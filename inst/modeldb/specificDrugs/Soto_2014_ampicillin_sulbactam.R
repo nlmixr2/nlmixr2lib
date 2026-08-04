@@ -20,7 +20,18 @@ Soto_2014_ampicillin_sulbactam <- function() {
     sep = " "
   )
   vignette <- "Soto_2014_ampicillin_sulbactam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sbt     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -136,7 +147,7 @@ Soto_2014_ampicillin_sulbactam <- function() {
     # linear allometric scaling on peripheral volume.
     # =====================================================================
     e_crcl_cl <- 0.701;     label("Shared CRCL power exponent on CL for ampicillin and sulbactam (unitless)") # Table 2: theta CLcr on CL = 0.701 (RSE 7.65%), common to both drugs in the combined final model
-    e_wt_vp   <- fixed(1.0); label("Body-weight allometric exponent on peripheral V2 for both drugs (FIXED at 1.0, unitless)") # Table 2: theta BWT on V2 = 1.00 Fix (combined final model, shared across drugs)
+    e_wt_vp   <- fixed(1.0); label("Body-weight allometric exponent on peripheral V2 for both drugs (unitless)") # Table 2: theta BWT on V2 = 1.00 Fix (combined final model, shared across drugs)
 
     # =====================================================================
     # Inter-individual variability (Soto 2014 Table 2, combined final-model

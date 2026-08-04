@@ -2,7 +2,16 @@ Wu_2012_sirolimus <- function() {
   description <- "Two-compartment population PK model for oral sirolimus with saturable Michaelis-Menten absorption in patients with advanced cancer (Wu 2012). Hematocrit power covariate on apparent oral clearance."
   reference <- "Wu K, Cohen EEW, House LK, Ramirez J, Zhang W, Ratain MJ, Bies RR. Nonlinear Population Pharmacokinetics of Sirolimus in Patients With Advanced Cancer. CPT Pharmacometrics Syst Pharmacol. 2012;1(11):e17. doi:10.1038/psp.2012.18"
   vignette <- "Wu_2012_sirolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     HCT = list(

@@ -40,6 +40,17 @@ Jones_2011_PF04878691_viralLoad <- function() {
   paper_specific_residual_sds <- c("addSd_vload")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "PF-04878691", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "PF-04878691", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF-04878691", units = "mg", specimen = "plasma", verified = FALSE),
+    oas         = list(analyte = "OAS", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -73,15 +84,15 @@ Jones_2011_PF04878691_viralLoad <- function() {
     # fixed because the OAS / viral-load layers were fit sequentially using
     # the upstream popPK EBE PK parameters.
     # ----------------------------------------------------------------------
-    lcl       <- fixed(log(1.7));    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg)
-    lcl_time  <- fixed(log(1.8));    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
-    lkdeg     <- fixed(log(0.24));   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h)
+    lcl_exp_inf       <- fixed(log(1.7));    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg)
+    lcl_exp_component  <- fixed(log(1.8));    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
+    lcl_exp_kdes     <- fixed(log(0.24));   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h)
     lvc       <- fixed(log(3.3));    label("Apparent central volume of distribution per kg body weight (Vc, L/kg)")                        # Table 1 (Vc = 3.3 L/kg)
     lq        <- fixed(log(0.74));   label("Apparent intercompartmental clearance per kg body weight (Q, L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg)
     lvp       <- fixed(log(21));     label("Apparent peripheral volume of distribution per kg body weight (Vp, L/kg)")                     # Table 1 (Vp = 21 L/kg)
     lka       <- fixed(log(0.078));  label("First-order absorption rate constant (ka, 1/h)")                                               # Table 1 (ka = 0.078 1/h)
 
-    etalcl ~ fixed(0.067)                                                                                                                  # Table 1 (IIV CLF = 0.067)
+    etalcl_exp_inf ~ fixed(0.067)                                                                                                                  # Table 1 (IIV CLF = 0.067)
     etalka ~ fixed(0.19)                                                                                                                   # Table 1 (IIV ka  = 0.19)
 
     # ----------------------------------------------------------------------
@@ -144,15 +155,15 @@ Jones_2011_PF04878691_viralLoad <- function() {
     # Inherited PK (Table 1). See Jones_2011_PF04878691.R for the standalone
     # PK model rationale.
     # ----------------------------------------------------------------------
-    cl_ss    <- exp(lcl + etalcl) * WT
-    cl_time0 <- exp(lcl_time) * WT
-    kdeg_cl  <- exp(lkdeg)
+    cl_exp_inf    <- exp(lcl_exp_inf + etalcl_exp_inf) * WT
+    cl_exp_component <- exp(lcl_exp_component) * WT
+    cl_exp_kdes  <- exp(lcl_exp_kdes)
     vc       <- exp(lvc) * WT
     q        <- exp(lq)  * WT
     vp       <- exp(lvp) * WT
     ka       <- exp(lka + etalka)
 
-    cl  <- cl_ss + cl_time0 * exp(-kdeg_cl * time)
+    cl  <- cl_exp_inf + cl_exp_component * exp(-cl_exp_kdes * time)
     kel <- cl / vc
     k12 <- q  / vc
     k21 <- q  / vp

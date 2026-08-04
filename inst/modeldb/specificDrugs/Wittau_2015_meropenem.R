@@ -11,7 +11,15 @@ Wittau_2015_meropenem <- function() {
     sep = " "
   )
   vignette <- "Wittau_2015_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FFM = list(
@@ -117,8 +125,8 @@ Wittau_2015_meropenem <- function() {
     # a 14% difference). Encoded as fixed() because the paper holds them
     # constant and reports no uncertainty.
     # =========================================================================
-    e_ffm_cl_q  <- fixed(0.75); label("Allometric exponent on CL and CLd (unitless; fixed)")        # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
-    e_ffm_vc_vp <- fixed(1.00); label("Allometric exponent on V1 and V2 (unitless; fixed)")         # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
+    e_ffm_cl_q  <- fixed(0.75); label("Allometric exponent on CL and CLd (unitless)")        # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
+    e_ffm_vc_vp <- fixed(1.00); label("Allometric exponent on V1 and V2 (unitless)")         # Methods 'Parameter variability model and covariate effects'; Discussion paragraph 4
 
     # =========================================================================
     # Between-subject variability. The model is exponential (Methods

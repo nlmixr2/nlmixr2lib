@@ -39,7 +39,7 @@ Wu_2023_SPI_62 <- function() {
   vignette <- "Wu_2023_SPI_62"
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L",
     dosing_notes  = paste(
@@ -62,6 +62,20 @@ Wu_2023_SPI_62 <- function() {
   # race on any of the six parameters carrying IIV (Vcentral, CL, Ktr, Koff,
   # Rtotal, IC50), so the formal stepwise covariate search was never run and the
   # final PK/PD model is identical to the base PK/PD model.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "SPI-62", units = "nmol", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "SPI-62", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "SPI-62", units = "nmol", specimen = "plasma", verified = FALSE),
+    complex     = list(analyte = "drug-target complex", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(
@@ -199,7 +213,7 @@ Wu_2023_SPI_62 <- function() {
     # Bioavailability is not identifiable (all L and L/h above are apparent),
     # so F is anchored at 1 rather than estimated. Wu 2023 Eq. 1 writes the
     # depot initial condition as Dose * F.
-    lfdepot <- fixed(log(1)); label("Bioavailability F of SPI-62 (fraction, fixed at 1)")  # Wu 2023 Eq. 1 and Table 2 footnote a (F unknown; only apparent parameters estimated, so F is anchored at 1)
+    lfdepot <- fixed(log(1)); label("Bioavailability F of SPI-62 (fraction)")  # Wu 2023 Eq. 1 and Table 2 footnote a (F unknown; only apparent parameters estimated, so F is anchored at 1)
 
     # ------------------------------------------------------------------
     # Target binding (TMDD). Concentrations are nM and Rtotal is an

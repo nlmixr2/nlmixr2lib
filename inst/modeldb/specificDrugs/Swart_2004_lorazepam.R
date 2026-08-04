@@ -2,7 +2,15 @@ Swart_2004_lorazepam <- function() {
   description <- "Two-compartment IV population PK model for lorazepam by continuous infusion in mechanically ventilated critically ill adult ICU patients. Clearance is selected by chronic alcohol-abuse status (a flat 0.74 L/h for alcohol-abuse subjects; a PEEP-adjusted 4.13 - (PEEP - 5) * 0.417 L/h otherwise). Steady-state volume of distribution decreases linearly with age above 58 years. Fitted by NONMEM V in the Swart 2004 learning cohort (n = 28)."
   reference   <- "Swart EL, Zuideveld KP, de Jongh J, Danhof M, Thijs LG, Strack van Schijndel RJM. Comparative population pharmacokinetics of lorazepam and midazolam during long-term continuous infusion in critically ill patients. Br J Clin Pharmacol. 2004;57(2):135-145. doi:10.1046/j.1365-2125.2003.01957.x"
   vignette    <- "Swart_2004_lorazepam_midazolam"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "lorazepam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lorazepam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     PEEP = list(

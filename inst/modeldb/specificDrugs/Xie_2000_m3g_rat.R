@@ -16,6 +16,16 @@ Xie_2000_m3g_rat <- function() {
     concentration = "umol/L (= uM; reported as unbound M3G in arterial plasma and brain ECF)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central    = list(analyte = "morphine-3-glucuronide (unbound)", units = "umol", specimen = "plasma", verified = FALSE),
+    brain_csf  = list(analyte = "morphine-3-glucuronide (unbound)", units = "umol", specimen = "tissue", verified = FALSE),
+    brain_deep = list(analyte = "morphine-3-glucuronide (unbound)", units = "umol", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_PROBENECID = list(
       description        = "Indicator for probenecid co-administration: 1 during the day-2 probenecid co-infusion in the probenecid-arm rats, 0 otherwise (control arm both days, plus day 1 of the probenecid arm before the loading dose).",

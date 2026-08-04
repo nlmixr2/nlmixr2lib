@@ -30,7 +30,18 @@ Taubert_2018_finafloxacin <- function() {
     "doi:10.1128/AAC.02328-17"
   )
   vignette <- "Taubert_2018_finafloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "finafloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "finafloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "finafloxacin", units = "mg", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     BSA = list(
@@ -173,7 +184,7 @@ Taubert_2018_finafloxacin <- function() {
     # ------------------------------------------------------------------------
     lfdepot   <- log(0.75) ;     label("Oral bioavailability F (unitless, log-scale)")
     # Paper Table 3 oral: F = 0.75 (IIV 33%, IOV 32%)
-    logitf1st <- logit(0.77) ;   label("Logit fraction of oral dose entering first-order arm (f1st)")
+    logitffo <- logit(0.77) ;   label("Logit fraction of oral dose entering first-order arm (f1st)")
     # Paper Table 3 oral: f1st = 0.77 (IIV 39%, IOV 36%)
     lka       <- log(6.61) ;     label("First-order oral absorption rate constant Ka (1/h)")
     # Paper Table 3 oral: Ka = 6.61 1/h (IIV 33%, IOV 168%)
@@ -215,7 +226,7 @@ Taubert_2018_finafloxacin <- function() {
 
     # Oral absorption IIVs (sequential fit on Trial I oral data)
     etalfdepot    ~ log(1 + 0.33 ^ 2)    # paper Table 3 oral: F IIV = 33%
-    etalogitf1st  ~ log(1 + 0.39 ^ 2)    # paper Table 3 oral: f1st IIV = 39%
+    etalogitffo  ~ log(1 + 0.39 ^ 2)    # paper Table 3 oral: f1st IIV = 39%
     etalka        ~ log(1 + 0.33 ^ 2)    # paper Table 3 oral: Ka IIV = 33%
     etaltlag1     ~ log(1 + 0.30 ^ 2)    # paper Table 3 oral: LAG1 IIV = 30%
     etald0        ~ log(1 + 0.31 ^ 2)    # paper Table 3 oral: D0 IIV = 31%
@@ -262,7 +273,7 @@ Taubert_2018_finafloxacin <- function() {
 
     # Oral absorption (individual)
     fdepot <- exp(lfdepot + etalfdepot)
-    f1st   <- expit(logitf1st + etalogitf1st)
+    f1st   <- expit(logitffo + etalogitffo)
     ka     <- exp(lka + etalka)
     tlag1  <- exp(ltlag1 + etaltlag1)
     d0     <- exp(ld0 + etald0)

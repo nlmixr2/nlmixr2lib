@@ -15,7 +15,15 @@ Lane_2011_warfarin_s <- function() {
   )
   vignette <- "Lane_2011_warfarin"
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "S-warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "S-warfarin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -157,7 +165,7 @@ Lane_2011_warfarin_s <- function() {
     #     concentration units in this model are mg/L per the units list above, so the additive constant is 0.001)
     # ============================================================
     propSd <- 0.316           ; label("Proportional residual SD (fraction)")                              # Lane 2011 Table 3 (estimated, 95% CI 28.5-34.5%)
-    addSd  <- fixed(0.001)    ; label("Additive residual SD (mg/L; = 1 ng/mL fixed in the paper)")        # Lane 2011 Table 3 (fixed at low value; the base S-warfarin model estimated 45.8 ng/mL but the final covariate model dropped it to a low fixed value)
+    addSd  <- fixed(0.001)    ; label("Additive residual SD (mg/L; = 1 ng/mL from the paper)")        # Lane 2011 Table 3 (fixed at low value; the base S-warfarin model estimated 45.8 ng/mL but the final covariate model dropped it to a low fixed value)
   })
 
   model({

@@ -40,7 +40,18 @@ Royer_2011_cisplatin <- function() {
   # this protein-binding formulation.
   paper_specific_compartments <- c("peritoneum", "bound")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    peritoneum  = list(analyte = "cisplatin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    bound       = list(analyte = "cisplatin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_EPI = list(

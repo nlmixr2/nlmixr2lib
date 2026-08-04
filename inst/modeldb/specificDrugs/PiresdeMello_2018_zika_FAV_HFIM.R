@@ -36,9 +36,28 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
   )
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "no dosing events -- FAV concentration is supplied via the CONC_FAV_UM time-varying covariate",
     concentration = "log10(PFU/mL) for the model observation Cc"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    uninfected = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    infected1  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    infected2  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    infected3  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    infected4  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    infected5  = list(analyte = "infected host cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi1        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi2        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi3        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi4        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi5        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vextra     = list(analyte = "extracellular virus", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(

@@ -4,6 +4,14 @@ Fang_2010_etanercept <- function() {
   vignette    <- "Fang_2010_etanercept"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "etanercept", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "etanercept", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Biological sex indicator, 1 = female, 0 = male",
@@ -52,7 +60,7 @@ Fang_2010_etanercept <- function() {
     lcl   <- log(0.168);  label("Apparent clearance CL/F at SEXF = 1, MULTI_DOSE_PT = 0 (L/h)") # Fang 2010 Table 3: CL/F = 0.168 L/h (female-typical, single-dose reference)
     lvc   <- log(15.5);   label("Apparent central volume V/F (L)")                            # Fang 2010 Table 3: V/F = 15.5 L
     ltlag <- log(1.03);   label("Absorption lag time Tlag (h)")                               # Fang 2010 Table 3: Tlag = 1.03 h
-    lfdepot <- fixed(log(1)); label("Bioavailability F at MULTI_DOSE_PT = 0 (fixed at 1 as SC reference)") # SC route - apparent CL/F and V/F absorb the unidentifiable absolute F; the multi-dose effect on F is captured by e_multi_dose_pt_f below.
+    lfdepot <- fixed(log(1)); label("Bioavailability F at MULTI_DOSE_PT = 0 (1 as SC reference)") # SC route - apparent CL/F and V/F absorb the unidentifiable absolute F; the multi-dose effect on F is captured by e_multi_dose_pt_f below.
 
     # Covariate effects (Fang 2010 Table 3 final-model thetas).
     e_sexf_cl       <- 0.655; label("Multiplicative male-vs-female CL/F ratio (applied as ratio^(1 - SEXF))")             # Fang 2010 Table 3: theta_Gender for CL/F = 0.655 (paper Gender = 1 - SEXF)

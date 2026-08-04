@@ -29,7 +29,16 @@ Kloprogge_2014_quinine <- function() {
     sep = " "
   )
   vignette <- "Kloprogge_2014_quinine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "quinine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "quinine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "quinine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -173,7 +182,7 @@ Kloprogge_2014_quinine <- function() {
     # that are not part of the typical simulation workflow (see vignette
     # Errata). Modelling F_typ = 1 with IIV CV 12.3% reproduces the
     # between-subject component of the source variability structure.
-    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless, fixed)")          # Kloprogge 2014 Table 2: F = 100 (fixed)
+    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless)")          # Kloprogge 2014 Table 2: F = 100 (fixed)
 
     # Allometric exponents. Fixed at the canonical Mahidol-Oxford
     # malaria-popPK values used by the source paper: 2/3 on clearance
@@ -183,8 +192,8 @@ Kloprogge_2014_quinine <- function() {
     # better fit of the model compared with a coefficient of 3/4 ...
     # in good agreement with the observed physiology since clearance
     # does not normally scale linearly with body weight").
-    allo_cl  <- fixed(2/3) ; label("Allometric exponent on CL/F and Q/F (unitless, fixed)")    # Kloprogge 2014 Methods + Results paragraph 2
-    allo_vc  <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless, fixed)")   # Kloprogge 2014 Methods + Results paragraph 2
+    e_wt_cl  <- fixed(2/3) ; label("Allometric exponent on CL/F and Q/F (unitless)")    # Kloprogge 2014 Methods + Results paragraph 2
+    e_wt_vc  <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless)")   # Kloprogge 2014 Methods + Results paragraph 2
 
     # Covariate effects.
     # Body temperature is encoded as an exponential effect on CL/F,
@@ -230,10 +239,10 @@ Kloprogge_2014_quinine <- function() {
     # Individual structural parameters with allometric WT scaling and
     # the body-temperature exponential effect on CL/F.
     ka  <- exp(lka + etalka)
-    cl  <- exp(lcl + etalcl) * (WT / 56)^allo_cl * exp(e_bodytemp_cl * (BODYTEMP - 37.2))
-    vc  <- exp(lvc)          * (WT / 56)^allo_vc
-    q   <- exp(lq)           * (WT / 56)^allo_cl
-    vp  <- exp(lvp + etalvp) * (WT / 56)^allo_vc
+    cl  <- exp(lcl + etalcl) * (WT / 56)^e_wt_cl * exp(e_bodytemp_cl * (BODYTEMP - 37.2))
+    vc  <- exp(lvc)          * (WT / 56)^e_wt_vc
+    q   <- exp(lq)           * (WT / 56)^e_wt_cl
+    vp  <- exp(lvp + etalvp) * (WT / 56)^e_wt_vc
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc

@@ -7,7 +7,15 @@ Olagunju_2018_efavirenz <- function() {
     "J Antimicrob Chemother. 2018;73(1):165-172. doi:10.1093/jac/dkx334."
   )
   vignette <- "Olagunju_2018_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -72,8 +80,8 @@ Olagunju_2018_efavirenz <- function() {
     # ---- Fixed allometric exponents on body weight (paper Methods paragraph 3) ----
     # "An allometric weight model for clearance parameters is given by CLwt = (WT/WTstd)^0.75
     #  and for volume parameters is given Vwt = (WT/WTstd)^1, where WTstd = 70 kg."
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed)") # Olagunju 2018 Methods paragraph 3
-    e_wt_vc <- fixed(1.0)  ; label("Allometric exponent of (WT/70) on V/F (unitless; fixed)")  # Olagunju 2018 Methods paragraph 3
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless)") # Olagunju 2018 Methods paragraph 3
+    e_wt_vc <- fixed(1.0)  ; label("Allometric exponent of (WT/70) on V/F (unitless)")  # Olagunju 2018 Methods paragraph 3
 
     # ---- IIV (diagonal omega; exponential errors, log-normal per equation 1) ----
     # Olagunju 2018 Methods equation 1: theta_i = theta_1 * exp(eta_i)

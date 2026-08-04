@@ -4,6 +4,14 @@ Hazendonk_2016_factor_viii <- function() {
   vignette    <- "Hazendonk_2016_factor_viii"
   units       <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "factor viii", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "factor viii", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -89,8 +97,8 @@ Hazendonk_2016_factor_viii <- function() {
 
     # Fixed allometric exponents (paper explicitly fixed these at theory-based
     # values; Hazendonk 2016 Structural model development and Table 3 footnote).
-    allo_cl <- fixed(0.75); label("Allometric exponent of (WT / 68) on CL and Q (fixed)")  # Hazendonk 2016 Structural model development: "power exponents fixed at 0.75 for clearances"
-    allo_vc <- fixed(1.00); label("Allometric exponent of (WT / 68) on V1 and V2 (fixed)") # Hazendonk 2016 Structural model development: "power exponents fixed at ... 1.0 for volumes of distribution"
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of (WT / 68) on CL and Q")  # Hazendonk 2016 Structural model development: "power exponents fixed at 0.75 for clearances"
+    e_wt_vc <- fixed(1.00); label("Allometric exponent of (WT / 68) on V1 and V2") # Hazendonk 2016 Structural model development: "power exponents fixed at ... 1.0 for volumes of distribution"
 
     # Inter-individual variability (exponential): omega^2 = CV^2 following the
     # convention of related FVIII popPK models (Chelle 2019, Nestorov 2014).
@@ -122,10 +130,10 @@ Hazendonk_2016_factor_viii <- function() {
 
     # Individual PK parameters (Hazendonk 2016 Table 5). CL, Q scale with WT^0.75;
     # V1, V2 scale with WT^1.0. Only CL and V1 carry IIV etas.
-    cl <- exp(lcl + etalcl) * ws ^ allo_cl * age_eff_cl * blood_eff_cl * surg_eff_cl
-    vc <- exp(lvc + etalvc) * ws ^ allo_vc * age_eff_vc
-    q  <- exp(lq)           * ws ^ allo_cl
-    vp <- exp(lvp)          * ws ^ allo_vc
+    cl <- exp(lcl + etalcl) * ws ^ e_wt_cl * age_eff_cl * blood_eff_cl * surg_eff_cl
+    vc <- exp(lvc + etalvc) * ws ^ e_wt_vc * age_eff_vc
+    q  <- exp(lq)           * ws ^ e_wt_cl
+    vp <- exp(lvp)          * ws ^ e_wt_vc
 
     # Micro-constants for the explicit two-compartment ODEs.
     kel <- cl / vc

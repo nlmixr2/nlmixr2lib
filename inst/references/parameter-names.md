@@ -139,11 +139,11 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lkt_abs (**canonical log-transformed saturable absorption half-saturation amount**)
 - **Type:** log-transformed-pk
-- **Role:** Log-scale amount of drug in the depot / absorption compartment at which the saturable absorption rate equals half its maximum (amount). Functionally a Km but expressed in amount-in-compartment units rather than concentration.
+- **Role:** Log-scale amount of drug in the depot / absorption compartment at which the saturable absorption rate equals half its maximum (amount). Functionally a `km` but expressed in amount-in-compartment units rather than concentration.
 - **Source aliases:**
   - `Kt` -- used in `Jansson_2008_eflornithine_rat.R`.
 - **Example models:** `Jansson_2008_eflornithine_rat.R`.
-- **Notes:** Paired with `ltmax_abs`. The amount-in-compartment formulation differs from a concentration Km because the absorption compartment may not have a well-defined volume.
+- **Notes:** Paired with `ltmax_abs`. The amount-in-compartment formulation differs from a concentration `km` because the absorption compartment may not have a well-defined volume.
 
 ### lcl_ss (**canonical log-transformed steady-state clearance arm**)
 - **Type:** log-transformed-pk
@@ -304,7 +304,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:**
   - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
 - **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples; rat `beta_cl = 0.162 mL/IU`, monkey `beta_cl = 0.0355 mL/IU`, both fitting the exponential-nonlinear-CL form on total FVIII activity).
-- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `Km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `Km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
+- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
 
 ---
 
@@ -904,7 +904,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Logit-transformed fraction of parent clearance routed to an active metabolite. Used when the source paper's estimation routine holds FM on the logit scale so that FM is bounded in (0, 1) regardless of covariate + eta combinations. Inside `model()` the bare form is `fm = 1 / (1 + exp(-logitfm_ind))` where `logitfm_ind` collects the fixed effect, covariate shifts, and IIV on the logit scale.
 - **Source aliases:** none.
 - **Example models:** `Mitra_2026_ziftomenib.R` (base `logitfm <- fixed(0.14)` corresponding to `logit^-1(0.14) = 0.535`; additive shift `e_dis_healthy_logitfm = -1.62` on the logit scale for the healthy-volunteer cohort; IIV `etalogitfm ~ 0.280` on the logit scale).
-- **Notes:** Follows the `logit`-transform-prefix family (`logitfr`, `logitemax`) applied to the existing `fm` canonical root. Prefer `logitfm` (paper's logit encoding) over `lfm` (log encoding) when the source paper's NONMEM control stream stores FM on the logit scale, because a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Ratified canonically on 2026-07-24 alongside the Mitra 2026 ziftomenib extraction.
+- **Notes:** Follows the `logit`-transform-prefix family (`logitffo`, `logitemax`) applied to the existing `fm` canonical root. Prefer `logitfm` (paper's logit encoding) over `lfm` (log encoding) when the source paper's NONMEM control stream stores FM on the logit scale, because a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Ratified canonically on 2026-07-24 alongside the Mitra 2026 ziftomenib extraction.
 
 ### kin (**canonical indirect-response production rate**)
 - **Type:** paper-named-param
@@ -918,6 +918,46 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** First-order elimination rate of an indirect-response turnover pool (1 / time). Also the tissue-to-central return leg of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family -- see the `kin` entry above.
 - **Source aliases:** none.
 - **Example models:** indirect-response PD models; `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form).
+
+### lkinf_rbc, kinf_rbc (**canonical first-order influx rate constant into the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for LINEAR influx of drug or active metabolite from plasma into the intracellular red-cell pool (`rbc_<analyte>`, see `compartment-names.md`). Enters as `d/dt(rbc_<analyte>) = kinf_rbc * Cc - keff_rbc * rbc_<analyte>`, so the plasma concentration `Cc` must be expressed in the same concentration units as the red-cell state for the term to be dimensionally consistent.
+- **Source aliases:**
+  - `Kin` -- used in `Gebhard_2023_methotrexate.R` (paper symbol `K_in^MTX`).
+- **Example models:** `Gebhard_2023_methotrexate.R` (`K_in^MTX = 0.031 1/day`), `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). The `kinf` stem is deliberately NOT `kin`: the canonical `kin` is a ZERO-ORDER production rate into an indirect-response turnover pool, which is a different quantity with different units, so reusing that stem would actively mislead. Distinct also from `clin` / `clef` (`Campagne_2019_cyclophosphamide_mouse.R`), which are plasma-to-tissue influx / efflux CLEARANCES (volume / time) paired with an `ecf` compartment; `kinf_rbc` / `keff_rbc` are first-order RATE CONSTANTS. The `_rbc` suffix marks the destination pool; no analyte suffix is carried because each model file holds a single drug arm. A future model fitting two red-cell arms jointly would extend to `lkinf_rbc_<analyte>`.
+
+### lkeff_rbc, keff_rbc (**canonical first-order efflux / elimination rate constant out of the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for loss of drug or active metabolite from the intracellular red-cell pool (`rbc_<analyte>`), combining efflux back to plasma, intracellular catabolism, and red-cell turnover into a single lumped rate. Enters as the `- keff_rbc * rbc_<analyte>` term of the red-cell ODE.
+- **Source aliases:**
+  - `Keff` -- used in `Gebhard_2023_methotrexate.R` and `Gebhard_2023_mercaptopurine.R` (paper symbols `K_eff^MTX`, `K_eff^6MP`).
+- **Example models:** `Gebhard_2023_methotrexate.R` (`K_eff^MTX = 0.018 1/day`), `Gebhard_2023_mercaptopurine.R` (`K_eff^6MP = 0.041 1/day`), `Gebhard_2023_mercaptopurine_anc.R` (`K_eff^6MP = 0.050 1/day`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Because the rate is lumped, its reciprocal half-life is a red-cell residence property rather than a pure membrane-transport property -- Gebhard 2023's Discussion validates `K_eff^MTX = 0.018 1/day` against literature red-cell methotrexate half-lives of 30-40 days (0.017-0.023 1/day).
+
+### lvmax_rbc, vmax_rbc (**canonical saturable-influx maximum rate into the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Maximum rate (concentration / time, e.g. umol/L/day) of SATURABLE Michaelis-Menten influx from plasma into the intracellular red-cell pool: `d/dt(rbc_<analyte>) = vmax_rbc * Cc / (km_rbc + Cc) - keff_rbc * rbc_<analyte>`.
+- **Source aliases:**
+  - `Vmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `V_mm^6MP`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`V_mm^6MP = 0.096 umol/L/day`), `Gebhard_2023_mercaptopurine_anc.R` (`V_mm^6MP = 0.21 umol/L/day`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Extends the blessed `vmax_<suffix>` / `km_<suffix>` disambiguation pattern to a saturable INFLUX. Distinct from the canonical bare `vmax` / log `lvmax`, which are registered for saturable ELIMINATION and carry amount/time units; `vmax_rbc` is an influx into a concentration state and therefore carries concentration/time units.
+
+### lkm_rbc, km_rbc (**canonical saturable-influx half-saturation concentration for the red-cell analyte pool**)
+- **Type:** paper-named-param
+- **Role:** Michaelis constant (concentration, e.g. umol/L) of the saturable influx into the intracellular red-cell pool; the plasma concentration at which influx reaches half of `vmax_rbc`.
+- **Source aliases:**
+  - `Kmm` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `K_mm^6MP`).
+- **Example models:** `Gebhard_2023_mercaptopurine.R` (`K_mm^6MP = 0.016 umol/L`), `Gebhard_2023_mercaptopurine_anc.R` (`K_mm^6MP = 0.14 umol/L`).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q2, option A). Paired with `lvmax_rbc`; both are meaningless alone.
+
+### linieff, inieff (**canonical mid-therapy initialisation fraction for a turnover / maturation chain**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fraction of the turnover baseline (`rbase`) at which a turnover or maturation chain is initialised when the observation record starts DURING ongoing therapy rather than at drug-free baseline. The terminal state is initialised at `inieff * rbase` and the upstream chain states at the steady-state values implied by that terminal value, so the chain begins at a treatment steady state carrying an unobserved historical drug effect rather than at the untreated baseline.
+- **Source aliases:**
+  - `inieff` -- used in `Gebhard_2023_mercaptopurine_anc.R` (Gebhard 2023 main text: "we assume to have reached a treatment steady state with an additional parameter `inieff` describing the drug effect at the initial time point and `X_ma(0) = inieff * base`").
+- **Example models:** `Gebhard_2023_mercaptopurine_anc.R` (`inieff = 0.87`, RSE 22%, CV 54%; Friberg chain initialised mid-maintenance-therapy for childhood ALL).
+- **Notes:** Registered 2026-07-30 (sidecar `oare_PMC10359452` request-001 q3, option A -- paper-faithful naming, following the register's existing paper-named precedents `le0` and `kmet`). Estimated with IIV in Gebhard 2023, which is what distinguishes it from a fixed initialisation convention: it absorbs the between-patient spread in how suppressed each patient's ANC already was when their record began. A value of 1 recovers the ordinary drug-free-baseline initialisation. Distinct from `rbase`, which is the untreated baseline itself.
 
 ### kdeg (**canonical degradation rate**)
 - **Type:** paper-named-param
@@ -1049,3 +1089,62 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `gamma` -- Siebinga 2023 Equation 2 (`Cobs = (Cpred + gamma) * (1 + eps_p) + eps_add`).
 - **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
 - **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
+
+### mic (**canonical minimum inhibitory concentration of the challenge organism**)
+- **Type:** paper-named-param
+- **Role:** Minimum inhibitory concentration of the drug against the specific challenge isolate, in concentration units, used as the DENOMINATOR of a PK/PD index in antimicrobial / antifungal exposure-response models (`AUC/MIC`, `Cmax/MIC`, `%T>MIC`). Not an estimated parameter: it is a measured susceptibility property of the isolate, so it is always wrapped in `fixed()` and is the natural knob a downstream user changes to apply the model to an organism of different susceptibility. Because the same isolate has different MICs by different reference methods, a model whose exposure-response was fitted against one susceptibility methodology must state which one in the `label()`; when a paper fits parallel exposure-response relationships against two methodologies, those are separate model files (see `Beredaki_2023_micafungin_clsi.R` / `..._eucast.R`).
+- **Source aliases:**
+  - `MIC` -- near-universal paper notation.
+  - `MIC50`, `MIC90` -- population-distribution percentiles; use `mic` only for a single organism's own MIC, and record which percentile the value is in the `label()` and the source-trace comment.
+  - `MEC` -- minimum effective concentration, the echinocandin/mould analogue of the MIC, reported for filamentous fungi.
+- **Example models:** `Chen_2023_tilmicosin.R` (`mic` = 0.25 ug/mL, the CLSI broth-microdilution MIC of *Pasteurella multocida* C44-15, driving an `AUC24h/MIC` sigmoidal Emax); `Beredaki_2023_micafungin_clsi.R` (`mic` = 0.008 mg/L, CLSI M27 median MIC of *Candida albicans* CA 580) and `Beredaki_2023_micafungin_eucast.R` (`mic` = 0.016 mg/L, the EUCAST E.Def 7.3 median MIC of the same isolate), both driving an `fAUC0-24/MIC` sigmoidal Emax.
+- **Notes:** Ratified for AUC/MIC-index models alongside the Chen 2023 tilmicosin extraction; this register entry was written with the Beredaki 2023 micafungin extraction. Distinct from `ec50` / `lec50`: `ec50` is the *fitted* index value producing half-maximal effect (and in an `AUC/MIC`-indexed model is unitless, or has units of time), whereas `mic` is a *measured* concentration used to form the index in the first place. In a model where the index is a free-drug exposure, apply the unbound fraction (`fu`) to the exposure numerator and leave `mic` on the total-drug scale the susceptibility method actually reports.
+
+## Unit spellings
+
+Registered 2026-08-03. The machine-readable `units` block wrote the same time
+unit three ways -- `"hour"` in 643 models, `"h"` in 208, `"hr"` in 28 -- so a
+consumer parsing `units$time` could not canonicalise without its own spelling
+table. Same for `"minute"` vs `"min"` and `"microgram"` vs `"ug"`.
+
+Canonical spellings live in `conventions$timeUnitSpellings` and
+`conventions$doseUnitSpellings`; `checkModelConventions()` raises an
+**error** for a non-canonical spelling and `buildModelDb()` aborts on it.
+
+**Spelling is normalised; dimension is never converted.** `min` and `h` are
+both canonical and are never conflated -- rewriting one as the other would
+misstate every value in the model. The check only maps alternative spellings
+of the *same* unit onto one form.
+
+Generic structural models (`PK_1cmt`, `PK_2cmt`, ...) are dimensionless by
+design and declare `"time_unit"` / `"dose_unit"`; `Beal_2001_iv1cmt_bql`
+expresses time in half-lives. These are listed in
+`conventions$placeholderUnits` and are exempt -- they are correct, not
+unnormalised.
+
+### Why `kon` is NOT canonicalised
+
+A consumer asked for a canonical unit for "the kon concept". There isn't one,
+because `kon*` is not one concept. Of the 91 parameters whose name starts
+`kon` in this library:
+
+- `kon51_col_atcc`, `kon52_col_aru` are an **EC50 in mg/L**, and
+  `konca_col_atcc`, `koncp_col_aru` an **Emax in 1/h** -- `KON51` and `KONCA`
+  are the source paper's own parameter names, not association rates.
+- QSP 2D on-rates carry a **length** dimension:
+  `1/(micromolarity*nanometer*second)`.
+- Opioid receptor-binding models use `pM^-n s^-1`, with a Hill-like exponent.
+- Some are mass-concentration based: `(mg/L)^-1 day^-1`.
+- The remainder are ordinary 3D molar rates: `1/(nM*day)`, `1/nM/h`,
+  `L/nmol/day`.
+
+At least three distinct dimensionalities share the prefix. A blanket
+canonicalisation would silently restate values -- the same trap as `lrbase`
+(see #477), where 89 of 102 uses were indirect-response PD baselines rather
+than target baselines. What *was* normalised in these labels is spelling and
+separators only (`/hour` -> `/h`, `pM.day` -> `pM*day`, `mcmol` -> `umol`),
+which cannot change a value.
+
+A consumer that needs kon in one unit has to read the dimensionality per
+model. That is a real cost, and it is smaller than the cost of being
+confidently wrong.

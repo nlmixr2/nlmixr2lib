@@ -2,7 +2,16 @@ Vezina_2014_valganciclovir <- function() {
   description <- "Two-compartment population PK model for ganciclovir after oral valganciclovir prophylaxis in paediatric and adult solid organ transplant recipients (Vezina 2014). First-order absorption with fixed lag time and rate, allometric (WT/70 kg) scaling on apparent CL/F and Q/F (exponent 0.75) and on V2/F and V3/F (exponent 1.0), and a power-form effect of body-weight-adjusted creatinine clearance on CL/F (reference 60 mL/min)."
   reference   <- "Vezina HE, Brundage RC, Balfour HH Jr. Population pharmacokinetics of valganciclovir prophylaxis in paediatric and adult solid organ transplant recipients. Br J Clin Pharmacol. 2014;78(2):343-352. doi:10.1111/bcp.12343"
   vignette    <- "Vezina_2014_valganciclovir"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "valganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "valganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -53,8 +62,8 @@ Vezina_2014_valganciclovir <- function() {
     # valganciclovir dose; the F factor absorbs both absolute oral
     # bioavailability and the molar conversion from valganciclovir to
     # ganciclovir.
-    lka   <- fixed(log(3.0))   ; label("Absorption rate constant ka (1/h; FIXED)")                                # Vezina 2014 Table 2: Ka = 3.0 (fixed)
-    ltlag <- fixed(log(0.5))   ; label("Absorption lag time (h; FIXED)")                                          # Vezina 2014 Table 2: Lag time = 0.5 (fixed)
+    lka   <- fixed(log(3.0))   ; label("Absorption rate constant ka (1/h)")                                # Vezina 2014 Table 2: Ka = 3.0 (fixed)
+    ltlag <- fixed(log(0.5))   ; label("Absorption lag time (h)")                                          # Vezina 2014 Table 2: Lag time = 0.5 (fixed)
     lcl   <- log(14.5)         ; label("Apparent oral clearance CL/F at WT = 70 kg, CRCL = 60 mL/min (L/h)")      # Vezina 2014 Table 2: CL/F = 14.5 L/h
     lvc   <- log(87.5)         ; label("Apparent central volume of distribution V2/F at WT = 70 kg (L)")         # Vezina 2014 Table 2: V2/F = 87.5 L
     lq    <- log(4.80)         ; label("Apparent inter-compartmental clearance Q/F at WT = 70 kg (L/h)")         # Vezina 2014 Table 2: Q/F = 4.80 L/h
@@ -65,8 +74,8 @@ Vezina_2014_valganciclovir <- function() {
     # V2/F, Q/F and V3/F was described by a fixed exponent power function
     # using standard allometric scaling values of 0.75 and 1.0 on clearance
     # and volume of distribution terms, respectively."
-    e_wt_cl_q  <- fixed(0.75) ; label("Shared allometric exponent of (WT/70 kg) on CL/F and Q/F (unitless; FIXED)")  # Vezina 2014 Methods: 0.75 on clearance terms
-    e_wt_vc_vp <- fixed(1.0)  ; label("Shared allometric exponent of (WT/70 kg) on V2/F and V3/F (unitless; FIXED)") # Vezina 2014 Methods: 1.0 on volume terms
+    e_wt_cl_q  <- fixed(0.75) ; label("Shared allometric exponent of (WT/70 kg) on CL/F and Q/F (unitless)")  # Vezina 2014 Methods: 0.75 on clearance terms
+    e_wt_vc_vp <- fixed(1.0)  ; label("Shared allometric exponent of (WT/70 kg) on V2/F and V3/F (unitless)") # Vezina 2014 Methods: 1.0 on volume terms
 
     # Covariate effect on CL/F -- Vezina 2014 Results final-model equation:
     # CL/F (L/h) = 14.5 * ((CRCL/60))^0.492 * (WT/70)^0.75. The CRCL

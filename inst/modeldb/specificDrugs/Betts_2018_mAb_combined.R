@@ -4,6 +4,14 @@ Betts_2018_mAb_combined <- function() {
   vignette <- "Betts_2018_mAb_linear_PK"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "mAb combined", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mAb combined", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -40,9 +48,9 @@ Betts_2018_mAb_combined <- function() {
     # Allometric exponents (unitless). Betts 2018 Table 4 note gives the scaling
     # equation Y_species = Y_typical * (BW / BW_ref)^exponent. All exponents are
     # estimated (not held constant at 0.75 / 1); reported with narrow CIs.
-    allo_cl <- 0.89; label("Allometric exponent on CL (unitless)")                  # Betts 2018 Table 4, all-species column: alpha
+    e_wt_cl <- 0.89; label("Allometric exponent on CL (unitless)")                  # Betts 2018 Table 4, all-species column: alpha
     allo_v1 <- 0.98; label("Allometric exponent on V1 (unitless)")                  # Betts 2018 Table 4, all-species column: beta
-    allo_q  <- 0.67; label("Allometric exponent on Q (unitless)")                   # Betts 2018 Table 4, all-species column: gamma
+    e_wt_q  <- 0.67; label("Allometric exponent on Q (unitless)")                   # Betts 2018 Table 4, all-species column: gamma
     allo_v2 <- 0.95; label("Allometric exponent on V2 (unitless)")                  # Betts 2018 Table 4, all-species column: delta
 
     # IIV block on CL and V1 (variances and covariance on log scale).
@@ -52,13 +60,13 @@ Betts_2018_mAb_combined <- function() {
 
     # Per-compound residual error is in Supplementary Table 2 (not on disk); fixed at 0
     # per the skill's standing policy for unreported RUV (documented in vignette Errata).
-    propSd <- fixed(0); label("Proportional residual error (fraction; fixed at 0)")
+    propSd <- fixed(0); label("Proportional residual error (fraction)")
   })
   model({
     # WT is body weight in kg. Allometric scaling with reference 70 kg per Betts 2018 Table 4.
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
     vc <- exp(lvc + etalvc) * (WT / 70)^allo_v1
-    q  <- exp(lq)           * (WT / 70)^allo_q
+    q  <- exp(lq)           * (WT / 70)^e_wt_q
     vp <- exp(lvp)          * (WT / 70)^allo_v2
 
     kel <- cl / vc

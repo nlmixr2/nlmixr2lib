@@ -2,9 +2,42 @@
 
 # development version
 
+- Canonical unit spellings. The machine-readable `units` block wrote the same
+  time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
+  -- so a consumer parsing `units$time` could not canonicalise it without
+  carrying its own spelling table. Same for `"minute"`/`"min"` and
+  `"microgram"`/`"ug"`.
+
+  790 spellings in the `units` block and 204 unit hints in labels are
+  normalised (`/hour` and `/hr` to `/h`, `pM.day` to `pM*day`, `mcmol` to
+  `umol`). `conventions$timeUnitSpellings` and `$doseUnitSpellings` hold the
+  map; `checkModelConventions()` errors on a non-canonical spelling and
+  `buildModelDb()` aborts, so it cannot regrow. The extraction skill's template
+  and checklist require it of new models.
+
+  **Spelling is normalised; dimension is never converted.** `min` and `h` are
+  both canonical and are never conflated -- rewriting one as the other would
+  misstate every value. Generic dimensionless models (`PK_1cmt`, `PK_2cmt`, ...)
+  keep their `"time_unit"` / `"dose_unit"` placeholders, and
+  `Beal_2001_iv1cmt_bql` keeps time in half-lives; those are exempt by design.
+
+  No model's numeric values changed.
+
+  `kon` is deliberately **not** canonicalised: the prefix covers at least three
+  different dimensionalities in this library (3D molar rates, QSP 2D on-rates
+  carrying a length dimension, and mass-concentration forms), plus four
+  parameters where `KON..` is the source paper's name for an EC50 or an Emax.
+  The reasoning is recorded in `inst/references/parameter-names.md`.
+
+- Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
+
 - Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
 
+- Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
+
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
+
+- Add Wang 2024 amphenmulin ([doi:10.1128/spectrum.03675-23](https://doi.org/10.1128/spectrum.03675-23)) - broiler chickens and in-vitro *Mycoplasma gallisepticum*.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
@@ -23,7 +56,7 @@
   simulation code**: event tables / `keep=` vectors referencing `CONMED_DIUR`
   must be renamed. Per-paper diuretic class composition (which differs between
   these models) remains documented in each model's `covariateData` notes.
-* Add Chen 2023 tilmicosin ([doi:10.3389/fvets.2023.1260990](https://doi.org/10.3389/fvets.2023.1260990)) -- preclinical crossbred piglets with a *Pasteurella multocida* tissue-cage infection (sigmoidal Emax PK/PD-index model on AUC24h/MIC; ratifies new `AUC_TILM` covariate canonical).
+* Add Wada 2023 sparsentan ([doi:10.1002/psp4.12996](https://doi.org/10.1002/psp4.12996)) -- healthy volunteers, subjects with hepatic impairment, and patients with primary or genetic focal segmental glomerulosclerosis (ratifies new `CONMED_CYP3A4_INH_MOD` and `FORM_CRUSHED_TABLET` covariate canonicals).
 * Add Beal 2001 one-compartment IV-bolus BQL methodology template ([doi:10.1023/a:1012299115260](https://doi.org/10.1023/a:1012299115260)) -- methodology reference (no drug, no patients); packages the SI1 generative model from Beal's M1-M7 below-quantification-limit paper as a teaching template with CL = 0.693 and Vd = 1 (time in half-lives).
 * Add Luu 2017 nusinersen ([doi:10.1002/jcph.884](https://doi.org/10.1002/jcph.884)) -- pediatric patients with spinal muscular atrophy receiving intrathecal nusinersen.
 * Add Gaohua 2012 pregnancy PBPK ([doi:10.1111/j.1365-2125.2012.04363.x](https://doi.org/10.1111/j.1365-2125.2012.04363.x)) -- healthy pregnant Caucasian women (14-compartment whole-body p-PBPK with GA-dependent maternal physiology, applied to caffeine [CYP1A2], metoprolol [CYP2D6], and midazolam [CYP3A4]); ratifies new canonical bare `skin` PBPK compartment.
@@ -311,6 +344,7 @@
 * Add Fiedler-Kelly 2019 fremanezumab ([doi:10.1111/bcp.14096](https://doi.org/10.1111/bcp.14096)) -- adults with chronic or episodic migraine.
 * Add Hu 2026 clesrovimab ([doi:10.1002/cpt.70199](https://doi.org/10.1002/cpt.70199)) -- preterm and full-term infants.
 * Add Clegg 2024 nirsevimab ([doi:10.1002/jcph.2401](https://doi.org/10.1002/jcph.2401)) -- preterm and term infants.
+* Add Chawla 2023 gefapixant ([doi:10.1002/psp4.12978](https://doi.org/10.1002/psp4.12978)) -- healthy adults and adults with refractory or unexplained chronic cough.
 * Verified all published-literature specific-drug and mAb-consensus models against their source papers and fixed several parameter-encoding bugs that had been latent in the package since their original addition:
   - **CarlssonPetri 2021 liraglutide**: fixed categorical covariate encoding that was zeroing individual clearance for subjects not in the indexed group. `(1 - SEXF)^e_sex_cl` -> `e_sex_cl^(1 - SEXF)` (previously evaluated `0^1.12 = 0` for females); `CHILD^e_age_child_cl * ADOLESCENT^e_age_adolescent_cl` -> `e_age_child_cl^CHILD * e_age_adolescent_cl^ADOLESCENT` (previously evaluated `0^1.11 * 0^1.06 = 0` for adults). IIV rewritten as `omega^2 = log(1 + CV^2)` per Table 3's explicit `%CV = sqrt(exp(omega^2) - 1) * 100` footnote.
   - **Zhu 2017 lebrikizumab**: fixed IIV variance-covariance block that was storing `sqrt(variance)` (SDs) instead of variances/covariances from Table 3.

@@ -34,10 +34,52 @@ Boak_2014_linezolid <- function() {
   )
   vignette <- "Boak_2014_linezolid"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     platelet      = "10^9 cells/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    lat1        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    lat2        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    lat3        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot       = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor6  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor7  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor8  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor9  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor10 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor11 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor12 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor13 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor14 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor15 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    transit1    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit8    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit9    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit10   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit11   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit12   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit13   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit14   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit15   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
@@ -176,8 +218,8 @@ Boak_2014_linezolid <- function() {
     # F_Ini_Pre and F_Ini_PL scale the initial precursor and platelet pools
     # away from steady state at time zero. Typical values are fixed at 1
     # (Boak 2014 Table 2 footnote d) with estimated BSV.
-    lfini_pre   <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_Pre for precursors (typical fixed to 1)")               # Boak 2014 Table 2 (F_Ini_Pre)
-    lfini_pl    <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_PL for platelets (typical fixed to 1)")                 # Boak 2014 Table 2 (F_Ini_PL)
+    lfini_pre   <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_Pre for precursors (typical)")               # Boak 2014 Table 2 (F_Ini_Pre)
+    lfini_pl    <- fixed(log(1)) ; label("Initial-condition scale factor F_Ini_PL for platelets (typical)")                 # Boak 2014 Table 2 (F_Ini_PL)
 
     # ---- Inter-individual variability ----
     # BSV values in Boak 2014 Table 2 are reported as decimal CV (confirmed
@@ -199,7 +241,7 @@ Boak_2014_linezolid <- function() {
     etalec50       ~ 0.70307   # IC50         CV = 1.01  -> omega^2 = log(2.02010)
     etalmtt_pre    ~ 0.11375   # MTT_Pre      CV = 0.347 -> omega^2 = log(1.120409)
     etalmtt_pl     ~ 0.04039   # MTT_PL       CV = 0.203 -> omega^2 = log(1.041209)
-    etalgamma      ~ fixed(0.02226) # gamma   CV = 0.15 fixed -> omega^2 = log(1.0225)
+    etalgamma      ~ fixed(0.02226) # gamma CV = 0.15 -> omega^2 = log(1.0225)
     etalfini_pre   ~ 0.04569   # F_Ini_Pre    CV = 0.215 -> omega^2 = log(1.046225)
     etalfini_pl    ~ 0.05455   # F_Ini_PL     CV = 0.236 -> omega^2 = log(1.055696)
 

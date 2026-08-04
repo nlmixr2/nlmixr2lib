@@ -4,6 +4,17 @@ Valade_2015_emtricitabine <- function() {
   vignette <- "Valade_2015_emtricitabine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "emtricitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "emtricitabine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "emtricitabine", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "emtricitabine", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",
@@ -65,7 +76,7 @@ Valade_2015_emtricitabine <- function() {
     # ka was not estimable in this dataset; fixed to 0.53 1/h from a previously
     # reported adult FTC popPK estimate (Valade 2015 Results paragraph 2 and
     # reference 21).
-    lka  <- fixed(log(0.53)); label("Absorption rate constant ka (1/h, FIXED from previously reported adult FTC popPK estimate, Valade 2015 reference 21)") # Valade 2015 Table 2: ka = 0.53 1/h (asterisk = fixed)
+    lka  <- fixed(log(0.53)); label("Absorption rate constant ka (1/h, from previously reported adult FTC popPK estimate, Valade 2015 reference 21)") # Valade 2015 Table 2: ka = 0.53 1/h (asterisk = fixed)
     lcl  <- log(14.8);        label("Apparent oral clearance CL/F (L/h) at median CRCL = 113 mL/min") # Valade 2015 Table 2: CL/F = 14.8 L/h (RSE 4%)
     lvc  <- log(51.6);        label("Apparent central volume of distribution Vc/F (L)")              # Valade 2015 Table 2: Vc/F = 51.6 L (RSE 11%)
     lq   <- log(8.19);        label("Apparent inter-compartmental clearance Q/F (L/h)")              # Valade 2015 Table 2: Q/F = 8.19 L/h (RSE 26%)

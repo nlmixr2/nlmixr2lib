@@ -21,9 +21,19 @@ Dodds_2005_rfxiii_cyno <- function() {
   paper_specific_compartments <- c("A2", "A2B2", "B")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/kg (IV bolus of rA2 dimer; doses are weight-normalised throughout)",
     concentration = "mg/L (each assay output: ELISA reading in mass/volume on plasma)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    A2   = list(analyte = "rA2 dimer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    A2B2 = list(analyte = "heterotetramer (A2B2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    B    = list(analyte = "Factor XIII B monomer", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -51,15 +61,15 @@ Dodds_2005_rfxiii_cyno <- function() {
   ini({
     # Structural parameters -- Table 1 of Dodds 2005 ("PK parameter (theta)" block).
     # Each value is the published point estimate; %RSEs from the same table.
-    linf_dimer    <- log(0.000622); label("Endogenous influx of A2 dimer (mg/kg/hr)")    # Table 1: InfA2 = 0.000622 mg/kg/hr (%RSE 17.0%)
-    linf_monomer  <- log(0.0121);   label("Endogenous influx of free B monomer (mg/kg/hr)")  # Table 1: InfB = 0.0121 mg/kg/hr (%RSE 8.76%)
+    linf_dimer    <- log(0.000622); label("Endogenous influx of A2 dimer (mg/kg/h)")    # Table 1: InfA2 = 0.000622 mg/kg/hr (%RSE 17.0%)
+    linf_monomer  <- log(0.0121);   label("Endogenous influx of free B monomer (mg/kg/h)")  # Table 1: InfB = 0.0121 mg/kg/hr (%RSE 8.76%)
     lvt_dimer     <- log(0.0407);   label("Apparent volume for total A2 assay (L/kg)")   # Table 1: VtA2 = 0.0407 L/kg (%RSE 3.93%)
     lv_tetramer   <- log(0.00934);  label("Apparent volume for A2B2 tetramer assay (L/kg)")  # Table 1: VA2B2 = 0.00934 L/kg (%RSE 3.62%)
     lv_monomer    <- log(0.0598);   label("Apparent volume for free B assay (L/kg)")     # Table 1: VB = 0.0598 L/kg (%RSE 12.3%)
-    lke_dimer     <- log(0.208);    label("First-order elimination of A2 dimer (1/hr)")   # Table 1: keA2 = 0.208 1/hr (%RSE 9.09%); half-life 3.33 h
-    lke_tetramer  <- log(0.0102);   label("First-order elimination of A2B2 tetramer (1/hr)") # Table 1: keA2B2 = 0.0102 1/hr (%RSE 10.5%); half-life 2.83 d
-    lke_monomer   <- log(0.176);    label("First-order elimination of free B monomer (1/hr)") # Table 1: keB = 0.176 1/hr (%RSE 15.9%); half-life 3.94 h
-    lk_assoc      <- log(6.59);     label("Bimolecular association rate constant (kg / mg / hr)") # Table 1: Ka = 6.59 mg^-1 kg /hr (%RSE 19.7%)
+    lke_dimer     <- log(0.208);    label("First-order elimination of A2 dimer (1/h)")   # Table 1: keA2 = 0.208 1/hr (%RSE 9.09%); half-life 3.33 h
+    lke_tetramer  <- log(0.0102);   label("First-order elimination of A2B2 tetramer (1/h)") # Table 1: keA2B2 = 0.0102 1/hr (%RSE 10.5%); half-life 2.83 d
+    lke_monomer   <- log(0.176);    label("First-order elimination of free B monomer (1/h)") # Table 1: keB = 0.176 1/hr (%RSE 15.9%); half-life 3.94 h
+    lk_assoc      <- log(6.59);     label("Bimolecular association rate constant (kg / mg /h)") # Table 1: Ka = 6.59 mg^-1 kg /hr (%RSE 19.7%)
 
     # Between-subject variability -- Table 1 of Dodds 2005 ("Population
     # variability (Omega)" block). Paper reports variances on the

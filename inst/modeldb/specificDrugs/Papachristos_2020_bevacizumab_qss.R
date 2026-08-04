@@ -4,6 +4,16 @@ Papachristos_2020_bevacizumab_qss <- function() {
   vignette <- "Papachristos_2020_bevacizumab_qss"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L (bevacizumab) and ng/L (free VEGF-A)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "VEGF-A", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

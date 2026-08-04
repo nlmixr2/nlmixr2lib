@@ -4,6 +4,19 @@ Hood_2021_medi7836 <- function() {
   vignette <- "Hood_2021_medi7836"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "MEDI7836", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
+    target             = list(analyte = "IL13", units = "mg", specimen = "serum", verified = FALSE),
+    complex            = list(analyte = "MEDI7836:IL13 complex", units = "mg", specimen = "serum", verified = FALSE),
+    complex_peripheral = list(analyte = "MEDI7836:IL13 complex", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ADA_POS = list(
       description        = "Post-baseline anti-drug antibody (ADA) status",
@@ -51,8 +64,8 @@ Hood_2021_medi7836 <- function() {
     lcxfr  <- log(0.0429);  label("Fraction of total IL13:MEDI7836 complex captured by the bioanalytical PD assay (unitless)") # Hood 2021 Table 2: Cx fraction = 4.29% [2.98-5.96%]
 
     # Fixed in-vitro binding constants from Biacore T100 molecule characterization.
-    kon  <- fixed(138.24); label("Binding rate Kon (1/(nM*day)), fixed from Biacore")                     # Hood 2021 Section 2.5: Kon = 138.24 nM^-1 day^-1
-    koff <- fixed(0.69);   label("Dissociation rate Koff (1/day), fixed from Biacore")                    # Hood 2021 Section 2.5: Koff = 0.69 day^-1
+    kon  <- fixed(138.24); label("Binding rate Kon (1/(nM*day)), from Biacore")                     # Hood 2021 Section 2.5: Kon = 138.24 nM^-1 day^-1
+    koff <- fixed(0.69);   label("Dissociation rate Koff (1/day), from Biacore")                    # Hood 2021 Section 2.5: Koff = 0.69 day^-1
 
     # Covariate: ADA-positive post-baseline on CL/F (linear fractional, Hood Eq. 5).
     e_ada_pos_cl <- 0.717; label("Fractional increase in CL/F for ADA-positive post-baseline subjects (unitless)") # Hood 2021 Table 2: ADA CL Increase = 71.7% [17.3-155%]

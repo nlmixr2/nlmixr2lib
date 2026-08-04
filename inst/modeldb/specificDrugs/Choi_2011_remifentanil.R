@@ -43,6 +43,18 @@ Choi_2011_remifentanil <- function() {
   # divided by V1 in L gives ug/L = ng/mL, matching Kang 2007 Table 2's
   # concentration units (assay LLOQ 0.05 ng/mL, see Kang 2007 Methods).
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "remifentanil", units = "ug", specimen = "not applicable", verified = FALSE),
+    tolerance   = list(analyte = "remifentanil metabolite", units = "ug", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age",

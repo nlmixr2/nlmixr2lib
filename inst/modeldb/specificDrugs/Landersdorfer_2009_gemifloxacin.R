@@ -10,6 +10,15 @@ Landersdorfer_2009_gemifloxacin <- function() {
   vignette <- "Landersdorfer_2009_gemifloxacin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "gemifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "gemifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "gemifloxacin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_PROBENECID = list(
       description        = "1 = probenecid co-administered (oral 4.5 g total split into 8 doses across the gemifloxacin sampling window); 0 = gemifloxacin alone (reference). Time-fixed at the treatment-arm level in the source crossover study.",

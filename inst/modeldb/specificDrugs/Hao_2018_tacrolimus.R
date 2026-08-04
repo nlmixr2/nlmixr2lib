@@ -2,7 +2,15 @@ Hao_2018_tacrolimus <- function() {
   description <- "One-compartment population PK model with first-order absorption (no lag) and first-order elimination for twice-daily oral immediate-release tacrolimus (Prograf) in paediatric nephrotic-syndrome patients aged 2.7-17.3 years (Hao 2018). Apparent oral clearance CL/F scales allometrically with body weight at a fixed exponent of 0.75 referenced to a 70 kg adult; apparent volume of distribution V/F scales linearly with body weight at a fixed exponent of 1.0 referenced to 70 kg; ka has no body-weight scaling. CL/F additionally varies with CYP3A5 expresser status (multiplicative factor 1.60 for *1/*1 or *1/*3 carriers vs the *3/*3 nonexpresser reference). Inter-individual variability is diagonal on ka, V/F, and CL/F (exponential / log-normal model). Residual unexplained variability is proportional (paper text: 'The proportional model best described residual variability'; Table 2 reports it under the 'Residual variability (exponential)' label, which is the standard NONMEM additive-on-log-scale parameterisation equivalent to proportional in linear space)."
   reference <- "Hao GX, Huang X, Zhang DF, Zheng Y, Shi HY, Li Y, Jacqz-Aigrain E, Zhao W. Population pharmacokinetics of tacrolimus in children with nephrotic syndrome. Br J Clin Pharmacol. 2018;84(8):1748-1756. doi:10.1111/bcp.13605"
   vignette <- "Hao_2018_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -60,8 +68,8 @@ Hao_2018_tacrolimus <- function() {
     # "The allometric size approach was used by implementing the body weight
     # into the basic model (the allometric coefficients fixed at 0.75 for CL
     # and 1 for V)." Theory-based and held fixed during estimation.
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed at theory value)")   # Hao 2018 Methods 'Covariate analysis'
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V/F (unitless; fixed at theory value)")    # Hao 2018 Methods 'Covariate analysis'
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL/F (unitless; theory value)")   # Hao 2018 Methods 'Covariate analysis'
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent of (WT/70) on V/F (unitless; theory value)")    # Hao 2018 Methods 'Covariate analysis'
 
     # Covariate effect on CL/F -- Hao 2018 Table 2 final model equation:
     #   CL/F = theta_2 * (WT/70)^0.75 * F_CYP3A5

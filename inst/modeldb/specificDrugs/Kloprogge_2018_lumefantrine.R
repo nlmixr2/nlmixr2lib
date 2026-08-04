@@ -32,7 +32,16 @@ Kloprogge_2018_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Kloprogge_2018_lumefantrine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -222,7 +231,7 @@ Kloprogge_2018_lumefantrine <- function() {
     # RSE 19.5%) that mildly distorts the F IIV distribution away from
     # strict log-normality; this Box-Cox departure is NOT reproduced in
     # the encoded log-normal IIV here (see vignette Errata).
-    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless, fixed)")             # Kloprogge 2018 Table 2: F = 1 (fixed)
+    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless)")             # Kloprogge 2018 Table 2: F = 1 (fixed)
 
     # Allometric exponents. Fixed at the canonical Mahidol-Oxford
     # malaria-popPK values used by the source paper: 3/4 on clearance
@@ -230,8 +239,8 @@ Kloprogge_2018_lumefantrine <- function() {
     # footnote: 'Clearance and volume parameters were centred on the
     # median body weight (WT) and scaled allometrically (CL and Q =
     # theta(n) * (WT/42)^(3/4); V = theta(n) * (WT/42))'.
-    allo_cl <- fixed(3/4) ; label("Allometric exponent on CL/F and Q/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
-    allo_vc <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless, fixed)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
+    e_wt_cl <- fixed(3/4) ; label("Allometric exponent on CL/F and Q/F (unitless)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
+    e_wt_vc <- fixed(1)   ; label("Allometric exponent on Vc/F and Vp/F (unitless)")        # Kloprogge 2018 Table 2 footnote (allometric scaling)
 
     # Dose-saturable absorption (saturation of relative bioavailability).
     # Table 2 footnote: 'dose-dependent absorption was implemented as a
@@ -293,10 +302,10 @@ Kloprogge_2018_lumefantrine <- function() {
     # the relevant covariates (WT, PREG, PARA, DOSE) are time-fixed
     # except DOSE which is per-dose-record (see covariateData notes).
     ka  <- exp(lka)              * (1 + e_preg_ka * PREG)
-    cl  <- exp(lcl)              * (WT / 42)^allo_cl
-    vc  <- exp(lvc  + etalvc)    * (WT / 42)^allo_vc
-    q   <- exp(lq)               * (WT / 42)^allo_cl
-    vp  <- exp(lvp)              * (WT / 42)^allo_vc
+    cl  <- exp(lcl)              * (WT / 42)^e_wt_cl
+    vc  <- exp(lvc  + etalvc)    * (WT / 42)^e_wt_vc
+    q   <- exp(lq)               * (WT / 42)^e_wt_cl
+    vp  <- exp(lvp)              * (WT / 42)^e_wt_vc
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc

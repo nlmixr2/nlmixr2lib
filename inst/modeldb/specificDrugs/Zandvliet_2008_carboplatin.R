@@ -2,7 +2,15 @@ Zandvliet_2008_carboplatin <- function() {
   description <- "Two-compartment population PK model for free (ultrafilterable) carboplatin in adult cancer patients receiving combination chemotherapy with indisulam (Zandvliet 2008). Clearance is modelled as a renal + non-renal split: a Cockcroft-Gault creatinine-clearance-proportional renal component (theta1 = 0.76) plus a fixed non-renal component (theta2 = 1.5 L/h, fixed at the Calvert 1989 estimate)."
   reference   <- "Zandvliet AS, Schellens JHM, Dittrich C, Wanders J, Beijnen JH, Huitema ADR. Population pharmacokinetic and pharmacodynamic analysis to support treatment optimization of combination chemotherapy with indisulam and carboplatin. Br J Clin Pharmacol. 2008;66(4):485-497. doi:10.1111/j.1365-2125.2008.03230.x"
   vignette    <- "Zandvliet_2008_carboplatin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     AGE = list(
@@ -67,7 +75,7 @@ Zandvliet_2008_carboplatin <- function() {
     # ref [16]). Encoding follows the Tod_1998_amikacin precedent
     # (non-renal CL on log scale; IIV applied multiplicatively to the sum).
     cl_renal_fraction <- 0.76;       label("Renal-fraction multiplier on CLcr (Zandvliet theta1, unitless)") # Zandvliet 2008 Table 2 row 1 (theta1 = 0.76, RSE 0.05; Equation 2)
-    lcl_nonrenal      <- fixed(log(1.5)); label("Log non-renal CL (Zandvliet theta2, L/h; fixed from Calvert 1989)") # Zandvliet 2008 Table 2 footnote ** (theta2 = 1.5 L/h fixed); Calvert 1989 ref [16]
+    lcl_nonrenal      <- fixed(log(1.5)); label("Log non-renal CL (Zandvliet theta2, L/h; from Calvert 1989)") # Zandvliet 2008 Table 2 footnote ** (theta2 = 1.5 L/h fixed); Calvert 1989 ref [16]
 
     lvc <- log(15.5); label("Log central volume V1 (L)")               # Zandvliet 2008 Table 2 row 2 (V_central = 15.5 L, RSE 0.19)
     lq  <- log(3.46); label("Log inter-compartmental clearance Q (L/h)") # Zandvliet 2008 Table 2 row 3 (Q = 3.46 L/h, RSE 0.18)

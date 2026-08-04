@@ -50,6 +50,20 @@ Westerhout_2012_acetaminophen_rat_pbpk <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "acetaminophen", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "acetaminophen", units = "ng", specimen = "plasma", verified = FALSE),
+    brain_ecf   = list(analyte = "acetaminophen", units = "ng", specimen = "tissue", verified = FALSE),
+    csf_lv      = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
+    csf_tfv     = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
+    csf_cm      = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE),
+    csf_sas     = list(analyte = "acetaminophen", units = "ng", specimen = "CSF", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = paste(

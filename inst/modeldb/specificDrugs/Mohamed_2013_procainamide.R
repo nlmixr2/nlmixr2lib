@@ -40,9 +40,19 @@ Mohamed_2013_procainamide <- function() {
   )
   vignette <- "Mohamed_2013_procainamide"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    central_napa = list(analyte = "N-acetylprocainamide (NAPA)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -113,7 +123,7 @@ Mohamed_2013_procainamide <- function() {
     # hemodialysis (paper reference 9). Fixing was required because the
     # fraction of procainamide elimination going through NAPA formation
     # could not be identified independently from the concentration data.
-    lvc_napa   <- fixed(log(100))    ; label("NAPA central volume (Vc)_N (L), FIXED at 100 L (= 70 kg x 1.5 L/kg from paper reference 9)")                        # Table 1: (Vc)_N = 100 L FIXED
+    lvc_napa   <- fixed(log(100))    ; label("NAPA central volume (Vc)_N (L), 100 L (= 70 kg x 1.5 L/kg from paper reference 9)")                        # Table 1: (Vc)_N = 100 L FIXED
 
     # Residual error - Mohamed 2013 equation 4 defines a proportional
     # error model (yi = yhat_i * (1 + eps_i)) on both procainamide and

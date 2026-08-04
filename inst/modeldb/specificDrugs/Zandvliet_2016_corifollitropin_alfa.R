@@ -33,7 +33,17 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
   )
   vignette <- "Zandvliet_2016_corifollitropin_alfa"
   paper_specific_compartments <- c("endo_fsh")
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "corifollitropin alfa", units = "ug", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "corifollitropin alfa", units = "ug", specimen = "plasma", verified = FALSE),
+    endo_fsh = list(analyte = "follicle-stimulating hormone (FSH)", units = "ug", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -209,7 +219,7 @@ Zandvliet_2016_corifollitropin_alfa <- function() {
     label("Corifollitropin alfa apparent clearance CL/F (L/h)")         # Zandvliet 2016 Table 3 theta_3
 
     lfdepot <- fixed(log(1))
-    label("Corifollitropin alfa bioavailability anchor F (FIXED at 1; the dose / V / CL scaling carries the apparent F)")  # Zandvliet 2016 Table 3 theta_6 = 1 FIX
+    label("Corifollitropin alfa bioavailability anchor F (the dose / V / CL scaling carries the apparent F)")  # Zandvliet 2016 Table 3 theta_6 = 1 FIX
 
     # ------------------------------------------------------------------
     # CORIFOLLITROPIN ALFA COVARIATE EFFECTS

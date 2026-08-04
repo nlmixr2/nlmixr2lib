@@ -24,6 +24,14 @@ Svensson_2017_bedaquiline <- function() {
   vignette <- "Svensson_2017_bedaquiline"
   units <- list(time = "week", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    mbl = list(analyte = "Mycobacterial load (MBL)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CAV = list(
       description        = "Bedaquiline weekly-average plasma concentration (Cav,W in the source). Time-varying covariate updated weekly to reflect the loading-vs-maintenance dose schedule and the slow tissue accumulation of bedaquiline over the treatment period. Set to 0 for placebo periods.",
@@ -111,7 +119,7 @@ Svensson_2017_bedaquiline <- function() {
     # source (because the limited range of observed exposures did not
     # support estimating Emax < 1).  Wrapped in fixed() so the constraint
     # is load-bearing provenance.
-    emax_bdq <- fixed(1)        ; label("Bedaquiline maximum fractional effect on HL (fixed at 1 = -100%)") # Svensson 2017 Table 2 bedaquiline maximal effect on half-life MBL = -1 FIX
+    emax_bdq <- fixed(1)        ; label("Bedaquiline maximum fractional effect on HL (1 = -100%)") # Svensson 2017 Table 2 bedaquiline maximal effect on half-life MBL = -1 FIX
 
     # Box-Cox shape parameter for the IIV transform on log HL (Petersson
     # 2009 form, `eta_BC = (exp(etalhl)^lambda_bc - 1) / lambda_bc`; see

@@ -11,6 +11,24 @@ HuttonSmith_2018_ranibizumab <- function() {
 
   units <- list(time = "day", dosing = "mg", concentration = "pM (pmol/L)")
 
+  # Issue #482: the ocular matrices are the reason this model is not
+  # comparable with a serum-clearance model. Verified against Hutton-Smith
+  # 2018 Figure 1 (three-compartment eye: retina, vitreous, aqueous humour).
+  compartmentData <- list(
+    vegf_ret  = list(analyte = "VEGF (free)",               units = "pmol", specimen = "retina",         verified = TRUE),
+    ranib_ret = list(analyte = "ranibizumab (free)",        units = "pmol", specimen = "retina",         verified = TRUE),
+    vr_ret    = list(analyte = "VEGF-ranibizumab complex",  units = "pmol", specimen = "retina",         verified = TRUE),
+    rvr_ret   = list(analyte = "ranibizumab-VEGF-ranibizumab complex", units = "pmol", specimen = "retina", verified = TRUE),
+    vegf_vit  = list(analyte = "VEGF (free)",               units = "pmol", specimen = "vitreous",       verified = TRUE),
+    ranib_vit = list(analyte = "ranibizumab (free)",        units = "pmol", specimen = "vitreous",       verified = TRUE),
+    vr_vit    = list(analyte = "VEGF-ranibizumab complex",  units = "pmol", specimen = "vitreous",       verified = TRUE),
+    rvr_vit   = list(analyte = "ranibizumab-VEGF-ranibizumab complex", units = "pmol", specimen = "vitreous", verified = TRUE),
+    vegf_aq   = list(analyte = "VEGF (free)",               units = "pmol", specimen = "aqueous humour", verified = TRUE),
+    ranib_aq  = list(analyte = "ranibizumab (free)",        units = "pmol", specimen = "aqueous humour", verified = TRUE),
+    vr_aq     = list(analyte = "VEGF-ranibizumab complex",  units = "pmol", specimen = "aqueous humour", verified = TRUE),
+    rvr_aq    = list(analyte = "ranibizumab-VEGF-ranibizumab complex", units = "pmol", specimen = "aqueous humour", verified = TRUE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -2,7 +2,14 @@ Aoyama_2012_sepantronium <- function() {
   description <- "One-compartment IV population PK model for sepantronium bromide (YM155), a small-molecule survivin suppressant administered as a 7-day continuous IV infusion every 21 days, with power-form covariate effects of creatinine clearance and alanine aminotransferase and proportional cancer-type effects (hormone-refractory prostate cancer and melanoma vs non-small cell lung cancer) on clearance, in adults with NSCLC, HRPC, or unresectable stage III/IV melanoma (Aoyama 2012)"
   reference <- "Aoyama Y, Kaibara A, Takada A, Nishimura T, Katashima M, Sawamoto T. Population pharmacokinetic modeling of sepantronium bromide (YM155), a small molecule survivin suppressant, in patients with non-small cell lung cancer, hormone refractory prostate cancer, or unresectable stage III or IV melanoma. Invest New Drugs. 2013;31(2):443-451. doi:10.1007/s10637-012-9867-x"
   vignette <- "Aoyama_2012_sepantronium"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "sepantronium", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

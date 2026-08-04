@@ -18,6 +18,14 @@ Lacy_2018_cabozantinib_tumor <- function() {
     concentration = "mm (tumor diameter; not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tumor_size = list(analyte = "tumour-size", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CAV = list(
       description        = "Time-varying individual predicted daily average plasma cabozantinib concentration (ng/mL).",
@@ -68,8 +76,8 @@ Lacy_2018_cabozantinib_tumor <- function() {
     etalkgrow       ~ 0.313                                  # ER Supplemental Table 3: IIV k_grow (omega) = 0.313 (90% CI 0.218, 0.408)
     etalkdmax       ~ 0.353                                  # ER Supplemental Table 3: IIV k_dmax (omega) = 0.353 (90% CI 0.224, 0.482)
     etalkdmaxtot    ~ 0.641                                  # ER Supplemental Table 3: IIV k_dmax_tol (omega) = 0.641 (90% CI 0.469, 0.814); supplement spells the IIV row k_dmax_tol but the structural row is k_dmax_tot -- treated here as a supplement typo for the same parameter
-    etalec50        ~ fixed(0.02)                            # ER Supplemental Table 3 footnote b: IIV EC50 (omega) = 0.02 (fixed value)
-    etalktol        ~ fixed(0.02)                            # ER Supplemental Table 3 footnote b: IIV k_tol (omega) = 0.02 (fixed value)
+    etalec50        ~ fixed(0.02)                            # ER Supplemental Table 3 footnote b: IIV EC50 (omega) = 0.02 (value)
+    etalktol        ~ fixed(0.02)                            # ER Supplemental Table 3 footnote b: IIV k_tol (omega) = 0.02 (value)
 
     # ---- Residual error ----
     # Paper Methods: "an additive error model for residual variability"

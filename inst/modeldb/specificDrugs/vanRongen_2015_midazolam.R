@@ -31,6 +31,18 @@ vanRongen_2015_midazolam <- function() {
   vignette <- "vanRongen_2015_midazolam"
   units <- list(time = "min", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central           = list(analyte = "midazolam", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "midazolam", units = "umol", specimen = "plasma", verified = FALSE),
+    central_1ohm      = list(analyte = "1-OH-midazolam", units = "umol", specimen = "plasma", verified = FALSE),
+    central_1ohmg     = list(analyte = "1-OH-midazolam glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_1ohmg = list(analyte = "1-OH-midazolam glucuronide", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

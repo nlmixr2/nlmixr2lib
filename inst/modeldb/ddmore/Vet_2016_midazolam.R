@@ -12,10 +12,18 @@ Vet_2016_midazolam <- function() {
     sep = " "
   )
   vignette <- "Vet_2016_midazolam"
-  units <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   ddmore_id    <- "DDMODEL00000249"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -76,7 +84,7 @@ Vet_2016_midazolam <- function() {
     # ORG_FAIL_COUNT=0 typical CL (FIXED at .mod $THETA line 78 "1.6 FIX") for a 5 kg child with
     # CRP = 32 mg/L. Per-stratum CL values for ORG_FAIL_COUNT >= 1 are encoded as additive shifts
     # `e_orgf<k>_cl` on the log scale below; the reference category is ORG_FAIL_COUNT = 0.
-    lcl <- fixed(log(1.60))   ; label("Typical CL for ORG_FAIL_COUNT = 0, WT = 5 kg, CRP = 32 mg/L (L/h, FIXED)") # .lst line 455 TH 1 = 1.60E+00 (THETA(1) FIX in .mod)
+    lcl <- fixed(log(1.60))   ; label("Typical CL for ORG_FAIL_COUNT = 0, WT = 5 kg, CRP = 32 mg/L (L/h)") # .lst line 455 TH 1 = 1.60E+00 (THETA(1) FIX in .mod)
     lvc <- log(3.28)          ; label("Central volume of distribution V1 at WT = 5 kg (L)")             # .lst line 455 TH 2 = 3.28E+00
     lq  <- log(1.52)          ; label("Inter-compartmental clearance Q (L/h)")                          # .lst line 455 TH 3 = 1.52E+00
     lvp <- log(5.44)          ; label("Peripheral volume of distribution V2 (L)")                       # .lst line 455 TH 4 = 5.44E+00
@@ -112,11 +120,11 @@ Vet_2016_midazolam <- function() {
     # nlmixr2 has no `SAME` shortcut so each occasion gets its own eta with the
     # variance fixed to the shared estimate after the first (the Jonsson 2011 pattern).
     etaiov_cl_1 ~ 0.197       # OMEGA(3,3) FINAL = 1.97E-01 ; estimated occasion-1 IOV variance
-    etaiov_cl_2 ~ fix(0.197)  # OMEGA(4,4) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_3 ~ fix(0.197)  # OMEGA(5,5) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_4 ~ fix(0.197)  # OMEGA(6,6) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_5 ~ fix(0.197)  # OMEGA(7,7) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
-    etaiov_cl_6 ~ fix(0.197)  # OMEGA(8,8) fixed equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_2 ~ fix(0.197)  # OMEGA(4,4) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_3 ~ fix(0.197)  # OMEGA(5,5) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_4 ~ fix(0.197)  # OMEGA(6,6) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_5 ~ fix(0.197)  # OMEGA(7,7) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
+    etaiov_cl_6 ~ fix(0.197)  # OMEGA(8,8) equal to OMEGA(3,3) per `$OMEGA BLOCK(1) SAME`
 
     # Combined proportional + additive residual error on the linear (ug/L) scale, per
     # the .mod $ERROR block `Y = F * (1 + ERR(1)) + ERR(2)`. The .lst SIGMA block

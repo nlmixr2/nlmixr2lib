@@ -17,7 +17,14 @@ Yoshida_2018_coproporphyrin_I_rifampin <- function() {
     sep = " "
   )
   vignette <- "Yoshida_2018_coproporphyrin_I_rifampin"
-  units <- list(time = "hour", dosing = "none", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "none", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "coproporphyrin I rifampin", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CP_RIF_UM = list(

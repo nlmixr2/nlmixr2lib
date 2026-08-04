@@ -23,9 +23,21 @@ Schindler_2017_sunitinib_hfs <- function() {
   paper_specific_compartments <- c("svegfr3", "pscore0", "pscore1", "pscore2", "pscore3")
 
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTCAE HFS grade 0-3, ordinal)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3 = list(analyte = "soluble vascular endothelial growth factor receptor 3 (sVEGFR-3)", units = "mg", specimen = "plasma", verified = FALSE),
+    pscore0 = list(analyte = "HFS grade 0", units = "mg", specimen = "not applicable", verified = FALSE),
+    pscore1 = list(analyte = "HFS grade 1", units = "mg", specimen = "not applicable", verified = FALSE),
+    pscore2 = list(analyte = "HFS grade 2", units = "mg", specimen = "not applicable", verified = FALSE),
+    pscore3 = list(analyte = "HFS grade 3", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(

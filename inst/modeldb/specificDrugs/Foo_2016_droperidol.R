@@ -25,6 +25,15 @@ Foo_2016_droperidol <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "droperidol", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "droperidol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "droperidol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -80,7 +89,7 @@ Foo_2016_droperidol <- function() {
     # the objective function."
     # ================================================================
     lka <- fixed(log(10))
-    label("Absorption rate constant (1/h, FIXED)")                                  # Table 2: ka = 10 h-1 (F = fixed)
+    label("Absorption rate constant (1/h)")                                  # Table 2: ka = 10 h-1 (F = fixed)
 
     # ================================================================
     # Structural disposition -- Foo 2016 Table 2 final model.
@@ -111,7 +120,7 @@ Foo_2016_droperidol <- function() {
     # log(1 + 0.51^2) = 0.231.
     # Q and Vp: '-' in Table 2 (no random effect estimated).
     # ================================================================
-    etalka ~ fixed(1)                                                               # Table 2: omega_ka^2 = 1, FIXED (~ 100% CV)
+    etalka ~ fixed(1)                                                               # Table 2: omega_ka^2 = 1 (~ 100% CV)
     etalcl ~ log(1 + 0.51^2)                                                        # Table 2: CV_CL = 51% (95% CI 31.2-64.4%); same eta also drives Vc per footnote a -> omega^2 = log(1 + 0.51^2) = 0.231
 
     # ================================================================
@@ -123,7 +132,7 @@ Foo_2016_droperidol <- function() {
     propSd <- 0.22
     label("Proportional residual error (fraction)")                                  # Table 2: sigma (CV%) = 22% (95% CI 8.5-30.3%)
     addSd  <- fixed(0.0001)
-    label("Additive residual error (ug/L, FIXED)")                                   # Table 2: sigma_add = 0.0001 ug/L (F = fixed)
+    label("Additive residual error (ug/L)")                                   # Table 2: sigma_add = 0.0001 ug/L (F = fixed)
   })
 
   model({

@@ -17,6 +17,15 @@ Hopkins_2015_leflunomide <- function() {
     concentration = "probability (the model outputs sur and sur_cens are survival probabilities, not drug concentrations)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz      = list(analyte = "toxicity-cessation hazard h0(t)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz_cens = list(analyte = "parallel random-censoring hazard h0ran(t)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     SNP_CYP1A2_RS762551_C_CARRIER = list(
       description        = "Binary indicator: 1 = carrier of at least one C allele at CYP1A2 rs762551 (the paper's 'C163A' promoter-region SNP; genotype AC or CC), 0 = homozygous AA (the CYP1A2*1F reference / ultra-inducible form).",

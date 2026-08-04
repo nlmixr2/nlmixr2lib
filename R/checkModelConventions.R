@@ -59,11 +59,15 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkParameterNames(ui, conv),
     .checkParameterLabels(ui, conv),
     .checkParameterUnits(ui, conv),
+    .checkUnitSpellings(ui, conv),
     .checkCovariates(ui, conv, model_name),
     .checkCompartments(ui, conv),
     .checkObservation(ui, conv),
     .checkUnits(ui, conv),
-    .checkDeprecatedNames(ui, conv)
+    .checkDeprecatedNames(ui, conv),
+    .checkFixedLabelAgreement(ui, conv),
+    .checkTimeVaryingClearanceNames(ui, conv),
+    .checkCompartmentData(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -593,6 +597,33 @@ checkModelConventions <- function(model, verbose = TRUE) {
   issues
 }
 
+# Issue: the library wrote the same time unit three ways in the machine-readable
+# `units` block -- "hour" (643 models), "h" (208) and "hr" (28) -- so a consumer
+# parsing units$time could not canonicalise without a spelling table of its own.
+# This checks SPELLING, not dimension: "min" and "h" are both canonical and are
+# never conflated, because normalising between them would misstate every value.
+.checkUnitSpellings <- function(ui, conv) {
+  issues <- .emptyIssues()
+  units <- as.list(ui$meta)$units
+  if (is.null(units)) return(issues)
+  spellings <- list(time = conv$timeUnitSpellings, dosing = conv$doseUnitSpellings)
+  for (fld in names(spellings)) {
+    val <- units[[fld]]
+    if (is.null(val) || !is.character(val) || length(val) != 1 || is.na(val)) next
+    if (val %in% conv$placeholderUnits) next
+    map <- spellings[[fld]]
+    key <- tolower(val)
+    if (key %in% names(map)) {
+      issues <- rbind(issues, .issue(
+        "unit_spelling", "error", sprintf("units$%s", fld),
+        sprintf("units$%s = '%s' is a non-canonical spelling.", fld, val),
+        sprintf("Use '%s'. Same unit, one spelling -- consumers cannot canonicalise otherwise.",
+                map[[key]])))
+    }
+  }
+  issues
+}
+
 .checkParameterUnits <- function(ui, conv) {
   issues <- .emptyIssues()
   ini <- ui$iniDf
@@ -1086,6 +1117,13 @@ checkModelConventions <- function(model, verbose = TRUE) {
         break
       }
     }
+    if (!is.null(conv$renamedParameters) && nm %in% names(conv$renamedParameters)) {
+      issues <- rbind(issues, .issue(
+        "deprecated_names", "error", nm,
+        sprintf("'%s' was renamed; this spelling defeats name-based discovery.", nm),
+        sprintf("Use '%s'.", conv$renamedParameters[[nm]])
+      ))
+    }
     issues <- rbind(issues, .checkDeprecatedVolumeOrVmaxName(nm, conv))
     issues <- rbind(issues, .checkDeprecatedAdcSuffix(nm, conv))
     issues <- rbind(issues, .checkDeprecatedCovEffectSuffix(nm, conv))
@@ -1241,3 +1279,188 @@ checkModelConventions <- function(model, verbose = TRUE) {
 }
 
 `%||%` <- function(a, b) if (is.null(a)) b else a
+
+
+# Severity is "error". The backlog this rule found when it was added (15
+# parameters in 10 models beyond the ones issue #479 enumerated by hand) has
+# been cleared, so any hit is a new mistake. Keep it that way: if this ever
+# needs to be demoted to "warning" to land a change, the change is
+# reintroducing the class the rule exists to prevent.
+# History and the false-positive classes are in
+# inst/references/fixed-provenance-followup.md.
+#
+# Issue #479: `iniDf$fix` is the only machine-readable signal that a value was
+# not estimated from the study's own data. Models that SAY in the label that a
+# parameter was fixed, assumed, borrowed from another paper, or set to a
+# theoretical value, while leaving it estimable, cause a downstream consumer to
+# treat an assumption as evidence -- e.g. counting a fixed 0.75 allometric
+# exponent as data supporting the 0.75 convention.
+# A label claims THIS parameter was not estimated only in a self-referential
+# construction. Matching the bare word "fixed" anywhere in the label produces
+# mostly false positives, because labels routinely describe a DIFFERENT
+# parameter as fixed: "the typical-value Ka is fixed but eta on Ka is
+# estimated", "corr(CL,Vp) = 0 (fixed)", "equivalent under fixed Km",
+# "F_HIV- = 1 fixed". Anchor on trailing qualifiers and on verb forms that
+# take the parameter itself as their subject.
+.fixedClaimPattern <- paste0(
+  # The claim must open its own clause. When another name precedes it in the
+  # same clause the sentence is about THAT parameter, not this one -- e.g.
+  # "IC50 ... (Imax fixed to 1)", "CL/F_DHA (L/h/kg); F_DHA fixed to 1",
+  # "CL_DM4 (L/day; V_DM4 fixed to 1 L)", "(correlation fixed to 1)",
+  # "P-gp components fixed to 0". Anchoring on the clause start keeps the
+  # self-referential "(unitless; fixed)" and "(fixed in source)" forms and
+  # drops the rest.
+  "(?:^|[;(),\u2014-])\\s*",
+  # "fixed effect" is the mixed-models term for a population parameter, not a
+  # claim that the value was held constant (Lehr 2010: "fixed effect, no IIV
+  # per the source paper", reported with RSE 6.9%).
+  "(?:fixed(?!\\s+effects?\\b)|assumed|not published|not paper-derived",
+  "|literature value|taken from|transferred from)\\b"
+)
+
+.estimatedDisclaimerPattern <- "\\b(?:is|was|were|are) estimated\\b|\\bestimated\\b[^.;]*\\bper\\b"
+
+# Issue #481: a clearance that depends on time must say so in its parameter
+# names. The old spellings cannot simply be banned by name -- `emax`, `imax`,
+# `gamma`, `hill`, `t50` and `kdes` are all legitimate PD names elsewhere in
+# the library -- so the check is structural: find a clearance symbol whose
+# definition references `t` or `time`, then require the canonical stem to
+# appear in that same expression.
+.clearanceLhsPattern <- "^\\s*(cl[a-z0-9_]*|[a-z0-9_]*_cl|td_cl)\\s*<-"
+.bareTimePattern <- "(?<![A-Za-z0-9_.])(t|time)(?![A-Za-z0-9_])"
+
+# The `ini({})` block declares parameters and their labels; only `model({})`
+# contains the equations. Scanning the whole function makes label prose such as
+# "Sigmoidicity exponent of time on CL" look like a reference to `t`.
+.modelBlockLines <- function(ui) {
+  lines <- tryCatch(deparse(ui$fun), error = function(e) character(0))
+  if (!length(lines)) return(character(0))
+  start <- grep("^\\s*model\\(\\{", lines)
+  if (!length(start)) return(character(0))
+  lines[seq(start[1], length(lines))]
+}
+
+.checkTimeVaryingClearanceNames <- function(ui, conv) {
+  issues <- .emptyIssues()
+  lines <- .modelBlockLines(ui)
+  if (!length(lines)) return(issues)
+  for (ln in lines) {
+    if (!grepl(.clearanceLhsPattern, ln)) next
+    rhs <- sub("^[^<]*<-", "", ln)
+    rhs <- sub("#.*$", "", rhs)
+    # Strip string literals: a label such as "...exponent of time on CL..."
+    # is prose about the parameter, not a reference to the time variable.
+    rhs <- gsub("\"[^\"]*\"", "", rhs)
+    if (!grepl(.bareTimePattern, rhs, perl = TRUE)) next
+    if (grepl("cl_hill_|cl_exp_", rhs)) next
+    nm <- trimws(sub("\\s*<-.*$", "", ln))
+    issues <- rbind(issues, .issue(
+      "time_varying_clearance", "warning", nm,
+      sprintf("'%s' makes clearance depend on time but uses none of the canonical names.", nm),
+      paste("Use cl_hill_max / cl_hill_t50 / cl_hill_gamma for a sigmoidal-in-time",
+            "clearance, or cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
+            "exponential decay, so the structure can be found by name (issue #481).")
+    ))
+  }
+  issues
+}
+
+# Issue #482: what molecule a compartment holds, in what units, and in what
+# biological matrix. Inferring the matrix from the state name works only
+# because most models happen to use `central` / `peripheral1`; where they do
+# not, inference fails silently or gets it wrong.
+.checkCompartmentData <- function(ui, conv) {
+  issues <- .emptyIssues()
+  meta <- as.list(ui$meta)
+  states <- tryCatch(ui$state, error = function(e) character(0))
+  if (!length(states)) return(issues)
+  cd <- meta$compartmentData
+  if (is.null(cd)) {
+    # Warning rather than error while the database is being backfilled; see
+    # inst/references/compartment-data-followup.md for the remaining models.
+    return(rbind(issues, .issue(
+      "compartment_data", "warning", "compartmentData",
+      "Model has ODE states but no `compartmentData` metadata.",
+      paste("Add compartmentData <- list(<state> = list(analyte=, units=,",
+            "specimen=, verified=)) for every d/dt() state (issue #482).")
+    )))
+  }
+  missing <- setdiff(states, names(cd))
+  if (length(missing)) {
+    issues <- rbind(issues, .issue(
+      "compartment_data", "error", paste(missing, collapse = ", "),
+      "ODE state(s) have no `compartmentData` entry.",
+      "Add one entry per d/dt() state."))
+  }
+  extra <- setdiff(names(cd), states)
+  if (length(extra)) {
+    issues <- rbind(issues, .issue(
+      "compartment_data", "error", paste(extra, collapse = ", "),
+      "`compartmentData` names a compartment that is not an ODE state.",
+      "Remove the entry, or correct the state name."))
+  }
+  for (nm in intersect(names(cd), states)) {
+    entry <- cd[[nm]]
+    absent <- setdiff(conv$compartmentDataFields, names(entry))
+    if (length(absent)) {
+      issues <- rbind(issues, .issue(
+        "compartment_data", "error", nm,
+        sprintf("`compartmentData$%s` is missing: %s.", nm, paste(absent, collapse = ", ")),
+        paste("Every entry needs", paste(conv$compartmentDataFields, collapse = ", "), ".")))
+      next
+    }
+    if (!entry$specimen %in% conv$specimenVocabulary) {
+      issues <- rbind(issues, .issue(
+        "compartment_data", "error", nm,
+        sprintf("`%s` is not in the specimen vocabulary.", entry$specimen),
+        paste("Use one of:", paste(conv$specimenVocabulary, collapse = ", "))))
+    }
+  }
+  issues
+}
+
+# "fixed" in a label whose value is already `fixed(...)`. Excludes compound
+# terms where "fixed" modifies something else and is not a claim about this
+# parameter's estimation status: "fixed effect" is the mixed-models term,
+# "fixed dose" / "fixed-dose regimen" describes a dosing strategy.
+.redundantFixedPattern <- "\\bfixed(?!\\s*[- ]\\s*(?:effects?|dose|dosing))\\b"
+
+.checkFixedLabelAgreement <- function(ui, conv) {
+  issues <- .emptyIssues()
+  ini <- ui$iniDf
+  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (!all(c("name", "label", "fix") %in% names(ini))) return(issues)
+  for (i in seq_len(nrow(ini))) {
+    lbl <- ini$label[[i]]
+    if (is.na(lbl) || !nzchar(lbl)) next
+    if (isTRUE(ini$fix[[i]])) {
+      # Mirror case: the value IS fixed, so saying so again in the label is
+      # redundant. `fixed()` is the machine-readable statement; the label
+      # should carry only what `fixed()` cannot express -- where the value
+      # came from ("from Rizk 2015"), or that the encoder assumed it.
+      if (grepl(.redundantFixedPattern, lbl, ignore.case = TRUE, perl = TRUE)) {
+        issues <- rbind(issues, .issue(
+          "fixed_label_redundant", "error", ini$name[[i]],
+          sprintf("Label of '%s' says the value is fixed, which `fixed()` already states.",
+                  ini$name[[i]]),
+          paste("Drop the word from the label. Keep any provenance around it --",
+                "\"fixed from Rizk 2015\" becomes \"from Rizk 2015\".")))
+      }
+      next
+    }
+    # Variance terms: their labels almost always discuss the fixed status of
+    # the corresponding typical value, not of the variance itself.
+    if (grepl("^eta", ini$name[[i]])) next
+    if (grepl(.estimatedDisclaimerPattern, lbl, ignore.case = TRUE)) next
+    if (grepl(.fixedClaimPattern, lbl, ignore.case = TRUE, perl = TRUE)) {
+      issues <- rbind(issues, .issue(
+        "fixed_label_disagreement", "error", ini$name[[i]],
+        sprintf("Label of '%s' says the value was fixed/assumed/borrowed, but fix = FALSE.",
+                ini$name[[i]]),
+        paste("Wrap the value in `fixed(...)` so `iniDf$fix` matches the label,",
+              "or reword the label if it was in fact estimated.")
+      ))
+    }
+  }
+  issues
+}

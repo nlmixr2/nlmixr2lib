@@ -14,6 +14,18 @@ Karaiskos_2015_colistin <- function() {
 
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
+    central_cms2     = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_cms2 = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE),
+    central_col      = list(analyte = "colistin", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance computed from ideal body weight (raw, not BSA-normalized)",

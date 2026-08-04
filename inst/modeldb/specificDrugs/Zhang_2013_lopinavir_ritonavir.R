@@ -25,7 +25,21 @@ Zhang_2013_lopinavir_ritonavir <- function() {
     "doi:10.1111/bcp.12101."
   )
   vignette <- "Zhang_2013_lopinavir_ritonavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv       = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1_rtv    = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2_rtv    = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_rtv     = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -153,9 +167,9 @@ Zhang_2013_lopinavir_ritonavir <- function() {
     # peripheral volume (Vp)" -- allometric scaling on CL/Q with exponent
     # 0.75 and on V/Vp with exponent 1).
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on apparent CL and Q (unitless, fixed)")        # Zhang 2013 Methods: allometric scaling
+    label("Allometric exponent on apparent CL and Q (unitless)")        # Zhang 2013 Methods: allometric scaling
     e_wt_vc <- fixed(1.00)
-    label("Allometric exponent on apparent V and Vp (unitless, fixed)")        # Zhang 2013 Methods: allometric scaling
+    label("Allometric exponent on apparent V and Vp (unitless)")        # Zhang 2013 Methods: allometric scaling
 
     # =========================================================================
     # Rifampicin effect on apparent CL of lopinavir and ritonavir.

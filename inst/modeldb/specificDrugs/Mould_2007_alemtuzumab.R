@@ -2,7 +2,15 @@ Mould_2007_alemtuzumab <- function() {
   description <- "Two-compartment population PK model with Michaelis-Menten elimination for alemtuzumab in B-cell chronic lymphocytic leukaemia (Mould 2007)"
   reference <- "Mould DR, Baumann A, Kuhlmann J, Keating MJ, Weitman S, Hillmen P, Brettman LR, Reif S, Bonate PL. Population pharmacokinetics-pharmacodynamics of alemtuzumab (Campath) in patients with chronic lymphocytic leukaemia and its link to treatment response. Br J Clin Pharmacol. 2007;64(3):278-291. doi:10.1111/j.1365-2125.2007.02914.x"
   vignette <- "Mould_2007_alemtuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "alemtuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WBC = list(

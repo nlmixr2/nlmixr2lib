@@ -7,6 +7,17 @@ Ma_2020_sarilumab_anc <- function() {
   vignette <- "Ma_2020_sarilumab_anc"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", ANC = "10^9/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "ANC", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

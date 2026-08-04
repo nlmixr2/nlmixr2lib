@@ -2,7 +2,15 @@ Schipani_2016_rifampicin <- function() {
   description <- "Simultaneous population pharmacokinetic model for oral rifampicin in a mixed Malawian cohort of adults (n=115) and children (n=50) with tuberculosis. One-compartment disposition with first-order absorption (depot to central). Allometric scaling of CL/F and V/F to a 70 kg reference body weight with canonical Anderson and Holford (2008) exponents (0.75 on CL, 1.0 on V; both fixed). Estimated power-form effect of age on CL/F (exponent 0.517) centered at AGE_median. Children (defined as body weight 5-29 kg, age < 15 y per Schipani 2016 Results) carry a relative bioavailability factor F = 0.517 vs adults (F fixed at 1). Inter-individual variability is carried on CL/F (46.6% approx CV) and V/F (87.4% approx CV); ka and F have no estimated IIV. Proportional residual error 48%."
   reference <- "Schipani A, Pertinez H, Mlota R, Molyneux E, Lopez N, Dzinjalamala FK, van Oosterhout JJ, Ward SA, Khoo S, Davies G. (2016). A simultaneous population pharmacokinetic analysis of rifampicin in Malawian adults and children. British Journal of Clinical Pharmacology 81(4):679-687. doi:10.1111/bcp.12848"
   vignette <- "Schipani_2016_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -73,7 +81,7 @@ Schipani_2016_rifampicin <- function() {
     # constant (ka), probably due to the limited data').
 
     lfdepot <- fixed(log(1))
-    label("Bioavailability anchor (adult; fixed at unity)")
+    label("Bioavailability anchor (adult; unity)")
     # Schipani 2016 Results: 'for the adults this bioavailability
     # factor was fixed at unity.' The reported child relative-F
     # value (0.517) is encoded as a multiplicative factor below.
@@ -82,13 +90,13 @@ Schipani_2016_rifampicin <- function() {
     # Allometric exponents fixed at canonical values (Schipani 2016
     # Methods: 'fixing the exponent to 0.75 for CL and 1 for V').
     # ============================================================
-    allo_cl <- fixed(0.75)
-    label("Allometric exponent on CL (unitless; fixed)")
+    e_wt_cl <- fixed(0.75)
+    label("Allometric exponent on CL (unitless)")
     # Schipani 2016 Methods, citing reference 18 (Anderson and
     # Holford 2008): 0.75 for CL.
 
     allo_v <- fixed(1.0)
-    label("Allometric exponent on V (unitless; fixed)")
+    label("Allometric exponent on V (unitless)")
     # Schipani 2016 Methods, citing reference 18 (Anderson and
     # Holford 2008): 1.0 for V.
 
@@ -145,7 +153,7 @@ Schipani_2016_rifampicin <- function() {
     # 1. Body-weight allometric factors (Schipani 2016 Methods,
     #    Anderson and Holford 2008); reference 70 kg.
     # ------------------------------------------------------------
-    bw_cl <- (WT / 70) ^ allo_cl
+    bw_cl <- (WT / 70) ^ e_wt_cl
     bw_v  <- (WT / 70) ^ allo_v
 
     # ------------------------------------------------------------

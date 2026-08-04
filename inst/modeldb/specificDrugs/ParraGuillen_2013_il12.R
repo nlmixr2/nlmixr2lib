@@ -23,6 +23,18 @@ ParraGuillen_2013_il12 <- function() {
   paper_specific_compartments <- c("vac", "tran", "svac", "reg", "tumor_size")
   units <- list(time = "day", dosing = "(arbitrary unit, set to 1 at plasmid injection)", concentration = "(K-PD, no PK)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    vac        = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tran       = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
+    svac       = list(analyte = "IL-12", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tumor_size = list(analyte = "tumour-size", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    reg        = list(analyte = "IL-12", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     MIX_VAC_RELAPSE = list(
       description        = paste(
@@ -98,9 +110,9 @@ ParraGuillen_2013_il12 <- function() {
     # subsection p. 800: 'estimating those parameters dependent upon the
     # tumour cell line (Ts0, lambda and REG50) or upon the immunotherapeutic
     # agent (k1) together with the corresponding inter-animal variability').
-    lk3     <- fixed(log(1.08));    label("Vaccine efficacy second-order rate constant k3 (1 / day) -- fixed from CyaA-E7 fit")   # Table I row 'k3' (IL-12 column = '1.08 FIX')
-    lk4     <- fixed(log(0.0390));  label("First-order regulator dynamics rate k4 (1 / day) -- fixed from CyaA-E7 fit")           # Table I row 'k4' (IL-12 column = '0.0390 FIX')
-    lhill   <- fixed(log(5.24));    label("Hill steepness gamma for REG inhibition (unitless) -- fixed from CyaA-E7 fit")         # Table I row 'gamma' (IL-12 column = '5.24 FIX')
+    lk3     <- fixed(log(1.08));    label("Vaccine efficacy second-order rate constant k3 (1 / day) -- from CyaA-E7 fit")   # Table I row 'k3' (IL-12 column = '1.08 FIX')
+    lk4     <- fixed(log(0.0390));  label("First-order regulator dynamics rate k4 (1 / day) -- from CyaA-E7 fit")           # Table I row 'k4' (IL-12 column = '0.0390 FIX')
+    lhill   <- fixed(log(5.24));    label("Hill steepness gamma for REG inhibition (unitless) -- from CyaA-E7 fit")         # Table I row 'gamma' (IL-12 column = '5.24 FIX')
 
     # Regulator half-inhibition amount -- re-estimated for MC38
     lreg50  <- log(2.08);    label("Regulator amount at half inhibition REG50 (mm)")                  # Table I row 'REG50' (IL-12 column)

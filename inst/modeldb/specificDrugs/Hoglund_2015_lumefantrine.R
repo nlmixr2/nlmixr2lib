@@ -36,7 +36,19 @@ Hoglund_2015_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Hoglund_2015_artemether_lumefantrine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "Lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1          = list(analyte = "Lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "Lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "Lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_desbutlum = list(analyte = "Desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_EFV = list(
@@ -179,7 +191,7 @@ Hoglund_2015_lumefantrine <- function() {
     # Hoglund_2017_piperaquine.R files).
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless; fixed at 1)")
+    label("Relative bioavailability F (unitless)")
     # Hoglund 2015 Table 2: Bioavailability = 1 FIX (Methods: "A fixed
     # bioavailability of 100% for the population with an estimated
     # between subject variability was evaluated").

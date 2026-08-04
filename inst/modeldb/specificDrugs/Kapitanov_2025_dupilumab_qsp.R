@@ -75,6 +75,19 @@ Kapitanov_2025_dupilumab_qsp <- function() {
   # to digitised first-in-human PK in healthy volunteers with body
   # weight assumed at 70 kg (Kapitanov 2025 Section 3.1). Dose is a per-
   # simulation input, not a covariate.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_central      = list(analyte = "IL4R receptor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral1  = list(analyte = "IL4R receptor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_central     = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_peripheral1 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

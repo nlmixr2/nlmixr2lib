@@ -36,6 +36,36 @@ Lu_2014_sglt_qsp <- function() {
     concentration = "mmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    glu_pct1     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct2     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct3     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct4     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct5     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pct6     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pst1     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pst2     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_pst3     = list(analyte = "Glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glu_bladder  = list(analyte = "Glucose", units = NA_character_, specimen = "urine", verified = FALSE),
+    glu_urine    = list(analyte = "Glucose", units = NA_character_, specimen = "urine", verified = FALSE),
+    glu_reabs    = list(analyte = "Glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    drug_pct1    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct2    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct3    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct4    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct5    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pct6    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pst1    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pst2    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_pst3    = list(analyte = "Inhibitor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    drug_bladder = list(analyte = "Inhibitor", units = NA_character_, specimen = "urine", verified = FALSE),
+    drug_urine   = list(analyte = "Inhibitor", units = NA_character_, specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list(
     GLU = list(
       description        = "Plasma glucose concentration (time-varying regressor input)",

@@ -2,7 +2,15 @@ Eugene_2016_metoprolol <- function() {
   description <- "One-compartment population PK model for oral metoprolol tartrate with first-order absorption and lag time in elderly inpatients with multiple comorbidities; sex as the only covariate on apparent clearance (Eugene 2016)."
   reference <- "Eugene AR. Gender based Dosing of Metoprolol in the Elderly using Population Pharmacokinetic Modeling and Simulations. Int J Clin Pharmacol Toxicol. 2016;5(3):209-215. doi:10.19070/2167-910X-1600035"
   vignette <- "Eugene_2016_metoprolol"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "metoprolol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "metoprolol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     SEXF = list(
@@ -38,9 +46,9 @@ Eugene_2016_metoprolol <- function() {
     # log-additive male effect betaCL_Male = 0.572 reproduces CL_Male as
     # CL_Female * exp(0.572) = 59.1 * 1.772 = 104.7 L/h, matching Table 1.
     ltlag      <- log(0.469); label("Absorption lag time (hr)")                                   # Eugene 2016 Table 1: Tlag = 0.469 hr (RSE 4%)
-    lka       <- log(0.235); label("First-order absorption rate constant (1/hr)")                # Eugene 2016 Table 1: Ka = 0.235 hr^-1 (RSE 8%)
+    lka       <- log(0.235); label("First-order absorption rate constant (1/h)")                # Eugene 2016 Table 1: Ka = 0.235 hr^-1 (RSE 8%)
     lvc       <- log(38);    label("Apparent central volume of distribution Vc/F (L)")           # Eugene 2016 Table 1: V = 38 L (RSE 95%)
-    lcl       <- log(59.1);  label("Apparent clearance CL/F at female reference (L/hr)")         # Eugene 2016 Table 1: CL Females = 59.1 L/hr (RSE 12%); structural reference of the MONOLIX model
+    lcl       <- log(59.1);  label("Apparent clearance CL/F at female reference (L/h)")         # Eugene 2016 Table 1: CL Females = 59.1 L/hr (RSE 12%); structural reference of the MONOLIX model
     e_sexf_cl <- 0.572;      label("Log-additive coefficient for male sex on CL (applied as (1 - SEXF))") # Eugene 2016 Table 1: betaCL_Male = 0.572 (RSE 24%, p = 2.70e-5); applied via (1 - SEXF) so SEXF = 0 (male) yields CL = CL_Female * exp(0.572) = 105 L/hr
 
     # Inter-individual variability (Eugene 2016 Table 1). The reported numeric

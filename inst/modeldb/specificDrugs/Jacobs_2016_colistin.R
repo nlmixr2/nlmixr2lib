@@ -10,6 +10,15 @@ Jacobs_2016_colistin <- function() {
   vignette <- "Jacobs_2016_colistin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "colistimethate sodium", units = "mg", specimen = "plasma", verified = FALSE),
+    central_col = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     RRT_HEMODIAL_ACTIVE = list(
       description        = "Hemodialysis-active indicator (1 during a dialysis session, 0 otherwise)",

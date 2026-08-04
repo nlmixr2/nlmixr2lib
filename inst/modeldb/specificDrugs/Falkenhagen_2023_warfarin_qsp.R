@@ -31,6 +31,19 @@ Falkenhagen_2023_warfarin_qsp <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "warfarin", units = "mg", specimen = "plasma", verified = FALSE),
+    vkh2       = list(analyte = "vitamin K hydroquinone (VKH2)", units = "mg", specimen = "plasma", verified = FALSE),
+    factor_ii  = list(analyte = "coagulation Factor II", units = "mg", specimen = "plasma", verified = FALSE),
+    factor_vii = list(analyte = "coagulation Factor VII", units = "mg", specimen = "plasma", verified = FALSE),
+    factor_x   = list(analyte = "coagulation Factor X", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CYP2C9_S1_COUNT = list(
       description        = "Count of CYP2C9*1 (wild-type) alleles per subject (0, 1, or 2)",
@@ -233,7 +246,7 @@ Falkenhagen_2023_warfarin_qsp <- function() {
     # No residual error is reported: the model was never fitted to
     # observed INR data. Fixed at 0 per the standing convention for
     # unreported RUV (documented in the vignette Errata).
-    addSd <- fixed(0); label("Additive residual error SD on INR (unitless; fixed at 0)")
+    addSd <- fixed(0); label("Additive residual error SD on INR (unitless)")
   })
 
   model({

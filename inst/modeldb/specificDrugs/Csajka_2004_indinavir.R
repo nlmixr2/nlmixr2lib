@@ -2,7 +2,15 @@ Csajka_2004_indinavir <- function() {
   description <- "One-compartment first-order-absorption population PK model for oral indinavir 800 mg three-times-daily (alone) or 800 mg twice-daily with low-dose ritonavir in HIV-infected adults; concomitant ritonavir, sex, and body weight enter apparent oral clearance as multiplicative covariate effects (Csajka 2004)."
   reference <- "Csajka C, Marzolini C, Fattinger K, Decosterd LA, Telenti A, Biollaz J, Buclin T. Population pharmacokinetics of indinavir in patients infected with human immunodeficiency virus. Antimicrob Agents Chemother. 2004;48(9):3226-3232. doi:10.1128/aac.48.9.3226-3232.2004"
   vignette <- "Csajka_2004_indinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "indinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "indinavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -67,7 +75,7 @@ Csajka_2004_indinavir <- function() {
     # set to 1 because intravenous drug administration not available,
     # hence no 95% CI or % SE evaluable."
     lfdepot <- fixed(log(1.0))
-    label("Oral bioavailability (FIXED to 1; no IV reference data)")              # Csajka 2004 Table 3 footnote h
+    label("Oral bioavailability (no IV reference data)")              # Csajka 2004 Table 3 footnote h
 
     # Covariate effects on CL/F. Final-model multiplicative form (Csajka
     # 2004 Table 3 footnote a):

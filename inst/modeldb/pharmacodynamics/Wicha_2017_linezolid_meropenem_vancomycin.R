@@ -2,7 +2,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
   description <- "In vitro (MSSA ATCC 29213). Semimechanistic time-kill pharmacodynamic model of linezolid, meropenem, and vancomycin against methicillin-susceptible Staphylococcus aureus. Bacterial life cycle has three states: growing (gro), replicating (repl), and persisting (pers). LZD inhibits the GRO->REP transition (bacteriostatic via krep) and induces a replication-independent killing rate kdeath_lzd on growing bacteria. MER and VAN, as cell wall-active antibiotics, impair successful doubling at the REP->GRO transition; the joint MER+VAN action is encoded as a modified Bliss-independence term that includes the paradoxical Eagle-effect self-inhibition of MER at high concentrations and the VAN Emax cap. Drug-unsusceptible persisters are generated during replication at rates kper_mer * E_MER and kper_van * E_VAN, then die at kdeath_per. An adaptive-resistance submodel (Tam 2005) inflates the effective EC50 of MER and of VAN over time via fractional ARon states; subinhibitory VAN concentrations inhibit the MER-adaption rate (monodirectional VAN-on-MER PD interaction). MER and VAN solution concentrations decay first-order due to chemical degradation in growth medium (rates fixed from HPLC measurement); LZD is stable. The model is in-vitro PD only -- there is no human PK component; drug exposures are static dosing at t = 0. Random effects (eta) are NOT present: the paper reports replicate-only experimental variability and uses an additive residual error on log10(CFU/mL)."
   reference <- "Wicha SG, Huisinga W, Kloft C. Translational pharmacometric evaluation of typical antibiotic broad-spectrum combination therapies against Staphylococcus aureus exploiting in vitro information. CPT Pharmacometrics Syst Pharmacol. 2017;6(8):512-522. doi:10.1002/psp4.12197."
   vignette <- "Wicha_2017_linezolid_meropenem_vancomycin"
-  units <- list(time = "hour", dosing = "mg/L (initial concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug states)")
+  units <- list(time = "h", dosing = "mg/L (initial concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug states)")
 
   # The model has no covariates -- it is a typical-value in-vitro PD model with
   # static drug exposures. Drug initial concentrations are applied via dosing
@@ -12,6 +12,23 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
   # Wicha 2017 Methods: LZD 0.5-32 mg/L, MER 0.015-8 mg/L, VAN 0.06-16 mg/L.
   # MER and VAN decay first-order in the growth medium (kdeg fixed from HPLC
   # measurements); LZD is chemically stable.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Decoded from this model's systematic state-naming
+  # scheme; units are not derivable from its units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    lzd       = list(analyte = "linezolid", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    mer       = list(analyte = "meropenem", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    van       = list(analyte = "vancomycin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aroff_mer = list(analyte = "adaptive-resistance OFF subpopulation (meropenem)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aron_mer  = list(analyte = "adaptive-resistance ON subpopulation (meropenem)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aroff_van = list(analyte = "adaptive-resistance OFF subpopulation (vancomycin)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aron_van  = list(analyte = "adaptive-resistance ON subpopulation (vancomycin)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    gro       = list(analyte = "growing bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    repl      = list(analyte = "replicating bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    pers      = list(analyte = "persister bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -40,7 +57,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lkrep <- log(1.56)
     label("Transit rate constant from gro to repl (krep, 1/h)")  # Wicha 2017 Table 1
     lkdoub <- fixed(log(100))
-    label("Replication / doubling rate constant (kdoub, 1/h; FIXED -- not rate-limiting)")  # Wicha 2017 Table 1 (FIXED)
+    label("Replication / doubling rate constant (kdoub, 1/h; -- not rate-limiting)")  # Wicha 2017 Table 1 (FIXED)
     lkdeath_per <- log(0.23)
     label("Basal death rate of persisters (kdeath_per, 1/h)")  # Wicha 2017 Table 1
 
@@ -64,7 +81,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lec50_mer_eagle <- log(1.35)
     label("MER half-maximum paradoxical Eagle-effect concentration (EC50_MER,Eagle, mg/L)")  # Wicha 2017 Table 1
     lhill_mer_eagle <- fixed(log(4))
-    label("MER Eagle-effect Hill coefficient (H_MER,Eagle, unitless; FIXED)")  # Wicha 2017 Table 1 (FIXED)
+    label("MER Eagle-effect Hill coefficient (H_MER,Eagle, unitless)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- MER adaption submodel ----
     lb_mer <- log(9.53)
@@ -78,7 +95,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
 
     # ---- MER chemical degradation in growth medium (HPLC-determined; FIXED) ----
     lkdeg_mer <- fixed(log(0.019))
-    label("MER first-order degradation rate in growth medium (kdeg_MER, 1/h; FIXED -- HPLC)")  # Wicha 2017 Table 1 (FIXED)
+    label("MER first-order degradation rate in growth medium (kdeg_MER, 1/h; -- HPLC)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- VAN drug parameters (initial-killing arm) ----
     emax_van <- 0.743
@@ -86,13 +103,13 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lec50_van_t0 <- log(0.46)
     label("VAN half-maximum-effect concentration on kdoub and kper_van at t = 0 (EC50_VAN,t=0, mg/L)")  # Wicha 2017 Table 1
     lhill_van <- fixed(log(20))
-    label("VAN Hill coefficient (H_VAN, unitless; FIXED -- steep on/off shape)")  # Wicha 2017 Table 1 (FIXED)
+    label("VAN Hill coefficient (H_VAN, unitless; -- steep on/off shape)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- VAN-on-MER adaption inhibition (PD interaction) ----
     lec50_van_ari <- log(0.39)
     label("VAN half-maximum suppression of MSSA adaption to MER (EC50_VAN,ARI, mg/L)")  # Wicha 2017 Table 1
     lhill_van_ari <- fixed(log(1))
-    label("VAN-on-MER-adaption Hill coefficient (H_VAN,ARI, unitless; FIXED)")  # Wicha 2017 Table 1 (FIXED)
+    label("VAN-on-MER-adaption Hill coefficient (H_VAN,ARI, unitless)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- VAN adaption submodel ----
     lb_van <- log(3.59)
@@ -106,7 +123,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
 
     # ---- VAN chemical degradation in growth medium (HPLC-determined; FIXED) ----
     lkdeg_van <- fixed(log(0.0039))
-    label("VAN first-order degradation rate in growth medium (kdeg_VAN, 1/h; FIXED -- HPLC)")  # Wicha 2017 Table 1 (FIXED) -- "3.9e-03"
+    label("VAN first-order degradation rate in growth medium (kdeg_VAN, 1/h; -- HPLC)")  # Wicha 2017 Table 1 (FIXED) -- "3.9e-03"
 
     # ---- Residual error ----
     # Wicha 2017 Table 1, "r [log10 CFU/mL] = 0.63"; residual is additive on

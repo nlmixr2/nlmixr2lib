@@ -18,13 +18,22 @@ Kovalenko_2016_dupilumab <- function() {
   # central amount (kel * central) rather than as clearance CL.
   # Intercompartmental transport is parameterized as k23 (1/d, central to
   # peripheral) and k32 (1/d, peripheral to central) rather than as Q and Vp;
-  # the paper notes V3 = V2 * k23 / k32.  Km was fixed at 0.01 mg/L because
+  # the paper notes V3 = V2 * k23 / k32.  km was fixed at 0.01 mg/L because
   # the OFV was insensitive to changes below ~0.01 mg/L; the additive
   # residual SD was fixed at 0.03 mg/L when BLQ data were included.
   #
   # IIV: Table 2 reports omega^2 (the variance of the log-scale random
   # effect) directly, so the tabulated values are inserted verbatim on the
   # right-hand side of each `~` line.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -59,7 +68,7 @@ Kovalenko_2016_dupilumab <- function() {
     lk32    <- log(0.129);  label("peripheral-to-central rate constant (1/d)")        # Table 2: k32 = 0.129 1/d
     lka     <- log(0.254);  label("first-order absorption rate constant (1/d)")       # Table 2: ka = 0.254 1/d
     lvmax   <- log(0.968);  label("Maximum target-mediated elimination rate Vmax (mg/L/d)")# Table 2: Vm = 0.968 mg/L/d
-    Km      <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")                 # Table 2: Km = 0.01 (fixed)
+    km      <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")                 # Table 2: km = 0.01 (fixed)
     lfdepot <- log(0.607);  label("subcutaneous bioavailability (fraction)")          # Table 2: F = 0.607
 
     # Covariate effect - allometric power of weight on central volume (Eq. 1: V2 = theta1 * (WT/75)^theta2)
@@ -87,7 +96,7 @@ Kovalenko_2016_dupilumab <- function() {
 
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot - kel * central - k23 * central + k32 * peripheral1 -
-                          central * (vmax / (Km + central / vc))
+                          central * (vmax / (km + central / vc))
     d/dt(peripheral1) <-                              k23 * central - k32 * peripheral1
 
     # Subcutaneous bioavailability; IV doses bypass the depot via the event record

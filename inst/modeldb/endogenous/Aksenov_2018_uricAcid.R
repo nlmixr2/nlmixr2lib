@@ -3,9 +3,18 @@ Aksenov_2018_uricAcid <- function() {
   reference <- "Aksenov S, Peck CC, Eriksson UG, Stanski DR. Individualized treatment strategies for hyperuricemia informed by a semi-mechanistic exposure-response model of uric acid dynamics. Physiol Rep. 2018 Mar;6(5):e13614. doi:10.14814/phy2.13614"
   vignette <- "Aksenov_2018_uricAcid"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/dL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    serum = list(analyte = "urate", units = "mg", specimen = "blood cell", verified = FALSE),
+    urine = list(analyte = "urate", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(
@@ -72,7 +81,7 @@ Aksenov_2018_uricAcid <- function() {
 
     # XOI -- febuxostat.  Default p50_fbx is the hyperuricemia/gout estimate (Table 1);
     # for healthy/normouricemic subjects override to p50_fbx = 87 ng/mL.
-    rmax_fbx <- 1;      label("Max fractional decrease in UA production by febuxostat (fixed in source)")  # Aksenov 2018 Table 1; fixed at 1 per Bhattaram & Gobburu 2017
+    rmax_fbx <- fixed(1);      label("Max fractional decrease in UA production by febuxostat")  # Aksenov 2018 Table 1; fixed at 1 per Bhattaram & Gobburu 2017
     p50_fbx  <- 120;    label("Febuxostat concentration at half-maximal production inhibition, hyperuricemic subjects (ng/mL)")  # Aksenov 2018 Table 1
 
     # Uricosuric -- lesinurad.  Default p50_lsn is the hyperuricemia/gout estimate (Table 1);

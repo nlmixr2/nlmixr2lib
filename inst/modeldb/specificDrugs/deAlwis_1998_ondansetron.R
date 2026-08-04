@@ -2,12 +2,20 @@ deAlwis_1998_ondansetron <- function() {
   description <- "Two-compartment population PK model with zero-order intravenous-infusion input for ondansetron in pooled paediatric, young-adult, elderly, and aged subjects (de Alwis 1998). The paper uses an empirical additive linear-regression covariate model in the 1990s NONMEM tradition (Maitre 1991 three-step approach): clearance CL and inter-compartmental clearance CLd are sex-stratified with separate male and female intercepts and slopes; the central volume V1 has a body-weight slope only; the steady-state volume Vss has body-weight and age slopes; the peripheral volume Vp is derived as Vss - V1. Inter-individual variability is diagonal log-normal on CL, V1, Vss, and CLd. Proportional residual error is stratified across five paper-defined study sub-populations (young healthy volunteers 18-41 y, elderly healthy volunteers 61-75 y, aged healthy volunteers >= 75 y, paediatric cancer patients receiving chemotherapy, paediatric patients receiving general anaesthesia), switched at runtime via the canonical AGE / DIS_HEALTHY / DIS_CANCER_PED covariates."
   reference <- "de Alwis DP, Aarons L, Palmer JL. Population pharmacokinetics of ondansetron: a covariate analysis. Br J Clin Pharmacol. 1998. doi:10.1046/j.1365-2125.1998.00756.x"
   vignette <- "deAlwis_1998_ondansetron"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   paper_specific_etas <- c("etalcl", "etalvc", "etalvss", "etalq")
   paper_specific_residual_sds <- c(
     "propSd_young_vol", "propSd_elderly_vol", "propSd_aged_vol",
     "propSd_paed_chemo", "propSd_paed_anaes"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ondansetron", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

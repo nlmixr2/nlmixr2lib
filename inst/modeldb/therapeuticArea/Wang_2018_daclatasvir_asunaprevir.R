@@ -23,6 +23,24 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "daclatasvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_asv       = list(analyte = "asunaprevir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_asv     = list(analyte = "asunaprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_asv = list(analyte = "asunaprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    effect          = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_asv      = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
+    target          = list(analyte = "HCV NS5A protein", units = "mg", specimen = "plasma", verified = FALSE),
+    infected        = list(analyte = "HCV-infected cells", units = "mg", specimen = "tissue", verified = FALSE),
+    virus           = list(analyte = "HCV RNA", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     HCV_GT1B = list(
       description        = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype for the IC50 estimates).",
@@ -152,10 +170,10 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     # =========================================================================
 
     # ---- FIXED literature constants ----
-    lTmax    <- fixed(log(18.5e6)); label("Maximum number of hepatocytes Tmax (cells/mL); FIXED")    # Wang 2018 Table 4: Tmax = 18.5e6 cells/mL (FIX)
-    ld       <- fixed(log(0.003));  label("Death rate constant of uninfected target cells d (1/day); FIXED")  # Wang 2018 Table 4: d = 0.003 /day (FIX)
-    lR0      <- fixed(log(7.15));   label("Basic reproductive ratio R0 (unitless); FIXED")           # Wang 2018 Table 4: R0 = 7.15 (FIX)
-    ldelta   <- fixed(log(0.139));  label("Loss rate constant of infected cells delta (1/day); FIXED")  # Wang 2018 Table 4: delta = 0.139 /day (FIX)
+    lTmax    <- fixed(log(18.5e6)); label("Maximum number of hepatocytes Tmax (cells/mL)")    # Wang 2018 Table 4: Tmax = 18.5e6 cells/mL (FIX)
+    ld       <- fixed(log(0.003));  label("Death rate constant of uninfected target cells d (1/day)")  # Wang 2018 Table 4: d = 0.003 /day (FIX)
+    lR0      <- fixed(log(7.15));   label("Basic reproductive ratio R0 (unitless)")           # Wang 2018 Table 4: R0 = 7.15 (FIX)
+    ldelta   <- fixed(log(0.139));  label("Loss rate constant of infected cells delta (1/day)")  # Wang 2018 Table 4: delta = 0.139 /day (FIX)
 
     # ---- Estimated VD system parameters ----
     lc       <- log(20.4); label("Virion clearance rate constant c (1/day)")                          # Wang 2018 Table 4: c = 20.4 /day
@@ -177,7 +195,7 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     lic50_dcv_gt1a <- log(0.041)
     label("IC50 of DCV for GT1A virion production (ug/L)")                    # Wang 2018 Table 4: IC50,DCV,GT1A = 0.041 ug/L
     scl_ic50_dcv   <- fixed(0.18)
-    label("Fixed scaling factor IC50_DCV_GT1B / IC50_DCV_GT1A (unitless); FIXED")  # Wang 2018 Table 4: SCL_IC50,DCV = 0.18 (FIX)
+    label("Scaling factor IC50_DCV_GT1B / IC50_DCV_GT1A (unitless)")  # Wang 2018 Table 4: SCL_IC50,DCV = 0.18 (FIX)
     etalic50_dcv   ~ log(1 + 2.194^2)  # Wang 2018 Table 4: IC50,DCV IIV CV = 219.4 percent -> omega^2 = log(1 + 2.194^2) = 1.7574
 
     # DCV sigmoid Emax shape factor (gamma); log-transformed because positive.
@@ -198,7 +216,7 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     lic50_asv_gt1a <- log(2.45)
     label("IC50 of ASV for GT1A virion production (ug/L)")                     # Wang 2018 Table 4: IC50,ASV,GT1A = 2.45 ug/L
     scl_ic50_asv   <- fixed(0.30)
-    label("Fixed scaling factor IC50_ASV_GT1B / IC50_ASV_GT1A (unitless); FIXED")  # Wang 2018 Table 4: SCL_IC50,ASV = 0.30 (FIX)
+    label("Scaling factor IC50_ASV_GT1B / IC50_ASV_GT1A (unitless)")  # Wang 2018 Table 4: SCL_IC50,ASV = 0.30 (FIX)
     etalic50_asv   ~ log(1 + 0.964^2)  # Wang 2018 Table 4: IC50,ASV IIV CV = 96.4 percent -> omega^2 = log(1 + 0.964^2) = 0.6516
 
     # ASV sigmoid Emax shape factor and resistance coefficient have no IIV

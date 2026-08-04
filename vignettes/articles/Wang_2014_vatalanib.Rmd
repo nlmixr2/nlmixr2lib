@@ -65,13 +65,13 @@ The table below collects them in one place for review.
 |----------------------|-------|-----------------|
 | Structural form: 1-compartment with lagged first-order absorption | n/a | Wang 2014 Methods 'Base model building' and Results 'Model development', pp. 1006-1008 |
 | Time-dependent CL: `CL/F(t) = CL_induced/F - delta_CL/F * exp(-K_induct * t)` | n/a | Wang 2014 Methods 'Base model building' p. 1006; Results 'Model development' p. 1008 |
-| `lcl_ss` -> exp = 54.9 L/h (CL_induced/F) | 54.9 | Table 2 row 'CL_induced/F', p. 1009 (95% CI 42.5-67.2; 11.7% RSE) |
-| `lcl_time` -> exp = 30.1 L/h (delta_CL/F) | 30.1 | Table 2 row 'delta_CL/F', p. 1009 (95% CI 14.8-45.4; 27.6% RSE) |
-| `lkdes` -> exp = 0.023 /h (K_induct, fixed) | 0.023 | Table 2 row 'K_induct', p. 1009 (fixed; footnote * 'maximal clearance induction was reached on day 7') |
+| `lcl_exp_inf` -> exp = 54.9 L/h (CL_induced/F) | 54.9 | Table 2 row 'CL_induced/F', p. 1009 (95% CI 42.5-67.2; 11.7% RSE) |
+| `lcl_exp_component` -> exp = 30.1 L/h (delta_CL/F) | 30.1 | Table 2 row 'delta_CL/F', p. 1009 (95% CI 14.8-45.4; 27.6% RSE) |
+| `lcl_exp_kdes` -> exp = 0.023 /h (K_induct, fixed) | 0.023 | Table 2 row 'K_induct', p. 1009 (fixed; footnote * 'maximal clearance induction was reached on day 7') |
 | `lvc` -> exp = 53.8 L (Vd/F) | 53.8 | Table 2 row 'Vd/F', p. 1009 (95% CI 38.4-69.1; 14.9% RSE) |
 | `lka` -> exp = 0.172 /h (Ka) | 0.172 | Table 2 row 'Ka', p. 1009 (95% CI 0.141-0.203; 9.2% RSE) |
 | `ltlag` -> exp = 0.178 h (A_lag) | 0.178 | Table 2 row 'A_lag', p. 1009 (95% CI 0.136-0.220; 11.7% RSE) |
-| `etalcl_ss` IIV (CV 22.8%; omega^2 = log(1+0.228^2) = 0.0507) | 0.0507 | Table 2 row 'IIV for CL_induced/F', p. 1009 |
+| `etalcl_exp_inf` IIV (CV 22.8%; omega^2 = log(1+0.228^2) = 0.0507) | 0.0507 | Table 2 row 'IIV for CL_induced/F', p. 1009 |
 | `etalvc` IIV (CV 84.4%; omega^2 = log(1+0.844^2) = 0.5380) | 0.5380 | Table 2 row 'IIV for Vd/F', p. 1009 |
 | `etalka` IIV (CV 35.4%; omega^2 = log(1+0.354^2) = 0.1181) | 0.1181 | Table 2 row 'IIV for Ka', p. 1009 |
 | `etaltlag` IIV (CV 137.1%; omega^2 = log(1+1.371^2) = 1.0577) | 1.0577 | Table 2 row 'IIV for A_lag', p. 1009 |
@@ -396,19 +396,19 @@ Two interpretive points on the comparison:
   insufficient information to estimate the induction rate directly
   (Table 2 footnote *; Discussion p. 1011). The fixed value was chosen
   so that maximal induction is reached on day 7 from prior internal
-  data. The model encodes this with `lkdes <- fixed(log(0.023))`.
+  data. The model encodes this with `lcl_exp_kdes <- fixed(log(0.023))`.
 * **IIV on delta_CL/F fixed at zero.** Wang 2014 Results 'Model
   development' (p. 1008) reports that the IIV on delta_CL/F was fixed
   to zero because its estimate was extremely small and the covariance
-  step failed to converge. In the packaged model, `cl_time` therefore
-  enters as `exp(lcl_time)` with no eta term.
+  step failed to converge. In the packaged model, `cl_exp_component` therefore
+  enters as `exp(lcl_exp_component)` with no eta term.
 * **Initial CL can in principle go negative for extreme draws.** The
-  composite CL trajectory `cl = cl_ss - cl_time * exp(-K_induct * t)`
-  is non-negative only as long as the individual's `cl_ss` (which
-  carries IIV via `etalcl_ss`) stays above `cl_time` (which is held at
+  composite CL trajectory `cl = cl_exp_inf - cl_exp_component * exp(-K_induct * t)`
+  is non-negative only as long as the individual's `cl_exp_inf` (which
+  carries IIV via `etalcl_exp_inf`) stays above `cl_exp_component` (which is held at
   the typical value). With the published variability (CV 22.8% on
-  CL_induced/F), an individual draw of `etalcl_ss` below roughly -0.6
-  (= about 2.7 standard deviations) would push `cl_ss` below 30.1 L/h
+  CL_induced/F), an individual draw of `etalcl_exp_inf` below roughly -0.6
+  (= about 2.7 standard deviations) would push `cl_exp_inf` below 30.1 L/h
   and give a negative initial CL. The published variability puts the
   probability of that event below 0.5%. This is a property of the
   paper's additive autoinduction parameterisation, not an additional

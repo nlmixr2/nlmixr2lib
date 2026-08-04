@@ -40,6 +40,18 @@ Syvanen_2011_verapamil_rat <- function() {
     concentration = "MBq/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_csf   = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_deep  = list(analyte = "R-[11C]verapamil", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at the time of PET scanning.",

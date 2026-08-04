@@ -2,7 +2,15 @@ Germovsek_2018_meropenem <- function() {
   description <- "One-compartment plasma + CSF (two-state) IV population PK model for meropenem in neonates and young infants (<=90 days) with late-onset sepsis and/or meningitis (Germovsek 2018; NeoMero-1 and NeoMero-2 studies). Plasma CL and Vc are allometrically scaled to body weight (fixed exponent 0.632 on CL, 1.0 on Vc) with a fixed Rhodin-style postmenstrual-age maturation Hill function on CL and a power covariate of (CREAT_REF / CREAT) on CL; an additional CSF compartment with fixed Vcsf = 0.15 L/70 kg and estimated inter-compartmental clearance CL_CSF carries a logit-scale CSF penetration fraction (typical 8.4 %) modulated by CSF total protein concentration."
   reference <- "Germovsek E, Lutsar I, Kipper K, Karlsson MO, Planche T, Chazallon C, Meyer L, Trafojer UMT, Metsvaht T, Fournier I, Sharland M, Heath P, Standing JF; NeoMero Consortium. Plasma and CSF pharmacokinetics of meropenem in neonates and young infants: results from the NeoMero studies. J Antimicrob Chemother. 2018;73(7):1908-1916. doi:10.1093/jac/dky128"
   vignette <- "Germovsek_2018_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    csf     = list(analyte = "meropenem", units = "mg", specimen = "CSF", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

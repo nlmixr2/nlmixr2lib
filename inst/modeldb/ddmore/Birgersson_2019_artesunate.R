@@ -23,6 +23,19 @@ Birgersson_2019_artesunate <- function() {
   replicate_of <- NULL
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit1           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit2           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit3           = list(analyte = "artesunate", units = "nmol", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "artesunate", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_dihydroart = list(analyte = "dihydroartemisinin", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -87,7 +100,7 @@ Birgersson_2019_artesunate <- function() {
     lcl_dihydroart <- log(190)  ; label("Apparent dihydroartemisinin elimination clearance, CLM/F at WT = 52 kg in pregnant women (L/h); non-pregnant women have CLM reduced via the e_preg_cl_dihydroart covariate effect")  # Executable_run1.mod $THETA TH 3 (CLM) = 190 L/h
     lvc_dihydroart <- log(267)  ; label("Apparent dihydroartemisinin central volume of distribution, V3/F at WT = 52 kg (L)")  # Executable_run1.mod $THETA TH 4 (V3) = 267 L
     lmtt  <- log(0.832)  ; label("Mean transit time of the 3-compartment transit-absorption chain, MTT (h)")  # Executable_run1.mod $THETA TH 5 (MTT) = 0.832 h
-    lfdepot <- fixed(log(1))   ; label("Reference relative bioavailability of artesunate, F1 (unitless); fixed at 1 (the source paper estimates F1 only via covariate effects of ALT and parasitaemia, with no absolute reference)")  # Executable_run1.mod $THETA TH 6 (F1) = 1 FIX
+    lfdepot <- fixed(log(1))   ; label("Reference relative bioavailability of artesunate, F1 (unitless) (the source paper estimates F1 only via covariate effects of ALT and parasitaemia, with no absolute reference)")  # Executable_run1.mod $THETA TH 6 (F1) = 1 FIX
 
     # Covariate effects
     e_preg_cl_dihydroart <- -0.214 ; label("Pregnancy-status effect on DHA elimination clearance, applied as (1 + e_preg_cl_dihydroart * (1 - PREG)) so that pregnant women (PREG = 1) match the structural TVCLM = 190 L/h and non-pregnant women (PREG = 0) have CLM scaled by 0.786 (~21% lower CLM than pregnant women)")  # Executable_run1.mod $THETA TH 7 (CLMPREG1) = -0.214

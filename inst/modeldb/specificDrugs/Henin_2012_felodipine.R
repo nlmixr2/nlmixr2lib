@@ -35,6 +35,23 @@ Henin_2012_felodipine <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "felodipine", units = "mg", specimen = "administration site", verified = FALSE),
+    fundus      = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    antrum      = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    proximal_si = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    distal_si   = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    colon       = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    liver       = list(analyte = "felodipine", units = "mg", specimen = "tissue", verified = FALSE),
+    central     = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight; used for allometric scaling of liver blood flow (QH = 3.5 * WT^0.75) and the fixed per-kg liver volume (Vliver = 0.0143 * WT).",
@@ -116,7 +133,7 @@ Henin_2012_felodipine <- function() {
     lk23         <- log(0.43)  ; label("Log dissolved-drug transfer rate fundus -> antrum K23 (1/h)")                  # Table I: K23 = 0.43 1/h (RSE 9.3%)
     lk34_fasted  <- log(3.48)  ; label("Log dissolved-drug transfer rate antrum -> PSI K34 (fasted, 1/h)")             # Table I: K34 fasted = 3.48 1/h (RSE 7.4%)
     lk34_fed     <- log(0.81)  ; label("Log dissolved-drug transfer rate antrum -> PSI K34 (fed, 1/h)")                # Table I: K34 fed = 0.81 1/h (RSE 5.9%)
-    k_si_bump    <- fixed(5)   ; label("Additive increase in K23 and K34 after tablet reaches SI (1/h; FIXED)")        # Table I footnote a: rate increased by 5 h^-1 after tablet movement to small intestine
+    k_si_bump    <- fixed(5)   ; label("Additive increase in K23 and K34 after tablet reaches SI (1/h)")        # Table I footnote a: rate increased by 5 h^-1 after tablet movement to small intestine
 
     # ------------------------------------------------------------------
     # Absorption first-order rate constants from PSI, DSI, colon to
@@ -142,8 +159,8 @@ Henin_2012_felodipine <- function() {
     # Both allometric anchors are held FIXED per Table I.
     # ------------------------------------------------------------------
     logiteh      <- 0         ; label("Logit hepatic extraction ratio EH (logit(0.50) = 0)")                            # Table I: EH = 0.50 (RSE 3.5%); logit(0.5) = 0
-    qh_per_kg075 <- fixed(3.5); label("Liver blood flow allometric constant QH (L/h/kg^0.75; FIXED)")                   # Table I: QH = 3.5 L/h/kg^0.75 FIXED
-    vliver_perkg <- fixed(0.0143); label("Liver volume per kg body weight Vliver (L/kg; FIXED)")                         # Table I: Vliver = 0.0143 L/kg FIXED
+    qh_per_kg075 <- fixed(3.5); label("Liver blood flow allometric constant QH (L/h/kg^0.75)")                   # Table I: QH = 3.5 L/h/kg^0.75 FIXED
+    vliver_perkg <- fixed(0.0143); label("Liver volume per kg body weight Vliver (L/kg)")                         # Table I: Vliver = 0.0143 L/kg FIXED
 
     # ------------------------------------------------------------------
     # Systemic disposition (Table I). Central and two peripheral
@@ -170,7 +187,7 @@ Henin_2012_felodipine <- function() {
     # FIXED to preserve the paper's mechanistic intent of a sharp
     # step-function switch between GI regions.
     # ------------------------------------------------------------------
-    sig          <- fixed(20) ; label("STEP-function sigmoidicity factor SIG (unitless; FIXED; not reported in paper)") # Paper Eq 1; specific SIG value not reported in Henin 2012 (see vignette Errata) -- FIXED at 20 per common practice
+    sig          <- fixed(20) ; label("STEP-function sigmoidicity factor SIG (unitless;; not reported in paper)") # Paper Eq 1; specific SIG value not reported in Henin 2012 (see vignette Errata) -- FIXED at 20 per common practice
 
     # ------------------------------------------------------------------
     # Residual error (Table I): 23% proportional on plasma felodipine

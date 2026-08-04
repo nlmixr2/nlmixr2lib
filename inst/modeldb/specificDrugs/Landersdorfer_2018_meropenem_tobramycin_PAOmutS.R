@@ -2,9 +2,24 @@ Landersdorfer_2018_meropenem_tobramycin_PAOmutS <- function() {
   description <- "In vitro (Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain). Mechanism-based PK/PD (life-cycle growth) model of bacterial killing and resistance for meropenem plus tobramycin, with three pre-existing subpopulations (susceptible, MEM-resistant/TOB-intermediate, MEM-intermediate/TOB-resistant) and mechanistic synergy via tobramycin-induced outer-membrane permeabilisation of meropenem"
   reference <- "Landersdorfer CB, Rees VE, Yadav R, Rogers KE, Kim TH, Bergen PJ, Cheah SE, Boyce JD, Peleg AY, Oliver A, Shin BS, Nation RL, Bulitta JB. Optimization of a meropenem-tobramycin combination dosage regimen against hypermutable and nonhypermutable Pseudomonas aeruginosa via mechanism-based modeling and the hollow-fiber infection model. Antimicrob Agents Chemother. 2018 Mar 27;62(4):e02055-17. doi:10.1128/AAC.02055-17. Model differential equations (Eqs 2-5) and Table S3 population parameter estimates are in the supplemental material."
   vignette <- "Landersdorfer_2018_meropenem_tobramycin"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   paper_specific_compartment_pattern <- "^bact_"
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (resistant/in", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonus aeruginosa PAOdelta-mutS hypermutable strain (intermediate", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa PAOdelta-mutS hypermutable strain (intermediate", units = NA_character_, specimen = "bile", verified = FALSE),
+    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ctob                          = list(analyte = "tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -29,7 +44,7 @@ Landersdorfer_2018_meropenem_tobramycin_PAOmutS <- function() {
     # --- Bacterial growth and subpopulations (Table S3) ---
     log10cfu0    <- 7.72;  label("Initial inoculum (log10 CFU/mL)")                                # Table S3: Log10CFU0 = 7.72 (SE 1.0%); shared between strains
     log10cfumax  <- 9.57;  label("Maximum population size CFUmax (log10 CFU/mL)")                  # Table S3: Log10CFUmax = 9.57 (SE 1.4%); shared between strains
-    lk21         <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")      # Same-group precedent (Rees 2018, AAC); supplement states "k21 was assumed to be fast"
+    lk21         <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)")      # Same-group precedent (Rees 2018, AAC); supplement states "k21 was assumed to be fast"
 
     # Mean generation time per subpopulation (minutes); growth rate k12 = 60/MGT (1/h)
     mgt_ss <- 57.3;  label("Mean generation time, double-susceptible MEMs/TOBs (min)")             # Table S3: MGT_SS = 57.3 (SE 11.2%); shared between strains
@@ -59,15 +74,15 @@ Landersdorfer_2018_meropenem_tobramycin_PAOmutS <- function() {
     hill_tob     <- 3.03;  label("Hill coefficient for tobramycin killing (unitless)")                     # Table S3: HillTOB = 3.03 (SE 12.9%); shared between strains
 
     # --- Mechanistic synergy: tobramycin disrupts the bacterial outer membrane, lowering effective KC50,MEM (Eq 5) ---
-    imax_om <- fixed(1.0); label("Max fractional decrease of KC50,MEM via outer-membrane disruption (unitless; FIXED)") # Table S3: Imax_OM = 1.0 (footnote e: fixed)
+    imax_om <- fixed(1.0); label("Max fractional decrease of KC50,MEM via outer-membrane disruption (unitless)") # Table S3: Imax_OM = 1.0 (footnote e: fixed)
     ic50_om <- 0.587;      label("Tobramycin concentration for 50% of Imax_OM (mg/L)")                                  # Table S3: IC50_OM = 0.587 (SE 19.5%); shared between strains
 
     # --- Residual error (additive on log10 scale) ---
     addSd <- 0.41; label("Additive residual SD on log10 scale (log10 CFU/mL)") # Table S3: SDCFU = 0.41 (SE 5.6%); shared between strains
 
     # --- Simulated antibiotic disposition (fixed, from clinical CF-patient PK literature) ---
-    thalf_mem <- fixed(0.8); label("Simulated meropenem half-life (h; FIXED)") # Main text Methods: t1/2,MEM = 0.8 h (refs 55, 56); not an MBM estimate
-    thalf_tob <- fixed(2.5); label("Simulated tobramycin half-life (h; FIXED)") # Main text Methods: t1/2,TOB = 2.5 h (refs 55, 56); not an MBM estimate
+    thalf_mem <- fixed(0.8); label("Simulated meropenem half-life (h)") # Main text Methods: t1/2,MEM = 0.8 h (refs 55, 56); not an MBM estimate
+    thalf_tob <- fixed(2.5); label("Simulated tobramycin half-life (h)") # Main text Methods: t1/2,TOB = 2.5 h (refs 55, 56); not an MBM estimate
   })
 
   model({

@@ -10,7 +10,15 @@ AbdulAziz_2016_doripenem <- function() {
     sep = " "
   )
   vignette <- "AbdulAziz_2016_doripenem"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "doripenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "doripenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -102,8 +110,8 @@ AbdulAziz_2016_doripenem <- function() {
     # Allometric exponents fixed a priori to canonical values (Methods,
     # citing Anderson and Holford 2008): 0.75 on clearances, 1 on volumes,
     # standardised to 70 kg.
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on (WT/70) for CL and Q (unitless, fixed)")  # Abdul-Aziz 2016 Methods, allometric scaling
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on (WT/70) for V1 and V2 (unitless, fixed)") # Abdul-Aziz 2016 Methods, allometric scaling
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on (WT/70) for CL and Q (unitless)")  # Abdul-Aziz 2016 Methods, allometric scaling
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on (WT/70) for V1 and V2 (unitless)") # Abdul-Aziz 2016 Methods, allometric scaling
 
     # Exponential effect of Cockcroft-Gault CLCR on CL, centred at the
     # population mean 82.5 mL/min (Abdul-Aziz 2016 Equation 1, Table 2):

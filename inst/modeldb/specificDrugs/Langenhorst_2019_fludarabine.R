@@ -2,7 +2,16 @@ Langenhorst_2019_fludarabine <- function() {
   description <- "Three-compartment IV population PK model for the circulating fludarabine metabolite F-ara-A in children and adults (n = 258, age 0.3-74 years) receiving fludarabine phosphate as part of myeloablative conditioning prior to allogeneic hematopoietic cell transplantation (Langenhorst 2019). Total clearance is decomposed into a non-renal component (3.2 L/h at 70 kg) and an eGFR-driven renal component with slope 0.78 (unitless), both allometrically scaled to actual body weight at a fixed 0.75 exponent referenced to 70 kg: CL = (3.2 + eGFR_L_per_h * 0.78) * (BW/70)^0.75 L/h, where eGFR is expressed in L/h (converted from Cockcroft-Gault / Schwartz eGFR in mL/min/1.73 m^2 by * 60/1000). Central volume V1 (39 L), first peripheral V2 (20 L), and second peripheral V3 (50 L) all scale allometrically at a fixed 1.0 exponent to 70 kg. Inter-compartmental clearances Q2 (8.6 L/h, V1-V2) and Q3 (3.8 L/h, V1-V3) scale at a fixed 0.75 exponent to 70 kg. Because the random effects on the volume triplet (V1, V2, V3) and on the clearance triplet (CL, Q2, Q3) were highly correlated in the original NONMEM fit, the paper encodes a SINGLE shared eta on {V1, V2, V3} (48% CV) and a SINGLE shared eta on {CL, Q2, Q3} (23% CV) -- implemented here as identical eta terms across the three parameters in each group (perfect correlation, matching the paper's coding). Inter-occasion variability (12% CV on CL/Q2/Q3, 31% CV on V1/V2/V3, one occasion per dose) reported by Langenhorst 2019 Table 2 is NOT encoded structurally: the source paper defines each dose as an occasion but nlmixr2lib omits IOV when no operational occasion column is defined for downstream use (Brooks 2021 / Andrews 2017 precedent); downstream users can add an OCC indicator and per-occasion etas in rxode2. Residual error is proportional (6.3% CV) on the linear concentration scale."
   reference <- "Langenhorst JB, Dorlo TPC, van Maarseveen EM, Nierkens S, Kuball J, Boelens JJ, van Kesteren C, Huitema ADR. Population Pharmacokinetics of Fludarabine in Children and Adults during Conditioning Prior to Allogeneic Hematopoietic Cell Transplantation. Clin Pharmacokinet. 2019;58(5):627-637. doi:10.1007/s40262-018-0715-9"
   vignette <- "Langenhorst_2019_fludarabine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "fludarabine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fludarabine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "fludarabine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

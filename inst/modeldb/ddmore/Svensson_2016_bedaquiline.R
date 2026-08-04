@@ -11,9 +11,23 @@ Svensson_2016_bedaquiline <- function() {
     sep = " "
   )
   vignette <- "Svensson_2016_bedaquiline"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000219"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2  = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -88,7 +102,7 @@ Svensson_2016_bedaquiline <- function() {
     # fraction-of-MAT residing in the transit delay FR (paper symbols).
     # KA and KTR are derived in model() from MAT and FR.
     lmat     <- log(0.6620 * 6)              ; label("Mean absorption time (hours, on log scale)") # THETA(9) typical value 0.662 fraction of 6 h ≡ 3.97 h; Table 3 'MAT, fraction of 6 hours = 0.66'
-    logitfr  <- log(0.4664 / (1 - 0.4664))   ; label("Fraction of MAT in transit delay (logit)")   # THETA(10) FR = 0.466; Table 3 'FR = 0.47'
+    logitfmat  <- log(0.4664 / (1 - 0.4664))   ; label("Fraction of MAT in transit delay (logit)")   # THETA(10) FR = 0.466; Table 3 'FR = 0.47'
 
     # Structural disposition: 3-compartment bedaquiline (parent) +
     # 1-compartment M2 metabolite. Apparent volumes and clearances (i.e.,
@@ -116,7 +130,7 @@ Svensson_2016_bedaquiline <- function() {
     # to nmol/mL plasma concentration) — that factor is dropped here because
     # nlmixr2lib reports concentration in mg/L; only the BSV part is retained
     # below. See vignette Errata.
-    lfdepot <- fixed(log(1))                       ; label("Bioavailability F (fixed at 1 because CL and V are apparent F-relative values)")
+    lfdepot <- fixed(log(1))                       ; label("Bioavailability F (1 because CL and V are apparent F-relative values)")
 
     # Inter-individual variability. Final estimates (variances) from the .mod
     # $OMEGA blocks. The full .mod also models BSV on baseline albumin / Ass /
@@ -161,7 +175,7 @@ Svensson_2016_bedaquiline <- function() {
     # Absorption derived from MAT (hours) and FR (unitless fraction in (0, 1)).
     # MAT inherits its IIV via etalmat; FR has no IIV in the source model.
     mat <- exp(lmat + etalmat)
-    fr  <- 1 / (1 + exp(-logitfr))
+    fr  <- 1 / (1 + exp(-logitfmat))
     mtt <- mat * fr
     ka  <- log(2) / (mat * (1 - fr) / 3.3)   # absorption rate (1/h); the 3.3-fold delay-to-absorption-half-life ratio is the paper's parameterization (Svensson 2016 Methods, transit description)
     ktr <- 2 / mtt                            # transit-chain rate (1/h) for two transit compartments

@@ -4,6 +4,19 @@ Aguiar_2021_ustekinumab <- function() {
   vignette <- "Aguiar_2021_ustekinumab"
   units <- list(time = "day", dosing = "nmol", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "ustekinumab", units = "nmol", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "ustekinumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "ustekinumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    total_target      = list(analyte = "unbound IL-12/IL-23 p40 target", units = "nmol", specimen = "plasma", verified = FALSE),
+    target_peripheral = list(analyte = "unbound IL-12/IL-23 p40 target", units = "nmol", specimen = "plasma", verified = FALSE),
+    fc                = list(analyte = "fecal calprotectin", units = "nmol", specimen = "faeces", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Baseline fat-free mass",

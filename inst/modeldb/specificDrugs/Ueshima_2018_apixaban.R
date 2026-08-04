@@ -22,7 +22,15 @@ Ueshima_2018_apixaban <- function() {
     "Br J Clin Pharmacol. 2018;84(6):1301-1312. doi:10.1111/bcp.13561."
   )
   vignette <- "Ueshima_2018_apixaban"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "apixaban", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "apixaban", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -147,7 +155,7 @@ Ueshima_2018_apixaban <- function() {
     # trough + 2-point post-dose sampling and could not identify ka from
     # the absorption phase (Methods: 'ka was fixed at the reported value
     # of 0.42 h^-1 because of a lack of data on the absorption phase').
-    lka <- fixed(log(0.42)); label("Absorption rate constant ka (1/h); fixed at literature value")  # Ueshima 2018 Table 4 theta3 = 0.42 h^-1 (fixed)
+    lka <- fixed(log(0.42)); label("Absorption rate constant ka (1/h); literature value")  # Ueshima 2018 Table 4 theta3 = 0.42 h^-1 (fixed)
 
     # Base apparent oral clearance theta1 = 1.53 L/h. This is the typical
     # value of CL/F for a reference patient with CCR = 70 mL/min,

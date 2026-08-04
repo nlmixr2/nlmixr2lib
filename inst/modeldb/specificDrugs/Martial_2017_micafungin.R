@@ -10,7 +10,15 @@ Martial_2017_micafungin <- function() {
     sep = " "
   )
   vignette <- "Martial_2017_micafungin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "micafungin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "micafungin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -60,10 +68,10 @@ Martial_2017_micafungin <- function() {
     # Discussion (page 1203): "Based on our data (n = 20 patients), the true
     # exponent is not identifiable and using an empirical estimate would not
     # allow for extrapolation beyond our dataset."
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless; fixed)")                        # Martial 2017 Section 2.4 (Methods)
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless; fixed)")                        # Martial 2017 Section 2.4 (Methods)
-    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q (unitless; fixed)")                         # Martial 2017 Section 2.4 (Methods)
-    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless; fixed)")                        # Martial 2017 Section 2.4 (Methods)
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless)")                        # Martial 2017 Section 2.4 (Methods)
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless)")                        # Martial 2017 Section 2.4 (Methods)
+    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q (unitless)")                         # Martial 2017 Section 2.4 (Methods)
+    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless)")                        # Martial 2017 Section 2.4 (Methods)
 
     # Inter-individual variability (log-normal). The paper reports IIV as
     # %CV; the internal variance is omega^2 = log(CV^2 + 1). IIV was retained

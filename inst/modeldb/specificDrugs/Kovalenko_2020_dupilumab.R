@@ -11,7 +11,7 @@ Kovalenko_2020_dupilumab <- function() {
   # elimination as a first-order rate constant kel (1/d) acting on the central
   # amount (kel * central), rather than as clearance CL.  Intercompartmental
   # transport is parameterized as kcp (1/d) and kpc (1/d) directly (with
-  # Mpc = kcp/kpc), rather than as Q and Vp.  Km and F were fixed in Model 1 to
+  # Mpc = kcp/kpc), rather than as Q and Vp.  km and F were fixed in Model 1 to
   # values carried forward from Kovalenko 2016 (doi:10.1002/psp4.12136); the
   # file reproduces those fixings.
   #
@@ -19,6 +19,18 @@ Kovalenko_2020_dupilumab <- function() {
   # the between-subject random effect (see Methods).  The nlmixr2 `~` syntax on
   # the RHS of an eta line stores the VARIANCE (omega^2), so the published SDs
   # are squared in the ini() block below.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -53,7 +65,7 @@ Kovalenko_2020_dupilumab <- function() {
     lka <- log(0.256); label("absorption rate (1/d)")
     lmtt <- log(0.105); label("mean transit time (d)")
     lvmax <- log(1.07); label("Maximum target-mediated rate of elimination Vmax (mg/L/d)")
-    Km <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")
+    km <- fixed(0.01); label("Michaelis-Menten constant (mg/L)")
     lfdepot <- log(0.643); label("Bioavailability (fraction)")
     e_wt_vc <- 0.711; label("Exponent of weight on central volume (unitless)")
 
@@ -95,7 +107,7 @@ Kovalenko_2020_dupilumab <- function() {
     d/dt(transit2) <- ktr*(transit1 - transit2)
     d/dt(transit3) <- ktr*transit2 - ka*transit3
     # Linear and Michaelis-Menten clearance
-    d/dt(central) <-                 ka*transit3 - kel*central - kcp*central + kpc*peripheral1 - central*(vmax/(Km + central/vc))
+    d/dt(central) <-                 ka*transit3 - kel*central - kcp*central + kpc*peripheral1 - central*(vmax/(km + central/vc))
     d/dt(peripheral1) <-                                             kcp*central - kpc*peripheral1
 
     f(depot) <- exp(lfdepot)

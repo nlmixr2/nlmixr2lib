@@ -31,6 +31,15 @@ Stringer_2015_pioglitazone <- function() {
   )
   paper_specific_compartments <- c("fpg", "hba1c")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    fpg   = list(analyte = "Fasting Plasma Glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba1c = list(analyte = "Glycosylated Hemoglobin", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Sex (female indicator)",
@@ -108,7 +117,7 @@ Stringer_2015_pioglitazone <- function() {
     lemax_pio  <- log(0.173); label("Maximum FPG-lowering fractional effect Emax for pioglitazone (dimensionless, i.e. 17.3%)")  # Table 2 Emax (Pioglitazone) = 17.3%
     lemax_ctrl <- log(0.084); label("Maximum FPG-lowering fractional effect Emax for control cohort (dimensionless, i.e. 8.4%)")  # Table 2 Emax (Control) = 8.4%
     let50_ctrl <- log(49.2);  label("Time-to-half-maximal drug effect ET50 for control cohort (days)")  # Table 2 ET50 (Control) = 49.2 days
-    et50_pio   <- fixed(0);   label("Time-to-half-maximal drug effect ET50 for pioglitazone (days; FIXED at 0 -- effect essentially instantaneous by the 3-month first FPG sample)")  # Table 2 ET50 (Pioglitazone) = 0 FIX
+    et50_pio   <- fixed(0);   label("Time-to-half-maximal drug effect ET50 for pioglitazone (days; 0 -- effect essentially instantaneous by the 3-month first FPG sample)")  # Table 2 ET50 (Pioglitazone) = 0 FIX
 
     # ---- Disease progression rates (Stringer 2015 Table 2; parameters expressed in years^-1) ----
     # These are converted to days^-1 inside model() by dividing by 365.25.

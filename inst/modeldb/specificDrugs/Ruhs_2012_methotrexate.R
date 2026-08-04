@@ -3,10 +3,20 @@ Ruhs_2012_methotrexate <- function() {
   reference <- "Ruhs H, Becker A, Drescher A, Panetta JC, Pui CH, Relling MV, Jaehde U. Population PK/PD Model of Homocysteine Concentrations after High-Dose Methotrexate Treatment in Patients with Acute Lymphoblastic Leukemia. PLoS ONE. 2012;7(9):e46015. doi:10.1371/journal.pone.0046015"
   vignette <- "Ruhs_2012_methotrexate"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "umol/L",
     notes         = "Dose entered as MTX amount in mg into the central compartment. The observation Cc is reported in umol/L (uM) via the conversion (central/vc) * 1000 / MW_MTX (MW_MTX = 454.44 g/mol) so that EC50 and HCY remain in their published uM units."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "methotrexate", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "homocysteine", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
@@ -88,7 +98,7 @@ Ruhs_2012_methotrexate <- function() {
     lhcybl      <- log(4.88);  label("Typical HCY baseline at age 0 y (uM)")                # Ruhs 2012 Table 2 theta_BL = 4.88 (intercept of the linear age effect)
     lkout       <- log(0.027); label("Typical HCY elimination rate constant kout (1/h)")    # Ruhs 2012 Table 2 theta_kout = 0.027
     lec50       <- log(0.648); label("Typical MTX EC50 for inhibition of HCY elimination (uM)")  # Ruhs 2012 Table 2 theta_EC50 = 0.648
-    emax        <- fixed(1);   label("MTX maximum fractional inhibition of HCY elimination (unitless; fixed)")  # Ruhs 2012 Table 2 theta_Emax = 1 (fixed)
+    emax        <- fixed(1);   label("MTX maximum fractional inhibition of HCY elimination (unitless)")  # Ruhs 2012 Table 2 theta_Emax = 1 (fixed)
     e_age_hcybl <- 0.116;      label("Linear effect of age on typical HCY baseline (uM/year)")  # Ruhs 2012 Table 2 theta_BL,AGE = 0.116
 
     # ---------------------------------------------------------------

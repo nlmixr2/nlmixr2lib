@@ -2,7 +2,15 @@ Danielak_2017_treosulfan <- function() {
   description <- "Two-compartment IV-infusion population PK model for treosulfan (TREO) in pediatric patients undergoing conditioning prior to hematopoietic stem cell transplantation (Danielak 2017). Allometric body-weight scaling normalised to a 70 kg adult typical value with exponents fixed at 0.75 on CL and 1 on V1 and V2; Q has no weight covariate. Correlated IIV on CL and V1 (Cl-V1 correlation 0.714); independent IIV on Q. Proportional residual error."
   reference   <- "Danielak D, Twardosz J, Kasprzyk A, Wachowiak J, Kalwak K, Glowka F. Population pharmacokinetics of treosulfan and development of a limited sampling strategy in children prior to hematopoietic stem cell transplantation. Eur J Clin Pharmacol. 2018 Jan;74(1):79-89. doi:10.1007/s00228-017-2344-x"
   vignette    <- "Danielak_2017_treosulfan"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "treosulfan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "treosulfan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -47,9 +55,9 @@ Danielak_2017_treosulfan <- function() {
     # 0.925 (V2) and then fixed them at 0.75 (CL) and 1 (V1, V2) per
     # Anderson and Holford (Danielak 2017 Results paragraph 1 and Table 2
     # entries marked "(fixed)"). Q has no weight covariate.
-    e_wt_cl <- fixed(0.75);  label("Allometric exponent on CL (unitless, fixed)")     # Danielak 2017 Table 2: "beta Cl, weight 0.75 (fixed)"
-    e_wt_vc <- fixed(1.0);   label("Allometric exponent on V1 (unitless, fixed)")     # Danielak 2017 Table 2: "beta V1, weight 1 (fixed)"
-    e_wt_vp <- fixed(1.0);   label("Allometric exponent on V2 (unitless, fixed)")     # Danielak 2017 Table 2: "beta V2, weight 1 (fixed)"
+    e_wt_cl <- fixed(0.75);  label("Allometric exponent on CL (unitless)")     # Danielak 2017 Table 2: "beta Cl, weight 0.75 (fixed)"
+    e_wt_vc <- fixed(1.0);   label("Allometric exponent on V1 (unitless)")     # Danielak 2017 Table 2: "beta V1, weight 1 (fixed)"
+    e_wt_vp <- fixed(1.0);   label("Allometric exponent on V2 (unitless)")     # Danielak 2017 Table 2: "beta V2, weight 1 (fixed)"
 
     # Correlated IIV on CL and V1. Paper reports omega-style IIV in percent
     # (Danielak 2017 Table 2: omega_Cl 25.5%, omega_V1 51.4%, omega_Cl-V1

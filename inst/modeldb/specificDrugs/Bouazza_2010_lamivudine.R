@@ -2,7 +2,16 @@ Bouazza_2010_lamivudine <- function() {
   description <- "Two-compartment population PK model for once-daily oral lamivudine in HIV-infected West African children (Bouazza 2010); allometric weight scaling on CL/F, Q/F, Vc/F, and Vp/F with reference body weight 16.8 kg, and absorption rate constant Ka structurally fixed to the disposition distribution-phase eigenvalue (Ka = alpha = 0.71 1/h) from the literature"
   reference <- "Bouazza N, Hirt D, Bardin C, Diagbouga S, Nacro B, Hien H, Zoure E, Rouet F, Ouiminga A, Blanche S, Van De Perre P, Treluyer J-M, Msellati P, Urien S. Is the recommended once-daily dose of lamivudine optimal in West African HIV-infected children? Antimicrob Agents Chemother. 2010;54(9):3938-3943. doi:10.1128/AAC.00306-10"
   vignette <- "Bouazza_2010_lamivudine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -37,7 +46,7 @@ Bouazza_2010_lamivudine <- function() {
     # Two-compartment model with the structural assumption Ka = alpha (distribution
     # eigenvalue), which is required by the sparse early-time sampling design (no
     # samples during the absorption phase). See Methods 'Modeling strategy'.
-    lka <- fixed(log(0.71)); label("Absorption rate constant (1/h); fixed to the published value from reference 17 (= the model's alpha disposition eigenvalue)") # Table 2 K_a; Methods 'Modeling strategy' fixes K_a per ref. 17
+    lka <- fixed(log(0.71)); label("Absorption rate constant (1/h); the published value from reference 17 (= the model's alpha disposition eigenvalue)") # Table 2 K_a; Methods 'Modeling strategy' fixes K_a per ref. 17
     lcl <- log(16.9);        label("Apparent clearance at WT=16.8 kg (CL/F, L/h)") # Table 2 CL/F
     lvc <- log(30.8);        label("Apparent central volume at WT=16.8 kg (Vc/F, L)") # Table 2 Vc/F
     lvp <- log(58.6);        label("Apparent peripheral volume at WT=16.8 kg (Vp/F, L)") # Table 2 Vp/F
@@ -46,8 +55,8 @@ Bouazza_2010_lamivudine <- function() {
     # Allometric exponents -- fixed at canonical theoretical values per Methods
     # ("from allometric scaling theory, these are typically 0.75 for clearance
     # parameters and 1 for volumes of distribution (2)").
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless; fixed at 0.75)") # Methods 'Modeling strategy'
-    e_wt_vc <- fixed(1);    label("Allometric exponent on Vc/F and Vp/F (unitless; fixed at 1)")   # Methods 'Modeling strategy'
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)") # Methods 'Modeling strategy'
+    e_wt_vc <- fixed(1);    label("Allometric exponent on Vc/F and Vp/F (unitless)")   # Methods 'Modeling strategy'
 
     # IIV on CL/F only (exponential model; only IIV retained in final model).
     # omega CL/F = 0.30 in Table 2 is reported as the SD on the log scale

@@ -28,6 +28,17 @@ Choy_2016_T2DM_WHIG <- function() {
   # by time and a fixed start-of-active-treatment marker (tTRT). The run-in
   # boundary at tTRT = 42 days is encoded structurally in model(), so no
   # subject indicator column is needed in the event table.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    weight   = list(analyte = "body-weight", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "postprandial-glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "HbA1c", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "HbA1c", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

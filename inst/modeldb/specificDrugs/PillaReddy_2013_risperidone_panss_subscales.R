@@ -54,7 +54,15 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "risperidone panss subscales", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "risperidone panss subscales", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -203,7 +211,7 @@ PillaReddy_2013_risperidone_panss_subscales <- function() {
     etaemax_neg ~ 0.0576   # Part II Table 2 risperidone: IIV Emax negative SD = 0.24
     etaemax_gen ~ 0.0484   # Part II Table 2 risperidone: IIV Emax general  SD = 0.22
 
-    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general fixed at 50% CV
+    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)
     etaec50_neg ~ 2.367          # Part II Table 2 risperidone: IIV EC50 negative = 311% CV; omega^2 = log(1 + 3.11^2) = 2.367
 

@@ -4,6 +4,14 @@ Merchan_2015_azithromycin <- function() {
   vignette <- "Merchan_2015_azithromycin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight.",
@@ -40,7 +48,7 @@ Merchan_2015_azithromycin <- function() {
 
     # Allometric exponents held fixed at the paper's a priori values
     # (Merchan 2015 Methods 'Pharmacokinetic data analysis').
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")            # Merchan 2015 Methods 'Pharmacokinetic data analysis'
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")            # Merchan 2015 Methods 'Pharmacokinetic data analysis'
     allo_v  <- fixed(1.0);  label("Allometric exponent on V1 and V2 (unitless)")           # Merchan 2015 Methods 'Pharmacokinetic data analysis'
 
     # IIV - Merchan 2015 reports ISV% as sqrt(omega^2) x 100 (Table 3
@@ -62,9 +70,9 @@ Merchan_2015_azithromycin <- function() {
     ref_wt <- 1
 
     # Individual structural parameters with allometric scaling on body weight.
-    cl <- exp(lcl + etalcl) * (WT / ref_wt)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / ref_wt)^e_wt_cl
     vc <- exp(lvc + etalvc) * (WT / ref_wt)^allo_v
-    q  <- exp(lq  + etalq)  * (WT / ref_wt)^allo_cl
+    q  <- exp(lq  + etalq)  * (WT / ref_wt)^e_wt_cl
     vp <- exp(lvp + etalvp) * (WT / ref_wt)^allo_v
 
     # Micro-constants for the explicit two-compartment ODE system.

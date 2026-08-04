@@ -4,6 +4,19 @@ Jansson_2008_eflornithine_rat <- function() {
   vignette <- "Jansson_2008_eflornithine"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_l       = list(analyte = "L-eflornithine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_d       = list(analyte = "D-eflornithine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_l     = list(analyte = "L-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_d     = list(analyte = "D-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_l = list(analyte = "L-eflornithine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_d = list(analyte = "D-eflornithine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE_HIGH_EFL = list(
       description       = "High-dose oral eflornithine indicator (1 = 3000 mg/kg oral dose record; 0 = 750-2000 mg/kg oral or any IV dose).",

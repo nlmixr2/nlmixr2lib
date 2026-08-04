@@ -23,7 +23,26 @@ LiemMoolenaar_2011_scopolamine <- function() {
     "doi:10.1111/j.1365-2125.2011.03936.x"
   )
   vignette <- "LiemMoolenaar_2011_scopolamine"
-  units <- list(time = "minute", dosing = "mg", concentration = "pg/mL")
+  units <- list(time = "min", dosing = "mg", concentration = "pg/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "scopolamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "scopolamine", units = "mg", specimen = "plasma", verified = FALSE),
+    effect1     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect2     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect3     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect4     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect5     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect6     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect7     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect8     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect9     = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect10    = list(analyte = "none", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list()
 

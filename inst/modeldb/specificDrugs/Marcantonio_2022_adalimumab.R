@@ -48,6 +48,22 @@ Marcantonio_2022_adalimumab <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot = list(analyte = "adalimumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ab_00 = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_L0 = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_LL = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1    = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1    = list(analyte = "TNFR", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1  = list(analyte = "TNF:TNFR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1    = list(analyte = "adalimumab-TNF-alpha complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
   covariatesDataExcluded <- list(
     BW = list(
@@ -100,7 +116,7 @@ Marcantonio_2022_adalimumab <- function() {
     lkclearL1    <- fixed(log(log(2) / (30 / 1440))); label("First-order TNF-alpha elimination rate constant (1/day; from t1/2 = 30 min)") # Marcantonio 2022 Table 2 TNF Half-Life (Moritz 1989)
     lkclearR1    <- fixed(log(log(2) / (540 / 1440))); label("First-order TNFR1 elimination rate constant (1/day; from t1/2 = 9 hr)")     # Marcantonio 2022 Table 2 TNFR receptor half-life (Higuchi 1994); 540 min = 9 hr
     lkclearS1    <- fixed(log(log(2) / (30 / 1440))); label("First-order soluble-shed-TNFR elimination rate constant (1/day)")           # Marcantonio 2022 Assess run file default (shed_half_1 = 30 min); unused when S1_conc = 0
-    kd_LR        <- fixed(0.019);               label("TNF:TNFR1 equilibrium dissociation constant (nM)")                                 # Marcantonio 2022 Table 2 TNF:TNFR KD = 19 pM (Grell 1998)
+    kd_lr        <- fixed(0.019);               label("TNF:TNFR1 equilibrium dissociation constant (nM)")                                 # Marcantonio 2022 Table 2 TNF:TNFR KD = 19 pM (Grell 1998)
 
     # -------------------------------------------------------------------------
     # System parameters.
@@ -130,7 +146,7 @@ Marcantonio_2022_adalimumab <- function() {
     kon1Ab     <- kon
     kon2Ab     <- floor(valency / 2) * kon
     koffAb     <- kon * kd_drug
-    koffL1R1   <- kon * kd_LR
+    koffL1R1   <- kon * kd_lr
 
     # -------------------------------------------------------------------------
     # Steady-state initial conditions for the target-side species (paper's

@@ -2,7 +2,18 @@ Li_2018_PF04236921 <- function() {
   description <- "Integrated population PK and indirect-response PK/PD model for the anti-interleukin-6 monoclonal antibody PF-04236921 in healthy volunteers and adults with rheumatoid arthritis, Crohn's disease, or systemic lupus erythematosus (Li 2018). Two-compartment IV/SC PK with first-order absorption and linear elimination from the central compartment; disease-stratified linear clearance and PD parameters; PF-04236921 inhibits the zero-order CRP synthesis rate of an indirect-response model."
   reference <- "Li C, Shoji S, Beebe J. Pharmacokinetics and C-reactive protein modelling of anti-interleukin-6 antibody (PF-04236921) in healthy volunteers and patients with autoimmune disease. Br J Clin Pharmacol. 2018;84(9):2059-2074. doi:10.1111/bcp.13641"
   vignette <- "Li_2018_PF04236921"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL", CRP = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL", CRP = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "PF-04236921", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "PF-04236921", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF-04236921", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "CRP synthesis rate", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -226,7 +237,7 @@ Li_2018_PF04236921 <- function() {
 
     # Hill coefficient. Fixed at 1 for HV/RA/CD per paper (Table 3B
     # "theta_gamma,HV,RA,CD = 1 fix"); estimated as 1.55 for SLE only.
-    lgamma <- fixed(log(1));    label("Hill coefficient gamma in HV/RA/CD reference (fixed at 1)")        # Li 2018 Table 3B theta_gamma,HV,RA,CD = 1 fix
+    lgamma <- fixed(log(1));    label("Hill coefficient gamma in HV/RA/CD reference")        # Li 2018 Table 3B theta_gamma,HV,RA,CD = 1 fix
     e_sle_gamma <- log(1.55);   label("Log-shift on Hill gamma for SLE cohort vs reference (unitless)")   # Li 2018 Table 3B theta_gamma,SLE = 1.55
 
     # First-order CRP elimination rate (single value across all cohorts; the

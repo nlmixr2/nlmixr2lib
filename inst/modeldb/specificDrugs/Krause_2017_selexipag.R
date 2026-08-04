@@ -2,7 +2,19 @@ Krause_2017_selexipag <- function() {
   description <- "Joint two-compartment parent + two-compartment metabolite population PK model for oral selexipag and its active metabolite ACT-333679 in adults with pulmonary arterial hypertension (Krause 2017, GRIPHON study). First-order absorption with a fixed 0.668 h absorption lag delivers selexipag into a two-compartment disposition with linear total clearance CL/F (apparent total clearance, of which the rate constant kmet describes the fraction converted to ACT-333679); the metabolite has its own two-compartment disposition with first-order elimination via km. Body weight (allometric on V_p/F and CL/F; on V_m/F), total bilirubin (power on CL/F), sex (multiplicative on km), and a four-level PAH-comedication categorical (naive / ERA only / PDE5 inhibitor only / ERA + PDE5 combined; multiplicative on km) were retained as statistically significant covariates."
   reference   <- "Krause A, Machacek M, Lott D, Hurst N, Bruderer S, Dingemanse J. Population modeling of selexipag pharmacokinetics and clinical response parameters in patients with pulmonary arterial hypertension. CPT Pharmacometrics Syst Pharmacol. 2017;6(7):477-485. doi:10.1002/psp4.12202"
   vignette    <- "Krause_2017_selexipag"
-  units       <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "selexipag", units = "ug", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "selexipag", units = "ug", specimen = "plasma", verified = FALSE),
+    central_act     = list(analyte = "ACT-333679", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1_act = list(analyte = "ACT-333679", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -83,7 +95,7 @@ Krause_2017_selexipag <- function() {
     lvc   <- log(12.90); label("Apparent selexipag central volume V_p/F at 70 kg (L)")                         # Krause 2017 Table 1: V_p/F = 12.90 L, RSE 16%
     lk12  <- log(0.09);  label("Selexipag central-to-peripheral rate constant k_12 (1/h)")                     # Krause 2017 Table 1: k_12 = 0.09 1/h, RSE 18%
     lk21  <- log(0.06);  label("Selexipag peripheral-to-central rate constant k_21 (1/h)")                     # Krause 2017 Table 1: k_21 = 0.06 1/h, RSE 17%
-    ltlag <- fixed(log(0.668)); label("Selexipag absorption lag time t_lag, fixed (h)")                        # Krause 2017 Table 1 and Methods 'Population PK': t_lag = 0.668 h, fixed to the estimate from the healthy subject popPK model
+    ltlag <- fixed(log(0.668)); label("Selexipag absorption lag time t_lag (h)")                        # Krause 2017 Table 1 and Methods 'Population PK': t_lag = 0.668 h, fixed to the estimate from the healthy subject popPK model
 
     # ---------------- Metabolite (ACT-333679) structural parameters -----------
     # Apparent V_m/F is the metabolite central volume; k_m, k_34, k_43 are the

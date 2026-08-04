@@ -2,7 +2,16 @@ Kassir_2014_tacrolimus <- function() {
   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for twice-daily oral tacrolimus in paediatric liver transplant recipients (Kassir 2014). Apparent oral clearance CL/F and apparent inter-compartmental clearance Q2/F scale allometrically with body weight at a fixed exponent of 0.75 referenced to the cohort median weight of 20 kg; apparent central volume V1/F and apparent peripheral volume V2/F scale at a fixed exponent of 1.0 to the same 20 kg reference; the first-order absorption rate constant ka carries an allometric exponent of -0.25 per Anderson and Holford theory. Apparent peripheral volume V2/F was fixed to 290 L during estimation to stabilise the model (Kassir 2014 Table 4 footnote). Inter-individual variability is diagonal on CL/F, V1/F, and Q2/F (no IIV on ka, tlag, or V2/F). Residual error is a proportional model. No covariates beyond body weight were retained after stepwise covariate analysis -- age, sex, type of transplant, age of liver donor, time post-transplantation, liver function tests, albumin, renal function (serum creatinine and creatinine clearance), haematocrit, use of steroids, presence of clinically relevant CYP3A4 inhibitors, and drug formulation were all screened and dropped (Kassir 2014 Results 'Analysis of covariates and sources of variability')."
   reference   <- "Kassir N, Labbe L, Delaloye J-R, Mouksassi M-S, Lapeyraque A-L, Alvarez F, Lallier M, Beaunoyer M, Theoret Y, Litalien C. Population pharmacokinetics and Bayesian estimation of tacrolimus exposure in paediatric liver transplant recipients. Br J Clin Pharmacol. 2014;77(6):1051-1063. doi:10.1111/bcp.12276"
   vignette    <- "Kassir_2014_tacrolimus"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -164,7 +173,7 @@ Kassir_2014_tacrolimus <- function() {
     lcl   <- log(12.1)  ; label("Apparent oral clearance CL/F at WT = 20 kg (L/h)")                      # Kassir 2014 Table 4 final CL/F = 12.1 L/h (RSE 10.1%)
     lvc   <- log(31.3)  ; label("Apparent central volume V1/F at WT = 20 kg (L)")                        # Kassir 2014 Table 4 final V1/F = 31.3 L (RSE 42.8%)
     lq    <- log(30.7)  ; label("Apparent inter-compartmental clearance Q2/F at WT = 20 kg (L/h)")       # Kassir 2014 Table 4 final Q2/F = 30.7 L/h (RSE 29.3%)
-    lvp   <- fixed(log(290)) ; label("Apparent peripheral volume V2/F at WT = 20 kg (L; fixed)")         # Kassir 2014 Table 4 final V2/F = 290 L (fixed; Table 4 footnote: "V2/F was fixed to a value estimated from a previous run in order to stabilize the model")
+    lvp   <- fixed(log(290)) ; label("Apparent peripheral volume V2/F at WT = 20 kg (L)")         # Kassir 2014 Table 4 final V2/F = 290 L (fixed; Table 4 footnote: "V2/F was fixed to a value estimated from a previous run in order to stabilize the model")
 
     # Allometric exponents -- Kassir 2014 Methods 'Population pharmacokinetic
     # analysis' equation block (citing references [20, 21], i.e., Anderson and
@@ -172,11 +181,11 @@ Kassir_2014_tacrolimus <- function() {
     # theory values; the paper's results state "Bodyweight was included in all
     # pharmacokinetic parameters as an allometric fixed term" (Table 4 footnote)
     # to confirm the fixed status.
-    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on CL/F (unitless; fixed)")        # Kassir 2014 Methods equation block (Anderson-Holford theory)
-    e_wt_q  <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on Q2/F (unitless; fixed)")        # Kassir 2014 Methods equation block
-    e_wt_vc <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V1/F (unitless; fixed)")        # Kassir 2014 Methods equation block
-    e_wt_vp <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V2/F (unitless; fixed)")        # Kassir 2014 Methods equation block
-    e_wt_ka <- fixed(-0.25) ; label("Allometric exponent of (WT/20 kg) on ka (unitless; fixed)")          # Kassir 2014 Methods equation block (ka = theta * (WT/WTmedian)^(-0.25))
+    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on CL/F (unitless)")        # Kassir 2014 Methods equation block (Anderson-Holford theory)
+    e_wt_q  <- fixed(0.75)  ; label("Allometric exponent of (WT/20 kg) on Q2/F (unitless)")        # Kassir 2014 Methods equation block
+    e_wt_vc <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V1/F (unitless)")        # Kassir 2014 Methods equation block
+    e_wt_vp <- fixed(1)     ; label("Allometric exponent of (WT/20 kg) on V2/F (unitless)")        # Kassir 2014 Methods equation block
+    e_wt_ka <- fixed(-0.25) ; label("Allometric exponent of (WT/20 kg) on ka (unitless)")          # Kassir 2014 Methods equation block (ka = theta * (WT/WTmedian)^(-0.25))
 
     # Diagonal inter-individual variability on CL/F, V1/F, and Q2/F. Kassir 2014
     # Table 4 reports BSV as %CV from an exponential (log-normal) random-effect

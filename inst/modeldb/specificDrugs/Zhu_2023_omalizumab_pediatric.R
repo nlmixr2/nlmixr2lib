@@ -17,6 +17,14 @@ Zhu_2023_omalizumab_pediatric <- function() {
     concentration = "fraction predicted (FEV1 percent predicted on the 0-1 fractional scale; multiply by 100 to display on the conventional 0-100 percent scale)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    fev1pp = list(analyte = "FEV1 percent predicted on a 0-1 fractional scale", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     IGE_FREE = list(
       description        = "Serum free IgE concentration at the FEV1 observation time. The exogenous time-varying PD driver: it enters the inhibition Hill term imax * IGE_FREE^hill / (ec50^hill + IGE_FREE^hill) to suppress steady-state FEV1pp.",
@@ -115,7 +123,7 @@ Zhu_2023_omalizumab_pediatric <- function() {
     lrbase    <- log(0.879)      ; label("Maximum FEV1pp at free IgE = 0 (FEV1max, fraction predicted)")                 # Zhu 2023 Table II: FEV1max = 0.879 (95% CI 0.844, 0.915; %RSE 2.08; fraction predicted -- multiply by 100 for the 0-100 percent scale)
     logitimax <- qlogis(0.0717)  ; label("Logit-scale maximum IgE inhibitory effect (Imax, unitless; constrained to (0,1))")  # Zhu 2023 Table II: Imax = 0.0717 (95% CI 0.0288, 0.168); logit transform per paper Methods constrains Imax to (0,1); theta2 = qlogis(0.0717) approx -2.560
     lec50     <- log(39.4)       ; label("Free IgE concentration causing 50% maximum inhibition (IC50, ng/mL)")           # Zhu 2023 Table II: IC50 = 39.4 ng/mL (95% CI 24.3, 63.9; %RSE 25.0)
-    lhill     <- fixed(log(9))   ; label("Hill coefficient gamma (unitless) -- FIXED at 9")                                # Zhu 2023 Table II: gamma = 9 (FIXED); sensitivity analysis examined values 1-9 and found 'values greater than 5 gave similar fits' (Results paragraph); the adult/adolescent estimate was 15.9 (%RSE 38.0) but a value of 9 was used in the pediatric model for stability with the sparser data
+    lhill     <- fixed(log(9))   ; label("Hill coefficient gamma (unitless)")                                # Zhu 2023 Table II: gamma = 9 (FIXED); sensitivity analysis examined values 1-9 and found 'values greater than 5 gave similar fits' (Results paragraph); the adult/adolescent estimate was 15.9 (%RSE 38.0) but a value of 9 was used in the pediatric model for stability with the sparser data
 
     # -----------------------------------------------------------
     # IIV: the same variance is estimated on logit-scale Imax and

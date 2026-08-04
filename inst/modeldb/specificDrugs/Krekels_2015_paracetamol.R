@@ -41,6 +41,19 @@ Krekels_2015_paracetamol <- function() {
   vignette <- "Krekels_2015_paracetamol"
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "paracetamol glucuronide", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sulf = list(analyte = "paracetamol sulphate", units = "mg", specimen = "plasma", verified = FALSE),
+    urine        = list(analyte = "paracetamol", units = "mg", specimen = "urine", verified = FALSE),
+    urine_gluc   = list(analyte = "paracetamol glucuronide", units = "mg", specimen = "urine", verified = FALSE),
+    urine_sulf   = list(analyte = "paracetamol sulphate", units = "mg", specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at start of study",

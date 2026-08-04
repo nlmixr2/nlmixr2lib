@@ -9,6 +9,16 @@ Hopkins_2017_doxycycline <- function() {
   vignette <- "Hopkins_2017_doxycycline"
   units    <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "doxycycline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "doxycycline", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "doxycycline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "doxycycline", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Fat-free mass at baseline; drives allometric scaling.",
@@ -114,7 +124,7 @@ Hopkins_2017_doxycycline <- function() {
     # Hopkins 2017 Methods 'General modeling strategy' paragraph 5: "fixed
     # exponents of 0.75 for clearance parameters and 1 for volumes").
     # =========================================================================
-    allo_cl <- fixed(0.75) ; label("Allometric exponent on CL and CLP1 (unitless)")       # Hopkins 2017 Methods paragraph 5; canonical Anderson-Holford 2008
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL and CLP1 (unitless)")       # Hopkins 2017 Methods paragraph 5; canonical Anderson-Holford 2008
     allo_v  <- fixed(1.0)  ; label("Allometric exponent on V and VP1 (unitless)")         # Hopkins 2017 Methods paragraph 5; canonical Anderson-Holford 2008
 
     # =========================================================================
@@ -148,10 +158,10 @@ Hopkins_2017_doxycycline <- function() {
   model({
     # 1. Individual parameters with FFM allometric scaling and covariate
     #    effects.
-    cl  <- exp(lcl + etalcl) * (FFM / 70) ^ allo_cl * (1 + e_sex_cl * SEXF)
+    cl  <- exp(lcl + etalcl) * (FFM / 70) ^ e_wt_cl * (1 + e_sex_cl * SEXF)
     vc  <- exp(lvc + etalvc) * (FFM / 70) ^ allo_v
     vp  <- exp(lvp + etalvp) * (FFM / 70) ^ allo_v
-    q   <- exp(lq)           * (FFM / 70) ^ allo_cl
+    q   <- exp(lq)           * (FFM / 70) ^ e_wt_cl
 
     # 2. Transit-absorption rate with formulation-dependent food effect.
     #    KTR is reduced by 20.9% in fed state for Doryx tablet / Doryx

@@ -2,7 +2,16 @@ Lu_2015_tacrolimus <- function() {
   description <- "Two-compartment population PK model with first-order absorption and lag time for oral tacrolimus in pooled Chinese healthy volunteers and adult orthotopic liver-transplant recipients (Lu 2015). Apparent peripheral volume V3/F is fixed at the healthy-volunteer-only estimate (916 L). Apparent clearance CL/F is reduced multiplicatively in liver-transplant recipients and further modulated by an exponential serum ALT effect that applies only to the transplant cohort."
   reference   <- "Lu YX, Su QH, Wu KH, Ren YP, Li L, Zhou TY, Lu W. A population pharmacokinetic study of tacrolimus in healthy Chinese volunteers and liver transplant patients. Acta Pharmacol Sin. 2015;36(2):281-288. doi:10.1038/aps.2014.110"
   vignette    <- "Lu_2015_tacrolimus"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     DIS_HEALTHY = list(
@@ -62,7 +71,7 @@ Lu_2015_tacrolimus <- function() {
     lcl   <- log(32.8 * 0.562)  ; label("Apparent CL/F (L/h); typical liver-transplant patient at ALT = 0")  # Lu 2015 Table 2 final: CL/F_healthy = 32.8 L/h x SubPop multiplier theta7 = 0.562 -> 18.4 L/h
     lvc   <- log(22.7)          ; label("Apparent central volume V2/F (L)")                                  # Lu 2015 Table 2 final: V2/F = 22.7 L
     lq    <- log(76.3)          ; label("Apparent inter-compartmental clearance Q/F (L/h)")                  # Lu 2015 Table 2 final: Q/F = 76.3 L/h
-    lvp   <- fixed(log(916))    ; label("Apparent peripheral volume V3/F (L); fixed from healthy-only fit")  # Lu 2015 Table 2 final: V3/F = 916 L (fixed per Methods "Population pharmacokinetic model development")
+    lvp   <- fixed(log(916))    ; label("Apparent peripheral volume V3/F (L); from healthy-only fit")  # Lu 2015 Table 2 final: V3/F = 916 L (fixed per Methods "Population pharmacokinetic model development")
     lka   <- log(0.419)         ; label("Absorption rate constant ka (1/h)")                                 # Lu 2015 Table 2 final: ka = 0.419 1/h
     ltlag <- log(0.404)         ; label("Absorption lag time ALAG1 (h)")                                     # Lu 2015 Table 2 final: ALAG1 = 0.404 h
 

@@ -4,6 +4,13 @@ Garg_2014_pertuzumab <- function() {
   vignette <- "Garg_2014_pertuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "pertuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     LBM = list(
       description        = "Lean body weight (canonical column LBM; source paper uses LBW)",

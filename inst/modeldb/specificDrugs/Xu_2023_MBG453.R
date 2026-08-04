@@ -4,6 +4,14 @@ Xu_2023_MBG453 <- function() {
   vignette <- "Xu_2023_MBG453"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "MBG453", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "MBG453", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -78,7 +86,7 @@ Xu_2023_MBG453 <- function() {
     # FIXED at 0.074 ug/mL (sabatolimab MW ~150 kDa) per the paper's footnote a, because Km was
     # not estimable from the PK data alone.
     lvmax  <- log(0.0197 * 24);    label("Michaelis-Menten maximum-velocity Vm ((ug/mL)/day)")          # Xu 2023 Table 1: Vm = 0.0197 ug/mL/h
-    lkm  <- fixed(log(0.074));   label("Michaelis-Menten constant Km (ug/mL, fixed at 0.5 nM)")       # Xu 2023 Table 1 footnote a (FIXED)
+    lkm  <- fixed(log(0.074));   label("Michaelis-Menten constant Km (ug/mL, 0.5 nM)")       # Xu 2023 Table 1 footnote a (FIXED)
 
     # Covariate effects (Xu 2023 Table 1 and the covariate equations on p1657).
     # Allometric exponents on baseline weight: applied as (WT/WT_ref)^e_wt_*.

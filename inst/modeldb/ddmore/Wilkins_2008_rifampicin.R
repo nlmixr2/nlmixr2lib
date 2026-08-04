@@ -10,9 +10,17 @@ Wilkins_2008_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Wilkins_2008_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000280"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FORM_FDC = list(
@@ -87,11 +95,11 @@ Wilkins_2008_rifampicin <- function() {
     # eta with the variance fixed to the shared value after the first (matching the
     # Jonsson_2011_ethambutol pattern).
     etaiov_cl_1 ~ 0.0508         # .mod $OMEGA BLOCK(1) on ETA(5); .lst FINAL OMEGA(5,5) = 5.08E-02 -- estimated occasion-1 IOV variance
-    etaiov_cl_2 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(6); fixed equal to OMEGA(5,5)
-    etaiov_cl_3 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(7); fixed equal to OMEGA(5,5)
-    etaiov_cl_4 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(8); fixed equal to OMEGA(5,5)
-    etaiov_cl_5 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(9); fixed equal to OMEGA(5,5)
-    etaiov_cl_6 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(10); fixed equal to OMEGA(5,5)
+    etaiov_cl_2 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(6); equal to OMEGA(5,5)
+    etaiov_cl_3 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(7); equal to OMEGA(5,5)
+    etaiov_cl_4 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(8); equal to OMEGA(5,5)
+    etaiov_cl_5 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(9); equal to OMEGA(5,5)
+    etaiov_cl_6 ~ fix(0.0508)    # $OMEGA BLOCK(1) SAME on ETA(10); equal to OMEGA(5,5)
 
     # IOV on log-MTT across 6 occasions. Same `BLOCK(1) + 5 SAME` pattern; FINAL shared
     # variance is OMEGA(11,11) = 4.61E-01.

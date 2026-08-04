@@ -2,7 +2,15 @@ Kim_2023_pyrazinamide <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption and first-order elimination for oral pyrazinamide in Korean adults with drug-susceptible tuberculosis (Kim 2023); lean body mass is an allometric covariate on CL/F and V/F (fixed exponents 0.75 and 1) and geriatric diabetes mellitus (age >= 70 years with diabetes mellitus) increases CL/F by 32%"
   reference <- "Kim R, Jayanti RP, Lee H, Kim H-K, Kang J, Park I-N, Kim J, Oh JY, Kim HW, Lee H, Ghim J-L, Ahn S, Long NP, Cho Y-S, Shin J-G; on behalf of the cPMTb. Development of a population pharmacokinetic model of pyrazinamide to guide personalized therapy: impacts of geriatric and diabetes mellitus on clearance. Front Pharmacol. 2023;14:1116226. doi:10.3389/fphar.2023.1116226"
   vignette <- "Kim_2023_pyrazinamide"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     LBM = list(
@@ -150,8 +158,8 @@ Kim_2023_pyrazinamide <- function() {
     # exponents of 0.75 and 1, respectively" (Kim 2023 Methods). Confirmed by
     # the FIX flags in Supplementary File S1 $THETA: '(0.75 FIX)' = THETA(6)
     # and '(1 FIX)' = THETA(7). Neither is given an %RSE in Table 2.
-    e_lbm_cl <- fixed(0.75); label("Allometric exponent of lean body weight on CL/F (fixed, unitless)")     # Kim 2023 Methods; Suppl. S1 $THETA (0.75 FIX) = S1 THETA(6)
-    e_lbm_vc <- fixed(1.0);  label("Allometric exponent of lean body weight on V/F (fixed, unitless)")      # Kim 2023 Methods; Suppl. S1 $THETA (1 FIX) = S1 THETA(7)
+    e_lbm_cl <- fixed(0.75); label("Allometric exponent of lean body weight on CL/F (unitless)")     # Kim 2023 Methods; Suppl. S1 $THETA (0.75 FIX) = S1 THETA(6)
+    e_lbm_vc <- fixed(1.0);  label("Allometric exponent of lean body weight on V/F (unitless)")      # Kim 2023 Methods; Suppl. S1 $THETA (1 FIX) = S1 THETA(7)
 
     # Geriatric-diabetes effect on CL/F. Kim 2023 encodes the categorical
     # effect as a fractional increase from 1: Table 2 gives the covariate row
@@ -190,7 +198,7 @@ Kim_2023_pyrazinamide <- function() {
     # proportional term is retained here as fixed(0) to preserve that
     # provenance.
     addSd  <- 3.41;     label("Additive residual standard deviation (ug/mL)")                      # Kim 2023 Table 2 'Residual variability / Additive' = 3.41; = S1 THETA(4)
-    propSd <- fixed(0); label("Proportional residual standard deviation (fraction; fixed to zero)")  # Suppl. S1 $THETA (0 FIX) = S1 THETA(5); not reported in Table 2
+    propSd <- fixed(0); label("Proportional residual standard deviation (fraction; zero)")  # Suppl. S1 $THETA (0 FIX) = S1 THETA(5); not reported in Table 2
   })
 
   model({

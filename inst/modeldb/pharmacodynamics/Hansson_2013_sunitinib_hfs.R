@@ -25,9 +25,18 @@ Hansson_2013_sunitinib_hfs <- function() {
   )
   vignette <- "Hansson_2013_sunitinib_hfs"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTC HFS grade 0-3+, ordinal)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
+    bm      = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
@@ -155,7 +164,7 @@ Hansson_2013_sunitinib_hfs <- function() {
     etaclge_px0 ~ 9.4249  # Table 3 HFS omega x|0 = 3.07 -> var = 3.07^2 = 9.4249 (RSE 67%)
     etaclge_px1 ~ 0.8136  # Table 3 HFS omega x|1 = 0.902 -> var = 0.902^2 = 0.8136 (RSE 54%)
     etaclge_px2 ~ 0.0729  # Table 3 HFS omega x|2 = 0.270 -> var = 0.270^2 = 0.0729 (RSE 118%)
-    etaclge_px3 ~ fixed(0.0001) # Table 3 HFS omega x|>=3 = NE (Not Estimated); fixed at tiny non-zero value (rxode2 requires non-zero variance)
+    etaclge_px3 ~ fixed(0.0001) # Table 3 HFS omega x|>=3 = NE (Not Estimated); tiny non-zero value (rxode2 requires non-zero variance)
 
     # ----------------------------------------------------------------------
     # Residual-error placeholder

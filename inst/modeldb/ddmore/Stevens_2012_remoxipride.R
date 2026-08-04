@@ -18,6 +18,20 @@ Stevens_2012_remoxipride <- function() {
   replicate_of <- NULL
 
   depends <- c("STUDY_DD")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "remoxipride", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_brain = list(analyte = "remoxipride", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "remoxipride", units = "mg", specimen = "plasma", verified = FALSE),
+    brain_csf   = list(analyte = "remoxipride", units = "mg", specimen = "tissue", verified = FALSE),
+    peripheral1 = list(analyte = "remoxipride", units = "mg", specimen = "plasma", verified = FALSE),
+    lactotroph  = list(analyte = "prolactin", units = "mg", specimen = "not applicable", verified = FALSE),
+    prolactin   = list(analyte = "prolactin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     STUDY_DD = list(
       description = "Double-dosing-study indicator: 1 = subject was enrolled in the double-dosing protocol (Stevens 2012 'study 3'), 0 = single-dose (intravenous or intranasal) protocols pooled in the same fit.",

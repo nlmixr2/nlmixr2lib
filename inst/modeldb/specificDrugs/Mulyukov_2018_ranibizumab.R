@@ -4,6 +4,15 @@ Mulyukov_2018_ranibizumab <- function() {
   vignette <- "Mulyukov_2018_ranibizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L (equivalent to ug/mL)", response = "SCORE_BCVA (ETDRS letters, 0-100)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "ranibizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    bcva    = list(analyte = "SCORE_BCVA", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age",

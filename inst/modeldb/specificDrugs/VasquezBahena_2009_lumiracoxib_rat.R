@@ -4,6 +4,17 @@ VasquezBahena_2009_lumiracoxib_rat <- function() {
   vignette <- "VasquezBahena_2009_lumiracoxib_rat"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "lumiracoxib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "lumiracoxib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lumiracoxib", units = "mg", specimen = "plasma", verified = FALSE),
+    cox2        = list(analyte = "COX-2", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-subject assigned oral lumiracoxib dose level (mg/kg). Enters the dose-dependent relative-bioavailability formula Frel = 1 - IMAX * DOSE / (D50 + DOSE).",
@@ -55,7 +66,7 @@ VasquezBahena_2009_lumiracoxib_rat <- function() {
     # variability (IIV) was modelled exponentially and expressed as coefficient
     # of variation"); the dose-dependent reduction is applied as a derived
     # multiplicative factor (Ide 2009 pravastatin pattern in this package).
-    lfrel      <- fixed(log(1)) ; label("Relative-bioavailability anchor F0 (fixed at 1; the dose-dependent reduction is applied separately)")  # paired with etalfrel; Table 1 IIV row
+    lfrel      <- fixed(log(1)) ; label("Relative-bioavailability anchor F0 (the dose-dependent reduction is applied separately)")  # paired with etalfrel; Table 1 IIV row
     limax_frel <- log(0.67)     ; label("Maximum fractional reduction in relative bioavailability IMAX (dimensionless)") # Table 1: IMAX = 0.67 (RSE 6%)
     ld50_frel  <- log(4.3)      ; label("Dose eliciting half-maximal reduction in Frel D50 (mg/kg)")                     # Table 1: D50 = 4.3 mg/kg (RSE 43%)
 

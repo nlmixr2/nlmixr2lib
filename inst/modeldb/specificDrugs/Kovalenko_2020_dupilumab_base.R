@@ -7,7 +7,7 @@ Kovalenko_2020_dupilumab_base <- function() {
   # Table S3.  Phase 3 atopic-dermatitis cohort only (R668-AD-1334 / SOLO 1,
   # R668-AD-1416 / SOLO 2, R668-AD-1224 / CHRONOS).  The structural model is
   # the same as Model 1 in Kovalenko_2020_dupilumab.R; the difference is that
-  # kcp, kpc, ka, MTT, Vm, Km, and F were FIXED to the values obtained from
+  # kcp, kpc, ka, MTT, Vm, km, and F were FIXED to the values obtained from
   # the rich-data fits (Models 1-2), and only Vc, ke, the correlated
   # between-subject random-effect block on (ln Vc, ln ke), and the residual
   # error were re-estimated on Phase 3 data.  Weight is the only covariate
@@ -28,6 +28,18 @@ Kovalenko_2020_dupilumab_base <- function() {
   # variance-covariance matrix directly; the inline arithmetic in ini()
   # squares the SDs into variances and multiplies SD * SD * Corr into the
   # covariance.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -51,7 +63,7 @@ Kovalenko_2020_dupilumab_base <- function() {
     disease_state  = "Adults with moderate-to-severe atopic dermatitis (SOLO 1, SOLO 2 monotherapy; CHRONOS concomitant topical corticosteroids).",
     dose_range     = "600 mg SC loading dose on day 1 followed by 300 mg SC qw or q2w for 15 weeks (SOLO 1, SOLO 2) or 51 weeks (CHRONOS).",
     regions        = "Multi-regional Phase 3 programme; see Supplementary Table S1 for per-study geographic coverage.",
-    notes          = "Base model (Model 3) is the precursor to the primary covariate model (Model 4).  The structural parameters kcp, kpc, ka, MTT, Vm, Km, and F are FIXED to values obtained from Models 1 and 2 fits on rich Phase 1/2 data (per the stepwise modelling strategy described in the paper's Methods).  Shrinkage in SD of etas for ke and Vc was 22% and 19%, respectively (Results)."
+    notes          = "Base model (Model 3) is the precursor to the primary covariate model (Model 4).  The structural parameters kcp, kpc, ka, MTT, Vm, km, and F are FIXED to values obtained from Models 1 and 2 fits on rich Phase 1/2 data (per the stepwise modelling strategy described in the paper's Methods).  Shrinkage in SD of etas for ke and Vc was 22% and 19%, respectively (Results)."
   )
 
   ini({
@@ -65,7 +77,7 @@ Kovalenko_2020_dupilumab_base <- function() {
     lka     <- fixed(log(0.306));  label("absorption rate ka (1/d)")                  # Supp. Table S3 Model 3 / Table 1: ka  = 0.306 (fixed; estimated in Model 2)
     lmtt    <- fixed(log(0.105));  label("mean transit time MTT (d)")                 # Supp. Table S3 Model 3 / Table 1: MTT = 0.105 (fixed; estimated in Model 1)
     lvmax   <- fixed(log(1.07));   label("maximum target-mediated rate of elimination Vmax (mg/L/d)") # Supp. Table S3 Model 3 / Table 1: Vm = 1.07 (fixed; estimated in Model 2)
-    Km      <- fixed(0.01);        label("Michaelis-Menten constant Km (mg/L)")       # Supp. Table S3 Model 3 / Table 1: Km = 0.01 (fixed; carried over from Kovalenko 2016)
+    km      <- fixed(0.01);        label("Michaelis-Menten constant km (mg/L)")       # Supp. Table S3 Model 3 / Table 1: km = 0.01 (fixed; carried over from Kovalenko 2016)
     lfdepot <- fixed(log(0.642));  label("subcutaneous bioavailability F (fraction)") # Supp. Table S3 Model 3 / Table 1: F  = 0.642 (fixed; estimated in Model 1)
 
     # Covariate effect: power of WT/75 on Vc
@@ -104,7 +116,7 @@ Kovalenko_2020_dupilumab_base <- function() {
     d/dt(central)     <-  ka * transit3 -
                           kel * central -
                           kcp * central + kpc * peripheral1 -
-                          central * (vmax / (Km + central / vc))
+                          central * (vmax / (km + central / vc))
     d/dt(peripheral1) <-  kcp * central - kpc * peripheral1
 
     # Subcutaneous bioavailability on the depot; IV doses bypass the depot via the event record

@@ -1,8 +1,16 @@
 Wu_2024_inotuzumab <- function() {
-  description <- "Two-compartment population PK model for inotuzumab ozogamicin in pediatric and adult patients with relapsed/refractory B-cell precursor acute lymphoblastic leukemia (BCP-ALL) and adult patients with B-cell non-Hodgkin's lymphoma (NHL); linear plus time-dependent (target-mediated) clearance with covariate effects on CL_SS, Vc, CL_TIME, and kdes (Wu 2024, ITCC-059 pediatric trial pooled with 11 adult studies)."
+  description <- "Two-compartment population PK model for inotuzumab ozogamicin in pediatric and adult patients with relapsed/refractory B-cell precursor acute lymphoblastic leukemia (BCP-ALL) and adult patients with B-cell non-Hodgkin's lymphoma (NHL); linear plus time-dependent (target-mediated) clearance with covariate effects on CL_SS, Vc, CL_TIME, and cl_exp_kdes (Wu 2024, ITCC-059 pediatric trial pooled with 11 adult studies)."
   reference <- "Wu JH, Pennesi E, Bautista F, Garrett M, Fukuhara K, Brivio E, et al. Population Pharmacokinetics of Inotuzumab Ozogamicin in Pediatric Relapsed/Refractory B-Cell Precursor Acute Lymphoblastic Leukemia: Results of Study ITCC-059. Clin Pharmacokinet. 2024;63(7):981-997. doi:10.1007/s40262-024-01386-z"
   vignette <- "Wu_2024_inotuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "inotuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "inotuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     LBM = list(
@@ -18,7 +26,7 @@ Wu_2024_inotuzumab <- function() {
       units              = "years",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on kdes (exponent -0.296) for BCP-ALL patients only, with reference 60 years (per Wu 2024 Table 3). For NHL patients the AGE effect is gated off via DIS_BCPALL.",
+      notes              = "Time-fixed baseline. Power effect on cl_exp_kdes (exponent -0.296) for BCP-ALL patients only, with reference 60 years (per Wu 2024 Table 3). For NHL patients the AGE effect is gated off via DIS_BCPALL.",
       source_name        = "AGE"
     ),
     DIS_BCPALL = list(
@@ -26,7 +34,7 @@ Wu_2024_inotuzumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (B-cell NHL)",
-      notes              = "Wu 2024 calls this the 'ALL effect' and notes it accounts for both disease type (NHL vs ALL) and the corresponding bioanalytical analysis method (ELISA for adult NHL vs HPLC-MS for ALL). Fractional-change (dummy-variable) effects on CL_SS (-0.767) and CL_TIME (-0.362), and gates the BLSTABL and AGE effects on kdes (kdes itself also takes a -0.924 fractional change for BCP-ALL). Source column 'ALL'; renamed to canonical DIS_BCPALL per inst/references/covariate-columns.md.",
+      notes              = "Wu 2024 calls this the 'ALL effect' and notes it accounts for both disease type (NHL vs ALL) and the corresponding bioanalytical analysis method (ELISA for adult NHL vs HPLC-MS for ALL). Fractional-change (dummy-variable) effects on CL_SS (-0.767) and CL_TIME (-0.362), and gates the BLSTABL and AGE effects on cl_exp_kdes (cl_exp_kdes itself also takes a -0.924 fractional change for BCP-ALL). Source column 'ALL'; renamed to canonical DIS_BCPALL per inst/references/covariate-columns.md.",
       source_name        = "ALL"
     ),
     CONMED_RITUX = list(
@@ -42,7 +50,7 @@ Wu_2024_inotuzumab <- function() {
       units              = "10^9 counts/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed baseline. Power effect on kdes (exponent -0.0484) for BCP-ALL patients only, with reference 0.352 x 10^9 counts (population median for BCP-ALL; Wu 2024 Table 3). Not applicable to NHL patients (the BLSTABL effect is gated off via DIS_BCPALL); when simulating an NHL patient supply BLSTABL = 0.352 (the reference) so the gated power term evaluates to 1.",
+      notes              = "Time-fixed baseline. Power effect on cl_exp_kdes (exponent -0.0484) for BCP-ALL patients only, with reference 0.352 x 10^9 counts (population median for BCP-ALL; Wu 2024 Table 3). Not applicable to NHL patients (the BLSTABL effect is gated off via DIS_BCPALL); when simulating an NHL patient supply BLSTABL = 0.352 (the reference) so the gated power term evaluates to 1.",
       source_name        = "BLSTABL"
     )
   )
@@ -66,22 +74,22 @@ Wu_2024_inotuzumab <- function() {
     regions        = "Multi-regional (US adult studies via Pfizer; ITCC-059 pediatric study spanned European centers and additional sites internationally).",
     n_observations = 8924L,
     bioanalytic_methods = "Adult NHL: validated ELISA (direct measurement of N-acetyl-gamma-calicheamicin dimethyl hydrazide linked to the InO antibody). Adult BCP-ALL and pediatric BCP-ALL: HPLC-MS/MS for the conjugated calicheamicin released from the ADC, with InO quantitation based on the average drug-to-antibody ratio of the dosing standard. Three separate residual error magnitudes were estimated to capture the assay differences (Wu 2024 Table 3, footnote d).",
-    notes          = "Final population PK model from the Wu 2024 (PMID 38907948) reanalysis of the Garrett 2019 adult model, refit on pooled adult + pediatric data and extended with ALL-effect on CL_TIME and AGE-effect on kdes. Used to evaluate exposure at the pediatric RP2D and to support 'no further dose adjustment required' for pediatric BCP-ALL. NONMEM 7.5.0 (SAEM + IMP); Pearl-speaks-NONMEM 5.3.0; SIR for parameter precision."
+    notes          = "Final population PK model from the Wu 2024 (PMID 38907948) reanalysis of the Garrett 2019 adult model, refit on pooled adult + pediatric data and extended with ALL-effect on CL_TIME and AGE-effect on cl_exp_kdes. Used to evaluate exposure at the pediatric RP2D and to support 'no further dose adjustment required' for pediatric BCP-ALL. NONMEM 7.5.0 (SAEM + IMP); Pearl-speaks-NONMEM 5.3.0; SIR for parameter precision."
   )
 
   ini({
     # Structural parameters (typical population values, Wu 2024 Table 3).
     # Reference covariate values: LBM = 52.7 kg, AGE = 60 years, BLSTABL = 0.352 x 10^9, DIS_BCPALL = 0 (NHL), CONMED_RITUX = 0.
-    # Time unit is hour; clearances in L/h; volumes in L; kdes in 1/h.
+    # Time unit is hour; clearances in L/h; volumes in L; cl_exp_kdes in 1/h.
     # Wu 2024 names CL1 the "linear clearance" and CL2 the "initial value of
     # time-dependent clearance"; total clearance is CL_total = CL1 + CL2 *
-    # exp(-kdes * time). Mapping to nlmixr2lib conventions: CL1 -> CL_SS
+    # exp(-cl_exp_kdes * time). Mapping to nlmixr2lib conventions: CL1 -> CL_SS
     # (the steady-state, non-decaying arm) and CL2 -> CL_TIME (the
     # time-varying decay arm).
-    lcl <- log(0.130);  label("Linear (steady-state) clearance for an NHL adult (CL_SS, L/h)")               # Wu 2024 Table 3 (CL1)
+    lcl_exp_inf <- log(0.130);  label("Linear (steady-state) clearance for an NHL adult (CL_SS, L/h)")               # Wu 2024 Table 3 (CL1)
     lvc    <- log(6.49);   label("Central volume of distribution for an NHL adult (Vc, L)")                     # Wu 2024 Table 3 (V1)
-    lcl_time <- log(0.569); label("Initial value of time-dependent clearance for an NHL adult (CL_TIME, L/h)")  # Wu 2024 Table 3 (CL2)
-    lkdes  <- log(0.0577); label("Decay coefficient of time-dependent clearance for an NHL adult (kdes, 1/h)")  # Wu 2024 Table 3
+    lcl_exp_component <- log(0.569); label("Initial value of time-dependent clearance for an NHL adult (CL_TIME, L/h)")  # Wu 2024 Table 3 (CL2)
+    lcl_exp_kdes  <- log(0.0577); label("Decay coefficient of time-dependent clearance for an NHL adult (cl_exp_kdes, 1/h)")  # Wu 2024 Table 3
     lq     <- log(0.0437); label("Intercompartmental clearance (Q, L/h)")                                       # Wu 2024 Table 3
     lvp    <- log(4.74);   label("Peripheral volume of distribution (Vp, L)")                                   # Wu 2024 Table 3 (V2)
 
@@ -93,9 +101,9 @@ Wu_2024_inotuzumab <- function() {
     e_lbm_cl_time <-  0.687;   label("Power exponent of LBM on CL_TIME (unitless)")                          # Wu 2024 Table 3
     e_all_cl   <- -0.767;   label("Fractional change in CL_SS for BCP-ALL (vs NHL, unitless)")            # Wu 2024 Table 3
     e_all_cl_time <- -0.362;   label("Fractional change in CL_TIME for BCP-ALL (vs NHL, unitless)")          # Wu 2024 Table 3
-    e_all_kdes    <- -0.924;   label("Fractional change in kdes for BCP-ALL (vs NHL, unitless)")             # Wu 2024 Table 3
-    e_blstabl_kdes <- -0.0484; label("Power exponent of BLSTABL on kdes for BCP-ALL only (unitless)")        # Wu 2024 Table 3
-    e_age_kdes    <- -0.296;   label("Power exponent of AGE on kdes for BCP-ALL only (unitless)")            # Wu 2024 Table 3
+    e_all_kdes    <- -0.924;   label("Fractional change in cl_exp_kdes for BCP-ALL (vs NHL, unitless)")             # Wu 2024 Table 3
+    e_blstabl_kdes <- -0.0484; label("Power exponent of BLSTABL on cl_exp_kdes for BCP-ALL only (unitless)")        # Wu 2024 Table 3
+    e_age_kdes    <- -0.296;   label("Power exponent of AGE on cl_exp_kdes for BCP-ALL only (unitless)")            # Wu 2024 Table 3
     e_ritux_cl <- -0.132;   label("Fractional change in CL_SS for concomitant rituximab (unitless)")      # Wu 2024 Table 3
 
     # Inter-individual variability. Wu 2024 Table 3 reports CV% for IIV with
@@ -103,11 +111,11 @@ Wu_2024_inotuzumab <- function() {
     # squared CV); this is verified by reproducing the published correlations
     # from the off-diagonal covariances (e.g., 0.136 / sqrt(0.16 * 0.1608)
     # = 0.847 = 84.7% as in Table 3 'CL1 - V1; correlations'). CL_SS, Vc,
-    # CL_TIME are reported as a 3x3 correlated block; kdes is independent.
-    etalcl + etalvc + etalcl_time ~ c(0.16,
+    # CL_TIME are reported as a 3x3 correlated block; cl_exp_kdes is independent.
+    etalcl_exp_inf + etalvc + etalcl_exp_component ~ c(0.16,
                                          0.136, 0.16080,
                                          0.194, 0.204, 0.54317)  # Wu 2024 Table 3 (CV%: CL_SS 40.0, Vc 40.1, CL_TIME 73.7; covariances 0.136 / 0.194 / 0.204)
-    etalkdes ~ 0.35641  # Wu 2024 Table 3 (CV% kdes 59.7)
+    etalcl_exp_kdes ~ 0.35641  # Wu 2024 Table 3 (CV% cl_exp_kdes 59.7)
 
     # Residual error. Wu 2024 reports the residual SD on log-transformed data,
     # which maps to a log-normal residual error in nlmixr2 (Cc ~ lnorm(SD)) and
@@ -130,23 +138,23 @@ Wu_2024_inotuzumab <- function() {
     #   kdes_ALL = 0.0577 * (1 - 0.924) * (BLSTABL/0.352)^-0.0484 * (AGE/60)^-0.296
     #   Q     = 0.0437
     #   Vp    = 4.74
-    cl <- exp(lcl + etalcl) *
+    cl_exp_inf <- exp(lcl_exp_inf + etalcl_exp_inf) *
       (1 + e_all_cl   * DIS_BCPALL) *
       (LBM / 52.7)^e_lbm_cl *
       (1 + e_ritux_cl * CONMED_RITUX)
 
     vc <- exp(lvc + etalvc) * (LBM / 52.7)^e_lbm_vc
 
-    cl_time <- exp(lcl_time + etalcl_time) *
+    cl_exp_component <- exp(lcl_exp_component + etalcl_exp_component) *
       (1 + e_all_cl_time * DIS_BCPALL) *
       (LBM / 52.7)^e_lbm_cl_time
 
-    # kdes covariate effects (BLSTABL, AGE) only apply for BCP-ALL patients in
+    # cl_exp_kdes covariate effects (BLSTABL, AGE) only apply for BCP-ALL patients in
     # Wu 2024; gating is encoded by multiplying each exponent by DIS_BCPALL so
     # that for NHL the corresponding power term collapses to 1. For NHL
     # patients supply BLSTABL at the BCP-ALL reference (0.352 x 10^9) so the
     # gated power term evaluates to 1 numerically.
-    kdes <- exp(lkdes + etalkdes) *
+    cl_exp_kdes <- exp(lcl_exp_kdes + etalcl_exp_kdes) *
       (1 + e_all_kdes * DIS_BCPALL) *
       (BLSTABL / 0.352)^(e_blstabl_kdes * DIS_BCPALL) *
       (AGE / 60)^(e_age_kdes * DIS_BCPALL)
@@ -155,17 +163,17 @@ Wu_2024_inotuzumab <- function() {
     vp <- exp(lvp)
 
     # Time-dependent total clearance (Wu 2024 Methods, Section 2.3):
-    #   CL_t    = CL_TIME * exp(-kdes * time)
+    #   CL_t    = CL_TIME * exp(-cl_exp_kdes * time)
     #   CL_total = CL_SS + CL_t
     # `time` is the internal integration time in hours, which corresponds to
     # time from the first dose for the event datasets this model expects.
-    cl_t   <- cl_time * exp(-kdes * time)
-    cl_tot <- cl + cl_t
+    cl_exp_component_t   <- cl_exp_component * exp(-cl_exp_kdes * time)
+    cl <- cl_exp_inf + cl_exp_component_t
 
     # Two-compartment model with IV input (no depot; doses are administered
     # directly into the central compartment as 60-minute IV infusions, see
     # Wu 2024 Methods Section 2.1).
-    kel <- cl_tot / vc
+    kel <- cl / vc
     k12 <- q     / vc
     k21 <- q     / vp
 

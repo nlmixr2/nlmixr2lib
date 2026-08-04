@@ -2,7 +2,16 @@ Diao_2014_rFIXFc <- function() {
   description <- "Three-compartment population PK model for recombinant factor IX Fc fusion protein (rFIXFc, eftrenonacog alfa) in patients with severe to moderate haemophilia B aged 12-77 years (Diao 2014). Disposition is described by linear three-compartment kinetics with intravenous input and first-order elimination from the central compartment; body weight is the only retained covariate, scaling CL and V1 with estimated power exponents (not the canonical 0.75 / 1) and a reference weight of 73 kg."
   reference <- "Diao L, Li S, Ludden T, Gobburu J, Nestorov I, Jiang H. Population pharmacokinetic modelling of recombinant factor IX Fc fusion protein (rFIXFc) in patients with haemophilia B. Clin Pharmacokinet. 2014;53(5):467-477. doi:10.1007/s40262-013-0129-7"
   vignette <- "Diao_2014_rFIXFc"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/dL")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "rFIXFc", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rFIXFc", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "rFIXFc", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

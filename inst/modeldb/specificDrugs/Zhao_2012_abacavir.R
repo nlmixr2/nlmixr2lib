@@ -2,7 +2,16 @@ Zhao_2012_abacavir <- function() {
   description <- "Two-compartment population PK model for oral abacavir in HIV-infected infants and toddlers (Zhao 2012) developed on the PENTA 15 crossover trial of 8 mg/kg twice-daily vs 16 mg/kg once-daily dosing; CL/F scales with body weight via an estimated power exponent (1.14) referenced to the population median weight of 12 kg, and inter-occasion variability on CL/F is multiplexed by the binary OCC indicator across the BID (occasion 1) and QD (occasion 2) study phases."
   reference <- "Zhao W, Cella M, Della Pasqua O, Burger D, Jacqz-Aigrain E, on behalf of Pediatric European Network for Treatment of AIDS (PENTA) 15 study group. Population pharmacokinetics and maximum a posteriori probability Bayesian estimator of abacavir: application of individualized therapy in HIV-infected infants and toddlers. Br J Clin Pharmacol. 2012;73(4):641-648. doi:10.1111/j.1365-2125.2011.04121.x"
   vignette <- "Zhao_2012_abacavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -67,7 +76,7 @@ Zhao_2012_abacavir <- function() {
     # nlmixr2 has no `SAME` shortcut so each occasion gets its own eta, with the
     # second fixed equal to the first (matching the Jonsson 2011 ethambutol pattern).
     etaiov_cl_1 ~ 0.04559         # Table 3 IOV CL/F = 21.6% CV; omega^2 = log(1 + 0.216^2) = 0.045591
-    etaiov_cl_2 ~ fix(0.04559)    # fixed equal to occasion-1 variance per Table 3 (`SAME` translation)
+    etaiov_cl_2 ~ fix(0.04559)    # equal to occasion-1 variance per Table 3 (`SAME` translation)
 
     # Residual error: paper Methods state "Residual variability was best described
     # by a proportional model"; Table 3 reports 14.1% (the residual proportional SD

@@ -10,9 +10,21 @@ Landersdorfer_2009_moxifloxacin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2009_moxifloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("cortical", "cancellous")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "moxifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "moxifloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    cortical    = list(analyte = "moxifloxacin", units = "mg", specimen = "bile", verified = FALSE),
+    cancellous  = list(analyte = "moxifloxacin", units = "mg", specimen = "bile", verified = FALSE)
+  )
 
   covariateData <- list()
 

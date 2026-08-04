@@ -11,8 +11,18 @@ Jonsson_2011_ethambutol <- function() {
     sep = " "
   )
   vignette <- "Jonsson_2011_ethambutol"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   replicate_of <- "inst/modeldb/ddmore/Jonsson_2011_ethambutol_ddmore.R"
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    transit1    = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot       = list(analyte = "ethambutol", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ethambutol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -110,9 +120,9 @@ Jonsson_2011_ethambutol <- function() {
     # Jonsson_2011_ethambutol_ddmore.R, Aregbe_2012_alvespimycin.R, and
     # Xie_2019_agomelatine.R).
     etaiov_cl_1 ~ 0.1296         # Table 2 'IOV on CL/F (% CV)' = 36; pi^2 = (0.36)^2 = 0.1296 (estimated)
-    etaiov_cl_2 ~ fix(0.1296)    # SAME-equivalent: fixed equal to occasion-1 IOV variance
-    etaiov_cl_3 ~ fix(0.1296)    # SAME-equivalent: fixed equal to occasion-1 IOV variance
-    etaiov_cl_4 ~ fix(0.1296)    # SAME-equivalent: fixed equal to occasion-1 IOV variance
+    etaiov_cl_2 ~ fix(0.1296)    # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_3 ~ fix(0.1296)    # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_4 ~ fix(0.1296)    # SAME-equivalent: equal to occasion-1 IOV variance
 
     # Combined residual error on the linear (mg/L) scale. The paper used log-
     # transformed observations with combined additive + proportional error terms

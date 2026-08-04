@@ -14,7 +14,7 @@ Log-transform any parameter that must be positive. Prefix `l` (lower-case L).
 - `lvp`, `lvp2` — first / second peripheral volume
 - `lq`, `lq2` — inter-compartmental clearance to `peripheral1` / `peripheral2`
 - `lfdepot` — log bioavailability for the depot compartment
-- `lvmax` — Michaelis-Menten Vmax (for nonlinear / saturable elimination)
+- `lvmax` — Michaelis-Menten vmax (for nonlinear / saturable elimination)
 
 Derived quantities inside `model()` are un-prefixed:
 `ka`, `cl`, `vc`, `vp`, `vp2`, `q`, `q2`, `vmax`, and micro-constants
@@ -24,7 +24,7 @@ Derived quantities inside `model()` are un-prefixed:
 `vc2`, etc. The `v1`/`v2`/`v3` numbering used by NONMEM `linCmt()` macros
 maps directly: `v1` → `vc`, `v2` → `vp`, `v3` → `vp2`.
 
-**Michaelis-Menten Vmax**: always `lvmax` / `vmax`. Never `lvm` / `vm`.
+**Michaelis-Menten vmax**: always `lvmax` / `vmax`. Never `lvm` / `vm`.
 
 ### PD structural parameters
 
@@ -258,7 +258,7 @@ Founding example: `Oualha_2018_enoxaparin.R`.
 ## Transform prefixes
 
 - `l` — natural log (`lka`, `lcl`, `lfdepot`)
-- `logit` — logit (`logitfr`, `logitemax`)
+- `logit` — logit (`logitffo`, `logitemax`)
 - `probit` — probit
 - Any other transform: spell it out as a prefix
 
@@ -277,6 +277,33 @@ Source signals that a parameter is fixed:
 - NONMEM `$THETA` / `$OMEGA` / `$SIGMA` with a `FIX` flag.
 - Bioavailability `F1 = 1` set as structural anchor.
 - Inherited parameters from an upstream publication that the current paper re-uses without re-fitting.
+
+**Do not repeat `fixed()` in the label.** `fixed()` is the machine-readable
+statement that the value was not estimated; writing "fixed" in the label as well
+says nothing extra, and `checkModelConventions()` raises an **error** for it.
+996 labels across 373 models were cleaned of this in 2026-08.
+
+Keep whatever sits around the word, because that is the part `fixed()` cannot
+express -- **where** the value came from, or that *you* assumed it rather than
+the paper fixing it:
+
+| Write this | Not this |
+|---|---|
+| `label("Allometric exponent on CL (unitless)")` | `label("Allometric exponent on CL (unitless; fixed)")` |
+| `label("Maternal apparent clearance, from Rizk 2015 (CL, L/h)")` | `label("Maternal apparent clearance, fixed from Rizk 2015 (CL, L/h)")` |
+| `label("Additive residual SD (mg/L; placeholder)")` | `label("Additive residual SD (mg/L; FIXED placeholder)")` |
+| `label("Vascular reflection coefficient (unitless)")` | `label("Vascular reflection coefficient (unitless; fixed at 0.95)")` |
+
+The last row is the general case: if the label only restates the number, drop the
+clause -- `fixed(0.95)` already holds it.
+
+Words that **must stay**, because they distinguish *the paper fixed this* from
+*the encoder assumed this* and `fixed()` cannot tell them apart (issue #479):
+`assumed`, `not published`, `not paper-derived`, `literature value`,
+`taken from`, `transferred from`.
+
+"fixed effect", "fixed dose" and "fixed-dose" are exempt -- there "fixed"
+modifies something else and is not a claim about this parameter.
 
 Examples:
 
@@ -362,7 +389,7 @@ For endogenous turnover, steady-state, and enzyme-kinetic models (e.g., `igg_kim
 
 Recommended patterns:
 
-- `Vmax`, `Km` — Michaelis–Menten constants for each enzyme / transporter. Name-disambiguate when several coexist: `vmax_pah`, `km_pah`, `vmax_trans`, `km_trans`.
+- `vmax`, `km` — Michaelis–Menten constants for each enzyme / transporter. Name-disambiguate when several coexist: `vmax_pah`, `km_pah`, `vmax_trans`, `km_trans`.
 - `kint`, `kcat`, `kpro`, `krmr` — fractional rate constants (1/time). When a rate is recomputed at steady state vs. dynamically, suffix the steady-state value with `_0` (e.g., `kcat_0`) and leave the dynamic one unsuffixed.
 - `bl_<species>` — baseline concentration of an endogenous species (e.g., `bl_phe`, `bl_gut`). Use this as the initial condition: `<species>(0) <- bl_<species>`.
 - `f_<fraction>` — unitless fractional-activity scalars (e.g., `f_pah` = fraction of healthy PAH activity).
@@ -467,3 +494,30 @@ Precedents in `inst/modeldb/specificDrugs/`: `AitOudhia_2012_canakinumab.R`. The
 ### Year-letter collision suffix
 
 When two extractions resolve to the same `<FirstAuthor>_<Year>_<drug>` name (e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year — `Author_2019a_drug.R`, `Author_2019b_drug.R`. Allocate letters in chronological model-development order when known. Never overwrite an existing file silently.
+
+## Time-varying clearance (issue #481)
+
+If clearance depends on time, use the stem that matches the functional form so
+the structure can be found by name. `checkModelConventions()` warns when a
+clearance expression references `t` / `time` without one of these.
+
+| Form | Stem | Roles |
+|---|---|---|
+| Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_hill_` | `cl_hill_max`, `cl_hill_t50`, `cl_hill_gamma` |
+| Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
+
+Prefix `l` for the log scale (`lcl_hill_t50`), `eta` for the IIV partner
+(`etacl_hill_max`), `e_<cov>_` for a covariate effect
+(`e_nhl_cl_exp_kdes`).
+
+Do **not** reuse `emax`, `imax`, `gamma`, `hill` or `t50` for clearance
+time-dependence: all of them are also standard PD parameter names, and several
+models carry both a PD `emax` and a clearance one.
+
+**The symbol the ODE consumes is the total clearance.** Name components so they
+cannot be mistaken for it -- `cl_exp_component`, not `cl_time` or `cl_t_now`. A
+decaying component can fall by dozens of orders of magnitude over a treatment
+course, which is meaningless in isolation but looks like a clearance value.
+
+Periodic (diurnal / circadian) variation is a different structure and keeps its
+own names; do not fold it into `cl_hill_` or `cl_exp_`.

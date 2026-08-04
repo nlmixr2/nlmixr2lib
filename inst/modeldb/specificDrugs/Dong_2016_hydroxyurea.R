@@ -25,7 +25,15 @@ Dong_2016_hydroxyurea <- function() {
     sep = " "
   )
   vignette <- "Dong_2016_hydroxyurea"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -270,7 +278,7 @@ Dong_2016_hydroxyurea <- function() {
     # apply the fixed exponent of 0.75 and 1 in our model').
     # =========================================================================
     allo_vmax <- fixed(0.75);  label("Allometric exponent on Vmax (unitless)")                                    # Dong 2016 Table 2: 'Vmax = theta1 * (WT/70)^0.75'; fixed at theoretical 0.75 per Anderson-Holford
-    allo_vc   <- fixed(1.00);  label("Allometric exponent on V/F (unitless)")                                     # Dong 2016 Table 2: 'V/F = theta3 * (WT/70)'; fixed at theoretical 1.0 per Anderson-Holford
+    e_wt_vc   <- fixed(1.00);  label("Allometric exponent on V/F (unitless)")                                     # Dong 2016 Table 2: 'V/F = theta3 * (WT/70)'; fixed at theoretical 1.0 per Anderson-Holford
 
     # =========================================================================
     # Cystatin C effect on Vmax (Dong 2016 Table 2: power-model exponent
@@ -313,7 +321,7 @@ Dong_2016_hydroxyurea <- function() {
 
     # Apparent central volume of distribution: allometric on body weight
     # (exponent 1.0 fixed, reference 70 kg).
-    vc   <- exp(lvc + etalvc) * (WT / 70)^allo_vc
+    vc   <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
 
     # Absorption rate constant: log-normal IIV.
     ka   <- exp(lka + etalka)

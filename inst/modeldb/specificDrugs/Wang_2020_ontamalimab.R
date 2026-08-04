@@ -4,6 +4,15 @@ Wang_2020_ontamalimab <- function() {
   vignette <- "Wang_2020_ontamalimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ontamalimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ontamalimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ontamalimab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (baseline)",
@@ -68,6 +77,13 @@ Wang_2020_ontamalimab <- function() {
     lkm     <- log(19.0 / 1000);              label("Michaelis-Menten constant Km (mg/L)")                        # Wang 2020 Table 2: Km = 19.0 ng/mL
 
     # Covariate exponents - Wang 2020 Table 2 final-model equations.
+    # VERIFIED against Wang 2020 Table 2, which prints:
+    #   "CL/F, L/h   0.0127 (3.73) x (WT/70)^0.0034 x (CRP/0.837)^0.147 x (ALB/39)^-0.889"
+    #   "CLd/F, L/h  0.000345 (16.3) x (WT/70)^0.0034"
+    # 0.0034 is implausibly small for a clearance exponent (the mAb models in this database run
+    # 0.29-1.52, median 0.75) and sits oddly beside the 0.635 volume exponents in the same table,
+    # but it IS what the paper reports. This encoding is faithful, NOT a transcription error --
+    # do not "correct" it to 0.75 without new evidence from the authors. See issue #478.
     e_wt_cl    <-  0.0034; label("Power exponent of (WT/70 kg) on CL/F (unitless)")                              # Wang 2020 Table 2: CL/F ~ WT
     e_wt_vc    <-  0.635;  label("Power exponent of (WT/70 kg) on Vc/F (unitless)")                              # Wang 2020 Table 2: Vc/F ~ WT
     e_wt_q     <-  0.0034; label("Power exponent of (WT/70 kg) on Q/F (unitless)")                               # Wang 2020 Table 2: CLd/F ~ WT

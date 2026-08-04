@@ -2,7 +2,25 @@ Naik_2013_peginesatide <- function() {
   description <- "Two-compartment population PK/PD model for peginesatide in adult chronic kidney disease (CKD) patients (Naik 2013). PK: first-order subcutaneous absorption with saturable Michaelis-Menten elimination and fixed inter-compartmental clearance. PD: modified precursor-dependent lifespan indirect-response (LIDR) model of hemoglobin (1 progenitor compartment + 7 red-blood-cell aging compartments) with a peginesatide Emax stimulation on progenitor production and an empirical exponential downward-drift factor on the progenitor-to-RBC transit."
   reference <- "Naik H, Tsai MC, Fiedler-Kelly J, Qiu P, Vakilynejad M. A Population Pharmacokinetic and Pharmacodynamic Analysis of Peginesatide in Patients with Chronic Kidney Disease on Dialysis. PLoS ONE. 2013;8(6):e66422. doi:10.1371/journal.pone.0066422"
   vignette <- "Naik_2013_peginesatide"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL", hemoglobin = "g/dL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL", hemoglobin = "g/dL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "peginesatide", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "peginesatide", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "peginesatide", units = "ug", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor6  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor7  = list(analyte = "progenitor cells", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor8  = list(analyte = "hemoglobin", units = "ug", specimen = "blood cell", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -99,17 +117,17 @@ Naik_2013_peginesatide <- function() {
     # === PK structural parameters (Naik 2013 Table 6, reference covariates) ===
     # All volumes and inter-compartmental clearance are per kg body weight
     # in the source paper; conversion to absolute units happens in model().
-    lka      <- log(0.00865)     ; label("Absorption rate constant base (Ka, 1/hr) for non-Hispanic dialysis subject")  # Naik 2013 Table 6
+    lka      <- log(0.00865)     ; label("Absorption rate constant base (Ka, 1/h) for non-Hispanic dialysis subject")  # Naik 2013 Table 6
     lfdepot  <- log(0.498)       ; label("Subcutaneous bioavailability (F1, fraction)")                                  # Naik 2013 Table 6
     lvc      <- log(35.6)        ; label("Central volume of distribution (V2, mL/kg) at reference BMI 26, age 59, TBILI 9")  # Naik 2013 Table 6
     lvp      <- log(7.44)        ; label("Peripheral volume of distribution (V3, mL/kg)")                                 # Naik 2013 Table 6
-    lq       <- fixed(log(5.23)) ; label("Inter-compartmental clearance (Q, mL/kg/hr) -- fixed for model stability")      # Naik 2013 Table 6 (Fixed)
-    lvmax    <- log(45.3)        ; label("Maximum rate of elimination from central (Vmax, ng/mL/hr)")                     # Naik 2013 Table 6
+    lq       <- fixed(log(5.23)) ; label("Inter-compartmental clearance (Q, mL/kg/h) -- for model stability")      # Naik 2013 Table 6 (Fixed)
+    lvmax    <- log(45.3)        ; label("Maximum rate of elimination from central (Vmax, ng/mL/h)")                     # Naik 2013 Table 6
     lkm      <- log(1880)        ; label("Concentration giving 50% of Vmax (Km, ng/mL) at reference ALP 87")              # Naik 2013 Table 6
 
     # PK covariate effects (Naik 2013 eq 13, 14, 15)
-    e_creat_ka         <-  0.000784 ; label("Linear slope of (CREAT-3.3) on Ka in non-dialysis subjects ((1/hr) per mg/dL)")  # Naik 2013 Table 6 / eq 13
-    e_race_hispanic_ka <-  0.00811  ; label("Additive shift on Ka for Hispanic vs non-Hispanic (1/hr)")                       # Naik 2013 Table 6 / eq 13
+    e_creat_ka         <-  0.000784 ; label("Linear slope of (CREAT-3.3) on Ka in non-dialysis subjects ((1/h) per mg/dL)")  # Naik 2013 Table 6 / eq 13
+    e_race_hispanic_ka <-  0.00811  ; label("Additive shift on Ka for Hispanic vs non-Hispanic (1/h)")                       # Naik 2013 Table 6 / eq 13
     e_bmi_vc           <- -0.491    ; label("Power exponent of (BMI/26) on Vc (unitless)")                                    # Naik 2013 Table 6 / eq 14
     e_age_vc           <- -0.125    ; label("Linear slope of (AGE-59) on Vc (mL/kg per year)")                                # Naik 2013 Table 6 / eq 14 (paper-reported units 'L/yr' interpreted as mL/kg/yr; see vignette Errata)
     e_tbili_vc         <-  0.477    ; label("Linear slope of (TBILI-9) on Vc (mL/kg per umol/L)")                              # Naik 2013 Table 6 / eq 14 (paper-reported units 'L/(g/L)' interpreted as mL/kg/(umol/L); see vignette Errata)
@@ -136,7 +154,7 @@ Naik_2013_peginesatide <- function() {
     lmtt   <- log(1640)    ; label("Mean red-blood-cell lifespan (MTT, hours ~ 68.3 days)")                       # Naik 2013 Table 7
     lmtp   <- log(462)     ; label("Mean transit time for progenitor cells (MTP, hours ~ 19.3 days)")             # Naik 2013 Table 7
     lrsa   <- log(0.153)   ; label("Residual prior-ESA effective concentration (RSA, ng/mL; paper symbol RSA)")   # Naik 2013 Table 7
-    lcf    <- log(2.75e-4) ; label("Correction factor for empirical Hgb drift (CF, 1/hr) at reference age 58")    # Naik 2013 Table 7
+    lcf    <- log(2.75e-4) ; label("Correction factor for empirical Hgb drift (CF, 1/h) at reference age 58")    # Naik 2013 Table 7
 
     # PD covariate effects (Naik 2013 eq 16, 17)
     e_esad_lhgbbl <- -4.49e-7 ; label("Log-scale slope of (ESAD-7996) on HgbBL ((1/(units/week)))")  # Naik 2013 Table 7 / eq 16

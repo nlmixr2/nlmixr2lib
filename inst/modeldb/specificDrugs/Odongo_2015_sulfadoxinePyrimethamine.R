@@ -34,6 +34,19 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     concentration = "mg/L (= ug/mL) for sulfadoxine plasma; ng/mL for pyrimethamine plasma"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_pyra       = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_pyra     = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at dosing",
@@ -211,7 +224,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     ltlag   <- log(0.371)
     label("Sulfadoxine absorption lag time, ALAG (h)")                    # Table 2: ALAG_TV = 0.371 h (RSE 11.8%)
     lfdepot <- fixed(log(1))
-    label("Sulfadoxine relative bioavailability F (unitless, FIXED at 1)") # Section 3.1: "bioavailability was assumed to be equal to 1"
+    label("Sulfadoxine relative bioavailability F (unitless)") # Section 3.1: "bioavailability was assumed to be equal to 1"
 
     # ============================================================
     # Pyrimethamine structural parameters
@@ -230,7 +243,7 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     lalag_pyra   <- log(0.394)
     label("Pyrimethamine absorption lag time, ALAG (h)")                      # Table 2: ALAG_TV = 0.394 h (RSE 1.3%)
     lfdepot_pyra <- fixed(log(1))
-    label("Pyrimethamine relative bioavailability F (unitless, FIXED at 1)")  # Section 3.2: same structural assumption as sulfadoxine
+    label("Pyrimethamine relative bioavailability F (unitless)")  # Section 3.2: same structural assumption as sulfadoxine
 
     # ============================================================
     # Covariate effects on apparent CL/F (additive in L/h)

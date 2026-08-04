@@ -32,6 +32,16 @@ Cao_2017_dha_troph_early <- function() {
     concentration = "nM (central DHA); unitless fraction (parasites = viability)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central   = list(analyte = "DHA", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stress    = list(analyte = "dynamic stress variable S(t)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    parasites = list(analyte = "viable parasites", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -93,7 +103,7 @@ Cao_2017_dha_troph_early <- function() {
     # saturated.
 
     hill <- fixed(1.7892)
-    label("Hill coefficient (paper symbol gamma; unitless; fixed across stages)")
+    label("Hill coefficient (paper symbol gamma; unitless; across stages)")
     # Cao 2017 Table 1 footnote a: fixed at 1.7892, stage-pooled mean of
     # the four individually-estimated gamma values from Table S1.
 

@@ -11,7 +11,18 @@ Smythe_2012_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Smythe_2012_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    enz_pool = list(analyte = "Enzyme (unitary-baseline)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -99,7 +110,7 @@ Smythe_2012_rifampicin <- function() {
     lkenz     <- log(0.00369)           ; label("First-order degradation rate constant of the enzyme pool kENZ (1/h)")   # Smythe 2012 Table 3: kENZ = 0.00369/h (RSE 5.6%) -> turnover half-life log(2)/kENZ = 187.8 h ~ 7.8 days
 
     # --- Bioavailability anchor (CL/F and V/F are apparent F-relative) ---
-    lfdepot   <- fixed(log(1))          ; label("Oral bioavailability F (fixed at 1 because CL and V are apparent F-relative)") # Implicit anchor: Smythe 2012 reports CL/F and V/F (no separate F estimate); see Methods 'Stochastic model' paragraph 1
+    lfdepot   <- fixed(log(1))          ; label("Oral bioavailability F (1 because CL and V are apparent F-relative)") # Implicit anchor: Smythe 2012 reports CL/F and V/F (no separate F estimate); see Methods 'Stochastic model' paragraph 1
 
     # =========================================================================
     # IIV. Smythe 2012 Table 3 reports IIV (%CV) on CL/F, V/F, and EC50, with

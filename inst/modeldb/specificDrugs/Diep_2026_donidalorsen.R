@@ -2,7 +2,18 @@ Diep_2026_donidalorsen <- function() {
   description <- "Two-compartment population PK and indirect-response PD model for the GalNAc3-conjugated antisense oligonucleotide donidalorsen targeting prekallikrein (PKK) mRNA, fit to pooled data from phase 1 to phase 3 studies in healthy volunteers and patients with hereditary angioedema (Diep 2026). First-order SC absorption with categorical covariates on ka (arm vs abdomen/thigh injection site; autoinjector vs vial drug presentation), allometric scaling of CL/F, Vc/F, Q/F, and Vp/F on total body weight with paper-estimated exponents, multiplicative disease-status effects on Vc/F and Q/F, full 5x5 omega block on PK random effects, and an indirect-response model with donidalorsen-driven inhibition of PKK production carrying multiplicative disease-status effects on baseline PKK and IC50."
   reference   <- "Diep JK, Liu M, Singh P, Dorow S, Cohn DM, Bordone L, Newman KB, Gao X. Population pharmacokinetic/pharmacodynamic modeling of donidalorsen, an antisense oligonucleotide in development for prophylaxis of hereditary angioedema. CPT Pharmacometrics Syst Pharmacol. 2026;15(2):e70206. doi:10.1002/psp4.70206"
   vignette    <- "Diep_2026_donidalorsen"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "donidalorsen", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "donidalorsen", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "donidalorsen", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "prekallikrein inhibition", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

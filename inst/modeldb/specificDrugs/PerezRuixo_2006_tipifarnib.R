@@ -2,7 +2,17 @@ PerezRuixo_2006_tipifarnib <- function() {
   description <- "Three-compartment population PK model for oral and IV tipifarnib in healthy subjects and adult cancer patients (Perez-Ruixo 2006). Sequential zero-order release into the depot (duration D1) followed by first-order absorption (Ka) into the central compartment, with absorption lag time, linear elimination, two peripheral compartments, and bioavailability fixed at 26.7 percent. Covariate effects retained in the final model are total bilirubin on CL (power exponent -0.103 centred at 9 umol/L) and body weight on V2 (linear scaling, exponent fixed at 1, centred at 70 kg); healthy-vs-cancer cohort multipliers apply to CL, V2, Q4, V4, and Ka; a solution-vs-solid formulation indicator scales D1, Ka, and tlag. The mixture-model lag-time subpopulation (71.7 percent subpop 1 vs 28.3 percent subpop 2) is collapsed to the typical subpop-1 lag time for library simulation use; correlated IIVs with paper-reported correlation 1 (Q3-V3, CL-Q4, CL-V4) are encoded as derived etas via the published variance-expansion factors."
   reference   <- "Perez-Ruixo JJ, Piotrovskij V, Zhang S, Hayes S, De Porre P, Zannikos P. Population pharmacokinetics of tipifarnib in healthy subjects and adult cancer patients. Br J Clin Pharmacol. 2006;62(1):81-96. doi:10.1111/j.1365-2125.2006.02615.x"
   vignette    <- "PerezRuixo_2006_tipifarnib"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tipifarnib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "tipifarnib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -98,7 +108,7 @@ PerezRuixo_2006_tipifarnib <- function() {
     e_solution_tlag <- 0.183; label("Solution-vs-solid tlag ratio (multiplicative; applied as ratio^FORM_SOLUTION)") # Perez-Ruixo 2006 Table 4 footnote k
 
     # Continuous-covariate exponents.
-    allo_vc      <- fixed(1);     label("WT exponent on V2 (unitless; fixed at 1 per Table 3 footnote 2)")    # Perez-Ruixo 2006 Table 3 footnote 2: exponent not different from 1, set to 1
+    e_wt_vc      <- fixed(1);     label("WT exponent on V2 (unitless; 1 per Table 3 footnote 2)")    # Perez-Ruixo 2006 Table 3 footnote 2: exponent not different from 1, set to 1
     e_tbili_cl   <- -0.103;       label("TBILI power exponent on CL (unitless; reference 9 umol/L)")          # Perez-Ruixo 2006 Table 4 footnote a: theta_TBIL = -0.103
 
     # Inter-individual variability (cancer-patient values; Perez-Ruixo 2006
@@ -161,7 +171,7 @@ PerezRuixo_2006_tipifarnib <- function() {
     # covariate equations applied. Bilirubin enters as a centred power law
     # on CL; body weight enters as a linear (exponent 1) ratio on V2.
     cl  <- exp(lcl + etalcl) * (TBILI / ref_tbil) ^ e_tbili_cl * f_healthy_cl
-    vc  <- exp(lvc + etalvc) * (WT / ref_wt) ^ allo_vc          * f_healthy_vc
+    vc  <- exp(lvc + etalvc) * (WT / ref_wt) ^ e_wt_vc          * f_healthy_vc
     q   <- exp(lq  + etalq)
     vp  <- exp(lvp + eta_lvp_corr)
     q2  <- exp(lq2 + eta_lq2_corr)                              * f_healthy_q2

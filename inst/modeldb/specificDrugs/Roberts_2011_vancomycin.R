@@ -2,7 +2,14 @@ Roberts_2011_vancomycin <- function() {
   description <- "One-compartment IV population PK model for vancomycin administered by continuous infusion in adult septic critically ill ICU patients (Roberts 2011). Volume of distribution scales linearly with total body weight (1.53 L/kg); clearance scales linearly with BSA-normalized 24-hour urinary creatinine clearance referenced to 100 mL/min/1.73 m^2 (4.58 L/h at the reference)."
   reference <- "Roberts JA, Taccone FS, Udy AA, Vincent JL, Jacobs F, Lipman J. Vancomycin dosing in critically ill patients: robust methods for improved continuous-infusion regimens. Antimicrob Agents Chemother. 2011;55(6):2704-2709. doi:10.1128/AAC.01708-10"
   vignette <- "Roberts_2011_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

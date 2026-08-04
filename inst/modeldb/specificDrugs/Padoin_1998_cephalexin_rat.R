@@ -10,9 +10,18 @@ Padoin_1998_cephalexin_rat <- function() {
   )
   vignette <- "Padoin_1998_cephalexin_rat"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/kg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "cephalexin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cephalexin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cephalexin", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

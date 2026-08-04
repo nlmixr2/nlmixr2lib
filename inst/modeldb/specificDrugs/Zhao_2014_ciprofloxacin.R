@@ -2,7 +2,15 @@ Zhao_2014_ciprofloxacin <- function() {
   description <- "Two-compartment population PK model with first-order elimination for intravenous ciprofloxacin in neonates and young infants less than three months of age (Zhao 2014). Central and peripheral volumes (V1, V2) scale allometrically with current body weight (fixed exponent 1, reference 1.955 kg); clearance (CL) and inter-compartmental clearance (Q) scale with current body weight at a fixed exponent of 0.75. CL is further multiplied by a renal-maturation factor in gestational age and postnatal age (F_age), a renal-function factor in serum creatinine (RF = exp((CREAT - 42 umol/L) * theta7)), and a fractional reduction (factor 0.708) when inotropic / vasoactive agents are coadministered. IIV is reported on V1, V2, and CL as %CV on an exponential model. Residual error is proportional. Inter-occasion variability on CL (16.4%CV) reported by Zhao 2014 is not encoded structurally here -- the source paper does not define an operational occasion mapping for the model-library use case; users who need IOV can add an OCC indicator and per-occasion eta downstream."
   reference   <- "Zhao W, Hill H, Le Guellec C, Neal T, Mahoney S, Paulus S, Castellan C, Kassai B, van den Anker JN, Kearns GL, Turner MA, Jacqz-Aigrain E. Population pharmacokinetics of ciprofloxacin in neonates and young infants less than three months of age. Antimicrob Agents Chemother. 2014;58(11):6572-6580. doi:10.1128/AAC.03568-14"
   vignette    <- "Zhao_2014_ciprofloxacin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ciprofloxacin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -88,10 +96,10 @@ Zhao_2014_ciprofloxacin <- function() {
     # rendering / OCR artifact in the published table; the surrounding
     # text and the Q row "(CW/1955)^0.75" confirm that V1 and V2 use the
     # fixed exponent 1, not theta1 / theta2.
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")   # Zhao 2014 Methods, Covariate analysis
-    allo_q  <- fixed(0.75); label("Allometric exponent on Q (unitless)")    # Zhao 2014 Methods, Covariate analysis
-    allo_vc <- fixed(1);    label("Allometric exponent on V1 (unitless)")   # Zhao 2014 Methods, Covariate analysis
-    allo_vp <- fixed(1);    label("Allometric exponent on V2 (unitless)")   # Zhao 2014 Methods, Covariate analysis
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")   # Zhao 2014 Methods, Covariate analysis
+    e_wt_q  <- fixed(0.75); label("Allometric exponent on Q (unitless)")    # Zhao 2014 Methods, Covariate analysis
+    e_wt_vc <- fixed(1);    label("Allometric exponent on V1 (unitless)")   # Zhao 2014 Methods, Covariate analysis
+    e_wt_vp <- fixed(1);    label("Allometric exponent on V2 (unitless)")   # Zhao 2014 Methods, Covariate analysis
 
     # Covariate effects on CL.
     e_ga_cl       <-  2.11;     label("Gestational-age power exponent on F_age (unitless; reference 27.9 weeks)")            # Zhao 2014 Table 4 theta5 = 2.11 (RSE 11.9%)
@@ -131,10 +139,10 @@ Zhao_2014_ciprofloxacin <- function() {
     f_inotrope <- e_inotrope_cl ^ CONMED_INOTROPE
 
     # ----- Individual parameters -----
-    cl <- exp(lcl + etalcl) * (WT / 1.955) ^ allo_cl * f_age * f_renal * f_inotrope
-    vc <- exp(lvc + etalvc) * (WT / 1.955) ^ allo_vc
-    vp <- exp(lvp + etalvp) * (WT / 1.955) ^ allo_vp
-    q  <- exp(lq)           * (WT / 1.955) ^ allo_q
+    cl <- exp(lcl + etalcl) * (WT / 1.955) ^ e_wt_cl * f_age * f_renal * f_inotrope
+    vc <- exp(lvc + etalvc) * (WT / 1.955) ^ e_wt_vc
+    vp <- exp(lvp + etalvp) * (WT / 1.955) ^ e_wt_vp
+    q  <- exp(lq)           * (WT / 1.955) ^ e_wt_q
 
     # ----- Micro-constants -----
     kel <- cl / vc

@@ -40,6 +40,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
 - `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
+- `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` -- intracellular drug / active-metabolite pools inside red blood cells, carried as ODE states in concentration units (`rbc_mtx`, `rbc_tgn`). Deliberately kept out of `registeredMetabolites` because the analyte is frequently the *parent* drug (methotrexate), and recording a parent drug in the metabolite register would mislead later readers of that list. See the "Intracellular red-cell analyte pools" section below for the naming rule and the per-analyte entries.
 - `compartmentRegex` and the four extension patterns above are extended only when a new paper introduces a structurally new shape. Adding a new spelled-out organ to the `pbpkSubCompartmentRegex` is a routine extension; introducing a new chain prefix is a naming-audit decision.
 
 ---
@@ -1142,6 +1143,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Example models:** `Hansson_2013_sunitinib_dbp.R`.
 - **Notes:** Registered 2026-06-28. Holds a blood-pressure value (mmHg), not a drug concentration; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`.
 
+### sbp (**canonical systolic blood pressure PD state**)
+- **Type:** compartment
+- **Role:** Systolic blood pressure (mmHg) indirect-response turnover state and PD output; the systolic sibling of `dbp`. In Ibrahim 2023 ibrutinib, `sbp` turns over via a zero-order production `kin` and first-order loss `kout` fed by a single upstream `transit1` compartment, with the daily ibrutinib AUC(0-24) stimulating `kin` through an Emax function; the state both carries the ODE and is the single observation variable.
+- **Source aliases:** none.
+- **Example models:** `Ibrahim_2023_ibrutinib_sbp.R`.
+- **Notes:** Registered 2026-07-30 alongside the Ibrahim 2023 ibrutinib extraction, completing the blood-pressure pair with the previously registered `dbp` (Hansson 2013 sunitinib). Holds a blood-pressure value (mmHg), not a drug concentration. Systolic and diastolic pressure are fitted as separate models in both founding papers, so keep them as two states in two files rather than collapsing them into one multi-output model; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`.
+
 ### bm (**canonical delayed biomarker-signal effect state**)
 - **Type:** compartment
 - **Role:** Effect-compartment-smoothed (first-order `ke0`) delayed biomarker-signal state that drives a downstream PD endpoint. In Hansson 2013 sunitinib (HFS / fatigue models) `bm` is the delayed relative-change-from-baseline signal of soluble VEGFR-3: `d/dt(bm) = ke0 * (bm_input - bm)` with `bm_input = (svegfr3 - baseline) / baseline`, which shifts the proportional-odds baseline logits.
@@ -1322,6 +1330,21 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:**
   - `Cles` -- lesion state in `Mehta_2023_bedaquiline_mpbpk.R` (Mehta 2023 ESM S2).
 - **Example models:** `Mehta_2023_bedaquiline_mpbpk.R` (founding example; also `lesion_m2` for the M2 metabolite), `Mehta_2023_pretomanid_mpbpk.R`, `Mehta_2023_pyrazinamide_mpbpk.R`.
+
+### pleura (**canonical pleural-space fluid compartment**)
+- **Type:** compartment
+- **Role:** The pleural space, a serous cavity modelled as a fluid sub-compartment of the lung. Pleural liquid is a microvascular filtrate that flows in through the parietal pleural capillaries and is removed via lymphatic stomata in the parietal pleura, so the state is fed by lung efflux at a pleural fluid flow `q_pleura` and drained at the same flow: `d/dt(pleura) = q_pleura * cv_lung - q_pleura * Cpleura`. Because it is a fluid space rather than a perfused tissue it carries **no** tissue:plasma partition coefficient -- its outflow uses the pleural concentration directly, not `Cpleura / kp_pleura`. Distinct from `isf` (the generic mAb interstitial-fluid space) and from `ecf` (brain / tumour extracellular fluid in microdialysis models): the pleural cavity is an anatomically separate serous cavity and a model could legitimately carry `pleura` alongside either of those. Pleural tuberculosis is the second most common form of extrapulmonary TB, and pleural effusion is also a site of interest for oncology and anti-infective penetration studies.
+- **Source aliases:**
+  - `Pl` / `C_Pl` -- pleural state in `Ramachandran_2023_*_pbpk.R` (Appendix S1 section 3).
+- **Example models:** `Ramachandran_2023_rifampicin_pbpk.R` (founding example), `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R`.
+- **Notes:** Pair with `lnode` when a model resolves both major extrapulmonary-TB sites. The volume and flow are per-kg quantities (0.3 mL/kg and 0.15 mL/kg/h in the founding example), not fractions of body weight or cardiac output.
+
+### gut_lumen (**canonical gut-luminal drug reservoir**)
+- **Type:** compartment
+- **Role:** Non-absorbed drug held in the intestinal lumen, as an **amount** rather than a concentration. Receives biliary / hepatic output and drains by two competing first-order routes: reabsorption back into the perfused `gut` tissue at `kr` (enterohepatic circulation) and faecal transit out of the body at `kF`. Distinct from `gallbladder`, which models a storage organ with delayed, gated emptying producing a discrete secondary peak -- the gut lumen is a continuously-draining reservoir with no emptying delay. Also distinct from `gut` / `a_gut`, which are the perfused gut *tissue* with their own volume, blood flow, lymph flow, and partition coefficient; a model that carries enterohepatic recycling needs both states simultaneously.
+- **Source aliases:**
+  - `GL` / `A_GL` -- gut lumen state in `Ramachandran_2023_*_pbpk.R` (Appendix S1 section 1).
+- **Example models:** `Ramachandran_2023_rifampicin_pbpk.R` (founding example; `kr = 0.17 /h` for rifampicin enterohepatic circulation), `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R` (all three with `kr = 0`, so the lumen is a terminal faecal-transit sink).
 
 ### brain (**canonical bare brain compartment**)
 - **Type:** compartment
@@ -1955,6 +1978,39 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Role:** Red blood cell pool.
 - **Source aliases:** none.
 - **Example models:** `Dao_2020_sultiame.R`.
+- **Notes:** This is a red-cell **count** state (cells per volume). It is NOT the state to use for a drug or active metabolite accumulating *inside* erythrocytes -- that role belongs to the `rbc_<analyte>` family (see "Intracellular red-cell analyte pools"), whose states carry drug concentration (e.g. umol/L). The two are physically different quantities and must not be conflated.
+
+### rbc_mtx (**canonical intracellular red-cell methotrexate pool**)
+- **Type:** compartment
+- **Role:** Methotrexate (predominantly as methotrexate polyglutamates) accumulated inside red blood cells, carried as an ODE state in concentration units (umol/L). Fed by an influx term driven by the plasma methotrexate concentration and drained by a first-order efflux / elimination rate constant.
+- **Source aliases:**
+  - `XEMTX` -- used in `Gebhard_2023_methotrexate.R` (paper symbol `X_E^MTX`; the observation is reported as "E-MTX").
+- **Example models:** `Gebhard_2023_methotrexate.R`, `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Registered 2026-07-30 as the founding member of the `rbc_<analyte>` family (see below). Distinct from `erythrocytes`, which is a red-cell *count* pool.
+
+### rbc_tgn (**canonical intracellular red-cell thioguanine-nucleotide pool**)
+- **Type:** compartment
+- **Role:** 6-thioguanine nucleotides (TGN), the active metabolites of 6-mercaptopurine, accumulated inside red blood cells and carried as an ODE state in concentration units (umol/L). Fed by a saturable (Michaelis-Menten) or linear influx term driven by the plasma 6-mercaptopurine concentration and drained by a first-order efflux / elimination rate constant.
+- **Source aliases:**
+  - `XE6MP` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `X_E^6MP`; the observation is reported as "E-TGN").
+- **Example models:** `Gebhard_2023_mercaptopurine.R`, `Gebhard_2023_mercaptopurine_anc.R`.
+- **Notes:** Registered 2026-07-30 alongside `rbc_mtx`. In the Gebhard 2023 PKPD model this state is the driver of the Friberg myelosuppression effect function (`Edrug = slope * rbc_tgn`).
+
+---
+
+## Intracellular red-cell analyte pools (`rbc_<analyte>` namespace)
+
+Naming rule: `rbc_<analyte>`, where `<analyte>` is the lowercase name of the species measured inside the erythrocyte (`mtx` for methotrexate / methotrexate polyglutamates, `tgn` for 6-thioguanine nucleotides). The state holds a **concentration** (typically umol/L), not an amount, because red-cell metabolite assays are reported per unit of red-cell volume (or per mmol hemoglobin, converted).
+
+Validated by `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` in `R/conventions.R`, NOT by the `<canonical>_<metabolite-suffix>` machinery. The distinction is deliberate: for methotrexate the intracellular analyte is the *parent* drug, so listing `mtx` in `registeredMetabolites` would record a parent drug in the metabolite register and mislead anyone reading that list. The regex lets any new red-cell analyte follow without further register edits, while keeping `registeredMetabolites` semantically clean.
+
+Use `rbc_<analyte>` when the model carries the red-cell pool as an ODE state with its own influx / efflux kinetics. When a paper instead models red-cell drug **algebraically** as a fixed proportion of plasma (e.g. `Crbc <- slprbc * Cc` in `Gastonguay_2005_efaproxiral.R`, or the saturable whole-blood binding in `Storset_2014_tacrolimus.R`), no compartment is needed and no `rbc_` state should be introduced.
+
+The corresponding transport parameters are `lkinf_rbc` / `lkeff_rbc` (first-order influx / efflux rate constants) and `lvmax_rbc` / `lkm_rbc` (saturable influx); see `parameter-names.md`.
+
+---
+
+## Cell populations and lymphoid tissues (continued)
 
 ### cells (**canonical generic cell population**)
 - **Type:** compartment

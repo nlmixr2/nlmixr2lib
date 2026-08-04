@@ -2,7 +2,16 @@ Jullien_2005_abacavir <- function() {
   description <- "Two-compartment population PK model for abacavir in HIV-infected adults (Jullien 2005); apparent clearance scales with body weight via an estimated power exponent, Q/F is fixed when BW is added to the model"
   reference <- "Jullien V, Treluyer J-M, Chappuy H, Dimet J, Rey E, Dupin N, Salmon D, Pons G, Urien S. Weight related differences in the pharmacokinetics of abacavir in HIV-infected patients. Br J Clin Pharmacol. 2005;59(2):183-188. doi:10.1111/j.1365-2125.2004.02259.x"
   vignette <- "Jullien_2005_abacavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -38,7 +47,7 @@ Jullien_2005_abacavir <- function() {
     lcl <- log(47.5);      label("Apparent clearance at 65 kg (CL/F, L/h)")      # Table 3, TV(CL/F) = 47.5 L/h
     lvc <- log(75);        label("Apparent central volume (Vc/F, L)")            # Table 3, TV(Vc/F) = 75 L
     lvp <- log(24);        label("Apparent peripheral volume (Vp/F, L)")         # Table 3, TV(Vp/F) = 24 L
-    lq  <- fixed(log(10)); label("Apparent intercompartmental clearance (Q/F, L/h); fixed at the basic-model typical value when BW was added to CL/F")  # Table 3, TV(Q/F) = 10 L/h (fixed)
+    lq  <- fixed(log(10)); label("Apparent intercompartmental clearance (Q/F, L/h); the basic-model typical value when BW was added to CL/F")  # Table 3, TV(Q/F) = 10 L/h (fixed)
 
     # Estimated power-form covariate effect on CL/F.
     # CL/F = TV(CL/F) * (WT/65)^e_wt_cl

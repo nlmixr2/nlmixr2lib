@@ -2,7 +2,16 @@ Chen_2021_ganciclovir <- function() {
   description <- "Two-compartment population PK model for oral ganciclovir (the active metabolite of valganciclovir) in adult Chinese renal allograft recipients (Chen 2021), with first-order absorption after a lag time and a linear creatinine-clearance effect on apparent oral clearance (CL/F)."
   reference <- "Chen B, Hu SS, Rui WB, An HM, Zhai XH, Wang XH, Lu JQ, Shao K, Zhou PJ. Population Pharmacokinetics and Bayesian Estimation of the Area Under the Concentration-Time Curve for Ganciclovir in Adult Chinese Renal Allograft Recipients After Valganciclovir Administration. J Clin Pharmacol. 2021;61(3):328-338. doi:10.1002/jcph.1735"
   vignette <- "Chen_2021_ganciclovir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

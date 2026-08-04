@@ -2,11 +2,19 @@ Overgaard_2016_liraglutide <- function() {
   description <- "Liraglutide 3.0 mg population PK model in overweight and obese adults with and without type 2 diabetes (Overgaard 2016 SCALE Obesity/Prediabetes + SCALE Diabetes pooled analysis)"
   reference <- "Overgaard RV, Petri KC, Jacobsen LV, Jensen CB. Liraglutide 3.0 mg for Weight Management: A Population Pharmacokinetic Analysis. Clin Pharmacokinet. 2016;55(11):1413-1422. doi:10.1007/s40262-016-0410-7"
   vignette <- "Overgaard_2016_liraglutide"
-  units <- list(time = "hr", dosing = "mg", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
   # Time in hours; SC doses in mg; observed concentrations in nmol/L (nM).
   # Liraglutide MW = 3751.2 g/mol; the vignette uses the MW to convert
   # simulated mg/L concentrations to nM before reporting AUC24 in nM*h to
   # match Overgaard 2016 Fig 3 / Table S1 units.
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "liraglutide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "liraglutide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -46,6 +46,41 @@ PerezRuixo_2008_epoetinAlfa <- function() {
   # paper-specific so checkModelConventions() does not flag them.
   paper_specific_compartment_pattern <- "^retic[0-9]+$"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "epoetin alfa", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "epoetin alfa", units = "IU", specimen = "plasma", verified = FALSE),
+    transit1    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    precursor1  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor6  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor7  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor8  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor9  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor10 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    retic1      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic2      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic3      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic4      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic5      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic6      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic7      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic8      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic9      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic10     = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = paste(
@@ -135,7 +170,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     ltlag2  <- log(2.72);            label("Slower-pathway lag time tlag2 (h)")                   # Perez-Ruixo 2008 Table I prior mean
     lfdepot <- log(0.62);            label("Minimum absolute bioavailability F0 (fraction)")      # Perez-Ruixo 2008 Table I prior mean
     lrbase  <- log(13.9);            label("Baseline endogenous EPO concentration BSL (IU/L)")    # Perez-Ruixo 2008 Table I prior mean
-    logitfr <- logit(0.60);          label("Fast/slow absorption split fraction fr (logit scale)") # Perez-Ruixo 2008 Table I prior mean
+    logitffo <- logit(0.60);          label("Fast/slow absorption split fraction fr (logit scale)") # Perez-Ruixo 2008 Table I prior mean
 
     # PK structural parameters held fixed from Olsson-Gisleskog 2007
     # (Perez-Ruixo 2008 Table I footnote a). All six were fixed during
@@ -166,7 +201,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     etaltlag2  ~ 0.2487  # log(0.53^2 + 1) = 0.2487; Table I prior CV(tlag2) = 53%
     etalfdepot ~ 0.1147  # log(0.35^2 + 1) = 0.1147; Table I prior CV(F0)    = 35%
     etalrbase  ~ 0.0862  # log(0.30^2 + 1) = 0.0862; Table I prior CV(BSL)   = 30%
-    etalogitfr ~ 0.1854  # log(0.45^2 + 1) = 0.1854; Table I prior CV(fr)    = 45% (logit-domain approximation)
+    etalogitffo ~ 0.1854  # log(0.45^2 + 1) = 0.1854; Table I prior CV(fr)    = 45% (logit-domain approximation)
 
     # =================================================================
     # PD STRUCTURAL PARAMETERS (Perez-Ruixo 2008 Table II Model D,
@@ -233,7 +268,7 @@ PerezRuixo_2008_epoetinAlfa <- function() {
     tlag2  <- exp(ltlag2  + etaltlag2)
     f0     <- exp(lfdepot + etalfdepot)
     bsl    <- exp(lrbase  + etalrbase)
-    fr     <- expit(logitfr + etalogitfr)
+    fr     <- expit(logitffo + etalogitffo)
 
     km     <- exp(lkm)
     q      <- exp(lq)

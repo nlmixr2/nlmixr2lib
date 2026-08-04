@@ -29,7 +29,20 @@ Weber_2015_fluticasone_inhaled <- function() {
   paper_specific_compartments <- c("LC1", "LC2", "LP1", "LP2")
   dosing <- c("LC1", "LP1")
 
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    LC1         = list(analyte = "fluticasone propionate undissolved particles", units = "ug", specimen = "administration site", verified = FALSE),
+    LC2         = list(analyte = "fluticasone propionate dissolved drug", units = "ug", specimen = "administration site", verified = FALSE),
+    LP1         = list(analyte = "fluticasone propionate undissolved particles", units = "ug", specimen = "administration site", verified = FALSE),
+    LP2         = list(analyte = "fluticasone propionate dissolved drug", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fluticasone propionate", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

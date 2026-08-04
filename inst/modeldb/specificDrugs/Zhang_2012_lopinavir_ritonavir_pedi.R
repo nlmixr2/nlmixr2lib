@@ -33,7 +33,28 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     sep = " "
   )
   vignette <- "Zhang_2012_lopinavir_ritonavir_pedi"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv     = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit8_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit9_rtv  = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit10_rtv = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_rtv   = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -164,7 +185,7 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     lka    <- log(0.74)
     label("LPV first-order absorption rate constant ka (1/h)")                                     # Zhang 2012 Table 2 row 'Lopinavir ka = 0.74'
     lfdepot <- fixed(log(1))
-    label("LPV bioavailability anchor at the standard 4:1 LPV/r no-rifampicin reference (unitless, FIXED)")  # Standard 4:1 LPV/r at the median 3 mg/kg ritonavir without rifampicin co-administration is the F = 1 reference per Zhang 2012 Methods 'Population pharmacokinetic analysis' paragraph 5: 'The relative bioavailability in the control group (standard LPV/r dose, no rifampicin) was assumed as a reference (100%)'.
+    label("LPV bioavailability anchor at the standard 4:1 LPV/r no-rifampicin reference (unitless)")  # Standard 4:1 LPV/r at the median 3 mg/kg ritonavir without rifampicin co-administration is the F = 1 reference per Zhang 2012 Methods 'Population pharmacokinetic analysis' paragraph 5: 'The relative bioavailability in the control group (standard LPV/r dose, no rifampicin) was assumed as a reference (100%)'.
 
     # =====================================================================
     # Ritonavir (RTV, sibling-drug / perpetrator) structural parameters
@@ -184,7 +205,7 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     lmtt_rtv     <- log(1.28)
     label("RTV mean transit time MTT through the 10-compartment Savic transit chain (h)")          # Zhang 2012 Table 2 row 'Ritonavir MTT = 1.28'
     nn_rtv       <- fixed(10)
-    label("RTV number of Savic-style transit compartments (integer, unitless, FIXED)")             # Zhang 2012 Results 'Model description' paragraph 1: 'the absorption phase displayed more complex pharmacokinetics which was described best by a series of 10 transit compartments'; the paper does not state whether the chain length was estimated or fixed before the final fit, but Table 2 does not list NN as an estimated parameter; treated as fixed here
+    label("RTV number of Savic-style transit compartments (integer, unitless)")             # Zhang 2012 Results 'Model description' paragraph 1: 'the absorption phase displayed more complex pharmacokinetics which was described best by a series of 10 transit compartments'; the paper does not state whether the chain length was estimated or fixed before the final fit, but Table 2 does not list NN as an estimated parameter; treated as fixed here
 
     # =====================================================================
     # Allometric exponents. The paper Methods 'Population pharmacokinetic
@@ -227,7 +248,7 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     # LPV parameters estimated').
     # =====================================================================
     emax_lpv <- fixed(0.9)
-    label("Maximum fractional inhibition of LPV CL/F by ritonavir concentration (unitless, FIXED)")  # Zhang 2012 Table 2 row 'Lopinavir-ritonavir interaction Emax = 0.9 (fix)'
+    label("Maximum fractional inhibition of LPV CL/F by ritonavir concentration (unitless)")  # Zhang 2012 Table 2 row 'Lopinavir-ritonavir interaction Emax = 0.9 (fix)'
     ec50_lpv <- 0.0519
     label("Ritonavir plasma concentration producing 50% of Emax on LPV CL/F (mg/L)")                # Zhang 2012 Table 2 row 'Lopinavir-ritonavir interaction EC50 = 0.0519 mg/l'
 

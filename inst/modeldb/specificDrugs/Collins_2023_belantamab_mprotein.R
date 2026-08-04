@@ -30,6 +30,17 @@ Collins_2023_belantamab_mprotein <- function() {
   vignette <- "Collins_2023_belantamab_mprotein"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "belantamab mafodotin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "belantamab mafodotin", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "active belantamab mafodotin", units = "mg", specimen = "not applicable", verified = FALSE),
+    tumor       = list(analyte = "M-protein", units = "mg", specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list(
     MCPROT = list(
       description        = "Baseline serum monoclonal (M) protein concentration",
@@ -247,9 +258,9 @@ Collins_2023_belantamab_mprotein <- function() {
     lvc   <- log(4.46);  label("Typical ADC central volume of distribution V1 (L)")                    # Collins 2023 Table S1: TVV1 = 4.46 L
     lq    <- log(0.740); label("Typical ADC intercompartmental clearance Q (L/day)")                   # Collins 2023 Table S1: TVQ = 0.740 L/day
     lvp   <- log(6.49);  label("Typical ADC peripheral volume of distribution V2 (L)")                 # Collins 2023 Table S1: TVV2 = 6.49 L
-    imax  <- -0.309;     label("Maximal log-fold change in ADC clearance over time IMAX (unitless)")   # Collins 2023 Table S1: IMAX = -0.309
-    lti50 <- log(56.9);  label("Log of time at which half the change in ADC clearance has occurred (log days)")  # Collins 2023 Table S1: TI50 = 56.9 days
-    gamma <- 3.81;       label("Sigmoidicity (Hill) exponent of time on ADC clearance (unitless)")     # Collins 2023 Table S1: Gamma = 3.81
+    cl_hill_max  <- -0.309;     label("Maximal log-fold change in ADC clearance over time IMAX (unitless)")   # Collins 2023 Table S1: IMAX = -0.309
+    lcl_hill_t50 <- log(56.9);  label("Log of time at which half the change in ADC clearance has occurred (log days)")  # Collins 2023 Table S1: TI50 = 56.9 days
+    cl_hill_gamma <- 3.81;       label("Sigmoidicity (Hill) exponent of time on ADC clearance (unitless)")     # Collins 2023 Table S1: Gamma = 3.81
 
     # ------------------------------------------------------------------
     # M-protein TGI structural parameters (Collins 2023 Table 1,
@@ -315,9 +326,9 @@ Collins_2023_belantamab_mprotein <- function() {
                                      0.546, 1.07,
                                      0.217, 1.12, 3.04)  # Collins 2023 Table 1: omega^2 KGR 0.677 (%RSE 15.5, shrinkage 15.8), Covariance(KGR~KD) 0.546 (20.0), omega^2 KD 1.07 (21.1) [19.7], Covariance(KGR~LAMBDA) 0.217 (78.3), Covariance(KD~LAMBDA) 1.12 (46.4), omega^2 LAMBDA 3.04 (32.9) [35.6]
 
-    etalke0   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 KEO FIXED = 0.015
-    etalslope ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 Slope fixed = 0.015
-    etala50   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 A50 fixed = 0.015
+    etalke0   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 KEO = 0.015
+    etalslope ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 Slope = 0.015
+    etala50   ~ fixed(0.015)  # Collins 2023 Table 1: omega^2 A50 = 0.015
 
     # ------------------------------------------------------------------
     # Residual error.
@@ -354,8 +365,8 @@ Collins_2023_belantamab_mprotein <- function() {
     #    treatment course. rxode2's `t` is time since the start of the
     #    simulation, which matches the paper's "Time" since first dose.
     # ------------------------------------------------------------------
-    ti50 <- exp(lti50)
-    cl   <- exp(lcl) * exp(imax * t^gamma / (ti50^gamma + t^gamma))
+    cl_hill_t50 <- exp(lcl_hill_t50)
+    cl   <- exp(lcl) * exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
     vc   <- exp(lvc)
     q    <- exp(lq)
     vp   <- exp(lvp)

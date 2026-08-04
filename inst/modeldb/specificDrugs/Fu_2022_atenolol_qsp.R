@@ -50,6 +50,21 @@ Fu_2022_atenolol_qsp <- function() {
     concentration = "ng/mL (central-compartment atenolol; the paper's Emax and EC50 values are on the ng/mL scale)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "atenolol", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hr          = list(analyte = "heart rate", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    edv         = list(analyte = "left-ventricular end-diastolic volume", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    tpr         = list(analyte = "total peripheral resistance", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    ctr         = list(analyte = "myocardial contractility", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     STUDY_FU2022_AZ = list(
       description        = "Fu 2022 pooled-analysis study indicator: 1 = subject enrolled in Study 2 (AstraZeneca; Alderley Park, UK; 4 male beagle dogs, 14.2-14.6 kg, 17-22 months old; oral atenolol 0, 1, 3, 10 mg/kg; HR, dP/dtmax, and MAP measured; NO cardiac output measurement); 0 = Study 1 (Servier; France; 4 male beagle dogs, 10-15 kg; oral atenolol 0, 3, 10, 30 mg/kg; HR, dP/dtmax, CO, and MAP measured). Time-fixed per subject.",
@@ -93,23 +108,23 @@ Fu_2022_atenolol_qsp <- function() {
     # divided by vc yields Cc in mg/(L/kg) = ng/mL when amt is entered as
     # ug/kg or mg/kg * 1000; see units$dosing above.
     # =====================================================================
-    lka      <- fixed(log(1.13))        ; label("Atenolol absorption rate ka (1/h; FIXED per Fu 2022 Methods)")             # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
-    lcl      <- fixed(log(3.35))        ; label("Atenolol systemic clearance CL (L/kg/h; FIXED per Fu 2022 Methods)")       # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
-    lvc      <- fixed(log(4.05))        ; label("Atenolol central volume Vc = V2 (L/kg; FIXED per Fu 2022 Methods)")        # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
-    lq       <- fixed(log(8.85))        ; label("Atenolol inter-compartmental clearance Q = Q2 (L/kg/h; FIXED)")            # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
-    lvp      <- fixed(log(3.74))        ; label("Atenolol first-peripheral volume Vp = V3 (L/kg; FIXED)")                   # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
-    lq2      <- fixed(log(5.73))        ; label("Atenolol inter-compartmental clearance Q2 = Q3 (L/kg/h; FIXED)")           # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
-    lvp2     <- fixed(log(11.9))        ; label("Atenolol second-peripheral volume Vp2 = V4 (L/kg; FIXED)")                 # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
-    lfdepot  <- fixed(log(0.783))       ; label("Atenolol oral bioavailability F1 (unitless; FIXED)")                       # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lka      <- fixed(log(1.13))        ; label("Atenolol absorption rate ka (1/h; per Fu 2022 Methods)")             # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lcl      <- fixed(log(3.35))        ; label("Atenolol systemic clearance CL (L/kg/h; per Fu 2022 Methods)")       # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lvc      <- fixed(log(4.05))        ; label("Atenolol central volume Vc = V2 (L/kg; per Fu 2022 Methods)")        # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lq       <- fixed(log(8.85))        ; label("Atenolol inter-compartmental clearance Q = Q2 (L/kg/h)")            # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lvp      <- fixed(log(3.74))        ; label("Atenolol first-peripheral volume Vp = V3 (L/kg)")                   # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lq2      <- fixed(log(5.73))        ; label("Atenolol inter-compartmental clearance Q2 = Q3 (L/kg/h)")           # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lvp2     <- fixed(log(11.9))        ; label("Atenolol second-peripheral volume Vp2 = V4 (L/kg)")                 # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
+    lfdepot  <- fixed(log(0.783))       ; label("Atenolol oral bioavailability F1 (unitless)")                       # Fu 2022 Methods p.641 'Pharmacokinetic model' paragraph
 
     # =====================================================================
     # CVS-CTR SYSTEM -- SHARED parameters (Fu 2022 Table 2)
     # =====================================================================
     lbsl_tpr <- log(0.0743)             ; label("Baseline total peripheral resistance BSL_TPR (mmHg*min/mL)")                # Fu 2022 Table 2 (final model column) 0.0743 (RSE 4.55%)
-    lbsl_edv <- fixed(log(31.13))       ; label("Baseline end-diastolic volume BSL_EDV (mL; FIXED at literature value)")     # Fu 2022 Table 2 (fixed; the paper attributes the value to reference 29 and notes it must be fixed to avoid over-parameterization)
+    lbsl_edv <- fixed(log(31.13))       ; label("Baseline end-diastolic volume BSL_EDV (mL; literature value)")     # Fu 2022 Table 2 (fixed; the paper attributes the value to reference 29 and notes it must be fixed to avoid over-parameterization)
     lkout    <- log(0.830)              ; label("Shared turnover elimination rate Kout (1/h) for HR / EDV / TPR / CTR")      # Fu 2022 Table 2 (final model column) 0.830 (RSE 21.8%); Kout_HR = Kout_EDV = Kout_TPR = Kout_CTR = Kout (Table 2 footnote a)
     lfb      <- log(0.00558)            ; label("MAP-mediated negative-feedback strength FB (1/mmHg)")                       # Fu 2022 Table 2 (final model column) 0.00558 (RSE 12.5%)
-    ltic     <- fixed(log(0.256))       ; label("Isovolumic contraction time TIC (s; FIXED, from Templeton 1979)")           # Fu 2022 Methods Eq 7 (TIC = 0.256 s reported for a typical young Beagle by Templeton 1979; kept in seconds so the CTRM = CTR * EDV / TIC identity retains the source's mmHg/s units for dP/dtmax)
+    ltic     <- fixed(log(0.256))       ; label("Isovolumic contraction time TIC (s;, from Templeton 1979)")           # Fu 2022 Methods Eq 7 (TIC = 0.256 s reported for a typical young Beagle by Templeton 1979; kept in seconds so the CTRM = CTR * EDV / TIC identity retains the source's mmHg/s units for dP/dtmax)
 
     # Circadian: horizontal displacement of TPR is shared across studies (24-h period; but TPR uses a 3x-frequency cosine ==> effective period = 8 h per Fu 2022 Methods 'Circadian rhythms in hemodynamic variables' -- the paper tested 8/12/24 h and identified the optimal period per variable).
     hor_tpr  <- 6.33                    ; label("Circadian horizontal displacement Hor_TPR (h)")                             # Fu 2022 Table 2 (final model column) 6.33 (RSE 1.96%)
@@ -150,9 +165,9 @@ Fu_2022_atenolol_qsp <- function() {
     # (58.3 ng/mL) as reported by Baker 2005 (Fu 2022 reference 23).
     # =====================================================================
     lemax_hr <- log(0.415)              ; label("Emax inhibition of HR production by atenolol (fraction)")                   # Fu 2022 Table 2 (final model column) 0.415 (RSE 11.6%)
-    lec50_hr <- fixed(log(58.3))        ; label("EC50 on HR (ng/mL; FIXED at beta1 KD)")                                     # Fu 2022 Table 2 (fixed at Baker 2005 KD_beta1 = 58.3 ng/mL)
+    lec50_hr <- fixed(log(58.3))        ; label("EC50 on HR (ng/mL; beta1 KD)")                                     # Fu 2022 Table 2 (fixed at Baker 2005 KD_beta1 = 58.3 ng/mL)
     lemax_ctr <- log(0.422)             ; label("Emax inhibition of CTR production by atenolol (fraction)")                  # Fu 2022 Table 2 (final model column) 0.422 (RSE 9.56%)
-    lec50_ctr <- fixed(log(58.3))       ; label("EC50 on CTR (ng/mL; FIXED at beta1 KD; = EC50_HR in the final model)")     # Fu 2022 Table 2 (fixed; CTL EC50_CTR = EC50_HR x THETA(11) with THETA(11) = 1 FIX)
+    lec50_ctr <- fixed(log(58.3))       ; label("EC50 on CTR (ng/mL; beta1 KD; = EC50_HR in the final model)")     # Fu 2022 Table 2 (fixed; CTL EC50_CTR = EC50_HR x THETA(11) with THETA(11) = 1 FIX)
 
     # =====================================================================
     # INTER-INDIVIDUAL VARIABILITY (Fu 2022 Table 2)

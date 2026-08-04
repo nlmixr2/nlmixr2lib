@@ -85,7 +85,7 @@ Yang_2010_rosuvastatin_mbma <- function() {
     # Tables 1-2) actually show 0-3.6 percent reductions, so the
     # study-level eta absorbs the deviation.
     e0 <- fixed(-0.802)
-    label("Placebo intercept E0 (percent LDL-C reduction at zero dose; FIXED from Mandema 2005)")  # Yang 2010 Table 4 footnote "E0 was presumed to be -0.802 percent based on the literature value [15]"
+    label("Placebo intercept E0 (percent LDL-C reduction at zero dose; from Mandema 2005)")  # Yang 2010 Table 4 footnote "E0 was presumed to be -0.802 percent based on the literature value [15]"
 
     # ----- Maximal LDL-C reduction Emax (Yang 2010 Table 4) -----
     lemax <- log(57.0)
@@ -102,7 +102,7 @@ Yang_2010_rosuvastatin_mbma <- function() {
     # acceptable". The fixed value drops the model from sigmoidal
     # Emax to simple Emax.
     lhill <- fixed(log(1))
-    label("Hill sigmoidicity exponent (canonical lhill; FIXED to 1 per paper Results, reducing the sigmoidal Emax to a simple Emax)")  # Yang 2010 Table 4 "gamma" = 1 (FIXED)
+    label("Hill sigmoidicity exponent (canonical lhill; per paper Results, reducing the sigmoidal Emax to a simple Emax)")  # Yang 2010 Table 4 "gamma" = 1 (FIXED)
 
     # ----- Asian race multiplicative effect on ED50 (Yang 2010 Table 4) -----
     # ED50_arm = exp(led50) * e_asian_ed50^RACE_ASIAN.

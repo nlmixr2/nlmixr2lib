@@ -2,7 +2,15 @@ Wright_2016_allopurinol <- function() {
   description <- "One-compartment population PK-PD model for allopurinol (via the active metabolite oxypurinol) and plasma urate in adults with gout (Wright 2016 BJCP). Oxypurinol disposition is a one-compartment first-order absorption / first-order elimination model with Ka fixed at 1.09 1/h; apparent oxypurinol clearance (CL/F_oxy) is allometrically scaled on fat-free mass (Janmahasatian formula, exponent fixed at 0.75) and power-scaled on Cockcroft-Gault creatinine clearance standardised to 70 kg, with a multiplicative reduction when a thiazide or loop diuretic is coadministered; apparent volume (V/F_oxy) is allometrically scaled on total body weight (exponent fixed at 1.0) and shares its IIV with CL/F_oxy via a fixed fractional scaler (Bonate 2006 fractional-effect parameterisation). Plasma urate is described by a direct-effect sigmoidal Emax inhibition of urate production on top of a baseline urate U0 that is power-scaled on renal function and multiplicatively higher with concomitant diuretic. The dose entered into the model is allopurinol oral mg; the implicit 1:1 molar conversion to oxypurinol is absorbed into the apparent CL/F_oxy and V/F_oxy. Cc is oxypurinol concentration (umol/L) and Eurate is plasma urate (mmol/L)."
   reference   <- "Wright DFB, Duffull SB, Merriman TR, Dalbeth N, Barclay ML, Stamp LK. Predicting allopurinol response in patients with gout. Br J Clin Pharmacol. 2016 Feb;81(2):277-289. doi:10.1111/bcp.12799"
   vignette    <- "Wright_2016_allopurinol"
-  units       <- list(time = "hour", dosing = "mg", concentration = "umol/L (oxypurinol Cc); mmol/L (urate Eurate)")
+  units       <- list(time = "h", dosing = "mg", concentration = "umol/L (oxypurinol Cc); mmol/L (urate Eurate)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "allopurinol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "allopurinol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FFM = list(
@@ -70,7 +78,7 @@ Wright_2016_allopurinol <- function() {
     # in the central compartment to umol/L of oxypurinol using the
     # allopurinol molecular weight 136.11 g/mol (the dose's molar
     # form).
-    lka <- fixed(log(1.09));  label("Apparent first-order absorption rate constant Ka (1/h, fixed)")        # Wright 2016 Table 3: Ka = 1.09 fixed (both base and final columns)
+    lka <- fixed(log(1.09));  label("Apparent first-order absorption rate constant Ka (1/h)")        # Wright 2016 Table 3: Ka = 1.09 fixed (both base and final columns)
     lcl <- log(1.32);         label("Apparent oral CL/F_oxy at reference FFM = 70 kg, CRCL = 6 L/h, no diuretic (L/h)") # Wright 2016 Table 3: thetaCL = 1.32 (RSE 3.9%); bootstrap median 1.31 [1.22, 1.44]
     lvc <- log(41.6);         label("Apparent oral V/F_oxy at reference TBW = 70 kg (L)")                   # Wright 2016 Table 3: thetaV = 41.6 (RSE 3.0%); bootstrap median 41.5 [39.5, 43.5]
 
@@ -79,8 +87,8 @@ Wright_2016_allopurinol <- function() {
     # an exponent of 1') citing Anderson & Holford [37]. Not reported
     # with RSE in Table 3, consistent with the canonical fixed-exponent
     # convention.
-    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F_oxy (unitless, fixed)")             # Wright 2016 Methods: CL scaled to FFM with exponent 0.75 fixed (Anderson Holford 2008/2009)
-    e_wt_vc  <- fixed(1.0);   label("Allometric exponent of TBW on V/F_oxy (unitless, fixed)")              # Wright 2016 Methods: V scaled to TBW with exponent 1 fixed (Anderson Holford 2008/2009)
+    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F_oxy (unitless)")             # Wright 2016 Methods: CL scaled to FFM with exponent 0.75 fixed (Anderson Holford 2008/2009)
+    e_wt_vc  <- fixed(1.0);   label("Allometric exponent of TBW on V/F_oxy (unitless)")              # Wright 2016 Methods: V scaled to TBW with exponent 1 fixed (Anderson Holford 2008/2009)
 
     # Covariate effects on CL/F_oxy.
     e_crcl_cl        <- 0.587; label("Power exponent of (CRCL/6) on CL/F_oxy (unitless)")                    # Wright 2016 Table 3: thetaRFexp = 0.587 (RSE 11.7%); bootstrap median 0.588 [0.476, 0.742]
@@ -124,11 +132,11 @@ Wright_2016_allopurinol <- function() {
     # individual log-scale deviation is F_v_oxy * etalcl (perfect
     # correlation between CL and V on the log scale, magnitude scaled
     # by F).
-    F_v_oxy <- fixed(0.0355); label("Fractional shared-eta scaler from etalcl onto V/F_oxy (unitless, fixed)") # Wright 2016 Table 3: F_omegaV_oxy = 0.0355 fixed (both base and final)
+    F_v_oxy <- fixed(0.0355); label("Fractional shared-eta scaler from etalcl onto V/F_oxy (unitless)") # Wright 2016 Table 3: F_omegaV_oxy = 0.0355 fixed (both base and final)
 
     # Ka IIV. Wright 2016 Table 3: omega_Ka = 58.9% (fixed in both
     # base and final). Encoded as omega^2 = 0.589^2 = 0.347.
-    etalka ~ fixed(0.347)                                                                                    # Wright 2016 Table 3: omegaKa = 58.9% fixed; encoded as omega^2 = 0.589^2
+    etalka ~ fixed(0.347)                                                                                    # Wright 2016 Table 3: omegaKa = 58.9%; encoded as omega^2 = 0.589^2
 
     # PD block IIV (Wright 2016 Table 3) with reported off-diagonal
     # covariances on the log scale. Order in the block matrix: lrbase
@@ -153,7 +161,7 @@ Wright_2016_allopurinol <- function() {
     # at 0.001 umol/L per the Table 3 footnote 'Oxypurinol sigma_add
     # fixed at 0.001'. The additive is effectively negligible.
     propSd <- 0.199;          label("Proportional residual error on oxypurinol Cc (fraction)")              # Wright 2016 Table 3: oxypurinol sigma_prop = 19.9% (final); bootstrap median 19.9% [17.7, 22.2]
-    addSd  <- fixed(0.001);   label("Additive residual error on oxypurinol Cc (umol/L, fixed)")             # Wright 2016 Table 3 footer: 'Oxypurinol sigma_add fixed at 0.001'
+    addSd  <- fixed(0.001);   label("Additive residual error on oxypurinol Cc (umol/L)")             # Wright 2016 Table 3 footer: 'Oxypurinol sigma_add fixed at 0.001'
 
     # Urate Eurate: additive only per the Table 3 footer 'Urate
     # sigma_prop fixed at 0.001'. The per-study additive SD varied
@@ -169,7 +177,7 @@ Wright_2016_allopurinol <- function() {
     # = 55.6%). Documented in this file's Errata-equivalent population$
     # studies_notes and re-stated in the validation vignette.
     addSd_Eurate  <- 0.037;         label("Additive residual error on plasma urate Eurate (mmol/L; Study 1 / Study 3 representative)") # Wright 2016 Table 3: Study 1 urate sigma_add = 0.037 (RSE 6.2%); bootstrap median 0.038 [0.033, 0.044]
-    propSd_Eurate <- fixed(0.001);  label("Proportional residual error on plasma urate Eurate (fraction, fixed)") # Wright 2016 Table 3 footer: 'Urate sigma_prop fixed at 0.001'
+    propSd_Eurate <- fixed(0.001);  label("Proportional residual error on plasma urate Eurate (fraction)") # Wright 2016 Table 3 footer: 'Urate sigma_prop fixed at 0.001'
   })
 
   model({

@@ -11,13 +11,32 @@ Landersdorfer_2013_nisin_amikacin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2013_nisin_amikacin_linezolid"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   # Cnis / Cami are the experimentally-controlled nisin and amikacin
   # broth concentrations in the static time-kill (and sequential
   # combination) experiments. They are supplied as time-varying
   # covariates from the event data, not estimated PK profiles.
   depends <- c("Cnis", "Cami")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1  = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin and ", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2  = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin and ", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible1 = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, su", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible2 = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, su", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_susceptible1    = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin, susce", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_susceptible2    = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin, susce", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_resistant1    = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin, res", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_resistant2    = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin, res", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant1   = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, re", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant2   = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, re", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_resistant1      = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin and am", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_resistant2      = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin and am", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     Cnis = list(
@@ -60,7 +79,7 @@ Landersdorfer_2013_nisin_amikacin <- function() {
     # Replication rate constant k21 (state 2 -> 2*state 1 doubling step),
     # shared across subpopulations and fixed per Table 1.
     lk21 <- fixed(log(50))
-    label("Replication rate constant k21 (1/h; state 2 -> 2*state 1 doubling; FIXED)")  # Landersdorfer 2013 Table 1, "k21 = 50 (fixed)"
+    label("Replication rate constant k21 (1/h; state 2 -> 2*state 1 doubling)")  # Landersdorfer 2013 Table 1, "k21 = 50 (fixed)"
 
     # Mean generation time for the slow state 1 -> state 2 transition.
     # Table 1 row "Nis_s/Ami_s and Nis_i/Ami_s = 57.3 min" (the two
@@ -102,7 +121,7 @@ Landersdorfer_2013_nisin_amikacin <- function() {
     # to 0. fk12_IR and fk12_RR were estimated via a logistic
     # transformation in S-ADAPT (footnote d).
     fk12_rs_sr <- fixed(0)
-    label("Growth-rate factor for Nis-R/Ami-S and Nis-S/Ami-R subpopulations (unitless; FIXED)")  # Landersdorfer 2013 Table 1 footnote a
+    label("Growth-rate factor for Nis-R/Ami-S and Nis-S/Ami-R subpopulations (unitless)")  # Landersdorfer 2013 Table 1 footnote a
     fk12_ir    <- 0.532
     label("Growth-rate factor for Nis-I/Ami-R subpopulation (unitless)")  # Landersdorfer 2013 Table 1 (S-ADAPT)
     fk12_rr    <- 0.413

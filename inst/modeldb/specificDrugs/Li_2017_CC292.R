@@ -20,7 +20,16 @@ Li_2017_CC292 <- function() {
     sep = " "
   )
   vignette <- "Li_2017_CC292"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "CC292", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "CC292", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "CC292", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     SEXF = list(

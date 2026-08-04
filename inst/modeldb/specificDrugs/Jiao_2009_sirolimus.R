@@ -11,6 +11,14 @@ Jiao_2009_sirolimus <- function() {
   vignette <- "Jiao_2009_sirolimus"
   units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     TCHOL = list(
       description        = "Fasting total cholesterol (whole-blood lipid panel).",
@@ -95,7 +103,7 @@ Jiao_2009_sirolimus <- function() {
     # (IIV) was not estimated"]. The Results note that varying ka by 5- and
     # 10-fold changed final estimates by no more than 10% / 4%, confirming
     # the fit is insensitive to the exact ka value.
-    lka <- fixed(log(0.752)); label("First-order absorption rate constant, ka (1/h; literature-fixed)")  # Jiao 2009 Methods (paper ref 32 = Zahir 2006)
+    lka <- fixed(log(0.752)); label("First-order absorption rate constant, ka (1/h; literature-)")  # Jiao 2009 Methods (paper ref 32 = Zahir 2006)
 
     # Covariate effects on CL/F. Linear-deviation forms (TCHOL, CP_CSA_NGML)
     # carry the signed coefficient from Eq. 9; the power-form effects

@@ -5,6 +5,16 @@ Fanta_2007_ciclosporin <- function() {
   vignette <- "Fanta_2007_ciclosporin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -87,8 +97,8 @@ Fanta_2007_ciclosporin <- function() {
     # were very close to the BW exponents estimated using NONMEM (0.787 for
     # clearance parameters and 0.951 for volume parameters), fixed values from
     # the literature were chosen."
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on clearance parameters CL, Q3, Q4 (unitless; fixed at the theoretical 3/4)")  # Fanta 2007 Results, fixed
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on volume parameters V2, V3, V4 (unitless; fixed at the theoretical 1)")       # Fanta 2007 Results, fixed
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on clearance parameters CL, Q3, Q4 (unitless; the theoretical 3/4)")  # Fanta 2007 Results, fixed
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on volume parameters V2, V3, V4 (unitless; the theoretical 1)")       # Fanta 2007 Results, fixed
 
     # Linear-deviation covariate effects (same coefficient applied identically
     # to CL, Q3, Q4, V2, V3, V4 per Fanta 2007 Results 'Covariate model'

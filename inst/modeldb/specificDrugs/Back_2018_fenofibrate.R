@@ -25,6 +25,18 @@ Back_2018_fenofibrate <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    stomach       = list(analyte = "fenofibrate", units = "mg", specimen = "administration site", verified = FALSE),
+    duodenum      = list(analyte = "fenofibrate", units = "mg", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "fenofibric acid", units = "mg", specimen = "plasma", verified = FALSE),
+    stomach_food  = list(analyte = "calories", units = "mg", specimen = "not applicable", verified = FALSE),
+    duodenum_food = list(analyte = "calories", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     FED = list(
       description        = "Fed-vs-fasted dose-record indicator",

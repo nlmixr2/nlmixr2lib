@@ -23,6 +23,13 @@ AlSallami_2016_unfractionatedHeparin <- function() {
   vignette <- "AlSallami_2016_unfractionatedHeparin"
   units <- list(time = "h", dosing = "IU", concentration = "IU/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "unfractionatedHeparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -107,7 +114,7 @@ AlSallami_2016_unfractionatedHeparin <- function() {
     lvc  <- log(0.751)
     label("Central volume of distribution at reference WT = 20 kg (V, L)")             # Al-Sallami 2016 Table 2 final model: theta_V = 0.751 (L per 20 kg WT)
     tdur <- fixed(0.1)
-    label("IV bolus zero-order input duration (D1, h); fixed")                          # Al-Sallami 2016 Table 2 footnote: theta_D1 = 0.1 h (fixed)
+    label("IV bolus zero-order input duration (D1, h)")                          # Al-Sallami 2016 Table 2 footnote: theta_D1 = 0.1 h (fixed)
 
     # --- PK inter-individual variability (Al-Sallami 2016 Table 2) ---
     # Exponential ETA model. omega^2 = log(CV^2 + 1).

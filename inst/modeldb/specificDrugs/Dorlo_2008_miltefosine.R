@@ -26,6 +26,15 @@ Dorlo_2008_miltefosine <- function() {
   vignette <- "Dorlo_2008_miltefosine"
   units    <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "miltefosine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "miltefosine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(
@@ -162,7 +171,7 @@ Dorlo_2008_miltefosine <- function() {
     # so it is structurally fixed at 1; the structural parameters above
     # are all apparent CL/F, V/F, Q/F).
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless, FIXED at 1)")              # Methods 'Pharmacokinetic data analysis' paragraph 3: 'Bioavailability (F) was unknown, and therefore, parameters relative to the bioavailability were estimated (CL/F, V/F, etc.)'
+    label("Relative bioavailability F (unitless)")              # Methods 'Pharmacokinetic data analysis' paragraph 3: 'Bioavailability (F) was unknown, and therefore, parameters relative to the bioavailability were estimated (CL/F, V/F, etc.)'
 
     # ============================================================
     # Inter-individual variability -- Dorlo 2008 Table 2 column

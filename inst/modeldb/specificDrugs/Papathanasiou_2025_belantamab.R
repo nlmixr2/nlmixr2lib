@@ -4,6 +4,14 @@ Papathanasiou_2025_belantamab <- function() {
   vignette <- "Papathanasiou_2025_belantamab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "belantamab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "belantamab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -113,8 +121,8 @@ Papathanasiou_2025_belantamab <- function() {
     # effective Imax = -0.580 and steady-state CL = 0.519 L/day (matches
     # the reported 44.0% reduction).
     imax  <- -0.403;     label("Maximal log-fold change in CL (typical, monotherapy reference) (unitless)") # Papathanasiou 2025 Table 2: Imax
-    lti50 <- log(66.4);  label("Log of time at which time-varying CL change is half-maximal (log days)")    # Papathanasiou 2025 Table 2: TI50 = 66.4 days
-    gamma <- 2.87;       label("Hill / sigmoidicity exponent of time on CL (unitless)")                    # Papathanasiou 2025 Table 2: Gamma
+    lcl_hill_t50 <- log(66.4);  label("Log of time at which time-varying CL change is half-maximal (log days)")    # Papathanasiou 2025 Table 2: TI50 = 66.4 days
+    cl_hill_gamma <- 2.87;       label("Hill / sigmoidicity exponent of time on CL (unitless)")                    # Papathanasiou 2025 Table 2: Gamma
 
     # Covariate effect parameters (Papathanasiou 2025 Table 2). The two
     # weight exponents (theta_V_WTBL on volumes, theta_CL_WTBL on
@@ -136,7 +144,7 @@ Papathanasiou_2025_belantamab <- function() {
     e_sbcma_imax  <-  0.160;  label("Power exponent of SBCMA on Imax")                                     # Papathanasiou 2025 Table 2: theta_IMAX_SBCMABL
 
     # Inter-individual variability (Papathanasiou 2025 Table 2). All etas
-    # are log-normal (omega^2 = log(CV^2 + 1)) except etaimax, which is
+    # are log-normal (omega^2 = log(CV^2 + 1)) except etacl_hill_max, which is
     # additive on the linear Imax scale (the paper's footnote: normal
     # distribution CV% = SQRT(Omega) / theta * 100, so
     # Omega = (CV/100 * |theta|)^2). CL and Vc are correlated as a 2x2
@@ -145,8 +153,8 @@ Papathanasiou_2025_belantamab <- function() {
                         0.0328, 0.03922)                  # Papathanasiou 2025 Table 2: CL CV 26.1%, Vc CV 20.0%, CL-Vc covariance 0.0328 (correlation 0.646)
     etalq    ~ 0.03546                                    # Papathanasiou 2025 Table 2: Q CV 19.0%
     etalvp   ~ 0.08945                                    # Papathanasiou 2025 Table 2: Vp CV 30.6%
-    etaimax  ~ 0.01366                                    # Papathanasiou 2025 Table 2: Imax CV 29.0% (normal-distribution form, theta = -0.403)
-    etalti50 ~ 0.39236                                    # Papathanasiou 2025 Table 2: TI50 CV 69.3%
+    etacl_hill_max  ~ 0.01366                                    # Papathanasiou 2025 Table 2: Imax CV 29.0% (normal-distribution form, theta = -0.403)
+    etalcl_hill_t50 ~ 0.39236                                    # Papathanasiou 2025 Table 2: TI50 CV 69.3%
 
     # Residual error (Papathanasiou 2025 Table 2): "Y = ln(IPRED) + eps"
     # with Var(eps) = 0.0633 (log(ng/mL))^2. Additive on the natural-log
@@ -161,18 +169,18 @@ Papathanasiou_2025_belantamab <- function() {
     # COMBO factor is applied as e_combo_imax^COMBO_BELAMAF so that
     # COMBO_BELAMAF = 0 yields factor 1 and COMBO_BELAMAF = 1 yields
     # factor 1.44.
-    imax_typ <- imax *
+    cl_hill_max <- imax *
       e_combo_imax^COMBO_BELAMAF *
       (IGG   / 15)^e_igg_imax *
       (SBCMA / 50)^e_sbcma_imax
-    imax_i <- imax_typ + etaimax
+    cl_hill_max_i <- cl_hill_max + etacl_hill_max
 
     # 2. Individual TI50 (log-normal eta). The published Table 2
     # equation also references an IgG-on-TI50 exponent
     # (theta_TI50_IGGBL), but no numeric value is reported anywhere in
     # the paper for that parameter; the term is therefore omitted (see
     # vignette Assumptions and deviations).
-    ti50_i <- exp(lti50 + etalti50)
+    cl_hill_t50_i <- exp(lcl_hill_t50 + etalcl_hill_t50)
 
     # 3. Individual baseline CL (covariate-adjusted typical CL at t = 0,
     # before applying the time-varying multiplier; Papathanasiou 2025
@@ -190,7 +198,7 @@ Papathanasiou_2025_belantamab <- function() {
     # 4. Sigmoidal time-varying CL multiplier (Papathanasiou 2025 Table 2).
     # rxode2's t variable is time since simulation start; with the first
     # dose at t = 0 this matches the paper's "Time" since first dose.
-    cl <- cl_base * exp(imax_i * t^gamma / (ti50_i^gamma + t^gamma))
+    cl <- cl_base * exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50_i^cl_hill_gamma + t^cl_hill_gamma))
 
     # 5. Other individual structural parameters (Papathanasiou 2025
     # Table 2 Vc, Vp, Q equations).

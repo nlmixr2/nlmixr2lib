@@ -22,7 +22,17 @@ Brussee_2018_midazolam_pbpk <- function() {
     sep = " "
   )
   vignette <- "Brussee_2018_midazolam_pbpk"
-  units    <- list(time = "hour", dosing = "microgram", concentration = "microgram/L")
+  units    <- list(time = "h", dosing = "ug", concentration = "microgram/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    central_1ohm = list(analyte = "1-OH-midazolam", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

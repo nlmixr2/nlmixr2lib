@@ -17,5 +17,10 @@ docs
 .Rproj.user
 .claude/settings.local.json
 .claude/worktrees/
+# consolidation worktrees created by runner-merge-claude-branches
+.worktrees/
+# parallel vignette-gate output (verify_vignettes_parallel.R)
+.vignette_gate.log
+.vignette_results.jsonl
 data-raw/modeldb-cache.rds
 post_merge_advance.sh

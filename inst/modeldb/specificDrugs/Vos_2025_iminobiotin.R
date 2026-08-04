@@ -4,6 +4,14 @@ Vos_2025_iminobiotin <- function() {
   vignette <- "Vos_2025_iminobiotin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Baseline estimated glomerular filtration rate (eGFR) on admission",
@@ -50,9 +58,9 @@ Vos_2025_iminobiotin <- function() {
     # Structural distribution parameters fixed from the upstream TIBOHCA model
     # (Vos 2025 reference 11). Footnote on Supplemental Table S8 reads "10.2 fixed",
     # "15.0 fixed", "10.4 fixed".
-    lvc <- fixed(log(10.2)); label("Central volume of distribution Vc (L; fixed from upstream TIBOHCA)")           # Vos 2025 Supplemental Table S8: "Vcentral (L) 10.2 fixed"
-    lq  <- fixed(log(15.0)); label("Inter-compartmental clearance Q (L/h; fixed from upstream TIBOHCA)")           # Vos 2025 Supplemental Table S8: "Q (L/hr) 15.0 fixed"
-    lvp <- fixed(log(10.4)); label("Peripheral volume of distribution Vp (L; fixed from upstream TIBOHCA)")        # Vos 2025 Supplemental Table S8: "Vperipheral (L) 10.4 fixed"
+    lvc <- fixed(log(10.2)); label("Central volume of distribution Vc (L; from upstream TIBOHCA)")           # Vos 2025 Supplemental Table S8: "Vcentral (L) 10.2 fixed"
+    lq  <- fixed(log(15.0)); label("Inter-compartmental clearance Q (L/h; from upstream TIBOHCA)")           # Vos 2025 Supplemental Table S8: "Q (L/hr) 15.0 fixed"
+    lvp <- fixed(log(10.4)); label("Peripheral volume of distribution Vp (L; from upstream TIBOHCA)")        # Vos 2025 Supplemental Table S8: "Vperipheral (L) 10.4 fixed"
 
     # Concomitant intravenous alteplase (IVT) effect on CL: multiplicative
     # increase from TVCL = 9.29 (no-IVT) to TVCL = 15.3 (with IVT), i.e.

@@ -39,6 +39,18 @@ Johnson_2011_olanzapine_rat <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "olanzapine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_vascular      = list(analyte = "olanzapine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_extravascular = list(analyte = "olanzapine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    effect              = list(analyte = "D2RO", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     ROUTE_IP = list(
       description        = paste(
@@ -141,19 +153,19 @@ Johnson_2011_olanzapine_rat <- function() {
     #    plasma (fu_plasma) and brain (fu_brain) was fixed to the values
     #    obtained from literature: 0.23 and 0.034, respectively (19)."
     lvbv      <- fixed(log(0.00024))
-    label("Brain-vascular volume Vbv (L/kg; rat physiology, fixed)")          # Methods: Vbv = 0.00024 L/kg (ref. 18)
+    label("Brain-vascular volume Vbv (L/kg; rat physiology)")          # Methods: Vbv = 0.00024 L/kg (ref. 18)
 
     lvbev     <- fixed(log(0.00656))
-    label("Brain-extravascular volume Vbev (L/kg; rat physiology, fixed)")    # Methods: Vbev = 0.00656 L/kg (ref. 18)
+    label("Brain-extravascular volume Vbev (L/kg; rat physiology)")    # Methods: Vbev = 0.00656 L/kg (ref. 18)
 
     lcl_bv    <- fixed(log(0.312))
-    label("Brain-vascular clearance CLbv = cerebral blood flow (L/h/kg; rat physiology, fixed)") # Methods: CLbv = 0.312 L/h/kg (ref. 18)
+    label("Brain-vascular clearance CLbv = cerebral blood flow (L/h/kg; rat physiology)") # Methods: CLbv = 0.312 L/h/kg (ref. 18)
 
     fu_plasma <- fixed(0.23)
-    label("Unbound fraction of olanzapine in plasma fu_plasma (rat; fixed)")  # Methods: fu_plasma = 0.23 (ref. 19)
+    label("Unbound fraction of olanzapine in plasma fu_plasma (rat)")  # Methods: fu_plasma = 0.23 (ref. 19)
 
     fu_brain  <- fixed(0.034)
-    label("Unbound fraction of olanzapine in brain fu_brain (rat; fixed)")    # Methods: fu_brain = 0.034 (ref. 19)
+    label("Unbound fraction of olanzapine in brain fu_brain (rat)")    # Methods: fu_brain = 0.034 (ref. 19)
 
     # ----- IIV (Johnson 2011 Table III; Methods convention) -----
     # Methods: "Inter-animal variability is expressed as percent coefficient

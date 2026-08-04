@@ -2,7 +2,16 @@ Feng_2006_enoxaparin <- function() {
   description <- "Two-compartment population PK model for enoxaparin in adult inpatients receiving continuous intravenous infusion (CII) or subcutaneous (SC) dosing (Feng 2006)"
   reference <- "Feng Y, Green B, Duffull SB, Kane-Gill SL, Bobek MB, Bies RR. Development of a dosage strategy in patients receiving enoxaparin by continuous intravenous infusion using modelling and simulation. Br J Clin Pharmacol. 2006;62(2):165-176. doi:10.1111/j.1365-2125.2006.02650.x"
   vignette <- "Feng_2006_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/L")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -44,7 +53,7 @@ Feng_2006_enoxaparin <- function() {
     # Structural PK parameters at reference weight 70 kg and reference CrCL 80 mL/min
     # (4.8 L/h); Feng 2006 Table 2 Final-model column.
     lka      <- log(0.476);          label("Subcutaneous absorption rate (Ka, 1/h)")                            # Feng 2006 Table 2 Final: Ka = 0.476 1/h (27.3% SE)
-    lcl_nr   <- fixed(log(0.229));   label("Non-renal clearance component theta_NR (L/h, FIXED)")               # Feng 2006 Table 2 Final: theta_NR = 0.229 L/h (FIXED from Green 2003 ref [20])
+    lcl_nr   <- fixed(log(0.229));   label("Non-renal clearance component theta_NR (L/h)")               # Feng 2006 Table 2 Final: theta_NR = 0.229 L/h (FIXED from Green 2003 ref [20])
     e_crcl_cl <- 0.744;              label("Renal CL slope per (CRCL_L_h / 4.8) i.e. per CRCL/80 mL/min (L/h)") # Feng 2006 Table 2 Final: theta_CrCL = 0.744 L/h (18.7% SE)
     lvc      <- log(6.78);           label("Central volume V2 at reference WT 70 kg (L per 70 kg)")             # Feng 2006 Table 2 Final: V2 = 6.78 L/70 kg (19.2% SE)
     lvp      <- log(6.19);           label("Peripheral volume V3 (L)")                                          # Feng 2006 Table 2 Final: V3 = 6.19 L (24.9% SE)

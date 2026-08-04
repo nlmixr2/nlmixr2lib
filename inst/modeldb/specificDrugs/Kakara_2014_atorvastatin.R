@@ -33,6 +33,14 @@ Kakara_2014_atorvastatin <- function() {
     concentration = "mg/dL (LDL-C)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    ldl = list(analyte = "LDL-cholesterol", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age in years (time-fixed; baseline value).",

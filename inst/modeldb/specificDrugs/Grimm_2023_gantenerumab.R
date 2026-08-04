@@ -2,7 +2,22 @@ Grimm_2023_gantenerumab <- function() {
   description <- "Gantenerumab PK model in cynomolgus monkeys (Grimm 2023): two-compartment plasma PK with brain extracellular distribution across six brain regions (brain_cerebellum, brain_hippocampus, brain_striatum, brain_cortex, choroid plexus, CSF)."
   reference <- "Grimm HP, Schumacher V, Schafer M, et al. Delivery of the Brainshuttle(TM) amyloid-beta antibody fusion trontinemab to non-human primate brain and projected efficacious dose regimens in humans. mAbs. 2023;15(1):2261509. doi:10.1080/19420862.2023.2261509"
   vignette <- "Grimm_2023"
-  units <- list(time = "hour", dosing = "mg/kg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central              = list(analyte = "gantenerumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1          = list(analyte = "gantenerumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    brain_cerebellum     = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_hippocampus    = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_striatum       = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_cortex         = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_choroid_plexus = list(analyte = "gantenerumab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    csf                  = list(analyte = "gantenerumab", units = NA_character_, specimen = "CSF", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

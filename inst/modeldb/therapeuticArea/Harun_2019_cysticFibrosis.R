@@ -56,7 +56,7 @@ Harun_2019_cysticFibrosis <- function() {
     # Structural parameters -- final non-linear progression model, Table E3 of the
     # Harun 2019 supplementary material (PDF page 12 of supplementary-material-1).
     lfev1pp_baseline <- log(99.7)        ; label("Typical baseline FEV1% predicted at age 5 (% predicted)")  # Table E3 final, also NMTRAN $THETA(1)
-    ldmax            <- fixed(log(40))   ; label("Maximum lifetime change in FEV1% predicted (% predicted) -- FIXED to literature value")  # Table E3 final, $THETA(2) FIX; literature value from Harun 2016 systematic review (PMID 26597232)
+    ldmax            <- fixed(log(40))   ; label("Maximum lifetime change in FEV1% predicted (% predicted) -- literature value")  # Table E3 final, $THETA(2) FIX; literature value from Harun 2016 systematic review (PMID 26597232)
     lt50max          <- log(8.38)        ; label("Age at which 50% of the maximum FEV1% change occurs (years)")  # Table E3 final, $THETA(3)
     lhill            <- log(3.08)        ; label("Hill coefficient on age (unitless)")  # Table E3 final, $THETA(4)
 

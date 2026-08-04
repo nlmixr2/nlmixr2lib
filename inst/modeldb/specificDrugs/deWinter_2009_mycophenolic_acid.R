@@ -9,7 +9,21 @@ deWinter_2009_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "deWinter_2009_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "mycophenolate mofetil (MMF)", units = "umol", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "free mycophenolic acid (fMPA)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "free mycophenolic acid (fMPA)", units = "umol", specimen = "plasma", verified = FALSE),
+    complex          = list(analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins", units = "umol", specimen = "plasma", verified = FALSE),
+    central_mpag     = list(analyte = "free mycophenolic acid-glucuronide (fMPAG)", units = "umol", specimen = "plasma", verified = FALSE),
+    complex_mpag     = list(analyte = "mycophenolic acid-glucuronide (MPAG) bound to plasma proteins", units = "umol", specimen = "plasma", verified = FALSE),
+    gallbladder_mpag = list(analyte = "mycophenolic acid-glucuronide (MPAG)", units = "umol", specimen = "bile", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -74,7 +88,7 @@ deWinter_2009_mycophenolic_acid <- function() {
 
     # Absorption parameters
     ltlag   <- log(0.231);        label("Absorption lag time TLAG (h)")                                                     # Table 2 TLAG = 0.231 h
-    lka     <- fixed(log(4.00));  label("First-order absorption rate constant ka (1/h), fixed at 4.00")                     # Table 2 ka = 4.00 1/h (fixed)
+    lka     <- fixed(log(4.00));  label("First-order absorption rate constant ka (1/h)")                     # Table 2 ka = 4.00 1/h (fixed)
 
     # fMPA disposition (2-compartment, central + peripheral). Apparent CL / V
     # / Q values per Methods 'Because bioavailability (F) could not be
@@ -113,8 +127,8 @@ deWinter_2009_mycophenolic_acid <- function() {
     # were fixed during NONMEM estimation due to insufficient data between
     # 4-10 h postdose to identify the gallbladder-emptying kinetics.
     ltgb      <- log(7.90);       label("Time of gallbladder emptying TGB (h post-dose)")                                   # Table 2 TGB = 7.90 h
-    ldgb      <- fixed(log(1.00)); label("Duration of gallbladder emptying DGB (h), fixed")                                 # Table 2 DGB = 1.00 h (fixed)
-    lk72      <- fixed(log(10.0)); label("Gallbladder-to-fMPA-central rate constant during emptying k72 (1/h), fixed")      # Table 2 k72 = 10.0 1/h (fixed)
+    ldgb      <- fixed(log(1.00)); label("Duration of gallbladder emptying DGB (h)")                                 # Table 2 DGB = 1.00 h (fixed)
+    lk72      <- fixed(log(10.0)); label("Gallbladder-to-fMPA-central rate constant during emptying k72 (1/h)")      # Table 2 k72 = 10.0 1/h (fixed)
     lk57      <- log(0.0796);     label("fMPAG-to-gallbladder transport rate constant k57 (1/h, tacrolimus reference)")     # Table 2 k57 = 0.0796 1/h
 
     # Covariate effects
@@ -160,7 +174,7 @@ deWinter_2009_mycophenolic_acid <- function() {
     etalbmax    ~ 0.207                                                                                                       # Table 2 IPV BMAX    =  48% CV -> log(1 + 0.48^2)
     etalcl_mpag ~ 0.753                                                                                                       # Table 2 IPV CL fMPAG= 106% CV -> log(1 + 1.06^2)
     etaltgb     ~ 1.095                                                                                                       # Table 2 IPV TGB     = 141% CV -> log(1 + 1.41^2); source used additive eta, packaged as log-normal (see vignette)
-    etalk57     ~ fixed(0.408)                                                                                                # Table 2 IPV k57     =  71% CV (FIXED) -> fixed(log(1 + 0.71^2))
+    etalk57     ~ fixed(0.408)                                                                                                # Table 2 IPV k57 = 71% CV -> (log(1 + 0.71^2))
 
     # Residual variability. Source paper reports 'Residual variability
     # between observed and predicted MPA plasma concentrations was described

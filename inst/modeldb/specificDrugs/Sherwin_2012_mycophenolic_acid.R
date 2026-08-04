@@ -43,7 +43,19 @@ Sherwin_2012_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Sherwin_2012_mycophenolic_acid"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "mycophenolate mofetil (MMF)", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mpag = list(analyte = "7-O-MPA-glucuronide (MPAG)", units = "mg", specimen = "plasma", verified = FALSE),
+    gallbladder  = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "bile", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -160,7 +172,7 @@ Sherwin_2012_mycophenolic_acid <- function() {
     # Assumptions and deviations).
 
     # ---- Structural parameters (point estimates from Table 3) ----
-    lka      <- fixed(log(1.5));  label("Absorption rate constant Ka (1/h), gut -> central MPA, fixed")          # Table 3 K_A = 1.5 1/h (fixed)
+    lka      <- fixed(log(1.5));  label("Absorption rate constant Ka (1/h), gut -> central MPA")          # Table 3 K_A = 1.5 1/h (fixed)
     lcl      <- log(25.3);        label("Apparent total clearance of MPA CL1/F (L/h)")                            # Table 3 CL1 MPA = 25.3 L/h
     lvc      <- log(20.9);        label("Apparent central volume of MPA V3/F (L); also used as V_MPAG = V3 MPA") # Table 3 V3 MPA = 20.9 L
     lq       <- log(19.8);        label("Apparent intercompartmental clearance of MPA CL2/F (L/h)")               # Table 3 CL2 MPA = 19.8 L/h
@@ -177,9 +189,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
     # data. See Sherwin 2012 Results: 'These elimination rates were
     # unidentifiable by the model due to a lack of data and estimations
     # were based on previously reported values in the literature [45].'
-    e_fm           <- fixed(0.85); label("Fraction of MPA elimination converted to MPAG (FM, unitless, fixed; remainder 0.15 is AcMPAG, not modelled)")      # Table 3 FM     fixed at 85%
-    e_fmpag        <- fixed(0.65); label("Fraction of MPAG total elimination via biliary pathway (FMPAG, unitless, fixed; complement is renal)")             # Table 3 FMPAG  fixed at 65%
-    e_ehc          <- fixed(0.35); label("Fraction of gallbladder content reaching the gut during meal-time emptying (EHC, unitless, fixed; complement is feces)") # Table 3 EHC    fixed at 35%
+    e_fm           <- fixed(0.85); label("Fraction of MPA elimination converted to MPAG (FM, unitless,; remainder 0.15 is AcMPAG, not modelled)")      # Table 3 FM     fixed at 85%
+    e_fmpag        <- fixed(0.65); label("Fraction of MPAG total elimination via biliary pathway (FMPAG, unitless,; complement is renal)")             # Table 3 FMPAG  fixed at 65%
+    e_ehc          <- fixed(0.35); label("Fraction of gallbladder content reaching the gut during meal-time emptying (EHC, unitless,; complement is feces)") # Table 3 EHC    fixed at 35%
 
     # ---- Inter-individual variability (Eq. 1; CV% per Table 3) ----
     # omega^2 = log(1 + CV^2):

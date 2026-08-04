@@ -4,6 +4,18 @@ Moes_2016_tacrolimus <- function() {
   vignette    <- "Moes_2016_tacrolimus"
   units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CYP3A5_EXPR = list(
       description        = "Recipient CYP3A5 expresser indicator: 1 if the liver-transplant recipient carries at least one functional CYP3A5*1 allele (genotype *1/*1 or *1/*3 at rs776746), 0 if homozygous *3/*3.",
@@ -65,7 +77,7 @@ Moes_2016_tacrolimus <- function() {
     # dose; the table-4 CL, Vc, Q, and Vp are therefore reported as actual
     # (not apparent) parameters and the model file applies the same F = 0.23
     # via f(depot).
-    lfdepot <- fixed(log(0.23)) ; label("Fixed oral bioavailability F (unitless)")  # Moes 2016 Methods Base model "F fixed to 0.23" and Table 4 row "F (fixed) = 0.23"
+    lfdepot <- fixed(log(0.23)) ; label("Oral bioavailability F (unitless)")  # Moes 2016 Methods Base model "F fixed to 0.23" and Table 4 row "F (fixed) = 0.23"
 
     # --- Covariate effects: CYP3A5*3 donor + recipient combination on CL ---
     # Moes 2016 Methods covariate-effect equation:

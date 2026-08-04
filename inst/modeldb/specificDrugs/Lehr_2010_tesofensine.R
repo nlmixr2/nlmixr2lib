@@ -11,6 +11,18 @@ Lehr_2010_tesofensine <- function() {
   vignette <- "Lehr_2010_tesofensine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "tesofensine", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "tesofensine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m1 = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    effect     = list(analyte = "tesofensine", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_m1  = list(analyte = "M1", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list()
@@ -44,10 +56,10 @@ Lehr_2010_tesofensine <- function() {
     lcl_met    <- log(0.416)        ; label("Apparent formation clearance CL_met/F of tesofensine to M1 (L/h); fixed effect, no IIV per the source paper") # Lehr 2010 Table I: CL_met/F = 0.416 L/h, RSE 6.9%
     lvc        <- log(720)          ; label("Apparent tesofensine central volume V2/F (L)")                 # Lehr 2010 Table I: V2/F = 720 L, RSE 4.9%
     lcl_m1     <- log(1.17)         ; label("Apparent M1 elimination clearance CL_M1/F (L/h)")              # Lehr 2010 Table I: CL_M1/F = 1.17 L/h, RSE 8.2%
-    lvc_m1     <- fixed(log(553))   ; label("Apparent M1 central volume V3/F (L); FIXED at 0.768-fold of V2/F per Lehr 2010 Table I footnote d (mouse-derived ratio, ref 17)") # Lehr 2010 Table I: V3/F = 553 L FIX (Phase IIa)
+    lvc_m1     <- fixed(log(553))   ; label("Apparent M1 central volume V3/F (L); 0.768-fold of V2/F per Lehr 2010 Table I footnote d (mouse-derived ratio, ref 17)") # Lehr 2010 Table I: V3/F = 553 L FIX (Phase IIa)
 
     # PD parameters
-    lkeo       <- fixed(log(0.0001)); label("Effect-compartment equilibration rate constant keo (1/h); FIXED at the upper boundary of the operator-insensitive plateau identified in the sensitivity analysis (Methods, Population PK/PD Model section)") # Lehr 2010 Table I: keo = 0.0001 1/h FIX
+    lkeo       <- fixed(log(0.0001)); label("Effect-compartment equilibration rate constant keo (1/h); the upper boundary of the operator-insensitive plateau identified in the sensitivity analysis (Methods, Population PK/PD Model section)") # Lehr 2010 Table I: keo = 0.0001 1/h FIX
     lemax      <- log(1.46)         ; label("Log absolute Emax for ADAS-Cog improvement (paper Emax = -1.46 ADAS-Cog points; sign applied in model())") # Lehr 2010 Table I: E_MAX = -1.46, RSE 29.3%
     lec50      <- log(0.0139)       ; label("Log EC50 (ng/mL) producing 50% of |Emax|; tesofensine effect-compartment scale (M1 effect-compartment concentration is scaled by 1/5 to share this EC50, per the competitive-interaction extended Emax structure)") # Lehr 2010 Table I: EC50 = 0.0139 ng/mL, RSE 49.6%
 
@@ -56,15 +68,15 @@ Lehr_2010_tesofensine <- function() {
     # paper notes the parameters could not be estimated from the sparse
     # 4-week Phase IIa placebo data (only 72 ADAS-Cog measurements from
     # 18 placebo patients).
-    lkeq       <- fixed(log(0.00183))    ; label("Log placebo onset rate constant keq (1/h); FIXED from literature placebo model (Lehr 2010 ref 34)") # Lehr 2010 Table I: keq = 0.00183 1/h FIX
-    lkel_pla   <- fixed(log(0.000473))   ; label("Log placebo offset rate constant kel_pla (1/h); paper symbol is 'kel' but renamed here to lkel_pla to avoid collision with the K-PD canonical lkel; FIXED from literature placebo model") # Lehr 2010 Table I: kel = 0.000473 1/h FIX
-    lbeta_pla  <- fixed(log(1.42))       ; label("Log absolute placebo scaling magnitude (paper beta = -1.42 ADAS-Cog points scaling; sign applied in model()); FIXED from literature placebo model") # Lehr 2010 Table I: beta = -1.42 FIX
+    lkeq       <- fixed(log(0.00183))    ; label("Log placebo onset rate constant keq (1/h); from literature placebo model (Lehr 2010 ref 34)") # Lehr 2010 Table I: keq = 0.00183 1/h FIX
+    lkel_pla   <- fixed(log(0.000473))   ; label("Log placebo offset rate constant kel_pla (1/h); paper symbol is 'kel' but renamed here to lkel_pla to avoid collision with the K-PD canonical lkel; from literature placebo model") # Lehr 2010 Table I: kel = 0.000473 1/h FIX
+    lbeta_pla  <- fixed(log(1.42))       ; label("Log absolute placebo scaling magnitude (paper beta = -1.42 ADAS-Cog points scaling; sign applied in model); from literature placebo model") # Lehr 2010 Table I: beta = -1.42 FIX
 
     # Disease progression - linear, FIXED at the literature value used
     # by Lehr 2010 (6 ADAS-Cog points/year per Lehr 2010 ref 26).
     # Stored in (ADAS-Cog points per hour) for unit consistency with
     # the rest of the model.
-    ldp_rate   <- fixed(log(6 / (365.25 * 24))) ; label("Log linear disease-progression rate (ADAS-Cog points/hour); FIXED at literature 6 points/year (Lehr 2010 ref 26)") # Lehr 2010 Disease Progression and Placebo Effect Model section
+    ldp_rate   <- fixed(log(6 / (365.25 * 24))) ; label("Log linear disease-progression rate (ADAS-Cog points/h); literature 6 points/year (Lehr 2010 ref 26)") # Lehr 2010 Disease Progression and Placebo Effect Model section
 
     # IIV - Lehr 2010 Table I (Phase IIa column) reports each random
     # effect as a percent CV on the parameter. The log-normal variance

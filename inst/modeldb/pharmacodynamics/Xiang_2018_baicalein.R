@@ -39,6 +39,19 @@ Xiang_2018_baicalein <- function() {
     concentration = "pg/mL (TNF-alpha, IL-6), unitless ratio (iNOS), uM (NO)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tnf      = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "TNF-alpha", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "TNF-alpha", units = NA_character_, specimen = "administration site", verified = FALSE),
+    il6      = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    inos     = list(analyte = "iNOS", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    no       = list(analyte = "NO", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CONC_BAI_UM = list(
       description        = paste(
@@ -181,10 +194,10 @@ Xiang_2018_baicalein <- function() {
     # reduce the model volatility').
     # ------------------------------------------------------------------
     kout_inos <- fixed(0)
-    label("koutiNOS -- iNOS elimination rate (fixed to 0 per source)")
+    label("koutiNOS -- iNOS elimination rate (per source)")
 
     kout_no <- fixed(0)
-    label("koutNO -- NO elimination rate (fixed to 0 per source)")
+    label("koutNO -- NO elimination rate (per source)")
 
     # ------------------------------------------------------------------
     # Baselines = control (t = 0) measurements per Eqs 3 and 5

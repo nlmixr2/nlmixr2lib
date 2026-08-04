@@ -2,11 +2,20 @@ PK_2cmt_tdcl_des <- function() {
   description <- "Two compartment PK model with time-dependent clearance using differential equations (structured like nivolumab PK model)"
   reference <- "C Liu, J Yu, H Li, J Liu, Y Xu, P Song, Q Liu, H Zhao, J Xu, V E Maher, B P Booth, G Kim, A Rahman, Y Wang; Association of time-varying clearance of nivolumab with disease dynamics and its implications on exposure response analysis.  Clin Pharmacol Ther May 2017; 101(5): 657-666. https://doi.org/10.1002/cpt.656"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     lcl <- log(0.2) ; label("Time-stationary clearance (CLTS)")
-    lcltmax <- log(0.22) ; label("Typical value of the maximal change of clearance relative to baseline (Tmax)")
-    lclgamma <- log(1) ; label("Hill coefficient for time-dependent clearance")
-    lclt50 <- log(30) ; label("Time for 50% of maximal CL change")
+    lcl_hill_max <- log(0.22) ; label("Typical value of the maximal change of clearance relative to baseline (Tmax)")
+    lcl_hill_gamma <- log(1) ; label("Hill coefficient for time-dependent clearance")
+    lcl_hill_t50 <- log(30) ; label("Time for 50% of maximal CL change")
     lvc  <- log(20) ; label("Central volume of distribution (V)")
     lvp  <- log(150) ; label("Peripheral volume of distribution (Vp)")
     lq  <- log(0.75) ; label("Intercompartmental clearance (Q)")
@@ -14,14 +23,14 @@ PK_2cmt_tdcl_des <- function() {
   })
   model({
     clts <- exp(lcl)
-    cltmax <- exp(lcltmax)
-    clgamma <- exp(lclgamma)
-    clt50 <- exp(lclt50)
+    cl_hill_max <- exp(lcl_hill_max)
+    cl_hill_gamma <- exp(lcl_hill_gamma)
+    cl_hill_t50 <- exp(lcl_hill_t50)
     vc <- exp(lvc)
     vp <- exp(lvp)
     q  <- exp(lq)
 
-    cl <- clts*exp(cltmax*time^clgamma/(clt50^clgamma+time^clgamma))
+    cl <- clts*exp(cl_hill_max*time^cl_hill_gamma/(cl_hill_t50^cl_hill_gamma+time^cl_hill_gamma))
 
     kel <- cl/vc
     k12 <- q/vc

@@ -21,7 +21,16 @@ Yoo_2009_cilostazol <- function() {
     "doi:10.1111/j.1365-2125.2009.03558.x. Online: 2009-12-04."
   )
   vignette    <- "Yoo_2009_cilostazol"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "cilostazol", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cilostazol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cilostazol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CYP3A5_STAR1_HET = list(

@@ -9,7 +9,16 @@ Wang_2015_rucaparib <- function() {
     "Clin Pharmacol Drug Dev. 2015;4(2):89-98. doi:10.1002/cpdd.176."
   )
   vignette <- "Wang_2015_rucaparib"
-  units <- list(time = "hr", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BL_PARP_PBL = list(

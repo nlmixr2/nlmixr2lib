@@ -38,7 +38,18 @@ Ollier_2015_ropivacaine <- function() {
     sep = " "
   )
   vignette <- "Ollier_2015_ropivacaine"
-  units <- list(time = "hour", dosing = "umol", concentration = "uM")
+  units <- list(time = "h", dosing = "umol", concentration = "uM")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "ropivacaine", units = "umol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE),
+    complex = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE),
+    target  = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -103,8 +114,8 @@ Ollier_2015_ropivacaine <- function() {
     # from Aarons et al. and Table 2 reports it as '0.557 ( - )', i.e.,
     # without %RSE, indicating a prior-pinned quantity. Encoded as fixed()
     # per the parameter-names 'Fixed parameters' rule.
-    lkbind <- fixed(log(100));    label("Free-to-bound ropivacaine binding rate constant kbind (1/(h*uM)), fixed")  # Methods 'Base model' (paper-authorised kb range 100 - 10^15 uM^-1 h^-1)
-    lkdiss <- fixed(log(0.557));  label("Ropivacaine-AAG dissociation constant Kd (uM), fixed (prior-pinned)")     # Table 2 Kd = 0.557 uM (no RSE, prior-informed)
+    lkbind <- fixed(log(100));    label("Free-to-bound ropivacaine binding rate constant kbind (1/(h*uM))")  # Methods 'Base model' (paper-authorised kb range 100 - 10^15 uM^-1 h^-1)
+    lkdiss <- fixed(log(0.557));  label("Ropivacaine-AAG dissociation constant Kd (uM) (prior-pinned)")     # Table 2 Kd = 0.557 uM (no RSE, prior-informed)
 
     # Binding-site pool (latent variable BS approximating unbound AAG).
     # kin is the zero-order production rate of unbinding sites in uM/h.

@@ -16,7 +16,17 @@ Agerso_2004_desmopressin <- function() {
   )
   vignette <- "Agerso_2004_desmopressin"
   paper_specific_etas <- c("etalvc_vp2")
-  units <- list(time = "hour", dosing = "ng", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "ng", concentration = "pg/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "desmopressin", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "desmopressin", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "desmopressin", units = "ng", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "desmopressin", units = "ng", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

@@ -2,7 +2,16 @@ Grover_2011_tacrolimus <- function() {
   description <- "Two-compartment population PK model for oral tacrolimus in adult Native American kidney transplant recipients (Grover 2011), with first-order absorption after a lag time, no covariate effects (the Native American cohort showed no association of age, sex, weight, BMI, or post-transplant duration with PK parameters), and a placeholder proportional residual error model (residual error was not reported in the short communication)."
   reference <- "Grover A, Frassetto LA, Benet LZ, Chakkera HA. Pharmacokinetic Differences Corroborate Observed Low Tacrolimus Dosage in Native American Renal Transplant Patients. Drug Metab Dispos. 2011 Nov;39(11):2017-2019. doi:10.1124/dmd.111.041350."
   vignette <- "Grover_2011_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -43,7 +52,7 @@ Grover_2011_tacrolimus <- function() {
     # volume Vp/F = Vss/F - V/F = 462 - 73.3 = 388.7 L is held at this
     # derived constant with no IIV. This matches the secondary calculated
     # V2/F mean of 391 L in Table 2.
-    lvp   <- fixed(log(388.7)); label("Apparent peripheral volume Vp/F = Vss/F - V/F = 462 - 73.3 (L; fixed)") # Table 2 NONMEM Parameter Estimates: Vss/F = 462 L, V/F = 73.3 L; Vp/F derived and fixed (Vss IIV not estimable)
+    lvp   <- fixed(log(388.7)); label("Apparent peripheral volume Vp/F = Vss/F - V/F = 462 - 73.3 (L)") # Table 2 NONMEM Parameter Estimates: Vss/F = 462 L, V/F = 73.3 L; Vp/F derived and fixed (Vss IIV not estimable)
 
     # Inter-individual variability. Grover 2011 Table 2 reports IIV as %CV;
     # convert to log-scale variance via omega^2 = log(CV^2 + 1):

@@ -31,9 +31,20 @@ Canini_2015_danoprevir <- function() {
   vignette <- "Canini_2015_danoprevir"
 
   units <- list(
-    time          = "hr",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "danoprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "danoprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    infected    = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus       = list(analyte = "HCV-virions", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -122,10 +133,10 @@ Canini_2015_danoprevir <- function() {
     #     to rescale I and beta_T by their choice of p.
     # =========================================================================
     lhill <- fixed(log(1))
-    label("Hill exponent for the Emax effectiveness function (unitless; FIXED at 1 in Canini 2015 after AICc/BIC selection)")  # Canini 2015 Results, PK/VK model: 'Fitting the PK/VK model for h=1 (AICc=6097), h=2 (AICc=6123) and h=3 (AICc=6154), showed that h=1 provided the best model'.
+    label("Hill exponent for the Emax effectiveness function (unitless; in Canini 2015 after AICc/BIC selection)")  # Canini 2015 Results, PK/VK model: 'Fitting the PK/VK model for h=1 (AICc=6097), h=2 (AICc=6123) and h=3 (AICc=6154), showed that h=1 provided the best model'.
 
     lp    <- fixed(log(1))
-    label("Virion production rate p (virions per infected cell per unit time; FIXED at 1 as a Neumann-family scaling because Canini 2015 does not identify p separately)")
+    label("Virion production rate p (virions per infected cell per unit time; 1 as a Neumann-family scaling because Canini 2015 does not identify p separately)")
 
     # =========================================================================
     # IIV (Canini 2015 Table 2). All %CV values reported in the 'IIV, % +- se'

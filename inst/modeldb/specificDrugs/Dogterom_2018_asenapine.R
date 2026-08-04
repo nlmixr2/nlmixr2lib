@@ -9,7 +9,16 @@ Dogterom_2018_asenapine <- function() {
     sep = " "
   )
   vignette <- "Dogterom_2018_asenapine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "asenapine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "asenapine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "asenapine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     SAMPLE_INTENSIVE = list(
@@ -55,13 +64,13 @@ Dogterom_2018_asenapine <- function() {
     # Bioavailability is not separately identifiable when CL/F and V/F are
     # reported as apparent values; F is anchored at 1 so the IIV(F) below
     # captures between-subject variability in the depot bioavailability.
-    lfdepot <- fixed(log(1));      label("Sublingual bioavailability F (fixed anchor; CL and V are apparent)")  # structural anchor
+    lfdepot <- fixed(log(1));      label("Sublingual bioavailability F (anchor; CL and V are apparent)")  # structural anchor
     # Residual-variability scaling anchor (log scale; anchored at 1). The
     # paper's 'IIV (rV)' in Table 3 is encoded as etalrv below, scaling the
     # per-observation residual SD by exp(lrv + etalrv); the lrv anchor exists
     # so the eta pairs with a typical-value fixed effect per the nlmixr2lib
     # naming convention.
-    lrv     <- fixed(log(1));      label("Residual-variability scaling anchor rV (fixed anchor)")  # structural anchor
+    lrv     <- fixed(log(1));      label("Residual-variability scaling anchor rV (anchor)")  # structural anchor
 
     # Inter-individual variability (exponential model). Paper reports %CV;
     # the log-scale variance is omega^2 = log(1 + CV^2):
@@ -74,7 +83,7 @@ Dogterom_2018_asenapine <- function() {
     #   IIV rV   = 19.2%  -> omega^2 = log(1 + 0.192^2) = 0.03620
     # Table 3 footnote also defines the correlation as cov / sqrt(var_cl * var_v2).
     etalcl + etalvc ~ c(0.36355, 0.50388, 0.82309)                                                    # Table 3: IIV CL/F = 66.2% (RSE 19.5%); IIV V2/F = 113% (RSE 21.3%); corr 0.921 (RSE 20.5%)
-    etalka          ~ fixed(0.38824)                                                                  # Table 3: IIV Ka = 68.9% (no RSE; shrinkage 73.5%; treated as fixed alongside the structural Ka fix)
+    etalka          ~ fixed(0.38824)                                                                  # Table 3: IIV Ka = 68.9% (no RSE; shrinkage 73.5%; treated as alongside the structural Ka fix)
     etalfdepot      ~ 0.25599                                                                         # Table 3: IIV F = 54.0% (RSE 22.7%)
     etalrv          ~ 0.03620                                                                         # Table 3: IIV rV = 19.2% (RSE 29.8%) -- between-subject scaling of residual SD
 

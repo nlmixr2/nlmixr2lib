@@ -10,7 +10,15 @@ Shoji_2016_cefepime <- function() {
     sep = " "
   )
   vignette <- "Shoji_2016_cefepime"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cefepime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -124,7 +132,7 @@ Shoji_2016_cefepime <- function() {
     # so that the maturation factor approaches 1 at PMA -> infinity, consistent
     # with theta_1 representing TVCL "after maturation"). Encoded as fixed because
     # the paper does not report an uncertainty estimate for it.
-    mat_intercept <- fixed(-0.09); label("Maturation function intercept (unitless, fixed)") # Shoji 2016 Table 3 expression (hard-coded constant)
+    mat_intercept <- fixed(-0.09); label("Maturation function intercept (unitless)") # Shoji 2016 Table 3 expression (hard-coded constant)
     mat_amplitude <- 1.09;         label("Maturation function amplitude (unitless)")        # Shoji 2016 Table 5: theta_6 = 1.09 +/- 0.087 (bootstrap 1.09 [0.945-1.320])
     mat_rate      <- 0.00958;      label("Maturation rate constant on PMA (1/week)")        # Shoji 2016 Table 3 expression (Table 5 theta_7 reports 0.010 +/- 0.003; Table 3 uses the more precise 0.00958)
 
@@ -138,8 +146,8 @@ Shoji_2016_cefepime <- function() {
     # (typical Q) is reported in Table 5 as L/h per kg^0.75, so Q also carries
     # the 0.75 allometric exponent. The Vss WT exponent applies equally to Vc
     # and Vp because both are linear shares of Vss.
-    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless, fixed)") # Shoji 2016 Methods (allometric scaling paragraph)
-    e_wt_vc_vp <- fixed(1.00); label("Shared allometric exponent on Vc and Vp (unitless, fixed)") # Shoji 2016 Methods (allometric scaling paragraph)
+    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless)") # Shoji 2016 Methods (allometric scaling paragraph)
+    e_wt_vc_vp <- fixed(1.00); label("Shared allometric exponent on Vc and Vp (unitless)") # Shoji 2016 Methods (allometric scaling paragraph)
 
     # Reference covariate values for the centred power terms (Shoji 2016
     # Table 1 cohort medians and Table 3 reference values).

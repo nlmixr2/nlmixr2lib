@@ -2,7 +2,16 @@ Ferron_2013_cabazitaxel <- function() {
   description <- "Three-compartment population PK model for intravenous cabazitaxel in patients with advanced solid tumors (Ferron 2013)"
   reference <- "Ferron GM, Dai Y, Semiond D. Population pharmacokinetics of cabazitaxel in patients with advanced solid tumors. Cancer Chemother Pharmacol. 2013;71(3):681-692. doi:10.1007/s00280-012-2058-9"
   vignette <- "Ferron_2013_cabazitaxel"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BSA = list(

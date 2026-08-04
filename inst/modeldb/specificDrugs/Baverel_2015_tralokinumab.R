@@ -8,6 +8,16 @@ Baverel_2015_tralokinumab <- function() {
   vignette <- "Baverel_2015_tralokinumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "tralokinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tralokinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tralokinumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -64,14 +74,14 @@ Baverel_2015_tralokinumab <- function() {
     ld0      <- log(5.7);              label("Zero-order absorption duration (D0, day)")           # Table 3: D0 5.7 days
     ltlag    <- log(0.8);              label("First-order absorption lag time (Tlag, day)")        # Table 3: Tlag 0.8 day
     lfdepot  <- log(0.8);              label("Subcutaneous bioavailability (Fsc, fraction)")       # Table 3: Fsc 0.8
-    logitfr  <- log(0.7 / (1 - 0.7));  label("Logit of fraction of SC dose absorbed first-order (Fr, unitless)")  # Table 3: Fr 0.7 (logit-transformed per Eqs. 2-3)
+    logitffo  <- log(0.7 / (1 - 0.7));  label("Logit of fraction of SC dose absorbed first-order (Fr, unitless)")  # Table 3: Fr 0.7 (logit-transformed per Eqs. 2-3)
 
     # Allometric exponents on disposition parameters (Baverel 2015 Equation 5,
     # reference weight 73 kg). Fixed to canonical mAb values per the paper's
     # Methods and Results: "fixed to prior knowledge (0.75 for CL and Q, and 1
     # for Vc and Vp) ... the choice of final model was to keep fixed exponents".
-    e_wt_cl_q   <- fixed(0.75);  label("Allometric exponent on CL and Q (unitless, fixed)")        # Table 3 row 'Effect of body weight' fixed per Methods
-    e_wt_vc_vp  <- fixed(1.00);  label("Allometric exponent on Vc and Vp (unitless, fixed)")       # Table 3 row 'Effect of body weight' fixed per Methods
+    e_wt_cl_q   <- fixed(0.75);  label("Allometric exponent on CL and Q (unitless)")        # Table 3 row 'Effect of body weight' fixed per Methods
+    e_wt_vc_vp  <- fixed(1.00);  label("Allometric exponent on Vc and Vp (unitless)")       # Table 3 row 'Effect of body weight' fixed per Methods
 
     # Categorical adolescent effect on CL. Baverel 2015 Equation 7 parameterises
     # this as an additive shift, with Table 3 reporting "CL decrease, %
@@ -109,7 +119,7 @@ Baverel_2015_tralokinumab <- function() {
     # Fr IIV on the logit-transformed scale (Equation 2-3, Table 3 row 'Fr'):
     # bootstrap CV% midpoint (8.6 + 32.8) / 2 = 20.7%, interpreted as the SD of
     # eta_logitfr on the logit scale -> omega^2 = 0.207^2 = 0.04285.
-    etalogitfr ~ 0.04285                                                                           # Table 3 IIV row 'Fr', 8.6-32.8% on logit scale
+    etalogitffo ~ 0.04285                                                                           # Table 3 IIV row 'Fr', 8.6-32.8% on logit scale
 
     # Combined additive + proportional residual error (Baverel 2015 Equation 4,
     # Table 3 rows 'Additive residual error' and 'Proportional residual error').
@@ -133,7 +143,7 @@ Baverel_2015_tralokinumab <- function() {
     d0     <- exp(ld0)
     tlag   <- exp(ltlag)
     fdepot <- exp(lfdepot)
-    fr     <- exp(logitfr + etalogitfr) / (1 + exp(logitfr + etalogitfr))
+    fr     <- exp(logitffo + etalogitffo) / (1 + exp(logitffo + etalogitffo))
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc
