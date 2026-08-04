@@ -2594,6 +2594,8 @@ navbar:
         href: articles/Lane_2011_warfarin.html
       - text: "Warfarin vk2 (Zhou 2016)"
         href: articles/Zhou_2016_warfarin_vk2.html
+      - text: "XZP5610 (Zhang 2024)"
+        href: articles/Zhang_2024_XZP5610.html
       - text: "Zalcitabine (Adams 1998)"
         href: articles/Adams_1998_zalcitabine.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
@@ -3963,6 +3965,7 @@ articles:
   - articles/Zhang_2022_ormutivimab
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
+  - articles/Zhang_2024_XZP5610
   - articles/Zhang_2024_sertraline
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
