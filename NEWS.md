@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2024 evorpacept ([doi:10.1111/cts.13811](https://doi.org/10.1111/cts.13811)) - in silico virtual cohort with advanced non-small cell lung cancer.
+- Add Decker 2024 baricitinib ([doi:10.1002/psp4.13131](https://doi.org/10.1002/psp4.13131)) - pediatric patients aged 2 to <18 years with juvenile idiopathic arthritis.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
