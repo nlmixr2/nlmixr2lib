@@ -9287,6 +9287,36 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Tammara_2017_rivipansel.R` (Table 1: additive effect 0.234 on CL via `1 + 0.234 * STUDY_RIV201`; selects the cohort-specific additive and proportional residual SDs in `model()`).
 - **Notes:** Specific scope because the contrast is tied to the rivipansel development program. The Tammara 2017 paper interprets the 23% CL increment as a putative hyperfiltration effect of SCD; in simulation use cases targeting the SCD population (the paper's stated goal) set `STUDY_RIV201 = 1` for every subject. Subject-level / time-fixed; set once from the trial identifier on each subject record.
 
+### STUDY_LPS30M (**canonical for Kutumova 2024 ANP-30-min-after-LPS cohort indicator**)
+- **Description:** 1 = albumin nanoparticles administered intravenously 30 min after the intraperitoneal lipopolysaccharide challenge (the paper's "LPS 30 min" arm, exp 2); 0 otherwise. Cohort indicator in the Kutumova 2024 four-experiment nanoparticle-biodistribution PBPK analysis, used together with `STUDY_LPS6H` and `STUDY_LPS24H` to select the arm-specific permeability (PAC) and distribution (P) coefficients of every organ from Table 1. All other fitted parameters (the Hill-function endocytic uptake constants KRESmax / KRES50 / KRESn, the exocytic release constant KRESrelease, the biliary and urinary excretion coefficients, and the radiant-efficiency scale factor k) are shared across all four arms.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (LPS-naive control cohort, exp 1 -- mice given nanoparticles only, no LPS).
+- **Source aliases:** derived per animal from the "LPS 30 min" column heading of Kutumova 2024 Table 1 / the ANP-administration time point of 0.5 h after LPS in section 2.4.
+- **Example models:** `Kutumova_2024_albuminNanoparticles_mouse_pbpk.R`.
+- **Notes:** Specific scope because the cohort is tied to the Kutumova 2024 murine LPS acute-lung-injury protocol. Animal-level (time-fixed) indicator. The three `STUDY_LPS*` indicators are mutually exclusive; all three zero selects the control arm via `f_ctrl <- 1 - STUDY_LPS30M - STUDY_LPS6H - STUDY_LPS24H` in `model()`. This encodes an experimental-arm contrast rather than a separate trial, in the same sense as `STUDY_d2eGFP` (reporter-construct cohorts measured under one imaging protocol).
+
+### STUDY_LPS6H (**canonical for Kutumova 2024 ANP-6-h-after-LPS cohort indicator**)
+- **Description:** 1 = albumin nanoparticles administered intravenously 6 h after the intraperitoneal lipopolysaccharide challenge (the paper's "LPS 6 h" arm, exp 3); 0 otherwise. Cohort indicator in the Kutumova 2024 four-experiment nanoparticle-biodistribution PBPK analysis, selecting the LPS-6-h column of Table 1 for every organ's permeability (PAC) and distribution (P) coefficient. This is the arm with peak pulmonary nanoparticle accumulation (lung P = 0.89661, the maximum across all four arms).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (LPS-naive control cohort, exp 1 -- mice given nanoparticles only, no LPS).
+- **Source aliases:** derived per animal from the "LPS 6 h" column heading of Kutumova 2024 Table 1 / the ANP-administration time point of 6 h after LPS in section 2.4.
+- **Example models:** `Kutumova_2024_albuminNanoparticles_mouse_pbpk.R`.
+- **Notes:** Specific scope because the cohort is tied to the Kutumova 2024 murine LPS acute-lung-injury protocol. Animal-level (time-fixed) indicator; mutually exclusive with `STUDY_LPS30M` and `STUDY_LPS24H`.
+
+### STUDY_LPS24H (**canonical for Kutumova 2024 ANP-24-h-after-LPS cohort indicator**)
+- **Description:** 1 = albumin nanoparticles administered intravenously 24 h after the intraperitoneal lipopolysaccharide challenge (the paper's "LPS 24 h" arm, exp 4); 0 otherwise. Cohort indicator in the Kutumova 2024 four-experiment nanoparticle-biodistribution PBPK analysis, selecting the LPS-24-h column of Table 1 for every organ's permeability (PAC) and distribution (P) coefficient. The paper interprets this arm as partial pulmonary recovery with persisting injury elsewhere (lung P falls from its 6-h peak while splenic PAC keeps rising).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (LPS-naive control cohort, exp 1 -- mice given nanoparticles only, no LPS).
+- **Source aliases:** derived per animal from the "LPS 24 h" column heading of Kutumova 2024 Table 1 / the ANP-administration time point of 24 h after LPS in section 2.4.
+- **Example models:** `Kutumova_2024_albuminNanoparticles_mouse_pbpk.R`.
+- **Notes:** Specific scope because the cohort is tied to the Kutumova 2024 murine LPS acute-lung-injury protocol. Animal-level (time-fixed) indicator; mutually exclusive with `STUDY_LPS30M` and `STUDY_LPS6H`. The optimisation constrained PAC to be non-decreasing from control through this arm for the lungs, liver, spleen, and kidneys (section 2.8 equation 9), so a monotone PAC trend across the four indicators is a fitted constraint rather than an emergent result.
+
 ### STUDY_WAGH_2 (**canonical for Wagh 2021 spectinamide 1810 mouse TB study 2 indicator**)
 - **Description:** 1 = BALB/c mouse cohort enrolled in study 2 of the Wagh 2021 spectinamide 1810 dose ranging / dose fractionation efficacy program (Wagh 2021 Table 5: study 2 used 4-arm dosing regimens of 50 BID, 100 QD, 166 TIW, 200 BID, and 333 TIW with a 5.37 log CFU baseline at start of treatment); 0 = study 1 (Wagh 2021 Table 4: 24-arm dose-fractionation schedule with a 7.08 log CFU baseline at start of treatment). Used to switch K_kill_max from the study 1 typical value to the 1.15-fold higher study 2 value in the integrated PK/PD model.
 - **Units:** (binary)
