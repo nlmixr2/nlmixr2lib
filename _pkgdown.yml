@@ -798,6 +798,8 @@ navbar:
         href: articles/Yoneyama_2017_emicizumab.html
       - text: "Empagliflozin (Baron 2016)"
         href: articles/Baron_2016_empagliflozin.html
+      - text: "Empagliflozin (Jiang 2024)"
+        href: articles/Jiang_2024_empagliflozin.html
       - text: "Empagliflozin (Johnston 2019)"
         href: articles/Johnston_2019_empagliflozin.html
       - text: "Empagliflozin MEASE1 (Johnston 2021)"
@@ -3352,6 +3354,7 @@ articles:
   - articles/Jia_2015_unfractionatedHeparin
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2023_imatinib
+  - articles/Jiang_2024_empagliflozin
   - articles/Jiao_2008_mycophenolic_acid
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
