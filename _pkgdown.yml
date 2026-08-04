@@ -300,6 +300,8 @@ navbar:
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Benzylpenicillin (Shah 2023)"
         href: articles/Shah_2023_benzylpenicillin.html
+      - text: "Benzylpenicillin horse (Lallemand 2023)"
+        href: articles/Lallemand_2023_benzylpenicillin_horse.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
       - text: "Bevacizumab (Han 2015)"
@@ -3370,6 +3372,7 @@ articles:
   - articles/Laffont_2025_opioid_overdose_reversal_simulation
   - articles/Lahu_2010_roflumilast
   - articles/Lakota_2018_ertapenem
+  - articles/Lallemand_2023_benzylpenicillin_horse
   - articles/Lamoth_2009_imipenem
   - articles/Landersdorfer_2007_flucloxacillin
   - articles/Landersdorfer_2009_gemifloxacin

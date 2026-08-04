@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
+- Add Lallemand 2023 benzylpenicillin ([doi:10.3389/fmicb.2023.1282949](https://doi.org/10.3389/fmicb.2023.1282949)) - healthy horses.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
