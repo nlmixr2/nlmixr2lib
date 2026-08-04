@@ -1122,6 +1122,8 @@ navbar:
         href: articles/Bosch_2025_glp1ra_hba1c.html
       - text: "Glucarpidase (Kimura 2023)"
         href: articles/Kimura_2023_glucarpidase.html
+      - text: "Glutamine (Sadaf 2024)"
+        href: articles/Sadaf_2024_glutamine.html
       - text: "Granisetron (Li 2023)"
         href: articles/Li_2023_granisetron.html
       - text: "Guselkumab (Chen 2022)"
@@ -3718,6 +3720,7 @@ articles:
   - articles/Rozman_2017_rituximab
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
+  - articles/Sadaf_2024_glutamine
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
   - articles/Sakurai_2007_lansoprazole
