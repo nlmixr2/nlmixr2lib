@@ -97,9 +97,17 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lq2 (**canonical log-transformed second inter-compartmental clearance**)
 - **Type:** log-transformed-pk
-- **Role:** Inter-compartmental clearance between central and second peripheral compartment (volume / time).
-- **Source aliases:** none.
-- **Example models:** 3-compartment popPK extractions.
+- **Role:** Inter-compartmental clearance that feeds the second peripheral compartment (volume / time). In the usual parallel (mammillary) layout the flow originates in `central`.
+- **Source aliases:** `Q3` (third inter-compartmental clearance as numbered in Tuffal 2023, where `Q1` is not defined and the numbering follows the compartment index `V3` rather than the clearance index) -- used in `Tuffal_2023_avalglucosidase_alfa.R`.
+- **Example models:** 3-compartment popPK extractions; `Tuffal_2023_avalglucosidase_alfa.R` for the series-chain case.
+- **Notes:** Pairs with `peripheral2` and `lvp2`. **Series ("concatenated") peripheral chains:** some papers arrange the peripheral compartments in series, so `peripheral2` is fed from `peripheral1` rather than from `central`. `lq2` remains the correct canonical in that case -- it is still "the second inter-compartmental clearance, the one that feeds `peripheral2`", and the source compartment is read off the ODEs rather than inferred from the parameter name. Do not introduce a parallel inter-peripheral canonical (`lq_p1p2` or similar) for this shape. Example: `Tuffal_2023_avalglucosidase_alfa.R`, where the paper's fixed `Q3` = 1.87 L/h carries drug one-way from `peripheral1` into `peripheral2`. When such a chain also returns drug directly to `central`, that return flow is `lqpc`, not `lq2`.
+
+### lqpc (**canonical log-transformed back-redistribution clearance**)
+- **Type:** log-transformed-pk
+- **Role:** One-way back-redistribution clearance returning drug from the terminal peripheral compartment of a series ("concatenated") peripheral chain directly to `central` (volume / time).
+- **Source aliases:** `Qpc` (`Q_pc`, peripheral-to-central) -- used in `Tuffal_2023_avalglucosidase_alfa.R`.
+- **Example models:** `Tuffal_2023_avalglucosidase_alfa.R` (founding example; Tuffal 2023 Table 2 `Qpc` = 0.0206 L/h).
+- **Notes:** Use when a paper closes the peripheral chain into a cycle -- `central` <-> `peripheral1` -> `peripheral2` -> `central` -- rather than letting each peripheral compartment exchange bidirectionally with `central`. The flow is unidirectional by construction: it appears as `+ qpc * Cp2` in `d/dt(central)` and `- qpc * Cp2` in the terminal peripheral compartment, with **no matching reverse term**. The directionality is load-bearing, not incidental: Tuffal 2023 explicitly tested a bidirectional variant (Supplemental Digital Content 1 Table 2, rows "Q3 one way" vs "Q3 two ways") and rejected it with the comment "Markedly increased OFV". A slow `qpc` returning a marginal drug fraction is what generates a late secondary concentration rebound / second kinetic sequence. Distinct from `lq` / `lq2` (bidirectional `central` <-> peripheral exchange), from `lq3` (`central` <-> `peripheral3` in 4-compartment models, which pairs with `peripheral3` / `lvp3` -- neither of which exists in a 3-compartment series chain), and from `qp` (inter-compartmental clearance of a **target species** in TMDD models, not of the drug). Bare counterpart is `qpc`.
 
 ### lq3 (**canonical log-transformed third inter-compartmental clearance**)
 - **Type:** log-transformed-pk
@@ -357,9 +365,17 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 
 ### q2 (**canonical bare second inter-compartmental clearance**)
 - **Type:** bare-pk
-- **Role:** Inter-compartmental clearance between central and `peripheral2` (volume / time).
-- **Source aliases:** none.
+- **Role:** Inter-compartmental clearance that feeds `peripheral2` (volume / time); from `central` in the usual parallel layout, or from `peripheral1` in a series ("concatenated") chain.
+- **Source aliases:** `Q3` -- used in `Tuffal_2023_avalglucosidase_alfa.R` (see `lq2` notes on the paper's compartment-indexed numbering).
 - **Example models:** universal in 3-compartment popPK extractions.
+- **Notes:** See `lq2` for the series-chain rule. Pairs with `qpc` when the chain returns drug directly to `central`.
+
+### qpc (**canonical bare back-redistribution clearance**)
+- **Type:** bare-pk
+- **Role:** One-way back-redistribution clearance from the terminal peripheral compartment of a series ("concatenated") peripheral chain into `central` (volume / time).
+- **Source aliases:** `Qpc` -- used in `Tuffal_2023_avalglucosidase_alfa.R`.
+- **Example models:** `Tuffal_2023_avalglucosidase_alfa.R` (founding example).
+- **Notes:** Bare counterpart of `lqpc`; see that entry for the full role, the unidirectionality requirement, and the distinctions from `q`, `q2`, `q3`, and `qp`.
 
 ### q3 (**canonical bare third inter-compartmental clearance**)
 - **Type:** bare-pk
