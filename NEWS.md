@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nagy 2017 obiltoxaximab ([doi:10.1111/cts.12433](https://doi.org/10.1111/cts.12433)) - healthy and anthrax-infected NZW rabbits, cynomolgus macaques, and healthy human volunteers, plus the companion Weibull cure-rate survival model.
+- Add Riccobene 2016 ceftaroline ([doi:10.1128/AAC.02755-15](https://doi.org/10.1128/AAC.02755-15)) — healthy adults, plasma and lung epithelial lining fluid.
 
 - Time-varying clearance now has a shared vocabulary (issue #481). 31 models
   gave clearance an explicit time dependence under some twenty different

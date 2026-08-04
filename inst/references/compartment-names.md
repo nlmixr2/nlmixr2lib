@@ -3383,6 +3383,15 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** `PR` (Gibiansky 2005 poster table headings: Vc_PR, K10_PR, K12_PR, K21_PR, K_GPI-PR).
 - **Example models:** `Gibiansky_2005_fospropofol.R`.
 
+### ceftaroline (**canonical ceftaroline active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ceftaroline, the active anti-MRSA cephalosporin liberated from the water-soluble N-phosphono prodrug ceftaroline fosamil by systemic phosphatase hydrolysis. Used as the metabolite suffix on `central_ceftaroline` / `peripheral1_ceftaroline` / `peripheral2_ceftaroline` compartments, `lcl_ceftaroline` / `lvc_ceftaroline` / `lq_ceftaroline` / `lvp_ceftaroline` / `lq2_ceftaroline` / `lvp2_ceftaroline` parameters, and the `Cc_ceftaroline` observation in joint parent-prodrug + active-metabolite popPK models. The prodrug ceftaroline fosamil is the dosed species and is itself a modelled compartment, so per the standing "the parent / dosed species always wins canonical naming" rule it keeps the unsuffixed `central` / `peripheral1` / `Cc` names.
+- **Source aliases:**
+  - `C` -- the subscript Riccobene 2016 Supplemental Table 1 uses to distinguish ceftaroline (CLc, Vcc, Q1c, Vp1c, Q2c, Vp2c) from ceftaroline fosamil (CLcf, Vccf, Qcf, Vpcf), against the prodrug's `cf` subscript.
+  - `CPT` -- the abbreviation used in the ceftaroline literature (ceftaroline fosamil is `CPT-F`); deliberately NOT adopted as the suffix token because `CPT` also abbreviates camptothecin.
+- **Example models:** `Riccobene_2016_ceftaroline.R`.
+- **Notes:** Spelled out rather than abbreviated, following the `sunitinib` / `irinotecan` precedent, because every short form collides with an unrelated agent (`cpt` with camptothecin, `cef`/`cft` with the rest of the cephalosporin class, of which nlmixr2lib already carries more than twenty). Models that dose a ceftaroline compartment directly without carrying a ceftaroline fosamil state would keep ceftaroline as the bare canonical `central` / `Cc`, exactly as documented for [[tfv]].
+
 ---
 
 ## PBPK organ sub-compartment suffixes (Ayyar 2024)
