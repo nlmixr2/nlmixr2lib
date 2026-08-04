@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2024 guhong injection ([doi:10.38212/2224-6614.3492](https://doi.org/10.38212/2224-6614.3492)) - eight constituents in male Sprague-Dawley rats with myocardial ischemia/reperfusion injury.
+- Add Zhang 2024 XZP-5610 ([doi:10.3390/ph17030369](https://doi.org/10.3390/ph17030369)) - healthy Chinese adults in a first-in-human single ascending dose trial.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
