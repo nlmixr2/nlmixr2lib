@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2024 XZP-5610 ([doi:10.3390/ph17030369](https://doi.org/10.3390/ph17030369)) - healthy Chinese adults in a first-in-human single ascending dose trial.
+- Add Liang 2024 rituximab ([doi:10.3389/fphar.2024.1197651](https://doi.org/10.3389/fphar.2024.1197651)) - adults with primary membranous nephropathy.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 

@@ -2150,8 +2150,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rituximab (Candelaria 2018)"
         href: articles/Candelaria_2018_rituximab.html
-      - text: "Rituximab (Chen 2024)"
-        href: articles/Chen_2024_rituximab.html
+      - text: "Rituximab (Liang 2024)"
+        href: articles/Liang_2024_rituximab.html
       - text: "Rituximab (Lioger 2017)"
         href: articles/Lioger_2017_rituximab.html
       - text: "Rituximab (Rozman 2017)"
@@ -3495,6 +3495,7 @@ articles:
   - articles/Li_2021_daratumumab_qsstmdd
   - articles/Li_2023_granisetron
   - articles/Liang_2023_polymyxinB
+  - articles/Liang_2024_rituximab
   - articles/LiemMoolenaar_2011_scopolamine
   - articles/Liesenfeld_2006_dabigatran
   - articles/Liesenfeld_2013_dabigatran
