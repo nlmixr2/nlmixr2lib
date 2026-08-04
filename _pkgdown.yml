@@ -2092,6 +2092,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rituximab (Candelaria 2018)"
         href: articles/Candelaria_2018_rituximab.html
+      - text: "Rituximab (Chen 2024)"
+        href: articles/Chen_2024_rituximab.html
       - text: "Rituximab (Lioger 2017)"
         href: articles/Lioger_2017_rituximab.html
       - text: "Rituximab (Rozman 2017)"
@@ -2976,6 +2978,7 @@ articles:
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
   - articles/Chen_2023_tilmicosin
+  - articles/Chen_2024_rituximab
   - articles/Cheng_2026_immunoglobulin
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib

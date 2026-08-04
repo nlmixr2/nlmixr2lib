@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mohammed Ali 2023 tacrolimus (LCP-Tac) ([doi:10.3390/pharmaceutics15122699](https://doi.org/10.3390/pharmaceutics15122699)) - stable adult renal transplant recipients.
+- Add Chen 2024 rituximab ([doi:10.3389/fphar.2023.1319744](https://doi.org/10.3389/fphar.2023.1319744)) - children with frequent-relapsing or steroid-dependent nephrotic syndrome.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
