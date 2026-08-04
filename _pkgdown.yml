@@ -2474,6 +2474,14 @@ navbar:
         href: articles/Grimm_2023.html
       - text: "Tusamitamab (Pouzin 2022)"
         href: articles/Pouzin_2022_tusamitamab.html
+      - text: "Tylosin Apleuropneumoniae healthy (Lee 2023)"
+        href: articles/Lee_2023_tylosin.html
+      - text: "Tylosin Apleuropneumoniae infected (Lee 2023)"
+        href: articles/Lee_2023_tylosin.html
+      - text: "Tylosin Pmultocida healthy (Lee 2023)"
+        href: articles/Lee_2023_tylosin.html
+      - text: "Tylosin Pmultocida infected (Lee 2023)"
+        href: articles/Lee_2023_tylosin.html
       - text: "UDCA (Zuo 2016)"
         href: articles/Zuo_2016_UDCA.html
       - text: "Udenafil (Kim 2016)"
@@ -3381,6 +3389,7 @@ articles:
   - articles/Lee_2017_doripenem
   - articles/Lee_2023_patritumab
   - articles/Lee_2023_tripegfilgrastim
+  - articles/Lee_2023_tylosin
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
   - articles/Leroux_2016_cefotaxime
