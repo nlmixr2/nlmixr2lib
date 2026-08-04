@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liang 2024 rituximab ([doi:10.3389/fphar.2024.1197651](https://doi.org/10.3389/fphar.2024.1197651)) - adults with primary membranous nephropathy.
+- Add Maleki 2024 brepocitinib ([doi:10.1002/psp4.13100](https://doi.org/10.1002/psp4.13100)) - healthy adults and patients with six immuno-inflammatory diseases.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 

@@ -344,6 +344,8 @@ navbar:
         href: articles/Suri_2018_brentuximab.html
       - text: "Brentuximab (Zhou 2025)"
         href: articles/Zhou_2025_brentuximab.html
+      - text: "Brepocitinib (Maleki 2024)"
+        href: articles/Maleki_2024_brepocitinib.html
       - text: "Brivaracetam (Schoemaker 2017)"
         href: articles/Schoemaker_2017_brivaracetam.html
       - text: "Brodalumab (Timmermann 2019)"
@@ -3538,6 +3540,7 @@ articles:
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Macpherson_2015_rosuvastatin
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
+  - articles/Maleki_2024_brepocitinib
   - articles/MangasSanjuan_2016_axomadol
   - articles/Marathe_2023_belzutifan
   - articles/Marcantonio_2022_efa
