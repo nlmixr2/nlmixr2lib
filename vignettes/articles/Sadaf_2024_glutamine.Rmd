@@ -564,6 +564,15 @@ peak landed at 2 h or later. No parameter was adjusted to close the gap.
   defined as age < 18 years with a mean of 12.0, and the Abstract and Results
   give the overall cohort range as 6.8-43.8 years with the healthy-volunteer
   group topping out at 43.8. The vignette population table above uses 15.1.
+- The paper contradicts itself on hydroxyurea use. Table 1 reports "Yes (1) /
+  No (3)" for the paediatric group and "Yes (2) / No (2)" for the adult group,
+  i.e. 3 of 8 participants with sickle cell disease on hydroxyurea, whereas
+  Results 3.1 states that the group had an equal distribution of "hydroxyurea
+  use (four yes, four no)". The genotype counts in the same sentence do agree
+  with Table 1, so the discrepancy is confined to hydroxyurea. It has no effect
+  on the extraction: hydroxyurea was not among the covariates screened in
+  Methods 2.6.2, and the model file's `population` metadata records both counts
+  rather than choosing one.
 - The Table 2 footnote spells the standard-baseline symbol "Glu_BSLstardard",
   a typographical variant of "standard". The value it defines, 683 umol/L, is
   unambiguous and is the normalisation constant used in the model.

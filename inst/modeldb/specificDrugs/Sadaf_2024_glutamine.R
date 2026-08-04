@@ -181,9 +181,14 @@ Sadaf_2024_glutamine <- function() {
     sex_female_pct = 66.7,
     disease_state  = paste(
       "Sickle cell disease (N = 8: 4 homozygous sickle cell anemia HbSS,",
-      "4 sickle-hemoglobin C disease HbSC; 3 of 8 on stable hydroxyurea)",
-      "plus healthy adult volunteers with a normal hemoglobin profile",
-      "(N = 4, HbAA).",
+      "4 sickle-hemoglobin C disease HbSC) plus healthy adult volunteers",
+      "with a normal hemoglobin profile (N = 4, HbAA). Concomitant",
+      "hydroxyurea was allowed if the dose had been stable for 3 months",
+      "and stayed unchanged during the trial; the paper is internally",
+      "inconsistent about how many took it (Table 1 gives 1 of 4 pediatric",
+      "and 2 of 4 adult, i.e. 3 of 8, whereas Results 3.1 states 'four yes,",
+      "four no'). Hydroxyurea was not among the covariates screened",
+      "(Methods 2.6.2), so the discrepancy does not affect the model.",
       sep = " "
     ),
     dose_range     = "0.1 g/kg twice daily, then 0.3 g/kg twice daily, then 0.6 g/kg once daily, oral, one dose level per week for three weeks",
