@@ -87,7 +87,7 @@
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
-- Add Valke 2024 factor VIII ([doi:10.1007/s13318-024-00876-6](https://doi.org/10.1007/s13318-024-00876-6)) - adults with severe hemophilia A; one population PK model plus three sequential PK-PD models for thrombin peak height, thrombin potential and plasmin peak height.
+- Add Wenker 2024 piperacillin/tazobactam ([doi:10.1093/jacamr/dlae036](https://doi.org/10.1093/jacamr/dlae036)) - in vitro hollow-fibre infection model against six Gram-negative strains.
 
 - Disambiguated the overloaded `OC` name, which denoted five unrelated
   concepts. Osteocalcin `OC` -> `OSTCALC` (uppercase, matching the sibling
