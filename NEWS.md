@@ -2,16 +2,7 @@
 
 # development version
 
-- Add 11 ganciclovir / valganciclovir population PK models transcribed from the
-  Yang 2023 model repository ([doi:10.3390/pharmaceutics15071801](https://doi.org/10.3390/pharmaceutics15071801))
-  -- Lalagkas 2023, Krens 2020 and Yuen 1995 (adults), Nguyen 2021, Franck 2021,
-  Li 2021, Facchin 2019 and Zhao 2009 (pediatrics), Horvatits 2014 (critically ill
-  adults on CVVHDF), and Acosta 2007 and Zhou 1996 (neonates). With the five
-  already-packaged models extracted from their primaries, this covers all 16
-  models in the review.
-- Add the `DIS_CRITILL` (binary critical-illness / ICU indicator), `TX_ANY`
-  (any-solid-organ-transplant vs non-transplant) and `DIS_CMV_RETINITIS`
-  (CMV retinitis vs CMV-positive without retinitis) covariate canonicals.
+- Add Janssen 2023 docetaxel, paclitaxel, doxorubicin and epirubicin ([doi:10.1007/s40262-023-01263-1](https://doi.org/10.1007/s40262-023-01263-1)) - pregnant patients with cancer. Adds the canonical covariate `EGA` (maternal estimated gestational age, weeks).
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
