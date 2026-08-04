@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2024 evorpacept ([doi:10.1111/cts.13811](https://doi.org/10.1111/cts.13811)) - in silico virtual cohort with advanced non-small cell lung cancer.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
