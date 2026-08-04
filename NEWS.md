@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhu 2023 oxaliplatin and irinotecan ([doi:10.3390/pharmaceutics15092274](https://doi.org/10.3390/pharmaceutics15092274)) - adults with metastatic colorectal cancer plus the patient-derived tumour organoids used to derive the drug effect. Five models: two in-vitro organoid PD models, a human oxaliplatin plasma PK model, and irinotecan/SN-38 minimal-PBPK models in tumour-bearing mice and in humans. The paper's in-vivo tumour-growth layer is not packaged; its growth equation is never printed (see the vignette).
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

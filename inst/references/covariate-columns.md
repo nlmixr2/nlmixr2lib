@@ -2912,6 +2912,26 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Xiang_2018_baicalein.R` (time-invariant baicalein concentration driving the log-linear inhibition of LPS-stimulated TNF-alpha production in RAW264.7 macrophages, propagating downstream to IL-6, iNOS, and NO).
 - **Notes:** Specific scope because the value is bound to baicalein and the in-vitro experimental design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; here the unit is uM (sibling concentration covariates such as `CONC_RIF_MGL` are reported in mg/L, so the `<units>` suffix is load-bearing). Distinct from the `STIM_<drug>_<units>` antimalarial-well family and the `CP_<drug>` plasma-PD-driver family. Ratified canonically alongside the Xiang 2018 baicalein extraction.
 
+### CONC_OXA_UM (**canonical for static in-vitro oxaliplatin concentration driving a tumour-organoid cytotoxicity PD model**)
+- **Description:** Static (time-invariant) oxaliplatin concentration applied to the culture medium of a patient-derived tumour-organoid (PDTO) drug-sensitivity assay, supplied as an exogenous covariate that drives the sigmoidal Emax killing term. Applied experimental concentration in the in-vitro matrix; distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<drug>` plasma-PD-driver family.
+- **Units:** uM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the Hill killing term `Emax * C^hill / (EC50^hill + C^hill)`; set to 0 for the vehicle-control organoid. Zhu 2023 does not tabulate the tested concentration grid; Figure 2A spans roughly 1-1000 umol/L, bracketing the estimated EC50 range of 246-622 umol/L (Table 2).
+- **Source aliases:** none -- the source writes `C` in Equation (2); the model column is the canonical `CONC_OXA_UM`.
+- **Example models:** `Zhu_2023_oxaliplatin_organoid.R` (96 h static oxaliplatin exposure of colorectal-cancer PDTOs; cell viability read as the treated-to-vehicle-control organoid volume ratio).
+- **Notes:** Specific scope because the value is bound to oxaliplatin and to the in-vitro organoid assay design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; the unit suffix is load-bearing because sibling entries such as `CONC_RIF_MGL` are reported in mg/L while the organoid assays are reported in umol/L. Ratified canonically alongside the Zhu 2023 extraction.
+
+### CONC_SN38_UM (**canonical for static in-vitro SN-38 concentration driving a tumour-organoid cytotoxicity PD model**)
+- **Description:** Static (time-invariant) SN-38 concentration applied to the culture medium of a patient-derived tumour-organoid (PDTO) drug-sensitivity assay, supplied as an exogenous covariate that drives the sigmoidal Emax killing term. SN-38 is the active metabolite of irinotecan. Applied experimental concentration in the in-vitro matrix; distinct from a state-derived plasma concentration (`Cc_sn38`) and from the `CP_<drug>` plasma-PD-driver family.
+- **Units:** uM
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the Hill killing term `Emax * C^hill / (EC50^hill + C^hill)`; set to 0 for the vehicle-control organoid. Zhu 2023 does not tabulate the tested concentration grid; Figure 2B spans roughly 0.01-100 umol/L, bracketing the estimated EC50 range of 4.17-15.5 umol/L (Table 2).
+- **Source aliases:** none -- the source writes `C` in Equation (2); the model column is the canonical `CONC_SN38_UM`.
+- **Example models:** `Zhu_2023_sn38_organoid.R` (96 h static SN-38 exposure of colorectal-cancer PDTOs; cell viability read as the treated-to-vehicle-control organoid volume ratio).
+- **Notes:** Specific scope because the value is bound to SN-38 and to the in-vitro organoid assay design. Member of the in-vitro applied-drug-concentration `CONC_<drug>_<units>` family; `SN38` matches the registered metabolite suffix `sn38` used for the paired compartment and parameter names. Ratified canonically alongside the Zhu 2023 extraction.
+
 ### CONC_IPM_MGL (**canonical for in-vitro imipenem concentration driving an antibacterial PD or receptor-binding model**)
 - **Description:** Unbound imipenem concentration applied to an in-vitro bacterial system, supplied externally as an exogenous covariate. Applied experimental concentration in the in-vitro matrix; distinct from `Cc` and the `CP_<DRUG>` plasma-PD-driver family. Used both time-varying (hollow-fiber infection model growth medium, driving the bacterial-kill PD effect) and static (60-min whole-cell penicillin-binding-protein binding assay, scaling the rate of net influx and PBP access).
 - **Units:** mg/L
