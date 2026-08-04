@@ -28,11 +28,20 @@ Othman_2013_ABT_102 <- function() {
   paper_specific_etas <- c("etabl", "etaamp", "etaps")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL",
     dosing_notes  = "Oral ABT-102; FORM_SOLUTION = 1 -> solution formulation (Studies 1 and 2), = 0 -> solid-dispersion formulation (Study 3).",
     concentration_notes = "ABT-102 plasma Cc; central is internally in mg with vc in L, Cc = 1000 * central / vc to express in ng/mL. Body temperature outputs BT_oral and BT_core are in degC."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "ABT 102", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "ABT 102", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "ABT 102", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

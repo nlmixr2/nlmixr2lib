@@ -27,6 +27,30 @@ Dogra_2023_covid19vaccine <- function() {
     concentration = "U/mL (neutralizing antibody titer)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_antigen = list(analyte = "antigen", units = NA_character_, specimen = "administration site", verified = FALSE),
+    apc           = list(analyte = "naive antigen-presenting cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    apc_active    = list(analyte = "activated antigen-presenting cells", units = NA_character_, specimen = "lymph", verified = FALSE),
+    cd4           = list(analyte = "naive CD4+ T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    cd4_effector  = list(analyte = "effector CD4+ T-cells", units = NA_character_, specimen = "tissue", verified = FALSE),
+    cd8           = list(analyte = "naive CD8+ T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    cd8_effector  = list(analyte = "effector CD8+ T-cells", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcell         = list(analyte = "naive B-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    bcell_active  = list(analyte = "activated B-cells", units = NA_character_, specimen = "lymph", verified = FALSE),
+    plasma_cell   = list(analyte = "antibody-secreting plasma cells", units = NA_character_, specimen = "plasma", verified = FALSE),
+    antibody      = list(analyte = "neutralizing antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    ifn1          = list(analyte = "type-I interferon", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    ifn2          = list(analyte = "type-II interferon", units = NA_character_, specimen = "tissue", verified = FALSE),
+    il6           = list(analyte = "interleukin-6", units = NA_character_, specimen = "serum", verified = FALSE),
+    healthy_cell  = list(analyte = "healthy cells", units = NA_character_, specimen = "tissue", verified = FALSE),
+    infected_cell = list(analyte = "infected cells", units = NA_character_, specimen = "tissue", verified = FALSE),
+    virus         = list(analyte = "SARS-CoV-2 virus", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

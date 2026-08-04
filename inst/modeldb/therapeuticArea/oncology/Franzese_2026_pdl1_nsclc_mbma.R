@@ -67,6 +67,15 @@ Franzese_2026_pdl1_nsclc_mbma <- function() {
     concentration = "fraction/arm (Cc output = per-arm predicted ORR as a dimensionless proportion in [0, 1]; e.g., Cc = 0.35 means a 35 percent ORR. The slash in the unit string is to satisfy checkModelConventions parsing; Cc is NOT a drug concentration.)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz_os  = list(analyte = "OS", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz_pfs = list(analyte = "PFS", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     TRT = list(
       description        = "Per-arm integer treatment indicator selecting the ORR treatment-specific intercept (46 unique treatments per Franzese 2026 Table S4) and, via a lookup inside model(), the 5-level OS/PFS treatment category.",

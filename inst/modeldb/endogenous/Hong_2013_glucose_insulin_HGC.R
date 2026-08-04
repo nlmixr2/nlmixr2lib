@@ -41,6 +41,16 @@ Hong_2013_glucose_insulin_HGC <- function() {
     concentration = "mg/L for glucose (G / VG) and mU/L for insulin (I / VI); convert to mg/dL via /10 and to mmol/L via /18.02 for glucose"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    glucose = list(analyte = "Glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    insulin = list(analyte = "Insulin", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    effect  = list(analyte = "Effect", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     FPG = list(
       description        = "Baseline fasting plasma glucose concentration (GCss in the paper notation). Used to derive the constant endogenous glucose production rate GP at steady state via GP = GCss * (CLG + CLGI_HGC * ICss). Time-fixed per subject.",

@@ -11,6 +11,17 @@ Schmid_2017_nintedanib <- function() {
   vignette <- "Schmid_2017_nintedanib"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "nintedanib", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "nintedanib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_bibf   = list(analyte = "BIBF 1202", units = "mg", specimen = "administration site", verified = FALSE),
+    central_bibf = list(analyte = "BIBF 1202", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Age. Linear effect on nintedanib F1 (centered at 62 years).",

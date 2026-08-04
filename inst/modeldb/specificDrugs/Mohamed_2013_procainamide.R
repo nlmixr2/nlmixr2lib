@@ -40,9 +40,19 @@ Mohamed_2013_procainamide <- function() {
   )
   vignette <- "Mohamed_2013_procainamide"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    central_napa = list(analyte = "N-acetylprocainamide (NAPA)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()

@@ -2,7 +2,15 @@ Archary_2019_lamivudine <- function() {
   description <- "One-compartment population PK model for lamivudine in severely malnourished HIV-infected children (Archary 2019); CL/F matures with age via a sigmoid Emax function, Vc/F decreases linearly with serum triglyceride, and ka steps up between day 1 and day 14 of antiretroviral treatment"
   reference <- "Archary M, McIlleron H, Bobat R, LaRussa P, Sibaya T, Wiesner L, Hennig S. Population pharmacokinetics of abacavir and lamivudine in severely malnourished human immunodeficiency virus-infected children in relation to treatment outcomes. Br J Clin Pharmacol. 2019;85(8):1881-1890. doi:10.1111/bcp.13998"
   vignette <- "Archary_2019_lamivudine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

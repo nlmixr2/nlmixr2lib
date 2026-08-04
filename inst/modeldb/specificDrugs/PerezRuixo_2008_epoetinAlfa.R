@@ -46,6 +46,41 @@ PerezRuixo_2008_epoetinAlfa <- function() {
   # paper-specific so checkModelConventions() does not flag them.
   paper_specific_compartment_pattern <- "^retic[0-9]+$"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "epoetin alfa", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "epoetin alfa", units = "IU", specimen = "plasma", verified = FALSE),
+    transit1    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "epoetin alfa", units = "IU", specimen = "administration site", verified = FALSE),
+    precursor1  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "EPO", units = "IU", specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor6  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor7  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor8  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor9  = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    precursor10 = list(analyte = "EPO", units = "IU", specimen = "plasma", verified = FALSE),
+    retic1      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic2      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic3      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic4      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic5      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic6      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic7      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic8      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic9      = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE),
+    retic10     = list(analyte = "EPO", units = "IU", specimen = "retina", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = paste(

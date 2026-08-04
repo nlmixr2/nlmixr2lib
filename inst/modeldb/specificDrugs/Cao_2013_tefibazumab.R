@@ -4,6 +4,17 @@ Cao_2013_tefibazumab <- function() {
   vignette <- "Cao_2013_tefibazumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "tefibazumab", units = "mg", specimen = "plasma", verified = FALSE),
+    tight  = list(analyte = "tefibazumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky  = list(analyte = "tefibazumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph  = list(analyte = "tefibazumab", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

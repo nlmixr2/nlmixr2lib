@@ -24,6 +24,22 @@ Marcantonio_2022_risankizumab <- function() {
     concentration = "Free risankizumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot = list(analyte = "risankizumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ab_00 = list(analyte = "free risankizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(analyte = "bound risankizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_L0 = list(analyte = "risankizumab-p19 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_LL = list(analyte = "dimerized risankizumab-p19 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1    = list(analyte = "p19 subunit of IL-23", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1    = list(analyte = "risankizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1  = list(analyte = "risankizumab-p19 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1    = list(analyte = "IL-23", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

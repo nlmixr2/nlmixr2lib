@@ -10,6 +10,20 @@ LopezArguello_2023_piperacillin_qsp <- function() {
     "npbp1a", "npbp1b", "npbp2", "npbp3", "npbp4", "npbp56", "nperi"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    npbp1a = list(analyte = "piperacillin-bound PBP 1a", units = NA_character_, specimen = "bile", verified = FALSE),
+    npbp1b = list(analyte = "piperacillin-bound PBP 1b", units = NA_character_, specimen = "bile", verified = FALSE),
+    npbp2  = list(analyte = "piperacillin-bound PBP 2", units = NA_character_, specimen = "bile", verified = FALSE),
+    npbp3  = list(analyte = "piperacillin-bound PBP 3", units = NA_character_, specimen = "bile", verified = FALSE),
+    npbp4  = list(analyte = "piperacillin-bound PBP 4", units = NA_character_, specimen = "bile", verified = FALSE),
+    npbp56 = list(analyte = "piperacillin-bound PBPs 5/6", units = NA_character_, specimen = "bile", verified = FALSE),
+    nperi  = list(analyte = "free piperacillin in periplasm", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     # Cell-preparation flag. Fig. S8 lines 66-73 branch on it: it gates BOTH the
     # outer-membrane influx term and the periplasmic initial condition.

@@ -49,7 +49,7 @@ Hietala_2010_artemether_parasitemia <- function() {
     sep = " "
   )
   vignette <- "Hietala_2010_artemether_lumefantrine_malaria"
-  units <- list(time = "hour", dosing = "mg", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
 
   paper_specific_compartments <- c(
     "parasite_tinyrings",
@@ -57,6 +57,22 @@ Hietala_2010_artemether_parasitemia <- function() {
     "parasite_largerings",
     "parasite_matureschizonts",
     "parasite_spleen"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot                    = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    central                  = list(analyte = "Artemether", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1              = list(analyte = "Artemether", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dihydroart       = list(analyte = "Dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE),
+    parasite_tinyrings       = list(analyte = "Plasmodium falciparum parasites", units = "mg", specimen = "blood cell", verified = FALSE),
+    parasite_smallrings      = list(analyte = "Plasmodium falciparum parasites", units = "mg", specimen = "blood cell", verified = FALSE),
+    parasite_largerings      = list(analyte = "Plasmodium falciparum parasites", units = "mg", specimen = "blood cell", verified = FALSE),
+    parasite_matureschizonts = list(analyte = "Plasmodium falciparum parasites", units = "mg", specimen = "blood cell", verified = FALSE),
+    parasite_spleen          = list(analyte = "Killed or injured Plasmodium falciparum parasites", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(

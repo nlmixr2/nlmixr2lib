@@ -38,6 +38,17 @@ Weatherley_2018_fosdagrocorat <- function() {
   vignette <- "Weatherley_2018_fosdagrocorat"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "fosdagrocorat", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
+    central_noxide = list(analyte = "PF-04015475", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline.",

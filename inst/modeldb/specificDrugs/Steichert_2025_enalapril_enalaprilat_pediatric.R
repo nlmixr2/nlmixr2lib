@@ -2,7 +2,17 @@ Steichert_2025_enalapril_enalaprilat_pediatric <- function() {
   description <- "Simultaneous parent + active-metabolite population PK model for oral enalapril (ODMT) and enalaprilat in ACEi-naive children with heart failure (Steichert 2025, LENA studies). Combined one-compartment model for enalapril (first-order absorption with a lag) coupled with a one-compartment model for enalaprilat via a fixed fraction metabolised fm = 0.7. Allometric scaling (fixed exponents 0.75 on CL, 1 on V) referenced to 5 kg body weight. Covariate effects retained in the final model: age and serum creatinine on the apparent clearance of enalaprilat, and modified Ross score on the apparent volume of distribution of enalaprilat."
   reference   <- "Steichert M, Cawello W, Laeer S; LENA Consortium. Population Pharmacokinetic Analysis of Enalapril and Enalaprilat in Newly Treated Children with Heart Failure: Implications for Safe Dosing of Enalapril (LENA Studies). Clin Pharmacokinet. 2025;64(7):1103-1118. doi:10.1007/s40262-025-01520-5"
   vignette    <- "Steichert_2025_enalapril_enalaprilat_pediatric"
-  units       <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "enalapril", units = "ug", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "enalapril", units = "ug", specimen = "plasma", verified = FALSE),
+    central_enaat = list(analyte = "enalaprilat", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

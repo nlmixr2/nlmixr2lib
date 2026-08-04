@@ -73,6 +73,28 @@ NA_NA_paracetamol <- function() {
     concentration = "umol/L"               # paracetamol; secondary outputs in mmol/L (glucose) and pmol/L (GLP-1, GIP), see description
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    stomach_apap    = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    intestine_apap  = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    stomach_glu     = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    duodenum_glu    = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    central_glu     = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_glu = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_glu_prod = list(analyte = "glucose", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_ins      = list(analyte = "insulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    jejunum_glu     = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    ileum_glu       = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    cumloss_apap    = list(analyte = "paracetamol", units = "mg", specimen = "not applicable", verified = FALSE),
+    glp1            = list(analyte = "GLP-1", units = "mg", specimen = "plasma", verified = FALSE),
+    gip             = list(analyte = "GIP", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight, time-fixed at baseline. Used as a linear scaling factor on the central glucose volume (VG_i = THETA(9) * WT / 70). Reference weight 70 kg.",

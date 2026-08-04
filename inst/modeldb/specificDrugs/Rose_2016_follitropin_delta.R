@@ -18,7 +18,16 @@ Rose_2016_follitropin_delta <- function() {
     sep = " "
   )
   vignette <- "Rose_2016_follitropin_delta"
-  units    <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units    <- list(time = "h", dosing = "ug", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "follitropin delta", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "follitropin delta", units = "ug", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "follitropin delta", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

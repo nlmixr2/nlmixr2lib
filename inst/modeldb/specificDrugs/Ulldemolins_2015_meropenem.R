@@ -2,7 +2,14 @@ Ulldemolins_2015_meropenem <- function() {
   description <- "One-compartment IV population PK model for meropenem in 30 critically ill adults with septic shock and continuous renal replacement therapy (Ulldemolins 2015). Clearance is the sum of a constant CRRT-mediated baseline (3.68 L/h at zero residual diuresis) and an additive linear contribution from 24-hour residual diuresis (0.22 L/h per 100 mL/24h); central volume scales with body weight by power exponent 2.07 around the population-median 73 kg. CRRT intensity, blood flow, filter type, and serum albumin were tested but not retained."
   reference <- "Ulldemolins M, Soy D, Llaurado-Serra M, Vaquer S, Castro P, Rodriguez AH, Pontes C, Calvo G, Torres A, Martin-Loeches I. Meropenem population pharmacokinetics in critically ill patients with septic shock and continuous renal replacement therapy: influence of residual diuresis on dose requirements. Antimicrob Agents Chemother. 2015;59(9):5520-5528. doi:10.1128/AAC.00712-15"
   vignette <- "Ulldemolins_2015_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

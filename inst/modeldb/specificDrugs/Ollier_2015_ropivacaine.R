@@ -38,7 +38,18 @@ Ollier_2015_ropivacaine <- function() {
     sep = " "
   )
   vignette <- "Ollier_2015_ropivacaine"
-  units <- list(time = "hour", dosing = "umol", concentration = "uM")
+  units <- list(time = "h", dosing = "umol", concentration = "uM")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "ropivacaine", units = "umol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE),
+    complex = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE),
+    target  = list(analyte = "ropivacaine", units = "umol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

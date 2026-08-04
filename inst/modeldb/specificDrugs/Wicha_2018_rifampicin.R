@@ -23,6 +23,21 @@ Wicha_2018_rifampicin <- function() {
     concentration = "mg/L for plasma Cc and ELF Celf and PAE Cpae; CFU/mL for the bacterial states (the log_cfu observation is on the natural-log scale)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    enzyme  = list(analyte = "Active Rifampicin Enzyme Complex", units = "mg", specimen = "plasma", verified = FALSE),
+    effect1 = list(analyte = "Rifampicin", units = "mg", specimen = "epithelial lining fluid", verified = FALSE),
+    effect2 = list(analyte = "Rifampicin", units = "mg", specimen = "epithelial lining fluid", verified = FALSE),
+    fast    = list(analyte = "Mycobacterium tuberculosis (Fast-Multiplying Subpopulation)", units = "mg", specimen = "not applicable", verified = FALSE),
+    slow    = list(analyte = "Mycobacterium tuberculosis (Slow-Growing Subpopulation)", units = "mg", specimen = "not applicable", verified = FALSE),
+    nonm    = list(analyte = "Mycobacterium tuberculosis (Non-Multiplying Subpopulation)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-record administered rifampicin dose (mg) used as the input to the saturable dose-dependent bioavailability function bio = 1 + femax * max(DOSE - 450, 0) / (fed50 + max(DOSE - 450, 0)).",

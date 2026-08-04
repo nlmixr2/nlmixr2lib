@@ -30,6 +30,17 @@ Gebhard_2023_methotrexate <- function() {
   #   amt [umol/m^2] = dose [mg/m^2] * 1000 / 454.44.
   # That conversion factor is a derived quantity, not printed in the paper.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "methotrexate", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "methotrexate", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "methotrexate", units = NA_character_, specimen = "plasma", verified = FALSE),
+    rbc_mtx     = list(analyte = "methotrexate", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     BL_MTX_RBC = list(
       description        = "Baseline (first observed) erythrocyte methotrexate concentration, used as the initial condition of the rbc_mtx compartment.",

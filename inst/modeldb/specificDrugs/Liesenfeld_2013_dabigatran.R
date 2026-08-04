@@ -2,7 +2,16 @@ Liesenfeld_2013_dabigatran <- function() {
   description <- "Two-compartment population PK model for oral dabigatran (after dabigatran etexilate prodrug) in seven end-stage renal disease (ESRD) subjects undergoing intermittent hemodialysis, with first-order absorption, absorption lag, an apparent total body clearance (renal + non-renal), and an apparent dialysis clearance described by the Michaels equation as a function of blood and dialysate flow rates and a hemodialyzer mass transfer-area coefficient (Liesenfeld 2013)."
   reference <- "Liesenfeld KH, Staab A, Haertter S, Formella S, Clemens A, Lehr T. Pharmacometric Characterization of Dabigatran Hemodialysis. Clin Pharmacokinet. 2013;52(6):453-462. doi:10.1007/s40262-013-0049-6"
   vignette <- "Liesenfeld_2013_dabigatran"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "dabigatran", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dabigatran", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     RRT_HEMODIAL_ACTIVE = list(

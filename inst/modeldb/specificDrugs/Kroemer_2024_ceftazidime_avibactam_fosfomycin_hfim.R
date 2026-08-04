@@ -12,6 +12,20 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_hfim <- function() {
     "conc_caz", "conc_avi", "conc_fof"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible   = list(analyte = "Escherichia coli (susceptible bacteria)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resistant     = list(analyte = "Escherichia coli (resistant bacteria)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resistant_cza = list(analyte = "Escherichia coli (resistant to ceftazidime bacteria)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resistant_fof = list(analyte = "Escherichia coli (resistant to fosfomycin bacteria)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    conc_caz           = list(analyte = "ceftazidime", units = NA_character_, specimen = "administration site", verified = FALSE),
+    conc_avi           = list(analyte = "avibactam", units = NA_character_, specimen = "administration site", verified = FALSE),
+    conc_fof           = list(analyte = "fosfomycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

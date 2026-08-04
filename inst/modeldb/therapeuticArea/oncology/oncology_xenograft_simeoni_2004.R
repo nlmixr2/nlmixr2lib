@@ -8,6 +8,17 @@ oncology_xenograft_simeoni_2004 <- function() {
   # 2 from the reference (limits are not from the reference). The values from
   # Table 2 will be estimated on the log scale to ensure positive values.
   # Residual errors are not in the original reference.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cycling_cells  = list(analyte = "tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells1 = list(analyte = "dead tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells2 = list(analyte = "dead tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells3 = list(analyte = "dead tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   ini({
     ldamageTransit <- log(c(0.1, 0.968, 10)) ; label("Transit rate through damage (1/day)")
     ldrugSlope <- log(c(0.00001, 0.000629, 0.1)) ; label("Linear drug effect on cycling cells (1/(day*ng/mL))")

@@ -2,7 +2,15 @@ Long_2017_necitumumab <- function() {
   description <- "Two-compartment population PK model for necitumumab in cancer patients (Long 2017), with IV infusion input and parallel linear plus Michaelis-Menten (target-mediated) elimination from the central compartment and allometric weight scaling on CL, Q, V1, and V2."
   reference <- "Long A, Chigutsa E, Wallin J. Population Pharmacokinetics of Necitumumab in Cancer Patients. Clin Pharmacokinet. 2017;56(5):505-514. doi:10.1007/s40262-016-0452-x"
   vignette <- "Long_2017_necitumumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "necitumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "necitumumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

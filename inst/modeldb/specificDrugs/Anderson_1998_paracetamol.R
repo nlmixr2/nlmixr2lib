@@ -24,7 +24,17 @@ Anderson_1998_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Anderson_1998_paracetamol"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot     = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central   = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    brain_csf = list(analyte = "paracetamol", units = "mg", specimen = "tissue", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

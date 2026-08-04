@@ -2,7 +2,16 @@ Overgaard_2019_semaglutide <- function() {
   description <- "Two-compartment population PK model for subcutaneous semaglutide (GLP-1 receptor agonist) with first-order absorption and first-order elimination, pooled across nine clinical pharmacology trials in healthy volunteers and adults with type 2 diabetes (Overgaard 2019)."
   reference <- "Overgaard RV, Delff PH, Petri KCC, Anderson TW, Flint A, Ingwersen SH. Population pharmacokinetics of semaglutide for type 2 diabetes. Diabetes Therapy. 2019;10(2):649-662. doi:10.1007/s13300-019-0581-y"
   vignette <- "Overgaard_2019_semaglutide"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "semaglutide", units = "nmol", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "semaglutide", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "semaglutide", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -47,10 +56,10 @@ Overgaard_2019_semaglutide <- function() {
   ini({
     # Structural parameters from Overgaard 2019 Table 4 (final two-compartment model). Reference
     # subject: healthy (DIS_DIAB = 0), 85 kg body weight, abdomen injection site, 1.34 mg/mL product.
-    lka     <- log(0.0253);  label("First-order SC absorption rate constant (1/hour)")             # Overgaard 2019 Table 4 (ka = 0.0253 1/h, 1.34 mg/mL)
-    lcl     <- log(0.0348);  label("Clearance at reference covariates (L/hour)")                    # Overgaard 2019 Table 4 (CL = 0.0348 L/h, 85 kg, healthy)
+    lka     <- log(0.0253);  label("First-order SC absorption rate constant (1/h)")             # Overgaard 2019 Table 4 (ka = 0.0253 1/h, 1.34 mg/mL)
+    lcl     <- log(0.0348);  label("Clearance at reference covariates (L/h)")                    # Overgaard 2019 Table 4 (CL = 0.0348 L/h, 85 kg, healthy)
     lvc     <- log(3.59);    label("Central volume of distribution at reference body weight (L)")   # Overgaard 2019 Table 4 (Vc = 3.59 L, 85 kg)
-    lq      <- log(0.304);   label("Intercompartmental clearance at reference body weight (L/hour)") # Overgaard 2019 Table 4 (Q = 0.304 L/h, 85 kg)
+    lq      <- log(0.304);   label("Intercompartmental clearance at reference body weight (L/h)") # Overgaard 2019 Table 4 (Q = 0.304 L/h, 85 kg)
     lvp     <- log(4.10);    label("Peripheral volume of distribution at reference body weight (L)") # Overgaard 2019 Table 4 (Vp = 4.10 L, 85 kg)
     lfdepot <- log(0.847);   label("Absolute SC bioavailability at abdomen, 1.34 mg/mL (fraction)")  # Overgaard 2019 Table 4 (F = 0.847)
 

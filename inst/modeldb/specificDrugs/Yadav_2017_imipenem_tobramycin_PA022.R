@@ -2,9 +2,25 @@ Yadav_2017_imipenem_tobramycin_PA022 <- function() {
   description <- "In vitro (static-concentration time-kill). Mechanism-based PK/PD (Bulitta life-cycle growth) model of bacterial killing and resistance for imipenem combined with tobramycin against carbapenem-resistant and aminoglycoside-resistant clinical Pseudomonas aeruginosa isolate FADDI-PA022 (MIC_IPM = 16 mg/L, MIC_TOB = 8 mg/L). Three pre-existing bacterial subpopulations with signal-molecule growth inhibition and aminoglycoside-mediated outer-membrane permeabilisation (mechanistic synergy)"
   reference <- "Yadav R, Bulitta JB, Nation RL, Landersdorfer CB. Optimization of synergistic combination regimens against carbapenem- and aminoglycoside-resistant clinical Pseudomonas aeruginosa isolates via mechanism-based pharmacokinetic/pharmacodynamic modeling. Antimicrob Agents Chemother. 2017 Jan;61(1):e01011-16. doi:10.1128/AAC.01011-16. Model differential equations (Eqs 1-5) are in the main paper Methods; parameter estimates for FADDI-PA022 with tobramycin are Table 3 (FADDI-PA022 column). Amikacin combinations against FADDI-PA022 were not studied (Table 1 footnote 'NS'). Supplemental Text S1 (not on disk) contains diagnostic plots only."
   vignette <- "Yadav_2017_imipenem_aminoglycoside_pseudomonas"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   paper_specific_compartments <- c("cipm", "cags", "csig")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    csig                          = list(analyte = "Signal molecule", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cipm                          = list(analyte = "Imipenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cags                          = list(analyte = "Tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list()
 

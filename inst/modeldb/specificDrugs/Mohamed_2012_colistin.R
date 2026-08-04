@@ -29,6 +29,18 @@ Mohamed_2012_colistin <- function() {
   # hemoglobin, hematocrit) failed to meet the dOFV > 10.83 inclusion
   # threshold (Mohamed 2012, Materials and Methods, "Population
   # pharmacokinetic modeling"; Results "PK model" and Table 3).
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central_cms    = list(analyte = "colistin methanesulfonate (CMS)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_cms = list(analyte = "colistin methanesulfonate (CMS)", units = "mg", specimen = "tissue", verified = FALSE),
+    central_col    = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE),
+    bact_s         = list(analyte = "Pseudomonas aeruginosa", units = "mg", specimen = "not applicable", verified = FALSE),
+    bact_r         = list(analyte = "Pseudomonas aeruginosa", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

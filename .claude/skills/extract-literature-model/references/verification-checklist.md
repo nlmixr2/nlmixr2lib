@@ -24,6 +24,10 @@ Do not silently resolve ambiguity. Do not tune parameters to make a validation o
 - [ ] **CV% vs. variance.** `omega²` in NONMEM output is the variance on the internal scale. For log-normal parameters, CV% relates via `omega² = log(CV² + 1)`. Do not paste CV% directly into `ini()` as if it were a variance.
 - [ ] **Correlated IIV.** If the paper reports a correlation `r` and individual CV%, the covariance is `cov = r × sqrt(var_1 × var_2)`. Verify the block matrix entries match this formula.
 - [ ] **Fixed parameters** the source holds fixed are wrapped in `fixed(...)` in `ini()` — applies to ALL parameter types (THETAs, allometric exponents, IIVs, residual errors, covariate effects, bioavailability anchors), not just IIVs. Source signals: explicit "fixed at <value>" prose, NONMEM `FIX` flags on `$THETA`/`$OMEGA`/`$SIGMA`, allometric exponents reported without uncertainty, bioavailability `F1=1` set as structural anchor, parameters inherited from upstream papers without re-fitting. If a parameter is reported without uncertainty but the paper does not explicitly say "fixed", sidecar-ask before guessing — see `references/parameter-names.md` § "Fixed parameters" for the encoding examples.
+- [ ] **Canonical unit spellings** in the `units` block and in label unit hints:
+      `h` (not hour/hr), `min` (not minute), `ug` (not microgram/mcg), `day` (not days).
+      `checkModelConventions()` errors and `buildModelDb()` aborts otherwise. Spelling
+      only — keep the paper's actual unit; never convert min to h or vice versa.
 - [ ] **No label repeats `fixed()`.** If the value is wrapped in `fixed(...)`, the label must
       not also say "fixed" / "FIXED" — `checkModelConventions()` errors on it. Keep any
       provenance around the word (`from Rizk 2015`, `per SPR-Biacore measurement`,

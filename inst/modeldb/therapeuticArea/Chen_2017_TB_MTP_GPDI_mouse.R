@@ -21,6 +21,25 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     concentration = "log(CFU/lungs) for the model observation; mg/L for the internal drug plasma trajectories Cc_rif / Cc_inh / Cc_emb / Cc_pza"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_rif       = list(analyte = "Rifampicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_rif     = list(analyte = "Rifampicin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_inh       = list(analyte = "Isoniazid", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_inh     = list(analyte = "Isoniazid", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_emb       = list(analyte = "Ethambutol", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_emb     = list(analyte = "Ethambutol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_emb = list(analyte = "Ethambutol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot_pza       = list(analyte = "Pyrazinamide", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central_pza     = list(analyte = "Pyrazinamide", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fbugs           = list(analyte = "Fast-multiplying M. tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE),
+    sbugs           = list(analyte = "Slow-multiplying M. tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE),
+    nbugs           = list(analyte = "Non-multiplying M. tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_INH_DOSE = list(
       description        = "Per-subject assigned isoniazid dose level (mg/kg/day)",

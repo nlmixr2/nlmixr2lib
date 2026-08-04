@@ -21,9 +21,18 @@ Hendriksen_2013_artesunate <- function() {
   )
   vignette  <- "Hendriksen_2013_artesunate"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central            = list(analyte = "artesunate", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dihydroart = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

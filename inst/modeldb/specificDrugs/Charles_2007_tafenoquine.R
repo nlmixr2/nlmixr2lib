@@ -2,7 +2,15 @@ Charles_2007_tafenoquine <- function() {
   description <- "One-compartment first-order-absorption population PK model for oral tafenoquine in adult Australian soldiers on weekly malaria prophylaxis (Charles 2007)"
   reference <- "Charles BG, Miller AK, Nasveld PE, Reid MG, Harris IE, Edstein MD. Population pharmacokinetics of tafenoquine during malaria prophylaxis in healthy subjects. Antimicrob Agents Chemother. 2007;51(8):2709-2715. doi:10.1128/AAC.01183-06"
   vignette <- "Charles_2007_tafenoquine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tafenoquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tafenoquine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

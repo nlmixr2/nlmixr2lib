@@ -4,6 +4,17 @@ VasquezBahena_2009_lumiracoxib_rat <- function() {
   vignette <- "VasquezBahena_2009_lumiracoxib_rat"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "lumiracoxib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "lumiracoxib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lumiracoxib", units = "mg", specimen = "plasma", verified = FALSE),
+    cox2        = list(analyte = "COX-2", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-subject assigned oral lumiracoxib dose level (mg/kg). Enters the dose-dependent relative-bioavailability formula Frel = 1 - IMAX * DOSE / (D50 + DOSE).",

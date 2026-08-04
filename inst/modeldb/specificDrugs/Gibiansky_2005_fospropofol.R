@@ -13,6 +13,18 @@ Gibiansky_2005_fospropofol <- function() {
 
   units       <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
+    delay           = list(analyte = "propofol", units = "mg", specimen = "administration site", verified = FALSE),
+    central_ppf     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ppf = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     LBM = list(
       description        = "Lean body mass (lean body weight) at study entry.",

@@ -4,6 +4,17 @@ Cao_2013_PRO95780 <- function() {
   vignette <- "Cao_2013_PRO95780"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "drozitumab", units = "mg", specimen = "plasma", verified = FALSE),
+    tight  = list(analyte = "drozitumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky  = list(analyte = "drozitumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph  = list(analyte = "drozitumab", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

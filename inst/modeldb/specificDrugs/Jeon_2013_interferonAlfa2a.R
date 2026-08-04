@@ -41,6 +41,17 @@ Jeon_2013_interferonAlfa2a <- function() {
   vignette <- "Jeon_2013_interferonAlfa2a"
   units <- list(time = "h", dosing = "MIU", concentration = "pg/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "interferon alfa-2a", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "interferon alfa-2a", units = NA_character_, specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "interferon alfa-2a", units = NA_character_, specimen = "administration site", verified = FALSE),
+    effect   = list(analyte = "neopterin response", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

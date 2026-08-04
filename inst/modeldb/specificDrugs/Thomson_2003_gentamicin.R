@@ -2,7 +2,14 @@ Thomson_2003_gentamicin <- function() {
   description <- "One-compartment population PK model of intramuscular gentamicin in African infants with suspected severe sepsis (Thomson 2003). The 8 mg/kg i.m. dose is modelled as an IV bolus into the central compartment because first-order absorption could not be characterised from the sparse 1 h / next-morning sampling (the paper documents that ka estimates were poorly identified and absorption appeared complete by 1 h). Apparent clearance scales linearly with body weight and as a power function of (postnatal age + 1 day) normalised to the cohort median + 1 day; apparent volume of distribution scales linearly with body weight relative to the cohort median 3 kg. Reported CL and V are apparent values (CL/F, V/F) because all doses were administered by intramuscular injection and bioavailability could not be estimated."
   reference   <- "Thomson AH, Kokwaro GO, Muchohi SN, English M, Mohammed S, Edwards G. Population pharmacokinetics of intramuscular gentamicin administered to young infants with suspected severe sepsis in Kenya. Br J Clin Pharmacol. 2003;56(1):25-31. doi:10.1046/j.1365-2125.2003.01819.x"
   vignette    <- "Thomson_2003_gentamicin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -2,7 +2,14 @@ Revilla_2010_vancomycin <- function() {
   description <- "One-compartment IV population PK model for vancomycin in critically ill adult medical ICU patients (Revilla 2010). Clearance is the sum of a renal arm proportional to weight-normalised creatinine clearance and a non-renal arm scaling as AGE^-0.24; central volume of distribution is per kg with a >2-fold increase when serum creatinine exceeds 1 mg/dL."
   reference <- "Revilla N, Martin-Suarez A, Paz Perez M, Martin Gonzalez F, Fernandez de Gatta MM. Vancomycin dosing assessment in intensive care unit patients based on a population pharmacokinetic/pharmacodynamic simulation. Br J Clin Pharmacol. 2010;70(2):201-212. doi:10.1111/j.1365-2125.2010.03679.x"
   vignette <- "Revilla_2010_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

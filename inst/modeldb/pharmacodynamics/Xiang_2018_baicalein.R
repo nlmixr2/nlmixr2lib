@@ -39,6 +39,19 @@ Xiang_2018_baicalein <- function() {
     concentration = "pg/mL (TNF-alpha, IL-6), unitless ratio (iNOS), uM (NO)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tnf      = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "TNF-alpha", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "TNF-alpha", units = NA_character_, specimen = "administration site", verified = FALSE),
+    il6      = list(analyte = "IL-6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    inos     = list(analyte = "iNOS", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    no       = list(analyte = "NO", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CONC_BAI_UM = list(
       description        = paste(

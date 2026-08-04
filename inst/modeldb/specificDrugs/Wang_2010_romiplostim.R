@@ -9,6 +9,36 @@ Wang_2010_romiplostim <- function() {
     "plt6", "plt7", "plt8", "plt9", "plt10"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "romiplostim", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor6  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor7  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor8  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor9  = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor10 = list(analyte = "megakaryocyte", units = "ug", specimen = "not applicable", verified = FALSE),
+    plt1        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt2        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt3        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt4        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt5        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt6        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt7        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt8        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt9        = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE),
+    plt10       = list(analyte = "platelet", units = "ug", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

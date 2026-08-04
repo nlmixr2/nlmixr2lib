@@ -48,6 +48,22 @@ Marcantonio_2022_adalimumab <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot = list(analyte = "adalimumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ab_00 = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_L0 = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_LL = list(analyte = "adalimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1    = list(analyte = "TNF-alpha", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1    = list(analyte = "TNFR", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1  = list(analyte = "TNF:TNFR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1    = list(analyte = "adalimumab-TNF-alpha complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
   covariatesDataExcluded <- list(
     BW = list(

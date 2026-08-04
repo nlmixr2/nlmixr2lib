@@ -11,6 +11,18 @@ Lehr_2010_tesofensine <- function() {
   vignette <- "Lehr_2010_tesofensine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "tesofensine", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "tesofensine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m1 = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    effect     = list(analyte = "tesofensine", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_m1  = list(analyte = "M1", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list()
@@ -64,7 +76,7 @@ Lehr_2010_tesofensine <- function() {
     # by Lehr 2010 (6 ADAS-Cog points/year per Lehr 2010 ref 26).
     # Stored in (ADAS-Cog points per hour) for unit consistency with
     # the rest of the model.
-    ldp_rate   <- fixed(log(6 / (365.25 * 24))) ; label("Log linear disease-progression rate (ADAS-Cog points/hour); literature 6 points/year (Lehr 2010 ref 26)") # Lehr 2010 Disease Progression and Placebo Effect Model section
+    ldp_rate   <- fixed(log(6 / (365.25 * 24))) ; label("Log linear disease-progression rate (ADAS-Cog points/h); literature 6 points/year (Lehr 2010 ref 26)") # Lehr 2010 Disease Progression and Placebo Effect Model section
 
     # IIV - Lehr 2010 Table I (Phase IIa column) reports each random
     # effect as a percent CV on the parameter. The log-normal variance

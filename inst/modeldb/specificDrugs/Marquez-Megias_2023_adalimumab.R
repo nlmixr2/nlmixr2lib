@@ -4,6 +4,15 @@
   vignette <- "Marquez-Megias_2023_adalimumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "adalimumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin (time-varying)",

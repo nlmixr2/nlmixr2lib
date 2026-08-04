@@ -2,11 +2,26 @@ Rees_2018_meropenem_ciprofloxacin <- function() {
   description <- "In vitro (hollow-fiber infection model). Mechanism-based PK/PD (life-cycle growth) model of bacterial killing and resistance for meropenem plus ciprofloxacin against hypermutable Pseudomonas aeruginosa CW44, with three pre-existing subpopulations and subpopulation plus mechanistic synergy"
   reference <- "Rees VE, Yadav R, Rogers KE, Bulitta JB, Wirth V, Oliver A, Boyce JD, Peleg AY, Nation RL, Landersdorfer CB. Meropenem combined with ciprofloxacin combats hypermutable Pseudomonas aeruginosa from respiratory infections of cystic fibrosis patients. Antimicrob Agents Chemother. 2018 Oct 24;62(11):e01150-18. doi:10.1128/AAC.01150-18. Model differential equations (Eqs 1-4) and static-time-kill parameters (Table S1) are in the supplemental material."
   vignette <- "Rees_2018_meropenem_ciprofloxacin"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   # No patient covariates: this is an in vitro mechanism-based model. The drug
   # exposures (meropenem and ciprofloxacin concentrations) are state variables
   # (cmem, ccip) dosed by the user, not covariate columns.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa (resistant-intermediate)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa (resistant-intermediate)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa (intermediate-resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa (intermediate-resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cmem                          = list(analyte = "meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ccip                          = list(analyte = "ciprofloxacin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

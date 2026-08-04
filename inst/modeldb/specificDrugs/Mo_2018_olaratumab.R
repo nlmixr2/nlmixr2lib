@@ -2,7 +2,15 @@ Mo_2018_olaratumab <- function() {
   description <- "Two-compartment population PK model with linear clearance for olaratumab in patients with advanced or metastatic cancer (Mo 2018)"
   reference <- "Mo G, Baldwin JR, Luffer-Atlas D, et al. Population Pharmacokinetic Modeling of Olaratumab, an Anti-PDGFRα Human Monoclonal Antibody, in Patients with Advanced and/or Metastatic Cancer. Clin Pharmacokinet. 2018;57(3):355-365. doi:10.1007/s40262-017-0562-0"
   vignette <- "Mo_2018_olaratumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "olaratumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "olaratumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

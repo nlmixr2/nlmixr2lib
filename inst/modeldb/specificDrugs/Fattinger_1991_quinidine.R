@@ -10,6 +10,14 @@ Fattinger_1991_quinidine <- function() {
   vignette <- "Fattinger_1991_quinidine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "quinidine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Creatinine clearance, raw modified Cockcroft-Gault (NOT BSA-normalized)",

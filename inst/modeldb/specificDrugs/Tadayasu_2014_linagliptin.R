@@ -8,7 +8,16 @@ Tadayasu_2014_linagliptin <- function() {
     "doi:10.18433/j3s304."
   )
   vignette <- "Tadayasu_2014_linagliptin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

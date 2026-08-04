@@ -4,6 +4,16 @@ Frey_2013_tocilizumab <- function() {
   vignette <- "Frey_2013_tocilizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "DAS28 (unitless 0-10 score)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    das28       = list(analyte = "DAS28", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     IL6 = list(
       description        = "Baseline serum interleukin-6 (IL-6) concentration",

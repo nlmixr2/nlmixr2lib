@@ -10,7 +10,7 @@ Davis_2008_maraviroc <- function() {
   )
   vignette <- "Davis_2008_maraviroc"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "not applicable (concentration-QT regression model; maraviroc plasma concentration is supplied as the time-varying covariate CP_MVC_NGML rather than via rxode2 dose events)",
     concentration = "ms (the modelled observation QT is the ECG QT interval in ms, NOT a drug concentration; the input covariate CP_MVC_NGML is maraviroc plasma concentration in ng/mL; the slash in this units string is only to satisfy checkModelConventions concentration-units parsing)"
   )

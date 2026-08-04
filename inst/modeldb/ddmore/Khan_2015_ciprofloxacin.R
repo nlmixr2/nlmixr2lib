@@ -11,9 +11,22 @@ Khan_2015_ciprofloxacin <- function() {
   vignette <- "Khan_2015_ciprofloxacin"
   paper_specific_compartments <- c("bact_s", "bact_r", "bact_spe", "bact_np", "bact_rpe", "bact_nppe")
 
-  units <- list(time = "hour", dosing = "mg/L", concentration = "log CFU/mL")
+  units <- list(time = "h", dosing = "mg/L", concentration = "log CFU/mL")
   ddmore_id    <- "DDMODEL00000225"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_s    = list(analyte = "Escherichia coli K-12 wild-type bacteria (susceptible-growing)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_r    = list(analyte = "Escherichia coli K-12 wild-type bacteria (resting)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_spe  = list(analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_np   = list(analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, suscepti", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_rpe  = list(analyte = "Escherichia coli K-12 wild-type bacteria (drug-induced non-colony-form", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_nppe = list(analyte = "Escherichia coli K-12 wild-type bacteria (non-colony-forming, resistan", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_STR_CC = list(

@@ -11,9 +11,24 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
   )
   vignette <- "Ande_2018_paclitaxel_everolimus_dasatinib"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug (PAC IV infusion); 50 nM target bath concentration (DE)",
     concentration = "nmol/L (PAC PD driver Cc); fold/L (caspase3Act, unitless relative-to-baseline); cells/L (tumorCells, total bioreactor count)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "PAC", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PAC", units = NA_character_, specimen = "plasma", verified = FALSE),
+    transit1    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tumor       = list(analyte = "PAC, caspase3Act, tumorCells", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()

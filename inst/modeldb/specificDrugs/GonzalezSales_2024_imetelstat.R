@@ -3,9 +3,19 @@ GonzalezSales_2024_imetelstat <- function() {
   reference <- "Gonzalez-Sales M, Lennox AL, Huang F, Pamulapati C, Wan Y, Sun L, Berry T, Kelly Behrs M, Feller F, Morcos PN. (2024). Population pharmacokinetics of imetelstat, a first-in-class oligonucleotide telomerase inhibitor. CPT Pharmacometrics Syst Pharmacol 13(7):1264-1277. doi:10.1002/psp4.13160."
   vignette <- "GonzalezSales_2024_imetelstat"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol",
     concentration = "umol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "imetelstat", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "imetelstat", units = "umol", specimen = "plasma", verified = FALSE),
+    complex     = list(analyte = "imetelstat", units = "umol", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(

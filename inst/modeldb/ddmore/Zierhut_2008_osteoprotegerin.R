@@ -10,10 +10,22 @@ Zierhut_2008_osteoprotegerin <- function() {
     sep = " "
   )
   vignette <- "Zierhut_2008_osteoprotegerin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL", biomarker = "nM BCE/mM creatinine per hr")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL", biomarker = "nM BCE/mM creatinine per hr")
 
   ddmore_id    <- "DDMODEL00000233"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "Fc-OPG", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "Fc-OPG", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "Fc-OPG", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "Fc-OPG", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "uNTX synthesis inhibition", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     ROUTE_IV = list(

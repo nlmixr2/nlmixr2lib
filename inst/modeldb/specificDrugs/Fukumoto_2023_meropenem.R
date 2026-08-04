@@ -19,7 +19,15 @@ Fukumoto_2023_meropenem <- function() {
     "Ther Drug Monit 45(3):392-399. doi:10.1097/FTD.0000000000001040"
   )
   vignette <- "Fukumoto_2023_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

@@ -25,6 +25,17 @@ Lahu_2010_roflumilast <- function() {
   vignette <- "Lahu_2010_roflumilast"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "roflumilast", units = "ug", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
+    central_noxide = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age (baseline; constant within an individual in the source dataset).",

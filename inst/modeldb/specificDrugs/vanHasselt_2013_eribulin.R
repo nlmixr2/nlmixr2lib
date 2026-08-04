@@ -19,10 +19,25 @@ vanHasselt_2013_eribulin <- function() {
   )
   vignette <- "vanHasselt_2013_eribulin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     anc           = "cells/uL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "eribulin", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "eribulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ        = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(

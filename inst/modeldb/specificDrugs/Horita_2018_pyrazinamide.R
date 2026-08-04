@@ -2,7 +2,18 @@ Horita_2018_pyrazinamide <- function() {
   description <- "One-compartment population pharmacokinetic model with three-compartment transit absorption followed by first-order absorption and first-order elimination for oral pyrazinamide in Ghanaian children with active tuberculosis (Horita 2018); allometric weight scaling on V/F (estimated exponent 0.677) and CL/F (estimated exponent 0.735) normalised to the cohort median 14.3 kg."
   reference <- "Horita Y, Alsultan A, Kwara A, Antwi S, Enimil A, Ortsin A, Dompreh A, Yang H, Wiesner L, Peloquin CA. Evaluation of the Adequacy of WHO Revised Dosages of the First-Line Antituberculosis Drugs in Children with Tuberculosis Using Population Pharmacokinetic Modeling and Simulations. Antimicrob Agents Chemother. 2018;62(9):e00008-18. doi:10.1128/AAC.00008-18"
   vignette <- "Horita_2018_pyrazinamide"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

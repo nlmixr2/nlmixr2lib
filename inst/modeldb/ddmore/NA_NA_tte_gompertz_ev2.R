@@ -20,6 +20,14 @@ NA_NA_tte_gompertz_ev2 <- function() {
   ddmore_id    <- "DDMODEL00000243"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz = list(analyte = "Event 2 cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_BAST_FW = list(
       description        = "First-week AUC of the unspecified hypothetical drug used in the BAST PTTE 2017 teaching dataset.",

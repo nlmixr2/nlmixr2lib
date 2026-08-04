@@ -17,6 +17,21 @@
   ddmore_id <- "DDMODEL00000295"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "colistimethate sodium (CMS)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_col = list(analyte = "colistin (Col)", units = "mg", specimen = "plasma", verified = FALSE),
+    filter      = list(analyte = "colistimethate sodium (CMS)", units = "mg", specimen = "administration site", verified = FALSE),
+    filter_col  = list(analyte = "colistin (Col)", units = "mg", specimen = "administration site", verified = FALSE),
+    cart        = list(analyte = "colistimethate sodium (CMS)", units = "mg", specimen = "administration site", verified = FALSE),
+    cart_col    = list(analyte = "colistin (Col)", units = "mg", specimen = "administration site", verified = FALSE),
+    effl        = list(analyte = "colistimethate sodium (CMS)", units = "mg", specimen = "administration site", verified = FALSE),
+    effl_col    = list(analyte = "colistin (Col)", units = "mg", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     HCT = list(
       description        = "Hematocrit, expressed as a fraction (0-1) inside the model. Determines the plasma-fraction scaling on the CRRT filter exchange rates: K13 / K31 / K24 / K42 each scale with (1 - HCT). Source column HT in the DDMORE bundle is encoded as a fraction; canonical HCT in inst/references/covariate-columns.md is documented in % units (0-100). When using HCT-in-% data, divide by 100 in model() OR supply the column already as a fraction (0-1).",

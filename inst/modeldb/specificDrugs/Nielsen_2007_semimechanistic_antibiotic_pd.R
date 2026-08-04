@@ -2,7 +2,7 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
   description <- "In vitro (Streptococcus pyogenes M12 NCTC P1800). Semimechanistic time-kill pharmacokinetic/pharmacodynamic model of five antibiotics (benzylpenicillin, cefuroxime, erythromycin, moxifloxacin, vancomycin) against S. pyogenes. The bacterial system has two states: a growing drug-susceptible population (bact_susceptible) and a resting drug-insusceptible population (bact_resting) that captures phenotypic persister-cell switching. Bacteria grow in the susceptible state at first-order rate kgrowth, die in both states at first-order rate kdeath, and transfer from susceptible to resting at rate kSR = (kgrowth - kdeath) * (bact_susceptible + bact_resting) / Bmax so the total population reaches Bmax at stationary phase (reverse transfer kRS is fixed to 0). Each drug is dosed into its own PK compartment (pen, cxm, ery, mxf, van; the compartment state IS the bath concentration in mg/L per the in-vitro convention). Drug decays first-order via degradation (kdeg fixed from stability experiments; nonzero only for benzylpenicillin and cefuroxime). A biophase (effect) compartment (pen_e, cxm_e, ery_e, mxf_e, van_e) equilibrates with the PK compartment at first-order rate ke and drives the killing effect through a sigmoidal Emax function DRUG = Emax * Ce^gamma / (Ce^gamma + EC50^gamma). DRUG adds to the natural death rate on susceptible bacteria only (paper equation 6). Multi-drug DRUG contributions sum; in monotherapy (as fitted) only one drug is active. The starting inoculum is treated as mix1 (all bacteria in the growing state) per the paper's mixture-model dominant mode; parameters fmix1 (0.747) and fpers (0.0529) are retained as fixed documentation for the mix2 alternative starting condition."
   reference <- "Nielsen EI, Viberg A, Lowdin E, Cars O, Karlsson MO, Sandstrom M. Semimechanistic pharmacokinetic/pharmacodynamic model for assessment of activity of antibacterial agents from time-kill curve experiments. Antimicrob Agents Chemother. 2007 Jan;51(1):128-136. doi:10.1128/AAC.00604-06. PMID: 17060527."
   vignette <- "Nielsen_2007_semimechanistic_antibiotic_pd"
-  units <- list(time = "hour", dosing = "mg/L (initial concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug states)")
+  units <- list(time = "h", dosing = "mg/L (initial concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug states)")
 
   # No patient covariates: this is an in-vitro semi-mechanistic PD model with
   # static drug exposures. Drug initial concentrations are applied via dosing
@@ -14,6 +14,25 @@ Nielsen_2007_semimechanistic_antibiotic_pd <- function() {
   # erythromycin 0.0078-8.00 mg/L (0.0625-64x MIC 0.125 mg/L),
   # moxifloxacin 0.0313-8.00 mg/L (0.25-64x MIC 0.125 mg/L),
   # vancomycin 0.0625-16.0 mg/L (0.25-64x MIC 0.25 mg/L).
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    pen              = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cxm              = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ery              = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mxf              = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    van              = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pen_e            = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cxm_e            = list(analyte = "cefuroxime", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ery_e            = list(analyte = "erythromycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mxf_e            = list(analyte = "moxifloxacin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    van_e            = list(analyte = "vancomycin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible = list(analyte = "S. pyogenes", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resting     = list(analyte = "S. pyogenes", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   # Paper-specific compartments: five drug PK compartments (one per antibiotic

@@ -8,6 +8,17 @@ Kretsos_2014_olokizumab <- function() {
   # was on a per-kg basis; Interim 2 and Final are absolute). Plasma OKZ and CRP
   # are both in ug/mL (1 mg/L = 1 ug/mL).
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "olokizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "olokizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "olokizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "CRP suppression", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     # The Final model in Kretsos 2014 Table 1 has no estimated covariate effects:
     # body weight was reported as a significant covariate on CL and V1 (paper

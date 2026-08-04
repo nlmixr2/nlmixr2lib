@@ -55,6 +55,28 @@ Bosch_2022_liraglutide_qsp <- function() {
     concentration = "mmol/L (glucose), pmol/L (insulin, GLP-1, glucagon, GIP, liraglutide)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    glc_dose       = list(analyte = "glucose meal", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glc_buffer     = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glc_gut1       = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glc_gut2       = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glc_gut3       = list(analyte = "glucose", units = NA_character_, specimen = "administration site", verified = FALSE),
+    glc_central    = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glc_peripheral = list(analyte = "glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
+    ins_central    = list(analyte = "insulin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    ins_effect     = list(analyte = "insulin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glp_central    = list(analyte = "GLP-1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glg_central    = list(analyte = "glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip_central    = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip_peripheral = list(analyte = "GIP", units = NA_character_, specimen = "tissue", verified = FALSE),
+    lira_depot     = list(analyte = "liraglutide", units = NA_character_, specimen = "administration site", verified = FALSE),
+    lira_central   = list(analyte = "liraglutide", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_DIAB = list(
       description        = "Type 2 diabetes mellitus indicator (1 = T2DM patient, 0 = healthy volunteer)",

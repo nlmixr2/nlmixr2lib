@@ -31,9 +31,20 @@ Canini_2015_danoprevir <- function() {
   vignette <- "Canini_2015_danoprevir"
 
   units <- list(
-    time          = "hr",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "danoprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "danoprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    infected    = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus       = list(analyte = "HCV-virions", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()

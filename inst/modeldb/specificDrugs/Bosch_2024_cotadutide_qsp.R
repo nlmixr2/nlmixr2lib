@@ -75,6 +75,28 @@ Bosch_2024_cotadutide_qsp <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "cotadutide", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "cotadutide", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose_gut    = list(analyte = "glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
+    glucose_buffer = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr1    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr2    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr3    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose        = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucose_per    = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    insulin        = list(analyte = "insulin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    insulin_eff    = list(analyte = "insulin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glp1           = list(analyte = "GLP-1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucagon       = list(analyte = "glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip            = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip_per        = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FPG = list(
       description        = "Individual fasting plasma glucose at study baseline (BSLglc in the paper notation). Used as the per-subject initial condition for the central glucose state and as the reference value for the power-function feedback of glucose on glucagon production. Time-fixed per subject.",

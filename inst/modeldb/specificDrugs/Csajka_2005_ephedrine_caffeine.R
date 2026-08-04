@@ -5,6 +5,19 @@ Csajka_2005_ephedrine_caffeine <- function() {
 
   units <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_caf    = list(analyte = "caffeine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_caf  = list(analyte = "caffeine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot        = list(analyte = "ephedrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "norephedrine", units = "mg", specimen = "plasma", verified = FALSE),
+    urine        = list(analyte = "ephedrine", units = "mg", specimen = "urine", verified = FALSE),
+    central_neph = list(analyte = "norephedrine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_BIRTHCONTROL = list(
       description        = "Oral hormonal contraceptive use indicator (1 = currently taking, 0 = not)",

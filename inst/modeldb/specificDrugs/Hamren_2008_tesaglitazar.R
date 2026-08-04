@@ -9,9 +9,23 @@ Hamren_2008_tesaglitazar <- function() {
     sep = " "
   )
   vignette <- "Hamren_2008_tesaglitazar"
-  units    <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units    <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   paper_specific_compartments <- c("gut_gluc")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "tesaglitazar", units = "umol", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "tesaglitazar", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "tesaglitazar", units = "umol", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
+    gut_gluc     = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "tissue", verified = FALSE),
+    urine        = list(analyte = "tesaglitazar", units = "umol", specimen = "urine", verified = FALSE),
+    urine_gluc   = list(analyte = "tesaglitazar acyl-glucuronide", units = "umol", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

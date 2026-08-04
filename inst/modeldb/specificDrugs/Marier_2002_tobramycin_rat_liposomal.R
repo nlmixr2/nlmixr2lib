@@ -32,6 +32,15 @@ Marier_2002_tobramycin_rat_liposomal <- function() {
     concentration = "ug (amount in lung tissue; Vc not fitted)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tobramycin rat liposomal", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tobramycin rat liposomal", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tobramycin rat liposomal", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -70,12 +70,36 @@ Aoki_2024_bosentan_pbpk <- function() {
   # the tissue states hold concentrations in umol/L (micromolar) and the
   # receptor states hold amounts in umol, so doses must be supplied in
   # umol (bosentan MW 551.61 g/mol, so mg * 1000 / 551.61 = umol).
-  units <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   # No covariates. Every physiological volume, flow and partition
   # coefficient in PSP4-13-54-s004.r is a fixed constant for a single
   # typical adult; the published code carries no body-weight or
   # demographic scaling of any kind.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central    = list(analyte = "bosentan", units = "umol", specimen = "plasma", verified = FALSE),
+    is_liver1  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver2  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver3  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver4  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    is_liver5  = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    int_liver1 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    int_liver2 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    int_liver3 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    int_liver4 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    int_liver5 = list(analyte = "bosentan", units = "umol", specimen = "administration site", verified = FALSE),
+    muscle     = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
+    skin       = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
+    adipose    = list(analyte = "bosentan", units = "umol", specimen = "tissue", verified = FALSE),
+    target     = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE),
+    complex    = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE),
+    occupancy  = list(analyte = "bosentan", units = "umol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

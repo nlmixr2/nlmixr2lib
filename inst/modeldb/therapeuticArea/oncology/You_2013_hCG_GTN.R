@@ -24,6 +24,14 @@ You_2013_hCG_GTN <- function() {
     concentration = "IU/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    hCG = list(analyte = "human chorionic gonadotrophin (hCG)", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -2,7 +2,14 @@ Leshinsky_2017_caspofungin_cat <- function() {
   description <- "Preclinical (cat). Two-compartment population PK model with first-order linear elimination from the central compartment for intravenous caspofungin acetate in healthy adult cats (Leshinsky 2017)"
   reference <- "Leshinsky J, McLachlan A, Foster DJR, Norris R, Barrs VR. Pharmacokinetics of caspofungin acetate to guide optimal dosing in cats. PLoS ONE. 2017;12(6):e0178783. doi:10.1371/journal.pone.0178783"
   vignette <- "Leshinsky_2017_caspofungin_cat"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "caspofungin cat", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

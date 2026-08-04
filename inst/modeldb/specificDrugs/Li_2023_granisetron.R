@@ -12,7 +12,15 @@ Li_2023_granisetron <- function() {
   # (Figures 2-4 axis labels). Encoding dose in ug with vc in L reproduces the
   # authors' concentration scale exactly, because 1 ug/L == 1 ng/mL. A 34.3 mg
   # patch is therefore dosed as amt = 34300.
-  units <- list(time = "hr", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "granisetron", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "granisetron", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

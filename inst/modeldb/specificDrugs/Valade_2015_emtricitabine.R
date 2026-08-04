@@ -4,6 +4,17 @@ Valade_2015_emtricitabine <- function() {
   vignette <- "Valade_2015_emtricitabine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "emtricitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "emtricitabine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "emtricitabine", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "emtricitabine", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance (raw, not BSA-normalized)",

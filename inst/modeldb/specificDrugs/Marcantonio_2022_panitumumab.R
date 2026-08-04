@@ -26,6 +26,36 @@ Marcantonio_2022_panitumumab <- function() {
     concentration = "Free panitumumab plasma concentration Cc = Ab_00_c / Vc in nM; central volume Vc = 3 L, peripheral Vp = 13 L. Target engagement = drug-bound R1 / (drug-bound R1 + free R1)."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    R1_c    = list(analyte = "membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1_c    = list(analyte = "soluble EGFR (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_00_c = list(analyte = "free panitumumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0R_c = list(analyte = "panitumumab bound to membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R0_c = list(analyte = "membrane EGFR bound to panitumumab (central)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_RR_c = list(analyte = "panitumumab dimer bound to membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0S_c = list(analyte = "soluble panitumumab (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_S0_c = list(analyte = "panitumumab bound to soluble EGFR (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_RS_c = list(analyte = "soluble panitumumab bound to membrane EGFR (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_SR_c = list(analyte = "membrane EGFR bound to soluble panitumumab (central), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_SS_c = list(analyte = "soluble panitumumab and membrane EGFR complex (central)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1_p    = list(analyte = "membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1_p    = list(analyte = "soluble EGFR (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_00_p = list(analyte = "free panitumumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0R_p = list(analyte = "panitumumab bound to membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R0_p = list(analyte = "membrane EGFR bound to panitumumab (peripheral)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_RR_p = list(analyte = "panitumumab dimer bound to membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0S_p = list(analyte = "soluble panitumumab (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_S0_p = list(analyte = "panitumumab bound to soluble EGFR (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_RS_p = list(analyte = "soluble panitumumab bound to membrane EGFR (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_SR_p = list(analyte = "membrane EGFR bound to soluble panitumumab (peripheral), not modelled", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab_SS_p = list(analyte = "soluble panitumumab and membrane EGFR complex (peripheral)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    depot   = list(analyte = "panitumumab", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

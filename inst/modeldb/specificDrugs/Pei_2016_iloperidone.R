@@ -50,6 +50,17 @@ Pei_2016_iloperidone <- function() {
 
   paper_specific_etas <- c("etalkel_form_p88", "etalkel_form_p95")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "iloperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "iloperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    central_p88 = list(analyte = "P-88 (M1)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_p95 = list(analyte = "P-95 (M2)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CYP2D6_STAR10_HET = list(
       description        = "CYP2D6*10 (rs1065852) heterozygote indicator (C/T genotype)",

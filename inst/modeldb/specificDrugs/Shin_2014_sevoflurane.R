@@ -10,7 +10,7 @@ Shin_2014_sevoflurane <- function() {
   )
   vignette <- "Shin_2014_sevoflurane"
   units <- list(
-    time          = "minute",
+    time          = "min",
     dosing        = "(none; volatile anesthetic discontinuation at start of emergence)",
     concentration = "vol % (end-tidal sevoflurane, ETSEVO)"
   )

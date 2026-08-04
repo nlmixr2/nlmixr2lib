@@ -2,6 +2,33 @@
 
 # development version
 
+- Canonical unit spellings. The machine-readable `units` block wrote the same
+  time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
+  -- so a consumer parsing `units$time` could not canonicalise it without
+  carrying its own spelling table. Same for `"minute"`/`"min"` and
+  `"microgram"`/`"ug"`.
+
+  790 spellings in the `units` block and 204 unit hints in labels are
+  normalised (`/hour` and `/hr` to `/h`, `pM.day` to `pM*day`, `mcmol` to
+  `umol`). `conventions$timeUnitSpellings` and `$doseUnitSpellings` hold the
+  map; `checkModelConventions()` errors on a non-canonical spelling and
+  `buildModelDb()` aborts, so it cannot regrow. The extraction skill's template
+  and checklist require it of new models.
+
+  **Spelling is normalised; dimension is never converted.** `min` and `h` are
+  both canonical and are never conflated -- rewriting one as the other would
+  misstate every value. Generic dimensionless models (`PK_1cmt`, `PK_2cmt`, ...)
+  keep their `"time_unit"` / `"dose_unit"` placeholders, and
+  `Beal_2001_iv1cmt_bql` keeps time in half-lives; those are exempt by design.
+
+  No model's numeric values changed.
+
+  `kon` is deliberately **not** canonicalised: the prefix covers at least three
+  different dimensionalities in this library (3D molar rates, QSP 2D on-rates
+  carrying a length dimension, and mass-concentration forms), plus four
+  parameters where `KON..` is the source paper's name for an EC50 or an Emax.
+  The reasoning is recorded in `inst/references/parameter-names.md`.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.

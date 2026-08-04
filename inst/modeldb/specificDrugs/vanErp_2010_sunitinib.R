@@ -31,6 +31,16 @@ vanErp_2010_sunitinib <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cyp3a4  = list(analyte = "CYP3A4 activity", units = "mg", specimen = "administration site", verified = FALSE),
+    depot   = list(analyte = "Sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Sunitinib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list()

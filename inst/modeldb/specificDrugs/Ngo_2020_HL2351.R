@@ -2,7 +2,16 @@ Ngo_2020_HL2351 <- function() {
   description <- "Population PK model for HL2351 (hIL-1Ra-hyFc, ~97 kDa) in healthy adult Korean men: a quasi-steady-state target-mediated drug disposition (QSS-TMDD) model coupled with FcRn-mediated recycling. The injection-site depot feeds a separate distribution space where free drug equilibrates with FcRn (QSS dissociation constant AKSS1, total FcRn AFcRn_t); free drug moves to the central compartment either directly (Ka2) or by FcRn-mediated recycling of the FcRn-drug complex (Krec). In the central compartment free drug equilibrates with IL1R (QSS dissociation constant KSS2, total IL1R CIL1R_t), is taken up back to the distribution space (Kup), exchanged with one peripheral compartment (Q/F), and eliminated linearly (CL/F). The IL1R-drug complex degrades at Kdeg2. All drug amounts and concentrations are in nmol / nmol/L; convert mg dosing using molecular weight 97 kDa (1 mg HL2351 = approximately 10306 nmol)."
   reference <- "Ngo L, Lee J, Lim L, Lim H, Bae KS, Hong T, Bae S, Hong Y. Development of a Pharmacokinetic Model Describing Neonatal Fc Receptor-Mediated Recycling of HL2351, a Novel Hybrid Fc-Fused Interleukin-1 Receptor Antagonist, to Optimize Dosage Regimen. CPT Pharmacometrics Syst Pharmacol. 2020 Oct;9(10):584-595. doi:10.1002/psp4.12552. PMID: 32945613."
   vignette <- "Ngo_2020_HL2351"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = FALSE),
+    peripheral1 = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = FALSE),
+    central     = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

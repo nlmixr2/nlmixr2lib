@@ -35,7 +35,18 @@ Lee_2016_raltegravir <- function() {
     sep = " "
   )
   vignette <- "Lee_2016_raltegravir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1     = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "raltegravir glucuronide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

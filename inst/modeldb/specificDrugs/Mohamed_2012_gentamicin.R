@@ -2,7 +2,7 @@ Mohamed_2012_gentamicin <- function() {
   description <- "In vitro (Escherichia coli ATCC 25922). Semi-mechanistic PKPD model of gentamicin bactericidal activity with adaptive resistance: drug-susceptible growing bacteria (bact_growing) plus insusceptible resting bacteria (bact_resting), with a binding model (ar_off / ar_on) by which gentamicin reduces its own Emax. Fit jointly to static and dynamic in-vitro time-kill curves."
   reference <- "Mohamed AF, Nielsen EI, Cars O, Friberg LE. Pharmacokinetic-pharmacodynamic model for gentamicin and its adaptive resistance with predictions of dosing schedules in newborn infants. Antimicrob Agents Chemother. 2012 Jan;56(1):179-188. doi:10.1128/AAC.00694-11. Model differential equations (Eqs 1-7), Figure 1 schematic, and final-model parameter estimates (Table 1) are in the main text."
   vignette <- "Mohamed_2012_gentamicin"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   # paper-mechanistic states (bacterial populations, adaptive-resistance
   # binding states, and the in-vitro flask gentamicin concentration);
@@ -12,6 +12,18 @@ Mohamed_2012_gentamicin <- function() {
   # No patient covariates: this is an in-vitro mechanism-based PKPD model.
   # The gentamicin exposure is a state variable (cgent) dosed by the user,
   # not a covariate column.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_growing = list(analyte = "Escherichia coli ATCC 25922 (drug-susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resting = list(analyte = "Escherichia coli ATCC 25922 (insusceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    ar_off       = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ar_on        = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cgent        = list(analyte = "gentamicin", units = NA_character_, specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

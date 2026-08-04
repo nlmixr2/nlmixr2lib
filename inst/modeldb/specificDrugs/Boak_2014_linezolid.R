@@ -34,10 +34,52 @@ Boak_2014_linezolid <- function() {
   )
   vignette <- "Boak_2014_linezolid"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L",
     platelet      = "10^9 cells/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    lat1        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    lat2        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    lat3        = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot       = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor6  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor7  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor8  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor9  = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor10 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor11 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor12 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor13 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor14 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    precursor15 = list(analyte = "linezolid metabolite", units = "mg", specimen = "urine", verified = FALSE),
+    transit1    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit8    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit9    = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit10   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit11   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit12   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit13   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit14   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit15   = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(

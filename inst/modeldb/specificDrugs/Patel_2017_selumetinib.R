@@ -7,7 +7,19 @@ Patel_2017_selumetinib <- function() {
     "CPT Pharmacometrics Syst Pharmacol. 2017;6(5):305-314. doi:10.1002/psp4.12175"
   )
   vignette <- "Patel_2017_selumetinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "selumetinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ndmsel     = list(analyte = "N-desmethyl-selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ndmsel = list(analyte = "N-desmethyl-selumetinib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BSA = list(

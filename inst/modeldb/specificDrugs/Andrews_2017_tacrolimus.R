@@ -2,7 +2,16 @@ Andrews_2017_tacrolimus <- function() {
   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for twice-daily oral immediate-release tacrolimus (Prograft and Modigraf) in paediatric renal transplant recipients during the first 6 weeks post-transplantation (Andrews 2017). Apparent oral clearance CL/F and apparent inter-compartmental clearance Q/F scale allometrically with body weight at a fixed exponent of 0.75 referenced to a 70 kg adult; apparent central volume V1/F and apparent peripheral volume V2/F scale at a fixed exponent of 1.0; ka has no body-weight scaling. CL/F additionally varies with CYP3A5 expresser status (1.04 multiplier for *3/*3 or unknown genotype, 1.98 multiplier for *1/*1 or *1/*3 carriers; pooled with unknown because Andrews 2017 explicitly groups *3/*3 with unknown in the final equation), donor source (0.74 multiplier for living-donor recipients vs deceased-donor reference; equivalent to deceased-donor recipients having ~35% higher CL/F), eGFR (power exponent 0.19 centred at the cohort median 69 mL/min/1.73 m^2 of adapted-Schwartz eGFR), and a piecewise hematocrit effect (power exponent -0.44 centred at 0.3 L/L applied only when HCT < 0.3 L/L). Inter-individual variability is diagonal on ka, CL/F, V1/F, and V2/F. Residual error is a combined additive + proportional model with separate immunoassay and LC-MS/MS magnitudes selected by the per-sample IMMUNOASSAY indicator. Inter-occasion variability (IOV) on CL/F (18% CV) and V2/F (35% CV) reported by Andrews 2017 Table 2 is NOT encoded structurally here (per the Brooks 2021 tacrolimus precedent) -- the source paper does not define an operational occasion column for the model-library use case; downstream users who want to simulate IOV can add an OCC indicator and a per-occasion eta in rxode2."
   reference <- "Andrews LM, Hesselink DA, van Gelder T, Koch BCP, Cornelissen EAM, Bruggemann RJM, van Schaik RHN, de Wildt SN, Cransberg K, de Winter BCM. A Population Pharmacokinetic Model to Predict the Individual Starting Dose of Tacrolimus Following Pediatric Renal Transplantation. Clin Pharmacokinet. 2018;57(4):475-489. doi:10.1007/s40262-017-0567-8 (published online 5 July 2017)."
   vignette <- "Andrews_2017_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

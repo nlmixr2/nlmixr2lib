@@ -2,7 +2,18 @@ Wojciechowski_2022_domagrozumab <- function() {
   description <- "Quasi-steady-state TMDD population PK/PD model for domagrozumab (anti-myostatin IgG1) in healthy adult volunteers and pediatric patients with Duchenne muscular dystrophy (Wojciechowski 2022): two-compartment IV/SC drug disposition with parallel linear and Michaelis-Menten elimination, a synthesis-degradation total-myostatin compartment with drug-mediated internalization, and a study-population covariate (DIS_DMD) shifting myostatin baseline and turnover."
   reference <- "Wojciechowski J, Purohit VS, Nawarskas R, Marshall S, Charnas L, Bhattacharya I. Population pharmacokinetic-pharmacodynamic analysis of domagrozumab in pediatric patients with Duchenne muscular dystrophy. Clin Transl Sci. 2022;15(12):2939-2952. doi:10.1111/cts.13418"
   vignette <- "Wojciechowski_2022_domagrozumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "domagrozumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "domagrozumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "myostatin", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -47,18 +58,18 @@ Wojciechowski_2022_domagrozumab <- function() {
     # here). All clearances are L/hour/kg and volumes are L/kg; the model() block
     # multiplies by the WT covariate to obtain per-subject quantities so that
     # doses can be supplied in mg.
-    lcl     <- log(0.0000982); label("Linear clearance per kilogram (L/hour/kg)")                  # Wojciechowski 2022 Table 2: CL = 0.0000982 L/hour/kg
+    lcl     <- log(0.0000982); label("Linear clearance per kilogram (L/h/kg)")                  # Wojciechowski 2022 Table 2: CL = 0.0000982 L/hour/kg
     lvc     <- log(0.0415);    label("Central volume of distribution per kilogram (L/kg)")         # Wojciechowski 2022 Table 2: V1 = 0.0415 L/kg
-    lq      <- log(0.000306);  label("Intercompartmental clearance per kilogram (L/hour/kg)")      # Wojciechowski 2022 Table 2: Q  = 0.000306 L/hour/kg
+    lq      <- log(0.000306);  label("Intercompartmental clearance per kilogram (L/h/kg)")      # Wojciechowski 2022 Table 2: Q  = 0.000306 L/hour/kg
     lvp     <- log(0.0416);    label("Peripheral volume of distribution per kilogram (L/kg)")      # Wojciechowski 2022 Table 2: V2 = 0.0416 L/kg
-    lka     <- log(0.00769);   label("First-order subcutaneous absorption rate (1/hour)")          # Wojciechowski 2022 Table 2: ka = 0.00769 1/hour
+    lka     <- log(0.00769);   label("First-order subcutaneous absorption rate (1/h)")          # Wojciechowski 2022 Table 2: ka = 0.00769 1/hour
     lfdepot <- log(0.858);     label("Subcutaneous bioavailability (fraction)")                    # Wojciechowski 2022 Table 2: F  = 0.858
 
     # ---- Michaelis-Menten (target-mediated) elimination from central ----
     # Vmax in nM/hour/kg (paper Methods); km in nM. Inside model() the MM rate
     # is computed in nM/hour after WT scaling and then converted to mg/hour for
     # the amount-based ODE using the assumed domagrozumab molecular weight.
-    lvmax   <- log(0.00251);   label("Maximum nonlinear elimination rate per kilogram (nM/hour/kg)") # Wojciechowski 2022 Table 2: Vmax = 0.00251 nM/hour/kg
+    lvmax   <- log(0.00251);   label("Maximum nonlinear elimination rate per kilogram (nM/h/kg)") # Wojciechowski 2022 Table 2: Vmax = 0.00251 nM/hour/kg
     lkm     <- log(12.2);      label("Michaelis-Menten constant (nM)")                              # Wojciechowski 2022 Table 2: km   = 12.2 nM
 
     # ---- Total-myostatin compartment (Eqs 4-6, Table 2) ----
@@ -66,8 +77,8 @@ Wojciechowski_2022_domagrozumab <- function() {
     # with quasi-steady-state binding (kss). ksyn is derived as rbase * kdeg
     # (Eq. 5) so that the compartment starts at steady state.
     lrbase   <- log(0.156);     label("Baseline total myostatin in healthy adult volunteers (nM)") # Wojciechowski 2022 Table 2: BASE = 0.156 nM
-    lkdeg   <- log(0.0381);    label("First-order myostatin degradation rate (1/hour)")            # Wojciechowski 2022 Table 2: kdeg = 0.0381 1/hour
-    lkint   <- log(0.00716);   label("First-order drug-myostatin complex internalization rate (1/hour)") # Wojciechowski 2022 Table 2: kint = 0.00716 1/hour
+    lkdeg   <- log(0.0381);    label("First-order myostatin degradation rate (1/h)")            # Wojciechowski 2022 Table 2: kdeg = 0.0381 1/hour
+    lkint   <- log(0.00716);   label("First-order drug-myostatin complex internalization rate (1/h)") # Wojciechowski 2022 Table 2: kint = 0.00716 1/hour
     lkss    <- log(7.76);      label("Quasi-steady-state binding constant for drug-myostatin (nM)") # Wojciechowski 2022 Table 2: kSS  = 7.76 nM
 
     # ---- Structural covariate effects ----

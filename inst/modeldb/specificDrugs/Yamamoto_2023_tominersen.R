@@ -44,6 +44,19 @@ Yamamoto_2023_tominersen <- function() {
   # intrathecal-ASO model Luu_2017_nusinersen.R, which has only one.
   paper_specific_compartments <- c("cns_tissue1", "cns_tissue2")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    csf         = list(analyte = "tominersen", units = "mg", specimen = "CSF", verified = FALSE),
+    cns_tissue1 = list(analyte = "tominersen", units = "mg", specimen = "CSF", verified = FALSE),
+    cns_tissue2 = list(analyte = "tominersen", units = "mg", specimen = "CSF", verified = FALSE),
+    central     = list(analyte = "tominersen", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tominersen", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "tominersen", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

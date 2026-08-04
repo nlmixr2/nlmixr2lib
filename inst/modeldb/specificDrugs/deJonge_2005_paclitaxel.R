@@ -11,9 +11,21 @@ deJonge_2005_paclitaxel <- function() {
   paper_specific_compartments <- c("bound", "cremophor")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    bound       = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    cremophor   = list(analyte = "Cremophor EL", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "free paclitaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "free paclitaxel", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()

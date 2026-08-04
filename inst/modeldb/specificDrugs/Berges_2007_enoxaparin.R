@@ -2,7 +2,16 @@ Berges_2007_enoxaparin <- function() {
   description <- "Two-compartment first-order absorption population PK model of anti-factor Xa activity in elderly patients (>75 years) receiving prophylactic subcutaneous enoxaparin 4000 IU once daily (Berges 2007 PROPHRE.75 study)"
   reference <- "Berges A, Laporte S, Epinat M, Zufferey P, Alamartine E, Tranchand B, Decousus H, Mismetti P. Anti-factor Xa activity of enoxaparin administered at prophylactic dosage to patients over 75 years old. Br J Clin Pharmacol. 2007;64(4):428-438. doi:10.1111/j.1365-2125.2007.02920.x"
   vignette <- "Berges_2007_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/mL")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

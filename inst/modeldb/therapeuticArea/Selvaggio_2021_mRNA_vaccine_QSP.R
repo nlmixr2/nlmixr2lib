@@ -19,6 +19,58 @@ Selvaggio_2021_mRNA_vaccine_QSP <- function() {
 
   units <- list(time = "day", dosing = "number of LNP molecules", concentration = "pmole antibody (Ab)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    lnp        = list(analyte = "LNP", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mdc_is     = list(analyte = "Dendritic cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mdc_is_lnp = list(analyte = "LNP", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mdc_is_ag  = list(analyte = "Antigen", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mdc_is_agl = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mdc_is_agm = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mdc_is_agh = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mdc_ln_lnp = list(analyte = "LNP", units = NA_character_, specimen = "lymph", verified = FALSE),
+    mdc_ln_ag  = list(analyte = "Antigen", units = NA_character_, specimen = "lymph", verified = FALSE),
+    mdc_ln_agl = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mdc_ln_agm = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mdc_ln_agh = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    pdc_is     = list(analyte = "Dendritic cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    pdc_is_lnp = list(analyte = "LNP", units = NA_character_, specimen = "tissue", verified = FALSE),
+    pdc_is_ag  = list(analyte = "Antigen", units = NA_character_, specimen = "tissue", verified = FALSE),
+    pdc_is_agl = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    pdc_is_agm = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    pdc_is_agh = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    pdc_ln_lnp = list(analyte = "LNP", units = NA_character_, specimen = "lymph", verified = FALSE),
+    pdc_ln_ag  = list(analyte = "Antigen", units = NA_character_, specimen = "lymph", verified = FALSE),
+    pdc_ln_agl = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    pdc_ln_agm = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    pdc_ln_agh = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mc_is      = list(analyte = "Monocyte", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mc_is_lnp  = list(analyte = "LNP", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mc_is_ag   = list(analyte = "Antigen", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mc_ln_lnp  = list(analyte = "LNP", units = NA_character_, specimen = "lymph", verified = FALSE),
+    mc_ln_ag   = list(analyte = "Antigen", units = NA_character_, specimen = "lymph", verified = FALSE),
+    np_is      = list(analyte = "Neutrophil", units = NA_character_, specimen = "tissue", verified = FALSE),
+    np_is_lnp  = list(analyte = "LNP", units = NA_character_, specimen = "tissue", verified = FALSE),
+    np_is_ag   = list(analyte = "Antigen", units = NA_character_, specimen = "tissue", verified = FALSE),
+    np_ln_lnp  = list(analyte = "LNP", units = NA_character_, specimen = "lymph", verified = FALSE),
+    np_ln_ag   = list(analyte = "Antigen", units = NA_character_, specimen = "lymph", verified = FALSE),
+    nt         = list(analyte = "T-cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    ant        = list(analyte = "B-cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    mta        = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mt         = list(analyte = "T-cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    ft         = list(analyte = "B-cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    nb         = list(analyte = "B-cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    anb        = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    amb        = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE),
+    mb         = list(analyte = "B-cell", units = NA_character_, specimen = "tissue", verified = FALSE),
+    sp         = list(analyte = "Administration site", units = NA_character_, specimen = "administration site", verified = FALSE),
+    lp         = list(analyte = "LNP", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ab         = list(analyte = "Antibody", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

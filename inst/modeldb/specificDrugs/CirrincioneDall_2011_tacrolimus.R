@@ -2,7 +2,15 @@ CirrincioneDall_2011_tacrolimus <- function() {
   description <- "One-compartment population PK model with first-order absorption for oral tacrolimus in pediatric liver transplant recipients (Cirrincione-Dall 2011 ACOP poster, Metrum Research Group). Apparent oral clearance CL/F (25.8 L/h at a 70 kg reference) and apparent volume V/F (2490 L at a 70 kg reference) are estimated; allometric body-weight scaling is fixed at exponent 0.75 on CL/F and 1.0 on V/F. The first-order absorption rate constant ka is fixed at 4.48 1/h from literature because the sparse therapeutic-drug-monitoring sampling could not identify it. CL/F additionally varies (full covariate model) with post-operative day as (POD/7)^0.409, with CYP3A5 expresser status as 1.24^CYP3A5_EXPR (missing genotype data imputed as non-expressers), with AST as (AST/510.5)^-0.0364, with albumin as (ALB/28)^-0.357, with hematocrit as 0.993^HCT (HCT entered as a fraction L/L, not as percent), and with age as (AGE/2)^-0.0310. Inter-individual random variation on CL/F and V/F was modeled exponentially with an estimated covariance of the two random effects per the poster text; the off-diagonal covariance value itself is not reported in the poster Table 2 so this implementation encodes uncorrelated diagonal IIVs and documents the gap in the vignette Errata. Residual error is a combined additive (SD 2.508 ng/mL) + proportional (SD 0.3674 fraction) model on whole-blood tacrolimus concentrations."
   reference <- "Cirrincione-Dall G, Gastonguay MR, Knebel W, Bergsma T, Zhang AY, Patel D, Barrett JS, van Schaik R, Soldin OP, Soldin SJ, Nulman I, Koren G, de Wildt SN. A Population Pharmacokinetic Model of Tacrolimus in Pediatric Liver Transplant Recipients. American Conference on Pharmacometrics (ACOP) 2011 poster, Metrum Research Group, Tariffville CT. https://metrumrg.com/wp-content/uploads/2018/07/acop_2011_tacrolimus.pdf"
   vignette <- "CirrincioneDall_2011_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

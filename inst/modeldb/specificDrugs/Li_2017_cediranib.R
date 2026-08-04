@@ -7,7 +7,16 @@ Li_2017_cediranib <- function() {
     "Br J Clin Pharmacol 83(8):1723-1733. doi:10.1111/bcp.13266"
   )
   vignette <- "Li_2017_cediranib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "cediranib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cediranib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cediranib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

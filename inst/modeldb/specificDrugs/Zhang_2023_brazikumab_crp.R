@@ -11,6 +11,17 @@ Zhang_2023_brazikumab_crp <- function() {
   # `das28` in a future naming audit.
   paper_specific_compartments <- c("cdai")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "brazikumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "brazikumab", units = "mg", specimen = "plasma", verified = FALSE),
+    cdai        = list(analyte = "CDAI", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CRP = list(
       description        = "Baseline serum C-reactive protein concentration",

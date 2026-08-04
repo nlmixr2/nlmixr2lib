@@ -15,6 +15,16 @@ Sharma_2016_hydroxyprogesteroneCaproate <- function() {
 
   paper_specific_compartments <- c("fetal")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "17alpha-hydroxyprogesterone caproate", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "17alpha-hydroxyprogesterone caproate", units = "mg", specimen = "plasma", verified = FALSE),
+    fetal   = list(analyte = "17alpha-hydroxyprogesterone caproate", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline maternal body weight",

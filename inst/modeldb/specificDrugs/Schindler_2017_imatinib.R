@@ -36,6 +36,21 @@ Schindler_2017_imatinib <- function() {
     concentration = "n/a (non-PK outputs: MTD in mm, Vactual / Vellipsoid in mL, density in HU)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    mtd_l1        = list(analyte = "Maximum transaxial diameter of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
+    mtd_l2        = list(analyte = "Maximum transaxial diameter of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE),
+    vactual_l1    = list(analyte = "Actual volume of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
+    vactual_l2    = list(analyte = "Actual volume of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE),
+    vellipsoid_l1 = list(analyte = "Ellipsoidal volume of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
+    vellipsoid_l2 = list(analyte = "Ellipsoidal volume of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE),
+    density_l1    = list(analyte = "Tumor density of lesion 1", units = NA_character_, specimen = "tumor", verified = FALSE),
+    density_l2    = list(analyte = "Tumor density of lesion 2", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = paste(

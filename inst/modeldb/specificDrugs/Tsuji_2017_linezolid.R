@@ -27,8 +27,23 @@ Tsuji_2017_linezolid <- function() {
   )
   vignette <- "Tsuji_2017_linezolid"
   units <- list(
-    time = "hour", dosing = "mg",
+    time = "h", dosing = "mg",
     concentration = "mg/L", platelet = "cells/uL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "linezolid metabolite", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ        = list(analyte = "platelet", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   covariateData <- list(

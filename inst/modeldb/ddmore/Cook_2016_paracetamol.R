@@ -17,6 +17,19 @@ Cook_2016_paracetamol <- function() {
   ddmore_id    <- "DDMODEL00000271"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central       = list(analyte = "paracetamol (APAP)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_apapg = list(analyte = "paracetamol glucuronide conjugate", units = "mg", specimen = "plasma", verified = FALSE),
+    central_apaps = list(analyte = "paracetamol sulphate conjugate", units = "mg", specimen = "plasma", verified = FALSE),
+    urine_apapg   = list(analyte = "paracetamol glucuronide conjugate", units = "mg", specimen = "urine", verified = FALSE),
+    urine_apap    = list(analyte = "paracetamol", units = "mg", specimen = "urine", verified = FALSE),
+    urine_apaps   = list(analyte = "paracetamol sulphate conjugate", units = "mg", specimen = "urine", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at time of study",

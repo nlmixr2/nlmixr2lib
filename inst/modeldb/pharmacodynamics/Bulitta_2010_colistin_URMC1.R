@@ -9,10 +9,22 @@ Bulitta_2010_colistin_URMC1 <- function() {
     sep = " "
   )
   vignette <- "Bulitta_2010_colistin"
-  units <- list(time = "hour", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
+  units <- list(time = "h", dosing = "mg/L (colistin in broth)", concentration = "log10 CFU/mL (observation); mg/L (drug covariate); umol/L (cation covariate)")
 
   depends <- c("Ccolistin", "Ccations")
   paper_specific_compartments <- c("bact_slag", "bact_s", "bact_i", "bact_r", "signal")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_slag = list(analyte = "Pseudomonas aeruginosa URMC1 cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_s    = list(analyte = "Pseudomonas aeruginosa URMC1 cells", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE),
+    bact_i    = list(analyte = "Pseudomonas aeruginosa URMC1 cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_r    = list(analyte = "Pseudomonas aeruginosa URMC1 cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    signal    = list(analyte = "colistin concentration", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE)
+  )
 
   covariateData <- list(
     Ccolistin = list(

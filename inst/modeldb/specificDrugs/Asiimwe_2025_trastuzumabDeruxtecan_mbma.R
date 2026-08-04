@@ -29,6 +29,14 @@ Asiimwe_2025_trastuzumabDeruxtecan_mbma <- function() {
     notes          = "Between-study variability (BSV) here is a study-level random effect, NOT individual between-subject variability. The T-DXd BSV magnitudes are small (omega_CL = 0.084, omega_Vc = 0.038) with high RSEs (48.3% / 38.8%) because only 4 studies were available; the sensitivity model with BTAV separated from BSV did not converge (Asiimwe 2025 Results 3.2). The paper also attempted a nonlinear-clearance / target-mediated model and a payload (DXd) sub-model but neither converged with acceptable precision; only the linear conjugate model is reproduced here."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "trastuzumabDeruxtecan", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "trastuzumabDeruxtecan", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     # ============================================================
     # Two-compartment linear MBMA Pop-PK model (Asiimwe 2025 Methods 2.2,

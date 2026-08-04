@@ -2,7 +2,16 @@ Lu_2016_tenofovir_combined <- function() {
   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for tenofovir (300 mg oral TDF once daily) in HIV-1-uninfected African adults receiving once-daily preexposure prophylaxis (Lu 2016, Partners PrEP Study). Combined variant: parameters estimated using a combined data set in which patient-reported dosing records were replaced with MEMS electronic adherence monitoring records where available. Absorption rate constant Ka is fixed at 1.5 /h; absorption lag time ALAG1 = 0.41 h. Apparent oral clearance (CL/F) carries a power-form covariate effect on creatinine clearance (raw Cockcroft-Gault, mL/min) centred at the cohort mean 106 mL/min. Diagonal IIV on CL/F, V1/F, and Ka; combined additive + proportional residual error."
   reference <- "Lu Y, Goti V, Chaturvedula A, Haberer JE, Fossler MJ, Sale ME, Bangsberg D, Baeten JM, Celum CL, Hendrix CW. Population pharmacokinetics of tenofovir in HIV-1-uninfected members of serodiscordant couples and effect of dose reporting methods. Antimicrob Agents Chemother. 2016;60(9):5379-5386. doi:10.1128/AAC.00559-16"
   vignette <- "Lu_2016_tenofovir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tenofovir combined", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tenofovir combined", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tenofovir combined", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

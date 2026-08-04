@@ -16,7 +16,21 @@ Heuberger_2018_salbutamol <- function() {
     "doi:10.1111/bcp.13619. Final NONMEM code in Data S1 supplement."
   )
   vignette <- "Heuberger_2018_salbutamol"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "salbutamol", units = "ug", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "salbutamol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "salbutamol", units = "ug", specimen = "plasma", verified = FALSE),
+    central_sulf = list(analyte = "S-SAL", units = "ug", specimen = "plasma", verified = FALSE),
+    urine        = list(analyte = "salbutamol", units = "ug", specimen = "urine", verified = FALSE),
+    urine_sulf   = list(analyte = "S-SAL", units = "ug", specimen = "urine", verified = FALSE),
+    urine_vol    = list(analyte = "not applicable", units = "ug", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

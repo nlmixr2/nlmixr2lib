@@ -2,11 +2,24 @@ Lommerse_2019_raltegravir <- function() {
   description <- "Integrated maternal-neonatal two-compartment first-order-absorption population PK model of oral raltegravir, coupling the maternal and fetal central compartments via a very fast intercompartmental clearance (1000 L/h) during pregnancy to enforce instantaneous placental equilibrium, and decoupling at birth (time t=0 in the model). Neonatal apparent clearance rises from nil at birth to CL_max (9.44 L/h at 25 kg) with a first-order maturation rate constant CL_tau (11.3 1/year, 90% mature by ~11 weeks); neonatal absorption rate constant rises from KA_base (0.0915 1/h) to KA_max (0.43 1/h) with a first-order maturation rate constant KA_tau (63.2 1/year, 90% mature by ~12 days). Neonate CL, Q, and volumes are allometrically scaled with fixed exponents 0.75 and 1.0 to a reference weight of 25 kg. Maternal disposition parameters (V2 3.52 L, V3 27 L, CL 9.73 L/h, Q 0.866 L/h; all at 25 kg reference) are fixed from the Rizk 2015 pediatric popPK (ref [12]); maternal KA (0.175 1/h) and bioavailability (F 0.517) are estimated. IIV is on neonate CL and KA and maternal F; residual error is combined additive (11.9 nM) and proportional (54%) (Lommerse 2019)."
   reference <- "Lommerse J, Clarke D, Kerbusch T, Merdjan H, Witjes H, Teppler H, Mirochnick M, Acosta EP, Wenning L, Nachman S, Chain A. Maternal-Neonatal Raltegravir Population Pharmacokinetics Modeling: Implications for Initial Neonatal Dosing. CPT Pharmacometrics Syst Pharmacol. 2019;8(9):643-653. doi:10.1002/psp4.12443"
   vignette <- "Lommerse_2019_raltegravir"
-  units <- list(time = "hour", dosing = "mg", concentration = "nM")
+  units <- list(time = "h", dosing = "mg", concentration = "nM")
 
   paper_specific_compartments <- c(
     "depot_mother", "central_mother", "peripheral_mother",
     "depot_neonate", "central_neonate", "peripheral_neonate"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_mother       = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_mother     = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_mother  = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE),
+    depot_neonate      = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_neonate    = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_neonate = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(

@@ -12,6 +12,20 @@ vanRongen_2016_acetaminophen <- function() {
   vignette <- "vanRongen_2016_acetaminophen"
   units <- list(time = "min", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "acetaminophen", units = "umol", specimen = "plasma", verified = FALSE),
+    transit1_gluc    = list(analyte = "glucuronide", units = "umol", specimen = "administration site", verified = FALSE),
+    central_gluc     = list(analyte = "glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
+    central_sulf     = list(analyte = "sulphate", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_sulf = list(analyte = "sulphate", units = "umol", specimen = "plasma", verified = FALSE),
+    transit1_cysmer  = list(analyte = "cysteine + mercapturate", units = "umol", specimen = "administration site", verified = FALSE),
+    central_cysmer   = list(analyte = "cysteine + mercapturate", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline",

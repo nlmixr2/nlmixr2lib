@@ -33,6 +33,16 @@ Keizer_2011_E7820_human <- function() {
     concentration = "ng/mL (E7820 plasma concentration); integrin expression in MESF (molecules of equivalent soluble fluorochrome)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "E7820", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "E7820", units = "mg", specimen = "plasma", verified = FALSE),
+    integrin = list(analyte = "alpha2-integrin on platelets", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

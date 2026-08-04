@@ -2,7 +2,15 @@ Bellanti_2017_deferiprone <- function() {
   description <- "One-compartment population PK model for the oral iron chelator deferiprone in paediatric patients aged <6 years with transfusion-dependent haemoglobinopathies, with first-order absorption and first-order elimination and fixed allometric scaling of clearance and volume on body weight (Bellanti 2017)."
   reference   <- "Bellanti F, Del Vecchio GC, Putti MC, Maggio A, Filosa A, Cosmi C, Mangiarini L, Spino M, Connelly J, Ceci A, Della Pasqua O; DEEP Consortium. Population pharmacokinetics and dosing recommendations for the use of deferiprone in children younger than 6 years. Br J Clin Pharmacol. 2017 Mar;83(3):593-602. doi:10.1111/bcp.13134"
   vignette    <- "Bellanti_2017_deferiprone"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "deferiprone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "deferiprone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

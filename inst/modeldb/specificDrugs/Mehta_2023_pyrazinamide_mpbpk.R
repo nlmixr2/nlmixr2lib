@@ -28,6 +28,17 @@ Mehta_2023_pyrazinamide_mpbpk <- function() {
     weight = "kg"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot  = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    blood  = list(analyte = "pyrazinamide", units = "mg", specimen = "blood cell", verified = FALSE),
+    lesion = list(analyte = "pyrazinamide", units = "mg", specimen = "tumor", verified = FALSE),
+    lung   = list(analyte = "pyrazinamide", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

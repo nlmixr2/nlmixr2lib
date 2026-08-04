@@ -14,9 +14,20 @@ Dao_2020_sultiame <- function() {
   ddmore_id <- "DDMODEL00000298"
   replicate_of <- NULL
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "sultiame", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "sultiame", units = "mg", specimen = "plasma", verified = FALSE),
+    erythrocytes = list(analyte = "sultiame", units = "mg", specimen = "blood cell", verified = FALSE),
+    urine        = list(analyte = "sultiame", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list()

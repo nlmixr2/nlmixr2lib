@@ -30,6 +30,15 @@ Ibrahim_2023_ibrutinib_dbp <- function() {
     concentration = "diastolic blood pressure in mmHg (not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    transit1 = list(analyte = "ibrutinib exposure", units = NA_character_, specimen = "administration site", verified = FALSE),
+    dbp      = list(analyte = "diastolic blood pressure", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_IBRU = list(
       description        = "Daily 0-24 h area under the ibrutinib plasma concentration-time curve, AUC(0-24).",

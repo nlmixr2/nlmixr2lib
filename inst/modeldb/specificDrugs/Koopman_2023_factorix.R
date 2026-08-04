@@ -2,7 +2,15 @@ Koopman_2023_factorix <- function() {
   description <- "Two-compartment population PK model for recombinant factor IX-Fc fusion concentrate (rFIX-Fc, eftrenonacog alfa) in haemophilia B patients aged 2-71 years (Koopman 2023)"
   reference <- "Koopman SF, Goedhart TMHJ, Bukkems LH, et al. A new population pharmacokinetic model for recombinant factor IX-Fc fusion concentrate including young children with haemophilia B. Br J Clin Pharmacol. 2024;90(1):220-231. doi:10.1111/bcp.15881"
   vignette <- "Koopman_2023_factorix"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/dL")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "factorix", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "factorix", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

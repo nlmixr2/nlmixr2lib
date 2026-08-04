@@ -11,7 +11,7 @@ Beredaki_2023_micafungin_eucast <- function() {
   )
   vignette <- "Beredaki_2023_micafungin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg (micafungin added to the 10 mL internal compartment)",
     concentration = "mg/L (micafungin, Cc); log10 CFU/mL (fungal density, log10cfu)"
   )
@@ -72,6 +72,16 @@ Beredaki_2023_micafungin_eucast <- function() {
       "and 100% pooled human serum (static effect at 120, 141 and 167 total",
       "Cmax/MIC respectively), so 10% serum was used throughout the dynamic model."
     )
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central   = list(analyte = "micafungin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fauc_0_24 = list(analyte = "micafungin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact      = list(analyte = "Candida albicans", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   ini({

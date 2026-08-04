@@ -4,6 +4,18 @@ Valenzuela_2025_nipocalimab <- function() {
   vignette <- "Valenzuela_2025_nipocalimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "nipocalimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "nipocalimab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "target antigen", units = "mg", specimen = "not applicable", verified = FALSE),
+    total_igg    = list(analyte = "IgG", units = "mg", specimen = "plasma", verified = FALSE),
+    effect       = list(analyte = "myasthenia gravis effect", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

@@ -4,6 +4,14 @@ Fang_2010_etanercept <- function() {
   vignette    <- "Fang_2010_etanercept"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "etanercept", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "etanercept", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Biological sex indicator, 1 = female, 0 = male",

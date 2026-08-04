@@ -36,7 +36,32 @@ Ramachandran_2023_rifampicin_pbpk <- function() {
     "rifampin in mice. Antimicrob Agents Chemother. 2013;57(4):1763-1771."
   )
   vignette <- "Ramachandran_2023_tuberculosis_eptb_pbpk"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot     = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    lung      = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    pleura    = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    brain     = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    heart     = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose   = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle    = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    skin      = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    other     = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    bone      = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen    = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney    = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    gut       = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    liver     = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    gut_lumen = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    lnode     = list(analyte = "Rifampicin", units = "mg", specimen = "tissue", verified = FALSE),
+    arterial  = list(analyte = "Rifampicin", units = "mg", specimen = "blood cell", verified = FALSE),
+    venous    = list(analyte = "Rifampicin", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
 
   covariateData <- list()
 

@@ -2,7 +2,16 @@ Jullien_2005_abacavir <- function() {
   description <- "Two-compartment population PK model for abacavir in HIV-infected adults (Jullien 2005); apparent clearance scales with body weight via an estimated power exponent, Q/F is fixed when BW is added to the model"
   reference <- "Jullien V, Treluyer J-M, Chappuy H, Dimet J, Rey E, Dupin N, Salmon D, Pons G, Urien S. Weight related differences in the pharmacokinetics of abacavir in HIV-infected patients. Br J Clin Pharmacol. 2005;59(2):183-188. doi:10.1111/j.1365-2125.2004.02259.x"
   vignette <- "Jullien_2005_abacavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

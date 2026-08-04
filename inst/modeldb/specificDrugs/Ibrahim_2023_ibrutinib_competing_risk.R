@@ -33,6 +33,16 @@ Ibrahim_2023_ibrutinib_competing_risk <- function() {
     concentration = "probability (all three states are occupancy probabilities, not drug concentrations)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    s_alive   = list(analyte = "probability of being alive and on study", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    s_dropout = list(analyte = "probability of having dropped out", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    s_death   = list(analyte = "probability of having died", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WBC = list(
       description        = "Model-predicted total leukocyte count from the preceding visit.",

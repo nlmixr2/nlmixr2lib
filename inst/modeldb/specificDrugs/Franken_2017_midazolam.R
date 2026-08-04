@@ -38,6 +38,18 @@ Franken_2017_midazolam <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2        = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_1ohm  = list(analyte = "1-OH-midazolam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_1ohmg = list(analyte = "1-OH-midazolam-glucuronide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin concentration",

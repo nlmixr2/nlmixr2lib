@@ -2,7 +2,15 @@ CarlssonPetri_2018_semaglutide <- function() {
   description <- "One-compartment population PK model for once-weekly subcutaneous semaglutide (GLP-1 receptor agonist) in adults with type 2 diabetes, pooled across five SUSTAIN phase III trials (Carlsson Petri 2018)."
   reference   <- "Carlsson Petri KC, Ingwersen SH, Flint A, Zacho J, Overgaard RV. Semaglutide s.c. once-weekly in type 2 diabetes: a population pharmacokinetic analysis. Diabetes Therapy. 2018;9(4):1533-1547. doi:10.1007/s13300-018-0458-5"
   vignette    <- "CarlssonPetri_2018_semaglutide"
-  units       <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units       <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "semaglutide", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "semaglutide", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -133,8 +141,8 @@ CarlssonPetri_2018_semaglutide <- function() {
     # Structural parameters at reference covariates (Table S3, full population PK model).
     # Reference subject: non-Hispanic/Latino white female, <65 y, WT = 85 kg, normal renal
     # function, abdomen injection, 1.0 mg once-weekly maintenance dose.
-    lka <- fixed(log(0.0286)); label("SC absorption rate constant (1/hour)")                             # Table S3 (ka = 0.0286 h^-1, FIXED per Methods 'Semaglutide Absorption rate constant ... set to 0.0286 h^-1 based on data from clinical pharmacology trials with richly sampled PK profiles')
-    lcl <- log(0.0478);        label("Apparent clearance at reference covariates (L/hour)")             # Table S3 (CL/F = 0.0478 L/h, 95% CI 0.0468-0.0488, RSE 1.06%)
+    lka <- fixed(log(0.0286)); label("SC absorption rate constant (1/h)")                             # Table S3 (ka = 0.0286 h^-1, FIXED per Methods 'Semaglutide Absorption rate constant ... set to 0.0286 h^-1 based on data from clinical pharmacology trials with richly sampled PK profiles')
+    lcl <- log(0.0478);        label("Apparent clearance at reference covariates (L/h)")             # Table S3 (CL/F = 0.0478 L/h, 95% CI 0.0468-0.0488, RSE 1.06%)
     lvc <- log(12.2);          label("Apparent volume of distribution (L)")                              # Table S3 (V/F = 12.2 L, 95% CI 12.1-12.4, RSE 0.487%)
 
     # Body weight power effect on CL/F, reference 85 kg (Methods 'reference subject profile ...

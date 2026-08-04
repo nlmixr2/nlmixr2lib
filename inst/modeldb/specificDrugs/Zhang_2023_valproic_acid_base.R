@@ -2,7 +2,15 @@ Zhang_2023_valproic_acid_base <- function() {
   description <- "One-compartment population PK model with first-order absorption for total plasma valproic acid in Chinese children with epilepsy (Zhang 2023 base model). Linear clearance with no covariates on CL/F or V/F; formulation-specific absorption rate constants FIXED from the literature (syrup 2.64 1/h reference, conventional tablet 1.57 1/h, sustained-release tablet 0.46 1/h). This is the reference model against which the paper's five protein-binding non-linearity strategies are compared; see modellib('Zhang_2023_valproic_acid_exponent') for the daily-dose power model."
   reference <- "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding non-linearity in population pharmacokinetic model of valproic acid in children with epilepsy: a systematic evaluation study. Front Pharmacol. 2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37860114. Base-model parameter estimates from Supplementary Table S3."
   vignette <- "Zhang_2023_valproic_acid_protein_binding"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FORM_TABLET = list(

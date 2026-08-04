@@ -3,9 +3,20 @@ Lu_2019_polatuzumab <- function() {
   reference <- "Lu D, Lu T, Gibiansky L, Li X, Li C, Agarwal P, Shemesh CS, Shi R, Dere RC, Hirata J, Miles D, Chanu P, Girish S, Jin JY. Integrated Two-Analyte Population Pharmacokinetic Model of Polatuzumab Vedotin in Patients With Non-Hodgkin Lymphoma. CPT Pharmacometrics Syst Pharmacol. 2020;9(1):48-59. doi:10.1002/psp4.12482. PMID 31749251. Asian-race effect on acMMAE V1 (-7.1%) re-quoted and assessed as not clinically meaningful in: Shi R, Lu T, Ku G, Ding H, Saito T, Gibiansky L, Agarwal P, Li X, Jin JY, Girish S, Miles D, Li C, Lu D. Asian race and origin have no clinically meaningful effects on polatuzumab vedotin pharmacokinetics in patients with relapsed/refractory B-cell non-Hodgkin lymphoma. Cancer Chemother Pharmacol. 2020;86(3):347-359. doi:10.1007/s00280-020-04119-8. PMID 32770353."
   vignette <- "Lu_2019_polatuzumab"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "polatuzumab vedotin (acMMAE)", units = "ug", specimen = "plasma", verified = FALSE),
+    central_mmae     = list(analyte = "unconjugated MMAE", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1_mmae = list(analyte = "unconjugated MMAE", units = "ug", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -111,13 +122,13 @@ Lu_2019_polatuzumab <- function() {
     # ----- acMMAE structural parameters (Lu 2019 Table 1, theta1-theta11) -----
     # Reference subject: 75 kg, ALB 35 g/L, TUMSZ 5000 mm^2, B-cell 1 cell/uL,
     # male, R/R, non-Asian, normal hepatic function, ECOG >= 1, single-agent.
-    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (cl_exp_kdes, 1/hour)")     # Lu 2019 Table 1, theta1
-    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/hour)") # Lu 2019 Table 1, theta2
-    lcl     <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/hour)") # Lu 2019 Table 1, theta3
+    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (cl_exp_kdes, 1/h)")     # Lu 2019 Table 1, theta1
+    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/h)") # Lu 2019 Table 1, theta2
+    lcl     <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/h)") # Lu 2019 Table 1, theta3
     lvc        <- log(3.15);    label("acMMAE central volume (Vc, L)")                                 # Lu 2019 Table 1, theta4
     lvp        <- log(3.98);    label("acMMAE peripheral volume (Vp, L)")                              # Lu 2019 Table 1, theta5
-    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (Q, L/hour)")               # Lu 2019 Table 1, theta6
-    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (Vmax, ng/mL/hour)") # Lu 2019 Table 1, theta7
+    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (Q, L/h)")               # Lu 2019 Table 1, theta6
+    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (Vmax, ng/mL/h)") # Lu 2019 Table 1, theta7
     lkm_ac     <- log(0.604);   label("acMMAE Michaelis-Menten constant (KM, ng/mL)")                  # Lu 2019 Table 1, theta8
     clss_emax  <- 0.223;        label("Maximum fractional effect of cycle on CL_NS (CLSSEMAX, unitless)") # Lu 2019 Table 1, theta9
     lt50_mo    <- log(3.53);    label("Time of half-maximal cycle effect on CL_NS (T50, months)")      # Lu 2019 Table 1, theta10 (converted to hours inside model() via T50_hr = T50_mo * 24 * 30)
@@ -128,10 +139,10 @@ Lu_2019_polatuzumab <- function() {
     # absolute fraction of formation of MMAE from acMMAE cannot be estimated,
     # so the systemic CL/V values are scaled by 1 / (true fraction of formation).
     lvc_mmae   <- log(82.2);    label("Unconjugated MMAE apparent central volume (V_MMAE, L)")         # Lu 2019 Table 1, theta12
-    lcl_mmae   <- log(1.89);    label("Unconjugated MMAE apparent linear clearance (CL_MMAE, L/hour)") # Lu 2019 Table 1, theta13
-    lq_mmae    <- log(36.3);    label("Unconjugated MMAE apparent intercompartmental clearance (Q_MMAE, L/hour)") # Lu 2019 Table 1, theta14
+    lcl_mmae   <- log(1.89);    label("Unconjugated MMAE apparent linear clearance (CL_MMAE, L/h)") # Lu 2019 Table 1, theta13
+    lq_mmae    <- log(36.3);    label("Unconjugated MMAE apparent intercompartmental clearance (Q_MMAE, L/h)") # Lu 2019 Table 1, theta14
     lvp_mmae   <- log(200);     label("Unconjugated MMAE apparent peripheral volume (V2_MMAE, L)")     # Lu 2019 Table 1, theta15
-    lvmax_mmae <- log(0.0307);  label("Unconjugated MMAE Michaelis-Menten maximum elimination rate (Vmax_MMAE, ng/mL/hour)") # Lu 2019 Table 1, theta16
+    lvmax_mmae <- log(0.0307);  label("Unconjugated MMAE Michaelis-Menten maximum elimination rate (Vmax_MMAE, ng/mL/h)") # Lu 2019 Table 1, theta16
     lkss_mmae  <- log(0.581);   label("Unconjugated MMAE Michaelis-Menten constant (KSS, ng/mL)")      # Lu 2019 Table 1, theta17
     lfrac_clt  <- log(3.70);    label("FRAC_CLT: ratio of acMMAE-MMAE conversion fraction for CL_t pathway relative to CL_NS (unitless)") # Lu 2019 Table 1, theta18
     lfrac_mm   <- log(2.72);    label("FRAC_MM: ratio of acMMAE-MMAE conversion fraction for CL_MM pathway relative to CL_NS (unitless)") # Lu 2019 Table 1, theta19

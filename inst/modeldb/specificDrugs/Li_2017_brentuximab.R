@@ -10,6 +10,20 @@ Li_2017_brentuximab <- function() {
     concentration = "pmol/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central               = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1           = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2           = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_mmae          = list(analyte = "monomethyl auristatin E (MMAE)", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1_mmae      = list(analyte = "monomethyl auristatin E (MMAE)", units = "nmol", specimen = "plasma", verified = FALSE),
+    pathway_proteolytic   = list(analyte = "brentuximab vedotin", units = "nmol", specimen = "administration site", verified = FALSE),
+    pathway_deconjugation = list(analyte = "monomethyl auristatin E (MMAE)", units = "nmol", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

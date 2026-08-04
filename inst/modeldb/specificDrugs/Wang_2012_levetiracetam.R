@@ -2,7 +2,15 @@ Wang_2012_levetiracetam <- function() {
   description <- "One-compartment population PK model for levetiracetam (LEV) in Chinese pediatric epilepsy patients (Wang 2012). First-order oral absorption and linear elimination (NONMEM ADVAN2 TRANS2). Body weight is the only retained covariate; it enters CL/F as a power-style allometric term with reference weight 25 kg (cohort median)."
   reference   <- "Wang YH, Wang L, Lu W, Shang DW, Wei MJ, Wu Y. Population pharmacokinetics modeling of levetiracetam in Chinese children with epilepsy. Acta Pharmacol Sin. 2012 Jun;33(6):845-851. doi:10.1038/aps.2012.57"
   vignette    <- "Wang_2012_levetiracetam"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "levetiracetam", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "levetiracetam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

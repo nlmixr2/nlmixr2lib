@@ -24,6 +24,22 @@ Marcantonio_2022_ustekinumab <- function() {
     concentration = "Free ustekinumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot = list(analyte = "ustekinumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ab_00 = list(analyte = "free ustekinumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(analyte = "bound ustekinumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_L0 = list(analyte = "free ustekinumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_LL = list(analyte = "bound ustekinumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1    = list(analyte = "p40", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1    = list(analyte = "IL-12R-beta1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1R1  = list(analyte = "p40:IL-12R-beta1 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1    = list(analyte = "ustekinumab:p40 complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

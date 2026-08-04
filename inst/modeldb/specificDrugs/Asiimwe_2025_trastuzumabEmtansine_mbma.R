@@ -29,6 +29,14 @@ Asiimwe_2025_trastuzumabEmtansine_mbma <- function() {
     notes          = "Between-study variability (BSV) here is a study-level random effect, NOT individual between-subject variability. The paper also fitted a two-compartment nonlinear-clearance / target-mediated model and a payload (DM1) sub-model but neither converged with acceptable precision; only the linear conjugate model is reproduced here. Parameter values in the sensitivity analyses that separated BTAV from BSV (Table S5) or restricted to dose-finding studies (Table S6) were similar to the primary values, with wider precision."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "trastuzumabEmtansine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "trastuzumabEmtansine", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     # ============================================================
     # Two-compartment linear MBMA Pop-PK model (Asiimwe 2025 Methods 2.2,

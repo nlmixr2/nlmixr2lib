@@ -18,6 +18,14 @@ Lacy_2018_cabozantinib_tumor <- function() {
     concentration = "mm (tumor diameter; not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tumor_size = list(analyte = "tumour-size", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CAV = list(
       description        = "Time-varying individual predicted daily average plasma cabozantinib concentration (ng/mL).",

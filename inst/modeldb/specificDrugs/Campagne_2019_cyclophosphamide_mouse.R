@@ -10,6 +10,22 @@ Campagne_2019_cyclophosphamide_mouse <- function() {
   # while the dose-per-body-weight convention is documented in
   # population$notes and in the vignette Assumptions section.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central            = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    ecf                = list(analyte = "cyclophosphamide (CTX)", units = "umol", specimen = "brain ISF", verified = FALSE),
+    central_4ohctx     = list(analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_4ohctx = list(analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)", units = "umol", specimen = "plasma", verified = FALSE),
+    ecf_4ohctx         = list(analyte = "4-hydroxy-cyclophosphamide (4OH-CTX)", units = "umol", specimen = "brain ISF", verified = FALSE),
+    central_cepm       = list(analyte = "carboxyethylphosphoramide mustard (CEPM)", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_cepm   = list(analyte = "carboxyethylphosphoramide mustard (CEPM)", units = "umol", specimen = "plasma", verified = FALSE),
+    ecf_cepm           = list(analyte = "carboxyethylphosphoramide mustard (CEPM)", units = "umol", specimen = "brain ISF", verified = FALSE)
+  )
+
   covariateData <- list(
     # Campagne 2019 Methods (Pharmacokinetic modeling) tested
     # cohort / tumor-status differences post hoc on individual

@@ -2,7 +2,16 @@ Gisleskog_1999_dutasteride <- function() {
   description <- "Two-compartment population PK model for dutasteride (GI198745, a dual type-1/type-2 5-alpha-reductase inhibitor) in healthy male volunteers after single oral doses, with first-order absorption, an absorption lag-time, and parallel linear (CL_l) plus Michaelis-Menten (Vmax / Km) elimination from the central compartment (Gisleskog 1999). All volumes and clearances are apparent (oral, no IV reference); bioavailability is assumed dose-independent."
   reference <- "Olsson Gisleskog P, Hermann D, Hammarlund-Udenaes M, Karlsson MO. The pharmacokinetic modelling of GI198745 (dutasteride), a compound with parallel linear and nonlinear elimination. Br J Clin Pharmacol. 1999;47(1):53-58. doi:10.1046/j.1365-2125.1999.00843.x"
   vignette <- "Gisleskog_1999_dutasteride"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "dutasteride", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "dutasteride", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dutasteride", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

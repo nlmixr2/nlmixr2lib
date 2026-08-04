@@ -2,7 +2,37 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
   description <- "QSP. Mouse in vivo platform model for HER2-targeting antibody-drug conjugates (T-DM1 default, N87 tumor xenograft; T-DXd variant supported via parameter overrides). Combines: (i) mouse plasma PK for ADC / naked antibody / free payload in central + peripheral compartments; (ii) mechanistic tumor uptake via a Krogh cylinder + surface exchange model; (iii) intracellular ADC processing (HER2 binding, endocytosis, recycling, degradation, endosomal payload release, cytosol transport, tubulin binding); and (iv) tumor growth inhibition via a Simeoni-style 4-stage transit-chain cascade with Hill-type kill on the proliferating stage. Amounts in nmol; concentrations amount/volume."
   reference   <- "Scheuher B, Ghusinga KR, McGirr K, Nowak M, Panday S, Apgar J, Subramanian K, Betts A. Towards a platform quantitative systems pharmacology (QSP) model for preclinical to clinical translation of antibody drug conjugates (ADCs). J Pharmacokinet Pharmacodyn. 2023;51(1):5-30. doi:10.1007/s10928-023-09884-6. Mouse in vivo model = Tables S1b, S2b-c, S3c-d."
   vignette    <- "Scheuher_2023_ADC_platform_qsp"
-  units       <- list(time = "hour", dosing = "nmol", concentration = "nM")
+  units       <- list(time = "h", dosing = "nmol", concentration = "nM")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    adc_central         = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_central          = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_central          = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_peripheral      = list(analyte = "ADC", units = "nmol", specimen = "plasma", verified = FALSE),
+    ab_peripheral       = list(analyte = "naked antibody", units = "nmol", specimen = "plasma", verified = FALSE),
+    pl_peripheral       = list(analyte = "free payload", units = "nmol", specimen = "plasma", verified = FALSE),
+    adc_ext_tumor       = list(analyte = "ADC", units = "nmol", specimen = "tumor", verified = FALSE),
+    ab_ext_tumor        = list(analyte = "naked antibody", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_ext_tumor        = list(analyte = "free payload", units = "nmol", specimen = "tumor", verified = FALSE),
+    n1                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n2                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n3                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    n4                  = list(analyte = "not applicable", units = "nmol", specimen = "not applicable", verified = FALSE),
+    her2_surf_tumor     = list(analyte = "HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_surf_tumor = list(analyte = "ADC-HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_ab_surf_tumor  = list(analyte = "naked antibody-HER2 complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_endo_tumor     = list(analyte = "endosomal HER2", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_adc_endo_tumor = list(analyte = "ADC-HER2 endosome complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    her2_ab_endo_tumor  = list(analyte = "naked antibody-HER2 endosome complex", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_endo_tumor       = list(analyte = "free payload in endosomes", units = "nmol", specimen = "tumor", verified = FALSE),
+    pl_cyto_tumor       = list(analyte = "free payload in cytosol", units = "nmol", specimen = "tumor", verified = FALSE),
+    t_cyto_tumor        = list(analyte = "tubulin-bound payload", units = "nmol", specimen = "tumor", verified = FALSE),
+    tpl_cyto_tumor      = list(analyte = "payload bound to tubulin", units = "nmol", specimen = "tumor", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -26,30 +56,30 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
     # -------------------------------------------------------------------
 
     # ADC deconjugation rate (T-DM1 in mouse)
-    lkdec <- log(8.5e-7 * 3600); label("Deconjugation rate constant kdec (1/hour)")   # Table S2b: 8.5e-7 /s = 3.06e-3 /hour (T-DM1); fit to Erickson 2012
+    lkdec <- log(8.5e-7 * 3600); label("Deconjugation rate constant kdec (1/h)")   # Table S2b: 8.5e-7 /s = 3.06e-3 /hour (T-DM1); fit to Erickson 2012
 
     # DAR (drug-to-antibody ratio) for T-DM1
     lDAR <- fixed(log(3.5)); label("Drug-to-antibody ratio DAR (T-DM1)")               # Table S2b: 3.5 for T-DM1
 
     # HER2 binding (association rate + KD)
-    lkonab <- fixed(log(1e-4 * 3600)); label("HER2 binding association rate k_on_Ab (1/nM/hour)")  # Table S2b: 1e-4 /nM/s = 0.36 /nM/hour
+    lkonab <- fixed(log(1e-4 * 3600)); label("HER2 binding association rate k_on_Ab (1/nM/h)")  # Table S2b: 1e-4 /nM/s = 0.36 /nM/hour
     lkdab  <- log(0.3); label("HER2:ADC equilibrium binding constant K_D_Ab (nM)")     # Table S2b: 0.3 nM (carried from in vitro)
 
     # HER2 receptor kinetics (from in vitro fit, carried to mouse per Table S2b header)
-    lkendoher2 <- log(4.27e-5 * 3600); label("HER2 endocytosis rate constant (1/hour)")  # Table S2a: 4.27e-5 /s (via S2b carry-over)
-    lkrecher2  <- log(2.4e-5 * 3600);  label("HER2 recycling rate constant (1/hour)")    # Table S2a: 2.4e-5 /s
-    lkdegher2  <- log(1.27e-4 * 3600); label("HER2 endosomal degradation (1/hour)")      # Table S2a: 1.27e-4 /s
+    lkendoher2 <- log(4.27e-5 * 3600); label("HER2 endocytosis rate constant (1/h)")  # Table S2a: 4.27e-5 /s (via S2b carry-over)
+    lkrecher2  <- log(2.4e-5 * 3600);  label("HER2 recycling rate constant (1/h)")    # Table S2a: 2.4e-5 /s
+    lkdegher2  <- log(1.27e-4 * 3600); label("HER2 endosomal degradation (1/h)")      # Table S2a: 1.27e-4 /s
 
     # Endosomal linker cleavage (0 for T-DM1 non-cleavable linker)
-    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage rate (1/hour)")    # Table S2a: 0 /s (T-DM1)
+    lkcleave <- fixed(log(1e-12)); label("Endosomal linker cleavage rate (1/h)")    # Table S2a: 0 /s (T-DM1)
 
     # Payload target binding (DM1:tubulin)
-    lkonpl <- fixed(log(1e-3 * 3600)); label("Payload:target association (1/nM/hour)")  # Table S2b: 1e-3 /nM/s
+    lkonpl <- fixed(log(1e-3 * 3600)); label("Payload:target association (1/nM/h)")  # Table S2b: 1e-3 /nM/s
     lkdpl  <- log(930); label("Payload:target K_D_PL (nM)")                             # Table S2b: 930 nM (DM1:tubulin)
 
     # Payload cellular flux (T-DM1)
-    lkinpl  <- log(5.95e-5 * 3600); label("Payload influx k_in_PL (1/hour)")           # Table S2b: 5.95e-5 /s (T-DM1)
-    lkoutpl <- log(3.95e-5 * 3600); label("Payload efflux k_out_PL (1/hour)")          # Table S2b: 3.95e-5 /s (T-DM1)
+    lkinpl  <- log(5.95e-5 * 3600); label("Payload influx k_in_PL (1/h)")           # Table S2b: 5.95e-5 /s (T-DM1)
+    lkoutpl <- log(3.95e-5 * 3600); label("Payload efflux k_out_PL (1/h)")          # Table S2b: 3.95e-5 /s (T-DM1)
 
     # Payload partition coefficient in tumor tissue
     lPcpl <- log(0.51); label("Payload tumor partition coefficient Pc_PL (unitless)")   # Table S2b: 0.51 (T-DM1)
@@ -98,13 +128,13 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
     lVtumor_max <- fixed(log(5e-3)); label("Maximum tumor volume V_tumor_max (L)")     # Table S2c: 5e-3 L (assumed)
     lVtumor_i <- log(2e-4); label("Initial tumor volume V_tumor_i (L)")                # 200 mm^3 typical mouse xenograft start (2e-4 L = 200 mm^3)
 
-    lkkillmax <- log(0.31 / 24); label("Maximum tumor kill rate kkill_max (1/hour) - N87+T-DM1")  # Table S2c N87+T-DM1: 0.31 /day = 0.01292 /hour
+    lkkillmax <- log(0.31 / 24); label("Maximum tumor kill rate kkill_max (1/h) - N87+T-DM1")  # Table S2c N87+T-DM1: 0.31 /day = 0.01292 /hour
     ltau      <- log(0.25 * 24); label("Kill transduction delay tau (hour) - N87+T-DM1")           # Table S2c: 0.25 day = 6 hour
     lkc50     <- log(485); label("Kill half-max concentration kc50 (nM) - N87+T-DM1")               # Table S2c: 485 nM
     lnHill    <- fixed(log(1)); label("Hill coefficient n_Hill - N87+T-DM1")                        # Table S2c: 1
 
     ltdouble <- log(12.37 * 24); label("Exponential tumor doubling time t_double (hour) - N87")   # Table S2c: 12.37 day = 296.88 hour
-    lklin    <- log(189.56 / 24); label("Linear tumor growth rate k_lin (mm^3/hour) - N87")        # Table S2c: 189.56 mm^3/day = 7.898 mm^3/hour
+    lklin    <- log(189.56 / 24); label("Linear tumor growth rate k_lin (mm^3/h) - N87")        # Table S2c: 189.56 mm^3/day = 7.898 mm^3/hour
 
     # -------------------------------------------------------------------
     # Residual error (placeholder - paper reports deterministic fits)

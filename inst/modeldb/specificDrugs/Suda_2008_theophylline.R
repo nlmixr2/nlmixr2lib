@@ -2,7 +2,15 @@ Suda_2008_theophylline <- function() {
   description <- "Steady-state population PK model for oral theophylline in 52 Japanese premature neonates and infants with apnea (Suda 2008). One-compartment first-order absorption structure; oral clearance CL/F is the only structural parameter the paper estimates (steady-state trough analysis Css = R / CL/F). Body-weight allometric scaling and a binary indicator for the Apnecut formulation (vs the in-house theophylline-alcohol comparator) on CL/F."
   reference   <- "Suda Y, Hanada K, Tsuchiwata S, Saito M, Nakamura T, Ito Y, Ishikawa Y, Kushida K, Ogata H. Population pharmacokinetic analysis of two theophylline formulations in premature neonates and infants with apnea. Yakugaku Zasshi. 2008;128(4):635-641. doi:10.1248/yakushi.128.635"
   vignette    <- "Suda_2008_theophylline"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "theophylline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "theophylline", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

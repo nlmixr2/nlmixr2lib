@@ -19,6 +19,14 @@ Gupta_2006_peginterferon_alfa_2b <- function() {
   vignette <- "Gupta_2006_peginterferon_alfa_2b"
   units <- list(time = "day", dosing = "ug", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "peginterferon alfa 2b", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "peginterferon alfa 2b", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance in raw mL/min (NOT BSA-normalized). Source column CLCR in Gupta 2006. Reference 120 mL/min matches the value at which Gupta 2006 Table 3 reports the typical CL0 = 44.1 L/day.",

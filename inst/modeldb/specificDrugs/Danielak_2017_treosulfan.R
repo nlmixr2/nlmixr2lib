@@ -2,7 +2,15 @@ Danielak_2017_treosulfan <- function() {
   description <- "Two-compartment IV-infusion population PK model for treosulfan (TREO) in pediatric patients undergoing conditioning prior to hematopoietic stem cell transplantation (Danielak 2017). Allometric body-weight scaling normalised to a 70 kg adult typical value with exponents fixed at 0.75 on CL and 1 on V1 and V2; Q has no weight covariate. Correlated IIV on CL and V1 (Cl-V1 correlation 0.714); independent IIV on Q. Proportional residual error."
   reference   <- "Danielak D, Twardosz J, Kasprzyk A, Wachowiak J, Kalwak K, Glowka F. Population pharmacokinetics of treosulfan and development of a limited sampling strategy in children prior to hematopoietic stem cell transplantation. Eur J Clin Pharmacol. 2018 Jan;74(1):79-89. doi:10.1007/s00228-017-2344-x"
   vignette    <- "Danielak_2017_treosulfan"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "treosulfan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "treosulfan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -2,7 +2,15 @@ Hong_2006_amphotericinB_liposomal <- function() {
   description <- "Two-compartment population PK model for liposomal amphotericin B (AmBisome) in 39 pediatric oncology patients receiving 1-h IV infusions (Hong 2006). Clearance and central volume scale exponentially with body weight centered at the cohort-median 21 kg; the paper additionally reports substantial between-occasion variability on CL and V1 that is encoded here as IIV on fixed-at-1 multiplicative anchors (Bellanti 2015 IOV-as-IIV pattern)."
   reference <- "Hong Y, Shaw PJ, Nath CE, Yadav SP, Stephen KR, Earl JW, McLachlan AJ. Population pharmacokinetics of liposomal amphotericin B in pediatric patients with malignant diseases. Antimicrob Agents Chemother. 2006 Mar;50(3):935-942. doi:10.1128/AAC.50.3.935-942.2006"
   vignette <- "Hong_2006_amphotericinB_liposomal"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "amphotericinB liposomal", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "amphotericinB liposomal", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

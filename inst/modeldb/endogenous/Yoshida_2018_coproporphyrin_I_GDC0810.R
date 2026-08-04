@@ -16,7 +16,14 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     sep = " "
   )
   vignette <- "Yoshida_2018_coproporphyrin_I_GDC0810"
-  units <- list(time = "hour", dosing = "none", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "none", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "coproporphyrin I GDC0810", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CP_GDC_UM = list(

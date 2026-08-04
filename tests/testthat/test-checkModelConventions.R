@@ -1356,4 +1356,66 @@ test_that("the extraction skill never shows fixed() repeated in a label", {
   expect_equal(sort(unique(offenders)), character(0))
 })
 
+
+# ---- Unit spellings ----------------------------------------------------------
+
+test_that("non-canonical time and dose spellings are flagged", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  chk <- function(tu, du) {
+    ui <- list(meta = list(units = list(time = tu, dosing = du, concentration = "mg/L")))
+    nlmixr2lib:::.checkUnitSpellings(ui, conv)
+  }
+  expect_equal(nrow(chk("hour", "mg")), 1L)
+  expect_equal(nrow(chk("hr", "mg")), 1L)
+  expect_equal(nrow(chk("h", "microgram")), 1L)
+  expect_equal(chk("hour", "mg")$severity, "error")
+})
+
+test_that("canonical spellings and distinct units are accepted", {
+  # "min" and "h" are BOTH canonical. Normalising between them would misstate
+  # every value in the model, so the check must never conflate them.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  chk <- function(tu, du) {
+    ui <- list(meta = list(units = list(time = tu, dosing = du, concentration = "mg/L")))
+    nlmixr2lib:::.checkUnitSpellings(ui, conv)
+  }
+  for (tu in c("h", "min", "day", "week", "month", "year", "s")) {
+    expect_equal(nrow(chk(tu, "mg")), 0L, info = tu)
+  }
+  for (du in c("mg", "ug", "ng", "g", "nmol", "umol", "IU")) {
+    expect_equal(nrow(chk("h", du)), 0L, info = du)
+  }
+})
+
+test_that("generic models' placeholder units are exempt", {
+  # PK_1cmt and friends are dimensionless by design; Beal_2001_iv1cmt_bql
+  # expresses time in half-lives. Those are correct, not unnormalised.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  chk <- function(tu, du) {
+    ui <- list(meta = list(units = list(time = tu, dosing = du, concentration = "c")))
+    nlmixr2lib:::.checkUnitSpellings(ui, conv)
+  }
+  expect_equal(nrow(chk("time_unit", "dose_unit")), 0L)
+  expect_equal(nrow(chk("half_life", "dose_unit")), 0L)
+})
+
+test_that("no model in the database uses a non-canonical unit spelling", {
+  # Enumerating: a newly added model with time = "hour" fails here.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  bad <- character(0)
+  for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
+    src <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    for (fld in c("time", "dosing")) {
+      map <- if (fld == "time") conv$timeUnitSpellings else conv$doseUnitSpellings
+      m <- regmatches(src, regexpr(sprintf('%s\\s*=\\s*"[^"]*"', fld), src))
+      if (!length(m)) next
+      val <- sub('.*"([^"]*)".*', "\\1", m)
+      if (tolower(val) %in% names(map)) bad <- c(bad, paste0(basename(f), ": ", fld, "=", val))
+    }
+  }
+  expect_equal(sort(unique(bad)), character(0))
+})
+
 # nolint end

@@ -54,6 +54,34 @@ Guiastrennec_2016_gastric_emptying <- function() {
     concentration = "umol/L (acetaminophen Cc); secondary outputs in pmol/L (TCCK) and mL (gallbladder volume GVol)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    stomach     = list(analyte = "acetaminophen", units = NA_character_, specimen = "administration site", verified = FALSE),
+    upper_si    = list(analyte = "acetaminophen", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "acetaminophen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "acetaminophen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stom_fat    = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stom_prot   = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stom_carb   = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    fat_usi     = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_usi    = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_usi    = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    fat_duod    = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_duod   = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_duod   = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    fat_jej     = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_jej    = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_jej    = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pool_f      = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cckf        = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    pool_l      = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cckl        = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gallbladder = list(analyte = "bile salts", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline. Linear-deviation effect on the baseline gallbladder volume (BASEBILE_eff = BASEBILE * (1 + 0.0119 * (WT - 88))).",

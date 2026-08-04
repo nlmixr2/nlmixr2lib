@@ -10,7 +10,7 @@ Wang_2024_amphenmulin_killrate <- function() {
   )
   vignette <- "Wang_2024_amphenmulin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "ug (amphenmulin into the 300 mL reaction chamber; amt/300 is the resulting concentration in ug/mL)",
     concentration = "ug/mL (Cc); log10 CFU/mL (logCfu)"
   )

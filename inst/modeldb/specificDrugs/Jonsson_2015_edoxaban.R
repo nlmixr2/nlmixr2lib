@@ -18,7 +18,19 @@ Jonsson_2015_edoxaban <- function() {
   # stoichiometry in d/dt(central_m4) below correct without a molecular-weight
   # ratio. To dose in mass units, convert with the edoxaban free-base
   # molecular weight of 548.0 g/mol (15 mg = 27372 nmol).
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "edoxaban", units = "nmol", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "edoxaban", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "edoxaban", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_m4  = list(analyte = "M4", units = "nmol", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "edoxaban", units = "nmol", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

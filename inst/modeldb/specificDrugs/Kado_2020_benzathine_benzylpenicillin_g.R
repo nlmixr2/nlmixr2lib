@@ -13,6 +13,18 @@ Kado_2020_benzathine_benzylpenicillin_g <- function() {
   vignette    <- "Kado_2020_benzathine_benzylpenicillin_g"
   units       <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot1   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    depot3   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ROUTE_SC = list(
       description        = "Route-of-administration indicator: 1 = SC injection, 0 = IM injection.",

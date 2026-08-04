@@ -3,12 +3,25 @@ Hirai_2016_febuxostat <- function() {
   reference <- "Hirai T, Kimura T, Echizen H. Modeling and simulation for estimating the influence of renal dysfunction on the hypouricemic effect of febuxostat in hyperuricemic patients due to overproduction or underexcretion of uric acid. Biol Pharm Bull. 2016;39(6):1013-1021. doi:10.1248/bpb.b15-01031"
   vignette <- "Hirai_2016_febuxostat"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/L"
   )
 
   paper_specific_compartments <- c("uapool1", "uapool2", "xanthine")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    uapool1     = list(analyte = "uric acid", units = "mg", specimen = "urine", verified = FALSE),
+    uapool2     = list(analyte = "uric acid", units = "mg", specimen = "plasma", verified = FALSE),
+    xanthine    = list(analyte = "xanthine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

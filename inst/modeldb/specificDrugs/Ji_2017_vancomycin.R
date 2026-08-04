@@ -2,7 +2,14 @@ Ji_2017_vancomycin <- function() {
   description <- "One-compartment IV (intermittent-infusion) population PK model for vancomycin in Chinese adult patients (Ji 2017). Clearance is scaled by raw Cockcroft-Gault creatinine clearance (centered linear term, reference 80 mL/min) and by age (power of (75/age), reference 75 years); the volume of distribution is a single typical value. Developed from steady-state trough therapeutic-drug-monitoring data."
   reference <- "Ji XW, Ji SM, He XR, Zhu X, Chen R, Lu W. Influences of renal function descriptors on population pharmacokinetic modeling of vancomycin in Chinese adult patients. Acta Pharmacol Sin. 2018;39(2):286-293. doi:10.1038/aps.2017.57 (published online 24 Aug 2017)"
   vignette <- "Ji_2017_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

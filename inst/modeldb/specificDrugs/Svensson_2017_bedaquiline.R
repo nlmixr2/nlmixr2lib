@@ -24,6 +24,14 @@ Svensson_2017_bedaquiline <- function() {
   vignette <- "Svensson_2017_bedaquiline"
   units <- list(time = "week", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    mbl = list(analyte = "Mycobacterial load (MBL)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CAV = list(
       description        = "Bedaquiline weekly-average plasma concentration (Cav,W in the source). Time-varying covariate updated weekly to reflect the loading-vs-maintenance dose schedule and the slow tissue accumulation of bedaquiline over the treatment period. Set to 0 for placebo periods.",

@@ -4,6 +4,14 @@ Hazendonk_2016_factor_viii <- function() {
   vignette    <- "Hazendonk_2016_factor_viii"
   units       <- list(time = "h", dosing = "IU", concentration = "IU/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "factor viii", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "factor viii", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

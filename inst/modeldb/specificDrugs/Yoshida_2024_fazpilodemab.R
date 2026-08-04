@@ -4,6 +4,16 @@ Yoshida_2024_fazpilodemab <- function() {
   vignette <- "Yoshida_2024_fazpilodemab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "fazpilodemab", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "fazpilodemab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "fazpilodemab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fazpilodemab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ADA_POS = list(
       description        = "Anti-drug antibody (ADA) positivity indicator",

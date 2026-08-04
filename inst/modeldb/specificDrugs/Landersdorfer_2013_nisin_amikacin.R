@@ -11,13 +11,32 @@ Landersdorfer_2013_nisin_amikacin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2013_nisin_amikacin_linezolid"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   # Cnis / Cami are the experimentally-controlled nisin and amikacin
   # broth concentrations in the static time-kill (and sequential
   # combination) experiments. They are supplied as time-varying
   # covariates from the event data, not estimated PK profiles.
   depends <- c("Cnis", "Cami")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1  = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin and ", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2  = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin and ", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible1 = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, su", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible2 = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, su", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_susceptible1    = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin, susce", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_susceptible2    = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin, susce", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_resistant1    = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin, res", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_resistant2    = list(analyte = "methicillin-resistant Staphylococcus aureus (susceptible to nisin, res", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant1   = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, re", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant2   = list(analyte = "methicillin-resistant Staphylococcus aureus (intermediate to nisin, re", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_resistant1      = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin and am", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_resistant2      = list(analyte = "methicillin-resistant Staphylococcus aureus (resistant to nisin and am", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     Cnis = list(

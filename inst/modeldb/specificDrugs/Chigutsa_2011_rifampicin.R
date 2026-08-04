@@ -2,7 +2,15 @@ Chigutsa_2011_rifampicin <- function() {
   description <- "Population pharmacokinetic model for oral rifampicin in adults with sputum-positive pulmonary tuberculosis in South Africa (Cape Town). One-compartment disposition with a fixed-length Erlang transit-absorption chain (NN = 19 fixed) feeding the central compartment via first-order ka. Allometric scaling of CL/F and V/F to a 70 kg reference body weight with canonical Anderson and Holford (2008) exponents (0.75 on CL, 1.0 on V; cited as Chigutsa 2011 Methods reference 3 for the allometric model). Covariate effects: female sex on V/F (-30%) and on the mean transit time MTT (+30% per Results body text page 4124 -- women have a 30% LONGER absorption delay than men; Table 2 Final-model row prints -30% with a CI bit-identical to the V/F row immediately above, which is the canonical signature of a typesetting row-duplication error; per the operator sidecar request-001 directive the body text +30% is the source of truth); high-dose-band effect on MTT (-27% for daily doses >= 600 mg vs the 450 mg reference); SLCO1B1 rs4149032 genotype-dependent oral bioavailability F (heterozygous carriers -18%; homozygous variant carriers -28%; relative to the homozygous-common-allele wild-type reference). Between-subject variability (BSV) is carried on F, CL, and MTT with the CL-MTT correlation block 0.86 from Table 2; within-subject (WSV / IOV) variability reported in Table 2 is NOT carried (forward-simulation users do not need the second-occasion IOV layer; see vignette Errata). Combined additive + proportional residual error."
   reference <- "Chigutsa E, Visser ME, Swart EC, Denti P, Pushpakom S, Egan D, Holford NHG, Smith PJ, Maartens G, Owen A, McIlleron H. (2011). The SLCO1B1 rs4149032 polymorphism is highly prevalent in South Africans and is associated with reduced rifampin concentrations: dosing implications. Antimicrob Agents Chemother 55(9):4122-4127. doi:10.1128/AAC.01833-10"
   vignette <- "Chigutsa_2011_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

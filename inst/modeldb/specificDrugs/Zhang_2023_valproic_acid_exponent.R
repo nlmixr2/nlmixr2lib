@@ -2,7 +2,15 @@ Zhang_2023_valproic_acid_exponent <- function() {
   description <- "One-compartment population PK model with first-order absorption for total plasma valproic acid in Chinese children with epilepsy (Zhang 2023 Model V, the simple exponent model). Apparent clearance follows a power function of the patient's own daily dose per kilogram, CL/F = CLp/F * (DD/25)^0.658, with DD in mg/kg/day and a reference daily dose of 25 mg/kg/day; this is the empirical dose-dependence strategy the authors contrast against mechanistic protein-binding models. Formulation-specific absorption rate constants FIXED from the literature (syrup 2.64 1/h reference, conventional tablet 1.57 1/h, sustained-release tablet 0.46 1/h). Best prediction-based performance of the five strategies (MDPE 1.50%, MAPE 17.68%) but the authors conclude it does not describe the underlying non-linearity; see modellib('Zhang_2023_valproic_acid_base') for the reference model."
   reference <- "Zhang L, Liu M, Qin W, Shi D, Mao J, Li Z. Modeling the protein binding non-linearity in population pharmacokinetic model of valproic acid in children with epilepsy: a systematic evaluation study. Front Pharmacol. 2023;14:1228641. doi:10.3389/fphar.2023.1228641. PMID 37860114. Model V structure from Eq. 7; parameter estimates from Supplementary Table S3."
   vignette <- "Zhang_2023_valproic_acid_protein_binding"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "valproic acid exponent", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "valproic acid exponent", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     DOSE_VPA_MGKGD = list(

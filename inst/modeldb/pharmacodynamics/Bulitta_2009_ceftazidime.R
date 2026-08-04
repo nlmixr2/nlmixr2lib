@@ -10,7 +10,7 @@ Bulitta_2009_ceftazidime <- function() {
   )
   vignette <- "Bulitta_2009_ceftazidime"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg/L (initial ceftazidime concentration in broth)",
     concentration = "log10 CFU/mL (observation); mg/L (drug state cb)"
   )
@@ -21,6 +21,22 @@ Bulitta_2009_ceftazidime <- function() {
     "alys_s", "alys_r",
     "csig1", "csig2",
     "cb"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_s1 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_s2 = list(analyte = "Pseudomonas aeruginosa (susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_r1 = list(analyte = "Pseudomonas aeruginosa (resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_r2 = list(analyte = "Pseudomonas aeruginosa (resistant)", units = NA_character_, specimen = "bile", verified = FALSE),
+    alys_s  = list(analyte = "autolysin (susceptible)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    alys_r  = list(analyte = "autolysin (resistant)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    csig1   = list(analyte = "ceftazidime", units = NA_character_, specimen = "bile", verified = FALSE),
+    csig2   = list(analyte = "ceftazidime", units = NA_character_, specimen = "bile", verified = FALSE),
+    cb      = list(analyte = "ceftazidime", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()

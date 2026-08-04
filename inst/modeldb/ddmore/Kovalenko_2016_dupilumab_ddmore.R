@@ -25,6 +25,15 @@ Kovalenko_2016_dupilumab_ddmore <- function() {
   replicate_of <- "inst/modeldb/specificDrugs/Kovalenko_2016_dupilumab.R"
   units        <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "dupilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dupilumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

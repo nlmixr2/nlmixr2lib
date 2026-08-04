@@ -4,6 +4,14 @@ Xu_2013_ranibizumab <- function() {
   vignette    <- "Xu_2013_ranibizumab"
   units       <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    vitreous = list(analyte = "ranibizumab", units = "mg", specimen = "vitreous", verified = FALSE),
+    central  = list(analyte = "ranibizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Creatinine clearance (Cockcroft-Gault). Xu 2013 median = 65.22 mL/min in the analysis population (adults with neovascular AMD).",

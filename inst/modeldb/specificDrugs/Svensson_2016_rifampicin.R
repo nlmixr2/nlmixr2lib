@@ -18,6 +18,20 @@ Svensson_2016_rifampicin <- function() {
   vignette <- "Svensson_2016_rifampicin"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    enz_pool = list(analyte = "Rifampicin metabolites", units = "mg", specimen = "plasma", verified = FALSE),
+    fast     = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE),
+    slow     = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE),
+    nonm     = list(analyte = "Mycobacterium tuberculosis", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight. Time-fixed per subject in the Svensson 2016 analysis (set to the Smythe 2012 cohort mean of 56 kg for every patient because no individual covariate values were available for the 1966-1977 sputum dataset).",

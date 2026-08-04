@@ -48,6 +48,17 @@ Bjornsson_2011_naproxcinod <- function() {
     concentration = "umol/L (both total and unbound naproxen)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_naproxcinod = list(analyte = "naproxcinod", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot_naproxen    = list(analyte = "naproxen", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "unbound naproxen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cumhaz            = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

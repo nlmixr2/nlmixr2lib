@@ -11,9 +11,21 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
   )
   vignette <- "Wagh_2021_spectinamide_1810_mouse"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/kg (per-kg dosing; PK volumes and clearances are also per-kg)",
     concentration = "mg/L for plasma Cc and PAE compartment; log10(CFU/lung) for the bacterial PD observation"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "spectinamide 1810", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "spectinamide 1810", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "spectinamide 1810", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "not applicable", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bacteria    = list(analyte = "Mycobacterium tuberculosis", units = NA_character_, specimen = "lymph", verified = FALSE)
   )
 
   covariateData <- list(

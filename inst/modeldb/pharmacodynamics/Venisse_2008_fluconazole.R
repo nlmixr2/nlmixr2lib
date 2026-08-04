@@ -9,12 +9,21 @@ Venisse_2008_fluconazole <- function() {
   )
   vignette <- "Venisse_2008_candida_albicans"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L (drug central; numerically equal to ug/mL used in the paper); CFU/mL (Candida count); log CFU/mL (Cc observation)"
   )
 
   paper_specific_compartments <- c("candida")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    candida = list(analyte = "Candida albicans cells", units = "mg", specimen = "bronchoalveolar lavage", verified = FALSE)
+  )
 
   covariateData <- list()
 

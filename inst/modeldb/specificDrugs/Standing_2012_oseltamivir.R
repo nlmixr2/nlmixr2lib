@@ -2,12 +2,23 @@ Standing_2012_oseltamivir <- function() {
   description <- "Population PK model for oral oseltamivir and its active metabolite oseltamivir carboxylate in preterm and term neonates and infants (Standing 2012). One-compartment parent + one-compartment metabolite with first-order absorption, an empirical transit compartment delaying first-pass metabolite appearance, well-stirred-model hepatic first-pass conversion (FM derived from CLI / liver-blood-flow FQ), and physiologically scaled clearances combining (WT/70)^0.75 allometry with a Rhodin 2009 renal-maturation Hill sigmoid on CLU/CLM and a fitted HCE1 Hill sigmoid (PM50 86.1 wk, Hill 3.17) on intrinsic clearance CLI. Volumes (VD, VDM) and liver blood flow (FQ) fixed from external references."
   reference   <- "Standing JF, Nika A, Tsagris V, Kapetanakis I, Maltezou HC, Kafetzis DA, Tsolia MN. Oseltamivir pharmacokinetics and clinical experience in neonates and infants during an outbreak of H1N1 influenza A virus infection in a neonatal intensive care unit. Antimicrob Agents Chemother. 2012;56(7):3833-3840. doi:10.1128/AAC.00290-12"
   vignette    <- "Standing_2012_oseltamivir"
-  units       <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units       <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # Standing 2012 Fig 1 compartment 3 is an empirical transit compartment that
   # delays first-pass metabolite appearance (causing flip-flop kinetics). It is
   # not a Savic absorption-chain transit; declare as paper-specific.
   paper_specific_compartments <- "transit_oselcarb"
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "oseltamivir", units = "nmol", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "oseltamivir", units = "nmol", specimen = "plasma", verified = FALSE),
+    transit_oselcarb = list(analyte = "oseltamivir carboxylate", units = "nmol", specimen = "administration site", verified = FALSE),
+    central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

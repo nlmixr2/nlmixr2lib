@@ -4,6 +4,14 @@ Kim_2015_paroxetine <- function() {
   vignette <- "Kim_2015_paroxetine"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "paroxetine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "paroxetine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Daily paroxetine dose administered at steady state (per-subject)",
