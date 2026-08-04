@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Wang 2024 omega-3 PUFA ([doi:10.1038/s41387-024-00262-w](https://doi.org/10.1038/s41387-024-00262-w)) — community-dwelling adults with type 2 diabetes.
+- Add Wang 2024 long-acting injectable risperidone, Rykindo and Risperdal Consta ([doi:10.1007/s40120-024-00578-w](https://doi.org/10.1007/s40120-024-00578-w)) - adults with schizophrenia or schizoaffective disorder.
+
+- Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Time-varying clearance now has a shared vocabulary (issue #481). 31 models
   gave clearance an explicit time dependence under some twenty different
