@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Roepcke 2023 rezafungin ([doi:10.1128/aac.00916-23](https://doi.org/10.1128/aac.00916-23)) - healthy subjects, hepatically impaired subjects, and adults with candidemia and/or invasive candidiasis.
+- Add Mohammed Ali 2023 tacrolimus (LCP-Tac) ([doi:10.3390/pharmaceutics15122699](https://doi.org/10.3390/pharmaceutics15122699)) - stable adult renal transplant recipients.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
