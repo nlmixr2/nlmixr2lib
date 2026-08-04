@@ -2,38 +2,16 @@
 
 # development version
 
-- Add Riccobene 2016 ceftaroline ([doi:10.1128/AAC.02755-15](https://doi.org/10.1128/AAC.02755-15)) — healthy adults, plasma and lung epithelial lining fluid.
-
-- Time-varying clearance now has a shared vocabulary (issue #481). 31 models
-  gave clearance an explicit time dependence under some twenty different
-  spellings, so the structure could not be found by name and the magnitude of
-  the change could not be compared across drugs without expanding each
-  `d/dt(central)`. Two stems, so the functional form is visible in the name:
-
-  790 spellings in the `units` block and 204 unit hints in labels are
-  normalised (`/hour` and `/hr` to `/h`, `pM.day` to `pM*day`, `mcmol` to
-  `umol`). `conventions$timeUnitSpellings` and `$doseUnitSpellings` hold the
-  map; `checkModelConventions()` errors on a non-canonical spelling and
-  `buildModelDb()` aborts, so it cannot regrow. The extraction skill's template
-  and checklist require it of new models.
-
-  **Spelling is normalised; dimension is never converted.** `min` and `h` are
-  both canonical and are never conflated -- rewriting one as the other would
-  misstate every value. Generic dimensionless models (`PK_1cmt`, `PK_2cmt`, ...)
-  keep their `"time_unit"` / `"dose_unit"` placeholders, and
-  `Beal_2001_iv1cmt_bql` keeps time in half-lives; those are exempt by design.
-
-  No model's numeric values changed.
-
-  `kon` is deliberately **not** canonicalised: the prefix covers at least three
-  different dimensionalities in this library (3D molar rates, QSP 2D on-rates
-  carrying a length dimension, and mass-concentration forms), plus four
-  parameters where `KON..` is the source paper's name for an EC50 or an Emax.
-  The reasoning is recorded in `inst/references/parameter-names.md`.
-
-- Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
-
-- Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
+- Add 11 ganciclovir / valganciclovir population PK models transcribed from the
+  Yang 2023 model repository ([doi:10.3390/pharmaceutics15071801](https://doi.org/10.3390/pharmaceutics15071801))
+  -- Lalagkas 2023, Krens 2020 and Yuen 1995 (adults), Nguyen 2021, Franck 2021,
+  Li 2021, Facchin 2019 and Zhao 2009 (pediatrics), Horvatits 2014 (critically ill
+  adults on CVVHDF), and Acosta 2007 and Zhou 1996 (neonates). With the five
+  already-packaged models extracted from their primaries, this covers all 16
+  models in the review.
+- Add the `DIS_CRITILL` (binary critical-illness / ICU indicator), `TX_ANY`
+  (any-solid-organ-transplant vs non-transplant) and `DIS_CMV_RETINITIS`
+  (CMV retinitis vs CMV-positive without retinitis) covariate canonicals.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
