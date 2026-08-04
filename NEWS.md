@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2023 monoclonal antibody panel ([doi:10.1080/19420862.2023.2263926](https://doi.org/10.1080/19420862.2023.2263926)) - female BALB/c mice.
+- Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
