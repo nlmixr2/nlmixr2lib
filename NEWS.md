@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kutumova 2024 albumin nanoparticles ([doi:10.1016/j.heliyon.2024.e30962](https://doi.org/10.1016/j.heliyon.2024.e30962)) - whole-body PBPK in male BALB/c mice with lipopolysaccharide-induced acute lung injury.
+- Add Zhou 2024 HER2-positive metastatic breast cancer QSP platform ([doi:10.1038/s41401-024-01232-9](https://doi.org/10.1038/s41401-024-01232-9)) - HER2-positive breast cancer cell lines and mouse xenografts.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
