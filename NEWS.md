@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhao 2024 ciprofloxacin + colistin ([doi:10.1038/s41598-024-61518-0](https://doi.org/10.1038/s41598-024-61518-0)) - in-vitro *Escherichia coli* time-kill plus simulated critically ill adults with bloodstream infection or pyelonephritis.
+- Add Wang 2024 tacrolimus ([doi:10.3389/fphar.2024.1389271](https://doi.org/10.3389/fphar.2024.1389271)) - Chinese adult renal transplant recipients.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
