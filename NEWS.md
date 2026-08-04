@@ -2,11 +2,13 @@
 
 # development version
 
-- Canonical unit spellings. The machine-readable `units` block wrote the same
-  time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
-  -- so a consumer parsing `units$time` could not canonicalise it without
-  carrying its own spelling table. Same for `"minute"`/`"min"` and
-  `"microgram"`/`"ug"`.
+- Add Nagy 2017 obiltoxaximab ([doi:10.1111/cts.12433](https://doi.org/10.1111/cts.12433)) - healthy and anthrax-infected NZW rabbits, cynomolgus macaques, and healthy human volunteers, plus the companion Weibull cure-rate survival model.
+
+- Time-varying clearance now has a shared vocabulary (issue #481). 31 models
+  gave clearance an explicit time dependence under some twenty different
+  spellings, so the structure could not be found by name and the magnitude of
+  the change could not be compared across drugs without expanding each
+  `d/dt(central)`. Two stems, so the functional form is visible in the name:
 
   790 spellings in the `units` block and 204 unit hints in labels are
   normalised (`/hour` and `/hr` to `/h`, `pM.day` to `pM*day`, `mcmol` to

@@ -1668,6 +1668,10 @@ navbar:
         href: articles/Luu_2017_nusinersen.html
       - text: "Nutlin3a (Zhang 2011)"
         href: articles/Zhang_2011_nutlin3a.html
+      - text: "Obiltoxaximab (Nagy 2017)"
+        href: articles/Nagy_2017_obiltoxaximab.html
+      - text: "Obiltoxaximab survival (Nagy 2017)"
+        href: articles/Nagy_2017_obiltoxaximab.html
       - text: "Obinutuzumab (Gibiansky 2014)"
         href: articles/Gibiansky_2014_obinutuzumab.html
       - text: "Ofatumumab (Yu 2022)"
@@ -3514,6 +3518,7 @@ articles:
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
   - articles/Nader_2017_adalimumab
+  - articles/Nagy_2017_obiltoxaximab
   - articles/Naik_2013_fasiglifam
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
