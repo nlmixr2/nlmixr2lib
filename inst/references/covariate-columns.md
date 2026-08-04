@@ -10181,32 +10181,19 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Henin_2012_felodipine.R`, `Henin_2012_diclofenac.R`.
 - **Notes:** Specific scope. Time-zero-referenced; effective DSI residence time is IP_DSI_C - IP_PSI_DSI. Ratified canonically alongside the Henin 2012 extraction.
 
-### CONMED_LAMOTRIGINE (**canonical for concomitant lamotrigine coadministration indicator**)
-- **Description:** 1 = subject is coadministered lamotrigine (phenyltriazine antiepileptic and mood stabiliser, cleared predominantly by UGT1A4 glucuronidation) at the pharmacokinetic observation, 0 = no concomitant lamotrigine. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (no concomitant lamotrigine).
-- **Source aliases:** none.
-- **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
-- **Notes:** Named-drug member of the `CONMED_<INN>` family. Distinct from the class-level `CONMED_AED` (any antiepileptic) and `CONMED_EIAED` (enzyme-INDUCING antiepileptic): lamotrigine is not a clinically meaningful CYP inducer, so a model that pools it into `CONMED_EIAED` would be mis-specified. Also distinct from `CONMED_UGT_INH`, which is the pooled UGT-inhibitor indicator -- lamotrigine is a UGT substrate rather than a UGT inhibitor. Use the named indicator when the source paper screens lamotrigine specifically, and the class indicator when the source pools antiepileptics.
+## Molecule-level physicochemical / developability attributes
 
-### CONMED_QUETIAPINE (**canonical for concomitant quetiapine coadministration indicator**)
-- **Description:** 1 = subject is coadministered quetiapine (dibenzothiazepine second-generation antipsychotic, cleared predominantly by CYP3A4) at the pharmacokinetic observation, 0 = no concomitant quetiapine. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (no concomitant quetiapine).
-- **Source aliases:** none.
-- **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
-- **Notes:** Named-drug member of the `CONMED_<INN>` family. Quetiapine is a CYP3A4 substrate and a weak CYP2D6 inhibitor; it is neither a strong CYP3A4 inhibitor nor an inducer, so it should not be folded into `CONMED_CYP3A4_INH` / `CONMED_CYP3A4_IND`. Register sibling named canonicals (`CONMED_OLANZAPINE`, `CONMED_RISPERIDONE`, ...) rather than reusing this one when a source screens a different antipsychotic, and reserve a future class-level `CONMED_ANTIPSYCHOTIC` for sources that pool the class.
+Covariates whose value is a property of the **administered molecule** rather than of the subject. They arise in inter-molecule-variability analyses (mAb developability panels, MBMA-style multi-compound PBPK fits) where many compounds are dosed under one protocol and a measured in-vitro attribute of each compound explains the between-compound spread in PK. Operationally they behave like any other covariate column: every record for a given subject carries the attribute of the compound that subject received, and the value is constant within subject.
 
-### CONMED_VENLAFAXINE (**canonical for concomitant venlafaxine coadministration indicator**)
-- **Description:** 1 = subject is coadministered venlafaxine (serotonin-norepinephrine reuptake inhibitor, cleared predominantly by CYP2D6 to O-desmethylvenlafaxine with a CYP3A4 minor route) at the pharmacokinetic observation, 0 = no concomitant venlafaxine. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (no concomitant venlafaxine).
-- **Source aliases:** none.
-- **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
-- **Notes:** Named-drug member of the `CONMED_<INN>` family. Relevant to psychotropic popPK models both as a coadministered antidepressant and as a CYP2D6 substrate that can compete with other CYP2D6-cleared comedications. Register sibling named canonicals for other antidepressants screened by name rather than reusing this one; reserve a future class-level `CONMED_ANTIDEPRESSANT` for sources that pool the class.
+Name them `<ASSAY>_<READOUT>` using the assay abbreviation the field uses (`HEPARIN_RT`, `FCRN_RT`, `ACSINS`, `HIC_RT`, `BVP`, `PI_CALC`, ...). Do not fold them into the `FORM_*` (formulation) or `CONMED_*` (co-medication) families -- those describe how a single drug was presented, while these describe which molecule was given.
+
+### HEPARIN_RT (**canonical for heparin-chromatography retention time of the administered antibody**)
+- **Description:** Retention time (minutes) at which the administered monoclonal antibody elutes from a heparin affinity column under a defined salt gradient, measured at the centre of the elution peak. A high-throughput surrogate for charge-mediated nonspecific binding, and the strongest in-vitro predictor of fast mAb clearance in the Liu 2023 developability panel. Enters the model as the driver of a sigmoidal relationship for the antibody-specific pinocytosis-uptake coefficient F1 of the Shah & Betts platform PBPK model.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** NULL -- continuous.
+- **Source aliases:**
+  - `Heparin_RT` -- Liu 2023 Supplementary Table S1 column name.
+- **Example models:** `Liu_2023_mAb_mouse_pbpk.R`.
+- **Notes:** Assay-condition dependent, so retention times are only comparable within a single column chemistry and gradient. Liu 2023 used a HiTrap Heparin High Performance 1 mL column (Cytiva 17040601), 0.4 mg antibody loaded in 50 mM Tris pH 7.6 / 5 mM NaCl, washed 5 column volumes, then eluted on a linear 5-400 mM NaCl gradient over 20 column volumes; the reported value is the elution-peak centre. Observed range in that panel: 2.92-31.5 min (56-antibody training set) and 15.1-32.6 min (14-antibody validation set); the paper's flag threshold for a fast-clearing antibody is 16.5 min. A related but distinct readout, `Heparin_pB_buffer` (percent B buffer at elution), was measured in the same runs and is highly correlated with `HEPARIN_RT`; it is not registered here because no extracted model uses it.

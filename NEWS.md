@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tuffal 2023 avalglucosidase alfa ([doi:10.1097/FTD.0000000000001086](https://doi.org/10.1097/FTD.0000000000001086)) - adolescents and adults with late-onset Pompe disease.
+- Add Liu 2023 monoclonal antibody panel ([doi:10.1080/19420862.2023.2263926](https://doi.org/10.1080/19420862.2023.2263926)) - female BALB/c mice.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
