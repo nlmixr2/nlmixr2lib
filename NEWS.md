@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kaushal 2024 mRNA-0184 relaxin-2 ([doi:10.1111/cts.13894](https://doi.org/10.1111/cts.13894)) -- healthy cynomolgus monkeys, plus the allometric human projection used for first-in-human dose selection in heart failure.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
