@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jiang 2024 empagliflozin ([doi:10.3390/ph17040522](https://doi.org/10.3390/ph17040522)) - healthy Korean adults given single oral doses of an empagliflozin L-proline cocrystal and the conventional formulation.
+- Add Mi 2024 aditoprim ([doi:10.3389/fphar.2024.1378034](https://doi.org/10.3389/fphar.2024.1378034)) - swine PBPK and integrated PBPK/PD against *Streptococcus suis*.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
