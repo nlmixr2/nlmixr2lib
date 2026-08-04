@@ -84,6 +84,8 @@ navbar:
         href: articles/Thai_2011_aflibercept.html
       - text: "Agomelatine (Xie 2019)"
         href: articles/Xie_2019_agomelatine.html
+      - text: "Albendazole (PillayFuentesLorente 2024)"
+        href: articles/PillayFuentesLorente_2024_albendazole.html
       - text: "Alemtuzumab (Mould 2007)"
         href: articles/Mould_2007_alemtuzumab.html
       - text: "Alemtuzumab wbc (Mould 2007)"
@@ -3596,6 +3598,7 @@ articles:
   - articles/Pierre_2017_morphine
   - articles/PillaReddy_2013_panss_subscales
   - articles/Pillai_2004_ibandronate
+  - articles/PillayFuentesLorente_2024_albendazole
   - articles/PiresdeMello_2018_zika_FAV_HFIM
   - articles/PiresdeMello_2018_zika_FAV_IFN_RBV
   - articles/Plachouras_2009_colistin

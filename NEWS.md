@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Pillay-Fuentes Lorente 2024 albendazole ([doi:10.1007/s40268-024-00476-4](https://doi.org/10.1007/s40268-024-00476-4)) -- adolescents infected with *Trichuris trichiura* in Tanzania and Cote d'Ivoire.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

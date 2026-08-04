@@ -3394,6 +3394,16 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `deKock_2017_sulfadoxinePyrimethamine.R` (-24.8% scaling on observed sulfadoxine concentrations; -5.4% scaling on observed pyrimethamine concentrations).
 - **Notes:** Specific scope; pairs with `REGION_MOZAMBIQUE` and `REGION_SUDAN`. Ratified canonically on 2026-05-18.
 
+### REGION_TANZANIA (**canonical for Tanzania study-site / enrollment-country indicator**)
+- **Description:** 1 = study site in Tanzania, 0 = otherwise. Country-level study-site indicator used in multi-country sub-Saharan African trials. In Pillay-Fuentes Lorente 2024 the contrast is Tanzania (Pemba Island) versus Cote d'Ivoire, and the paper refers to it as the "study population" covariate rather than by country name.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Tanzania sites; the specific reference set varies per model -- in Pillay-Fuentes Lorente 2024 the reference is Cote d'Ivoire).
+- **Source aliases:** `Country`, `study population`.
+- **Example models:** `PillayFuentesLorente_2024_albendazole.R` (exponential categorical effect on both apparent metabolite clearances: exp(0.56) = 1.75, i.e. 75% higher albendazole sulfoxide CL/F, and exp(0.38) = 1.46, i.e. 46% higher albendazole sulfone CL/F, in the Tanzanian study population).
+- **Notes:** Specific scope, following the same pattern as `REGION_MOZAMBIQUE` / `REGION_SUDAN` / `REGION_ZAMBIA`: the canonical models a single Tanzania vs non-Tanzania contrast within one multi-site trial, and the comparator set is paper-specific. Note that a country indicator in this family is a proxy for whatever differs between the study populations (in Pillay-Fuentes Lorente 2024 the authors attribute it to drug-metabolising-enzyme polymorphisms, host-parasite interaction, nutritional status and gut microbiome differences), not to geography as such.
+
 ### REGION_POLAND (**canonical for Poland EPPICC enrollment-country indicator**)
 - **Description:** 1 = subject enrolled at the Polish EPPICC cohort site (Medical University Warsaw / Regional Hospital of Infectious Disease), 0 = otherwise. Country-level enrollment-country indicator used in the multi-country European Pregnancy and Paediatric HIV Cohort Collaboration (EPPICC) HIV/HCV coinfection study.
 - **Units:** (binary)
