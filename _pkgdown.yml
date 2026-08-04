@@ -1310,6 +1310,8 @@ navbar:
         href: articles/Tadayasu_2014_linagliptin.html
       - text: "Linezolid (Boak 2014)"
         href: articles/Boak_2014_linezolid.html
+      - text: "Linezolid (Milakovic 2024)"
+        href: articles/Milakovic_2024_linezolid.html
       - text: "Linezolid (Schmidt 2009)"
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "Linezolid (Taubert 2016)"
@@ -3504,6 +3506,7 @@ articles:
   - articles/Merchan_2015_azithromycin
   - articles/Mercier_2014_tramadol_tapentadol
   - articles/Mi_2023_cefquinome_pbpk
+  - articles/Milakovic_2024_linezolid
   - articles/Milosheska_2016_lamotrigine
   - articles/Minichmayr_2024_ceftaroline
   - articles/Minucci_2024_CART_qsp
