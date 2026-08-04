@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pejcic 2024 clopidogrel ([doi:10.3390/pharmaceutics16050685](https://doi.org/10.3390/pharmaceutics16050685)) - healthy Caucasian adults in two bioequivalence studies.
+- Add Kutumova 2024 albumin nanoparticles ([doi:10.1016/j.heliyon.2024.e30962](https://doi.org/10.1016/j.heliyon.2024.e30962)) - whole-body PBPK in male BALB/c mice with lipopolysaccharide-induced acute lung injury.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
