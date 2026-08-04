@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mi 2024 aditoprim ([doi:10.3389/fphar.2024.1378034](https://doi.org/10.3389/fphar.2024.1378034)) - swine PBPK and integrated PBPK/PD against *Streptococcus suis*.
+- Add Zhao 2024 ciprofloxacin + colistin ([doi:10.1038/s41598-024-61518-0](https://doi.org/10.1038/s41598-024-61518-0)) - in-vitro *Escherichia coli* time-kill plus simulated critically ill adults with bloodstream infection or pyelonephritis.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
