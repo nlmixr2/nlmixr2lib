@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sadaf 2024 L-glutamine ([doi:10.1007/s40262-024-01349-4](https://doi.org/10.1007/s40262-024-01349-4)) - children and adults with sickle cell disease and healthy adult volunteers.
+- Add Zhou 2024 cetagliptin ([doi:10.3389/fendo.2024.1359407](https://doi.org/10.3389/fendo.2024.1359407)) - Chinese adults with type 2 diabetes mellitus.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
