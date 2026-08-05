@@ -2294,6 +2294,8 @@ navbar:
         href: articles/Moes_2016_tacrolimus.html
       - text: "Tacrolimus (Passey 2011)"
         href: articles/Passey_2011_tacrolimus.html
+      - text: "Tacrolimus (Pei 2023)"
+        href: articles/Pei_2023_tacrolimus.html
       - text: "Tacrolimus (Prytula 2016)"
         href: articles/Prytula_2016_tacrolimus.html
       - text: "Tacrolimus (Rower 2017)"
@@ -2308,6 +2310,8 @@ navbar:
         href: articles/Lu_2019_tacrolimus_industry_meta.html
       - text: "Tacrolimus metaanalysis (Nanga 2019)"
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
+      - text: "Tacrolimus pbpk (Pei 2023)"
+        href: articles/Pei_2023_tacrolimus.html
       - text: "Tacrolimus thoracic (Sikma 2020)"
         href: articles/Sikma_2020_tacrolimus_thoracic.html
       - text: "Tacrolimus unbound plasma (Sikma 2020)"
@@ -3579,6 +3583,7 @@ articles:
   - articles/Patel_2017_selumetinib
   - articles/Paule_2011_hydroxyurea
   - articles/Pei_2016_iloperidone
+  - articles/Pei_2023_tacrolimus
   - articles/Peng_2014_MK3577
   - articles/Peng_2024_SAL003
   - articles/Perez-Guille_2018_dexmedetomidine

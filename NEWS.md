@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Pei 2023 tacrolimus PBPK and popPK models ([doi:10.3390/pharmaceutics15112580](https://doi.org/10.3390/pharmaceutics15112580)) -- adult heart transplant recipients.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
