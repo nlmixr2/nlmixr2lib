@@ -2714,6 +2714,8 @@ navbar:
         href: articles/Grimsley_1999_vancomycin.html
       - text: "Vancomycin (Ji 2017)"
         href: articles/Ji_2017_vancomycin.html
+      - text: "Vancomycin (Jung 2024)"
+        href: articles/Jung_2024_vancomycin.html
       - text: "Vancomycin (Li 2018)"
         href: articles/Li_2018_vancomycin.html
       - text: "Vancomycin (MarquesMinana 2010)"
@@ -3490,6 +3492,7 @@ articles:
   - articles/Jorga_2000_tolcapone
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
+  - articles/Jung_2024_vancomycin
   - articles/Kado_2020_benzathine_benzylpenicillin_g
   - articles/Kakara_2014_statins_LDLC
   - articles/Kamal_2013_oseltamivir
