@@ -288,8 +288,15 @@ worst_deviation <- function(sim) {
   max(abs(cmp$cmax / cmp$a_peak - 1), abs(cmp$cmin / cmp$a_trough - 1))
 }
 
+# The retry budget is 40, not 8. The correctness gate below is sound -- a
+# solve is only accepted when every subject matches the closed form -- so the
+# only thing at risk is TERMINATION. Under the merge gate's 30-way parallel
+# render the corruption rate rises with CPU contention and 8 attempts proved
+# insufficient (this vignette passed a serial-ish run at 52.4 s and failed a
+# loaded one). Raising the budget costs nothing when the first attempt
+# succeeds, which is the usual case.
 sim <- NULL
-for (attempt in seq_len(8L)) {
+for (attempt in seq_len(40L)) {
   candidate <- solve_once()
   dev <- worst_deviation(candidate)
   if (dev < 1e-6) {
@@ -298,7 +305,7 @@ for (attempt in seq_len(8L)) {
   }
 }
 if (is.null(sim)) {
-  stop("rxSolve did not reproduce the analytic steady state in 8 attempts")
+  stop("rxSolve did not reproduce the analytic steady state in 40 attempts")
 }
 
 c(`solve attempts` = attempt,
