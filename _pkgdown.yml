@@ -576,6 +576,12 @@ navbar:
         href: articles/Bosch_2024_cotadutide_qsp.html
       - text: "Crisantaspase (Sassen 2017)"
         href: articles/Sassen_2017_crisantaspase.html
+      - text: "CrisprCas9 human (Desai 2024)"
+        href: articles/Desai_2024_crisprCas9.html
+      - text: "CrisprCas9 mouse (Desai 2024)"
+        href: articles/Desai_2024_crisprCas9.html
+      - text: "CrisprCas9 nhp (Desai 2024)"
+        href: articles/Desai_2024_crisprCas9.html
       - text: "Crizotinib mouse (Yamazaki 2008)"
         href: articles/Yamazaki_2008_crizotinib_mouse.html
       - text: "CyaaE7 (ParraGuillen 2013)"
@@ -3217,6 +3223,7 @@ articles:
   - articles/Denti_2010_glucoseMinimal
   - articles/Denti_2018_levofloxacin
   - articles/Desai_2016_isavuconazole
+  - articles/Desai_2024_crisprCas9
   - articles/Desikan_2022_covidVaccine
   - articles/Desmee_2015_PSA_mCRPC
   - articles/deVriesSchultink_2018_cardiotoxicity
