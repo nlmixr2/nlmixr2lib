@@ -42,7 +42,7 @@ length(mod$state)
 
 ```{r population, echo = FALSE}
 pop <- readModelDb("Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp")
-p <- environment(pop)$population
+p <- rxode2::rxode(pop)$population
 data.frame(
   Field = c("Species", "Disease state", "Subjects", "Studies", "Dosing"),
   Value = c(p$species, p$disease_state, p$n_subjects, p$n_studies, p$dose_range)

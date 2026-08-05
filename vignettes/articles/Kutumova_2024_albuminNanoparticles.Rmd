@@ -172,7 +172,11 @@ throughout; they are a validation target, not a tabulated result.
 
 ```{r figure-4}
 ratios <- sim |>
-  filter(!is.na(Cliver)) |>
+  # Cliver is exactly 0 at t = 0 (nothing has distributed yet), so the
+  # liver-normalised ratio is 0/0 = NaN there. That is not missing data, it is
+  # undefined, and one NaN per arm propagates through mean(). Drop the
+  # undefined rows rather than masking them with na.rm.
+  filter(!is.na(Cliver), Cliver > 0) |>
   transmute(id, arm, time,
             Lungs   = Clung   / Cliver,
             Spleen  = Cspleen / Cliver,
@@ -268,8 +272,10 @@ lung_summary |>
                caption = paste("Liver-normalised pulmonary signal by",
                                "experiment (model)."))
 
+# `Experiment` only exists inside the piped rename() feeding kable() above;
+# lung_summary itself still carries the original `arm` column.
 mean_by_arm <- setNames(lung_summary$`Mean lung:liver`,
-                        as.character(lung_summary$Experiment))
+                        as.character(lung_summary$arm))
 
 # Kutumova 2024 abstract and section 3.4: accumulation in the lungs increases,
 # peaking 6 h after LPS, and decreases at 24 h.
@@ -307,7 +313,9 @@ That constraint is a property of the packaged parameter values and can be
 checked directly.
 
 ```{r table-1-monotonicity}
-ini_df <- mod$iniDf
+# readModelDb() returns a function; the ui that exposes $iniDf comes from
+# rxode2::rxode(). mod itself stays a function for the rxSolve() calls.
+ini_df <- rxode2::rxode(mod)$iniDf
 pa_of <- function(organ) {
   vapply(c("ctrl", "lps30m", "lps6h", "lps24h"),
          function(s) ini_df$est[ini_df$name == paste0("pa_", organ, "_", s)],

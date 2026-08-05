@@ -632,9 +632,15 @@ bracket <- sens |>
   dplyr::group_by(PPTESTCD) |>
   dplyr::summarise(lo = min(reduction_pct), hi = max(reduction_pct), .groups = "drop") |>
   dplyr::mutate(published = published_reduction[PPTESTCD],
-                brackets = published >= lo & published <= hi)
+                brackets = published >= lo & published <= hi) |>
+  # Only three NCA parameters have a published reduction to compare against;
+  # the rest carry published = NA, and all(c(TRUE, TRUE, TRUE, NA)) is NA,
+  # which stopifnot() rejects. Restrict to the rows that are actually testable.
+  dplyr::filter(!is.na(published))
 print(as.data.frame(bracket))
-stopifnot(all(bracket$brackets))
+# Guard that the filter did not empty the check out: all three published
+# reductions must be present AND inside the modelled range.
+stopifnot(nrow(bracket) == length(published_reduction), all(bracket$brackets))
 ```
 
 Every one of the three published reductions falls inside the range the model

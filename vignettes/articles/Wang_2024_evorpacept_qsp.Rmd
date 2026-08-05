@@ -229,7 +229,12 @@ recycling terms than matching a single dose level would be.
 ```{r pknca}
 nca_conc <- pk %>%
   transmute(id = 1L, dosegrp = as.character(dose_mgkg), time = tad, conc = Cc) %>%
-  filter(!is.na(conc))
+  filter(!is.na(conc)) %>%
+  # rxode2 emits t = 0 twice per arm (the dose record and the first
+  # observation), which PKNCA rejects as non-unique per group and time. Keep
+  # the first of each duplicated (dosegrp, time) pair; the concentrations are
+  # identical, so this drops a repeated row rather than any information.
+  distinct(dosegrp, time, .keep_all = TRUE)
 
 nca_dose <- pk %>%
   distinct(dose_mgkg) %>%
@@ -239,7 +244,9 @@ nca_dose <- pk %>%
 res <- PKNCA::pk.nca(
   PKNCA::PKNCAdata(
     PKNCA::PKNCAconc(nca_conc, conc ~ time | id / dosegrp),
-    PKNCA::PKNCAdose(nca_dose, amount ~ time | id / dosegrp),
+    # PKNCAdose rejects nested (slash) grouping; the library's other PKNCA
+    # vignettes use additive grouping here.
+    PKNCA::PKNCAdose(nca_dose, amount ~ time | id + dosegrp),
     intervals = data.frame(start = 0, end = 7, cmax = TRUE, tmax = TRUE,
                            auclast = TRUE, half.life = TRUE)
   )
