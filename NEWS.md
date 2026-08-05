@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Meid 2024 spironolactone potassium-homeostasis QSP ([doi:10.3390/ph17081041](https://doi.org/10.3390/ph17081041)) - hospitalised adults newly initiating spironolactone.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

@@ -2665,6 +2665,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `TerHeine_2014_tamoxifen.R`.
 - **Notes:** Renamed from `endx` to `endox` on 2026-06-19 per the canonical-register standardization audit (operator decision: keep the contracted form but include the "o" so the suffix is readable as "endox" without vowel-stripping; `endx` was an opaque consonant cluster).
 
+### canrenone (**canonical canrenone suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Canrenone, the principal active metabolite of spironolactone and the species that actually occupies the mineralocorticoid receptor. Spironolactone is extensively metabolised; the canrenone concentration -- not the parent -- drives the Emax receptor-inhibition term in mineralocorticoid-receptor-antagonist PK/PD and QSP models, so canrenone carries its own central and peripheral disposition compartments alongside the parent.
+- **Source aliases:**
+  - `canrenone` / `canrenone_C2` -- the source-listing state names in Meid 2024 Appendix C, mapped to `central_canrenone` and `peripheral1_canrenone`.
+- **Example models:** `Meid_2024_spironolactone_qsp.R` (potassium-homeostasis QSP; two-compartment canrenone disposition formed from spironolactone at `Spiro_Fmetabolized` = 0.19311 of parent clearance, driving mineralocorticoid-receptor occupancy).
+- **Notes:** Full metabolite name kept rather than a contraction: it is short, unambiguous, and already the standard name in the spironolactone literature. Follows the same parent + metabolite pattern as `m1` / `endox` / `megx`.
+
 ### megx (**canonical MEGX lidocaine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Monoethylglycinexylidide (MEGX) lidocaine metabolite (LID -> MEGX via CYP1A2/3A4).

@@ -2226,6 +2226,8 @@ navbar:
         href: articles/Wada_2023_sparsentan.html
       - text: "Spectinamide 1810 mouse (Wagh 2021)"
         href: articles/Wagh_2021_spectinamide_1810_mouse.html
+      - text: "Spironolactone qsp (Meid 2024)"
+        href: articles/Meid_2024_spironolactone_qsp.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
@@ -3461,6 +3463,7 @@ articles:
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
   - articles/Mehta_2023_tb_lesion_mpbpk
+  - articles/Meid_2024_spironolactone_qsp
   - articles/Melhem_2018_g_csf
   - articles/Melhem_2022_dostarlimab
   - articles/Menon_2024_parkinsonPathogenesis
