@@ -966,6 +966,8 @@ navbar:
         href: articles/Naik_2013_fasiglifam.html
       - text: "Fazpilodemab (Yoshida 2024)"
         href: articles/Yoshida_2024_fazpilodemab.html
+      - text: "Febuxostat (Chen 2024)"
+        href: articles/Chen_2024_febuxostat.html
       - text: "Febuxostat (Hirai 2016)"
         href: articles/Hirai_2016_febuxostat.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
@@ -3152,9 +3154,7 @@ articles:
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
   - articles/Chen_2023_tilmicosin
-  - articles/Chen_2024_guhongInjection
-  - articles/Chen_2024_nadroparin
-  - articles/Chen_2024_rituximab
+  - articles/Chen_2024_febuxostat
   - articles/Cheng_2026_immunoglobulin
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
