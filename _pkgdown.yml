@@ -1282,6 +1282,10 @@ navbar:
         href: articles/Feng_2014_ipilimumab.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
+      - text: "Irinotecan (Zhu 2023)"
+        href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Irinotecan mouse (Zhu 2023)"
+        href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Isatuximab (Brillac 2025)"
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
@@ -1824,6 +1828,10 @@ navbar:
         href: articles/Brown_2017_osimertinib.html
       - text: "Oxaliplatin (Valenzuela 2011)"
         href: articles/Valenzuela_2011_oxaliplatin.html
+      - text: "Oxaliplatin (Zhu 2023)"
+        href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Oxaliplatin organoid (Zhu 2023)"
+        href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
       - text: "Oxypurinol (Stocker 2012)"
@@ -2334,8 +2342,8 @@ navbar:
         href: articles/Xu_2011_sirukumab.html
       - text: "Sitafloxacin (Rodjun 2023)"
         href: articles/Rodjun_2023_colistin_sitafloxacin.html
-      - text: "SKL10406 (Park 2014)"
-        href: articles/Park_2014_SKL10406.html
+      - text: "Sn38 organoid (Zhu 2023)"
+        href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Snake venom (Sanhajariya 2018)"
         href: articles/Sanhajariya_2018_snake_venom.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
@@ -4194,6 +4202,7 @@ articles:
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2023_omalizumab_pediatric
+  - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
   - articles/Zieck_2023_ceftazidime
   - articles/Zierhut_2008_osteoprotegerin
   - articles/Zingmark_2003_clomethiazole
