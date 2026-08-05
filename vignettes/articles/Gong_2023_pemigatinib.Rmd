@@ -20,7 +20,7 @@ library(ggplot2)
 # Model and source
 
 Gong 2023 reports two things: a refined population PK model for pemigatinib, and a
-set of exposure-response analyses built on top of it. Two of those models are
+set of exposure-response analyses built on top of it. Three of those models are
 packaged here.
 
 * Citation: `r rxode2::rxode(readModelDb("Gong_2023_pemigatinib"))$reference`
@@ -31,10 +31,12 @@ packaged here.
 | Model | Role |
 |---|---|
 | `Gong_2023_pemigatinib` | Two-compartment population PK with sequential zero-/first-order absorption |
+| `Gong_2023_pemigatinib_phosphate` | Direct-effect Emax model for the change from baseline in serum phosphate, driven by steady-state AUC and baseline phosphate |
 | `Gong_2023_pemigatinib_creatinine` | Direct-effect Emax model for percentage change from baseline in serum creatinine, driven by steady-state AUC |
 
 ```{r models}
 mod  <- readModelDb("Gong_2023_pemigatinib")
+modp <- readModelDb("Gong_2023_pemigatinib_phosphate")
 modc <- readModelDb("Gong_2023_pemigatinib_creatinine")
 ```
 
@@ -60,8 +62,10 @@ co-medication use was phosphate binders in 61 (13.1%), proton-pump inhibitors
 89.3% received pemigatinib monotherapy. Baseline demographics are Gong 2023
 Table 1.
 
-The exposure-response analysis of serum creatinine used the 300 monotherapy
-patients pooled from FIGHT-101, FIGHT-102, and FIGHT-202.
+Both serum-chemistry exposure-response analyses -- serum phosphate and serum
+creatinine -- used the same 300 monotherapy patients pooled from FIGHT-101,
+FIGHT-102, and FIGHT-202. The objective-response analyses used the 108 patients
+with CCA carrying *FGFR2* fusions or rearrangements.
 
 The same information is available programmatically via
 `readModelDb("Gong_2023_pemigatinib")()$population`.
@@ -98,6 +102,17 @@ collected here for review.
 | `propSd` | 0.323 | Table 2 RUV 32.3%; Appendix S1 `$ERROR` log-additive |
 | Absorption structure | sequential zero-order D1 then first-order ka | Appendix S1 `$SUBROUTINE ADVAN4 TRANS4` with `D1=TVD1*EXP(ETA(6))`; Results paragraph 2 |
 | `Cc` unit conversion | `x 1e6 / 487.5` | Appendix S1 `S2 = V2/1000000*487.5 ;nM` (pemigatinib MW 487.5 g/mol) |
+
+## Serum-phosphate exposure-response model
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lemax` | 5.51 mg/dL | Table S2, approximate SE 0.368, 95% CL 4.79-6.23 |
+| `lec50` | 1665 h*nM | Table S2, approximate SE 357, 95% CL 963-2367 |
+| `e_phos_base` | -0.185 per mg/dL, carried as -0.5730 per mmol/L | Table S2, approximate SE 0.0812, 95% CL -0.345 to -0.0250; rescaled by 3.0975 mg/dL per mmol/L |
+| `phosChange = Emax * AUC / (EC50 + AUC) + coef * PHOS` | n/a | Methods "Exposure-response evaluation"; additive form confirmed by the Results sentence quoted below |
+| Baseline phosphate is a covariate | n/a | Methods: "Serum phosphate at baseline was entered into the model as a covariate" |
+| Residual error | not reported | absent from Table S2 and main text; encoded `fixed(0)` |
 
 ## Serum-creatinine exposure-response model
 
@@ -241,6 +256,138 @@ sim |>
   )
 ```
 
+## Serum phosphate vs steady-state exposure (Figure 2)
+
+Gong 2023 Figure 2 plots the model-predicted mean change from baseline in serum
+phosphate at C1D8/C1D15 against steady-state AUC. The published parameters are in
+the paper's mg/dL, but the canonical covariate column `PHOS` is SI mmol/L, so the
+baseline coefficient is carried rescaled. The two units are related by the atomic
+mass of elemental phosphorus.
+
+```{r phos-units}
+MGDL_PER_MMOLL <- 30.974 / 10  # elemental phosphorus, 30.974 g/mol; 1 mmol/L = 3.0975 mg/dL
+auc_ref_135 <- 2850            # Gong 2023 Results: mean AUCss at 13.5 mg q.d.
+```
+
+Baseline serum phosphate is not tabulated by Gong 2023, so the curve is drawn as a
+band spanning the adult clinical reference range, 2.5-4.5 mg/dL.
+
+```{r figure-2}
+phos_grid <- tidyr::crossing(
+  AUC_PEMI = seq(0, 9000, length.out = 100),
+  PHOS_mgdL = c(2.5, 3.5, 4.5)
+) |>
+  dplyr::mutate(
+    id = dplyr::row_number(),
+    time = 0,
+    PHOS = PHOS_mgdL / MGDL_PER_MMOLL
+  )
+
+phos_sim <- rxode2::rxSolve(modp, events = phos_grid,
+                            keep = c("AUC_PEMI", "PHOS_mgdL")) |>
+  as.data.frame()
+
+ggplot(phos_sim, aes(AUC_PEMI, phosChange, group = PHOS_mgdL,
+                     linetype = factor(PHOS_mgdL))) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 1665, colour = "firebrick", linetype = "dotted") +
+  labs(
+    x = "Steady-state AUC (h*nM)",
+    y = "Change from baseline in serum phosphate (mg/dL)",
+    linetype = "Baseline phosphate (mg/dL)",
+    title = "Serum phosphate exposure-response",
+    caption = paste(
+      "Replicates Figure 2 of Gong 2023. The dotted line is the fitted",
+      "EC50 of 1665 h*nM, which the paper notes approximates the mean",
+      "AUC0-24h at 8 mg once daily."
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+### The baseline covariate enters additively, not multiplicatively
+
+Table S2 labels the baseline coefficient `(mg/dL)^-1`, which reads as an
+inverse-concentration unit and would suggest a multiplicative form
+`Emax * E(AUC) * (1 + coef * PHOS)`. The paper's own Results sentence settles it in
+favour of the additive form: "For every 1-mg/dL increase in baseline serum
+phosphate level, the reduction from baseline was less than or equal to 0.185
+mg/dL". A constant absolute offset per unit of baseline, independent of exposure,
+is the additive reading; under the multiplicative reading the offset would scale
+with the Emax term. The two forms are far apart numerically at the recommended
+dose, and only the additive one lands near the paper's reported median change of
+about 2.7 mg/dL.
+
+```{r phos-form}
+phos_base <- 3.5  # mid-normal-range assumption; see Assumptions and deviations
+emax_p <- 5.51
+ec50_p <- 1665
+e_drug <- emax_p * auc_ref_135 / (ec50_p + auc_ref_135)
+
+tibble::tibble(
+  Form = c("Additive (packaged)", "Multiplicative (rejected)"),
+  Equation = c("Emax * E + coef * PHOS", "Emax * E * (1 + coef * PHOS)"),
+  `Predicted change at 13.5 mg (mg/dL)` = c(
+    e_drug - 0.185 * phos_base,
+    e_drug * (1 - 0.185 * phos_base)
+  ),
+  `Observed median (mg/dL)` = 2.7
+) |>
+  knitr::kable(digits = 2,
+               caption = "Only the additive form reproduces the reported median change.")
+```
+
+### Gates
+
+Three checks: the EC50 half-maximal identity, the unit-conversion round trip, and
+the paper's observed median change from baseline.
+
+```{r phos-checks}
+eval_phos <- function(auc, phos_mgdL) {
+  ev <- tibble::tibble(
+    id = seq_along(auc),
+    time = 0,
+    AUC_PEMI = auc,
+    PHOS = phos_mgdL / MGDL_PER_MMOLL
+  )
+  rxode2::rxSolve(modp, events = ev)$phosChange
+}
+
+# 1. At AUC = EC50 with a zero baseline term, the drug effect is exactly Emax/2.
+half_max <- eval_phos(1665, 0)
+
+# 2. Unit-conversion round trip: raising baseline phosphate by 1 mg/dL must lower
+#    the predicted change by exactly the published 0.185 mg/dL, even though the
+#    model is driven by an SI mmol/L column and a rescaled coefficient.
+slope_per_mgdL <- diff(eval_phos(c(auc_ref_135, auc_ref_135), c(3.0, 4.0)))
+
+# 3. Median change from baseline. Gong 2023 Figure 3b gives the median AUCss in
+#    the CCA efficacy population as the second/third quartile boundary, 2351
+#    h*nM; Figure 3a gives the median change from baseline as the corresponding
+#    boundary, 2.7 mg/dL. Driving the model at that exposure across the adult
+#    reference range for baseline phosphate must bracket the observed median.
+med_band <- eval_phos(c(2351, 2351), c(2.5, 4.5))
+
+tibble::tibble(
+  Check = c("Emax/2 at AUC = EC50 (mg/dL)",
+            "Change per +1 mg/dL baseline (mg/dL)",
+            "Predicted change at median AUCss, baseline 4.5 mg/dL",
+            "Predicted change at median AUCss, baseline 2.5 mg/dL"),
+  Model = c(half_max, slope_per_mgdL, med_band[2], med_band[1]),
+  Published = c(5.51 / 2, -0.185, NA, NA),
+  Source = c("Table S2 Emax", "Results / Table S2 coefficient",
+             "brackets the observed median of 2.7 (Figure 3a)",
+             "brackets the observed median of 2.7 (Figure 3a)")
+) |>
+  knitr::kable(digits = 4, caption = "Serum-phosphate model gates.")
+
+stopifnot(abs(half_max - 5.51 / 2) < 1e-8)
+stopifnot(abs(slope_per_mgdL - (-0.185)) < 1e-4)
+# The observed median must fall strictly inside the band the model spans over the
+# clinical reference range for baseline phosphate.
+stopifnot(med_band[2] < 2.7, 2.7 < med_band[1])
+```
+
 ## Serum creatinine vs steady-state exposure (Figure 4)
 
 Gong 2023 Figure 4 plots model-predicted percentage change from baseline in serum
@@ -249,8 +396,7 @@ doses (Results, "Exposure-response analysis of safety"), obtained from the mean
 post hoc AUCss at 13.5 mg once daily and the dose-scaled means at the other doses.
 
 ```{r figure-4}
-auc_ref_135 <- 2850  # Gong 2023 Results: mean AUCss at 13.5 mg q.d.
-
+# auc_ref_135 (the published mean AUCss at 13.5 mg q.d.) is defined above.
 # A plotting grid for the algebraic exposure-response curve -- these are
 # evaluation points, not virtual participants.
 creat_curve <- tibble::tibble(
@@ -527,26 +673,54 @@ reproduced exactly on AUC. No parameter was tuned to close the gap.
 * **Sex comparison holds body weight equal.** See the caveat above: the paper's
   reported Cmax,ss / Cmin,ss sex differences are confounded with body weight,
   which Table 1 does not report by sex.
-* **Residual variability for the exposure-response model is not reported.**
-  Gong 2023 Figure 4 shows simulated 5th and 95th percentiles, so the fitted
-  creatinine model carried a residual term, but neither Table S2 nor the main
-  text gives its magnitude. It is encoded as `fixed(0)` rather than invented, so
-  `Gong_2023_pemigatinib_creatinine` is a typical-value (deterministic)
-  predictor.
-* **No inter-individual variability is reported for the exposure-response model**
-  either; it is a population-level regression on per-subject AUCss.
-* **Known convention deviation: the exposure-response output name.**
-  `checkModelConventions()` emits one warning for
-  `Gong_2023_pemigatinib_creatinine` -- that the single-output observation
-  variable `creatPctChange` is neither `Cc` nor a registered PD-output canonical.
-  The endpoint is a percentage change from baseline in a serum chemistry analyte:
-  not a drug concentration, and not backed by an ODE state, so no existing
-  canonical compartment name fits. The model declares
-  `paper_specific_compartments <- c("creatPctChange")`, which suppresses the
-  compartment warning but not the observation warning. Registering a canonical
-  name for change-from-baseline serum-chemistry endpoints is pending operator
-  ratification; the name may change when that is settled. The population PK model
-  `Gong_2023_pemigatinib` lints clean.
+* **The baseline-phosphate covariate enters additively and uncentered.** Table S2
+  labels the coefficient `(mg/dL)^-1`, which on its face suggests a
+  multiplicative form, but the Results sentence quoted in "The baseline covariate
+  enters additively" above describes a constant absolute offset per unit of
+  baseline. The additive reading reproduces the paper's reported median change;
+  the multiplicative reading misses it by more than a factor of two. No centering
+  value is reported and none is implied by the equation, so the term is applied
+  uncentered -- which means the model predicts a negative change at zero exposure
+  (`-0.185 * PHOS`). That is an artifact of an uncentered regression, not a
+  biological claim; the model is meaningful over the treated exposure range the
+  paper fitted.
+* **`PHOS` is carried in SI mmol/L while the endpoint stays in mg/dL.** Gong 2023
+  reports both in mg/dL, but the canonical covariate column is SI (matching the
+  treatment `ALB` received), so the published coefficient of -0.185 per mg/dL is
+  rescaled to -0.5730 per mmol/L using 1 mmol/L = 3.0975 mg/dL for elemental
+  phosphorus. The endpoint is deliberately *not* converted, so that Table S2's
+  `Emax` and every published anchor (the Figure 3a quartile boundaries, the
+  reported median change) remain directly comparable. The round trip is gated
+  above: a 1 mg/dL rise in baseline must move the prediction by exactly the
+  published 0.185 mg/dL.
+* **Baseline serum phosphate is not tabulated by the paper.** Table 1 does not
+  report it, so the vignette draws the exposure-response curve as a band over the
+  adult clinical reference range (2.5-4.5 mg/dL) and uses 3.5 mg/dL as a stated
+  mid-range assumption where a single value is needed. No parameter depends on
+  that choice; the gates are stated either at a zero baseline term or as a band
+  over the whole range.
+* **Residual variability for the exposure-response models is not reported.**
+  Gong 2023 Figures 2 and 4 show simulated 5th and 95th percentiles, so both
+  fitted serum-chemistry models carried a residual term, but neither Table S2 nor
+  the main text gives the magnitude. It is encoded as `fixed(0)` rather than
+  invented, so `Gong_2023_pemigatinib_phosphate` and
+  `Gong_2023_pemigatinib_creatinine` are typical-value (deterministic)
+  predictors.
+* **No inter-individual variability is reported for the exposure-response models**
+  either; they are population-level regressions on per-subject AUCss.
+* **Known convention deviation: the exposure-response output names.**
+  `checkModelConventions()` emits one warning each for
+  `Gong_2023_pemigatinib_creatinine` and `Gong_2023_pemigatinib_phosphate` --
+  that the single-output observation variables `creatPctChange` and `phosChange`
+  are neither `Cc` nor a registered PD-output canonical. The endpoints are a
+  percentage change and an absolute change from baseline in serum chemistry
+  analytes: not drug concentrations, and not backed by ODE states, so no existing
+  canonical compartment name fits. Both models declare the name in
+  `paper_specific_compartments`, which suppresses the compartment warning but not
+  the observation warning. The operator's decision (sidecar request 001 q2) is to
+  keep the paper-named forms and accept the warning rather than found a PD-output
+  canonical family on two examples; the names may change if a canonical family is
+  ratified later. The population PK model `Gong_2023_pemigatinib` lints clean.
 * **`AUC_PEMI` is a static covariate, not an integrated state.** This mirrors the
   authors' own workflow: AUCss was derived noncompartmentally from a dense
   simulated steady-state profile in NONMEM and then used as a regressor in SAS.
@@ -564,15 +738,10 @@ reproduced exactly on AUC. No parameter was tuned to close the gap.
 
 No erratum or corrigendum for Gong 2023 was located.
 
-Several exposure-response sub-models reported in the paper are **not** packaged:
+The remaining exposure-response sub-models reported in the paper are **not**
+packaged, because in each case a parameter needed to evaluate the model is absent
+from the paper, the supplement, and the control stream:
 
-* **Serum phosphate Emax model.** Table S2 reports Emax = 5.51 mg/dL,
-  EC50 = 1665 h*nM, and a baseline-serum-phosphate coefficient of -0.185 per
-  mg/dL -- a complete parameter set. This model is deferred only pending
-  ratification of a canonical covariate column for baseline serum phosphate: no
-  serum-phosphate entry exists in `inst/references/covariate-columns.md`, and the
-  choice between the paper's mg/dL and SI mmol/L needs an operator decision,
-  since serum albumin was made SI-canonical. It is otherwise ready to package.
 * **Objective-response-rate logistic regressions** (Figure 3a on serum-phosphate
   change, Figure 3b on AUCss). The paper reports only model-predicted ORR at four
   doses and describes the shape as bell-shaped; no intercept or coefficient is
