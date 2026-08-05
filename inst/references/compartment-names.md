@@ -2974,6 +2974,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Morris_2011_telapristone.R` (doi:10.1208/s12248-011-9304-7).
 - **Notes:** The Morris 2011 model fixes the metabolite apparent volume V3/F to 1 L for identifiability (Fmet not separately identifiable from V3), so the estimated `fmetest` (= Fmet / V3_metab, units 1/L) numerically equals Fmet under that constraint. The metabolite compartment `central_cdb4453` therefore numerically equals the metabolite concentration (nmol/L) when V3 = 1 L. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
 
+### cns7054 (**canonical CNS 7054 remimazolam metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** CNS 7054, the pharmacologically inactive carboxylic-acid metabolite of remimazolam formed by carboxylesterase-1 (CES-1) hydrolysis of the parent's methyl-propanoate ester. It is the sole quantified metabolite of remimazolam, is cleared predominantly renally (70-90% of its elimination), and clears roughly 19-fold more slowly than the parent, so it accumulates well above parent concentrations during infusion. Drives `central_cns7054` / `peripheral1_cns7054`, the `lcl_cns7054` / `lvc_cns7054` / `lq_cns7054` / `lvp_cns7054` parameters, and the `propSd_cns7054` / `addSd_cns7054` residuals; parent-side parameters keep the canonical unsuffixed names.
+- **Source aliases:** `CNS7054` and `CNS 7054` (both spellings appear in the source papers).
+- **Example models:** `Chen_2024_remimazolam.R` (doi:10.3390/pharmaceutics16091122).
+- **Notes:** Chen 2024 states no stoichiometric conversion factor for the parent-to-metabolite transfer, so the amount transfer is 1:1 on a mass basis and the fitted CNS 7054 volumes and clearance are apparent values in remimazolam-mass equivalents. The parent (439 g/mol) and metabolite (425.1 g/mol) molecular weights differ by only 3.2 percent, which is within the reported RSEs of the metabolite disposition parameters (3-5 percent).
+
 ---
 
 ### 8oh (**canonical 8-hydroxy-efavirenz suffix**)
