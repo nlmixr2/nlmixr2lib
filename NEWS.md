@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tiraboschi 2023 avalglucosidase alfa ([doi:10.1007/s10928-023-09874-8](https://doi.org/10.1007/s10928-023-09874-8)) -- children and adults with late-onset or infantile-onset Pompe disease.
+- Add Kaushal 2024 mRNA-0184 relaxin-2 ([doi:10.1111/cts.13894](https://doi.org/10.1111/cts.13894)) -- healthy cynomolgus monkeys, plus the allometric human projection used for first-in-human dose selection in heart failure.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
