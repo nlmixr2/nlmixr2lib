@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2023 tylosin ([doi:10.3389/fphar.2023.1258403](https://doi.org/10.3389/fphar.2023.1258403)) — healthy and *A. pleuropneumoniae* / *P. multocida* co-infected pigs.
+- Add Zhang 2023 valproic acid ([doi:10.3389/fphar.2023.1228641](https://doi.org/10.3389/fphar.2023.1228641)) -- children with epilepsy; the paper's base model plus all five protein-binding non-linearity strategies, one model file each.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
