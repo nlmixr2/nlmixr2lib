@@ -2140,6 +2140,8 @@ navbar:
         href: articles/Darpo_2014_racSotalol.html
       - text: "RacSotalol QTcI (Darpo 2014)"
         href: articles/Darpo_2014_racSotalol.html
+      - text: "Ractopamine goat pbpk (Ai 2024)"
+        href: articles/Ai_2024_ractopamine_goat_pbpk.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
       - text: "Raltegravir (ArabAlameddine 2012)"
@@ -2987,6 +2989,7 @@ articles:
   - articles/Ahmed_2016_lorenzosOil
   - articles/Ahn_2014_parathyroidHormone
   - articles/Ahsman_2010_cefotaxime
+  - articles/Ai_2024_ractopamine_goat_pbpk
   - articles/Ait-Oudhia_2016_sunitinib
   - articles/AitOudhia_2012_canakinumab
   - articles/Akbar_2025_voriconazole

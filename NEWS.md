@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Desai 2024 in vivo CRISPR-Cas9 gene editing QSP platform ([doi:10.3389/fphar.2024.1454785](https://doi.org/10.3389/fphar.2024.1454785)) - mouse, cynomolgus monkey and human.
+- Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
