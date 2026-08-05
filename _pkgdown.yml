@@ -1074,6 +1074,10 @@ navbar:
         href: articles/Kelman_1984_gentamicin.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
+      - text: "Gevokizumab (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_gevokizumab.html
+      - text: "Gevokizumab mbma (Karakitsios 2024)"
+        href: articles/Karakitsios_2024_gevokizumab.html
       - text: "Givosiran (Ayyar 2024)"
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glasdegib QTcF (Fostvedt 2021)"
@@ -3284,6 +3288,7 @@ articles:
   - articles/Kappelhoff_2005_indinavir
   - articles/Kappelhoff_2005_ritonavir
   - articles/Karaiskos_2015_colistin
+  - articles/Karakitsios_2024_gevokizumab
   - articles/Karlsson_2009_voriconazole
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kassir_2014_tacrolimus
