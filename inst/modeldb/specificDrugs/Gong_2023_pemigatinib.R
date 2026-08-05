@@ -41,7 +41,16 @@ Gong_2023_pemigatinib <- function() {
     sep = " "
   )
   vignette <- "Gong_2023_pemigatinib"
-  units    <- list(time = "hour", dosing = "mg", concentration = "nM")
+  units    <- list(time = "h", dosing = "mg", concentration = "nM")
+
+  # States hold pemigatinib amounts in mg (the dosing unit); the observation Cc
+  # converts the central amount to nM via the Appendix S1 scaling
+  # S2 = V2/1000000*487.5, i.e. pemigatinib MW 487.5 g/mol.
+  compartmentData <- list(
+    depot       = list(analyte = "pemigatinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "pemigatinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pemigatinib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -46,7 +46,7 @@ Gong_2023_pemigatinib_phosphate <- function() {
   # sibling model Gong_2023_pemigatinib_creatinine uses the same convention
   # (operator decision, sidecar request 001 q2: keep the paper-named form).
   paper_specific_compartments <- c("phosChange")
-  units    <- list(time = "hour", dosing = "mg", concentration = "nM")
+  units    <- list(time = "h", dosing = "mg", concentration = "nM")
 
   covariateData <- list(
     AUC_PEMI = list(

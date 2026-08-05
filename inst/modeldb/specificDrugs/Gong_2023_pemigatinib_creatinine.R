@@ -42,7 +42,7 @@ Gong_2023_pemigatinib_creatinine <- function() {
   # name. Declared here so checkModelConventions() treats it as a documented
   # paper-mechanistic output rather than a naming deviation.
   paper_specific_compartments <- c("creatPctChange")
-  units    <- list(time = "hour", dosing = "mg", concentration = "nM")
+  units    <- list(time = "h", dosing = "mg", concentration = "nM")
 
   covariateData <- list(
     AUC_PEMI = list(
