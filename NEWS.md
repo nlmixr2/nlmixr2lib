@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lin 2024 pulmonary TB treatment-outcome multistate model ([doi:10.1093/jac/dkae256](https://doi.org/10.1093/jac/dkae256)) -- adults with drug-resistant pulmonary tuberculosis on bedaquiline plus a multidrug background regimen.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

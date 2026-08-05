@@ -2187,6 +2187,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Hansson_2013_sunitinib_os.R` (Weibull PH `sur = exp(-cumhaz)`; the observation variable), `Struemper_2025_tumorsize_OS_nsclc.R` (AFT log-normal `sur = 1 - pnorm(z_os)`, derived OS output).
 - **Notes:** Registered 2026-06-28. Founding models expose `sur` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model.
 
+### prob_scc (**canonical sputum-culture-conversion probability output**)
+- **Type:** compartment
+- **Role:** Marginal probability of occupying the sputum-culture-converted state at time `t` in a tuberculosis treatment-outcome multistate model, i.e. the probability that a patient has achieved sputum culture conversion (SCC) and has not since relapsed, dropped out or died. Sputum culture conversion is the standard early efficacy endpoint in TB drug development, so `prob_scc` is the natural single PD output to expose for a TB multistate model whose remaining state-occupancy probabilities (active TB, recurrent TB, dropout, death) are returned alongside it as ordinary `model()` outputs.
+- **Source aliases:** none.
+- **Example models:** `Lin_2024_TB_multistate.R` (five-state pharmacometric multistate model; `prob_scc <- s_converted` is the observation variable and carries the placeholder additive residual, while `prob_active_tb`, `prob_recurrent_tb`, `prob_dropout` and `prob_death` expose the other four state-occupancy probabilities).
+- **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Distinct from `sur` (a survival probability derived from a cumulative hazard in a time-to-event sub-model) because `prob_scc` is a state-occupancy probability of a *transient, re-enterable* state: a patient can leave the converted state for recurrent TB and return to it, so `prob_scc` is not monotone in time and is not the complement of any cumulative hazard. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc`. Founding models expose `prob_scc` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises an exact multistate event likelihood on the observed categorical state and has no observation-error model.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
