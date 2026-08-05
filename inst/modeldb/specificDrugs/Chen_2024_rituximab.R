@@ -27,6 +27,16 @@ Chen_2024_rituximab <- function() {
   # was used for initializing CD19+ lymphocytes compartment." Hence
   # kin = rbase * kout and bcell(0) = rbase.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rituximab", units = "mg", specimen = "plasma", verified = FALSE),
+    bcell       = list(analyte = "CD19+ B-lymphocytes", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     BSA = list(
       description        = "Body surface area",

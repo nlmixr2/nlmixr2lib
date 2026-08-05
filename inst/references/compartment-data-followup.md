@@ -56,15 +56,29 @@ before its clean result means anything.**
 
 ## Not done
 
-- `Anbari_2023_atezolizumab_cibisatamab_qsp` (90 states) and
-  `Ippolito_2024_pacmilimab_qsp` (240 states). More than half their states are
-  immunological-synapse and antigen-processing constructs
-  (`q_syn_T_C1_PD1_PDLN`, `q_A_e_M1p0`). A bespoke decoder for two models risks
-  hundreds of wrong entries; a missing block is a warning by design, which is
-  exactly this case.
-- **Verification against source papers for all 6,219 entries.** This is the
-  real remaining work. The `verified` flag makes it enumerable:
-  `sum(!verified)` is the size of the backlog.
+- **Four large immuno-oncology QSP models** share one state-naming taxonomy and
+  are all left unannotated together:
+  `Anbari_2023_atezolizumab_cibisatamab_qsp` (90 states),
+  `Ippolito_2024_pacmilimab_qsp` (240),
+  `Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp` (140) and
+  `Wang_2024_evorpacept_qsp` (153).
+
+  Only about half their states are the decodable `q_V_<compartment>_<species>`
+  form. The remainder are immunological-synapse and antigen-processing
+  constructs (`q_syn_T_C1_PD1_PDLN`, `q_A_e_M1p0`) whose taxonomy would need a
+  bespoke decoder. Writing one for four models risks hundreds of wrong entries,
+  and the local model times out on them (>520 s) and drops states when it does
+  answer. A missing block is a warning by design, which is exactly this case.
+
+  If these are wanted later, the tractable route is to decode the
+  `q_V_<compartment>_<species>` half deterministically -- the compartment codes
+  are C (central/plasma), P (peripheral), T (tumour), LN (lymph node) and e
+  (APC endosome) -- and hand-annotate the synapse/antigen remainder once, since
+  all four share it.
+
+- **Verification against source papers for every entry.** This is the real
+  remaining work. The `verified` flag makes it enumerable: `sum(!verified)` is
+  the size of the backlog.
 
 **When `verified = FALSE` reaches zero, change the missing-block branch of
 `.checkCompartmentData()` from `"warning"` to `"error"`.**

@@ -47,6 +47,28 @@ Parmar_2023_spectinamide_1599_mouse_pbpk <- function() {
   # Sprague-Dawley rat physiology is a separate model file
   # (Parmar_2023_spectinamide_1599_rat_pbpk.R) rather than a covariate switch,
   # following the An_2012_mitoxantrone_{mouse,human}_pbpk precedent.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    venous               = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    arterial             = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    lung_extracellular   = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    lung_cellular        = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    elf                  = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    spleen_extracellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen_cellular      = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    liver_extracellular  = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    liver_cellular       = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    kidney_extracellular = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    kidney_cellular      = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other_extracellular  = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other_cellular       = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "tissue", verified = FALSE),
+    depot                = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot2               = list(analyte = "Spectinamide 1599", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -39,6 +39,25 @@ Parmar_2023_spectinamide_1810_rat_pbpk <- function() {
   # column) is held fixed and no demographic or disease covariate effect is
   # estimated. Species is a separate model file rather than a covariate
   # switch, following the An_2012_mitoxantrone_{mouse,human}_pbpk precedent.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    venous               = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    arterial             = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    lung_extracellular   = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    lung_cellular        = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen_extracellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen_cellular      = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    liver_extracellular  = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    liver_cellular       = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    kidney_extracellular = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    kidney_cellular      = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other_extracellular  = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other_cellular       = list(analyte = "Spectinamide 1810", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -13,6 +13,25 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
   vignette <- "Lallemand_2023_benzylpenicillin_horse"
   units <- list(time = "h", dosing = "ug/kg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot1      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot3      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot4      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot5      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot6      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot7      = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    auc_free    = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    t_above_mic = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     STUDY_SWEDEN_IV = list(
       description        = "Swedish IV cohort indicator (Lallemand 2023 'source of dataset' level Nationcode = 1)",
