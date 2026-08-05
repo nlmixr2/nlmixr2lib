@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2024 febuxostat ([doi:10.1186/s40360-024-00783-1](https://doi.org/10.1186/s40360-024-00783-1)) - healthy Chinese adult volunteers.
+- Add Meid 2024 spironolactone potassium-homeostasis QSP ([doi:10.3390/ph17081041](https://doi.org/10.3390/ph17081041)) - hospitalised adults newly initiating spironolactone.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
