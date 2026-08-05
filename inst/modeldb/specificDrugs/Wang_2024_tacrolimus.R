@@ -25,7 +25,7 @@ Wang_2024_tacrolimus <- function() {
     "doi:10.3389/fphar.2024.1389271."
   )
   vignette <- "Wang_2024_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     HCT = list(

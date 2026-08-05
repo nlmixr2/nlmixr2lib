@@ -2,7 +2,16 @@ Roepcke_2023_rezafungin <- function() {
   description <- "Three-compartment population PK model for rezafungin after weekly IV infusion in healthy subjects, hepatically impaired subjects, and patients with candidemia and/or invasive candidiasis (Roepcke 2023), with body-surface-area scaling on CL, V1, and the shared peripheral volume V23, a serum-albumin effect on V23, and a healthy-vs-diseased disease-state shift on CL and V1."
   reference   <- "Roepcke S, Passarell J, Walker H, Flanagan S. Population pharmacokinetic modeling and target attainment analyses of rezafungin for the treatment of candidemia and invasive candidiasis. Antimicrob Agents Chemother. 2023;67(12):e00916-23. doi:10.1128/aac.00916-23"
   vignette    <- "Roepcke_2023_rezafungin"
-  units       <- list(time = "hr", dosing = "mg", concentration = "ug/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "rezafungin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rezafungin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "rezafungin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BSA = list(

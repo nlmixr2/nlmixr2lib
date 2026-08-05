@@ -26,7 +26,7 @@ Milakovic_2024_linezolid <- function() {
   )
   vignette <- "Milakovic_2024_linezolid"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
   )

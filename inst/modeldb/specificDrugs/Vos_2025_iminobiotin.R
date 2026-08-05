@@ -26,7 +26,7 @@ Vos_2025_iminobiotin <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no concomitant alteplase / IVT)",
-      notes              = "1 = subject received concomitant intravenous thrombolysis with alteplase before / concurrent with 2-IB infusion; 0 = no IVT. In Vos 2025 the cohort prevalence was 65% (13 of 20 in the 2-IB arm; 11 of 18 in the PK-evaluable subset). The +65% multiplicative increase in clearance (TVCL 9.29 L/h no-IVT vs 15.3 L/h with IVT; Vos 2025 Supplemental Table S8 'CL (L/hr) + IVT') has no firmly established mechanism: the Vos 2025 Discussion ruled out plasmin-mediated cleavage because 2-IB is a small molecule rather than a peptide (unlike nerinetide in the ESCAPE-NA1 trial). Source column 'IVT' in the Vos 2025 NONMEM dataset.",
+      notes              = "1 = subject received concomitant intravenous thrombolysis with alteplase before / concurrent with 2-IB infusion; 0 = no IVT. In Vos 2025 the cohort prevalence was 65% (13 of 20 in the 2-IB arm; 11 of 18 in the PK-evaluable subset). The +65% multiplicative increase in clearance (TVCL 9.29 L/h no-IVT vs 15.3 L/h with IVT; Vos 2025 Supplemental Table S8 'CL (L/h) + IVT') has no firmly established mechanism: the Vos 2025 Discussion ruled out plasmin-mediated cleavage because 2-IB is a small molecule rather than a peptide (unlike nerinetide in the ESCAPE-NA1 trial). Source column 'IVT' in the Vos 2025 NONMEM dataset.",
       source_name        = "IVT"
     )
   )
@@ -53,19 +53,19 @@ Vos_2025_iminobiotin <- function() {
     # Typical clearance for the IVT-negative reference (no concomitant alteplase),
     # at the eGFR reference of 90 mL/min/1.73 m^2. The IVT effect is applied
     # multiplicatively in model(). Estimated.
-    lcl <- log(9.29);    label("Typical clearance CL at CRCL=90 and CONMED_ALTEPLASE=0 (L/h)")  # Vos 2025 Supplemental Table S8: "CL (L/hr) - IVT" = 9.29 (RSE 5.8%)
+    lcl <- log(9.29);    label("Typical clearance CL at CRCL=90 and CONMED_ALTEPLASE=0 (L/h)")  # Vos 2025 Supplemental Table S8: "CL (L/h) - IVT" = 9.29 (RSE 5.8%)
 
     # Structural distribution parameters fixed from the upstream TIBOHCA model
     # (Vos 2025 reference 11). Footnote on Supplemental Table S8 reads "10.2 fixed",
     # "15.0 fixed", "10.4 fixed".
     lvc <- fixed(log(10.2)); label("Central volume of distribution Vc (L; from upstream TIBOHCA)")           # Vos 2025 Supplemental Table S8: "Vcentral (L) 10.2 fixed"
-    lq  <- fixed(log(15.0)); label("Inter-compartmental clearance Q (L/h; from upstream TIBOHCA)")           # Vos 2025 Supplemental Table S8: "Q (L/hr) 15.0 fixed"
+    lq  <- fixed(log(15.0)); label("Inter-compartmental clearance Q (L/h; from upstream TIBOHCA)")           # Vos 2025 Supplemental Table S8: "Q (L/h) 15.0 fixed"
     lvp <- fixed(log(10.4)); label("Peripheral volume of distribution Vp (L; from upstream TIBOHCA)")        # Vos 2025 Supplemental Table S8: "Vperipheral (L) 10.4 fixed"
 
     # Concomitant intravenous alteplase (IVT) effect on CL: multiplicative
     # increase from TVCL = 9.29 (no-IVT) to TVCL = 15.3 (with IVT), i.e.
     # +(15.3/9.29 - 1) = +0.6469 fractional change in CL.
-    e_alteplase_cl <- 0.6469;  label("Fractional change in CL with concomitant alteplase (unitless)")  # Vos 2025 Supplemental Table S8: derived from "CL (L/hr) + IVT" 15.3 vs no-IVT 9.29, i.e. 15.3/9.29 - 1
+    e_alteplase_cl <- 0.6469;  label("Fractional change in CL with concomitant alteplase (unitless)")  # Vos 2025 Supplemental Table S8: derived from "CL (L/h) + IVT" 15.3 vs no-IVT 9.29, i.e. 15.3/9.29 - 1
 
     # Baseline eGFR allometric power exponent on CL (Vos 2025 Supplemental
     # Table S8: "COVeGFR0 CL"). Reference eGFR = 90 mL/min/1.73 m^2

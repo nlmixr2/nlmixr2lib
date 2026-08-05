@@ -115,11 +115,11 @@ Zhang_2019_nivolumab <- function() {
   ini({
     # Structural parameters - reference patient: 80 kg, eGFR 90 mL/min/1.73 m^2,
     # male, PS 0, white/other race, monotherapy, NSCLC (Zhang 2019 Figure 1 caption).
-    # Source values reported in mL/hour and hour; converted to L/day and days
+    # Source values reported in mL/h and hour; converted to L/day and days
     # so the time axis matches the rest of nlmixr2lib's mAb library.
-    lcl     <- log(10.8 * 24 / 1000); label("Baseline clearance CL0 at reference covariates (L/day)")     # Zhang 2019 Table 2: CL0 REF = 10.8 mL/hour
+    lcl     <- log(10.8 * 24 / 1000); label("Baseline clearance CL0 at reference covariates (L/day)")     # Zhang 2019 Table 2: CL0 REF = 10.8 mL/h
     lvc     <- log(4.27);             label("Central volume Vc at reference covariates (L)")              # Zhang 2019 Table 2: VC REF = 4.27 L
-    lq      <- log(34.9 * 24 / 1000); label("Intercompartmental clearance Q at reference covariates (L/day)") # Zhang 2019 Table 2: Q REF = 34.9 mL/hour
+    lq      <- log(34.9 * 24 / 1000); label("Intercompartmental clearance Q at reference covariates (L/day)") # Zhang 2019 Table 2: Q REF = 34.9 mL/h
     lvp     <- log(2.70);             label("Peripheral volume Vp at reference covariates (L)")           # Zhang 2019 Table 2: VP REF = 2.70 L
 
     # Time-varying CL Hill-cl_hill_max function (Zhang 2019 final-model equation):

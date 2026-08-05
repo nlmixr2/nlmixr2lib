@@ -34,7 +34,7 @@ Parmar_2023_spectinamide_1810_mouse_pbpk <- function() {
   )
   vignette <- "Parmar_2023_spectinamides_pbpk"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (absolute amount; the paper's mg/kg dose x 0.02 kg mouse body weight, e.g. 10 mg/kg = 0.2 mg)",
     concentration = "mg/L (equivalently ug/mL for plasma and ug/g for tissue under the paper's unit-tissue-density assumption)"
   )
@@ -186,17 +186,17 @@ Parmar_2023_spectinamide_1810_mouse_pbpk <- function() {
     # subcutaneous 0.36 (15.6%).
 
     propSd_Clung <- fixed(0)
-    label("Proportional residual SD for lung concentration (FIXED AT ZERO - published value is a transcription duplicate)")
+    label("Proportional residual SD for lung concentration (published value is a transcription duplicate)")
     # Parmar 2023 Table 7 eps_Lung IV is printed as 0.13 (16.0), identical to
     # the K_Lung(I->C) row; unrecoverable. Subcutaneous column: 0.30 (14.7%).
 
     propSd_Cliver <- fixed(0)
-    label("Proportional residual SD for liver concentration (FIXED AT ZERO - published value is a transcription duplicate)")
+    label("Proportional residual SD for liver concentration (published value is a transcription duplicate)")
     # Parmar 2023 Table 7 eps_Liver IV is printed as 0.076 (17.6), identical
     # to the K_Lung(C->I) row; unrecoverable. Subcutaneous column: 0.31 (14.7%).
 
     propSd_Cspleen <- fixed(0)
-    label("Proportional residual SD for spleen concentration (FIXED AT ZERO - published value is a transcription duplicate)")
+    label("Proportional residual SD for spleen concentration (published value is a transcription duplicate)")
     # Parmar 2023 Table 7 eps_Spleen IV is printed as 1.19 (12.0), identical
     # to the K_Liver(I->C) row; unrecoverable. Subcutaneous column: 0.43 (14.7%).
   })

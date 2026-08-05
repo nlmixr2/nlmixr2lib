@@ -8,7 +8,7 @@ Liang_2024_rituximab <- function() {
   # concentration by multiplying 94000 CD20 molecules per cell and dividing by
   # Avogadro's constant (Liang 2024 Section 2.3). Doses must therefore be
   # supplied in umol; see the vignette for the mg -> umol conversion.
-  units <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   compartmentData <- list(
     # RTX was assayed by ELISA on blood samples and the Discussion refers to
@@ -123,9 +123,9 @@ Liang_2024_rituximab <- function() {
 
   ini({
     # Rituximab disposition (Liang 2024 Table 2).
-    lcl   <- log(0.0482);         label("Nonspecific clearance (CL, L/h)")                                        # Liang 2024 Table 2: CL = 0.0482 L/hr (95% CI 0.0336, 0.0681)
+    lcl   <- log(0.0482);         label("Nonspecific clearance (CL, L/h)")                                        # Liang 2024 Table 2: CL = 0.0482 L/h (95% CI 0.0336, 0.0681)
     lvc   <- log(2.48);           label("Central volume of distribution (V, L)")                                   # Liang 2024 Table 2: V = 2.48 L (1.77, 2.96)
-    lq    <- log(0.0073);         label("Intercompartmental clearance (Q, L/h)")                                   # Liang 2024 Table 2: Q = 0.0073 L/hr (0.000679, 0.0372)
+    lq    <- log(0.0073);         label("Intercompartmental clearance (Q, L/h)")                                   # Liang 2024 Table 2: Q = 0.0073 L/h (0.000679, 0.0372)
     lvp   <- log(4.68);           label("Peripheral volume of distribution (V2, L)")                               # Liang 2024 Table 2: V2 = 4.68 L (1.86, 21.9)
 
     # Target binding and turnover (Liang 2024 Table 2, Section 2.3).

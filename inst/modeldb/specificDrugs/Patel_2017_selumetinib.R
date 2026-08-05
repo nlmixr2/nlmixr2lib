@@ -79,9 +79,9 @@ Patel_2017_selumetinib <- function() {
     # population parameters apply at the reference covariate set (BSA = 1.66 m^2,
     # AGE = 53 y, ALT = 20 U/L, FED = 0) and at single dose (the steady-state
     # reduction in Fm is documented in vignette Assumptions and deviations).
-    # The Table 2 column header reads "h1 (nmol/hr)" and "h9 (nmol/hr)" but the
+    # The Table 2 column header reads "h1 (nmol/h)" and "h9 (nmol/h)" but the
     # parameter description column says "Duration of zero-order drug input"; the
-    # nmol/hr label is a Table 2 unit typo for these two duration entries. Both
+    # nmol/h label is a Table 2 unit typo for these two duration entries. Both
     # values are interpreted as hours (only interpretation consistent with the
     # paper's Figure 1 absorption-model diagram and the Figure 4 ~11% food-effect
     # AUC reduction).

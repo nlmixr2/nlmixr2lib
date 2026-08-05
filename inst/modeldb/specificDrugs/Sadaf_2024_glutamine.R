@@ -29,7 +29,7 @@ Sadaf_2024_glutamine <- function() {
     sep = " "
   )
   vignette <- "Sadaf_2024_glutamine"
-  units <- list(time = "hour", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
   covariateData <- list(
     WT = list(

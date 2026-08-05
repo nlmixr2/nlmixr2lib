@@ -36,13 +36,22 @@ Tuffal_2023_avalglucosidase_alfa <- function() {
   vignette <- "Tuffal_2023_avalglucosidase_alfa"
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ug/mL"
   )
 
   # No covariates are retained in the final model. Every covariate the paper
   # screened is documented in covariatesDataExcluded below.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "avalglucosidase alfa", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

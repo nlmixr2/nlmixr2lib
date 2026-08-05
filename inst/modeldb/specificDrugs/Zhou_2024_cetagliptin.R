@@ -2,7 +2,7 @@ Zhou_2024_cetagliptin <- function() {
   description <- "Two-compartment population PK model with first-order absorption and saturable Michaelis-Menten elimination for cetagliptin, coupled by a direct-effect sigmoid Emax model to plasma DPP-4 inhibition, in Chinese patients with type 2 diabetes mellitus. Total bilirubin is a power covariate on the peripheral volume of distribution."
   reference   <- "Zhou C, Zhou S, Wang J, Xie L, Lv Z, Zhao Y, Wang L, Luo H, Xie D, Shao F. Safety, tolerability, pharmacokinetics and pharmacokinetic-pharmacodynamic modeling of cetagliptin in patients with type 2 diabetes mellitus. Front Endocrinol (Lausanne). 2024;15:1359407. doi:10.3389/fendo.2024.1359407"
   vignette    <- "Zhou_2024_cetagliptin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     TBILI = list(

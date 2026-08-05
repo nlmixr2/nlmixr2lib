@@ -78,7 +78,7 @@ PerezRuixo_2025_posdinemab <- function() {
     lkc    <- log(0.040);                  label("First-order elimination of free p217+tau / tau seeds (kc, 1/h)") # Table 2: 0.040 1/h
     lkint  <- log(0.299);                  label("First-order elimination of free posdinemab in CSF and posdinemab-target complex (kint, 1/h)") # Table 2: 0.299 1/h
 
-    # kon reported in Table 2 as 264 nmol/mL^-1 / hour. Converting to (pmol/L)^-1 / h:
+    # kon reported in Table 2 as 264 nmol/mL^-1 /h. Converting to (pmol/L)^-1 / h:
     # 1 nmol/mL = 10^6 pmol/L => kon[(pmol/L)^-1/h] = 264 * 10^-6 = 2.64e-4
     # Sanity check: kd = koff/kon = 0.224 / 2.64e-4 = 848.5 pmol/L (matches Discussion: 848.5 pM).
     lkon   <- log(2.64e-4);                label("Posdinemab-p217+tau second-order association rate in CSF (kon, (pmol/L)^-1 h^-1; converted from 264 (nmol/mL)^-1 h^-1)") # Table 2: 264 (nmol/mL)^-1 h^-1

@@ -64,7 +64,7 @@
     label("First-order SC absorption rate constant ka (1/h)")  # Drweesh 2026 Methods Section 2.3
 
     # Typical CL/F is the mean of the individual empirical-Bayes clearance
-    # estimates reported in Drweesh 2026 Section 3.2 (0.018 +/- 0.012 L/hr).
+    # estimates reported in Drweesh 2026 Section 3.2 (0.018 +/- 0.012 L/h).
     lcl <- log(0.018)
     label("Apparent clearance CL/F (L/h)")  # Drweesh 2026 Section 3.2
 

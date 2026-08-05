@@ -109,8 +109,8 @@ Anbari_2023_atezolizumab_cibisatamab_qsp <- function() {
     K_nT0_pro <- fixed(1000000000); label("half-maximal peripheral proliferation of of nT0 (Braber 2012, PMID:... [cell]")  # Table S4 (K_nT0_pro = 1000000000 cell)
     k_nT0_death <- fixed(0.002); label("rate of nT0 death (Braber 2012, PMID: 22365666) [1/day]")  # Table S4 (k_nT0_death = 0.002 1/day)
     k_IL2_deg <- fixed(288); label("rate of IL2 degradation (Lotze 1985, PMID: 3871099) [1/minute]")  # Table S4 (k_IL2_deg = 0.2 1/minute)
-    k_IL2_cons <- fixed(0.000144); label("rate of IL2 consumption by T cells (Lotze 1985, PMID: 3871099) [nanomole/cell/h]")  # Table S4 (k_IL2_cons = 6e-06 nanomole/cell/hour)
-    k_IL2_sec <- fixed(0.00072); label("rate of IL2 secretion from T cells (Han 2012, PMID: 22160692; Thurley 2015... [nanomole/cell/h]")  # Table S4 (k_IL2_sec = 3e-05 nanomole/cell/hour)
+    k_IL2_cons <- fixed(0.000144); label("rate of IL2 consumption by T cells (Lotze 1985, PMID: 3871099) [nanomole/cell/h]")  # Table S4 (k_IL2_cons = 6e-06 nanomole/cell/h)
+    k_IL2_sec <- fixed(0.00072); label("rate of IL2 secretion from T cells (Han 2012, PMID: 22160692; Thurley 2015... [nanomole/cell/h]")  # Table S4 (k_IL2_sec = 3e-05 nanomole/cell/h)
     IL2_50 <- fixed(0.32); label("T cell activation half-maximal IL2 concentration (Marchingo 2014, PMID:... [nanomolarity]")  # Table S4 (IL2_50 = 0.32 nanomolarity)
     IL2_50_Treg <- fixed(0.0032); label("Treg activation half-maximal IL2 concentration (Wang and Smith 1987, PMID:... [nanomolarity]")  # Table S4 (IL2_50_Treg = 0.0032 nanomolarity)
     N0 <- fixed(5); label("numer of activated T cell generation by TCR signaling only(Marchingo 2014... [dimensionless]")  # Table S4 (N0 = 5 dimensionless)
@@ -225,7 +225,7 @@ Anbari_2023_atezolizumab_cibisatamab_qsp <- function() {
     # ---- Myeloid-derived suppressor cell (MDSC) module ----
     k_rec_MDSC <- fixed(1.2); label("Rate of MDSC recruitment into the tumor (Lai 2018, PMID: 29735668; Huang... [1/day]")  # Table S4 (k_rec_MDSC = 1.2 1/day)
     kd_MDSC <- fixed(0.015); label("Rate of MDSC death (Lai 2018, PMID: 29735668) [1/day]")  # Table S4 (kd_MDSC = 0.015 1/day)
-    k_deg_CCL2 <- fixed(1.44); label("rate of CCL2 degradation (Tanimoto 2007, PMID: 18089573) [1/h]")  # Table S4 (k_deg_CCL2 = 0.06 1/hour)
+    k_deg_CCL2 <- fixed(1.44); label("rate of CCL2 degradation (Tanimoto 2007, PMID: 18089573) [1/h]")  # Table S4 (k_deg_CCL2 = 0.06 1/h)
     k_deg_NO <- fixed(135); label("rate of NO degradation (Hakim 1996, PMID: 8953625) [1/day]")  # Table S4 (k_deg_NO = 135 1/day)
     k_deg_ArgI <- fixed(0.173); label("rate of ArgI degradation (Schimke 1964, PMID: 14257612) [1/day]")  # Table S4 (k_deg_ArgI = 0.173 1/day)
     k_sec_CCL2 <- fixed(1.5e-12); label("rate of CCL2 secretion (Huang 2007, PMID: 17257744; Dutta 2018, PMID:... [nanomole/cell/day]")  # Table S4 (k_sec_CCL2 = 1.5e-12 nanomole/cell/day)
@@ -282,7 +282,7 @@ Anbari_2023_atezolizumab_cibisatamab_qsp <- function() {
     # exact rename of CL_atezo (Table S4, 0.324 liter/day); Table S6 R97
     #   and Supplementary Eq 4 both give it as the central clearance
     k_cl_cibis <- fixed(3); label("Clearance of cibisatamab from the central compartment [liter/h]")
-    # exact rename of CL_cibis (Table S4, 0.125 liter/hour); Table S6 R150
+    # exact rename of CL_cibis (Table S4, 0.125 liter/h); Table S6 R150
     #   and Supplementary Eq 4
     kon_CEA_cibis <- fixed(1.728); label("kon of CEA-cibisatamab binding [1/(molarity*second)]")
     # exact rename of kon_CEA_TCE (Table S4, 20000 1/(molarity*second))

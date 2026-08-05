@@ -14,7 +14,16 @@ Janssen_2023_paclitaxel <- function() {
     sep = " "
   )
   vignette <- "Janssen_2023_pregnancy_cytotoxics"
-  units <- list(time = "hr", dosing = "umol", concentration = "umol/L")
+  units <- list(time = "h", dosing = "umol", concentration = "umol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "paclitaxel", units = "umol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     EGA = list(
@@ -50,7 +59,7 @@ Janssen_2023_paclitaxel <- function() {
       "Lancet Oncol / Janssen 2021). The non-pregnant structural parameters come",
       "from the Crombag 2019 base model; the pregnancy layer was evaluated, not",
       "estimated, against these 20 patients. Doses are expressed in umol: the",
-      "Crombag 2019 saturable-kinetics parameters are in umol/hr and umol/L, so a",
+      "Crombag 2019 saturable-kinetics parameters are in umol/h and umol/L, so a",
       "mg dose must be converted with the paclitaxel molar mass before use.",
       sep = " "
     )
@@ -61,12 +70,12 @@ Janssen_2023_paclitaxel <- function() {
     # All fixed: Janssen 2023 re-uses the published Crombag 2019 base model
     # without re-estimation (Janssen 2023 Sect. 2.2 "Prediction").
     lvc <- fixed(log(12)); label("Central volume at EGA = 0 (L)")                                   # Table 1, paclitaxel column, V1
-    lvmax_el <- fixed(log(33.8)); label("Maximum elimination rate VM_EL at EGA = 0 (umol/hr)")      # Table 1, paclitaxel column, VM_EL
+    lvmax_el <- fixed(log(33.8)); label("Maximum elimination rate VM_EL at EGA = 0 (umol/h)")      # Table 1, paclitaxel column, VM_EL
     lkm_el <- fixed(log(0.44)); label("Concentration at half VM_EL, KM_EL (umol/L)")                # Table 1, paclitaxel column, KM_EL
-    lvmax_tr <- fixed(log(177)); label("Maximum transport rate to peripheral1, VM_TR (umol/hr)")    # Table 1, paclitaxel column, VM_TR
+    lvmax_tr <- fixed(log(177)); label("Maximum transport rate to peripheral1, VM_TR (umol/h)")    # Table 1, paclitaxel column, VM_TR
     lkm_tr <- fixed(log(1.61)); label("Concentration at half VM_TR, KM_TR (umol/L)")                # Table 1, paclitaxel column, KM_TR
-    lk21 <- fixed(log(1.21)); label("First-order rate constant peripheral1 to central (1/hr)")      # Table 1, paclitaxel column, K21
-    lq2 <- fixed(log(16.8)); label("Intercompartmental clearance to peripheral2 at EGA = 0 (L/hr)") # Table 1, paclitaxel column, Q2
+    lk21 <- fixed(log(1.21)); label("First-order rate constant peripheral1 to central (1/h)")      # Table 1, paclitaxel column, K21
+    lq2 <- fixed(log(16.8)); label("Intercompartmental clearance to peripheral2 at EGA = 0 (L/h)") # Table 1, paclitaxel column, Q2
     lvp2 <- fixed(log(268)); label("Second peripheral volume at EGA = 0 (L)")                       # Table 1, paclitaxel column, V3
 
     # --- Drug-specific disposition constants --------------------------------
@@ -82,12 +91,12 @@ Janssen_2023_paclitaxel <- function() {
     etalq2 ~ fixed(0.219101)       # Table 1: Q2    IIV 49.5% CV -> log(0.495^2 + 1)
 
     # --- Residual error -----------------------------------------------------
-    propSd <- fixed(0); label("Proportional residual error (fraction; FIXED AT ZERO - not reported)")  # Janssen 2023 reports predictions, never a residual-error model
+    propSd <- fixed(0); label("Proportional residual error (fraction; not reported)")  # Janssen 2023 reports predictions, never a residual-error model
   })
 
   model({
     # ---- System constants --------------------------------------------------
-    qhblood <- 109 # hepatic blood flow (L/hr), fixed to the non-pregnant value  # Sect. 2.1.2, from Nakai 2002 (reference [11])
+    qhblood <- 109 # hepatic blood flow (L/h), fixed to the non-pregnant value  # Sect. 2.1.2, from Nakai 2002 (reference [11])
 
     # ---- Gestational physiology (EGA in weeks; EGA = 0 = non-pregnant) -----
     calb <- 45.8 + -0.177 * EGA + -0.0033 * EGA^2                          # Eq 1, serum albumin (g/L)
@@ -97,7 +106,7 @@ Janssen_2023_paclitaxel <- function() {
     vplasma <- 2.5 + -0.0223 * EGA + 0.0042 * EGA^2 + -0.00007 * EGA^3     # Eq 15, plasma volume (L)
     ecw <- 11.86 + 0.0187 * EGA + 0.0016 * EGA^2                           # Eq 17, extracellular water (L)
     tbw <- 31.67 + 0.275 * EGA + 0.0024 * EGA^2                            # Eq 16, total body water (L)
-    qhp <- (1 - hct / 100) * qhblood                                       # Eq 9, hepatic plasma flow (L/hr)
+    qhp <- (1 - hct / 100) * qhblood                                       # Eq 9, hepatic plasma flow (L/h)
 
     # Non-pregnant anchors: the same polynomials evaluated at EGA = 0
     calb0 <- 45.8
@@ -122,8 +131,8 @@ Janssen_2023_paclitaxel <- function() {
     vp20 <- exp(lvp2 + etalvp2)
 
     # ---- VM_EL during pregnancy (Sect. 3.2: "VM_EL was scaled according to
-    # Eqs. 10-13"). The numeric value of VM_EL (umol/hr) is substituted for
-    # CL (L/hr) in the Eq 5-13 clearance cascade. This is dimensionally
+    # Eqs. 10-13"). The numeric value of VM_EL (umol/h) is substituted for
+    # CL (L/h) in the Eq 5-13 clearance cascade. This is dimensionally
     # inconsistent but is what reproduces Table 3 (see vignette Errata).
     clr0 <- vmax_el0 * f_renal
     clh0 <- vmax_el0 - clr0
@@ -131,7 +140,7 @@ Janssen_2023_paclitaxel <- function() {
     clint <- clint0 * cyp3a4 / 100                                         # Eq 12 with Eq 13 (CYP3A4 only; CYP2C8 held at the non-pregnant value, Sect. 2.1.2)
     clh <- qhp * clint * fu / (qhp + clint * fu)                           # Eq 10, well-stirred liver model
     clr <- clr0 * (gfr / gfr0) * (fu / fu_ref)                             # Eq 6
-    vmax_el <- clr + clh                                                   # Eq 5, scaled VM_EL (umol/hr)
+    vmax_el <- clr + clh                                                   # Eq 5, scaled VM_EL (umol/h)
 
     # ---- Volumes during pregnancy (Eq 14, nested fluid shells) ------------
     # fu/ft is back-calculated once at EGA = 0 and held constant (Sect. 2.1.3).

@@ -13,7 +13,7 @@ Lee_2024_topiramate <- function() {
     sep = " "
   )
   vignette <- "Lee_2024_topiramate"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(

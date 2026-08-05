@@ -40,7 +40,7 @@ Wenker_2024_piperacillin_tazobactam <- function() {
   )
   vignette <- "Wenker_2024_piperacillin_tazobactam"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "% of the dosing interval above the MIC (PK/PD index supplied as a covariate)",
     concentration = "log10(CFU/mL) change over 24 h (observation)"
   )

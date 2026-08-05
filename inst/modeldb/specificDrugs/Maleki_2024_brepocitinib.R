@@ -9,7 +9,7 @@ Maleki_2024_brepocitinib <- function() {
     sep = " "
   )
   vignette <- "Maleki_2024_brepocitinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   covariateData <- list(
     WT = list(

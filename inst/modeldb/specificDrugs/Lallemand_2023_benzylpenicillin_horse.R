@@ -11,7 +11,7 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     sep = " "
   )
   vignette <- "Lallemand_2023_benzylpenicillin_horse"
-  units <- list(time = "hour", dosing = "ug/kg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "ug/kg", concentration = "ug/mL")
 
   covariateData <- list(
     STUDY_SWEDEN_IV = list(
@@ -119,17 +119,17 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     # gives a concentration in ug/mL.
     # ---------------------------------------------------------------------
     lvc <- fixed(log(106.184336892764))
-    label("Central volume of distribution Vc (mL/kg; FIXED, frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvV(freeze)); rounded to 106 in Table 4 and Supplementary Table S7
+    label("Central volume of distribution Vc (mL/kg; frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvV(freeze)); rounded to 106 in Table 4 and Supplementary Table S7
     lvp <- fixed(log(46.2952044536849))
-    label("First peripheral volume of distribution V2 (mL/kg; FIXED, frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvV2(freeze)); rounded to 46.3 in Table 4
+    label("First peripheral volume of distribution V2 (mL/kg; frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvV2(freeze)); rounded to 46.3 in Table 4
     lvp2 <- fixed(log(50.4297016344536))
-    label("Second peripheral volume of distribution V3 (mL/kg; FIXED, frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvV3(freeze)); rounded to 50.4 in Table 4
+    label("Second peripheral volume of distribution V3 (mL/kg; frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvV3(freeze)); rounded to 50.4 in Table 4
     lcl <- fixed(log(480.899353392651))
-    label("Plasma clearance CL for French horses, the reference source of dataset (mL/kg/h; FIXED, frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvCl(freeze)); rounded to 481 in Table 4 and Supplementary Table S7
+    label("Plasma clearance CL for French horses, the reference source of dataset (mL/kg/h; frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvCl(freeze)); rounded to 481 in Table 4 and Supplementary Table S7
     lq <- fixed(log(125.961026710481))
-    label("Inter-compartmental clearance CL2 to the first peripheral compartment (mL/kg/h; FIXED, frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvCl2(freeze)); rounded to 126 in Table 4
+    label("Inter-compartmental clearance CL2 to the first peripheral compartment (mL/kg/h; frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvCl2(freeze)); rounded to 126 in Table 4
     lq2 <- fixed(log(24.9818543761259))
-    label("Inter-compartmental clearance CL3 to the second peripheral compartment (mL/kg/h; FIXED, frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvCl3(freeze)); rounded to 25.0 in Table 4
+    label("Inter-compartmental clearance CL3 to the second peripheral compartment (mL/kg/h; frozen from the IV analysis)")  # Supplementary Data 2 fixef(tvCl3(freeze)); rounded to 25.0 in Table 4
 
     # ---------------------------------------------------------------------
     # 'Source of dataset' covariate on plasma clearance, log-additive
@@ -142,11 +142,11 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     # paper prose rather than the (freeze) flags in Supplementary Data 2.
     # ---------------------------------------------------------------------
     e_study_sweden_iv_cl <- fixed(-0.683254)
-    label("Effect of the Swedish IV cohort on log CL (scalar; FIXED, frozen from the IV analysis)")  # Table 4 dCldSource_of_data1 = -0.68325471; Supplementary Table S7 dCldNationcode1 = -0.6833. Gives CL = 243 mL/kg/h
+    label("Effect of the Swedish IV cohort on log CL (scalar; frozen from the IV analysis)")  # Table 4 dCldSource_of_data1 = -0.68325471; Supplementary Table S7 dCldNationcode1 = -0.6833. Gives CL = 243 mL/kg/h
     e_study_usa1_cl <- fixed(-0.125766)
-    label("Effect of the USA1 cohort on log CL (scalar; FIXED, frozen from the IV analysis)")  # Table 4 dCldSource_of_data2 = -0.12576635; Supplementary Table S7 dCldNationcode2 = -0.1258. Gives CL = 424 mL/kg/h. Not significant (95% CI -0.329 to 0.077) but retained
+    label("Effect of the USA1 cohort on log CL (scalar; frozen from the IV analysis)")  # Table 4 dCldSource_of_data2 = -0.12576635; Supplementary Table S7 dCldNationcode2 = -0.1258. Gives CL = 424 mL/kg/h. Not significant (95% CI -0.329 to 0.077) but retained
     e_study_usa2_cl <- fixed(-0.136097)
-    label("Effect of the USA2 cohort on log CL (scalar; FIXED, frozen from the IV analysis)")  # Table 4 dCldSource_of_data3 = -0.13609778; Supplementary Table S7 dCldNationcode4 = -0.1361. Gives CL = 420 mL/kg/h, i.e. 87.3% of the French value
+    label("Effect of the USA2 cohort on log CL (scalar; frozen from the IV analysis)")  # Table 4 dCldSource_of_data3 = -0.13609778; Supplementary Table S7 dCldNationcode4 = -0.1361. Gives CL = 420 mL/kg/h, i.e. 87.3% of the French value
     e_study_japan_cl <- -0.156691638818043
     label("Effect of the Japanese cohort on log CL (scalar; Bayesian estimate from the full model)")  # Supplementary Data 2 fixef(dCldNationcode3); Supplementary Table S7 = -0.1567. Gives CL = 411 mL/kg/h (Table 6, Supplementary Table S8 ClearanceJP)
     e_study_sweden_im_cl <- -0.314630693388979
@@ -182,19 +182,19 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     lka_proc <- log(0.046594811352403)
     label("First-order absorption rate constant Ka after IM procaine BP, French formulation Depocilline (1/h)")  # Supplementary Data 2 fixef(tvKaPROC); Supplementary Table S7 tvKaPROC = 0.0466. MAT = 21.46 h (Table 6)
     e_study_sweden_im_ka_proc <- fixed(0.0390078308660437)
-    label("Effect of the Swedish IM cohort on log Ka for procaine BP, Penovet (scalar; FIXED)")  # Supplementary Data 2 fixef(dKadNationcode11(freeze)); Supplementary Table S7 = 0.0390. Gives Ka = 0.048 /h, MAT = 20.64 h (Table 6)
+    label("Effect of the Swedish IM cohort on log Ka for procaine BP, Penovet (scalar)")  # Supplementary Data 2 fixef(dKadNationcode11(freeze)); Supplementary Table S7 = 0.0390. Gives Ka = 0.048 /h, MAT = 20.64 h (Table 6)
     e_study_usa1_ka_proc <- fixed(-2.37155662564783)
-    label("Effect of the USA1 cohort on log Ka for procaine BP, Norocillin (scalar; FIXED)")  # Supplementary Data 2 fixef(dKadNationcode2(freeze)); Supplementary Table S7 = -2.372. Gives Ka = 0.00435 /h, MAT = 230 h (Table 6)
+    label("Effect of the USA1 cohort on log Ka for procaine BP, Norocillin (scalar)")  # Supplementary Data 2 fixef(dKadNationcode2(freeze)); Supplementary Table S7 = -2.372. Gives Ka = 0.00435 /h, MAT = 230 h (Table 6)
     e_study_japan_ka_proc <- fixed(-0.00427442230486608)
-    label("Effect of the Japanese cohort on log Ka for procaine BP (scalar; FIXED)")  # Supplementary Data 2 fixef(dKadNationcode3(freeze)); Supplementary Table S7 = -0.0043. Gives Ka = 0.04640 /h, MAT = 21.55 h (Table 6)
+    label("Effect of the Japanese cohort on log Ka for procaine BP (scalar)")  # Supplementary Data 2 fixef(dKadNationcode3(freeze)); Supplementary Table S7 = -0.0043. Gives Ka = 0.04640 /h, MAT = 21.55 h (Table 6)
     logitfdepot_proc <- 7.83103159739662
     label("Logit of the bioavailability of BP after IM procaine BP, French formulation Depocilline (scalar)")  # Supplementary Data 2 fixef(tvFPROC); Supplementary Table S7 tvFBP-PROC = 7.8310 -> ilogit = 99.960% (Supplementary Table S8)
     e_study_sweden_im_fdepot_proc <- -0.00177886964815447
     label("Multiplicative effect of the Swedish IM cohort on the logit bioavailability of procaine BP (scalar)")  # Supplementary Data 2 fixef(dFNationcode11); Supplementary Table S7 = -0.0018. Gives F = 99.960% (Supplementary Table S8)
     e_study_usa1_fdepot_proc <- fixed(0.0517205803762012)
-    label("Multiplicative effect of the USA1 cohort on the logit bioavailability of procaine BP (scalar; FIXED)")  # Supplementary Data 2 fixef(dFNationcode2(freeze)); Supplementary Table S7 = 0.052. Gives F = 99.974% (Supplementary Table S8)
+    label("Multiplicative effect of the USA1 cohort on the logit bioavailability of procaine BP (scalar)")  # Supplementary Data 2 fixef(dFNationcode2(freeze)); Supplementary Table S7 = 0.052. Gives F = 99.974% (Supplementary Table S8)
     e_study_japan_fdepot_proc <- fixed(0.422679139787995)
-    label("Multiplicative effect of the Japanese cohort on the logit bioavailability of procaine BP (scalar; FIXED)")  # Supplementary Data 2 fixef(dFNationcode3(freeze)); Supplementary Table S7 = 0.423. Gives F = 99.999% (Supplementary Table S8)
+    label("Multiplicative effect of the Japanese cohort on the logit bioavailability of procaine BP (scalar)")  # Supplementary Data 2 fixef(dFNationcode3(freeze)); Supplementary Table S7 = 0.423. Gives F = 99.999% (Supplementary Table S8)
 
     # ---------------------------------------------------------------------
     # Depots 3 and 4: Duplocilline, a fixed combination of procaine BP
@@ -246,9 +246,9 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     # PK/PD integration constants (Lallemand 2023 Section 2.3).
     # ---------------------------------------------------------------------
     fu <- fixed(0.4)
-    label("Fraction of BP unbound in equine plasma (unitless; FIXED)")  # Section 2.3: plasma protein binding measured at 62.8% in Swedish horses (Olsen 2013); "For our simulations, fu was introduced into the model, with a typical value of 0.4"
+    label("Fraction of BP unbound in equine plasma (unitless)")  # Section 2.3: plasma protein binding measured at 62.8% in Swedish horses (Olsen 2013); "For our simulations, fu was introduced into the model, with a typical value of 0.4"
     mic <- fixed(0.25)
-    label("Minimum inhibitory concentration used for the fT>MIC integration (mg/L, numerically equal to ug/mL; FIXED)")  # Section 2.3 explored 0.0625, 0.125, 0.25, 0.375, 0.5, 1 and 2 mg/L; 0.25 mg/L is the PK/PD cutoff the paper concludes with. Change this to explore another MIC
+    label("Minimum inhibitory concentration used for the fT>MIC integration (mg/L, numerically equal to ug/mL)")  # Section 2.3 explored 0.0625, 0.125, 0.25, 0.375, 0.5, 1 and 2 mg/L; 0.25 mg/L is the PK/PD cutoff the paper concludes with. Change this to explore another MIC
 
     # ---------------------------------------------------------------------
     # Between-subject variability. Lallemand 2023 used an exponential

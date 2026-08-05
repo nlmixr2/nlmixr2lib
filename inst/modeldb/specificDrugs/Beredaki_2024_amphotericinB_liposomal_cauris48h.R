@@ -10,7 +10,7 @@ Beredaki_2024_amphotericinB_liposomal_cauris48h <- function() {
   )
   vignette <- "Beredaki_2024_amphotericinB_liposomal"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg (L-AMB added to the internal compartment of the dilution model)",
     concentration = "mg/L (L-AMB, Cc); log10 CFU/mL (fungal density, log10cfu)"
   )

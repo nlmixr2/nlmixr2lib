@@ -33,7 +33,7 @@ Cao_2013_PRO95780 <- function() {
   ini({
     sigma_tight <- 0.984; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.984 (CV 10.3%)
     sigma_leaky <- 0.638; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.638 (CV 19.4%)
-    lcl   <- log(0.2976); label("Plasma clearance (CLp, L/day)")                           # Cao 2013 Table 2 (Model A): CLp = 0.0124 L/hr (CV 18.3%) = 0.2976 L/day
+    lcl   <- log(0.2976); label("Plasma clearance (CLp, L/day)")                           # Cao 2013 Table 2 (Model A): CLp = 0.0124 L/h (CV 18.3%) = 0.2976 L/day
   })
 
   model({

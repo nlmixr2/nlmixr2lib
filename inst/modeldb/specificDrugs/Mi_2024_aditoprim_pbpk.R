@@ -57,7 +57,7 @@ Mi_2024_aditoprim_pbpk <- function() {
   # and volumes are in L, so amount/volume is mg/L, which is numerically
   # identical to the ug/mL the paper reports for plasma and to the ug/g
   # used for the maximum residue limits in liver and kidney.
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

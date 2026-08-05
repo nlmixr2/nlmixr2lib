@@ -54,7 +54,7 @@ Mi_2024_aditoprim_pbpkpd <- function() {
   # The two bacterial states are CONCENTRATIONS (CFU/mL), not amounts --
   # they live in the in vitro broth system of the time-kill experiment,
   # not in a swine tissue, and are never dosed.
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   covariateData <- list(
     WT = list(

@@ -105,11 +105,11 @@ Yin_2020_pexidartinib <- function() {
     # exponentiated and are reported in the table" -- so the linear-scale
     # reference values are taken directly from Table 2 and re-logged here for the
     # `l` (log) prefix convention.
-    lcl   <- log(5.83) ; label("Apparent oral clearance CL/F (L/h) at the reference subject")              # Yin 2020 Table 2: CL/F exp(theta1) = 5.83 L/hr (95% CI 5.43-6.27)
+    lcl   <- log(5.83) ; label("Apparent oral clearance CL/F (L/h) at the reference subject")              # Yin 2020 Table 2: CL/F exp(theta1) = 5.83 L/h (95% CI 5.43-6.27)
     lvc   <- log(98.0) ; label("Apparent central volume Vc/F (L) at WT = 80 kg")                            # Yin 2020 Table 2: Vc/F exp(theta2) = 98.0 L (95% CI 90.0-107)
     lvp   <- log(116)  ; label("Apparent peripheral volume Vp/F (L) at WT = 80 kg")                         # Yin 2020 Table 2: Vp/F exp(theta3) = 116 L (95% CI 106-128)
-    lq    <- log(20.7) ; label("Apparent inter-compartmental clearance Q/F (L/h) at WT = 80 kg")           # Yin 2020 Table 2: Q/F exp(theta4) = 20.7 L/hr (95% CI 17.9-23.8)
-    lka   <- log(6.82) ; label("First-order absorption rate constant KA (1/h)")                            # Yin 2020 Table 2: KA exp(theta5) = 6.82 1/hr (95% CI 5.09-9.14)
+    lq    <- log(20.7) ; label("Apparent inter-compartmental clearance Q/F (L/h) at WT = 80 kg")           # Yin 2020 Table 2: Q/F exp(theta4) = 20.7 L/h (95% CI 17.9-23.8)
+    lka   <- log(6.82) ; label("First-order absorption rate constant KA (1/h)")                            # Yin 2020 Table 2: KA exp(theta5) = 6.82 1/h (95% CI 5.09-9.14)
     ltlag <- log(0.387); label("Absorption lag time ALAG1 (hr)")                                            # Yin 2020 Table 2: ALAG1 exp(theta6) = 0.387 hr (95% CI 0.385-0.390)
     ld1   <- log(1.22) ; label("Duration of zero-order deposition D1 (hr)")                                 # Yin 2020 Table 2: D1 exp(theta7) = 1.22 hr (95% CI 1.20-1.25)
 

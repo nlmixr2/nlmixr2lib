@@ -30,7 +30,7 @@ Parmar_2023_spectinamide_1810_rat_pbpk <- function() {
   )
   vignette <- "Parmar_2023_spectinamides_pbpk"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg (absolute amount; the paper's mg/kg dose x 0.225 kg rat body weight, e.g. 10 mg/kg = 2.25 mg)",
     concentration = "mg/L (equivalently ug/mL for plasma and ug/g for tissue under the paper's unit-tissue-density assumption)"
   )

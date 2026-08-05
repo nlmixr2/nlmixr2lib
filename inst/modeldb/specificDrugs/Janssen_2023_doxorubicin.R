@@ -14,7 +14,15 @@ Janssen_2023_doxorubicin <- function() {
     sep = " "
   )
   vignette <- "Janssen_2023_pregnancy_cytotoxics"
-  units <- list(time = "hr", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     EGA = list(
@@ -60,9 +68,9 @@ Janssen_2023_doxorubicin <- function() {
     # --- Non-pregnant (EGA = 0) structural parameters -----------------------
     # All fixed: Janssen 2023 re-uses the published Joerger 2007 base model
     # without re-estimation (Janssen 2023 Sect. 2.2 "Prediction").
-    lcl <- fixed(log(47.6)); label("Clearance at EGA = 0 (L/hr)")                                  # Table 1, doxorubicin column, CL
+    lcl <- fixed(log(47.6)); label("Clearance at EGA = 0 (L/h)")                                  # Table 1, doxorubicin column, CL
     lvc <- fixed(log(12.3)); label("Central volume at EGA = 0 (L)")                                # Table 1, doxorubicin column, V1
-    lq <- fixed(log(60.3)); label("Intercompartmental clearance to peripheral1 at EGA = 0 (L/hr)") # Table 1, doxorubicin column, Q1
+    lq <- fixed(log(60.3)); label("Intercompartmental clearance to peripheral1 at EGA = 0 (L/h)") # Table 1, doxorubicin column, Q1
     lvp <- fixed(log(421)); label("Peripheral volume at EGA = 0 (L)")                              # Table 1, doxorubicin column, V2
 
     # --- Drug-specific disposition constants --------------------------------
@@ -77,12 +85,12 @@ Janssen_2023_doxorubicin <- function() {
     etalvp ~ fixed(0.060625)   # Table 1: V2 IIV 25.0% CV -> log(0.250^2 + 1)
 
     # --- Residual error -----------------------------------------------------
-    propSd <- fixed(0); label("Proportional residual error (fraction; FIXED AT ZERO - not reported)")  # Janssen 2023 reports predictions, never a residual-error model
+    propSd <- fixed(0); label("Proportional residual error (fraction; not reported)")  # Janssen 2023 reports predictions, never a residual-error model
   })
 
   model({
     # ---- System constants --------------------------------------------------
-    qhblood <- 109 # hepatic blood flow (L/hr), fixed to the non-pregnant value  # Sect. 2.1.2, from Nakai 2002 (reference [11])
+    qhblood <- 109 # hepatic blood flow (L/h), fixed to the non-pregnant value  # Sect. 2.1.2, from Nakai 2002 (reference [11])
 
     # ---- Gestational physiology (EGA in weeks; EGA = 0 = non-pregnant) -----
     calb <- 45.8 + -0.177 * EGA + -0.0033 * EGA^2                          # Eq 1, serum albumin (g/L)
@@ -92,7 +100,7 @@ Janssen_2023_doxorubicin <- function() {
     vplasma <- 2.5 + -0.0223 * EGA + 0.0042 * EGA^2 + -0.00007 * EGA^3     # Eq 15, plasma volume (L)
     ecw <- 11.86 + 0.0187 * EGA + 0.0016 * EGA^2                           # Eq 17, extracellular water (L)
     tbw <- 31.67 + 0.275 * EGA + 0.0024 * EGA^2                            # Eq 16, total body water (L)
-    qhp <- (1 - hct / 100) * qhblood                                       # Eq 9, hepatic plasma flow (L/hr)
+    qhp <- (1 - hct / 100) * qhblood                                       # Eq 9, hepatic plasma flow (L/h)
 
     # Non-pregnant anchors: the same polynomials evaluated at EGA = 0
     calb0 <- 45.8

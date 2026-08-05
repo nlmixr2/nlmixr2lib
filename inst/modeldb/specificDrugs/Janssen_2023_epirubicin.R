@@ -14,7 +14,16 @@ Janssen_2023_epirubicin <- function() {
     sep = " "
   )
   vignette <- "Janssen_2023_pregnancy_cytotoxics"
-  units <- list(time = "hr", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "epirubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "epirubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "epirubicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     EGA = list(
@@ -59,11 +68,11 @@ Janssen_2023_epirubicin <- function() {
     # --- Non-pregnant (EGA = 0) structural parameters -----------------------
     # All fixed: Janssen 2023 re-uses the published Sandstrom 2006 base model
     # without re-estimation (Janssen 2023 Sect. 2.2 "Prediction").
-    lcl <- fixed(log(71.7)); label("Clearance at EGA = 0 (L/hr)")                                  # Table 1, epirubicin column, CL
+    lcl <- fixed(log(71.7)); label("Clearance at EGA = 0 (L/h)")                                  # Table 1, epirubicin column, CL
     lvc <- fixed(log(13.1)); label("Central volume at EGA = 0 (L)")                                # Table 1, epirubicin column, V1
-    lq <- fixed(log(70.6)); label("Intercompartmental clearance to peripheral1 at EGA = 0 (L/hr)") # Table 1, epirubicin column, Q1
+    lq <- fixed(log(70.6)); label("Intercompartmental clearance to peripheral1 at EGA = 0 (L/h)") # Table 1, epirubicin column, Q1
     lvp <- fixed(log(14.6)); label("First peripheral volume at EGA = 0 (L)")                       # Table 1 prints this as "V3"; Table 3 identifies it as V2 (see vignette Errata)
-    lq2 <- fixed(log(17.8)); label("Intercompartmental clearance to peripheral2 at EGA = 0 (L/hr)") # Table 1, epirubicin column, Q2
+    lq2 <- fixed(log(17.8)); label("Intercompartmental clearance to peripheral2 at EGA = 0 (L/h)") # Table 1, epirubicin column, Q2
     lvp2 <- fixed(log(776)); label("Second peripheral volume at EGA = 0 (L)")                      # Table 1 prints this as "V2"; Table 3 identifies it as V3 (see vignette Errata)
 
     # --- Drug-specific disposition constants --------------------------------
@@ -75,12 +84,12 @@ Janssen_2023_epirubicin <- function() {
     etalcl ~ fixed(0.022252)   # Table 1: CL IIV 15% CV -> log(0.15^2 + 1)
 
     # --- Residual error -----------------------------------------------------
-    propSd <- fixed(0); label("Proportional residual error (fraction; FIXED AT ZERO - not reported)")  # Janssen 2023 reports predictions, never a residual-error model
+    propSd <- fixed(0); label("Proportional residual error (fraction; not reported)")  # Janssen 2023 reports predictions, never a residual-error model
   })
 
   model({
     # ---- System constants --------------------------------------------------
-    qhblood <- 109 # hepatic blood flow (L/hr), fixed to the non-pregnant value  # Sect. 2.1.2, from Nakai 2002 (reference [11])
+    qhblood <- 109 # hepatic blood flow (L/h), fixed to the non-pregnant value  # Sect. 2.1.2, from Nakai 2002 (reference [11])
 
     # ---- Gestational physiology (EGA in weeks; EGA = 0 = non-pregnant) -----
     calb <- 45.8 + -0.177 * EGA + -0.0033 * EGA^2                          # Eq 1, serum albumin (g/L)
@@ -90,7 +99,7 @@ Janssen_2023_epirubicin <- function() {
     vplasma <- 2.5 + -0.0223 * EGA + 0.0042 * EGA^2 + -0.00007 * EGA^3     # Eq 15, plasma volume (L)
     ecw <- 11.86 + 0.0187 * EGA + 0.0016 * EGA^2                           # Eq 17, extracellular water (L)
     tbw <- 31.67 + 0.275 * EGA + 0.0024 * EGA^2                            # Eq 16, total body water (L)
-    qhp <- (1 - hct / 100) * qhblood                                       # Eq 9, hepatic plasma flow (L/hr)
+    qhp <- (1 - hct / 100) * qhblood                                       # Eq 9, hepatic plasma flow (L/h)
 
     # Non-pregnant anchors: the same polynomials evaluated at EGA = 0
     calb0 <- 45.8

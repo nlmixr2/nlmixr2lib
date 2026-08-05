@@ -120,7 +120,7 @@ Henin_2012_diclofenac <- function() {
     allo_v      <- fixed(1)   ; label("Allometric exponent on volumes")                                     # Table III headers 'L/70 kg' -- standard allometric scaling
 
     # ------------------------------------------------------------------
-    # STEP function sigmoidicity (paper Equation 1; FIXED). Value not
+    # STEP function sigmoidicity (paper Equation 1). Value not
     # reported in the paper; SIG = 20 is used to give a sharp transition
     # between GI regions (see vignette Errata).
     # ------------------------------------------------------------------

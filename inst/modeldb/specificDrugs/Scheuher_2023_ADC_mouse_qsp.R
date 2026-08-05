@@ -52,17 +52,17 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
     # -------------------------------------------------------------------
     # Structural parameters (T-DM1 in N87 xenograft, mouse)
     # Source: Scheuher 2023 Supplement Tables S2b (mouse PK), S2c (mouse PD, N87 with T-DM1)
-    # All rates converted from 1/s to 1/hour by *3600 for internal consistency.
+    # All rates converted from 1/s to 1/h by *3600 for internal consistency.
     # -------------------------------------------------------------------
 
     # ADC deconjugation rate (T-DM1 in mouse)
-    lkdec <- log(8.5e-7 * 3600); label("Deconjugation rate constant kdec (1/h)")   # Table S2b: 8.5e-7 /s = 3.06e-3 /hour (T-DM1); fit to Erickson 2012
+    lkdec <- log(8.5e-7 * 3600); label("Deconjugation rate constant kdec (1/h)")   # Table S2b: 8.5e-7 /s = 3.06e-3 /h (T-DM1); fit to Erickson 2012
 
     # DAR (drug-to-antibody ratio) for T-DM1
     lDAR <- fixed(log(3.5)); label("Drug-to-antibody ratio DAR (T-DM1)")               # Table S2b: 3.5 for T-DM1
 
     # HER2 binding (association rate + KD)
-    lkonab <- fixed(log(1e-4 * 3600)); label("HER2 binding association rate k_on_Ab (1/nM/h)")  # Table S2b: 1e-4 /nM/s = 0.36 /nM/hour
+    lkonab <- fixed(log(1e-4 * 3600)); label("HER2 binding association rate k_on_Ab (1/nM/h)")  # Table S2b: 1e-4 /nM/s = 0.36 /nM/h
     lkdab  <- log(0.3); label("HER2:ADC equilibrium binding constant K_D_Ab (nM)")     # Table S2b: 0.3 nM (carried from in vitro)
 
     # HER2 receptor kinetics (from in vitro fit, carried to mouse per Table S2b header)
@@ -128,13 +128,13 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
     lVtumor_max <- fixed(log(5e-3)); label("Maximum tumor volume V_tumor_max (L)")     # Table S2c: 5e-3 L (assumed)
     lVtumor_i <- log(2e-4); label("Initial tumor volume V_tumor_i (L)")                # 200 mm^3 typical mouse xenograft start (2e-4 L = 200 mm^3)
 
-    lkkillmax <- log(0.31 / 24); label("Maximum tumor kill rate kkill_max (1/h) - N87+T-DM1")  # Table S2c N87+T-DM1: 0.31 /day = 0.01292 /hour
+    lkkillmax <- log(0.31 / 24); label("Maximum tumor kill rate kkill_max (1/h) - N87+T-DM1")  # Table S2c N87+T-DM1: 0.31 /day = 0.01292 /h
     ltau      <- log(0.25 * 24); label("Kill transduction delay tau (hour) - N87+T-DM1")           # Table S2c: 0.25 day = 6 hour
     lkc50     <- log(485); label("Kill half-max concentration kc50 (nM) - N87+T-DM1")               # Table S2c: 485 nM
     lnHill    <- fixed(log(1)); label("Hill coefficient n_Hill - N87+T-DM1")                        # Table S2c: 1
 
     ltdouble <- log(12.37 * 24); label("Exponential tumor doubling time t_double (hour) - N87")   # Table S2c: 12.37 day = 296.88 hour
-    lklin    <- log(189.56 / 24); label("Linear tumor growth rate k_lin (mm^3/h) - N87")        # Table S2c: 189.56 mm^3/day = 7.898 mm^3/hour
+    lklin    <- log(189.56 / 24); label("Linear tumor growth rate k_lin (mm^3/h) - N87")        # Table S2c: 189.56 mm^3/day = 7.898 mm^3/h
 
     # -------------------------------------------------------------------
     # Residual error (placeholder - paper reports deterministic fits)
@@ -194,7 +194,7 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
     kc50     <- exp(lkc50)
     nHill    <- exp(lnHill)
     tdouble  <- exp(ltdouble)
-    klin_h   <- exp(lklin)      # mm^3/hour
+    klin_h   <- exp(lklin)      # mm^3/h
 
     # -------------------------------------------------------------------
     # 2. Derived / inferred quantities (Table S2 inferred parameters)
@@ -220,7 +220,7 @@ Scheuher_2023_ADC_mouse_qsp <- function() {
     HER2_0_per_cell_nmol <- RPCher2 / 6.022e23 * 1e9
     HER2_endo_0_per_cell_nmol <- kendoher2 / (krecher2 + kdegher2) * HER2_0_per_cell_nmol
 
-    # Zeroth-order HER2 synthesis rate per cell (nmol/hour per cell)
+    # Zeroth-order HER2 synthesis rate per cell (nmol/h per cell)
     ksynth_per_cell <- HER2_0_per_cell_nmol * kendoher2 * kdegher2 / (kdegher2 + krecher2)
 
     # Total living tumor cells and tumor volumes (updated dynamically from N states)

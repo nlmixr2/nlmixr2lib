@@ -27,7 +27,7 @@ Jiang_2024_empagliflozin <- function() {
     sep = " "
   )
   vignette <- "Jiang_2024_empagliflozin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     WT = list(
