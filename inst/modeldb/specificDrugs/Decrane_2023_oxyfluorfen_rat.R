@@ -124,9 +124,10 @@ Decrane_2023_oxyfluorfen_rat <- function() {
     # Blood flows, fraction of cardiac output.
     # Table 1's "Liver 0.174" is the TOTAL hepatic venous outflow and equals
     # Portal Vein (0.153) + Hepatic Artery (0.021) exactly -- an internal
-    # consistency check the table passes. model() builds the liver flows from
-    # the portal-vein and hepatic-artery rows, so fq_liver is declared for
-    # traceability and used only in that identity check.
+    # consistency check the table passes. model() therefore builds the liver
+    # flows from the portal-vein and hepatic-artery rows, and the redundant
+    # Table 1 "Liver" row is deliberately NOT declared here: an ini()
+    # parameter that model() never references is a build-time error.
     fq_thyroid         <- fixed(0.0027)    ; label("Thyroid blood flow, fraction of cardiac output")           # Table 1
     fq_fat             <- fixed(0.070)     ; label("Fat blood flow, fraction of cardiac output")               # Table 1
     fq_muscle          <- fixed(0.278)     ; label("Muscle blood flow, fraction of cardiac output")            # Table 1
