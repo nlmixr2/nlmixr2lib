@@ -767,6 +767,41 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Zurlinden_2016_paracetamol.R`.
 
+### a_skin (**canonical PBPK skin-amount compartment**)
+- **Type:** compartment
+- **Role:** Skin organ compartment in mass-balance PBPK extractions. Flow-limited: `Q_skin * (CA - C_skin/pc_skin)`.
+- **Source aliases:** none.
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** The bare `skin` form is also canonical; PBPK organ-amount models use the `a_` prefix alongside `a_liver` / `a_kidney` / `a_muscle`.
+
+### a_brain (**canonical PBPK brain-amount compartment**)
+- **Type:** compartment
+- **Role:** Brain organ compartment in mass-balance PBPK extractions, treated as a single flow-limited lump. Distinct from the `brain_<region>` namespace, which resolves anatomically separate CNS sub-regions for brain-distribution models.
+- **Source aliases:** none.
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
+### a_blood (**canonical PBPK single well-mixed blood pool**)
+- **Type:** compartment
+- **Role:** Single well-mixed blood pool in a PBPK model that has no separate arterial / venous split and no lung compartment: it simultaneously supplies the arterial concentration `Cart` to every tissue and receives all venous return.
+- **Source aliases:** none.
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** Use `a_arterial` + `a_venous` when the source model splits the two; use `a_blood` only when the source carries a single pool. Distinct from the bare `blood` form used by membrane-limited extractions such as `Parhiz_2024_mRNA_LNP.R`.
+
+### a_thyroid_blood (**canonical PBPK thyroid vascular sub-compartment**)
+- **Type:** compartment
+- **Role:** Vascular sub-compartment of a diffusion-limited thyroid. Exchanges with the systemic blood pool by perfusion (`Q_thy`) and with the thyroid tissue sub-compartment by passive diffusion across a permeability-area product (`PA_thy`). Because it is blood, it carries no tissue:blood partition coefficient.
+- **Source aliases:**
+  - `Athyblood` / `Cthyblood` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** Paired with `a_thyroid_tissue`; a thyroid split into these two states is the standard structure in the thyroid-disruptor / HPT-axis modelling family (Ekerot 2013, Willemin & Lumen 2017, Handa 2021).
+
+### a_thyroid_tissue (**canonical PBPK thyroid tissue sub-compartment**)
+- **Type:** compartment
+- **Role:** Tissue sub-compartment of a diffusion-limited thyroid, where thyroid-hormone synthesis takes place and where a thyroid-disrupting chemical exerts its sodium-iodide-symporter (NIS) or thyroid-peroxidase (TPO) inhibition. Exchanges only with `a_thyroid_blood`, across the permeability-area product `PA_thy`.
+- **Source aliases:**
+  - `Athytissue` / `Cthytissue` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
 ### a_fast (**canonical bimodal-disease fast-progression arm**)
 - **Type:** compartment
 - **Role:** Bimodal disease-progression state for the fast-progression arm in Delor 2013 Alzheimer mixture-of-progression-rates PD model. Per-subject mixture weight selects between this fast arm and the slow arm.
@@ -1880,6 +1915,43 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Role:** Parathyroid hormone biomarker PD output.
 - **Source aliases:** none.
 - **Example models:** `Ahn_2014.R`.
+
+### t4_thyroid (**canonical thyroxine pool in thyroid tissue**)
+- **Type:** compartment
+- **Role:** Thyroxine (T4) held in thyroid tissue, as an **amount**. Produced by a zero-order thyroidal synthesis rate that a thyroid-disrupting chemical scales down and that serum TSH scales up; drains by deiodination to T3 within the gland and by first-order transfer into serum.
+- **Source aliases:**
+  - `AT4thy` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** The location suffix is load-bearing: T4 exists as two kinetically distinct pools (thyroid tissue and serum), so a bare `t4` would be ambiguous. Paired with `t4_serum`. This is the hypothalamic-pituitary-thyroid (HPT) axis naming family shared with `t3_thyroid`, `t3_serum` and `tsh_serum`.
+
+### t3_thyroid (**canonical triiodothyronine pool in thyroid tissue**)
+- **Type:** compartment
+- **Role:** Triiodothyronine (T3) held in thyroid tissue, as an **amount**. Produced both by direct thyroidal synthesis and by intrathyroidal deiodination of T4; drains by intrathyroidal metabolism and by first-order transfer into serum.
+- **Source aliases:**
+  - `AT3thy` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
+### t4_serum (**canonical thyroxine pool in serum**)
+- **Type:** compartment
+- **Role:** Circulating thyroxine (T4) in serum, as an **amount** distributed in a T4-specific volume of distribution. Fed by transfer out of the thyroid; drains by systemic deiodination to T3 and by non-deiodinative loss. Its deviation from the basal amount drives the HPT negative-feedback terms on TSH production and turnover.
+- **Source aliases:**
+  - `AT4srm` -- Decrane 2023 (paper p. 4).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
+### t3_serum (**canonical triiodothyronine pool in serum**)
+- **Type:** compartment
+- **Role:** Circulating triiodothyronine (T3) in serum, as an **amount** distributed in a T3-specific volume of distribution. Fed by transfer out of the thyroid and by systemic deiodination of serum T4; drains by first-order systemic loss.
+- **Source aliases:**
+  - `AT3srm` -- Decrane 2023 (paper p. 4).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
+### tsh_serum (**canonical thyrotropin pool in serum**)
+- **Type:** compartment
+- **Role:** Circulating thyroid-stimulating hormone (thyrotropin, TSH) in serum, as an **amount**. Zero-order production is up-regulated and first-order turnover is slowed when serum T4 falls below its basal level; the resulting TSH concentration stimulates thyroidal T4 synthesis. This state closes the HPT feedback loop.
+- **Source aliases:**
+  - `ATSH` -- Decrane 2023 (paper p. 4).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** Distinct from `tsh` should a future model carry TSH as a directly observed concentration biomarker rather than an amount state; the `_serum` suffix marks the HPT-axis amount-state family.
 
 ### ca (**canonical serum calcium PD output**)
 - **Type:** compartment

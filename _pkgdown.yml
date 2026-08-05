@@ -1720,6 +1720,10 @@ navbar:
         href: articles/Valenzuela_2011_oxaliplatin.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
+      - text: "Oxyfluorfen human (Decrane 2023)"
+        href: articles/Decrane_2023_oxyfluorfen.html
+      - text: "Oxyfluorfen rat (Decrane 2023)"
+        href: articles/Decrane_2023_oxyfluorfen.html
       - text: "Oxypurinol (Stocker 2012)"
         href: articles/Stocker_2012_oxypurinol.html
       - text: "Ozanezumab (Berges 2015)"
@@ -3001,6 +3005,7 @@ articles:
   - articles/DeCock_2012_propyleneGlycol
   - articles/DeJongh_2014_antithrombin
   - articles/Debord_2001_cyclosporin
+  - articles/Decrane_2023_oxyfluorfen
   - articles/DelFrari_2018_propranolol
   - articles/Delattre_2010_amikacin
   - articles/Delor_2013_alzheimer

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
