@@ -1496,6 +1496,8 @@ navbar:
         href: articles/Gebhard_2023_leukemia_maintenance_therapy.html
       - text: "Methotrexate (Joerger 2006)"
         href: articles/Joerger_2006_methotrexate.html
+      - text: "Methotrexate (Olivo 2024)"
+        href: articles/Olivo_2024_methotrexate.html
       - text: "Methotrexate (Ruhs 2012)"
         href: articles/Ruhs_2012_methotrexate.html
       - text: "Methotrexate (Taylor 2020)"
@@ -3545,6 +3547,7 @@ articles:
   - articles/Oishi_2014_fesoterodine
   - articles/Okada_2025_rocatinlimab
   - articles/Olagunju_2018_efavirenz
+  - articles/Olivo_2024_methotrexate
   - articles/Ollier_2015_ropivacaine
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Oosten_2016_fentanyl
