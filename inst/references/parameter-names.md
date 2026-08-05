@@ -41,6 +41,54 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `residualError = c("propSd", "addSd", "expSd")` — canonical residual-error SD names. `propSd` / `addSd` are the proportional and additive SDs for the standard `~ prop(...)`, `~ add(...)`, and combined `~ prop(...) + add(...)` forms. `expSd` is the log-scale residual SD used with `~ lnorm(...)`.
 - `deprecatedResidualError`, `deprecatedIivPrefixes`, `deprecatedVolumeNames`, `deprecatedVmaxNames`, `deprecatedParentSuffix` — deprecation lists also remain in R.
 
+## Covariate-expression shape tokens
+
+Most published covariate models are multiplicative and need exactly one
+coefficient per (covariate, parameter) pair, which `e_<cov>_<param>` covers.
+Machine-learned covariate models (symbolic regression, equation learning,
+sparse neural networks) instead produce low-order **polynomials and ratios of
+polynomials**, so one pair can carry several coefficients that must be told
+apart by name. The tokens below are the canonical way to do that. They are
+shape tokens on the existing `e_<cov>_<param>` family and on bare
+`<param>_<token>` names -- not new PK parameters -- so no `Type:` entry is
+required for them, and `covEffectPattern` already admits the `e_` forms.
+
+- `_quad` -- coefficient of a **squared** normalised covariate, appended as the
+  final token: `e_wt_vc_quad` is the coefficient of `(WT/ref)^2` on `vc`. The
+  unsuffixed `e_wt_vc` remains the linear coefficient. Precedent:
+  `e_pdl1_orr_pd1_quad` / `e_pdl1_orr_pd1_lin` in
+  `Franzese_2026_pdl1_nsclc_mbma.R`. Prefer leaving the linear term unsuffixed
+  over writing `_lin`, because `_lin` already means "linear clearance
+  component" elsewhere in the library.
+- `_num` / `_den` -- position within a **rational** covariate expression of the
+  form `(a*C1 + b*C2 + c) / (d*C1 + e*C2 + f)`, inserted before the final
+  parameter token would be for a bare name and appended for an `e_` name:
+  `e_age_k12_num` and `e_age_k12_den` are the two age coefficients of the k12
+  ratio. Use these **only** when the numerator and denominator have no
+  pharmacological identity of their own. When they do -- a saturable / Hill
+  function of a covariate, where the numerator is an asymptote and the
+  denominator a half-max -- name the sub-parameter instead and attach the
+  covariate effect to it (`e_sexf_lmax` vs `e_pnpla3_cg_bmi50` in
+  `Oniki_2018_nafld_risk.R`; `crcl50_cl_renal` / `hill_cl_renal` in
+  `Ganesan_2023_tebipenem.R`). That idiom is preferred wherever it applies.
+- `e_<cov1>_<cov2>_<param>` -- coefficient of a **covariate-by-covariate
+  interaction**, covariates in the order they are printed in the source:
+  `e_age_wt_vc` multiplies `(AGE/ref) * (WT/ref)` on `vc`. Distinct from
+  covariate-by-stratum effects, which put the stratum in the middle token
+  (`e_pdl1_orr_pd1`, `e_fed_ktr_tab`).
+- `<param>_int` -- **signed additive intercept** of a covariate expression, for
+  the case `l<param>` cannot express: a negative intercept, or a rational
+  expression with no single intercept (`vc_int`, `k12_num_int`). When the
+  intercept is positive and the expression is `intercept + covariate terms`,
+  use the canonical log form instead (`lkel`, `lk21`, `lk31` with
+  `kel <- exp(lkel) + e_wt_kel * wtn`), as in
+  `McLachlan_1996_fluconazole.R` and `Blair_2004_raltitrexed.R`. Precedent for
+  the bare form: `b1_int` / `b2_int` in `Sherer_2012_AAA.R`.
+
+Founding example: `Wahlquist_2024_propofol.R` (symbolic-regression network
+covariate model on all four inter-compartmental rate constants, the
+elimination rate constant and the central volume).
+
 ---
 
 ## Log-transformed structural PK parameters
