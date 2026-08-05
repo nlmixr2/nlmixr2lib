@@ -3536,3 +3536,39 @@ L- and D-enantiomer suffixes for stereoselective popPK models that simultaneousl
 - **Role:** BIBF 1202, the main hydrolytic metabolite of nintedanib (BIBF 1120) formed by cleavage of the methyl ester. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `depot_bibf`, `central_bibf`; parameters `lka_bibf`, `lvc_bibf`, `lcl_bibf`, `lfdepot_bibf`, `ltlag_bibf`; residual `expSd_bibf`). Founding example: `Schmid_2017_nintedanib.R`.
 - **Source aliases:** none.
 - **Example models:** `Schmid_2017_nintedanib.R`.
+
+---
+
+## PBPK permeability-limited tissue subcompartment suffixes (Gaohua 2023)
+
+Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carries four subcompartments -- residual blood cells, residual plasma, extracellular water and intracellular water -- with passive permeation between adjacent pairs and active uptake / efflux transporters on the cell membrane between the two water spaces. The same `_plasma` / `_bc` pair also describes the blood compartments (`venous_plasma`, `arterial_plasma`, `portal_plasma` and their `_bc` partners), which have no extracellular or intracellular water. This is the inverse-ordering analogue of the `<subtype>_<organ>` `pbpkSubCompartmentRegex` and extends the `<organ>_<suffix>` shape founded by Ayyar 2024, so the two families compose. Registered per the operator naming decision of 2026-08-05.
+
+### plasma (**canonical residual-plasma subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Residual plasma within the named tissue (the paper's "tissue plasma", TP) -- the plasma fraction of the blood left in the tissue after bleeding. For a blood compartment it is that compartment's plasma space. Perfused at the compartment's plasma flow and exchanging with `<organ>_bc` and `<organ>_ew`.
+- **Source aliases:** `TP`, `tp`, `plasma_<organ>`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### bc (**canonical residual-blood-cell subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Residual blood cells within the named tissue (the paper's "tissue blood cells", TC), or a blood compartment's blood-cell space. Perfused at the compartment's blood-cell flow and exchanging only with `<organ>_plasma`. Echoes the existing `bcc` (central blood cells) and the `bc_<organ>` prefix form in `pbpkSubCompartmentRegex`.
+- **Source aliases:** `TC`, `tc`, `rbc_<organ>`, `RBC`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### ew (**canonical extracellular-water subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Extracellular water of the named tissue, as implemented in the Simcyp Simulator tissue-composition scheme. Sits between the residual plasma and the intracellular water; the cell membrane separating it from `<organ>_iw` is where active uptake and efflux transporters act. Distinct from `is_<organ>` (interstitial space) in `pbpkSubCompartmentRegex`, which is an antibody-distribution concept paired with endosomal FcRn recycling rather than a small-molecule tissue-composition water space.
+- **Source aliases:** `EW`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### iw (**canonical intracellular-water subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Intracellular water of the named tissue. Reached from `<organ>_ew` by passive permeation and by active uptake, and is the usual site of intracellular metabolism. Distinct from `int_<organ>` in `pbpkSubCompartmentRegex`, which denotes a bulk intracellular pool in mRNA-LNP models rather than a tissue-composition water space.
+- **Source aliases:** `IW`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### portal (**canonical bare portal-vein blood compartment**)
+- **Type:** compartment
+- **Role:** Portal vein blood compartment, collecting the venous outflow of the splanchnic organs (pancreas, spleen, gut) and delivering it to the liver alongside the hepatic artery. A blood compartment, so it carries only the `_plasma` and `_bc` subcompartments. Complements the already-canonical bare `venous` and `arterial` roots and the `vp_portal` vascular-concentration form; the bare root is registered so `portal_plasma` / `portal_bc` compose with the subcompartment suffixes above.
+- **Source aliases:** `PV`, `pv`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.

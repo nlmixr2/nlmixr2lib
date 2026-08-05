@@ -1173,3 +1173,123 @@ which cannot change a value.
 A consumer that needs kon in one unit has to read the dimensionality per
 model. That is a real cost, and it is smaller than the cost of being
 confidently wrong.
+
+## Permeability-limited whole-body PBPK parameters (Gaohua 2023)
+
+Vocabulary for permeability-limited whole-body PBPK models, in which each tissue is resolved into residual blood cells, residual plasma, extracellular water and intracellular water (compartment suffixes `_bc` / `_plasma` / `_ew` / `_iw`; see `compartment-names.md`). Two conventions define the family. First, system physiology is carried as *fractions* -- `fvol_<organ>` of body weight and `fq_<organ>` of cardiac output -- so that a published table of percentages transcribes directly and both columns can be checked to sum to 100%. Second, every permeability-surface-area product and every clearance is expressed as a **fold-multiple of the compartment's own plasma flow** (`fold_*`), which is how these papers parameterise their what-if scenarios: one multiplier per mechanism, swept around the tissue blood flow. Registered per the operator naming decision of 2026-08-05.
+
+### bw (**canonical body weight system constant**)
+- **Type:** paper-named-param
+- **Role:** Reference body weight (kg) of the simulated individual. In whole-body PBPK it is the normalising constant for `fvol_<organ>` and the denominator of the body-weight-normalised volume of distribution `Vdt`.
+- **Source aliases:** `BW`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### qc (**canonical cardiac output**)
+- **Type:** paper-named-param
+- **Role:** Cardiac output (L/h); the normalising constant for `fq_<organ>`. Splits into a total plasma flow `(1 - hct) * qc` and a total blood-cell flow `hct * qc` when a model resolves the two blood phases separately.
+- **Source aliases:** `Qc`, `CO`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### hct (**canonical haematocrit**)
+- **Type:** paper-named-param
+- **Role:** Haematocrit: the volume fraction of blood that is blood cells. Splits both blood volumes and blood flows into their blood-cell and plasma phases, and splits a tissue's residual blood volume into `<organ>_bc` and `<organ>_plasma`.
+- **Source aliases:** `Haematocrit`, `HCT`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### density (**canonical tissue density**)
+- **Type:** paper-named-param
+- **Role:** Tissue and blood density (kg/L), converting an organ's share of body weight into a volume. Commonly assumed to be 1 kg/L, which makes tissue volumes in L numerically equal to their share of body weight in kg.
+- **Source aliases:** `Density`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fvol_<organ> (**canonical fractional organ volume**)
+- **Type:** paper-named-param
+- **Role:** Volume of the named organ as a fraction of body weight (L per kg), so `v_<organ> = fvol_<organ> * bw / density`. One entry per organ, plus `fvol_blood` for total blood; the set is expected to sum to 1. Distinct from the `vp_<organ>` / `v_<organ>` *absolute* volumes, which are the derived quantities.
+- **Source aliases:** `% of total body weight`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fq_<organ> (**canonical fractional organ blood flow**)
+- **Type:** paper-named-param
+- **Role:** Blood flow to the named organ as a fraction of cardiac output, so `qplasma_<organ> = fq_<organ> * (1 - hct) * qc`. One entry per organ; the set covering the organs that drain directly to venous blood is expected to sum to 1. Where an organ has a dual blood supply the arterial share is named explicitly (e.g. `fq_liver_arterial`) and the portal share is derived from the splanchnic organs it collects.
+- **Source aliases:** `% of total cardiac output`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### frb_<organ> (**canonical residual blood volume fraction**)
+- **Type:** paper-named-param
+- **Role:** Volume of blood remaining in the named organ after bleeding, as a fraction of that organ's volume. Split by haematocrit into the `<organ>_bc` and `<organ>_plasma` subcompartment volumes. Conventionally sourced from rat tissue-residual-blood measurements.
+- **Source aliases:** `residual blood`, `Vre`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### few_<organ> (**canonical extracellular water volume fraction**)
+- **Type:** paper-named-param
+- **Role:** Extracellular water of the named organ as a fraction of that organ's volume, giving the `<organ>_ew` volume. The intracellular water volume `<organ>_iw` is then usually taken as the remainder of the organ volume once residual blood and extracellular water are removed.
+- **Source aliases:** `EW fraction`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### ps_bc_plasma (**canonical blood-cell / plasma permeability-surface area product**)
+- **Type:** paper-named-param
+- **Role:** Passive permeability-surface area product (L/h) between a compartment's residual blood cells and its residual plasma. Set to a deliberately large value when the source model assumes immediate equilibrium between the two blood phases, which collapses that pair into a single well-stirred space.
+- **Source aliases:** `PStc/tp`, `PSrbc2plasma`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_ps_plasma_ew (**canonical vascular-membrane permeability fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Passive permeability-surface area product between residual plasma and extracellular water, expressed as a fold-multiple of the compartment's plasma flow (the vascular membrane). Paired with `fold_ps_ew_iw`; when the two differ, the smaller one is rate-limiting, which is what makes a distribution metric saturate as the other is increased.
+- **Source aliases:** `FoldPlasmaEw`, `PS/Q`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_ps_ew_iw (**canonical cell-membrane permeability fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Passive permeability-surface area product between extracellular and intracellular water, expressed as a fold-multiple of the compartment's plasma flow (the cell membrane). For a typical small molecule the cell membrane is the less permeable of the two, so this is the multiplier a permeability sweep usually varies.
+- **Source aliases:** `FoldEwIw`, `PS/Q`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_iw_<compartment> (**canonical intracellular water metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the intracellular water of the named compartment, as a fold-multiple of that compartment's plasma flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearanceIW`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_ew_<compartment> (**canonical extracellular water metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the extracellular water of the named compartment, as a fold-multiple of that compartment's plasma flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearanceEW`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_plasma_<compartment> (**canonical residual plasma metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the residual plasma of the named compartment, as a fold-multiple of that compartment's plasma flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearancePLASMA`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_bc_<compartment> (**canonical residual blood cells metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the residual blood cells of the named compartment, as a fold-multiple of that compartment's blood-cell flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearanceRBC`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_uptake (**canonical active uptake transporter fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Active uptake transporter clearance carrying drug from extracellular into intracellular water, as a fold-multiple of the compartment's plasma flow. Paired with `fold_efflux`; uptake raises the tissue/plasma partition coefficient and the volume of distribution, efflux lowers both.
+- **Source aliases:** `FoldUptake`, `CLew/iw`, `Cluptake`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_efflux (**canonical active efflux transporter fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Active efflux transporter clearance carrying drug from intracellular back to extracellular water, as a fold-multiple of the compartment's plasma flow. Paired with `fold_uptake`.
+- **Source aliases:** `FoldEfflux`, `CLiw/ew`, `Clefflux`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### Kp_<organ> (**canonical dynamic tissue/plasma partition coefficient output**)
+- **Type:** paper-named-param
+- **Role:** Time-varying tissue/plasma partition coefficient of the named organ: the whole-tissue concentration (total amount across all four subcompartments divided by the total organ volume) divided by the venous plasma concentration. An algebraic **output** of a permeability-limited model, not an input -- which is what distinguishes it from the perfusion-limited `kp_<organ>` input parameter, where the partition coefficient is a fixed constant supplied to the model.
+- **Source aliases:** `Kp(t)`, `Kpss`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+- **Notes:** Capitalised `Kp_` deliberately, to keep the dynamic output visually distinct from the lowercase `kp_<organ>` perfusion-limited input parameter used by e.g. `Gaohua_2012_pregnancy_pbpk_midazolam.R`.
+
+### Vdt (**canonical dynamic volume of distribution output**)
+- **Type:** paper-named-param
+- **Role:** Time-varying volume of distribution (L/kg): the total drug amount in blood and tissues divided by the venous plasma concentration and body weight. An algebraic output; its pseudo-steady-state value is the reported Vdss. Distinct from the registered `vd` (apparent volume of distribution as a fitted structural parameter) -- `Vdt` is a model prediction that changes over time, `vd` is an input.
+- **Source aliases:** `Vd(t)`, `Vdss`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+- **Notes:** Named `Vdt` rather than `vd` precisely so that the two never collide in one model.

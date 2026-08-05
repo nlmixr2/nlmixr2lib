@@ -31,7 +31,7 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
-- Waterhouse 2024 vedolizumab ([doi:10.1002/prp2.1257](https://doi.org/10.1002/prp2.1257)) now encodes the paper's inter-occasion variability on clearance (Table 3, variance 0.0315) as seven occasion-indexed etas driven by an `OCC` column; it was previously documented but not implemented.
+- Add Gaohua 2023 permeability-limited whole-body PBPK ([doi:10.3390/ijms242216224](https://doi.org/10.3390/ijms242216224)) - theoretical 70 kg reference adult, no drug.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
