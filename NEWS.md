@@ -31,7 +31,7 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
-- Add Karakitsios 2024 gevokizumab ([doi:10.3390/pharmaceutics16091129](https://doi.org/10.3390/pharmaceutics16091129)) - adults with type 2 diabetes; a single-dosage-group fit and a five-dosage-group meta-analysis of the same minimal PBPK structure.
+- Add Olivo 2024 methotrexate ([doi:10.3390/pharmaceutics16091180](https://doi.org/10.3390/pharmaceutics16091180)) - Brazilian children and adolescents with osteosarcoma on the BOTG high-dose protocol.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
