@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Tiraboschi 2023 avalglucosidase alfa ([doi:10.1007/s10928-023-09874-8](https://doi.org/10.1007/s10928-023-09874-8)) -- children and adults with late-onset or infantile-onset Pompe disease.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

@@ -108,6 +108,22 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
 - **Notes:** Pairs with `peripheral3` and `lvp3`.
 
+### lq_p1_p2 (**canonical log-transformed one-way peripheral1-to-peripheral2 inter-compartmental clearance**)
+- **Type:** log-transformed-pk
+- **Role:** One-way (unidirectional) inter-compartmental clearance carrying drug from `peripheral1` into `peripheral2` (volume / time), with no return flow along the same path.
+- **Source aliases:**
+  - `Q3` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R` for the one-way V2 -> V3 clearance.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** Deliberately NOT `lq2`. `lq` / `lq2` / `lq3` are mamillary canonicals -- bidirectional exchange between `central` and the first / second / third peripheral compartment. `lq_p1_p2` names a flow that neither starts nor ends at `central` and that runs in one direction only, so reusing `lq2` would overload a bidirectional canonical with a directional concept. Directional naming follows the register's existing practice of giving one-way flows their own names when direction is load-bearing (`kbm` biliary, `lcl_csf` one-way CSF-to-plasma). Pairs with `lq_p2_c` to close a catenary / cyclic topology `central <-> peripheral1 -> peripheral2 -> central`. The source-to-destination token pattern `_<from>_<to>` (`p1`, `p2`, `c` for `peripheral1`, `peripheral2`, `central`) is available to future catenary models.
+
+### lq_p2_c (**canonical log-transformed one-way peripheral2-to-central back-redistribution clearance**)
+- **Type:** log-transformed-pk
+- **Role:** One-way (unidirectional) inter-compartmental clearance returning drug from `peripheral2` to `central` (volume / time) -- the "back-redistribution" limb that closes a catenary / cyclic distribution loop.
+- **Source aliases:**
+  - `Qpc` / `QPC` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R` for the low one-way V3 -> V1 clearance.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** Not an alias of `lq2` (bidirectional `central` <-> `peripheral2`), of `qp` (target inter-compartmental clearance), or of `lqbile` (one-way plasma-to-gut biliary transfer). Typically much smaller than the forward limb, so it governs the terminal phase: in the founding example Qpc = 0.0157 L/h against Q3 = 1.87 L/h. Pairs with `lq_p1_p2`; see that entry for the `_<from>_<to>` token pattern.
+
 ### lfdepot (**canonical log-transformed depot fraction**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale parameter for the fraction of dose absorbed via the depot (e.g., parallel-absorption oral models with a fast/slow depot split).
@@ -366,6 +382,22 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Inter-compartmental clearance between central and `peripheral3` (volume / time) in 4-compartment popPK models.
 - **Source aliases:** none.
 - **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+
+### q_p1_p2 (**canonical bare one-way peripheral1-to-peripheral2 inter-compartmental clearance**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lq_p1_p2`: one-way inter-compartmental clearance from `peripheral1` into `peripheral2` (volume / time).
+- **Source aliases:**
+  - `Q3` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R`.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** See `lq_p1_p2` for why this is not `q2`.
+
+### q_p2_c (**canonical bare one-way peripheral2-to-central back-redistribution clearance**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lq_p2_c`: one-way back-redistribution clearance from `peripheral2` to `central` (volume / time).
+- **Source aliases:**
+  - `Qpc` / `QPC` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R`.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** See `lq_p2_c`.
 
 ### kel (**canonical bare elimination rate constant (K-PD)**)
 - **Type:** bare-pk
