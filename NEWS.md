@@ -31,7 +31,7 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
-- Add Gaohua 2023 permeability-limited whole-body PBPK ([doi:10.3390/ijms242216224](https://doi.org/10.3390/ijms242216224)) - theoretical 70 kg reference adult, no drug.
+- Add Wahlquist 2024 propofol ([doi:10.1007/s10928-023-09887-3](https://doi.org/10.1007/s10928-023-09887-3)) - pooled 30-study Eleveld cohort of 1,031 surgical and volunteer subjects from neonates to the elderly.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
