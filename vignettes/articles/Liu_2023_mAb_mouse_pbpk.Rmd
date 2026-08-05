@@ -91,11 +91,11 @@ entry in `inst/modeldb/pharmacokinetics/Liu_2023_mAb_mouse_pbpk.R`.
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
 | `F1` sigmoid form | `a + (b - a) / (1 + (c / HEPARIN_RT)^d)` | Liu 2023 Eq 1 (Results, "Fitting of the PBPK model incorporating the Heparin_RT covariate") and Eq 2 (Materials and methods, "Simultaneous fitting of antibody PK using full PBPK model"); repeated in Supplementary Methods 2, "Equations for Organ Sub-Compartment" |
-| `lf1min` (`a`) | 0.67 (CV% 1.28) | Liu 2023 Table 2 |
-| `lf1max` (`b`) | 3.65 (CV% 3.37) | Liu 2023 Table 2 |
-| `lrt50_f1` (`c`) | 17.7 min (CV% 0.543) | Liu 2023 Table 2 |
-| `lhill_f1` (`d`) | 22.7 (CV% 7.89) | Liu 2023 Table 2 |
-| `lf2` (`F2`) | 1.45, fixed | Liu 2023 Results: "we fixed F2 to 1.45, the median F2 value in this panel" |
+| `lclup_scale_min` (`a`) | 0.67 (CV% 1.28) | Liu 2023 Table 2 |
+| `lclup_scale_max` (`b`) | 3.65 (CV% 3.37) | Liu 2023 Table 2 |
+| `lrt50_clup_scale` (`c`) | 17.7 min (CV% 0.543) | Liu 2023 Table 2 |
+| `lhill_clup_scale` (`d`) | 22.7 (CV% 7.89) | Liu 2023 Table 2 |
+| `llymph_scale` (`F2`) | 1.45, fixed | Liu 2023 Results: "we fixed F2 to 1.45, the median F2 value in this panel" |
 | `lclup` (`CLup`) | 0.24 L/h/L, fixed | Liu 2023 Materials and methods, "Individual fitting of antibody PK using the base PBPK model": "the parameter glossary and values are the same as in Shah and Betts except that the CLup value is set to 0.24 L/h/L" |
 | `lfcrn` (`FcRn`) | 4.98e-5 mol/L, fixed | Shah & Betts 2012 Table 6 (inherited unchanged; Liu 2023 reference 36) |
 | `lkdeg` (`Kdeg`) | 42.9 1/h, fixed | Shah & Betts 2012 Table 6 |
@@ -289,7 +289,7 @@ sim |>
 
 The paper's Figure 5 sweeps `F1` from 0.4 to 4. Because the packaged model derives
 `F1` from `HEPARIN_RT`, the sweep is done by collapsing the sigmoid's two plateaus
-onto the target value (`f1min = f1max = F1`), which makes `F1` constant and
+onto the target value (`clup_scale_min = clup_scale_max = F1`), which makes `F1` constant and
 independent of the covariate.
 
 ```{r figure-5}
@@ -299,14 +299,14 @@ f1_levels <- c(0.4, 0.67, 1, 1.5, 2, 3, 4)
 ev1 <- rxode2::et(amt = dose_nmol, cmt = "plasma") |>
   rxode2::et(sample_times)
 
-sens <- lapply(f1_levels, function(f1) {
+sens <- lapply(f1_levels, function(clup_scale) {
   rxode2::rxSolve(
     mod_fun, events = ev1,
-    params = c(lf1min = log(f1), lf1max = log(f1), HEPARIN_RT = 10),
+    params = c(lclup_scale_min = log(clup_scale), lclup_scale_max = log(clup_scale), HEPARIN_RT = 10),
     atol = 1e-10, rtol = 1e-8
   ) |>
     as.data.frame() |>
-    dplyr::mutate(F1 = f1)
+    dplyr::mutate(F1 = clup_scale)
 }) |>
   dplyr::bind_rows()
 
@@ -564,7 +564,7 @@ comparison.
   multiplies `L_ORG` in every convective term (vascular-to-interstitial entry,
   interstitial-to-lymph exit, and the matching lymph-node inflow), leaving the bulk
   vascular outflow `PLQ - L` unscaled so that antibody mass is conserved. Setting
-  `lf2 = log(1)` recovers the supplement's printed equations exactly. Figure 2's
+  `llymph_scale = log(1)` recovers the supplement's printed equations exactly. Figure 2's
   caption instead describes `F2` as modulating `sigma_V`; that reading is not
   tenable, because the reported individual `F2` estimates run up to 17.6 and would
   drive `sigma_V` above 1 (negative convection).
@@ -637,3 +637,24 @@ comparison.
   inherited from Shah & Betts 2012, which Liu 2023 cites as reference 36 and adopts
   unchanged apart from `CLup`. That paper is on disk; no value was taken from any
   other source.
+- **Parameter names describe the mechanism, not the paper's symbol.** The registry
+  names each inter-antibody variability coefficient for the quantity it scales:
+  `clup_scale` for the paper's `F1` (which multiplies the pinocytotic uptake `CLup`)
+  and `lymph_scale` for the paper's `F2` (which multiplies organ lymphatic flow), with
+  the sigmoid's shape parameters suffixed to that root (`clup_scale_min`,
+  `clup_scale_max`, `rt50_clup_scale`, `hill_clup_scale`). A bare `f1` would name the
+  source's notation rather than the quantity, so a consumer searching the library for
+  what scales `CLup` could not find it. The paper's symbols are retained throughout
+  this vignette's narrative and in each parameter's `label()` so the mapping back to
+  Table 2 stays explicit.
+- **`HEPARIN_RT` is a molecule-level covariate.** Every other covariate in the
+  register is a property of the subject; this one is a property of the administered
+  antibody, which is what makes an inter-antibody-variability analysis possible at
+  all. Operationally it still behaves like an ordinary covariate column - each animal's
+  records carry the retention time of the antibody it received, constant within
+  subject - so it is registered under the existing "Formulation / assay / study"
+  section rather than founding a separate molecule-attribute family. The remaining
+  nine developability readouts measured in this paper (FcRn chromatography retention
+  time, AC-SINS, HIC, BVP, membrane-prep ELISA, poly-D-lysine, PEI, calculated pI,
+  thermolysin stability) are deliberately **not** registered, because no extracted
+  model uses them.

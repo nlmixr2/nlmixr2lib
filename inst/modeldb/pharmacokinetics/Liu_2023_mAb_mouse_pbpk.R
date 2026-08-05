@@ -8,6 +8,92 @@ Liu_2023_mAb_mouse_pbpk <- function() {
     concentration = "nmol/L"
   )
 
+  compartmentData <- list(
+    # Tissue vascular (plasma) space: mAb amount
+    vp_heart           = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_lung            = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_muscle          = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_skin            = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_adipose         = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_bone            = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_brain           = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_kidney          = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_liver           = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_small_intestine = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_large_intestine = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_pancreas        = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_thymus          = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_spleen          = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    vp_other           = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    # Tissue interstitial space: mAb amount
+    is_heart           = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_lung            = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_muscle          = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_skin            = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_adipose         = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_bone            = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_brain           = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_kidney          = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_liver           = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_small_intestine = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_large_intestine = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_pancreas        = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_thymus          = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_spleen          = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    is_other           = list(analyte = "mAb", units = "nmol", specimen = "tissue", verified = TRUE),
+    # Endosomal space: FcRn-unbound mAb amount
+    eu_heart           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_lung            = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_muscle          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_skin            = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_adipose         = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_bone            = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_brain           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_kidney          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_liver           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_small_intestine = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_large_intestine = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_pancreas        = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_thymus          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_spleen          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eu_other           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    # Endosomal space: FcRn-bound mAb amount
+    eb_heart           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_lung            = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_muscle          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_skin            = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_adipose         = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_bone            = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_brain           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_kidney          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_liver           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_small_intestine = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_large_intestine = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_pancreas        = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_thymus          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_spleen          = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    eb_other           = list(analyte = "mAb", units = "nmol", specimen = "endosome", verified = TRUE),
+    # Endosomal space: free (unoccupied) FcRn amount
+    fr_heart           = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_lung            = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_muscle          = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_skin            = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_adipose         = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_bone            = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_brain           = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_kidney          = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_liver           = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_small_intestine = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_large_intestine = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_pancreas        = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_thymus          = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_spleen          = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    fr_other           = list(analyte = "FcRn", units = "nmol", specimen = "endosome", verified = TRUE),
+    # Central plasma and lymph node
+    plasma             = list(analyte = "mAb", units = "nmol", specimen = "plasma", verified = TRUE),
+    lnode              = list(analyte = "mAb", units = "nmol", specimen = "lymph", verified = TRUE)
+  )
+
   covariateData <- list(
     HEPARIN_RT = list(
       description        = "Heparin-chromatography retention time of the administered monoclonal antibody",
@@ -56,14 +142,18 @@ Liu_2023_mAb_mouse_pbpk <- function() {
 
   ini({
     # --- Inter-antibody variability coefficients (Liu 2023) -------------------
-    # F1 scales pinocytotic uptake (CLup); F2 scales convective (lymph) transport.
-    # F1 = f1min + (f1max - f1min) / (1 + (rt50_f1 / HEPARIN_RT) ^ hill_f1)
+    # Named for the quantity each one scales rather than for the paper's symbol.
+    # `clup_scale` is the paper's F1: it multiplies pinocytotic uptake (CLup).
+    # `lymph_scale` is the paper's F2: it multiplies organ lymphatic flow (L).
+    # clup_scale = clup_scale_min +
+    #   (clup_scale_max - clup_scale_min) /
+    #   (1 + (rt50_clup_scale / HEPARIN_RT) ^ hill_clup_scale)
     # (Liu 2023 Eq 1 / Eq 2; coefficients a, b, c, d of Table 2).
-    lf1min   <- log(0.67);  label("F1 lower plateau, low-heparin-retention antibodies (unitless)")     # Liu 2023 Table 2, coefficient a = 0.67 (CV% 1.28)
-    lf1max   <- log(3.65);  label("F1 upper plateau, high-heparin-retention antibodies (unitless)")    # Liu 2023 Table 2, coefficient b = 3.65 (CV% 3.37)
-    lrt50_f1 <- log(17.7);  label("HEPARIN_RT giving half-maximal F1 (min)")                 # Liu 2023 Table 2, coefficient c = 17.7 (CV% 0.543)
-    lhill_f1 <- log(22.7);  label("Sigmoidicity of the HEPARIN_RT-F1 relationship (unitless)")          # Liu 2023 Table 2, coefficient d = 22.7 (CV% 7.89)
-    lf2      <- fixed(log(1.45)); label("F2 convective-transport variability coefficient (unitless)")   # Liu 2023 Results: "we fixed F2 to 1.45, the median F2 value in this panel"
+    lclup_scale_min  <- log(0.67);  label("Pinocytotic-uptake scaling, lower plateau (low-heparin-retention antibodies; paper's F1 coefficient a, unitless)")   # Liu 2023 Table 2, coefficient a = 0.67 (CV% 1.28)
+    lclup_scale_max  <- log(3.65);  label("Pinocytotic-uptake scaling, upper plateau (high-heparin-retention antibodies; paper's F1 coefficient b, unitless)")  # Liu 2023 Table 2, coefficient b = 3.65 (CV% 3.37)
+    lrt50_clup_scale <- log(17.7);  label("HEPARIN_RT giving half-maximal pinocytotic-uptake scaling (paper's F1 coefficient c, min)")                          # Liu 2023 Table 2, coefficient c = 17.7 (CV% 0.543)
+    lhill_clup_scale <- log(22.7);  label("Sigmoidicity of the HEPARIN_RT to pinocytotic-uptake-scaling relationship (paper's F1 coefficient d, unitless)")     # Liu 2023 Table 2, coefficient d = 22.7 (CV% 7.89)
+    llymph_scale     <- fixed(log(1.45)); label("Organ-lymphatic-flow scaling coefficient (paper's F2, unitless)")                                              # Liu 2023 Results: "we fixed F2 to 1.45, the median F2 value in this panel"
 
     # --- System parameters -----------------------------------------------------
     # CLup is the one platform parameter Liu 2023 changed relative to Shah & Betts
@@ -87,11 +177,11 @@ Liu_2023_mAb_mouse_pbpk <- function() {
   })
 
   model({
-    f1min   <- exp(lf1min)
-    f1max   <- exp(lf1max)
-    rt50_f1 <- exp(lrt50_f1)
-    hill_f1 <- exp(lhill_f1)
-    f2      <- exp(lf2)
+    clup_scale_min  <- exp(lclup_scale_min)
+    clup_scale_max  <- exp(lclup_scale_max)
+    rt50_clup_scale <- exp(lrt50_clup_scale)
+    hill_clup_scale <- exp(lhill_clup_scale)
+    lymph_scale     <- exp(llymph_scale)
 
     clup_pv <- exp(lclup)
     fcrn_M  <- exp(lfcrn)
@@ -107,7 +197,7 @@ Liu_2023_mAb_mouse_pbpk <- function() {
 
     # Antibody-specific pinocytosis coefficient (Liu 2023 Eq 1 / Eq 2). Sigmoidal
     # in the heparin-chromatography retention time of the administered antibody.
-    f1 <- f1min + (f1max - f1min) / (1.0 + (rt50_f1 / HEPARIN_RT) ^ hill_f1)
+    clup_scale <- clup_scale_min + (clup_scale_max - clup_scale_min) / (1.0 + (rt50_clup_scale / HEPARIN_RT) ^ hill_clup_scale)
 
     # Fixed system constants (Shah & Betts 2012 text p.73)
     fr    <- 0.715   # fraction of FcRn-bound mAb recycled to the vascular space
@@ -279,34 +369,34 @@ Liu_2023_mAb_mouse_pbpk <- function() {
     # supply of every organ except the lung and the liver is the lung vascular
     # concentration; the lung is supplied from central plasma.
 
-    d/dt(vp_heart) <- q_ht * cv_lu - (q_ht - l_ht) * cv_ht - (1 - sv_ht) * f2 * l_ht * cv_ht -
-      f1 * clu_ht * cv_ht + fr * clu_ht * ceb_ht
-    d/dt(vp_lung) <- (q_lu + l_lu) * cv_p - q_lu * cv_lu - (1 - sv_lu) * f2 * l_lu * cv_lu -
-      f1 * clu_lu * cv_lu + fr * clu_lu * ceb_lu
-    d/dt(vp_muscle) <- q_mu * cv_lu - (q_mu - l_mu) * cv_mu - (1 - sv_mu) * f2 * l_mu * cv_mu -
-      f1 * clu_mu * cv_mu + fr * clu_mu * ceb_mu
-    d/dt(vp_skin) <- q_sk * cv_lu - (q_sk - l_sk) * cv_sk - (1 - sv_sk) * f2 * l_sk * cv_sk -
-      f1 * clu_sk * cv_sk + fr * clu_sk * ceb_sk
-    d/dt(vp_adipose) <- q_ad * cv_lu - (q_ad - l_ad) * cv_ad - (1 - sv_ad) * f2 * l_ad * cv_ad -
-      f1 * clu_ad * cv_ad + fr * clu_ad * ceb_ad
-    d/dt(vp_bone) <- q_bo * cv_lu - (q_bo - l_bo) * cv_bo - (1 - sv_bo) * f2 * l_bo * cv_bo -
-      f1 * clu_bo * cv_bo + fr * clu_bo * ceb_bo
-    d/dt(vp_brain) <- q_br * cv_lu - (q_br - l_br) * cv_br - (1 - sv_br) * f2 * l_br * cv_br -
-      f1 * clu_br * cv_br + fr * clu_br * ceb_br
-    d/dt(vp_kidney) <- q_ki * cv_lu - (q_ki - l_ki) * cv_ki - (1 - sv_ki) * f2 * l_ki * cv_ki -
-      f1 * clu_ki * cv_ki + fr * clu_ki * ceb_ki
+    d/dt(vp_heart) <- q_ht * cv_lu - (q_ht - l_ht) * cv_ht - (1 - sv_ht) * lymph_scale * l_ht * cv_ht -
+      clup_scale * clu_ht * cv_ht + fr * clu_ht * ceb_ht
+    d/dt(vp_lung) <- (q_lu + l_lu) * cv_p - q_lu * cv_lu - (1 - sv_lu) * lymph_scale * l_lu * cv_lu -
+      clup_scale * clu_lu * cv_lu + fr * clu_lu * ceb_lu
+    d/dt(vp_muscle) <- q_mu * cv_lu - (q_mu - l_mu) * cv_mu - (1 - sv_mu) * lymph_scale * l_mu * cv_mu -
+      clup_scale * clu_mu * cv_mu + fr * clu_mu * ceb_mu
+    d/dt(vp_skin) <- q_sk * cv_lu - (q_sk - l_sk) * cv_sk - (1 - sv_sk) * lymph_scale * l_sk * cv_sk -
+      clup_scale * clu_sk * cv_sk + fr * clu_sk * ceb_sk
+    d/dt(vp_adipose) <- q_ad * cv_lu - (q_ad - l_ad) * cv_ad - (1 - sv_ad) * lymph_scale * l_ad * cv_ad -
+      clup_scale * clu_ad * cv_ad + fr * clu_ad * ceb_ad
+    d/dt(vp_bone) <- q_bo * cv_lu - (q_bo - l_bo) * cv_bo - (1 - sv_bo) * lymph_scale * l_bo * cv_bo -
+      clup_scale * clu_bo * cv_bo + fr * clu_bo * ceb_bo
+    d/dt(vp_brain) <- q_br * cv_lu - (q_br - l_br) * cv_br - (1 - sv_br) * lymph_scale * l_br * cv_br -
+      clup_scale * clu_br * cv_br + fr * clu_br * ceb_br
+    d/dt(vp_kidney) <- q_ki * cv_lu - (q_ki - l_ki) * cv_ki - (1 - sv_ki) * lymph_scale * l_ki * cv_ki -
+      clup_scale * clu_ki * cv_ki + fr * clu_ki * ceb_ki
     d/dt(vp_small_intestine) <- q_si * cv_lu - (q_si - l_si) * cv_si -
-      (1 - sv_si) * f2 * l_si * cv_si - f1 * clu_si * cv_si + fr * clu_si * ceb_si
+      (1 - sv_si) * lymph_scale * l_si * cv_si - clup_scale * clu_si * cv_si + fr * clu_si * ceb_si
     d/dt(vp_large_intestine) <- q_lr * cv_lu - (q_lr - l_lr) * cv_lr -
-      (1 - sv_lr) * f2 * l_lr * cv_lr - f1 * clu_lr * cv_lr + fr * clu_lr * ceb_lr
-    d/dt(vp_pancreas) <- q_pa * cv_lu - (q_pa - l_pa) * cv_pa - (1 - sv_pa) * f2 * l_pa * cv_pa -
-      f1 * clu_pa * cv_pa + fr * clu_pa * ceb_pa
-    d/dt(vp_thymus) <- q_th * cv_lu - (q_th - l_th) * cv_th - (1 - sv_th) * f2 * l_th * cv_th -
-      f1 * clu_th * cv_th + fr * clu_th * ceb_th
-    d/dt(vp_spleen) <- q_sp * cv_lu - (q_sp - l_sp) * cv_sp - (1 - sv_sp) * f2 * l_sp * cv_sp -
-      f1 * clu_sp * cv_sp + fr * clu_sp * ceb_sp
-    d/dt(vp_other) <- q_ot * cv_lu - (q_ot - l_ot) * cv_ot - (1 - sv_ot) * f2 * l_ot * cv_ot -
-      f1 * clu_ot * cv_ot + fr * clu_ot * ceb_ot
+      (1 - sv_lr) * lymph_scale * l_lr * cv_lr - clup_scale * clu_lr * cv_lr + fr * clu_lr * ceb_lr
+    d/dt(vp_pancreas) <- q_pa * cv_lu - (q_pa - l_pa) * cv_pa - (1 - sv_pa) * lymph_scale * l_pa * cv_pa -
+      clup_scale * clu_pa * cv_pa + fr * clu_pa * ceb_pa
+    d/dt(vp_thymus) <- q_th * cv_lu - (q_th - l_th) * cv_th - (1 - sv_th) * lymph_scale * l_th * cv_th -
+      clup_scale * clu_th * cv_th + fr * clu_th * ceb_th
+    d/dt(vp_spleen) <- q_sp * cv_lu - (q_sp - l_sp) * cv_sp - (1 - sv_sp) * lymph_scale * l_sp * cv_sp -
+      clup_scale * clu_sp * cv_sp + fr * clu_sp * ceb_sp
+    d/dt(vp_other) <- q_ot * cv_lu - (q_ot - l_ot) * cv_ot - (1 - sv_ot) * lymph_scale * l_ot * cv_ot -
+      clup_scale * clu_ot * cv_ot + fr * clu_ot * ceb_ot
 
     # Liver: hepatic-artery inflow plus the four portal tributaries; the total
     # outflow QVOUT_LIVER = q_li - l_li + q_li_upstream returns to central plasma.
@@ -314,8 +404,8 @@ Liu_2023_mAb_mouse_pbpk <- function() {
     d/dt(vp_liver) <- q_li * cv_lu +
       (q_si - l_si) * cv_si + (q_pa - l_pa) * cv_pa +
       (q_lr - l_lr) * cv_lr + (q_sp - l_sp) * cv_sp -
-      qvout_li * cv_li - (1 - sv_li) * f2 * l_li * cv_li -
-      f1 * clu_li * cv_li + fr * clu_li * ceb_li
+      qvout_li * cv_li - (1 - sv_li) * lymph_scale * l_li * cv_li -
+      clup_scale * clu_li * cv_li + fr * clu_li * ceb_li
 
     # === Endosomal spaces ======================================================
     # Uptake into the endosome is scaled by F1; FcRn-complex efflux (recycling to
@@ -323,79 +413,79 @@ Liu_2023_mAb_mouse_pbpk <- function() {
     # "Endosomal Space"). Free-plus-bound FcRn is conserved within each organ.
 
     bind_ht <- kon * ceu_ht * cfr_ht * v_ht_e; ub_ht <- koff * eb_heart
-    d/dt(eu_heart) <- f1 * clu_ht * (cv_ht + cis_ht) - bind_ht + ub_ht - kdeg * eu_heart
+    d/dt(eu_heart) <- clup_scale * clu_ht * (cv_ht + cis_ht) - bind_ht + ub_ht - kdeg * eu_heart
     d/dt(eb_heart) <- bind_ht - ub_ht - clup_pv * eb_heart
     d/dt(fr_heart) <- ub_ht - bind_ht + clup_pv * eb_heart
 
     bind_lu <- kon * ceu_lu * cfr_lu * v_lu_e; ub_lu <- koff * eb_lung
-    d/dt(eu_lung) <- f1 * clu_lu * (cv_lu + cis_lu) - bind_lu + ub_lu - kdeg * eu_lung
+    d/dt(eu_lung) <- clup_scale * clu_lu * (cv_lu + cis_lu) - bind_lu + ub_lu - kdeg * eu_lung
     d/dt(eb_lung) <- bind_lu - ub_lu - clup_pv * eb_lung
     d/dt(fr_lung) <- ub_lu - bind_lu + clup_pv * eb_lung
 
     bind_mu <- kon * ceu_mu * cfr_mu * v_mu_e; ub_mu <- koff * eb_muscle
-    d/dt(eu_muscle) <- f1 * clu_mu * (cv_mu + cis_mu) - bind_mu + ub_mu - kdeg * eu_muscle
+    d/dt(eu_muscle) <- clup_scale * clu_mu * (cv_mu + cis_mu) - bind_mu + ub_mu - kdeg * eu_muscle
     d/dt(eb_muscle) <- bind_mu - ub_mu - clup_pv * eb_muscle
     d/dt(fr_muscle) <- ub_mu - bind_mu + clup_pv * eb_muscle
 
     bind_sk <- kon * ceu_sk * cfr_sk * v_sk_e; ub_sk <- koff * eb_skin
-    d/dt(eu_skin) <- f1 * clu_sk * (cv_sk + cis_sk) - bind_sk + ub_sk - kdeg * eu_skin
+    d/dt(eu_skin) <- clup_scale * clu_sk * (cv_sk + cis_sk) - bind_sk + ub_sk - kdeg * eu_skin
     d/dt(eb_skin) <- bind_sk - ub_sk - clup_pv * eb_skin
     d/dt(fr_skin) <- ub_sk - bind_sk + clup_pv * eb_skin
 
     bind_ad <- kon * ceu_ad * cfr_ad * v_ad_e; ub_ad <- koff * eb_adipose
-    d/dt(eu_adipose) <- f1 * clu_ad * (cv_ad + cis_ad) - bind_ad + ub_ad - kdeg * eu_adipose
+    d/dt(eu_adipose) <- clup_scale * clu_ad * (cv_ad + cis_ad) - bind_ad + ub_ad - kdeg * eu_adipose
     d/dt(eb_adipose) <- bind_ad - ub_ad - clup_pv * eb_adipose
     d/dt(fr_adipose) <- ub_ad - bind_ad + clup_pv * eb_adipose
 
     bind_bo <- kon * ceu_bo * cfr_bo * v_bo_e; ub_bo <- koff * eb_bone
-    d/dt(eu_bone) <- f1 * clu_bo * (cv_bo + cis_bo) - bind_bo + ub_bo - kdeg * eu_bone
+    d/dt(eu_bone) <- clup_scale * clu_bo * (cv_bo + cis_bo) - bind_bo + ub_bo - kdeg * eu_bone
     d/dt(eb_bone) <- bind_bo - ub_bo - clup_pv * eb_bone
     d/dt(fr_bone) <- ub_bo - bind_bo + clup_pv * eb_bone
 
     bind_br <- kon * ceu_br * cfr_br * v_br_e; ub_br <- koff * eb_brain
-    d/dt(eu_brain) <- f1 * clu_br * (cv_br + cis_br) - bind_br + ub_br - kdeg * eu_brain
+    d/dt(eu_brain) <- clup_scale * clu_br * (cv_br + cis_br) - bind_br + ub_br - kdeg * eu_brain
     d/dt(eb_brain) <- bind_br - ub_br - clup_pv * eb_brain
     d/dt(fr_brain) <- ub_br - bind_br + clup_pv * eb_brain
 
     bind_ki <- kon * ceu_ki * cfr_ki * v_ki_e; ub_ki <- koff * eb_kidney
-    d/dt(eu_kidney) <- f1 * clu_ki * (cv_ki + cis_ki) - bind_ki + ub_ki - kdeg * eu_kidney
+    d/dt(eu_kidney) <- clup_scale * clu_ki * (cv_ki + cis_ki) - bind_ki + ub_ki - kdeg * eu_kidney
     d/dt(eb_kidney) <- bind_ki - ub_ki - clup_pv * eb_kidney
     d/dt(fr_kidney) <- ub_ki - bind_ki + clup_pv * eb_kidney
 
     bind_li <- kon * ceu_li * cfr_li * v_li_e; ub_li <- koff * eb_liver
-    d/dt(eu_liver) <- f1 * clu_li * (cv_li + cis_li) - bind_li + ub_li - kdeg * eu_liver
+    d/dt(eu_liver) <- clup_scale * clu_li * (cv_li + cis_li) - bind_li + ub_li - kdeg * eu_liver
     d/dt(eb_liver) <- bind_li - ub_li - clup_pv * eb_liver
     d/dt(fr_liver) <- ub_li - bind_li + clup_pv * eb_liver
 
     bind_si <- kon * ceu_si * cfr_si * v_si_e; ub_si <- koff * eb_small_intestine
-    d/dt(eu_small_intestine) <- f1 * clu_si * (cv_si + cis_si) - bind_si + ub_si -
+    d/dt(eu_small_intestine) <- clup_scale * clu_si * (cv_si + cis_si) - bind_si + ub_si -
       kdeg * eu_small_intestine
     d/dt(eb_small_intestine) <- bind_si - ub_si - clup_pv * eb_small_intestine
     d/dt(fr_small_intestine) <- ub_si - bind_si + clup_pv * eb_small_intestine
 
     bind_lr <- kon * ceu_lr * cfr_lr * v_lr_e; ub_lr <- koff * eb_large_intestine
-    d/dt(eu_large_intestine) <- f1 * clu_lr * (cv_lr + cis_lr) - bind_lr + ub_lr -
+    d/dt(eu_large_intestine) <- clup_scale * clu_lr * (cv_lr + cis_lr) - bind_lr + ub_lr -
       kdeg * eu_large_intestine
     d/dt(eb_large_intestine) <- bind_lr - ub_lr - clup_pv * eb_large_intestine
     d/dt(fr_large_intestine) <- ub_lr - bind_lr + clup_pv * eb_large_intestine
 
     bind_pa <- kon * ceu_pa * cfr_pa * v_pa_e; ub_pa <- koff * eb_pancreas
-    d/dt(eu_pancreas) <- f1 * clu_pa * (cv_pa + cis_pa) - bind_pa + ub_pa - kdeg * eu_pancreas
+    d/dt(eu_pancreas) <- clup_scale * clu_pa * (cv_pa + cis_pa) - bind_pa + ub_pa - kdeg * eu_pancreas
     d/dt(eb_pancreas) <- bind_pa - ub_pa - clup_pv * eb_pancreas
     d/dt(fr_pancreas) <- ub_pa - bind_pa + clup_pv * eb_pancreas
 
     bind_th <- kon * ceu_th * cfr_th * v_th_e; ub_th <- koff * eb_thymus
-    d/dt(eu_thymus) <- f1 * clu_th * (cv_th + cis_th) - bind_th + ub_th - kdeg * eu_thymus
+    d/dt(eu_thymus) <- clup_scale * clu_th * (cv_th + cis_th) - bind_th + ub_th - kdeg * eu_thymus
     d/dt(eb_thymus) <- bind_th - ub_th - clup_pv * eb_thymus
     d/dt(fr_thymus) <- ub_th - bind_th + clup_pv * eb_thymus
 
     bind_sp <- kon * ceu_sp * cfr_sp * v_sp_e; ub_sp <- koff * eb_spleen
-    d/dt(eu_spleen) <- f1 * clu_sp * (cv_sp + cis_sp) - bind_sp + ub_sp - kdeg * eu_spleen
+    d/dt(eu_spleen) <- clup_scale * clu_sp * (cv_sp + cis_sp) - bind_sp + ub_sp - kdeg * eu_spleen
     d/dt(eb_spleen) <- bind_sp - ub_sp - clup_pv * eb_spleen
     d/dt(fr_spleen) <- ub_sp - bind_sp + clup_pv * eb_spleen
 
     bind_ot <- kon * ceu_ot * cfr_ot * v_ot_e; ub_ot <- koff * eb_other
-    d/dt(eu_other) <- f1 * clu_ot * (cv_ot + cis_ot) - bind_ot + ub_ot - kdeg * eu_other
+    d/dt(eu_other) <- clup_scale * clu_ot * (cv_ot + cis_ot) - bind_ot + ub_ot - kdeg * eu_other
     d/dt(eb_other) <- bind_ot - ub_ot - clup_pv * eb_other
     d/dt(fr_other) <- ub_ot - bind_ot + clup_pv * eb_other
 
@@ -404,36 +494,36 @@ Liu_2023_mAb_mouse_pbpk <- function() {
     # from the interstitium scales with F1, and the (1 - FR) fraction of recycled
     # FcRn-complex is delivered here (Supplementary Methods 2, "Interstitial Space").
 
-    d/dt(is_heart) <- (1 - sv_ht) * f2 * l_ht * cv_ht - (1 - sigis) * f2 * l_ht * cis_ht -
-      f1 * clu_ht * cis_ht + clu_ht * (1 - fr) * ceb_ht
-    d/dt(is_lung) <- (1 - sv_lu) * f2 * l_lu * cv_lu - (1 - sigis) * f2 * l_lu * cis_lu -
-      f1 * clu_lu * cis_lu + clu_lu * (1 - fr) * ceb_lu
-    d/dt(is_muscle) <- (1 - sv_mu) * f2 * l_mu * cv_mu - (1 - sigis) * f2 * l_mu * cis_mu -
-      f1 * clu_mu * cis_mu + clu_mu * (1 - fr) * ceb_mu
-    d/dt(is_skin) <- (1 - sv_sk) * f2 * l_sk * cv_sk - (1 - sigis) * f2 * l_sk * cis_sk -
-      f1 * clu_sk * cis_sk + clu_sk * (1 - fr) * ceb_sk
-    d/dt(is_adipose) <- (1 - sv_ad) * f2 * l_ad * cv_ad - (1 - sigis) * f2 * l_ad * cis_ad -
-      f1 * clu_ad * cis_ad + clu_ad * (1 - fr) * ceb_ad
-    d/dt(is_bone) <- (1 - sv_bo) * f2 * l_bo * cv_bo - (1 - sigis) * f2 * l_bo * cis_bo -
-      f1 * clu_bo * cis_bo + clu_bo * (1 - fr) * ceb_bo
-    d/dt(is_brain) <- (1 - sv_br) * f2 * l_br * cv_br - (1 - sigis) * f2 * l_br * cis_br -
-      f1 * clu_br * cis_br + clu_br * (1 - fr) * ceb_br
-    d/dt(is_kidney) <- (1 - sv_ki) * f2 * l_ki * cv_ki - (1 - sigis) * f2 * l_ki * cis_ki -
-      f1 * clu_ki * cis_ki + clu_ki * (1 - fr) * ceb_ki
-    d/dt(is_liver) <- (1 - sv_li) * f2 * l_li * cv_li - (1 - sigis) * f2 * l_li * cis_li -
-      f1 * clu_li * cis_li + clu_li * (1 - fr) * ceb_li
-    d/dt(is_small_intestine) <- (1 - sv_si) * f2 * l_si * cv_si -
-      (1 - sigis) * f2 * l_si * cis_si - f1 * clu_si * cis_si + clu_si * (1 - fr) * ceb_si
-    d/dt(is_large_intestine) <- (1 - sv_lr) * f2 * l_lr * cv_lr -
-      (1 - sigis) * f2 * l_lr * cis_lr - f1 * clu_lr * cis_lr + clu_lr * (1 - fr) * ceb_lr
-    d/dt(is_pancreas) <- (1 - sv_pa) * f2 * l_pa * cv_pa - (1 - sigis) * f2 * l_pa * cis_pa -
-      f1 * clu_pa * cis_pa + clu_pa * (1 - fr) * ceb_pa
-    d/dt(is_thymus) <- (1 - sv_th) * f2 * l_th * cv_th - (1 - sigis) * f2 * l_th * cis_th -
-      f1 * clu_th * cis_th + clu_th * (1 - fr) * ceb_th
-    d/dt(is_spleen) <- (1 - sv_sp) * f2 * l_sp * cv_sp - (1 - sigis) * f2 * l_sp * cis_sp -
-      f1 * clu_sp * cis_sp + clu_sp * (1 - fr) * ceb_sp
-    d/dt(is_other) <- (1 - sv_ot) * f2 * l_ot * cv_ot - (1 - sigis) * f2 * l_ot * cis_ot -
-      f1 * clu_ot * cis_ot + clu_ot * (1 - fr) * ceb_ot
+    d/dt(is_heart) <- (1 - sv_ht) * lymph_scale * l_ht * cv_ht - (1 - sigis) * lymph_scale * l_ht * cis_ht -
+      clup_scale * clu_ht * cis_ht + clu_ht * (1 - fr) * ceb_ht
+    d/dt(is_lung) <- (1 - sv_lu) * lymph_scale * l_lu * cv_lu - (1 - sigis) * lymph_scale * l_lu * cis_lu -
+      clup_scale * clu_lu * cis_lu + clu_lu * (1 - fr) * ceb_lu
+    d/dt(is_muscle) <- (1 - sv_mu) * lymph_scale * l_mu * cv_mu - (1 - sigis) * lymph_scale * l_mu * cis_mu -
+      clup_scale * clu_mu * cis_mu + clu_mu * (1 - fr) * ceb_mu
+    d/dt(is_skin) <- (1 - sv_sk) * lymph_scale * l_sk * cv_sk - (1 - sigis) * lymph_scale * l_sk * cis_sk -
+      clup_scale * clu_sk * cis_sk + clu_sk * (1 - fr) * ceb_sk
+    d/dt(is_adipose) <- (1 - sv_ad) * lymph_scale * l_ad * cv_ad - (1 - sigis) * lymph_scale * l_ad * cis_ad -
+      clup_scale * clu_ad * cis_ad + clu_ad * (1 - fr) * ceb_ad
+    d/dt(is_bone) <- (1 - sv_bo) * lymph_scale * l_bo * cv_bo - (1 - sigis) * lymph_scale * l_bo * cis_bo -
+      clup_scale * clu_bo * cis_bo + clu_bo * (1 - fr) * ceb_bo
+    d/dt(is_brain) <- (1 - sv_br) * lymph_scale * l_br * cv_br - (1 - sigis) * lymph_scale * l_br * cis_br -
+      clup_scale * clu_br * cis_br + clu_br * (1 - fr) * ceb_br
+    d/dt(is_kidney) <- (1 - sv_ki) * lymph_scale * l_ki * cv_ki - (1 - sigis) * lymph_scale * l_ki * cis_ki -
+      clup_scale * clu_ki * cis_ki + clu_ki * (1 - fr) * ceb_ki
+    d/dt(is_liver) <- (1 - sv_li) * lymph_scale * l_li * cv_li - (1 - sigis) * lymph_scale * l_li * cis_li -
+      clup_scale * clu_li * cis_li + clu_li * (1 - fr) * ceb_li
+    d/dt(is_small_intestine) <- (1 - sv_si) * lymph_scale * l_si * cv_si -
+      (1 - sigis) * lymph_scale * l_si * cis_si - clup_scale * clu_si * cis_si + clu_si * (1 - fr) * ceb_si
+    d/dt(is_large_intestine) <- (1 - sv_lr) * lymph_scale * l_lr * cv_lr -
+      (1 - sigis) * lymph_scale * l_lr * cis_lr - clup_scale * clu_lr * cis_lr + clu_lr * (1 - fr) * ceb_lr
+    d/dt(is_pancreas) <- (1 - sv_pa) * lymph_scale * l_pa * cv_pa - (1 - sigis) * lymph_scale * l_pa * cis_pa -
+      clup_scale * clu_pa * cis_pa + clu_pa * (1 - fr) * ceb_pa
+    d/dt(is_thymus) <- (1 - sv_th) * lymph_scale * l_th * cv_th - (1 - sigis) * lymph_scale * l_th * cis_th -
+      clup_scale * clu_th * cis_th + clu_th * (1 - fr) * ceb_th
+    d/dt(is_spleen) <- (1 - sv_sp) * lymph_scale * l_sp * cv_sp - (1 - sigis) * lymph_scale * l_sp * cis_sp -
+      clup_scale * clu_sp * cis_sp + clu_sp * (1 - fr) * ceb_sp
+    d/dt(is_other) <- (1 - sv_ot) * lymph_scale * l_ot * cv_ot - (1 - sigis) * lymph_scale * l_ot * cis_ot -
+      clup_scale * clu_ot * cis_ot + clu_ot * (1 - fr) * ceb_ot
 
     # === Central plasma (Supplementary Methods 2, "Plasma") ====================
     d/dt(plasma) <- (q_ht - l_ht) * cv_ht +
@@ -450,7 +540,7 @@ Liu_2023_mAb_mouse_pbpk <- function() {
       (q_lu + l_lu) * cv_p
 
     # === Lymph node (Supplementary Methods 2, "Lymph Nodes") ==================
-    d/dt(lnode) <- (1 - sigis) * f2 * (
+    d/dt(lnode) <- (1 - sigis) * lymph_scale * (
       l_ht * cis_ht + l_lu * cis_lu + l_mu * cis_mu + l_sk * cis_sk + l_ad * cis_ad +
       l_bo * cis_bo + l_br * cis_br + l_ki * cis_ki + l_li * cis_li + l_si * cis_si +
       l_lr * cis_lr + l_pa * cis_pa + l_th * cis_th + l_sp * cis_sp + l_ot * cis_ot
