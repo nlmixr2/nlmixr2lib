@@ -1818,6 +1818,8 @@ navbar:
         href: articles/Li_2014_penicillinG.html
       - text: "Perampanel (Silva 2023)"
         href: articles/Silva_2023_perampanel.html
+      - text: "PermeabilityLimited pbpk (Gaohua 2023)"
+        href: articles/Gaohua_2023_permeabilityLimited_pbpk.html
       - text: "Pertuzumab (Garg 2014)"
         href: articles/Garg_2014_pertuzumab.html
       - text: "Pertuzumab (Wang 2021)"
