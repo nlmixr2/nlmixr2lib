@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2023 valproic acid ([doi:10.3389/fphar.2023.1228641](https://doi.org/10.3389/fphar.2023.1228641)) -- children with epilepsy; the paper's base model plus all five protein-binding non-linearity strategies, one model file each.
+- Add Tiraboschi 2023 avalglucosidase alfa ([doi:10.1007/s10928-023-09874-8](https://doi.org/10.1007/s10928-023-09874-8)) -- children and adults with late-onset or infantile-onset Pompe disease.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
