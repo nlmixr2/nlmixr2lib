@@ -31,7 +31,7 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
-- Add Zhu 2024 pyrotinib ([doi:10.3389/fphar.2024.1432944](https://doi.org/10.3389/fphar.2024.1432944)) - Chinese patients with HER2-positive breast cancer.
+- Add Foster 2023 enrofloxacin and ciprofloxacin ([doi:10.1111/jvim.16866](https://doi.org/10.1111/jvim.16866)) - client-owned cats with normal to severely reduced kidney function.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 

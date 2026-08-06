@@ -3461,6 +3461,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Example models:** Combination antibiotic PD models with daptomycin.
 - **Notes:** Same token as the bare `dap` drug-state compartment.
 
+### cipro (**canonical ciprofloxacin metabolite / sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ciprofloxacin species suffix. Ciprofloxacin is both a fluoroquinolone antibacterial in its own right and the principal active metabolite of enrofloxacin (formed by hepatic N-dealkylation), so the suffix serves parent + metabolite extractions in which enrofloxacin is the parent (`central_cipro`, `lvc_cipro`, `lcl_cipro`, `propSd_cipro`, `Cc_cipro`) and would equally serve a combination model in which ciprofloxacin is a sibling drug.
+- **Source aliases:** `Cipro`, `CIP` (Foster 2023 Figure S2 and Table 3 printed forms).
+- **Example models:** `Foster_2023_enrofloxacin_ciprofloxacin_cat.R` (founding example; enrofloxacin -> ciprofloxacin formation clearance in cats with reduced kidney function).
+- **Notes:** Spelled `cipro` rather than `cip` to stay unambiguous against the covariate register's `CONMED_CIP` and against the `ccip` bath-concentration compartment of the Rees 2018 hollow-fiber meropenem + ciprofloxacin model, which is a distinct state (a dosed medium concentration in a time-kill experiment), not a metabolite species suffix.
+
 ---
 
 ## Miscellaneous metabolite suffixes
