@@ -198,18 +198,35 @@ Walsh_2024_buprenorphine_cows <- function() {
     ic50 <- ic90 / 9^(1 / hill)
 
     # -------------------------------------------------------------------
-    # Imax exposure-response between the two probit-scale asymptotes.
+    # Imax exposure-response between the two probit-scale asymptotes. This
+    # is the paper's IPRED, which lives "on the scale of quantile function
+    # of standard distribution" -- NOT on the observable 0-44 COWS scale.
     # -------------------------------------------------------------------
-    cows <- pbase -
+    latentcows <- pbase -
       (pbase - pbase_low) * CP_BPN_NGML^hill / (ic50^hill + CP_BPN_NGML^hill)
 
     # -------------------------------------------------------------------
-    # Bounded-integer observation. probitNorm(sd, low, hi) applies
-    # probit((y - low) / (hi - low)) and adds normal error on that scale,
-    # which is exactly the bounded-integer construction for a 45-category
-    # score: y = 45 * pnorm(latent). The published likelihood additionally
-    # floors this to an integer; that step is not applied here (see
-    # vignette Errata).
+    # Map the latent probit-scale prediction onto the observable score
+    # range: probitInv(x, 0, 45) == 45 * pnorm(x). This back-transform is
+    # REQUIRED because rxode2's probitNorm(sd, low, hi) expects the
+    # prediction on the untransformed (observed) scale and applies
+    # probit((y - low) / (hi - low)) internally -- feeding it the latent
+    # value directly puts the argument outside (0, 45) and silently yields
+    # NA. Because probitInv is the exact inverse of that internal probit,
+    # the round trip is lossless and the residual error lands on the
+    # paper's quantile scale, which is the bounded-integer construction.
+    #
+    # Back-check: probitInv(-0.887, 0, 45) = 8.44 (pre-treatment COWS,
+    # inside the paper's 5-12 "mild withdrawal" band) and
+    # probitInv(-2.11, 0, 45) = 0.78 (fully blocked).
+    # -------------------------------------------------------------------
+    cows <- probitInv(latentcows, 0, 45)
+
+    # -------------------------------------------------------------------
+    # Bounded-integer observation. The published likelihood additionally
+    # floors the mapped value to an integer; that step is not applied here
+    # (see vignette Errata) -- downstream users reproducing the paper's
+    # category proportions should apply floor() to the simulated score.
     # -------------------------------------------------------------------
     cows ~ probitNorm(addSd, 0, 45)
   })

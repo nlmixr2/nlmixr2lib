@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abdelgawad 2024 linezolid ([doi:10.1093/infdis/jiad413](https://doi.org/10.1093/infdis/jiad413)) -- adults with HIV-associated tuberculous meningitis, in plasma and cerebrospinal fluid.
+- Add Walsh 2024 buprenorphine ([doi:10.1038/s41386-023-01793-z](https://doi.org/10.1038/s41386-023-01793-z)) - non-treatment-seeking adults with moderate to severe opioid use disorder.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
