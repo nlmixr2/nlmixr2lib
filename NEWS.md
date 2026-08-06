@@ -6,6 +6,8 @@
 
 - Add Willemin 2024 interleukin-6 / CYP PBPK ([doi:10.1002/psp4.13144](https://doi.org/10.1002/psp4.13144)) - patients with relapsed/refractory multiple myeloma experiencing cytokine release syndrome after teclistamab.
 
+- Add Shen 2024 vancomycin ([doi:10.1002/psp4.13151](https://doi.org/10.1002/psp4.13151)) - Southern Chinese children aged 1 month to 17 years on routine therapeutic drug monitoring.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
