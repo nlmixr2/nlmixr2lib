@@ -122,7 +122,7 @@ Sharma_2023_nitrofurantoin_rat_pbpk <- function() {
     Tmc     <- 8.02  ; label("Maximum active tubular secretion rate coefficient (mg/h/kg)")             # Table S4 Tmc, Fitted, 8.02 (6.78-9.30); V4 posterior mean 8.0241
     Kt      <- 0.059 ; label("Concentration at half-maximal active tubular secretion (mg/L)")           # Table S4 Kt, Fitted, 0.059 (0.043-0.079); V4 posterior mean 0.0593
     VmaxC   <- 0.47  ; label("Maximum hepatic metabolism rate coefficient (mg/h/g liver)")              # Table S4 VmaxC, Fitted, 0.47 (0.42-0.53); V4 posterior mean 0.4729
-    Km      <- 5.83  ; label("Concentration at half-maximal hepatic metabolism (mg/L)")                 # Table S4 Km, Fitted, 5.83 (4.96-6.82); V4 posterior mean 5.8324
+    km      <- 5.83  ; label("Concentration at half-maximal hepatic metabolism (mg/L)")                 # Table S4 Km, Fitted, 5.83 (4.96-6.82); V4 posterior mean 5.8324
 
     # ------------------------------------------------------------------
     # Enterohepatic recirculation -- Table S4 RAT column, the rat arm of the
@@ -213,7 +213,7 @@ Sharma_2023_nitrofurantoin_rat_pbpk <- function() {
     # ================================================================
     # 7. Hepatic processes
     # ================================================================
-    metabolism     <- vmax * c_liver * fu / (Km   + c_liver * fu)
+    metabolism     <- vmax * c_liver * fu / (km   + c_liver * fu)
     biliary_efflux <- vehr * c_liver * fu / (Kehr + c_liver * fu)
 
     # ================================================================

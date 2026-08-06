@@ -208,7 +208,7 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
     # Hepatic metabolism -- fitted on rabbit data, scaled by rabbit body weight.
     # ==================================================================
     VmaxC <- 0.472 ; label("Maximum hepatic metabolism rate coefficient (mg/h/g liver), rabbit-scaled") # deposited human Monte-Carlo input 0.472; Table S4 0.47; V4 posterior mean 0.4729
-    Km    <- 5.83  ; label("Concentration at half-maximal hepatic metabolism (mg/L)")                   # Table S4 Km 5.83 (4.96-6.82); V4 posterior mean 5.8324
+    km    <- 5.83  ; label("Concentration at half-maximal hepatic metabolism (mg/L)")                   # Table S4 Km 5.83 (4.96-6.82); V4 posterior mean 5.8324
 
     # ==================================================================
     # Enterohepatic recirculation and gut absorption -- Table S4 RAT column
@@ -245,7 +245,7 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
     etaTmc              ~ fixed(0.02465) # Distrib(Tmc, LogNormal, 8.024, 1.17)
     etaKt               ~ fixed(0.02465) # Distrib(Kt, LogNormal, 0.059, 1.17)
     etaVmaxC            ~ fixed(0.02465) # Distrib(VmaxC, LogNormal, 0.472, 1.17)
-    etaKm               ~ fixed(0.02465) # Distrib(Km, LogNormal, 5.83, 1.17)
+    etakm               ~ fixed(0.02465) # Distrib(Km, LogNormal, 5.83, 1.17)
     etaVehrc            ~ fixed(0.02465) # Distrib(Vehrc, LogNormal, 0.527, 1.17)
     etaKehr             ~ fixed(0.02465) # Distrib(Kehr, LogNormal, 0.017, 1.17)
     etakbile            ~ fixed(0.02465) # Distrib(kbile, LogNormal, 0.25, 1.17)
@@ -275,7 +275,7 @@ Sharma_2023_nitrofurantoin_human_pbpk <- function() {
     tmc_i    <- Tmc              * exp(etaTmc)
     kt_i     <- Kt               * exp(etaKt)
     vmaxc_i  <- VmaxC            * exp(etaVmaxC)
-    km_i     <- Km               * exp(etaKm)
+    km_i     <- km               * exp(etakm)
     vehrc_i  <- Vehrc            * exp(etaVehrc)
     kehr_i   <- Kehr             * exp(etaKehr)
     kbile_i  <- kbile            * exp(etakbile)
