@@ -176,7 +176,7 @@ Moein_2024_apitolisib_human <- function() {
 
     etalkg      ~ 0.668;          # Table 4: IIV Kg variance = 0.668 (RSE 34.9%, Variability 81.7%, shrinkage 37.9%)
     etalkmax    ~ 0.377;          # Table 4: IIV Kmax variance = 0.377 (RSE 44.6%, Variability 61.4%, shrinkage 55.8%)
-    etalki50    ~ fixed(0.0225);  # Table 4: IIV KI50 variance = 0.0225 (fix) -- Online Resource 1 Sect. II: "fixed to a small value (0.0225) to enhance the numerical estimation capability"
+    etalki50    ~ fixed(0.0225);  # Table 4: IIV KI50 variance = 0.0225 (fix) -- Online Resource 1 Sect. II: 'fixed to a small value (0.0225) to enhance the numerical estimation capability'
     etalhill_ks ~ fixed(0.0225);  # Table 4: IIV gamma2 variance = 0.0225 (fix) -- same rationale
 
     # ------------------------------------------------------------------
