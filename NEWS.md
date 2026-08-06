@@ -29,6 +29,8 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
+- Add Lee 2024 eculizumab ([doi:10.1007/s00228-024-03703-8](https://doi.org/10.1007/s00228-024-03703-8)) - healthy adults and patients with paroxysmal nocturnal haemoglobinuria.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
