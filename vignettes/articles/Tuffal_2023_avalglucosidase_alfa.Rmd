@@ -269,7 +269,16 @@ the dose in mg and the infusion rates in mg/h. The published table corresponds t
 solve_typical <- function(dose_mg_per_kg, weight_kg = 75, tmax_h = 336,
                           grid_h = 0.1, exact_eoi = FALSE) {
   inf <- avg_infusion(dose_mg_per_kg, weight_kg)
-  ev <- rxode2::et(amountUnits = "mg", timeUnits = "h")
+  # Units are recorded STATICALLY here and canonically in the model's own
+  # `units` field (time = h, dosing = mg) rather than declared via
+  # et(amountUnits=, timeUnits=). Those arguments attach unit attributes
+  # through the `units` package, which is NOT a dependency of nlmixr2lib and
+  # is absent on the CI runners -- pkgdown failed with "there is no package
+  # called 'units'". Nothing is gained by declaring them: no unit CONVERSION
+  # happens anywhere in this vignette. Every amt below is already mg and every
+  # time is already hours, matching the model. Same fix as
+  # Fu_2022_atenolol_qsp.Rmd, which hit this identically.
+  ev <- rxode2::et()
   for (i in seq_along(inf$amt)) {
     ev <- rxode2::et(ev, amt = inf$amt[[i]], rate = inf$rate[[i]],
                      time = inf$time[[i]], cmt = "central")
