@@ -10,7 +10,16 @@ Retlich_2015_linagliptin <- function() {
     "J Clin Pharmacol. 2010;50(8):873-885."
   )
   vignette <- "Retlich_2015_linagliptin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from nmol/L via MW 472.54 g/mol); RFU (DPP-4 activity)")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from nmol/L via MW 472.54 g/mol); RFU (DPP-4 activity)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

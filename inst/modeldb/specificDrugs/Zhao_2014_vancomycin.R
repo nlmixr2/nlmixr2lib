@@ -2,7 +2,14 @@ Zhao_2014_vancomycin <- function() {
   description <- "One-compartment IV-infusion population PK model for vancomycin in 70 children with malignant hematological disease (Zhao 2014). Clearance scales with body weight by power exponent (reference 20.2 kg, exponent 0.677) and with Schwartz-formula creatinine clearance by power exponent (reference 191 mL/min/1.73 m^2, exponent 1.03); central volume scales with body weight by power exponent (reference 20.2 kg, exponent 0.838). Vancomycin clearance was substantially higher than in pediatric populations without cancer; the published patient-tailored daily dose is target AUC * CL_i."
   reference <- "Zhao W, Zhang D, Fakhoury M, Fahd M, Duquesne F, Storme T, Baruchel A, Jacqz-Aigrain E. Population pharmacokinetics and dosing optimization of vancomycin in children with malignant hematological disease. Antimicrob Agents Chemother. 2014;58(6):3191-3199. doi:10.1128/AAC.02564-13"
   vignette <- "Zhao_2014_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -14,6 +14,21 @@ Ali_2018_amodiaquine <- function() {
   vignette <- "Ali_2018_amodiaquine"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1         = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2         = list(analyte = "amodiaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "amodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_deaq     = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2_deaq = list(analyte = "desethylamodiaquine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

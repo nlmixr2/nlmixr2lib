@@ -4,6 +4,16 @@ Berends_2019_infliximab <- function() {
   vignette <- "Berends_2019_infliximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "free TNF", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin",

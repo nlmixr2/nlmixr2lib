@@ -23,6 +23,16 @@ Clinckers_2008_MHD_rat <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)", units = "mg", specimen = "plasma", verified = FALSE),
+    effect  = list(analyte = "10,11-dihydro-10-hydroxy-carbamazepine (MHD)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     SEIZURE_ACUTE = list(
       description        = "Acute focal pilocarpine-induced seizure activity indicator: 1 = animal is undergoing intrahippocampal pilocarpine-evoked limbic seizures during the modelled observation window; 0 = no seizures.",

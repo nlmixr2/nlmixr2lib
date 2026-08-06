@@ -34,6 +34,18 @@ PerezBlanco_2016_doxorubicin <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central           = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2       = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    central_doxol     = list(analyte = "DOXol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_doxol = list(analyte = "DOXol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

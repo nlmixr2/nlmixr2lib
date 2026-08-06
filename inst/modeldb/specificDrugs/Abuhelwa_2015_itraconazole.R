@@ -10,7 +10,7 @@ Abuhelwa_2015_itraconazole <- function() {
     sep = " "
   )
   vignette <- "Abuhelwa_2015_itraconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # The FVAR random effect is a paper-mechanistic "common variability on
   # bioavailability" eta (Abuhelwa 2015 Methods 'Base model development of
@@ -20,6 +20,21 @@ Abuhelwa_2015_itraconazole <- function() {
   # via paper_specific_etas so checkModelConventions() does not flag the
   # missing matching `fvar` typical-value parameter.
   paper_specific_etas <- c("etafvar")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "itraconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "hydroxy-itraconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ohi = list(analyte = "hydroxy-itraconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FED = list(

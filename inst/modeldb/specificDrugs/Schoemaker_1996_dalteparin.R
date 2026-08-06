@@ -36,6 +36,14 @@ Schoemaker_1996_dalteparin <- function() {
     concentration = "IU/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "dalteparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dalteparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

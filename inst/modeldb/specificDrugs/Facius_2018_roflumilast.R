@@ -39,6 +39,19 @@ Facius_2018_roflumilast <- function() {
   vignette <- "Facius_2018_roflumilast"
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "roflumilast", units = "ug", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "roflumilast", units = "ug", specimen = "plasma", verified = FALSE),
+    depot_noxide   = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "administration site", verified = FALSE),
+    central_noxide = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral2    = list(analyte = "roflumilast N-oxide", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline (constant within an individual in the source dataset).",

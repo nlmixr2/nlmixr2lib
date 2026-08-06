@@ -25,7 +25,15 @@ Dong_2016_hydroxyurea <- function() {
     sep = " "
   )
   vignette <- "Dong_2016_hydroxyurea"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

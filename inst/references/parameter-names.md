@@ -1124,3 +1124,52 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `lambda`, `LAMBDA` -- general NONMEM Box-Cox notation.
 - **Example models:** `Walsh_2024_buprenorphine_desireToUse.R` (`lambda_base` = -12.9, capturing a desire-to-use VAS baseline concentrated near the top of the 0-100 scale).
 - **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. The `_base` suffix names the parameter the transform acts on; a future model applying a Box-Cox eta transform to a different parameter should register `lambda_<param>` following the same pattern rather than reusing this entry. Distinct from the residual-error `lambda` of a Box-Cox / power transform of the OBSERVATIONS -- this one transforms the random effect, not the data.
+
+## Unit spellings
+
+Registered 2026-08-03. The machine-readable `units` block wrote the same time
+unit three ways -- `"hour"` in 643 models, `"h"` in 208, `"hr"` in 28 -- so a
+consumer parsing `units$time` could not canonicalise without its own spelling
+table. Same for `"minute"` vs `"min"` and `"microgram"` vs `"ug"`.
+
+Canonical spellings live in `conventions$timeUnitSpellings` and
+`conventions$doseUnitSpellings`; `checkModelConventions()` raises an
+**error** for a non-canonical spelling and `buildModelDb()` aborts on it.
+
+**Spelling is normalised; dimension is never converted.** `min` and `h` are
+both canonical and are never conflated -- rewriting one as the other would
+misstate every value in the model. The check only maps alternative spellings
+of the *same* unit onto one form.
+
+Generic structural models (`PK_1cmt`, `PK_2cmt`, ...) are dimensionless by
+design and declare `"time_unit"` / `"dose_unit"`; `Beal_2001_iv1cmt_bql`
+expresses time in half-lives. These are listed in
+`conventions$placeholderUnits` and are exempt -- they are correct, not
+unnormalised.
+
+### Why `kon` is NOT canonicalised
+
+A consumer asked for a canonical unit for "the kon concept". There isn't one,
+because `kon*` is not one concept. Of the 91 parameters whose name starts
+`kon` in this library:
+
+- `kon51_col_atcc`, `kon52_col_aru` are an **EC50 in mg/L**, and
+  `konca_col_atcc`, `koncp_col_aru` an **Emax in 1/h** -- `KON51` and `KONCA`
+  are the source paper's own parameter names, not association rates.
+- QSP 2D on-rates carry a **length** dimension:
+  `1/(micromolarity*nanometer*second)`.
+- Opioid receptor-binding models use `pM^-n s^-1`, with a Hill-like exponent.
+- Some are mass-concentration based: `(mg/L)^-1 day^-1`.
+- The remainder are ordinary 3D molar rates: `1/(nM*day)`, `1/nM/h`,
+  `L/nmol/day`.
+
+At least three distinct dimensionalities share the prefix. A blanket
+canonicalisation would silently restate values -- the same trap as `lrbase`
+(see #477), where 89 of 102 uses were indirect-response PD baselines rather
+than target baselines. What *was* normalised in these labels is spelling and
+separators only (`/hour` -> `/h`, `pM.day` -> `pM*day`, `mcmol` -> `umol`),
+which cannot change a value.
+
+A consumer that needs kon in one unit has to read the dimensionality per
+model. That is a real cost, and it is smaller than the cost of being
+confidently wrong.

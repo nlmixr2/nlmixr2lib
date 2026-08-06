@@ -31,9 +31,17 @@ Viberg_2012_AZD6088_rat <- function() {
   )
   vignette <- "Viberg_2012_AZD6088_rat"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol/kg",
     concentration = "umol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "AZD6088", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central = list(analyte = "AZD6088", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

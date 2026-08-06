@@ -4,6 +4,19 @@ Hood_2021_medi7836 <- function() {
   vignette <- "Hood_2021_medi7836"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "MEDI7836", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "MEDI7836", units = "mg", specimen = "plasma", verified = FALSE),
+    target             = list(analyte = "IL13", units = "mg", specimen = "serum", verified = FALSE),
+    complex            = list(analyte = "MEDI7836:IL13 complex", units = "mg", specimen = "serum", verified = FALSE),
+    complex_peripheral = list(analyte = "MEDI7836:IL13 complex", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ADA_POS = list(
       description        = "Post-baseline anti-drug antibody (ADA) status",

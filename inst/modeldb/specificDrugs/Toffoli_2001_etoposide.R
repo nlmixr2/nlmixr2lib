@@ -2,7 +2,16 @@ Toffoli_2001_etoposide <- function() {
   description <- "Two-compartment population PK model for oral and IV etoposide in adult patients with solid tumours (Toffoli 2001). Additive-linear creatinine-clearance covariate on CL from Equation 2."
   reference <- "Toffoli G, Corona G, Sorio R, Robieux I, Basso B, Colussi AM, Boiocchi M. Population pharmacokinetics and pharmacodynamics of oral etoposide. Br J Clin Pharmacol. 2001;52(5):511-519. doi:10.1046/j.0306-5251.2001.01468.x"
   vignette <- "Toffoli_2001_etoposide"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "etoposide", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "etoposide", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "etoposide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

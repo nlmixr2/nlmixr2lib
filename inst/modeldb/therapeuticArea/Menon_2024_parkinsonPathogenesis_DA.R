@@ -43,9 +43,20 @@ Menon_2024_parkinsonPathogenesis_DA <- function() {
   paper_specific_compartments <- c("alpha_syn", "ros", "da_ves", "da_cyto")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "(none; mechanistic DA-compartmentalization variant, no drug input)",
     concentration = "(alpha_syn and ROS dimensionless with 50 pM scale factor per Supinfo2 Section 1.4; DA states da_ves, da_cyto in uM per Supinfo2 Section 1.6)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    alpha_syn = list(analyte = "misfolded alpha-synuclein monomer", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    ros       = list(analyte = "cytoplasmic reactive oxygen species", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    da_ves    = list(analyte = "vesicular dopamine", units = NA_character_, specimen = "administration site", verified = FALSE),
+    da_cyto   = list(analyte = "cytoplasmic dopamine", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list()

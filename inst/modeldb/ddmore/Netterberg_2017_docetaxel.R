@@ -19,9 +19,21 @@ Netterberg_2017_docetaxel <- function() {
   # that supplies CP_MGL (Kloft 2006 / Netterberg 2017 reference: 100 mg/m^2 IV over 1 h).
   # The PD-only model itself has no dosing compartment; CP_MGL is read directly from the
   # time-varying covariate column.
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L", anc = "10^9 cells/L", aag = "g/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L", anc = "10^9 cells/L", aag = "g/L")
   ddmore_id    <- "DDMODEL00000224"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    circ       = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE),
+    precursor1 = list(analyte = "progenitor cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "progenitor cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "progenitor cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "progenitor cells", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     SEXF = list(

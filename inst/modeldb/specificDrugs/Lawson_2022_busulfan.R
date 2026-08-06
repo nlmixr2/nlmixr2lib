@@ -2,7 +2,15 @@ Lawson_2022_busulfan <- function() {
   description <- "Two-compartment IV PK model for once-daily busulfan in pediatric hematopoietic stem cell transplant recipients with allometric normal-fat-mass (NFM) scaling, postmenstrual-age maturation on CL, and a time-associated within-treatment-course CL decline (Lawson 2022)."
   reference <- "Lawson R, Staatz CE, Fraser CJ, et al. Population pharmacokinetic model for once-daily intravenous busulfan in pediatric subjects describing time-associated clearance. CPT Pharmacometrics Syst Pharmacol. 2022;11(8):1002-1017. doi:10.1002/psp4.12809"
   vignette <- "Lawson_2022_busulfan"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

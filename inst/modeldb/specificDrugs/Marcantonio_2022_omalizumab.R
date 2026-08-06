@@ -25,6 +25,22 @@ Marcantonio_2022_omalizumab <- function() {
     concentration = "Free omalizumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot = list(analyte = "omalizumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ab_00 = list(analyte = "free omalizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_L0 = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_LL = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1    = list(analyte = "IgE", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1    = list(analyte = "FcepsilonRI", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    L1R1  = list(analyte = "IgE-FcepsilonRI complex", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    S1    = list(analyte = "omalizumab-IgE-FcepsilonRI ternary complex", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

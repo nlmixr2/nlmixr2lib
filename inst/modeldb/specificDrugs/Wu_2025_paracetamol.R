@@ -18,6 +18,19 @@ Wu_2025_paracetamol <- function() {
   vignette <- "Wu_2025_paracetamol"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc   = list(analyte = "paracetamol-glucuronide", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sulf   = list(analyte = "paracetamol-sulfate", units = "mg", specimen = "plasma", verified = FALSE),
+    central_cysmer = list(analyte = "paracetamol-oxidative metabolites", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Current body weight (time-varying)",

@@ -18,6 +18,19 @@ Yu_2022_ofatumumab <- function() {
   # the ofatumumab molecular weight (~149 kDa, IgG1) so that the QSS algebra
   # runs entirely on a single mg/L scale consistent with mg dosing and L
   # volumes (Lc = central / vc is natively mg/L). EC50 is already in mg/L.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "ofatumumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "ofatumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "ofatumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "CD20+ B cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    bcell        = list(analyte = "CD20+ B cells", units = "mg", specimen = "blood cell", verified = FALSE),
+    bcell_periph = list(analyte = "CD20+ B cells", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (baseline; time-fixed)",

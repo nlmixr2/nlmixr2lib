@@ -28,6 +28,22 @@ Wilson_2015_sunitinib_irinotecan_mouse <- function() {
     concentration = "mm (geometric mean of three orthogonal tumor diameters (l*w*h)^(1/3); not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    intIrinotecan        = list(analyte = "irinotecan", units = NA_character_, specimen = "tumor", verified = FALSE),
+    cumSunitinibFrozen   = list(analyte = "sunitinib", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cycling_cells        = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells1       = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells2       = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells3       = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    carrying_capacity    = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    depot_kpd_sunitinib  = list(analyte = "sunitinib", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot_kpd_irinotecan = list(analyte = "irinotecan", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

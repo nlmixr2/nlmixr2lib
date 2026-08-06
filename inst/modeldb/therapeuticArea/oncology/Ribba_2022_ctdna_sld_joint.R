@@ -34,9 +34,20 @@ Ribba_2022_ctdna_sld_joint <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "days",
+    time          = "day",
     dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
     concentration = "two outputs on different scales -- `TS` is the RECIST 1.1 sum of longest diameters in mm, and `ctdna` is base-10 log-transformed average mutant molecules per mL of plasma (log10 MMPM). The residual-error parameters follow their outputs: addSd_TS is in mm, addSd_ctdna is in log10 units."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    growth       = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    shrink       = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    growth_ctdna = list(analyte = "ctDNA", units = NA_character_, specimen = "plasma", verified = FALSE),
+    shrink_ctdna = list(analyte = "ctDNA", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

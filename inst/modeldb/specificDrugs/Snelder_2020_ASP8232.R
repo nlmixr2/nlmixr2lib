@@ -3,10 +3,20 @@ Snelder_2020_ASP8232 <- function() {
   reference <- "Snelder N, Hoefman S, Garcia-Hernandez A, Onkels H, Larsson TE, Bergmann KR. Population pharmacokinetics and pharmacodynamics of a novel vascular adhesion protein-1 inhibitor using a multiple-target mediated drug disposition model. J Pharmacokinet Pharmacodyn. 2021;48(1):39-53. doi:10.1007/s10928-020-09717-w. PMID:32930923."
   vignette <- "Snelder_2020_ASP8232"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L",
     dosing_notes  = "Amounts are carried internally in nmol so C = A / V yields nmol/L (equivalent to nM), directly comparable to KD, sVAP-1c, and mVAP-1 (all in nM per the paper). Convert an mg dose to nmol by multiplying by 1000/444, i.e. dividing by the ASP8232 free-base molecular weight of 444 g/mol (Snelder 2020 Main modeling assumption 6). Example: a 40 mg oral dose corresponds to 40 * 1000 / 444 = 90.09 nmol."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ASP8232", units = "nmol", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "ASP8232", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

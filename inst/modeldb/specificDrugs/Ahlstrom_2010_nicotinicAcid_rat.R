@@ -32,6 +32,24 @@ Ahlstrom_2010_nicotinicAcid_rat <- function() {
     concentration = "umol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "nicotinic acid (NiAc)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "nicotinic acid (NiAc)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    nefa        = list(analyte = "non-esterified fatty acids (NEFA)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor5  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE),
+    precursor6  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE),
+    precursor7  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE),
+    precursor8  = list(analyte = "intermediate metabolite", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

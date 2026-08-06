@@ -17,6 +17,15 @@ Ouerdani_2015_pazopanib <- function() {
     concentration = "mm (sum of longest diameters of target lesions per RECIST 1.1; not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tumor_size        = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    carrying_capacity = list(analyte = "vasculature-determined carrying capacity", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_PAZO = list(
       description        = "Per-period mean AUC of pazopanib driving the antiangiogenic and cytotoxic drug-effect rates in the Ouerdani 2015 clinical TGI model.",

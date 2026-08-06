@@ -2,7 +2,14 @@ Padari_2012_meropenem <- function() {
   description <- "One-compartment IV population PK model for meropenem in very-low-birth-weight neonates (gestational age <=32 weeks, birth weight <1,500 g; n=19; Padari 2012). Vss scales linearly with current body weight; CL follows the Rhodin (2009) fixed renal-maturation function (allometric exponent 0.75 on CL, Hill-type postmenstrual-age maturation with TM50 = 47.7 weeks and Hill = 3.4); serum creatinine, postnatal age, and gestational age were screened and did not improve fit and are not retained."
   reference <- "Padari H, Metsvaht T, Korgvee LT, Germovsek E, Ilmoja ML, Kipper K, Herodes K, Standing JF, Oselin K, Lutsar I. Short versus long infusion of meropenem in very-low-birth-weight neonates. Antimicrob Agents Chemother. 2012;56(9):4760-4764. doi:10.1128/AAC.00655-12"
   vignette <- "Padari_2012_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

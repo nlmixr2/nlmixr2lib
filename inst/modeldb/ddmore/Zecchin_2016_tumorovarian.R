@@ -20,6 +20,14 @@ Zecchin_2016_tumorovarian <- function() {
   ddmore_id    <- "DDMODEL00000217"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tumor_size = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AUC_CARBO = list(
       description        = "Per-cycle average AUC of carboplatin (time-varying drug-exposure covariate driving the carboplatin cytotoxic-death term).",

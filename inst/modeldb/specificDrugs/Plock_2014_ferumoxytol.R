@@ -8,7 +8,15 @@ Plock_2014_ferumoxytol <- function() {
     sep = " "
   )
   vignette <- "Plock_2014_ferumoxytol"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ferumoxytol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ferumoxytol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

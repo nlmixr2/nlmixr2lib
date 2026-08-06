@@ -20,6 +20,18 @@ Kunarajah_2017_doxorubicin <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central       = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1   = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2   = list(analyte = "doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_doxol = list(analyte = "doxorubicinol", units = "mg", specimen = "plasma", verified = FALSE),
+    effect        = list(analyte = "cardiac troponin I (cTnI)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     BSA = list(
       description        = "Body surface area at the analysed dose. Enters as a linear factor `1 + (BSA - 1.8) * 0.465` applied identically to every clearance and volume parameter (CL, V1, Q2, V2, Q3, V3, CLm, V4, Qm) in the doxorubicin-doxorubicinol popPK model.",

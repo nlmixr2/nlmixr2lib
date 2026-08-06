@@ -38,6 +38,16 @@ deVriesSchultink_2018_trastuzumab_LVEF <- function() {
   vignette <- "deVriesSchultink_2018_cardiotoxicity"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "cardiac damage", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

@@ -10,6 +10,14 @@ Vorontsova_2022_misoprostol <- function() {
   vignette <- "Vorontsova_2022_misoprostol"
   units <- list(time = "h", dosing = "ng", concentration = "pg/mL", volume = "L", clearance = "L/h")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "misoprostol", units = "ng", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "misoprostol", units = "ng", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ROUTE_VAGINAL = list(
       description        = "Administration route (vaginal vs buccal): 1 = vaginal misoprostol, 0 = buccal misoprostol.",

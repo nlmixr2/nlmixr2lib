@@ -8,6 +8,33 @@ Pouzin_2022_tusamitamab <- function() {
     concentration = "uM (umol/L) in antibody-equivalent for ADC and NAB; uM for free DM4 and MeDM4"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    dar8_central     = list(analyte = "tusamitamab ravtansine DAR8", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar8_peripheral1 = list(analyte = "tusamitamab ravtansine DAR8", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar7_central     = list(analyte = "tusamitamab ravtansine DAR7", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar7_peripheral1 = list(analyte = "tusamitamab ravtansine DAR7", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar6_central     = list(analyte = "tusamitamab ravtansine DAR6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar6_peripheral1 = list(analyte = "tusamitamab ravtansine DAR6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar5_central     = list(analyte = "tusamitamab ravtansine DAR5", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar5_peripheral1 = list(analyte = "tusamitamab ravtansine DAR5", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar4_central     = list(analyte = "tusamitamab ravtansine DAR4", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar4_peripheral1 = list(analyte = "tusamitamab ravtansine DAR4", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar3_central     = list(analyte = "tusamitamab ravtansine DAR3", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar3_peripheral1 = list(analyte = "tusamitamab ravtansine DAR3", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar2_central     = list(analyte = "tusamitamab ravtansine DAR2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar2_peripheral1 = list(analyte = "tusamitamab ravtansine DAR2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar1_central     = list(analyte = "tusamitamab ravtansine DAR1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar1_peripheral1 = list(analyte = "tusamitamab ravtansine DAR1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_nab      = list(analyte = "naked antibody chain", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_nab  = list(analyte = "naked antibody chain", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_dm4      = list(analyte = "DM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_medm4    = list(analyte = "MeDM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

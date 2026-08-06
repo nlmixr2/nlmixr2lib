@@ -2,9 +2,16 @@ Han_2013_fluconazole <- function() {
   description <- "One-compartment IV population PK model for fluconazole in adult burn-ICU patients with suspected or confirmed Candida infection, with a piecewise CL covariate model that switches between a fixed CRRT-cohort CL and a Cockcroft-Gault-CrCl / postburn-recency / sepsis-shifted non-CRRT CL plus an additive WT / edema / postburn-recency model on volume (Han 2013)"
   reference <- "Han S, Kim J, Yim H, Hur J, Song W, Lee J, Jeon S, Hong T, Woo H, Yim DS. Population pharmacokinetic analysis of fluconazole to predict therapeutic outcome in burn patients with Candida infection. Antimicrob Agents Chemother. 2013;57(2):1006-1011. doi:10.1128/AAC.01372-12"
   vignette <- "Han_2013_fluconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   paper_specific_etas <- c("etalcl_rrt")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

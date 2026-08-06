@@ -17,6 +17,14 @@ Laouenan_2015_ribavirin <- function() {
   ddmore_id    <- "DDMODEL00000285"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    hb = list(analyte = "Hemoglobin", units = "mg", specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     CSS_RBV = list(
       description        = "Individual posthoc ribavirin steady-state trough plasma concentration from an upstream popPK fit (regressor input)",

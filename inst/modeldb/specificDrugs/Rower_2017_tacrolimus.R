@@ -19,7 +19,15 @@ Rower_2017_tacrolimus <- function() {
     "doi:10.1136/bmjpo-2017-000147."
   )
   vignette <- "Rower_2017_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     AGE = list(

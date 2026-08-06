@@ -20,6 +20,27 @@ AlvarezJimenez_2016_scopolamine <- function() {
     "red_nb0", "red_nb1", "red_nb2"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    nbRT     = list(analyte = "scopolamine hydrobromide concentration in plasma", units = "mg", specimen = "plasma", verified = FALSE),
+    sacInacc = list(analyte = "scopolamine hydrobromide effect on saccadic inaccuracy", units = "mg", specimen = "not applicable", verified = FALSE),
+    sacPV    = list(analyte = "scopolamine hydrobromide effect on saccadic peak velocity", units = "mg", specimen = "not applicable", verified = FALSE),
+    adTrack  = list(analyte = "scopolamine hydrobromide effect on adaptive tracker performance", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegAfc   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegApo   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegDfc   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegDpo   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegTfc   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegTpo   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb0  = list(analyte = "probability of correct answer for N-back 0 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb1  = list(analyte = "probability of correct answer for N-back 1 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb2  = list(analyte = "probability of correct answer for N-back 2 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    central  = list(analyte = "scopolamine hydrobromide concentration in central compartment", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline",

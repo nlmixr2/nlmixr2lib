@@ -16,9 +16,18 @@ Hansson_2013_sunitinib_os <- function() {
   )
   vignette <- "Hansson_2013_sunitinib_os"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "n/a (no drug-dosing events; ANC(t) and DBP_REL(t) enter as time-varying covariates from the upstream Hansson 2013 myelosuppression and dBP models)",
     concentration = "probability (the model output `sur` is a survival probability, not a drug concentration)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    cumhaz      = list(analyte = "overall survival event count", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz_cens = list(analyte = "censored overall survival event count", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(

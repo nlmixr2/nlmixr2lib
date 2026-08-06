@@ -22,7 +22,7 @@ Johnston_2021_empagliflozin_MEASE1 <- function() {
   )
   vignette <- "Johnston_2021_empagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "n/a (no drug dosing events; empagliflozin exposure enters as the per-subject AUC_EMPA covariate from the upstream popPK)",
     concentration = "n/a (multi-output PD-only model; the observations are HbA1c in % NGSP, MDG in mg*day/dL, and TDID in IU/kg)",
     AUC_EMPA      = "nmol*h/L"

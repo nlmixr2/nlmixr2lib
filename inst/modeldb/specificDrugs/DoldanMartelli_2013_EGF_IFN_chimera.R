@@ -10,6 +10,18 @@ DoldanMartelli_2013_EGF_IFN_chimera <- function() {
     concentration = "molecules per cell"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    egfr   = list(analyte = "EGFR", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ifnr   = list(analyte = "IFN receptor", units = NA_character_, specimen = "administration site", verified = FALSE),
+    c_egf  = list(analyte = "EGF-IFN chimera (bound to EGFR)", units = NA_character_, specimen = "retina", verified = FALSE),
+    c_ifn  = list(analyte = "IFN-alpha-2a subunit of EGF-IFN chimera", units = NA_character_, specimen = "retina", verified = FALSE),
+    c_full = list(analyte = "EGF-IFN chimera (bound to both EGFR and IFN receptor)", units = NA_character_, specimen = "retina", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

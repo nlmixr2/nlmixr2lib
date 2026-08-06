@@ -8,6 +8,16 @@ Hayashi_2007_omalizumab <- function() {
     concentration = "ug/mL (total omalizumab); ng/mL (free and total IgE)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "omalizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "omalizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "IgE", units = "mg", specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

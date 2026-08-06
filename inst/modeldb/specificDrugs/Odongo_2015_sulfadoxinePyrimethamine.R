@@ -34,6 +34,19 @@ Odongo_2015_sulfadoxinePyrimethamine <- function() {
     concentration = "mg/L (= ug/mL) for sulfadoxine plasma; ng/mL for pyrimethamine plasma"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_pyra       = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_pyra     = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at dosing",

@@ -12,9 +12,25 @@ Schindler_2016_sunitinib <- function() {
   vignette     <- "Schindler_2016_sunitinib"
   paper_specific_compartments <- c("suv1", "suv2", "suv3", "suv4", "suv5")
 
-  units        <- list(time = "hour", dosing = "mg", concentration = "n/a (non-PK outputs only: SUVmax unitless and SLD in mm)")
+  units        <- list(time = "h", dosing = "mg", concentration = "n/a (non-PK outputs only: SUVmax unitless and SLD in mm)")
   ddmore_id    <- "DDMODEL00000221"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    effect      = list(analyte = "sunitinib", units = "mg", specimen = "not applicable", verified = FALSE),
+    suv1        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv2        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv3        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv4        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    suv5        = list(analyte = "[18F]FDG-PET SUVmax", units = "mg", specimen = "tissue", verified = FALSE),
+    sld         = list(analyte = "tumour-size", units = "mg", specimen = "tissue", verified = FALSE),
+    cumhaz_os   = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE),
+    cumhaz_drop = list(analyte = "hazard", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     CLI = list(

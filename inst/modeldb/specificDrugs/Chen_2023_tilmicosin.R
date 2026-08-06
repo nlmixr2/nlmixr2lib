@@ -10,13 +10,21 @@ Chen_2023_tilmicosin <- function() {
   )
   vignette <- "Chen_2023_tilmicosin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "ug*h/mL (tilmicosin AUC0-24h per dosing interval, supplied as a covariate)",
     concentration = "log10 CFU/mL (observation)"
   )
 
   depends <- c("AUC_TILM")
   paper_specific_compartments <- c("bact")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact = list(analyte = "Pasteurella multocida serovar D:7", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
 
   covariateData <- list(
     AUC_TILM = list(

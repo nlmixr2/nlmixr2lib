@@ -21,9 +21,20 @@ Blesch_2003_capecitabine <- function() {
   reference <- "Blesch KS, Gieschke R, Tsukamoto Y, Reigner BG, Burger HU, Steimer JL. Clinical pharmacokinetic/pharmacodynamic and physiologically based pharmacokinetic modeling in new drug development: the capecitabine experience. Invest New Drugs. 2003;21(2):195-223. doi:10.1023/A:1023525513696. PMID: 12889740."
   vignette  <- "Blesch_2003_capecitabine"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ug/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "capecitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_dfur = list(analyte = "5'-DFUR", units = "mg", specimen = "plasma", verified = FALSE),
+    central_5fu  = list(analyte = "5-FU", units = "mg", specimen = "plasma", verified = FALSE),
+    central_fbal = list(analyte = "FBAL", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

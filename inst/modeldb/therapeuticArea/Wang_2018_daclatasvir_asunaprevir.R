@@ -23,6 +23,24 @@ Wang_2018_daclatasvir_asunaprevir <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "daclatasvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "daclatasvir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_asv       = list(analyte = "asunaprevir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_asv     = list(analyte = "asunaprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_asv = list(analyte = "asunaprevir", units = "mg", specimen = "plasma", verified = FALSE),
+    effect          = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_asv      = list(analyte = "not applicable", units = "mg", specimen = "not applicable", verified = FALSE),
+    target          = list(analyte = "HCV NS5A protein", units = "mg", specimen = "plasma", verified = FALSE),
+    infected        = list(analyte = "HCV-infected cells", units = "mg", specimen = "tissue", verified = FALSE),
+    virus           = list(analyte = "HCV RNA", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     HCV_GT1B = list(
       description        = "HCV genotype-1 subtype indicator. 1 = patient infected with HCV genotype 1B; 0 = patient infected with HCV genotype 1A (the source-paper reference subtype for the IC50 estimates).",

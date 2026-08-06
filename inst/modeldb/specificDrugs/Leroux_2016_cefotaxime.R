@@ -2,7 +2,15 @@ Leroux_2016_cefotaxime <- function() {
   description <- "Two-compartment IV population PK model for cefotaxime in neonates and young infants (Leroux 2016). Clearance, central volume, peripheral volume, and inter-compartmental clearance are allometrically scaled to current body weight (fixed exponents 0.75 on CL and Q, 1.0 on V1 and V2; reference weight 1.665 kg). Clearance carries a power-form maturation function on gestational age (reference 30 weeks) and postnatal age (reference 12 days). Only CL has inter-individual variability; residual error is proportional."
   reference <- "Leroux S, Roue J-M, Gouyon J-B, Biran V, Zheng H, Zhao W, Jacqz-Aigrain E. A Population and Developmental Pharmacokinetic Analysis To Evaluate and Optimize Cefotaxime Dosing Regimen in Neonates and Young Infants. Antimicrob Agents Chemother. 2016;60(11):6626-6634. doi:10.1128/AAC.01045-16"
   vignette <- "Leroux_2016_cefotaxime"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cefotaxime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -14,6 +14,15 @@
   vignette <- "Perez-Guille_2018_dexmedetomidine"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # Methods: dose 0.7 ug/kg single IV infusion over 10-15 min; plasma DEX measured by HPLC-ESI-MS/MS (5 pg/mL LLOQ); Table 2 CL in L/h, V1/V2 in L; Table 3 IC50 in ng/mL; with central in ug and vc in L, Cc = central/vc has units ug/L = ng/mL.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

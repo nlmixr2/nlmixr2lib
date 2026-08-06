@@ -19,11 +19,23 @@ Baron_2016_empagliflozin <- function() {
   )
   vignette <- "Baron_2016_empagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (= nM; converted from mg/L via MW 450.91 g/mol); FPG in mmol/L; HbA1c in % (NGSP)"
   )
   paper_specific_compartments <- c("hba1c")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "empagliflozin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "empagliflozin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "empagliflozin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose     = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba1c       = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
 
   covariateData <- list(
     AGE = list(

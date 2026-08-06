@@ -2,7 +2,14 @@ Easterling_2018_magnesium_sulfate <- function() {
   description <- "One-compartment population PK model of magnesium sulfate (MgSO4-7H2O) with intravenous administration and an endogenous baseline magnesium term added to the administered drug, in pregnant women with severe preeclampsia comparing continuous IV infusion vs serial IV bolus dosing (Easterling 2018)."
   reference <- "Easterling T, Hebert M, Bracken H, Darwish E, Ramadan MC, Shaarawy S, Charles D, Abdel-Aziz T, Nasr AS, Safwal SM, Winikoff B. A randomized trial comparing the pharmacology of magnesium sulfate when used to treat severe preeclampsia with serial intravenous boluses versus a continuous intravenous infusion. BMC Pregnancy Childbirth 2018;18:290. doi:10.1186/s12884-018-1919-6"
   vignette  <- "Easterling_2018_magnesium_sulfate"
-  units     <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units     <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "magnesium sulfate", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

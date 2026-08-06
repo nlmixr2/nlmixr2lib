@@ -26,7 +26,16 @@ Silva_2024_apx3330 <- function() {
     "doi:10.1002/psp4.13061."
   )
   vignette <- "Silva_2024_apx3330"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "apx3330", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "apx3330", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "apx3330", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -6,6 +6,22 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
 
   units <- list(time = "min", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    nitrite_p = list(analyte = "Nitrite", units = "umol", specimen = "plasma", verified = FALSE),
+    nitrite_r = list(analyte = "Nitrite", units = "umol", specimen = "blood cell", verified = FALSE),
+    nitrate_p = list(analyte = "Nitrate", units = "umol", specimen = "plasma", verified = FALSE),
+    nitrate_r = list(analyte = "Nitrate", units = "umol", specimen = "blood cell", verified = FALSE),
+    methb     = list(analyte = "Methemoglobin", units = "umol", specimen = "blood cell", verified = FALSE),
+    nitrite_t = list(analyte = "Nitrite", units = "umol", specimen = "tissue", verified = FALSE),
+    nitrate_t = list(analyte = "Nitrate", units = "umol", specimen = "tissue", verified = FALSE),
+    kmr       = list(analyte = "NO", units = "umol", specimen = "blood cell", verified = FALSE),
+    no_r      = list(analyte = "NO", units = "umol", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

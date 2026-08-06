@@ -55,6 +55,14 @@ vanMaanen_2025_amyloid <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plaque = list(analyte = "Amyloid plaque burden", units = NA_character_, specimen = "brain ISF", verified = FALSE)
+  )
+
   covariateData <- list(
     PLAQUE_BL = list(
       description        = paste(

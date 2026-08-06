@@ -34,7 +34,21 @@ Heo_2016_amlodipine_valsartan <- function() {
 
   paper_specific_compartments <- c("effect_sbp", "effect_dbp")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "amlodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_sbp      = list(analyte = "SBP", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_dbp      = list(analyte = "DBP", units = "mg", specimen = "not applicable", verified = FALSE),
+    central_val     = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_val = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_val      = list(analyte = "BP", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

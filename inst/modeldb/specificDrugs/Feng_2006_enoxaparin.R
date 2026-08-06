@@ -2,7 +2,16 @@ Feng_2006_enoxaparin <- function() {
   description <- "Two-compartment population PK model for enoxaparin in adult inpatients receiving continuous intravenous infusion (CII) or subcutaneous (SC) dosing (Feng 2006)"
   reference <- "Feng Y, Green B, Duffull SB, Kane-Gill SL, Bobek MB, Bies RR. Development of a dosage strategy in patients receiving enoxaparin by continuous intravenous infusion using modelling and simulation. Br J Clin Pharmacol. 2006;62(2):165-176. doi:10.1111/j.1365-2125.2006.02650.x"
   vignette <- "Feng_2006_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/L")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

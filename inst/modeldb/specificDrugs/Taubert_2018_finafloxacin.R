@@ -30,7 +30,18 @@ Taubert_2018_finafloxacin <- function() {
     "doi:10.1128/AAC.02328-17"
   )
   vignette <- "Taubert_2018_finafloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "finafloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "finafloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "finafloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "finafloxacin", units = "mg", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     BSA = list(

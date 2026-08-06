@@ -22,9 +22,21 @@ Urien_2005_capecitabine <- function() {
   reference <- "Urien S, Rezai K, Lokiec F. Pharmacokinetic modelling of 5-FU production from capecitabine--a population study in 40 adult patients with metastatic cancer. J Pharmacokinet Pharmacodyn. 2005;32(5-6):817-833. doi:10.1007/s10928-005-0018-2"
   vignette  <- "Urien_2005_capecitabine"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol",
     concentration = "umol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "capecitabine", units = "umol", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "capecitabine", units = "umol", specimen = "plasma", verified = FALSE),
+    central_dfcr = list(analyte = "5'-DFCR", units = "umol", specimen = "plasma", verified = FALSE),
+    central_dfur = list(analyte = "5'-DFUR", units = "umol", specimen = "plasma", verified = FALSE),
+    central_5fu  = list(analyte = "5-FU", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

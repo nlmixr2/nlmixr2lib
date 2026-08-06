@@ -38,7 +38,7 @@ Melhem_2018_g_csf <- function() {
   paper_specific_compartments <- c("depot_kpd_chemotherapy", "depot_kpd_corticosteroid")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol (G-CSF); mg (chemotherapy and corticosteroid KPD inputs)",
     concentration = "nmol/L (nM; serum G-CSF, endogenous BSLD plus exogenous FDC)",
     ANC           = "10^9 cells/L",
@@ -52,6 +52,22 @@ Melhem_2018_g_csf <- function() {
       "delayed by LAG8 = 16.3 h). Both KPD compartments decay first-order",
       "and drive stimulation / elimination terms in the granulopoiesis chain."
     )
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot                    = list(analyte = "filgrastim", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central                  = list(analyte = "filgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ                     = list(analyte = "filgrastim-G-CSFR complex", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    depot_kpd_corticosteroid = list(analyte = "corticosteroid", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot_kpd_chemotherapy   = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(

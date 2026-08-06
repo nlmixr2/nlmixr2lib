@@ -9,6 +9,29 @@ Zhang_2011_nutlin3a <- function() {
     weight = "kg"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "nutlin-3a", units = "mg", specimen = "administration site", verified = FALSE),
+    venous     = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
+    lung       = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    arterial   = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
+    adipose    = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    adrenal    = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    bonemarrow = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    brain      = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle     = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen     = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    intestine  = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    liver      = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    retina     = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE),
+    vitreous   = list(analyte = "nutlin-3a", units = "mg", specimen = "vitreous", verified = FALSE),
+    res_vasc   = list(analyte = "nutlin-3a", units = "mg", specimen = "blood cell", verified = FALSE),
+    res_tis    = list(analyte = "nutlin-3a", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

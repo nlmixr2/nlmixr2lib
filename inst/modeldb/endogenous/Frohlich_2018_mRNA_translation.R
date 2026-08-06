@@ -15,7 +15,17 @@ Frohlich_2018_mRNA_translation <- function() {
     sep = " "
   )
   vignette    <- "Frohlich_2018_mRNA_translation"
-  units       <- list(time = "hour", dosing = "normalized mRNA mass (m0 = 1)", concentration = "log fluorescence intensity (a.u.)")
+  units       <- list(time = "h", dosing = "normalized mRNA mass (m0 = 1)", concentration = "log fluorescence intensity (a.u.)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    mrna = list(analyte = "mRNA", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    gfp  = list(analyte = "eGFP", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    ribo = list(analyte = "free ribosomes", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     STUDY_d2eGFP = list(

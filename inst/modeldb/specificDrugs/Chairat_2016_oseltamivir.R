@@ -18,13 +18,24 @@ Chairat_2016_oseltamivir <- function() {
     "Cc and Cc_oselcarb).")
   reference <- "Chairat K, Jittamala P, Hanpithakpong W, Day NPJ, White NJ, Pukrittayakamee S, Tarning J. Population pharmacokinetics of oseltamivir and oseltamivir carboxylate in obese and non-obese volunteers. Br J Clin Pharmacol. 2016;81(6):1103-1112. doi:10.1111/bcp.12892"
   vignette <- "Chairat_2016_oseltamivir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
   # Intermediate metabolism delay compartment between parent OS central and
   # metabolite OC central; not an absorption-chain transit (Savic) and not a
   # well-stirred-hepatic compartment (Standing 2012 transit_oselcarb). Declared as
   # paper-specific so checkModelConventions() does not flag the name.
   paper_specific_compartments <- "metabolism"
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
+    metabolism       = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "not applicable", verified = FALSE),
+    central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

@@ -10,7 +10,16 @@ Dong_2014_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Dong_2014_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

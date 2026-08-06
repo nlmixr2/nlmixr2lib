@@ -30,7 +30,17 @@ Fauchet_2013_zidovudine <- function() {
     sep = " "
   )
   vignette <- "Fauchet_2013_zidovudine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "zidovudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "zidovudine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "3'-azido-3'-deoxy-5'-glucuronylthymidine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

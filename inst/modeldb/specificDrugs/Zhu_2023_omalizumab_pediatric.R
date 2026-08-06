@@ -17,6 +17,14 @@ Zhu_2023_omalizumab_pediatric <- function() {
     concentration = "fraction predicted (FEV1 percent predicted on the 0-1 fractional scale; multiply by 100 to display on the conventional 0-100 percent scale)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    fev1pp = list(analyte = "FEV1 percent predicted on a 0-1 fractional scale", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     IGE_FREE = list(
       description        = "Serum free IgE concentration at the FEV1 observation time. The exogenous time-varying PD driver: it enters the inhibition Hill term imax * IGE_FREE^hill / (ec50^hill + IGE_FREE^hill) to suppress steady-state FEV1pp.",

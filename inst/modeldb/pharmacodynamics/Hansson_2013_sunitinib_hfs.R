@@ -25,9 +25,18 @@ Hansson_2013_sunitinib_hfs <- function() {
   )
   vignette <- "Hansson_2013_sunitinib_hfs"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTC HFS grade 0-3+, ordinal)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
+    bm      = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(

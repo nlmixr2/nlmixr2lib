@@ -21,6 +21,17 @@ Zvada_2010_rifapentine <- function() {
   vignette <- "Zvada_2010_rifapentine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "Rifapentine (RFP)", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "Rifapentine (RFP)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_desrpt     = list(analyte = "25-O-desacetyl rifapentine (25-DRFP)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_desrpt = list(analyte = "25-O-desacetyl rifapentine (25-DRFP)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     MEAL_A = list(
       description        = "Binary indicator for meal A administered 30 min before the oral rifapentine dose (1 = meal A, 0 = otherwise). Meal A is a high-fat English breakfast (Zvada 2010 Table 1: 2 rashers of bacon (20 g), 1 fried egg (50 g), 1 slice white toast (30 g) with butter (7 g) and marmalade (10 g), 2 cups decaffeinated coffee (400 ml) with full-cream milk (100 ml) and sugar (10 g); 18.9 g protein, 27 g fat, 38 g carbohydrate, 1,966 kJ, 627 g total weight).",

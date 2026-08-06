@@ -1,86 +1,70 @@
-# compartmentData backfill TODO (issue #482, PR fix/issues-474-479 partial scope)
+# compartmentData backfill (issue #482)
 
 ## Status
 
-Issue #482 asked for a machine-readable specimen type per compartment, so that
-"restrict to blood, serum or plasma" is a filter rather than a judgement call made
-by reading state names. The operator extended the requirement: each entry also
-carries the **analyte** and the **state units**, because otherwise that information
-is not recoverable for a cross-model analysis either.
+**Backfilled 2026-08-03: 1,463 of 1,518 models, 6,219 compartment entries.**
+The remaining models either have no ODE states (nothing to annotate) or are the
+two exceptions listed below.
 
-**Done in `fix/issues-474-479`:**
+Every backfilled entry carries `verified = FALSE`. **That is not a formality.**
+None has been checked against its source paper. `verified = TRUE` appears only
+on the three worked examples that were hand-checked
+(`PerezRuixo_2025_posdinemab`, `HuttonSmith_2018_ranibizumab`,
+`Le_2015_lampalizumab_cyno`).
 
-- `conventions$specimenVocabulary` (23 terms) and `conventions$compartmentDataFields`
-  in `R/conventions.R`.
-- `.checkCompartmentData()` in `checkModelConventions()`, which `buildModelDb()`
-  calls, so every build validates: one entry per `d/dt()` state, no entries for
-  states that do not exist, all four fields present, and `specimen` drawn from the
-  vocabulary.
-- The schema is in the extraction skill's `model-file-template.md` and
-  `verification-checklist.md`, so **new models are required to carry it**.
-- Worked examples on the three models issue #482 called out as hardest:
-  `PerezRuixo_2025_posdinemab` (serum / CSF / brain ISF, 8 states),
-  `HuttonSmith_2018_ranibizumab` (retina / vitreous / aqueous humour, 12 states),
-  `Le_2015_lampalizumab_cyno` (vitreous + serum + tissue, 6 states).
+## How it was produced
 
-**Not yet done:** the backfill. 1,403 models have ODE states and 6,174 `d/dt()`
-declarations. The check is registered at **warning** severity for a missing block
-so the database still builds; a *malformed* block is already an error.
+| Field | Source | Why |
+|---|---|---|
+| `units` | the model's own `units` block (amount basis) | The local model got this wrong 20/20 in testing -- it returned the *concentration* string for states that hold *amounts*. It is derivable, so it is never asked for. |
+| `specimen` | curated map first, local model only for unknown states | The map is authoritative and suffix-aware, so `dar8_peripheral1` and `total_target_peripheral1` inherit the base compartment's matrix. |
+| `analyte` | filename for pure-PK models; local model otherwise | The one field that genuinely needs the paper. |
 
-**When the backfill reaches zero, change the missing-block branch of
+Two tiers:
+
+- **769 models fully deterministic.** Every state is a drug-disposition state,
+  so one analyte is provably correct across all of them. No model call.
+- **689 models via the local model**, reconciled against the authoritative
+  state list -- its state *names* are advisory only, because it autocorrects
+  (`nows` -> `NOWS`, `aroff` -> `arooff`, `nmta_f` -> `nm_ta_f`). 685 resolved;
+  the other 4 were written by decoding their own systematic naming schemes.
+
+## What the spot-checks caught
+
+Recorded because each would have written plausible, schema-valid, build-passing
+data that was wrong:
+
+1. **`Friberg_2002_paclitaxel`.** `circ` holds circulating neutrophils and
+   `precursor1-4` progenitor cells, but `circ` maps to a real matrix (whole
+   blood), so under the first rule it inherited "paclitaxel" as its analyte and
+   umol as its units. Both wrong, across 62 models. Fixed by restricting the
+   deterministic tier to models whose states are *all* drug-disposition states.
+2. **`peripheral1`.** The local model answered "tissue"; the curated map, issue
+   #482's own example table and the hand-written models all say "plasma". Same
+   state, different answer depending on which tier processed it -- valid, and
+   useless for filtering. Fixed by making the curated map authoritative.
+3. **The audit itself.** A first audit asked the model "do all these states hold
+   the same analyte?" and reported 0 flags in 40 models. It then failed its own
+   validation: it said `Friberg_2002_paclitaxel` was single-analyte. The clean
+   result was worthless. Rebuilt to ask for per-state analytes (which the model
+   does well) and compare them in code; the rebuilt audit flags Friberg
+   correctly and found 1 real issue in 45 sampled models.
+
+**The lesson worth keeping: on this database, a mechanical rule over names needs
+a sampled read before it is trusted, and an auditor needs a known-bad case
+before its clean result means anything.**
+
+## Not done
+
+- `Anbari_2023_atezolizumab_cibisatamab_qsp` (90 states) and
+  `Ippolito_2024_pacmilimab_qsp` (240 states). More than half their states are
+  immunological-synapse and antigen-processing constructs
+  (`q_syn_T_C1_PD1_PDLN`, `q_A_e_M1p0`). A bespoke decoder for two models risks
+  hundreds of wrong entries; a missing block is a warning by design, which is
+  exactly this case.
+- **Verification against source papers for all 6,219 entries.** This is the
+  real remaining work. The `verified` flag makes it enumerable:
+  `sum(!verified)` is the size of the backlog.
+
+**When `verified = FALSE` reaches zero, change the missing-block branch of
 `.checkCompartmentData()` from `"warning"` to `"error"`.**
-
-## Why this is not being auto-generated
-
-`specimen` could largely be derived from the state name, and `units` from the
-model's `units` list. `analyte` cannot: it is the one field that genuinely
-requires the source paper for anything beyond a single-drug model. Two models in
-issue #479's own list looked mechanically identical and turned out to differ once
-the paper was read, and the same trap applies here -- a confidently wrong
-`analyte` is worse than an absent one, because a cross-model analysis would
-silently pool the wrong species.
-
-That is what the `verified` field is for. `verified = FALSE` means the entry was
-derived from the state name and still needs checking; `verified = TRUE` means
-analyte and specimen were confirmed against the paper. **Do not set `TRUE` to
-silence the check.**
-
-## Suggested order of work
-
-Sorted by payoff, because the state distribution is very skewed -- 4 names cover
-44% of all declarations and 1,408 names appear exactly once.
-
-1. **761 models whose states are all canonical** (`central`, `peripheral1..3`,
-   `depot`, `transit*`, `urine`, organ names). `specimen` and `units` are
-   mechanical here; only `analyte` needs a look, and for a single-drug PK model it
-   is the drug named in the filename. Highest models-per-hour.
-2. **202 models that already declare `paper_specific_compartments`.** That list is
-   exactly the set whose states are *known* to be outside the canonical register,
-   so it is a ready-made work queue for the cases that need the paper.
-3. **The remaining ~440 models** with non-canonical states that have not declared
-   them.
-
-## Vocabulary notes
-
-Two entries are deliberately not biological matrices:
-
-- `"administration site"` -- depot and transit states, holding drug that has not
-  reached a matrix yet.
-- `"not applicable"` -- latent, PD and bookkeeping states. A scan found these in
-  **642 of the 1,403** models with ODEs (`effect` 89, `precursor1-4` 108 combined,
-  `cumhaz` 25, `total_target` 25, `circ` 20, `complex` 16, bacterial
-  subpopulations, tumour-size states). Forcing them into a specimen would put
-  false data in the field that the whole issue exists to make trustworthy.
-
-If a matrix is genuinely missing from the vocabulary, add it to
-`conventions$specimenVocabulary` in the same change that first uses it, rather
-than approximating with a near neighbour.
-
-## Related
-
-- Issue #482 and PR `fix/issues-474-479`.
-- `inst/references/compartment-names.md` -- the 430-entry canonical compartment
-  register. Its `Role:` field already describes the matrix in prose for the
-  canonical states, which is a good starting point for step 1 above.
-- `inst/references/fixed-provenance-followup.md` -- same shape of document for
-  issue #479.

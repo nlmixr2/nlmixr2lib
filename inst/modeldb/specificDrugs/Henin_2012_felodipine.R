@@ -35,6 +35,23 @@ Henin_2012_felodipine <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "felodipine", units = "mg", specimen = "administration site", verified = FALSE),
+    fundus      = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    antrum      = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    proximal_si = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    distal_si   = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    colon       = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    liver       = list(analyte = "felodipine", units = "mg", specimen = "tissue", verified = FALSE),
+    central     = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "felodipine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight; used for allometric scaling of liver blood flow (QH = 3.5 * WT^0.75) and the fixed per-kg liver volume (Vliver = 0.0143 * WT).",

@@ -2,7 +2,15 @@ Chen_2017_tacrolimus <- function() {
   description <- "One-compartment population PK model with first-order absorption and absorption lag for low-dose oral tacrolimus (FK506, Prograf 0.5 mg capsules) in Chinese adult and paediatric myasthenia-gravis (MG) patients (Chen 2017). The absorption parameters ka and tlag are fixed at values obtained from a supplementary dataset of healthy volunteers, because the sparse-trough MG dataset is not informative about the absorption phase. Apparent oral clearance CL/F (3.6 L/h typical) is modulated by hematocrit and blood urea nitrogen through a multiplicative power-of-covariate-ratio form referenced to cohort medians (HCT median 38.4 %, exponent 4.31; BUN median 4.2 mmol/L, exponent 1.42). Apparent volume V/F is 1700 L typical with no retained covariate effects (high-dose IV immunoglobulin treatment was tested as a covariate on V/F but did not survive backward elimination). Inter-individual variability is diagonal on CL/F (141.6% CV) and V/F (72.4% CV); no IIV is estimated on ka or tlag. Residual variability is a pure proportional model (35.8% CV) on whole-blood tacrolimus concentrations."
   reference   <- "Chen YS, Liu ZQ, Chen R, Wang L, Huang L, Zhu X, Zhou TY, Lu W, Ma P. Population pharmacokinetic analysis of tacrolimus in Chinese myasthenia gravis patients. Acta Pharmacol Sin. 2017;38(8):1195-1204. doi:10.1038/aps.2016.174"
   vignette    <- "Chen_2017_tacrolimus"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     HCT = list(

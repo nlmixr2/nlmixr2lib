@@ -2,7 +2,15 @@ Qi_2014_sapropterin <- function() {
   description <- "One-compartment population PK model with first-order oral absorption, an absorption lag, linear elimination, and an additive endogenous BH4 baseline for sapropterin dihydrochloride in pediatric and adult patients with phenylketonuria (Qi 2014)."
   reference <- "Qi Y, Mould DR, Zhou H, Merilainen M, Musson DG. A prospective population pharmacokinetic analysis of sapropterin dihydrochloride in infants and young children with phenylketonuria. Clinical Pharmacokinetics. 2015;54(2):195-207. doi:10.1007/s40262-014-0196-4"
   vignette <- "Qi_2014_sapropterin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "sapropterin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "sapropterin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

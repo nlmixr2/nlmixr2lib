@@ -8,6 +8,22 @@ Rymut_2023_anti_tryptase <- function() {
     concentration = "ug/mL (Cc, serum MTPS9579A); nM (TotalSerumTryptase, serum total tryptase); unitless (ActiveAirwayTryptase, fraction of baseline)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot               = list(analyte = "MTPS9579A", units = "mg", specimen = "administration site", verified = FALSE),
+    central             = list(analyte = "MTPS9579A", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "MTPS9579A", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target        = list(analyte = "TotalSerumTryptase", units = "mg", specimen = "serum", verified = FALSE),
+    mab_isf             = list(analyte = "MTPS9579A", units = "mg", specimen = "brain ISF", verified = FALSE),
+    target_isf          = list(analyte = "tryptase tetramer", units = "mg", specimen = "brain ISF", verified = FALSE),
+    complex_isf         = list(analyte = "MTPS9579A-tryptase complex", units = "mg", specimen = "brain ISF", verified = FALSE),
+    monomer_isf         = list(analyte = "inactive tryptase monomer", units = "mg", specimen = "brain ISF", verified = FALSE),
+    complex_monomer_isf = list(analyte = "MTPS9579A-tryptase monomer complex", units = "mg", specimen = "brain ISF", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

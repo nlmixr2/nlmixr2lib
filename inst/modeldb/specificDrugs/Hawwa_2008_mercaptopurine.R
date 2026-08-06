@@ -33,9 +33,20 @@ Hawwa_2008_mercaptopurine <- function() {
   reference <- "Hawwa AF, Collier PS, Millership JS, McCarthy A, Dempsey S, Cairns C, McElnay JC. Population pharmacokinetic and pharmacogenetic analysis of 6-mercaptopurine in paediatric patients with acute lymphoblastic leukaemia. Br J Clin Pharmacol. 2008;66(6):826-837. doi:10.1111/j.1365-2125.2008.03281.x"
   vignette  <- "Hawwa_2008_mercaptopurine"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "6-mercaptopurine (6-MP)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_tgn  = list(analyte = "6-thioguanine nucleotides (6-TGNs)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mmpn = list(analyte = "6-methylmercaptopurine nucleotides (6-mMPNs)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

@@ -2,7 +2,14 @@ Kelman_1984_gentamicin_manchester2 <- function() {
   description <- "One-compartment population PK model for gentamicin in older children and adolescents (Kelman 1984, Manchester II cohort; n=68, age 6 months-15 years, body weight 5.7-62 kg). Clearance is a linear-additive function of body weight, age (in years), and serum creatinine (paper Equation 4, Model 1: CL = theta1*WT + theta2*AGE + theta3*CREAT); volume of distribution is proportional to body weight (Equation 5: V = theta4*WT). Encoded from Kelman 1984 Table 4 Model 1 (FULL model, paper's best by NONMEM objective function for this cohort). For Manchester II the paper's theta2 coefficient is in L/h per year (sign negative), implying age units are years rather than the days used in the Glasgow I and Manchester I cohorts; encoded here with the canonical AGE-in-years covariate."
   reference <- "Kelman AW, Thomson AH, Whiting B, Bryson SM, Steedman DA, Mawer GE, Samba-Donga LA. Estimation of gentamicin clearance and volume of distribution in neonates and young children. Br J Clin Pharmacol. 1984;18:685-692. doi:10.1111/j.1365-2125.1984.tb02530.x"
   vignette <- "Kelman_1984_gentamicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "gentamicin manchester2", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

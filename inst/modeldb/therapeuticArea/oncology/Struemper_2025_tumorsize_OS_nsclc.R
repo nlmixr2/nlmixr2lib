@@ -39,6 +39,15 @@ Struemper_2025_tumorsize_OS_nsclc <- function() {
     concentration = "mm (TS observable = sum of longest diameters of target lesions per RECIST 1.1; the canonical covariate column corresponding to the time-varying TS observable is TUM_SLD)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    growth = list(analyte = "tumor size", units = NA_character_, specimen = "administration site", verified = FALSE),
+    shrink = list(analyte = "tumor size", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     TRT = list(
       description = "Per-subject treatment-arm integer indicator selecting the per-arm typical TS parameters (kge, kse) at simulation / fit time.",

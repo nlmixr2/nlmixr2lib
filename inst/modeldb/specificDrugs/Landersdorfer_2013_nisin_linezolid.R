@@ -11,7 +11,7 @@ Landersdorfer_2013_nisin_linezolid <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2013_nisin_amikacin_linezolid"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   # Cnis / Clin are the experimentally-controlled nisin and linezolid
   # broth concentrations in the static time-kill (and sequential
@@ -24,6 +24,20 @@ Landersdorfer_2013_nisin_linezolid <- function() {
   # the pool then raises Inh_Rep (Eq 7) and reduces successful
   # replication for the Lin-S populations.
   paper_specific_compartments <- c("prot_pool")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    prot_pool                      = list(analyte = "protein pool P", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_susceptible_susceptible1  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible1 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible2 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     Cnis = list(

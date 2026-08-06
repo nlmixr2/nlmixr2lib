@@ -8,6 +8,13 @@ Sharma_2018_naltrexone_bupropion <- function() {
     concentration = "kg"  # body weight (the single-output "Cc" canonical carries kg, not a drug concentration; see model() comment)
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "naltrexone bupropion", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_DIAB = list(
       description = "Type-2 diabetes mellitus comorbidity indicator at study entry",

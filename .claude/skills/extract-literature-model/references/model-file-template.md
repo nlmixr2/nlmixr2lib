@@ -19,7 +19,15 @@ Related references:
   #! parameter-sourcing rule).
   reference   <- "<Full citation with DOI>"
   vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
-  units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
+  units       <- list(time = "<h|day|min>", dosing = "<mg|ug|nmol>", concentration = "<ug/mL|ng/mL>")
+  #! Use the CANONICAL spelling. checkModelConventions() errors on alternatives
+  #! and buildModelDb() aborts: "h" not "hour"/"hr", "min" not "minute",
+  #! "ug" not "microgram"/"mcg", "day" not "days".
+  #! Spelling only -- never convert between units. If the paper reports in
+  #! minutes, write "min" and keep the values in minutes; rewriting them as
+  #! hours would misstate every number.
+  #! Generic dimensionless models may use the placeholders "time_unit" /
+  #! "dose_unit"; real extractions may not.
 
   covariateData <- list(
     #! One entry per covariate. Canonical names come from inst/references/covariate-columns.md.

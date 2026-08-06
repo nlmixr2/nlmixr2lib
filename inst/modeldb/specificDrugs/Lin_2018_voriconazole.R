@@ -2,7 +2,15 @@ Lin_2018_voriconazole <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption for intravenous and oral voriconazole in Chinese adult renal transplant recipients receiving therapeutic drug monitoring (Lin 2018); CYP2C19 phenotype enters as a covariate on clearance, postoperative time as a covariate on oral bioavailability, and body weight as a power-form covariate on volume of distribution."
   reference <- "Lin XB, Li ZW, Yan M, Zhang BK, Liang W, Wang F, Xu P, Xiang DX, Xie XB, Yu SJ, Lan GB, Peng FH. Population pharmacokinetics of voriconazole and CYP2C19 polymorphisms for optimizing dosing regimens in renal transplant recipients. Br J Clin Pharmacol. 2018;84(7):1587-1597. doi:10.1111/bcp.13595"
   vignette <- "Lin_2018_voriconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -37,6 +37,24 @@ Brain_2008_ifosfamide <- function() {
   # carbamazepine-coadministration observation (eight-fold CLINIT increase, OFV
   # drop of 106 units) was excluded prior to the final fit and is documented in
   # vignette Assumptions and deviations rather than as a model covariate.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    enzyme     = list(analyte = "autoinduction enzyme pool", units = "umol", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    ohif       = list(analyte = "4-hydroxy-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    decloro3   = list(analyte = "3-dechloroethyl-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    decloro2   = list(analyte = "2-dechloroethyl-ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    bmg        = list(analyte = "urinary beta-2-microglobulin", units = "umol", specimen = "urine", verified = FALSE),
+    precursor1 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "not applicable", units = "umol", specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "not applicable", units = "umol", specimen = "whole blood", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

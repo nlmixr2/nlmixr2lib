@@ -2,7 +2,16 @@ Horita_2018_isoniazid <- function() {
   description <- "Two-compartment population pharmacokinetic model with first-order absorption and linear elimination for oral isoniazid in Ghanaian children with active tuberculosis (Horita 2018); NAT2 slow-vs-nonslow acetylator phenotype on apparent oral clearance with separate typical-value clearances and separate IIV omegas; allometric weight scaling on CL/F and Q/F (fixed 0.75) and V1/F and V2/F (fixed 1.0) normalised to the cohort median 14.3 kg."
   reference <- "Horita Y, Alsultan A, Kwara A, Antwi S, Enimil A, Ortsin A, Dompreh A, Yang H, Wiesner L, Peloquin CA. Evaluation of the Adequacy of WHO Revised Dosages of the First-Line Antituberculosis Drugs in Children with Tuberculosis Using Population Pharmacokinetic Modeling and Simulations. Antimicrob Agents Chemother. 2018;62(9):e00008-18. doi:10.1128/AAC.00008-18"
   vignette <- "Horita_2018_isoniazid"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "isoniazid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "isoniazid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

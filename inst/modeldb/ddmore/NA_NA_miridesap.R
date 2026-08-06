@@ -3,13 +3,26 @@ NA_NA_miridesap <- function() {
   reference <- "Sahota T, Berges A, Barton S, Cookson L, Zamuner S, Richards D. Target Mediated Drug Disposition Model of CPHPC in Patients With Systemic Amyloidosis. CPT Pharmacometrics Syst Pharmacol. 2015;4(2):e15. doi:10.1002/psp4.15. Companion DDMORE Foundation Model Repository entry: DDMODEL00000262."
   vignette <- "NA_NA_miridesap"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent (SAP plasma; equal to mg/L * 1000)"
   )
 
   ddmore_id    <- "DDMODEL00000262"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "CPHPC", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "CPHPC", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "SAP", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target      = list(analyte = "SAP", units = "mg", specimen = "not applicable", verified = FALSE),
+    target_peripheral = list(analyte = "CPHPC + SAP complex", units = "mg", specimen = "plasma", verified = FALSE),
+    complex           = list(analyte = "CPHPC + SAP complex", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

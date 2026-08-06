@@ -19,9 +19,20 @@ Lu_2017_polatuzumab_neuropathy <- function() {
   )
   vignette <- "Lu_2017_polatuzumab_neuropathy"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "polatuzumab vedotin", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "polatuzumab vedotin", units = "ug", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "acMMAE", units = "ug", specimen = "not applicable", verified = FALSE),
+    cumhaz      = list(analyte = "PN hazard", units = "ug", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
@@ -189,13 +200,13 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     # single-agent.
 
     # ----- acMMAE structural parameters (Lu 2019 Table 1, theta1-theta11) -----
-    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (cl_exp_kdes, 1/hour)")     # Lu 2019 Table 1, theta1
-    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/hour)") # Lu 2019 Table 1, theta2
-    lcl        <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/hour)") # Lu 2019 Table 1, theta3
+    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (cl_exp_kdes, 1/h)")     # Lu 2019 Table 1, theta1
+    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/h)") # Lu 2019 Table 1, theta2
+    lcl        <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/h)") # Lu 2019 Table 1, theta3
     lvc        <- log(3.15);    label("acMMAE central volume (Vc, L)")                                 # Lu 2019 Table 1, theta4
     lvp        <- log(3.98);    label("acMMAE peripheral volume (Vp, L)")                              # Lu 2019 Table 1, theta5
-    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (Q, L/hour)")               # Lu 2019 Table 1, theta6
-    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (Vmax, ng/mL/hour)") # Lu 2019 Table 1, theta7
+    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (Q, L/h)")               # Lu 2019 Table 1, theta6
+    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (Vmax, ng/mL/h)") # Lu 2019 Table 1, theta7
     lkm_ac     <- log(0.604);   label("acMMAE Michaelis-Menten constant (KM, ng/mL)")                  # Lu 2019 Table 1, theta8
     clss_emax  <- 0.223;        label("Maximum fractional effect of cycle on CL_NS (CLSSEMAX, unitless)") # Lu 2019 Table 1, theta9
     lt50_mo    <- log(3.53);    label("Time of half-maximal cycle effect on CL_NS (T50, months)")      # Lu 2019 Table 1, theta10 (converted to hours in model() via T50_hr = T50_mo * 24 * 30)
@@ -253,7 +264,7 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     # no fixed(0) variance is required).
     lalpha_haz <- log(2.26e-6); label("Drug effect parameter alpha (1/(hour*ng/mL); log domain)")                # Lu 2017 Table 1: alpha = 2.26e-6 (RSE 49.2%)
     lbeta_haz  <- log(1.37);    label("Weibull function shape parameter beta (unitless; log domain)")            # Lu 2017 Table 1: beta = 1.37 (RSE 15.1%)
-    lk1e_haz   <- log(3.60e-4); label("Effect-compartment distribution rate constant k1e (1/hour; log domain; ke0 = k1e)") # Lu 2017 Table 1: k1e = 3.60e-4 (RSE 73.8%); ke0 = k1e
+    lk1e_haz   <- log(3.60e-4); label("Effect-compartment distribution rate constant k1e (1/h; log domain; ke0 = k1e)") # Lu 2017 Table 1: k1e = 3.60e-4 (RSE 73.8%); ke0 = k1e
 
     # ----- Lu 2017 TTE PD covariate effects (Table 1, THETA(4)-THETA(15); normal domain) -----
     # All covariate effects on the log-hazard are entered as the paper's

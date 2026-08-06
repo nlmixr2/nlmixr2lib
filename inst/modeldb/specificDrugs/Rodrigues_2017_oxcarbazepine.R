@@ -2,7 +2,18 @@ Rodrigues_2017_oxcarbazepine <- function() {
   description <- "Parent-metabolite population PK model for oral oxcarbazepine (OXC) and its active monohydroxy derivative (MHD) in epileptic children aged 2-12 years (Rodrigues 2017). Two-compartment OXC + one-compartment MHD with first-order absorption, complete metabolic conversion (Fm fixed to 1), reversible MHD-to-OXC back-transformation (KBT), empirical allometric weight scaling on CL_OXC/F, Vc_OXC/F, CL_MHD/F, and Vc_MHD/F (no scaling on Q_OXC/F or Vp_OXC/F), and a 29.3% increase in MHD clearance under concomitant enzyme-inducing antiepileptic drugs."
   reference   <- "Rodrigues C, Chiron C, Rey E, Dulac O, Comets E, Pons G, Jullien V. Population pharmacokinetics of oxcarbazepine and its monohydroxy derivative in epileptic children. Br J Clin Pharmacol. 2017 Dec;83(12):2695-2708. doi:10.1111/bcp.13392"
   vignette    <- "Rodrigues_2017_oxcarbazepine"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "oxcarbazepine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "oxcarbazepine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "oxcarbazepine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mhd = list(analyte = "monohydroxy derivative (MHD)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

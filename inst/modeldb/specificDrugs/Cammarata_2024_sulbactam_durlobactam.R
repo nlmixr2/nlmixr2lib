@@ -30,7 +30,7 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
     sep = " "
   )
   vignette <- "Cammarata_2024_sulbactam_durlobactam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Durlobactam plasma residual variability is stratified by study phase
   # (Phase 1 / 2 / 3), so the canonical propSd / addSd used by the error model
@@ -38,6 +38,17 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
   # construction as Valenzuela_2025_nipocalimab and vanIersel_2018_posaconazole.
   paper_specific_residual_sds <- c(
     "propSdPhase1", "propSdPhase2", "propSdPhase3", "addSdPhase1"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sbt     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

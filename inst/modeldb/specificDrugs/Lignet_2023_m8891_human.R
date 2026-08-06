@@ -12,11 +12,22 @@ Lignet_2023_m8891_human <- function() {
     sep = " "
   )
   vignette <- "Lignet_2023_m8891"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # See Lignet_2023_m8891_mouse.R for the rationale; `effect` is the paper's
   # effect compartment Ce and `metef1a` is the tumour Met-EF1a turnover pool.
   paper_specific_compartments <- c("metef1a")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "M8891", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "M8891", units = "mg", specimen = "plasma", verified = FALSE),
+    effect  = list(analyte = "Met-EF1a modulation level", units = "mg", specimen = "not applicable", verified = FALSE),
+    metef1a = list(analyte = "Met-EF1a", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

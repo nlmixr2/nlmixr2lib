@@ -56,6 +56,22 @@ Westerhout_2013_quinidine <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central       = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral1   = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral2   = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    brain_deep    = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_ecf     = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_csf_lv  = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_csf_tfv = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_csf_cm  = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE),
+    brain_csf_sas = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_TARIQUIDAR = list(
       description        = paste(

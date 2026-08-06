@@ -21,7 +21,17 @@ Weatherley_2009_maraviroc_iv <- function() {
     sep = " "
   )
   vignette <- "Weatherley_2009_maraviroc_iv"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral3 = list(analyte = "maraviroc", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

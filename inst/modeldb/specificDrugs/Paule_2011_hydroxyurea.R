@@ -4,6 +4,18 @@ Paule_2011_hydroxyurea <- function() {
   vignette <- "Paule_2011_hydroxyurea"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", HbF = "%", MCV = "fL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE),
+    effect1     = list(analyte = "HbF percentage", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect2     = list(analyte = "mean corpuscular volume (MCV)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

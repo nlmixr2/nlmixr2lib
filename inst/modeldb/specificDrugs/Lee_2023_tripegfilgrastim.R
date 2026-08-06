@@ -38,7 +38,7 @@ Lee_2023_tripegfilgrastim <- function() {
   paper_specific_compartments <- c("depot_kpd_chemotherapy", "endogenous_gcsf")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug (tripegfilgrastim); mg (chemotherapy KPD input)",
     concentration = "ug/L (serum G-CSF, free exogenous drug plus free endogenous G-CSF)",
     ANC           = "cells/uL",
@@ -55,6 +55,22 @@ Lee_2023_tripegfilgrastim <- function() {
       "compartment (16 different regimens were pooled), so that dose is a",
       "user-supplied simulation input -- see the vignette Errata."
     )
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot                  = list(analyte = "tripegfilgrastim", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central                = list(analyte = "tripegfilgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
+    endogenous_gcsf        = list(analyte = "G-CSF", units = NA_character_, specimen = "serum", verified = FALSE),
+    precursor1             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4             = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ                   = list(analyte = "G-CSF-receptor pool", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    depot_kpd_chemotherapy = list(analyte = "tripegfilgrastim", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(

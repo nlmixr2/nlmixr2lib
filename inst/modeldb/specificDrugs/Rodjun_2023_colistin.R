@@ -18,7 +18,17 @@ Rodjun_2023_colistin <- function() {
   )
   vignette <- "Rodjun_2023_colistin_sitafloxacin"
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "colistimethate sodium", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_col = list(analyte = "colistin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

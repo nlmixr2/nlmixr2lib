@@ -4,7 +4,16 @@ Friberg_2012_voriconazole <- function() {
   vignette <- "Friberg_2012_voriconazole"
   paper_specific_etas <- c("etalkm_vmax1", "etalvmax1_ped", "etalgtf1_other", "etalgtf1_adult", "etalka_nonadult", "eta_re_nonadult")
   paper_specific_residual_sds <- c("expSdStdy1", "expSdStdy2", "expSdStdy34", "expSdStdy5Iv", "expSdStdy5Oral")
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "voriconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

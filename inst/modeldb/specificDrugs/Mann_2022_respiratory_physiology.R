@@ -51,6 +51,29 @@ Mann_2022_respiratory_physiology <- function() {
     concentration = "L/min (primary output Venti is minute ventilation; the model has no plasma-concentration analyte and the canonical Cc observation is not used)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    palv_co2         = list(analyte = "CO2 partial pressure in alveoli", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    palv_o2          = list(analyte = "O2 partial pressure in alveoli", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    cb_co2           = list(analyte = "CO2 partial pressure in capillaries", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    cb_o2            = list(analyte = "O2 partial pressure in capillaries", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    ct_co2           = list(analyte = "CO2 partial pressure in tissues", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    ct_o2            = list(analyte = "O2 partial pressure in tissues", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    yco2             = list(analyte = "CO2 partial pressure in alveoli (y)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    yo2              = list(analyte = "O2 partial pressure in alveoli (y)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    dp_state         = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    dc_state         = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    alpha_h          = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    crossed_latch    = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    first_cross_time = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    check_complete   = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    ca_arrest_latch  = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    im_arrest        = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CAR_OPIOID = list(
       description        = "Time-varying fraction of mu-opioid receptors bound by an opioid agonist (RL_op output of Mann_2022_mu_receptor_binding); drives the ventilatory-depression reductions of wakefulness and chemoreflex drives.",

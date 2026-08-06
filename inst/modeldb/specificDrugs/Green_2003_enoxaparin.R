@@ -2,7 +2,16 @@ Green_2003_enoxaparin <- function() {
   description <- "Two-compartment first-order-input population PK model for subcutaneous enoxaparin in adults treated at the Royal Brisbane Hospital for acute coronary syndrome, deep vein thrombosis, pulmonary embolism, or DVT prophylaxis (Green & Duffull 2003). Anti-Xa activity is the observation; lean body weight (LBW; James 1976 formula) is the size descriptor on clearance and total body weight is the size descriptor on the central volume."
   reference <- "Green B, Duffull SB. Development of a dosing strategy for enoxaparin in obese patients. Br J Clin Pharmacol. 2003 Jul;56(1):96-103. doi:10.1046/j.1365-2125.2003.01849.x. PMID:12848781."
   vignette <- "Green_2003_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/L")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

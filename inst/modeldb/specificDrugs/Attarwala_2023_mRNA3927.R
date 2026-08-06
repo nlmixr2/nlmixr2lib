@@ -10,6 +10,19 @@ Attarwala_2023_mRNA3927 <- function() {
     concentration = "mg/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "PCC protein", units = "mg", specimen = "not applicable", verified = FALSE),
+    pcc         = list(analyte = "PCC protein", units = "mg", specimen = "tissue", verified = FALSE),
+    pcc_p       = list(analyte = "PCC protein", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (used for allometric scaling across species).",

@@ -4,6 +4,14 @@ Nestorov_2014_factorviii <- function() {
   vignette <- "Nestorov_2014_factorviii"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "factorviii", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

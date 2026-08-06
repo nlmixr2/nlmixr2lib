@@ -50,6 +50,21 @@ Fu_2022_atenolol_qsp <- function() {
     concentration = "ng/mL (central-compartment atenolol; the paper's Emax and EC50 values are on the ng/mL scale)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "atenolol", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "atenolol", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hr          = list(analyte = "heart rate", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    edv         = list(analyte = "left-ventricular end-diastolic volume", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    tpr         = list(analyte = "total peripheral resistance", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    ctr         = list(analyte = "myocardial contractility", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     STUDY_FU2022_AZ = list(
       description        = "Fu 2022 pooled-analysis study indicator: 1 = subject enrolled in Study 2 (AstraZeneca; Alderley Park, UK; 4 male beagle dogs, 14.2-14.6 kg, 17-22 months old; oral atenolol 0, 1, 3, 10 mg/kg; HR, dP/dtmax, and MAP measured; NO cardiac output measurement); 0 = Study 1 (Servier; France; 4 male beagle dogs, 10-15 kg; oral atenolol 0, 3, 10, 30 mg/kg; HR, dP/dtmax, CO, and MAP measured). Time-fixed per subject.",

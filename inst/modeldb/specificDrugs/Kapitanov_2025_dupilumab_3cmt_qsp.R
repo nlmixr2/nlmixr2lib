@@ -72,6 +72,22 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_central      = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral1  = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral2  = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_central     = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_peripheral1 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_peripheral2 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

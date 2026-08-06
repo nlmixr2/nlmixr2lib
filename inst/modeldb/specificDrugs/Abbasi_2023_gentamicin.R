@@ -2,7 +2,14 @@ Abbasi_2023_gentamicin <- function() {
   description <- "One-compartment intravenous pooled meta-analytic population PK model for gentamicin in critically ill adult ICU patients (n=1215 pooled from 21 published studies; Abbasi 2023). Vd (0.33 +/- 0.20 L/kg), CL (4.70 +/- 2.89 L/h) and total body weight (70.8 +/- 19.9 kg) were pooled as mean +/- SD across the 21 studies and used as normal-distribution inputs to a Monte Carlo Simulation (10,000 virtual patients, Crystal Ball, Oracle) for probability-of-target-attainment (PTA) analysis of gentamicin once-daily doses 5-10 mg/kg (0.5-h IV infusion, 24-h dosing interval) against AUC24h/MIC and Cmax/MIC efficacy targets. The reported variability reflects combined between-study and between-patient effects rather than a NONMEM-fitted OMEGA."
   reference <- "Abbasi MY, Chaijamorn W, Wiwattanawongsa K, Charoensareerat T, Doungngern T. Recommendations of Gentamicin Dose Based on Different Pharmacokinetic/Pharmacodynamic Targets for Intensive Care Adult Patients: A Redefining Approach. Clin Pharmacol Adv Appl. 2023;15:67-76. doi:10.2147/CPAA.S417298"
   vignette <- "Abbasi_2023_gentamicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

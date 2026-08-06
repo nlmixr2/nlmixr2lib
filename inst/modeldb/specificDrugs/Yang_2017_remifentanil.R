@@ -19,6 +19,13 @@ Yang_2017_remifentanil <- function() {
   # matching the Yang 2017 plasma concentration units (Table 2 footnote;
   # Methods, Remifentanil concentration assay).
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "remifentanil", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Biological sex indicator",

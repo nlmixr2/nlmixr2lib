@@ -9,7 +9,7 @@ Woillard_2014_ciclosporin <- function() {
     sep = " "
   )
   vignette <- "Woillard_2014_ciclosporin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariatesDataExcluded <- list(
     HGB = list(
@@ -83,6 +83,19 @@ Woillard_2014_ciclosporin <- function() {
     bioanalytical         = "Whole-blood ciclosporin quantified by turbulent-flow LC-MS/MS (Cyclone P online extraction, Propel MS C18 analytical column, TSQ Quantum Discovery MS/MS) with calibration over 10-2000 ug/L, LOD = 10 ug/L and LOQ = 20 ug/L. Inter-assay precision (RSD) -3.1 to 11.8 %, mean relative error 4.0 to 11.7 %.",
     baseline_demographics = "Median (range) in the development cohort (Table 1): age 59 (24-67) years, weight 71 (47-101) kg, sex M/F 25/15, haematocrit 29 (23-43) %, haemoglobin 10.0 (8.2-14.8) g/dL, serum creatinine 77 (34-198) umol/L, total bilirubin 11 (4-74) umol/L, albumin 31.4 (18.8-55.1) g/L, ALAT 35 (8-195) U/L, ASAT 27 (10-146) U/L. Sampling time post-transplant median 4 days (range 0-99).",
     notes                 = "Three independent modelling approaches (NONMEM, iterative two-stage ITS, non-parametric Pmetrics) were fit in parallel to compare Bayesian estimators of CsA AUC(0,12h) under a three-sample limited sampling strategy. The packaged model file encodes the NONMEM final model (Table 2) parameterised in standard CL/V/Q form. The ITS and Pmetrics fits used a gamma-law absorption with macro-constant disposition (FAIV, FBIV, alpha, beta in Table 3) and are not packaged here; see the vignette's Assumptions and deviations section for rationale."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   ini({

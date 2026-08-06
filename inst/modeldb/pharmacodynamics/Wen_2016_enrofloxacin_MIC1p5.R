@@ -10,13 +10,21 @@ Wen_2016_enrofloxacin_MIC1p5 <- function() {
   )
   vignette <- "Wen_2016_enrofloxacin_Pmultocida"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "ug/mL (enrofloxacin in broth)",
     concentration = "log10 CFU/mL (observation); ug/mL (drug covariate)"
   )
 
   depends <- c("Cenrofloxacin")
   paper_specific_compartments <- c("bact")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact = list(analyte = "Pasteurella multocida", units = NA_character_, specimen = "bronchoalveolar lavage", verified = FALSE)
+  )
 
   covariateData <- list(
     Cenrofloxacin = list(

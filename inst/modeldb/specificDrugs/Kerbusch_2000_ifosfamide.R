@@ -12,6 +12,15 @@ Kerbusch_2000_ifosfamide <- function() {
   vignette <- "Kerbusch_2000_ifosfamide"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central  = list(analyte = "ifosfamide", units = "umol", specimen = "plasma", verified = FALSE),
+    enz_pool = list(analyte = "CYP3A4", units = "umol", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

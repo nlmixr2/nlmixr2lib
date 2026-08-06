@@ -2,7 +2,15 @@ Kuester_2008_matuzumab <- function() {
   description <- "Two-compartment population PK model for matuzumab (humanised anti-EGFR IgG1 monoclonal antibody) in adults with advanced carcinoma (Kuester 2008), with parallel first-order linear and Michaelis-Menten elimination from the central compartment; body weight on linear CL and central volume."
   reference <- "Kuester K, Kovar A, Lupfert C, Brockhaus B, Kloft C. Population pharmacokinetic data analysis of three phase I studies of matuzumab, a humanised anti-EGFR monoclonal antibody in clinical cancer development. Br J Cancer. 2008;98(5):900-906. doi:10.1038/sj.bjc.6604265"
   vignette <- "Kuester_2008_matuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "matuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "matuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

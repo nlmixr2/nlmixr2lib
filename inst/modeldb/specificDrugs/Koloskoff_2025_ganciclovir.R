@@ -18,10 +18,18 @@ Koloskoff_2025_ganciclovir <- function() {
   )
   vignette    <- "Koloskoff_2025_ganciclovir"
   units       <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "n/a (no drug dosing events; ganciclovir exposure enters as the time-varying AUC_GCV covariate)",
     concentration = "log10 copies/mL (CMV viral load output; not a drug concentration)",
     AUC_GCV       = "mg*h/L (per q12h dosing interval; q24h regimens are entered as AUC_0-24 / 2 so all data live in a q12h framework)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    viralLoad = list(analyte = "CMV", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -91,7 +99,7 @@ Koloskoff_2025_ganciclovir <- function() {
     # 0.00087 / 0.00023 = 3.78 log10 copies/mL, consistent with the
     # observed median baseline of 3.61 log10 copies/mL (Table 1).
     lkin   <- log(0.00087); label("Zero-order viral production rate kin (log10 copies/mL per hour)")          # Koloskoff 2025 Table 2 final kin = 0.00087 (RSE 4.80%)
-    lkout  <- log(0.00023); label("First-order viral elimination rate constant kout (1/hour)")                  # Koloskoff 2025 Table 2 final kout = 0.00023 (RSE 5.19%)
+    lkout  <- log(0.00023); label("First-order viral elimination rate constant kout (1/h)")                  # Koloskoff 2025 Table 2 final kout = 0.00023 (RSE 5.19%)
     lemax  <- log(16.3);    label("Maximum drug-induced fold-increase in viral elimination Emax (unitless)")    # Koloskoff 2025 Table 2 final Emax = 16.3 (RSE 18.1%)
     lec50  <- log(23.5);    label("Ganciclovir AUC at half-maximal stimulation EC50 (mg*h/L)")                  # Koloskoff 2025 Table 2 final EC50 = 23.5 mg*h/L (RSE 46.7%)
 

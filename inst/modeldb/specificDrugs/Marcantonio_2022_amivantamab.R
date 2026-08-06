@@ -31,6 +31,32 @@ Marcantonio_2022_amivantamab <- function() {
     concentration = "Free amivantamab plasma concentration Cc = Ab_00_c / Vc in nM; central Vc = 3 L, peripheral Vp = 13 L."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    R1_c      = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R2_c      = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S2_c      = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_00_c   = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R1_c   = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R2_c   = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_S2_c   = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R1R2_c = list(analyte = "bound form Ab-R1R2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R1S2_c = list(analyte = "bound form Ab-R1S2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1_p      = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    R2_p      = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    S2_p      = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_00_p   = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R1_p   = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R2_p   = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_S2_p   = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R1R2_p = list(analyte = "bound form Ab-R1R2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R1S2_p = list(analyte = "bound form Ab-R1S2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    depot     = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

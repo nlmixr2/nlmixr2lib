@@ -2,7 +2,16 @@ Hua_2015_anrukinzumab <- function() {
   description <- "Two-compartment population PK model for anrukinzumab (anti-IL-13 IgG1 monoclonal antibody) with first-order SC absorption and linear elimination, pooling healthy volunteers, mild-to-moderate asthma, moderate-to-severe asthma, and ulcerative colitis patients (Hua 2015)"
   reference <- "Hua F, Ribbing J, Reinisch W, Cataldi F, Martin S. A pharmacokinetic comparison of anrukinzumab, an anti-IL-13 monoclonal antibody, among healthy volunteers, asthma and ulcerative colitis patients. Br J Clin Pharmacol. 2015;80(1):101-109. doi:10.1111/bcp.12589"
   vignette <- "Hua_2015_anrukinzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "anrukinzumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "anrukinzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "anrukinzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -55,6 +55,17 @@ NA_NA_lidocaine <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "lidocaine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_megx = list(analyte = "MEGX", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gx   = list(analyte = "GX", units = "mg", specimen = "plasma", verified = FALSE),
+    central_xyl  = list(analyte = "2,6-XYL", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     DLVL = list(
       description        = "Source-protocol integer dose-level / regimen indicator (1-4 in the bundle's simulated dataset). Used as binary `DLVL_HIGH = as.integer(DLVL > 2)` per the source `.ctl` `IF(DLVL.GT.2)P1=0` line; switches typical-value baselines for the GX rate constant k_gx_elim and the lidocaine apparent central volume vc.",

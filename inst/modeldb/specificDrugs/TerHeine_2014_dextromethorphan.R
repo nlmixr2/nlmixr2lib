@@ -39,6 +39,21 @@ TerHeine_2014_dextromethorphan <- function() {
   vignette <- "TerHeine_2014_tamoxifen"
   units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "dextromethorphan", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "dextromethorphan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "dextromethorphan", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dxor    = list(analyte = "dextrorphan", units = "mg", specimen = "plasma", verified = FALSE),
+    central_3mm     = list(analyte = "3-methoxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
+    central_3hm     = list(analyte = "3-hydroxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_3mm = list(analyte = "3-methoxymorphinan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_3hm = list(analyte = "3-hydroxymorphinan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     # No estimated covariates in the dextromethorphan model itself; the
     # model is a typical-value semi-physiological structure used to

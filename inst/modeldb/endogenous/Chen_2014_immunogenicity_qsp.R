@@ -19,6 +19,40 @@ Chen_2014_immunogenicity_qsp <- function() {
     concentration = "pM (antigenic protein in plasma)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    MS   = list(analyte = "antigenic protein", units = NA_character_, specimen = "administration site", verified = FALSE),
+    iDC  = list(analyte = "T-epitope presenting dendritic cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mDC  = list(analyte = "memory T-epitope presenting dendritic cells", units = NA_character_, specimen = "administration site", verified = FALSE),
+    AgE  = list(analyte = "antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pE   = list(analyte = "processed antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cpE  = list(analyte = "cytoplasmic processed antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cptE = list(analyte = "cytoplasmic processed T-epitope presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mhcE = list(analyte = "MHC-II molecules on antigen presenting endosomes", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pmE  = list(analyte = "processed antigen presenting macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cpmE = list(analyte = "cytoplasmic processed antigen presenting macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pmM  = list(analyte = "processed MHC-II molecules on macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cpmM = list(analyte = "cytoplasmic processed MHC-II molecules on macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mhcM = list(analyte = "MHC-II molecules on macrophages", units = NA_character_, specimen = "administration site", verified = FALSE),
+    NT   = list(analyte = "naive T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aTn  = list(analyte = "activated naive T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aTm  = list(analyte = "memory T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    MT   = list(analyte = "memory T-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    FT   = list(analyte = "free tumor cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    NB   = list(analyte = "naive B-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aBn  = list(analyte = "activated naive B-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    aBm  = list(analyte = "memory B-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    MB   = list(analyte = "memory B-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    SP   = list(analyte = "soluble protein", units = NA_character_, specimen = "plasma", verified = FALSE),
+    LP   = list(analyte = "lymph node", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    Ab   = list(analyte = "antibody", units = NA_character_, specimen = "plasma", verified = FALSE),
+    AgIS = list(analyte = "antigenic protein in depot", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ag   = list(analyte = "antigenic protein", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -51,7 +85,7 @@ Chen_2014_immunogenicity_qsp <- function() {
     kExt      <- fixed(28.8);      label("Exocytosis rate of peptide-MHC complex (endosome -> membrane, 1/day)")# Table S2 (Agrawal 1996 ref 8)
     kIntCplx  <- fixed(14.4);      label("Internalization rate of peptide-MHC & Ag-BCR (membrane -> endosome, 1/day)")# Table S2 (Agrawal 1996 ref 8)
     Vendo     <- fixed(4e-16);     label("Endosome volume in one dendritic cell (L)")                           # Table S2 (Agrawal 1996 ref 8)
-    konMHC    <- fixed(8.64e-3);   label("On-rate constant for peptide-MHC-II binding (1/(pM.day))")            # Table S2 (Foote 1995 ref 1)
+    konMHC    <- fixed(8.64e-3);   label("On-rate constant for peptide-MHC-II binding (1/(pM*day))")            # Table S2 (Foote 1995 ref 1)
     KpMN      <- fixed(400);       label("Number of peptide-MHC on DC for half-max naive T activation (dimensionless)")# Table S2 (Kimachi 1997 ref 10)
     KpMM      <- fixed(40);        label("Number of peptide-MHC on DC for half-max memory T activation (dimensionless)")# Table S2 (Kimachi 1997 ref 10)
     cp0pl     <- fixed(3.025e8);   label("Endogenous competing-protein amount in plasma (pmole)")               # Table S2 (Agrawal 1996 ref 8)
@@ -87,7 +121,7 @@ Chen_2014_immunogenicity_qsp <- function() {
     NB0      <- fixed(5200);       label("Initial naive B-cell number (cells, i=1 lumped over 17 sub-clones)")# Table S2 (Castiglione 2005 / Crotty 2003 refs 26, 33)
 
     # 5) ADA (antibody) disposition (paper section 5)
-    alphaAb  <- fixed(8.64e8);     label("Ab secretion rate per plasma cell (molecules/(cell.day))") # Table S2 (Auner / Hibi refs 28-29)
+    alphaAb  <- fixed(8.64e8);     label("Ab secretion rate per plasma cell (molecules/(cell*day))") # Table S2 (Auner / Hibi refs 28-29)
     betaAb   <- fixed(0.0301);     label("Free Ab elimination rate (1/day)")                         # Table S2 (Castiglione 2005 ref 26)
     betaCmp  <- fixed(0.0301);     label("Ag-Ab immune complex elimination rate (1/day) (paper notes as Ag-specific; set equal to betaAb here as the neutral default)")# paper 'Ag-specific'; see vignette Errata
 

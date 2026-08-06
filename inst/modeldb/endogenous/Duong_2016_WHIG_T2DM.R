@@ -59,6 +59,17 @@ Duong_2016_WHIG_T2DM <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    weight  = list(analyte = "body-weight", units = NA_character_, specimen = "administration site", verified = FALSE),
+    hba1c_1 = list(analyte = "glycated haemoglobin (HbA1c)", units = NA_character_, specimen = "faeces", verified = FALSE),
+    hba1c_2 = list(analyte = "glycated haemoglobin (HbA1c)", units = NA_character_, specimen = "urine", verified = FALSE),
+    hba1c_3 = list(analyte = "glycated haemoglobin (HbA1c)", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     STUDY_1 = list(
       description        = paste(

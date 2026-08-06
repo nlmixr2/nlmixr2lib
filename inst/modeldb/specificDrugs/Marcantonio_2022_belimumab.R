@@ -24,6 +24,22 @@ Marcantonio_2022_belimumab <- function() {
     concentration = "Free belimumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot = list(analyte = "Belimumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ab_00 = list(analyte = "Belimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(analyte = "Belimumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_L0 = list(analyte = "Belimumab-BAFF complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_LL = list(analyte = "Belimumab-BAFF complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1    = list(analyte = "soluble BAFF (BLyS)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1    = list(analyte = "BAFF-R", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    L1R1  = list(analyte = "Belimumab-BAFF-BAFF-R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S1    = list(analyte = "Free soluble BAFF (BLyS)", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

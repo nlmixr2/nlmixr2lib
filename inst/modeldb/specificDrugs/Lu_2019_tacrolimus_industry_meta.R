@@ -24,7 +24,16 @@ Lu_2019_tacrolimus_industry_meta <- function() {
     "Pharmacol. 2019;85(8):1692-1703. doi:10.1111/bcp.13952."
   )
   vignette <- "Lu_2019_tacrolimus_industry_meta"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus industry meta", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus industry meta", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus industry meta", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     RACE_ASIAN = list(

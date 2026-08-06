@@ -28,6 +28,16 @@ Hirt_2006_nelfinavir <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "nelfinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m8 = list(analyte = "M8 (hydroxy-tert-butylamide)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight; multiplier on the per-kg V/F and CL/F.",

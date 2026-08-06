@@ -33,9 +33,24 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
   )
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "static covariates (uM FAV, ug/mL RBV, IU/mL IFN) -- not administered events",
     concentration = "log10(PFU/mL) for the model observation Cc"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    uninfected = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    infected   = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    vi1        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi2        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi3        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi4        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi5        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vextra     = list(analyte = "virus", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(

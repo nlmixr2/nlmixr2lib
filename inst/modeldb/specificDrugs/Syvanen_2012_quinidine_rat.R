@@ -37,6 +37,16 @@ Syvanen_2012_quinidine_rat <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    brain_csf   = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_POSTSE_KAINATE = list(
       description        = paste(

@@ -2,7 +2,16 @@ Jackson_2022_ixekizumab <- function() {
   description <- "Two-compartment linear population PK model for subcutaneous ixekizumab in paediatric patients with moderate-to-severe plaque psoriasis (IXORA-PEDS; Jackson 2022)"
   reference <- "Jackson K, Chua L, Velez de Mendizabal N, et al. Population pharmacokinetic and exposure-efficacy analysis of ixekizumab in paediatric patients with moderate-to-severe plaque psoriasis (IXORA-PEDS). Br J Clin Pharmacol. 2022;88(3):1074-1086. doi:10.1111/bcp.15034"
   vignette <- "Jackson_2022_ixekizumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ixekizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ixekizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ixekizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -43,11 +52,11 @@ Jackson_2022_ixekizumab <- function() {
 
   ini({
     # Structural parameters — reference body weight 58.6 kg (Jackson 2022 Table 2 footnotes)
-    lka     <- log(0.00801);   label("Absorption rate constant (Ka, 1/hour)")                                     # Table 2: Ka = 0.00801 h^-1
-    lcl     <- log(0.0120);    label("Apparent clearance at 58.6 kg reference weight, ADA-negative (CL, L/hour)") # Table 2: CL = 0.0120 L/h
+    lka     <- log(0.00801);   label("Absorption rate constant (Ka, 1/h)")                                     # Table 2: Ka = 0.00801 h^-1
+    lcl     <- log(0.0120);    label("Apparent clearance at 58.6 kg reference weight, ADA-negative (CL, L/h)") # Table 2: CL = 0.0120 L/h
     lvc     <- log(2.72);      label("Central volume of distribution at 58.6 kg reference weight (V2, L)")        # Table 2: V2 = 2.72 L
     lvp     <- log(2.11);      label("Peripheral volume of distribution at 58.6 kg reference weight (V3, L)")     # Table 2: V3 = 2.11 L
-    lq      <- log(0.0119);    label("Intercompartmental clearance at 58.6 kg reference weight (Q, L/hour)")      # Table 2: Q = 0.0119 L/h
+    lq      <- log(0.0119);    label("Intercompartmental clearance at 58.6 kg reference weight (Q, L/h)")      # Table 2: Q = 0.0119 L/h
     lfdepot <- fixed(log(0.72)); label("Subcutaneous bioavailability (F1, fraction) -- adult model value") # Table 2 footnote c: F1 fixed at 0.72 (adult model)
 
     # Allometric weight exponents (reference weight 58.6 kg)

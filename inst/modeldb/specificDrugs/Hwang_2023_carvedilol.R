@@ -15,6 +15,14 @@ Hwang_2023_carvedilol <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "carvedilol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CYP2D6_STAR10_HOM = list(
       description        = "CYP2D6*10 (rs1065852) homozygous-mutant indicator; 1 = CYP2D6*10/*10 (the paper's intermediate-metabolizer-2, IM-2, group), 0 = otherwise",

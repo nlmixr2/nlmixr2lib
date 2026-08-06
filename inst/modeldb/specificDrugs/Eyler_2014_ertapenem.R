@@ -2,7 +2,15 @@ Eyler_2014_ertapenem <- function() {
   description <- "Two-compartment population PK model for intravenous ertapenem in critically ill adults with acute kidney injury receiving continuous venovenous hemodialysis (CVVHD) or hemodiafiltration (CVVHDF). PK is parameterised on unbound drug; total serum concentrations are reconstructed via a single-site saturable albumin-binding equation Cb = Bmax * Cu / (KD + Cu). Systemic (body) clearance and a separate dialytic clearance arm are estimated as primary parameters; the dialytic arm is added to body clearance only while the CRRT circuit is running, gated by the time-varying RRT_HEMODIAL_ACTIVE covariate. Eyler 2014, n = 8 subjects, single 1 g IV dose over 30 min."
   reference <- "Eyler RF, Vilay AM, Nader AM, Heung M, Pleva M, Sowinski KM, DePestel DD, Sorgel F, Kinzig M, Mueller BA. Pharmacokinetics of ertapenem in critically ill patients receiving continuous venovenous hemodialysis or hemodiafiltration. Antimicrob Agents Chemother. 2014;58(3):1320-1326. doi:10.1128/AAC.02090-12"
   vignette <- "Eyler_2014_ertapenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ertapenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ertapenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     RRT_HEMODIAL_ACTIVE = list(

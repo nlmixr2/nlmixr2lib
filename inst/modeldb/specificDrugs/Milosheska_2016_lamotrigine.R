@@ -11,6 +11,16 @@ Milosheska_2016_lamotrigine <- function() {
   vignette <- "Milosheska_2016_lamotrigine"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "lamotrigine (LTG)", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "lamotrigine (LTG)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "N-2-glucuronide of lamotrigine (LTG-glu)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

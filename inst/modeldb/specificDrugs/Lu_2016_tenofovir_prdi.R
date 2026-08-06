@@ -2,7 +2,16 @@ Lu_2016_tenofovir_prdi <- function() {
   description <- "Two-compartment population PK model with first-order absorption for tenofovir (300 mg oral TDF once daily) in HIV-1-uninfected African adults receiving once-daily preexposure prophylaxis (Lu 2016, Partners PrEP Study). PRDI variant: parameters estimated using patient-reported dosing information with a steady-state assumption. Apparent oral clearance (CL/F) carries a power-form covariate effect on creatinine clearance (raw Cockcroft-Gault, mL/min) centred at the cohort median 106 mL/min. Diagonal IIV on CL/F only; combined additive + proportional residual error."
   reference <- "Lu Y, Goti V, Chaturvedula A, Haberer JE, Fossler MJ, Sale ME, Bangsberg D, Baeten JM, Celum CL, Hendrix CW. Population pharmacokinetics of tenofovir in HIV-1-uninfected members of serodiscordant couples and effect of dose reporting methods. Antimicrob Agents Chemother. 2016;60(9):5379-5386. doi:10.1128/AAC.00559-16"
   vignette <- "Lu_2016_tenofovir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tenofovir prdi", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tenofovir prdi", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tenofovir prdi", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

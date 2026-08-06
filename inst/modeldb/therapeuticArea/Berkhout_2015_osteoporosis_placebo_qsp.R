@@ -49,6 +49,17 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    osteoblast = list(analyte = "active osteoblast", units = NA_character_, specimen = "tissue", verified = FALSE),
+    osteoclast = list(analyte = "active osteoclast", units = NA_character_, specimen = "tissue", verified = FALSE),
+    BMD_LS     = list(analyte = "bone mineral density (lumbar spine)", units = NA_character_, specimen = "tissue", verified = FALSE),
+    BMD_TH     = list(analyte = "bone mineral density (total hip)", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     BMI = list(
       description        = paste0(

@@ -32,6 +32,16 @@ Jones_2011_PF04878691_lymphocyte <- function() {
   paper_specific_residual_sds <- c("propSd_lymph")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "plasma", verified = FALSE),
+    lymph       = list(analyte = "PF04878691 lymphocyte", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

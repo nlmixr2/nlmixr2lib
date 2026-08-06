@@ -2,7 +2,15 @@ Hirt_2009_didanosine <- function() {
   description <- "One-compartment population PK model for didanosine (ddI) administered once daily as buffered chewable Videx tablets in West African HIV-1-infected children; first-order absorption with ka fixed at 4 1/h, additive residual error, exponential IIV on CL/F and Vc/F with off-diagonal covariance"
   reference <- "Hirt D, Bardin C, Diagbouga S, Nacro B, Hien H, Zoure E, Rouet F, Ouiminga A, Urien S, Foulongne V, Van De Perre P, Treluyer JM, Msellati P. Didanosine population pharmacokinetics in West African human immunodeficiency virus-infected children administered once-daily tablets in relation to efficacy after one year of treatment. Antimicrob Agents Chemother. 2009;53(10):4399-4406. doi:10.1128/AAC.01187-08"
   vignette <- "Hirt_2009_didanosine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "didanosine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "didanosine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

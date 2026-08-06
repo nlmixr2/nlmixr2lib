@@ -8,6 +8,15 @@ Angeli_2016_iron_hepcidin <- function() {
     concentration = "umol/L (serum iron) and nmol/L (serum hepcidin)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    iron = list(analyte = "Serum Iron", units = NA_character_, specimen = "serum", verified = FALSE),
+    hep  = list(analyte = "Serum Hepcidin", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_BIRTHCONTROL = list(
       description        = "Oral hormonal contraceptive use; `1` = currently taking an oral contraceptive, `0` = not on hormonal contraception.",

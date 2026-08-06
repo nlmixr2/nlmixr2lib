@@ -34,9 +34,18 @@ Azechi_2024_tamibarotene_pediatric <- function() {
   )
   vignette <- "Azechi_2024_tamibarotene_pediatric"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tamibarotene", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tamibarotene", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tamibarotene", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

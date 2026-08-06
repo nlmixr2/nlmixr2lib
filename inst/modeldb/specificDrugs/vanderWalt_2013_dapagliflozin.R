@@ -37,9 +37,20 @@ vanderWalt_2013_dapagliflozin <- function() {
   )
   vignette <- "vanderWalt_2013_dapagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "dapagliflozin", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "dapagliflozin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_d3og = list(analyte = "dapagliflozin 3-O-glucuronide (D3OG)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

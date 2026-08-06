@@ -8,6 +8,37 @@ Bender_2014_trastuzumabEmtansine_mechanistic <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    dar7_central     = list(analyte = "trastuzumab emtansine DAR7", units = "mg", specimen = "plasma", verified = FALSE),
+    dar7_peripheral1 = list(analyte = "trastuzumab emtansine DAR7", units = "mg", specimen = "plasma", verified = FALSE),
+    dar7_peripheral2 = list(analyte = "trastuzumab emtansine DAR7", units = "mg", specimen = "plasma", verified = FALSE),
+    dar6_central     = list(analyte = "trastuzumab emtansine DAR6", units = "mg", specimen = "plasma", verified = FALSE),
+    dar6_peripheral1 = list(analyte = "trastuzumab emtansine DAR6", units = "mg", specimen = "plasma", verified = FALSE),
+    dar6_peripheral2 = list(analyte = "trastuzumab emtansine DAR6", units = "mg", specimen = "plasma", verified = FALSE),
+    dar5_central     = list(analyte = "trastuzumab emtansine DAR5", units = "mg", specimen = "plasma", verified = FALSE),
+    dar5_peripheral1 = list(analyte = "trastuzumab emtansine DAR5", units = "mg", specimen = "plasma", verified = FALSE),
+    dar5_peripheral2 = list(analyte = "trastuzumab emtansine DAR5", units = "mg", specimen = "plasma", verified = FALSE),
+    dar4_central     = list(analyte = "trastuzumab emtansine DAR4", units = "mg", specimen = "plasma", verified = FALSE),
+    dar4_peripheral1 = list(analyte = "trastuzumab emtansine DAR4", units = "mg", specimen = "plasma", verified = FALSE),
+    dar4_peripheral2 = list(analyte = "trastuzumab emtansine DAR4", units = "mg", specimen = "plasma", verified = FALSE),
+    dar3_central     = list(analyte = "trastuzumab emtansine DAR3", units = "mg", specimen = "plasma", verified = FALSE),
+    dar3_peripheral1 = list(analyte = "trastuzumab emtansine DAR3", units = "mg", specimen = "plasma", verified = FALSE),
+    dar3_peripheral2 = list(analyte = "trastuzumab emtansine DAR3", units = "mg", specimen = "plasma", verified = FALSE),
+    dar2_central     = list(analyte = "trastuzumab emtansine DAR2", units = "mg", specimen = "plasma", verified = FALSE),
+    dar2_peripheral1 = list(analyte = "trastuzumab emtansine DAR2", units = "mg", specimen = "plasma", verified = FALSE),
+    dar2_peripheral2 = list(analyte = "trastuzumab emtansine DAR2", units = "mg", specimen = "plasma", verified = FALSE),
+    dar1_central     = list(analyte = "trastuzumab emtansine DAR1", units = "mg", specimen = "plasma", verified = FALSE),
+    dar1_peripheral1 = list(analyte = "trastuzumab emtansine DAR1", units = "mg", specimen = "plasma", verified = FALSE),
+    dar1_peripheral2 = list(analyte = "trastuzumab emtansine DAR1", units = "mg", specimen = "plasma", verified = FALSE),
+    dar0_central     = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    dar0_peripheral1 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    dar0_peripheral2 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

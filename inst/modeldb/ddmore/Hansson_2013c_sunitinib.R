@@ -16,12 +16,20 @@ Hansson_2013c_sunitinib <- function() {
   )
   vignette <- "Hansson_2013c_sunitinib"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "(NCI-CTC fatigue grade 0-3+, ordinal)"
   )
   ddmore_id <- "DDMODEL00000222"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3 = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     DOSE = list(

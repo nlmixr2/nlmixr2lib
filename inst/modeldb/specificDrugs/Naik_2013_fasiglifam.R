@@ -43,12 +43,24 @@ Naik_2013_fasiglifam <- function() {
   paper_specific_compartments <- c("glucose", "Hba1c")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg fasiglifam (TAK-875, oral, once daily)",
     concentration = paste(
       "Cc in mg/L (equivalent to ug/mL; EC50 = 3.16 ug/mL = 3.16 mg/L);",
       "FPG in mg/dL; HbA1c in %"
     )
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "fasiglifam", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose     = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Hba1c       = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(

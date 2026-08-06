@@ -12,6 +12,21 @@ Birgersson_2016_artemisinin <- function() {
   vignette <- "Birgersson_2016_artemisinin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit7 = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "artemisinin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

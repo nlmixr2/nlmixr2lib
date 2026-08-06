@@ -28,6 +28,18 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     concentration = "log(CFU/mL) for the model observation Cc"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Decoded from this model's systematic state-naming
+  # scheme; units are not derivable from its units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    aroff = list(analyte = "adaptive-resistance OFF subpopulation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aron  = list(analyte = "adaptive-resistance ON subpopulation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    fbugs = list(analyte = "fast-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    sbugs = list(analyte = "slow-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    nbugs = list(analyte = "non-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CONC_RIF_MGL = list(
       description        = "Static rifampicin concentration in the in vitro time-kill assay (mg/L)",

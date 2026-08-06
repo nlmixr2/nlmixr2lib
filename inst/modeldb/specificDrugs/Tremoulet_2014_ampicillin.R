@@ -2,7 +2,14 @@ Tremoulet_2014_ampicillin <- function() {
   description <- "One-compartment IV population PK model for ampicillin in preterm and term neonates (Tremoulet 2014; opportunistic POPS / PTN study). Clearance is allometrically scaled linearly to body weight and modulated by a serum-creatinine power factor (0.6/SCR)^0.428 and a postmenstrual-age power factor (PMA/37)^1.34. Central volume scales linearly with body weight (0.399 L/kg). Inter-individual variability is supported on CL only; residual variability is proportional."
   reference <- "Tremoulet A, Le J, Poindexter B, Sullivan JE, Laughon M, Delmore P, Salgado A, Chong SI, Melloni C, Gao J, Benjamin DK Jr, Capparelli EV, Cohen-Wolkowiez M; Administrative Core Committee of the Best Pharmaceuticals for Children Act-Pediatric Trials Network. Characterization of the population pharmacokinetics of ampicillin in neonates using an opportunistic study design. Antimicrob Agents Chemother. 2014;58(6):3013-3020. doi:10.1128/AAC.02374-13"
   vignette <- "Tremoulet_2014_ampicillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "ampicillin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

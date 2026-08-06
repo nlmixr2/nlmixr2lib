@@ -12,6 +12,14 @@ Su_2016_dexmedetomidine <- function() {
   vignette <- "Su_2016_dexmedetomidine"
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL") # Methods: dose ug (loading dose 0.25-1 ug/kg over 10 min then CIVI 0.2-0.75 ug/kg/h); validated HPLC-MS/MS assay reported in pg/mL with LLOQ 5 pg/mL. Final model parameterised with CL, Q in mL/min and V1, V2 in L (Table 4); CL and Q converted to L/h here (657 mL/min = 39.42 L/h; 6780 mL/min = 406.8 L/h). With central in ug and vc in L, central/vc gives ug/L = ng/mL; the observation Cc multiplies by 1000 to convert to pg/mL.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

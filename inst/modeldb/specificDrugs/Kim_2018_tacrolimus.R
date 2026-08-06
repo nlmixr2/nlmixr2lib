@@ -9,9 +9,25 @@ Kim_2018_tacrolimus <- function() {
   )
   vignette <- "Kim_2018_tacrolimus"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "ng/mL (tacrolimus); ug/mL (MPA, MPAG, AcMPAG)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_mpa       = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "administration site", verified = FALSE),
+    central_mpa     = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_mpa = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mpag    = list(analyte = "mycophenolic acid 7-O-glucuronide (MPAG)", units = "mg", specimen = "plasma", verified = FALSE),
+    gallbladder     = list(analyte = "mycophenolic acid acyl glucuronide (AcMPAG)", units = "mg", specimen = "bile", verified = FALSE),
+    central_acmpag  = list(analyte = "mycophenolic acid acyl glucuronide (AcMPAG)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

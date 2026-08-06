@@ -6,7 +6,7 @@ Brekkan_2018_pegfilgrastim <- function() {
     "AAPS J 20(5):91. doi:10.1208/s12248-018-0249-y."
   )
   vignette <- "Brekkan_2018_pegfilgrastim"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL", ANC = "10^9 cells/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL", ANC = "10^9 cells/L")
 
   # Covariates were evaluated using a full random effects model (FREM)
   # approach with sex, age, lean body weight (LBW = LBM), body mass index,
@@ -85,6 +85,20 @@ Brekkan_2018_pegfilgrastim <- function() {
     dose_range     = "Single 6 mg subcutaneous pegfilgrastim per period in a three-way crossover comparing one biosimilar candidate (BIOS_PG) and two reference Neulasta(R) products (US_PG and EU_PG), separated by at least 5 weeks washout. Median delivered doses by syringe batch: BIOS_PG 6.6 and 6.7 mg (two batches), US_PG 6.3 mg, EU_PG 6.2 mg (Brekkan 2018 Results, Data).",
     regions        = "USA",
     notes          = "Study PG-01-003 (Dr. Reddy's Laboratories). 192 enrolled; 174 included after excluding 15 subjects with measurable baseline PG and ADA-positive occasions (Brekkan 2018 Results, Data). 445 dosing occasions analysed. The paper does not tabulate age or weight ranges; baseline demographics are referenced via Fig 1 and prose only."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "pegfilgrastim (PG)", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "neutrophils", units = "mg", specimen = "whole blood", verified = FALSE)
   )
 
   ini({
