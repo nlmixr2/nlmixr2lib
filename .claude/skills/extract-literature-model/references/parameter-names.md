@@ -383,6 +383,59 @@ Do not lump them under a single `e_race_cl` (ambiguous); do not omit the
 parameter token (`e_asian` is wrong — it must end in `_cl` or `_vc` or
 similar to identify what it modifies).
 
+### Stratum-suffixed parameters
+
+Some papers estimate the *same quantity twice* -- once in each of two or more
+sub-populations -- inside a **single joint fit**. The canonical name supplies
+exactly one slot for that quantity, so each stratum's estimate takes an explicit
+suffix naming the stratum:
+
+```r
+lcl_agegt2     <- log(2.59) ; label("Typical clearance for age > 2 years ... (L/h)")
+lcl_agele2     <- log(1.98) ; label("Typical clearance for age <= 2 years ... (L/h)")
+e_wt_cl_agegt2 <- 0.38      ; label("Power exponent on (WT/12) for CL, age > 2 years (unitless)")
+e_wt_cl_agele2 <- 0.739     ; label("Power exponent on (WT/12) for CL, age <= 2 years (unitless)")
+```
+
+Rules:
+
+- **Symmetric.** Every stratum carries a suffix; none keeps the bare canonical.
+  A bare `lcl` silently meaning "the age > 2 y value" is exactly the ambiguity
+  the suffix exists to remove, and papers of this shape report parallel
+  estimates rather than a reference plus an offset.
+- **The suffix names the stratum, not the paper's symbol.** `_agele2` /
+  `_agegt2` (age <= 2 / age > 2), `_center1` / `_center2`, `_ped` / `_adult`.
+  Keep it lower-case and readable; a reader must be able to tell which subgroup
+  the number belongs to without opening the paper.
+- **Only suffix what is actually stratum-specific.** Anything the joint fit
+  shares (in the founding example: the volume, the CLcr exponent, the IIV)
+  keeps its bare canonical name. Suffixing a shared parameter falsely implies
+  the paper estimated it more than once.
+- **Applies on top of any canonical form**, including the covariate-effect
+  grammar: `e_<cov>_<param>_<stratum>`. This is *not* one of the three-token
+  forms above -- the trailing token is a stratum label, not a metabolite, a
+  second PK parameter, or a CL component. Disambiguate by what the token names:
+  a registered metabolite (`R/conventions.R::registeredMetabolites`) -> the
+  metabolite form; a bare PK parameter (`pkBareParams`) -> the shared-exponent
+  form; `ss` / `time` / `renal` -> multi-component CL; anything else -> a
+  stratum.
+- **One model file, not N.** A stratified joint fit is a single model
+  (`references/replicate-author-structure.md`); the suffixes are what let one
+  file hold every stratum. Split into separate files only when the paper fit
+  separate models.
+
+Founding example: `Shen_2024_vancomycin.R` (Shen 2024 vancomycin popPK -- an
+age-cutoff model estimating both a typical CL and a body-weight allometric
+exponent in each of two age strata within one NONMEM run, OFV 2272.810).
+Precedent predating this entry, in files that use the pattern without having
+registered it: `Duong_2016_WHIG_T2DM.R` (`b0_s1` / `b0_s23`),
+`Frohlich_2018_mRNA_translation.R` (`lkdeg_egfp` / `lkdeg_d2egfp`),
+`Friberg_2012_voriconazole.R` (`expSdStdy1` / `expSdStdy2` / `expSdStdy34`).
+
+Note that `checkModelConventions()` does not validate structural-parameter
+names, so a clean lint is not evidence that a stratum suffix is well-formed --
+this section is the record.
+
 ## Endogenous / mechanistic parameters
 
 For endogenous turnover, steady-state, and enzyme-kinetic models (e.g., `igg_kim_2006`, `phenylalanine_charbonneau_2021`), parameters come from mechanism rather than from a CL/V parameterization. Use the names the paper uses; lower-case snake-case by default. Log-transform only positive-constrained parameters that are being *estimated* — not mechanistic constants that the source paper reports as point values.

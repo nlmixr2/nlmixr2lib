@@ -10104,3 +10104,53 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** none.
 - **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
 - **Notes:** Named-drug member of the `CONMED_<INN>` family. Relevant to psychotropic popPK models both as a coadministered antidepressant and as a CYP2D6 substrate that can compete with other CYP2D6-cleared comedications. Register sibling named canonicals for other antidepressants screened by name rather than reusing this one; reserve a future class-level `CONMED_ANTIDEPRESSANT` for sources that pool the class.
+
+### STUDY_VANCO_CENTER2 (**canonical for Shen 2024 vancomycin second-study-center indicator**)
+- **Description:** 1 = subject enrolled at the second of the two study centers pooled in the Shen 2024 Southern Chinese pediatric vancomycin analysis (Table 1 column N2, n = 176 patients / 249 concentrations); 0 = subject enrolled at the first center (Table 1 column N1, n = 210 patients / 272 concentrations). Selects between the two additive residual-error magnitudes the paper estimated per center.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (center N1).
+- **Source aliases:** derived per subject from the recruiting-hospital identifier. Shen 2024 does not state which of Baoan Women's and Children's Hospital / Shenzhen Children's Hospital is N1 and which is N2, so the indicator is anchored to the Table 1 column label rather than to a hospital name.
+- **Example models:** `Shen_2024_vancomycin.R` (switches the additive residual SD between `addSdCenter1 = 4.64 mg/L` and `addSdCenter2 = 4.53 mg/L`, per Shen 2024 Table 3 rows RV1 / RV2 and Results "RV was best characterized by an additive error model for each of the two study centers").
+- **Notes:** Specific scope; tied to the two-hospital Shen 2024 vancomycin cohort. Member of the auto-approved `STUDY_<id>` family, and the first member keyed on a recruiting *center* rather than on a trial phase or protocol number -- the `STUDY_<DRUG>_PHASE<N>` naming of `STUDY_POSA_PHASE3` / `STUDY_NIPOCALIMAB_PHASE1` / `STUDY_SULDUR_PHASE2` does not apply because both Shen 2024 centers contributed the same kind of routine-TDM observations under one protocol. Subject-level (time-fixed). Distinct from the model's age strata: center N1 has median age 0.95 y and N2 median 4.32 y, but both centers contribute patients on both sides of the 2-year clearance cutoff, so this indicator must not be conflated with the `AGE <= 2` stratum switch. A future multi-center analysis of a different drug should register its own `STUDY_<drug>_CENTER<N>` sibling rather than reuse this entry, because the center numbering is source-table-specific.
+
+### CONMED_MEROPENEM (**canonical for concomitant meropenem coadministration indicator**)
+- **Description:** 1 = subject is coadministered meropenem (carbapenem beta-lactam, eliminated predominantly by renal filtration and tubular secretion with partial hydrolysis by dehydropeptidase-I) at the pharmacokinetic observation, 0 = no concomitant meropenem. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant meropenem).
+- **Source aliases:** none.
+- **Example models:** `Shen_2024_vancomycin.R` (screened on vancomycin CL because it was coadministered in more than 10% of patients -- 43.76% of records -- and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family. Relevant to renally cleared antibacterial popPK models as a potential competitor for tubular secretion. Register sibling named canonicals for other antibacterials screened by name rather than reusing this one; reserve a future class-level `CONMED_CARBAPENEM` or `CONMED_ABX` for sources that pool the class.
+
+### CONMED_CEFOPERAZONE (**canonical for concomitant cefoperazone coadministration indicator**)
+- **Description:** 1 = subject is coadministered cefoperazone (third-generation cephalosporin, eliminated predominantly by biliary excretion) at the pharmacokinetic observation, 0 = no concomitant cefoperazone. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant cefoperazone).
+- **Source aliases:** none.
+- **Example models:** `Shen_2024_vancomycin.R` (screened on vancomycin CL because it was coadministered in more than 10% of patients -- 25.91% of records -- and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family. Cefoperazone is unusual among cephalosporins in being cleared mainly by the biliary rather than the renal route, so it should not be folded into a renal-competition class indicator. Register sibling named canonicals for other cephalosporins screened by name rather than reusing this one.
+
+### CONMED_CEFTRIAXONE (**canonical for concomitant ceftriaxone coadministration indicator**)
+- **Description:** 1 = subject is coadministered ceftriaxone (third-generation cephalosporin, highly protein-bound, eliminated by both renal and biliary routes) at the pharmacokinetic observation, 0 = no concomitant ceftriaxone. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant ceftriaxone).
+- **Source aliases:** none.
+- **Example models:** `Shen_2024_vancomycin.R` (screened on vancomycin CL because it was coadministered in more than 10% of patients -- 25.72% of records -- and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family. Ceftriaxone's high albumin binding makes it a plausible displacement interactant as well as a coeliminated antibacterial, which is why sources screen it by name rather than pooling it into a class indicator.
+
+### CONMED_MANNITOL (**canonical for concomitant mannitol coadministration indicator**)
+- **Description:** 1 = subject is coadministered mannitol (osmotic diuretic, freely filtered at the glomerulus and not reabsorbed) at the pharmacokinetic observation, 0 = no concomitant mannitol. Time-varying when comedication start / stop events are captured; time-fixed at the analysis baseline in sources that record comedication only as a per-record flag.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant mannitol).
+- **Source aliases:** none.
+- **Example models:** `Shen_2024_vancomycin.R` (screened on vancomycin CL because it was coadministered in more than 10% of patients -- 12.67% of records -- and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family. Mechanistically distinct from the antibacterial `CONMED_<INN>` entries: mannitol raises urine flow and can transiently increase the renal clearance of filtered drugs, so it is screened in renally cleared popPK models as a renal-haemodynamic perturbation rather than as a metabolic interactant. Register `CONMED_FUROSEMIDE` and other named diuretics separately rather than reusing this entry; reserve a future class-level `CONMED_DIURETIC` for sources that pool the class.
