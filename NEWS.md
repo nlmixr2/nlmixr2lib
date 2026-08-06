@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wattanakul 2024 primaquine ([doi:10.1038/s41467-024-47908-y](https://doi.org/10.1038/s41467-024-47908-y)) -- lactating women with *Plasmodium vivax* infection and their breastfed infants.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

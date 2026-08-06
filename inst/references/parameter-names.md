@@ -906,6 +906,48 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Mitra_2026_ziftomenib.R` (base `logitfm <- fixed(0.14)` corresponding to `logit^-1(0.14) = 0.535`; additive shift `e_dis_healthy_logitfm = -1.62` on the logit scale for the healthy-volunteer cohort; IIV `etalogitfm ~ 0.280` on the logit scale).
 - **Notes:** Follows the `logit`-transform-prefix family (`logitffo`, `logitemax`) applied to the existing `fm` canonical root. Prefer `logitfm` (paper's logit encoding) over `lfm` (log encoding) when the source paper's NONMEM control stream stores FM on the logit scale, because a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Ratified canonically on 2026-07-24 alongside the Mitra 2026 ziftomenib extraction.
 
+### lq_milk (**canonical log-transformed central-to-breast-milk inter-compartmental clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent inter-compartmental clearance between a central compartment and its paired `milk` compartment in a lactation-transfer model (volume / time). Extends the existing `lq` family with a destination token, on the same principle as the `kin_<compartment>` / `kout_<compartment>` family: the canonical bare `lq` / `lq2` mean exchange with `peripheral1` / `peripheral2` specifically, so reusing them for a breast-milk compartment would silently mislead. The bare form `q_milk` is used inside `model()`.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`Q/F = 0.400 L/h`, shared between primaquine and carboxyprimaquine per Wattanakul 2024 Table 2 footnote c; the source paper assumed and encoded `Q/F_CPQ = Q/F_PQ`).
+- **Notes:** Ratified 2026-08-06 with the library's first lactation model (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A). Metabolite forms take the standard suffix (`lq_milk_<metab>`) when a paper estimates the parent and metabolite transfer clearances separately.
+
+### pcmilk (**canonical milk:plasma partition coefficient**)
+- **Type:** paper-named-param
+- **Role:** Milk:plasma partition coefficient -- the fraction of the drug in the central compartment that is freely distributed into breast milk. Unitless, normally in (0, 1]. Enters the central-to-milk micro-rate constant as `k = (q_milk / vc) * pcmilk`, so at pseudo-equilibrium the milk:plasma concentration ratio (and hence the milk:plasma AUC ratio) equals `pcmilk` exactly. That identity is the natural falsifier for a lactation extraction: a published milk:plasma AUC ratio that does not equal the published partition coefficient means the model that produced it had an additional milk sink. Metabolite forms take the standard suffix (`pcmilk_<metab>`).
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`PC_PQ = 0.376`, `PC_CPQ = 0.00889` per Wattanakul 2024 Table 2; Table 3 reports the simulated milk:plasma AUC ratio as 0.376 (0.375-0.377), equal to `pcmilk`).
+- **Notes:** Ratified 2026-08-06 (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A). Distinct from a "milk-to-plasma ratio" reported as a raw observed concentration ratio: `pcmilk` is a model parameter that generates such a ratio, not the ratio itself.
+
+### cfcap (**canonical capillary:venous conversion factor**)
+- **Type:** paper-named-param
+- **Role:** Proportional conversion factor between a venous-plasma model prediction and the corresponding capillary (finger-prick) plasma prediction, estimated when a study assays both matrices and fits them simultaneously. Unitless; the capillary observable is `Ccap = Cc * cfcap`. Metabolite forms take the standard suffix (`cfcap_<metab>`).
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`CF_PQ = 0.898`, `CF_CPQ = 1.06` per Wattanakul 2024 Table 2; the associated observation variables are `Ccap` and `Ccap_cpq`).
+- **Notes:** Ratified 2026-08-06 as the mechanical consequence of the `cfcap` concept approved in operator sidecar `oare_PMC11078975` question q2 option A -- a capillary:venous conversion factor is only usable if the capillary observable it produces also has a name. Capillary sampling is standard in field malaria and paediatric pharmacokinetics, so this is expected to recur. Do NOT reuse `cfcap` for a plasma:whole-blood or plasma:serum conversion; those are different matrices and should get their own canonical.
+
+### kmilkinf (**canonical breast-milk-to-infant transfer rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1/time) transferring drug from a mother's `milk` compartment into the breastfed infant's `infant_depot` compartment during a feeding window in a mother-to-infant dyad model. Normally fixed to a large value so that essentially all of the milk-compartment amount transfers within the window rather than estimated, because the feed is fast relative to every other process in the model.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (`MTINF_PQ = MTINF_CPQ = 100 /h`, fixed high so that more than 95% of the amount in the breast-milk compartment is transferred during the 24-minute feeding window per Wattanakul 2024 Results, 'Predicting infant concentrations').
+- **Notes:** Ratified 2026-08-06 (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A).
+
+### feed_n, feed_window, feed_first, milk_intake (**canonical breastfeeding-pattern constants**)
+- **Type:** paper-named-param
+- **Role:** The four design constants that define a breastfeeding schedule in a lactation-transfer model. `feed_n` is the number of feeds per day (giving a feeding cycle of `24 / feed_n` hours); `feed_window` is the duration of each feed (time); `feed_first` is the time of the first feed after time zero (time); `milk_intake` is the average daily breast-milk intake per kg of infant body weight (volume / mass / time), from which the milk-compartment volume is derived as `milk_intake * WT_INFANT / feed_n`. All four are normally `fixed()` -- they describe the simulated feeding scenario, not an estimated property of the drug -- and are the natural handles for a feeding-pattern sensitivity analysis.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`feed_n = 10` feeds/day, `feed_window = 0.4` h, `feed_first = 1` h, `milk_intake = 0.15` L/kg/day, giving a 2.4 h cycle with a 24-minute feeding window; Wattanakul 2024 Eq. 1 and Results, 'Predicting infant concentrations').
+- **Notes:** Ratified 2026-08-06 (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A). Kept as separate scalars rather than folded into one schedule object so that each can be varied independently in a sensitivity analysis, which is exactly what the founding paper does (Supplementary Figs. 2-4 vary feeding frequency and volume per feed).
+
+### lmtt_infant (**canonical log-transformed breastfed-infant mean transit time**)
+- **Type:** log-transformed-pk
+- **Role:** Mean transit absorption time of the breastfed infant in a mother-to-infant dyad model, when the infant's absorption is not scaled from the mother's but taken from a separate paediatric source. Uses the `_infant` suffix in the same sense as the `infant_<canonical>` compartment namespace and the `WT_INFANT` / `AGE_INFANT` covariates: it marks the quantity as belonging to the dyad PARTNER rather than to the modelled subject, whose own mean transit time is the plain `lmtt`.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (`MTT_infant = 0.706 h`, fixed from a paediatric literature model to account for more rapid absorption in infants, with 2 transit compartments so `ktr_infant = 3 / MTT_infant`; Wattanakul 2024 Methods, 'Predicting infant concentrations').
+- **Notes:** Ratified 2026-08-06 as the mechanical extension of the `infant_` dyad-partner namespace approved in operator sidecar `oare_PMC11078975` questions q1 and q3 (option A both). Any other canonical parameter that a dyad model must carry separately for the infant partner takes the same `_infant` suffix; parameters that are merely SCALED from the mother's (allometric clearances and volumes) do not get their own `ini()` name at all, because they are derived inside `model()`.
+
 ### kin (**canonical indirect-response production rate**)
 - **Type:** paper-named-param
 - **Role:** Zero-order production rate of an indirect-response / turnover pool (Dayneka 1993; Jusko traditions).
