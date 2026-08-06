@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Okada 2024 triazolam ([doi:10.1186/s40360-024-00777-z](https://doi.org/10.1186/s40360-024-00777-z)) - young and elderly adults.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
