@@ -1418,6 +1418,60 @@ test_that("no model in the database uses a non-canonical unit spelling", {
   expect_equal(sort(unique(bad)), character(0))
 })
 
+test_that("no ini() line carries a quoted trailing comment rxode2 would promote into a broken label", {
+  # Enumerating: a newly added model whose ini() line ends in a comment that
+  # quotes the source paper fails here.
+  #
+  # rxode2 promotes a trailing comment on an ini() line into `label("<comment>")`
+  # when the function is parsed with source refs kept. A double quote inside
+  # that comment terminates the generated string early and the re-parse fails
+  # inside rxode2:::.rxReplaceCommentWithLabel(), with no indication of which
+  # model or line is responsible. ANY embedded double quote breaks it, not just
+  # an unbalanced one, because the generated label is itself double-quoted.
+  #
+  # This is invisible to buildModelDb(), which resolves without source refs and
+  # so never runs the promotion -- the build goes green while the test suite
+  # fails. Moein_2024_apitolisib_human.R hit this on an eta line quoting the
+  # Online Resource text. Fix by using single quotes inside the comment.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  bad <- character(0)
+  for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
+    lines <- readLines(f, warn = FALSE)
+    inIni <- FALSE
+    for (i in seq_along(lines)) {
+      ln <- lines[[i]]
+      if (grepl("^\\s*ini\\(\\{", ln)) {
+        inIni <- TRUE
+        next
+      }
+      if (grepl("^\\s*model\\(\\{", ln)) inIni <- FALSE
+      if (!inIni) next
+      # A standalone comment line is not attached to a parameter, and a line
+      # that already calls label() is not promoted.
+      if (grepl("^\\s*#", ln)) next
+      if (grepl("label(", ln, fixed = TRUE)) next
+      # Locate the first # that is not itself inside a string literal.
+      chars <- strsplit(ln, "", fixed = TRUE)[[1]]
+      nq <- 0L
+      hash <- 0L
+      for (k in seq_along(chars)) {
+        if (chars[[k]] == '"') {
+          nq <- nq + 1L
+        } else if (chars[[k]] == "#" && nq %% 2L == 0L) {
+          hash <- k
+          break
+        }
+      }
+      if (hash == 0L) next
+      if (grepl('"', substring(ln, hash), fixed = TRUE)) {
+        bad <- c(bad, paste0(basename(f), ":", i))
+      }
+    }
+  }
+  expect_equal(sort(bad), character(0))
+})
+
 # Within-subject random-effect levels. `etaiov_<param>_<occ>` (inter-occasion)
 # and `etabvv_<param>_<visit>` (between-visit) both pair with the log-scale
 # fixed effect `l<param>` rather than with a same-named fixed effect, so
