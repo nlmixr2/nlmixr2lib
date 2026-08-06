@@ -767,6 +767,64 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Zurlinden_2016_paracetamol.R`.
 
+### a_gut_lumen (**canonical PBPK intestinal-lumen compartment**)
+- **Type:** compartment
+- **Role:** Intestinal lumen contents in mass-balance PBPK extractions: unabsorbed drug plus drug returned from bile. The dosing target for the oral route and the return target for enterohepatic recirculation; drains to `a_gut` by first-order absorption and to `a_feces` by first-order faecal excretion.
+- **Source aliases:**
+  - `Agutlumen` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
+- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
+- **Notes:** Distinct from `a_gut`, which is the perfused gut **tissue** compartment that exchanges with plasma at `q_gut`; `a_gut_lumen` is the lumen contents and has no blood flow. A PBPK model with oral dosing and/or enterohepatic recirculation needs both. Distinct from the bare `gut_lumen` compartment used by non-PBPK gastrointestinal-transit models: `a_` marks an amount state in a mass-balance whole-body PBPK, and registering the two under one name would put a PBPK amount and a transit-model state under a single canonical. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+
+### a_bile (**canonical PBPK biliary compartment**)
+- **Type:** compartment
+- **Role:** Biliary compartment in mass-balance PBPK extractions. Receives saturable hepatobiliary efflux from `a_liver` and empties into `a_gut_lumen` at a first-order rate, closing the enterohepatic recirculation loop.
+- **Source aliases:**
+  - `ABile` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
+- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
+- **Notes:** Companion to the non-PBPK enterohepatic-recirculation compartments registered under "Enterohepatic recirculation" above; `a_bile` is the `a_<organ>` mass-balance form. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+
+### a_feces (**canonical PBPK faecal-excretion compartment**)
+- **Type:** compartment
+- **Role:** Cumulative faecal-excretion accumulator in mass-balance PBPK extractions. Terminal state -- receives first-order loss from `a_gut_lumen` and has no outflow.
+- **Source aliases:**
+  - `Afeces` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
+- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
+- **Notes:** Faecal analogue of `a_urine`; both are cumulative excreted-amount accumulators rather than physiological organs, and both live on the `a_<organ>` namespace so a mass-balance sum over the model's states is complete. Spelled `a_feces` (not `a_faeces`) to match the `Afeces` source spelling and the ASCII-only model-file rule; note the `compartmentData` `specimen` vocabulary uses the British `"faeces"`. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+
+### a_filtrate (**canonical PBPK renal tubular-filtrate compartment**)
+- **Type:** compartment
+- **Role:** Renal tubular filtrate / tubular lumen in mass-balance PBPK extractions. Receives glomerular filtration and saturable active tubular secretion from `a_kidney`; loses drug by first-order tubular reabsorption back to `a_kidney` and by bulk filtrate flow onward to `a_urine_storage`.
+- **Source aliases:**
+  - `Afilterate` -- the source code's own misspelling, used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
+  - `Ffiltrate` / `Qfiltrate` -- the corrected spelling used in the same paper's supplementary tables for the compartment's volume fraction and inflow.
+  - `tubules` -- the term used in the Sharma 2023 manuscript body and figure axes for this compartment.
+- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
+- **Notes:** The compartment that makes non-linear renal handling expressible: with both saturable secretion into it and first-order reabsorption out of it, renal clearance becomes dose-dependent. Distinct from the non-PBPK `renal_cortex` accumulation compartment, which represents drug retained in kidney tissue rather than filtrate in the tubular lumen. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+
+### a_urine_storage (**canonical PBPK pre-void urine-storage compartment**)
+- **Type:** compartment
+- **Role:** Pre-void urine storage in mass-balance PBPK extractions: a renal transit delay between the tubular filtrate and cumulative urinary excretion. Receives bulk filtrate flow from `a_filtrate` and empties to `a_urine` at a first-order rate.
+- **Source aliases:**
+  - `Adelay` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`; the Sharma 2023 Methods describe it as "a temporary storage compartment from which NFT was excreted to urine".
+- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
+- **Notes:** Distinct from `a_urine`, which is the cumulative amount **already excreted**; `a_urine_storage` holds drug that has left the tubules but has not yet been voided, and is what lets a model reproduce the lag between renal clearance and measured urinary recovery. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+
+### a_rest_of_body (**canonical PBPK lumped-remainder compartment**)
+- **Type:** compartment
+- **Role:** Single lumped remainder compartment for all tissues not modelled explicitly in a mass-balance PBPK extraction. Its volume is total body volume **minus** the sum of the explicit organ volumes and its plasma flow is cardiac output **minus** the sum of the explicit organ flows.
+- **Source aliases:**
+  - `Arestbody` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`; the Sharma 2023 manuscript writes it `Restbody`.
+- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
+- **Notes:** Distinct from the `a_rapidly_perfused` / `a_slowly_perfused` pair, which is a perfusion-based two-way lumping of the non-explicit tissues; `a_rest_of_body` is a single by-subtraction remainder, so its volume and flow are defined by closure rather than by a tabulated fraction, and its partition coefficient is typically fitted rather than predicted. Use `a_rest_of_body` when the source model has exactly one remainder compartment. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+
+### a_plasma (**canonical PBPK combined-plasma compartment**)
+- **Type:** compartment
+- **Role:** Single combined plasma compartment in mass-balance PBPK extractions where the model has no arterial/venous split: every organ returns to it and cardiac output leaves from it.
+- **Source aliases:**
+  - `Aplasma` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
+- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
+- **Notes:** Distinct from the `a_venous` / `a_arterial` pair used when the source model carries two separate blood pools, and distinct from the bare `plasma` compartment reserved for the Cao 2013 mAb minimal-PBPK family (see the "mPBPK exception" section) -- `a_plasma` is an **amount** state in a whole-body mass-balance PBPK whereas the mPBPK `plasma` is a concentration state. Follows the precedent set by `a_urine` above, which likewise carries the `a_` prefix rather than reusing the bare `urine` form. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+
 ### a_fast (**canonical bimodal-disease fast-progression arm**)
 - **Type:** compartment
 - **Role:** Bimodal disease-progression state for the fast-progression arm in Delor 2013 Alzheimer mixture-of-progression-rates PD model. Per-subject mixture weight selects between this fast arm and the slow arm.
