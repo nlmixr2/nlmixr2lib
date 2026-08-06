@@ -1410,6 +1410,8 @@ navbar:
         href: articles/Retlich_2015_linagliptin.html
       - text: "Linagliptin (Tadayasu 2014)"
         href: articles/Tadayasu_2014_linagliptin.html
+      - text: "Linezolid (Abdelgawad 2024)"
+        href: articles/Abdelgawad_2024_linezolid.html
       - text: "Linezolid (Boak 2014)"
         href: articles/Boak_2014_linezolid.html
       - text: "Linezolid (Milakovic 2024)"
@@ -3015,6 +3017,7 @@ articles:
   - articles/Abbasi_2023_gentamicin
   - articles/Abboud_2009_epinephrine
   - articles/AbdelJalil_2013_tacrolimus
+  - articles/Abdelgawad_2024_linezolid
   - articles/AbdulAziz_2016_doripenem
   - articles/Abduljalil_2009_clarithromycin
   - articles/Abrantes_2017_moroctocog

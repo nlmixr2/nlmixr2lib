@@ -38,6 +38,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$"` — canonical shape of a covariate-effect parameter name: a leading `e_`, a covariate token, and one to five additional tokens (final token is the affected PK parameter, optional middle tokens carry metabolite / shared-exponent / CL-component context).
 - `clComponents = c("ss", "time", "renal", "nonren")` — suffix tokens permitted on multi-component CL parameters (e.g., `cl_renal + cl_nonren`).
 - `transformPrefixes = c("l", "logit", "probit")` — accepted parameter-name transform prefixes.
+- Within-subject random-effect levels, matched by `R/checkModelConventions.R::.isIOVEtaSuffix`: `etaiov_<param>_<occ>` for inter-occasion variability and `etabvv_<param>_<visit>` for between-visit variability, where `<param>` is an existing fixed-effect parameter (bare, or with an `l` / `ltv` / `lv` prefix) and the trailing integer is the occasion / visit index. The two prefixes are kept separate because a paper can fit both levels at once on different parameters -- `Abdelgawad_2024_linezolid.R` carries five-occasion IOV on `ka` and `mtt` alongside a two-visit BVV on `vmax`, and folding them into one prefix would lose the published random-effect hierarchy. NONMEM `$OMEGA BLOCK(1) SAME` repeats map to `~ fix(<variance>)` on every index after the first.
 - `residualError = c("propSd", "addSd", "expSd")` — canonical residual-error SD names. `propSd` / `addSd` are the proportional and additive SDs for the standard `~ prop(...)`, `~ add(...)`, and combined `~ prop(...) + add(...)` forms. `expSd` is the log-scale residual SD used with `~ lnorm(...)`.
 - `deprecatedResidualError`, `deprecatedIivPrefixes`, `deprecatedVolumeNames`, `deprecatedVmaxNames`, `deprecatedParentSuffix` — deprecation lists also remain in R.
 
@@ -736,6 +737,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lke0 = log(0.134) = -2.01`, giving `ke0 = 0.134 1/min` for the rocuronium effect-compartment equilibration; allometric scaling `(BW/70)^-0.25`), `Savic_2010_warfarin.R` (founding registry example -- 1-compartment PK with effect-compartment-driven proportional-odds PD), `Schindler_2016_sunitinib.R` (effect-compartment equilibration with daily AUC at ln(2)/50 1/h).
 - **Notes:** Distinct from `lke_kpd` (which is K-PD elimination rate and was deprecated in favour of the canonical `lkel`). `lke0` is specifically the effect-compartment equilibration parameter for hysteresis PK-PD modelling.
 
+### ppc (**canonical effect-compartment pseudo-partition coefficient**)
+- **Type:** paper-named-param
+- **Role:** Steady-state ratio of the effect-compartment concentration to the central (plasma) concentration in a Sheiner-style effect-compartment model, `d Ce / dt = ke0 * (ppc * Cc - Ce)` (unitless fraction). Unlike a plain effect compartment, where the steady-state ratio is 1 by construction, `ppc` scales the driving concentration so the effect compartment equilibrates to a fraction (or multiple) of plasma -- the standard way to describe tissue penetration when only a delayed, partitioned site-of-action concentration is measured. Inside `model()` the bare name is `ppc`; the log-transformed `lppc` form is used in `ini()`, since the coefficient is strictly positive.
+- **Source aliases:**
+  - `PPC` -- Abdelgawad 2024 paper and control-stream notation (`PPC plasma-CSF`).
+  - `Kp,uu`-style "penetration ratio" / "partition coefficient" prose in CSF- and tissue-penetration papers, when the quantity is the steady-state ratio of an effect compartment rather than a physiologic tissue-to-plasma partition.
+- **Example models:** `Abdelgawad_2024_linezolid.R` (founding example -- `lppc = log(0.365)`, the maximal CSF-to-plasma pseudo-partition coefficient for linezolid in tuberculous meningitis, modulated by CSF total protein through the covariate-effect parameter `e_csftpro_ppc`).
+- **Notes:** Distinct from `ke0`, which sets how fast the effect compartment equilibrates, whereas `ppc` sets the level it equilibrates to; a model with a partitioned effect compartment needs both. Distinct from the PBPK `kpu<n>` family (clustered unbound tissue-to-plasma partition coefficients derived from tissue composition), which are physiologic constants of a whole-body model rather than an estimated effect-compartment parameter. Covariate effects on `ppc` follow the standard `e_<cov>_ppc` shape.
+
 ### lec50 (**canonical log-transformed effect-compartment EC50**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed concentration producing half-maximal effect in sigmoid Emax / Imax PD models (concentration units). Inside `model()` the bare name is `ec50`.
@@ -1024,6 +1034,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** First-order rate constant for transit-absorption chains; equals `n_transit / mtt` for a chain of length `n_transit`.
 - **Source aliases:** none.
 - **Example models:** transit-absorption popPK extractions.
+
+### ntr (**canonical transit-chain length**)
+- **Type:** paper-named-param
+- **Role:** Number of absorption transit compartments in a Savic (2007) transit chain (unitless, and typically non-integer because it is estimated as the shape parameter of the equivalent gamma-density input). Closes the `mtt` / `ktr` / `ntr` family: `ktr = (ntr + 1) / mtt`. Inside `model()` the bare name is `ntr`; the log-transformed `lntr` form is used in `ini()`, since the count is strictly positive.
+- **Source aliases:**
+  - `NN` -- NONMEM control-stream notation for the transit-chain shape parameter (Abdelgawad 2024 `$THETA 6 NN`, Svensson 2018 rifampicin `THETA(9)`).
+  - `N`, `n_transit`, `NTR` -- equivalent paper notation.
+- **Example models:** `Abdelgawad_2024_linezolid.R` (founding example -- `lntr = log(5.68)`, an estimated chain length feeding rxode2's analytical `transit()`).
+- **Notes:** `ntr` is the canonical name for new extractions. Do NOT use `lnn` / `nn` for a transit-chain length: the `lnn` / `nn_fix` form is reserved for the Wang and co-authors sigmoidicity exponent in specific BDE / morphine-like models, so reusing it here would be a role collision. Legacy files predating this entry (`Svensson_2018_rifampicin.R`, `Smythe_2013_gatifloxacin.R`) still carry `lnn` / `nn` and are not retrofitted. Distinct from `ktr`, which is the per-compartment rate, and from `mtt`, which is the mean time through the whole chain.
 
 ### kmet (**canonical metabolite-formation rate constant**)
 - **Type:** paper-named-param

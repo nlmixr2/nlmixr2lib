@@ -265,17 +265,28 @@ checkModelConventions <- function(model, verbose = TRUE) {
   all(matches)
 }
 
-# Recognize an inter-occasion-variability (IOV) eta suffix of the form
-# `iov_<param>_<occ>` where `<param>` corresponds to an existing
-# fixed-effect parameter (matched as the bare token `<param>`, with the
-# canonical log prefix `l<param>`, or with the typical-value prefixes
-# `ltv<param>` / `lv<param>`) and `<occ>` is a positive integer occasion
-# index. Used to accept names like `etaiov_k13_1` (a single IOV eta on
-# `k13` for occasion 1) without flagging them as missing a structural
-# pair.
+# Recognize a within-subject-level variability eta suffix of the form
+# `iov_<param>_<occ>` or `bvv_<param>_<visit>` where `<param>` corresponds
+# to an existing fixed-effect parameter (matched as the bare token
+# `<param>`, with the canonical log prefix `l<param>`, or with the
+# typical-value prefixes `ltv<param>` / `lv<param>`) and the trailing
+# integer is the occasion / visit index. Used to accept names like
+# `etaiov_k13_1` (a single IOV eta on `k13` for occasion 1) and
+# `etabvv_vmax_1` (a between-visit eta on `vmax` for visit 1) without
+# flagging them as missing a structural pair.
+#
+# `iov_` and `bvv_` are separate prefixes because a source paper can fit
+# BOTH levels simultaneously on different parameters: Abdelgawad 2024
+# linezolid carries five-occasion IOV on `ka` and `mtt` alongside a
+# two-visit BVV on `vmax`, and collapsing them would lose the published
+# random-effect hierarchy.
 .isIOVEtaSuffix <- function(suffix, fixed_names) {
-  if (!startsWith(suffix, "iov_")) return(FALSE)
-  rest <- substr(suffix, 5L, nchar(suffix))
+  prefix <- NULL
+  for (p in c("iov_", "bvv_")) {
+    if (startsWith(suffix, p)) prefix <- p
+  }
+  if (is.null(prefix)) return(FALSE)
+  rest <- substr(suffix, nchar(prefix) + 1L, nchar(suffix))
   m <- regmatches(rest, regexec("^(.+)_([0-9]+)$", rest))[[1]]
   if (length(m) != 3L) return(FALSE)
   param <- m[[2L]]
