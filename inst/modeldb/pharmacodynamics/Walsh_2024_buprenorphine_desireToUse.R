@@ -230,11 +230,12 @@ Walsh_2024_buprenorphine_desireToUse <- function() {
     # -------------------------------------------------------------------
     # Imax exposure-response on the desire to use VAS score.
     # -------------------------------------------------------------------
-    dtu <- base * (1 - imax_t * CP_BPN_NGML^hill / (ic50^hill + CP_BPN_NGML^hill))
+    desiretousevas <-
+      base * (1 - imax_t * CP_BPN_NGML^hill / (ic50^hill + CP_BPN_NGML^hill))
 
     # -------------------------------------------------------------------
     # Logit-normal residual error on the bounded range -1 to 101.
     # -------------------------------------------------------------------
-    dtu ~ logitNorm(addSd, -1, 101)
+    desiretousevas ~ logitNorm(addSd, -1, 101)
   })
 }

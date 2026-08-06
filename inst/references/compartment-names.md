@@ -607,6 +607,31 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Abuse-liability and opioid-withdrawal clinical scores
+
+### druglikingvascfb (**canonical period-corrected drug liking VAS change-score output compartment**)
+- **Type:** compartment
+- **Role:** Period-corrected drug liking maximum-effect (Emax) visual analog scale (VAS) score output for opioid abuse-liability / blockade PD models. The endpoint is a CHANGE score: the pre-challenge VAS value is subtracted from the maximum value recorded after a fixed opioid challenge, so the state is a difference on the VAS scale rather than an absolute reading. Use `druglikingvascfb` whenever the paper's own equation targets the period-corrected (change) quantity; a future model fitting the ABSOLUTE drug liking VAS reading should register a companion `druglikingvas`, exactly as `das28` and `das28cfb` are separated.
+- **Source aliases:** `VAS(Cp)`, `drug liking Emax VAS score` -- Walsh 2024 paper notation.
+- **Example models:** `Walsh_2024_buprenorphine_drugLiking.R` (Imax blockade of hydromorphone-18-mg drug liking by subcutaneous depot buprenorphine CAM2038; logit-transformed onto -1 to 52).
+- **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. The `cfb` suffix follows the `das28` / `das28cfb` precedent for marking a change-from-baseline variant, and the lowercase run-together form follows `das28` / `deltaUPDRS`. Note the deliberate distinction from the metabolite-suffix token `vas` (canonical vascular-pool suffix, Ayyar 2024 PBPK) -- the full `druglikingvascfb` name avoids that collision, which is why a bare `vas` observation variable must never be used for a VAS score. Walsh 2024 bounds the logit transformation at -1 to 52 (not 0 to 100) because the period-corrected bipolar score is a change from a neutral 50, so 52 is just above the largest attainable increase.
+
+### desiretousevas (**canonical desire-to-use VAS output compartment**)
+- **Type:** compartment
+- **Role:** Desire to use visual analog scale (VAS) score output for opioid craving / substance-use PD models. Absolute (not change-corrected) reading on a 0-100 mm unipolar scale where 0 = no effect. Companion endpoint to `druglikingvascfb` in opioid-blockade analyses.
+- **Source aliases:** `desire to use VAS score` -- Walsh 2024 paper notation.
+- **Example models:** `Walsh_2024_buprenorphine_desireToUse.R` (Imax suppression of pre-challenge desire to use by subcutaneous depot buprenorphine CAM2038, with an exponential onset-delay term on Imax; logit-transformed onto -1 to 101).
+- **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. No `cfb` suffix because the modelled quantity is the absolute pre-challenge score, in contrast to its sister endpoint `druglikingvascfb`. The logit bounds -1 to 101 pad the 0-100 unipolar scale by one unit either side so that predictions of exactly 0 and 100 remain attainable.
+
+### cows (**canonical Clinical Opiate Withdrawal Scale total-score output compartment**)
+- **Type:** compartment
+- **Role:** Clinical Opiate Withdrawal Scale (COWS) total score output for opioid-withdrawal PD models. Eleven observer-rated withdrawal signs each scored 0-4, giving an integer total of 0-44 (45 ordered categories) in which 5-12 denotes mild symptoms. Because the endpoint is a bounded integer, models of this state typically live on the standard-normal quantile (probit) scale and map back via the normal CDF -- see `probitbase` / `probitbase_low` in `parameter-names.md`.
+- **Source aliases:** `COWS score`, `COWS total score` -- Walsh 2024 paper notation.
+- **Example models:** `Walsh_2024_buprenorphine_cows.R` (bounded-integer Imax model of COWS suppression by subcutaneous depot buprenorphine CAM2038, encoded as `probitNorm(addSd, 0, 45)`).
+- **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. Registered as the bare score acronym (no scale-type suffix) because COWS is a single unambiguous instrument with one total score, unlike the VAS family where the scale type must be named. The `0, 45` bounds on the probit transform are the 45 ordered categories, not the 0-44 score maximum.
+
+---
+
 ## Body-weight PD output
 
 ### bw (**canonical body-weight PD output**)
