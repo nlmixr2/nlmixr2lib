@@ -2,7 +2,15 @@
 
 # development version
 
-- Add Majid 2024 lenvatinib ([doi:10.1002/psp4.13130](https://doi.org/10.1002/psp4.13130)) - patients with radioiodine-refractory differentiated thyroid cancer.
+- Add Aoki 2024 intra-target microdosing PBPK-PKRO model
+  ([doi:10.3389/fphar.2024.1366160](https://doi.org/10.3389/fphar.2024.1366160))
+  -- drug-agnostic simulated small-molecule compounds, no human subjects.
+
+- Canonical unit spellings. The machine-readable `units` block wrote the same
+  time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
+  -- so a consumer parsing `units$time` could not canonicalise it without
+  carrying its own spelling table. Same for `"minute"`/`"min"` and
+  `"microgram"`/`"ug"`.
 
 - Add Willemin 2024 interleukin-6 / CYP PBPK ([doi:10.1002/psp4.13144](https://doi.org/10.1002/psp4.13144)) - patients with relapsed/refractory multiple myeloma experiencing cytokine release syndrome after teclistamab.
 
