@@ -587,6 +587,41 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Heathman_2024_efavirenz.R`.
 - **Notes:** Initial condition `enzyme_2a6(0) <- 1` (relative to baseline). Founding example: `Heathman_2024_efavirenz.R`.
 
+### enzyme_1a2 (**canonical CYP1A2 enzyme pool**)
+- **Type:** compartment
+- **Role:** CYP1A2 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline. Same `enzyme_<isoform>` family as `enzyme_2b6` / `enzyme_2a6`, but driven by an exogenous or endogenous modulator rather than by drug autoinduction.
+- **Source aliases:** none.
+- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
+- **Notes:** Initial condition `enzyme_1a2(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R` (interleukin-6 net *induction* of CYP1A2 during cytokine release syndrome, alongside suppression of four other isoenzymes).
+
+### enzyme_2c9 (**canonical CYP2C9 enzyme pool**)
+- **Type:** compartment
+- **Role:** CYP2C9 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
+- **Source aliases:** none.
+- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
+- **Notes:** Initial condition `enzyme_2c9(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`.
+
+### enzyme_2c19 (**canonical CYP2C19 enzyme pool**)
+- **Type:** compartment
+- **Role:** CYP2C19 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
+- **Source aliases:** none.
+- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
+- **Notes:** Initial condition `enzyme_2c19(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`.
+
+### enzyme_3a4 (**canonical CYP3A4 enzyme pool**)
+- **Type:** compartment
+- **Role:** CYP3A4 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
+- **Source aliases:** none.
+- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
+- **Notes:** Initial condition `enzyme_3a4(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`. Distinct from a tissue-resolved `enzyme_liver` / `enzyme_gut` pair, which names the organ rather than the isoenzyme; use `enzyme_3a4` when several isoenzymes are resolved within one tissue, and the organ-suffixed form when one isoenzyme is resolved across several organs.
+
+### enzyme_3a5 (**canonical CYP3A5 enzyme pool**)
+- **Type:** compartment
+- **Role:** CYP3A5 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
+- **Source aliases:** none.
+- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
+- **Notes:** Initial condition `enzyme_3a5(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`. Kept separate from `enzyme_3a4` even when a source assumes identical potencies for the two, because the two isoenzymes drive different victim drugs and a user may want to break the assumption.
+
 ---
 
 ## DAS28 disease-activity score

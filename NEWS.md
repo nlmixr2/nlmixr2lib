@@ -29,6 +29,8 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
+- Add Willemin 2024 interleukin-6 / CYP PBPK ([doi:10.1002/psp4.13144](https://doi.org/10.1002/psp4.13144)) - patients with relapsed/refractory multiple myeloma experiencing cytokine release syndrome after teclistamab.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
