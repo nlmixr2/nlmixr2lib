@@ -587,19 +587,22 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Heathman_2024_efavirenz.R`.
 - **Notes:** Initial condition `enzyme_2a6(0) <- 1` (relative to baseline). Founding example: `Heathman_2024_efavirenz.R`.
 
-### enzyme_liver (**canonical hepatic enzyme pool**)
+### enzyme_3a4_liver (**canonical hepatic CYP3A4 enzyme pool**)
 - **Type:** compartment
-- **Role:** Hepatic pool of a drug-metabolising enzyme whose amount is modulated over time by an inducer or suppressor. Tissue-resolved counterpart of the isoenzyme-resolved `enzyme_2b6` / `enzyme_2a6` pair: use `enzyme_liver` / `enzyme_gut` when the SAME isoenzyme is tracked in more than one tissue with tissue-specific turnover, and the isoenzyme-suffixed forms when several isoenzymes are tracked in one tissue. The two axes may be combined if a future model needs both.
-- **Source aliases:** `ENZact,H-CYP3A`.
-- **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R`.
-- **Notes:** The state carries the ABSOLUTE enzyme abundance in the units the source reports (e.g. pmol/mg microsomal protein), with initial condition `enzyme_liver(0) <- bl_enzyme_liver`; relative activity is then exposed as the algebraic output `enzyme_liver / bl_enzyme_liver`. This differs from `enzyme_2b6(0) <- 1`, which is already normalised; either is acceptable, but state the choice in `compartmentData$units`. Founding example: `Chen_2024_interleukin6_cyp3a_pbpk.R` (IL-6 suppression of hepatic CYP3A, kdeg 0.0193/h).
+- **Role:** Hepatic CYP3A4 enzyme pool in a tissue-resolved enzyme-turnover model, carrying an *absolute* enzyme abundance (pmol/mg microsomal protein) rather than a fraction of baseline. Turns over as `d/dt(enzyme_3a4_liver) <- kdeg_liver * bl_enzyme_3a4_liver * fsupp - kdeg_liver * enzyme_3a4_liver`, where `fsupp` is the cytokine-driven suppression of synthesis.
+- **Source aliases:**
+  - `ENZact,H-CYP3A` -- Chen 2024 Appendix S1 Equation 1 notation.
+  - `CYP3A4 in liver` -- Chen 2024 Table 1 notation.
+- **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R` (founding example; baseline 137 pmol/mg microsomal protein in healthy volunteers, 82.2 in rheumatoid arthritis).
+- **Notes:** Ratified 2026-08-06. Initial condition is the baseline abundance `enzyme_3a4_liver(0) <- bl_enzyme_3a4_liver`, **not** 1 -- this is the absolute-abundance form, distinct from the relative-to-baseline convention used by `enzyme_2b6` / `enzyme_2a6` (`enzyme_2b6(0) <- 1`). Either normalisation is acceptable, but state the choice in `compartmentData$units`; relative activity is exposed as the algebraic output `enzyme_3a4_liver / bl_enzyme_3a4_liver`. **The isoenzyme is named before the organ so the two naming axes compose:** use the bare isoenzyme form (`enzyme_2b6`, `enzyme_2a6`) when several isoenzymes are resolved within one tissue, and append the organ to the isoenzyme (`enzyme_3a4_liver` / `enzyme_3a4_gut`) when the *same* isoenzyme is resolved across several organs. An organ-only form (`enzyme_liver`) is deliberately **not** used: it does not say which isoenzyme, and it would collide the moment a second isoenzyme were resolved in the same organ. Paired with `enzyme_3a4_gut`.
 
-### enzyme_gut (**canonical intestinal enzyme pool**)
+### enzyme_3a4_gut (**canonical intestinal CYP3A4 enzyme pool**)
 - **Type:** compartment
-- **Role:** Intestinal (gut-wall) pool of a drug-metabolising enzyme whose amount is modulated over time by an inducer or suppressor. Companion to `enzyme_liver`; the two are distinguished by tissue-specific degradation rate constants, which is what makes gut and hepatic enzyme activity respond differently to the same transient perpetrator exposure.
-- **Source aliases:** none.
-- **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R`.
-- **Notes:** Carries the absolute abundance in the source's units (e.g. nmol/small intestine), initial condition `enzyme_gut(0) <- bl_enzyme_gut`. Founding example: `Chen_2024_interleukin6_cyp3a_pbpk.R` (IL-6 suppression of intestinal CYP3A, kdeg 0.03/h).
+- **Role:** Intestinal (small-bowel) CYP3A4 enzyme pool in a tissue-resolved enzyme-turnover model, carrying an *absolute* enzyme abundance (nmol per small intestine) rather than a fraction of baseline. Turns over as `d/dt(enzyme_3a4_gut) <- kdeg_gut * bl_enzyme_3a4_gut * fsupp - kdeg_gut * enzyme_3a4_gut`.
+- **Source aliases:**
+  - `CYP3A4 in gut` -- Chen 2024 Table 1 notation.
+- **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R` (founding example; baseline 66.2 nmol/small intestine in healthy volunteers, 40.0 in rheumatoid arthritis).
+- **Notes:** Ratified 2026-08-06. Initial condition `enzyme_3a4_gut(0) <- bl_enzyme_3a4_gut`. Kept separate from `enzyme_3a4_liver` because the gut pool has both a different baseline unit (an amount per organ, not a per-mg-protein density) and a different degradation half-life, and because intestinal first-pass CYP3A4 is the arm that drives oral victim-drug interactions -- the tissue-specific `kdeg` values are what make gut and hepatic activity respond differently to the same transient perpetrator exposure. See `enzyme_3a4_liver` for the naming rule.
 
 ---
 

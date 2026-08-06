@@ -89,7 +89,7 @@ knitr::kable(
       "lcl", "lvc",
       "emin", "ec50",
       "kdeg_liver", "kdeg_gut",
-      "bl_enzyme_liver", "bl_enzyme_gut",
+      "bl_enzyme_3a4_liver", "bl_enzyme_3a4_gut",
       "etalcl", "etalvc",
       "propSd",
       "Equation 1"
@@ -152,8 +152,8 @@ constants, so every ODE term is checked explicitly.
 | `cl / vc * central` | (L/h) / L * mg = mg/h | matches d(central)/dt |
 | `Cc = central / vc * 1e6` | mg/L * (pg/mL)/(mg/L) = pg/mL | matches EC50 units |
 | `fsupp` | unitless (both `emin` and the Michaelis term are unitless) | scalar |
-| `kdeg_liver * bl_enzyme_liver * fsupp` | (1/h) * (pmol/mg) = pmol/mg/h | matches d(enzyme_liver)/dt |
-| `kdeg_liver * enzyme_liver` | (1/h) * (pmol/mg) = pmol/mg/h | matches |
+| `kdeg_liver * bl_enzyme_3a4_liver * fsupp` | (1/h) * (pmol/mg) = pmol/mg/h | matches d(enzyme_3a4_liver)/dt |
+| `kdeg_liver * enzyme_3a4_liver` | (1/h) * (pmol/mg) = pmol/mg/h | matches |
 
 The single non-obvious conversion is `1e6`: amounts are in mg and volumes in L,
 so `central / vc` is mg/L, and 1 mg/L = 1e6 pg/mL. EC50 and every published IL-6
@@ -217,15 +217,15 @@ ss <- solve_tv(rxode2::et(amt = 0, time = 0, cmt = "central"), tmax = 1000, by =
 data.frame(
   Pool = c("liver", "gut"),
   Baseline = c(137, 66.2),
-  `Min over 1000 h` = c(min(ss$enzyme_liver), min(ss$enzyme_gut)),
-  `Max over 1000 h` = c(max(ss$enzyme_liver), max(ss$enzyme_gut)),
+  `Min over 1000 h` = c(min(ss$enzyme_3a4_liver), min(ss$enzyme_3a4_gut)),
+  `Max over 1000 h` = c(max(ss$enzyme_3a4_liver), max(ss$enzyme_3a4_gut)),
   check.names = FALSE
 ) |>
   knitr::kable(digits = 6)
 
 stopifnot(
-  all.equal(range(ss$enzyme_liver), c(137, 137), tolerance = 1e-8),
-  all.equal(range(ss$enzyme_gut), c(66.2, 66.2), tolerance = 1e-8),
+  all.equal(range(ss$enzyme_3a4_liver), c(137, 137), tolerance = 1e-8),
+  all.equal(range(ss$enzyme_3a4_gut), c(66.2, 66.2), tolerance = 1e-8),
   all.equal(range(ss$Cc), c(0, 0), tolerance = 1e-12)
 )
 ```
@@ -241,14 +241,14 @@ recovery rate constant and not merely as a scale factor on the synthesis term.
 The displacement is applied with `evid = 5` (replacement) dosing events on the
 enzyme compartments, following the pattern used by
 `vanErp_2010_sunitinib`. Note that the `inits` argument to `rxSolve()` would
-*not* work here: the model body sets `enzyme_liver(0) <- bl_enzyme_liver`, and a
+*not* work here: the model body sets `enzyme_3a4_liver(0) <- bl_enzyme_3a4_liver`, and a
 model-body initial condition takes precedence over `inits`, so the states would
 silently stay at baseline and the check would pass vacuously.
 
 ```{r perturbation}
 recover <- function(f_liver, f_gut) {
-  ev <- rxode2::et(amt = f_liver * 137, cmt = "enzyme_liver", time = 0, evid = 5) |>
-    rxode2::et(amt = f_gut * 66.2, cmt = "enzyme_gut", time = 0, evid = 5) |>
+  ev <- rxode2::et(amt = f_liver * 137, cmt = "enzyme_3a4_liver", time = 0, evid = 5) |>
+    rxode2::et(amt = f_gut * 66.2, cmt = "enzyme_3a4_gut", time = 0, evid = 5) |>
     rxode2::et(seq(0, 600, by = 1), cmt = "central")
   rxode2::rxSolve(
     tv, ev,
@@ -263,8 +263,8 @@ hi <- recover(1.5, 1.5)
 
 # The displacement must actually have happened, or the check is vacuous.
 stopifnot(
-  abs(lo$enzyme_liver[1] - 0.5 * 137) < 1e-6,
-  abs(hi$enzyme_liver[1] - 1.5 * 137) < 1e-6
+  abs(lo$enzyme_3a4_liver[1] - 0.5 * 137) < 1e-6,
+  abs(hi$enzyme_3a4_liver[1] - 1.5 * 137) < 1e-6
 )
 
 # Recovery half-life should equal log(2)/kdeg for each tissue.
@@ -276,8 +276,8 @@ half_life <- function(d, state, bl) {
 data.frame(
   Pool = c("liver", "gut"),
   `Observed recovery t1/2 (h)` = c(
-    half_life(lo, "enzyme_liver", 137),
-    half_life(lo, "enzyme_gut", 66.2)
+    half_life(lo, "enzyme_3a4_liver", 137),
+    half_life(lo, "enzyme_3a4_gut", 66.2)
   ),
   `log(2)/kdeg (h)` = round(log(2) / c(0.0193, 0.03), 1),
   check.names = FALSE
@@ -285,10 +285,10 @@ data.frame(
   knitr::kable(digits = 1)
 
 stopifnot(
-  abs(tail(lo$enzyme_liver, 1) - 137) < 0.01,
-  abs(tail(hi$enzyme_liver, 1) - 137) < 0.01,
-  abs(tail(lo$enzyme_gut, 1) - 66.2) < 0.01,
-  abs(tail(hi$enzyme_gut, 1) - 66.2) < 0.01
+  abs(tail(lo$enzyme_3a4_liver, 1) - 137) < 0.01,
+  abs(tail(hi$enzyme_3a4_liver, 1) - 137) < 0.01,
+  abs(tail(lo$enzyme_3a4_gut, 1) - 66.2) < 0.01,
+  abs(tail(hi$enzyme_3a4_gut, 1) - 66.2) < 0.01
 )
 ```
 
@@ -343,8 +343,8 @@ clamp <- function(Css, days = 21) {
     Css_sim = tail(d$Cc, 1),
     liver_pct = pct_reduction(tail(d$cyp3aLiver, 1)),
     gut_pct = pct_reduction(tail(d$cyp3aGut, 1)),
-    liver_abundance = tail(d$enzyme_liver, 1),
-    gut_abundance = tail(d$enzyme_gut, 1)
+    liver_abundance = tail(d$enzyme_3a4_liver, 1),
+    gut_abundance = tail(d$enzyme_3a4_gut, 1)
   )
 }
 
