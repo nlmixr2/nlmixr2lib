@@ -1,0 +1,487 @@
+---
+title: "Osimertinib EGFRm+ target engagement QSP (Liang 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Osimertinib EGFRm+ target engagement QSP (Liang 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>",
+  fig.width  = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Liang_2024_osimertinib_qsp"))$reference`
+* Article: <https://doi.org/10.3389/fphar.2024.1363259>
+* PMC record (open access): <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10946252/>
+* Supplementary Material (Data Sheet 1 = the authors' ODE listing; Table 1 =
+  Supplementary Tables S1-S3):
+  <https://www.frontiersin.org/articles/10.3389/fphar.2024.1363259/full#supplementary-material>
+
+```{r load-model}
+mod <- readModelDb("Liang_2024_osimertinib_qsp")
+mod
+```
+
+# What is extracted, and what is not
+
+Liang 2024 contains **two** modelling layers. Only the second is extracted here.
+
+| Layer | Content | Extracted? | Why |
+|---|---|---|---|
+| 1 | Whole-body PBPK for osimertinib in Caucasian / Japanese / Chinese healthy and NSCLC populations | **No** | Built in PK-Sim 10.0. Section 2.1.1 states only that "Rodgers and Rowland, and PK-Sim's standard methods provided the human tissue distribution and cellular permeability estimate for OSI". Table 1 gives drug-specific properties plus exactly one physiological volume (liver: 2.38 / 1.91 / 2.16 L) -- no other organ volumes, no blood flows, no partition-coefficient table, no GI transit model, and no ODEs. The supplementary material contains no `.pksim5` project file. The layer is therefore not reproducible from the published sources, and filling the gaps from platform defaults would be fabrication. |
+| 2 | EGFRm+ (T790M and L858R) target engagement driven by the osimertinib concentration | **Yes** | Section 2.3 Eqs 5-7 are printed in full and every rate constant is published with a citation. |
+
+Because layer 1 is not extracted, the osimertinib concentration that drives
+layer 2 is **supplied by the user** through the canonical time-varying covariate
+`CEFFECT`, exactly matching the authors' own design in which `Clung` is computed
+by the PBPK and handed to the target-engagement equations.
+
+# Population
+
+```{r population}
+pop <- readModelDb("Liang_2024_osimertinib_qsp") |> attr("population")
+str(pop)
+```
+
+Liang 2024 Section 2.3: *"Each simulation consisted of ten virtual subjects."*
+The virtual populations' demographics and dosing regimens were taken from the
+clinical studies tabulated in Liang 2024 Table 2. The three ethnic groups differ
+in the PBPK layer only (liver volume and CYP abundances, Table 1); the
+target-engagement parameters are shared, so ethnicity enters this model solely
+through the `CEFFECT` concentration supplied.
+
+The target-side physiology is that of the **diseased** (NSCLC) population:
+`fu` = 0.019 rather than the healthy-volunteer 0.013 (Table 1).
+
+# Source trace
+
+Every parameter and equation, with its location in the source.
+
+```{r source-trace, echo = FALSE}
+tribble(
+  ~Quantity,        ~Value,                    ~`Source location`,
+  "kon (T790M)",    "0.91 /uM/s = 3276 /uM/h", "Section 2.3 text (from Zhai 2020, = Kinact/Ki)",
+  "kon (L858R)",    "0.44 /uM/s = 1584 /uM/h", "Section 2.3 text (from Zhai 2020, = Kinact/Ki)",
+  "koff",           "0",                       "Section 2.3 text ('assumed to be 0 due to irreversible covalent binding'); Suppl. Data Sheet 1 koff = 0.00",
+  "kturnover",      "0.025 /h",                "Section 2.3 text (from Greig 2015); Suppl. Data Sheet 1 Kturnover = 0.025",
+  "kdeg",           "0.025 /h",                "Suppl. Data Sheet 1 kdeg = 0.025",
+  "Em0 (rbase)",    "0.299 umol/L",            "Section 2.3 text (from Bartelink 2022); Suppl. Data Sheet 1 T0 = 0.299, INIT Tfree = 0.299",
+  "fu",             "0.019",                   "Table 1, fup diseased column; Suppl. Data Sheet 1 fu = 0.019",
+  "Complex ODE",    "Eq 5 + inferred -kdeg*complex", "Section 2.3 Eq 5 (the -kdeg*complex term is NOT in the source; see Assumptions)",
+  "Free-target ODE","Eq 6, verbatim",          "Section 2.3 Eq 6",
+  "Inhibition (%)", "Eq 7, verbatim",          "Section 2.3 Eq 7",
+  "Klu,p",          "28.5",                    "Table 1 (used below only to scale a plasma driver to a pulmonary one)",
+  "Css,max 80 mg OD","577.3 nmol/L",           "Table 2, Caucasian patients, 80 mg OD 29 days (Harvey 2018 comparison)",
+  "Ctrough 80 mg OD","342.4 nmol/L",           "Table 4, Caucasian, 80 mg MD (Harvey 2018 comparison)",
+  "Efficacy window","328-677 nmol/L",          "Introduction (from Abu Hamdh and Nazzal 2023)",
+  "PD threshold",   "> 80% EGFRm+ inhibition", "Section 3.3 (from FDA 2015)"
+) |>
+  knitr::kable(caption = "Source trace for every parameter and equation.")
+```
+
+**Note on equation recovery.** The preprocessed `_trimmed.md` for this article
+dropped all seven display equations as `formula-not-decoded`. Equations 1-7 were
+recovered from the PDF with `pdftotext -layout`. Equations 5-7 as printed are:
+
+```
+(5)  dOEm/dt      = kon * Clung * Emfree - koff * OEm
+(6)  dEmfree/dt   = (Em0 - Emfree) * kturnover - kon * Clung * Emfree + koff * OEm
+(7)  Inhibition(%) = OEm / (Emfree + OEm) * 100
+```
+
+## Units table (dimensional analysis)
+
+Mechanistic models mix molar concentrations with fractional rate constants, so
+every term is checked explicitly.
+
+```{r units-table, echo = FALSE}
+tribble(
+  ~Symbol,           ~Units,             ~`Role`,
+  "target_*",        "umol/L",           "free EGFR mutant concentration (state)",
+  "complex_*",       "umol/L",           "osimertinib-EGFR covalent complex (state)",
+  "CEFFECT",         "umol/L",           "total osimertinib concentration (covariate)",
+  "fu",              "unitless",         "fraction unbound",
+  "cfree",           "umol/L",           "CEFFECT * fu, the free driver concentration",
+  "kon_*",           "1/(umol/L)/h",     "second-order association rate constant",
+  "koff",            "1/h",              "first-order dissociation rate constant",
+  "kturnover",       "1/h",              "first-order target re-synthesis rate constant",
+  "kdeg",            "1/h",              "first-order degradation rate constant",
+  "rbase",           "umol/L",           "baseline total EGFRm+ concentration",
+  "inh*",            "%",                "fractional receptor occupancy * 100"
+) |>
+  knitr::kable(caption = "Units of every symbol in the model.")
+```
+
+Checking each ODE term against the required `umol/L per h`:
+
+* `(rbase - target) * kturnover` = `umol/L * 1/h` = `umol/L/h`. OK
+* `kon * cfree * target` = `1/(umol/L)/h * umol/L * umol/L` = `umol/L/h`. OK
+* `koff * complex` = `1/h * umol/L` = `umol/L/h`. OK
+* `kdeg * complex` = `1/h * umol/L` = `umol/L/h`. OK
+
+`inh` is a ratio of two `umol/L` quantities and is correctly dimensionless
+(reported as a percentage). The only unit conversion applied anywhere in the
+model file is `kon` from `/uM/s` to `/uM/h` (multiply by 3600), because the
+paper's own supplement, `kturnover` and Figure 1 all use hours.
+
+# Parameter table: paper vs. model file
+
+```{r param-table, echo = FALSE}
+ini_tbl <- as.data.frame(mod$iniDf)[, c("name", "est", "fix")]
+paper <- c(
+  lkon_t790m = log(3276), lkon_l858r = log(1584), koff = 0,
+  lkturnover = log(0.025), lkdeg = log(0.025),
+  lrbase = log(0.299), fu = 0.019
+)
+ini_tbl |>
+  mutate(
+    `Paper value (model scale)` = paper[name],
+    `Matches` = ifelse(abs(est - paper[name]) < 1e-10, "yes", "NO")
+  ) |>
+  rename(Parameter = name, `File value` = est, Fixed = fix) |>
+  knitr::kable(caption = "Every ini() value against the source. All are fixed literature values; none were estimated by Liang 2024.")
+
+stopifnot(all(abs(ini_tbl$est - paper[ini_tbl$name]) < 1e-10))
+stopifnot(all(ini_tbl$fix))
+```
+
+# Validation
+
+This is a deterministic mechanistic model with no dose, no absorption and no
+residual error, so NCA is not the right validation target. The checks below
+follow the endogenous / mechanistic pattern: baseline hold, mass balance,
+analytic steady state, and perturbation recovery.
+
+## 1. Baseline hold (zero exposure)
+
+With no drug, free target must sit at `rbase` = 0.299 umol/L indefinitely and
+occupancy must be exactly zero.
+
+```{r baseline-hold}
+ev_zero <- data.frame(
+  id = 1L, time = seq(0, 720, by = 4),
+  CEFFECT = 0, evid = 0L, amt = 0
+)
+s_zero <- rxode2::rxSolve(mod, ev_zero, returnType = "data.frame")
+
+range(s_zero$target_t790m)
+range(s_zero$inhT790M)
+
+stopifnot(all(abs(s_zero$target_t790m - 0.299) < 1e-10))
+stopifnot(all(abs(s_zero$target_l858r - 0.299) < 1e-10))
+stopifnot(all(s_zero$inhT790M == 0), all(s_zero$inhL858R == 0))
+```
+
+The baseline holds to machine precision over 30 days.
+
+## 2. Mass balance: total target is conserved
+
+Because `kturnover` and `kdeg` are both 0.025 /h, total target
+(`free + complex`) is an exactly conserved quantity equal to `rbase`. This is
+the property the inferred `-kdeg*complex` term restores, and it is what makes
+the plateau in the paper's Figure 1 possible at all.
+
+Symbolically, with `Ttot = target + complex`:
+
+```
+dTtot/dt = (rbase - target) * kturnover - kdeg * complex
+         = (rbase - target) * kturnover - kdeg * (Ttot - target)
+```
+
+at `Ttot = rbase` this is `(rbase - target) * (kturnover - kdeg)`, which is
+identically zero when `kturnover == kdeg`. Numerically, under a demanding
+time-varying driver:
+
+```{r mass-balance}
+tt <- seq(0, 360, by = 0.25)
+Cmax_pub <- 0.5773  # umol/L, Liang 2024 Table 2 (Caucasian, 80 mg OD)
+Cmin_pub <- 0.3424  # umol/L, Liang 2024 Table 4 (Caucasian, 80 mg MD)
+kel_recon <- log(Cmax_pub / Cmin_pub) / 24
+
+ev_md <- data.frame(
+  id = 1L, time = tt,
+  CEFFECT = Cmax_pub * exp(-kel_recon * (tt %% 24)),
+  evid = 0L, amt = 0
+)
+s_md <- rxode2::rxSolve(mod, ev_md, returnType = "data.frame")
+
+max(abs(s_md$totalT790M - 0.299))
+max(abs(s_md$totalL858R - 0.299))
+
+stopifnot(max(abs(s_md$totalT790M - 0.299)) < 1e-9)
+stopifnot(max(abs(s_md$totalL858R - 0.299)) < 1e-9)
+```
+
+Total target is conserved to machine precision under a 15-day oscillating
+driver.
+
+## 3. Analytic steady state
+
+Setting `d/dt(complex) = 0` with `koff = 0` and using `target = rbase - complex`
+gives a closed form for occupancy under a constant free concentration:
+
+```
+TO = kon * cfree / (kon * cfree + kdeg)
+```
+
+The simulation must reproduce this exactly.
+
+```{r analytic-ss}
+analytic_to <- function(kon, cfree, kdeg = 0.025) {
+  100 * kon * cfree / (kon * cfree + kdeg)
+}
+
+conc_grid <- c(0.001, 0.01, 0.05, 0.1, 0.3424, 0.5773, 1, 5)
+
+ss_check <- lapply(conc_grid, function(cc) {
+  ev <- data.frame(id = 1L, time = seq(0, 2000, by = 10),
+                   CEFFECT = cc, evid = 0L, amt = 0)
+  s <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  last <- s[nrow(s), ]
+  cfree <- cc * 0.019
+  data.frame(
+    `CEFFECT (umol/L)` = cc,
+    `cfree (umol/L)`   = cfree,
+    `T790M simulated`  = last$inhT790M,
+    `T790M analytic`   = analytic_to(3276, cfree),
+    `L858R simulated`  = last$inhL858R,
+    `L858R analytic`   = analytic_to(1584, cfree),
+    check.names = FALSE
+  )
+}) |> bind_rows()
+
+knitr::kable(ss_check, digits = 6,
+             caption = "Simulated steady-state occupancy against the closed form.")
+
+stopifnot(max(abs(ss_check$`T790M simulated` - ss_check$`T790M analytic`)) < 1e-6)
+stopifnot(max(abs(ss_check$`L858R simulated` - ss_check$`L858R analytic`)) < 1e-6)
+```
+
+Simulated and analytic occupancy agree to better than 1e-6 percentage points
+across four orders of magnitude of driver concentration.
+
+## 4. Perturbation recovery (washout)
+
+Occupancy must decay back toward zero once drug is withdrawn, at a rate set by
+`kdeg` (the only route out of the complex when `koff = 0`). The complex
+half-life should be `log(2)/kdeg` = `r round(log(2)/0.025, 1)` h.
+
+```{r washout}
+tt_w <- seq(0, 720, by = 1)
+ev_w <- data.frame(
+  id = 1L, time = tt_w,
+  # 14 days of 80 mg OD exposure, then complete withdrawal
+  CEFFECT = ifelse(tt_w <= 336, Cmax_pub * exp(-kel_recon * (tt_w %% 24)), 0),
+  evid = 0L, amt = 0
+)
+s_w <- rxode2::rxSolve(mod, ev_w, returnType = "data.frame")
+
+post <- s_w[s_w$time >= 336, ]
+# fraction of complex remaining, relative to the value at withdrawal
+frac <- post$complex_t790m / post$complex_t790m[1]
+t_half_obs <- approx(frac, post$time - 336, xout = 0.5)$y
+t_half_obs
+
+stopifnot(abs(t_half_obs - log(2) / 0.025) < 0.5)
+stopifnot(post$inhT790M[nrow(post)] < 1)
+```
+
+```{r washout-plot, echo = FALSE, fig.cap = "Occupancy rises to a plateau during 14 days of dosing and decays with a 27.7 h half-life after withdrawal at 336 h (dashed line)."}
+s_w |>
+  select(time, T790M = inhT790M, L858R = inhL858R) |>
+  pivot_longer(-time, names_to = "Mutant", values_to = "Inhibition") |>
+  ggplot(aes(time, Inhibition, colour = Mutant)) +
+  geom_line() +
+  geom_vline(xintercept = 336, linetype = "dashed") +
+  labs(x = "Time (h)", y = "EGFRm+ inhibition (%)") +
+  theme_bw()
+```
+
+The observed complex half-life after withdrawal is
+`r round(t_half_obs, 2)` h against the expected `log(2)/kdeg` =
+`r round(log(2)/0.025, 2)` h.
+
+# Figure 1 replication attempt
+
+Liang 2024 Figure 1 shows plasma and pulmonary T790M / L858R inhibition over
+360 h of 80 mg once-daily dosing. Reproducing it requires the osimertinib
+concentration profile from the PBPK layer, which is not extractable. The
+closest paper-anchored substitute is a one-compartment repeated-dose profile
+calibrated to the paper's **own published** steady-state exposures for the
+Caucasian 80 mg OD scenario: `Css,max` = 577.3 nmol/L (Table 2) and `Ctrough` =
+342.4 nmol/L (Table 4), which imply an apparent `kel` of
+`r sprintf("%.4f", kel_recon)` /h (half-life
+`r sprintf("%.1f", log(2)/kel_recon)` h). The pulmonary driver is the plasma
+driver scaled by the paper's lung-to-plasma partition coefficient
+`Klu,p` = 28.5 (Table 1).
+
+```{r figure1-attempt}
+ev_lung <- ev_md
+ev_lung$CEFFECT <- ev_md$CEFFECT * 28.5
+s_lung <- rxode2::rxSolve(mod, ev_lung, returnType = "data.frame")
+
+ss_window <- function(d, from = 336) {
+  d <- d[d$time >= from, ]
+  c(T790M_min = min(d$inhT790M), T790M_max = max(d$inhT790M),
+    L858R_min = min(d$inhL858R), L858R_max = max(d$inhL858R))
+}
+
+comparison <- rbind(
+  data.frame(Matrix = "Plasma", t(ss_window(s_md))),
+  data.frame(Matrix = "Lung",   t(ss_window(s_lung)))
+)
+knitr::kable(comparison, digits = 3,
+             caption = "Simulated steady-state inhibition band over the final 24 h.")
+```
+
+```{r figure1-plot, echo = FALSE, fig.cap = "Replication attempt for Liang 2024 Figure 1: T790M and L858R inhibition over 360 h of 80 mg once-daily dosing, driven by plasma and by pulmonary (plasma x Klu,p) osimertinib concentrations. The dashed line is the paper's 80% efficacy threshold."}
+bind_rows(
+  s_md   |> mutate(Matrix = "Plasma"),
+  s_lung |> mutate(Matrix = "Lung")
+) |>
+  select(time, Matrix, T790M = inhT790M, L858R = inhL858R) |>
+  pivot_longer(c(T790M, L858R), names_to = "Mutant", values_to = "Inhibition") |>
+  ggplot(aes(time, Inhibition, colour = Mutant)) +
+  geom_line() +
+  geom_hline(yintercept = 80, linetype = "dashed") +
+  facet_wrap(~Matrix) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time (h)", y = "EGFRm+ inhibition (%)") +
+  theme_bw()
+```
+
+## What matches, and what does not
+
+**Matches.** The *shape* is right: after a short rise, both mutants sit on a
+flat plateau with a shallow 24-h sawtooth across the full 360 h, exactly the
+qualitative signature of Figure 1. This is precisely what the inferred
+`-kdeg*complex` term buys -- as printed, the system has no plateau at all (see
+Assumptions below). The paper's headline conclusion is also reproduced:
+pulmonary inhibition of both mutants stays well above the 80% PD threshold at
+80 mg once daily (Section 3.3).
+
+**Does not match.** The *level* is too high. Figure 1 reports roughly 90-95%
+pulmonary and 50-78% plasma (T790M) / 33-65% plasma (L858R) inhibition; this
+model gives >99.8% in every case. The discrepancy is driven by the published
+`kon`:
+
+```{r kon-gap}
+cfree_peak   <- Cmax_pub * 0.019
+cfree_trough <- Cmin_pub * 0.019
+
+# kon required to land on the edges of Figure 1's reported plasma T790M band
+kon_for <- function(to, cfree, kdeg = 0.025) (to / (1 - to)) * kdeg / cfree
+kon_needed <- c(
+  `50% at trough` = kon_for(0.50, cfree_trough),
+  `78% at peak`   = kon_for(0.78, cfree_peak)
+)
+kon_needed
+3276 / kon_needed   # fold-difference against the published T790M kon
+```
+
+Reproducing Figure 1's plasma band needs a `kon` of roughly 4-8 /uM/h against
+the published 3276 /uM/h -- a 400- to 900-fold gap. Because
+`kon * cfree` (about 21-36 /h) overwhelms `kdeg` (0.025 /h) by three orders of
+magnitude, occupancy is pinned near 100% and is insensitive to the driver. No
+choice of concentration profile closes this; it is a property of the published
+rate constants, not of the reconstruction used here. **No parameter was tuned to
+improve the match.**
+
+# Assumptions and deviations
+
+This extraction was performed under operator sidecar decision
+`oare_PMC10946252` `request-001` = **option B**, answered 2026-08-05. The
+alternatives offered and not chosen were: (A) encode Eqs 5-7 verbatim with no
+complex elimination, (C) skip the paper, (D) defer pending author
+correspondence.
+
+1. **The whole-body PBPK layer is deliberately not extracted.** See the table
+   at the top of this vignette. Liang 2024 publishes drug-specific properties
+   and one physiological volume, but no organ volumes, blood flows, partition
+   coefficients or ODEs, and deposited no `.pksim5` project. Filling those from
+   PK-Sim defaults would be fabrication, so the concentration driver is instead
+   a user-supplied `CEFFECT` covariate.
+
+2. **The complex ODE carries an inferred `-kdeg*complex` term that is not in
+   any on-disk source.** This is the single most important deviation.
+   * As printed, Eq 5 is `dOEm/dt = kon*Clung*Emfree - koff*OEm`, and the
+     authors' supplementary listing agrees (`d/dt(TC) = kon*Cc*fu*Tfree -
+     Koff*TC`). With `koff = 0` this makes `dOEm/dt >= 0` always, so the
+     complex is monotone non-decreasing while free target is bounded above by
+     `Em0`. Occupancy therefore rises monotonically to 100% under **any**
+     non-trivial exposure, and total target is not conserved. Simulated
+     verbatim, occupancy is still climbing at day 15.
+   * Figure 1 shows the opposite: a flat sawtooth plateau from day ~1 across
+     the full 360 h. The printed system provably cannot produce that, under any
+     driver. No simulation is needed to show this -- it follows from the sign of
+     the right-hand side.
+   * The supplement declares `kdeg = 0.025` **separately** from
+     `Kturnover = 0.025` and uses `kdeg` only on the free-target line, which is
+     consistent with the complex line having lost its `kdeg` term in
+     transcription. Restoring it conserves total target at `Em0` and yields the
+     plateau. It uses only published values, but it remains an **inference, not
+     a transcription**, and a user who wants the literal published system can
+     set `kdeg` to a negligible value.
+
+3. **The published `kon` cannot reproduce Figure 1's inhibition levels**
+   (400- to 900-fold too high; see the section above). The values encoded are
+   the ones Liang 2024 prints (0.91 and 0.44 /uM/s from Zhai 2020). They were
+   **not** adjusted to improve agreement.
+
+4. **The supplement's PK block is a placeholder and was not used.**
+   Supplementary Data Sheet 1 contains a two-compartment PK model with
+   `kel = k12 = k21 = 0.5 /h` and `Vc = 6 L`. Integrated verbatim over 16 daily
+   doses it gives a steady-state `Cc,max` of about 0.24 nmol/L against the
+   paper's own published `Css,max` of about 577 nmol/L -- low by a factor of
+   roughly 2500 (osimertinib's apparent `Vss/F` is around 900 L, not 6 L).
+   Only the target-side values from that listing (`fu`, `T0`, `kturnover`,
+   `kdeg`, `koff`) were used; all of them match the main text exactly.
+
+5. **The supplement's `kon = 13500` was not used.** It matches neither
+   published mutant value in any unit combination (0.91 /uM/s = 3276 /uM/h;
+   0.44 /uM/s = 1584 /uM/h) and carries no attribution. The main text values
+   were used instead.
+
+6. **`kon` was converted from `/uM/s` to `/uM/h`** (multiply by 3600) so the
+   whole model runs on the hour time base used by the paper's supplement,
+   `kturnover`, and Figure 1's axis. This is the only unit conversion in the
+   file.
+
+7. **Both mutants are encoded in one model.** Liang 2024 ran a single
+   target-engagement system twice, once per `kon`. Because the two
+   target/complex pairs are mathematically independent and share only the
+   driver, encoding both in one file is exactly equivalent to the authors' two
+   runs and reproduces Figure 1's mutant pair in a single solve.
+
+8. **The Figure 1 driver is a reconstruction, not the paper's PBPK output.**
+   The one-compartment profile used above is calibrated to Liang 2024's own
+   published `Css,max` and `Ctrough` for the Caucasian 80 mg OD scenario. It is
+   used only to demonstrate model behaviour; it is not part of the model file.
+
+9. **No IIV and no residual error are encoded.** Liang 2024 generated
+   variability by sampling PK-Sim virtual populations in the PBPK layer, not by
+   fitting random effects on the target-engagement layer, so forcing etas or an
+   error model here would invent structure the paper does not have.
+
+10. **`specimen` is recorded as `tissue`** for all four states. The paper's
+    headline readout is pulmonary EGFRm+ inhibition in the target tissue
+    (Section 3.3), though Figure 1 also drives the same system with plasma
+    concentrations.
+
+11. **Liang 2024 did not couple this layer to any published popPK model.**
+    `modellib("Brown_2017_osimertinib")` also ships an osimertinib popPK model
+    and could supply `CEFFECT`, but pairing them is a user choice, not the
+    authors' design.
