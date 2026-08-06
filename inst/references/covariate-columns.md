@@ -4196,9 +4196,9 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (non-PNH subject; the complement group is paper-defined -- for Lin 2024 it pools healthy adult volunteers and CHAPLE disease patients).
-- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `PNH`, `DPNH`).
-- **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients).
+- **Reference category:** 0 (non-PNH subject; the complement group is paper-defined -- for Lin 2024 it pools healthy adult volunteers and CHAPLE disease patients, while for Lee 2024 it is the healthy phase I subjects only).
+- **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `PNH`, `DPNH`); Lee 2024 calls the column "subject group (healthy subjects versus PNH patients)".
+- **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients), `Lee_2024_eculizumab.R` (separately estimated typical values per subject group on Vc, on the terminal-complement-activity baseline E0 and on Imax, encoded as log-scale shifts `e_pnh_vc`, `e_pnh_rbase_tca`, `e_pnh_imax_tca`; reference category is the healthy phase I cohort).
 - **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
 ### DIS_MDS_AML (**canonical for MDS or AML disease-type indicator**)
