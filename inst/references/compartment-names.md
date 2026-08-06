@@ -1476,6 +1476,14 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
   - `PAN` -- NONMEM `$MODEL` compartment label in Yau 2023 Appendix S1.
 - **Example models:** `Yau_2023_diazepam_pbpk_kpu_human.R`, `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_kpu_rat.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
 
+### tendon (**canonical bare tendon / connective-tissue compartment**)
+- **Type:** compartment
+- **Role:** Bare tendon (dense connective tissue) compartment in full-body PBPK extractions built on the Levitt PKQuest standard-human physiology, which resolves tendon as its own organ with a distinct mass and perfusion (3 kg, 0.6 L/h/kg at the 70 kg reference) separate from the `other` lumped remainder (5.56 kg, 1.2 L/h/kg). Total tissue (well-stirred) drug amount, paired with the surrounding bare organ compartments.
+- **Source aliases:**
+  - `Tendon` -- Table S1 row label in Pei 2023 (Pharmaceutics 15:2580) and Table 1 of Levitt 2002 (BMC Clin Pharmacol 2:5) / Levitt & Schnider 2005 (BMC Anesthesiol 5:4).
+- **Example models:** `Pei_2023_tacrolimus_pbpk.R`.
+- **Notes:** `Levitt_2005_propofol_pbpk.R` lumps the same source physiology's tendon into `other` (`v_other = 5.524 + 3` kg), which is exact for propofol because both organs share a partition coefficient AND the model needed only their combined return to venous blood. Lumping is NOT generally equivalent: tendon and `other` differ two-fold in perfusion (0.6 vs 1.2 L/h/kg), so a drug whose distribution into connective tissue is perfusion-limited equilibrates at different rates in the two organs even when their Kp values coincide. Extractions that keep the source's tendon row separate should use this canonical rather than re-lumping. Ratified 2026-08-05 alongside the Pei 2023 tacrolimus PBPK extraction (sidecar `oare_PMC10675244` q3 = A).
+
 ---
 
 ### skin_fat (**canonical bare lumped skin + fat compartment**)
