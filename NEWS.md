@@ -22,6 +22,8 @@
 
 - Add Lee 2024 eculizumab ([doi:10.1007/s00228-024-03703-8](https://doi.org/10.1007/s00228-024-03703-8)) - healthy adults and patients with paroxysmal nocturnal haemoglobinuria.
 
+- Add Chen 2024 noscapine ([doi:10.1007/s40268-024-00466-6](https://doi.org/10.1007/s40268-024-00466-6)) - healthy adults genotyped for CYP2C9.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
