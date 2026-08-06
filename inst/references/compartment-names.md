@@ -275,6 +275,46 @@ The `brain_<region>` namespace was adopted 2026-05-28 to disambiguate brain-anat
 
 ---
 
+## Lactation / mother-to-infant dyad namespace
+
+Adopted 2026-08-06 with the first lactation model in the library (`Wattanakul_2024_primaquine.R` / `Wattanakul_2024_primaquine_motherinfant.R`; operator sidecar `oare_PMC11078975` request-001 / response-001, question q1, option A).
+
+A lactation-transfer model has two structurally distinct sides. The maternal side is an ordinary popPK model plus one breast-milk compartment per analyte; that compartment is a physiologic matrix like `csf` or `isf`, so it gets the bare canonical `milk` (metabolite forms `milk_<metab>`). The infant side is a *second person's* complete PK model carried inside the same model object, so bare compartment names would collide with the mother's: `central` would be ambiguous between the two members of the dyad. The `infant_<canonical>` prefix resolves this the same way `brain_<region>` resolves the bare-`cortex` collision -- every canonical compartment name may be prefixed with `infant_` to denote the breastfed-partner copy of that state, and metabolite suffixes compose normally (`infant_central_<metab>`).
+
+The corresponding derived observation variables are `Cmilk` / `Cmilk_<metab>` and `Cinfant` / `Cinfant_<metab>`. Infant-partner covariates are `WT_INFANT` and `AGE_INFANT` (see `covariate-columns.md`); the milk-transfer parameters are `lq_milk`, `pcmilk`, `cfcap`, and `kmilkinf` (see `parameter-names.md`).
+
+### milk (**canonical breast-milk compartment**)
+- **Type:** compartment
+- **Role:** Breast-milk physiologic compartment of a lactating subject. Holds the amount of the parent drug in the milk that the infant ingests at one feed; its volume is normally derived from the infant's daily milk intake divided by the number of feeds per day rather than estimated. Metabolite forms take the standard suffix (`milk_cpq`). Matches the `milk` entry already present in `conventions$specimenVocabulary`.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (breast-milk compartments for primaquine and carboxyprimaquine, exchanging with their respective central compartments through a shared apparent inter-compartmental clearance and an analyte-specific milk:plasma partition coefficient, gated by a square-wave breastfeeding function).
+
+### infant_depot (**canonical breastfed-infant dose compartment**)
+- **Type:** compartment
+- **Role:** Dose compartment of the breastfed infant in a mother-to-infant dyad model. Receives drug from the mother's `milk` compartment during a feed rather than from an external dose event.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R`.
+
+### infant_transit1, infant_transit2, infant_transit3, infant_transit4 (**canonical breastfed-infant transit-absorption chain**)
+- **Type:** compartment
+- **Role:** Transit-absorption chain of the breastfed infant in a mother-to-infant dyad model. Same semantics as the bare `transit<n>` chain, applied to the infant partner.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (two transit compartments per analyte, mean transit time fixed to a paediatric literature value).
+
+### infant_central (**canonical breastfed-infant central compartment**)
+- **Type:** compartment
+- **Role:** Central (plasma) compartment of the breastfed infant in a mother-to-infant dyad model. Metabolite forms take the standard suffix (`infant_central_cpq`).
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R`.
+
+### infant_peripheral1, infant_peripheral2 (**canonical breastfed-infant peripheral compartments**)
+- **Type:** compartment
+- **Role:** Peripheral distribution compartments of the breastfed infant in a mother-to-infant dyad model. Registered alongside the rest of the namespace so a future dyad model with a multi-compartment infant disposition does not have to re-open the naming question; not exercised by the founding models, whose infant disposition is one-compartment per analyte.
+- **Source aliases:** none.
+- **Example models:** none yet (namespace member registered with `Wattanakul_2024_primaquine_motherinfant.R`).
+
+---
+
 ## Friberg myelosuppression chains
 
 ### circ (**canonical circulating-cell compartment**)
@@ -2969,6 +3009,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `LeuppiTaegtmeyer_2019_CMS.R` (DDMODEL00000295).
 - **Notes:** Same token as the bare `col` drug-state compartment; both Types co-exist for the same canonical name.
+
+### cpq (**canonical carboxyprimaquine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Carboxyprimaquine, the major circulating metabolite of primaquine formed by monoamine-oxidase-A-mediated oxidative deamination of the terminal amine of the aminopentyl side chain. Conversion is 1:1 molar, which is why joint primaquine + carboxyprimaquine models are parameterised on the molar scale. Used in parent + metabolite simultaneous popPK extractions.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (one-compartment carboxyprimaquine disposition fed both by first-pass metabolism from the last transit compartment and by the entirety of systemic primaquine clearance, plus its own breast-milk compartment).
 
 ### dihydroart (**canonical dihydroartemisinin suffix**)
 - **Type:** metabolite-suffix

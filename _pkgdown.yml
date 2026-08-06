@@ -2082,8 +2082,10 @@ navbar:
         href: articles/Gaohua_2012_pregnancy_pbpk.html
       - text: "Pretomanid mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
-      - text: "Prexasertib mouse pbpk (Saleh 2023)"
-        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Primaquine (Wattanakul 2024)"
+        href: articles/Wattanakul_2024_primaquine_lactation.html
+      - text: "Primaquine motherinfant (Wattanakul 2024)"
+        href: articles/Wattanakul_2024_primaquine_lactation.html
       - text: "Procainamide (Mohamed 2013)"
         href: articles/Mohamed_2013_procainamide.html
       - text: "Propofol (Chi 2018)"
@@ -4167,6 +4169,7 @@ articles:
   - articles/Watson_2010_liraglutide
   - articles/Watt_2015_fluconazole
   - articles/Wattanakul_2016_paracetamol
+  - articles/Wattanakul_2024_primaquine_lactation
   - articles/Weatherley_2009_maraviroc_iv
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren

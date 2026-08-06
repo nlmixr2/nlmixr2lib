@@ -323,6 +323,36 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Grasela_1985_phenobarbital.R` (Grasela & Donn 1985; preterm-neonate phenobarbital popPK; +13% on V when 5-minute Apgar < 5; no detected effect on CL).
 - **Notes:** Distinct from the continuous Apgar score itself (which has not been registered as a canonical because no model in nlmixr2lib uses the continuous form as of this entry). The < 5 cutoff at 5 minutes is the perinatal-asphyxia convention Grasela 1985 used; future papers that adopt a different Apgar cutoff (e.g., < 7 at 1 minute, or a different time point) should register a separate canonical (e.g., `APGAR1_LT7`) rather than reusing `ASPHYXIA` with relaxed semantics. Ratified canonically alongside the Grasela 1985 phenobarbital extraction.
 
+## Mother-infant dyad partner
+
+Ratified 2026-08-06 with the library's first lactation / mother-to-infant transfer model (`Wattanakul_2024_primaquine.R` / `Wattanakul_2024_primaquine_motherinfant.R`; operator sidecar `oare_PMC11078975` request-001 / response-001, question q3, option A).
+
+In a dyad model the modelled SUBJECT is the mother, so the general `WT`, `AGE`, and `PAGE` canonicals already denote her. Describing the breastfed infant with those same names would put two different people's demographics on one record under one canonical name, and nothing in the column name would say which person it referred to. The `_INFANT` suffix marks a column as belonging to the dyad PARTNER rather than to the modelled subject. It parallels the `infant_<canonical>` compartment namespace in `compartment-names.md`.
+
+Use these columns only in a genuine dyad model, i.e. one that carries maternal and infant quantities simultaneously. A standalone paediatric popPK model whose subject is the infant uses the plain `WT` / `AGE` / `PAGE` canonicals, because there is no second person to disambiguate against.
+
+### WT_INFANT (**canonical for breastfed-infant body weight in a mother-infant dyad model**)
+- **Description:** Body weight of the breastfed infant paired with the modelled lactating subject. Distinct from `WT`, which in a dyad model is the mother's body weight.
+- **Units:** kg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used both to size the maternal breast-milk compartment (milk ingested per feed = daily milk intake per kg x `WT_INFANT` / feeds per day) and, in a full dyad model, to scale the infant's clearances and volumes allometrically from the mother's, `(WT_INFANT / WT)^0.75` on clearance and `(WT_INFANT / WT)` on volume.
+- **Source aliases:**
+  - `INFWT` -- NONMEM `$INPUT` column name in `Wattanakul_2024_primaquine.R` / `Wattanakul_2024_primaquine_motherinfant.R` (`INFWT ; INFANT BODY WEIGHT (KG)`); same quantity in kg, no value transformation.
+- **Example models:** `Wattanakul_2024_primaquine.R` (enters only through the breast-milk compartment volume `V_M = (0.15 L/kg/day * WT_INFANT) / feeds-per-day`; cohort median 6.8 kg, range 4.13-10.8, giving milk-compartment volumes of 0.062-0.162 L), `Wattanakul_2024_primaquine_motherinfant.R` (additionally scales the infant's apparent clearances and volumes from the mother's estimates).
+- **Notes:** Baseline in the founding models, but time-varying in principle -- infant weight changes materially over a multi-month lactation period, and dyad simulations that sweep infant age (Wattanakul 2024 uses WHO weight-for-age curves with z-scores -3 to +3 from birth to 24 months) pair each `AGE_INFANT` with the corresponding `WT_INFANT`. Verify baseline vs. time-varying against the source paper.
+
+### AGE_INFANT (**canonical for breastfed-infant postnatal age in a mother-infant dyad model**)
+- **Description:** Postnatal age of the breastfed infant paired with the modelled lactating subject. Distinct from `AGE`, which in a dyad model is the mother's age.
+- **Units:** months
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- typically enters an enzyme-maturation function on the infant's clearance. When the maturation function is written in postmenstrual age, the model derives PMA internally by adding an assumed term gestation to `AGE_INFANT` rather than requiring a separate column, because individual gestational ages are rarely reported in lactation studies; the assumed gestation must be stated in the model file.
+- **Source aliases:**
+  - `INFAGE` -- NONMEM `$INPUT` column name in `Wattanakul_2024_primaquine_motherinfant.R` (`INFAGE ; INFANT AGE (MONTHS)`); same quantity in months, no value transformation.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (drives monoamine-oxidase-A maturation on the infant's primaquine clearance, `MF = PMA / (TM50 + PMA)` with `PMA = AGE_INFANT + 9.2` months for assumed full-term gestation of 40 weeks and `TM50 = 7.6` months; cohort median 5.0 months, range 1.6-21.7).
+- **Notes:** Months, not years -- lactation cohorts are dominated by infants under two years old, where a year scale loses resolution, and paediatric maturation functions are conventionally written in months or weeks of postmenstrual age. This matches the units of the general `PAGE` canonical. Distinct from `PAGE`: `AGE_INFANT` is postnatal, so a model that needs postmenstrual age must add the gestational term explicitly.
+
 ## Nutritional status
 
 ### MAL_NOURISH (**canonical for malnutrition status indicator**)
