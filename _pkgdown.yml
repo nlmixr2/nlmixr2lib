@@ -174,6 +174,10 @@ navbar:
         href: articles/DeJongh_2014_antithrombin.html
       - text: "Antithrombin (Moffett 2017)"
         href: articles/Moffett_2017_antithrombin.html
+      - text: "Apitolisib human (Moein 2024)"
+        href: articles/Moein_2024_apitolisib.html
+      - text: "Apitolisib mouse (Moein 2024)"
+        href: articles/Moein_2024_apitolisib.html
       - text: "Apixaban (Ueshima 2018)"
         href: articles/Ueshima_2018_apixaban.html
       - text: "Apomine (Bonate 2004)"
@@ -3712,6 +3716,7 @@ articles:
   - articles/MocWilleford_2024_rlyb212
   - articles/Mody_2023_doxorubicin_dexrazoxane
   - articles/Moein_2022_etrolizumab
+  - articles/Moein_2024_apitolisib
   - articles/Moes_2016_tacrolimus
   - articles/Moffett_2017_antithrombin
   - articles/Mohamed_2012_colistin

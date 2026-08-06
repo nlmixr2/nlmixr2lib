@@ -716,6 +716,21 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** widespread sigmoid-Emax PD extractions.
 
+### lki50 (**canonical log-transformed half-maximal upstream-biomarker level driving a downstream effect rate**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed half-maximal point of a sigmoid whose DRIVER is an upstream biomarker response rather than a drug concentration, entering a downstream effect-RATE expression: `rate = rmax * I^hill / (ki50^hill + I^hill)`, where `I` is the biomarker response on its own axis (percent inhibition of a phosphoprotein, percent receptor occupancy, fold-change of a transcript). Carries the units of that biomarker axis, NOT concentration units. Inside `model()` the bare name is `ki50`.
+- **Source aliases:**
+  - `KI50` -- Moein 2024 notation ("I where Ks is 50% of Kmax", Tables 3 and 4); constrained to (1, 100) in both NONMEM control streams because the driver is a percentage.
+- **Example models:** `Moein_2024_apitolisib_mouse.R` (founding example; `ki50 = 67.2` %pAkt inhibition for the 786-O xenograft tumour-shrinkage sigmoid), `Moein_2024_apitolisib_human.R` (`ki50 = 58.0` %pAkt inhibition for the phase 1 RECIST sum-of-longest-diameters fit).
+- **Notes:** Ratified 2026-08-05 alongside the Moein 2024 apitolisib extraction (sidecar request-001 q2, option A). Distinct from `lec50` / `lic50`, which are DRUG CONCENTRATIONS producing half-maximal effect -- a model can carry both at once, as the Moein files do (`ic50` on the drug-to-pAkt step, `ki50` on the pAkt-to-tumour step of the same cascade). Distinct also from `kc50` as used for a trimer CONCENTRATION at half-maximum kill rate: `ki50` is deliberately axis-agnostic and is the name to reach for when the sigmoid's x-axis is a biomarker readout. Pairs with `kmax` (the maximum of the driven rate) and `hill` (the sigmoidicity factor). A downstream user must read the axis units off `label()` / `compartmentData`, since they are model-specific by construction.
+
+### ki50 (**canonical bare half-maximal upstream-biomarker level driving a downstream effect rate**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `lki50`; the half-maximal biomarker-response level on the linear scale, for use inside `model()`.
+- **Source aliases:**
+  - `KI50` -- Moein 2024 notation.
+- **Example models:** `Moein_2024_apitolisib_mouse.R`, `Moein_2024_apitolisib_human.R`.
+
 ### lreg_qm (**canonical log-transformed once-monthly regimen EC50 multiplier**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed multiplicative modifier applied to EC50 when a static Emax-on-AUC exposure-response model parameterised on an integrated-window AUC predictor (rather than an instantaneous concentration) needs to distinguish between dosing regimens whose AUCs encode different time-course profiles. Paired with the binary covariate `REGI_QM`: applied as `ec50_eff = ec50 * reg_qm^REGI_QM`, i.e., `ec50_eff = ec50` for Q2W (REGI_QM = 0) and `ec50_eff = ec50 * exp(lreg_qm)` for QM (REGI_QM = 1). Captures the "lack of kinetics" gap in static Emax-on-AUC models where two regimens that produce similar window-AUC values can still produce different effects because of differences in target-saturation time courses. Inside `model()` the bare name is `reg_qm`.

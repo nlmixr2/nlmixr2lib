@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Moein 2024 apitolisib ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) - 786-O xenograft mice and patients with advanced solid tumors.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
