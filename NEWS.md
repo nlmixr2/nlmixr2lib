@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liang 2024 rituximab ([doi:10.3389/fphar.2024.1197651](https://doi.org/10.3389/fphar.2024.1197651)) - adults with primary membranous nephropathy.
+- Add Liang 2024 rituximab and anti-PLA2R titer models ([doi:10.3389/fphar.2024.1197651](https://doi.org/10.3389/fphar.2024.1197651)) - adults with primary membranous nephropathy.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
