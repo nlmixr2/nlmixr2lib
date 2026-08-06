@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2024 meropenem ([doi:10.1038/s41598-024-64223-0](https://doi.org/10.1038/s41598-024-64223-0)) - critically ill adult ICU patients with severe pneumonia.
+- Add Singu 2024 gentamicin ([doi:10.3390/children11080898](https://doi.org/10.3390/children11080898)) - Namibian neonates with suspected or confirmed sepsis.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
