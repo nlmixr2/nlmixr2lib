@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Abdelgawad 2024 linezolid ([doi:10.1093/infdis/jiad413](https://doi.org/10.1093/infdis/jiad413)) -- adults with HIV-associated tuberculous meningitis, in plasma and cerebrospinal fluid.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

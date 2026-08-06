@@ -1418,4 +1418,81 @@ test_that("no model in the database uses a non-canonical unit spelling", {
   expect_equal(sort(unique(bad)), character(0))
 })
 
+# Within-subject random-effect levels. `etaiov_<param>_<occ>` (inter-occasion)
+# and `etabvv_<param>_<visit>` (between-visit) both pair with the log-scale
+# fixed effect `l<param>` rather than with a same-named fixed effect, so
+# .isIOVEtaSuffix must accept both prefixes. Abdelgawad_2024_linezolid fits
+# five-occasion IOV on ka/mtt alongside a two-visit BVV on vmax; before the
+# bvv_ prefix was recognised, every etabvv_ slot raised a spurious "no
+# matching fixed-effect parameter" warning.
+test_that("iov_ and bvv_ level etas pair with their l<param> fixed effect", {
+  levels_model <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    covariateData <- list(
+      OCC = list(
+        description = "Occasion index", units = "(count)", type = "categorical",
+        reference_category = NULL, notes = "n", source_name = "OCC"
+      )
+    )
+    ini({
+      lvmax <- 5; label("Maximum elimination rate (Vmax, mg/h)")
+      lkm <- 3;   label("Michaelis-Menten constant (km, mg/L)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      etalvmax ~ 0.01
+      etabvv_vmax_1 ~ 0.04
+      etabvv_vmax_2 ~ fix(0.04)
+      etaiov_vc_1 ~ 0.09
+      etaiov_vc_2 ~ fix(0.09)
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      oc1 <- (OCC == 1)
+      oc2 <- (OCC == 2)
+      bvv <- oc1 * etabvv_vmax_1 + oc2 * etabvv_vmax_2
+      iov <- oc1 * etaiov_vc_1 + oc2 * etaiov_vc_2
+      vmax <- exp(lvmax + etalvmax + bvv)
+      km <- exp(lkm)
+      vc <- exp(lvc + iov)
+      Cc <- central / vc
+      d/dt(central) <- -vmax * Cc / (km + Cc)
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(levels_model, verbose = FALSE))
+  naming <- res[res$category == "parameter_naming", ]
+  expect_equal(nrow(naming), 0)
+})
+
+test_that("a bvv_ eta whose parameter has no fixed effect is still flagged", {
+  bad_bvv <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    ini({
+      lcl <- 1; label("Clearance (CL, L/h)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      etabvv_nosuch_1 ~ 0.04
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl + etabvv_nosuch_1)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad_bvv, verbose = FALSE))
+  expect_true(any(grepl("etabvv_nosuch_1", res$name, fixed = TRUE)))
+})
+
 # nolint end
