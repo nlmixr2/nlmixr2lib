@@ -2830,6 +2830,8 @@ navbar:
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Vortioxetine (Naik 2016)"
         href: articles/Naik_2016_vortioxetine.html
+      - text: "Vosoritide (Qi 2024)"
+        href: articles/Qi_2024_vosoritide.html
       - text: "Vrc01 (Huang 2017)"
         href: articles/Huang_2017_vrc01.html
       - text: "VwfFviii humateP (Bauer 2023)"
@@ -3906,6 +3908,7 @@ articles:
   - articles/Pu_2021_evinacumab
   - articles/Puisset_2007_docetaxel
   - articles/Qi_2014_sapropterin
+  - articles/Qi_2024_vosoritide
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk

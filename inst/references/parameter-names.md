@@ -1310,30 +1310,53 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Chen_2023_tilmicosin.R` (`mic` = 0.25 ug/mL, the CLSI broth-microdilution MIC of *Pasteurella multocida* C44-15, driving an `AUC24h/MIC` sigmoidal Emax); `Beredaki_2023_micafungin_clsi.R` (`mic` = 0.008 mg/L, CLSI M27 median MIC of *Candida albicans* CA 580) and `Beredaki_2023_micafungin_eucast.R` (`mic` = 0.016 mg/L, the EUCAST E.Def 7.3 median MIC of the same isolate), both driving an `fAUC0-24/MIC` sigmoidal Emax.
 - **Notes:** Ratified for AUC/MIC-index models alongside the Chen 2023 tilmicosin extraction; this register entry was written with the Beredaki 2023 micafungin extraction. Distinct from `ec50` / `lec50`: `ec50` is the *fitted* index value producing half-maximal effect (and in an `AUC/MIC`-indexed model is unitless, or has units of time), whereas `mic` is a *measured* concentration used to form the index in the first place. In a model where the index is a free-drug exposure, apply the unbound fraction (`fu`) to the exposure numerator and leave `mic` on the total-drug scale the susceptibility method actually reports.
 
-### probitbase (**canonical bounded-integer baseline on the probit scale**)
-- **Type:** paper-named-param
-- **Role:** Baseline value of a bounded-integer (ordered-categorical) clinical score, expressed on the scale of the quantile function of the standard normal distribution (the probit scale) rather than on the observable score scale. Used by bounded-integer models in the Ueckert & Karlsson formulation, where a latent normal variable is mapped onto the `N` ordered categories of the score by the normal CDF; the observable baseline score is recovered as `N * pnorm(probitbase)`. The parameter is unconstrained in sign (a negative value places the baseline in the lower part of the score range), so it is NOT log-transformed and carries ADDITIVE inter-individual variability (`probitbase + etaprobitbase`) rather than exponential.
-- **Source aliases:**
-  - `BASEb.int`, `BASE_b.int.` -- Walsh 2024 and the Ueckert bounded-integer literature.
-- **Example models:** `Walsh_2024_buprenorphine_cows.R` (`probitbase` = -0.887, giving a pre-treatment COWS of `45 * pnorm(-0.887)` = 8.4, inside the paper's 5-12 "mild withdrawal" band).
-- **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. Uses the registered `probit` transform prefix, exactly as `logitbase` uses `logit`. Distinct from a plain `base` / `lbase` (which live on the observable score scale): the probit scale is what makes the bounded-integer likelihood well-behaved at the score boundaries, and mixing the two scales silently produces nonsense. The companion residual/scaling SD is the canonical `addSd` inside `probitNorm(addSd, low, hi)`; the lower asymptote, when the paper estimates one, is `probitbase_low`.
+## Nested (multi-level) random effects
 
-### probitbase_low (**canonical bounded-integer lower asymptote on the probit scale**)
-- **Type:** paper-named-param
-- **Role:** Lower asymptotic value of a bounded-integer clinical score on the probit (standard-normal quantile) scale -- the floor the score is driven to after the maximum drug effect, in bounded-integer Imax models parameterised as `IPRED = probitbase - (probitbase - probitbase_low) * Cp^gamma / (ic50^gamma + Cp^gamma)`. This form lets the drug effect drag the latent score from its baseline down to a finite floor rather than towards zero, which is what gives the estimation enough flexibility to separate baseline from maximal effect.
-- **Source aliases:**
-  - `LBASEb.int`, `LBASE_b.int.` -- Walsh 2024 and the Ueckert bounded-integer literature.
-- **Example models:** `Walsh_2024_buprenorphine_cows.R` (`probitbase_low` = -2.11, giving a fully-blocked COWS of `45 * pnorm(-2.11)` = 0.78, consistent with the paper's simulation that 80.4% of participants had COWS <= 1 at 0.100 ng/mL).
-- **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. Always paired with `probitbase`. Note that Walsh 2024 places EXPONENTIAL inter-individual variability on this parameter (`probitbase_low * exp(etaprobitbase_low)`) while placing ADDITIVE variability on `probitbase` -- exponential IIV on a negative parameter scales its magnitude while preserving its sign, so the floor stays a floor. Do not assume a shared IIV form across the pair; read the paper's own statement.
+Registered 2026-08-06 with the `Qi_2024_vosoritide.R` extraction, the first
+model in this library to carry a second hierarchical level of random effects.
+This section documents a naming pattern, not a canonical parameter, so it has
+no H3 entries and contributes nothing to the runtime name vectors.
 
-### lambda_base (**canonical Box-Cox shape parameter for a baseline IIV distribution**)
-- **Type:** paper-named-param
-- **Role:** Shape parameter `lambda` of the Box-Cox transformation applied to the inter-individual random effect on a BASELINE parameter, for papers that model a heavily skewed baseline distribution. The standard NONMEM eta transform is `eta_tr = (exp(eta)^lambda - 1) / lambda`, which is 0 at `eta = 0` (leaving the typical value unchanged) and is bounded above by `-1 / lambda` for negative `lambda` while remaining unbounded below -- producing the strong left skew typical of a baseline sitting near the top of a bounded scale. The parameter is unconstrained in sign and is not log-transformed.
-- **Source aliases:**
-  - `Baseline Box-Cox shape parameter` -- Walsh 2024 Table S3.
-  - `lambda`, `LAMBDA` -- general NONMEM Box-Cox notation.
-- **Example models:** `Walsh_2024_buprenorphine_desireToUse.R` (`lambda_base` = -12.9, capturing a desire-to-use VAS baseline concentrated near the top of the 0-100 scale).
-- **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. The `_base` suffix names the parameter the transform acts on; a future model applying a Box-Cox eta transform to a different parameter should register `lambda_<param>` following the same pattern rather than reusing this entry. Distinct from the residual-error `lambda` of a Box-Cox / power transform of the OBSERVATIONS -- this one transforms the random effect, not the data.
+When a paper fits a **second hierarchical level** of random effects on top of
+the per-subject etas -- a between-study, between-site or between-centre random
+effect whose draw is shared by every subject in that group -- name the nested
+eta `eta<lparam>_<level>`, where `<lparam>` is the same transformed parameter
+name the subject-level eta uses and `<level>` is a short lowercase token naming
+the grouping level. Declare it in `ini()` with rxode2's native nesting syntax,
+piping the grouping column after the variance:
+
+```r
+etalcl       ~ 0.112896            # subject-level IIV on CL/F
+etalcl_study ~ 0.066049 | SIDN     # study-level (nested) random effect on CL/F
+```
+
+and add it to the same log-scale sum as the subject-level eta in `model()`:
+
+```r
+cl <- exp(lcl + etalcl + etalcl_study) * (WT / ref_wt)^e_wt_cl
+```
+
+Founding example: `Qi_2024_vosoritide.R` (`etalcl_study` and `etalvc_study`,
+nested on the `SIDN` study-identity column; Qi 2024 Sect. 2.4 eta6 / eta7).
+
+**The grouping column is a covariate register entry of its own** (see `SIDN` in
+`covariate-columns.md`), not a parameter. Because it is consumed by the `ini()`
+nesting syntax rather than by any `model()` expression,
+`checkModelConventions()` reports `covariateData[['<level>']] has an entry but
+is not referenced in model()`. That warning is structural for a nesting level.
+
+**Distinct from inter-occasion variability.** IOV indexes occasions *within* a
+subject (`OCC`, decomposed `etalcl_oc1..N` sharing one variance -- see
+`Jonsson_2011_ethambutol.R`, `Chen_2023_nemonoxacin.R`); a nested level groups
+*across* subjects, so every record of a subject shares one draw.
+
+**Two rxode2 simulation constraints apply** (verified against rxode2 5.1.3).
+The event table must contain at least two distinct grouping-column values --
+with only one level `rxSolve()` fails with `The following parameter(s) are
+required for solving: THETA[2], THETA[1]`, an error naming thetas the model does
+not have and giving no hint that the nesting is the cause. And `omega` must be
+passed explicitly (`omega = mod$omega`), because a nested omega is a *list* of
+matrices keyed by level rather than a single matrix.
 
 ## Unit spellings
 
