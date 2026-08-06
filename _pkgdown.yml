@@ -1350,6 +1350,8 @@ navbar:
         href: articles/Park_2001_ketoprofen.html
       - text: "Ketorolac (Valitalo 2017)"
         href: articles/Valitalo_2017_ketorolac.html
+      - text: "Kynurenicacid pbpk (Granda 2024)"
+        href: articles/Granda_2024_kidney_pbpk.html
       - text: "Lacosamide dropout (Lindauer 2017)"
         href: articles/Lindauer_2017_lacosamide.html
       - text: "Lacosamide seizure (Lindauer 2017)"
@@ -1856,8 +1858,8 @@ navbar:
         href: articles/Kamal_2015_oseltamivir.html
       - text: "Oseltamivir (Standing 2012)"
         href: articles/Standing_2012_oseltamivir.html
-      - text: "Oseltamivir pbpk (Luo 2024)"
-        href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Oseltamivircarboxylate pbpk (Granda 2024)"
+        href: articles/Granda_2024_kidney_pbpk.html
       - text: "Osimertinib (Brown 2017)"
         href: articles/Brown_2017_osimertinib.html
       - text: "Oxaliplatin (Valenzuela 2011)"
@@ -2582,6 +2584,8 @@ navbar:
         href: articles/Chen_2016_tenofovir_emtricitabine.html
       - text: "Tenofovir full (Thoueille 2023)"
         href: articles/Thoueille_2023_tenofovir_ckd.html
+      - text: "Tenofovir pbpk (Granda 2024)"
+        href: articles/Granda_2024_kidney_pbpk.html
       - text: "Tenofovir prdi (Lu 2016)"
         href: articles/Lu_2016_tenofovir.html
       - text: "Tenofovir reduced (Thoueille 2023)"
@@ -3388,7 +3392,7 @@ articles:
   - articles/Goteti_2024_SLE_mbma
   - articles/Goti_2018_vancomycin
   - articles/Goulooze_2022_finerenone
-  - articles/Goulooze_2022_finerenone_uacr_egfr
+  - articles/Granda_2024_kidney_pbpk
   - articles/Grasela_1985_phenobarbital
   - articles/Green_2003_enoxaparin
   - articles/Green_2005_enoxaparin

@@ -35,7 +35,7 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
-- Add Courlet 2023 cabamiquine ([doi:10.1128/aac.00891-23](https://doi.org/10.1128/aac.00891-23)) - healthy adult men in induced blood stage and sporozoite malaria challenge studies.
+- Add Granda 2024 tenofovir, oseltamivir carboxylate and kynurenic acid ([doi:10.1111/cts.13678](https://doi.org/10.1111/cts.13678)) - adult outpatients spanning CKD stages 1-5.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
