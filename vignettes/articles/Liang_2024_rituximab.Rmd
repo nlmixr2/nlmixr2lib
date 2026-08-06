@@ -24,6 +24,19 @@ library(ggplot2)
 * Article: <https://doi.org/10.3389/fphar.2024.1197651>
 * Supplementary material: <https://www.frontiersin.org/articles/10.3389/fphar.2024.1197651/full#supplementary-material>
 
+This paper contributes **two** models, fitted independently by the authors and
+therefore packaged as two files that share this vignette:
+
+| Model | Endpoint | Time base |
+|---|---|---|
+| `Liang_2024_rituximab` | rituximab concentration and CD20 (the molar surrogate for CD20+ B cell count) | hours |
+| `Liang_2024_rituximab_pla2r` | serum anti-PLA2R autoantibody titer | days |
+
+The first is a mechanistic QSS TMDD PK/PD model and occupies most of this
+vignette; the second is the empirical titer decline of Eq. 5, which the authors
+were explicitly unable to link to the first (Section 3.6) and which is validated
+in its own section at the end.
+
 Liang and colleagues built the first population PK/PD model for rituximab (RTX)
 in primary membranous nephropathy (PMN), in order to justify a monthly
 "mini-dose" of 100 mg against the 375 mg/m^2 x 4 and 1000 mg x 2 regimens
@@ -585,14 +598,274 @@ stopifnot(abs(nca_wide$cl.obs[nca_wide$arm == "100 mg"] - cl_L_per_day) < 0.02)
   eGFR, body weight and BSA are recorded in the model's
   `covariatesDataExcluded` metadata as documentation of that screen.
 
-## Not included in this model
+## Scope of this model
 
-The paper also describes an empirical exponential decline of the anti-PLA2R
-antibody titer (Eq. 5, `titer = A * exp(-ke_PLA2R * t)`, mean
-`ke_PLA2R` = 0.033 +/- 0.017 per day, mean half-life 21 days). The authors
-explicitly could **not** link it to the CD20+ B cell count -- "we failed to
-establish the quantitatively relationship between CD20+ B cell counts and
-anti-PLA2R titers" (Section 3.6) -- and fitted it separately, so it is a
-genuinely independent model rather than part of the PK/PD model above. It is
-being packaged separately; naming of its biomarker compartment is pending
-ratification of a new canonical name.
+Everything above concerns the QSS TMDD PK/PD model. The paper's second model --
+the empirical decline of the anti-PLA2R autoantibody titer -- is packaged
+separately as `Liang_2024_rituximab_pla2r` and is validated in the next section.
+
+# The anti-PLA2R titer model
+
+* Description: `r readModelDb("Liang_2024_rituximab_pla2r")()$description`
+
+Anti-PLA2R is the pathogenic autoantibody of PMN and its fall is what the field
+actually treats for: "the decrease of anti-PLA2R titer precedes the remission of
+proteinuria" (Introduction). The authors set out to drive it from the CD20+ B
+cell count of the model above and **failed**: "we failed to establish the
+quantitatively relationship between CD20+ B cell counts and anti-PLA2R titers"
+(Section 3.6). Monthly sampling could not capture the depletion transient -- most
+CD20+ B cell observations were taken either before an infusion or after depletion
+was already complete -- and titer re-emergence after B cell recovery was
+inconsistent between patients.
+
+So the titers "of 36 in all 41 patients were analyzed **without** the integration
+of CD20+ B cell count", giving a mono-exponential decline (Eq. 5) whose rate
+constant is stated to be "independent of CD20+ B cell counts". That makes it a
+second, non-hierarchical model on a different endpoint rather than a PD layer of
+the model above, which is why it is a separate model file sharing this vignette.
+Only the descending stage was fitted: serologic relapse (two consecutive
+ascending titers), titers more than 3 months apart, and titers beyond 12 months
+from the first infusion were all excluded (Section 2.7). The fit gave
+`R^2 > 0.8` in every patient but one (`R^2 = 0.67`).
+
+## Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `titer(t) = A * exp(-ke_PLA2R * t)` | n/a | Eq. 5; Sections 2.7, 3.6 |
+| `lkel` (`ke_PLA2R`) typical | 0.029336 /day (median; mean 0.033) | Section 3.6, moment-matched -- see below |
+| `etalkel` | variance 0.235373 | Section 3.6 (SD 0.017 /day) |
+| `le0` (`A`) typical | 129.64 U/mL (median; mean 260.3) | Table 1 baseline titer, moment-matched |
+| `etale0` | variance 1.394093 | Table 1 (SD 453.2 U/mL) |
+| Proportional residual error | not reported (encoded as 0) | Section 3.6 reports only `R^2` |
+| Fitted window | descending stage only, to 12 months | Section 2.7 |
+
+## Reading the reported "mean +/- SD"
+
+Both parameters are reported as an arithmetic mean and SD over individual fits,
+not as a fitted population model, so they have to be turned into a
+typical value plus an IIV variance. Encoding them as log-normal by moment
+matching -- median = `mean / sqrt(1 + CV^2)`, `omega^2 = log(1 + CV^2)` -- makes a
+simulated cohort reproduce the reported mean and SD by construction. The
+alternative additive (normal) reading is refuted outright: mean 0.033 with SD
+0.017 puts the lower tail of `ke_PLA2R` at or below zero, admitting negative rate
+constants, whereas the observed minimum is 0.01.
+
+Two further statistics the paper reports, and which were **not** used to set any
+value, then discriminate the choice of centring.
+
+```{r pla2r-moments}
+pla2r    <- readModelDb("Liang_2024_rituximab_pla2r")
+pla2r_ui <- rxode2::rxode2(pla2r)
+th <- pla2r_ui$theta
+om <- diag(pla2r_ui$omega)
+
+# Analytic log-normal moments implied by the model file itself, so a change to
+# any ini() value breaks these gates.
+ln_mean <- function(med, om2) med * exp(om2 / 2)
+ln_sd   <- function(med, om2) ln_mean(med, om2) * sqrt(exp(om2) - 1)
+p_above <- function(med, om2, thr) 1 - stats::pnorm(log(thr / med) / sqrt(om2))
+
+ke_med <- exp(th[["lkel"]]); ke_om <- om[["etalkel"]]
+a_med  <- exp(th[["le0"]]);  a_om  <- om[["etale0"]]
+
+moments <- data.frame(
+  Quantity = c("ke_PLA2R mean (/day)", "ke_PLA2R SD (/day)",
+               "Mean half-life (days)", "ke_PLA2R 2.5th pctile (/day)",
+               "ke_PLA2R 97.5th pctile (/day)", "Initial titer mean (U/mL)",
+               "Initial titer SD (U/mL)", "Patients above 150 U/mL (%)"),
+  Model = c(ln_mean(ke_med, ke_om), ln_sd(ke_med, ke_om),
+            log(2) / ln_mean(ke_med, ke_om),
+            ke_med * exp(-1.96 * sqrt(ke_om)), ke_med * exp(1.96 * sqrt(ke_om)),
+            ln_mean(a_med, a_om), ln_sd(a_med, a_om),
+            100 * p_above(a_med, a_om, 150)),
+  Reported = c(0.033, 0.017, 21, 0.01, 0.079, 260.3, 453.2, 100 * 17 / 41),
+  Source = c("Section 3.6", "Section 3.6", "Section 3.6",
+             "Section 3.6 (observed min)", "Section 3.6 (observed max)",
+             "Table 1", "Table 1", "Table 1 (17/41)")
+)
+knitr::kable(moments, digits = 4,
+             caption = "Analytic moments of the packaged model versus the paper.")
+
+# The two reported summary statistics are reproduced exactly by construction.
+stopifnot(abs(ln_mean(ke_med, ke_om) - 0.033) < 1e-4,
+          abs(ln_sd(ke_med, ke_om)   - 0.017) < 1e-4,
+          abs(ln_mean(a_med, a_om)   - 260.3) < 0.1,
+          abs(ln_sd(a_med, a_om)     - 453.2) < 0.5)
+
+# Section 3.6: "The mean ke,PLA2R is 0.033 +/- 0.017, corresponding to the mean
+# half-life 21 days" -- computed from the MEAN, which the moment matching
+# reproduces, so the paper's headline half-life comes back.
+stopifnot(abs(log(2) / ln_mean(ke_med, ke_om) - 21) < 0.2)
+
+# Independent check 1: the 95% interval must cover the reported observed range
+# 0.01-0.079 /day without being much wider than it.
+stopifnot(abs(ke_med * exp(-1.96 * sqrt(ke_om)) - 0.01)  < 0.004,
+          abs(ke_med * exp( 1.96 * sqrt(ke_om)) - 0.079) < 0.008)
+
+# Independent check 2: the baseline-titer distribution must put about 41.5% of
+# patients above the 150 U/mL high-titer threshold (Table 1, 17/41). This is the
+# statistic that decides the centring: reading the arithmetic mean 260.3 as the
+# median instead would put 68% above the threshold.
+stopifnot(abs(100 * p_above(a_med, a_om, 150) - 100 * 17 / 41) < 5)
+stopifnot(100 * p_above(260.3, a_om, 150) > 60)   # the refuted alternative
+```
+
+## Simulated cohort
+
+```{r pla2r-cohort}
+set.seed(20240326)
+# The fitted window stops at 12 months (Section 2.7), so the cohort is simulated
+# over exactly that window. There is no dosing record: Eq. 5 is an empirical
+# decline in time since the start of the descending stage.
+pla2r_days <- sort(unique(c(seq(0, 30, by = 1), seq(30, 365, by = 5))))
+pla2r_events <- tidyr::expand_grid(id = seq_len(NPER), time = pla2r_days) |>
+  dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "antipla2r") |>
+  dplyr::arrange(id, time)
+
+pla2r_sim <- rxode2::rxSolve(pla2r, events = pla2r_events,
+                             omega = rxode2::rxode2(pla2r)$omega) |>
+  dplyr::as_tibble()
+stopifnot(dplyr::n_distinct(pla2r_sim$id) == NPER)   # rxSolve can drop subjects
+
+pla2r_ind <- pla2r_sim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(e0 = dplyr::first(e0), kel = dplyr::first(kel),
+                   .groups = "drop")
+```
+
+```{r pla2r-figure, fig.height = 4}
+pla2r_band <- pla2r_sim |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(med = stats::median(antipla2r),
+                   lo  = stats::quantile(antipla2r, 0.05),
+                   hi  = stats::quantile(antipla2r, 0.95),
+                   .groups = "drop")
+
+ggplot(pla2r_band, aes(time / 30, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = 150, linetype = "dashed") +
+  scale_x_continuous(breaks = 0:12) +
+  scale_y_log10() +
+  labs(x = "Time since start of titer decline (month)",
+       y = "Anti-PLA2R titer (U/mL)",
+       caption = paste("Liang 2024 Eq. 5, median and 90% interval,",
+                       "200 subjects. Dashed line = 150 U/mL high-titer",
+                       "threshold."))
+```
+
+## Validation
+
+There is no dose and no concentration here, so NCA is not the right check; the
+model is validated instead against its own closed form and against the paper's
+arithmetic.
+
+```{r pla2r-gates}
+# 1. The ODE must reproduce Eq. 5 exactly, not just approximately. Checked on
+#    every simulated subject and time point down to 0.001 U/mL -- more than
+#    three orders of magnitude below the lowest titer the assay ever reported
+#    (5.4 U/mL, Table 1). Below that the solver's absolute tolerance dominates,
+#    which is a statement about rxode2 rather than about the model.
+closed_form <- pla2r_sim$e0 * exp(-pla2r_sim$kel * pla2r_sim$time)
+meaningful  <- closed_form > 1e-3
+stopifnot(sum(meaningful) > 0.85 * length(closed_form))
+stopifnot(max(abs(pla2r_sim$antipla2r[meaningful] - closed_form[meaningful]) /
+                closed_form[meaningful]) < 1e-4)
+
+# 2. Every simulated subject declines monotonically (a signed check on kel: a
+#    sign error anywhere would show up as growth).
+stopifnot(all(pla2r_sim$kel > 0))
+
+# 3. Cohort summary. The reported 0.01-0.079 /day range of ke,PLA2R is the
+#    observed min and max over 36 patients (roughly 9 to 69 days of half-life);
+#    drawing 200 subjects samples further into the tails than 36 did, so the
+#    simulated extremes are expected to sit outside it. Only the mean and the
+#    mean-derived half-life are gated here -- the distribution itself is gated
+#    analytically above, where there is no sampling noise.
+half_lives <- log(2) / pla2r_ind$kel
+cohort <- data.frame(
+  Quantity = c("Simulated mean ke_PLA2R (/day)", "Simulated SD ke_PLA2R (/day)",
+               "Simulated min / max half-life (days)",
+               "Simulated mean initial titer (U/mL)",
+               "Simulated % above 150 U/mL"),
+  Value = c(round(mean(pla2r_ind$kel), 4), round(stats::sd(pla2r_ind$kel), 4),
+            paste(round(min(half_lives)), "/", round(max(half_lives))),
+            round(mean(pla2r_ind$e0), 1),
+            round(100 * mean(pla2r_ind$e0 > 150), 1))
+)
+knitr::kable(cohort,
+             caption = paste("Simulated cohort of 200; sampling noise on a",
+                             "CV-174% baseline is large, so the tight gates are",
+                             "the analytic ones above."))
+stopifnot(abs(mean(pla2r_ind$kel) - 0.033) < 0.005,
+          abs(log(2) / mean(pla2r_ind$kel) - 21) < 3)
+
+# 4. Discussion: "Six monthly doses of 100 mg RTX infusion is able to maintain
+#    the depletion of CD20+ B cells for more than 7 months, which is sufficient
+#    for the fully elimination of anti-PLA2R antibody (~10 half-lives)."
+#    That claim is about the TYPICAL patient, at the mean 21-day half-life.
+n_half_lives  <- 7 * 30 / (log(2) / mean(pla2r_ind$kel))
+frac_typical  <- exp(-mean(pla2r_ind$kel) * 7 * 30)
+# ... but the paper immediately qualifies it: "a large variability was observed
+#     for ke,PLA2R that ranges from 0.01 to 0.079. For some patients, 6 months
+#     infusion may be insufficient or unnecessary." A subject at the slow end
+#     (0.01 /day) still retains 12% of the starting titer at 7 months, so the
+#     cohort must contain a substantial minority who are not fully cleared --
+#     which is the paper's own argument for individualising the duration.
+frac_incomplete <- mean(exp(-pla2r_ind$kel * 7 * 30) > 0.01)
+c(half_lives_in_7_months  = round(n_half_lives, 1),
+  typical_fraction_left   = signif(frac_typical, 3),
+  pct_above_1pct_at_7_mo  = round(100 * frac_incomplete, 1))
+stopifnot(abs(n_half_lives - 10) < 1.5, frac_typical < 0.001)
+stopifnot(frac_incomplete > 0.1, frac_incomplete < 0.5)
+
+# 5. Ruggenenti 2015 (cited in Section 3.6) reported ke,PLA2R = 0.025 /day under
+#    standard dosing, which must sit inside this model's between-subject
+#    distribution rather than outside it.
+stopifnot(mean(pla2r_ind$kel < 0.025) > 0.1, mean(pla2r_ind$kel < 0.025) < 0.9)
+```
+
+The closed-form check agrees to better than 1 part in 10,000 everywhere the titer
+is above 0.001 U/mL, so the packaged ODE is Eq. 5 and nothing else. The paper's
+own downstream arithmetic -- 7 months of B cell depletion being "~10 half-lives"
+of anti-PLA2R -- is reproduced from the model rather than assumed, and so is the
+qualification the paper attaches to it: because `ke_PLA2R` varies roughly
+eight-fold across patients, a substantial minority still carry more than 1% of
+their starting titer at 7 months. That is exactly the paper's stated case for
+monitoring the titer and individualising the treatment duration ("monitoring of
+anti-PLA2R titer can be used to fit the parameter ... Therefore, a personalized
+treatment is feasible", Discussion).
+
+## Assumptions and deviations specific to the titer model
+
+* **Log-normal moment matching.** Covered above. The typical values in `ini()`
+  are medians derived from the paper's reported arithmetic means and SDs; the
+  derivation is written out in the model file. Both derived numbers are checked
+  against statistics the paper reports independently (the observed `ke_PLA2R`
+  range and the 41.5% high-titer count).
+* **The initial titer comes from Table 1, not from the fit.** The paper states
+  that Eq. 5 "is parameterized with initial anti-PLA2R titer and individual
+  elimination constant `ke,PLA2R`" but never reports a fitted population value
+  for `A`, so the cohort baseline titer of Table 1 (260.3 +/- 453.2 U/mL) is
+  used. Table 1 summarises all 41 patients whereas the titer fit used 36, a
+  difference the paper gives no way to correct for.
+* **Residual error.** Only `R^2` is reported (`> 0.8` for all but one patient,
+  which gave 0.67), which is a goodness-of-fit summary rather than a residual
+  standard deviation, so `propSd` is encoded as zero rather than back-derived
+  from an inequality.
+* **Time base.** This model runs in **days**, because `ke_PLA2R` is reported per
+  day (`log(2)/0.033 = 21` days). Its companion `Liang_2024_rituximab` runs in
+  **hours**, because Table 2 is reported in `1/hr`. The two models share a paper
+  but not a time base, which is another consequence of their being independent
+  fits.
+* **Time origin.** `t = 0` is the start of the descending stage, not necessarily
+  the first infusion. For patients who relapsed and then had a second round of
+  titer reduction the authors fitted two separate exponentials (Section 2.7);
+  the packaged model represents one such descending episode.
+* **No covariates.** Pearson correlation against the available physiological
+  factors found nothing at the paper's `|r| > 0.7` screening threshold
+  (Section 3.6), so the model carries no covariate terms.
+* **No link to the PK/PD model.** By the authors' own account the two models
+  cannot be joined on the available data. Nothing in this file infers a link
+  that the paper declined to make.

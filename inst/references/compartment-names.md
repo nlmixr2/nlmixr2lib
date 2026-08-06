@@ -1993,6 +1993,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Example models:** `Valenzuela_2025_nipocalimab.R`.
 - **Notes:** Renamed from `total_IgG` to `total_igg` on 2026-06-19 per the canonical-register standardization audit (operator decision: compartment names follow the all-lowercase nlmixr2 convention; the mixed-case `total_IgG` was an outlier).
 
+### antipla2r (**canonical anti-PLA2R autoantibody titer biomarker**)
+- **Type:** compartment
+- **Role:** Serum anti-phospholipase A2 receptor (anti-PLA2R) IgG AUTOANTIBODY titer, the pathogenic-antibody biomarker of primary membranous nephropathy and the surrogate the field uses to judge immunological remission. Assayed by ELISA and reported in U/mL. Used as a PD output state whose decline follows B-cell-depleting therapy.
+- **Source aliases:**
+  - `anti-PLA2R titer`, `anti-PLA2R antibody titer` -- paper prose forms.
+- **Example models:** `Liang_2024_rituximab_pla2r.R` (founding example; mono-exponential decline after rituximab, Liang 2024 Eq. 5).
+- **Notes:** Registered 2026-08-06 (sidecar `oare_PMC11002205` request-001 q1, option A). The name deliberately marks the AUTOANTIBODY rather than its antigen: PLA2R itself is the podocyte receptor, so the bare name `pla2r` is left free for a future model of the receptor or of the immune-complex deposition it mediates. The `anti` prefix is what carries that distinction; the alternative `pla2r_ab` was rejected because `_ab` is not an established compartment suffix in this register (`tab` / `nab` / `ige` exist only as metabolite / binding-partner suffixes) and would have introduced a second new convention for one model. Joins the same one-word-analyte biomarker family as `igg`, `total_igg`, `crp`, `vegf` and `shbg`.
+
 ### phe (**canonical phenylalanine PD output**)
 - **Type:** compartment
 - **Role:** Phenylalanine biomarker PD output (phenylketonuria models).
