@@ -767,63 +767,40 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Zurlinden_2016_paracetamol.R`.
 
-### a_gut_lumen (**canonical PBPK intestinal-lumen compartment**)
+### a_skin (**canonical PBPK skin-amount compartment**)
 - **Type:** compartment
-- **Role:** Intestinal lumen contents in mass-balance PBPK extractions: unabsorbed drug plus drug returned from bile. The dosing target for the oral route and the return target for enterohepatic recirculation; drains to `a_gut` by first-order absorption and to `a_feces` by first-order faecal excretion.
-- **Source aliases:**
-  - `Agutlumen` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
-- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
-- **Notes:** Distinct from `a_gut`, which is the perfused gut **tissue** compartment that exchanges with plasma at `q_gut`; `a_gut_lumen` is the lumen contents and has no blood flow. A PBPK model with oral dosing and/or enterohepatic recirculation needs both. Distinct from the bare `gut_lumen` compartment used by non-PBPK gastrointestinal-transit models: `a_` marks an amount state in a mass-balance whole-body PBPK, and registering the two under one name would put a PBPK amount and a transit-model state under a single canonical. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+- **Role:** Skin organ compartment in mass-balance PBPK extractions. Flow-limited: `Q_skin * (CA - C_skin/pc_skin)`.
+- **Source aliases:** none.
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** The bare `skin` form is also canonical; PBPK organ-amount models use the `a_` prefix alongside `a_liver` / `a_kidney` / `a_muscle`.
 
-### a_bile (**canonical PBPK biliary compartment**)
+### a_brain (**canonical PBPK brain-amount compartment**)
 - **Type:** compartment
-- **Role:** Biliary compartment in mass-balance PBPK extractions. Receives saturable hepatobiliary efflux from `a_liver` and empties into `a_gut_lumen` at a first-order rate, closing the enterohepatic recirculation loop.
-- **Source aliases:**
-  - `ABile` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
-- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
-- **Notes:** Companion to the non-PBPK enterohepatic-recirculation compartments registered under "Enterohepatic recirculation" above; `a_bile` is the `a_<organ>` mass-balance form. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+- **Role:** Brain organ compartment in mass-balance PBPK extractions, treated as a single flow-limited lump. Distinct from the `brain_<region>` namespace, which resolves anatomically separate CNS sub-regions for brain-distribution models.
+- **Source aliases:** none.
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
 
-### a_feces (**canonical PBPK faecal-excretion compartment**)
+### a_blood (**canonical PBPK single well-mixed blood pool**)
 - **Type:** compartment
-- **Role:** Cumulative faecal-excretion accumulator in mass-balance PBPK extractions. Terminal state -- receives first-order loss from `a_gut_lumen` and has no outflow.
-- **Source aliases:**
-  - `Afeces` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
-- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
-- **Notes:** Faecal analogue of `a_urine`; both are cumulative excreted-amount accumulators rather than physiological organs, and both live on the `a_<organ>` namespace so a mass-balance sum over the model's states is complete. Spelled `a_feces` (not `a_faeces`) to match the `Afeces` source spelling and the ASCII-only model-file rule; note the `compartmentData` `specimen` vocabulary uses the British `"faeces"`. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+- **Role:** Single well-mixed blood pool in a PBPK model that has no separate arterial / venous split and no lung compartment: it simultaneously supplies the arterial concentration `Cart` to every tissue and receives all venous return.
+- **Source aliases:** none.
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** Use `a_arterial` + `a_venous` when the source model splits the two; use `a_blood` only when the source carries a single pool. Distinct from the bare `blood` form used by membrane-limited extractions such as `Parhiz_2024_mRNA_LNP.R`.
 
-### a_filtrate (**canonical PBPK renal tubular-filtrate compartment**)
+### a_thyroid_blood (**canonical PBPK thyroid vascular sub-compartment**)
 - **Type:** compartment
-- **Role:** Renal tubular filtrate / tubular lumen in mass-balance PBPK extractions. Receives glomerular filtration and saturable active tubular secretion from `a_kidney`; loses drug by first-order tubular reabsorption back to `a_kidney` and by bulk filtrate flow onward to `a_urine_storage`.
+- **Role:** Vascular sub-compartment of a diffusion-limited thyroid. Exchanges with the systemic blood pool by perfusion (`Q_thy`) and with the thyroid tissue sub-compartment by passive diffusion across a permeability-area product (`PA_thy`). Because it is blood, it carries no tissue:blood partition coefficient.
 - **Source aliases:**
-  - `Afilterate` -- the source code's own misspelling, used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
-  - `Ffiltrate` / `Qfiltrate` -- the corrected spelling used in the same paper's supplementary tables for the compartment's volume fraction and inflow.
-  - `tubules` -- the term used in the Sharma 2023 manuscript body and figure axes for this compartment.
-- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
-- **Notes:** The compartment that makes non-linear renal handling expressible: with both saturable secretion into it and first-order reabsorption out of it, renal clearance becomes dose-dependent. Distinct from the non-PBPK `renal_cortex` accumulation compartment, which represents drug retained in kidney tissue rather than filtrate in the tubular lumen. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+  - `Athyblood` / `Cthyblood` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** Paired with `a_thyroid_tissue`; a thyroid split into these two states is the standard structure in the thyroid-disruptor / HPT-axis modelling family (Ekerot 2013, Willemin & Lumen 2017, Handa 2021).
 
-### a_urine_storage (**canonical PBPK pre-void urine-storage compartment**)
+### a_thyroid_tissue (**canonical PBPK thyroid tissue sub-compartment**)
 - **Type:** compartment
-- **Role:** Pre-void urine storage in mass-balance PBPK extractions: a renal transit delay between the tubular filtrate and cumulative urinary excretion. Receives bulk filtrate flow from `a_filtrate` and empties to `a_urine` at a first-order rate.
+- **Role:** Tissue sub-compartment of a diffusion-limited thyroid, where thyroid-hormone synthesis takes place and where a thyroid-disrupting chemical exerts its sodium-iodide-symporter (NIS) or thyroid-peroxidase (TPO) inhibition. Exchanges only with `a_thyroid_blood`, across the permeability-area product `PA_thy`.
 - **Source aliases:**
-  - `Adelay` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`; the Sharma 2023 Methods describe it as "a temporary storage compartment from which NFT was excreted to urine".
-- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
-- **Notes:** Distinct from `a_urine`, which is the cumulative amount **already excreted**; `a_urine_storage` holds drug that has left the tubules but has not yet been voided, and is what lets a model reproduce the lag between renal clearance and measured urinary recovery. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
-
-### a_rest_of_body (**canonical PBPK lumped-remainder compartment**)
-- **Type:** compartment
-- **Role:** Single lumped remainder compartment for all tissues not modelled explicitly in a mass-balance PBPK extraction. Its volume is total body volume **minus** the sum of the explicit organ volumes and its plasma flow is cardiac output **minus** the sum of the explicit organ flows.
-- **Source aliases:**
-  - `Arestbody` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`; the Sharma 2023 manuscript writes it `Restbody`.
-- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
-- **Notes:** Distinct from the `a_rapidly_perfused` / `a_slowly_perfused` pair, which is a perfusion-based two-way lumping of the non-explicit tissues; `a_rest_of_body` is a single by-subtraction remainder, so its volume and flow are defined by closure rather than by a tabulated fraction, and its partition coefficient is typically fitted rather than predicted. Use `a_rest_of_body` when the source model has exactly one remainder compartment. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
-
-### a_plasma (**canonical PBPK combined-plasma compartment**)
-- **Type:** compartment
-- **Role:** Single combined plasma compartment in mass-balance PBPK extractions where the model has no arterial/venous split: every organ returns to it and cardiac output leaves from it.
-- **Source aliases:**
-  - `Aplasma` -- used in `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`.
-- **Example models:** `Sharma_2023_nitrofurantoin_rabbit_pbpk.R`, `Sharma_2023_nitrofurantoin_rat_pbpk.R`, `Sharma_2023_nitrofurantoin_human_pbpk.R`.
-- **Notes:** Distinct from the `a_venous` / `a_arterial` pair used when the source model carries two separate blood pools, and distinct from the bare `plasma` compartment reserved for the Cao 2013 mAb minimal-PBPK family (see the "mPBPK exception" section) -- `a_plasma` is an **amount** state in a whole-body mass-balance PBPK whereas the mPBPK `plasma` is a concentration state. Follows the precedent set by `a_urine` above, which likewise carries the `a_` prefix rather than reusing the bare `urine` form. Founding example: `Sharma_2023_nitrofurantoin_rabbit_pbpk.R` (operator sidecar request 001 / response 001, 2026-08-04).
+  - `Athytissue` / `Cthytissue` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
 
 ### a_fast (**canonical bimodal-disease fast-progression arm**)
 - **Type:** compartment
@@ -1975,6 +1952,43 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Role:** Parathyroid hormone biomarker PD output.
 - **Source aliases:** none.
 - **Example models:** `Ahn_2014.R`.
+
+### t4_thyroid (**canonical thyroxine pool in thyroid tissue**)
+- **Type:** compartment
+- **Role:** Thyroxine (T4) held in thyroid tissue, as an **amount**. Produced by a zero-order thyroidal synthesis rate that a thyroid-disrupting chemical scales down and that serum TSH scales up; drains by deiodination to T3 within the gland and by first-order transfer into serum.
+- **Source aliases:**
+  - `AT4thy` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** The location suffix is load-bearing: T4 exists as two kinetically distinct pools (thyroid tissue and serum), so a bare `t4` would be ambiguous. Paired with `t4_serum`. This is the hypothalamic-pituitary-thyroid (HPT) axis naming family shared with `t3_thyroid`, `t3_serum` and `tsh_serum`.
+
+### t3_thyroid (**canonical triiodothyronine pool in thyroid tissue**)
+- **Type:** compartment
+- **Role:** Triiodothyronine (T3) held in thyroid tissue, as an **amount**. Produced both by direct thyroidal synthesis and by intrathyroidal deiodination of T4; drains by intrathyroidal metabolism and by first-order transfer into serum.
+- **Source aliases:**
+  - `AT3thy` -- Decrane 2023 (paper p. 3).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
+### t4_serum (**canonical thyroxine pool in serum**)
+- **Type:** compartment
+- **Role:** Circulating thyroxine (T4) in serum, as an **amount** distributed in a T4-specific volume of distribution. Fed by transfer out of the thyroid; drains by systemic deiodination to T3 and by non-deiodinative loss. Its deviation from the basal amount drives the HPT negative-feedback terms on TSH production and turnover.
+- **Source aliases:**
+  - `AT4srm` -- Decrane 2023 (paper p. 4).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
+### t3_serum (**canonical triiodothyronine pool in serum**)
+- **Type:** compartment
+- **Role:** Circulating triiodothyronine (T3) in serum, as an **amount** distributed in a T3-specific volume of distribution. Fed by transfer out of the thyroid and by systemic deiodination of serum T4; drains by first-order systemic loss.
+- **Source aliases:**
+  - `AT3srm` -- Decrane 2023 (paper p. 4).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+
+### tsh_serum (**canonical thyrotropin pool in serum**)
+- **Type:** compartment
+- **Role:** Circulating thyroid-stimulating hormone (thyrotropin, TSH) in serum, as an **amount**. Zero-order production is up-regulated and first-order turnover is slowed when serum T4 falls below its basal level; the resulting TSH concentration stimulates thyroidal T4 synthesis. This state closes the HPT feedback loop.
+- **Source aliases:**
+  - `ATSH` -- Decrane 2023 (paper p. 4).
+- **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
+- **Notes:** Distinct from `tsh` should a future model carry TSH as a directly observed concentration biomarker rather than an amount state; the `_serum` suffix marks the HPT-axis amount-state family.
 
 ### ca (**canonical serum calcium PD output**)
 - **Type:** compartment
