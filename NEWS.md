@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
+- Add Goulooze 2022 finerenone UACR and eGFR dose-exposure-response models ([doi:10.1007/s40262-022-01124-3](https://doi.org/10.1007/s40262-022-01124-3)) -- adults with chronic kidney disease and type 2 diabetes (FIDELIO-DKD).
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
