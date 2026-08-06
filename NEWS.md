@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pei 2023 tacrolimus PBPK and popPK models ([doi:10.3390/pharmaceutics15112580](https://doi.org/10.3390/pharmaceutics15112580)) -- adult heart transplant recipients.
+- Add Gong 2023 pemigatinib ([doi:10.1002/psp4.13064](https://doi.org/10.1002/psp4.13064)) - healthy participants and patients with advanced solid tumors including cholangiocarcinoma.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
