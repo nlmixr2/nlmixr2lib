@@ -10,6 +10,8 @@
 
 - Add Marques 2024 salbutamol ([doi:10.3390/pharmaceutics16070881](https://doi.org/10.3390/pharmaceutics16070881)) - healthy adult volunteers given a single 600 ug dry-powder-inhaler dose.
 
+- Add Wang 2024 saxagliptin and 5-hydroxy saxagliptin ([doi:10.1186/s40360-024-00757-3](https://doi.org/10.1186/s40360-024-00757-3)) - streptozotocin/high-fat-diet type 2 diabetic Sprague-Dawley rats.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
