@@ -81,6 +81,14 @@ buildModelDb <- function() {
     entries = cache$entries
   )
   modeldb <- result$modeldb
+  # The canonical-name registers are checked against the tree being built, not
+  # the installed copy, so a duplicate cannot ride in on a stale install.
+  refIssues <- .referenceDuplicateIssues(
+    Sys.glob(file.path(packageDirectory, "inst/references/*.md"))
+  )
+  if (nrow(refIssues)) {
+    .conventionErrorsAdd("inst/references", refIssues)
+  }
   # Abort before writing artifacts: a database with convention errors in it
   # must never be saved, or the next build starts from a bad cache.
   .conventionErrorsStopIfAny()

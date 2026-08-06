@@ -1549,4 +1549,79 @@ test_that("a bvv_ eta whose parameter has no fixed effect is still flagged", {
   expect_true(any(grepl("etabvv_nosuch_1", res$name, fixed = TRUE)))
 })
 
+
+# Reference-register duplicates. The registers resolve in document order,
+# last one wins, so two blocks sharing a name AND a Type silently discard the
+# earlier one. `col`, `mic` and `cloca` each hit this. A name repeated under
+# DIFFERENT Types is deliberate and must not be flagged.
+
+test_that("no register entry is duplicated at the same Type", {
+  # Enumerating: a merge that leaves two same-Type blocks fails here.
+  root <- system.file("references", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "references not installed")
+  issues <- nlmixr2lib:::.referenceDuplicateIssues(
+    Sys.glob(file.path(root, "*.md")))
+  expect_equal(nrow(issues), 0L)
+})
+
+test_that("two blocks sharing a name and a Type are an error", {
+  tmp <- tempfile(fileext = ".md")
+  on.exit(unlink(tmp), add = TRUE)
+  writeLines(c(
+    "### foo (**canonical foo**)",
+    "- **Type:** compartment",
+    "- **Role:** first.",
+    "",
+    "### foo (**canonical foo again**)",
+    "- **Type:** compartment",
+    "- **Role:** second, silently discarded."
+  ), tmp)
+  issues <- nlmixr2lib:::.referenceDuplicateIssues(tmp)
+  expect_equal(nrow(issues), 1L)
+  expect_equal(issues$severity, "error")
+  expect_equal(issues$category, "reference_duplicate")
+  expect_equal(issues$name, "foo")
+  expect_true(grepl("compartment", issues$message, fixed = TRUE))
+})
+
+test_that("the same name under two different Types is NOT flagged", {
+  # col / complex / dap / lzd / mer / mero / plasma / van are each both a bare
+  # compartment and a metabolite-suffix, on purpose.
+  tmp <- tempfile(fileext = ".md")
+  on.exit(unlink(tmp), add = TRUE)
+  writeLines(c(
+    "### col (**canonical colistin bare drug-state compartment**)",
+    "- **Type:** compartment",
+    "- **Role:** bare state.",
+    "",
+    "### col (**canonical colistin metabolite suffix**)",
+    "- **Type:** metabolite-suffix",
+    "- **Role:** suffix."
+  ), tmp)
+  expect_equal(nrow(nlmixr2lib:::.referenceDuplicateIssues(tmp)), 0L)
+})
+
+test_that("register blocks are parsed with and without the bold parenthetical", {
+  tmp <- tempfile(fileext = ".md")
+  on.exit(unlink(tmp), add = TRUE)
+  writeLines(c(
+    "## A section heading is not an entry",
+    "### bare",
+    "- **Type:** paper-named-param",
+    "",
+    "### withParen (**canonical thing**)",
+    "- **Type:** compartment",
+    "",
+    "### Files using ALB",
+    "(prose heading, no Type line)"
+  ), tmp)
+  b <- nlmixr2lib:::.referenceRegisterBlocks(tmp)
+  expect_true(all(c("bare", "withParen") %in% b$name))
+  expect_equal(b$type[b$name == "bare"], "paper-named-param")
+  expect_equal(b$type[b$name == "withParen"], "compartment")
+  # A prose heading has no Type; it must not collide with other prose headings
+  # on the first word alone.
+  expect_false("Files" %in% b$name)
+})
+
 # nolint end

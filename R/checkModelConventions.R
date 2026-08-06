@@ -1475,3 +1475,68 @@ checkModelConventions <- function(model, verbose = TRUE) {
   }
   issues
 }
+
+# Reference-register duplicate detection ------------------------------------
+#
+# A canonical name may legitimately appear twice in a register when the two
+# entries carry DIFFERENT `- **Type:**` values. `col`, `complex`, `dap`,
+# `lzd`, `mer`, `mero`, `plasma` and `van` are each registered both as a bare
+# compartment and as a metabolite-suffix, and several say so in their Notes.
+#
+# Two entries sharing a name AND a Type are a different matter. The registers
+# are resolved in document order, last one wins, so the earlier block -- and
+# any source alias, example model or caveat recorded only there -- is silently
+# discarded. That is not hypothetical: `col` (twice as metabolite-suffix) and
+# `mic` (twice as paper-named-param) were each written by two extractions that
+# did not know the other existed, and `cloca` was duplicated again by a
+# consolidation merge. In every case text was being dropped and nobody noticed,
+# because nothing consumed the fact.
+.referenceHeaderPattern <- "^### ([^ (]+)\\s*(\\(\\*\\*.*\\*\\*\\))?\\s*$"
+.referenceTypePattern <- "^-\\s+\\*\\*Type:\\*\\*\\s*(.+?)\\s*$"
+
+.referenceRegisterBlocks <- function(path) {
+  empty <- data.frame(name = character(), type = character(),
+                      line = integer(), stringsAsFactors = FALSE)
+  lines <- readLines(path, warn = FALSE)
+  isHeader <- grepl(.referenceHeaderPattern, lines)
+  if (!any(isHeader)) return(empty)
+  # A block ends at the next register header, the next `## ` section, or a
+  # horizontal rule -- whichever comes first.
+  isBreak <- isHeader | grepl("^## ", lines) | grepl("^---\\s*$", lines)
+  hdr <- which(isHeader)
+  rows <- lapply(hdr, function(i) {
+    nm <- sub(.referenceHeaderPattern, "\\1", lines[[i]])
+    nxt <- which(isBreak & seq_along(lines) > i)
+    end <- if (length(nxt)) nxt[[1]] - 1L else length(lines)
+    body <- if (end >= i + 1L) lines[(i + 1L):end] else character()
+    tl <- grep(.referenceTypePattern, body, value = TRUE)
+    ty <- if (length(tl)) sub(.referenceTypePattern, "\\1", tl[[1]]) else NA_character_
+    data.frame(name = nm, type = ty, line = i, stringsAsFactors = FALSE)
+  })
+  do.call(rbind, rows)
+}
+
+.referenceDuplicateIssues <- function(paths) {
+  issues <- .emptyIssues()
+  for (p in paths) {
+    if (!file.exists(p)) next
+    blocks <- .referenceRegisterBlocks(p)
+    if (!nrow(blocks)) next
+    key <- paste(blocks$name, blocks$type, sep = "\r")
+    for (k in unique(key[duplicated(key)])) {
+      rows <- blocks[key == k, , drop = FALSE]
+      issues <- rbind(issues, .issue(
+        "reference_duplicate", "error", rows$name[[1]],
+        sprintf(
+          "%s has %d `### %s` entries sharing `- **Type:** %s` (lines %s).",
+          basename(p), nrow(rows), rows$name[[1]], rows$type[[1]],
+          paste(rows$line, collapse = ", ")),
+        paste("Merge them into a single block, keeping every source alias and",
+              "example model from both. The register resolves in document",
+              "order, last one wins, so each earlier block is silently",
+              "discarded. Repeating a name is only safe when the Types differ.")
+      ))
+    }
+  }
+  issues
+}
