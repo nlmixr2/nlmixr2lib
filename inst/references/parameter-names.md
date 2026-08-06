@@ -37,6 +37,8 @@ The `Type:` field is the routing tag the runtime parser uses to assign the entry
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists. They are documented here for cross-reference:
 
 - `covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$"` — canonical shape of a covariate-effect parameter name: a leading `e_`, a covariate token, and one to five additional tokens (final token is the affected PK parameter, optional middle tokens carry metabolite / shared-exponent / CL-component context).
+  - `e_wt_<param>` is the body-weight member of that family and is the canonical spelling for an **allometric exponent**. The deprecated `allo_<param>` / `allovc` / `dCLdWT` / `dVdWT` spellings are rewritten onto it by the rename map in `R/conventions.R` (`allo_vc` -> `e_wt_vc`, `allo_cl` -> `e_wt_cl`, ...), so `checkModelConventions()` will reject `allo_vc` and name `e_wt_vc` as the fix.
+  - When a paper states a **single** exponent that it applies to every rate constant at once, rather than one exponent per named parameter, use the generic token `e_wt_k` for that shared exponent. Founding examples: `Biliouris_2018_nusinersen.R` (`e_wt_k` = -0.08, applied to all rate constants) and `Siebinga_2024_lu177psmaIT.R` (`e_wt_k` = -0.25 across all nine rate constants, alongside `e_wt_vc` = 1). Ratified 2026-08-05 with the Siebinga 2024 extraction. Prefer a specific `e_wt_<param>` whenever the paper does report per-parameter exponents.
 - `clComponents = c("ss", "time", "renal", "nonren")` — suffix tokens permitted on multi-component CL parameters (e.g., `cl_renal + cl_nonren`).
 - `transformPrefixes = c("l", "logit", "probit")` — accepted parameter-name transform prefixes.
 - Within-subject random-effect levels, matched by `R/checkModelConventions.R::.isIOVEtaSuffix`: `etaiov_<param>_<occ>` for inter-occasion variability and `etabvv_<param>_<visit>` for between-visit variability, where `<param>` is an existing fixed-effect parameter (bare, or with an `l` / `ltv` / `lv` prefix) and the trailing integer is the occasion / visit index. The two prefixes are kept separate because a paper can fit both levels at once on different parameters -- `Abdelgawad_2024_linezolid.R` carries five-occasion IOV on `ka` and `mtt` alongside a two-visit BVV on `vmax`, and folding them into one prefix would lose the published random-effect hierarchy. NONMEM `$OMEGA BLOCK(1) SAME` repeats map to `~ fix(<variance>)` on every index after the first.
@@ -1264,7 +1266,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:**
   - `SF1` .. `SF4` -- Yau 2023 Table 2 / Table S6 and Eq 10.
 - **Example models:** `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
-- **Notes:** A value of 1 means the bottom-up prediction needs no correction, so `sf<n>` estimates are directly interpretable as fold-bias. Do NOT reuse `sf<n>` for a generic "scaling factor" on a non-partition-coefficient parameter -- allometric exponents use `allo_<param>`, and covariate multipliers use the `e_<cov>_<param>` family. Paired with the `kpurr_<tissue>` derived `model()` quantities in the founding examples. Introduced 2026-07-26 with the Yau 2023 diazepam PBPK extraction.
+- **Notes:** A value of 1 means the bottom-up prediction needs no correction, so `sf<n>` estimates are directly interpretable as fold-bias. Do NOT reuse `sf<n>` for a generic "scaling factor" on a non-partition-coefficient parameter -- allometric exponents use `e_wt_<param>`, and covariate multipliers use the wider `e_<cov>_<param>` family that `e_wt_<param>` belongs to. Paired with the `kpurr_<tissue>` derived `model()` quantities in the founding examples. Introduced 2026-07-26 with the Yau 2023 diazepam PBPK extraction.
 
 ### eh (**canonical hepatic extraction ratio**)
 - **Type:** paper-named-param
@@ -1375,6 +1377,23 @@ not have and giving no hint that the nesting is the cause. And `omega` must be
 passed explicitly (`omega = mod$omega`), because a nested omega is a *list* of
 matrices keyed by level rather than a single matrix.
 
+### boxcox_<param> (**canonical Box-Cox shape parameter for an interindividual random-effect distribution**)
+- **Type:** paper-named-param
+- **Role:** Estimated shape parameter (lambda) of a Box-Cox transformation applied to the *interindividual* random effect of `<param>`, used when a paper reports that the eta distribution deviates visibly from log-normal. Unitless and signed. Because rxode2's `boxCox()` attaches to the residual-error model and cannot be applied to an eta, the transform is written out explicitly in `model()` in the Petersson (2009) form `phi_<param> <- (exp(eta<param>)^lambda - 1) / lambda`, followed by `<param> <- exp(l<param> + phi_<param>)`. A Box-Cox shape is a structural THETA, so it belongs in `ini()` (wrapped in `fixed()` only when the paper fixed it).
+- **Source aliases:**
+  - `Box-cox shape parameter` -- Siebinga 2024 Table 3.
+  - `LAMBDA`, `SHAPE` -- common NONMEM `$THETA` labels for the same quantity.
+- **Example models:** `Siebinga_2024_lu177psmaIT.R` (`boxcox_lkgrow` = -0.822, RSE 28.3%, the shape of the PSA-growth-rate eta; the authors added it because the kG random effect deviated strongly from log-normal, dOFV -28.7).
+- **Notes:** Ratified 2026-08-05 with the Siebinga 2024 [177Lu]Lu-PSMA-I&T extraction; founding instance `boxcox_lkgrow`. Name the entry after the parameter whose eta is transformed, spelled as that parameter appears in `ini()`, so `boxcox_lkgrow` transforms `etalkgrow`. **Distinct from `lambda_<output>`** -- e.g. `lambda_ca125` in `Wilbaux_2014_ovarianCancer_ca125.R`, which is a Box-Cox transform of the *residual error*, declared through `rxode2::boxCox()` inside the error model and carried in the `paper_specific_residual_sds` metadata field. That mechanism cannot express an eta transform, which is why this separate canonical exists; do not conflate the two.
+
+### lkd_direct, kd_direct, lkd_delay, kd_delay (**canonical linear drug-effect coefficients on a turnover loss rate**)
+- **Type:** paper-named-param
+- **Role:** Proportionality coefficients of a *linear* drug effect that multiply a driving exposure to give a first-order loss rate out of a PD turnover compartment (`E = kd_<route> * C`, entering the response ODE as `- E * R`). Units are reciprocal exposure per unit time and therefore depend on the driver's units, so the `label()` must state them explicitly. `kd_direct` is driven by the instantaneous concentration in the source compartment; `kd_delay` is driven by an effect-compartment concentration equilibrating at `ke0`, and is the form to use when a paper reports response continuing after the drug has washed out. Both are strictly positive, so the log-transformed `lkd_<route>` form carries the `ini()` typical value and any exponential IIV.
+- **Source aliases:**
+  - `kD,direct` -- Siebinga 2024 Table 3 and Eq. 9.
+  - `kD,delay`, `kD,delayed` -- Siebinga 2024 Table 3 and Eq. 12.
+- **Example models:** `Siebinga_2024_lu177psmaIT.R` (`lkd_direct` = log(0.00335) L/day/GBq driven by the tumor radioactivity concentration, and `lkd_delay` = log(0.0000328) L/day/MBq driven by an effect compartment at `ke0` = 0.00128 1/h; both act on the PSA compartment, per Eq. 12).
+- **Notes:** Ratified 2026-08-05 with the Siebinga 2024 [177Lu]Lu-PSMA-I&T extraction. **Distinct from `kd`**, the mechanistic *dissociation* rate (1 / time) used in TMDD-type models: these are exposure-scaled slopes with different units, so do not alias them onto `kd`. The `_direct` / `_delay` suffixes name the driver and follow the register's established `<stem>_<suffix>` pattern (`lcl_renal` / `lcl_nonren`, `kge_ctdna` / `kse_ctdna`). Use these names only for the *linear* drug-effect form; when a paper instead fits an Emax or sigmoid-Emax effect, the potency and shape parameters belong to the `ec50` / `lec50` / `hill` family.
 ## Unit spellings
 
 Registered 2026-08-03. The machine-readable `units` block wrote the same time
