@@ -32,13 +32,13 @@ Cao_2013_mab7E3 <- function() {
   ini({
     sigma_tight <- fixed(0.95);  label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 1 (Model A): 0.95, fixed (footnote b "Assumed")
     sigma_leaky <- 0.421; label("Vascular reflection coefficient for leaky tissues (unitless)")                                # Cao 2013 Table 1 (Model A): 0.421 (CV 10.4%)
-    lcl   <- log(1.1976e-4); label("Plasma clearance (CLp, L/day)")                                                       # Cao 2013 Table 1 (Model A): CLp = 0.499e-5 L/hr (CV 14.1%) = 1.1976e-4 L/day
+    lcl   <- log(1.1976e-4); label("Plasma clearance (CLp, L/day)")                                                       # Cao 2013 Table 1 (Model A): CLp = 0.499e-5 L/h (CV 14.1%) = 1.1976e-4 L/day
   })
 
   model({
     # Mouse system parameters; Cao 2013 Table 1 footnote and Methods, for a 20 g BW mouse.
     # Vplasma = 0.85 mL = 0.00085 L; ISF = 4.35 mL = 0.00435 L;
-    # total lymph flow = 0.12 mL/hr = 0.00288 L/day; sigmaL = 0.2; Kp = 0.8 for native IgG1 (refs 22-23).
+    # total lymph flow = 0.12 mL/h = 0.00288 L/day; sigmaL = 0.2; Kp = 0.8 for native IgG1 (refs 22-23).
     sigmal     <- 0.2
     kp         <- 0.8
     vplasma    <- 0.00085

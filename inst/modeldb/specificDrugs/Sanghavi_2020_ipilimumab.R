@@ -87,12 +87,12 @@ Sanghavi_2020_ipilimumab <- function() {
     # Structural parameters at the reference patient: 80 kg BBWT, 217 U/L
     # BLDH, melanoma tumor type, ipilimumab monotherapy, 2L+ line of
     # therapy (Sanghavi 2020 Figure 1 reference-patient definition).
-    # CL0 and Q are reported in the source as mL/hour and converted to
+    # CL0 and Q are reported in the source as mL/h and converted to
     # L/day (mL/h * 24 / 1000 = mL/h * 0.024) so the model carries time
     # in days; T50 below is also converted from hours to days.
-    lcl    <- log(14.1 * 0.024); label("Baseline CL0 at reference covariates (L/day)")              # Sanghavi 2020 Table 2: CL0_REF = 14.1 mL/hour
+    lcl    <- log(14.1 * 0.024); label("Baseline CL0 at reference covariates (L/day)")              # Sanghavi 2020 Table 2: CL0_REF = 14.1 mL/h
     lvc    <- log(3.95);         label("Central volume VC at reference (L)")                        # Sanghavi 2020 Table 2: VC_REF = 3.95 L
-    lq     <- log(27.9 * 0.024); label("Intercompartmental clearance Q at reference (L/day)")       # Sanghavi 2020 Table 2: Q_REF = 27.9 mL/hour
+    lq     <- log(27.9 * 0.024); label("Intercompartmental clearance Q at reference (L/day)")       # Sanghavi 2020 Table 2: Q_REF = 27.9 mL/h
     lvp    <- log(3.18);         label("Peripheral volume VP at reference (L)")                     # Sanghavi 2020 Table 2: VP_REF = 3.18 L
 
     # Time-varying CL parameters: CL(t) = CL0 * exp(cl_hill_max_i * t^HILL / (T50^HILL + t^HILL)),

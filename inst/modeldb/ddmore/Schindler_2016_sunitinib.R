@@ -79,9 +79,9 @@ Schindler_2016_sunitinib <- function() {
     # Final estimates from Output_real_SLD_SUV_OS_GIST.lst, FINAL PARAMETER
     # ESTIMATE block (lines 868-882). Unit conversions follow the source `.mod`
     # `$PK` block (lines 54, 63, 72, 81): the listed THETA values are scaled
-    # (typically /1000/24/7 or /24/7) to give 1/hour rate constants matching
+    # (typically /1000/24/7 or /24/7) to give 1/h rate constants matching
     # the dataset's TIME column in hours. Each `log()` wraps the back-
-    # transformed 1/hour rate so that `exp(l...)` inside `model()` recovers it.
+    # transformed 1/h rate so that `exp(l...)` inside `model()` recovers it.
     lkout    <- log(555.634 / 1000 / 24 / 7) ; label("KOUT: SUVmax loss-of-response rate constant (1/h)")  # THETA(1) = 555.634 FIX (1/week * 1000); .mod line 54 KOUT = THETA(1)/1000/24/7 -> 0.003307 1/h
     ldrug    <- log(0.94569)                 ; label("DRUG_SUV: sunitinib drug-effect coefficient on SUVmax (per mg*h/L of effect-compartment AUC)")  # THETA(3) = 0.94569 FIX; .mod line 72 TVDRUG = THETA(3)
     lbase_suv <- log(7.58866)                ; label("Typical baseline SUVmax (unitless)")                  # THETA(4) = 7.58866 FIX; .mod line 81 TVBASE = THETA(4)

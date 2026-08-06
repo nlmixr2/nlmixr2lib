@@ -56,7 +56,7 @@ Kuroda_2023_cephalothin <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed adult-horse body weight. Kuroda 2023 Table 1 reports every structural parameter per kilogram (l/kg, l/kg/hr), so WT enters as a linear multiplier (exponent 1) on cl, vc, q, vp, q2 and vp2 rather than as an estimated allometric term. Study horses weighed 490-570 kg.",
+      notes              = "Time-fixed adult-horse body weight. Kuroda 2023 Table 1 reports every structural parameter per kilogram (l/kg, l/kg/h), so WT enters as a linear multiplier (exponent 1) on cl, vc, q, vp, q2 and vp2 rather than as an estimated allometric term. Study horses weighed 490-570 kg.",
       source_name        = "bwt (body weight; Kuroda 2023 Methods paragraph 1)"
     )
   )
@@ -81,7 +81,7 @@ Kuroda_2023_cephalothin <- function() {
     # Structural disposition parameters -- Kuroda 2023 Table 1
     # =====================================================================
     # Table 1 reports every primary structural parameter normalized to body
-    # weight (l/kg for volumes, l/kg/hr for clearances). They are carried
+    # weight (l/kg for volumes, l/kg/h for clearances). They are carried
     # here on that per-kilogram basis and multiplied by WT (exponent 1) in
     # model(), which is exactly what the per-kilogram normalization means.
     # Naming map (Kuroda 2023 Fig. 1 / Table 1 -> nlmixr2lib canonical):
@@ -94,9 +94,9 @@ Kuroda_2023_cephalothin <- function() {
     lvc <- log(0.083); label("Weight-normalized central volume of distribution V1 (L/kg)")                       # Table 1: V = 0.083 l/kg (CV% 8.1; 2.5-97.5% 0.071-0.099)
     lvp <- log(0.060); label("Weight-normalized rapidly equilibrating peripheral volume V2 (L/kg)")              # Table 1: V2 = 0.060 l/kg (CV% 16.5; 2.5-97.5% 0.040-0.082)
     lvp2 <- log(0.054); label("Weight-normalized slowly equilibrating peripheral volume V3 (L/kg)")              # Table 1: V3 = 0.054 l/kg (CV% 71.1; 2.5-97.5% 0.039-0.057)
-    lcl <- log(0.597); label("Weight-normalized plasma clearance CL (L/kg/h)")                                  # Table 1: CL = 0.597 l/kg/hr (CV% 4.3; 2.5-97.5% 0.522-0.597)
-    lq <- log(0.106); label("Weight-normalized distribution clearance to peripheral1 CL2 (L/kg/h)")             # Table 1: CL2 = 0.106 l/kg/hr (CV% 14.5; 2.5-97.5% 0.098-0.156)
-    lq2 <- log(0.018); label("Weight-normalized distribution clearance to peripheral2 CL3 (L/kg/h)")            # Table 1: CL3 = 0.018 l/kg/hr (CV% 18.1; 2.5-97.5% 0.016-0.030)
+    lcl <- log(0.597); label("Weight-normalized plasma clearance CL (L/kg/h)")                                  # Table 1: CL = 0.597 l/kg/h (CV% 4.3; 2.5-97.5% 0.522-0.597)
+    lq <- log(0.106); label("Weight-normalized distribution clearance to peripheral1 CL2 (L/kg/h)")             # Table 1: CL2 = 0.106 l/kg/h (CV% 14.5; 2.5-97.5% 0.098-0.156)
+    lq2 <- log(0.018); label("Weight-normalized distribution clearance to peripheral2 CL3 (L/kg/h)")            # Table 1: CL3 = 0.018 l/kg/h (CV% 18.1; 2.5-97.5% 0.016-0.030)
 
     # =====================================================================
     # Intramuscular absorption -- Kuroda 2023 Table 1
@@ -105,7 +105,7 @@ Kuroda_2023_cephalothin <- function() {
     # arm only (Methods paragraph 2). Kabs is consistent with the reported
     # secondary parameter: log(2)/1.070 = 0.648 hr, and Table 1 reports an
     # absorption half-life of 0.65 hr.
-    lka <- log(1.070); label("First-order intramuscular absorption rate constant Kabs (1/h)")                   # Table 1: Kabs = 1.070 1/hr (CV% 24.6); cross-checks against the secondary parameter absorption half-life = 0.65 hr
+    lka <- log(1.070); label("First-order intramuscular absorption rate constant Kabs (1/h)")                   # Table 1: Kabs = 1.070 1/h (CV% 24.6); cross-checks against the secondary parameter absorption half-life = 0.65 hr
     lfdepot <- log(0.997); label("Intramuscular bioavailability F (fraction)")                                    # Table 1: F = 99.7% (CV% 9.8; 2.5-97.5% 67.7-99.8%); Results text repeats "bioavailability ... 99.7%"
 
     # =====================================================================
@@ -169,7 +169,7 @@ Kuroda_2023_cephalothin <- function() {
     # 1. Individual parameters. Kuroda 2023 Table 1 is reported per kilogram
     #    of body weight, so every volume and clearance scales linearly with
     #    WT (exponent 1). Kabs and F are not weight-normalized in Table 1
-    #    (1/hr and %) and are used as-is.
+    #    (1/h and %) and are used as-is.
     vc <- exp(lvc + etalvc) * WT
     vp <- exp(lvp + etalvp) * WT
     vp2 <- exp(lvp2 + etalvp2) * WT

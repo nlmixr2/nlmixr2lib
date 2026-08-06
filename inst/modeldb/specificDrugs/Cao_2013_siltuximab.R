@@ -34,7 +34,7 @@ Cao_2013_siltuximab <- function() {
     # mPBPK Model A parameters from Cao 2013 Table 2 (siltuximab row)
     sigma_tight <- 0.964; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.964 (CV 10.3%)
     sigma_leaky <- 0.673; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.673 (CV 9.27%)
-    lcl   <- log(0.276); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0115 L/hr (CV 5.19%) = 0.276 L/day
+    lcl   <- log(0.276); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0115 L/h (CV 5.19%) = 0.276 L/day
   })
 
   model({

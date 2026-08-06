@@ -28,7 +28,7 @@ Naik_2013_peginesatide <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Used to convert the paper-reported per-kg volumes (V2 in mL/kg, V3 in mL/kg) and per-kg inter-compartmental clearance (Q in mL/kg/hr) to absolute volumes (L) and flow (L/hr) inside model(). Naik 2013 PK-population mean 79.4 kg (Table 3).",
+      notes              = "Used to convert the paper-reported per-kg volumes (V2 in mL/kg, V3 in mL/kg) and per-kg inter-compartmental clearance (Q in mL/kg/h) to absolute volumes (L) and flow (L/h) inside model(). Naik 2013 PK-population mean 79.4 kg (Table 3).",
       source_name        = "WT"
     ),
     AGE = list(
@@ -198,19 +198,19 @@ Naik_2013_peginesatide <- function() {
     vc <- v2 * WT / 1000                 # L
 
     vp <- exp(lvp) * WT / 1000           # L (V3 has no covariates)
-    q  <- exp(lq)  * WT / 1000           # L/hr (Q fixed in mL/kg/hr)
+    q  <- exp(lq)  * WT / 1000           # L/h (Q fixed in mL/kg/h)
 
     # Individual Km and Vmax (Naik 2013 eq 15; Vmax has no covariate or IIV).
     km   <- exp(lkm + etalkm) * (ALP / 87)^e_alp_km   # ng/mL
-    vmax <- exp(lvmax)                                 # ng/mL/hr = ug/L/hr
+    vmax <- exp(lvmax)                                 # ng/mL/h = ug/L/h
 
     # Peginesatide concentration: dose in ug, central in ug, vc in L
     # so Cc = central / vc has units ug/L = ng/mL (no further scaling).
     Cc <- central / vc
 
     # Two-compartment ODE with Michaelis-Menten elimination from central.
-    # Vmax * Cc / (Km + Cc) is a concentration rate (ng/mL/hr = ug/L/hr);
-    # multiplying by vc (L) converts to a mass rate (ug/hr) for d/dt(central).
+    # Vmax * Cc / (Km + Cc) is a concentration rate (ng/mL/h = ug/L/h);
+    # multiplying by vc (L) converts to a mass rate (ug/h) for d/dt(central).
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot -
                           vmax * Cc / (km + Cc) * vc -
@@ -253,7 +253,7 @@ Naik_2013_peginesatide <- function() {
     k1      <- 1 / mtp
     kt      <- 7 / mtt
     k0_stim <- 1 + emax * rsa / (ec50 + rsa)
-    k0      <- hgbbl / mtt * k0_stim                # g/dL/hr
+    k0      <- hgbbl / mtt * k0_stim                # g/dL/h
 
     # Peginesatide stimulation of progenitor production (paper eq 1 STM term).
     stm <- 1 + emax * Cc / (ec50 + Cc)

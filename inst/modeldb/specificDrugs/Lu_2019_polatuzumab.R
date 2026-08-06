@@ -146,7 +146,7 @@ Lu_2019_polatuzumab <- function() {
     lkss_mmae  <- log(0.581);   label("Unconjugated MMAE Michaelis-Menten constant (KSS, ng/mL)")      # Lu 2019 Table 1, theta17
     lfrac_clt  <- log(3.70);    label("FRAC_CLT: ratio of acMMAE-MMAE conversion fraction for CL_t pathway relative to CL_NS (unitless)") # Lu 2019 Table 1, theta18
     lfrac_mm   <- log(2.72);    label("FRAC_MM: ratio of acMMAE-MMAE conversion fraction for CL_MM pathway relative to CL_NS (unitless)") # Lu 2019 Table 1, theta19
-    lalph_mo   <- log(0.167);   label("Rate constant of FRAC_NS time-decay (alpha, 1/month)")          # Lu 2019 Table 1, theta20 (converted to 1/hour inside model() via alpha_hr = alpha_mo / (24 * 30))
+    lalph_mo   <- log(0.167);   label("Rate constant of FRAC_NS time-decay (alpha, 1/month)")          # Lu 2019 Table 1, theta20 (converted to 1/h inside model() via alpha_hr = alpha_mo / (24 * 30))
     frac_t     <- 0.139;        label("Initial-time-dependent multiplier of FRAC_NS (FRAC_T, unitless)") # Lu 2019 Table 1, theta21
 
     # ----- Covariate effects on acMMAE parameters (Lu 2019 Table 2, theta22-theta37) -----
@@ -258,27 +258,27 @@ Lu_2019_polatuzumab <- function() {
 
     # ===== 2. Individual PK parameters (Lu 2019 supplement, Random Effects Model block) =====
     # acMMAE side
-    cl_exp_kdes        <- exp(lcl_exp_kdes) * cov_cl_exp_kdes                      # 1/hour
-    cl_exp_component <- exp(lcl_exp_component + etalcl_exp_component) * cov_cl_exp_component # CL_TIME initial value at t = 0 (L/hour)
-    cl       <- exp(lcl + etalcl) * cov_cl        # L/hour
+    cl_exp_kdes        <- exp(lcl_exp_kdes) * cov_cl_exp_kdes                      # 1/h
+    cl_exp_component <- exp(lcl_exp_component + etalcl_exp_component) * cov_cl_exp_component # CL_TIME initial value at t = 0 (L/h)
+    cl       <- exp(lcl + etalcl) * cov_cl        # L/h
     vc          <- exp(lvc + etalvc) * cov_vc                 # L
     vp          <- exp(lvp + etalvp) * (WT / 75)^e_wt_vc      # L
-    q           <- exp(lq + etalq) * (WT / 75)^e_wt_vc        # L/hour
-    vmax        <- exp(lvmax + etalvmax)                      # ng/mL/hour
+    q           <- exp(lq + etalq) * (WT / 75)^e_wt_vc        # L/h
+    vmax        <- exp(lvmax + etalvmax)                      # ng/mL/h
     km_ac       <- exp(lkm_ac)                                # ng/mL
     t50         <- exp(lt50_mo) * 24 * 30                     # T50 in hours (paper reports months)
     t50gam      <- t50^gamma_ns
 
     # Unconjugated MMAE side (apparent parameters)
     vc_mmae   <- exp(lvc_mmae)                            # L
-    cl_mmae   <- exp(lcl_mmae + etalcl_mmae)              # L/hour
-    q_mmae    <- exp(lq_mmae)                             # L/hour
+    cl_mmae   <- exp(lcl_mmae + etalcl_mmae)              # L/h
+    q_mmae    <- exp(lq_mmae)                             # L/h
     vp_mmae   <- exp(lvp_mmae + etalvp_mmae)              # L
-    vmax_mmae <- exp(lvmax_mmae)                          # ng/mL/hour
+    vmax_mmae <- exp(lvmax_mmae)                          # ng/mL/h
     kss_mmae  <- exp(lkss_mmae)                           # ng/mL
     frac_clt  <- exp(lfrac_clt)                           # unitless
     frac_mm   <- exp(lfrac_mm)                            # unitless
-    alph      <- exp(lalph_mo) / (24 * 30)                # alpha in 1/hour (paper reports 1/month)
+    alph      <- exp(lalph_mo) / (24 * 30)                # alpha in 1/h (paper reports 1/month)
     frac_0    <- exp(lfrac_mmae + etalfrac_mmae) * cov_mmae  # FRAC_0 = COVMMAE * exp(eta7); lfrac_mmae fixed at 0 keeps original behavior
 
     # ===== 3. Time-dependent quantities (Lu 2019 supplement $DES block) =====
@@ -303,7 +303,7 @@ Lu_2019_polatuzumab <- function() {
 
     # KINPUT = FRAC_NS * (CL_NS + FRAC_CLT * CL_TIME + FRAC_MM * CL_MM) / Vc
     # where CL_MM = Vmax * Vc / (KM + A1/Vc).
-    # The product KINPUT * A1 is the input rate (amount/hour) into central MMAE
+    # The product KINPUT * A1 is the input rate (amount/h) into central MMAE
     # contributed by the three acMMAE elimination pathways (Lu 2019 Eq. 2).
     kinput <- frac_ns * (
                 cl_ns +

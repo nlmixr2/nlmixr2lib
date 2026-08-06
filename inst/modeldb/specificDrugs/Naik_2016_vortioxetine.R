@@ -19,7 +19,7 @@ Naik_2016_vortioxetine <- function() {
       units              = "mL/min",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive effect: CL/F increases by 0.18 L/hr per (CRCL - 106) mL/min. Naik 2016 used a raw mL/min value (not BSA-normalized); the paper does not state the formula explicitly. Reference 106 mL/min is the population median (Table 2).",
+      notes              = "Linear additive effect: CL/F increases by 0.18 L/h per (CRCL - 106) mL/min. Naik 2016 used a raw mL/min value (not BSA-normalized); the paper does not state the formula explicitly. Reference 106 mL/min is the population median (Table 2).",
       source_name        = "CrCL"
     ),
     HT = list(
@@ -27,7 +27,7 @@ Naik_2016_vortioxetine <- function() {
       units              = "cm",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive effect: CL/F increases by 0.40 L/hr per (HT - 167) cm. Reference 167 cm is the population median (Table 2). Height was retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV.",
+      notes              = "Linear additive effect: CL/F increases by 0.40 L/h per (HT - 167) cm. Reference 167 cm is the population median (Table 2). Height was retained over weight and BMI in stepwise selection because it produced the larger reduction in CL IIV.",
       source_name        = "HT"
     ),
     REGION_EUROPE = list(
@@ -35,7 +35,7 @@ Naik_2016_vortioxetine <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 = USA (USA is the typical-value reference; combine with REGION_ROW = 0 for USA)",
-      notes              = "Naik 2016 estimated three region-specific typical CL/F values: USA = 51 L/hr (reference), EU = 39 L/hr, RoW = 38 L/hr. EU CL/F was about 23 percent lower than USA. Encoded here as a log-multiplicative shift e_region_europe_cl = log(39/51).",
+      notes              = "Naik 2016 estimated three region-specific typical CL/F values: USA = 51 L/h (reference), EU = 39 L/h, RoW = 38 L/h. EU CL/F was about 23 percent lower than USA. Encoded here as a log-multiplicative shift e_region_europe_cl = log(39/51).",
       source_name        = "REGION_EU"
     ),
     REGION_ROW = list(
@@ -70,22 +70,22 @@ Naik_2016_vortioxetine <- function() {
   ini({
     # Structural PK parameters - Table 3 of Naik 2016
     # Reference subject for covariates: USA, height = 167 cm, CRCL = 106 mL/min
-    lcl       <- log(51);   label("Typical CL/F in USA reference, log-scale (L/h)")            # Table 3 ("CL/F for US" = 51 L/hr)
+    lcl       <- log(51);   label("Typical CL/F in USA reference, log-scale (L/h)")            # Table 3 ("CL/F for US" = 51 L/h)
     lvc       <- log(2900); label("Central volume of distribution V2/F, log-scale (L)")          # Table 3 (V2/F = 2.9 x 10^3 L)
 
     # Parameters fixed in Naik 2016 from the upstream Phase I popPK (Areberg et al. 2014).
     # The Phase I model is not yet packaged in nlmixr2lib; the fixed values are listed
     # explicitly here so this file is self-contained.
-    lq        <- fixed(log(23));   label("Intercompartmental clearance Q/F, log-scale (L/h)")    # Table 3 (Q/F = 23 L/hr, fixed)
+    lq        <- fixed(log(23));   label("Intercompartmental clearance Q/F, log-scale (L/h)")    # Table 3 (Q/F = 23 L/h, fixed)
     lvp       <- fixed(log(670));  label("Peripheral volume of distribution V3/F, log-scale (L)") # Table 3 (V3/F = 6.7 x 10^2 L, fixed)
-    lka       <- fixed(log(0.14)); label("First-order absorption rate constant, log-scale (1/h)")# Table 3 (ka = 0.14 /hr, fixed; Table 3 unit "L/hr" is a typo)
+    lka       <- fixed(log(0.14)); label("First-order absorption rate constant, log-scale (1/h)")# Table 3 (ka = 0.14 /h, fixed; Table 3 unit "L/h" is a typo)
 
     # Region effects on CL/F (log-multiplicative form recovering the paper's
-    # additive intercepts TVCL_USA = 51, TVCL_EU = 39, TVCL_RoW = 38 L/hr).
+    # additive intercepts TVCL_USA = 51, TVCL_EU = 39, TVCL_RoW = 38 L/h).
     e_region_europe_cl <- log(39 / 51); label("Log multiplicative effect of EU region on CL/F (TVCL_EU / TVCL_USA = 39 / 51)")  # Table 3
     e_region_row_cl    <- log(38 / 51); label("Log multiplicative effect of RoW region on CL/F (TVCL_RoW / TVCL_USA = 38 / 51)") # Table 3
 
-    # Covariate effects on CL/F (linear additive on L/hr, per equation 12 of Naik 2016)
+    # Covariate effects on CL/F (linear additive on L/h, per equation 12 of Naik 2016)
     e_crcl_cl <- 0.18; label("Linear effect of creatinine clearance on CL/F (L/h per (CRCL - 106) mL/min)") # Table 3 (CrCL on CL/F)
     e_ht_cl   <- 0.40; label("Linear effect of height on CL/F (L/h per (HT - 167) cm)")                    # Table 3 (Height on CL/F)
 
@@ -104,7 +104,7 @@ Naik_2016_vortioxetine <- function() {
 
   model({
     # Region-specific typical CL/F via log-multiplicative shifts. The exp() form recovers
-    # the paper's additive intercepts: USA = 51, EU = 39, RoW = 38 L/hr.
+    # the paper's additive intercepts: USA = 51, EU = 39, RoW = 38 L/h.
     tvcl_region <- exp(lcl + e_region_europe_cl * REGION_EUROPE + e_region_row_cl * REGION_ROW)
 
     # Equation 12: CL/F = TVCL_region + 0.18 * (CRCL - 106) + 0.40 * (HT - 167)

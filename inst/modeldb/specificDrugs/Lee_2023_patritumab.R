@@ -112,7 +112,7 @@ Lee_2023_patritumab <- function() {
     hepatic_function = c(Normal = 71.8, Mild = 26.7, Moderate = 0.7, Severe = 0.0, Missing = 0.7),
     renal_function   = c(Normal = 55.1, Mild = 34.7, Moderate = 10.2, Severe = 0.0, Missing = 0.0),
     reference_subject = "Non-Asian female NSCLC patient, age 60, weight 60 kg, ECOG 0, eGFR 90 mL/min/1.73m^2, albumin 40 g/L, baseline SLD 60 mm (= 6 cm), normal hepatic function (Lee 2023 Figure 6 caption).",
-    notes           = "ACoP 14 (Oct 2023) conference poster. NONMEM v7.5 sequential fit: anti-HER3-ac-DXd base model, then integrated anti-HER3-ac-DXd + DXd base model, then anti-HER3-ac-DXd covariates, then full integrated covariate model. Full covariate model: covariate point estimates and 95% confidence intervals reported without stepwise hypothesis-testing selection. 500-replicate Monte Carlo VPCs stratified by tumor type. PK observations: 6,869 anti-HER3-ac-DXd and 6,821 DXd samples from 401 cancer subjects across studies U31402-A-J101 and U31402-A-U102. Concentrations reported in molar units (nmol/L) in the structural-parameter tables (Vmax and Km units nmol/L/hr and nmol/L respectively) - dosing therefore needs a mg-to-nmol conversion through the patritumab MW (approx 150,000 g/mol) at the simulation step. Distinct from the peer-reviewed Lu 2022 (J Clin Pharmacol 2023) patritumab deruxtecan popPK model in `Lu_2022_patritumab.R`, which used a different structural form (parallel linear+M-M intact clearance with a within-cycle DAR-modulated DXd release rate) on a partly different cohort (425 subjects from studies J101 / U102 / U202)."
+    notes           = "ACoP 14 (Oct 2023) conference poster. NONMEM v7.5 sequential fit: anti-HER3-ac-DXd base model, then integrated anti-HER3-ac-DXd + DXd base model, then anti-HER3-ac-DXd covariates, then full integrated covariate model. Full covariate model: covariate point estimates and 95% confidence intervals reported without stepwise hypothesis-testing selection. 500-replicate Monte Carlo VPCs stratified by tumor type. PK observations: 6,869 anti-HER3-ac-DXd and 6,821 DXd samples from 401 cancer subjects across studies U31402-A-J101 and U31402-A-U102. Concentrations reported in molar units (nmol/L) in the structural-parameter tables (Vmax and Km units nmol/L/h and nmol/L respectively) - dosing therefore needs a mg-to-nmol conversion through the patritumab MW (approx 150,000 g/mol) at the simulation step. Distinct from the peer-reviewed Lu 2022 (J Clin Pharmacol 2023) patritumab deruxtecan popPK model in `Lu_2022_patritumab.R`, which used a different structural form (parallel linear+M-M intact clearance with a within-cycle DAR-modulated DXd release rate) on a partly different cohort (425 subjects from studies J101 / U102 / U202)."
   )
 
   ini({
@@ -120,9 +120,9 @@ Lee_2023_patritumab <- function() {
     # anti-HER3-ac-DXd (intact ADC) structural parameters
     # ============================================================
     # Time unit kept as HOURS so the Hill-on-time CL_ns parameterization
-    # (T50 = 1380 hr) and the CL_t decay (Kdes = 0.217 1/hr) preserve the
+    # (T50 = 1380 hr) and the CL_t decay (Kdes = 0.217 1/h) preserve the
     # paper's tabulated values exactly. Concentrations are in nmol/L
-    # because Vmax (nmol/L/hr) and Km (nmol/L) are reported in molar
+    # because Vmax (nmol/L/h) and Km (nmol/L) are reported in molar
     # units (Lee 2023 Tables 4 and 5).
     #
     # Reference subject for typical-value parameters: non-Asian female
@@ -317,7 +317,7 @@ Lee_2023_patritumab <- function() {
     # CL_ns(0) = CL_ss * (1 + Emax). As time -> infinity the Hill factor
     # vanishes and CL_ns -> CL_ss. With the typical-value estimates this
     # reproduces the paper's text 0.0136 * (1 + 0.603) = 0.0218 ~ 0.0217
-    # L/hr at time = 0 declining toward CL_ss = 0.0136 L/hr.
+    # L/h at time = 0 declining toward CL_ss = 0.0136 L/h.
     # `time` is the rxode2 simulation clock (hours since first dose).
     cl_exp_component_t  <- cl_exp_component * exp(-cl_exp_kdes * time)
     cl_ns_now <- cl_ss * (1 + emax_clns * t50_clns^hill_clns /
@@ -330,20 +330,20 @@ Lee_2023_patritumab <- function() {
     # matches the Vmax / Km units in the paper's structural tables.
     Cc <- central / vc
 
-    # Pathway elimination rates (nmol/hr). The Michaelis-Menten rate is
+    # Pathway elimination rates (nmol/h). The Michaelis-Menten rate is
     # written in amount form vmax * central / (km + Cc) so the resulting
-    # mass-flux units (nmol/hr) are consistent with the linear pathways
-    # (cl * Cc, also nmol/hr).
+    # mass-flux units (nmol/h) are consistent with the linear pathways
+    # (cl * Cc, also nmol/h).
     rate_t  <- cl_exp_component_t  * Cc
     rate_ns <- cl_ns_now * Cc
     rate_mm <- vmax * central / (km + Cc)
 
-    # DXd formation rate (nmol/hr). Each pathway's elimination rate is
+    # DXd formation rate (nmol/h). Each pathway's elimination rate is
     # scaled by its dimensionless conversion fraction (Frac_ns fixed at 1
     # as the identifiability anchor; Frac_t and Frac_mm estimated).
     formation_dxd <- fracns * rate_ns + fract * rate_t + fracmm * rate_mm
 
-    # DXd elimination (nmol/hr): linear CL_DXd plus Michaelis-Menten.
+    # DXd elimination (nmol/h): linear CL_DXd plus Michaelis-Menten.
     Cc_dxd     <- central_dxd / vc_dxd
     rate_d_lin <- cl_dxd * Cc_dxd
     rate_d_mm  <- vmax_dxd * central_dxd / (km_dxd + Cc_dxd)

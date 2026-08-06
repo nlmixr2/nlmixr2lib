@@ -97,7 +97,7 @@ Lommerse_2019_raltegravir <- function() {
     # instantaneous maternal-fetal equilibrium during pregnancy; the
     # coupling is gated OFF at and after birth (t >= 0).
     # =====================================================================
-    q_link_pregnant <- fixed(1000); label("Placental intercompartmental clearance during pregnancy (L/h; instant equilibrium)") # Methods: "the intercompartmental CL linking the maternal and fetal central compartments was set to 1,000 L/hour"
+    q_link_pregnant <- fixed(1000); label("Placental intercompartmental clearance during pregnancy (L/h; instant equilibrium)") # Methods: "the intercompartmental CL linking the maternal and fetal central compartments was set to 1,000 L/h"
 
     # =====================================================================
     # ALLOMETRIC EXPONENTS (all fixed per Methods)

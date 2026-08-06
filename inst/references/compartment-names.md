@@ -906,6 +906,21 @@ PBPK organ-vascular concentration compartments used by membrane-limited PBPK ext
   - `vp_ot` -- deprecated.
 - **Example models:** `Parhiz_2024_mRNA_LNP.R`, `Shah_2012_mAb_PBPK.R`.
 
+### vp_subcutaneous (**canonical PBPK subcutaneous-injection-site vascular concentration**)
+- **Type:** compartment
+- **Role:** Vascular concentration in the subcutaneous injection-site compartment
+  of a whole-body PBPK model that bifurcates skin into a small
+  dose-receiving subcutaneous depot plus a "rest of skin" compartment. The
+  companion sub-compartments follow the standard membrane-limited pattern
+  (`bc_subcutaneous`, `eu_subcutaneous`, `eb_subcutaneous`,
+  `fr_subcutaneous`, `is_subcutaneous`); the SC dose is administered into
+  `is_subcutaneous` (the interstitial space), not into a `depot`.
+  Distinct from the canonical `depot`, which is an empirical
+  first-order absorption compartment with no physiological volume or flow.
+- **Source aliases:**
+  - `SC` -- Kumar 2024 Figure 1 / Table 1.
+- **Example models:** `Kumar_2024_mAb_popPBPK_sc.R`.
+
 ---
 
 ## Whole-body blood / lymph compartments
@@ -2187,6 +2202,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Example models:** `Hansson_2013_sunitinib_os.R` (Weibull PH `sur = exp(-cumhaz)`; the observation variable), `Struemper_2025_tumorsize_OS_nsclc.R` (AFT log-normal `sur = 1 - pnorm(z_os)`, derived OS output).
 - **Notes:** Registered 2026-06-28. Founding models expose `sur` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model.
 
+### prob_scc (**canonical sputum-culture-conversion probability output**)
+- **Type:** compartment
+- **Role:** Marginal probability of occupying the sputum-culture-converted state at time `t` in a tuberculosis treatment-outcome multistate model, i.e. the probability that a patient has achieved sputum culture conversion (SCC) and has not since relapsed, dropped out or died. Sputum culture conversion is the standard early efficacy endpoint in TB drug development, so `prob_scc` is the natural single PD output to expose for a TB multistate model whose remaining state-occupancy probabilities (active TB, recurrent TB, dropout, death) are returned alongside it as ordinary `model()` outputs.
+- **Source aliases:** none.
+- **Example models:** `Lin_2024_TB_multistate.R` (five-state pharmacometric multistate model; `prob_scc <- s_converted` is the observation variable and carries the placeholder additive residual, while `prob_active_tb`, `prob_recurrent_tb`, `prob_dropout` and `prob_death` expose the other four state-occupancy probabilities).
+- **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Distinct from `sur` (a survival probability derived from a cumulative hazard in a time-to-event sub-model) because `prob_scc` is a state-occupancy probability of a *transient, re-enterable* state: a patient can leave the converted state for recurrent TB and return to it, so `prob_scc` is not monotone in time and is not the complement of any cumulative hazard. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc`. Founding models expose `prob_scc` with a small placeholder residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises an exact multistate event likelihood on the observed categorical state and has no observation-error model.
+
 ---
 
 ## MBMA placebo / drug arm output compartments
@@ -2665,6 +2687,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `TerHeine_2014_tamoxifen.R`.
 - **Notes:** Renamed from `endx` to `endox` on 2026-06-19 per the canonical-register standardization audit (operator decision: keep the contracted form but include the "o" so the suffix is readable as "endox" without vowel-stripping; `endx` was an opaque consonant cluster).
 
+### canrenone (**canonical canrenone suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Canrenone, the principal active metabolite of spironolactone and the species that actually occupies the mineralocorticoid receptor. Spironolactone is extensively metabolised; the canrenone concentration -- not the parent -- drives the Emax receptor-inhibition term in mineralocorticoid-receptor-antagonist PK/PD and QSP models, so canrenone carries its own central and peripheral disposition compartments alongside the parent.
+- **Source aliases:**
+  - `canrenone` / `canrenone_C2` -- the source-listing state names in Meid 2024 Appendix C, mapped to `central_canrenone` and `peripheral1_canrenone`.
+- **Example models:** `Meid_2024_spironolactone_qsp.R` (potassium-homeostasis QSP; two-compartment canrenone disposition formed from spironolactone at `Spiro_Fmetabolized` = 0.19311 of parent clearance, driving mineralocorticoid-receptor occupancy).
+- **Notes:** Full metabolite name kept rather than a contraction: it is short, unambiguous, and already the standard name in the spironolactone literature. Follows the same parent + metabolite pattern as `m1` / `endox` / `megx`.
+
 ### megx (**canonical MEGX lidocaine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Monoethylglycinexylidide (MEGX) lidocaine metabolite (LID -> MEGX via CYP1A2/3A4).
@@ -2914,6 +2944,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Danielak_2017_clopidogrel.R` (doi:10.1007/s00228-017-2334-z).
 
+### cloca (**canonical clopidogrel carboxylic acid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Clopidogrel carboxylic acid (CLO-CA), the pharmacologically inactive hydrolysis product formed from clopidogrel by carboxylesterase-1 (CES1). It is the major circulating clopidogrel species -- roughly 85-90% of the absorbed dose is routed to it, and plasma concentrations are about 2000-fold higher than those of the parent, so it is assayed in ug/mL where clopidogrel is assayed in ng/mL. Distinct from `h4`, the active thiol metabolite of the same parent drug, which sits on the competing CYP-mediated oxidation branch; a joint model can carry both suffixes.
+- **Source aliases:** `CLO-CA`, `SR 26334` (the Sanofi development code for the carboxylic acid metabolite).
+- **Example models:** `Pejcic_2024_clopidogrel.R` (`central_cloca`, `peripheral1_cloca`, `Cc_cloca`, `lcl_cloca`, `lvc_cloca`, `lq_cloca`, `lvp_cloca`; doi:10.3390/pharmaceutics16050685).
+
 ### mpag (**canonical mycophenolic acid glucuronide suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Mycophenolic acid glucuronide (MPAG, 7-O-glucuronide phase II metabolite of mycophenolic acid produced by UGT1A9 and UGT2B7). Major plasma metabolite of mycophenolic acid after MMF dosing in renal transplant recipients.
@@ -2944,6 +2980,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none (the paper uses the compound code CDB-4453 throughout).
 - **Example models:** `Morris_2011_telapristone.R` (doi:10.1208/s12248-011-9304-7).
 - **Notes:** The Morris 2011 model fixes the metabolite apparent volume V3/F to 1 L for identifiability (Fmet not separately identifiable from V3), so the estimated `fmetest` (= Fmet / V3_metab, units 1/L) numerically equals Fmet under that constraint. The metabolite compartment `central_cdb4453` therefore numerically equals the metabolite concentration (nmol/L) when V3 = 1 L. Ratified canonically on 2026-06-09 alongside the Morris 2011 telapristone extraction.
+
+### cns7054 (**canonical CNS 7054 remimazolam metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** CNS 7054, the pharmacologically inactive carboxylic-acid metabolite of remimazolam formed by carboxylesterase-1 (CES-1) hydrolysis of the parent's methyl-propanoate ester. It is the sole quantified metabolite of remimazolam, is cleared predominantly renally (70-90% of its elimination), and clears roughly 19-fold more slowly than the parent, so it accumulates well above parent concentrations during infusion. Drives `central_cns7054` / `peripheral1_cns7054`, the `lcl_cns7054` / `lvc_cns7054` / `lq_cns7054` / `lvp_cns7054` parameters, and the `propSd_cns7054` / `addSd_cns7054` residuals; parent-side parameters keep the canonical unsuffixed names.
+- **Source aliases:** `CNS7054` and `CNS 7054` (both spellings appear in the source papers).
+- **Example models:** `Chen_2024_remimazolam.R` (doi:10.3390/pharmaceutics16091122).
+- **Notes:** Chen 2024 states no stoichiometric conversion factor for the parent-to-metabolite transfer, so the amount transfer is 1:1 on a mass basis and the fitted CNS 7054 volumes and clearance are apparent values in remimazolam-mass equivalents. The parent (439 g/mol) and metabolite (425.1 g/mol) molecular weights differ by only 3.2 percent, which is within the reported RSEs of the metabolite disposition parameters (3-5 percent).
 
 ---
 
@@ -3375,13 +3418,90 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Type:** metabolite-suffix
 - **Role:** Enalaprilat (ENAAT), the pharmacologically active diacid metabolite of enalapril formed by hepatic carboxylesterase 1 (CES1) hydrolysis of the inactive ester prodrug. Used as the metabolite suffix on `central_enaat` compartments, `lcl_enaat` / `lvc_enaat` parameters, and `Cc_enaat` observation in joint parent-prodrug + active-metabolite popPK models.
 - **Source aliases:** `ENAAT` (NONMEM-style abbreviation used by Steichert 2025).
-- **Example models:** `Steichert_2025_enalapril_enalaprilat_pediatric.R`.
+- **Example models:** `Steichert_2025_enalapril_enalaprilat_pediatric.R`, `Luo_2024_enalapril_pbpk.R`.
+
+### benat (**canonical benazeprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Benazeprilat, the pharmacologically active diacid metabolite of the ester prodrug benazepril, formed by hepatic carboxylesterase 1 (CES1) hydrolysis and eliminated renally. Drives `central_benat` / `peripheral1_benat` / `liver_benat` / `kidney_benat` compartments, `lvc_benat` / `lcl_int_k_benat` / `kp_liver_benat` parameters and the `Cc_benat` plasma-concentration observation.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_benazepril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family. Follows the `enaat` (enalaprilat) precedent: drug stem plus `at` for the active diacid of an ACE-inhibitor ester prodrug.
+
+### cilat (**canonical cilazaprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Cilazaprilat, the pharmacologically active diacid metabolite of the ester prodrug cilazapril, formed by hepatic CES1 hydrolysis and eliminated renally.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_cilazapril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family, per the `enaat` precedent.
+
+### temat (**canonical temocaprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Temocaprilat, the pharmacologically active diacid metabolite of the ester prodrug temocapril, formed by hepatic CES1 hydrolysis. Unusually among the ACE-inhibitor diacids it is eliminated by BOTH renal and MRP2-mediated biliary routes, so it also drives a `lcl_int_bile_temat` biliary intrinsic-clearance parameter.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_temocapril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family, per the `enaat` precedent.
+
+### perat (**canonical perindoprilat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Perindoprilat, the pharmacologically active diacid metabolite of the ester prodrug perindopril, formed by hepatic CES1 hydrolysis and eliminated renally. Note that perindopril's parallel UGT glucuronidation route does NOT form perindoprilat, so a model carrying this suffix must keep the two hepatic pathways separate.
+- **Source aliases:** none.
+- **Example models:** `Luo_2024_perindopril_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family, per the `enaat` precedent.
+
+### oselc (**canonical oseltamivir carboxylate metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Oseltamivir carboxylate, the antivirally active carboxylate metabolite of the ester prodrug oseltamivir, formed by hepatic CES1 hydrolysis and eliminated renally by combined glomerular filtration and tubular secretion.
+- **Source aliases:** `OC` -- the abbreviation used by Luo 2024 Table 9 and Section 3.1.6.
+- **Example models:** `Luo_2024_oseltamivir_pbpk.R`.
+- **Notes:** Registered 2026-08-03 alongside the Luo 2024 CES1 semi-PBPK family. Deliberately NOT named `oc`: the former `OC` canonical was retired on 2026-07-26 precisely because it was overloaded across five unrelated concepts, oseltamivir carboxylate among them (see the `osteocalcin` entry). `oselc` keeps the drug stem explicit so the collision cannot recur.
 
 ### ppf (**canonical propofol active-metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Propofol (2,6-diisopropylphenol), the active sedative-hypnotic metabolite liberated from the water-soluble prodrug fospropofol (GPI 15715, AQUAVAN) via systemic alkaline-phosphatase hydrolysis. Used as the metabolite suffix on `central_ppf` / `peripheral1_ppf` compartments and `Cc_ppf` observation in joint parent-prodrug + active-drug popPK models.
 - **Source aliases:** `PR` (Gibiansky 2005 poster table headings: Vc_PR, K10_PR, K12_PR, K21_PR, K_GPI-PR).
 - **Example models:** `Gibiansky_2005_fospropofol.R`.
+
+### ceftaroline (**canonical ceftaroline active-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ceftaroline, the active anti-MRSA cephalosporin liberated from the water-soluble N-phosphono prodrug ceftaroline fosamil by systemic phosphatase hydrolysis. Used as the metabolite suffix on `central_ceftaroline` / `peripheral1_ceftaroline` / `peripheral2_ceftaroline` compartments, `lcl_ceftaroline` / `lvc_ceftaroline` / `lq_ceftaroline` / `lvp_ceftaroline` / `lq2_ceftaroline` / `lvp2_ceftaroline` parameters, and the `Cc_ceftaroline` observation in joint parent-prodrug + active-metabolite popPK models. The prodrug ceftaroline fosamil is the dosed species and is itself a modelled compartment, so per the standing "the parent / dosed species always wins canonical naming" rule it keeps the unsuffixed `central` / `peripheral1` / `Cc` names.
+- **Source aliases:**
+  - `C` -- the subscript Riccobene 2016 Supplemental Table 1 uses to distinguish ceftaroline (CLc, Vcc, Q1c, Vp1c, Q2c, Vp2c) from ceftaroline fosamil (CLcf, Vccf, Qcf, Vpcf), against the prodrug's `cf` subscript.
+  - `CPT` -- the abbreviation used in the ceftaroline literature (ceftaroline fosamil is `CPT-F`); deliberately NOT adopted as the suffix token because `CPT` also abbreviates camptothecin.
+- **Example models:** `Riccobene_2016_ceftaroline.R`.
+- **Notes:** Spelled out rather than abbreviated, following the `sunitinib` / `irinotecan` precedent, because every short form collides with an unrelated agent (`cpt` with camptothecin, `cef`/`cft` with the rest of the cephalosporin class, of which nlmixr2lib already carries more than twenty). Models that dose a ceftaroline compartment directly without carrying a ceftaroline fosamil state would keep ceftaroline as the bare canonical `central` / `Cc`, exactly as documented for [[tfv]].
+
+---
+
+## PBPK organ extracellular / cellular split (Parmar 2023 mPBPK family)
+
+Minimal-PBPK models that resolve each organ into a rapid-equilibrium pool (vascular + interstitial, taken to be in instantaneous equilibrium with blood) and a slow-equilibrium cellular pool use the `<organ>_extracellular` / `<organ>_cellular` suffix pair. The two suffixes are complements of each other and must be used together: an organ carrying one without the other is a naming error, because the pair's whole point is that the organ's total concentration is the amount-weighted sum of exactly these two pools divided by the organ volume.
+
+The names are spelled out in full per the 2026-05-28 anti-abbreviation audit. In particular, do **not** shorten the rapid-equilibrium pool to `<organ>_rap`: that would read as a per-organ analogue of the existing `a_rapidly_perfused` compartment, which means something different (a lumped rapidly-perfused ORGAN GROUP, not an intra-organ sub-pool).
+
+### extracellular (**canonical rapid-equilibrium vascular+interstitial pool suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Rapid-equilibrium sub-compartment of the named organ, lumping the vascular and interstitial spaces which are assumed to be in instantaneous equilibrium with blood. Its effective volume is `V_vascular + V_interstitial / k(b/p)` so that a single blood-scale concentration describes both spaces.
+- **Source aliases:** `rapid equilibrium sub-compartment`, `V+I` -- Parmar 2023 Table 4 / Table 7 row descriptions and supplement equations S3, S7, S10, S13, S16 (free-form prose labels, not data column names).
+- **Example models:** `Parmar_2023_spectinamide_1599_mouse_pbpk.R`, `Parmar_2023_spectinamide_1599_rat_pbpk.R`, `Parmar_2023_spectinamide_1810_mouse_pbpk.R`, `Parmar_2023_spectinamide_1810_rat_pbpk.R`.
+- **Notes:** Distinct from the membrane-limited `is_<organ>` interstitial-space prefix in `pbpkSubCompartmentRegex`, which carries interstitium alone with the vascular space held as a separate `bc_` / `vp_` state; `<organ>_extracellular` deliberately lumps the two because the source model assumes instantaneous vascular-interstitial equilibrium. Paired with `cellular`.
+
+### cellular (**canonical slow-equilibrium cellular pool suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Slow-equilibrium cellular sub-compartment of the named organ, coupled to the organ's `_extracellular` pool by a first-order influx acting on the unbound fraction (`K(I->C) x fu`) and a first-order back flux (`K(C->I)`) on the total cellular amount.
+- **Source aliases:** `cellular sub-compartment` -- Parmar 2023 Table 4 / Table 7 row descriptions and supplement equations S4, S8, S11, S14, S17 (prose label, not a data column name).
+- **Example models:** `Parmar_2023_spectinamide_1599_mouse_pbpk.R`, `Parmar_2023_spectinamide_1599_rat_pbpk.R`, `Parmar_2023_spectinamide_1810_mouse_pbpk.R`, `Parmar_2023_spectinamide_1810_rat_pbpk.R`.
+- **Notes:** Distinct from the membrane-limited `int_<organ>` intracellular prefix in `pbpkSubCompartmentRegex`, which pairs with `is_<organ>` under a permeability-surface-area coupling rather than the pair of first-order rate constants used here. Paired with `extracellular`.
+
+---
+
+## Epithelial lining fluid
+
+### elf (**canonical epithelial-lining-fluid compartment**)
+- **Type:** compartment
+- **Role:** Epithelial lining fluid of the lung airspace: the apical aqueous layer that inhaled or intratracheally instilled drug is deposited into before it distributes into the lung tissue and reaches the systemic circulation. Carries its own physiological volume and its own unbound fraction `fu_elf` (typically derived from plasma `fu` and the plasma/ELF albumin ratio), and exchanges with the lung's `lung_cellular` and `lung_extracellular` pools.
+- **Source aliases:** `ELF` -- Parmar 2023 Figure 2, Table 2 (`V ELF`, `fu ELF`) and supplement equations S22-S26.
+- **Example models:** `Parmar_2023_spectinamide_1599_mouse_pbpk.R`.
+- **Notes:** A physiological airspace compartment, not an absorption depot: the inhaled or intratracheal dose lands in a separate `depot2` and reaches `elf` by first-order absorption with its own bioavailability, exactly as an oral dose reaches `central` from `depot`. Whole-lung concentration includes the ELF amount (Parmar 2023 supplement S26). Related but distinct from `isf` (generic interstitial fluid) and from the `brain_csf*` namespace; a future inhalation model that resolves regional airway ELF should register `elf_<region>` names rather than overload the bare `elf`.
 
 ---
 
@@ -3438,3 +3558,39 @@ L- and D-enantiomer suffixes for stereoselective popPK models that simultaneousl
 - **Role:** BIBF 1202, the main hydrolytic metabolite of nintedanib (BIBF 1120) formed by cleavage of the methyl ester. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `depot_bibf`, `central_bibf`; parameters `lka_bibf`, `lvc_bibf`, `lcl_bibf`, `lfdepot_bibf`, `ltlag_bibf`; residual `expSd_bibf`). Founding example: `Schmid_2017_nintedanib.R`.
 - **Source aliases:** none.
 - **Example models:** `Schmid_2017_nintedanib.R`.
+
+---
+
+## PBPK permeability-limited tissue subcompartment suffixes (Gaohua 2023)
+
+Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carries four subcompartments -- residual blood cells, residual plasma, extracellular water and intracellular water -- with passive permeation between adjacent pairs and active uptake / efflux transporters on the cell membrane between the two water spaces. The same `_plasma` / `_bc` pair also describes the blood compartments (`venous_plasma`, `arterial_plasma`, `portal_plasma` and their `_bc` partners), which have no extracellular or intracellular water. This is the inverse-ordering analogue of the `<subtype>_<organ>` `pbpkSubCompartmentRegex` and extends the `<organ>_<suffix>` shape founded by Ayyar 2024, so the two families compose. Registered per the operator naming decision of 2026-08-05.
+
+### plasma (**canonical residual-plasma subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Residual plasma within the named tissue (the paper's "tissue plasma", TP) -- the plasma fraction of the blood left in the tissue after bleeding. For a blood compartment it is that compartment's plasma space. Perfused at the compartment's plasma flow and exchanging with `<organ>_bc` and `<organ>_ew`.
+- **Source aliases:** `TP`, `tp`, `plasma_<organ>`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### bc (**canonical residual-blood-cell subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Residual blood cells within the named tissue (the paper's "tissue blood cells", TC), or a blood compartment's blood-cell space. Perfused at the compartment's blood-cell flow and exchanging only with `<organ>_plasma`. Echoes the existing `bcc` (central blood cells) and the `bc_<organ>` prefix form in `pbpkSubCompartmentRegex`.
+- **Source aliases:** `TC`, `tc`, `rbc_<organ>`, `RBC`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### ew (**canonical extracellular-water subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Extracellular water of the named tissue, as implemented in the Simcyp Simulator tissue-composition scheme. Sits between the residual plasma and the intracellular water; the cell membrane separating it from `<organ>_iw` is where active uptake and efflux transporters act. Distinct from `is_<organ>` (interstitial space) in `pbpkSubCompartmentRegex`, which is an antibody-distribution concept paired with endosomal FcRn recycling rather than a small-molecule tissue-composition water space.
+- **Source aliases:** `EW`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### iw (**canonical intracellular-water subcompartment suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Intracellular water of the named tissue. Reached from `<organ>_ew` by passive permeation and by active uptake, and is the usual site of intracellular metabolism. Distinct from `int_<organ>` in `pbpkSubCompartmentRegex`, which denotes a bulk intracellular pool in mRNA-LNP models rather than a tissue-composition water space.
+- **Source aliases:** `IW`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
+
+### portal (**canonical bare portal-vein blood compartment**)
+- **Type:** compartment
+- **Role:** Portal vein blood compartment, collecting the venous outflow of the splanchnic organs (pancreas, spleen, gut) and delivering it to the liver alongside the hepatic artery. A blood compartment, so it carries only the `_plasma` and `_bc` subcompartments. Complements the already-canonical bare `venous` and `arterial` roots and the `vp_portal` vascular-concentration form; the bare root is registered so `portal_plasma` / `portal_bc` compose with the subcompartment suffixes above.
+- **Source aliases:** `PV`, `pv`.
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.

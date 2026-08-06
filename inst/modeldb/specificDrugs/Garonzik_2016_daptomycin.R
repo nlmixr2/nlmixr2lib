@@ -102,7 +102,7 @@ Garonzik_2016_daptomycin <- function() {
     beta_lag    <- fixed(10.0);              label("Sigmoidicity constant for lag-phase function (beta, unitless)") # Garonzik 2016 Table 2 (beta; reported with 0% SE = FIXED)
     lmtt_k12    <- log(20.2);                label("Mean transit time S1 -> S2 (MTT_K12, h; k12 = 1/MTT_K12)")          # Garonzik 2016 Table 2 (MTT_K12)
     ic50_k12_log10 <- 7.81;                  label("CFU/mL for 50% inhibition of k12 transition (log10 IC50_K12)")        # Garonzik 2016 Table 2 (Log10IC50_K12)
-    imax_k12    <- fixed(0.99);              label("Maximum inhibition of k12 at high CFU/mL (Imax_k12, unitless)") # Garonzik 2016 Table 2 (IMAX_K12; FIXED)
+    imax_k12    <- fixed(0.99);              label("Maximum inhibition of k12 at high CFU/mL (Imax_k12, unitless)") # Garonzik 2016 Table 2 (IMAX_K12)
     lk21        <- fixed(log(50.0));         label("S2 -> S1 transition rate (k21, 1/h; -- doubling fast)")        # Garonzik 2016 Table 2 (K21; FIXED at 50)
     cfum_log10  <- 9.20;                     label("CFU/mL at which probability of successful replication is 50% (log10 CFU_M)") # Garonzik 2016 Table 2 (Log10 CFU_M)
 

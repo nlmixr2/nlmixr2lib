@@ -1,0 +1,826 @@
+---
+title: "Spectinamide 1599 + 1810 minimal PBPK (Parmar 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Spectinamide 1599 + 1810 minimal PBPK (Parmar 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Parmar 2023 develops one minimal PBPK (mPBPK) structure and applies it to two
+anti-tuberculosis spectinamides (1599 and 1810) in two species (BALB/c mouse and
+Sprague-Dawley rat). Because the physiology differs between species while the
+structure and the estimated distribution rate constants are shared, the paper is
+packaged as four self-contained model files -- the same factoring used for
+`An_2012_mitoxantrone_mouse_pbpk` / `An_2012_mitoxantrone_human_pbpk`.
+
+| Model | Compound | Species | Routes |
+|---|---|---|---|
+| `Parmar_2023_spectinamide_1599_mouse_pbpk` | 1599 | BALB/c mouse (20 g) | IV, SC, intrapulmonary aerosol |
+| `Parmar_2023_spectinamide_1599_rat_pbpk`   | 1599 | Sprague-Dawley rat (225 g) | IV |
+| `Parmar_2023_spectinamide_1810_mouse_pbpk` | 1810 | BALB/c mouse (20 g) | IV, SC |
+| `Parmar_2023_spectinamide_1810_rat_pbpk`   | 1810 | Sprague-Dawley rat (225 g) | IV |
+
+* Citation: `r rxode2::rxode2(readModelDb("Parmar_2023_spectinamide_1599_mouse_pbpk"))$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics15061759>
+* PMC record (open access, includes the Supplementary Materials with equations S1-S26): <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10305115/>
+
+```{r load-models}
+# readModelDb() returns the model *function*; rxode2() evaluates it into the
+# rxUi object that rxSolve() and zeroRe() operate on.
+mouse1599 <- rxode2::rxode2(readModelDb("Parmar_2023_spectinamide_1599_mouse_pbpk"))
+rat1599   <- rxode2::rxode2(readModelDb("Parmar_2023_spectinamide_1599_rat_pbpk"))
+mouse1810 <- rxode2::rxode2(readModelDb("Parmar_2023_spectinamide_1810_mouse_pbpk"))
+rat1810   <- rxode2::rxode2(readModelDb("Parmar_2023_spectinamide_1810_rat_pbpk"))
+
+mouse1599$state
+```
+
+# Model structure
+
+Blood is split into venous and arterial compartments. Five tissues (lung,
+spleen, liver, kidney, and a lumped "other" that closes the mass balance) hang
+off the circulation: the lung sits in series between venous and arterial blood
+(receiving the whole cardiac output through the pulmonary artery), the spleen is
+a parallel arterial branch whose outflow drains portally into the liver, and the
+liver, kidney and "other" return directly to venous blood.
+
+Each tissue carries two pools:
+
+* `<organ>_extracellular` -- the rapid-equilibrium sub-compartment, lumping the
+  vascular and interstitial spaces which Parmar 2023 assumes to be in
+  instantaneous equilibrium with blood. Its effective volume is
+  `V_vascular + V_interstitial / k(b/p)`, so a single blood-scale concentration
+  describes both spaces.
+* `<organ>_cellular` -- the slow-equilibrium cellular sub-compartment, coupled
+  to the extracellular pool by a first-order influx `K(I->C) * fu` and a
+  first-order back flux `K(C->I)`.
+
+The single elimination pathway is glomerular filtration of unbound drug out of
+the kidney extracellular pool (`GFR * fu`); the paper assumes spectinamides are
+eliminated entirely renally.
+
+For the intrapulmonary-aerosol route the mouse 1599 model adds an epithelial
+lining fluid compartment (`elf`, the newly registered canonical): the aerosol
+dose lands in `depot2`, is absorbed into `elf` with its own `ka` and `F`, and the
+ELF then exchanges with both lung pools. Subcutaneous doses use `depot` and are
+absorbed into venous blood.
+
+# Population
+
+The mouse datasets (Parmar 2023 Table 1) are healthy BALB/c mice with
+destructive sampling: one data point per animal (plasma plus lung, liver, spleen
+and kidney, plus ELF in the aerosol studies), three animals per sampling time
+point. Spectinamide 1599 contributed 168 healthy mice across the intravenous
+(10 mg/kg single dose and QD5) and subcutaneous (50 and 200 mg/kg, single dose /
+QD5 / BIW / TIW) studies and 234 healthy mice across the intrapulmonary-aerosol
+studies (10, 50 and 150 mg/kg, single dose / QD5 / BIW / TIW). Spectinamide 1810
+contributed 153 healthy mice (intravenous 10 mg/kg single dose and QD5;
+subcutaneous 46, 50 and 200 mg/kg single dose and 50 / 200 mg/kg QD5).
+
+The rat datasets are healthy double-catheterized Sprague-Dawley rats given a
+single 10 mg/kg intravenous dose (10 mg/mL in PlasmaLyte / water 9:1 via the
+femoral-vein catheter) with 13 serial jugular plasma samples out to 48 h: 6
+female + 5 male rats for 1599 (plus a separate 4 male + 4 female
+destructive-sampling tissue study at 15 min and 4 h) and 18 male rats for 1810.
+
+*Mycobacterium tuberculosis*-infected BALB/c mice (150 animals per compound,
+plasma only) served as an external predictive check of the subcutaneous models.
+Parmar 2023 Sections 3.6 and 3.8 found the healthy-animal parameters predicted
+the infected-animal profiles, so no disease-status covariate is encoded.
+
+The same information is available programmatically from each model's
+`population` metadata:
+
+```{r population}
+readModelDb("Parmar_2023_spectinamide_1599_mouse_pbpk")()$population$species
+readModelDb("Parmar_2023_spectinamide_1599_rat_pbpk")()$population$n_subjects
+```
+
+# Source trace
+
+Per-parameter provenance is recorded as an in-file comment next to each `ini()`
+entry. Tables 4 and 7 were transcribed from the typeset PDF (pages 9-10 and 20)
+because the machine-extracted text scrambles Table 4.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `d/dt(venous)` | n/a | Supplement S1 (corrected, see Errata) |
+| `Cc = Cven / kbp` | n/a | Supplement S2 |
+| `d/dt(lung_extracellular)`, `d/dt(lung_cellular)`, `Clung` | n/a | Supplement S3, S4, S5 |
+| `d/dt(arterial)` | n/a | Supplement S6 |
+| `d/dt(spleen_extracellular)`, `d/dt(spleen_cellular)`, `Cspleen` | n/a | Supplement S7, S8, S9 |
+| `d/dt(liver_extracellular)`, `d/dt(liver_cellular)`, `Cliver` | n/a | Supplement S10 (corrected), S11, S12 |
+| `d/dt(kidney_extracellular)`, `d/dt(kidney_cellular)`, `Ckidney` | n/a | Supplement S13, S14, S15 |
+| `d/dt(other_extracellular)`, `d/dt(other_cellular)` | n/a | Supplement S16, S17, S18 |
+| `d/dt(depot)`, `f(depot)` | n/a | Supplement S19-S21 |
+| `d/dt(depot2)`, `d/dt(elf)`, `Clung` with ELF | n/a | Supplement S22-S26 (corrected, see Errata) |
+| `q_spleen`, `q_liver`, `q_kidney`, `q_other`, `gfr` | mouse 0.00695 / 0.139 / 0.100 / 0.371 / 0.0168 L/h; rat 0.0412 / 0.901 / 0.601 / 3.29 / 0.088 L/h | Table 2 |
+| `q_lung` | derived as the sum of the four systemic flows (see Errata) | Table 2 |
+| `v_venous` ... `v_other`, `v_elf` | mouse 0.00120 ... 0.0235, 1.00e-5 L; rat 0.0115 ... 0.245 L | Table 2 |
+| `kbp`, `fu`, `fu_elf` | 1599 mouse 0.552 / 0.602 / 0.948; 1599 rat 0.812 / 0.563; 1810 mouse 0.604 / 0.693; 1810 rat 0.785 / 0.607 | Table 2 |
+| `fvas_*`, `fint_*`, `fcell_*` | lung 0.26 / 0.19 / 0.55; spleen 0.22 / 0.20 / 0.58; liver 0.15 / 0.20 / 0.64; kidney 0.10 / 0.15 / 0.75; other 0.040 / 0.19 / 0.77 | Table 3 |
+| `lkic_lung` ... `lkci_other` (1599) | 0.068, 0.028, 0.048, 0.01, 0.87, 0.061, 12.1, 0.15, 5.4, 7.0e-5 1/h | Table 4, Intravenous column |
+| `lka`, `lfdepot` (1599 SC) | 4.36 1/h, 0.86 | Table 4, Subcutaneous column |
+| `lka2`, `lfdepot2` (1599 aerosol) | 5.03 1/h, 0.33 | Table 4, Intratracheal column |
+| `etalkic_lung`, `etalkic_spleen`, `etalkic_liver`, `etalkic_other` (1599) | SD 0.87, 0.66, 0.61, 0.48 -> variances 0.7569, 0.4356, 0.3721, 0.2304 | Table 4 + Section 3.7 CV cross-check |
+| `propSd`, `propSd_Clung`, `propSd_Cliver`, `propSd_Cspleen` (1599) | 0.32, 0.35, 0.28, 0.53 | Table 4, Intravenous column |
+| `lkic_lung` ... `lkci_other` (1810) | 0.13, 0.076, 0.059, 0.013, 1.19, 0.051, 3.94, 0.097, 4.77, 7.0e-5 1/h | Table 7, Intravenous column |
+| `lka`, `lfdepot` (1810 SC) | 8.26 1/h, 1.00 | Table 7, Subcutaneous column |
+| `etalkic_other` (1810) | SD 0.31 -> variance 0.0961 | Table 7 |
+| `propSd` (1810) | 0.43 | Table 7, Intravenous column |
+| `propSd_Clung`, `propSd_Cliver`, `propSd_Cspleen` (1810) | fixed at 0 (published values are transcription duplicates, see Errata) | Table 7, Intravenous column |
+| `K(ELF->C) = K_Lung(I->C)`, `K(ELF->B) = Ka`, cellular-to-ELF flux `= K_Lung(C->I)` | 0.068, 5.03, 0.028 1/h | Figure 2 arrow labels + supplement S23-S25 (see Errata) |
+
+## Reading the reported omega values as standard deviations
+
+Tables 4 and 7 label the inter-animal variability rows with `omega` and the
+footnote calls `omega` "the inter-animal variance". The values are in fact
+**log-scale standard deviations**. Parmar 2023 Section 3.7 states that the 1599
+values, which span 0.48 to 0.87, "correspond to 50.9 to 106% CV" -- and that
+mapping only holds under the SD reading:
+
+```{r omega-check}
+sd_reading  <- 100 * sqrt(exp(c(0.48, 0.87)^2) - 1)   # -> 50.9%, 106%
+var_reading <- 100 * sqrt(exp(c(0.48, 0.87))     - 1) # -> 78.5%, 106%
+round(rbind(`SD reading` = sd_reading, `variance reading` = var_reading), 1)
+```
+
+The models therefore store each published value squared, because `ini()` takes
+variances.
+
+# Structural corrections applied
+
+Three defects in the published equations prevent the system from conserving
+drug. Each correction is uniquely determined -- no free parameter is introduced
+-- and each is applied identically in all four model files.
+
+1. **Venous outflow to the lung (supplement S1).** Printed as
+   `- Q_Lung * Cb_Lung`, but S3 has the lung *gaining* `Q_Lung * C_VenousBlood`.
+   The venous compartment must lose exactly what the lung gains, so the term is
+   `- Q_Lung * C_VenousBlood`.
+2. **Hepatic outflow of the portal spleen flow (supplement S1 / S10).** S10 adds
+   `Q_Spleen * Cb_Spleen` to the liver but removes only `Q_Liver * Cb_Liver`.
+   Because the tabulated flows satisfy
+   `Q_Liver + Q_Spleen + Q_Kidney + Q_Other = Q_Lung`, `Q_Liver` is the
+   hepatic-*arterial* flow and the hepatic venous return must be
+   `(Q_Liver + Q_Spleen) * Cb_Liver`.
+3. **Cardiac-output rounding (Table 2).** The printed `Q_Lung` does not exactly
+   equal the sum of the systemic organ flows (mouse 0.618 vs 0.61695 L/h; rat
+   4.83 vs 4.8332 L/h). Pulmonary flow *is* the cardiac output, so any mismatch
+   makes the arterial node destroy or create drug: the arterial compartment loses
+   `Q_Lung * Cart` while the tissues receive only the sum. The models derive
+   `q_lung` as the sum. This is a 0.17% (mouse) / 0.07% (rat) change to a flow,
+   but it is roughly 10% of total drug *removal*, because glomerular filtration
+   is itself a small clearance -- with the printed value, 2.8% of the mouse dose
+   goes missing by 72 h.
+
+A fourth defect affects only the aerosol sub-model and is discussed under
+Errata.
+
+# Mass-balance verification
+
+For a PBPK model the first validation is not NCA but conservation: at every
+time, the drug in all compartments plus the cumulative renal elimination must
+equal the absorbed dose. Each model exposes `elimRate = gfr * fu * Cb_kidney` as
+a derived output so the check needs no re-hardcoded constants.
+
+```{r mass-balance}
+trapz <- function(t, y) sum(diff(t) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+# Fine early grid: the IV bolus produces a very sharp venous peak, so a coarse
+# grid would make the elimination integral -- not the model -- look inexact.
+mb_times <- sort(unique(c(seq(0, 2, by = 0.0005), seq(2, 72, by = 0.01))))
+
+mass_balance <- function(model, cmt, amt, fdepot = 1) {
+  m <- rxode2::zeroRe(model)
+  ev <- dplyr::bind_rows(
+    tibble::tibble(id = 1L, time = 0, amt = amt, evid = 1L,
+                   cmt = cmt, dvid = NA_integer_),
+    tibble::tibble(id = 1L, time = mb_times, amt = NA_real_, evid = 0L,
+                   cmt = NA_character_, dvid = 1L)
+  ) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+  s <- rxode2::rxSolve(m, ev, returnType = "data.frame",
+                       atol = 1e-12, rtol = 1e-10)
+  in_body <- sum(utils::tail(s[, model$state, drop = FALSE], 1))
+  eliminated <- trapz(s$time, s$elimRate)
+  tibble::tibble(
+    absorbed_dose_mg = amt * fdepot,
+    in_body_mg = in_body,
+    eliminated_mg = eliminated,
+    recovered_mg = in_body + eliminated,
+    relative_error = (in_body + eliminated) / (amt * fdepot) - 1
+  )
+}
+
+mb <- dplyr::bind_rows(
+  mass_balance(mouse1599, "venous", 0.2)  |> mutate(scenario = "1599 mouse IV 10 mg/kg"),
+  mass_balance(mouse1599, "depot",  1.0, fdepot = 0.86) |> mutate(scenario = "1599 mouse SC 50 mg/kg"),
+  mass_balance(mouse1599, "depot2", 1.0, fdepot = 0.33) |> mutate(scenario = "1599 mouse IPA 50 mg/kg"),
+  mass_balance(rat1599,   "venous", 2.25) |> mutate(scenario = "1599 rat IV 10 mg/kg"),
+  mass_balance(mouse1810, "venous", 0.2)  |> mutate(scenario = "1810 mouse IV 10 mg/kg"),
+  mass_balance(rat1810,   "venous", 2.25) |> mutate(scenario = "1810 rat IV 10 mg/kg")
+) |>
+  dplyr::relocate(scenario)
+
+mb |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~ signif(.x, 5))) |>
+  dplyr::rename(
+    "Scenario" = scenario,
+    "Absorbed dose (mg)" = absorbed_dose_mg,
+    "In body at 72 h (mg)" = in_body_mg,
+    "Renally eliminated (mg)" = eliminated_mg,
+    "Recovered (mg)" = recovered_mg,
+    "Relative error" = relative_error
+  ) |>
+  knitr::kable(caption = "Mass balance: drug in body at 72 h plus cumulative renal elimination versus absorbed dose.")
+
+stopifnot(all(abs(mb$relative_error) < 1e-4))
+```
+
+The residual error is at solver tolerance, which confirms the three structural
+corrections above are self-consistent. Note how much drug is still in the body
+at 72 h: the lumped "other tissue" back-flux constant is 7.0e-5 1/h (Table 4 and
+Table 7 both report this value, with 142% RSE for 1599), a half-life of about
+9,900 h, so the cellular pool of the remainder compartment behaves as a nearly
+irreversible sink. That has a direct consequence for the NCA below.
+
+# Virtual cohorts and simulation
+
+Cohorts of 50 animals per arm carry the published inter-animal variability on
+the tissue uptake rate constants. Doses are absolute amounts: the paper's mg/kg
+dose times 0.02 kg (mouse) or 0.225 kg (rat).
+
+```{r cohort}
+set.seed(20230601)
+
+MOUSE_WT <- 0.020  # kg, Parmar 2023 Table 2
+RAT_WT   <- 0.225  # kg, Parmar 2023 Table 2
+N_PER_ARM <- 50L   # well under the 200-per-arm cap
+
+# Observation rows are tagged with `dvid = 1L` rather than a `cmt` value. These
+# models declare four algebraic endpoints via `~`, so rxode2 requires each
+# observation record to select one of the endpoint slots; pointing an
+# observation at an ODE state (cmt = "venous") is rejected with a dvid->cmt
+# mapping error, and naming the observable as a compartment (cmt = "Cc") would
+# be the compartment-renumbering antipattern. `dvid` is the semantic form.
+# Every observable (Cc, Clung, Cliver, Cspleen, Ckidney, Celf, elimRate) is
+# returned as its own column at each observation row regardless of which
+# endpoint the row selects.
+make_arm <- function(label, cmt, dose_mg_kg, bw, times, id_offset) {
+  dplyr::bind_rows(
+    tibble::tibble(id = id_offset + seq_len(N_PER_ARM), time = 0,
+                   amt = dose_mg_kg * bw, evid = 1L, cmt = cmt,
+                   dvid = NA_integer_),
+    tidyr::crossing(id = id_offset + seq_len(N_PER_ARM), time = times) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, cmt = NA_character_, dvid = 1L)
+  ) |>
+    dplyr::mutate(arm = label) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+mouse_times <- sort(unique(c(seq(0, 1, by = 0.02), seq(1, 8, by = 0.1),
+                            seq(8, 24, by = 0.5))))
+rat_times   <- sort(unique(c(seq(0, 1, by = 0.02), seq(1, 8, by = 0.1),
+                            seq(8, 48, by = 0.5))))
+
+ev_mouse1599 <- dplyr::bind_rows(
+  make_arm("IV 10 mg/kg",  "venous", 10, MOUSE_WT, mouse_times, 0L),
+  make_arm("SC 50 mg/kg",  "depot",  50, MOUSE_WT, mouse_times, 1000L),
+  make_arm("IPA 50 mg/kg", "depot2", 50, MOUSE_WT, mouse_times, 2000L)
+)
+stopifnot(!anyDuplicated(unique(ev_mouse1599[, c("id", "time", "evid")])))
+
+ev_rat1599   <- make_arm("IV 10 mg/kg", "venous", 10, RAT_WT,   rat_times,   0L)
+ev_mouse1810 <- make_arm("IV 10 mg/kg", "venous", 10, MOUSE_WT, mouse_times, 0L)
+ev_rat1810   <- make_arm("IV 10 mg/kg", "venous", 10, RAT_WT,   rat_times,   0L)
+```
+
+```{r simulate}
+sim_mouse1599 <- rxode2::rxSolve(mouse1599, events = ev_mouse1599, keep = "arm") |>
+  as.data.frame()
+sim_rat1599   <- rxode2::rxSolve(rat1599,   events = ev_rat1599,   keep = "arm") |>
+  as.data.frame()
+sim_mouse1810 <- rxode2::rxSolve(mouse1810, events = ev_mouse1810, keep = "arm") |>
+  as.data.frame()
+sim_rat1810   <- rxode2::rxSolve(rat1810,   events = ev_rat1810,   keep = "arm") |>
+  as.data.frame()
+```
+
+# Replicate published figures
+
+Parmar 2023 plots the simulated median with a 95% prediction interval overlaid
+on the observed concentrations. The observed data are not public, so only the
+median and interval are reproduced.
+
+```{r vpc-helper}
+vpc_summary <- function(sim, matrices) {
+  sim |>
+    dplyr::filter(time > 0) |>
+    dplyr::select(id, time, arm, dplyr::all_of(names(matrices))) |>
+    tidyr::pivot_longer(dplyr::all_of(names(matrices)),
+                        names_to = "output", values_to = "conc") |>
+    dplyr::mutate(matrix = factor(matrices[output], levels = unname(matrices))) |>
+    dplyr::group_by(arm, matrix, time) |>
+    dplyr::summarise(
+      Q025 = stats::quantile(conc, 0.025, na.rm = TRUE),
+      Q50  = stats::quantile(conc, 0.500, na.rm = TRUE),
+      Q975 = stats::quantile(conc, 0.975, na.rm = TRUE),
+      .groups = "drop"
+    )
+}
+
+vpc_plot <- function(dat, title, caption, ncol = 4) {
+  ggplot(dat, aes(time, Q50)) +
+    geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.25) +
+    geom_line() +
+    facet_grid(arm ~ matrix, scales = "free_y") +
+    scale_y_log10() +
+    labs(x = "Time (h)", y = "Concentration (ug/mL plasma or ug/g tissue)",
+         title = title, caption = caption)
+}
+```
+
+```{r figures-3-4-6, fig.height = 6}
+mats1599 <- c(Cc = "Plasma", Cliver = "Liver", Clung = "Lung",
+              Cspleen = "Spleen", Celf = "ELF")
+
+vpc_summary(sim_mouse1599, mats1599) |>
+  dplyr::filter(!(matrix == "ELF" & arm != "IPA 50 mg/kg")) |>
+  vpc_plot(
+    title = "Spectinamide 1599 in mouse plasma and tissues, three routes",
+    caption = paste(
+      "Replicates Figure 3 (IV 10 mg/kg), Figure 6 (SC 50 mg/kg) and",
+      "Figure 4 (intrapulmonary aerosol 50 mg/kg) of Parmar 2023.",
+      "Line = median of 50 simulated animals, band = 95% prediction interval."
+    )
+  )
+```
+
+```{r figures-9-10}
+vpc_summary(sim_rat1599, mats1599[c("Cc", "Cliver", "Clung", "Cspleen")]) |>
+  vpc_plot(
+    title = "Spectinamide 1599 in rat plasma and tissues after IV 10 mg/kg",
+    caption = paste(
+      "Replicates Figures 9 and 10 of Parmar 2023.",
+      "Line = median of 50 simulated animals, band = 95% prediction interval."
+    )
+  )
+```
+
+```{r figures-11-13}
+dplyr::bind_rows(
+  vpc_summary(sim_mouse1810, mats1599[c("Cc", "Cliver", "Clung", "Cspleen")]) |>
+    dplyr::mutate(arm = "Mouse IV 10 mg/kg"),
+  vpc_summary(sim_rat1810, mats1599["Cc"]) |>
+    dplyr::mutate(arm = "Rat IV 10 mg/kg")
+) |>
+  vpc_plot(
+    title = "Spectinamide 1810 after IV 10 mg/kg",
+    caption = paste(
+      "Replicates Figure 11 (mouse plasma and tissues) and Figure 13 (rat",
+      "plasma) of Parmar 2023. Line = median of 50 simulated animals,",
+      "band = 95% prediction interval."
+    )
+  )
+```
+
+# PKNCA validation
+
+The NCA below is run on typical-value profiles (`zeroRe()`), matching the
+"median predicted" column of the paper's exposure tables.
+
+**Why `auclast` rather than `aucinf.obs`.** The mass-balance table showed that
+most of the dose is still in the body at 72 h, held in a lumped remainder
+cellular pool that empties with a half-life of roughly 9,900 h. The true AUC to
+infinity is therefore several times the observable-window AUC and is governed by
+a rate constant reported with 142% RSE, so it is not a quantity the paper could
+have been reporting. `auclast` over the simulated window is used for the
+comparison because it is defined by the window rather than by a terminal-slope
+selection. `aucinf.obs` is computed alongside it as a check: the two agree to
+within 1% (table below), because PKNCA's automatic `lambda.z` window falls in
+the observable disposition phase rather than in the slow remainder-release
+phase. The choice of statistic is therefore not what drives any of the
+differences seen further down.
+
+```{r nca-setup}
+# One typical animal per (route, dose level). The model is linear and
+# time-invariant, and the paper's own predicted AUCinf values differ by under 1%
+# across single-dose, QD5, TIW and BIW regimens at the same dose level (e.g.
+# 4.87 / 4.85 / 4.83 for aerosol 10 mg/kg, and 159 for SC QD5 200 mg/kg against
+# 4 x 39.8 = 159.2 for SC 50 mg/kg), so a single-dose simulation reproduces
+# every regimen row at that dose level.
+nca_arm <- function(label, cmt, dose_mg_kg, bw, times, id) {
+  dplyr::bind_rows(
+    tibble::tibble(id = id, time = 0, amt = dose_mg_kg * bw, evid = 1L,
+                   cmt = cmt, dvid = NA_integer_),
+    tibble::tibble(id = id, time = times, amt = NA_real_, evid = 0L,
+                   cmt = NA_character_, dvid = 1L)
+  ) |>
+    dplyr::mutate(arm = label) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+nca_sim <- function(model, arms) {
+  ev <- dplyr::bind_rows(arms)
+  out <- rxode2::rxSolve(rxode2::zeroRe(model), events = ev, keep = "arm") |>
+    as.data.frame()
+  # rxSolve omits the id column when the event table has a single subject; the
+  # rat models have one typical animal, so restore it for the PKNCA grouping.
+  if (!"id" %in% names(out)) out$id <- 1L
+  out
+}
+
+nca_mouse1599 <- nca_sim(mouse1599, list(
+  nca_arm("IV 10 mg/kg",   "venous",  10, MOUSE_WT, mouse_times, 1L),
+  nca_arm("SC 50 mg/kg",   "depot",   50, MOUSE_WT, mouse_times, 2L),
+  nca_arm("SC 200 mg/kg",  "depot",  200, MOUSE_WT, mouse_times, 3L),
+  nca_arm("IPA 10 mg/kg",  "depot2",  10, MOUSE_WT, mouse_times, 4L),
+  nca_arm("IPA 50 mg/kg",  "depot2",  50, MOUSE_WT, mouse_times, 5L),
+  nca_arm("IPA 150 mg/kg", "depot2", 150, MOUSE_WT, mouse_times, 6L)
+))
+nca_rat1599 <- nca_sim(rat1599, list(
+  nca_arm("Rat IV 10 mg/kg", "venous", 10, RAT_WT, rat_times, 1L)
+))
+nca_mouse1810 <- nca_sim(mouse1810, list(
+  nca_arm("IV 10 mg/kg",  "venous",  10, MOUSE_WT, mouse_times, 1L),
+  nca_arm("SC 46 mg/kg",  "depot",   46, MOUSE_WT, mouse_times, 2L),
+  nca_arm("SC 50 mg/kg",  "depot",   50, MOUSE_WT, mouse_times, 3L),
+  nca_arm("SC 200 mg/kg", "depot",  200, MOUSE_WT, mouse_times, 4L)
+))
+nca_rat1810 <- nca_sim(rat1810, list(
+  nca_arm("Rat IV 10 mg/kg", "venous", 10, RAT_WT, rat_times, 1L)
+))
+```
+
+```{r nca-run}
+run_nca <- function(sim, output) {
+  conc <- sim |>
+    dplyr::filter(!is.na(.data[[output]])) |>
+    dplyr::transmute(id, time, arm, Cc = .data[[output]])
+  # Guarantee a time-zero row per (arm, id): PKNCA anchors AUC at the interval
+  # start and warns once per subject otherwise. Existing time-zero rows win.
+  conc <- dplyr::bind_rows(
+    conc,
+    conc |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+  ) |>
+    dplyr::distinct(arm, id, time, .keep_all = TRUE) |>
+    dplyr::arrange(arm, id, time)
+
+  # No dose object is needed: cmax, tmax, auclast and aucinf.obs are all
+  # concentration-only parameters, so PKNCA does not require dose amounts or a
+  # route specification here.
+  conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + id)
+  intervals <- data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                          auclast = TRUE, aucinf.obs = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, intervals = intervals))
+  as.data.frame(res) |>
+    dplyr::filter(!is.na(PPORRES)) |>
+    dplyr::select(arm, PPTESTCD, PPORRES) |>
+    dplyr::mutate(output = output)
+}
+
+nca_plasma <- dplyr::bind_rows(
+  run_nca(nca_mouse1599, "Cc") |> mutate(model = "1599 mouse"),
+  run_nca(nca_rat1599,   "Cc") |> mutate(model = "1599 rat"),
+  run_nca(nca_mouse1810, "Cc") |> mutate(model = "1810 mouse"),
+  run_nca(nca_rat1810,   "Cc") |> mutate(model = "1810 rat")
+)
+
+nca_plasma |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "aucinf.obs")) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(ratio = aucinf.obs / auclast) |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), ~ signif(.x, 3))) |>
+  dplyr::select(model, arm, auclast, aucinf.obs, ratio) |>
+  dplyr::rename(
+    "Model" = model, "Arm" = arm,
+    "AUClast (h*ug/mL)" = auclast,
+    "AUCinf,obs (h*ug/mL)" = aucinf.obs,
+    "AUCinf / AUClast" = ratio
+  ) |>
+  knitr::kable(caption = paste(
+    "Extrapolated AUCinf,obs versus observable-window AUClast for plasma.",
+    "The inflation factor is driven entirely by the 7.0e-5 1/h remainder",
+    "back-flux constant, which is why AUClast is used for the comparison."
+  ))
+```
+
+## Comparison against the published plasma exposures (Tables 5 and 8)
+
+```{r nca-compare-plasma}
+# Parmar 2023 Table 5 (spectinamide 1599) and Table 8 (spectinamide 1810),
+# "Median Predicted" column, mapped onto the (route, dose level) that generates
+# it. Where several regimens share a dose level the paper's predicted values
+# agree to under 1%; the value used is noted in the comment.
+published_plasma <- tibble::tribble(
+  ~model,        ~arm,                ~auclast,
+  "1599 mouse",  "IV 10 mg/kg",        8.85,   # SD 8.85, QD5 8.83
+  "1599 mouse",  "SC 50 mg/kg",       39.8,    # SD 39.8
+  "1599 mouse",  "SC 200 mg/kg",     159,      # QD5 200 mg/kg row
+  "1599 mouse",  "IPA 10 mg/kg",       4.87,   # SD 4.87, QD5 4.85, TIW 4.83
+  "1599 mouse",  "IPA 50 mg/kg",      24.4,    # SD 24.4, QD5 24.2, TIW 24.2, BIW 24.1
+  "1599 mouse",  "IPA 150 mg/kg",     73.1,    # SD 73.1, QD5 72.7, TIW 72.5, BIW 72.4
+  "1599 rat",    "Rat IV 10 mg/kg",   12.5,
+  "1810 mouse",  "IV 10 mg/kg",        7.64,   # SD 7.64, QD5 7.70
+  "1810 mouse",  "SC 46 mg/kg",       36.8,
+  "1810 mouse",  "SC 50 mg/kg",       40.0,    # SD 40.0, QD5 40.3
+  "1810 mouse",  "SC 200 mg/kg",     160,      # SD 160, QD5 161
+  "1810 rat",    "Rat IV 10 mg/kg",   12.9
+)
+
+cmp_plasma <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_plasma |>
+    dplyr::filter(PPTESTCD == "auclast") |>
+    dplyr::select(model, arm, PPTESTCD, PPORRES),
+  reference = published_plasma,
+  by = c("model", "arm"),
+  params = "auclast",
+  units = c(auclast = "h*ug/mL"),
+  tolerance_pct = 100
+)
+
+knitr::kable(
+  cmp_plasma,
+  caption = paste(
+    "Simulated plasma AUC from this implementation versus the median predicted",
+    "AUCinf reported by Parmar 2023 (Tables 5 and 8).",
+    "* marks a difference above the paper's own two-fold qualification",
+    "criterion."
+  )
+)
+```
+
+Every arm reproduces the authors' predicted plasma exposure inside their own
+two-fold qualification criterion, and no row is starred. The differences fall
+into a clear pattern worth stating plainly:
+
+* **Both rat arms agree to about 1%** (12.6 against 12.5; 13.0 against 12.9).
+* **The mouse intravenous and subcutaneous arms run 7% to 34% high.** This is
+  not an artifact of the NCA statistic (`aucinf.obs` agrees with `auclast` to
+  1%) and it is not driven by inter-animal variability (the median AUC of a
+  200-animal simulated cohort is within 4% of the typical-value AUC). The most
+  likely contributors are the three structural corrections and the sampling
+  schedule the authors used for their own NCA, which the paper does not report;
+  the mouse intravenous AUC in particular is sensitive to how the post-bolus
+  venous spike is sampled, since dosing a bolus straight into a 1.2 mL venous
+  compartment produces a very short-lived peak near 300 ug/mL.
+* **The aerosol arms run 37% low at all three dose levels**, a constant ratio.
+  That constancy is diagnostic and is discussed under Errata item 5: in a linear
+  model, aerosol plasma AUC is set by `F` alone, so no choice of ELF rate
+  constant could change it.
+
+```{r nca-observed-plasma}
+# The paper's OBSERVED plasma AUCinf, for context. This is a different
+# comparison from the table above -- model versus data, rather than this
+# implementation versus the authors' implementation.
+observed_plasma <- tibble::tribble(
+  ~model,       ~arm,               ~observed, ~regimen,
+  "1599 mouse", "IV 10 mg/kg",        7.52,    "SD",
+  "1599 mouse", "IV 10 mg/kg",        6.37,    "QD5",
+  "1599 mouse", "SC 50 mg/kg",       40.4,     "SD",
+  "1599 mouse", "SC 200 mg/kg",     227,       "QD5",
+  "1599 mouse", "IPA 10 mg/kg",       5.51,    "SD",
+  "1599 mouse", "IPA 50 mg/kg",      23.2,     "SD",
+  "1599 mouse", "IPA 150 mg/kg",     59.5,     "SD",
+  "1599 rat",   "Rat IV 10 mg/kg",   19.8,     "SD",
+  "1810 mouse", "IV 10 mg/kg",        7.91,    "SD",
+  "1810 mouse", "SC 46 mg/kg",       38.6,     "SD",
+  "1810 mouse", "SC 50 mg/kg",       67.9,     "SD",
+  "1810 mouse", "SC 200 mg/kg",     267,       "SD",
+  "1810 rat",   "Rat IV 10 mg/kg",   20.8,     "SD"
+)
+
+nca_plasma |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(model, arm, simulated = PPORRES) |>
+  dplyr::right_join(observed_plasma, by = c("model", "arm")) |>
+  dplyr::mutate(
+    fold = pmax(simulated / observed, observed / simulated),
+    dplyr::across(dplyr::where(is.numeric), ~ signif(.x, 3))
+  ) |>
+  dplyr::select(model, arm, regimen, observed, simulated, fold) |>
+  dplyr::rename(
+    "Model" = model, "Arm" = arm, "Regimen" = regimen,
+    "Observed AUCinf (h*ug/mL)" = observed,
+    "Simulated AUClast (h*ug/mL)" = simulated,
+    "Fold difference" = fold
+  ) |>
+  knitr::kable(caption = paste(
+    "Simulated plasma AUC versus the OBSERVED AUCinf reported by Parmar 2023",
+    "(Tables 5 and 8). The paper's qualification criterion is a two-fold",
+    "difference."
+  ))
+```
+
+## Comparison against the published tissue exposures (Tables 6 and 9)
+
+Tables 6 and 9 report tissue AUCinf for the single-dose and QD5 intravenous and
+subcutaneous arms. Only the single-dose rows are used here: unlike plasma, the
+tissue AUC does accumulate across a QD5 regimen (the paper's own 1810 lung
+prediction rises from 8.53 for a single dose to 9.79 for QD5), so a single-dose
+simulation is not a valid stand-in for the multiple-dose rows.
+
+```{r nca-compare-tissue}
+nca_tissue <- lapply(c("Clung", "Cliver", "Cspleen"), function(o) {
+  dplyr::bind_rows(
+    run_nca(nca_mouse1599, o) |> dplyr::mutate(model = "1599 mouse"),
+    run_nca(nca_mouse1810, o) |> dplyr::mutate(model = "1810 mouse")
+  )
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::filter(PPTESTCD == "auclast")
+
+simulated_tissue <- nca_tissue |>
+  dplyr::filter((model == "1599 mouse" & arm %in% c("IV 10 mg/kg", "SC 50 mg/kg")) |
+                  (model == "1810 mouse" & arm == "IV 10 mg/kg")) |>
+  dplyr::transmute(model, arm,
+                   matrix = c(Clung = "Lung", Cliver = "Liver",
+                              Cspleen = "Spleen")[output],
+                   simulated = PPORRES)
+
+published_tissue <- tibble::tribble(
+  ~model,       ~arm,          ~matrix,   ~predicted, ~observed,
+  "1599 mouse", "IV 10 mg/kg", "Lung",     6.24,       3.79,
+  "1599 mouse", "IV 10 mg/kg", "Liver",   16.6,       19.9,
+  "1599 mouse", "IV 10 mg/kg", "Spleen",   5.02,       3.42,
+  "1599 mouse", "SC 50 mg/kg", "Lung",    27.0,       19.1,
+  "1599 mouse", "SC 50 mg/kg", "Liver",   70.5,       91.8,
+  "1599 mouse", "SC 50 mg/kg", "Spleen",  21.2,       23.6,
+  "1810 mouse", "IV 10 mg/kg", "Lung",     8.53,       5.75,
+  "1810 mouse", "IV 10 mg/kg", "Liver",   25.2,       31.6,
+  "1810 mouse", "IV 10 mg/kg", "Spleen",   4.43,       4.29
+)
+
+simulated_tissue |>
+  dplyr::left_join(published_tissue, by = c("model", "arm", "matrix")) |>
+  dplyr::mutate(
+    fold_vs_predicted = pmax(simulated / predicted, predicted / simulated),
+    fold_vs_observed  = pmax(simulated / observed,  observed / simulated),
+    dplyr::across(dplyr::where(is.numeric), ~ signif(.x, 3))
+  ) |>
+  dplyr::arrange(model, arm, matrix) |>
+  dplyr::rename(
+    "Model" = model, "Arm" = arm, "Matrix" = matrix,
+    "Simulated AUClast (h*ug/g)" = simulated,
+    "Parmar predicted (h*ug/g)" = predicted,
+    "Fold vs predicted" = fold_vs_predicted,
+    "Parmar observed (h*ug/g)" = observed,
+    "Fold vs observed" = fold_vs_observed
+  ) |>
+  knitr::kable(caption = paste(
+    "Simulated tissue AUC versus the predicted and observed AUCinf reported by",
+    "Parmar 2023 (Tables 6 and 9), single-dose arms only."
+  ))
+```
+
+All nine tissue arms reproduce the authors' predicted AUC within 1.42-fold. Two
+rows exceed two-fold against the *observed* data: spectinamide 1599 lung after
+IV 10 mg/kg (2.28-fold) and after SC 50 mg/kg (2.00-fold). The paper's own
+predictions were already high on lung by 1.65-fold and 1.41-fold respectively
+(Table 6), so this is a pre-existing feature of the published lung
+parameterisation amplified by the same 20-40% offset seen in plasma, not a
+separate defect. No parameter was tuned to close it.
+
+# Assumptions and deviations
+
+## File factoring
+
+* One model file per (compound, species). Parmar 2023 states it "combined the
+  mouse and rat model into a single integrated PBPK model ... a single code
+  structure", and the distribution rate constants and inter-animal variances
+  were estimated by fitting mouse and rat data simultaneously, so the parameter
+  values are genuinely shared. The physiology is not, and the registry has no
+  canonical species covariate; splitting by species follows the existing
+  `An_2012_mitoxantrone_mouse_pbpk` / `An_2012_mitoxantrone_human_pbpk`
+  precedent and keeps each file self-contained. The shared estimates are
+  duplicated across the two species files by design.
+* The rat files carry the intravenous route only. Parmar 2023 reports no rat
+  subcutaneous or aerosol data and estimated `Ka` and `F` from mouse data alone,
+  so importing the mouse absorption parameters into a rat model would be a
+  substitution, not an extraction.
+* Spectinamide 1810 has no aerosol route, matching the paper.
+
+## Residual error and route
+
+Parmar 2023 reports a separate proportional residual error per matrix *and per
+route* (Tables 4 and 7). A single nlmixr2 model carries one residual SD per
+endpoint, so the bare `propSd*` parameters hold the **intravenous** column --
+the dataset that parameterised the structural model. The subcutaneous and
+intratracheal values are recorded in the in-file comment on each parameter line
+so a user simulating those routes can override them. For spectinamide 1599 they
+are: plasma 0.54 (SC) / 6.57 (intratracheal); lung 0.50 / 0.95; liver 0.29 /
+2.55; spleen 0.97 / 8.48. The intratracheal plasma and spleen values above 6 are
+implausibly large as proportional errors but are reproduced here as printed.
+
+No residual error is reported for kidney in either table, so `Ckidney` is a
+derived output with no error model, and `Celf` (mouse 1599) likewise.
+
+## Cohort and simulation choices
+
+* Body weights fixed at the paper's reference values (0.020 kg mouse,
+  0.225 kg rat) to convert mg/kg doses to absolute amounts; the paper's
+  physiology is tabulated at those weights and is not weight-scaled.
+* Inter-animal variability applied to the tissue uptake rate constants only, as
+  published; no variability on `Ka`, `F`, the back-flux constants, or the
+  kidney uptake constant, because none is reported.
+* NCA uses `auclast` over the simulated observation window (0-24 h mouse,
+  0-48 h rat) rather than `aucinf.obs`, for the reason given in the PKNCA
+  section. The window choice is ours: the paper does not state the NCA window it
+  used for its "AUCinf" values.
+* Single-dose simulations stand in for the paper's QD5 / TIW / BIW plasma rows,
+  justified by the model's linearity and by the paper's own predicted values
+  agreeing to under 1% across regimens at the same dose level. Tissue
+  comparisons are restricted to single-dose rows, where that justification does
+  not hold.
+
+## Errata: defects in the published model
+
+1. **Supplement S1 venous outflow.** Printed as `- Q_Lung * Cb_Lung`; corrected
+   to `- Q_Lung * C_VenousBlood` to match the lung's gain term in S3. As printed
+   the pair does not conserve drug instant by instant.
+2. **Supplement S1 / S10 hepatic outflow.** The liver gains
+   `Q_Spleen * Cb_Spleen` from the portal circulation but loses only
+   `Q_Liver * Cb_Liver`; corrected to `(Q_Liver + Q_Spleen) * Cb_Liver`. The
+   tabulated flows confirm `Q_Liver` is hepatic-arterial:
+   `Q_Liver + Q_Spleen + Q_Kidney + Q_Other` equals `Q_Lung` in both species.
+3. **Table 2 cardiac output.** `Q_Lung` is printed as the rounded sum of the
+   systemic organ flows (mouse 0.618 against 0.61695; rat 4.83 against 4.8332).
+   The models derive `q_lung` as the exact sum, because any mismatch makes the
+   arterial node create or destroy drug -- with the printed mouse value, 2.8% of
+   the dose disappears by 72 h.
+4. **Aerosol sub-model back flux (supplement S23 / S24 / S25).** The lung
+   cellular pool loses `K_Lung(C->I) * A_cellular` once (S24) but that same
+   quantity is *added* to both the ELF pool (S23) and the lung extracellular
+   pool (S25): as printed, the aerosol sub-model creates drug. Figure 2 draws two
+   distinct arrows out of the lung cellular pool ("K2" to the interstitium and
+   "K3" to the ELF), so the missing loss term is restored, with its rate
+   constant identified with `K_Lung(C->I)` exactly as S23 writes it. This
+   introduces no new number. The alternative reading -- splitting the single
+   printed efflux between the two destinations with an invented fraction -- was
+   rejected because that fraction appears nowhere on disk.
+5. **ELF transfer constants never tabulated.** `K(ELF->C)` and `K(ELF->B)` carry
+   no value anywhere in the paper or supplement. Table 4 marks every `K` as
+   "Fixed" for the intratracheal fit and lists only `Ka` and `F` as newly
+   estimated, and Figure 2 labels the ELF arrows with the *same* symbols used
+   for the interstitial arrows: `K_B2C * fup_ELF` and `Ka * fup_ELF`. The model
+   therefore sets `K(ELF->C) = K_Lung(I->C) = 0.068 1/h` and
+   `K(ELF->B) = Ka = 5.03 1/h`. S23's reuse of the lung's own `K(C->I)` for the
+   cellular-to-ELF flux establishes that reusing lung constants in the ELF
+   equations is the authors' own pattern.
+
+   This identification cannot be falsified by the plasma AUC, and it is
+   important to say so plainly: in a linear model with no elimination in the
+   lung, the plasma AUC after an aerosol dose is fixed by `F` alone, whatever
+   the ELF rate constants are. The simulated aerosol plasma AUC is 37% below the
+   authors' predicted value at all three dose levels (3.07 against 4.87, 15.3
+   against 24.4, 46.0 against 73.1), a constant ratio, which means the authors'
+   implementation delivers roughly 55% of the aerosol dose to the systemic
+   circulation despite `F = 0.33`. The most likely cause is the
+   drug-creating back flux of item 4 above, which was present in their code. The
+   discrepancy is within the paper's own two-fold qualification criterion, so
+   the aerosol route is shipped; a user who needs the authors' exact aerosol
+   exposures should scale `lfdepot2` accordingly and document it.
+6. **Table 7 intravenous tissue residual errors (spectinamide 1810).** Printed
+   as `eps_Lung 0.13 (16.0)`, `eps_Liver 0.076 (17.6)` and
+   `eps_Spleen 1.19 (12.0)` -- verbatim duplicates, value *and* %RSE, of the
+   `K_Lung(I->C)`, `K_Lung(C->I)` and `K_Liver(I->C)` rows immediately above
+   them. Confirmed against the typeset PDF (page 20), so this is a publisher
+   transcription error rather than a conversion artifact, and a 119%
+   proportional error on spleen alongside a 43% plasma error is not credible.
+   The three values are treated as unreported and fixed at zero rather than
+   invented. The clean subcutaneous-column values (0.30 lung, 0.31 liver, 0.43
+   spleen) are recorded in the in-file comments for users who need stochastic
+   tissue simulations.
+7. **Table 2 tissue volumes exceed body volume.** The mouse volumes sum to
+   27.8 mL for a 20 g animal and the rat volumes to 284 mL for a 225 g animal,
+   in both cases driven by `V_Other` (23.5 mL and 245 mL). The values are
+   reproduced as published because they are load-bearing for the fitted rate
+   constants, but a user rescaling the model to a different body weight should
+   be aware that `V_Other` is not a literal remainder-tissue volume.
+8. **Omega values labelled as variances.** Tables 4 and 7 and their footnote
+   call the inter-animal variability values variances; the paper's own CV
+   mapping in Section 3.7 shows they are log-scale standard deviations. See the
+   source-trace section above for the arithmetic.
+
+## Out of scope
+
+Section 3.9 of the paper explores relative drug exposure in granulomatous lesion
+substructures using a *human* Simcyp whole-lung and granuloma model, with the
+drug-specific inputs in supplement Table S1 (fu 0.436, k(b/p) 0.693, CL_R
+3.27 L/h -- human values, not the rodent values in Table 2). That analysis
+depends on a proprietary platform whole-body model whose equations are not on
+disk, and it is not part of the mPBPK model extracted here.

@@ -17,7 +17,7 @@ Shin_2017_levetiracetam <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-varying. Shin 2017 reports V and CL on a per-kg basis (1.15 L/kg and 0.083 L/hr/kg respectively); the model applies a linear weight scaling (allometric exponent fixed to 1.0) so that vc = (V per kg) * WT and cl = (CL per kg) * WT. Reference weight is therefore 1 kg; the paper's typical individual is recovered at the cohort median WT = 4.3 kg (Results paragraph 2).",
+      notes              = "Time-varying. Shin 2017 reports V and CL on a per-kg basis (1.15 L/kg and 0.083 L/h/kg respectively); the model applies a linear weight scaling (allometric exponent fixed to 1.0) so that vc = (V per kg) * WT and cl = (CL per kg) * WT. Reference weight is therefore 1 kg; the paper's typical individual is recovered at the cohort median WT = 4.3 kg (Results paragraph 2).",
       source_name        = "WT"
     )
   )
@@ -44,9 +44,9 @@ Shin_2017_levetiracetam <- function() {
     # Structural parameters - final-model estimates from Shin 2017 Table 5.
     # Values are reported on a per-kg basis so that the typical individual at
     # the cohort median weight 4.3 kg has V = 1.15 * 4.3 = 4.945 L and
-    # CL = 0.083 * 4.3 = 0.357 L/hr (matching Results paragraph 2).
+    # CL = 0.083 * 4.3 = 0.357 L/h (matching Results paragraph 2).
     lvc <- log(1.15);  label("Central volume per kg body weight (V, L/kg)")        # Shin 2017 Table 5: V = 1.15 L/kg (RSE 29.7%)
-    lcl <- log(0.083); label("Clearance per kg body weight (CL, L/h/kg)")         # Shin 2017 Table 5: CL = 0.083 L/hr/kg (RSE 12.7%)
+    lcl <- log(0.083); label("Clearance per kg body weight (CL, L/h/kg)")         # Shin 2017 Table 5: CL = 0.083 L/h/kg (RSE 12.7%)
 
     # Inter-individual variability. Shin 2017 reports "exponential error model
     # for random inter-individual variability ... mean zero and variance

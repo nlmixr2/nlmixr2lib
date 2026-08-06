@@ -81,7 +81,7 @@ Yin_2021_pexidartinib <- function() {
     # placebo-cohort tumor growth rate estimated at 0.227 cm/yr with a 95% CI that included
     # zero (-0.13, 0.583), so it was fixed to 0 for subsequent drug-effect model development.
     emax_pd   <- fixed(0.999) ; label("Maximal achievable drug effect Emax (unitless)")                        # Yin 2021 Table S2 theta7 FIXED = 0.999
-    growth_pd <- fixed(0)     ; label("Natural tumor growth rate (cm/h)")                                # Yin 2021 Table S2 theta2 FIXED = 0.00 cm/yr; encoded as 0/hr
+    growth_pd <- fixed(0)     ; label("Natural tumor growth rate (cm/h)")                                # Yin 2021 Table S2 theta2 FIXED = 0.00 cm/yr; encoded as 0/h
 
     # Multiplicative covariate effects on baseline Y0, kdrug, and konset. The
     # values in Yin 2021 Table S2 are the already-exponentiated multipliers

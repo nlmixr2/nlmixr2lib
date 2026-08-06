@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
@@ -42,9 +44,13 @@
 
 - Add Li 2023 ornidazole ([doi:10.3390/pharmaceutics15112524](https://doi.org/10.3390/pharmaceutics15112524)) - breastfeeding women after caesarean section, with colostrum concentrations.
 
+- Add Zhu 2024 pyrotinib ([doi:10.3389/fphar.2024.1432944](https://doi.org/10.3389/fphar.2024.1432944)) - Chinese patients with HER2-positive breast cancer.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
+
+- Add Liu 2023 monoclonal antibody panel ([doi:10.1080/19420862.2023.2263926](https://doi.org/10.1080/19420862.2023.2263926)) - female BALB/c mice.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 

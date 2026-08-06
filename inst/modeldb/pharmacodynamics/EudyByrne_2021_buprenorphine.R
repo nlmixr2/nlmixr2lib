@@ -143,8 +143,8 @@ EudyByrne_2021_buprenorphine <- function() {
     nowsm   <- exp(lnowsm   + etalnowsm)     # 1/day
     emax    <- exp(lemax    + etalemax)
     ec50    <- exp(lec50)
-    kin     <- exp(lkin)                     # score/hr
-    kout    <- exp(lkout    + etalkout)      # 1/hr
+    kin     <- exp(lkin)                     # score/h
+    kout    <- exp(lkout    + etalkout)      # 1/h
 
     # -------------------------------------------------------------------
     # Natural NAS-withdrawal course with postnatal age. The canonical PNA

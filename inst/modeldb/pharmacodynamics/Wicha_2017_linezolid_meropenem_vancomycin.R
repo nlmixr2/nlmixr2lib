@@ -93,7 +93,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lkper_mer <- log(0.11)
     label("MER-driven persister development rate (kper_MER, 1/h)")  # Wicha 2017 Table 1
 
-    # ---- MER chemical degradation in growth medium (HPLC-determined; FIXED) ----
+    # ---- MER chemical degradation in growth medium (HPLC-determined) ----
     lkdeg_mer <- fixed(log(0.019))
     label("MER first-order degradation rate in growth medium (kdeg_MER, 1/h; -- HPLC)")  # Wicha 2017 Table 1 (FIXED)
 
@@ -121,7 +121,7 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     lkper_van <- log(0.017)
     label("VAN-driven persister development rate (kper_VAN, 1/h)")  # Wicha 2017 Table 1
 
-    # ---- VAN chemical degradation in growth medium (HPLC-determined; FIXED) ----
+    # ---- VAN chemical degradation in growth medium (HPLC-determined) ----
     lkdeg_van <- fixed(log(0.0039))
     label("VAN first-order degradation rate in growth medium (kdeg_VAN, 1/h; -- HPLC)")  # Wicha 2017 Table 1 (FIXED) -- "3.9e-03"
 

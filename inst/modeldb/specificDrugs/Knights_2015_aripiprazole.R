@@ -76,9 +76,9 @@ Knights_2015_aripiprazole <- function() {
     # equal the structural thetas.
     lka <- log(0.515) ; label("Absorption rate constant ka (1/h)")                                                  # Knights 2015 Figure 1B KA = 0.515 1/h; supplement $THETA(1)
     lvc <- log(192)   ; label("Apparent central volume Vc/F at reference covariates (L)")                            # Knights 2015 Figure 1B VC = 192 L; supplement $THETA(2)
-    lq  <- log(12.2)  ; label("Apparent inter-compartmental clearance Q/F at reference covariates (L/h)")            # Knights 2015 Figure 1B Q = 12.20 L/hr; supplement $THETA(3)
+    lq  <- log(12.2)  ; label("Apparent inter-compartmental clearance Q/F at reference covariates (L/h)")            # Knights 2015 Figure 1B Q = 12.20 L/h; supplement $THETA(3)
     lvp <- log(151)   ; label("Apparent peripheral volume Vp/F at reference covariates (L)")                         # Knights 2015 Figure 1B VP = 151 L; supplement $THETA(4)
-    lcl <- log(3.88)  ; label("Apparent oral clearance CL/F at reference covariates (L/h)")                          # Knights 2015 Figure 1B CL = 3.88 L/hr; supplement $THETA(5)
+    lcl <- log(3.88)  ; label("Apparent oral clearance CL/F at reference covariates (L/h)")                          # Knights 2015 Figure 1B CL = 3.88 L/h; supplement $THETA(5)
 
     # Covariate effects -- the WT covariate enters as a linear-deviation
     # additive shift to the typical CL/F, Q/F, and Vp/F (in linear-scale
