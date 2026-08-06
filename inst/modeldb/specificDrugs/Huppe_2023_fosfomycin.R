@@ -2,7 +2,19 @@ Huppe_2023_fosfomycin <- function() {
   description <- "Two-compartment population PK model for multiple-dose intravenous fosfomycin in critically ill adults with renal insufficiency during continuous venovenous hemodialysis (CVVHD). Total clearance is the sum of a renal arm driven linearly by measured urinary creatinine clearance (gated off in anuric patients) and a CVVHD arm given by the Michaels hemodialyzer equation as a function of blood flow rate, dialysate flow rate, and a mass transfer-area coefficient. Central volume increases linearly with time since first dose (Huppe 2023)."
   reference <- "Huppe T, Gotz KM, Meiser A, de Faria Fernandes A, Maurer F, Groesdonk HV, Volk T, Lehr T, Kreuer S. Population pharmacokinetic modeling of multiple-dose intravenous fosfomycin in critically ill patients during continuous venovenous hemodialysis. Sci Rep. 2023;13:18132. doi:10.1038/s41598-023-45084-5"
   vignette <- "Huppe_2023_fosfomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. verified = TRUE: checked against Huppe 2023, which
+  # administers fosfomycin as 5 g (mg-scale) i.v. infusions and quantifies
+  # "concentrations of i.v. fosfomycin ... in patient plasma" drawn from a
+  # central venous line (Results, Patient characteristics; Methods, Protocol
+  # and sample collection). Both states hold amounts of unchanged fosfomycin;
+  # the drug does not undergo metabolization (Introduction).
+  compartmentData <- list(
+    central     = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE)
+  )
 
   covariateData <- list(
     CRCL = list(
