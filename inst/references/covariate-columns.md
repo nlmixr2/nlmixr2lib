@@ -10132,6 +10132,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Nagy_2017_obiltoxaximab.R` (selects the cynomolgus macaque column of Nagy 2017 Supplementary Table S1 -- CL 0.0191 L/day, Vc 0.134 L, Vp 0.123 L, Q 0.0890 L/day, Ka 3.89 /day, F1 0.895 -- with the macaque-specific 2.88 kg allometric reference weight and the macaque Michaelis-Menten arm Vmax 0.275 mg/day, Km 3.21 ug/mL).
 - **Notes:** In the founding example the macaque nonlinear-elimination component is also the one carried over to the *human* infected projection (Nagy 2017 Methods: "the nonlinear clearance model component from the cynomolgus macaque model was added to the human population PK model, allometrically scaled to human body size"). That carry-over is a property of the model, not of this covariate: the indicator still reads 0 for the human subject, and the model handles the transfer by scaling the macaque Vmax from the *macaque* reference weight rather than the human one. Any future model that borrows a component across species should document the borrowing in `covariateData` notes so the reference-weight choice is auditable. Ratified canonically alongside the Nagy 2017 obiltoxaximab extraction.
 
+### CNSREG_PFC (**canonical for medial-prefrontal-cortex sampling-region indicator in regional-CNS PK-PD models**)
+- **Description:** 1 = the observation was sampled from the medial prefrontal cortex; 0 = it was sampled from the reference CNS region. Member of the `CNSREG_<region>` family, which identifies the anatomical central-nervous-system region (brain nucleus, cortical area, or spinal-cord segment) a per-observation measurement was taken from, in models that fit one joint structural model across several CNS sampling sites and let a region indicator select region-specific typical values. Per-observation rather than per-subject: a single animal commonly contributes one sample from each region.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the model's reference CNS region; the amygdala in the founding example).
+- **Source aliases:**
+  - `BRAIN AREA` (categorical column, level `PFC`) -- decomposed to a binary indicator. Used in `AlfoseaCuadrado_2024_reserpine_rat.R`.
+- **Example models:** `AlfoseaCuadrado_2024_reserpine_rat.R` (selects the prefrontal-cortex typical value of the monoamine precursor production rate, `kpin = (exp(lkpin) * (1 - CNSREG_PFC - CNSREG_SC) + exp(lkpin_pfc) * CNSREG_PFC + exp(lkpin_sc) * CNSREG_SC) * exp(etalkpin)`, with kin = 6.97 (amygdala), 2.10 (prefrontal cortex) and 1.78 (spinal cord) mg/L/h sharing one 97 % inter-animal variability term).
+- **Notes:** The `CNSREG_` prefix was chosen over a `BRAIN_` prefix so that spinal-cord levels are described correctly -- the founding example's three levels are two brain regions plus the lumbar spinal cord, and the spinal cord is not brain. Distinct from the `brain_<region>` **compartment** namespace in `compartment-names.md` (`brain_cortex`, `brain_hippocampus`, ...), which names ODE states holding a drug concentration in a region; `CNSREG_<region>` is a data column marking which region an observation came from and carries no mass balance. Also distinct from `REGION_<geography>` (geographic enrollment region), `TUMTP_<type>` (tumour histology) and `SAMPLE_<design>` (blood-collection design flags on residual error). Data assemblers must preserve mutual exclusivity -- no record may set more than one `CNSREG_*` indicator to 1 -- because the reference-level arithmetic `1 - CNSREG_PFC - CNSREG_SC` would otherwise go negative and silently produce nonsense rather than erroring. Register a sibling canonical (`CNSREG_HIPPOCAMPUS`, `CNSREG_STRIATUM`, `CNSREG_NAC`, ...) rather than overloading this name when a new region appears; promote the family to general scope once a second model ratifies it. Ratified canonically alongside the Alfosea-Cuadrado 2024 reserpine extraction (operator sidecar oare_PMC11359992, 2026-08-05).
+
+### CNSREG_SC (**canonical for spinal-cord sampling-region indicator in regional-CNS PK-PD models**)
+- **Description:** 1 = the observation was sampled from the spinal cord (the lumbar portion in the founding example); 0 = it was sampled from the reference CNS region. Sibling of `CNSREG_PFC` in the `CNSREG_<region>` family. Per-observation rather than per-subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the model's reference CNS region; the amygdala in the founding example).
+- **Source aliases:**
+  - `BRAIN AREA` (categorical column, level `SC`) -- decomposed to a binary indicator. Used in `AlfoseaCuadrado_2024_reserpine_rat.R`. Note the source column is named for brain area even though this level is spinal cord.
+- **Example models:** `AlfoseaCuadrado_2024_reserpine_rat.R` (selects the spinal-cord typical value of the monoamine precursor production rate kin = 1.78 mg/L/h).
+- **Notes:** See `CNSREG_PFC` for the family's naming rationale, the distinction from the `brain_<region>` compartment namespace, and the mutual-exclusivity requirement. Ratified canonically alongside the Alfosea-Cuadrado 2024 reserpine extraction (operator sidecar oare_PMC11359992, 2026-08-05).
+
 
 ## Infectious-disease subtype indicators
 
