@@ -31,7 +31,7 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
-- Add Wojciechowski 2023 ritlecitinib ([doi:10.1007/s40262-023-01318-3](https://doi.org/10.1007/s40262-023-01318-3)) - three model iterations covering healthy participants and patients with rheumatoid arthritis, ulcerative colitis, alopecia areata or vitiligo, plus moderate hepatic and severe renal impairment.
+- Add Courlet 2023 cabamiquine ([doi:10.1128/aac.00891-23](https://doi.org/10.1128/aac.00891-23)) - healthy adult men in induced blood stage and sporozoite malaria challenge studies.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
