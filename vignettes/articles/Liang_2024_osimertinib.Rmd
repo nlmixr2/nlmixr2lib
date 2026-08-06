@@ -52,7 +52,7 @@ by the PBPK and handed to the target-engagement equations.
 # Population
 
 ```{r population}
-pop <- readModelDb("Liang_2024_osimertinib_qsp") |> attr("population")
+pop <- rxode2::rxode(readModelDb("Liang_2024_osimertinib_qsp"))$population
 str(pop)
 ```
 
@@ -140,7 +140,7 @@ paper's own supplement, `kturnover` and Figure 1 all use hours.
 # Parameter table: paper vs. model file
 
 ```{r param-table, echo = FALSE}
-ini_tbl <- as.data.frame(mod$iniDf)[, c("name", "est", "fix")]
+ini_tbl <- as.data.frame(rxode2::rxode(mod)$iniDf)[, c("name", "est", "fix")]
 paper <- c(
   lkon_t790m = log(3276), lkon_l858r = log(1584), koff = 0,
   lkturnover = log(0.025), lkdeg = log(0.025),
@@ -292,10 +292,21 @@ s_w <- rxode2::rxSolve(mod, ev_w, returnType = "data.frame")
 post <- s_w[s_w$time >= 336, ]
 # fraction of complex remaining, relative to the value at withdrawal
 frac <- post$complex_t790m / post$complex_t790m[1]
-t_half_obs <- approx(frac, post$time - 336, xout = 0.5)$y
+tt_post <- post$time - 336
+
+# Terminal half-life of the complex. Time-to-50% measured from the withdrawal
+# instant is NOT the terminal half-life: residual drug is still clearing over
+# the first hours after withdrawal, so that reading comes out about an hour
+# long (28.75 h). log(2)/kdeg describes the terminal log-linear phase, so fit
+# the slope there instead. Doing so recovers kdeg to five decimal places and
+# lets this gate be asserted tightly.
+term <- tt_post >= 100 & tt_post <= 200
+stopifnot(sum(term) > 10)
+kdeg_obs <- -coef(lm(log(frac[term]) ~ tt_post[term]))[[2]]
+t_half_obs <- log(2) / kdeg_obs
 t_half_obs
 
-stopifnot(abs(t_half_obs - log(2) / 0.025) < 0.5)
+stopifnot(abs(t_half_obs - log(2) / 0.025) < 0.01)
 stopifnot(post$inhT790M[nrow(post)] < 1)
 ```
 

@@ -41,17 +41,21 @@ extraction is six model files sharing this one vignette.
 | `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468` | C | MDA-MB-468 | Methods + Figure 6 |
 
 ```{r load-models}
+# readModelDb() returns the model *function*, which has no $theta / $iniDf.
+# Resolve each one to its rxUi here so the parameter accessors below work.
+load_ui <- function(nm) rxode2::rxode(readModelDb(nm))
+
 mA <- list(
-  jimt1    = readModelDb("Mody_2023_doxorubicin_dexrazoxane_static_jimt1"),
-  mdamb468 = readModelDb("Mody_2023_doxorubicin_dexrazoxane_static_mdamb468")
+  jimt1    = load_ui("Mody_2023_doxorubicin_dexrazoxane_static_jimt1"),
+  mdamb468 = load_ui("Mody_2023_doxorubicin_dexrazoxane_static_mdamb468")
 )
 mB <- list(
-  jimt1    = readModelDb("Mody_2023_doxorubicin_dexrazoxane_jimt1"),
-  mdamb468 = readModelDb("Mody_2023_doxorubicin_dexrazoxane_mdamb468")
+  jimt1    = load_ui("Mody_2023_doxorubicin_dexrazoxane_jimt1"),
+  mdamb468 = load_ui("Mody_2023_doxorubicin_dexrazoxane_mdamb468")
 )
 mC <- list(
-  jimt1    = readModelDb("Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1"),
-  mdamb468 = readModelDb("Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468")
+  jimt1    = load_ui("Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1"),
+  mdamb468 = load_ui("Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468")
 )
 cell_label <- c(jimt1 = "JIMT-1", mdamb468 = "MDA-MB-468")
 ```
@@ -74,7 +78,7 @@ every three weeks as a 15-min IV infusion, alone or with DEX 500 mg/m^2
 cardioprotective -- for three cycles.
 
 The same information is available programmatically, e.g.
-`readModelDb("Mody_2023_doxorubicin_dexrazoxane_jimt1")()$population`.
+`rxode2::rxode(readModelDb("Mody_2023_doxorubicin_dexrazoxane_jimt1"))$population`.
 
 # Source trace
 
@@ -125,7 +129,18 @@ static_predict <- function(model, dox, dex, psi = NULL) {
     CONC_DOXORUBICIN = dox, CONC_DEXRAZOXANE = dex
   )
   out <- rxode2::rxSolve(model, ev, returnType = "data.frame")
-  out$viability[match(seq_along(dox), out$id)]
+  # rxSolve omits the `id` column entirely when the event table has a single
+  # subject. match() against a NULL column then yields NA and this function
+  # silently returns an all-NA prediction, which reads as a failed gate rather
+  # than a broken accessor. Fall back to event order, and check the row count
+  # rather than assuming it.
+  if (is.null(out$id)) {
+    stopifnot(nrow(out) == length(dox))
+    return(out$viability)
+  }
+  idx <- match(seq_along(dox), out$id)
+  stopifnot(!anyNA(idx))
+  out$viability[idx]
 }
 ```
 
@@ -322,7 +337,12 @@ dose_ev <- function(with_dex, obs_cmt, tobs) {
 ## Plasma pharmacokinetics and PKNCA validation
 
 ```{r layerC-pk}
-pk_tobs <- sort(unique(c(seq(0, 24, by = 0.25), seq(24, 504, by = 2))))
+# Tmax is 0.25 h, so a 0.25 h grid puts the peak at the very first post-dose
+# sample and the trapezoidal AUC below understates AUCinf by ~4.6%. Resolve the
+# distribution phase finely enough that the NCA below reproduces Dose/CL to
+# within a rounding error rather than within a few percent.
+pk_tobs <- sort(unique(c(seq(0, 2, by = 0.005), seq(2, 24, by = 0.05),
+                         seq(24, 504, by = 1))))
 mC_typ  <- rxode2::zeroRe(mC$jimt1)
 
 pk_dox <- rxode2::rxSolve(mC_typ, dose_ev(TRUE, "Cc_dox", pk_tobs),
@@ -361,8 +381,18 @@ nca_one <- function(dat, dose_amt) {
   PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = ivals))
 }
 
-nca_dox <- nca_one(pk_dox |> filter(time <= 504), 90)
-nca_dex <- nca_one(pk_dex |> filter(time <= 504), 900)
+# DEX has a ~1.8 h terminal half-life, so by 504 h its simulated concentration
+# has decayed into ODE-solver noise and goes very slightly negative
+# (~ -2e-15 mg/L). PKNCA then takes log() of a negative value when selecting
+# lambda_z, and aucinf.obs comes back NaN. Cut the DEX window at 72 h -- still
+# about 40 half-lives, so the extrapolated tail is negligible -- and assert the
+# window really is free of solver noise rather than assuming it.
+pk_dox_nca <- pk_dox |> filter(time <= 504)
+pk_dex_nca <- pk_dex |> filter(time <= 72)
+stopifnot(all(pk_dox_nca$Cc >= 0), all(pk_dex_nca$Cc >= 0))
+
+nca_dox <- nca_one(pk_dox_nca, 90)
+nca_dex <- nca_one(pk_dex_nca, 900)
 
 nca_tab <- bind_rows(as.data.frame(nca_dox$result), as.data.frame(nca_dex$result)) |>
   filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
@@ -378,7 +408,10 @@ auc_check <- nca_tab |>
 
 knitr::kable(auc_check, digits = 4,
              caption = "PKNCA on the simulated plasma profiles, checked against Dose/CL.")
-stopifnot(all(abs(auc_check$`Difference (%)`) < 2))
+# With the peak resolved and the DEX window clear of solver noise, NCA
+# reproduces Dose/CL essentially exactly (DOX -0.002%, DEX 0.000%), so this is
+# asserted at 0.1% rather than the 2% that a coarse grid needed.
+stopifnot(all(abs(auc_check$`Difference (%)`) < 0.1))
 ```
 
 ## Replicating Figure 6B -- AUEC of percent cell viability

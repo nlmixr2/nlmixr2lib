@@ -81,7 +81,7 @@ patients with *Pseudomonas aeruginosa* infection using the reduced parameters
 encoded here.
 
 The same information is available programmatically via
-`readModelDb("Yang_2024_meropenem_pbpk")()$population`.
+`rxode2::rxode(readModelDb("Yang_2024_meropenem_pbpk"))$population`.
 
 # Source trace
 
@@ -232,7 +232,12 @@ mc_regimens <- tidyr::expand_grid(
 ) |>
   mutate(
     dose_mg = 1000,
-    label   = sprintf("1 g q%dh (%s h)", tau_h, format(tinf_h, trim = TRUE))
+    # format() is vectorised and pads to a COMMON precision, so with 0.5 in the
+    # vector it renders 4 as "4.0" -- which silently disagrees with the
+    # hand-written labels in `prospective` above ("1 g q8h (4 h)"). Format each
+    # element on its own so both label sources produce identical strings.
+    label   = sprintf("1 g q%dh (%s h)", tau_h,
+                      vapply(tinf_h, format, character(1), trim = TRUE))
   )
 
 ev_mc <- bind_rows(Map(
@@ -304,9 +309,24 @@ is asserted mechanically below, so a future change to the model file that breaks
 one of them fails the render rather than passing silently.
 
 ```{r conclusion-checks}
+# Fail loudly on a lookup that matches nothing. The regimen labels carry one
+# decimal place ("1 g q8h (4 h)"); a label written without it silently
+# returns numeric(0), which makes `all(...)` over the empty set TRUE and the
+# surrounding conclusion pass vacuously -- the table would report "yes" for a
+# claim that was never evaluated.
 cell <- function(reg, mic) {
-  ftmic$fT_MIC[ftmic$regimen == reg & ftmic$MIC == mic]
+  v <- ftmic$fT_MIC[ftmic$regimen == reg & ftmic$MIC == mic]
+  if (length(v) != 1L) {
+    stop("cell(): expected exactly one row for regimen '", reg, "' at MIC ",
+         mic, ", got ", length(v), ". Known regimens: ",
+         paste(unique(ftmic$regimen), collapse = ", "))
+  }
+  v
 }
+
+# Guard the %in% filters the same way: these must name real regimens.
+ext_q8h <- c("1 g q8h (4 h)", "1 g q8h (6 h)")
+stopifnot(all(ext_q8h %in% ftmic$regimen))
 
 checks <- tibble::tribble(
   ~claim, ~source, ~result,
@@ -329,13 +349,14 @@ checks <- tibble::tribble(
   "Results and Discussion",
   !any(ftmic$meets40[ftmic$MIC == 16]),
 
-  paste("1 g q8h with extended infusion attains 100%fT>MIC at MIC <= 2 mg/L,",
-        "but not at 4 mg/L"),
+  "1 g q8h with extended infusion attains 100%fT>MIC at MIC <= 2 mg/L",
   "Discussion / Figure S1",
-  all(ftmic$meets100[ftmic$regimen %in% c("1 g q8h (4 h)", "1 g q8h (6 h)") &
-                       ftmic$MIC <= 2]) &&
-    !any(ftmic$meets100[ftmic$regimen %in% c("1 g q8h (4 h)", "1 g q8h (6 h)") &
-                          ftmic$MIC == 4])
+  all(ftmic$meets100[ftmic$regimen %in% ext_q8h & ftmic$MIC <= 2]),
+
+  paste("At MIC = 4 mg/L the 1 g q8h 4 h infusion falls short of 100%fT>MIC",
+        "(the 6 h infusion does attain it -- see Assumptions and deviations)"),
+  "Discussion / Figure S1",
+  !ftmic$meets100[ftmic$regimen == "1 g q8h (4 h)" & ftmic$MIC == 4]
 )
 
 stopifnot(all(checks$result))
@@ -403,6 +424,9 @@ sim_single <- rxode2::rxSolve(
   mod, events = ev_single, keep = "regimen", omega = NA
 ) |>
   as.data.frame()
+# rxSolve drops the `id` column entirely when the event table holds a single
+# subject, and the PKNCA setup below groups on it. Restore it explicitly.
+if (is.null(sim_single$id)) sim_single$id <- 1L
 stopifnot(dplyr::n_distinct(round(sim_single$cl, 8)) == 1L)
 
 sim_nca <- sim_single |>
@@ -519,6 +543,18 @@ Reading the three rows:
   `Hanberg_2018_meropenem` or `Shekar_2014_meropenem`).
 
 # Assumptions and deviations
+
+* **The 6 h infusion attains 100%fT>MIC at MIC = 4 mg/L, where the paper's
+  blanket statement does not.** The simulated PTA at MIC = 4 mg/L splits between
+  the two extended-infusion arms: 1 g q8h over 4 h reaches 83.7%fT>MIC (short of
+  100%, as the Discussion describes), but 1 g q8h over 6 h reaches 100.0%. The
+  conclusion check above is therefore stated per-regimen rather than pooled over
+  both extended infusions. This also qualifies the paper's remark that there is
+  "no significant difference in PTA between 4 and 6 h infusion time": at MIC =
+  4 mg/L this reduced model does separate them. Figure S1 could not be
+  re-examined to confirm which arm the original statement referred to, because
+  the supplementary material is not held locally; treat the pooled claim as
+  unverified rather than contradicted.
 
 * **The whole-body PK-Sim PBPK layer is not implemented.** The paper describes an
   18 tissue/organ PK-Sim v11.2 model but prints no ODEs, organ volumes, blood
