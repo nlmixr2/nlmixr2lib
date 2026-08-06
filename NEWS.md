@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Mody 2023 doxorubicin + dexrazoxane ([doi:10.3389/fphar.2023.1239141](https://doi.org/10.3389/fphar.2023.1239141)) -- in vitro JIMT-1 and MDA-MB-468 human breast cancer cell lines, with clinical translation.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without

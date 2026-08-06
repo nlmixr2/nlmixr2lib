@@ -1205,6 +1205,40 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Chen_2023_tilmicosin.R` (`mic` = 0.25 ug/mL, the CLSI broth-microdilution MIC of *Pasteurella multocida* C44-15, driving an `AUC24h/MIC` sigmoidal Emax); `Beredaki_2023_micafungin_clsi.R` (`mic` = 0.008 mg/L, CLSI M27 median MIC of *Candida albicans* CA 580) and `Beredaki_2023_micafungin_eucast.R` (`mic` = 0.016 mg/L, the EUCAST E.Def 7.3 median MIC of the same isolate), both driving an `fAUC0-24/MIC` sigmoidal Emax.
 - **Notes:** Ratified for AUC/MIC-index models alongside the Chen 2023 tilmicosin extraction; this register entry was written with the Beredaki 2023 micafungin extraction. Distinct from `ec50` / `lec50`: `ec50` is the *fitted* index value producing half-maximal effect (and in an `AUC/MIC`-indexed model is unitless, or has units of time), whereas `mic` is a *measured* concentration used to form the index in the first place. In a model where the index is a free-drug exposure, apply the unbound fraction (`fu`) to the exposure numerator and leave `mic` on the total-drug scale the susceptibility method actually reports.
 
+### psi (**canonical drug-drug interaction parameter**)
+- **Type:** paper-named-param
+- **Role:** Unitless drug-drug interaction parameter of the competitive-interaction family (Chakraborty and Jusko 2002; Pawaskar 2013), applied as a multiplicative scale factor on a partner drug's half-maximal potency constant: `psi > 1` antagonistic, `psi < 1` synergistic, `psi = 1` additive. In the static response-surface form it scales the `ec50` of BOTH drugs; in the dynamic cellular-PD form of Mody 2023 it scales the `kc50` of one named drug only. Inside `model()` the bare name is `psi`; the log-transformed `lpsi` form is used in `ini()` because the parameter is strictly positive.
+- **Source aliases:**
+  - `psi`, the Greek letter -- Mody 2023, Zhu 2015, Miao 2016 notation.
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_static_jimt1.R` (founding example, static competitive-interaction form), `Mody_2023_doxorubicin_dexrazoxane_static_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`.
+- **Notes:** Distinct from the structurally-similar GPDI interaction family (`lint_<perpetrator>_<victim>`, Kroemer 2024), in which the potency shift is itself a saturating function of the perpetrator concentration; `psi` is a bare concentration-independent constant. Also distinct from the mechanistic-sigmoid form used in `Landersdorfer_2018_meropenem_tobramycin_PAO1.R` (`om_effect = 1 - imax_om*ctob/(ctob+ic50_om)`), which achieves the same shape through an explicit Imax function. **Name-collision warning:** several tumour-growth models use a bare `psi` for the unrelated Simeoni (2004) exponential-to-linear growth-phase-switch exponent -- `Lindauer_2017_pembrolizumab.R`, `Scheuher_2023_ADC_mouse_qsp.R`, `Scheuher_2023_ADC_human_qsp.R`; `Betts_2019_pf_06671008_qsp.R` already spells that role `psi_switch`, which is the preferred form for new extractions of the Simeoni family. Ratified by operator sidecar on 2026-08-04 for the interaction role.
+
+### kp_tumor (**canonical total tumour:plasma concentration ratio**)
+- **Type:** paper-named-param
+- **Role:** Unitless TOTAL (not unbound) tumour-tissue to plasma concentration ratio, used to scale a simulated plasma concentration into a tumour-site driving concentration outside a full PBPK frame: `C_tumour = kp_tumor * C_plasma`. Typically derived as an `AUC_tumour / AUC_plasma` ratio from digitised tissue-distribution data. Drug-suffixed forms (`kp_tumor_<drug>`) are used when more than one drug is scaled. Inside `model()` the bare name is `kp_tumor`; `lkp_tumor` is the log form for `ini()`. Generalises to `kp_<tissue>` for other named target tissues.
+- **Source aliases:**
+  - `Fac1`, `Fac2` -- Mody 2023 notation.
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R` (founding example, `lkp_tumor_dox` = 57.1 from He 2018), `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`.
+- **Notes:** Distinct from the PBPK partition-coefficient family `kpu<n>` (clustered UNBOUND tissue partition coefficient) and from `sf<n>` (scaling factor applied to a bottom-up-predicted `kpu`): `kp_tumor` is a total-concentration ratio measured or digitised top-down and applied algebraically, with no tissue-composition model behind it. Ratified by operator sidecar on 2026-08-04.
+
+### kmax (**canonical maximal killing rate constant**)
+- **Type:** paper-named-param
+- **Role:** Maximal (capacity-limited) killing / death-stimulation rate constant of a saturating kill function, `kkill = kmax * C / (kc50 + C)` (1 / time). Paired with `kc50`. Inside `model()` the bare name is `kmax`; the log-transformed `lkmax` form is used in `ini()`. Sub-population or drug suffixes are appended as usual (`lkmax_s`, `lkmax_i`, `lkmax_dox`).
+- **Source aliases:**
+  - `Smax` -- Mody 2023 notation for the maximal stimulation-of-death rate constant.
+  - `Kmax` -- Garonzik 2016 notation.
+- **Example models:** `Garonzik_2016_daptomycin.R` (`lkmax_s`, `lkmax_i`), `Landersdorfer_2013_nisin_amikacin.R`, `Mody_2023_doxorubicin_dexrazoxane_jimt1.R`.
+- **Notes:** Register entry backfilled 2026-08-04; the name has been in use since `Garonzik_2016_daptomycin.R` and is referenced inside the `trimer` entry of `compartment-names.md` (`kkill = kmax * trimer / (kc50 + trimer)`), but had no entry of its own. Distinct from the PD `emax` / `imax` family, which act on a production or loss RATE of a turnover pool rather than as a first-order killing rate on the state itself.
+
+### kc50 (**canonical half-maximal killing concentration**)
+- **Type:** paper-named-param
+- **Role:** Drug concentration producing half of `kmax` in a saturating kill function, `kkill = kmax * C / (kc50 + C)`, in the concentration units of the driving state. Paired with `kmax`. Inside `model()` the bare name is `kc50`; the log-transformed `lkc50` form is used in `ini()`. Sub-population or drug suffixes are appended as usual (`kc50_ss_mem`, `lkc50_dox`).
+- **Source aliases:**
+  - `SC50` -- Mody 2023 notation for the concentration inducing 50% of the maximal killing rate.
+  - `KC50` -- Garonzik 2016 notation.
+- **Example models:** `Landersdorfer_2018_meropenem_tobramycin_PAO1.R` (`kc50_ss_mem`, `kc50_ss_tob`), `Garonzik_2016_daptomycin.R`, `Mody_2023_doxorubicin_dexrazoxane_jimt1.R`.
+- **Notes:** Register entry backfilled 2026-08-04 alongside `kmax`, its obligate partner. Distinct from `ec50` / `ic50`, which belong to the Emax / Imax family acting on a turnover rate; `kc50` is specifically the potency term of a first-order killing rate applied to the state itself.
+
 ## Unit spellings
 
 Registered 2026-08-03. The machine-readable `units` block wrote the same time
