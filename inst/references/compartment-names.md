@@ -1025,6 +1025,22 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** thrombocytopenia PD models.
 
+### PRU (**canonical P2Y12 reaction unit platelet-reactivity state**)
+- **Type:** compartment
+- **Role:** Platelet reactivity expressed in P2Y12 reaction units (PRU), the device-standardised readout of the Accumetrics / Werfen VerifyNow P2Y12 assay, carried as a turnover pool whose fractional loss rate is stimulated by an active antiplatelet metabolite. Reported normal baseline range 180-376 PRU; the therapeutic window targeted for P2Y12 inhibition is 70-150 PRU. Used both as the ODE state and as the observation output name.
+- **Source aliases:**
+  - `PRU` -- universal in the antiplatelet PK-PD literature.
+  - `P2Y12 reaction unit` -- expanded form used in figure axes and table headers.
+- **Example models:** `Jung_2024_clopidogrel.R` (doi:10.1002/psp4.13053; `d/dt(PRU) = kin - kout * (1 + emax * C_h4^hill / (ec50^hill + C_h4^hill)) * PRU`, `PRU(0) = kin / kout = 212.67`).
+- **Notes:** Registered 2026-08-06 (sidecar `oare_PMC10787215` request-001 q2, option A). `pru` is the canonical LOWERCASE sibling for the ODE state itself, and `PRU` is the observation-output name -- the same split already registered for `ANC` / `anc`, and required because `checkModelConventions()` enforces lowercase ODE-state names while the biomarker observables are uppercase. A model therefore writes `d/dt(pru) <- ...; pru(0) <- kin / kout; PRU <- pru; PRU ~ add(addSd_PRU)`. Uppercase for the observable per the rule stated in the `OSTCALC` entry ("Uppercase to match the sibling biomarker observables") and to match the surrounding clinical-acronym biomarker family (`INR`, `PT`, `aPTT`, `TT`, `PLT`, `P1NP`, `WBC`). Deliberately distinct from the two existing platelet entries, which are different quantities: `PLT` is platelet COUNT (cells/volume) and `integrin` is platelet alpha2-integrin EXPRESSION; `PRU` is platelet REACTIVITY (an assay-defined aggregation-response unit) and is not convertible to either. Registered as a general canonical rather than a paper-specific state because the VerifyNow readout is the shared endpoint across the antiplatelet class, so prasugrel / ticagrelor / cangrelor PK-PD extractions should reuse it.
+
+### pru (**canonical lowercase P2Y12-reaction-unit ODE state**)
+- **Type:** compartment
+- **Role:** Lowercase sibling of `PRU`, used for the platelet-reactivity turnover ODE state itself so that the state name follows the all-lowercase ODE-state convention while the observation output keeps the uppercase clinical acronym. See the `PRU` entry above for the quantity, the assay, and the reference ranges.
+- **Source aliases:** none.
+- **Example models:** `Jung_2024_clopidogrel.R` (`d/dt(pru)`, `pru(0) <- kin / kout`, observed as `PRU <- pru`).
+- **Notes:** Registered 2026-08-06 alongside `PRU`. Exactly parallel to the registered `ANC` / `anc` pair: the uppercase form is the biomarker observable, the lowercase form is the state.
+
 ### WBC (**canonical white blood cell count**)
 - **Type:** compartment
 - **Role:** White blood cell count PD output.
@@ -3560,6 +3576,13 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
   - `OC` -- the abbreviation used throughout the oseltamivir literature (Chairat 2016, Kamal 2013, Standing 2012) and retained in prose / plot labels.
 - **Example models:** `Standing_2012_oseltamivir.R`, `Chairat_2016_oseltamivir.R`, `Kamal_2013_oseltamivir.R`.
 - **Notes:** Renamed from the former `oc` suffix on 2026-07-26 to remove the `OC`/`oc` case-only distinction from osteocalcin. Used as `central_oselcarb`, `cl_oselcarb`, `lcl_oselcarb`, `lvc_oselcarb`, `Cc_oselcarb`, following the `enaat` metabolite-suffix pattern.
+
+### cloca (**canonical clopidogrel carboxylic acid suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Clopidogrel carboxylic acid (CLO-CA), the pharmacologically inactive hydrolysis product formed from clopidogrel by carboxylesterase-1 (CES1). It is the major circulating clopidogrel species -- roughly 85-90% of the absorbed dose is routed to it, and plasma concentrations are about 2000-fold higher than those of the parent, so it is assayed in ug/mL where clopidogrel is assayed in ng/mL. Distinct from `h4`, the active thiol metabolite of the same parent drug, which sits on the competing CYP-mediated oxidation branch; a joint model can carry both suffixes.
+- **Source aliases:** `CLO-CA`, `SR 26334` (the Sanofi development code for the carboxylic acid metabolite), `carbo` (Jung 2024's abbreviation, used in `fm_carbo` / `sigma_carbo`), `m2` (Jung 2024 Table 2 parameter subscripts `V_m2`, `V_p2`, `CL_m2`, `Q_m2`, a positional index rather than an analyte name).
+- **Example models:** `Pejcic_2024_clopidogrel.R` (`central_cloca`, `peripheral1_cloca`, `Cc_cloca`, `lcl_cloca`, `lvc_cloca`, `lq_cloca`, `lvp_cloca`; doi:10.3390/pharmaceutics16050685), `Jung_2024_clopidogrel.R` (same suffix set, carried alongside `central_h4` in a joint parent + both-metabolites model; doi:10.1002/psp4.13053).
+- **Notes:** The generic `acid` suffix is unavailable for this analyte -- it is already the canonical simvastatin acid suffix -- and a bare carboxylate abbreviation is a poor canonical anyway (the `oc` -> `oselcarb` rename records exactly that collision pressure), so the drug-prefixed `cloca` form is used.
 
 ### enaat (**canonical enalaprilat metabolite suffix**)
 - **Type:** metabolite-suffix

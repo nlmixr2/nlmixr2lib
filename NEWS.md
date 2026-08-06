@@ -2,11 +2,7 @@
 
 # development version
 
-- Add Saleh 2023 LeiCNS-PK3.0 mouse CNS PBPK models for cyclophosphamide,
-  quinidine, erlotinib, phenobarbital, colchicine, ribociclib, topotecan,
-  cefadroxil, prexasertib and methotrexate
-  ([doi:10.1007/s11095-023-03554-5](https://doi.org/10.1007/s11095-023-03554-5))
-  -- laboratory mice (CD1 nude, NMRI, FVB, ICR, C57BL/6 Pept2+/+).
+- Add Jung 2024 clopidogrel ([doi:10.1002/psp4.13053](https://doi.org/10.1002/psp4.13053)) -- healthy Korean male adults stratified by CYP2C19 phenotype.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28

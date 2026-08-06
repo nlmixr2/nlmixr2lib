@@ -556,8 +556,8 @@ navbar:
         href: articles/Kleiber_2017_clonidine.html
       - text: "Clopidogrel (Danielak 2017)"
         href: articles/Danielak_2017_clopidogrel.html
-      - text: "Clopidogrel (Pejcic 2024)"
-        href: articles/Pejcic_2024_clopidogrel.html
+      - text: "Clopidogrel (Jung 2024)"
+        href: articles/Jung_2024_clopidogrel.html
       - text: "Clozapine (Li 2012)"
         href: articles/Li_2012_clozapine.html
       - text: "Colchicine mouse pbpk (Saleh 2023)"
@@ -3542,7 +3542,7 @@ articles:
   - articles/Jorga_2000_tolcapone
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
-  - articles/Jung_2024_vancomycin
+  - articles/Jung_2024_clopidogrel
   - articles/Kado_2020_benzathine_benzylpenicillin_g
   - articles/Kakara_2014_statins_LDLC
   - articles/Kamal_2013_oseltamivir
