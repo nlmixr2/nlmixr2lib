@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chen 2024 IL-6-mediated CYP3A suppression ([doi:10.1002/psp4.13073](https://doi.org/10.1002/psp4.13073)) -- adults with relapsed/refractory non-Hodgkin lymphoma receiving mosunetuzumab.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
