@@ -2236,8 +2236,12 @@ navbar:
         href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Risperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
-      - text: "Risperidone rykindo (Wang 2024)"
-        href: articles/Wang_2024_risperidone_lai_switching.html
+      - text: "Ritlecitinib base (Wojciechowski 2023)"
+        href: articles/Wojciechowski_2023_ritlecitinib.html
+      - text: "Ritlecitinib final (Wojciechowski 2023)"
+        href: articles/Wojciechowski_2023_ritlecitinib.html
+      - text: "Ritlecitinib updated (Wojciechowski 2023)"
+        href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritonavir (Kappelhoff 2005)"
         href: articles/Kappelhoff_2005_ritonavir.html
       - text: "Ritonavir (Mensing 2017)"
@@ -4161,6 +4165,7 @@ articles:
   - articles/Woillard_2014_ciclosporin
   - articles/Wojciechowski_2015_rheumatoidArthritis
   - articles/Wojciechowski_2022_domagrozumab
+  - articles/Wojciechowski_2023_ritlecitinib
   - articles/Wright_2013_allopurinol
   - articles/Wright_2016_allopurinol
   - articles/Wu_2012_modafinil

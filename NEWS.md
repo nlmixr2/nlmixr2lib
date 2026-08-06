@@ -31,18 +31,7 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
-- Canonical names for lactation transfer and tissue partitioning.
-  `cmpr` / `lcmpr` is the estimated milk-to-plasma **concentration** ratio, for
-  lactation popPK models with too few milk samples to support a milk compartment
-  (`Cmilk <- cmpr * Cc`). Separately, the per-tissue partition-coefficient family
-  `kp_<tissue>` / `lkp_<tissue>` -- de-facto used across six PBPK model files
-  since before the register existed, but never registered -- is now documented,
-  with `kp_milk` / `lkp_milk` added as its lactation member. The two are distinct
-  concepts and coexist: `cmpr` is fitted to paired plasma and milk observations,
-  while a `kp` is a predicted or literature-fixed partition constant. Both are in
-  `inst/references/parameter-names.md`.
-
-- Add Li 2023 ornidazole ([doi:10.3390/pharmaceutics15112524](https://doi.org/10.3390/pharmaceutics15112524)) - breastfeeding women after caesarean section, with colostrum concentrations.
+- Add Wojciechowski 2023 ritlecitinib ([doi:10.1007/s40262-023-01318-3](https://doi.org/10.1007/s40262-023-01318-3)) - three model iterations covering healthy participants and patients with rheumatoid arthritis, ulcerative colitis, alopecia areata or vitiligo, plus moderate hepatic and severe renal impairment.
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
