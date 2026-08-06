@@ -10104,3 +10104,37 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** none.
 - **Example models:** `Zhang_2024_sertraline.R` (screened on sertraline CL/F and V/F via the paper's categorical-covariate form and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
 - **Notes:** Named-drug member of the `CONMED_<INN>` family. Relevant to psychotropic popPK models both as a coadministered antidepressant and as a CYP2D6 substrate that can compete with other CYP2D6-cleared comedications. Register sibling named canonicals for other antidepressants screened by name rather than reusing this one; reserve a future class-level `CONMED_ANTIDEPRESSANT` for sources that pool the class.
+
+### CU_QTP_BRAIN (**canonical for time-varying unbound quetiapine brain-interstitial concentration input to a PD-only model**)
+- **Description:** Time-varying unbound (free) quetiapine concentration in medial prefrontal cortex (mPFC) interstitial fluid, sampled by intracerebral microdialysis, used as the exposure driver of a PD-only model whose PK layer lives in a separate publication. Per-observation covariate supplied by the user in the event table because the modelling paper does not embed a PK compartment. The driver time-course is produced by the companion semimechanistic plasma-and-brain popPK model of quetiapine solution and quetiapine lipid core nanocapsules (Carreno 2020 JPET, `doi:10.1124/jpet.120.000109`) and consumed by the PD-layer paper (Dias 2024, `doi:10.1002/psp4.13107`).
+- **Units:** ng/mL
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 ng/mL before the intravenous dose; typical peak unbound brain concentrations after a single 5 mg/kg i.v. dose are plotted per experimental group in Dias 2024 Figure 4a and Figure S2.
+- **Source aliases:**
+  - `CBRAIN` -- Dias 2024 Supplementary Material S1 NM-TRAN data item, assigned `CB = CBRAIN` in `$PK` and carried into `$DES` as `CONC`; identical orientation, no value transformation.
+  - `Cu,brain` -- the symbol used in the Dias 2024 Results text and Equation (3); identical quantity.
+- **Example models:** `Dias_2024_quetiapine_rat.R` (drives the Sheiner effect compartment `d/dt(effect) <- ke0 * CU_QTP_BRAIN - effect`, whose state in turn scales the linear stimulation of dopamine release from the precursor pool -- founding example).
+- **Notes:** Sibling of `CU_ASP8232` in the `CU_<DRUG>` family, following that entry's instruction that future PD-only models inheriting PK from a companion paper register their own canonical rather than reuse the ASP8232 name. The `_BRAIN` matrix qualifier is load-bearing: `CU_ASP8232` is an unbound *plasma* concentration, whereas this canonical is an unbound *brain interstitial* concentration, and a future quetiapine PD model driven by unbound plasma should take `CU_QTP` rather than overload this name. Distinct from `CEFFECT` (the operator-approved generic effect-site PD driver): `CU_QTP_BRAIN` is the model's *input*, and the Dias 2024 model additionally contains a true downstream Sheiner effect compartment, so using `CEFFECT` for the input would be actively ambiguous. Ratified with the operator on 2026-08-05 alongside the Dias 2024 quetiapine rat dopamine extraction.
+
+### SCORE_PPI (**canonical for prepulse inhibition of the acoustic startle response**)
+- **Description:** Prepulse inhibition (PPI) of the acoustic startle response, expressed as the percentage reduction in startle amplitude when the startling pulse is preceded by a weak prepulse. PPI is the standard operational measure of sensorimotor gating; reduced PPI indexes the gating deficit seen in schizophrenia and in rodent neurodevelopmental models of it, so the score serves as a continuous disease-severity covariate. Higher values mean better gating (less disease).
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a (continuous). Centre at the study population median and state the centring value per model; Dias 2024 centres at `PPImd` = 33.4%.
+- **Source aliases:**
+  - `PPI` -- Dias 2024 Methods, Results Equations (6) and (7), and the Supplementary Material S1 NM-TRAN data item; identical orientation, no value transformation.
+- **Example models:** `Dias_2024_quetiapine_rat.R` (continuous covariate entered linearly about `PPImd` = 33.4% on both the dopamine baseline DA0 and the quetiapine effect slope EQTP; group medians 49.7% for naive rats and 23.6% for schizophrenia phenotyped rats -- founding example).
+- **Notes:** Member of the `SCORE_<INSTRUMENT>` family. The `SCORE_` prefix is required rather than a bare `PPI` column because the letters PPI already denote proton-pump inhibitors in this register (`CONMED_PPI`); a bare `PPI` covariate would be actively ambiguous in a mixed model database. Applicable to both preclinical and clinical sources -- the startle paradigm is run in rodents and in humans with the same readout definition -- so a future human schizophrenia model may reuse this name directly. Ratified with the operator on 2026-08-05 alongside the Dias 2024 quetiapine rat dopamine extraction.
+
+### FORM_QTP_QLNC (**canonical for quetiapine lipid core nanocapsule vs solution formulation indicator**)
+- **Description:** 1 = quetiapine was administered as lipid core nanocapsules (QLNC, a polymeric nanocarrier with a lipid core, ~166 nm, ~93% encapsulation efficiency), 0 = quetiapine was administered as a conventional solution (FQ). Time-fixed per subject in single-dose designs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (FQ, quetiapine solution).
+- **Source aliases:**
+  - `NANO` -- Dias 2024 Supplementary Material S1 NM-TRAN data item, tested as `IF(NANO.EQ.1)` in `$PK` and `$DES`; identical orientation, no value transformation.
+- **Example models:** `Dias_2024_quetiapine_rat.R` (gates the nanoparticle state: multiplies NP0 so that `nano(0)` is zero for solution-dosed animals, which collapses both the nanoparticle ODE and the `1/(1 + NP)` drug-effect blunting term to their solution-group values -- founding example).
+- **Notes:** Named member of the `FORM_<drug>_<formulation>` family. Distinct from the generic `FORM_SOLUTION` (an oral-solution indicator whose reference category is a solid oral form): here the *solution* is the reference and the *nanocarrier* is the indexed formulation, and the indicator additionally carries a pharmacodynamic meaning -- Dias 2024 attributes a target-site effect to the nanoparticles themselves, beyond their effect on drug delivery. Register sibling canonicals for other drugs formulated as lipid core nanocapsules rather than generalising this name.

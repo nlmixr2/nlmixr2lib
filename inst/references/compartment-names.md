@@ -1206,6 +1206,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Stevens_2012_remoxipride.R`.
 
+### dopamine (**canonical extracellular dopamine output**)
+- **Type:** compartment
+- **Role:** Extracellular dopamine PD output (CNS neurotransmitter turnover); the state holds the dopamine concentration in brain interstitial fluid as sampled by intracerebral microdialysis.
+- **Source aliases:** none.
+- **Example models:** `Dias_2024_quetiapine_rat.R`.
+- **Notes:** Neurotransmitter sibling of the existing `prolactin` endocrine-biomarker output, and registered as canonical for the same reason `insulin` and `glucose` are: an extracellular-neurotransmitter state generalises to any CNS turnover / precursor-pool model, so it should not be hidden behind `paper_specific_compartments`. Name the state for the neurotransmitter itself; a paired precursor pool uses the canonical `precursor1` chain rather than a `dopamine_pool` variant, and the interval-integral bookkeeping state that microdialysis models need to form a collection-interval mean stays paper-specific (`auc_dopamine` in the founding model).
+
 ### aaaSize (**canonical abdominal aortic aneurysm size**)
 - **Type:** compartment
 - **Role:** Abdominal aortic aneurysm size PD output.
