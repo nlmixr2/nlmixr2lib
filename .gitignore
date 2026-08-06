@@ -24,3 +24,7 @@ docs
 .vignette_results.jsonl
 data-raw/modeldb-cache.rds
 post_merge_advance.sh
+
+# Vignette-gate render artifacts (verify_vignettes_parallel.R)
+*.knit.md
+vignettes/articles/*.html
