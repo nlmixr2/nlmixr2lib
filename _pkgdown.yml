@@ -2132,8 +2132,8 @@ navbar:
         href: articles/Ayyoub_2016_pyronaridine.html
       - text: "Pyronaridine hamster pbpk (Kang 2023)"
         href: articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk.html
-      - text: "Pyrotinib (Zhu 2024)"
-        href: articles/Zhu_2024_pyrotinib.html
+      - text: "Quetiapine rat (Dias 2024)"
+        href: articles/Dias_2024_quetiapine_rat.html
       - text: "Quinidine (Fattinger 1991)"
         href: articles/Fattinger_1991_quinidine.html
       - text: "Quinidine (Westerhout 2013)"
@@ -3277,6 +3277,7 @@ articles:
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright
   - articles/Diao_2016_daclizumab_treg
+  - articles/Dias_2024_quetiapine_rat
   - articles/Dickinson_2009_atazanavir
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
