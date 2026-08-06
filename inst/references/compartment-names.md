@@ -3041,12 +3041,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Cook_2016_paracetamol.R` (DDMODEL00000271), `Zurlinden_2016_paracetamol.R` (migrated from `as` to `apaps` on 2026-06-19).
 - **Notes:** On 2026-06-19 the Zurlinden 2016 paracetamol PBPK model was migrated from its prior `as` shorthand to this canonical, per the canonical-register standardization audit (R-reserved-word collision fix: bare `as` clashes with `as.numeric`, `as.integer`, `as.character`, etc.).
 
-### col (**canonical colistin metabolite suffix**)
+### col (**canonical colistin metabolite / sibling-drug suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Colistin, the active polymyxin generated in vivo by hydrolysis of the prodrug colistimethate sodium (CMS).
+- **Role:** Colistin as a suffixed species. Two use cases share the suffix: the active polymyxin generated in vivo by hydrolysis of the prodrug colistimethate sodium (CMS), and colistin as one member of a combination-antibiotic model.
 - **Source aliases:** none.
-- **Example models:** `LeuppiTaegtmeyer_2019_CMS.R` (DDMODEL00000295).
-- **Notes:** Same token as the bare `col` drug-state compartment; both Types co-exist for the same canonical name.
+- **Example models:** `LeuppiTaegtmeyer_2019_CMS.R` (DDMODEL00000295; colistin formed from CMS), `Mohamed_2016_colistin_meropenem.R` (colistin as a sibling drug alongside meropenem).
+- **Notes:** Same token as the bare `col` drug-state compartment; both Types co-exist for the same canonical name. Merged 2026-08-06 from two separate `metabolite-suffix` blocks that had been added independently for the two use cases. Because the register resolves document-order last-writes-win, having both meant the CMS-prodrug description was silently discarded; a repeated name is only safe when the Types differ.
 
 ### cpq (**canonical carboxyprimaquine suffix**)
 - **Type:** metabolite-suffix
@@ -3638,13 +3638,6 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Source aliases:** none.
 - **Example models:** `Mohamed_2016_colistin_meropenem.R`.
 - **Notes:** Same token as the bare `mero` drug-state compartment.
-
-### col (**canonical colistin drug suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Colistin drug suffix in combination antibiotic models (sibling of the active-polymyxin-from-CMS use case above; same canonical token).
-- **Source aliases:** none.
-- **Example models:** `Mohamed_2016_colistin_meropenem.R`.
-- **Notes:** Same token as the bare `col` drug-state compartment.
 
 ### dap (**canonical daptomycin drug suffix**)
 - **Type:** metabolite-suffix
