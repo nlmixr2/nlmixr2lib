@@ -41,6 +41,54 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `residualError = c("propSd", "addSd", "expSd")` — canonical residual-error SD names. `propSd` / `addSd` are the proportional and additive SDs for the standard `~ prop(...)`, `~ add(...)`, and combined `~ prop(...) + add(...)` forms. `expSd` is the log-scale residual SD used with `~ lnorm(...)`.
 - `deprecatedResidualError`, `deprecatedIivPrefixes`, `deprecatedVolumeNames`, `deprecatedVmaxNames`, `deprecatedParentSuffix` — deprecation lists also remain in R.
 
+## Covariate-expression shape tokens
+
+Most published covariate models are multiplicative and need exactly one
+coefficient per (covariate, parameter) pair, which `e_<cov>_<param>` covers.
+Machine-learned covariate models (symbolic regression, equation learning,
+sparse neural networks) instead produce low-order **polynomials and ratios of
+polynomials**, so one pair can carry several coefficients that must be told
+apart by name. The tokens below are the canonical way to do that. They are
+shape tokens on the existing `e_<cov>_<param>` family and on bare
+`<param>_<token>` names -- not new PK parameters -- so no `Type:` entry is
+required for them, and `covEffectPattern` already admits the `e_` forms.
+
+- `_quad` -- coefficient of a **squared** normalised covariate, appended as the
+  final token: `e_wt_vc_quad` is the coefficient of `(WT/ref)^2` on `vc`. The
+  unsuffixed `e_wt_vc` remains the linear coefficient. Precedent:
+  `e_pdl1_orr_pd1_quad` / `e_pdl1_orr_pd1_lin` in
+  `Franzese_2026_pdl1_nsclc_mbma.R`. Prefer leaving the linear term unsuffixed
+  over writing `_lin`, because `_lin` already means "linear clearance
+  component" elsewhere in the library.
+- `_num` / `_den` -- position within a **rational** covariate expression of the
+  form `(a*C1 + b*C2 + c) / (d*C1 + e*C2 + f)`, inserted before the final
+  parameter token would be for a bare name and appended for an `e_` name:
+  `e_age_k12_num` and `e_age_k12_den` are the two age coefficients of the k12
+  ratio. Use these **only** when the numerator and denominator have no
+  pharmacological identity of their own. When they do -- a saturable / Hill
+  function of a covariate, where the numerator is an asymptote and the
+  denominator a half-max -- name the sub-parameter instead and attach the
+  covariate effect to it (`e_sexf_lmax` vs `e_pnpla3_cg_bmi50` in
+  `Oniki_2018_nafld_risk.R`; `crcl50_cl_renal` / `hill_cl_renal` in
+  `Ganesan_2023_tebipenem.R`). That idiom is preferred wherever it applies.
+- `e_<cov1>_<cov2>_<param>` -- coefficient of a **covariate-by-covariate
+  interaction**, covariates in the order they are printed in the source:
+  `e_age_wt_vc` multiplies `(AGE/ref) * (WT/ref)` on `vc`. Distinct from
+  covariate-by-stratum effects, which put the stratum in the middle token
+  (`e_pdl1_orr_pd1`, `e_fed_ktr_tab`).
+- `<param>_int` -- **signed additive intercept** of a covariate expression, for
+  the case `l<param>` cannot express: a negative intercept, or a rational
+  expression with no single intercept (`vc_int`, `k12_num_int`). When the
+  intercept is positive and the expression is `intercept + covariate terms`,
+  use the canonical log form instead (`lkel`, `lk21`, `lk31` with
+  `kel <- exp(lkel) + e_wt_kel * wtn`), as in
+  `McLachlan_1996_fluconazole.R` and `Blair_2004_raltitrexed.R`. Precedent for
+  the bare form: `b1_int` / `b2_int` in `Sherer_2012_AAA.R`.
+
+Founding example: `Wahlquist_2024_propofol.R` (symbolic-regression network
+covariate model on all four inter-compartmental rate constants, the
+elimination rate constant and the central volume).
+
 ---
 
 ## Log-transformed structural PK parameters
@@ -97,9 +145,17 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lq2 (**canonical log-transformed second inter-compartmental clearance**)
 - **Type:** log-transformed-pk
-- **Role:** Inter-compartmental clearance between central and second peripheral compartment (volume / time).
-- **Source aliases:** none.
-- **Example models:** 3-compartment popPK extractions.
+- **Role:** Inter-compartmental clearance that feeds the second peripheral compartment (volume / time). In the usual parallel (mammillary) layout the flow originates in `central`.
+- **Source aliases:** `Q3` (third inter-compartmental clearance as numbered in Tuffal 2023, where `Q1` is not defined and the numbering follows the compartment index `V3` rather than the clearance index) -- used in `Tuffal_2023_avalglucosidase_alfa.R`.
+- **Example models:** 3-compartment popPK extractions; `Tuffal_2023_avalglucosidase_alfa.R` for the series-chain case.
+- **Notes:** Pairs with `peripheral2` and `lvp2`. **Series ("concatenated") peripheral chains:** some papers arrange the peripheral compartments in series, so `peripheral2` is fed from `peripheral1` rather than from `central`. `lq2` remains the correct canonical in that case -- it is still "the second inter-compartmental clearance, the one that feeds `peripheral2`", and the source compartment is read off the ODEs rather than inferred from the parameter name. Do not introduce a parallel inter-peripheral canonical (`lq_p1p2` or similar) for this shape. Example: `Tuffal_2023_avalglucosidase_alfa.R`, where the paper's fixed `Q3` = 1.87 L/h carries drug one-way from `peripheral1` into `peripheral2`. When such a chain also returns drug directly to `central`, that return flow is `lqpc`, not `lq2`.
+
+### lqpc (**canonical log-transformed back-redistribution clearance**)
+- **Type:** log-transformed-pk
+- **Role:** One-way back-redistribution clearance returning drug from the terminal peripheral compartment of a series ("concatenated") peripheral chain directly to `central` (volume / time).
+- **Source aliases:** `Qpc` (`Q_pc`, peripheral-to-central) -- used in `Tuffal_2023_avalglucosidase_alfa.R`.
+- **Example models:** `Tuffal_2023_avalglucosidase_alfa.R` (founding example; Tuffal 2023 Table 2 `Qpc` = 0.0206 L/h).
+- **Notes:** Use when a paper closes the peripheral chain into a cycle -- `central` <-> `peripheral1` -> `peripheral2` -> `central` -- rather than letting each peripheral compartment exchange bidirectionally with `central`. The flow is unidirectional by construction: it appears as `+ qpc * Cp2` in `d/dt(central)` and `- qpc * Cp2` in the terminal peripheral compartment, with **no matching reverse term**. The directionality is load-bearing, not incidental: Tuffal 2023 explicitly tested a bidirectional variant (Supplemental Digital Content 1 Table 2, rows "Q3 one way" vs "Q3 two ways") and rejected it with the comment "Markedly increased OFV". A slow `qpc` returning a marginal drug fraction is what generates a late secondary concentration rebound / second kinetic sequence. Distinct from `lq` / `lq2` (bidirectional `central` <-> peripheral exchange), from `lq3` (`central` <-> `peripheral3` in 4-compartment models, which pairs with `peripheral3` / `lvp3` -- neither of which exists in a 3-compartment series chain), and from `qp` (inter-compartmental clearance of a **target species** in TMDD models, not of the drug). Bare counterpart is `qpc`.
 
 ### lq3 (**canonical log-transformed third inter-compartmental clearance**)
 - **Type:** log-transformed-pk
@@ -107,6 +163,22 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
 - **Notes:** Pairs with `peripheral3` and `lvp3`.
+
+### lq_p1_p2 (**canonical log-transformed one-way peripheral1-to-peripheral2 inter-compartmental clearance**)
+- **Type:** log-transformed-pk
+- **Role:** One-way (unidirectional) inter-compartmental clearance carrying drug from `peripheral1` into `peripheral2` (volume / time), with no return flow along the same path.
+- **Source aliases:**
+  - `Q3` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R` for the one-way V2 -> V3 clearance.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** Deliberately NOT `lq2`. `lq` / `lq2` / `lq3` are mamillary canonicals -- bidirectional exchange between `central` and the first / second / third peripheral compartment. `lq_p1_p2` names a flow that neither starts nor ends at `central` and that runs in one direction only, so reusing `lq2` would overload a bidirectional canonical with a directional concept. Directional naming follows the register's existing practice of giving one-way flows their own names when direction is load-bearing (`kbm` biliary, `lcl_csf` one-way CSF-to-plasma). Pairs with `lq_p2_c` to close a catenary / cyclic topology `central <-> peripheral1 -> peripheral2 -> central`. The source-to-destination token pattern `_<from>_<to>` (`p1`, `p2`, `c` for `peripheral1`, `peripheral2`, `central`) is available to future catenary models.
+
+### lq_p2_c (**canonical log-transformed one-way peripheral2-to-central back-redistribution clearance**)
+- **Type:** log-transformed-pk
+- **Role:** One-way (unidirectional) inter-compartmental clearance returning drug from `peripheral2` to `central` (volume / time) -- the "back-redistribution" limb that closes a catenary / cyclic distribution loop.
+- **Source aliases:**
+  - `Qpc` / `QPC` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R` for the low one-way V3 -> V1 clearance.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** Not an alias of `lq2` (bidirectional `central` <-> `peripheral2`), of `qp` (target inter-compartmental clearance), or of `lqbile` (one-way plasma-to-gut biliary transfer). Typically much smaller than the forward limb, so it governs the terminal phase: in the founding example Qpc = 0.0157 L/h against Q3 = 1.87 L/h. Pairs with `lq_p1_p2`; see that entry for the `_<from>_<to>` token pattern.
 
 ### lfdepot (**canonical log-transformed depot fraction**)
 - **Type:** log-transformed-pk
@@ -357,15 +429,39 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 
 ### q2 (**canonical bare second inter-compartmental clearance**)
 - **Type:** bare-pk
-- **Role:** Inter-compartmental clearance between central and `peripheral2` (volume / time).
-- **Source aliases:** none.
+- **Role:** Inter-compartmental clearance that feeds `peripheral2` (volume / time); from `central` in the usual parallel layout, or from `peripheral1` in a series ("concatenated") chain.
+- **Source aliases:** `Q3` -- used in `Tuffal_2023_avalglucosidase_alfa.R` (see `lq2` notes on the paper's compartment-indexed numbering).
 - **Example models:** universal in 3-compartment popPK extractions.
+- **Notes:** See `lq2` for the series-chain rule. Pairs with `qpc` when the chain returns drug directly to `central`.
+
+### qpc (**canonical bare back-redistribution clearance**)
+- **Type:** bare-pk
+- **Role:** One-way back-redistribution clearance from the terminal peripheral compartment of a series ("concatenated") peripheral chain into `central` (volume / time).
+- **Source aliases:** `Qpc` -- used in `Tuffal_2023_avalglucosidase_alfa.R`.
+- **Example models:** `Tuffal_2023_avalglucosidase_alfa.R` (founding example).
+- **Notes:** Bare counterpart of `lqpc`; see that entry for the full role, the unidirectionality requirement, and the distinctions from `q`, `q2`, `q3`, and `qp`.
 
 ### q3 (**canonical bare third inter-compartmental clearance**)
 - **Type:** bare-pk
 - **Role:** Inter-compartmental clearance between central and `peripheral3` (volume / time) in 4-compartment popPK models.
 - **Source aliases:** none.
 - **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
+
+### q_p1_p2 (**canonical bare one-way peripheral1-to-peripheral2 inter-compartmental clearance**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lq_p1_p2`: one-way inter-compartmental clearance from `peripheral1` into `peripheral2` (volume / time).
+- **Source aliases:**
+  - `Q3` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R`.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** See `lq_p1_p2` for why this is not `q2`.
+
+### q_p2_c (**canonical bare one-way peripheral2-to-central back-redistribution clearance**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lq_p2_c`: one-way back-redistribution clearance from `peripheral2` to `central` (volume / time).
+- **Source aliases:**
+  - `Qpc` / `QPC` -- used in `Tiraboschi_2023_avalglucosidaseAlfa.R`.
+- **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
+- **Notes:** See `lq_p2_c`.
 
 ### kel (**canonical bare elimination rate constant (K-PD)**)
 - **Type:** bare-pk
@@ -1012,6 +1108,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 - **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
 
+### mic (**canonical minimum inhibitory concentration**)
+- **Type:** paper-named-param
+- **Role:** Minimum inhibitory concentration of the drug against the target pathogen, in the model's concentration units (note that mg/L and ug/mL are numerically identical, which is why antimicrobial papers move between them freely). Used as the denominator of the PK/PD indices that drive antimicrobial PK/PD-integration, probability-of-target-attainment and PK/PD-cutoff models: `AUC/MIC`, `fAUC/MIC`, `Cmax/MIC`, and as the threshold for `T>MIC` / `fT>MIC`. Normally held `fixed()`, because it is a measured property of the isolate (CLSI / EUCAST broth microdilution) rather than an estimated model parameter; papers that sweep a range of MICs expose it so the user can override it per simulation.
+- **Source aliases:**
+  - `MIC` -- the near-universal paper symbol.
+  - `MIC90` -- when the paper drives the index off the 90th-percentile MIC of a surveillance distribution rather than a single isolate's MIC.
+- **Example models:** `Chen_2023_tilmicosin.R` (fixed at 0.25 ug/mL, the measured MIC of *Pasteurella multocida* D:7; forms the `AUC24h/MIC` index that drives a sigmoidal Emax kill model), `Lallemand_2023_benzylpenicillin_horse.R` (fixed at 0.25 mg/L, the paper's concluded PK/PD cutoff, and overridden via `params = c(mic = ...)` to sweep 0.0625-2 mg/L; used both as the `fAUC/MIC` denominator and as the threshold integrated by the `t_above_mic` state).
+- **Notes:** Keep the bare lower-case name -- do NOT log-transform (an `lmic` would imply the MIC is being estimated) and do NOT rename to a generic `thres` / `ec50`, which would lose the microbiological meaning and collide with the sigmoidal-PD canonicals. Pair with `fu` when the index is defined on free rather than total drug: the free-drug index is `fu * Cc` compared against `mic`, which is equivalent to comparing total `Cc` against `mic / fu`. For models that carry more than one pathogen or isolate, suffix per analyte in the usual way (`mic_<organism>`).
+
 ### kpu<n> (**canonical clustered unbound tissue:plasma partition coefficient**)
 - **Type:** paper-named-param
 - **Role:** Estimated unbound tissue-to-plasma partition coefficient (Kpu) shared by a *cluster* of PBPK tissues, numbered `kpu1`, `kpu2`, `kpu3`, `kpu4`, ... (log-transform prefix `lkpu<n>`). Unitless. Used by "steady-state commonality" PBPK simplifications that keep the full whole-body kinetic structure but reduce the number of unknown distribution parameters by assigning one common Kpu to every tissue in a composition-derived cluster. The numeric suffix indexes the cluster, not a compartment; the cluster-to-tissue mapping must be written out explicitly in `model()` (e.g. `kpu_bone <- kpu1`) and cited to the source table footnote. Convert to the tissue:blood coefficient with `kb = kpu * fu_p / BP`.
@@ -1148,3 +1253,123 @@ which cannot change a value.
 A consumer that needs kon in one unit has to read the dimensionality per
 model. That is a real cost, and it is smaller than the cost of being
 confidently wrong.
+
+## Permeability-limited whole-body PBPK parameters (Gaohua 2023)
+
+Vocabulary for permeability-limited whole-body PBPK models, in which each tissue is resolved into residual blood cells, residual plasma, extracellular water and intracellular water (compartment suffixes `_bc` / `_plasma` / `_ew` / `_iw`; see `compartment-names.md`). Two conventions define the family. First, system physiology is carried as *fractions* -- `fvol_<organ>` of body weight and `fq_<organ>` of cardiac output -- so that a published table of percentages transcribes directly and both columns can be checked to sum to 100%. Second, every permeability-surface-area product and every clearance is expressed as a **fold-multiple of the compartment's own plasma flow** (`fold_*`), which is how these papers parameterise their what-if scenarios: one multiplier per mechanism, swept around the tissue blood flow. Registered per the operator naming decision of 2026-08-05.
+
+### bw (**canonical body weight system constant**)
+- **Type:** paper-named-param
+- **Role:** Reference body weight (kg) of the simulated individual. In whole-body PBPK it is the normalising constant for `fvol_<organ>` and the denominator of the body-weight-normalised volume of distribution `Vdt`.
+- **Source aliases:** `BW`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### qc (**canonical cardiac output**)
+- **Type:** paper-named-param
+- **Role:** Cardiac output (L/h); the normalising constant for `fq_<organ>`. Splits into a total plasma flow `(1 - hct) * qc` and a total blood-cell flow `hct * qc` when a model resolves the two blood phases separately.
+- **Source aliases:** `Qc`, `CO`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### hct (**canonical haematocrit**)
+- **Type:** paper-named-param
+- **Role:** Haematocrit: the volume fraction of blood that is blood cells. Splits both blood volumes and blood flows into their blood-cell and plasma phases, and splits a tissue's residual blood volume into `<organ>_bc` and `<organ>_plasma`.
+- **Source aliases:** `Haematocrit`, `HCT`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### density (**canonical tissue density**)
+- **Type:** paper-named-param
+- **Role:** Tissue and blood density (kg/L), converting an organ's share of body weight into a volume. Commonly assumed to be 1 kg/L, which makes tissue volumes in L numerically equal to their share of body weight in kg.
+- **Source aliases:** `Density`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fvol_<organ> (**canonical fractional organ volume**)
+- **Type:** paper-named-param
+- **Role:** Volume of the named organ as a fraction of body weight (L per kg), so `v_<organ> = fvol_<organ> * bw / density`. One entry per organ, plus `fvol_blood` for total blood; the set is expected to sum to 1. Distinct from the `vp_<organ>` / `v_<organ>` *absolute* volumes, which are the derived quantities.
+- **Source aliases:** `% of total body weight`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fq_<organ> (**canonical fractional organ blood flow**)
+- **Type:** paper-named-param
+- **Role:** Blood flow to the named organ as a fraction of cardiac output, so `qplasma_<organ> = fq_<organ> * (1 - hct) * qc`. One entry per organ; the set covering the organs that drain directly to venous blood is expected to sum to 1. Where an organ has a dual blood supply the arterial share is named explicitly (e.g. `fq_liver_arterial`) and the portal share is derived from the splanchnic organs it collects.
+- **Source aliases:** `% of total cardiac output`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### frb_<organ> (**canonical residual blood volume fraction**)
+- **Type:** paper-named-param
+- **Role:** Volume of blood remaining in the named organ after bleeding, as a fraction of that organ's volume. Split by haematocrit into the `<organ>_bc` and `<organ>_plasma` subcompartment volumes. Conventionally sourced from rat tissue-residual-blood measurements.
+- **Source aliases:** `residual blood`, `Vre`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### few_<organ> (**canonical extracellular water volume fraction**)
+- **Type:** paper-named-param
+- **Role:** Extracellular water of the named organ as a fraction of that organ's volume, giving the `<organ>_ew` volume. The intracellular water volume `<organ>_iw` is then usually taken as the remainder of the organ volume once residual blood and extracellular water are removed.
+- **Source aliases:** `EW fraction`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### ps_bc_plasma (**canonical blood-cell / plasma permeability-surface area product**)
+- **Type:** paper-named-param
+- **Role:** Passive permeability-surface area product (L/h) between a compartment's residual blood cells and its residual plasma. Set to a deliberately large value when the source model assumes immediate equilibrium between the two blood phases, which collapses that pair into a single well-stirred space.
+- **Source aliases:** `PStc/tp`, `PSrbc2plasma`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_ps_plasma_ew (**canonical vascular-membrane permeability fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Passive permeability-surface area product between residual plasma and extracellular water, expressed as a fold-multiple of the compartment's plasma flow (the vascular membrane). Paired with `fold_ps_ew_iw`; when the two differ, the smaller one is rate-limiting, which is what makes a distribution metric saturate as the other is increased.
+- **Source aliases:** `FoldPlasmaEw`, `PS/Q`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_ps_ew_iw (**canonical cell-membrane permeability fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Passive permeability-surface area product between extracellular and intracellular water, expressed as a fold-multiple of the compartment's plasma flow (the cell membrane). For a typical small molecule the cell membrane is the less permeable of the two, so this is the multiplier a permeability sweep usually varies.
+- **Source aliases:** `FoldEwIw`, `PS/Q`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_iw_<compartment> (**canonical intracellular water metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the intracellular water of the named compartment, as a fold-multiple of that compartment's plasma flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearanceIW`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_ew_<compartment> (**canonical extracellular water metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the extracellular water of the named compartment, as a fold-multiple of that compartment's plasma flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearanceEW`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_plasma_<compartment> (**canonical residual plasma metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the residual plasma of the named compartment, as a fold-multiple of that compartment's plasma flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearancePLASMA`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_clint_bc_<compartment> (**canonical residual blood cells metabolic-clearance fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Metabolic (intrinsic) clearance in the residual blood cells of the named compartment, as a fold-multiple of that compartment's blood-cell flow. Resolved per compartment rather than globally because these papers apply metabolism both to every tissue at once and to a single organ (e.g. the liver) in isolation; setting every compartment to one value recovers the single global multiplier.
+- **Source aliases:** `FoldClearanceRBC`, `CL/Q`, `CLmet`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_uptake (**canonical active uptake transporter fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Active uptake transporter clearance carrying drug from extracellular into intracellular water, as a fold-multiple of the compartment's plasma flow. Paired with `fold_efflux`; uptake raises the tissue/plasma partition coefficient and the volume of distribution, efflux lowers both.
+- **Source aliases:** `FoldUptake`, `CLew/iw`, `Cluptake`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### fold_efflux (**canonical active efflux transporter fold multiplier**)
+- **Type:** paper-named-param
+- **Role:** Active efflux transporter clearance carrying drug from intracellular back to extracellular water, as a fold-multiple of the compartment's plasma flow. Paired with `fold_uptake`.
+- **Source aliases:** `FoldEfflux`, `CLiw/ew`, `Clefflux`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+
+### Kp_<organ> (**canonical dynamic tissue/plasma partition coefficient output**)
+- **Type:** paper-named-param
+- **Role:** Time-varying tissue/plasma partition coefficient of the named organ: the whole-tissue concentration (total amount across all four subcompartments divided by the total organ volume) divided by the venous plasma concentration. An algebraic **output** of a permeability-limited model, not an input -- which is what distinguishes it from the perfusion-limited `kp_<organ>` input parameter, where the partition coefficient is a fixed constant supplied to the model.
+- **Source aliases:** `Kp(t)`, `Kpss`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+- **Notes:** Capitalised `Kp_` deliberately, to keep the dynamic output visually distinct from the lowercase `kp_<organ>` perfusion-limited input parameter used by e.g. `Gaohua_2012_pregnancy_pbpk_midazolam.R`.
+
+### Vdt (**canonical dynamic volume of distribution output**)
+- **Type:** paper-named-param
+- **Role:** Time-varying volume of distribution (L/kg): the total drug amount in blood and tissues divided by the venous plasma concentration and body weight. An algebraic output; its pseudo-steady-state value is the reported Vdss. Distinct from the registered `vd` (apparent volume of distribution as a fitted structural parameter) -- `Vdt` is a model prediction that changes over time, `vd` is an input.
+- **Source aliases:** `Vd(t)`, `Vdss`
+- **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
+- **Notes:** Named `Vdt` rather than `vd` precisely so that the two never collide in one model.

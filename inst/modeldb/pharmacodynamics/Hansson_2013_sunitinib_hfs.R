@@ -150,7 +150,7 @@ Hansson_2013_sunitinib_hfs <- function() {
 
     # --- Effect-compartment rate constant (fixed in source per Methods text) ---
     # Hansson 2013 e85 Results: 'Incorporation of an effect compartment
-    # into the model [ke0 = 0.424/hour (fatigue) and 0.347/hour (HFS)]
+    # into the model [ke0 = 0.424/h (fatigue) and 0.347/h (HFS)]
     # significantly improved both the fatigue and HFS models'. The value
     # is reported point-estimated to three significant figures with no
     # uncertainty -> wrap in fixed().

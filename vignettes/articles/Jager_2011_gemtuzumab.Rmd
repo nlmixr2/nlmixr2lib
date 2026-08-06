@@ -57,7 +57,7 @@ Programmatic access:
 
 ```{r population-meta}
 mod_fun <- readModelDb("Jager_2011_gemtuzumab")
-str(environment(mod_fun)$population)
+str(rxode2::rxode(mod_fun)$population)
 ```
 
 Consult Jager et al. (2011) directly for the full population description.

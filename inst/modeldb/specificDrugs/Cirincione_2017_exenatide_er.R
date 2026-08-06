@@ -87,11 +87,11 @@ Cirincione_2017_exenatide_er <- function() {
 
     # Disposition parameters (fixed in the ER analysis from the IR Cirincione 2017 BJCP companion model;
     # see modellib('Cirincione_2017_exenatide')). ER values in day units = IR values in hour units * 24.
-    lcl       <- fixed(log(110));    label("Linear clearance at reference CRCL (L/day)")                                          # Table II / IR Table 2: CL_int = 110 L/day (= 4.58 L/hr * 24)
-    lq        <- fixed(log(89.3));   label("Intercompartmental clearance (L/day)")                                                # Table II / IR Table 2: CLd = 89.3 L/day (= 3.72 L/hr * 24)
+    lcl       <- fixed(log(110));    label("Linear clearance at reference CRCL (L/day)")                                          # Table II / IR Table 2: CL_int = 110 L/day (= 4.58 L/h * 24)
+    lq        <- fixed(log(89.3));   label("Intercompartmental clearance (L/day)")                                                # Table II / IR Table 2: CLd = 89.3 L/day (= 3.72 L/h * 24)
     lvc       <- fixed(log(7.03));   label("Central volume at reference body weight (L)")                                          # Table II / IR Table 2: Vc_int = 7.03 L
     lvp       <- fixed(log(7.04));   label("Peripheral volume (L)")                                                                # Table II / IR Table 2: Vp = 7.04 L
-    lvmax     <- fixed(log(37.2));   label("Maximum Michaelis-Menten elimination rate (ug/day)")                                   # Table II: Vmax = 0.0372 mg/day = 37.2 ug/day (matches IR 1.55 ug/hr * 24)
+    lvmax     <- fixed(log(37.2));   label("Maximum Michaelis-Menten elimination rate (ug/day)")                                   # Table II: Vmax = 0.0372 mg/day = 37.2 ug/day (matches IR 1.55 ug/h * 24)
     lkm       <- fixed(log(0.567));  label("Michaelis-Menten constant for saturable elimination (ng/mL)")                          # Table II: Km = 567 pg/mL expressed as 0.567 ng/mL for unit-consistency with Cc_ngmL = central/vc (matches IR Km)
     e_crcl_cl <- fixed(0.838);       label("Power effect of CRCL (MDRD eGFR) on linear clearance (unitless)")                      # Table II / IR Table 2: CL_eGFR = 0.838
     e_wt_vc   <- fixed(2.67);        label("Power effect of body weight on central volume (unitless)")                             # Table II / IR Table 2: Vc_wtkg = 2.67

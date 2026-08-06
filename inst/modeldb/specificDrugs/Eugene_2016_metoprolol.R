@@ -48,8 +48,8 @@ Eugene_2016_metoprolol <- function() {
     ltlag      <- log(0.469); label("Absorption lag time (hr)")                                   # Eugene 2016 Table 1: Tlag = 0.469 hr (RSE 4%)
     lka       <- log(0.235); label("First-order absorption rate constant (1/h)")                # Eugene 2016 Table 1: Ka = 0.235 hr^-1 (RSE 8%)
     lvc       <- log(38);    label("Apparent central volume of distribution Vc/F (L)")           # Eugene 2016 Table 1: V = 38 L (RSE 95%)
-    lcl       <- log(59.1);  label("Apparent clearance CL/F at female reference (L/h)")         # Eugene 2016 Table 1: CL Females = 59.1 L/hr (RSE 12%); structural reference of the MONOLIX model
-    e_sexf_cl <- 0.572;      label("Log-additive coefficient for male sex on CL (applied as (1 - SEXF))") # Eugene 2016 Table 1: betaCL_Male = 0.572 (RSE 24%, p = 2.70e-5); applied via (1 - SEXF) so SEXF = 0 (male) yields CL = CL_Female * exp(0.572) = 105 L/hr
+    lcl       <- log(59.1);  label("Apparent clearance CL/F at female reference (L/h)")         # Eugene 2016 Table 1: CL Females = 59.1 L/h (RSE 12%); structural reference of the MONOLIX model
+    e_sexf_cl <- 0.572;      label("Log-additive coefficient for male sex on CL (applied as (1 - SEXF))") # Eugene 2016 Table 1: betaCL_Male = 0.572 (RSE 24%, p = 2.70e-5); applied via (1 - SEXF) so SEXF = 0 (male) yields CL = CL_Female * exp(0.572) = 105 L/h
 
     # Inter-individual variability (Eugene 2016 Table 1). The reported numeric
     # values are variances on the log scale (omega^2). The paper's reported CV%

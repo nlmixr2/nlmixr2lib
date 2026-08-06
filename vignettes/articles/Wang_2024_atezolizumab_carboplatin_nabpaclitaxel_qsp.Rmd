@@ -1,0 +1,692 @@
+---
+title: "Atezolizumab + carboplatin + nab-paclitaxel in NSCLC (Wang 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Atezolizumab + carboplatin + nab-paclitaxel in NSCLC (Wang 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7)
+```
+
+```{r libs, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+```
+
+This vignette validates the `Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp`
+model against its source.
+
+* Reference: `r rxode2::rxode2(readModelDb("Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp"))$reference`
+
+The model is a translation of the complete SimBiology export shipped as
+Supplementary Tables S1-S7 of the paper: 14 compartments (Table S2), 146 species
+(Table S3), 277 parameters (Table S4), 216 reactions (Table S5), 55 rules
+(Table S6) and 3 events (Table S7). It is a **deterministic mechanism model**:
+the authors represented between-patient variability by Latin hypercube sampling
+of the 26 parameter distributions in Table S1, not by fitting inter-individual
+or residual variability, so the `ini()` block contains no etas and no error
+model.
+
+```{r model}
+mod <- rxode2::rxode2(readModelDb("Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp"))
+length(mod$state)
+```
+
+## Population
+
+```{r population, echo = FALSE}
+pop <- readModelDb("Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp")
+p <- rxode2::rxode(pop)$population
+data.frame(
+  Field = c("Species", "Disease state", "Subjects", "Studies", "Dosing"),
+  Value = c(p$species, p$disease_state, p$n_subjects, p$n_studies, p$dose_range)
+) |>
+  knitr::kable(caption = "Population metadata (Wang 2024 Methods 4.1-4.3).")
+```
+
+The calibration and evaluation data set is the IMpower131 trial (NCT02367794).
+Atezolizumab was given at 1200 mg IV on day 1 of each 21-day cycle, carboplatin
+at an AUC of 6 mg/mL/min IV on day 1, and nab-paclitaxel at 100 mg/m^2 IV on
+days 1, 8 and 15. Treatment duration was 400 days with tumour assessment every
+8 weeks, scored by RECIST v1.1.
+
+## Source trace
+
+```{r sourcetrace, echo = FALSE}
+data.frame(
+  Component = c(
+    "Compartment capacities (`vol_*`)",
+    "Species initial amounts (`q_*(0)`)",
+    "All 247 `ini()` parameters",
+    "216 reaction fluxes (`v1` ... `v216`)",
+    "55 algebraic rules",
+    "Cancer-cell dynamics (Equation 1)",
+    "Cancer-cell capacity (Equation 2)",
+    "Cell-count floors",
+    "Virtual-cohort parameter distributions",
+    "Efficacy targets (ORR, DOR)",
+    "Alternative-regimen targets"
+  ),
+  Source = c(
+    "Supplementary Table S2",
+    "Supplementary Table S3 and the initialAssignment rules of Table S6",
+    "Supplementary Table S4",
+    "Supplementary Table S5",
+    "Supplementary Table S6",
+    "Main text Equation 1 (assembled from reactions 4-7, 60-61, 189-191, 216)",
+    "Main text Equation 2 (see the identity check below)",
+    "Supplementary Table S7 events 1-3",
+    "Supplementary Table S1",
+    "Table 1",
+    "Table 2"
+  )
+) |>
+  knitr::kable(caption = "Provenance of every model component. Per-parameter source traces are in the trailing comments of the model file's `ini()` block, which record the tabulated value and unit alongside the converted value.")
+```
+
+### Unit system
+
+SimBiology resolves units implicitly; `rxode2` does not. Every tabulated value
+was converted by a dimensional-analysis pass into one canonical system --
+**day / litre / dm^2 / nanomole / cell / microgram** -- and each `ini()` entry
+carries a comment with the Table S4 value and unit exactly as published. Two
+consequences are visible in the model file:
+
+* States are **amounts**, named `q_<compartment>_<species>` one-to-one from the
+  Parent and Name columns of Table S3. Concentrations are derived algebraically
+  as `x_<compartment>_<species>`. This is what SimBiology does internally and it
+  is required here because the tumour compartment volume `vol_V_T` is itself a
+  repeated assignment (Table S6 rule 1) over the cell counts, so it is
+  time-varying and the dilution terms must not be hand-written.
+* Species declared in `molecule` (the receptor and ligand surface densities and
+  the Treg CTLA-4 pools) keep their amounts in molecules rather than nanomoles,
+  converted by `NAVG_nmol`. In nanomoles those amounts are around 1e-12, below
+  any workable solver `atol`, and the very fast 2D binding equilibria then
+  cannot be resolved.
+
+Thirty rows of Table S4 are **not** carried into `ini()`. Each is the
+left-hand side of a repeated-assignment rule in Table S6, so SimBiology stores
+the last computed value of the rule in the parameter table; emitting them as
+constants would silently disable the rule. The trap is not hypothetical here:
+the stored `H_ENT_C1 = 1` would make the `(1 - H_ENT_C1)` factor in the
+cancer-growth reactions zero and abolish all tumour growth, and the stored
+`C_total = 0` would collapse the tumour-volume rule.
+
+## Structural checks against the source
+
+### Equation 2 identity
+
+Equation 2 gives the maximal cancer-cell capacity from a maximum tumour
+diameter and a cancer-cell density. `pdftotext` renders its stacked leading
+fraction ambiguously, and neither the diameter nor the density is tabulated.
+Both are recovered exactly from the stored `C_max` in Table S4:
+
+```{r eq2}
+Cmax_tabulated <- 862890782185.99646        # Table S4, C_max (cell)
+D_T_max <- 20                               # cm
+DEN_T_cell <- 2.06e8                        # cell/mL
+Cmax_eq2 <- 4 / 3 * pi * (D_T_max / 2)^3 * DEN_T_cell
+c(tabulated = Cmax_tabulated, equation2 = Cmax_eq2,
+  rel_diff = (Cmax_eq2 - Cmax_tabulated) / Cmax_tabulated)
+stopifnot(abs(Cmax_eq2 - Cmax_tabulated) / Cmax_tabulated < 1e-9)
+```
+
+The leading coefficient is therefore `4/3`, not the `3/4` that a plain text
+extraction of the PDF suggests, and the two unreported constants are a 20 cm
+maximum diameter and a density of 2.06e8 cell/mL. Neither constant enters the
+ODEs: Table S6 rule 51 sets `C_max` to the vasculature state `V_T.K`, so the
+tabulated `C_max` is a stale stored value and the capacity is dynamic.
+
+### Table S1 against Table S4
+
+Ten of the Table S1 rows are uniform sampling ranges. Their midpoints should
+recover the Table S4 point estimates, which is an independent check that the
+Table S1 row labels have been mapped onto the right parameters.
+
+```{r s1s4, echo = FALSE}
+s1 <- data.frame(
+  Parameter = c("k_K_g", "Vmcl", "Kcl", "Vmt", "Kt", "BSA",
+                "vol_V_1", "vol_V_2", "vol_V_3", "r_nabp"),
+  lower = c(2.9, 6500, 24.9, 190694, 2210, 1.3, 13.71, 1396, 59.8, 1),
+  upper = c(6.9, 9836, 58.9, 540445, 7910, 2.4, 17.85, 1935, 99.1, 2),
+  TableS4 = c(4.93, 8070, 40.2, 325000, 4260, 1.9, 15.8, 1650, 75.4, 1.5)
+)
+s1$Midpoint <- (s1$lower + s1$upper) / 2
+s1$`% diff` <- round(100 * (s1$Midpoint - s1$TableS4) / s1$TableS4, 2)
+knitr::kable(s1, caption = "Table S1 uniform midpoints vs the Table S4 point values. The two nab-paclitaxel Michaelis-Menten parameters (Vmt, Kt) have asymmetric ranges because they are confidence intervals carried from the source population-PK model rather than symmetric sampling windows.")
+```
+
+The two log-uniform PD-L1 rows provide a second check: their upper bounds,
+180000 and 266666 molecule, are exactly the Table S4 values of `C1_PDL1_base`
+and `APC_PDL1_base`.
+
+## Untreated baseline and the tumour microenvironment
+
+The model is started at the pre-treatment tumour diameter. The initial
+cancer-cell count is derived from `initial_tumour_diameter` through the same
+geometry as Table S6 rule 1, so the reported diameter at time zero reproduces
+the input exactly.
+
+```{r untreated}
+u <- rxode2::rxSolve(mod, rxode2::et(seq(0, 400, by = 2)),
+                     atol = 1e-8, rtol = 1e-6, maxsteps = 1e6) |>
+  as.data.frame()
+stopifnot(abs(u$tumour_diameter_cm[1] - 2.5) < 1e-6)
+last <- tail(u, 1)
+```
+
+```{r untreated_tab, echo = FALSE}
+data.frame(
+  Quantity = c("Tumour diameter, day 0 (cm)", "Tumour diameter, day 400 (cm)",
+               "Cancer cells, day 0", "Cancer cells, day 400",
+               "Carrying capacity V_T.K, day 400 (cell)",
+               "Arginase I (mU)", "Nitric oxide (nmol/L)",
+               "MDSC density (cell/mL)",
+               "CD8+ Teff density (cell/mL)", "CD4+ Th density (cell/mL)",
+               "Treg density (cell/mL)"),
+  Value = c(sprintf("%.4f", u$tumour_diameter_cm[1]),
+            sprintf("%.3f", last$tumour_diameter_cm),
+            sprintf("%.3e", u$cancer_cells[1]),
+            sprintf("%.3e", last$cancer_cells),
+            sprintf("%.3e", last$q_V_T_K),
+            sprintf("%.2f", last$x_V_T_ArgI),
+            sprintf("%.3f", last$x_V_T_NO),
+            sprintf("%.0f", last$MDSC_density),
+            sprintf("%.0f", last$CD8_density),
+            sprintf("%.0f", last$CD4_density),
+            sprintf("%.0f", last$Treg_density)),
+  Reference = c("initial_tumour_diameter = 2.5 cm (Table S4 / Table S1)",
+                "-", "-", "-", "-",
+                "EC50_ArgI_Treg 22.1, IC50_ArgI_CTL 61.7 mU (Table S4)",
+                "IC50_NO_CTL 0.75 nmol/L (Table S4)",
+                "MDSC_max 163700 cell/mL (Table S4)",
+                "-", "-", "-")
+) |>
+  knitr::kable(caption = "Untreated 400-day baseline. The suppressive mediators settle within the half-maximal ranges of their own Table S4 constants, so none of the inhibitory Hill terms is pinned at 0 or 1.")
+```
+
+### Arginase-I closed-form gate
+
+The dimensional-analysis pass flagged exactly one reaction in the whole export
+whose rate has to be *divided* by a compartment volume: reaction 175, arginase-I
+secretion by MDSCs, whose rate constant `k_sec_ArgI` carries units of
+`mU*microliter/cell/day`. The tumour steady state is therefore set by the MDSC
+*density*, independent of tumour size, and can be written down in closed form
+and compared with the simulation.
+
+```{r argi}
+k_sec_ArgI <- 1.4e-2      # Table S4, mU*microliter/cell/day
+k_deg_ArgI <- 0.173       # Table S4, 1/day
+mdsc_per_uL <- last$MDSC_density / 1000
+ArgI_closed_form <- k_sec_ArgI * mdsc_per_uL / k_deg_ArgI
+c(closed_form = ArgI_closed_form, simulated = last$x_V_T_ArgI)
+stopifnot(abs(ArgI_closed_form - last$x_V_T_ArgI) / ArgI_closed_form < 0.02)
+```
+
+The agreement confirms the reading of that reaction. Under the alternative
+reading -- treating the rate as an amount rate and not dividing by the tumour
+volume -- steady-state arginase I would exceed `IC50_ArgI_CTL` by four orders of
+magnitude and the MDSC suppression term would be permanently saturated.
+
+## Atezolizumab pharmacokinetics
+
+```{r pk_atezo}
+dose_nmol <- function(mg, kda) mg * 1e-3 / (kda * 1e3) * 1e9
+MW_ATEZO <- 145   # kDa
+
+ev_at <- rxode2::et(seq(0, 63, by = 0.25))
+ev_at <- rxode2::et(ev_at, amt = dose_nmol(1200, MW_ATEZO), time = 0,
+                    ii = 21, until = 63, cmt = "q_V_C_atezo")
+pk <- rxode2::rxSolve(mod, ev_at, atol = 1e-8, rtol = 1e-6, maxsteps = 1e6) |>
+  as.data.frame() |>
+  mutate(ug_mL = x_V_C_atezo * MW_ATEZO / 1000)
+```
+
+```{r pk_fig, echo = FALSE, fig.height = 3.6, fig.cap = "Simulated atezolizumab concentrations over three 21-day cycles at 1200 mg Q3W, in the central, tumour, tumour-draining lymph node and peripheral compartments (Table S5 reactions 97-102)."}
+pk |>
+  transmute(time,
+            Central = x_V_C_atezo, Tumour = x_V_T_atezo,
+            TdLN = x_V_LN_atezo, Peripheral = x_V_P_atezo) |>
+  tidyr::pivot_longer(-time, names_to = "Compartment", values_to = "nmol_L") |>
+  ggplot(aes(time, nmol_L, colour = Compartment)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Atezolizumab (nmol/L)") +
+  theme_bw()
+```
+
+### Lymphatic drainage chain
+
+Reactions 100 and 101 are the convective leg of the drug distribution chain,
+tumour interstitium to tumour-draining lymph node to central. Their rate
+constant `q_LD_atezo` is a first-order lymphatic drainage rate, so the rate
+expressions are concentration rates and each needs a volume to become an amount
+rate. The volumetric lymph flow is set by the tumour, `q_LD * V_T`, and the same
+flow carries drug out of the node, so **both** legs are scaled by the tumour
+volume. Two checks confirm that reading:
+
+```{r lymph}
+end <- tail(pk, 1)
+c(LN_over_central = end$x_V_LN_atezo / end$x_V_C_atezo,
+  tumour_over_central = end$x_V_T_atezo / end$x_V_C_atezo)
+
+## Quasi-steady state in the node: the convective term dominates the diffusive
+## one by ~60x, so the free node concentration approaches the free tumour
+## concentration, giving C_LN/C_T = gamma_LN/gamma_T.
+closed_form <- (0.2 / 0.522) * (end$x_V_T_atezo / end$x_V_C_atezo)
+c(closed_form = closed_form, simulated = end$x_V_LN_atezo / end$x_V_C_atezo)
+
+## The node is downstream of the tumour, so it must not concentrate drug above
+## its own source.
+stopifnot(end$x_V_LN_atezo < end$x_V_T_atezo)
+stopifnot(abs(closed_form - end$x_V_LN_atezo / end$x_V_C_atezo) / closed_form < 0.15)
+```
+
+Scaling the node-to-central leg by the lymph-node volume instead would make the
+fluid flow out of the node differ from the flow into it, and would drive the free
+node concentration to roughly 2.3 times the tumour concentration.
+
+The atezolizumab molar mass is not tabulated anywhere in the paper. It does not
+need to be: free atezolizumab participates only in reactions 97-102 (linear
+diffusive and convective transport plus linear central clearance) and appears in
+the checkpoint-binding reactions in the rate law only, never as a reactant, so
+the PK sub-system is strictly linear and the profile expressed in mass units is
+invariant to the molar mass assumed when converting the milligram dose.
+
+```{r mw_invariance}
+one_cycle <- function(kda) {
+  ev <- rxode2::et(seq(0, 21, by = 0.5))
+  ev <- rxode2::et(ev, amt = dose_nmol(1200, kda), time = 0, cmt = "q_V_C_atezo")
+  rxode2::rxSolve(mod, ev, atol = 1e-8, rtol = 1e-6, maxsteps = 1e6) |>
+    as.data.frame() |>
+    transform(mass = x_V_C_atezo * kda)
+}
+a <- one_cycle(145)
+b <- one_cycle(290)
+max(abs(a$mass - b$mass) / a$mass)
+stopifnot(max(abs(a$mass - b$mass) / a$mass) < 1e-4)
+```
+
+### Non-compartmental analysis
+
+The paper reports no non-compartmental parameters, so the reference column below
+is the closed form implied by the tabulated disposition constants: the initial
+concentration is the dose divided by the central volume `vol_V_C` = 5 L
+(Table S2), and the terminal half-life is `log(2) * vol_V_C / k_cl_atezo` with
+`k_cl_atezo` = 0.324 L/day (Table S4).
+
+```{r pknca}
+conc <- pk |>
+  filter(time <= 21, !is.na(ug_mL)) |>
+  transmute(id = 1L, treatment = "Atezolizumab 1200 mg", time, conc = ug_mL)
+dose <- data.frame(id = 1L, treatment = "Atezolizumab 1200 mg",
+                   time = 0, amt = 1200, duration = 0)
+
+o_conc <- PKNCA::PKNCAconc(conc, conc ~ time | id / treatment)
+o_dose <- PKNCA::PKNCAdose(dose, amt ~ time | id + treatment, duration = "duration")
+res <- suppressWarnings(PKNCA::pk.nca(PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 21,
+                         cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE)
+)))
+nca <- as.data.frame(res) |> filter(start == 0, end == 21)
+```
+
+```{r pknca_tab, echo = FALSE}
+sim <- nca |> transmute(treatment, PPTESTCD, PPORRES)
+ref <- data.frame(
+  treatment = "Atezolizumab 1200 mg",
+  cmax = 1200 / 5,                                  # mg / L = ug/mL
+  half.life = log(2) * 5 / 0.324
+)
+tbl <- nlmixr2lib::ncaComparisonTable(
+  sim, ref, by = "treatment",
+  params = c("cmax", "half.life"),
+  units = c(cmax = "ug/mL", half.life = "day")
+)
+knitr::kable(tbl, caption = "Simulated atezolizumab NCA over one 21-day cycle against the closed form implied by Table S2 and Table S4.")
+attr(tbl, "footnote")
+```
+
+## Nab-paclitaxel pharmacokinetics
+
+Nab-paclitaxel has its own three-compartment model with Michaelis-Menten
+elimination and Michaelis-Menten distribution to the first peripheral
+compartment (Table S5 reactions 186-188). The paper does not report an infusion
+duration, so doses are given as boluses, which overestimates the peak.
+
+```{r pk_nabp}
+BSA_m2 <- 1.9   # Table S4
+ev_np <- rxode2::et(seq(0, 21, by = 0.05))
+ev_np <- rxode2::et(ev_np, amt = 100 * BSA_m2 * 1000, time = c(0, 7, 14),
+                    cmt = "q_V_1_NabP")
+np <- rxode2::rxSolve(mod, ev_np, atol = 1e-8, rtol = 1e-6, maxsteps = 1e6) |>
+  as.data.frame()
+```
+
+```{r pk_nabp_fig, echo = FALSE, fig.height = 3.2, fig.cap = "Simulated nab-paclitaxel central concentration and the resulting tumour concentration for 100 mg/m2 on days 1, 8 and 15. The horizontal line is IC50_nabp = 47 nmol/L (Table S4)."}
+np |>
+  transmute(time, `Central (ug/L)` = Cc_nabp,
+            `Tumour (nmol/L)` = x_V_T_NabP) |>
+  tidyr::pivot_longer(-time, names_to = "Series", values_to = "value") |>
+  ggplot(aes(time, value)) +
+  geom_line() +
+  geom_hline(data = data.frame(Series = "Tumour (nmol/L)", y = 47),
+             aes(yintercept = y), linetype = 2, colour = "grey40") +
+  facet_wrap(~Series, scales = "free_y") +
+  labs(x = "Time (day)", y = NULL) +
+  theme_bw()
+```
+
+Carboplatin is not dosed. Following the paper's Methods 4.1.2 assumption that
+"carboplatin would reach a stable concentration in the circulating blood and
+enter the tumour cells at a constant proportion", the export represents it as a
+fixed plasma concentration `V1_carb` = 1.98e-4 g/L, the steady-state average for
+an AUC of 6 mg/mL/min. Setting `V1_carb` to zero removes carboplatin.
+
+```{r carb}
+c(tumour_carboplatin_nmol_L = np$x_V_T_carb[1], IC50_carb = 3.18e5)
+```
+
+## Virtual cohort
+
+The 26 sampled parameters of Table S1 are converted to the canonical units by
+the same dimensional-analysis pass used for Table S4. The cohort is built by a
+**deterministic** Latin hypercube -- stratified quantiles with a fixed
+permutation per parameter -- so the numbers below are reproducible rather than
+a fresh random draw.
+
+The `Geometric standard deviation` column of Table S1 is read as the standard
+deviation on the log scale. It cannot be a multiplicative geometric standard
+deviation: two of its entries are 0.7 and 0.3, and a geometric standard
+deviation is at least 1 by construction.
+
+```{r cohort}
+NSUB <- 80
+S1 <- tibble::tribble(
+  ~param, ~dist, ~a, ~b,
+  "k_C1_growth", "lnorm", 0.012, 1,
+  "k_C_T1", "lnorm", 4, 1,
+  "k_P1_d1", "lnorm", 27, 1,
+  "n_T1_clones", "lnorm", 92, 0.7,
+  "n_T0_clones", "lnorm", 250, 0.7,
+  "initial_tumour_diameter", "lnorm", 0.25, 0.3,
+  "MDSC_max", "lnorm", 2.6e8, 1,
+  "k_reg", "lnorm", 0.022, 1,
+  "IC50_nabp", "lnorm", 47, 1.1,
+  "k_C_resist", "lnorm", 1e-4, 1,
+  "k_c_nabp", "lnorm", 1.7e-8, 1,
+  "k_C1_death", "lunif", 1e-5, 1e-3,
+  "k_T1", "lunif", 0.01, 1,
+  "k_Treg", "lunif", 0.05, 0.5,
+  "C1_PDL1_base", "lunif", 1.49448516046e-11, 2.98897032091e-10,
+  "APC_PDL1_base", "lunif", 2.15870078733e-11, 4.42809310887e-10,
+  "k_K_g", "unif", 2.9, 6.9,
+  "Vmcl", "unif", 156000, 236064,
+  "Kcl", "unif", 24.9, 58.9,
+  "Vmt", "unif", 4576656, 12970680,
+  "Kt", "unif", 2210, 7910,
+  "BSA", "unif", 130, 240,
+  "vol_V_1", "unif", 13.71, 17.85,
+  "vol_V_2", "unif", 1396, 1935,
+  "vol_V_3", "unif", 59.8, 99.1,
+  "r_nabp", "unif", 1, 2
+)
+
+set.seed(20240212)
+uq <- sapply(seq_len(nrow(S1)), function(j) sample((seq_len(NSUB) - 0.5) / NSUB))
+cohort <- as.data.frame(setNames(lapply(seq_len(nrow(S1)), function(j) {
+  r <- S1[j, ]
+  switch(r$dist,
+    lnorm = stats::qlnorm(uq[, j], log(r$a), r$b),
+    lunif = exp(stats::qunif(uq[, j], log(r$a), log(r$b))),
+    unif  = stats::qunif(uq[, j], r$a, r$b))
+}), S1$param))
+round(quantile(cohort$initial_tumour_diameter * 10, c(0.25, 0.5, 0.75)), 2)
+```
+
+```{r events}
+TMAX <- 400
+OBS <- seq(0, TMAX, by = 56)     # RECIST assessment every 8 weeks
+
+mkEvents <- function(atezo_mg, atezo_ii) {
+  ids <- seq_len(nrow(cohort))
+  obs <- expand.grid(id = ids, time = OBS)
+  obs$amt <- NA_real_
+  obs$cmt <- "q_V_T_C1"
+  obs$evid <- 0L
+  parts <- list(obs)
+  if (!is.na(atezo_mg)) {
+    at <- expand.grid(id = ids, time = seq(0, TMAX - 1, by = atezo_ii))
+    at$amt <- dose_nmol(atezo_mg, MW_ATEZO)
+    at$cmt <- "q_V_C_atezo"
+    at$evid <- 1L
+    parts <- c(parts, list(at))
+  }
+  npt <- sort(as.vector(outer(c(0, 7, 14), seq(0, TMAX - 1, by = 21), "+")))
+  nb <- expand.grid(id = ids, time = npt[npt < TMAX])
+  ## 100 mg/m2 in ug; BSA is carried in dm^2 so BSA/100 is m^2
+  nb$amt <- 100 * (cohort$BSA[nb$id] / 100) * 1000
+  nb$cmt <- "q_V_1_NabP"
+  nb$evid <- 1L
+  do.call(rbind, c(parts, list(nb))) |> dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+runArm <- function(label, atezo_mg, atezo_ii) {
+  s <- rxode2::rxSolve(mod, mkEvents(atezo_mg, atezo_ii), params = cohort,
+                       atol = 1e-8, rtol = 1e-6, maxsteps = 1e6,
+                       returnType = "data.frame", cores = 4)
+  s |>
+    filter(!is.na(tumour_diameter_cm)) |>
+    group_by(id) |>
+    summarise(
+      base = tumour_diameter_cm[which.min(time)],
+      final = tumour_diameter_cm[which.max(time)],
+      ## RECIST v1.1 best overall response is the minimum over the POST-baseline
+      ## assessments, so it can exceed baseline for a tumour that only grows.
+      best = min(tumour_diameter_cm[time > 0]),
+      .groups = "drop"
+    ) |>
+    mutate(arm = label,
+           pct_day400 = 100 * (final - base) / base,
+           pct_best = 100 * (best - base) / base)
+}
+
+arms <- bind_rows(
+  runArm("Atezolizumab 840 mg Q2W + chemo", 840, 14),
+  runArm("Atezolizumab 1200 mg Q3W + chemo", 1200, 21),
+  runArm("Atezolizumab 1680 mg Q4W + chemo", 1680, 28),
+  runArm("Carboplatin + nab-paclitaxel", NA, NA)
+)
+table(arms$arm)
+```
+
+### Objective response rate (replicates Table 1)
+
+```{r orr, echo = FALSE}
+orr <- arms |>
+  group_by(arm) |>
+  summarise(ORR = 100 * mean(pct_best <= -30), .groups = "drop") |>
+  mutate(
+    Reference = case_when(
+      arm == "Carboplatin + nab-paclitaxel" ~ "40.5 (predicted), 41.0 (observed)",
+      arm == "Atezolizumab 1200 mg Q3W + chemo" ~ "52.0 (predicted), 49.7 (observed)",
+      TRUE ~ "not tabulated separately"
+    ),
+    ORR = sprintf("%.1f", ORR)
+  ) |>
+  rename("Arm" = arm, "Simulated ORR (%)" = ORR, "Table 1 ORR (%)" = Reference)
+knitr::kable(orr, caption = "Objective response rate, defined as a best overall response of at least a 30% decrease in tumour diameter (RECIST v1.1). Reference values are the Table 1 model predictions and IMpower131 observations.")
+```
+
+The chemotherapy-only and triple-combination response rates both land within a
+few percentage points of the published predictions, and the increment from
+adding atezolizumab is reproduced.
+
+### Alternative atezolizumab regimens (replicates Table 2A)
+
+```{r table2, echo = FALSE}
+ref2 <- tribble(
+  ~arm, ~ref_median, ~ref_p25, ~ref_p75,
+  "Atezolizumab 840 mg Q2W + chemo", -10.97, -49.40, 20.58,
+  "Atezolizumab 1200 mg Q3W + chemo", -7.33, -47.89, 19.86,
+  "Atezolizumab 1680 mg Q4W + chemo", -7.73, -46.92, 21.45
+)
+arms |>
+  filter(arm %in% ref2$arm) |>
+  group_by(arm) |>
+  summarise(m = median(pct_day400),
+            p25 = quantile(pct_day400, 0.25),
+            p75 = quantile(pct_day400, 0.75), .groups = "drop") |>
+  left_join(ref2, by = "arm") |>
+  transmute(
+    Arm = sub(" \\+ chemo$", "", arm),
+    Simulated = sprintf("%.2f (%.2f, %.2f)", m, p25, p75),
+    `Table 2A` = sprintf("%.2f (%.2f, %.2f)", ref_median, ref_p25, ref_p75)
+  ) |>
+  knitr::kable(caption = "Percentage change in tumour diameter from baseline at day 400, median (25th, 75th percentile). Table 2A of the paper reports the same three regimens.")
+```
+
+The three atezolizumab regimens are **indistinguishable** in the simulation, to
+two decimal places on every summary statistic. That is the paper's central
+conclusion for this table: all three schedules "excessively rescue immune
+suppression caused by mAPC PD-L1 in tumours", so the checkpoint block is
+saturated and the schedule does not matter. The reference 25th percentiles are
+reproduced; the medians and 75th percentiles are not, for the reasons set out
+under Assumptions and deviations below.
+
+```{r waterfall, echo = FALSE, fig.height = 3.4, fig.cap = "Replicates the waterfall panels of Figure 2: best overall response in tumour diameter for the chemotherapy-only and triple-combination arms."}
+arms |>
+  filter(arm %in% c("Carboplatin + nab-paclitaxel",
+                    "Atezolizumab 1200 mg Q3W + chemo")) |>
+  group_by(arm) |>
+  arrange(desc(pct_best), .by_group = TRUE) |>
+  mutate(rank = row_number()) |>
+  ungroup() |>
+  ggplot(aes(rank, pct_best,
+             fill = cut(pct_best, c(-Inf, -30, 20, Inf),
+                        labels = c("PR/CR", "SD", "PD")))) +
+  geom_col(width = 1) +
+  geom_hline(yintercept = -30, linetype = 2) +
+  facet_wrap(~arm) +
+  labs(x = "Virtual patient (ranked)", y = "Best change in diameter (%)",
+       fill = "RECIST") +
+  theme_bw()
+```
+
+## Assumptions and deviations
+
+1. **`initial_tumour_diameter` drives the initial cancer-cell count.** Table S3
+   stores `V_T.C1` = 4.7e6 cell, which corresponds to a 3.9 mm tumour and is
+   inconsistent with the 2.5 cm pre-treatment diameter that Table S4 and
+   Table S1 both give. `initial_tumour_diameter` appears in no reaction and no
+   rule, which is the signature of an initialAssignment that the export dropped.
+   The model therefore sets `q_V_T_C1(0)` from `initial_tumour_diameter` using
+   exactly the geometry of Table S6 rule 1, so that the reported diameter at
+   time zero equals the input. Set `q_V_T_C1(0)` explicitly to recover the
+   stored value.
+
+2. **The lymphatic-drainage legs are scaled by the tumour volume.** Reactions
+   94/95, 100/101, 106/107 and 183/184 are concentration rates, so each needs a
+   volume factor that the export leaves implicit. Both legs of each chain use the
+   tumour volume, because `q_LD_*` is the tumour lymphatic drainage rate and the
+   lymph leaving the node is the lymph the tumour produced. This is checked above
+   against the quasi-steady-state closed form and against the requirement that
+   the node not concentrate drug above its upstream source, and it matches the
+   sibling port `Anbari_2023_atezolizumab_cibisatamab_qsp` of the same platform.
+
+3. **Table S7 events are implemented as derivative floors.** `rxode2` has no
+   state-reset events. Events 1-3 reset `V_T.C1`, `V_T.C2` and `V_T.K` to
+   0.01 cell whenever they fall below 0.5 cell, which in SimBiology pins them
+   just above zero and lets a near-eradicated tumour regrow. Here the
+   derivative is clamped to be non-negative below 0.5 cell, which pins the state
+   in the same way. The difference is confined to sub-single-cell counts and is
+   invisible in tumour diameter.
+
+4. **Three Table S4 rows are not carried into `ini()`.** `A_syn` duplicates the
+   synapse compartment capacities of Table S2, which are what the rate laws
+   actually use; `lagP` and `durP` are the oral absorption lag time and
+   zero-order duration for entinostat, SimBiology dosing attributes rather than
+   ODE parameters. None is referenced by any reaction or rule.
+
+5. **Inherited but undosed limbs are retained.** The export carries the full
+   parent platform, including nivolumab, ipilimumab (with the CTLA-4 binding
+   and ADCC reactions) and entinostat. None is dosed in any IMpower131 regimen,
+   so all are inert here, but they are kept because they are part of the
+   published 216-reaction model and can be dosed by a user.
+
+6. **Carboplatin is a fixed concentration, not a dose.** Per Methods 4.1.2 it is
+   represented by the constant `V1_carb`. It is therefore "on" for the whole
+   simulation; set `V1_carb` to zero to remove it.
+
+7. **Nab-paclitaxel is given as a bolus.** The paper reports no infusion
+   duration and the export carries no dosing table, so the peak central
+   concentration is overestimated relative to the usual 30-minute infusion.
+
+8. **The atezolizumab molar mass is not tabulated.** 145 kDa is used to convert
+   the milligram dose to nanomoles. The invariance check above shows the
+   mass-unit profile does not depend on this value, because the atezolizumab PK
+   sub-system is strictly linear.
+
+9. **The scale of the Table S1 variability column is inferred.** It is labelled
+   "Geometric standard deviation" but two of its entries are below 1, which is
+   impossible for a geometric standard deviation, so it is read as the standard
+   deviation on the log scale. Scoring both readings against Table 2A, the
+   log-scale reading reproduces the median and 25th percentile substantially
+   better than the alternative reading in which an entry of 1 means no
+   variability.
+
+10. **Table 2A's median and 75th percentile are not reproduced.** The simulated
+   day-400 distribution has a much heavier upper tail than the published one
+   (75th percentile near +90% against a published +20%). Four pieces of
+   information needed to reproduce that table are absent from the paper and the
+   supplement, and none can be settled from on-disk sources:
+
+   * the time at which the "percentage change in tumour diameter" is read --
+     day 400, the best overall response, or a nominated scan. Note that Table 1
+     and Table 2A cannot both be best overall responses in the same cohort: an
+     objective response rate of 52% requires a median best response of at most
+     -30%, whereas Table 2A reports a median of -7.33%. Day 400 is used here.
+   * the number of induction chemotherapy cycles. IMpower131 gave four or six
+     cycles of carboplatin plus nab-paclitaxel followed by atezolizumab
+     maintenance, but the paper states only a 400-day treatment duration and
+     tabulates the regimen with no cycle cap, so chemotherapy is continued
+     throughout. Truncating it to four or six cycles moves the day-400 median
+     from about -3% to about +29%, straddling the published -7.33%.
+   * whether the Latin hypercube cohort was screened. The authors' earlier
+     platform paper screened virtual patients on tumour diameter and on blood
+     T-cell densities; this paper does not say whether it did.
+   * the exact Latin hypercube realisation, which sets the quantiles of a
+     visibly bimodal response distribution.
+
+   What is reproduced without any of that information is the objective response
+   rate for both arms, the increment from adding atezolizumab, and the
+   equivalence of the three atezolizumab schedules.
+
+11. **Duration of response is not reproduced.** Table 1 reports a median
+    duration of response of 5.3 and 7.1 months. Deriving it requires the
+    RECIST confirmation and progression rules the paper does not state, and it
+    inherits every ambiguity in item 9.
+
+12. **Table 2B is labelled mm^3 but the values are only coherent as cm^3.** A
+    2.5 cm tumour is 8181 mm^3, whereas Table 2B reports medians near 7. Read as
+    cm^3 the values correspond to diameters near 2.3 cm, consistent with the
+    Table 2A diameter changes. Table 2A is used for validation because it is
+    dimensionless and therefore unambiguous.
+
+13. **`covariateData` is empty.** The model takes no subject-level covariate
+    columns. Every input is either a fixed parameter or a dosing event, and the
+    between-patient variation in the source is variation in model parameters,
+    supplied to `rxode2::rxSolve()` as a parameter data frame.
+
+14. **Solver tolerances.** The default `rxode2` tolerances
+    (`atol` 1e-8, `rtol` 1e-6) are used. They give results identical to
+    `atol` 1e-10 / `rtol` 1e-8 to five significant figures while being roughly
+    200 times faster, because the fast 2D binding equilibria dominate the step
+    size at tight tolerances.

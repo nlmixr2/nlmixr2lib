@@ -156,7 +156,7 @@ Lehr_2010_tesofensine <- function() {
                (exp(-kel_pla * time) - exp(-keq * time))
 
     # Linear disease progression added to the overall ADAS-Cog
-    # change-from-baseline. dp_rate is in ADAS-Cog points/hour;
+    # change-from-baseline. dp_rate is in ADAS-Cog points/h;
     # multiplying by time (hours) gives the cumulative progression.
     dp <- dp_rate * time
 

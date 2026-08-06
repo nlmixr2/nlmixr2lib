@@ -318,13 +318,13 @@ Lu_2017_polatuzumab_neuropathy <- function() {
                    bcel_cl_time^e_blbcell_cl_time
 
     # ===== 2. Individual PK parameters (Lu 2019 acMMAE side) =====
-    cl_exp_kdes         <- exp(lcl_exp_kdes) * cov_cl_exp_kdes                      # 1/hour
-    cl_exp_component <- exp(lcl_exp_component + etalcl_exp_component) * cov_cl_exp_component  # CL_TIME initial value at t = 0 (L/hour)
-    cl_inf       <- exp(lcl + etalcl) * cov_cl                 # CL_SS, L/hour
+    cl_exp_kdes         <- exp(lcl_exp_kdes) * cov_cl_exp_kdes                      # 1/h
+    cl_exp_component <- exp(lcl_exp_component + etalcl_exp_component) * cov_cl_exp_component  # CL_TIME initial value at t = 0 (L/h)
+    cl_inf       <- exp(lcl + etalcl) * cov_cl                 # CL_SS, L/h
     vc           <- exp(lvc + etalvc) * cov_vc                 # L
     vp           <- exp(lvp + etalvp) * (WT / 75)^e_wt_vc      # L
-    q            <- exp(lq + etalq) * (WT / 75)^e_wt_vc        # L/hour
-    vmax         <- exp(lvmax + etalvmax)                      # ng/mL/hour
+    q            <- exp(lq + etalq) * (WT / 75)^e_wt_vc        # L/h
+    vmax         <- exp(lvmax + etalvmax)                      # ng/mL/h
     km_ac        <- exp(lkm_ac)                                # ng/mL
     t50_hr       <- exp(lt50_mo) * 24 * 30                     # T50 in hours (paper reports months)
     t50_hr_gam   <- t50_hr^gamma_ns

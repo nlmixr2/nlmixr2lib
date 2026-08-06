@@ -67,16 +67,16 @@ Xu_2020_daratumumab <- function() {
     # Structural typical-value PK parameters for the reference patient
     # (Xu 2020 Online Resource 6; reference: WT 78.6 kg, ALB 37.0 g/L,
     # non-IgG MM, male).
-    lcl   <- log(0.00485); label("Linear clearance CL at reference covariates (L/h)") # Xu 2020 Online Resource 6: CL 0.00485 L/hr, RSE 10%
+    lcl   <- log(0.00485); label("Linear clearance CL at reference covariates (L/h)") # Xu 2020 Online Resource 6: CL 0.00485 L/h, RSE 10%
     lvc   <- log(4.09);    label("Central volume of distribution V1 at reference (L)")   # Xu 2020 Online Resource 6: V1 4.09 L, RSE 3.5%
-    lq    <- log(0.0642);  label("Intercompartmental clearance Q (L/h)")              # Xu 2020 Online Resource 6: Q 0.0642 L/hr, RSE 8.0%
+    lq    <- log(0.0642);  label("Intercompartmental clearance Q (L/h)")              # Xu 2020 Online Resource 6: Q 0.0642 L/h, RSE 8.0%
     lvp   <- log(3.06);    label("Peripheral volume of distribution V2 (L)")             # Xu 2020 Online Resource 6: V2 3.06 L, RSE 9.7%
 
     # Parallel Michaelis-Menten (target-mediated) elimination from the
-    # central compartment. Vmax (mg/hour) decays mono-exponentially from
-    # its baseline at first-order rate KDES (1/hour); KM is fixed.
-    lvmax <- log(2.08);    label("Baseline Michaelis-Menten Vmax of nonlinear CL (mg/h)") # Xu 2020 Online Resource 6: Vmax 2.08 mg/hr, RSE 16.7%
-    lkdes <- log(0.0013);  label("First-order rate of decrease of Vmax (1/h)")            # Xu 2020 Online Resource 6: KDES 0.0013 1/hr, RSE 17.8%
+    # central compartment. Vmax (mg/h) decays mono-exponentially from
+    # its baseline at first-order rate KDES (1/h); KM is fixed.
+    lvmax <- log(2.08);    label("Baseline Michaelis-Menten Vmax of nonlinear CL (mg/h)") # Xu 2020 Online Resource 6: Vmax 2.08 mg/h, RSE 16.7%
+    lkdes <- log(0.0013);  label("First-order rate of decrease of Vmax (1/h)")            # Xu 2020 Online Resource 6: KDES 0.0013 1/h, RSE 17.8%
     lkm   <- fixed(log(0.93)); label("Michaelis-Menten Km of nonlinear CL (ug/mL)")          # Xu 2020 Online Resource 6: KM 0.93 ug/mL, fixed
 
     # Covariate effects. Power-form on continuous covariates; additive
@@ -130,7 +130,7 @@ Xu_2020_daratumumab <- function() {
     km   <- exp(lkm)
 
     # Time-varying Vmax: first-order decay from the baseline value at
-    # rate KDES. KDES = 0.0013 /hr corresponds to a Vmax half-life of
+    # rate KDES. KDES = 0.0013 /h corresponds to a Vmax half-life of
     # ln(2) / 0.0013 ~ 533 hours (~22 days), capturing the gradual
     # depletion of CD38 target burden over weekly therapy.
     vmax_t <- vmax * exp(-kdes * t)

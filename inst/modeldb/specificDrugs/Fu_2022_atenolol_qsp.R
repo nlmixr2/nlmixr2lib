@@ -316,7 +316,7 @@ Fu_2022_atenolol_qsp <- function() {
     # ---------------------------------------------------------------------
     # 9. ODE system (Fu 2022 Methods Eqs 8 and 'Incorporation of drug
     #    effects in the systems model' box). Order of state declarations
-    #    (depot / central / peripheral1 / peripheral2 / hr / edv / tpr /
+    #    (depot / central / peripheral1 / peripheral2 /h / edv / tpr /
     #    ctr) matches the NONMEM $MODEL COMP block.
     # ---------------------------------------------------------------------
     d/dt(depot)       <- -ka * depot

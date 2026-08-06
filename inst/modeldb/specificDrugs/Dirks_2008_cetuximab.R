@@ -59,11 +59,11 @@ Dirks_2008_cetuximab <- function() {
     # Structural typical-value PK parameters at the reference covariates
     # (Dirks 2008 Table 3-2, thesis Chapter 3, p. 53; reference IBW 64 kg,
     # WBC 6.8 x 10^9/L, WT 60 kg).
-    lvmax <- log(4.38);  label("Michaelis-Menten Vmax at reference covariates (mg/h)") # Dirks 2008 Table 3-2: theta1 = 4.38 mg/hr, 90% CI 3.40-6.64
+    lvmax <- log(4.38);  label("Michaelis-Menten Vmax at reference covariates (mg/h)") # Dirks 2008 Table 3-2: theta1 = 4.38 mg/h, 90% CI 3.40-6.64
     lkm   <- log(74);    label("Michaelis-Menten Km (ug/mL)")                              # Dirks 2008 Table 3-2: theta4 = 74 ug/mL, 90% CI 38.2-163.3
     lvc   <- log(2.83);  label("Central volume of distribution V1 at reference WT (L)")   # Dirks 2008 Table 3-2: theta5 = 2.83 L, 90% CI 2.69-2.96
     lvp   <- log(2.43);  label("Peripheral volume of distribution V2 (L)")                 # Dirks 2008 Table 3-2: theta7 = 2.43 L, 90% CI 1.95-2.85
-    lq    <- log(0.103); label("Intercompartmental clearance Q (L/h)")                  # Dirks 2008 Table 3-2: theta8 = 0.103 L/hr, 90% CI 0.062-0.191
+    lq    <- log(0.103); label("Intercompartmental clearance Q (L/h)")                  # Dirks 2008 Table 3-2: theta8 = 0.103 L/h, 90% CI 0.062-0.191
 
     # Covariate effects. Additive linear-deviation form on continuous
     # covariates as parameterised in Dirks 2008 Table 3-2:
@@ -123,7 +123,7 @@ Dirks_2008_cetuximab <- function() {
     # thesis p. 141-149; ADVAN6 TRANS1). A parallel first-order
     # elimination pathway was tested but produced no OFV improvement and
     # was dropped in favour of the more parsimonious purely nonlinear
-    # elimination model (p. 50 Structural Model). Vmax is in mg/hour and
+    # elimination model (p. 50 Structural Model). Vmax is in mg/h and
     # depends on Cc = central / vc (concentration in ug/mL = mg/L because
     # doses are in mg and volumes in L).
     Cc <- central / vc

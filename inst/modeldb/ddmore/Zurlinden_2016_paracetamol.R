@@ -125,11 +125,11 @@ Zurlinden_2016_paracetamol <- function() {
     Vmax_AS        <- exp( 13.6788)  ; label("Vmax for AS transport from hepatocyte to liver-blood (umol/h)")               # line 21:  lnVmax_AS      = 13.6788
     Km_AS          <- exp(  9.7220)  ; label("Km for AS hepatocyte-to-liver-blood transport (umol)")                         # line 13:  lnKm_AS        =  9.7220
 
-    # Cofactor zeroth-order resynthesis rates (relative-amount/hr)
+    # Cofactor zeroth-order resynthesis rates (relative-amount/h)
     kPAPS_syn      <- exp(  7.9251)  ; label("PAPS zeroth-order resynthesis rate (1/h)")                                     # line 7:   lnkPAPS_syn    =  7.9251
     kGA_syn        <- exp(  9.0430)  ; label("GA zeroth-order resynthesis rate (1/h)")                                       # line 25:  lnkGA_syn      =  9.0430
 
-    # Renal blood clearance constants (L/hr/kg) for APAP and conjugates
+    # Renal blood clearance constants (L/h/kg) for APAP and conjugates
     CLC_APAP       <- exp( -4.6564)  ; label("APAP renal blood clearance per body weight (L/h/kg)")                          # line 17:  lnCLC_APAP     = -4.6564
     CLC_AG         <- exp( -1.9876)  ; label("AG renal blood clearance per body weight (L/h/kg)")                            # line 19:  lnCLC_AG       = -1.9876
     CLC_AS         <- exp( -2.0404)  ; label("AS renal blood clearance per body weight (L/h/kg)")                            # line 8:   lnCLC_AS       = -2.0404
@@ -265,7 +265,7 @@ Zurlinden_2016_paracetamol <- function() {
     VS   <- VSC   * WT
 
     # ---------------------------------------------------------------------
-    # 4. Compartment blood flows (L/hr). Bundle lines 622-634.
+    # 4. Compartment blood flows (L/h). Bundle lines 622-634.
     #    QC = QCC * BW^0.75 (allometric cardiac output).
     #    The bundle divides each tissue flow by QTC = sum of flow
     #    fractions = QFC + QKC + QGC + QLBC + QMC + QRC + QSC =
@@ -288,7 +288,7 @@ Zurlinden_2016_paracetamol <- function() {
     QL  <- QG + QLB
 
     # ---------------------------------------------------------------------
-    # 5. Renal clearances (L/hr) and allometric metabolic Vmax (mcmol/hr).
+    # 5. Renal clearances (L/h) and allometric metabolic Vmax (mcmol/h).
     #    Bundle lines 638-649.
     # ---------------------------------------------------------------------
     CLR_APAP  <- alpha_APAP * CLC_APAP * WT
@@ -368,7 +368,7 @@ Zurlinden_2016_paracetamol <- function() {
     Cplasma_apapg <- CV_AG / BP_APAP     # bundle line 722 (BP_APAP reused for AG)
 
     # ---------------------------------------------------------------------
-    # 8. Liver metabolic rates (mcmol/hr). Bundle lines 732-734.
+    # 8. Liver metabolic rates (mcmol/h). Bundle lines 732-734.
     #    Each rate has Michaelis-Menten kinetics with partial substrate
     #    inhibition (Ki) for SULT/UGT and cofactor dependence (PAPS, GA).
     # ---------------------------------------------------------------------
@@ -381,13 +381,13 @@ Zurlinden_2016_paracetamol <- function() {
                  (UGT_Km_GA + a_gut))
 
     # Hepatocyte-to-liver-blood transport rates for the conjugates
-    # (mcmol/hr). Bundle lines 786, 819.
+    # (mcmol/h). Bundle lines 786, 819.
     r_hep_apaps <- Vmax_AS * a_hepatic_apaps / (Km_AS + a_hepatic_apaps)
     r_hep_apapg <- Vmax_AG * a_hepatic_apapg / (Km_AG + a_hepatic_apapg)
 
     # ---------------------------------------------------------------------
-    # 9. Renal elimination rates (mcmol/hr) and gastric-emptying input
-    #    rate (mcmol/hr). Bundle lines 749, 770, 809, 842.
+    # 9. Renal elimination rates (mcmol/h) and gastric-emptying input
+    #    rate (mcmol/h). Bundle lines 749, 770, 809, 842.
     #    Gastric emptying is encoded as a closed-form function of the
     #    simulation time t (NOT of stomach state), so this model is
     #    parameterised for a single oral dose at t = 0 only -- see vignette

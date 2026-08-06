@@ -33,7 +33,7 @@ Cao_2013_gevokizumab <- function() {
   ini({
     sigma_tight <- 0.931; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.931 (CV 2.58%)
     sigma_leaky <- 0.837; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.837 (CV 2.63%)
-    lcl   <- log(0.16032); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00668 L/hr (CV 1.87%) = 0.16032 L/day
+    lcl   <- log(0.16032); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00668 L/h (CV 1.87%) = 0.16032 L/day
   })
 
   model({

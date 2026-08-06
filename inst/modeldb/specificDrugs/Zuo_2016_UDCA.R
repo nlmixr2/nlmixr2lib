@@ -82,7 +82,7 @@ Zuo_2016_UDCA <- function() {
 
   ini({
     # Rate constants for UDCA (analyte index 0) - Table 1 columns 'UDCA'.
-    # All values are 1/hour. Log-transformed because the paper reports them
+    # All values are 1/h. Log-transformed because the paper reports them
     # as positive point estimates from least-squares parameter optimisation
     # (MATLAB Optimization Toolbox).
     lk_si    <- log(16.61); label("Stomach -> intestine rate constant K_SI (1/h, UDCA)")            # Table 1

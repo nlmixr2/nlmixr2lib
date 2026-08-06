@@ -44,10 +44,10 @@ phenylalanine_charbonneau_2021 <- function() {
     # Unit conversion adjustment from Gut to Plasma concentrations (mmol/L)/mg
     f_gut_plasma <- 1/(mw_phe * vd * WT)
 
-    v_pah <- vmax_pah*f_pah / (1 + km_pah/phe + km_pah*kact_pah/(phe^2)) # units: (mmol/L)/hr
-    v_trans <- vmax_trans / (1 + km_trans/phe) # units: (mmol/L)/hr
+    v_pah <- vmax_pah*f_pah / (1 + km_pah/phe + km_pah*kact_pah/(phe^2)) # units: (mmol/L)/h
+    v_trans <- vmax_trans / (1 + km_trans/phe) # units: (mmol/L)/h
     cl_renal <- exp(lcl_renal)
-    v_renal <- phe * cl_renal * vd # units: (mmol/L)/hr
+    v_renal <- phe * cl_renal * vd # units: (mmol/L)/h
 
     d/dt(gut) <- -ka_gut*gut
     d/dt(phe) <- ka_gut*gut*f_gut_plasma + v_npd - v_pah - v_trans - v_renal
