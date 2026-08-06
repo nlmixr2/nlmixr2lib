@@ -26,6 +26,8 @@ navbar:
       text: Specific drug models
       menu:
       # AUTOGEN:specific_drugs:BEGIN
+      - text: "5hydroxysaxagliptin rat (Wang 2024)"
+        href: articles/Wang_2024_saxagliptin_dpp4_rat.html
       - text: "8C2 (Abuqayyas 2012)"
         href: articles/Abuqayyas_2012_8C2.html
       - text: "ABT 102 (Othman 2013)"
@@ -2162,6 +2164,8 @@ navbar:
         href: articles/Ma_2020_sarilumab_anc.html
       - text: "Sarilumab das28crp (Ma 2020)"
         href: articles/Ma_2020_sarilumab_das28crp.html
+      - text: "Saxagliptin rat (Wang 2024)"
+        href: articles/Wang_2024_saxagliptin_dpp4_rat.html
       - text: "Scopolamine (AlvarezJimenez 2016)"
         href: articles/AlvarezJimenez_2016_scopolamine.html
       - text: "Scopolamine (LiemMoolenaar 2011)"
@@ -3854,6 +3858,7 @@ articles:
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2024_amphenmulin
+  - articles/Wang_2024_saxagliptin_dpp4_rat
   - articles/Wang_2024_sugemalimab
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
