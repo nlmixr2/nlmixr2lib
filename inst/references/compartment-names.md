@@ -676,7 +676,7 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Role:** CYP3A4 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
 - **Source aliases:** none.
 - **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
-- **Notes:** Initial condition `enzyme_3a4(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`. Distinct from a tissue-resolved `enzyme_liver` / `enzyme_gut` pair, which names the organ rather than the isoenzyme; use `enzyme_3a4` when several isoenzymes are resolved within one tissue, and the organ-suffixed form when one isoenzyme is resolved across several organs.
+- **Notes:** Initial condition `enzyme_3a4(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`. Use bare `enzyme_3a4` when the model resolves several isoenzymes within a single tissue; when the *same* isoenzyme is resolved across several organs, append the organ to the isoenzyme rather than replacing it -- `enzyme_3a4_liver` / `enzyme_3a4_gut`. An organ-only form (`enzyme_liver`) is **not** used: it does not say which isoenzyme, and it would collide the moment a second isoenzyme were resolved in the same organ. Ratified 2026-08-06 with `Chen_2024_interleukin6_cyp3a_pbpk.R`.
 
 ### enzyme_3a5 (**canonical CYP3A5 enzyme pool**)
 - **Type:** compartment
@@ -684,6 +684,22 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** none.
 - **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
 - **Notes:** Initial condition `enzyme_3a5(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`. Kept separate from `enzyme_3a4` even when a source assumes identical potencies for the two, because the two isoenzymes drive different victim drugs and a user may want to break the assumption.
+
+### enzyme_3a4_liver (**canonical hepatic CYP3A4 enzyme pool**)
+- **Type:** compartment
+- **Role:** Hepatic CYP3A4 enzyme pool in a tissue-resolved enzyme-turnover model, carrying an *absolute* enzyme abundance (pmol/mg microsomal protein) rather than a fraction of baseline. Turns over as `d/dt(enzyme_3a4_liver) <- kdeg_liver * bl_enzyme_3a4_liver * fsupp - kdeg_liver * enzyme_3a4_liver`, where `fsupp` is the cytokine-driven suppression of synthesis.
+- **Source aliases:**
+  - `CYP3A4 in liver` -- Chen 2024 Table 1 notation.
+- **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R` (founding example; baseline 137 pmol/mg microsomal protein in healthy volunteers, 82.2 in rheumatoid arthritis).
+- **Notes:** Registered 2026-08-06. Initial condition is the baseline abundance `enzyme_3a4_liver(0) <- bl_enzyme_3a4_liver`, **not** 1 -- this is the absolute-abundance form, distinct from the relative-to-baseline `enzyme_3a4`. The isoenzyme is named before the organ so the two naming axes compose: use `enzyme_3a4` when several isoenzymes are resolved in one tissue, and `enzyme_3a4_<organ>` when one isoenzyme is resolved across organs. An organ-only `enzyme_liver` is deliberately not used -- it does not state the isoenzyme. Paired with `enzyme_3a4_gut`.
+
+### enzyme_3a4_gut (**canonical intestinal CYP3A4 enzyme pool**)
+- **Type:** compartment
+- **Role:** Intestinal (small-bowel) CYP3A4 enzyme pool in a tissue-resolved enzyme-turnover model, carrying an *absolute* enzyme abundance (nmol per small intestine) rather than a fraction of baseline. Turns over as `d/dt(enzyme_3a4_gut) <- kdeg_gut * bl_enzyme_3a4_gut * fsupp - kdeg_gut * enzyme_3a4_gut`.
+- **Source aliases:**
+  - `CYP3A4 in gut` -- Chen 2024 Table 1 notation.
+- **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R` (founding example; baseline 66.2 nmol/small intestine in healthy volunteers, 40.0 in rheumatoid arthritis).
+- **Notes:** Registered 2026-08-06. Initial condition `enzyme_3a4_gut(0) <- bl_enzyme_3a4_gut`. Kept separate from `enzyme_3a4_liver` because the gut pool has both a different baseline unit (an amount per organ, not a per-mg-protein density) and a different degradation half-life, and because intestinal first-pass CYP3A4 is the arm that drives oral victim-drug interactions. See `enzyme_3a4_liver` for the naming rule.
 
 ---
 

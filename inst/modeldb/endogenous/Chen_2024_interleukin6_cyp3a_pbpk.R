@@ -22,13 +22,13 @@ Chen_2024_interleukin6_cyp3a_pbpk <- function() {
       specimen = "plasma",
       verified = TRUE
     ),
-    enzyme_liver = list(
+    enzyme_3a4_liver = list(
       analyte  = "cytochrome P450 3A4",
       units    = "pmol/mg microsomal protein",
       specimen = "tissue",
       verified = TRUE
     ),
-    enzyme_gut = list(
+    enzyme_3a4_gut = list(
       analyte  = "cytochrome P450 3A4",
       units    = "nmol/small intestine",
       specimen = "tissue",
@@ -80,8 +80,8 @@ Chen_2024_interleukin6_cyp3a_pbpk <- function() {
     # (Table 1 footnote f), and Figure 4c reports the reduction from the
     # healthy-volunteer baseline. Both cancel out of the relative-activity
     # outputs cyp3aLiver and cyp3aGut.
-    bl_enzyme_liver <- fixed(137); label("Baseline hepatic CYP3A4 abundance in healthy volunteers (pmol/mg microsomal protein)")  # Table 1: CYP3A4 in liver in HVs 137 pmol/mg-protein; the rheumatoid-arthritis population value is 82.2
-    bl_enzyme_gut <- fixed(66.2); label("Baseline intestinal CYP3A4 abundance in healthy volunteers (nmol/small intestine)")  # Table 1: CYP3A4 in gut in HVs 66.2 nmol/small intestine; the rheumatoid-arthritis population value is 40.0
+    bl_enzyme_3a4_liver <- fixed(137); label("Baseline hepatic CYP3A4 abundance in healthy volunteers (pmol/mg microsomal protein)")  # Table 1: CYP3A4 in liver in HVs 137 pmol/mg-protein; the rheumatoid-arthritis population value is 82.2
+    bl_enzyme_3a4_gut <- fixed(66.2); label("Baseline intestinal CYP3A4 abundance in healthy volunteers (nmol/small intestine)")  # Table 1: CYP3A4 in gut in HVs 66.2 nmol/small intestine; the rheumatoid-arthritis population value is 40.0
 
     # -----------------------------------------------------------------------
     # Between-subject variability.
@@ -151,19 +151,19 @@ Chen_2024_interleukin6_cyp3a_pbpk <- function() {
     # -----------------------------------------------------------------------
     fsupp <- 1 + (emin - 1) * Cc / (ec50 + Cc)
 
-    d/dt(enzyme_liver) <- kdeg_liver * bl_enzyme_liver * fsupp - kdeg_liver * enzyme_liver
-    d/dt(enzyme_gut) <- kdeg_gut * bl_enzyme_gut * fsupp - kdeg_gut * enzyme_gut
+    d/dt(enzyme_3a4_liver) <- kdeg_liver * bl_enzyme_3a4_liver * fsupp - kdeg_liver * enzyme_3a4_liver
+    d/dt(enzyme_3a4_gut) <- kdeg_gut * bl_enzyme_3a4_gut * fsupp - kdeg_gut * enzyme_3a4_gut
 
-    enzyme_liver(0) <- bl_enzyme_liver
-    enzyme_gut(0) <- bl_enzyme_gut
+    enzyme_3a4_liver(0) <- bl_enzyme_3a4_liver
+    enzyme_3a4_gut(0) <- bl_enzyme_3a4_gut
 
     # -----------------------------------------------------------------------
     # Relative CYP3A activity, as a fraction of the untreated baseline. These
     # are the quantities the paper plots (Figures 3b, 4c, 4d) and the ones the
     # vignette validates; the absolute abundances cancel out of them.
     # -----------------------------------------------------------------------
-    cyp3aLiver <- enzyme_liver / bl_enzyme_liver
-    cyp3aGut <- enzyme_gut / bl_enzyme_gut
+    cyp3aLiver <- enzyme_3a4_liver / bl_enzyme_3a4_liver
+    cyp3aGut <- enzyme_3a4_gut / bl_enzyme_3a4_gut
 
     Cc ~ prop(propSd)
   })
