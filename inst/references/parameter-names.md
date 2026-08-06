@@ -244,6 +244,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`.
 - **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit.
 
+### lkel_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying elimination rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale rate constant governing how fast a time-varying elimination rate constant relaxes from its value at t = 0 toward its asymptote, in the exponential form `kel(t) = kel * (1 + kel_exp_famp * (1 - exp(-kel_exp_kdes * t)))` (1 / time). `log(2) / kel_exp_kdes` is the half-life of the change.
+- **Source aliases:**
+  - `ln(kappa_k)` -- used in `Schreib_2024_busulfan.R` (paper `theta_kappa_k`).
+- **Example models:** `Schreib_2024_busulfan.R` (`lkel_exp_kdes = -2.965`, giving 0.0516 1/h and a 13.4 h half-life for the decline in busulfan `k` and `CL` over a conditioning course).
+- **Notes:** The `kel` counterpart of the registered `cl_exp_kdes` role in the time-varying-clearance family; reuses the `_kdes` role token deliberately so both families are found by the same stem. Ratified on 2026-08-05 (task `oare_PMC11154452` sidecar question q1, answer A).
+
 ### ltlag (**canonical log-transformed absorption lag time**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale absorption lag time before drug enters the depot (time).
@@ -376,6 +384,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `kp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `ps_elim`, `pc_elim` -- paper-named (Wilson 2015 p_S / p_C) bare drug-specific K-PD elim rates; replaced 2026-05-30 by `kel_sunitinib` / `kel_irinotecan`.
 - **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`.
+
+### kel_exp_kdes (**canonical bare decay-rate constant of a time-varying elimination rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lkel_exp_kdes`: the rate constant at which a time-varying elimination rate constant relaxes toward its asymptote (1 / time).
+- **Source aliases:**
+  - `kappa_k` -- used in `Schreib_2024_busulfan.R`.
+- **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_kdes = exp(lkel_exp_kdes) = 0.0516 1/h`).
+- **Notes:** Bare counterpart of `lkel_exp_kdes`; see that entry for the functional form. The sibling `kel_exp_famp` is registered under "Paper-named mechanistic parameters" instead of here, because it is signed and must never be log-transformed. Ratified on 2026-08-05 (task `oare_PMC11154452` sidecar question q1, answer A).
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk
@@ -561,6 +577,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 ## Paper-named mechanistic parameters
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
+
+### kel_exp_famp (**canonical fractional amplitude of a time-varying elimination rate constant**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fractional amplitude of an exponential change in the elimination rate constant over a course of therapy: `kel(t) = kel * (1 + kel_exp_famp * (1 - exp(-kel_exp_kdes * t)))`, so `kel(0) = kel`, `kel(inf) = kel * (1 + kel_exp_famp)`, and a negative value means `kel` (and hence `CL`) falls over time.
+- **Source aliases:**
+  - `dk` -- used in `Schreib_2024_busulfan.R` (paper `theta_dk1`).
+- **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_famp = -0.167`, a 16.7% average fall in busulfan `k` and `CL` at steady state; carries its own additive IIV `etakel_exp_famp` and an additive covariate effect `e_hlhxlp_kel_exp_famp = -0.145` that takes the amplitude to -0.312).
+- **Notes:** `_famp` is the fractional-amplitude role token, introduced because the registered `cl_exp_` time-varying-clearance family parameterises by an absolute decaying component (`cl_exp_inf` + `cl_exp_component`) rather than by a fraction of the baseline. Registered as `paper-named-param` rather than `bare-pk` precisely because it is signed: it is estimated on the natural scale, is typically negative, and must NEVER be log-transformed (`bare-pk` makes `checkModelConventions()` demand an `l`-prefixed form). It is additive in its covariate and random-effect terms for the same reason. Prefer this fractional parameterisation over reparameterising into `cl_exp_inf` / `cl_exp_component` whenever the source estimates `V` and `kel` separately with *different* covariate sets, because the absolute-component form is a product of the two and entangles their covariates -- in the founding model the infusion-duration covariate has opposite signs on `ln(V)` and `ln(k)`, so the product would cancel it. The sibling decay rate is `kel_exp_kdes` / `lkel_exp_kdes` in the bare and log-transformed PK sections. The parallel `cl_exp_famp` was explicitly considered and NOT registered (sidecar option C, declined); add it only when a source paper needs it. Ratified on 2026-08-05 (task `oare_PMC11154452` sidecar question q1, answer A).
 
 ### kd (**canonical mechanistic dissociation / dissociation-like rate**)
 - **Type:** paper-named-param
