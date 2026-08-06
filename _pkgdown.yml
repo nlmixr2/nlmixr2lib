@@ -462,10 +462,14 @@ navbar:
         href: articles/Shi_2018_ceftazidime.html
       - text: "Ceftazidime (Zieck 2023)"
         href: articles/Zieck_2023_ceftazidime.html
+      - text: "Ceftazidime avibactam control (Zazo 2024)"
+        href: articles/Zazo_2024_ceftazidime_avibactam.html
       - text: "Ceftazidime avibactam fosfomycin hfim (Kroemer 2024)"
         href: articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin.html
       - text: "Ceftazidime avibactam fosfomycin tkc (Kroemer 2024)"
         href: articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin.html
+      - text: "Ceftazidime avibactam icu (Zazo 2024)"
+        href: articles/Zazo_2024_ceftazidime_avibactam.html
       - text: "Ceftazidime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Ceftobiprole (Cojutti 2023)"
@@ -4305,6 +4309,7 @@ articles:
   - articles/Yukawa_2002_clonazepam_pediatric
   - articles/Zandvliet_2008_carboplatin
   - articles/Zandvliet_2016_corifollitropin_alfa
+  - articles/Zazo_2024_ceftazidime_avibactam
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
   - articles/Zeng_2009_acyclovir
