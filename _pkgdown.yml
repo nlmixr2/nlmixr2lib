@@ -748,6 +748,10 @@ navbar:
         href: articles/Zhang_2015_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
         href: articles/Wojciechowski_2022_domagrozumab.html
+      - text: "Donepezil im (Khwarg 2024)"
+        href: articles/Khwarg_2024_donepezil.html
+      - text: "Donepezil oral (Khwarg 2024)"
+        href: articles/Khwarg_2024_donepezil.html
       - text: "Donidalorsen (Diep 2026)"
         href: articles/Diep_2026_donidalorsen.html
       - text: "Donidalorsen (Singh 2025)"
@@ -3607,6 +3611,7 @@ articles:
   - articles/Kerbusch_2000_ifosfamide
   - articles/Kervezee_2014_quinidine_rat
   - articles/Khan_2015_ciprofloxacin
+  - articles/Khwarg_2024_donepezil
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2008_aripiprazole
   - articles/Kim_2015_paroxetine

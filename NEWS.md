@@ -24,6 +24,8 @@
 
 - Add Ait-Oudhia 2024 sotatercept ([doi:10.1002/psp4.13166](https://doi.org/10.1002/psp4.13166)) - healthy post-menopausal women and patients with pulmonary arterial hypertension.
 
+- Add Khwarg 2024 donepezil ([doi:10.1007/s40120-024-00643-4](https://doi.org/10.1007/s40120-024-00643-4)) - healthy adult men given oral tablets or long-acting intramuscular GB-5001 injections.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
