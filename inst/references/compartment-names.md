@@ -233,6 +233,27 @@ The `brain_<region>` namespace was adopted 2026-05-28 to disambiguate brain-anat
 - **Source aliases:** none.
 - **Example models:** `Westerhout_2013_quinidine.R` (founding example; physiological volume `V_SAS` = 180 uL in the rat; this compartment closes the CSF loop by feeding back into the plasma mass balance).
 
+### brain_icf (**canonical brain intracellular-fluid compartment**)
+- **Type:** compartment
+- **Role:** Brain intracellular fluid (the aggregate cytosolic space of all brain cells) in whole-CNS PBPK models that resolve intracellular from extracellular brain drug distribution. Drug reaches it only through the brain cell membrane (`brain_cell_membrane`), never directly from `brain_ecf`, and exchanges onward with the acidic lysosomal space (`brain_lysosome`). Carried as a total unbound concentration of which the pH-dependent fraction `PHF_ICF` is uncharged; the mouse volume is 80 percent of total brain volume (288 uL).
+- **Source aliases:** `brainICF`, `brain_ICF`, `ICF`.
+- **Example models:** `Saleh_2023_quinidine_mouse_pbpk.R` (founding example; the LeiCNS-PK3.0 mouse family, 10 drugs).
+- **Notes:** Distinct from the membrane-limited PBPK sub-compartment pattern `int_brain` (`pbpkSubCompartmentRegex`), which denotes a generic intracellular organ sub-compartment in whole-body PBPK models. `brain_icf` is the brain-specific role under the `brain_<region>` namespace and is paired with `brain_ecf`, `brain_cell_membrane` and `brain_lysosome` as one mechanistic intra-brain unit.
+
+### brain_cell_membrane (**canonical brain cell-membrane phospholipid compartment**)
+- **Type:** compartment
+- **Role:** Non-specific phospholipid binding compartment representing the brain cell membranes, introduced in LeiCNS-PK3.0 to replace the instantaneous "binding factor" of LeiCNS-PK1.0. It sits between `brain_ecf` and `brain_icf` and exchanges with BOTH faces using the same water-to-oil / oil-to-water clearance pair (`CL_wo` = `P0` x `SA_BCM`, `CL_ow` = `CL_wo` / 10^logP), so at equilibrium the membrane-to-ECF concentration ratio equals the octanol/water partition coefficient. Its volume is the brain phospholipid volume fraction (0.05) times total brain volume.
+- **Source aliases:** `BCM`, `brain_BCM`, `brainCellMembrane`, `phospholipid`.
+- **Example models:** `Saleh_2023_quinidine_mouse_pbpk.R` (founding example; the LeiCNS-PK3.0 mouse family, 10 drugs).
+- **Notes:** Named for the anatomical structure rather than the binding substance so it composes with the `brain_<region>` namespace. Because equilibration across the membrane is fast (half-life well under a minute for lipophilic drugs), this state is numerically near-instantaneous; it is nonetheless carried explicitly because it is what makes the intra-brain steady-state identity `P_oct/water = C_BCM / (C_ECF x PHF_ECF)` hold.
+
+### brain_lysosome (**canonical brain lysosomal compartment**)
+- **Type:** compartment
+- **Role:** Aggregate acidic lysosomal space of the brain cells (pH 5.5) in whole-CNS PBPK models that account for lysosomal trapping of basic drugs. Exchanges only with `brain_icf` across the lysosomal membrane at `Q_LYSO` = `P0` x `SA_LYSO`, with the neutral fraction on each side (`PHF_ICF`, `PHF_LYS`) gating the transfer; the large pH gradient is what drives accumulation of bases. Mouse volume is 1.25 percent of the brain ICF volume (3.6 uL).
+- **Source aliases:** `lysosome`, `LYSO`, `brain_LYS`.
+- **Example models:** `Saleh_2023_quinidine_mouse_pbpk.R` (founding example; the LeiCNS-PK3.0 mouse family, 10 drugs).
+- **Notes:** Prefixed under the `brain_<region>` namespace even though lysosomes are subcellular rather than anatomical regions, so that the whole intra-brain unit (`brain_ecf` / `brain_cell_membrane` / `brain_icf` / `brain_lysosome`) shares one prefix. A non-brain lysosomal compartment in a whole-body PBPK model would need its own registered name.
+
 ### brain_deep (**canonical deep brain compartment**)
 - **Type:** compartment
 - **Role:** Deep brain tissue compartment in brain-PBPK extractions.
@@ -241,9 +262,10 @@ The `brain_<region>` namespace was adopted 2026-05-28 to disambiguate brain-anat
 
 ### brain_vascular (**canonical brain vascular compartment**)
 - **Type:** compartment
-- **Role:** Drug in cerebral capillary blood (volume `Vbv`, fed by cerebral blood flow `CLbv` from systemic central) in hybrid physiology-based PK-PD models that resolve the blood-brain barrier transport as two coupled states.
-- **Source aliases:** none.
-- **Example models:** `Johnson_2011_olanzapine_rat.R`.
+- **Role:** Drug in cerebral capillary blood (volume `Vbv`, fed by cerebral blood flow `CLbv` from systemic central) in hybrid physiology-based PK-PD models that resolve the blood-brain barrier transport as two coupled states. In whole-CNS PBPK models this is also the brain microvasculature: the intravascular space that exchanges with systemic plasma at cerebral blood flow `Q_CBF` and is the donor compartment for BOTH the blood-brain barrier and the blood-CSF barrier.
+- **Source aliases:** `brain_MV`, `brainMV`, `MV`, `microvasculature`.
+- **Example models:** `Johnson_2011_olanzapine_rat.R`; `Saleh_2023_quinidine_mouse_pbpk.R` (LeiCNS-PK3.0 mouse family, where the compartment is the paper's `brainMV`, volume 5 uL).
+- **Notes:** The LeiCNS-PK3.0 family's `brainMV` is this role, not a new one -- it holds the total drug concentration in cerebral capillary blood and the unbound driving concentration is `fu_plasma` times the total. A separate `brain_mv` canonical was proposed during extraction of the LeiCNS mouse family and rejected as a synonym of this entry.
 
 ### brain_extravascular (**canonical brain extravascular compartment**)
 - **Type:** compartment

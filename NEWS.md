@@ -2,7 +2,11 @@
 
 # development version
 
-- Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
+- Add Saleh 2023 LeiCNS-PK3.0 mouse CNS PBPK models for cyclophosphamide,
+  quinidine, erlotinib, phenobarbital, colchicine, ribociclib, topotecan,
+  cefadroxil, prexasertib and methotrexate
+  ([doi:10.1007/s11095-023-03554-5](https://doi.org/10.1007/s11095-023-03554-5))
+  -- laboratory mice (CD1 nude, NMRI, FVB, ICR, C57BL/6 Pept2+/+).
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28

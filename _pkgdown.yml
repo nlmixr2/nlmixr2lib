@@ -420,6 +420,8 @@ navbar:
         href: articles/Kleideiter_2018_cebranopadol.html
       - text: "Cediranib (Li 2017)"
         href: articles/Li_2017_cediranib.html
+      - text: "Cefadroxil mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Cefathiamidine (Zhi 2018)"
         href: articles/Zhi_2018_cefathiamidine.html
       - text: "Cefepime (Capparelli 2005)"
@@ -558,6 +560,8 @@ navbar:
         href: articles/Pejcic_2024_clopidogrel.html
       - text: "Clozapine (Li 2012)"
         href: articles/Li_2012_clozapine.html
+      - text: "Colchicine mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Colistin (Jacobs 2016)"
         href: articles/Jacobs_2016_colistin.html
       - text: "Colistin (Karaiskos 2015)"
@@ -592,6 +596,8 @@ navbar:
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
       - text: "Cyclophosphamide mouse (Campagne 2019)"
         href: articles/Campagne_2019_cyclophosphamide_mouse.html
+      - text: "Cyclophosphamide mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Cyclosporin (Debord 2001)"
         href: articles/Debord_2001_cyclosporin.html
       - text: "Cyclosporine (Philippe 2015)"
@@ -884,6 +890,8 @@ navbar:
         href: articles/vanHasselt_2013_eribulin.html
       - text: "Eribulin (vanHasselt 2015)"
         href: articles/vanHasselt_2015_eribulin.html
+      - text: "Erlotinib mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Ertapenem (Eyler 2014)"
         href: articles/Eyler_2014_ertapenem.html
       - text: "Ertapenem (Lakota 2018)"
@@ -1618,6 +1626,8 @@ navbar:
         href: articles/Ruhs_2012_methotrexate.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
+      - text: "Methotrexate mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Methoxsalen blood (Billard 1995)"
         href: articles/Billard_1995_methoxsalen.html
       - text: "Methoxsalen plasma (Billard 1995)"
@@ -1986,6 +1996,8 @@ navbar:
         href: articles/Betts_2019_pf_06671008.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
+      - text: "Phenobarbital mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Phenytoin (Hennig 2015)"
         href: articles/Hennig_2015_phenytoin.html
       - text: "Phenytoin (Tanaka 2012)"
@@ -2066,6 +2078,8 @@ navbar:
         href: articles/Gaohua_2012_pregnancy_pbpk.html
       - text: "Pretomanid mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
+      - text: "Prexasertib mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Procainamide (Mohamed 2013)"
         href: articles/Mohamed_2013_procainamide.html
       - text: "Propofol (Chi 2018)"
@@ -2122,6 +2136,8 @@ navbar:
         href: articles/Westerhout_2013_quinidine.html
       - text: "Quinidine QT (Shin 2006)"
         href: articles/Shin_2006_quinidine_QT.html
+      - text: "Quinidine mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Quinidine rat (Kervezee 2014)"
         href: articles/Kervezee_2014_quinidine_rat.html
       - text: "Quinidine rat (Syvanen 2012)"
@@ -2190,6 +2206,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Ribavirin (Mulder 2025)"
         href: articles/Mulder_2025_ribavirin.html
+      - text: "Ribociclib mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Barnett 2018)"
@@ -2630,6 +2648,8 @@ navbar:
         href: articles/Leger_2004_topotecan.html
       - text: "Topotecan (Roberts 2016)"
         href: articles/Roberts_2016_topotecan.html
+      - text: "Topotecan mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Torsemide (Jeong 2022)"
         href: articles/Jeong_2022_torsemide.html
       - text: "Tralokinumab (Baverel 2015)"
@@ -3915,6 +3935,7 @@ articles:
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
   - articles/Sakurai_2007_lansoprazole
+  - articles/Saleh_2023_leicns_pk30_mouse_brain
   - articles/Salem_2014_efavirenz
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
