@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Qi 2024 vosoritide ([doi:10.1007/s40262-024-01371-6](https://doi.org/10.1007/s40262-024-01371-6)) - children with achondroplasia aged 0.95-15 years.
+- Add Schreib 2024 busulfan ([doi:10.3390/pharmaceutics16010013](https://doi.org/10.3390/pharmaceutics16010013)) - pediatric patients undergoing hematopoietic stem cell transplantation.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28

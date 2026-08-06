@@ -4254,6 +4254,28 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Wu_2024_inotuzumab.R` (additive fractional-change effects on CL1 (-0.767) and CL2 (-0.362), and gates the BLSTABL and AGE effects on kdes; for kdes itself a -0.924 fractional change for BCP-ALL).
 - **Notes:** Used when a population PK model pools BCP-ALL patients with a non-BCP-ALL reference (e.g., Wu 2024: pooled adult B-cell NHL + adult BCP-ALL + pediatric BCP-ALL). Scope: specific because the complement reference category is paper-defined (Wu 2024 reference is pooled adult B-cell NHL). The "ALL effect" theta in Wu 2024 conflates two physiologically distinct sources of variation -- B-cell tumor type (NHL vs ALL surface CD22 burden) and bioanalytical method (ELISA for adult NHL vs HPLC-MS for ALL) -- and cannot be split with the available data; document this confounding when comparing across populations. Ratified canonically on 2026-04-26.
 
+### DIS_ALL (**canonical for acute lymphoblastic leukemia disease-state indicator**)
+- **Description:** 1 = patient with acute lymphoblastic leukemia (ALL) of any lineage, 0 = any other indication pooled in the source analysis. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-ALL; the complement group is paper-defined -- for Schreib 2024 the reference is every other hematopoietic-stem-cell-transplantation indication in the cohort, i.e. AML, chronic granulomatous disease, HLH/XLP, hemoglobinopathies, primary immunodeficiencies, metabolic diseases, neuroblastoma, and others).
+- **Source aliases:**
+  - `ALL` -- used in `Schreib_2024_busulfan.R` (Table 3 covariate `theta_k5`, effect of ALL on `ln(k)`; the source dataset carries a nine-level `diagnosis group` factor and the canonical column is `as.integer(DiaGroup == "ALL")`).
+- **Example models:** `Schreib_2024_busulfan.R` (exponential effect on the elimination rate constant: `exp(-0.210 * DIS_ALL)`, about a 19% lower `k` and `CL`; 13 of 124 patients, 10%).
+- **Notes:** Lineage-agnostic ALL indicator. Distinct from `DIS_BCPALL`, which is specifically B-cell *precursor* ALL against a paper-defined reference of B-cell non-Hodgkin lymphoma or other non-BCP-ALL indication; `DIS_BCPALL` additionally conflates disease type with a bioanalytical-assay difference in its founding model and is not interchangeable with `DIS_ALL`. Use `DIS_ALL` when the source pools all ALL lineages against a general non-ALL reference. Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-08-05 (task `oare_PMC11154452` sidecar question q3, answer A) alongside the Schreib 2024 busulfan extraction.
+
+### DIS_HLHXLP (**canonical for hemophagocytic lymphohistiocytosis / X-linked lymphoproliferative disease indicator**)
+- **Description:** 1 = patient with hemophagocytic lymphohistiocytosis (HLH) or X-linked lymphoproliferative disease (XLP), 0 = any other indication pooled in the source analysis. Time-fixed per subject. The two diagnoses are pooled into one indicator because the source analyses that use it treat them as a single disease group.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (neither HLH nor XLP; the complement group is paper-defined -- for Schreib 2024 the reference is every other hematopoietic-stem-cell-transplantation indication in the cohort).
+- **Source aliases:**
+  - `HLH/XLP` -- used in `Schreib_2024_busulfan.R` (Table 3 covariate `theta_dk2`; the source dataset carries a nine-level `diagnosis group` factor and the canonical column is `as.integer(DiaGroup == "HLH/XLP")`).
+- **Example models:** `Schreib_2024_busulfan.R` (additive effect of -0.145 on `kel_exp_famp`, the fractional amplitude of the decline in the elimination rate constant over a course of therapy, taking it from -0.167 to -0.312, i.e. from a 17% to a 31% fall in `k` and `CL`; 14 of 124 patients, 11%).
+- **Notes:** Registered as a single pooled token without an internal underscore so that covariate-effect parameter names stay unambiguous (`e_hlhxlp_kel_exp_famp`). Splitting into separate `DIS_HLH` and `DIS_XLP` columns was considered and declined: the founding source pools the two into one 14-patient diagnosis group and estimates a single coefficient, so a split cannot be sourced from it. Register `DIS_HLH` / `DIS_XLP` separately only if a future source estimates them apart. Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-08-05 (task `oare_PMC11154452` sidecar question q3, answer A) alongside the Schreib 2024 busulfan extraction.
+
 ### DIS_BCELLNHL (**canonical for B-cell non-Hodgkin lymphoma disease-state indicator**)
 - **Description:** 1 = patient with B-cell non-Hodgkin lymphoma (B-cell NHL), 0 = non-B-cell-NHL subject (the complement group in a pooled multi-indication PK analysis of hematologic malignancies). Time-fixed per subject. Used when a population PK model treats B-cell NHL as its own indicator alongside a sibling CLL/SLL reference and other lymphoma / leukemia strata.
 - **Units:** (binary)
@@ -10035,16 +10057,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Abrantes_2017_moroctocog.R` (multiplicative effect on CL: `(1 - 0.347 * STUDY_B1831090)` so B1831090 subjects have ~34.7% lower CL than the other 12 studies; Abrantes 2017 Table 2 also reports a 95% CI of -40.7% to -24.2%).
 - **Notes:** Specific scope because the contrast is tied to the Abrantes 2017 pooled-analysis design. Subject-level / time-fixed; set once from the trial identifier on each subject record. Inclusion in the model allows the typical PK parameters to describe the remaining 12 studies, with B1831090 captured by the indicator (Abrantes 2017 Discussion). Ratified canonically on 2026-06-21 alongside the Abrantes 2017 moroctocog extraction.
 
-### HEPARIN_RT (**canonical for heparin-chromatography retention time of the administered antibody**)
-- **Description:** Retention time (minutes) at which the administered monoclonal antibody elutes from a heparin affinity column under a defined salt gradient, measured at the centre of the elution peak. A high-throughput surrogate for charge-mediated nonspecific binding, and the strongest in-vitro predictor of fast mAb clearance in the Liu 2023 developability panel. Enters the model as the driver of a sigmoidal relationship for the antibody-specific pinocytosis-uptake scaling coefficient of the Shah & Betts platform PBPK model.
-- **Units:** min
+### TINF (**canonical for the duration of an intravenous infusion**)
+- **Description:** Duration of the intravenous infusion of the dose record, in hours. Continuous. Used as a *covariate* when a source analysis estimates an effect of the administration protocol on PK parameters; this is separate from, and in addition to, the physical infusion duration carried on the dose record itself.
+- **Units:** h
 - **Type:** continuous
-- **Scope:** specific
-- **Reference category:** NULL -- continuous.
+- **Scope:** general
+- **Reference category:** none (continuous). Source analyses typically enter it as a linear deviation from a paper-specific reference duration, so record the reference in the model's `covariateData[["TINF"]]$notes` rather than assuming a library-wide default.
 - **Source aliases:**
-  - `Heparin_RT` -- Liu 2023 Supplementary Table S1 column name.
-- **Example models:** `Liu_2023_mAb_mouse_pbpk.R`.
-- **Notes:** Unlike every other covariate in this register, the value is a property of the **administered molecule** rather than of the subject: in an inter-antibody-variability analysis many molecules are dosed under one protocol and a measured in-vitro attribute of each molecule explains the between-molecule spread in PK. Operationally it still behaves like an ordinary covariate column -- every record for a given animal carries the retention time of the antibody that animal received, and the value is constant within subject. Assay-condition dependent, so retention times are only comparable within a single column chemistry and gradient. Liu 2023 used a HiTrap Heparin High Performance 1 mL column (Cytiva 17040601), 0.4 mg antibody loaded in 50 mM Tris pH 7.6 / 5 mM NaCl, washed 5 column volumes, then eluted on a linear 5-400 mM NaCl gradient over 20 column volumes; the reported value is the elution-peak centre. Observed range in that panel: 2.92-31.5 min (56-antibody training set) and 15.1-32.6 min (14-antibody validation set); the paper's flag threshold for a fast-clearing antibody is 16.5 min. A related but distinct readout, `Heparin_pB_buffer` (percent B buffer at elution), was measured in the same runs and is highly correlated with `HEPARIN_RT`; it is not registered here because no extracted model uses it. Filed under this section rather than founding a separate molecule-attribute family; register further developability readouts (FcRn chromatography retention time, AC-SINS, HIC retention time, BVP, calculated pI) here as siblings if and when an extracted model uses them.
+  - `Tinf` -- used in `Schreib_2024_busulfan.R` (Table 3 covariates `theta_V3` and `theta_k6`, both entering as `(Tinf - 3 h)`).
+- **Example models:** `Schreib_2024_busulfan.R` (exponential effects on both the central volume, `exp(0.226 * (TINF - 3))`, and the elimination rate constant, `exp(-0.161 * (TINF - 3))`; the center changed its standard busulfan infusion from 3 h to 4 h in October 2014, so only two values occur in that cohort and the covariate term is 0 or 1).
+- **Notes:** Matches the near-universal pharmacometric symbol T_inf. **Supply this as an explicit data column even though the event table already encodes the infusion duration** -- rxode2 takes the physical infusion duration from the `dur` / `rate` fields of the dose record and does not expose it to `model()`, so a covariate effect on infusion duration needs its own column. Registered with general scope: the concept is protocol-independent even though any particular reference duration is paper-specific. Opposite-signed effects on volume and on the elimination rate constant (as in Schreib 2024) are a recognised signature of a one-compartment model absorbing a distribution phase that a shorter infusion exposes -- clearance is then nearly independent of infusion duration; note that interpretation when it applies rather than reading the two effects as independent physiology. Ratified canonically on 2026-08-05 (task `oare_PMC11154452` sidecar question q2, answer A) alongside the Schreib 2024 busulfan extraction.
 
 ## Occasion / period (IOV)
 
