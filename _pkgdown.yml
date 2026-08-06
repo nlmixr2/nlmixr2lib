@@ -330,6 +330,8 @@ navbar:
         href: articles/Suri_2018_brentuximab.html
       - text: "Brentuximab (Zhou 2025)"
         href: articles/Zhou_2025_brentuximab.html
+      - text: "Brigatinib (Hanley 2024)"
+        href: articles/Hanley_2024_brigatinib.html
       - text: "Brivaracetam (Schoemaker 2017)"
         href: articles/Schoemaker_2017_brivaracetam.html
       - text: "Brodalumab (Timmermann 2019)"
@@ -3156,6 +3158,7 @@ articles:
   - articles/Han_2016_bevacizumab
   - articles/Han_2018_methionineMetabolismCycle
   - articles/Hanberg_2018_meropenem
+  - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_OS
   - articles/Hansson_2013_sunitinib_dbp
   - articles/Hansson_2013_sunitinib_hfs
