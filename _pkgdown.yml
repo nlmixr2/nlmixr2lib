@@ -2452,6 +2452,8 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sorafenib (Jain 2011)"
         href: articles/Jain_2011_sorafenib.html
+      - text: "Sotatercept (AitOudhia 2024)"
+        href: articles/AitOudhia_2024_sotatercept.html
       - text: "Sparsentan (Wada 2023)"
         href: articles/Wada_2023_sparsentan.html
       - text: "Spectinamide 1599 mouse pbpk (Parmar 2023)"
@@ -3061,6 +3063,7 @@ articles:
   - articles/Ai_2024_ractopamine_goat_pbpk
   - articles/Ait-Oudhia_2016_sunitinib
   - articles/AitOudhia_2012_canakinumab
+  - articles/AitOudhia_2024_sotatercept
   - articles/Akbar_2025_voriconazole
   - articles/Aksenov_2018_uricAcid
   - articles/AlSallami_2016_unfractionatedHeparin
