@@ -29,6 +29,8 @@
   parameters where `KON..` is the source paper's name for an EC50 or an Emax.
   The reasoning is recorded in `inst/references/parameter-names.md`.
 
+- Add Kim 2024 meropenem ([doi:10.3390/antibiotics13090849](https://doi.org/10.3390/antibiotics13090849)) - healthy Korean adults with normal renal function.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.

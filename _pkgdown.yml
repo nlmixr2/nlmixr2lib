@@ -1468,6 +1468,8 @@ navbar:
         href: articles/Germovsek_2018_meropenem.html
       - text: "Meropenem (Hanberg 2018)"
         href: articles/Hanberg_2018_meropenem.html
+      - text: "Meropenem (Kim 2024)"
+        href: articles/Kim_2024_meropenem.html
       - text: "Meropenem (Padari 2012)"
         href: articles/Padari_2012_meropenem.html
       - text: "Meropenem (Shekar 2014)"
@@ -3306,6 +3308,7 @@ articles:
   - articles/Kim_2017_fimasartan
   - articles/Kim_2018_tacrolimus
   - articles/Kim_2023_pyrazinamide
+  - articles/Kim_2024_meropenem
   - articles/Kimura_2023_glucarpidase
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleiber_2017_clonidine
