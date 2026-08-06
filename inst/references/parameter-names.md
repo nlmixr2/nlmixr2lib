@@ -1100,6 +1100,54 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Chen_2023_tilmicosin.R` (`mic` = 0.25 ug/mL, the CLSI broth-microdilution MIC of *Pasteurella multocida* C44-15, driving an `AUC24h/MIC` sigmoidal Emax); `Beredaki_2023_micafungin_clsi.R` (`mic` = 0.008 mg/L, CLSI M27 median MIC of *Candida albicans* CA 580) and `Beredaki_2023_micafungin_eucast.R` (`mic` = 0.016 mg/L, the EUCAST E.Def 7.3 median MIC of the same isolate), both driving an `fAUC0-24/MIC` sigmoidal Emax.
 - **Notes:** Ratified for AUC/MIC-index models alongside the Chen 2023 tilmicosin extraction; this register entry was written with the Beredaki 2023 micafungin extraction. Distinct from `ec50` / `lec50`: `ec50` is the *fitted* index value producing half-maximal effect (and in an `AUC/MIC`-indexed model is unitless, or has units of time), whereas `mic` is a *measured* concentration used to form the index in the first place. In a model where the index is a free-drug exposure, apply the unbound fraction (`fu`) to the exposure numerator and leave `mic` on the total-drug scale the susceptibility method actually reports.
 
+## Nested (multi-level) random effects
+
+Registered 2026-08-06 with the `Qi_2024_vosoritide.R` extraction, the first
+model in this library to carry a second hierarchical level of random effects.
+This section documents a naming pattern, not a canonical parameter, so it has
+no H3 entries and contributes nothing to the runtime name vectors.
+
+When a paper fits a **second hierarchical level** of random effects on top of
+the per-subject etas -- a between-study, between-site or between-centre random
+effect whose draw is shared by every subject in that group -- name the nested
+eta `eta<lparam>_<level>`, where `<lparam>` is the same transformed parameter
+name the subject-level eta uses and `<level>` is a short lowercase token naming
+the grouping level. Declare it in `ini()` with rxode2's native nesting syntax,
+piping the grouping column after the variance:
+
+```r
+etalcl       ~ 0.112896            # subject-level IIV on CL/F
+etalcl_study ~ 0.066049 | SIDN     # study-level (nested) random effect on CL/F
+```
+
+and add it to the same log-scale sum as the subject-level eta in `model()`:
+
+```r
+cl <- exp(lcl + etalcl + etalcl_study) * (WT / ref_wt)^e_wt_cl
+```
+
+Founding example: `Qi_2024_vosoritide.R` (`etalcl_study` and `etalvc_study`,
+nested on the `SIDN` study-identity column; Qi 2024 Sect. 2.4 eta6 / eta7).
+
+**The grouping column is a covariate register entry of its own** (see `SIDN` in
+`covariate-columns.md`), not a parameter. Because it is consumed by the `ini()`
+nesting syntax rather than by any `model()` expression,
+`checkModelConventions()` reports `covariateData[['<level>']] has an entry but
+is not referenced in model()`. That warning is structural for a nesting level.
+
+**Distinct from inter-occasion variability.** IOV indexes occasions *within* a
+subject (`OCC`, decomposed `etalcl_oc1..N` sharing one variance -- see
+`Jonsson_2011_ethambutol.R`, `Chen_2023_nemonoxacin.R`); a nested level groups
+*across* subjects, so every record of a subject shares one draw.
+
+**Two rxode2 simulation constraints apply** (verified against rxode2 5.1.3).
+The event table must contain at least two distinct grouping-column values --
+with only one level `rxSolve()` fails with `The following parameter(s) are
+required for solving: THETA[2], THETA[1]`, an error naming thetas the model does
+not have and giving no hint that the nesting is the cause. And `omega` must be
+passed explicitly (`omega = mod$omega`), because a nested omega is a *list* of
+matrices keyed by level rather than a single matrix.
+
 ## Unit spellings
 
 Registered 2026-08-03. The machine-readable `units` block wrote the same time

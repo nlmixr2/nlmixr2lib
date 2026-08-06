@@ -16,7 +16,7 @@ Qi_2024_vosoritide <- function() {
     "derive the eight-band weight-band dosing regimen of Qi 2024 Table 6.")
   reference   <- "Qi Y, Chan ML, Mould DR, Larimore K, Fisheleva E, Cherukuri A, Day J, Savarirayan R, Irving M, Bacino CA, Hoover-Fong J, Ozono K, Mohnike K, Wilcox WR, Bober MB, Henshaw J. Development of a weight-band dosing approach for vosoritide in children with achondroplasia using a population pharmacokinetic model. Clin Pharmacokinet. 2024;63(5):707-719. doi:10.1007/s40262-024-01371-6"
   vignette    <- "Qi_2024_vosoritide"
-  units       <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
   compartmentData <- list(
     depot   = list(analyte = "vosoritide", units = "ug", specimen = "administration site", verified = TRUE),
