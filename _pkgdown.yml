@@ -1886,6 +1886,8 @@ navbar:
         href: articles/Dvorackova_2023_posaconazole.html
       - text: "Posaconazole (Kohl 2010)"
         href: articles/Kohl_2010_posaconazole.html
+      - text: "Posaconazole (Shu 2024)"
+        href: articles/Shu_2024_posaconazole.html
       - text: "Posaconazole (vanIersel 2018)"
         href: articles/vanIersel_2018_posaconazole.html
       - text: "Posdinemab (PerezRuixo 2025)"
@@ -3699,6 +3701,7 @@ articles:
   - articles/Shoji_2016_cefepime
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
+  - articles/Shu_2024_posaconazole
   - articles/Sidhu_1998_artemisinin
   - articles/Siebinga_2023_lu177psma617
   - articles/Sikma_2020_tacrolimus_thoracic
