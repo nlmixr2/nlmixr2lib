@@ -938,6 +938,10 @@ navbar:
         href: articles/Goulooze_2022_finerenone.html
       - text: "Finerenone (vandenBerg 2021)"
         href: articles/vandenBerg_2021_finerenone.html
+      - text: "Finerenone egfr (Goulooze 2022)"
+        href: articles/Goulooze_2022_finerenone_uacr_egfr.html
+      - text: "Finerenone uacr (Goulooze 2022)"
+        href: articles/Goulooze_2022_finerenone_uacr_egfr.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Fluconazole (Han 2013)"
@@ -3128,6 +3132,7 @@ articles:
   - articles/Goteti_2024_SLE_mbma
   - articles/Goti_2018_vancomycin
   - articles/Goulooze_2022_finerenone
+  - articles/Goulooze_2022_finerenone_uacr_egfr
   - articles/Grasela_1985_phenobarbital
   - articles/Green_2003_enoxaparin
   - articles/Green_2005_enoxaparin

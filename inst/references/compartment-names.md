@@ -1040,6 +1040,20 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** `K`, `K+`, `serum_K`, `POTAS` -- translate to `serumK` when assembling input data; document the source-paper symbol in the model file's `description`.
 - **Example models:** `Goulooze_2022_finerenone.R` (FIDELIO-DKD Phase III PKPD turnover model for finerenone effect on serum K; founding example).
 
+### uacr, uacrObs (**canonical urine albumin-to-creatinine ratio**)
+- **Type:** compartment
+- **Role:** Urine albumin-to-creatinine ratio PD output / disease-progression state, in mg/g. Used in longitudinal albuminuria disease-progression models of chronic kidney disease, where UACR is integrated as a state whose fractional rate of change carries the progression rate and the drug effect (mineralocorticoid-receptor antagonists, SGLT2 inhibitors, RAAS inhibitors). Distinct from the covariate column `UACR`, which is the time-fixed observed BASELINE value used to scale parameters; this compartment is the modelled time course. Distinct from any drug-PK central compartment because the modelled species is an endogenous damage biomarker rather than the dosed drug. `uacrObs` is the canonical sibling name for the **observed / model-predicted** UACR when a model separates it from the integrated state -- registered for the same reason `QTcF` / `QTcS` are registered alongside `QTc`, so that a single-output model can name its observation variable directly. Use the sibling only when the two genuinely differ; when the state IS the observation, observe `uacr`.
+- **Source aliases:** `UACR`, `A(1)` (Goulooze 2022 UACR control stream, `COMP=(PROGR)`), `A(3)` (Goulooze 2022 eGFR control stream, `COMP=(PROGRUACR)`) -- translate to `uacr`. `IPREDUACR` (Goulooze 2022 `$ERROR`) -- translate to `uacrObs`.
+- **Example models:** `Goulooze_2022_finerenone_uacr.R` (founding example; FIDELIO-DKD Phase III UACR disease-progression model with a power-function finerenone effect through an effect compartment), `Goulooze_2022_finerenone_egfr.R` (same state embedded as the driver of chronic eGFR decline).
+- **Notes:** The state / observation split is load-bearing in the founding example: Goulooze 2022 integrates the drug-free natural progression of UACR (`NATUACR = A(3)` in its own `$ERROR` block) and applies the finerenone and SGLT2i effects algebraically at the observation, which is what makes those effects instantaneously reversible.
+
+### egfr, egfrObs (**canonical estimated glomerular filtration rate**)
+- **Type:** compartment
+- **Role:** Estimated glomerular filtration rate PD output / disease-progression state, in mL/min/1.73 m^2. Used in longitudinal renal-function-decline models where eGFR is integrated as a state carrying a chronic decline slope, an approach to a low-eGFR stabilisation point, and acute reversible haemodynamic drug effects. Distinct from the covariate column `CRCL`, which is the time-fixed observed BASELINE renal function used to scale parameters; this compartment is the modelled time course. `egfrObs` is the canonical sibling name for the **observed / model-predicted** eGFR when a model separates it from the integrated state; see the `uacr` / `uacrObs` entry for the rationale.
+- **Source aliases:** `eGFR`, `EGFR`, `EGFREPI`, `A(1)` (Goulooze 2022 eGFR control stream, `COMP=(PROGR)`) -- translate to `egfr`. `IPRED` of the eGFR control stream -- translate to `egfrObs`.
+- **Example models:** `Goulooze_2022_finerenone_egfr.R` (founding example; FIDELIO-DKD Phase III eGFR model with a constant chronic slope, an exponential stabilisation function toward 16.1 mL/min/1.73 m^2, a reversible acute finerenone effect via an effect compartment, and model-predicted UACR driving the chronic slope).
+- **Notes:** In the founding example the acute finerenone effect and the acute SGLT2 inhibitor effect are applied to `egfr` at the observation rather than inside `d/dt(egfr)`, which is precisely what makes the acute eGFR decline fully reversible on discontinuation.
+
 ---
 
 ## Bacterial-count PD outputs
