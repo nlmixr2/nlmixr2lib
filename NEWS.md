@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zazo 2024 ceftazidime-avibactam ([doi:10.3390/antibiotics13090861](https://doi.org/10.3390/antibiotics13090861)) — simulated non-ICU and ICU adults with renal impairment (two population-specific models).
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
