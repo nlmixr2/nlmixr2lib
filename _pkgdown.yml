@@ -1286,6 +1286,8 @@ navbar:
         href: articles/Denti_2018_levofloxacin.html
       - text: "Levofloxacin rat (Hurtado 2014)"
         href: articles/Hurtado_2014_levofloxacin_rat.html
+      - text: "Levonorgestrel (Adeojo 2024)"
+        href: articles/Adeojo_2024_levonorgestrel.html
       - text: "Ligelizumab (Bienczak 2025)"
         href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
@@ -2767,6 +2769,7 @@ articles:
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abuqayyas_2012_8C2
   - articles/Adams_1998_zalcitabine
+  - articles/Adeojo_2024_levonorgestrel
   - articles/Admiraal_2023_iminobiotin
   - articles/Agerso_2004_desmopressin
   - articles/Agoram_2006_darbepoetin_alfa

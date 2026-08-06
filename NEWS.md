@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Adeojo 2024 levonorgestrel ([doi:10.3390/pharmaceutics16081050](https://doi.org/10.3390/pharmaceutics16081050)) -- adult women, pooled across four published trials with and without efavirenz.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
