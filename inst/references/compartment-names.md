@@ -2018,6 +2018,14 @@ The corresponding transport parameters are `lkinf_rbc` / `lkeff_rbc` (first-orde
 - **Source aliases:** none.
 - **Example models:** `Jager_2011_gemtuzumab.R`.
 
+### viability (**canonical normalised cell-viability PD state**)
+- **Type:** compartment
+- **Role:** Percent cell viability of an in-vitro cytotoxicity assay, normalised to the untreated vehicle control, carried as a dynamic PD state (`d/dt(viability)`). Its baseline is the fixed or fitted `rbase` (typically 100%). Used for colorimetric / metabolic viability readouts (CCK-8, MTT, resazurin) where the measurement is an absorbance ratio and no absolute cell number is observed.
+- **Source aliases:**
+  - `R` -- Mody 2023 notation, `dR/dt = kg*R - K3*R`.
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane.R`.
+- **Notes:** Distinct from `cells`, which holds an absolute cell count or number. `cells` was explicitly considered and rejected for this role: a percentage normalised to a control is not a count, and conflating the two would make the units of a `cells` state unknowable from its name. Because the state IS the observed quantity, `viability` is also canonical as a single-output observation variable (`viability ~ add(addSd_viability)`). Ratified by operator sidecar on 2026-08-04 with the Mody 2023 breast-cancer extraction.
+
 ### lactotroph (**canonical anterior-pituitary lactotroph cells**)
 - **Type:** compartment
 - **Role:** Anterior-pituitary lactotroph cells.
@@ -2269,6 +2277,22 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Source aliases:** none.
 - **Example models:** `Wilson_2015_sunitinib_irinotecan_mouse.R`.
 - **Notes:** Full INN name (lowercase) for the same reason as `sunitinib`.
+
+### dox (**canonical doxorubicin drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Doxorubicin drug-name suffix for combination-therapy compartments, parameters and residual SDs (`central_dox`, `peripheral1_dox`, `peripheral2_dox`, `transit1_dox`, `conc_dox`, `lkmax_dox`, `lkc50_dox`, `lktr_dox`, `lkdeg_dox`, `addSd_Cc_dox`).
+- **Source aliases:**
+  - `DOX` -- Mody 2023 notation.
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`.
+- **Notes:** The source paper's own abbreviation and unambiguous across the registry. Ratified by operator sidecar on 2026-08-04 together with `dexrazoxane`.
+
+### dexrazoxane (**canonical dexrazoxane drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dexrazoxane drug-name suffix for combination-therapy compartments, parameters and residual SDs (`central_dexrazoxane`, `peripheral1_dexrazoxane`, `transit1_dexrazoxane`, `conc_dexrazoxane`, `lkmax_dexrazoxane`, `lkc50_dexrazoxane`, `lktr_dexrazoxane`, `lkdeg_dexrazoxane`, `addSd_Cc_dexrazoxane`).
+- **Source aliases:**
+  - `DEX` -- Mody 2023 notation.
+- **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`.
+- **Notes:** Deliberately spelled out in full rather than abbreviated to the paper's `DEX`, because `dex` would collide with dexamethasone and dexmedetomidine and permanently burn the token on the less common drug. The resulting asymmetry with the abbreviated `dox` is intentional; ratified by operator sidecar on 2026-08-04.
 
 ---
 
