@@ -78,7 +78,7 @@ every three weeks as a 15-min IV infusion, alone or with DEX 500 mg/m^2
 cardioprotective -- for three cycles.
 
 The same information is available programmatically, e.g.
-`rxode2::rxode(readModelDb("Mody_2023_doxorubicin_dexrazoxane_jimt1"))$population`.
+`readModelDb("Mody_2023_doxorubicin_dexrazoxane_jimt1")()$population`.
 
 # Source trace
 

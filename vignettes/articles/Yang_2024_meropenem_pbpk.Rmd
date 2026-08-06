@@ -81,7 +81,7 @@ patients with *Pseudomonas aeruginosa* infection using the reduced parameters
 encoded here.
 
 The same information is available programmatically via
-`rxode2::rxode(readModelDb("Yang_2024_meropenem_pbpk"))$population`.
+`readModelDb("Yang_2024_meropenem_pbpk")()$population`.
 
 # Source trace
 
