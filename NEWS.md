@@ -2,8 +2,6 @@
 
 # development version
 
-- Add Sharma 2023 nitrofurantoin whole-body PBPK ([doi:10.3390/pharmaceutics15092199](https://doi.org/10.3390/pharmaceutics15092199)) -- three models: rabbits, rats, and human adults.
-
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
@@ -35,9 +33,9 @@
 
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
-- Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
+- Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
 
-- Add Liu 2023 monoclonal antibody panel ([doi:10.1080/19420862.2023.2263926](https://doi.org/10.1080/19420862.2023.2263926)) - female BALB/c mice.
+- Add Zhang 2024 sertraline ([doi:10.1016/j.heliyon.2024.e25231](https://doi.org/10.1016/j.heliyon.2024.e25231)) - Chinese inpatients with psychiatric disorders, aged 11-79 years.
 
 - Add Wu 2023 SPI-62 ([doi:10.1007/s40262-023-01278-8](https://doi.org/10.1007/s40262-023-01278-8)) - healthy adults.
 
