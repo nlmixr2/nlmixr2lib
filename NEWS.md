@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Adeojo 2024 levonorgestrel ([doi:10.3390/pharmaceutics16081050](https://doi.org/10.3390/pharmaceutics16081050)) -- adult women, pooled across four published trials with and without efavirenz.
+- Add Shu 2024 posaconazole ([doi:10.1038/s41598-024-70955-w](https://doi.org/10.1038/s41598-024-70955-w)) — Chinese hematopoietic stem cell transplantation recipients on oral suspension.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
