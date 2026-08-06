@@ -1392,6 +1392,14 @@ navbar:
         href: articles/Hopkins_2015_leflunomide.html
       - text: "Lenvatinib (Gupta 2016)"
         href: articles/Gupta_2016_lenvatinib.html
+      - text: "Lenvatinib (Majid 2024)"
+        href: articles/Majid_2024_lenvatinib.html
+      - text: "Lenvatinib biomarkers (Majid 2024)"
+        href: articles/Majid_2024_lenvatinib.html
+      - text: "Lenvatinib tumor (Majid 2024)"
+        href: articles/Majid_2024_lenvatinib.html
+      - text: "Lenvatinib tumor asdeposited (Majid 2024)"
+        href: articles/Majid_2024_lenvatinib.html
       - text: "Levalbuterol (Jaworowicz 2006)"
         href: articles/Jaworowicz_2006_levalbuterol.html
       - text: "Levamisole (KreeftmeijerVegter 2015)"
@@ -3734,7 +3742,7 @@ articles:
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Macpherson_2015_rosuvastatin
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
-  - articles/Maleki_2024_brepocitinib
+  - articles/Majid_2024_lenvatinib
   - articles/MangasSanjuan_2016_axomadol
   - articles/Marathe_2023_belzutifan
   - articles/Marcantonio_2022_efa
