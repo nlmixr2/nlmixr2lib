@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhang 2024 tucatinib ([doi:10.1007/s40262-024-01412-0](https://doi.org/10.1007/s40262-024-01412-0)) - healthy participants and patients with HER2+ metastatic breast or colorectal cancer.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same

@@ -5242,6 +5242,18 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Lu_2022_patritumab.R` (multiplicative fractional effect 0.811 on CLlin of DXd-conjugated antibody for breast-cancer patients vs the NSCLC reference; CRC effect was tested and found insignificant so CRC is pooled into the reference).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Registers the breast-cancer arm of an oncology-cohort tumor-type contrast; pair with sister `TUMTP_<GROUP>` indicators (e.g., `TUMTP_NSCLC`, `TUMTP_CRC`) when a future paper retains separate effects for additional tumor types beyond the implicit reference. Ratified canonically on 2026-04-28.
 
+### TUMTP_CRC (**canonical for colorectal-cancer tumor-type indicator**)
+- **Description:** 1 = colorectal cancer (any site / histology, including metastatic CRC), 0 = other tumor types.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = all other tumor types (per source paper; in Zhang 2024 the reference is a healthy participant, obtained when `TUMTP_CRC = 0` and every sister `TUMTP_<GROUP>` indicator is also 0).
+- **Source aliases:**
+  - `TUM` (Zhang 2024 tucatinib; integer tumor-type code where `TUM == 1` is HER2+ mCRC, `TUM == 0` is HER2+ mBC and `TUM < 0` is a healthy participant) -- decompose into `TUMTP_CRC = as.integer(TUM == 1)`.
+  - `TUMTP` (categorical column with levels including `BC`, `NSCLC`, `CRC`) -- decompose into `TUMTP_CRC = as.integer(TUMTP == "CRC")`.
+- **Example models:** `Zhang_2024_tucatinib.R` (multiplicative fractional effect -0.705 on CL and -0.637 on relative bioavailability for HER2+ metastatic colorectal cancer versus the healthy-participant reference; the two partly offset, giving a net 18.7% lower apparent CL/F; n = 69 / 283 = 24.4% of the pooled cohort, all from study SGNTUC-017 / MOUNTAINEER).
+- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern, and is the sister indicator anticipated by the `TUMTP_BREAST` entry. Registers the colorectal arm of an oncology-cohort tumor-type contrast. General scope because "colorectal cancer" is a stable histology-agnostic disease label rather than a per-paper pooled bucket; use `TUMTP_OTHER` instead when a paper collapses CRC into a heterogeneous residual pool (as Sathe 2024 / Sathe 2025 do), and pool CRC into the reference when a paper tests it and finds no effect (as Lu 2022 does). A given subject can have at most one of the `TUMTP_<GROUP>` indicators set to 1; all-zero means the reference group. Receptor status (e.g. HER2+) and RAS status are not encoded here -- record them in `covariateData[[TUMTP_CRC]]$notes` when the source cohort is selected on them.
+
 ### TUMTP_ESCC (**canonical for oesophageal-squamous-cell-carcinoma tumor-type indicator**)
 - **Description:** 1 = oesophageal squamous cell carcinoma (ESCC), 0 = other tumor types.
 - **Units:** (binary)
