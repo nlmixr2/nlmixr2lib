@@ -2,6 +2,11 @@
 
 # development version
 
+- Add Yang 2024 naloxone auto-injector and its four mechanistic opioid-induced
+  respiratory depression reversal models -- buprenorphine, morphine, fentanyl
+  and carfentanil ([doi:10.1002/psp4.13215](https://doi.org/10.1002/psp4.13215))
+  - healthy adults.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same

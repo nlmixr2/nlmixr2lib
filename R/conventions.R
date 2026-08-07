@@ -303,6 +303,20 @@
     # cytosolic arylketone reductases (Rodrigues 2017 BJCP
     # doi:10.1111/bcp.13392).
     "mhd",
+    # Naloxone as a co-administered SECOND ANALYTE (not a metabolite) in
+    # mechanistic opioid-overdose-reversal PK-PD models. Yang 2024
+    # (doi:10.1002/psp4.13215) couples an opioid agonist -- the parent,
+    # which keeps the unsuffixed canonical names -- to a full naloxone
+    # PK model (depot_naloxone, transit1..3_naloxone, central_naloxone,
+    # peripheral1_naloxone, effect_naloxone; lcl_naloxone, lvc_naloxone,
+    # lktr_naloxone, lke0_naloxone, lec50_naloxone) that competes with
+    # the agonist at the mu-opioid receptor. One suffix covers all four
+    # of that paper's opioid pairings, whereas making naloxone the
+    # parent would have required four (buprenorphine / morphine /
+    # fentanyl / carfentanil). Founding examples:
+    # Yang_2024_naloxone_buprenorphine, Yang_2024_naloxone_morphine,
+    # Yang_2024_naloxone_fentanyl, Yang_2024_naloxone_carfentanil.
+    "naloxone",
     # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
     # models in which both enantiomers are followed in plasma but no
     # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP

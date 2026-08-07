@@ -3076,6 +3076,18 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
 
 ---
 
+## Opioid-antagonist / reversal-agent sibling-drug suffixes
+
+Sibling-drug suffix for the Yang 2024 mechanistic opioid-induced-respiratory-depression (OIRD) reversal models, where the opioid agonist is the unsuffixed parent and the co-administered antagonist naloxone carries the `naloxone` suffix throughout. Opposite orientation to the Kleijn 2011 `roc` case: there the reversal agent is the parent, here the substrate opioid is, because Yang 2024 pairs one shared naloxone auto-injector PK layer against four different opioids (buprenorphine, morphine, fentanyl, carfentanil). Suffixing naloxone once therefore replaces four separate opioid suffixes, and keeps `lcl` / `lvc` / `central` / `effect` meaning "the opioid this file is about" in every one of the four files.
+
+### naloxone (**canonical naloxone antagonist sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Naloxone (competitive mu-opioid receptor antagonist) sibling-drug suffix for opioid-overdose-reversal PK-PD models in which a full naloxone PK model runs alongside the opioid agonist's. Drives the `depot_naloxone` / `transit1_naloxone` / `transit2_naloxone` / `transit3_naloxone` / `central_naloxone` / `peripheral1_naloxone` / `effect_naloxone` compartment chain and the `lktr_naloxone` / `lcl_naloxone` / `lvc_naloxone` / `lq_naloxone` / `lvp_naloxone` / `lke0_naloxone` / `lec50_naloxone` parameters. Naloxone always needs its own effect compartment here, because it is the naloxone biophase concentration -- not the plasma concentration -- that competes with the opioid at the receptor.
+- **Source aliases:** none.
+- **Example models:** `Yang_2024_naloxone_buprenorphine.R`, `Yang_2024_naloxone_morphine.R`, `Yang_2024_naloxone_fentanyl.R`, `Yang_2024_naloxone_carfentanil.R` (all doi:10.1002/psp4.13215). The standalone naloxone population PK model `Yang_2024_naloxone.R` uses unsuffixed canonical names, since there naloxone is the only drug.
+
+---
+
 ## Combination antimalarial / antibiotic sibling-drug suffixes
 
 ### pyra (**canonical pyrimethamine sibling-drug suffix**)
