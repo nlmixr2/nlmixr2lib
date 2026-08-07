@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Henthorn 2024 delta-9-tetrahydrocannabinol ([doi:10.1097/FTD.0000000000001224](https://doi.org/10.1097/FTD.0000000000001224)) - adults inhaling commercial-market cannabis, occasional and daily users.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
