@@ -4,6 +4,8 @@
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
+- Add Wahlquist 2024 propofol ([doi:10.1007/s10928-023-09887-3](https://doi.org/10.1007/s10928-023-09887-3)) - pooled 30-study Eleveld cohort of 1,031 surgical and volunteer subjects from neonates to the elderly.
+
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
   -- so a consumer parsing `units$time` could not canonicalise it without
