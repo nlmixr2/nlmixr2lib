@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Khaowroongrueng 2024 sufentanil ([doi:10.1002/psp4.13205](https://doi.org/10.1002/psp4.13205)) - adult Korean patients undergoing cardiopulmonary bypass surgery.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
