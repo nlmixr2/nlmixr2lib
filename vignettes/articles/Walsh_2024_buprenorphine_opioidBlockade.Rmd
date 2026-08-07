@@ -389,6 +389,12 @@ ic50_draw <- exp(est("lic50") + rnorm(n_draw, 0, sd_log(0.304)))
 # and sometimes no crossing at all. That is what made this chunk pass locally
 # and fail in CI; it is not a seeding problem, and re-seeding does not fix it.
 #
+# Confirmed present on rxode2 5.1.7 (origin/main @ 7d74e29e4), not only on the
+# 5.1.3 release, so this workaround is still required. It appears at >= 8
+# subjects and is independent of core count -- `cores = 1` fails too. Reprex:
+# _scripts/rxode2_params_nondeterminism_reprex.R in the ingestion queue, whose
+# header records when this can be reverted.
+#
 # Doing the arithmetic here is safe because the drug liking model is algebraic
 # in Cp with Imax and gamma both fixed to 1, and the closed form was checked to
 # reproduce a (correct) solve exactly -- max absolute difference 0. The
