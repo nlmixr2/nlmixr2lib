@@ -934,6 +934,12 @@ navbar:
         href: articles/Cirincione_2017_exenatide_er.html
       - text: "Exendin939 (Ng 2018)"
         href: articles/Ng_2018_exendin939.html
+      - text: "F53b human pbpk (Zhang 2024)"
+        href: articles/Zhang_2024_f53b_pbpk.html
+      - text: "F53b human prepregnancy pbpk (Zhang 2024)"
+        href: articles/Zhang_2024_f53b_pbpk.html
+      - text: "F53b mouse pbpk (Zhang 2024)"
+        href: articles/Zhang_2024_f53b_pbpk.html
       - text: "FXa inhibitors mbma (Yoshioka 2018)"
         href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
       - text: "Factor viii (Hazendonk 2016)"
@@ -4219,6 +4225,7 @@ articles:
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_XZP5610
+  - articles/Zhang_2024_f53b_pbpk
   - articles/Zhang_2024_sertraline
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir

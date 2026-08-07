@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhang 2024 F-53B ([doi:10.1021/acs.est.4c05405](https://doi.org/10.1021/acs.est.4c05405)) - gestational PBPK in pregnant mice, plus pre-pregnant and pregnant human extrapolations.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
