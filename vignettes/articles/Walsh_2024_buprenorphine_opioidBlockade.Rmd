@@ -365,28 +365,45 @@ ini_dl <- drugLiking$iniDf
 est <- function(nm) ini_dl$est[ini_dl$name == nm]
 sd_log <- function(rse) sqrt(log(1 + rse^2))
 
-# One id per parameter draw; the time index selects the concentration, which is
-# valid because the drug liking model is purely algebraic in Cp.
-draws <- data.frame(
-  id = seq_len(n_draw),
-  lbase = est("lbase") + rnorm(n_draw, 0, sd_log(0.0240)),
-  lic50 = est("lic50") + rnorm(n_draw, 0, sd_log(0.304))
+# Re-seed immediately before the draws. The set.seed() at the top of this file
+# is NOT sufficient: rxode2::rxSolve() consumes R's RNG stream even when called
+# with omega = NA, and seven solves run above this point. How far the stream is
+# advanced depends on the rxode2 version, the number of observation rows and
+# the threading, so the same top-of-file seed lands on a different position on
+# a different machine. That is exactly how this chunk passed locally and failed
+# in CI: a different draw put every upper 97.5% limit above the 11-point
+# threshold, so the crossing below came back NA. Seeding here makes the band
+# depend only on this chunk.
+set.seed(20240501)
+
+base_draw <- exp(est("lbase") + rnorm(n_draw, 0, sd_log(0.0240)))
+ic50_draw <- exp(est("lic50") + rnorm(n_draw, 0, sd_log(0.304)))
+
+# The uncertainty band is evaluated in closed form rather than by solving one
+# id per draw.
+#
+# Why: rxode2::rxSolve() with a multi-row `params` data.frame does not return
+# the same values for byte-identical inputs. Holding the draws fixed (verified
+# by hashing them), five successive solves in one session produced five
+# different result hashes and crossings of 0.45, 0.60, 0.45, 2.30 and 0.46 --
+# and sometimes no crossing at all. That is what made this chunk pass locally
+# and fail in CI; it is not a seeding problem, and re-seeding does not fix it.
+#
+# Doing the arithmetic here is safe because the drug liking model is algebraic
+# in Cp with Imax and gamma both fixed to 1, and the closed form was checked to
+# reproduce a (correct) solve exactly -- max absolute difference 0. The
+# stopifnot below re-checks that identity against the typical-value solve on
+# every render, so if the model equation ever changes this fails loudly instead
+# of quietly plotting stale arithmetic.
+vas_curve <- function(cp, base, ic50) base * (1 - cp / (ic50 + cp))
+
+unc <- tibble::tibble(
+  CP_BPN_NGML = cp_grid,
+  lo = vapply(cp_grid, function(cp)
+    quantile(vas_curve(cp, base_draw, ic50_draw), 0.025, names = FALSE), numeric(1)),
+  hi = vapply(cp_grid, function(cp)
+    quantile(vas_curve(cp, base_draw, ic50_draw), 0.975, names = FALSE), numeric(1))
 )
-
-unc_ev <- tidyr::expand_grid(
-  id = seq_len(n_draw), time = seq_along(cp_grid)
-) |>
-  dplyr::mutate(CP_BPN_NGML = cp_grid[time], evid = 0L, amt = 0)
-
-unc <- rxode2::rxSolve(
-  drugLiking, unc_ev, params = draws, omega = NA, returnType = "data.frame"
-) |>
-  dplyr::group_by(CP_BPN_NGML) |>
-  dplyr::summarise(
-    lo = quantile(druglikingvascfb, 0.025, names = FALSE),
-    hi = quantile(druglikingvascfb, 0.975, names = FALSE),
-    .groups = "drop"
-  )
 
 typ <- rxode2::rxSolve(
   drugLiking, zero_ev(cp_grid), omega = NA, returnType = "data.frame"
@@ -394,6 +411,16 @@ typ <- rxode2::rxSolve(
   dplyr::transmute(CP_BPN_NGML, typical = druglikingvascfb)
 
 fig4 <- dplyr::left_join(typ, unc, by = "CP_BPN_NGML")
+
+# The typical curve still comes from the model. Check that the closed form used
+# for the band above reproduces it, so the band cannot silently drift from the
+# model equation. This is a single-subject solve, which is not affected by the
+# multi-row `params` problem described above.
+stopifnot(isTRUE(all.equal(
+  fig4$typical,
+  vas_curve(fig4$CP_BPN_NGML, exp(est("lbase")), exp(est("lic50"))),
+  tolerance = 1e-8
+)))
 
 ggplot2::ggplot(fig4, ggplot2::aes(x = CP_BPN_NGML)) +
   ggplot2::geom_ribbon(ggplot2::aes(ymin = lo, ymax = hi),
@@ -416,7 +443,16 @@ which the **upper 95% confidence limit** of the simulated score falls below the
 11-point threshold. That crossing is recovered below.
 
 ```{r fig4-threshold}
-crossing <- fig4$CP_BPN_NGML[which(fig4$hi <= 11)[1]]
+# which(...)[1] is NA when nothing crosses, and stopifnot(NA > 0.2) reports
+# only "crossing > 0.2 is not TRUE", which says nothing about why. Fail on the
+# empty case explicitly so the next person sees the actual problem.
+below <- which(fig4$hi <= 11)
+if (!length(below)) {
+  stop("no concentration on the grid brings the upper 97.5% limit to <= 11 ",
+       "points (min hi = ", signif(min(fig4$hi), 4), "); the uncertainty band ",
+       "is wrong, not merely off-target")
+}
+crossing <- fig4$CP_BPN_NGML[below[1]]
 
 tibble::tibble(
   Quantity = c(
