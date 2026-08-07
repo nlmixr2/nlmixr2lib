@@ -15,7 +15,7 @@ tgi_sat_VonBertalanffy <- function() {
   ini({
     lrbase <- 0.3; label("Initial tumor size (TS0)") 
     ltsmax <- 0.9; label("Maximum tumor size at saturation (TSmax)")
-    lka <- 0.45 ; label("Absorption rate (Ka)")
+    lka <- 0.45 ; label("Absorption rate (Ka, 1/time_unit)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
     lkg <- 0.7; label("Tumor growth (birth) rate (1/time_unit)")
