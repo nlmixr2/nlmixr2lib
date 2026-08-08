@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Willemin 2024 interleukin-6 / CYP modulation after talquetamab ([doi:10.1007/s11523-024-01093-6](https://doi.org/10.1007/s11523-024-01093-6)) - adults with relapsed/refractory multiple myeloma and cytokine release syndrome.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
