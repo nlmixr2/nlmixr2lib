@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2024 RNA lipid nanoparticles ([doi:10.1016/j.apsb.2024.06.011](https://doi.org/10.1016/j.apsb.2024.06.011)) - ionizable-lipid PBPK in Sprague-Dawley rats, CD-1 and C57BL/6 mice, and healthy volunteers given patisiran, plus a cellular trafficking model in HeLa cells.
+
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
