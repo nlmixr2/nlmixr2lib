@@ -246,6 +246,12 @@ navbar:
         href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
       - text: "Atorvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
+      - text: "AtractylodesLancea group1day1 (Saeheng 2024)"
+        href: articles/Saeheng_2024_atractylodesLancea.html
+      - text: "AtractylodesLancea group2day14 (Saeheng 2024)"
+        href: articles/Saeheng_2024_atractylodesLancea.html
+      - text: "AtractylodesLancea group2day28 (Saeheng 2024)"
+        href: articles/Saeheng_2024_atractylodesLancea.html
       - text: "Avalglucosidase alfa (Tuffal 2023)"
         href: articles/Tuffal_2023_avalglucosidase_alfa.html
       - text: "AvalglucosidaseAlfa (Tiraboschi 2023)"
@@ -3887,6 +3893,7 @@ articles:
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadaf_2024_glutamine
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
+  - articles/Saeheng_2024_atractylodesLancea
   - articles/Sahota_2015_miridesap
   - articles/Sakurai_2007_lansoprazole
   - articles/Salem_2014_efavirenz
