@@ -14,12 +14,12 @@ tgi_no_sat_powerLaw <- function() {
 
   ini({
     lrbase <- 0.8; label("Initial tumor size (TS0)")
-    lka <- 0.45 ; label("Absorption rate (Ka)")
+    lka <- 0.45 ; label("Absorption rate (Ka, 1/time_unit)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
     lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
-    lkgl <- 0.7; label("Zero-order linear growth rate")
-    lkge <- 0.7; label("First-order exponential growth rate")
+    lkgl <- 0.7; label("Zero-order linear growth rate (tumor size/time_unit)")
+    lkge <- 0.7; label("First-order exponential growth rate (1/time_unit)")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
     addSd_tumor_size <- 30 ; label("Tumor size additive residual error (tumor volume)")

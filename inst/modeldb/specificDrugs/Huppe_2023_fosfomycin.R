@@ -5,11 +5,15 @@ Huppe_2023_fosfomycin <- function() {
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
-  # biological matrix. Derived mechanically; verified = FALSE means it has
-  # NOT been checked against the source paper.
+  # biological matrix. verified = TRUE: checked against Huppe 2023, which
+  # administers fosfomycin as 5 g (mg-scale) i.v. infusions and quantifies
+  # "concentrations of i.v. fosfomycin ... in patient plasma" drawn from a
+  # central venous line (Results, Patient characteristics; Methods, Protocol
+  # and sample collection). Both states hold amounts of unchanged fosfomycin;
+  # the drug does not undergo metabolization (Introduction).
   compartmentData <- list(
-    central     = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = FALSE),
-    peripheral1 = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = FALSE)
+    central     = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "fosfomycin", units = "mg", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list(

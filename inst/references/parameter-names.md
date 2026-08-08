@@ -9,6 +9,7 @@ This file is the authoritative register of structural and paper-mechanistic para
 3. **If the source paper uses an alias listed under an existing canonical name**, prefer the canonical name. Aliases are documented for cross-reference, not as a free pass to introduce the deprecated form in new models.
 4. **If the parameter is not in this register at all**, propose a new entry with a canonical name, type, role, source aliases, and example models. Verify with the user before committing. The addition is part of the model's PR.
 5. **Do not modify existing model files when you discover a missing entry**; simply register the canonical here. Retrofitting existing models is a separate effort.
+6. **Never add a second entry for a name that already has one at the same `Type`.** Extend the existing block instead -- add your source alias and example model to it. A name may appear twice only when the two entries carry *different* `Type` values. This register is resolved in document order, last one wins, so a same-`Type` repeat silently discards the earlier block along with any alias or example recorded only there. `buildModelDb()` fails the build on one.
 
 ## Entry schema
 
@@ -38,6 +39,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `covEffectPattern = "^e_[A-Za-z0-9]+(_[A-Za-z0-9]+){1,5}$"` — canonical shape of a covariate-effect parameter name: a leading `e_`, a covariate token, and one to five additional tokens (final token is the affected PK parameter, optional middle tokens carry metabolite / shared-exponent / CL-component context).
 - `clComponents = c("ss", "time", "renal", "nonren")` — suffix tokens permitted on multi-component CL parameters (e.g., `cl_renal + cl_nonren`).
 - `transformPrefixes = c("l", "logit", "probit")` — accepted parameter-name transform prefixes.
+- Within-subject random-effect levels, matched by `R/checkModelConventions.R::.isIOVEtaSuffix`: `etaiov_<param>_<occ>` for inter-occasion variability and `etabvv_<param>_<visit>` for between-visit variability, where `<param>` is an existing fixed-effect parameter (bare, or with an `l` / `ltv` / `lv` prefix) and the trailing integer is the occasion / visit index. The two prefixes are kept separate because a paper can fit both levels at once on different parameters -- `Abdelgawad_2024_linezolid.R` carries five-occasion IOV on `ka` and `mtt` alongside a two-visit BVV on `vmax`, and folding them into one prefix would lose the published random-effect hierarchy. NONMEM `$OMEGA BLOCK(1) SAME` repeats map to `~ fix(<variance>)` on every index after the first.
 - `residualError = c("propSd", "addSd", "expSd")` — canonical residual-error SD names. `propSd` / `addSd` are the proportional and additive SDs for the standard `~ prop(...)`, `~ add(...)`, and combined `~ prop(...) + add(...)` forms. `expSd` is the log-scale residual SD used with `~ lnorm(...)`.
 - `deprecatedResidualError`, `deprecatedIivPrefixes`, `deprecatedVolumeNames`, `deprecatedVmaxNames`, `deprecatedParentSuffix` — deprecation lists also remain in R.
 
@@ -316,6 +318,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`.
 - **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit.
 
+### lkel_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying elimination rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale rate constant governing how fast a time-varying elimination rate constant relaxes from its value at t = 0 toward its asymptote, in the exponential form `kel(t) = kel * (1 + kel_exp_famp * (1 - exp(-kel_exp_kdes * t)))` (1 / time). `log(2) / kel_exp_kdes` is the half-life of the change.
+- **Source aliases:**
+  - `ln(kappa_k)` -- used in `Schreib_2024_busulfan.R` (paper `theta_kappa_k`).
+- **Example models:** `Schreib_2024_busulfan.R` (`lkel_exp_kdes = -2.965`, giving 0.0516 1/h and a 13.4 h half-life for the decline in busulfan `k` and `CL` over a conditioning course).
+- **Notes:** The `kel` counterpart of the registered `cl_exp_kdes` role in the time-varying-clearance family; reuses the `_kdes` role token deliberately so both families are found by the same stem. Ratified on 2026-08-05 (task `oare_PMC11154452` sidecar question q1, answer A).
+
 ### ltlag (**canonical log-transformed absorption lag time**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale absorption lag time before drug enters the depot (time).
@@ -377,6 +387,24 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
 - **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples; rat `beta_cl = 0.162 mL/IU`, monkey `beta_cl = 0.0355 mL/IU`, both fitting the exponential-nonlinear-CL form on total FVIII activity).
 - **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent), `lgamma` (Friberg / TGI kinetic exponents), and `lvmax` / `km` (Michaelis-Menten saturable elimination — a different mathematical form). Choose `lbeta_cl` when the source paper explicitly parameterises CL as an exponential function of concentration; choose `lvmax` / `km` when the paper fits Michaelis-Menten saturation instead. The `_cl` suffix marks that the slope acts on clearance; parallel `beta_<param>` names are permitted for other parameters when a paper extends the exponential-nonlinear form to `V` or `Q`.
+
+### lcmpr (**canonical log-transformed milk-to-plasma concentration ratio**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the ratio of drug concentration in breast milk to the concentration in maternal plasma, used to derive a milk observable algebraically from the plasma compartment (`Cmilk <- cmpr * Cc`) when the source data are too sparse to support a separate milk compartment with its own transfer clearances. Unitless. May be estimated with IIV (`etalcmpr`) and may carry covariate effects, e.g. a power function of time postpartum during the colostrum period. The bare counterpart inside `model()` is `cmpr`.
+- **Source aliases:**
+  - `MPRcon` -- Li 2023 ornidazole notation for the milk-to-plasma concentration ratio.
+  - `MP` -- common lactation-literature shorthand for the milk:plasma ratio.
+- **Example models:** `Li_2023_ornidazole.R` (founding example; `lcmpr = log(0.58)`, RSE 8.63%, IIV variance 0.327, power effect of time postpartum with exponent 1.37 centred on a back-solved median postpartum sampling time of 54 h).
+- **Notes:** Distinct from the `lkp_<tissue>` partition-coefficient family (including `lkp_milk`) in that `cmpr` is an **estimated popPK parameter** fitted to paired maternal plasma and milk observations, whereas a `kp` is a physicochemically predicted or literature-fixed partition constant used inside a mechanistic distribution model. Use `cmpr` when the paper estimates a concentration ratio as a model parameter; use `kp_milk` when the paper supplies a milk:plasma partition coefficient as a mechanistic input to a milk compartment. Use an AUC-based ratio name only if the paper actually parameterises the model on an exposure ratio -- Li 2023 reports `MPRauc` as a derived simulation **output**, not a model parameter, and it is deliberately not encoded. Pair with the `Cmilk` observable and the `propSd_Cmilk` residual. Ratified 2026-08-05 alongside the Li 2023 ornidazole extraction, jointly with the `lkp_<tissue>` family registration below.
+
+### lkp_adipose, lkp_brain, lkp_intestine, lkp_kidney, lkp_liver, lkp_lung, lkp_milk, lkp_muscle, lkp_other, lkp_rest, lkp_trachea (**canonical log-transformed tissue-to-plasma partition coefficients**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the tissue-to-plasma (or tissue-to-blood) partition coefficient Kp for one named anatomical tissue, i.e. the equilibrium ratio of tissue concentration to plasma (or blood) concentration. Unitless. The family shape is `lkp_<tissue>`, where `<tissue>` is the same lowercase anatomical token used for the corresponding PBPK compartment name, so `lkp_liver` is the partition coefficient of the `liver` compartment. Each drives the perfusion- or permeability-limited distribution term for its tissue (e.g. `d/dt(liver) <- q_liver * (Cc - liver / vliver / kp_liver) - ...`). The bare counterparts inside `model()` are `kp_<tissue>`, registered below. Usually fixed from the source paper's physicochemical predictions (Rodgers-Rowland, Poulin-Theil) or measured tissue:plasma ratios, but may be estimated when the paper fits them.
+- **Source aliases:**
+  - `Kp` -- near-universal PBPK notation, subscripted by tissue in the source tables.
+  - `Kt` / `Ptp` -- tissue:plasma partition notation used by some perfusion-limited PBPK papers.
+- **Example models:** `Levitt_2005_propofol_pbpk.R` (`lkp_adipose`, `lkp_brain`, `lkp_liver`, `lkp_intestine`, `lkp_rest`), `Mi_2023_cefquinome_pbpk.R` (`lkp_liver`, `lkp_kidney`, `lkp_lung`, `lkp_muscle`, `lkp_other`), `Kang_2023_artesunate_hamster_pbpk.R` and `Kang_2023_pyronaridine_hamster_pbpk.R` (`lkp_lung`, `lkp_trachea`, `lkp_other`, plus metabolite-suffixed `lkp_lung_dihydroart` etc.).
+- **Notes:** This entry formally registers a family that had been de-facto in use across the PBPK model files listed above since before the register existed; the members enumerated in the heading are those currently used, and a new anatomical tissue may be added to the heading without a fresh naming sidecar so long as `<tissue>` matches the canonical compartment name in `compartment-names.md`. `lkp_milk` is the lactation member: the milk:plasma partition coefficient for mechanistic milk-compartment models. Distinct from `lkpu<n>`, which is a *cluster*-indexed unbound partition coefficient shared by several tissues rather than one named organ, and from `sf<n>`, which scales a predicted Kpu rather than replacing it. Distinct from `lcmpr` above, which is an estimated popPK milk:plasma **concentration ratio** rather than a mechanistic partition constant. Two existing names collide on prefix but are NOT members of this family and must not be read as partition coefficients: `lkp_f` and `lkp_hb` in `Li_2015_taspoglutide_mbma.R` are placebo-response rate constants for fasting plasma glucose and HbA1c, and `lkpin` / `lkpout` are precursor-pool turnover rate constants. Family registered 2026-08-05 alongside the Li 2023 ornidazole extraction.
 
 ---
 
@@ -472,6 +500,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `kp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `ps_elim`, `pc_elim` -- paper-named (Wilson 2015 p_S / p_C) bare drug-specific K-PD elim rates; replaced 2026-05-30 by `kel_sunitinib` / `kel_irinotecan`.
 - **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`.
+
+### kel_exp_kdes (**canonical bare decay-rate constant of a time-varying elimination rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare (natural-scale) form of `lkel_exp_kdes`: the rate constant at which a time-varying elimination rate constant relaxes toward its asymptote (1 / time).
+- **Source aliases:**
+  - `kappa_k` -- used in `Schreib_2024_busulfan.R`.
+- **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_kdes = exp(lkel_exp_kdes) = 0.0516 1/h`).
+- **Notes:** Bare counterpart of `lkel_exp_kdes`; see that entry for the functional form. The sibling `kel_exp_famp` is registered under "Paper-named mechanistic parameters" instead of here, because it is signed and must never be log-transformed. Ratified on 2026-08-05 (task `oare_PMC11154452` sidecar question q1, answer A).
 
 ### k12 (**canonical bare central-to-first-peripheral rate constant**)
 - **Type:** bare-pk
@@ -652,11 +688,35 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `β` -- Greek letter used in Larsen 2018 Table 3 and Eq. 1.
 - **Example models:** `Larsen_2018_factorviii_rat.R`, `Larsen_2018_factorviii_monkey.R` (founding examples).
 
+### cmpr (**canonical bare milk-to-plasma concentration ratio**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcmpr`. Unitless ratio of breast-milk to maternal-plasma drug concentration, used inside `model()` after being exponentiated from `lcmpr` (`cmpr <- exp(lcmpr + etalcmpr) * <covariate terms>`) and then applied to derive the milk observable, `Cmilk <- cmpr * Cc`.
+- **Source aliases:**
+  - `MPRcon` -- Li 2023 ornidazole notation.
+- **Example models:** `Li_2023_ornidazole.R` (founding example).
+- **Notes:** See `lcmpr` above for the distinction from the `kp_<tissue>` partition-coefficient family and for why an AUC-based ratio is not encoded as a model parameter.
+
+### kp_adipose, kp_bone, kp_brain, kp_cerebellum, kp_choroid_plexus, kp_cortex, kp_csf, kp_gut, kp_heart, kp_hippocampus, kp_intestine, kp_kidney, kp_liver, kp_lnode, kp_lung, kp_milk, kp_muscle, kp_other, kp_rest, kp_skin, kp_spleen, kp_striatum, kp_trachea (**canonical bare tissue-to-plasma partition coefficients**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of the `lkp_<tissue>` family. Unitless equilibrium ratio of concentration in one named anatomical tissue to concentration in plasma (or blood), used inside `model()` either as the exponentiated form of an `ini()` entry (`kp_liver <- exp(lkp_liver)`) or as a value computed in place from the source paper's physicochemical prediction equations.
+- **Source aliases:**
+  - `Kp` -- near-universal PBPK notation, subscripted by tissue.
+- **Example models:** `Levitt_2005_propofol_pbpk.R`, `Mi_2023_cefquinome_pbpk.R`, `Gaohua_2012_pregnancy_pbpk_midazolam.R`, `Litjens_2023_linezolid_cns_pbpk.R`, `Yang_2023_diclazuril_chicken_pbpk.R`, `Kang_2023_artesunate_hamster_pbpk.R`.
+- **Notes:** Registered 2026-08-05 together with the log-transformed family; see `lkp_adipose, ...` above for the family shape, for the `kp_milk` lactation member, for the boundary against `kpu<n>` / `sf<n>` / `cmpr`, and for the prefix-collision names that are not partition coefficients. Many PBPK models compute additional bare `kp_*` names that are qualifiers rather than tissues (`kp_free`, `kp_bound`, `kp_preg`) or per-tissue loop indices (`kp_i`); those are local `model()` intermediates and are intentionally not registered as canonicals.
+
 ---
 
 ## Paper-named mechanistic parameters
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
+
+### kel_exp_famp (**canonical fractional amplitude of a time-varying elimination rate constant**)
+- **Type:** paper-named-param
+- **Role:** Dimensionless fractional amplitude of an exponential change in the elimination rate constant over a course of therapy: `kel(t) = kel * (1 + kel_exp_famp * (1 - exp(-kel_exp_kdes * t)))`, so `kel(0) = kel`, `kel(inf) = kel * (1 + kel_exp_famp)`, and a negative value means `kel` (and hence `CL`) falls over time.
+- **Source aliases:**
+  - `dk` -- used in `Schreib_2024_busulfan.R` (paper `theta_dk1`).
+- **Example models:** `Schreib_2024_busulfan.R` (`kel_exp_famp = -0.167`, a 16.7% average fall in busulfan `k` and `CL` at steady state; carries its own additive IIV `etakel_exp_famp` and an additive covariate effect `e_hlhxlp_kel_exp_famp = -0.145` that takes the amplitude to -0.312).
+- **Notes:** `_famp` is the fractional-amplitude role token, introduced because the registered `cl_exp_` time-varying-clearance family parameterises by an absolute decaying component (`cl_exp_inf` + `cl_exp_component`) rather than by a fraction of the baseline. Registered as `paper-named-param` rather than `bare-pk` precisely because it is signed: it is estimated on the natural scale, is typically negative, and must NEVER be log-transformed (`bare-pk` makes `checkModelConventions()` demand an `l`-prefixed form). It is additive in its covariate and random-effect terms for the same reason. Prefer this fractional parameterisation over reparameterising into `cl_exp_inf` / `cl_exp_component` whenever the source estimates `V` and `kel` separately with *different* covariate sets, because the absolute-component form is a product of the two and entangles their covariates -- in the founding model the infusion-duration covariate has opposite signs on `ln(V)` and `ln(k)`, so the product would cancel it. The sibling decay rate is `kel_exp_kdes` / `lkel_exp_kdes` in the bare and log-transformed PK sections. The parallel `cl_exp_famp` was explicitly considered and NOT registered (sidecar option C, declined); add it only when a source paper needs it. Ratified on 2026-08-05 (task `oare_PMC11154452` sidecar question q1, answer A).
 
 ### kd (**canonical mechanistic dissociation / dissociation-like rate**)
 - **Type:** paper-named-param
@@ -701,6 +761,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `keo`, `Keo` -- equivalent paper notation; both spellings (`keo` and `ke0`) appear in the literature.
 - **Example models:** `Kleijn_2011_sugammadex_rocuronium.R` (`lke0 = log(0.134) = -2.01`, giving `ke0 = 0.134 1/min` for the rocuronium effect-compartment equilibration; allometric scaling `(BW/70)^-0.25`), `Savic_2010_warfarin.R` (founding registry example -- 1-compartment PK with effect-compartment-driven proportional-odds PD), `Schindler_2016_sunitinib.R` (effect-compartment equilibration with daily AUC at ln(2)/50 1/h).
 - **Notes:** Distinct from `lke_kpd` (which is K-PD elimination rate and was deprecated in favour of the canonical `lkel`). `lke0` is specifically the effect-compartment equilibration parameter for hysteresis PK-PD modelling.
+
+### ppc (**canonical effect-compartment pseudo-partition coefficient**)
+- **Type:** paper-named-param
+- **Role:** Steady-state ratio of the effect-compartment concentration to the central (plasma) concentration in a Sheiner-style effect-compartment model, `d Ce / dt = ke0 * (ppc * Cc - Ce)` (unitless fraction). Unlike a plain effect compartment, where the steady-state ratio is 1 by construction, `ppc` scales the driving concentration so the effect compartment equilibrates to a fraction (or multiple) of plasma -- the standard way to describe tissue penetration when only a delayed, partitioned site-of-action concentration is measured. Inside `model()` the bare name is `ppc`; the log-transformed `lppc` form is used in `ini()`, since the coefficient is strictly positive.
+- **Source aliases:**
+  - `PPC` -- Abdelgawad 2024 paper and control-stream notation (`PPC plasma-CSF`).
+  - `Kp,uu`-style "penetration ratio" / "partition coefficient" prose in CSF- and tissue-penetration papers, when the quantity is the steady-state ratio of an effect compartment rather than a physiologic tissue-to-plasma partition.
+- **Example models:** `Abdelgawad_2024_linezolid.R` (founding example -- `lppc = log(0.365)`, the maximal CSF-to-plasma pseudo-partition coefficient for linezolid in tuberculous meningitis, modulated by CSF total protein through the covariate-effect parameter `e_csftpro_ppc`).
+- **Notes:** Distinct from `ke0`, which sets how fast the effect compartment equilibrates, whereas `ppc` sets the level it equilibrates to; a model with a partitioned effect compartment needs both. Distinct from the PBPK `kpu<n>` family (clustered unbound tissue-to-plasma partition coefficients derived from tissue composition), which are physiologic constants of a whole-body model rather than an estimated effect-compartment parameter. Covariate effects on `ppc` follow the standard `e_<cov>_ppc` shape.
 
 ### lec50 (**canonical log-transformed effect-compartment EC50**)
 - **Type:** paper-named-param
@@ -844,9 +913,11 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 
 ### p (**canonical proliferation / growth-rate parameter**)
 - **Type:** paper-named-param
-- **Role:** Proliferation / growth-rate constant (1 / time). Paper-mechanistic meaning depends on the model.
-- **Source aliases:** none.
-- **Example models:** TGI / cell-population PD models.
+- **Role:** Proliferation / growth-rate constant of a tumor-growth-inhibition or cell-population state. Paper-mechanistic meaning depends on the growth law. Inside `model()` the bare name is `p`; the log-transformed `lp` form is used in `ini()` because the rate is strictly positive.
+- **Source aliases:**
+  - `k` -- Yates 2023 notation for the growth-law rate constant of all three laws (exponential, Mayneord, von Bertalanffy).
+- **Example models:** `Yates_2023_tgi_exponential.R` (founding example; `p = 0.005` 1/day, the exponential fractional growth rate), `Yates_2023_tgi_mayneord.R` (`p = 0.005` L^(1/3)/day), `Yates_2023_tgi_bertalanffy.R` (`p = 0.005` L^(1/3)/day).
+- **Notes:** `p` is the TGI-family *generic*: use it whenever a paper's growth constant is not one of the mechanistically-specific alternatives. Distinct from `kgrow` (life-cycle-anchored multiplication rate constrained by a known cycle time and per-cycle amplification factor) and from `kge` (the growing-fraction exponent of the Stein two-exponential decomposition); both of those entries cross-reference `p` as the family generic. **Dimensions are set by the growth law, not by the name.** In an exponential law `dV/dt = p * V` the constant acts on volume and carries 1 / time; in the sub-exponential Mayneord and von Bertalanffy laws `dV/dt = p * V^(2/3) - ...` it acts on the tumor radius and carries length / time (L^(1/3)/day when V is in L). Record the dimensions in the parameter's `label()` rather than assuming 1 / time. Founding examples added 2026-08-05 with the Yates 2023 extraction; the entry itself predates them. Paired with `kdeath` in the von Bertalanffy law.
 
 ### vd (**canonical apparent volume of distribution**)
 - **Type:** paper-named-param
@@ -895,6 +966,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `KS`, `TVKS`, `ks`, `k_s`, `ksT` -- Stein-family paper notation for the shrinkage / decay rate.
 - **Example models:** `Struemper_2025_tumorsize_OS_nsclc.R` (founding example; 12 per-arm `lkse_<arm>` values, 1/week), `Ribba_2022_sld.R` (`kse = 0.0014` 1/day for the OAK sum-of-longest-diameters fit).
 - **Notes:** Register entry backfilled 2026-07-28 together with `kge`. **Name-collision warning:** the bare symbol `ks` used by much of the Stein literature is already taken in this register by a different canonical -- `ks` is the drug-mediated effect-compartment elimination rate of Kleijn 2011, with units 1 / (concentration * time). Always map a Stein-model paper's `ks` to `kse`, never to `ks`.
+
+### kdeath (**canonical constitutive cell-death / loss rate**)
+- **Type:** paper-named-param
+- **Role:** Constitutive, drug-independent first-order cell-death / loss rate of a tumor state (1 / time). Founding use: the `- kd * V` loss term of the von Bertalanffy growth law `dV/dt = p * V^(2/3) - kdeath * V`, which is what makes an untreated tumor plateau at the finite carrying volume `(p / kdeath)^3`. Inside `model()` the bare name is `kdeath`; the log-transformed `lkdeath` form is used in `ini()` because the rate is strictly positive.
+- **Source aliases:**
+  - `kd` -- Yates 2023 notation for the von Bertalanffy natural cell-death rate.
+- **Example models:** `Yates_2023_tgi_bertalanffy.R` (founding example; `kdeath = 0.004` 1/day, giving an untreated plateau volume of `(0.005 / 0.004)^3 = 1.95` L), `tgi_sat_VonBertalanffy.R`, `tgi_sat_genVonBertalanffy.R` (both templates, retrofitted from `lkd` 2026-08-06).
+- **Notes:** Ratified 2026-08-05 with the Yates 2023 extraction. **Deliberately not named `kd`, and deliberately not merged into `kk`.** The bare `kd` is already this register's canonical for the mechanistic *dissociation* rate constant and is in live use with that meaning (`Kleijn_2011_sugammadex_rocuronium.R`, `Hayashi_2007_omalizumab.R`, `Lowe_2009_omalizumab.R`, `Anbari_2023`); overloading it would give one canonical two incompatible roles. The templates `tgi_sat_VonBertalanffy.R` and `tgi_sat_genVonBertalanffy.R` originally used `lkd` for this concept -- they predated the register and were the collision, not the precedent; both were retrofitted to `lkdeath` / `kdeath` on 2026-08-06, so no model in the library now uses `kd` for a cell-death rate. Note that `lkd` is still correct, and widely used, for the *dissociation* constant (~18 models). Distinct also from Cardilin 2018's `kk`, which is a *drug- or radiation-modulated* kill rate rather than the constitutive loss term encoded here, and from `kdeg` (first-order degradation of a turnover pool, a synthesis/degradation-balance concept rather than a growth-law loss term). Paired with `p`.
 
 ### kge_ctdna (**canonical Stein ctDNA growth-rate constant**)
 - **Type:** paper-named-param
@@ -981,6 +1060,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** transit-absorption popPK extractions.
 
+### ntr (**canonical transit-chain length**)
+- **Type:** paper-named-param
+- **Role:** Number of absorption transit compartments in a Savic (2007) transit chain (unitless, and typically non-integer because it is estimated as the shape parameter of the equivalent gamma-density input). Closes the `mtt` / `ktr` / `ntr` family: `ktr = (ntr + 1) / mtt`. Inside `model()` the bare name is `ntr`; the log-transformed `lntr` form is used in `ini()`, since the count is strictly positive.
+- **Source aliases:**
+  - `NN` -- NONMEM control-stream notation for the transit-chain shape parameter (Abdelgawad 2024 `$THETA 6 NN`, Svensson 2018 rifampicin `THETA(9)`).
+  - `N`, `n_transit`, `NTR` -- equivalent paper notation.
+- **Example models:** `Abdelgawad_2024_linezolid.R` (founding example -- `lntr = log(5.68)`, an estimated chain length feeding rxode2's analytical `transit()`).
+- **Notes:** `ntr` is the canonical name for new extractions. Do NOT use `lnn` / `nn` for a transit-chain length: the `lnn` / `nn_fix` form is reserved for the Wang and co-authors sigmoidicity exponent in specific BDE / morphine-like models, so reusing it here would be a role collision. Legacy files predating this entry (`Svensson_2018_rifampicin.R`, `Smythe_2013_gatifloxacin.R`) still carry `lnn` / `nn` and are not retrofitted. Distinct from `ktr`, which is the per-compartment rate, and from `mtt`, which is the mean time through the whole chain.
+
 ### kmet (**canonical metabolite-formation rate constant**)
 - **Type:** paper-named-param
 - **Role:** First-order rate constant for in-vivo formation of an active metabolite from the parent central compartment, used when the source paper parameterises metabolite formation independently of the parent's total clearance.
@@ -1001,6 +1089,48 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** `Mitra_2026_ziftomenib.R` (base `logitfm <- fixed(0.14)` corresponding to `logit^-1(0.14) = 0.535`; additive shift `e_dis_healthy_logitfm = -1.62` on the logit scale for the healthy-volunteer cohort; IIV `etalogitfm ~ 0.280` on the logit scale).
 - **Notes:** Follows the `logit`-transform-prefix family (`logitffo`, `logitemax`) applied to the existing `fm` canonical root. Prefer `logitfm` (paper's logit encoding) over `lfm` (log encoding) when the source paper's NONMEM control stream stores FM on the logit scale, because a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Ratified canonically on 2026-07-24 alongside the Mitra 2026 ziftomenib extraction.
+
+### lq_milk (**canonical log-transformed central-to-breast-milk inter-compartmental clearance**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent inter-compartmental clearance between a central compartment and its paired `milk` compartment in a lactation-transfer model (volume / time). Extends the existing `lq` family with a destination token, on the same principle as the `kin_<compartment>` / `kout_<compartment>` family: the canonical bare `lq` / `lq2` mean exchange with `peripheral1` / `peripheral2` specifically, so reusing them for a breast-milk compartment would silently mislead. The bare form `q_milk` is used inside `model()`.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`Q/F = 0.400 L/h`, shared between primaquine and carboxyprimaquine per Wattanakul 2024 Table 2 footnote c; the source paper assumed and encoded `Q/F_CPQ = Q/F_PQ`).
+- **Notes:** Ratified 2026-08-06 with the library's first lactation model (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A). Metabolite forms take the standard suffix (`lq_milk_<metab>`) when a paper estimates the parent and metabolite transfer clearances separately.
+
+### pcmilk (**canonical milk:plasma partition coefficient**)
+- **Type:** paper-named-param
+- **Role:** Milk:plasma partition coefficient -- the fraction of the drug in the central compartment that is freely distributed into breast milk. Unitless, normally in (0, 1]. Enters the central-to-milk micro-rate constant as `k = (q_milk / vc) * pcmilk`, so at pseudo-equilibrium the milk:plasma concentration ratio (and hence the milk:plasma AUC ratio) equals `pcmilk` exactly. That identity is the natural falsifier for a lactation extraction: a published milk:plasma AUC ratio that does not equal the published partition coefficient means the model that produced it had an additional milk sink. Metabolite forms take the standard suffix (`pcmilk_<metab>`).
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`PC_PQ = 0.376`, `PC_CPQ = 0.00889` per Wattanakul 2024 Table 2; Table 3 reports the simulated milk:plasma AUC ratio as 0.376 (0.375-0.377), equal to `pcmilk`).
+- **Notes:** Ratified 2026-08-06 (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A). Distinct from a "milk-to-plasma ratio" reported as a raw observed concentration ratio: `pcmilk` is a model parameter that generates such a ratio, not the ratio itself.
+
+### cfcap (**canonical capillary:venous conversion factor**)
+- **Type:** paper-named-param
+- **Role:** Proportional conversion factor between a venous-plasma model prediction and the corresponding capillary (finger-prick) plasma prediction, estimated when a study assays both matrices and fits them simultaneously. Unitless; the capillary observable is `Ccap = Cc * cfcap`. Metabolite forms take the standard suffix (`cfcap_<metab>`).
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`CF_PQ = 0.898`, `CF_CPQ = 1.06` per Wattanakul 2024 Table 2; the associated observation variables are `Ccap` and `Ccap_cpq`).
+- **Notes:** Ratified 2026-08-06 as the mechanical consequence of the `cfcap` concept approved in operator sidecar `oare_PMC11078975` question q2 option A -- a capillary:venous conversion factor is only usable if the capillary observable it produces also has a name. Capillary sampling is standard in field malaria and paediatric pharmacokinetics, so this is expected to recur. Do NOT reuse `cfcap` for a plasma:whole-blood or plasma:serum conversion; those are different matrices and should get their own canonical.
+
+### kmilkinf (**canonical breast-milk-to-infant transfer rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1/time) transferring drug from a mother's `milk` compartment into the breastfed infant's `infant_depot` compartment during a feeding window in a mother-to-infant dyad model. Normally fixed to a large value so that essentially all of the milk-compartment amount transfers within the window rather than estimated, because the feed is fast relative to every other process in the model.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (`MTINF_PQ = MTINF_CPQ = 100 /h`, fixed high so that more than 95% of the amount in the breast-milk compartment is transferred during the 24-minute feeding window per Wattanakul 2024 Results, 'Predicting infant concentrations').
+- **Notes:** Ratified 2026-08-06 (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A).
+
+### feed_n, feed_window, feed_first, milk_intake (**canonical breastfeeding-pattern constants**)
+- **Type:** paper-named-param
+- **Role:** The four design constants that define a breastfeeding schedule in a lactation-transfer model. `feed_n` is the number of feeds per day (giving a feeding cycle of `24 / feed_n` hours); `feed_window` is the duration of each feed (time); `feed_first` is the time of the first feed after time zero (time); `milk_intake` is the average daily breast-milk intake per kg of infant body weight (volume / mass / time), from which the milk-compartment volume is derived as `milk_intake * WT_INFANT / feed_n`. All four are normally `fixed()` -- they describe the simulated feeding scenario, not an estimated property of the drug -- and are the natural handles for a feeding-pattern sensitivity analysis.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (`feed_n = 10` feeds/day, `feed_window = 0.4` h, `feed_first = 1` h, `milk_intake = 0.15` L/kg/day, giving a 2.4 h cycle with a 24-minute feeding window; Wattanakul 2024 Eq. 1 and Results, 'Predicting infant concentrations').
+- **Notes:** Ratified 2026-08-06 (operator sidecar `oare_PMC11078975` request-001 / response-001, question q2, option A). Kept as separate scalars rather than folded into one schedule object so that each can be varied independently in a sensitivity analysis, which is exactly what the founding paper does (Supplementary Figs. 2-4 vary feeding frequency and volume per feed).
+
+### lmtt_infant (**canonical log-transformed breastfed-infant mean transit time**)
+- **Type:** log-transformed-pk
+- **Role:** Mean transit absorption time of the breastfed infant in a mother-to-infant dyad model, when the infant's absorption is not scaled from the mother's but taken from a separate paediatric source. Uses the `_infant` suffix in the same sense as the `infant_<canonical>` compartment namespace and the `WT_INFANT` / `AGE_INFANT` covariates: it marks the quantity as belonging to the dyad PARTNER rather than to the modelled subject, whose own mean transit time is the plain `lmtt`.
+- **Source aliases:** none.
+- **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (`MTT_infant = 0.706 h`, fixed from a paediatric literature model to account for more rapid absorption in infants, with 2 transit compartments so `ktr_infant = 3 / MTT_infant`; Wattanakul 2024 Methods, 'Predicting infant concentrations').
+- **Notes:** Ratified 2026-08-06 as the mechanical extension of the `infant_` dyad-partner namespace approved in operator sidecar `oare_PMC11078975` questions q1 and q3 (option A both). Any other canonical parameter that a dyad model must carry separately for the infant partner takes the same `_infant` suffix; parameters that are merely SCALED from the mother's (allometric clearances and volumes) do not get their own `ini()` name at all, because they are derived inside `model()`.
 
 ### kin (**canonical indirect-response production rate**)
 - **Type:** paper-named-param
@@ -1111,11 +1241,13 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 ### mic (**canonical minimum inhibitory concentration**)
 - **Type:** paper-named-param
 - **Role:** Minimum inhibitory concentration of the drug against the target pathogen, in the model's concentration units (note that mg/L and ug/mL are numerically identical, which is why antimicrobial papers move between them freely). Used as the denominator of the PK/PD indices that drive antimicrobial PK/PD-integration, probability-of-target-attainment and PK/PD-cutoff models: `AUC/MIC`, `fAUC/MIC`, `Cmax/MIC`, and as the threshold for `T>MIC` / `fT>MIC`. Normally held `fixed()`, because it is a measured property of the isolate (CLSI / EUCAST broth microdilution) rather than an estimated model parameter; papers that sweep a range of MICs expose it so the user can override it per simulation.
+  Because the same isolate has different MICs by different reference methods, a model whose exposure-response was fitted against one susceptibility methodology must state which one in the `label()`; when a paper fits parallel exposure-response relationships against two methodologies, those are separate model files (see `Beredaki_2023_micafungin_clsi.R` / `..._eucast.R`).
 - **Source aliases:**
   - `MIC` -- the near-universal paper symbol.
-  - `MIC90` -- when the paper drives the index off the 90th-percentile MIC of a surveillance distribution rather than a single isolate's MIC.
-- **Example models:** `Chen_2023_tilmicosin.R` (fixed at 0.25 ug/mL, the measured MIC of *Pasteurella multocida* D:7; forms the `AUC24h/MIC` index that drives a sigmoidal Emax kill model), `Lallemand_2023_benzylpenicillin_horse.R` (fixed at 0.25 mg/L, the paper's concluded PK/PD cutoff, and overridden via `params = c(mic = ...)` to sweep 0.0625-2 mg/L; used both as the `fAUC/MIC` denominator and as the threshold integrated by the `t_above_mic` state).
-- **Notes:** Keep the bare lower-case name -- do NOT log-transform (an `lmic` would imply the MIC is being estimated) and do NOT rename to a generic `thres` / `ec50`, which would lose the microbiological meaning and collide with the sigmoidal-PD canonicals. Pair with `fu` when the index is defined on free rather than total drug: the free-drug index is `fu * Cc` compared against `mic`, which is equivalent to comparing total `Cc` against `mic / fu`. For models that carry more than one pathogen or isolate, suffix per analyte in the usual way (`mic_<organism>`).
+  - `MIC50`, `MIC90` -- population-distribution percentiles; use `mic` only for a single organism's own MIC, and record which percentile the value is in the `label()` and the source-trace comment.
+  - `MEC` -- minimum effective concentration, the echinocandin/mould analogue of the MIC, reported for filamentous fungi.
+- **Example models:** `Chen_2023_tilmicosin.R` (fixed at 0.25 ug/mL, the CLSI 2013 broth-microdilution MIC of *Pasteurella multocida* strain C44-15, serovar D:7; forms the `AUC24h/MIC` index that drives a sigmoidal Emax kill model), `Lallemand_2023_benzylpenicillin_horse.R` (fixed at 0.25 mg/L, the paper's concluded PK/PD cutoff, and overridden via `params = c(mic = ...)` to sweep 0.0625-2 mg/L; used both as the `fAUC/MIC` denominator and as the threshold integrated by the `t_above_mic` state), `Beredaki_2023_micafungin_clsi.R` (0.008 mg/L, CLSI M27 median MIC of *Candida albicans* CA 580) and `Beredaki_2023_micafungin_eucast.R` (0.016 mg/L, EUCAST E.Def 7.3 median MIC of the same isolate), both driving an `fAUC0-24/MIC` sigmoidal Emax.
+- **Notes:** Keep the bare lower-case name -- do NOT log-transform (an `lmic` would imply the MIC is being estimated) and do NOT rename to a generic `thres` / `ec50`, which would lose the microbiological meaning and collide with the sigmoidal-PD canonicals. Distinct from `ec50` / `lec50`: `ec50` is the *fitted* index value producing half-maximal effect (and in an `AUC/MIC`-indexed model is unitless, or has units of time), whereas `mic` is a *measured* concentration used to form the index in the first place. Pair with `fu` when the index is defined on free rather than total drug: apply the unbound fraction to the exposure numerator and leave `mic` on the total-drug scale the susceptibility method actually reports, since the free-drug index `fu * Cc` against `mic` is equivalent to total `Cc` against `mic / fu`. For models that carry more than one pathogen or isolate, suffix per analyte in the usual way (`mic_<organism>`). Ratified with the Chen 2023 tilmicosin extraction and extended with the Beredaki 2023 micafungin extraction; the two entries those left behind were merged 2026-08-06, since a repeated name at the same `Type` is resolved last-writes-win and the earlier one was being silently discarded.
 
 ### kpu<n> (**canonical clustered unbound tissue:plasma partition coefficient**)
 - **Type:** paper-named-param
@@ -1195,15 +1327,53 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
 - **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
 
-### mic (**canonical minimum inhibitory concentration of the challenge organism**)
-- **Type:** paper-named-param
-- **Role:** Minimum inhibitory concentration of the drug against the specific challenge isolate, in concentration units, used as the DENOMINATOR of a PK/PD index in antimicrobial / antifungal exposure-response models (`AUC/MIC`, `Cmax/MIC`, `%T>MIC`). Not an estimated parameter: it is a measured susceptibility property of the isolate, so it is always wrapped in `fixed()` and is the natural knob a downstream user changes to apply the model to an organism of different susceptibility. Because the same isolate has different MICs by different reference methods, a model whose exposure-response was fitted against one susceptibility methodology must state which one in the `label()`; when a paper fits parallel exposure-response relationships against two methodologies, those are separate model files (see `Beredaki_2023_micafungin_clsi.R` / `..._eucast.R`).
-- **Source aliases:**
-  - `MIC` -- near-universal paper notation.
-  - `MIC50`, `MIC90` -- population-distribution percentiles; use `mic` only for a single organism's own MIC, and record which percentile the value is in the `label()` and the source-trace comment.
-  - `MEC` -- minimum effective concentration, the echinocandin/mould analogue of the MIC, reported for filamentous fungi.
-- **Example models:** `Chen_2023_tilmicosin.R` (`mic` = 0.25 ug/mL, the CLSI broth-microdilution MIC of *Pasteurella multocida* C44-15, driving an `AUC24h/MIC` sigmoidal Emax); `Beredaki_2023_micafungin_clsi.R` (`mic` = 0.008 mg/L, CLSI M27 median MIC of *Candida albicans* CA 580) and `Beredaki_2023_micafungin_eucast.R` (`mic` = 0.016 mg/L, the EUCAST E.Def 7.3 median MIC of the same isolate), both driving an `fAUC0-24/MIC` sigmoidal Emax.
-- **Notes:** Ratified for AUC/MIC-index models alongside the Chen 2023 tilmicosin extraction; this register entry was written with the Beredaki 2023 micafungin extraction. Distinct from `ec50` / `lec50`: `ec50` is the *fitted* index value producing half-maximal effect (and in an `AUC/MIC`-indexed model is unitless, or has units of time), whereas `mic` is a *measured* concentration used to form the index in the first place. In a model where the index is a free-drug exposure, apply the unbound fraction (`fu`) to the exposure numerator and leave `mic` on the total-drug scale the susceptibility method actually reports.
+## Nested (multi-level) random effects
+
+Registered 2026-08-06 with the `Qi_2024_vosoritide.R` extraction, the first
+model in this library to carry a second hierarchical level of random effects.
+This section documents a naming pattern, not a canonical parameter, so it has
+no H3 entries and contributes nothing to the runtime name vectors.
+
+When a paper fits a **second hierarchical level** of random effects on top of
+the per-subject etas -- a between-study, between-site or between-centre random
+effect whose draw is shared by every subject in that group -- name the nested
+eta `eta<lparam>_<level>`, where `<lparam>` is the same transformed parameter
+name the subject-level eta uses and `<level>` is a short lowercase token naming
+the grouping level. Declare it in `ini()` with rxode2's native nesting syntax,
+piping the grouping column after the variance:
+
+```r
+etalcl       ~ 0.112896            # subject-level IIV on CL/F
+etalcl_study ~ 0.066049 | SIDN     # study-level (nested) random effect on CL/F
+```
+
+and add it to the same log-scale sum as the subject-level eta in `model()`:
+
+```r
+cl <- exp(lcl + etalcl + etalcl_study) * (WT / ref_wt)^e_wt_cl
+```
+
+Founding example: `Qi_2024_vosoritide.R` (`etalcl_study` and `etalvc_study`,
+nested on the `SIDN` study-identity column; Qi 2024 Sect. 2.4 eta6 / eta7).
+
+**The grouping column is a covariate register entry of its own** (see `SIDN` in
+`covariate-columns.md`), not a parameter. Because it is consumed by the `ini()`
+nesting syntax rather than by any `model()` expression,
+`checkModelConventions()` reports `covariateData[['<level>']] has an entry but
+is not referenced in model()`. That warning is structural for a nesting level.
+
+**Distinct from inter-occasion variability.** IOV indexes occasions *within* a
+subject (`OCC`, decomposed `etalcl_oc1..N` sharing one variance -- see
+`Jonsson_2011_ethambutol.R`, `Chen_2023_nemonoxacin.R`); a nested level groups
+*across* subjects, so every record of a subject shares one draw.
+
+**Two rxode2 simulation constraints apply** (verified against rxode2 5.1.3).
+The event table must contain at least two distinct grouping-column values --
+with only one level `rxSolve()` fails with `The following parameter(s) are
+required for solving: THETA[2], THETA[1]`, an error naming thetas the model does
+not have and giving no hint that the nesting is the cause. And `omega` must be
+passed explicitly (`omega = mod$omega`), because a nested omega is a *list* of
+matrices keyed by level rather than a single matrix.
 
 ## Unit spellings
 

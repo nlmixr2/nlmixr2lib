@@ -237,11 +237,12 @@ Walsh_2024_buprenorphine_drugLiking <- function() {
     # observed", Results), which is why a direct rather than effect-
     # compartment model is appropriate.
     # -------------------------------------------------------------------
-    vas <- base * (1 - imax * CP_BPN_NGML^hill / (ic50^hill + CP_BPN_NGML^hill))
+    druglikingvascfb <-
+      base * (1 - imax * CP_BPN_NGML^hill / (ic50^hill + CP_BPN_NGML^hill))
 
     # -------------------------------------------------------------------
     # Logit-normal residual error on the bounded range -1 to 52.
     # -------------------------------------------------------------------
-    vas ~ logitNorm(addSd, -1, 52)
+    druglikingvascfb ~ logitNorm(addSd, -1, 52)
   })
 }

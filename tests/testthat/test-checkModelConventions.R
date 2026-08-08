@@ -1418,4 +1418,210 @@ test_that("no model in the database uses a non-canonical unit spelling", {
   expect_equal(sort(unique(bad)), character(0))
 })
 
+test_that("no ini() line carries a quoted trailing comment rxode2 would promote into a broken label", {
+  # Enumerating: a newly added model whose ini() line ends in a comment that
+  # quotes the source paper fails here.
+  #
+  # rxode2 promotes a trailing comment on an ini() line into `label("<comment>")`
+  # when the function is parsed with source refs kept. A double quote inside
+  # that comment terminates the generated string early and the re-parse fails
+  # inside rxode2:::.rxReplaceCommentWithLabel(), with no indication of which
+  # model or line is responsible. ANY embedded double quote breaks it, not just
+  # an unbalanced one, because the generated label is itself double-quoted.
+  #
+  # This is invisible to buildModelDb(), which resolves without source refs and
+  # so never runs the promotion -- the build goes green while the test suite
+  # fails. Moein_2024_apitolisib_human.R hit this on an eta line quoting the
+  # Online Resource text. Fix by using single quotes inside the comment.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  bad <- character(0)
+  for (f in list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)) {
+    lines <- readLines(f, warn = FALSE)
+    inIni <- FALSE
+    for (i in seq_along(lines)) {
+      ln <- lines[[i]]
+      if (grepl("^\\s*ini\\(\\{", ln)) {
+        inIni <- TRUE
+        next
+      }
+      if (grepl("^\\s*model\\(\\{", ln)) inIni <- FALSE
+      if (!inIni) next
+      # A standalone comment line is not attached to a parameter, and a line
+      # that already calls label() is not promoted.
+      if (grepl("^\\s*#", ln)) next
+      if (grepl("label(", ln, fixed = TRUE)) next
+      # Locate the first # that is not itself inside a string literal.
+      chars <- strsplit(ln, "", fixed = TRUE)[[1]]
+      nq <- 0L
+      hash <- 0L
+      for (k in seq_along(chars)) {
+        if (chars[[k]] == '"') {
+          nq <- nq + 1L
+        } else if (chars[[k]] == "#" && nq %% 2L == 0L) {
+          hash <- k
+          break
+        }
+      }
+      if (hash == 0L) next
+      if (grepl('"', substring(ln, hash), fixed = TRUE)) {
+        bad <- c(bad, paste0(basename(f), ":", i))
+      }
+    }
+  }
+  expect_equal(sort(bad), character(0))
+})
+
+# Within-subject random-effect levels. `etaiov_<param>_<occ>` (inter-occasion)
+# and `etabvv_<param>_<visit>` (between-visit) both pair with the log-scale
+# fixed effect `l<param>` rather than with a same-named fixed effect, so
+# .isIOVEtaSuffix must accept both prefixes. Abdelgawad_2024_linezolid fits
+# five-occasion IOV on ka/mtt alongside a two-visit BVV on vmax; before the
+# bvv_ prefix was recognised, every etabvv_ slot raised a spurious "no
+# matching fixed-effect parameter" warning.
+test_that("iov_ and bvv_ level etas pair with their l<param> fixed effect", {
+  levels_model <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    covariateData <- list(
+      OCC = list(
+        description = "Occasion index", units = "(count)", type = "categorical",
+        reference_category = NULL, notes = "n", source_name = "OCC"
+      )
+    )
+    ini({
+      lvmax <- 5; label("Maximum elimination rate (Vmax, mg/h)")
+      lkm <- 3;   label("Michaelis-Menten constant (km, mg/L)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      etalvmax ~ 0.01
+      etabvv_vmax_1 ~ 0.04
+      etabvv_vmax_2 ~ fix(0.04)
+      etaiov_vc_1 ~ 0.09
+      etaiov_vc_2 ~ fix(0.09)
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      oc1 <- (OCC == 1)
+      oc2 <- (OCC == 2)
+      bvv <- oc1 * etabvv_vmax_1 + oc2 * etabvv_vmax_2
+      iov <- oc1 * etaiov_vc_1 + oc2 * etaiov_vc_2
+      vmax <- exp(lvmax + etalvmax + bvv)
+      km <- exp(lkm)
+      vc <- exp(lvc + iov)
+      Cc <- central / vc
+      d/dt(central) <- -vmax * Cc / (km + Cc)
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(levels_model, verbose = FALSE))
+  naming <- res[res$category == "parameter_naming", ]
+  expect_equal(nrow(naming), 0)
+})
+
+test_that("a bvv_ eta whose parameter has no fixed effect is still flagged", {
+  bad_bvv <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+    compartmentData <- list(
+      central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = TRUE)
+    )
+    ini({
+      lcl <- 1; label("Clearance (CL, L/h)")
+      lvc <- 1; label("Central volume (Vc, L)")
+      etabvv_nosuch_1 ~ 0.04
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl + etabvv_nosuch_1)
+      vc <- exp(lvc)
+      kel <- cl / vc
+      d/dt(central) <- -kel * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad_bvv, verbose = FALSE))
+  expect_true(any(grepl("etabvv_nosuch_1", res$name, fixed = TRUE)))
+})
+
+
+# Reference-register duplicates. The registers resolve in document order,
+# last one wins, so two blocks sharing a name AND a Type silently discard the
+# earlier one. `col`, `mic` and `cloca` each hit this. A name repeated under
+# DIFFERENT Types is deliberate and must not be flagged.
+
+test_that("no register entry is duplicated at the same Type", {
+  # Enumerating: a merge that leaves two same-Type blocks fails here.
+  root <- system.file("references", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "references not installed")
+  issues <- nlmixr2lib:::.referenceDuplicateIssues(
+    Sys.glob(file.path(root, "*.md")))
+  expect_equal(nrow(issues), 0L)
+})
+
+test_that("two blocks sharing a name and a Type are an error", {
+  tmp <- tempfile(fileext = ".md")
+  on.exit(unlink(tmp), add = TRUE)
+  writeLines(c(
+    "### foo (**canonical foo**)",
+    "- **Type:** compartment",
+    "- **Role:** first.",
+    "",
+    "### foo (**canonical foo again**)",
+    "- **Type:** compartment",
+    "- **Role:** second, silently discarded."
+  ), tmp)
+  issues <- nlmixr2lib:::.referenceDuplicateIssues(tmp)
+  expect_equal(nrow(issues), 1L)
+  expect_equal(issues$severity, "error")
+  expect_equal(issues$category, "reference_duplicate")
+  expect_equal(issues$name, "foo")
+  expect_true(grepl("compartment", issues$message, fixed = TRUE))
+})
+
+test_that("the same name under two different Types is NOT flagged", {
+  # col / complex / dap / lzd / mer / mero / plasma / van are each both a bare
+  # compartment and a metabolite-suffix, on purpose.
+  tmp <- tempfile(fileext = ".md")
+  on.exit(unlink(tmp), add = TRUE)
+  writeLines(c(
+    "### col (**canonical colistin bare drug-state compartment**)",
+    "- **Type:** compartment",
+    "- **Role:** bare state.",
+    "",
+    "### col (**canonical colistin metabolite suffix**)",
+    "- **Type:** metabolite-suffix",
+    "- **Role:** suffix."
+  ), tmp)
+  expect_equal(nrow(nlmixr2lib:::.referenceDuplicateIssues(tmp)), 0L)
+})
+
+test_that("register blocks are parsed with and without the bold parenthetical", {
+  tmp <- tempfile(fileext = ".md")
+  on.exit(unlink(tmp), add = TRUE)
+  writeLines(c(
+    "## A section heading is not an entry",
+    "### bare",
+    "- **Type:** paper-named-param",
+    "",
+    "### withParen (**canonical thing**)",
+    "- **Type:** compartment",
+    "",
+    "### Files using ALB",
+    "(prose heading, no Type line)"
+  ), tmp)
+  b <- nlmixr2lib:::.referenceRegisterBlocks(tmp)
+  expect_true(all(c("bare", "withParen") %in% b$name))
+  expect_equal(b$type[b$name == "bare"], "paper-named-param")
+  expect_equal(b$type[b$name == "withParen"], "compartment")
+  # A prose heading has no Type; it must not collide with other prose headings
+  # on the first word alone.
+  expect_false("Files" %in% b$name)
+})
+
 # nolint end
