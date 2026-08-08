@@ -10,11 +10,11 @@
   Egyptian pediatric patients (age 2-12 yr, weight 12-30 kg) treated for
   an acute asthma attack (elDesoky 1997). Aminophylline given as a
   30-min loading infusion (6 mg/kg) followed by 12 hr of continuous
-  maintenance infusion (1 mg/kg/hr); theophylline concentrations
-  measured at 0.75, 7, and 13.25 hr. Parameter values taken from the
-  Standard Calculations (SC) column of Table 2, which is independent of
-  the Bayesian-prior population data and is treated by the authors as
-  the reference (true) values.
+  maintenance infusion (1 mg/kg/h); theophylline concentrations measured
+  at 0.75, 7, and 13.25 hr. Parameter values taken from the Standard
+  Calculations (SC) column of Table 2, which is independent of the
+  Bayesian-prior population data and is treated by the authors as the
+  reference (true) values.
 - Article: [Jpn J Pharmacol
   1997;75(1):13-20](https://doi.org/10.1254/jjp.75.13) (J-STAGE open
   access)

@@ -42,8 +42,19 @@ in either the `Model_Accommodations.txt` accompaniment or the MDL
 ``` r
 
 mod_fun <- readModelDb("Jager_2011_gemtuzumab")
-str(environment(mod_fun)$population)
-#>  NULL
+str(rxode2::rxode(mod_fun)$population)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> List of 10
+#>  $ n_subjects    : int NA
+#>  $ n_studies     : int NA
+#>  $ age_range     : chr NA
+#>  $ weight_range  : chr NA
+#>  $ sex_female_pct: num NA
+#>  $ race_ethnicity: chr NA
+#>  $ disease_state : chr "Patients with acute myeloid leukemia (AML) receiving the CD33-directed antibody-drug conjugate gemtuzumab ozoga"| __truncated__
+#>  $ dose_range    : chr "Intravenous gemtuzumab ozogamicin. Specific clinical doses, infusion durations, and study design are reported i"| __truncated__
+#>  $ regions       : chr NA
+#>  $ notes         : chr "Demographic detail is not reproduced in the DDMORE bundle for DDMODEL00000229, and the Jager 2011 PLoS One pape"| __truncated__
 ```
 
 Consult Jager et al. (2011) directly for the full population

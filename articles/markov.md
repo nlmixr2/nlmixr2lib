@@ -187,6 +187,7 @@ model, for example to add drug effects, etc.
 fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(print = 0))
 #> ℹ parameter labels from comments are typically ignored in non-interactive mode
 #> ℹ Need to run with the source intact to parse comments
+#> ℹ moved zero initial estimate(s) off 0 (foceiControl(zeroTheta)): logitnonetonone
 #> → loading into symengine environment...
 #> → pruning branches (`if`/`else`) of full model...
 #> ✔ done
@@ -200,25 +201,24 @@ fit <- nlmixr2est::nlmixr(modFun, data = dMarkov, est = "focei", control = list(
 #> [====|====|====|====|====|====|====|====|====|====] 0:00:00
 #> → compiling EBE model...
 #> ✔ done
-#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.6 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 #> calculating covariance matrix
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:00 
 #> done
 #> → Calculating residuals/tables
 #> ✔ done
 fit
-#> ── nlmixr² log-likelihood Population Only (outer: nlminb) ──
+#> ── nlmixr² log-likelihood Population Only (outer: bobyqa) ──
 #> 
-#>          OBJF      AIC     BIC Log-likelihood Condition#(Cov) Condition#(Cor)
-#> lPop 70.21154 109.7797 114.028      -48.88985        4.404546        1.000178
+#>          OBJF      AIC    BIC Log-likelihood Condition#(Cov) Condition#(Cor)
+#> lPop 58.43353 98.00169 102.25      -43.00085        9.582164        2.999777
 #> 
 #> ── Time (sec fit$time): ──
 #> 
-#>              setup  optimize  covariance preprocess postprocess table compress
-#> elapsed 0.07478712 0.5066756 0.004555337      0.057        0.03 0.069    0.002
-#>            other
-#> elapsed 4.138982
+#>            setup   optimize  covariance preprocess postprocess table compress
+#> elapsed 3.487588 0.00693652 0.001497045      0.058       0.014 0.049    0.002
+#>             other
+#> elapsed 0.8959787
 #> 
 #> ── (fit$parFixed or fit$parFixedDf): ──
 #> 
@@ -229,42 +229,28 @@ fit
 #> logmildtomild           Probability of transition from state mild to mild (log-logit link difference from prior state)
 #> logitmoderatetonone                          Probability of transition from state moderate to none (logit probability)
 #> logmoderatetomild   Probability of transition from state moderate to mild (log-logit link difference from prior state)
-#>                          Est.     SE     %RSE     Back-transformed(95%CI)
-#> logitnonetonone     -0.000185 0.0112 6.06e+03 -0.000185 (-0.0221, 0.0218)
-#> lognonetomild            -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)
-#> logitmildtonone        -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)
-#> logmildtomild          -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)
-#> logitmoderatetonone    -0.693 0.0189     2.73      -0.693 (-0.73, -0.656)
-#> logmoderatetomild        -1.1 0.0235     2.14         -1.1 (-1.15, -1.05)
-#>                     BSV(SD) Shrink(SD)%
-#> logitnonetonone                        
-#> lognonetomild                          
-#> logitmildtonone                        
-#> logmildtomild                          
-#> logitmoderatetonone                    
-#> logmoderatetomild                      
+#>                        Est.    SE  %RSE Back-transformed(95%CI)
+#> logitnonetonone     0.00118 0.816 69200   0.00118 (-1.60, 1.60)
+#> lognonetomild         0.476 0.642   135    0.476 (-0.782, 1.73)
+#> logitmildtonone      -0.693 0.866   125    -0.693 (-2.39, 1.00)
+#> logmildtomild         0.834 0.505  60.5    0.834 (-0.155, 1.82)
+#> logitmoderatetonone  -0.693  1.22   177    -0.693 (-3.09, 1.71)
+#> logmoderatetomild     0.326 0.884   271     0.326 (-1.41, 2.06)
 #>  
 #>   Covariance Type (fit$covMethod): r
 #>   Information about run found (fit$runInfo):
-#>    • gradient problems with initial estimate and covariance; see $scaleInfo 
-#>    • last objective function was not at minimum, possible problems in optimization 
-#>    • Hessian reset during optimization; (can control by foceiControl(resetHessianAndEta=.)) 
+#>    • gradient problems with covariance; see $scaleInfo 
 #>   Censoring (fit$censInformation): No censoring
 #>   Minimization message (fit$message):  
-#>     false convergence (8) 
-#>   In an ODE system, false convergence may mean "useless" evaluations were performed.
-#>   See https://tinyurl.com/yyrrwkce
-#>   It could also mean the convergence is poor, check results before accepting fit
-#>   You may also try a good derivative free optimization:
-#>     nlmixr2(...,control=list(outerOpt="bobyqa"))
+#>     Normal exit from bobyqa 
 #> 
 #> ── Fit Data (object fit is a modified tibble): ──
 #> # A tibble: 15 × 29
-#>   ID     TIME    DV  IPRED linknonetonone cumprnonetonone linknonetomild
-#>   <fct> <dbl> <dbl>  <dbl>          <dbl>           <dbl>          <dbl>
-#> 1 1         0     0 -2.49       -0.000185           0.500          0.333
-#> 2 1         1     0 -0.601      -0.000185           0.500          0.333
-#> 3 1         2     0 -2.56       -0.000185           0.500          0.333
+#>   ID     TIME    DV IPRED linknonetonone cumprnonetonone linknonetomild
+#>   <fct> <dbl> <dbl> <dbl>          <dbl>           <dbl>          <dbl>
+#> 1 1         0     0 -1.10        0.00118           0.500           1.61
+#> 2 1         1     0 -1.79        0.00118           0.500           1.61
+#> 3 1         2     0 -1.10        0.00118           0.500           1.61
 #> # ℹ 12 more rows
 #> # ℹ 22 more variables: cumprnonetomild <dbl>, prnonetonone <dbl>,
 #> #   prnonetomild <dbl>, prnonetomoderate <dbl>, llnone <dbl>,
@@ -318,10 +304,10 @@ createMarkovTransitionMatrix(colPrev = dMarkov$previous, colCur = dMarkov$curren
 #> mild     0.3333333 0.5000000 0.1666667
 #> moderate 0.3333333 0.3333333 0.3333333
 createMarkovTransitionMatrix(colPrev = dSim$previous, colCur = dSim$current)
-#>               none       mild moderate
-#> none     0.6086957 0.06521739 0.326087
-#> mild     0.2500000 0.00000000 0.750000
-#> moderate 0.3600000 0.04000000 0.600000
+#>               none      mild   moderate
+#> none     0.7407407 0.2037037 0.05555556
+#> mild     0.4545455 0.1818182 0.36363636
+#> moderate 0.2000000 0.3000000 0.50000000
 ```
 
 or summarized in any other useful way.

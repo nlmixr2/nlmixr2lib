@@ -10,7 +10,7 @@ library(PKNCA)
 #> 
 #>     filter
 library(rxode2)
-#> rxode2 5.1.5 using 2 threads (see ?getRxThreads)
+#> rxode2 5.1.6 using 2 threads (see ?getRxThreads)
 #>   no cache: create with `rxCreateCache()`
 library(dplyr)
 #> 
@@ -28,6 +28,8 @@ library(ggplot2)
 ## Model and source
 
     #> ℹ parameter labels from comments will be replaced by 'label()'
+    #> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
+    #> as a work-around try putting the mu-referenced expression on a simple line
 
 - **Citation:** Waterhouse T, Baron K, Eure W, Chen C, Akbari M, Dirks
   NL, Jansson J, Mehrotra S. Population pharmacokinetic modeling of
@@ -101,7 +103,7 @@ below collects them in one place.
 | `cov(CL, Vp)` | `-0.0253` | Table 3: Corr = -0.208 |
 | `cov(Vc, Vp)` | `0.0272` | Table 3: Corr = 0.358 |
 | `propSd` | `sqrt(0.0241) ~ 0.1553` | Table 3: sigma^2_prop = 0.0241 (CV% = 15.5) |
-| IOV on CL (documented, not encoded) | `omega^2 = 0.0315` | Table 3: CV% = 17.9; see Assumptions / Errata below |
+| IOV on CL `etaiov_cl_1..7` | `omega^2 = 0.0315` | Table 3: IOV-CL CV% = 17.9, 95% CI 0.0190-0.0440, shrinkage 55.4%. Occasion definition: Methods Section 2.2.2 |
 | Model structure | 2-cmt linear elimination | Section 3.2.1 base model + Section 3.2.2 final model |
 
 Reference patient (Waterhouse 2024 Table 2 and Table 3 footnote):
@@ -183,7 +185,11 @@ make_cohort <- function(n,
 
   bind_rows(d_dose, d_obs) |>
     arrange(ID, TIME, desc(EVID)) |>
-    select(ID, TIME, AMT, EVID, CMT, RATE, DV,
+    # OCC: the dosing occasion each record belongs to (Waterhouse 2024 Methods
+    # 2.2.2 -- a new occasion begins at each administered dose and runs until the
+    # next dose). Records at or before the first dose take occasion 1.
+    mutate(OCC = pmax(1L, findInterval(TIME, dose_times))) |>
+    select(ID, TIME, AMT, EVID, CMT, RATE, DV, OCC,
            WT, AGE, ALB, LYMPH_ABS,
            AGVHD_LIVER, AGVHD_SKIN, AGVHD_INTESTINE)
 }
@@ -193,6 +199,8 @@ make_cohort <- function(n,
 
 mod <- rxode2::rxode(readModelDb("Waterhouse_2024_vedolizumab"))
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ## Simulation
@@ -204,6 +212,8 @@ two doses 14 days apart, then Q4W).
 
 events_vpc <- make_cohort(n = 200)
 sim_vpc <- rxode2::rxSolve(mod, events = events_vpc) |> as.data.frame()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
+#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ### Concentration-time VPC over the phase 3 dosing schedule
@@ -245,6 +255,78 @@ ggplot(d_vpc, aes(x = time, y = Q50)) +
 ```
 
 ![](Waterhouse_2024_vedolizumab_files/figure-html/fig-vpc-1.png)
+
+### Inter-occasion variability on CL
+
+Waterhouse 2024 estimates inter-occasion variability on CL (Table 3,
+variance 0.0315, CV% 17.9). An occasion begins at each administered dose
+and runs until the next (Methods Section 2.2.2), so the model requires
+an `OCC` column in the event table; `make_cohort()` above derives it
+from the dose schedule.
+
+The check below is deterministic: all etas are supplied as event-data
+columns with `omega = NA`, and only the occasion-2 IOV eta is perturbed.
+Clearance must change during occasion 2 alone, leaving occasion 1
+untouched.
+
+``` r
+
+ev_iov <- make_cohort(n = 1, n_doses = 3) |>
+  mutate(
+    WT = 75, AGE = 53, ALB = 40, LYMPH_ABS = 100,
+    AGVHD_LIVER = 0, AGVHD_SKIN = 0, AGVHD_INTESTINE = 0,
+    etalcl = 0, etalvc = 0, etalvp = 0,
+    etaiov_cl_1 = 0, etaiov_cl_2 = 0, etaiov_cl_3 = 0, etaiov_cl_4 = 0,
+    etaiov_cl_5 = 0, etaiov_cl_6 = 0, etaiov_cl_7 = 0
+  )
+
+cl_by_occ <- function(events) {
+  out <- rxode2::rxSolve(mod, events = events, omega = NA) |>
+    as.data.frame()
+  # CL is piecewise-constant within an occasion here (covariates and etas are
+  # fixed), so the within-occasion spread must be numerically zero.
+  stopifnot(max(tapply(out$cl, out$OCC, function(x) diff(range(x)))) < 1e-9)
+  out |>
+    group_by(OCC) |>
+    summarise(CL = mean(cl), .groups = "drop")
+}
+
+cl_ref  <- cl_by_occ(ev_iov)
+cl_pert <- cl_by_occ(ev_iov |> mutate(etaiov_cl_2 = log(2)))
+
+iov_tbl <- left_join(cl_ref, cl_pert, by = "OCC", suffix = c("_ref", "_pert")) |>
+  mutate(Ratio = CL_pert / CL_ref)
+
+# Occasion 2 CL must double; all other occasions must be untouched.
+stopifnot(
+  isTRUE(all.equal(iov_tbl$Ratio[iov_tbl$OCC == 2], 2, tolerance = 1e-6)),
+  isTRUE(all.equal(iov_tbl$Ratio[iov_tbl$OCC != 2],
+                   rep(1, sum(iov_tbl$OCC != 2)), tolerance = 1e-6))
+)
+
+iov_tbl |>
+  dplyr::rename(
+    "Occasion"           = OCC,
+    "CL, reference (L/day)" = CL_ref,
+    "CL, eta_IOV,2 = log(2) (L/day)" = CL_pert,
+    "Ratio"              = Ratio
+  ) |>
+  knitr::kable(
+    caption = paste0(
+      "IOV multiplexing check: perturbing the occasion-2 IOV eta changes CL ",
+      "during occasion 2 only."
+    )
+  )
+```
+
+| Occasion | CL, reference (L/day) | CL, eta_IOV,2 = log(2) (L/day) | Ratio |
+|---------:|----------------------:|-------------------------------:|------:|
+|        1 |                 0.148 |                          0.148 |     1 |
+|        2 |                 0.148 |                          0.296 |     2 |
+|        3 |                 0.148 |                          0.148 |     1 |
+
+IOV multiplexing check: perturbing the occasion-2 IOV eta changes CL
+during occasion 2 only. {.table}
 
 ### Covariate forest plot (final-model covariate effects on CL)
 
@@ -329,6 +411,8 @@ days).
 ``` r
 
 mod_typical <- mod |> rxode2::zeroRe()
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
+#> as a work-around try putting the mu-referenced expression on a simple line
 
 events_single <- make_cohort(
   n = 1,
@@ -344,7 +428,9 @@ events_single <- make_cohort(
 sim_single <- rxode2::rxSolve(mod_typical, events = events_single) |>
   as.data.frame() |>
   mutate(id = 1L, treatment = "single_300mg")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
+#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etaiov_cl_1, etaiov_cl_2, etaiov_cl_3, etaiov_cl_4, etaiov_cl_5, etaiov_cl_6, etaiov_cl_7
+#> as a work-around try putting the mu-referenced expression on a simple line
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_cl_7'
 
 sim_nca_single <- sim_single |>
   filter(!is.na(Cc)) |>
@@ -430,6 +516,7 @@ extra_obs <- data.frame(
   ID = 1L,
   TIME = final_dose_day + c(35, 42, 56, 84, 112, 168, 224),
   AMT = 0, EVID = 0, CMT = "central", RATE = 0, DV = NA_real_,
+  OCC = 7L,  # washout observations belong to the seventh (final) dosing occasion
   WT = 75, AGE = 53, ALB = 40, LYMPH_ABS = 100,
   AGVHD_LIVER = 0, AGVHD_SKIN = 0, AGVHD_INTESTINE = 0
 )
@@ -439,7 +526,7 @@ events_ss <- bind_rows(events_ss_base, extra_obs) |>
 sim_ss <- rxode2::rxSolve(mod_typical, events = events_ss) |>
   as.data.frame() |>
   mutate(id = 1L, treatment = "ss_300mg_final_dose")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etaiov_cl_1', 'etaiov_cl_2', 'etaiov_cl_3', 'etaiov_cl_4', 'etaiov_cl_5', 'etaiov_cl_6', 'etaiov_cl_7'
 
 sim_nca_ss <- sim_ss |>
   filter(!is.na(Cc), time >= final_dose_day) |>
@@ -568,18 +655,24 @@ structural-parameter-derived expectations. {.table}
   uses 0.75. The Table 2 value (0.50) is treated as a typographical
   error; a corrigendum has not been located as of extraction
   (2026-07-25).
-- **IOV on CL documented but not encoded.** Waterhouse 2024 Table 3
-  reports an inter-occasion variability variance of 0.0315 on CL (CV% =
-  17.9), where an “occasion” is each dosing occasion after which
-  vedolizumab PK observations are collected. Encoding IOV as a separate
-  occasion-indexed eta on `lcl` requires an `OCC` event-table column and
-  specific event-table setup that add complexity beyond the
-  simulation-only use case supported here. The population-typical plus
-  block-diagonal IIV variability reproduces the paper’s VPC (Figure 4)
-  shape and prediction intervals adequately, and the IOV magnitude is
-  documented in the
-  [`ini()`](https://nlmixr2.github.io/rxode2/reference/ini.html) block
-  for downstream users who want to extend the model.
+- **IOV on CL requires an `OCC` event-table column.** Waterhouse 2024
+  Table 3 reports an inter-occasion variability variance of 0.0315 on CL
+  (CV% = 17.9), where Methods Section 2.2.2 defines an occasion as each
+  administered dose with subsequent PK observations taking place before
+  the next dose. The packaged model encodes this as seven
+  occasion-indexed etas (`etaiov_cl_1` .. `etaiov_cl_7`) multiplexed by
+  binary indicators derived from an `OCC` column, covering the
+  seven-dose phase 3 VEDO-3035 schedule; the three-dose phase 1b
+  VEDO-1015 schedule uses occasions 1-3 and leaves the remaining
+  indicators at zero. NONMEM shares one variance across occasions via
+  `$OMEGA BLOCK(1) SAME`; nlmixr2 has no `SAME` shortcut, so occasions
+  2-7 are [`fix()`](https://rdrr.io/r/utils/fix.html)ed to the
+  occasion-1 estimate. **Users must supply an `OCC` column** (integer,
+  1-based, incrementing at each dose) in the event table; records
+  preceding the first dose take `OCC = 1`. Note the paper reports 55.4%
+  shrinkage on the IOV term, so the individual per-occasion estimates
+  are weakly informed even though the population variance is well
+  estimated (95% CI 0.0190-0.0440).
 - **Anti-vedolizumab antibody (AVA) effect not encoded.** Only 2 of 193
   subjects (1.0%) had positive AVA tests during the dosing period, both
   at the first day of dosing. Waterhouse 2024 Section 3.2.2 states: “The

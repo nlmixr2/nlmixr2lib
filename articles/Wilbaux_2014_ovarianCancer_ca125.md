@@ -259,10 +259,8 @@ a sensible range.
 
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [intdy -- t = 4.68133e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown
-#> [intdy -- t = 4.68151e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown
-#> [intdy -- t = 6.91601e-310 illegal]: 10 warning(s) for subject(s): Unknown
-#> [intdy -- t = 6.91602e-310 illegal]: 1 warning(s) for subject(s): Unknown
+#> [intdy -- t = 4.65014e-310 illegal]: 214 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
+#> [intdy -- t = 4.6502e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).
@@ -454,7 +452,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.5          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.6          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] generics_0.1.4     sass_0.4.10        xml2_1.6.0         digest_0.6.39     

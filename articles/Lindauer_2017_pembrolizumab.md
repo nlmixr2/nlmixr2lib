@@ -41,7 +41,8 @@ The same metadata is available programmatically:
 ``` r
 
 spec <- nlmixr2lib::readModelDb("Lindauer_2017_pembrolizumab")
-pop_meta <- environment(spec)$population
+pop_meta <- rxode2::rxode(spec)$population
+#> ℹ parameter labels from comments will be replaced by 'label()'
 if (is.null(pop_meta)) {
   pop_meta <- local({
     env <- new.env()

@@ -680,7 +680,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] ggplot2_4.0.3         dplyr_1.2.1           rxode2_5.1.5         
+#> [1] ggplot2_4.0.3         dplyr_1.2.1           rxode2_5.1.6         
 #> [4] nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):

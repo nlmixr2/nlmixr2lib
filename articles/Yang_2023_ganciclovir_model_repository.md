@@ -28,19 +28,18 @@ secondary source.
 
 ### Models contributed by this paper
 
-Nine of the review’s 16 models are packaged here. Five were already in
-nlmixr2lib, extracted directly from their **primary** publications, and
-are **not** re-extracted from the review (`Caldes_2009_ganciclovir`,
-`Chen_2021_ganciclovir`, `Perrottet_2009_ganciclovir`,
-`Vezina_2010_valganciclovir`, `Vezina_2014_valganciclovir`). Two more
-are blocked pending covariate-canonical ratification (Nguyen 2021, which
-needs a critical-illness indicator; Yuen 1995, which needs an
-any-solid-organ-transplant indicator and a CMV-retinitis indicator) –
-see *Assumptions and deviations*.
+All 11 of the review’s 16 models that were not already in nlmixr2lib are
+packaged here. The other five were already present, extracted directly
+from their **primary** publications, and are **not** re-extracted from
+the review (`Caldes_2009_ganciclovir`, `Chen_2021_ganciclovir`,
+`Perrottet_2009_ganciclovir`, `Vezina_2010_valganciclovir`,
+`Vezina_2014_valganciclovir`). Coverage of the review is therefore
+complete: 11 + 5 = 16.
 
 | Model | Compartments | Route(s) | Population |
 |:---|:---|:---|:---|
 | Lalagkas_2023_ganciclovir | 2 | GCV IV + VGCV PO | Adult SOT recipients with CMV infection |
+| Nguyen_2021_ganciclovir | 2 | GCV IV + VGCV PO | Pediatrics, incl. critically ill children |
 | Franck_2021_ganciclovir | 2 | GCV IV + VGCV PO | Pediatric SOT and SCT recipients |
 | Li_2021_ganciclovir | 1 | GCV IV | Critically ill children |
 | Krens_2020_ganciclovir | 1 | GCV IV | Critically ill adults |
@@ -49,8 +48,9 @@ see *Assumptions and deviations*.
 | Zhao_2009_ganciclovir | 2 | VGCV PO | Pediatric renal transplant patients |
 | Acosta_2007_ganciclovir | 1 | GCV IV + VGCV PO | Neonates with congenital CMV disease |
 | Zhou_1996_ganciclovir | 1 | GCV IV | Newborns with congenital CMV disease |
+| Yuen_1995_ganciclovir | 2 | GCV IV | CMV retinitis, CMV urine shedding, or SOT with renal dysfunction |
 
-Models extracted from Yang 2023 Table 3. {.table style="width:100%;"}
+Models extracted from Yang 2023 Table 3. {.table}
 
 Every model file records both citations – the primary publication and
 the Yang 2023 review it was transcribed from:
@@ -64,14 +64,15 @@ cat(rxode2::rxode2(readModelDb("Krens_2020_ganciclovir"))$reference)
 
 ## Population
 
-The nine packaged models were fitted to nine separate cohorts published
-between 1996 and 2023, spanning newborns to adults. The table below
+The 11 packaged models were fitted to 11 separate cohorts published
+between 1995 and 2023, spanning newborns to adults. The table below
 reproduces the per-study demographics from Yang 2023 Table 2 (the
 review’s own tabulation of the primary studies).
 
 | Study | Country | N | Observations | Age (median/mean) | Weight | Formulation |
 |:---|:---|:---|:---|:---|:---|:---|
 | Lalagkas 2023 | Spain | 60 | 640 | 57 y (22-78) | 68 kg (43-131) | GCV i.v. + VGCV p.o. |
+| Nguyen 2021 | France | 105 | 374 | 2.5 y (0.01-17.3) | 11.7 kg (2.6-80) | GCV i.v. + VGCV p.o. |
 | Franck 2021 | Canada | 50 | 580 | 7.5 y (0.5-17.4) | 26.7 kg (5.96-87) | GCV i.v. + VGCV p.o. |
 | Li 2021 | China | 104 | 138 | 2.46 y (0.10-12.83) | 12.0 kg (2.5-55.0) | GCV i.v. |
 | Krens 2020 | Netherlands | 34 | 128 | 56 y (30-82) | 70 kg (44-140) | GCV i.v. |
@@ -80,6 +81,7 @@ review’s own tabulation of the primary studies).
 | Zhao 2009 | France | 22 | 164 | 9 y (3-17) | 28 kg (12-76) | VGCV p.o. |
 | Acosta 2007 | USA | 24 | 484 | 30 d (11-34) / 20 d (8-33) | 2.7 / 2.9 kg | GCV i.v. + VGCV p.o. |
 | Zhou 1996 | USA | 27 | 219 | Newborns | NR | GCV i.v. |
+| Yuen 1995 | USA | 53 | 558 | NR | NR | GCV i.v. |
 
 Per-study demographics, from Yang 2023 Table 2. NR = not reported.
 {.table}
@@ -104,14 +106,17 @@ in only two studies and was not clinically meaningful.
 Per-parameter provenance is recorded as an in-file comment next to each
 `ini()` line in `inst/modeldb/specificDrugs/<model>.R`. **Every**
 structural parameter, between-subject variance, and residual-error term
-in all nine models comes from a single source location: **Yang 2023
-Table 3** (“Model strategies and final pharmacokinetic parameters of the
-included studies”), in the row for that study. The table below collects
-the structural equations exactly as Table 3 prints them.
+in all 11 models comes from a single source location: **Yang 2023 Table
+3** (“Model strategies and final pharmacokinetic parameters of the
+included studies”), in the row for that study – with the group-effect
+coefficients of `Nguyen_2021` and `Yuen_1995` defined in Table 3’s own
+footnote. The table below collects the structural equations exactly as
+Table 3 prints them.
 
 | Model | Fixed-effect equations (verbatim from Yang 2023 Table 3) | BSV (%) | RUV |
 |----|----|----|----|
 | `Lalagkas_2023` | CL = 6.93 x (CKD-EPI/55)^0.817 x (BW/70)^0.75; Vc = 43.1 x (BW/70); Q = 9.23 x (BW/70)^0.75; Vp = 219 x (BW/70); Ka = 0.766; F = 0.699; Tlag = 0.331 | CL 29.9, Vc 36.1, Vp 103.4, Ka 45.7, F 16.6 | 28.2% prop + 0.237 mg/L add |
+| `Nguyen_2021` | CL = 2.55 x (BW/11.7)^0.75 x (eGFR/167)^0.763 x 0.806^critically ill; Vc = 5.96 x (BW/11.7); Q = 0.222 x (BW/11.7)^0.75; Vp = 1.29 x (BW/11.7); Ka = 0.506; F = 0.438 | CL 48.6, Vc 46.9 | 47.7% prop |
 | `Franck_2021` | CL = 6.9 x (BW/26.7)^0.75 x (CrCL/149.8)^0.88; Vc = 9.7 x (BW/26.7); Q = 10.9; Vp = 7.6 x (BW/26.7); Tlag = 0.33; Ka = 0.73; F = 0.43 | CL 66.3, Vc 76.8, Ka 83.7, F 55.7 | 0.98 mg/L add |
 | `Li_2021` | CL = 5.23 x KF^0.92 x (BW/12.0)^1.02, KF = eGFR/120; Vc = 11.35 x (BW/12.0)^0.80 | CL 12.9, Vc 65.8 | 8.23% prop |
 | `Krens_2020` | CL = 2.3 x (CKD-EPI/65)^0.71; Vc = 42 | CL 47.0, Vc 80.0 | 43% prop |
@@ -120,11 +125,15 @@ the structural equations exactly as Table 3 prints them.
 | `Zhao_2009` | CL/F = 8.04 x (CLcr/89)^2.93 + 3.62 x (BW/28); Vc/F = 5.2; Vp/F = 30.7; Q/F = 3.97; Ka = 0.369; Tlag = 0.743 | CL 23.83, Vc 58.22, Ka 32.25 | 20.93% exponential |
 | `Acosta_2007` | CL = 0.146 x BW^1.68; V = 1.15 x BW; Ka = 0.591; F = 0.536 | CL 28.4, F 12.4 | 45.4% exponential |
 | `Zhou_1996` | CL = 0.262 + (0.00271 x ASCC); Vc = 0.627 + (0.437 x BW) | CL 35.4, Vc 30.1, COV 28.5 | 8.46% prop |
+| `Yuen_1995` | CL = 0.382 + 0.168 x BW x CLcr/100 x (1-T) x (1-CMV); Vc = 0.381 x BW; Vp = 0.511 x BW; Q = 13.4 | CL 47.5, Vc 27.5 | 36.1% prop |
 
 Supporting source locations for the encoding conventions:
 
 | Convention | Source location |
 |----|----|
+| `Nguyen_2021` critical-illness coding (1 = critically ill, 0 = others) | Yang 2023 Table 3 footnote: “critically ill: 1 for critically ill patients and 0 for others” |
+| `Yuen_1995` transplant coefficient T = 0.76 (0 for non-transplant) | Yang 2023 Table 3 footnote: “T: T = 0 for non-transplant patients and 0.76 for transplant patients” |
+| `Yuen_1995` CMV coefficient 0.41 (0 for CMV-shedding, 0.41 for retinitis) | Yang 2023 Table 3 footnote: “CMV: CMV = 0 for CMV-shedding patients and 0.41 for patients with CMV retinitis” |
 | BSV reported as %CV with omega = %CV/100 (so variance = (%CV/100)^2) | Yang 2023 Section 2.2: “BSV … was recorded as the coefficient of variation (CV), and %CV = sqrt(omega^2) \* 100%” |
 | BSV is exponential in every included study | Yang 2023 Section 3.2.1: “BSV was described by an exponential model in all the included studies.” |
 | Exponential residual error encoded as proportional in linear space | Yang 2023 Section 3.2.1 residual-error tabulation; exponential residual on the natural scale = additive on the log scale = `prop()` in nlmixr2 |
@@ -212,7 +221,10 @@ Each model is simulated only in the age cohort(s) its source study
 targeted, and only via the route(s) it can support. Models parameterized
 in apparent oral clearances (`Facchin_2019`, `Zhao_2009`) are oral-only;
 models without a depot compartment (`Li_2021`, `Krens_2020`,
-`Horvatits_2014`, `Zhou_1996`) are IV-only.
+`Horvatits_2014`, `Zhou_1996`) are IV-only. `Yuen_1995`’s cohort has no
+reported weights or ages but was an adult population (CMV retinitis, CMV
+urine shedding, and solid-organ transplant recipients), so it is
+simulated in the adult cohort, IV-only.
 
 ``` r
 
@@ -228,6 +240,10 @@ arms <- tibble::tribble(
   "Franck_2021_ganciclovir",     "Children",  "GCV IV",   "norm",
   "Franck_2021_ganciclovir",     "Infants",   "VGCV PO",  "norm",
   "Franck_2021_ganciclovir",     "Children",  "VGCV PO",  "norm",
+  "Nguyen_2021_ganciclovir",     "Infants",   "GCV IV",   "norm",
+  "Nguyen_2021_ganciclovir",     "Children",  "GCV IV",   "norm",
+  "Nguyen_2021_ganciclovir",     "Infants",   "VGCV PO",  "norm",
+  "Nguyen_2021_ganciclovir",     "Children",  "VGCV PO",  "norm",
   "Li_2021_ganciclovir",         "Infants",   "GCV IV",   "norm",
   "Li_2021_ganciclovir",         "Children",  "GCV IV",   "norm",
   "Facchin_2019_ganciclovir",    "Children",  "VGCV PO",  "norm",
@@ -235,7 +251,8 @@ arms <- tibble::tribble(
   "Lalagkas_2023_ganciclovir",   "Adults",    "GCV IV",   "norm",
   "Lalagkas_2023_ganciclovir",   "Adults",    "VGCV PO",  "norm",
   "Krens_2020_ganciclovir",      "Adults",    "GCV IV",   "norm",
-  "Horvatits_2014_ganciclovir",  "Adults",    "GCV IV",   "norm"
+  "Horvatits_2014_ganciclovir",  "Adults",    "GCV IV",   "norm",
+  "Yuen_1995_ganciclovir",       "Adults",    "GCV IV",   "raw"
 ) |>
   mutate(
     study = sub("_ganciclovir$", "", model),
@@ -243,7 +260,7 @@ arms <- tibble::tribble(
   )
 
 nrow(arms)
-#> [1] 15
+#> [1] 20
 ```
 
 ## Simulation
@@ -292,6 +309,17 @@ make_arm_events <- function(model, cohort, route, crcl_kind, arm, id_offset) {
     CREAT = pat$CREAT,
     SEXF  = pat$SEXF,
     CRCL  = crcl,
+    # Three group indicators are each set to their model's REFERENCE category, so
+    # every arm reports that model's typical-value profile and the cross-model QC
+    # comparison is not confounded by a subgroup shift. The non-reference levels
+    # are exercised separately in the covariate-effect section below.
+    #   DIS_CRITILL       (Nguyen_2021): 0 = not critically ill
+    #   TX_ANY            (Yuen_1995):   0 = non-transplant patient
+    #   DIS_CMV_RETINITIS (Yuen_1995):   0 = CMV-positive without retinitis
+    #                                        (asymptomatic urine shedding)
+    DIS_CRITILL       = 0,
+    TX_ANY            = 0,
+    DIS_CMV_RETINITIS = 0,
     arm   = arm,
     cohort = cohort,
     route  = route
@@ -369,6 +397,8 @@ for (m in unique(arms$model)) {
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ parameter labels from comments will be replaced by 'label()'
 sim <- dplyr::bind_rows(sim_list)
 
 # Sanity: every arm produced non-missing concentrations.
@@ -385,7 +415,7 @@ Yang 2023 Figure 2 (IV ganciclovir) and Figure 3 (oral valganciclovir)
 show simulated steady-state profiles for neonates, infants, children,
 and adults, with the median and 10th-90th percentiles across the virtual
 population, one line per retrieved study. The panels below reproduce
-that layout over the 72-96 h steady-state window for the nine packaged
+that layout over the 72-96 h steady-state window for the 11 packaged
 models.
 
 ``` r
@@ -445,34 +475,48 @@ the packaged models:
 # Renal-function effect: CL ratio between the low and high end of a common
 # eGFR range (Yang 2023 scaled renal function to a uniform range; the exact
 # Table S1 endpoints are unavailable, so 30-130 mL/min/1.73 m^2 is used).
+# `Zhao_2009` and `Yuen_1995` use raw CLcr in mL/min rather than the normalized
+# scale; the two coincide to within the BSA ratio (~5% for a 70 kg adult), which
+# is far smaller than the effect sizes being plotted, so the same range is used
+# for every model to keep the comparison on one axis (as Yang 2023 Figure 4 does).
 renal_lo <- 30; renal_hi <- 130
 ref_norm <- 90   # reference renal function for the ratio
+
+# `additive_yuen` evaluates Yuen 1995's CL = 0.382 + 0.168 * BW * CLcr/100 at a
+# 70 kg adult (the cohort weights are not reported), so its renal term is the
+# dominant one and the ratio is close to -- but not exactly -- proportional.
+yuen_cl <- function(crcl, wt = 70) 0.382 + 0.168 * wt * crcl / 100
 
 renal_effects <- tibble::tribble(
   ~study,           ~ref,   ~expo,   ~kind,
   "Lalagkas_2023",  55,     0.817,   "power",
+  "Nguyen_2021",    167,    0.763,   "power",
   "Franck_2021",    149.8,  0.88,    "power",
   "Li_2021",        120,    0.92,    "power",
   "Krens_2020",     65,     0.71,    "power",
   "Zhao_2009",      89,     2.93,    "power_partial",
-  "Zhou_1996",      NA,     NA,      "additive"
+  "Zhou_1996",      NA,     NA,      "additive",
+  "Yuen_1995",      NA,     NA,      "additive_yuen"
 ) |>
   rowwise() |>
   mutate(
     cl_lo = dplyr::case_when(
       kind == "power"         ~ (renal_lo / ref)^expo,
       kind == "power_partial" ~ (8.04 * (renal_lo / ref)^expo + 3.62) / (8.04 + 3.62),
-      kind == "additive"      ~ (0.262 + 0.00271 * renal_lo) / (0.262 + 0.00271 * ref_norm)
+      kind == "additive"      ~ (0.262 + 0.00271 * renal_lo) / (0.262 + 0.00271 * ref_norm),
+      kind == "additive_yuen" ~ yuen_cl(renal_lo) / yuen_cl(ref_norm)
     ),
     cl_hi = dplyr::case_when(
       kind == "power"         ~ (renal_hi / ref)^expo,
       kind == "power_partial" ~ (8.04 * (renal_hi / ref)^expo + 3.62) / (8.04 + 3.62),
-      kind == "additive"      ~ (0.262 + 0.00271 * renal_hi) / (0.262 + 0.00271 * ref_norm)
+      kind == "additive"      ~ (0.262 + 0.00271 * renal_hi) / (0.262 + 0.00271 * ref_norm),
+      kind == "additive_yuen" ~ yuen_cl(renal_hi) / yuen_cl(ref_norm)
     ),
     cl_ref = dplyr::case_when(
       kind == "power"         ~ (ref_norm / ref)^expo,
       kind == "power_partial" ~ (8.04 * (ref_norm / ref)^expo + 3.62) / (8.04 + 3.62),
-      kind == "additive"      ~ 1
+      kind == "additive"      ~ 1,
+      kind == "additive_yuen" ~ 1
     )
   ) |>
   ungroup() |>
@@ -649,11 +693,14 @@ mass_balance |>
 | Acosta_2007 \| Neonates \| GCV IV | 30 | 0.932 | 32.2 | 32.2 | -0.04 |
 | Franck_2021 \| Children \| GCV IV | 300 | 3.470 | 86.5 | 86.4 | -0.09 |
 | Franck_2021 \| Infants \| GCV IV | 100 | 1.232 | 81.2 | 81.1 | -0.06 |
-| Horvatits_2014 \| Adults \| GCV IV | 700 | 2.164 | 323.4 | 323.4 | 0.00 |
-| Krens_2020 \| Adults \| GCV IV | 700 | 2.904 | 241.1 | 241.0 | -0.01 |
-| Lalagkas_2023 \| Adults \| GCV IV | 700 | 10.261 | 68.2 | 68.2 | -0.04 |
-| Li_2021 \| Children \| GCV IV | 300 | 7.825 | 38.3 | 38.3 | -0.08 |
-| Li_2021 \| Infants \| GCV IV | 100 | 1.984 | 50.4 | 50.4 | -0.03 |
+| Horvatits_2014 \| Adults \| GCV IV | 700 | 2.266 | 309.0 | 308.9 | -0.01 |
+| Krens_2020 \| Adults \| GCV IV | 700 | 2.773 | 252.5 | 252.4 | 0.00 |
+| Lalagkas_2023 \| Adults \| GCV IV | 700 | 10.209 | 68.6 | 68.5 | -0.04 |
+| Li_2021 \| Children \| GCV IV | 300 | 7.819 | 38.4 | 38.3 | -0.07 |
+| Li_2021 \| Infants \| GCV IV | 100 | 2.032 | 49.2 | 49.2 | -0.04 |
+| Nguyen_2021 \| Children \| GCV IV | 300 | 2.535 | 118.4 | 118.3 | -0.02 |
+| Nguyen_2021 \| Infants \| GCV IV | 100 | 0.925 | 108.1 | 108.1 | -0.03 |
+| Yuen_1995 \| Adults \| GCV IV | 700 | 10.673 | 65.6 | 65.5 | -0.08 |
 | Zhou_1996 \| Neonates \| GCV IV | 30 | 0.424 | 70.8 | 70.8 | -0.03 |
 
 Mass-balance check on the steady-state AUC0-24h integration (IV arms).
@@ -687,18 +734,23 @@ nca_summary |>
 | Acosta_2007 | Neonates | GCV IV | 3.99 | 1.00 | 0.185 | 32.2 | 2.6 |
 | Zhou_1996 | Neonates | GCV IV | 7.76 | 1.00 | 0.550 | 70.8 | 3.1 |
 | Franck_2021 | Infants | GCV IV | 8.60 | 1.00 | 0.590 | 81.1 | 4.1 |
-| Li_2021 | Infants | GCV IV | 5.19 | 1.00 | 0.381 | 50.4 | 3.6 |
+| Li_2021 | Infants | GCV IV | 5.44 | 1.00 | 0.288 | 49.2 | 3.3 |
+| Nguyen_2021 | Infants | GCV IV | 10.63 | 1.00 | 1.390 | 108.1 | 6.7 |
 | Franck_2021 | Children | GCV IV | 9.92 | 1.00 | 0.849 | 86.4 | 4.6 |
-| Li_2021 | Children | GCV IV | 5.68 | 1.00 | 0.067 | 38.3 | 2.2 |
-| Horvatits_2014 | Adults | GCV IV | 19.33 | 1.00 | 10.462 | 323.4 | 24.0 |
-| Krens_2020 | Adults | GCV IV | 15.33 | 1.00 | 5.681 | 241.0 | 10.4 |
-| Lalagkas_2023 | Adults | GCV IV | 7.89 | 1.00 | 1.315 | 68.2 | 33.7 |
+| Li_2021 | Children | GCV IV | 5.23 | 1.00 | 0.105 | 38.3 | 2.4 |
+| Nguyen_2021 | Children | GCV IV | 11.05 | 1.00 | 1.635 | 118.3 | 7.8 |
+| Horvatits_2014 | Adults | GCV IV | 19.51 | 1.00 | 9.708 | 308.9 | 22.1 |
+| Krens_2020 | Adults | GCV IV | 15.03 | 1.00 | 6.497 | 252.4 | 12.9 |
+| Lalagkas_2023 | Adults | GCV IV | 7.87 | 1.00 | 1.339 | 68.5 | 29.7 |
+| Yuen_1995 | Adults | GCV IV | 9.53 | 1.00 | 0.848 | 65.5 | 5.5 |
 | Acosta_2007 | Neonates | VGCV PO | 2.67 | 2.31 | 0.337 | 35.4 | 2.7 |
 | Franck_2021 | Infants | VGCV PO | 4.41 | 2.28 | 0.728 | 62.3 | 3.9 |
-| Facchin_2019 | Children | VGCV PO | 5.46 | 1.35 | 0.553 | 51.6 | 10.1 |
+| Nguyen_2021 | Infants | VGCV PO | 5.98 | 2.53 | 1.521 | 92.6 | 6.6 |
+| Facchin_2019 | Children | VGCV PO | 5.47 | 1.40 | 0.617 | 53.9 | 10.7 |
 | Franck_2021 | Children | VGCV PO | 5.23 | 1.77 | 0.807 | 67.1 | 4.1 |
-| Zhao_2009 | Children | VGCV PO | 10.70 | 1.93 | 2.430 | 129.8 | 10.4 |
-| Lalagkas_2023 | Adults | VGCV PO | 6.66 | 1.94 | 1.766 | 86.4 | 30.7 |
+| Nguyen_2021 | Children | VGCV PO | 6.67 | 2.54 | 1.693 | 103.0 | 7.4 |
+| Zhao_2009 | Children | VGCV PO | 10.18 | 1.97 | 2.299 | 124.9 | 10.3 |
+| Lalagkas_2023 | Adults | VGCV PO | 6.53 | 2.06 | 1.939 | 90.7 | 31.8 |
 
 Steady-state NCA geometric means by arm (PKNCA; AUC over 72-96 h,
 half-life over the 84-168 h washout). {.table style="width:100%;"}
@@ -744,16 +796,22 @@ qc |>
 |:---|:---|:---|---:|---:|---:|:---|
 | Acosta_2007 | Neonates | GCV IV | 72 | 67 | 100 | yes |
 | Zhou_1996 | Neonates | GCV IV | 139 | 148 | 100 | yes |
-| Franck_2021 | Infants | GCV IV | 129 | 127 | 100 | yes |
-| Li_2021 | Infants | GCV IV | 78 | 79 | 100 | yes |
-| Franck_2021 | Children | GCV IV | 132 | 150 | 100 | yes |
-| Li_2021 | Children | GCV IV | 76 | 67 | 100 | yes |
-| Horvatits_2014 | Adults | GCV IV | 146 | 185 | 100 | yes |
-| Krens_2020 | Adults | GCV IV | 115 | 138 | 100 | yes |
-| Lalagkas_2023 | Adults | GCV IV | 59 | 39 | 100 | NO |
-| Facchin_2019 | Children | VGCV PO | 81 | 67 | 81 | yes |
-| Franck_2021 | Children | VGCV PO | 78 | 88 | 106 | yes |
-| Zhao_2009 | Children | VGCV PO | 159 | 169 | 116 | yes |
+| Franck_2021 | Infants | GCV IV | 109 | 107 | 100 | yes |
+| Li_2021 | Infants | GCV IV | 69 | 65 | 100 | yes |
+| Nguyen_2021 | Infants | GCV IV | 134 | 143 | 100 | yes |
+| Franck_2021 | Children | GCV IV | 119 | 118 | 100 | yes |
+| Li_2021 | Children | GCV IV | 63 | 52 | 100 | yes |
+| Nguyen_2021 | Children | GCV IV | 133 | 162 | 100 | yes |
+| Horvatits_2014 | Adults | GCV IV | 160 | 226 | 100 | NO |
+| Krens_2020 | Adults | GCV IV | 123 | 185 | 100 | yes |
+| Lalagkas_2023 | Adults | GCV IV | 65 | 50 | 100 | yes |
+| Yuen_1995 | Adults | GCV IV | 78 | 48 | 100 | NO |
+| Franck_2021 | Infants | VGCV PO | 86 | 82 | 95 | yes |
+| Nguyen_2021 | Infants | VGCV PO | 116 | 122 | 105 | yes |
+| Facchin_2019 | Children | VGCV PO | 82 | 65 | 75 | yes |
+| Franck_2021 | Children | VGCV PO | 79 | 81 | 94 | yes |
+| Nguyen_2021 | Children | VGCV PO | 100 | 125 | 135 | yes |
+| Zhao_2009 | Children | VGCV PO | 153 | 151 | 105 | yes |
 
 Yang 2023 QC similarity comparison, reproduced for the packaged models.
 {.table}
@@ -777,8 +835,8 @@ tibble::tibble(
 
 | NCA metric  | within 50-200% | within 70-150% |
 |:------------|---------------:|---------------:|
-| Cmax        |          1.000 |          0.833 |
-| AUC0-24h,ss |          0.917 |          0.417 |
+| Cmax        |          1.000 |          0.722 |
+| AUC0-24h,ss |          0.889 |          0.444 |
 | Tmax        |          1.000 |          1.000 |
 
 Fraction of arms inside the Yang 2023 QC similarity bands. {.table}
@@ -850,18 +908,23 @@ pta |>
 | Acosta_2007 | Neonates | GCV IV | 80 | 77.5 | 22.5 | 0.0 | 0.0 |
 | Zhou_1996 | Neonates | GCV IV | 80 | 3.8 | 57.5 | 35.0 | 3.8 |
 | Franck_2021 | Infants | GCV IV | 80 | 6.2 | 43.8 | 26.2 | 23.8 |
-| Li_2021 | Infants | GCV IV | 80 | 2.5 | 97.5 | 0.0 | 0.0 |
+| Li_2021 | Infants | GCV IV | 80 | 0.0 | 100.0 | 0.0 | 0.0 |
+| Nguyen_2021 | Infants | GCV IV | 80 | 1.2 | 27.5 | 31.2 | 40.0 |
 | Franck_2021 | Children | GCV IV | 80 | 11.2 | 32.5 | 25.0 | 31.2 |
-| Li_2021 | Children | GCV IV | 80 | 63.7 | 36.2 | 0.0 | 0.0 |
-| Horvatits_2014 | Adults | GCV IV | 80 | 0.0 | 0.0 | 8.8 | 91.2 |
-| Krens_2020 | Adults | GCV IV | 80 | 0.0 | 1.2 | 1.2 | 97.5 |
-| Lalagkas_2023 | Adults | GCV IV | 80 | 3.8 | 68.8 | 21.2 | 6.2 |
+| Li_2021 | Children | GCV IV | 80 | 65.0 | 35.0 | 0.0 | 0.0 |
+| Nguyen_2021 | Children | GCV IV | 80 | 1.2 | 17.5 | 30.0 | 51.2 |
+| Horvatits_2014 | Adults | GCV IV | 80 | 0.0 | 2.5 | 1.2 | 96.2 |
+| Krens_2020 | Adults | GCV IV | 80 | 0.0 | 0.0 | 8.8 | 91.2 |
+| Lalagkas_2023 | Adults | GCV IV | 80 | 2.5 | 70.0 | 27.5 | 0.0 |
+| Yuen_1995 | Adults | GCV IV | 80 | 12.5 | 58.8 | 20.0 | 8.8 |
 | Acosta_2007 | Neonates | VGCV PO | 80 | 66.2 | 32.5 | 1.2 | 0.0 |
 | Franck_2021 | Infants | VGCV PO | 80 | 30.0 | 31.2 | 18.8 | 20.0 |
-| Facchin_2019 | Children | VGCV PO | 80 | 0.0 | 100.0 | 0.0 | 0.0 |
+| Nguyen_2021 | Infants | VGCV PO | 80 | 3.8 | 33.8 | 30.0 | 32.5 |
+| Facchin_2019 | Children | VGCV PO | 80 | 5.0 | 93.8 | 1.2 | 0.0 |
 | Franck_2021 | Children | VGCV PO | 80 | 27.5 | 33.8 | 13.8 | 25.0 |
-| Zhao_2009 | Children | VGCV PO | 80 | 0.0 | 5.0 | 30.0 | 65.0 |
-| Lalagkas_2023 | Adults | VGCV PO | 80 | 1.2 | 41.2 | 40.0 | 17.5 |
+| Nguyen_2021 | Children | VGCV PO | 80 | 1.2 | 27.5 | 35.0 | 36.2 |
+| Zhao_2009 | Children | VGCV PO | 80 | 0.0 | 2.5 | 38.8 | 58.8 |
+| Lalagkas_2023 | Adults | VGCV PO | 80 | 0.0 | 37.5 | 42.5 | 20.0 |
 
 Probability of target attainment by AUC0-24h band. Replicates Yang 2023
 Figure 5. {.table}
@@ -904,9 +967,9 @@ checks |>
 
 | Yang 2023 claim | Simulated % \> 120 | Expected | Agrees |
 |:---|---:|:---|:---|
-| Krens 2020: \>50% of adults above 120 mg\*h/L (GCV 5 mg/kg q12h) | 97.5 | \> 50% | TRUE |
-| Horvatits 2014: \>50% of adults above 120 mg\*h/L (GCV 5 mg/kg q12h) | 91.2 | \> 50% | TRUE |
-| Lalagkas 2023: NOT \>50% above 120 mg\*h/L | 6.2 | \<= 50% | TRUE |
+| Krens 2020: \>50% of adults above 120 mg\*h/L (GCV 5 mg/kg q12h) | 91.2 | \> 50% | TRUE |
+| Horvatits 2014: \>50% of adults above 120 mg\*h/L (GCV 5 mg/kg q12h) | 96.2 | \> 50% | TRUE |
+| Lalagkas 2023: NOT \>50% above 120 mg\*h/L | 0.0 | \<= 50% | TRUE |
 
 Yang 2023 Section 3.4.1 per-model overexposure claims vs. this
 reproduction. {.table}
@@ -946,9 +1009,108 @@ tibble::tibble(
 | Neonatal CL at 5 kg is at least 3.34-fold CL at 1 kg | Acosta_2007 (CL ~ BW^1.68) | 14.94 | TRUE |
 | Adult CL at 100 kg is at most 2.43-fold CL at 40 kg | Lalagkas_2023 (CL ~ BW^0.75) | 1.99 | TRUE |
 
+### Group-indicator effects (Nguyen 2021 and Yuen 1995)
+
+Three of the packaged models’ covariates are binary group indicators
+whose coefficients Table 3 folds into the *coded value* of the column
+rather than printing as a separate THETA (`critically ill`, `T`, and
+`CMV`). Because the column is stored as a plain 0 / 1 canonical
+indicator and the coefficient lives in `ini()`, the encoding has to be
+checked by solving the model at both levels of each indicator and
+confirming the clearance ratio equals the coefficient the footnote
+prints. This is a direct test of the encoding, not of the paper.
+
+``` r
+
+# Read back the clearance the model actually computed at each level of each
+# indicator. `omega = NA` is passed at SOLVE time (rather than mutating the model
+# with `zeroRe()`) so the etas are zeroed for this solve only and the population
+# simulations above keep their between-subject variability; and the event table
+# omits `id` so rxode2 treats it as a genuine single-subject solve.
+group_cl <- function(model, covs) {
+  ev <- data.frame(
+    time = c(0, 1), amt = c(100, 0), cmt = "central", evid = c(1L, 0L)
+  )
+  for (nm in names(covs)) ev[[nm]] <- covs[[nm]]
+  out <- as.data.frame(
+    rxode2::rxSolve(readModelDb(model), events = ev, omega = NA, useLinCmt = FALSE)
+  )
+  out$cl[nrow(out)]
+}
+
+# Nguyen 2021: CL = 2.55 * (BW/11.7)^0.75 * (eGFR/167)^0.763 * 0.806^critically ill
+nguyen_cov <- list(WT = 11.7, CRCL = 167, DIS_CRITILL = 0)
+nguyen_ref  <- group_cl("Nguyen_2021_ganciclovir", nguyen_cov)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+nguyen_cov$DIS_CRITILL <- 1
+nguyen_crit <- group_cl("Nguyen_2021_ganciclovir", nguyen_cov)
+
+# Yuen 1995: CL = 0.382 + 0.168 * BW * CLcr/100 * (1-T) * (1-CMV).
+# Hand-computed at BW = 70 kg, CLcr = 90 mL/min for all four group combinations.
+yuen_hand <- function(tx, ret) {
+  0.382 + 0.168 * 70 * 90 / 100 * (1 - 0.76 * tx) * (1 - 0.41 * ret)
+}
+yuen_cov <- function(tx, ret) {
+  list(WT = 70, CRCL = 90, TX_ANY = tx, DIS_CMV_RETINITIS = ret)
+}
+yuen_grid <- tidyr::expand_grid(TX_ANY = 0:1, DIS_CMV_RETINITIS = 0:1) |>
+  rowwise() |>
+  mutate(
+    cl_model = group_cl("Yuen_1995_ganciclovir", yuen_cov(TX_ANY, DIS_CMV_RETINITIS)),
+    cl_hand  = yuen_hand(TX_ANY, DIS_CMV_RETINITIS)
+  ) |>
+  ungroup()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+tibble::tibble(
+  "Check" = c(
+    "Nguyen 2021: CL at reference covariates = 2.55 L/h",
+    "Nguyen 2021: critically-ill CL ratio = 0.806",
+    "Yuen 1995: CL matches the printed equation at all 4 group combinations",
+    "Yuen 1995: transplant CL (shedding) = 3.53 L/h at 70 kg, CLcr 90"
+  ),
+  "Value" = round(c(
+    nguyen_ref,
+    nguyen_crit / nguyen_ref,
+    max(abs(yuen_grid$cl_model - yuen_grid$cl_hand)),
+    yuen_grid$cl_model[yuen_grid$TX_ANY == 1 & yuen_grid$DIS_CMV_RETINITIS == 0]
+  ), 4),
+  "Expected" = c("2.55", "0.806", "max abs error 0", "3.5285")
+) |>
+  knitr::kable(caption = "Group-indicator encoding checks against Yang 2023 Table 3 and its footnote.")
+```
+
+| Check | Value | Expected |
+|:---|---:|:---|
+| Nguyen 2021: CL at reference covariates = 2.55 L/h | 2.5500 | 2.55 |
+| Nguyen 2021: critically-ill CL ratio = 0.806 | 0.8060 | 0.806 |
+| Yuen 1995: CL matches the printed equation at all 4 group combinations | 0.0000 | max abs error 0 |
+| Yuen 1995: transplant CL (shedding) = 3.53 L/h at 70 kg, CLcr 90 | 2.9222 | 3.5285 |
+
+Group-indicator encoding checks against Yang 2023 Table 3 and its
+footnote. {.table}
+
+``` r
+
+
+# Hard gates: each coefficient must be recovered exactly (to solver tolerance).
+stopifnot(
+  abs(nguyen_ref - 2.55) < 1e-6,
+  abs(nguyen_crit / nguyen_ref - 0.806) < 1e-6,
+  all(abs(yuen_grid$cl_model - yuen_grid$cl_hand) < 1e-6),
+  # Both reductions compose multiplicatively, so a transplanted retinitis patient
+  # keeps only (1 - 0.76) * (1 - 0.41) = 14.16% of the renal-elimination term.
+  abs(
+    (yuen_grid$cl_model[yuen_grid$TX_ANY == 1 & yuen_grid$DIS_CMV_RETINITIS == 1] - 0.382) /
+      (yuen_grid$cl_model[yuen_grid$TX_ANY == 0 & yuen_grid$DIS_CMV_RETINITIS == 0] - 0.382) -
+      0.24 * 0.59
+  ) < 1e-6
+)
+```
+
 ## Assumptions and deviations
 
-**Extraction source.** All nine models are transcribed from **Yang 2023
+**Extraction source.** All 11 models are transcribed from **Yang 2023
 Table 3**, a systematic review, rather than from their primary
 publications. This is the “extract-from-review” path, taken because
 Table 3 tabulates complete fixed-effect equations, BSV, and RUV for
@@ -964,28 +1126,79 @@ including Chen 2021’s unusual `CL/F = 7.09 x (1 + CLcr/68.3 x 1.08)`
 form (which really does define CL/F at CrCl = 0 in the primary). Those
 five are **not** re-extracted here.
 
-**Models deferred pending covariate canonicals.** Two of the review’s 16
-models are not packaged because they require covariate columns that are
-not yet in `inst/references/covariate-columns.md` and are not members of
-an auto-approved canonical family:
+**Three new covariate canonicals.** `Nguyen_2021` and `Yuen_1995` needed
+covariate columns that did not exist in
+`inst/references/covariate-columns.md` and were not members of an
+auto-approved canonical family, so they were ratified by the operator
+before extraction (sidecar request 001, all three approved as proposed)
+and are registered in this same change:
 
-- **Nguyen 2021**
-  (`CL = 2.55 x (BW/11.7)^0.75 x (eGFR/167)^0.763 x 0.806^critically_ill`)
-  needs a binary critical-illness / ICU indicator. The register has ICU
-  severity scores (`SAPS_II`, `APACHE_II`), `ORG_FAIL_COUNT`,
-  `MECH_VENT`, and ICU-admission-etiology indicators, but no plain “is
-  critically ill” binary.
-- **Yuen 1995** (`CL = 0.382 + 0.168 x BW x CLcr/100 x (1-T) x (1-CMV)`,
-  with T = 0.76 for transplant recipients and CMV = 0.41 for CMV
-  retinitis vs 0 for CMV urine shedding) needs an
-  any-solid-organ-transplant indicator (the register has only
-  organ-specific `TX_LIVER` / `TX_HEART` / `TX_LUNG` against a non-organ
-  reference) and a CMV-retinitis-vs-shedding indicator (the existing
-  `DIS_CMV` encodes transplant-with-CMV vs non-CMV, different
-  semantics).
+- **`DIS_CRITILL`** – binary critical-illness / ICU indicator (1 =
+  critically ill), needed by `Nguyen_2021`’s `0.806^critically_ill`
+  factor on CL. The register already had ICU severity *scores*
+  (`SAPS_II`, `APACHE_II`), `ORG_FAIL_COUNT`, `MECH_VENT`, and
+  ICU-admission-*etiology* indicators, but no plain “is critically ill”
+  binary. It is deliberately not derived from `ORG_FAIL_COUNT > 0` or
+  `DIS_SEPSIS`: Nguyen 2021 reports a bare binary with neither behind
+  it. Note the distinction from `Li_2021`, `Krens_2020` and
+  `Horvatits_2014`, whose cohorts are *entirely* critically ill – for
+  those, critical illness is a population property recorded in
+  `population$disease_state`, not a covariate column.
+- **`TX_ANY`** – any-solid-organ-transplant indicator against a
+  **non-transplant** reference, needed by `Yuen_1995`’s `(1 - T)` factor
+  with T = 0.76. The existing `TX_LIVER` / `TX_HEART` / `TX_LUNG`
+  canonicals partition *within* a transplant cohort (their reference is
+  a different graft), so none of them can express
+  transplant-vs-never-transplanted. Only 5 of Yuen 1995’s 53 subjects
+  carry `TX_ANY = 1`.
+- **`DIS_CMV_RETINITIS`** – CMV-retinitis indicator against a
+  CMV-positive, non-retinitis reference, needed by `Yuen_1995`’s
+  `(1 - CMV)` factor with CMV = 0.41. This is a within-CMV-positive
+  presentation split (31 retinitis vs 17 asymptomatic urine shedders),
+  so it is orthogonal to the existing `DIS_CMV`, which contrasts
+  transplant-recipient-with-CMV against a non-CMV reference and would
+  take the value 1 for *both* Yuen groups.
 
-Both are recorded for operator ratification; they are additions to this
-repository, not corrections to it.
+All three are `Scope: specific` (each reference complement is
+paper-defined) and name their founding model in the register. Because
+Table 3 folds each coefficient into the coded value of the column
+(`T = 0.76`, `CMV = 0.41`) rather than printing a separate THETA, the
+model files store the column as a plain 0 / 1 indicator and carry the
+coefficient as a named `ini()` parameter; the *Group-indicator effects*
+section above verifies that round-trip against the printed equation.
+
+**Nguyen 2021 critical illness: Table 3 and Section 3.3.3 disagree.**
+Section 3.3.3 says that of the two studies testing transplant status,
+CMV presentation and critical illness, “only transplant and CMV-shedding
+showed a significant influence” – which reads as critical illness having
+been rejected. But Table 3 prints the `0.806^critically ill` factor as
+part of Nguyen 2021’s **final** CL equation, and Table 4 lists
+“critically ill” among that study’s significant covariates on CL. Two of
+the three statements support inclusion, and the printed final equation
+is the authoritative one under the trust-the-equation rule, so the
+factor is encoded. Flagged here as a discrepancy inside the review
+rather than resolved silently.
+
+**Yuen 1995 clearance-equation precedence.** Table 3 prints
+`CL = 0.382 + 0.168 x BW x CLcr/100 x (1-T) x (1-CMV)`. As written, the
+two group factors multiply only the renal-elimination term, not the
+0.382 L/h intercept, so a transplanted retinitis patient retains
+`(1-0.76)(1-0.41) = 14.2%` of the renal term plus the full intercept.
+That reading is encoded verbatim, per the trust-the-printed-equation
+rule; it is also the physiologically coherent one (a covariate-free
+intercept represents non-renal elimination, which group membership
+should not scale). The alternative reading – both factors applied to the
+whole sum – would drive CL below the intercept and is not what the
+equation prints.
+
+**Yuen 1995 cohort weights and ages are unreported.** Yang 2023 Table 2
+records Yuen 1995’s ages and weights as NR. The model is weight-driven
+on CL, Vc and Vp, so the vignette simulates it in the adult virtual
+patient (70 kg), which is consistent with the cohort description
+(CMV-retinitis and solid-organ-transplant adults) but is an assumption,
+not a reported value. The published dose range (1.2-5.0 mg/kg) is
+weight-normalized, so the 5 mg/kg regimen the vignette uses sits at its
+top end.
 
 **Unavailable supplement.** Yang 2023’s supplementary materials (Table
 S1 uniform covariate ranges and reference values, Table S2 full PTA
@@ -1064,9 +1277,11 @@ magnitudes are recorded in `Facchin_2019_ganciclovir.R`’s
 standard errors for any parameter, so estimated-vs-fixed status cannot
 be read off the table directly. Exponents at the canonical allometric
 values (0.75 on CL/Q, 1 on Vc/Vp) are encoded as `fixed()` because those
-are structural impositions; non-canonical exponents (0.817, 0.88, 0.92,
-1.02, 0.80, 0.71, -0.768, 1.31, 1.28, 2.93, 1.68) are encoded as
-estimated.
+are structural impositions; non-canonical exponents (0.817, 0.763, 0.88,
+0.92, 1.02, 0.80, 0.71, -0.768, 1.31, 1.28, 2.93, 1.68) are encoded as
+estimated. The same reasoning applies to the three group-indicator
+coefficients (0.806, 0.76, 0.41), which are estimated effects, not
+structural impositions.
 
 **No published per-model NCA table to compare against.** The review
 reports no numeric Cmax / Tmax / AUC point estimates per model – its

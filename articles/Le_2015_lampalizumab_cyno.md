@@ -564,7 +564,7 @@ sessionInfo()
 #> 
 #> other attached packages:
 #> [1] ggplot2_4.0.3         tidyr_1.3.2           dplyr_1.2.1          
-#> [4] rxode2_5.1.5          nlmixr2lib_0.3.2.9000
+#> [4] rxode2_5.1.6          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
 #>  [1] generics_0.1.4     sass_0.4.10        xml2_1.6.0         digest_0.6.39     
