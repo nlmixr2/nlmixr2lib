@@ -297,25 +297,61 @@ while the spleen is 0.44 mL/h against a 39.6 mL/h splenic flow
 (permeability-limited, so highly sensitive). With the factor, both organs would
 be strongly perfusion-limited and neither would be sensitive to `P`.
 
-Second, the fit itself. Applying the 3600 factor collapses every liver curve:
+Second, the fit itself. Rat MC3 is insensitive to the choice - which is exactly
+what the sensitivity analysis predicts for a perfusion-limited liver - but every
+other liver curve collapses under the 3600 factor:
 
 ```{r ps-convention}
-ps_scan <- lapply(c(1, 3600), function(sc) {
-  d <- rat_arm("MC3", 0L, 0L, dose_rat_mc3)
-  p <- c(lp_liver_mc3  = log(2.6112 * sc),
-         lp_spleen_mc3 = log(0.0026 * sc),
-         lp_other_mc3  = log(0.0135 * sc))
-  r <- rxode2::rxSolve(mod_rat, d, params = p, useLinCmt = FALSE) |> as.data.frame()
-  tibble::tibble(`P x S convention` = ifelse(sc == 1, "P x S as mL/h (used here)",
-                                             "P x S converted from cm3/s (x3600)"),
-                 `Liver peak (mg/mL)` = max(r$Cliver),
-                 `Liver Tmax (h)` = r$time[which.max(r$Cliver)])
+ps_arms <- tibble::tribble(
+  ~lipid,    ~sm102, ~lipid5, ~dose,           ~p_liver, ~p_spleen, ~p_other, ~published,
+  "MC3",     0L,     0L,      dose_rat_mc3,    2.6112,   0.0026,    0.0135,   0.037,
+  "SM-102",  1L,     0L,      dose_rat_other,  2.6112,   0.0020,    2.1e-5,   0.017,
+  "Lipid 5", 0L,     1L,      dose_rat_other,  0.5222,   5.0e-4,    0.0020,   0.0060
+)
+
+ps_scan <- lapply(seq_len(nrow(ps_arms)), function(i) {
+  a <- ps_arms[i, ]
+  peaks <- vapply(c(1, 3600), function(sc) {
+    d <- rat_arm(a$lipid, a$sm102, a$lipid5, a$dose)
+    p <- c(lp_liver_mc3 = log(2.6112 * sc), lp_liver_lipid5 = log(0.5222 * sc),
+           lp_spleen_mc3 = log(0.0026 * sc), lp_spleen_sm102 = log(0.0020 * sc),
+           lp_spleen_lipid5 = log(5.0e-4 * sc),
+           lp_other_mc3 = log(0.0135 * sc), lp_other_sm102 = log(2.1e-5 * sc),
+           lp_other_lipid5 = log(0.0020 * sc))
+    max(as.data.frame(rxode2::rxSolve(mod_rat, d, params = p,
+                                      useLinCmt = FALSE))$Cliver)
+  }, numeric(1))
+  tibble::tibble(`Ionizable lipid` = a$lipid,
+                 `Liver peak, P x S as mL/h` = peaks[1],
+                 `Liver peak, P x S x 3600`  = peaks[2],
+                 `Liver peak, Figure 4A`     = a$published)
 }) |> dplyr::bind_rows()
 
+# Mouse MC3, the arm where the two conventions differ most. The mouse event
+# helper is defined further down, so the event table is built inline here.
+mouse_ps_events <- rxode2::et(amt = dose_mouse_mc3, cmt = "venous_np") |>
+  rxode2::et(seq(0, 25, by = 0.1), cmt = "venous_np") |>
+  as.data.frame() |>
+  dplyr::mutate(id = 1L, FORM_LNP_DMAPBLP78 = 0L, FORM_LNP_DMAPBLP45 = 0L)
+
+mouse_ps <- vapply(c(1, 3600), function(sc) {
+  d <- mouse_ps_events
+  p <- c(lp_liver_mc3 = log(5.7086 * sc), lp_spleen_mc3 = log(5.0e-4 * sc),
+         lp_other_mc3 = log(6.6e-4 * sc))
+  r <- as.data.frame(rxode2::rxSolve(mod_mouse, d, params = p, useLinCmt = FALSE))
+  r$Cliver[which.max(r$time)]
+}, numeric(1))
+
 ps_scan |>
-  dplyr::mutate(`Figure 4A liver peak` = 0.037) |>
+  dplyr::bind_rows(tibble::tibble(
+    `Ionizable lipid`           = "MC3 (mouse, liver at 24 h)",
+    `Liver peak, P x S as mL/h` = mouse_ps[1],
+    `Liver peak, P x S x 3600`  = mouse_ps[2],
+    `Liver peak, Figure 4A`     = 0.20)) |>
   knitr::kable(digits = 4,
-               caption = "Rat MC3 liver peak under the two possible unit conventions.")
+               caption = paste("Liver concentrations under the two possible unit",
+                               "conventions. The last row is the mouse Figure 5A",
+                               "liver value rather than a Figure 4A peak."))
 ```
 
 # Mouse: particle size (Figures 5 and 6)
