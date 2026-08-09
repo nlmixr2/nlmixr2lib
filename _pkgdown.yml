@@ -580,6 +580,8 @@ navbar:
         href: articles/Pejcic_2024_clopidogrel.html
       - text: "Clozapine (Li 2012)"
         href: articles/Li_2012_clozapine.html
+      - text: "Codeine (Ashraf 2024)"
+        href: articles/Ashraf_2024_codeine.html
       - text: "Colchicine mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Colistin (Jacobs 2016)"
@@ -3159,6 +3161,7 @@ articles:
   - articles/Areberg_2006_escitalopram
   - articles/Aregbe_2012_alvespimycin
   - articles/Aruldhas_2021_methadone
+  - articles/Ashraf_2024_codeine
   - articles/Asiimwe_2025_trastuzumab_ADCs_mbma
   - articles/Asimus_2007_artemisinin
   - articles/Attarwala_2023_mRNA3927
