@@ -7038,6 +7038,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Notes:** Specific scope until a second model legitimately reuses the indicator. Fuchs 2014 Discussion notes that the effect "might principally reflect cardiovascular instability in critically ill newborns" -- so the dopamine flag is partly a marker of disease severity rather than a clean drug-drug-interaction effect. The mechanism on glomerular filtration in neonates remains debated (Fuchs 2014 Discussion citations [57-59]).
 
 
+### CONMED_PROPOFOL_CC (**canonical for measured plasma concentration of co-administered propofol**)
+- **Description:** Time-varying measured plasma concentration of propofol administered concomitantly as the intravenous general-anaesthetic agent, supplied as a covariate column rather than computed from a coupled propofol PK model. Used as the perpetrator exposure in models where propofol modifies the disposition of another drug -- Li 2024 found that measured propofol concentration explains the reduced norepinephrine clearance seen under general anaesthesia better than the accompanying fall in cardiac output does, consistent with propofol's inhibition of the norepinephrine transporter. Set to 0 whenever no propofol is on board (awake phase, before induction, after full washout), which collapses the exponential effect term to 1.
+- **Units:** `ug/mL` (document per-model via `covariateData[[CONMED_PROPOFOL_CC]]$units` if a different exposure unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (no propofol administered). Reference values observed: median measured propofol concentration during Eleveld-model target-controlled maintenance anaesthesia was 3.53 ug/mL in Li 2024's healthy-volunteer cohort; a typical maintenance target is 3 ug/mL and a high target 6 ug/mL.
+- **Source aliases:**
+  - `CPROP` (Li 2024 Table 3 covariate-effect row "CPROP~CL" and Results 3.2; per-record measured propofol plasma concentration in ug/mL, same orientation as the canonical, no value transformation).
+- **Example models:** `Li_2024_norepinephrine.R` (exponential effect on norepinephrine clearance, `cl *= exp((e_conmed_propofol_cc_cl + etae_conmed_propofol_cc_cl) / 100 * CONMED_PROPOFOL_CC)` with `e_conmed_propofol_cc_cl = -3.57` per 100 ug/mL; the covariate replaced a binary awake-versus-anaesthesia session factor in the final model).
+- **Notes:** Follows the registered `CONMED_<drug>_CC` family (`CONMED_RIF_CC`, `CONMED_INH_CC`, `CONMED_MER_CC`, ...) for the time-varying concentration of a co-administered named drug, with the full INN spelled out as in `CONMED_SILDENAFIL_NMETAB_CC` because a `PROP` abbreviation would collide with propranolol and propranolol-like INNs. Distinct from `CEFFECT`, which carries the propofol *effect-site* concentration acting as the PD driver of propofol's own anaesthetic effect (`Koo_2012_propofol.R`); `CONMED_PROPOFOL_CC` is a measured *plasma* concentration acting as a perpetrator on a different drug's PK. Also distinct from the binary `CONMED_SEVO` / volatile-agent indicators, which carry no magnitude information.
+
 ## Rheumatoid-arthritis disease-activity covariates
 
 ### RHEUMATOID_FACTOR (**canonical for serum rheumatoid factor concentration**)
