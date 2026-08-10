@@ -9631,6 +9631,26 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (selects `propSdPhase3 = sqrt(0.203)` = 0.451 for durlobactam plasma observations; the Phase 3 additive residual component 'was determined to not be significant and was consequently removed', per Cammarata 2024 Results).
 - **Notes:** Specific scope; see `STUDY_SULDUR_PHASE2` for the full family rationale and the pair-of-indicators convention. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
 
+### STUDY_LEFAMULIN_PHASE1 (**canonical for Bian 2024 lefamulin phase 1 study cohort indicator**)
+- **Description:** 1 = subject enrolled in one of the Phase 1 studies (n = 98 healthy adults) of the pooled lefamulin popPK model-building dataset; 0 = otherwise. Paired with `STUDY_LEFAMULIN_PHASE2`; both indicators 0 selects the Phase 3 CABP studies (n = 622), which are the reference stratum. Shifts clearance, distributional clearance to the first peripheral compartment, and the first peripheral volume.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with `STUDY_LEFAMULIN_PHASE2` also 0 (Phase 3 community-acquired bacterial pneumonia studies). Bian 2024 Equations 1, 3 and 4 all state it explicitly: "When PHASE = 3, CLPHASE = 1".
+- **Source aliases:** derived per subject from the integer `PHASE` column of the pooled dataset (`PHASE == 1` -> 1).
+- **Example models:** `Bian_2024_lefamulin_original_ppb.R` and `Bian_2024_lefamulin_higher_ppb.R` (multiplies CL by 1.766 / 1.710, CLd1 by 2.12 / 1.788, and Vp1 by 2.75 / 1.889 in the original- and higher-plasma-protein-binding fits respectively).
+- **Notes:** Specific scope because the contrast is tied to the lefamulin clinical-development pooled analysis. Drug-specific paper-anchored member of the `STUDY_<DRUG>_PHASE<N>` family alongside `STUDY_SULDUR_PHASE2` / `STUDY_SULDUR_PHASE3` (Cammarata 2024), `STUDY_POSA_PHASE3` (van Iersel 2018), `STUDY_ASP8232_PHASE2` (Snelder 2020), `STUDY_NIPOCALIMAB_PHASE1` (Valenzuela 2025) and `STUDY_FARLETUZUMAB_PHASE2` (Farrell 2012). Like the sulbactam-durlobactam pair this needs TWO indicators because the source stratifies across three phases; keeping both columns rather than an integer `PHASE` column keeps the reference stratum explicit. Subject-level (time-fixed). The underlying source is the pooled foreign dataset also used by Zhang 2019 (doi:10.1093/jac/dkz088) and the FDA XENLETA review (NDA 211672/211673), so the same two columns apply to any further extraction from that lineage. Ratified canonically on 2026-08-09 alongside the Bian 2024 lefamulin extraction.
+
+### STUDY_LEFAMULIN_PHASE2 (**canonical for Bian 2024 lefamulin phase 2 study cohort indicator**)
+- **Description:** 1 = subject enrolled in the Phase 2 acute bacterial skin and skin structure infection study (n = 129) of the pooled lefamulin popPK model-building dataset; 0 = otherwise. Paired with `STUDY_LEFAMULIN_PHASE1`; both indicators 0 selects the Phase 3 CABP studies. Shifts clearance, distributional clearance to the first peripheral compartment, and the first peripheral volume.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with `STUDY_LEFAMULIN_PHASE1` also 0 (Phase 3 community-acquired bacterial pneumonia studies).
+- **Source aliases:** derived per subject from the integer `PHASE` column of the pooled dataset (`PHASE == 2` -> 1).
+- **Example models:** `Bian_2024_lefamulin_original_ppb.R` and `Bian_2024_lefamulin_higher_ppb.R` (multiplies CL by 1.827 / 1.707, CLd1 by 1.44 / 1.192, and Vp1 by 1.985 / 1.28 in the original- and higher-plasma-protein-binding fits respectively).
+- **Notes:** Specific scope; see `STUDY_LEFAMULIN_PHASE1` for the full family rationale and the pair-of-indicators convention. Ratified canonically on 2026-08-09 alongside the Bian 2024 lefamulin extraction.
+
 ### STUDY_ASP8232_PHASE2 (**canonical for Snelder 2020 ASP8232 phase 2 study cohort indicator in the pooled TMDD PK-PD analysis**)
 - **Description:** 1 = subject enrolled in one of the two phase 2 studies of the Snelder 2020 pooled ASP8232 TMDD PK-PD analysis (VIDI study, NCT02302079, diabetic macular edema; or ALBUM study 8232-CL-0004, NCT02358096, diabetic kidney disease); 0 = subject enrolled in one of the two phase 1 studies (8232-CL-0001 first-in-human healthy volunteers; 8232-CL-0002 renal impairment / T2DM-CKD, NCT02218099). Used to switch the log-additive residual-error magnitude on ASP8232 plasma concentrations and on VAP-1 plasma activity between the phase 1 studies (reference) and the phase 2 studies (paper's estimated multiplicative factor 1.88 relative to phase 1).
 - **Units:** (binary)
