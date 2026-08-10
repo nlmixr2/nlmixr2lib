@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Sexton 2024 lanadelumab kallikrein-kinin system QSP model ([doi:10.1007/s10928-024-09919-6](https://doi.org/10.1007/s10928-024-09919-6)) -- adults with hereditary angioedema due to C1-inhibitor deficiency.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
