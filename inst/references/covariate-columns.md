@@ -369,6 +369,17 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
   - `Catalan-Latorre_2018_taurine_rat.R` (static baseline indicator -- no `T_NUT_SUPP` pairing because there was no nutritional rehabilitation phase in the preclinical Wistar-rat study; `MAL_NOURISH = 1` reduces the saturable tubular secretion Vmax of taurine by 9.4% relative to well-nourished animals).
 - **Notes:** Specific scope because the malnutrition definition (WHO Z-score thresholds in Tikiso 2021; end-of-adaptation body weight below 80% of the well-nourished mean AND serum albumin below 23 g/L in Catalan-Latorre 2018; mid-upper arm circumference, weight-for-height vs height-for-age, etc.) is paper-defined; per-model `covariateData[[MAL_NOURISH]]$notes` must document the criterion used. Pairs with `T_NUT_SUPP` (days on nutritional supplementation) when the model uses a time-decaying recovery function; otherwise `MAL_NOURISH` alone serves as a static baseline indicator. Distinct from generic body-weight Z-scores (which are continuous anthropometric metrics rather than a binarised malnutrition indicator).
 
+### MUAC (**canonical for mid-upper arm circumference**)
+- **Description:** Mid-upper arm circumference, the continuous anthropometric measurement of the circumference of the upper arm at its midpoint. A standard WHO nutritional-status measure in children aged 6-59 months; the WHO severe-acute-malnutrition threshold is `MUAC < 115 mm`. Time-fixed at admission in the models that use it, though it is measurable repeatedly during nutritional rehabilitation.
+- **Units:** mm
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a
+- **Source aliases:**
+  - `MUAC` -- used in `Chotsiri_2019_lumefantrine.R` (Chotsiri 2019 Table 1 and Table 2 report MUAC in mm and the covariate coefficient per **cm**; the model therefore converts `MUAC / 10` inside `model()`).
+- **Example models:** `Chotsiri_2019_lumefantrine.R` (continuous exponential effect on the relative bioavailability of oral lumefantrine: `fmuac = exp(e_muac_f * (MUAC / 10 - muac_ref))` with `e_muac_f = -log(1 - 0.254)` per cm and `muac_ref = 13.0` cm, i.e. bioavailability falls 25.4% per 1 cm reduction in MUAC).
+- **Notes:** Store the raw measurement in **millimetres** -- the unit WHO uses for the SAM threshold and the unit source tables almost always tabulate -- and convert inside `model()` when a paper publishes its coefficient per centimetre. Distinct from the binary `MAL_NOURISH`: `MAL_NOURISH` is a paper-defined malnourished/not-malnourished indicator, whereas `MUAC` is the underlying continuous measurement and is one of the criteria papers use to *set* `MAL_NOURISH`. A model that retains a continuous MUAC effect must use `MUAC`; binarising it onto `MAL_NOURISH` would discard the dose-response. Where a paper reports both, carry both columns. Also distinct from the weight-for-height / weight-for-age / height-for-age z-scores (`WHZ` / `WAZ` / `HAZ` families), which are population-standardised scores rather than a raw circumference.
+
 ### T_NUT_SUPP (**canonical for time on nutritional supplementation**)
 - **Description:** Time elapsed since the start of nutritional / refeeding supplementation, in days. 0 at the start of supplementation; increases with time. Used by population PK models that describe the time-varying recovery of PK parameters during nutritional rehabilitation in malnourished cohorts.
 - **Units:** days
