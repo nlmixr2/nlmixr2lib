@@ -358,6 +358,8 @@ navbar:
         href: articles/Zhang_2023_brazikumab.html
       - text: "Brazikumab il22 (Zhang 2023)"
         href: articles/Zhang_2023_brazikumab.html
+      - text: "Brentuximab (Choules 2024)"
+        href: articles/Choules_2024_vedotin_ddi.html
       - text: "Brentuximab (Li 2017)"
         href: articles/Li_2017_brentuximab.html
       - text: "Brentuximab (Suri 2018)"
@@ -890,6 +892,8 @@ navbar:
         href: articles/Steichert_2025_enalapril_enalaprilat_pediatric.html
       - text: "Enalapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Enfortumab (Choules 2024)"
+        href: articles/Choules_2024_vedotin_ddi.html
       - text: "Enoxaparin (Barras 2009)"
         href: articles/Barras_2009_enoxaparin.html
       - text: "Enoxaparin (Berges 2007)"
@@ -3325,6 +3329,7 @@ articles:
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
   - articles/Choi_2018_metformin
+  - articles/Choules_2024_vedotin_ddi
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chua_2025_mirikizumab
   - articles/Chung_2013_vancomycin
