@@ -2746,6 +2746,8 @@ navbar:
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Torsemide (Jeong 2022)"
         href: articles/Jeong_2022_torsemide.html
+      - text: "Tozorakimab (Sadiq 2024)"
+        href: articles/Sadiq_2024_tozorakimab.html
       - text: "Tralokinumab (Baverel 2015)"
         href: articles/Baverel_2015_tralokinumab.html
       - text: "Tralokinumab (Soehoel 2022)"
@@ -4053,6 +4055,7 @@ articles:
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
   - articles/Sadaf_2024_glutamine
+  - articles/Sadiq_2024_tozorakimab
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
   - articles/Sakurai_2007_lansoprazole
