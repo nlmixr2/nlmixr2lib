@@ -2480,6 +2480,10 @@ navbar:
         href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
         href: articles/Lu_2014_sglt_qsp.html
+      - text: "ShikimicAcid pig iv (Mo 2024)"
+        href: articles/Mo_2024_shikimicAcid.html
+      - text: "ShikimicAcid pig oral (Mo 2024)"
+        href: articles/Mo_2024_shikimicAcid.html
       - text: "Sibutramine (Han 2015)"
         href: articles/Han_2015_sibutramine.html
       - text: "Sifalimumab (Narwal 2013)"
@@ -3873,6 +3877,7 @@ articles:
   - articles/Mitra_2026_ziftomenib
   - articles/Miyano_2022_atopicDermatitis_qsp
   - articles/Mo_2018_olaratumab
+  - articles/Mo_2024_shikimicAcid
   - articles/MocWilleford_2024_rlyb212
   - articles/Mody_2023_doxorubicin_dexrazoxane
   - articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer
