@@ -203,11 +203,14 @@ between-regimen comparisons sharp:
   weights and the three `eta` draws are generated once and reused for every arm
   (with disjoint `id` offsets). Between-arm differences are then entirely due to
   the regimen, not to resampling.
-* **Stratified (quantile) sampling** of the weights and of each `eta`. Drawing
-  the `i`-th subject at the `(i - 0.5)/n` quantile of its marginal, then
-  shuffling, reproduces each marginal distribution almost exactly at n = 200.
-  The `eta` values are supplied as data columns with `omega = NA` so `rxSolve`
-  uses them rather than resampling.
+* **Stratified (quantile) sampling of the body weights.** The weight
+  distribution is a fact about the trial population, so placing the `i`-th
+  subject at the `(i - 0.5)/n` quantile reproduces it almost exactly at n = 200.
+  The `eta` values are *not* treated this way: they are the model's own
+  stochastic element, and pinning each one to its marginal quantiles would
+  understate the joint tail of any quantity that depends on more than one of
+  them. They are drawn randomly under a fixed seed and supplied as data columns
+  with `omega = NA` so that all three arms share them.
 
 Body weights follow the observed patient distribution: mean 65.5 kg, SD 18.1 kg,
 spanning roughly 35-120 kg (Na 2024 Section 2.6 and Figure S1). Because the
@@ -241,17 +244,18 @@ p_lo <- stats::pnorm(wt_lo, mu_wt, wt_sd)
 p_hi <- stats::pnorm(wt_hi, mu_wt, wt_sd)
 wt <- sample(stats::qnorm(p_lo + probs * (p_hi - p_lo), mu_wt, wt_sd))
 
-# Stratified eta draws, using the omega variances carried by the model itself.
+# Random eta draws (NOT quantile-pinned -- see the note above), using the omega
+# variances carried by the model itself.
 ui <- rxode2::rxode(readModelDb("Na_2024_tovecimig"))
 omega_var <- diag(ui$omega)
-strat_eta <- function(nm) sample(stats::qnorm(probs, 0, sqrt(omega_var[[nm]])))
+draw_eta <- function(nm) stats::rnorm(n_per_arm, 0, sqrt(omega_var[[nm]]))
 
 subj_base <- tibble::tibble(
   subj   = seq_len(n_per_arm),
   WT     = wt,
-  etalcl = strat_eta("etalcl"),
-  etalvc = strat_eta("etalvc"),
-  etalvp = strat_eta("etalvp")
+  etalcl = draw_eta("etalcl"),
+  etalvc = draw_eta("etalvc"),
+  etalvp = draw_eta("etalvp")
 )
 
 c(`cohort mean WT (kg)` = mean(wt), `cohort SD WT (kg)` = stats::sd(wt),
@@ -438,7 +442,8 @@ nca_wide <- as.data.frame(nca_res$result) |>
 
 nca_wide |>
   dplyr::mutate(
-    value = sprintf("%.1f +/- %.1f", mean, sd),
+    value = sprintf("%.1f +/- %.1f (SEM %.1f%%)", mean, sd,
+                    100 * sd / sqrt(n_per_arm) / mean),
     PPTESTCD = nlmixr2lib::ncaParamLabel(PPTESTCD)
   ) |>
   dplyr::select(regimen, PPTESTCD, value) |>
@@ -447,7 +452,8 @@ nca_wide |>
   knitr::kable(
     caption = paste(
       "Simulated steady-state exposure, mean +/- SD across 200 virtual",
-      "patients per arm. Compare with Table 3 of Na 2024."
+      "patients per arm, with the Monte-Carlo standard error of the mean.",
+      "Compare with Table 3 of Na 2024."
     )
   )
 ```
@@ -489,13 +495,18 @@ knitr::kable(
 ```
 
 The 700 mg fixed-dose arm reproduces all four published quantities to within
-0.8%. That is a strong joint check: Cmax pins `V1` and its weight exponent,
-AUC over the dosing interval pins total clearance (hence both the linear `CL`
-and the Michaelis-Menten arm, and with it the `mg` reading of `Vmax` and `Km`),
-and the standard deviations reported alongside them pin the three `omega`
-terms.
+2.1%, and its AUC and Cavg to within 0.3%. That is a strong joint check: Cmax
+pins `V1` and its weight exponent, AUC over the dosing interval pins total
+clearance (hence both the linear `CL` and the Michaelis-Menten arm, and with it
+the `mg` reading of `Vmax` and `Km`), and the standard deviations reported
+alongside them pin the three `omega` terms -- the simulated SDs sit within a few
+percent of the published ones for every quantity.
 
-The weight-based arms sit 2.8-6.4% high. Part of that gap is arithmetic in the
+The weight-based arms sit 0.8-8.3% high. Most of that is inside the Monte-Carlo
+noise of a 200-subject cohort: the standard error of the mean printed in the
+table above is 3.6-3.9% for AUC and Cavg and about 6% for Cmin, so only the
+15 mg/kg Q3W AUC sits as much as two standard errors away. Part of the rest is
+arithmetic in the
 paper's own table rather than in this implementation. At steady state
 AUC over a dosing interval is dose divided by clearance, so the 15 mg/kg Q3W and
 10 mg/kg Q2W rows should differ by the dose ratio 1.500 in a linear model, and
@@ -519,24 +530,75 @@ adjusted.
 * **`Vmax` and `Km` units.** Na 2024 Table 2 prints `Vmax (ug/h) = 0.0968` and
   `Km (ug/L) = 4.15`. Taken literally, the saturable arm would contribute a
   clearance of about `1e-6` L/h, i.e. nothing at all, which contradicts the
-  paper elsewhere: (a) the model would then be effectively linear, yet the paper
-  builds the whole Results section on parallel linear plus Michaelis-Menten
-  elimination; (b) the reported "approximately 5.7 days" elimination half-life
-  requires the extra clearance (the literal reading gives 6.1 days); and (c) the
-  literal reading overshoots every steady-state exposure in Table 3 by about 6%,
-  whereas the mg reading reproduces them to about 1%. The concentration data are
-  in mg/L throughout (Table 3), so a NONMEM `Vmax` is in mg/h and `Km` is in
-  mg/L. The model file therefore uses `Vmax = 0.0968 mg/h` and
-  `Km = 4.15 mg/L`, and the `ug` labels are treated as printing errors. No value
-  was changed, only its unit interpretation.
+  paper elsewhere. Three arguments select the `mg` reading, the first of which
+  is decisive on its own.
+
+  (a) *Dimensional analysis.* The concentration data are in mg/L throughout
+  (Table 3 reports Cmax and Ctrough in mg/L) and doses are in mg. A NONMEM
+  `Vmax` is an amount per time in the dataset's own units, so it is mg/h, and
+  `Km` is a concentration in the dataset's own units, so it is mg/L.
+
+  (b) *The reported half-life.* "Approximately 5.7 days" requires the extra
+  clearance; the `mg` reading gives 5.78 days and the `ug` reading 6.1 days, as
+  the closed-form check earlier in this vignette shows.
+
+  (c) *Consistency with Table 3.* The `mg` reading reproduces the 700 mg
+  fixed-dose AUC over the dosing interval to +0.3%. Because that arm's AUC is
+  dose divided by clearance, and is therefore insensitive both to `V1` and to
+  the cohort's weights, it is a clean check on total clearance. The `ug` reading
+  removes the Michaelis-Menten contribution entirely and would raise it by
+  roughly 6%.
+
+  The model file therefore uses `Vmax = 0.0968 mg/h` and `Km = 4.15 mg/L`, and
+  the `ug` labels are treated as printing errors. No value was changed, only its
+  unit interpretation.
 * **`theta_V1`: 3.87 L (Table 2) vs 3.64 L (Results equation).** The Results
   text prints `V1 (L) = 3.64 (L) x (Weight (kg) / 70 (kg))^0.598`, but Table 2
   reports the final estimate as 3.87 L (RSE 5%) with a bootstrap median of
-  3.63 L. The 3.64 in the equation is essentially the bootstrap median, not the
-  final estimate. Simulating both against Na 2024's own Table 3 is decisive:
-  3.87 L gives a mean steady-state Cmax of 263.9 mg/L for the 700 mg fixed dose
-  against the published 263.1 mg/L, while 3.64 L gives 271.4 mg/L. The model
-  file uses the Table 2 value, 3.87 L.
+  3.63 L. The model file uses the Table 2 value, 3.87 L, on the strength of the
+  table itself: Table 2 is the paper's authoritative "Parameter estimates of the
+  final model" and carries an RSE, whereas the 3.64 printed in the Results
+  sentence coincides with the bootstrap median 3.63 and reads as a transcription
+  slip from the adjacent column.
+
+  Simulation does **not** settle this one, and it is worth showing why rather
+  than implying otherwise. In this model `V1` enters only as
+  `exp(lvc + etalvc) * (WT/70)^0.598`, so substituting 3.64 L for 3.87 L is
+  exactly a constant shift of `log(3.64/3.87)` on `etalvc`; the check below
+  re-solves the identical cohort with that shift, so the two readings differ in
+  nothing else.
+
+```{r v1-sensitivity}
+sim_v1_alt <- rxode2::rxSolve(
+  mod_ss,
+  events = events |> dplyr::mutate(etalvc = etalvc + log(3.64 / 3.87)),
+  omega = NA, keep = c("WT", "regimen"), addDosing = FALSE
+) |>
+  as.data.frame()
+
+fixed_arm_cmax <- function(x) {
+  x |>
+    dplyr::filter(regimen == "700 mg fixed Q2W") |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(cmax = max(Cc), .groups = "drop") |>
+    dplyr::pull(cmax) |>
+    mean()
+}
+
+c(`published Cmax (mg/L)`      = 263.1,
+  `theta_V1 = 3.87 (Table 2)`  = fixed_arm_cmax(sim),
+  `theta_V1 = 3.64 (Results)`  = fixed_arm_cmax(sim_v1_alt)) |>
+  round(1)
+```
+
+  The two readings straddle the published mean steady-state Cmax by a similar
+  margin (-2.1% and +1.7%), and both sit inside roughly one Monte-Carlo standard
+  error of this cohort's mean Cmax. Cmax is also sensitive to the cohort's
+  weight distribution, since `V1` scales as `WT^0.598`. Table 3 therefore cannot
+  discriminate the two values at the available precision; the choice rests on
+  Table 2's authority, and the check above serves to bound the consequence of
+  the alternative reading at about 4% in simulated Cmax rather than to justify
+  the choice.
 * **Residual error, SD vs variance.** Table 2 reports "Proportional residual
   error 0.245" with no unit or scale annotation. It is encoded as an SD
   (`propSd = 0.245`, i.e. 24.5% CV). Read as a NONMEM variance it would imply a
@@ -545,12 +607,31 @@ adjusted.
   12.76%) and with the tightness of the pcVPC in Figure 2. Na 2024's Table 3
   simulations do not include residual error at all (see the next bullet), so
   this choice does not affect any comparison in this vignette.
-* **Table 3 was simulated without residual error.** Adding a 24.5% proportional
-  error to the simulated profiles inflates the mean steady-state Cmax from
-  263.9 to 361.6 mg/L, far above the published 263.1 mg/L, while leaving AUC
-  essentially unchanged. The published values are therefore reproduced from
-  `Cc` (individual predictions) rather than from residual-error-perturbed
-  observations.
+* **Table 3 was simulated without residual error.** Cmax is a maximum over a
+  dense sampling grid, so it is strongly inflated by any residual error, while
+  AUC over the interval is barely affected. Applying the model's proportional
+  error to the same simulation shows the published Cmax is only compatible with
+  a residual-error-free simulation:
+
+```{r ruv-check}
+set.seed(20241205)
+prop_sd <- rxode2::rxode(readModelDb("Na_2024_tovecimig"))$theta[["propSd"]]
+
+sim |>
+  dplyr::filter(regimen == "700 mg fixed Q2W") |>
+  dplyr::mutate(dv = Cc * (1 + stats::rnorm(dplyr::n(), 0, prop_sd))) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cmax_ipred = max(Cc), cmax_dv = max(dv), .groups = "drop") |>
+  dplyr::summarise(
+    `published Cmax (mg/L)`     = 263.1,
+    `simulated, no error`       = mean(cmax_ipred),
+    `simulated, 24.5% prop err` = mean(cmax_dv)
+  ) |>
+  round(1)
+```
+
+  The published values are therefore reproduced from `Cc` (individual
+  predictions) rather than from residual-error-perturbed observations.
 * **Supplement Table S1 vs Table 2 on IIV for `Vmax`.** Supplementary Table 1
   describes model steps 6 and 7 as carrying "BSV CL, V1, V2, Vmax", but
   Section 3.2 and Table 2 both state that IIV on `Vmax` did not significantly
