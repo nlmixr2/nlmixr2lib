@@ -2954,6 +2954,34 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Hirt_2006_nelfinavir.R`.
 
+### m27 (**canonical elinzanetant M27 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M27, one of the two primary metabolites of the dual NK-1/NK-3 receptor antagonist elinzanetant, formed directly from the parent (fraction of parent clearance fixed at 0.3) and itself converted onward to the secondary metabolite M18/21. Present at pharmacologically relevant exposure in human plasma and reported to exert activity similar to the parent. Used in the parent + three-metabolite joint popPK extraction of elinzanetant.
+- **Source aliases:** none.
+- **Example models:** `Willmann_2024_elinzanetant.R` (two-compartment M27 with a linear clearance to M18/21 plus a saturable Michaelis-Menten elimination, both circadian-modulated).
+- **Notes:** Distinct from `m2` (N-desmethyl-bedaquiline) and `m7`-style tokens -- the suffix matcher uses `endsWith(name, "_m27")` and does not collide. Registered alongside the Willmann 2024 elinzanetant extraction together with its siblings `m3034` and `m1821`.
+
+### m3034 (**canonical elinzanetant M30/34 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M30/M34, the second primary metabolite of elinzanetant and the largest metabolic route (fraction of parent clearance fixed at 0.6), itself converted onward to M18/21. M30 and M34 are interconverting stereoisomers that cannot be separated analytically, so every measurement refers to the mixture of both; the suffix drops the slash to stay a valid name token.
+- **Source aliases:** `M30/34`, `M30/M34` -- Willmann 2024 Table 2 and Figure 1 notation.
+- **Example models:** `Willmann_2024_elinzanetant.R` (two-compartment M30/34 with a linear clearance to M18/21 plus a saturable Michaelis-Menten elimination, both circadian-modulated).
+- **Notes:** Registered alongside the Willmann 2024 elinzanetant extraction together with its siblings `m27` and `m1821`.
+
+### m1821 (**canonical elinzanetant M18/21 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** M18/M21, the secondary metabolite of elinzanetant, formed from the linear clearances of both primary metabolites (M27 and M30/34) rather than from the parent directly. M18 and M21 are interconverting stereoisomers that cannot be separated analytically, so every measurement refers to the mixture of both; the suffix drops the slash to stay a valid name token.
+- **Source aliases:** `M18/21`, `M18/M21` -- Willmann 2024 Table 2 and Figure 1 notation.
+- **Example models:** `Willmann_2024_elinzanetant.R` (one-compartment M18/21 with a linear clearance plus a saturable Michaelis-Menten elimination, both circadian-modulated).
+- **Notes:** Registered alongside the Willmann 2024 elinzanetant extraction together with its siblings `m27` and `m3034`.
+
+### c13 (**canonical stable-isotope [13C]-labelled parent-drug analyte suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Stable-isotope carbon-13-labelled form of the parent drug, administered as a separate (usually intravenous microdose) analyte alongside the unlabelled parent so that absolute oral bioavailability can be estimated within a single joint fit. Not a metabolite: the labelled species is chemically the parent and is given its own compartments and its own residual error because it is measured as a distinct analyte, in the same way `tab` (total antibody) is carried as a non-metabolite analyte suffix. The labelled and unlabelled forms share every disposition parameter.
+- **Source aliases:** `[13C5]-elinzanetant`, `13C-elinzanetant` -- Willmann 2024 Table 2 and Figure 1 notation.
+- **Example models:** `Willmann_2024_elinzanetant.R` (100 ug [13C5]-elinzanetant intravenous microdose in study 21772, two-compartment, sharing CL, Q, Vc and Vp with the orally dosed parent; its metabolites were not measured, so the whole of CL leaves the system).
+- **Notes:** Generic across drugs -- reuse this suffix for any `[13C]`-labelled tracer arm. A future `d<n>` or `c14` sibling should be registered separately if a deuterium- or carbon-14-labelled tracer appears.
+
 ### ko739 (**canonical KO-739 ziftomenib active metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** KO-739, one of the two active minor metabolites of the menin inhibitor ziftomenib (Kura Oncology development-code compound designation). Formed via CYP3A4-mediated biotransformation of ziftomenib in parallel with KO-516; reported to be less than 10% of total drug-related exposure in plasma. Used in parent + metabolite joint popPK extractions of ziftomenib.
