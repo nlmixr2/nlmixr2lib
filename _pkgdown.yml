@@ -1786,6 +1786,8 @@ navbar:
         href: articles/Park_2023_mycophenolic_acid.html
       - text: "Mycophenolic acid (Sherwin 2012)"
         href: articles/Sherwin_2012_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Suzuki 2024)"
+        href: articles/Suzuki_2024_mycophenolic_acid.html
       - text: "Mycophenolic acid (Yu 2017)"
         href: articles/Yu_2017_mycophenolic_acid.html
       - text: "Mycophenolic acid (Zeng 2010)"
@@ -4162,6 +4164,7 @@ articles:
   - articles/Suri_2018_brentuximab
   - articles/Suyagh_2011_metronidazole
   - articles/Suyagh_2012_canrenone
+  - articles/Suzuki_2024_mycophenolic_acid
   - articles/Svensson_2012_nevirapine
   - articles/Svensson_2013_bedaquiline
   - articles/Svensson_2014_bedaquiline
