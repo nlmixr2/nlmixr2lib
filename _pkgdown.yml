@@ -26,10 +26,14 @@ navbar:
       text: Specific drug models
       menu:
       # AUTOGEN:specific_drugs:BEGIN
+      - text: "3methoxydaidzein rat (Liu 2024)"
+        href: articles/Liu_2024_spatholobiCaulis.html
       - text: "5hydroxysaxagliptin rat (Wang 2024)"
         href: articles/Wang_2024_saxagliptin_dpp4_rat.html
       - text: "8C2 (Abuqayyas 2012)"
         href: articles/Abuqayyas_2012_8C2.html
+      - text: "8Omethylretusin rat (Liu 2024)"
+        href: articles/Liu_2024_spatholobiCaulis.html
       - text: "ABT 102 (Othman 2013)"
         href: articles/Othman_2013_ABT_102.html
       - text: "ADC human qsp (Scheuher 2023)"
@@ -640,6 +644,8 @@ navbar:
         href: articles/Diao_2016_daclizumab_treg.html
       - text: "Dactinomycin (Mondick 2006)"
         href: articles/Mondick_2006_dactinomycin.html
+      - text: "Daidzin rat (Liu 2024)"
+        href: articles/Liu_2024_spatholobiCaulis.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Danoprevir (Canini 2015)"
@@ -1364,6 +1370,8 @@ navbar:
         href: articles/Fau_2020_isatuximab.html
       - text: "Isavuconazole (Desai 2016)"
         href: articles/Desai_2016_isavuconazole.html
+      - text: "Isolariciresinol rat (Liu 2024)"
+        href: articles/Liu_2024_spatholobiCaulis.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
       - text: "Isoniazid (Seng 2015)"
@@ -3808,6 +3816,7 @@ articles:
   - articles/Lioger_2017_rituximab
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2023_mAb_mouse_pbpk
+  - articles/Liu_2024_spatholobiCaulis
   - articles/Livio_2014_tobramycin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
