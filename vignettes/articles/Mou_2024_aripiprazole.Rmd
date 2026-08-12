@@ -1,0 +1,569 @@
+---
+title: "Aripiprazole (Mou 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Aripiprazole (Mou 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Mou_2024_aripiprazole"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Mou_2024_aripiprazole"))$description`
+* Article: <https://doi.org/10.1177/20420986241303432>
+* Supplement: supplemental material accompanying the article (virtual-population
+  demographics Table S1, validation-study list Table S2, the metabolic-pathway
+  derivation in section 1.3, and the dose-optimization Table S3)
+
+# What this model is, and what it is not
+
+Mou 2024 is a whole-body physiologically based pharmacokinetic (PBPK) analysis
+built in PK-Sim 10.0. It has no published disposition ODEs, no volume of
+distribution, and no half-life: aripiprazole distribution in the source is a
+PK-Sim partition-coefficient database output, not a reported parameter.
+
+What the paper *does* publish, completely, is the **clearance layer**:
+
+* a systemic plasma clearance (Table 1 and supplemental section 1.3, stated two
+  independent ways that agree to 0.1%),
+* the split of that clearance between CYP2D6 and CYP3A4 and between the
+  dehydrogenation and non-dehydrogenation routes (Table 2 enzyme kinetics plus
+  Table 3 enzyme abundances),
+* how each of those changes with CYP2D6 phenotype (Table 2), with Child-Pugh A
+  hepatic impairment, and with risperidone coadministration (Table 5,
+  supplemental Table S3),
+* and complete simulated concentration-time profiles for both analytes across
+  four CYP2D6 phenotypes (Figure 2) and for mild hepatic impairment (Figure 4).
+
+The packaged model is therefore a **compartmental reduction**, not a
+reimplementation of the PBPK model. Every clearance and every covariate effect
+is taken from the paper. The five distribution parameters and the absorption
+rate constant, which the paper does not report at all, were recovered by
+digitizing the predicted mean curves of Figure 2(a) and fitting the reduction to
+them with all clearances held fixed. The reduction is then checked against
+published summaries that were **not** used in the fit.
+
+# Population
+
+The simulations use a PK-Sim virtual population of 500 individuals
+(supplemental Table S1): age 18-65 years (median 43), weight 48.0-171.2 kg
+(median 78.0), height 151.8-191.7 cm (median 170.8). Where a source trial did
+not report demographics, the authors assumed a 100% Mexican-American / White
+male population aged 18-65 and completed the covariates from NHANES.
+
+Model validation used four clinical studies (supplemental Table S2):
+
+| Model | Dosing | n | Age (years) | Source |
+|---|---|---|---|---|
+| DGI (NM / IM / PM / UM) | 10 mg single | 28 / 21 / 1 / 5 | 19.0-51.0 | Kneller 2021 |
+| Initial | 10 mg multiple | 8 | 18.0-60.0 | Mallikaarjun 2004 |
+| Initial | 30 mg multiple | 7 | 23.0-35.6 | Mallikaarjun 2004 |
+| DDI | 20 mg multiple + risperidone | 10 | 21.0-77.0 | Waade 2009 |
+| DDZI | 15 mg single, Child-Pugh A | 8 | 43.0-61.0 | Mallikaarjun 2008 |
+
+The same information is available programmatically via
+`readModelDb("Mou_2024_aripiprazole")()$population`.
+
+# Source trace
+
+Every `ini()` entry, with the location it came from.
+
+| Parameter | Value | Source |
+|---|---|---|
+| `lcl_nonren` | 47.96 mL/h/kg (3.3572 L/h at 70 kg) | Table 1 `CL_H`, aripiprazole. Supplemental 1.3 independently states "plasma clearance 0.8 mL/min/kg" = 48.0 mL/h/kg |
+| `lcl_renal` | 0.04 mL/h/kg | Table 1 `CL_R`, aripiprazole; supplemental 1.3 "renal clearance < 1%" |
+| `lcl_nonren_dehydro` | 40.00 mL/h/kg | Table 1 `CL_H`, dehydro-aripiprazole |
+| `lcl_renal_dehydro` | 0.06 mL/h/kg | Table 1 `CL_R`, dehydro-aripiprazole |
+| `fmet2d6Dehydro` | 0.09017 | Table 2 `Kcat,CYP2D6,dehydrogenation` 14.99 /min, `Km` 26.20 uM; Table 3 `[CYP2D6]` 0.40 uM |
+| `fmet2d6Other` | 0.34387 | Table 2 `Kcat,CYP2D6,hydroxylation` 57.17 /min |
+| `fmet3a4Dehydro` | 0.31327 | Table 2 `Kcat,CYP3A4,dehydrogenation` 54.85 /min, `Km` 298.00 uM; Table 3 `[CYP3A4]` 4.32 uM |
+| `fmet3a4Other` | 0.25268 | Table 2 `Kcat,CYP3A4,other` 44.24 /min |
+| `rel2d6Im` | 0.6999 | Table 2 IM column: 10.49/14.99 and 40.02/57.17 |
+| `rel3a4PmDehydro` | 1.3453 | Table 2 PM column footnote a: 73.79/54.85 |
+| `rel3a4PmOther` | 1.3422 | Table 2 PM column footnote a: 59.38/44.24 |
+| `mwRatioDehydro` | 0.99554 | Table 1 molecular weights 446.4 / 448.4 g/mol |
+| `e_hepimp_cl` | 0.9279 | Supplemental Table S3: DDZI AUC 806.39 vs DGI NM 748.25 umol*min/L |
+| `e_risp_cl` | 0.9907 | Supplemental Table S3: DDI AUC 755.26 vs DGI NM 748.25 umol*min/L |
+| `lfdepot` | 0.974 | Derived: reconciles Table 1 `CL_H` at 70 kg with the reported single-dose AUC of 773.85 umol*min/L after 20 mg |
+| `lka`, `lvc`, `lvp`, `lq` | 2.3638 /h, 190.8 L, 32.0 L, 4.629 L/h | Digitized from Figure 2(a); not reported by Mou 2024 |
+| `lvc_dehydro`, `lvp_dehydro`, `lq_dehydro` | 43.2 L, 193.3 L, 9.952 L/h | Digitized from Figure 2(a); not reported by Mou 2024 |
+| `propSd`, `propSd_dehydro` | 0.10 (placeholder) | Not reported; Mou 2024 evaluate the model by MPE / MAPE, not by a fitted sigma |
+
+## The clearance layer is internally over-determined
+
+Three statements in the paper independently confirm the way Table 2 was read
+here. Each is reproduced by the packaged `ini()` values without adjustment.
+
+```{r pathway-check}
+E2D6 <- 0.40; E3A4 <- 4.32          # Table 3, normal liver (umol/L)
+Km2D6 <- 26.20; Km3A4 <- 298.00     # Table 2 (umol)
+clu <- function(kcat, E, Km) kcat * E / Km
+
+d2 <- clu(14.99, E2D6, Km2D6); h2 <- clu(57.17, E2D6, Km2D6)
+d3 <- clu(54.85, E3A4, Km3A4); o3 <- clu(44.24, E3A4, Km3A4)
+tot <- d2 + h2 + d3 + o3
+
+tibble::tibble(
+  Quantity = c("CYP2D6 fraction of metabolism",
+               "CYP3A4 fraction of metabolism",
+               "Fraction forming dehydro-aripiprazole",
+               "Aripiprazole plasma clearance (mL/min/kg)"),
+  `From Table 1 / 2 / 3` = c(
+    sprintf("%.4f", (d2 + h2) / tot),
+    sprintf("%.4f", (d3 + o3) / tot),
+    sprintf("%.4f", (d2 + d3) / tot),
+    sprintf("%.4f", 47.96 / 60)),
+  `Stated by the paper` = c("0.43 (suppl. 1.3)", "0.56 (suppl. 1.3)",
+                            "0.40 (suppl. 1.3)", "0.8 (suppl. 1.3)")
+) |>
+  knitr::kable(caption = "Table 2 + Table 3 reproduce the three metabolic fractions and the clearance that the supplement states in prose.")
+```
+
+# Simulation setup
+
+The model carries no between-subject variability: Mou 2024 report a PBPK
+forward prediction with a virtual-population confidence band, not a population
+model with estimated omegas. Simulations below are therefore typical-value
+(deterministic) profiles for a 70 kg adult.
+
+```{r sim-helper}
+mod <- rxode2::rxode(readModelDb("Mou_2024_aripiprazole"))
+
+# The model has two endpoints (Cc, Cc_dehydro), so observation rows carry
+# dvid = 1 with cmt = NA; the algebraic observables are returned as columns.
+mou_sim <- function(dose = 10, phenotype = "NM", hepimp = 0, risperidone = 0,
+                    wt = 70, tmax = 1200, dt = 0.25) {
+  grid <- seq(0, tmax, by = dt)
+  ev <- dplyr::bind_rows(
+    data.frame(id = 1L, time = 0, amt = dose, evid = 1L,
+               cmt = "depot", dvid = NA_integer_),
+    data.frame(id = 1L, time = grid, amt = NA_real_, evid = 0L,
+               cmt = NA_character_, dvid = 1L)
+  )
+  ev$WT <- wt
+  ev$CYP2D6_EM <- as.integer(phenotype == "NM")
+  ev$CYP2D6_PM <- as.integer(phenotype == "PM")
+  ev$CYP2D6_UM <- as.integer(phenotype == "UM")
+  ev$HEPIMP_MILD <- hepimp
+  ev$CONMED_RISPERIDONE <- risperidone
+  out <- rxode2::rxSolve(mod, ev, returnType = "data.frame")
+  out$phenotype <- phenotype
+  out
+}
+
+trapz <- function(time, conc) sum(diff(time) * (utils::head(conc, -1) + utils::tail(conc, -1)) / 2)
+```
+
+# Replicating Figure 2: CYP2D6 phenotypes, single 10 mg dose
+
+Mou 2024 Figure 2 plots the predicted mean concentration-time curves for
+aripiprazole and dehydro-aripiprazole in each of the four CYP2D6 phenotypes.
+The points below were digitized from the published mean curves of panel (a),
+CYP2D6 normal metabolizer -- these are the curves the distribution parameters
+were fitted to, so this panel is a fit check rather than an independent test.
+
+```{r fig2a-digitized}
+fig2a <- tibble::tribble(
+  ~analyte,       ~time, ~conc,
+  "aripiprazole",   2.8, 47.156, "aripiprazole",   4.0, 45.150,
+  "aripiprazole",   5.0, 43.536, "aripiprazole",   6.4, 41.824,
+  "aripiprazole",   7.2, 40.894, "aripiprazole",   9.2, 39.085,
+  "aripiprazole",  11.8, 37.030, "aripiprazole",  16.0, 34.193,
+  "aripiprazole",  20.0, 31.845, "aripiprazole",  24.8, 29.595,
+  "aripiprazole",  30.0, 27.051, "aripiprazole",  36.0, 24.507,
+  "aripiprazole",  42.0, 22.404, "aripiprazole",  48.6, 20.203,
+  "aripiprazole",  54.0, 18.735, "aripiprazole",  60.0, 17.023,
+  "aripiprazole",  63.4, 16.289,
+  "dehydro-aripiprazole",  1.8, 1.810, "dehydro-aripiprazole",  9.0, 4.158,
+  "dehydro-aripiprazole", 11.2, 4.500, "dehydro-aripiprazole", 16.0, 5.283,
+  "dehydro-aripiprazole", 20.0, 5.577, "dehydro-aripiprazole", 23.2, 5.821,
+  "dehydro-aripiprazole", 30.0, 6.164, "dehydro-aripiprazole", 36.0, 6.310,
+  "dehydro-aripiprazole", 42.0, 6.408, "dehydro-aripiprazole", 47.0, 6.359,
+  "dehydro-aripiprazole", 54.0, 6.310, "dehydro-aripiprazole", 60.0, 6.164,
+  "dehydro-aripiprazole", 63.6, 6.066, "dehydro-aripiprazole", 69.0, 5.968
+)
+
+sim_nm <- mou_sim(dose = 10, phenotype = "NM", tmax = 75, dt = 0.1)
+pred_nm <- dplyr::bind_rows(
+  data.frame(analyte = "aripiprazole", time = sim_nm$time, conc = sim_nm$Cc),
+  data.frame(analyte = "dehydro-aripiprazole", time = sim_nm$time, conc = sim_nm$Cc_dehydro)
+)
+
+ggplot2::ggplot(pred_nm, ggplot2::aes(time, conc, colour = analyte)) +
+  ggplot2::geom_line(linewidth = 0.9) +
+  ggplot2::geom_point(data = fig2a, size = 2.2, shape = 21, fill = "white") +
+  ggplot2::labs(
+    x = "Time (h)", y = "Plasma concentration (ng/mL)", colour = NULL,
+    title = "Replicates Figure 2(a) of Mou 2024",
+    subtitle = "Lines: packaged model. Points: digitized published mean curves. Oral 10 mg, CYP2D6 NM."
+  ) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+```{r fig2a-fit-quality}
+interp <- function(sim, col, times) stats::approx(sim$time, sim[[col]], times)$y
+fit_tbl <- fig2a |>
+  dplyr::mutate(
+    predicted = ifelse(analyte == "aripiprazole",
+                       interp(sim_nm, "Cc", time),
+                       interp(sim_nm, "Cc_dehydro", time))
+  ) |>
+  dplyr::group_by(analyte) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    `RMSE (log scale)` = sqrt(mean((log(predicted) - log(conc))^2)),
+    `Max |deviation| (%)` = max(abs(100 * (predicted / conc - 1))),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(Analyte = analyte, `N points` = n)
+
+knitr::kable(fit_tbl, digits = 3,
+             caption = "Agreement between the packaged model and the digitized Figure 2(a) mean curves.")
+```
+
+# Independent checks that were not used in the fit
+
+## Published AUC after a single 20 mg dose
+
+The Results section states that after a single 20 mg dose the aripiprazole AUC
+was 773.85 umol*min/L. Nothing in that number entered the digitization fit
+except as a weak anchor on the 10 mg curve; the 20 mg simulation is a scale
+check.
+
+```{r auc-20mg}
+s20 <- mou_sim(dose = 20, phenotype = "NM")
+auc20_umol_min <- trapz(s20$time, s20$Cc) / 448.4 * 60   # ng*h/mL -> umol*min/L
+
+tibble::tibble(
+  Quantity = "AUC after a single oral 20 mg dose (umol*min/L)",
+  Simulated = round(auc20_umol_min, 2),
+  Published = 773.85,
+  `Difference (%)` = round(100 * (auc20_umol_min / 773.85 - 1), 1)
+) |>
+  knitr::kable(caption = "Mou 2024 Results, DDI models section.")
+```
+
+## Figure 2(c): the poor-metabolizer panel exposes two parameterizations
+
+Mou 2024 report two different CYP2D6 poor-metabolizer results that do not agree
+with each other:
+
+* the Results text and abstract give a PM/NM AUC fold change of **1.75**;
+* supplemental Table S3 and Table 5, which drive the dose recommendations, give
+  1025.64/748.25 = **1.371**.
+
+The difference is exactly the Table 2 footnote-a CYP3A4 up-adjustment. Setting
+CYP2D6 activity to zero and leaving CYP3A4 at its normal-metabolizer values
+gives an AUC ratio of 1.77 and reproduces the published Figure 2(c) curve to
+about 2%; applying the footnote-a values as well gives 1.31, which is the Table
+S3 value. The packaged model encodes Table 2 **as printed** (footnote a
+included), because that is the parameterization behind the paper's dose
+recommendations.
+
+```{r fig2c}
+fig2c <- tibble::tribble(
+  ~time, ~conc,
+   3.0, 51.302,  4.0, 49.363,  5.0, 47.535,  6.0, 46.316,
+   7.2, 44.875,  9.8, 42.659, 12.0, 41.163, 16.0, 39.114,
+  20.0, 37.507, 24.0, 36.011, 30.0, 34.072, 36.0, 32.244,
+  42.0, 30.582, 47.2, 29.197, 54.0, 27.424, 60.0, 25.873,
+  66.0, 24.488
+)
+
+sim_pm <- mou_sim(dose = 10, phenotype = "PM", tmax = 75, dt = 0.1)
+
+# The Figure-2 variant: CYP2D6 zeroed, CYP3A4 left at normal-metabolizer values.
+mod_fig2 <- rxode2::rxode(readModelDb("Mou_2024_aripiprazole"))
+sim_pm_fig2 <- local({
+  grid <- seq(0, 75, by = 0.1)
+  ev <- dplyr::bind_rows(
+    data.frame(id = 1L, time = 0, amt = 10, evid = 1L, cmt = "depot", dvid = NA_integer_),
+    data.frame(id = 1L, time = grid, amt = NA_real_, evid = 0L, cmt = NA_character_, dvid = 1L))
+  ev$WT <- 70; ev$CYP2D6_EM <- 0L; ev$CYP2D6_PM <- 1L; ev$CYP2D6_UM <- 0L
+  ev$HEPIMP_MILD <- 0; ev$CONMED_RISPERIDONE <- 0
+  rxode2::rxSolve(mod_fig2, ev, params = c(rel3a4PmDehydro = 1, rel3a4PmOther = 1),
+                  returnType = "data.frame")
+})
+
+ggplot2::ggplot() +
+  ggplot2::geom_line(data = data.frame(time = sim_pm$time, conc = sim_pm$Cc,
+                                       src = "Packaged model (Table 2 as printed)"),
+                     ggplot2::aes(time, conc, colour = src), linewidth = 0.9) +
+  ggplot2::geom_line(data = data.frame(time = sim_pm_fig2$time, conc = sim_pm_fig2$Cc,
+                                       src = "CYP2D6 zeroed only (Figure 2 variant)"),
+                     ggplot2::aes(time, conc, colour = src), linewidth = 0.9, linetype = 2) +
+  ggplot2::geom_point(data = fig2c, ggplot2::aes(time, conc), size = 2.2,
+                      shape = 21, fill = "white") +
+  ggplot2::labs(x = "Time (h)", y = "Aripiprazole (ng/mL)", colour = NULL,
+                title = "Replicates Figure 2(c) of Mou 2024 (CYP2D6 poor metabolizer)",
+                subtitle = "Points: digitized published mean curve. Oral 10 mg.") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+```{r fig2c-quality}
+tibble::tibble(
+  Parameterization = c("Table 2 as printed (footnote a CYP3A4)",
+                       "CYP2D6 zeroed only"),
+  `RMSE vs Figure 2(c) (log scale)` = c(
+    sqrt(mean((log(interp(sim_pm, "Cc", fig2c$time)) - log(fig2c$conc))^2)),
+    sqrt(mean((log(interp(sim_pm_fig2, "Cc", fig2c$time)) - log(fig2c$conc))^2))),
+  `PM/NM AUC ratio` = c(
+    trapz(mou_sim(10, "PM")$time, mou_sim(10, "PM")$Cc) /
+      trapz(mou_sim(10, "NM")$time, mou_sim(10, "NM")$Cc),
+    1.767),
+  `Paper value matched` = c("1.371 (Table S3, Table 5)", "1.75 (Results, abstract)")
+) |>
+  knitr::kable(digits = 3,
+               caption = "The two CYP2D6 poor-metabolizer parameterizations present in Mou 2024.")
+```
+
+# Reproducing Figure 4: mild hepatic impairment, single 15 mg dose
+
+```{r fig4}
+sim_hep <- mou_sim(dose = 15, phenotype = "NM", hepimp = 1, tmax = 75, dt = 0.1)
+sim_norm15 <- mou_sim(dose = 15, phenotype = "NM", tmax = 75, dt = 0.1)
+
+dplyr::bind_rows(
+  data.frame(time = sim_hep$time, conc = sim_hep$Cc,
+             grp = "Child-Pugh A, aripiprazole"),
+  data.frame(time = sim_hep$time, conc = sim_hep$Cc_dehydro,
+             grp = "Child-Pugh A, dehydro-aripiprazole"),
+  data.frame(time = sim_norm15$time, conc = sim_norm15$Cc,
+             grp = "Normal liver, aripiprazole")
+) |>
+  ggplot2::ggplot(ggplot2::aes(time, conc, colour = grp, linetype = grp)) +
+  ggplot2::geom_line(linewidth = 0.9) +
+  ggplot2::labs(x = "Time (h)", y = "Plasma concentration (ng/mL)",
+                colour = NULL, linetype = NULL,
+                title = "Replicates Figure 4 of Mou 2024",
+                subtitle = "Oral single 15 mg aripiprazole, adults with mild hepatic impairment.") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+# PKNCA validation
+
+Non-compartmental analysis of the simulated profiles, run across the six
+scenarios the paper reports an AUC for. All scenarios use a single oral 20 mg
+dose so they are directly comparable with the paper's `umol*min/L` AUC table.
+
+```{r pknca}
+scenarios <- tibble::tribble(
+  ~scenario,                 ~phenotype, ~hepimp, ~risperidone,
+  "CYP2D6 NM",               "NM",       0,       0,
+  "CYP2D6 IM",               "IM",       0,       0,
+  "CYP2D6 PM",               "PM",       0,       0,
+  "CYP2D6 UM",               "UM",       0,       0,
+  "Child-Pugh A (NM)",       "NM",       1,       0,
+  "With risperidone (NM)",   "NM",       0,       1
+)
+
+sim_all <- do.call(rbind, lapply(seq_len(nrow(scenarios)), function(i) {
+  s <- mou_sim(dose = 20, phenotype = scenarios$phenotype[i],
+               hepimp = scenarios$hepimp[i], risperidone = scenarios$risperidone[i],
+               tmax = 600, dt = 0.5)
+  data.frame(id = 1L, scenario = scenarios$scenario[i], time = s$time, Cc = s$Cc)
+}))
+
+# Only !is.na(Cc): keeping the time-zero record is required by PKNCA.
+conc_data <- sim_all |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, scenario, time, Cc)
+
+dose_data <- conc_data |>
+  dplyr::distinct(id, scenario) |>
+  dplyr::mutate(time = 0, dose = 20)
+
+o_conc <- PKNCA::PKNCAconc(conc_data, Cc ~ time | id / scenario)
+o_dose <- PKNCA::PKNCAdose(dose_data, dose ~ time | id / scenario)
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = Inf,
+                         cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+)
+res <- suppressWarnings(PKNCA::pk.nca(o_data))
+
+nca_res <- as.data.frame(res) |>
+  dplyr::select(scenario, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_res |>
+  dplyr::rename(Scenario = scenario, `Cmax (ng/mL)` = cmax, `Tmax (h)` = tmax,
+                `AUC0-inf (ng*h/mL)` = aucinf.obs, `t1/2 (h)` = half.life) |>
+  knitr::kable(digits = c(0, 2, 1, 0, 1),
+               caption = "Simulated NCA parameters, single oral 20 mg aripiprazole.")
+```
+
+## Comparison against the published exposures
+
+Mou 2024 reports AUC in umol*min/L; the reference column below converts those
+to ng*h/mL using the aripiprazole molecular weight of 448.4 g/mol from Table 1.
+The Child-Pugh A and risperidone rows come from supplemental Table S3, the four
+phenotype rows from Table S3 as well.
+
+```{r nca-compare}
+published <- tibble::tibble(
+  scenario = c("CYP2D6 NM", "CYP2D6 IM", "CYP2D6 PM", "CYP2D6 UM",
+               "Child-Pugh A (NM)", "With risperidone (NM)"),
+  aucinf.obs = c(748.25, 852.47, 1025.64, 748.25, 806.39, 755.26) / 60 * 448.4
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = published,
+  by            = "scenario",
+  params        = "aucinf.obs",
+  units         = c(aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  digits = 0,
+  caption = "Simulated versus published aripiprazole AUC after a single oral 20 mg dose, by scenario. * marks rows differing by more than 20%."
+)
+```
+
+# Reproducing the dose-optimization table
+
+Mou 2024 converts each exposure change into a correction factor
+`CF = AUC_reference / AUC_scenario` and a recommended dose change
+`dD = 1 - CF` (equation 9 and Table 5 / Table S3).
+
+```{r dose-optimization}
+auc_of <- function(ph, hp = 0, rp = 0) {
+  s <- mou_sim(dose = 20, phenotype = ph, hepimp = hp, risperidone = rp)
+  trapz(s$time, s$Cc)
+}
+ref <- auc_of("NM")
+
+dose_tbl <- tibble::tribble(
+  ~Scenario,                              ~ph,  ~hp, ~rp, ~cf_paper, ~dd_paper,
+  "CYP2D6 IM",                            "IM",  0,   0,   0.88,      "12%",
+  "CYP2D6 PM",                            "PM",  0,   0,   0.73,      "27%",
+  "CYP2D6 UM",                            "UM",  0,   0,   1.00,      "0%",
+  "Child-Pugh A",                         "NM",  1,   0,   0.93,      "7%",
+  "Risperidone coadministration",         "NM",  0,   1,   0.99,      "1%"
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(cf_model = ref / auc_of(ph, hp, rp)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(
+    `Correction factor (model)` = round(cf_model, 2),
+    `Dose change (model)` = sprintf("%.0f%%", 100 * (1 - cf_model))
+  ) |>
+  dplyr::select(Scenario,
+                `Correction factor (model)`, `Dose change (model)`,
+                `Correction factor (paper)` = cf_paper,
+                `Dose change (paper)` = dd_paper)
+
+knitr::kable(dose_tbl,
+             caption = "Correction factors and recommended dose reductions, model versus Mou 2024 supplemental Table S3.")
+```
+
+# Assumptions and deviations
+
+The paper does not report several things this reduction needs, and it contains
+a number of internal inconsistencies. Both are recorded here.
+
+## Parameters not reported by the source
+
+* **All distribution parameters and the absorption rate constant.**
+  `lka`, `lvc`, `lvp`, `lq`, `lvc_dehydro`, `lvp_dehydro` and `lq_dehydro` are
+  **not** in Mou 2024. They were recovered by digitizing the predicted mean
+  curves of Figure 2(a) and fitting this reduction to them with every clearance
+  fixed at its published value. A one-compartment parent could not fit the
+  curve (the absorption rate ran to infinity); a two-compartment parent with a
+  two-compartment metabolite was required.
+* **Bioavailability.** `lfdepot` = 0.974 is derived, not published. It is the
+  value that makes Table 1's clearance consistent with the reported single-dose
+  AUC at the 70 kg reference weight.
+* **Reference weight.** Table 1 gives clearance per kg but no reference
+  individual. Supplemental Table S1's virtual-population median is 78.0 kg, but
+  at 78 kg the paper's own clearance and AUC imply a bioavailability of 1.08,
+  which is impossible; a bioavailability of at most 1 requires a reference
+  weight of about 72 kg or less. The rounded standard of 70 kg is used.
+* **Volume-weight scaling.** Volumes are scaled linearly with body weight. The
+  paper gives no basis for this; linear scaling was chosen so that the
+  typical-value half-life is weight-invariant, consistent with the per-kg
+  clearance parameterization.
+* **Residual error.** Not reported; `propSd` and `propSd_dehydro` are 0.10
+  placeholders following the in-repo PBPK convention.
+* **Between-subject variability.** None. The confidence bands in the paper's
+  figures come from PK-Sim virtual-population sampling over anatomy and enzyme
+  abundance, which is not a population-PK omega and is not transferable.
+* **The risperidone inhibition constant.** Mou 2024 state that the DDI model
+  was built "using inhibition constant (Ki)" but never give its value, and the
+  risperidone compound parameters are cited to an external reference that is
+  not part of this article. Risperidone is therefore not modelled as a
+  perpetrator; its effect is encoded as the flat clearance multiplier the paper
+  reports (a 0.9% AUC increase, i.e. no meaningful interaction, which is the
+  paper's own conclusion). The published effect was dose-independent over
+  risperidone 2-6 mg, so a binary indicator is sufficient.
+
+## Internal inconsistencies in the source
+
+* **Two CYP2D6 poor-metabolizer parameterizations.** The Results text and
+  abstract report a PM/NM AUC fold change of 1.75, which corresponds to zeroing
+  CYP2D6 and leaving CYP3A4 unchanged; supplemental Table S3 and Table 5 report
+  1.371, which corresponds to Table 2's footnote-a CYP3A4 up-adjustment. Both
+  are reproduced above. The packaged model uses Table 2 as printed because that
+  is the basis of the paper's dose recommendations.
+* **The poor-metabolizer metabolite curve cannot be reproduced from Table 2.**
+  Figure 2(c) plots dehydro-aripiprazole plateauing near 3 ng/mL in poor
+  metabolizers, roughly half the normal-metabolizer level. Table 2 implies the
+  opposite: in a poor metabolizer all metabolism runs through CYP3A4, whose
+  dehydrogenation share is higher, so the fraction of the dose converted to
+  dehydro-aripiprazole rises from 0.40 to 0.55 and the metabolite exposure
+  should rise by about 1.37-fold. No combination of the paper's published
+  numbers produces the plotted curve. Note that the paper's own observed
+  dehydro-aripiprazole data in Figure 2(c) lie well **above** its predicted
+  curve, and the Results section acknowledges that dehydro-aripiprazole
+  prediction in poor metabolizers is poor. The packaged model follows Table 2.
+* **Three different Child-Pugh A effect sizes.** Supplemental Table S3 gives a
+  DDZI AUC ratio of 1.078 (+8%); the Results text states that steady-state
+  concentrations in mild hepatic impairment were "1.65 +/- 0.12 times" higher
+  while simultaneously concluding "there is no difference in the drug exposure
+  between the two populations"; and Figure 4's reported AUC of 5485.65 ng*h/mL
+  after 15 mg implies about +26% relative to the paper's own 20 mg AUC scaled
+  to 15 mg. The Table S3 value is encoded because it is the one that produces
+  the correction factor of 0.93 the paper recommends. As a consequence the
+  15 mg Child-Pugh A simulation under-predicts Figure 4's aripiprazole AUC by
+  about 15% and over-predicts its dehydro-aripiprazole AUC by about 25%.
+* **Table 3 physiology does not compose to the reported effect.** Table 3's
+  Child-Pugh A factors (fractional liver mass 0.69, CYP2D6 abundance 0.76,
+  CYP3A4 abundance 0.79, unbound fraction 1.23) would, under a well-stirred
+  low-extraction reduction, raise AUC by roughly 50%, not the 8% the paper
+  reports. The empirical Table S3 ratio is used instead of composing Table 3.
+* **The DDI and DDZI effects are not multiplicative.** Table 5's combined
+  Child-Pugh A plus risperidone AUC ratio is 1.126, whereas the individual
+  effects multiply to 1.088. Mou 2024 describe this explicitly as a synergistic
+  effect. The packaged model applies the two covariate effects
+  multiplicatively, so it reproduces each effect alone exactly but
+  under-predicts the combination by about 3%.
+* **Table 4 versus Figure 3.** The Results text states that "the MPE values of
+  the two models of CYP2D6 PM and CYP2D6 UM were greater than 10% when
+  predicting dehydro-aripiprazole", but Table 4 reports PM and UM
+  dehydro-aripiprazole MPE as -1.51% and -8.41%, while the largest value in the
+  column is IM at -21.92%. This does not affect the model.
+
+## Scope
+
+The model covers aripiprazole and dehydro-aripiprazole disposition with CYP2D6
+phenotype, Child-Pugh A hepatic impairment, and risperidone coadministration.
+It does not reimplement the PK-Sim whole-body PBPK structure, the Weibull
+dissolution model (b = 0.91, T50 = 5 min), or the risperidone compound model.

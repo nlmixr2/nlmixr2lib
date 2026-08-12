@@ -3510,6 +3510,14 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Sherwin_2012_risperidone.R`.
 
+### dehydro (**canonical dehydro-aripiprazole suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Dehydro-aripiprazole, the pharmacologically active dehydrogenation metabolite of aripiprazole. Formed by both CYP2D6 and CYP3A4 dehydrogenation and, together with the parent, makes up the "active moiety" used in aripiprazole therapeutic drug monitoring.
+- **Source aliases:**
+  - `dehydroaripiprazole` / `dehydro-aripiprazole` -- Mou 2024 figure legends and text.
+- **Example models:** `Mou_2024_aripiprazole.R`.
+- **Notes:** The bare token `dehydro` is used rather than a drug-specific contraction because the metabolite's universal short name in the aripiprazole literature is "dehydro"; a second drug with a dehydro metabolite should register its own more specific token rather than reuse this one.
+
 ### p88 (**canonical iloperidone metabolite P-88 (M1) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** P-88 (also termed M1), the active iloperidone metabolite produced via cytosolic / microsomal enzymes (not CYP2D6); contributes to the iloperidone therapeutic profile via D2 / 5-HT2A receptor binding affinity comparable to the parent.
