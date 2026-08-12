@@ -1199,7 +1199,14 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Type:** compartment
 - **Role:** Hemoglobin PD output.
 - **Source aliases:** none.
-- **Example models:** anemia / EPO PD models.
+- **Example models:** anemia / EPO PD models, `Crass_2024_pegcetacoplan_hemoglobin.R` (direct sigmoidal Emax hemoglobin response to pegcetacoplan in paroxysmal nocturnal hemoglobinuria; algebraic output `hb <- rbase * (1 + edrug)` with additive residual error in g/dL).
+
+### ldh (**canonical serum lactate dehydrogenase PD output**)
+- **Type:** compartment
+- **Role:** Serum lactate dehydrogenase (LDH, U/L) biomarker PD output. LDH is the standard clinical marker of intravascular hemolysis and, more generally, of cell turnover / tissue damage; complement-inhibitor and hemolytic-disease PK/PD models take it as a direct or indirect response endpoint.
+- **Source aliases:** `LDH`, `BASELDH`, `TVBLDH` -- Crass 2024 ESM Table 1 LDH control stream (`COMP = (LDH)`, `EFF = BASELDH*(1-EDRUG)`).
+- **Example models:** `Crass_2024_pegcetacoplan_ldh.R` (founding example; direct sigmoidal Emax LDH suppression by pegcetacoplan in paroxysmal nocturnal hemoglobinuria, with baseline and maximal effect stratified by baseline eculizumab status; algebraic output `ldh <- rbase * (1 - edrug)` with log-scale (`lnorm`) residual error).
+- **Notes:** Counterpart to the existing `LDH` covariate canonical in `inst/references/covariate-columns.md`, following the same covariate-versus-output-state pairing convention already documented for `Hba1c` / `HBA1C`: the covariate entry represents the baseline or observed clinical measurement used as a predictor, and `ldh` is the modelled dynamic output state. Distinct from the `lactate` canonical, which is the plasma L-lactate *metabolite* concentration (mmol/L) in turnover models -- LDH is an enzyme activity (U/L) and a different quantity, the same distinction the covariate register draws between `LDH` and `LACT`. Registered alongside the Crass 2024 pegcetacoplan extraction, whose sibling hemoglobin endpoint uses the pre-existing `hb` canonical.
 
 ### Hba1c (**canonical glycated hemoglobin (HbA1c) PD output**)
 - **Type:** compartment
