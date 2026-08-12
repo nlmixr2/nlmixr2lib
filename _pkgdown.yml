@@ -350,6 +350,12 @@ navbar:
         href: articles/Toukam_2025_biib107.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
+      - text: "Borneol dog pbpk (Zhu 2024)"
+        href: articles/Zhu_2024_borneol_pbpk.html
+      - text: "Borneol human pbpk (Zhu 2024)"
+        href: articles/Zhu_2024_borneol_pbpk.html
+      - text: "Borneol rat pbpk (Zhu 2024)"
+        href: articles/Zhu_2024_borneol_pbpk.html
       - text: "Bosentan pbpk (Aoki 2024)"
         href: articles/Aoki_2024_bosentan_pbpk.html
       - text: "Brazikumab (Zhang 2023)"
@@ -4425,6 +4431,7 @@ articles:
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2023_omalizumab_pediatric
   - articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer
+  - articles/Zhu_2024_borneol_pbpk
   - articles/Zhu_2024_pyrotinib
   - articles/Zieck_2023_ceftazidime
   - articles/Zierhut_2008_osteoprotegerin
