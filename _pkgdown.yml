@@ -2538,6 +2538,10 @@ navbar:
         href: articles/Wang_2024_sugemalimab.html
       - text: "Sulbactam durlobactam (Cammarata 2024)"
         href: articles/Cammarata_2024_sulbactam_durlobactam.html
+      - text: "Sulbactam human (Abouelhassan 2024)"
+        href: articles/Abouelhassan_2024_sulbactam_elf_pneumonia.html
+      - text: "Sulbactam mouse (Abouelhassan 2024)"
+        href: articles/Abouelhassan_2024_sulbactam_elf_pneumonia.html
       - text: "Sulbactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Sulfadoxine (Karunajeewa 2009)"
@@ -3110,6 +3114,7 @@ articles:
   - articles/Abdelgawad_2024_linezolid
   - articles/AbdulAziz_2016_doripenem
   - articles/Abduljalil_2009_clarithromycin
+  - articles/Abouelhassan_2024_sulbactam_elf_pneumonia
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abuqayyas_2012_8C2
