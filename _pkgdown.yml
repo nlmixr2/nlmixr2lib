@@ -1988,6 +1988,12 @@ navbar:
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pacmilimab qsp (Ippolito 2024)"
         href: articles/Ippolito_2024_pacmilimab_qsp.html
+      - text: "Palbociclib (Panetta 2024)"
+        href: articles/Panetta_2024_palbociclib.html
+      - text: "Palbociclib anc (Panetta 2024)"
+        href: articles/Panetta_2024_palbociclib.html
+      - text: "Palbociclib plt (Panetta 2024)"
+        href: articles/Panetta_2024_palbociclib.html
       - text: "Paliperidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Palivizumab (Robbie 2012)"
@@ -3965,6 +3971,7 @@ articles:
   - articles/Padari_2012_meropenem
   - articles/Padari_2018_penicillin_G
   - articles/Padoin_1998_cephalexin_rat
+  - articles/Panetta_2024_palbociclib
   - articles/Panoilia_2015_bevacizumab
   - articles/Papachristos_2020_bevacizumab_pk
   - articles/Papachristos_2020_bevacizumab_pkpd
