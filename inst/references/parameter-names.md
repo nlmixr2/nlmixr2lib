@@ -188,6 +188,14 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** parallel-absorption oral PK models.
 
+### lffo (**canonical log-transformed first-order absorption-site fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale parameter for the fraction of the bioavailable dose routed to the fast (first-order, `ka1`) site of a parallel two-site absorption model, the remainder going to the slow site.
+- **Source aliases:**
+  - `Frapid` -- used in `Winter_2024_oxytetracycline_cattle.R` (Winter 2024 Table 1 `tvFrapid`).
+- **Example models:** `Winter_2024_oxytetracycline_cattle.R`.
+- **Notes:** The log-scale sibling of the existing `logitffo` canonical (`Baverel_2015_tralokinumab.R`, `Cirincione_2017_exenatide.R`, `Lacy_2018_cabozantinib.R`, `PerezRuixo_2008_epoetinAlfa.R`), sharing the same `ffo` bare root. Use `logitffo` whenever the source paper estimates the fraction on the logit scale, which is the safer encoding because it cannot leak above 1. Use `lffo` only when the source explicitly parameterises the fraction multiplicatively with exponential IIV, as Winter 2024 does (`stparm(Frapid = tvFrapid * exp(nFrapid))` in its Phoenix control stream); in that case the published parameterisation genuinely admits values above 1 in the tails, and re-encoding it on the logit scale would silently change the model. Ratified canonically alongside the Winter 2024 oxytetracycline extraction.
+
 ### lvmax (**canonical log-transformed Michaelis-Menten Vmax**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale maximum metabolic rate for saturable (Michaelis-Menten) elimination (amount / time).

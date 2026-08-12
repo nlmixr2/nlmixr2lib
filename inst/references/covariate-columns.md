@@ -174,15 +174,16 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Notes:** Use this canonical for adult clinical-trial models that test a pregnancy-vs-non-pregnancy contrast (typical settings: malaria-in-pregnancy PK, antiviral-in-pregnancy PK). Trimester or gestational-age stratification within the pregnant cohort should use a separate canonical (e.g., gestational-age weeks via `GA` or a trimester indicator, ratified separately when needed). The canonical convention is reference category 0 (non-pregnant) following the broader pharmacology default; source papers that use the pregnant cohort as the reference (Birgersson 2019) preserve their published structural values via a `(1 - PREG)` form on the effect coefficient. Ratified canonically on 2026-05-07.
 
 ### CHILD (**canonical for child age-cohort indicator**)
-- **Description:** 1 = subject is a child, 0 = not a child.
+- **Description:** 1 = subject is a child, 0 = not a child. In non-human models this is the general juvenile-versus-adult age-cohort indicator (1 = juvenile animal, 0 = adult animal); the concept is the same binary immature-versus-mature contrast, only the species-specific age cutoff changes.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (not child, i.e., adult baseline).
 - **Source aliases:**
   - `PED` -- used in the Schoemaker 2018 LEV / BRV pediatric extrapolation (DDMODEL00000239) as the pediatric-vs-adult indicator that gates the Markov-amplitude term, the overdispersion IIV, and the four pediatric offsets on log baseline rate / mixture / placebo / Emax / EC50.
-- **Example models:** `CarlssonPetri_2021_liraglutide.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239).
-- **Notes:** Age-group indicator used alongside `ADOLESCENT`; paper's age cutoffs must be captured in `covariateData[[CHILD]]$notes`.
+  - `adult_calve` -- used in `Winter_2024_oxytetracycline_cattle.R` (and in the raw data set distributed with Winter 2024 as `code_adult_calve`) as the calf-vs-adult-cattle indicator on all three volumes and all three clearances. Same coding as the canonical: 0 = adult, 1 = calf.
+- **Example models:** `CarlssonPetri_2021_liraglutide.R`, `Schoemaker_2018_levetiracetam.R` (DDMODEL00000239), `Winter_2024_oxytetracycline_cattle.R`.
+- **Notes:** Age-group indicator used alongside `ADOLESCENT`; paper's age cutoffs must be captured in `covariateData[[CHILD]]$notes`. That requirement is load-bearing for veterinary and preclinical models, where the cutoff is species-specific and bears no relation to the human paediatric ranges (Winter 2024 defines a calf as under 6 months of age, or any animal the original study authors declared to be a calf).
 
 ### ADOLESCENT (**canonical for adolescent age-cohort indicator**)
 - **Description:** 1 = subject is an adolescent, 0 = not.
