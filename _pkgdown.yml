@@ -1054,6 +1054,8 @@ navbar:
         href: articles/Sano_2023_fesoterodine.html
       - text: "Filgrastim (Harrold 2020)"
         href: articles/Harrold_2020_filgrastim_ars.html
+      - text: "Filgrastim (Jiang 2025)"
+        href: articles/Jiang_2025_filgrastim.html
       - text: "Fimasartan (Kim 2017)"
         href: articles/Kim_2017_fimasartan.html
       - text: "Finafloxacin (Taubert 2018)"
@@ -3632,6 +3634,7 @@ articles:
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2023_imatinib
   - articles/Jiang_2024_empagliflozin
+  - articles/Jiang_2025_filgrastim
   - articles/Jiao_2008_mycophenolic_acid
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
