@@ -556,6 +556,8 @@ navbar:
         href: articles/Savic_2017_cladribine.html
       - text: "Clarithromycin (Abduljalil 2009)"
         href: articles/Abduljalil_2009_clarithromycin.html
+      - text: "ClavulanicAcid (Schouwenburg 2025)"
+        href: articles/Schouwenburg_2025_clavulanicAcid.html
       - text: "Clazakizumab (Muthukrishnan 2025)"
         href: articles/Muthukrishnan_2025_clazakizumab.html
       - text: "Clesrovimab (Hu 2026)"
@@ -4088,6 +4090,7 @@ articles:
   - articles/Schoemaker_2017_brivaracetam
   - articles/Schoemaker_2018_levetiracetam
   - articles/Schoenmakers_2025_betamethasone
+  - articles/Schouwenburg_2025_clavulanicAcid
   - articles/Schreib_2024_busulfan
   - articles/Schutte_2018_desmopressin
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
