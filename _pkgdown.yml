@@ -630,6 +630,8 @@ navbar:
         href: articles/Liesenfeld_2006_dabigatran.html
       - text: "Dabigatran aPTT (Liesenfeld 2006)"
         href: articles/Liesenfeld_2006_dabigatran.html
+      - text: "Dabigatran sheep (Eaton 2025)"
+        href: articles/Eaton_2025_dabigatran_sheep.html
       - text: "Daclizumab (Othman 2014)"
         href: articles/Othman_2014_daclizumab.html
       - text: "Daclizumab cd25 (Diao 2016)"
@@ -3403,6 +3405,7 @@ articles:
   - articles/Duong_2017_AT9283
   - articles/Dvorackova_2023_posaconazole
   - articles/Easterling_2018_magnesium_sulfate
+  - articles/Eaton_2025_dabigatran_sheep
   - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edstein_2001_tafenoquine
   - articles/Eissing_2024_finerenone
