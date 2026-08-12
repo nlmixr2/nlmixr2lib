@@ -2496,6 +2496,8 @@ navbar:
         href: articles/Golubovic_2019_sirolimus.html
       - text: "Sirolimus (Jiao 2009)"
         href: articles/Jiao_2009_sirolimus.html
+      - text: "Sirolimus (Mao 2024)"
+        href: articles/Mao_2024_sirolimus.html
       - text: "Sirolimus (Wu 2012)"
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
@@ -3840,6 +3842,7 @@ articles:
   - articles/Majid_2024_lenvatinib
   - articles/Maleki_2024_brepocitinib
   - articles/MangasSanjuan_2016_axomadol
+  - articles/Mao_2024_sirolimus
   - articles/Marathe_2023_belzutifan
   - articles/Marcantonio_2022_efa
   - articles/Marier_2002_tobramycin_rat_conventional
