@@ -2276,6 +2276,10 @@ navbar:
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Respiratory physiology (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Resveratrol rat iv (Cerqueira 2025)"
+        href: articles/Cerqueira_2025_resveratrol.html
+      - text: "Resveratrol rat oral (Cerqueira 2025)"
+        href: articles/Cerqueira_2025_resveratrol.html
       - text: "Rezafungin (Roepcke 2023)"
         href: articles/Roepcke_2023_rezafungin.html
       - text: "Rfviii rat (VargasChristensen 2019)"
@@ -3283,6 +3287,7 @@ articles:
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
   - articles/Cella_2012_midazolam_paediatric_scaling
+  - articles/Cerqueira_2025_resveratrol
   - articles/Chae_2012_metformin
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
