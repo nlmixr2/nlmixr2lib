@@ -1128,6 +1128,8 @@ navbar:
         href: articles/Melhem_2018_g_csf.html
       - text: "GNbAC1 (Cao 2013)"
         href: articles/Cao_2013_GNbAC1.html
+      - text: "Gabapentin (AlZubaydi 2024)"
+        href: articles/AlZubaydi_2024_gabapentin.html
       - text: "Galcanezumab (Kielbasa 2020)"
         href: articles/Kielbasa_2020_galcanezumab.html
       - text: "Ganciclovir (Acosta 2007)"
@@ -3132,6 +3134,7 @@ articles:
   - articles/Akbar_2025_voriconazole
   - articles/Aksenov_2018_uricAcid
   - articles/AlSallami_2016_unfractionatedHeparin
+  - articles/AlZubaydi_2024_gabapentin
   - articles/Ali_2018_amodiaquine
   - articles/Allegaert_2015_paracetamol
   - articles/Almquist_2016_ticagrelor
