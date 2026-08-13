@@ -2565,6 +2565,13 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Wilson_2015_sunitinib_irinotecan_mouse.R`.
 - **Notes:** Full INN name (lowercase) for the same reason as `sunitinib`.
 
+### olaparib (**canonical olaparib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Olaparib drug-name suffix for the non-parent arm of AZD7648 + olaparib combination models, covering its full PK cascade (`depot_olaparib`, `central_olaparib`, `peripheral1_olaparib`, `effect_olaparib`) and the associated parameters (`lcl_olaparib`, `lvc_olaparib`, `lslope_olaparib`, `lfdepot_olaparib`).
+- **Source aliases:** none.
+- **Example models:** `DeJongh_2025_azd7648_olaparib_xenograft_mouse.R` (olaparib as the co-administered PARP inhibitor alongside the parent DNA-PK inhibitor AZD7648, with its own two-compartment PK, biophase compartment and drug effect).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` for oncology combination models: semantic clarity wins over abbreviation when the suffix names a whole co-administered agent rather than a metabolite. Unlike those two, olaparib here carries a real (non-K-PD) PK model, so the suffix appears on `central` / `peripheral1` / `effect` as well as on the depot. The parent AZD7648 keeps the bare canonical names; a standalone olaparib model (`DeJongh_2025_olaparib_mouse.R`) uses bare names because olaparib is the parent there.
+
 ### dox (**canonical doxorubicin drug-name suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Doxorubicin drug-name suffix for combination-therapy compartments, parameters and residual SDs (`central_dox`, `peripheral1_dox`, `peripheral2_dox`, `transit1_dox`, `conc_dox`, `lkmax_dox`, `lkc50_dox`, `lktr_dox`, `lkdeg_dox`, `addSd_Cc_dox`).
