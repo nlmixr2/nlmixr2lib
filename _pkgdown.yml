@@ -2754,6 +2754,8 @@ navbar:
         href: articles/Mercier_2014_tramadol_tapentadol.html
       - text: "TranexamicAcid (Dunn 2025)"
         href: articles/Dunn_2025_tranexamicAcid.html
+      - text: "TranexamicAcid (Nakai 2025)"
+        href: articles/Nakai_2025_tranexamicAcid.html
       - text: "Trastuzumab (Bruno 2005)"
         href: articles/Bruno_2005_trastuzumab.html
       - text: "Trastuzumab (LeTilly 2021)"
@@ -3919,6 +3921,7 @@ articles:
   - articles/Naik_2013_fasiglifam
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
+  - articles/Nakai_2025_tranexamicAcid
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
   - articles/Nath_2007_melphalan
