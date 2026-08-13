@@ -2532,6 +2532,8 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
+      - text: "Sufentanil (Nie 2025)"
+        href: articles/Nie_2025_sufentanil.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
@@ -3933,6 +3935,7 @@ articles:
   - articles/Ni_2013_ciclosporin
   - articles/Nicholas_2009_ponezumab
   - articles/Nichols_2016_piperacillin_tazobactam
+  - articles/Nie_2025_sufentanil
   - articles/Niebecker_2015_edoxaban
   - articles/Nielsen_2007_semimechanistic_antibiotic_pd
   - articles/Nielsen_2011_antibacterial_efficacy
