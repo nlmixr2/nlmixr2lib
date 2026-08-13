@@ -4620,6 +4620,59 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Thomson_1989_lisinopril.R` (multiplicative power-form effect on CL/F: `e_chf_cl^DIS_CHF` with `e_chf_cl = 0.645`; ~35% lower apparent clearance with compensated cardiac failure).
 - **Notes:** Use this canonical when the source paper tests a binary cardiac-failure indicator (compensated, stable, on background therapy) as a structural covariate on PK parameters. Distinct from concomitant-medication indicators such as `CONMED_SPIRON` (which captures the diuretic / aldosterone-antagonist effect typically given alongside CHF therapy) and from haemodynamic / autonomic covariates such as `HR` and the blood-pressure outputs. For papers that decompose CHF severity into NYHA classes, prefer a per-class encoding (e.g., `DIS_CHF_NYHA3`, `DIS_CHF_NYHA4`) when the strata are retained in the final model. The covariate-effect parameter form is `e_chf_<param>` (drops the `DIS_` prefix per the existing `DIS_CANCER -> e_cancer_<param>` precedent). Ratified canonically on 2026-06-10 alongside the Thomson 1989 lisinopril extraction.
 
+### DIS_RETT (**canonical for Rett syndrome disease-state indicator**)
+- **Description:** 1 = participant has Rett syndrome (RTT), a rare X-linked neurodevelopmental disorder caused by loss-of-function variants in `MECP2`; 0 = healthy volunteers and any other disease cohort. Subject-level, time-fixed. Rett syndrome occurs almost exclusively in females, so in a pooled analysis this indicator is effectively collinear with female sex within the patient cohort; document that collinearity per model rather than fitting both a sex and an RTT term on the same PK parameter unless the source paper did.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (healthy volunteers, per the usual pooled healthy-volunteer-plus-patient design).
+- **Source aliases:**
+  - `Rett` -- used in `Darwish_2025_trofinetide.R` (Darwish 2025 Results, definition of the `Rett_I` indicator variable in the typical-value equations for CL and Vp).
+  - `RTT` -- the standard abbreviation used throughout the Rett syndrome literature and in the Darwish 2025 narrative text.
+- **Example models:** `Darwish_2025_trofinetide.R` (two proportional shifts from Darwish 2025 Table 2: `cl * (1 + e_rett_cl * DIS_RETT)` with `e_rett_cl = -0.169` (16.9% lower clearance) and `vp * (1 + e_rett_vp * DIS_RETT)` with `e_rett_vp = 0.616` (61.6% larger peripheral volume). The indicator additionally selects the disease-cohort residual-error magnitude, which Darwish 2025 pooled across Rett syndrome, fragile X syndrome, and traumatic brain injury -- founding example).
+- **Notes:** Member of the `DIS_<CONDITION>` family of disease-state indicators. The covariate-effect parameter form is `e_rett_<param>` (drops the `DIS_` prefix, per the `DIS_CANCER -> e_cancer_<param>` and `DIS_CHF -> e_chf_<param>` precedents). Distinct from `DIS_FXS` (fragile X syndrome) even though both are monogenic neurodevelopmental disorders studied with overlapping trofinetide programmes -- the two cohorts have opposite sex distributions and Darwish 2025 estimated separate, differently-signed effects on different PK parameters, so they must not be collapsed into a single "neurodevelopmental disorder" indicator. Ratified canonically alongside the Darwish 2025 trofinetide extraction.
+
+### DIS_TBI (**canonical for traumatic brain injury disease-state indicator**)
+- **Description:** 1 = participant has a traumatic brain injury (TBI); 0 = healthy volunteers and any other disease cohort. Subject-level, time-fixed. Used where a source paper pools a TBI cohort with healthy volunteers or other patient groups and retains a TBI shift on a PK parameter.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (healthy volunteers).
+- **Source aliases:**
+  - `TBI` -- used in `Darwish_2025_trofinetide.R` (Darwish 2025 Results, definition of the `TBI_I` indicator variable in the typical-value equations for CL and Vp).
+- **Example models:** `Darwish_2025_trofinetide.R` (two proportional shifts from Darwish 2025 Table 2: `cl * (1 + e_tbi_cl * DIS_TBI)` with `e_tbi_cl = 0.235` (23.5% higher clearance) and `vp * (1 + e_tbi_vp * DIS_TBI)` with `e_tbi_vp = -0.752` (75.2% smaller peripheral volume). The indicator additionally selects the disease-cohort residual-error magnitude -- founding example).
+- **Notes:** Member of the `DIS_<CONDITION>` family; covariate-effect parameter form `e_tbi_<param>`. **Name-collision warning:** `DIS_BURN_RECENT` documents a source alias also spelled `TBI` (used in `Han_2013_fluconazole.R`), where the author's column name abbreviates a recoded *burn-injury* recency flag rather than traumatic brain injury. The two canonicals are unrelated. When a source paper uses a bare `TBI` column, read the paper's own variable definition before mapping it -- map to `DIS_TBI` only when the paper defines it as traumatic brain injury, and to `DIS_BURN_RECENT` when it defines it as time since burn injury. Ratified canonically alongside the Darwish 2025 trofinetide extraction.
+
+### DIS_FXS (**canonical for fragile X syndrome disease-state indicator**)
+- **Description:** 1 = participant has fragile X syndrome (FXS), the X-linked trinucleotide-repeat expansion disorder of `FMR1` and the most common inherited cause of intellectual disability; 0 = healthy volunteers and any other disease cohort. Subject-level, time-fixed. Clinically penetrant FXS predominates in males, so in a pooled analysis this indicator tends to be collinear with male sex within the patient cohort.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (healthy volunteers).
+- **Source aliases:**
+  - `FXS` -- used in `Darwish_2025_trofinetide.R` (Darwish 2025 Results, definition of the `FXS_I` indicator variable in the typical-value equation for Vc).
+- **Example models:** `Darwish_2025_trofinetide.R` (proportional shift on central volume from Darwish 2025 Table 2: `vc * (1 + e_fxs_vc * DIS_FXS)` with `e_fxs_vc = 1.15`, i.e. a 115% larger central volume -- more than a doubling, the largest single covariate effect in that model. The indicator additionally selects the disease-cohort residual-error magnitude -- founding example).
+- **Notes:** Member of the `DIS_<CONDITION>` family; covariate-effect parameter form `e_fxs_<param>`. See the `DIS_RETT` notes for why the two neurodevelopmental-disorder cohorts are registered separately rather than pooled. Ratified canonically alongside the Darwish 2025 trofinetide extraction.
+
+
+## Treatment-emergent adverse-event indicators
+
+Binary indicators flagging that a participant is currently experiencing a specific treatment-emergent adverse event, used where the event itself perturbs the drug's pharmacokinetics (most often gastrointestinal events altering oral absorption or bioavailability). Naming follows `AE_<EVENT>`, where `<EVENT>` is the MedDRA-style preferred term in upper case.
+
+These are deliberately **not** registered under the `DIS_<CONDITION>` family. `DIS_*` entries describe the participant's underlying disease or comorbid state -- the reason they are in the trial -- and are almost always time-fixed. An `AE_*` entry describes a drug-caused, typically transient and time-varying event occurring *during* treatment. The distinction matters because both can appear in the same model on the same parameter: `Darwish_2025_trofinetide.R` carries `DIS_RETT` (the disease under study) and `AE_DIARRHEA` (the drug's most common adverse event) simultaneously, and conflating them would obscure which effect is disease-driven and which is treatment-emergent. Record per model in `covariateData[[AE_<EVENT>]]$notes` whether the source carried the flag per record (time-varying) or per subject (ever-experienced).
+
+### AE_DIARRHEA (**canonical for concurrent treatment-emergent diarrhea indicator**)
+- **Description:** 1 = participant is experiencing treatment-emergent diarrhea at the time of the record; 0 = no diarrhea. Diarrhea shortens gastrointestinal transit time and reduces the window available for absorption, so it typically enters oral popPK models as a negative effect on bioavailability or a positive effect on the absorption rate constant.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no diarrhea).
+- **Source aliases:**
+  - `Diar` -- used in `Darwish_2025_trofinetide.R` (Darwish 2025 Results, definition of the `Diar_I` indicator variable in the typical-value equation for F1; the paper explicitly describes it as a *time-varying* indicator).
+  - `DIAR` -- the all-caps form used in the Darwish 2025 Fig. 5 forest-plot panel labels.
+- **Example models:** `Darwish_2025_trofinetide.R` (proportional shift on oral bioavailability from Darwish 2025 Table 2: `fdepot * (1 + e_diarrhea_f * AE_DIARRHEA)` with `e_diarrhea_f = -0.148`, a 14.8% reduction in F1 while diarrhea is present. Diarrhea is trofinetide's most common adverse event, affecting 52.4% of the Rett syndrome participants in the analysis dataset at some point during the studies, which is why the sponsor carried it as a structural covariate rather than screening it out -- founding example).
+- **Notes:** Founding member of the `AE_<EVENT>` family. Carry the flag per dose record when the source models it as time-varying (the Darwish 2025 form) and per subject only when the source collapses it to an ever-experienced flag; state which in the per-model `notes`. Distinct from `DIS_UC`, `DIS_DUOD_ULCER`, and the other gastrointestinal `DIS_*` entries, which denote a pre-existing gastrointestinal disease rather than a treatment-emergent event. Ratified canonically alongside the Darwish 2025 trofinetide extraction.
+
 
 ## Epilepsy baseline seizure-severity indicators
 
@@ -9513,6 +9566,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - derived per-dose-record from the co-administered AT2221 dose amount -- used in `Hajjar_2018_cipaglucosidase.R` as a categorical multiplier on ATB200 linear CL (`e_dose260mg_cl ^ DOSE_260MG`).
 - **Example models:** `Hajjar_2018_cipaglucosidase.R` (per-dose-record oral co-medication indicator).
 - **Notes:** Sibling of `DOSE_50MG`, `DOSE_70MG`, `DOSE_130MG`, and `DOSE_400MG`; member of the `DOSE_<N>MG` family of dose-level indicators. In Hajjar 2018 the indicator marks the AT2221 (miglustat) co-administration dose paired with the same-occasion 20 mg/kg ATB200 IV infusion; mutual exclusivity with `DOSE_130MG` is enforced by the study design. Ratified canonically alongside the Hajjar 2018 ATB200 / AT2221 extraction.
+
+### DOSE_18G (**canonical for 18 g dose-level indicator**)
+- **Description:** 1 = subject or dose record is in the 18 g dose-level cohort, 0 = any other dose level. Gram-scale member of the `DOSE_<N><UNIT>` dose-level-indicator family, for drugs dosed in grams rather than milligrams.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-18 g dose level; for Darwish 2025 the reference comprises the 6-12 g therapeutic weight-banded doses).
+- **Source aliases:**
+  - `DoseGrp1` -- used in `Darwish_2025_trofinetide.R` (Darwish 2025 Results, definition of the `DoseGrp1_I` indicator variable in the typical-value equation for F1).
+- **Example models:** `Darwish_2025_trofinetide.R` (proportional shift on oral bioavailability from Darwish 2025 Table 2: `fdepot * (1 + e_dose18g_f * DOSE_18G)` with `e_dose18g_f = -0.132`, a 13.2% reduction in F1 at the 18 g supratherapeutic dose. The dose level was studied in the thorough-QTc study ACP-2566-008; the effect captures the less-than-proportional rise in trofinetide exposure above the 6-12 g therapeutic range. Paired with `DOSE_24G`, which carries the larger 28.4% reduction -- founding example).
+- **Notes:** Sibling of the milligram-scale `DOSE_1P8MG` / `DOSE_10MG` / `DOSE_50MG` / `DOSE_70MG` / `DOSE_130MG` / `DOSE_260MG` / `DOSE_400MG` entries; the unit token is `G` rather than `MG` because trofinetide is dosed in grams throughout its literature and spelling this as `DOSE_18000MG` would be gratuitously unreadable. Follow the same `P`-for-decimal-point convention as `DOSE_1P8MG` if a fractional-gram sibling is ever needed. The covariate-effect parameter form is `e_dose18g_<param>`: unlike the `DIS_`/`FORM_`/`AE_` families, the `DOSE` token is retained because it carries the semantic content (the effect is *about* the dose level) rather than being a bare family prefix. Mutually exclusive with `DOSE_24G`; both = 0 selects the therapeutic-dose reference. Distinct from the abstract `DOSE_HIGH`, which names the "in the highest cohort" role without fixing a numerical value -- use the numerically-explicit entries when a source estimates a separate effect for each of two or more named supratherapeutic levels, as Darwish 2025 does. Ratified canonically alongside the Darwish 2025 trofinetide extraction.
+
+### DOSE_24G (**canonical for 24 g dose-level indicator**)
+- **Description:** 1 = subject or dose record is in the 24 g dose-level cohort, 0 = any other dose level. Gram-scale member of the `DOSE_<N><UNIT>` dose-level-indicator family.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-24 g dose level; for Darwish 2025 the reference comprises the 6-12 g therapeutic weight-banded doses).
+- **Source aliases:**
+  - `DoseGrp2` -- used in `Darwish_2025_trofinetide.R` (Darwish 2025 Results, definition of the `DoseGrp2_I` indicator variable in the typical-value equation for F1).
+- **Example models:** `Darwish_2025_trofinetide.R` (proportional shift on oral bioavailability from Darwish 2025 Table 2: `fdepot * (1 + e_dose24g_f * DOSE_24G)` with `e_dose24g_f = -0.284`, a 28.4% reduction in F1 at the 24 g supratherapeutic dose -- roughly twice the 18 g reduction, consistent with a saturating-absorption interpretation -- founding example).
+- **Notes:** Paired sibling of `DOSE_18G`; see that entry for the family, unit-token, and covariate-effect-naming rationale. Mutually exclusive with `DOSE_18G`. Ratified canonically alongside the Darwish 2025 trofinetide extraction.
 
 ### DOSE_HIGH (**canonical for highest-dose-cohort binary indicator**)
 - **Description:** 1 = subject is in the source paper's highest-dose cohort (numerical threshold documented per model in `covariateData[[DOSE_HIGH]]$notes`); 0 = subject is in any lower-dose cohort. Time-fixed per subject in escalating-cohort or parallel-dose designs where each animal / subject remained on a single dose level for the full study and the paper detected a step-function shift in a PK parameter (typically apparent oral clearance or bioavailability) that was significant enough to warrant a separate typical-value estimate for the highest cohort alone.

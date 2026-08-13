@@ -2792,6 +2792,8 @@ navbar:
         href: articles/Lee_2023_tripegfilgrastim.html
       - text: "Triptorelin (Tornoe 2006)"
         href: articles/Tornoe_2006_HPG_axis.html
+      - text: "Trofinetide (Darwish 2025)"
+        href: articles/Darwish_2025_trofinetide.html
       - text: "Trontinemab (Grimm 2023)"
         href: articles/Grimm_2023.html
       - text: "Tusamitamab (Pouzin 2022)"
@@ -3358,6 +3360,7 @@ articles:
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
   - articles/Darpo_2014_racSotalol
+  - articles/Darwish_2025_trofinetide
   - articles/Davis_2008_maraviroc
   - articles/DeCock_2012_propyleneGlycol
   - articles/DeJongh_2014_antithrombin
