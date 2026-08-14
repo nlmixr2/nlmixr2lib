@@ -22,7 +22,7 @@ library(ggplot2)
 * Citation: Chotsiri P, Denoeud-Ndam L, Baudin E, Guindo O, Diawara H, Attaher O, et al. (2019). Severe acute malnutrition results in lower lumefantrine exposure in children treated with artemether-lumefantrine for uncomplicated malaria. *Clinical Pharmacology and Therapeutics* **106**(6):1299-1309. doi:10.1002/cpt.1531.
 * Article: <https://doi.org/10.1002/cpt.1531>
 * Trial: MAL-NUT, ClinicalTrials.gov <https://clinicaltrials.gov/study/NCT01958905>
-* Applying publication also reproduced here: Simeon S, Jagannathan P, Kakuru A, Muhindo M, Savic RM, et al. (2024). Optimizing lumefantrine dosing for young children in high-malaria-burden countries using pharmacokinetic-pharmacodynamic simulations. *Open Forum Infectious Diseases* **11**(11):ofae627. doi:10.1093/ofid/ofae627. <https://doi.org/10.1093/ofid/ofae627>
+* Applying publication also reproduced here: Simeon S, Hughes E, Wallender E, Solans BP, Savic R (2024). Optimizing lumefantrine dosing for young children in high-malaria-burden countries using pharmacokinetic-pharmacodynamic simulations. *Open Forum Infectious Diseases* **11**(11):ofae627. doi:10.1093/ofid/ofae627. <https://doi.org/10.1093/ofid/ofae627>
 
 Simeon 2024 develops no model of its own: its Methods state that it "used a published LF PK-PD model from Chotsiri et al" and that simulations were run "using the Chotsiri et al model described above ... sampled from the population parameter and variability distributions estimated by Chotsiri et al." The model packaged here is therefore the Chotsiri 2019 model, and the final section of this vignette reproduces the Simeon 2024 dosing-regimen comparison with it.
 
