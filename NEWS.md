@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Brossard 2025 emapalumab ([doi:10.1111/cts.70163](https://doi.org/10.1111/cts.70163)) -- children and young adults with macrophage activation syndrome associated with Still's disease.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
