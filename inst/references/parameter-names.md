@@ -1327,6 +1327,15 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
 - **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
 
+### dp_slope (**canonical bare linear disease-progression slope**)
+- **Type:** paper-named-param
+- **Role:** Slope of linear natural disease progression, in units of the modelled endpoint per unit time, entering the prediction additively as `progression = dp_slope * time`. Used for placebo-arm / untreated drift in a disease-progression model where the endpoint changes approximately linearly over the observation window, alongside a baseline (`lrbase`) and a drug-effect term. Deliberately **untransformed** (no `l` prefix): see Notes.
+- **Source aliases:**
+  - `Kprog` -- Lee 2024 Table 1 and Figure 1 (`Natural progression = Kprog x time`).
+  - `SLP`, `ALPHA`, `k_prog`, `Kdis` -- equivalent notation in other disease-progression papers.
+- **Example models:** `Lee_2024_lserine.R` (`dp_slope` = 0.015 K-VABS-II-ABC score/day, with a normally-distributed `etadp_slope` of SD 0.018).
+- **Notes:** Registered 2026-08-14. This canonical is intentionally bare rather than log-transformed, and there is **no** `ldp_slope` counterpart. A disease-progression slope is one of the few structural parameters that must be allowed to take either sign: papers routinely report an **additive (normal) random effect** on it whose spread puts a meaningful fraction of the population at a negative individual slope (patients who decline rather than improve). A log-normal `exp(ldp_slope + etaldp_slope)` parameterisation cannot represent that, so it would silently truncate the population. Encode as `dp_slope <- <value>` in `ini()` with `etadp_slope ~ <sd>^2`, and combine additively inside `model()` (`dp_slope + etadp_slope`), not multiplicatively. Founding example: Lee 2024, whose Results state Kprog was estimated "with a standard deviation of random effects of 0.018 in a normal eta distribution" around 0.015/day -- which places roughly 20% of the population at a negative slope, and which reproduces the paper's published placebo percentiles where a log-normal cannot. When a paper instead reports a strictly-positive progression slope with a log-normal (CV%) random effect, the log-transformed `l`-prefix convention applies as usual and a `ldp_slope` entry may be registered at that point.
+
 ## Nested (multi-level) random effects
 
 Registered 2026-08-06 with the `Qi_2024_vosoritide.R` extraction, the first
