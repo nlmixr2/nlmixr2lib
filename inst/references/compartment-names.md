@@ -578,6 +578,14 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Source aliases:** none.
 - **Example models:** `Hill-McManus_2017_uricLT.R`.
 
+### oxalate_urine (**canonical 24-hour urinary oxalate excretion**)
+- **Type:** compartment
+- **Role:** 24-hour urinary oxalate excretion (umol/24 h), the registrational efficacy endpoint for oxalate-lowering therapy in primary hyperoxaluria. Held as an indirect-response turnover pool: `d/dt(oxalate_urine) = kin * (1 - eff) - kout * oxalate_urine`, initialised at the estimated baseline `rbase`.
+- **Source aliases:**
+  - `Uox`, `UO24` -- Zhang 2024 notation for 24-h urinary oxalate; the standard symbol in the primary-hyperoxaluria literature.
+- **Example models:** `Zhang_2024_nedosiran.R`.
+- **Notes:** Ratified 2026-08-14 (sidecar request-001 / response-001, option A) as a member of the `<analyte>_urine` family alongside `xanthine_urine` and `urate_urine`, chosen over the field abbreviation `uox` because the compartment register prefers full-English role-based names. Same anatomical namespace as its two siblings but a different mathematical object: `xanthine_urine` and `urate_urine` are cumulative excretion integrals fed from a renal-clearance outflow, whereas `oxalate_urine` is a turnover pool whose value is an excretion RATE over a 24-hour collection window and therefore does not start at zero. A future model needing cumulative oxalate excretion rather than the 24-h collection rate should say so explicitly rather than reuse this state.
+
 ---
 
 ## Multistate Tuberculosis Pharmacometric (MTP) bacterial states

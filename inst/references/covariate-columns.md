@@ -4191,6 +4191,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Collins_2023_belantamab_mprotein.R` (multiplicative factor 0.108 on the effect-compartment rate constant KEO of the serum M-protein tumour-growth-inhibition model when `DIS_EMD = 1`, per Collins 2023 Table 1; 95% CI 0.0617-0.187).
 - **Notes:** Distinct from `DIS_MM` (active vs smoldering multiple-myeloma disease status) and `DIS_SMM` (smoldering multiple myeloma), and complementary to both: a patient with active multiple myeloma may or may not have extramedullary disease. Also distinct from the ulcerative-colitis disease-extent canonicals `DISEXT_EP` / `DISEXT_OTHER`, which describe the anatomical extent of inflammatory bowel disease rather than a plasma-cell malignancy outside the marrow. Covariate-effect parameters drop the `DIS_` prefix per the `DIS_CANCER` -> `e_cancer_*` convention; use `e_emd_<param>`. Scope: specific because the concept is mechanistically bound to plasma-cell malignancies. Ratified canonically on 2026-07-27 alongside the Collins 2023 belantamab mafodotin M-protein extraction.
 
+### DIS_PH1 (**canonical for primary hyperoxaluria type 1 patient indicator**)
+- **Description:** 1 = patient with primary hyperoxaluria type 1 (PH1, AGXT loss-of-function), 0 = non-PH1 subject. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-PH1 subject). Note that the complement group is paper-defined and is NOT simply "healthy": in Zhang 2024 the pooled PK dataset is 85 non-PH volunteers, 46 PH1 and 12 PH2 patients, only PH1 carries a covariate effect, so `DIS_PH1 = 0` covers healthy volunteers AND PH2 patients. `DIS_PH1` is therefore not expressible as `1 - DIS_HEALTHY`.
+- **Source aliases:**
+  - `PH1` -- Zhang 2024 Table 1 row label "Covariate effect of PH1 on ka1".
+- **Example models:** `Zhang_2024_nedosiran.R` (multiplicative factor 1.54 on the slow-pathway subcutaneous absorption rate constant ka1, i.e. PH1 patients absorb nedosiran through the slow pathway ~54% faster than the pooled volunteer/PH2 reference; the paper placed the effect on ka1 rather than Vc/F because it described the overall PK better, and reports that it produces no clinically meaningful change in Cmax,ss or AUC0-tau,ss).
+- **Notes:** Ratified 2026-08-14 (sidecar request-001 / response-001, option A) as a member of the `DIS_<condition>` family. `PH1` is abbreviated rather than spelled out to match how the nephrology and RNAi-therapeutic literature universally names the condition; the `DIS_` prefix removes any collision with pH. Only `DIS_PH1` is registered because only PH1 carries an effect in the founding model -- a `DIS_PH2` or `DIS_PH3` indicator should be added by the first model that actually uses it, per the register's "Scope: specific needs an Example" rule.
+
 ### DIS_PNH (**canonical for paroxysmal nocturnal hemoglobinuria indicator**)
 - **Description:** 1 = paroxysmal nocturnal hemoglobinuria (PNH) patient, 0 = non-PNH subject (healthy volunteer or another indication pooled in the source analysis). Time-fixed per subject.
 - **Units:** (binary)
