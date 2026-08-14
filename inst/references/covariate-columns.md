@@ -602,6 +602,72 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Notes:** General scope because pre-dose QTc baseline is a universally applicable ECG-derived per-subject covariate in any concentration-DeltaQTc model. The QT correction method (Bazett, Fridericia, individual, study-population-specific) is model-specific and is the per-model documentation responsibility of `covariateData[[QTC_BL]]$notes`; do NOT register parallel canonicals like `QTCI_BL` or `QTCF_BL` for different correction methods (the unit, role, and centering pattern are identical -- only the precise QT-to-QTc conversion formula differs upstream of the model). Future concentration-DeltaQTc papers using a non-zero centering reference different from the Darpo 2014 rounded standard 390 ms should document the per-model reference in `covariateData[[QTC_BL]]$notes`. Ratified canonically on 2026-06-30 alongside the Darpo 2014 rac-sotalol concentration-QTc extraction.
 
 
+## Organ and lesion volumes (`ORGVOL_<ORGAN>` family)
+
+Per-subject **measured** volumes of a named anatomical compartment, in mL, supplied to a model as an input rather than derived from body size. Physiologically based models need these whenever a paper images an organ or a lesion per patient instead of scaling it from a reference individual: the measured volume then sets that compartment's vascular, interstitial and intracellular sub-volumes, its serum flow (`flow density x volume`) and its permeability-surface-area product (`PS density x volume`), and multiplies a binding-site density to give the compartment's total receptor pool.
+
+Naming convention: `ORGVOL_<ORGAN>`, all caps, where `<ORGAN>` is the anatomical compartment as the model names it. New members are added by registering an entry below; the family convention itself does not need re-ratifying. Keep `<ORGAN>` at the granularity the model actually resolves -- register `ORGVOL_KIDNEY` for a model with one kidney compartment, not `ORGVOL_KIDNEY_LEFT` / `ORGVOL_KIDNEY_RIGHT`, unless the model genuinely carries them separately.
+
+**Relationship to `TUM_VOL`.** `TUM_VOL` is aggregate tumour *burden* -- total tumour volume summed over every lesion, in mm^3, used as a size stratifier or as a TGI initial condition. The `ORGVOL_TUMOR<n>` members are something different: the volume of one individually delineated lesion that the model carries as its own compartment, in mL, on exactly the same footing as an organ. A model that resolves individual lesions needs one column per lesion and `TUM_VOL` supplies only one; a model that needs total burden should use `TUM_VOL` and not sum the `ORGVOL_TUMOR<n>` columns, because the lumped-remainder compartment is an assumption rather than a measurement. Both may legitimately appear in the same dataset.
+
+Ratified canonically on 2026-08-14 (sidecar `oare_PMC11791192` request-001 q3, escalated for the same reason as the `AE_<EVENT>` family) alongside the Golzaryan 2025 whole-body 177Lu-PSMA I&T PBPK extraction, which supplies every founding member below.
+
+### ORGVOL_KIDNEY (**canonical for measured total kidney volume**)
+- **Description:** Measured total volume of the kidneys (both kidneys combined unless the model states otherwise), typically delineated on CT or the CT component of a SPECT/CT or PET/CT acquisition.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - ``Kidney (measured volume)` -- Golzaryan 2025 Table S1 column header, reproduced from Kletting 2016 PLoS One Table 1; reported in mL, no value transformation.`
+- **Example models:** `Golzaryan_2025_lu177psmaIT_pbpk.R`
+- **Notes:** Founding member of the `ORGVOL_<ORGAN>` family. In the founding model the measured volume is split into vascular (5.5 %), interstitial (15 %) and intracellular (two thirds of the remainder) sub-volumes and multiplies the fitted PSMA binding-site density. Cohort range 268-394 mL in five mCRPC patients. Distinct from `KBF` (renal blood flow, mL/min) -- that is a flow, this is a volume.
+
+### ORGVOL_SALGLAND (**canonical for measured total salivary gland volume**)
+- **Description:** Measured total volume of the salivary glands. The founding source delineates the left plus right parotid glands only; a model that includes the submandibular or sublingual glands should say so in `covariateData[[ORGVOL_SALGLAND]]$notes` rather than registering a separate canonical.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - ``Salivary Glands (measured volume)` -- Golzaryan 2025 Table S1 column header; reported in mL, no value transformation.`
+- **Example models:** `Golzaryan_2025_lu177psmaIT_pbpk.R`
+- **Notes:** Founding member of the `ORGVOL_<ORGAN>` family. The salivary glands are a dose-limiting organ at risk in PSMA-targeted radioligand therapy, so their volume is measured per patient rather than scaled from body size. Cohort range 17-54 mL in five mCRPC patients.
+
+### ORGVOL_TUMOR1 (**canonical for measured individually delineated tumour lesion 1 volume**)
+- **Description:** Measured volume of the first of the individually delineated tumour lesions that a model carries as its own compartment. Lesion numbering follows the source paper.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - ``Tumor 1 (measured volume)` -- Golzaryan 2025 Table S1 column header; reported in mL, no value transformation.`
+- **Example models:** `Golzaryan_2025_lu177psmaIT_pbpk.R`
+- **Notes:** Founding member of the `ORGVOL_<ORGAN>` family; see the family note above for the distinction from `TUM_VOL`. Lesion indices are positional labels from the source, not anatomical sites, so a model that names its lesions anatomically should register named members (`ORGVOL_TUMOR_BONE`, ...) instead of numbered ones. Cohort range 0.5-4 mL in five mCRPC patients.
+
+### ORGVOL_TUMOR2 (**canonical for measured individually delineated tumour lesion 2 volume**)
+- **Description:** Measured volume of the second of the individually delineated tumour lesions that a model carries as its own compartment.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - ``Tumor 2 (measured volume)` -- Golzaryan 2025 Table S1 column header; reported in mL, no value transformation.`
+- **Example models:** `Golzaryan_2025_lu177psmaIT_pbpk.R`
+- **Notes:** Founding member of the `ORGVOL_<ORGAN>` family. Extend the family with `ORGVOL_TUMOR3` and beyond as models resolve more lesions. Cohort range 1-34 mL in five mCRPC patients.
+
+### ORGVOL_TUMORREST (**canonical for measured lumped remaining-tumour-lesion volume**)
+- **Description:** Volume assigned to the single compartment that represents every tumour lesion a model does not delineate individually. Unlike the other members of this family this is an assumption rather than a measurement, because the lesions it stands for were not imaged individually; record how the source arrived at it in `covariateData[[ORGVOL_TUMORREST]]$notes`.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - ``R_TU,Rest,0 / [R_TU,Rest,0]` -- Golzaryan 2025 Table S2 states the lumped compartment through its total binding sites at an assumed 266 nmol/L density, which is the same quantity divided by that density.`
+- **Example models:** `Golzaryan_2025_lu177psmaIT_pbpk.R`
+- **Notes:** Founding member of the `ORGVOL_<ORGAN>` family. Registered as its own canonical rather than as another `ORGVOL_TUMOR<n>` because its provenance is categorically different: it is an assumed residual-disease burden, and a downstream user must be able to exclude it when summing measured lesion volumes. The founding source assumes either 10 mL or 50 mL per patient.
+
+
 ## Renal / hepatic function
 
 ### URINE_FLOW (**canonical for instantaneous urine flow rate**)
@@ -625,6 +691,17 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
   - `residual diuresis` (Ulldemolins 2015 prose); typical NONMEM column abbreviation `DIUR`. Same value orientation, no transformation.
 - **Example models:** `Ulldemolins_2015_meropenem.R` (critically ill adults with septic shock and continuous renal replacement therapy; reference 100 mL/24h; additive linear effect 0.22 L/h per (URINE_VOL_24H / 100) on meropenem total CL on top of the CRRT-mediated baseline 3.68 L/h), `Huppe_2023_fosfomycin.R` (critically ill adults with renal insufficiency on continuous venovenous hemodialysis; used as the binary preserved-diuresis gate `(URINE_VOL_24H > 100)` that switches the renal clearance arm off entirely in anuric patients, per the source's own definition of preserved diuresis as residual diuresis exceeding 100 mL/24h).
 - **Notes:** Promoted from `specific` to `general` alongside the Huppe 2023 fosfomycin extraction, the second model to retain a 24-hour urine-volume covariate with consistent semantics. The two registered effect forms are both multiplicative-or-additive in the same 100 mL/24h anuria cutoff and so share this entry: Ulldemolins 2015 uses the additive linear `base + slope * (URINE_VOL_24H / 100)`, and Huppe 2023 uses the binary gate `(URINE_VOL_24H > 100)` on a renal-clearance arm. Distinct from `URINE_FLOW` because (a) `URINE_VOL_24H` is a 24-hour cumulative volume (mL/24h), not an instantaneous rate (mL/h), and (b) the additive-linear effect form `base + slope * (URINE_VOL_24H / 100)` is structurally different from the centered-linear-effect-with-sentinel-zero form used by `URINE_FLOW`. A future model that uses a proportional or multiplicative effect form on a 24-hour volume should evaluate whether the semantics still match this entry (proportional / multiplicative forms are compatible); a centered-linear-with-sentinel form (analogous to the URINE_FLOW convention) would diverge and should register a sibling canonical. The full-word `URINE_VOL_24H` form was chosen over the shorter `URINE_24H` per operator instruction (sidecar request 001 of task `frompeople-536`). Ratified canonically on 2026-06-27 alongside the Ulldemolins 2015 meropenem extraction.
+
+### TER_MAG3 (**canonical for tubular extraction rate measured by 99mTc-MAG3 renography**)
+- **Description:** Tubular extraction rate of 99mTc-mercaptoacetyltriglycine (MAG3), the whole-kidney tubular secretion clearance measured by MAG3 renography. Not BSA-normalized and not a filtration measurement: MAG3 is handled predominantly by active proximal-tubular secretion, whereas creatinine clearance and 51Cr-EDTA / iohexol clearance measure glomerular filtration. Papers that use TER as their renal-function input typically convert it to a filtration rate with a published regression before it enters the model.
+- **Units:** mL/min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used as a direct model input, not as a covariate-effect coefficient.
+- **Source aliases:**
+  - `TER` -- the bare symbol used by Golzaryan 2025 Table S1 and by the upstream Kletting 2016 PLoS One Table 1 ("TER = tubular extraction rate as determined with the 99mTc Mag3 method"); same quantity in mL/min, no value transformation.
+- **Example models:** `Golzaryan_2025_lu177psmaIT_pbpk.R` (Golzaryan 2025 whole-body 177Lu-PSMA I&T PBPK; per-patient TER of 136-252 mL/min is converted to the 51Cr-EDTA glomerular filtration rate as `GFR = TER / 3 * 20 / 15` per Table S2, then scaled to peptide molecular size by the sieving ratio phi = 0.66 to give the filtration flow used by the kidney sub-model -- founding example).
+- **Notes:** Deliberately NOT folded into `CRCL`. `CRCL` pools creatinine-based and tracer-measured estimates of *glomerular filtration*, normalized to 1.73 m^2; `TER_MAG3` is non-normalized *tubular extraction*, a physiologically distinct process measured by a different tracer, and the two are related only through a cohort-specific regression. Reusing `CRCL` would require an undocumented conversion at data-ingestion time and would silently mix two renal processes under one column. The tracer is named in the canonical because the number is uninterpretable without it -- a tubular extraction rate measured with 131I-OIH is not numerically interchangeable with a MAG3 one. Ratified canonically on 2026-08-14 (sidecar `oare_PMC11791192` request-001 q2) alongside the Golzaryan 2025 extraction.
 
 ### CRCL (**canonical for BSA-normalized renal function (creatinine-based estimate OR tracer-measured GFR)**)
 - **Description:** BSA-normalized renal function expressed in mL/min/1.73 m^2. Accepts either (a) a creatinine-based estimate -- MDRD- or CKD-EPI-estimated glomerular filtration rate, or a measured creatinine clearance that has been BSA-normalized as `1.73 x CrCl / BSA` -- or (b) a tracer-measured glomerular filtration rate using an exogenous filtration marker (iohexol clearance, inulin clearance, 99mTc-DTPA clearance, 51Cr-EDTA clearance), which is the clinical gold standard for measured GFR. All variants enter popPK models with the same operational role (a covariate on clearance) and the same units; the per-model `covariateData[[CRCL]]$description` and `notes` must state which assay the source paper used.
