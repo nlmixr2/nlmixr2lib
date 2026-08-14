@@ -806,6 +806,14 @@ navbar:
         href: articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
+      - text: "Doxycycline duck ff20 (Li 2025)"
+        href: articles/Li_2025_doxycycline_florfenicol_ducks.html
+      - text: "Doxycycline duck ff40 (Li 2025)"
+        href: articles/Li_2025_doxycycline_florfenicol_ducks.html
+      - text: "Doxycycline duck liver (Li 2025)"
+        href: articles/Li_2025_doxycycline_florfenicol_ducks.html
+      - text: "Doxycycline duck lung (Li 2025)"
+        href: articles/Li_2025_doxycycline_florfenicol_ducks.html
       - text: "Droperidol (Foo 2016)"
         href: articles/Foo_2016_droperidol.html
       - text: "Dupilumab (Kovalenko 2016)"
@@ -3791,6 +3799,7 @@ articles:
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
   - articles/Li_2024_orin1001
+  - articles/Li_2025_doxycycline_florfenicol_ducks
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_osimertinib
   - articles/Liang_2024_rituximab
