@@ -1718,6 +1718,8 @@ navbar:
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Midazolam (Swart 2004)"
         href: articles/Swart_2004_lorazepam_midazolam.html
+      - text: "Midazolam (Xie 2025)"
+        href: articles/Xie_2025_midazolam.html
       - text: "Midazolam (vanRongen 2015)"
         href: articles/vanRongen_2015_midazolam.html
       - text: "Midazolam (vanRongen 2017)"
@@ -4335,6 +4337,7 @@ articles:
   - articles/Xiang_2018_baicalein
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
+  - articles/Xie_2025_midazolam
   - articles/Xu_2011_sirukumab
   - articles/Xu_2013_ranibizumab
   - articles/Xu_2019_sarilumab
