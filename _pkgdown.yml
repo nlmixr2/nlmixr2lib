@@ -640,6 +640,8 @@ navbar:
         href: articles/Diao_2016_daclizumab_treg.html
       - text: "Dactinomycin (Mondick 2006)"
         href: articles/Mondick_2006_dactinomycin.html
+      - text: "Dalbavancin (Baiardi 2025)"
+        href: articles/Baiardi_2025_dalbavancin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Danoprevir (Canini 2015)"
@@ -3167,6 +3169,7 @@ articles:
   - articles/Azechi_2024_tamibarotene_pediatric
   - articles/Back_2018_fenofibrate
   - articles/Baheti_2011_tenofovir
+  - articles/Baiardi_2025_dalbavancin
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
   - articles/Barau_2012_mycophenolic_acid
