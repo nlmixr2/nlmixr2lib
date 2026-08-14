@@ -3797,7 +3797,21 @@ The names are spelled out in full per the 2026-05-28 anti-abbreviation audit. In
 - **Role:** Epithelial lining fluid of the lung airspace: the apical aqueous layer that inhaled or intratracheally instilled drug is deposited into before it distributes into the lung tissue and reaches the systemic circulation. Carries its own physiological volume and its own unbound fraction `fu_elf` (typically derived from plasma `fu` and the plasma/ELF albumin ratio), and exchanges with the lung's `lung_cellular` and `lung_extracellular` pools.
 - **Source aliases:** `ELF` -- Parmar 2023 Figure 2, Table 2 (`V ELF`, `fu ELF`) and supplement equations S22-S26.
 - **Example models:** `Parmar_2023_spectinamide_1599_mouse_pbpk.R`.
-- **Notes:** A physiological airspace compartment, not an absorption depot: the inhaled or intratracheal dose lands in a separate `depot2` and reaches `elf` by first-order absorption with its own bioavailability, exactly as an oral dose reaches `central` from `depot`. Whole-lung concentration includes the ELF amount (Parmar 2023 supplement S26). Related but distinct from `isf` (generic interstitial fluid) and from the `brain_csf*` namespace; a future inhalation model that resolves regional airway ELF should register `elf_<region>` names rather than overload the bare `elf`.
+- **Notes:** A physiological airspace compartment, not an absorption depot: the inhaled or intratracheal dose lands in a separate `depot2` and reaches `elf` by first-order absorption with its own bioavailability, exactly as an oral dose reaches `central` from `depot`. Whole-lung concentration includes the ELF amount (Parmar 2023 supplement S26). Related but distinct from `isf` (generic interstitial fluid) and from the `brain_csf*` namespace; a future inhalation model that resolves regional airway ELF should register `elf_<region>` names rather than overload the bare `elf` -- see `elf_lrt` and `elf_trachea` below, the first members of that family.
+
+### elf_lrt (**canonical lower-respiratory-tract epithelial-lining-fluid pool**)
+- **Type:** compartment
+- **Role:** The epithelial lining fluid of the lower respiratory tract, resolved as a distinct regional pool of the lung airspace because an inhaled (nebulized) aerosol deposits there rather than being distributed uniformly through the lung. Holds a drug amount, not a concentration; regional ELF pools normally share one ELF volume with the bare `elf` compartment, so a regional concentration is only meaningful as part of the whole-lung ELF concentration `(elf_lrt + elf_trachea + elf) / v_elf`. Distinct from a `depot`: drug in this pool is physically in the epithelial lining fluid and is measured as ELF by urea-corrected bronchoalveolar lavage, so it belongs in the observed ELF concentration; a `depot` amount never does.
+- **Source aliases:** `LUNG1`, `INHCMT` -- Kurup 2024 Fig. 1 ("the depot compartment in the lower respiratory tract for inhaled administration") and supplement eq. (1) / `$MODEL COMP(INHCMT)`.
+- **Example models:** `Kurup_2024_DZIF10c.R`.
+- **Notes:** The region token names ANATOMY, not the route that delivered the dose, so a future model that reaches the lower respiratory tract by some other route reuses this name rather than registering a synonym. This is the same principle as `enzyme_3a4_liver` / `enzyme_3a4_gut` and the `brain_<region>` namespace. Pair with `elf_trachea` and the bare `elf`; the volume, the loss clearance and the systemic-exchange clearance are `lv_elf`, `lcl_elf` and `lq_elf` in `inst/references/parameter-names.md`.
+
+### elf_trachea (**canonical tracheal epithelial-lining-fluid pool**)
+- **Type:** compartment
+- **Role:** The epithelial lining fluid lining the trachea, resolved as a distinct regional pool of the lung airspace because an intratracheally instilled dose is delivered into the tracheal lumen rather than reaching the deep lung. Holds a drug amount and shares the ELF volume with the other regional pools, exactly as `elf_lrt` does.
+- **Source aliases:** `LUNG2`, `ITCMT` -- Kurup 2024 Fig. 1 ("the depot compartment in the trachea for IT administration") and supplement eq. (2) / `$MODEL COMP(ITCMT)`.
+- **Example models:** `Kurup_2024_DZIF10c.R`.
+- **Notes:** Deliberately distinct from the bare `trachea` compartment, which is a PBPK whole-organ TISSUE state holding the well-stirred tracheal tissue amount. `elf_trachea` is the aqueous film on the luminal surface of that organ, is sampled by lavage rather than by tissue homogenate, and can coexist with `trachea` in a model that resolves both.
 
 ---
 

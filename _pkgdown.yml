@@ -624,6 +624,8 @@ navbar:
         href: articles/Philippe_2015_cyclosporine.html
       - text: "Cysteamine (Belldina 2003)"
         href: articles/Belldina_2003_cysteamine.html
+      - text: "DZIF10c (Kurup 2024)"
+        href: articles/Kurup_2024_DZIF10c.html
       - text: "Dabigatran (Liesenfeld 2013)"
         href: articles/Liesenfeld_2013_dabigatran.html
       - text: "Dabigatran ECT (Liesenfeld 2006)"
@@ -3728,6 +3730,7 @@ articles:
   - articles/Kunisawa_2014_olprinone
   - articles/Kunisawa_2015_landiolol
   - articles/Kuroda_2023_cephalothin
+  - articles/Kurup_2024_DZIF10c
   - articles/Kutumova_2024_albuminNanoparticles
   - articles/Kyhl_2016_nalmefene
   - articles/Lacy_2018_cabozantinib
