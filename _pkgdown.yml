@@ -2190,6 +2190,10 @@ navbar:
         href: articles/Pardridge_2023_brain_plasma_protein_binding.html
       - text: "PropyleneGlycol (DeCock 2012)"
         href: articles/DeCock_2012_propyleneGlycol.html
+      - text: "PropyleneGlycol adult (Olafuyi 2025)"
+        href: articles/Olafuyi_2025_propyleneGlycol.html
+      - text: "PropyleneGlycol neonate (Olafuyi 2025)"
+        href: articles/Olafuyi_2025_propyleneGlycol.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
       - text: "Pyrazinamide (Chirehwa 2017)"
@@ -3946,6 +3950,7 @@ articles:
   - articles/Ogungbenro_2009_penciclovir
   - articles/Oishi_2014_fesoterodine
   - articles/Okada_2025_rocatinlimab
+  - articles/Olafuyi_2025_propyleneGlycol
   - articles/Olagunju_2018_efavirenz
   - articles/Olivo_2024_methotrexate
   - articles/Ollier_2015_ropivacaine
