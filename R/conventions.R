@@ -385,7 +385,15 @@
     # parent + metabolite joint popPK models for high-dose methotrexate
     # therapy (Joerger 2006 Br J Clin Pharmacol 62(1):71-80
     # doi:10.1111/j.1365-2125.2005.02513.x).
-    "7ohmtx"
+    "7ohmtx",
+    # AC886, the pharmacologically active metabolite of quizartinib
+    # (an N-desalkyl derivative formed predominantly via CYP3A4).
+    # AC886 is roughly equipotent with the parent for FLT3-ITD
+    # inhibition and circulates at comparable exposure, so it is
+    # followed as a second analyte in joint parent + metabolite popPK
+    # models (Vaddady 2024 doi:10.1111/cts.70074). Sidecar
+    # request-001 / response-001, question q1, option A.
+    "ac886"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`

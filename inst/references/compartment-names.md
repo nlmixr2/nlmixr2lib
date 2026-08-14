@@ -3293,6 +3293,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Heathman_2024_efavirenz.R`.
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier. Founding example: `Heathman_2024_efavirenz.R`.
 
+### ac886 (**canonical AC886 quizartinib-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** AC886, the pharmacologically active N-desalkyl metabolite of quizartinib formed predominantly via CYP3A4. AC886 is roughly equipotent with the parent for FLT3-ITD inhibition and circulates at comparable exposure, so it is followed as a second plasma analyte in joint parent + metabolite popPK models.
+- **Source aliases:** none (the paper, both NONMEM control streams and the assay all use the bare compound code `AC886`).
+- **Example models:** `Vaddady_2024_quizartinib.R` (doi:10.1111/cts.70074); compartments `central_ac886` / `peripheral1_ac886`, observation `Cc_ac886`, parameters `lcl_ac886` / `lvc_ac886` / `lvp_ac886` / `lq_ac886` / `etalvc_ac886` / `propSd_ac886`.
+- **Notes:** Ratified by sidecar request-001 / response-001, question q1, option A. Suffix starts with a letter but contains digits; the convention check matches on `endsWith(name, "_<metab>")` so the mixed alphanumeric form is fine.
+
 ## Cell-type suffixes (Friberg multi-cell-type chains)
 
 Cell-type suffixes used with Friberg-style `circ_<celltype>` myelosuppression compartments and `precursor1_<celltype>` ... `precursorN_<celltype>` maturation chains for paired-output multi-cell models. Registered 2026-05-28 per the naming audit.
