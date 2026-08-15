@@ -3589,6 +3589,37 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Source aliases:** none.
 - **Example models:** `Stroh_2013_rolofylline.R` (doi:10.1208/s12248-012-9443-5).
 
+### zan (**canonical zanubrutinib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Zanubrutinib, a covalent (irreversible) Bruton tyrosine kinase inhibitor approved for B-cell malignancies. Used as a sibling-drug suffix in multi-inhibitor models that carry zanubrutinib, acalabrutinib and ibrutinib simultaneously, where no single moiety can claim the unsuffixed canonical names. Drives `gut_zan` / `depot_zan` / `central_zan` / `peripheral1_zan` compartments, the `lcl_zan` / `lvc_zan` / `lvp_zan` / `lq_zan` / `ld1_zan` PK parameters, and the `Cc_zan` observation.
+- **Source aliases:** `ZAN` (used by Demin 2025 in `ZAN_pls`, `CL_zan`, `Kd_zan_btk`).
+- **Example models:** `Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.R` (doi:10.1002/psp4.13307).
+- **Notes:** Zanubrutinib has no major active metabolite, so unlike `aca` / `ibr` this suffix has no paired metabolite suffix.
+
+### aca (**canonical acalabrutinib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Acalabrutinib, a covalent Bruton tyrosine kinase inhibitor approved for B-cell malignancies. Sibling-drug suffix in multi-inhibitor models; paired with `acp` for its active metabolite ACP-5862. Drives `gut_aca` / `transit1_aca` .. `transit5_aca` / `depot_aca` / `central_aca` / `peripheral1_aca` compartments, the `lcl_aca` / `lvc_aca` / `lvp_aca` / `lmtt_aca` PK parameters, and the `Cc_aca` observation.
+- **Source aliases:** `ACA` (used by Demin 2025 in `ACA_pls`, `CL_aca`, `Kd_aca_btk`).
+- **Example models:** `Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.R` (doi:10.1002/psp4.13307).
+
+### acp (**canonical ACP-5862 acalabrutinib metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** ACP-5862, the major active (pyrrolidine-hydroxylated) metabolite of acalabrutinib, formed by CYP3A-mediated metabolism with a metabolic conversion fraction of about 0.4. Retains covalent BTK-inhibitory activity at roughly half the inactivation rate of the parent, so it must be carried explicitly in target-occupancy models. Drives `central_acp` / `peripheral1_acp` and the `lcl_acp` / `lvc_acp` / `lvp_acp` / `lq_acp` parameters.
+- **Source aliases:** `ACP5862`, `ACP-5862` (used by Demin 2025 in `ACP5862_pls`, `CL_acp`).
+- **Example models:** `Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.R` (doi:10.1002/psp4.13307).
+
+### ibr (**canonical ibrutinib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ibrutinib, the first-in-class covalent Bruton tyrosine kinase inhibitor. Sibling-drug suffix in multi-inhibitor models; paired with `pci` for its active dihydrodiol metabolite PCI-45227. Drives `gut_ibr` / `depot_ibr` / `central_ibr` / `peripheral1_ibr` compartments, the `lcl_ibr` / `lvc_ibr` / `lvp_ibr` / `ld1_ibr` / `lclmet_ibr` PK parameters, and the `Cc_ibr` observation.
+- **Source aliases:** `IBR` (used by Demin 2025 in `IBR_pls`, `CL_ibr`, `Kd_ibr_btk`).
+- **Example models:** `Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.R` (doi:10.1002/psp4.13307).
+
+### pci (**canonical PCI-45227 ibrutinib metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** PCI-45227, the dihydrodiol active metabolite of ibrutinib. Approximately 15-fold less potent than the parent against BTK but still covalently inactivating, and formed both pre-systemically and from systemic ibrutinib, so it is carried explicitly in target-occupancy models. Drives `central_pci` / `peripheral1_pci` and the `lcl_pci` / `lkabs_pci` parameters; in the founding model it shares the ibrutinib central and peripheral volumes, per the source population-PK model.
+- **Source aliases:** `PCI45227`, `PCI-45227` (used by Demin 2025 in `PCI45227_pls`, `CL_pci`).
+- **Example models:** `Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.R` (doi:10.1002/psp4.13307).
+
 ---
 
 ## TB-treatment drug suffixes (combination antibiotic)

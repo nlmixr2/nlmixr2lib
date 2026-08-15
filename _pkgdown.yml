@@ -2942,6 +2942,8 @@ navbar:
         href: articles/Zhang_2024_XZP5610.html
       - text: "Zalcitabine (Adams 1998)"
         href: articles/Adams_1998_zalcitabine.html
+      - text: "Zanubrutinib acalabrutinib ibrutinib qsp (Demin 2025)"
+        href: articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zidovudine (Fauchet 2013)"
@@ -3367,6 +3369,7 @@ articles:
   - articles/DelFrari_2018_propranolol
   - articles/Delattre_2010_amikacin
   - articles/Delor_2013_alzheimer
+  - articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp
   - articles/Denti_2010_glucoseMinimal
   - articles/Denti_2018_levofloxacin
   - articles/Desai_2016_isavuconazole
