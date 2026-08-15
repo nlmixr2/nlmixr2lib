@@ -1070,6 +1070,8 @@ navbar:
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
+      - text: "Fluconazole (Adamiszak 2025)"
+        href: articles/Adamiszak_2025_fluconazole.html
       - text: "Fluconazole (Han 2013)"
         href: articles/Han_2013_fluconazole.html
       - text: "Fluconazole (Leroux 2018)"
@@ -3113,6 +3115,7 @@ articles:
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abuqayyas_2012_8C2
+  - articles/Adamiszak_2025_fluconazole
   - articles/Adams_1998_zalcitabine
   - articles/Adeojo_2024_levonorgestrel
   - articles/Admiraal_2023_iminobiotin
