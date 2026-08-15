@@ -2714,6 +2714,8 @@ navbar:
         href: articles/Hennig_2008_tobramycin.html
       - text: "Tobramycin (Livio 2014)"
         href: articles/Livio_2014_tobramycin.html
+      - text: "Tobramycin (VanWart 2025)"
+        href: articles/VanWart_2025_tobramycin.html
       - text: "Tobramycin inhaled (Ting 2014)"
         href: articles/Ting_2014_tobramycin_inhaled.html
       - text: "Tobramycin rat conventional (Marier 2002)"
@@ -4237,6 +4239,7 @@ articles:
   - articles/Valke_2024_factorviii_thrombin_plasmin
   - articles/Valle_2005_exemestane
   - articles/VanWart_2004_garenoxacin
+  - articles/VanWart_2025_tobramycin
   - articles/Varatharajan_2016_daunorubicin
   - articles/VargasChristensen_2019_rfviii_rat
   - articles/Vargo_2014_statins_ezetimibe_mbma
