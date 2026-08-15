@@ -2438,6 +2438,8 @@ navbar:
         href: articles/Heuberger_2018_salbutamol.html
       - text: "Salbutamol (Marques 2024)"
         href: articles/Marques_2024_salbutamol.html
+      - text: "Salbutamol rat pbpk (Wen 2025)"
+        href: articles/Wen_2025_pulmonary_pbpk.html
       - text: "Sapropterin (Feillet 2008)"
         href: articles/Feillet_2008_sapropterin.html
       - text: "Sapropterin (Muntau 2017)"
@@ -4294,6 +4296,7 @@ articles:
   - articles/Weber_1993_remikiren
   - articles/Weber_2015_fluticasone_inhaled
   - articles/Wen_2016_enrofloxacin_Pmultocida
+  - articles/Wen_2025_pulmonary_pbpk
   - articles/Wenker_2024_piperacillin_tazobactam
   - articles/Westerhout_2012_acetaminophen_rat_pbpk
   - articles/Westerhout_2013_quinidine
