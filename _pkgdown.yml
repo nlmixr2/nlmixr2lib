@@ -784,6 +784,8 @@ navbar:
         href: articles/Kuchimanchi_2024_dostarlimab.html
       - text: "Dostarlimab (Melhem 2022)"
         href: articles/Melhem_2022_dostarlimab.html
+      - text: "Dotatate pbpk (Budiansah 2025)"
+        href: articles/Budiansah_2025_dotatate_pbpk.html
       - text: "Doxorubicin (Freyer 2000)"
         href: articles/Freyer_2000_AVI_regimen.html
       - text: "Doxorubicin (Janssen 2023)"
@@ -3244,6 +3246,7 @@ articles:
   - articles/BuchwalderCsajka_1999_angiotensin
   - articles/Budha_2015_rg7652
   - articles/Budha_2023_tislelizumab
+  - articles/Budiansah_2025_dotatate_pbpk
   - articles/Buelga_2005_vancomycin
   - articles/Buil-Bruna_2015_lanreotide
   - articles/Bukkems_2021_raltegravir

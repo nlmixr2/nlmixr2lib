@@ -5005,6 +5005,39 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Ouerdani_2015_pazopanib_mouse.R` (Ouerdani 2015 preclinical TGI in CAKI-2 xenograft mice; per-subject `TUM_VOL` initialises the `tumorSize` state and is held constant per individual across the 24-day dosing window), `Siebinga_2023_lu177psma617.R` (clinical CT-delineated total tumor volume as a power covariate on the tumor uptake rate constant, `(TUM_VOL / 1730)^0.705`; re-measured before each treatment cycle).
 - **Notes:** General scope because tumor-volume measurements have a shared meaning across papers regardless of drug, cell line, or measurement modality. Carried in mm^3 regardless of the unit the source reports (clinical papers usually report mL; 1 mL = 1000 mm^3), so convert on data ingestion and scale any per-model reference accordingly to keep `(TUM_VOL / ref)^exp` numerically invariant. Use `TUM_SLD` for clinical RECIST sum-of-longest-diameters (a length, not a volume) and `TUMSZ` for the pooled "baseline tumor burden as a covariate on PK" use case where the source does not resolve to a volume. Ratified canonically on 2026-05-12 alongside the Ouerdani 2015 pazopanib mouse extraction, initially scoped to caliper-measured preclinical xenograft volumes; scope promoted on 2026-07-30 to any volumetric tumor-burden measurement (operator-ratified alongside the Siebinga 2023 extraction, which supplies the founding clinical volumetric example). The promotion follows the `CRCL` precedent, where creatinine-based and tracer-measured GFR are pooled onto one canonical because they play the same operational role.
 
+### ORGVOL_KIDNEY (**canonical for measured total kidney volume**)
+- **Description:** Measured total volume of the kidneys (both kidneys combined unless the model states otherwise), typically delineated on CT or the CT component of a SPECT/CT or PET/CT acquisition.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - `Kidneys (measured volume)` -- Kletting 2016 J Nucl Med Table 1 column header; reported in mL, no value transformation.
+- **Example models:** `Budiansah_2025_dotatate_pbpk.R`
+- **Notes:** Founding member of the `ORGVOL_<ORGAN>` family, whose members carry a per-patient measured organ volume that a physiologically-based model uses to build that organ's sub-volumes rather than scaling it allometrically from body size. In the founding model the measured volume is split into vascular (5.5 %), interstitial (15 %) and intracellular (two thirds of the remainder) sub-volumes and multiplies the fitted sst2 binding-site density. Cohort range 125-233 mL. Distinct from `KBF` (renal blood flow, mL/min) -- that is a flow, this is a volume.
+
+### ORGVOL_LIVER (**canonical for measured total liver volume**)
+- **Description:** Measured total liver volume, typically delineated on CT or the CT component of a SPECT/CT or PET/CT acquisition.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - `Liver (measured volume)` -- Kletting 2016 J Nucl Med Table 1 column header; reported in mL, no value transformation.
+- **Example models:** `Budiansah_2025_dotatate_pbpk.R`
+- **Notes:** Member of the `ORGVOL_<ORGAN>` family; see `ORGVOL_KIDNEY` for the family rationale. In the founding model the measured volume is split into vascular (8.5 %) and interstitial (20 %) sub-volumes and multiplies the fitted hepatic sst2 binding-site density. Cohort range 1500-4876 mL, the upper end being a patient whose liver was largely replaced by neuroendocrine metastases. Distinct from `LIVER_VOL_FRAC` or any tumour-burden covariate: this is the whole organ including any intrahepatic disease.
+
+### ORGVOL_SPLEEN (**canonical for measured total spleen volume**)
+- **Description:** Measured total spleen volume, typically delineated on CT or the CT component of a SPECT/CT or PET/CT acquisition.
+- **Units:** mL
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used directly as a physiologic input that sets a compartment's sub-volumes, its perfusion and its permeability-surface-area product; not a covariate-effect coefficient.
+- **Source aliases:**
+  - `Spleen (measured volume)` -- Kletting 2016 J Nucl Med Table 1 column header; reported in mL, no value transformation.
+- **Example models:** `Budiansah_2025_dotatate_pbpk.R`
+- **Notes:** Member of the `ORGVOL_<ORGAN>` family; see `ORGVOL_KIDNEY` for the family rationale. In the founding model the measured volume is split into vascular (12 %) and interstitial (20 %) sub-volumes and multiplies the fitted splenic sst2 binding-site density. The spleen is the highest-density normal-tissue somatostatin-receptor organ, so its volume is a material determinant of whole-body peptide distribution. Cohort range 110-320 mL. Splenectomised patients contribute no spleen observations; set the volume to a small positive placeholder rather than zero so that the sub-volume divisions in the ODEs stay finite, and exclude the spleen output from those subjects.
+
 ### CTDNA (**canonical for baseline circulating tumor DNA burden**)
 - **Description:** Baseline (pre-treatment, cycle 1 day 1) circulating tumor DNA burden in plasma, quantified by next-generation sequencing as the average number of mutant tumor molecules per millilitre of plasma (MMPM). ctDNA is shed into the circulation when tumor cells die by apoptosis or necrosis, so MMPM acts as a liquid-biopsy surrogate for total tumor burden that is independent of the RECIST target-lesion selection captured by `TUM_SLD`.
 - **Units:** MMPM (mutant molecules per mL of plasma)
@@ -5458,6 +5491,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
   - Study-based indicator "Primary CNS tumour" as defined by paper narrative (Han 2015 Table 1 splits the paediatric cohort into two clinical groups: primary-CNS-tumour patients in AVF3842s and sarcoma patients in AVF2771s + AVF4117s + BO20924, with n = 76 in each group of the model-building population).
 - **Example models:** `Han_2015_bevacizumab.R` (multiplicative fractional effect: `CL x 0.725^TUMTP_CNS_PRIM` and `V1 x 0.854^TUMTP_CNS_PRIM` relative to the paediatric-sarcoma reference; Han 2015 Table 2 rows 'Primary CNS tumour on CL' = 0.725 and 'Primary CNS tumour on V1' = 0.854 with RSE 4.3% and 3.7% respectively).
 - **Notes:** Follows the `TUMTP_CHL` / `TUMTP_GC` / `TUMTP_SCLC` decomposition pattern. Use this canonical when the source paper reports a single umbrella indicator for primary CNS tumours as a group rather than resolving individual histologies (glioma / medulloblastoma / ependymoma). When a future paper resolves specific primary-CNS-tumour histologies separately, register the finer-grained canonical(s) alongside; the umbrella indicator can coexist with the specific ones because the pooling is a paper-level analytic decision. Scope: specific because the reference category is paper-defined. Ratified canonically on 2026-06-20 alongside the Han 2015 bevacizumab paediatric-popPK extraction.
+
+### TUMTP_NET (**canonical for neuroendocrine-tumour tumor-type indicator**)
+- **Description:** 1 = neuroendocrine tumour (NET, including metastasised gastroenteropancreatic and other well-differentiated NETs), 0 = other tumour types (per-source-paper reference cohort). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = other tumour types (paper-defined; in the Budiansah 2025 cohort the complement is meningioma, the other somatostatin-receptor-positive tumour type enrolled for peptide receptor radionuclide therapy).
+- **Source aliases:**
+  - `Net` / `NETs` -- Kletting 2016 J Nucl Med Table 1 'Disease' column, whose two levels are `Net` and `Men` (meningioma); decompose into `TUMTP_NET = as.integer(Disease == "Net")`.
+- **Example models:** `Budiansah_2025_dotatate_pbpk.R` (whole-body sst2 PBPK in which the tumour is the only tumour-type-specific region: the indicator switches the tumour interstitial fraction 0.3 vs 0.23, vascular fraction 0.1 vs 0.11, serum flow density 1.0 vs 0.9 mL/min/g and permeability-surface density 0.2 vs 0.31 mL/min/g).
+- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_MTC` (medullary thyroid carcinoma), which is a specific neuroendocrine histology that a paper pooling all NETs would subsume; register the finer-grained canonical alongside when a source resolves NET subtypes. In radioligand-therapy papers the tumour type usually enters as a physiologic switch (perfusion, permeability, interstitial fraction) rather than as a covariate-effect coefficient on a PK parameter. Ratified canonically on 2026-08-14 alongside the Budiansah 2025 [111In]In-DOTA-TATE PBPK extraction.
 
 ### TUMTP_LEUK (**canonical for leukemia tumor-type indicator**)
 - **Description:** 1 = leukemia (any subtype -- AML / ALL / CLL / CML pooled), 0 = other tumor types. Time-fixed per subject.
