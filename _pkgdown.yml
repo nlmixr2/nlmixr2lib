@@ -644,6 +644,8 @@ navbar:
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Danoprevir (Canini 2015)"
         href: articles/Canini_2015_danoprevir.html
+      - text: "Dapagliflozin (Kobuchi 2025)"
+        href: articles/Kobuchi_2025_dapagliflozin.html
       - text: "Dapagliflozin (vanderWalt 2013)"
         href: articles/vanderWalt_2013_dapagliflozin.html
       - text: "Dapsone (Gatti 1996)"
@@ -3702,6 +3704,7 @@ articles:
   - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
+  - articles/Kobuchi_2025_dapagliflozin
   - articles/Kohl_2010_posaconazole
   - articles/Koloskoff_2025_ganciclovir
   - articles/Koo_2012_propofol
