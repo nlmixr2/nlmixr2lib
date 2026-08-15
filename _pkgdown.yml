@@ -1734,6 +1734,8 @@ navbar:
         href: articles/Dorlo_2008_miltefosine.html
       - text: "Miltefosine (Dorlo 2017)"
         href: articles/Dorlo_2017_miltefosine.html
+      - text: "Minocycline (Athanassa 2025)"
+        href: articles/Athanassa_2025_minocycline.html
       - text: "Miridesap (Sahota 2015)"
         href: articles/Sahota_2015_miridesap.html
       - text: "Mirikizumab (Chua 2025)"
@@ -3161,6 +3163,7 @@ articles:
   - articles/Aruldhas_2021_methadone
   - articles/Asiimwe_2025_trastuzumab_ADCs_mbma
   - articles/Asimus_2007_artemisinin
+  - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
