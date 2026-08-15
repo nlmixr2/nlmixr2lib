@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Warren 2025 apremilast and orismilast ([doi:10.1007/s13555-025-01371-9](https://doi.org/10.1007/s13555-025-01371-9)) -- adults with atopic dermatitis, plus an in vitro human whole-blood IL-13 inhibition layer for each drug.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
