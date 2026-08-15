@@ -2266,6 +2266,8 @@ navbar:
         href: articles/Hawwa_2013_ranitidine.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Remdesivir (Roberts 2025)"
+        href: articles/Roberts_2025_remdesivir.html
       - text: "Remifentanil (Choi 2011)"
         href: articles/Choi_2011_remifentanil.html
       - text: "Remifentanil (Yang 2017)"
@@ -4038,6 +4040,7 @@ articles:
   - articles/Robbie_2012_palivizumab
   - articles/Roberts_2011_vancomycin
   - articles/Roberts_2016_topotecan
+  - articles/Roberts_2025_remdesivir
   - articles/Rodjun_2023_colistin_sitafloxacin
   - articles/Rodrigues_2017_oxcarbazepine
   - articles/Roepcke_2018_tak_079
