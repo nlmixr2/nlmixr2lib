@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lacroix 2025 polymyxin B ([doi:10.1128/aac.01535-24](https://doi.org/10.1128/aac.01535-24)) -- in vitro time-kill against two multidrug-resistant Acinetobacter baumannii clinical isolates, with and without 1% mucin.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.

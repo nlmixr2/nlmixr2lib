@@ -10808,3 +10808,23 @@ Covariates whose value is a property of the **administered molecule** rather tha
 - **Source aliases:** none.
 - **Example models:** `Shen_2024_vancomycin.R` (screened on vancomycin CL because it was coadministered in more than 10% of patients -- 12.67% of records -- and not retained; declared in `covariatesDataExcluded` to preserve the screen -- founding example).
 - **Notes:** Named-drug member of the `CONMED_<INN>` family. Mechanistically distinct from the antibacterial `CONMED_<INN>` entries: mannitol raises urine flow and can transiently increase the renal clearance of filtered drugs, so it is screened in renally cleared popPK models as a renal-haemodynamic perturbation rather than as a metabolic interactant. Register `CONMED_FUROSEMIDE` and other named diuretics separately rather than reusing this entry; reserve a future class-level `CONMED_DIURETIC` for sources that pool the class.
+
+### CONC_PMB_MGL (**canonical for static in-vitro polymyxin B concentration driving an antibacterial PD model**)
+- **Description:** Static (time-invariant) TOTAL polymyxin B concentration applied to the medium of an in-vitro bacterial experiment, supplied as an exogenous covariate that drives bacterial kill. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied experimental concentration in the in-vitro matrix. Where the medium binds the drug, this covariate carries the TOTAL concentration and the model derives the unbound concentration internally.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 mg/L is the drug-free growth control. Lacroix 2025 studied total PMB 0.5 to 128 mg/L for A. baumannii AB121-D0 and 8 to 512 mg/L for AB122-D12.
+- **Source aliases:** none standardized (Lacroix 2025 writes `C` in Eq 1 and `C_T` in Fig. S2).
+- **Example models:** `Lacroix_2025_polymyxinB_AB121D0.R` and `Lacroix_2025_polymyxinB_AB122D12.R` (founding examples; static total PMB per time-kill tube, converted to the unbound concentration Cu = C_T x fu that drives the Emax / sigmoidal-Emax kill rate).
+- **Notes:** Specific scope because the value is bound to polymyxin B and to the in-vitro time-kill assay design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_DOR_MGL`, `CONC_MEM_MGL`, `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). PMB was shown stable over the 30-h time-kill experiment, so the concentration is genuinely time-invariant and needs no PK ODE state. Pairs with `MUCIN_PRESENT`, which selects whether the medium binds PMB at all.
+
+### MUCIN_PRESENT (**canonical for mucin supplementation of the in-vitro growth medium**)
+- **Description:** 1 = the in-vitro growth medium was supplemented with 1% (w/v) porcine-stomach mucin, the gel-forming glycoprotein that is the key solid component of airway mucus; 0 = unsupplemented medium (control arm). Time-fixed per experiment (each time-kill tube belongs to exactly one arm). Mucin is a binding matrix as well as a growth-condition modifier, so models typically use this indicator twice: to switch on a medium-binding unbound-fraction submodel, and to select mucin-specific values of the pharmacodynamic parameters it perturbs.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (medium without mucin).
+- **Source aliases:** none -- Lacroix 2025 writes `Mucin` in main-text Eq 4 and supplemental Fig. S2.
+- **Example models:** `Lacroix_2025_polymyxinB_AB121D0.R` (founding example; gates the Eq 1 unbound-fraction model and selects `emax_r_camhb` vs `emax_r_mucin`), `Lacroix_2025_polymyxinB_AB122D12.R` (gates the same binding model and selects `knet_camhb` / `knet_mucin` and `ec50_camhb` / `ec50_mucin`).
+- **Notes:** General scope because mucin supplementation is a standard, drug-agnostic in-vitro manipulation used to mimic the airway or gastrointestinal mucus barrier; polymyxins, aminoglycosides and fluoroquinolones are all reported to bind it. Register a distinct covariate rather than reusing this one if a source varies the mucin PERCENTAGE as a continuous exposure (Lacroix 2025 tested a single 1% level and modelled it as a binary categorical, matching the physiological composition of mucus in mild cystic fibrosis). Structurally analogous to `M3M3FBS_PRESENT`, the binary ex-vivo pretreatment indicator, whose notes anticipate sibling experimental-condition indicators being registered under their own names rather than reusing that entry. Distinct from `CONMED_<INN>` (clinically administered comedications) because mucin is a medium constituent, not a drug given to a subject.
