@@ -268,8 +268,9 @@ loop all have to be identical between the two systems for it to hold.
 
 The identity is exact only for an instantaneous input, because the labelled
 input during a finite infusion is not itself decay-weighted. So the residual
-should be a few tenths of a percent for the 51 min infusion and should shrink to
-solver precision for a bolus.
+should be a few tenths of a percent for the 51 min infusion, should fall roughly
+in proportion to the infusion duration, and should vanish into solver noise for
+a bolus.
 
 ```{r identity}
 lambda_phy <- 1.71e-4
@@ -295,7 +296,12 @@ id_err <- function(dur) {
              "pintra_kidney", "pprp", "pven", "part")
   max(vapply(probe, function(st) {
     pred <- s[[paste0(st, "_tot")]] / 75 * exp(-lambda_phy * s$time)
-    max(abs(s[[paste0(st, "_lab")]] - pred) / pmax(pred, 1e-30))
+    # Score the identity over each compartment's top six orders of magnitude,
+    # where the solve is numerically resolved. In the deep tail several states
+    # decay to ~1e-30, far below the 1e-12 absolute tolerance, so a relative
+    # error taken there measures solver noise rather than the model.
+    keep <- pred > 1e-6 * max(pred)
+    max(abs(s[[paste0(st, "_lab")]][keep] - pred[keep]) / pred[keep])
   }, numeric(1)))
 }
 
@@ -312,8 +318,19 @@ identity_check |>
 ```
 
 The residual falls by roughly an order of magnitude for each order of magnitude
-of infusion duration and reaches solver precision for the bolus, which is
-exactly the predicted behaviour. All 114 states are consistent.
+of infusion duration, and for a bolus reaches 3e-7 -- four orders of magnitude
+below the 51 min value -- which is exactly the predicted behaviour. All 114
+states are consistent.
+
+The 51 min figure is a genuine structural residual: it is unchanged to three
+significant figures whether the identity is scored over each compartment's top
+four, six, eight or ten orders of magnitude, because the finite-infusion
+approximation biases the well-resolved early profile where the peptide actually
+is. The bolus figure behaves in the opposite way -- it shrinks monotonically as
+the scoring window is tightened (1.7e-5, 3.2e-6, 3.1e-7, 1.0e-8 at cut-offs of
+1e-10, 1e-8, 1e-6 and 1e-4 of each compartment's peak) -- which is the signature
+of accumulated solver noise in the decayed tail rather than of a broken
+equation.
 
 ## Reproducing the published reference TIACs
 
@@ -374,7 +391,7 @@ long |>
 ```
 
 Five of the six regions land close to the published individual values: serum
-1.04, whole body 0.90, spleen 1.03, liver 1.03 and tumour 1.14. For a
+1.04, whole body 0.90, spleen 1.03, liver 1.02 and tumour 1.14. For a
 typical-value simulation compared against individual empirical-Bayes fits from a
 model whose interindividual variability runs from 19 % to 101 % CV, that is
 about as close as this comparison can get.
@@ -422,7 +439,7 @@ confirms the argument. But Table 1 gives the kidneys a *lower* receptor number
 than the spleen in every patient (`[R_K,0] = 4.55` nmol/L on a ~175 mL kidney
 against `[R_S,0] = 7.37` nmol/L on a ~180 mL spleen), so the published parameter
 set necessarily predicts **kidney TIAC below spleen TIAC** -- whereas the
-published rTIACs of Table S3 have the kidney *above* the spleen in six of the
+published rTIACs of Table S3 have the kidney *above* the spleen in five of the
 seven patients with spleen data. The published fixed effects and the published
 per-patient rTIACs are mutually inconsistent for this one region. This is
 recorded rather than repaired; no parameter was tuned.
@@ -673,9 +690,49 @@ vpc |>
 "individually measured", but neither Budiansah 2025 nor the upstream Kletting
 2016 tabulates them. This vignette uses the 71 kg ICRP-23 reference individual
 that every `x * BW / 71` scaling in Table S1 is written against, and 45 % (men)
-/ 40 % (women) hematocrit. A sweep over 50-100 kg and 35-45 % moved every organ
-TIAC by less than 6 %, so the choice does not drive any conclusion here; the
-model file leaves both as required covariates.
+/ 40 % (women) hematocrit. The model file leaves both as required covariates.
+
+How much that choice matters is worth measuring rather than asserting, because
+weight and hematocrit propagate into `V_P` and from there into every flow term:
+
+```{r wt-hct-sweep}
+sweep_cov <- expand.grid(WT = c(50, 71, 100), HCT = c(35, 45)) |>
+  mutate(id = row_number(),
+         TUMTP_NET = 0, SEXF = 0, BSA = 1.94,
+         CRCL = 0.11 * 1000 * 1.73 / 1.94,
+         ORGVOL_KIDNEY = 193, ORGVOL_LIVER = 1811,
+         ORGVOL_SPLEEN = 198, TUM_VOL = 107000)
+
+sweep_sim <- rxSolve(
+  modz, events = dose_events(sweep_cov$id),
+  iCov = sweep_cov[, c("id", "TUMTP_NET", "SEXF", "BSA", "HCT", "WT", "CRCL",
+                       "ORGVOL_KIDNEY", "ORGVOL_LIVER", "ORGVOL_SPLEEN",
+                       "TUM_VOL")],
+  atol = 1e-12, rtol = 1e-10, omega = NA, sigma = NA, addDosing = FALSE
+) |>
+  as.data.frame() |>
+  group_by(id) |>
+  summarise(across(c(Aserum, Abody, Akidney, Aspleen, Aliver, Atumor),
+                   ~ trap(time, .x)), .groups = "drop") |>
+  left_join(sweep_cov[, c("id", "WT", "HCT")], by = "id")
+
+ref_row <- sweep_sim |> filter(WT == 71, HCT == 45)
+
+sweep_sim |>
+  mutate(across(c(Aserum, Abody, Akidney, Aspleen, Aliver, Atumor),
+                ~ 100 * (.x / ref_row[[cur_column()]] - 1))) |>
+  select(WT, HCT, Serum = Aserum, `Whole body` = Abody, Kidneys = Akidney,
+         Spleen = Aspleen, Liver = Aliver, Tumour = Atumor) |>
+  kable(digits = 1,
+        caption = "Percent change in TIAC from the 71 kg / 45 % reference.")
+```
+
+The organ TIACs move by up to about 7 % across that whole range and the whole
+body by about 21 %, so the assumption is **not** negligible in general and any
+quantitative use of this vignette's absolute TIACs should supply the real
+covariates. It is, however, far too small to explain the kidney discrepancy
+above: closing a factor of 2.3 needs a 130 % change in the kidney TIAC, against
+the 7.3 % that the entire plausible weight-and-hematocrit range buys.
 
 **Patient mapping onto the Kletting cohort** is inferred, not stated -- see
 [the cohort section](#population) for the two independent checks (splenectomy at
@@ -694,7 +751,30 @@ organ regions here.
 **Organ regions carry no share of the serum-protein-bound pool.** The sibling
 PSMA model of the same group distributes that pool across regions by vascular
 volume; the DOTATATE supplement prints no such equation, so it is not done here.
-The effect is well under 1 % of any organ TIAC.
+Bounding the effect by that same vascular-volume rule -- the protein-bound TIAC
+times the region's share of `V_P`, as a fraction of the region's own TIAC --
+gives about 1.1 % for the liver (which holds much the largest vascular volume of
+the delineated organs) and below 0.3 % for the kidneys, spleen and tumour:
+
+```{r pprp-bound}
+pprp_share <- sim |>
+  filter(id == 1) |>
+  summarise(pprp_tiac = trap(time, pprp_lab),
+            across(c(vv_liver, vv_kidney, vv_spleen, vv_tumor, vserum), first),
+            Aliver = trap(time, Aliver), Akidney = trap(time, Akidney),
+            Aspleen = trap(time, Aspleen), Atumor = trap(time, Atumor))
+
+data.frame(
+  Region = c("Liver", "Kidneys", "Spleen", "Tumour"),
+  `Share of V_P` = with(pprp_share, c(vv_liver, vv_kidney, vv_spleen,
+                                      vv_tumor) / vserum),
+  `Bound (% of region TIAC)` = with(pprp_share,
+    100 * pprp_tiac * c(vv_liver, vv_kidney, vv_spleen, vv_tumor) / vserum /
+      c(Aliver, Akidney, Aspleen, Atumor)),
+  check.names = FALSE
+) |>
+  kable(digits = c(0, 4, 2))
+```
 
 **`F_TOTAL = F + F_TU` is used for the lungs, arteries and veins.** Table S1
 prints both `F_LU = F` and `F_TOTAL = F + F_TU`. Using `F_LU = F` leaves the
