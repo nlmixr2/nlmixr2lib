@@ -2342,6 +2342,8 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Risperidone rykindo (Wang 2024)"
         href: articles/Wang_2024_risperidone_lai_switching.html
+      - text: "Risperidone tv46000 (Perlstein 2025)"
+        href: articles/Perlstein_2025_risperidone_tv46000.html
       - text: "Ritlecitinib base (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritlecitinib final (Wojciechowski 2023)"
@@ -3994,6 +3996,7 @@ articles:
   - articles/PerezRuixo_2015_oxaliplatin_platelet_dynamics
   - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
+  - articles/Perlstein_2025_risperidone_tv46000
   - articles/Perrottet_2009_ganciclovir
   - articles/Petric_2023_vinpocetine
   - articles/Petrov_2024_romiplostim

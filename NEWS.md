@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Perlstein 2025 TV-46000 long-acting subcutaneous risperidone ([doi:10.1007/s40120-025-00723-z](https://doi.org/10.1007/s40120-025-00723-z)) -- healthy volunteers and adults with schizophrenia or schizoaffective disorder.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
