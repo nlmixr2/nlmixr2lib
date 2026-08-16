@@ -444,6 +444,10 @@ navbar:
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Cefepime (Shoji 2016)"
         href: articles/Shoji_2016_cefepime.html
+      - text: "Cefepime (Zhao 2020)"
+        href: articles/Gotta_2025_cefepime_infant_neurotoxicity.html
+      - text: "Cefepime (deCacqueray 2022)"
+        href: articles/Gotta_2025_cefepime_infant_neurotoxicity.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefotaxime (Ahsman 2010)"
@@ -3495,6 +3499,7 @@ articles:
   - articles/GonzalezSales_2024_imetelstat
   - articles/Goteti_2024_SLE_mbma
   - articles/Goti_2018_vancomycin
+  - articles/Gotta_2025_cefepime_infant_neurotoxicity
   - articles/Goulooze_2022_finerenone
   - articles/Goulooze_2022_finerenone_uacr_egfr
   - articles/Granda_2024_kidney_pbpk

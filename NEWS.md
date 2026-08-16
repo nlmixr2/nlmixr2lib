@@ -2,6 +2,10 @@
 
 # development version
 
+- Add de Cacqueray 2022 cefepime ([doi:10.1016/j.cmi.2022.05.007](https://doi.org/10.1016/j.cmi.2022.05.007)) -- critically ill infants and children aged 1.1 months to 17.6 years.
+
+- Add Zhao 2020 cefepime ([doi:10.3389/fphar.2020.00014](https://doi.org/10.3389/fphar.2020.00014)) -- Chinese neonates and young infants with postmenstrual age below 48 weeks.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
