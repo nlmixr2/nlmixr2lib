@@ -444,6 +444,8 @@ navbar:
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Cefepime (Shoji 2016)"
         href: articles/Shoji_2016_cefepime.html
+      - text: "Cefepime (Valadez 2025)"
+        href: articles/Valadez_2025_cefepime.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefotaxime (Ahsman 2010)"
@@ -4230,6 +4232,7 @@ articles:
   - articles/Urien_2013_anakinra
   - articles/Valade_2014_emtricitabine
   - articles/Valade_2015_emtricitabine
+  - articles/Valadez_2025_cefepime
   - articles/Valenzuela_2011_oxaliplatin
   - articles/Valenzuela_2025_nipocalimab
   - articles/Valitalo_2017_ketorolac
