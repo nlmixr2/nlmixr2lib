@@ -926,6 +926,8 @@ navbar:
         href: articles/PerezRuixo_2008_epoetinAlfa.html
       - text: "EpoetinBeta (Hayashi 1998)"
         href: articles/Hayashi_1998_epoetinBeta.html
+      - text: "Ergothioneine pbpk (Okumura 2025)"
+        href: articles/Okumura_2025_ergothioneine_pbpk.html
       - text: "Eribulin (Kawamura 2018)"
         href: articles/Kawamura_2018_eribulin.html
       - text: "Eribulin (vanHasselt 2013)"
@@ -3946,6 +3948,7 @@ articles:
   - articles/Ogungbenro_2009_penciclovir
   - articles/Oishi_2014_fesoterodine
   - articles/Okada_2025_rocatinlimab
+  - articles/Okumura_2025_ergothioneine_pbpk
   - articles/Olagunju_2018_efavirenz
   - articles/Olivo_2024_methotrexate
   - articles/Ollier_2015_ropivacaine
