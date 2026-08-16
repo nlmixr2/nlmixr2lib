@@ -1932,6 +1932,8 @@ navbar:
         href: articles/Granda_2024_kidney_pbpk.html
       - text: "Osimertinib (Brown 2017)"
         href: articles/Brown_2017_osimertinib.html
+      - text: "Osimertinib pbpk (vanderGaag 2025)"
+        href: articles/vanderGaag_2025_osimertinib_pbpk.html
       - text: "Osimertinib qsp (Liang 2024)"
         href: articles/Liang_2024_osimertinib.html
       - text: "Oxaliplatin (Valenzuela 2011)"
@@ -4457,6 +4459,7 @@ articles:
   - articles/vanWijk_2019_paracetamol
   - articles/vandenBerg_2021_finerenone
   - articles/vandenBerg_2021_uprifosbuvir
+  - articles/vanderGaag_2025_osimertinib_pbpk
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vonHentig_2009_saquinavir
   internal: true
