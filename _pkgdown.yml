@@ -1172,6 +1172,12 @@ navbar:
         href: articles/Jiang_2008_gemcitabine.html
       - text: "Gemifloxacin (Landersdorfer 2009)"
         href: articles/Landersdorfer_2009_gemifloxacin.html
+      - text: "GenericMab allometricAll mbma (vandenBerg 2025)"
+        href: articles/vandenBerg_2025_genericMab.html
+      - text: "GenericMab allometricClVc mbma (vandenBerg 2025)"
+        href: articles/vandenBerg_2025_genericMab.html
+      - text: "GenericMab mbma (vandenBerg 2025)"
+        href: articles/vandenBerg_2025_genericMab.html
       - text: "Gentamicin (Abbasi 2023)"
         href: articles/Abbasi_2023_gentamicin.html
       - text: "Gentamicin (Bijleveld 2016)"
@@ -4457,6 +4463,7 @@ articles:
   - articles/vanWijk_2019_paracetamol
   - articles/vandenBerg_2021_finerenone
   - articles/vandenBerg_2021_uprifosbuvir
+  - articles/vandenBerg_2025_genericMab
   - articles/vanderWalt_2013_dapagliflozin
   - articles/vonHentig_2009_saquinavir
   internal: true
