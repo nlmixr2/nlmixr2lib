@@ -2068,6 +2068,8 @@ navbar:
         href: articles/Yin_2021_pexidartinib.html
       - text: "Pf 06671008 qsp (Betts 2019)"
         href: articles/Betts_2019_pf_06671008.html
+      - text: "Pfuroylamphenmulin (Xia 2025)"
+        href: articles/Xia_2025_pfuroylamphenmulin.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
       - text: "Phenobarbital mouse pbpk (Saleh 2023)"
@@ -4332,6 +4334,7 @@ articles:
   - articles/Wu_2025_paracetamol
   - articles/Wurthwein_2013_caspofungin
   - articles/Xia_2024_warfarin
+  - articles/Xia_2025_pfuroylamphenmulin
   - articles/Xiang_2018_baicalein
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
