@@ -2794,6 +2794,8 @@ navbar:
         href: articles/Tornoe_2006_HPG_axis.html
       - text: "Trontinemab (Grimm 2023)"
         href: articles/Grimm_2023.html
+      - text: "Tubocurarine (Sheiner 1979)"
+        href: articles/Sheiner_1979_tubocurarine.html
       - text: "Tusamitamab (Pouzin 2022)"
         href: articles/Pouzin_2022_tusamitamab.html
       - text: "Tylosin Apleuropneumoniae healthy (Lee 2023)"
@@ -4098,6 +4100,7 @@ articles:
   - articles/Sharma_2018_SHetA2
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2023_nitrofurantoin
+  - articles/Sheiner_1979_tubocurarine
   - articles/Shekar_2014_meropenem
   - articles/Shen_2013_belatacept
   - articles/Shen_2024_vancomycin
