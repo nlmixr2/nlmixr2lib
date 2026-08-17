@@ -3391,6 +3391,17 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
   - `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232), where ampicillin is the unsuffixed parent.
 - **Notes:** Registered 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction. `Soto_2014_ampicillin_sulbactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_sbt` / `peripheral1_sbt` / `propSd_sbt` convention warnings. Sulbactam is a sibling drug, not a metabolite: in both source papers the two analytes are dosed as a fixed-ratio combination and fitted simultaneously without interconversion.
 
+### avi (**canonical avibactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Avibactam (diazabicyclooctane, non-beta-lactam beta-lactamase inhibitor) sibling-drug suffix, used when avibactam is co-modelled with its partner beta-lactam and is not the unsuffixed parent. Avibactam is always the junior partner of a fixed-ratio combination product - aztreonam-avibactam (3:1) and ceftazidime-avibactam (4:1) - so it takes the suffix and the partner beta-lactam takes the canonical unsuffixed names. Drives `central_avi` / `peripheral1_avi` compartments, `lcl_avi` / `lvc_avi` / `lq_avi` / `lvp_avi` PK parameters, the `e_<cov>_<param>_avi` covariate-effect forms, and the `propSd_avi` / `addSd_avi` residuals on the `Cc_avi` avibactam plasma concentration.
+- **Source aliases:**
+  - `AVI` -- abbreviation used in `Xie_2025_aztreonam_avibactam.R` (Table S3 parameter names `CL_AVI`, `Vc_AVI`, `Q_AVI`, `Vp_AVI`, `CL_AVI_DIAL`) and in Das 2024.
+  - `NXL104` -- the development code for avibactam, used in the older ceftazidime-avibactam literature.
+- **Example models:**
+  - `Xie_2025_aztreonam_avibactam.R` (doi:10.1128/aac.01950-24) where aztreonam is the unsuffixed parent and avibactam carries the suffix.
+  - `Zazo_2024_ceftazidime_avibactam_icu.R` and `Zazo_2024_ceftazidime_avibactam_control.R`, and the `Kroemer_2024_ceftazidime_avibactam_fosfomycin_*` pair, all of which pair `_avi` with a `_caz` ceftazidime suffix.
+- **Notes:** Registered 2026-08-17 alongside the Xie 2025 aztreonam-avibactam extraction. Several ceftazidime-avibactam models had been using this suffix since their own extractions without a register entry, so registering it also clears their pre-existing `central_avi` / `Cc_avi` convention warnings. Avibactam is a sibling drug, not a metabolite: in every source paper the two analytes are dosed together as a fixed-ratio combination and fitted simultaneously without interconversion. The partner beta-lactam suffix `caz` (ceftazidime), used by those same models when ceftazidime is not the parent, is not registered here and remains outstanding.
+
 ---
 
 ## Anthracycline cardioprotection sibling-drug suffixes
