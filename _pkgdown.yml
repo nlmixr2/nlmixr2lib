@@ -556,6 +556,8 @@ navbar:
         href: articles/Savic_2017_cladribine.html
       - text: "Clarithromycin (Abduljalil 2009)"
         href: articles/Abduljalil_2009_clarithromycin.html
+      - text: "Clarithromycin (Shah 2025)"
+        href: articles/Shah_2025_clarithromycin.html
       - text: "Clazakizumab (Muthukrishnan 2025)"
         href: articles/Muthukrishnan_2025_clazakizumab.html
       - text: "Clesrovimab (Hu 2026)"
@@ -4094,6 +4096,7 @@ articles:
   - articles/Seng_2015_isoniazid
   - articles/Shah_2012_mAb_PBPK
   - articles/Shah_2023_benzylpenicillin
+  - articles/Shah_2025_clarithromycin
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
   - articles/Sharma_2018_SHetA2
   - articles/Sharma_2018_naltrexone_bupropion
