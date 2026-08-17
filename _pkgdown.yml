@@ -1876,6 +1876,8 @@ navbar:
         href: articles/Nagy_2017_obiltoxaximab.html
       - text: "Obinutuzumab (Gibiansky 2014)"
         href: articles/Gibiansky_2014_obinutuzumab.html
+      - text: "Octreotide (Glatard 2025)"
+        href: articles/Glatard_2025_octreotide.html
       - text: "Ofatumumab (Yu 2022)"
         href: articles/Yu_2022_ofatumumab.html
       - text: "Ofloxacin (Chigutsa 2012)"
@@ -3487,6 +3489,7 @@ articles:
   - articles/Gilkey_2015_DiRnanoparticle
   - articles/Girard_2012_pimasertib
   - articles/Gisleskog_1999_dutasteride
+  - articles/Glatard_2025_octreotide
   - articles/Goel_2016_Sonidegib
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus

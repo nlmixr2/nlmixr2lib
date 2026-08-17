@@ -8513,8 +8513,38 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Scope:** specific
 - **Reference category:** 0 (abdomen).
 - **Source aliases:** paper narrative "thigh" / "abdomen" subgroup labels driving site-specific PK parameters.
-- **Example models:** `CarlssonPetri_2018_semaglutide.R` (multiplicative CL/F ratio 1.04 for thigh vs abdomen injection site, encoded as `e_site_thigh_cl^INJSITE_THIGH` per Table S3; per-subject dominant injection-site indicator since the paper assigns each subject their most frequently used site).
-- **Notes:** Specific scope because the thigh-vs-abdomen contrast is paper-specific. Sister canonical to `INJSITE_ARM` (arm-vs-abdomen). Per-administration or per-subject depending on the paper's dosing granularity -- in Carlsson Petri 2018 the covariate is per-subject because 'the most frequently used injection site for an individual patient was used as the covariate value' (Methods); a future paper with per-dose injection-site data could supply this as a time-varying per-dose-record covariate. Distinct from `ROUTE_IV` (IV vs SC route, not within-SC site) and from `DEVICE_AI` (autoinjector vs prefilled syringe, device rather than anatomical site). Founded alongside the CarlssonPetri_2018_semaglutide extraction.
+- **Example models:** `CarlssonPetri_2018_semaglutide.R` (multiplicative CL/F ratio 1.04 for thigh vs abdomen injection site, encoded as `e_site_thigh_cl^INJSITE_THIGH` per Table S3; per-subject dominant injection-site indicator since the paper assigns each subject their most frequently used site), `Glatard_2025_octreotide.R` (fractional change `-0.351` on the fast-release mean absorption time MAT_fast of the CAM2029 octreotide depot relative to abdominal injection, per Table 3 / Eq 11; supplied per dose record alongside `INJSITE_BUTTOCK`, both 0 meaning abdomen).
+- **Notes:** Specific scope because the thigh-vs-abdomen contrast is paper-specific. Sister canonical to `INJSITE_ARM` (arm-vs-abdomen) and `INJSITE_BUTTOCK` (buttock-vs-abdomen). Per-administration or per-subject depending on the paper's dosing granularity -- in Carlsson Petri 2018 the covariate is per-subject because 'the most frequently used injection site for an individual patient was used as the covariate value' (Methods); a future paper with per-dose injection-site data could supply this as a time-varying per-dose-record covariate. Distinct from `ROUTE_IV` (IV vs SC route, not within-SC site) and from `DEVICE_AI` (autoinjector vs prefilled syringe, device rather than anatomical site). Founded alongside the CarlssonPetri_2018_semaglutide extraction.
+
+### INJSITE_BUTTOCK (**canonical for SC injection-site = buttock indicator**)
+- **Description:** 1 = subject's SC dose injected into the buttock, 0 = abdomen (the universal SC reference site across the popPK literature) or a different non-buttock injection site. Per-dose-record OR per-subject covariate flagging the SC injection site when a population analysis estimates site-specific absorption parameters.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (abdomen).
+- **Source aliases:** paper narrative "buttock" / "abdomen" injection-site labels driving site-specific absorption parameters.
+- **Example models:** `Glatard_2025_octreotide.R` (fractional change `-0.527` on the fast-release mean absorption time MAT_fast of the CAM2029 octreotide depot relative to abdominal injection, per Table 3 / Eq 11; supplied per dose record alongside `INJSITE_THIGH`, both 0 meaning abdomen).
+- **Notes:** Specific scope because the buttock-vs-abdomen contrast is paper-specific. Third sibling of the `INJSITE_<site>` family alongside `INJSITE_ARM` (arm-vs-abdomen) and `INJSITE_THIGH` (thigh-vs-abdomen); the three indicators are mutually exclusive and all-zero denotes the abdomen reference. Distinct from `ROUTE_IV` (IV vs SC route, not within-SC site) and from `DEVICE_AI` (autoinjector vs prefilled syringe, device rather than anatomical site). In Glatard 2025 the buttock effect rests on only 1.5% of observations (from 5.1% of participants) and the authors explicitly advise caution in interpreting it -- carry that caveat forward when reusing the estimate.
+
+### FORM_OCTREOTIDE_IR (**canonical for immediate-release octreotide formulation indicator**)
+- **Description:** 1 = record belongs to immediate-release (IR) subcutaneous octreotide, 0 = the CAM2029 sustained-release subcutaneous octreotide depot (FluidCrystal injection depot).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (CAM2029 sustained-release depot).
+- **Source aliases:** "octreotide IR" / "CAM2029" treatment-group labels in Glatard 2025.
+- **Example models:** `Glatard_2025_octreotide.R` (selects between the two formulation-specific log-scale residual error terms of Table 3 -- 0.393 for CAM2029 vs 0.204 for octreotide IR, each carrying its own exponential IIV).
+- **Notes:** Member of the `FORM_<drug>_<formulation>` family. In the founding model this indicator does **not** route the dose -- the dosing compartment does that (`depot` / `depot2` for CAM2029's two parallel release processes, `depot3` for octreotide IR) -- it selects the residual-error stratum. Time-varying within a participant: in trial HS-19-664 healthy volunteers received four octreotide IR doses, then after a washout of at least 6 days received CAM2029, so the same subject contributes records under both values.
+
+### PRIOR_OCTREOTIDE (**canonical for prior/ongoing octreotide (or lanreotide) therapy at a pre-first-dose baseline record**)
+- **Description:** 1 = the record is a pre-first-study-dose baseline sample from a participant already receiving octreotide LAR or lanreotide autogel therapy, 0 = octreotide-naive participant, or any record at or after the first study dose.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (octreotide-naive, or any on-treatment record).
+- **Source aliases:** "Pre-treatment" treatment-group label in Glatard 2025 Online Resource 2; "pre-treated participants with octreotide" in Sect. 2.3.1.
+- **Example models:** `Glatard_2025_octreotide.R` (gates the estimated additive baseline `rbase` = 0.433 ng/mL, the authors' "fudge factor" for the octreotide concentration present before the first CAM2029 dose in participants entering the phase 3 trials on stable somatostatin-receptor-ligand therapy).
+- **Notes:** Member of the registered `PRIOR_<drug or class>` family (cf. `PRIOR_STATIN`, `PRIOR_EZE`, `PRIOR_TNF`, `PRIOR_IPI`, `PRIOR_TAXANE`), but unlike those per-subject indicators this one is supplied **per record**, because the parameter it gates describes a specific baseline observation rather than a subject-level exposure history. Online Resource 2 of the founding paper reports exactly 1.0 observation per participant in the "Pre-treatment" group (22 of 46 participants in HS-18-633; 49 of 95 in HS-19-647), i.e. the single pre-dose baseline sample. At such a record the model prediction arising from study dosing is identically zero, so adding the baseline to the prediction and substituting it for the prediction are equivalent; set the indicator to 0 for ordinary forward simulation. Distinct from `CONMED_<INN>` (a genuinely concomitant medication continued during the study) because the prior therapy is stopped when study treatment begins.
 
 ### STUDY_APLIOS (**canonical for APLIOS bioequivalence study indicator**)
 - **Description:** 1 = subject enrolled in the APLIOS bioequivalence study (NCT03560739; phase 2; ofatumumab AI vs PFS in RMS), 0 = other study in the Yu 2022 pooled analysis.
