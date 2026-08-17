@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Toutain 2025 doxycycline ([doi:10.1111/jvp.13511](https://doi.org/10.1111/jvp.13511)) -- pigs of 8.5-100.6 kg dosed intravenously or orally in feed, drinking water or by stomach tube.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.

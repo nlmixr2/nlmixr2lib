@@ -806,6 +806,8 @@ navbar:
         href: articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
       - text: "Doxycycline (Hopkins 2017)"
         href: articles/Hopkins_2017_doxycycline.html
+      - text: "Doxycycline pig (Toutain 2025)"
+        href: articles/Toutain_2025_doxycycline_pig.html
       - text: "Droperidol (Foo 2016)"
         href: articles/Foo_2016_droperidol.html
       - text: "Dupilumab (Kovalenko 2016)"
@@ -4218,6 +4220,7 @@ articles:
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
+  - articles/Toutain_2025_doxycycline_pig
   - articles/Tremoulet_2014_ampicillin
   - articles/Tsai_2023_ceftriaxone
   - articles/Tsuda_2010_tamsulosin
