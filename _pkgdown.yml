@@ -614,6 +614,8 @@ navbar:
         href: articles/Yamazaki_2008_crizotinib_mouse.html
       - text: "CyaaE7 (ParraGuillen 2013)"
         href: articles/ParraGuillen_2013_tumor_immunotherapy.html
+      - text: "Cyanide pbpk (Harada 2025)"
+        href: articles/Harada_2025_cyanide_pbpk.html
       - text: "Cyclophosphamide mouse (Campagne 2019)"
         href: articles/Campagne_2019_cyclophosphamide_mouse.html
       - text: "Cyclophosphamide mouse pbpk (Saleh 2023)"
@@ -3537,6 +3539,7 @@ articles:
   - articles/Hansson_2013c_sunitinib
   - articles/Hanzel_2021_infliximab
   - articles/Hao_2018_tacrolimus
+  - articles/Harada_2025_cyanide_pbpk
   - articles/Harrold_2020_filgrastim_ars
   - articles/Harrold_2020_radiation_neutropenia
   - articles/Harun_2019_cysticFibrosis
