@@ -400,6 +400,8 @@ navbar:
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cabozantinib tumor (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
+      - text: "Camizestrant (Richardson 2025)"
+        href: articles/Richardson_2025_automated_popPK.html
       - text: "Canakinumab (AitOudhia 2012)"
         href: articles/AitOudhia_2012_canakinumab.html
       - text: "Canakinumab (Chakraborty 2012)"
@@ -1884,6 +1886,8 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Olanzapine rat (Johnson 2011)"
         href: articles/Johnson_2011_olanzapine_rat.html
+      - text: "Olaparib (Richardson 2025)"
+        href: articles/Richardson_2025_automated_popPK.html
       - text: "Olaratumab (Mo 2018)"
         href: articles/Mo_2018_olaratumab.html
       - text: "Olodaterol (Borghardt 2016)"
@@ -1932,6 +1936,8 @@ navbar:
         href: articles/Granda_2024_kidney_pbpk.html
       - text: "Osimertinib (Brown 2017)"
         href: articles/Brown_2017_osimertinib.html
+      - text: "Osimertinib (Richardson 2025)"
+        href: articles/Richardson_2025_automated_popPK.html
       - text: "Osimertinib qsp (Liang 2024)"
         href: articles/Liang_2024_osimertinib.html
       - text: "Oxaliplatin (Valenzuela 2011)"
@@ -2288,6 +2294,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Ribavirin (Mulder 2025)"
         href: articles/Mulder_2025_ribavirin.html
+      - text: "Ribociclib (Richardson 2025)"
+        href: articles/Richardson_2025_automated_popPK.html
       - text: "Ribociclib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Rifabutin (Hennig 2015)"
@@ -2684,6 +2692,8 @@ navbar:
         href: articles/Hamren_2008_tesaglitazar.html
       - text: "Tesofensine (Lehr 2010)"
         href: articles/Lehr_2010_tesofensine.html
+      - text: "Tezepelumab (Richardson 2025)"
+        href: articles/Richardson_2025_automated_popPK.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
       - text: "Theophylline (Suda 2008)"
@@ -4033,6 +4043,7 @@ articles:
   - articles/Revilla_2010_vancomycin
   - articles/Ribba_2022_ctdna_tumor_size
   - articles/Riccobene_2016_ceftaroline
+  - articles/Richardson_2025_automated_popPK
   - articles/Rietveld_2025_docetaxel
   - articles/Robarge_2017_efavirenz
   - articles/Robbie_2012_palivizumab
