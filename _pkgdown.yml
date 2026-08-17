@@ -350,6 +350,12 @@ navbar:
         href: articles/Toukam_2025_biib107.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
+      - text: "Bnt162b2 molecular qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
+      - text: "Bnt162b2 over60 qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
+      - text: "Bnt162b2 qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Bosentan pbpk (Aoki 2024)"
         href: articles/Aoki_2024_bosentan_pbpk.html
       - text: "Brazikumab (Zhang 2023)"
@@ -1772,6 +1778,8 @@ navbar:
         href: articles/Morganroth_2015_moxifloxacin.html
       - text: "Moxifloxacin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Mrna1273 qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Mycophenolic acid (Barau 2012)"
@@ -3358,6 +3366,7 @@ articles:
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
   - articles/Darpo_2014_racSotalol
+  - articles/Dasti_2025_mrna_vaccines
   - articles/Davis_2008_maraviroc
   - articles/DeCock_2012_propyleneGlycol
   - articles/DeJongh_2014_antithrombin
