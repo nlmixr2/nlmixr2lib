@@ -1458,6 +1458,8 @@ navbar:
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
         href: articles/Adeojo_2024_levonorgestrel.html
+      - text: "Lidocaine (He 2025)"
+        href: articles/He_2025_lidocaine.html
       - text: "Ligelizumab (Bienczak 2025)"
         href: articles/Bienczak_2025_ligelizumab.html
       - text: "Linagliptin (Retlich 2015)"
@@ -3547,6 +3549,7 @@ articles:
   - articles/Hayashi_2007_omalizumab
   - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
+  - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
   - articles/Hempel_2003_daunorubicin_liposomal
   - articles/Hendriksen_2013_artesunate
