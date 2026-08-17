@@ -138,7 +138,10 @@ Li 2025 Figure S5 plots the typical `Rtot,ADA` against log3 titer: it starts at
 1.35 nM at a log3 titer of 4 (a reciprocal titer of 81, the reference), passes
 through roughly 12-13 nM at 9, and reaches about 79 nM at 13. Figure S6 plots
 `koff,ADA` starting at 3.6e3 1/h at a log3 titer of 4 and decaying toward the
-3.6e-2 1/h asymptote. Both are reproduced exactly.
+3.6e-2 1/h asymptote. The table above reproduces both to within the precision
+the published figures can be read; the two anchor points that the article states
+numerically rather than graphically, `Rtot,ADA` = 1.35 nM and
+`koff,ADA` = 3600 1/h at a log3 titer of 4, are recovered exactly.
 
 ```{r ada-assertions}
 tol <- function(x, target, pct) abs(x / target - 1) <= pct / 100
@@ -151,7 +154,9 @@ stopifnot(
   # Figure S5 typical-value line
   tol(ada$rtot_ada[ada$l3titer == 9], 12.98, 2),
   tol(ada$rtot_ada[ada$l3titer == 13], 79.3, 2),
-  # Table 2 koff,ADA,max and the Figure S6 value at the top of the observed range
+  # Table 2 koff,ADA,max, and a regression guard on the top of the observed
+  # titer range: with kdec = 0.0275 the published function is still a few
+  # hundred 1/h at a log3 titer of 13, far above the 0.036 1/h asymptote.
   tol(ada$koff_per_h[ada$l3titer == 4], 3600, 0.5),
   tol(ada$koff_per_h[ada$l3titer == 13], 288, 2)
 )
@@ -258,8 +263,11 @@ down: a log-normal with a median of 77 kg and a log-scale SD of 0.322 reproduces
 all three quartiles and gives a mean of 81 kg, close to the reported 79.9 kg.
 Albumin is drawn to the Table 1 mean and SD, truncated at the reported range.
 
-Cohorts here are **200 subjects per arm**, the nlmixr2lib vignette cap, rather
-than the paper's 2500 (Figure 3) or 1000 (Figure S12).
+Cohorts here are **200 subjects per arm**, the nlmixr2lib vignette cap. The
+paper used 2500 virtual patients for the Figure 3 exposure simulations and 200
+for its efficacy simulations, so the efficacy cohort below matches the paper's
+own sample size; only the Figure 3 cohort is smaller. Figure S12 does not state
+its sample size.
 
 ```{r cohort}
 n_arm <- 200L
@@ -374,8 +382,11 @@ The qualitative conclusion reproduces: within each pair, the fixed and
 weight-based distributions overlap closely overall, the weight-based arm's
 exposure is flatter across weight quartiles, and the fixed arm trends upward in
 the lightest quartile and downward in the heaviest. That is the pattern Li 2025
-used to argue that fixed dosing is acceptable when the weight exponents on CL
-and Vc are both below about 0.5.
+used to argue for fixed dosing, invoking the published criterion that a fixed
+dose is preferable when the weight exponents on CL and Vc are both less than
+approximately 0.5. Modakafusp alfa satisfies it: weight was not a significant
+predictor of any elimination parameter, so CL carries no weight exponent at all,
+and the Vc exponent is 0.509.
 
 ## Comparison against the published simulations
 
@@ -402,10 +413,10 @@ knitr::kable(cmp)
 attr(cmp, "footnote")
 ```
 
-`Cmax` reproduces the published medians closely in all four arms, within 10%.
-`AUClast` does not: the simulated medians run about 1.2- to 1.5-fold high at the
-120 mg / 1.5 mg/kg dose level and about 2.1- to 2.2-fold high at 240 mg /
-3 mg/kg, and the discrepancy grows with dose.
+`Cmax` reproduces the published medians closely in all four arms, running
+between 1.4% and 10.0% high. `AUClast` does not: the simulated medians run about
+1.2- to 1.5-fold high at the 120 mg / 1.5 mg/kg dose level and about 2.1- to
+2.2-fold high at 240 mg / 3 mg/kg, and the discrepancy grows with dose.
 
 That split is itself diagnostic, and it points at a specific gap in what the
 paper publishes rather than at the structural model. `Cmax` after an IV
@@ -427,11 +438,13 @@ sim3 |>
 ```
 
 Li 2025 Figure S12 panel A shows a 90% prediction interval about three orders of
-magnitude wide at one week after a 1.5 mg/kg dose; the interval above is
-substantially wider. Because AUC is a convex functional of the disposition
-parameters, over-dispersion inflates the mean more than the median and skews the
-distribution, exactly as observed (the simulated mean-to-median ratio is larger
-than the published figure's). No parameter was adjusted to close the gap.
+magnitude wide at one week after a 1.5 mg/kg dose. The interval above spans
+roughly seven orders of magnitude, so the simulated spread is wider than the
+published one by about four orders of magnitude -- a direct measure of the
+over-dispersion the missing covariances cause. Because AUC is a convex
+functional of the disposition parameters, that over-dispersion also inflates the
+mean relative to the median and skews the exposure distribution to the right. No
+parameter was adjusted to close the gap.
 
 # Serum M-protein response (replicates Figure S12)
 
@@ -533,13 +546,15 @@ summary_tbl <- orr |>
 knitr::kable(summary_tbl, digits = 0)
 ```
 
-All three published quantities reproduce within about ten percentage points, and
-the **ordering and spacing of the ADA effect** is right: response is nearly
-halved between a log3 titer of 9 and 13, which is the paper's point that
+Every published quantity reproduces within the 12-percentage-point bound
+asserted below, and the **ordering and spacing of the ADA effect** is right:
+peak response more than halves between a log3 titer of 9 and 13 (38% to 16%
+simulated, against 28% to 12% published), which is the paper's point that
 high-titer immunogenicity materially erodes efficacy. The **dropout dynamics**
 track Figure S12 panel C, which is a joint check on the M-protein growth rate,
-the resistance rate, and the progressive-disease rule. The **week-40 median
-M-protein change** at a log3 titer of 9 is essentially exact.
+the resistance rate, and the progressive-disease rule. The closest agreement is
+the **week-40 median M-protein change** at a log3 titer of 9, within
+2 percentage points.
 
 The residual bias is in the same direction as the AUC discrepancy above and has
 the same cause: the over-dispersed exposure distribution that follows from the
@@ -584,9 +599,11 @@ stopifnot(
 * **The PK-PD control stream carries a stale `kdec`.** The PK-PD stream sets
   `KD_TITERDEC = 0.210`, which is the value of `kel,ADA`, not of `kdec`. Table 2
   reports `kdec = 0.0275` with a 5.23% RSE, the popPK stream estimates it as
-  `THETA(13)`, and Figure S6 is only consistent with 0.0275 (at 0.210 the curve
-  would already be at the minimum by a log3 titer of 13, whereas the figure shows
-  about 3.4e2 1/h there). The model uses 0.0275 in both files.
+  `THETA(13)`, and Figure S6 is only consistent with 0.0275: at 0.210 the curve
+  reaches 0.2 1/h by a log3 titer of 13, indistinguishable from the 0.036 1/h
+  asymptote, whereas the figure still shows a value of order 1e2 1/h there
+  (0.0275 gives 288 1/h, the value tabulated above). The model uses 0.0275 in
+  both files.
 * **Table 1's M-protein column counts do not sum to 60.** The sex, ECOG and race
   counts in the "Serum M-protein analysis population" column sum to 99, while the
   Results text states that 60 patients formed the M-protein evaluable population.
@@ -639,8 +656,10 @@ stopifnot(
   published typical PK values and their IIV so that it can be simulated on its
   own; that composition is not identical to the sequential estimation the authors
   performed.
-* **Cohort size.** 200 subjects per arm here versus 2500 (Figure 3) and 1000
-  (Figure S12) in the paper.
+* **Cohort size.** 200 subjects per arm here versus 2500 for the Figure 3
+  exposure simulations. The paper's efficacy simulations also used 200 virtual
+  patients, so the M-protein cohort matches; Figure S12 does not report a
+  sample size.
 * **The virtual cohort is reconstructed, not the paper's.** Li 2025 used a tilted
   bootstrap over a correlated virtual RRMM population; weight and albumin here
   are drawn independently from marginal distributions matched to Table 1 and to
