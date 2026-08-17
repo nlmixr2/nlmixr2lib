@@ -2660,6 +2660,8 @@ navbar:
         href: articles/Zhao_2015_teicoplanin.html
       - text: "Telapristone (Morris 2011)"
         href: articles/Morris_2011_telapristone.html
+      - text: "Telavancin (VanWart 2025)"
+        href: articles/VanWart_2025_telavancin.html
       - text: "Temocapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -4237,6 +4239,7 @@ articles:
   - articles/Valke_2024_factorviii_thrombin_plasmin
   - articles/Valle_2005_exemestane
   - articles/VanWart_2004_garenoxacin
+  - articles/VanWart_2025_telavancin
   - articles/Varatharajan_2016_daunorubicin
   - articles/VargasChristensen_2019_rfviii_rat
   - articles/Vargo_2014_statins_ezetimibe_mbma
