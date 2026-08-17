@@ -2008,6 +2008,10 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
         href: articles/Kim_2015_paroxetine.html
+      - text: "Paroxetine (Shigetome 2025)"
+        href: articles/Shigetome_2025_paroxetine.html
+      - text: "Paroxetine madrs (Shigetome 2025)"
+        href: articles/Shigetome_2025_paroxetine.html
       - text: "Patritumab (Lee 2023)"
         href: articles/Lee_2023_patritumab.html
       - text: "Patritumab (Lu 2022)"
@@ -4107,6 +4111,7 @@ articles:
   - articles/Sherwin_2012_mycophenolic_acid
   - articles/Sherwin_2012_risperidone
   - articles/Shi_2018_ceftazidime
+  - articles/Shigetome_2025_paroxetine
   - articles/Shin_2006_quinidine_QT
   - articles/Shin_2014_sevoflurane
   - articles/Shin_2017_levetiracetam

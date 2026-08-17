@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Shigetome 2025 paroxetine ([doi:10.1002/psp4.70032](https://doi.org/10.1002/psp4.70032)) -- Japanese adults with major depressive disorder; population PK plus a MADRS exposure-response model.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.

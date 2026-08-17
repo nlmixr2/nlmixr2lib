@@ -747,6 +747,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Depression-severity clinical scores
+
+### madrsenh (**canonical MADRS enhancement-rate output compartment**)
+- **Type:** compartment
+- **Role:** Enhancement rate in depression severity: the percentage reduction in the Montgomery-Asberg Depression Rating Scale (MADRS) total score from the pre-treatment baseline, `100 * (MADRS_baseline - MADRS_t) / MADRS_baseline`. Used as the modelled endpoint by antidepressant PD models that fit the paper-declared relative improvement rather than the absolute score. **Sign convention: POSITIVE for clinical improvement**, because the underlying MADRS score falls as depression improves. This is the opposite orientation to `das28cfb`, which is a raw change score and therefore negative-going for improvement -- the two must not be treated as interchangeable shapes. A future model fitting the ABSOLUTE MADRS reading should register a companion `madrs`, and one fitting the raw (non-percentage) change should register `madrscfb`, exactly as `das28` and `das28cfb` are separated.
+- **Source aliases:** `EFF`, `enhancement rate` -- Shigetome 2025 paper notation and NONMEM `$PRED` block.
+- **Example models:** `Shigetome_2025_paroxetine_madrs.R` (Emax model in treatment duration, `EFF = Emax * Time / (ET50 + Time)`, with cumulative first-week paroxetine exposure on Emax and the week-1 MADRS score on ET50).
+- **Notes:** Ratified canonically alongside the Shigetome 2025 paroxetine extraction, following the same lowercase run-together convention as `das28` / `das28cfb` / `deltaUPDRS` / `cows` / `druglikingvascfb`. The state is a percentage on a roughly 0-100 scale but is not bounded by the model: a negative value is attainable when the score worsens from baseline, and the Emax term itself can exceed 100 at high exposure, so this endpoint should not be given a bounded (logit / probit) transform unless the source paper declares one. Distinct from the covariate `SCORE_MADRS` in `covariate-columns.md`, which carries an absolute MADRS reading at a stated visit; the baseline reading that defines this endpoint's denominator is part of the endpoint, not a covariate.
+
+---
+
 ## Body-weight PD output
 
 ### bw (**canonical body-weight PD output**)
