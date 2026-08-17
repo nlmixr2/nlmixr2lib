@@ -1748,6 +1748,10 @@ navbar:
         href: articles/Honda_2006_mizoribine.html
       - text: "Modafinil (Wu 2012)"
         href: articles/Wu_2012_modafinil.html
+      - text: "ModakafuspAlfa (Li 2025)"
+        href: articles/Li_2025_modakafuspAlfa.html
+      - text: "ModakafuspAlfa mprotein (Li 2025)"
+        href: articles/Li_2025_modakafuspAlfa.html
       - text: "Mogamulizumab (Mukai 2019)"
         href: articles/Mukai_2019_mogamulizumab.html
       - text: "Monalizumab (Hwang 2023)"
@@ -3791,6 +3795,7 @@ articles:
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
   - articles/Li_2024_orin1001
+  - articles/Li_2025_modakafuspAlfa
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_osimertinib
   - articles/Liang_2024_rituximab
