@@ -964,6 +964,8 @@ navbar:
         href: articles/Toffoli_2001_etoposide.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
+      - text: "Everolimus (Mo 2025)"
+        href: articles/Mo_2025_everolimus.html
       - text: "Everolimus (TerHeine 2018)"
         href: articles/TerHeine_2018_everolimus.html
       - text: "Everolimus (deWit 2016)"
@@ -3873,6 +3875,7 @@ articles:
   - articles/Mitra_2026_ziftomenib
   - articles/Miyano_2022_atopicDermatitis_qsp
   - articles/Mo_2018_olaratumab
+  - articles/Mo_2025_everolimus
   - articles/MocWilleford_2024_rlyb212
   - articles/Mody_2023_doxorubicin_dexrazoxane
   - articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer
