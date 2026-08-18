@@ -2600,6 +2600,8 @@ navbar:
         href: articles/Moes_2016_tacrolimus.html
       - text: "Tacrolimus (MohammedAli 2023)"
         href: articles/MohammedAli_2023_tacrolimus.html
+      - text: "Tacrolimus (MohammedAli 2025)"
+        href: articles/MohammedAli_2025_tacrolimus.html
       - text: "Tacrolimus (Passey 2011)"
         href: articles/Passey_2011_tacrolimus.html
       - text: "Tacrolimus (Pei 2023)"
@@ -3884,6 +3886,7 @@ articles:
   - articles/Mohamed_2013_procainamide
   - articles/Mohamed_2016_colistin_meropenem
   - articles/MohammedAli_2023_tacrolimus
+  - articles/MohammedAli_2025_tacrolimus
   - articles/Molto_2016_atazanavir_ritonavir
   - articles/Momper_2016_fluconazole
   - articles/Mondick_2006_dactinomycin
