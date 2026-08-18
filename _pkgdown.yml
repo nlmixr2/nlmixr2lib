@@ -2580,6 +2580,8 @@ navbar:
         href: articles/CirrincioneDall_2011_tacrolimus.html
       - text: "Tacrolimus (Dunlap 2025)"
         href: articles/Dunlap_2025_tacrolimus.html
+      - text: "Tacrolimus (Francke 2025)"
+        href: articles/Francke_2025_tacrolimus.html
       - text: "Tacrolimus (Grover 2011)"
         href: articles/Grover_2011_tacrolimus.html
       - text: "Tacrolimus (Hao 2018)"
@@ -2622,6 +2624,8 @@ navbar:
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
       - text: "Tacrolimus pbpk (Pei 2023)"
         href: articles/Pei_2023_tacrolimus.html
+      - text: "Tacrolimus startingdose (Francke 2025)"
+        href: articles/Francke_2025_tacrolimus.html
       - text: "Tacrolimus thoracic (Sikma 2020)"
         href: articles/Sikma_2020_tacrolimus_thoracic.html
       - text: "Tacrolimus unbound plasma (Sikma 2020)"
@@ -3444,6 +3448,7 @@ articles:
   - articles/Foster_2023_enrofloxacin_cat
   - articles/Fostvedt_2021_glasdegib
   - articles/Fournier_2018_amoxicillin
+  - articles/Francke_2025_tacrolimus
   - articles/Franken_2015_morphine
   - articles/Franken_2017_haloperidol
   - articles/Franken_2017_midazolam
