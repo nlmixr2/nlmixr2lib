@@ -1090,6 +1090,8 @@ navbar:
         href: articles/Polito_2016_fludrocortisone.html
       - text: "Flumazenil pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Fluorouracil (Yamada 2025)"
+        href: articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab.html
       - text: "Flurbiprofen (Kumpulainen 2010)"
         href: articles/Kumpulainen_2010_flurbiprofen.html
       - text: "Flurbiprofen (Zhang 2018)"
@@ -1936,6 +1938,8 @@ navbar:
         href: articles/Liang_2024_osimertinib.html
       - text: "Oxaliplatin (Valenzuela 2011)"
         href: articles/Valenzuela_2011_oxaliplatin.html
+      - text: "Oxaliplatin (Yamada 2025)"
+        href: articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab.html
       - text: "Oxaliplatin (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Oxaliplatin organoid (Zhu 2023)"
@@ -4342,6 +4346,7 @@ articles:
   - articles/Xu_2023_MBG453
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
+  - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
   - articles/Yamada_2025_zolbetuximab
   - articles/Yamamoto_2023_tominersen
   - articles/Yamazaki_2008_crizotinib_mouse
