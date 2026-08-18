@@ -2242,6 +2242,8 @@ navbar:
         href: articles/Darpo_2014_racSotalol.html
       - text: "Ractopamine goat pbpk (Ai 2024)"
         href: articles/Ai_2024_ractopamine_goat_pbpk.html
+      - text: "Radamts13 qsp (McBride 2025)"
+        href: articles/McBride_2025_radamts13_qsp.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
       - text: "Raltegravir (ArabAlameddine 2012)"
@@ -3853,6 +3855,7 @@ articles:
   - articles/Masters_2022_avelumab
   - articles/Matsumoto_2005_TF_505
   - articles/Mazzocco_2015_temozolomide
+  - articles/McBride_2025_radamts13_qsp
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
