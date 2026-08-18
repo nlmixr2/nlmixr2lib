@@ -1094,6 +1094,10 @@ navbar:
         href: articles/Kumpulainen_2010_flurbiprofen.html
       - text: "Flurbiprofen (Zhang 2018)"
         href: articles/Zhang_2018_flurbiprofen.html
+      - text: "Flurbiprofen r (Yao 2025)"
+        href: articles/Yao_2025_flurbiprofen.html
+      - text: "Flurbiprofen s (Yao 2025)"
+        href: articles/Yao_2025_flurbiprofen.html
       - text: "Fluticasone inhaled (Weber 2015)"
         href: articles/Weber_2015_fluticasone_inhaled.html
       - text: "Fluvoxamine rat (Geldof 2008)"
@@ -4356,6 +4360,7 @@ articles:
   - articles/Yang_2024_meropenem_pbpk
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
+  - articles/Yao_2025_flurbiprofen
   - articles/Yassen_2025_asundexian
   - articles/Yates_2023_dose_response_shape
   - articles/Yau_2023_diazepam_pbpk
