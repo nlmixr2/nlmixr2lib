@@ -1816,6 +1816,10 @@ navbar:
         href: articles/Boucher_2018_naproxen_mbma.html
       - text: "Necitumumab (Long 2017)"
         href: articles/Long_2017_necitumumab.html
+      - text: "Nedosiran (Zhang 2025)"
+        href: articles/Zhang_2025_nedosiran.html
+      - text: "Nedosiran uoxcr (Zhang 2025)"
+        href: articles/Zhang_2025_nedosiran.html
       - text: "Nefopam (Djerada 2014)"
         href: articles/Djerada_2014_nefopam.html
       - text: "Nelfinavir (Hirt 2006)"
@@ -4401,6 +4405,7 @@ articles:
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_XZP5610
   - articles/Zhang_2024_sertraline
+  - articles/Zhang_2025_nedosiran
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir

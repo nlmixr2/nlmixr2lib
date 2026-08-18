@@ -4201,6 +4201,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Lin_2024_pozelimab.R` (additive-fractional +34.07% effect on Vc; no CL or Vp effect; reference category pools healthy volunteers and CHAPLE patients), `Lee_2024_eculizumab.R` (separately estimated typical values per subject group on Vc, on the terminal-complement-activity baseline E0 and on Imax, encoded as log-scale shifts `e_pnh_vc`, `e_pnh_rbase_tca`, `e_pnh_imax_tca`; reference category is the healthy phase I cohort).
 - **Notes:** Paroxysmal nocturnal hemoglobinuria is a rare hematological disease characterized by uncontrolled complement activation on red blood cells; treated with C5-targeted complement inhibitors (eculizumab, ravulizumab, pozelimab). Scope: specific because the disease-pooling reference category is paper-defined. Ratified canonically on 2026-04-27.
 
+### DIS_PH1 (**canonical for primary hyperoxaluria type 1 disease-state indicator**)
+- **Description:** 1 = patient with primary hyperoxaluria type 1 (PH1, autosomal-recessive `AGXT` mutation causing alanine-glyoxylate aminotransferase deficiency and hepatic oxalate overproduction), 0 = subject without PH1 pooled in the source analysis (primary hyperoxaluria type 2 or type 3 patient, or healthy volunteer). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-PH1 subject; the complement group is paper-defined -- for Zhang 2025 it pools PH2 patients and healthy volunteers).
+- **Source aliases:**
+  - `PH` -- Zhang 2025 Table 2 covariate-formula footnote, defined there as "PH = 1 for PH1 subjects and 0 for PH2 and healthy volunteers".
+  - `PH1`, `PHTYPE`, `DPH1` -- plausible alternative NONMEM `$INPUT` forms.
+- **Example models:** `Zhang_2025_nedosiran.R` and `Zhang_2025_nedosiran_uoxcr.R` (power-form multiplicative factor `1.32^DIS_PH1` on the slow subcutaneous absorption rate constant ka1, per Zhang 2025 Table 2 `ka1.PH` = 1.32, 95% CI 1.07-1.57; no effect on CL/F, Vc/F, Q/F, Vp/F or Vmax -- the paper reports PH subtype had no effect on nedosiran exposure).
+- **Notes:** Primary hyperoxaluria is a group of three genetically distinct disorders of hepatic glyoxylate metabolism; PH1 accounts for 70-80% of cases and is the most severe. Register a sibling `DIS_PH2` / `DIS_PH3` only if a future paper distinguishes those subtypes as their own indicators rather than pooling them into the reference category. Covariate-effect parameters drop the `DIS_` prefix per the `DIS_CANCER` -> `e_cancer_*` convention; use `e_ph1_<param>`. Scope: specific because the reference category is paper-defined (whether healthy volunteers, PH2 patients, or both are pooled into it varies by analysis). Distinct from `DIS_HEALTHY`, which is a healthy-volunteer cohort indicator: a PH2 patient is neither `DIS_PH1 = 1` nor `DIS_HEALTHY = 1`.
+
 ### DIS_MDS_AML (**canonical for MDS or AML disease-type indicator**)
 - **Description:** 1 = patient with myelodysplastic syndrome (MDS) or acute myeloid leukemia (AML), 0 = other hematologic malignancy or reference group. Time-fixed per subject.
 - **Units:** (binary)
