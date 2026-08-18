@@ -3391,6 +3391,30 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
   - `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232), where ampicillin is the unsuffixed parent.
 - **Notes:** Registered 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction. `Soto_2014_ampicillin_sulbactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_sbt` / `peripheral1_sbt` / `propSd_sbt` convention warnings. Sulbactam is a sibling drug, not a metabolite: in both source papers the two analytes are dosed as a fixed-ratio combination and fitted simultaneously without interconversion.
 
+### sdz (**canonical sulfadiazine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulfadiazine (short-acting sulfonamide) sibling-drug suffix, used when sulfadiazine is co-modelled with trimethoprim in the licensed 1:5 TMP:sulfonamide veterinary combinations and trimethoprim is the unsuffixed parent. Drives `depot_sdz` / `depot2_sdz` / `central_sdz` / `peripheral1_sdz` compartments, the `lka_sdz` / `lka2_sdz` / `lfdepot_sdz` / `lfdepot2_sdz` / `lcl_sdz` / `lvc_sdz` / `lq_sdz` / `lvp_sdz` PK parameters, the `e_wt_cl_sdz` / `e_wt_vc_sdz` covariate effects, and the `expSd_sdz` residual on the `Cc_sdz` plasma concentration.
+- **Source aliases:**
+  - `SDZ` -- abbreviation used throughout `Boulanger_2025_trimethoprim_sulfonamides_pig.R`.
+- **Example models:** `Boulanger_2025_trimethoprim_sulfonamides_pig.R` (doi:10.1080/01652176.2025.2565351).
+- **Notes:** Registered 2026-08-18 alongside the Boulanger 2025 pig TMP/sulfonamide extraction. Distinct from the existing `pyra` / sulfadoxine antimalarial pairing: sulfadiazine is a different sulfonamide and here the partner drug is trimethoprim, not pyrimethamine. A sibling drug, not a metabolite -- the two analytes are dosed as a fixed-ratio combination product and fitted simultaneously without interconversion.
+
+### sdmx (**canonical sulfadimethoxine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulfadimethoxine (long-acting sulfonamide) sibling-drug suffix, used when sulfadimethoxine is co-modelled with trimethoprim as the unsuffixed parent. Drives `depot_sdmx` / `central_sdmx` / `peripheral1_sdmx` compartments, the `lka_sdmx` / `lfdepot_sdmx` / `lcl_sdmx` / `lvc_sdmx` / `lq_sdmx` / `lvp_sdmx` PK parameters, and the `expSd_sdmx` residual on the `Cc_sdmx` plasma concentration.
+- **Source aliases:**
+  - `SDMX` -- abbreviation used throughout `Boulanger_2025_trimethoprim_sulfonamides_pig.R`.
+- **Example models:** `Boulanger_2025_trimethoprim_sulfonamides_pig.R` (doi:10.1080/01652176.2025.2565351).
+- **Notes:** Registered 2026-08-18 alongside the Boulanger 2025 pig TMP/sulfonamide extraction. Sulfadimethoxine is the longest-acting of the three sulfonamides in that paper (CL 0.015 L/h/kg, terminal half-life 14.8 h) and is the one whose accumulation on daily dosing drives the declining TMP:S ratio.
+
+### smx (**canonical sulfamethoxazole sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulfamethoxazole sibling-drug suffix, used when sulfamethoxazole is co-modelled with trimethoprim as the unsuffixed parent (the human co-trimoxazole pairing and its veterinary equivalents). Drives `depot_smx` / `central_smx` / `peripheral1_smx` compartments, the `lka_smx` / `lfdepot_smx` / `lcl_smx` / `lvc_smx` / `lq_smx` / `lvp_smx` PK parameters, and the `expSd_smx` residual on the `Cc_smx` plasma concentration.
+- **Source aliases:**
+  - `SMX` -- abbreviation used throughout `Boulanger_2025_trimethoprim_sulfonamides_pig.R`.
+- **Example models:** `Boulanger_2025_trimethoprim_sulfonamides_pig.R` (doi:10.1080/01652176.2025.2565351).
+- **Notes:** Registered 2026-08-18 alongside the Boulanger 2025 pig TMP/sulfonamide extraction. Trimethoprim is the unsuffixed parent in that model because it is common to all three combination products; a future co-trimoxazole extraction that treats sulfamethoxazole as the primary analyte should still use this suffix for consistency rather than promoting SMX to the unsuffixed slot.
+
 ---
 
 ## Anthracycline cardioprotection sibling-drug suffixes
