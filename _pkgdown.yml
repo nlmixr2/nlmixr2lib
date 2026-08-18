@@ -688,6 +688,8 @@ navbar:
         href: articles/Schutte_2018_desmopressin.html
       - text: "Dexamethasone rat (Li 2012)"
         href: articles/Li_2012_dexamethasone_rat.html
+      - text: "Dexmedetomidine (Huang 2025)"
+        href: articles/Huang_2025_dexmedetomidine.html
       - text: "Dexmedetomidine (Perez-Guille 2018)"
         href: articles/Perez-Guille_2018_dexmedetomidine.html
       - text: "Dexmedetomidine (Smuszkiewicz 2017)"
@@ -3595,6 +3597,7 @@ articles:
   - articles/Hu_2026_clesrovimab
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
+  - articles/Huang_2025_dexmedetomidine
   - articles/Huppe_2023_fosfomycin
   - articles/Hurtado_2014_levofloxacin_rat
   - articles/Hussein_1997_lamotrigine
