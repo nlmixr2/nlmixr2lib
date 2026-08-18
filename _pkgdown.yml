@@ -824,6 +824,8 @@ navbar:
         href: articles/Kapitanov_2025_dupilumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
+      - text: "Durvalumab (deVries 2025)"
+        href: articles/deVries_2025_durvalumab.html
       - text: "Dutasteride (Gisleskog 1999)"
         href: articles/Gisleskog_1999_dutasteride.html
       - text: "E7820 human (Keizer 2011)"
@@ -4441,6 +4443,7 @@ articles:
   - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/deVriesSchultink_2018_cardiotoxicity
   - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deVries_2025_durvalumab
   - articles/deWinter_2009_mycophenolic_acid
   - articles/deWit_2016_everolimus
   - articles/elDesoky_1997_theophylline_pediatric_asthma
