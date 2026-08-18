@@ -1442,6 +1442,8 @@ navbar:
         href: articles/Majid_2024_lenvatinib.html
       - text: "Lenvatinib tumor asdeposited (Majid 2024)"
         href: articles/Majid_2024_lenvatinib.html
+      - text: "Letermovir (Royston 2025)"
+        href: articles/Royston_2025_letermovir.html
       - text: "Levalbuterol (Jaworowicz 2006)"
         href: articles/Jaworowicz_2006_levalbuterol.html
       - text: "Levamisole (KreeftmeijerVegter 2015)"
@@ -4049,6 +4051,7 @@ articles:
   - articles/Rower_2017_tacrolimus
   - articles/Royer_2010_HuHMFG1
   - articles/Royer_2011_cisplatin
+  - articles/Royston_2025_letermovir
   - articles/Rozman_2017_rituximab
   - articles/Ruhs_2012_methotrexate
   - articles/Rymut_2023_anti_tryptase
