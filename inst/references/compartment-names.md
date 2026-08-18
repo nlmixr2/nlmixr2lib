@@ -530,6 +530,12 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Source aliases:** none.
 - **Example models:** `Oualha_2014_epinephrine.R`, `Hong_2013_glucose_insulin_HGC.R`, `Hong_2013_glucose_insulin_MTT.R`.
 
+### fpg (**canonical fasting plasma glucose output**)
+- **Type:** compartment
+- **Role:** Fasting plasma glucose as a single-arm PD output, in mmol/L. Use for exposure-response models whose endpoint is the clinical fasting measurement rather than a dynamically modelled glucose pool: `fpg` is typically an algebraic direct effect of drug exposure on a baseline, not a state with its own ODE. Distinct from `glucose`, which is the dynamic endogenous plasma-glucose state of a turnover or glucose-insulin homeostasis model with a mass-balance parameterisation. The un-suffixed base name of the existing `fpg_placebo` / `fpg_drug` pair, which the MBMA arm-splitting convention uses when a model carries separate placebo and drug arms of the same endpoint.
+- **Source aliases:** `FPG` -- used in `Xiang_2025_tacrolimus_fpg.R` (Xiang 2025 Eq. 2).
+- **Example models:** `Xiang_2025_tacrolimus_fpg.R` (founding example; linear direct effect of tacrolimus trough concentration on the pre-transplantation baseline, `fpg <- rbase_fpg + slope * Cc`, as a model of post-transplantation diabetes mellitus risk).
+
 ### insulin (**canonical plasma insulin compartment**)
 - **Type:** compartment
 - **Role:** Endogenous plasma insulin used by integrated glucose-insulin homeostasis models (Silber 2007 framework, Jauslin 2007 OGTT framework, Hong 2013 HGC / MTT models). State holds insulin amount (mU) or concentration (mU/L or pmol/L) consistent with the paper's mass-balance parameterisation; the per-model `units` field documents which. Distinct from the existing `INS` (time-varying plasma-insulin regressor covariate) and `INS_BL` (baseline plasma-insulin covariate) -- those are exogenous inputs that drive other models; `insulin` is the dynamic state when insulin is itself a modelled quantity with its own ODE (production / secretion plus elimination).
