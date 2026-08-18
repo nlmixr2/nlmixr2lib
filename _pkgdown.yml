@@ -2140,6 +2140,8 @@ navbar:
         href: articles/Lin_2024_pozelimab.html
       - text: "Pravastatin (Ide 2009)"
         href: articles/Ide_2009_pravastatin.html
+      - text: "Prednisolone (Bouazza 2025)"
+        href: articles/Bouazza_2025_prednisolone.html
       - text: "Pregabalin (Shoji 2011)"
         href: articles/Shoji_2011_pregabalin.html
       - text: "Pregabalin rat binary (Bender 2009)"
@@ -3230,6 +3232,7 @@ articles:
   - articles/Bouazza_2010_lamivudine
   - articles/Bouazza_2011_lamivudine
   - articles/Bouazza_2012_clindamycin
+  - articles/Bouazza_2025_prednisolone
   - articles/Boucher_2018_naproxen_mbma
   - articles/Brain_2008_ifosfamide
   - articles/Brekkan_2016_factorIX
