@@ -2,6 +2,8 @@
 
 # development version
 
+- Add 14 published imatinib population PK models transcribed from the Yang 2025 external evaluation ([doi:10.1007/s11523-025-01172-2](https://doi.org/10.1007/s11523-025-01172-2)) -- Judson 2005, Schmidli 2005, Widmer 2006, Petain 2008, Demetri 2009, Menon-Andersen 2009, Yamakawa 2011, Eechoute 2012, Golabchifar 2014, Gotta 2014, Di Paolo 2014, Wang 2019, Shriyan 2022 and He 2023; adults with chronic myeloid leukemia or gastrointestinal stromal tumor, two of them also including children.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.

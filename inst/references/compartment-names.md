@@ -3127,6 +3127,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Patel_2017_selumetinib.R` (doi:10.1002/psp4.12175).
 - **Notes:** Renamed from `ndsel` to `ndmsel` on 2026-06-19 per the canonical-register standardization audit (operator decision: insert `m` so the contracted form reads as `n-desmethyl-sel` rather than `n-des-sel`; matches the N-desmethyl-`<drug>` pattern used by other contracted suffixes).
 
+### ndmima (**canonical N-desmethyl-imatinib suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desmethyl imatinib (CGP74588), the main circulating imatinib metabolite, formed by CYP3A4/CYP3A5-mediated oxidative N-demethylation of the piperazine methyl group. Pharmacologically active with BCR-ABL1 inhibitory potency comparable to the parent, and typically present at 10-20 percent of parent plasma concentrations at steady state, so imatinib therapeutic-drug-monitoring analyses frequently quantify both analytes.
+- **Source aliases:**
+  - `CGP74588` -- the Novartis compound code, used interchangeably with the chemical name in the imatinib literature.
+  - `N-desmethyl imatinib` / `metabolite` -- Yang 2025 Table 1 column headings (`CLm/fm`, `V1m/fm`, `Qm/fm`, `V2m/fm`).
+- **Example models:** `Petain_2008_imatinib.R` (one-compartment metabolite; `central_ndmima`), `MenonAndersen_2009_imatinib.R` (two-compartment metabolite; `central_ndmima`, `peripheral1_ndmima`).
+- **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib) rather than a bare `ndi`, so the suffix reads as `n-desmethyl-ima`. Both founding models parameterise the metabolite as apparent with respect to the unidentifiable fraction metabolized (`CLm/fm`, `V1m/fm`), so `central_ndmima` holds an fm-scaled amount; the predicted metabolite concentration is nonetheless the true one, because the same `fm` divides both the clearance and the volume. Registered on 2026-08-18 alongside the Yang 2025 imatinib external-evaluation extraction.
+
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5'-deoxy-5-fluorocytidine (5'-DFCR), formed in the liver by carboxylesterase from capecitabine.
