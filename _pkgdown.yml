@@ -1712,6 +1712,8 @@ navbar:
         href: articles/Beredaki_2023_micafungin.html
       - text: "Midazolam (Brill 2014)"
         href: articles/Brill_2014_midazolam.html
+      - text: "Midazolam (Collins 2025)"
+        href: articles/Collins_2025_midazolam.html
       - text: "Midazolam (Franken 2017)"
         href: articles/Franken_2017_midazolam.html
       - text: "Midazolam (Janssen 2017)"
@@ -3343,6 +3345,7 @@ articles:
   - articles/Cojutti_2023_ceftobiprole
   - articles/Colin_2014_moxifloxacin
   - articles/Collins_2023_belantamab_mprotein
+  - articles/Collins_2025_midazolam
   - articles/Colombo_2006_atazanavir
   - articles/Conil_2007_ceftazidime
   - articles/Conil_2010_tobramycin
