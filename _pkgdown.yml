@@ -1446,6 +1446,10 @@ navbar:
         href: articles/Jaworowicz_2006_levalbuterol.html
       - text: "Levamisole (KreeftmeijerVegter 2015)"
         href: articles/KreeftmeijerVegter_2015_levamisole.html
+      - text: "Levamisole 2cm (Cheng 2026)"
+        href: articles/Cheng_2026_levamisole_interspecies.html
+      - text: "Levamisole mpbpk (Cheng 2026)"
+        href: articles/Cheng_2026_levamisole_interspecies.html
       - text: "Levetiracetam (Shin 2017)"
         href: articles/Shin_2017_levetiracetam.html
       - text: "Levetiracetam (Wang 2012)"
@@ -3317,6 +3321,7 @@ articles:
   - articles/Chen_2024_remimazolam
   - articles/Chen_2024_rituximab
   - articles/Cheng_2026_immunoglobulin
+  - articles/Cheng_2026_levamisole_interspecies
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
   - articles/Chigutsa_2011_rifampicin
