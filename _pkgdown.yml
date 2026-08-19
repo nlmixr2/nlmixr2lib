@@ -1094,6 +1094,12 @@ navbar:
         href: articles/Kumpulainen_2010_flurbiprofen.html
       - text: "Flurbiprofen (Zhang 2018)"
         href: articles/Zhang_2018_flurbiprofen.html
+      - text: "Fluticasone 1500ug (Rosenborg 2025)"
+        href: articles/Rosenborg_2025_fluticasone_salmeterol.html
+      - text: "Fluticasone 300ug (Rosenborg 2025)"
+        href: articles/Rosenborg_2025_fluticasone_salmeterol.html
+      - text: "Fluticasone 750ug (Rosenborg 2025)"
+        href: articles/Rosenborg_2025_fluticasone_salmeterol.html
       - text: "Fluticasone inhaled (Weber 2015)"
         href: articles/Weber_2015_fluticasone_inhaled.html
       - text: "Fluvoxamine rat (Geldof 2008)"
@@ -2438,6 +2444,8 @@ navbar:
         href: articles/Heuberger_2018_salbutamol.html
       - text: "Salbutamol (Marques 2024)"
         href: articles/Marques_2024_salbutamol.html
+      - text: "Salmeterol (Rosenborg 2025)"
+        href: articles/Rosenborg_2025_fluticasone_salmeterol.html
       - text: "Sapropterin (Feillet 2008)"
         href: articles/Feillet_2008_sapropterin.html
       - text: "Sapropterin (Muntau 2017)"
@@ -4045,6 +4053,7 @@ articles:
   - articles/Rosario_2008_maraviroc
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
+  - articles/Rosenborg_2025_fluticasone_salmeterol
   - articles/Rovei_1982_theophylline
   - articles/Rower_2017_tacrolimus
   - articles/Royer_2010_HuHMFG1
