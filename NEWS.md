@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chigutsa 2025 tirzepatide ([doi:10.1002/cpt.3750](https://doi.org/10.1002/cpt.3750)) -- adults with obesity or overweight without type 2 diabetes (SURMOUNT-1).
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
