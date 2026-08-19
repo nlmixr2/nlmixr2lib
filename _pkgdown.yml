@@ -372,6 +372,8 @@ navbar:
         href: articles/Schoemaker_2017_brivaracetam.html
       - text: "Brodalumab (Timmermann 2019)"
         href: articles/Timmermann_2019_brodalumab.html
+      - text: "Bumetanide pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Busulfan (Choe 2012)"
         href: articles/Choe_2012_busulfan.html
       - text: "Busulfan (Lawson 2022)"
@@ -410,6 +412,8 @@ navbar:
         href: articles/Blesch_2003_capecitabine.html
       - text: "Capecitabine (Urien 2005)"
         href: articles/Urien_2005_capecitabine.html
+      - text: "Captopril pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Carbenicillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Carboplatin (Ekhart 2008)"
@@ -736,6 +740,8 @@ navbar:
         href: articles/Jelliffe_2014_digoxin.html
       - text: "Digoxin (Zhou 2010)"
         href: articles/Zhou_2010_digoxin.html
+      - text: "Digoxin pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Dihydroartemisinin (Tarning 2012)"
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Dilmapimod (Yang 2016)"
@@ -1036,6 +1042,8 @@ navbar:
         href: articles/HillMcManus_2017_febuxostat_lesinurad.html
       - text: "Felodipine (Henin 2012)"
         href: articles/Henin_2012_gastrointestinal_transit_time_absorption.html
+      - text: "Felodipine pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Fenofibrate (Back 2018)"
         href: articles/Back_2018_fenofibrate.html
       - text: "Fentanyl (Bista 2015)"
@@ -1122,6 +1130,8 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
       - text: "Furmonertinib (Zou 2022)"
         href: articles/Zou_2022_furmonertinib.html
+      - text: "Furosemide pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "FxiLica (Willmann 2021)"
         href: articles/Willmann_2021_fxi_aso.html
       - text: "G csf (Melhem 2018)"
@@ -1728,6 +1738,8 @@ navbar:
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
+      - text: "Midazolam pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Miglustat (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Miltefosine (Dorlo 2008)"
@@ -2744,6 +2756,8 @@ navbar:
         href: articles/Roberts_2016_topotecan.html
       - text: "Topotecan mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Torasemide pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Torsemide (Jeong 2022)"
         href: articles/Jeong_2022_torsemide.html
       - text: "Tralokinumab (Baverel 2015)"
@@ -2844,6 +2858,8 @@ navbar:
         href: articles/Williams_2012_valproic_acid_pediatric.html
       - text: "Valsartan (Kim 2015)"
         href: articles/Kim_2015_valsartan.html
+      - text: "Valsartan pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Vancomycin (Alqahtani 2018)"
         href: articles/Alqahtani_2018_vancomycin.html
       - text: "Vancomycin (Buelga 2005)"
@@ -3505,6 +3521,7 @@ articles:
   - articles/Grimsley_1999_vancomycin
   - articles/Grover_2011_tacrolimus
   - articles/Grzesk_2016_m3M3FBS
+  - articles/Gu_2025_heart_failure_pbpk
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guo_2022_PF_06939999
   - articles/Gupta_2006_peginterferon_alfa_2b

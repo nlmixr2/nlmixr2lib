@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Gu 2025 whole-body heart-failure PBPK models for digoxin, furosemide, bumetanide, torasemide, captopril, valsartan, felodipine and midazolam ([doi:10.3390/pharmaceutics17111394](https://doi.org/10.3390/pharmaceutics17111394)) -- healthy adults and chronic heart-failure patients in NYHA classes II-IV.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
