@@ -282,6 +282,8 @@ navbar:
         href: articles/Solms_2020_BAY94_9027.html
       - text: "BIIB023 (Galluppi 2016)"
         href: articles/Galluppi_2016_BIIB023.html
+      - text: "Balcinrenone (Parkinson 2025)"
+        href: articles/Parkinson_2025_balcinrenone.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "Baricitinib (Decker 2024)"
@@ -3976,6 +3978,7 @@ articles:
   - articles/Park_2014_SKL10406
   - articles/Park_2014_triflusal
   - articles/Park_2023_mycophenolic_acid
+  - articles/Parkinson_2025_balcinrenone
   - articles/Parmar_2023_spectinamides_pbpk
   - articles/ParraGuillen_2013_tumor_immunotherapy
   - articles/Passey_2011_tacrolimus

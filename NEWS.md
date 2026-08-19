@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Parkinson 2025 balcinrenone ([doi:10.1007/s40262-025-01572-7](https://doi.org/10.1007/s40262-025-01572-7)) -- healthy participants, participants with renal impairment, and patients with heart failure and chronic kidney disease.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
