@@ -2536,6 +2536,22 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Source aliases:** none.
 - **Example models:** `Stevens_2012_remoxipride.R`.
 
+### depot_ip (**canonical intraperitoneal depot**)
+- **Type:** compartment
+- **Role:** Intraperitoneal depot used in parallel-route preclinical PK models, typically alongside `depot_sc`. Each route carries its own absorption rate constant (`lka_ip` / `ka_ip`).
+- **Source aliases:**
+  - `A1` -- Fan 2025 notation for the IP amount in eq 1.
+- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`.
+- **Notes:** Registered 2026-08-19 as a well-formed member of the existing `depot_<route>` family (`depot_im`, `depot_oral`, `depot_brain`). Deliberately preferred over the numbered `depot1` / `depot2` form because the route is load-bearing: the two depots in a parallel-route model are not interchangeable, they carry route-specific absorption rate constants, and a study arm selects exactly one of them.
+
+### depot_sc (**canonical subcutaneous depot**)
+- **Type:** compartment
+- **Role:** Subcutaneous depot used in parallel-route models where a bare `depot` would be ambiguous because a second dosing route is modelled explicitly. Pairs with the absorption rate constant `lka_sc` / `ka_sc`, which is already in use across the library.
+- **Source aliases:**
+  - `A2` -- Fan 2025 notation for the SC amount in eq 2.
+- **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`.
+- **Notes:** Registered 2026-08-19 alongside `depot_ip`. A single-route subcutaneous model should keep the bare canonical `depot`; use `depot_sc` only when the model carries a second, explicitly named dosing route.
+
 ---
 
 ## K-PD virtual drug compartments
