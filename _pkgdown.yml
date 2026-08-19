@@ -294,12 +294,20 @@ navbar:
         href: articles/Svensson_2017_bedaquiline.html
       - text: "Bedaquiline (Svensson 2018)"
         href: articles/Svensson_2018_bedaquiline.html
+      - text: "Bedaquiline dog pbpk (Karakitsios 2025)"
+        href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
+      - text: "Bedaquiline human pbpk (Karakitsios 2025)"
+        href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
       - text: "Bedaquiline lpvr (Svensson 2014)"
         href: articles/Svensson_2014_bedaquiline_arv.html
+      - text: "Bedaquiline mouse pbpk (Karakitsios 2025)"
+        href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
       - text: "Bedaquiline mpbpk (Mehta 2023)"
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Bedaquiline nvp (Svensson 2014)"
         href: articles/Svensson_2014_bedaquiline_arv.html
+      - text: "Bedaquiline rat pbpk (Karakitsios 2025)"
+        href: articles/Karakitsios_2025_bedaquiline_lung_pbpk.html
       - text: "Belantamab (Papathanasiou 2025)"
         href: articles/Papathanasiou_2025_belantamab.html
       - text: "Belantamab mprotein (Collins 2023)"
@@ -3661,6 +3669,7 @@ articles:
   - articles/Kappelhoff_2005_ritonavir
   - articles/Karaiskos_2015_colistin
   - articles/Karakitsios_2024_gevokizumab
+  - articles/Karakitsios_2025_bedaquiline_lung_pbpk
   - articles/Karlsson_2009_voriconazole
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kassir_2014_tacrolimus
