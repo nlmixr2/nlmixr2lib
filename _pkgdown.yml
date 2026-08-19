@@ -2322,6 +2322,8 @@ navbar:
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Rilpivirine (Aouri 2017)"
         href: articles/Aouri_2017_rilpivirine.html
+      - text: "Rimegepant (Comisar 2025)"
+        href: articles/Comisar_2025_rimegepant.html
       - text: "Risankizumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Risankizumab (Suleiman 2018)"
@@ -3344,6 +3346,7 @@ articles:
   - articles/Colin_2014_moxifloxacin
   - articles/Collins_2023_belantamab_mprotein
   - articles/Colombo_2006_atazanavir
+  - articles/Comisar_2025_rimegepant
   - articles/Conil_2007_ceftazidime
   - articles/Conil_2010_tobramycin
   - articles/Conrado_2014_alzheimer
