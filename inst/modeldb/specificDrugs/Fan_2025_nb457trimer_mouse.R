@@ -103,6 +103,13 @@ Fan_2025_nb457trimer_mouse <- function() {
     label("First-order rate constant for HIV-1 release from infected cells beta (1/h)")  # Table 2, Nb457 row "beta (1/h)" = 8.12e-7 (%RSE 21.1)
     llambda_virus <- log(0.81)
     label("Scaling ratio lambda relating the infected-cell pool to viral load (unitless)")  # Table 2, Nb457 row "lambda" = 0.81 (%RSE 36.1)
+    # Table 2's units cell reads cells/mL, kept verbatim here. Note that
+    # this value in cells/mL is 0.8 cells/uL, far below any viable CD4+
+    # count, while in cells/uL it is unremarkable; the units label is
+    # very likely off by 1000. Because eqs 6-7 are linear in this state,
+    # `virus` is exactly proportional to BASE_T, and the vignette Errata
+    # shows that a x1000 rescale closes most of the gap to the published
+    # viral-load figures. Not applied: the error is inferred, not stated.
     lrbase_infected <- log(814.2)
     label("Estimated initial condition of the infected CD4+ T-cell pool BASE_T (cells/mL)")  # Table 2, Nb457 row "BASE T (cells/mL)" = 814.2 (%RSE 44.2)
 

@@ -231,7 +231,7 @@ mousePk <- bind_rows(lapply(
   }
 ))
 
-ggplot(mousePk, aes(time, Cc, colour = route)) +
+ggplot(filter(mousePk, Cc > 0), aes(time, Cc, colour = route)) +
   geom_line(linewidth = 0.8) +
   facet_wrap(~drug, scales = "free_y") +
   scale_y_continuous(trans = "log", breaks = c(0.1, 1, 10, 100)) +
@@ -333,11 +333,24 @@ knitr::kable(ncaTbl, caption = "Simulated NCA versus the observed-data NCA repor
 attr(ncaTbl, "footnote")
 ```
 
-Only two of the eight cells fall inside 20%: the nanobody SC Cmax
-(65.2 versus 67.0 ug/mL, -2.8%) and the ibalizumab IP half-life (20.0 versus
-24.8 h, -19%). The nanobody IP Cmax is under-predicted by roughly a factor of
-three and both ibalizumab Cmax values are over-predicted. The reference column
-here is an NCA of the **observed** mouse data (`n` = 4, eight time points),
+Only two of the eight cells fall inside 20%: the nanobody SC Cmax (65.1 versus
+67.0 ug/mL, -2.8%) and the ibalizumab IP half-life (19.9 versus 24.8 h,
+-19.4%). The nanobody IP Cmax is under-predicted by a factor of 2.7 and both
+ibalizumab Cmax values are over-predicted by 37-63%.
+
+The half-life rows deserve a separate note, because the gap there is
+structural rather than numerical. A one-compartment model whose absorption is
+faster than its elimination has a single terminal slope, so its half-life
+cannot depend on the route: the simulated values are 39.2 h (IP) and 36.8 h
+(SC) for the nanobody, and 19.9 h by both routes for ibalizumab. The published
+observed-data NCA instead reports 7.47 h versus 27.71 h for the nanobody and
+24.75 h versus 34.31 h for ibalizumab -- a 3.7-fold and a 1.4-fold route
+difference for the same drug. No model of the published structure can produce
+a route-dependent terminal half-life, so those reference values reflect the
+sparse design (`n` = 4, eight time points, a 120 h window) rather than a target
+the packaged model could have been expected to hit.
+
+The reference column throughout is an NCA of the **observed** mouse data,
 while the simulated column is the model's own typical-value prediction; the
 published visual predictive check in Figure 3 shows the same gap, with the
 model median running below the observed peaks. These rows therefore measure a
@@ -592,14 +605,20 @@ ibaTbl <- data.frame(
 knitr::kable(ibaTbl, caption = "Packaged ibalizumab projection against values digitized from Figure S7.")
 ```
 
-The packaged projection peaks about 60% higher and troughs about three-fold
-lower than the published trace, i.e. it decays too fast. The implied terminal
-half-life of the published curve (falling from roughly 155 to 28 ug/mL over a
-14-day interval) is about 5.7 days, against 2.7 days for `ln(2) * Vss / CL`
-with the parameters here. `Q` and `V4` are the only human parameters the paper
-does not print, so they are the natural suspects; see Errata. They were derived
-by applying the published exponents to the published murine values and were
-**not** adjusted to close this gap.
+The packaged projection has too much peak-to-trough swing: it peaks 60% above
+the published line (360 versus 225 ug/mL), sits about twice as high at the
+week-8 trough while doses are still weekly (58.9 versus 30 ug/mL), and then
+falls about three-fold below it once dosing widens to every two weeks (8.68
+versus 28 ug/mL at weeks 24 and 48). A profile that is simultaneously high at
+the short inter-dose interval and low at the long one is the signature of a
+terminal slope that is too steep. The implied terminal half-life of the
+published curve (falling from roughly 155 to 28 ug/mL over a 14-day interval)
+is about 5.7 days, against 2.7 days for `ln(2) * Vss / CL` with the parameters
+here. Part of the peak excess is the bolus assumption noted above, but that
+cannot explain the trough behaviour. `Q` and `V4` are the only human parameters
+the paper does not print, so they are the natural suspects; see Errata. They
+were derived by applying the published exponents to the published murine values
+and were **not** adjusted to close this gap.
 
 # Assumptions and deviations
 
@@ -649,23 +668,67 @@ by applying the published exponents to the published murine values and were
    control is therefore several hundred-fold above the packaged prediction at
    week 1, growing to several thousand-fold by week 4.
 
-   Because the gap *grows*, no single prefactor closes it: rescaling the
-   product `beta * lambda * BASE_T` shifts the whole curve but cannot change
-   its slope. The residual is a slope difference. In eqs 6-7 the asymptotic
-   log-slope of `virus` is exactly `kPV - kCV`, which for the nanobody is
-   0.016 /h = 2.69 natural-log units per week; the published control lines
-   read about 3.3 log units per week (Figure 3, right, weeks 1-4) and about
-   3.8 (Figure 5, left). Both offsets are present for **both** drugs and in
-   **both** the murine and the human figures, so this is not a single
-   mistyped table cell, and it is not resolvable from anything printed in the
-   paper. No value was altered.
+   The gap decomposes cleanly into a scale error and a slope error, and the
+   scale part has a very likely explanation. Table 2 gives `BASE T` as
+   814.2 **cells/mL**. A CD4+ T-cell count of 814 cells/mL is 0.8 cells/uL,
+   which is not a viable value; 814 cells/**uL** is an unremarkable normal
+   CD4 count. The units cell is almost certainly mislabelled by a factor of
+   1000. Because eqs 6-7 are linear in `A5`, `virus` is exactly proportional
+   to `BASE_T`, so this is testable without touching the fit:
+
+```{r errata-baset}
+wkT   <- c(1, 2, 3, 4) * 168
+ctlEv <- evt(numeric(0), 0, "depot_sc", seq(0, 28 * 24, by = 6))
+asIs  <- solveIt(zNb, ctlEv)
+perUl <- solveIt(zNb, ctlEv, params = c(lrbase_infected = log(814.2 * 1000)))
+
+at2 <- function(s) approx(s$time, s$virus, wkT)$y
+# Figure 3 (right), murine control, read off the natural-log axis.
+pubFig3 <- exp(c(5.8, 9.5, 12.6, 15.6))
+
+baseT <- data.frame(
+  Week = 1:4,
+  `As published (cells/mL)` = signif(at2(asIs), 3),
+  `Reading BASE_T as cells/uL` = signif(at2(perUl), 3),
+  `Figure 3 control` = signif(pubFig3, 3),
+  check.names = FALSE
+)
+baseT$`Fold gap, as published`  <- signif(pubFig3 / at2(asIs), 3)
+baseT$`Fold gap, as cells/uL`   <- signif(pubFig3 / at2(perUl), 3)
+knitr::kable(baseT, caption = "Effect of reading BASE_T as cells/uL rather than cells/mL.")
+
+# virus is exactly linear in BASE_T, so the rescale is a pure factor of 1000.
+stopifnot(isTRUE(all.equal(at2(perUl) / at2(asIs), rep(1000, 4))))
+```
+
+   As published the model sits 720- to 3,800-fold below the digitized
+   control; reading `BASE_T` as cells/uL brings it to within a factor of 1.4
+   at week 1 and 3.8 at week 4. What remains after that rescale is a pure
+   slope difference, and no prefactor can absorb it: in eqs 6-7 the
+   asymptotic log-slope of `virus` is exactly `kPV - kCV`, which for the
+   nanobody is 0.016 /h = 2.69 natural-log units per week, against about 3.3
+   read off Figure 3 (right) and about 3.8 off Figure 5 (left). Notably, the
+   *ibalizumab* row of Table 2 gives `kPV - kCV` = 0.0198 /h = 3.33 log units
+   per week, which matches the Figure 3 control slope well -- yet the two
+   drugs share the same experimental control arm, so the two fits disagree
+   about a curve they both observed.
+
+   **The packaged files keep 814.2 exactly as Table 2 prints it.** The
+   rescale above is a diagnostic, not a correction: the units error is
+   inferred rather than stated, and `beta`, `lambda` and `BASE_T` enter the
+   viral-load prediction only through their product, so a reader who wants
+   the published figure magnitudes can supply any one of the three. No value
+   was altered.
 
    The *shape* of every PD figure is reproduced faithfully: log-linear
    untreated growth after an initial transient from `virus(0) = 0`, a treated
    arm held far below control, and three superimposed human regimens.
 2. **The ibalizumab human projection decays too fast** relative to Figure S7
-   (2.7-day versus about 5.7-day terminal half-life; peaks about 60% high,
-   troughs about three-fold low). The unprinted `Q` and `V4` are the only
+   (2.7-day versus about 5.7-day terminal half-life). The symptom is excess
+   peak-to-trough swing rather than a uniform offset: the peak is about 60%
+   high, the week-8 trough about twice high while dosing is weekly, and the
+   week-24 and week-48 troughs about three-fold low once dosing widens to
+   every two weeks. The unprinted `Q` and `V4` are the only
    degrees of freedom, and no published value constrains them, so the
    principled derivation was kept rather than back-solved from the figure.
 3. **The abstract's precision claim is contradicted by Table 1.** The abstract
