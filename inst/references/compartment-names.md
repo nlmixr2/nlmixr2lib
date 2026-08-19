@@ -3591,15 +3591,33 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 
 ---
 
+## Transporter-DDI perpetrator drug suffixes
+
+Perpetrator (inhibitor) drug suffixes used when an endogenous-biomarker or
+victim-drug model carries the perpetrator's own PK as coupled ODE states in the
+same file, rather than importing its concentration as a time-varying covariate.
+Each suffix drives `central_<drug>` / `depot_<drug>` compartments, the matching
+`lcl_<drug>` / `lvc_<drug>` / `lka_<drug>` PK parameters, the `Cc_<drug>`
+concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
+
+### prob (**canonical probenecid perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Probenecid (organic-anion transport inhibitor) perpetrator drug suffix, used when a model carries probenecid's own one-compartment first-order-absorption PK as coupled states in order to drive a concentration-dependent OAT1/OAT3 inhibition term on a co-modelled substrate or endogenous biomarker.
+- **Source aliases:**
+  - `PROB` -- the near-universal paper symbol, used in `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (Table 2, Figure 2).
+- **Example models:** `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (doi:10.1002/cpt.70023; `depot_prob` / `central_prob` drive `cu_prob` into the competitive OAT3 term on GCDCA-S renal clearance).
+- **Notes:** Distinct from the covariate canonicals `CONMED_PROBENECID` (binary co-administration indicator) and `CP_PRB_MGL` (probenecid plasma concentration supplied directly as a time-varying column). Use `prob` only when the probenecid PK is carried as ODE states inside the model file; when the concentration is supplied externally, use `CP_PRB_MGL` and register no compartment. Probenecid MW = 285.34 g/mol, so a 500 mg oral dose is 1752 umol.
+
 ## TB-treatment drug suffixes (combination antibiotic)
 
 TB-treatment drug suffixes used in combination-antibiotic `central_<drug>` / `depot_<drug>` / `peripheral1_<drug>` PK subsystems. Each suffix is the canonical drug INN lowercase abbreviation.
 
 ### rif (**canonical rifampicin drug suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Rifampicin drug suffix in combination TB models.
-- **Source aliases:** none.
-- **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`, `Clewe_2018_TB_MTP_GPDI_in_vitro.R`.
+- **Role:** Rifampicin drug suffix, used both in combination TB models and as a perpetrator suffix when a transporter-DDI model carries rifampicin's own PK as coupled ODE states to drive an OATP1B inhibition term (see the "Transporter-DDI perpetrator drug suffixes" section above).
+- **Source aliases:**
+  - `RIF` -- used in `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (Table 2, Figure 2).
+- **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`, `Clewe_2018_TB_MTP_GPDI_in_vitro.R`, `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (perpetrator use; `central_rif` with zero-order absorption drives `cu_rif` into the competitive OATP1B3 term on GCDCA-S hepatobiliary clearance).
 
 ### inh (**canonical isoniazid drug suffix**)
 - **Type:** metabolite-suffix

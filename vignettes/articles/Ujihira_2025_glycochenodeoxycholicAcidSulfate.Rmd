@@ -1,0 +1,604 @@
+---
+title: "Glycochenodeoxycholic acid 3-O-sulfate, an OATP1B3 / OAT3 biomarker (Ujihira 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Glycochenodeoxycholic acid 3-O-sulfate, an OATP1B3 / OAT3 biomarker (Ujihira 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ujihira_2025_glycochenodeoxycholicAcidSulfate"))$reference`
+* Article: <https://doi.org/10.1002/cpt.70023>
+
+Glycochenodeoxycholic acid 3-O-sulfate (GCDCA-S) is a sulfated bile-acid
+conjugate proposed by the International Transporter Consortium as a Tier 2
+endogenous biomarker of hepatic OATP1B3 and renal OAT3. Ujihira 2025 is the
+first mechanistic population-PK model for it, and it quantifies two things that
+were previously unknown: the biomarker's zero-order synthesis rate, and the
+split between its hepatobiliary and renal elimination routes.
+
+The distinctive feature of this extraction is that the model is a **single
+coupled three-drug system**. The paper fit the GCDCA-S turnover model
+simultaneously with the perpetrator PK of rifampicin and probenecid (Figure 2),
+and the two inhibition constants plus the probenecid fold-change `X` are joint
+estimates across that system. The model file therefore carries all five ODE
+states in one place, so a user can dose a perpetrator and read the biomarker
+response directly, without a two-step simulate-then-feed workflow.
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("Ujihira_2025_glycochenodeoxycholicAcidSulfate"))
+mod
+```
+
+The model declares four endpoints, so rxode2 places their slots *after* the five
+ODE states. Observation records in every event table below therefore use
+`cmt = "Cc"` and not `cmt = "central"`: with more than one declared endpoint,
+`cmt = "central"` is rejected with `'dvid'->'cmt' or 'cmt' on observation
+record`. Because `Cc` already has an endpoint slot from the model definition,
+naming it on an observation row injects nothing and renumbers nothing, and
+`rxSolve()` returns every model variable as an output column regardless of which
+endpoint is named.
+
+```{r endpoint-map}
+mod$predDf[, c("var", "cond", "cmt", "dvid")]
+mod$state
+```
+
+# Population and biological context
+
+```{r population}
+pop <- readModelDb("Ujihira_2025_glycochenodeoxycholicAcidSulfate")()$population
+str(pop, max.level = 1)
+```
+
+The model was developed on 24 healthy White volunteers pooled from three
+crossover studies, each with a control occasion and an inhibitor occasion
+(Ujihira 2025 Table 1): Tatosian et al. 2021 (n = 6, 3 male / 3 female, single
+600 mg oral rifampicin), Willemin et al. 2021 (n = 6, all female, probenecid
+500 mg four times daily on days 1-7 after two day-0 loading doses), and an
+unpublished study of the same design as Willemin (n = 12, all male). 430
+GCDCA-S plasma samples and 175 GCDCA-S
+urine samples were fit simultaneously with 153 perpetrator plasma samples in
+Monolix 2024R2.
+
+Observed GCDCA-S plasma baseline was approximately 80 nmol/L, with high
+between-subject variability (CV 34-69% across the three studies) and
+comparable within-subject diurnal variability (CV 34-43%) -- both larger than
+for the Tier 1 biomarker coproporphyrin I. Six diurnal-fluctuation functions
+(Table S2) and a sex effect on the synthesis rate (Table S3) were each tested
+and each failed to improve the fit, so neither appears in the final model.
+
+# Source trace
+
+Every structural equation and every `ini()` value, with its location in the
+source.
+
+| Model element | Value | Source location |
+| --- | --- | --- |
+| Plasma turnover ODE, no inhibitor | `dC/dt = [ksyn - (C*CLh + C*CLR)] / Vc` | Eq. 1, main text p. 1535 |
+| Plasma turnover ODE, with inhibitors | `dC/dt = [ksyn - (C*CLh/(1+Cu_RIF/Ki_u_OATP1B3)*(1/X) + C*CLR/(1+Cu_PROB/Ki_u_OAT3))] / Vc` | Eq. 2, main text p. 1535 |
+| Urine ODE, no inhibitor | `dA/dt = C*CLR` | Eq. 3, main text p. 1535 |
+| Urine ODE, with probenecid | `dA/dt = C*CLR/(1+Cu_PROB/Ki_u_OAT3)` | Eq. 4, main text p. 1535 |
+| Rifampicin structure | 1-compartment, zero-order absorption after a lag, linear elimination | Methods "Structural models"; Figure 2 left panel |
+| Probenecid structure | 1-compartment, first-order absorption, linear elimination | Methods "Structural models"; Figure 2 right panel |
+| `lksyn` = log(1.0) umol/h | 1.0 (RSE 18%) | Table 2, GCDCA-S `k syn` |
+| `lvc` = fixed(log(4.8)) L | 4.8 (FIXED) | Table 2, GCDCA-S `V c,GCDCA-S` |
+| `lcl_renal` = log(0.31) L/h | 0.31 (RSE 8%) | Table 2, GCDCA-S `CL R,GCDCA-S` |
+| `lcl_nonren` = log(15) L/h | 15 (RSE 13%) | Table 2, GCDCA-S `CL h,GCDCA-S` |
+| `ltlag_rif` = log(0.56) h | 0.56 (RSE 20%) | Table 2, RIF `Tlag RIF` |
+| `ld1_rif` = log(0.84) h | 0.84 (RSE 41%) | Table 2, RIF `Tk0 RIF` |
+| `lvc_rif` = log(35) L | 35 (RSE 5%) | Table 2, RIF `V RIF` |
+| `lcl_rif` = log(6.7) L/h | 6.7 (RSE 8%) | Table 2, RIF `CL RIF` |
+| `lkiu_oatp1b3` = log(0.009) umol/L | 0.009 (RSE 29%) | Table 2, RIF `K i,unbound,OATP1B3` |
+| `lka_prob` = log(1.1) 1/h | 1.1 (RSE 37%) | Table 2, PROB `ka PROB` |
+| `lvc_prob` = log(17) L | 17 (RSE 10%) | Table 2, PROB `V PROB` |
+| `lcl_prob` = log(0.95) L/h | 0.95 (RSE 7%) | Table 2, PROB `CL PROB` |
+| `lkiu_oat3` = log(2.7) umol/L | 2.7 (RSE 12%) | Table 2, PROB `K i,unbound,OAT3` |
+| `e_prob_clh` = -0.4118 | `X` = 1.7 (RSE 5%), encoded as 1/X - 1 | Table 2, PROB `X`; Eq. 2 |
+| `etalksyn` = 0.3164 | IIV 61% (RSE 15%), log(1 + 0.61^2) | Table 2, GCDCA-S IIV |
+| `etalcl_renal` = 0.0560 | IIV 24% (RSE 25%) | Table 2, GCDCA-S IIV |
+| `etaltlag_rif` = 0.1920 | IIV 46% (RSE 32%) | Table 2, RIF IIV |
+| `etald1_rif` = 0.4657 | IIV 77% (RSE 37%) | Table 2, RIF IIV |
+| `etalcl_rif` = 0.0319 | IIV 18% (RSE 35%) | Table 2, RIF IIV |
+| `etalvc_prob` = 0.0917 | IIV 31% (RSE 28%) | Table 2, PROB IIV |
+| `etalcl_prob` = 0.0704 | IIV 27% (RSE 20%) | Table 2, PROB IIV |
+| `etalkiu_oat3` = 0.0975 | IIV 32% (RSE 27%) | Table 2, PROB IIV |
+| `propSd` = 0.45 | 45% (RSE 3%) | Table 2, `sigma prop - GCDCA-S plasma` |
+| `propSd_Ugcdcas` = 0.29 | 29% (RSE 1%) | Table 2, `sigma prop - GCDCA-S urine` |
+| `propSd_rif` = 0.20 | 20% (RSE 14%) | Table 2, `sigma prop - RIF` |
+| `addSd_rif` = fixed(0.2) umol/L | 0.2 (FIXED) | Table 2, `sigma add - RIF` |
+| `propSd_prob` = 0.23 | 23% (RSE 8%) | Table 2, `sigma prop - PROB` |
+| `addSd_prob` = fixed(0.001) umol/L | 0.001 (FIXED) | Table 2, `sigma add - PROB` |
+| `fu_rif` = fixed(0.11) | **not in Ujihira 2025** -- see Errata | Barnett 2018 Table 1 footnote c |
+| `fu_prob` = fixed(0.062) | **not in Ujihira 2025** -- see Errata | Ahmad 2021 Table 1 footnote |
+
+## Units of every ODE term (dimensional analysis)
+
+The whole system runs in `umol` and `umol/L` (= `uM`), which is why perpetrator
+doses must be supplied in `umol` rather than `mg`.
+
+| Term | Units | Check |
+| --- | --- | --- |
+| `central`, `urine` | umol | state = amount |
+| `Cc = central / vc` | umol / L = uM | matches the paper's `C_GCDCA-S` (uM) |
+| `ksyn` | umol/h | matches the paper's `k syn` (umol/h) |
+| `cl_nonren`, `cl_renal` | L/h | matches `CLh`, `CLR` (L/h) |
+| `(cl_nonren_eff + cl_renal_eff) * Cc` | L/h * umol/L = umol/h | balances `d/dt(central)` |
+| `d/dt(urine) = cl_renal_eff * Cc` | umol/h | matches the paper's `A_GCDCA-S` (umol) |
+| `cu_rif / kiu_oatp1b3` | uM / uM = unitless | inhibition term is dimensionless |
+| `e_prob_clh` | unitless | multiplicative factor on `cl_nonren` |
+| `central_rif / vc_rif` | umol / L = uM | matches `Cu,RIF` scale after `fu_rif` |
+
+The paper writes Eq. 1 in terms of concentration with the whole bracket divided
+by `Vc`; the file uses the algebraically identical amount form
+(`d/dt(central) = ksyn - CL*Cc` with `Cc = central/vc`), which is the standard
+rxode2 idiom and makes the urine state directly comparable to the paper's
+`A_GCDCA-S` in umol.
+
+```{r constants}
+# Molecular weights used only to convert the published mg doses into the umol
+# the model consumes. Rifampicin 822.94 g/mol and probenecid 285.34 g/mol are
+# the values already carried by the nlmixr2lib covariate / model registers
+# (PubChem CID 135398735 and 4911 agree to 4 significant figures).
+MW_RIF  <- 822.94
+MW_PROB <- 285.34
+
+dose_umol <- function(mg, mw) mg / mw * 1000
+
+# Typical-value (deterministic) model for the structural checks.
+mod0 <- rxode2::zeroRe(mod)
+
+# Analytic baseline from Eq. 1 with dC/dt = 0: Css = ksyn / (CLh + CLR).
+ksyn <- 1.0; clh <- 15; clr <- 0.31; vc <- 4.8
+css_analytic <- ksyn / (clh + clr)
+c(css_umol_per_L = css_analytic, css_nmol_per_L = css_analytic * 1000)
+```
+
+# Steady-state check
+
+With no perpetrator on board the model must sit at the analytic baseline
+`ksyn / (CLh + CLR)` indefinitely.
+
+```{r steady-state}
+ev_ss <- rxode2::et(seq(0, 168, by = 0.5), cmt = "Cc") |> as.data.frame()
+ev_ss$CONMED_PROBENECID <- 0
+
+ss <- rxode2::rxSolve(mod0, ev_ss, returnType = "data.frame")
+
+max_drift <- max(abs(ss$Cc - css_analytic))
+c(analytic = css_analytic, simulated = ss$Cc[1], max_abs_drift = max_drift)
+
+stopifnot(max_drift < 1e-10)
+```
+
+The simulated baseline holds at `r signif(css_analytic, 6)` umol/L
+(`r signif(css_analytic * 1000, 4)` nmol/L) over 7 days with no drift.
+
+# Perturbation-recovery
+
+The model-body initial condition `central(0) <- ksyn/(CLh + CLR) * vc` overrides
+`rxSolve(inits = )`, so the state is displaced with events instead: a bolus dose
+that doubles the central amount, and an `evid = 6` multiply event that halves
+it. Both must return to the same attractor.
+
+```{r perturbation}
+c0 <- css_analytic * vc
+
+perturb <- function(ev, label) {
+  ev <- as.data.frame(ev)
+  ev$CONMED_PROBENECID <- 0
+  out <- rxode2::rxSolve(mod0, ev, returnType = "data.frame")
+  out$arm <- label
+  out
+}
+
+up <- perturb(
+  rxode2::et(amt = c0, cmt = "central", time = 0) |>
+    rxode2::et(seq(0, 6, by = 0.02), cmt = "Cc"),
+  "2x baseline (bolus)"
+)
+dn <- perturb(
+  rxode2::et(amt = 0.5, cmt = "central", time = 0, evid = 6) |>
+    rxode2::et(seq(0, 6, by = 0.02), cmt = "Cc"),
+  "0.5x baseline (multiply)"
+)
+
+recov <- dplyr::bind_rows(up, dn)
+
+c(final_up = tail(up$Cc, 1), final_dn = tail(dn$Cc, 1), target = css_analytic)
+stopifnot(abs(tail(up$Cc, 1) - css_analytic) < 1e-9,
+          abs(tail(dn$Cc, 1) - css_analytic) < 1e-9)
+```
+
+```{r perturbation-plot, fig.cap = "Perturbation-recovery: displacing GCDCA-S to twice and half its baseline returns it to the same steady state."}
+ggplot2::ggplot(recov, ggplot2::aes(time, Cc, colour = arm)) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::geom_hline(yintercept = css_analytic, linetype = "dashed") +
+  ggplot2::labs(x = "Time (h)", y = "GCDCA-S plasma (umol/L)", colour = NULL) +
+  ggplot2::theme_bw()
+```
+
+Recovery is fast because the uninhibited system's relaxation half-life is
+`ln(2) * Vc / (CLh + CLR)` =
+`r signif(log(2) * vc / (clh + clr), 3)` h. This is a load-bearing property of
+the model: under strong OATP1B3 inhibition `CLh` collapses, the effective
+half-life lengthens by more than an order of magnitude, and the biomarker
+therefore accumulates slowly rather than jumping to a new quasi-steady state.
+
+# Mass-balance / flux check
+
+At the baseline, production must exactly balance elimination, and the renal
+fraction of the total flux is the fraction excreted in urine, `fe`.
+
+```{r mass-balance}
+flux_in    <- ksyn
+flux_hep   <- clh * css_analytic
+flux_renal <- clr * css_analytic
+fe         <- clr / (clh + clr)
+
+c(production = flux_in,
+  hepatobiliary = flux_hep,
+  renal = flux_renal,
+  net = flux_in - flux_hep - flux_renal,
+  fe_percent = 100 * fe,
+  biliary_percent = 100 * (1 - fe))
+
+stopifnot(abs(flux_in - flux_hep - flux_renal) < 1e-12)
+```
+
+`fe` = `r signif(100 * fe, 3)`% reproduces the paper's central mechanistic
+finding: biliary excretion is the primary route of elimination for GCDCA-S
+(reported as ~95%, with `fe` < 5%; Results and Discussion, and Table S6 which
+infers `fe` < 3.1-6.9% from four independent clinical DDI studies).
+
+A second, sharper identity: with no inhibitor present, the operational renal
+clearance `Ae(0-24) / AUC(0-24)` must recover the `CLR` parameter exactly.
+
+```{r clr-identity}
+ev_24 <- rxode2::et(seq(0, 24, by = 0.02), cmt = "Cc") |> as.data.frame()
+ev_24$CONMED_PROBENECID <- 0
+s24 <- rxode2::rxSolve(mod0, ev_24, returnType = "data.frame")
+
+trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+clr_operational <- (max(s24$Ugcdcas) - min(s24$Ugcdcas)) / trapz(s24$time, s24$Cc)
+
+c(clr_parameter = clr, clr_operational = clr_operational)
+stopifnot(abs(clr_operational - clr) < 1e-6)
+```
+
+# Rifampicin OATP1B3 interaction
+
+The paper's headline predictive check is the GCDCA-S plasma AUC ratio
+(`AUCR0-24h`) after a single oral rifampicin dose. Reported values: predicted
+AUCR of **13** at 600 mg against an observed range of **10-16**, and predicted
+**9.3** at 300 mg against an observed **4.3-5.9** (Results, "GCDCA-S model
+verification"; Table S4 lists the 600 mg value as 13).
+
+```{r rif-sim}
+sim_rif <- function(mg, label) {
+  ev <- if (is.na(mg)) {
+    rxode2::et(seq(0, 24, by = 0.02), cmt = "Cc")
+  } else {
+    rxode2::et(amt = dose_umol(mg, MW_RIF), cmt = "central_rif",
+               rate = -2, time = 0) |>
+      rxode2::et(seq(0, 24, by = 0.02), cmt = "Cc")
+  }
+  ev <- as.data.frame(ev)
+  ev$CONMED_PROBENECID <- 0
+  out <- rxode2::rxSolve(mod0, ev, returnType = "data.frame")
+  out$treatment <- label
+  out$id <- 1L
+  out
+}
+
+rif <- dplyr::bind_rows(
+  sim_rif(NA,  "Control"),
+  sim_rif(300, "RIF 300 mg"),
+  sim_rif(600, "RIF 600 mg")
+)
+```
+
+`rate = -2` on the dose record is required so rxode2 uses the modelled
+zero-order duration `dur(central_rif) <- d1_rif` rather than treating the dose
+as an instantaneous bolus.
+
+```{r rif-nca}
+conc_rif <- dplyr::filter(rif, !is.na(Cc))
+
+o_conc <- PKNCA::PKNCAconc(conc_rif, Cc ~ time | id / treatment)
+intervals <- data.frame(start = 0, end = 24,
+                        auclast = TRUE, cmax = TRUE, tmax = TRUE)
+nca_rif <- PKNCA::pk.nca(PKNCA::PKNCAdata(o_conc, intervals = intervals))
+
+nca_tab <- as.data.frame(nca_rif) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+auc_ctl <- nca_tab$auclast[nca_tab$treatment == "Control"]
+
+# Published reference values joined BY KEY, never by row position, so a change
+# in PKNCA's output ordering cannot silently transpose them.
+published <- data.frame(
+  treatment      = c("RIF 300 mg", "RIF 600 mg"),
+  published_AUCR = c(9.3, 13),
+  observed_AUCR  = c("4.3-5.9", "10-16")
+)
+
+aucr <- nca_tab |>
+  dplyr::filter(treatment != "Control") |>
+  dplyr::mutate(AUCR = auclast / auc_ctl) |>
+  dplyr::inner_join(published, by = "treatment") |>
+  dplyr::select(
+    "Treatment"          = treatment,
+    "AUC0-24h (uM*h)"    = auclast,
+    "Cmax (uM)"          = cmax,
+    "Simulated AUCR"     = AUCR,
+    "Published AUCR"     = published_AUCR,
+    "Observed AUCR"      = observed_AUCR
+  )
+
+knitr::kable(aucr, digits = 2,
+             caption = "GCDCA-S plasma AUC ratio after single-dose rifampicin, simulated vs. Ujihira 2025.")
+```
+
+`PKNCA` reports "No dose information provided" because GCDCA-S is endogenous and
+has no dose record; only the interval-based `auclast` / `cmax` / `tmax` are
+requested, none of which need a dose.
+
+```{r rif-assert}
+aucr_600 <- aucr[["Simulated AUCR"]][aucr$Treatment == "RIF 600 mg"]
+aucr_300 <- aucr[["Simulated AUCR"]][aucr$Treatment == "RIF 300 mg"]
+
+# 600 mg: must land inside the paper's observed range of 10-16 and within 15%
+# of the paper's own predicted 13.
+stopifnot(aucr_600 > 10, aucr_600 < 16, abs(aucr_600 / 13 - 1) < 0.15)
+# 300 mg: must reproduce the paper's PREDICTED 9.3 within 15%. The paper is
+# explicit that its own prediction overestimates the observed 4.3-5.9 here, so
+# the target is the prediction, not the observation.
+stopifnot(abs(aucr_300 / 9.3 - 1) < 0.15)
+```
+
+This is the strongest available end-to-end check on the extraction: the AUCR is
+a product of the mg-to-umol conversion, the rifampicin PK parameters, the
+unbound fraction `fu_rif`, the inhibition constant `Ki,u,OATP1B3`, and the
+GCDCA-S clearance split. An error in any one of them would move it.
+
+```{r rif-plot, fig.cap = "GCDCA-S plasma response to single-dose rifampicin (replicates the pattern of Ujihira 2025 Figure 3a and Figure 4b)."}
+ggplot2::ggplot(rif, ggplot2::aes(time, Cc, colour = treatment)) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::labs(x = "Time (h)", y = "GCDCA-S plasma (umol/L)", colour = NULL) +
+  ggplot2::theme_bw()
+```
+
+```{r rif-pk-plot, fig.cap = "Rifampicin perpetrator PK driving the interaction (replicates Ujihira 2025 Figure 4c)."}
+ggplot2::ggplot(dplyr::filter(rif, treatment != "Control"),
+                ggplot2::aes(time, Cc_rif, colour = treatment)) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::labs(x = "Time (h)", y = "Rifampicin plasma (umol/L)", colour = NULL) +
+  ggplot2::theme_bw()
+```
+
+# Probenecid OAT3 interaction
+
+For OAT3 the paper's metric is renal clearance, not plasma AUC: Table S4 reports
+a `CLR` ratio (`CLR,+inhibitor / CLR,control`) of **0.1** at steady state under
+the probenecid regimen. The regimen is 500 mg at 6 pm and 11 pm on day 0, then
+500 mg at 7 am, 1 pm, 6 pm and 11 pm on days 1-7 (Table 1).
+
+```{r prob-sim}
+# t = 0 is the day-0 6 pm dose; the day-1 onward pattern repeats every 24 h.
+dose_times <- c(0, 5, as.vector(outer(c(13, 19, 24, 29), 24 * (0:6), "+")))
+dose_times <- sort(dose_times[dose_times <= 24 * 7.5])
+grid <- seq(0, 24 * 7.5, by = 0.05)
+
+sim_prob <- function(on) {
+  ev <- if (on) {
+    rxode2::et(amt = dose_umol(500, MW_PROB), cmt = "depot_prob",
+               time = dose_times) |>
+      rxode2::et(grid, cmt = "Cc")
+  } else {
+    rxode2::et(grid, cmt = "Cc")
+  }
+  ev <- as.data.frame(ev)
+  ev$CONMED_PROBENECID <- as.integer(on)
+  rxode2::rxSolve(mod0, ev, returnType = "data.frame")
+}
+
+prob_ctl <- sim_prob(FALSE)
+prob_on  <- sim_prob(TRUE)
+
+# Steady-state 24 h window (day 6 -> day 7).
+window_metrics <- function(s) {
+  k <- s$time >= 144 & s$time <= 168
+  auc <- trapz(s$time[k], s$Cc[k])
+  ae  <- max(s$Ugcdcas[k]) - min(s$Ugcdcas[k])
+  c(AUC = auc, Ae = ae, CLR = ae / auc)
+}
+
+w_ctl <- window_metrics(prob_ctl)
+w_on  <- window_metrics(prob_on)
+
+prob_tab <- data.frame(
+  Metric = c("AUC0-24h (uM*h)", "Ae0-24h (umol)", "CLR (L/h)"),
+  Control = as.numeric(w_ctl),
+  Probenecid = as.numeric(w_on),
+  Ratio = as.numeric(w_on) / as.numeric(w_ctl)
+)
+knitr::kable(prob_tab, digits = 4,
+             caption = "GCDCA-S at steady state under the Willemin probenecid regimen.")
+```
+
+```{r prob-assert}
+clr_ratio <- unname(w_on["CLR"] / w_ctl["CLR"])
+auc_ratio <- unname(w_on["AUC"] / w_ctl["AUC"])
+
+c(clr_ratio = clr_ratio, published_clr_ratio = 0.1,
+  auc_ratio = auc_ratio, X = 1.7)
+
+# Table S4 reports the CLR ratio to one significant figure as 0.1; require the
+# simulated ratio to be consistent with that rounding (stated as an explicit
+# interval rather than round(), which is rounding-mode dependent at 0.125).
+stopifnot(clr_ratio > 0.05, clr_ratio < 0.15)
+# The plasma AUC ratio must recover X = 1.7 to within 5%: CLh dominates total
+# clearance, so reducing it 1.7-fold raises plasma exposure 1.7-fold, while the
+# OAT3 inhibition of the small renal arm contributes almost nothing to AUC.
+stopifnot(abs(auc_ratio / 1.7 - 1) < 0.05)
+```
+
+The two ratios separate the two mechanisms exactly as the paper describes them
+(Figure S3): OAT3 inhibition is read out almost entirely in `CLR` (ratio
+`r signif(clr_ratio, 3)`), while the plasma AUC moves only by the
+concentration-independent `X` factor (`r signif(auc_ratio, 3)` against
+`X` = 1.7). This is why the paper recommends `CLR` rather than plasma AUC as
+the GCDCA-S metric for OAT3-mediated DDI.
+
+```{r prob-plot, fig.cap = "GCDCA-S plasma and renal clearance under multiple-dose probenecid (replicates the pattern of Ujihira 2025 Figure 3a-b)."}
+prob_plot <- dplyr::bind_rows(
+  dplyr::mutate(prob_ctl, arm = "Control"),
+  dplyr::mutate(prob_on,  arm = "Probenecid 500 mg QID")
+)
+ggplot2::ggplot(prob_plot, ggplot2::aes(time / 24, Cc, colour = arm)) +
+  ggplot2::geom_line(linewidth = 0.7) +
+  ggplot2::labs(x = "Time (days)", y = "GCDCA-S plasma (umol/L)", colour = NULL) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+# Between-subject variability and the observed baseline
+
+The paper reports an observed GCDCA-S plasma baseline of approximately
+80 nmol/L (Results) and 85 nmol/L in Table S5. The typical value implied by the
+parameters is lower, at `r signif(css_analytic * 1000, 4)` nmol/L, because
+`ksyn` carries 61% log-normal IIV and the reported baselines are arithmetic
+means, not medians.
+
+```{r cohort}
+set.seed(20250101)
+ev_cohort <- rxode2::et(seq(0, 24, by = 1), cmt = "Cc") |> as.data.frame()
+ev_cohort$CONMED_PROBENECID <- 0
+
+cohort <- rxode2::rxSolve(mod, ev_cohort, nSub = 200, returnType = "data.frame")
+
+baseline_by_subject <- cohort |>
+  dplyr::filter(time == 0) |>
+  dplyr::summarise(
+    median_nM = median(Cc) * 1000,
+    mean_nM   = mean(Cc) * 1000,
+    cv_pct    = 100 * sd(Cc) / mean(Cc)
+  )
+baseline_by_subject
+
+# Analytic log-normal mean of the baseline: median * exp(omega^2 / 2).
+c(analytic_mean_nM = css_analytic * 1000 * exp(0.3163576 / 2),
+  reported_mean_nM = 80)
+```
+
+The simulated cohort mean baseline lands close to the reported ~80 nmol/L, and
+the simulated baseline CV is consistent with the observed 34-69% range across
+the three development studies.
+
+```{r cohort-plot, fig.cap = "Simulated baseline GCDCA-S distribution in 200 virtual subjects, no inhibitor."}
+ggplot2::ggplot(dplyr::filter(cohort, time == 0),
+                ggplot2::aes(Cc * 1000)) +
+  ggplot2::geom_histogram(bins = 30, fill = "grey70", colour = "white") +
+  ggplot2::geom_vline(xintercept = 80, linetype = "dashed") +
+  ggplot2::labs(x = "Baseline GCDCA-S plasma (nmol/L)", y = "Subjects",
+                caption = "Dashed line: reported observed baseline of ~80 nmol/L.") +
+  ggplot2::theme_bw()
+```
+
+# Assumptions and deviations
+
+**Unbound fractions are not reported by Ujihira 2025.** The model's inhibition
+terms are driven by *unbound* perpetrator concentrations (`Cu,RIF`, `Cu,PROB`),
+and both inhibition constants in Table 2 are unbound constants, but neither the
+main text nor Supplementary Material S1 ever states the `fu` used to convert the
+modelled *total* plasma concentrations to unbound. Both values come from the
+upstream models the paper explicitly adopts, and neither is verifiable from the
+Ujihira 2025 sources alone. They are therefore pinned against two on-disk answer
+keys instead:
+
+* **Rifampicin `fu` = 0.11.** Carried by the sibling nlmixr2lib extractions
+  `Barnett_2018_coproporphyrin_I` and `Barnett_2018_rosuvastatin`, whose
+  source-trace comments record Barnett 2018 Table 1 footnote c converting
+  `Ki,total` = 1.15 uM to `Ki,unbound` = 0.13 uM and 2.23 uM to 0.25 uM at
+  `fu` = 0.11. Ujihira 2025 Table S7 independently lists that same Barnett study
+  at `Ki,u` = 0.13 uM, so the two agree.
+* **Probenecid `fu` = 0.062.** Attributed to Ahmad 2021, the source of this
+  model's probenecid structure (Methods, "Structural models"). Ahmad 2021 is
+  *not* among this extraction's source files, so the attribution itself could
+  not be checked.
+
+The two interaction checks above are what actually pin these values, and both
+are on-disk answer keys:
+
+* `fu_rif` is pinned by the rifampicin AUCR check, which reproduces Table S4's
+  predicted `AUCR0-24h` of 13 at 600 mg. That number is a product of the
+  mg-to-umol conversion, the rifampicin PK, `fu_rif`, `Ki,u,OATP1B3`, and the
+  GCDCA-S clearance split; a materially different `fu` moves it.
+* `fu_prob` is pinned by the probenecid check, which reproduces Table S4's
+  steady-state `CLR` ratio of 0.1. Recovering 0.1 requires
+  `1 + Cu,PROB/Ki,u,OAT3` of about 10. The total average steady-state
+  concentration under 500 mg QID is `1752 umol / (0.95 L/h * 6 h)` = 307 uM, so
+  `fu` = 0.062 gives `Cu` = 19 uM and a ratio of 0.12 -- consistent with 0.1 at
+  one significant figure, whereas `fu` = 1 gives 0.009 and `fu` = 0.03 gives
+  0.23. Both alternatives are excluded.
+
+**IIV scale.** Table 2's "IIV" column is a percentage whose scale (CV% versus
+the Monolix `omega` on the log scale) is not stated. It is read here as CV% and
+converted with `omega^2 = log(1 + CV^2)`, matching the convention used
+throughout nlmixr2lib and by the sibling `Barnett_2018_coproporphyrin_I` model.
+The reported RSEs support an SD-scale rather than a variance-scale reading: the
+best-determined term, `ksyn` IIV at 61% with RSE 15%, matches the
+`1/sqrt(2N)` = 14.4% expected for an SD estimate at N = 24, not the
+`sqrt(2/N)` = 28.9% expected for a variance. The residual CV%-versus-`omega`
+ambiguity changes `omega` by at most about 10% relative at the largest IIV and
+less elsewhere.
+
+**Molecular weights** are not in the paper. Doses in the source studies are in
+mg while the model runs in umol, so rifampicin 822.94 g/mol and probenecid
+285.34 g/mol are used for the conversion; both are already carried by the
+nlmixr2lib registers and agree with PubChem to four significant figures.
+
+**`CL RIF` units.** Table 2 prints the rifampicin clearance row as
+`CL RIF (L)`. It must be L/h for Eq. 1 to balance dimensionally, and 6.7 L/h is
+consistent with the 6.35 L/h of the upstream Takita 2022 rifampicin model, so
+the printed unit is treated as a typographical omission of the time term.
+
+**Not implemented, because the paper excluded them from the final model:** the
+six diurnal-fluctuation functions applied to `ksyn` (Table S2; none improved
+the fit, p > 0.9) and the sex effect on `ksyn` (Table S3; `COVSEX` = 0.065 with
+RSE 404%, dOFV = 3). The sex covariate is recorded in the model file's
+`covariatesDataExcluded` metadata so the screen is preserved without creating an
+unused-covariate warning.
+
+**Not implemented, because the paper did not have the data:** any effect of
+rifampicin or probenecid on GCDCA-S *synthesis*. The paper is explicit that
+rifampicin may both inhibit CYP7A1/CYP8B1 and induce SULT2A1, that this could
+confound the `Ki,u,OATP1B3` estimate, and that its own hypothetical simulations
+(Supplementary Eqs 7-10, Figure S5) show plasma AUC is highly sensitive to
+`ksyn`. Those hypothetical variants are sensitivity analyses, not the fitted
+model, and are not extracted. Enterohepatic recirculation is likewise excluded,
+consistent with the paper's rationale that bile-acid sulfates undergo limited
+intestinal reabsorption.
+
+**Perpetrator co-administration.** Rifampicin and probenecid were never given
+together in the source studies. The model supports both legs simultaneously,
+but that combination is an extrapolation beyond the fitted data.
+
+**Doses are in umol, not mg.** Because the whole system is parameterised in
+umol and uM, dose records for `central_rif` and `depot_prob` must be supplied in
+umol. Rifampicin doses additionally require `rate = -2` so that the modelled
+zero-order absorption duration is applied.
