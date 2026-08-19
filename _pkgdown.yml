@@ -88,6 +88,8 @@ navbar:
         href: articles/Mi_2024_aditoprim.html
       - text: "Aditoprim pbpkpd (Mi 2024)"
         href: articles/Mi_2024_aditoprim.html
+      - text: "Aficamten (Xu 2025)"
+        href: articles/Xu_2025_aficamten.html
       - text: "Aflibercept (Thai 2011)"
         href: articles/Thai_2011_aflibercept.html
       - text: "Agomelatine (Xie 2019)"
@@ -4340,6 +4342,7 @@ articles:
   - articles/Xu_2019_sarilumab
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
+  - articles/Xu_2025_aficamten
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_zolbetuximab
