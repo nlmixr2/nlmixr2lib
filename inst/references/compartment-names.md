@@ -3167,7 +3167,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Type:** metabolite-suffix
 - **Role:** 10-monohydroxy derivative (MHD, "10-hydroxy-carbazepine"), primary active metabolite of oxcarbazepine produced by cytosolic arylketone reductases.
 - **Source aliases:** none.
-- **Example models:** `Rodrigues_2017_oxcarbazepine.R` (doi:10.1111/bcp.13392).
+- **Example models:** `Rodrigues_2017_oxcarbazepine.R` (doi:10.1111/bcp.13392), `Sinha_2026_oxcarbazepine.R` (doi:10.1007/s40262-025-01579-0; joint parent-metabolite model carrying the suffix on `central_mhd`, `lcl_mhd`, `lvc_mhd`, `etalcl_mhd`, `etalvc_mhd` and `propSd_mhd`, with molar-mass-corrected bidirectional transfer between OXZ and MHD).
 
 ### r_enant (**canonical R-enantiomer suffix**)
 - **Type:** metabolite-suffix
