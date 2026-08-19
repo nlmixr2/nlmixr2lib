@@ -2650,6 +2650,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tebipenem (Ganesan 2023)"
         href: articles/Ganesan_2023_tebipenem.html
+      - text: "Tebipenem (Zhang 2026)"
+        href: articles/Zhang_2026_tebipenem.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Teicoplanin (Chen 2023)"
@@ -4401,6 +4403,7 @@ articles:
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_XZP5610
   - articles/Zhang_2024_sertraline
+  - articles/Zhang_2026_tebipenem
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir
