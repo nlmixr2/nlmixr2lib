@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yu 2025 vancomycin ([doi:10.1007/s40268-025-00523-8](https://doi.org/10.1007/s40268-025-00523-8)) -- Chinese pediatric inpatients (birth to 15 years) receiving IV vancomycin.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
