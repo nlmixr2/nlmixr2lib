@@ -1264,6 +1264,10 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Ibandronate (Pillai 2004)"
         href: articles/Pillai_2004_ibandronate.html
+      - text: "Ibrutinib bp (Ibrahim 2025)"
+        href: articles/Ibrahim_2025_ibrutinib.html
+      - text: "Ibrutinib cll (Ibrahim 2025)"
+        href: articles/Ibrahim_2025_ibrutinib.html
       - text: "Ibrutinib competing risk (Ibrahim 2023)"
         href: articles/Ibrahim_2023_ibrutinib.html
       - text: "Ibrutinib dbp (Ibrahim 2023)"
@@ -1272,6 +1276,8 @@ navbar:
         href: articles/Ibrahim_2023_ibrutinib.html
       - text: "Ibrutinib sbp (Ibrahim 2023)"
         href: articles/Ibrahim_2023_ibrutinib.html
+      - text: "Ibrutinib venetoclax (Ibrahim 2025)"
+        href: articles/Ibrahim_2025_ibrutinib.html
       - text: "Ibuprofen (Hirt 2008)"
         href: articles/Hirt_2008_ibuprofen.html
       - text: "Iclaprim (Lodise 2018)"
@@ -3605,6 +3611,7 @@ articles:
   - articles/Hwang_2023_carvedilol
   - articles/Hwang_2023_monalizumab
   - articles/Ibrahim_2023_ibrutinib
+  - articles/Ibrahim_2025_ibrutinib
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
   - articles/Iida_2008_nicorandil
