@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yamada 2025 fluorouracil and oxaliplatin ([doi:10.1007/s00280-025-04808-2](https://doi.org/10.1007/s00280-025-04808-2)) -- adults with locally advanced unresectable or metastatic gastric or gastroesophageal junction adenocarcinoma receiving mFOLFOX6 with or without zolbetuximab.
+- Add Xiang 2025 tacrolimus ([doi:10.2147/DDDT.S542786](https://doi.org/10.2147/DDDT.S542786)) -- adult renal transplant recipients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
