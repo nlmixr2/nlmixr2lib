@@ -1588,6 +1588,10 @@ navbar:
         href: articles/Betts_2018_mAb_linear_PK.html
       - text: "MAb human (Betts 2018)"
         href: articles/Betts_2018_mAb_linear_PK.html
+      - text: "MAb human (Patidar 2024)"
+        href: articles/Patidar_2024_mAb_size_charge_fcrn.html
+      - text: "MAb mouse (Patidar 2024)"
+        href: articles/Patidar_2024_mAb_size_charge_fcrn.html
       - text: "MAb tg32mouse (Betts 2018)"
         href: articles/Betts_2018_mAb_linear_PK.html
       - text: "MAb1 (Zheng 2012)"
@@ -4040,6 +4044,7 @@ articles:
   - articles/Passey_2011_tacrolimus
   - articles/Patel_2011_fluconazole
   - articles/Patel_2017_selumetinib
+  - articles/Patidar_2024_mAb_size_charge_fcrn
   - articles/Paule_2011_hydroxyurea
   - articles/Pei_2016_iloperidone
   - articles/Pei_2023_tacrolimus
