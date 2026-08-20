@@ -272,10 +272,8 @@ navbar:
         href: articles/Garrett_2014_axitinib.html
       - text: "Axomadol (MangasSanjuan 2016)"
         href: articles/MangasSanjuan_2016_axomadol.html
-      - text: "Azd7648 mouse (DeJongh 2025)"
-        href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
-      - text: "Azd7648 olaparib xenograft mouse (DeJongh 2025)"
-        href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
+      - text: "AZD6088 rat (Viberg 2012)"
+        href: articles/Viberg_2012_AZD6088_rat.html
       - text: "Azithromycin (Merchan 2015)"
         href: articles/Merchan_2015_azithromycin.html
       - text: "Azithromycin (Sampson 2014)"
@@ -286,14 +284,6 @@ navbar:
         href: articles/Zheng_2018_azithromycin.html
       - text: "Aztreonam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
-      - text: "BAY81 8973 (Garmann 2017)"
-        href: articles/Garmann_2017_BAY81_8973.html
-      - text: "BAY94 9027 (Solms 2020)"
-        href: articles/Solms_2020_BAY94_9027.html
-      - text: "BI754111 mpbpk (Michelet 2025)"
-        href: articles/Michelet_2025_BI754111_mpbpk.html
-      - text: "BIIB023 (Galluppi 2016)"
-        href: articles/Galluppi_2016_BIIB023.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "Baricitinib (Decker 2024)"
@@ -1804,6 +1794,8 @@ navbar:
         href: articles/Franken_2017_midazolam.html
       - text: "Midazolam (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Midazolam (McCann 2025)"
+        href: articles/McCann_2025_midazolam.html
       - text: "Midazolam (Swart 2004)"
         href: articles/Swart_2004_lorazepam_midazolam.html
       - text: "Midazolam (Xie 2025)"
@@ -2094,10 +2086,8 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
-      - text: "Pamiparib (Wickramasinghe 2025)"
-        href: articles/Wickramasinghe_2025_pamiparib.html
-      - text: "Pamiparib unbound (Wickramasinghe 2025)"
-        href: articles/Wickramasinghe_2025_pamiparib.html
+      - text: "PAmAb (Cao 2013)"
+        href: articles/Cao_2013_PAmAb.html
       - text: "Panitumumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Pantoprazole (Pettersen 2009)"
@@ -3565,15 +3555,15 @@ articles:
   - articles/Darpo_2014_racSotalol
   - articles/Darwish_2025_trofinetide
   - articles/Davis_2008_maraviroc
-  - articles/DeCock_2012_propyleneGlycol
-  - articles/DeJongh_2014_antithrombin
-  - articles/DeJongh_2025_azd7648_olaparib_xenograft
+  - articles/deAlwis_1998_ondansetron
   - articles/Debord_2001_cyclosporin
   - articles/Decker_2024_baricitinib
   - articles/DeCock_2012_propyleneGlycol
   - articles/Decrane_2023_oxyfluorfen
-  - articles/Deferm_2025_lactation_physiology
-  - articles/DelFrari_2018_propranolol
+  - articles/deHoogd_2017_morphine
+  - articles/deJonge_2005_paclitaxel
+  - articles/DeJongh_2014_antithrombin
+  - articles/deKock_2017_sulfadoxinePyrimethamine
   - articles/Delattre_2010_amikacin
   - articles/DelFrari_2018_propranolol
   - articles/Delor_2013_alzheimer
@@ -4085,6 +4075,7 @@ articles:
   - articles/Masters_2022_avelumab
   - articles/Matsumoto_2005_TF_505
   - articles/Mazzocco_2015_temozolomide
+  - articles/McCann_2025_midazolam
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin
@@ -4674,7 +4665,7 @@ articles:
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_sertraline
-  - articles/Zhang_2025_cefiderocol
+  - articles/Zhang_2024_XZP5610
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir
@@ -4710,30 +4701,5 @@ articles:
   - articles/Zuo_2024_apatinib
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
-  - articles/deAlwis_1998_ondansetron
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
-  - articles/vanErp_2010_sunitinib
-  - articles/vanHasselt_2013_eribulin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanIersel_2018_posaconazole
-  - articles/vanMaanen_2025_amyloid
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
-  - articles/vandenBerg_2021_finerenone
-  - articles/vandenBerg_2021_uprifosbuvir
-  - articles/vanderGaag_2025_osimertinib_pbpk
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END

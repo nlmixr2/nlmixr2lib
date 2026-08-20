@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Assmus 2025 benznidazole ([doi:10.1371/journal.pntd.0012968](https://doi.org/10.1371/journal.pntd.0012968)) -- mouse (BALB/c), uninfected satellite PK cohort and chronic *Trypanosoma cruzi* infection efficacy cohort.
+- Add McCann 2025 midazolam ([doi:10.1111/cts.70247](https://doi.org/10.1111/cts.70247)) -- children and young adults with and without obesity receiving standard-of-care IV midazolam.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
