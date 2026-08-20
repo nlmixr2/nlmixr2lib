@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2024 zastaprazan ([doi:10.1002/psp4.13228](https://doi.org/10.1002/psp4.13228)) -- patients with erosive gastroesophageal reflux disease and healthy volunteers.
+- Add Willmann 2024 elinzanetant ([doi:10.1002/psp4.13226](https://doi.org/10.1002/psp4.13226)) -- healthy volunteers and women with vasomotor symptoms associated with menopause.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

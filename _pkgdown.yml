@@ -878,6 +878,8 @@ navbar:
         href: articles/Sanchez_2011_efavirenz.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
+      - text: "Elinzanetant (Willmann 2024)"
+        href: articles/Willmann_2024_elinzanetant.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
       - text: "Eltrombopag (Farrell 2014)"
@@ -4413,6 +4415,7 @@ articles:
   - articles/Willmann_2021_fxi_aso
   - articles/Willmann_2021_rivaroxaban
   - articles/Willmann_2022_rivaroxaban
+  - articles/Willmann_2024_elinzanetant
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
