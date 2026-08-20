@@ -1002,6 +1002,8 @@ navbar:
         href: articles/PerezRuixo_2020_esketamine.html
       - text: "Etanercept (Fang 2010)"
         href: articles/Fang_2010_etanercept.html
+      - text: "Eteplirsen (Patel 2025)"
+        href: articles/Patel_2025_eteplirsen.html
       - text: "Ethambutol (Horita 2018)"
         href: articles/Horita_2018_ethambutol.html
       - text: "Ethambutol (Jonsson 2011)"
@@ -4219,7 +4221,7 @@ articles:
   - articles/Passey_2011_tacrolimus
   - articles/Patel_2011_fluconazole
   - articles/Patel_2017_selumetinib
-  - articles/Patidar_2024_mAb_size_charge_fcrn
+  - articles/Patel_2025_eteplirsen
   - articles/Paule_2011_hydroxyurea
   - articles/Pei_2016_iloperidone
   - articles/Pei_2023_tacrolimus

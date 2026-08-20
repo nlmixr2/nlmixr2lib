@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van der Gaag 2025 osimertinib target-site PBPK model ([doi:10.1002/psp4.70006](https://doi.org/10.1002/psp4.70006)) -- adults with advanced-stage EGFR-mutated non-small cell lung cancer.
+- Add Patel 2025 eteplirsen ([doi:10.1002/psp4.70001](https://doi.org/10.1002/psp4.70001)) -- boys with Duchenne muscular dystrophy aged 6 months to 16 years.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
