@@ -2,6 +2,14 @@
 
 # development version
 
+- Add Zhu 2024 pyrotinib ([doi:10.3389/fphar.2024.1432944](https://doi.org/10.3389/fphar.2024.1432944)) - Chinese patients with HER2-positive breast cancer.
+
+- Add Yau 2023 diazepam and midazolam simplified PBPK models ([doi:10.1002/psp4.12915](https://doi.org/10.1002/psp4.12915)) -- rat, cynomolgus monkey and the human translation.
+
+- Add Li 2024 ORIN1001 ([doi:10.3389/fphar.2024.1322557](https://doi.org/10.3389/fphar.2024.1322557)) - Chinese patients with advanced solid tumors.
+
+- Add Siebinga 2024 [177Lu]Lu-PSMA-I&T ([doi:10.1186/s40658-024-00642-2](https://doi.org/10.1186/s40658-024-00642-2)) - men with metastatic castration-resistant prostate cancer.
+
 - Add Braniff 2025 lorlatinib signaling / shell-and-core tumor QSP model ([doi:10.1002/psp4.13270](https://doi.org/10.1002/psp4.13270)) -- adults with ALK-positive advanced non-small cell lung cancer.
 
 - Add Ojara 2024 lamivudine ([doi:10.1002/psp4.13274](https://doi.org/10.1002/psp4.13274)) -- breastfeeding Ugandan women living with HIV, with paired maternal plasma and breast-milk data.
