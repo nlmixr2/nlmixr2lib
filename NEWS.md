@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Butragueno-Laiseca 2025 teicoplanin ([doi:10.1093/jac/dkaf012](https://doi.org/10.1093/jac/dkaf012)) -- critically ill children, including those on continuous kidney replacement therapy.
+- Add Xie 2025 midazolam ([doi:10.2147/DDDT.S495647](https://doi.org/10.2147/DDDT.S495647)) -- mechanically ventilated Chinese adult ICU patients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
