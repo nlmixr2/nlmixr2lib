@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Garcia 2025 garadacimab ([doi:10.1002/psp4.70009](https://doi.org/10.1002/psp4.70009)) -- healthy volunteers and adolescents and adults with hereditary angioedema.
+- Add van der Gaag 2025 osimertinib target-site PBPK model ([doi:10.1002/psp4.70006](https://doi.org/10.1002/psp4.70006)) -- adults with advanced-stage EGFR-mutated non-small cell lung cancer.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
