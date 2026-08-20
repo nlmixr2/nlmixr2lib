@@ -440,11 +440,84 @@ Pooled across the paper's sampling times the simulated S/P ratio is
 `r sprintf("%.2f +/- %.2f", sp_overall$mean, sp_overall$sd)`, against the paper's
 observed `0.89 +/- 0.22`. The closed-form spread implied by the two residual
 errors, `0.88 * sqrt(0.1292^2 + 0.2250^2)`, is
-`r sprintf("%.3f", sp_theory)` -- so the reported observed variability in the S/P
-ratio is fully accounted for by the model's residual-error structure, with no
-between-subject variability on the scale factor required. That is consistent with
-the authors' own finding that IIV on the scale factor shrank to 100% and had to be
-dropped.
+`r sprintf("%.3f", sp_theory)` -- so the pooled observed variability in the S/P
+ratio is accounted for by the model's residual-error structure alone, with no
+between-subject variability on the scale factor required. (Per timepoint the
+agreement is looser in both directions: the paper's observed S/P SDs span
+0.12-0.32 across the nine sampling times against a simulated 0.22-0.26, on
+observed subsets as small as n = 9.) That is consistent with the authors' own
+finding that the shrinkage on the scale-factor IIV reached 100%, so the term had
+to be dropped.
+
+## Dose-scale diagnostic for the absolute concentration level
+
+The simulated concentrations in the table above sit below the observed means at
+every timepoint. That is expected and is quantified here rather than asserted:
+the trial dosed 0.8 mg/kg on **adjusted ideal body weight**, which needs
+per-subject height and sex (not reported), so this vignette instead doses each
+virtual subject from the paper's own Equation 5-6 calculator at the 1200
+umol*min/L target. In a linear one-compartment model concentration is
+proportional to dose, so a pure dose mismatch appears as one common
+multiplicative offset. The post-infusion rows (t >= 2 h, after the 2-hour
+infusion has ended) are the ones free of infusion-timing artefacts.
+
+```{r table-2-offset}
+offset <- t2 |>
+  mutate(
+    ratio_plasma = plasma_sim / plasma_ref,
+    ratio_saliva = saliva_sim / saliva_ref,
+    phase = ifelse(time >= 2, "Post-infusion", "Intra-infusion")
+  )
+
+offset_post <- offset |> filter(time >= 2)
+ratios_post <- c(offset_post$ratio_plasma, offset_post$ratio_saliva)
+
+# One common dose-scale factor implied by the post-infusion rows of both matrices
+implied_dose_ratio <- exp(mean(log(ratios_post)))
+implied_dose_excess_pct <- 100 * (1 / implied_dose_ratio - 1)
+shortfall_post_pct <- range(100 * (1 - ratios_post))
+shortfall_intra_pct <- range(100 * (1 - c(offset$ratio_plasma[offset$time < 2],
+                                          offset$ratio_saliva[offset$time < 2])))
+
+# A single constant offset would leave the ratio flat in time. Quantify the drift
+# by the apparent 2 -> 6 h decline half-life of each mean series.
+decline_hl <- function(c2, c6) 4 * log(2) / log(c2 / c6)
+hl_obs_plasma <- decline_hl(t2$plasma_ref[t2$time == 2], t2$plasma_ref[t2$time == 6])
+hl_sim_plasma <- decline_hl(t2$plasma_sim[t2$time == 2], t2$plasma_sim[t2$time == 6])
+
+offset |>
+  transmute(
+    `Time (h)` = time,
+    Phase = phase,
+    `Plasma sim/obs` = round(ratio_plasma, 3),
+    `Saliva sim/obs` = round(ratio_saliva, 3)
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated/observed mean-concentration ratio by sampling time.",
+      "A pure dose-scale mismatch would hold this ratio constant."
+    )
+  )
+```
+
+Over the post-infusion rows the simulated means run
+`r sprintf("%.1f-%.1f%%", shortfall_post_pct[1], shortfall_post_pct[2])` below the
+observed ones, and a single dose-scale factor of
+`r sprintf("%.3f", implied_dose_ratio)` accounts for the bulk of that -- i.e. the
+trial's realised adjusted-ideal-body-weight doses averaged about
+`r sprintf("%.0f%%", implied_dose_excess_pct)` higher than the calculator returns
+at the 1200 umol*min/L target, which is the midpoint of the EMA 900-1500 window.
+
+The ratio is not perfectly flat, so the offset is not *purely* dose-scale: in
+plasma it drifts from
+`r sprintf("%.2f", offset_post$ratio_plasma[offset_post$time == 2])` at 2 h to
+`r sprintf("%.2f", offset_post$ratio_plasma[offset_post$time == 6])` at 6 h. The
+apparent 2-to-6 h decline half-life is `r sprintf("%.2f", hl_sim_plasma)` h
+simulated against `r sprintf("%.2f", hl_obs_plasma)` h for the observed means --
+both inside the 2-3 h terminal half-life the paper quotes for busulfan
+(Introduction). The observed means are cross-sectional over different and unequal
+subject subsets at each time (n = 9-70 in Table 2), so this is weak evidence
+about shape in either direction.
 
 # PKNCA validation
 
@@ -607,19 +680,26 @@ stopifnot(max(abs(ss_check$pct_diff)) < 2)
   dispersion parameters themselves are not reported; only the medians and ranges
   are. Marginal quantiles of the drawn cohort therefore need not match the
   unreported observed distribution.
-* **Absolute concentration level.** Simulated mean concentrations sit roughly
-  8-20% below the Table 2 observed means at every post-infusion timepoint. This
-  is a **dose-scale** offset, not a shape or structure mismatch: concentrations
-  in a linear one-compartment model are proportional to dose, and the simulated
-  doses come from the paper's Equation 5-6 calculator at the 1200 umol*min/L
-  target rather than from the 0.8 mg/kg adjusted-ideal-body-weight doses the
-  patients actually received (which are not reported per subject). Back-solving
-  the 2 h mean implies the trial's realised doses averaged about 10% higher than
-  the calculator's. Everything dose-independent -- the S/P ratio at every
-  timepoint, the profile shape, Tmax and t1/2 -- matches the paper closely, which
-  is the intended reading of these tables.
-* **Intra-infusion timepoints.** The 0.5 h row is the one substantial outlier
-  (-44%). Table 2 bins **actual** sampling times, and its early bins are very
+* **Absolute concentration level.** Simulated mean concentrations sit
+  `r sprintf("%.1f-%.1f%%", shortfall_post_pct[1], shortfall_post_pct[2])` below
+  the Table 2 observed means over the post-infusion timepoints, and
+  `r sprintf("%.1f-%.1f%%", shortfall_intra_pct[1], shortfall_intra_pct[2])` below
+  them intra-infusion. This is predominantly a **dose-scale** offset rather than a
+  structural mismatch: concentrations in a linear one-compartment model are
+  proportional to dose, and the simulated doses come from the paper's Equation 5-6
+  calculator at the 1200 umol*min/L target rather than from the 0.8 mg/kg
+  adjusted-ideal-body-weight doses the patients actually received (which are not
+  reported per subject). One common dose-scale factor of
+  `r sprintf("%.3f", implied_dose_ratio)` -- realised doses about
+  `r sprintf("%.0f%%", implied_dose_excess_pct)` above the calculator's -- accounts
+  for the bulk of it; the residual drift in that ratio with time is quantified in
+  the dose-scale diagnostic above and is not resolvable from the reported data.
+  The dose-independent checks -- the S/P ratio at every timepoint, Tmax, and t1/2 --
+  match the paper closely, which is the intended reading of these tables.
+* **Intra-infusion timepoints.** The 0.5 h row is the largest single deviation
+  (`r sprintf("%.1f%%", 100 * (offset$ratio_plasma[offset$time == 0.5] - 1))` plasma
+  and `r sprintf("%.1f%%", 100 * (offset$ratio_saliva[offset$time == 0.5] - 1))`
+  saliva). Table 2 bins **actual** sampling times, and its early bins are very
   sparse (n = 14, 16 and 9 at 0.5, 1.0 and 1.5 h, against 58-70 at 2-3 h) for a
   protocol whose only nominal intra-infusion sample was at 0.5 h; the simulation
   assumes every infusion ran exactly 2 h at a constant rate. Neither the realised
