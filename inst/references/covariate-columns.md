@@ -6427,6 +6427,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Kirubakaran_2022_tacrolimus.R` (state-dependent typical CL/F: 21.1 L/h without azole and 4.2 L/h with azole, an 80% reduction; also a state-dependent BSV magnitude on CL/F: 61% CV without azole vs 89.5% CV with azole).
 - **Notes:** Azoles are mechanism-based CYP3A4 and P-glycoprotein inhibitors with different inhibitor potencies (itraconazole > voriconazole > fluconazole). The per-model `covariateData[[CONMED_AZOLE]]$notes` must document (1) which azoles are pooled into the indicator, (2) any post-cessation lag (Kirubakaran 2022 carries `CONMED_AZOLE = 1` for one week after azole discontinuation to allow tacrolimus apparent clearance to stabilize given itraconazole's long half-life), and (3) whether the indicator is a baseline-only proxy or a true time-varying flag.
 
+### CONMED_BLEOMYCIN (**canonical for concomitant bleomycin coadministration indicator**)
+- **Description:** 1 = subject is receiving bleomycin as a component of the concomitant chemotherapy regimen during the observation interval, 0 = no concomitant bleomycin. Bleomycin is a glycopeptide antitumour antibiotic used in germ-cell-tumour, Hodgkin-lymphoma and squamous-cell regimens; roughly 65% of a dose is eliminated renally, so it is co-eliminated with (and potentially competes with or perturbs the renal handling of) other renally cleared cytotoxics such as methotrexate. Time-varying in principle because bleomycin dosing is scheduled on specific protocol days relative to the index drug.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant bleomycin).
+- **Source aliases:**
+  - `BLM` -- used in `Zhao_2025_methotrexate.R` (Eq. 5 writes the term as `e^BLM` with `BLM = 0.08 when combined with BLM, otherwise = 0`; the register splits that into a 0/1 indicator times an estimated coefficient).
+- **Example models:** `Zhao_2025_methotrexate.R` (exponential effect on MTX clearance, `exp(0.08 * CONMED_BLEOMYCIN)` = 1.083-fold; bleomycin is given on day 2 of a regimen whose methotrexate + vincristine dose falls on day 1).
+- **Notes:** Specific scope until a second model reuses the indicator. The direction found by Zhao 2025 -- bleomycin *accelerates* methotrexate clearance -- is not mechanistically established; the paper states plainly that "the influence of BLM on MTX remains unexplored" and lists enzyme induction, transporter upregulation, oxidative-stress modulation and detoxifying-enzyme activation as candidate explanations. A per-model `covariateData[[CONMED_BLEOMYCIN]]$notes` should record the timing of bleomycin relative to the index drug, because a covariate flagged at the subject level can conflate a genuine interaction with a regimen-cohort difference when the two drugs are not concurrent in plasma.
+
 ### CONMED_CBZ (**canonical for concomitant carbamazepine coadministration indicator**)
 - **Description:** 1 = subject is taking carbamazepine (CBZ) as a concomitant antiepileptic drug at the PK observation, 0 = no concomitant carbamazepine. Carbamazepine is a strong CYP3A4 / UGT / P-gp inducer that increases the apparent clearance of co-administered drugs. Time-varying when carbamazepine starts / stops within the observation window; time-fixed when the source paper analyses chronic-maintenance cohorts whose AED therapy is stable across the analysis window.
 - **Units:** (binary)

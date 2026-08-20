@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kobuchi 2025 dapagliflozin ([doi:10.7150/ijms.111519](https://doi.org/10.7150/ijms.111519)) -- Japanese outpatients with type 2 diabetes mellitus treated for one year in routine practice.
+- Add Zhao 2025 methotrexate ([doi:10.3389/fphar.2025.1548203](https://doi.org/10.3389/fphar.2025.1548203)) -- Chinese children and adults with intracranial germ cell tumors.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
