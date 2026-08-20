@@ -1446,6 +1446,8 @@ navbar:
         href: articles/Le_2015_lampalizumab.html
       - text: "Lampalizumab cyno (Le 2015)"
         href: articles/Le_2015_lampalizumab_cyno.html
+      - text: "Lanadelumab qsp (Sexton 2024)"
+        href: articles/Sexton_2024_lanadelumab_qsp.html
       - text: "Landiolol (Kunisawa 2015)"
         href: articles/Kunisawa_2015_landiolol.html
       - text: "Lanreotide (Buil-Bruna 2015)"
@@ -4159,6 +4161,7 @@ articles:
   - articles/Schutte_2018_desmopressin
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/Seng_2015_isoniazid
+  - articles/Sexton_2024_lanadelumab_qsp
   - articles/Shah_2012_mAb_PBPK
   - articles/Shah_2023_benzylpenicillin
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
