@@ -2808,8 +2808,8 @@ navbar:
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Torsemide (Jeong 2022)"
         href: articles/Jeong_2022_torsemide.html
-      - text: "Tozorakimab (Sadiq 2024)"
-        href: articles/Sadiq_2024_tozorakimab.html
+      - text: "Tovecimig (Na 2024)"
+        href: articles/Na_2024_tovecimig.html
       - text: "Tralokinumab (Baverel 2015)"
         href: articles/Baverel_2015_tralokinumab.html
       - text: "Tralokinumab (Soehoel 2022)"
@@ -3992,6 +3992,7 @@ articles:
   - articles/NA_NA_tte_gompertz_ev2
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
+  - articles/Na_2024_tovecimig
   - articles/Nader_2017_adalimumab
   - articles/Nagy_2017_obiltoxaximab
   - articles/Naik_2013_fasiglifam
