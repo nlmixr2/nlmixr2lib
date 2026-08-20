@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Centanni 2025 sunitinib thrombocytopenia ([doi:10.1007/s40273-024-01438-z](https://doi.org/10.1007/s40273-024-01438-z)) -- adults with imatinib-resistant gastrointestinal stromal tumours (GIST).
+- Add Gaspar 2025 fexofenadine ([doi:10.1007/s40262-024-01470-4](https://doi.org/10.1007/s40262-024-01470-4)) -- hospitalized older adult polymorbid patients pooled with healthy volunteers.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

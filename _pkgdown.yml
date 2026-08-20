@@ -1078,6 +1078,8 @@ navbar:
         href: articles/Sano_2023_fesoterodine.html
       - text: "Fesoterodine mcc (Sano 2023)"
         href: articles/Sano_2023_fesoterodine.html
+      - text: "Fexofenadine (Gaspar 2025)"
+        href: articles/Gaspar_2025_fexofenadine.html
       - text: "Filgrastim (Harrold 2020)"
         href: articles/Harrold_2020_filgrastim_ars.html
       - text: "Filgrastim (Jiang 2025)"
@@ -3584,6 +3586,7 @@ articles:
   - articles/Garonzik_2016_daptomycin
   - articles/Garot_2011_ceftriaxone
   - articles/Garrett_2014_axitinib
+  - articles/Gaspar_2025_fexofenadine
   - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
   - articles/Gebhard_2023_leukemia_maintenance_therapy
