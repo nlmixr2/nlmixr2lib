@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tsyplakova 2025 mycophenolate sodium and mycophenolate mofetil ([doi:10.3390/medsci13040235](https://doi.org/10.3390/medsci13040235)) -- adult renal transplant recipients.
+- Add Karakitsios 2025 bedaquiline lung PBPK models ([doi:10.1002/bcp.70163](https://doi.org/10.1002/bcp.70163)) -- mouse, rat (Sprague-Dawley), beagle dog, and adults with pulmonary drug-resistant tuberculosis.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
