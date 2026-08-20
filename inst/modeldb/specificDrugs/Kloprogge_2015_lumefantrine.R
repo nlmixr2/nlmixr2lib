@@ -41,11 +41,23 @@ Kloprogge_2015_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Kloprogge_2015_lumefantrine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   paper_specific_compartments <- c("central_dlf", "peripheral1_dlf")
   paper_specific_etas         <- c("etalcl_dlf", "etalvc_dlf")
   paper_specific_residual_sds <- c("propSd_dlf")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dlf     = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_dlf = list(analyte = "desbutyl-lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     GA = list(
@@ -197,7 +209,7 @@ Kloprogge_2015_lumefantrine <- function() {
     # (matches the same-author Kloprogge_2018 file's precedent; see
     # vignette Errata).
     lfdepot <- fixed(log(1))                                                         # Table 2: F                 = 100 (fixed)
-    label("LF relative bioavailability F (unitless, fixed at 1)")
+    label("LF relative bioavailability F (unitless)")
 
     lcl     <- log(5.35)                                                             # Table 2: CL_LF/F           = 5.35      (RSE 12.9%;  95% CI 4.11-6.77)
     label("LF apparent elimination clearance CL/F (L/h)")

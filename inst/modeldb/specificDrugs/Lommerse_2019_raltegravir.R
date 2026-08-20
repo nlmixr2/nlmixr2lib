@@ -2,11 +2,24 @@ Lommerse_2019_raltegravir <- function() {
   description <- "Integrated maternal-neonatal two-compartment first-order-absorption population PK model of oral raltegravir, coupling the maternal and fetal central compartments via a very fast intercompartmental clearance (1000 L/h) during pregnancy to enforce instantaneous placental equilibrium, and decoupling at birth (time t=0 in the model). Neonatal apparent clearance rises from nil at birth to CL_max (9.44 L/h at 25 kg) with a first-order maturation rate constant CL_tau (11.3 1/year, 90% mature by ~11 weeks); neonatal absorption rate constant rises from KA_base (0.0915 1/h) to KA_max (0.43 1/h) with a first-order maturation rate constant KA_tau (63.2 1/year, 90% mature by ~12 days). Neonate CL, Q, and volumes are allometrically scaled with fixed exponents 0.75 and 1.0 to a reference weight of 25 kg. Maternal disposition parameters (V2 3.52 L, V3 27 L, CL 9.73 L/h, Q 0.866 L/h; all at 25 kg reference) are fixed from the Rizk 2015 pediatric popPK (ref [12]); maternal KA (0.175 1/h) and bioavailability (F 0.517) are estimated. IIV is on neonate CL and KA and maternal F; residual error is combined additive (11.9 nM) and proportional (54%) (Lommerse 2019)."
   reference <- "Lommerse J, Clarke D, Kerbusch T, Merdjan H, Witjes H, Teppler H, Mirochnick M, Acosta EP, Wenning L, Nachman S, Chain A. Maternal-Neonatal Raltegravir Population Pharmacokinetics Modeling: Implications for Initial Neonatal Dosing. CPT Pharmacometrics Syst Pharmacol. 2019;8(9):643-653. doi:10.1002/psp4.12443"
   vignette <- "Lommerse_2019_raltegravir"
-  units <- list(time = "hour", dosing = "mg", concentration = "nM")
+  units <- list(time = "h", dosing = "mg", concentration = "nM")
 
   paper_specific_compartments <- c(
     "depot_mother", "central_mother", "peripheral_mother",
     "depot_neonate", "central_neonate", "peripheral_neonate"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_mother       = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_mother     = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_mother  = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE),
+    depot_neonate      = list(analyte = "Raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_neonate    = list(analyte = "Raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral_neonate = list(analyte = "Raltegravir", units = "mg", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
@@ -65,17 +78,17 @@ Lommerse_2019_raltegravir <- function() {
     # which evaluates to 0 at PNA=0 by construction. No explicit CL_base parameter is needed.
     # F4 (neonate bioavailability after birth) fixed to 1 as the reference anchor for the
     # relative-bioavailability parameterisation.
-    lfdepot_neonate <- fixed(log(1)); label("Neonate oral bioavailability (F4, fraction; fixed to 1)")       # Table 2, F4 fixed = 1
+    lfdepot_neonate <- fixed(log(1)); label("Neonate oral bioavailability (F4, fraction)")       # Table 2, F4 fixed = 1
 
     # =====================================================================
     # MATERNAL PK -- Rizk 2015 pediatric popPK (ref [12]) values at the same
     # 25 kg reference. All maternal disposition parameters are fixed; only
     # KA and F are estimated to inform the mother-to-fetus transfer.
     # =====================================================================
-    lcl_mother    <- fixed(log(9.73));  label("Maternal apparent clearance at 25 kg, fixed from Rizk 2015 (CL, L/h)")     # Table 2, CL fixed = 9.73 L/h
-    lvc_mother    <- fixed(log(3.52));  label("Maternal central volume at 25 kg, fixed from Rizk 2015 (V2, L)")           # Table 2, V2 fixed = 3.52 L
-    lvp_mother    <- fixed(log(27));    label("Maternal peripheral volume at 25 kg, fixed from Rizk 2015 (V3, L)")        # Table 2, V3 fixed = 27 L
-    lq_mother     <- fixed(log(0.866)); label("Maternal intercompartmental clearance at 25 kg, fixed from Rizk 2015 (Q, L/h)") # Table 2, Q fixed = 0.866 L/h
+    lcl_mother    <- fixed(log(9.73));  label("Maternal apparent clearance at 25 kg, from Rizk 2015 (CL, L/h)")     # Table 2, CL fixed = 9.73 L/h
+    lvc_mother    <- fixed(log(3.52));  label("Maternal central volume at 25 kg, from Rizk 2015 (V2, L)")           # Table 2, V2 fixed = 3.52 L
+    lvp_mother    <- fixed(log(27));    label("Maternal peripheral volume at 25 kg, from Rizk 2015 (V3, L)")        # Table 2, V3 fixed = 27 L
+    lq_mother     <- fixed(log(0.866)); label("Maternal intercompartmental clearance at 25 kg, from Rizk 2015 (Q, L/h)") # Table 2, Q fixed = 0.866 L/h
     lka_mother    <- log(0.175);        label("Maternal first-order absorption rate constant (KA, 1/h)")                  # Table 2, KA = 0.175 1/h
     lfdepot_mother <- log(0.517);       label("Maternal oral bioavailability relative to neonate F=1 anchor (F, fraction)") # Table 2, F = 0.517
 
@@ -84,13 +97,13 @@ Lommerse_2019_raltegravir <- function() {
     # instantaneous maternal-fetal equilibrium during pregnancy; the
     # coupling is gated OFF at and after birth (t >= 0).
     # =====================================================================
-    q_link_pregnant <- fixed(1000); label("Placental intercompartmental clearance during pregnancy (L/h; instant equilibrium)") # Methods: "the intercompartmental CL linking the maternal and fetal central compartments was set to 1,000 L/hour"
+    q_link_pregnant <- fixed(1000); label("Placental intercompartmental clearance during pregnancy (L/h; instant equilibrium)") # Methods: "the intercompartmental CL linking the maternal and fetal central compartments was set to 1,000 L/h"
 
     # =====================================================================
     # ALLOMETRIC EXPONENTS (all fixed per Methods)
     # =====================================================================
-    e_wt_cl_q  <- fixed(0.75); label("Fixed shared allometric exponent on CL and Q (unitless; Holford 1996)")  # Methods: fixed to 0.75
-    e_wt_vc_vp <- fixed(1.0);  label("Fixed shared allometric exponent on Vc and Vp (unitless; isometric)")    # Methods: fixed to 1.0
+    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless; Holford 1996)")  # Methods: fixed to 0.75
+    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric exponent on Vc and Vp (unitless; isometric)")    # Methods: fixed to 1.0
 
     # =====================================================================
     # IIV -- paper reports the magnitudes as fractions in Table 2 (matching

@@ -22,6 +22,21 @@ Wilbaux_2015_prostate <- function() {
   ddmore_id    <- "DDMODEL00000261"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    chemo          = list(analyte = "Chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    hormo          = list(analyte = "Hormonotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    latent_tumor   = list(analyte = "Tumour burden", units = NA_character_, specimen = "tumor", verified = FALSE),
+    ctc            = list(analyte = "Circulating tumour cell count", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    chemo_d        = list(analyte = "Chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    hormo_d        = list(analyte = "Hormonotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    latent_tumor_d = list(analyte = "Tumour burden", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    psa            = list(analyte = "Prostate-specific antigen", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     # No subject-level covariates were retained in the final published model
     # (Wilbaux 2015 Results: "No covariates were identified in the final
@@ -77,7 +92,7 @@ Wilbaux_2015_prostate <- function() {
     # The paper fixes LV0 = 1 ("LV corresponded to the fractional change
     # in the latent variable from baseline"). The .mod fixes THETA(1) at
     # 1 and OMEGA(1,1) at 1e-7 FIX (effectively no IIV).
-    lrbase <- fix(log(1)); label("Log of latent tumour-variable initial / baseline value LV0 (AU; fixed at 1 per Wilbaux 2015 Methods; .mod TH(1) = 1 FIX)")  # .lst FINAL TH 1 = 1.00E+00 (FIX)
+    lrbase <- fix(log(1)); label("Log of latent tumour-variable initial / baseline value LV0 (AU; per Wilbaux 2015 Methods; .mod TH(1) = 1 FIX)")  # .lst FINAL TH 1 = 1.00E+00 (FIX)
 
     # --- K-PD elimination rates (1/day) ---
     lk1 <- log(0.248);  label("Log of chemotherapy K-PD elimination rate constant Kc (1/day)") # .lst FINAL TH 2 = 2.48E-01; paper Table 1 Kc = 0.248

@@ -4,6 +4,19 @@ Sathe_2025_sacituzumab <- function() {
   vignette <- "Sathe_2025_sacituzumab"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "SG", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sn38     = list(analyte = "free SN-38", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_sn38 = list(analyte = "free SN-38", units = "mg", specimen = "plasma", verified = FALSE),
+    central_tab      = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_tab  = list(analyte = "tAB", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -112,8 +125,8 @@ Sathe_2025_sacituzumab <- function() {
     lkrel    <- -2.37; label("First-order SG-to-free-SN-38 release rate (log 1/h); KREL = 0.0937 1/h")             # Sathe 2025 Table 3 / Table S3
     lcl_sn38  <-  5.99; label("Apparent SN-38 clearance (log L/h); CLSN38/F = 401 L/h")                             # Sathe 2025 Table 3 / Table S3
     lq_sn38   <-  5.49; label("Apparent SN-38 intercompartmental clearance (log L/h); QSN38/F = 243 L/h")           # Sathe 2025 Table 3 / Table S3
-    lvc_sn38  <- fixed(log(49));   label("Apparent SN-38 central volume V1SN38/F (L); FIXED to Sathe 2024 [ref 10] literature value")     # Sathe 2025 Table 3; value carried from Sathe 2024 [ref 10] (originally Klein et al. Clin Pharmacol Ther 2002;72:638-647)
-    lvp_sn38  <- fixed(log(2177)); label("Apparent SN-38 peripheral volume V2SN38/F (L); FIXED to Sathe 2024 [ref 10] literature value")  # Sathe 2025 Table 3; value carried from Sathe 2024 [ref 10] (originally Klein et al. Clin Pharmacol Ther 2002;72:638-647)
+    lvc_sn38  <- fixed(log(49));   label("Apparent SN-38 central volume V1SN38/F (L); Sathe 2024 [ref 10] literature value")     # Sathe 2025 Table 3; value carried from Sathe 2024 [ref 10] (originally Klein et al. Clin Pharmacol Ther 2002;72:638-647)
+    lvp_sn38  <- fixed(log(2177)); label("Apparent SN-38 peripheral volume V2SN38/F (L); Sathe 2024 [ref 10] literature value")  # Sathe 2025 Table 3; value carried from Sathe 2024 [ref 10] (originally Klein et al. Clin Pharmacol Ther 2002;72:638-647)
     e_wt_cl_q_sn38 <- 0.519; label("Body-weight allometric exponent on free-SN-38 CL and Q (unitless)")             # Sathe 2025 Table 3 / Table S3
 
     # ============================================================

@@ -4,6 +4,14 @@ Melhem_2022_dostarlimab <- function() {
   vignette <- "Melhem_2022_dostarlimab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dostarlimab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -83,9 +91,9 @@ Melhem_2022_dostarlimab <- function() {
     # (same pattern as Masters_2022_avelumab). The resulting maximum
     # reduction at t >> T50 is 1 - exp(I_max) = 1 - exp(-0.161) = 0.149 (14.9 %),
     # matching the paper.
-    limax <- log(0.161); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Melhem 2022 Table 3: I_max = -0.161
-    lt50  <- log(108);   label("log T50; time at half of I_max (days)")                                # Melhem 2022 Table 3: T50 = 108 d
-    lhill <- log(5.29);  label("log Hill; sigmoid steepness coefficient (unitless)")                   # Melhem 2022 Table 3: Hill = 5.29
+    lcl_hill_max <- log(0.161); label("log|I_max|; magnitude of the log-CL reduction at t >> T50 (unitless)") # Melhem 2022 Table 3: I_max = -0.161
+    lcl_hill_t50  <- log(108);   label("log T50; time at half of I_max (days)")                                # Melhem 2022 Table 3: T50 = 108 d
+    lcl_hill_gamma <- log(5.29);  label("log Hill; sigmoid steepness coefficient (unitless)")                   # Melhem 2022 Table 3: Hill = 5.29
 
     # Allometric exponents on body weight (reference 70 kg).
     e_wt_cl    <- 0.470;  label("Allometric exponent of WT on CL (unitless)")              # Melhem 2022 Table 3: Effect of WT on CL = 0.470
@@ -111,7 +119,7 @@ Melhem_2022_dostarlimab <- function() {
     #   omega^2_Imax        = 0.537
     etalcl + etalvc ~ c(0.0551,
                         0.0210, 0.0258)
-    etalimax ~ 0.537
+    etalcl_hill_max ~ 0.537
 
     # Residual error (combined additive + proportional). Melhem 2022 Table 3
     # reports proportional 0.133 (unitless) and additive 2.79 mg/L. The
@@ -143,10 +151,10 @@ Melhem_2022_dostarlimab <- function() {
     # Time-dependent CL (Hill function of time since first dose; t in days).
     # I_max < 0; sign applied here to keep individual values strictly negative
     # under log-normal IIV on |I_max|.
-    imax_i <- -exp(limax + etalimax)
-    t50    <- exp(lt50)
-    hill   <- exp(lhill)
-    td_cl  <- exp(imax_i * t^hill / (t50^hill + t^hill))
+    cl_hill_max_i <- -exp(lcl_hill_max + etalcl_hill_max)
+    cl_hill_t50    <- exp(lcl_hill_t50)
+    cl_hill_gamma   <- exp(lcl_hill_gamma)
+    td_cl  <- exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
 
     # Individual PK parameters. CL_base is at t=0 for the reference patient;
     # td_cl folds in the time dependency.

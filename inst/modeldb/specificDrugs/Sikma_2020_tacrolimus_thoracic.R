@@ -20,7 +20,16 @@ Sikma_2020_tacrolimus_thoracic <- function() {
     "2020;45(1):123-134. doi:10.1007/s13318-019-00591-7."
   )
   vignette <- "Sikma_2020_tacrolimus_thoracic"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus thoracic", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -101,7 +110,7 @@ Sikma_2020_tacrolimus_thoracic <- function() {
     # absolute bioavailability was not identifiable, the variability in the
     # relative bioavailability was estimated similarly with theta_k fixed at
     # 1").
-    lfdepot <- fixed(log(1)) ; label("Oral bioavailability F (FIXED at 1)")             # Sikma 2020 Table 2 F = Fixed at 1
+    lfdepot <- fixed(log(1)) ; label("Oral bioavailability F")             # Sikma 2020 Table 2 F = Fixed at 1
 
     # ---- Inter-individual variability (Sikma 2020 Table 2) ------------------
     # Reported as %CV; converted to log-scale variance via

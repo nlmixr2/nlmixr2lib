@@ -28,6 +28,19 @@ Mehta_2023_pretomanid_mpbpk <- function() {
     weight = "kg"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "pretomanid", units = "mg", specimen = "administration site", verified = FALSE),
+    blood       = list(analyte = "pretomanid", units = "mg", specimen = "blood cell", verified = FALSE),
+    peripheral1 = list(analyte = "pretomanid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "pretomanid", units = "mg", specimen = "plasma", verified = FALSE),
+    lesion      = list(analyte = "pretomanid", units = "mg", specimen = "tissue", verified = FALSE),
+    lung        = list(analyte = "pretomanid", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

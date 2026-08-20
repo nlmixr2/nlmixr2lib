@@ -2,7 +2,18 @@ Zhao_2018_omeprazole <- function() {
   description <- "Population PK-pharmacogenetic model for oral omeprazole and its two metabolites 5-hydroxy-omeprazole and omeprazole sulfone in Caucasian neonates and young infants (Zhao 2018). One-compartment parent disposition with first-order absorption (Ka modulated by ABCB1 C3435T genotype) is followed by parallel formation into two one-compartment metabolites with apparent volume V_M/F fixed to 1 L; the omeprazole-to-5-hydroxy-omeprazole formation clearance (CLOMZ-M1) is modulated by CYP2C19 metabolizer phenotype (poor / intermediate / extensive-or-ultrarapid) and a postnatal-age power function, while the omeprazole-to-omeprazole-sulfone formation clearance (CLOMZ-M2) and the metabolite apparent eliminations carry no covariates. Linear omeprazole elimination was estimated as negligible (< 0.0001 L/h) and is therefore not included in the final structural model."
   reference   <- "Zhao W, Leroux S, Biran V, Jacqz-Aigrain E. Developmental pharmacogenetics of CYP2C19 in neonates and young infants: omeprazole as a probe drug. Br J Clin Pharmacol. 2018;84(5):997-1005. doi:10.1111/bcp.13526"
   vignette    <- "Zhao_2018_omeprazole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "omeprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central_5oh = list(analyte = "5-hydroxy-omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sfn = list(analyte = "omeprazole sulfone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     PNA = list(
@@ -89,12 +100,12 @@ Zhao_2018_omeprazole <- function() {
     # `kmet` paper-named-parameter token is used because it canonically
     # tags a metabolite-formation rate / formation-clearance scalar in
     # parent-plus-metabolite popPK models.
-    lvc_5oh    <- fixed(log(1));   label("Apparent volume of distribution V2/F of 5-hydroxy-omeprazole (L) -- fixed")   # Zhao 2018 Table 2: V2/F = 1 L FIX
+    lvc_5oh    <- fixed(log(1));   label("Apparent volume of distribution V2/F of 5-hydroxy-omeprazole (L)")   # Zhao 2018 Table 2: V2/F = 1 L FIX
     lkmet_5oh  <- log(0.658);      label("Formation parameter CLOMZ-M1 reference (theta2) for 5-hydroxy-omeprazole (L/h at PNA = 38 days / 1.249 months and EM/UM reference)")  # Zhao 2018 Table 2: theta2 = 0.658 L/h (RSE 21.4%)
     lcl_5oh    <- log(0.846);      label("Apparent elimination clearance CLM1/F of 5-hydroxy-omeprazole (L/h)")         # Zhao 2018 Table 2: CLM1/F = 0.846 L/h (RSE 18.4%)
 
     # Structural parameters -- omeprazole sulfone (M2) metabolite.
-    lvc_sfn    <- fixed(log(1));   label("Apparent volume of distribution V3/F of omeprazole sulfone (L) -- fixed")     # Zhao 2018 Table 2: V3/F = 1 L FIX
+    lvc_sfn    <- fixed(log(1));   label("Apparent volume of distribution V3/F of omeprazole sulfone (L)")     # Zhao 2018 Table 2: V3/F = 1 L FIX
     lkmet_sfn  <- log(0.140);      label("Formation parameter CLOMZ-M2 for omeprazole sulfone (L/h)")                   # Zhao 2018 Table 2: CLOMZ-M2 = 0.140 L/h (RSE 8.4%)
     lcl_sfn    <- log(0.130);      label("Apparent elimination clearance CLM2/F of omeprazole sulfone (L/h)")           # Zhao 2018 Table 2: CLM2/F = 0.130 L/h (RSE 27.3%)
 

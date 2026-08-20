@@ -4,6 +4,14 @@ Betts_2018_mAb_tg32mouse <- function() {
   vignette <- "Betts_2018_mAb_linear_PK"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "mAb tg32mouse", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mAb tg32mouse", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -36,7 +44,7 @@ Betts_2018_mAb_tg32mouse <- function() {
 
     # Per-compound residual error is in Supplementary Table 1 (not on disk); fixed at 0
     # per the skill's standing policy for unreported RUV (documented in vignette Errata).
-    propSd <- fixed(0); label("Proportional residual error (fraction; fixed at 0)")
+    propSd <- fixed(0); label("Proportional residual error (fraction)")
   })
   model({
     cl <- exp(lcl + etalcl)

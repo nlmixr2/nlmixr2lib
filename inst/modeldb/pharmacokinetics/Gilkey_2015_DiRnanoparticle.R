@@ -8,6 +8,18 @@ Gilkey_2015_DiRnanoparticle <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "DiR-NPs", units = "ug", specimen = "plasma", verified = FALSE),
+    liver  = list(analyte = "DiR-NPs", units = "ug", specimen = "tissue", verified = FALSE),
+    spleen = list(analyte = "DiR-NPs", units = "ug", specimen = "tissue", verified = FALSE),
+    kidney = list(analyte = "DiR-NPs", units = "ug", specimen = "tissue", verified = FALSE),
+    other  = list(analyte = "DiR-NPs", units = "ug", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

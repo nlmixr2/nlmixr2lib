@@ -574,6 +574,16 @@ unit conversion enabled) and are written out here. Section 3 demonstrates that
 the receptor-binding factor is required for the model to have any
 pharmacodynamics at all.
 
+**Minor: the declared unit of `PHI_periphery` is inconsistent.** The
+Parameter Dashboard "Species" sheet declares `PHI_periphery` in ug/mL while
+`PHI_Plasma`, and every other peripheral species, is declared in ng/mL. Taken
+literally the distribution term `CLD_PHI * (PHI_Plasma - PHI_periphery)` would
+then subtract two quantities a factor of 1000 apart. This implementation reads
+both states as ng/mL, which is the self-consistent interpretation and the one
+that reproduces the paper's vadadustat response above; the declared ug/mL is
+treated as a slip in the sheet. The state starts at zero either way, so
+nothing in the steady-state results depends on the choice.
+
 **Solver guard on the PHI Hill function.** `PHI_Plasma^0.17` has an infinite
 derivative at zero, which stalls the integrator during the undosed
 equilibration run. A `1e-24` offset is added inside the power. This is a

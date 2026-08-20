@@ -34,6 +34,18 @@ PerezBlanco_2016_doxorubicin <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central           = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2       = list(analyte = "DOX", units = "mg", specimen = "plasma", verified = FALSE),
+    central_doxol     = list(analyte = "DOXol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_doxol = list(analyte = "DOXol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(
@@ -165,11 +177,11 @@ PerezBlanco_2016_doxorubicin <- function() {
     # values for the estimated parameters are tabulated in Table 2.
 
     lcl       <- log(62.4) ; label("Doxorubicin total clearance CL (L/h); includes the Fm-fraction routed to doxorubicinol formation and the (1 - Fm)-fraction non-DOXol elimination") # Table 2 final-model CL = 62.4 L/h, RSE 11.5%
-    lvc       <- fixed(log(17.7))   ; label("Doxorubicin central volume V1 (L); FIXED from Kontny 2013") # Table 2 final-model V1 = 17.7 L FIX
+    lvc       <- fixed(log(17.7))   ; label("Doxorubicin central volume V1 (L); from Kontny 2013") # Table 2 final-model V1 = 17.7 L FIX
     lq        <- log(50.7) ; label("Doxorubicin inter-compartmental clearance Q to peripheral1 (L/h); paper Q2") # Table 2 final-model Q2 = 50.7 L/h, RSE 18.4%
-    lvp       <- fixed(log(1830))   ; label("Doxorubicin peripheral1 volume Vp (L); paper V2 FIXED from Kontny 2013") # Table 2 final-model V2 = 1830 L FIX
+    lvp       <- fixed(log(1830))   ; label("Doxorubicin peripheral1 volume Vp (L); paper V2 from Kontny 2013") # Table 2 final-model V2 = 1830 L FIX
     lq2       <- log(28.4) ; label("Doxorubicin inter-compartmental clearance Q2 to peripheral2 (L/h); paper Q3") # Table 2 final-model Q3 = 28.4 L/h, RSE 13.5%
-    lvp2      <- fixed(log(71))     ; label("Doxorubicin peripheral2 volume Vp2 (L); paper V3 FIXED from Kontny 2013") # Table 2 final-model V3 = 71 L FIX
+    lvp2      <- fixed(log(71))     ; label("Doxorubicin peripheral2 volume Vp2 (L); paper V3 from Kontny 2013") # Table 2 final-model V3 = 71 L FIX
 
     # ------------------------------------------------------------------
     # FRACTION METABOLISED TO DOXORUBICINOL
@@ -192,9 +204,9 @@ PerezBlanco_2016_doxorubicin <- function() {
     # popPK model; prior studies used a one-compartment DOXol.
 
     lcl_doxol <- log(26.8) ; label("Doxorubicinol total clearance CLm (L/h)") # Table 2 final-model CLm = 26.8 L/h, RSE 42.9%
-    lvc_doxol <- fixed(log(79.8))   ; label("Doxorubicinol central volume V4 (L); FIXED from sensitivity analysis") # Table 2 final-model V4 = 79.8 L FIX
+    lvc_doxol <- fixed(log(79.8))   ; label("Doxorubicinol central volume V4 (L); from sensitivity analysis") # Table 2 final-model V4 = 79.8 L FIX
     lq_doxol  <- log(424)  ; label("Doxorubicinol inter-compartmental clearance Q5 to peripheral1_doxol (L/h)") # Table 2 final-model Q5 = 424 L/h, RSE 18.0%
-    lvp_doxol <- fixed(log(653))    ; label("Doxorubicinol peripheral1 volume V5 (L); FIXED from sensitivity analysis") # Table 2 final-model V5 = 653 L FIX
+    lvp_doxol <- fixed(log(653))    ; label("Doxorubicinol peripheral1 volume V5 (L); from sensitivity analysis") # Table 2 final-model V5 = 653 L FIX
 
     # ------------------------------------------------------------------
     # INTER-INDIVIDUAL VARIABILITY
@@ -210,10 +222,10 @@ PerezBlanco_2016_doxorubicin <- function() {
     # No correlation between random-effect parameters was identified.
 
     etalcl       ~ 0.051112                                                                           # IIV(CL)  = 22.9% CV -> omega^2 = log(1 + 0.229^2) = 0.051112
-    etalq        ~ fixed(0.344214)                                                                    # IIV(Q2)  = 64.1% CV -> omega^2 = log(1 + 0.641^2) = 0.344214 (FIXED at model-building value)
-    etalq2       ~ fixed(0.076520)                                                                    # IIV(Q3)  = 28.2% CV -> omega^2 = log(1 + 0.282^2) = 0.076520 (FIXED at model-building value)
+    etalq        ~ fixed(0.344214)                                                                    # IIV(Q2) = 64.1% CV -> omega^2 = log(1 + 0.641^2) = 0.344214 (model-building value)
+    etalq2       ~ fixed(0.076520)                                                                    # IIV(Q3) = 28.2% CV -> omega^2 = log(1 + 0.282^2) = 0.076520 (model-building value)
     etalfm       ~ 0.160322                                                                           # IIV(Fm)  = 41.7% CV -> omega^2 = log(1 + 0.417^2) = 0.160322
-    etalcl_doxol ~ fixed(0.201130)                                                                    # IIV(CLm) = 47.2% CV -> omega^2 = log(1 + 0.472^2) = 0.201130 (FIXED at model-building value)
+    etalcl_doxol ~ fixed(0.201130)                                                                    # IIV(CLm) = 47.2% CV -> omega^2 = log(1 + 0.472^2) = 0.201130 (model-building value)
     etalq_doxol  ~ 0.297821                                                                           # IIV(Q5)  = 58.9% CV -> omega^2 = log(1 + 0.589^2) = 0.297821
 
     # ------------------------------------------------------------------

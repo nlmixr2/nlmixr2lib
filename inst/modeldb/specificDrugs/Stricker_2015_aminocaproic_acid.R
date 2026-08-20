@@ -2,7 +2,15 @@ Stricker_2015_aminocaproic_acid <- function() {
   description <- "Two-compartment IV population PK model for epsilon-aminocaproic acid (EACA) in infants undergoing craniofacial reconstruction and adolescents undergoing posterior spinal fusion surgery (Stricker 2015)"
   reference <- "Stricker PA, Gastonguay MR, Singh D, Fiadjoe JE, Sussman EM, Pruitt EY, Goebel TK, Zuppa AF. Population pharmacokinetics of epsilon-aminocaproic acid in adolescents undergoing posterior spinal fusion surgery. Br J Anaesth 2015;114(4):689-699. doi:10.1093/bja/aeu459"
   vignette <- "Stricker_2015_aminocaproic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "aminocaproic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "aminocaproic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

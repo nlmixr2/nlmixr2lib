@@ -26,7 +26,17 @@ Urien_2004_cisplatin <- function() {
   # composite parameters fm/Vm and CLm0/Vm absorbing the volume.
   paper_specific_compartments <- c("bound")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cisplatin (unbound)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cisplatin (unbound)", units = "mg", specimen = "plasma", verified = FALSE),
+    bound       = list(analyte = "cisplatin (protein-bound)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BSA = list(
@@ -123,8 +133,8 @@ Urien_2004_cisplatin <- function() {
     # exponents are estimated.
     e_dose_fmVm <- -0.48;        label("Power exponent of (DOSE/BSA)/25 on fm/Vm (unitless)")             # Urien 2004 Table 5: theta_DOSEm-2 on fm/Vm = -0.48
     e_tpro_fmVm <-  1.33;        label("Power exponent of TPRO/70 on fm/Vm (unitless)")                   # Urien 2004 Table 5: theta_PROT  on fm/Vm = +1.33
-    e_bsa_fmVm  <- fixed(-0.83); label("Fixed power exponent of BSA/1.62 on fm/Vm (unitless)")            # Urien 2004 Table 5: theta_BSA   on fm/Vm = -0.83 (fixed)
-    e_crcl_fmVm <- fixed(-0.36); label("Fixed power exponent of CRCL/81 on fm/Vm (unitless)")             # Urien 2004 Table 5: theta_CLCr on fm/Vm = -0.36 (fixed)
+    e_bsa_fmVm  <- fixed(-0.83); label("Power exponent of BSA/1.62 on fm/Vm (unitless)")            # Urien 2004 Table 5: theta_BSA   on fm/Vm = -0.83 (fixed)
+    e_crcl_fmVm <- fixed(-0.36); label("Power exponent of CRCL/81 on fm/Vm (unitless)")             # Urien 2004 Table 5: theta_CLCr on fm/Vm = -0.36 (fixed)
 
     # Inter-individual variability - log-normal IIV (omega^2 = log(1 + CV^2)).
     # Urien 2004 reports ISV as percent CV in Tables 4 and 5. Q and V2 ISVs

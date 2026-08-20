@@ -2,7 +2,16 @@ Archary_2019_abacavir <- function() {
   description <- "Two-compartment population PK model for abacavir in severely malnourished HIV-infected children (Archary 2019); CL/F steps up between day 1 and day 14 of antiretroviral treatment and bioavailability is 31% higher in the early-ART arm"
   reference <- "Archary M, McIlleron H, Bobat R, LaRussa P, Sibaya T, Wiesner L, Hennig S. Population pharmacokinetics of abacavir and lamivudine in severely malnourished human immunodeficiency virus-infected children in relation to treatment outcomes. Br J Clin Pharmacol. 2019;85(8):1881-1890. doi:10.1111/bcp.13998"
   vignette <- "Archary_2019_abacavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "abacavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "abacavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -54,11 +63,11 @@ Archary_2019_abacavir <- function() {
     lvc  <- log(4.63);   label("Apparent central volume at 7 kg reference (Vc/F, L)")           # Table 3
     lq   <- log(0.63);   label("Apparent intercompartmental clearance (Q/F, L/h)")              # Table 3
     lvp  <- log(1.65);   label("Apparent peripheral volume (Vp/F, L)")                          # Table 3
-    lfdepot <- fix(log(1)); label("Log baseline bioavailability F for delayed-ART reference (fixed at log(1) = 0)") # Table 3 (delayed-arm typical F = 1)
+    lfdepot <- fix(log(1)); label("Log baseline bioavailability F for delayed-ART reference (log(1) = 0)") # Table 3 (delayed-arm typical F = 1)
 
     # Allometric exponents (paper-fixed per Methods Section 2.3)
-    e_wt_cl_q  <- 0.75; label("Allometric exponent on CL/F and Q/F (unitless; fixed)")          # Methods 2.3
-    e_wt_vc_vp <- 1;    label("Allometric exponent on Vc/F and Vp/F (unitless; fixed)")         # Methods 2.3
+    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)")          # Methods 2.3
+    e_wt_vc_vp <- fixed(1);    label("Allometric exponent on Vc/F and Vp/F (unitless)")         # Methods 2.3
 
     # DAY14 effect on CL/F (multiplicative additive shift; encodes the day-1 -> day-14 step)
     # 5.86 / 3.33 - 1 = 0.760, i.e. CL/F rises by 76% on day 14 vs day 1

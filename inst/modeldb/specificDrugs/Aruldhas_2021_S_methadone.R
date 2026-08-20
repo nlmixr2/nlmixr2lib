@@ -34,6 +34,17 @@ Aruldhas_2021_S_methadone <- function() {
   vignette <- "Aruldhas_2021_methadone"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "methadone", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "methadone", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "methadone", units = "mg", specimen = "plasma", verified = FALSE),
+    central_eddp = list(analyte = "S-EDDP", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight; allometrically scales S-methadone total clearance CL",
@@ -294,7 +305,7 @@ Aruldhas_2021_S_methadone <- function() {
 
     # ----- Metabolite (S-EDDP) disposition (Aruldhas 2021 Table 2) -----
     lcl_eddp         <- log(7.97);           label("Typical S-EDDP apparent clearance CL3 (L/h)")                                                  # Aruldhas 2021 Table 2 'CL3 (L*h^-1) = 7.97 (23.7)' for S-methadone
-    lvf              <- fixed(log(1));       label("VF scaling factor between S-methadone V2 and S-EDDP V3 (V3 = V2 * VF; dimensionless, fixed at 1 due to metabolite unidentifiability)")  # Aruldhas 2021 Table 2 'VF = 1 FIX' and Figure 1 legend
+    lvf              <- fixed(log(1));       label("VF scaling factor between S-methadone V2 and S-EDDP V3 (V3 = V2 * VF; dimensionless, 1 due to metabolite unidentifiability)")  # Aruldhas 2021 Table 2 'VF = 1 FIX' and Figure 1 legend
 
     # ----- Allometric exponent (fixed) -----
     e_wt_cl                      <- fixed(0.75);  label("Allometric WT exponent on S-methadone CL (unitless)")                                    # Aruldhas 2021 Results 'Covariate modeling on S methadone' paragraph 1: fixed to 0.75 to avoid small-cohort bias despite the estimated exponent (0.67)

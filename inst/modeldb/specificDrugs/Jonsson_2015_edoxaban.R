@@ -18,7 +18,19 @@ Jonsson_2015_edoxaban <- function() {
   # stoichiometry in d/dt(central_m4) below correct without a molecular-weight
   # ratio. To dose in mass units, convert with the edoxaban free-base
   # molecular weight of 548.0 g/mol (15 mg = 27372 nmol).
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "edoxaban", units = "nmol", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "edoxaban", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "edoxaban", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_m4  = list(analyte = "M4", units = "nmol", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "edoxaban", units = "nmol", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -139,7 +151,7 @@ Jonsson_2015_edoxaban <- function() {
     #    the absorption rate constant was not separately identifiable and
     #    was constrained equal to ktr = (NN + 1) / MTT.
     lmtt        <- log(0.731)      ; label("Mean transit time MTT (h, log scale)")                                    # Jonsson 2015 Table 1 'Mean transit time (MTT), h = 0.731' (RSE 16.3%); control stream initial 0.735371
-    lnn         <- fixed(log(8.08)); label("Number of transit compartments NN (unitless, log scale; FIXED)")           # Jonsson 2015 Table 1 'Number of transit compartments (NN) = 8.08 (ne)'; footnote c 'ne, not estimated. Parameter estimate was fixed'; control stream $THETA 8.07871 FIX
+    lnn         <- fixed(log(8.08)); label("Number of transit compartments NN (unitless, log scale)")           # Jonsson 2015 Table 1 'Number of transit compartments (NN) = 8.08 (ne)'; footnote c 'ne, not estimated. Parameter estimate was fixed'; control stream $THETA 8.07871 FIX
     logitfdepot <- log(0.723 / (1 - 0.723)); label("Absolute oral bioavailability F (logit scale; F_pop = 0.723)")     # Jonsson 2015 Table 1 'Absolute oral bioavailability (F) = 0.723' (RSE 8.0%); logit form per control stream PSI = LOG(TVF1/(1-TVF1)); control stream initial 0.739588
 
     # -- Edoxaban disposition. Clearance is split into a non-renal arm
@@ -184,8 +196,8 @@ Jonsson_2015_edoxaban <- function() {
     #    Fixed allometric exponents, applied to the clearance terms that are
     #    NOT a function of kidney function (cl_nonren, q, cl_m4) and to all
     #    volume terms (vc, vp, vc_m4).
-    e_wt_cl_q       <- fixed(0.75) ; label("Allometric exponent on CLNR, Q and CLM4 (unitless; FIXED)")                # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 0.75 FIX
-    e_wt_vc_vp      <- fixed(1)    ; label("Allometric exponent on Vc, Vp and VM4 (unitless; FIXED)")                  # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 1 FIX
+    e_wt_cl_q       <- fixed(0.75) ; label("Allometric exponent on CLNR, Q and CLM4 (unitless)")                # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 0.75 FIX
+    e_wt_vc_vp      <- fixed(1)    ; label("Allometric exponent on Vc, Vp and VM4 (unitless)")                  # Jonsson 2015 Results 'Final Population PK Model': exponents 'fixed to 1 and 3/4 for volume and clearance terms'; control stream $THETA 1 FIX
 
     # ---------------------------------------------------------------------
     # Inter-individual variability. Jonsson 2015 Results: 'Interindividual
@@ -212,7 +224,7 @@ Jonsson_2015_edoxaban <- function() {
     etalvc            ~ 0.027225   # var = 0.165^2 ; Jonsson 2015 Table 1 'Vc, %CV = 16.5' (RSE 32.7%); control stream initial 0.0281244
     etalvp            ~ 0.123201   # var = 0.351^2 ; Jonsson 2015 Table 1 'Vp, %CV = 35.1' (RSE 23.2%); control stream initial 0.123084
     etalmtt           ~ 0.283024   # var = 0.532^2 ; Jonsson 2015 Table 1 'MTT, %CV = 53.2' (RSE 27.9%); control stream initial 0.284762
-    etalnn            ~ fixed(1.4884) # var = 1.22^2 ; Jonsson 2015 Table 1 'NN, %CV = 122 (ne)' -- fixed, footnote c; control stream $OMEGA 1.50033 FIX
+    etalnn            ~ fixed(1.4884) # var = 1.22^2; Jonsson 2015 Table 1 'NN, %CV = 122 (ne)', footnote c; control stream $OMEGA 1.50033 FIX
 
     # IIV on F is on the LOGIT scale (control stream: VF1 = EXP(PSI +
     # ETA(5)); BIO = VF1/(1 + VF1)). Table 1 reports 0.129 for F, which per

@@ -10,10 +10,18 @@ Voller_2017_phenobarbital <- function() {
     sep = " "
   )
   vignette <- "Voller_2017_phenobarbital"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   ddmore_id    <- "DDMODEL00000256"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "phenobarbital", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "phenobarbital", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -103,7 +111,7 @@ Voller_2017_phenobarbital <- function() {
     lvc <- log(2.38);    label("Typical V at WT = 2.70 kg (L)")                          # .lst TH 2 = 2.38E+00
 
     # KA was FIXED at 50 1/h in the source $THETA (`50 FIX`); kept fixed here.
-    lka <- fixed(log(50)); label("First-order absorption rate constant (1/h; FIXED)")    # .lst TH 7 = 50 (FIXED)
+    lka <- fixed(log(50)); label("First-order absorption rate constant (1/h)")    # .lst TH 7 = 50 (FIXED)
 
     # Oral bioavailability of the depot (gastrointestinal) compartment.
     # Source $THETA bound (0, 0.594, 1) is a bounded parameter; the typical

@@ -20,6 +20,27 @@ AlvarezJimenez_2016_scopolamine <- function() {
     "red_nb0", "red_nb1", "red_nb2"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    nbRT     = list(analyte = "scopolamine hydrobromide concentration in plasma", units = "mg", specimen = "plasma", verified = FALSE),
+    sacInacc = list(analyte = "scopolamine hydrobromide effect on saccadic inaccuracy", units = "mg", specimen = "not applicable", verified = FALSE),
+    sacPV    = list(analyte = "scopolamine hydrobromide effect on saccadic peak velocity", units = "mg", specimen = "not applicable", verified = FALSE),
+    adTrack  = list(analyte = "scopolamine hydrobromide effect on adaptive tracker performance", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegAfc   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegApo   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegDfc   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegDpo   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegTfc   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegTpo   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb0  = list(analyte = "probability of correct answer for N-back 0 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb1  = list(analyte = "probability of correct answer for N-back 1 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb2  = list(analyte = "probability of correct answer for N-back 2 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    central  = list(analyte = "scopolamine hydrobromide concentration in central compartment", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline",
@@ -207,7 +228,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     # compartments for the delay are approximated by a single indirect-
     # response state with rate kIN_nb0. EMAX fixed to 1 per paper narrative.
     lec50_nb0 <- log(2140)        ; label("EC50 for 0-back correct-answer ratio (pg/mL)")     # Table 2 EC50 = 2140
-    lemax_nb0 <- fixed(log(1))    ; label("EMAX for 0-back correct-answer ratio (fixed at 1)") # Table 2 EMAX = 1 (fixed per paper)
+    lemax_nb0 <- fixed(log(1))    ; label("EMAX for 0-back correct-answer ratio") # Table 2 EMAX = 1 (fixed per paper)
     lkin_nb0  <- log(0.0354)      ; label("kIN for 0-back ratio (1/min); approximated single-compartment for 4-transit chain") # Table 2 kIN = 0.0354
     lkout_nb0 <- log(0.036)       ; label("kOUT for 0-back ratio (1/min)")                    # Table 2 kOUT = 0.036
     e0_nb0    <- 3.77             ; label("Baseline log-odds of 0-back correct answers")      # Table 2 E0 = 3.77 (expit(3.77) = 97.7%)

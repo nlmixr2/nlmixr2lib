@@ -19,7 +19,15 @@ Fukumoto_2023_meropenem <- function() {
     "Ther Drug Monit 45(3):392-399. doi:10.1097/FTD.0000000000001040"
   )
   vignette <- "Fukumoto_2023_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -250,8 +258,8 @@ Fukumoto_2023_meropenem <- function() {
     # effective interindividual variability on intercompartmental clearance
     # (Q) and peripheral Vd (V2) did not significantly improve the model fit.
     # Therefore, the random effects were fixed at zero."
-    etalq  ~ fixed(0)  # Results p. 395: random effect on Q fixed at zero
-    etalvp ~ fixed(0)  # Results p. 395: random effect on V2 fixed at zero
+    etalq  ~ fixed(0)  # Results p. 395: random effect on Q zero
+    etalvp ~ fixed(0)  # Results p. 395: random effect on V2 zero
 
     # Residual error. Fukumoto 2023 Results (p. 395): "The final residual
     # error model was described using the proportional error model."

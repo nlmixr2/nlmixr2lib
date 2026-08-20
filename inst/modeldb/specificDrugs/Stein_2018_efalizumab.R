@@ -4,6 +4,16 @@ Stein_2018_efalizumab <- function() {
   vignette <- "Stein_2018_mAb_nonlinear_PK"
   units <- list(time = "day", dosing = "nmol", concentration = "nM")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "efalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "efalizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "CD11a", units = "nmol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -33,7 +43,7 @@ Stein_2018_efalizumab <- function() {
 
     # Target turnover and binding (QSS approximation; paper Eq. 7)
     lksyn <- fixed(log(8.5));   label("Target synthesis rate (ksyn = Vmax/Vc, nM/day)")          # Stein and Peletier 2018 Table 1: ksyn = Vmax/Vc = 8.5 nM/d
-    lKss  <- fixed(log(1.2));   label("QSS binding constant (Kss = KM, nM)")                     # Stein and Peletier 2018 Table 1: Kss = KM = 1.2 nM
+    lkss  <- fixed(log(1.2));   label("QSS binding constant (Kss = KM, nM)")                     # Stein and Peletier 2018 Table 1: Kss = KM = 1.2 nM
     lkdeg <- fixed(log(4400));  label("Free target elimination rate (ke(R), 1/day)")             # Stein and Peletier 2018 Table 1: ke(R) = 4400 1/d (practically unidentifiable; Stein and Peletier 2018 page 672)
     lkint <- fixed(log(4400));  label("Drug-target complex internalization rate (ke(CR), 1/day)") # Stein and Peletier 2018 Table 1: ke(CR) = 4400 1/d (assumed equal to ke(R); Stein and Peletier 2018 page 672)
   })
@@ -45,7 +55,7 @@ Stein_2018_efalizumab <- function() {
     cl   <- exp(lcl)
     q    <- exp(lq)
     ksyn <- exp(lksyn)
-    kss  <- exp(lKss)
+    kss  <- exp(lkss)
     kdeg <- exp(lkdeg)
     kint <- exp(lkint)
 

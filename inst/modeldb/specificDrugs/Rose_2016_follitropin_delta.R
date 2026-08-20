@@ -18,7 +18,16 @@ Rose_2016_follitropin_delta <- function() {
     sep = " "
   )
   vignette <- "Rose_2016_follitropin_delta"
-  units    <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units    <- list(time = "h", dosing = "ug", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "follitropin delta", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "follitropin delta", units = "ug", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "follitropin delta", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -82,8 +91,8 @@ Rose_2016_follitropin_delta <- function() {
     # Allometric exponents on body weight. The paper held these fixed at
     # canonical allometric values (Section 3: "with the power exponent
     # fixed to allometric values").
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of WT on CL/F (unitless, fixed)") # Rose 2016 Section 3 (fixed allometric exponent)
-    e_wt_vc <- fixed(1.00); label("Allometric exponent of WT on V/F (unitless, fixed)")  # Rose 2016 Section 3 (fixed allometric exponent)
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of WT on CL/F (unitless)") # Rose 2016 Section 3 (fixed allometric exponent)
+    e_wt_vc <- fixed(1.00); label("Allometric exponent of WT on V/F (unitless)")  # Rose 2016 Section 3 (fixed allometric exponent)
 
     # IIV. Rose 2016 Table 2 reports IIV as CV%; conversion to the
     # log-eta variance scale uses omega^2 = log(CV^2 + 1).

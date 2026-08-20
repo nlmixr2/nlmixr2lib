@@ -19,7 +19,16 @@ Jaworowicz_2006_levalbuterol <- function() {
     "November 2, 2006. Sepracor, Inc. / Cognigen Corporation."
   )
   vignette <- "Jaworowicz_2006_levalbuterol"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "levalbuterol", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "levalbuterol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "levalbuterol", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -30,7 +39,7 @@ Jaworowicz_2006_levalbuterol <- function() {
       notes              = paste(
         "Reference body weight 74.8 kg (cohort median). Apparent clearance",
         "CL/F uses a linear-additive form CL = 59.1 + 0.477 * (WT - 74.8)",
-        "L/hr (Equation 1 of poster). Apparent central volume Vc/F uses a",
+        "L/h (Equation 1 of poster). Apparent central volume Vc/F uses a",
         "power form Vc = 527 * (WT / 74.8)^0.361 L (Equation 2 of poster)."
       ),
       source_name        = "WTKG"
@@ -42,8 +51,8 @@ Jaworowicz_2006_levalbuterol <- function() {
       reference_category = 0,
       notes              = paste(
         "Used as the pediatric-vs-adult switch on absorption rate Ka:",
-        "Adult subjects (>= 12 years) have Ka = 6.28 1/hr; pediatric",
-        "subjects (< 12 years) have Ka = 3.08 1/hr. Encoded as a",
+        "Adult subjects (>= 12 years) have Ka = 6.28 1/h; pediatric",
+        "subjects (< 12 years) have Ka = 3.08 1/h. Encoded as a",
         "multiplicative log-ratio effect e_child_ka on lka."
       ),
       source_name        = "PED"
@@ -91,18 +100,18 @@ Jaworowicz_2006_levalbuterol <- function() {
     # covariate effect on lka via the CHILD indicator. log(3.08 / 6.28)
     # = -0.7126 (rounded to 4 d.p.).
     lka         <- log(6.28)
-    label("Adult (>= 12 years) absorption rate constant ka (1/hr)")        # Table 2: Ka adults = 6.28 1/hr (%SEM 7.8)
+    label("Adult (>= 12 years) absorption rate constant ka (1/h)")        # Table 2: Ka adults = 6.28 1/h (%SEM 7.8)
     e_child_ka  <- log(3.08 / 6.28)
-    label("Log-ratio effect of CHILD on lka (pediatric vs adult)")          # Table 2: Ka pediatrics = 3.08 1/hr (%SEM 15.4); log(3.08/6.28) = -0.7126
+    label("Log-ratio effect of CHILD on lka (pediatric vs adult)")          # Table 2: Ka pediatrics = 3.08 1/h (%SEM 15.4); log(3.08/6.28) = -0.7126
 
     # --- Apparent clearance: linear-additive WT scaling --------------
     # TVCL = 59.1 + 0.477 * (WT - 74.8) per Equation 1; encoded so the
     # log-normal IIV multiplies the entire TVCL (paper used NONMEM
     # EXP(ETA) on CL with TVCL constructed inside the structural model).
     lcl         <- log(59.1)
-    label("Apparent clearance intercept at WT = 74.8 kg (L/hr)")             # Table 2: CL/F = 59.1 L/hr (%SEM 14.6); Equation 1 intercept
+    label("Apparent clearance intercept at WT = 74.8 kg (L/h)")             # Table 2: CL/F = 59.1 L/h (%SEM 14.6); Equation 1 intercept
     e_wt_cl     <- 0.477
-    label("Linear-additive WT effect on CL/F (L/hr per kg above 74.8 kg)")   # Table 2: slope = 0.477 L/hr/kg (%SEM 26.4); Equation 1 slope
+    label("Linear-additive WT effect on CL/F (L/h per kg above 74.8 kg)")   # Table 2: slope = 0.477 L/h/kg (%SEM 26.4); Equation 1 slope
 
     # --- Apparent central volume: power WT scaling -------------------
     lvc         <- log(527)
@@ -114,7 +123,7 @@ Jaworowicz_2006_levalbuterol <- function() {
     lvp         <- log(506)
     label("Apparent peripheral volume Vp (L)")                               # Table 2: Vp = 506 L (%SEM 25.1)
     lq          <- log(100)
-    label("Inter-compartmental clearance Q (L/hr)")                          # Table 2: Q = 100 L/hr (%SEM 9.7); no IIV reported
+    label("Inter-compartmental clearance Q (L/h)")                          # Table 2: Q = 100 L/h (%SEM 9.7); no IIV reported
 
     # --- Bioavailability reference -----------------------------------
     # F1 = 1.0 for the Adult / Study 051-353 / single-dose levalbuterol

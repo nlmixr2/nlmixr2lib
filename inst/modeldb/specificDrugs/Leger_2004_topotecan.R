@@ -2,7 +2,16 @@ Leger_2004_topotecan <- function() {
   description <- "Two-compartment population PK model for oral and intravenous topotecan in adult cancer patients, with first-order absorption + lag time for the oral route, additive linear creatinine-clearance plus linear-ordinal WHO performance-status effects on CL, and linear body-weight effect on the central volume of distribution (Leger 2004)"
   reference <- "Leger F, Loos WJ, Fourcade J, Bugat R, Goffinet M, Mathijssen RHJ, Verweij J, Sparreboom A, Chatelut E. Factors affecting pharmacokinetic variability of oral topotecan: a population analysis. Br J Cancer. 2004;90(2):343-347. doi:10.1038/sj.bjc.6601469"
   vignette <- "Leger_2004_topotecan"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "topotecan", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "topotecan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "topotecan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

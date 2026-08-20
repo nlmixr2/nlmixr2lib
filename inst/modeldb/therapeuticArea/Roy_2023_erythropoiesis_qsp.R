@@ -60,10 +60,49 @@ Roy_2023_erythropoiesis_qsp <- function() {
     "Progenitors", "Precursors", "Retics_plasma", "RBCM"
   )
 
+  # Declared explicitly: buildModelDb() infers the registry's dosing column
+  # only from compartments literally named "depot" or "central", neither of
+  # which exists here. rHuEPO and darbepoetin are dosed subcutaneously (ng)
+  # and the oral PHIs into the gut (ug).
+  dosing <- c("rhuEPO_SC_Dose", "darbe_SC_Dose", "PHI_Dose_Gut")
+
   units <- list(
     time          = "h",
     dosing        = "ng (rHuEPO / darbepoetin SC) or ug (oral PHI)",
     concentration = "ng/mL"
+  )
+
+  # Units are those declared in the Supplementary Parameter Dashboard sheet
+  # "Species" (column InitialAmountUnits), so verified = TRUE throughout. The
+  # one exception is PHI_periphery, which that sheet declares in ug/mL while
+  # PHI_Plasma and every other peripheral species is ng/mL; this
+  # implementation reads it as ng/mL (the self-consistent interpretation, and
+  # the one that reproduces the paper's vadadustat response), so it is flagged
+  # unverified. See the vignette Errata.
+  # Progenitors and Precursors physically reside in bone marrow but are
+  # modelled in the central compartment, a caveat the Supplement states
+  # explicitly; "blood cell" is the nearest specimen in the vocabulary.
+  compartmentData <- list(
+    HIFa              = list(analyte = "hypoxia-inducible factor 1-alpha", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    EPO_plasma        = list(analyte = "endogenous erythropoietin", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    EPO_periphery     = list(analyte = "endogenous erythropoietin", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    EPO_receptor      = list(analyte = "free erythropoietin receptor", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    EPO_LR_complex    = list(analyte = "endogenous EPO-EPOR complex", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    rhuEPO_LR_complex = list(analyte = "epoetin alfa-EPOR complex", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    darbe_LR_complex  = list(analyte = "darbepoetin alfa-EPOR complex", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    rhuEPO_SC_Dose    = list(analyte = "epoetin alfa", units = "ng", specimen = "administration site", verified = TRUE),
+    rhuEPO_plasma     = list(analyte = "epoetin alfa", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    rhuEPO_periphery  = list(analyte = "epoetin alfa", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    darbe_SC_Dose     = list(analyte = "darbepoetin alfa", units = "ng", specimen = "administration site", verified = TRUE),
+    Darbe_plasma      = list(analyte = "darbepoetin alfa", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    darbe_periphery   = list(analyte = "darbepoetin alfa", units = "ng/mL", specimen = "tissue", verified = TRUE),
+    PHI_Dose_Gut      = list(analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)", units = "ug", specimen = "administration site", verified = TRUE),
+    PHI_Plasma        = list(analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)", units = "ng/mL", specimen = "plasma", verified = TRUE),
+    PHI_periphery     = list(analyte = "HIF prolyl-hydroxylase inhibitor (vadadustat or daprodustat)", units = "ng/mL", specimen = "tissue", verified = FALSE),
+    Progenitors       = list(analyte = "erythroid progenitor cells (CFU-E)", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    Precursors        = list(analyte = "erythroid precursor cells", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    Retics_plasma     = list(analyte = "reticulocytes", units = "molecule/L", specimen = "blood cell", verified = TRUE),
+    RBCM              = list(analyte = "mature erythrocytes", units = "molecule/L", specimen = "blood cell", verified = TRUE)
   )
 
   covariateData <- list()
@@ -216,7 +255,7 @@ Roy_2023_erythropoiesis_qsp <- function() {
     # ---- Algebraic outputs (sbproj rules 1, 2, 5, 14) --------------------
     HGB <- (MCH_Reti * Retics_plasma + MCH_RBCM * RBCM) * scaler7          # Eq. 28 / rule_1
     RBC_total <- Retics_plasma + RBCM                                      # rule_5
-    Retic_pct <- 100 * Retics_plasma / RBC_total                           # absolute form; see vignette note on rule_3
+    Retic_pct <- 100 * Retics_plasma / RBC_total                           # rule_3
     EPO_plasma_IU <- (EPO_plasma + rhuEPO_plasma + Darbe_plasma) * scaler_EPO # rule_2
 
     # PHI concentration entering the Hill function, in ug/mL. The 1e-24

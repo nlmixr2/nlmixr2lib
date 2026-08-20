@@ -2,7 +2,15 @@ Ng_2018_exendin939 <- function() {
   description <- "Two-compartment intravenous-infusion population PK model for exendin-(9-39) in patients with congenital hyperinsulinism (Ng 2018). Pooled paediatric (neonates and children) and adult cohort with allometric scaling fixed at 0.75 on CL and Q and 1.0 on Vc and Vp (reference WT 70 kg); inter-individual variability retained only on CL. Residual variability follows the NONMEM Poisson error model (Var(Y|F) = F * sigma^2), encoded as a power-error with fixed exponent 0.5."
   reference <- "Ng CM, Tang F, Seeholzer SH, Zou Y, De Leon DD. Population pharmacokinetics of exendin-(9-39) and clinical dose selection in patients with congenital hyperinsulinism. Br J Clin Pharmacol. 2018;84(3):520-528. doi:10.1111/bcp.13463"
   vignette <- "Ng_2018_exendin939"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "exendin939", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "exendin939", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -68,7 +76,7 @@ Ng_2018_exendin939 <- function() {
     # in `pow(..., 0.5)` during forward simulation). See vignette Assumptions
     # and deviations section.
     powSd  <- sqrt(3.66); label("Poisson residual error scale (SD = powSd * sqrt(Cc); (ng/mL)^0.5)") # Ng 2018 Table 2: Sigma_poisson = 3.66 (SE 0.508)
-    powExp <- fixed(0.5); label("Power exponent on Cc in the residual error (fixed for NONMEM Poisson interpretation)") # Ng 2018 Methods: Poisson error model implies W = sqrt(F)
+    powExp <- fixed(0.5); label("Power exponent on Cc in the residual error (for NONMEM Poisson interpretation)") # Ng 2018 Methods: Poisson error model implies W = sqrt(F)
   })
   model({
     # Two-compartment IV-infusion PK with allometric scaling on all four

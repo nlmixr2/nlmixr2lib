@@ -2,7 +2,16 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
   description <- "Two-compartment population PK model for whole-blood (Cc), unbound plasma (Cupc), and total plasma (Ctpc) tacrolimus in 30 adult thoracic-organ (10 heart + 20 lung) transplant recipients during the first 6 postoperative days (Sikma 2020). First-order oral absorption with ka, F, and the within-PK fixed-parameter variabilities inherited from a previously estimated tacrolimus model; non-linear saturable binding of tacrolimus to erythrocytes (UPC = WBC * Kd / (Bmax * HCT - WBC)) with the maximum erythrocyte binding capacity Bmax scaled by hematocrit, and a linear non-specific plasma binding constant Nplasma linking unbound to total plasma (TPC = Nplasma * UPC)."
   reference <- "Sikma MA, Van Maarseveen EM, Hunault CC, Moreno JM, Van de Graaf EA, Kirkels JH, Verhaar MC, Grutters JC, Kesecioglu J, De Lange DW, Huitema ADR. Unbound Plasma, Total Plasma, and Whole-Blood Tacrolimus Pharmacokinetics Early After Thoracic Organ Transplantation. Clin Pharmacokinet. 2020;59(6):771-780. doi:10.1007/s40262-019-00854-1"
   vignette <- "Sikma_2020_tacrolimus_unbound_plasma"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL (whole blood) and pg/mL (unbound and total plasma)")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (whole blood) and pg/mL (unbound and total plasma)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus unbound plasma", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus unbound plasma", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus unbound plasma", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     HCT = list(
@@ -59,8 +68,8 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
     lvp  <- log(469)          ; label("Whole-blood apparent peripheral volume V2/F (L)")                        # Sikma 2020 Table 3 V2 = 469 (95% CI 399-579)
 
     # ---- Absorption / bioavailability (fixed from upstream model) -----------
-    lka     <- fixed(log(0.579)) ; label("First-order absorption rate constant Ka (1/h; FIXED from upstream tacrolimus model)") # Sikma 2020 Table 3 Ka = 0.579 Fixed
-    lfdepot <- fixed(log(1))     ; label("Oral bioavailability F (FIXED at 1)")                                  # Sikma 2020 Table 3 F = 1 Fixed
+    lka     <- fixed(log(0.579)) ; label("First-order absorption rate constant Ka (1/h; from upstream tacrolimus model)") # Sikma 2020 Table 3 Ka = 0.579 Fixed
+    lfdepot <- fixed(log(1))     ; label("Oral bioavailability F")                                  # Sikma 2020 Table 3 F = 1 Fixed
 
     # ---- Erythrocyte and plasma binding (Sikma 2020 Table 3) ----------------
     # Bmax is the maximum binding capacity to erythrocytes. The model
@@ -92,13 +101,13 @@ Sikma_2020_tacrolimus_unbound_plasma <- function() {
     #   Kd      CV  3% Fixed   -> log(1 + 0.03^2)   = 0.000899
     #   Nplasma CV 29%         -> log(1 + 0.29^2)   = 0.08076
     etalcl      ~ 0.16320                                       # Sikma 2020 Table 3 IIV CL = 42.1% (95% CI 30-60)
-    etalvc      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V1 = 10% Fixed
-    etalq       ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Q = 10% Fixed
-    etalvp      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V2 = 10% Fixed
-    etalka      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Ka = 10% Fixed
-    etalfdepot  ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV F = 10% Fixed
+    etalvc      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V1 = 10%
+    etalq       ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Q = 10%
+    etalvp      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV V2 = 10%
+    etalka      ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV Ka = 10%
+    etalfdepot  ~ fixed(0.00995)                                # Sikma 2020 Table 3 IIV F = 10%
     etalbmax    ~ 0.07034                                       # Sikma 2020 Table 3 IIV Bmax = 27% (95% CI 19-36)
-    etalkd      ~ fixed(0.000899)                               # Sikma 2020 Table 3 IIV Kd = 3% Fixed
+    etalkd      ~ fixed(0.000899)                               # Sikma 2020 Table 3 IIV Kd = 3%
     etalnplasma ~ 0.08076                                       # Sikma 2020 Table 3 IIV Nplasma = 29% (95% CI 22-41)
 
     # ---- Residual error (Sikma 2020 Table 3) --------------------------------

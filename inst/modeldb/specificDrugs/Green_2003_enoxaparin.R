@@ -2,7 +2,16 @@ Green_2003_enoxaparin <- function() {
   description <- "Two-compartment first-order-input population PK model for subcutaneous enoxaparin in adults treated at the Royal Brisbane Hospital for acute coronary syndrome, deep vein thrombosis, pulmonary embolism, or DVT prophylaxis (Green & Duffull 2003). Anti-Xa activity is the observation; lean body weight (LBW; James 1976 formula) is the size descriptor on clearance and total body weight is the size descriptor on the central volume."
   reference <- "Green B, Duffull SB. Development of a dosing strategy for enoxaparin in obese patients. Br J Clin Pharmacol. 2003 Jul;56(1):96-103. doi:10.1046/j.1365-2125.2003.01849.x. PMID:12848781."
   vignette <- "Green_2003_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/L")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -125,8 +134,8 @@ Green_2003_enoxaparin <- function() {
     # units of L h^-1 70 kg^-1 and L 70 kg^-1, i.e. the exponent is fixed to 1
     # by construction; no per-parameter uncertainty is reported for the
     # exponent). Wrap in fixed() to make the structural assumption explicit.
-    e_lbw_cl <- fixed(1); label("Linear exponent of LBM on CL (unitless; fixed by Table 3 unit convention)") # Green 2003 Table 3 unit convention (CL per 70 kg LBW)
-    e_wt_vc  <- fixed(1); label("Linear exponent of WT on Vc (unitless; fixed by Table 3 unit convention)")  # Green 2003 Table 3 unit convention (V2 per 70 kg WT)
+    e_lbw_cl <- fixed(1); label("Linear exponent of LBM on CL (unitless; by Table 3 unit convention)") # Green 2003 Table 3 unit convention (CL per 70 kg LBW)
+    e_wt_vc  <- fixed(1); label("Linear exponent of WT on Vc (unitless; by Table 3 unit convention)")  # Green 2003 Table 3 unit convention (V2 per 70 kg WT)
 
     # Inter-individual variability. Green 2003 reports BSV as %CV with a
     # log-normal model (P_j = P_pop * exp(eta_j)); for log-normal, the variance

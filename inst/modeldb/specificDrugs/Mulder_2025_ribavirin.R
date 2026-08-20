@@ -56,6 +56,20 @@ Mulder_2025_ribavirin <- function() {
 
   paper_specific_compartments <- c("hb_state", "healthy", "infected", "virus")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ribavirin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ribavirin", units = "mg", specimen = "plasma", verified = FALSE),
+    hb_state    = list(analyte = "haemoglobin", units = "mg", specimen = "not applicable", verified = FALSE),
+    healthy     = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE),
+    infected    = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus       = list(analyte = "virus", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

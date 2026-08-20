@@ -6,7 +6,18 @@ Kleideiter_2018_cebranopadol <- function() {
     sep = " "
   )
   vignette    <- "Kleideiter_2018_cebranopadol"
-  units       <- list(time = "hr", dosing = "ug", concentration = "pg/mL")
+  units       <- list(time = "h", dosing = "ug", concentration = "pg/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "cebranopadol", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cebranopadol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cebranopadol", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     AGE = list(

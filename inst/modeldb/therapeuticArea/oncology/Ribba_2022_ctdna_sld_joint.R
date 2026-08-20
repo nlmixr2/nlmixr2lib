@@ -34,9 +34,20 @@ Ribba_2022_ctdna_sld_joint <- function() {
   vignette <- "Ribba_2022_ctdna_tumor_size"
 
   units <- list(
-    time          = "days",
+    time          = "day",
     dosing        = "n/a (no PK input; treatment effect is absorbed into the empirical growth and decay rate constants)",
     concentration = "two outputs on different scales -- `TS` is the RECIST 1.1 sum of longest diameters in mm, and `ctdna` is base-10 log-transformed average mutant molecules per mL of plasma (log10 MMPM). The residual-error parameters follow their outputs: addSd_TS is in mm, addSd_ctdna is in log10 units."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    growth       = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    shrink       = list(analyte = "tumor size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    growth_ctdna = list(analyte = "ctDNA", units = NA_character_, specimen = "plasma", verified = FALSE),
+    shrink_ctdna = list(analyte = "ctDNA", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -84,13 +95,13 @@ Ribba_2022_ctdna_sld_joint <- function() {
     # ----- SLD Stein rate constants: FIXED to the independent SLD fit (Ribba_2022_sld.R) -----
     # Appendix: "For the joint ctDNA and SLD model, all population parameters (fixed and
     # random effects) were fixed to the values reported above."
-    lkge <- fixed(log(0.0016))   ; label("log SLD growth rate kge (1/day), FIXED from the independent SLD fit")  # Appendix tumor-size table: kgT_pop = 0.0016 1/day
-    lkse <- fixed(log(0.0014))   ; label("log SLD decay rate kse (1/day), FIXED from the independent SLD fit")   # Appendix tumor-size table: ksT_pop = 0.0014 1/day
+    lkge <- fixed(log(0.0016))   ; label("log SLD growth rate kge (1/day), from the independent SLD fit")  # Appendix tumor-size table: kgT_pop = 0.0016 1/day
+    lkse <- fixed(log(0.0014))   ; label("log SLD decay rate kse (1/day), from the independent SLD fit")   # Appendix tumor-size table: ksT_pop = 0.0014 1/day
 
     # ----- ctDNA growth rate: FIXED to the independent ctDNA fit (Ribba_2022_ctdna.R) -----
     # Eq. 2 reuses the symbol kg from Eq. 1 for the ctDNA growth rate. The ctDNA DECAY
     # rate ks from Eq. 1 is NOT reused: in the joint model it is replaced by zeta * kse.
-    lkge_ctdna <- fixed(log(0.0038)) ; label("log ctDNA growth rate kge_ctdna (1/day), FIXED from the independent ctDNA fit")  # Appendix ctDNA table: kg_pop = 0.0038 1/day
+    lkge_ctdna <- fixed(log(0.0038)) ; label("log ctDNA growth rate kge_ctdna (1/day), from the independent ctDNA fit")  # Appendix ctDNA table: kg_pop = 0.0038 1/day
 
     # ----- Cross-endpoint link parameter (the only estimated structural parameter) -----
     lzeta <- log(1.94)   ; label("log zeta -- dimensionless multiplier linking the SLD decay rate to the ctDNA decay rate (kse_ctdna = zeta * kse)")  # Appendix joint-model table: zeta_pop = 1.94, RSE 37.3%
@@ -99,9 +110,9 @@ Ribba_2022_ctdna_sld_joint <- function() {
     # The three fixed etas carry the omegas of the two single-endpoint fits; only
     # omega_zeta was estimated. Table values are standard deviations of the random
     # effects, so the nlmixr2 variance is omega^2.
-    etalkge       ~ fixed(1.0609)   # Appendix tumor-size table: omega_kgT = 1.03; 1.03^2 = 1.0609 (FIXED in the joint fit)
-    etalkse       ~ fixed(2.6896)   # Appendix tumor-size table: omega_ksT = 1.64; 1.64^2 = 2.6896 (FIXED in the joint fit)
-    etalkge_ctdna ~ fixed(0.6724)   # Appendix ctDNA table:      omega_kg  = 0.82; 0.82^2 = 0.6724 (FIXED in the joint fit)
+    etalkge       ~ fixed(1.0609)   # Appendix tumor-size table: omega_kgT = 1.03; 1.03^2 = 1.0609 (from the joint fit)
+    etalkse       ~ fixed(2.6896)   # Appendix tumor-size table: omega_ksT = 1.64; 1.64^2 = 2.6896 (from the joint fit)
+    etalkge_ctdna ~ fixed(0.6724)   # Appendix ctDNA table: omega_kg = 0.82; 0.82^2 = 0.6724 (from the joint fit)
     etalzeta      ~ 0.7396          # Appendix joint-model table: omega_zeta = 0.86, RSE 35.0%; 0.86^2 = 0.7396 (estimated)
 
     # ----- Residual error: constant on both outputs (Appendix: "the parameters of the two error models (assumed constant)") -----

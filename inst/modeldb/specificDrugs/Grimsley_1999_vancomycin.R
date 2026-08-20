@@ -2,7 +2,14 @@ Grimsley_1999_vancomycin <- function() {
   description <- "One-compartment IV-infusion population PK model for vancomycin in neonates and young infants (Grimsley 1999). Developed from routine therapeutic-drug-monitoring data in 59 neonates (347 concentrations). Clearance scales linearly with body weight and inversely with serum creatinine concentration (CL = 3.56 * WT / CREAT, L/h, WT in kg, CREAT in umol/L); central volume scales linearly with body weight (V = 0.669 * WT, L/kg). The covariate-coupled CL form (no separately estimated exponents) is reported by the paper as the entire structural model."
   reference <- "Grimsley C, Thomson AH. Pharmacokinetics and dose requirements of vancomycin in neonates. Arch Dis Child Fetal Neonatal Ed. 1999;81(3):F221-F227. doi:10.1136/fn.81.3.f221"
   vignette <- "Grimsley_1999_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

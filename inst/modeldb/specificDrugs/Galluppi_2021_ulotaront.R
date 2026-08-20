@@ -2,7 +2,16 @@ Galluppi_2021_ulotaront <- function() {
   description <- "Two-compartment population PK model with first-order oral absorption for ulotaront (SEP-363856), a trace amine-associated receptor 1 (TAAR1) agonist with 5-HT1A agonist activity in phase III development for schizophrenia. Pooled analysis of nine studies (seven phase I, one phase II acute, one 6-month open-label extension) in 404 adult subjects (99 healthy volunteers and 305 patients with schizophrenia). Body weight was estimated as a power-form covariate on the clearance parameters (CL/F, Q/F) and the volume parameters (Vc/F, Vp/F); disease status, sex, race (Asian vs non-Asian), and age were retained as full-model covariates on CL/F only. IIV on CL/F, Vc/F, ka, Vp/F is modelled as a full 4x4 correlated BLOCK. Residual error is proportional-only per AIC/BIC (Galluppi 2021)."
   reference   <- "Galluppi GR, Polhamus DG, Fisher JM, Hopkins SC, Koblan KS. Population pharmacokinetic analysis of ulotaront in subjects with schizophrenia. CPT Pharmacometrics Syst Pharmacol. 2021;10(10):1245-1254. doi:10.1002/psp4.12692"
   vignette    <- "Galluppi_2021_ulotaront"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ulotaront", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ulotaront", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ulotaront", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

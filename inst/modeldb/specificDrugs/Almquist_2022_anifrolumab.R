@@ -4,6 +4,16 @@ Almquist_2022_anifrolumab <- function() {
   vignette <- "Almquist_2022_anifrolumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "anifrolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "anifrolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "IFNAR1 receptor", units = "mg", specimen = "retina", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -58,7 +68,7 @@ Almquist_2022_anifrolumab <- function() {
     # Supplement appendix (line 140) sets the internalisation rate kint equal to kdeg = 77.4 d^-1
     # so the drug-target complex is removed at the same rate as the unbound receptor.
     # supplement-derived (JCPH appendix; not in main paper's results table 1 except as the kint=kdeg constraint)
-    kdeg   <- fixed(77.4); label("Receptor degradation rate kdeg (1/day, fixed; equals internalisation rate kint per supplement)")  # Supplement appendix: kdeg = kint = 77.4 d^-1 fixed
+    kdeg   <- fixed(77.4); label("Receptor degradation rate kdeg (1/day,; equals internalisation rate kint per supplement)")  # Supplement appendix: kdeg = kint = 77.4 d^-1 fixed
 
     # Covariate effects on linear CL and Vc
     e_ifngslow_cl <- 0.793;  label("Multiplicative factor on CL for IFNGS-low subjects (1 = high reference, <1 = low)")  # Table 1: F_IFNGS-low = 0.793

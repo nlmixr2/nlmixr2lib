@@ -28,6 +28,18 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     concentration = "log(CFU/mL) for the model observation Cc"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Decoded from this model's systematic state-naming
+  # scheme; units are not derivable from its units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    aroff = list(analyte = "adaptive-resistance OFF subpopulation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    aron  = list(analyte = "adaptive-resistance ON subpopulation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    fbugs = list(analyte = "fast-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    sbugs = list(analyte = "slow-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    nbugs = list(analyte = "non-multiplying bacteria", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CONC_RIF_MGL = list(
       description        = "Static rifampicin concentration in the in vitro time-kill assay (mg/L)",
@@ -282,7 +294,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     # for F-kill by up to 67.9%.
 
     int_fd_inh_rif <- fixed(0)
-    label("INT^FD_INH,RIF -- INH modulates RIF EC50 for F-kill (fractional, fixed 0)")
+    label("INT^FD_INH,RIF -- INH modulates RIF EC50 for F-kill (fractional, 0)")
     # Clewe 2018 Table 3: 0 fixed^b (additivity).
 
     int_fd_emb_inh <- 1.72
@@ -291,11 +303,11 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     # increase (antagonism).
 
     int_fd_inh_emb <- fixed(0)
-    label("INT^FD_INH,EMB -- INH modulates EMB EC50 for F-kill (fractional, fixed 0)")
+    label("INT^FD_INH,EMB -- INH modulates EMB EC50 for F-kill (fractional, 0)")
     # Clewe 2018 Table 3: 0 fixed^b.
 
     int_fd_rif_emb <- fixed(-0.99)
-    label("INT^FD_RIF,EMB -- RIF modulates EMB EC50 for F-kill (fractional, fixed -0.9999)")
+    label("INT^FD_RIF,EMB -- RIF modulates EMB EC50 for F-kill (fractional, -0.9999)")
     # Clewe 2018 Table 3: INT^FD_RIF,EMB = -0.99 fixed^c (max decrease,
     # synergism). Paper footnote c sets this to -0.9999 reflecting "a
     # maximal decrease in EC50 identified in mono exposure"; here we

@@ -9,6 +9,23 @@ Betts_2019_pf_06671008_qsp <- function() {
   # The vignette shows the mg/kg -> nM conversion for a 0.025 kg mouse.
   units <- list(time = "day", dosing = "nM (central-compartment concentration equivalent for IV bolus)", concentration = "nM")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "PF-06671008", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "PF-06671008", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tumor           = list(analyte = "PF-06671008", units = NA_character_, specimen = "tumor", verified = FALSE),
+    drug_cd3_tumor  = list(analyte = "CD3", units = NA_character_, specimen = "tumor", verified = FALSE),
+    drug_pcad_tumor = list(analyte = "P-cadherin", units = NA_character_, specimen = "tumor", verified = FALSE),
+    trimer          = list(analyte = "PF-06671008-CD3-P-cadherin trimer", units = NA_character_, specimen = "tissue", verified = FALSE),
+    cycling_cells   = list(analyte = "cycling cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    damaged_cells1  = list(analyte = "damaged cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    damaged_cells2  = list(analyte = "damaged cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    damaged_cells3  = list(analyte = "damaged cells", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

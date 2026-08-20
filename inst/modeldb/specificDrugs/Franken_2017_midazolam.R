@@ -38,6 +38,18 @@ Franken_2017_midazolam <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2        = list(analyte = "midazolam", units = "mg", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "midazolam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_1ohm  = list(analyte = "1-OH-midazolam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_1ohmg = list(analyte = "1-OH-midazolam-glucuronide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin concentration",
@@ -139,9 +151,9 @@ Franken_2017_midazolam <- function() {
     # h-1 for subcutaneous injection)').
     # ================================================================
     lka_oral <- fixed(log(5.5))
-    label("Ka oral route (1/h, FIXED literature)")              # Methods / Table 2 footnote: Ka oral = 5.5 1/h fixed (literature)
+    label("Ka oral route (1/h, literature)")              # Methods / Table 2 footnote: Ka oral = 5.5 1/h fixed (literature)
     lka_sc   <- fixed(log(10))
-    label("Ka subcutaneous route (1/h, FIXED literature)")      # Methods / Table 2 footnote: Ka SC = 10 1/h fixed (literature)
+    label("Ka subcutaneous route (1/h, literature)")      # Methods / Table 2 footnote: Ka SC = 10 1/h fixed (literature)
 
     # ================================================================
     # Oral bioavailability - estimated. SC F is structurally fixed

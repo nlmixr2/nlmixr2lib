@@ -16,6 +16,14 @@ Zheng_2012_mAb8 <- function() {
   vignette <- "Zheng_2012_minipig_mab"
   units <- list(time = "day", dosing = "mg/kg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "mAb8", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mAb8", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -39,7 +39,7 @@ s_high  <- rxSolve(mod, ev_low, inits = c(igg = 2.0 * 12.1))
 
 Failure modes this catches:
 
-- Dynamic rate terms (e.g., `krmr = Jmax / (V1·(Km + igg))`) implemented as the steady-state value rather than concentration-dependent.
+- Dynamic rate terms (e.g., `krmr = Jmax / (V1·(km + igg))`) implemented as the steady-state value rather than concentration-dependent.
 - A fictional equilibrium that is not the paper's baseline.
 
 ## 3. Mass-balance / flux check
@@ -49,7 +49,7 @@ At steady state, compute each flux term (production, elimination, recycling) and
 For `igg_kim_2006` at `igg = Css = 12.1`:
 
 ```
-krmr  = Jmax / (V1 · (Km + Css))
+krmr  = Jmax / (V1 · (km + Css))
       = 147 / (42 · (21 + 12.1)) = 0.1058 /day
 kcat  = kint - krmr = 0.18 - 0.1058 = 0.0742 /day
 jpro  = kcat · V1 · Css = 0.0742 · 42 · 12.1 = 37.72 mg/kg/day

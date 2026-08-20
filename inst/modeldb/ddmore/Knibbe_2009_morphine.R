@@ -26,6 +26,17 @@ Knibbe_2009_morphine <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
+    central_m3g = list(analyte = "M3G", units = "ug", specimen = "plasma", verified = FALSE),
+    central_m6g = list(analyte = "M6G", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight, time-varying",
@@ -35,7 +46,7 @@ Knibbe_2009_morphine <- function() {
       notes              = paste(
         "Time-varying body weight at the time of each dose / observation.",
         "Source NONMEM column BWS reports body weight in grams; convert to canonical WT (kg) via WT = BWS / 1000.",
-        "The source model uses the un-normalised expression WT^allo_cl on each clearance and WT^allo_v on each volume,",
+        "The source model uses the un-normalised expression WT^e_wt_cl on each clearance and WT^allo_v on each volume,",
         "i.e. an implicit reference weight of 1 kg (the typical-value parameters are the per-kg^exponent constants)."
       ),
       source_name        = "BWS"
@@ -102,36 +113,36 @@ Knibbe_2009_morphine <- function() {
 
     # Morphine-to-M3G formation clearance (NONMEM CL2). PNA-stratified:
     # `_le10` for postnatal age <= 10 days, `_gt10` for PNA > 10 days.
-    # Units of the bare typical-value: L/min per kg^allo_cl.
+    # Units of the bare typical-value: L/min per kg^e_wt_cl.
     lcl_form_m3g_le10 <- log(0.00309)
-    label("Morphine->M3G formation clearance per kg^allo_cl, PNA <= 10 days (L/min)")
+    label("Morphine->M3G formation clearance per kg^e_wt_cl, PNA <= 10 days (L/min)")
     # Output_real_run4.lst FINAL: TH 1 = 3.09E-03.
     lcl_form_m3g_gt10 <- log(0.00825)
-    label("Morphine->M3G formation clearance per kg^allo_cl, PNA > 10 days (L/min)")
+    label("Morphine->M3G formation clearance per kg^e_wt_cl, PNA > 10 days (L/min)")
     # Output_real_run4.lst FINAL: TH10 = 8.25E-03.
 
     # Morphine-to-M6G formation clearance (NONMEM CL3). PNA-stratified.
     lcl_form_m6g_le10 <- log(0.000408)
-    label("Morphine->M6G formation clearance per kg^allo_cl, PNA <= 10 days (L/min)")
+    label("Morphine->M6G formation clearance per kg^e_wt_cl, PNA <= 10 days (L/min)")
     # Output_real_run4.lst FINAL: TH 6 = 4.08E-04.
     lcl_form_m6g_gt10 <- log(0.000699)
-    label("Morphine->M6G formation clearance per kg^allo_cl, PNA > 10 days (L/min)")
+    label("Morphine->M6G formation clearance per kg^e_wt_cl, PNA > 10 days (L/min)")
     # Output_real_run4.lst FINAL: TH11 = 6.99E-04.
 
     # M3G and M6G excretion clearances (NONMEM CL4 and CL5).
     lcl_m3g <- log(0.00219)
-    label("M3G elimination (excretion) clearance per kg^allo_cl (L/min)")
+    label("M3G elimination (excretion) clearance per kg^e_wt_cl (L/min)")
     # Output_real_run4.lst FINAL: TH 7 = 2.19E-03.
     lcl_m6g <- log(0.00111)
-    label("M6G elimination (excretion) clearance per kg^allo_cl (L/min)")
+    label("M6G elimination (excretion) clearance per kg^e_wt_cl (L/min)")
     # Output_real_run4.lst FINAL: TH 9 = 1.11E-03.
 
     # Allometric exponents on body weight.
-    allo_cl <- 1.44
+    e_wt_cl <- 1.44
     label("Allometric exponent of body weight on clearances (unitless)")
     # Output_real_run4.lst FINAL: TH 4 = 1.44E+00.
     allo_v <- fix(1.00)
-    label("Allometric exponent of body weight on volumes (unitless, FIXED in source)")
+    label("Allometric exponent of body weight on volumes (unitless, from source)")
     # Output_real_run4.lst FINAL: TH 5 = 1.00E+00; source `.mod` $THETA flag `1 FIX`.
 
     # IIV. The source `.mod` $OMEGA structure is:
@@ -183,8 +194,8 @@ Knibbe_2009_morphine <- function() {
     pna_threshold <- 10 / 30.4375
 
     # Body-weight scaling factors. allo_v is fixed at 1.0 in the source
-    # (source NONMEM `$THETA 1 FIX`); allo_cl is estimated.
-    bw_cl_factor <- WT^allo_cl
+    # (source NONMEM `$THETA 1 FIX`); e_wt_cl is estimated.
+    bw_cl_factor <- WT^e_wt_cl
     bw_v_factor  <- WT^allo_v
 
     # Individual structural parameters.

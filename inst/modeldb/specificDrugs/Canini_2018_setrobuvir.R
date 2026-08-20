@@ -18,9 +18,21 @@ Canini_2018_setrobuvir <- function() {
   # hours - consistent with the BID dosing interval (12 h) and the
   # absorption lag time (1.68 h).
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "setrobuvir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "setrobuvir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "setrobuvir", units = "mg", specimen = "plasma", verified = FALSE),
+    infected    = list(analyte = "HCV-infected cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    virus       = list(analyte = "free HCV virus", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

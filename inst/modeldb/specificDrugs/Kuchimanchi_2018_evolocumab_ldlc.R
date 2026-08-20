@@ -5,6 +5,16 @@ Kuchimanchi_2018_evolocumab_ldlc <- function() {
   paper_specific_compartments <- c("auc_wk8_12")
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", ldlc = "mg/dL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "evolocumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "evolocumab", units = "mg", specimen = "plasma", verified = FALSE),
+    auc_wk8_12 = list(analyte = "evolocumab AUC over weeks 8-12", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -125,7 +135,7 @@ Kuchimanchi_2018_evolocumab_ldlc <- function() {
     etalcl   ~ 0.25839                         # Table 3 IIV CV 54.3% on CL
     etalvc   ~ 0.07704                         # Table 3 IIV CV 28.3% on V
     etalvmax ~ 0.09232                         # Table 3 IIV CV 31.1% on Vmax
-    etalka   ~ fix(0.44245)                    # Table 3 IIV CV 74.6% FIXED on ka
+    etalka   ~ fix(0.44245)                    # Table 3 IIV CV 74.6% on ka
 
     # ---- PK residual error (Table 3) ----
     # Paper reports proportional error as a fraction (0.282 = 28.2% CV) and

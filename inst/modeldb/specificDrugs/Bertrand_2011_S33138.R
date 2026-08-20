@@ -25,9 +25,19 @@ Bertrand_2011_S33138 <- function() {
   )
   vignette <- "Bertrand_2011_S33138"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "nmol",
     concentration = "nmol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "S33138", units = "nmol", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "S33138", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_s35424 = list(analyte = "S35424", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -92,7 +102,7 @@ Bertrand_2011_S33138 <- function() {
     # the paper Results 'Once included the data at W8, the absorption constant
     # rate had to be fixed to its estimate on data at W4 for stability
     # purposes.' IIV on log Ka remains estimated.
-    lka          <- fixed(log(8.06));        label("Absorption rate constant Ka (1/h), fixed")                                  # Table IV K = 8.06 (no RSE)
+    lka          <- fixed(log(8.06));        label("Absorption rate constant Ka (1/h)")                                  # Table IV K = 8.06 (no RSE)
 
     # Single volume of distribution shared by parent and metabolite (Vm set
     # equal to Vp for identifiability per Methods 'Joint Pharmacokinetic
@@ -107,7 +117,7 @@ Bertrand_2011_S33138 <- function() {
     # encoded `lfdepot` carries the log of f. IIV on log f is retained
     # (omega_f = 0.27) so individuals deviate around 1 even though the
     # population typical value is fixed.
-    lfdepot      <- fixed(log(1.00));        label("Bioavailability f (fraction, -), fixed")                                    # Table IV f = 1.00 (fixed, no RSE)
+    lfdepot      <- fixed(log(1.00));        label("Bioavailability f (fraction, -)")                                    # Table IV f = 1.00 (fixed, no RSE)
 
     # Linear dose effect on f (Eq. 1): f(Dose) = f_pop * exp(e_dose_fdepot *
     # (DOSE - 10)), with DOSE in mg and 10 mg the reference. Source-paper

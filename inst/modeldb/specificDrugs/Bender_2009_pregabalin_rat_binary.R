@@ -28,7 +28,15 @@ Bender_2009_pregabalin_rat_binary <- function() {
     sep = " "
   )
   vignette <- "Bender_2009_pregabalin_rat"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "pregabalin rat binary", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pregabalin rat binary", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_SILDENAFIL = list(

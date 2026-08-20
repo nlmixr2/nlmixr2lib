@@ -10,6 +10,16 @@ Flint_2017_s_ketamine <- function() {
   vignette    <- "Flint_2017_s_ketamine"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "S-ketamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "S-ketamine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_snk = list(analyte = "S-norketamine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at study entry (kg).",
@@ -57,7 +67,7 @@ Flint_2017_s_ketamine <- function() {
     # because varying it from 0.1 to 10 did not change the goodness of fit or
     # the other parameter values (Results Section 3.3).
     lcl_snk <- log(53.2);       label("S-norketamine apparent clearance Clsnk/Fm at 70 kg (L/h)") # Flint 2017 Table 3: Clsnk/Fm = 53.2 L/h/70 kg, %SE 27
-    lvc_snk <- fixed(log(1));   label("S-norketamine apparent central volume Vsnk/Fm at 70 kg, fixed (L)")  # Flint 2017 Table 3 footnote a: Vsnk/Fm fixed at 1
+    lvc_snk <- fixed(log(1));   label("S-norketamine apparent central volume Vsnk/Fm at 70 kg (L)")  # Flint 2017 Table 3 footnote a: Vsnk/Fm fixed at 1
 
     # ---------------- Allometric covariate effects ----------------------------
     # Fixed at the canonical Holford allometric exponents (Flint 2017 Methods

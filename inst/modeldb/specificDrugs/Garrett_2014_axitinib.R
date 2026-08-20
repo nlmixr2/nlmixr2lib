@@ -4,6 +4,15 @@ Garrett_2014_axitinib <- function() {
   vignette    <- "Garrett_2014_axitinib"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "axitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "axitinib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline.",
@@ -62,7 +71,7 @@ Garrett_2014_axitinib <- function() {
     lq      <- log(1.74)         ; label("Inter-compartmental clearance Q (L/h)")                           # Garrett 2014 Table 3: Q = 1.74 L/h
     lvp     <- log(45.9)         ; label("Peripheral volume of distribution Vp (L)")                        # Garrett 2014 Table 3: Vp = 45.9 L
     lfdepot <- log(0.465)        ; label("Absolute oral bioavailability F, Form IV fed reference (unitless)")  # Garrett 2014 Table 3: F, Form IV, Fed = 0.465
-    ltlag   <- fixed(log(0.457)) ; label("Absorption lag time (h; FIXED)")                                  # Garrett 2014 Table 3 footnote: tlag fixed at 0.457 in the final run
+    ltlag   <- fixed(log(0.457)) ; label("Absorption lag time (h)")                                  # Garrett 2014 Table 3 footnote: tlag fixed at 0.457 in the final run
 
     # Covariate effects -- Garrett 2014 Table 3 final-model estimates.
     # Weight on Vc is an estimated allometric exponent (75 kg reference).

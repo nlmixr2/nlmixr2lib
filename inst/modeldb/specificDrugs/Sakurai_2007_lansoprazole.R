@@ -2,7 +2,14 @@ Sakurai_2007_lansoprazole <- function() {
   description <- "Two-compartment population PK model for intravenously administered lansoprazole in 56 healthy Japanese adult males (Sakurai 2007). Volumes (V1, V2) and clearances (CL, Q) scale linearly with body weight via per-kg reference values; systemic clearance is stratified by CYP2C19 metabolizer phenotype using two binary indicators (homoEM reference; heteroEM and PM groups carry multiplicative factors of 0.612 and 0.212 respectively). Inter-individual variability is log-normal on V1, CL, V2 (no IIV on Q); residual error is combined proportional plus additive."
   reference   <- "Sakurai Y, Hirayama M, Hashimoto M, Tanaka T, Hasegawa S, Irie S, Ashida K, Kayano Y, Taguchi M, Hashimoto Y. Population pharmacokinetics and proton pump inhibitory effects of intravenous lansoprazole in healthy Japanese males. Biol Pharm Bull. 2007;30(12):2238-2243. doi:10.1248/bpb.30.2238"
   vignette    <- "Sakurai_2007_lansoprazole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "lansoprazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -4,6 +4,15 @@ Chandasana_2024_lamivudine <- function() {
   vignette <- "Chandasana_2024_dolutegravir_lamivudine"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -95,8 +104,8 @@ Chandasana_2024_lamivudine <- function() {
     # Allometric weight scaling (Chandasana 2024 Table 2 footnote; fixed
     # exponents per Methods and Results). CL/F and Q/F share the WT^0.75
     # exponent; V2/F (and V3/F, which is set equal to V2/F) uses WT^1.0.
-    e_wt_cl_q <- fixed(0.75); label("Allometric exponent of WT shared across CL/F and Q/F (unitless; fixed)")  # Chandasana 2024 Results / Table 2 footnote
-    e_wt_vc   <- fixed(1.0);  label("Allometric exponent of WT on V2/F = V3/F (unitless; fixed)")              # Chandasana 2024 Results / Table 2 footnote
+    e_wt_cl_q <- fixed(0.75); label("Allometric exponent of WT shared across CL/F and Q/F (unitless)")  # Chandasana 2024 Results / Table 2 footnote
+    e_wt_vc   <- fixed(1.0);  label("Allometric exponent of WT on V2/F = V3/F (unitless)")              # Chandasana 2024 Results / Table 2 footnote
 
     # Estimated covariate effects on CL/F.
     #   CL/F: (CRCL/99)^e_crcl_cl * (theta_race)^RACE_BLACK

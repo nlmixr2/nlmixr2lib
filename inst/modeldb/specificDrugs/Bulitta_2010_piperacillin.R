@@ -8,7 +8,17 @@ Bulitta_2010_piperacillin <- function() {
     "doi:10.1111/j.1365-2125.2010.03750.x"
   )
   vignette <- "Bulitta_2010_piperacillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "piperacillin", units = "mg", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

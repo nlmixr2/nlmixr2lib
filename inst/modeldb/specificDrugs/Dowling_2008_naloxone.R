@@ -11,6 +11,17 @@ Dowling_2008_naloxone <- function() {
   vignette  <- "Dowling_2008_naloxone"
   units     <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "naloxone", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "naloxone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight.",
@@ -83,7 +94,7 @@ Dowling_2008_naloxone <- function() {
     # NONMEM SIGMA reports variances; sqrt(0.101) = 0.318 (matches 31.7% CV);
     # sqrt(0.001) = 0.0316 ug/L additive SD in ng/mL units (ng/mL == ug/L).
     propSd <- 0.318            ; label("Proportional residual error (fraction; sqrt of Table 1 SIGMA^2 = 0.101)")  # Table 1: Prop Err SIGMA^2 = 0.101 (31.7% CV)
-    addSd  <- fixed(sqrt(0.001)); label("Additive residual error (ng/mL; sqrt of Table 1 SIGMA^2 = 0.001 fixed)") # Table 1: Add Err SIGMA^2 = 0.001 (fixed)
+    addSd  <- fixed(sqrt(0.001)); label("Additive residual error (ng/mL; sqrt of Table 1 SIGMA^2 = 0.001)") # Table 1: Add Err SIGMA^2 = 0.001 (fixed)
   })
 
   model({

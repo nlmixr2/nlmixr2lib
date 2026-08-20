@@ -2,7 +2,20 @@ Li_2014_penicillinG_swine <- function() {
   description <- "Preclinical (swine). Three-compartment population pharmacokinetic model for penicillin G in swine, with two parallel first-order absorption depots covering intramuscular penicillin potassium and intramuscular procaine penicillin, plus separate kidney and muscle tissue compartments connected to the central compartment by inter-compartmental clearance; pooled meta-analysis of 89 pigs from 13 published studies and one unpublished FDA dataset (Li 2014)."
   reference   <- "Li M, Gehring R, Tell L, Baynes R, Huang Q, Riviere JE. Interspecies mixed-effect pharmacokinetic modeling of penicillin G in cattle and swine. Antimicrob Agents Chemother. 2014;58(8):4495-4503. doi:10.1128/AAC.02806-14"
   vignette    <- "Li_2014_penicillinG"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot1      = list(analyte = "penicillinG swine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "penicillinG swine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "penicillinG swine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "penicillinG swine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "penicillinG swine", units = "mg", specimen = "plasma", verified = FALSE),
+    kidney      = list(analyte = "penicillinG swine", units = "mg", specimen = "tissue", verified = FALSE),
+    muscle      = list(analyte = "penicillinG swine", units = "mg", specimen = "tissue", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

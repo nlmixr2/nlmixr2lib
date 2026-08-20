@@ -34,7 +34,18 @@ Hietala_2010_artemether <- function() {
     sep = " "
   )
   vignette <- "Hietala_2010_artemether_lumefantrine_malaria"
-  units <- list(time = "hour", dosing = "mg", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "mg", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "Artemether (ARM)", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "Artemether (ARM)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "Artemether (ARM)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dihydroart = list(analyte = "Dihydroartemisinin (DHA)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -117,7 +128,7 @@ Hietala_2010_artemether <- function() {
     # The Table 1 caption for "Q ARM (liters/kg)" omits "/h" -- it is treated here as
     # L/h/kg consistent with its description "Intercompartment clearance" (a flux)
     # and consistent with the other CL / Q clearance entries in the same table.
-    lka      <- fixed(log(1))    ; label("Absorption rate constant ka (1/h); fixed")                  # Hietala 2010 Table 1: ka = 1 (fixed); Results "the absorption rate constant was fixed to 1/h"
+    lka      <- fixed(log(1))    ; label("Absorption rate constant ka (1/h)")                  # Hietala 2010 Table 1: ka = 1 (fixed); Results "the absorption rate constant was fixed to 1/h"
     lcl      <- log(2.6)         ; label("Apparent oral artemether clearance at OCC = 1, theta1 (L/h/kg)") # Hietala 2010 Table 1: theta1 = 2.6 (95% CI 1.5-2.6)
     e_occ_cl <- 0.57             ; label("Fractional increase in CL/F_ARM per dose occasion, theta2 (per OCC step)") # Hietala 2010 Table 1: theta2 = 0.57 (95% CI 0.39-0.75)
     lvc      <- log(5.2)         ; label("Apparent artemether central volume Vc/F_ARM (L/kg)")           # Hietala 2010 Table 1: Vc/F_ARM = 5.2 (95% CI 3.5-7.1)
@@ -143,9 +154,9 @@ Hietala_2010_artemether <- function() {
     # used) and the proportional SD as a fraction. The additive components
     # were fixed by the paper (Table 1 caption marks them "fixed").
     propSd     <- 0.61          ; label("Proportional residual SD for artemether plasma concentration (fraction)") # Hietala 2010 Table 1: sigma_prop_ARM = 61% (95% CI 54-67)
-    addSd      <- fixed(2)      ; label("Additive residual SD for artemether plasma concentration (nM); fixed")    # Hietala 2010 Table 1: sigma_add_ARM = 2 nM (fixed)
+    addSd      <- fixed(2)      ; label("Additive residual SD for artemether plasma concentration (nM)")    # Hietala 2010 Table 1: sigma_add_ARM = 2 nM (fixed)
     propSd_dihydroart <- 0.82          ; label("Proportional residual SD for DHA plasma concentration (fraction)")        # Hietala 2010 Table 1: sigma_prop_DHA = 82% (95% CI 73-90)
-    addSd_dihydroart  <- fixed(3)      ; label("Additive residual SD for DHA plasma concentration (nM); fixed")           # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
+    addSd_dihydroart  <- fixed(3)      ; label("Additive residual SD for DHA plasma concentration (nM)")           # Hietala 2010 Table 1: sigma_add_DHA = 3 nM (fixed)
   })
 
   model({

@@ -21,7 +21,14 @@ Oualha_2014_norepinephrine <- function() {
     sep = " "
   )
   vignette <- "Oualha_2014_norepinephrine"
-  units <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "norepinephrine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -121,16 +128,16 @@ Oualha_2014_norepinephrine <- function() {
     # Table 2 "fixed" flag).
     lcl <- log(6.6)        ; label("Typical unit clearance (L/h/kg^0.75)")              # Table 2: theta_CL = 6.6 L/h/kg, RSE 11%
     lq0 <- log(3.12)       ; label("Typical unit endogenous NorEp production rate (ug/h/kg^0.75)") # Table 2: theta_q0 = 3.12 ug/h/kg, RSE 23%
-    e_wt_cl <- fixed(0.75) ; label("Body weight allometric exponent on CL (unitless, FIXED to 3/4)") # Table 2: theta_BW(CL) = 0.75 FIX
-    e_wt_q0 <- fixed(0.75) ; label("Body weight allometric exponent on q0 (unitless, FIXED to 3/4)") # Table 2: theta_BW(q0) = 0.75 FIX
+    e_wt_cl <- fixed(0.75) ; label("Body weight allometric exponent on CL (unitless)") # Table 2: theta_BW(CL) = 0.75 FIX
+    e_wt_q0 <- fixed(0.75) ; label("Body weight allometric exponent on q0 (unitless)") # Table 2: theta_BW(q0) = 0.75 FIX
 
     # Vc was not separately estimated; ascribed to the circulating volume
     # V_circ = 0.08 * BW (L) per the rule cited from Linderkamp et al. in
     # Methods/PK section. Encoded as FIXED log(Vc/kg) plus a FIXED linear
     # weight exponent so the parameter is provenance-traceable. V (10 kg)
     # = 0.8 L is the paper's worked example (Table 2 footnote).
-    lvc     <- fixed(log(0.08)) ; label("Central volume per kg (Vc / WT, L/kg, FIXED to circulating volume)") # Methods: V_Circ = 0.08 * BW; Table 2 footnote
-    e_wt_vc <- fixed(1)         ; label("Body weight allometric exponent on Vc (unitless, FIXED to 1)")      # Same V_Circ rule
+    lvc     <- fixed(log(0.08)) ; label("Central volume per kg (Vc / WT, L/kg, circulating volume)") # Methods: V_Circ = 0.08 * BW; Table 2 footnote
+    e_wt_vc <- fixed(1)         ; label("Body weight allometric exponent on Vc (unitless)")      # Same V_Circ rule
 
     # IIV on log(CL) and log(q0). Paper reports eta_CL = 0.6 and eta_q0 =
     # 1.1 as sqrt(omega^2) (Table 2); variances are 0.6^2 = 0.36 and

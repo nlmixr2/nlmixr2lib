@@ -18,6 +18,14 @@
   vignette <- "Drweesh_2026_adalimumab"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "adalimumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "adalimumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -53,10 +61,10 @@
     # (Marquez-Megias 2021; Kang 2020). Note this differs from the
     # Marquez-Megias 2023 value of 0.00625 1/h (Ternant 2015 reference).
     lka <- fixed(log(0.01))
-    label("First-order SC absorption rate constant ka (1/h); fixed")  # Drweesh 2026 Methods Section 2.3
+    label("First-order SC absorption rate constant ka (1/h)")  # Drweesh 2026 Methods Section 2.3
 
     # Typical CL/F is the mean of the individual empirical-Bayes clearance
-    # estimates reported in Drweesh 2026 Section 3.2 (0.018 +/- 0.012 L/hr).
+    # estimates reported in Drweesh 2026 Section 3.2 (0.018 +/- 0.012 L/h).
     lcl <- log(0.018)
     label("Apparent clearance CL/F (L/h)")  # Drweesh 2026 Section 3.2
 

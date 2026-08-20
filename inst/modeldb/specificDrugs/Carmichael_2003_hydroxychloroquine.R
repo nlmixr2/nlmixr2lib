@@ -2,7 +2,15 @@ Carmichael_2003_hydroxychloroquine <- function() {
   description <- "One-compartment first-order-absorption population PK model with an absorption lag time for oral hydroxychloroquine (HCQ) whole-blood concentrations in 123 adult rheumatoid arthritis patients (74 on HCQ alone plus 49 on HCQ + methotrexate) pooled from four Australian studies, with bioavailability fixed at the value 0.746 estimated from a nine-patient IV/oral crossover sub-study and a linear additive shift in central volume of distribution for concomitant methotrexate coadministration (V_MTX = 1070 L added to the base V of 605 L when MTX is present) (Carmichael 2003)."
   reference   <- "Carmichael SJ, Charles B, Tett SE. Population Pharmacokinetics of Hydroxychloroquine in Patients With Rheumatoid Arthritis. Ther Drug Monit. 2003;25(6):671-681. doi:10.1097/00007691-200312000-00005. PMID 14639053."
   vignette    <- "Carmichael_2003_hydroxychloroquine"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "hydroxychloroquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "hydroxychloroquine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_MTX = list(
@@ -43,7 +51,7 @@ Carmichael_2003_hydroxychloroquine <- function() {
     # and held fixed during all downstream population fits (Results 'Bioavailability' final paragraph:
     # "The typical value for F was 0.746" and Results 'Population Pharmacokinetic Model for Single-Agent
     # HCQ' paragraph 1: "bioavailability was fixed to 0.746, as estimated previously.").
-    lfdepot <- fixed(log(0.746)) ; label("Oral bioavailability (F, fixed at bioavailability-sub-study estimate)") # Table 2 row (a): F = 0.746 (SE 0.068); fixed in row (d)
+    lfdepot <- fixed(log(0.746)) ; label("Oral bioavailability (F, bioavailability-sub-study estimate)") # Table 2 row (a): F = 0.746 (SE 0.068); fixed in row (d)
 
     # Additive shift in V per equation 3: V_i = V + V_MTX * MTX (linear, additive; L units).
     # See vignette Assumptions and deviations -- unusual coding relative to the more common

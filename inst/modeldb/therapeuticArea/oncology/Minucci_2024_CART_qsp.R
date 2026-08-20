@@ -58,6 +58,21 @@ Minucci_2024_CART_qsp <- function() {
     concentration = "cells/uL (CAR T-cell density in blood; matches Ying et al. 2021 Figure 2A units)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    t_cd8_inf = list(analyte = "CD8+ CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    t_cd8_eff = list(analyte = "CD8+ effector CAR T-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    t_cd8_mem = list(analyte = "CD8+ memory CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    t_cd4_inf = list(analyte = "CD4+ CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    t_cd4_eff = list(analyte = "CD4+ effector CAR T-cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    t_cd4_mem = list(analyte = "CD4+ memory CAR T-cells", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    tumor     = list(analyte = "B cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    endo      = list(analyte = "endogenous lymphocytes", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

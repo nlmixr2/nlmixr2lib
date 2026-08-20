@@ -2,7 +2,15 @@ Conil_2007_ceftazidime <- function() {
   description <- "Two-compartment IV population PK model for ceftazidime in adult burn-ICU patients, with creatinine clearance on CL and sex / mechanical ventilation / creatinine clearance on the peripheral volume V2 (Conil 2007)"
   reference <- "Conil JM, Georges B, Lavit M, Laguerre J, Samii K, Houin G, Saivin S. A population pharmacokinetic approach to ceftazidime use in burn patients: influence of glomerular filtration, gender and mechanical ventilation. Br J Clin Pharmacol. 2007;64(1):27-35. doi:10.1111/j.1365-2125.2007.02857.x"
   vignette <- "Conil_2007_ceftazidime"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ceftazidime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     SEXF = list(

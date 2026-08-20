@@ -4,6 +4,14 @@ Rosario_2015_vedolizumab <- function() {
   vignette <- "Rosario_2015_vedolizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -154,9 +162,9 @@ Rosario_2015_vedolizumab <- function() {
     e_wt_vc     <-  0.467;  label("Weight exponent on Vc (unitless; reference 70 kg)")           # Table S4: weight on Vc = 0.467
 
     # Fixed allometric exponents (Table S4: "1 Fixed", "0.75 Fixed").
-    e_wt_vp   <- fixed(1);    label("Allometric exponent of WT on Vp (fixed)")                # Table S4: weight on Vp = 1 Fixed
-    e_wt_vmax <- fixed(0.75); label("Allometric exponent of WT on Vmax (fixed)")              # Table S4: weight on Vmax = 0.75 Fixed
-    e_wt_q    <- fixed(0.75); label("Allometric exponent of WT on Q (fixed)")                 # Table S4: weight on Q = 0.75 Fixed
+    e_wt_vp   <- fixed(1);    label("Allometric exponent of WT on Vp")                # Table S4: weight on Vp = 1 Fixed
+    e_wt_vmax <- fixed(0.75); label("Allometric exponent of WT on Vmax")              # Table S4: weight on Vmax = 0.75 Fixed
+    e_wt_q    <- fixed(0.75); label("Allometric exponent of WT on Q")                 # Table S4: weight on Q = 0.75 Fixed
 
     # Categorical covariate multipliers (Table S4 "NULL effect = 1").
     e_priortnf_cl   <- 1.04;  label("Prior TNF-alpha antagonist multiplier on CLL (power form: CLL * 1.04^PRIOR_TNF)")   # Table S4

@@ -44,7 +44,16 @@ Kay_2022_lumefantrine <- function() {
     sep = " "
   )
   vignette <- "Kay_2022_lumefantrine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "lumefantrine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "lumefantrine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -239,7 +248,7 @@ Kay_2022_lumefantrine <- function() {
     # estimated theta_6 below; without F = 1 fixed, the model would be
     # non-identifiable.
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless; structural anchor, fixed at 1)")
+    label("Relative bioavailability F (unitless; structural anchor)")
     # Kay 2022 Methods: structural anchor for apparent-PK parameterisation.
 
     # Power-form age effect on relative bioavailability:
@@ -339,7 +348,7 @@ Kay_2022_lumefantrine <- function() {
     # used an exponent of 0.75, 0.9, 1.0, or 1.2 for children age > 60
     # months, > 24 to 60 months, > 3 to 24 months, and <= 3 months,
     # respectively."
-    allo_cl <- 1.2  * (agemo <= 3)                +
+    e_wt_cl <- 1.2  * (agemo <= 3)                +
                1.0  * (agemo >  3 & agemo <= 24)  +
                0.9  * (agemo > 24 & agemo <= 60)  +
                0.75 * (agemo > 60)
@@ -350,12 +359,12 @@ Kay_2022_lumefantrine <- function() {
     # exponent, V2/F and V3/F use exponent 1. CL/F and ka additionally
     # carry the three mutually-exclusive ART indicator effects. IIV is
     # log-normal multiplicative.
-    cl <- exp(lcl + etalcl) * (WT / ref_wt)^allo_cl *
+    cl <- exp(lcl + etalcl) * (WT / ref_wt)^e_wt_cl *
             (1 + e_efv_cl * CONMED_EFV) *
             (1 + e_lpv_cl * CONMED_LPV) *
             (1 + e_nvp_cl * CONMED_NVP)
     vc <- exp(lvc + etalvc) * (WT / ref_wt)
-    q  <- exp(lq  + etalq ) * (WT / ref_wt)^allo_cl
+    q  <- exp(lq  + etalq ) * (WT / ref_wt)^e_wt_cl
     vp <- exp(lvp + etalvp) * (WT / ref_wt)
     ka <- exp(lka + etalka) *
             (1 + e_efv_ka * CONMED_EFV) *

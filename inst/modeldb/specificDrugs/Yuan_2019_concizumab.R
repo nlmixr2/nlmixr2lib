@@ -6,6 +6,36 @@ Yuan_2019_concizumab <- function() {
 
   units       <- list(time = "day", dosing = "nmol", concentration = "nM")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "concizumab", units = "nmol", specimen = "administration site", verified = FALSE),
+    a_p           = list(analyte = "concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    stfpi_p       = list(analyte = "soluble TFPI-concizumab complex", units = "nmol", specimen = "plasma", verified = FALSE),
+    astfpi_p      = list(analyte = "free concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    mtfpi_p       = list(analyte = "membrane-bound TFPI-concizumab complex", units = "nmol", specimen = "plasma", verified = FALSE),
+    amtfpi_p      = list(analyte = "free concizumab", units = "nmol", specimen = "plasma", verified = FALSE),
+    a_e1          = list(analyte = "concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    mtfpi_e1      = list(analyte = "membrane-bound TFPI-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
+    amtfpi_e1     = list(analyte = "free concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrn_e1       = list(analyte = "FcRn-receptor-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrna_e1      = list(analyte = "receptor-bound concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    a_e2          = list(analyte = "concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    stfpi_e2      = list(analyte = "soluble TFPI-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
+    astfpi_e2     = list(analyte = "free concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrn_e2       = list(analyte = "FcRn-receptor-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrna_e2      = list(analyte = "receptor-bound concizumab", units = "nmol", specimen = "endosome", verified = FALSE),
+    fcrnastfpi_e2 = list(analyte = "FcRn-receptor-soluble TFPI-concizumab complex", units = "nmol", specimen = "endosome", verified = FALSE),
+    a_t           = list(analyte = "concizumab", units = "nmol", specimen = "tissue", verified = FALSE),
+    astfpi_t      = list(analyte = "free concizumab", units = "nmol", specimen = "tissue", verified = FALSE),
+    a_lk          = list(analyte = "concizumab", units = "nmol", specimen = "lymph", verified = FALSE),
+    astfpi_lk     = list(analyte = "free concizumab", units = "nmol", specimen = "lymph", verified = FALSE),
+    a_lm          = list(analyte = "concizumab", units = "nmol", specimen = "milk", verified = FALSE),
+    astfpi_lm     = list(analyte = "free concizumab", units = "nmol", specimen = "milk", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

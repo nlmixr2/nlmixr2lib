@@ -33,9 +33,24 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
   )
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "static covariates (uM FAV, ug/mL RBV, IU/mL IFN) -- not administered events",
     concentration = "log10(PFU/mL) for the model observation Cc"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    uninfected = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    infected   = list(analyte = "host cells", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    vi1        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi2        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi3        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi4        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vi5        = list(analyte = "virus", units = NA_character_, specimen = "administration site", verified = FALSE),
+    vextra     = list(analyte = "virus", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
@@ -217,7 +232,7 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
     # Table 1: IC50_IFN = 4.12 IU/mL (RSE 15.9 percent).
 
     lhill_ifn     <- fixed(log(2.00))
-    label("Hill_IFN -- Hill coefficient for IFN inhibition (unitless, fixed)")
+    label("Hill_IFN -- Hill coefficient for IFN inhibition (unitless)")
     # Table 1: Hill_IFN = 2.00 (fixed; informed by IFN monotherapy modelling).
 
     # ---------------------------------------------------------------------

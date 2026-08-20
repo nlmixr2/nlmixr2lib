@@ -23,6 +23,13 @@ Henin_2009_capecitabine <- function() {
     # Assumptions and deviations section.
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "capecitabine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Baseline creatinine clearance (Cockcroft-Gault), not BSA-normalized",
@@ -89,7 +96,7 @@ Henin_2009_capecitabine <- function() {
     # intercept (added to b00, b10, b20 alike). The "etab00" name is associated with b00 to satisfy the eta+typical
     # naming convention; mechanistically the same draw shifts every Markov-state intercept (the NONMEM source
     # statement "IIV=ETA(2)+(BCLCR-75.5)*TCLCR" is added to A0 and A1 regardless of SWM1).
-    etalk + etab00 ~ fixed(c(0.802, 0.735, 1.50))                                                                                       # Output_real_HFSmodel.lst FINAL OMEGA BLOCK(2) FIXED: var(ETA1)=0.802, cov=0.735, var(ETA2)=1.50
+    etalk + etab00 ~ fixed(c(0.802, 0.735, 1.50))                                                                                       # Output_real_HFSmodel.lst FINAL OMEGA BLOCK(2) : var(ETA1)=0.802, cov=0.735, var(ETA2)=1.50
   })
 
   model({

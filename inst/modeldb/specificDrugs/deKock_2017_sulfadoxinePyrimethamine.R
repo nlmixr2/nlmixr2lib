@@ -35,6 +35,20 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
     concentration = "mg/L for sulfadoxine (whole blood); ng/mL for pyrimethamine (whole blood)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_pyra       = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_pyra     = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2_pyra = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",
@@ -202,7 +216,7 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
     lvp     <- log(179)
     label("Sulfadoxine apparent peripheral volume of distribution at WT = 60 kg (L)") # Table 2 sulfa: Vp1/F = 179 L
     lfdepot <- fixed(log(1))
-    label("Sulfadoxine relative bioavailability F (unitless, FIXED at 1)")  # Table 2 sulfa: F = 1 FIXED
+    label("Sulfadoxine relative bioavailability F (unitless)")  # Table 2 sulfa: F = 1 FIXED
 
     # ============================================================
     # Pyrimethamine structural parameters
@@ -223,7 +237,7 @@ deKock_2017_sulfadoxinePyrimethamine <- function() {
     lvp2_pyra    <- log(251)
     label("Pyrimethamine apparent deep peripheral volume at WT = 60 kg (L)")     # Table 2 pyra: Vp2/F = 251 L
     lfdepot_pyra <- fixed(log(1))
-    label("Pyrimethamine relative bioavailability F (unitless, FIXED at 1)")     # Table 2 pyra: F = 1 FIXED
+    label("Pyrimethamine relative bioavailability F (unitless)")     # Table 2 pyra: F = 1 FIXED
 
     # ============================================================
     # Whole-blood / plasma partition (per drug)

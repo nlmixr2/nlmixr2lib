@@ -6,6 +6,22 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
 
   units <- list(time = "min", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    nitrite_p = list(analyte = "Nitrite", units = "umol", specimen = "plasma", verified = FALSE),
+    nitrite_r = list(analyte = "Nitrite", units = "umol", specimen = "blood cell", verified = FALSE),
+    nitrate_p = list(analyte = "Nitrate", units = "umol", specimen = "plasma", verified = FALSE),
+    nitrate_r = list(analyte = "Nitrate", units = "umol", specimen = "blood cell", verified = FALSE),
+    methb     = list(analyte = "Methemoglobin", units = "umol", specimen = "blood cell", verified = FALSE),
+    nitrite_t = list(analyte = "Nitrite", units = "umol", specimen = "tissue", verified = FALSE),
+    nitrate_t = list(analyte = "Nitrate", units = "umol", specimen = "tissue", verified = FALSE),
+    kmr       = list(analyte = "NO", units = "umol", specimen = "blood cell", verified = FALSE),
+    no_r      = list(analyte = "NO", units = "umol", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -87,7 +103,7 @@ VegaVilla_2013_sodium_nitrite_qsp <- function() {
 
     # Direct plasma nitrite-to-nitrate conversion (supplement THETA(7) TVKNO3P,
     # fixed to zero in the final model; included for structural completeness).
-    kno3_p <- fixed(0);        label("Direct plasma nitrite-to-nitrate conversion (1/min, fixed at 0)")  # supplement $THETA(7) FIX
+    kno3_p <- fixed(0);        label("Direct plasma nitrite-to-nitrate conversion (1/min)")  # supplement $THETA(7) FIX
 
     # ---- IIV (Table 1 %CV converted via omega^2 = log(1 + CV^2)) ----
     # Final %CV from Table 1, mapped to the corresponding nlmixr2 parameter.

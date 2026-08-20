@@ -17,7 +17,15 @@ Watson_2010_liraglutide <- function() {
     "2010;50(8):886-894. doi:10.1177/0091270009354996"
   )
   vignette <- "Watson_2010_liraglutide"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L (nM)")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L (nM)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "liraglutide", units = "nmol", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "liraglutide", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

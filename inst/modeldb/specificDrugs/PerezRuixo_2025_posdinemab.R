@@ -8,6 +8,19 @@ PerezRuixo_2025_posdinemab <- function() {
     concentration = "pmol/L"
   )
 
+  # Issue #482: what molecule each compartment holds, in what units, in what
+  # biological matrix. Verified against Perez-Ruixo 2025 Methods / Figure 1.
+  compartmentData <- list(
+    central      = list(analyte = "posdinemab",             units = "pmol", specimen = "serum",    verified = TRUE),
+    peripheral1  = list(analyte = "posdinemab",             units = "pmol", specimen = "serum",    verified = TRUE),
+    csf          = list(analyte = "posdinemab",             units = "pmol", specimen = "CSF",      verified = TRUE),
+    isf          = list(analyte = "posdinemab",             units = "pmol", specimen = "brain ISF", verified = TRUE),
+    target       = list(analyte = "p217+tau (free)",        units = "pmol", specimen = "CSF",      verified = TRUE),
+    complex      = list(analyte = "posdinemab-p217+tau complex", units = "pmol", specimen = "CSF", verified = TRUE),
+    target_isf   = list(analyte = "tau seeds (free)",       units = "pmol", specimen = "brain ISF", verified = TRUE),
+    complex_isf  = list(analyte = "posdinemab-tau-seed complex", units = "pmol", specimen = "brain ISF", verified = TRUE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -56,8 +69,8 @@ PerezRuixo_2025_posdinemab <- function() {
     lvisf  <- log(43.4e-3);  label("Posdinemab ISF volume of distribution (VISF, L, 70 kg ref)")        # Table 2: 43.4 x 10^-3 L = 0.0434 L
 
     # ----- Allometric exponents (Results: fixed; Germovsek 2021 priors) ------
-    e_wt_cl_q  <- 0.75;  label("Allometric (WT) exponent shared across all clearance-like terms (CL, Q, QCSF, QISF; fixed; Results: estimating exponents did not improve MOFV)")
-    e_wt_vc_vp <- 1.00;  label("Allometric (WT) exponent shared across all volume-like terms (Vc, Vp, VCSF, VISF; fixed; Results)")
+    e_wt_cl_q  <- fixed(0.75);  label("Allometric (WT) exponent shared across all clearance-like terms (CL, Q, QCSF, QISF; Results: estimating exponents did not improve MOFV)")
+    e_wt_vc_vp <- fixed(1.00);  label("Allometric (WT) exponent shared across all volume-like terms (Vc, Vp, VCSF, VISF; Results)")
 
     # ----- Mechanistic p217+tau / tau-seed parameters (Table 2) --------------
     lrbase    <- log(0.793);                  label("Baseline free p217+tau in CSF, healthy (R0_HV, pmol/L)") # Table 2: R0 healthy 0.793 pmol/L
@@ -65,15 +78,15 @@ PerezRuixo_2025_posdinemab <- function() {
     lkc    <- log(0.040);                  label("First-order elimination of free p217+tau / tau seeds (kc, 1/h)") # Table 2: 0.040 1/h
     lkint  <- log(0.299);                  label("First-order elimination of free posdinemab in CSF and posdinemab-target complex (kint, 1/h)") # Table 2: 0.299 1/h
 
-    # kon reported in Table 2 as 264 nmol/mL^-1 / hour. Converting to (pmol/L)^-1 / h:
+    # kon reported in Table 2 as 264 nmol/mL^-1 /h. Converting to (pmol/L)^-1 / h:
     # 1 nmol/mL = 10^6 pmol/L => kon[(pmol/L)^-1/h] = 264 * 10^-6 = 2.64e-4
     # Sanity check: kd = koff/kon = 0.224 / 2.64e-4 = 848.5 pmol/L (matches Discussion: 848.5 pM).
     lkon   <- log(2.64e-4);                label("Posdinemab-p217+tau second-order association rate in CSF (kon, (pmol/L)^-1 h^-1; converted from 264 (nmol/mL)^-1 h^-1)") # Table 2: 264 (nmol/mL)^-1 h^-1
     lkoff  <- log(0.224);                  label("Posdinemab-p217+tau dissociation rate in CSF (koff, 1/h)") # Table 2: 0.224 1/h
 
     # Fixed mechanistic assumptions (Methods, "Mechanism-based popPK-PD model"):
-    aff_isf_ratio <- 20; label("Affinity ratio kd(CSF)/kd(ISF), fixed at 20 (Methods: ISF binds tau seeds with 20-fold higher affinity)")
-    seed_ratio    <- 10; label("Baseline ISF tau seed / CSF p217+tau ratio, fixed at 10 (Methods: ISF tau seed levels 10-fold higher than CSF)")
+    aff_isf_ratio <- fixed(20); label("Affinity ratio kd(CSF)/kd(ISF) (Methods: ISF binds tau seeds with 20-fold higher affinity)")
+    seed_ratio    <- fixed(10); label("Baseline ISF tau seed / CSF p217+tau ratio (Methods: ISF tau seed levels 10-fold higher than CSF)")
 
     # MW for mg-to-pmol dose conversion. Posdinemab is a humanized IgG1 ~148 kDa
     # (Discussion: "13,805 pmol of posdinemab (148 kDa)").

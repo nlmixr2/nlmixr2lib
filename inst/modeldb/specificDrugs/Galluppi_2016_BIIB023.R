@@ -2,7 +2,15 @@ Galluppi_2016_BIIB023 <- function() {
   description <- "Two-compartment population PK model for intravenous BIIB023, an anti-TWEAK monoclonal antibody, in healthy Chinese, Japanese and Caucasian volunteers and adults with rheumatoid arthritis (Galluppi 2016); parallel first-order linear and Michaelis-Menten elimination from the central compartment with body weight on CL and V, and sex on V."
   reference <- "Galluppi GR, Wisniacki N, Stebbins C. Population pharmacokinetic and pharmacodynamic analysis of BIIB023, an anti-TNF-like weak inducer of apoptosis (anti-TWEAK) monoclonal antibody. Br J Clin Pharmacol. 2016;82(1):118-128. doi:10.1111/bcp.12914"
   vignette <- "Galluppi_2016_BIIB023"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "BIIB023", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "BIIB023", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -83,10 +91,10 @@ Galluppi_2016_BIIB023 <- function() {
     # (undefined-reference default); sex enters as a proportional shift on V only.
     # Final-model form (paper does not print the closed-form equation but states
     # "body weight effect on CL and V, and sex effect on V"):
-    #   CL = tvCL * (WT/70)^dCLdWT
-    #   V  = tvV  * (WT/70)^dVdWT * (1 + dVdSEXF * SEXF)
-    dCLdWT  <-  0.830; label("Power exponent of WT/70 on linear CL (unitless)")       # Galluppi 2016 Table 4, dCLdBodyWeight
-    dVdWT   <-  0.459; label("Power exponent of WT/70 on central volume V (unitless)") # Galluppi 2016 Table 4, dVdBodyWeight
+    #   CL = tvCL * (WT/70)^e_wt_cl
+    #   V  = tvV  * (WT/70)^e_wt_vc * (1 + dVdSEXF * SEXF)
+    e_wt_cl  <-  0.830; label("Power exponent of WT/70 on linear CL (unitless)")       # Galluppi 2016 Table 4, dCLdBodyWeight
+    e_wt_vc   <-  0.459; label("Power exponent of WT/70 on central volume V (unitless)") # Galluppi 2016 Table 4, dVdBodyWeight
     dVdSEXF <- -0.105; label("Proportional sex effect on V for SEXF = 1 (unitless)")   # Galluppi 2016 Table 4, dVdFemale
 
     # Inter-individual variability - Galluppi 2016 Table 4 ("Omega" rows).
@@ -122,8 +130,8 @@ Galluppi_2016_BIIB023 <- function() {
     # Reference body weight 70 kg (canonical undefined-reference default); sex
     # reference = male (SEXF = 0). The sex effect enters V as a proportional
     # shift (1 + dVdSEXF * SEXF); since dVdSEXF = -0.105, V_female = V_male * 0.895.
-    cl   <- exp(lcl + etalcl) * (WT / 70)^dCLdWT
-    vc   <- exp(lvc + etalvc) * (WT / 70)^dVdWT * (1 + dVdSEXF * SEXF)
+    cl   <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
+    vc   <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc * (1 + dVdSEXF * SEXF)
     vp   <- exp(lvp + etalvp)
     q    <- exp(lq  + etalq)
     km   <- exp(lkm)

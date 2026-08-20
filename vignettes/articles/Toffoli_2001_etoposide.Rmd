@@ -282,3 +282,25 @@ ggplot(emax_curve, aes(free_auc, pct_anc)) +
 - **CRCL is reported in raw mL/min (Jelliffe method), not BSA-normalized.** The canonical `CRCL` column is documented in mL/min/1.73 m^2; Toffoli 2001 uses raw mL/min. The additive-linear Equation 2 slope 0.0057 L/h per mL/min is calibrated to raw values. This follows the precedent of Delattre 2010 amikacin and MedellinGaribay 2015 gentamicin (both raw / non-BSA-normalized CRCL under the canonical `CRCL` name).
 - **Emax PD sub-model is NOT encoded** in the model file. Toffoli 2001's Emax model operates on the free oral AUC (a scalar exposure), which is not a state of the ODE system. The PD relationship is documented above as a descriptive check but not fit or simulated.
 - **fu (unbound fraction) is not carried as a subject-level covariate.** The paper reports population mean fu = 0.085 (CV 5%). The vignette applies this single population fu to convert total AUC to free AUC; the model file does not internally track per-subject fu because the paper's Vc/k12 covariate coefficients on %PB are not published.
+
+## Errata
+
+- **Residual error is not reported and is encoded as `fixed(0)`.**
+  Toffoli 2001 reports no residual-error estimate for etoposide. An
+  earlier version of this model carried `propSd = 0.10`, described in the
+  label as assumed from assay validation. That value appears nowhere in
+  the paper, so it has been replaced with `fixed(0)`, following the
+  library policy that an unreported residual error is encoded as zero and
+  documented here rather than filled in with a class-typical guess.
+
+  **Consequence for simulation:** simulating from this model returns the
+  typical-value prediction without residual noise. If you need a
+  realistic observation model, set `propSd` yourself, e.g.
+
+  ```r
+  m <- nlmixr2lib::readModelDb("Toffoli_2001_etoposide")
+  m <- rxode2::ini(m, propSd = 0.10)
+  ```
+
+  and note in your own write-up that the magnitude is your assumption,
+  not Toffoli 2001's.

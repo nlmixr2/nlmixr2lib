@@ -10,7 +10,19 @@ Jiao_2008_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Jiao_2008_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "mycophenolate mofetil (MMF)", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "mycophenolic acid (MPA)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_mpag     = list(analyte = "7-O-glucuronide metabolite (MPAG)", units = "mg", specimen = "plasma", verified = FALSE),
+    gallbladder_mpag = list(analyte = "7-O-glucuronide metabolite (MPAG)", units = "mg", specimen = "bile", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -179,9 +191,9 @@ Jiao_2008_mycophenolic_acid <- function() {
     # ---- Body-weight scaling on CL_MPA/F, Q/F, V_3/F ----
     # Paper Eq 5 ('slope linear without intercept') with WT_m = 65.5 kg.
     # Implemented as (WT/65.5)^exponent with exponent fixed at 1.
-    e_wt_cl  <- fixed(1);     label("Allometric exponent on CL_MPA/F (unitless, fixed; paper Eq 5)")  # Methods Eq 5
-    e_wt_q   <- fixed(1);     label("Allometric exponent on Q/F (unitless, fixed; paper Eq 5)")       # Methods Eq 5
-    e_wt_vp  <- fixed(1);     label("Allometric exponent on V_3/F (unitless, fixed; paper Eq 5)")     # Methods Eq 5
+    e_wt_cl  <- fixed(1);     label("Allometric exponent on CL_MPA/F (unitless,; paper Eq 5)")  # Methods Eq 5
+    e_wt_q   <- fixed(1);     label("Allometric exponent on Q/F (unitless,; paper Eq 5)")       # Methods Eq 5
+    e_wt_vp  <- fixed(1);     label("Allometric exponent on V_3/F (unitless,; paper Eq 5)")     # Methods Eq 5
 
     # ---- Cross-parameter eta linkage (paper 'q') ----
     # Paper Table 3 reports an estimated scalar q such that

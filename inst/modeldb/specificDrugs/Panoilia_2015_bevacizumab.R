@@ -4,6 +4,16 @@ Panoilia_2015_bevacizumab <- function() {
   vignette <- "Panoilia_2015_bevacizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L (bevacizumab) and ng/L (free VEGF165)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "bevacizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "VEGF165", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -51,8 +61,8 @@ Panoilia_2015_bevacizumab <- function() {
     # k was "either estimated or fixed to a certain value (0.75 for clearance and 1 for volume
     # parameters)". Discussion: "the developed TMDD (binding) model did not include any covariates
     # except for body weight in all clearance and volume parameters". The shared exponents follow.
-    e_wt_cl_q  <- fixed(0.75); label("Fixed allometric exponent on log(WT/70) shared by CL and Q (unitless)")
-    e_wt_vc_vp <- fixed(1);    label("Fixed allometric exponent on log(WT/70) shared by V1 and V2 (unitless)")
+    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent on log(WT/70) shared by CL and Q (unitless)")
+    e_wt_vc_vp <- fixed(1);    label("Allometric exponent on log(WT/70) shared by V1 and V2 (unitless)")
 
     # IIV (exponential, log-normal). omega^2 = log(CV^2 + 1) for CV reported as % in Table 3.
     # CL CV 20%   -> omega^2 = log(1 + 0.20^2) = 0.03922

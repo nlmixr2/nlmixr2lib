@@ -255,7 +255,7 @@ Darpo_2014_racSotalol_QTcF <- function() {
     # value prediction). The vignette Errata documents the gap.
     # ==================================================================
     addSd <- fixed(0)
-    label("Additive residual error standard deviation on DeltaQTcF (ms; FIXED AT ZERO - not reported in source)")
+    label("Additive residual error standard deviation on DeltaQTcF (ms; ZERO - not reported in source)")
   })
 
   model({

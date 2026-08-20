@@ -4,6 +4,17 @@ Cao_2013_mab8C2 <- function() {
   vignette <- "Cao_2013_mab8C2"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "8C2", units = "mg", specimen = "plasma", verified = FALSE),
+    tight  = list(analyte = "8C2", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky  = list(analyte = "8C2", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph  = list(analyte = "8C2", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -21,13 +32,13 @@ Cao_2013_mab8C2 <- function() {
   ini({
     sigma_tight <- 0.943; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 1 (Model A): 0.943 (CV 30.7%)
     sigma_leaky <- 0.378; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 1 (Model A): 0.378 (CV 34.2%)
-    lcl   <- log(1.260e-4); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 1 (Model A): CLp = 0.525e-5 L/hr (CV 46.5%) = 1.260e-4 L/day
+    lcl   <- log(1.260e-4); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 1 (Model A): CLp = 0.525e-5 L/h (CV 46.5%) = 1.260e-4 L/day
   })
 
   model({
     # Mouse system parameters; Cao 2013 Table 1 footnote and Methods, for a 20 g BW mouse.
     # Vplasma = 0.85 mL = 0.00085 L; ISF = 4.35 mL = 0.00435 L;
-    # total lymph flow = 0.12 mL/hr = 0.00288 L/day; sigmaL = 0.2; Kp = 0.8 for native IgG1.
+    # total lymph flow = 0.12 mL/h = 0.00288 L/day; sigmaL = 0.2; Kp = 0.8 for native IgG1.
     sigmal     <- 0.2
     kp         <- 0.8
     vplasma    <- 0.00085

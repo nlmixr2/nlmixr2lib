@@ -50,7 +50,7 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
     # ----------------------------------------------------------------------
     bl_em       <- 8.35;          label("Typical baseline migraine days/month at acute-med use <= 5 d/mo")     # Fiedler-Kelly 2020 Table S3
     slope_AM    <- 0.438;         label("Slope on baseline acute-med days >5 d/mo (days migraine / day acute)") # Fiedler-Kelly 2020 Table S3
-    exp_PLC     <- fixed(0.360);  label("Exponent for placebo time-course (1/month, FIXED in source)")          # Fiedler-Kelly 2020 Table S3
+    exp_PLC     <- fixed(0.360);  label("Exponent for placebo time-course (1/month, from source)")          # Fiedler-Kelly 2020 Table S3
     # Logit transform of typical maximum fractional Cav response (typical 0.252):
     # logit(0.252) = log(0.252 / (1 - 0.252)) = -1.0883. IIV is logit-normal
     # so that individual Emax stays in (0, 1) under any random effect.

@@ -2,7 +2,14 @@ Veinstein_2013_gentamicin <- function() {
   description <- "One-compartment population PK model for intravenous gentamicin in critically ill adult ICU patients with acute kidney injury undergoing 4-hour intermittent hemodialysis (n=10, all male; 6 mg/kg infused over 30 min, with hemodialysis starting 30 min after the end of the infusion; Veinstein 2013). Disposition is parameterised in terms of non-hemodialysis (interdialytic body) clearance, an additive hemodialysis-arm clearance, and volume of distribution. The dialysis arm is gated on/off by the time-varying RRT_HEMODIAL_ACTIVE covariate. Body weight enters the model as a linear (exponent = 1) structural scaler on all three parameters because the published Table 4 estimates are reported per kg; weight was tested as an explicit covariate on V and not retained."
   reference <- "Veinstein A, Venisse N, Badin J, Pinsard M, Robert R, Dupuis A. Gentamicin in hemodialyzed critical care patients: early dialysis after administration of a high dose should be considered. Antimicrob Agents Chemother. 2013;57(2):977-982. doi:10.1128/AAC.01762-12"
   vignette <- "Veinstein_2013_gentamicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "gentamicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

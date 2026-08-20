@@ -8,7 +8,15 @@ Viberg_2006_cefuroxime <- function() {
     "doi:10.1111/j.1365-2125.2006.02652.x"
   )
   vignette <- "Viberg_2006_cefuroxime"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CYSC = list(

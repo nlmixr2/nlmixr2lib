@@ -10,9 +10,19 @@ Svensson_2018_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Svensson_2018_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000244"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "Rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "Rifampicin", units = "mg", specimen = "plasma", verified = FALSE),
+    enzyme  = list(analyte = "Induced enzyme", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     FFM = list(
@@ -93,13 +103,13 @@ Svensson_2018_rifampicin <- function() {
     # second occasion's variance fix(...)-pinned to the first (matching the Jonsson_2011_ethambutol
     # and Xie_2019_agomelatine patterns).
     etaiov_bio_1 ~ 0.0248        # OMEGA(7,7)  FINAL = 2.48E-02 -- estimated occasion-1 IOV in bioavailability
-    etaiov_bio_2 ~ fix(0.0248)   # OMEGA(8,8)  fixed equal to OMEGA(7,7) per $OMEGA BLOCK(1) SAME
+    etaiov_bio_2 ~ fix(0.0248)   # OMEGA(8,8) equal to OMEGA(7,7) per $OMEGA BLOCK(1) SAME
     etaiov_mtt_1 ~ 0.318         # OMEGA(9,9)  FINAL = 3.18E-01 -- estimated occasion-1 IOV in MTT
-    etaiov_mtt_2 ~ fix(0.318)    # OMEGA(10,10) fixed equal to OMEGA(9,9) per $OMEGA BLOCK(1) SAME
+    etaiov_mtt_2 ~ fix(0.318)    # OMEGA(10,10) equal to OMEGA(9,9) per $OMEGA BLOCK(1) SAME
     etaiov_km_1  ~ 0.0355        # OMEGA(11,11) FINAL = 3.55E-02 -- estimated occasion-1 IOV in KM
-    etaiov_km_2  ~ fix(0.0355)   # OMEGA(12,12) fixed equal to OMEGA(11,11) per $OMEGA BLOCK(1) SAME
+    etaiov_km_2  ~ fix(0.0355)   # OMEGA(12,12) equal to OMEGA(11,11) per $OMEGA BLOCK(1) SAME
     etaiov_ka_1  ~ 0.0985        # OMEGA(13,13) FINAL = 9.85E-02 -- estimated occasion-1 IOV in KA
-    etaiov_ka_2  ~ fix(0.0985)   # OMEGA(14,14) fixed equal to OMEGA(13,13) per $OMEGA BLOCK(1) SAME
+    etaiov_ka_2  ~ fix(0.0985)   # OMEGA(14,14) equal to OMEGA(13,13) per $OMEGA BLOCK(1) SAME
 
     # Residual error. The .mod uses log-transformed observations with $ERROR Y = IPRED + EPS(1)
     # where IPRED = LOG(A(2)/S2 + 1e-5); on the back-transformed linear scale this is

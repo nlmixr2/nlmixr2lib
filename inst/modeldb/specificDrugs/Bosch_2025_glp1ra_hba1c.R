@@ -47,6 +47,37 @@ Bosch_2025_glp1ra_hba1c <- function() {
     concentration = "% (HbA1c percentage)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    hba_n01 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n02 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n03 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n04 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n05 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n06 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n07 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n08 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n09 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n10 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n11 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_n12 = list(analyte = "glycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g01 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g02 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g03 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g04 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g05 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g06 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g07 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g08 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g09 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g10 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g11 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba_g12 = list(analyte = "unglycated red blood cell", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     GLU = list(
       description        = "Plasma glucose concentration (time-varying regressor input)",

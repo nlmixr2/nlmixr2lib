@@ -2,7 +2,16 @@ Knights_2015_aripiprazole <- function() {
   description <- "Two-compartment population PK model for oral aripiprazole in adult psychiatric patients (Knights 2015), with first-order absorption, linear-deviation weight (gated by WT < 115 kg) and age effects on apparent oral clearance, multiplicative CYP2D6 poor-metabolizer effect on CL/F, linear weight (gated by WT < 115 kg) and age effects with multiplicative female-sex effect on the peripheral volume, linear weight (gated by WT < 115 kg) effect with multiplicative female-sex effect on apparent inter-compartmental clearance, correlated inter-individual variability across Vc/F, Q/F, and Vp/F, independent IIV on ka and CL/F, and a proportional residual error."
   reference <- "Knights J, Rohatagi S. Development and application of an aggregate adherence metric derived from population pharmacokinetics to inform clinical trial enrichment. J Pharmacokinet Pharmacodyn. 2015;42(3):263-273. doi:10.1007/s10928-015-9414-4"
   vignette <- "Knights_2015_aripiprazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -67,9 +76,9 @@ Knights_2015_aripiprazole <- function() {
     # equal the structural thetas.
     lka <- log(0.515) ; label("Absorption rate constant ka (1/h)")                                                  # Knights 2015 Figure 1B KA = 0.515 1/h; supplement $THETA(1)
     lvc <- log(192)   ; label("Apparent central volume Vc/F at reference covariates (L)")                            # Knights 2015 Figure 1B VC = 192 L; supplement $THETA(2)
-    lq  <- log(12.2)  ; label("Apparent inter-compartmental clearance Q/F at reference covariates (L/h)")            # Knights 2015 Figure 1B Q = 12.20 L/hr; supplement $THETA(3)
+    lq  <- log(12.2)  ; label("Apparent inter-compartmental clearance Q/F at reference covariates (L/h)")            # Knights 2015 Figure 1B Q = 12.20 L/h; supplement $THETA(3)
     lvp <- log(151)   ; label("Apparent peripheral volume Vp/F at reference covariates (L)")                         # Knights 2015 Figure 1B VP = 151 L; supplement $THETA(4)
-    lcl <- log(3.88)  ; label("Apparent oral clearance CL/F at reference covariates (L/h)")                          # Knights 2015 Figure 1B CL = 3.88 L/hr; supplement $THETA(5)
+    lcl <- log(3.88)  ; label("Apparent oral clearance CL/F at reference covariates (L/h)")                          # Knights 2015 Figure 1B CL = 3.88 L/h; supplement $THETA(5)
 
     # Covariate effects -- the WT covariate enters as a linear-deviation
     # additive shift to the typical CL/F, Q/F, and Vp/F (in linear-scale

@@ -4,6 +4,14 @@ Abrantes_2017_moroctocog <- function() {
   vignette <- "Abrantes_2017_moroctocog"
   units <- list(time = "h", dosing = "IU", concentration = "IU/dL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "moroctocog", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "moroctocog", units = "IU", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -122,8 +130,8 @@ Abrantes_2017_moroctocog <- function() {
 
     # Allometric exponents. Theory-based 0.75 on CL and Q are held fixed; the
     # shared exponent 0.812 on V1 and V2 was estimated jointly.
-    e_wt_cl    <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL (theory-based; fixed)")   # Abrantes 2017 Table 2 footnote b: "(WT / 70)^3/4"
-    e_wt_q     <- fixed(0.75) ; label("Allometric exponent of (WT/70) on Q (theory-based; fixed)")    # Abrantes 2017 Table 2 footnote d: "(WT / 70)^3/4"
+    e_wt_cl    <- fixed(0.75) ; label("Allometric exponent of (WT/70) on CL (theory-based)")   # Abrantes 2017 Table 2 footnote b: "(WT / 70)^3/4"
+    e_wt_q     <- fixed(0.75) ; label("Allometric exponent of (WT/70) on Q (theory-based)")    # Abrantes 2017 Table 2 footnote d: "(WT / 70)^3/4"
     e_wt_vc_vp <- 0.812       ; label("Shared estimated allometric exponent of (WT/70) on V1 and V2 (unitless)")  # Abrantes 2017 Table 2: Allometric exponent for V1 and V2 = 0.812
 
     # Piecewise age-on-CL slopes (Abrantes 2017 Table 2 footnote b). Two

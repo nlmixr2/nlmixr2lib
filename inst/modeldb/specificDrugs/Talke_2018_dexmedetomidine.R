@@ -4,6 +4,17 @@ Talke_2018_dexmedetomidine <- function() {
   vignette <- "Talke_2018_dexmedetomidine"
   units <- list(time = "min", dosing = "ug", concentration = "ug/L") # Methods + Tables: dose ug, plasma in ug/L (= ng/mL); time in minutes (CL in L/min, t1/2 keo in min)
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "none", units = "ug", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

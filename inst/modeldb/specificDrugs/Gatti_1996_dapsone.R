@@ -32,6 +32,14 @@ Gatti_1996_dapsone <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "dapsone", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "dapsone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_RIF = list(
       description        = paste(
@@ -190,9 +198,9 @@ Gatti_1996_dapsone <- function() {
     # HPLC RSD < 10%) provide a defensible lower bound.
     # ============================================================
     propSd <- fixed(0)
-    label("Proportional residual SD (fraction; FIXED at 0 -- not reported in paper)")
+    label("Proportional residual SD (fraction; 0 -- not reported in paper)")
     addSd <- fixed(0)
-    label("Additive residual SD (mg/L; FIXED at 0 -- not reported in paper)")
+    label("Additive residual SD (mg/L; 0 -- not reported in paper)")
   })
 
   model({

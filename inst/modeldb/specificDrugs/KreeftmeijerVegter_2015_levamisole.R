@@ -23,7 +23,15 @@ KreeftmeijerVegter_2015_levamisole <- function() {
     sep = " "
   )
   vignette <- "KreeftmeijerVegter_2015_levamisole"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "levamisole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "levamisole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -107,7 +115,7 @@ KreeftmeijerVegter_2015_levamisole <- function() {
     # the population median age of 6.28 years. From Table 2 of the
     # source.
     lka <- fixed(log(1.2))
-    label("Absorption rate constant ka (1/h; fixed in final model)")  # Table 2: ka = 1.2 1/h fixed; pre-covariate point estimate carried into the final model per Results paragraph 3
+    label("Absorption rate constant ka (1/h; from final model)")  # Table 2: ka = 1.2 1/h fixed; pre-covariate point estimate carried into the final model per Results paragraph 3
     lcl <- log(44)
     label("Apparent clearance CL/F at 70 kg, age 6.28 y (L/h)")        # Table 2: CL/F = 44 L/h/70 kg (RSE 8.5%)
     lvc <- log(236)
@@ -117,10 +125,10 @@ KreeftmeijerVegter_2015_levamisole <- function() {
     # ... (power value of 0.75) to standard body weight (70 kg) ... than
     # linear scaling (corresponding allometric power of 1) of CL/F and
     # V/F." Both held fixed at the standard Anderson-Holford values.
-    allo_cl <- fixed(0.75)
-    label("Allometric exponent on CL/F (unitless; fixed)")             # Results paragraph "Allometric scaling of CL/F (power value of 0.75)"
-    allo_vc <- fixed(1)
-    label("Allometric exponent on V/F (unitless; fixed)")              # Table 3 row 2 "Allometric scaling of CL/F and V/F to BW (70 kg)"; linear scaling on V/F
+    e_wt_cl <- fixed(0.75)
+    label("Allometric exponent on CL/F (unitless)")             # Results paragraph "Allometric scaling of CL/F (power value of 0.75)"
+    e_wt_vc <- fixed(1)
+    label("Allometric exponent on V/F (unitless)")              # Table 3 row 2 "Allometric scaling of CL/F and V/F to BW (70 kg)"; linear scaling on V/F
 
     # Linear proportional age effect on CL/F, centred at the population
     # median age (6.28 y). Final-model equation in Results:
@@ -171,10 +179,10 @@ KreeftmeijerVegter_2015_levamisole <- function() {
 
     # Individual PK parameters
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl * age_eff_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl * age_eff_cl
     # V/F shares the CL eta perfectly (paper Methods); the block omega
     # above carries the correlation, so etalvc is used directly here.
-    vc <- exp(lvc + etalvc) * (WT / 70)^allo_vc
+    vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc
 
     kel <- cl / vc
 

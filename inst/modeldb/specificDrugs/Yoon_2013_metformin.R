@@ -2,7 +2,15 @@ Yoon_2013_metformin <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order oral absorption and an absorption-lag time for a single 500 mg oral dose of metformin in healthy Korean male adults (Yoon 2013). Body weight enters V/F as a linear-in-deviation covariate; two organic-cation-transporter (OCT) genetic polymorphisms enter CL/F as multiplicative fractional shifts, OCT2 c.808G>T (SLC22A2, A270S, widely known as rs316019) and OCTN1 c.917C>T (SLC22A4, T306I). Variant carriers are pooled (heterozygotes and homozygous variants together vs the homozygous wild-type reference) per the source paper's dominant-model encoding. Slow first-order absorption (ka = 0.248 1/h) relative to elimination (kel = cl/vc = 1.21 1/h) produces the apparent flip-flop kinetics reported for metformin."
   reference   <- "Yoon H, Cho H-Y, Yoo H-D, Kim S-M, Lee Y-B. Influences of organic cation transporter polymorphisms on the population pharmacokinetics of metformin in healthy subjects. AAPS J. 2013;15(2):571-580. doi:10.1208/s12248-013-9460-z"
   vignette    <- "Yoon_2013_metformin"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -9,7 +9,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2018_imipenem_tobramycin"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   # Cipm / Ctob are the experimentally-controlled imipenem / tobramycin
   # broth concentrations (the in-vitro HFIM PK forcing functions) supplied
@@ -18,6 +18,19 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
   # register check does not apply (they are documented in covariateData
   # below for provenance).
   depends <- c("Cipm", "Ctob")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Acinetobacter baumannii (susceptible to imipenem and tobramycin)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Acinetobacter baumannii (resistant to imipenem, intermediate to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Acinetobacter baumannii (intermediate to imipenem, resistant to tobram", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     Cipm = list(
@@ -63,7 +76,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     # and fixed at 50 /h per Table 1 footnote (a sensitivity-tested
     # value, not an estimate).
     lk21 <- fixed(log(50))
-    label("Replication rate constant k21 (1/h; S2 -> 2*S1 doubling; FIXED)")  # Landersdorfer 2018 Table 1
+    label("Replication rate constant k21 (1/h; S2 -> 2*S1 doubling)")  # Landersdorfer 2018 Table 1
 
     # Mean generation time per subpopulation (minutes). Inverse
     # gives the slow S1 -> S2 rate constant k12_p (1/min initially
@@ -100,7 +113,7 @@ Landersdorfer_2018_imipenem_tobramycin <- function() {
     lkmax_ipm <- log(1.74)
     label("Maximum imipenem killing rate Kmax,IPM (1/h)")  # Landersdorfer 2018 Table 1
     lhill_ipm <- fixed(log(3.0))
-    label("Imipenem Hill coefficient (unitless; FIXED per sensitivity analysis)")  # Landersdorfer 2018 Table 1 footnote (d)
+    label("Imipenem Hill coefficient (unitless; per sensitivity analysis)")  # Landersdorfer 2018 Table 1 footnote (d)
 
     # Imipenem KC50 per subpopulation. Population 3 has two
     # values: the monotherapy KC50 (without sufficient tobramycin)

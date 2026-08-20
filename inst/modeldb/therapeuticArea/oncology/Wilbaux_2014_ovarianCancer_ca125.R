@@ -15,6 +15,17 @@ Wilbaux_2014_ovarianCancer_ca125 <- function() {
     concentration = "U/mL for CA-125; mm for tumour size"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit1   = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tumor_size = list(analyte = "tumour size", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    ca125      = list(analyte = "CA-125", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(

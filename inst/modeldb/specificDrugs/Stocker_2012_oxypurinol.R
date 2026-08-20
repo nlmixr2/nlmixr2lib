@@ -2,7 +2,15 @@ Stocker_2012_oxypurinol <- function() {
   description <- "One-compartment population PK model for oxypurinol (the active metabolite of allopurinol) in adults with gout (Stocker 2012). First-order formation from allopurinol (Kfm taken as the apparent first-order absorption rate into the central compartment), one-compartment distribution, and first-order elimination. Apparent clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine clearance based on lean body weight (CRCL), concomitant any-class diuretic use (CONMED_DIURETIC; thiazide / furosemide / spironolactone pooled), and concomitant probenecid use (CONMED_PROBENECID), each via a linear-deviation multiplicative factor. Apparent volume (V/Fm) is allometrically scaled on lean body weight (LBW) with the volume exponent held fixed at the theoretical value of 1.0. The dose entered into the model is the oxypurinol-equivalent dose, taken as 0.9 x allopurinol dose per the paper's prior published assumption."
   reference   <- "Stocker SL, McLachlan AJ, Savic RM, Kirkpatrick CM, Graham GG, Williams KM, Day RO. The pharmacokinetics of oxypurinol in people with gout. Br J Clin Pharmacol. 2012 Sep;74(3):477-489. doi:10.1111/j.1365-2125.2012.04207.x"
   vignette    <- "Stocker_2012_oxypurinol"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "oxypurinol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "oxypurinol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -81,7 +89,7 @@ Stocker_2012_oxypurinol <- function() {
     # value 1.0 (linear scaling), consistent with the absence of a
     # Table 3 row for theta9 and with the typical fixed-exponent
     # convention for V/F allometric scaling (Anderson & Holford).
-    e_lbm_vc <- fixed(1.0); label("Allometric LBW exponent on V/Fm (unitless, fixed)")                     # Stocker 2012 Results equation page 480: TVV/Fm = theta2 * (LBW/60)^theta9; theta9 not reported in Table 3, inferred fixed at theoretical 1.0
+    e_lbm_vc <- fixed(1.0); label("Allometric LBW exponent on V/Fm (unitless)")                     # Stocker 2012 Results equation page 480: TVV/Fm = theta2 * (LBW/60)^theta9; theta9 not reported in Table 3, inferred fixed at theoretical 1.0
 
     # Covariate effects on CL/Fm. Linear-deviation multiplicative form
     # (NONMEM "additive on theta1" / linear-deviation scaling): CL =

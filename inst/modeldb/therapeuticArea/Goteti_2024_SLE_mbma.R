@@ -592,7 +592,7 @@ Goteti_2024_SLE_mbma <- function() {
     addSd <- fixed(0.001)
     label(paste(
       "Additive residual placeholder on the study-arm-mean responder",
-      "probability (FIXED; the source paper's likelihood is binomial /",
+      "probability (the source paper's likelihood is binomial /",
       "multinomial at the arm level, not encoded here)"
     ))
   })

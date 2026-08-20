@@ -30,7 +30,7 @@ Pardridge_2023_imipramine_pbpk <- function() {
     sep = " "
   )
   vignette <- "Pardridge_2023_brain_plasma_protein_binding"
-  units    <- list(time = "minute", dosing = "nmol/kg", concentration = "nM")
+  units    <- list(time = "min", dosing = "nmol/kg", concentration = "nM")
 
   # Paper-mechanistic brain states (Table I).  The `brain_vascular` /
   # `brain_extravascular` stems are the registered canonical brain
@@ -49,6 +49,20 @@ Pardridge_2023_imipramine_pbpk <- function() {
 
   # No covariates: every parameter is a fixed literature constant and the
   # paper simulates a single typical subject rather than a population.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    brain_vascular_drug_agp       = list(analyte = "imipramine AGP-bound", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_vascular_drug_alb       = list(analyte = "imipramine albumin-bound", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_vascular_drug_free      = list(analyte = "imipramine free", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_extravascular_drug_free = list(analyte = "imipramine free", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_extravascular_prot_free = list(analyte = "free brain cytoplasmic binding protein", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_extravascular_drug_prot = list(analyte = "imipramine drug-occupied brain cytoplasmic binding protein", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_vascular_agp_free       = list(analyte = "alpha-1-acid-glycoprotein (AGP) free", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

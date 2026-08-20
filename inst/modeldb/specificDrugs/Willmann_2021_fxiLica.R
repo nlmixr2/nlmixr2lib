@@ -37,7 +37,19 @@ Willmann_2021_fxiLica <- function() {
   )
   vignette <- "Willmann_2021_fxi_aso"
   paper_specific_compartments <- c("fxi")
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "FXI-LICA", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "FXI-LICA", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "FXI-LICA", units = "mg", specimen = "plasma", verified = FALSE),
+    fxi         = list(analyte = "FXI activity", units = "mg", specimen = "blood cell", verified = FALSE),
+    effect      = list(analyte = "FXI activity", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list(
     RRT_HEMODIAL_STATUS = list(
@@ -96,7 +108,7 @@ Willmann_2021_fxiLica <- function() {
     # (final PK/PD model, simultaneously fitted to pooled FXI-activity data
     # from ASO-CS1 + ASO-CS4 + LICA-CS1; shared baseline, kout, ke0, hill).
     # ---------------------------------------------------------------------
-    imax     <- fixed(1.00)   ; label("Maximum fractional inhibition of Kin (unitless; fixed to 1)")                       # Willmann 2021 Table S4: Imax = 1.00 (fixed)
+    imax     <- fixed(1.00)   ; label("Maximum fractional inhibition of Kin (unitless)")                       # Willmann 2021 Table S4: Imax = 1.00 (fixed)
     lic50    <- log(2.59)     ; label("IC50 of FXI-LICA at the effect site (ng/mL)")                                        # Willmann 2021 Table S4: IC50 FXI-LICA = 2.59 ng/mL (95% CI 2.18-3.00)
     lrbase   <- log(0.994)    ; label("Baseline FXI activity Baseline (U/mL)")                                              # Willmann 2021 Table S4: Baseline FXI activity = 0.994 U/mL (95% CI 0.971-1.02)
     lkout    <- log(0.00435)  ; label("First-order elimination rate constant kout for FXI activity (1/h)")                  # Willmann 2021 Table S4: kout = 0.00435 1/h (95% CI 0.00383-0.00488)

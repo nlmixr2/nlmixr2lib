@@ -11,9 +11,23 @@ vanRongen_2018_midazolam <- function() {
     sep = " "
   )
   vignette  <- "vanRongen_2018_midazolam"
-  units     <- list(time = "minute", dosing = "microgram", concentration = "microgram/L")
+  units     <- list(time = "min", dosing = "ug", concentration = "microgram/L")
   ddmore_id    <- "DDMODEL00000250"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "midazolam", units = "ug", specimen = "plasma", verified = FALSE),
+    transit1    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "midazolam", units = "ug", specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

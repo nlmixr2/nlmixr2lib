@@ -9,7 +9,7 @@ Woillard_2014_ciclosporin <- function() {
     sep = " "
   )
   vignette <- "Woillard_2014_ciclosporin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariatesDataExcluded <- list(
     HGB = list(
@@ -85,6 +85,19 @@ Woillard_2014_ciclosporin <- function() {
     notes                 = "Three independent modelling approaches (NONMEM, iterative two-stage ITS, non-parametric Pmetrics) were fit in parallel to compare Bayesian estimators of CsA AUC(0,12h) under a three-sample limited sampling strategy. The packaged model file encodes the NONMEM final model (Table 2) parameterised in standard CL/V/Q form. The ITS and Pmetrics fits used a gamma-law absorption with macro-constant disposition (FAIV, FBIV, alpha, beta in Table 3) and are not packaged here; see the vignette's Assumptions and deviations section for rationale."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     # NONMEM final-model estimates from Woillard 2014 Table 2. Structural
     # model: two-compartment with first-order elimination and Erlang
@@ -105,7 +118,7 @@ Woillard_2014_ciclosporin <- function() {
     # Apparent peripheral volume of distribution. The paper notes the
     # peripheral volume was "arbitrarily fixed to 500 L" (Results,
     # "Pharmacokinetic models"), so the value is encoded with fixed().
-    lvp  <- fixed(log(500)); label("Apparent peripheral volume of distribution Vp/F (L), fixed") # Table 2, Vp/F = 500 L (fixed; NA SE/CI)
+    lvp  <- fixed(log(500)); label("Apparent peripheral volume of distribution Vp/F (L)") # Table 2, Vp/F = 500 L (fixed; NA SE/CI)
 
     # Apparent oral clearance.
     lcl  <- log(41.2);  label("Apparent oral clearance CL/F (L/h)")                          # Table 2, CL/F = 41.2 L/h

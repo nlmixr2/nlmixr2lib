@@ -2,7 +2,15 @@ Admiraal_2023_iminobiotin <- function() {
   description <- "Two-compartment IV population PK model for 2-iminobiotin (2-IB, a selective neuronal nitric oxide synthase inhibitor) in adults after out-of-hospital cardiac arrest, with a power-model eGFR-on-clearance covariate effect."
   reference <- "Admiraal MM, Velseboer DC, Tjabbes H, Vis P, Peeters-Scholte C, Horn J. Neuroprotection after cardiac arrest with 2-iminobiotin: a single center phase IIa study on safety, tolerability, and pharmacokinetics. Front Neurol. 2023;14:1136046. doi:10.3389/fneur.2023.1136046"
   vignette <- "Admiraal_2023_iminobiotin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "iminobiotin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

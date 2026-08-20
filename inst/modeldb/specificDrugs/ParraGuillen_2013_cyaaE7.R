@@ -18,6 +18,18 @@ ParraGuillen_2013_cyaaE7 <- function() {
   paper_specific_compartments <- c("vac", "tran", "svac", "reg", "tumor_size")
   units <- list(time = "day", dosing = "(arbitrary unit, set to 1 at vaccine injection)", concentration = "(K-PD, no PK)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    vac        = list(analyte = "CyaA-E7 vaccine", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tran       = list(analyte = "CyaA-E7 vaccine", units = NA_character_, specimen = "administration site", verified = FALSE),
+    svac       = list(analyte = "SVAC (vaccine-elicited inhibitory signal)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tumor_size = list(analyte = "TC1 tumor size", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    reg        = list(analyte = "REG (Hill-function regulator)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     MIX_VAC_RELAPSE = list(
       description        = paste(

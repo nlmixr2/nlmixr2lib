@@ -16,6 +16,15 @@ Delor_2013_alzheimer <- function() {
     concentration = "(CDR-SOB score, 0-18, unitless)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    a_fast = list(analyte = "Alzheimer's disease progression rate (fast branch)", units = NA_character_, specimen = "administration site", verified = FALSE),
+    a_slow = list(analyte = "Alzheimer's disease progression rate (slow branch)", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     SCORE_CDR_SOB = list(
       description        = "Clinical Dementia Rating scale - Sum of Boxes score (0-18; integer-valued with half-unit increments in ADNI). Used here as a time-fixed baseline covariate (the source paper's CDR_bsl column). Drives both the per-subject disease-onset time (multiplicative power form, centred on SCORE_CDR_SOB = 2) and the per-subject slow-progression-subpopulation probability (logit-additive shift, centred on SCORE_CDR_SOB = 1).",
@@ -131,7 +140,7 @@ Delor_2013_alzheimer <- function() {
     lpl <- log(0.434); label("Log placebo-effect magnitude (CDR-SOB units; subtracted from predicted score after study entry)")
     # Delor 2013 Table 2 final 'Placebo magnitude (PL)' = 0.434.
 
-    lkpl <- fixed(log(1)); label("Log placebo-effect equilibration rate constant (1/year; FIXED 1 in source -- IIV not supported by the data)")
+    lkpl <- fixed(log(1)); label("Log placebo-effect equilibration rate constant (1/year; 1 in source -- IIV not supported by the data)")
     # Delor 2013 Table 2 final 'Placebo rate (KPL), 1/year' = 1 with no
     # estimated CV%, indicating FIXED. The source text 'estimation of IIV on
     # KPL was not supported by the data' confirms that the typical value

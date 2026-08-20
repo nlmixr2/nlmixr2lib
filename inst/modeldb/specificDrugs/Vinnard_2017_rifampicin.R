@@ -9,7 +9,15 @@ Vinnard_2017_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Vinnard_2017_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     OCC = list(
@@ -51,7 +59,7 @@ Vinnard_2017_rifampicin <- function() {
     lvc  <- log(52.90); label("Apparent oral central volume of distribution V/F (L)")                     # Vinnard 2017 Table 1: oral apparent volume of distribution (V/F) = 52.90 L (RSE 5.10%)
     lmtt <- log(0.97);  label("Mean absorption transit time MTT (h)")                                     # Vinnard 2017 Table 1: mean transit time within compartments = 0.97 h (RSE 6.80%)
     lnn  <- log(4.36);  label("Number of absorption transit compartments NN (continuous, dimensionless)") # Vinnard 2017 Table 1: number of absorption transit compartments = 4.36 (RSE 9.01%)
-    lfdepot <- fixed(log(1)); label("Oral bioavailability F (fixed at 1)")                                # Vinnard 2017 Table 1: oral bioavailability (F) = 1 (fixed)
+    lfdepot <- fixed(log(1)); label("Oral bioavailability F")                                # Vinnard 2017 Table 1: oral bioavailability (F) = 1 (fixed)
 
     # Inter-individual variability (between-subject). Source reports BSV as CV%
     # in Table 1; converted to log-normal variance via omega^2 = log(1 + CV^2).
@@ -67,7 +75,7 @@ Vinnard_2017_rifampicin <- function() {
     # (matching the standard NONMEM $OMEGA BLOCK(1) + SAME pattern, e.g.
     # Wilkins_2008_rifampicin.R).
     etaiov_fdepot_1 ~ 0.00843        # Vinnard 2017 Table 1: IOV F = 9.2% CV; omega^2 = log(1 + 0.092^2) = 0.00843 (occasion 1, pre-ART)
-    etaiov_fdepot_2 ~ fix(0.00843)   # occasion 2 (post-ART) - variance fixed equal to occasion 1 (single IOV variance shared across occasions in source)
+    etaiov_fdepot_2 ~ fix(0.00843)   # occasion 2 (post-ART) - variance equal to occasion 1 (single IOV variance shared across occasions in source)
 
     # Combined additive + proportional residual error (Vinnard 2017 Table 1).
     # Concentrations are in mg/L (= ug/mL).

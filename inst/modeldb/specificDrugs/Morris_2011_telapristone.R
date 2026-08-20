@@ -31,9 +31,20 @@ Morris_2011_telapristone <- function() {
   paper_specific_etas <- "etalfmetest"
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "telapristone", units = "nmol", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "telapristone", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "telapristone", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_cdb4453 = list(analyte = "CDB-4453", units = "nmol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -173,7 +184,7 @@ Morris_2011_telapristone <- function() {
 
     # Metabolite (CDB-4453) parameters
     lvc_cdb4453 <- fixed(log(1))
-    label("Metabolite V3/F -- apparent volume (L), FIXED for identifiability")              # Table II 'V3/F (L)' = 1 (fixed); Methods 'V3/F was fixed to 1 L'
+    label("Metabolite V3/F -- apparent volume (L), for identifiability")              # Table II 'V3/F (L)' = 1 (fixed); Methods 'V3/F was fixed to 1 L'
     lcl_cdb4453 <- log(2.43)
     label("Metabolite CLM/F -- apparent clearance (L/h)")                                   # Table II 'CLM/F (L/h)' (Estimate 2.43, RSE 15.1 %)
     lfmetest    <- log(0.201)

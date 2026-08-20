@@ -2,7 +2,16 @@ Jeong_2022_torsemide <- function() {
   description <- "Two-compartment population PK model for oral torsemide in healthy Korean adult males (Jeong 2022), with first-order absorption after a lag time, proportional residual error, and categorical genotype covariates: OATP1B1 *15 haplotype (intermediate / poor transporter) reduces apparent central volume, and CYP2C9 extensive-metabolizer phenotype increases apparent oral clearance and apparent inter-compartmental clearance."
   reference <- "Jeong S-H, Jang J-H, Cho H-Y, Lee Y-B. Population Pharmacokinetic (Pop-PK) Analysis of Torsemide in Healthy Korean Males Considering CYP2C9 and OATP1B1 Genetic Polymorphisms. Pharmaceutics. 2022;14(4):771. doi:10.3390/pharmaceutics14040771"
   vignette <- "Jeong_2022_torsemide"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "torsemide", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "torsemide", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "torsemide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     SLCO1B1_HAP15_HET = list(

@@ -24,9 +24,27 @@ Schindler_2017_likert_pain <- function() {
   )
 
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "(none; placebo arm)",
     concentration = "(11-point Likert pain score 0-10, ordinal)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    pscore0  = list(analyte = "11-point Likert pain score 0", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore1  = list(analyte = "11-point Likert pain score 1", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore2  = list(analyte = "11-point Likert pain score 2", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore3  = list(analyte = "11-point Likert pain score 3", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore4  = list(analyte = "11-point Likert pain score 4", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore5  = list(analyte = "11-point Likert pain score 5", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore6  = list(analyte = "11-point Likert pain score 6", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore7  = list(analyte = "11-point Likert pain score 7", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore8  = list(analyte = "11-point Likert pain score 8", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore9  = list(analyte = "11-point Likert pain score 9", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pscore10 = list(analyte = "11-point Likert pain score 10", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(

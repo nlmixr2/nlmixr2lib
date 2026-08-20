@@ -31,6 +31,13 @@ Goggin_2004_emfilermin <- function() {
   vignette <- "Goggin_2004_emfilermin"
   units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "emfilermin", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -119,8 +126,8 @@ Goggin_2004_emfilermin <- function() {
     # Jonsson 2011 ethambutol pattern.
     # -------------------------------------------------------------------
     etaiov_vc_1 ~ 0.05155            # Goggin 2004 Table 4: IOV(V/F) = 23% CV -> p^2 = log(0.23^2 + 1) = 0.05155 (estimated, occasion 1)
-    etaiov_vc_2 ~ fix(0.05155)       # occasion-2 variance fixed equal to occasion-1 ($OMEGA BLOCK(1) SAME pattern)
-    etaiov_vc_3 ~ fix(0.05155)       # occasion-3 variance fixed equal to occasion-1 ($OMEGA BLOCK(1) SAME pattern)
+    etaiov_vc_2 ~ fix(0.05155)       # occasion-2 variance equal to occasion-1 ($OMEGA BLOCK(1) SAME pattern)
+    etaiov_vc_3 ~ fix(0.05155)       # occasion-3 variance equal to occasion-1 ($OMEGA BLOCK(1) SAME pattern)
 
     # -------------------------------------------------------------------
     # Residual error - proportional (Goggin 2004 Methods Step 1; combined

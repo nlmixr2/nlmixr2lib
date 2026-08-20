@@ -8,7 +8,15 @@ Dhoro_2015_efavirenz <- function() {
     "BMC Pharmacol Toxicol. 2015;16:4. doi:10.1186/s40360-015-0004-2."
   )
   vignette <- "Dhoro_2015_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -125,7 +133,7 @@ Dhoro_2015_efavirenz <- function() {
     # Dhoro 2015 Table 3: ka and V/F were FIXED from the upstream Nyakutira et al. (2008)
     # Zimbabwean popPK [Dhoro 2015 reference 37]. Only CL/F was estimated.
     lka <- fixed(log(0.18)) ; label("First-order absorption rate constant ka (1/h)") # Dhoro 2015 Table 3: ka = 0.18 1/h FIX (fixed from Nyakutira 2008)
-    lvc <- fixed(log(150))  ; label("Apparent volume of distribution V/F (L)")        # Dhoro 2015 Table 3: V/F = 150 L FIX (fixed from Nyakutira 2008; the table header "L/hr" is a typo - V/F is a volume in L)
+    lvc <- fixed(log(150))  ; label("Apparent volume of distribution V/F (L)")        # Dhoro 2015 Table 3: V/F = 150 L FIX (fixed from Nyakutira 2008; the table header "L/h" is a typo - V/F is a volume in L)
 
     # ---- CL/F stratified by CYP2B6*18 (rs28399499 / 983T>C) genotype ----
     # Dhoro 2015 Table 3 reports CL/F as three distinct typical values, one per *18

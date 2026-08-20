@@ -14,9 +14,20 @@ Dao_2020_sultiame <- function() {
   ddmore_id <- "DDMODEL00000298"
   replicate_of <- NULL
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "sultiame", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "sultiame", units = "mg", specimen = "plasma", verified = FALSE),
+    erythrocytes = list(analyte = "sultiame", units = "mg", specimen = "blood cell", verified = FALSE),
+    urine        = list(analyte = "sultiame", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list()
@@ -43,7 +54,7 @@ Dao_2020_sultiame <- function() {
     lkon  <- log(0.949);  label("Plasma->erythrocyte association rate KON (1/(h*mg))")                    # Output_real_*.lst FINAL THETA TH 4 = 9.49E-01 (KON)
     lbtot <- log(97.1);   label("Maximal erythrocyte binding capacity BTOT (mg)")                         # Output_real_*.lst FINAL THETA TH 5 = 9.71E+01 (BTOT)
     lkoff <- log(0.796);  label("Erythrocyte->plasma dissociation rate KOFF (1/h)")                       # Output_real_*.lst FINAL THETA TH 6 = 7.96E-01 (KOFF)
-    lka   <- fixed(log(1)); label("First-order absorption rate KA (1/h, fixed)")                          # Output_real_*.lst FINAL THETA TH 7 = 1.00E+00 (KA, '1 FIX' in $THETA)
+    lka   <- fixed(log(1)); label("First-order absorption rate KA (1/h)")                          # Output_real_*.lst FINAL THETA TH 7 = 1.00E+00 (KA, '1 FIX' in $THETA)
     lqren <- log(0.247);  label("Renal extraction fraction QREN (unitless, bounded 0-1 in source)")       # Output_real_*.lst FINAL THETA TH 8 = 2.47E-01 (QREN)
 
     # Inter-individual variability - diagonal $OMEGA on the linear parameter scale

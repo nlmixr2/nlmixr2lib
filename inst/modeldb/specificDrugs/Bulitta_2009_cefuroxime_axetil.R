@@ -31,6 +31,16 @@ Bulitta_2009_cefuroxime_axetil <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    stomach   = list(analyte = "cefuroxime axetil", units = "mg", specimen = "administration site", verified = FALSE),
+    intestine = list(analyte = "cefuroxime axetil", units = "mg", specimen = "administration site", verified = FALSE),
+    central   = list(analyte = "cefuroxime", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

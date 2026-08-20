@@ -34,9 +34,18 @@ Azechi_2024_tamibarotene_pediatric <- function() {
   )
   vignette <- "Azechi_2024_tamibarotene_pediatric"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tamibarotene", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tamibarotene", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tamibarotene", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -117,7 +126,7 @@ Azechi_2024_tamibarotene_pediatric <- function() {
     # mean, used as the centering value in the linear BSA-scaling form).
     # Apparent clearances in L/h, apparent volumes in L, ka in 1/h, tlag in h.
     lka   <- log(0.415);       label("Absorption rate constant ka (1/h)")                                # Azechi 2024 Table 4 final ka = 0.415 /h (95% CI 0.270-0.560; bootstrap median 0.429, 95% CI 0.350-0.546)
-    ltlag <- fixed(log(0.95)); label("Absorption lag time tlag (h) -- FIXED per source")                 # Azechi 2024 Table 4 Tlag = 0.95 h FIXED (Section 2.6 / Discussion: post-covariate estimate ~1.8 h was judged of low physiological validity, so Tlag was held at the pre-covariate value of 0.95 h)
+    ltlag <- fixed(log(0.95)); label("Absorption lag time tlag (h) -- per source")                 # Azechi 2024 Table 4 Tlag = 0.95 h FIXED (Section 2.6 / Discussion: post-covariate estimate ~1.8 h was judged of low physiological validity, so Tlag was held at the pre-covariate value of 0.95 h)
     lcl   <- log(8.73);        label("Apparent oral clearance CL/F at BSA = 0.995 m^2 (L/h)")            # Azechi 2024 Table 4 final tvCL/F = 8.73 L/h (95% CI 7.12-10.35; bootstrap median 9.1, 95% CI 7.61-10.81)
     lvc   <- log(9.17);        label("Apparent central volume V1/F at BSA = 0.995 m^2 (L)")              # Azechi 2024 Table 4 final tvV1/F = 9.17 L (95% CI 1.84-16.50; bootstrap median 10.13, 95% CI 4.47-15.40)
     lq    <- log(3.45);        label("Apparent inter-compartmental clearance Q/F (L/h)")                 # Azechi 2024 Table 4 final tvQ/F = 3.45 L/h (95% CI 1.25-5.65; bootstrap median 3.39, 95% CI 2.89-4.70). No covariate on Q/F in the final model.
@@ -132,9 +141,9 @@ Azechi_2024_tamibarotene_pediatric <- function() {
     # provenance is explicit in ini() (matches the Andrews 2017 tacrolimus
     # convention of encoding theory-fixed allometric exponents as
     # fixed(<exp>)).
-    e_bsa_cl <- fixed(1); label("Power exponent of (BSA/0.995) on CL/F (unitless; fixed at 1 per Table 4 form)") # Azechi 2024 Table 4 Final Model: CL/F = tvCL/F * BSA/mean
-    e_bsa_vc <- fixed(1); label("Power exponent of (BSA/0.995) on V1/F (unitless; fixed at 1 per Table 4 form)") # Azechi 2024 Table 4 Final Model: V1/F = tvV1/F * BSA/mean
-    e_bsa_vp <- fixed(1); label("Power exponent of (BSA/0.995) on V2/F (unitless; fixed at 1 per Table 4 form)") # Azechi 2024 Table 4 Final Model: V2/F = tvV2/F * BSA/mean
+    e_bsa_cl <- fixed(1); label("Power exponent of (BSA/0.995) on CL/F (unitless; 1 per Table 4 form)") # Azechi 2024 Table 4 Final Model: CL/F = tvCL/F * BSA/mean
+    e_bsa_vc <- fixed(1); label("Power exponent of (BSA/0.995) on V1/F (unitless; 1 per Table 4 form)") # Azechi 2024 Table 4 Final Model: V1/F = tvV1/F * BSA/mean
+    e_bsa_vp <- fixed(1); label("Power exponent of (BSA/0.995) on V2/F (unitless; 1 per Table 4 form)") # Azechi 2024 Table 4 Final Model: V2/F = tvV2/F * BSA/mean
 
     # Inter-individual variability. Azechi 2024 Methods Section 2.6
     # specifies an exponential IIV model on all five PK parameters

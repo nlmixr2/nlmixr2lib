@@ -2,7 +2,14 @@ Lee_2017_doripenem <- function() {
   description <- "One-compartment IV-infusion population PK model for doripenem in 37 Korean adults with acute infections (pyelonephritis, intra-abdominal infection, neutropenic fever) and CLCR ranging 20-50 or >50 mL/min (Lee 2017). Clearance and central volume scale linearly with body weight (CL/WT = 0.109 L/h/kg, V/WT = 0.280 L/kg at WT=70 kg, CLCR=57 mL/min); CL additionally scales by a power exponent on Cockcroft-Gault creatinine clearance (raw mL/min, reference 57)."
   reference <- "Lee D-H, Kim YK, Jin K, Kang MJ, Joo Y-D, Kim YW, Moon YS, Shin J-G, Kiem S. Population pharmacokinetic analysis of doripenem after intravenous infusion in Korean patients with acute infections. Antimicrob Agents Chemother. 2017;61(5):e02185-16. doi:10.1128/AAC.02185-16"
   vignette <- "Lee_2017_doripenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "doripenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -53,8 +60,8 @@ Lee_2017_doripenem <- function() {
     # (CL/WT, V/WT) is mathematically equivalent to fixed linear allometric
     # exponents (1.0) on WT for both CL and V. Wrapped in fixed() because
     # this is a structural assumption, not an estimated parameter.
-    e_wt_cl <- fixed(1); label("WT exponent on CL (fixed, structural)") # Lee 2017 Methods/Results: structural per-kg parameterization CL/WT = constant
-    e_wt_vc <- fixed(1); label("WT exponent on V (fixed, structural)")  # Lee 2017 Methods/Results: structural per-kg parameterization V/WT = constant
+    e_wt_cl <- fixed(1); label("WT exponent on CL (structural)") # Lee 2017 Methods/Results: structural per-kg parameterization CL/WT = constant
+    e_wt_vc <- fixed(1); label("WT exponent on V (structural)")  # Lee 2017 Methods/Results: structural per-kg parameterization V/WT = constant
 
     # CLCR power-law covariate effect on CL (Lee 2017 Table 2 / Results
     # equation): CL/WT = 0.109 x (CLCR/57)^0.688.

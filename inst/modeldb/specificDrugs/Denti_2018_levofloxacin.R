@@ -24,7 +24,16 @@ Denti_2018_levofloxacin <- function() {
     sep = " "
   )
   vignette <- "Denti_2018_levofloxacin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "levofloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "levofloxacin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -165,7 +174,7 @@ Denti_2018_levofloxacin <- function() {
 
     # Allometric exponents (fixed per Denti 2018 Methods: 0.75 on CL parameters and
     # 1 on volume parameters, citing Anderson and Holford 2008).
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")  # Methods, p.7 col.2 paragraph 2
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")  # Methods, p.7 col.2 paragraph 2
     allo_v  <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)") # Methods, p.7 col.2 paragraph 2
 
     # Maturation parameters (Hill function on postmenstrual age, applied to CL).
@@ -189,7 +198,7 @@ Denti_2018_levofloxacin <- function() {
 
     # Residual error: combined proportional + additive (additive fixed at 20% of LLOQ).
     propSd <- 0.116;           label("Proportional residual error (fraction)")  # Table 2 row "Proportional error (%)"
-    addSd  <- fixed(0.0160);   label("Additive residual error (mg/L; fixed at 20% of LLOQ)") # Table 2 row "Additive error" (fixed)
+    addSd  <- fixed(0.0160);   label("Additive residual error (mg/L; 20% of LLOQ)") # Table 2 row "Additive error" (fixed)
   })
 
   model({
@@ -208,9 +217,9 @@ Denti_2018_levofloxacin <- function() {
     ngt_tlag <- 1 + e_route_ngt_tlag * ROUTE_NGT
 
     # Individual PK parameters with allometric weight scaling (12 kg reference).
-    cl <- exp(lcl + etalcl)         * (WT / 12)^allo_cl * mat_cl * hiv_cl
+    cl <- exp(lcl + etalcl)         * (WT / 12)^e_wt_cl * mat_cl * hiv_cl
     vc <- exp(lvc)                  * (WT / 12)^allo_v
-    q  <- exp(lq)                   * (WT / 12)^allo_cl
+    q  <- exp(lq)                   * (WT / 12)^e_wt_cl
     vp <- exp(lvp)                  * (WT / 12)^allo_v
     ka <- exp(lka + etalka)
     tlag_central <- exp(ltlag + etaltlag) * ngt_tlag

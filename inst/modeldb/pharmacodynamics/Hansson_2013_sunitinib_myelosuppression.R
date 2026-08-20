@@ -22,7 +22,20 @@ Hansson_2013_sunitinib_myelosuppression <- function() {
     sep = " "
   )
   vignette <- "Hansson_2013_sunitinib_myelosuppression"
-  units <- list(time = "hour", dosing = "mg", concentration = "10^9 cells/L (ANC)")
+  units <- list(time = "h", dosing = "mg", concentration = "10^9 cells/L (ANC)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    svegfr3  = list(analyte = "sVEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
+    prol     = list(analyte = "progenitor cells", units = "mg", specimen = "blood cell", verified = FALSE),
+    transit1 = list(analyte = "mature neutrophil precursors", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "late mature neutrophil precursors", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "circulating neutrophils", units = "mg", specimen = "administration site", verified = FALSE),
+    circ     = list(analyte = "ANC", units = "mg", specimen = "whole blood", verified = FALSE)
+  )
 
   covariateData <- list(
     DOSE = list(

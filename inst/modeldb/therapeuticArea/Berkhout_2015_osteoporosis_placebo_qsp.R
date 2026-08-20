@@ -49,6 +49,17 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    osteoblast = list(analyte = "active osteoblast", units = NA_character_, specimen = "tissue", verified = FALSE),
+    osteoclast = list(analyte = "active osteoclast", units = NA_character_, specimen = "tissue", verified = FALSE),
+    BMD_LS     = list(analyte = "bone mineral density (lumbar spine)", units = NA_character_, specimen = "tissue", verified = FALSE),
+    BMD_TH     = list(analyte = "bone mineral density (total hip)", units = NA_character_, specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     BMI = list(
       description        = paste0(
@@ -210,7 +221,7 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
     NTX_0    <- 49.5;         label("Baseline urine NTX at menopause onset NTX_0 (nmol bce/mmol cr)")
     # Table 2, EPIC 2 NTX_0 = 49.5 (%CV 5.7).
 
-    BSAP_0   <- fixed(97.4);  label("Baseline serum BSAP in tibolone-study units BSAP_0 (U/L; fixed at Post 2013 value)")
+    BSAP_0   <- fixed(97.4);  label("Baseline serum BSAP in tibolone-study units BSAP_0 (U/L; Post 2013 value)")
     # Table 2, all columns: 'fixed at 97.4' (footnote a: 'Fixed at the tibolone value, see main text for explanation').
     # NONMEM $THETA: '(97.4) FIX'.
 
@@ -220,7 +231,7 @@ Berkhout_2015_osteoporosis_placebo_qsp <- function() {
     q_NTX    <- 0.56;         label("NTX transducer exponent q_NTX (dimensionless; NTX = NTX_0 * z^q_NTX)")
     # Table 2, EPIC 2 q_NTX = 0.56 (%CV 15.6).
 
-    q_BSAP   <- fixed(0.286); label("BSAP transducer exponent q_BSAP (dimensionless; BSAP = (BSAP_0*(1+k_BSAP0)) * y^q_BSAP; fixed at tibolone value)")
+    q_BSAP   <- fixed(0.286); label("BSAP transducer exponent q_BSAP (dimensionless; BSAP = (BSAP_0*(1+k_BSAP0)) * y^q_BSAP; tibolone value)")
     # Table 2, EPIC columns: 'fixed at tibolone value' (footnote a). NONMEM $THETA: '(0, 0.286, 10) FIX'.
 
     # =====================================================================

@@ -36,6 +36,13 @@ Shin_2006_quinidine_QT <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "quinidine QT", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Biological sex indicator, 1 = female, 0 = male.",
@@ -136,13 +143,13 @@ Shin_2006_quinidine_QT <- function() {
     # inter-compartmental clearance.
     # ------------------------------------------------------------------
     lcl <- fixed(log(0.30 * 70))
-    label("Clearance (L/h, reference WT 70 kg; NCA-derived, fixed)")
+    label("Clearance (L/h, reference WT 70 kg; NCA-derived)")
     # Shin 2006 Table 2 'Total' rows: CLtot = 0.31 (Korean) and 0.29
     # (Caucasian) L/h/kg; pooled ~0.30 L/h/kg. For 70 kg reference,
     # CL = 21 L/h. NOT a popPK fit -- see vignette Errata.
 
     lvc <- fixed(log(2.5 * 70))
-    label("Central volume of distribution (L, reference WT 70 kg; = NCA Vss, fixed)")
+    label("Central volume of distribution (L, reference WT 70 kg; = NCA Vss)")
     # Shin 2006 Table 2 'Total' rows: Vss = 2.78 (Korean) and 2.40
     # (Caucasian) L/kg; pooled ~2.5 L/kg. 1-cmt approximation uses
     # Vc = Vss; for 70 kg reference, Vc = 175 L. NOT a popPK fit --

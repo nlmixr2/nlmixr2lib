@@ -9,9 +9,20 @@ Nielsen_2011_benzylpenicillin <- function() {
     sep = " "
   )
   vignette <- "Nielsen_2011_antibacterial_efficacy"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "natural log CFU/mL (observation); mg/L (drug compartment)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "natural log CFU/mL (observation); mg/L (drug compartment)")
 
   paper_specific_compartments <- c("bact_sensitive", "bact_resting")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central        = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect         = list(analyte = "benzylpenicillin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_sensitive = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (sensitive)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resting   = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (resistant)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -65,7 +76,7 @@ Nielsen_2011_benzylpenicillin <- function() {
     # ini() shape works across the five Nielsen 2011 drug files
     # (PEN/CXM nonzero; ERY/MXF/VAN zero -> log() would not apply).
     kdeg <- fixed(0.020)
-    label("Drug degradation rate kdeg in broth (1/h; FIXED per Methods 'Semimechanistic PKPD model')")  # Methods: "for these drugs the kdeg values were fixed to 0.020 and 0.026 h-1, respectively" (benzylpenicillin = 0.020)
+    label("Drug degradation rate kdeg in broth (1/h; per Methods 'Semimechanistic PKPD model')")  # Methods: "for these drugs the kdeg values were fixed to 0.020 and 0.026 h-1, respectively" (benzylpenicillin = 0.020)
 
     # ke is the in vitro kinetic-system elimination rate (flow rate
     # / volume). For dynamic experiments it is set to ln(2) /
@@ -87,7 +98,7 @@ Nielsen_2011_benzylpenicillin <- function() {
     lhill <- log(1.06)
     label("Log Hill (sigmoidicity) exponent gamma on the killing function (unitless)")    # Table 3 "Static and dynamic" column: gamma PEN = 1.06 (RSE 24%)
     lke0  <- fixed(log(100))
-    label("Log effect-compartment delay rate ke0 (1/h; FIXED at 100 per Table 3 'Static and dynamic' column)")  # Table 3 "Static and dynamic" column: ke0 PEN = 100 FIX (effectively instantaneous equilibrium)
+    label("Log effect-compartment delay rate ke0 (1/h; per Table 3 'Static and dynamic' column)")  # Table 3 "Static and dynamic" column: ke0 PEN = 100 FIX (effectively instantaneous equilibrium)
 
     # =============================================================
     # Starting inoculum
@@ -96,7 +107,7 @@ Nielsen_2011_benzylpenicillin <- function() {
     # ("Time-kill curve experiments"). Treated as a model parameter
     # so users can override per simulation.
     lcfu0 <- fixed(log(1e6))
-    label("Log starting bacterial inoculum (CFU/mL; FIXED at 10^6 per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
+    label("Log starting bacterial inoculum (CFU/mL; per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
 
     # =============================================================
     # Residual error

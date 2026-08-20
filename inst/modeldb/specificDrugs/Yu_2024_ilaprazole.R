@@ -2,7 +2,15 @@ Yu_2024_ilaprazole <- function() {
   description <- "Two-compartment population PK model with first-order elimination for ilaprazole, a proton-pump inhibitor, after 0.75 h intravenous infusion in Chinese healthy subjects and patients with duodenal ulcer (Yu 2024). Pooled analysis of 1,560 plasma concentrations from 58 subjects across four phase I studies (healthy) and one phase IIa study (duodenal ulcer), fit in Phoenix NLME 8.3 by FOCE-ELS. Female sex lowers clearance (exp(-0.213)) and duodenal-ulcer disease status raises both clearance (exp(0.290)) and peripheral volume (exp(0.356)); peripheral volume additionally scales with body weight by a power of 1.545 around a 60.6 kg median. Typical values are for a healthy male at 60.6 kg. Inter-individual variability on the inter-compartmental clearance (CLp) was fixed in the final model because of 84% eta-shrinkage and no numeric variance was reported, so it is encoded as fixed(0)."
   reference   <- "Yu M, Liu S, Wu X, Wang H. Population pharmacokinetic modeling of ilaprazole in healthy subjects and patients with duodenal ulcer in China. Front Pharmacol. 2024 Jan 10;14:1306222. doi:10.3389/fphar.2023.1306222."
   vignette    <- "Yu_2024_ilaprazole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ilaprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ilaprazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -82,7 +90,7 @@ Yu_2024_ilaprazole <- function() {
     etalvc ~ 0.013                   # Yu 2024 Table 3: omega^2 V = 0.013 (RSE 31.284%, 95% CI 0.005-0.021; eta-shrinkage 34.0%)
     etalvp ~ 0.032                   # Yu 2024 Table 3: omega^2 Vp = 0.032 (RSE 21.763%, 95% CI 0.018-0.046; eta-shrinkage 1.82%)
     etalcl ~ 0.059                   # Yu 2024 Table 3: omega^2 CL = 0.059 (RSE 25.051%, 95% CI 0.030-0.089; eta-shrinkage 24.4%)
-    etalq  ~ fixed(0)                # Yu 2024 Table 3: omega^2 CLp reported only as Fixed; Section 3.2 states the CLp random effect was fixed because of 84% eta-shrinkage. No numeric variance is reported anywhere in the paper or supplement, so it is encoded as fixed(0) (see vignette Errata).
+    etalq  ~ fixed(0)                # Yu 2024 Table 3: omega^2 CLp reported only as; Section 3.2 states the CLp random effect was because of 84% eta-shrinkage. No numeric variance is reported anywhere in the paper or supplement, so it is encoded as (0) (see vignette Errata).
 
     # ------------------------------------------------------------------
     # Residual error - multiplicative (proportional) model.

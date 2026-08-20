@@ -46,9 +46,30 @@ Levitt_2005_propofol_pbpk <- function() {
     sep = " "
   )
   vignette <- "Levitt_2005_propofol_pbpk"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("lung_seq")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    muscle    = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney    = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    brain     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    heart     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    skin      = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    other     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    adipose   = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    bone      = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    intestine = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    liver     = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    lung      = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE),
+    arterial  = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    venous    = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    lung_seq  = list(analyte = "propofol", units = "mg", specimen = "tissue", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

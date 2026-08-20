@@ -1,6 +1,15 @@
 phenylalanine_charbonneau_2021 <- function() {
   description <- "Phenylalanine model for absorption and metabolism in healthy subjects and patients with PKU"
   reference <- "Charbonneau, M.R., Denney, W.S., Horvath, N.G. et al. Development of a mechanistic model to predict synthetic biotic activity in healthy volunteers and patients with phenylketonuria. Commun Biol 4, 898 (2021). https://doi.org/10.1038/s42003-021-02183-1"
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    gut = list(analyte = "phenylalanine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    phe = list(analyte = "phenylalanine", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description = "Body weight in kg",
@@ -15,17 +24,17 @@ phenylalanine_charbonneau_2021 <- function() {
     bl_gut <- 0; label("Baseline Phe in the gut (mg)")
 
     ka_gut <- 0.25; label("Absorption rate from gut to plasma")
-    v_npd <- 0.012; label("Rate of net protein breakdown ((mmol/L)/hr)")
+    v_npd <- 0.012; label("Rate of net protein breakdown ((mmol/L)/h)")
 
-    vmax_pah <- 0.9; label("Maximum rate of Phe breakdown by PAH in a healthy subject ((mmol/L)/hr)")
+    vmax_pah <- 0.9; label("Maximum rate of Phe breakdown by PAH in a healthy subject ((mmol/L)/h)")
     f_pah <- 0; label("Fraction of healthy PAH activity (PKU patient = 0 to 0.02)")
     km_pah <- 0.51; label("Michaelis-Menten constant for Phe with PAH (mmol/L)")
     kact_pah <- 0.54; label("Phe activation constant for PAH")
 
-    vmax_trans <- 0.063; label("Maximum rate of Phe breakdown by transaminase ((mmol/L)/hr)")
+    vmax_trans <- 0.063; label("Maximum rate of Phe breakdown by transaminase ((mmol/L)/h)")
     km_trans <- 1.37; label("Michaelis-Menten constant for Phe with transaminase (mmol/L)")
 
-    lcl_renal <- log(5.696e-4); label("Renal clearance of Phe per body weight ((L/kg)/hr)")
+    lcl_renal <- log(5.696e-4); label("Renal clearance of Phe per body weight ((L/kg)/h)")
 
     vd <- 0.5; label("Body-weight normalized volume distribution of Phe (L/kg)")
   })
@@ -35,10 +44,10 @@ phenylalanine_charbonneau_2021 <- function() {
     # Unit conversion adjustment from Gut to Plasma concentrations (mmol/L)/mg
     f_gut_plasma <- 1/(mw_phe * vd * WT)
 
-    v_pah <- vmax_pah*f_pah / (1 + km_pah/phe + km_pah*kact_pah/(phe^2)) # units: (mmol/L)/hr
-    v_trans <- vmax_trans / (1 + km_trans/phe) # units: (mmol/L)/hr
+    v_pah <- vmax_pah*f_pah / (1 + km_pah/phe + km_pah*kact_pah/(phe^2)) # units: (mmol/L)/h
+    v_trans <- vmax_trans / (1 + km_trans/phe) # units: (mmol/L)/h
     cl_renal <- exp(lcl_renal)
-    v_renal <- phe * cl_renal * vd # units: (mmol/L)/hr
+    v_renal <- phe * cl_renal * vd # units: (mmol/L)/h
 
     d/dt(gut) <- -ka_gut*gut
     d/dt(phe) <- ka_gut*gut*f_gut_plasma + v_npd - v_pah - v_trans - v_renal

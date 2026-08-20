@@ -6,6 +6,15 @@ Kotani_2022_astegolimab <- function() {
 
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "astegolimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "astegolimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "astegolimab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

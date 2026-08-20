@@ -24,7 +24,14 @@ Kleiber_2017_clonidine <- function() {
     sep = " "
   )
   vignette <- "Kleiber_2017_clonidine"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "clonidine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -93,8 +100,8 @@ Kleiber_2017_clonidine <- function() {
     # 0.75 on CL and 1 on V. The a priori allometric scaling produced
     # dOFV = -35.3 (P < 0.001, Table 4). Not estimated in NONMEM.
     # ----------------------------------------------------------------------
-    e_wt_cl <- fixed(0.75); label("Allometric (WT) exponent on CL (unitless, fixed)")  # paper Methods Eq 4
-    e_wt_vc  <- fixed(1);    label("Allometric (WT) exponent on V (unitless, fixed)")   # paper Methods Eq 5
+    e_wt_cl <- fixed(0.75); label("Allometric (WT) exponent on CL (unitless)")  # paper Methods Eq 4
+    e_wt_vc  <- fixed(1);    label("Allometric (WT) exponent on V (unitless)")   # paper Methods Eq 5
 
     # ----------------------------------------------------------------------
     # Postnatal-age Hill maturation of CL -- Eq 8 / Table 3 final model.

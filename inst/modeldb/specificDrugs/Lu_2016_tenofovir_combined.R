@@ -2,7 +2,16 @@ Lu_2016_tenofovir_combined <- function() {
   description <- "Two-compartment population PK model with first-order absorption and an absorption lag time for tenofovir (300 mg oral TDF once daily) in HIV-1-uninfected African adults receiving once-daily preexposure prophylaxis (Lu 2016, Partners PrEP Study). Combined variant: parameters estimated using a combined data set in which patient-reported dosing records were replaced with MEMS electronic adherence monitoring records where available. Absorption rate constant Ka is fixed at 1.5 /h; absorption lag time ALAG1 = 0.41 h. Apparent oral clearance (CL/F) carries a power-form covariate effect on creatinine clearance (raw Cockcroft-Gault, mL/min) centred at the cohort mean 106 mL/min. Diagonal IIV on CL/F, V1/F, and Ka; combined additive + proportional residual error."
   reference <- "Lu Y, Goti V, Chaturvedula A, Haberer JE, Fossler MJ, Sale ME, Bangsberg D, Baeten JM, Celum CL, Hendrix CW. Population pharmacokinetics of tenofovir in HIV-1-uninfected members of serodiscordant couples and effect of dose reporting methods. Antimicrob Agents Chemother. 2016;60(9):5379-5386. doi:10.1128/AAC.00559-16"
   vignette <- "Lu_2016_tenofovir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tenofovir combined", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tenofovir combined", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tenofovir combined", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -42,7 +51,7 @@ Lu_2016_tenofovir_combined <- function() {
     # Ka is FIXED (Lu 2016 Discussion: 'The absorption rate constant was fixed
     # by a local search due to numerical instabilities posed during modeling of
     # the combined data set').
-    lka  <- fixed(log(1.5)); label("First-order absorption rate constant ka (1/h, fixed)")          # Lu 2016 Table 2 Combined final Ka = 1.5 (fixed)
+    lka  <- fixed(log(1.5)); label("First-order absorption rate constant ka (1/h)")          # Lu 2016 Table 2 Combined final Ka = 1.5 (fixed)
     ltlag <- log(0.41);      label("Absorption lag time ALAG1 (h)")                                 # Lu 2016 Table 2 Combined final ALAG1 = 0.41 h
     lcl  <- log(61.5);       label("Apparent oral clearance CL/F at CRCL = 106 mL/min (L/h)")       # Lu 2016 Table 2 Combined final CL = 61.5 L/h
     lvc  <- log(345);        label("Apparent central volume of distribution V1/F (L)")              # Lu 2016 Table 2 Combined final V1 = 345 L

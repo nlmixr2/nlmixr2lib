@@ -30,6 +30,15 @@ Franken_2017_haloperidol <- function() {
     concentration = "ug/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "haloperidol", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2  = list(analyte = "haloperidol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "haloperidol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -80,9 +89,9 @@ Franken_2017_haloperidol <- function() {
     # exists for the intravenous formulation used here.
     # ================================================================
     lka_oral <- fixed(log(0.236))
-    label("Ka oral route (1/h, FIXED literature)")              # Table 2, footnote a: Ka_oral = 0.236 1/h fixed
+    label("Ka oral route (1/h, literature)")              # Table 2, footnote a: Ka_oral = 0.236 1/h fixed
     lka_sc   <- fixed(log(20))
-    label("Ka subcutaneous route (1/h, FIXED literature)")      # Table 2, footnote a: Ka_SC = 20 1/h fixed from IM Tmax = 20 min
+    label("Ka subcutaneous route (1/h, literature)")      # Table 2, footnote a: Ka_SC = 20 1/h fixed from IM Tmax = 20 min
 
     # ================================================================
     # Oral bioavailability - estimated. SC F is structurally fixed at

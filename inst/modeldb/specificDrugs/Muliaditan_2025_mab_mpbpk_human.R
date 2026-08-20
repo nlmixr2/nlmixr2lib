@@ -40,9 +40,42 @@ Muliaditan_2025_mab_mpbpk_human <- function() {
   )
   vignette <- "Muliaditan_2025_mab_mpbpk"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol (convert mg via dose_nmol = dose_mg / mw_kda * 1000)",
     concentration = "nmol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central           = list(analyte = "mab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tissue_vasc       = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_endo_u     = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_endo_b     = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    tissue_isf        = list(analyte = "mab", units = NA_character_, specimen = "brain ISF", verified = FALSE),
+    brain_vascular    = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_endo_u        = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_endo_b        = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    brain_isf         = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcsfb_endo_u      = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcsfb_endo_b      = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    csf               = list(analyte = "mab", units = NA_character_, specimen = "CSF", verified = FALSE),
+    lymph             = list(analyte = "mab", units = NA_character_, specimen = "lymph", verified = FALSE),
+    tissue_fcrn       = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bbb_fcrn          = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    bcsfb_fcrn        = list(analyte = "mab", units = NA_character_, specimen = "tissue", verified = FALSE),
+    complex_plasma    = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    delta_utfr_bbb    = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex_bbb_lum   = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
+    complex_bbb_abl   = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
+    utfr_bbb_abl      = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    delta_utfr_bcsfb  = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex_bcsfb_lum = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
+    complex_bcsfb_abl = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE),
+    utfr_bcsfb_abl    = list(analyte = "TfR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex_neuron    = list(analyte = "mab-TfR complex", units = NA_character_, specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(

@@ -28,7 +28,23 @@ Tarning_2012_artemether <- function() {
     sep = " "
   )
   vignette <- "Tarning_2012_artemether"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit6           = list(analyte = "Artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "Artemether", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dihydroart = list(analyte = "DHA", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -102,7 +118,7 @@ Tarning_2012_artemether <- function() {
     # absolute oral bioavailability data available) but estimated IIV on
     # F to capture between-subject variability in absorption.
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless); fixed at 1")  # Tarning 2012 Table 2: F = "1 (fixed)" (no estimation, no RSE)
+    label("Relative bioavailability F (unitless)")  # Tarning 2012 Table 2: F = "1 (fixed)" (no estimation, no RSE)
 
     # Inter-individual variability. Tarning 2012 Table 2 reports IIV as
     # %CV with footnote a: "IIV is presented as 100 * sqrt(exp(omega^2) -

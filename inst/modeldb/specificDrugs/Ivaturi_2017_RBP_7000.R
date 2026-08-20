@@ -51,7 +51,23 @@ Ivaturi_2017_RBP_7000 <- function() {
     sep = " "
   )
   vignette <- "Ivaturi_2017_RBP_7000"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "Risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "Risperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "9-OH-Risperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    central_9oh = list(analyte = "9-OH-Risperidone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CYP2D6_PM = list(

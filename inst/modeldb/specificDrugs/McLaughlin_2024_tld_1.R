@@ -39,6 +39,17 @@ McLaughlin_2024_tld_1 <- function() {
 
   paper_specific_compartments <- c("entrapped")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    entrapped     = list(analyte = "TLD-1", units = "mg", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "free doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1   = list(analyte = "free doxorubicin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_doxol = list(analyte = "doxorubicinol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     BSA = list(
       description        = "Body surface area at baseline. Enters as a power covariate on the free-doxorubicin central (V2) and peripheral (V3) volumes only; the paper screened BSA on V1 (entrapped) but the effect was not retained (Mc Laughlin 2024 Results / Covariate model paragraph).",

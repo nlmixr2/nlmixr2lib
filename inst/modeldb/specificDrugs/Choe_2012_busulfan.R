@@ -2,7 +2,14 @@ Choe_2012_busulfan <- function() {
   description <- "One-compartment IV PK model for intravenous busulfan in adult Korean hematopoietic stem cell transplant recipients, with allometric scaling on actual body weight (fixed exponent 0.5) on CL and Vd and a sex effect on Vd (Choe 2012)."
   reference <- "Choe S, Kim G, Lim H-S, et al. A simple dosing scheme for intravenous busulfan based on retrospective population pharmacokinetic analysis in Korean patients. Korean J Physiol Pharmacol. 2012;16(4):273-280. doi:10.4196/kjpp.2012.16.4.273"
   vignette <- "Choe_2012_busulfan"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -54,8 +61,8 @@ Choe_2012_busulfan <- function() {
     # paper: "Simplified power model with the power terms fixed at 0.5 was
     # fitted to the data and estimation of power terms as unknown parameters
     # was found not to improve the model compared to fixing the power term."
-    e_wt_cl <- fixed(0.5) ; label("Allometric exponent of WT on CL (unitless, fixed)")   # Choe 2012 Results, p. 276
-    e_wt_vc <- fixed(0.5) ; label("Allometric exponent of WT on Vd (unitless, fixed)")   # Choe 2012 Results, p. 276
+    e_wt_cl <- fixed(0.5) ; label("Allometric exponent of WT on CL (unitless)")   # Choe 2012 Results, p. 276
+    e_wt_vc <- fixed(0.5) ; label("Allometric exponent of WT on Vd (unitless)")   # Choe 2012 Results, p. 276
 
     # Sex effect on Vd. The paper parameterised Vd as theta2 * ABW^0.5 *
     # (1 + SEX * theta3) with SEX = 1 for male, 0 for female and theta3 =

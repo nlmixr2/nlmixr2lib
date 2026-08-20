@@ -3,9 +3,20 @@ Ahn_2014_parathyroidHormone <- function() {
   reference   <- "Ahn JE, Jeon S, Lee J, Han S, Yim DS. Modeling of the Parathyroid Hormone Response after Calcium Intake in Healthy Subjects. Korean J Physiol Pharmacol. 2014 Jun;18(3):217-223. doi:10.4196/kjpp.2014.18.3.217"
   vignette    <- "Ahn_2014_parathyroidHormone"
   units       <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "unit (normalized: depot at t=0 set to 1 for the thermal-water reference per Ahn 2014 p. 218)",
     concentration = "mmol/L (ionized Ca, observation Cc) and pg/mL (PTH, observation PTH)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "calcium", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ca_unobs = list(analyte = "ionized calcium", units = NA_character_, specimen = "plasma", verified = FALSE),
+    ca       = list(analyte = "ionized calcium", units = NA_character_, specimen = "plasma", verified = FALSE),
+    pth      = list(analyte = "parathyroid hormone", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -39,16 +50,16 @@ Ahn_2014_parathyroidHormone <- function() {
     # Structural parameters -- Ahn 2014 Table 2 final estimates.
 
     # Absorption rate of calcium from the depot (oral intake) into the unobserved Ca pool.
-    lka       <- log(0.796)        ; label("First-order absorption rate constant for oral calcium (1/hr)")  # Ahn 2014 Table 2 (ka = 0.796 1/hr; 95% CI 0.438-1.15)
+    lka       <- log(0.796)        ; label("First-order absorption rate constant for oral calcium (1/h)")  # Ahn 2014 Table 2 (ka = 0.796 1/h; 95% CI 0.438-1.15)
 
     # Indirect-response model for observed plasma ionized Ca: kin / kout turnover.
-    lkin_ca   <- log(3.41)         ; label("Zero-order input rate for observed Ca, kin_ca (mmol/L/hr)")     # Ahn 2014 Table 2 (kin_ca = 3.41 mmol/L/hr; 95% CI 3.39-3.43)
-    lkout_ca  <- fixed(log(2.86))  ; label("First-order output rate constant for Ca, kout_ca (1/hr)")        # Ahn 2014 Table 2 (kout_ca fixed at literature value 2.862 1/hr, Abraham et al. 2009 -- reference [6] of Ahn 2014)
+    lkin_ca   <- log(3.41)         ; label("Zero-order input rate for observed Ca, kin_ca (mmol/L/h)")     # Ahn 2014 Table 2 (kin_ca = 3.41 mmol/L/h; 95% CI 3.39-3.43)
+    lkout_ca  <- fixed(log(2.86))  ; label("First-order output rate constant for Ca, kout_ca (1/h)")        # Ahn 2014 Table 2 (kout_ca fixed at literature value 2.862 1/h, Abraham et al. 2009 -- reference [6] of Ahn 2014)
 
     # Indirect-response model for PTH: kin_pth production with inhibition by unobserved Ca,
     # first-order kout_pth elimination.
-    lkin_pth  <- log(21.6)         ; label("Zero-order input rate for PTH, kin_pth (pg/mL/hr)")               # Ahn 2014 Table 2 (kin_pth = 21.6 pg/mL/hr; 95% CI 12.4-30.8)
-    lkout_pth <- log(0.849)        ; label("First-order output rate constant for PTH, kout_pth (1/hr)")       # Ahn 2014 Table 2 (kout_pth = 0.849 1/hr; 95% CI 0.513-1.19)
+    lkin_pth  <- log(21.6)         ; label("Zero-order input rate for PTH, kin_pth (pg/mL/h)")               # Ahn 2014 Table 2 (kin_pth = 21.6 pg/mL/h; 95% CI 12.4-30.8)
+    lkout_pth <- log(0.849)        ; label("First-order output rate constant for PTH, kout_pth (1/h)")       # Ahn 2014 Table 2 (kout_pth = 0.849 1/h; 95% CI 0.513-1.19)
 
     # Inhibitory Emax model on PTH secretion (Ahn 2014 Methods p. 218; Eq. on the same page).
     lec50     <- log(0.158)        ; label("Half-maximal inhibitory concentration of unobserved Ca, EC50 (mmol/L)")  # Ahn 2014 Table 2 (EC50 = 0.158 mmol/L; 95% CI 0.0924-0.224)

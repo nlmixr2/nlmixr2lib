@@ -4,6 +4,14 @@ Nath_2010_melphalan_unbound <- function() {
   vignette <- "Nath_2010_melphalan"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "melphalan unbound", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "melphalan unbound", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Fat-free mass (Janmahasatian formula)",
@@ -69,8 +77,8 @@ Nath_2010_melphalan_unbound <- function() {
 
     # Covariate-effect parameters (final model, p. 489)
     e_hct_cl_nonren  <- 0.679;        label("HCT power exponent on non-renal CL (reference 34 %)")              # Table 5: theta2 = 0.679 (95% CI 0.284-1.070)
-    e_ffm_cl_nonren  <- fixed(0.75);  label("FFM power exponent on non-renal CL (fixed allometric value)")      # Methods p. 486: allometric exponent fixed at 0.75
-    e_ffm_vc         <- fixed(1.0);   label("FFM power exponent on V1 (fixed allometric value)")                # Methods p. 486: allometric exponent fixed at 1.0
+    e_ffm_cl_nonren  <- fixed(0.75);  label("FFM power exponent on non-renal CL (allometric value)")      # Methods p. 486: allometric exponent fixed at 0.75
+    e_ffm_vc         <- fixed(1.0);   label("FFM power exponent on V1 (allometric value)")                # Methods p. 486: allometric exponent fixed at 1.0
 
     # Inter-individual variability. CV% reported in Table 5; omega^2 = log(CV^2 + 1).
     # The exponential random effect applies to the typical-value PK parameter

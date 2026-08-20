@@ -10,7 +10,15 @@ Sloan_2017_rifampicin <- function() {
     sep = " "
   )
   vignette <- "Sloan_2017_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -115,7 +123,7 @@ Sloan_2017_rifampicin <- function() {
     lka     <- fixed(log(0.277)); label("First-order absorption rate constant Ka (1/h)")                                                  # Sloan 2017 Table 3: Ka = 0.277/h (FIX); stage 1 estimate RSE 9.8%, 95% CI 0.23-0.32
     lmtt    <- fixed(log(0.326)); label("Mean transit time MMT (h)")                                                                      # Sloan 2017 Table 3: MMT = 0.326 h (FIX); stage 1 estimate RSE 35%, 95% CI 0.05-1.0
     lnn     <- fixed(log(1.5));   label("Number of absorption transit compartments NN (continuous, dimensionless)")                       # Sloan 2017 Table 3: NN = 1.5 (FIX); stage 1 estimate RSE 41%, 95% CI 0.09-3.9
-    lfdepot <- fixed(log(1));     label("Oral bioavailability F (fixed at 1; CL/F and V/F are F-relative)")                               # Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 4: 'F is the oral bioavailability, which was fixed to 1'
+    lfdepot <- fixed(log(1));     label("Oral bioavailability F (CL/F and V/F are F-relative)")                               # Sloan 2017 Methods 'Population pharmacokinetic analysis' paragraph 4: 'F is the oral bioavailability, which was fixed to 1'
 
     # ============================================================================
     # Allometric weight model - canonical fixed exponents at reference weight 70 kg
@@ -124,8 +132,8 @@ Sloan_2017_rifampicin <- function() {
     # CL/F_wt = (wt/wt_std)^(3/4) and for volume parameters is given by
     # V/F_wt = (wt/wt_std)^1').
     # ============================================================================
-    allo_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")  # Sloan 2017 Methods: CL exponent fixed at 3/4
-    allo_vc <- fixed(1.0);  label("Allometric exponent on V/F (unitless)")   # Sloan 2017 Methods: V exponent fixed at 1
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")  # Sloan 2017 Methods: CL exponent fixed at 3/4
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V/F (unitless)")   # Sloan 2017 Methods: V exponent fixed at 1
 
     # ============================================================================
     # Sex effect on CL/F. Sloan 2017 Table 3 reports the multiplicative ratio
@@ -165,8 +173,8 @@ Sloan_2017_rifampicin <- function() {
     # 1. Individual PK parameters with allometric weight scaling and sex effect on CL.
     #    Female (SEXF = 1) is the reference: CL_female = exp(lcl + etalcl) at 70 kg.
     #    Male (SEXF = 0): CL_male = CL_female * exp(e_sex_cl) = CL_female * 1.2.
-    cl <- exp(lcl + etalcl + e_sex_cl * (1 - SEXF)) * (WT / 70) ^ allo_cl
-    vc <- exp(lvc + etalvc)                          * (WT / 70) ^ allo_vc
+    cl <- exp(lcl + etalcl + e_sex_cl * (1 - SEXF)) * (WT / 70) ^ e_wt_cl
+    vc <- exp(lvc + etalvc)                          * (WT / 70) ^ e_wt_vc
 
     # 2. Absorption parameters (all fixed from stage 1).
     ka     <- exp(lka)

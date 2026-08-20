@@ -10,6 +10,34 @@ Ayyar_2024_givosiran <- function() {
     concentration = "nmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "givosiran", units = "nmol", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "givosiran", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_asn1     = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "plasma", verified = FALSE),
+    target           = list(analyte = "ASGPR receptor", units = "nmol", specimen = "not applicable", verified = FALSE),
+    complex          = list(analyte = "givosiran - ASGPR complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    complex_asn1     = list(analyte = "AS(N-1)3' givosiran metabolite - ASGPR complex", units = "nmol", specimen = "not applicable", verified = FALSE),
+    liver            = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_asn1       = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_endo       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_endo_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_deep       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver_deep_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    cyto             = list(analyte = "givosiran", units = "nmol", specimen = "not applicable", verified = FALSE),
+    cyto_asn1        = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "not applicable", verified = FALSE),
+    risc             = list(analyte = "RISC-loaded siRNA (givosiran + AS(N-1)3' metabolite)", units = "nmol", specimen = "not applicable", verified = FALSE),
+    kidney_vas       = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_vas_asn1  = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney           = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_asn1      = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_deep      = list(analyte = "givosiran", units = "nmol", specimen = "tissue", verified = FALSE),
+    kidney_deep_asn1 = list(analyte = "AS(N-1)3' givosiran metabolite", units = "nmol", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -67,7 +95,7 @@ Ayyar_2024_givosiran <- function() {
     lfesc    <- log(0.01);    label("Escaped fraction of endosomal siRNA f_esc (unitless)")      # Table 1, fixed at 0.01 (1%); paper text p.180
     lkdege   <- log(0.007);   label("Endosomal degradation rate constant k_deg_e (1/h)")         # Table 1, human (allometric, b_deg=-0.24; rat 0.028, monkey 0.013)
     lkcle    <- log(1.32);    label("GalNAc cleavage rate from GalNAc-siRNA k_cle (1/h)")        # Table 1, shared across species: 1.32 (= k_off; Ayyar 2021)
-    lkonapp  <- log(1.4e-5);  label("RISC association rate constant k_on_app (1/(nM h))")        # Table 1, shared rat/human: 1.4e-5 (36% RSE)
+    lkonapp  <- log(1.4e-5);  label("RISC association rate constant k_on_app (1/(nM*h))")        # Table 1, shared rat/human: 1.4e-5 (36% RSE)
     lrisctot <- log(30);      label("Total liver RISC concentration RISC_tot (nM)")              # Table 1, fixed across species: 30 (paper Table 1)
     lkcomplx <- log(0.042);   label("RISC-loaded siRNA degradation rate k_complx (1/h)")         # Table 1, shared rat/human: 0.042 (31% RSE)
     lkdegc   <- log(0.01);    label("Cytosolic free-siRNA degradation rate k_deg_c (1/h)")       # Table 1, shared across species: 0.01

@@ -37,6 +37,16 @@ Syvanen_2012_quinidine_rat <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "quinidine", units = "ng", specimen = "plasma", verified = FALSE),
+    brain_csf   = list(analyte = "quinidine", units = "ng", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_POSTSE_KAINATE = list(
       description        = paste(
@@ -159,7 +169,7 @@ Syvanen_2012_quinidine_rat <- function() {
     # the ratio V_Br1 / Q_out remained stable; the 10.8 mL/min anchor
     # is the value obtained when Q_out was left free in the final
     # model fit.
-    lqout <- fixed(log(10.8));  label("BBB efflux clearance Q_out (mL/min), FIXED -- reference: vehicle co-administration")  # Table II: Q_out = 10.8 mL/min FIXED
+    lqout <- fixed(log(10.8));  label("BBB efflux clearance Q_out (mL/min), -- reference: vehicle co-administration")  # Table II: Q_out = 10.8 mL/min FIXED
     lf1   <- log(0.0619);       label("Ratio Q_in / Q_out (unitless)")                                                       # Table II: f1 = 0.0619 (RSE 8.2%)
     lvbr  <- log(269);          label("Brain ECF volume of distribution V_Br (mL) -- reference: control rat")                # Table II: V_Br = 269 mL (RSE 14%)
     lf2   <- log(8.67);         label("Ratio Cbrain_deep / Cbrain_csf (unitless) -- reference: vehicle co-administration")   # Table II: f2 = 8.67 (RSE 2.7%)

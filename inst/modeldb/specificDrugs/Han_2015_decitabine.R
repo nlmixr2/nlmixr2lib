@@ -24,7 +24,7 @@ Han_2015_decitabine <- function() {
   )
   vignette <- "Han_2015_decitabine"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg/m^2",
     concentration = "mg/L",
     anc           = "10^9 cells/L",
@@ -40,6 +40,25 @@ Han_2015_decitabine <- function() {
   # meaningful covariate effect (Methods + Results: "No meaningful
   # covariate was found in either the patient demographic or clinical
   # variables").
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central        = list(analyte = "decitabine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "decitabine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4_anc = list(analyte = "neutrophils", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ_anc       = list(analyte = "neutrophils", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    precursor1_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4_plt = list(analyte = "platelets", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ_plt       = list(analyte = "platelets", units = NA_character_, specimen = "whole blood", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

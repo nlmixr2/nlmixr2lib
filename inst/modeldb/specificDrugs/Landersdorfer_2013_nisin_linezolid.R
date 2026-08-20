@@ -11,7 +11,7 @@ Landersdorfer_2013_nisin_linezolid <- function() {
     sep = " "
   )
   vignette <- "Landersdorfer_2013_nisin_amikacin_linezolid"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "log10 CFU/mL (observation); mg/L (drug covariates)")
 
   # Cnis / Clin are the experimentally-controlled nisin and linezolid
   # broth concentrations in the static time-kill (and sequential
@@ -24,6 +24,20 @@ Landersdorfer_2013_nisin_linezolid <- function() {
   # the pool then raises Inh_Rep (Eq 7) and reduces successful
   # replication for the Lin-S populations.
   paper_specific_compartments <- c("prot_pool")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    prot_pool                      = list(analyte = "protein pool P", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_susceptible_susceptible1  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2  = list(analyte = "Nis-S/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible1 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_susceptible2 = list(analyte = "Nis-I/Lin-S bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2   = list(analyte = "Nis-R/Lin-I bacteria", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     Cnis = list(
@@ -66,7 +80,7 @@ Landersdorfer_2013_nisin_linezolid <- function() {
     # Replication rate constant k21 (state 2 -> 2*state 1 doubling step),
     # shared across subpopulations and fixed per Table 1.
     lk21 <- fixed(log(50))
-    label("Replication rate constant k21 (1/h; state 2 -> 2*state 1 doubling; FIXED)")  # Landersdorfer 2013 Table 1, "k21 = 50 (fixed)"
+    label("Replication rate constant k21 (1/h; state 2 -> 2*state 1 doubling)")  # Landersdorfer 2013 Table 1, "k21 = 50 (fixed)"
 
     # Mean generation time for the slow state 1 -> state 2 transition.
     # Table 1 row "Nis_s/Lin_s and Nis_i/Lin_s = 83.9 min" (the two
@@ -122,7 +136,7 @@ Landersdorfer_2013_nisin_linezolid <- function() {
     # Imax_Rep * (1 - P) raises the probability of unsuccessful
     # replication. Imax_Rep is fixed to 1.0 (Table 1, footnote).
     imax_rep    <- fixed(1.0)
-    label("Maximum inhibition of successful replication by linezolid (unitless; FIXED)")  # Landersdorfer 2013 Table 1
+    label("Maximum inhibition of successful replication by linezolid (unitless)")  # Landersdorfer 2013 Table 1
     ic50_prot   <- 3.92
     label("Linezolid concn for half-maximum inhibition of protein synthesis (mg/L)")  # Landersdorfer 2013 Table 1 (IC_50,Prot)
     lk_prot     <- log(0.72)
@@ -141,7 +155,7 @@ Landersdorfer_2013_nisin_linezolid <- function() {
     ic50_k12    <- 4.25
     label("Linezolid concn for 50% of Imax_k12 effect (mg/L)")  # Landersdorfer 2013 Table 1 (IC_50,k12)
     lhill_k12   <- fixed(log(10))
-    label("Hill coefficient for the Inh_k12 function (unitless; FIXED)")  # Landersdorfer 2013 Table 1, "Hill_k12 = 10 (fixed)"
+    label("Hill coefficient for the Inh_k12 function (unitless)")  # Landersdorfer 2013 Table 1, "Hill_k12 = 10 (fixed)"
 
     # =============================================================
     # Residual error (additive on log10 viable count)

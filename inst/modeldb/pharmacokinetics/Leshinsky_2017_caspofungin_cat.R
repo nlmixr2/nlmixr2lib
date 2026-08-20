@@ -2,7 +2,14 @@ Leshinsky_2017_caspofungin_cat <- function() {
   description <- "Preclinical (cat). Two-compartment population PK model with first-order linear elimination from the central compartment for intravenous caspofungin acetate in healthy adult cats (Leshinsky 2017)"
   reference <- "Leshinsky J, McLachlan A, Foster DJR, Norris R, Barrs VR. Pharmacokinetics of caspofungin acetate to guide optimal dosing in cats. PLoS ONE. 2017;12(6):e0178783. doi:10.1371/journal.pone.0178783"
   vignette <- "Leshinsky_2017_caspofungin_cat"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "caspofungin cat", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -44,8 +51,8 @@ Leshinsky_2017_caspofungin_cat <- function() {
     # modeling strategy': 'exponent fixed of 0.75 for clearance parameters and 1
     # for volumes', and Table 1 row labels 'CL * (WT/4)^0.75', 'V1 * (WT/4)',
     # 'V2 * (WT/4)', 'Q * (WT/4)^0.75'). Reference weight 4 kg.
-    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent of WT on CL and Q (unitless; fixed)") # Leshinsky 2017 Methods / Table 1 footnote
-    e_wt_vc_vp <- fixed(1.0);  label("Allometric exponent of WT on V1 and V2 (unitless; fixed)") # Leshinsky 2017 Methods / Table 1 footnote
+    e_wt_cl_q  <- fixed(0.75); label("Allometric exponent of WT on CL and Q (unitless)") # Leshinsky 2017 Methods / Table 1 footnote
+    e_wt_vc_vp <- fixed(1.0);  label("Allometric exponent of WT on V1 and V2 (unitless)") # Leshinsky 2017 Methods / Table 1 footnote
 
     # IIV. Leshinsky 2017 Table 1 reports an exponential PPV model (eq 2,
     # Methods 'General modeling strategy'). Only CL had an independent eta;

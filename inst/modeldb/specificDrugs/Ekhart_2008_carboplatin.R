@@ -2,11 +2,19 @@ Ekhart_2008_carboplatin <- function() {
   description <- "Two-compartment population PK model for free (ultrafilterable) carboplatin in adult cancer patients (Ekhart 2008)"
   reference <- "Ekhart C, Rodenhuis S, Schellens JHM, Beijnen JH, Huitema ADR. Carboplatin dosing in overweight and obese patients with normal renal function, does weight matter? Cancer Chemother Pharmacol. 2009;64(1):115-122. doi:10.1007/s00280-008-0856-x"
   vignette <- "Ekhart_2008_carboplatin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Final structural model has no covariate effects: allometric scaling on CL
   # with ABW / IBW / AIBW / Benezet / FFM / LBM each gave delta-OFV < 6.63
   # versus the basic model (Table 6), so weight was not retained.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "carboplatin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -6,6 +6,16 @@ Zhou_2016_warfarin_vk2 <- function() {
 
   units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "warfarin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_vk2 = list(analyte = "vitamin K2", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "clotting-factor synthesis", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (baseline)",

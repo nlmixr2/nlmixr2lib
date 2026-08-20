@@ -19,6 +19,14 @@ Gupta_2006_peginterferon_alfa_2b <- function() {
   vignette <- "Gupta_2006_peginterferon_alfa_2b"
   units <- list(time = "day", dosing = "ug", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "peginterferon alfa 2b", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "peginterferon alfa 2b", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CRCL = list(
       description        = "Cockcroft-Gault creatinine clearance in raw mL/min (NOT BSA-normalized). Source column CLCR in Gupta 2006. Reference 120 mL/min matches the value at which Gupta 2006 Table 3 reports the typical CL0 = 44.1 L/day.",
@@ -89,7 +97,7 @@ Gupta_2006_peginterferon_alfa_2b <- function() {
     # Structural parameters (Gupta 2006 Table 3 final model)
     lcl <- log(44.1)               # Gupta 2006 Table 3: theta_CL0 = 44.1 L/day at CLcr = 120 mL/min
     label("Typical baseline (maximal) apparent clearance CL0 at CLcr 120 mL/min (L/day)")
-    lt50 <- log(23.8 * 28)         # Gupta 2006 Table 3: theta_T50 = 23.8 reported in units of 28 days -> 666.4 days
+    lcl_hill_t50 <- log(23.8 * 28)         # Gupta 2006 Table 3: theta_T50 = 23.8 reported in units of 28 days -> 666.4 days
     label("Typical time at which apparent clearance has declined to half of CL0, T50 (days)")
     lvc <- log(149)                # Gupta 2006 Table 3: V = 149 L
     label("Typical apparent central volume V (L)")
@@ -105,7 +113,7 @@ Gupta_2006_peginterferon_alfa_2b <- function() {
     # The Methods text explicitly enumerates only eta_CL0 and eta_T50, but Table 3 also
     # reports omega(CV) = 59% for V, so the final model carries IIV on V as well.
     etalcl  ~ 0.1156               # Gupta 2006 Table 3: omega(CV) CL0 = 35%  -> omega^2 = log(0.35^2 + 1) = 0.1156
-    etalt50 ~ 0.7833               # Gupta 2006 Table 3: omega(CV) T50 = 109% -> omega^2 = log(1.09^2 + 1) = 0.7833
+    etalcl_hill_t50 ~ 0.7833               # Gupta 2006 Table 3: omega(CV) T50 = 109% -> omega^2 = log(1.09^2 + 1) = 0.7833
     etalvc  ~ 0.2986               # Gupta 2006 Table 3: omega(CV) V   = 59%  -> omega^2 = log(0.59^2 + 1) = 0.2986
 
     # Residual error: Gupta 2006 Table 3 reports sigma_epsilon = 41.4 +/- 84.2% with a
@@ -128,7 +136,7 @@ Gupta_2006_peginterferon_alfa_2b <- function() {
     cl0 <- exp(lcl + etalcl) * (CRCL / 120)^e_crcl_cl
 
     # Individual half-decline time T50 (days)
-    t50 <- exp(lt50 + etalt50)
+    cl_hill_t50 <- exp(lcl_hill_t50 + etalcl_hill_t50)
 
     # Individual central volume V (L)
     vc <- exp(lvc + etalvc)
@@ -139,7 +147,7 @@ Gupta_2006_peginterferon_alfa_2b <- function() {
     # Time-varying apparent clearance: Gupta 2006 Methods Emax-type decline
     #   CL(t) = CL0 / (1 + (t / T50)^beta), with beta = 1 fixed in the final model.
     # 'time' is the model time variable (days from treatment start), matching the paper's t.
-    cl <- cl0 / (1 + time / t50)
+    cl <- cl0 / (1 + time / cl_hill_t50)
 
     kel <- cl / vc
 

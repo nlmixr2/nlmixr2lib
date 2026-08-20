@@ -30,7 +30,15 @@ Koumaki_2023_mecillinam <- function() {
     sep = " "
   )
   vignette <- "Koumaki_2023_mecillinam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "mecillinam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mecillinam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -145,7 +153,7 @@ Koumaki_2023_mecillinam <- function() {
     # deterministically given the etas. Users re-fitting on individual-level
     # data must replace this with an estimated proportional (or combined)
     # error term. See vignette Errata.
-    propSd <- fixed(0); label("Proportional residual error (fraction; FIXED AT ZERO - not estimated in source)")  # Table 1 / Methods: no residual error term
+    propSd <- fixed(0); label("Proportional residual error (fraction; ZERO - not estimated in source)")  # Table 1 / Methods: no residual error term
   })
   model({
     # 1. Individual PK parameters. Every structural parameter scales

@@ -28,6 +28,16 @@ Hirt_2006_nelfinavir <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "nelfinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "nelfinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m8 = list(analyte = "M8 (hydroxy-tert-butylamide)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight; multiplier on the per-kg V/F and CL/F.",
@@ -108,7 +118,7 @@ Hirt_2006_nelfinavir <- function() {
     # fixes Vm = 1 so K_M0 absorbs the physical M8 volume (Appendix:
     # "K_M0 = CLm0/Vm, with Vm = 1").
     lvc_m8 <- fixed(log(1))
-    label("M8 apparent distribution volume (L) -- FIXED to 1 per Hirt 2006 (not identifiable)")  # Hirt 2006 Appendix: 'K_M0 = CLm0/Vm with Vm = 1'
+    label("M8 apparent distribution volume (L) -- per Hirt 2006 (not identifiable)")  # Hirt 2006 Appendix: 'K_M0 = CLm0/Vm with Vm = 1'
 
     # Shared age exponent on V/F and CL/F. The paper applies the SAME
     # age effect to both V and CL (a 101-U combined OFV decrease vs.

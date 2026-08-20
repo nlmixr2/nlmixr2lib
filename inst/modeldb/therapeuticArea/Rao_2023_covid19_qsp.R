@@ -64,6 +64,68 @@ Rao_2023_covid19_qsp <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    V                = list(analyte = "virus", units = "mg", specimen = "plasma", verified = FALSE),
+    AT2              = list(analyte = "healthy alveolar type II cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    I                = list(analyte = "infected alveolar type I cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    AT1              = list(analyte = "damaged alveolar type I cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    dAT1             = list(analyte = "damaged alveolar type I cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    dAT2             = list(analyte = "damaged alveolar type II cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    vpeaked          = list(analyte = "virus", units = "mg", specimen = "plasma", verified = FALSE),
+    pDC              = list(analyte = "plasmacytoid dendritic cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    pDC1             = list(analyte = "plasmacytoid dendritic cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    M1               = list(analyte = "macrophages", units = "mg", specimen = "not applicable", verified = FALSE),
+    N                = list(analyte = "neutrophils", units = "mg", specimen = "not applicable", verified = FALSE),
+    Th1              = list(analyte = "CD4+ Th1 cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    Th17             = list(analyte = "CD4+ Th17 cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    CTL              = list(analyte = "CD8+ cytotoxic T cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    Treg             = list(analyte = "CD4+ regulatory T cells", units = "mg", specimen = "not applicable", verified = FALSE),
+    TNFa             = list(analyte = "tumor necrosis factor-alpha", units = "mg", specimen = "plasma", verified = FALSE),
+    IL6              = list(analyte = "interleukin-6", units = "mg", specimen = "plasma", verified = FALSE),
+    IL1b             = list(analyte = "interleukin-1 beta", units = "mg", specimen = "plasma", verified = FALSE),
+    IFNg             = list(analyte = "interferon-gamma", units = "mg", specimen = "plasma", verified = FALSE),
+    IFNb             = list(analyte = "interferon-beta", units = "mg", specimen = "plasma", verified = FALSE),
+    IL2              = list(analyte = "interleukin-2", units = "mg", specimen = "plasma", verified = FALSE),
+    IL12             = list(analyte = "interleukin-12", units = "mg", specimen = "plasma", verified = FALSE),
+    IL17             = list(analyte = "interleukin-17", units = "mg", specimen = "plasma", verified = FALSE),
+    IL10             = list(analyte = "interleukin-10", units = "mg", specimen = "plasma", verified = FALSE),
+    TGFb             = list(analyte = "transforming growth factor-beta", units = "mg", specimen = "plasma", verified = FALSE),
+    GMCSF            = list(analyte = "granulocyte-macrophage colony-stimulating factor", units = "mg", specimen = "plasma", verified = FALSE),
+    SPD              = list(analyte = "surfactant protein D", units = "mg", specimen = "not applicable", verified = FALSE),
+    FER              = list(analyte = "ferritin", units = "mg", specimen = "not applicable", verified = FALSE),
+    TNFa_c           = list(analyte = "tumor necrosis factor-alpha complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IL6_c            = list(analyte = "interleukin-6 complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IL1b_c           = list(analyte = "interleukin-1 beta complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IFNb_c           = list(analyte = "interferon-beta complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IFNg_c           = list(analyte = "interferon-gamma complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IL2_c            = list(analyte = "interleukin-2 complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IL12_c           = list(analyte = "interleukin-12 complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IL17_c           = list(analyte = "interleukin-17 complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    IL10_c           = list(analyte = "interleukin-10 complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    TGFb_c           = list(analyte = "transforming growth factor-beta complexed to antibodies", units = "mg", specimen = "plasma", verified = FALSE),
+    GMCSF_c          = list(analyte = "granulocyte-macrophage colony-stimulating factor complexed to antibodi", units = "mg", specimen = "plasma", verified = FALSE),
+    SPD_c            = list(analyte = "surfactant protein D complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    FER_c            = list(analyte = "ferritin complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    pDC_c            = list(analyte = "plasmacytoid dendritic cells complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    M1_c             = list(analyte = "macrophages complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    N_c              = list(analyte = "neutrophils complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    Th1_c            = list(analyte = "CD4+ Th1 cells complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    Th17_c           = list(analyte = "CD4+ Th17 cells complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    CTL_c            = list(analyte = "CD8+ cytotoxic T cells complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    Treg_c           = list(analyte = "CD4+ regulatory T cells complexed to antibodies", units = "mg", specimen = "not applicable", verified = FALSE),
+    CRPExtracellular = list(analyte = "C-reactive protein extracellular", units = "mg", specimen = "plasma", verified = FALSE),
+    Blood_CRP        = list(analyte = "C-reactive protein in blood", units = "mg", specimen = "plasma", verified = FALSE),
+    Ab               = list(analyte = "neutralizing antibodies", units = "mg", specimen = "administration site", verified = FALSE),
+    Ab12             = list(analyte = "neutralizing antibody 1", units = "mg", specimen = "administration site", verified = FALSE),
+    Ab21             = list(analyte = "neutralizing antibody 2", units = "mg", specimen = "administration site", verified = FALSE),
+    Ab22             = list(analyte = "neutralizing antibody 3", units = "mg", specimen = "administration site", verified = FALSE),
+    Ab_Igx           = list(analyte = "IgX antibodies", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CP_EIDD_NGML = list(
       description        = paste(

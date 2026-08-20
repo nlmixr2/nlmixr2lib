@@ -4,7 +4,7 @@ Noe_1996_factor_viii <- function() {
   vignette <- "Noe_1996_factor_viii"
   paper_specific_compartments <- c("viii", "vwf")
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "U/mL (mass dose divided by plasma volume; state is a concentration, not amount)",
     concentration = "U/mL (both factor VIII and vWF measured on the conventional 1 U/mL == 100% of normal-pool scale)"
   )
@@ -13,6 +13,15 @@ Noe_1996_factor_viii <- function() {
     species       = "human",
     disease_state = "healthy adults with normal endogenous factor VIII and vWF; the same structural model is exercised in the paper to describe hemophilia (reduced factor VIII synthesis), hemophilia carriers, type 1 and type 3 von Willebrand disease (reduced or absent vWF), acute-phase reactions and pregnancy (elevated vWF), and hemophilia / vWD replacement therapy with cryoprecipitate, recombinant factor VIII, or high-purity vWF concentrate",
     notes         = "Parameter values are the final recommended combination reported in the Discussion (p. 300): Svm/kfviii = 0.075 U/mL, kfviii = 1.12 /h, kbviii = 0.028 /h, kequi = 0.2 U/mL, N = 4.67 U factor VIII / U vWF. Fit to mean literature data from Holmberg & Nilsson (subacute/chronic illness), Hermens (hemophilia treated with cryoprecipitate), Fijnvandraat (recombinant factor VIII in hemophilia), Cattaneo (recombinant factor VIII in vWD), Goudemand (high-purity vWF in vWD), and Morfini (type 3 vWD). The paper reports no individual-subject fits; the model is a typical-value mechanism with no inter-individual variability or residual error."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    viii = list(analyte = "Factor VIII", units = NA_character_, specimen = "plasma", verified = FALSE),
+    vwf  = list(analyte = "Von Willebrand factor (vWF)", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   ini({

@@ -39,7 +39,20 @@ Hoglund_2015_artemether <- function() {
     sep = " "
   )
   vignette <- "Hoglund_2015_artemether_lumefantrine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "artemether", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "artemether", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dha = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_EFV = list(
@@ -174,7 +187,7 @@ Hoglund_2015_artemether <- function() {
     # ktr = (NN + 1)/MTT = 4/MTT (Savic & Karlsson 2007 convention).
 
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless; fixed at 1)")
+    label("Relative bioavailability F (unitless)")
     # Hoglund 2015 Table 3: Bioavailability = 1 FIX (Methods: "A fixed
     # bioavailability of 100 % for the population with an estimated
     # between subject variability was evaluated").
@@ -194,11 +207,11 @@ Hoglund_2015_artemether <- function() {
     # caption: "MMAX is the maximum maturation in the maturation
     # model"). Both MMAX and MF50 are FIXED; only Hill is estimated.
     mat_mmax <- fixed(1)
-    label("Maximum auto-induction increment in artemether CL/F (fraction; fixed at 100 %)")
+    label("Maximum auto-induction increment in artemether CL/F (fraction; 100 %)")
     # Hoglund 2015 Table 3: MMAX = 1 FIX
 
     mat_mf50 <- fixed(62)
-    label("Auto-induction half-time on artemether CL/F: time at which maturation reaches 50 % (h; fixed at literature value)")
+    label("Auto-induction half-time on artemether CL/F: time at which maturation reaches 50 % (h; literature value)")
     # Hoglund 2015 Table 3: MF50 = 62 FIX (literature value, Methods)
 
     mat_hill <- 0.445

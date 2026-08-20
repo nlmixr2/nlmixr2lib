@@ -2,9 +2,25 @@ Yadav_2017_imipenem_amikacin_PA088 <- function() {
   description <- "In vitro (static-concentration time-kill). Mechanism-based PK/PD (Bulitta life-cycle growth) model of bacterial killing and resistance for imipenem combined with amikacin against carbapenem- and tobramycin-resistant clinical Pseudomonas aeruginosa isolate FADDI-PA088 (MIC_IPM = 16 mg/L, MIC_AMK = 4 mg/L). Three pre-existing bacterial subpopulations with signal-molecule growth inhibition and aminoglycoside-mediated outer-membrane permeabilisation (mechanistic synergy)"
   reference <- "Yadav R, Bulitta JB, Nation RL, Landersdorfer CB. Optimization of synergistic combination regimens against carbapenem- and aminoglycoside-resistant clinical Pseudomonas aeruginosa isolates via mechanism-based pharmacokinetic/pharmacodynamic modeling. Antimicrob Agents Chemother. 2017 Jan;61(1):e01011-16. doi:10.1128/AAC.01011-16. Model differential equations (Eqs 1-5) are in the main paper Methods; parameter estimates for FADDI-PA088 with amikacin are Table 3 (footnote b). Supplemental Text S1 (not on disk) contains diagnostic plots only."
   vignette <- "Yadav_2017_imipenem_aminoglycoside_pseudomonas"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   paper_specific_compartments <- c("cipm", "cags", "csig")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "administration site", verified = FALSE),
+    csig                          = list(analyte = "signal molecule", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cipm                          = list(analyte = "imipenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cags                          = list(analyte = "amikacin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -29,7 +45,7 @@ Yadav_2017_imipenem_amikacin_PA088 <- function() {
     # --- Bacterial growth and subpopulations (Table 3, FADDI-PA088, footnote b = amikacin fit) ---
     log10cfu0   <- 7.46;  label("Initial inoculum (log10 CFU/mL)")                                     # Table 3 footnote b: Log CFU0 = 7.46 (SE 1.8%)
     log10cfumax <- 9.56;  label("Maximum population size (log10 CFU/mL); PLAT half-saturation")        # Table 3: CFUmax = 9.56 (SE 1.8%) [strain-shared]
-    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")           # Table 3: k21 = 50 (fixed)
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)")           # Table 3: k21 = 50 (fixed)
 
     mgt_ss <- 26.9; label("Mean generation time, SS subpop (min)")                                     # Table 3: k12,SS row = 26.9 (SE 6.2%) [strain-shared]
     mgt_ri <- 873;  label("Mean generation time, IPM-resistant/AGS-intermediate (min)")                # Table 3: k12,RI row = 873 (SE 8.5%) [strain-shared]
@@ -52,7 +68,7 @@ Yadav_2017_imipenem_amikacin_PA088 <- function() {
     kc50_ir_ags <- 329;   label("Amikacin KC50, IR subpop (mg/L)")                                     # Table 3 footnote b: KC50,IR,AGS = 329 (SE 10.8%)
     hill_ags    <- 1.11;  label("Hill coefficient for AGS killing (unitless)")                         # Table 3: Hill,AGS = 1.11 (SE 5.5%) [shared]
 
-    mtt_sig      <- fixed(1);    label("Mean turnover time of hypothetical signal molecule (h; FIXED)") # Table 3: MTT,sig = 1 (fixed) [strain-shared]
+    mtt_sig      <- fixed(1);    label("Mean turnover time of hypothetical signal molecule (h)") # Table 3: MTT,sig = 1 (fixed) [strain-shared]
     imax_sig12   <- 0.997;       label("Max fractional inhibition of k12 by signal molecule (unitless)") # Table 3: Imax,sig12 = 0.997 (SE 13.7%) [strain-shared]
     log10ic50sig <- 10.2;        label("Log10 signal molecule concn at 50% Imax,sig12 (log10 CFU/mL)")  # Table 3: Log IC50,Sig = 10.2 (SE 4.3%) [strain-shared]
 

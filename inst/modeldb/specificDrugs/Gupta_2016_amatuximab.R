@@ -2,7 +2,15 @@ Gupta_2016_amatuximab <- function() {
   description <- "Two-compartment population PK model with parallel linear and Michaelis-Menten elimination for amatuximab in patients with advanced cancers / malignant pleural mesothelioma (Gupta 2016)"
   reference <- "Gupta A, Hussein Z, Hassan R, Wustner J, Maltzman JD, Wallin BA. Population pharmacokinetics and exposure-response relationship of amatuximab, an anti-mesothelin monoclonal antibody, in patients with malignant pleural mesothelioma and its application in dose selection. Cancer Chemother Pharmacol. 2016;77(4):733-743. doi:10.1007/s00280-016-2984-z"
   vignette <- "Gupta_2016_amatuximab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "amatuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "amatuximab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

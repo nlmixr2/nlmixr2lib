@@ -7,7 +7,19 @@ Patel_2017_selumetinib <- function() {
     "CPT Pharmacometrics Syst Pharmacol. 2017;6(5):305-314. doi:10.1002/psp4.12175"
   )
   vignette <- "Patel_2017_selumetinib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot              = list(analyte = "selumetinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central            = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1        = list(analyte = "selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ndmsel     = list(analyte = "N-desmethyl-selumetinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ndmsel = list(analyte = "N-desmethyl-selumetinib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BSA = list(
@@ -67,9 +79,9 @@ Patel_2017_selumetinib <- function() {
     # population parameters apply at the reference covariate set (BSA = 1.66 m^2,
     # AGE = 53 y, ALT = 20 U/L, FED = 0) and at single dose (the steady-state
     # reduction in Fm is documented in vignette Assumptions and deviations).
-    # The Table 2 column header reads "h1 (nmol/hr)" and "h9 (nmol/hr)" but the
+    # The Table 2 column header reads "h1 (nmol/h)" and "h9 (nmol/h)" but the
     # parameter description column says "Duration of zero-order drug input"; the
-    # nmol/hr label is a Table 2 unit typo for these two duration entries. Both
+    # nmol/h label is a Table 2 unit typo for these two duration entries. Both
     # values are interpreted as hours (only interpretation consistent with the
     # paper's Figure 1 absorption-model diagram and the Figure 4 ~11% food-effect
     # AUC reduction).
@@ -83,7 +95,7 @@ Patel_2017_selumetinib <- function() {
 
     # Bioavailability anchor: F1 = 1 fixed under fasted condition per Patel 2017
     # Methods, "Bioavailability under the fasted condition was set to 1".
-    lfdepot <- fixed(log(1.0)) ; label("Selumetinib bioavailability (F1) under fasted reference (fixed at 1)")    # Patel 2017 Methods; F1 fasted fixed at 1
+    lfdepot <- fixed(log(1.0)) ; label("Selumetinib bioavailability (F1) under fasted reference")    # Patel 2017 Methods; F1 fasted fixed at 1
 
     # Food-effect (FED = 1, high-fat meal) covariate coefficients applied as
     # linear additive shifts on selumetinib absorption parameters (Patel 2017

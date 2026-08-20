@@ -2,7 +2,16 @@ Fisher_2008_fosamprenavir <- function() {
   description <- "Two-compartment population PK model with first-order absorption for orally administered fosamprenavir (FPV), measured as the active amprenavir (APV) metabolite, in HIV-1-infected pediatric patients aged 4 weeks to 18 years (Fisher 2008). Allometric scaling on apparent clearance (CL/F, Q) at a fixed exponent of 0.75 and on apparent volumes (V2/F, V3) at a fixed exponent of 1.0 (reference 70 kg). Apparent CL/F is reduced ~60% by concomitant ritonavir (RTV) co-administration (maximal CYP3A4 inhibition assumed at the RTV doses used), and is further modified by a piecewise age-maturation factor (linearly declining additive offset for AGE <= 2*AG50, zero above), by sex (lower in females), by race (separate multipliers for Black and for the non-Black non-White composite vs the White reference), and by a power effect of serum alpha-1-acid glycoprotein (AAG, centred at 0.77 g/L). Apparent V2/F also carries a power effect of AAG. Bioavailability is anchored on suspension-under-fed conditions (F=1), with a separate relative bioavailability for the tablet formulation (F_tab) and a separate relative bioavailability for the suspension administered fasted (F_food,sus). Inter-occasion variability on CL/F (~34% CV) reported by the source poster is NOT structurally encoded here (no operational occasion column is defined for the model-library use case); downstream users who want to simulate IOV can add an OCC indicator and a per-occasion eta in rxode2."
   reference <- "Fisher J, Gastonguay MR, Knebel W, Gibiansky L, Wire MB. Population Pharmacokinetic Modeling of Fosamprenavir in Pediatric HIV-Infected Patients. American Conference on Pharmacometrics (ACOP) poster, Tucson, AZ, 2008. Available at https://metrumrg.com/wp-content/uploads/2018/08/acop_2008_fosamprenavir.pdf"
   vignette <- "Fisher_2008_fosamprenavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "fosamprenavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "fosamprenavir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fosamprenavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -120,10 +129,10 @@ Fisher_2008_fosamprenavir <- function() {
     # using a normalized reference weight of 70 kg and fixed allometric power
     # values of 0.75 (CL and Q) and 1 (V2/F and V3)."). ka is NOT allometrically
     # scaled in Fisher 2008.
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F with WT (unitless; fixed at theory)")  # Methods, Model and Modeling Assumptions
-    e_wt_q  <- fixed(0.75); label("Allometric exponent on Q with WT (unitless; fixed at theory)")     # Methods, Model and Modeling Assumptions
-    e_wt_vc <- fixed(1);    label("Allometric exponent on V2/F with WT (unitless; fixed at theory)")  # Methods, Model and Modeling Assumptions
-    e_wt_vp <- fixed(1);    label("Allometric exponent on V3 with WT (unitless; fixed at theory)")    # Methods, Model and Modeling Assumptions
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F with WT (unitless; theory)")  # Methods, Model and Modeling Assumptions
+    e_wt_q  <- fixed(0.75); label("Allometric exponent on Q with WT (unitless; theory)")     # Methods, Model and Modeling Assumptions
+    e_wt_vc <- fixed(1);    label("Allometric exponent on V2/F with WT (unitless; theory)")  # Methods, Model and Modeling Assumptions
+    e_wt_vp <- fixed(1);    label("Allometric exponent on V3 with WT (unitless; theory)")    # Methods, Model and Modeling Assumptions
 
     # Concomitant ritonavir effect on CL/F. Fisher 2008 reports two CL/F values
     # in Table 3 (theta_1 = 34.1 L/h with RTV; theta_6 = 84.4 L/h without RTV).

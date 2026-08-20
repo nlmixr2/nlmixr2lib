@@ -2,7 +2,15 @@ Farrell_2012_farletuzumab <- function() {
   description <- "Two-compartment population PK model for farletuzumab (humanized IgG1 anti-folate-receptor-alpha monoclonal antibody) with first-order linear elimination after IV infusion in women with advanced epithelial ovarian cancer (Farrell 2012)."
   reference <- "Farrell C, Schweizer C, Wustner J, Weil S, Namiki M, Nakano T, Nakai K, Phillips MD. Population pharmacokinetics of farletuzumab, a humanized monoclonal antibody against folate receptor alpha, in epithelial ovarian cancer. Cancer Chemother Pharmacol. 2012;70(5):727-734. doi:10.1007/s00280-012-1959-y"
   vignette <- "Farrell_2012_farletuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "farletuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "farletuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -42,9 +50,9 @@ Farrell_2012_farletuzumab <- function() {
     # Structural parameters (final model) — Farrell 2012 Table 3.
     # Reference weight 66.2 kg = overall population median (Table 1; paper states
     # COV_ST is the median value of the covariate in the study population).
-    lcl      <- log(0.00784); label("Clearance at reference body weight (CL, L/hr)")                     # Table 3: CL = 0.00784 L/h
+    lcl      <- log(0.00784); label("Clearance at reference body weight (CL, L/h)")                     # Table 3: CL = 0.00784 L/h
     lvc      <- log(3.00);    label("Central volume of distribution at reference body weight (Vc, L)")  # Table 3: Vc = 3.00 L
-    lq       <- log(0.0203);  label("Inter-compartmental clearance (Q, L/hr)")                          # Table 3: Q = 0.0203 L/h
+    lq       <- log(0.0203);  label("Inter-compartmental clearance (Q, L/h)")                          # Table 3: Q = 0.0203 L/h
     lvp      <- log(7.50);    label("Peripheral volume of distribution (Vp, L)")                        # Table 3: Vp = 7.50 L
 
     # Weight effect (power form on CL and Vc only; no weight effect on Q or Vp)

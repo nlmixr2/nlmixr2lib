@@ -2,7 +2,16 @@ Laffont_2024_nalmefene <- function() {
   description <- "Population PK model for intranasal (IN) nalmefene HCl in healthy adult volunteers (Laffont 2024): two-compartment model with linear elimination, parallel zero-order plus lagged first-order absorption, and allometric body-weight scaling on apparent clearance."
   reference <- "Laffont CM, Purohit P, Delcamp N, Gonzalez-Garcia I, Skolnick P. Comparison of intranasal naloxone and intranasal nalmefene in a translational model assessing the impact of synthetic opioid overdose on respiratory depression and cardiac arrest. Front Psychiatry. 2024;15:1399803. doi:10.3389/fpsyt.2024.1399803"
   vignette <- "Laffont_2024_nalmefene"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "nalmefene", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "nalmefene", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

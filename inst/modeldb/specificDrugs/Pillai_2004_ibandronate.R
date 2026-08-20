@@ -25,6 +25,15 @@ Pillai_2004_ibandronate <- function() {
     # ibandronate concentrations; see vignette narrative.
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "ibandronate", units = "mg", specimen = "plasma", verified = FALSE),
+    effect  = list(analyte = "ibandronate", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     CONMED_CAVITD = list(
       description        = "Concomitant calcium + vitamin D supplementation indicator (1 = on daily oral calcium + vitamin D coadministration during the observation period, 0 = not on supplementation)",

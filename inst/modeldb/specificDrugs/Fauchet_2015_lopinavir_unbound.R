@@ -2,7 +2,15 @@ Fauchet_2015_lopinavir_unbound <- function() {
   description <- "One-compartment first-order-absorption population PK model for lopinavir in HIV-infected pregnant and nonpregnant women parameterised on the unbound fraction, with total LPV reconstructed from a linear HSA binding term plus a saturable single-site AAG binding term (Fauchet 2015 unbound submodel)."
   reference <- "Fauchet F, Treluyer JM, Illamola SM, Pressiat C, Lui G, Valade E, Mandelbrot L, Lechedanec J, Delmas S, Blanche S, Warszawski J, Urien S, Tubiana R, Hirt D, for the ANRS 135 PRIMEVA Study Group. Population approach to analyze the pharmacokinetics of free and total lopinavir in HIV-infected pregnant women and consequences for dose adjustment. Antimicrob Agents Chemother. 2015;59(9):5727-5735. doi:10.1128/AAC.00863-15"
   vignette <- "Fauchet_2015_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "lopinavir unbound", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lopinavir unbound", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     ALB = list(
@@ -81,7 +89,7 @@ Fauchet_2015_lopinavir_unbound <- function() {
     # Appendix equation 2.
     lkhsa <- log(0.036);  label("Linear HSA binding constant K_HSA (L/umol; product N_HSA*K_HSA)")  # Table 2 row 'K_HSA' = 0.036 L/umol
     lkaag <- log(0.159);  label("Saturable AAG dissociation constant K_AAG (umol/L)")               # Table 2 row 'N_AAG K_AAG' with K_AAG = 0.159 umol/L
-    naag  <- fixed(1);    label("Number of LPV binding sites on AAG (unitless, fixed)")             # Table 2 footnote c 'Fixed value'; Results paragraph: N_AAG was fixed to 1 in the final model
+    naag  <- fixed(1);    label("Number of LPV binding sites on AAG (unitless)")             # Table 2 footnote c 'Fixed value'; Results paragraph: N_AAG was fixed to 1 in the final model
 
     # IIV on apparent unbound clearance only. Fauchet 2015 reports omega as the square
     # root of the between-subject variance (Table 2 footnote d), so the variance entered

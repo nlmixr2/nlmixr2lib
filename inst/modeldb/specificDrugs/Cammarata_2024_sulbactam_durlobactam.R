@@ -30,7 +30,7 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
     sep = " "
   )
   vignette <- "Cammarata_2024_sulbactam_durlobactam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Durlobactam plasma residual variability is stratified by study phase
   # (Phase 1 / 2 / 3), so the canonical propSd / addSd used by the error model
@@ -38,6 +38,17 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
   # construction as Valenzuela_2025_nipocalimab and vanIersel_2018_posaconazole.
   paper_specific_residual_sds <- c(
     "propSdPhase1", "propSdPhase2", "propSdPhase3", "addSdPhase1"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "durlobactam", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sbt     = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_sbt = list(analyte = "sulbactam", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -362,7 +373,7 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
     lq  <- log(4.43); label("Durlobactam inter-compartmental clearance Q (L/h)")           # Table 1 Durlobactam: Q = 4.43 L/h (%SEM 3.77; SIR 90% CI [4.17, 4.71])
     lvp <- log(5.83); label("Durlobactam peripheral volume Vp (L)")                        # Table 1 Durlobactam: Vp = 5.83 L (%SEM 3.44; SIR 90% CI [5.54, 6.10])
 
-    f_renal <- fixed(0.479); label("Durlobactam fraction of total CL excreted renally (FE, unitless; FIXED)")
+    f_renal <- fixed(0.479); label("Durlobactam fraction of total CL excreted renally (FE, unitless)")
     # Table 1 Durlobactam: FE (%) = 0.479, reported in the shaded 'fixed or
     # not estimated' style with no %SEM. Results: 'The fraction of durlobactam
     # and sulbactam assumed to be excreted renally (FE) was fixed to the values
@@ -392,7 +403,7 @@ Cammarata_2024_sulbactam_durlobactam <- function() {
     lq_sbt  <- log(7.88); label("Sulbactam inter-compartmental clearance Q (L/h)")            # Table 1 Sulbactam: Q = 7.88 L/h (%SEM 18.9; SIR 90% CI [6.56, 9.72])
     lvp_sbt <- log(6.99); label("Sulbactam peripheral volume Vp (L)")                         # Table 1 Sulbactam: Vp = 6.99 L (%SEM 9.29; SIR 90% CI [6.24, 7.80])
 
-    f_renal_sbt <- fixed(0.479); label("Sulbactam fraction of total CL excreted renally (FE, unitless; FIXED)")
+    f_renal_sbt <- fixed(0.479); label("Sulbactam fraction of total CL excreted renally (FE, unitless)")
     # Table 1 Sulbactam: FE (%) = 0.479, shaded 'fixed or not estimated'.
 
     e_crcl_cl_renal_sbt <- 1.14; label("Sulbactam CLcr power exponent on the renal CL arm (unitless)") # Table 1 Sulbactam: 'CL R, CLcr power' = 1.14 (%SEM 20.8; SIR 90% CI [0.920, 1.37])

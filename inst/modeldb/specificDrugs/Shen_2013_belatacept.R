@@ -8,6 +8,13 @@ Shen_2013_belatacept <- function() {
     concentration = "ug/mL (belatacept Cc); MESF (free CD86 receptor); percent (CD86 receptor occupancy)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "belatacept", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

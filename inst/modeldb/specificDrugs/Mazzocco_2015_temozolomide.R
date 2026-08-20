@@ -25,6 +25,17 @@ Mazzocco_2015_temozolomide <- function() {
     concentration = "mm (mean tumour diameter MTD = P + Q + Qp; not a drug concentration)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "temozolomide", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prolif    = list(analyte = "tumour cells (proliferative)", units = NA_character_, specimen = "tumor", verified = FALSE),
+    quiesc    = list(analyte = "tumour cells (non-damaged quiescent)", units = NA_character_, specimen = "tumor", verified = FALSE),
+    quiescDam = list(analyte = "tumour cells (damaged quiescent)", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list(
     TUM_TP53_MUT = list(
       description        = "Tumour TP53 mutation indicator (1 = TP53 mutant tumour, 0 = TP53 wild-type tumour). p53 protein overexpression by IHC is used by the source paper as a surrogate marker for TP53 missense mutations (Gillet et al. J Neurooncol 2014).",
@@ -109,7 +120,7 @@ Mazzocco_2015_temozolomide <- function() {
     # KDE IIV is reported as "50 (FIXED)" in Table 2 -- the value of the
     # variance is held constant rather than estimated. The corresponding
     # log-normal omega^2 is log(0.50^2 + 1) = 0.2231.
-    etalkel      ~ fixed(0.2231)  # CV 50% (FIXED) -> omega^2 = log(0.50^2 + 1) per Mazzocco 2015 Table 2
+    etalkel      ~ fixed(0.2231)  # CV 50% -> omega^2 = log(0.50^2 + 1) per Mazzocco 2015 Table 2
 
     # Constant additive residual error on MTD ("constant error model with
     # parameter value a", Mazzocco 2015 Methods).

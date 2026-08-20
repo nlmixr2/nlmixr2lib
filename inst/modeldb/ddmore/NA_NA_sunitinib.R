@@ -22,6 +22,28 @@ NA_NA_sunitinib <- function() {
   ddmore_id <- "DDMODEL00000231"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_metab       = list(analyte = "sunitinib metabolite", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_metab     = list(analyte = "sunitinib metabolite", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_metab = list(analyte = "sunitinib metabolite", units = "mg", specimen = "plasma", verified = FALSE),
+    biom1             = list(analyte = "PD biomarker 1", units = "mg", specimen = "not applicable", verified = FALSE),
+    biom2             = list(analyte = "PD biomarker 2", units = "mg", specimen = "not applicable", verified = FALSE),
+    biom3             = list(analyte = "PD biomarker 3", units = "mg", specimen = "not applicable", verified = FALSE),
+    biom4             = list(analyte = "PD biomarker 4", units = "mg", specimen = "not applicable", verified = FALSE),
+    tumor             = list(analyte = "tumour size", units = "mg", specimen = "tumor", verified = FALSE),
+    resistance        = list(analyte = "drug resistance", units = "mg", specimen = "not applicable", verified = FALSE),
+    lat_signal        = list(analyte = "latent signal", units = "mg", specimen = "not applicable", verified = FALSE),
+    parent_integ      = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    lam_feedback      = list(analyte = "feedback loop", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     # No covariates declared in the MDL parObj or mdlObj; the dataObj only
     # carries ID, TIME, AMT, DVID, DV, MDV. The model is covariate-free.

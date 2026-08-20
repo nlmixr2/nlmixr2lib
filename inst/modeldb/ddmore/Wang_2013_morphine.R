@@ -10,10 +10,18 @@ Wang_2013_morphine <- function() {
     sep = " "
   )
   vignette <- "Wang_2013_morphine"
-  units <- list(time = "minute", dosing = "ug", concentration = "ug/L")
+  units <- list(time = "min", dosing = "ug", concentration = "ug/L")
 
   ddmore_id    <- "DDMODEL00000269"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "morphine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
