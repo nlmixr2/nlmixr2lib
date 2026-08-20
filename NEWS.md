@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Van Wart 2025 telavancin ([doi:10.1128/aac.01382-24](https://doi.org/10.1128/aac.01382-24)) - healthy subjects and patients with complicated skin and skin-structure infection, hospital-acquired or ventilator-associated bacterial pneumonia, or uncomplicated bacteremia, spanning the full range of renal function including hemodialysis.
+- Add Harada 2025 cyanide ([doi:10.1007/s11419-025-00713-8](https://doi.org/10.1007/s11419-025-00713-8)) -- adults in fire-related deaths examined at forensic autopsy.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
