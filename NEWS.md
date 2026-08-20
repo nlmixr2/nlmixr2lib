@@ -2,7 +2,7 @@
 
 # development version
 
-- Add McBride 2025 recombinant ADAMTS13 ([doi:10.1002/psp4.70063](https://doi.org/10.1002/psp4.70063)) -- patients with congenital thrombotic thrombocytopenic purpura.
+- Add Duffull 2025 monoclonal antibody TMDD models, full and target-saturated simplification ([doi:10.1002/psp4.70049](https://doi.org/10.1002/psp4.70049)) -- 80 simulated subjects, unnamed mAb.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
