@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jian 2025 peginterferon alfa-2b / Pegbing ([doi:10.1002/psp4.70104](https://doi.org/10.1002/psp4.70104)) -- healthy volunteers and chronic hepatitis B patients.
+- Add Tian 2025 pirtobrutinib ([doi:10.1002/psp4.70134](https://doi.org/10.1002/psp4.70134)) - healthy adults; a compartmental reduction of the published Simcyp minimal-PBPK model.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

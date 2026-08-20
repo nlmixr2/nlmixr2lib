@@ -2380,6 +2380,8 @@ navbar:
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Piperaquine (Tarning 2014)"
         href: articles/Tarning_2014_piperaquine.html
+      - text: "Pirtobrutinib (Tian 2025)"
+        href: articles/Tian_2025_pirtobrutinib.html
       - text: "Pitavastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
       - text: "Polatuzumab (Lu 2019)"
@@ -4662,6 +4664,7 @@ articles:
   - articles/Thoueille_2023_lopinavir
   - articles/Thoueille_2023_tenofovir_ckd
   - articles/Thuo_2011_ciprofloxacin
+  - articles/Tian_2025_pirtobrutinib
   - articles/Tikiso_2021_abacavir
   - articles/Timmermann_2019_brodalumab
   - articles/Ting_2014_tobramycin_inhaled
