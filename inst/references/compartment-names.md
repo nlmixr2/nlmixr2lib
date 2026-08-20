@@ -2837,6 +2837,22 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** mAb popPK extractions tracking NAb.
 
+### alb (**canonical endogenous serum albumin species suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Endogenous serum albumin, carried as a co-modelled species alongside a dosed therapeutic protein in multi-protein PBPK / QSP models. Albumin and IgG share the antibody catabolic machinery (fluid-phase pinocytosis into the endosome, FcRn-mediated salvage, lysosomal degradation), so mechanistic antibody PBPK models that use albumin as a biomarker of protein turnover must integrate albumin through the *same* whole-body compartment set as the drug. The suffix marks those albumin states: `plasma_alb`, `lnode_alb`, `urine_alb`, `vp_<organ>_alb`, `is_<organ>_alb`, `eu_<organ>_alb`, `eb_<organ>_alb`, and the albumin-site free-FcRn pool `fr_<organ>_alb`. Also valid on parameters that are albumin-specific rather than drug-specific (`lfcrn_alb`, `lcss_alb`).
+- **Source aliases:**
+  - `ALB` -- Proctor 2026 Appendix S3 species prefix (`ALB_LU_V`, `ALB_PL_V`, ...).
+- **Example models:** `Proctor_2026_durvalumab_pbpk.R`.
+- **Notes:** Follows the `np` precedent immediately below: a second species travelling through the same anatomical compartment set as the parent, with the unsuffixed state holding the dosed drug. Deliberately distinct from `uacr` (urine albumin-to-creatinine ratio, a renal damage biomarker) and from `albumin` used as an observation variable in g/L; this token names the ODE species, not the reported output. Do NOT use for albumin-*binding* or albumin-*conjugated* drug forms -- an albumin-conjugated API is a conjugation state and belongs under `np` or a named-payload suffix.
+
+### igg (**canonical endogenous IgG species suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Endogenous immunoglobulin G, carried as a co-modelled species alongside a dosed therapeutic antibody. Endogenous IgG *competes with the dosed antibody for the same FcRn binding site*, so a mechanistic antibody PBPK model cannot get the drug's non-linear FcRn-salvage clearance right without integrating the endogenous pool through the same compartment set. The suffix marks those states: `plasma_igg`, `lnode_igg`, `urine_igg`, `vp_<organ>_igg`, `is_<organ>_igg`, `eu_<organ>_igg`, `eb_<organ>_igg`, and the IgG-site free-FcRn pool `fr_<organ>_igg`; also valid on IgG-specific parameters (`lfcrn_igg`, `lcss_igg`).
+- **Source aliases:**
+  - `ENIGG` -- Proctor 2026 Appendix S3 species prefix for endogenous IgG (`ENIGG_LU_V`, ...). The paper's `EXIGG` (exogenous IgG) prefix maps to the UNSUFFIXED canonical states, per the parent-drug-is-unsuffixed rule.
+- **Example models:** `Proctor_2026_durvalumab_pbpk.R`.
+- **Notes:** Registered as a metabolite-suffix alongside the pre-existing `igg` **compartment** entry (the Kim 2006 single-pool endogenous IgG turnover state) -- the two entries describe the same analyte in different structural roles, exactly as `plasma` is registered both as an mPBPK compartment and as a residual-plasma sub-compartment suffix. Distinct from `total_igg` (a serum-IgG PD *output*) and from `ige` / `tab` / `nab`: `tab` is total *therapeutic* antibody in an ADC model, whereas `igg` here is the patient's own antibody pool.
+
 ### np (**canonical nanoparticle-conjugated species suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Nanoparticle- / carrier-conjugated form of a drug in dual-species nanoparticle biodistribution models, where the bare canonical compartment name holds the released (free) drug and the `_np` suffix holds the still-conjugated drug travelling with its carrier.
