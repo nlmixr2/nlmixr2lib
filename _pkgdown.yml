@@ -2282,6 +2282,8 @@ navbar:
         href: articles/LeJouan_2005_quinine.html
       - text: "Quinine rat (Sheng 2016)"
         href: articles/Sheng_2016_quinine_rat.html
+      - text: "Quizartinib (Vaddady 2024)"
+        href: articles/Vaddady_2024_quizartinib.html
       - text: "R methadone (Aruldhas 2021)"
         href: articles/Aruldhas_2021_methadone.html
       - text: "RBP 7000 (Ivaturi 2017)"
@@ -4303,6 +4305,7 @@ articles:
   - articles/Urien_2004_cisplatin
   - articles/Urien_2005_capecitabine
   - articles/Urien_2013_anakinra
+  - articles/Vaddady_2024_quizartinib
   - articles/Valade_2014_emtricitabine
   - articles/Valade_2015_emtricitabine
   - articles/Valenzuela_2011_oxaliplatin

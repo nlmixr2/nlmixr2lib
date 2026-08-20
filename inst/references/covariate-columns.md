@@ -4242,8 +4242,9 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Reference category:** 0 (non-AML subject; the complement group is paper-defined -- for Xu 2023 the reference is patients with advanced solid tumors, alongside the parallel `DIS_MDS` and `DIS_CMML` indicators that decompose the hematologic-malignancy cohort).
 - **Source aliases:**
   - `DISEASE_abb == "AML"` -- used in `Xu_2023_MBG453.R` (the Monolix supplement Appendix S2 encodes disease as the categorical column `DISEASE_abb` with categories `{AML, CMML, MDS, Solid_Tumor}` and reference `Solid_Tumor`; the canonical column carries the binary `as.integer(DISEASE_abb == "AML")`).
-- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.0146 * DIS_AML)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach).
-- **Notes:** Use `DIS_AML` (rather than the combined `DIS_MDS_AML`) when the source paper separates AML from MDS as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined.
+  - `AML3` -- used in `Vaddady_2024_quizartinib.R`. NOTE the source column is the *complement*: the NONMEM stream codes `AML3 = 1` for NON-AML subjects (healthy volunteers and subjects with hepatic impairment), so the canonical column carries `DIS_AML = 1 - AML3` and every reported effect is applied via `(1 - DIS_AML)`.
+- **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.0146 * DIS_AML)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach); `Vaddady_2024_quizartinib.R` (reference category INVERTED -- AML patients are the reference and the non-AML effect is estimated: Frel multiplier 1.73, fractional change -0.188 on quizartinib ka, +0.843 on AC886 CL; the column also selects which stratum-specific IIV variance applies to quizartinib Frel and to AC886 CL).
+- **Notes:** Use `DIS_AML` (rather than the combined `DIS_MDS_AML`) when the source paper separates AML from MDS as distinct indicators. Scope: specific because the disease-pooling reference category is paper-defined -- and it genuinely varies: Xu 2023 makes non-AML (advanced solid tumors) the reference, whereas Vaddady 2024 makes AML patients the reference. Always read the paper's stated reference before assigning a sign to any effect on this column, and record the direction in `covariateData[["DIS_AML"]]$reference_category`.
 
 ### DIS_MDS (**canonical for myelodysplastic syndrome disease-state indicator**)
 - **Description:** 1 = patient with myelodysplastic syndrome (MDS), 0 = non-MDS subject (the complement group in a pooled multi-indication PK analysis). Time-fixed per subject.
@@ -7777,6 +7778,36 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Source aliases:** `1B` -- Kloos 2021 Table 2 / Table 3 treatment-phase row label.
 - **Example models:** `Kloos_2021_pegasparaginase.R` (clearance effect FIXED to 1, i.e. pooled with the 1A reference, because only two patients were treated as high risk and the effect was not estimable reliably; Kloos 2021 Table 2 prints "1 (fix)").
 - **Notes:** A fixed-to-reference member is still worth registering: dropping the column would silently erase the fact that the authors tested the phase and could not estimate it. See the family preamble above for the protocol-documentation requirement.
+
+### TRTPH_CONSOLIDATION (**canonical for consolidation treatment-phase indicator**)
+- **Description:** 1 = the record falls within the consolidation phase of the treatment protocol; 0 = any other phase or population. For the founding model (QuANTUM-First, AC220-A-U302, newly diagnosed FLT3-ITD-positive AML) consolidation is standard high-dose cytarabine plus quizartinib or placebo, allogeneic hematopoietic cell transplantation, or both, in patients achieving remission. Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0. Note that the all-`TRTPH_`-indicators-0 state is protocol-defined and is NOT necessarily the protocol's own induction phase: for Vaddady 2024 the reference is relapsed/refractory AML patients on quizartinib monotherapy, "for whom no distinct treatment phases were reported", so induction carries its own indicator rather than being folded into the reference. Any model using this column must state in `covariateData` notes what its all-zero state means.
+- **Source aliases:** `PHASE == 2` -- Vaddady 2024 final NONMEM control stream (Supporting Information); `Consolidation` -- Vaddady 2024 Table 3 treatment-phase row label.
+- **Example models:** `Vaddady_2024_quizartinib.R` (fractional change -0.192 on quizartinib relative bioavailability, RSE 15.6 percent, Equation 9; and +0.272 on the parent-to-metabolite conversion fraction fMET, RSE 13.3 percent, Equation 16).
+- **Notes:** Bare (unqualified) phase name, per the family preamble's qualify-only-on-collision default; ratified by sidecar request-001 / response-001, question q2, option A. A later protocol whose consolidation phase differs materially in background therapy should qualify its own member (`TRTPH_<PROTOCOL>_CONSOLIDATION`) rather than overloading this entry.
+
+### TRTPH_CONTINUATION (**canonical for continuation treatment-phase indicator**)
+- **Description:** 1 = the record falls within the continuation phase of the treatment protocol; 0 = any other phase or population. For the founding model (QuANTUM-First, AC220-A-U302) continuation is single-agent quizartinib or placebo for up to 3 years in patients with blood-count recovery, i.e. no background chemotherapy. Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0; see the reference-category note on `TRTPH_CONSOLIDATION` -- the all-zero state is protocol-defined and for Vaddady 2024 is relapsed/refractory AML on monotherapy, not induction.
+- **Source aliases:** `PHASE == 3` -- Vaddady 2024 final NONMEM control stream (Supporting Information); `Continuation` -- Vaddady 2024 Table 3 treatment-phase row label.
+- **Example models:** `Vaddady_2024_quizartinib.R` (fractional change +0.418 on quizartinib relative bioavailability, RSE 12.5 percent, Equation 9; and -0.249 on fMET, RSE 8.47 percent, Equation 16).
+- **Notes:** Bare (unqualified) phase name; ratified by sidecar request-001 / response-001, question q2, option A. This is the phase with the highest dose-normalised quizartinib exposure (about 1.4-fold the relapsed/refractory reference); Vaddady 2024 confirmed by a VPC restricted to patients who entered continuation that the effect is phase-related rather than driven by selection of patients who survived to that phase.
+
+### TRTPH_INDUCTION (**canonical for induction treatment-phase indicator**)
+- **Description:** 1 = the record falls within the induction phase of the treatment protocol; 0 = any other phase or population. For the founding model (QuANTUM-First, AC220-A-U302) induction is quizartinib or placebo plus intravenous cytarabine and an anthracycline (daunorubicin or idarubicin). Member of the `TRTPH_<phase>` family described above.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0. This member exists precisely because the family preamble's default -- fold the protocol's own induction phase into the all-zero reference -- does NOT hold universally: Vaddady 2024 sets the reference to relapsed/refractory AML patients on quizartinib monotherapy, so induction is a non-reference level needing its own indicator. Register `TRTPH_INDUCTION` only when induction is genuinely non-reference in the source model; when induction IS the reference, encode it as all indicators 0 and register no column, per the preamble.
+- **Source aliases:** `PHASE == 1` -- Vaddady 2024 final NONMEM control stream (Supporting Information); `Induction` -- Vaddady 2024 Table 3 treatment-phase row label.
+- **Example models:** `Vaddady_2024_quizartinib.R` (fractional change -0.419 on quizartinib relative bioavailability, RSE 4.92 percent, Equation 9; and +0.715 on fMET, RSE 6.38 percent, Equation 16).
+- **Notes:** Bare (unqualified) phase name, per the family preamble's qualify-only-on-collision default; ratified by sidecar request-001 / response-001, question q2, option A. In parent-plus-metabolite models the phase effects on parent bioavailability and on the conversion fraction act in opposite directions by construction: the parent bioavailability effect is carried over to the metabolite, and the conversion-fraction phase effect exists to counterbalance that spurious carry-over (Vaddady 2024 Discussion).
 
 ### TRTPH_M (**canonical for DCOG ALL-11 protocol M treatment-phase indicator**)
 - **Description:** 1 = the record falls within protocol M of the DCOG ALL-11 protocol (6-mercaptopurine plus high-dose methotrexate, 5,000 mg/m^2/dose at days 8, 22, 36 and 50); 0 = any other phase. Member of the `TRTPH_<phase>` family described above.
