@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gu 2025 whole-body heart-failure PBPK models for digoxin, furosemide, bumetanide, torasemide, captopril, valsartan, felodipine and midazolam ([doi:10.3390/pharmaceutics17111394](https://doi.org/10.3390/pharmaceutics17111394)) -- healthy adults and chronic heart-failure patients in NYHA classes II-IV.
+- Add Zhou 2025 tacrolimus ([doi:10.1007/s00228-025-03920-9](https://doi.org/10.1007/s00228-025-03920-9)) -- Chinese adult lung transplant recipients in the first three months post-transplantation.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
