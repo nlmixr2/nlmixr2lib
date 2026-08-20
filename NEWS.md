@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Winning 2025 certepetide ([doi:10.1002/cpdd.1502](https://doi.org/10.1002/cpdd.1502)) -- adults with metastatic pancreatic ductal adenocarcinoma.
+- Add Michelet 2025 BI 754111 anti-LAG-3 two-pore minimal-PBPK model ([doi:10.1002/psp4.13285](https://doi.org/10.1002/psp4.13285)) -- adults with anti-PD-1-refractory NSCLC or HNSCC in an 89Zr-immuno-PET biodistribution study.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
