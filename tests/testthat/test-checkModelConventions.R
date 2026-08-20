@@ -1625,3 +1625,138 @@ test_that("register blocks are parsed with and without the bold parenthetical", 
 })
 
 # nolint end
+
+
+# Fraction-metabolised pathway family (`fm_<pathway>`). `fm` was registered
+# but its pathway suffixes were not, so nothing consumed the fact that
+# `fm_other` / `fm_others` and `fm_h4` / `fm_H4` were each in the tree twice
+# under two spellings. The register heading is the enumeration; these tests
+# check that the heading is actually load-bearing.
+
+# `.checkFmFamily()` needs only the bound names, so stub the two fields it
+# reads rather than paying for a full nlmixr2() parse per case.
+.fmStubUi <- function(ini = character(0), model = character(0)) {
+  list(
+    iniDf = if (length(ini)) {
+      data.frame(name = ini, stringsAsFactors = FALSE)
+    } else {
+      NULL
+    },
+    lstExpr = lapply(model, function(s) parse(text = s)[[1]])
+  )
+}
+
+test_that("every registered fm_<pathway> member is accepted", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  registered <- grep("^fm_", conv$paperNamedParams, value = TRUE)
+  # Guard against a vacuous gate: if a register edit broke the heading, the
+  # parse would yield nothing and every test below would pass for free.
+  expect_gte(length(registered), 7L)
+  expect_true(all(c("fm_cyp3a4", "fm_cyp3a5", "fm_h4", "fm_ko516_frac",
+                    "fm_m3g", "fm_m6g", "fm_other") %in% registered))
+  issues <- nlmixr2lib:::.checkFmFamily(.fmStubUi(ini = registered), conv)
+  expect_equal(nrow(issues), 0L)
+})
+
+test_that("the two spellings this family exists to stop are not registered", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  registered <- grep("^fm_", conv$paperNamedParams, value = TRUE)
+  # Plural residual route, and the capitalised clopidogrel H4 pathway.
+  expect_false("fm_others" %in% registered)
+  expect_false("fm_H4" %in% registered)
+})
+
+test_that("a plural residual route is an error naming the singular", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  issues <- nlmixr2lib:::.checkFmFamily(.fmStubUi(ini = "fm_others"), conv)
+  expect_equal(nrow(issues), 1L)
+  expect_equal(issues$severity, "error")
+  expect_equal(issues$category, "fm_family")
+  expect_equal(issues$name, "fm_others")
+  expect_true(grepl("Rename to 'fm_other'", issues$suggestion, fixed = TRUE))
+})
+
+test_that("a capitalised pathway token is an error naming the lowercase form", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  issues <- nlmixr2lib:::.checkFmFamily(.fmStubUi(ini = "fm_H4"), conv)
+  expect_equal(nrow(issues), 1L)
+  expect_equal(issues$severity, "error")
+  expect_equal(issues$name, "fm_H4")
+  expect_true(grepl("Rename to 'fm_h4'", issues$suggestion, fixed = TRUE))
+})
+
+test_that("an unregistered pathway is an error pointing at the register", {
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  issues <- nlmixr2lib:::.checkFmFamily(.fmStubUi(ini = "fm_ugt1a1"), conv)
+  expect_equal(nrow(issues), 1L)
+  expect_equal(issues$severity, "error")
+  expect_equal(issues$name, "fm_ugt1a1")
+  expect_true(grepl("parameter-names.md", issues$suggestion, fixed = TRUE))
+  # No near-miss exists, so it must not invent one.
+  expect_false(grepl("Rename to", issues$suggestion, fixed = TRUE))
+})
+
+test_that("model() locals are in scope, not just ini() parameters", {
+  # Mitra_2026_ziftomenib.R binds `fm_ko516_frac` inside model(), never in
+  # ini(); an ini-only check would not see it.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  expect_equal(nrow(nlmixr2lib:::.checkFmFamily(
+    .fmStubUi(model = "fm_ko516_frac <- 0.5"), conv)), 0L)
+  bad <- nlmixr2lib:::.checkFmFamily(
+    .fmStubUi(model = "fm_ko516frac <- 0.5"), conv)
+  expect_equal(nrow(bad), 1L)
+  expect_equal(bad$name, "fm_ko516frac")
+})
+
+test_that("a name bound inside an if() branch is still in scope", {
+  # rxode2 permits branching in model(); a flat scan of the top-level
+  # statements would let a respelling hide one level down.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  issues <- nlmixr2lib:::.checkFmFamily(
+    .fmStubUi(model = "if (COV > 0) { fm_others <- 0.1 } else { fm_others <- 0.2 }"),
+    conv)
+  expect_equal(nrow(issues), 1L)
+  expect_equal(issues$name, "fm_others")
+  expect_true(grepl("Rename to 'fm_other'", issues$suggestion, fixed = TRUE))
+})
+
+test_that("source-paper notation in prose is out of scope", {
+  # Both of these are correct as written and must never be flagged:
+  #   * Svensson_2013_bedaquiline.R quotes the paper's `fm_M2` inside a
+  #     label() string, beside the `CL_M2` / `V_M2` symbols it belongs with.
+  #   * Robarge_2017_efavirenz.R's `fm_range` is FAT MASS in kg -- the
+  #     canonical `FM` covariate -- sitting in population metadata next to
+  #     `ffm_range`, not a fraction metabolised at all.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  ui <- .fmStubUi(
+    ini = "lcl_m2",
+    model = c('lab <- "Apparent M2 metabolite clearance CL_M2/(F*fm_M2)"',
+              'population <- list(ffm_range = "35.6-75.1", fm_range = "6.3-42.7")')
+  )
+  expect_equal(nrow(nlmixr2lib:::.checkFmFamily(ui, conv)), 0L)
+})
+
+test_that("no model in the database binds an unregistered fm_ parameter", {
+  # Enumerating: a newly added model using a new or respelled pathway fails
+  # here. The candidate set is derived from the tree rather than listed, so a
+  # new model file is picked up without editing this test.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE,
+                      full.names = TRUE)
+  candidates <- Filter(function(f) {
+    any(grepl("\\bfm_[A-Za-z0-9_]+", readLines(f, warn = FALSE), perl = TRUE))
+  }, files)
+  # If this drops to zero the test has stopped testing anything.
+  expect_gte(length(candidates), 1L)
+  bad <- character(0)
+  for (f in candidates) {
+    nm <- sub("[.]R$", "", basename(f))
+    ui <- suppressMessages(suppressWarnings(
+      nlmixr2est::nlmixr(readModelDb(nm))))
+    issues <- nlmixr2lib:::.checkFmFamily(ui, conv)
+    if (nrow(issues)) bad <- c(bad, paste0(nm, ": ", issues$name))
+  }
+  expect_equal(sort(bad), character(0))
+})

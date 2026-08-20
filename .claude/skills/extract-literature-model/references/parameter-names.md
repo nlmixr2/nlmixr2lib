@@ -81,6 +81,33 @@ central_sn38, peripheral1_sn38                    # free SN-38 metabolite
 central_tab,  peripheral1_tab                     # total antibody analyte
 ```
 
+### Fraction metabolised (`fm`, `fm_<pathway>`)
+
+One identified route: bare `fm` (or `logitfm` when the paper holds it on
+the logit scale). When the paper splits the metabolic flux across two or
+more **named** routes, use the `fm_<pathway>` family:
+
+```
+fm_cyp3a4, fm_cyp3a5, fm_other    # enzyme routes + the residual route
+fm_m3g, fm_m6g                    # routes named by the metabolite formed
+```
+
+- `<pathway>` is **lowercase**, even when the paper capitalises it
+  (`fm_h4`, never `fm_H4`), and reuses the canonical metabolite suffix
+  from `compartment-names.md` where the route is named by its product.
+- The residual / unspecified route is **singular `fm_other`** — never
+  `fm_others` — matching the registered `lkp_other` / `kp_other`.
+- A trailing `_frac` marks a **nested** share, i.e. a fraction *of* `fm`
+  rather than of total clearance (`fm * fm_ko516_frac` is the share of
+  parent clearance reaching that metabolite). Use it only for that case.
+- Papers that parameterise a nested split **positionally** keep the
+  paper's own `fm1` / `fm2` names; those are not `fm_<pathway>` members.
+
+Adding a new pathway that follows these rules needs **no sidecar** — add
+it to the `### fm_...` heading in `inst/references/parameter-names.md`.
+Anything else is a build error: `buildModelDb()` fails on an `fm_`-prefixed
+name bound in `ini()` or `model()` that is not in that heading.
+
 ### DAR-explicit mechanistic ADCs
 
 For models that carry every drug-antibody-ratio isoform as a separate
