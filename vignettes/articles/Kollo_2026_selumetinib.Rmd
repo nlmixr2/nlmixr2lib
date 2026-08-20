@@ -54,9 +54,11 @@ Twenty-eight children were recruited at the Pediatric Center, Semmelweis
 University (Budapest) between July 2023 and October 2024. Twenty-two contributed
 156 steady-state selumetinib concentrations (5-8 samples each) to model
 construction; six further patients contributed 10 samples to a limited external
-validation (Table S5). Doses were individualised on clinical response: 14
-participants took a fixed dose and 13 alternating morning/evening doses
-(Table S1). Selumetinib was assayed in plasma by LC-MS/MS and reported in
+validation (Table S5). Doses were individualised on clinical response: across
+the 28 recruited children, 14 took a fixed dose, 13 took alternating
+morning/evening doses, and one (patient S4) took alternating and then fixed
+doses at the first and second sampling occasion respectively (Methods 2.2;
+Table S1). Selumetinib was assayed in plasma by LC-MS/MS and reported in
 nmol/L.
 
 # Source trace
@@ -143,10 +145,11 @@ All seven parameters agree to within `r sprintf("%.2f", max(abs(check_s14[["% di
 which is the rounding of Table S14 to two decimal places. The transcription is
 sound.
 
-Note how far the distribution is from log-normal: KPC has a CV of 234% with a
-median (0.13) six times below its mean (0.78), and Ka is bimodal, clustering
-near 1-5 and again near 17-75. This is the variability structure the packaged
-model deliberately does not try to summarise with an omega matrix.
+Note how far the distribution is from log-normal: KPC has a CV of 234%
+(Table S14) with a median (0.13) six times below its mean (0.78), and Ka is
+bimodal -- seven support points fall below 5 1/h and twelve above 17 1/h, with
+only three in between (7.6, 10.4 and 12.6). This is the variability structure
+the packaged model deliberately does not try to summarise with an omega matrix.
 
 # Virtual cohort
 
@@ -199,7 +202,7 @@ ggplot(sim_ss, aes(tad, Cc, group = id)) +
 
 Figure 3 of the paper shows the 22 observed profiles on the same semi-log axes,
 with peaks in the 1000-4000 nmol/L band and 12 h troughs in the 30-200 nmol/L
-band. The simulated envelope covers the same range.
+band.
 
 ```{r ss-envelope}
 env <- sim_ss |>
@@ -215,6 +218,15 @@ tibble::tibble(
 ) |>
   knitr::kable(caption = "Simulated steady-state exposure vs. the observed band read off Figure 3.")
 ```
+
+Both simulated medians fall inside the observed bands
+(Cmax `r sprintf("%.0f", median(env$cmax))` nmol/L against ~1000-4000;
+12 h trough `r sprintf("%.0f", median(env$ctrough))` nmol/L against ~30-200).
+The support-point *envelope* is wider than the observed band at both ends
+(`r sprintf("%.0f-%.0f", min(env$cmax), max(env$cmax))` nmol/L for Cmax), which
+is expected rather than a discrepancy: here all 22 parameter vectors are given
+the same 25 mg q12h dose at the same 39.35 kg weight, whereas each child in
+Figure 3 was observed at their own weight on their own individualised dose.
 
 # PKNCA validation
 
@@ -244,12 +256,18 @@ intervals <- data.frame(start = 0, end = tau,
 
 nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
 
-nca_tbl <- as.data.frame(nca_res$result) |>
+nca_sum <- as.data.frame(nca_res$result) |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav", "half.life")) |>
   dplyr::group_by(PPTESTCD) |>
   dplyr::summarise(median = median(PPORRES, na.rm = TRUE),
                    min = min(PPORRES, na.rm = TRUE),
-                   max = max(PPORRES, na.rm = TRUE), .groups = "drop") |>
+                   max = max(PPORRES, na.rm = TRUE), .groups = "drop")
+
+# Kept for the Figure 7 narrative below, which explains why an hourly sampling
+# grid misses the peak.
+tmax_np <- nca_sum[nca_sum$PPTESTCD == "tmax", ]
+
+nca_tbl <- nca_sum |>
   dplyr::mutate(Parameter = nlmixr2lib::ncaParamLabel(PPTESTCD)) |>
   dplyr::select(Parameter, median, min, max)
 
@@ -335,10 +353,13 @@ within 25% (q12h to within 8%). Two systematic differences are worth naming:
 
 * **Sampling grid.** Computing the true Cmin/Cmax over the window rather than on
   the stated hourly grid moves every value toward the published number, because
-  an hourly grid starting at the dose time both misses the true peak (which
-  occurs about 0.7-0.9 h post-dose, given a 0.62 h lag and a fast Ka) and misses
+  an hourly grid starting at the dose time both misses the true peak and misses
   the true trough (which falls just before absorption begins, not at the end of
-  the interval).
+  the interval). The peak is missed because it arrives early and at a different
+  time in every individual: across the 22 support points the steady-state Tmax
+  of the NCA above is `r sprintf("%.2f", tmax_np$median)` h post-dose
+  (range `r sprintf("%.2f-%.2f", tmax_np$min, tmax_np$max)` h), driven by
+  support-point lag times spanning 0.28-0.98 h combined with a fast Ka.
 * **Simulation method.** The published ranges reach down to 0.000-0.001, whereas
   the 22 discrete support points bottom out near 0.03-0.08. Pmetrics'
   `PM_sim()` broadens the discrete NPAG distribution rather than resampling the
@@ -441,8 +462,11 @@ range, at quantiles spanning **0.01%** to 95%. That lower figure is the
 explanation for the four samples that fall outside here: a quantile of 0.01% is a
 one-in-ten-thousand tail, which a distribution with only 22 atoms cannot
 represent at all. All four misses are in the same direction - below the discrete
-minimum, at quantile 0 - and they are the four lowest-exposure samples in the
-set. This is the same `PM_sim()` broadening identified in the Figure 7
+minimum, at quantile 0. They are not the four lowest concentrations in absolute
+terms - patient S4's 295 nmol/L peak is the second highest measurement in the
+set - but the four lowest *relative to* what the support points predict for that
+patient's own weight and regimen.
+This is the same `PM_sim()` broadening identified in the Figure 7
 reproduction above, now confirmed by a second, independent check: Pmetrics does
 not resample the NPAG support points verbatim but simulates around them, which
 extends both tails well beyond the atoms.
@@ -454,8 +478,9 @@ ten samples sit at the 95.5th percentile of the prediction while four sit at the
 misses are modest for three of the four (S4 peak, S5 trough and patient #18 at
 11.5 h are 1.4-, 2.8- and 2.0-fold below the discrete minimum). Only patient S1's
 trough of 1.28 nmol/L - a value near the assay's lowest spiking level, implying a
-trough-to-peak ratio of 0.010 against a minimum of about 0.03 across all 22
-support points - is a genuinely extreme individual, and it is exactly the kind of
+trough-to-peak ratio of 0.010 against a minimum of 0.025 across all 22 support
+points on a 12 h interval (the q12h row of the Figure 7 table above) - is a
+genuinely extreme individual, and it is exactly the kind of
 outlier the paper cites nonparametric modelling as being able to accommodate.
 
 # Assumptions and deviations
@@ -489,8 +514,9 @@ are damaged.
   paper or supplement. It is taken from PubChem CID 10127622
   (C17H15BrClFN4O3, 457.7 g/mol) and applied in `model()` as
   `f(depot) <- fdepot * 1e6 / 457.7`. The conversion is corroborated by
-  simulation: at 25 mg q12h and 39.35 kg the model predicts a steady-state Cmax
-  of about 1800 nmol/L, inside the 1000-4000 nmol/L band observed in Figure 3,
+  simulation: at 25 mg q12h and 39.35 kg the model predicts a median
+  steady-state Cmax of `r sprintf("%.0f", median(env$cmax))` nmol/L across the
+  22 support points, inside the 1000-4000 nmol/L band observed in Figure 3,
   whereas treating the dose as mg directly would predict concentrations three
   orders of magnitude too low.
 
