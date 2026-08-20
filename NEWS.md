@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Willmann 2024 elinzanetant ([doi:10.1002/psp4.13226](https://doi.org/10.1002/psp4.13226)) -- healthy volunteers and women with vasomotor symptoms associated with menopause.
+- Add Abouelhassan 2024 sulbactam ([doi:10.1093/jacamr/dlae203](https://doi.org/10.1093/jacamr/dlae203)) -- mouse (ICR/CD-1 neutropenic *Acinetobacter baumannii* pneumonia model) and healthy adults, both with an epithelial lining fluid compartment.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

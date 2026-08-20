@@ -139,6 +139,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Schmitt_2018_vinflunine.R`, `Li_2017_brentuximab.R`, `Weatherley_2009_maraviroc_iv.R`.
 - **Notes:** Pairs with `peripheral3` compartment and inter-compartmental clearance `lq3`.
 
+### lvelf (**canonical log-transformed epithelial-lining-fluid compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the canonical `elf` compartment, used to convert the ELF drug amount to the ELF concentration `Celf <- elf / velf` (volume). Applies both to a plasma-plus-ELF popPK model in which `elf` is a distribution compartment sampled by bronchoalveolar lavage, and to a single-compartment model fitted directly to ELF concentrations, where the value is an apparent volume that also absorbs bioavailability (the paper's `Vc/F`).
+- **Source aliases:**
+  - `VELF`, `V ELF`, `V_ELF` -- Abouelhassan 2024 Results and Parmar 2023 Table 2.
+  - `Vc/F` -- Abouelhassan 2024 Table 2, for the murine one-compartment ELF fit whose only disposition compartment IS the ELF.
+- **Example models:** `Abouelhassan_2024_sulbactam_human.R` (VELF = 2.44 L in a plasma + peripheral + ELF model), `Abouelhassan_2024_sulbactam_mouse.R` (apparent ELF Vc/F = 0.5125 L/kg).
+- **Notes:** Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, following the existing `lvcsf` / `lvcns` precedent in `Luu_2017_nusinersen.R`. Distinct from `lvc`: `lvelf` never scales a plasma concentration. `Parmar_2023_spectinamide_1599_mouse_pbpk.R` carries the same quantity as a hardcoded physiologic constant `v_elf` inside `model()` rather than as an `ini()` parameter, which is correct for a PBPK model where the volume is anatomy rather than a fitted parameter.
+
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between central and first peripheral compartment (volume / time).
@@ -532,6 +541,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** First-order distribution rate constant from `peripheral2` to central (1 / time).
 - **Source aliases:** none.
 - **Example models:** rate-constant-parameterised 3-compartment popPK extractions.
+
+### k_central_elf, k_elf_central (**canonical bare central-to-ELF and ELF-to-central rate constants**)
+- **Type:** bare-pk
+- **Role:** First-order transfer rate constants between `central` and the canonical `elf` compartment (1 / time). Deliberately a directional PAIR rather than a single inter-compartmental clearance, because plasma-to-ELF distribution is typically asymmetric -- `k_central_elf < k_elf_central` is what generates the sub-unity ELF penetration ratio that lung PK/PD analyses turn on, and a symmetric `q` / `velf` parameterisation cannot express it. The log-transformed `lk_central_elf` / `lk_elf_central` forms are used in `ini()`.
+- **Source aliases:**
+  - `K12` / `K21` -- Abouelhassan 2024 Results. The paper's prose calls ELF "the third compartment" while its printed subscripts number ELF second; the printed subscripts are the ones that reproduce the paper's own Table 4 PTA, so the ELF pair is the printed `K12` / `K21`. See the source-trace note in `Abouelhassan_2024_sulbactam_human.R`.
+- **Example models:** `Abouelhassan_2024_sulbactam_human.R`.
+- **Notes:** Member of the established `k_<from>_<to>` directional-transfer family already used for `k_central_milk` / `k_milk_central` (`Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R`) and `k_csf_plasma` / `k_csf_brain` / `k_brain_csf` (`Biliouris_2018_nusinersen.R`). Use this family, not `k13` / `k31`, whenever a transfer connects `central` to a named non-numbered compartment: `k13` / `k31` are reserved for `central` <-> `peripheral2` and reusing them for a physiologic matrix hides which compartment the constant actually feeds. Pairs with `lvelf`.
 
 ### fdepot (**canonical bare depot fraction**)
 - **Type:** bare-pk
