@@ -2704,6 +2704,8 @@ navbar:
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
         href: articles/Wang_2024_sugemalimab.html
+      - text: "Sulbactam (Onita 2025)"
+        href: articles/Onita_2025_sulbactam.html
       - text: "Sulbactam durlobactam (Cammarata 2024)"
         href: articles/Cammarata_2024_sulbactam_durlobactam.html
       - text: "Sulbactam human (Abouelhassan 2024)"
@@ -4196,6 +4198,7 @@ articles:
   - articles/Olivo_2024_methotrexate
   - articles/Ollier_2015_ropivacaine
   - articles/Oniki_2018_BMI_NAFLD
+  - articles/Onita_2025_sulbactam
   - articles/Oosten_2016_fentanyl
   - articles/Othman_2007_carvedilol
   - articles/Othman_2013_ABT_102

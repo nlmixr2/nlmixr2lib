@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van den Maagdenberg 2025 A2AR / anti-PD-L1 tumour-microenvironment QSP model ([doi:10.1021/acs.jcim.5c00107](https://doi.org/10.1021/acs.jcim.5c00107)) -- mouse (MCA205 syngeneic tumour model).
+- Add Onita 2025 sulbactam ([doi:10.1093/jpids/piaf043](https://doi.org/10.1093/jpids/piaf043)) -- pediatric patients from 4 weeks to 16 years, pooled from 23 published studies.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
