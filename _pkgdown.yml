@@ -1546,6 +1546,8 @@ navbar:
         href: articles/Siebinga_2023_lu177psma617.html
       - text: "Lu177psmaIT (Siebinga 2024)"
         href: articles/Siebinga_2024_lu177psmaIT.html
+      - text: "Lumefantrine (Chotsiri 2019)"
+        href: articles/Chotsiri_2019_lumefantrine.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
@@ -3369,6 +3371,7 @@ articles:
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
   - articles/Choi_2018_metformin
+  - articles/Chotsiri_2019_lumefantrine
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chua_2025_mirikizumab
   - articles/Chung_2013_vancomycin

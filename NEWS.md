@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Willemin 2024 interleukin-6 / CYP modulation after talquetamab ([doi:10.1007/s11523-024-01093-6](https://doi.org/10.1007/s11523-024-01093-6)) - adults with relapsed/refractory multiple myeloma and cytokine release syndrome.
+- Add Chotsiri 2019 lumefantrine ([doi:10.1002/cpt.1531](https://doi.org/10.1002/cpt.1531)) -- children aged 6-59 months with uncomplicated malaria, with and without severe acute malnutrition.
+
+- Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
