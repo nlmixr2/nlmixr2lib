@@ -344,6 +344,8 @@ navbar:
         href: articles/Kado_2023_benzathine_benzylpenicillin_g.html
       - text: "Benznidazole (Soy 2015)"
         href: articles/Soy_2015_benznidazole.html
+      - text: "Benznidazole mouse (Assmus 2025)"
+        href: articles/Assmus_2025_benznidazole_mouse.html
       - text: "Benzylpenicillin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Benzylpenicillin (Shah 2023)"
@@ -3352,7 +3354,7 @@ articles:
   - articles/Aruldhas_2021_methadone
   - articles/Asiimwe_2025_trastuzumab_ADCs_mbma
   - articles/Asimus_2007_artemisinin
-  - articles/Athanassa_2025_minocycline
+  - articles/Assmus_2025_benznidazole_mouse
   - articles/Attarwala_2023_mRNA3927
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
