@@ -4,6 +4,16 @@ Kimura_2023_glucarpidase <- function() {
   vignette <- "Kimura_2023_glucarpidase"
   units <- list(time = "h", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "MTX", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "MTX", units = "umol", specimen = "plasma", verified = FALSE),
+    central_cpg2 = list(analyte = "CPG2", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -4,6 +4,15 @@ Tiraboschi_2025_amlitelimab <- function() {
   vignette <- "Tiraboschi_2025_amlitelimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "amlitelimab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "amlitelimab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "amlitelimab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -56,7 +65,7 @@ Tiraboschi_2025_amlitelimab <- function() {
     lvmax    <- log(0.0362);                     label("Maximum velocity of nonlinear (TMDD) elimination (Vmax, mg/day)")                   # Table S2 TVVM (labeled 'ug/day' in Table S2, verified mg/day via the paper's 66% TMDD-fraction at LLOQ 0.0469 ug/mL and 20% at 1 ug/mL)
     lkm      <- log(0.0783);                     label("Michaelis-Menten constant (Km, ug/mL)")                                             # Table S2 TVKM
     ltlag    <- log(0.0351);                     label("Absorption lag time (ALAG, day)")                                                   # Table S2 TVALAG
-    logitf1  <- log(0.888 / (1 - 0.888));        label("Typical subcutaneous bioavailability on the logit scale (linear F = 0.888 at population-median albumin 47 g/L)")  # Table S2 TVFsc = 0.888 on linear scale
+    logitfdepot  <- log(0.888 / (1 - 0.888));        label("Typical subcutaneous bioavailability on the logit scale (linear F = 0.888 at population-median albumin 47 g/L)")  # Table S2 TVFsc = 0.888 on linear scale
 
     # Allometric exponents on body weight (reference 75 kg)
     e_wt_cl <- 1.20;  label("Allometric exponent on linear clearance (unitless)")   # Table S2 BWT effect on CL
@@ -71,7 +80,7 @@ Tiraboschi_2025_amlitelimab <- function() {
     etalvc + etalcl ~ c(0.0491,
                         0.0240, 0.0482)  # Table S2 omega^2 V1, omega(V1,CL), omega^2 CL
     etalvp     ~ 0.0693  # Table S2 omega^2 V2
-    etalogitf1 ~ 1.18    # Table S2 omega^2 Fsc (IIV applied on logit scale per the source NONMEM control stream)
+    etalogitfdepot ~ 1.18    # Table S2 omega^2 Fsc (IIV applied on logit scale per the source NONMEM control stream)
     etaltlag   ~ 0.151   # Table S2 omega^2 ALAG
     etalka     ~ 0.135   # Table S2 omega^2 Ka
 
@@ -93,10 +102,10 @@ Tiraboschi_2025_amlitelimab <- function() {
     # Fsc: population on logit scale -> invert to linear, add additive albumin term, re-logit, then apply the logit-scale eta
     # (Tiraboschi 2025 Table S2 footnote f: Fsc = TVFsc + 0.598 * ((BALB/47) - 1); the source NONMEM code then uses
     # F1 = exp(PHI + ETAF1) / (1 + exp(PHI + ETAF1)) with PHI = log(Fsc / (1 - Fsc)).)
-    f1_typ_lin <- exp(logitf1) / (1 + exp(logitf1))
+    f1_typ_lin <- exp(logitfdepot) / (1 + exp(logitfdepot))
     f1_cov_lin <- f1_typ_lin + e_alb_f1 * ((ALB / 47) - 1)
     phi_f1     <- log(f1_cov_lin / (1 - f1_cov_lin))
-    f1         <- exp(phi_f1 + etalogitf1) / (1 + exp(phi_f1 + etalogitf1))
+    f1         <- exp(phi_f1 + etalogitfdepot) / (1 + exp(phi_f1 + etalogitfdepot))
 
     # Micro-constants
     kel <- cl / vc

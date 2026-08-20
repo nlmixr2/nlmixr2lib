@@ -4,6 +4,15 @@ Shoji_2017_fosdagrocorat_oc <- function() {
   vignette <- "Shoji_2017_fosdagrocorat_oc"
   units <- list(time = "week", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "fosdagrocorat", units = "mg", specimen = "administration site", verified = FALSE),
+    effect    = list(analyte = "osteocalcin", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DOSE = list(
       description        = "Per-subject assigned once-daily oral dose (mg) of fosdagrocorat or prednisone driving the dose-and-time-dependent rebound term on biomarker synthesis. Set to 0 for placebo (methotrexate only).",
@@ -62,7 +71,7 @@ Shoji_2017_fosdagrocorat_oc <- function() {
     # estimate was close to 1 in unconstrained OSTCALC fits (paper Discussion).
     # A single shared scalar imax (no drug switching needed because both
     # drugs share the value 1) and a per-drug EDK50 with log-ratio offset.
-    imax <- fixed(1); label("Maximum fractional inhibition Imax (unitless, fixed to 1 for both drugs)")  # Shoji 2017 Table 2 OSTCALC: Imax Fosdagrocorat = Imax Prednisone = 1 FIX
+    imax <- fixed(1); label("Maximum fractional inhibition Imax (unitless, 1 for both drugs)")  # Shoji 2017 Table 2 OSTCALC: Imax Fosdagrocorat = Imax Prednisone = 1 FIX
 
     ledk50       <- log(148);          label("Effect-compartment infusion rate IR producing 50% of Imax, fosdagrocorat (mg/week)") # Shoji 2017 Table 2 OSTCALC: EDK50 Fosdagrocorat = 148 mg/week (RSE 6.68%)
     dledk50_pred <- log(122 / 148);    label("Log-ratio offset for prednisone EDK50: log(EDK50_pred / EDK50_fos) (unitless)")      # Shoji 2017 Table 2 OSTCALC: EDK50 Prednisone   = 122 mg/week (RSE 11.3%)

@@ -8,6 +8,21 @@ Vasalou_2023_dendriticNanoparticle_dog <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    blood_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
+    liver_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen_np = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other_np  = list(analyte = "nanoparticle-conjugated API", units = NA_character_, specimen = "administration site", verified = FALSE),
+    blood     = list(analyte = "free API", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    liver     = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    spleen    = list(analyte = "free API", units = NA_character_, specimen = "tissue", verified = FALSE),
+    other     = list(analyte = "free API", units = NA_character_, specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

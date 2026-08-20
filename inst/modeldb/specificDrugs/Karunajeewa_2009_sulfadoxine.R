@@ -36,6 +36,17 @@ Karunajeewa_2009_sulfadoxine <- function() {
     concentration = "mg/L for sulfadoxine; mg/L for N-acetylsulfadoxine"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "sulfadoxine", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "sulfadoxine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_nasdox = list(analyte = "N-acetylsulfadoxine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",
@@ -129,7 +140,7 @@ Karunajeewa_2009_sulfadoxine <- function() {
     lvc_nasdox <- log(3.69)
     label("NASDOX apparent volume V/F at WT = 70 kg (L)")                                        # Table 2: V/F NASDOX = 3.69 L/70kg
     lfdepot <- fixed(log(1))
-    label("SDOX relative bioavailability F (unitless, FIXED at 1)")                              # Methods 'Population pharmacokinetic analysis': all V and CL parameters expressed relative to F
+    label("SDOX relative bioavailability F (unitless)")                              # Methods 'Population pharmacokinetic analysis': all V and CL parameters expressed relative to F
 
     # ============================================================
     # Pregnancy effect on SDOX non-metabolic CL/F (additive)

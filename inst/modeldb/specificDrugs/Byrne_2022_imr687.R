@@ -12,9 +12,19 @@ Byrne_2022_imr687 <- function() {
   )
   vignette <- "Byrne_2022_imr687"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "IMR-687", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "IMR-687", units = "mg", specimen = "plasma", verified = FALSE),
+    cumhaz  = list(analyte = "VOC events", units = "mg", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()

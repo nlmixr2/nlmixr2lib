@@ -10,6 +10,20 @@ LopezArguello_2023_cefoxitin_qsp <- function() {
     "npbp1a", "npbp1b", "npbp2", "npbp3", "npbp4", "npbp56", "nperi"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    npbp1a = list(analyte = "PBP 1a", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp1b = list(analyte = "PBP 1b", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp2  = list(analyte = "PBP 2", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp3  = list(analyte = "PBP 3", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp4  = list(analyte = "PBP 4", units = NA_character_, specimen = "administration site", verified = FALSE),
+    npbp56 = list(analyte = "PBP 5/6", units = NA_character_, specimen = "administration site", verified = FALSE),
+    nperi  = list(analyte = "Cefoxitin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     # Cell-preparation flag. Fig. S8 lines 66-73 branch on it: it gates BOTH the
     # outer-membrane influx term and the periplasmic initial condition.
@@ -60,22 +74,22 @@ LopezArguello_2023_cefoxitin_qsp <- function() {
     k2_1b <- 795;        label("Second-order acylation rate constant, PBP1b (1e-3 /min)") # Table S1, cefoxitin PBP1b: 795
     k2_2 <- 495;         label("Second-order acylation rate constant, PBP2 (1e-3 /min)") # Table S1, cefoxitin PBP2: 495
     k2_3 <- 240;         label("Second-order acylation rate constant, PBP3 (1e-3 /min)") # Table S1, cefoxitin PBP3: 240
-    k2_4 <- fixed(1000); label("Second-order acylation rate constant, PBP4 (1e-3 /min; FIXED)") # Table S1, cefoxitin PBP4: 1000, footnote a (fixed after sensitivity analyses of the highest-affinity target)
+    k2_4 <- fixed(1000); label("Second-order acylation rate constant, PBP4 (1e-3 /min)") # Table S1, cefoxitin PBP4: 1000, footnote a (fixed after sensitivity analyses of the highest-affinity target)
     k2_5 <- 767;         label("Second-order acylation rate constant, PBP5/6 (1e-3 /min)") # Table S1, cefoxitin PBP5/6: 767
 
     # --- Assay configuration (Fig. S8 lines 66-73) ---
     n_peri_lysed <- fixed(1e7); label("Periplasmic drug molecules per cell at time 0, lysed-cell assay") # Fig. S8 line 71: N_IN_IC = 10000000 (vast excess vs the 1,731 PBPs)
 
     # --- Michaelis-Menten constant, common to all six PBPs ---
-    km_pbp <- fixed(1000); label("Michaelis-Menten constant for PBP acylation (drug molecules per cell; FIXED)") # Materials and Methods: "The Km was fixed to 1,000 drug molecules" (only one concentration studied)
+    km_pbp <- fixed(1000); label("Michaelis-Menten constant for PBP acylation (drug molecules per cell)") # Materials and Methods: "The Km was fixed to 1,000 drug molecules" (only one concentration studied)
 
     # --- Nominal PBP expression: 1,731 molecules/cell split by relative band intensity ---
-    n_pbp1a_0 <- fixed(153);  label("Nominal PBP1a expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 153 molecules for PBP1a (8.8% of all PBPs)
-    n_pbp1b_0 <- fixed(118);  label("Nominal PBP1b expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 118 molecules for PBP1b (6.8% of all PBPs)
-    n_pbp2_0 <- fixed(50);    label("Nominal PBP2 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 50 molecules for PBP2 (2.9% of all PBPs)
-    n_pbp3_0 <- fixed(79);    label("Nominal PBP3 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 79 molecules for PBP3 (4.6% of all PBPs)
-    n_pbp4_0 <- fixed(99);    label("Nominal PBP4 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 99 molecules for PBP4 (5.7% of all PBPs)
-    n_pbp56_0 <- fixed(1232); label("Nominal PBP5/6 expression (molecules/cell; FIXED)") # Materials and Methods, Mass balance equations: 1232 molecules for PBP5/6 (71.2% of all PBPs)
+    n_pbp1a_0 <- fixed(153);  label("Nominal PBP1a expression (molecules/cell)") # Materials and Methods, Mass balance equations: 153 molecules for PBP1a (8.8% of all PBPs)
+    n_pbp1b_0 <- fixed(118);  label("Nominal PBP1b expression (molecules/cell)") # Materials and Methods, Mass balance equations: 118 molecules for PBP1b (6.8% of all PBPs)
+    n_pbp2_0 <- fixed(50);    label("Nominal PBP2 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 50 molecules for PBP2 (2.9% of all PBPs)
+    n_pbp3_0 <- fixed(79);    label("Nominal PBP3 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 79 molecules for PBP3 (4.6% of all PBPs)
+    n_pbp4_0 <- fixed(99);    label("Nominal PBP4 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 99 molecules for PBP4 (5.7% of all PBPs)
+    n_pbp56_0 <- fixed(1232); label("Nominal PBP5/6 expression (molecules/cell)") # Materials and Methods, Mass balance equations: 1232 molecules for PBP5/6 (71.2% of all PBPs)
 
     # --- Non-suppressible background gel-band fraction (Table S2, dataset 5 (IPM, CAZ, FEP, FOX)) ---
     noise_1a <- 0.0687; label("Background gel-band fraction not suppressible by drug, PBP1a (unitless)") # Table S2 NOISE_1a = 0.0687

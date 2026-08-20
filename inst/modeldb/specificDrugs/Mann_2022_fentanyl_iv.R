@@ -36,6 +36,17 @@ Mann_2022_fentanyl_iv <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "fentanyl", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "fentanyl", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (Mann 2022 simulations fix WT = 70 kg; the allometric scaling block keeps WT exposed as a covariate so subject-level body weight can vary in downstream composition)",
@@ -129,13 +140,13 @@ Mann_2022_fentanyl_iv <- function() {
     lq2  <- log(2.28)
     label("Inter-compartmental clearance Q3, central <-> peripheral2 (L/min)") # Table S1: Q3 = 0.038 L/s = 2.28 L/min
     lk1  <- fixed(log(0.18))
-    label("Biophase equilibration rate k1 (1/min, FIXED, no IIV reported)") # Table S1: k1 = 0.003 1/s = 0.18/min; reported with omega^2 = 0 (no IIV)
+    label("Biophase equilibration rate k1 (1/min,, no IIV reported)") # Table S1: k1 = 0.003 1/s = 0.18/min; reported with omega^2 = 0 (no IIV)
 
     # Fixed allometric exponents (a priori, Algera 2021 / Mann 2022)
     e_wt_cl <- fixed(0.75)
-    label("Body-weight allometric exponent on CL and Q (unitless, FIXED)")  # Supplement 1 Pharmacokinetic Component: CL = CL_TV * (WT/70)^0.75
+    label("Body-weight allometric exponent on CL and Q (unitless)")  # Supplement 1 Pharmacokinetic Component: CL = CL_TV * (WT/70)^0.75
     e_wt_vc  <- fixed(1)
-    label("Body-weight allometric exponent on V1, V2, V3 (unitless, FIXED)") # Supplement 1 Pharmacokinetic Component: V = V_TV * (WT/70)
+    label("Body-weight allometric exponent on V1, V2, V3 (unitless)") # Supplement 1 Pharmacokinetic Component: V = V_TV * (WT/70)
 
     # IIV -- Table S1 reports log-scale variances omega^2 directly. The
     # parenthesised %CV values are derived from sqrt(exp(omega^2) - 1).

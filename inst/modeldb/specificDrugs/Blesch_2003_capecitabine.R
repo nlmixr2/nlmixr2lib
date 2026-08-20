@@ -21,9 +21,20 @@ Blesch_2003_capecitabine <- function() {
   reference <- "Blesch KS, Gieschke R, Tsukamoto Y, Reigner BG, Burger HU, Steimer JL. Clinical pharmacokinetic/pharmacodynamic and physiologically based pharmacokinetic modeling in new drug development: the capecitabine experience. Invest New Drugs. 2003;21(2):195-223. doi:10.1023/A:1023525513696. PMID: 12889740."
   vignette  <- "Blesch_2003_capecitabine"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ug/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "capecitabine", units = "mg", specimen = "administration site", verified = FALSE),
+    central_dfur = list(analyte = "5'-DFUR", units = "mg", specimen = "plasma", verified = FALSE),
+    central_5fu  = list(analyte = "5-FU", units = "mg", specimen = "plasma", verified = FALSE),
+    central_fbal = list(analyte = "FBAL", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -104,7 +115,7 @@ Blesch_2003_capecitabine <- function() {
     # development; literature value from Heggie 1987 [reference 2 in
     # source]). No ISV estimated for V2.
     lvc_5fu <- fixed(log(17.8))
-    label("Apparent 5-FU volume V2/F (L) -- FIXED to Heggie 1987 literature value")  # Blesch 2003 Table 1: V2 fixed at 17.8 L; "TV fixed, no ISV"
+    label("Apparent 5-FU volume V2/F (L) -- Heggie 1987 literature value")  # Blesch 2003 Table 1: V2 fixed at 17.8 L; "TV fixed, no ISV"
     lcl_5fu <- log(1190)
     label("Apparent 5-FU clearance CL2/F at ALP = 100 U/L (L/h)")  # Blesch 2003 Table 1: TV CL2 = 1190 L/h (SE 39.3)
 
@@ -142,7 +153,7 @@ Blesch_2003_capecitabine <- function() {
     # ----------------------------------------------------------------------
     etalka       ~ 0.39878  # Blesch 2003 Table 1: ISV KA 70% CV -> log(1 + 0.70^2)
     etaltlag     ~ 12.41    # Blesch 2003 Table 1: ISV TLAG 49,498% CV -> log(1 + 494.98^2); effectively unidentified
-    etalvc_dfur  ~ fixed(0.08618)  # Blesch 2003 Table 1: ISV V1 30% CV (FIXED) -> log(1 + 0.30^2)
+    etalvc_dfur  ~ fixed(0.08618)  # Blesch 2003 Table 1: ISV V1 30% CV -> log(1 + 0.30^2)
     etalcl_dfur  ~ 0.05598  # Blesch 2003 Table 1: ISV CL1 24% CV -> log(1 + 0.24^2)
     etalcl_5fu   ~ 0.10336  # Blesch 2003 Table 1: ISV CL2 33% CV -> log(1 + 0.33^2)
     etalvc_fbal  ~ 0.06537  # Blesch 2003 Table 1: ISV V3 26% CV -> log(1 + 0.26^2)

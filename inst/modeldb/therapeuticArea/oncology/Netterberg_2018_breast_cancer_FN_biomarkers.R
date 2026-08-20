@@ -11,9 +11,18 @@ Netterberg_2018_breast_cancer_FN_biomarkers <- function() {
   )
   vignette <- "Netterberg_2018_breast_cancer_FN"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "n/a (no drug doses; the biomarker surge is gated by binary cycle-level covariates MIX_ELEV_IL6 / MIX_ELEV_CRP)",
     concentration = "IL-6 in pg/mL; CRP in mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    il6 = list(analyte = "Interleukin-6 (IL-6)", units = NA_character_, specimen = "serum", verified = FALSE),
+    crp = list(analyte = "C-reactive protein (CRP)", units = NA_character_, specimen = "serum", verified = FALSE)
   )
 
   covariateData <- list(

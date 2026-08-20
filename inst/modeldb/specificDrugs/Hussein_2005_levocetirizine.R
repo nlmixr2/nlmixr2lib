@@ -5,6 +5,14 @@ Hussein_2005_levocetirizine <- function() {
   paper_specific_residual_sds <- c("addSdLow", "addSdHigh")
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "levocetirizine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "levocetirizine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at the visit (time-varying within subject across the 18-month follow-up)",

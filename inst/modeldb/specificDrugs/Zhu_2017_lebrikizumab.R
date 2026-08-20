@@ -4,6 +4,14 @@ Zhu_2017_lebrikizumab <- function() {
   vignette <- "Zhu_2017_lebrikizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "lebrikizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lebrikizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -106,7 +114,7 @@ Zhu_2017_lebrikizumab <- function() {
     # Zhu 2017 Table 3 reports WT effect on CL as 1.00; ambiguous whether this was
     # fixed (theta locked at 1.00) or estimated to ~1.00. Kept as estimated; flag
     # for follow-up if the intended behavior is fixed allometry.
-    e_wt_cl <- 1.00; label("Effect of body weight on clearance (unitless)")
+    e_wt_cl <- 1.00; label("Effect of body weight on clearance (unitless)") # Issue #479: exactly on a convention value; source paper was not obtainable (not open access / table not on hand), so provenance is UNVERIFIED -- left estimable rather than asserting fixed().
     e_wt_vc <- 0.814; label("Effect of body weight on central volume (unitless)")
     e_wt_vp <- 0.692; label("Effect of body weight on peripheral volume (unitless)")
     e_wt_q <- 0.479; label("Effect of body weight on intercompartmental clearance (unitless)")
@@ -117,7 +125,7 @@ Zhu_2017_lebrikizumab <- function() {
     e_race_other_cl <- 1.11; label("Effect of race (other) on clearance (unitless)")
     e_form_ns0_ka <- 0.981; label("Effect of NS0 formulation on absorption rate (unitless)")
     e_form_cho_phase2_ka <- 0.989; label("Effect of CHO formulation used during Phase 2 on absorption rate (unitless)")
-    e_form_ns0_fdepot <- 1.00; label("Effect of NS0 formulation on bioavailability (unitless)")
+    e_form_ns0_fdepot <- 1.00; label("Effect of NS0 formulation on bioavailability (unitless)") # Issue #479: exactly on a convention value; source paper was not obtainable (not open access / table not on hand), so provenance is UNVERIFIED -- left estimable rather than asserting fixed(). A multiplicative effect of exactly 1.0 may also mean 'reference level / no effect', which is a different claim than a fixed exponent.
     e_form_cho_phase2_fdepot <- 0.973; label("Effect of CHO formulation used during Phase 2 on bioavailability (unitless)")
     e_ada_pos_cl <- 1.04; label("Effect of anti-drug antibody (ADA) positivity on clearance (unitless)")
 

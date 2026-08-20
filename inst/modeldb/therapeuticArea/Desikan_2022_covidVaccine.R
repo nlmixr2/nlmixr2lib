@@ -90,6 +90,27 @@ Desikan_2022_covidVaccine <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    agW   = list(analyte = "antigen WU", units = NA_character_, specimen = "administration site", verified = FALSE),
+    agWw  = list(analyte = "antibody-bound antigen WU (epitope class w)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    agWc  = list(analyte = "antibody-bound antigen WU (epitope class c)", units = NA_character_, specimen = "serum", verified = FALSE),
+    agWwc = list(analyte = "antibody-bound antigen WU (epitope classes w and c)", units = NA_character_, specimen = "tissue", verified = FALSE),
+    agV   = list(analyte = "antigen OM", units = NA_character_, specimen = "administration site", verified = FALSE),
+    agVv  = list(analyte = "antibody-bound antigen OM (epitope class v)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    agVc  = list(analyte = "antibody-bound antigen OM (epitope class c)", units = NA_character_, specimen = "serum", verified = FALSE),
+    agVvc = list(analyte = "antibody-bound antigen OM (epitope classes v and c)", units = NA_character_, specimen = "tissue", verified = FALSE),
+    Bc    = list(analyte = "total B cells", units = NA_character_, specimen = "saliva", verified = FALSE),
+    Bw    = list(analyte = "naive precursor B cells WU", units = NA_character_, specimen = "saliva", verified = FALSE),
+    Bv    = list(analyte = "naive precursor B cells OM", units = NA_character_, specimen = "saliva", verified = FALSE),
+    Ac    = list(analyte = "antibody (total)", units = NA_character_, specimen = "serum", verified = FALSE),
+    Aw    = list(analyte = "antibody WU", units = NA_character_, specimen = "serum", verified = FALSE),
+    Av    = list(analyte = "antibody OM", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

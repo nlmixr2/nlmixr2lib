@@ -35,6 +35,15 @@ Karunajeewa_2009_pyrimethamine <- function() {
     concentration = "ug/L (= ng/mL) for pyrimethamine plasma"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "pyrimethamine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pyrimethamine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",
@@ -125,7 +134,7 @@ Karunajeewa_2009_pyrimethamine <- function() {
     lvp <- log(76.8)
     label("PYR apparent peripheral volume Vp/F in nonpregnant women at WT = 70 kg (L)")   # Table 4: Vp/F = 76.8 L/70kg
     lfdepot <- fixed(log(1))
-    label("PYR relative bioavailability F (unitless, FIXED at 1)")                        # Methods: all V and CL parameters expressed relative to F
+    label("PYR relative bioavailability F (unitless)")                        # Methods: all V and CL parameters expressed relative to F
 
     # ============================================================
     # Pregnancy effects (all additive) on CL/F, Vc/F, Vp/F.

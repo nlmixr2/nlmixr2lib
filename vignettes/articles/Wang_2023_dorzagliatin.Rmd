@@ -1,0 +1,962 @@
+---
+title: "Dorzagliatin (Wang 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Dorzagliatin (Wang 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Wang_2023_dorzagliatin"))$reference`
+* Article: <https://doi.org/10.1007/s40262-023-01286-8>
+* Supplement (Tables S1-S4): <https://static-content.springer.com/esm/art%3A10.1007%2Fs40262-023-01286-8/MediaObjects/40262_2023_1286_MOESM1_ESM.docx>
+
+Dorzagliatin (HMS5552) is a first-in-class dual-acting glucokinase activator
+approved in China in September 2022 for adults with type 2 diabetes mellitus
+(T2DM), as monotherapy and as an add-on to metformin. Wang 2023 pooled six
+trials from the Hua Medicine development programme into a single population PK
+analysis to quantify the influence of demographic, hepatic and renal covariates
+on dorzagliatin exposure.
+
+The structural model is a **two-compartment model with sequential zero-order
+then first-order oral absorption** and first-order elimination: the dose enters
+the depot at a constant rate over a window of duration `D1`, and the depot then
+drains into the central compartment first-order at `ka`. All disposition
+parameters are apparent (`CL/F`, `Vc/F`, `Q/F`, `Vp/F`) because only oral data
+were analysed; bioavailability was not estimated and is implicitly 1.
+
+```{r model}
+mod <- readModelDb("Wang_2023_dorzagliatin")
+mod
+```
+
+# Population
+
+The analysis dataset comprised **7686 plasma concentrations from 1062
+subjects** across six trials (Wang 2023 Table 1): two phase I studies
+(HMM0102 / NCT02077452 multiple ascending dose; HMM0103 / NCT02386982 28-day
+beta-cell-function study), one phase II dose-ranging study
+(HMM0201 / NCT02561338), two phase III studies (HMM0301 / NCT03173391
+monotherapy in drug-naive patients; HMM0302 / NCT03141073 add-on to metformin),
+and one open-label renal-impairment study with matched healthy volunteers
+(HMM0110 / NCT04324424). Doses ranged from 25 to 400 mg/day; the approved and
+pivotal-trial regimen is 75 mg twice daily.
+
+Baseline demographics (Wang 2023 Table 2, Overall column, median with min-max):
+age 55.0 years (19.0-74.2), total body weight 69.0 kg (40.0-110), BMI
+25.2 kg/m^2 (18.2-34.9), albumin 46.2 g/L (33.2-57.0), ALT 19.0 U/L
+(2.50-110), AST 18.0 U/L (8.00-74.0), serum creatinine 67.0 umol/L (35.0-943),
+total bilirubin 10.0 umol/L (1.25-40.0). The cohort was 397/1062 female
+(37.4%). All six trials were run in China, so the population is Asian. By the
+FDA hepatic-impairment categories (Wang 2023 Table S3), 974 subjects (92.2%)
+had normal hepatic function, 77 (7.29%) mild and 5 (0.473%) moderate; no
+subject was severe.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Wang_2023_dorzagliatin")()$population`).
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Wang_2023_dorzagliatin.R` carries an in-file
+comment naming its origin. The table below collects them for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F) | 10.4 L/h | Table 3, `CL/F`, RSE 0.923%, 95% CI 10.2-10.6 |
+| `lvc` (Vc/F) | 80.6 L | Table 3, `Vc/F`, RSE 1.23%, 95% CI 78.7-82.6 |
+| `lq` (Q/F) | 3.02 L/h | Table 3, `Q/F`, RSE 9.70%, 95% CI 2.50-3.66 |
+| `lvp` (Vp/F) | 26.5 L | Table 3, `Vp/F`, RSE 6.95%, 95% CI 23.1-30.4 |
+| `lka` | 3.29 1/h | Table 3, `Ka`, RSE 5.30%, 95% CI 2.96-3.65 |
+| `ld1` (D1) | 0.418 h | Table 3, `D1`, RSE 7.49%, 95% CI 0.361-0.484 |
+| `e_study_dorza_early_cl` | 0.203 | Table 3 footnote equation, `0.203 x Study`; Table 3 `CL_STUDY` = 1.23 = exp(0.203) |
+| `e_wt_cl` | 0.255 | Table 3 `CL_BW`, RSE 19.4%; footnote equation `0.255 x log(BW/69)` |
+| `e_ast_cl` | -0.103 | Table 3 `CL_AST`, RSE 21.3%; footnote equation `-0.103 x log(AST/18)` |
+| `e_age_cl` | -0.135 | Table 3 `CL_AGE`, RSE 28.5%; footnote equation `-0.135 x log(AGE/55)` |
+| `e_wt_vc` | 0.553 | Table 3 `Vc,BW`, RSE 9.94%; footnote equation `0.553 x log(BW/69)` |
+| `e_sexf_vc` | -0.170 | Table 3 footnote equation `-0.170 x GEND`; Table 3 `Vc,GEND` = 0.843 = exp(-0.170) |
+| `e_meal_delay_1h_d1` | 0.816 | Table 3 footnote equation `0.816 x FOOD`; Table 3 `D1,FOOD` = 2.26 = exp(0.816) |
+| IIV `etalcl` | 22.5% CV -> var 0.050625 | Table 3 `IIV_CL`, RSE 2.65% |
+| IIV `etalvc` | 14.9% CV -> var 0.022201 | Table 3 `IIV_Vc`, RSE 5.56% |
+| IIV cov(CL, Vc) | 0.0181 | Table 3 `Cor_CL,Vc`, RSE 10.9% |
+| IIV `etalvp` | 48.8% CV -> var 0.238144 | Table 3 `IIV_Vp`, RSE 9.25% |
+| IIV `etald1` | 82.8% CV -> var 0.685584 | Table 3 `IIV_D1`, RSE 8.16% |
+| `propSd` | 0.329 | Table 3 `sigma1 (%)` = 32.9%, RSE 1.34% |
+| `addSd` | 109 ng/mL | Table 3 `sigma2 (ng/mL)` = 109, RSE 1.38% |
+| Structure: 2-cmt, sequential zero- then first-order absorption | n/a | Section 2.3 and Section 3.2 |
+| Combined additive + proportional residual error | n/a | Section 2.3, second unnumbered equation |
+| Reference (normalisation) values 69 kg / 18 U/L / 55 years | n/a | Section 3.2 typical-subject description; Table 2 Overall medians |
+| Covariate model form (power on continuous, exponential on binary) | n/a | Section 2.4 general equations; Table 3 footnote equations |
+
+The three covariate equations are printed immediately below Wang 2023 Table 3 as
+
+```
+CL/F = 10.4 * exp(0.203*Study + 0.255*log(BW/69)
+                  - 0.103*log(AST/18) - 0.135*log(AGE/55) + eta_CL)
+Vc/F = 80.6 * exp(0.553*log(BW/69) - 0.170*GEND + eta_Vc)
+D1   = 0.418 * exp(0.816*FOOD + eta_D1)
+```
+
+with the footnote "Study: 1 for study 102/103/110, 0 for others; GEND: 1 for
+female, 0 for male; FOOD: 0 and 1 for the time of food consumption after 0.5 h
+and >= 1 h of drug administration, respectively". The model file writes the
+continuous terms in the algebraically identical power form `(cov/ref)^theta`.
+
+# Typical-value parameters
+
+The first check is that at the reference covariate vector (69 kg, 55 years,
+AST 18 U/L, male, later-phase study, meal 0.5 h post-dose) every covariate
+multiplier collapses to 1 and the model returns the Wang 2023 Table 3 typical
+values exactly.
+
+```{r typical-params}
+tau      <- 12      # dosing interval (h) for the 75 mg BID regimen
+n_dose   <- 10      # Wang 2023 Fig. 4: exposure "after 10 repeated doses"
+dose_mg  <- 75      # approved / pivotal-trial dose
+ss_start <- tau * (n_dose - 1)   # 108 h: start of the final dosing interval
+ss_end   <- ss_start + tau       # 120 h
+
+dose_times <- seq(0, by = tau, length.out = n_dose)
+
+# Observation grid: coarse over the accumulation phase, dense over the final
+# interval so Cmax,ss / Cmin,ss are resolved.
+obs_times <- sort(unique(c(
+  seq(0, tau, by = 0.02),          # dense over the first interval (accumulation ratio)
+  seq(0, ss_start, by = 0.5),
+  seq(ss_start, ss_end, by = 0.02) # dense over the final interval (Cmax,ss / Cmin,ss)
+)))
+
+#' Build one event table. Dose rows go to `depot` with rate = -2 so rxode2
+#' uses the model's `dur(depot) <- d1` zero-order window; a plain bolus would
+#' collapse the zero-order absorption phase and bias Cmax. Observation rows
+#' point at the ODE state `central` -- rxode2 returns the algebraic observable
+#' `Cc` as a column at those rows.
+make_events <- function(id = 1L, WT = 69, AGE = 55, AST = 18, SEXF = 0,
+                        STUDY_DORZA_EARLY = 0, MEAL_DELAY_1H = 0,
+                        dose = dose_mg, scenario = "typical",
+                        times = obs_times, doses = dose_times) {
+  dos <- data.frame(
+    id = id, time = doses, amt = dose, evid = 1L,
+    cmt = "depot", rate = -2
+  )
+  obs <- data.frame(
+    id = id, time = times, amt = NA_real_, evid = 0L,
+    cmt = "central", rate = NA_real_
+  )
+  out <- rbind(dos, obs)
+  out <- out[order(out$time, -out$evid), ]
+  out$WT <- WT
+  out$AGE <- AGE
+  out$AST <- AST
+  out$SEXF <- SEXF
+  out$STUDY_DORZA_EARLY <- STUDY_DORZA_EARLY
+  out$MEAL_DELAY_1H <- MEAL_DELAY_1H
+  out$scenario <- scenario
+  out
+}
+
+# Typical-value solve: omega = NA and sigma = NA suppress IIV and residual
+# error without mutating the shared model object (zeroRe() mutates state).
+sim_typ <- rxode2::rxSolve(
+  mod, make_events(), omega = NA, sigma = NA,
+  keep = "scenario", returnType = "data.frame"
+)
+
+typical_params <- sim_typ |>
+  dplyr::slice(1) |>
+  dplyr::select(cl, vc, q, vp, ka, d1)
+
+typical_params |>
+  dplyr::rename(
+    "CL/F (L/h)" = cl, "Vc/F (L)" = vc, "Q/F (L/h)" = q,
+    "Vp/F (L)" = vp, "ka (1/h)" = ka, "D1 (h)" = d1
+  ) |>
+  knitr::kable(
+    digits = 4,
+    caption = "Typical-value PK parameters at the reference covariate vector. Reproduces Wang 2023 Table 3."
+  )
+
+stopifnot(
+  isTRUE(all.equal(typical_params$cl, 10.4,  tolerance = 1e-8)),
+  isTRUE(all.equal(typical_params$vc, 80.6,  tolerance = 1e-8)),
+  isTRUE(all.equal(typical_params$q,   3.02, tolerance = 1e-8)),
+  isTRUE(all.equal(typical_params$vp, 26.5,  tolerance = 1e-8)),
+  isTRUE(all.equal(typical_params$ka,  3.29, tolerance = 1e-8)),
+  isTRUE(all.equal(typical_params$d1,  0.418, tolerance = 1e-8))
+)
+```
+
+The exponentiated forms of the three indicator coefficients must also match the
+values Wang 2023 tabulates directly (`CL_STUDY` 1.23, `Vc,GEND` 0.843,
+`D1,FOOD` 2.26):
+
+```{r indicator-check}
+coefs  <- c(0.203, -0.170, 0.816)
+tabled <- c(1.23,   0.843,  2.26)
+# Half of the last tabulated digit: the tolerance within which exp(coef) must
+# fall to round to the value Wang 2023 actually printed.
+round_tol <- c(0.005, 0.0005, 0.005)
+diffs <- abs(exp(coefs) - tabled)
+
+indicators <- tibble::tibble(
+  Effect = c("CL_STUDY (early-phase studies)",
+             "Vc,GEND (female)",
+             "D1,FOOD (meal >= 1 h post-dose)"),
+  `Log-scale coefficient` = coefs,
+  `exp(coefficient)` = exp(coefs),
+  `Wang 2023 Table 3` = tabled,
+  `Rounds to Table 3?` = ifelse(diffs < round_tol, "yes", "no")
+)
+knitr::kable(indicators, digits = 5,
+             caption = "Log-scale equation coefficients vs the exponentiated values in Wang 2023 Table 3.")
+
+# The study and meal-timing factors round exactly to their tabulated values:
+# exp(0.203) = 1.2251 -> 1.23 and exp(0.816) = 2.2612 -> 2.26.
+stopifnot(diffs[1] < round_tol[1], diffs[3] < round_tol[3])
+
+# The female-Vc factor does NOT: exp(-0.170) = 0.84366, which rounds to 0.844
+# rather than the tabulated 0.843. This is a real inconsistency in the source
+# (see Errata). Pin both the failure and its magnitude so that any future edit
+# to e_sexf_vc -- including "correcting" it to log(0.843) -- trips this check
+# rather than silently changing the model.
+stopifnot(diffs[2] > round_tol[2], diffs[2] < 0.001)
+```
+
+# Replicate Figure 3: parameter-covariate relationships
+
+Wang 2023 Figure 3 plots the final-model typical CL/F against body weight, age
+and AST, and typical Vc/F against body weight and sex. Those relationships are
+closed-form given the Table 3 coefficients, so they are reproduced here
+directly from the packaged model's typical-value predictions.
+
+```{r figure-3, fig.height = 6}
+cl_typ <- function(WT = 69, AGE = 55, AST = 18) {
+  10.4 * (WT / 69)^0.255 * (AST / 18)^-0.103 * (AGE / 55)^-0.135
+}
+vc_typ <- function(WT = 69, SEXF = 0) {
+  80.6 * (WT / 69)^0.553 * exp(-0.170 * SEXF)
+}
+
+panels <- dplyr::bind_rows(
+  tibble::tibble(panel = "CL/F vs body weight",
+                 x = seq(40, 110, by = 1), y = cl_typ(WT = x)),
+  tibble::tibble(panel = "CL/F vs age",
+                 x = seq(19, 75, by = 1), y = cl_typ(AGE = x)),
+  tibble::tibble(panel = "CL/F vs AST",
+                 x = seq(8, 74, by = 1), y = cl_typ(AST = x)),
+  tibble::tibble(panel = "Vc/F vs body weight (male)",
+                 x = seq(40, 110, by = 1), y = vc_typ(WT = x, SEXF = 0)),
+  tibble::tibble(panel = "Vc/F vs body weight (female)",
+                 x = seq(40, 110, by = 1), y = vc_typ(WT = x, SEXF = 1))
+)
+
+ggplot(panels, aes(x, y)) +
+  geom_line(colour = "firebrick", linewidth = 0.9) +
+  facet_wrap(~panel, scales = "free", ncol = 2) +
+  labs(
+    x = "Covariate value", y = "Typical parameter value",
+    title = "Figure 3 - final-model parameter-covariate relationships",
+    caption = "Replicates Figure 3 of Wang 2023 (typical-value red curves)."
+  ) +
+  theme_bw()
+```
+
+Cross-checking the endpoints of those curves against the percentage changes
+Wang 2023 quotes in its Discussion is an exact test of the four continuous
+coefficients:
+
+```{r figure-3-check}
+disc <- tibble::tribble(
+  ~Parameter, ~Covariate,          ~Simulated,                              ~`Wang 2023 Discussion`,
+  "CL/F",     "WT 55 kg",          cl_typ(WT = 55) / cl_typ() - 1,          -0.0563,
+  "CL/F",     "WT 83 kg",          cl_typ(WT = 83) / cl_typ() - 1,           0.0483,
+  "Vc/F",     "WT 55 kg",          vc_typ(WT = 55) / vc_typ() - 1,          -0.1180,
+  "Vc/F",     "WT 83 kg",          vc_typ(WT = 83) / vc_typ() - 1,           0.1080,
+  "CL/F",     "AGE 41 y",          cl_typ(AGE = 41) / cl_typ() - 1,          0.0406,
+  "CL/F",     "AGE 66 y",          cl_typ(AGE = 66) / cl_typ() - 1,         -0.0244,
+  "CL/F",     "AST 13 U/L",        cl_typ(AST = 13) / cl_typ() - 1,          0.0341,
+  "CL/F",     "AST 28 U/L",        cl_typ(AST = 28) / cl_typ() - 1,         -0.0445,
+  "Vc/F",     "Female vs male",    vc_typ(SEXF = 1) / vc_typ() - 1,         -0.1570,
+  "CL/F",     "Early-phase study", exp(0.203) - 1,                           0.2250
+) |>
+  dplyr::mutate(
+    `Difference (pp)` = 100 * (Simulated - `Wang 2023 Discussion`),
+    Simulated = sprintf("%+.2f%%", 100 * Simulated),
+    `Wang 2023 Discussion` = sprintf("%+.2f%%", 100 * `Wang 2023 Discussion`)
+  )
+
+knitr::kable(disc, digits = 3,
+             caption = "Parameter-level covariate effects vs the values quoted in the Wang 2023 Discussion.")
+
+# Every coefficient must reproduce the paper's own percentage to within
+# 0.1 percentage points (the paper rounds to 3 significant figures).
+stopifnot(all(abs(disc$`Difference (pp)`) < 0.1))
+```
+
+# Replicate Section 3.3 / Figure 4: sensitivity analysis
+
+Wang 2023 Figure 4 is a tornado plot of the effect of each significant
+covariate on steady-state exposure in a typical subject after 10 repeated
+75 mg twice-daily doses. Section 3.3 quotes the resulting percentage changes.
+For the three continuous covariates the paper reports a **range**, which turns
+out to be the minimum and maximum across the three exposure metrics
+(AUCtau,ss, Cmax,ss, Cmin,ss); for sex and meal timing it reports each metric
+separately.
+
+Because each scenario perturbs a single covariate while holding the others at
+their population medians, this is exactly reproducible from the packaged model
+without needing the individual-level dataset.
+
+```{r sensitivity}
+scenarios <- tibble::tribble(
+  ~scenario,              ~WT, ~AGE, ~AST, ~SEXF, ~STUDY_DORZA_EARLY, ~MEAL_DELAY_1H,
+  "Typical (base)",        69,   55,   18,     0,                  0,              0,
+  "WT 55 kg",              55,   55,   18,     0,                  0,              0,
+  "WT 83 kg",              83,   55,   18,     0,                  0,              0,
+  "AST 13 U/L",            69,   55,   13,     0,                  0,              0,
+  "AST 28 U/L",            69,   55,   28,     0,                  0,              0,
+  "AGE 41 y",              69,   41,   18,     0,                  0,              0,
+  "AGE 66 y",              69,   66,   18,     0,                  0,              0,
+  "Female",                69,   55,   18,     1,                  0,              0,
+  "Meal >= 1 h post-dose", 69,   55,   18,     0,                  0,              1,
+  "Early-phase study",     69,   55,   18,     0,                  1,              0
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+sens_events <- do.call(
+  rbind,
+  lapply(seq_len(nrow(scenarios)), function(i) {
+    s <- scenarios[i, ]
+    make_events(
+      id = s$id, WT = s$WT, AGE = s$AGE, AST = s$AST, SEXF = s$SEXF,
+      STUDY_DORZA_EARLY = s$STUDY_DORZA_EARLY,
+      MEAL_DELAY_1H = s$MEAL_DELAY_1H, scenario = s$scenario
+    )
+  })
+)
+stopifnot(!anyDuplicated(unique(sens_events[, c("id", "time", "evid")])))
+
+sim_sens <- rxode2::rxSolve(
+  mod, sens_events, omega = NA, sigma = NA,
+  keep = "scenario", returnType = "data.frame"
+)
+
+# Steady-state exposure metrics over the final dosing interval. AUCtau uses the
+# linear trapezoidal rule, matching Wang 2023 Section 2.6 ("AUCtau,ss was
+# calculated using the linear trapezoidal approximation"); the PKNCA section
+# below independently confirms these numbers.
+ss_metrics <- sim_sens |>
+  dplyr::filter(time >= ss_start, time <= ss_end) |>
+  dplyr::arrange(scenario, time) |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(
+    AUCtau = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    Cmax   = max(Cc),
+    Cmin   = min(Cc),
+    .groups = "drop"
+  )
+
+base_ss <- ss_metrics |> dplyr::filter(scenario == "Typical (base)")
+
+sens_pct <- ss_metrics |>
+  dplyr::filter(scenario != "Typical (base)") |>
+  dplyr::mutate(
+    `AUCtau,ss` = 100 * (AUCtau / base_ss$AUCtau - 1),
+    `Cmax,ss`   = 100 * (Cmax   / base_ss$Cmax   - 1),
+    `Cmin,ss`   = 100 * (Cmin   / base_ss$Cmin   - 1)
+  ) |>
+  dplyr::select(scenario, `AUCtau,ss`, `Cmax,ss`, `Cmin,ss`)
+
+sens_pct |>
+  dplyr::rename("Scenario" = scenario) |>
+  knitr::kable(
+    digits = 2,
+    caption = "Percent change in steady-state exposure vs the typical subject (75 mg BID, 10 doses). Replicates Figure 4 / Section 3.3 of Wang 2023."
+  )
+```
+
+The paper's reported values, and the assertions that pin them:
+
+```{r sensitivity-check}
+rng <- function(sc) {
+  r <- sens_pct |> dplyr::filter(scenario == sc)
+  c(min = min(c(r$`AUCtau,ss`, r$`Cmax,ss`, r$`Cmin,ss`)),
+    max = max(c(r$`AUCtau,ss`, r$`Cmax,ss`, r$`Cmin,ss`)))
+}
+
+reported <- tibble::tribble(
+  ~Scenario,               ~`Wang 2023 Section 3.3`,                ~`Simulated range`,
+  "WT 55 kg",              "+1.63% to +9.62%",  sprintf("%+.2f%% to %+.2f%%", rng("WT 55 kg")[1], rng("WT 55 kg")[2]),
+  "WT 83 kg",              "-7.1% to -1.35%",   sprintf("%+.2f%% to %+.2f%%", rng("WT 83 kg")[1], rng("WT 83 kg")[2]),
+  "AST 13 U/L",            "-5.77% to -1.73%",  sprintf("%+.2f%% to %+.2f%%", rng("AST 13 U/L")[1], rng("AST 13 U/L")[2]),
+  "AST 28 U/L",            "+2.45% to +8.24%",  sprintf("%+.2f%% to %+.2f%%", rng("AST 28 U/L")[1], rng("AST 28 U/L")[2]),
+  "AGE 41 y",              "-6.82% to -2.04%",  sprintf("%+.2f%% to %+.2f%%", rng("AGE 41 y")[1], rng("AGE 41 y")[2]),
+  "AGE 66 y",              "+1.31% to +4.41%",  sprintf("%+.2f%% to %+.2f%%", rng("AGE 66 y")[1], rng("AGE 66 y")[2]),
+  "Female",                "AUCtau 0.01%, Cmax 9.09%, Cmin -11.6%",
+                           sprintf("AUCtau %+.2f%%, Cmax %+.2f%%, Cmin %+.2f%%",
+                                   sens_pct$`AUCtau,ss`[sens_pct$scenario == "Female"],
+                                   sens_pct$`Cmax,ss`[sens_pct$scenario == "Female"],
+                                   sens_pct$`Cmin,ss`[sens_pct$scenario == "Female"]),
+  "Meal >= 1 h post-dose", "AUCtau no difference, Cmax -1.26%, Cmin 2.71%",
+                           sprintf("AUCtau %+.2f%%, Cmax %+.2f%%, Cmin %+.2f%%",
+                                   sens_pct$`AUCtau,ss`[sens_pct$scenario == "Meal >= 1 h post-dose"],
+                                   sens_pct$`Cmax,ss`[sens_pct$scenario == "Meal >= 1 h post-dose"],
+                                   sens_pct$`Cmin,ss`[sens_pct$scenario == "Meal >= 1 h post-dose"])
+)
+knitr::kable(reported,
+             caption = "Simulated steady-state sensitivity vs the values reported in Wang 2023 Section 3.3.")
+
+# Continuous-covariate ranges: both endpoints within 0.1 percentage points.
+stopifnot(
+  abs(rng("WT 55 kg")   - c( 1.63,  9.62)) < 0.1,
+  abs(rng("WT 83 kg")   - c(-7.10, -1.35)) < 0.1,
+  abs(rng("AST 13 U/L") - c(-5.77, -1.73)) < 0.1,
+  abs(rng("AST 28 U/L") - c( 2.45,  8.24)) < 0.1,
+  abs(rng("AGE 41 y")   - c(-6.82, -2.04)) < 0.1,
+  abs(rng("AGE 66 y")   - c( 1.31,  4.41)) < 0.1
+)
+
+# Sex and meal timing, per metric.
+fem  <- sens_pct |> dplyr::filter(scenario == "Female")
+meal <- sens_pct |> dplyr::filter(scenario == "Meal >= 1 h post-dose")
+stopifnot(
+  abs(fem$`AUCtau,ss` -   0.01) < 0.05,
+  abs(fem$`Cmax,ss`   -   9.09) < 0.1,
+  abs(fem$`Cmin,ss`   - (-11.6)) < 0.1,
+  abs(meal$`Cmax,ss`  - (-1.26)) < 0.1,
+  abs(meal$`Cmin,ss`  -   2.71)  < 0.05
+)
+```
+
+## Structural invariants
+
+Two of the paper's findings are exact structural consequences of where each
+covariate acts, and are therefore sharper tests than a tolerance band. Sex acts
+only on `Vc/F` and meal timing only on `D1`; neither touches `CL/F`, so
+steady-state AUCtau (which equals `Dose / (CL/F)` for a linear model) must be
+**identically** unchanged. Wang 2023 reports 0.01% and "no difference"
+respectively.
+
+```{r invariants}
+invariants <- tibble::tibble(
+  Invariant = c("AUCtau,ss unchanged by sex (acts on Vc/F only)",
+                "AUCtau,ss unchanged by meal timing (acts on D1 only)",
+                "CL/F ratio, early-phase vs later-phase studies"),
+  Simulated = c(sprintf("%+.4f%%", fem$`AUCtau,ss`),
+                sprintf("%+.4f%%", meal$`AUCtau,ss`),
+                sprintf("%.4f", exp(0.203))),
+  Expected  = c("0% (Wang 2023 reports 0.01%)",
+                "0% (Wang 2023 reports no difference)",
+                "1.23 (Wang 2023 Table 3 CL_STUDY)")
+)
+knitr::kable(invariants, caption = "Structural invariants of the Wang 2023 covariate model.")
+
+# AUCtau is invariant to Vc/F and D1 up to ODE solver tolerance.
+stopifnot(
+  abs(fem$`AUCtau,ss`)  < 0.02,
+  abs(meal$`AUCtau,ss`) < 0.02
+)
+```
+
+## Tornado plot
+
+```{r figure-4, fig.height = 5}
+sens_pct |>
+  tidyr::pivot_longer(-scenario, names_to = "metric", values_to = "pct") |>
+  dplyr::mutate(
+    metric = factor(metric, levels = c("AUCtau,ss", "Cmax,ss", "Cmin,ss"))
+  ) |>
+  ggplot(aes(pct, scenario)) +
+  geom_col(fill = "steelblue") +
+  geom_vline(xintercept = 0, linewidth = 0.4) +
+  facet_wrap(~metric) +
+  labs(
+    x = "Change from typical subject (%)", y = NULL,
+    title = "Figure 4 - covariate sensitivity on steady-state exposure",
+    caption = "Replicates Figure 4 of Wang 2023 (75 mg BID, 10 doses, typical subject)."
+  ) +
+  theme_bw()
+```
+
+# Dose linearity
+
+Wang 2023 describes the model as a "two-compartment **linear** pharmacokinetic
+model", and the first-in-human study reported dose-proportional exposure from 5
+to 50 mg. Because nothing in the final model is dose- or
+concentration-dependent, steady-state exposure must scale *exactly* with dose.
+Pairing the dose arms turns this into a strict assertion rather than a visual
+check.
+
+```{r dose-linearity}
+dose_levels <- c(25, 75, 200)
+
+dose_events <- do.call(rbind, lapply(seq_along(dose_levels), function(i) {
+  make_events(id = 100L + i, dose = dose_levels[i],
+              scenario = paste0(dose_levels[i], " mg BID"))
+}))
+stopifnot(!anyDuplicated(unique(dose_events[, c("id", "time", "evid")])))
+
+sim_dose <- rxode2::rxSolve(
+  mod, dose_events, omega = NA, sigma = NA,
+  keep = "scenario", returnType = "data.frame"
+)
+
+dose_lookup <- tibble::tibble(
+  scenario = paste0(dose_levels, " mg BID"),
+  dose     = dose_levels
+)
+
+dose_ss <- sim_dose |>
+  dplyr::filter(time >= ss_start, time <= ss_end) |>
+  dplyr::arrange(scenario, time) |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(
+    AUCtau = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    Cmax   = max(Cc),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(dose_lookup, by = "scenario") |>
+  dplyr::mutate(
+    `AUCtau/dose` = AUCtau / dose,
+    `Cmax/dose`   = Cmax / dose
+  )
+
+dose_ss |>
+  dplyr::select(-dose) |>
+  dplyr::rename(
+    "Regimen" = scenario,
+    "AUCtau,ss (ng*h/mL)" = AUCtau,
+    "Cmax,ss (ng/mL)" = Cmax,
+    "AUCtau,ss per mg" = `AUCtau/dose`,
+    "Cmax,ss per mg" = `Cmax/dose`
+  ) |>
+  knitr::kable(digits = 3,
+               caption = "Dose-normalised steady-state exposure. A linear model gives identical values across dose levels.")
+
+# Dose-normalised exposure is identical across arms to solver tolerance.
+stopifnot(
+  diff(range(dose_ss$`AUCtau/dose`)) / mean(dose_ss$`AUCtau/dose`) < 1e-6,
+  diff(range(dose_ss$`Cmax/dose`))   / mean(dose_ss$`Cmax/dose`)   < 1e-6
+)
+```
+
+# Virtual cohort
+
+Original observed data are not available. The cohort below is calibrated to the
+distributions Wang 2023 actually reports: the medians come from Table 2
+(Overall column) and the dispersions are set so the 10th and 90th percentiles
+match the values quoted in the Discussion (WT 55 and 83 kg, AGE 41 and 66
+years, AST 13 and 28 U/L about medians of 69 kg, 55 years and 18 U/L). Each
+covariate is drawn log-normal and truncated to the reported min-max range.
+
+```{r cohort}
+set.seed(20230803)
+n_sub <- 200   # per-arm cap
+
+# log-SD implied by median and the reported 10th / 90th percentiles
+logsd <- function(p10, p90) (log(p90) - log(p10)) / (2 * stats::qnorm(0.9))
+
+rtrunc_lnorm <- function(n, med, sd_log, lo, hi) {
+  x <- stats::rlnorm(n, log(med), sd_log)
+  pmin(pmax(x, lo), hi)
+}
+
+cohort <- tibble::tibble(
+  id  = seq_len(n_sub),
+  WT  = rtrunc_lnorm(n_sub, 69, logsd(55, 83), 40,  110),
+  AGE = rtrunc_lnorm(n_sub, 55, logsd(41, 66), 19,  74.2),
+  AST = rtrunc_lnorm(n_sub, 18, logsd(13, 28),  8,   74),
+  SEXF = stats::rbinom(n_sub, 1, 0.374),          # Table 2: 397/1062 female
+  # 83 of 1062 subjects (studies 102 / 103 / 110) carry the early-study effect
+  STUDY_DORZA_EARLY = stats::rbinom(n_sub, 1, 83 / 1062),
+  MEAL_DELAY_1H = 0                               # reference level; see Assumptions
+)
+
+cohort |>
+  dplyr::summarise(
+    `WT median` = stats::median(WT), `WT p10` = stats::quantile(WT, 0.1),
+    `WT p90` = stats::quantile(WT, 0.9),
+    `AGE median` = stats::median(AGE), `AST median` = stats::median(AST),
+    `Female %` = 100 * mean(SEXF)
+  ) |>
+  knitr::kable(digits = 1,
+               caption = "Virtual cohort covariate summary (target medians 69 kg / 55 y / 18 U/L, 37.4% female).")
+
+cohort_events <- do.call(rbind, lapply(seq_len(nrow(cohort)), function(i) {
+  r <- cohort[i, ]
+  make_events(
+    id = r$id, WT = r$WT, AGE = r$AGE, AST = r$AST, SEXF = r$SEXF,
+    STUDY_DORZA_EARLY = r$STUDY_DORZA_EARLY, MEAL_DELAY_1H = r$MEAL_DELAY_1H,
+    scenario = "75 mg BID",
+    times = sort(unique(c(seq(0, ss_start, by = 1), seq(ss_start, ss_end, by = 0.1))))
+  )
+}))
+stopifnot(!anyDuplicated(unique(cohort_events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+Inter-individual variability is retained; residual error is suppressed
+(`sigma = NA`) so the output is on the IPRED scale. This matches Wang 2023
+Section 2.6, which simulated steady-state exposure "using the individual
+post-hoc parameter estimates" -- i.e. individual predictions, not observations
+with residual noise. Comparing a residual-inflated Cmax against the paper's
+post-hoc Cmax would bias the comparison upward.
+
+```{r simulate}
+sim_cohort <- rxode2::rxSolve(
+  mod, cohort_events, sigma = NA,
+  keep = "scenario", returnType = "data.frame"
+)
+```
+
+```{r figure-2, fig.height = 4.5}
+sim_cohort |>
+  dplyr::filter(time >= ss_start) |>
+  dplyr::mutate(tad = time - ss_start) |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(
+    Q025 = stats::quantile(Cc, 0.025),
+    Q50  = stats::quantile(Cc, 0.500),
+    Q975 = stats::quantile(Cc, 0.975),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q025, ymax = Q975), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 0.9) +
+  labs(
+    x = "Time after the 10th dose (h)", y = "Dorzagliatin (ng/mL)",
+    title = "Steady-state concentration-time profile, 75 mg BID",
+    caption = paste(
+      "Median and 2.5th-97.5th percentile of", n_sub, "virtual subjects (IPRED scale).",
+      "Illustrative analogue of the pooled prediction-corrected VPC in Figure 2 of Wang 2023."
+    )
+  ) +
+  theme_bw()
+```
+
+This is *not* a direct replication of Wang 2023 Figure 2: that figure is a
+prediction-corrected VPC pooling all six studies, all dose levels and all
+sampling schedules, which cannot be rebuilt without the original dataset. It is
+shown as an illustration of the model's steady-state variability at the
+approved dose.
+
+# PKNCA validation
+
+NCA is computed with PKNCA over the final dosing interval (108-120 h), the same
+window used for the exposure metrics above.
+
+```{r pknca}
+# Only `!is.na(Cc)` -- adding `time > 0` or `Cc > 0` would drop the time-zero
+# row that PKNCA needs to anchor the AUC interval.
+sim_nca <- sim_cohort |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, scenario)
+
+# Guarantee a time = 0 row per subject; pre-dose Cc = 0 for an oral model.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, scenario) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, scenario, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, scenario, time)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | scenario + id,
+  concu = "ng/mL", timeu = "h"
+)
+
+dose_df <- cohort_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, scenario)
+
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | scenario + id, doseu = "mg"
+)
+
+intervals <- data.frame(
+  start   = ss_start,
+  end     = ss_end,
+  cmax    = TRUE,
+  tmax    = TRUE,
+  cmin    = TRUE,
+  auclast = TRUE,
+  cav     = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+```
+
+## Comparison against published steady-state exposures
+
+Wang 2023 Tables S1-S4 report geometric-mean steady-state exposures for the
+75 mg twice-daily regimen. The overall-population values are recovered from
+Table S3, which gives both the normal-hepatic-function geometric mean and its
+percentage difference from the overall population:
+AUCtau,ss 7149 / (1 - 0.000526) = **7153 ng*h/mL**,
+Cmax,ss 1089 / (1 + 0.00123) = **1088 ng/mL**, and
+Cmin,ss 271 / (1 - 0.00319) = **272 ng/mL**.
+
+`ncaComparisonTable()` summarises the simulated cohort by its median, which for
+a log-normally distributed exposure is the geometric mean -- so the two sides
+of the table are on the same footing.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~scenario,    ~cmax, ~cmin, ~auclast,
+  "75 mg BID",  1088,  272,   7153
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "scenario",
+  units     = c(cmax = "ng/mL", cmin = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs published steady-state exposure (75 mg BID). * differs from reference by >20%."
+)
+```
+
+The typical subject provides a second, exact anchor. For a linear model
+steady-state AUCtau equals `Dose / (CL/F)`, so the simulated trapezoidal AUCtau
+must equal `75 mg / 10.4 L/h` = 7212 ng*h/mL:
+
+```{r auc-analytic}
+auc_analytic <- dose_mg / 10.4 * 1000     # mg / (L/h) -> ng*h/mL
+
+anchor <- tibble::tibble(
+  Quantity = c("AUCtau,ss, typical subject (simulated)",
+               "AUCtau,ss, typical subject (analytic Dose / (CL/F))",
+               "AUCtau,ss, overall population (Wang 2023 Table S3)"),
+  Value = c(base_ss$AUCtau, auc_analytic, 7153)
+)
+anchor |>
+  dplyr::rename("AUCtau,ss (ng*h/mL)" = Value) |>
+  knitr::kable(digits = 1,
+               caption = "Steady-state AUCtau anchors. The typical-subject simulation must equal Dose / (CL/F) exactly.")
+
+stopifnot(abs(base_ss$AUCtau / auc_analytic - 1) < 0.001)
+```
+
+## Half-life
+
+The model's analytic disposition half-lives follow from the Table 3
+micro-constants. PKNCA's `half.life` on a single-dose profile is compared
+against the analytic terminal (beta) half-life as an internal consistency
+check on the NCA step.
+
+```{r half-life}
+k10 <- 10.4 / 80.6
+k12 <- 3.02 / 80.6
+k21 <- 3.02 / 26.5
+sm  <- k10 + k12 + k21
+disc <- sqrt(sm^2 - 4 * k21 * k10)
+t_half_alpha <- log(2) / (0.5 * (sm + disc))
+t_half_beta  <- log(2) / (0.5 * (sm - disc))
+
+# Single 75 mg dose, typical subject, sampled to 96 h.
+sd_events <- make_events(
+  id = 900L, doses = 0, scenario = "75 mg single dose",
+  times = sort(unique(c(seq(0, 12, by = 0.05), seq(12, 96, by = 0.5))))
+)
+sim_sd <- rxode2::rxSolve(
+  mod, sd_events, omega = NA, sigma = NA,
+  keep = "scenario", returnType = "data.frame"
+)
+
+# rxSolve omits the `id` column when the solve has a single subject, so it is
+# restored explicitly before handing the frame to PKNCA.
+sd_nca <- sim_sd |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 900L) |>
+  dplyr::select(id, time, Cc, scenario)
+
+sd_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(sd_nca, Cc ~ time | scenario + id,
+                   concu = "ng/mL", timeu = "h"),
+  PKNCA::PKNCAdose(
+    sd_events |> dplyr::filter(evid == 1) |>
+      dplyr::select(id, time, amt, scenario),
+    amt ~ time | scenario + id, doseu = "mg"
+  ),
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         aucinf.obs = TRUE, half.life = TRUE)
+))
+
+nca_sd <- as.data.frame(sd_res)
+t_half_nca <- nca_sd$PPORRES[nca_sd$PPTESTCD == "half.life"]
+
+tibble::tibble(
+  Quantity = c("Distribution half-life (alpha), analytic",
+               "Terminal half-life (beta), analytic",
+               "Terminal half-life, PKNCA on single-dose profile",
+               "Reported NCA half-life range (Wang 2023 Introduction, ref. 7)"),
+  `Value (h)` = c(sprintf("%.2f", t_half_alpha),
+                  sprintf("%.2f", t_half_beta),
+                  sprintf("%.2f", t_half_nca),
+                  "4.5 - 8.6")
+) |>
+  knitr::kable(caption = "Dorzagliatin half-life from the packaged model vs the literature range cited by Wang 2023.")
+
+# PKNCA's lambda_z must recover the model's own analytic beta half-life.
+stopifnot(abs(t_half_nca / t_half_beta - 1) < 0.05)
+```
+
+The analytic terminal half-life (`r sprintf("%.1f", t_half_beta)` h) sits above
+the 4.5-8.6 h range Wang 2023 quotes in its Introduction. That range comes from
+reference 7 (Miao 2022), a dedicated renal-impairment study whose NCA half-life
+was estimated from a finite sampling window (0-72 h) and is closer to an
+*effective* half-life than to the true terminal slope of a two-compartment
+model. The effective half-life implied by the accumulation this model predicts
+is the more comparable quantity:
+
+```{r effective-half-life}
+first_int <- sim_typ |>
+  dplyr::filter(time <= tau) |>
+  dplyr::arrange(time)
+auc_first <- sum(diff(first_int$time) *
+                   (head(first_int$Cc, -1) + tail(first_int$Cc, -1)) / 2)
+r_ac <- base_ss$AUCtau / auc_first
+t_half_eff <- -tau * log(2) / log(1 - 1 / r_ac)
+
+tibble::tibble(
+  Quantity = c("AUCtau after the first dose (ng*h/mL)",
+               "AUCtau at steady state (ng*h/mL)",
+               "Accumulation ratio",
+               "Effective half-life (h)"),
+  Value = c(auc_first, base_ss$AUCtau, r_ac, t_half_eff)
+) |>
+  knitr::kable(digits = 2,
+               caption = "Accumulation-derived effective half-life, the quantity most comparable to a windowed NCA half-life.")
+```
+
+The effective half-life of `r sprintf("%.1f", t_half_eff)` h falls inside the
+4.5-8.6 h literature range, which reconciles the two figures: the packaged
+model is consistent with the reported half-life once the difference between a
+terminal-slope and an accumulation-based half-life is accounted for.
+
+# Assumptions and deviations
+
+* **Meal-timing covariate set to its reference level in the virtual cohort.**
+  Wang 2023 does not report how many subjects ate 0.5 h versus at least 1 h
+  after dosing, so `MEAL_DELAY_1H = 0` (the reference, eat at 0.5 h) is used
+  for the cohort. The covariate acts only on `D1`, so this choice does not
+  affect AUCtau,ss and shifts Cmax,ss / Cmin,ss by at most 1.3% / 2.7% (shown
+  in the sensitivity section). Downstream users modelling a delayed-meal
+  population should set the column to 1.
+* **Virtual-cohort covariate dispersions are inferred, not published.** Table 2
+  reports median and min-max only. Log-normal dispersions were back-solved from
+  the 10th and 90th percentiles the Discussion quotes (WT 55 / 83 kg, AGE
+  41 / 66 years, AST 13 / 28 U/L), then truncated to the Table 2 ranges. The
+  covariates are drawn **independently**, whereas the real cohort has
+  correlated demographics.
+* **Table S1, S2 and S4 subgroup differences are not reproduced.** Those
+  supplement tables compare exposure across BMI quartiles, age groups
+  (< 65 vs >= 65 years) and renal-function groups using *post-hoc individual*
+  parameter estimates on the actual 1062-subject covariate distribution. Wang
+  2023 states explicitly that "this simulation accounts for potential
+  correlations among covariates" and that "the above differences also included
+  the confounding effects of multiple factors". The reported +9.11% AUCtau
+  difference for age >= 65, for instance, is larger than the pure age
+  coefficient predicts (about +3.4% for a 53 -> 68 year shift), because older
+  subjects also differ in weight and AST. Reproducing those tables requires the
+  individual-level dataset, which is available only from the corresponding
+  author. The overall-population values (Table S3, recovered above) are
+  reproduced instead.
+* **Renal function carries no effect in the model.** Serum creatinine and
+  creatinine clearance were screened and dropped, so the Table S4
+  renal-function differences arise entirely from correlated covariates. This
+  matches the paper's conclusion that no dose adjustment is needed at any stage
+  of renal impairment (geometric mean ratio of ESRD to healthy volunteers 0.81
+  for Cmax and 1.11 for AUC, from reference 7).
+* **IIV reported as "approximate CV%".** Wang 2023 Table 3's footnote reads
+  "IIV for CL, Vc, Vp, D1, and proportional error are reported as approximate
+  CV%". The model reads this as the square-root-of-variance convention
+  (`omega = CV / 100`) rather than the exact log-normal
+  `CV = sqrt(exp(omega^2) - 1)`, because only the former is an approximation.
+  The two readings differ negligibly at these magnitudes (omega_CL 0.2250 vs
+  0.2222).
+* **Residual error suppressed for the exposure comparison.** The cohort is
+  simulated with `sigma = NA` so results are on the IPRED scale, matching Wang
+  2023 Section 2.6's use of post-hoc individual parameter estimates. Including
+  the 32.9% proportional plus 109 ng/mL additive residual error would inflate
+  simulated Cmax,ss relative to the paper's values.
+* **No IIV on `ka` or `Q/F`.** Wang 2023 Table 3 reports IIV only for CL/F,
+  Vc/F, Vp/F and D1. No variability is invented for the remaining parameters.
+* **Bioavailability is not a parameter.** Only oral data were analysed, so all
+  disposition parameters are apparent (`/F`) and `F` is implicitly 1. The
+  between-study exposure difference that would ordinarily be modelled on `F`
+  was instead absorbed into `CL/F` -- see the errata note below.
+
+## Errata and source-document issues
+
+These are transcription problems in the published article; the values used in
+the model file follow the printed **equations**, which are internally
+consistent with the paper's own reported percentage changes.
+
+* **Table 3 mislabels the `D1,FOOD` row** as "Influence of food consumption
+  time on **CL/F**". The printed equation places the effect on `D1`
+  (`D1 = 0.418 * exp(0.816 * FOOD + eta_D1)`), the parameter name is `D1,FOOD`,
+  and the Discussion confirms "patients with time to food consumption of >= 1 h
+  after drug administration had higher D1". The model applies it to `D1`.
+* **Table 3's "shrinkage" footnote duplicates the IIV column.** It reads "The
+  shrinkage of CL/F, Vc/F, Vp/F and D1 are 22.5%, 14.9%, 48.8% and 82.8%" --
+  exactly the four IIV CV% values from the table body. These are the IIV
+  estimates, not shrinkage; no shrinkage values are recoverable from the
+  article.
+* **Supplement Table S2 and S4 row labels are wrong.** In both tables the
+  second and third exposure rows are labelled "Cmax,ss (ug/mL)" and
+  "Cmax,ss (ng/mL)"; from the magnitudes and the accompanying main-text
+  narrative these are Cmax,ss (ng/mL) and Cmin,ss (ng/mL). Table S4's column
+  headers additionally read "Normal / Mild **Hepatic** function" although its
+  title and footnote both describe **renal** function groups.
+* **The female Vc effect is quoted three ways that do not round to each
+  other.** The printed equation coefficient is `-0.170`, Table 3 tabulates
+  `Vc,GEND = 0.843`, and the Discussion says females are "15.7% lower". But
+  `exp(-0.170) = 0.84366`, which rounds to 0.844, not 0.843; conversely
+  `log(0.843) = -0.170788`. Both printed numbers are roundings of the same
+  underlying estimate (about -0.1708), at different precisions and on different
+  scales. The model file uses the **equation** coefficient `-0.170`, per the
+  convention that the printed equation governs. The practical consequence is
+  negligible but was measured rather than assumed: `-0.170` gives a female Vc/F
+  15.63% lower than male (vs the quoted 15.7%) and reproduces the paper's
+  Section 3.3 female Cmax,ss / Cmin,ss changes as +9.03% / -11.62% against the
+  reported +9.09% / -11.6%. Using `log(0.843) = -0.170788` instead reproduces
+  the 15.7% and the +9.09% Cmax exactly but shifts Cmin,ss to -11.67%, so
+  neither reading matches all three reported figures. Every difference is under
+  0.07 percentage points. Downstream users who need to match the paper's Vc/F
+  ratio exactly should override `e_sexf_vc` to `log(0.843)`.
+* **Study-effect magnitude is quoted two ways.** Table 3 gives
+  `CL_STUDY = 1.23` (three significant figures) while the Discussion says CL
+  was "22.5% higher" in studies 102/103/110. The printed equation coefficient
+  0.203 reconciles them: `exp(0.203) = 1.2251`, i.e. 22.5% higher, rounding to
+  1.23 in the table. The model stores the log-scale 0.203.
+* **The between-study effect is mechanistically a bioavailability difference.**
+  Wang 2023 Discussion attributes the lower exposure in studies 102/103/110 to
+  formulation (studies 301/302 used near-commercial preparations) but reports
+  that "the model was unable to correct for prediction bias by bioavailability"
+  in the sparsely-sampled later studies, so the difference was carried on
+  `CL/F`. The covariate is therefore registered as `STUDY_DORZA_EARLY` (a study
+  indicator) rather than as a formulation indicator: the formulation
+  attribution is the paper's hypothesis, not its parameterisation.

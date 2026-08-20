@@ -25,6 +25,22 @@ Marcantonio_2022_omalizumab <- function() {
     concentration = "Free omalizumab plasma concentration Cc = Ab_00 / V in nM; V = 5 L."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot = list(analyte = "omalizumab", units = NA_character_, specimen = "administration site", verified = FALSE),
+    Ab_00 = list(analyte = "free omalizumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_0L = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_L0 = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_LL = list(analyte = "omalizumab-IgE complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    L1    = list(analyte = "IgE", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1    = list(analyte = "FcepsilonRI", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    L1R1  = list(analyte = "IgE-FcepsilonRI complex", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    S1    = list(analyte = "omalizumab-IgE-FcepsilonRI ternary complex", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -49,7 +65,7 @@ Marcantonio_2022_omalizumab <- function() {
     lkclearL1    <- fixed(log(log(2) / (2880 / 1440))); label("First-order IgE elimination rate constant (1/day; from t1/2 = 2 days)")             # Marcantonio 2022 Table S6 IgE Half Life = 2 days (Corne 1997); 2880 min
     lkclearR1    <- fixed(log(log(2) / (15 / 1440)));   label("First-order FcepsilonRI elimination rate constant (1/day; from t1/2 = 15 min)")     # Marcantonio 2022 Assess run file rec_half_1 = 15 min; Table S6 lists a 2 hr alternative that the paper explicitly says was 'tried both' (occupancy of soluble IgE vs FcepsilonRI inhibition); the Assess-JSON value of 15 min drives the paper's Table 5 dose prediction
     lkclearS1    <- fixed(log(log(2) / (30 / 1440)));   label("First-order shed-receptor elimination rate constant (1/day; unused)")               # Assess default
-    kd_LR        <- fixed(0.12);                     label("IgE:FcepsilonRI equilibrium dissociation constant (nM)")                              # Marcantonio 2022 Table S6 IgE:Receptor KD = 0.12 nM (Miller 1989)
+    kd_lr        <- fixed(0.12);                     label("IgE:FcepsilonRI equilibrium dissociation constant (nM)")                              # Marcantonio 2022 Table S6 IgE:Receptor KD = 0.12 nM (Miller 1989)
 
     V           <- fixed(5);                         label("Central compartment volume of distribution (L)")                                        # Table S6 Volume
     kon         <- fixed(0.001 * 86400);             label("Bimolecular association rate constant (L/nmol/day)")                                    # Assess default
@@ -67,7 +83,7 @@ Marcantonio_2022_omalizumab <- function() {
     kon1Ab     <- kon
     kon2Ab     <- floor(valency / 2) * kon
     koffAb     <- kon * kd_drug
-    koffL1R1   <- kon * kd_LR
+    koffL1R1   <- kon * kd_lr
 
     total_R1 <- R1_conc * V
     L1_0     <- L1_conc * V

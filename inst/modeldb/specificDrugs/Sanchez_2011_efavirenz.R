@@ -9,7 +9,15 @@ Sanchez_2011_efavirenz <- function() {
     "doi:10.1128/AAC.00194-11."
   )
   vignette <- "Sanchez_2011_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     GGT = list(
@@ -58,7 +66,7 @@ Sanchez_2011_efavirenz <- function() {
 
   ini({
     # ---- Structural PK parameters (Sanchez 2011 Table 4 final-model estimates) ----
-    lka <- fixed(log(0.3)) ; label("First-order absorption rate constant ka (1/h) -- fixed")  # Sanchez 2011 Methods 'Population PK/PG model development' paragraph 2: ka 'could not be estimated and was fixed at 0.3 h^-1, a Ka value previously reported (13)' (Cabrera 2009)
+    lka <- fixed(log(0.3)) ; label("First-order absorption rate constant ka (1/h)")  # Sanchez 2011 Methods 'Population PK/PG model development' paragraph 2: ka 'could not be estimated and was fixed at 0.3 h^-1, a Ka value previously reported (13)' (Cabrera 2009)
     lcl <- log(12.2)       ; label("CL/F (L/h) -- intercept at GGT = 0, CYP2B6*6 wild-type, ABCC4 1497CC wild-type")  # Sanchez 2011 Table 4 theta_1 = 12.2 L/h (RSE 4.36%)
     lvc <- log(247)        ; label("V/F (L)")                                                  # Sanchez 2011 Table 4 theta_2 = 247 L (RSE 14.21%); no covariate effects retained in the final V/F model (Results 'Regarding V/F' paragraph)
 

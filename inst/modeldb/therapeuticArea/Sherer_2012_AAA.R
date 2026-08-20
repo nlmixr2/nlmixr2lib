@@ -15,6 +15,14 @@ Sherer_2012_AAA <- function() {
     concentration = "mm (abdominal aortic aneurysm diameter, observation aaaSize)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    aaa = list(analyte = "Abdominal Aortic Aneurysm Diameter", units = NA_character_, specimen = "aqueous humour", verified = FALSE)
+  )
+
   covariateData <- list(
     AAA_DIAM = list(
       description        = "Baseline (screening) abdominal aortic aneurysm diameter; the per-subject time-fixed measurement that anchors the ODE initial condition and enters the regression equations for all three individual-level parameters (beta0, beta1, beta2).",

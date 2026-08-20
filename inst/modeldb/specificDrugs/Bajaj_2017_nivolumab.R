@@ -5,6 +5,14 @@ Bajaj_2017_nivolumab <- function() {
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
   replicate_of <- "inst/modeldb/ddmore/Bajaj_2017_nivolumab_ddmore.R"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "nivolumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -90,9 +98,9 @@ Bajaj_2017_nivolumab <- function() {
     # 0.745 of baseline (a 25.5% reduction), matching the paper's reported mean
     # maximal reduction of ~24.5%. T50 is reported in hours in Table 1 (1.41e3 h);
     # converted to days (/24) because this model keeps time in days.
-    cl_emax <- -0.295;           label("Maximal fractional change in CL_EMAX (unitless)")                               # Bajaj 2017 Table 1: CL_EMAX = -0.295
-    t50     <-  1.41e3 / 24;     label("Time at which the change in CL is 50%% of CL_EMAX (days)")                      # Bajaj 2017 Table 1: CL_T50  = 1.41e3 h
-    cl_hill <-  3.15;            label("Hill / sigmoidicity exponent of time on CL (unitless)")                         # Bajaj 2017 Table 1: CL_HILL = 3.15
+    cl_hill_max <- -0.295;           label("Maximal fractional change in CL_EMAX (unitless)")                               # Bajaj 2017 Table 1: CL_EMAX = -0.295
+    cl_hill_t50     <-  1.41e3 / 24;     label("Time at which the change in CL is 50%% of CL_EMAX (days)")                      # Bajaj 2017 Table 1: CL_T50  = 1.41e3 h
+    cl_hill_gamma <-  3.15;            label("Hill / sigmoidicity exponent of time on CL (unitless)")                         # Bajaj 2017 Table 1: CL_HILL = 3.15
 
     # Covariate effects on VC (Bajaj 2017 Table 1 and Eq. 10). Power on BW;
     # exponential on sex (applied to male-indicator).
@@ -102,11 +110,11 @@ Bajaj_2017_nivolumab <- function() {
     # Inter-individual variability (Bajaj 2017 Table 1). CL and VC are
     # log-normal with a single CL:VC covariance (correlation 0.352); VP is an
     # independent log-normal eta; Emax has an INDEPENDENT ADDITIVE eta
-    # (Emax_i = cl_emax + etacl_emax per Bajaj 2017 Eq. 3).
+    # (Emax_i = cl_hill_max + etacl_hill_max per Bajaj 2017 Eq. 3).
     etalcl + etalvc ~ c(0.123,
                         0.0432, 0.123)                                                                                  # Bajaj 2017 Table 1: omega^2_CL = 0.123, cov_CL:VC = 0.0432, omega^2_VC = 0.123
     etalvp     ~ 0.258                                                                                                  # Bajaj 2017 Table 1: omega^2_VP = 0.258
-    etacl_emax ~ 0.0719                                                                                                 # Bajaj 2017 Table 1: omega^2_EMAX = 0.0719
+    etacl_hill_max ~ 0.0719                                                                                                 # Bajaj 2017 Table 1: omega^2_EMAX = 0.0719
 
     # Residual error (proportional only; Bajaj 2017 Table 1).
     propSd <- 0.215; label("Proportional residual error (fraction)")                                                    # Bajaj 2017 Table 1: proportional error = 0.215
@@ -132,8 +140,8 @@ Bajaj_2017_nivolumab <- function() {
       exp(e_sex_vc * sex_male)
 
     # Time-varying clearance (Bajaj 2017 Eqs. 8 and 3). Additive IIV on Emax.
-    emax_i <- cl_emax + etacl_emax
-    cl     <- cl_base * exp(emax_i * t^cl_hill / (t50^cl_hill + t^cl_hill))
+    cl_hill_max_i <- cl_hill_max + etacl_hill_max
+    cl     <- cl_base * exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
 
     vp <- exp(lvp + etalvp)
     q  <- exp(lq)

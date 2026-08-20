@@ -15,10 +15,27 @@ Harrold_2020_filgrastim <- function() {
   )
   vignette <- "Harrold_2020_filgrastim_ars"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L",
     notes         = "Filgrastim dose in nmol to compartment 'depot' (1 ug = 1e-6/18800 mol = 53.2 pmol for filgrastim; molecular weight 18.8 kDa). Radiation dose in Gy delivered as a bolus to compartment 'depot_kpd'. Filgrastim concentration Cc reported in nM. ANC reported in cells/uL (= 10^9 cells/L when divided by 1000)."
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "filgrastim", units = "nmol", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "neutrophils", units = "nmol", specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "neutrophils", units = "nmol", specimen = "whole blood", verified = FALSE),
+    depot_kpd  = list(analyte = "filgrastim", units = "nmol", specimen = "administration site", verified = FALSE),
+    effect     = list(analyte = "G-CSF receptor pool", units = "nmol", specimen = "not applicable", verified = FALSE),
+    cumhaz_os  = list(analyte = "overall survival", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
@@ -56,7 +73,7 @@ Harrold_2020_filgrastim <- function() {
     # simulation built on the previously developed and validated
     # Melhem 2018 and Harrold 2015 components).
     # ------------------------------------------------------------------
-    lfsc       <- fixed(log(1))     ; label("Relative bioavailability F_SC after s.c. filgrastim (fixed at 1)")   # Harrold 2020 Table 2 (FSC FIL = 1)
+    lfsc       <- fixed(log(1))     ; label("Relative bioavailability F_SC after s.c. filgrastim")   # Harrold 2020 Table 2 (FSC FIL = 1)
     lksc       <- fixed(log(0.123)) ; label("Subcutaneous absorption rate constant K_SC (1/h)")                    # Harrold 2020 Table 2 (KSC FIL = 0.123)
     lvd        <- fixed(log(3.12))  ; label("Filgrastim volume of distribution VD (L) at WT = 70 kg")              # Harrold 2020 Table 2 (VD FIL = 3.12 L)
     e_wt_vd    <- fixed(0.943)      ; label("Allometric exponent on VD with reference 70 kg")                      # Harrold 2020 Table 2 (beta_VD(WT/70) = 0.943)

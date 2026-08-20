@@ -2,7 +2,15 @@ Alsultan_2017_pyrazinamide <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order absorption and first-order elimination for oral pyrazinamide in adults with drug-susceptible pulmonary tuberculosis (Alsultan 2017); body weight is an allometric covariate on CL/F and V/F (fixed exponents 0.75 and 1) and biological sex is an exponential covariate on V/F"
   reference <- "Alsultan A, Savic R, Dooley KE, Weiner M, Whitworth W, Mac Kenzie WR, Peloquin CA, Tuberculosis Trials Consortium. Population pharmacokinetics of pyrazinamide in patients with tuberculosis. Antimicrob Agents Chemother. 2017;61(6):e02625-16. doi:10.1128/AAC.02625-16"
   vignette <- "Alsultan_2017_pyrazinamide"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -56,8 +64,8 @@ Alsultan_2017_pyrazinamide <- function() {
     # scaling was used to describe the effect of body weight on both V/F
     # and CL/F, using fixed exponents of 1 and 0.75, respectively"
     # (Population pharmacokinetics paragraph, page 4).
-    e_wt_cl  <- fixed(0.75);  label("Allometric exponent on CL/F (fixed, unitless)")          # Alsultan 2017 Methods/Results: fixed allometric exponent
-    e_wt_vc  <- fixed(1.0);   label("Allometric exponent on V/F (fixed, unitless)")           # Alsultan 2017 Methods/Results: fixed allometric exponent
+    e_wt_cl  <- fixed(0.75);  label("Allometric exponent on CL/F (unitless)")          # Alsultan 2017 Methods/Results: fixed allometric exponent
+    e_wt_vc  <- fixed(1.0);   label("Allometric exponent on V/F (unitless)")           # Alsultan 2017 Methods/Results: fixed allometric exponent
     # Sex on V/F: source uses sex(male)=1 with female as reference.
     # Stored exponential coefficient is +0.148; applied in model() as
     # exp(e_sex_vc * (1 - SEXF)) to preserve the female-reference V/F.

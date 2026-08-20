@@ -4,6 +4,15 @@ Desai_2016_isavuconazole <- function() {
   vignette <- "Desai_2016_isavuconazole"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "isavuconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "isavuconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     HEPIMP_MILD = list(
       description        = "Mild hepatic impairment indicator (1 = Child-Pugh Class A, 0 = healthy or moderate)",
@@ -70,7 +79,7 @@ Desai_2016_isavuconazole <- function() {
     # 100 mg dose is the isavuconazole equivalent of the 186 mg prodrug; the
     # paper assumes complete conversion of isavuconazonium sulfate to active
     # isavuconazole in vivo.
-    lfdepot <- fixed(log(1.0));  label("Isavuconazole oral bioavailability (F1, fraction; fixed)")  # Desai 2016 Table 4: F1 = 1.00 (fixed)
+    lfdepot <- fixed(log(1.0));  label("Isavuconazole oral bioavailability (F1, fraction)")  # Desai 2016 Table 4: F1 = 1.00 (fixed)
 
     # Categorical covariate effects on CL and Q for hepatic-impairment status.
     # Desai 2016 reports three group-specific typical values (theta_{1,8,9} for

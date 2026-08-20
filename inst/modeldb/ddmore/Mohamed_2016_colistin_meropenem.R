@@ -18,6 +18,23 @@ Mohamed_2016_colistin_meropenem <- function() {
   replicate_of <- NULL
 
   depends <- c("TYPE", "ID2", "DILmer", "DILcol")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    S            = list(analyte = "P. aeruginosa (wild-type)", units = NA_character_, specimen = "bile", verified = FALSE),
+    R            = list(analyte = "P. aeruginosa (wild-type)", units = NA_character_, specimen = "bile", verified = FALSE),
+    mero         = list(analyte = "Meropenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    mero_ce      = list(analyte = "Meropenem", units = NA_character_, specimen = "plasma", verified = FALSE),
+    mero_bindoff = list(analyte = "P. aeruginosa (wild-type)", units = NA_character_, specimen = "bile", verified = FALSE),
+    col          = list(analyte = "Colistin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    col_ce       = list(analyte = "Colistin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    col_bindoff  = list(analyte = "P. aeruginosa (wild-type)", units = NA_character_, specimen = "bile", verified = FALSE),
+    S_mut        = list(analyte = "Meropenem-resistant mutant P. aeruginosa", units = NA_character_, specimen = "bile", verified = FALSE),
+    R_mut        = list(analyte = "Meropenem-resistant mutant P. aeruginosa", units = NA_character_, specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list(
     BACT = list(
       description = "Bacterial strain indicator: 1 = ARU552 (meropenem-resistant clinical isolate), 2 = ATCC 27853 (wild-type)",

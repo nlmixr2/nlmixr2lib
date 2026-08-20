@@ -35,6 +35,17 @@ Yu_2015_sunitinib <- function() {
   vignette <- "Yu_2015_sunitinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot               = list(analyte = "sunitinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central             = list(analyte = "sunitinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_su12662     = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_su12662 = list(analyte = "SU12662", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -88,8 +99,8 @@ Yu_2015_sunitinib <- function() {
     # Allometric scaling -- Methods Eqs 3-4. Fixed exponents (no SE / CI
     # reported in the paper); reference WT = 70 kg.
     # ----------------------------------------------------------------------
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL, Qh, CL_SU12662, Qi_SU12662 (fixed; Methods Eq 3)")  # Methods Eq 3
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc, Vc_SU12662, Vp_SU12662 (fixed; Methods Eq 4)")       # Methods Eq 4
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL, Qh, CL_SU12662, Qi_SU12662 (Methods Eq 3)")  # Methods Eq 3
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on Vc, Vc_SU12662, Vp_SU12662 (Methods Eq 4)")       # Methods Eq 4
 
     # ----------------------------------------------------------------------
     # Inter-individual variability -- Table 2 + $OMEGA BLOCK(4) in the

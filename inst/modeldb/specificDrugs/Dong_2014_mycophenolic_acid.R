@@ -10,7 +10,16 @@ Dong_2014_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Dong_2014_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -123,7 +132,7 @@ Dong_2014_mycophenolic_acid <- function() {
     lq   <- log(22.4);     label("Apparent inter-compartmental clearance Q/F (L/h)")                           # Dong 2014 Table 2 row 'Q/F (L/h) = 22.4'
     lka  <- log(2.5);      label("First-order absorption rate constant from depot to central (1/h)")           # Dong 2014 Table 2 row 'Ka (h-1) = 2.5'
     lmtt <- log(0.25);     label("Mean absorption transit-chain time MTT (h)")                                 # Dong 2014 Table 2 row 'MTT (h) = 0.25'
-    lnn  <- fixed(log(8)); label("Number of transit compartments n (FIXED at 8)")                              # Dong 2014 Table 2 row 'Number of transit compartment (n) = 8 fix'
+    lnn  <- fixed(log(8)); label("Number of transit compartments n")                              # Dong 2014 Table 2 row 'Number of transit compartment (n) = 8 fix'
 
     # ========================================================================
     # Allometric exponent on CL/F. The estimated value 0.31 is data-driven

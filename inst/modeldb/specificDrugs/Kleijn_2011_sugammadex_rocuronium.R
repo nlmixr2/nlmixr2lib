@@ -47,6 +47,20 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
     concentration = "umol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "sugammadex", units = "umol", specimen = "plasma", verified = FALSE),
+    central_roc         = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_roc     = list(analyte = "rocuronium", units = "umol", specimen = "plasma", verified = FALSE),
+    central_complex     = list(analyte = "sugammadex-rocuronium complex", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_complex = list(analyte = "sugammadex-rocuronium complex", units = "umol", specimen = "plasma", verified = FALSE),
+    effect_roc          = list(analyte = "neuromuscular blockade effect", units = "umol", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",
@@ -265,7 +279,7 @@ Kleijn_2011_sugammadex_rocuronium <- function() {
     # ini() parameters for complex PK. Only the dissociation
     # kinetics are estimated; kd is fixed from in-vitro.
     # ============================================================
-    kd  <- fixed(0.0559);  label("Equilibrium dissociation constant of the sugammadex-rocuronium complex (uM, fixed from in-vitro per Bom 2002)")  # Table 4 complex: kd = 0.0559 uM, FIXED
+    kd  <- fixed(0.0559);  label("Equilibrium dissociation constant of the sugammadex-rocuronium complex (uM, from in-vitro per Bom 2002)")  # Table 4 complex: kd = 0.0559 uM, FIXED
     lk2 <- -3.38;          label("Log of complex dissociation rate constant k2 (1/min)")                                                          # Table 4 complex: log_e(k2) = -3.38, RSE 16.5%; k2 = exp(-3.38) = 0.034 1/min, association t1/2 = 1.1 min, dissociation t1/2 = 20.4 min
 
     # ============================================================

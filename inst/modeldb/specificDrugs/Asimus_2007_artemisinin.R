@@ -18,6 +18,18 @@ Asimus_2007_artemisinin <- function() {
   vignette <- "Asimus_2007_artemisinin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "artemisinin", units = "mg", specimen = "administration site", verified = FALSE),
+    liver      = list(analyte = "artemisinin", units = "mg", specimen = "tissue", verified = FALSE),
+    central    = list(analyte = "artemisinin", units = "mg", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "unknown", units = "mg", specimen = "not applicable", verified = FALSE),
+    enzyme     = list(analyte = "unknown", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight; scales hepatic plasma flow Q_H = 0.63 * WT (L/h)",
@@ -118,18 +130,18 @@ Asimus_2007_artemisinin <- function() {
     # the formulation `kdeg * (1 + s_ind * C_H_ng_per_mL)`.
 
     fu     <- fixed(0.14)
-    label("Plasma unbound fraction fu (FIXED)")
+    label("Plasma unbound fraction fu")
     # Asimus 2007 Table 2: f_u = 0.14 FIXED; carried unchanged from the
     # Gordi 2005 model (Gordi 2005 ref [18], saliva-plasma partitioning).
 
     v_h_fix <- fixed(1)
-    label("Hepatic compartment volume V_H (L, FIXED)")
+    label("Hepatic compartment volume V_H (L)")
     # Gordi 2005 Methods 'Pharmacokinetic analysis' and Figure 2 caption:
     # V_H fixed at 1 L; sensitivity analyses at 5 and 10 L increased the
     # OFV by 10-12 units and were rejected.
 
     q_h_per_kg <- fixed(1.2)
-    label("Hepatic blood flow per kg body weight q_h_per_kg (L/h/kg, FIXED)")
+    label("Hepatic blood flow per kg body weight q_h_per_kg (L/h/kg)")
     # Gordi 2005 Methods 'Pharmacokinetic analysis' tested two values for
     # Q_H: 0.63 L/h/kg (hepatic plasma flow, the Gordi 2005 default) and
     # 1.2 L/h/kg (hepatic blood flow, the upper sensitivity alternative).

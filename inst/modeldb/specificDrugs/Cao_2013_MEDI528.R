@@ -4,6 +4,17 @@ Cao_2013_MEDI528 <- function() {
   vignette <- "Cao_2013_MEDI528"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "MEDI-528", units = "mg", specimen = "plasma", verified = FALSE),
+    tight  = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky  = list(analyte = "MEDI-528", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph  = list(analyte = "MEDI-528", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -22,7 +33,7 @@ Cao_2013_MEDI528 <- function() {
   ini({
     sigma_tight <- 0.987; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.987 (CV 6.17%)
     sigma_leaky <- 0.754; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.754 (CV 7.00%)
-    lcl   <- log(0.12888); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00537 L/hr (CV 6.88%) = 0.12888 L/day
+    lcl   <- log(0.12888); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00537 L/h (CV 6.88%) = 0.12888 L/day
   })
 
   model({

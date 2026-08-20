@@ -38,7 +38,7 @@ Melhem_2018_g_csf <- function() {
   paper_specific_compartments <- c("depot_kpd_chemotherapy", "depot_kpd_corticosteroid")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol (G-CSF); mg (chemotherapy and corticosteroid KPD inputs)",
     concentration = "nmol/L (nM; serum G-CSF, endogenous BSLD plus exogenous FDC)",
     ANC           = "10^9 cells/L",
@@ -52,6 +52,22 @@ Melhem_2018_g_csf <- function() {
       "delayed by LAG8 = 16.3 h). Both KPD compartments decay first-order",
       "and drive stimulation / elimination terms in the granulopoiesis chain."
     )
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot                    = list(analyte = "filgrastim", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central                  = list(analyte = "filgrastim", units = NA_character_, specimen = "plasma", verified = FALSE),
+    precursor1               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4               = list(analyte = "G-CSFR", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ                     = list(analyte = "filgrastim-G-CSFR complex", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    depot_kpd_corticosteroid = list(analyte = "corticosteroid", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot_kpd_chemotherapy   = list(analyte = "chemotherapy", units = NA_character_, specimen = "administration site", verified = FALSE)
   )
 
   covariateData <- list(
@@ -191,9 +207,9 @@ Melhem_2018_g_csf <- function() {
     # Granulopoiesis parameters (drug-shared)
     # -----------------------------------------------------------------
     lkp          <- log(0.0276)                ; label("Log KP (receptor production rate) (nM/h)")                                                                # Melhem 2018 Table 2 (KP = 0.0276, RSE 1%)
-    lktr         <- fixed(log(4 / 120))        ; label("Log KTR (bone-marrow transit rate) (1/h) -- fixed at 4/120 (5-day maturation time)")                      # Melhem 2018 Table 2 (KTR = 0.033) and Methods 'Neutrophil maturation'
-    lkc          <- fixed(log(0.12))           ; label("Log KC (blood neutrophil elimination rate) (1/h) -- fixed at 0.12 (6-hour blood half-life)")              # Melhem 2018 Table 2 (KC = 0.12) and Results 'Covariate analysis'
-    lsr          <- fixed(log(0.059))          ; label("Log SR (receptor / ANC scaling factor) (nM per 10^9 cells/L) -- fixed at preliminary-run estimate")       # Melhem 2018 Table 2 (SR = 0.059) and Results 'Model development'
+    lktr         <- fixed(log(4 / 120))        ; label("Log KTR (bone-marrow transit rate) (1/h) (5-day maturation time)")                      # Melhem 2018 Table 2 (KTR = 0.033) and Methods 'Neutrophil maturation'
+    lkc          <- fixed(log(0.12))           ; label("Log KC (blood neutrophil elimination rate) (1/h) (6-hour blood half-life)")              # Melhem 2018 Table 2 (KC = 0.12) and Results 'Covariate analysis'
+    lsr          <- fixed(log(0.059))          ; label("Log SR (receptor / ANC scaling factor) (nM per 10^9 cells/L) -- preliminary-run estimate")       # Melhem 2018 Table 2 (SR = 0.059) and Results 'Model development'
 
     lstm1        <- log(7.53)                  ; label("Log STM1 (max stimulation of receptor production)")                                                       # Melhem 2018 Table 2 (STM1 = 7.53, RSE 2%)
     lstm2        <- log(3.89)                  ; label("Log STM2 (max stimulation of transit rate) -- patient reference")                                         # Melhem 2018 Table 2 (STM2 PT = 3.89, RSE 2%)
@@ -210,7 +226,7 @@ Melhem_2018_g_csf <- function() {
     ltlag_cort   <- log(16.3)                  ; label("Log LAG8 (corticosteroid KPD lag time) (h)")                                                              # Melhem 2018 Table 2 (LAG8 = 16.3, RSE 9%)
     ltlag_chem   <- log(66.2)                  ; label("Log LAG9 (chemotherapy KPD lag time) (h)")                                                                # Melhem 2018 Table 2 (LAG9 = 66.2, RSE 1%)
 
-    lkel_cort    <- fixed(log(0.2))            ; label("Log KCRT (corticosteroid KPD elimination rate) (1/h) -- fixed")                                            # Melhem 2018 Table 2 (KCRT = 0.2, Fixed)
+    lkel_cort    <- fixed(log(0.2))            ; label("Log KCRT (corticosteroid KPD elimination rate) (1/h)")                                            # Melhem 2018 Table 2 (KCRT = 0.2, Fixed)
     lkel_chem    <- log(0.0724)                ; label("Log KCHM (chemotherapy KPD elimination rate) (1/h)")                                                       # Melhem 2018 Table 2 (KCHM = 0.0724, RSE 1%)
 
     lchmsl       <- log(668)                   ; label("Log CHMSL (slope relating chemotherapy KPD output to mitotic-cell loss rate) (1/mg)")                      # Melhem 2018 Table 2 (CHMSL = 668, RSE 10%)

@@ -50,7 +50,15 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "haloperidol panss subscales", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "haloperidol panss subscales", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -219,7 +227,7 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
     # II Table 2 footnote). For positive and general it was fixed at 50% CV
     # = log(1 + 0.5^2) = 0.2231 -- encoded as a fixed IIV to preserve the
     # paper's choice.
-    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general fixed at 50% CV
+    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)  # Part II Table 2 footnote: 50% CV nominal value because parameter not estimable
     etaec50_neg ~ 2.1085         # Part II Table 2 haloperidol: IIV EC50 negative = 269% CV; omega^2 = log(1 + 2.69^2) = 2.1085
 
@@ -235,7 +243,7 @@ PillaReddy_2013_haloperidol_panss_subscales <- function() {
 
   model({
     # The paper reports time-dependent PD parameters in DAYS (TD in days, KT
-    # in 1/day) while units$time = "hour" for the PK ODE. Convert model time
+    # in 1/day) while units$time = "h" for the PK ODE. Convert model time
     # t (hours since first dose) to days for use in the placebo Weibull and
     # the Emax onset.
     t_days <- t / 24

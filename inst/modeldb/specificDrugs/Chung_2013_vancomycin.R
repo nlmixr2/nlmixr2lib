@@ -2,7 +2,14 @@ Chung_2013_vancomycin <- function() {
   description <- "One-compartment IV-infusion population PK model for vancomycin in Korean adults with normal serum creatinine (Chung 2013). CL and V are described by centered-linear additive deviations on age, total body weight, serum creatinine (CL only), and sex, plus a power-law effect of serum cystatin C on CL (reference 0.91 mg/L, exponent -0.78); cystatin C is the dominant CL covariate, accounting for ~62% of the inter-individual variability in CL even within the SCr <= 1.2 mg/dL inclusion window."
   reference <- "Chung JY, Jin SJ, Yoon JH, Song YG. Serum cystatin C is a major predictor of vancomycin clearance in a population pharmacokinetic analysis of patients with normal serum creatinine concentrations. J Korean Med Sci. 2013;28(1):48-54. doi:10.3346/jkms.2013.28.1.48"
   vignette <- "Chung_2013_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     AGE = list(

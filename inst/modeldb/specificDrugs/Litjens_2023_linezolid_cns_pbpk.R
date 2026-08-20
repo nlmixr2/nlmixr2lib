@@ -61,6 +61,19 @@ Litjens_2023_linezolid_cns_pbpk <- function() {
     concentration = "mg/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "Linezolid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "Linezolid", units = "mg", specimen = "plasma", verified = FALSE),
+    brain_blood = list(analyte = "Linezolid", units = "mg", specimen = "tissue", verified = FALSE),
+    brain_mass  = list(analyte = "Linezolid", units = "mg", specimen = "tissue", verified = FALSE),
+    csf_cranial = list(analyte = "Linezolid", units = "mg", specimen = "CSF", verified = FALSE),
+    csf_spinal  = list(analyte = "Linezolid", units = "mg", specimen = "CSF", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = paste(

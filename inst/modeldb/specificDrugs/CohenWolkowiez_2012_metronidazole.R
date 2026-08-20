@@ -2,7 +2,14 @@ CohenWolkowiez_2012_metronidazole <- function() {
   description <- "One-compartment IV population PK model for metronidazole in preterm infants (Cohen-Wolkowiez 2012). Clearance scales linearly with body weight (reference 1.5 kg) and as a power function of postmenstrual age (reference 32 weeks); central volume scales linearly with body weight."
   reference <- "Cohen-Wolkowiez M, Ouellet D, Smith PB, et al. Population pharmacokinetics of metronidazole evaluated using scavenged samples from preterm infants. Antimicrob Agents Chemother. 2012;56(4):1828-1837. doi:10.1128/AAC.06071-11"
   vignette <- "CohenWolkowiez_2012_metronidazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "metronidazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -78,8 +85,8 @@ CohenWolkowiez_2012_metronidazole <- function() {
     # An estimated body-size exponent was tested by the authors and excluded for
     # lack of improvement in fit and imprecision (Cohen-Wolkowiez 2012 Results,
     # 'Population PK model building').
-    e_wt_cl <- fixed(1); label("Linear weight exponent on CL (unitless, fixed at 1)")  # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
-    e_wt_vc <- fixed(1); label("Linear weight exponent on V (unitless, fixed at 1)")   # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
+    e_wt_cl <- fixed(1); label("Linear weight exponent on CL (unitless)")  # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
+    e_wt_vc <- fixed(1); label("Linear weight exponent on V (unitless)")   # Cohen-Wolkowiez 2012 Table 3 (final model: linear (WT/1.5))
 
     # Power exponent on (PMA/32) for CL. Reference PMA 32 weeks = 32/4.35 months.
     e_page_cl <- 2.49; label("Power exponent on (PMA/32) for CL (unitless)")  # Cohen-Wolkowiez 2012 Table 4: theta_CL-PMA = 2.49 (RSE 29.8%)

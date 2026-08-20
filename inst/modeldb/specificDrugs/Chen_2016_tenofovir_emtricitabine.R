@@ -6,6 +6,29 @@ Chen_2016_tenofovir_emtricitabine <- function() {
 
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "Tenofovir Disoproxil Fumarate (TDF)", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "Tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "Tenofovir (TFV)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_ftc         = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "administration site", verified = FALSE),
+    central_ftc       = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ftc   = list(analyte = "Emtricitabine (FTC)", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_tfvdp      = list(analyte = "Tenofovir-Diphosphate (TFV-DP)", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_ftctp      = list(analyte = "Emtricitabine-Triphosphate (FTC-TP)", units = "mg", specimen = "not applicable", verified = FALSE),
+    tfvdp             = list(analyte = "Tenofovir-Diphosphate (TFV-DP)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_tfvdp = list(analyte = "Tenofovir-Diphosphate (TFV-DP)", units = "mg", specimen = "plasma", verified = FALSE),
+    ftctp             = list(analyte = "Emtricitabine-Triphosphate (FTC-TP)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ftctp = list(analyte = "Emtricitabine-Triphosphate (FTC-TP)", units = "mg", specimen = "plasma", verified = FALSE),
+    datp              = list(analyte = "Diphospho-Thymidine Triphosphate (dATP)", units = "mg", specimen = "not applicable", verified = FALSE),
+    dgtp              = list(analyte = "Guanosine-Diphosphate (dGTP)", units = "mg", specimen = "not applicable", verified = FALSE),
+    dctp              = list(analyte = "Deoxy-Cytidine Triphosphate (dCTP)", units = "mg", specimen = "not applicable", verified = FALSE),
+    ttp               = list(analyte = "Thymidine-Triphosphate (TTP)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     SEXF = list(
       description        = "Biological sex (1 = female, 0 = male)",

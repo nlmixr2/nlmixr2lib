@@ -48,6 +48,15 @@ Terranova_2022_TGD_OS_gastric <- function() {
     concentration = "mm (TGD observable = sum of longest diameters of RECIST 1.1 target lesions); probability (OS sub-model output `sur`)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tumor  = list(analyte = "tumour-size", units = NA_character_, specimen = "tumor", verified = FALSE),
+    cumhaz = list(analyte = "hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     TRT = list(
       description = "Per-subject treatment-arm integer indicator selecting the per-arm shape parameter of the log-logistic OS hazard and enabling an ML-screened but ultimately not-detected treatment effect on TGD.",

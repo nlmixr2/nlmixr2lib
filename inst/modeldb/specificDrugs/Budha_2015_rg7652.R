@@ -6,6 +6,16 @@ Budha_2015_rg7652 <- function() {
 
   units       <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "RG7652", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "RG7652", units = "mg", specimen = "plasma", verified = FALSE),
+    LDL     = list(analyte = "LDL-C", units = "mg", specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Age",

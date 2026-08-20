@@ -2,7 +2,15 @@ Goti_2018_vancomycin <- function() {
   description <- "Two-compartment IV population PK model for vancomycin in hospitalized adults with and without intermittent hemodialysis (Goti 2018). Volumes scaled allometrically to body weight (reference 70 kg, fixed linear exponent), CL scaled by Cockcroft-Gault creatinine clearance with a power exponent (reference 120 mL/min), and intermittent hemodialysis acts as a multiplicative factor on CL (0.7) and central volume (0.5)."
   reference <- "Goti V, Chaturvedula A, Fossler MJ, Mok S, Jacob JT. Hospitalized patients with and without hemodialysis have markedly different vancomycin pharmacokinetics: a population pharmacokinetic model-based analysis. Ther Drug Monit. 2018;40(2):212-221. doi:10.1097/FTD.0000000000000490"
   vignette <- "Goti_2018_vancomycin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "vancomycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

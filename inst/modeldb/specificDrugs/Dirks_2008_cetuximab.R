@@ -2,7 +2,15 @@ Dirks_2008_cetuximab <- function() {
   description <- "Two-compartment population PK model for intravenous cetuximab (anti-EGFR chimeric IgG1) in adults with recurrent and/or metastatic squamous cell carcinoma of the head and neck (SCCHN), with Michaelis-Menten (target-mediated) elimination from the central compartment. Ideal body weight and white blood cell count are linear-deviation covariates on Vmax; total body weight is a linear-deviation covariate on V1 (Dirks 2008 J Clin Pharmacol; Chapter 3 of the Dirks 2010 UTHSC PhD dissertation)."
   reference <- "Dirks NL, Nolting A, Kovar A, Meibohm B. Population pharmacokinetics of cetuximab in patients with squamous cell carcinoma of the head and neck. J Clin Pharmacol. 2008;48(3):267-278. doi:10.1177/0091270007313393. See also Chapter 3 (pp. 45-64) and Appendix A (NONMEM control stream, pp. 141-149) of Dirks NL, Population Pharmacokinetics of Therapeutic Monoclonal Antibodies: Examples and Estimation Method Performance Differences, PhD dissertation, University of Tennessee Health Science Center, May 2010, ETD paper 63, doi:10.21007/etd.cghs.2010.0072."
   vignette <- "Dirks_2008_cetuximab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "cetuximab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cetuximab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     IBW = list(
@@ -51,11 +59,11 @@ Dirks_2008_cetuximab <- function() {
     # Structural typical-value PK parameters at the reference covariates
     # (Dirks 2008 Table 3-2, thesis Chapter 3, p. 53; reference IBW 64 kg,
     # WBC 6.8 x 10^9/L, WT 60 kg).
-    lvmax <- log(4.38);  label("Michaelis-Menten Vmax at reference covariates (mg/hour)") # Dirks 2008 Table 3-2: theta1 = 4.38 mg/hr, 90% CI 3.40-6.64
+    lvmax <- log(4.38);  label("Michaelis-Menten Vmax at reference covariates (mg/h)") # Dirks 2008 Table 3-2: theta1 = 4.38 mg/h, 90% CI 3.40-6.64
     lkm   <- log(74);    label("Michaelis-Menten Km (ug/mL)")                              # Dirks 2008 Table 3-2: theta4 = 74 ug/mL, 90% CI 38.2-163.3
     lvc   <- log(2.83);  label("Central volume of distribution V1 at reference WT (L)")   # Dirks 2008 Table 3-2: theta5 = 2.83 L, 90% CI 2.69-2.96
     lvp   <- log(2.43);  label("Peripheral volume of distribution V2 (L)")                 # Dirks 2008 Table 3-2: theta7 = 2.43 L, 90% CI 1.95-2.85
-    lq    <- log(0.103); label("Intercompartmental clearance Q (L/hour)")                  # Dirks 2008 Table 3-2: theta8 = 0.103 L/hr, 90% CI 0.062-0.191
+    lq    <- log(0.103); label("Intercompartmental clearance Q (L/h)")                  # Dirks 2008 Table 3-2: theta8 = 0.103 L/h, 90% CI 0.062-0.191
 
     # Covariate effects. Additive linear-deviation form on continuous
     # covariates as parameterised in Dirks 2008 Table 3-2:
@@ -115,7 +123,7 @@ Dirks_2008_cetuximab <- function() {
     # thesis p. 141-149; ADVAN6 TRANS1). A parallel first-order
     # elimination pathway was tested but produced no OFV improvement and
     # was dropped in favour of the more parsimonious purely nonlinear
-    # elimination model (p. 50 Structural Model). Vmax is in mg/hour and
+    # elimination model (p. 50 Structural Model). Vmax is in mg/h and
     # depends on Cc = central / vc (concentration in ug/mL = mg/L because
     # doses are in mg and volumes in L).
     Cc <- central / vc

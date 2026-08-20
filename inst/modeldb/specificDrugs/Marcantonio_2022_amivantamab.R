@@ -31,6 +31,32 @@ Marcantonio_2022_amivantamab <- function() {
     concentration = "Free amivantamab plasma concentration Cc = Ab_00_c / Vc in nM; central Vc = 3 L, peripheral Vp = 13 L."
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    R1_c      = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R2_c      = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    S2_c      = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_00_c   = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R1_c   = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R2_c   = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_S2_c   = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R1R2_c = list(analyte = "bound form Ab-R1R2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    Ab_R1S2_c = list(analyte = "bound form Ab-R1S2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    R1_p      = list(analyte = "membrane EGFR (R1)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    R2_p      = list(analyte = "membrane c-Met (R2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    S2_p      = list(analyte = "soluble c-Met (S2)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_00_p   = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R1_p   = list(analyte = "bound form Ab-R1", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R2_p   = list(analyte = "bound form Ab-R2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_S2_p   = list(analyte = "bound form Ab-S2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R1R2_p = list(analyte = "bound form Ab-R1R2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Ab_R1S2_p = list(analyte = "bound form Ab-R1S2", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    depot     = list(analyte = "free drug (Amivantamab)", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -46,8 +72,8 @@ Marcantonio_2022_amivantamab <- function() {
   ini({
     lka       <- fixed(log(log(2) / 2.5));         label("First-order SC absorption placeholder rate constant (1/day; unused for IV dosing)")     # Assess default
     lkclearAb <- fixed(log(log(2) / 11));          label("First-order amivantamab elimination rate constant (1/day; from t1/2 = 11 days)")        # Marcantonio 2022 Table 4 Amivantamab Half-Life (Rybrevant USPI)
-    kd_T1     <- fixed(1.4);                       label("Amivantamab-EGFR equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for EGFR (Jarantow 2015)
-    kd_T2     <- fixed(0.04);                      label("Amivantamab-cMet equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for c-Met (Jarantow 2015)
+    kd_t1     <- fixed(1.4);                       label("Amivantamab-EGFR equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for EGFR (Jarantow 2015)
+    kd_t2     <- fixed(0.04);                      label("Amivantamab-cMet equilibrium dissociation constant (nM)")                                # Marcantonio 2022 Table 4 Amivantamab KD for c-Met (Jarantow 2015)
 
     R1_conc_c <- fixed(0.0152);                    label("EGFR receptor concentration in central compartment (nM)")                                # Marcantonio 2022 Table 3 EGFR expression central (bottom-up)
     R1_conc_p <- fixed(1.13);                      label("EGFR receptor concentration in peripheral compartment (nM)")                             # Marcantonio 2022 Table 3 EGFR expression peripheral (bottom-up)
@@ -78,8 +104,8 @@ Marcantonio_2022_amivantamab <- function() {
     kclearR2   <- exp(lkclearR2)
     kclearS2   <- exp(lkclearS2)
 
-    koff_T1    <- kon * kd_T1
-    koff_T2    <- kon * kd_T2
+    koff_T1    <- kon * kd_t1
+    koff_T2    <- kon * kd_t2
 
     # Drug distribution
     Tdist_Ab_d <- Tdist_Ab_hr / 24

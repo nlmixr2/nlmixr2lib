@@ -2,7 +2,16 @@ Williams_2012_valproic_acid_pediatric <- function() {
   description <- "Two-compartment population PK model for valproic acid in pediatric patients with epilepsy (Williams 2012). Allometric weight scaling on CL/Q (fixed 0.75) and Vc/Vp (fixed 1.0); estimated age power (-0.267) on Vc; reference weight 70 kg, reference age 8.5 years. Default first-order oral absorption is for divalproex sodium enteric-coated sprinkle (Ka 1.2 1/h, ALAG 1 h, FIXED); other formulations (syrup K0=410 mg/h, capsule Ka=2 1/h, tablet Ka=4.1 1/h with ALAG=2 h) require overriding lka/ltlag at simulation time. Direct IV dosing into the central compartment is supported. Residual error defaults to the TDM-subset proportional SD (CV 34.8%); paper also reports a TRIAL-subset SD (CV 4.6%) for the IV-infusion subset."
   reference <- "Williams JH, Jayaraman B, Swoboda KJ, Barrett JS. Population pharmacokinetics of valproic acid in pediatric patients with epilepsy: considerations for dosing spinal muscular atrophy patients. J Clin Pharmacol. 2012;52(11):1676-1688. doi:10.1177/0091270011428138. PMID 22167565."
   vignette <- "Williams_2012_valproic_acid_pediatric"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "valproic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "valproic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -60,17 +69,17 @@ Williams_2012_valproic_acid_pediatric <- function() {
     #   Tablet:  Ka = 4.1 1/h, ALAG = 2 h
     # All four oral formulations approximate 100% bioavailability.
     # ----------------------------------------------------------------
-    lka     <- fixed(log(1.2));   label("First-order absorption rate constant for sprinkle (1/h, FIXED)") # Williams 2012 Table I (Sprinkle Ka = THETA3 = 1.2 1/h)
-    ltlag   <- fixed(log(1));     label("Absorption lag time for sprinkle (h, FIXED)")                    # Williams 2012 Table I (Sprinkle ALAG = THETA4 = 1 h)
-    lfdepot <- fixed(log(1));     label("Oral bioavailability (fraction, FIXED at 1)")                    # Williams 2012 Discussion: "approximately 100% bioavailability" for all 4 oral formulations
+    lka     <- fixed(log(1.2));   label("First-order absorption rate constant for sprinkle (1/h)") # Williams 2012 Table I (Sprinkle Ka = THETA3 = 1.2 1/h)
+    ltlag   <- fixed(log(1));     label("Absorption lag time for sprinkle (h)")                    # Williams 2012 Table I (Sprinkle ALAG = THETA4 = 1 h)
+    lfdepot <- fixed(log(1));     label("Oral bioavailability (fraction)")                    # Williams 2012 Discussion: "approximately 100% bioavailability" for all 4 oral formulations
 
     # ----------------------------------------------------------------
     # Allometric weight exponents (Williams 2012 Table I, theoretical
     # allometric values; reported without RSE in the Final Model column,
     # consistent with FIXED estimation)
     # ----------------------------------------------------------------
-    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless, FIXED)")  # Williams 2012 Table I (WT power CL = 0.75, WT power Q = 0.75)
-    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric exponent on Vc and Vp (unitless, FIXED)") # Williams 2012 Table I (WT power Vc = 1.0, WT power Vp = 1.0)
+    e_wt_cl_q  <- fixed(0.75); label("Shared allometric exponent on CL and Q (unitless)")  # Williams 2012 Table I (WT power CL = 0.75, WT power Q = 0.75)
+    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric exponent on Vc and Vp (unitless)") # Williams 2012 Table I (WT power Vc = 1.0, WT power Vp = 1.0)
 
     # ----------------------------------------------------------------
     # Age effect on Vc (estimated; bootstrap 95% CI -0.378 to 0.211

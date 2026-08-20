@@ -38,6 +38,20 @@ Thorsted_2016_somatropin_human <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
+    igf1        = list(analyte = "insulin-like growth factor 1", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -116,7 +130,7 @@ Thorsted_2016_somatropin_human <- function() {
     # included for predictions, as patients had only been deprived of
     # rhGH for 1 week in order to washout IGF-1").
     lkout   <- log(0.0178);   label("First-order IGF-1 degradation rate kout (1/h) at 70 kg") # Table 3
-    lrbase     <- fixed(log(65)); label("Baseline IGF-1 R0 (ng/mL) - fixed to human population mean (Laursen 1996)") # Table 3 / Methods
+    lrbase     <- fixed(log(65)); label("Baseline IGF-1 R0 (ng/mL) - human population mean (Laursen 1996)") # Table 3 / Methods
     lemax   <- log(9.88);     label("Maximum stimulation of kin relative to baseline (unscaled from rat)") # Table 3
     lec50   <- log(16.3);     label("rhGH concentration for 50% Emax (ug/L = ng/mL; unscaled from rat)") # Table 3
 

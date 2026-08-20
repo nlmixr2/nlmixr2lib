@@ -27,6 +27,23 @@ Roepcke_2018_tak_079 <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "TAK-079", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "TAK-079", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "TAK-079", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "CD38", units = "mg", specimen = "lymph", verified = FALSE),
+    nkcell       = list(analyte = "NK-cells", units = "mg", specimen = "lymph", verified = FALSE),
+    precursor1   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor2   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor3   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    precursor4   = list(analyte = "B-cell precursors", units = "mg", specimen = "not applicable", verified = FALSE),
+    bcell        = list(analyte = "B-cells", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list(
     ROUTE_IV = list(
       description        = "Route of administration indicator (1 = IV, 0 = SC).",
@@ -111,9 +128,9 @@ Roepcke_2018_tak_079 <- function() {
     # 0.04 units/L/day. Kss and Kdeg were estimated from the low-dose
     # single-dose studies 7 and 8 and then held fixed while fitting on
     # the entire dataset (Section 3.2 'Model development').
-    lkint       <- fixed(log(0.1));    label("Drug-target complex internalisation rate KINT (1/day; FIXED)")  # Table 2: KINT=0.1 /day FIXED; Berkeley Madonna KINT=0.1
+    lkint       <- fixed(log(0.1));    label("Drug-target complex internalisation rate KINT (1/day)")  # Table 2: KINT=0.1 /day FIXED; Berkeley Madonna KINT=0.1
     lkss        <- log(5.68);          label("QSS binding constant KSS = (KOFF + KINT)/KON (ug/mL)")           # Table 2: KSS=5.68 (%SE 38.7); Berkeley Madonna KSS=5.68
-    lksyn       <- fixed(log(0.04));   label("CD38 receptor synthesis rate KSYN (u/L per day; FIXED)")         # Table 2: KSYN=0.04 u/L/day FIXED; Berkeley Madonna KSYN=0.04
+    lksyn       <- fixed(log(0.04));   label("CD38 receptor synthesis rate KSYN (u/L per day)")         # Table 2: KSYN=0.04 u/L/day FIXED; Berkeley Madonna KSYN=0.04
     lkdeg       <- log(0.00452);       label("CD38 receptor degradation rate KDEG (1/day)")                    # Table 2: KDEG=0.00452 /day (%SE 30.1); Berkeley Madonna KDEG=0.00452
 
     # Route-of-administration effect on Vc: source paper models Vc_SC =

@@ -40,9 +40,19 @@ Mohamed_2013_procainamide <- function() {
   )
   vignette <- "Mohamed_2013_procainamide"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "procainamide", units = "mg", specimen = "plasma", verified = FALSE),
+    central_napa = list(analyte = "N-acetylprocainamide (NAPA)", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -58,10 +68,10 @@ Mohamed_2013_procainamide <- function() {
     weight_range   = "70 kg (single patient)",
     sex_female_pct = 0,
     race_ethnicity = "White (single 40-year-old white male; Case Report first paragraph).",
-    disease_state  = "CKD stage 5 (serum creatinine 10 mg/dL on ICU admission) with residual renal function (~1400 mL urine per 24 h) on continuous renal replacement therapy (CRRT) at 2000 mL/hr via a PRISMA system with an AN69/M100 hemofilter set and 150 mL/min blood flow, following aortic valve replacement complicated by monomorphic ventricular tachycardia treated with procainamide loading and maintenance infusions.",
+    disease_state  = "CKD stage 5 (serum creatinine 10 mg/dL on ICU admission) with residual renal function (~1400 mL urine per 24 h) on continuous renal replacement therapy (CRRT) at 2000 mL/h via a PRISMA system with an AN69/M100 hemofilter set and 150 mL/min blood flow, following aortic valve replacement complicated by monomorphic ventricular tachycardia treated with procainamide loading and maintenance infusions.",
     dose_range     = "IV procainamide: 1000 mg loading dose infused at 50 mg/min for 20 min; maintenance infusions of 2 mg/min for 6 h, 4 mg/min for 8 h, 2 mg/min for 7 h, and 1 mg/min for ~13 h (approximately 36 h total therapy). Simulated regimens in Figure 2 use a 20 mg/min loading for 30 min followed by 48 h of 1, 2, or 4 mg/min maintenance.",
     regions        = "United States (Indiana University Health Methodist Hospital, Indianapolis, IN).",
-    notes          = "Single-subject case report; the popPK model is a typical-value description of this specific patient's disposition. Between-subject variability is not identifiable from a single subject and is therefore not encoded (paper Table 1 does not report omega values). CRRT was maintained continuously at 2000 mL/hr during the entire procainamide administration period; the estimated Cl_other therefore combines residual renal (~58 mL/hr from the ~1400 mL/24 h urine output) with CRRT hemofiltration removal of procainamide and cannot be decomposed further without procainamide dialysate concentrations."
+    notes          = "Single-subject case report; the popPK model is a typical-value description of this specific patient's disposition. Between-subject variability is not identifiable from a single subject and is therefore not encoded (paper Table 1 does not report omega values). CRRT was maintained continuously at 2000 mL/h during the entire procainamide administration period; the estimated Cl_other therefore combines residual renal (~58 mL/h from the ~1400 mL/24 h urine output) with CRRT hemofiltration removal of procainamide and cannot be decomposed further without procainamide dialysate concentrations."
   )
 
   ini({
@@ -80,22 +90,22 @@ Mohamed_2013_procainamide <- function() {
     # metabolic)"). Encoded as `lcl_nonmet` per the parent-metabolite
     # canonical (parent's non-formation elimination arm; sibling of
     # `lcl_met`).
-    lcl_nonmet <- log(3.54)          ; label("Procainamide non-formation clearance Cl_other (L/h): CRRT + residual renal + non-NAPA-forming metabolic")           # Table 1: Cl_other = 3.54 L/hr, RSE 44.3%
+    lcl_nonmet <- log(3.54)          ; label("Procainamide non-formation clearance Cl_other (L/h): CRRT + residual renal + non-NAPA-forming metabolic")           # Table 1: Cl_other = 3.54 L/h, RSE 44.3%
 
     # Procainamide-to-NAPA formation clearance (paper Cl_f,napa) - the
     # metabolic-formation flux from parent to metabolite via hepatic
     # N-acetylation. Encoded as `lcl_met` per the parent-metabolite
     # canonical (metabolic-formation arm; sibling of `lcl_nonmet`).
-    lcl_met    <- log(3.70)          ; label("Procainamide-to-NAPA formation clearance Cl_f,napa (L/h)")                                                          # Table 1: Cl_f,napa = 3.70 L/hr, RSE 26.3%
+    lcl_met    <- log(3.70)          ; label("Procainamide-to-NAPA formation clearance Cl_f,napa (L/h)")                                                          # Table 1: Cl_f,napa = 3.70 L/h, RSE 26.3%
 
     # NAPA total elimination clearance (paper Cl_napa) - combines CRRT
     # hemofiltration and residual renal excretion of NAPA. Encoded as
     # `lcl_napa` per the metabolite canonical (`lcl_<metabsuffix>`).
-    lcl_napa   <- log(2.96)          ; label("NAPA total elimination clearance Cl_napa (L/h): CRRT + residual renal")                                             # Table 1: Cl_napa = 2.96 L/hr, RSE 32.1%
+    lcl_napa   <- log(2.96)          ; label("NAPA total elimination clearance Cl_napa (L/h): CRRT + residual renal")                                             # Table 1: Cl_napa = 2.96 L/h, RSE 32.1%
 
     # Procainamide inter-compartmental (distribution) clearance between
     # its central and peripheral compartments (paper Cld).
-    lq         <- log(19.1)          ; label("Procainamide distribution clearance Cld (L/h)")                                                                     # Table 1: Cld = 19.1 L/hr, RSE 24.6%
+    lq         <- log(19.1)          ; label("Procainamide distribution clearance Cld (L/h)")                                                                     # Table 1: Cld = 19.1 L/h, RSE 24.6%
 
     # Procainamide central volume of distribution (paper (Vc)_P). The
     # apparent volume is relative to the total dose because parent is
@@ -113,7 +123,7 @@ Mohamed_2013_procainamide <- function() {
     # hemodialysis (paper reference 9). Fixing was required because the
     # fraction of procainamide elimination going through NAPA formation
     # could not be identified independently from the concentration data.
-    lvc_napa   <- fixed(log(100))    ; label("NAPA central volume (Vc)_N (L), FIXED at 100 L (= 70 kg x 1.5 L/kg from paper reference 9)")                        # Table 1: (Vc)_N = 100 L FIXED
+    lvc_napa   <- fixed(log(100))    ; label("NAPA central volume (Vc)_N (L), 100 L (= 70 kg x 1.5 L/kg from paper reference 9)")                        # Table 1: (Vc)_N = 100 L FIXED
 
     # Residual error - Mohamed 2013 equation 4 defines a proportional
     # error model (yi = yhat_i * (1 + eps_i)) on both procainamide and

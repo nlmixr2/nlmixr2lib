@@ -6,6 +6,13 @@ Ezzati_2014_dexmedetomidine_piglet <- function() {
 
   units <- list(time = "h", dosing = "ug", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "dexmedetomidine piglet", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",

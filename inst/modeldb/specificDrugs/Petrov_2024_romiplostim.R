@@ -6,7 +6,21 @@ Petrov_2024_romiplostim <- function() {
     "Makarenko I, Petrov A, Sokolov V, Drai R, Mishchenko A, Bondareva I, Galustyan A, Sigaev V. Population Pharmacokinetic and Pharmacodynamic Modeling of Romiplostim Biosimilar GP40141 and Reference Product in Healthy Volunteers to Evaluate Biosimilarity. Clin Pharmacol Drug Dev. 2024. doi:10.1002/cpdd.1367 (PMID 38168134; reference 20 in Petrov 2024)."
   )
   vignette <- "Petrov_2024_romiplostim"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL", platelet = "10^9/L")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL", platelet = "10^9/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "romiplostim", units = "ug", specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "romiplostim", units = "ug", specimen = "plasma", verified = FALSE),
+    precursor1 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "platelet precursor", units = "ug", specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "platelets", units = "ug", specimen = "whole blood", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -30,6 +30,14 @@ Iida_2008_nicorandil <- function() {
   vignette <- "Iida_2008_nicorandil"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "nicorandil", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "nicorandil", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -185,13 +193,13 @@ Iida_2008_nicorandil <- function() {
     # effects': Equation 5 with exponent 3/4 for CL; Holford 1996 size
     # standard cited as reference [11] supplies the canonical 1.0 for V).
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent on CL (unitless, FIXED)")                      # Paper Eq 5: (Wt / 70)^(3/4)
+    label("Allometric exponent on CL (unitless)")                      # Paper Eq 5: (Wt / 70)^(3/4)
     e_wt_vc <- fixed(1.0)
-    label("Allometric exponent on V1 (unitless, FIXED)")                      # Holford 1996 [11] canonical exponent on V
+    label("Allometric exponent on V1 (unitless)")                      # Holford 1996 [11] canonical exponent on V
     e_wt_q  <- fixed(0.75)
-    label("Allometric exponent on Q (unitless, FIXED)")                       # Paper Eq 5: (Wt / 70)^(3/4) applied to all clearance terms
+    label("Allometric exponent on Q (unitless)")                       # Paper Eq 5: (Wt / 70)^(3/4) applied to all clearance terms
     e_wt_vp <- fixed(1.0)
-    label("Allometric exponent on V2 (unitless, FIXED)")                      # Holford 1996 [11] canonical exponent on V
+    label("Allometric exponent on V2 (unitless)")                      # Holford 1996 [11] canonical exponent on V
 
     # ====================================================================
     # PD structural parameters -- Iida 2008 Table 2 final-model (model 10)

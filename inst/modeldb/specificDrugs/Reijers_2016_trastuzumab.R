@@ -4,6 +4,15 @@ Reijers_2016_trastuzumab <- function() {
   vignette <- "Reijers_2016_trastuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     LBM = list(
       description        = "Lean body mass at baseline",
@@ -81,8 +90,8 @@ Reijers_2016_trastuzumab <- function() {
     # i.e. the covariate exponent is structurally 1 (linear in the
     # covariate ratio) rather than an estimated power. Encoded with
     # fixed(1) to document the slope-1 form explicitly.
-    e_lbm_vc  <- fixed(1); label("Power exponent of LBM on V1 (unitless, fixed at 1 by SI Eq. 1)")     # Reijers 2016 Online Resource Eq. 1
-    e_bmi_kel <- fixed(1); label("Power exponent of BMI on ke (unitless, fixed at 1 by SI Eq. 2)")    # Reijers 2016 Online Resource Eq. 2
+    e_lbm_vc  <- fixed(1); label("Power exponent of LBM on V1 (unitless, 1 by SI Eq. 1)")     # Reijers 2016 Online Resource Eq. 1
+    e_bmi_kel <- fixed(1); label("Power exponent of BMI on ke (unitless, 1 by SI Eq. 2)")    # Reijers 2016 Online Resource Eq. 2
 
     # Inter-individual variability (Reijers 2016 Table 2 combined model).
     # Table 2 reports omega^2 directly; the CV% column is a derived

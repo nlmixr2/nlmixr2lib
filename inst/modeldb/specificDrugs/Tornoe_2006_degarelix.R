@@ -32,8 +32,23 @@ Tornoe_2006_degarelix <- function() {
 
   paper_specific_compartments <- c("feedback", "lhpool", "lh", "testosterone")
   paper_specific_etas <- c(
-    "etalkaslow", "etalogitfr", "etalogitfdeg",
+    "etalkaslow", "etalogitfburst", "etalogitfdeg",
     "etalkrel", "etalic50", "etaldeltapd", "etalkef", "etallmax", "etall50"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "degarelix", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2       = list(analyte = "degarelix", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "degarelix", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "degarelix", units = "mg", specimen = "plasma", verified = FALSE),
+    feedback     = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
+    lhpool       = list(analyte = "LH", units = "mg", specimen = "not applicable", verified = FALSE),
+    lh           = list(analyte = "LH", units = "mg", specimen = "plasma", verified = FALSE),
+    testosterone = list(analyte = "testosterone", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -99,7 +114,7 @@ Tornoe_2006_degarelix <- function() {
     # given as logit-transformed approximations (CV(q) = (1-q) * w_q).
     # logit(0.0573) = log(0.0573 / (1 - 0.0573)) = -2.798.
     # logit(0.240)  = log(0.240  / (1 - 0.240))  = -1.153.
-    logitfr   <- log(0.0573 / (1 - 0.0573))      ; label("Logit-transformed rapid-release fraction Fr at 40 mg/mL (logit units)") # Table 3: Fr_40 = 0.0573 (RSE 6.30%)
+    logitfburst   <- log(0.0573 / (1 - 0.0573))      ; label("Logit-transformed rapid-release fraction Fr at 40 mg/mL (logit units)") # Table 3: Fr_40 = 0.0573 (RSE 6.30%)
     logitfdeg <- log(0.240  / (1 - 0.240))       ; label("Logit-transformed bioavailability F at 40 mg/mL (logit units)")         # Table 3: F_40  = 0.240  (RSE 6.83%)
 
     # ----------------------------------------------------------------
@@ -135,7 +150,7 @@ Tornoe_2006_degarelix <- function() {
     etalcl       ~ log(1 + 0.281^2)              # Table 3 IIV CL    CV 28.1% (RSE 9.61)
     etalvc       ~ log(1 + 0.246^2)              # Table 3 IIV Vc    CV 24.6% (RSE 32.3)
     etalkaslow   ~ log(1 + 0.444^2)              # Table 3 IIV t_1/2,slow,40 CV 44.4% (RSE 7.30); same on log-rate
-    etalogitfr   ~ (0.378 / (1 - 0.0573))^2      # Table 3 IIV Fr_40 CV 37.8% (RSE 10.5) on logit scale
+    etalogitfburst   ~ (0.378 / (1 - 0.0573))^2      # Table 3 IIV Fr_40 CV 37.8% (RSE 10.5) on logit scale
     etalogitfdeg ~ (0.232 / (1 - 0.240))^2       # Table 3 IIV F_40  CV 23.2% (RSE 13.4) on logit scale
 
     etalkrel     ~ log(1 + 0.834^2)              # Table 4 IIV krel,LH CV 83.4% (RSE 3.25)
@@ -165,7 +180,7 @@ Tornoe_2006_degarelix <- function() {
     vp     <- exp(lvp)
     kafast <- exp(lkafast)
     kaslow <- exp(lkaslow + etalkaslow)
-    fr     <- expit(logitfr   + etalogitfr)
+    fr     <- expit(logitfburst   + etalogitfburst)
     fdeg   <- expit(logitfdeg + etalogitfdeg)
 
     # 2-compartment disposition micro-constants

@@ -43,12 +43,24 @@ Naik_2013_fasiglifam <- function() {
   paper_specific_compartments <- c("glucose", "Hba1c")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg fasiglifam (TAK-875, oral, once daily)",
     concentration = paste(
       "Cc in mg/L (equivalent to ug/mL; EC50 = 3.16 ug/mL = 3.16 mg/L);",
       "FPG in mg/dL; HbA1c in %"
     )
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "fasiglifam", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fasiglifam", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose     = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    Hba1c       = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(
@@ -259,9 +271,9 @@ Naik_2013_fasiglifam <- function() {
     lcl <- log(0.75)             ; label("Apparent oral clearance CL/F (L/h) for typical female subject")   # Table 2 CL/F = 0.75 L/h (7.46 pct RSE); s07 TH1
     cl_male_delta <- 0.31        ; label("Additive shift on CL/F for male (L/h); paper reports males have ~41 pct higher clearance than females")  # Table 2 'Gender on CL/F' = 0.31 L/h (27.2 pct RSE); s07 TH6 additive form
     lvc <- log(5.86)             ; label("Apparent central volume V1/F (L)")                                  # Table 2 V1/F = 5.86 L (11.2 pct RSE); s07 TH2
-    lq  <- fixed(log(0.833))     ; label("Apparent intercompartmental clearance Q/F (L/h; FIXED per Naik 2013 Discussion because phase-2 sparse sampling could not identify Q, V2, ka; value from Leifke 2012 multiple-rising-dose study)")  # Table 2 Q/F = 0.833 L/h FIXED; s07 TH3 FIX
-    lvp <- fixed(log(23.7))      ; label("Apparent peripheral volume V2/F (L; FIXED per Naik 2013 Discussion; value from Leifke 2012)")   # Table 2 V2/F = 23.7 L FIXED; s07 TH4 FIX
-    lka <- fixed(log(0.075))     ; label("First-order absorption rate constant ka (1/h; FIXED per Naik 2013 Discussion; value from Leifke 2012)")  # Table 2 Ka = 0.075 1/h FIXED; s07 TH5 FIX
+    lq  <- fixed(log(0.833))     ; label("Apparent intercompartmental clearance Q/F (L/h; per Naik 2013 Discussion because phase-2 sparse sampling could not identify Q, V2, ka; value from Leifke 2012 multiple-rising-dose study)")  # Table 2 Q/F = 0.833 L/h FIXED; s07 TH3 FIX
+    lvp <- fixed(log(23.7))      ; label("Apparent peripheral volume V2/F (L; per Naik 2013 Discussion; value from Leifke 2012)")   # Table 2 V2/F = 23.7 L FIXED; s07 TH4 FIX
+    lka <- fixed(log(0.075))     ; label("First-order absorption rate constant ka (1/h; per Naik 2013 Discussion; value from Leifke 2012)")  # Table 2 Ka = 0.075 1/h FIXED; s07 TH5 FIX
 
     etalcl ~ 0.488               # Table 2 omega^2 on CL/F = 0.488 (7.45 pct RSE); s07 OMEGA1 EXP
     propSd <- sqrt(0.152)        ; label("Proportional residual SD for fasiglifam plasma concentration (fraction)")  # Table 2 sigma^2 (exponential error label; proportional error per Methods) = 0.152 (3.67 pct RSE); s07 SIGMA1
@@ -296,7 +308,7 @@ Naik_2013_fasiglifam <- function() {
     e_dd_bla1 <- 0.0133          ; label("Linear (additive) coefficient of (T_DIAG_DIAB - 4.61) on BLA1 (pct / year)")   # Table 2 'DD on BLA1' = 0.0133 pct/year (55.6 pct RSE); s05 TH6
     e_bfpg_bla1 <- 0.00181       ; label("Exponential coefficient of (FPG - 163.5) on BLA1 (1/(mg/dL))")     # Table 2 'BFPG on BLA1' = 0.00181 pct/(mg/dL) (5.1 pct RSE); s05 TH7 -- entered in supplement s05 as EXP(TH7 * (BLI - 163.5)) so 0.00181 is an exponential coefficient (see vignette Errata)
     lka1c <- log(0.00052)        ; label("First-order rate constant for HbA1c elimination KA1C (1/h)")       # Table 2 KA1C = 0.00052 1/h (11.3 pct RSE); s05 TH2
-    hl_placebo <- fixed(720)     ; label("Placebo-effect half-life HL (h; FIXED per Naik 2013 Methods: '720 h observed based upon graphical analysis of data')")   # Table 2 HL = 720 h FIXED; s05 TH3 FIX
+    hl_placebo <- fixed(720)     ; label("Placebo-effect half-life HL (h; per Naik 2013 Methods: '720 h observed based upon graphical analysis of data')")   # Table 2 HL = 720 h FIXED; s05 TH3 FIX
     mpl <- 0.0590                ; label("Maximum placebo response MPL for typical female subject (unitless)")   # Table 2 MPL = 0.0590 (21.7 pct RSE); s05 TH4
     mpl_male_delta <- 0.0363     ; label("Additive shift on MPL for male (unitless)")                        # Table 2 'Gender on MPL' = 0.0363 (32.1 pct RSE); s05 TH5
 

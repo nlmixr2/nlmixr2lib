@@ -39,7 +39,17 @@ Sherwin_2012_risperidone <- function() {
     sep = " "
   )
   vignette <- "Sherwin_2012_risperidone"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "risperidone", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "risperidone", units = "mg", specimen = "plasma", verified = FALSE),
+    central_9oh = list(analyte = "+/-)-9-hydroxyrisperidone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -141,7 +151,7 @@ Sherwin_2012_risperidone <- function() {
     # mixture model (Table 2 superscript b: fixed). The paper's earlier
     # base-model section mentions 2.6 1/h; the Table 2 final mixture-
     # model value (2.5) is authoritative.
-    lka <- fixed(log(2.5)); label("Absorption rate constant Ka (1/h); fixed per Table 2")  # Sherwin 2012 Table 2: Ka = 2.5 (Fixed)
+    lka <- fixed(log(2.5)); label("Absorption rate constant Ka (1/h); per Table 2")  # Sherwin 2012 Table 2: Ka = 2.5 (Fixed)
 
     # Shared apparent volume of distribution. The paper constrains
     # Vd/F (risperidone) = VdM/F (9-OH risperidone) per Table 2
@@ -176,7 +186,7 @@ Sherwin_2012_risperidone <- function() {
     # unrealistically high.").
     kf_pm <- 0.16; label("Fraction of risperidone metabolized to (+/-)-9-hydroxyrisperidone in CYP2D6 PMs (unitless, 0-1)")  # Sherwin 2012 Table 2: KF-PM = 0.16 (SE 17.7%; bootstrap 95% CI 0.01-0.5)
     kf_em <- 0.13; label("Fraction of risperidone metabolized to (+/-)-9-hydroxyrisperidone in CYP2D6 EMs (unitless, 0-1)")  # Sherwin 2012 Table 2: KF-EM = 0.13 (SE 36.1%; bootstrap 95% CI 0.03-0.5)
-    kf_im <- fixed(1); label("Fraction of risperidone metabolized to (+/-)-9-hydroxyrisperidone in CYP2D6 IMs (unitless, fixed at 1)")  # Sherwin 2012 Table 2: KF-IM = 1 (Fixed)
+    kf_im <- fixed(1); label("Fraction of risperidone metabolized to (+/-)-9-hydroxyrisperidone in CYP2D6 IMs (unitless)")  # Sherwin 2012 Table 2: KF-IM = 1 (Fixed)
 
     # Inter-individual variability (NONMEM OMEGA, variance scale).
     # IIV is reported separately for each metabolizer subpopulation's

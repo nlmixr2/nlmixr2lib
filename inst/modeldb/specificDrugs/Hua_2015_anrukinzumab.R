@@ -2,7 +2,16 @@ Hua_2015_anrukinzumab <- function() {
   description <- "Two-compartment population PK model for anrukinzumab (anti-IL-13 IgG1 monoclonal antibody) with first-order SC absorption and linear elimination, pooling healthy volunteers, mild-to-moderate asthma, moderate-to-severe asthma, and ulcerative colitis patients (Hua 2015)"
   reference <- "Hua F, Ribbing J, Reinisch W, Cataldi F, Martin S. A pharmacokinetic comparison of anrukinzumab, an anti-IL-13 monoclonal antibody, among healthy volunteers, asthma and ulcerative colitis patients. Br J Clin Pharmacol. 2015;80(1):101-109. doi:10.1111/bcp.12589"
   vignette <- "Hua_2015_anrukinzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "anrukinzumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "anrukinzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "anrukinzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -64,7 +73,7 @@ Hua_2015_anrukinzumab <- function() {
     lfdepot <- log(0.973);  label("SC bioavailability in non-moderate-to-severe-asthma subjects (F, log-scale)")  # Hua 2015 Table 3: F,pop = 0.973
 
     # Allometric exponents on body weight (reference 75 kg; Hua 2015 Table 3).
-    e_wt_cl    <- fixed(0.75); label("Allometric exponent of WT on CL (fixed at 0.75)")                        # Hua 2015 Table 3 / Methods: fixed to 0.75
+    e_wt_cl    <- fixed(0.75); label("Allometric exponent of WT on CL")                        # Hua 2015 Table 3 / Methods: fixed to 0.75
     e_wt_vc_vp <- 0.688;       label("Allometric exponent of WT on Vc and Vp (estimated, shared)")             # Hua 2015 Table 3: theta_WT (Vc,Vp) = 0.688
 
     # Covariate effects on CL and F (Hua 2015 Table 3 final model).

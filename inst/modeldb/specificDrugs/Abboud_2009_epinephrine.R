@@ -17,6 +17,13 @@ Abboud_2009_epinephrine <- function() {
   # (used to convert the paper's mg/h and ug/kg/min rates to nmol/h for use
   # with this model; the conversion is recorded in the validation vignette).
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "epinephrine", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at study inclusion",

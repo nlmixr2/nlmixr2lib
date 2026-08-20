@@ -50,7 +50,7 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
     bl_cm        <- 10.2;                  label("Typical baseline M/S headache days/month at acute-med use <= 5 d/mo")  # Fiedler-Kelly 2020 Table S4
     slope_AM     <- 0.460;                 label("Slope on baseline acute-med days >5 d/mo (M/S days / day acute)")       # Fiedler-Kelly 2020 Table S4
     maxPLC_cm    <- fixed(-6.24);          label("Maximum placebo response in M/S headache days (negative; days/month)")  # Fiedler-Kelly 2020 Table S4 (FIXED)
-    T50_PLC      <- fixed(1.76);           label("Time to half-maximum placebo response (months, FIXED)")                 # Fiedler-Kelly 2020 Table S4 (FIXED, NE)
+    T50_PLC      <- fixed(1.76);           label("Time to half-maximum placebo response (months)")                 # Fiedler-Kelly 2020 Table S4 (FIXED, NE)
     lhill_PLC    <- fixed(log(0.486));     label("Log Hill coefficient for placebo time-course (unitless)")               # Fiedler-Kelly 2020 Table S4 (FIXED)
     # Logit transform of typical drug-effect intercept (typical 0.157):
     # logit(0.157) = log(0.157 / (1 - 0.157)) = -1.6816. IIV is logit-normal

@@ -10,6 +10,14 @@ Vorontsova_2022_misoprostol <- function() {
   vignette <- "Vorontsova_2022_misoprostol"
   units <- list(time = "h", dosing = "ng", concentration = "pg/mL", volume = "L", clearance = "L/h")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "misoprostol", units = "ng", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "misoprostol", units = "ng", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     ROUTE_VAGINAL = list(
       description        = "Administration route (vaginal vs buccal): 1 = vaginal misoprostol, 0 = buccal misoprostol.",
@@ -130,7 +138,7 @@ Vorontsova_2022_misoprostol <- function() {
     # occasion-1 estimate (matching the SAME convention used in
     # Jonsson_2011_ethambutol.R and Aregbe_2012_alvespimycin.R).
     etaiov_fvb_1 ~ 0.0848         # Table 2 Omega row 'IOV' Estimate = 0.0848 (RSE 60.3%, shrinkage 39.4%) -- estimated for occasion 1
-    etaiov_fvb_2 ~ fix(0.0848)    # SAME-equivalent: fixed equal to occasion-1 IOV variance
+    etaiov_fvb_2 ~ fix(0.0848)    # SAME-equivalent: equal to occasion-1 IOV variance
 
     # Residual variability -- proportional error only (paper Methods:
     # 'Residual variability was modeled by a proportional error model.').

@@ -14,6 +14,15 @@
   vignette <- "Perez-Guille_2018_dexmedetomidine"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # Methods: dose 0.7 ug/kg single IV infusion over 10-15 min; plasma DEX measured by HPLC-ESI-MS/MS (5 pg/mL LLOQ); Table 2 CL in L/h, V1/V2 in L; Table 3 IC50 in ng/mL; with central in ug and vc in L, Cc = central/vc has units ug/L = ng/mL.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "dexmedetomidine", units = "ug", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",
@@ -55,10 +64,10 @@
     lvp <- log(81.2) ; label("Peripheral volume V2 at 70 kg (L)")                     # Table 2: theta_V2 = 81.2 L/70 kg (RSE 9%; bootstrap median 81.7, 95% CI 79-83.5)
 
     # Allometric exponents -- fixed a priori per Methods (Anderson and Holford theoretical exponents)
-    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless, FIXED)")     # Table 2: beta_Cl = 0.75 fixed
-    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless, FIXED)")     # Table 2: beta_V1 = 1.0 fixed
-    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q  (unitless, FIXED)")     # Table 2: beta_Q  = 0.75 fixed
-    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless, FIXED)")     # Table 2: beta_V2 = 1.0 fixed
+    e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL (unitless)")     # Table 2: beta_Cl = 0.75 fixed
+    e_wt_vc <- fixed(1)    ; label("Allometric exponent on V1 (unitless)")     # Table 2: beta_V1 = 1.0 fixed
+    e_wt_q  <- fixed(0.75) ; label("Allometric exponent on Q (unitless)")     # Table 2: beta_Q  = 0.75 fixed
+    e_wt_vp <- fixed(1)    ; label("Allometric exponent on V2 (unitless)")     # Table 2: beta_V2 = 1.0 fixed
 
     # ============================================================
     # Population PD: sigmoidal Imax model on HR fractional response

@@ -4,6 +4,13 @@ Beal_2001_iv1cmt_bql <- function() {
   vignette <- "Beal_2001_iv1cmt_bql"
   units <- list(time = "half_life", dosing = "dose_unit", concentration = "dose_unit/vol_unit")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "iv1cmt bql", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

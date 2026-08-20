@@ -2,9 +2,25 @@ Yadav_2017_imipenem_tobramycin_PA022 <- function() {
   description <- "In vitro (static-concentration time-kill). Mechanism-based PK/PD (Bulitta life-cycle growth) model of bacterial killing and resistance for imipenem combined with tobramycin against carbapenem-resistant and aminoglycoside-resistant clinical Pseudomonas aeruginosa isolate FADDI-PA022 (MIC_IPM = 16 mg/L, MIC_TOB = 8 mg/L). Three pre-existing bacterial subpopulations with signal-molecule growth inhibition and aminoglycoside-mediated outer-membrane permeabilisation (mechanistic synergy)"
   reference <- "Yadav R, Bulitta JB, Nation RL, Landersdorfer CB. Optimization of synergistic combination regimens against carbapenem- and aminoglycoside-resistant clinical Pseudomonas aeruginosa isolates via mechanism-based pharmacokinetic/pharmacodynamic modeling. Antimicrob Agents Chemother. 2017 Jan;61(1):e01011-16. doi:10.1128/AAC.01011-16. Model differential equations (Eqs 1-5) are in the main paper Methods; parameter estimates for FADDI-PA022 with tobramycin are Table 3 (FADDI-PA022 column). Amikacin combinations against FADDI-PA022 were not studied (Table 1 footnote 'NS'). Supplemental Text S1 (not on disk) contains diagnostic plots only."
   vignette <- "Yadav_2017_imipenem_aminoglycoside_pseudomonas"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   paper_specific_compartments <- c("cipm", "cags", "csig")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_susceptible_susceptible1 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_susceptible_susceptible2 = list(analyte = "Pseudomonas aeruginosa susceptible bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate1  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resistant_intermediate2  = list(analyte = "Pseudomonas aeruginosa resistant-intermediate bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant1  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_intermediate_resistant2  = list(analyte = "Pseudomonas aeruginosa intermediate-resistant bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    csig                          = list(analyte = "Signal molecule", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cipm                          = list(analyte = "Imipenem", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cags                          = list(analyte = "Tobramycin", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -27,7 +43,7 @@ Yadav_2017_imipenem_tobramycin_PA022 <- function() {
   ini({
     log10cfu0   <- 6.99;  label("Initial inoculum (log10 CFU/mL)")                                     # Table 3: Log CFU0 = 6.99 (SE 1.3%)
     log10cfumax <- 9.54;  label("Maximum population size (log10 CFU/mL); PLAT half-saturation")        # Table 3: CFUmax = 9.54 (SE 2.9%)
-    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h; FIXED)")           # Table 3: k21 = 50 (fixed)
+    lk21        <- fixed(log(50.0)); label("Log replication rate constant k21 (1/h)")           # Table 3: k21 = 50 (fixed)
 
     mgt_ss <- 63.8; label("Mean generation time, SS subpop (min)")                                     # Table 3: k12,SS row = 63.8 (SE 10.8%)
     mgt_ri <- 565;  label("Mean generation time, IPM-resistant/TOB-intermediate (min)")                # Table 3: k12,RI row = 565 (SE 19.9%)

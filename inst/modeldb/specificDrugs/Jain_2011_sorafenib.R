@@ -10,7 +10,21 @@ Jain_2011_sorafenib <- function() {
     sep = " "
   )
   vignette <- "Jain_2011_sorafenib"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "sorafenib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "sorafenib", units = "mg", specimen = "plasma", verified = FALSE),
+    gallbladder = list(analyte = "sorafenib", units = "mg", specimen = "bile", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -117,7 +131,7 @@ Jain_2011_sorafenib <- function() {
     # "Baseline bodyweight was found to be a statistically significant
     # covariate for V/F and was modelled as a power function with the exponent
     # fixed to 1"). Reference weight 80 kg (cohort median).
-    e_wt_vc <- fixed(1.0); label("Allometric exponent on V/F (fixed)")                            # Results p. 300 ("exponent fixed to 1")
+    e_wt_vc <- fixed(1.0); label("Allometric exponent on V/F")                            # Results p. 300 ("exponent fixed to 1")
 
     # Inter-individual variability. Paper-reported %CV translates to log-scale
     # variance via omega^2 = log(1 + CV^2). IIV on CL/F and V/F are reported

@@ -29,6 +29,24 @@ Mehta_2023_bedaquiline_mpbpk <- function() {
     weight = "kg"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot1         = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2         = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    liver          = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
+    blood          = list(analyte = "bedaquiline", units = "mg", specimen = "blood cell", verified = FALSE),
+    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    blood_m2       = list(analyte = "M2", units = "mg", specimen = "blood cell", verified = FALSE),
+    peripheral1_m2 = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE),
+    lesion         = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
+    lung           = list(analyte = "bedaquiline", units = "mg", specimen = "tissue", verified = FALSE),
+    lesion_m2      = list(analyte = "M2", units = "mg", specimen = "tissue", verified = FALSE),
+    lung_m2        = list(analyte = "M2", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

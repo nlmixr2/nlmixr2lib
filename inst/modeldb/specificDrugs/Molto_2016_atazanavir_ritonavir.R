@@ -32,7 +32,18 @@ Molto_2016_atazanavir_ritonavir <- function() {
     "doi:10.1111/bcp.13072."
   )
   vignette <- "Molto_2016_atazanavir_ritonavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "atazanavir (ATV)", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "atazanavir (ATV)", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv   = list(analyte = "ritonavir (RTV)", units = "mg", specimen = "administration site", verified = FALSE),
+    central_rtv = list(analyte = "ritonavir (RTV)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -93,7 +104,7 @@ Molto_2016_atazanavir_ritonavir <- function() {
     lmtt <- log(0.80)
     label("Atazanavir mean transit time MTT (h)")                      # Table 2 final MTT_ATV = 0.80 h (RSE 6.2%)
     lnn  <- fixed(log(7))
-    label("Atazanavir number of transit compartments N (unitless, FIXED to integer 7)") # Table 2 N_transit_ATV = 7; no RSE reported because N was held at an integer selected by model search
+    label("Atazanavir number of transit compartments N (unitless, integer 7)") # Table 2 N_transit_ATV = 7; no RSE reported because N was held at an integer selected by model search
     lcl  <- log(11.7)
     label("Atazanavir baseline apparent clearance in the absence of ritonavir, CL/F_ATV (L/h)") # Table 2 final CL/F_ATV = 11.7 L/h (RSE 6.8%); represents the unboosted typical value (interaction factor evaluates to 1 at C_RTV = 0)
     lvc  <- log(95.7)
@@ -108,7 +119,7 @@ Molto_2016_atazanavir_ritonavir <- function() {
     lmtt_rtv <- log(0.522)
     label("Ritonavir mean transit time MTT (h)")                        # Table 2 final MTT_RTV = 0.522 h (RSE 3.8%)
     lnn_rtv  <- fixed(log(11))
-    label("Ritonavir number of transit compartments N (unitless, FIXED to integer 11)") # Table 2 N_transit_RTV = 11; no RSE reported because N was held at an integer selected by model search
+    label("Ritonavir number of transit compartments N (unitless, integer 11)") # Table 2 N_transit_RTV = 11; no RSE reported because N was held at an integer selected by model search
     lcl_rtv  <- log(9.68)
     label("Ritonavir apparent clearance, CL/F_RTV (L/h)")               # Table 2 final CL/F_RTV = 9.68 L/h (RSE 3.0%)
     lvc_rtv  <- log(70.5)

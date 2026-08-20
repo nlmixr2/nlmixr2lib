@@ -2,7 +2,15 @@ Hong_2011_atazanavir <- function() {
   description <- "C0-delinked one-compartment first-order-absorption population PK model with absorption lag-time for orally administered atazanavir (ATV) in HIV-infected adults and pediatric patients (3 months to 21 years), with covariate effects of age (ka), body weight (CL/F, V/F), sex, study-site region (Africa), ritonavir comedication (CL/F and Frel), and capsule-vs-powder formulation (Frel) (Hong 2011)."
   reference <- "Hong Y, Kowalski KG, Zhang J, Zhu L, Horga M, Bertz R, Pfister M, Roy A. Model-based approach for optimization of atazanavir dose recommendations for HIV-infected pediatric patients. Antimicrob Agents Chemother. 2011;55(12):5746-5752. doi:10.1128/aac.00554-11"
   vignette <- "Hong_2011_atazanavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

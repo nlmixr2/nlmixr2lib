@@ -23,7 +23,7 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     sep = " "
   )
   vignette <- "vandenBerg_2021_uprifosbuvir"
-  units    <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units    <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   paper_specific_compartments <- c(
     "gut", "gut_m5", "gut_m6",
@@ -35,6 +35,34 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     "transit_gut_m5_3", "transit_gut_m5_4",
     "transit_gut_par",
     "pseudo_m4_gut"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "uprifosbuvir", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot2           = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    gut              = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
+    gut_m6           = list(analyte = "M6", units = "nmol", specimen = "tissue", verified = FALSE),
+    liver            = list(analyte = "uprifosbuvir", units = "nmol", specimen = "tissue", verified = FALSE),
+    central          = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    uxp              = list(analyte = "UXP", units = "nmol", specimen = "not applicable", verified = FALSE),
+    central_m6       = list(analyte = "M6", units = "nmol", specimen = "plasma", verified = FALSE),
+    transit_cxp_m5   = list(analyte = "CXP", units = "nmol", specimen = "administration site", verified = FALSE),
+    cxp              = list(analyte = "CXP", units = "nmol", specimen = "not applicable", verified = FALSE),
+    central_m5       = list(analyte = "M5", units = "nmol", specimen = "plasma", verified = FALSE),
+    portal_vein      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    gut_m5           = list(analyte = "M5", units = "nmol", specimen = "tissue", verified = FALSE),
+    transit_gut_m5_1 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_m5_2 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_m5_3 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_m5_4 = list(analyte = "M5", units = "nmol", specimen = "administration site", verified = FALSE),
+    transit_gut_par  = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral2      = list(analyte = "uprifosbuvir", units = "nmol", specimen = "plasma", verified = FALSE),
+    pseudo_m4_gut    = list(analyte = "M4", units = "nmol", specimen = "tissue", verified = FALSE)
   )
 
   covariateData <- list(
@@ -167,7 +195,7 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     # FrM6g = 1 - FrM5g - FrM4g = 0.521 (Table 1 note f).
     lkm4g          <- fixed(log(0.119));  label("Pseudo-M4 gut absorption rate (log 1/h)")                                    # TH(40); Table 1
     lkm6g          <- fixed(log(0.106));  label("Gut M6 absorption rate constant (log 1/h)")                                  # TH(10); Table 1
-    lk2m5g         <- fixed(log(0.402));  label("Rate gut M5 -> M5 transit chain (log 1/h; K3M5g = K2M5g fixed)")             # TH(12); Table 1
+    lk2m5g         <- fixed(log(0.402));  label("Rate gut M5 -> M5 transit chain (log 1/h; K3M5g = K2M5g)")             # TH(12); Table 1
     lkelm6g_50000  <- fixed(log(6.10));   label("Conc-dep gut M6 elimination rate at 50,000 nmol gut M6 (log 1/h; tablet)")   # TH(11); Table 1
     e_pow_kelm6g   <- fixed(1.39);        label("Power exponent on the conc-dep gut M6 elimination (tablet)")                 # TH(41); Table 1
 
@@ -180,15 +208,15 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
 
     # ---------- UXP - CXP intrahepatic cycle ----------
     lkunuc1        <- fixed(log(13.3));   label("Rate constant UXP -> M6 (log; NONMEM parameterises as THETA/1000)")          # TH(20); Table 1 note i (natural 0.0133 1/h)
-    lkucxp         <- fixed(log(0.785));  label("Rate constant UXP -> CXP (log 1/h; kCUXP = kUCXP fixed)")                    # TH(21); Table 1
+    lkucxp         <- fixed(log(0.785));  label("Rate constant UXP -> CXP (log 1/h; kCUXP = kUCXP)")                    # TH(21); Table 1
     lkeluxp_50000  <- fixed(log(0.481));  label("Conc-dep UXP -> CXP additional rate at 50,000 nmol UXP (log 1/h)")           # TH(43); Table 1
     e_pow_keluxp   <- fixed(1.34);        label("Power exponent on the conc-dep UXP -> CXP rate")                             # TH(44); Table 1
     lkcnuc         <- fixed(log(33.8));   label("Rate constant CXP -> M5 transit (log; NONMEM parameterises as THETA/1000)")  # TH(23); Table 1 note k (natural 0.0338 1/h)
     lkcnuc2        <- fixed(log(0.122));  label("Rate constant transit CXP-M5 -> central M5 (log 1/h)")                       # TH(37); Table 1
 
     # ---------- M5 and M6 systemic clearance ----------
-    lcl_m6         <- fixed(log(2.60));   label("M6 systemic clearance (log L/h; V_M6 = V_c fixed)")                          # TH(24); Table 1
-    lcl_m5         <- fixed(log(79.5));   label("M5 systemic clearance in HV (log L/h; V_M5 = V_c fixed)")                    # TH(26); Table 1
+    lcl_m6         <- fixed(log(2.60));   label("M6 systemic clearance (log L/h; V_M6 = V_c)")                          # TH(24); Table 1
+    lcl_m5         <- fixed(log(79.5));   label("M5 systemic clearance in HV (log L/h; V_M5 = V_c)")                    # TH(26); Table 1
 
     # ---------- HCV covariate on CL_M5 ----------
     e_hcv_cl_m5    <- fixed(0.716);       label("HCV factor on CL_M5 (multiplicative; 28.4% lower in HCV patients)")          # TH(53); Table 3
@@ -218,7 +246,7 @@ vandenBerg_2021_uprifosbuvir_pbpk <- function() {
     # ~exp(9.77) = 17500 nmol/L (Table 6 note a).
     lec50          <- fixed(9.77);        label("Log EC50 for viral inhibition (log nmol/L UXP; typical EC50 = 17,500)")      # TH(68); Table 6 note a
     lhill          <- fixed(log(2.80));   label("Log Hill coefficient for viral inhibition (unitless)")                       # Table 6
-    lemax          <- fixed(log(1.0));    label("Log Emax for viral inhibition (fixed to 1; unitless multiplier)")            # Table 6
+    lemax          <- fixed(log(1.0));    label("Log Emax for viral inhibition (unitless multiplier)")            # Table 6
 
     # ==================== IIV (Table 4) ====================
     # Full 15-eta variance-covariance matrix (with the kCnuc/CLM5 block) is

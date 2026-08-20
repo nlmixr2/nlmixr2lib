@@ -12,7 +12,21 @@ Xia_2024_warfarin <- function() {
   vignette <- "Xia_2024_warfarin"
   paper_specific_compartments <- c("coag_s1", "coag_s2", "coag_s3", "coag_l1", "coag_l2", "coag_l3")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "warfarin", units = "mg", specimen = "administration site", verified = FALSE),
+    coag_s1   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_s2   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_s3   = list(analyte = "activated coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l1   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l2   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE),
+    coag_l3   = list(analyte = "inactive coagulation factor", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -109,7 +123,7 @@ Xia_2024_warfarin <- function() {
     lcl_cyp2c9_s3 <- fixed(log(0.0422)) ; label("CL per CYP2C9*3 allele (L/h)")              # Xia 2024 Table 3 (fixed, Hamberg literature value)
     e_age_cl      <- fixed(-0.00571)    ; label("Age effect on CL (fractional change per year, reference age 71 y)")  # Xia 2024 Table 3 / supplement Eq 7 (fixed)
     lvc           <- fixed(log(14.3))   ; label("Apparent volume of distribution V/F (L) at effect site")             # Xia 2024 Table 3 (fixed, Hamberg literature value)
-    lemax         <- fixed(log(1))      ; label("Maximum anticoagulant effect Emax (fixed at 1 = 100%)")              # Xia 2024 supplement Section 1.1 (fixed)
+    lemax         <- fixed(log(1))      ; label("Maximum anticoagulant effect Emax (1 = 100%)")              # Xia 2024 supplement Section 1.1 (fixed)
     lhill        <- fixed(log(1.39))   ; label("Hill coefficient gamma for the sigmoid Emax effect (unitless)")      # Xia 2024 Table 3 (fixed)
     lmtt1         <- fixed(log(27.2))   ; label("Mean transit time of fast coagulation-factor chain MTT1 (h)")        # Xia 2024 Table 3 (fixed)
     lmtt2         <- fixed(log(110.9))  ; label("Mean transit time of slow coagulation-factor chain MTT2 (h)")        # Xia 2024 Table 3 (fixed)

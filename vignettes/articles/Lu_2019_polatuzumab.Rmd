@@ -39,7 +39,7 @@ The model couples two submodels (paper Figure 1):
      repeated dosing via a sigmoidal Hill function
      `CL_NS(t) = CL_INF * (1 + CL_INF,EMAX * T50^gamma / (T50^gamma + t^gamma))`,
    - `CL_t` (rapidly-declining linear clearance)
-     `CL_t(t) = CL_T0 * exp(-kdes * t)`, and
+     `CL_t(t) = CL_T0 * exp(-cl_exp_kdes * t)`, and
    - `CL_MM` (Michaelis-Menten clearance)
      `CL_MM = Vmax * V1 / (KM + A1/V1)`.
 2. **MMAE submodel** -- unconjugated MMAE, two-compartment, with apparent
@@ -107,8 +107,8 @@ Table S3. The table below collates them.
 
 | Parameter (nlmixr2lib) | Source quantity            | Value           | Source location  |
 |------------------------|----------------------------|-----------------|------------------|
-| `lkdes`                | kdes                       | 0.0046 1/hour   | Table 1, theta1  |
-| `lcl_time`             | CL_TIME (initial)          | 0.00623 L/hour  | Table 1, theta2  |
+| `lcl_exp_kdes`                | kdes                       | 0.0046 1/hour   | Table 1, theta1  |
+| `lcl_exp_component`             | CL_TIME (initial)          | 0.00623 L/hour  | Table 1, theta2  |
 | `lcl`               | CL_SS                      | 0.0344 L/hour   | Table 1, theta3  |
 | `lvc`                  | V1                         | 3.15 L          | Table 1, theta4  |
 | `lvp`                  | V2                         | 3.98 L          | Table 1, theta5  |
@@ -302,13 +302,13 @@ typ_sim <- rxode2::rxSolve(typ, typ_events, returnType = "data.frame")
 typ_sim |>
   mutate(
     cl_mm = vmax / (km_ac + central / vc),  # CL_MM in L/hour
-    cl_total = cl_ns + cl_t + cl_mm
+    cl_total = cl_ns + cl_exp_component_t + cl_mm
   ) |>
-  select(time, cl_ns, cl_t, cl_mm, cl_total) |>
-  pivot_longer(c(cl_ns, cl_t, cl_mm, cl_total),
+  select(time, cl_ns, cl_exp_component_t, cl_mm, cl_total) |>
+  pivot_longer(c(cl_ns, cl_exp_component_t, cl_mm, cl_total),
                names_to = "pathway", values_to = "cl_Lhr") |>
   mutate(pathway = factor(pathway,
-                          levels = c("cl_ns", "cl_t", "cl_mm", "cl_total"),
+                          levels = c("cl_ns", "cl_exp_component_t", "cl_mm", "cl_total"),
                           labels = c("CL_NS", "CL_t", "CL_MM", "Total CL"))) |>
   ggplot(aes(time, cl_Lhr, colour = pathway)) +
   geom_line(linewidth = 0.8) +
@@ -324,7 +324,7 @@ typ_sim |>
   mutate(
     cl_mm = vmax / (km_ac + central / vc),
     input_clns_ugh = frac_ns * cl_ns * central / vc,
-    input_clt_ugh  = frac_ns * frac_clt * cl_t * central / vc,
+    input_clt_ugh  = frac_ns * frac_clt * cl_exp_component_t * central / vc,
     input_clmm_ugh = frac_ns * frac_mm * cl_mm * central / vc,
     input_total_ugh = input_clns_ugh + input_clt_ugh + input_clmm_ugh
   ) |>

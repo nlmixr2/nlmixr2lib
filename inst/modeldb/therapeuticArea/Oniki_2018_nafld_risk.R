@@ -144,7 +144,7 @@ Oniki_2018_nafld_risk <- function() {
     # NONMEM: $THETA -5.00E+00 FIX ; THETA(1) BASE
     # When (BMI - 17) -> 0 the sigmoidal-Emax contribution -> 0 and
     # logit(P(NAFLD)) -> base_logit = -5, i.e. P -> expit(-5) ~ 0.007.
-    base_logit         <- fixed(-5)        ; label("Baseline logit floor of P(NAFLD) for BMI <= 17 (fixed; unitless logit)")  # s011 .lst THETA(1) BASE; FIXED in $THETA
+    base_logit         <- fixed(-5)        ; label("Baseline logit floor of P(NAFLD) for BMI <= 17 (unitless logit)")  # s011 .lst THETA(1) BASE; FIXED in $THETA
 
     # ----- Sigmoidal-Emax structural parameters (Eqs. 2, 4) -----
     # NONMEM variable LGT50 in s011 corresponds to (BMI50 - 17) per

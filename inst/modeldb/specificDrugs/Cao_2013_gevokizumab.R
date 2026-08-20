@@ -4,6 +4,17 @@ Cao_2013_gevokizumab <- function() {
   vignette <- "Cao_2013_gevokizumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "gevokizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    tight  = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky  = list(analyte = "gevokizumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph  = list(analyte = "gevokizumab", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -22,7 +33,7 @@ Cao_2013_gevokizumab <- function() {
   ini({
     sigma_tight <- 0.931; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.931 (CV 2.58%)
     sigma_leaky <- 0.837; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.837 (CV 2.63%)
-    lcl   <- log(0.16032); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00668 L/hr (CV 1.87%) = 0.16032 L/day
+    lcl   <- log(0.16032); label("Plasma clearance (CLp, L/day)")                          # Cao 2013 Table 2 (Model A): CLp = 0.00668 L/h (CV 1.87%) = 0.16032 L/day
   })
 
   model({

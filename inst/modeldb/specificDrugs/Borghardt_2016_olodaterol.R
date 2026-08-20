@@ -26,7 +26,21 @@ Borghardt_2016_olodaterol <- function() {
     sep = " "
   )
   vignette <- "Borghardt_2016_olodaterol"
-  units <- list(time = "hour", dosing = "ug", concentration = "pg/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "pg/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
+    depot3      = list(analyte = "olodaterol", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral3 = list(analyte = "olodaterol", units = "ug", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "olodaterol", units = "ug", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     SMOKE = list(
@@ -194,7 +208,7 @@ Borghardt_2016_olodaterol <- function() {
     # as a model output. See vignette Assumptions and deviations.
     # ============================================================
     propSd <- 0.158;          label("Proportional residual error on plasma Cc (fraction)")  # Borghardt 2016 Table 2 (plasma proportional RSV = 15.8% CV, 1.66% RSE)
-    addSd  <- fixed(0.00001); label("Additive residual error on plasma Cc (pg/mL; fixed)")  # Borghardt 2016 Table 2 (plasma additive RSV = 0.00001 pg/mL, fixed)
+    addSd  <- fixed(0.00001); label("Additive residual error on plasma Cc (pg/mL)")  # Borghardt 2016 Table 2 (plasma additive RSV = 0.00001 pg/mL, fixed)
   })
 
   model({

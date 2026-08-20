@@ -4,6 +4,14 @@ Waterhouse_2024_vedolizumab <- function() {
   vignette    <- "Waterhouse_2024_vedolizumab"
   units       <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "vedolizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -60,6 +68,14 @@ Waterhouse_2024_vedolizumab <- function() {
       reference_category = "0 (no documented intestinal aGvHD)",
       notes              = "Time-varying (per Waterhouse 2024 Methods 2.2.1, NOCB-interpolated). Multiplicative power-form effect on CL: 1.07^AGVHD_INTESTINE. Paper Discussion Section 3.2.3 concludes the effect is not clinically meaningful (90% CI 0.870-1.27 crosses 1). Mechanistically on-target for vedolizumab (integrin alpha-4 beta-7 blockade of gut-homing leukocyte trafficking).",
       source_name        = "INTGVHD"
+    ),
+    OCC = list(
+      description        = "Integer-valued dosing-occasion indicator for inter-occasion-variability multiplexing on CL",
+      units              = "(count)",
+      type               = "categorical",
+      reference_category = NULL,
+      notes              = "Waterhouse 2024 Methods 2.2.2 defines an occasion as each administered vedolizumab dose with subsequent PK observations taking place prior to the next administered dose. Values 1..7 cover the phase 3 VEDO-3035 schedule (Days -1, +13, +41, +69, +97, +125, +153); the phase 1b VEDO-1015 schedule (Days -1, +13, +42) uses values 1..3 only. Records preceding the first dose take OCC = 1. Decomposed inside `model()` into binary indicators `oc1`..`oc7` that multiplex the seven IOV etas on log-CL.",
+      source_name        = "OCC"
     )
   )
 
@@ -158,8 +174,8 @@ Waterhouse_2024_vedolizumab <- function() {
     # Equation S2 ("theta_11 for Q (fixed to 0.75)"). Following the paper's own equation form
     # (Eq S2) and the standard allometric-clearance convention, Q = 0.75. The Table 2 value
     # 0.50 is treated as a typographical error and is documented in the vignette Errata.
-    e_wt_q  <- fixed(0.75); label("Allometric exponent of WT on Q (fixed)")   # Section 3.2.2 + Supp Eq S2
-    e_wt_vp <- fixed(1.00); label("Allometric exponent of WT on Vp (fixed)")  # Table 2 + Supp Eq S2
+    e_wt_q  <- fixed(0.75); label("Allometric exponent of WT on Q")   # Section 3.2.2 + Supp Eq S2
+    e_wt_vp <- fixed(1.00); label("Allometric exponent of WT on Vp")  # Table 2 + Supp Eq S2
 
     # Estimated categorical covariate multipliers (Waterhouse 2024 Table 2, power form:
     # CL *= multiplier^indicator; null effect = 1).
@@ -178,12 +194,24 @@ Waterhouse_2024_vedolizumab <- function() {
                                  0.0214,  0.0323,
                                 -0.0253,  0.0272, 0.179)  # Table 3
 
-    # IOV on CL (Table 3): variance = 0.0315, CV% = 17.9. Not encoded as a
-    # separate occasion-indexed eta on lcl (requires an OCC event-table column;
-    # the modelling of per-occasion within-subject variability is beyond the
-    # scope of the simulation-only use case). The population-typical + IIV
-    # variability alone reproduces the paper's VPC to within the reported
-    # prediction intervals; IOV magnitude is documented here for provenance.
+    # Inter-occasion variability on CL -- Waterhouse 2024 Table 3: variance = 0.0315
+    # (CV% = 17.9, 95% CI 0.0190-0.0440, shrinkage 55.4%). Waterhouse 2024 Methods
+    # 2.2.2: "A new occasion was defined whenever a vedolizumab dose was administered
+    # with subsequent vedolizumab PK observations taking place prior to the next
+    # administered dose." Seven occasions cover the phase 3 VEDO-3035 dosing schedule
+    # (Days -1, +13, +41, +69, +97, +125, +153); the phase 1b VEDO-1015 schedule has
+    # three. A single NONMEM `$OMEGA BLOCK(1)` variance is shared across occasions
+    # via `SAME`; nlmixr2 has no `SAME` shortcut, so each occasion gets its own eta
+    # with the variance fixed to the occasion-1 value after the first (matching the
+    # convention in Jonsson_2011_ethambutol.R, Zhao_2012_abacavir.R, and
+    # Chen_2023_nemonoxacin.R).
+    etaiov_cl_1 ~ 0.0315       # Table 3: IOV-CL variance = 0.0315 (CV% = 17.9)
+    etaiov_cl_2 ~ fix(0.0315)  # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_3 ~ fix(0.0315)  # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_4 ~ fix(0.0315)  # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_5 ~ fix(0.0315)  # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_6 ~ fix(0.0315)  # SAME-equivalent: equal to occasion-1 IOV variance
+    etaiov_cl_7 ~ fix(0.0315)  # SAME-equivalent: equal to occasion-1 IOV variance
 
     # Residual error -- Waterhouse 2024 Table 3: sigma^2_prop = 0.0241 (CV% = 15.5).
     propSd <- sqrt(0.0241); label("Proportional residual error on vedolizumab concentration (fraction)")  # Table 3
@@ -199,7 +227,21 @@ Waterhouse_2024_vedolizumab <- function() {
     lymph_floor <- 10
     lymph_use   <- (LYMPH_ABS < lymph_floor) * lymph_floor + (LYMPH_ABS >= lymph_floor) * LYMPH_ABS
 
-    cl <- exp(lcl + etalcl) *
+    # Decompose the integer-valued occasion column into binary indicators for IOV
+    # multiplexing on log-CL across the seven scheduled vedolizumab dosing occasions.
+    oc1 <- (OCC == 1)
+    oc2 <- (OCC == 2)
+    oc3 <- (OCC == 3)
+    oc4 <- (OCC == 4)
+    oc5 <- (OCC == 5)
+    oc6 <- (OCC == 6)
+    oc7 <- (OCC == 7)
+
+    iov_cl <- oc1 * etaiov_cl_1 + oc2 * etaiov_cl_2 + oc3 * etaiov_cl_3 +
+      oc4 * etaiov_cl_4 + oc5 * etaiov_cl_5 + oc6 * etaiov_cl_6 +
+      oc7 * etaiov_cl_7
+
+    cl <- exp(lcl + etalcl + iov_cl) *
       (WT / 75)^e_wt_cl *
       (ALB / 40)^e_alb_cl *
       (lymph_use / 100)^e_lymph_cl *

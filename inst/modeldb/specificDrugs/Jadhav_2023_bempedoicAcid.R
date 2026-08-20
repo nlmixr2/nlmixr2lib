@@ -4,6 +4,16 @@ Jadhav_2023_bempedoicAcid <- function() {
   vignette    <- "Jadhav_2023_bempedoicAcid"
   units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "bempedoicAcid", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "bempedoicAcid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "bempedoicAcid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "bempedoicAcid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -143,7 +153,7 @@ Jadhav_2023_bempedoicAcid <- function() {
 
     # Relative oral bioavailability. Fig. 1 caption: "F1 oral bioavailability
     # (typical value fixed at 1, such that systemic parameters are apparent)".
-    lfdepot <- fixed(log(1)); label("Relative oral bioavailability F1 in the no-atorvastatin reference (fraction; FIXED at 1)")  # Fig. 1 caption: F1 typical value fixed at 1
+    lfdepot <- fixed(log(1)); label("Relative oral bioavailability F1 in the no-atorvastatin reference (fraction)")  # Fig. 1 caption: F1 typical value fixed at 1
 
     # ---- Covariate effects on CL/F (Table 2, "Covariates of CL/F") ----
     e_wt_cl              <- 0.61;    label("Power exponent of (WT / 83.7 kg) on CL/F (unitless)")                                   # Table 2: Body weight = 0.61 (%RSE 9.8; 95% CI 0.493, 0.727)

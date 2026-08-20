@@ -2,7 +2,15 @@ Horita_2018_rifampicin <- function() {
   description <- "One-compartment population pharmacokinetic model with sequential zero-order then first-order absorption and first-order elimination for oral rifampin (rifampicin) in Ghanaian children with active tuberculosis (Horita 2018); allometric weight scaling on CL/F (fixed 0.75) and V/F (fixed 1.0) normalised to the cohort median 14.3 kg."
   reference <- "Horita Y, Alsultan A, Kwara A, Antwi S, Enimil A, Ortsin A, Dompreh A, Yang H, Wiesner L, Peloquin CA. Evaluation of the Adequacy of WHO Revised Dosages of the First-Line Antituberculosis Drugs in Children with Tuberculosis Using Population Pharmacokinetic Modeling and Simulations. Antimicrob Agents Chemother. 2018;62(9):e00008-18. doi:10.1128/AAC.00008-18"
   vignette <- "Horita_2018_rifampicin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "rifampicin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "rifampicin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -44,8 +52,8 @@ Horita_2018_rifampicin <- function() {
 
     # Allometric exponents on body weight -- fixed at canonical theoretical values.
     # Horita 2018 Results 'RIF' paragraph 1: 'The fixed exponents were 0.75 for CL/F and 1.0 for V/F.'
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (fixed, unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
-    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V/F  (fixed, unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
+    e_wt_vc <- fixed(1.0);  label("Allometric exponent on V/F (unitless)")   # Horita 2018 Results 'RIF' paragraph 1: fixed exponent
 
     # Inter-individual variability. Table 2 IIV column reports 'omega (CV%)' on the
     # log scale (back-transformed via CV% = sqrt(exp(omega^2) - 1) * 100). Encode

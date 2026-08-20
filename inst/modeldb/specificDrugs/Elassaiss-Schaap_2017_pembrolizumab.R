@@ -10,6 +10,15 @@
   vignette <- "Elassaiss-Schaap_2017_pembrolizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -39,7 +48,7 @@
     lvp   <- log(2.85);     label("Peripheral volume of distribution Vp (L)")                         # Table 2 Vp    = 2.85 L
     lvmax <- log(0.114);    label("Maximum Michaelis-Menten elimination rate Vmax (mg/day)")          # Table 2 Vmax  = 0.114 mg/d
     lkm   <- log(0.0784);   label("Michaelis-Menten constant Km (ug/mL)")                             # Table 2 Km    = 0.0784 ug/mL
-    lfdepot <- fixed(log(1)); label("Bioavailability F (unitless; fixed at 1)")                       # Table 2 F = 1 (fixed)
+    lfdepot <- fixed(log(1)); label("Bioavailability F (unitless)")                       # Table 2 F = 1 (fixed)
 
     # PD parameters (Imax model on IL-2 stimulation ratio; Table 2 footnote
     # d: "Exponent of the estimated parameter" - the listed value is the

@@ -3,9 +3,16 @@ Silva_2023_perampanel <- function() {
   reference <- "Silva R, Colom H, Bicker J, Almeida A, Silva A, Sales F, Santana I, Falcao A, Fortuna A. Population Pharmacokinetic Analysis of Perampanel in Portuguese Patients Diagnosed with Refractory Epilepsy. Pharmaceutics. 2023;15(6):1704. doi:10.3390/pharmaceutics15061704"
   vignette <- "Silva_2023_perampanel"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "perampanel", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

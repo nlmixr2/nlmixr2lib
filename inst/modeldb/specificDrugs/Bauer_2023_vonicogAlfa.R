@@ -38,9 +38,19 @@ Bauer_2023_vonicogAlfa <- function() {
   paper_specific_compartments <- c("fviii")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "IU (VWF:RCo activity)",
     concentration = "IU/dL (VWF:RCo activity; FVIII:C activity)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "vonicog alfa", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "vonicog alfa", units = NA_character_, specimen = "plasma", verified = FALSE),
+    fviii       = list(analyte = "endogenous factor VIII activity (FVIII:C)", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

@@ -3,13 +3,26 @@ NA_NA_miridesap <- function() {
   reference <- "Sahota T, Berges A, Barton S, Cookson L, Zamuner S, Richards D. Target Mediated Drug Disposition Model of CPHPC in Patients With Systemic Amyloidosis. CPT Pharmacometrics Syst Pharmacol. 2015;4(2):e15. doi:10.1002/psp4.15. Companion DDMORE Foundation Model Repository entry: DDMODEL00000262."
   vignette <- "NA_NA_miridesap"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent (SAP plasma; equal to mg/L * 1000)"
   )
 
   ddmore_id    <- "DDMODEL00000262"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "CPHPC", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "CPHPC", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "SAP", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target      = list(analyte = "SAP", units = "mg", specimen = "not applicable", verified = FALSE),
+    target_peripheral = list(analyte = "CPHPC + SAP complex", units = "mg", specimen = "plasma", verified = FALSE),
+    complex           = list(analyte = "CPHPC + SAP complex", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -86,8 +99,8 @@ NA_NA_miridesap <- function() {
 
     # Subcutaneous depot -- both fixed; bundle's simulated dataset does not
     # exercise SC dosing but the .ctl supports it via a separate compartment.
-    lka     <- fixed(0.4055)   ; label("Log SC absorption rate (log 1/h); ka = exp(lka) = 1.50 1/h - FIXED (Sahota 2015 Table 2: 1.5 FIX)")            # THETA(14) FIXED
-    lfdepot <- fixed(0)        ; label("Log SC bioavailability (log unitless); F = exp(lfdepot) = 1 - FIXED")                                          # THETA(13) FIXED
+    lka     <- fixed(0.4055)   ; label("Log SC absorption rate (log 1/h); ka = exp(lka) = 1.50 1/h (Sahota 2015 Table 2: 1.5 FIX)")            # THETA(14) FIXED
+    lfdepot <- fixed(0)        ; label("Log SC bioavailability (log unitless); F = exp(lfdepot) = 1")                                          # THETA(13) FIXED
 
     # SAP turnover and distribution
     lkout    <- -3.07          ; label("Log endogenous SAP elimination rate (log 1/h); kout = exp(lkout) = 0.0464 1/h (Sahota 2015 Table 2: 0.046)")   # THETA(1)
@@ -110,14 +123,14 @@ NA_NA_miridesap <- function() {
     etalkout    ~ 0.169          # OMEGA1 (KOUT)
     etalcl      ~ 0.0481         # OMEGA2 (CL)
     etalvc      ~ 0.0914         # OMEGA3 (V)
-    etalq       ~ fixed(0.0225)  # OMEGA4 (Q) FIXED
-    etalvp      ~ fixed(0.0225)  # OMEGA5 (V2) FIXED
+    etalq       ~ fixed(0.0225)  # OMEGA4 (Q)
+    etalvp      ~ fixed(0.0225)  # OMEGA5 (V2)
     etalsap0    ~ 0.0415         # OMEGA6 (SAP10)
-    etalkon     ~ fixed(0.0225)  # OMEGA7 (KON) FIXED
-    etalkint    ~ fixed(0.0225)  # OMEGA8 (KINT) FIXED
+    etalkon     ~ fixed(0.0225)  # OMEGA7 (KON)
+    etalkint    ~ fixed(0.0225)  # OMEGA8 (KINT)
     etalq_sap   ~ 0.273          # OMEGA9 (Q4)
     etalvp_sap  ~ 0.366          # OMEGA10 (V4)
-    etalka      ~ fixed(0.0225)  # OMEGA11 (KSC) FIXED
+    etalka      ~ fixed(0.0225)  # OMEGA11 (KSC)
 
     # Residual error - both observations are proportional only; the $ERROR
     # block multiplies IPRED by (1 + W * EPS1) for CMT.EQ.1 (CPHPC) and CMT.EQ.3

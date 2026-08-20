@@ -16,7 +16,18 @@ Bienczak_2016_nevirapine <- function() {
     sep = " "
   )
   vignette <- "Bienczak_2016_nevirapine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -141,7 +152,7 @@ Bienczak_2016_nevirapine <- function() {
     # (FpreH(3.3) = 1 - (1 - 0.583) * exp(-0.450 * 3.3) = 0.906, paper says
     # 'approximately 90%'). See vignette Assumptions and deviations.
     # =========================================================================
-    lfpreh_old <- fixed(log(1.0));  label("Pre-hepatic bioavailability FpreH in older children (unitless, fixed at 1)")  # Bienczak 2016 Table 3 row 'FpreH older children = 1 (fixed)'
+    lfpreh_old <- fixed(log(1.0));  label("Pre-hepatic bioavailability FpreH in older children (unitless)")  # Bienczak 2016 Table 3 row 'FpreH older children = 1 (fixed)'
     fpreh_birth <- 0.583;           label("Pre-hepatic bioavailability FpreH at birth, as a fraction of the older-child reference (unitless)") # Bienczak 2016 Table 3 row 'FpreH at birth (%) = 58.30 (50.48-68.24)'
     t_half_fpreh <- 1.54;           label("Half-life of the exponential FpreH approach to the older-child plateau (years)") # Bienczak 2016 Table 3 row 't_1/2 (years) = 1.54 (1.47-2.58)'
 

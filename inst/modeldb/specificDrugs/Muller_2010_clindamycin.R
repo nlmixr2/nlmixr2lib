@@ -21,7 +21,16 @@ Muller_2010_clindamycin <- function() {
     sep = " "
   )
   vignette <- "Muller_2010_clindamycin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "clindamycin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -199,7 +208,7 @@ Muller_2010_clindamycin <- function() {
     # with a typical-value fixed effect, and etalrv carries the
     # reported variance.
     # ============================================================
-    lrv     <- fixed(log(1));  label("Residual-variability scaling anchor (fixed log(1))")           # structural anchor; pairs etalrv with a typical-value fixed effect
+    lrv     <- fixed(log(1));  label("Residual-variability scaling anchor (log(1))")           # structural anchor; pairs etalrv with a typical-value fixed effect
     etalrv  ~ 0.306             # Table 3 IIV in error = 0.306 (RSE 50.0%, 95% CI 0.00612-0.606)
 
     # ============================================================

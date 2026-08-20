@@ -19,6 +19,15 @@ Girard_2012_pimasertib <- function() {
   ddmore_id    <- "DDMODEL00000215"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "pimasertib", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cumhaz  = list(analyte = "ocular-adverse-event", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     DIS_HYPERT = list(
       description        = "History of hypertension comorbidity (binary; 1 = prior or current hypertension, 0 = none)",

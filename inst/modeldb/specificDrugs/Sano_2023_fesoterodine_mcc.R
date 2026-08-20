@@ -60,7 +60,7 @@ Sano_2023_fesoterodine_mcc <- function() {
     # $THETA. It nevertheless carries an ESTIMATED inter-individual
     # variance (etalemax below), so the typical value is fixed while the
     # between-patient spread around it is not.
-    lemax  <- fixed(log(390)); label("Maximum attainable MCC (expected bladder capacity) plateau for age > 12 years (mL), FIXED in source") # Sano 2023 Table 3 Emax: "390, Fixed"; = 30 * (12 + 1) from the EBC rule in Methods section 2.2.3
+    lemax  <- fixed(log(390)); label("Maximum attainable MCC (expected bladder capacity) plateau for age > 12 years (mL), from source") # Sano 2023 Table 3 Emax: "390, Fixed"; = 30 * (12 + 1) from the EBC rule in Methods section 2.2.3
 
     # ------------------------------------------------------------------
     # Inter-individual variability -- OMEGA BLOCK(2) on BASE and Emax

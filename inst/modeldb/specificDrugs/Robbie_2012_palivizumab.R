@@ -4,6 +4,15 @@ Robbie_2012_palivizumab <- function() {
   vignette <- "Robbie_2012_palivizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "palivizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "palivizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "palivizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -101,8 +110,8 @@ Robbie_2012_palivizumab <- function() {
     lfdepot  <- log(0.694);    label("Intramuscular bioavailability (F, fraction)")        # Robbie 2012 Table 2
 
     # Allometric exponents (Robbie 2012 eq. 3 and Table 2)
-    e_wt_cl_q <- 0.75; label("Allometric exponent on CL and Q (unitless)")
-    e_wt_vc_vp <- 1.0; label("Allometric exponent on Vc and Vp (unitless)")
+    e_wt_cl_q <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")            # Robbie 2012 Methods: "a fixed allometric exponent (theta_allo) which is assigned a value of 0.75 for clearance processes and 1.0 for anatomical volumes"
+    e_wt_vc_vp <- fixed(1.0); label("Allometric exponent on Vc and Vp (unitless)")           # Robbie 2012 Methods, same sentence as e_wt_cl_q
 
     # Maturation parameters for CL (Robbie 2012 eq. 1a; asymptotic-exponential form centered on
     # 40-week PAGE = 9.195 months). beta is CL at term as fraction of the allometrically scaled

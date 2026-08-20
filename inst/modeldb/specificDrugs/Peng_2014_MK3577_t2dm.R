@@ -52,6 +52,17 @@ Peng_2014_MK3577_t2dm <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    glucose            = list(analyte = "Glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucose_peripheral = list(analyte = "Glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
+    insulin            = list(analyte = "Insulin", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucagon           = list(analyte = "Glucagon", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     CP_MK3577_NM = list(
       description        = paste(

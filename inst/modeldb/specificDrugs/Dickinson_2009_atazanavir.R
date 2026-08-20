@@ -2,7 +2,15 @@ Dickinson_2009_atazanavir <- function() {
   description <- "One-compartment first-order-absorption population PK model with absorption lag-time for oral ritonavir-boosted atazanavir in HIV-infected adults and healthy volunteers; ritonavir AUC0-24 (median 7.52 mg*h/L) enters CL/F via a power function (Dickinson 2009)."
   reference <- "Dickinson L, Boffito M, Back D, Waters L, Else L, Davies G, Khoo S, Pozniak A, Aarons L. Population pharmacokinetics of ritonavir-boosted atazanavir in HIV-infected patients and healthy volunteers. J Antimicrob Chemother. 2009;63(6):1233-1243. doi:10.1093/jac/dkp102"
   vignette <- "Dickinson_2009_atazanavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_RTV_AUC = list(

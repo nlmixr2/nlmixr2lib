@@ -35,7 +35,18 @@ Lee_2016_raltegravir <- function() {
     sep = " "
   )
   vignette <- "Lee_2016_raltegravir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1     = list(analyte = "raltegravir", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "raltegravir", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "raltegravir glucuronide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -108,7 +119,7 @@ Lee_2016_raltegravir <- function() {
 
     lka     <- log(4.23);     label("First-order absorption rate constant ka (1/h)")             # Table 2: ka = 4.23 1/h (RSE 19.3%)
     lmtt    <- log(1.04);     label("Mean transit time MTT through the transit chain (h)")       # Table 2: MTT = 1.04 h (RSE 25.8%)
-    lfdepot <- fixed(log(1)); label("Oral bioavailability F (unitless, fixed at 1)")             # Table 2: F = 1 FIXED (no IV reference data; absolute F not identifiable)
+    lfdepot <- fixed(log(1)); label("Oral bioavailability F (unitless)")             # Table 2: F = 1 FIXED (no IV reference data; absolute F not identifiable)
 
     # ------------------------------------------------------------------
     # Raltegravir parent disposition parameters (Lee 2016 Table 2)
@@ -130,7 +141,7 @@ Lee_2016_raltegravir <- function() {
     # to metabolite); see R/conventions.R::paperNamedParams.
     lkmet_gluc <- log(0.0324); label("Glucuronide formation rate constant kmet (= FMET; 1/h)")    # Table 2: FMET = 0.0324 (RSE 10.4%)
     lcl_gluc   <- log(0.715);  label("Glucuronide first-order clearance CL_GLU (L/h)")            # Table 2: CL_GLU = 0.715 L/h (RSE 10.2%)
-    lvc_gluc   <- fixed(log(1)); label("Glucuronide volume of distribution V_GLU (L, fixed)")     # Table 2: V_GLU = 1 L FIXED
+    lvc_gluc   <- fixed(log(1)); label("Glucuronide volume of distribution V_GLU (L)")     # Table 2: V_GLU = 1 L FIXED
 
     # ------------------------------------------------------------------
     # Inter-individual variability

@@ -19,7 +19,15 @@ Related references:
   #! parameter-sourcing rule).
   reference   <- "<Full citation with DOI>"
   vignette    <- "<FirstAuthor>_<Year>_<drug>"  #! basename of vignettes/articles/<FirstAuthor>_<Year>_<drug>.Rmd; used by list-of-models to link here
-  units       <- list(time = "<day|hour>", dosing = "<mg|mg/kg>", concentration = "<ug/mL|ng/mL>")
+  units       <- list(time = "<h|day|min>", dosing = "<mg|ug|nmol>", concentration = "<ug/mL|ng/mL>")
+  #! Use the CANONICAL spelling. checkModelConventions() errors on alternatives
+  #! and buildModelDb() aborts: "h" not "hour"/"hr", "min" not "minute",
+  #! "ug" not "microgram"/"mcg", "day" not "days".
+  #! Spelling only -- never convert between units. If the paper reports in
+  #! minutes, write "min" and keep the values in minutes; rewriting them as
+  #! hours would misstate every number.
+  #! Generic dimensionless models may use the placeholders "time_unit" /
+  #! "dose_unit"; real extractions may not.
 
   covariateData <- list(
     #! One entry per covariate. Canonical names come from inst/references/covariate-columns.md.
@@ -34,6 +42,33 @@ Related references:
       source_name        = "WT"
     )
     #! Add further covariates here.
+  )
+
+  compartmentData <- list(
+    #! REQUIRED whenever the model has d/dt() states. One entry per ODE state,
+    #! keyed by the exact state name. Issue #482: there is otherwise no
+    #! machine-readable way to ask what molecule a compartment holds or what
+    #! biological matrix it represents, and inferring it from the state name
+    #! works only while models happen to use `central` / `peripheral1`.
+    #!
+    #! analyte  -- the molecular species held in this state. The primary drug,
+    #!             a named metabolite, a target protein, or a drug-target
+    #!             complex. Use the generic drug name, not a trade name.
+    #! units    -- units of the STATE (an amount: mg, umol, pmol, nmol), which
+    #!             are usually NOT the `units$concentration` above.
+    #! specimen -- the biological matrix, from conventions$specimenVocabulary
+    #!             (R/conventions.R). Two entries are not matrices and exist
+    #!             so you never have to invent one:
+    #!               "administration site" -- depot and transit states
+    #!               "not applicable"      -- latent / PD / bookkeeping states
+    #!                 (effect, precursor*, cumhaz, circ, tumour size, ...)
+    #! verified -- TRUE only if you confirmed analyte AND specimen against the
+    #!             source paper. FALSE means derived from the state name and
+    #!             still needs checking. Do not set TRUE to silence the check.
+    central     = list(analyte = "<drug>", units = "<mg|umol>", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "<drug>", units = "<mg|umol>", specimen = "plasma", verified = TRUE),
+    depot       = list(analyte = "<drug>", units = "<mg|umol>", specimen = "administration site", verified = TRUE)
+    #! Add one entry per remaining d/dt() state.
   )
 
   population <- list(
@@ -69,9 +104,9 @@ Related references:
     # If F1 was fixed to 1: lfdepot <- fixed(log(1)); label("Bioavailability") # <source location>
 
     # Allometric / maturation parameters (if applicable)
-    # Estimated:           allo_cl <- <value>; label("Allometric exponent on CL (unitless)")
-    # Fixed at canonical:  allo_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")
-    allo_cl <- <value>; label("Allometric exponent on CL (unitless)")  # <source location>
+    # Estimated:           e_wt_cl <- <value>; label("Allometric exponent on CL (unitless)")
+    # Fixed at canonical:  e_wt_cl <- fixed(0.75); label("Allometric exponent on CL (unitless)")
+    e_wt_cl <- <value>; label("Allometric exponent on CL (unitless)")  # <source location>
 
     # Covariate effects — one per covariate/parameter combination
     # Wrap in fixed() if the paper held this coefficient constant.
@@ -104,7 +139,7 @@ Related references:
 
     # 2. Individual parameters
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^allo_cl  # * maturation_cl * race_cl ...
+    cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^e_wt_cl  # * maturation_cl * race_cl ...
     vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^allo_v
 
     # 3. Micro-constants (if using explicit ODEs)
@@ -134,10 +169,10 @@ Related references:
   ```r
   model({
     ka <- exp(lka + etalka)
-    cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^e_wt_cl
     vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^allo_v
     vp <- exp(lvp) * (WT / <ref_wt>)^allo_v
-    q  <- exp(lq)  * (WT / <ref_wt>)^allo_cl
+    q  <- exp(lq)  * (WT / <ref_wt>)^e_wt_cl
     Cc <- linCmt()
     Cc ~ prop(propSd)
   })

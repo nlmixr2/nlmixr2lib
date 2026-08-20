@@ -2,7 +2,16 @@ Zhu_2014_tacrolimus <- function() {
   description <- "Two-compartment population PK model for oral tacrolimus in Chinese adult liver transplant recipients (Zhu 2014), with first-order absorption, a power-form joint DOSE x POD covariate effect on apparent clearance, log-normal IIV on CL/F, V2/F, Q/F, V3/F, and ka, and proportional residual error. Bioavailability was not estimated; the structural disposition parameters are apparent values (CL/F, V/F, Q/F)."
   reference <- "Zhu L, Wang H, Sun X, Rao W, Qu W, Zhang Y, Sun L. The Population Pharmacokinetic Models of Tacrolimus in Chinese Adult Liver Transplantation Patients. Journal of Pharmaceutics. 2014;2014:713650. doi:10.1155/2014/713650"
   vignette <- "Zhu_2014_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     DOSE = list(

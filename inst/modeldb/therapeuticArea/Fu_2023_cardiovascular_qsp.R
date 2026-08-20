@@ -25,9 +25,20 @@ Fu_2023_cardiovascular_qsp <- function() {
   paper_specific_compartments <- c("hr", "svt", "tpr")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "amount unit (implicit V = 1 in the hypothetical-drug PK; the drug-effect Emax uses the central amount directly so any amount unit is valid provided EC50 is on the same scale)",
     concentration = "beats/min (HR), mL/beat (SV), mmHg*min/mL (TPR), mL/min (CO), mmHg (MAP), and hypothetical amount units for the drug (Cc)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "hypothetical drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hr      = list(analyte = "heart rate (HR)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    svt     = list(analyte = "stroke volume turnover (SVT)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    tpr     = list(analyte = "total peripheral resistance (TPR)", units = NA_character_, specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list()

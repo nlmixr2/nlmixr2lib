@@ -2,7 +2,15 @@ He_2012_lamotrigine <- function() {
   description <- "One-compartment population PK model for oral lamotrigine in Chinese paediatric patients with epilepsy aged 0.5-17 years (He 2012). First-order absorption with Ka fixed at 1.0 1/h and bioavailability fixed at 1 (lamotrigine steady-state trough therapeutic-drug-monitoring data, which do not identify Ka or F), and first-order elimination from a single central compartment. Apparent oral clearance is scaled by an estimated power of total body weight (exponent 0.635) and modified exponentially by concomitant antiepileptic comedication: valproate (CONMED_VPA) reduces CL, while the enzyme-inducers carbamazepine (CONMED_CBZ) and phenobarbital (CONMED_PB) increase CL. Apparent central volume is fixed at 16.7 L at the 27.87 kg reference weight, scaled linearly with total body weight (allometric exponent fixed at 1.0)."
   reference   <- "He DK, Wang L, Lu W, Qin J, Zhang S, Li L, Zhang JM, Bao WQ, Song XQ, Liu HT. Population pharmacokinetics of lamotrigine in Chinese children with epilepsy. Acta Pharmacol Sin. 2012 Nov;33(11):1417-1423. doi:10.1038/aps.2012.118"
   vignette    <- "He_2012_lamotrigine"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "lamotrigine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lamotrigine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -64,15 +72,15 @@ He_2012_lamotrigine <- function() {
     # bioavailability was fixed at 1.0; absolute F is not separately
     # identifiable from steady-state trough data.
 
-    lka <- fixed(log(1.0)); label("First-order absorption rate constant (Ka, 1/h, fixed)")          # He 2012 Methods, page 1418: "absorption rate (Ka) was fixed at 1.0 h-1"
+    lka <- fixed(log(1.0)); label("First-order absorption rate constant (Ka, 1/h)")          # He 2012 Methods, page 1418: "absorption rate (Ka) was fixed at 1.0 h-1"
     lcl <- log(1.01);       label("Apparent oral clearance at 27.87 kg reference TBW (CL/F, L/h)")  # He 2012 Table 3 final model: theta1 = 1.01 (RSE 4.48%)
-    lvc <- fixed(log(16.7)); label("Apparent central volume at 27.87 kg reference TBW (V/F, L, fixed)") # He 2012 Table 3 final model: theta6 = 16.7 (RSE "-", i.e. fixed); derived by solving 45 = theta6 * (75/27.87) so the model reproduces 45 L at a 75 kg adult (He 2012 Results, page 1420)
+    lvc <- fixed(log(16.7)); label("Apparent central volume at 27.87 kg reference TBW (V/F, L)") # He 2012 Table 3 final model: theta6 = 16.7 (RSE "-", i.e. fixed); derived by solving 45 = theta6 * (75/27.87) so the model reproduces 45 L at a 75 kg adult (He 2012 Results, page 1420)
 
     # Allometric exponents on total body weight. CL exponent estimated;
     # Vc exponent fixed at 1.0 (linear scaling per the paper's stated
     # Vd formula Vd = 16.7 * (TBW/27.87)).
     e_wt_cl <- 0.635;       label("Allometric TBW exponent on CL/F (unitless)")              # He 2012 Table 3 final model: theta2 = 0.635 (RSE 7.91%)
-    e_wt_vc <- fixed(1.0);  label("Allometric TBW exponent on V/F (unitless, fixed)")        # He 2012 Results, page 1420: "It was intended to be a fixed allometric covariate model such as Vd(L) = 16.7 * (WT/27.87)"
+    e_wt_vc <- fixed(1.0);  label("Allometric TBW exponent on V/F (unitless)")        # He 2012 Results, page 1420: "It was intended to be a fixed allometric covariate model such as Vd(L) = 16.7 * (WT/27.87)"
 
     # AED-coadministration effects on apparent oral clearance.
     # Exponential categorical form: cl *= exp(theta * indicator) for each

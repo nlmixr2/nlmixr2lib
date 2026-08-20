@@ -10,9 +10,24 @@ Allegaert_2015_paracetamol <- function() {
     sep = " "
   )
   vignette <- "Allegaert_2015_paracetamol"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
   ddmore_id    <- "DDMODEL00000267"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "APAP-glucuronide", units = "mg", specimen = "plasma", verified = FALSE),
+    central_sulf = list(analyte = "APAP-sulphate", units = "mg", specimen = "plasma", verified = FALSE),
+    urine_gluc   = list(analyte = "APAP-glucuronide", units = "mg", specimen = "urine", verified = FALSE),
+    urine_sulf   = list(analyte = "APAP-sulphate", units = "mg", specimen = "urine", verified = FALSE),
+    urine_apap   = list(analyte = "APAP", units = "mg", specimen = "urine", verified = FALSE),
+    peripheral2  = list(analyte = "APAP", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

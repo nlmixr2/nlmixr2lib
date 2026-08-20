@@ -2,7 +2,18 @@ Dunn_2025_tranexamicAcid <- function() {
   description <- "Two-compartment population PK model for tranexamic acid (TXA) with parallel first-order intramuscular and first-order oral absorption (oral lag time) and first-order elimination, in pregnant individuals receiving IV, IM, or oral TXA for prevention or treatment of postpartum hemorrhage (Dunn 2025)."
   reference   <- "Dunn A, Felfeli M, Seifert SM, Gilliot S, Ducloy-Bouthors A-S, Shakur-Still H, Geer A, Grassin-Delyle S, Luban NL, van den Anker JN, Gobburu JVS, Roberts I, Ahmadzia HK. Evaluating tranexamic acid dosing strategies for postpartum hemorrhage: a population pharmacokinetic approach in pregnant individuals. J Clin Pharmacol. 2025;65(10):1262-1272. doi:10.1002/jcph.70031"
   vignette    <- "Dunn_2025_tranexamicAcid"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_im    = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    depot_oral  = list(analyte = "tranexamic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tranexamic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

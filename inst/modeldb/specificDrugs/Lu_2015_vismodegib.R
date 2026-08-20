@@ -4,6 +4,14 @@ Lu_2015_vismodegib <- function() {
   vignette    <- "Lu_2015_vismodegib"
   units       <- list(time = "day", dosing = "mg", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "vismodegib", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "vismodegib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age (years).",

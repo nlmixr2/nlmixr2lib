@@ -2,7 +2,15 @@ Mukai_2019_mogamulizumab <- function() {
   description <- "Two-compartment population PK model for mogamulizumab in adults with cutaneous T-cell lymphoma or adult T-cell lymphoma (Mukai 2019)"
   reference <- "Mukai M, Mould DR, Nishimura K, Gallerani E, Grimwood D. Population Pharmacokinetic Modeling of Mogamulizumab in Adults With Cutaneous T-Cell Lymphoma or Adult T-Cell Lymphoma. J Clin Pharmacol. 2020;60(1):58-66. doi:10.1002/jcph.1564"
   vignette <- "Mukai_2019_mogamulizumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "mogamulizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mogamulizumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     ALB = list(
@@ -71,10 +79,10 @@ Mukai_2019_mogamulizumab <- function() {
 
   ini({
     # Structural PK parameters (log-transformed)
-    lcl <- log(0.0138); label("Clearance at reference covariates (L/hr)") # Table 5
+    lcl <- log(0.0138); label("Clearance at reference covariates (L/h)") # Table 5
     lvc <- log(3.65);   label("Central volume of distribution at reference covariates (L)") # Table 5, V1
     lvp <- log(2.48);   label("Peripheral volume of distribution at reference covariates (L)") # Table 5, V2
-    lq  <- log(0.0532); label("Intercompartmental clearance (L/hr)") # Table 5, Q
+    lq  <- log(0.0532); label("Intercompartmental clearance (L/h)") # Table 5, Q
 
     # Covariate effects on CL
     e_alb_cl  <- -1.81; label("ALB effect on CL (power exponent, reference 4.0 g/dL)") # Table 5

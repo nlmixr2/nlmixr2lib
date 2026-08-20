@@ -4,9 +4,16 @@ Bellanti_2015_deferoxamine <- function() {
   vignette <- "Bellanti_2015_deferoxamine"
 
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "ug/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "deferoxamine", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -88,7 +95,7 @@ Bellanti_2015_deferoxamine <- function() {
     # variance). The model loses the within-subject between-occasion drift the paper estimates
     # but preserves the population-level CRT spread. See vignette Assumptions and deviations.
     lcrt_mult <- fixed(log(1))
-    label("Multiplicative CRT factor anchor (log scale, fixed at log(1) = 0; carries IIV originally reported as IOV)")  # structural anchor for the IOV-encoded-as-IIV pattern
+    label("Multiplicative CRT factor anchor (log scale, log(1) = 0; carries IIV originally reported as IOV)")  # structural anchor for the IOV-encoded-as-IIV pattern
     etalcrt_mult ~ 0.252   # Bellanti 2015 Table III row IOV-on-CRT (variance; encoded as IIV on the log-1 anchor)
 
     # ----- Residual error (proportional on serum ferritin) -----

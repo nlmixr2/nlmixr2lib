@@ -2,7 +2,15 @@ Kim_2015_valsartan <- function() {
   description <- "Two-compartment population PK model for valsartan with zero-order absorption in healthy adult Korean male volunteers (Kim 2015)"
   reference <- "Kim Y, Son H, Son M, Lee D, Heo YA, Park K. Assessment of statistical power for covariate effects in data from phase I clinical trials. Transl Clin Pharmacol. 2015;23(1):31-34. doi:10.12793/tcp.2015.23.1.31"
   vignette <- "Kim_2015_valsartan"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "valsartan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -9,7 +9,16 @@ Wang_2015_rucaparib <- function() {
     "Clin Pharmacol Drug Dev. 2015;4(2):89-98. doi:10.1002/cpdd.176."
   )
   vignette <- "Wang_2015_rucaparib"
-  units <- list(time = "hr", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "rucaparib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BL_PARP_PBL = list(
@@ -58,12 +67,12 @@ Wang_2015_rucaparib <- function() {
     # paragraph: "the typical volume of distribution of rucaparib in peripheral
     # compartment (311 L for V2 and 48 L for V3) was much larger than that in
     # the central compartment (15.5 L)... the high intercompartmental
-    # clearances (21.7 L/hr for Q2, and 52.9 L/hr for Q3)").
-    lcl  <- log(17.5);  label("Total clearance CL (L/h)")                          # Wang 2015 Table 1: CL = 17.5 L/hr (RSE 6.57%)
+    # clearances (21.7 L/h for Q2, and 52.9 L/h for Q3)").
+    lcl  <- log(17.5);  label("Total clearance CL (L/h)")                          # Wang 2015 Table 1: CL = 17.5 L/h (RSE 6.57%)
     lvc  <- log(15.5);  label("Central volume of distribution V1 (L)")             # Wang 2015 Table 1: V1 = 15.5 L (RSE 11.6%)
-    lq   <- log(21.7);  label("Distributional clearance to peripheral1 Q2 (L/h)")  # Wang 2015 Discussion p.95: Q2 = 21.7 L/hr
+    lq   <- log(21.7);  label("Distributional clearance to peripheral1 Q2 (L/h)")  # Wang 2015 Discussion p.95: Q2 = 21.7 L/h
     lvp  <- log(311);   label("Peripheral volume 1 V2 (L)")                        # Wang 2015 Discussion p.95: V2 = 311 L
-    lq2  <- log(52.9);  label("Distributional clearance to peripheral2 Q3 (L/h)")  # Wang 2015 Discussion p.95: Q3 = 52.9 L/hr
+    lq2  <- log(52.9);  label("Distributional clearance to peripheral2 Q3 (L/h)")  # Wang 2015 Discussion p.95: Q3 = 52.9 L/h
     lvp2 <- log(48);    label("Peripheral volume 2 V3 (L)")                        # Wang 2015 Discussion p.95: V3 = 48 L
 
     # PD parameters -- direct-effect Emax model for PARP activity in PBL

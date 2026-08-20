@@ -35,6 +35,15 @@ Langdon_2010_PF00821385_human <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "PF00821385", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "PF00821385", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PF00821385", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -75,7 +84,7 @@ Langdon_2010_PF00821385_human <- function() {
     # PK structural parameters -- Langdon 2010 Table 2 (human final NONMEM
     # estimate; SE and bootstrap 95% CI as reported).
     # =====================================================================
-    lfdepot <- fixed(log(1)); label("Oral bioavailability (FIXED at 1; absolute F unknown)")  # Table 2: F = 1 (FIXED)
+    lfdepot <- fixed(log(1)); label("Oral bioavailability (absolute F unknown)")  # Table 2: F = 1 (FIXED)
     lka     <- log(0.599);    label("First-order oral absorption rate constant ka (1/h)")     # Table 2: ka = 0.599 1/h (SE 0.0101; bootstrap 95% CI 0.582 - 0.616)
     lcl     <- log(36.7);     label("Apparent clearance CL/F (L/h)")                          # Table 2: CL/F = 36.7 L/h (SE 2.55; bootstrap 95% CI 32.8 - 40.9)
     lvc     <- log(18.4);     label("Apparent central volume Vc/F (L)")                       # Table 2: Vc/F = 18.4 L (SE 3.08; bootstrap 95% CI 14.2 - 24.3)
@@ -99,7 +108,7 @@ Langdon_2010_PF00821385_human <- function() {
     # quantify fu directly for either species; the operator-chosen value
     # fu = 0.64 is applied to both dog and human models for consistency
     # (no species-difference in fu is reported). See vignette Errata.
-    lfu <- fixed(log(0.64)); label("Plasma unbound fraction (FIXED; back-calculated)")        # vignette Errata (not in source); back-calculation from paper Introduction
+    lfu <- fixed(log(0.64)); label("Plasma unbound fraction (back-calculated)")        # vignette Errata (not in source); back-calculation from paper Introduction
 
     # =====================================================================
     # IIV. Per Methods paragraph 'Human pharmacokinetic-pharmacodynamic

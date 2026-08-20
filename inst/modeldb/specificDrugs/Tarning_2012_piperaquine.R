@@ -34,7 +34,22 @@ Tarning_2012_piperaquine <- function() {
     sep = " "
   )
   vignette <- "Tarning_2012_dihydroartemisinin_piperaquine"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     PREG = list(
@@ -151,7 +166,7 @@ Tarning_2012_piperaquine <- function() {
     # variability in F is captured via the per-occasion BOV etas
     # (etaiov_fdepot_1..3, CV 56.3% per occasion) plus the proportional
     # pregnancy multiplier below.
-    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless, fixed)")           # Tarning 2012 Table 2: F = 1 (fixed)
+    lfdepot <- fixed(log(1)) ; label("Relative bioavailability F (unitless)")           # Tarning 2012 Table 2: F = 1 (fixed)
 
     # Pregnancy proportional effects. Tarning 2012 Results
     # 'Pharmacokinetics of piperaquine': '45.0% and 46.8% increase in

@@ -7,7 +7,16 @@ Li_2017_cediranib <- function() {
     "Br J Clin Pharmacol 83(8):1723-1733. doi:10.1111/bcp.13266"
   )
   vignette <- "Li_2017_cediranib"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "cediranib", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "cediranib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "cediranib", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -64,7 +73,7 @@ Li_2017_cediranib <- function() {
     # the reference value (F = 1)" for sparse-sampling occasions; rich-sampling
     # F1 carried IOV (44.6% CV) that is dropped from this single-occasion
     # simulation library model (see vignette Assumptions and deviations).
-    lfdepot <- fixed(log(1.0)) ; label("Bioavailability into depot (F1, fixed)")                               # Li 2017 Table 2 F1 = 1 (fixed)
+    lfdepot <- fixed(log(1.0)) ; label("Bioavailability into depot (F1)")                               # Li 2017 Table 2 F1 = 1 (fixed)
 
     # Covariate effects -- Li 2017 page 1727 final covariate equations:
     #   CL/F = 26.3 * (Age/59)^-0.409 * (WT/73)^0.517

@@ -18,7 +18,15 @@
     sep = " "
   )
   vignette <- "Boer-Perez_2026_piperacillin"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "piperacillin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -97,8 +105,8 @@
     lvc <- log(0.866);  label("Typical V at BW = 1.76 kg (L)")                                          # Boer-Perez 2026 Table 2: theta_V  = 0.866 L (RSE 8%)
 
     # Allometric / covariate exponents (Boer-Perez 2026 Table 2 covariate equation; eq. 3 in Methods)
-    e_wt_cl    <- 0.75;   label("Allometric exponent on CL (unitless, fixed)")  # Methods: k = 0.75 for CL (eq. 3)
-    e_wt_vc    <- 1.0;    label("Allometric exponent on V (unitless, fixed)")   # Methods: k = 1 for V (eq. 3)
+    e_wt_cl    <- fixed(0.75);   label("Allometric exponent on CL (unitless)")  # Methods: k = 0.75 for CL (eq. 3)
+    e_wt_vc    <- fixed(1.0);    label("Allometric exponent on V (unitless)")   # Methods: k = 1 for V (eq. 3)
     e_creat_cl <- -0.635; label("Power exponent on (CREAT / 0.4) for CL (unitless)")  # Boer-Perez 2026 Table 2: theta_SCr = -0.635 (RSE 36%)
 
     # Maturation Hill function constants (Boer-Perez 2026 Methods, fixed from Rhodin 2009, ref 35)

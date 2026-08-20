@@ -12,7 +12,7 @@ Yin_2021_pexidartinib <- function() {
     sep = " "
   )
   vignette <- "Yin_2021_pexidartinib"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   covariateData <- list(
     CAV = list(
@@ -75,13 +75,13 @@ Yin_2021_pexidartinib <- function() {
     # and re-logged here for the standard `l` (log) prefix convention.
     lbase   <- log(9.36)     ; label("Typical baseline tumor size Y0 at reference (cm)")                              # Yin 2021 Table S2 theta1 = 9.36 (95% CI 8.04, 10.7), RSE 7.18%
     lkdrug  <- log(0.196)    ; label("Typical drug-effect rate constant kdrug at reference ((mg/L)^-1)")             # Yin 2021 Table S2 exp(theta6) = 0.196 (95% CI 0.101, 0.377), RSE 20.6%
-    lkonset <- log(0.000225) ; label("Typical drug-effect onset rate constant konset at reference (1/hr)")           # Yin 2021 Table S2 exp(theta8) = 0.000225 (95% CI 0.000119, 0.000425), RSE 3.86%
+    lkonset <- log(0.000225) ; label("Typical drug-effect onset rate constant konset at reference (1/h)")           # Yin 2021 Table S2 exp(theta8) = 0.000225 (95% CI 0.000119, 0.000425), RSE 3.86%
 
     # Fixed structural effects. Yin 2021 Results: Emax fixed at 0.999 (Table S2 theta7);
     # placebo-cohort tumor growth rate estimated at 0.227 cm/yr with a 95% CI that included
     # zero (-0.13, 0.583), so it was fixed to 0 for subsequent drug-effect model development.
-    emax_pd   <- fixed(0.999) ; label("Maximal achievable drug effect Emax (unitless; FIXED)")                        # Yin 2021 Table S2 theta7 FIXED = 0.999
-    growth_pd <- fixed(0)     ; label("Natural tumor growth rate (cm/hr; FIXED to 0)")                                # Yin 2021 Table S2 theta2 FIXED = 0.00 cm/yr; encoded as 0/hr
+    emax_pd   <- fixed(0.999) ; label("Maximal achievable drug effect Emax (unitless)")                        # Yin 2021 Table S2 theta7 FIXED = 0.999
+    growth_pd <- fixed(0)     ; label("Natural tumor growth rate (cm/h)")                                # Yin 2021 Table S2 theta2 FIXED = 0.00 cm/yr; encoded as 0/h
 
     # Multiplicative covariate effects on baseline Y0, kdrug, and konset. The
     # values in Yin 2021 Table S2 are the already-exponentiated multipliers

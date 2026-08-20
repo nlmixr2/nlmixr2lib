@@ -24,6 +24,13 @@ Janssen_2017_cabazitaxel <- function() {
   vignette <- "Janssen_2017_cabazitaxel_phenotyping"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "cabazitaxel", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CYP3A4 = list(
       description        = "Individual midazolam clearance used as a CYP3A metabolic-phenotype probe",

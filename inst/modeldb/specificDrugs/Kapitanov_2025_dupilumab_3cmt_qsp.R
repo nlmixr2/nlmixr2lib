@@ -72,6 +72,22 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central             = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2         = list(analyte = "dupilumab", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_central      = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral1  = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target_peripheral2  = list(analyte = "IL4R", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_central     = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_peripheral1 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_peripheral2 = list(analyte = "dupilumab-IL4R complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -140,8 +156,8 @@ Kapitanov_2025_dupilumab_3cmt_qsp <- function() {
     ltdist <- fixed(log(55.9))      ; label("Central-peripheral1 distribution half-time t_dist,12 (h; Kapitanov 2025 Table S4)")  # Kapitanov 2025 Table S4 3-compt Approach 2: t_dist,12 = 55.9 h (recomputed via Eq 22 vs Case 2's 54.3 h)
     lpdist <- fixed(log(0.352))     ; label("Peripheral1 partition coefficient P_dist,12 (unitless; Kapitanov 2025 Table S4)")     # Kapitanov 2025 Table S4 3-compt Approach 2: P_dist,12 = 0.352 (unchanged from Case 2)
 
-    ltdist_p2 <- fixed(log(30))     ; label("Central-SoA distribution half-time t_dist,13 (h; Kapitanov 2025 Approach 2 fixed)")   # Kapitanov 2025 Table S4 3-compt Approach 2: t_dist,13 = 30 h (Approach 1 alternative: 150 h)
-    lpdist_p2 <- fixed(log(0.3))    ; label("SoA partition coefficient P_dist,13 (unitless; Kapitanov 2025 Approach 2 fixed)")     # Kapitanov 2025 Table S4 3-compt Approach 2: P_dist,13 = 0.3 (Approach 1 alternative: 0.352)
+    ltdist_p2 <- fixed(log(30))     ; label("Central-SoA distribution half-time t_dist,13 (h; Kapitanov 2025 Approach 2)")   # Kapitanov 2025 Table S4 3-compt Approach 2: t_dist,13 = 30 h (Approach 1 alternative: 150 h)
+    lpdist_p2 <- fixed(log(0.3))    ; label("SoA partition coefficient P_dist,13 (unitless; Kapitanov 2025 Approach 2)")     # Kapitanov 2025 Table S4 3-compt Approach 2: P_dist,13 = 0.3 (Approach 1 alternative: 0.352)
 
     # =====================================================================
     # IL4R receptor concentrations (Kapitanov 2025 Table S4 and Table

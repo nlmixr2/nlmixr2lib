@@ -2,7 +2,15 @@ Archary_2018_lopinavir <- function() {
   description <- "One-compartment first-order-absorption population PK model for oral lopinavir/ritonavir in severely malnourished HIV-infected children, with FFM allometric scaling and a linear total-cholesterol effect on apparent clearance (Archary 2018)."
   reference <- "Archary M, McIlleron H, Bobat R, La Russa P, Sibaya T, Wiesner L, Hennig S. Population Pharmacokinetics of Lopinavir in Severely Malnourished HIV Infected Children and the Effect on Treatment Outcomes. Pediatr Infect Dis J. 2018;37(4):349-355. doi:10.1097/INF.0000000000001867"
   vignette <- "Archary_2018_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FFM = list(
@@ -51,8 +59,8 @@ Archary_2018_lopinavir <- function() {
     # Allometric exponents fixed per Archary 2018 Methods page 4 ("Allometric exponents
     # were fixed to 0.75 for CL/F and 1 for Vd/F, when testing use of weight or fat-free
     # mass (FFM) to account for size").
-    e_ffm_cl <- fixed(0.75); label("Allometric exponent on CL with FFM (unitless, fixed)")  # Methods page 4
-    e_ffm_vc <- fixed(1.00); label("Allometric exponent on Vd with FFM (unitless, fixed)")  # Methods page 4
+    e_ffm_cl <- fixed(0.75); label("Allometric exponent on CL with FFM (unitless)")  # Methods page 4
+    e_ffm_vc <- fixed(1.00); label("Allometric exponent on Vd with FFM (unitless)")  # Methods page 4
 
     # Cholesterol linear effect on apparent CL/F (paper Table 2 footnote equation):
     #   CL = 3.1 * (FFM/5.6)^0.75 * (1 + 0.207 * (CHOL - 3))

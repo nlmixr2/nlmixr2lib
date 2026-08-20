@@ -75,6 +75,28 @@ Bosch_2024_cotadutide_qsp <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "cotadutide", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "cotadutide", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose_gut    = list(analyte = "glucose", units = NA_character_, specimen = "tissue", verified = FALSE),
+    glucose_buffer = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr1    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr2    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose_tr3    = list(analyte = "glucose", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glucose        = list(analyte = "glucose", units = NA_character_, specimen = "blood cell", verified = FALSE),
+    glucose_per    = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    insulin        = list(analyte = "insulin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    insulin_eff    = list(analyte = "insulin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    glp1           = list(analyte = "GLP-1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucagon       = list(analyte = "glucagon", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip            = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gip_per        = list(analyte = "GIP", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FPG = list(
       description        = "Individual fasting plasma glucose at study baseline (BSLglc in the paper notation). Used as the per-subject initial condition for the central glucose state and as the reference value for the power-function feedback of glucose on glucagon production. Time-fixed per subject.",
@@ -141,11 +163,11 @@ Bosch_2024_cotadutide_qsp <- function() {
     # Section 2.3 fixes the cotadutide PK structure and individual EBEs
     # from Guan et al. 2022; this packaged model uses the typical values.
     # =====================================================================
-    lka <- fixed(log(0.343))       ; label("Cotadutide absorption rate ka (1/h; FIXED from Guan 2022 typical value)")  # Bosch 2024 supplement $PK block default `if(IKA <= 0) KA = 0.343`
-    lcl <- fixed(log(1.04))        ; label("Cotadutide clearance CL (L/h; FIXED from Guan 2022 typical value)")        # Bosch 2024 supplement $PK block default `if(ICL <= 0) CL = 1.04`
-    lvc <- fixed(log(18.7))        ; label("Cotadutide central volume Vc (L; FIXED from Guan 2022 typical value)")     # Bosch 2024 supplement $PK block default `if(IV <= 0) V = 18.7`
+    lka <- fixed(log(0.343))       ; label("Cotadutide absorption rate ka (1/h; from Guan 2022 typical value)")  # Bosch 2024 supplement $PK block default `if(IKA <= 0) KA = 0.343`
+    lcl <- fixed(log(1.04))        ; label("Cotadutide clearance CL (L/h; from Guan 2022 typical value)")        # Bosch 2024 supplement $PK block default `if(ICL <= 0) CL = 1.04`
+    lvc <- fixed(log(18.7))        ; label("Cotadutide central volume Vc (L; from Guan 2022 typical value)")     # Bosch 2024 supplement $PK block default `if(IV <= 0) V = 18.7`
 
-    fumedi <- fixed(0.0023)        ; label("Cotadutide plasma free fraction (unitless; FIXED at 0.23 percent)")        # Bosch 2024 Section 2.2 and supplement `fumedi = 0.0023`
+    fumedi <- fixed(0.0023)        ; label("Cotadutide plasma free fraction (unitless; 0.23 percent)")        # Bosch 2024 Section 2.2 and supplement `fumedi = 0.0023`
 
     # =====================================================================
     # 4GI glucose disposition (T2DM) -- all FIXED from Bosch 2022 (Table S1).
@@ -154,13 +176,13 @@ Bosch_2024_cotadutide_qsp <- function() {
     # MAD/Ph2a cohort is entirely T2DM. Glucose amounts are in mmol;
     # concentrations in mmol/L.
     # =====================================================================
-    lclglc   <- fixed(log(1.72))   ; label("Insulin-independent glucose clearance CLglc T2DM (L/h; FIXED from Bosch 2022 Table S1)")           # Bosch 2024 supplement Table S1; THETA(1)
-    lclgi    <- fixed(log(0.0256)) ; label("Insulin-dependent glucose clearance CLglci T2DM ((L/h)/(pmol/L); FIXED from Bosch 2022 Table S1)") # Bosch 2024 supplement Table S1; THETA(2)
-    lqglc    <- fixed(log(26.5))   ; label("Glucose inter-compartmental clearance Qglc (L/h; FIXED from Bosch 2022 Table S1)")                  # Bosch 2024 supplement Table S1; THETA(3)
-    lvcglc   <- fixed(log(9.33))   ; label("Glucose central volume VCglc (L; FIXED from Bosch 2022 Table S1)")                                  # Bosch 2024 supplement Table S1; THETA(4)
-    lvpglc   <- fixed(log(8.56))   ; label("Glucose peripheral volume VPglc (L; FIXED from Bosch 2022 Table S1)")                               # Bosch 2024 supplement Table S1; THETA(5)
-    lkeglc   <- fixed(log(0.281))  ; label("Glucose buffer-to-transit rate constant Keglc (1/h; FIXED from Bosch 2022 Table S1)")               # Bosch 2024 supplement Table S1; THETA(8)
-    lkelglc  <- fixed(log(1.93))   ; label("Glucose transit chain rate constant Kelglc (1/h; FIXED from Bosch 2022 Table S1)")                  # Bosch 2024 supplement Table S1; THETA(9)
+    lclglc   <- fixed(log(1.72))   ; label("Insulin-independent glucose clearance CLglc T2DM (L/h; from Bosch 2022 Table S1)")           # Bosch 2024 supplement Table S1; THETA(1)
+    lclgi    <- fixed(log(0.0256)) ; label("Insulin-dependent glucose clearance CLglci T2DM ((L/h)/(pmol/L); from Bosch 2022 Table S1)") # Bosch 2024 supplement Table S1; THETA(2)
+    lqglc    <- fixed(log(26.5))   ; label("Glucose inter-compartmental clearance Qglc (L/h; from Bosch 2022 Table S1)")                  # Bosch 2024 supplement Table S1; THETA(3)
+    lvcglc   <- fixed(log(9.33))   ; label("Glucose central volume VCglc (L; from Bosch 2022 Table S1)")                                  # Bosch 2024 supplement Table S1; THETA(4)
+    lvpglc   <- fixed(log(8.56))   ; label("Glucose peripheral volume VPglc (L; from Bosch 2022 Table S1)")                               # Bosch 2024 supplement Table S1; THETA(5)
+    lkeglc   <- fixed(log(0.281))  ; label("Glucose buffer-to-transit rate constant Keglc (1/h; from Bosch 2022 Table S1)")               # Bosch 2024 supplement Table S1; THETA(8)
+    lkelglc  <- fixed(log(1.93))   ; label("Glucose transit chain rate constant Kelglc (1/h; from Bosch 2022 Table S1)")                  # Bosch 2024 supplement Table S1; THETA(9)
 
     # MMTT-meal glucose absorption -- estimated in Bosch 2024 Table 3.
     lkaglc    <- log(3.58)                  ; label("Glucose absorption rate constant for MMTT meal Kaglc (1/h)")        # Bosch 2024 Table 3 estimate (RSE 7.58%)
@@ -170,9 +192,9 @@ Bosch_2024_cotadutide_qsp <- function() {
     # 4GI insulin disposition -- all FIXED from Bosch 2022 (Table S1).
     # Insulin amounts are in pmol; concentrations in pmol/L.
     # =====================================================================
-    lclins   <- fixed(log(73.2))      ; label("Insulin clearance CLins (L/h; FIXED from Bosch 2022 Table S1)")                                  # Bosch 2024 supplement Table S1; THETA(10)
-    lvcins   <- fixed(log(6.09))      ; label("Insulin central volume VCins (L; FIXED from Bosch 2022 Table S1)")                               # Bosch 2024 supplement Table S1; THETA(11)
-    lke0ins  <- fixed(-0.158729)      ; label("Log effect-compartment insulin equilibration rate KE0ins (log-1/h; FIXED, exp = 0.853)")          # Bosch 2024 supplement THETA(12) (log-scale: exp(-0.159) = 0.853 1/h)
+    lclins   <- fixed(log(73.2))      ; label("Insulin clearance CLins (L/h; from Bosch 2022 Table S1)")                                  # Bosch 2024 supplement Table S1; THETA(10)
+    lvcins   <- fixed(log(6.09))      ; label("Insulin central volume VCins (L; from Bosch 2022 Table S1)")                               # Bosch 2024 supplement Table S1; THETA(11)
+    lke0ins  <- fixed(-0.158729)      ; label("Log effect-compartment insulin equilibration rate KE0ins (log-1/h;, exp = 0.853)")          # Bosch 2024 supplement THETA(12) (log-scale: exp(-0.159) = 0.853 1/h)
 
     # =====================================================================
     # 4GI GLP-1 disposition -- all FIXED from Bosch 2022 (Table S1).
@@ -180,25 +202,25 @@ Bosch_2024_cotadutide_qsp <- function() {
     # Michaelis-Menten elimination: the source $THETA stores VM and KM on
     # the log scale (`VM = exp(THETA(14))`, `KM = exp(THETA(15))`).
     # =====================================================================
-    lvcglp     <- fixed(log(16.0))    ; label("GLP-1 central volume VCglp (L; FIXED from Bosch 2022 Table S1)")                                 # Bosch 2024 supplement Table S1; THETA(13)
-    lvmax_glp1 <- fixed(7.96952)      ; label("Log GLP-1 maximum MM elimination rate VM (log-pmol/(L*h); FIXED, exp = 2893)")                   # Bosch 2024 supplement THETA(14); VM = exp(7.97) = 2893 pmol/(L*h)
-    lkm_glp1   <- fixed(4.90603)      ; label("Log GLP-1 MM half-saturation KM (log-pmol/L; FIXED, exp = 135)")                                  # Bosch 2024 supplement THETA(15); KM = exp(4.91) = 135 pmol/L
+    lvcglp     <- fixed(log(16.0))    ; label("GLP-1 central volume VCglp (L; from Bosch 2022 Table S1)")                                 # Bosch 2024 supplement Table S1; THETA(13)
+    lvmax_glp1 <- fixed(7.96952)      ; label("Log GLP-1 maximum MM elimination rate VM (log-pmol/(L*h);, exp = 2893)")                   # Bosch 2024 supplement THETA(14); VM = exp(7.97) = 2893 pmol/(L*h)
+    lkm_glp1   <- fixed(4.90603)      ; label("Log GLP-1 MM half-saturation KM (log-pmol/L;, exp = 135)")                                  # Bosch 2024 supplement THETA(15); KM = exp(4.91) = 135 pmol/L
 
     # =====================================================================
     # 4GI glucagon disposition -- all FIXED from Bosch 2022 (Table S1).
     # Glucagon amounts are in pmol; concentrations in pmol/L.
     # =====================================================================
-    lclglg <- fixed(log(453))         ; label("Glucagon clearance CLglg (L/h; FIXED from Bosch 2022 Table S1)")                                  # Bosch 2024 supplement Table S1; THETA(16)
-    lvcglg <- fixed(log(64.6))        ; label("Glucagon central volume VCglg (L; FIXED from Bosch 2022 Table S1)")                               # Bosch 2024 supplement Table S1; THETA(17)
+    lclglg <- fixed(log(453))         ; label("Glucagon clearance CLglg (L/h; from Bosch 2022 Table S1)")                                  # Bosch 2024 supplement Table S1; THETA(16)
+    lvcglg <- fixed(log(64.6))        ; label("Glucagon central volume VCglg (L; from Bosch 2022 Table S1)")                               # Bosch 2024 supplement Table S1; THETA(17)
 
     # =====================================================================
     # 4GI GIP disposition -- all FIXED from Bosch 2022 (Table S1).
     # GIP amounts are in pmol; concentrations in pmol/L.
     # =====================================================================
-    lclgip <- fixed(log(86.8))        ; label("GIP clearance CLgip (L/h; FIXED from Bosch 2022 Table S1)")                                       # Bosch 2024 supplement Table S1; THETA(18)
-    lvcgip <- fixed(log(9.21))        ; label("GIP central volume VCgip (L; FIXED from Bosch 2022 Table S1)")                                    # Bosch 2024 supplement Table S1; THETA(19)
-    lqgip  <- fixed(log(49.4))        ; label("GIP inter-compartmental clearance Qgip (L/h; FIXED from Bosch 2022 Table S1)")                    # Bosch 2024 supplement Table S1; THETA(20)
-    lvpgip <- fixed(log(22.8))        ; label("GIP peripheral volume VPgip (L; FIXED from Bosch 2022 Table S1)")                                 # Bosch 2024 supplement Table S1; THETA(21)
+    lclgip <- fixed(log(86.8))        ; label("GIP clearance CLgip (L/h; from Bosch 2022 Table S1)")                                       # Bosch 2024 supplement Table S1; THETA(18)
+    lvcgip <- fixed(log(9.21))        ; label("GIP central volume VCgip (L; from Bosch 2022 Table S1)")                                    # Bosch 2024 supplement Table S1; THETA(19)
+    lqgip  <- fixed(log(49.4))        ; label("GIP inter-compartmental clearance Qgip (L/h; from Bosch 2022 Table S1)")                    # Bosch 2024 supplement Table S1; THETA(20)
+    lvpgip <- fixed(log(22.8))        ; label("GIP peripheral volume VPgip (L; from Bosch 2022 Table S1)")                                 # Bosch 2024 supplement Table S1; THETA(21)
 
     # =====================================================================
     # MMTT-specific meal-effect parameters -- estimated in Bosch 2024
@@ -220,8 +242,8 @@ Bosch_2024_cotadutide_qsp <- function() {
     # low-glucose branch GLCGLG_POWL is fixed at 0 in the source code
     # logic (no hypoglycaemic glucagon counter-regulation in T2DM).
     # =====================================================================
-    lglcins_s    <- fixed(log(2.46))   ; label("Glucose-on-insulin secretion power coefficient GLCINS_S (1/mM; FIXED)")             # Bosch 2024 supplement THETA(26); Table S2 GLCINS_S = 2.46
-    lglcglg_powh <- fixed(log(0.925))  ; label("Glucose-on-glucagon production power exponent high-glc branch GLCGLG_POWH (unitless; FIXED)")  # Bosch 2024 supplement THETA(27); Table S2 GLCGLG_POWH = 0.925
+    lglcins_s    <- fixed(log(2.46))   ; label("Glucose-on-insulin secretion power coefficient GLCINS_S (1/mM)")             # Bosch 2024 supplement THETA(26); Table S2 GLCINS_S = 2.46
+    lglcglg_powh <- fixed(log(0.925))  ; label("Glucose-on-glucagon production power exponent high-glc branch GLCGLG_POWH (unitless)")  # Bosch 2024 supplement THETA(27); Table S2 GLCGLG_POWH = 0.925
 
     # =====================================================================
     # GLP-1 receptor effect parameters on (1) insulin secretion, (2)
@@ -232,17 +254,17 @@ Bosch_2024_cotadutide_qsp <- function() {
     # EC50 for each effect is derived from these by the in-vitro EC50
     # ratio (Bosch 2024 Eq 1), computed in model() as ECGLP1 / 2 / 3.
     # =====================================================================
-    lemax_1 <- fixed(log(10.7))       ; label("GLP-1 Emax on insulin secretion EMAX_1 (unitless; FIXED)")                                       # Bosch 2024 supplement THETA(28); Table S2 EMAX_1 = 10.7
-    lec50_1 <- fixed(log(26.6))       ; label("GLP-1 EC50 on insulin secretion EC50_1 (pmol/L; FIXED)")                                          # Bosch 2024 supplement THETA(29); back-transformed exp(3.29) = 26.6; Table S2 26.6
-    lhill_1 <- fixed(log(1.79))       ; label("GLP-1 Hill on insulin secretion HILL_1 (unitless; FIXED)")                                        # Bosch 2024 supplement THETA(30); Table S2 HILL_1 = 1.79
+    lemax_1 <- fixed(log(10.7))       ; label("GLP-1 Emax on insulin secretion EMAX_1 (unitless)")                                       # Bosch 2024 supplement THETA(28); Table S2 EMAX_1 = 10.7
+    lec50_1 <- fixed(log(26.6))       ; label("GLP-1 EC50 on insulin secretion EC50_1 (pmol/L)")                                          # Bosch 2024 supplement THETA(29); back-transformed exp(3.29) = 26.6; Table S2 26.6
+    lhill_1 <- fixed(log(1.79))       ; label("GLP-1 Hill on insulin secretion HILL_1 (unitless)")                                        # Bosch 2024 supplement THETA(30); Table S2 HILL_1 = 1.79
 
-    lemax_2 <- fixed(log(1))          ; label("GLP-1 Emax on glucose absorption EMAX_2 (unitless; FIXED at 1)")                                  # Bosch 2024 supplement THETA(31); Table S2 EMAX_2 = 1
-    lec50_2 <- fixed(log(144))        ; label("GLP-1 EC50 on glucose absorption EC50_2 (pmol/L; FIXED)")                                         # Bosch 2024 supplement THETA(32); back-transformed exp(4.97) = 144; Table S2 144
-    lhill_2 <- fixed(log(1))          ; label("GLP-1 Hill on glucose absorption HILL_2 (unitless; FIXED at 1)")                                  # Bosch 2024 supplement THETA(33); Table S2 HILL_2 = 1
+    lemax_2 <- fixed(log(1))          ; label("GLP-1 Emax on glucose absorption EMAX_2 (unitless)")                                  # Bosch 2024 supplement THETA(31); Table S2 EMAX_2 = 1
+    lec50_2 <- fixed(log(144))        ; label("GLP-1 EC50 on glucose absorption EC50_2 (pmol/L)")                                         # Bosch 2024 supplement THETA(32); back-transformed exp(4.97) = 144; Table S2 144
+    lhill_2 <- fixed(log(1))          ; label("GLP-1 Hill on glucose absorption HILL_2 (unitless)")                                  # Bosch 2024 supplement THETA(33); Table S2 HILL_2 = 1
 
-    lemax_3 <- fixed(log(1))          ; label("GLP-1 Emax on glucagon production EMAX_3 (unitless; FIXED at 1)")                                 # Bosch 2024 supplement THETA(34); Table S2 EMAX_3 = 1
-    lec50_3 <- fixed(log(99.5))       ; label("GLP-1 EC50 on glucagon production EC50_3 (pmol/L; FIXED)")                                        # Bosch 2024 supplement THETA(35); back-transformed exp(4.60) = 99.5; Table S2 99.5
-    lhill_3 <- fixed(log(1))          ; label("GLP-1 Hill on glucagon production HILL_3 (unitless; FIXED at 1)")                                 # Bosch 2024 supplement THETA(36); Table S2 HILL_3 = 1
+    lemax_3 <- fixed(log(1))          ; label("GLP-1 Emax on glucagon production EMAX_3 (unitless)")                                 # Bosch 2024 supplement THETA(34); Table S2 EMAX_3 = 1
+    lec50_3 <- fixed(log(99.5))       ; label("GLP-1 EC50 on glucagon production EC50_3 (pmol/L)")                                        # Bosch 2024 supplement THETA(35); back-transformed exp(4.60) = 99.5; Table S2 99.5
+    lhill_3 <- fixed(log(1))          ; label("GLP-1 Hill on glucagon production HILL_3 (unitless)")                                 # Bosch 2024 supplement THETA(36); Table S2 HILL_3 = 1
 
     # Cotadutide effect on endogenous GLP-1 (Bosch 2024 Eq 3 and Table 3).
     # EC50_5S is a scaling factor on the cotadutide in vitro EC50 for GLP-1
@@ -250,7 +272,7 @@ Bosch_2024_cotadutide_qsp <- function() {
     # cotadutide). HILL_5 fixed at 5 per Section 3.1.
     lemax_5  <- log(0.321)            ; label("Cotadutide Emax inhibition of endogenous GLP-1 EMAX_5 (unitless)")                                # Bosch 2024 Table 3 estimate 0.321 (RSE 25.7%)
     lec50_5s <- log(10.9)             ; label("Cotadutide in-vitro-to-in-vivo EC50 scaling factor EC50_5S (unitless)")                            # Bosch 2024 Table 3 estimate 10.9 (RSE 37.9%)
-    lhill_5  <- fixed(log(5))         ; label("Cotadutide Hill on endogenous GLP-1 inhibition HILL_5 (unitless; FIXED at 5)")                     # Bosch 2024 Table 3 footnote and Section 3.1
+    lhill_5  <- fixed(log(5))         ; label("Cotadutide Hill on endogenous GLP-1 inhibition HILL_5 (unitless)")                     # Bosch 2024 Table 3 footnote and Section 3.1
 
     # =====================================================================
     # Glucagon receptor effect on glucose production (Bosch 2022 Table S2).
@@ -258,9 +280,9 @@ Bosch_2024_cotadutide_qsp <- function() {
     # EC50 is derived from the in vitro ratio (Eq 1), computed in model()
     # as ECGLG1.
     # =====================================================================
-    lemax_4 <- fixed(log(6.73))       ; label("Glucagon Emax on glucose production EMAX_4 (unitless; FIXED)")                                    # Bosch 2024 supplement THETA(40); Table S2 EMAX_4 = 6.73
-    lec50_4 <- fixed(log(98.5))       ; label("Glucagon EC50 on glucose production EC50_4 (pmol/L; FIXED)")                                       # Bosch 2024 supplement THETA(41); back-transformed exp(4.59) = 98.5; Table S2 98.5
-    lhill_4 <- fixed(log(1))          ; label("Glucagon Hill on glucose production HILL_4 (unitless; FIXED at 1)")                                # Bosch 2024 supplement THETA(42); Table S2 HILL_4 = 1
+    lemax_4 <- fixed(log(6.73))       ; label("Glucagon Emax on glucose production EMAX_4 (unitless)")                                    # Bosch 2024 supplement THETA(40); Table S2 EMAX_4 = 6.73
+    lec50_4 <- fixed(log(98.5))       ; label("Glucagon EC50 on glucose production EC50_4 (pmol/L)")                                       # Bosch 2024 supplement THETA(41); back-transformed exp(4.59) = 98.5; Table S2 98.5
+    lhill_4 <- fixed(log(1))          ; label("Glucagon Hill on glucose production HILL_4 (unitless)")                                # Bosch 2024 supplement THETA(42); Table S2 HILL_4 = 1
 
     # =====================================================================
     # GIP-on-glucagon production power exponent (Bosch 2022 Table S2). The
@@ -268,14 +290,14 @@ Bosch_2024_cotadutide_qsp <- function() {
     # at 0 in the source code (HV alternatives: GIPINS = 1, POW_3 = 0.286
     # per Table S2); they appear hard-coded as 0 inside model().
     # =====================================================================
-    lpow_4  <- fixed(log(0.109))      ; label("GIP-on-glucagon production power POW_4 (unitless; FIXED)")                                          # Bosch 2024 supplement THETA(45); Table S2 POW_4 = 0.109
+    lpow_4  <- fixed(log(0.109))      ; label("GIP-on-glucagon production power POW_4 (unitless)")                                          # Bosch 2024 supplement THETA(45); Table S2 POW_4 = 0.109
 
     # In vitro EC50s (free cotadutide and endogenous ligands) -- Table 2.
     # These FIXED inputs feed the in-vivo cotadutide EC50 derivation (Eq 1).
-    lecmglp <- fixed(log(0.076))      ; label("Cotadutide in vitro EC50 on GLP-1R (pmol/L; FIXED at Table 2 value)")                              # Bosch 2024 Table 2 in vitro GLP-1R EC50 cotadutide = 0.076 pmol/L (free, unpublished)
-    lecmglg <- fixed(log(0.088))      ; label("Cotadutide in vitro EC50 on GCGR (pmol/L; FIXED at Table 2 value)")                                # Bosch 2024 Table 2 in vitro GCGR EC50 cotadutide = 0.088 pmol/L (free, unpublished)
-    lecglp  <- fixed(log(1.92))       ; label("Endogenous GLP-1 in vitro EC50 on GLP-1R (pmol/L; FIXED at Table 2 value)")                        # Bosch 2024 Table 2 in vitro GLP-1R EC50 endogenous GLP-1 = 1.92 pmol/L (unpublished)
-    lecglg  <- fixed(log(1.54))       ; label("Endogenous glucagon in vitro EC50 on GCGR (pmol/L; FIXED at Table 2 value)")                       # Bosch 2024 Table 2 in vitro GCGR EC50 endogenous glucagon = 1.54 pmol/L (unpublished)
+    lecmglp <- fixed(log(0.076))      ; label("Cotadutide in vitro EC50 on GLP-1R (pmol/L; Table 2 value)")                              # Bosch 2024 Table 2 in vitro GLP-1R EC50 cotadutide = 0.076 pmol/L (free, unpublished)
+    lecmglg <- fixed(log(0.088))      ; label("Cotadutide in vitro EC50 on GCGR (pmol/L; Table 2 value)")                                # Bosch 2024 Table 2 in vitro GCGR EC50 cotadutide = 0.088 pmol/L (free, unpublished)
+    lecglp  <- fixed(log(1.92))       ; label("Endogenous GLP-1 in vitro EC50 on GLP-1R (pmol/L; Table 2 value)")                        # Bosch 2024 Table 2 in vitro GLP-1R EC50 endogenous GLP-1 = 1.92 pmol/L (unpublished)
+    lecglg  <- fixed(log(1.54))       ; label("Endogenous glucagon in vitro EC50 on GCGR (pmol/L; Table 2 value)")                       # Bosch 2024 Table 2 in vitro GCGR EC50 endogenous glucagon = 1.54 pmol/L (unpublished)
 
     # =====================================================================
     # Lifestyle-change effect on endogenous glucose production (Bosch 2024
@@ -287,7 +309,7 @@ Bosch_2024_cotadutide_qsp <- function() {
     # 'Kred was 0.0164 d^-1, consistent with a half-life ... of 45 days').
     # =====================================================================
     llsci <- log(0.566)               ; label("Lifestyle-change amplitude LSCI (fraction)")                                                       # Bosch 2024 Table 3 estimate 0.566 (RSE 13.1%)
-    lklsc <- fixed(log(10))           ; label("Lifestyle-change onset rate Klsc (1/day; FIXED)")                                                    # Bosch 2024 Table 3 fixed at 10 per Section 3.1
+    lklsc <- fixed(log(10))           ; label("Lifestyle-change onset rate Klsc (1/day)")                                                    # Bosch 2024 Table 3 fixed at 10 per Section 3.1
     lkred <- log(0.0164)              ; label("Lifestyle-change reduction rate Kred (1/day)")                                                       # Bosch 2024 Table 3 estimate 0.0164 (RSE 55.0%)
 
     # =====================================================================

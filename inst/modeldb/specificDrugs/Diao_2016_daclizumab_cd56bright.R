@@ -4,6 +4,17 @@ Diao_2016_daclizumab_cd56bright <- function() {
   vignette <- "Diao_2016_daclizumab_cd56bright"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "% of total lymphocytes (T + B + NK)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "daclizumab HYP", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "daclizumab HYP", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "CD56 bright NK cells", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "stimulation of CD56 bright NK cell production", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

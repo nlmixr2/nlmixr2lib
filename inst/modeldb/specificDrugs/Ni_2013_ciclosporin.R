@@ -4,6 +4,14 @@ Ni_2013_ciclosporin <- function() {
   vignette <- "Ni_2013_ciclosporin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -50,7 +58,7 @@ Ni_2013_ciclosporin <- function() {
   ini({
     # Structural parameters; reference body weight 70 kg
     lka <- fixed(log(0.68))
-    label("Absorption rate constant (Ka, 1/h); fixed from prior literature (Ni 2013 Results paragraph 1; Table 2)")  # Table 2 'Ka (Fixed)'
+    label("Absorption rate constant (Ka, 1/h); from prior literature (Ni 2013 Results paragraph 1; Table 2)")  # Table 2 'Ka (Fixed)'
     lvc <- log(178)
     label("Apparent volume of distribution at WT = 70 kg (V/F, L); Ni 2013 Table 2 theta1")  # Table 2 theta1
     lcl <- log(31.5)
@@ -58,9 +66,9 @@ Ni_2013_ciclosporin <- function() {
 
     # Allometric exponents fixed from West / Holford convention (Ni 2013 Methods; refs 11, 12)
     e_wt_cl <- fixed(0.75)
-    label("Allometric (WT) exponent on CL/F (unitless); fixed (Ni 2013 Methods)")  # Methods; Table 2 equation
+    label("Allometric (WT) exponent on CL/F (unitless) (Ni 2013 Methods)")  # Methods; Table 2 equation
     e_wt_vc <- fixed(1.0)
-    label("Allometric (WT) exponent on V/F (unitless); fixed (Ni 2013 Methods)")  # Methods; Table 2 equation
+    label("Allometric (WT) exponent on V/F (unitless) (Ni 2013 Methods)")  # Methods; Table 2 equation
 
     # Covariate effects on CL/F
     e_creat_cl <- 0.0821

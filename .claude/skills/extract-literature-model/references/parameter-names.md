@@ -14,7 +14,7 @@ Log-transform any parameter that must be positive. Prefix `l` (lower-case L).
 - `lvp`, `lvp2` — first / second peripheral volume
 - `lq`, `lq2` — inter-compartmental clearance to `peripheral1` / `peripheral2`
 - `lfdepot` — log bioavailability for the depot compartment
-- `lvmax` — Michaelis-Menten Vmax (for nonlinear / saturable elimination)
+- `lvmax` — Michaelis-Menten vmax (for nonlinear / saturable elimination)
 
 Derived quantities inside `model()` are un-prefixed:
 `ka`, `cl`, `vc`, `vp`, `vp2`, `q`, `q2`, `vmax`, and micro-constants
@@ -24,7 +24,7 @@ Derived quantities inside `model()` are un-prefixed:
 `vc2`, etc. The `v1`/`v2`/`v3` numbering used by NONMEM `linCmt()` macros
 maps directly: `v1` → `vc`, `v2` → `vp`, `v3` → `vp2`.
 
-**Michaelis-Menten Vmax**: always `lvmax` / `vmax`. Never `lvm` / `vm`.
+**Michaelis-Menten vmax**: always `lvmax` / `vmax`. Never `lvm` / `vm`.
 
 ### PD structural parameters
 
@@ -258,7 +258,7 @@ Founding example: `Oualha_2018_enoxaparin.R`.
 ## Transform prefixes
 
 - `l` — natural log (`lka`, `lcl`, `lfdepot`)
-- `logit` — logit (`logitfr`, `logitemax`)
+- `logit` — logit (`logitffo`, `logitemax`)
 - `probit` — probit
 - Any other transform: spell it out as a prefix
 
@@ -277,6 +277,33 @@ Source signals that a parameter is fixed:
 - NONMEM `$THETA` / `$OMEGA` / `$SIGMA` with a `FIX` flag.
 - Bioavailability `F1 = 1` set as structural anchor.
 - Inherited parameters from an upstream publication that the current paper re-uses without re-fitting.
+
+**Do not repeat `fixed()` in the label.** `fixed()` is the machine-readable
+statement that the value was not estimated; writing "fixed" in the label as well
+says nothing extra, and `checkModelConventions()` raises an **error** for it.
+996 labels across 373 models were cleaned of this in 2026-08.
+
+Keep whatever sits around the word, because that is the part `fixed()` cannot
+express -- **where** the value came from, or that *you* assumed it rather than
+the paper fixing it:
+
+| Write this | Not this |
+|---|---|
+| `label("Allometric exponent on CL (unitless)")` | `label("Allometric exponent on CL (unitless; fixed)")` |
+| `label("Maternal apparent clearance, from Rizk 2015 (CL, L/h)")` | `label("Maternal apparent clearance, fixed from Rizk 2015 (CL, L/h)")` |
+| `label("Additive residual SD (mg/L; placeholder)")` | `label("Additive residual SD (mg/L; FIXED placeholder)")` |
+| `label("Vascular reflection coefficient (unitless)")` | `label("Vascular reflection coefficient (unitless; fixed at 0.95)")` |
+
+The last row is the general case: if the label only restates the number, drop the
+clause -- `fixed(0.95)` already holds it.
+
+Words that **must stay**, because they distinguish *the paper fixed this* from
+*the encoder assumed this* and `fixed()` cannot tell them apart (issue #479):
+`assumed`, `not published`, `not paper-derived`, `literature value`,
+`taken from`, `transferred from`.
+
+"fixed effect", "fixed dose" and "fixed-dose" are exempt -- there "fixed"
+modifies something else and is not a claim about this parameter.
 
 Examples:
 
@@ -356,13 +383,66 @@ Do not lump them under a single `e_race_cl` (ambiguous); do not omit the
 parameter token (`e_asian` is wrong — it must end in `_cl` or `_vc` or
 similar to identify what it modifies).
 
+### Stratum-suffixed parameters
+
+Some papers estimate the *same quantity twice* -- once in each of two or more
+sub-populations -- inside a **single joint fit**. The canonical name supplies
+exactly one slot for that quantity, so each stratum's estimate takes an explicit
+suffix naming the stratum:
+
+```r
+lcl_agegt2     <- log(2.59) ; label("Typical clearance for age > 2 years ... (L/h)")
+lcl_agele2     <- log(1.98) ; label("Typical clearance for age <= 2 years ... (L/h)")
+e_wt_cl_agegt2 <- 0.38      ; label("Power exponent on (WT/12) for CL, age > 2 years (unitless)")
+e_wt_cl_agele2 <- 0.739     ; label("Power exponent on (WT/12) for CL, age <= 2 years (unitless)")
+```
+
+Rules:
+
+- **Symmetric.** Every stratum carries a suffix; none keeps the bare canonical.
+  A bare `lcl` silently meaning "the age > 2 y value" is exactly the ambiguity
+  the suffix exists to remove, and papers of this shape report parallel
+  estimates rather than a reference plus an offset.
+- **The suffix names the stratum, not the paper's symbol.** `_agele2` /
+  `_agegt2` (age <= 2 / age > 2), `_center1` / `_center2`, `_ped` / `_adult`.
+  Keep it lower-case and readable; a reader must be able to tell which subgroup
+  the number belongs to without opening the paper.
+- **Only suffix what is actually stratum-specific.** Anything the joint fit
+  shares (in the founding example: the volume, the CLcr exponent, the IIV)
+  keeps its bare canonical name. Suffixing a shared parameter falsely implies
+  the paper estimated it more than once.
+- **Applies on top of any canonical form**, including the covariate-effect
+  grammar: `e_<cov>_<param>_<stratum>`. This is *not* one of the three-token
+  forms above -- the trailing token is a stratum label, not a metabolite, a
+  second PK parameter, or a CL component. Disambiguate by what the token names:
+  a registered metabolite (`R/conventions.R::registeredMetabolites`) -> the
+  metabolite form; a bare PK parameter (`pkBareParams`) -> the shared-exponent
+  form; `ss` / `time` / `renal` -> multi-component CL; anything else -> a
+  stratum.
+- **One model file, not N.** A stratified joint fit is a single model
+  (`references/replicate-author-structure.md`); the suffixes are what let one
+  file hold every stratum. Split into separate files only when the paper fit
+  separate models.
+
+Founding example: `Shen_2024_vancomycin.R` (Shen 2024 vancomycin popPK -- an
+age-cutoff model estimating both a typical CL and a body-weight allometric
+exponent in each of two age strata within one NONMEM run, OFV 2272.810).
+Precedent predating this entry, in files that use the pattern without having
+registered it: `Duong_2016_WHIG_T2DM.R` (`b0_s1` / `b0_s23`),
+`Frohlich_2018_mRNA_translation.R` (`lkdeg_egfp` / `lkdeg_d2egfp`),
+`Friberg_2012_voriconazole.R` (`expSdStdy1` / `expSdStdy2` / `expSdStdy34`).
+
+Note that `checkModelConventions()` does not validate structural-parameter
+names, so a clean lint is not evidence that a stratum suffix is well-formed --
+this section is the record.
+
 ## Endogenous / mechanistic parameters
 
 For endogenous turnover, steady-state, and enzyme-kinetic models (e.g., `igg_kim_2006`, `phenylalanine_charbonneau_2021`), parameters come from mechanism rather than from a CL/V parameterization. Use the names the paper uses; lower-case snake-case by default. Log-transform only positive-constrained parameters that are being *estimated* — not mechanistic constants that the source paper reports as point values.
 
 Recommended patterns:
 
-- `Vmax`, `Km` — Michaelis–Menten constants for each enzyme / transporter. Name-disambiguate when several coexist: `vmax_pah`, `km_pah`, `vmax_trans`, `km_trans`.
+- `vmax`, `km` — Michaelis–Menten constants for each enzyme / transporter. Name-disambiguate when several coexist: `vmax_pah`, `km_pah`, `vmax_trans`, `km_trans`.
 - `kint`, `kcat`, `kpro`, `krmr` — fractional rate constants (1/time). When a rate is recomputed at steady state vs. dynamically, suffix the steady-state value with `_0` (e.g., `kcat_0`) and leave the dynamic one unsuffixed.
 - `bl_<species>` — baseline concentration of an endogenous species (e.g., `bl_phe`, `bl_gut`). Use this as the initial condition: `<species>(0) <- bl_<species>`.
 - `f_<fraction>` — unitless fractional-activity scalars (e.g., `f_pah` = fraction of healthy PAH activity).
@@ -467,3 +547,30 @@ Precedents in `inst/modeldb/specificDrugs/`: `AitOudhia_2012_canakinumab.R`. The
 ### Year-letter collision suffix
 
 When two extractions resolve to the same `<FirstAuthor>_<Year>_<drug>` name (e.g., two same-author/year/drug entries with different scenarios), append a lowercase letter to the year — `Author_2019a_drug.R`, `Author_2019b_drug.R`. Allocate letters in chronological model-development order when known. Never overwrite an existing file silently.
+
+## Time-varying clearance (issue #481)
+
+If clearance depends on time, use the stem that matches the functional form so
+the structure can be found by name. `checkModelConventions()` warns when a
+clearance expression references `t` / `time` without one of these.
+
+| Form | Stem | Roles |
+|---|---|---|
+| Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_hill_` | `cl_hill_max`, `cl_hill_t50`, `cl_hill_gamma` |
+| Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
+
+Prefix `l` for the log scale (`lcl_hill_t50`), `eta` for the IIV partner
+(`etacl_hill_max`), `e_<cov>_` for a covariate effect
+(`e_nhl_cl_exp_kdes`).
+
+Do **not** reuse `emax`, `imax`, `gamma`, `hill` or `t50` for clearance
+time-dependence: all of them are also standard PD parameter names, and several
+models carry both a PD `emax` and a clearance one.
+
+**The symbol the ODE consumes is the total clearance.** Name components so they
+cannot be mistaken for it -- `cl_exp_component`, not `cl_time` or `cl_t_now`. A
+decaying component can fall by dozens of orders of magnitude over a treatment
+course, which is meaningless in isolation but looks like a clearance value.
+
+Periodic (diurnal / circadian) variation is a different structure and keeps its
+own names; do not fold it into `cl_hill_` or `cl_exp_`.

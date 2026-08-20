@@ -15,6 +15,21 @@ Harrold_2020_radiation_neutropenia <- function() {
     concentration = "10^9 cells/L (ANC)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd  = list(analyte = "K-PD radiation amount", units = NA_character_, specimen = "administration site", verified = FALSE),
+    precursor1 = list(analyte = "N_SM stem cell", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "N_MT mitotic", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor3 = list(analyte = "N_PM1", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor4 = list(analyte = "N_PM2", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    circ       = list(analyte = "ANC", units = NA_character_, specimen = "whole blood", verified = FALSE),
+    effect     = list(analyte = "mitotic-cell killing", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz     = list(analyte = "cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",

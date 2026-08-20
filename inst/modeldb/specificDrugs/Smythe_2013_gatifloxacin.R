@@ -23,7 +23,15 @@ Smythe_2013_gatifloxacin <- function() {
     sep = " "
   )
   vignette <- "Smythe_2013_gatifloxacin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "gatifloxacin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "gatifloxacin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -177,7 +185,7 @@ Smythe_2013_gatifloxacin <- function() {
 
     # Bioavailability: first-dose F is fixed at 1 (Table 2: 'F first dose
     # = 1 FIX'); steady-state F is reduced by 11.7% relative to first dose.
-    lfdose1   <- fixed(log(1));    label("Bioavailability on the first dose, fixed at 1 (unitless)")                       # Smythe 2013 Table 2: F first dose = 1 FIX (not estimated)
+    lfdose1   <- fixed(log(1));    label("Bioavailability on the first dose(unitless)")                       # Smythe 2013 Table 2: F first dose = 1 FIX (not estimated)
     e_ss_fbio <- -0.117;            label("Fractional change in bioavailability at steady state vs first dose (unitless)") # Smythe 2013 Table 2: F steady-state = -11.7% change from F_first (RSE 17.4%)
 
     # Covariate effects on ka. Centred / fractional forms per Table 2 footnote.
@@ -203,11 +211,11 @@ Smythe_2013_gatifloxacin <- function() {
     # sister Wilkins 2008 rifampicin model (DDMODEL00000280). The OCC
     # column (1 or 2) is decomposed into binary indicators inside model().
     etaiov_cl_1  ~ 0.10336              # Smythe 2013 Table 2: IOV CL/F = 33.0% CV (RSE 5.7%) -> log(0.33^2 + 1) = 0.10336 (occasion 1)
-    etaiov_cl_2  ~ fix(0.10336)         # IOV on log-CL, occasion 2; variance fixed equal to occasion 1 per source's single-variance IOV reporting
+    etaiov_cl_2  ~ fix(0.10336)         # IOV on log-CL, occasion 2; variance equal to occasion 1 per source's single-variance IOV reporting
     etaiov_vc_1  ~ 0.01727              # Smythe 2013 Table 2: IOV V/F  = 13.2% CV (RSE 13.9%) -> log(0.132^2 + 1) = 0.01727 (occasion 1)
-    etaiov_vc_2  ~ fix(0.01727)         # IOV on log-V,  occasion 2; variance fixed equal to occasion 1
+    etaiov_vc_2  ~ fix(0.01727)         # IOV on log-V, occasion 2; variance equal to occasion 1
     etaiov_mtt_1 ~ 0.18365              # Smythe 2013 Table 2: IOV MTT  = 44.9% CV (RSE 12.3%) -> log(0.449^2 + 1) = 0.18365 (occasion 1)
-    etaiov_mtt_2 ~ fix(0.18365)         # IOV on log-MTT, occasion 2; variance fixed equal to occasion 1
+    etaiov_mtt_2 ~ fix(0.18365)         # IOV on log-MTT, occasion 2; variance equal to occasion 1
 
     # Residual error. Combined additive + proportional on the linear
     # concentration scale (mg/L). The source paper also reports a

@@ -2,7 +2,16 @@ Sarashina_2005_epinastine <- function() {
   description <- "Two-compartment population PK model with first-order absorption for oral epinastine in healthy adults and paediatric atopic dermatitis patients (Sarashina 2005), with linear-in-WT CL/F and V1/F plus food-status and formulation covariate effects"
   reference <- "Sarashina A, Tatami S, Yamamura N, Tsuda Y, Igarashi T. Population pharmacokinetics of epinastine, a histamine H1 receptor antagonist, in adults and children. Br J Clin Pharmacol. 2005;59(1):43-53. doi:10.1111/j.1365-2125.2005.02250.x"
   vignette <- "Sarashina_2005_epinastine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "epinastine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "epinastine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "epinastine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

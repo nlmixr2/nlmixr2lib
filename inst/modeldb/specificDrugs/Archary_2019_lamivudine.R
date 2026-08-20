@@ -2,7 +2,15 @@ Archary_2019_lamivudine <- function() {
   description <- "One-compartment population PK model for lamivudine in severely malnourished HIV-infected children (Archary 2019); CL/F matures with age via a sigmoid Emax function, Vc/F decreases linearly with serum triglyceride, and ka steps up between day 1 and day 14 of antiretroviral treatment"
   reference <- "Archary M, McIlleron H, Bobat R, LaRussa P, Sibaya T, Wiesner L, Hennig S. Population pharmacokinetics of abacavir and lamivudine in severely malnourished human immunodeficiency virus-infected children in relation to treatment outcomes. Br J Clin Pharmacol. 2019;85(8):1881-1890. doi:10.1111/bcp.13998"
   vignette <- "Archary_2019_lamivudine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "lamivudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lamivudine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -62,8 +70,8 @@ Archary_2019_lamivudine <- function() {
     lvc  <- log(8.22);   label("Apparent central volume at 7 kg reference, TRIG = 5.3 mmol/L (Vc/F, L)") # Table 2
 
     # Allometric exponents (paper-fixed per Methods Section 2.3)
-    e_wt_cl <- 0.75; label("Allometric exponent on CL/F (unitless; fixed)")                     # Methods 2.3
-    e_wt_vc <- 1;    label("Allometric exponent on Vc/F (unitless; fixed)")                     # Methods 2.3
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on CL/F (unitless)")                     # Methods 2.3
+    e_wt_vc <- fixed(1);    label("Allometric exponent on Vc/F (unitless)")                     # Methods 2.3
 
     # Maturation function for CL/F (sigmoid Emax in age)
     mat_hill   <- 1.47; label("Hill coefficient of the CL/F sigmoid Emax age-maturation function (unitless)") # Table 2

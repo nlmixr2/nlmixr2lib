@@ -23,9 +23,18 @@ Johnston_2021_empagliflozin_popPK <- function() {
   )
   vignette <- "Johnston_2021_empagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (converted from mg/L via MW 450.91 g/mol)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "empagliflozin popPK", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "empagliflozin popPK", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "empagliflozin popPK", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(

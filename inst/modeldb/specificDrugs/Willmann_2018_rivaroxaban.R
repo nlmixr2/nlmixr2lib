@@ -2,7 +2,16 @@ Willmann_2018_rivaroxaban <- function() {
   description <- "Paediatric population PK model for oral rivaroxaban in children aged 0.5-18 years (Willmann 2018, EINSTEIN-Jr phase I). Linear two-compartment model with first-order absorption from a depot and first-order elimination from the central compartment; CL and central V allometrically scaled to body weight (CL exponent 0.323 estimated; V exponent 1 fixed); ka shifted between the undiluted-oral-suspension formulation and the tablet / diluted-oral-suspension reference; relative bioavailability F1 reduced for the 20 mg-equivalent body-weight-adjusted dose relative to the 10 mg-equivalent reference."
   reference   <- "Willmann S, Thelen K, Kubitza D, Lensing AWA, Frede M, Coboeken K, Stampfuss J, Burghaus R, Mueck W, Lippert J. Pharmacokinetics of rivaroxaban in children using physiologically based and population pharmacokinetic modelling: an EINSTEIN-Jr phase I study. Thromb J. 2018;16:32. doi:10.1186/s12959-018-0185-1"
   vignette    <- "Willmann_2018_rivaroxaban"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "rivaroxaban", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "rivaroxaban", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -69,8 +78,8 @@ Willmann_2018_rivaroxaban <- function() {
     # Results paragraph ("the scaling exponent of V with body weight was
     # estimated to be not significantly different from 1; therefore, it was
     # fixed to 1, consistent with the allometric theory").
-    allo_cl <- 0.323;         label("Allometric exponent on CL with body weight (unitless)")  # Willmann 2018 Table 1: CL exponent = 0.323, RSE 27.1%
-    allo_vc <- fixed(1.0);    label("Allometric exponent on central V with body weight (unitless, fixed)")  # Willmann 2018 Table 1: V exponent fixed at 1, consistent with allometric theory
+    e_wt_cl <- 0.323;         label("Allometric exponent on CL with body weight (unitless)")  # Willmann 2018 Table 1: CL exponent = 0.323, RSE 27.1%
+    e_wt_vc <- fixed(1.0);    label("Allometric exponent on central V with body weight (unitless)")  # Willmann 2018 Table 1: V exponent fixed at 1, consistent with allometric theory
 
     # IIV - Willmann 2018 reports CV% (Table 1 footer "b"; exponential IIV
     # model per Methods "exponential inter-individual variability (IIV)").
@@ -102,8 +111,8 @@ Willmann_2018_rivaroxaban <- function() {
     # weight relative to a body weight of 70 kg"; "Scaling of Vp and Q with
     # body weight did not improve the fit and led to implausibly large
     # values of Vp").
-    cl <- exp(lcl + etalcl) * (WT / ref_wt)^allo_cl
-    vc <- exp(lvc) * (WT / ref_wt)^allo_vc
+    cl <- exp(lcl + etalcl) * (WT / ref_wt)^e_wt_cl
+    vc <- exp(lvc) * (WT / ref_wt)^e_wt_vc
     q  <- exp(lq)
     vp <- exp(lvp)
 

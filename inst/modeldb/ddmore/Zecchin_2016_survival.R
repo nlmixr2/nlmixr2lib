@@ -25,6 +25,16 @@ Zecchin_2016_survival <- function() {
   ddmore_id    <- "DDMODEL00000218"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    tumor_size = list(analyte = "Tumour-size", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    wts        = list(analyte = "Weibull baseline hazard rate", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    cumhaz     = list(analyte = "Cumulative hazard", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     KG = list(
       description        = "Subject-specific tumour-size first-order growth rate constant carried over (as an empirical-Bayes posterior) from the upstream Zecchin 2016 SLD model (DDMODEL00000217). Used inside the inline SLD ODE term `KG / 1000 * tumor_size`.",

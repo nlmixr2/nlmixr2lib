@@ -9,7 +9,15 @@ Tang_2019_amoxicillin <- function() {
     sep = " "
   )
   vignette <- "Tang_2019_amoxicillin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "amoxicillin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -87,8 +95,8 @@ Tang_2019_amoxicillin <- function() {
     # model by the allometric size approach (allometric coefficients were
     # 1 for V1 and V2 and 0.75 for CL and Q)." No RSE is reported for
     # these exponents, consistent with fixed allometric scaling.
-    e_wt_vc_vp <- fixed(1.00); label("Allometric (WT) exponent shared across V1 and V2 (unitless, fixed)")   # Tang 2019 Results 'Covariate analysis' (a priori fixed)
-    e_wt_cl_q  <- fixed(0.75); label("Allometric (WT) exponent shared across CL and Q (unitless, fixed)")    # Tang 2019 Results 'Covariate analysis' (a priori fixed)
+    e_wt_vc_vp <- fixed(1.00); label("Allometric (WT) exponent shared across V1 and V2 (unitless)")   # Tang 2019 Results 'Covariate analysis' (a priori fixed)
+    e_wt_cl_q  <- fixed(0.75); label("Allometric (WT) exponent shared across CL and Q (unitless)")    # Tang 2019 Results 'Covariate analysis' (a priori fixed)
 
     # F_age maturation exponents on CL (estimated).
     e_ga_cl  <- 4.19;  label("Gestational-age power exponent on CL (unitless; GA reference 38.14 weeks)")    # Tang 2019 Table 2: theta5 = 4.19 (RSE 12.60%)

@@ -2,7 +2,15 @@ deVriesSchultink_2020_zenocutuzumab <- function() {
   description <- "Two-compartment population PK model with parallel linear and Michaelis-Menten non-linear elimination from the central compartment for intravenous zenocutuzumab (MCLA-128), a bispecific IgG1 (anti-HER2 x anti-HER3) monoclonal antibody, in patients with various advanced solid tumors (de Vries Schultink 2020)"
   reference <- "de Vries Schultink AHM, Bol K, Doornbos RP, Murat A, Wasserman E, Dorlo TPC, Schellens JHM, Beijnen JH, Huitema ADR. Population Pharmacokinetics of MCLA-128, a HER2/HER3 Bispecific Monoclonal Antibody, in Patients with Solid Tumors. Clin Pharmacokinet. 2020;59(7):875-884. doi:10.1007/s40262-020-00858-2"
   vignette <- "deVriesSchultink_2020_zenocutuzumab"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "zenocutuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "zenocutuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FFM = list(

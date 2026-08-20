@@ -13,7 +13,24 @@ Svensson_2018_bedaquiline <- function() {
     sep = " "
   )
   vignette <- "Svensson_2018_bedaquiline"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2    = list(analyte = "bedaquiline", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2     = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m2 = list(analyte = "N-desmethyl bedaquiline (M2)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FORM_SUSPENSION = list(
@@ -77,7 +94,7 @@ Svensson_2018_bedaquiline <- function() {
     # formulations (95% nonparametric CI of relative F 94-108%, predefined
     # BE criteria 80-125%), so F is identical across whole and suspended
     # tablets; only MAT shifts. See vignette's Assumptions and deviations.
-    lfdepot <- fixed(log(1))  ; label("Bioavailability F (fixed at 1 because CL and V are apparent F-relative values; relative F whole vs suspension was bioequivalent within 80-125% per Svensson 2018 Results)")
+    lfdepot <- fixed(log(1))  ; label("Bioavailability F (1 because CL and V are apparent F-relative values; relative F whole vs suspension was bioequivalent within 80-125% per Svensson 2018 Results)")
 
     # Formulation covariate effect. Encoded as additive-fractional on MAT:
     # MAT_typ = MAT_whole * (1 + e_susp_mat * FORM_SUSPENSION). At

@@ -2,7 +2,16 @@ Caldes_2009_ganciclovir <- function() {
   description <- "Two-compartment population PK model for ganciclovir after IV ganciclovir and oral valganciclovir administration in solid organ transplant patients infected with cytomegalovirus, with first-order absorption, lag time, logit-transformed bioavailability, and creatinine-clearance scaling on CL (Caldes 2009)"
   reference   <- "Caldes A, Colom H, Armendariz Y, Garrido MJ, Troconiz IF, Gil-Vernet S, Lloberas N, Pou L, Peraire C, Grinyo JM. Population pharmacokinetics of ganciclovir after intravenous ganciclovir and oral valganciclovir administration in solid organ transplant patients infected with cytomegalovirus. Antimicrob Agents Chemother. 2009;53(11):4816-4824. doi:10.1128/AAC.00085-09"
   vignette    <- "Caldes_2009_ganciclovir"
-  units       <- list(time = "hr", dosing = "mg", concentration = "ug/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ganciclovir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ganciclovir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -50,7 +59,7 @@ Caldes_2009_ganciclovir <- function() {
     # Linear CRCL effect on CL: CL = 7.49 * (CRCL / 57). Stored as a power exponent
     # of 1 on the (CRCL / 57) ratio so the covariate-effect parameter is identifiable
     # by checkModelConventions() and the form mirrors other CL ~ renal-function models.
-    e_crcl_cl <- 1.0; label("Power exponent of CRCL on CL (unitless; reference 57 mL/min, fixed at 1 per linear paper form)")  # Caldes 2009 Table 3 footnote c (linear scaling: CL = 7.49 * (CLCR/57))
+    e_crcl_cl <- fixed(1.0); label("Power exponent of CRCL on CL (unitless; reference 57 mL/min)")  # Caldes 2009 Table 3 footnote c (linear scaling: CL = 7.49 * (CLCR/57))
 
     # Inter-individual variability. Caldes 2009 Table 3 reports the IIV variances
     # directly (omega^2 column, expressed as variance). NONMEM exponential-on-log-scale

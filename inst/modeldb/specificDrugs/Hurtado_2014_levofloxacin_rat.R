@@ -22,6 +22,16 @@ Hurtado_2014_levofloxacin_rat <- function() {
   vignette <- "Hurtado_2014_levofloxacin_rat"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "unbound levofloxacin in plasma", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "unbound levofloxacin in prostate interstitial fluid", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "free levofloxacin in prostate interstitial fluid", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

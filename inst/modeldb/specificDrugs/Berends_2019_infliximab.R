@@ -4,6 +4,16 @@ Berends_2019_infliximab <- function() {
   vignette <- "Berends_2019_infliximab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "infliximab", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "free TNF", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     ALB = list(
       description        = "Serum albumin",
@@ -67,9 +77,9 @@ Berends_2019_infliximab <- function() {
     # Internalization rate is paper's ke(P) (= kint in QSS notation). kdeg
     # fixed per sensitivity analysis (Suppl. Table 1; Results "Simulations").
     lkss  <- log(2.0264);   label("Steady-state dissociation constant Kss in IFX-equivalent ug/mL (paper: 13.6 nM)")           # Berends 2019 Results "Final model" + Abstract (text 13.6 nM); Table 2 bootstrap 13.7 nM; Table 2 "Estimate" displays integer-rounded 14
-    lBmax <- log(5.662e-5); label("Baseline TNF concentration Bmax in IFX-equivalent ug/mL (paper: 0.38 pM = 19.8 pg/mL)")     # Berends 2019 Table 2 (Bmax 0.38 pM = 19.8 pg/mL)
+    lbmax <- log(5.662e-5); label("Baseline TNF concentration Bmax in IFX-equivalent ug/mL (paper: 0.38 pM = 19.8 pg/mL)")     # Berends 2019 Table 2 (Bmax 0.38 pM = 19.8 pg/mL)
     lkint <- log(0.984);    label("Complex internalization rate ke(P) = kint (1/day)")                                          # Berends 2019 Table 2 (ke(P))
-    lkdeg <- fixed(log(5.12)); label("TNF degradation rate kdeg (1/day; FIXED per sensitivity analysis)")                       # Berends 2019 Table 2 (kdeg fixed = 5.12; Results "Simulations")
+    lkdeg <- fixed(log(5.12)); label("TNF degradation rate kdeg (1/day; per sensitivity analysis)")                       # Berends 2019 Table 2 (kdeg fixed = 5.12; Results "Simulations")
 
     # ---- Inter-individual variability ---------------------------------------
     # CV%-style values from Table 2 converted to log-normal variance via
@@ -88,7 +98,7 @@ Berends_2019_infliximab <- function() {
     etalcl + etalvc ~ c(0.08185,
                         0.007884, 0.05022)  # Berends 2019 Table 2: IIV CL 29.2%, IIV Vc 22.7%, Cov 12.3% (interpreted as correlation 0.123)
     etalvp   ~ 0.43847    # Berends 2019 Table 2 IIV Vp 74.2 % CV
-    etalBmax ~ 0.14302    # Berends 2019 Table 2 IIV Bmax 39.2 % CV
+    etalbmax ~ 0.14302    # Berends 2019 Table 2 IIV Bmax 39.2 % CV
 
     # ---- Residual error (Table 2 final-model estimates) ---------------------
     # Both errors reported as proportional. IFX residual applies to Cc (ug/mL);
@@ -119,7 +129,7 @@ Berends_2019_infliximab <- function() {
 
     # ---- Individual TMDD-QSS parameters ------------------------------------
     kss  <- exp(lkss)                  # ug/mL, IFX-mass-equivalent
-    Bmax <- exp(lBmax + etalBmax)      # ug/mL, IFX-mass-equivalent (baseline TNF)
+    Bmax <- exp(lbmax + etalbmax)      # ug/mL, IFX-mass-equivalent (baseline TNF)
     kint <- exp(lkint)                 # 1/day (= ke(P) in paper)
     kdeg <- exp(lkdeg)                 # 1/day (FIXED at 5.12)
 

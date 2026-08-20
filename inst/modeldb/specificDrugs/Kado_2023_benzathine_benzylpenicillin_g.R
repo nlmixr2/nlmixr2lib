@@ -16,6 +16,18 @@ Kado_2023_benzathine_benzylpenicillin_g <- function() {
   vignette    <- "Kado_2023_benzathine_benzylpenicillin_g"
   units       <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # The final model was fitted to dried-blood-spot (whole blood) concentrations
+  # (Results, 'Pharmacokinetic modeling'); plasma and DBS were shown to be
+  # equivalent (bootstrap ratio 0.990, 95% CI 0.897-1.08), so the DBS fit is
+  # interchangeable with a plasma fit. `depot` and `depot2` are the bolus and
+  # zero-order halves of the single subcutaneous depot of Figure 2.
+  compartmentData <- list(
+    depot    = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2   = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "benzathine benzylpenicillin g", units = "mg", specimen = "whole blood", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight, used as the allometric size descriptor.",
@@ -104,15 +116,15 @@ Kado_2023_benzathine_benzylpenicillin_g <- function() {
     # was fixed following the group's earlier models). Table 2 reports it in
     # h^-1 for a 70 kg individual; converted to 1/day because every absorption
     # parameter in this model is expressed in days.
-    lkel <- fixed(log(1.32 * 24)); label("Elimination rate constant, 70 kg reference (1/day; fixed)")  # Table 2: kel = 1.32 h^-1 . 70 kg^-1, Fixed -> 31.68 1/day
+    lkel <- fixed(log(1.32 * 24)); label("Elimination rate constant, 70 kg reference (1/day)")  # Table 2: kel = 1.32 h^-1 . 70 kg^-1, Fixed -> 31.68 1/day
     lvc  <- log(42.8);             label("Apparent central volume of distribution V/F, 70 kg reference (L)")  # Table 2: V/F = 42.8 L . 70 kg^-1 (bootstrap 42.8, 95% CI 40-46.1)
 
     # Allometric exponents were applied a priori, not estimated (Methods,
     # 'Population pharmacokinetic analysis': "Allometric scaling for size was
     # employed a priori, with an exponential of 1 for volume (V) and 3/4 for
     # clearance (CL) terms").
-    e_wt_vc <- fixed(1);    label("Allometric exponent of WT on V/F (unitless; fixed)")  # Methods 'Population pharmacokinetic analysis': exponent 1 for volume
-    e_wt_cl <- fixed(0.75); label("Allometric exponent of WT on clearance (unitless; fixed)")  # Methods 'Population pharmacokinetic analysis': exponent 3/4 for clearance
+    e_wt_vc <- fixed(1);    label("Allometric exponent of WT on V/F (unitless), applied a priori")  # Methods 'Population pharmacokinetic analysis': exponent 1 for volume
+    e_wt_cl <- fixed(0.75); label("Allometric exponent of WT on clearance (unitless), applied a priori")  # Methods 'Population pharmacokinetic analysis': exponent 3/4 for clearance
 
     # ==========================================================================
     # Absorption

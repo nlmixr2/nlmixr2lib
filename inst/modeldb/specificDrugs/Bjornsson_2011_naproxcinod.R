@@ -48,6 +48,17 @@ Bjornsson_2011_naproxcinod <- function() {
     concentration = "umol/L (both total and unbound naproxen)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_naproxcinod = list(analyte = "naproxcinod", units = NA_character_, specimen = "administration site", verified = FALSE),
+    depot_naproxen    = list(analyte = "naproxen", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "unbound naproxen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cumhaz            = list(analyte = "none", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   covariatesDataExcluded <- list(
@@ -230,7 +241,7 @@ Bjornsson_2011_naproxcinod <- function() {
     # Table 3 k_pl = 0.237 /h (RSE 68.8%); IIV 43% (RSE 39%).
 
     lemax <- fixed(log(1))
-    label("Maximum drug effect on PI (fraction, fixed at 1)")
+    label("Maximum drug effect on PI (fraction)")
     # Paper Methods 'Pain intensity model' + Table 3: 'Emax was
     # estimated close to 1, the upper boundary, and was therefore
     # fixed to 1.'

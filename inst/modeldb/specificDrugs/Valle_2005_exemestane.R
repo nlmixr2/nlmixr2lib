@@ -6,6 +6,18 @@ Valle_2005_exemestane <- function() {
 
   paper_specific_compartments <- c("e1s")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "exemestane", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "exemestane", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "exemestane", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "exemestane", units = "mg", specimen = "plasma", verified = FALSE),
+    e1s         = list(analyte = "estrone sulphate", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FORM_SUSPENSION = list(
       description        = "Extemporaneous tablet-suspended-in-water formulation indicator (1 = exemestane delivered as an extemporaneously-prepared suspension administered with 180 mL of vehicle, 0 = sugar-coated tablet swallowed whole with 180 mL of water).",

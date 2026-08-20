@@ -36,6 +36,23 @@ Lindauer_2017_pembrolizumab <- function() {
 
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central       = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1   = list(analyte = "pembrolizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor_vs      = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_es_ub   = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_es_b    = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_is      = list(analyte = "pembrolizumab", units = "mg", specimen = "tumor", verified = FALSE),
+    complex_blood = list(analyte = "pembrolizumab-PD-1 complex", units = "mg", specimen = "plasma", verified = FALSE),
+    complex_tumor = list(analyte = "pembrolizumab-PD-1 complex", units = "mg", specimen = "tumor", verified = FALSE),
+    target_tumor  = list(analyte = "PD-1", units = "mg", specimen = "tumor", verified = FALSE),
+    tumor_vol     = list(analyte = "none", units = "mg", specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

@@ -3,9 +3,21 @@ Sampson_2014_azithromycin <- function() {
   reference <- "Sampson MR, Dumitrescu TP, Brouwer KLR, Schmith VD. Population pharmacokinetics of azithromycin in whole blood, peripheral blood mononuclear cells, and polymorphonuclear cells in healthy adults. CPT Pharmacometrics Syst Pharmacol. 2014;3(3):e103. doi:10.1038/psp.2013.80"
   vignette <- "Sampson_2014_azithromycin"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "azithromycin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE),
+    pbmc        = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
+    pmn         = list(analyte = "azithromycin", units = "mg", specimen = "blood cell", verified = FALSE),
+    peripheral1 = list(analyte = "azithromycin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()

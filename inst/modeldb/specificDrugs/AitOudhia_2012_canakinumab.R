@@ -8,6 +8,21 @@ AitOudhia_2012_canakinumab <- function() {
     concentration = "ug/mL (total canakinumab); pg/mL (total / free IL-1beta); mg/L (CRP)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "canakinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central_il1b = list(analyte = "IL-1beta", units = "mg", specimen = "plasma", verified = FALSE),
+    crp1         = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
+    crp2         = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
+    crp3         = list(analyte = "CRP", units = "mg", specimen = "plasma", verified = FALSE),
+    acrl         = list(analyte = "ACR latent variable", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -46,7 +61,7 @@ AitOudhia_2012_canakinumab <- function() {
     lvc     <- log(3.71);   label("Central volume of distribution Vc (L) for 70 kg patient")                   # Ait-Oudhia 2012 Table 1
     lvp     <- log(2.24);   label("Peripheral volume of distribution Vp (L) for 70 kg patient")                # Ait-Oudhia 2012 Table 1
     lcl     <- log(0.104);  label("Total canakinumab clearance CL = CLDL (L/day) for 70 kg patient")           # Ait-Oudhia 2012 Table 1
-    lcll    <- log(13.7);   label("Free IL-1beta clearance CLL (L/day)")                                       # Ait-Oudhia 2012 Table 1
+    lcl_ligand    <- log(13.7);   label("Free IL-1beta clearance CLL (L/day)")                                       # Ait-Oudhia 2012 Table 1
     lq      <- log(0.165);  label("Intercompartmental clearance Q (L/day) for 70 kg patient")                  # Ait-Oudhia 2012 Table 1
     lkd     <- log(0.38);   label("Equilibrium dissociation constant Kd (nmol/L)")                             # Ait-Oudhia 2012 Table 1
     lfdepot <- log(0.667);  label("Subcutaneous bioavailability F (fraction)")                                 # Ait-Oudhia 2012 Table 1 (paper used logit transform; typical F = 0.667)
@@ -56,8 +71,8 @@ AitOudhia_2012_canakinumab <- function() {
     # Allometric exponents on body weight, fixed at the canonical values
     # (Ait-Oudhia 2012 Methods, Data analysis paragraph, page 9).
     # ------------------------------------------------------------------
-    e_wt_cl_q   <- fixed(0.75); label("Fixed allometric exponent on CL, CLDL, CLL, Q (unitless)")              # Ait-Oudhia 2012 Methods page 9 (fixed at 3/4)
-    e_wt_vc_vp  <- fixed(1);    label("Fixed allometric exponent on Vc, Vp (unitless)")                        # Ait-Oudhia 2012 Methods page 9 (fixed at 1)
+    e_wt_cl_q   <- fixed(0.75); label("Allometric exponent on CL, CLDL, CLL, Q (unitless)")              # Ait-Oudhia 2012 Methods page 9 (fixed at 3/4)
+    e_wt_vc_vp  <- fixed(1);    label("Allometric exponent on Vc, Vp (unitless)")                        # Ait-Oudhia 2012 Methods page 9 (fixed at 1)
 
     # ------------------------------------------------------------------
     # CRP transduction parameters (Ait-Oudhia 2012 Table 2).
@@ -92,7 +107,7 @@ AitOudhia_2012_canakinumab <- function() {
     etalvc     ~ 0.128356  # log(1 + 0.37^2);  Ait-Oudhia 2012 Table 1 Vc  CV 37%
     etalvp     ~ 0.147654  # log(1 + 0.399^2); Ait-Oudhia 2012 Table 1 Vp  CV 39.9%
     etalcl     ~ 0.013832  # log(1 + 0.118^2); Ait-Oudhia 2012 Table 1 CL  CV 11.8%
-    etalcll    ~ 0.099887  # log(1 + 0.324^2); Ait-Oudhia 2012 Table 1 CLL CV 32.4%
+    etalcl_ligand    ~ 0.099887  # log(1 + 0.324^2); Ait-Oudhia 2012 Table 1 CLL CV 32.4%
     etalq      ~ 0.017298  # log(1 + 0.132^2); Ait-Oudhia 2012 Table 1 Q   CV 13.2%
     etalkd     ~ 0.109419  # log(1 + 0.34^2);  Ait-Oudhia 2012 Table 1 Kd  CV 34%
     etalfdepot ~ 0.001353  # log(1 + 0.0368^2); Ait-Oudhia 2012 Table 1 F  CV 3.68%
@@ -145,7 +160,7 @@ AitOudhia_2012_canakinumab <- function() {
     vc     <- exp(lvc  + etalvc)  * (WT / 70)^e_wt_vc_vp
     vp     <- exp(lvp  + etalvp)  * (WT / 70)^e_wt_vc_vp
     q      <- exp(lq   + etalq)   * (WT / 70)^e_wt_cl_q
-    cll    <- exp(lcll + etalcll) * (WT / 70)^e_wt_cl_q
+    cll    <- exp(lcl_ligand + etalcl_ligand) * (WT / 70)^e_wt_cl_q
     kd     <- exp(lkd  + etalkd)
     fdepot <- exp(lfdepot + etalfdepot)
     cl_dl  <- cl                   # CLDL = CL (Ait-Oudhia 2012 Results, 'During the model building process...' page 2)
