@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wickramasinghe 2025 pamiparib ([doi:10.3390/pharmaceutics17040524](https://doi.org/10.3390/pharmaceutics17040524)) -- adults with newly diagnosed or recurrent glioblastoma.
+- Add Gao 2025 cefquinome ([doi:10.3390/vetsci12040294](https://doi.org/10.3390/vetsci12040294)) -- Ili foals, with an ex vivo PK/PD-integration model against *Escherichia coli*.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
