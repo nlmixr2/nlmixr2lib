@@ -3012,12 +3012,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
 
-### m3 (**canonical N,N-bis-desmethyl-bedaquiline (M3) suffix**)
+### m3 (**canonical paper-named M3 metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** N,N-bis-desmethyl-bedaquiline (M3) metabolite of bedaquiline; the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step).
-- **Source aliases:** none.
-- **Example models:** `Svensson_2013_bedaquiline.R`.
-- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) -- the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite).
+- **Role:** Generic M3 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the metabolite simply "M3". Each model file's `description` / `reference` text identifies the specific compound; the `m3` suffix is the shared notational token, disambiguated by drug context in the same way as `m1` and `m2`. Drug contexts registered so far: in `Svensson_2013_bedaquiline.R`, M3 is N,N-bis-desmethyl-bedaquiline, the downstream demethylation product of M2 (responsible enzyme(s) not identified in vitro but suspected CYP3A4-mediated demethylation by analogy with the BDQ -> M2 step); in `Kong_2025_sudapyridine.R`, M3 is WX-081-M3, the major CYP3A4-formed metabolite of the bedaquiline analogue sudapyridine (WX-081), which carries the compound's QT-prolongation liability (hERG IC50 1.89 uM) and has weaker in vitro anti-tuberculosis activity than the parent.
+- **Source aliases:** `WX-081-M3` -- the development-code form used throughout Kong 2025.
+- **Example models:** `Svensson_2013_bedaquiline.R`, `Kong_2025_sudapyridine.R`.
+- **Notes:** Distinct from `m3g` (morphine-3-glucuronide) -- the suffix matcher uses `endsWith(name, "_m3")` vs `endsWith(name, "_m3g")` and these do not collide. Registered alongside the Svensson 2013 bedaquiline extraction (the first BDQ paper to model the M3 metabolite) and generalised to the drug-context-disambiguated form alongside the Kong 2025 sudapyridine extraction, whose M3 is a chemically distinct compound reached through the same `M<n>` naming habit. Note that a bedaquiline `m3` and a sudapyridine `m3` never co-occur in one model file, so the shared token carries no ambiguity within a model.
 
 ### m4 (**canonical edoxaban M4 metabolite suffix**)
 - **Type:** metabolite-suffix

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xie 2025 aztreonam-avibactam ([doi:10.1128/aac.01950-24](https://doi.org/10.1128/aac.01950-24)) -- healthy adults and hospitalized adults with complicated intra-abdominal infection, nosocomial pneumonia, complicated urinary tract infection, or bloodstream infection, spanning augmented renal clearance through end-stage renal disease.
+- Add Kong 2025 sudapyridine ([doi:10.1016/j.ejps.2025.107160](https://doi.org/10.1016/j.ejps.2025.107160)) - Chinese healthy volunteers and drug-susceptible / multidrug-resistant tuberculosis patients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
