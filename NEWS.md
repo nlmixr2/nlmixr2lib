@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Na 2024 tovecimig / ABL001 / CTX-009 ([doi:10.1111/cas.16363](https://doi.org/10.1111/cas.16363)) -- adults with relapsed or refractory solid tumors.
+- Add Mo 2024 shikimic acid ([doi:10.1021/acs.jafc.4c09250](https://doi.org/10.1021/acs.jafc.4c09250)) -- growing pigs (Landrace x Large White) dosed intravenously and intragastrically.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
