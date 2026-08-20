@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2025 nedosiran ([doi:10.1007/s40262-025-01540-1](https://doi.org/10.1007/s40262-025-01540-1)) -- healthy volunteers and children and adults with primary hyperoxaluria.
+- Add Francke 2025 tacrolimus full and starting-dose models ([doi:10.1007/s40262-025-01533-0](https://doi.org/10.1007/s40262-025-01533-0)) - adult living and deceased donor kidney transplant recipients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
