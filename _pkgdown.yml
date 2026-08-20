@@ -2834,6 +2834,8 @@ navbar:
         href: articles/Zhao_2015_teicoplanin.html
       - text: "Telapristone (Morris 2011)"
         href: articles/Morris_2011_telapristone.html
+      - text: "Telavancin (VanWart 2025)"
+        href: articles/VanWart_2025_telavancin.html
       - text: "Temocapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Temozolomide (Mazzocco 2015)"
@@ -4515,7 +4517,7 @@ articles:
   - articles/vanRongen_2018_metformin
   - articles/vanRongen_2018_midazolam
   - articles/VanWart_2004_garenoxacin
-  - articles/vanWijk_2019_paracetamol
+  - articles/VanWart_2025_telavancin
   - articles/Varatharajan_2016_daunorubicin
   - articles/VargasChristensen_2019_rfviii_rat
   - articles/Vargo_2014_statins_ezetimibe_mbma

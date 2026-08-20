@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2025 avatrombopag ([doi:10.3390/ph18060903](https://doi.org/10.3390/ph18060903)) -- healthy Chinese adults dosed fasting or after a high-fat meal.
+- Add Van Wart 2025 telavancin ([doi:10.1128/aac.01382-24](https://doi.org/10.1128/aac.01382-24)) - healthy subjects and patients with complicated skin and skin-structure infection, hospital-acquired or ventilator-associated bacterial pneumonia, or uncomplicated bacteremia, spanning the full range of renal function including hemodialysis.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
