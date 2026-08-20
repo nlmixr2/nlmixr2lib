@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kir 2025 atenolol and metoprolol minimal-PBPK absorption models ([doi:10.1007/s13318-025-00943-6](https://doi.org/10.1007/s13318-025-00943-6)) -- non-malnourished and malnourished rats (Sprague-Dawley).
+- Add Sheiner 1979 d-tubocurarine ([doi:10.1002/cpt1979253358](https://doi.org/10.1002/cpt1979253358)) -- adults undergoing elective surgery with normal renal function or chronic end-stage renal failure.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
