@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kong 2025 sudapyridine ([doi:10.1016/j.ejps.2025.107160](https://doi.org/10.1016/j.ejps.2025.107160)) - Chinese healthy volunteers and drug-susceptible / multidrug-resistant tuberculosis patients.
+- Add Comisar 2025 rimegepant ([doi:10.1002/psp4.70051](https://doi.org/10.1002/psp4.70051)) -- healthy adults, elderly adults with stable chronic illness, and adults with renal or hepatic impairment.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
