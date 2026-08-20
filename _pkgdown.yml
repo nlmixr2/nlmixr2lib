@@ -1434,6 +1434,8 @@ navbar:
         href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Lamivudine (Moore 1999)"
         href: articles/Moore_1999_lamivudine.html
+      - text: "Lamivudine (Ojara 2024)"
+        href: articles/Ojara_2024_lamivudine.html
       - text: "Lamotrigine (He 2012)"
         href: articles/He_2012_lamotrigine.html
       - text: "Lamotrigine (Hussein 1997)"
@@ -4007,7 +4009,7 @@ articles:
   - articles/Ogasawara_2020_durvalumab
   - articles/Ogungbenro_2009_penciclovir
   - articles/Oishi_2014_fesoterodine
-  - articles/Okada_2024_triazolam
+  - articles/Ojara_2024_lamivudine
   - articles/Okada_2025_rocatinlimab
   - articles/Olagunju_2018_efavirenz
   - articles/Olivo_2024_methotrexate

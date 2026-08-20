@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Patidar 2024 platform monoclonal-antibody minimal-PBPK models ([doi:10.1007/s10928-023-09899-z](https://doi.org/10.1007/s10928-023-09899-z)) -- mouse (wild-type and FcRn knockout) and 70 kg adult human.
+- Add Ojara 2024 lamivudine ([doi:10.1002/psp4.13274](https://doi.org/10.1002/psp4.13274)) -- breastfeeding Ugandan women living with HIV, with paired maternal plasma and breast-milk data.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
