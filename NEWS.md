@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cao 2025 ferric carboxymaltose ([doi:10.1021/acsptsci.5c00097](https://doi.org/10.1021/acsptsci.5c00097)) -- rats (Sprague-Dawley) with iron deficiency anemia.
+- Add Glatard 2025 octreotide ([doi:10.1007/s40262-025-01522-3](https://doi.org/10.1007/s40262-025-01522-3)) -- healthy adults and adults with acromegaly.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
