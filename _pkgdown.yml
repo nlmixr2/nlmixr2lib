@@ -114,6 +114,8 @@ navbar:
         href: articles/Thakkar_2017_amifampridine.html
       - text: "Amikacin (Delattre 2010)"
         href: articles/Delattre_2010_amikacin.html
+      - text: "Amikacin (Li 2025)"
+        href: articles/Li_2025_amikacin.html
       - text: "Amikacin (Tod 1998)"
         href: articles/Tod_1998_amikacin.html
       - text: "Aminocaproic acid (Stricker 2015)"
@@ -4233,7 +4235,7 @@ articles:
   - articles/Li_2023_ornidazole
   - articles/Li_2024_norepinephrine
   - articles/Li_2024_orin1001
-  - articles/Li_2025_modakafuspAlfa
+  - articles/Li_2025_amikacin
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_osimertinib
   - articles/Liang_2024_rituximab

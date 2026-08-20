@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zakria 2026 voriconazole ([doi:10.1080/20523211.2025.2601420](https://doi.org/10.1080/20523211.2025.2601420)) -- adult Pakistani cancer patients, elderly (> 65 y) versus young.
+- Add Li 2025 amikacin ([doi:10.1186/s12879-025-11747-z](https://doi.org/10.1186/s12879-025-11747-z)) -- Chinese premature infants receiving therapeutic drug monitoring.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
