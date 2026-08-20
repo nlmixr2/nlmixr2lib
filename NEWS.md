@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Darwish 2025 trofinetide ([doi:10.1007/s12325-024-03056-9](https://doi.org/10.1007/s12325-024-03056-9)) -- healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury.
+- Add Golzaryan 2025 [177Lu]Lu-PSMA I&T ([doi:10.1038/s41598-025-86159-9](https://doi.org/10.1038/s41598-025-86159-9)) - men with metastatic castration-resistant prostate cancer; a 21-compartment whole-body PBPK model with parallel labelled and unlabelled circulations.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

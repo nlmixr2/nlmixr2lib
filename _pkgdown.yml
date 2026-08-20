@@ -1570,8 +1570,8 @@ navbar:
         href: articles/Siebinga_2023_lu177psma617.html
       - text: "Lu177psmaIT (Siebinga 2024)"
         href: articles/Siebinga_2024_lu177psmaIT.html
-      - text: "Lumefantrine (Chotsiri 2019)"
-        href: articles/Chotsiri_2019_lumefantrine.html
+      - text: "Lu177psmaIT pbpk (Golzaryan 2025)"
+        href: articles/Golzaryan_2025_lu177psmaIT_pbpk.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
@@ -3606,6 +3606,7 @@ articles:
   - articles/Goel_2016_Sonidegib
   - articles/Goggin_2004_emfilermin
   - articles/Golubovic_2019_sirolimus
+  - articles/Golzaryan_2025_lu177psmaIT_pbpk
   - articles/Gong_2023_pemigatinib
   - articles/GonzalezSales_2015_testosterone
   - articles/GonzalezSales_2024_imetelstat
