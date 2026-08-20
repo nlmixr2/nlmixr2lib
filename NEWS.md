@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zuo 2024 apatinib ([doi:10.1186/s12885-024-13118-4](https://doi.org/10.1186/s12885-024-13118-4)) - Chinese adults with solid tumours.
+- Add Duan 2024 linezolid ([doi:10.1128/aac.01148-24](https://doi.org/10.1128/aac.01148-24)) - Chinese premature neonates undergoing therapeutic drug monitoring.
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
