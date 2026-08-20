@@ -2248,6 +2248,15 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Schindler_2016_sunitinib.R`.
 
+### mprotein (**canonical serum M-protein PD output**)
+- **Type:** compartment
+- **Role:** Serum M-protein (monoclonal immunoglobulin, "myeloma protein", paraprotein) concentration in g/L, the International Myeloma Working Group standard measure of tumor burden in multiple myeloma and the endpoint on which objective response and progressive disease are defined. Used as the state of tumor-growth-inhibition models fitted to myeloma trials, in the same role that `sld` and `tumor_size` play for solid-tumor RECIST endpoints and that `psa` plays for prostate cancer.
+- **Source aliases:**
+  - `MP` -- Li 2025 notation.
+  - `M-protein`, `M protein`, `myeloma protein`, `paraprotein` -- clinical long forms.
+- **Example models:** `Li_2025_modakafuspAlfa_mprotein.R` (founding example; Claret tumor-growth-inhibition model with exponential growth `kg`, a saturable Emax kill term driven by unbound modakafusp alfa, and an exponentially appearing resistance term).
+- **Notes:** A serum-biomarker PD output in the same family as `psa`, `crp`, `igg`, `total_igg` and `sdma`, and registered for the same reason: it is a recurring, assay-defined endpoint rather than a paper-mechanistic state. Deliberately NOT `tumor_size` / `sld`: M-protein is a serum protein concentration in g/L, not a lesion dimension, and a model can carry both if a paper reports plasmacytoma measurements alongside the paraprotein. Serum free light chain, which substitutes for M-protein in oligosecretory myeloma, would be a separate entry (`flc`) and is not registered here because no model needs it yet.
+
 ### mbl (**canonical bare mean bacterial load**)
 - **Type:** compartment
 - **Role:** Bare-case alias of the registered observation `MBL` (Svensson 2017 bedaquiline).

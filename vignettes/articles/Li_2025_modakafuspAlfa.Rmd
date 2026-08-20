@@ -1,0 +1,673 @@
+---
+title: "Modakafusp alfa (Li 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Modakafusp alfa (Li 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5, dpi = 96
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+set.seed(20250817)
+```
+
+# Model and source
+
+Li 2025 reports two sequentially fitted models, extracted here as two model
+files that share this article.
+
+```{r models}
+pk   <- rxode2::rxode(readModelDb("Li_2025_modakafuspAlfa"))
+pkpd <- rxode2::rxode(readModelDb("Li_2025_modakafuspAlfa_mprotein"))
+```
+
+* Citation: `r pk$reference`
+* Population PK model: `r pk$description`
+* PK-PD model: `r pkpd$description`
+* Article: <https://doi.org/10.1111/cts.70296>
+* Supporting Information (open access, includes both NONMEM control streams and
+  Figures S1-S12): <https://doi.org/10.1111/cts.70296>
+
+Modakafusp alfa (TAK-573) is a first-in-class fusion protein: a humanized
+anti-CD38 IgG4 kappa antibody with attenuated human interferon alfa-2b fused to
+the C-terminus of each heavy chain. It was studied in the Phase 1/2 iinnovate-1
+trial (NCT03215030) in relapsed or refractory multiple myeloma (RRMM).
+
+# Population
+
+```{r population}
+pop <- pk$population
+tibble::tibble(Field = names(pop),
+               Value = vapply(pop, function(x) paste(
+                 if (is.null(names(x))) as.character(x)
+                 else paste0(names(x), " ", as.character(x)),
+                 collapse = "; "), character(1))) |>
+  knitr::kable()
+```
+
+The population PK analysis used 96 of the 100 enrolled RRMM patients (those with
+at least one quantifiable serum concentration), contributing 2297 quantifiable
+observations plus 806 below the 6.25 ng/mL limit of quantification, which were
+handled as censored data by the Beal M3 likelihood method. The sequential PK-PD
+analysis of serum M-protein used the 60 patients whose baseline M-protein was at
+least 5 g/L, contributing 492 observations. Baseline demographics are Li 2025
+Table 1: mean weight 79.9 kg (SD 23.0, range 60-169), mean age 63.1 years (SD
+10.5, range 34-84), 42.7% female, 78.1% Caucasian, and mean serum albumin
+3.72 g/dL (SD 0.58).
+
+Immunogenicity was central to the PK model. 12.5% of PK-evaluable patients were
+ADA-positive at baseline and 52.1% became ADA-positive on treatment, with titers
+rising over repeated dosing (Table S2 and Figure S3).
+
+# Source trace
+
+Per-parameter provenance is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Li_2025_modakafuspAlfa.R` and
+`inst/modeldb/specificDrugs/Li_2025_modakafuspAlfa_mprotein.R`. The table
+collects them here.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL) | 0.0553 L/day | Table 2 |
+| `lvc` (Vc at 80.8 kg) | 5.08 L | Table 2 |
+| `e_wt_vc` | 0.509 | Table 2 and footnote b |
+| `lq` (Q) | 0.137 L/day | Table 2 |
+| `lvp` (Vp) | 4.01 L | Table 2 |
+| `lvmax` (Vmax) | 4.77 nmol/h | Table 2 |
+| `lkm` (KM) | 1.26 nM | Table 2 |
+| `lrtot_ada` (Rtot,ADA at titer 81) | 1.35 nM | Table 2 |
+| `e_ada_titer_rtot_ada` | 0.412 | Table 2 (footnote c prints 4.12; see Errata) |
+| `lkon_ada` | 3.6 1/(nM*h), fixed | Table 2, from Chen 2016 |
+| `lkoff_ada_max` / `lkoff_ada_min` | 3600 / 0.036 1/h, fixed | Table 2, from Chen 2016 |
+| `kdecay_ada` (kdec) | 0.0275 | Table 2 |
+| `lkel_ada` | 0.210 1/h | Table 2 |
+| PK IIV and residual error | omega^2 and sigma^2 | Table 2 |
+| Molecular weight 186 kDa | 1 nM = 186 ng/mL | Supporting Information NONMEM streams (`DOSE/186.0`, `C*186`) |
+| ADA gate at log3 titer > 3 | n/a | Supporting Information popPK stream (`L3OFFTITER = 3.0`) |
+| `TVVc = 5.08*(WT/80.8)^0.509` | n/a | Table 2 footnote b |
+| `TVRtot,ADA = 1.35*(Titer/81)^0.412` | n/a | Table 2 footnote c, corrected |
+| `koff,ADA` titer function | n/a | Table 2 footnote d; Figure S6 |
+| ADA binding ODEs (kon / koff / kel,ADA, Rfree = Rtot - complex) | n/a | Figure 1 and the popPK `$DES` block |
+| `lrbase` (MP0 at 3.6 g/dL albumin) | 17.4 g/L | Table 3 |
+| `e_alb_rbase` | -2.74 | Table 3 and footnote a |
+| `lp` (kg) | 0.0303 1/week | Table 3 |
+| `llambda` (kr) | 0.0568 1/week | Table 3 |
+| `lkkillmax` | 0.816 1/week | Table 3 |
+| `lec50` | 447 ng/mL | Table 3 |
+| PD IIV, EC50 / kkill,max covariance | omega^2, -0.374 | Table 3 and footnote b |
+| PD residual error | sigma^2 = 0.0161 (prop), 6.58 (add) | Table 3 |
+| `dMP/dt = kg*MP - kkill,max*exp(-kr*t)*(Cp/(EC50+Cp))*MP` | n/a | Equation 1 |
+| Objective response / progressive disease definitions | n/a | Methods section 2.5 |
+
+# Structural verification of the ADA sub-model
+
+The anti-drug-antibody layer is the distinctive part of this model, and it is
+fully determined by the log3 ADA titer covariate. Both titer relationships can
+therefore be checked exactly against the published typical-value curves, with no
+simulation variability involved.
+
+```{r ada-relationships}
+# Both relationships are algebraic functions of the covariate alone, so a
+# single dose-free observation record per titer level is enough to read them
+# straight out of the compiled model.
+ada_curve <- function(l3) {
+  d <- data.frame(id = seq_along(l3), time = 0, amt = NA_real_, evid = 0L,
+                  cmt = "central", WT = 80.8, ADA_TITER = l3)
+  r <- rxode2::rxSolve(rxode2::zeroRe(pk), d, returnType = "data.frame",
+                       addDosing = FALSE)
+  if (is.null(r$id)) r$id <- 1L
+  data.frame(l3titer = l3[r$id], rtot_ada = r$rtot_ada,
+             koff_per_h = r$koff_ada / 24)
+}
+ada <- ada_curve(0:13)
+knitr::kable(ada, digits = c(0, 3, 2),
+             col.names = c("log3(ADA titer)", "Rtot,ADA (nM)", "koff,ADA (1/h)"))
+```
+
+Li 2025 Figure S5 plots the typical `Rtot,ADA` against log3 titer: it starts at
+1.35 nM at a log3 titer of 4 (a reciprocal titer of 81, the reference), passes
+through roughly 12-13 nM at 9, and reaches about 79 nM at 13. Figure S6 plots
+`koff,ADA` starting at 3.6e3 1/h at a log3 titer of 4 and decaying toward the
+3.6e-2 1/h asymptote. The table above reproduces both to within the precision
+the published figures can be read; the two anchor points that the article states
+numerically rather than graphically, `Rtot,ADA` = 1.35 nM and
+`koff,ADA` = 3600 1/h at a log3 titer of 4, are recovered exactly.
+
+```{r ada-assertions}
+tol <- function(x, target, pct) abs(x / target - 1) <= pct / 100
+stopifnot(
+  # ADA-negative (and any titer at or below the log3 gate of 3) gives no pool
+  ada$rtot_ada[ada$l3titer == 0] == 0,
+  ada$rtot_ada[ada$l3titer == 3] == 0,
+  # Table 2 reference value
+  tol(ada$rtot_ada[ada$l3titer == 4], 1.35, 0.5),
+  # Figure S5 typical-value line
+  tol(ada$rtot_ada[ada$l3titer == 9], 12.98, 2),
+  tol(ada$rtot_ada[ada$l3titer == 13], 79.3, 2),
+  # Table 2 koff,ADA,max, and a regression guard on the top of the observed
+  # titer range: with kdec = 0.0275 the published function is still a few
+  # hundred 1/h at a log3 titer of 13, far above the 0.036 1/h asymptote.
+  tol(ada$koff_per_h[ada$l3titer == 4], 3600, 0.5),
+  tol(ada$koff_per_h[ada$l3titer == 13], 288, 2)
+)
+"ADA titer relationships reproduce Table 2, Figure S5 and Figure S6"
+```
+
+```{r ada-figure, fig.cap = "Reproduction of Li 2025 Figures S5 and S6: the typical total ADA pool and the drug-ADA dissociation rate constant as functions of the log3 ADA titer, over the titer range observed in the study."}
+ada |>
+  filter(l3titer >= 4) |>
+  tidyr::pivot_longer(c(rtot_ada, koff_per_h),
+                      names_to = "quantity", values_to = "value") |>
+  mutate(quantity = recode(quantity,
+                           rtot_ada   = "Rtot,ADA (nM) -- Figure S5",
+                           koff_per_h = "koff,ADA (1/h) -- Figure S6")) |>
+  ggplot(aes(l3titer, value)) +
+  geom_line(colour = "purple", linewidth = 1.1) +
+  geom_point(colour = "purple", size = 1.4) +
+  scale_y_log10() +
+  facet_wrap(~quantity, scales = "free_y") +
+  labs(x = expression(log[3]*"(ADA titer)"), y = NULL) +
+  theme_bw()
+```
+
+# Typical-value pharmacokinetics
+
+Doses are converted from mg to nmol with the model's 186 kDa molecular weight
+(`nmol = mg / 0.186`). Infusions are the 1-h infusion used for the published
+simulations.
+
+```{r helpers}
+MW_KDA   <- 186
+MG_TO_NMOL <- 1000 / MW_KDA        # 1 mg = 1000/186 nmol for a 186 kDa protein
+
+# Build an event data frame. Observation rows use cmt = "central", an ODE state
+# name, never an algebraic observable name.
+build_events <- function(id, amt_nmol, wt, alb = NA_real_, l3titer = 0,
+                         dose_times = 0, obs_times) {
+  dose <- data.frame(
+    id = rep(id, each = length(dose_times)),
+    time = rep(dose_times, times = length(id)),
+    amt = rep(amt_nmol, each = length(dose_times)),
+    dur = 1 / 24, evid = 1L, cmt = "central"
+  )
+  obs <- data.frame(
+    id = rep(id, each = length(obs_times)),
+    time = rep(obs_times, times = length(id)),
+    amt = NA_real_, dur = NA_real_, evid = 0L, cmt = "central"
+  )
+  ev <- rbind(dose, obs)
+  ev <- ev[order(ev$id, ev$time, -ev$evid), ]
+  idx <- match(ev$id, id)
+  ev$WT <- wt[idx]
+  ev$ALB <- alb[idx]
+  ev$ADA_TITER <- l3titer
+  ev
+}
+
+solve_pop <- function(mod, ev, typical = FALSE) {
+  m <- if (typical) rxode2::zeroRe(mod) else mod
+  out <- rxode2::rxSolve(m, ev, omega = if (typical) NULL else mod$omega,
+                         returnType = "data.frame", addDosing = FALSE,
+                         atol = 1e-10, rtol = 1e-8)
+  if (is.null(out$id)) out$id <- 1L   # rxSolve drops id for a single subject
+  out
+}
+```
+
+```{r typical-pk, fig.cap = "Typical-value serum modakafusp alfa after a single 1-h IV infusion of 120 mg or 240 mg to an 80.8 kg ADA-negative patient. The near-flat early phase followed by a steep decline is the signature of the saturable Michaelis-Menten elimination pathway."}
+tgrid <- c(seq(0, 2, by = 1 / 48), seq(2.05, 28, by = 0.05))
+typ <- lapply(c(120, 240), function(mg) {
+  ev <- build_events(1L, mg * MG_TO_NMOL, 80.8, obs_times = tgrid)
+  solve_pop(pk, ev, typical = TRUE) |> mutate(dose = paste(mg, "mg"))
+}) |> bind_rows()
+
+ggplot(typ, aes(time, pmax(Cc, 0.1), colour = dose)) +
+  geom_line(linewidth = 0.9) +
+  scale_y_log10() +
+  geom_hline(yintercept = 6.25, linetype = "dashed", colour = "grey40") +
+  labs(x = "Time (day)", y = "Serum modakafusp alfa (ng/mL)",
+       colour = "Dose",
+       caption = "Dashed line: 6.25 ng/mL assay LLOQ") +
+  theme_bw()
+```
+
+```{r typical-cmax}
+typ_cmax <- typ |> group_by(dose) |> summarise(cmax = max(Cc), .groups = "drop")
+knitr::kable(typ_cmax, digits = 0,
+             col.names = c("Dose", "Typical Cmax (ng/mL)"))
+# Cmax for an IV bolus / short infusion is dose / Vc, independent of the
+# molecular weight, so this is a direct check on the Vc parameterisation.
+# Look the value up by key rather than by row position.
+expected <- c(`120 mg` = 120, `240 mg` = 240) * 1000 / 5.08
+stopifnot(setequal(typ_cmax$dose, names(expected)))
+stopifnot(all(abs(typ_cmax$cmax / expected[typ_cmax$dose] - 1) < 0.02))
+"Typical Cmax equals dose / Vc to within 2%"
+```
+
+# Virtual cohort
+
+Li 2025 generated 2500 virtual RRMM patients by tilted bootstrap so that mean
+body weight and albumin matched iinnovate-1. The weight quartile cut-points used
+for Figure 3 (`<= 62`, `(62, 77]`, `(77, 96]`, `> 96` kg) pin that distribution
+down: a log-normal with a median of 77 kg and a log-scale SD of 0.322 reproduces
+all three quartiles and gives a mean of 81 kg, close to the reported 79.9 kg.
+Albumin is drawn to the Table 1 mean and SD, truncated at the reported range.
+
+Cohorts here are **200 subjects per arm**, the nlmixr2lib vignette cap. The
+paper used 2500 virtual patients for the Figure 3 exposure simulations and 200
+for its efficacy simulations, so the efficacy cohort below matches the paper's
+own sample size; only the Figure 3 cohort is smaller. Figure S12 does not state
+its sample size.
+
+```{r cohort}
+n_arm <- 200L
+cohort <- tibble::tibble(
+  id  = seq_len(n_arm),
+  WT  = pmin(pmax(exp(rnorm(n_arm, log(77), 0.322)), 40), 175),
+  ALB = pmin(pmax(rnorm(n_arm, 37.5, 5.7), 19), 46)   # g/L (Table 1: 3.75 g/dL)
+)
+cohort |>
+  summarise(`Median WT (kg)` = median(WT), `Q1 WT` = quantile(WT, .25),
+            `Q3 WT` = quantile(WT, .75), `Mean WT` = mean(WT),
+            `Mean ALB (g/L)` = mean(ALB)) |>
+  knitr::kable(digits = 1)
+```
+
+# Weight-based versus fixed dosing (replicates Figure 3)
+
+The paper's headline PK result is that 120 mg and 240 mg fixed doses give
+exposure comparable to 1.5 and 3.0 mg/kg, which supported the switch to fixed
+dosing. Figure 3 simulates a single 28-day cycle, during which almost all
+patients are still ADA-negative, so `ADA_TITER` is 0 throughout.
+
+```{r fig3-sim}
+arms <- tibble::tribble(
+  ~treatment,    ~mgkg, ~mg,
+  "1.5 mg/kg",     1.5,  NA,
+  "120 mg",         NA, 120,
+  "3 mg/kg",       3.0,  NA,
+  "240 mg",         NA, 240
+)
+nca_grid <- c(seq(0, 2, by = 1 / 24), seq(2 + 1 / 12, 28, by = 1 / 12))
+
+# rxSolve already returns the covariate columns it was given, so weight is read
+# back from the cohort by id rather than joined (a join would collide with the
+# WT column already present and silently rename it).
+wt_band <- function(wt) {
+  cut(wt, c(-Inf, 62, 77, 96, Inf),
+      labels = c("Q1: <= 62", "Q2: (62, 77]", "Q3: (77, 96]", "Q4: > 96"))
+}
+
+sim3 <- lapply(seq_len(nrow(arms)), function(i) {
+  a <- arms[i, ]
+  amt <- if (is.na(a$mg)) a$mgkg * cohort$WT * MG_TO_NMOL
+         else rep(a$mg * MG_TO_NMOL, n_arm)
+  ev <- build_events(cohort$id, amt, cohort$WT, obs_times = nca_grid)
+  solve_pop(pk, ev) |>
+    mutate(treatment = a$treatment, amt_nmol = amt[match(id, cohort$id)])
+}) |> bind_rows() |>
+  mutate(wt_kg = cohort$WT[match(id, cohort$id)],
+         wt_quartile = wt_band(wt_kg))
+stopifnot(!anyNA(sim3$wt_kg))
+stopifnot(dplyr::n_distinct(sim3$id) == n_arm,
+          nrow(sim3) == 4L * n_arm * length(nca_grid))
+```
+
+## NCA with PKNCA
+
+```{r pknca}
+conc_df <- sim3 |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment, wt_quartile)
+
+dose_df <- sim3 |>
+  group_by(treatment, id) |>
+  summarise(time = 0, amt = first(amt_nmol), .groups = "drop") |>
+  mutate(wt_quartile = wt_band(cohort$WT[match(id, cohort$id)])) |>
+  select(id, time, amt, treatment, wt_quartile)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id,
+                             concu = "ng/mL", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "nmol")
+intervals <- data.frame(start = 0, end = 28,
+                        cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                      intervals = intervals))
+nca_ind <- as.data.frame(nca) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+  mutate(PPORRES = ifelse(PPTESTCD == "auclast", PPORRES * 24, PPORRES))
+# auclast is ng*day/mL from a day time base; x24 puts it on the paper's
+# ng*h/mL axis.
+```
+
+```{r fig3-plot, fig.cap = "Replicates Li 2025 Figure 3: model-predicted Cmax and AUC0-tau after a single cycle, overall and by body-weight quartile, comparing weight-based with fixed dosing."}
+plt <- nca_ind |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  left_join(dose_df |> select(id, treatment, wt_quartile),
+            by = c("id", "treatment")) |>
+  mutate(
+    pair = ifelse(treatment %in% c("1.5 mg/kg", "120 mg"),
+                  "1.5 mg/kg vs 120 mg", "3 mg/kg vs 240 mg"),
+    mode = ifelse(grepl("kg", treatment), "Weight-based", "Fixed"),
+    param = ifelse(PPTESTCD == "cmax", "Cmax (ng/mL)",
+                   "AUC0-tau (ng*h/mL)"),
+    wt_quartile = as.character(wt_quartile)
+  )
+plt_all <- bind_rows(plt, mutate(plt, wt_quartile = "Overall")) |>
+  mutate(wt_quartile = factor(wt_quartile,
+                              levels = c("Overall", "Q1: <= 62", "Q2: (62, 77]",
+                                         "Q3: (77, 96]", "Q4: > 96")))
+ggplot(plt_all, aes(wt_quartile, PPORRES, fill = mode)) +
+  geom_boxplot(outlier.shape = NA, position = position_dodge(0.8)) +
+  stat_summary(fun = mean, geom = "point", colour = "red", size = 1.4,
+               position = position_dodge(0.8)) +
+  facet_grid(param ~ pair, scales = "free_y") +
+  coord_cartesian(ylim = c(0, NA)) +
+  labs(x = "Body weight (kg)", y = NULL, fill = "Dosing") +
+  theme_bw() + theme(axis.text.x = element_text(angle = 30, hjust = 1))
+```
+
+The qualitative conclusion reproduces: within each pair, the fixed and
+weight-based distributions overlap closely overall, the weight-based arm's
+exposure is flatter across weight quartiles, and the fixed arm trends upward in
+the lightest quartile and downward in the heaviest. That is the pattern Li 2025
+used to argue for fixed dosing, invoking the published criterion that a fixed
+dose is preferable when the weight exponents on CL and Vc are both less than
+approximately 0.5. Modakafusp alfa satisfies it: weight was not a significant
+predictor of any elimination parameter, so CL carries no weight exponent at all,
+and the Vc exponent is 0.509.
+
+## Comparison against the published simulations
+
+Li 2025 reports Figure 3 only as boxplots, so the reference values below were
+read off the published figure and are accurate to roughly 10%.
+
+```{r fig3-comparison}
+reference <- tibble::tribble(
+  ~treatment,   ~cmax,  ~auclast,
+  "1.5 mg/kg",  22000,  0.88e6,
+  "120 mg",     23500,  0.90e6,
+  "3 mg/kg",    44000,  2.30e6,
+  "240 mg",     48000,  2.40e6
+)
+sim_for_cmp <- nca_ind |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  select(treatment, PPTESTCD, PPORRES)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  sim_for_cmp, reference, by = "treatment",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL")
+)
+knitr::kable(cmp)
+attr(cmp, "footnote")
+```
+
+`Cmax` reproduces the published medians closely in all four arms, running
+between 1.4% and 10.0% high. `AUClast` does not: the simulated medians run about
+1.2- to 1.5-fold high at the 120 mg / 1.5 mg/kg dose level and about 2.1- to
+2.2-fold high at 240 mg / 3 mg/kg, and the discrepancy grows with dose.
+
+That split is itself diagnostic, and it points at a specific gap in what the
+paper publishes rather than at the structural model. `Cmax` after an IV
+infusion is dose divided by `Vc`, so it depends on exactly one random effect
+(`etalvc`), whose variance Table 2 does report. `AUC` under parallel linear and
+saturable elimination depends jointly on `CL`, `Vc`, `Q`, `Vp` and `Vmax`. Those
+five etas were estimated in the source as a full `$OMEGA BLOCK(5)`, but Table 2
+publishes only the five diagonal variances; the ten covariances are not reported
+anywhere in the article or the Supporting Information. Carrying the etas as
+independent (the only option that does not invent numbers) inflates the spread
+of the exposure distribution, which is visible directly:
+
+```{r spread-check}
+sim3 |>
+  filter(treatment == "1.5 mg/kg", abs(time - 7) < 1e-6) |>
+  summarise(`5th pct` = quantile(Cc, 0.05), Median = median(Cc),
+            `95th pct` = quantile(Cc, 0.95)) |>
+  knitr::kable(digits = 3)
+```
+
+Li 2025 Figure S12 panel A shows a 90% prediction interval about three orders of
+magnitude wide at one week after a 1.5 mg/kg dose. The interval above spans
+roughly seven orders of magnitude, so the simulated spread is wider than the
+published one by about four orders of magnitude -- a direct measure of the
+over-dispersion the missing covariances cause. Because AUC is a convex
+functional of the disposition parameters, that over-dispersion also inflates the
+mean relative to the median and skews the exposure distribution to the right. No
+parameter was adjusted to close the gap.
+
+# Serum M-protein response (replicates Figure S12)
+
+Figure S12 is the cleanest end-to-end validation target in the paper because the
+immunogenicity scenario is fully specified: 1.5 mg/kg Q4W for 10 cycles at a
+**constant** log3 ADA titer of 0 (ADA-negative), 9, or 13, rather than the
+bootstrapped individual titer trajectories used for Figure 4.
+
+Objective response and progressive disease follow the Methods section 2.5
+definitions, and dropout for progressive disease is applied as the paper
+describes.
+
+```{r pkpd-sim}
+cycle_days <- seq(0, 9 * 28, by = 28)
+obs_days   <- seq(0, 280, by = 7)
+
+pkpd_run <- function(l3) {
+  ev <- build_events(cohort$id, 1.5 * cohort$WT * MG_TO_NMOL,
+                     cohort$WT, cohort$ALB, l3titer = l3,
+                     dose_times = cycle_days, obs_times = obs_days)
+  solve_pop(pkpd, ev) |>
+    arrange(id, time) |>
+    group_by(id) |>
+    mutate(
+      mp_base = first(mprotein),
+      nadir   = cummin(mprotein),
+      pchg    = 100 * (mprotein / mp_base - 1),
+      # Li 2025 section 2.5: PD is a >= 25% increase relative to the lowest
+      # value with an absolute increase of >= 5 g/L, or an absolute increase
+      # of >= 10 g/L when baseline is >= 50 g/L.
+      pd      = time > 0 &
+        ((mprotein >= 1.25 * nadir & mprotein - nadir >= 5) |
+           (mp_base >= 50 & mprotein - mp_base >= 10)),
+      onstudy = cumsum(pd) == 0
+    ) |>
+    ungroup() |>
+    mutate(l3titer = l3)
+}
+pkpd_sim <- lapply(c(0, 9, 13), pkpd_run) |> bind_rows()
+stopifnot(dplyr::n_distinct(pkpd_sim$id) == n_arm,
+          all(c(0, 9, 13) %in% pkpd_sim$l3titer))
+```
+
+```{r pkpd-mprotein, fig.cap = "Replicates Li 2025 Figure S12 panel B: median serum M-protein change from baseline among patients still on study, after 1.5 mg/kg Q4W for 10 cycles at a constant log3 ADA titer of 0, 9 or 13."}
+mp_med <- pkpd_sim |>
+  filter(onstudy) |>
+  group_by(l3titer, time) |>
+  summarise(median = median(pchg),
+            lo = quantile(pchg, 0.05), hi = quantile(pchg, 0.95),
+            .groups = "drop") |>
+  mutate(titer = factor(l3titer))
+
+ggplot(mp_med, aes(time / 7, median, colour = titer, fill = titer)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.12, colour = NA) +
+  geom_line(linewidth = 1) +
+  labs(x = "Time since first dose (week)",
+       y = "Serum M-protein (% change from baseline)",
+       colour = expression(log[3]*"(ADA titer)"),
+       fill = expression(log[3]*"(ADA titer)")) +
+  theme_bw()
+```
+
+```{r pkpd-orr, fig.cap = "Replicates Li 2025 Figure S12 panel C: objective response rate at the end of each dosing cycle. Objective response is a decrease of at least 50% in serum M-protein from baseline."}
+orr <- pkpd_sim |>
+  filter(time %in% (seq_len(10) * 28)) |>
+  group_by(l3titer, cycle = time / 28) |>
+  summarise(responders = sum(onstudy & pchg <= -50),
+            remaining  = sum(onstudy),
+            orr_itt    = 100 * responders / n_arm,
+            .groups = "drop") |>
+  mutate(titer = factor(l3titer))
+stopifnot(nrow(orr) == 30L, all(orr$remaining > 0))
+
+ggplot(orr, aes(cycle, orr_itt, colour = titer)) +
+  geom_line(linewidth = 1) + geom_point() +
+  scale_x_continuous(breaks = 1:10) +
+  labs(x = "Dosing cycle", y = "Objective response rate (%)",
+       colour = expression(log[3]*"(ADA titer)")) +
+  theme_bw()
+```
+
+```{r pkpd-table}
+summary_tbl <- orr |>
+  group_by(titer) |>
+  summarise(`Peak ORR (%)` = max(orr_itt),
+            `Retention cycle 1 -> 10 (%)` =
+              100 * remaining[cycle == 10] / remaining[cycle == 1],
+            .groups = "drop") |>
+  left_join(
+    mp_med |> filter(time == 280) |>
+      transmute(titer, `Median M-protein change at week 40 (%)` = median),
+    by = "titer"
+  ) |>
+  mutate(
+    `Published peak ORR (%)`  = c(40, 28, 12),
+    `Published retention (%)` = c(58, 52, 30),
+    `Published week-40 change (%)` = c(-86, -73, -43)
+  )
+knitr::kable(summary_tbl, digits = 0)
+```
+
+Every published quantity reproduces within the 12-percentage-point bound
+asserted below, and the **ordering and spacing of the ADA effect** is right:
+peak response more than halves between a log3 titer of 9 and 13 (38% to 16%
+simulated, against 28% to 12% published), which is the paper's point that
+high-titer immunogenicity materially erodes efficacy. The **dropout dynamics**
+track Figure S12 panel C, which is a joint check on the M-protein growth rate,
+the resistance rate, and the progressive-disease rule. The closest agreement is
+the **week-40 median M-protein change** at a log3 titer of 9, within
+2 percentage points.
+
+The residual bias is in the same direction as the AUC discrepancy above and has
+the same cause: the over-dispersed exposure distribution that follows from the
+unpublished `$OMEGA` covariances feeds directly into the saturable kill term, so
+objective response rate and retention both run a little high and the week-40
+medians a little more negative than published. The effect is far smaller here
+than on AUC because the drug effect saturates: `EC50` is 447 ng/mL, so the kill
+term is already close to its maximum whenever concentrations are high, and
+response is therefore much less than proportional to exposure. A two-fold error
+in AUC buys only a modest error in response.
+
+```{r pkpd-assertions}
+stopifnot(
+  # The ADA gradient is monotone in the published direction
+  all(diff(summary_tbl$`Peak ORR (%)`) < 0),
+  all(diff(summary_tbl$`Median M-protein change at week 40 (%)`) > 0),
+  # All three published quantities reproduce within 12 percentage points
+  all(abs(summary_tbl$`Peak ORR (%)` -
+            summary_tbl$`Published peak ORR (%)`) < 12),
+  all(abs(summary_tbl$`Retention cycle 1 -> 10 (%)` -
+            summary_tbl$`Published retention (%)`) < 12),
+  all(abs(summary_tbl$`Median M-protein change at week 40 (%)` -
+            summary_tbl$`Published week-40 change (%)`) < 12)
+)
+"ORR, retention and M-protein response reproduce Figure S12 within 12 points"
+```
+
+# Assumptions and deviations
+
+## Errata and corrections to the source
+
+* **Table 2 footnote c prints the wrong exponent.** The footnote reads
+  `TVRtot,ADA (nM) = 1.35 * (Titer/81)^4.12`, but Table 2's own parameter row
+  gives the `Rtot,ADA`-titer power as **0.412** with a 4.29% RSE. The model uses
+  0.412. Three independent lines of evidence settle it: the typical-value line in
+  Figure S5 runs from 1.35 nM at a log3 titer of 4 to about 79 nM at 13, which is
+  `1.35 * (3^9)^0.412 = 79.3` and is many orders of magnitude away from what 4.12
+  would give; observed reciprocal titers exceeded 164 000 (Figure S4 legend), at
+  which an exponent of 4.12 would imply a physically impossible ADA
+  concentration; and the NONMEM control stream in the Supporting Information
+  hardcodes `**0.412`.
+* **The PK-PD control stream carries a stale `kdec`.** The PK-PD stream sets
+  `KD_TITERDEC = 0.210`, which is the value of `kel,ADA`, not of `kdec`. Table 2
+  reports `kdec = 0.0275` with a 5.23% RSE, the popPK stream estimates it as
+  `THETA(13)`, and Figure S6 is only consistent with 0.0275: at 0.210 the curve
+  reaches 0.2 1/h by a log3 titer of 13, indistinguishable from the 0.036 1/h
+  asymptote, whereas the figure still shows a value of order 1e2 1/h there
+  (0.0275 gives 288 1/h, the value tabulated above). The model uses 0.0275 in
+  both files.
+* **Table 1's M-protein column counts do not sum to 60.** The sex, ECOG and race
+  counts in the "Serum M-protein analysis population" column sum to 99, while the
+  Results text states that 60 patients formed the M-protein evaluable population.
+  The model records `n_subjects = 60` per the Results text and reproduces the
+  Table 1 percentages as published.
+* **`koff,ADA,max` is labelled "when ADA titer = 0".** The published function
+  evaluates to 3600 1/h at a log3 titer of 4, not at 0, and exceeds 3600 below
+  that. This is immaterial: `Rtot,ADA` is gated to zero at or below a log3 titer
+  of 3, so no ADA binding occurs in that range and `koff,ADA` never acts.
+
+## Encoding decisions
+
+* **Time base.** The source NONMEM streams work in hours; these model files work
+  in days, which suits the 21- and 28-day cycles. Per-hour rate constants from
+  Table 2 are multiplied by 24 and the per-week PD rate constants from Table 3
+  are divided by 7, mirroring the source stream's own `/24/7` conversion.
+* **Molecular weight.** 186 kDa, taken from the control streams
+  (`IN = DOSE/186.0` and `IPRED = (A(1)/S1)*186.0`); the article text does not
+  state it. Doses must be supplied in nmol.
+* **The `complex` state is a concentration, not an amount.** `A(3)` in the source
+  `$DES` is written in nM, with the return flux to the central compartment
+  multiplied back up by `Vc`. That is replicated rather than rescaled, because
+  with a time-varying body weight (and hence a time-varying `Vc`) the two
+  formulations are not identical.
+* **Free ADA is `Rtot,ADA` minus the complex.** Li 2025 states that "Rtot,ADA was
+  assumed to be constant at a given time-varying titer level (i.e., no turnover
+  of ADA)", so the pool is implicitly replenished as complex is cleared.
+* **The ADA gate at a log3 titer above 3** is taken from the control stream
+  (`L3OFFTITER = 3.0`); the article text says only that the pool is zero during
+  ADA negativity.
+* **Albumin is in g/L.** The nlmixr2lib canonical unit for `ALB` is g/L, whereas
+  Li 2025 reports g/dL and centres the M-protein baseline effect on 3.6 g/dL. The
+  model centres on 36 g/L; because the covariate enters as a ratio, the effect is
+  unchanged.
+
+## Known limitations
+
+* **The `$OMEGA BLOCK(5)` covariances are not published.** Table 2 reports the
+  five diagonal variances of the correlated CL / Vc / Q / Vp / Vmax block but
+  none of the ten covariances, and they appear nowhere in the Supporting
+  Information (the control stream lists only initial estimates). The five etas
+  are therefore carried as independent, which is the only encoding that does not
+  invent numbers. The consequence is quantified above: typical-value predictions
+  and single-eta statistics such as `Cmax` reproduce, while joint-eta statistics
+  such as `AUC0-tau`, the width of the prediction interval, and the objective
+  response rate are over-dispersed and biased high. Anyone using these models for
+  population simulation should treat the exposure spread as an upper bound.
+* **Sequential fitting.** The source fitted the PD with each patient's post hoc
+  PK parameters held fixed. `Li_2025_modakafuspAlfa_mprotein` carries the
+  published typical PK values and their IIV so that it can be simulated on its
+  own; that composition is not identical to the sequential estimation the authors
+  performed.
+* **Cohort size.** 200 subjects per arm here versus 2500 for the Figure 3
+  exposure simulations. The paper's efficacy simulations also used 200 virtual
+  patients, so the M-protein cohort matches; Figure S12 does not report a
+  sample size.
+* **The virtual cohort is reconstructed, not the paper's.** Li 2025 used a tilted
+  bootstrap over a correlated virtual RRMM population; weight and albumin here
+  are drawn independently from marginal distributions matched to Table 1 and to
+  the Figure 3 weight quartile cut-points.
+* **Figure 4 is not reproduced.** It requires bootstrapped individual longitudinal
+  ADA titer trajectories from the 1.5 and 3.0 mg/kg Q4W cohorts, which are shown
+  only graphically in Figure S3. Figure S12, whose constant-titer scenarios are
+  fully specified, is reproduced instead.
+* **Reference values read from figures.** The Figure 3 and Figure S12 comparison
+  values were digitised from the published figures and are accurate to roughly
+  10%; the paper reports no corresponding numeric table.

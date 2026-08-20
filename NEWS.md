@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fiandaca 2025 mRNA-encoded BiTE short-chain and long-chain multiscale PBPK models ([doi:10.1016/j.omtn.2025.102606](https://doi.org/10.1016/j.omtn.2025.102606)) -- mouse (immunodeficient, tumour-bearing).
+- Add Li 2025 modakafusp alfa ([doi:10.1111/cts.70296](https://doi.org/10.1111/cts.70296)) - adults with relapsed or refractory multiple myeloma.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
