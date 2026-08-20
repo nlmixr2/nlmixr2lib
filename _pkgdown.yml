@@ -180,6 +180,8 @@ navbar:
         href: articles/Moein_2024_apitolisib.html
       - text: "Apitolisib mouse (Moein 2024)"
         href: articles/Moein_2024_apitolisib.html
+      - text: "Apixaban (Morath 2025)"
+        href: articles/Morath_2025_apixaban.html
       - text: "Apixaban (Ueshima 2018)"
         href: articles/Ueshima_2018_apixaban.html
       - text: "Apomine (Bonate 2004)"
@@ -3889,6 +3891,7 @@ articles:
   - articles/Mondick_2006_dactinomycin
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
+  - articles/Morath_2025_apixaban
   - articles/Morganroth_2015_moxifloxacin
   - articles/Mori_2018_zoledronicAcid
   - articles/Morris_2011_artesunate
