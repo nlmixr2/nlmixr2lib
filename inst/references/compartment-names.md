@@ -752,6 +752,14 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Walsh_2024_buprenorphine_desireToUse.R` (Imax suppression of pre-challenge desire to use by subcutaneous depot buprenorphine CAM2038, with an exponential onset-delay term on Imax; logit-transformed onto -1 to 101).
 - **Notes:** Ratified canonically on 2026-08-05 alongside the Walsh 2024 CAM2038 extraction. No `cfb` suffix because the modelled quantity is the absolute pre-challenge score, in contrast to its sister endpoint `druglikingvascfb`. The logit bounds -1 to 101 pad the 0-100 unipolar scale by one unit either side so that predictions of exactly 0 and 100 remain attainable.
 
+### tmccfb (**canonical UHDRS Total Maximal Chorea change-from-baseline output compartment**)
+- **Type:** compartment
+- **Role:** Change from baseline in the Total Maximal Chorea (TMC) score, the chorea-severity component of the motor assessment of the Unified Huntington's Disease Rating Scale (UHDRS). The TMC sums seven body-region subscores (face, mouth, trunk, and each of the four limbs independently), each scored 0-4, for a total range of 0-28; the modelled quantity is the signed CHANGE from baseline, so a negative value is an improvement in chorea. Primary efficacy output state for Huntington's-disease chorea exposure-response models. The `cfb` suffix marks the change-from-baseline parameterisation, following `druglikingvascfb`.
+- **Source aliases:**
+  - `change from baseline in TMC score` / `TMC CFB` -- Nguyen 2025 paper notation (the paper's response variable `R`).
+- **Example models:** `Nguyen_2025_valbenazine_tmc.R` (decoupled placebo-plus-Emax longitudinal exposure-response model: an asymptotic-exponential-with-attenuation placebo term gated by `PLACEBO`, plus an Emax term in the daily [+]-alpha-HTBZ AUC `AUC_HTBZ`, with an additive residual on the TMC scale).
+- **Notes:** Registered alongside the Nguyen 2025 valbenazine extraction as a member of the PD-output-compartment family, using the `cfb` suffix convention documented at `druglikingvascfb` (change-from-baseline) versus `desiretousevas` (absolute score). A future model of the ABSOLUTE TMC score rather than its change from baseline should register a sibling `tmc` on the `desiretousevas` pattern rather than overload this name. Related but distinct UHDRS-derived endpoints (the full UHDRS motor score, the UHDRS total functional capacity score) would each need their own canonical; the TMC is only the chorea subscore. Clinically anchored minimal important difference from the KINECT-HD study: a TMC reduction of -4.0 (CGI-S anchor) or -4.3 (PGI-S anchor) marks a minimal clinically meaningful improvement (Nguyen 2025 Discussion).
+
 ### cows (**canonical Clinical Opiate Withdrawal Scale total-score output compartment**)
 - **Type:** compartment
 - **Role:** Clinical Opiate Withdrawal Scale (COWS) total score output for opioid-withdrawal PD models. Eleven observer-rated withdrawal signs each scored 0-4, giving an integer total of 0-44 (45 ordered categories) in which 5-12 denotes mild symptoms. Because the endpoint is a bounded integer, models of this state typically live on the standard-normal quantile (probit) scale and map back via the normal CDF -- see `probitbase` / `probitbase_low` in `parameter-names.md`.
@@ -4063,6 +4071,16 @@ L- and D-enantiomer suffixes for stereoselective popPK models that simultaneousl
 - **Role:** BIBF 1202, the main hydrolytic metabolite of nintedanib (BIBF 1120) formed by cleavage of the methyl ester. Used as the metabolite suffix in parent + metabolite simultaneous popPK models (compartments `depot_bibf`, `central_bibf`; parameters `lka_bibf`, `lvc_bibf`, `lcl_bibf`, `lfdepot_bibf`, `ltlag_bibf`; residual `expSd_bibf`). Founding example: `Schmid_2017_nintedanib.R`.
 - **Source aliases:** none.
 - **Example models:** `Schmid_2017_nintedanib.R`.
+
+### htbz (**canonical [+]-alpha-dihydrotetrabenazine valbenazine-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** [+]-alpha-dihydrotetrabenazine ([+]-alpha-HTBZ, development code NBI-98782), the sole and pharmacologically active metabolite of valbenazine, formed by hydrolysis of the valine ester. Valbenazine is a prodrug: essentially all VMAT2-inhibitory activity resides in this metabolite, so a valbenazine popPK model is necessarily a joint parent + metabolite model. Used as the metabolite suffix on compartments (`central_htbz`, `peripheral1_htbz`) and parameters (`lcl_htbz`, `lq_htbz`, `lvp_htbz`, `e_cyp2d6_pm_cl_htbz`, `e_cyp2d6_im_cl_htbz`; residual `expSdIntensive_htbz` / `expSdSparse_htbz`; output `Cc_htbz`). Founding example: `Nguyen_2025_valbenazine.R`.
+- **Source aliases:**
+  - `[+]-alpha-HTBZ` -- the notation used throughout Nguyen 2025.
+  - `NBI-98782` -- Neurocrine development code, used in Nguyen 2025 Results and Supplemental Table S2.
+  - `(+)-alpha-dihydrotetrabenazine` -- the full stereochemical name.
+- **Example models:** `Nguyen_2025_valbenazine.R` (joint parent-metabolite popPK with the apparent central volume VC/F shared between valbenazine and the metabolite, which is the constraint that makes the fraction metabolised FM = 0.207 identifiable; CYP2D6 poor- and intermediate-metabolizer effects act on the metabolite clearance `cl_htbz`).
+- **Notes:** Direct structural analogue of `bibf` above -- both are the hydrolytic ester-cleavage metabolite of an ester prodrug, carried as the second analyte of a simultaneously fitted parent + metabolite popPK model. `htbz` names the dihydrotetrabenazine scaffold rather than the stereoisomer, because Nguyen 2025 states that `[+]-alpha-HTBZ` is the ONLY HTBZ metabolite formed from valbenazine (unlike tetrabenazine, which forms several alpha and beta dihydro isomers). A future tetrabenazine or deutetrabenazine model that must distinguish several HTBZ stereoisomers should register per-isomer siblings (e.g. `htbz_a`, `htbz_b`) rather than overload this name, following the `l` / `d` / `rac` enantiomer-suffix precedent above. Not a member of the `9oh` / `endox` / `m1` numbered- or position-named metabolite groups: those name a hydroxylation position or an ordinal, whereas `htbz` names the metabolite's own scaffold. Registered alongside the Nguyen 2025 valbenazine extraction as a member of the metabolite-suffix family.
 
 ---
 

@@ -3170,6 +3170,12 @@ navbar:
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Ustekinumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "VRC07523LS (Huynh 2026)"
+        href: articles/Huynh_2026_VRC07523LS.html
+      - text: "Valbenazine (Nguyen 2025)"
+        href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
+      - text: "Valbenazine tmc (Nguyen 2025)"
+        href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valganciclovir (Vezina 2010)"
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
@@ -4353,6 +4359,7 @@ articles:
   - articles/Ng_2018_exendin939
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
+  - articles/Nguyen_2025_valbenazine_huntington_chorea
   - articles/Ni_2013_ciclosporin
   - articles/Nicholas_2009_ponezumab
   - articles/Nichols_2016_piperacillin_tazobactam

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ozdin 2025 dexamethasone, erythrocyte-encapsulated ([doi:10.1002/psp4.70103](https://doi.org/10.1002/psp4.70103)) -- healthy adults and pediatric patients with ataxia telangiectasia.
+- Add Nguyen 2025 valbenazine ([doi:10.1002/jcph.70092](https://doi.org/10.1002/jcph.70092)) -- healthy adults and patients with tardive dyskinesia or Huntington's disease chorea.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
