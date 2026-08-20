@@ -1812,6 +1812,8 @@ navbar:
         href: articles/Kir_2025_atenolol_metoprolol_malnutrition.html
       - text: "Metronidazole (CohenWolkowiez 2012)"
         href: articles/CohenWolkowiez_2012_metronidazole.html
+      - text: "Metronidazole (Randell 2024)"
+        href: articles/Randell_2024_metronidazole.html
       - text: "Metronidazole (Suyagh 2011)"
         href: articles/Suyagh_2011_metronidazole.html
       - text: "MHD rat (Clinckers 2008)"
@@ -4336,6 +4338,7 @@ articles:
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Rambiritch_2016_glibenclamide
   - articles/Ramharter_2019_mefloquine
+  - articles/Randell_2024_metronidazole
   - articles/Rao_2023_covid19_qsp
   - articles/Ravva_2009_varenicline
   - articles/Rees_2018_meropenem_ciprofloxacin
@@ -4751,7 +4754,7 @@ articles:
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_sertraline
-  - articles/Zhang_2025_dupilumab_fev1
+  - articles/Zhang_2024_XZP5610
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir
