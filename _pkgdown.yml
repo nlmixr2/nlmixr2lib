@@ -2198,6 +2198,8 @@ navbar:
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Oxcarbazepine (Rodrigues 2017)"
         href: articles/Rodrigues_2017_oxcarbazepine.html
+      - text: "Oxcarbazepine (Sinha 2026)"
+        href: articles/Sinha_2026_oxcarbazepine.html
       - text: "Oxyfluorfen human (Decrane 2023)"
         href: articles/Decrane_2023_oxyfluorfen.html
       - text: "Oxyfluorfen rat (Decrane 2023)"
@@ -4590,6 +4592,7 @@ articles:
   - articles/Simpson_2013_mefloquine
   - articles/Singh_2025_donidalorsen
   - articles/Singu_2024_gentamicin
+  - articles/Sinha_2026_oxcarbazepine
   - articles/Sloan_2017_rifampicin
   - articles/Smith_2017_clindamycin
   - articles/Smuszkiewicz_2017_dexmedetomidine

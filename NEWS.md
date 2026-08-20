@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2026 tebipenem ([doi:10.1111/cts.70453](https://doi.org/10.1111/cts.70453)) -- Japanese children aged 0.5-16 years, simulated for Bangladeshi children aged 24-59 months with shigellosis.
+- Add Sinha 2026 oxcarbazepine ([doi:10.1007/s40262-025-01579-0](https://doi.org/10.1007/s40262-025-01579-0)) -- children and young adults aged 44 days to 20.9 years, 52% with obesity.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
