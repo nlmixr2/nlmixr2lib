@@ -472,6 +472,8 @@ navbar:
         href: articles/Shoji_2016_cefepime.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Cefiderocol (Zhang 2025)"
+        href: articles/Zhang_2025_cefiderocol.html
       - text: "Cefotaxime (Ahsman 2010)"
         href: articles/Ahsman_2010_cefotaxime.html
       - text: "Cefotaxime (Leroux 2016)"
@@ -4640,7 +4642,7 @@ articles:
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_sertraline
-  - articles/Zhang_2024_XZP5610
+  - articles/Zhang_2025_cefiderocol
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir

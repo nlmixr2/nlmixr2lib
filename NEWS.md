@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Demin 2025 zanubrutinib, acalabrutinib and ibrutinib BTK-occupancy QSP model ([doi:10.1002/psp4.13307](https://doi.org/10.1002/psp4.13307)) -- virtual patients with B-cell malignancies.
+- Add Zhang 2025 cefiderocol ([doi:10.1007/s12325-025-03147-1](https://doi.org/10.1007/s12325-025-03147-1)) - healthy Chinese adults.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
