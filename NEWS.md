@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yao 2025 flurbiprofen enantiomers ([doi:10.2147/DDDT.S542722](https://doi.org/10.2147/DDDT.S542722)) -- Chinese adults with postoperative pain after joint replacement, with paired plasma and cerebrospinal-fluid sampling.
+- Add Mo 2025 everolimus ([doi:10.12793/tcp.2025.33.e14](https://doi.org/10.12793/tcp.2025.33.e14)) -- healthy adult Korean males.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
