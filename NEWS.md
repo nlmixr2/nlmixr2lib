@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mo 2025 everolimus ([doi:10.12793/tcp.2025.33.e14](https://doi.org/10.12793/tcp.2025.33.e14)) -- healthy adult Korean males.
+- Add Kim 2025 infliximab, a panel of eight externally validated population PK models ([doi:10.1002/psp4.70089](https://doi.org/10.1002/psp4.70089)) -- adults and children with inflammatory bowel disease.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
