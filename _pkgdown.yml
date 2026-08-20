@@ -1222,6 +1222,10 @@ navbar:
         href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Gantenerumab (Grimm 2023)"
         href: articles/Grimm_2023.html
+      - text: "Garadacimab (Garcia 2025)"
+        href: articles/Garcia_2025_garadacimab.html
+      - text: "Garadacimab hae attack (Garcia 2025)"
+        href: articles/Garcia_2025_garadacimab.html
       - text: "Garenoxacin (VanWart 2004)"
         href: articles/VanWart_2004_garenoxacin.html
       - text: "Gatifloxacin (Smythe 2013)"
@@ -3678,6 +3682,7 @@ articles:
   - articles/Gao_2025_cefquinome
   - articles/Gaohua_2012_pregnancy_pbpk
   - articles/Gaohua_2023_permeabilityLimited_pbpk
+  - articles/Garcia_2025_garadacimab
   - articles/Garg_2014_pertuzumab
   - articles/Garmann_2017_BAY81_8973
   - articles/Garonzik_2016_daptomycin
