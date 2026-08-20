@@ -2798,6 +2798,8 @@ navbar:
         href: articles/Hwang_2022_tremelimumab.html
       - text: "Treosulfan (Danielak 2017)"
         href: articles/Danielak_2017_treosulfan.html
+      - text: "Triazolam (Okada 2024)"
+        href: articles/Okada_2024_triazolam.html
       - text: "Triflusal (Park 2014)"
         href: articles/Park_2014_triflusal.html
       - text: "Tripegfilgrastim (Lee 2023)"
@@ -3960,6 +3962,7 @@ articles:
   - articles/Ogasawara_2020_durvalumab
   - articles/Ogungbenro_2009_penciclovir
   - articles/Oishi_2014_fesoterodine
+  - articles/Okada_2024_triazolam
   - articles/Okada_2025_rocatinlimab
   - articles/Olagunju_2018_efavirenz
   - articles/Olivo_2024_methotrexate
