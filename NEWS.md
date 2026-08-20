@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
+- Add Kado 2023 benzathine benzylpenicillin G ([doi:10.1128/aac.00962-23](https://doi.org/10.1128/aac.00962-23)) - healthy adults receiving high-dose subcutaneous infusions.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
