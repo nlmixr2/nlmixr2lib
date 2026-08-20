@@ -2,6 +2,8 @@
 
 # development version
 
+- Rename the nine Zheng 2012 Gottingen minipig mAb models ([doi:10.4161/mabs.4.2.19387](https://doi.org/10.4161/mabs.4.2.19387)) to carry the `_minipig` species suffix: `Zheng_2012_mAb1` .. `Zheng_2012_mAb8` and `Zheng_2012_adalimumab` become `Zheng_2012_mAb1_minipig` .. `Zheng_2012_mAb8_minipig` and `Zheng_2012_adalimumab_minipig`. This matches the species-suffix convention used elsewhere in `specificDrugs/` and, for the adalimumab entry, disambiguates a preclinical minipig model from the four human adalimumab popPK models in the library (Drweesh 2026, Marcantonio 2022, Marquez-Megias 2023, Nader 2017). Code calling `readModelDb()` with the old names must be updated.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
