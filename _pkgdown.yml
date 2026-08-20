@@ -286,6 +286,8 @@ navbar:
         href: articles/Zheng_2014_azithromycin.html
       - text: "Azithromycin (Zheng 2018)"
         href: articles/Zheng_2018_azithromycin.html
+      - text: "Aztreonam avibactam (Xie 2025)"
+        href: articles/Xie_2025_aztreonam_avibactam.html
       - text: "Aztreonam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Bapineuzumab (Hu 2014)"
@@ -4642,7 +4644,7 @@ articles:
   - articles/Xiang_2018_baicalein
   - articles/Xie_2000_m3g_rat
   - articles/Xie_2019_agomelatine
-  - articles/Xie_2025_midazolam
+  - articles/Xie_2025_aztreonam_avibactam
   - articles/Xu_2011_sirukumab
   - articles/Xu_2013_ranibizumab
   - articles/Xu_2019_sarilumab

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Richardson 2025 automated model-search popPK models for ribociclib, camizestrant, osimertinib, olaparib and tezepelumab ([doi:10.1038/s43856-025-01054-8](https://doi.org/10.1038/s43856-025-01054-8)) -- one synthetic cohort and four pooled Phase 1 adult cohorts.
+- Add Xie 2025 aztreonam-avibactam ([doi:10.1128/aac.01950-24](https://doi.org/10.1128/aac.01950-24)) -- healthy adults and hospitalized adults with complicated intra-abdominal infection, nosocomial pneumonia, complicated urinary tract infection, or bloodstream infection, spanning augmented renal clearance through end-stage renal disease.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
