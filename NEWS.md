@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Takada 2025 vancomycin ([doi:10.1186/s40780-025-00423-8](https://doi.org/10.1186/s40780-025-00423-8)) -- Japanese inpatients aged 75 years and older with a body mass index below 25 kg/m^2.
+- Add Li 2025 doxycycline PK and doxycycline + florfenicol PK/PD models ([doi:10.1016/j.psj.2025.104922](https://doi.org/10.1016/j.psj.2025.104922)) -- Riemerella anatipestifer-infected ducks (Tadorna tadorna).
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
