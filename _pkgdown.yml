@@ -1188,6 +1188,8 @@ navbar:
         href: articles/Watt_2015_fluconazole.html
       - text: "Fludarabine (Langenhorst 2019)"
         href: articles/Langenhorst_2019_fludarabine.html
+      - text: "Fludarabine (VarelaGonzalezAller 2025)"
+        href: articles/VarelaGonzalezAller_2025_fludarabine.html
       - text: "Fludrocortisone (Polito 2016)"
         href: articles/Polito_2016_fludrocortisone.html
       - text: "Flumazenil pbpk (Luo 2024)"
@@ -4717,6 +4719,7 @@ articles:
   - articles/VanWart_2004_garenoxacin
   - articles/vanWijk_2019_paracetamol
   - articles/Varatharajan_2016_daunorubicin
+  - articles/VarelaGonzalezAller_2025_fludarabine
   - articles/VargasChristensen_2019_rfviii_rat
   - articles/Vargo_2014_statins_ezetimibe_mbma
   - articles/Vasalou_2023_dendriticNanoparticle

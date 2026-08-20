@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Collins 2025 midazolam ([doi:10.1002/psp4.70116](https://doi.org/10.1002/psp4.70116)) -- healthy volunteers given oral midazolam as a CYP3A probe with single-dose and multiple-dose efavirenz.
+- Add Varela-Gonzalez-Aller 2025 fludarabine ([doi:10.3390/pharmaceutics17121592](https://doi.org/10.3390/pharmaceutics17121592)) -- adults with relapsed/refractory large B-cell lymphoma receiving fludarabine-based lymphodepletion before CAR T-cell therapy.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
