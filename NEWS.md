@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chotsiri 2019 lumefantrine ([doi:10.1002/cpt.1531](https://doi.org/10.1002/cpt.1531)) -- children aged 6-59 months with uncomplicated malaria, with and without severe acute malnutrition.
+- Add Li 2024 norepinephrine ([doi:10.1007/s40262-024-01430-y](https://doi.org/10.1007/s40262-024-01430-y)) -- healthy volunteers, awake and under propofol/remifentanil general anesthesia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
