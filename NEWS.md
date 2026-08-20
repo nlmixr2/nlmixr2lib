@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Vaddady 2024 quizartinib and its active metabolite AC886 ([doi:10.1111/cts.70074](https://doi.org/10.1111/cts.70074)) -- adults with newly diagnosed or relapsed/refractory FLT3-ITD-positive acute myeloid leukemia, healthy volunteers and subjects with hepatic impairment.
+- Add Sadiq 2024 tozorakimab ([doi:10.1111/bcp.16195](https://doi.org/10.1111/bcp.16195)) -- healthy adults and patients with mild COPD.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
