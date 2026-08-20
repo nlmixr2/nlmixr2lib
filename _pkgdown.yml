@@ -2946,6 +2946,8 @@ navbar:
         href: articles/Charles_2007_tafenoquine.html
       - text: "Tafenoquine (Edstein 2001)"
         href: articles/Edstein_2001_tafenoquine.html
+      - text: "Tak 071 (Jia 2025)"
+        href: articles/Jia_2025_tak_071.html
       - text: "Tak 079 (Roepcke 2018)"
         href: articles/Roepcke_2018_tak_079.html
       - text: "Tamibarotene pediatric (Azechi 2024)"
@@ -4019,6 +4021,7 @@ articles:
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
   - articles/Jia_2015_unfractionatedHeparin
+  - articles/Jia_2025_tak_071
   - articles/Jiang_2008_gemcitabine
   - articles/Jiang_2023_imatinib
   - articles/Jiang_2024_empagliflozin
