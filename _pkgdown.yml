@@ -290,14 +290,6 @@ navbar:
         href: articles/Xie_2025_aztreonam_avibactam.html
       - text: "Aztreonam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
-      - text: "BAY81 8973 (Garmann 2017)"
-        href: articles/Garmann_2017_BAY81_8973.html
-      - text: "BAY94 9027 (Solms 2020)"
-        href: articles/Solms_2020_BAY94_9027.html
-      - text: "BIIB023 (Galluppi 2016)"
-        href: articles/Galluppi_2016_BIIB023.html
-      - text: "Balcinrenone (Parkinson 2025)"
-        href: articles/Parkinson_2025_balcinrenone.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "Baricitinib (Decker 2024)"
@@ -758,6 +750,8 @@ navbar:
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
         href: articles/Schutte_2018_desmopressin.html
+      - text: "Dexamethasone (Ozdin 2025)"
+        href: articles/Ozdin_2025_dexamethasone.html
       - text: "Dexamethasone rat (Li 2012)"
         href: articles/Li_2012_dexamethasone_rat.html
       - text: "Dexmedetomidine (Huang 2025)"
@@ -1056,10 +1050,6 @@ navbar:
         href: articles/Toffoli_2001_etoposide.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
-      - text: "Everolimus (Mo 2025)"
-        href: articles/Mo_2025_everolimus.html
-      - text: "Everolimus (TerHeine 2018)"
-        href: articles/TerHeine_2018_everolimus.html
       - text: "Everolimus (deWit 2016)"
         href: articles/deWit_2016_everolimus.html
       - text: "Everolimus (TerHeine 2018)"
@@ -4399,6 +4389,7 @@ articles:
   - articles/Overgaard_2016_liraglutide
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
+  - articles/Ozdin_2025_dexamethasone
   - articles/Padari_2012_meropenem
   - articles/Padari_2018_penicillin_G
   - articles/Padoin_1998_cephalexin_rat
@@ -4889,7 +4880,7 @@ articles:
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_sertraline
-  - articles/Zhang_2025_nedosiran
+  - articles/Zhang_2024_XZP5610
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir
@@ -4926,30 +4917,5 @@ articles:
   - articles/Zuo_2024_apatinib
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
-  - articles/deAlwis_1998_ondansetron
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deVries_2025_durvalumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
-  - articles/vanErp_2010_sunitinib
-  - articles/vanHasselt_2013_eribulin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanIersel_2018_posaconazole
-  - articles/vanMaanen_2025_amyloid
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
-  - articles/vanWijk_2019_paracetamol
-  - articles/vandenBerg_2021_finerenone
-  - articles/vandenBerg_2021_uprifosbuvir
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END

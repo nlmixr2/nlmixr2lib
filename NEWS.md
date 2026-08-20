@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Parkinson 2025 balcinrenone ([doi:10.1007/s40262-025-01572-7](https://doi.org/10.1007/s40262-025-01572-7)) -- healthy participants, participants with renal impairment, and patients with heart failure and chronic kidney disease.
+- Add Ozdin 2025 dexamethasone, erythrocyte-encapsulated ([doi:10.1002/psp4.70103](https://doi.org/10.1002/psp4.70103)) -- healthy adults and pediatric patients with ataxia telangiectasia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
