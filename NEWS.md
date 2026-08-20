@@ -2,39 +2,9 @@
 
 # development version
 
-- Add Kado 2023 benzathine benzylpenicillin G ([doi:10.1128/aac.00962-23](https://doi.org/10.1128/aac.00962-23)) - healthy adults receiving high-dose subcutaneous infusions.
+- Add Chen 2024 IL-6-mediated CYP3A suppression ([doi:10.1002/psp4.13073](https://doi.org/10.1002/psp4.13073)) - adults with relapsed/refractory non-Hodgkin lymphoma receiving mosunetuzumab.
 
-- Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
-
-- Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
-
-- Add Courlet 2023 cabamiquine ([doi:10.1128/aac.00891-23](https://doi.org/10.1128/aac.00891-23)) - healthy adult men in induced blood stage and sporozoite malaria challenge studies.
-
-- Add Hanley 2024 brigatinib ([doi:10.1002/psp4.13106](https://doi.org/10.1002/psp4.13106)) - healthy adults; a compartmental reduction of the published Simcyp minimal-PBPK model.
-
-- Add Majid 2024 lenvatinib ([doi:10.1002/psp4.13130](https://doi.org/10.1002/psp4.13130)) - patients with radioiodine-refractory differentiated thyroid cancer.
-
-- Add Aoki 2024 intra-target microdosing PBPK-PKRO model
-  ([doi:10.3389/fphar.2024.1366160](https://doi.org/10.3389/fphar.2024.1366160))
-  -- drug-agnostic simulated small-molecule compounds, no human subjects.
-
-- Add Chen 2024 IL-6-mediated CYP3A suppression ([doi:10.1002/psp4.13073](https://doi.org/10.1002/psp4.13073)) -- adults with relapsed/refractory non-Hodgkin lymphoma receiving mosunetuzumab.
-
-- Add Saleh 2023 LeiCNS-PK3.0 mouse CNS PBPK models for cyclophosphamide,
-  quinidine, erlotinib, phenobarbital, colchicine, ribociclib, topotecan,
-  cefadroxil, prexasertib and methotrexate
-  ([doi:10.1007/s11095-023-03554-5](https://doi.org/10.1007/s11095-023-03554-5))
-  -- laboratory mice (CD1 nude, NMRI, FVB, ICR, C57BL/6 Pept2+/+).
-
-- Add Granda 2024 tenofovir, oseltamivir carboxylate and kynurenic acid ([doi:10.1111/cts.13678](https://doi.org/10.1111/cts.13678)) - adult outpatients spanning CKD stages 1-5.
-
-- Add Wattanakul 2024 primaquine ([doi:10.1038/s41467-024-47908-y](https://doi.org/10.1038/s41467-024-47908-y)) -- lactating women with *Plasmodium vivax* infection and their breastfed infants.
-
-- Add Pei 2023 tacrolimus PBPK and popPK models ([doi:10.3390/pharmaceutics15112580](https://doi.org/10.3390/pharmaceutics15112580)) -- adult heart transplant recipients.
-
-- Add Wojciechowski 2023 ritlecitinib ([doi:10.1007/s40262-023-01318-3](https://doi.org/10.1007/s40262-023-01318-3)) - three model iterations covering healthy participants and patients with rheumatoid arthritis, ulcerative colitis, alopecia areata or vitiligo, plus moderate hepatic and severe renal impairment.
-
-- Add Walsh 2024 buprenorphine ([doi:10.1038/s41386-023-01793-z](https://doi.org/10.1038/s41386-023-01793-z)) - non-treatment-seeking adults with moderate to severe opioid use disorder.
+- Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28

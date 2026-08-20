@@ -651,48 +651,14 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Example models:** `Heathman_2024_efavirenz.R`.
 - **Notes:** Initial condition `enzyme_2a6(0) <- 1` (relative to baseline). Founding example: `Heathman_2024_efavirenz.R`.
 
-### enzyme_1a2 (**canonical CYP1A2 enzyme pool**)
-- **Type:** compartment
-- **Role:** CYP1A2 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline. Same `enzyme_<isoform>` family as `enzyme_2b6` / `enzyme_2a6`, but driven by an exogenous or endogenous modulator rather than by drug autoinduction.
-- **Source aliases:** none.
-- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
-- **Notes:** Initial condition `enzyme_1a2(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R` (interleukin-6 net *induction* of CYP1A2 during cytokine release syndrome, alongside suppression of four other isoenzymes).
-
-### enzyme_2c9 (**canonical CYP2C9 enzyme pool**)
-- **Type:** compartment
-- **Role:** CYP2C9 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
-- **Source aliases:** none.
-- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
-- **Notes:** Initial condition `enzyme_2c9(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`.
-
-### enzyme_2c19 (**canonical CYP2C19 enzyme pool**)
-- **Type:** compartment
-- **Role:** CYP2C19 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
-- **Source aliases:** none.
-- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
-- **Notes:** Initial condition `enzyme_2c19(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`.
-
-### enzyme_3a4 (**canonical CYP3A4 enzyme pool**)
-- **Type:** compartment
-- **Role:** CYP3A4 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
-- **Source aliases:** none.
-- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
-- **Notes:** Initial condition `enzyme_3a4(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`. Use bare `enzyme_3a4` when the model resolves several isoenzymes within a single tissue; when the *same* isoenzyme is resolved across several organs, append the organ to the isoenzyme rather than replacing it -- `enzyme_3a4_liver` / `enzyme_3a4_gut`. An organ-only form (`enzyme_liver`) is **not** used: it does not say which isoenzyme, and it would collide the moment a second isoenzyme were resolved in the same organ. Ratified 2026-08-06 with `Chen_2024_interleukin6_cyp3a_pbpk.R`.
-
-### enzyme_3a5 (**canonical CYP3A5 enzyme pool**)
-- **Type:** compartment
-- **Role:** CYP3A5 enzyme pool in an isoenzyme-resolved enzyme-turnover model; the relative enzyme amount is the isoenzyme's activity as a fraction of its untreated baseline.
-- **Source aliases:** none.
-- **Example models:** `Willemin_2024_interleukin6_cyp_pbpk.R`.
-- **Notes:** Initial condition `enzyme_3a5(0) <- 1` (relative to baseline). Founding example: `Willemin_2024_interleukin6_cyp_pbpk.R`. Kept separate from `enzyme_3a4` even when a source assumes identical potencies for the two, because the two isoenzymes drive different victim drugs and a user may want to break the assumption.
-
 ### enzyme_3a4_liver (**canonical hepatic CYP3A4 enzyme pool**)
 - **Type:** compartment
 - **Role:** Hepatic CYP3A4 enzyme pool in a tissue-resolved enzyme-turnover model, carrying an *absolute* enzyme abundance (pmol/mg microsomal protein) rather than a fraction of baseline. Turns over as `d/dt(enzyme_3a4_liver) <- kdeg_liver * bl_enzyme_3a4_liver * fsupp - kdeg_liver * enzyme_3a4_liver`, where `fsupp` is the cytokine-driven suppression of synthesis.
 - **Source aliases:**
+  - `ENZact,H-CYP3A` -- Chen 2024 Appendix S1 Equation 1 notation.
   - `CYP3A4 in liver` -- Chen 2024 Table 1 notation.
 - **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R` (founding example; baseline 137 pmol/mg microsomal protein in healthy volunteers, 82.2 in rheumatoid arthritis).
-- **Notes:** Registered 2026-08-06. Initial condition is the baseline abundance `enzyme_3a4_liver(0) <- bl_enzyme_3a4_liver`, **not** 1 -- this is the absolute-abundance form, distinct from the relative-to-baseline `enzyme_3a4`. The isoenzyme is named before the organ so the two naming axes compose: use `enzyme_3a4` when several isoenzymes are resolved in one tissue, and `enzyme_3a4_<organ>` when one isoenzyme is resolved across organs. An organ-only `enzyme_liver` is deliberately not used -- it does not state the isoenzyme. Paired with `enzyme_3a4_gut`.
+- **Notes:** Ratified 2026-08-06. Initial condition is the baseline abundance `enzyme_3a4_liver(0) <- bl_enzyme_3a4_liver`, **not** 1 -- this is the absolute-abundance form, distinct from the relative-to-baseline convention used by `enzyme_2b6` / `enzyme_2a6` (`enzyme_2b6(0) <- 1`). Either normalisation is acceptable, but state the choice in `compartmentData$units`; relative activity is exposed as the algebraic output `enzyme_3a4_liver / bl_enzyme_3a4_liver`. **The isoenzyme is named before the organ so the two naming axes compose:** use the bare isoenzyme form (`enzyme_2b6`, `enzyme_2a6`) when several isoenzymes are resolved within one tissue, and append the organ to the isoenzyme (`enzyme_3a4_liver` / `enzyme_3a4_gut`) when the *same* isoenzyme is resolved across several organs. An organ-only form (`enzyme_liver`) is deliberately **not** used: it does not say which isoenzyme, and it would collide the moment a second isoenzyme were resolved in the same organ. Paired with `enzyme_3a4_gut`.
 
 ### enzyme_3a4_gut (**canonical intestinal CYP3A4 enzyme pool**)
 - **Type:** compartment
@@ -700,7 +666,7 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:**
   - `CYP3A4 in gut` -- Chen 2024 Table 1 notation.
 - **Example models:** `Chen_2024_interleukin6_cyp3a_pbpk.R` (founding example; baseline 66.2 nmol/small intestine in healthy volunteers, 40.0 in rheumatoid arthritis).
-- **Notes:** Registered 2026-08-06. Initial condition `enzyme_3a4_gut(0) <- bl_enzyme_3a4_gut`. Kept separate from `enzyme_3a4_liver` because the gut pool has both a different baseline unit (an amount per organ, not a per-mg-protein density) and a different degradation half-life, and because intestinal first-pass CYP3A4 is the arm that drives oral victim-drug interactions. See `enzyme_3a4_liver` for the naming rule.
+- **Notes:** Ratified 2026-08-06. Initial condition `enzyme_3a4_gut(0) <- bl_enzyme_3a4_gut`. Kept separate from `enzyme_3a4_liver` because the gut pool has both a different baseline unit (an amount per organ, not a per-mg-protein density) and a different degradation half-life, and because intestinal first-pass CYP3A4 is the arm that drives oral victim-drug interactions -- the tissue-specific `kdeg` values are what make gut and hepatic activity respond differently to the same transient perpetrator exposure. See `enzyme_3a4_liver` for the naming rule.
 
 ---
 
