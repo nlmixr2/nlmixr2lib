@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Francke 2025 tacrolimus full and starting-dose models ([doi:10.1007/s40262-025-01533-0](https://doi.org/10.1007/s40262-025-01533-0)) - adult living and deceased donor kidney transplant recipients.
+- Add Huang 2025 dexmedetomidine nasal spray ([doi:10.3389/fphar.2025.1662364](https://doi.org/10.3389/fphar.2025.1662364)) -- Chinese healthy volunteers and adults undergoing elective abdominal surgery.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
