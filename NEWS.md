@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sheiner 1979 d-tubocurarine ([doi:10.1002/cpt1979253358](https://doi.org/10.1002/cpt1979253358)) -- adults undergoing elective surgery with normal renal function or chronic end-stage renal failure.
+- Add Perlstein 2025 TV-46000 long-acting subcutaneous risperidone ([doi:10.1007/s40120-025-00723-z](https://doi.org/10.1007/s40120-025-00723-z)) -- healthy volunteers and adults with schizophrenia or schizoaffective disorder.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
