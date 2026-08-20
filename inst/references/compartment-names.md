@@ -3312,6 +3312,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Lahu_2010_roflumilast.R` (doi:10.2165/11536600-000000000-00000).
 
+### pyrazol (**canonical enflicoxib pyrazol-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** The pyrazol metabolite of enflicoxib -- the long-lived active moiety formed by irreversible biotransformation of the COX-2-selective NSAID enflicoxib in the dog. It is the species responsible for the sustained effect of enflicoxib's once-weekly posology: the parent's terminal half-life is 1.4 days while the metabolite's is 13.8 days, and steady-state metabolite exposure (AUC_tau ~ 16,700 ng*d/mL) is roughly four-fold the parent's. Used as a metabolite suffix for the compartment, parameter and residual-SD names of parent-plus-metabolite enflicoxib popPK models (`central_pyrazol`, `peripheral1_pyrazol`, `peripheral2_pyrazol`, `lvc_pyrazol`, `lcl_pyrazol`, `Cc_pyrazol`, `propSd_pyrazol`).
+- **Source aliases:**
+  - `pyrazol metabolite` -- the name used throughout Cendros 2025 and Cendros 2022; the source papers never give the metabolite a chemical or code name, so the token is taken from the papers' own term.
+  - `M` / `M2` / `MP` -- the `CLM`, `VM`, `VM2`, `VMP`, `CLMP`, `CLM2` parameter-symbol stems in Cendros 2025 Table 1.
+- **Example models:** `Cendros_2025_enflicoxib.R` (founding example; doi:10.3389/fvets.2025.1645857).
+- **Notes:** The token is the source papers' own descriptor rather than a chemical name because none is published for this metabolite. `pyrazol` (not `pyrazole`) matches the spelling used consistently in Cendros 2025. Deliberately scoped in this register to enflicoxib's metabolite even though "pyrazol" names a generic heterocycle: a future model whose analyte is a *different* drug's pyrazole metabolite must register its own drug-scoped token (e.g. `pyrazol_<drug>`) rather than reuse this one, following the same collision-avoidance reasoning that kept `dexrazoxane` spelled out in full rather than abbreviated to `dex`.
+
 ### oxy (**canonical oxypurinol suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Oxypurinol (1H-purine-2,6,8(3H)-trione), the principal long-lived active metabolite of allopurinol produced by xanthine oxidase and aldehyde oxidase catalysed 2-hydroxylation. Oxypurinol is itself a xanthine-oxidase inhibitor and is the main contributor to sustained urate-lowering effect during chronic allopurinol therapy (allopurinol has a short plasma half-life of ~1-2 h while oxypurinol persists for ~24 h with a renally-cleared elimination). Used as a metabolite suffix in parent-plus-metabolite joint or sequential popPK models for allopurinol.

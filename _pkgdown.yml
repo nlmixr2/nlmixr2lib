@@ -960,8 +960,8 @@ navbar:
         href: articles/Steichert_2025_enalapril_enalaprilat_pediatric.html
       - text: "Enalapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
-      - text: "Enfortumab (Choules 2024)"
-        href: articles/Choules_2024_vedotin_ddi.html
+      - text: "Enflicoxib (Cendros 2025)"
+        href: articles/Cendros_2025_enflicoxib.html
       - text: "Enoxaparin (Barras 2009)"
         href: articles/Barras_2009_enoxaparin.html
       - text: "Enoxaparin (Berges 2007)"
@@ -3600,7 +3600,7 @@ articles:
   - articles/Castro-Surez_2020_nimotuzumab
   - articles/Catalan-Latorre_2018_taurine_rat
   - articles/Cella_2012_midazolam_paediatric_scaling
-  - articles/Centanni_2025_sunitinib_thrombocytopenia
+  - articles/Cendros_2025_enflicoxib
   - articles/Chae_2012_metformin
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
