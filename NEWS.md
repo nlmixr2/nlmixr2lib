@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2025 doxycycline PK and doxycycline + florfenicol PK/PD models ([doi:10.1016/j.psj.2025.104922](https://doi.org/10.1016/j.psj.2025.104922)) -- Riemerella anatipestifer-infected ducks (Tadorna tadorna).
+- Add Winning 2025 certepetide ([doi:10.1002/cpdd.1502](https://doi.org/10.1002/cpdd.1502)) -- adults with metastatic pancreatic ductal adenocarcinoma.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

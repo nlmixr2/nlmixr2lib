@@ -518,6 +518,8 @@ navbar:
         href: articles/Padoin_1998_cephalexin_rat.html
       - text: "Cephalothin (Kuroda 2023)"
         href: articles/Kuroda_2023_cephalothin.html
+      - text: "Certepetide (Winning 2025)"
+        href: articles/Winning_2025_certepetide.html
       - text: "Certolizumab (Wade 2015)"
         href: articles/Wade_2015_certolizumab.html
       - text: "Cetagliptin (Zhou 2024)"
@@ -4527,6 +4529,7 @@ articles:
   - articles/Willmann_2022_rivaroxaban
   - articles/Willmann_2024_elinzanetant
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
+  - articles/Winning_2025_certepetide
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
   - articles/Woillard_2014_ciclosporin
