@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Randell 2024 metronidazole ([doi:10.1128/aac.01533-23](https://doi.org/10.1128/aac.01533-23)) -- critically ill preterm and term infants.
+- Add Zavrelova 2025 linezolid ([doi:10.1111/cts.70346](https://doi.org/10.1111/cts.70346)) -- hematooncological adults with suspected or proven Gram-positive sepsis.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

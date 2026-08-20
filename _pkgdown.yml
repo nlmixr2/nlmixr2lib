@@ -1596,6 +1596,8 @@ navbar:
         href: articles/Taubert_2016_linezolid.html
       - text: "Linezolid (Tsuji 2017)"
         href: articles/Tsuji_2017_linezolid.html
+      - text: "Linezolid (Zavrelova 2025)"
+        href: articles/Zavrelova_2025_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"
         href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -4735,6 +4737,7 @@ articles:
   - articles/Yukawa_2002_clonazepam_pediatric
   - articles/Zandvliet_2008_carboplatin
   - articles/Zandvliet_2016_corifollitropin_alfa
+  - articles/Zavrelova_2025_linezolid
   - articles/Zazo_2024_ceftazidime_avibactam
   - articles/Zecchin_2016_survival
   - articles/Zecchin_2016_tumorovarian
