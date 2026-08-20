@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Comisar 2025 rimegepant ([doi:10.1002/psp4.70051](https://doi.org/10.1002/psp4.70051)) -- healthy adults, elderly adults with stable chronic illness, and adults with renal or hepatic impairment.
+- Add Zhang 2025 dupilumab FEV1 PK/PD ([doi:10.1002/psp4.70057](https://doi.org/10.1002/psp4.70057)) -- adults and adolescents with uncontrolled moderate-to-severe asthma.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

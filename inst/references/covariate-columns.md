@@ -1741,6 +1741,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `FiedlerKelly_2020_fremanezumab_em.R` (slope 0.438 d/d, episodic migraine), `FiedlerKelly_2020_fremanezumab_cm.R` (slope 0.460 d/d, chronic migraine).
 - **Notes:** Specific scope because the variable is migraine-domain-bound. Time-fixed per subject (baseline-only). When future migraine E-R models register additional aliases or alternative breakpoints, document them per-model and consider promoting to `general`.
 
+### NEXAC12M (**canonical for number of disease exacerbations in the 12 months before study entry**)
+- **Description:** Count of clinically significant disease exacerbations experienced in the 12 months immediately preceding study entry, supplied as a per-subject baseline covariate. Standard measure of pre-treatment disease instability in chronic airway disease (asthma, COPD) and other relapsing-remitting conditions; enters exposure-response models as a marker of how brittle the subject's disease was before randomization. Time-fixed per subject.
+- **Units:** count (events in the prior 12 months)
+- **Type:** count
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(NEXAC12M / ref)^exponent`. Reference values observed: 1.0 (Zhang 2025, median of the pooled Phase 2b + Phase 3 uncontrolled moderate-to-severe asthma cohort; range 1-50).
+- **Source aliases:**
+  - `PREEXAC` ("number of prior exacerbations in the past year") -- used in `Zhang_2025_dupilumab_fev1.R`.
+- **Example models:** `Zhang_2025_dupilumab_fev1.R` (power effect `(NEXAC12M / 1.0)^-0.0411` on baseline pre-bronchodilator FEV1; subjects with more prior exacerbations start from a lower baseline lung function, though Zhang 2025 Table 4 shows the effect is not clinically meaningful -- only -7% at the 95th-percentile count of 6).
+- **Notes:** Distinct from [[HOSPRA]], which is a *time-varying binary* indicator of being hospitalised for a pulmonary exacerbation at the moment a spirometry value is recorded; NEXAC12M is a time-fixed baseline *count* over a fixed 12-month look-back window. Also distinct from the decomposed-band pattern used for baseline seizure counts (`NSP3M_LT2` / `NSP3M_7_50` / `NSP3M_GT50`): those source papers binned the count into categories, whereas Zhang 2025 uses the raw count continuously inside a power function, which cannot be expressed as band indicators. The exacerbation definition is disease- and protocol-specific (Zhang 2025: severe asthma exacerbations per the DRI12544 / EFC13579 protocols); document the source definition in `covariateData[[NEXAC12M]]$notes` per model. Register a differently-windowed canonical (e.g. a 6-month or 24-month look-back) rather than reusing this name if a future paper changes the window. Scope: specific until a second model ratifies the semantics; promote to general at that point.
+
 ### DIS_AMYLOID_LOAD (**canonical for systemic-amyloidosis whole-body amyloid load grade**)
 - **Description:** Ordinal whole-body amyloid load score in patients with systemic amyloidosis. Integer 0-3: 0 = no amyloid (healthy volunteers), 1 = small amyloid load, 2 = moderate amyloid load, 3 = large amyloid load. The grading combines organ-by-organ amyloid presence (liver, spleen, bone, adrenals, gut, heart) and SAP-scintigraphy uptake into a single per-patient severity grade at baseline. Time-fixed per subject.
 - **Units:** (categorical 0-3)
@@ -1960,6 +1971,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - `BEOS` (baseline EOS) -- used in `Kotani_2022_astegolimab.R`.
 - **Example models:** `Kotani_2022_astegolimab.R` (reference 180 cells/uL, baseline).
 - **Notes:** Used as a surrogate of inflammatory burden that correlates with protein turnover and therefore mAb clearance. Canonical name drops the `B` prefix to match the `SCORE_EASI` / `AGE` / `WT` / `ALB` pattern; baseline-vs-time-varying status is documented in `covariateData[[EOS]]$notes`.
+
+### FENO (**canonical for fractional exhaled nitric oxide concentration**)
+- **Description:** Fractional concentration of nitric oxide in exhaled breath (FeNO), measured by chemiluminescence or electrochemical analyser at a 50 mL/s expiratory flow rate per the ATS/ERS standard. A non-invasive marker of eosinophilic (type-2) airway inflammation: elevated FeNO reflects IL-4 / IL-13-driven upregulation of inducible nitric oxide synthase in airway epithelium. Standard baseline biomarker covariate in asthma exposure-response models, typically alongside blood eosinophil count [[EOS]].
+- **Units:** ppb (parts per billion)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- used with power scaling `(FENO / ref)^exponent`. Reference values observed: 25 ppb (Zhang 2025, median of the pooled Phase 2b + Phase 3 uncontrolled moderate-to-severe asthma cohort; range 3-387 ppb). 25 ppb is also the conventional clinical cut-point separating low from intermediate type-2 inflammation in adults.
+- **Source aliases:**
+  - `BFENO` (baseline FeNO) -- used in `Zhang_2025_dupilumab_fev1.R`.
+- **Example models:** `Zhang_2025_dupilumab_fev1.R` (power effect `(FENO / 25)^0.682` on the dupilumab maximum treatment effect Emax for pre-bronchodilator FEV1; patients with higher baseline FeNO gain substantially more lung function -- +154% Emax at the 95th percentile of 98 ppb, -54% at the 5th percentile of 8 ppb).
+- **Notes:** Canonical name drops the `B` prefix of the common `BFENO` source column to match the `EOS` / `IGE` / `ALB` pattern; baseline-vs-time-varying status is documented in `covariateData[[FENO]]$notes` per model. Record the expiratory flow rate in the model notes if the source paper used a non-standard one (values are strongly flow-dependent, so a FeNO measured at 100 or 200 mL/s is not interchangeable with the 50 mL/s standard). Scope: specific until a second model ratifies the semantics; promote to general at that point.
 
 ### BLBCELL (**canonical for baseline CD19+ B cell count**)
 - **Description:** Baseline CD19+ B cell count (cells/uL) measured by fluorescence-activated cell sorting (FACS) prior to first dose. Used as a covariate / scaling biomarker for B-cell-targeted antibody PK-PD models (e.g., anti-CD20 mAbs in multiple sclerosis or B cell malignancies).
