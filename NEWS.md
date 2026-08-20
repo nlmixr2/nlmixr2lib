@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rolsma 2025 cefepime, meropenem, piperacillin and tazobactam ([doi:10.1093/infdis/jiae451](https://doi.org/10.1093/infdis/jiae451)) -- children and adults with cystic fibrosis.
+- Add Baiardi 2025 dalbavancin ([doi:10.3390/antibiotics14020190](https://doi.org/10.3390/antibiotics14020190)) -- adults receiving multidose long-term therapy for difficult-to-treat Gram-positive infections.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
