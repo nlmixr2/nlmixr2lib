@@ -2220,6 +2220,8 @@ navbar:
         href: articles/Wattanakul_2024_primaquine_lactation.html
       - text: "Procainamide (Mohamed 2013)"
         href: articles/Mohamed_2013_procainamide.html
+      - text: "Proguanil (Khwarg 2024)"
+        href: articles/Khwarg_2024_proguanil.html
       - text: "Propofol (Chi 2018)"
         href: articles/Chi_2018_propofol.html
       - text: "Propofol (Diepstraten 2013)"
@@ -3759,6 +3761,7 @@ articles:
   - articles/Kervezee_2014_quinidine_rat
   - articles/Khan_2015_ciprofloxacin
   - articles/Khwarg_2024_donepezil
+  - articles/Khwarg_2024_proguanil
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2008_aripiprazole
   - articles/Kim_2015_paroxetine

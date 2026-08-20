@@ -3925,14 +3925,9 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Source aliases:** `PV`, `pv`.
 - **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
 
----
-
-## Moein 2024 apitolisib pAkt biomarker
-
-### pakt (**canonical phosphorylated-Akt biomarker compartment**)
-- **Type:** compartment
-- **Role:** Phosphorylated Akt (serine 473) turnover pool -- the indirect-response biomarker state of PI3K / AKT / mTOR pathway-inhibitor PK-PD models. Held as `%pAkt`, i.e. the pAkt signal expressed as a percentage of the drug-free control / pre-dose baseline, so the state starts at 100 by definition and the drug acts by inhibiting the production rate: `d/dt(pakt) = kin * (1 - imax * Cc^hill / (ic50^hill + Cc^hill)) - kout * pakt`. The percent INHIBITION `I = 100 - pakt` is the usual driver of a downstream effect (see `lki50` in `parameter-names.md`). Used in both the preclinical model, where pAkt is assayed in TUMOUR TISSUE, and the clinical model, where it is assayed in PLATELET-RICH PLASMA as a surrogate for tumour target modulation -- the same state in a different matrix, distinguished via `compartmentData$pakt$specimen` rather than by two separate names.
-- **Source aliases:**
-  - `%pAkt`, `PAKT` -- Moein 2024 notation (Methods Eqs. 2-3; Online Resource 2 control-stream state `A(3)` / `A(4)`).
-- **Example models:** `Moein_2024_apitolisib_mouse.R` (founding example; tumour-tissue pAkt in 786-O renal-cell-carcinoma xenografts), `Moein_2024_apitolisib_human.R` (platelet-rich-plasma pAkt in two phase 1 dose-escalation studies).
-- **Notes:** Ratified 2026-08-05 alongside the Moein 2024 apitolisib extraction (sidecar request-001 q1, option A). Registered per the `integrin` precedent (Keizer 2011 E7820), which is the same shape: drug inhibits a platelet-measurable biomarker turnover pool that then drives a downstream effect. Registered rather than confined to `paper_specific_compartments` because the PI3K / AKT / mTOR pathway is a large drug class and pAkt is its standard pharmacodynamic readout, so later extractions in the class should reuse this name. The pool is measured as a percentage rather than an amount or a concentration, so a residual-error term on it is `propSd_pakt`; the units belong in `compartmentData$pakt$units`.
+### cycloguanil (**canonical cycloguanil active metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Cycloguanil, the active triazine antifolate metabolite formed from the biguanide prodrug proguanil by CYP2C19-mediated oxidative cyclisation in the hepatocyte. It is the species responsible for proguanil's dihydrofolate-reductase-inhibiting antimalarial activity, so a joint proguanil model carries it as the pharmacologically relevant output rather than as a disposal route. Assayed in the same ug/L range as the parent (cycloguanil Cmax is roughly a third of proguanil Cmax), and the cycloguanil-to-proguanil AUC ratio is the reported "metabolic ratio" used as a CYP2C19 / OCT1 activity readout.
+- **Source aliases:** none.
+- **Example models:** `Khwarg_2024_proguanil.R` (`liver_cycloguanil`, `transit1_cycloguanil`, `transit2_cycloguanil`, `central_cycloguanil`, `Cc_cycloguanil`, `lcl_cycloguanil`, `lktr_cycloguanil`, `propSd_cycloguanil`, `addSd_cycloguanil`; a semi-physiologic well-stirred-liver joint parent-metabolite model in which cycloguanil is formed inside the liver compartment and effluxes to systemic plasma through two transit compartments; doi:10.1111/cts.70103).
+- **Notes:** The metabolite is formed in a `liver_cycloguanil` state rather than directly in `central_cycloguanil` because the founding model's formation flux is the hepatic extraction flux out of the parent's `liver` compartment; the `<canonical>_cycloguanil` suffix therefore composes with `liver` and `transit<n>` as well as with `central`. Do not use a `cyclo` abbreviation -- it is ambiguous against cyclophosphamide and cyclosporine metabolite naming.

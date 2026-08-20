@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kurup 2024 DZIF-10c ([doi:10.1007/s10928-024-09947-2](https://doi.org/10.1007/s10928-024-09947-2)) -- pooled adults (SARS-CoV-2 infected and uninfected) and cynomolgus macaques.
+- Add Khwarg 2024 proguanil ([doi:10.1111/cts.70103](https://doi.org/10.1111/cts.70103)) -- healthy Korean male adults genotyped for SLC22A1 (OCT1) 1022C>T.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
