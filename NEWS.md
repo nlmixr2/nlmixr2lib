@@ -2,7 +2,12 @@
 
 # development version
 
-- Add Harada 2025 cyanide ([doi:10.1007/s11419-025-00713-8](https://doi.org/10.1007/s11419-025-00713-8)) -- adults in fire-related deaths examined at forensic autopsy.
+- Add Dasti 2025 multiscale mRNA vaccine QSP models for BNT162b2 (general adult
+  and over-60 populations), mRNA-1273, and the single-cell antigen-presentation
+  molecular layer
+  ([doi:10.1002/psp4.70041](https://doi.org/10.1002/psp4.70041))
+  -- healthy adults receiving prophylactic COVID-19 mRNA vaccination; the early
+  antigen-presenting-cell events are calibrated on rhesus macaque data.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
