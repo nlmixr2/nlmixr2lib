@@ -2774,6 +2774,8 @@ navbar:
         href: articles/LiemMoolenaar_2011_scopolamine.html
       - text: "Selexipag (Krause 2017)"
         href: articles/Krause_2017_selexipag.html
+      - text: "Selumetinib (Kollo 2026)"
+        href: articles/Kollo_2026_selumetinib.html
       - text: "Selumetinib (Patel 2017)"
         href: articles/Patel_2017_selumetinib.html
       - text: "Semaglutide (CarlssonPetri 2018)"
@@ -4141,6 +4143,7 @@ articles:
   - articles/Knights_2015_aripiprazole
   - articles/Kobuchi_2025_dapagliflozin
   - articles/Kohl_2010_posaconazole
+  - articles/Kollo_2026_selumetinib
   - articles/Koloskoff_2025_ganciclovir
   - articles/Kong_2025_sudapyridine
   - articles/Koo_2012_propofol

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zeng 2026 atezolizumab ([doi:10.1007/s00228-025-03974-9](https://doi.org/10.1007/s00228-025-03974-9)) -- adults with metastatic non-small cell lung cancer; all parameters fixed, transcribed from the FDA CDER review of BLA 761041Orig1s000.
+- Add Kollo 2026 selumetinib ([doi:10.1002/psp4.70156](https://doi.org/10.1002/psp4.70156)) - children aged 5-16 years with inoperable neurofibromatosis type I or plexiform neurofibromas.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
