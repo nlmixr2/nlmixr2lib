@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yan 2024 amisulpride ([doi:10.2147/DDDT.S469149](https://doi.org/10.2147/DDDT.S469149)) - Chinese adult inpatients with schizophrenia.
+- Add Jiang 2025 filgrastim ([doi:10.1111/cts.70121](https://doi.org/10.1111/cts.70121)) -- healthy Korean adult men.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
