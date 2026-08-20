@@ -1394,6 +1394,7 @@ matrices keyed by level rather than a single matrix.
   - `kD,delay`, `kD,delayed` -- Siebinga 2024 Table 3 and Eq. 12.
 - **Example models:** `Siebinga_2024_lu177psmaIT.R` (`lkd_direct` = log(0.00335) L/day/GBq driven by the tumor radioactivity concentration, and `lkd_delay` = log(0.0000328) L/day/MBq driven by an effect compartment at `ke0` = 0.00128 1/h; both act on the PSA compartment, per Eq. 12).
 - **Notes:** Ratified 2026-08-05 with the Siebinga 2024 [177Lu]Lu-PSMA-I&T extraction. **Distinct from `kd`**, the mechanistic *dissociation* rate (1 / time) used in TMDD-type models: these are exposure-scaled slopes with different units, so do not alias them onto `kd`. The `_direct` / `_delay` suffixes name the driver and follow the register's established `<stem>_<suffix>` pattern (`lcl_renal` / `lcl_nonren`, `kge_ctdna` / `kse_ctdna`). Use these names only for the *linear* drug-effect form; when a paper instead fits an Emax or sigmoid-Emax effect, the potency and shape parameters belong to the `ec50` / `lec50` / `hill` family.
+
 ## Unit spellings
 
 Registered 2026-08-03. The machine-readable `units` block wrote the same time
