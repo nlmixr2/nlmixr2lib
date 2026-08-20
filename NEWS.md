@@ -2,6 +2,19 @@
 
 # development version
 
+- Add Siebinga 2024 [177Lu]Lu-PSMA-I&T ([doi:10.1186/s40658-024-00642-2](https://doi.org/10.1186/s40658-024-00642-2)) - men with metastatic castration-resistant prostate cancer.
+
+- Register three new canonical parameter names in
+  `inst/references/parameter-names.md`: `boxcox_<param>` for a Box-Cox shape
+  parameter applied to an interindividual random effect (distinct from
+  `lambda_<output>`, which transforms the *residual* error), `lkd_direct` /
+  `lkd_delay` for linear drug-effect coefficients on a turnover loss rate
+  (distinct from `kd`, a mechanistic dissociation rate), and `e_wt_k` for a
+  single allometric exponent a paper applies to every rate constant at once.
+  The `sf<n>` note that had pointed at the deprecated `allo_<param>` spelling
+  now points at `e_wt_<param>`, which is what `checkModelConventions()`
+  actually enforces.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
