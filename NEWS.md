@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Duffull 2025 monoclonal antibody TMDD models, full and target-saturated simplification ([doi:10.1002/psp4.70049](https://doi.org/10.1002/psp4.70049)) -- 80 simulated subjects, unnamed mAb.
+- Add Comisar 2025 rimegepant ([doi:10.1111/cts.70360](https://doi.org/10.1111/cts.70360)) -- pooled adults and children 6 to <12 years with a history of migraine.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

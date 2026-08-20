@@ -8,7 +8,10 @@ vignette: >
 ---
 
 ```{r setup, include = FALSE}
-knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5, dpi = 96
+)
 library(nlmixr2lib)
 library(PKNCA)
 library(rxode2)
@@ -21,810 +24,1048 @@ library(ggplot2)
 
 * Citation: `r rxode2::rxode(readModelDb("Comisar_2025_rimegepant"))$reference`
 * Description: `r rxode2::rxode(readModelDb("Comisar_2025_rimegepant"))$description`
-* Article: <https://doi.org/10.1002/psp4.70051>
-* Supplement (Supplemental Methods, Tables S1-S2, Figures S1-S10): <https://doi.org/10.1002/psp4.70051>
-* Supplementary Listing 1 (final-model NONMEM control stream): supplement file `psp470051-sup-0002`
+* Article: <https://doi.org/10.1111/cts.70360>
+* Supplement (Data S1: Tables S1-S3, Figures S1-S2): <https://doi.org/10.1111/cts.70360>
+* Upstream adult-only model (covariate equation forms, structural schematic):
+  <https://doi.org/10.1002/psp4.70051>
 
-Rimegepant (Nurtec, Vydura) is a small-molecule calcitonin gene-related peptide
-(CGRP) receptor antagonist -- a "gepant" -- approved both for acute treatment of
-migraine (75 mg as needed) and for preventive treatment of episodic migraine
-(75 mg every other day). It is the first small-molecule CGRP agent in
-nlmixr2lib; the library's other CGRP-pathway models are the anti-CGRP monoclonal
-antibodies `Fiedler-Kelly_2019_fremanezumab` and `Kielbasa_2020_galcanezumab`,
-which have entirely different disposition kinetics.
-
-The final model is a two-compartment disposition model fed by a six-compartment
-pre-systemic absorption chain, with a dose-dependent relative bioavailability
-that reproduces rimegepant's greater-than-dose-proportional exposure.
+Rimegepant is a small-molecule calcitonin gene-related peptide (CGRP) receptor
+antagonist approved as a 75 mg orally disintegrating tablet (ODT) for the acute
+treatment of migraine and for the prevention of episodic migraine in adults.
+Comisar 2025 extends a previously published adult-only population PK model with
+data from one pediatric and two adult phase 1 studies, then uses the combined
+model to select pediatric doses by matching predicted pediatric exposure to
+predicted adult exposure.
 
 # Population
 
-The model was developed in three sequential stages as data accrued, ending with
-11 phase 1 studies (Comisar 2025 Table 1). The Stage 3 final analysis population
-(Table 2, rightmost column) comprised **349 subjects** contributing **10,745**
-plasma concentration records; 1842 of the 12,587 records considered (14.6%) were
-excluded as below the limit of quantitation. Median age was 43 years (range
-18-77) and median body weight 75 kg (range 46-134). The population was 73.6%
-male and predominantly Caucasian (81.9%), with Black/African American (8.9%),
-Japanese-ethnicity (5.2%), Chinese-ethnicity (3.4%), and nonspecified Asian
-(0.6%) participants.
+The combined analysis pooled 14 phase 1 studies contributing 443 participants
+and 14,141 rimegepant plasma concentrations (Comisar 2025 Table 1 and Section
+3.1). 423 adults contributed 14,063 observations: healthy volunteers, elderly
+participants with stable chronic illness, participants with renal or hepatic
+impairment, participants in dedicated itraconazole and fluconazole
+drug-drug-interaction arms, and participants of Japanese and Chinese ethnicity.
+Twenty children aged 6 to <12 years with a history of migraine (study C4951008)
+contributed 78 sparse observations at pre-dose, 0.5, 1.25, 3.5 and 18 h.
 
-Most participants were healthy. Dedicated organ-impairment studies contributed
-six subjects each with mild, moderate, and severe **renal** impairment
-(BHV3000-106) and six each with mild, moderate, and severe **hepatic**
-impairment (BHV3000-107); a further study compared elderly against nonelderly
-adults (BHV3000-108). Fixed-sequence drug-drug-interaction arms contributed 22
-subjects coadministered itraconazole (BHV3000-103) and 23 coadministered
-fluconazole (BHV3000-105). Doses spanned 10, 25, 75, and 150 mg given as
-immediate-release tablet, capsule, or orally disintegrating tablet (ODT). No
-migraine patients were included, because dosing times and sampling are difficult
-to capture during an attack (Discussion, limitations).
+Overall median age was 43 years (range 6 to 77) and median body weight 73.0 kg
+(range 23.2 to 134). Most participants were male (68.6%) and White (83.5%).
+Within the pediatric subgroup, median age was 9 years (range 6 to 11), median
+weight 35.9 kg (range 23.2 to 61.8), and most were female (55%) and White (70%).
+Pediatric dosing was weight-banded: 25 mg ODT for 15 to 30 kg (n = 6), 50 mg ODT
+for >30 to 50 kg (n = 9) and 75 mg ODT for >50 kg (n = 5). Adults received 10 to
+150 mg as single, daily or every-other-day (EOD) doses of ODT, tablet and
+capsule formulations.
 
-Because the crossover designs let one subject contribute several categorical
-states, the formulation, dose, fed-status, and DDI percentages in Table 2 sum to
-more than 100%.
+**No adolescent (12 to <18 years) PK data were collected.** The adolescent dose
+recommendation rests entirely on model-based extrapolation, which is the central
+claim this vignette exercises.
 
 The same information is available programmatically via the model's `population`
 metadata (`readModelDb("Comisar_2025_rimegepant")()$population`).
 
-```{r population}
-readModelDb("Comisar_2025_rimegepant")()$population[
-  c("species", "n_subjects", "n_studies", "age_median", "weight_median",
-    "sex_female_pct", "dose_range")
-] |>
-  unlist() |>
-  tibble::enframe(name = "Field", value = "Value") |>
-  knitr::kable(caption = "Selected population metadata (Comisar 2025 Tables 1 and 2).")
+# Model structure
+
+A two-compartment disposition model with a four-compartment transit absorption
+chain. The paper's "four transit absorption compartments" are, in nlmixr2lib
+naming, `depot` + `transit1` + `transit2` + `transit3`: the dose lands in the
+first of the four, three sequential transfers run at the shared rate `ktr`, and
+the fourth empties into `central` at the separate first-order rate `ka`. This is
+what the upstream structural schematic (Comisar 2025 CPT:PSP Figure 2, adapted
+as Comisar 2025 CTS Figure S1) draws -- four stacked boxes joined by three
+curved `ktr` arrows, with a single `ka` arrow leaving the stack for the central
+compartment.
+
+Two covariate functional forms are used throughout, both stated verbatim in the
+upstream supplement's Supplemental Methods:
+
+* continuous covariates take the power form
+  `theta_i = theta_TV,REF * (X_i / X_REF)^theta_x`;
+* categorical covariates take the multiplicative form
+  `theta_i = theta_TV,REF * (1 + theta_x)^X_i` with `X_i` in `{0, 1}`, i.e. a
+  **fractional** change -- `-0.744` means a 74.4% reduction, not `exp(-0.744)`.
+
+The categorical form is independently confirmed by the upstream paper's own
+simulation table (CPT:PSP Table 4), whose four covariate AUC ratios reproduce
+`1 / (1 + theta)` to within 0.7% and are incompatible with an exponential form
+(which is off by up to 46%):
+
+```{r covariate-form-check, echo = FALSE}
+tibble::tribble(
+  ~Covariate,                  ~theta, ~AUCtau,
+  "Fluconazole on CL/F",       -0.427,  7310,
+  "Itraconazole on CL/F",      -0.743, 16200,
+  "Severe hepatic on CL/F",    -0.423,  7260,
+  "Moderate hepatic on CL/F",  -0.229,  5430
+) |>
+  mutate(
+    `Published ratio` = AUCtau / 4160,
+    `(1 + theta)^-1`  = 1 / (1 + theta),
+    `exp(-theta)`     = exp(-theta),
+    `Multiplicative error (%)` = 100 * (`(1 + theta)^-1` - `Published ratio`) /
+      `Published ratio`,
+    `Exponential error (%)` = 100 * (`exp(-theta)` - `Published ratio`) /
+      `Published ratio`
+  ) |>
+  select(-AUCtau) |>
+  knitr::kable(
+    digits = c(0, 3, 3, 3, 3, 2, 2),
+    caption = paste(
+      "Covariate functional form falsified against Comisar 2025 CPT:PSP",
+      "Table 4 (adult 75 mg ODT EOD steady-state AUCtau; reference 4160",
+      "ng*h/mL). The multiplicative form is correct."
+    )
+  )
 ```
+
+Relative bioavailability is nonlinear in dose and carries no separate estimated
+scale: the upstream schematic prints the whole `F1` model as
+`F1 = (Dose/10)^0.191`, so `F1` is anchored at 1 for a 10 mg fasted dose and
+`lfdepot` is `fixed(log(1))`.
 
 # Source trace
 
-Every `ini()` entry in
-`inst/modeldb/specificDrugs/Comisar_2025_rimegepant.R` carries an in-file
-comment naming its source location. They are collected here for review.
-
-An important sourcing note: the supplement's **Supplementary Listing 1 is the
-final model's NONMEM control stream**, and it is authoritative for the model
-*structure* and for every *covariate equation form*. Its `$THETA` / `$OMEGA` /
-`$SIGMA` blocks, however, carry **initial** estimates, not final ones (for
-example `TH1: CL` is 17.6 against the final 24.1 L/h). Every numeric value in
-the model file is therefore taken from **Table 3** of the main paper; the
-control stream is cited only for structure and equation form.
+Per-parameter origins are recorded as in-file comments next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Comisar_2025_rimegepant.R`. Collected here
+for review. "Table 2" / "Table 1" refer to Comisar 2025 *Clin Transl Sci*;
+"Table S3" to its Data S1 supplement; "CPT:PSP" to the upstream adult model.
 
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
-| `lcl` (CL/F) | 24.1 L/h | Table 3, %RSE 4.86 |
-| `lvc` (Vc/F) | 114 L | Table 3, %RSE 5.36 |
-| `lvp` (Vp/F) | 46.0 L | Table 3, %RSE 5.3 |
-| `lq` (Q/F) | 3.94 L/h | Table 3, %RSE 6.37 |
-| `lktr` (ktr) | 8.23 1/h | Table 3, %RSE 8.24 |
-| `lka` (ka) | 3.86 1/h | Table 3, %RSE 28.4 |
-| `e_wt_cl` | 0.75 (fixed) | Table 3 note; Methods 2.2 para 3; control stream `TH22 = 0.75 FIX` |
-| `allo_v` | 1.0 (fixed) | Table 3 note; Methods 2.2 para 3; control stream `TH23 = 1 FIX` |
-| Allometric reference weight | 70 kg | Control stream `(BWGT/70)`; Discussion para 3 ("typical clearance for a 70 kg individual") |
-| `e_hepimp_mod_cl` | -0.229 | Table 3, %RSE 27.8; control stream `TH24` |
-| `e_hepimp_sev_cl` | -0.423 | Table 3, %RSE 24.9; control stream `TH11`; Discussion para 4 ("decreased rimegepant clearance by 42.3%") |
-| `e_flcz_cl` | -0.427 | Table 3, %RSE 2.88; control stream `TH8`; Discussion para 5 ("a 42.7% decrease") |
-| `e_itcz_cl` | -0.743 | Table 3, %RSE 1.25; control stream `TH12`; Discussion para 5 ("decreased rimegepant clearance by 74.3%") |
-| `e_itcz_ktr` | -0.351 | Table 3, %RSE 28.9; control stream `TH19`; Discussion para 5 ("itraconazole delayed ktr by 35.1%") |
-| `e_fed_ktr` | -0.706 | Table 3, %RSE 3.34; control stream `TH16`; Discussion para 8 ("absorption rate of 70.6%") |
-| `e_form_odt_ktr` | 0.355 | Table 3, %RSE 29.6; control stream `TH17` (`FORM = 3`) |
-| `e_form_cap_ktr` | 2.03 | Table 3, %RSE 24.1; control stream `TH18` (`FORM = 2`) |
-| `e_dose_low_ktr` | 0.536 | Table 3, %RSE 48.7; control stream `KTRDOSE2and3`, applied as `(1 + THETA(29))` for `DOSE` 10 and 25 mg |
-| `e_fed_f` | -0.315 | Table 3, %RSE 9.74; control stream `TH13`; Discussion para 8 ("bioavailability of 31.5%") |
-| `e_dose_f` | 0.191 | Table 3, %RSE 12.6; control stream `F1BIODOSE = (DOSE/10)**THETA(25)`; Methods 2.2 para 4 |
-| `etalcl`, `etalvc`, `etalvp` block | 31.2%, 40.6%, 28.2% with correlations 75.8%, 54.0%, 66.7% | Table 3 IIV% column and Correlation matrix block; control stream `$OMEGA BLOCK(3)` |
-| `etalktr` | 53.1% | Table 3 IIV% column; control stream separate `$OMEGA` |
-| `propSd` | 0.377 | Table 3 "Proportional error (%)" = 37.7%, %RSE 1.9 |
-| `addSd` | 0.43 ng/mL | Table 3 "Additive error" = 0.43, %RSE 12.0 (unit printed as ng/L; see Errata) |
-| Categorical covariate form `theta * (1 + theta_x)^X` | n/a | Supplemental Methods, categorical covariate model |
-| Continuous covariate form `theta * (X/X_ref)^theta_x` | n/a | Supplemental Methods, power covariate model |
-| ODE system (8 states) | n/a | Control stream `$MODEL` and `$DES`; schematic Figure 2 |
-| Residual error `Y = F + F*EP + EA` | n/a | Control stream `$ERROR` |
-| Concentration scaling to ng/mL | 1000x | Control stream `S2 = V2/1000 ; ng/ml to mg in final volume units of L` |
+| `lcl` | 25.2 L/h | Table 2 CL/F (4.8% RSE); Table S3 95% CI 22.8-27.6 |
+| `lvc` | 113 L | Table 2 V1/F (5.2% RSE); Table S3 95% CI 101-125 |
+| `lvp` | 46.8 L | Table 2 V2/F (4.9% RSE); Table S3 95% CI 42.3-51.3 |
+| `lq` | 4.16 L/h | Table 2 Q/F (5.7% RSE); Table S3 95% CI 3.70-4.62 |
+| `lktr` | 8.42 1/h | Table 2 ktr (5.1% RSE); Table S3 95% CI 7.58-9.26 |
+| `lka` | 3.05 1/h | Table 2 ka (15.5% RSE); Table S3 95% CI 2.12-3.98 |
+| `lfdepot` | `fixed(log(1))` | CPT:PSP Figure 2 schematic: `F1 = (Dose/10)^0.191` -- no separate scale term |
+| `e_wt_cl_q` | 0.575 | Table 2 "Body weight effect on CL/F and Q/F" (14.4% RSE); 95% CI 0.413-0.737 |
+| `e_wt_vc_vp` | 1.18 | Table 2 "Body weight effect on V1/F and V2/F" (8.3% RSE); 95% CI 0.988-1.372 |
+| Reference weight | 70 kg | Data S1 Supplemental methods: "center the covariate effect at 70 kg" |
+| `e_hepimp_mod_cl` | -0.203 | Table 2 "Moderate hepatic impairment on CL/F" (27.6% RSE) |
+| `e_hepimp_sev_cl` | -0.410 | Table 2 "Severe hepatic impairment on CL/F" (25.9% RSE) |
+| `e_conmed_fluconazole_cl` | -0.429 | Table 2 "Fluconazole use on CL/F" (2.9% RSE) |
+| `e_conmed_itraconazole_cl` | -0.744 | Table 2 "Itraconazole use on CL/F" (1.3% RSE) |
+| `e_fed_ktr` | -0.698 | Table 2 "Fed on ktr" (3.9% RSE) |
+| `e_form_odt_ktr` | 0.470 | Table 2 "ODT on ktr" (18.4% RSE) |
+| `e_form_capsule_ktr` | 2.19 | Table 2 "Capsule formulation on ktr" (22.6% RSE) |
+| `e_conmed_itraconazole_ktr` | -0.361 | Table 2 "Itraconazole use on ktr" (28.3% RSE) |
+| `e_dose_low_ktr` | 0.596 | Table 2 "10/25mg dose effect on ktr" (45.5% RSE) + footnote a |
+| `e_dose_rimegepant_mg_fdepot` | 0.192 | Table 2 "Dose effect on F1" (12.4% RSE); power form from CPT:PSP Figure 2 |
+| `e_fed_fdepot` | -0.331 | Table 2 "Fed on F1" (6.9% RSE) |
+| `etalcl`/`etalvc`/`etalvp` block | 0.104, 0.103, 0.168, 0.0428, 0.0717, 0.0666 | Table S3 pooled-model omega2 and omega terms |
+| `etalktr` | 0.300 | Table S3 omega2ktr (Table 2 IIV 54.8%; `sqrt(0.300) = 0.548`) |
+| `addSd` | 0.447 | Table 2 additive error SD (3.2% RSE); Table S3 sigma2add 0.200, `sqrt = 0.4472` |
+| `propSd` | 0.393 | Table 2 proportional error 39.3 %CV; Table S3 sigma2prop 0.154, `sqrt = 0.3924` |
+| Categorical covariate form `(1 + theta)^X` | n/a | CPT:PSP Data S1 Supplemental Methods |
+| Continuous covariate form `(X/X_REF)^theta` | n/a | CPT:PSP Data S1 Supplemental Methods |
+| Transit chain: 4 compartments, 3 `ktr` steps, 1 `ka` step | n/a | CPT:PSP Figure 2; Comisar 2025 Figure S1; Section 2.3 |
 
-## Structure
+The paper reports IIV as `100 * omega` (Table 2 note: "%CV was calculated using
+the equation: %CV = 100 x sigma, where sigma represents the standard deviation
+of the random effect"), and the omega block entries as percent correlations. The
+supplement's Table S3 gives the same random effects as variances and covariances
+on the NONMEM scale; those are what the model file uses, and they reproduce
+Table 2 to rounding:
 
-The `$MODEL` block declares eight compartments and `$DES` gives the system
-transcribed into the model file without modification:
-
+```{r iiv-crosscheck, echo = FALSE}
+tibble::tribble(
+  ~Term,          ~`Table S3`, ~`Table 2 (%)`,
+  "omega2 CL",       0.104,   32.3,
+  "omega2 Vc",       0.168,   41.0,
+  "omega2 Vp",       0.0666,  25.8,
+  "omega2 ktr",      0.300,   54.8,
+  "sigma2 prop",     0.154,   39.3,
+  "sigma2 add",      0.200,    0.447
+) |>
+  mutate(`sqrt(Table S3)` = sqrt(`Table S3`)) |>
+  relocate(`sqrt(Table S3)`, .after = `Table S3`) |>
+  knitr::kable(
+    digits = 4,
+    caption = paste(
+      "Table S3 variances reproduce Table 2's IIV% (= 100 * omega),",
+      "%CV and additive SD exactly."
+    )
+  )
 ```
-COMP(1) DOSING AND TRANSIT 0   ->  depot        DADT(1) = -KTR*A(1)
-COMP(4) TRANSIT 1              ->  transit1     DADT(4) = KTR*A(1) - KTR*A(4)
-COMP(5) TRANSIT 2              ->  transit2     DADT(5) = KTR*A(4) - KTR*A(5)
-COMP(6) TRANSIT 3              ->  transit3     DADT(6) = KTR*A(5) - KTR*A(6)
-COMP(7) TRANSIT 4              ->  transit4     DADT(7) = KTR*A(6) - KTR*A(7)
-COMP(8) ABSORPTION             ->  transit5     DADT(8) = KTR*A(7) - KA*A(8)
-COMP(2) CENTRAL                ->  central      DADT(2) = KA*A(8) - CL*C2 - Q*C2 + Q*C3
-COMP(3) PERIPHERAL             ->  peripheral1  DADT(3) = Q*C2 - Q*C3
-```
 
-So the pre-systemic path is **five sequential `ktr` transfers followed by one
-`ka` transfer** -- six compartments in series -- even though the paper counts
-only the four explicitly labelled transit compartments ("n ~ 4" in Figure 2).
-The dose lands in `depot` (the control stream's "DOSING AND TRANSIT 0") and the
-terminal pre-systemic compartment is named `transit5`, following the house
-idiom in `Bukkems_2021_raltegravir` where the last transit compartment likewise
-drains into `central` at `ka` rather than `ktr`.
+```{r corr-crosscheck, echo = FALSE}
+sdv <- c(CL = sqrt(0.104), Vc = sqrt(0.168), Vp = sqrt(0.0666))
+tibble::tribble(
+  ~Pair,        ~Covariance, ~`Table 2 correlation (%)`,
+  "CL:Vc",       0.103,   77.4,
+  "CL:Vp",       0.0428,  54.1,
+  "Vc:Vp",       0.0717,  67.8
+) |>
+  mutate(
+    `Implied correlation (%)` = 100 * Covariance /
+      c(sdv[["CL"]] * sdv[["Vc"]], sdv[["CL"]] * sdv[["Vp"]],
+        sdv[["Vc"]] * sdv[["Vp"]]),
+    `Difference (pp)` = `Implied correlation (%)` - `Table 2 correlation (%)`
+  ) |>
+  knitr::kable(
+    digits = c(0, 4, 1, 1, 1),
+    caption = paste(
+      "Table S3 covariances vs Table 2 percent correlations. CL:Vc and Vc:Vp",
+      "agree; CL:Vp differs by 2.7 percentage points -- see Errata."
+    )
+  )
+```
 
 # Virtual cohort
 
-Original observed data are not publicly available. The simulations below use
-virtual cohorts whose body-weight distribution approximates the published
-demographics: median 75 kg (Table 2) with 5th and 95th percentiles of 61 kg and
-102 kg. Those two percentiles are recoverable exactly from Discussion paragraph
-3, which states that population CL/F runs "from 90.1% at 61 kg (5th percentile
-of analysis dataset body weight range) to 132% at 102 kg (95 percentile)" of the
-70 kg typical value -- and `(61/70)^0.75 = 0.902` and `(102/70)^0.75 = 1.326`
-reproduce those figures, which independently confirms both the 70 kg reference
-and the 0.75 exponent.
+Original observed data are not publicly available. The cohorts below approximate
+the published virtual populations.
 
-```{r cohort}
-set.seed(20250817)
-n_arm <- 200L
+Comisar 2025 generated its virtual pediatric population from the US CDC growth
+charts for age and body weight. The CDC LMS tables are not redistributed with
+this package, so the weight-for-age distribution here is instead **calibrated to
+the paper's own published summary of that virtual population** (Section 3.3:
+ages 6 to 11 years had median body weight 26.4 kg with 5th and 95th percentiles
+16.2 and 45.3 kg; ages 12 to <18 years had median 49.7 kg with percentiles 30.8
+and 69.9 kg). A monotone median-weight-for-age curve is scaled by one factor and
+given one within-age lognormal spread, both fitted to those six anchors; the fit
+is then asserted against them.
 
-# Log-normal body weight, median 75 kg, spread chosen between the two published
-# tail constraints, truncated to the observed 46-134 kg range (Table 2).
-#
-# A deterministic quantile grid is used rather than `rnorm` draws. The cohort
-# then reproduces the intended marginal distribution exactly -- in particular
-# its median is exactly 75 kg -- so none of the residual disagreement with
-# Table 4 is attributable to a lucky or unlucky weight sample. This is a
-# variance-reduction choice, not a tuning one: the grid is fixed by the
-# published median and spread, with no freedom to shift it.
-draw_wt <- function(n) {
-  pmin(pmax(stats::qlnorm(stats::ppoints(n), log(75), 0.156), 46), 134)
-}
+```{r cohort-calibration}
+set.seed(20251018)
 
-# Covariate defaults: fasted, normal-or-mild hepatic function, no azole
-# coadministration, ODT formulation, 75 mg.
-cov_default <- list(
-  FED = 0, HEPIMP_MOD = 0, HEPIMP_SEV = 0, CONMED_ITRACONAZOLE = 0,
-  CONMED_FLUCONAZOLE = 0, FORM_ODT = 1, FORM_CAPSULE = 0, DOSE = 75
+# CDC-shaped 50th-percentile weight-for-age (kg), ages 6-17, sex-averaged. Only
+# the SHAPE is used; the level and the within-age spread are fitted below.
+age_years <- 6:17
+wt_shape <- c(20.7, 23.0, 25.8, 29.0, 32.6, 37.0,
+              41.6, 47.0, 52.5, 57.0, 60.8, 63.5)
+
+# Published anchors from Comisar 2025 Section 3.3 (the target of the fit).
+anchors <- tibble::tribble(
+  ~group,     ~p05,  ~p50,  ~p95,
+  "6-11 y",   16.2,  26.4,  45.3,
+  "12-17 y",  30.8,  49.7,  69.9
 )
 
-# The scenario arms below are a PAIRED design: every arm is the same virtual
-# cohort re-dosed under different covariate settings, exactly as Table 4
-# applies its scenarios to one resampled population. Pairing is what makes the
-# between-arm exposure ratios exact rather than noisy, so the weight pool is
-# drawn ONCE and shared by every arm, and the simulation chunk resets the
-# rxode2 seed before each arm so the eta draws match subject for subject.
-wt_pool <- draw_wt(n_arm)
-
-# One arm as a self-contained event table. `id_offset` keeps subject IDs
-# disjoint across arms: rxSolve treats id as the subject key, so duplicated
-# ids in a single bind_rows()-ed event table would silently merge into one
-# subject receiving the summed dose. Note the weight lookup happens BEFORE the
-# offset is applied, so subject k of every arm carries the same body weight.
-make_arm <- function(label, dose_times, obs_times, covs = list(),
-                     id_offset = 0L, amt = NULL) {
-  cv <- utils::modifyList(cov_default, covs)
-  if (is.null(amt)) amt <- cv$DOSE
-  ev <- rxode2::et(amt = amt, time = dose_times, cmt = "depot") |>
-    rxode2::et(obs_times, cmt = "central") |>
-    rxode2::et(id = seq_len(n_arm)) |>
-    as.data.frame()
-  for (k in names(cv)) ev[[k]] <- cv[[k]]
-  ev$WT <- wt_pool[ev$id]
-  ev$id <- ev$id + id_offset
-  ev$arm <- label
-  ev
+# Pooled quantiles implied by (scale k, within-age sdlog s), assuming ages are
+# uniform over the group. Closed form: mixture of lognormals over age.
+pooled_q <- function(k, s, ages, probs = c(0.05, 0.50, 0.95)) {
+  med <- k * wt_shape[match(ages, age_years)]
+  grid <- as.vector(outer(med, exp(s * stats::qnorm(seq(0.001, 0.999, length.out = 400)))))
+  stats::quantile(grid, probs = probs, names = FALSE)
 }
 
-# Solve each arm on its own with the seed reset, so subject k of every arm
-# draws the identical eta vector. Solving one bind_rows()-ed table instead
-# would give each of the 1200 ids its own draw and make the arms independent
-# cohorts rather than a paired design.
-solve_arms <- function(arms) {
-  lapply(arms, function(ev) {
-    rxode2::rxSetSeed(4242)
-    rxode2::rxSolve(mod, events = ev, keep = c("arm", "WT")) |> as.data.frame()
-  }) |>
-    dplyr::bind_rows()
-}
+# Fit in two stages rather than jointly. The by-age median exposure depends on
+# the median weight curve, so the scale is fitted to the two published MEDIANS
+# alone; the within-age spread is then fitted to the four published 5th/95th
+# percentiles. A joint fit trades median accuracy for tail accuracy and pulls
+# every age-group median down by several percent.
+k_fit <- stats::optimize(
+  function(k) {
+    sum((log(c(pooled_q(k, 0.2, 6:11, 0.5), pooled_q(k, 0.2, 12:17, 0.5))) -
+           log(anchors$p50))^2)
+  },
+  c(0.7, 1.3)
+)$minimum
+
+s_fit <- stats::optimize(
+  function(s) {
+    sum((log(c(pooled_q(k_fit, s, 6:11, c(0.05, 0.95)),
+               pooled_q(k_fit, s, 12:17, c(0.05, 0.95)))) -
+           log(c(anchors$p05[1], anchors$p95[1],
+                 anchors$p05[2], anchors$p95[2])))^2)
+  },
+  c(0.05, 0.5)
+)$minimum
+
+c(scale = k_fit, sdlog = s_fit)
 ```
 
-## Steady-state every-other-day arms (Table 4 scenarios)
+```{r cohort-calibration-check, echo = FALSE}
+chk <- bind_rows(
+  tibble(group = "6-11 y",
+         stat = c("5th", "Median", "95th"),
+         Fitted = pooled_q(k_fit, s_fit, 6:11),
+         Published = unlist(anchors[1, c("p05", "p50", "p95")])),
+  tibble(group = "12-17 y",
+         stat = c("5th", "Median", "95th"),
+         Fitted = pooled_q(k_fit, s_fit, 12:17),
+         Published = unlist(anchors[2, c("p05", "p50", "p95")]))
+) |>
+  mutate(`Difference (%)` = 100 * (Fitted - Published) / Published)
 
-Table 4 reports steady-state exposure after 75 mg ODT every other day (EOD,
-`tau` = 48 h). Six EOD doses are given and the final 48 h interval is analysed;
-with a terminal half-life near 10 h against a 48 h interval, steady state is
-reached comfortably.
-
-```{r cohort-ss}
-tau <- 48
-dose_times_ss <- seq(0, by = tau, length.out = 6L)
-t_ss <- max(dose_times_ss)
-obs_ss <- t_ss + c(seq(0, 8, by = 0.25), 10, 12, 16, 20, 24, 30, 36, 42, 48)
-
-scenarios <- tibble::tribble(
-  ~arm,                          ~covs,
-  "Rimegepant ODT 75mg, fasted", list(),
-  "Fed",                         list(FED = 1),
-  "Severe hepatic impairment",   list(HEPIMP_SEV = 1),
-  "Moderate hepatic impairment", list(HEPIMP_MOD = 1),
-  "Itraconazole DDI",            list(CONMED_ITRACONAZOLE = 1),
-  "Fluconazole DDI",             list(CONMED_FLUCONAZOLE = 1)
+# Fail loudly if the calibration drifts. The two medians -- the statistics the
+# by-age exposure comparison actually depends on -- are held to 3%; the 5th and
+# 95th percentiles to 12%, which is as close as a single-scale, single-spread
+# lognormal proxy can get to the CDC LMS distribution's age-dependent skew.
+stopifnot(
+  nrow(chk) == 6L,
+  all(abs(chk$`Difference (%)`[chk$stat == "Median"]) < 3),
+  all(abs(chk$`Difference (%)`) < 12)
 )
 
-arms_ss <- lapply(seq_len(nrow(scenarios)), function(i) {
-  make_arm(
-    label = scenarios$arm[[i]], dose_times = dose_times_ss,
-    obs_times = obs_ss, covs = scenarios$covs[[i]],
-    id_offset = (i - 1L) * n_arm
+chk |>
+  rename("Age group" = group, "Statistic" = stat, "Fitted (kg)" = Fitted,
+         "Published (kg)" = Published) |>
+  knitr::kable(
+    digits = 1,
+    caption = paste(
+      "Calibrated weight-for-age cohort vs the virtual-population summary",
+      "published in Comisar 2025 Section 3.3."
+    )
   )
-})
-events_ss <- dplyr::bind_rows(arms_ss)
-
-# Cheap regression guards. The first catches the duplicate-id merge described
-# above; the second confirms every arm really is a distinct set of subjects;
-# the third confirms the paired design, i.e. that subject k carries the same
-# body weight in every arm.
-stopifnot(!anyDuplicated(events_ss[, c("id", "time", "evid")]))
-stopifnot(nrow(dplyr::distinct(events_ss, id)) == nrow(scenarios) * n_arm)
-stopifnot(vapply(arms_ss, function(ev) {
-  isTRUE(all.equal(unique(ev[, c("id", "WT")])$WT, wt_pool))
-}, logical(1)))
-stopifnot(isTRUE(all.equal(stats::median(wt_pool), 75, tolerance = 1e-6)))
 ```
 
-The same six scenarios are also built as **typical-value** arms: one subject per
-arm at the population median weight of 75 kg, with all random effects zeroed.
-These are the primary comparator for Table 4. For a model whose parameters are
-log-normally distributed, the population median of a quantity that is monotone
-in those parameters is the typical-value prediction -- and steady-state AUC over
-a dosing interval is exactly `Dose * F1 / CL`, hence monotone in CL alone. The
-typical-value profile is therefore the theoretically correct match for a
-published population median, and unlike a 200-subject cohort median it carries
-no Monte Carlo error at all (at 200 per arm the median exposure has a standard
-error near 2.8%, which is the same order as the discrepancy being measured).
-A finer observation grid is affordable here because there are only six profiles.
+```{r cohort-builders}
+# Per-arm cohort sizes (skill cap: never exceed 200). The larger size is used
+# for the arms whose medians are scored against published ratios; the smaller
+# one for the illustrative / near-deterministic arms (a covariate that simply
+# multiplies CL moves the median almost exactly, so extra subjects buy nothing).
+N_ARM <- 200L
+N_SMALL <- 100L
 
-```{r cohort-ss-typical}
-obs_ss_typ <- t_ss + c(seq(0, 12, by = 0.05), seq(13, 48, by = 1))
+# Dense early grid to capture Cmax/Tmax, coarsening through the terminal phase
+# for lambda-z. 48 h is ~4.4 effective half-lives, so aucinf.obs extrapolates
+# only a few percent.
+OBS_TO <- 48
+obs_grid <- function(from, to) {
+  rel <- c(seq(0, 6, by = 0.1), seq(6.5, 12, by = 0.5), seq(14, to - from, by = 2))
+  sort(unique(from + rel[rel <= (to - from)]))
+}
 
-# Built as a single six-subject event table (one id per scenario) rather than
-# six one-subject tables: rxSolve omits the `id` column entirely when a solve
-# has only one subject, which downstream PKNCA grouping needs.
-events_ss_typ <- lapply(seq_len(nrow(scenarios)), function(i) {
-  cv <- utils::modifyList(cov_default, scenarios$covs[[i]])
-  ev <- rxode2::et(amt = cv$DOSE, time = dose_times_ss, cmt = "depot") |>
-    rxode2::et(obs_ss_typ, cmt = "central") |>
-    as.data.frame()
-  for (k in names(cv)) ev[[k]] <- cv[[k]]
-  ev$WT <- 75
-  ev$id <- i
-  ev$arm <- scenarios$arm[[i]]
-  ev
-}) |>
-  dplyr::bind_rows()
-
-stopifnot(nrow(dplyr::distinct(events_ss_typ, id)) == nrow(scenarios))
+# Build one arm. `t_doses` are the dosing times; observations run over the LAST
+# dosing interval so that a multi-dose arm is observed at steady state.
+make_arm <- function(n, wt, dose, low, arm, t_doses = 0, obs_from = 0,
+                     obs_to = OBS_TO, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  dosing <- tidyr::expand_grid(id = ids, time = t_doses) |>
+    mutate(evid = 1L, amt = dose, cmt = "depot")
+  obs <- tidyr::expand_grid(id = ids, time = obs_grid(obs_from, obs_to)) |>
+    mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  bind_rows(dosing, obs) |>
+    arrange(id, time, desc(evid)) |>
+    mutate(
+      arm = arm,
+      WT = wt[match(id, ids)],
+      FED = 0, FORM_ODT = 1, FORM_CAPSULE = 0,
+      HEPIMP_MOD = 0, HEPIMP_SEV = 0,
+      CONMED_FLUCONAZOLE = 0, CONMED_ITRACONAZOLE = 0,
+      DOSE_RIMEGEPANT_MG = dose, DOSE_LOW = low
+    )
+}
 ```
 
-## Single-dose dose-ranging arms
+Observation rows use `cmt = "central"` (the ODE state), never `cmt = "Cc"`;
+`Cc` is an algebraic observable and referencing it as a compartment would
+renumber every compartment slot.
 
-```{r cohort-dose}
-doses <- c(10, 25, 75, 150)
-obs_sd <- c(seq(0, 8, by = 0.25), 10, 12, 16, 24, 36, 48, 72, 96)
+The dose bands are those of Comisar 2025 Table 3. The adult reference arm is
+75 mg ODT fasted at the analysis population's adult weight distribution
+(Table 1: median 73.6 kg, range 45.5 to 134).
 
-arms_dose <- lapply(seq_along(doses), function(i) {
-  make_arm(
-    label = paste0(doses[i], " mg"), dose_times = 0, obs_times = obs_sd,
-    covs = list(DOSE = doses[i]), id_offset = 2000L + (i - 1L) * n_arm
+```{r cohorts}
+bands <- tibble::tribble(
+  ~lo, ~hi, ~dose,
+   15,  20,   35,
+   20,  25,   35,
+   25,  30,   50,
+   30,  35,   50,
+   35,  40,   50,
+   40,  45,   75,
+   45,  50,   75,
+   50,  55,   75,
+   55,  60,   75,
+   60,  65,   75,
+   65,  75,   75
+) |>
+  mutate(
+    arm = sprintf("%g-%g kg | %g mg", lo, hi, dose),
+    low = as.numeric(dose %in% c(10, 25))
   )
-})
-events_dose <- dplyr::bind_rows(arms_dose)
 
-stopifnot(!anyDuplicated(events_dose[, c("id", "time", "evid")]))
+adult_wt <- pmin(pmax(rlnorm(N_ARM, log(73.6), 0.17), 45.5), 134)
+
+# --- Single dose ------------------------------------------------------------
+single <- bind_rows(
+  lapply(seq_len(nrow(bands)), function(i) {
+    make_arm(N_ARM, runif(N_ARM, bands$lo[i], bands$hi[i]), bands$dose[i],
+             bands$low[i], bands$arm[i], t_doses = 0, obs_to = OBS_TO,
+             id_offset = (i - 1L) * N_ARM)
+  })
+) |>
+  bind_rows(
+    make_arm(N_ARM, adult_wt, 75, 0, "Adult | 75 mg", t_doses = 0, obs_to = OBS_TO,
+             id_offset = nrow(bands) * N_ARM)
+  )
+
+# --- Every-other-day dosing to steady state ---------------------------------
+# 5 doses at 48 h intervals; with a ~11 h half-life this is far past steady
+# state. Observations cover the final 0-48 h interval.
+TAU <- 48
+t_eod <- seq(0, by = TAU, length.out = 5)
+t_ss <- max(t_eod)
+OFF <- 1e5L  # keep EOD ids disjoint from the single-dose ids
+
+eod <- bind_rows(
+  lapply(seq_len(nrow(bands)), function(i) {
+    make_arm(N_ARM, runif(N_ARM, bands$lo[i], bands$hi[i]), bands$dose[i],
+             bands$low[i], bands$arm[i], t_doses = t_eod,
+             obs_from = t_ss, obs_to = t_ss + TAU,
+             id_offset = OFF + (i - 1L) * N_ARM)
+  })
+) |>
+  bind_rows(
+    make_arm(N_ARM, adult_wt, 75, 0, "Adult | 75 mg", t_doses = t_eod,
+             obs_from = t_ss, obs_to = t_ss + TAU,
+             id_offset = OFF + nrow(bands) * N_ARM)
+  )
+
+# Disjoint-id guard (duplicate ids across arms silently merge into one subject).
+stopifnot(
+  !anyDuplicated(unique(single[, c("id", "time", "evid")])),
+  !anyDuplicated(unique(eod[, c("id", "time", "evid")])),
+  length(intersect(single$id, eod$id)) == 0L,
+  n_distinct(single$id) == (nrow(bands) + 1L) * N_ARM
+)
 ```
 
 # Simulation
 
+Comisar 2025 Section 2.4 states that the dose-selection simulations "included
+inter-individual variability, but did not include parameter uncertainty or
+random unexplained variability". `Cc` is the individual prediction and carries
+no residual error, so simulating with IIV and reading `Cc` matches the paper.
+
 ```{r simulate}
 mod <- readModelDb("Comisar_2025_rimegepant")
-mod_typical <- rxode2::zeroRe(mod)
 
-sim_ss <- solve_arms(arms_ss)
-sim_dose <- solve_arms(arms_dose) |>
-  dplyr::mutate(arm = factor(arm, levels = paste0(doses, " mg")))
+sim_single <- rxode2::rxSolve(mod, events = single, keep = c("arm", "WT"),
+                              addDosing = FALSE, returnType = "data.frame")
+sim_eod <- rxode2::rxSolve(mod, events = eod, keep = c("arm", "WT"),
+                           addDosing = FALSE, returnType = "data.frame")
 
-sim_ss_typ <- rxode2::rxSolve(mod_typical, events = events_ss_typ,
-                              keep = c("arm", "WT")) |>
-  as.data.frame()
+stopifnot(
+  n_distinct(sim_single$id) == n_distinct(single$id),
+  n_distinct(sim_eod$id) == n_distinct(eod$id),
+  all(is.finite(sim_single$Cc)), all(is.finite(sim_eod$Cc))
+)
 ```
 
-# Structural checks on the typical-value profile
+# Structural identity check
 
-Before comparing against the published table, three deterministic checks on the
-typical-value profile (all random effects zeroed, `WT` = 75 kg) confirm the
-model is internally consistent. Because these carry no Monte Carlo noise they
-are the sharpest gate available.
+For a linear model with first-order input, `AUC(0-inf)` after a single dose is
+exactly `F1 * Dose / CL` for **every** subject. Both `fdepot` and `cl` come back
+as columns from `rxSolve`, so this is checked per subject with no tolerance on a
+population summary -- a far stricter test than comparing medians.
 
-The first is a closed-form identity: for a linear model, steady-state AUC over a
-dosing interval is exactly `Dose * F1 / CL`, independent of the entire
-absorption chain. It must therefore agree with both the numerically integrated
-steady-state AUC and the single-dose AUC extrapolated to infinity.
-
-```{r structural-checks}
-sim_typ_1dose <- rxode2::rxSolve(
-  mod_typical,
-  events = rxode2::et(amt = 75, time = 0, cmt = "depot") |>
-    rxode2::et(seq(0, 96, by = 0.05), cmt = "central") |>
-    as.data.frame() |>
-    (\(d) {
-      for (k in names(cov_default)) d[[k]] <- cov_default[[k]]
-      d$WT <- 75
-      d
-    })()
-) |>
-  as.data.frame() |>
-  dplyr::filter(!is.na(Cc))
-
-trap <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
-
-cl_typ <- 24.1 * (75 / 70)^0.75
-f1_typ <- (75 / 10)^0.191
-auc_closed <- 1000 * 75 * f1_typ / cl_typ
-
-term <- dplyr::filter(sim_typ_1dose, time >= 48)
-thalf <- log(2) / -stats::coef(stats::lm(log(Cc) ~ time, term))[["time"]]
-
-tibble::tribble(
-  ~Check, ~Value, ~Reference,
-  "CL/F at 75 kg (L/h)", round(cl_typ, 2), "24.1 * (75/70)^0.75",
-  "F1 at 75 mg (relative to 10 mg)", round(f1_typ, 3), "(75/10)^0.191",
-  "Closed-form Dose*F1/CL (ng*h/mL)", round(auc_closed), "analytic identity",
-  "Single-dose AUC to 96 h (ng*h/mL)", round(trap(sim_typ_1dose$time, sim_typ_1dose$Cc)),
-  "should match the closed form",
-  "Single-dose Cmax (ng/mL)", round(max(sim_typ_1dose$Cc), 1), "published median 677",
-  "Single-dose Tmax (h)", sim_typ_1dose$time[which.max(sim_typ_1dose$Cc)],
-  "label Tmax about 1.5 h",
-  "Terminal half-life, 48-96 h (h)", round(thalf, 2),
-  "analytic beta half-life 10.06 h; label about 11 h"
-) |>
-  knitr::kable(caption = "Deterministic structural checks on the typical-value profile.")
-```
-
-The allometric term is validated exactly against the paper's own text:
-
-```{r allometry-check}
-tibble::tibble(
-  `Body weight (kg)` = c(61, 70, 102),
-  `CL/F vs 70 kg` = sprintf("%.1f%%", 100 * (c(61, 70, 102) / 70)^0.75),
-  `Vc/F vs 70 kg` = sprintf("%.1f%%", 100 * (c(61, 70, 102) / 70)^1.0),
-  `Published (Discussion para 3)` = c("90.1% CL, 87.1% Vc", "100% (reference)",
-                                      "132% CL, 146% Vc")
-) |>
-  knitr::kable(caption = "Allometric scaling reproduces the published percentages exactly.")
-```
-
-# Replicate published figures
-
-## Figure S2 -- dose dependence of relative bioavailability
-
-Relative bioavailability is a pure power function of dose anchored at 1 for a
-10 mg dose, so Figure S2 is reproduced deterministically with no simulation.
-This is the term that generates rimegepant's greater-than-dose-proportional
-exposure, attributed to dose-dependent autoinhibition of CYP3A-mediated
-first-pass metabolism (Discussion paragraph 7).
-
-```{r figure-S2}
-tibble::tibble(dose = seq(10, 150, by = 1)) |>
-  dplyr::mutate(
-    F1_vs_10mg = (dose / 10)^0.191,
-    F1_vs_75mg = F1_vs_10mg / (75 / 10)^0.191
+```{r identity-check}
+ident <- sim_single |>
+  group_by(id, arm) |>
+  summarise(
+    # trapezoid over the observed grid, plus the terminal tail extrapolated
+    # with the EXACT beta of the two-compartment system (not CL/Vc, which is
+    # the faster micro-constant k10 and would truncate the tail).
+    auc_num = {
+      k10 <- first(cl) / first(vc)
+      k12 <- first(q) / first(vc)
+      k21 <- first(q) / first(vp)
+      s <- k10 + k12 + k21
+      beta <- 0.5 * (s - sqrt(s^2 - 4 * k10 * k21))
+      sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2) + tail(Cc, 1) / beta
+    },
+    auc_analytic = first(fdepot) * first(DOSE_RIMEGEPANT_MG) * 1000 / first(cl),
+    .groups = "drop"
   ) |>
-  ggplot(aes(dose, F1_vs_75mg)) +
-  geom_line(linewidth = 0.9) +
-  geom_hline(yintercept = 1, linetype = "dashed", colour = "grey50") +
-  geom_point(
-    data = tibble::tibble(dose = c(10, 25, 75, 150)) |>
-      dplyr::mutate(F1_vs_75mg = (dose / 10)^0.191 / (75 / 10)^0.191),
-    size = 2.4
-  ) +
-  scale_x_continuous(breaks = c(10, 25, 50, 75, 100, 125, 150)) +
-  labs(
-    x = "Rimegepant dose (mg)",
-    y = "Relative bioavailability (75 mg = 1)",
-    title = "Figure S2 -- dose dependence of rimegepant bioavailability",
-    caption = "Replicates Figure S2 of Comisar 2025. Points mark the four studied dose levels."
-  )
-```
+  mutate(rel_err_pct = 100 * (auc_num - auc_analytic) / auc_analytic)
 
-## Figure 1 -- concentration-time profiles by dose
+# Only trapezoid discretisation error remains, so require every subject within
+# 1%. This is a per-subject identity, not a population summary -- there is no
+# Monte Carlo noise to hide behind.
+stopifnot(nrow(ident) == (nrow(bands) + 1L) * N_ARM,
+          max(abs(ident$rel_err_pct)) < 1)
 
-Figure 1 of the paper is a semilogarithmic scatterplot of observed
-concentrations against time from the last dose, stratified by dose. The
-simulated analogue below shows the median and 5th-95th percentile band per dose
-level after a single ODT dose.
-
-```{r figure-1}
-sim_dose |>
-  dplyr::filter(!is.na(Cc), time >= 0.25) |>
-  dplyr::group_by(arm, time) |>
-  dplyr::summarise(
-    Q05 = stats::quantile(Cc, 0.05), Q50 = stats::median(Cc),
-    Q95 = stats::quantile(Cc, 0.95), .groups = "drop"
-  ) |>
-  ggplot(aes(time, Q50, colour = arm, fill = arm)) +
-  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.18, colour = NA) +
-  geom_line(linewidth = 0.8) +
-  geom_hline(yintercept = 0.5, linetype = "dotted", colour = "grey40") +
-  scale_y_log10() +
-  labs(
-    x = "Time after dose (h)", y = "Rimegepant plasma concentration (ng/mL)",
-    colour = "Dose", fill = "Dose",
-    title = "Figure 1 -- simulated concentration-time profiles by dose",
-    caption = paste(
-      "Analogue of Figure 1 of Comisar 2025 (single 75 mg ODT dose per arm,",
-      "n = 200 each). Dotted line marks the 0.5 ng/mL LLOQ."
-    )
-  )
-```
-
-## Figure 3 -- covariate effects as exposure ratios
-
-Figure 3 of the paper is a forest plot of covariate effects. Because
-steady-state AUC over a dosing interval is exactly `Dose * F1 / CL`, each
-covariate's effect on AUC has a closed form: `1 / (1 + theta)` for the clearance
-effects and `(1 + theta)` for the bioavailability effect. The simulated ratios
-below are computed from the cohort and compared against those analytic values.
-
-```{r figure-3}
-auc_ss <- sim_ss |>
-  dplyr::filter(!is.na(Cc), time >= t_ss) |>
-  dplyr::group_by(arm, id) |>
-  dplyr::summarise(auc = trap(time, Cc), cmax = max(Cc), .groups = "drop")
-
-ref_arm <- "Rimegepant ODT 75mg, fasted"
-auc_med <- auc_ss |>
-  dplyr::group_by(arm) |>
-  dplyr::summarise(auc = stats::median(auc), cmax = stats::median(cmax), .groups = "drop")
-auc_ref <- auc_med$auc[auc_med$arm == ref_arm]
-
-forest <- tibble::tribble(
-  ~arm,                          ~analytic,
-  "Rimegepant ODT 75mg, fasted", 1,
-  "Fed",                         1 - 0.315,
-  "Moderate hepatic impairment", 1 / (1 - 0.229),
-  "Severe hepatic impairment",   1 / (1 - 0.423),
-  "Fluconazole DDI",             1 / (1 - 0.427),
-  "Itraconazole DDI",            1 / (1 - 0.743)
+tibble(
+  `Subjects checked` = nrow(ident),
+  `Max |relative error| (%)` = max(abs(ident$rel_err_pct)),
+  `Median relative error (%)` = median(ident$rel_err_pct)
 ) |>
-  dplyr::left_join(auc_med, by = "arm") |>
-  dplyr::mutate(
-    simulated = auc / auc_ref,
-    `Deviation (%)` = 100 * (simulated / analytic - 1)
-  )
-
-forest |>
-  dplyr::select(arm, analytic, simulated, `Deviation (%)`) |>
-  dplyr::rename(
-    "Scenario" = arm, "Analytic AUCtau ratio" = analytic,
-    "Simulated AUCtau ratio" = simulated
-  ) |>
   knitr::kable(
-    digits = 4,
-    caption = paste(
-      "Figure 3 analogue: steady-state AUCtau ratios versus the fasted",
-      "reference. Simulated ratios reproduce the analytic covariate factors to",
-      "within 0.25%, confirming every covariate effect is encoded correctly."
-    )
-  )
-```
-
-```{r figure-3-plot}
-forest |>
-  dplyr::filter(arm != ref_arm) |>
-  ggplot(aes(simulated, stats::reorder(arm, simulated))) +
-  geom_vline(xintercept = 1, linetype = "dashed", colour = "grey50") +
-  geom_point(size = 3) +
-  geom_point(aes(x = analytic), shape = 4, size = 3.4, colour = "firebrick") +
-  scale_x_log10() +
-  labs(
-    x = "Steady-state AUCtau ratio versus fasted 75 mg ODT", y = NULL,
-    title = "Figure 3 -- covariate effects on rimegepant exposure",
-    caption = paste(
-      "Replicates Figure 3 of Comisar 2025. Filled circles are simulated;",
-      "red crosses are the analytic 1/(1+theta) or (1+theta) factors."
-    )
+    digits = 3,
+    caption = "Per-subject AUC(0-inf) = F1 * Dose / CL identity."
   )
 ```
 
 # PKNCA validation
 
-NCA is run on the final 48 h dosing interval at steady state (PKNCA recipe 3),
-grouped by scenario so the per-scenario values can be compared against Table 4.
-The same routine is applied to the typical-value arms (the primary comparator)
-and to the stochastic cohort (which carries the variability).
-
-```{r pknca}
-intervals <- data.frame(
-  start = t_ss, end = t_ss + tau,
-  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
-)
-
-run_nca <- function(sim, events) {
-  sim_nca <- sim |>
-    dplyr::filter(!is.na(Cc)) |>
-    dplyr::select(id, time, Cc, arm)
-
-  # Guarantee a record at the interval start for every subject, so PKNCA never
-  # has to extrapolate the AUC window back before the first measurement.
-  sim_nca <- dplyr::bind_rows(
-    sim_nca,
-    sim_nca |> dplyr::distinct(id, arm) |> dplyr::mutate(time = t_ss, Cc = 0)
+```{r pknca-single}
+nca_of <- function(sim, ev, interval) {
+  conc <- sim |>
+    filter(!is.na(Cc)) |>
+    select(id, time, Cc, arm)
+  # Guarantee a record at the interval start (pre-dose Cc = 0 for the single
+  # dose arms); PKNCA needs it to anchor AUC.
+  conc <- bind_rows(
+    conc,
+    conc |> distinct(id, arm) |> mutate(time = interval$start, Cc = 0)
   ) |>
-    dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
-    dplyr::arrange(id, arm, time)
+    distinct(id, arm, time, .keep_all = TRUE) |>
+    arrange(id, arm, time)
 
-  conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id,
-                               concu = "ng/mL", timeu = "h")
+  dose_df <- ev |>
+    filter(evid == 1) |>
+    select(id, time, amt, arm)
 
-  dose_df <- events |>
-    dplyr::filter(evid == 1, time == t_ss) |>
-    dplyr::select(id, time, amt, arm)
-
-  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id,
-                               route = "extravascular", doseu = "mg")
-
-  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+  co <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + id,
+                         concu = "ng/mL", timeu = "h")
+  do <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+  PKNCA::pk.nca(PKNCA::PKNCAdata(co, do, intervals = interval))
 }
 
-nca_typ <- run_nca(sim_ss_typ, events_ss_typ)
-nca_res <- run_nca(sim_ss, events_ss)
-```
-
-```{r pknca-summary}
-as.data.frame(nca_typ$result) |>
-  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cmin")) |>
-  dplyr::select(arm, PPTESTCD, PPORRES) |>
-  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
-  dplyr::rename(
-    "Scenario" = arm, "Cmax (ng/mL)" = cmax, "Cmin (ng/mL)" = cmin,
-    "Tmax (h)" = tmax, "AUCtau (ng*h/mL)" = auclast
-  ) |>
-  knitr::kable(digits = 3, caption = "Typical-value steady-state NCA by scenario (WT = 75 kg, random effects zeroed).")
-```
-
-The stochastic cohort gives the variability around those typical values, which
-is what Table 4's parenthetical 5th and 95th percentiles describe.
-
-```{r pknca-cohort}
-cohort_nca <- as.data.frame(nca_res$result) |>
-  dplyr::filter(PPTESTCD %in% c("cmax", "auclast"))
-
-cohort_nca |>
-  dplyr::group_by(arm, PPTESTCD) |>
-  dplyr::summarise(
-    summary = sprintf("%.0f (%.0f, %.0f)", stats::median(PPORRES),
-                      stats::quantile(PPORRES, 0.05),
-                      stats::quantile(PPORRES, 0.95)),
-    .groups = "drop"
-  ) |>
-  tidyr::pivot_wider(names_from = PPTESTCD, values_from = summary) |>
-  dplyr::left_join(
-    tibble::tribble(
-      ~arm,                          ~cmax_pub,          ~auc_pub,
-      "Rimegepant ODT 75mg, fasted", "677 (335, 1430)",  "4160 (2080, 8710)",
-      "Fed",                         "353 (169, 839)",   "2780 (1240, 6450)",
-      "Severe hepatic impairment",   "747 (370, 1550)",  "7260 (3790, 14700)",
-      "Moderate hepatic impairment", "716 (351, 1480)",  "5430 (2760, 11100)",
-      "Itraconazole DDI",            "882 (468, 1820)",  "16200 (9210, 32500)",
-      "Fluconazole DDI",             "748 (371, 1550)",  "7310 (3820, 14800)"
-    ),
-    by = "arm"
-  ) |>
-  dplyr::select(arm, cmax, cmax_pub, auclast, auc_pub) |>
-  dplyr::rename(
-    "Scenario" = arm,
-    "Cmax simulated" = cmax, "Cmax published" = cmax_pub,
-    "AUCtau simulated" = auclast, "AUCtau published" = auc_pub
-  ) |>
-  knitr::kable(
-    caption = paste(
-      "Cohort median (5th, 95th percentile) against Comisar 2025 Table 4,",
-      "n = 200 per arm. Published values are medians of 1000 resampled",
-      "participants."
-    )
-  )
-```
-
-The simulated spread is narrower than the published spread: the 95th-to-5th
-percentile ratio for fasted AUCtau is about 3.3 here against 4.2 in Table 4.
-That is expected, because Table 4 resampled the whole analysis dataset, in
-which roughly 6% of subjects carry itraconazole and 7% fluconazole and 3.4%
-moderate or severe hepatic impairment. Those subjects have 1.3- to 3.9-fold
-higher exposure and inflate the upper tail of the pooled distribution, whereas
-each arm simulated here holds its covariates fixed at the scenario definition.
-
-## Comparison against published NCA
-
-```{r nca_compare}
-published <- tibble::tribble(
-  ~arm,                          ~cmax, ~auclast,
-  "Rimegepant ODT 75mg, fasted", 677,   4160,
-  "Fed",                         353,   2780,
-  "Severe hepatic impairment",   747,   7260,
-  "Moderate hepatic impairment", 716,   5430,
-  "Itraconazole DDI",            882,   16200,
-  "Fluconazole DDI",             748,   7310
+res_single <- nca_of(
+  sim_single, single,
+  data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+             aucinf.obs = TRUE)
 )
+```
 
-cmp <- nlmixr2lib::ncaComparisonTable(
-  simulated = nca_typ,
-  reference = published,
-  by = "arm",
-  params = c("cmax", "auclast"),
+```{r pknca-eod}
+# Steady state: the final 0-48 h EOD interval. Observations already start at
+# t_ss, so the interval start already has a record and no zero row is added.
+res_eod <- local({
+  conc <- sim_eod |> filter(!is.na(Cc)) |> select(id, time, Cc, arm)
+  dose_df <- eod |> filter(evid == 1) |> select(id, time, amt, arm)
+  co <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + id,
+                         concu = "ng/mL", timeu = "h")
+  do <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    co, do,
+    intervals = data.frame(start = t_ss, end = t_ss + TAU,
+                           cmax = TRUE, tmax = TRUE, auclast = TRUE)
+  ))
+})
+```
+
+## Adult exposure cross-check against the upstream adult model
+
+Comisar 2025 publishes no absolute exposure values -- only pediatric/adult
+ratios. The upstream adult-only analysis does (CPT:PSP Table 4: 75 mg ODT
+fasted EOD steady state, median `Cmax` 677 ng/mL and `AUCtau` 4160 ng*h/mL), so
+that table is used here as an external check on the adult arm. The two models
+differ slightly (CL/F 25.2 vs 24.1 L/h; estimated vs fixed allometric
+exponents), so exact agreement is not expected.
+
+```{r adult-crosscheck}
+adult_ss <- as.data.frame(res_eod$result) |>
+  filter(arm == "Adult | 75 mg", PPTESTCD %in% c("cmax", "auclast")) |>
+  group_by(PPTESTCD) |>
+  summarise(Simulated = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = Simulated)
+
+cmp_adult <- nlmixr2lib::ncaComparisonTable(
+  simulated = adult_ss,
+  reference = tibble::tibble(cmax = 677, auclast = 4160),
   units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
   tolerance_pct = 20
 )
 
 knitr::kable(
-  cmp,
+  cmp_adult,
   caption = paste(
-    "Simulated versus published steady-state exposure (Comisar 2025 Table 4,",
-    "75 mg ODT every other day). * differs from the reference by more than 20%."
-  ),
-  align = c("l", "l", "r", "r", "r")
+    "Adult 75 mg ODT EOD steady state vs the UPSTREAM adult-only model",
+    "(Comisar 2025 CPT:PSP Table 4). * differs by >20%."
+  )
 )
-attr(cmp, "footnote")
 ```
 
-The simulated values run consistently **above** the published medians. Outside
-the fed arm the offset is 3.7-4.4% on AUCtau and 4.8-8.6% on Cmax; the fed arm
-is higher on both (7.0% and 21.6%) and is discussed separately below. That
-offset is a property of the published simulation rather than of the packaged
-model, and it is quantifiable: substituting the
-paper's own Table 3 point estimates into the exact identity
-`AUCtau = Dose * F1 / CL` at the population median weight of 75 kg gives
-`r sprintf("%.0f", 1000 * 75 * (75/10)^0.191 / (24.1 * (75/70)^0.75))` ng*h/mL,
-against the 4160 ng*h/mL reported in Table 4. The paper's own reported median is
-therefore about 4% below what its own parameter estimates imply, before any
-simulation is involved. Two contributors explain this:
+## Replicating Table 3: pediatric / adult exposure ratios
 
-* **Weight resampling.** Table 4 resampled 1000 virtual participants from the
-  analysis dataset rather than fixing weight at the median. Because the weight
-  distribution is right-skewed (median 75 kg, range to 134 kg), the resampled
-  median clearance exceeds the clearance at the median weight. Reconciling the
-  reported 4160 ng*h/mL exactly requires a resampled median weight near 79 kg,
-  which is well inside the plausible range for a 1000-draw resample of this
-  population.
-* **Monte Carlo noise in the published medians.** The published table is
-  internally inconsistent by a similar margin. Since AUCtau is exactly
-  proportional to F1, the published fed-to-fasted AUCtau ratio must equal
-  `1 - 0.315 = 0.685`; Table 4 gives `2780 / 4160 = 0.668`, a 2.5% discrepancy
-  attributable to the median of a 1000-subject draw.
+This is the paper's headline result and its own answer key: 44 published ratios
+of median predicted pediatric to median predicted adult exposure, across 11
+weight bands, for single-dose (`Cmax`, `AUC0-inf`) and EOD steady-state
+(`Cmax,ss`, `AUC0-48h,ss`) exposure.
 
-The one row flagged at more than 20% is **Cmax in the fed arm**. Fed status
-slows `ktr` by 70.6%, making the fed peak the flattest and latest in the table
-(simulated Tmax near 2.8 h against 1.3 h fasted), so fed Cmax is the quantity in
-Table 4 most sensitive to both the absorption submodel and the resolution of the
-sampling grid on which the published Cmax was read. The fed arm is also the
-thinnest slice of the dataset -- all fed records come from the single 31-subject
-crossover study BHV3000-112 -- and the fed AUCtau carries the largest offset in
-the table as well. No parameter was tuned; the deviation is reported as found.
+```{r table3-ratios}
+med_by_arm <- function(res, codes) {
+  as.data.frame(res$result) |>
+    filter(PPTESTCD %in% codes) |>
+    group_by(arm, PPTESTCD) |>
+    summarise(value = median(PPORRES), .groups = "drop")
+}
 
-A useful robustness note falls out of the structural work: the number of
-compartments in the absorption chain is only weakly identified here. Sweeping
-the chain from two to eight sequential `ktr` transfers moves steady-state Cmax
-by only 2.7% and leaves AUCtau exactly unchanged, because `ka` (3.86 1/h) is
-slower than the ODT `ktr` (8.23 * 1.355 = 11.15 1/h) and is therefore
-rate-limiting. This is the paper's own argument for why the faster ODT and
-capsule `ktr` values are not clinically relevant (Discussion paragraph 8), and
-it means the six-compartment chain transcribed from `$DES` is a robust choice
-rather than a delicately tuned one.
+ratio_table <- function(res, codes) {
+  m <- med_by_arm(res, codes)
+  ref <- m |> filter(arm == "Adult | 75 mg") |> select(PPTESTCD, ref = value)
+  m |>
+    filter(arm != "Adult | 75 mg") |>
+    left_join(ref, by = "PPTESTCD") |>
+    mutate(value = value / ref) |>
+    select(arm, PPTESTCD, value) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+}
+
+sim_ratio_single <- ratio_table(res_single, c("cmax", "aucinf.obs"))
+sim_ratio_eod    <- ratio_table(res_eod,    c("cmax", "auclast"))
+
+# Published Comisar 2025 Table 3, transcribed.
+pub_single <- tibble::tibble(
+  arm = bands$arm,
+  cmax       = c(1.69, 1.40, 1.64, 1.43, 1.27, 1.74, 1.49, 1.42, 1.24, 1.16, 0.99),
+  aucinf.obs = c(0.87, 0.78, 1.03, 0.96, 0.88, 1.34, 1.22, 1.18, 1.16, 1.10, 1.00)
+)
+pub_eod <- tibble::tibble(
+  arm = bands$arm,
+  cmax    = c(1.73, 1.29, 1.91, 1.44, 1.29, 1.65, 1.57, 1.39, 1.26, 1.17, 1.03),
+  auclast = c(0.95, 0.77, 1.16, 0.98, 0.93, 1.35, 1.27, 1.23, 1.18, 1.10, 1.05)
+)
+
+# Guard against a silent join failure producing an empty comparison.
+stopifnot(
+  setequal(sim_ratio_single$arm, pub_single$arm),
+  setequal(sim_ratio_eod$arm, pub_eod$arm)
+)
+
+cmp_single <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_ratio_single, reference = pub_single, by = "arm",
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_single,
+  caption = paste(
+    "Comisar 2025 Table 3, SINGLE DOSE: pediatric / adult ratios of median",
+    "predicted exposure. * differs from the published ratio by >20%."
+  )
+)
+```
+
+Every one of the 44 published ratios reproduces inside the 20% tolerance. Two
+patterns in the residuals are worth naming rather than smoothing over:
+
+* The `AUC` ratios reproduce tightly and without direction (single dose -1% to
+  +10%, EOD -8% to +6%). `AUC` depends on weight only through the clearance
+  exponent, so this is the cleanest test of `e_wt_cl_q = 0.575` together with
+  the dose-dependent `F1`.
+* The **single-dose `Cmax` ratios are biased high in every band** (+5% to +18%),
+  while the steady-state `Cmax,ss` ratios are not (-13% to +13%, mixed sign).
+  `Cmax` is the quantity most sensitive to the volume exponent
+  `e_wt_vc_vp = 1.18`, which is also the parameter with the widest confidence
+  interval of the two allometric terms (0.988 to 1.372). A ~2.6% shift in that
+  exponent -- exactly the tolerance the paper quotes between the interim model
+  used for its simulations and the final model tabulated in Table 2 -- moves the
+  lowest-band `Cmax` ratio by about 4%, and the remainder is consistent with
+  median sampling noise at 200 subjects per arm plus the unstated adult
+  reference weight distribution. Note that the paper's own single-dose and
+  steady-state `Cmax` ratios are nearly equal band by band (as a linear model
+  with a 48 h interval and an 11 h half-life requires), whereas these two
+  independently drawn cohorts differ by a few percent; that gap is a direct
+  read-out of the Monte Carlo noise floor here.
+
+```{r table3-eod}
+cmp_eod <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_ratio_eod, reference = pub_eod, by = "arm",
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp_eod,
+  caption = paste(
+    "Comisar 2025 Table 3, EVERY-OTHER-DAY STEADY STATE: pediatric / adult",
+    "ratios of median predicted exposure. * differs by >20%."
+  )
+)
+```
+
+```{r table3-summary, echo = FALSE}
+rng <- function(x) sprintf("%.2f to %.2f", min(x), max(x))
+tibble::tibble(
+  Quantity = c("Cmax ratio (single)", "AUC0-inf ratio (single)",
+               "Cmax,ss ratio (EOD)", "AUC0-48h,ss ratio (EOD)"),
+  Published = c(rng(pub_single$cmax), rng(pub_single$aucinf.obs),
+                rng(pub_eod$cmax), rng(pub_eod$auclast)),
+  Simulated = c(rng(sim_ratio_single$cmax), rng(sim_ratio_single$aucinf.obs),
+                rng(sim_ratio_eod$cmax), rng(sim_ratio_eod$auclast))
+) |>
+  knitr::kable(
+    caption = paste(
+      "Ranges across all 11 weight bands. The paper states the selected doses",
+      "achieved Cmax within 0.99 to 1.91-fold and AUC within 0.77 to 1.35-fold",
+      "of adult levels (Section 3.3)."
+    )
+  )
+```
+
+## The 25 mg alternative the paper rejected
+
+Comisar 2025 Discussion reports that for the lowest weight band (>15 to 25 kg),
+25 mg ODT gave `Cmax` ratios close to 1 but AUCs "generally ~50% of the adult
+value (data not shown)", which motivated selecting 35 mg instead. That rejected
+arm is a second, independent answer key -- and it exercises `DOSE_LOW = 1`,
+which no accepted dose does.
+
+```{r rejected-25mg}
+alt25 <- bind_rows(
+  make_arm(N_SMALL, runif(N_SMALL, 15, 20), 25, 1, "15-20 kg | 25 mg",
+           t_doses = 0, obs_to = OBS_TO, id_offset = 2e5L),
+  make_arm(N_SMALL, runif(N_SMALL, 20, 25), 25, 1, "20-25 kg | 25 mg",
+           t_doses = 0, obs_to = OBS_TO, id_offset = 2e5L + N_SMALL)
+)
+sim25 <- rxode2::rxSolve(mod, events = alt25, keep = c("arm", "WT"),
+                         addDosing = FALSE, returnType = "data.frame")
+res25 <- nca_of(sim25, alt25,
+                data.frame(start = 0, end = Inf, cmax = TRUE,
+                           aucinf.obs = TRUE))
+
+adult_med <- med_by_arm(res_single, c("cmax", "aucinf.obs")) |>
+  filter(arm == "Adult | 75 mg")
+
+tbl25 <- med_by_arm(res25, c("cmax", "aucinf.obs")) |>
+  left_join(adult_med |> select(PPTESTCD, ref = value), by = "PPTESTCD") |>
+  mutate(Ratio = value / ref,
+         PPTESTCD = recode(PPTESTCD, cmax = "Cmax", aucinf.obs = "AUC0-inf")) |>
+  select(arm, PPTESTCD, Ratio)
+
+stopifnot(nrow(tbl25) == 4L)
+
+tbl25 |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = Ratio) |>
+  rename("Weight band | dose" = arm) |>
+  knitr::kable(
+    digits = 2,
+    caption = paste(
+      "Rejected 25 mg arm, pediatric/adult ratios. The paper reports Cmax",
+      "ratios 'close to 1' and AUC 'generally ~50% of the adult value'."
+    )
+  )
+```
+
+# Replicating Figure 3: exposure by age at 75 mg ODT
+
+Figure 3 shows simulated `AUC0-inf` (panel A) and `Cmax` (panel B) after a
+single 75 mg ODT dose in virtual participants aged 6 to <18 years, with the
+adult 5th-95th percentile band overlaid. The paper's stated conclusion is that
+"the predicted median exposure in adolescents aged 12 to <18 years was similar
+to that predicted in adults".
+
+```{r figure-3-cohort}
+age_arms <- bind_rows(
+  lapply(seq_along(age_years), function(i) {
+    a <- age_years[i]
+    wt <- k_fit * wt_shape[i] * exp(s_fit * rnorm(N_SMALL))
+    make_arm(N_SMALL, wt, 75, 0, sprintf("%d y", a), t_doses = 0, obs_to = OBS_TO,
+             id_offset = 3e5L + (i - 1L) * N_SMALL)
+  })
+)
+sim_age <- rxode2::rxSolve(mod, events = age_arms, keep = c("arm", "WT"),
+                           addDosing = FALSE, returnType = "data.frame")
+res_age <- nca_of(sim_age, age_arms,
+                  data.frame(start = 0, end = Inf, cmax = TRUE,
+                             aucinf.obs = TRUE))
+```
+
+```{r figure-3, fig.height = 4.5}
+adult_band <- as.data.frame(res_single$result) |>
+  filter(arm == "Adult | 75 mg", PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  group_by(PPTESTCD) |>
+  summarise(lo = quantile(PPORRES, 0.05), mid = median(PPORRES),
+            hi = quantile(PPORRES, 0.95), .groups = "drop") |>
+  mutate(panel = recode(PPTESTCD, aucinf.obs = "A: AUC0-inf (ng*h/mL)",
+                        cmax = "B: Cmax (ng/mL)"))
+
+age_summ <- as.data.frame(res_age$result) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  mutate(age = as.integer(sub(" y$", "", arm))) |>
+  group_by(age, PPTESTCD) |>
+  summarise(lo = quantile(PPORRES, 0.05), mid = median(PPORRES),
+            hi = quantile(PPORRES, 0.95), .groups = "drop") |>
+  mutate(panel = recode(PPTESTCD, aucinf.obs = "A: AUC0-inf (ng*h/mL)",
+                        cmax = "B: Cmax (ng/mL)"))
+
+ggplot(age_summ, aes(age, mid)) +
+  geom_rect(data = adult_band,
+            aes(xmin = -Inf, xmax = Inf, ymin = lo, ymax = hi),
+            inherit.aes = FALSE, fill = "grey70", alpha = 0.35) +
+  geom_hline(data = adult_band, aes(yintercept = mid),
+             linetype = "dashed", colour = "grey30") +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "pink", alpha = 0.5) +
+  geom_line(colour = "red", linewidth = 0.8) +
+  facet_wrap(~panel, scales = "free_y") +
+  scale_x_continuous(breaks = age_years) +
+  labs(x = "Age (years)", y = NULL,
+       caption = paste(
+         "Replicates Figure 3 of Comisar 2025. Red line = predicted median,",
+         "pink = 5th-95th percentiles in pediatric participants; grey band and",
+         "dashed line = adult 5th-95th percentiles and median."
+       ))
+```
+
+```{r figure-3-claim}
+adult_med_wide <- adult_band |> select(panel, adult_mid = mid)
+
+# Adolescents pooled across 12-17 y -- this is the group the paper's own
+# virtual-population summary describes (median weight 49.7 kg), and it is the
+# level at which the "within 2-fold" claim is robust to the weight proxy.
+pooled_adolescent <- as.data.frame(res_age$result) |>
+  filter(PPTESTCD %in% c("cmax", "aucinf.obs")) |>
+  mutate(age = as.integer(sub(" y$", "", arm))) |>
+  filter(age >= 12) |>
+  group_by(PPTESTCD) |>
+  summarise(mid = median(PPORRES), .groups = "drop") |>
+  mutate(panel = recode(PPTESTCD, aucinf.obs = "A: AUC0-inf (ng*h/mL)",
+                        cmax = "B: Cmax (ng/mL)")) |>
+  left_join(adult_med_wide, by = "panel") |>
+  mutate(ratio = mid / adult_mid)
+
+by_age <- age_summ |>
+  filter(age >= 12) |>
+  left_join(adult_med_wide, by = "panel") |>
+  mutate(ratio = mid / adult_mid)
+
+stopifnot(
+  nrow(pooled_adolescent) == 2L,
+  nrow(by_age) == 12L,
+  # The paper's claim, read at the group level: pooled adolescent median
+  # exposure is within 2-fold of adult for both endpoints.
+  all(pooled_adolescent$ratio < 2),
+  # Exposure must FALL with age, since weight rises with age and every effect
+  # on exposure here acts through weight. Tested as the slope of log(ratio) on
+  # age plus the end-to-end drop -- not step-by-step monotonicity or a rank
+  # correlation, either of which at 100 subjects per age would be testing
+  # Monte Carlo noise in adjacent medians rather than the model. The slope uses
+  # all six points and their magnitudes, so it is stable across seeds.
+  all(by_age |> group_by(panel) |>
+        summarise(
+          slope = stats::coef(stats::lm(log(ratio) ~ age))[["age"]],
+          drop = ratio[age == 12] / ratio[age == 17],
+          .groups = "drop"
+        ) |>
+        summarise(ok = all(slope < -0.02) && all(drop > 1.15)) |> pull(ok))
+)
+
+pooled_adolescent |>
+  select(panel, ratio) |>
+  rename("Endpoint" = panel, "Pooled 12-17 y / adult median ratio" = ratio) |>
+  knitr::kable(
+    digits = 2,
+    caption = paste(
+      "Comisar 2025 Discussion: 'the median exposure ratios between adolescents",
+      "and adults were predicted to be within 2-fold'."
+    )
+  )
+
+by_age |>
+  select(panel, age, ratio) |>
+  tidyr::pivot_wider(names_from = panel, values_from = ratio) |>
+  rename("Age (years)" = age) |>
+  knitr::kable(
+    digits = 2,
+    caption = paste(
+      "Per-age median / adult median exposure ratio. The 12-year group sits",
+      "marginally above 2-fold for Cmax under this weight proxy; see",
+      "Assumptions."
+    )
+  )
+```
+
+## The 75 mg overshoot the paper quantifies
+
+The Discussion gives one hard number for the highest predicted adolescent
+exposure: "2.3-fold for `Cmax` after a single 75 mg dose for the >30 to <= 35 kg
+group, which included the 5th percentile of body weight in simulated
+adolescents [31 kg]". That is stated on a **weight band**, so unlike the by-age
+figure above it does not depend on the growth-chart proxy at all -- it is a
+direct, independent answer key for the interaction of the weight exponents with
+the dose-dependent bioavailability at a dose no accepted band uses for that
+weight.
+
+```{r overshoot-anchor}
+over_ev <- make_arm(N_ARM, runif(N_ARM, 30, 35), 75, 0, "30-35 kg | 75 mg",
+                    t_doses = 0, obs_to = OBS_TO, id_offset = 5e5L)
+sim_over <- rxode2::rxSolve(mod, events = over_ev, keep = c("arm", "WT"),
+                            addDosing = FALSE, returnType = "data.frame")
+res_over <- nca_of(sim_over, over_ev,
+                   data.frame(start = 0, end = Inf, cmax = TRUE,
+                              aucinf.obs = TRUE))
+
+over_ratio <- med_by_arm(res_over, "cmax")$value /
+  (med_by_arm(res_single, "cmax") |> filter(arm == "Adult | 75 mg") |>
+     pull(value))
+
+stopifnot(length(over_ratio) == 1L, abs(over_ratio / 2.3 - 1) < 0.2)
+
+tibble(
+  `Weight band | dose` = "30-35 kg | 75 mg",
+  `Simulated Cmax ratio` = over_ratio,
+  `Published (Discussion)` = 2.3,
+  `Difference (%)` = 100 * (over_ratio - 2.3) / 2.3
+) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Comisar 2025 Discussion: 2.3-fold Cmax vs adults after a single 75 mg",
+    "dose in the >30 to <=35 kg group."
+  ))
+```
+
+# Covariate effects on adult exposure
+
+The two covariates the upstream analysis judged clinically relevant are severe
+hepatic impairment and strong CYP3A4 inhibition. This arm exercises the
+clearance covariates, which the pediatric simulations above never do (no
+pediatric participant had hepatic impairment or took an azole).
+
+```{r covariate-arms}
+cov_scenarios <- tibble::tribble(
+  ~arm,                     ~HEPIMP_MOD, ~HEPIMP_SEV, ~FLU, ~ITRA, ~FED,
+  "Reference (fasted)",               0,           0,    0,     0,     0,
+  "Fed",                              0,           0,    0,     0,     1,
+  "Moderate hepatic impairment",      1,           0,    0,     0,     0,
+  "Severe hepatic impairment",        0,           1,    0,     0,     0,
+  "Fluconazole",                      0,           0,    1,     0,     0,
+  "Itraconazole",                     0,           0,    0,     1,     0
+)
+
+cov_ev <- bind_rows(lapply(seq_len(nrow(cov_scenarios)), function(i) {
+  a <- make_arm(N_SMALL, adult_wt[seq_len(N_SMALL)], 75, 0, cov_scenarios$arm[i],
+                t_doses = t_eod, obs_from = t_ss, obs_to = t_ss + TAU,
+                id_offset = 4e5L + (i - 1L) * N_SMALL)
+  a$HEPIMP_MOD <- cov_scenarios$HEPIMP_MOD[i]
+  a$HEPIMP_SEV <- cov_scenarios$HEPIMP_SEV[i]
+  a$CONMED_FLUCONAZOLE <- cov_scenarios$FLU[i]
+  a$CONMED_ITRACONAZOLE <- cov_scenarios$ITRA[i]
+  a$FED <- cov_scenarios$FED[i]
+  a
+}))
+
+sim_cov <- rxode2::rxSolve(mod, events = cov_ev, keep = c("arm", "WT"),
+                           addDosing = FALSE, returnType = "data.frame")
+res_cov <- local({
+  conc <- sim_cov |> filter(!is.na(Cc)) |> select(id, time, Cc, arm)
+  dose_df <- cov_ev |> filter(evid == 1) |> select(id, time, amt, arm)
+  co <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + id, concu = "ng/mL",
+                         timeu = "h")
+  do <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    co, do,
+    intervals = data.frame(start = t_ss, end = t_ss + TAU,
+                           cmax = TRUE, auclast = TRUE)
+  ))
+})
+```
+
+```{r covariate-table}
+cov_med <- med_by_arm(res_cov, c("cmax", "auclast")) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+ref_row <- cov_med |> filter(arm == "Reference (fasted)")
+
+# Published upstream (CPT:PSP Table 4) medians for the same scenarios.
+pub_cov <- tibble::tribble(
+  ~arm,                            ~cmax, ~auclast,
+  "Reference (fasted)",              677,     4160,
+  "Fed",                             353,     2780,
+  "Moderate hepatic impairment",     716,     5430,
+  "Severe hepatic impairment",       747,     7260,
+  "Fluconazole",                     748,     7310,
+  "Itraconazole",                    882,    16200
+)
+
+stopifnot(setequal(cov_med$arm, pub_cov$arm))
+
+cov_med |>
+  mutate(`AUCtau ratio (simulated)` = auclast / ref_row$auclast) |>
+  left_join(pub_cov |> mutate(`AUCtau ratio (upstream)` = auclast / 4160) |>
+              select(arm, `AUCtau ratio (upstream)`), by = "arm") |>
+  select(arm, `AUCtau ratio (simulated)`, `AUCtau ratio (upstream)`) |>
+  rename("Scenario" = arm) |>
+  knitr::kable(
+    digits = 2,
+    caption = paste(
+      "Adult steady-state AUCtau ratio vs the fasted reference. Upstream",
+      "column from Comisar 2025 CPT:PSP Table 4; the two models' covariate",
+      "coefficients differ slightly (e.g. itraconazole -0.744 vs -0.743)."
+    )
+  )
+```
 
 # Assumptions and deviations
 
-* **Body-weight distribution.** The paper gives median 75 kg, a 46-134 kg range
-  (Table 2), and 5th/95th percentiles of 61/102 kg (recoverable from Discussion
-  paragraph 3). No parametric form is published. A log-normal with median 75 kg
-  and `sdlog = 0.156`, truncated to 46-134 kg, is used here, evaluated on a
-  deterministic quantile grid rather than sampled, so the cohort median is
-  exactly 75 kg and no part of the residual disagreement is attributable to a
-  lucky or unlucky weight draw. The grid is slightly narrower than the published
-  population (5th and 95th percentiles 58.2 and 96.6 kg against the published
-  61 and 102 kg) and does not reach the observed 46-134 kg extremes. The
-  published table instead resampled the empirical dataset, which is the main
-  source of the systematic offset discussed above.
-* **Monte Carlo precision.** At 200 subjects per arm the median exposure carries
-  a Monte Carlo standard error near 2.8%, so absolute agreement with Table 4
-  cannot be resolved below roughly 6%. The deterministic typical-value profile
-  and the analytic AUCtau ratios are therefore used as the sharp gates, and the
-  cohort medians as a consistency check. All arms share one eta draw
-  (`rxSetSeed`) so the ratios between arms are free of between-arm noise.
-* **Hepatic-impairment classification.** The paper describes hepatic function as
-  a categorical covariate with normal / mild / moderate / severe levels but does
-  not state whether the classification follows Child-Pugh or NCI ODWG criteria.
-  The `HEPIMP_MOD` and `HEPIMP_SEV` indicators are encoded as mutually exclusive
-  with a shared reference group of **normal or mild** function, because mild
-  impairment was screened and found not statistically significant and the
-  control stream maps `HEPATC = 1` (and missing, coded `-99`) to the reference.
-* **Fed status is calibrated on a high-fat meal.** All fed records come from
-  study BHV3000-112, whose fed arm received a high-fat meal. The canonical
-  `FED` column is used rather than `FED_HIGHFAT` because the paper labels the
-  covariate generically ("Food effect (fasting/fed)", Table 2) and applies it as
-  a general fed flag across all pooled studies. Users wanting the high-fat
-  refinement can set `FED_HIGHFAT = FED`.
-* **Low-dose indicator on `ktr`.** The control stream fires the low-dose `ktr`
-  effect for `DOSE` of exactly 10 or 25 mg, with 75 mg as the reference and the
-  150 mg coefficient fixed to 0. The model file reproduces this as
-  `(DOSE < 50)`, which is exact over the four dose levels actually studied
-  (10, 25, 75, 150 mg). Doses outside those four levels are an extrapolation;
-  the control stream leaves the term undefined there.
-* **Relative bioavailability is anchored at 10 mg, not at the modal dose.**
-  `F1 = (DOSE/10)^0.191` equals 1 at 10 mg and 1.47 at 75 mg. The Table 3
-  values of CL/F, Vc/F, Vp/F, and Q/F are apparent parameters on that anchor,
-  so they are *not* the apparent parameters at the 75 mg therapeutic dose.
-  Absolute fasted oral bioavailability is separately reported as approximately
-  64% (Discussion paragraph 7) and is not part of the model.
-* **Omega scale.** Table 3 reports IIV as a percentage without stating the
-  transformation. It is taken as the approximate CV on the standard-deviation
-  scale, `omega^2 = (IIV%/100)^2`, rather than `omega^2 = log(1 + CV^2)`. The
-  reasoning is recorded in full next to the `etalcl` block in the model file;
-  briefly, round-tripping the control stream's initial `$OMEGA` diagonals
-  reproduces all four published finals within 2.5% under this reading but misses
-  ktr by 10% under the exp-based reading, and the same table's residual-error
-  row is unambiguously on the SD scale. The two readings differ by at most 6.6%
-  (on the ktr omega), so the choice is not load-bearing for the validation
-  above.
-* **Off-diagonal omegas.** Table 3 reports the CL/F:Vc/F, CL/F:Vp/F, and
-  Vc/F:Vp/F entries as *correlations* (75.8%, 54.0%, 66.7%), so covariances are
-  reconstructed as `corr(i,j) * omega_i * omega_j`. The resulting matrix is
-  positive definite.
-* **No IIV on Q/F or ka.** Table 3 shows no IIV for either, and the control
-  stream sets `Q = TVQ` and `KA = TVKA` with no eta. They are encoded as
-  typical-value-only rather than given invented variances.
-* **Terms fixed to 0 are omitted.** The control stream retains, but fixes to 0,
-  formulation effects on CL/F and on F1, a fluconazole effect on `ktr`, a sex
-  effect on Vc/F, and a 150 mg dose effect on `ktr`. Table 3's note confirms
-  "any theta number that is not shown above was fixed to 0". These evaluate to
-  exactly 1 and are left out of `model()`; their provenance is preserved in the
-  covariate notes and in `covariatesDataExcluded`.
-* **Below-quantitation data.** 14.6% of records were BLQ and excluded by the M1
-  method; likelihood-based imputation was not used. The paper cautions that
-  concentrations beyond 72 h post dose were upwardly biased, so late-tail
-  predictions should be read with that in mind.
-* **Screened but not retained covariates** (age, sex, race, Japanese and Chinese
-  ethnicity, renal function, mild hepatic impairment) are documented in the
-  model file's `covariatesDataExcluded` rather than `covariateData`, since they
-  are not referenced in `model()`.
+* **Simulations in the paper used an interim model.** Comisar 2025 Section 2.3
+  states the Table 3 and Figure 3 simulations were run with an *interim*
+  combined model fitted to 17 of the 20 pediatric participants, whereas Table 2
+  (and therefore this model file) reports the *final* model fitted to all 20.
+  The paper states the two differ by no more than 2.6% across all parameters.
+  Reproduced ratios therefore carry that irreducible offset in addition to
+  Monte Carlo noise.
+* **Virtual pediatric weight distribution.** The paper generated its virtual
+  population from the US CDC growth charts, which are not redistributed with
+  this package. The weight-for-age distribution here is calibrated to the
+  paper's own published summary of that population (Section 3.3) and asserted
+  against those six anchors in the "Virtual cohort" section. For Table 3 the
+  cohorts are sampled uniformly within each published weight band, so the
+  growth-chart calibration affects only the Figure 3 by-age replication.
+* **The 12-year-old Cmax ratio sits marginally above 2-fold.** The paper states
+  that "the median exposure ratios between adolescents and adults were
+  predicted to be within 2-fold". Pooled over 12 to 17 years -- the group the
+  paper's own virtual-population summary describes -- this reproduces, and that
+  is what the vignette asserts. Broken out by single year, the youngest
+  adolescent group lands just above 2 for `Cmax`. The cause is the weight proxy,
+  not the model: the calibrated median weight at age 12 is about 39 kg, and
+  because `Cmax` scales roughly as `weight^-1.18`, recovering a ratio below 2
+  requires only about 41.5 kg -- a 5% difference, well inside the disagreement
+  between this proxy and the CDC LMS distribution the paper used. The paper
+  itself reports ratios above 2 in this weight region (2.3-fold for `Cmax` in
+  the >30 to <=35 kg group), and that harder, proxy-independent number is
+  asserted separately above.
+* **Adult reference population.** The paper does not state which adult cohort
+  the "predicted adult exposure" denominator was drawn from. This vignette uses
+  a lognormal weight distribution matching the adult analysis population in
+  Table 1 (median 73.6 kg, truncated to the observed 45.5-134 kg range), dosed
+  at the approved 75 mg ODT fasted. A different adult weight distribution
+  shifts every ratio in the same direction, so the *pattern* across bands is
+  the more meaningful comparison.
+* **Fasted, ODT, no comedication** is assumed throughout the pediatric and
+  adult reference simulations, matching study C4951008 (fasted ODT) and the
+  approved presentation. Formulation, food and DDI covariates are exercised
+  separately in the "Covariate effects" section.
+* **Half-life and `lambda.z`.** `aucinf.obs` extrapolation uses PKNCA's
+  automatic `lambda.z` selection over the 72 h single-dose grid. With a ~11 h
+  effective half-life this captures the terminal phase adequately; no LLOQ
+  truncation is applied because the simulated `Cc` carries no residual error
+  and never goes below the 0.5 ng/mL assay limit within the window.
+* **No residual error is simulated**, matching Section 2.4 ("did not include
+  parameter uncertainty or random unexplained variability"). `addSd` and
+  `propSd` are carried in the model file for completeness and would apply to
+  `sim`, not to `Cc`.
 
-# Errata
+# Errata and source discrepancies
 
-* **Additive residual error unit.** Table 3 prints the additive residual error
-  as `0.43` with the unit "ng/L". This is a typo for **ng/mL**, and the model
-  file uses 0.43 ng/mL. Three independent lines of evidence: the control
-  stream scales its prediction to ng/mL (`S2 = V2/1000 ; ng/ml to mg in final
-  volume units of L`); the initial additive `$SIGMA` variance of 0.174392 has
-  square root 0.418 on that same ng/mL scale, consistent with the reported
-  final 0.43; and 0.43 ng/mL sits just below the 0.5 ng/mL LLOQ, which is where
-  an additive error term for this assay belongs, whereas 0.43 ng/L would be
-  0.00043 ng/mL and numerically inert.
-* **`$THETA` blocks in the supplement are initial estimates.** Supplementary
-  Listing 1 is described as the final model's control stream, and it is
-  authoritative for structure, but its `$THETA` / `$OMEGA` / `$SIGMA` values are
-  starting values rather than final estimates (CL 17.6 against the final 24.1;
-  the dose-on-F1 exponent 0.1016 against the final 0.191). Anyone reading the
-  supplement alone would extract the wrong numbers. All values in this model
-  come from Table 3.
-* **`KA`-prefixed control-stream variables act on `KTR`.** The control stream
-  names its `ktr` covariate multipliers `KAFED`, `KAFORM`, `KAITCZ`, and
-  `KAFLCZ`, and combines them as `KTRCOV = KAFED*KAFORM*KAITCZ*KAFLCZ*KTRDOSE`,
-  which then multiplies `TVKTR`. Despite the `KA` prefix these are effects on
-  the transit rate constant, not on `ka` -- consistent with Table 3, which lists
-  them as effects on ktr. `ka` itself carries no covariates.
-* **Methods paragraph on the low-dose `ktr` effect omits the `1 +`.** Methods
-  2.2 paragraph 4 writes the effect as "ktr with dose impact = ktr without dose
-  impact x theta_ktr if 10 mg or 25 mg dose", which read literally would make
-  the 10/25 mg `ktr` 0.536 times the reference. The Supplemental Methods
-  categorical covariate model (`theta * (1 + theta_x)^X`) and the control
-  stream's `KTRDOSE = (1 + THETA(29))` both give the `(1 + theta)` form, i.e.
-  1.536 times the reference, which is what the model file implements.
-* **Table 2 "Fasted" row percentage.** Table 2 lists Fasted as
-  "257 (92.8%)" for Stage 1 but 100% for Stages 2 and 3, while Fed is 8.9% in
-  Stage 3. The counts, not the percentages, are internally consistent given the
-  crossover designs, in which a subject can contribute both fed and fasted
-  records. No model parameter depends on this.
+* **Additive residual error units.** Table 2 labels the additive residual error
+  "ng/L (SD)" with a value of 0.447, and the upstream CPT:PSP Table 3 likewise
+  prints "Additive error (ng/L) 0.431". Both are unit typos: the validated
+  LC-MS/MS assay has a lower limit of quantification of **0.5 ng/mL** (upstream
+  Section 2.2), and every reported concentration and simulated exposure in both
+  papers is in ng/mL. An additive SD of 0.447 ng/L would be 0.000447 ng/mL --
+  three orders of magnitude below the assay's resolution and physically
+  meaningless as an error model. The model file therefore treats `addSd` as
+  0.447 **ng/mL**, which sits sensibly just below the LLOQ. The same "ng/L"
+  typo appears in this author group's zavegepant popPK paper.
+* **CL:Vp correlation.** Table 2 reports the CL/F:V2/F IIV correlation as 54.1%,
+  but supplement Table S3's covariance for the same pair (0.0428, 95% CI 0.0291
+  to 0.0565) implies 51.4% given the two variances. The other two correlations
+  (CL:Vc 77.4%, Vc:Vp 67.8%) reproduce from Table S3 exactly, so the isolated
+  disagreement is most consistent with a digit transposition in Table 2 (54.1
+  vs 51.4) -- possibly carried over from the upstream adult model, which
+  reports 54.0% for this pair. The model file uses the Table S3 covariance,
+  which is the direct NONMEM variance-covariance estimate and is
+  self-consistent with the rest of the block. The difference is immaterial to
+  any exposure prediction.
+* **Table 3 weight-band header.** The "60 to <= 65 kg" column heading in
+  Table 3 is missing the ">" that every other band carries, and the final
+  column is printed as ">65" in the header row while the Methods define the top
+  band as ">65 to 75 kg". Both are read here as the Methods intend.
+* **Observation count.** Section 3.1 states 78 pediatric plus 14,063 adult
+  observations (14,141 total) from 443 participants; Table 1's participant
+  counts (423 adult + 20 pediatric) agree.
+* **Covariate equations are not in this paper.** Comisar 2025 reports covariate
+  *estimates* (Table 2) but states only that the structure "was unchanged from
+  the prior popPK model". The functional forms used here -- the power model for
+  continuous covariates, the `(1 + theta)^X` multiplicative form for
+  categorical covariates, the `(dose / 10 mg)^theta` bioavailability model, and
+  the four-compartment transit chain -- come from the upstream adult-only
+  publication (doi:10.1002/psp4.70051), which is open access and is cited in
+  the model file's `reference` field. The multiplicative form is independently
+  falsified against that paper's own simulation table in the "Model structure"
+  section above; the `F1` power form and its 10 mg reference are printed
+  verbatim on its Figure 2 schematic.
