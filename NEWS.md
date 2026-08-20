@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2024 valproic acid ([doi:10.3389/fphar.2024.1423411](https://doi.org/10.3389/fphar.2024.1423411)) -- Chinese children and adults with epilepsy or after neurosurgery.
+- Add Tuey 2024 cholecalciferol ([doi:10.3390/ijms252212279](https://doi.org/10.3390/ijms252212279)) -- adults with chronic kidney disease and vitamin D insufficiency or deficiency.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

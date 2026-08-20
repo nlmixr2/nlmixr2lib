@@ -520,6 +520,8 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Chloroquine (Simpson 2013)"
         href: articles/Simpson_2013_chloroquine.html
+      - text: "Cholecalciferol (Tuey 2024)"
+        href: articles/Tuey_2024_cholecalciferol.html
       - text: "Ciclosporin (Fanta 2007)"
         href: articles/Fanta_2007_ciclosporin.html
       - text: "Ciclosporin (Frobel 2013)"
@@ -4294,6 +4296,7 @@ articles:
   - articles/Tsai_2023_ceftriaxone
   - articles/Tsuda_2010_tamsulosin
   - articles/Tsuji_2017_linezolid
+  - articles/Tuey_2024_cholecalciferol
   - articles/Tuffal_2023_avalglucosidase_alfa
   - articles/Ueshima_2018_apixaban
   - articles/Ulldemolins_2015_meropenem

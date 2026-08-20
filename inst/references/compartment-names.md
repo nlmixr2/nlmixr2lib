@@ -2886,6 +2886,27 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 
 ## Small-molecule metabolite suffixes
 
+### 25d3 (**canonical 25-hydroxyvitamin D3 suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 25-hydroxyvitamin D3 (25(OH)D3, calcifediol), the major circulating metabolite of cholecalciferol, formed hepatically by CYP2R1. The primary clinical measure of vitamin D status.
+- **Source aliases:** `25D3`, `25OHD3`, `25(OH)D3`, `25D`, `calcifediol`.
+- **Example models:** `Tuey_2024_cholecalciferol.R` (one-compartment 25D3 fed by first-order formation from VitD3, Tuey 2024 Table 2).
+- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `7dm` / `7ohmtx` precedent. The token mirrors the source literature's own `25D3` shorthand rather than the spelled-out INN, per operator sidecar `oare_PMC11595143` request-001 / response-001 (option A).
+
+### 125d3 (**canonical 1,25-dihydroxyvitamin D3 suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 1,25-dihydroxyvitamin D3 (1,25(OH)2D3, calcitriol), the hormonally active vitamin D metabolite, formed from 25D3 by renal CYP27B1.
+- **Source aliases:** `1,25D3`, `1,25(OH)2D3`, `1,25OH2D3`, `calcitriol`.
+- **Example models:** `Tuey_2024_cholecalciferol.R` (one-compartment 1,25D3 fed by the `fm_125d3` fraction of 25D3 clearance, Tuey 2024 Table 2).
+- **Notes:** The comma of the published `1,25` is dropped because the token must be a plain alphanumeric suffix; read `125d3` as "one-comma-twenty-five-D-three", not as the number 125. Digit-leading, as for `25d3`.
+
+### 2425d3 (**canonical 24,25-dihydroxyvitamin D3 suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 24,25-dihydroxyvitamin D3 (24,25(OH)2D3, secalcifediol), the principal catabolic vitamin D metabolite, formed from 25D3 by CYP24A1. Its circulating level is a marker of vitamin D catabolic capacity and is reduced in chronic kidney disease.
+- **Source aliases:** `24,25D3`, `24,25(OH)2D3`, `2425OH2D3`, `secalcifediol`.
+- **Example models:** `Tuey_2024_cholecalciferol.R` (one-compartment 24,25D3 fed by the `1 - fm_125d3` remainder of 25D3 clearance, Tuey 2024 Table 2).
+- **Notes:** The comma of the published `24,25` is dropped for the same reason as `125d3`; read `2425d3` as "twenty-four-comma-twenty-five-D-three". Digit-leading, as for `25d3`.
+
 ### 3oh (**canonical 3-hydroxy-agomelatine suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 3-hydroxy-agomelatine metabolite of agomelatine (Xie 2019).
