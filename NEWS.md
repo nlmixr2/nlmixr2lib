@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Duan 2024 linezolid ([doi:10.1128/aac.01148-24](https://doi.org/10.1128/aac.01148-24)) - Chinese premature neonates undergoing therapeutic drug monitoring.
+- Add Saeheng 2024 Atractylodes lancea ([doi:10.1186/s12906-024-04618-8](https://doi.org/10.1186/s12906-024-04618-8)) - patients with advanced-stage intrahepatic cholangiocarcinoma.
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
