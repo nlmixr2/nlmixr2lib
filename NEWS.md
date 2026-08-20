@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2025 dupilumab FEV1 PK/PD ([doi:10.1002/psp4.70057](https://doi.org/10.1002/psp4.70057)) -- adults and adolescents with uncontrolled moderate-to-severe asthma.
+- Add Vucicevic 2025 efavirenz ([doi:10.7759/cureus.88533](https://doi.org/10.7759/cureus.88533)) -- Caucasian adults with HIV-1 in Serbia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

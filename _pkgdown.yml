@@ -920,6 +920,8 @@ navbar:
         href: articles/Salem_2014_efavirenz.html
       - text: "Efavirenz (Sanchez 2011)"
         href: articles/Sanchez_2011_efavirenz.html
+      - text: "Efavirenz (Vucicevic 2025)"
+        href: articles/Vucicevic_2025_efavirenz.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -4590,6 +4592,7 @@ articles:
   - articles/vonHentig_2009_saquinavir
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
+  - articles/Vucicevic_2025_efavirenz
   - articles/Vuu_2016_topiramate_dog
   - articles/Wada_2023_sparsentan
   - articles/Wade_2008_fluconazole
