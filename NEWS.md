@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Crass 2025 pegcetacoplan geographic-atrophy lesion-area models
-  ([doi:10.1002/psp4.13264](https://doi.org/10.1002/psp4.13264))
-  -- adults with geographic atrophy secondary to age-related macular degeneration.
+- Add Balis 2025 busulfan ([doi:10.1007/s00280-025-04757-w](https://doi.org/10.1007/s00280-025-04757-w)) -- infants and children receiving busulfan-containing stem cell transplant conditioning.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
