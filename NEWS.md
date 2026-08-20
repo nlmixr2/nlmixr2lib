@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zavrelova 2025 linezolid ([doi:10.1111/cts.70346](https://doi.org/10.1111/cts.70346)) -- hematooncological adults with suspected or proven Gram-positive sepsis.
+- Add Zhang 2025 nedosiran ([doi:10.1007/s40262-025-01540-1](https://doi.org/10.1007/s40262-025-01540-1)) -- healthy volunteers and children and adults with primary hyperoxaluria.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
