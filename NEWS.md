@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2024 IL-6-mediated CYP3A suppression ([doi:10.1002/psp4.13073](https://doi.org/10.1002/psp4.13073)) - adults with relapsed/refractory non-Hodgkin lymphoma receiving mosunetuzumab.
+- Add Moein 2024 apitolisib ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) - 786-O xenograft mice and patients with advanced solid tumors.
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
