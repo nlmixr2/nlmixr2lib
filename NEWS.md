@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Varela-Gonzalez-Aller 2025 fludarabine ([doi:10.3390/pharmaceutics17121592](https://doi.org/10.3390/pharmaceutics17121592)) -- adults with relapsed/refractory large B-cell lymphoma receiving fludarabine-based lymphodepletion before CAR T-cell therapy.
+- Add Trujillo 2025 proinsulin/glucose homeostasis QSP model ([doi:10.3390/pharmaceutics17121522](https://doi.org/10.3390/pharmaceutics17121522)) -- four virtual patients spanning healthy physiology and the type 2 diabetes spectrum.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
