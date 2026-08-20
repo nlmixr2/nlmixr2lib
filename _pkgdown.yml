@@ -2824,6 +2824,8 @@ navbar:
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Tazobactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Tebipenem (Ebihara 2025)"
+        href: articles/Ebihara_2025_tebipenem.html
       - text: "Tebipenem (Ganesan 2023)"
         href: articles/Ganesan_2023_tebipenem.html
       - text: "Tefibazumab (Cao 2013)"
@@ -3629,6 +3631,7 @@ articles:
   - articles/Duong_2017_AT9283
   - articles/Dvorackova_2023_posaconazole
   - articles/Easterling_2018_magnesium_sulfate
+  - articles/Ebihara_2025_tebipenem
   - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edstein_2001_tafenoquine
   - articles/Eissing_2024_finerenone
