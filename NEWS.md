@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cheng 2026 levamisole interspecies models ([doi:10.1007/s40005-025-00770-6](https://doi.org/10.1007/s40005-025-00770-6)) -- joint allometric two-compartment and minimal-PBPK fits across duck, rabbit, chicken, goat, dog, sheep, pig and human.
+- Add Morath 2025 apixaban ([doi:10.1007/s40262-025-01534-z](https://doi.org/10.1007/s40262-025-01534-z)) -- adults with postoperative atrial fibrillation after cardiac surgery, with and without concomitant amiodarone.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
