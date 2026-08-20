@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cerqueira 2025 resveratrol ([doi:10.3390/nu17010181](https://doi.org/10.3390/nu17010181)) -- rat (Wistar, male); separate intravenous and oral models.
+- Add Centanni 2025 sunitinib thrombocytopenia ([doi:10.1007/s40273-024-01438-z](https://doi.org/10.1007/s40273-024-01438-z)) -- adults with imatinib-resistant gastrointestinal stromal tumours (GIST).
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
