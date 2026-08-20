@@ -3290,6 +3290,8 @@ navbar:
         href: articles/Shen_2025_voriconazole.html
       - text: "Voriconazole (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Voriconazole (Zakria 2026)"
+        href: articles/Zakria_2026_voriconazole.html
       - text: "Vortioxetine (Naik 2016)"
         href: articles/Naik_2016_vortioxetine.html
       - text: "Vosoritide (Qi 2024)"
@@ -4892,6 +4894,7 @@ articles:
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
+  - articles/Zakria_2026_voriconazole
   - articles/Zandvliet_2008_carboplatin
   - articles/Zandvliet_2016_corifollitropin_alfa
   - articles/Zavrelova_2025_linezolid

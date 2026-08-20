@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Decker 2026 baricitinib ([doi:10.1007/s40262-025-01563-8](https://doi.org/10.1007/s40262-025-01563-8)) -- pediatric patients aged 2 to <18 years with moderate-to-severe atopic dermatitis.
+- Add Zakria 2026 voriconazole ([doi:10.1080/20523211.2025.2601420](https://doi.org/10.1080/20523211.2025.2601420)) -- adult Pakistani cancer patients, elderly (> 65 y) versus young.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

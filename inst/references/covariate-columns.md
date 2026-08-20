@@ -73,7 +73,18 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Source aliases:**
   - `AGE >= 70` -- derived from the continuous `AGE` column via `AGE_GE70 = as.integer(AGE >= 70)`; used in `Overgaard_2016_liraglutide.R` (Overgaard 2016 Fig. 2 / Table S1 covariate label "Age >= 70 years").
 - **Example models:** `Overgaard_2016_liraglutide.R` (multiplicative log-scale effect on CL/F, coefficient -0.10 per Table S1).
-- **Notes:** Sibling to the `ECOG_GE1` / `ECOG_GE2` binary threshold family; captures a paper-defined age band as a decomposed binary indicator rather than a continuous `AGE` term. When the source paper describes the age band as ">= 70 y" (as in Overgaard 2016), use `AGE_GE70`; for other thresholds (e.g., >= 65 y, >= 75 y) register a sibling canonical (`AGE_GE65`, `AGE_GE75`). The underlying continuous `AGE` may still be recorded alongside for downstream re-derivation.
+- **Notes:** Sibling to the `ECOG_GE1` / `ECOG_GE2` binary threshold family; captures a paper-defined age band as a decomposed binary indicator rather than a continuous `AGE` term. When the source paper describes the age band as ">= 70 y" (as in Overgaard 2016), use `AGE_GE70`; for other thresholds (e.g., >= 65 y, >= 75 y) register a sibling canonical (`AGE_GE65`, `AGE_GE75`). Use the `AGE_GT<n>` spelling instead when the paper's threshold is strictly greater than the cut point (see `AGE_GT65`). The underlying continuous `AGE` may still be recorded alongside for downstream re-derivation.
+
+### AGE_GT65 (**canonical for age > 65 years indicator**)
+- **Description:** 1 = subject is older than 65 years at baseline, 0 = subject is 65 years old or younger. Time-fixed at study entry per subject. Used when the source paper reports an age effect as a threshold indicator (> 65 y vs <= 65 y) rather than as a continuous covariate on `AGE`. This is the conventional geriatric cut point in anti-infective and oncology popPK.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (<= 65 years).
+- **Source aliases:**
+  - `AGE_GROUP` (coded 1 = age <= 65 y, 2 = age > 65 y) -- derived from the continuous `AGE` column via `AGE_GT65 = as.integer(AGE > 65)`, equivalently `AGE_GT65 = AGE_GROUP - 1`; used in `Zakria_2026_voriconazole.R` (Zakria 2026 Table 2 rows "CL-AGE_GROUP 1" / "CL-AGE_GROUP 2").
+- **Example models:** `Zakria_2026_voriconazole.R` (additive-fractional effect on CL, coefficient -0.519 per Table 2 and Eq 2).
+- **Notes:** Sibling to `AGE_GE70` and to the `ECOG_GE1` / `ECOG_GE2` binary threshold family. The `GT` (strictly greater) rather than `GE` (greater or equal) spelling is load-bearing: a subject aged exactly 65 years belongs to the reference group under `AGE_GT65` but to the indicator group under a hypothetical `AGE_GE65`. Match the spelling to the inequality the source paper prints -- Zakria 2026 dichotomises as "<= 65 years" versus "> 65 years", so `AGE_GT65` is correct and `AGE_GE65` would misclassify the 65-year-olds. Register `AGE_GE65` separately if a paper genuinely uses the ">= 65 y" band. The underlying continuous `AGE` may still be recorded alongside for downstream re-derivation.
 
 ### LBM (**canonical for lean body mass**)
 - **Description:** Lean body mass.
