@@ -286,6 +286,8 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "Baricitinib (Decker 2024)"
         href: articles/Decker_2024_baricitinib.html
+      - text: "Baricitinib (Decker 2026)"
+        href: articles/Decker_2026_baricitinib.html
       - text: "Bedaquiline (Svensson 2013)"
         href: articles/Svensson_2013_bedaquiline.html
       - text: "Bedaquiline (Svensson 2014)"
@@ -3363,6 +3365,7 @@ articles:
   - articles/DeJongh_2014_antithrombin
   - articles/Debord_2001_cyclosporin
   - articles/Decker_2024_baricitinib
+  - articles/Decker_2026_baricitinib
   - articles/Decrane_2023_oxyfluorfen
   - articles/DelFrari_2018_propranolol
   - articles/Delattre_2010_amikacin
