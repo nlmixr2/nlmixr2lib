@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gaspar 2025 fexofenadine ([doi:10.1007/s40262-024-01470-4](https://doi.org/10.1007/s40262-024-01470-4)) -- hospitalized older adult polymorbid patients pooled with healthy volunteers.
+- Add Darwish 2025 trofinetide ([doi:10.1007/s12325-024-03056-9](https://doi.org/10.1007/s12325-024-03056-9)) -- healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
