@@ -1002,6 +1002,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Sanghavi_2020_ipilimumab.R` (linear-on-log form on CL with reference 217 U/L; coefficient 0.703), `NA_NA_lidocaine.R` (DDMODEL00000281; binary stratification at threshold 195 U/L switching the typical-value baseline of the 2,6-xylidide rate constant K40).
 - **Notes:** Universal lab marker. Sanghavi 2020 log-transforms LDH because the distribution is heavily right-skewed (range 74-6,245 U/L over a median of 217); other papers may use a simple `(LDH/ref)^exponent` form. Document the functional form in `covariateData[[LDH]]$notes`.
 
+### AMYL (**canonical for blood amylase activity**)
+- **Description:** Blood (serum or plasma) total amylase activity (baseline or time-varying). Routine clinical-chemistry enzyme, conventionally read as a pancreatic / salivary marker, but amylase is also cleared renally and therefore accumulates as glomerular filtration falls. In population PK analyses of renally-impaired cohorts it is used in the latter role -- as a surrogate for uremic burden rather than for pancreatic disease -- so the direction of any effect should be interpreted against the paper's stated mechanism, not assumed to be pancreatic.
+- **Units:** **U/L** (SI; canonical, matching the `AST` / `ALT` / `ALP` / `GGT` / `LDH` enzyme family; IU/L is used interchangeably). Document per-model via `covariateData[[AMYL]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(AMYL / ref)^exponent`. Reference values observed: 59.5 IU/L (Kim 2025 healthy-subject median).
+- **Source aliases:**
+  - `Amyl` -- Kim 2025 Table 1 / Table 2 and NONMEM `$INPUT` column abbreviation.
+- **Example models:** `Kim_2025_evogliptin.R` (IU/L, reference 59.5; positive exponent 0.363 on relative bioavailability F1, paired with `TRIG`; both markers rise with worsening renal impairment and jointly express the paper's finding that uremia inhibits CYP3A4-mediated first-pass metabolism and so raises oral bioavailability).
+- **Notes:** Routine clinical-chemistry covariate; follows the bare-abbreviation naming of the established enzyme canonicals `AST`, `ALT`, `ALP`, `GGT`, and `LDH`. Distinct from lipase, which is the companion pancreatic enzyme and was recorded but not tested in Kim 2025 -- register a separate `LIPASE` canonical if a future paper retains it. Because amylase can move for either pancreatic or renal reasons, `covariateData[[AMYL]]$notes` should state which interpretation the source paper intends. Ratified canonically alongside the Kim 2025 evogliptin extraction.
+
 ### HEPIMP_MILD (**canonical for mild hepatic impairment indicator**)
 - **Description:** 1 = mild hepatic impairment per the National Cancer Institute Organ Dysfunction Working Group (NCI ODWG) criteria, 0 = normal hepatic function or non-mild category. NCI ODWG mild = total bilirubin <= ULN with AST > ULN, OR total bilirubin > 1.0xULN to <= 1.5xULN with any AST.
 - **Units:** (binary)
