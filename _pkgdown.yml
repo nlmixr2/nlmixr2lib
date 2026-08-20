@@ -3038,8 +3038,8 @@ navbar:
         href: articles/Zhang_2024_XZP5610.html
       - text: "Zalcitabine (Adams 1998)"
         href: articles/Adams_1998_zalcitabine.html
-      - text: "Zastaprazan (Yang 2024)"
-        href: articles/Yang_2024_zastaprazan.html
+      - text: "Zavegepant (Comisar 2025)"
+        href: articles/Comisar_2025_zavegepant.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zidovudine (Fauchet 2013)"
@@ -3447,6 +3447,7 @@ articles:
   - articles/Colin_2014_moxifloxacin
   - articles/Collins_2023_belantamab_mprotein
   - articles/Colombo_2006_atazanavir
+  - articles/Comisar_2025_zavegepant
   - articles/Conil_2007_ceftazidime
   - articles/Conil_2010_tobramycin
   - articles/Conrado_2014_alzheimer
