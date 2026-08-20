@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2024 nedosiran ([doi:10.1111/bcp.16194](https://doi.org/10.1111/bcp.16194)) -- healthy adults and patients with primary hyperoxaluria type 1 or 2.
+- Add Yang 2024 dabigatran ([doi:10.3389/fphar.2024.1454612](https://doi.org/10.3389/fphar.2024.1454612)) -- healthy Chinese adults.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
