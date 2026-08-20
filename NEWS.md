@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tian 2025 pirtobrutinib ([doi:10.1002/psp4.70134](https://doi.org/10.1002/psp4.70134)) - healthy adults; a compartmental reduction of the published Simcyp minimal-PBPK model.
+- Add Xu 2025 aficamten ([doi:10.1002/psp4.70099](https://doi.org/10.1002/psp4.70099)) - healthy adults and adults with obstructive hypertrophic cardiomyopathy.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
