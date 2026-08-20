@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gu 2025 rivaroxaban ([doi:10.3389/fphar.2025.1562259](https://doi.org/10.3389/fphar.2025.1562259)) - Chinese healthy volunteers and patients after radiofrequency ablation for non-valvular atrial fibrillation.
+- Add Shigetome 2025 paroxetine ([doi:10.1002/psp4.70032](https://doi.org/10.1002/psp4.70032)) -- Japanese adults with major depressive disorder; population PK plus a MADRS exposure-response model.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
