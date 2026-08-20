@@ -2254,6 +2254,10 @@ navbar:
         href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
       - text: "PolymyxinB (Liang 2023)"
         href: articles/Liang_2023_polymyxinB.html
+      - text: "PolymyxinB AB121D0 (Lacroix 2025)"
+        href: articles/Lacroix_2025_polymyxinB_mucin.html
+      - text: "PolymyxinB AB122D12 (Lacroix 2025)"
+        href: articles/Lacroix_2025_polymyxinB_mucin.html
       - text: "Ponezumab (Nicholas 2009)"
         href: articles/Nicholas_2009_ponezumab.html
       - text: "Posaconazole (Dvorackova 2023)"
@@ -3941,6 +3945,7 @@ articles:
   - articles/Kurup_2024_DZIF10c
   - articles/Kutumova_2024_albuminNanoparticles
   - articles/Kyhl_2016_nalmefene
+  - articles/Lacroix_2025_polymyxinB_mucin
   - articles/Lacy_2018_cabozantinib
   - articles/Lacy_2018_cabozantinib_exposure_response
   - articles/Laffont_2024_nalmefene

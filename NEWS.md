@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Athanassa 2025 minocycline ([doi:10.1093/jac/dkaf090](https://doi.org/10.1093/jac/dkaf090)) -- critically ill adults with ventilator-associated pneumonia.
+- Add Lacroix 2025 polymyxin B ([doi:10.1128/aac.01535-24](https://doi.org/10.1128/aac.01535-24)) -- in vitro time-kill against two multidrug-resistant Acinetobacter baumannii clinical isolates, with and without 1% mucin.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
