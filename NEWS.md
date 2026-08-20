@@ -2,7 +2,7 @@
 
 # development version
 
-- Add DeJongh 2025 AZD7648 and olaparib ([doi:10.1007/s10928-025-09962-x](https://doi.org/10.1007/s10928-025-09962-x)) -- mice (SCID and athymic nude, FaDu ATM-knockout xenograft).
+- Add Rolsma 2025 cefepime, meropenem, piperacillin and tazobactam ([doi:10.1093/infdis/jiae451](https://doi.org/10.1093/infdis/jiae451)) -- children and adults with cystic fibrosis.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
