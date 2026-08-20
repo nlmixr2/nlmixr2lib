@@ -2,11 +2,7 @@
 
 # development version
 
-- Fix the dose basis in the Steichert 2025 enalapril + enalaprilat vignette
-  ([doi:10.1007/s40262-025-01520-5](https://doi.org/10.1007/s40262-025-01520-5)) --
-  doses are enalapril free base, so 0.25 mg enalapril maleate is 191.1 ug, not
-  250 ug. The vignette now reproduces the published enalaprilat Cmax,1 instead of
-  overshooting it by 31%.
+- Add Shah 2025 clarithromycin ([doi:10.3390/antibiotics14060559](https://doi.org/10.3390/antibiotics14060559)) -- critically ill adults receiving intravenous clarithromycin.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
