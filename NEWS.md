@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Panetta 2024 palbociclib ([doi:10.3390/pharmaceutics16121528](https://doi.org/10.3390/pharmaceutics16121528)) -- children and young adults with recurrent, progressive or refractory brain tumors.
+- Add Al-Zubaydi 2024 gabapentin ([doi:10.3390/pharmaceutics16121514](https://doi.org/10.3390/pharmaceutics16121514)) -- hospitalized adults with therapeutic drug monitoring concentrations.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
