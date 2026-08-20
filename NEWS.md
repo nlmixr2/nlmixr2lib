@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Glatard 2025 octreotide ([doi:10.1007/s40262-025-01522-3](https://doi.org/10.1007/s40262-025-01522-3)) -- healthy adults and adults with acromegaly.
+- Add Koloskoff 2025 ganciclovir ([doi:10.1007/s40262-025-01526-z](https://doi.org/10.1007/s40262-025-01526-z)) -- pediatric solid-organ and hematopoietic-stem-cell transplant recipients with CMV reactivation (PD-only indirect viral turnover model with the new `AUC_GCV` time-varying covariate as ganciclovir exposure input).
+
+- Add Valitalo 2017 morphine ([doi:10.1002/psp4.12156](https://doi.org/10.1002/psp4.12156)) -- mechanically ventilated preterm neonates undergoing endotracheal suctioning (item response theory PD model with linear morphine concentration-effect and study-time effect on a latent pain variable; ratifies new `CP_MORPH_NGML`, `MOMENT`, `ITEM`, and `OBSTYPE` covariate canonicals) [DDMODEL00000247].
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
