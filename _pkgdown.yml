@@ -2078,8 +2078,10 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
-      - text: "PAmAb (Cao 2013)"
-        href: articles/Cao_2013_PAmAb.html
+      - text: "Pamiparib (Wickramasinghe 2025)"
+        href: articles/Wickramasinghe_2025_pamiparib.html
+      - text: "Pamiparib unbound (Wickramasinghe 2025)"
+        href: articles/Wickramasinghe_2025_pamiparib.html
       - text: "Panitumumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Pantoprazole (Pettersen 2009)"
@@ -4539,6 +4541,7 @@ articles:
   - articles/Wi_2017_teicoplanin
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wicha_2018_rifampicin
+  - articles/Wickramasinghe_2025_pamiparib
   - articles/Wilbaux_2014_ovarianCancer_ca125
   - articles/Wilbaux_2015_prostate
   - articles/Wilbaux_2022_roblitinib
