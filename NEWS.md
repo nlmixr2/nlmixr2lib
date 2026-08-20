@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xia 2025 p-furoylamphenmulin ([doi:10.1016/j.psj.2025.105249](https://doi.org/10.1016/j.psj.2025.105249)) -- Mycoplasma gallisepticum-infected specific-pathogen-free chickens.
+- Add Gu 2025 rivaroxaban ([doi:10.3389/fphar.2025.1562259](https://doi.org/10.3389/fphar.2025.1562259)) - Chinese healthy volunteers and patients after radiofrequency ablation for non-valvular atrial fibrillation.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

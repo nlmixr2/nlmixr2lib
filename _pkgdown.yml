@@ -2518,8 +2518,8 @@ navbar:
         href: articles/Williams_2016_rituximab_biosimilar.html
       - text: "Rituximab pla2r (Liang 2024)"
         href: articles/Liang_2024_rituximab.html
-      - text: "Rivaroxaban (Wang 2025)"
-        href: articles/Wang_2025_rivaroxaban.html
+      - text: "Rivaroxaban (Gu 2025)"
+        href: articles/Gu_2025_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2018)"
         href: articles/Willmann_2018_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2021)"
@@ -3719,6 +3719,7 @@ articles:
   - articles/Grimsley_1999_vancomycin
   - articles/Grover_2011_tacrolimus
   - articles/Grzesk_2016_m3M3FBS
+  - articles/Gu_2025_rivaroxaban
   - articles/Guiastrennec_2016_gastric_emptying
   - articles/Guo_2022_PF_06939999
   - articles/Gupta_2006_peginterferon_alfa_2b
