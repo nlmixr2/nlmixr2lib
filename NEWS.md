@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Shigetome 2025 paroxetine ([doi:10.1002/psp4.70032](https://doi.org/10.1002/psp4.70032)) -- Japanese adults with major depressive disorder; population PK plus a MADRS exposure-response model.
+- Add Cao 2025 ferric carboxymaltose ([doi:10.1021/acsptsci.5c00097](https://doi.org/10.1021/acsptsci.5c00097)) -- rats (Sprague-Dawley) with iron deficiency anemia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
