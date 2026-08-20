@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fan 2025 intravenous iron whole-body PBPK models ([doi:10.1007/s13346-024-01675-x](https://doi.org/10.1007/s13346-024-01675-x)) -- mice on iron-deficient, iron-adequate and iron-loaded diets, plus ferric carboxymaltose extrapolations to rat (iron-deficiency anaemia) and adults with iron-deficiency anaemia.
+- Add Butragueno-Laiseca 2025 teicoplanin ([doi:10.1093/jac/dkaf012](https://doi.org/10.1093/jac/dkaf012)) -- critically ill children, including those on continuous kidney replacement therapy.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
