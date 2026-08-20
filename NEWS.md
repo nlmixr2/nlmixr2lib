@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kim 2025 infliximab, a panel of eight externally validated population PK models ([doi:10.1002/psp4.70089](https://doi.org/10.1002/psp4.70089)) -- adults and children with inflammatory bowel disease.
+- Add McBride 2025 recombinant ADAMTS13 ([doi:10.1002/psp4.70063](https://doi.org/10.1002/psp4.70063)) -- patients with congenital thrombotic thrombocytopenic purpura.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
