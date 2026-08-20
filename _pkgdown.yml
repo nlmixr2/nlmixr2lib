@@ -2886,6 +2886,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Valproic acid (Zhang 2024)"
+        href: articles/Zhang_2024_valproic_acid.html
       - text: "Valproic acid base (Zhang 2023)"
         href: articles/Zhang_2023_valproic_acid_protein_binding.html
       - text: "Valproic acid ddemax (Zhang 2023)"
@@ -4472,7 +4474,7 @@ articles:
   - articles/Zhang_2024_XZP5610
   - articles/Zhang_2024_f53b_pbpk
   - articles/Zhang_2024_sertraline
-  - articles/Zhang_2024_tucatinib
+  - articles/Zhang_2024_valproic_acid
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir
