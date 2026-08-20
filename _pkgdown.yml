@@ -178,6 +178,8 @@ navbar:
         href: articles/Ueshima_2018_apixaban.html
       - text: "Apomine (Bonate 2004)"
         href: articles/Bonate_2004_apomine.html
+      - text: "Apremilast (Warren 2025)"
+        href: articles/Warren_2025_pde4_il13_atopic_dermatitis.html
       - text: "Apx3330 (Silva 2024)"
         href: articles/Silva_2024_apx3330.html
       - text: "Arginine (Brussee 2016)"
@@ -2014,6 +2016,8 @@ navbar:
         href: articles/Wang_2020_ontamalimab.html
       - text: "Orin1001 (Li 2024)"
         href: articles/Li_2024_orin1001.html
+      - text: "Orismilast (Warren 2025)"
+        href: articles/Warren_2025_pde4_il13_atopic_dermatitis.html
       - text: "Ormutivimab (Zhang 2022)"
         href: articles/Zhang_2022_ormutivimab.html
       - text: "Ornidazole (Li 2023)"
@@ -4509,6 +4513,7 @@ articles:
   - articles/Wang_2024_saxagliptin_dpp4_rat
   - articles/Wang_2024_sugemalimab
   - articles/Wang_2024_tacrolimus
+  - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
   - articles/Watt_2015_fluconazole
