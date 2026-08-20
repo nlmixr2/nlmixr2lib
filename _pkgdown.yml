@@ -1384,10 +1384,38 @@ navbar:
         href: articles/Pei_2016_iloperidone.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
+      - text: "Imatinib (Demetri 2009)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (DiPaolo 2014)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Eechoute 2012)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Golabchifar 2014)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Gotta 2014)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (He 2023)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Jiang 2023)"
         href: articles/Jiang_2023_imatinib.html
+      - text: "Imatinib (Judson 2005)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (MenonAndersen 2009)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Petain 2008)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
+      - text: "Imatinib (Schmidli 2005)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Shriyan 2022)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Wang 2019)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Widmer 2006)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Yamakawa 2011)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imetelstat (GonzalezSales 2024)"
         href: articles/GonzalezSales_2024_imetelstat.html
       - text: "Iminobiotin (Admiraal 2023)"
@@ -4731,7 +4759,7 @@ articles:
   - articles/Yang_2024_axatilimab
   - articles/Yang_2024_dabigatran
   - articles/Yang_2024_meropenem_pbpk
-  - articles/Yang_2024_zastaprazan
+  - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yassen_2025_asundexian
