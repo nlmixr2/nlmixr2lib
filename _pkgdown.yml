@@ -300,10 +300,8 @@ navbar:
         href: articles/Hu_2014_bapineuzumab.html
       - text: "Baricitinib (Decker 2024)"
         href: articles/Decker_2024_baricitinib.html
-      - text: "BAY81 8973 (Garmann 2017)"
-        href: articles/Garmann_2017_BAY81_8973.html
-      - text: "BAY94 9027 (Solms 2020)"
-        href: articles/Solms_2020_BAY94_9027.html
+      - text: "Baricitinib (Decker 2026)"
+        href: articles/Decker_2026_baricitinib.html
       - text: "Bedaquiline (Svensson 2013)"
         href: articles/Svensson_2013_bedaquiline.html
       - text: "Bedaquiline (Svensson 2014)"
@@ -3765,7 +3763,7 @@ articles:
   - articles/deAlwis_1998_ondansetron
   - articles/Debord_2001_cyclosporin
   - articles/Decker_2024_baricitinib
-  - articles/DeCock_2012_propyleneGlycol
+  - articles/Decker_2026_baricitinib
   - articles/Decrane_2023_oxyfluorfen
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
