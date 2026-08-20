@@ -2,7 +2,7 @@
 
 # development version
 
-- Add van den Berg 2025 generic monoclonal antibody meta-analytic models ([doi:10.1080/19420862.2025.2512217](https://doi.org/10.1080/19420862.2025.2512217)) -- medians across 160 published population PK models of 69 marketed IgG mAbs in adults.
+- Add Okumura 2025 ergothioneine PBPK model ([doi:10.1002/fsn3.70382](https://doi.org/10.1002/fsn3.70382)) -- healthy Japanese adults taking daily oral ergothioneine supplements.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
