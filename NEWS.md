@@ -2,9 +2,11 @@
 
 # development version
 
-- Add Koloskoff 2025 ganciclovir ([doi:10.1007/s40262-025-01526-z](https://doi.org/10.1007/s40262-025-01526-z)) -- pediatric solid-organ and hematopoietic-stem-cell transplant recipients with CMV reactivation (PD-only indirect viral turnover model with the new `AUC_GCV` time-varying covariate as ganciclovir exposure input).
-
-- Add Valitalo 2017 morphine ([doi:10.1002/psp4.12156](https://doi.org/10.1002/psp4.12156)) -- mechanically ventilated preterm neonates undergoing endotracheal suctioning (item response theory PD model with linear morphine concentration-effect and study-time effect on a latent pain variable; ratifies new `CP_MORPH_NGML`, `MOMENT`, `ITEM`, and `OBSTYPE` covariate canonicals) [DDMODEL00000247].
+- Fix the dose basis in the Steichert 2025 enalapril + enalaprilat vignette
+  ([doi:10.1007/s40262-025-01520-5](https://doi.org/10.1007/s40262-025-01520-5)) --
+  doses are enalapril free base, so 0.25 mg enalapril maleate is 191.1 ug, not
+  250 ug. The vignette now reproduces the published enalaprilat Cmax,1 instead of
+  overshooting it by 31%.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
