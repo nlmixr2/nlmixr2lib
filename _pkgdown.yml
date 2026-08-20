@@ -410,6 +410,8 @@ navbar:
         href: articles/Blesch_2003_capecitabine.html
       - text: "Capecitabine (Urien 2005)"
         href: articles/Urien_2005_capecitabine.html
+      - text: "Captopril rat (Kiriyama 2024)"
+        href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
       - text: "Carbenicillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Carboplatin (Ekhart 2008)"
@@ -1836,6 +1838,8 @@ navbar:
         href: articles/Iida_2008_nicorandil.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
+      - text: "Nifedipine rat (Kiriyama 2024)"
+        href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
       - text: "Nimotuzumab (Castro-Surez 2020)"
         href: articles/Castro-Surez_2020_nimotuzumab.html
       - text: "Nintedanib (Schmid 2017)"
@@ -3687,6 +3691,7 @@ articles:
   - articles/Kim_2023_pyrazinamide
   - articles/Kim_2024_meropenem
   - articles/Kimura_2023_glucarpidase
+  - articles/Kiriyama_2024_nifedipine_captopril_rat
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleiber_2017_clonidine
   - articles/Kleideiter_2017_cebranopadol
