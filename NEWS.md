@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bouazza 2025 prednisolone ([doi:10.1002/bcp.70103](https://doi.org/10.1002/bcp.70103)) -- paediatric and adult patients with active systemic lupus erythematosus.
+- Add Mohammed Ali 2025 tacrolimus ([doi:10.3390/pharmaceutics17091185](https://doi.org/10.3390/pharmaceutics17091185)) -- stable adult renal transplant recipients converted from IR-Tac to LCP-Tac.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

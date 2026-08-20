@@ -1,0 +1,801 @@
+---
+title: "Tacrolimus IR-Tac to LCP-Tac conversion (Mohammed Ali 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tacrolimus IR-Tac to LCP-Tac conversion (Mohammed Ali 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("MohammedAli_2025_tacrolimus"))
+```
+
+* Citation: `r mod$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics17091185>
+* Supplement (Figure S1 NPDE, Table S1 simulations):
+  <https://www.mdpi.com/article/10.3390/pharmaceutics17091185/s1>
+
+Mohammed Ali 2025 is the first population PK analysis built specifically to
+answer a *conversion* question: when a stable renal transplant recipient is
+switched from twice-daily immediate-release tacrolimus (IR-Tac, Prograf) to
+once-daily extended-release LCP-Tac (Envarsus, MeltDose), what dose ratio
+reproduces the previous exposure -- and does the answer depend on *CYP3A5*
+genotype? European guidelines recommend a single 1:0.7 ratio regardless of
+genetics. The paper's simulations conclude that 1:0.7 is right for *CYP3A5*
+non-expressers but that expressers need 1:0.6.
+
+The structural model is a two-compartment model with delayed first-order
+absorption, fitted jointly to both formulations in the *same* 30 patients. Three
+features make it unusual and are the focus of the validation below:
+
+1. **Formulation-specific absorption.** Separate absorption rate constants
+   (`ka` 2.04 vs 0.111 h^-1) and lag times (0.465 vs 1.4 h) for IR-Tac and
+   LCP-Tac. The MeltDose product absorbs roughly 18-fold more slowly.
+2. **A 24 h circadian rhythm** on apparent clearance and, for IR-Tac only, on
+   its absorption rate constant. This is what produces the day-dose /
+   night-dose asymmetry visible in the paper's Figure 2 panels (a) and (b).
+3. **Genotype-by-formulation bioavailability.** *CYP3A5* enters the model on
+   `F`, not on `CL/F`, giving four relative bioavailabilities anchored at
+   `F = 1` for the LCP-Tac non-expresser reference group.
+
+# Population
+
+`r mod$population$n_subjects` stable adult renal transplant recipients
+(`r mod$population$regions`), all at least six months post-transplant and on
+tacrolimus + mycophenolate mofetil + prednisone, enrolled in the open-label
+single-centre trial NCT02961608. Mean body weight was 72 kg (IQR 64-80), mean
+age 58 years (IQR 48-68), and 8 of 30 (27%) were female (Table 1). Renal
+function was typical for a stable graft (eGFR 49.6 mL/min, IQR 34-57) and
+hematocrit was near-normal (40.9%, IQR 37.6-44.8). Genotyping of *CYP3A5\*3*
+(rs776746) found 9 *\*1/\*3*, 1 *\*1/\*1* and 20 *\*3/\*3* patients; because a
+single *\*1/\*1* patient cannot support its own stratum, the analysis pooled
+*\*1* carriers into 10 **expressers** and kept 20 **non-expressers**.
+
+Each patient contributed two rich 24 h steady-state profiles -- one a week
+before conversion on IR-Tac (481 samples) and one four weeks after conversion
+on LCP-Tac (451 samples), 932 whole-blood concentrations in total, with 10-18
+samples per profile. This within-patient crossover is what lets the model
+separate a formulation effect on `F` from between-subject differences.
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("MohammedAli_2025_tacrolimus")()$population, max.level = 1)
+```
+
+# Source trace
+
+Every value below is also recorded as an in-file comment next to its `ini()`
+entry in `inst/modeldb/specificDrugs/MohammedAli_2025_tacrolimus.R`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F mesor) | 11.9 L/h | Table 3, "CL/F" (RSE 8.5%) |
+| `lvc` (Vc/F) | 78 L | Table 3, "Vc/F" (RSE 14.7%) |
+| `lq` (CLd/F) | 25.8 L/h | Table 3, "CLd/F" (RSE 8.5%) |
+| `lvp` (Vp/F) | 500 L, **FIX** | Table 3, "Vp/F = 500 FIX"; Results 3.2.1 |
+| `lka_ir` | 2.04 /h | Table 3, "Ka IR-Tac" (RSE 40%) |
+| `lka_lcp` | 0.111 /h | Table 3, "Ka LCP_Tac" (RSE 16.9%) |
+| `ltlag_ir` | 0.465 h | Table 3, "Lag-Time IR-Tac" (RSE 0.1%) |
+| `ltlag_lcp` | 1.4 h | Table 3, "Lag-Time LCP-Tac" (RSE 2.4%) |
+| `lfdepot_lcp_nonexpr` | 1, **FIX** | Table 3, "F LCP-Tac_PM = 1 FIX"; Methods 2.6.1 eq. 2 |
+| `lfdepot_ir_nonexpr` | 0.745 | Table 3, "F IR-Tac_PM" (RSE 7.6%) |
+| `lfdepot_lcp_expr` | 0.693 | Table 3, "F LCP-Tac_HM" (RSE 13.7%) |
+| `lfdepot_ir_expr` | 0.427 | Table 3, "F IR-Tac_HM" (RSE 13.4%) |
+| `acrophase_cl` | 17 h | Table 3, "Acrophase CL/F" (RSE 3.6%) |
+| `amp_cl` | 3.42 L/h | Table 3, "Amp CL/F" (RSE 17.1%) |
+| `acrophase_ka_ir` | 3.13 h | Table 3, "Acrophase ka" (RSE 18.3%) |
+| `amp_ka_ir` | 1.55 /h | Table 3, "Amp ka" (RSE 44.5%) |
+| `propSd` | 0.133 | Table 3, "RE. (-) = 13.30" (RSE 8.2%); Results 3.2.1 |
+| `etalcl` | 26.49 %CV | Table 3, "IIV CL/F" (RSE 29.1%) |
+| `etalvc` | 53.47 %CV | Table 3, "IIV Vc/F" (RSE 42%) |
+| `etalka_ir` | 150.66 %CV | Table 3, "IIV Ka IR-Tac" (RSE 25.6%) |
+| `etalka_lcp` | 67.23 %CV | Table 3, "IIV Ka LCP_Tac" (RSE 46.5%) |
+| block corr. Vc/F--Ka IR | 0.7563 | Table 3, "Vc/F/Ka IR-Tac Correlation" |
+| block corr. Vc/F--Ka LCP | 0.4438 | Table 3, "Vc/F/Ka LCP-Tac Correlation" |
+| block corr. Ka IR--Ka LCP | 0.45 | Table 3, "Ka IR-Tac/Ka LCP-Tac Correlation" |
+| `etaiov_cl_*` | 20.85 %CV | Table 3, "IOV CL" (RSE 23.9%) |
+| `etaiov_vc_*` | 58.82 %CV | Table 3, "IOV Vc" (RSE 28.9%) |
+| Cosinor equation `P = theta1 + theta_AMP * cos(2*pi*(TIME - ACROPHASE)/1440)` | n/a | Methods 2.6.1, equation 3 |
+| Relative bioavailability `F = 1 * theta_x` | n/a | Methods 2.6.1, equation 2 |
+| Two-compartment ODEs, delayed first-order absorption | n/a | Results 3.2.1 |
+
+Reference values used as validation targets: Table 2 (observed NCA by
+formulation and genotype), the Discussion's four derived `CL/F` values, and
+supplementary Table S1 (the paper's own 1000-subject simulations of AUC24 and
+Ctrough across IR-Tac doses 0.5-10 mg and conversion ratios 0.5-1.0).
+
+# Simulation setup
+
+The model's time variable is **clock time in hours from midnight**, because the
+acrophases (17:00 for `CL/F`, 03:08 for the IR-Tac `ka`) are absolute times of
+day rather than times after dose. The paper defines `TIME` as "the time in
+minutes starting at midnight of the first PK profile" but never states the
+clock time at which the simulated doses were given, so the helper below takes it
+as an argument; `dose_hour = 0` (the literal reading, in which the first dose
+sits at the `TIME` origin) is used throughout, and the sensitivity to this
+choice is quantified in a later section.
+
+```{r helpers}
+`%||%` <- function(a, b) if (is.null(a)) b else a
+
+# One arm = one dosing regimen for one genotype. Built as a plain data frame:
+# assigning covariate columns onto an rxEt object silently drops them.
+# `obs_by` defaults to a fine 0.02 h grid: the IR-Tac peak is sharp (tmax ~1.3 h)
+# and a coarse grid costs several tenths of a percent of AUC, which is more than
+# the closed-form gate below tolerates. Use a coarser grid for large cohorts.
+#
+# `n_days = 30` is set by the terminal half-life, which is 45.8 h for these
+# parameters (eigenvalues of the two-compartment system with Vp/F = 500 L).
+# 30 days is 15.7 terminal half-lives and reproduces the closed-form AUC to
+# 0.002%; 14 days would still be 0.53% short of steady state. Note that the
+# paper simulated 'after at least 10 days of treatment' (Methods 2.8), which
+# is only 5.2 terminal half-lives, so its Table S1 values sit slightly below
+# true steady state.
+make_arm <- function(daily_mg, form_lcp, expr, n_sub = 1L, id_offset = 0L,
+                     dose_hour = 0, n_days = 30L, obs_by = 0.02, label = NULL) {
+  tau <- if (form_lcp == 1) 24 else 12
+  amt <- if (form_lcp == 1) daily_mg else daily_mg / 2
+  # doses from the origin through the end of the observation window
+  n_dose <- as.integer(n_days * 24 / tau) + 1L
+  dose_times <- dose_hour + seq(0, by = tau, length.out = n_dose)
+  # observe the final full 24 h day, which is the steady-state window
+  win_start <- (n_days - 1L) * 24
+  obs_times <- seq(win_start, win_start + 24, by = obs_by)
+
+  ids <- id_offset + seq_len(n_sub)
+  dose_rows <- expand.grid(id = ids, time = dose_times) |>
+    mutate(amt = amt, evid = 1L, cmt = "depot")
+  obs_rows <- expand.grid(id = ids, time = obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central")
+
+  bind_rows(dose_rows, obs_rows) |>
+    mutate(
+      CYP3A5_EXPR       = expr,
+      FORM_TAC_ENVARSUS = form_lcp,
+      OCC               = if (form_lcp == 1) 2L else 1L,
+      daily_mg          = daily_mg,
+      genotype          = if (expr == 1) "CYP3A5*1 expresser" else "CYP3A5 non-expresser",
+      formulation       = if (form_lcp == 1) "LCP-Tac" else "IR-Tac",
+      treatment         = label %||% paste0(formulation, " ", daily_mg, " mg/day"),
+      win_start         = win_start
+    ) |>
+    arrange(id, time, desc(evid))
+}
+
+# Typical-value solve (IIV and residual error switched off).
+mod_typ <- rxode2::zeroRe(mod)
+
+solve_typ <- function(ev, model = mod_typ) {
+  keep <- c("CYP3A5_EXPR", "FORM_TAC_ENVARSUS", "daily_mg", "genotype",
+            "formulation", "treatment", "win_start")
+  out <- rxode2::rxSolve(model, ev, keep = keep, returnType = "data.frame",
+                         atol = 1e-10, rtol = 1e-10, maxsteps = 1e6)
+  # rxSolve omits `id` for a single-subject event table (failure pattern 8)
+  if (is.null(out$id)) out$id <- 1L
+  out
+}
+
+# Exact AUC over [a, b] by trapezoid on the dense solution grid.
+auc_dense <- function(time, conc, a, b) {
+  k <- time >= a - 1e-9 & time <= b + 1e-9
+  tt <- time[k]; cc <- conc[k]
+  sum(diff(tt) * (head(cc, -1) + tail(cc, -1)) / 2)
+}
+```
+
+# Gate 1: the closed-form steady-state AUC identity
+
+With the circadian amplitudes set to zero the model is time-invariant, so at
+steady state the AUC over one full day must equal `daily dose * F / (CL/F)`
+*exactly*. This single identity gates the ODE system, the dose encoding, the
+bioavailability wiring and the observation scaling all at once, so it is worth
+asserting before anything else.
+
+```{r gate-closed-form}
+F_tab <- tibble::tribble(
+  ~formulation, ~expr, ~F_rel,
+  "LCP-Tac",    0,     1.000,   # Table 3: F LCP-Tac_PM = 1 FIX
+  "IR-Tac",     0,     0.745,   # Table 3: F IR-Tac_PM
+  "LCP-Tac",    1,     0.693,   # Table 3: F LCP-Tac_HM
+  "IR-Tac",     1,     0.427    # Table 3: F IR-Tac_HM
+)
+CL_MESOR <- 11.9
+
+# amplitudes zeroed -> time-invariant model
+mod_flat <- mod_typ |> rxode2::ini(amp_cl = 0, amp_ka_ir = 0)
+
+gate1 <- F_tab |>
+  rowwise() |>
+  mutate(
+    daily_mg = 4,
+    sim = {
+      ev <- make_arm(daily_mg, form_lcp = as.integer(formulation == "LCP-Tac"),
+                     expr = expr)
+      s <- solve_typ(ev, mod_flat)
+      auc_dense(s$time, s$Cc, s$win_start[1], s$win_start[1] + 24)
+    },
+    closed_form = daily_mg * F_rel / CL_MESOR * 1000
+  ) |>
+  ungroup() |>
+  mutate(pct_diff = 100 * (sim - closed_form) / closed_form)
+
+gate1 |>
+  mutate(genotype = ifelse(expr == 1, "expresser", "non-expresser")) |>
+  select(formulation, genotype, F_rel, closed_form, sim, pct_diff) |>
+  rename("Formulation" = formulation, "CYP3A5" = genotype,
+         "F (rel.)" = F_rel, "dose*F/CL (ng*h/mL)" = closed_form,
+         "Simulated AUC24 (ng*h/mL)" = sim, "% diff" = pct_diff) |>
+  knitr::kable(digits = 3, caption =
+    "Time-invariant model: simulated steady-state AUC24 vs the closed form.")
+
+stopifnot(nrow(gate1) == 4L, max(abs(gate1$pct_diff)) < 0.05)
+```
+
+The identity holds to better than 0.05% in all four formulation-by-genotype
+groups, which gates the ODE system, the dose encoding, the bioavailability
+wiring and the `ng/mL` scaling together.
+
+# Gate 2: the Discussion's four derived CL/F values
+
+Because `F` is a pure multiplier on dose, the apparent clearance of each group
+is `11.9 / F`. The Discussion states these as 11.9, 15.97, 17.17 and 27.87 L/h
+for LCP-Tac non-expressers, IR-Tac non-expressers, LCP-Tac expressers and
+IR-Tac expressers respectively. This is an independent arithmetic check on the
+bioavailability parameterization: if `F` had been coded as an effect on
+clearance instead of on dose, these would not reproduce.
+
+```{r gate-derived-cl}
+published_clf <- c("LCP-Tac 0" = 11.90, "IR-Tac 0" = 15.97,
+                   "LCP-Tac 1" = 17.17, "IR-Tac 1" = 27.87)
+
+gate2 <- F_tab |>
+  mutate(
+    key       = paste(formulation, expr),
+    derived   = CL_MESOR / F_rel,
+    published = unname(published_clf[key])
+  )
+stopifnot(!anyNA(gate2$published))          # fail loudly on a label mismatch
+
+gate2 |>
+  mutate(genotype = ifelse(expr == 1, "expresser", "non-expresser"),
+         `% diff` = 100 * (derived - published) / published) |>
+  select(formulation, genotype, F_rel, published, derived, `% diff`) |>
+  rename("Formulation" = formulation, "CYP3A5" = genotype, "F (rel.)" = F_rel,
+         "Published CL/F (L/h)" = published, "11.9 / F (L/h)" = derived) |>
+  knitr::kable(digits = c(0, 0, 3, 2, 2, 3), caption =
+    "Discussion-quoted apparent clearances reproduced as 11.9 / F.")
+
+stopifnot(max(abs(gate2$derived - gate2$published)) < 0.01)
+```
+
+All four agree to within 0.01 L/h, i.e. to the precision at which the paper
+prints them.
+
+# Gate 3: does the circadian rhythm on CL/F act on LCP-Tac?
+
+The paper is explicit that the `ka` rhythm belongs to IR-Tac ("the absorption
+rate constant of the IR-Tac formulation"), but it does not say whether the
+`CL/F` rhythm applies to LCP-Tac records as well. `CL/F` is a single shared
+parameter of a joint model, and a diurnal metabolic rhythm is a property of the
+patient rather than of the tablet, so the model applies it to both formulations.
+
+Table S1 settles the question quantitatively. Integrating a cosinor-modulated
+clearance over a **full** 24 h cycle gives an AUC slightly *above* the
+time-invariant `dose * F / CL` -- a Jensen effect, because AUC depends on
+`1 / CL`. For a once-daily formulation this excess is independent of the dose
+clock time, so it is a clean discriminator.
+
+```{r gate-circadian-scope}
+lcp_targets <- tibble::tribble(          # Table S1, LCP-Tac columns
+  ~daily_ir, ~expr, ~ratio, ~tableS1,
+  0.5, 1, 1.0,  29.86,   0.5, 0, 1.0,  43.56,
+  3.0, 1, 1.0, 180.73,   3.0, 0, 1.0, 267.27,
+  6.0, 1, 1.0, 358.32,   6.0, 0, 1.0, 522.73,
+  0.5, 1, 0.6,  18.19,   0.5, 0, 0.6,  25.60,
+  3.0, 1, 0.6, 107.98,   3.0, 0, 0.6, 158.18,
+  6.0, 1, 0.6, 218.28,   6.0, 0, 0.6, 307.25
+)
+
+auc_lcp <- function(daily_mg, expr, model) {
+  ev <- make_arm(daily_mg, form_lcp = 1L, expr = expr)
+  s <- solve_typ(ev, model)
+  auc_dense(s$time, s$Cc, s$win_start[1], s$win_start[1] + 24)
+}
+
+gate3 <- lcp_targets |>
+  rowwise() |>
+  mutate(
+    dose_lcp   = daily_ir * ratio,
+    with_rhythm = auc_lcp(dose_lcp, expr, mod_typ),
+    no_rhythm   = auc_lcp(dose_lcp, expr, mod_flat)
+  ) |>
+  ungroup() |>
+  mutate(
+    dev_with = 100 * (with_rhythm - tableS1) / tableS1,
+    dev_none = 100 * (no_rhythm   - tableS1) / tableS1
+  )
+
+tibble::tibble(
+  Reading = c("CL/F rhythm applied to LCP-Tac (model as shipped)",
+              "CL/F rhythm suppressed on LCP-Tac"),
+  `Mean |% dev| vs Table S1` = c(mean(abs(gate3$dev_with)), mean(abs(gate3$dev_none))),
+  `Max |% dev|`              = c(max(abs(gate3$dev_with)),  max(abs(gate3$dev_none)))
+) |>
+  knitr::kable(digits = 2, caption =
+    "Discriminating the scope of the CL/F circadian rhythm against Table S1.")
+
+# The applied reading must be the better one, by a clear margin.
+stopifnot(mean(abs(gate3$dev_with)) < 0.5 * mean(abs(gate3$dev_none)),
+          max(abs(gate3$dev_with)) < 3)
+```
+
+Applying the rhythm to LCP-Tac reduces the mean absolute deviation from the
+paper's own simulations by roughly a factor of five, and every one of the 12
+cells lands within 3%. Suppressing it leaves a systematic ~3.5% shortfall in
+the same direction throughout. The model therefore carries the `CL/F` rhythm on
+both formulations.
+
+# Replicating supplementary Table S1
+
+Table S1 reports geometric means of AUC24 and Ctrough from 1000 simulated
+subjects for every IR-Tac dose and conversion ratio. For this model the
+geometric mean of AUC over a log-normal cohort equals the typical-value AUC
+(AUC scales as `1 / CL` and `log CL` is symmetric), so the typical-value
+profile is the right comparator and is far cheaper than re-running 1000
+subjects per cell.
+
+```{r tableS1-grid}
+grid_targets <- tibble::tribble(
+  ~daily_ir, ~expr, ~ratio, ~auc_S1, ~ctrough_S1,
+  # IR-Tac reference arms (ratio NA); Table S1 "IR-Tac0-24"
+  3.0, 1, NA, 105.76, 3.19,   3.0, 0, NA, 183.98, 5.52,
+  6.0, 1, NA, 213.39, 6.45,   6.0, 0, NA, 367.08, 10.97,
+  # LCP-Tac arms at the two clinically recommended ratios
+  3.0, 1, 0.6, 107.98, 3.41,  3.0, 0, 0.6, 158.18, 5.00,
+  3.0, 1, 0.7, 126.40, 3.96,  3.0, 0, 0.7, 181.84, 5.75,
+  6.0, 1, 0.6, 218.28, 6.90,  6.0, 0, 0.6, 307.25, 9.72,
+  6.0, 1, 0.7, 253.90, 8.01,  6.0, 0, 0.7, 369.14, 11.70
+)
+
+sim_cell <- function(daily_ir, expr, ratio) {
+  is_lcp <- !is.na(ratio)
+  dose <- if (is_lcp) daily_ir * ratio else daily_ir
+  ev <- make_arm(dose, form_lcp = as.integer(is_lcp), expr = expr)
+  s <- solve_typ(ev)
+  w0 <- s$win_start[1]
+  tibble::tibble(
+    auc_sim     = auc_dense(s$time, s$Cc, w0, w0 + 24),
+    ctrough_sim = approx(s$time, s$Cc, xout = w0 + 24)$y
+  )
+}
+
+s1_cmp <- grid_targets |>
+  rowwise() |>
+  mutate(sim_cell(daily_ir, expr, ratio)) |>
+  ungroup() |>
+  mutate(
+    arm = ifelse(is.na(ratio), "IR-Tac (reference)",
+                 paste0("LCP-Tac ratio ", ratio)),
+    genotype = ifelse(expr == 1, "expresser", "non-expresser"),
+    auc_pct     = 100 * (auc_sim - auc_S1) / auc_S1,
+    ctrough_pct = 100 * (ctrough_sim - ctrough_S1) / ctrough_S1
+  )
+
+s1_cmp |>
+  select(daily_ir, genotype, arm, auc_S1, auc_sim, auc_pct,
+         ctrough_S1, ctrough_sim, ctrough_pct) |>
+  rename("IR dose (mg/day)" = daily_ir, "CYP3A5" = genotype, "Arm" = arm,
+         "AUC24 Table S1" = auc_S1, "AUC24 model" = auc_sim,
+         "AUC % diff" = auc_pct, "Ctrough Table S1" = ctrough_S1,
+         "Ctrough model" = ctrough_sim, "Ctrough % diff" = ctrough_pct) |>
+  knitr::kable(digits = 2, caption =
+    "Model typical-value predictions vs the paper's supplementary Table S1 simulations (AUC24 in ng*h/mL, Ctrough in ng/mL).")
+
+stopifnot(nrow(s1_cmp) == 12L,
+          max(abs(s1_cmp$auc_pct)) < 4,
+          max(abs(s1_cmp$ctrough_pct)) < 7)
+```
+
+Agreement is good throughout: LCP-Tac AUC24 is within 1.5% of Table S1 in every
+cell, and the IR-Tac arms sit about 3% high. The IR-Tac offset is discussed
+under Assumptions and deviations -- it is driven by the one quantity the paper
+never reports, the clock time of the simulated doses.
+
+# The conversion-ratio question (Figures 3 and 4)
+
+Figures 3 and 4 of the paper are boxplots of simulated AUC24 and Ctrough for
+IR-Tac total daily doses of 3-6 mg against conversion ratios 0.5-1.0, split by
+genotype. The panel below reproduces the typical-value backbone of those
+figures: the LCP-Tac exposure curve against conversion ratio, with the IR-Tac
+reference exposure drawn as a horizontal line. Where the curve crosses the line
+is the ratio that preserves exposure -- the paper's central result.
+
+```{r figure34, fig.height = 5.5}
+ratios <- seq(0.5, 1.0, by = 0.1)
+doses  <- c(3, 4, 5, 6)
+
+lcp_curve <- expand.grid(daily_ir = doses, expr = c(0, 1), ratio = ratios) |>
+  rowwise() |>
+  mutate(sim_cell(daily_ir, expr, ratio)) |>
+  ungroup()
+
+ir_ref <- expand.grid(daily_ir = doses, expr = c(0, 1)) |>
+  rowwise() |>
+  mutate(sim_cell(daily_ir, expr, NA)) |>
+  ungroup() |>
+  rename(auc_ir = auc_sim, ctrough_ir = ctrough_sim)
+
+lab_geno <- function(x) ifelse(x == 1, "CYP3A5*1 expresser", "CYP3A5 non-expresser")
+
+ggplot(lcp_curve, aes(ratio, auc_sim, colour = factor(daily_ir))) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 1.4) +
+  geom_hline(data = ir_ref, aes(yintercept = auc_ir, colour = factor(daily_ir)),
+             linetype = "dashed", linewidth = 0.4) +
+  facet_wrap(~lab_geno(expr)) +
+  labs(x = "IR-Tac to LCP-Tac conversion ratio",
+       y = "Steady-state AUC24 (ng*h/mL)",
+       colour = "IR-Tac dose\n(mg/day)",
+       title = "Replicates Figure 3 of Mohammed Ali 2025 (typical-value backbone)",
+       subtitle = "Dashed line: exposure on the pre-conversion IR-Tac regimen") +
+  theme_bw()
+```
+
+The ratio at which LCP-Tac exposure matches the previous IR-Tac exposure is the
+paper's recommendation. Solving for it directly:
+
+```{r optimal-ratio}
+opt_ratio <- lcp_curve |>
+  left_join(ir_ref |> select(daily_ir, expr, auc_ir, ctrough_ir),
+            by = c("daily_ir", "expr")) |>
+  group_by(daily_ir, expr) |>
+  summarise(
+    ratio_auc     = approx(auc_sim, ratio, xout = auc_ir[1])$y,
+    ratio_ctrough = approx(ctrough_sim, ratio, xout = ctrough_ir[1])$y,
+    .groups = "drop"
+  ) |>
+  mutate(genotype = lab_geno(expr))
+
+opt_ratio |>
+  select(genotype, daily_ir, ratio_auc, ratio_ctrough) |>
+  arrange(genotype, daily_ir) |>
+  rename("CYP3A5" = genotype, "IR-Tac dose (mg/day)" = daily_ir,
+         "Exposure-neutral ratio (AUC24)" = ratio_auc,
+         "Exposure-neutral ratio (Ctrough)" = ratio_ctrough) |>
+  knitr::kable(digits = 3, caption =
+    "Conversion ratio that reproduces the pre-conversion IR-Tac exposure. The paper recommends 1:0.6 for expressers and 1:0.7 for non-expressers.")
+
+# The paper's headline conclusion, asserted: expressers need a LOWER ratio than
+# non-expressers, and the two cluster around 0.6 and 0.7 respectively.
+by_geno <- opt_ratio |> group_by(expr) |> summarise(r = mean(ratio_auc))
+r_expr    <- by_geno$r[by_geno$expr == 1]
+r_nonexpr <- by_geno$r[by_geno$expr == 0]
+stopifnot(length(r_expr) == 1L, length(r_nonexpr) == 1L)
+stopifnot(r_expr < r_nonexpr)                       # genotype ordering
+stopifnot(abs(r_expr - 0.6) < 0.05)                 # 1:0.6 for expressers
+stopifnot(abs(r_nonexpr - 0.7) < 0.05)              # 1:0.7 for non-expressers
+```
+
+Both recommendations fall out of the model: expressers need roughly a 0.6 ratio
+(a 40% dose reduction) and non-expressers roughly 0.7 (a 30% reduction), and the
+answer is essentially independent of the starting dose because the model is
+linear in dose. This reproduces the paper's central conclusion, and it is a
+consequence of the `F` estimates alone: the expresser LCP-Tac/IR-Tac
+bioavailability ratio is `0.693 / 0.427 = 1.62`, versus
+`1.000 / 0.745 = 1.34` in non-expressers, and `1 / 1.62 = 0.617` while
+`1 / 1.34 = 0.745`.
+
+# Day-dose versus night-dose asymmetry (Figure 2)
+
+Panels (a) and (b) of Figure 2 show the IR-Tac day dose and night dose
+separately, which only makes sense because the circadian terms make them
+different. Table S1 quantifies it: AUC over 0-12 h exceeds AUC over 12-24 h by
+about 17% in every dose-genotype cell.
+
+```{r figure2-asymmetry}
+ir_profile <- make_arm(3, form_lcp = 0L, expr = 1L, obs_by = 0.02) |> solve_typ()
+w0 <- ir_profile$win_start[1]
+
+a_day   <- auc_dense(ir_profile$time, ir_profile$Cc, w0,      w0 + 12)
+a_night <- auc_dense(ir_profile$time, ir_profile$Cc, w0 + 12, w0 + 24)
+
+tibble::tibble(
+  Interval = c("0-12 h (day dose)", "12-24 h (night dose)", "ratio day/night"),
+  Model    = c(a_day, a_night, a_day / a_night),
+  `Table S1 (3 mg, expresser)` = c(56.78, 48.53, 56.78 / 48.53)
+) |>
+  knitr::kable(digits = 3, caption =
+    "IR-Tac day-dose vs night-dose steady-state AUC (ng*h/mL).")
+
+# The asymmetry must be present and in the direction the paper reports.
+stopifnot(a_day > a_night, a_day / a_night > 1.05)
+```
+
+```{r figure2-profiles, fig.height = 4}
+prof <- bind_rows(
+  make_arm(3, form_lcp = 0L, expr = 1L, obs_by = 0.02) |> solve_typ(),
+  make_arm(3, form_lcp = 0L, expr = 0L, obs_by = 0.02) |> solve_typ(),
+  make_arm(3 * 0.6, form_lcp = 1L, expr = 1L, obs_by = 0.02) |> solve_typ(),
+  make_arm(3 * 0.7, form_lcp = 1L, expr = 0L, obs_by = 0.02) |> solve_typ()
+) |>
+  mutate(clock = (time - win_start) %% 24)
+
+ggplot(prof, aes(clock, Cc, colour = formulation)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~genotype) +
+  scale_x_continuous(breaks = seq(0, 24, by = 6)) +
+  labs(x = "Clock time within the steady-state day (h from midnight)",
+       y = "Whole-blood tacrolimus (ng/mL)", colour = "Formulation",
+       title = "Steady-state typical-value profiles at exposure-neutral doses",
+       subtitle = "IR-Tac 3 mg/day split q12h; LCP-Tac at the genotype-specific conversion ratio") +
+  theme_bw()
+```
+
+The IR-Tac profile shows the sharp twice-daily peaks the formulation is known
+for, with visibly unequal day and night peaks, while LCP-Tac (`ka` = 0.111
+h^-1) produces the flat once-daily profile that motivated the MeltDose product.
+
+# Virtual cohort and PKNCA validation
+
+The stochastic cohort below carries the published IIV, the correlated
+Vc/F--ka block and the inter-occasion variability. It is used for the
+NCA validation and for a variability band around the typical-value profiles.
+
+```{r cohort}
+set.seed(20250912)
+N_PER_ARM <- 100L   # cap is 200 per arm
+
+cohort_ev <- bind_rows(
+  make_arm(3,       form_lcp = 0L, expr = 1L, n_sub = N_PER_ARM, id_offset =   0L, obs_by = 0.25,
+           label = "IR-Tac 3 mg/day, expresser"),
+  make_arm(3,       form_lcp = 0L, expr = 0L, n_sub = N_PER_ARM, id_offset = 100L, obs_by = 0.25,
+           label = "IR-Tac 3 mg/day, non-expresser"),
+  make_arm(3 * 0.6, form_lcp = 1L, expr = 1L, n_sub = N_PER_ARM, id_offset = 200L, obs_by = 0.25,
+           label = "LCP-Tac 1.8 mg/day, expresser"),
+  make_arm(3 * 0.7, form_lcp = 1L, expr = 0L, n_sub = N_PER_ARM, id_offset = 300L, obs_by = 0.25,
+           label = "LCP-Tac 2.1 mg/day, non-expresser")
+)
+
+sim <- rxode2::rxSolve(
+  mod, cohort_ev,
+  keep = c("CYP3A5_EXPR", "FORM_TAC_ENVARSUS", "daily_mg", "genotype",
+           "formulation", "treatment", "win_start"),
+  returnType = "data.frame", atol = 1e-8, rtol = 1e-8, maxsteps = 1e6
+)
+if (is.null(sim$id)) sim$id <- 1L
+stopifnot(dplyr::n_distinct(sim$id) == 4L * N_PER_ARM, all(sim$Cc >= 0))
+```
+
+```{r cohort-plot, fig.height = 4.5}
+bands <- sim |>
+  mutate(clock = (time - win_start) %% 24) |>
+  group_by(treatment, formulation, genotype, clock) |>
+  summarise(p05 = quantile(Cc, 0.05), p50 = median(Cc),
+            p95 = quantile(Cc, 0.95), .groups = "drop")
+
+ggplot(bands, aes(clock, p50, colour = formulation, fill = formulation)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.18, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~genotype) +
+  scale_x_continuous(breaks = seq(0, 24, by = 6)) +
+  labs(x = "Clock time within the steady-state day (h from midnight)",
+       y = "Whole-blood tacrolimus (ng/mL)",
+       colour = "Formulation", fill = "Formulation",
+       title = "Simulated steady-state variability (median, 5th-95th percentiles)",
+       subtitle = paste0(N_PER_ARM, " subjects per arm; compare Figure 2 of Mohammed Ali 2025")) +
+  theme_bw()
+```
+
+Non-compartmental analysis over the steady-state dosing day, with `PKNCA`
+configured to use the linear-up / log-down trapezoid that the paper's own NCA
+used (Methods 2.5).
+
+```{r pknca}
+conc_df <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(time_ss = time - win_start) |>
+  filter(time_ss >= 0, time_ss <= 24) |>
+  select(id, treatment, time_ss, Cc)
+stopifnot(any(conc_df$time_ss == 0))   # a time-zero record is mandatory
+
+dose_df <- cohort_ev |>
+  filter(evid == 1L) |>
+  mutate(time_ss = time - win_start) |>
+  filter(time_ss >= 0, time_ss < 24) |>
+  group_by(id, treatment) |>
+  summarise(dose_total = sum(amt), time_ss = min(time_ss), .groups = "drop")
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time_ss | treatment + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, dose_total ~ time_ss | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(start = 0, end = 24,
+                        cmax = TRUE, tmax = TRUE, cmin = TRUE,
+                        auclast = TRUE, cav = TRUE, ctrough = TRUE)
+
+# Match the paper's own NCA method (Methods 2.5, "linear-log trapezoidal rule").
+# PKNCA.options() returns the previous values, so the old settings are restored
+# after this chunk rather than leaking into later chunks.
+old_opts <- PKNCA::PKNCA.options(auc.method = "lin up/log down")
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+stopifnot(nrow(as.data.frame(nca_res)) > 0L)
+
+nca_res |>
+  summary() |>
+  knitr::kable(caption =
+    "Steady-state NCA of the simulated cohort over the 24 h dosing day.")
+```
+
+## Comparison against the published NCA
+
+Table 2 of the paper reports observed geometric-mean AUC24 and Ctrough by
+formulation and genotype. Those were measured at the patients' own individual
+clinical doses (median 5 and 3 mg/day IR-Tac in expressers and non-expressers),
+not at the fixed 3 mg/day used above, so the comparison below re-simulates each
+arm at the paper's own median dose for that group.
+
+```{r nca-comparison}
+tab2 <- tibble::tribble(
+  ~treatment,                       ~dose_daily, ~form_lcp, ~expr, ~auclast, ~cmin,
+  "IR-Tac, expresser",              5.00,  0L, 1L, 195, 4.9,
+  "IR-Tac, non-expresser",          3.00,  0L, 0L, 212, 5.7,
+  "LCP-Tac, expresser",             3.75,  1L, 1L, 232, 5.6,
+  "LCP-Tac, non-expresser",         2.00,  1L, 0L, 199, 5.7
+)
+
+tab2_ev <- bind_rows(lapply(seq_len(nrow(tab2)), function(i) {
+  r <- tab2[i, ]
+  make_arm(r$dose_daily, form_lcp = r$form_lcp, expr = r$expr,
+           n_sub = N_PER_ARM, id_offset = (i - 1L) * N_PER_ARM, obs_by = 0.25,
+           label = r$treatment)
+}))
+
+sim2 <- rxode2::rxSolve(
+  mod, tab2_ev,
+  keep = c("treatment", "win_start"),
+  returnType = "data.frame", atol = 1e-8, rtol = 1e-8, maxsteps = 1e6
+)
+if (is.null(sim2$id)) sim2$id <- 1L
+
+conc2 <- sim2 |>
+  filter(!is.na(Cc)) |>
+  mutate(time_ss = time - win_start) |>
+  filter(time_ss >= 0, time_ss <= 24) |>
+  select(id, treatment, time_ss, Cc)
+dose2 <- tab2_ev |>
+  filter(evid == 1L) |>
+  mutate(time_ss = time - win_start) |>
+  filter(time_ss >= 0, time_ss < 24) |>
+  group_by(id, treatment) |>
+  summarise(dose_total = sum(amt), time_ss = min(time_ss), .groups = "drop")
+
+nca2 <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc2, Cc ~ time_ss | treatment + id,
+                   concu = "ng/mL", timeu = "h"),
+  PKNCA::PKNCAdose(dose2, dose_total ~ time_ss | treatment + id, doseu = "mg"),
+  intervals = data.frame(start = 0, end = 24, auclast = TRUE, cmin = TRUE)
+))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca2,
+  reference = tab2 |> select(treatment, auclast, cmin),
+  by        = "treatment",
+  units     = c(auclast = "ng*h/mL", cmin = "ng/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, caption = paste(
+  "Simulated vs observed NCA (Mohammed Ali 2025 Table 2 geometric means).",
+  "* differs from the reference by more than 20%."),
+  align = c("l", "l", "r", "r", "r"))
+attr(cmp, "footnote")
+```
+
+The simulated exposures track the observed geometric means across all four
+formulation-by-genotype arms. Residual differences are expected and are not
+tuned away: Table 2 reports geometric means over patients receiving a *range*
+of doses (the median is used here as a single representative dose), the
+cohort's simulated Ctrough is sensitive to the large `Vc/F` variability
+(53% IIV plus 59% IOV), and the observed values carry the 13.3% residual error
+that the simulation reproduces only in expectation.
+
+# Assumptions and deviations
+
+* **Clock time of the simulated doses is unstated and is the largest residual
+  uncertainty.** The circadian terms make every prediction depend on the clock
+  time at which dosing starts, but the paper never reports it. This vignette
+  uses `dose_hour = 0`, the literal reading of the paper's own definition of
+  `TIME` ("minutes starting at midnight of the first PK profile") with the
+  first dose at the `TIME` origin. This reproduces the direction and most of
+  the magnitude of the day/night asymmetry (ratio 1.13 modelled vs 1.17 in
+  Table S1) and leaves IR-Tac AUC24 about 3% above Table S1. A first-dose time
+  near 01:30 reproduces both the IR-Tac total AUC (within 0.1%) and the
+  day/night ratio (within 1%) simultaneously, but no value in the paper
+  supports preferring it, so it was not adopted. LCP-Tac predictions are
+  insensitive to this choice, because a full-cycle integral of the rhythm does
+  not depend on where the cycle starts.
+* **The paper's simulations are slightly short of steady state, which also
+  contributes to the IR-Tac offset.** Methods 2.8 simulates "at least 10 days
+  of treatment", but the terminal half-life implied by Table 3 (with
+  `Vp/F` = 500 L) is 45.8 h, so 10 days is only 5.2 terminal half-lives and
+  reaches roughly 97% of the steady-state AUC. This vignette simulates 30 days
+  (15.7 half-lives, within 0.002% of steady state), so a small positive offset
+  against Table S1 is expected on structural grounds and was not tuned away.
+* **Scope of the `CL/F` circadian rhythm was inferred, not stated.** The paper
+  says the `ka` rhythm belongs to IR-Tac but is silent on whether the `CL/F`
+  rhythm applies to LCP-Tac records. It is applied to both, on the grounds that
+  `CL/F` is one shared parameter of a joint model and diurnal metabolic
+  capacity is a patient property. Gate 3 above shows this reading matches
+  Table S1 roughly five times better than the alternative.
+* **Placement of the random effect relative to the cosinor term was inferred.**
+  Equation 3 reads `P = theta_1 + theta_AMP * cos(...)` and calls `theta_1` the
+  "individual value". Adding an *absolute* amplitude to the individual value is
+  not viable here: the IR-Tac `ka` carries 150.66 %CV IIV, so `ka_i` would fall
+  below the 1.55 h^-1 amplitude in roughly 40% of subjects and the absorption
+  rate would go negative for part of every day, which cannot be what produced
+  the paper's 1000-subject simulations. The model therefore uses the standard
+  NONMEM idiom `P_i(t) = (theta_mesor + theta_AMP * cos(...)) * exp(eta)`, in
+  which the amplitude-to-mesor ratio is constant across subjects and both rates
+  stay positive. For the typical subject the two readings are identical, so no
+  validation target distinguishes them.
+* **Equation 3 is printed with unbalanced parentheses.** As typeset,
+  `P = theta_1 + theta_AMP*COS(2*pi/1440)*(TIME - theta_ACROPHASE))` would make
+  `cos(2*pi/1440)` a constant near 1 and the parameter a linear ramp in time,
+  which contradicts the surrounding text ("a cosine function with a period of
+  24 h", "acrophase (time of the peak of the cosine function)") and the
+  reported acrophases. The standard cosinor reading
+  `theta_1 + theta_AMP * cos(2*pi*(TIME - ACROPHASE)/24)` is used.
+* **Acrophase units.** Equation 3 puts `TIME` in minutes with a 1440-minute
+  period, but Table 3 labels both acrophases in hours (17 h, 3.13 h). The
+  implementation works in hours with a 24 h period, which is the same function.
+* **`Vp/F` is fixed at 500 L**, as in the paper (Table 3 "500 FIX"); no
+  uncertainty is available for it.
+* **Number of occasions for the IOV terms is inferred from the design.** The
+  paper reports single IOV magnitudes for `CL/F` and `Vc/F` without stating how
+  many occasions were used. The design fixes it at two, one rich 24 h profile
+  per formulation, so `OCC = 1` is the IR-Tac profile and `OCC = 2` the
+  LCP-Tac profile, with occasion 2's variance fixed equal to occasion 1
+  (NONMEM `$OMEGA BLOCK(1) SAME`). Because `OCC` and `FORM_TAC_ENVARSUS` are
+  one-to-one in this crossover, the IOV and the formulation effect on `F` are
+  partially aliased; a user applying this model to a dataset with more
+  occasions per formulation should revisit the mapping.
+* **Residual error is coded as purely proportional.** Table 3 labels the
+  13.30% term "Combined residual error", but no additive component is reported
+  anywhere in the paper and Results 3.2.1 states the proportional model was
+  selected. A single proportional term is used.
+* **`Lag-Time LCP-Tac` is 1.4 h**, per Table 3 and its bootstrap CI
+  (1.32-1.57); the Discussion quotes 1.42 h for the same parameter.
+* **Covariates screened but not retained.** Body weight, BMI, age, sex and
+  hematocrit were all tested and none reached significance (Results 3.2.2), so
+  they are recorded in `covariatesDataExcluded` rather than `covariateData` and
+  the model has no size scaling. Users applying it outside the narrow
+  demographic range of this 30-patient cohort should not assume weight
+  independence generalises.
+* **The single `CYP3A5*1/*1` patient was pooled with heterozygotes** by the
+  authors (Results 3.1), so `CYP3A5_EXPR = 1` covers both `*1/*3` and `*1/*1`
+  and the model cannot distinguish homozygous from heterozygous expressers.
+* **`checkModelConventions()` reports no issues** beyond an informational note
+  that `units$dosing` (mg) and `units$concentration` (ng/mL) differ in
+  magnitude; the required factor of 1000 is applied explicitly in
+  `Cc <- 1000 * central / vc`.
+* **Original observed data are not publicly available**, so all figures use
+  virtual cohorts and typical-value profiles rather than the trial's own
+  concentrations. The quantitative comparisons target the paper's published
+  tables (Table 2 observed NCA, Table 3 parameter estimates, Table S1
+  simulations) and the four derived `CL/F` values in the Discussion.
