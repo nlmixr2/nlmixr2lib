@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Olafuyi 2025 propylene glycol ([doi:10.1002/jcph.6150](https://doi.org/10.1002/jcph.6150)) - healthy adults and term neonates; compartmental reductions of the published Simcyp full-PBPK models, with saturable ADH-mediated clearance.
+- Add Fan 2025 intravenous iron whole-body PBPK models ([doi:10.1007/s13346-024-01675-x](https://doi.org/10.1007/s13346-024-01675-x)) -- mice on iron-deficient, iron-adequate and iron-loaded diets, plus ferric carboxymaltose extrapolations to rat (iron-deficiency anaemia) and adults with iron-deficiency anaemia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

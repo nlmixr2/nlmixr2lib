@@ -1396,6 +1396,16 @@ navbar:
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Irinotecan mouse (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+      - text: "Iron ferriccarboxymaltose human pbpk (Fan 2025)"
+        href: articles/Fan_2025_iron_wholebody_pbpk.html
+      - text: "Iron ferriccarboxymaltose rat pbpk (Fan 2025)"
+        href: articles/Fan_2025_iron_wholebody_pbpk.html
+      - text: "Iron mouse ironadequate pbpk (Fan 2025)"
+        href: articles/Fan_2025_iron_wholebody_pbpk.html
+      - text: "Iron mouse irondeficient pbpk (Fan 2025)"
+        href: articles/Fan_2025_iron_wholebody_pbpk.html
+      - text: "Iron mouse ironloaded pbpk (Fan 2025)"
+        href: articles/Fan_2025_iron_wholebody_pbpk.html
       - text: "Isatuximab (Brillac 2025)"
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
@@ -3559,6 +3569,7 @@ articles:
   - articles/Facius_2018_roflumilast
   - articles/Faelens_2021_infliximab
   - articles/Falkenhagen_2023_warfarin_qsp
+  - articles/Fan_2025_iron_wholebody_pbpk
   - articles/Fang_2010_etanercept
   - articles/Fanta_2007_ciclosporin
   - articles/Farrell_2012_farletuzumab
