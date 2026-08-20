@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kim 2025 evogliptin ([doi:10.1002/psp4.13263](https://doi.org/10.1002/psp4.13263)) -- adults spanning normal renal function through end-stage renal disease on hemodialysis.
+- Add Braniff 2025 lorlatinib signaling / shell-and-core tumor QSP model ([doi:10.1002/psp4.13270](https://doi.org/10.1002/psp4.13270)) -- adults with ALK-positive advanced non-small cell lung cancer.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

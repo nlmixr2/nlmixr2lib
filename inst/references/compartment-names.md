@@ -454,6 +454,22 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Source aliases:** none.
 - **Example models:** `Simeoni_2004.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R`.
 
+### damaged_cells4 (**canonical fourth damaged-cell transit compartment**)
+- **Type:** compartment
+- **Role:** Fourth damaged-cell transit compartment, for damaged / necrotic-cell clearance chains longer than the three-compartment Simeoni 2004 default.
+- **Source aliases:**
+  - `N_n3` -- Braniff 2025 notation for the third necrotic clearance-delay compartment (the paper indexes its necrotic states from `N_n0`, so its `N_n3` is the fourth member of this chain).
+- **Example models:** `Braniff_2025_lorlatinib_qsp.R` (founding example; a five-compartment necrotic core in which `damaged_cells1` is the core-entry state cleared at rate `ke_necrotic` and `damaged_cells2..damaged_cells5` transit at `1 / tau`).
+- **Notes:** Registered 2026-08-13. The `damaged_cells<n>` chain is a blessed chain-prefix family (see "Numbered compartments and chain prefixes"); this entry and `damaged_cells5` extend the registered chain from three to five members so that shell-and-core tumor models with a longer necrotic clearance delay do not need paper-specific names. Unlike the Simeoni chain, the transitions into and along a shell-and-core necrotic chain need not share a single rate.
+
+### damaged_cells5 (**canonical fifth damaged-cell transit compartment**)
+- **Type:** compartment
+- **Role:** Fifth damaged-cell transit compartment; the terminal state of a five-member damaged / necrotic-cell clearance chain, from which cells are eliminated.
+- **Source aliases:**
+  - `N_n4` -- Braniff 2025 notation for the terminal necrotic clearance-delay compartment.
+- **Example models:** `Braniff_2025_lorlatinib_qsp.R` (founding example).
+- **Notes:** Registered 2026-08-13 together with `damaged_cells4`. In Braniff 2025 this terminal state is load-bearing beyond simple clearance: it appears in the shell-to-core transfer rate `kn`, and its initial value is bounded by the paper's no-spontaneous-shrinkage constraint `N_n4 < kg0 * tau * N_p`.
+
 ### growth (**canonical Stein-model tumor-growth sub-state**)
 - **Type:** compartment
 - **Role:** Exponentially growing (treatment-resistant) sub-population of the Stein bi-exponential tumor-size model: `d/dt(growth) = kge * growth` with `growth(0) = TSb`, so `growth(t) = TSb * exp(kge * t)`. Paired with `shrink`; the observed tumor size is `TS = growth + shrink - TSb`.
