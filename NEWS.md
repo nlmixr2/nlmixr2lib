@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jia 2025 TAK-071 ([doi:10.1002/cpdd.1579](https://doi.org/10.1002/cpdd.1579)) -- healthy adults and participants with Parkinson disease and cognitive impairment.
+- Add Fan 2025 Nb457-NbHSA-Nb457 anti-CD4 trimeric nanobody and ibalizumab TMDD PK-PD models ([doi:10.1128/spectrum.00805-25](https://doi.org/10.1128/spectrum.00805-25)) -- HIV-1-infected humanized NDG-HuPBL mice, plus allometric human projections.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
