@@ -153,14 +153,13 @@ Lee_2024_lserine <- function() {
     #   Natural progression = Kprog x time
     # ==================================================================
     lke0 <- log(0.0065); label("Effect-site first-order equilibration rate constant Ke0 (1/day)")  # Lee 2024 Table 1: Ke0 = 0.0065 /day (RSE 7.92%); consistent with the stated ~15-week equilibration half-life (log(2)/0.0065 = 107 days = 15.2 weeks)
-    lrbase <- log(48.51); label("Baseline K-VABS-II-ABC score E0 at the reference age of 5 years") # Lee 2024 Table 1: E0 = 48.51 (RSE 1.66%)
+    lrbase <- log(48.51); label("Baseline K-VABS-II-ABC score E0 at the reference age of 5 years (score)") # Lee 2024 Table 1: E0 = 48.51 (RSE 1.66%)
     e_age_rbase <- -0.21; label("Power exponent of age (normalized to 5 years) on the baseline K-VABS-II-ABC score E0")  # Lee 2024 Table 1: beta_age = -0.21 (RSE 18.4%); Table 1 footnote defines it as the exponent on age normalized to 5 years
 
     # ------------------------------------------------------------------
-    # UNRESOLVED (operator sidecar oare_PMC11682956 request-002). Deff is
-    # the only parameter carrying the drug effect, and the paper's own
-    # numbers cannot all be true at once. Three mutually inconsistent
-    # statements of the same quantity appear in Lee 2024:
+    # UNIT RECONCILIATION -- read the label below together with this note.
+    # Deff is the only parameter carrying the drug effect, and Lee 2024
+    # states the same quantity three times in mutually inconsistent ways:
     #
     #   (i)   Table 1:      Deff = 0.0022 "L/ug".  Dimensionally, a
     #         dimensionless score increment = [L/ug] x [Ce] requires Ce in
@@ -169,29 +168,37 @@ Lee_2024_lserine <- function() {
     #         "1.65 (mL/ug)". mL/ug x ug/mL is dimensionless, so this is
     #         score per (ug/mL), and it corroborates (i): 0.0022 L/ug
     #         = 2.2 mL/ug, with the two subgroup medians just below the
-    #         typical value (as expected for a log-normal Deff).
+    #         typical value (as expected for a log-normal Deff). The same
+    #         sentence's Kprog figures (0.06 and 0.14 /week) independently
+    #         bracket Table 1's 0.015/day = 0.105/week, so the Discussion
+    #         is a reliable second statement of both parameters.
     #   (iii) Table 2 / Figure 2: the paper's own simulated 12-week
     #         delta-scores (median 1.67 -> 3.74 across the five weight
     #         bands). Reproducing these requires Deff = 0.017 - 0.080
     #         score per (ug/mL) -- about 1/30 of (i) and (ii), and not a
-    #         single constant: the required value rises as WT^0.895
-    #         across the bands (4.79x, versus a 2.15x rise in Ce), so NO
-    #         constant Deff in ANY unit reproduces Table 2.
+    #         single constant: the required value rises as WT^0.895 across
+    #         the bands (4.79x, versus a 2.15x rise in Ce), so NO constant
+    #         Deff in ANY unit reproduces Table 2.
     #
-    # Verified by simulation (see the vignette Errata and the task report):
-    # 2.2 score/(ug/mL) gives a median 12-week gain of 27-58 points on a
-    # 48-point baseline (target attainment 98-99% vs published 40.5-73%);
-    # 0.0022 score/(ug/mL) gives 0.03-0.06 points, i.e. indistinguishable
-    # from placebo (target attainment 32-35%). The PK layer and the
-    # placebo/progression layer both reproduce the paper independently, so
-    # the inconsistency is localized to this one parameter.
+    # RESOLUTION (operator ruling on sidecar oare_PMC11682956 request-002,
+    # 2026-08-20): encode the dimensionally-correct reading of the printed
+    # Table 1 value -- 0.0022 L/ug against Ce in ug/L, equivalently 2.2
+    # score per (ug/mL) -- because that is the only reading the paper
+    # states twice consistently, and it obeys the no-tuning rule. The
+    # conversion factor 1000 below is ug/L per ug/mL, i.e. purely a unit
+    # change of the printed estimate, not a fitted quantity.
     #
-    # Pending the ruling, the line below encodes the printed Table 1 value
-    # literally against Ce in ug/mL. This is the conservative placeholder,
-    # NOT a resolution -- do not treat the drug-effect magnitude of this
-    # model as validated until request-002 is answered.
+    # KNOWN CONSEQUENCE, verified by simulation (see the vignette Errata):
+    # at 2.2 score/(ug/mL) the model predicts a median 12-week gain of
+    # 27-58 points on a 48-point baseline, versus the 1.67-3.74 points of
+    # Lee 2024 Table 2. The PK layer and the placebo / disease-progression
+    # layer each reproduce the source independently, so the discrepancy is
+    # localized to this one parameter and is a defect of the paper's own
+    # internal consistency, not of the encoding. Treat the drug-effect
+    # MAGNITUDE of this model as unvalidated; the structure, the PK layer
+    # and the progression layer are validated.
     # ------------------------------------------------------------------
-    lslope <- log(0.0022); label("Linear drug-effect slope Deff on effect-site L-serine concentration (K-VABS-II-ABC score per ug/mL)")  # Lee 2024 Table 1: Deff = 0.0022 L/ug (RSE 37.5%); see the UNRESOLVED note above -- Table 1, the Discussion's mL/ug figures, and Table 2 are mutually irreconcilable
+    lslope <- log(0.0022 * 1000); label("Linear drug-effect slope Deff on effect-site L-serine concentration (K-VABS-II-ABC score per ug/mL)")  # Lee 2024 Table 1: Deff = 0.0022 L/ug (RSE 37.5%; bootstrap 95% CI 0.0008-0.0046), x1000 ug/L per ug/mL = 2.2 score per (ug/mL); corroborated by the Discussion's subgroup medians of 1.45 and 1.65 mL/ug. See the UNIT RECONCILIATION note above
 
     # Kprog is NOT log-transformed. Lee 2024 Results: "The slope of the
     # natural K-VABS-II-ABC score progression (Kprog) was estimated to be
