@@ -2422,6 +2422,8 @@ navbar:
         href: articles/Yang_2017_remifentanil.html
       - text: "Remimazolam (Chen 2024)"
         href: articles/Chen_2024_remimazolam.html
+      - text: "Remimazolam (Chen 2025)"
+        href: articles/Chen_2025_remimazolam.html
       - text: "Remimazolam pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Reserpine rat (AlfoseaCuadrado 2024)"
@@ -3523,6 +3525,7 @@ articles:
   - articles/Chen_2024_noscapine
   - articles/Chen_2024_remimazolam
   - articles/Chen_2024_rituximab
+  - articles/Chen_2025_remimazolam
   - articles/Cheng_2026_immunoglobulin
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
