@@ -2264,6 +2264,8 @@ navbar:
         href: articles/Jeon_2014_piperacillin.html
       - text: "Piperacillin (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_piperacillin.html
+      - text: "Piperacillin (Lee 2025)"
+        href: articles/Lee_2025_piperacillin_tazobactam.html
       - text: "Piperacillin (Nichols 2016)"
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Piperacillin (ObrinkHansen 2015)"
@@ -2858,6 +2860,8 @@ navbar:
         href: articles/Catalan-Latorre_2018_taurine_rat.html
       - text: "Tazobactam (CohenWolkowiez 2014)"
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
+      - text: "Tazobactam (Lee 2025)"
+        href: articles/Lee_2025_piperacillin_tazobactam.html
       - text: "Tazobactam (Nichols 2016)"
         href: articles/Nichols_2016_piperacillin_tazobactam.html
       - text: "Tazobactam (Rolsma 2025)"
@@ -4056,7 +4060,7 @@ articles:
   - articles/Lee_2023_tylosin
   - articles/Lee_2024_eculizumab
   - articles/Lee_2024_topiramate
-  - articles/Lee_2025_levofloxacin
+  - articles/Lee_2025_piperacillin_tazobactam
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
   - articles/LeJouan_2005_quinine
