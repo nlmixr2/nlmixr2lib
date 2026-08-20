@@ -1986,6 +1986,10 @@ navbar:
         href: articles/Niloy_2026_MTMSATrp_mouse.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "MycophenolateMofetil (Tsyplakova 2025)"
+        href: articles/Tsyplakova_2025_mycophenolate.html
+      - text: "MycophenolateSodium (Tsyplakova 2025)"
+        href: articles/Tsyplakova_2025_mycophenolate.html
       - text: "Mycophenolic acid (Barau 2012)"
         href: articles/Barau_2012_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
@@ -4641,7 +4645,7 @@ articles:
   - articles/Tsai_2023_ceftriaxone
   - articles/Tsuda_2010_tamsulosin
   - articles/Tsuji_2017_linezolid
-  - articles/Tuey_2024_cholecalciferol
+  - articles/Tsyplakova_2025_mycophenolate
   - articles/Tuffal_2023_avalglucosidase_alfa
   - articles/Ueshima_2018_apixaban
   - articles/Ulldemolins_2015_meropenem
