@@ -328,7 +328,11 @@ events <- do.call(bind_rows, lapply(seq_len(nrow(arms)), function(i) {
   make_arm(a$scr_lo, a$scr_hi, a$mgkg, a$tau, a$arm, a$id_offset)
 }))
 
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+# No two rows may share (id, time, evid) -- a duplicated dose would double the
+# amount delivered, and a duplicated observation would double-weight that time
+# in the NCA. Note the `unique()` must NOT be applied before `anyDuplicated()`:
+# de-duplicating first makes the test vacuous (it can then never fail).
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 stopifnot(dplyr::n_distinct(events$id) == nrow(arms) * n_per_arm)
 ```
 
