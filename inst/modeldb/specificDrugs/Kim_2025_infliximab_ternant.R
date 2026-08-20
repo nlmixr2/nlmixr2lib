@@ -112,13 +112,13 @@ Kim_2025_infliximab_ternant <- function() {
     # six of the seven etas. Every structural term in this model carries its
     # own eta, including each ADA stratum of CL and each additive component of
     # Vc -- seven random effects on a development cohort of 33 patients.
-    etalcl_ada_neg ~ 0.051  # Data S1 model #3 $OMEGA ETA1 = 0.051; sqrt = 22.6%, matching Table S2 "0.288 (22.6%)"
-    etalcl_ada_pos ~ 0.075  # Data S1 model #3 $OMEGA ETA2 = 0.075; sqrt = 27.4%, matching Table S2 "0.768 (27.4%)"
-    etalvc_female  ~ 0.013  # Data S1 model #3 $OMEGA ETA3 = 0.013; sqrt = 11.4%, matching Table S2 "F: 1.1 (11.4%)"
-    etalvc_male    ~ 0.020  # Data S1 model #3 $OMEGA ETA4 = 0.020; sqrt = 14.1%, matching Table S2 "M: 2.3 (14.1%)"
+    etalcl_ada_neg ~ 0.051  # Data S1 model #3 $OMEGA ETA1 = 0.051; sqrt = 22.6%, matching Table S2 '0.288 (22.6%)'
+    etalcl_ada_pos ~ 0.075  # Data S1 model #3 $OMEGA ETA2 = 0.075; sqrt = 27.4%, matching Table S2 '0.768 (27.4%)'
+    etalvc_female  ~ 0.013  # Data S1 model #3 $OMEGA ETA3 = 0.013; sqrt = 11.4%, matching Table S2 'F: 1.1 (11.4%)'
+    etalvc_male    ~ 0.020  # Data S1 model #3 $OMEGA ETA4 = 0.020; sqrt = 14.1%, matching Table S2 'M: 2.3 (14.1%)'
     etalvc_wt      ~ 0.037  # Data S1 model #3 $OMEGA ETA5 = 0.037 (sqrt = 19.2%); the only eta of the seven that Table S2 does not tabulate, because Table S2 reports a single Vc %CV per sex
-    etalvp         ~ 0.023  # Data S1 model #3 $OMEGA ETA6 = 0.023; sqrt = 15.2%, matching Table S2 "1.9 (15.2%)"
-    etalq          ~ 0.010  # Data S1 model #3 $OMEGA ETA7 = 0.010; sqrt = 10.0%, matching Table S2 "0.130 (10%)"
+    etalvp         ~ 0.023  # Data S1 model #3 $OMEGA ETA6 = 0.023; sqrt = 15.2%, matching Table S2 '1.9 (15.2%)'
+    etalq          ~ 0.010  # Data S1 model #3 $OMEGA ETA7 = 0.010; sqrt = 10.0%, matching Table S2 '0.130 (10%)'
 
     # Residual error -- proportional only. This is the only model in the panel
     # whose $ERROR block carries no additive term (Y = IPRED*(1+ERR(1))), and

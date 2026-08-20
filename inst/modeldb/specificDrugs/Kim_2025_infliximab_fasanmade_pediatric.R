@@ -102,9 +102,9 @@ Kim_2025_infliximab_fasanmade_pediatric <- function() {
 
     # Inter-individual variability; OMEGA = (CV)^2 per Kim 2025's control-stream
     # annotation, with each %CV given in the stream comment and Table S2.
-    etalcl ~ 0.064   # Data S1 model #7 $OMEGA IIV_CL = 0.064 (25.2% CV); Table S2 "(25.2%)"
-    etalvc ~ 0.027   # Data S1 model #7 $OMEGA IIV_V1 = 0.027 (16.3% CV); Table S2 "(16.3%)"
-    etalvp ~ 0.122   # Data S1 model #7 $OMEGA IIV_V2 = 0.122 (34.9% CV); Table S2 "(34.9%)"
+    etalcl ~ 0.064   # Data S1 model #7 $OMEGA IIV_CL = 0.064 (25.2% CV); Table S2 '(25.2%)'
+    etalvc ~ 0.027   # Data S1 model #7 $OMEGA IIV_V1 = 0.027 (16.3% CV); Table S2 '(16.3%)'
+    etalvp ~ 0.122   # Data S1 model #7 $OMEGA IIV_V2 = 0.122 (34.9% CV); Table S2 '(34.9%)'
 
     # Inter-occasion variability on CL. As in the pooled parameterization, the
     # source declares two occasion blocks (OMEGA BLOCK(1) 0.048 each) selected by

@@ -104,10 +104,10 @@ Kim_2025_infliximab_wojciechowski <- function() {
 
     # Inter-individual variability; OMEGA = (CV)^2 per Kim 2025's control-stream
     # annotation, with each %CV given in the stream comment and Table S2.
-    etalcl ~ 0.107   # Data S1 model #10 $OMEGA ETA1 = 0.107 (32.7% CV); Table S2 "(32.7%)"
-    etalvc ~ 0.023   # Data S1 model #10 $OMEGA ETA2 = 0.023 (15% CV); Table S2 "(15.2%)"
-    etalvp ~ 0.638   # Data S1 model #10 $OMEGA ETA3 = 0.638 (79.9% CV); Table S2 "(79.9%)"
-    etalq  ~ 1.210   # Data S1 model #10 $OMEGA ETA4 = 1.210 (110% CV); Table S2 "(110%)"
+    etalcl ~ 0.107   # Data S1 model #10 $OMEGA ETA1 = 0.107 (32.7% CV); Table S2 '(32.7%)'
+    etalvc ~ 0.023   # Data S1 model #10 $OMEGA ETA2 = 0.023 (15% CV); Table S2 '(15.2%)'
+    etalvp ~ 0.638   # Data S1 model #10 $OMEGA ETA3 = 0.638 (79.9% CV); Table S2 '(79.9%)'
+    etalq  ~ 1.210   # Data S1 model #10 $OMEGA ETA4 = 1.210 (110% CV); Table S2 '(110%)'
 
     # Residual error -- proportional only.
     propSd <- 0.419; label("Proportional residual error (fraction)")  # Data S1 model #10 $SIGMA 0.176, comment "proportional error (41.9 %CV)"

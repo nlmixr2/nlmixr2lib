@@ -116,8 +116,8 @@ Kim_2025_infliximab_passot_pediatric <- function() {
 
     # Inter-individual variability. The control stream gives the SD in each
     # comment: 0.092 = 0.304^2 (CL); 0.050 = 0.224^2 (Vc).
-    etalcl ~ 0.092   # Data S1 model #8 $OMEGA ETA1 = 0.092 (SD 0.304); Table S2 "(30.3%)"
-    etalvc ~ 0.050   # Data S1 model #8 $OMEGA ETA2 = 0.050 (SD 0.224); Table S2 "(22.4%)"
+    etalcl ~ 0.092   # Data S1 model #8 $OMEGA ETA1 = 0.092 (SD 0.304); Table S2 '(30.3%)'
+    etalvc ~ 0.050   # Data S1 model #8 $OMEGA ETA2 = 0.050 (SD 0.224); Table S2 '(22.4%)'
 
     # Residual error -- combined proportional + additive; SDs from the stream's
     # own comments (the $SIGMA entries are the corresponding variances).

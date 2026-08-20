@@ -93,8 +93,8 @@ Kim_2025_infliximab_aubourg <- function() {
     # log-normal log(1 + CV^2). Values are used exactly as published:
     #   0.2209 = 0.47^2 (47% CV on CL); 0.0729 = 0.27^2 (27% CV on Vc).
     # A single CL eta and a single Vc eta are shared across both sex strata.
-    etalcl ~ 0.2209   # Data S1 model #1 $OMEGA ETA1 = 0.2209 (47% CV); Table S2 "(47%)"
-    etalvc ~ 0.0729   # Data S1 model #1 $OMEGA ETA2 = 0.0729 (27% CV); Table S2 "(27%)"
+    etalcl ~ 0.2209   # Data S1 model #1 $OMEGA ETA1 = 0.2209 (47% CV); Table S2 '(47%)'
+    etalvc ~ 0.0729   # Data S1 model #1 $OMEGA ETA2 = 0.0729 (27% CV); Table S2 '(27%)'
 
     # Residual error -- combined proportional + additive. The control stream
     # reports variances with the corresponding SDs in its comments; the SDs are
