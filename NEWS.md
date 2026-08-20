@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Golzaryan 2025 [177Lu]Lu-PSMA I&T ([doi:10.1038/s41598-025-86159-9](https://doi.org/10.1038/s41598-025-86159-9)) - men with metastatic castration-resistant prostate cancer; a 21-compartment whole-body PBPK model with parallel labelled and unlabelled circulations.
+- Add Lam 2025 ondansetron ([doi:10.1111/cts.70147](https://doi.org/10.1111/cts.70147)) -- neonates with neonatal opioid withdrawal syndrome.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
