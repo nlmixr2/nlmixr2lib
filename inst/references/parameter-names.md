@@ -491,6 +491,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Example models:** `Tiraboschi_2023_avalglucosidaseAlfa.R` (founding example).
 - **Notes:** See `lq_p2_c`.
 
+### q_bone_rbc, lq_bone_rbc (**canonical bare one-way bone-to-red-cell erythropoietic utilisation flow**)
+- **Type:** bare-pk
+- **Role:** One-way inter-compartmental clearance (volume / time) carrying a haematinic substrate out of the `bone` compartment and into the red-cell pool as it is incorporated into haemoglobin during erythropoiesis. It appears twice in a whole-body PBPK mass balance: as an extra loss term on `bone` (alongside the perfusion-limited efflux `q_bone / kp_bone`) and as the sole input to the red-cell pool. Because it is a flow rather than a rate constant, it multiplies a bone *concentration*, not a bone amount.
+- **Source aliases:**
+  - `QE` -- used in `Fan_2025_iron_mouse_ironadequate_pbpk.R` and siblings ("production rate of red blood cells in the bone compartment by utilizing iron").
+- **Example models:** `Fan_2025_iron_mouse_irondeficient_pbpk.R`, `Fan_2025_iron_mouse_ironadequate_pbpk.R`, `Fan_2025_iron_mouse_ironloaded_pbpk.R`, `Fan_2025_iron_ferriccarboxymaltose_rat_pbpk.R`, `Fan_2025_iron_ferriccarboxymaltose_human_pbpk.R` (founding examples).
+- **Notes:** Member of the `q_<from>_<to>` one-way inter-compartmental clearance family established by `q_p1_p2` and `q_p2_c`; the `<from>` / `<to>` tokens are canonical compartment names rather than the `p1` / `p2` / `c` positional abbreviations, because a whole-body PBPK model has no positional peripheral numbering. NOT a `kel`-style rate constant and NOT a `kin` / `kpro` production rate: those have units of 1/time or amount/time, whereas this is a clearance. The paired red-cell drain is `mtt_rbc` (mean red-cell lifespan), so the steady-state red-cell burden is `q_bone_rbc * C_bone * mtt_rbc`.
+
 ### kel (**canonical bare elimination rate constant (K-PD)**)
 - **Type:** bare-pk
 - **Role:** First-order elimination rate constant in K-PD / single-rate-constant elimination models with no explicit `vc`.
@@ -1046,7 +1054,16 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** Mean transit time for a transit-absorption chain (time).
 - **Source aliases:** none.
 - **Example models:** transit-absorption popPK extractions.
-- **Notes:** First-order transit rate constant `ktr = n_transit / mtt`.
+- **Notes:** First-order transit rate constant `ktr = n_transit / mtt`. For a mean *cell* lifespan use the `mtt_<celltype>` forms below rather than bare `mtt`.
+
+### mtt_rbc, lmtt_rbc (**canonical mean red-blood-cell lifespan**)
+- **Type:** paper-named-param
+- **Role:** Mean lifespan of circulating red blood cells (time). Drains a single-compartment red-cell pool at first-order rate `1 / mtt_rbc`, so the pool's mean residence time equals the lifespan. In iron / haematinic PBPK models this term is the erythrophagocytic recycling limb: senescent red cells are cleared by splenic macrophages and their haemoglobin iron returns to the `spleen` compartment.
+- **Source aliases:**
+  - `TRBC` -- used in `Fan_2025_iron_mouse_ironadequate_pbpk.R` and siblings ("lifespan of RBC").
+  - `MTT` -- used in `Naik_2013_peginesatide.R` for the same quantity ("Mean red-blood-cell lifespan").
+- **Example models:** `Fan_2025_iron_mouse_irondeficient_pbpk.R`, `Fan_2025_iron_mouse_ironadequate_pbpk.R`, `Fan_2025_iron_mouse_ironloaded_pbpk.R`, `Fan_2025_iron_ferriccarboxymaltose_rat_pbpk.R`, `Fan_2025_iron_ferriccarboxymaltose_human_pbpk.R`.
+- **Notes:** Registers the explicit `mtt_<celltype>` form for red cells, matching the platelet form `mtt_pl` already used in `Boak_2014_*` and making the celltype visible without reading the label. `Naik_2013_peginesatide.R` uses bare `lmtt` for exactly this quantity and is a candidate to migrate. Distinct from `ltr` / `ltp` (`PerezRuixo_2008_epoetinAlfa.R`, `Wang_2010_romiplostim.R`), which are the lifespans of *reticulocytes* and of *precursor* cells in a multi-stage maturation chain rather than of the mature circulating cell. Where a maturation chain is divided into `n` transit compartments the per-compartment rate is `n / mtt_rbc`; in the founding examples the pool is a single compartment, so the rate is `1 / mtt_rbc`.
 
 ### fr (**canonical fraction of MAT in transit delay**)
 - **Type:** paper-named-param
