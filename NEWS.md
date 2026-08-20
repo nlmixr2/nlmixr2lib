@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mohammed Ali 2025 tacrolimus ([doi:10.3390/pharmaceutics17091185](https://doi.org/10.3390/pharmaceutics17091185)) -- stable adult renal transplant recipients converted from IR-Tac to LCP-Tac.
+- Add Shen 2025 voriconazole ([doi:10.3389/fphar.2025.1671652](https://doi.org/10.3389/fphar.2025.1671652)) -- immunocompromised children under 2 years of age.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

@@ -3206,6 +3206,8 @@ navbar:
         href: articles/Lin_2018_voriconazole.html
       - text: "Voriconazole (Muto 2015)"
         href: articles/Muto_2015_voriconazole.html
+      - text: "Voriconazole (Shen 2025)"
+        href: articles/Shen_2025_voriconazole.html
       - text: "Voriconazole (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Vortioxetine (Naik 2016)"
@@ -4480,6 +4482,7 @@ articles:
   - articles/Shekar_2014_meropenem
   - articles/Shen_2013_belatacept
   - articles/Shen_2024_vancomycin
+  - articles/Shen_2025_voriconazole
   - articles/Sheng_2013_ABPM
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
