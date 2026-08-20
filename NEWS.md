@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Comisar 2025 zavegepant ([doi:10.1002/psp4.13257](https://doi.org/10.1002/psp4.13257)) -- healthy adults and patients with migraine dosed intravenously, intranasally, or orally.
+- Add Cerqueira 2025 resveratrol ([doi:10.3390/nu17010181](https://doi.org/10.3390/nu17010181)) -- rat (Wistar, male); separate intravenous and oral models.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
