@@ -34,7 +34,33 @@ Yau_2023_diazepam_rat_pbpk <- function() {
     sep = " "
   )
   vignette <- "Yau_2023_middle_out_pbpk_translation"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. `central` lumps arterial blood, venous blood and lung
+  # (paper Discussion: "the lumped central compartment (blood and lungs) as
+  # the initial dilution space"), and the model reads it as a blood
+  # concentration via c_blood <- central / v_conv, so its specimen is whole
+  # blood, not plasma; Cc <- c_blood / bp converts to the observed plasma
+  # concentration. The 13 remaining states are the perfusion-limited tissues
+  # of Table 1. verified = TRUE: identities read off the paper's Table 1
+  # tissue groupings and the model's own equations.
+  compartmentData <- list(
+    central  = list(analyte = "diazepam", units = "mg", specimen = "whole blood", verified = TRUE),
+    adipose  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    bone     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    brain    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    gut      = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    heart    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    kidney   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    muscle   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    other    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    pancreas = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    skin     = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    spleen   = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    stomach  = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE),
+    liver    = list(analyte = "diazepam", units = "mg", specimen = "tissue", verified = TRUE)
+  )
 
   covariateData <- list()
 

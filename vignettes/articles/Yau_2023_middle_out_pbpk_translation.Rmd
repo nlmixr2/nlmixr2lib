@@ -625,12 +625,12 @@ nca_wide |>
 
 * **Canonical names come from the sibling extraction.** The Kpu cluster scalars
   use the `sf<n>` / `lsf<n>` canonical and the bare `pancreas` compartment, both
-  registered by the companion paper's extraction on branch
-  `claude/oare_PMC10014059`. Per the operator's decision (sidecar request-002
-  q1) this branch adds no register entry of its own, so that one canonical
-  serves both papers and the two pull requests do not conflict in
-  `inst/references/`. Until that sibling branch merges, `checkModelConventions()`
-  run against this branch in isolation will report `pancreas` as unregistered.
+  registered by the companion paper's extraction, which is now on `main` as
+  `Yau_2023_diazepam_pbpk_{lumped,kpu,scalar}_{rat,human}`. Per the operator's
+  decision (sidecar request-002 q1) this branch adds no register entry of its
+  own, so that one canonical serves both papers and the two pull requests do
+  not conflict in `inst/references/`. `checkModelConventions()` now reports no
+  issues for any of the five models here.
 
 * **No covariates.** The physiology is fixed at the reference individual of
   Table S6, so `covariateData` is empty in every model. Users simulating
