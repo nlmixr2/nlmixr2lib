@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nguyen 2025 valbenazine ([doi:10.1002/jcph.70092](https://doi.org/10.1002/jcph.70092)) -- healthy adults and patients with tardive dyskinesia or Huntington's disease chorea.
+- Add Gu 2025 whole-body heart-failure PBPK models for digoxin, furosemide, bumetanide, torasemide, captopril, valsartan, felodipine and midazolam ([doi:10.3390/pharmaceutics17111394](https://doi.org/10.3390/pharmaceutics17111394)) -- healthy adults and chronic heart-failure patients in NYHA classes II-IV.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

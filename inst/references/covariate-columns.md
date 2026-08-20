@@ -5098,6 +5098,42 @@ Baseline morphology and laterality descriptors of a geographic atrophy (GA) lesi
 - **Notes:** Follows the count-covariate policy ("count covariate -> decomposed binary indicators, not a single integer count") and the `NTARGET_GE3` precedent of binarising a lesion count at a paper-defined threshold. No `DIS_` prefix because drusen are an AMD imaging feature that is graded independently of the GA diagnosis, in the same way `NTARGET_GE3` records RECIST lesion multiplicity without a disease-state prefix. Source papers supply the already-dichotomised indicator rather than a raw count; if a future paper reports the integer count, derive `DRUSEN_GT20 = as.integer(count > 20)` and record the raw column as a source alias. If a future paper uses a different split (e.g. > 10 or > 30) or a different size threshold, register a sibling canonical rather than overloading this name. The covariate-effect parameter form is `e_drusen_<param>`. Ratified canonically alongside the Crass 2025 pegcetacoplan geographic-atrophy extraction.
 
 
+### DIS_CHF_NYHA2 (**canonical for NYHA class II heart-failure indicator**)
+- **Description:** 1 = subject has mild chronic heart failure classified as New York Heart Association (NYHA) functional class II, 0 = otherwise. Time-fixed per subject. Member of the mutually-exclusive `DIS_CHF_NYHA2` / `DIS_CHF_NYHA3` / `DIS_CHF_NYHA4` trio prescribed by the `DIS_CHF` entry's Notes for papers that retain NYHA strata in the final model; all three = 0 selects the non-heart-failure reference. NYHA class I is not given its own indicator because published HF pharmacokinetic cohorts almost never separate it from the healthy reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no heart failure, when `DIS_CHF_NYHA2`, `DIS_CHF_NYHA3` and `DIS_CHF_NYHA4` are all 0).
+- **Source aliases:**
+  - `HF-II` -- used in `Gu_2025_*_pbpk.R` (Gu 2025 Table 1 and Table S3 heart-failure grade column).
+- **Example models:** `Gu_2025_digoxin_pbpk.R` and its seven sibling whole-body PBPK files (`furosemide`, `bumetanide`, `torasemide`, `captopril`, `valsartan`, `felodipine`, `midazolam`). The indicator selects the NYHA-class-II column of Gu 2025 Table 1, which rescales organ blood flows relative to the healthy 70 kg values of Table S1: splanchnic (hepatic artery, spleen, stomach and all five intestinal-wall segments) x 0.76, renal x 0.78, and skin / adipose / muscle x 0.57. Heart, brain and rest-of-body flows are unchanged, and cardiac output is the sum of the rescaled flows. Intrinsic hepatic and renal clearances are NOT altered by the indicator (Gu 2025 Section 2.3).
+- **Notes:** Distinct from `DIS_CHF`, which is an unstratified compensated-CHF indicator; use `DIS_CHF` when the source treats heart failure as a single binary and this trio when it resolves NYHA classes. Distinct from the paediatric `SCORE_ROSS` severity instrument (NYHA is adult-only) and from `DIS_HF_OR_LF_SEV` (which pools severe heart failure with severe liver failure). The covariate-effect parameter form is `e_nyha2_<param>`, dropping the `DIS_CHF_` prefix per the `DIS_CANCER -> e_cancer_<param>` precedent. Ratified canonically on 2026-08-19 alongside the Gu 2025 heart-failure PBPK extraction.
+
+
+### DIS_CHF_NYHA3 (**canonical for NYHA class III heart-failure indicator**)
+- **Description:** 1 = subject has moderate chronic heart failure classified as New York Heart Association (NYHA) functional class III, 0 = otherwise. Time-fixed per subject. Member of the mutually-exclusive `DIS_CHF_NYHA2` / `DIS_CHF_NYHA3` / `DIS_CHF_NYHA4` trio prescribed by the `DIS_CHF` entry's Notes for papers that retain NYHA strata in the final model; all three = 0 selects the non-heart-failure reference. NYHA class I is not given its own indicator because published HF pharmacokinetic cohorts almost never separate it from the healthy reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no heart failure, when `DIS_CHF_NYHA2`, `DIS_CHF_NYHA3` and `DIS_CHF_NYHA4` are all 0).
+- **Source aliases:**
+  - `HF-III` -- used in `Gu_2025_*_pbpk.R` (Gu 2025 Table 1 and Table S3 heart-failure grade column).
+- **Example models:** `Gu_2025_digoxin_pbpk.R` and its seven sibling whole-body PBPK files (`furosemide`, `bumetanide`, `torasemide`, `captopril`, `valsartan`, `felodipine`, `midazolam`). The indicator selects the NYHA-class-III column of Gu 2025 Table 1, which rescales organ blood flows relative to the healthy 70 kg values of Table S1: splanchnic (hepatic artery, spleen, stomach and all five intestinal-wall segments) x 0.54, renal x 0.55, and skin / adipose / muscle x 0.44. Heart, brain and rest-of-body flows are unchanged, and cardiac output is the sum of the rescaled flows. Intrinsic hepatic and renal clearances are NOT altered by the indicator (Gu 2025 Section 2.3).
+- **Notes:** Distinct from `DIS_CHF`, which is an unstratified compensated-CHF indicator; use `DIS_CHF` when the source treats heart failure as a single binary and this trio when it resolves NYHA classes. Distinct from the paediatric `SCORE_ROSS` severity instrument (NYHA is adult-only) and from `DIS_HF_OR_LF_SEV` (which pools severe heart failure with severe liver failure). The covariate-effect parameter form is `e_nyha3_<param>`, dropping the `DIS_CHF_` prefix per the `DIS_CANCER -> e_cancer_<param>` precedent. Ratified canonically on 2026-08-19 alongside the Gu 2025 heart-failure PBPK extraction.
+
+
+### DIS_CHF_NYHA4 (**canonical for NYHA class IV heart-failure indicator**)
+- **Description:** 1 = subject has severe chronic heart failure classified as New York Heart Association (NYHA) functional class IV, 0 = otherwise. Time-fixed per subject. Member of the mutually-exclusive `DIS_CHF_NYHA2` / `DIS_CHF_NYHA3` / `DIS_CHF_NYHA4` trio prescribed by the `DIS_CHF` entry's Notes for papers that retain NYHA strata in the final model; all three = 0 selects the non-heart-failure reference. NYHA class I is not given its own indicator because published HF pharmacokinetic cohorts almost never separate it from the healthy reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no heart failure, when `DIS_CHF_NYHA2`, `DIS_CHF_NYHA3` and `DIS_CHF_NYHA4` are all 0).
+- **Source aliases:**
+  - `HF-IV` -- used in `Gu_2025_*_pbpk.R` (Gu 2025 Table 1 and Table S3 heart-failure grade column).
+- **Example models:** `Gu_2025_digoxin_pbpk.R` and its seven sibling whole-body PBPK files (`furosemide`, `bumetanide`, `torasemide`, `captopril`, `valsartan`, `felodipine`, `midazolam`). The indicator selects the NYHA-class-IV column of Gu 2025 Table 1, which rescales organ blood flows relative to the healthy 70 kg values of Table S1: splanchnic (hepatic artery, spleen, stomach and all five intestinal-wall segments) x 0.46, renal x 0.63, and skin / adipose / muscle x 0.28. Heart, brain and rest-of-body flows are unchanged, and cardiac output is the sum of the rescaled flows. Intrinsic hepatic and renal clearances are NOT altered by the indicator (Gu 2025 Section 2.3).
+- **Notes:** Distinct from `DIS_CHF`, which is an unstratified compensated-CHF indicator; use `DIS_CHF` when the source treats heart failure as a single binary and this trio when it resolves NYHA classes. Distinct from the paediatric `SCORE_ROSS` severity instrument (NYHA is adult-only) and from `DIS_HF_OR_LF_SEV` (which pools severe heart failure with severe liver failure). The covariate-effect parameter form is `e_nyha4_<param>`, dropping the `DIS_CHF_` prefix per the `DIS_CANCER -> e_cancer_<param>` precedent. Ratified canonically on 2026-08-19 alongside the Gu 2025 heart-failure PBPK extraction.
+
+
 ## Epilepsy baseline seizure-severity indicators
 
 Baseline seizure-severity indicators derived from a pre-trial seizure count (typically the number of seizures in the 3 months before study entry, decomposed by the source paper into severity bins). The count itself is decomposed into a set of mutually-exclusive binary indicators per the standing operator policy for count covariates ("count covariate -> decomposed binary indicators, not a single integer count"). Members are jointly restricted to at most one being = 1 for any subject; the reference category is 2-6 seizures in the previous 3 months (all indicators = 0 selects the reference).
