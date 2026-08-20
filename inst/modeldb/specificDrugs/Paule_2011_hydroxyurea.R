@@ -4,6 +4,18 @@ Paule_2011_hydroxyurea <- function() {
   vignette <- "Paule_2011_hydroxyurea"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", HbF = "%", MCV = "fL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "hydroxyurea", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "hydroxyurea", units = "mg", specimen = "plasma", verified = FALSE),
+    effect1     = list(analyte = "HbF percentage", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect2     = list(analyte = "mean corpuscular volume (MCV)", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -42,7 +54,7 @@ Paule_2011_hydroxyurea <- function() {
     lcl  <- log(11.6 * 24);  label("Apparent oral clearance at 70 kg (CL/F, L/day)")              # Paule 2011 Table 2 (11.6 L/h)
     lvc  <- log(45.3);       label("Apparent central volume of distribution at 70 kg (Vc/F, L)")  # Paule 2011 Table 2
     lkcp <- log(0.027 * 24); label("Central-to-peripheral first-order transfer rate (kcp, 1/day)")  # Paule 2011 Table 2 (0.027 1/h)
-    lkpc <- fixed(log(0.004 * 24)); label("Peripheral-to-central first-order transfer rate (kpc, 1/day) -- fixed")  # Paule 2011 Table 2 (kpc fixed at 0.004 1/h)
+    lkpc <- fixed(log(0.004 * 24)); label("Peripheral-to-central first-order transfer rate (kpc, 1/day)")  # Paule 2011 Table 2 (kpc fixed at 0.004 1/h)
 
     # Allometric exponents (Paule 2011 Methods; held fixed at the canonical
     # values reported in the paper)

@@ -2,7 +2,16 @@ Ngo_2020_HL2351 <- function() {
   description <- "Population PK model for HL2351 (hIL-1Ra-hyFc, ~97 kDa) in healthy adult Korean men: a quasi-steady-state target-mediated drug disposition (QSS-TMDD) model coupled with FcRn-mediated recycling. The injection-site depot feeds a separate distribution space where free drug equilibrates with FcRn (QSS dissociation constant AKSS1, total FcRn AFcRn_t); free drug moves to the central compartment either directly (Ka2) or by FcRn-mediated recycling of the FcRn-drug complex (Krec). In the central compartment free drug equilibrates with IL1R (QSS dissociation constant KSS2, total IL1R CIL1R_t), is taken up back to the distribution space (Kup), exchanged with one peripheral compartment (Q/F), and eliminated linearly (CL/F). The IL1R-drug complex degrades at Kdeg2. All drug amounts and concentrations are in nmol / nmol/L; convert mg dosing using molecular weight 97 kDa (1 mg HL2351 = approximately 10306 nmol)."
   reference <- "Ngo L, Lee J, Lim L, Lim H, Bae KS, Hong T, Bae S, Hong Y. Development of a Pharmacokinetic Model Describing Neonatal Fc Receptor-Mediated Recycling of HL2351, a Novel Hybrid Fc-Fused Interleukin-1 Receptor Antagonist, to Optimize Dosage Regimen. CPT Pharmacometrics Syst Pharmacol. 2020 Oct;9(10):584-595. doi:10.1002/psp4.12552. PMID: 32945613."
   vignette <- "Ngo_2020_HL2351"
-  units <- list(time = "hour", dosing = "nmol", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = FALSE),
+    peripheral1 = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = FALSE),
+    central     = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -28,12 +37,12 @@ Ngo_2020_HL2351 <- function() {
     lka2      <- log(0.0171);   label("Direct rate of free drug from distribution space to central (Ka2, 1/h)")     # Ngo 2020 Table 1: Ka2 = 0.0171 1/h
     lkrec     <- log(0.0338);   label("FcRn-mediated recycling rate of FcRn-drug complex into central (Krec, 1/h)") # Ngo 2020 Table 1: Krec = 0.0338 1/h
     lkdeg1    <- log(0.0264);   label("Degradation rate of free drug at the distribution space (Kdeg1, 1/h)")       # Ngo 2020 Table 1: Kdeg1 = 0.0264 1/h
-    lkdeg2    <- fixed(log(0.206));  label("Degradation rate of IL1R-drug complex at the central compartment (Kdeg2, 1/h; FIXED)") # Ngo 2020 Table 1: Kdeg2 = 0.206 1/h (FIX)
-    lkup      <- fixed(log(0.00952)); label("Uptake rate of free drug from central back to distribution space (Kup, 1/h; FIXED)") # Ngo 2020 Table 1: Kup = 0.00952 1/h (FIX)
+    lkdeg2    <- fixed(log(0.206));  label("Degradation rate of IL1R-drug complex at the central compartment (Kdeg2, 1/h)") # Ngo 2020 Table 1: Kdeg2 = 0.206 1/h (FIX)
+    lkup      <- fixed(log(0.00952)); label("Uptake rate of free drug from central back to distribution space (Kup, 1/h)") # Ngo 2020 Table 1: Kup = 0.00952 1/h (FIX)
     lcl       <- log(0.208);    label("Apparent clearance of free drug from central (CL/F, L/h)")                   # Ngo 2020 Table 1: CL/F = 0.208 L/h
     lvc       <- log(11.3);     label("Apparent central volume of distribution (Vc/F, L)")                          # Ngo 2020 Table 1: Vc/F = 11.3 L
     lq        <- log(0.0288);   label("Apparent inter-compartmental clearance (Q/F, L/h)")                          # Ngo 2020 Table 1: Q/F = 0.0288 L/h
-    lvp       <- fixed(log(5.06));  label("Apparent peripheral volume of distribution (Vp/F, L; FIXED)")            # Ngo 2020 Table 1: Vp/F = 5.06 L (FIX)
+    lvp       <- fixed(log(5.06));  label("Apparent peripheral volume of distribution (Vp/F, L)")            # Ngo 2020 Table 1: Vp/F = 5.06 L (FIX)
     la_kss1   <- log(237);      label("Drug-FcRn QSS dissociation constant in distribution space (AKSS1, nmol)")    # Ngo 2020 Table 1: AKSS1 = 237 nmol
     la_fcrn_t <- log(749);      label("Total active amount of FcRn in distribution space (AFcRn_t, nmol)")          # Ngo 2020 Table 1: AFcRn_t = 749 nmol
     lkss2     <- log(14.5);     label("Drug-IL1R QSS dissociation constant in central (KSS2, nmol/L)")              # Ngo 2020 Table 1: KSS2 = 14.5 nmol/L

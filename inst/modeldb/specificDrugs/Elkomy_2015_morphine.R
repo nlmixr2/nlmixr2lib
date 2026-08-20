@@ -31,9 +31,20 @@ Elkomy_2015_morphine <- function() {
   )
   vignette <- "Elkomy_2015_morphine"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "nmol",
     concentration = "nmol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "morphine", units = "nmol", specimen = "plasma", verified = FALSE),
+    effect_m3g  = list(analyte = "M3G", units = "nmol", specimen = "not applicable", verified = FALSE),
+    effect_m6g  = list(analyte = "M6G", units = "nmol", specimen = "not applicable", verified = FALSE)
   )
 
   covariateData <- list(
@@ -139,8 +150,8 @@ Elkomy_2015_morphine <- function() {
     lq  <- log(0.88);  label("Morphine inter-compartmental clearance CLD at WT = 6 kg (L/h)") # Table II: theta_CLD = 0.88 L/h (%SE 15; bootstrap median 0.91 [0.60, 1.4])
     lvp <- log(25.2);  label("Morphine peripheral volume at WT = 6 kg (L)")                   # Table II: theta_VP = 25.2 L (%SE 32; bootstrap median 25.2 [15.0, 61.1])
 
-    e_wt_cl_q  <- fixed(0.75); label("Shared allometric WT exponent on CL and CLD (unitless; FIXED)") # Methods para 4 / Results para 2: exponent 0.75 FIXED
-    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric WT exponent on VC and VP (unitless; FIXED)")  # Methods para 4 / Results para 2: exponent 1.0 FIXED
+    e_wt_cl_q  <- fixed(0.75); label("Shared allometric WT exponent on CL and CLD (unitless)") # Methods para 4 / Results para 2: exponent 0.75 FIXED
+    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric WT exponent on VC and VP (unitless)")  # Methods para 4 / Results para 2: exponent 1.0 FIXED
 
     # ================================================================
     # Metabolite intermediate-effect-compartment + Emax structural

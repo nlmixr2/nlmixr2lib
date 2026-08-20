@@ -8,6 +8,16 @@ Hong_2025_datopotamab <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "datopotamab deruxtecan (Dato-DXd)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "datopotamab deruxtecan (Dato-DXd)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dxd = list(analyte = "DXd", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Baseline body weight",
@@ -141,7 +151,7 @@ Hong_2025_datopotamab <- function() {
     # Continuous covariates enter as power models (CovEff = (Cov / Cov_ref)^theta;
     # paper Eq. 4); categorical covariates enter as fractional-difference models
     # (CovEff = 1 + theta for non-reference; paper Eq. 6).
-    e_wt_cl          <- fix(0.75); label("Power exponent of WT on Dato-DXd CL_lin (unitless, fixed)")             # Hong 2025 Table 1: 0.750 fixed (estimated 0.80; Methods)
+    e_wt_cl          <- fix(0.75); label("Power exponent of WT on Dato-DXd CL_lin (unitless)")             # Hong 2025 Table 1: 0.750 fixed (estimated 0.80; Methods)
     e_wt_vc          <-  0.415;    label("Power exponent of WT on Dato-DXd Vc (unitless)")                        # Hong 2025 Table 1
     e_wt_vp          <-  0.311;    label("Power exponent of WT on Dato-DXd Vp (unitless)")                        # Hong 2025 Table 1
     e_age_cl         <- -0.306;    label("Power exponent of AGE on Dato-DXd CL_lin (unitless)")                   # Hong 2025 Table 1
@@ -152,8 +162,8 @@ Hong_2025_datopotamab <- function() {
     e_tumsz_vmax     <-  0.125;    label("Power exponent of TUMSZ on Dato-DXd Vmax (unitless)")                   # Hong 2025 Table 1, Eq. 12
 
     # ----- Covariate effects on DXd parameters (Hong 2025 Table 2 / Eq. 14-15).
-    e_wt_cl_dxd      <- fix(0.298); label("Power exponent of WT on DXd CL (unitless, fixed)")                     # Hong 2025 Table 2: paper "estimated then fixed"
-    e_wt_vc_dxd      <- fix(0.530); label("Power exponent of WT on DXd Vc (unitless, fixed)")                     # Hong 2025 Table 2: paper "estimated then fixed"
+    e_wt_cl_dxd      <- fix(0.298); label("Power exponent of WT on DXd CL (unitless)")                     # Hong 2025 Table 2: paper "estimated then fixed"
+    e_wt_vc_dxd      <- fix(0.530); label("Power exponent of WT on DXd Vc (unitless)")                     # Hong 2025 Table 2: paper "estimated then fixed"
     e_alb_cl_dxd     <-  0.343;     label("Power exponent of ALB on DXd CL (unitless)")                           # Hong 2025 Table 2
     e_ast_cl_dxd     <- -0.154;     label("Power exponent of AST on DXd CL (unitless)")                           # Hong 2025 Table 2
     e_tbili_cl_dxd   <- -0.139;     label("Power exponent of TBILI on DXd CL (unitless)")                         # Hong 2025 Table 2

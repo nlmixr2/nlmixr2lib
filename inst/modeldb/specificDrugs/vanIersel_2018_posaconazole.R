@@ -4,6 +4,14 @@ vanIersel_2018_posaconazole <- function() {
   vignette    <- "vanIersel_2018_posaconazole"
   units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "posaconazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "posaconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -94,7 +102,7 @@ vanIersel_2018_posaconazole <- function() {
     # covariates': 'tablet formulation D is the marketed image and the
     # predominant formulation used across the data set and was taken as
     # the reference formulation for the relative bioavailability estimate'.
-    lfdepot <- fixed(log(1)); label("Reference relative bioavailability F1 (unitless; tablet D in non-AML/MDS subjects at WT = 74.9 kg, fixed anchor)")
+    lfdepot <- fixed(log(1)); label("Reference relative bioavailability F1 (unitless; tablet D in non-AML/MDS subjects at WT = 74.9 kg, anchor)")
 
     # Correlation factor coupling the random effect on D1 to etalka.
     # van Iersel 2018 Methods 'Covariate model': 'To account for the high

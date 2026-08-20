@@ -2,7 +2,21 @@ Han_2018_methionineMetabolismCycle <- function() {
   description <- "Preclinical (rat). Seven-compartment mechanistic methionine metabolism cycle (MMC) model in Zucker Diabetic Fatty (ZDF) rats vs non-diabetic controls; predicts plasma methionine and homocysteine after IV methionine."
   reference   <- "Han N, Chae JW, Jeon J, Lee J, Back HM, Song B, Kwon KI, Kim SK, Yun HY. Prediction of Methionine and Homocysteine levels in Zucker diabetic fatty (ZDF) rats as a DIS_DIAB animal model after consumption of a Methionine-rich diet. Nutr Metab (Lond). 2018;15:14. doi:10.1186/s12986-018-0247-1"
   vignette    <- "Han_2018_methionineMetabolismCycle"
-  units       <- list(time = "hour", dosing = "mmol/kg", concentration = "mmol/L")
+  units       <- list(time = "h", dosing = "mmol/kg", concentration = "mmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    met    = list(analyte = "methionine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    methep = list(analyte = "methionine", units = NA_character_, specimen = "lymph", verified = FALSE),
+    sam    = list(analyte = "S-adenosylmethionine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    sah    = list(analyte = "S-adenosylhomocysteine", units = NA_character_, specimen = "tissue", verified = FALSE),
+    hcyhep = list(analyte = "homocysteine", units = NA_character_, specimen = "lymph", verified = FALSE),
+    cys    = list(analyte = "cysteine", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hcy    = list(analyte = "homocysteine", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     DIS_DIAB = list(

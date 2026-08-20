@@ -4,6 +4,17 @@ Ma_2020_sarilumab_das28crp <- function() {
   vignette <- "Ma_2020_sarilumab_das28crp"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L", response = "DAS28-CRP score (unitless, 0-10 scale)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sarilumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sarilumab", units = "mg", specimen = "plasma", verified = FALSE),
+    das28       = list(analyte = "DAS28-CRP", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

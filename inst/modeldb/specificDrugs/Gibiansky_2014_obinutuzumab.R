@@ -1,8 +1,16 @@
 Gibiansky_2014_obinutuzumab <- function() {
-  description <- "Two-compartment population PK model of obinutuzumab (GA101, glycoengineered type II anti-CD20 mAb) in adults with chronic lymphocytic leukemia (CLL) or non-Hodgkin lymphoma (NHL); clearance is the sum of a time-independent component CL_inf and a mono-exponentially decaying time-dependent component CL_T*exp(-kdes*time), with histology (CLL / BCL / DLBCL / MCL), baseline tumor size, body weight, and sex as covariates (Gibiansky 2014)."
+  description <- "Two-compartment population PK model of obinutuzumab (GA101, glycoengineered type II anti-CD20 mAb) in adults with chronic lymphocytic leukemia (CLL) or non-Hodgkin lymphoma (NHL); clearance is the sum of a time-independent component CL_inf and a mono-exponentially decaying time-dependent component CL_T*exp(-cl_exp_kdes*time), with histology (CLL / BCL / DLBCL / MCL), baseline tumor size, body weight, and sex as covariates (Gibiansky 2014)."
   reference <- "Gibiansky E, Gibiansky L, Carlile DJ, Jamois C, Buchheit V, Frey N. Population Pharmacokinetics of Obinutuzumab (GA101) in Chronic Lymphocytic Leukemia (CLL) and Non-Hodgkin's Lymphoma and Exposure-Response in CLL. CPT Pharmacometrics Syst Pharmacol. 2014;3(10):e144. doi:10.1038/psp.2014.42"
   vignette <- "Gibiansky_2014_obinutuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "obinutuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "obinutuzumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -50,7 +58,7 @@ Gibiansky_2014_obinutuzumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (other histology; CLL is the typical-value reference category)",
-      notes              = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_MCL = as.integer(DIS == 4). The MCL effect (theta14, ratio 1.75) is applied separately to CL_T and CL_inf. Together with TUMTP_BCL and TUMTP_DLBCL, the indicators define the kdes-NHL composite ((TUMTP_BCL + TUMTP_DLBCL + TUMTP_MCL); theta12, ratio 2.08).",
+      notes              = "Source NONMEM control stream encodes diagnosis as DIS with integer levels 1 = CLL, 2 = BCL, 3 = DLBCL, 4 = MCL (Supplementary Table S1). Decompose into TUMTP_MCL = as.integer(DIS == 4). The MCL effect (theta14, ratio 1.75) is applied separately to CL_T and CL_inf. Together with TUMTP_BCL and TUMTP_DLBCL, the indicators define the cl_exp_kdes-NHL composite ((TUMTP_BCL + TUMTP_DLBCL + TUMTP_MCL); theta12, ratio 2.08).",
       source_name        = "DIS"
     )
   )
@@ -70,7 +78,7 @@ Gibiansky_2014_obinutuzumab <- function() {
     regimen        = "Intermittent IV infusion across induction and maintenance regimens; CLL11 used the 1000 mg cycle-1 loading (days 1, 8, 15) + 1000 mg q28d maintenance regimen carried forward as the obinutuzumab labelled regimen in CLL.",
     regions        = "Multi-regional phase I-III programme.",
     studies        = "GAUGUIN (BO20999, NCT00517530, phase I/II; 131 patients, 3446 samples); GAUDI (BO21000, NCT00825149, phase Ib; 134 patients, 3634 samples); GAUSS (BO21003, NCT00576758, phase I/II; 105 patients, 2327 samples); CLL11 (BO21004, NCT01010061, phase III; 308 patients, 3227 samples).",
-    bsiz_summary   = "Baseline tumor size (sum of products of perpendicular diameters, SPPD) mean (SD) 5390 (19,100) mm^2 across the full cohort; per-study means range 4420-6030 mm^2 (Gibiansky 2014 Table 2). The threshold 1750 mm^2 splits the cohort into 'low' and 'high' strata for the kdes effect.",
+    bsiz_summary   = "Baseline tumor size (sum of products of perpendicular diameters, SPPD) mean (SD) 5390 (19,100) mm^2 across the full cohort; per-study means range 4420-6030 mm^2 (Gibiansky 2014 Table 2). The threshold 1750 mm^2 splits the cohort into 'low' and 'high' strata for the cl_exp_kdes effect.",
     bcell_summary  = "Baseline B-cell count mean (SD) 37.4 (66.6) x 10^9/L across cohort; CLL11 mean 77.75 x 10^9/L vs 1.62-11.8 x 10^9/L in the NHL studies. Baseline B-cell count and diagnosis were confounded (high counts in CLL) and diagnosis was retained as the primary covariate in lieu of B-cell count.",
     excluded_obs   = "74 postdose observations (0.6%) below the assay LLOQ of 4.05 ng/mL were excluded from the analysis.",
     notes          = "Pooled phase I-III population PK dataset. The four trials enrolled previously treated CLL/NHL patients (GAUGUIN, GAUDI, GAUSS) plus previously untreated comorbid CLL patients (CLL11). Age and renal function (creatinine clearance) were tested but did not significantly affect PK parameters; race and antidrug antibody status were not retained as covariates."
@@ -82,9 +90,9 @@ Gibiansky_2014_obinutuzumab <- function() {
     # log of the back-transformed value. Reference subject: CLL diagnosis, female (SEX = 0),
     # body weight 75 kg, BSIZ > 1750 mm^2 (Supplementary Table S1 NONMEM control stream
     # mean-zero centring on CLL/female/75 kg/high-BSIZ).
-    lkdes    <- log(0.0359);    label("Decay rate of time-dependent clearance kdes (1/day)")               # Gibiansky 2014 Table 3 exp(theta1) = 0.0359
-    lcl_time <- log(0.231);     label("Initial value of time-dependent clearance CL_T (L/day)")            # Gibiansky 2014 Table 3 exp(theta2) = 0.231
-    lcl_ss   <- log(0.0828);    label("Time-independent (steady-state) clearance CL_inf (L/day)")          # Gibiansky 2014 Table 3 exp(theta3) = 0.0828
+    lcl_exp_kdes    <- log(0.0359);    label("Decay rate of time-dependent clearance cl_exp_kdes (1/day)")               # Gibiansky 2014 Table 3 exp(theta1) = 0.0359
+    lcl_exp_component <- log(0.231);     label("Initial value of time-dependent clearance CL_T (L/day)")            # Gibiansky 2014 Table 3 exp(theta2) = 0.231
+    lcl_exp_inf   <- log(0.0828);    label("Time-independent (steady-state) clearance CL_inf (L/day)")          # Gibiansky 2014 Table 3 exp(theta3) = 0.0828
     lvc      <- log(2.76);      label("Central volume of distribution V1 (L)")                              # Gibiansky 2014 Table 3 exp(theta4) = 2.76
     lvp      <- log(1.01);      label("Peripheral volume of distribution V2 (L)")                           # Gibiansky 2014 Table 3 exp(theta5) = 1.01
     lq       <- log(1.29);      label("Intercompartmental clearance Q (L/day)")                             # Gibiansky 2014 Table 3 exp(theta6) = 1.29
@@ -96,30 +104,30 @@ Gibiansky_2014_obinutuzumab <- function() {
     # and 1, respectively').
     e_wt_cl  <-  0.615;         label("Power exponent of (WT/75) on CL_T and CL_inf (shared; unitless)")    # Gibiansky 2014 Table 3 theta7 = 0.615
     e_wt_vc  <-  0.383;         label("Power exponent of (WT/75) on V1 (unitless)")                          # Gibiansky 2014 Table 3 theta8 = 0.383
-    e_wt_q   <- fixed(0.75);    label("Power exponent of (WT/75) on Q (unitless; fixed allometric)")        # Gibiansky 2014 Methods (allometric exponent 0.75 on clearances, fixed)
-    e_wt_vp  <- fixed(1.0);     label("Power exponent of (WT/75) on V2 (unitless; fixed allometric)")       # Gibiansky 2014 Methods (allometric exponent 1.0 on volumes, fixed)
+    e_wt_q   <- fixed(0.75);    label("Power exponent of (WT/75) on Q (unitless; allometric)")        # Gibiansky 2014 Methods (allometric exponent 0.75 on clearances, fixed)
+    e_wt_vp  <- fixed(1.0);     label("Power exponent of (WT/75) on V2 (unitless; allometric)")       # Gibiansky 2014 Methods (allometric exponent 1.0 on volumes, fixed)
 
     # ---- Sex effects (paper-reported values for SEX = 1 male; applied via (1 - SEXF)) ----
-    e_sex_cl_time <- log(1.49); label("log(ratio) of CL_T for males vs females (applied via (1-SEXF))")     # Gibiansky 2014 Table 3 exp(theta9) = 1.49
-    e_sex_cl_ss   <- log(1.22); label("log(ratio) of CL_inf for males vs females (applied via (1-SEXF))")   # Gibiansky 2014 Table 3 exp(theta10) = 1.22
+    e_sex_cl_exp_component <- log(1.49); label("log(ratio) of CL_T for males vs females (applied via (1-SEXF))")     # Gibiansky 2014 Table 3 exp(theta9) = 1.49
+    e_sex_cl_exp_inf   <- log(1.22); label("log(ratio) of CL_inf for males vs females (applied via (1-SEXF))")   # Gibiansky 2014 Table 3 exp(theta10) = 1.22
     e_sex_vc      <- log(1.18); label("log(ratio) of V1 for males vs females (applied via (1-SEXF))")       # Gibiansky 2014 Table 3 exp(theta11) = 1.18
 
     # ---- Diagnosis effects ----
-    # NHL composite (BCL + DLBCL + MCL) effect on kdes; shared BCL/DLBCL effect and a
+    # NHL composite (BCL + DLBCL + MCL) effect on cl_exp_kdes; shared BCL/DLBCL effect and a
     # separate MCL effect on CL_T and CL_inf (effects shared between the two CL components
     # per the NONMEM MU expressions; theta13 in MU_2 and MU_3 and theta14 in MU_2 and MU_3).
-    e_nhl_kdes    <- log(2.08);  label("log(ratio) of kdes for NHL vs CLL (any of BCL/DLBCL/MCL)")           # Gibiansky 2014 Table 3 exp(theta12) = 2.08
+    e_nhl_cl_exp_kdes    <- log(2.08);  label("log(ratio) of cl_exp_kdes for NHL vs CLL (any of BCL/DLBCL/MCL)")           # Gibiansky 2014 Table 3 exp(theta12) = 2.08
     e_bcldlbcl_cl <- log(0.834); label("log(ratio) of CL_T and CL_inf for BCL or DLBCL vs CLL (shared)")     # Gibiansky 2014 Table 3 exp(theta13) = 0.834
     e_mcl_cl      <- log(1.75);  label("log(ratio) of CL_T and CL_inf for MCL vs CLL (shared)")              # Gibiansky 2014 Table 3 exp(theta14) = 1.75
 
     # ---- Baseline tumor size effect ----
-    e_bsizlow_kdes <- log(2.65); label("log(ratio) of kdes for BSIZ <= 1750 mm^2 vs BSIZ > 1750 mm^2")       # Gibiansky 2014 Table 3 exp(theta15) = 2.65
+    e_bsizlow_cl_exp_kdes <- log(2.65); label("log(ratio) of cl_exp_kdes for BSIZ <= 1750 mm^2 vs BSIZ > 1750 mm^2")       # Gibiansky 2014 Table 3 exp(theta15) = 2.65
 
     # ---- Inter-individual variability (omega^2 = log-scale variance; Table 3) ----
-    # CV% = 100 * sqrt(exp(omega^2) - 1): kdes 201%, CL_T 122%, CL_inf 41.5%, V1 18.6%,
+    # CV% = 100 * sqrt(exp(omega^2) - 1): cl_exp_kdes 201%, CL_T 122%, CL_inf 41.5%, V1 18.6%,
     # V2 65.9%, Q 120%. Correlations of random effects were tested and not retained
     # in the final model per Methods ('correlation of the random effects was not included').
-    etalkdes    ~ 1.62;   # Gibiansky 2014 Table 3 Omega(1,1) (CV = 201%)
+    etalcl_exp_kdes    ~ 1.62;   # Gibiansky 2014 Table 3 Omega(1,1) (CV = 201%)
     etalcl_time ~ 0.907;  # Gibiansky 2014 Table 3 Omega(2,2) (CV = 122%)
     etalcl_ss   ~ 0.159;  # Gibiansky 2014 Table 3 Omega(3,3) (CV = 41.5%)
     etalvc      ~ 0.034;  # Gibiansky 2014 Table 3 Omega(4,4) (CV = 18.6%)
@@ -148,7 +156,7 @@ Gibiansky_2014_obinutuzumab <- function() {
     # Diagnosis composite indicators per the NONMEM control stream:
     #   CODD  = 1 if DIS in {2, 3} (BCL or DLBCL) -> bcl_dlbcl
     #   CODD1 = 1 if DIS == 4 (MCL)               -> TUMTP_MCL (used directly)
-    #   kdes NHL indicator = (CODD + CODD1) = any NHL histology -> nhl
+    #   cl_exp_kdes NHL indicator = (CODD + CODD1) = any NHL histology -> nhl
     bcl_dlbcl <- TUMTP_BCL + TUMTP_DLBCL
     nhl       <- TUMTP_BCL + TUMTP_DLBCL + TUMTP_MCL
 
@@ -161,20 +169,20 @@ Gibiansky_2014_obinutuzumab <- function() {
     # Allometric scaling: CL_T, CL_inf, V1 use estimated WT exponents (theta7, theta8);
     # Q and V2 retain fixed allometric coefficients (0.75 and 1.0). Sex and diagnosis
     # effects are applied as log-ratio offsets to the central-compartment parameters.
-    kdes    <- exp(lkdes    + e_nhl_kdes     * nhl       + e_bsizlow_kdes * bsiz_low + etalkdes)
-    cl_time <- exp(lcl_time + e_sex_cl_time  * sex_male  + e_wt_cl  * log(WT/75) +
+    cl_exp_kdes    <- exp(lcl_exp_kdes    + e_nhl_cl_exp_kdes     * nhl       + e_bsizlow_cl_exp_kdes * bsiz_low + etalcl_exp_kdes)
+    cl_exp_component <- exp(lcl_exp_component + e_sex_cl_exp_component  * sex_male  + e_wt_cl  * log(WT/75) +
                    e_bcldlbcl_cl * bcl_dlbcl + e_mcl_cl  * TUMTP_MCL + etalcl_time)
-    cl_ss   <- exp(lcl_ss   + e_sex_cl_ss    * sex_male  + e_wt_cl  * log(WT/75) +
+    cl_exp_inf   <- exp(lcl_exp_inf   + e_sex_cl_exp_inf    * sex_male  + e_wt_cl  * log(WT/75) +
                    e_bcldlbcl_cl * bcl_dlbcl + e_mcl_cl  * TUMTP_MCL + etalcl_ss)
     vc      <- exp(lvc      + e_sex_vc       * sex_male  + e_wt_vc  * log(WT/75) + etalvc)
     vp      <- exp(lvp      + e_wt_vp        * log(WT/75) + etalvp)
     q       <- exp(lq       + e_wt_q         * log(WT/75) + etalq)
 
     # ---- Time-varying clearance --------------------------------------------------
-    # Gibiansky 2014 Methods 'Base PK model development': CL(t) = CL_T * exp(-kdes * t)
+    # Gibiansky 2014 Methods 'Base PK model development': CL(t) = CL_T * exp(-cl_exp_kdes * t)
     # + CL_inf. The integration time variable 'time' refers to the time since the start
     # of the simulation / first observation, matching NONMEM TIME.
-    cl <- cl_time * exp(-kdes * time) + cl_ss
+    cl <- cl_exp_component * exp(-cl_exp_kdes * time) + cl_exp_inf
 
     # ---- Micro-constants ---------------------------------------------------------
     kel <- cl / vc

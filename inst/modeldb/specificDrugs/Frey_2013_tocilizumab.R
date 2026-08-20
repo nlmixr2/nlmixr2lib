@@ -4,6 +4,16 @@ Frey_2013_tocilizumab <- function() {
   vignette <- "Frey_2013_tocilizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "DAS28 (unitless 0-10 score)")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tocilizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    das28       = list(analyte = "DAS28", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     IL6 = list(
       description        = "Baseline serum interleukin-6 (IL-6) concentration",
@@ -125,7 +135,7 @@ Frey_2013_tocilizumab <- function() {
     # ------------------------------------------------------------------
     e_lil6_ec50    <- -4.4;   label("Power exponent of (log(IL6 * 1000)/9.9) on ec50 (unitless)")           # Frey 2013 Table 2 ec50 row
     e_sexm_emax    <-  0.11;  label("Fractional increase in emax for males (unitless)")                    # Frey 2013 Table 2 SEX row (+11% male)
-    e_race_amind_oth_kout    <- -0.25;  label("Fractional change in kout for RACE_ASIAN_AMIND_OTH = 1 (unitless)")         # Frey 2013 Table 2 RACE row (-25%)
+    e_race_amind_oth_kout    <- -0.25;  label("Fractional change in kout for RACE_ASIAN_AMIND_OTH = 1 (unitless)")         # Frey 2013 Table 2 RACE row (-25%). Estimated, not fixed -- -0.25 is the rounded reported percentage, see issue #479.
     e_blhaq_base   <-  0.043; label("Power exponent of (BLHAQ/1.6) on BASE (unitless)")                    # Frey 2013 Table 2 HAQ row
     e_lil6_base    <-  0.13;  label("Power exponent of (log(IL6 * 1000)/9.9) on BASE (unitless)")          # Frey 2013 Table 2 log-IL-6 on BASE row
     e_pain_base    <-  0.062; label("Power exponent of (PAIN/60) on BASE (unitless)")                      # Frey 2013 Table 2 PAIN row

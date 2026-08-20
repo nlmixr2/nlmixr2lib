@@ -2,7 +2,14 @@ Yano_1993_theophylline <- function() {
   description <- "One-compartment IV-infusion population PK model for theophylline (Yano 1993 Paper II) in 55 adult inpatients with stable chronic airway obstruction; clearance and volume of distribution are log-linear functions of arterial PaCO2 and a binary hepatic-dysfunction indicator."
   reference <- "Yano I, Tanigawara Y, Yasuhara M, Okumura K, Kawakatsu K, Nishimura K, Hori R. Population Pharmacokinetics of Theophylline. II: Intravenous Infusion to Patients with Stable Chronic Airway Obstruction. Biol Pharm Bull. 1993;16(5):501-505. doi:10.1248/bpb.16.501"
   vignette <- "Yano_1993_theophylline"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "theophylline", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

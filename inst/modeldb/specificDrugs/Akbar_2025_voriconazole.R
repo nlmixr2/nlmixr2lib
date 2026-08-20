@@ -2,7 +2,14 @@ Akbar_2025_voriconazole <- function() {
   description <- "One-compartment population pharmacokinetic model with first-order elimination for intravenous voriconazole in adult and pediatric Pakistani cancer patients receiving therapeutic drug monitoring (Akbar 2025); creatinine clearance and primary cancer diagnosis are covariates on clearance"
   reference <- "Akbar Z, Usman M, Aamir M, Saleem Z, Khan MR, Alamri A, Alharbi MS, Osman GEM. Population pharmacokinetic analysis of intravenous voriconazole in cancer patients. PLoS ONE. 2025;20(3):e0318883. doi:10.1371/journal.pone.0318883"
   vignette <- "Akbar_2025_voriconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "voriconazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

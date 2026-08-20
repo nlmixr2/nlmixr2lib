@@ -22,7 +22,15 @@ Soy_2015_benznidazole <- function() {
     sep = " "
   )
   vignette <- "Soy_2015_benznidazole"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "benznidazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "benznidazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -155,7 +163,7 @@ Soy_2015_benznidazole <- function() {
     # population PK model paragraph). Ka was fixed at 1.15 1/h from
     # Raaflaub & Ziegler 1979 (Soy 2015 reference 8); the available
     # sampling design did not support its estimation.
-    lka <- fixed(log(1.15)); label("Absorption rate constant Ka (1/h; fixed from Raaflaub & Ziegler 1979)")  # Soy 2015 Table 2 ("Ka 1.15 (fixed)")
+    lka <- fixed(log(1.15)); label("Absorption rate constant Ka (1/h; from Raaflaub & Ziegler 1979)")  # Soy 2015 Table 2 ("Ka 1.15 (fixed)")
     lcl <- log(1.73);        label("Apparent oral clearance CL/F (L/h)")                                     # Soy 2015 Table 2 (CL/F)
     lvc <- log(89.6);        label("Apparent volume of distribution V/F (L)")                                # Soy 2015 Table 2 (V/F)
 

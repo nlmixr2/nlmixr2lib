@@ -37,6 +37,14 @@ Langdon_2010_PF00821385_dog <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "PF00821385", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "PF00821385", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -103,7 +111,7 @@ Langdon_2010_PF00821385_dog <- function() {
     # vignette Errata for the full derivation. PF-00821385 was discontinued
     # at first-in-human so author correspondence is unlikely to recover the
     # original NONMEM-supplied value.
-    lfu <- fixed(log(0.64)); label("Plasma unbound fraction (FIXED; back-calculated)")        # vignette Errata (not in source); back-calculation from paper Introduction
+    lfu <- fixed(log(0.64)); label("Plasma unbound fraction (back-calculated)")        # vignette Errata (not in source); back-calculation from paper Introduction
 
     # =====================================================================
     # IIV. Per Methods paragraph 3 of Langdon 2010 ('The interindividual

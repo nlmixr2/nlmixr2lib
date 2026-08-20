@@ -30,13 +30,21 @@ Chi_2018_propofol <- function() {
   )
   vignette <- "Chi_2018_propofol"
   units <- list(
-    time          = "minute",
+    time          = "min",
     dosing        = "mg",
     concentration = "ug/mL"
   )
   # Dose units mg; central / vc has units mg/L = ug/mL, matching the
   # Chi 2018 propofol plasma concentration units (Methods, Anesthesia:
   # propofol plasma concentrations were set at 3 ug/mL).
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

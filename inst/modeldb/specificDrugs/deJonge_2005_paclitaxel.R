@@ -11,9 +11,21 @@ deJonge_2005_paclitaxel <- function() {
   paper_specific_compartments <- c("bound", "cremophor")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    bound       = list(analyte = "paclitaxel", units = "mg", specimen = "administration site", verified = FALSE),
+    cremophor   = list(analyte = "Cremophor EL", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "free paclitaxel", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "free paclitaxel", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list()
@@ -159,7 +171,7 @@ deJonge_2005_paclitaxel <- function() {
     label("Equilibrium rate constant for paclitaxel free <-> bound in the GI tract keq (1/h); paper reports keq = k15/k51, encoded here as k_forward = keq * cremophor and k_backward = keq") # Table 3: k_eq = 0.334 (RSE 43.4%)
 
     lfdepot <- fixed(log(1))
-    label("Oral bioavailability anchor F1 (FIXED at 1; paper found F was independent of paclitaxel dose and of CrEL amount over the studied range)") # Table 3: Bioavailability = 1 FIX
+    label("Oral bioavailability anchor F1 (paper found F was independent of paclitaxel dose and of CrEL amount over the studied range)") # Table 3: Bioavailability = 1 FIX
 
     # ----- Between-subject variability (de Jonge 2005 Table 3, % IIV column) -----
     # Paper reports CV% on an exponential (log-normal) error model; converted to

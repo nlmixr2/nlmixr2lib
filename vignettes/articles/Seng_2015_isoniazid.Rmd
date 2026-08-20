@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- Simulation size reduced for build time: this vignette took >300 s to render,
+     against a 19 s median across the article set. Only the COHORT SIZE and/or
+     OBSERVATION GRID DENSITY were reduced -- no model, parameter, dose or
+     covariate value was touched, so the figures show the same behaviour. -->
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
 library(nlmixr2lib)
@@ -104,7 +109,7 @@ set.seed(20260620)
 # NAT2 acetylator phenotype is sampled with the observed cohort ratios
 # 7 / 15 / 11 (rapid / intermediate / slow), and converted to the paired
 # canonical indicators NAT2_RAPID + NAT2_SLOW.
-n_per_phenotype <- 60L
+n_per_phenotype <- 25L
 n_doses         <- 2L
 
 make_phenotype_cohort <- function(phenotype, n, id_offset) {

@@ -2,7 +2,16 @@ Areberg_2006_escitalopram <- function() {
   description <- "Two-compartment population PK model with first-order absorption and lag time for escitalopram in healthy and hepatic-impaired adults (Areberg 2006)"
   reference <- "Areberg J, Christophersen JS, Poulsen MN, Larsen F, Molz K-H. The Pharmacokinetics of Escitalopram in Patients With Hepatic Impairment. AAPS J. 2006;8(1):E14-E19 (Article 2). doi:10.1208/aapsj080102"
   vignette <- "Areberg_2006_escitalopram"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "escitalopram", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "escitalopram", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -44,7 +53,7 @@ Areberg_2006_escitalopram <- function() {
     # (WT = 79 kg pooled mean and CYP2C19 = 0.769 S/R-mephenytoin ratio).
     # 'The "average" subject would have values for V/F and CL/F of 8.0*10^2 L
     # and 19 L/h, respectively.' (Areberg 2006 Results, p E17).
-    lka      <- fixed(log(3.6)); label("Absorption rate constant (Ka, 1/h; fixed)")                      # Areberg 2006 Table 3 (theta_5, 'fixed'; Results: 'k_a had to be fixed in order to run the model successfully ... set to 3.6 h^-1 ... based on modeling the data from each subject separately')
+    lka      <- fixed(log(3.6)); label("Absorption rate constant (Ka, 1/h)")                      # Areberg 2006 Table 3 (theta_5, 'fixed'; Results: 'k_a had to be fixed in order to run the model successfully ... set to 3.6 h^-1 ... based on modeling the data from each subject separately')
     lcl      <- log(19);         label("Apparent oral clearance at the cohort-mean CYP2C19 ratio (CL/F, L/h)")  # Areberg 2006 Table 3 (theta_2, 19 L/h, RSE 7%) / Results 'The average subject would have values for V/F and CL/F of ... 19 L/h'
     lvc      <- log(800);        label("Apparent central volume of distribution at the cohort-mean weight (V/F, L)")  # Areberg 2006 Table 3 (theta_1, 8.0*10^2 L, RSE 6%) / Results 'The average subject would have values for V/F ... of 8.0*10^2 L'
     lvp      <- log(470);        label("Apparent peripheral volume of distribution (V2/F, L)")            # Areberg 2006 Table 3 (theta_3, 4.7*10^2 L, RSE 8%)

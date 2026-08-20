@@ -6,7 +6,16 @@ Ting_2014_tobramycin_inhaled <- function() {
     "CPT Pharmacometrics Syst Pharmacol 3(9):e99. doi:10.1038/psp.2013.76"
   )
   vignette <- "Ting_2014_tobramycin_inhaled"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tobramycin inhaled", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tobramycin inhaled", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tobramycin inhaled", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     BMI = list(

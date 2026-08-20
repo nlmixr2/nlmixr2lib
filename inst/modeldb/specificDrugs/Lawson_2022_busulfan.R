@@ -2,7 +2,15 @@ Lawson_2022_busulfan <- function() {
   description <- "Two-compartment IV PK model for once-daily busulfan in pediatric hematopoietic stem cell transplant recipients with allometric normal-fat-mass (NFM) scaling, postmenstrual-age maturation on CL, and a time-associated within-treatment-course CL decline (Lawson 2022)."
   reference <- "Lawson R, Staatz CE, Fraser CJ, et al. Population pharmacokinetic model for once-daily intravenous busulfan in pediatric subjects describing time-associated clearance. CPT Pharmacometrics Syst Pharmacol. 2022;11(8):1002-1017. doi:10.1002/psp4.12809"
   vignette <- "Lawson_2022_busulfan"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "busulfan", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -57,20 +65,20 @@ Lawson_2022_busulfan <- function() {
     lvp <- log(3.57);  label("Typical peripheral volume of distribution at adult reference (V2, L)")       # Lawson 2022 Table 3
 
     # Time-associated CL decline within a treatment course (Lawson 2022 Equation 1, simplified
-    # to gamma = 1; CL_t = CL * exp(dCLmax * t / (tm50_time + t)) where t is time since the
+    # to gamma = 1; CL_t = CL * exp(cl_hill_max * t / (cl_hill_t50 + t)) where t is time since the
     # start of the first infusion).
-    dCLmax    <- -0.198;  label("Maximum fractional change in CL over a treatment course (unitless)")      # Lawson 2022 Table 3
-    tm50_time <-  50.6;   label("Time at which 50% of dCLmax is attained (h)")                             # Lawson 2022 Table 3
+    cl_hill_max    <- -0.198;  label("Maximum fractional change in CL over a treatment course (unitless)")      # Lawson 2022 Table 3
+    cl_hill_t50 <-  50.6;   label("Time at which 50% of cl_hill_max is attained (h)")                             # Lawson 2022 Table 3
 
     # Fat-mass fractions for parameter-specific NFM (fixed a priori per McCune 2014).
-    ffat_cl <- fixed(0.509);  label("Fraction of fat mass contributing to NFM on CL (unitless, fixed)")    # Lawson 2022 Table 3
-    ffat_v1 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V1 (unitless, fixed)")    # Lawson 2022 Table 3
-    ffat_q  <- fixed(0.0);    label("Fraction of fat mass contributing to NFM on Q (unitless, fixed)")     # Lawson 2022 Table 3
-    ffat_v2 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V2 (unitless, fixed)")    # Lawson 2022 Table 3
+    ffat_cl <- fixed(0.509);  label("Fraction of fat mass contributing to NFM on CL (unitless)")    # Lawson 2022 Table 3
+    ffat_v1 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V1 (unitless)")    # Lawson 2022 Table 3
+    ffat_q  <- fixed(0.0);    label("Fraction of fat mass contributing to NFM on Q (unitless)")     # Lawson 2022 Table 3
+    ffat_v2 <- fixed(0.203);  label("Fraction of fat mass contributing to NFM on V2 (unitless)")    # Lawson 2022 Table 3
 
     # Maturation parameters fixed a priori (Lawson 2022 Methods + Table 3).
-    hill_mat <- fixed(2.3);   label("Hill coefficient for the CL maturation function (unitless, fixed)")   # Lawson 2022 Table 3 + Methods
-    tm50_mat <- fixed(45.6);  label("Postmenstrual age at 50% of adult CL via maturation (weeks, fixed)")  # Lawson 2022 Table 3 + Methods
+    hill_mat <- fixed(2.3);   label("Hill coefficient for the CL maturation function (unitless)")   # Lawson 2022 Table 3 + Methods
+    tm50_mat <- fixed(45.6);  label("Postmenstrual age at 50% of adult CL via maturation (weeks)")  # Lawson 2022 Table 3 + Methods
 
     # Inter-individual variability on CL and V1 (block).
     # Per Lawson 2022 Table 3 footnote: 'CV% are calculated as the Square root of variance
@@ -110,7 +118,7 @@ Lawson_2022_busulfan <- function() {
     # Time-associated CL multiplier over the treatment course (Lawson 2022 Equation 1 with
     # gamma = 1, Table 3). The simulation clock t must equal time since the first dose (i.e.,
     # dosing in the event table starts at t = 0); at t = 0 the multiplier is 1.
-    time_factor_cl <- exp(dCLmax * t / (tm50_time + t))
+    time_factor_cl <- exp(cl_hill_max * t / (cl_hill_t50 + t))
 
     # Individual PK parameters.
     cl <- exp(lcl + etalcl) * size_cl * maturation_cl * time_factor_cl

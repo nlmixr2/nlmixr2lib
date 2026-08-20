@@ -8,7 +8,14 @@ Kunisawa_2014_olprinone <- function() {
     "doi:10.2147/CPAA.S50626."
   )
   vignette <- "Kunisawa_2014_olprinone"
-  units <- list(time = "hr", dosing = "ug", concentration = "ng/mL") # Methods: doses in ug/kg, plasma concentrations measured in ng/mL by HPLC; time converted from minutes-as-reported to hours
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # Methods: doses in ug/kg, plasma concentrations measured in ng/mL by HPLC; time converted from minutes-as-reported to hours
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "olprinone", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

@@ -9,12 +9,21 @@ Venisse_2008_fluconazole <- function() {
   )
   vignette <- "Venisse_2008_candida_albicans"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L (drug central; numerically equal to ug/mL used in the paper); CFU/mL (Candida count); log CFU/mL (Cc observation)"
   )
 
   paper_specific_compartments <- c("candida")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    candida = list(analyte = "Candida albicans cells", units = "mg", specimen = "bronchoalveolar lavage", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -38,10 +47,10 @@ Venisse_2008_fluconazole <- function() {
     # Methods (page 938): V = 0.4 L (bulk volume of the glass compartment),
     # CL = 1.54 mL/min = 0.0924 L/h, half-life = 3 h. Both fixed.
     lcl <- fixed(log(0.0924))
-    label("Drug clearance (L/h; CL = 1.54 mL/min, fixed by broth-pump flow rate)")
+    label("Drug clearance (L/h; CL = 1.54 mL/min, by broth-pump flow rate)")
     # Venisse 2008 Methods (PK-PD analysis paragraph): CL = 1.54 mL/min fixed.
     lvc <- fixed(log(0.4))
-    label("Drug central volume (L; V = 0.4 L bulk bath volume, fixed)")
+    label("Drug central volume (L; V = 0.4 L bulk bath volume)")
     # Venisse 2008 Methods (PK-PD analysis paragraph): V = 0.4 liters fixed.
 
     # ----- Candida population dynamics (shared across all 6 experiments) -----
@@ -55,7 +64,7 @@ Venisse_2008_fluconazole <- function() {
     label("Maximum Candida carrying capacity Nmax (CFU/mL)")
     # Venisse 2008 Table 2: Nmax = 1.48e6 CFU/mL, SE = 5.54e5.
     lke <- fixed(log(0.231))
-    label("Broth-renewal elimination rate constant Ke (1/h; fixed at 0.231 = ln(2)/3 h)")
+    label("Broth-renewal elimination rate constant Ke (1/h; 0.231 = ln(2)/3 h)")
     # Venisse 2008 Methods (page 938): Ke fixed at 0.231 1/h, equal to the drug
     # 1-compartment kel = CL/V = 0.0924/0.4. Set by experimenters (pump flow rate).
 

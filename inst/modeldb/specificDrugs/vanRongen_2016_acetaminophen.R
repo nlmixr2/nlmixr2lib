@@ -12,6 +12,20 @@ vanRongen_2016_acetaminophen <- function() {
   vignette <- "vanRongen_2016_acetaminophen"
   units <- list(time = "min", dosing = "umol", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "acetaminophen", units = "umol", specimen = "plasma", verified = FALSE),
+    transit1_gluc    = list(analyte = "glucuronide", units = "umol", specimen = "administration site", verified = FALSE),
+    central_gluc     = list(analyte = "glucuronide", units = "umol", specimen = "plasma", verified = FALSE),
+    central_sulf     = list(analyte = "sulphate", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_sulf = list(analyte = "sulphate", units = "umol", specimen = "plasma", verified = FALSE),
+    transit1_cysmer  = list(analyte = "cysteine + mercapturate", units = "umol", specimen = "administration site", verified = FALSE),
+    central_cysmer   = list(analyte = "cysteine + mercapturate", units = "umol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline",
@@ -78,14 +92,14 @@ vanRongen_2016_acetaminophen <- function() {
     # Sulphate pathway - two-compartment plasma disposition with equalized
     # central + peripheral volumes (5.66 L FIX per Methods page 836; cites
     # Liukas 2011 / ref [31]).
-    lvc_sulf   <- fixed(log(5.66))  ; label("Sulphate central volume of distribution (L, fixed)")                          # Methods page 836: V_sulphate,central = V_sulphate,peripheral = 5.66 L FIX, citing Liukas 2011 (ref 31)
-    lvp_sulf   <- fixed(log(5.66))  ; label("Sulphate peripheral volume of distribution (L, fixed equal to central)")      # Methods page 836: V_sulphate,central = V_sulphate,peripheral
+    lvc_sulf   <- fixed(log(5.66))  ; label("Sulphate central volume of distribution (L)")                          # Methods page 836: V_sulphate,central = V_sulphate,peripheral = 5.66 L FIX, citing Liukas 2011 (ref 31)
+    lvp_sulf   <- fixed(log(5.66))  ; label("Sulphate peripheral volume of distribution (L, equal to central)")      # Methods page 836: V_sulphate,central = V_sulphate,peripheral
     lq_sulf    <- log(0.339) ; label("Sulphate inter-compartmental clearance Q (L/min)")                                   # Table 2 final Q = 0.339 L/min (RSE 19.6%)
     lcle_sulf  <- log(0.096) ; label("Sulphate elimination clearance (L/min)")                                             # Table 2 final CLE_{sulph} = 0.096 L/min (RSE 3.4%)
 
     # CYP2E1 (cysteine + mercapturate) pathway - transit compartment +
     # plasma metabolite pool (fixed apparent volume per Liukas 2011).
-    lvc_cysmer <- fixed(log(15.6))  ; label("Cysteine + mercapturate combined volume of distribution (L, fixed)")          # Methods page 836: V_{cysteine and mercapturate} = 15.6 L FIX, citing Liukas 2011 (ref 31)
+    lvc_cysmer <- fixed(log(15.6))  ; label("Cysteine + mercapturate combined volume of distribution (L)")          # Methods page 836: V_{cysteine and mercapturate} = 15.6 L FIX, citing Liukas 2011 (ref 31)
     lktr_cysmer <- log(0.0057)      ; label("CYP2E1 transit-compartment rate constant Ktr_CYP2E1 at LBW = 65.2 kg (1/min)") # Table 2 final Ktr_{CYP2E1,65.2 kg} = 0.0057 1/min (RSE 12.2%), MTT = 175.4 min for n = 1 transit compartment
     lcle_cysmer <- log(0.329)       ; label("Cysteine + mercapturate elimination clearance (L/min)")                       # Table 2 final CLE_{cys and mercap} = 0.329 L/min (RSE 14.5%)
 

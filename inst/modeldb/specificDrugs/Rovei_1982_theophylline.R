@@ -2,7 +2,15 @@ Rovei_1982_theophylline <- function() {
   description <- "One-compartment oral PK model for theophylline tablets (Rovei 1982): first-order absorption with lag time in healthy adult volunteers across single oral doses of 125-500 mg."
   reference <- "Rovei V, Chanoine F, Strolin Benedetti M. Pharmacokinetics of theophylline: a dose-range study. Br J Clin Pharmacol. 1982;14(6):769-778. doi:10.1111/j.1365-2125.1982.tb02035.x"
   vignette <- "Rovei_1982_theophylline"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "theophylline", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "theophylline", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -35,8 +43,8 @@ Rovei_1982_theophylline <- function() {
     # The paper concludes (page 773, ANOVA on Table 3) that t_lag, t_abs, t_max, t_beta, CL, CL_R, Vd and F are
     # not modified by dose, so across-dose averages are reported here as the typical-value population estimates.
     ltlag <- log(0.09); label("Absorption lag time (hr)")                                              # Rovei 1982 Table 3: across-dose mean of t_lag (0.11, 0.09, 0.09, 0.07 h at 125/250/375/500 mg)
-    lka  <- log(1.73); label("First-order absorption rate constant (1/hr)")                           # Rovei 1982 Table 3: ka = ln(2)/t_abs with across-dose mean t_abs = 0.40 h (0.31, 0.44, 0.29, 0.55)
-    lcl  <- log(2.94); label("Apparent clearance for a 70 kg adult (L/hr)")                           # Rovei 1982 Table 3: across-dose mean CL = 0.042 L/h/kg * 70 kg = 2.94 L/h
+    lka  <- log(1.73); label("First-order absorption rate constant (1/h)")                           # Rovei 1982 Table 3: ka = ln(2)/t_abs with across-dose mean t_abs = 0.40 h (0.31, 0.44, 0.29, 0.55)
+    lcl  <- log(2.94); label("Apparent clearance for a 70 kg adult (L/h)")                           # Rovei 1982 Table 3: across-dose mean CL = 0.042 L/h/kg * 70 kg = 2.94 L/h
     lvc  <- log(35.7); label("Apparent central volume for a 70 kg adult (L)")                         # Rovei 1982 Table 3: across-dose mean Vd = 0.51 L/kg * 70 kg = 35.7 L
 
     # IIV approximated from inter-subject SD/mean across the 8 individual fits in Rovei 1982 (Table 3

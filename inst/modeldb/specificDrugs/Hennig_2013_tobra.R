@@ -2,7 +2,15 @@ Hennig_2013_tobra <- function() {
   description <- "Two-compartment intravenous population PK model for tobramycin in adults and children with and without cystic fibrosis (Hennig 2013); fat-free mass allometric scaling on CL/Q (estimated exponent) and on V1/V2 (linear), sex-specific reference CL and V1, piecewise-linear age effect on CL with breakpoint at 18 years, and a power effect of the SCR_mean/SCR ratio on CL."
   reference <- "Hennig S, Standing JF, Staatz CE, Thomson AH. Population pharmacokinetics of tobramycin in patients with and without cystic fibrosis. Clin Pharmacokinet. 2013;52(4):289-301. doi:10.1007/s40262-013-0036-y"
   vignette <- "Hennig_2013_tobra"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "tobra", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tobra", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FFM = list(

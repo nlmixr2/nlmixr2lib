@@ -2,7 +2,15 @@ Solana_2014_omeprazole <- function() {
   description <- "Two-compartment intravenous-infusion population PK model for omeprazole in 40 critically ill children (Solana 2014), with fixed Anderson-Holford allometric body-weight scaling on all four disposition parameters (exponents 0.75 on CL and Q, 1.00 on Vc and Vp; reference 70 kg). Between-patient variability was retained on CL only; residual error is proportional."
   reference   <- "Solana MJ, Colom H, Lopez-Herce J, Urbano J, Gonzalez R, Lopez J, Manzanares C, Carrillo A. Population pharmacokinetics of omeprazole in critically ill pediatric patients. Ther Drug Monit. 2014;36(4):519-527. doi:10.1097/FTD.0000000000000033"
   vignette    <- "Solana_2014_omeprazole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "omeprazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

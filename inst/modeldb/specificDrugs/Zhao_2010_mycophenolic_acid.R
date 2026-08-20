@@ -10,7 +10,16 @@ Zhao_2010_mycophenolic_acid <- function() {
     sep = " "
   )
   vignette <- "Zhao_2010_mycophenolic_acid"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "mycophenolic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mycophenolic acid", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -74,7 +83,7 @@ Zhao_2010_mycophenolic_acid <- function() {
     # reasonable agreement the reported values in transplant patients
     # ranging from 137 l to 496 l'.
     lvc     <- log(22.3);         label("Apparent central volume V1/F (L)")                                           # Table 3 V1/F = 22.3 L
-    lvp     <- fixed(log(250));   label("Apparent peripheral volume V2/F (L), fixed at 250 L")                        # Table 3 V2/F = 250 L (fixed)
+    lvp     <- fixed(log(250));   label("Apparent peripheral volume V2/F (L), 250 L")                        # Table 3 V2/F = 250 L (fixed)
     lq      <- log(18.8);         label("Apparent inter-compartment clearance Q/F (L/h)")                             # Table 3 Q/F = 18.8 L/h
 
     # Apparent oral clearance. The paper writes

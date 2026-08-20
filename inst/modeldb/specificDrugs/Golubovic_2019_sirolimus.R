@@ -11,6 +11,15 @@ Golubovic_2019_sirolimus <- function() {
   vignette <- "Golubovic_2019_sirolimus"
   units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sirolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "sirolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age (baseline; years).",
@@ -74,7 +83,7 @@ Golubovic_2019_sirolimus <- function() {
     # approximately 2e-5, i.e., numerical-noise level) and bootstrap
     # confidence interval 2.19-2.19, consistent with fix semantics rather
     # than true posterior uncertainty.
-    lka <- fixed(log(2.19)); label("First-order absorption rate constant, ka (1/h; prior-fixed)")  # Table IV: ka = 2.19 1/h (prior-fixed)
+    lka <- fixed(log(2.19)); label("First-order absorption rate constant, ka (1/h; prior-)")  # Table IV: ka = 2.19 1/h (prior-fixed)
 
     # Covariate effects on CL/F. The paper's final equation is
     #   CL/F = 12.2 * 0.63^AST_HIGH * (1 - 0.388 * AGE / 44)
@@ -96,7 +105,7 @@ Golubovic_2019_sirolimus <- function() {
     etalvc ~ 0.306            # Table IV: omega^2 Vc/F = 0.306
     etalvp ~ 0.0657           # Table IV: omega^2 Vp/F = 0.0657
     etalq  ~ 0.103            # Table IV: omega^2 Q/F  = 0.103
-    etalka ~ fixed(0.145)     # Table IV: omega^2 ka  = 0.145 (prior-fixed; SE 1.28e-6, bootstrap CI 0.144-0.144)
+    etalka ~ fixed(0.145)     # Table IV: omega^2 ka = 0.145 (prior; SE 1.28e-6, bootstrap CI 0.144-0.144)
 
     # Residual unexplained variability: "slope-intercept" (combined additive
     # + proportional) error model (Results, "the residual variability was

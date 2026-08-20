@@ -2,7 +2,15 @@ Jullien_2006_lopinavir <- function() {
   description <- "One-compartment population PK model for oral lopinavir (boosted with ritonavir) in HIV-infected children from birth to 18 years, with the absorption and elimination rate constants constrained to a single shared rate constant k = CL/F divided by V/F (Jullien 2006, simplified parameterisation per Wahlby 2002). Body weight is allometrically scaled on CL/F and V/F (reference 27 kg), nevirapine coadministration increases CL/F by 34%, and male sex increases CL/F by 39% in children older than 12 years."
   reference <- "Jullien V, Urien S, Hirt D, Delaugerre C, Rey E, Teglas JP, Vaz P, Rouzioux C, Chaix ML, Macassa E, Firtion G, Pons G, Blanche S, Treluyer JM. Population Analysis of Weight-, Age-, and Sex-Related Differences in the Pharmacokinetics of Lopinavir in Children from Birth to 18 Years. Antimicrob Agents Chemother. 2006 Nov;50(11):3548-55. doi:10.1128/AAC.00943-05"
   vignette <- "Jullien_2006_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

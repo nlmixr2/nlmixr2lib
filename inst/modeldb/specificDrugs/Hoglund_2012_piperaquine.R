@@ -28,7 +28,20 @@ Hoglund_2012_piperaquine <- function() {
     sep = " "
   )
   vignette <- "Hoglund_2012_piperaquine"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "piperaquine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "piperaquine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -133,7 +146,7 @@ Hoglund_2012_piperaquine <- function() {
     # fixed to 100%"). All F variability is captured by IIV around F (BSV
     # and BOV in the source paper; see etalfdepot below).
     lfdepot <- fixed(log(1))
-    label("Relative bioavailability F (unitless, fixed at 1)")
+    label("Relative bioavailability F (unitless)")
     # Hoglund 2012 Table 2: F (%) = 100 fix (no estimation, no RSE)
 
     # Allometric exponents fixed by the source paper (strong biological prior;

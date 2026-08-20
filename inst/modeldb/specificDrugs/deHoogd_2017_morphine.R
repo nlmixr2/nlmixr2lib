@@ -32,6 +32,25 @@ deHoogd_2017_morphine <- function() {
     concentration = "nmol/L"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central      = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1  = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2  = list(analyte = "morphine", units = "mg", specimen = "plasma", verified = FALSE),
+    transit1_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
+    transit4_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
+    transit5_m3g = list(analyte = "M3G", units = "mg", specimen = "administration site", verified = FALSE),
+    central_m3g  = list(analyte = "M3G", units = "mg", specimen = "plasma", verified = FALSE),
+    transit1_m6g = list(analyte = "M6G", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2_m6g = list(analyte = "M6G", units = "mg", specimen = "administration site", verified = FALSE),
+    central_m6g  = list(analyte = "M6G", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",
@@ -134,7 +153,7 @@ deHoogd_2017_morphine <- function() {
     # paper reports no TBW effect on morphine CL, so this constant is
     # used unchanged for every subject.
     lcl_nongluc <- fixed(log(0.4805))
-    label("Morphine non-glucuronide elimination clearance (L/min, FIXED structural)")  # Methods 2.4: 35% of CL_total(70 kg)
+    label("Morphine non-glucuronide elimination clearance (L/min, structural)")  # Methods 2.4: 35% of CL_total(70 kg)
 
     # ============================================================
     # M3G formation-delay transit chain

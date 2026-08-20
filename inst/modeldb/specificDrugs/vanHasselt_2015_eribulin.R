@@ -15,6 +15,15 @@ vanHasselt_2015_eribulin <- function() {
     concentration = "ng/mL (serum PSA)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "eribulin mesilate", units = NA_character_, specimen = "administration site", verified = FALSE),
+    PSA       = list(analyte = "prostate-specific antigen (PSA)", units = NA_character_, specimen = "serum", verified = FALSE)
+  )
+
   covariateData <- list(
     PRIOR_TAXANE = list(
       description        = "Binary indicator of prior taxane chemotherapy at study entry (1 = received any prior taxane regimen, 0 = taxane-naive).",
@@ -51,7 +60,7 @@ vanHasselt_2015_eribulin <- function() {
   ini({
     # Structural parameters from van Hasselt 2015 Table 2 ('Fixed effect
     # parameters' block, final-model column 'Estimate').
-    lkel   <- fixed(log(6000));    label("K-PD elimination rate constant KP (1/day; FIXED per paper)") # van Hasselt 2015 Table 2: hKP = 6000 /day, marked '+' = FIXED in the table footnote. Paper Results: 'The optimal value of the drug exposure parameter (KP) was selected based on evaluation of different fixed values in the model. We selected a large value of 6,000 to allow for a nearly instantaneous dosing event.'
+    lkel   <- fixed(log(6000));    label("K-PD elimination rate constant KP (1/day; per paper)") # van Hasselt 2015 Table 2: hKP = 6000 /day, marked '+' = FIXED in the table footnote. Paper Results: 'The optimal value of the drug exposure parameter (KP) was selected based on evaluation of different fixed values in the model. We selected a large value of 6,000 to allow for a nearly instantaneous dosing event.'
     lkd0   <- log(0.241);          label("Drug PSA inhibition rate KD0 (L/(ng*h*day); the paper's unit string 'ng*h/L /day /day' is dimensionally the same when KD0*D has units 1/day with D in ng*h/mL)") # van Hasselt 2015 Table 2: hKD0 = 0.241 (RSE 32.6%)
     lkres  <- log(0.0113);         label("Drug-resistance development rate k_res (1/day; multiplies exp(-k_res*t))") # van Hasselt 2015 Table 2: hk = 0.0113 (RSE 44.3%)
     lkg    <- log(0.00879);        label("PSA first-order growth rate KG (1/day)") # van Hasselt 2015 Table 2: hKG = 0.00879 (RSE 12.6%)

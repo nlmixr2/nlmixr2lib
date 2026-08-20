@@ -213,11 +213,159 @@ read the actual compiler error:
 
 ```r
 m <- readModelDb("YourModel")
-m_built <- m()  # this is where compilation happens
+m_built <- rxode2::rxode(m)  # this is where compilation happens
 ```
 
 The error message at this level is much more specific than the
 one in the vignette render.
+
+`readModelDb("YourModel")()` also works and is the idiom used
+throughout the existing vignettes — but only because each vignette
+calls `library(rxode2)`. Calling the model function relies on
+`ini()`/`model()` being **attached**; in a script that merely does
+`devtools::load_all()` or `library(nlmixr2lib)` it fails with
+`could not find function "ini"`. `rxode2::rxode()` has no such
+dependency, so prefer it in helper scripts and diagnostics.
+
+## 7. `object of type 'closure' is not subsettable`, or an empty/NULL result with no error
+
+**Cause.** `readModelDb()` returns the model **function**, not an
+`rxUi`. Calling it (`f()`) yields the ui, but treating the function
+itself as the ui does not:
+
+```r
+# WRONG — errors:
+mod <- readModelDb("Some_2024_model")
+mod$iniDf          # closure is not subsettable
+mod$theta          # closure is not subsettable
+
+# WRONG — SILENT, returns NULL and renders an empty table:
+attr(readModelDb(nm), "population")
+environment(readModelDb(nm))$population
+
+# RIGHT — either of these:
+readModelDb(nm)()$population              # needs library(rxode2) attached
+rxode2::rxode(readModelDb(nm))$population # works anywhere
+```
+
+**Fix.** Resolve to the ui exactly once, then use it:
+
+```r
+ui <- rxode2::rxode(readModelDb("Some_2024_model"))
+ui$iniDf; ui$theta; ui$population; ui$reference; ui$description
+```
+
+When a vignette holds several models in a list, convert at load
+time (`lapply(nms, \(n) rxode2::rxode(readModelDb(n)))`) so every
+downstream accessor works.
+
+The silent variants matter more than the erroring ones: `attr()`
+returns `NULL` without failing, so `str(pop)` prints ` NULL` and a
+table renders empty while the vignette reports success.
+
+## 8. `Column 'id' doesn't exist`, or an all-`NA` prediction from a solve that clearly worked
+
+**Cause.** `rxSolve()` **omits the `id` column entirely** when the
+event table holds a single subject. Code that indexes on it then
+breaks, or worse, silently yields `NA`:
+
+```r
+out <- rxode2::rxSolve(model, ev, returnType = "data.frame")
+out$viability[match(seq_along(dox), out$id)]  # match(1L, NULL) -> NA
+```
+
+**Fix.** Handle the single-subject case explicitly, and check
+rather than assume:
+
+```r
+if (is.null(out$id)) {
+  stopifnot(nrow(out) == length(dox))
+  return(out$viability)
+}
+idx <- match(seq_along(dox), out$id)
+stopifnot(!anyNA(idx))
+out$viability[idx]
+```
+
+If downstream code (PKNCA grouping, `distinct(id, ...)`) needs the
+column, restore it right after the solve:
+`if (is.null(sim$id)) sim$id <- 1L`.
+
+## 9. `rep(0, dim(.omega)[1]) : invalid 'times' argument`
+
+**Cause.** `omega = NA` was passed to a model that declares **no**
+`eta` terms. rxode2 evaluates `dim(NA)[1]`, which is `NA`, and
+calls `rep(0, NA)`.
+
+**Fix.** `omega = NA` suppresses IIV, so it is only meaningful when
+there is IIV to suppress. Pass it conditionally when one helper
+serves both typical-value and IIV models:
+
+```r
+solve_typical <- function(mod, ev, ...) {
+  ui <- rxode2::rxode(mod)
+  if (any(!is.na(ui$iniDf$neta1))) {
+    rxode2::rxSolve(mod, ev, omega = NA, ...)
+  } else {
+    rxode2::rxSolve(mod, ev, ...)
+  }
+}
+```
+
+## 10. A validation check that passes without testing anything
+
+**Cause.** A lookup that matches no rows returns a zero-length
+vector, and `all(logical(0))` is `TRUE`. A conclusions table then
+reports "yes" for a claim it never evaluated. The usual trigger is
+a label mismatch — including one from `format()`, which is
+**vectorised** and pads to a common precision:
+
+```r
+format(c(0.5, 4, 6), trim = TRUE)   # "0.5" "4.0" "6.0"  <- 4 became "4.0"
+```
+
+so a generated `"1 g q8h (4.0 h)"` silently fails to match a
+hand-written `"1 g q8h (4 h)"` elsewhere in the same file.
+
+**Fix.** Format each element independently
+(`vapply(x, format, character(1), trim = TRUE)`), derive both label
+sets from one source, and make lookups fail loudly:
+
+```r
+cell <- function(reg, mic) {
+  v <- tab$value[tab$regimen == reg & tab$MIC == mic]
+  if (length(v) != 1L) stop("no unique row for '", reg, "' at MIC ", mic)
+  v
+}
+stopifnot(all(wanted_labels %in% tab$regimen))  # guard %in% filters too
+```
+
+Whenever a check "passes", confirm it had rows to test. A gate
+that cannot go red is worse than no gate.
+
+## 11. A validation assertion that fails while the model is correct
+
+Before changing a model to satisfy an assertion, check that the
+assertion measures what it claims. Recurring cases:
+
+* **Terminal half-life.** Time-to-50% measured from the moment of
+  withdrawal includes the washout transient and reads long. Fit the
+  slope over a window well after washout to recover `log(2)/k`.
+* **NCA against Dose/CL.** A time grid that does not resolve `Tmax`
+  understates AUC by several percent. Sample the distribution phase
+  finely.
+* **Concentrations decayed into solver noise** go slightly negative
+  in the far tail; PKNCA then takes `log()` of a negative value and
+  `aucinf.obs` is `NaN`. Truncate to a window that is still many
+  half-lives long, and assert `all(conc >= 0)`.
+* **A median across subjects is not the typical-value prediction.**
+  With large IIV on a non-linear response, the median of the
+  transform sits above the transform of the median. Assert the
+  typical-value quantity against a typical-value threshold.
+
+When the model turns out to be right, **tighten** the assertion to
+the accuracy actually achieved rather than loosening it — that is
+what makes it catch a future regression.
 
 ## Process reminder
 

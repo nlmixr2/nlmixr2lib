@@ -4,6 +4,15 @@ Toukam_2025_biib107 <- function() {
   vignette <- "Toukam_2025_biib107"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL", response = "% alpha-4 integrin receptor saturation")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "biib107", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "biib107", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "biib107", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -47,17 +56,17 @@ Toukam_2025_biib107 <- function() {
     lvp     <- log(1.18);           label("Peripheral volume of distribution for a 70 kg adult (V3, L)")    # Toukam 2025 Table 3 (V3 1180 mL)
     lq      <- log(0.301);          label("Inter-compartmental clearance for a 70 kg adult (Q, L/day)")     # Toukam 2025 Table 3 (Q 301 mL/day)
     lvmax   <- log(1.89);           label("Maximum rate of saturable target-mediated elimination (Vmax, mg/day)")  # Toukam 2025 Table 3 (Vmax 1890 ug/day)
-    lkm     <- fixed(log(0.00435)); label("Michaelis-Menten constant (Km, mg/L = ug/mL; FIXED at in vitro Kd)")    # Toukam 2025 Table 3 (Km 0.00435 ug/mL FIXED)
+    lkm     <- fixed(log(0.00435)); label("Michaelis-Menten constant (Km, mg/L = ug/mL; in vitro Kd)")    # Toukam 2025 Table 3 (Km 0.00435 ug/mL FIXED)
     lfdepot <- log(0.738);          label("SC bioavailability (F, fraction)")                               # Toukam 2025 Table 3 (F 73.8%)
-    ltlag   <- fixed(log(0.0793));  label("Absorption lag time for SC doses (Tlag/ALAG1, day; FIXED)")      # Toukam 2025 Table 3 (Tlag 0.0793 day FIXED)
+    ltlag   <- fixed(log(0.0793));  label("Absorption lag time for SC doses (Tlag/ALAG1, day)")      # Toukam 2025 Table 3 (Tlag 0.0793 day FIXED)
 
     # Allometric exponents on body weight (reference 70 kg). Toukam 2025
     # Table 3: exponent on CL was estimated at 1.07 (RSE 39.7%); exponents
     # on V2, V3, and Q were fixed at 1, 1, and 0.75 respectively.
     e_wt_cl <- 1.07;          label("Allometric exponent on CL (estimated, unitless)")  # Toukam 2025 Table 3 (Exponent on CL 1.07 estimated)
-    e_wt_vc <- fixed(1);      label("Allometric exponent on V2 (FIXED, unitless)")      # Toukam 2025 Table 3 (Exponent on V2 1 FIXED)
-    e_wt_vp <- fixed(1);      label("Allometric exponent on V3 (FIXED, unitless)")      # Toukam 2025 Table 3 (Exponent on V3 1 FIXED)
-    e_wt_q  <- fixed(0.75);   label("Allometric exponent on Q (FIXED, unitless)")       # Toukam 2025 Table 3 (Exponent on Q 0.75 FIXED)
+    e_wt_vc <- fixed(1);      label("Allometric exponent on V2 (unitless)")      # Toukam 2025 Table 3 (Exponent on V2 1 FIXED)
+    e_wt_vp <- fixed(1);      label("Allometric exponent on V3 (unitless)")      # Toukam 2025 Table 3 (Exponent on V3 1 FIXED)
+    e_wt_q  <- fixed(0.75);   label("Allometric exponent on Q (unitless)")       # Toukam 2025 Table 3 (Exponent on Q 0.75 FIXED)
 
     # Inter-individual variability on log-transformed parameters. Paper
     # reports CV%; converted via omega^2 = log(CV^2 + 1). IIV was retained
@@ -86,7 +95,7 @@ Toukam_2025_biib107 <- function() {
     a4satE0     <- 17.7;          label("Baseline alpha-4 integrin saturation (E0, %)")             # Toukam 2025 Table 4 (E0 17.7%)
     a4satEmax   <- 77.5;          label("Maximum drug-induced alpha-4 integrin saturation (Emax, % above E0)")  # Toukam 2025 Table 4 (Emax 77.5%)
     la4satEC50  <- log(0.376);    label("BIIB107 concentration producing 50% of Emax (EC50, ug/mL)")            # Toukam 2025 Table 4 (EC50 0.376 ug/mL)
-    a4satGamma  <- fixed(1);      label("Hill coefficient for alpha-4 integrin saturation (gamma, FIXED)")     # Toukam 2025 PK-PD equation (gamma fixed at 1)
+    a4satGamma  <- fixed(1);      label("Hill coefficient for alpha-4 integrin saturation (gamma)")     # Toukam 2025 PK-PD equation (gamma fixed at 1)
 
     # IIV on EC50 (only PD parameter with IIV). Paper reports 10 (with
     # high shrinkage 62%); interpreted as 10% CV consistent with the

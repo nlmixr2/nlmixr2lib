@@ -29,6 +29,21 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
   # No patient covariates: this is a fixed-design xenograft experiment. The
   # radiation dose per fraction is encoded as the parameter `radDose` (Gy) so it
   # can be overridden per scenario / subject without a covariate column.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central        = list(analyte = "radiosensitizer", units = NA_character_, specimen = "plasma", verified = FALSE),
+    radDepot       = list(analyte = "radiosensitizer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cycling_cells  = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells1 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells2 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    damaged_cells3 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
+    irrad1         = list(analyte = "DNA damage", units = NA_character_, specimen = "tumor", verified = FALSE),
+    irrad2         = list(analyte = "DNA damage", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -61,7 +76,7 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
     # Linear-quadratic radiation parameters. alpha/beta was FIXED to 10
     # (Methods; Table 1 footnote), so beta is derived as alpha/abratio.
     lalpha  <- log(0.08)  ; label("LQ linear radiation parameter alpha (1/Gy)")        # Table 1
-    abratio <- fixed(10)  ; label("LQ alpha/beta ratio (Gy) - fixed")                  # Methods (fixed at 10)
+    abratio <- fixed(10)  ; label("LQ alpha/beta ratio (Gy)")                  # Methods (fixed at 10)
 
     # Radiosensitizer pharmacodynamic coefficients. The Table 1 letters and the
     # Mathematica supplement code-variable names for these two coefficients are

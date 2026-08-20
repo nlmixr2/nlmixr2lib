@@ -73,6 +73,28 @@ NA_NA_paracetamol <- function() {
     concentration = "umol/L"               # paracetamol; secondary outputs in mmol/L (glucose) and pmol/L (GLP-1, GIP), see description
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    stomach_apap    = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    intestine_apap  = list(analyte = "paracetamol", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "paracetamol", units = "mg", specimen = "plasma", verified = FALSE),
+    stomach_glu     = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    duodenum_glu    = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    central_glu     = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_glu = list(analyte = "glucose", units = "mg", specimen = "plasma", verified = FALSE),
+    effect_glu_prod = list(analyte = "glucose", units = "mg", specimen = "not applicable", verified = FALSE),
+    effect_ins      = list(analyte = "insulin", units = "mg", specimen = "not applicable", verified = FALSE),
+    jejunum_glu     = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    ileum_glu       = list(analyte = "glucose", units = "mg", specimen = "administration site", verified = FALSE),
+    cumloss_apap    = list(analyte = "paracetamol", units = "mg", specimen = "not applicable", verified = FALSE),
+    glp1            = list(analyte = "GLP-1", units = "mg", specimen = "plasma", verified = FALSE),
+    gip             = list(analyte = "GIP", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight, time-fixed at baseline. Used as a linear scaling factor on the central glucose volume (VG_i = THETA(9) * WT / 70). Reference weight 70 kg.",
@@ -134,7 +156,7 @@ NA_NA_paracetamol <- function() {
     lvc       <- log(27.0)           ; label("Paracetamol central volume V1 (L)")                     # `.lst` FINAL TH 2 = 2.70E+01
     lq        <- log(0.675)          ; label("Paracetamol inter-compartmental clearance Q2 (L/min)")  # `.lst` FINAL TH 3 = 6.75E-01
     lvp       <- log(22.0)           ; label("Paracetamol peripheral volume V2 (L)")                  # `.lst` FINAL TH 4 = 2.20E+01
-    lka       <- fixed(log(0.140))   ; label("Paracetamol absorption rate KA (1/min) - FIXED")        # `.lst` FINAL TH 5 = 1.40E-01 (FIX)
+    lka       <- fixed(log(0.140))   ; label("Paracetamol absorption rate KA (1/min)")        # `.lst` FINAL TH 5 = 1.40E-01 (FIX)
     lapapbl   <- log(6.54)           ; label("Paracetamol baseline-noise concentration APAPBL (uM)")  # `.lst` FINAL TH 6 = 6.54E+00
     lvmax     <- log(17.0)           ; label("Paracetamol intestinal saturable first-pass Vmax (mg/min equivalent)")  # `.lst` FINAL TH 29 = 1.70E+01
     lkm_apap  <- log(168)            ; label("Paracetamol intestinal saturable first-pass KM (mg)")   # `.lst` FINAL TH 30 = 1.68E+02
@@ -149,17 +171,17 @@ NA_NA_paracetamol <- function() {
     # ---------------------------------------------------------------------
     lgss_h    <- log(5.27)           ; label("Glucose baseline (healthy) GSSH (mM)")                  # `.lst` FINAL TH 7 = 5.27E+00
     lgss_d    <- log(7.48)           ; label("Glucose baseline (DIS_DIAB) GSSD (mM)")                     # `.lst` FINAL TH 8 = 7.48E+00
-    lvg       <- fixed(log(9.33))    ; label("Glucose central volume VG (L) - FIXED")                 # `.lst` FINAL TH 9 = 9.33E+00 (FIX)
-    lclg_h    <- fixed(log(0.0894))  ; label("Glucose insulin-independent clearance (healthy) CLGH (L/min) - FIXED")  # `.lst` FINAL TH 10 = 8.94E-02 (FIX)
+    lvg       <- fixed(log(9.33))    ; label("Glucose central volume VG (L)")                 # `.lst` FINAL TH 9 = 9.33E+00 (FIX)
+    lclg_h    <- fixed(log(0.0894))  ; label("Glucose insulin-independent clearance (healthy) CLGH (L/min)")  # `.lst` FINAL TH 10 = 8.94E-02 (FIX)
     lclgi_h   <- log(0.00663)        ; label("Glucose insulin-dependent clearance (healthy) CLGIH (L/min/(uU/mL))")    # `.lst` FINAL TH 11 = 6.63E-03 (bounded at upper 8.3E-03)
-    lq_g      <- fixed(log(0.442))   ; label("Glucose inter-compartmental clearance Q (L/min) - FIXED")  # `.lst` FINAL TH 12 = 4.42E-01 (FIX)
-    lvp_g     <- fixed(log(8.56))    ; label("Glucose peripheral volume VP (L) - FIXED")              # `.lst` FINAL TH 13 = 8.56E+00 (FIX)
-    lkge1     <- fixed(log(0.0573))  ; label("Glucose-on-production effect rate KGE1 (1/min) - FIXED") # `.lst` FINAL TH 14 = 5.73E-02 (FIX)
-    lkie      <- fixed(log(0.0213))  ; label("Insulin-on-elimination effect rate KIE (1/min) - FIXED") # `.lst` FINAL TH 15 = 2.13E-02 (FIX)
-    lclg_d    <- fixed(log(0.0287))  ; label("Glucose insulin-independent clearance (DIS_DIAB) CLGD (L/min) - FIXED")  # `.lst` FINAL TH 16 = 2.87E-02 (FIX)
+    lq_g      <- fixed(log(0.442))   ; label("Glucose inter-compartmental clearance Q (L/min)")  # `.lst` FINAL TH 12 = 4.42E-01 (FIX)
+    lvp_g     <- fixed(log(8.56))    ; label("Glucose peripheral volume VP (L)")              # `.lst` FINAL TH 13 = 8.56E+00 (FIX)
+    lkge1     <- fixed(log(0.0573))  ; label("Glucose-on-production effect rate KGE1 (1/min)") # `.lst` FINAL TH 14 = 5.73E-02 (FIX)
+    lkie      <- fixed(log(0.0213))  ; label("Insulin-on-elimination effect rate KIE (1/min)") # `.lst` FINAL TH 15 = 2.13E-02 (FIX)
+    lclg_d    <- fixed(log(0.0287))  ; label("Glucose insulin-independent clearance (DIS_DIAB) CLGD (L/min)")  # `.lst` FINAL TH 16 = 2.87E-02 (FIX)
     lclgi_d   <- log(0.00547)        ; label("Glucose insulin-dependent clearance (DIS_DIAB) CLGID (L/min/(uU/mL))")    # `.lst` FINAL TH 17 = 5.47E-03 (bounded at upper 8.3E-03)
     fpg_h     <- 0.909               ; label("Glucose bioavailability into central (healthy) FPGH (fraction, bounded [0,1])")  # `.lst` FINAL TH 18 = 9.09E-01 (bounded at upper 1)
-    fpg_d     <- fixed(1)            ; label("Glucose bioavailability into central (DIS_DIAB) FPGD (fraction) - FIXED at 1")  # `.lst` FINAL TH 19 = 1.00E+00 (FIX)
+    fpg_d     <- fixed(1)            ; label("Glucose bioavailability into central (DIS_DIAB) FPGD (fraction)")  # `.lst` FINAL TH 19 = 1.00E+00 (FIX)
     lramax_d  <- log(0.576)          ; label("Glucose duodenal-segment max absorption rate RAMAXD (g/min)")  # `.lst` FINAL TH 20 = 5.76E-01
     lramax_j  <- log(2.06)           ; label("Glucose jejunal-segment max absorption rate RAMAXJ (g/min)")   # `.lst` FINAL TH 21 = 2.06E+00
     lramax_i  <- log(1.33)           ; label("Glucose ileal-segment max absorption rate RAMAXI (g/min)")     # `.lst` FINAL TH 22 = 1.33E+00
@@ -168,8 +190,8 @@ NA_NA_paracetamol <- function() {
     # ---------------------------------------------------------------------
     # Gastric-emptying and gut-glucose-inhibition parameters.
     # ---------------------------------------------------------------------
-    lkw       <- fixed(log(0.140))   ; label("Water gastric-emptying rate KW (1/min) - FIXED")        # `.lst` FINAL TH 24 = 1.40E-01 (FIX)
-    glumax    <- fixed(1)            ; label("Maximum fractional inhibition of gastric emptying by duodenal glucose GLUMAX - FIXED at 1")  # `.lst` FINAL TH 25 = 1.00E+00 (FIX)
+    lkw       <- fixed(log(0.140))   ; label("Water gastric-emptying rate KW (1/min)")        # `.lst` FINAL TH 24 = 1.40E-01 (FIX)
+    glumax    <- fixed(1)            ; label("Maximum fractional inhibition of gastric emptying by duodenal glucose GLUMAX")  # `.lst` FINAL TH 25 = 1.00E+00 (FIX)
     ligd50    <- log(7.42)           ; label("Duodenal-glucose amount giving 50 percent gastric-emptying inhibition IGD50 (g)")  # `.lst` FINAL TH 26 = 7.42E+00
     lgam      <- log(14.0)           ; label("Hill exponent on duodenal-glucose-mediated gastric-emptying inhibition GAM (unitless)")  # `.lst` FINAL TH 27 = 1.40E+01
     lt50      <- log(20.0)           ; label("Mid-point of the logistic lag profile gating gastric emptying T50 (min, bounded 15-30)")  # `.lst` FINAL TH 28 = 2.00E+01

@@ -1,8 +1,16 @@
 Stocker_2012_oxypurinol <- function() {
-  description <- "One-compartment population PK model for oxypurinol (the active metabolite of allopurinol) in adults with gout (Stocker 2012). First-order formation from allopurinol (Kfm taken as the apparent first-order absorption rate into the central compartment), one-compartment distribution, and first-order elimination. Apparent clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine clearance based on lean body weight (CRCL), concomitant any-class diuretic use (CONMED_DIUR; thiazide / furosemide / spironolactone pooled), and concomitant probenecid use (CONMED_PROBENECID), each via a linear-deviation multiplicative factor. Apparent volume (V/Fm) is allometrically scaled on lean body weight (LBW) with the volume exponent held fixed at the theoretical value of 1.0. The dose entered into the model is the oxypurinol-equivalent dose, taken as 0.9 x allopurinol dose per the paper's prior published assumption."
+  description <- "One-compartment population PK model for oxypurinol (the active metabolite of allopurinol) in adults with gout (Stocker 2012). First-order formation from allopurinol (Kfm taken as the apparent first-order absorption rate into the central compartment), one-compartment distribution, and first-order elimination. Apparent clearance (CL/Fm) is modified by raw Cockcroft-Gault creatinine clearance based on lean body weight (CRCL), concomitant any-class diuretic use (CONMED_DIURETIC; thiazide / furosemide / spironolactone pooled), and concomitant probenecid use (CONMED_PROBENECID), each via a linear-deviation multiplicative factor. Apparent volume (V/Fm) is allometrically scaled on lean body weight (LBW) with the volume exponent held fixed at the theoretical value of 1.0. The dose entered into the model is the oxypurinol-equivalent dose, taken as 0.9 x allopurinol dose per the paper's prior published assumption."
   reference   <- "Stocker SL, McLachlan AJ, Savic RM, Kirkpatrick CM, Graham GG, Williams KM, Day RO. The pharmacokinetics of oxypurinol in people with gout. Br J Clin Pharmacol. 2012 Sep;74(3):477-489. doi:10.1111/j.1365-2125.2012.04207.x"
   vignette    <- "Stocker_2012_oxypurinol"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "oxypurinol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "oxypurinol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(
@@ -21,12 +29,12 @@ Stocker_2012_oxypurinol <- function() {
       notes              = "Stocker 2012 Methods cites reference [22] for the LBW formula (the James 1976 formula commonly used in the Sydney popPK group). Used as the size descriptor for V/Fm allometric scaling with the volume exponent held fixed at the theoretical value of 1.0 and a reference value of 60 kg (Stocker 2012 Table 3 footnote: 'For a typical patient who has a lean body weight of 60 kg'). LBW is also the size descriptor used to estimate CRCL via Cockcroft-Gault.",
       source_name        = "LBW"
     ),
-    CONMED_DIUR = list(
+    CONMED_DIURETIC = list(
       description        = "Concomitant any-class diuretic indicator (composite: thiazide + loop diuretic + potassium-sparing diuretic).",
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no concomitant diuretic of any class)",
-      notes              = "Stocker 2012 Table 1 footnote ' Including furosemide, thiazide diuretics and spironolactone'. 46% of the cohort (72 of 155 gouty patients) were on a concomitant diuretic. Linear-deviation multiplicative effect on CL/Fm: cl *= (1 + (-0.294) * CONMED_DIUR), i.e. 29.4% lower apparent oxypurinol clearance when a diuretic is coadministered. Time-varying per occasion in the source dataset because changes in concomitant medication define a new occasion.",
+      notes              = "Stocker 2012 Table 1 footnote ' Including furosemide, thiazide diuretics and spironolactone'. 46% of the cohort (72 of 155 gouty patients) were on a concomitant diuretic. Linear-deviation multiplicative effect on CL/Fm: cl *= (1 + (-0.294) * CONMED_DIURETIC), i.e. 29.4% lower apparent oxypurinol clearance when a diuretic is coadministered. Time-varying per occasion in the source dataset because changes in concomitant medication define a new occasion.",
       source_name        = "DIUR"
     ),
     CONMED_PROBENECID = list(
@@ -81,14 +89,14 @@ Stocker_2012_oxypurinol <- function() {
     # value 1.0 (linear scaling), consistent with the absence of a
     # Table 3 row for theta9 and with the typical fixed-exponent
     # convention for V/F allometric scaling (Anderson & Holford).
-    e_lbm_vc <- fixed(1.0); label("Allometric LBW exponent on V/Fm (unitless, fixed)")                     # Stocker 2012 Results equation page 480: TVV/Fm = theta2 * (LBW/60)^theta9; theta9 not reported in Table 3, inferred fixed at theoretical 1.0
+    e_lbm_vc <- fixed(1.0); label("Allometric LBW exponent on V/Fm (unitless)")                     # Stocker 2012 Results equation page 480: TVV/Fm = theta2 * (LBW/60)^theta9; theta9 not reported in Table 3, inferred fixed at theoretical 1.0
 
     # Covariate effects on CL/Fm. Linear-deviation multiplicative form
     # (NONMEM "additive on theta1" / linear-deviation scaling): CL =
     # TVCL * (1 + theta6 * (CRCL - 37.6)) * (1 + theta7 * DIUR) *
     # (1 + theta8 * PROB).
     e_crcl_cl              <-  0.0250; label("CRCL slope on CL/Fm: per mL/min of (CRCL - 37.6) deviation") # Stocker 2012 Table 3: theta6 = 0.0250 (0.021, 0.028)
-    e_conmed_diur_cl       <- -0.294;  label("Fractional change in CL/Fm with concomitant any-class diuretic (CONMED_DIUR = 1)")    # Stocker 2012 Table 3: theta7 = -0.294 (-0.386, -0.207); -29.4%
+    e_conmed_diuretic_cl       <- -0.294;  label("Fractional change in CL/Fm with concomitant any-class diuretic (CONMED_DIURETIC = 1)")    # Stocker 2012 Table 3: theta7 = -0.294 (-0.386, -0.207); -29.4%
     e_conmed_probenecid_cl <-  0.383;  label("Fractional change in CL/Fm with concomitant probenecid (CONMED_PROBENECID = 1)")      # Stocker 2012 Table 3: theta8 = 0.383 (0.264, 0.499); +38.3%
 
     # IIV. Stocker 2012 Methods (page 478) describes the IIV as
@@ -125,7 +133,7 @@ Stocker_2012_oxypurinol <- function() {
     # fractional change in CL/Fm at the covariate's reference state
     # (CRCL = ref_crcl, DIUR = 0, PROB = 0).
     cov_cl <- (1 + e_crcl_cl              * (CRCL - ref_crcl)) *
-              (1 + e_conmed_diur_cl       * CONMED_DIUR) *
+              (1 + e_conmed_diuretic_cl       * CONMED_DIURETIC) *
               (1 + e_conmed_probenecid_cl * CONMED_PROBENECID)
 
     # Individual parameters.

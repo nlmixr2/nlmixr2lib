@@ -5,9 +5,23 @@ Suri_2018_brentuximab <- function() {
   paper_specific_compartments <- c("lag")
 
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "umol",
     concentration = "umol/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central          = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral2      = list(analyte = "brentuximab vedotin", units = "umol", specimen = "plasma", verified = FALSE),
+    target           = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "not applicable", verified = FALSE),
+    lag              = list(analyte = "brentuximab vedotin", units = "umol", specimen = "administration site", verified = FALSE),
+    central_mmae     = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "plasma", verified = FALSE),
+    peripheral1_mmae = list(analyte = "monomethyl auristatin E", units = "umol", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -100,11 +114,11 @@ Suri_2018_brentuximab <- function() {
   ini({
     # ADC structural parameters (Suri 2018 supplement Table S1; 3-compartment
     # linear with zero-order input and first-order elimination from central).
-    lcl  <- log(0.0478); label("ADC clearance (CL, L/hr)")                                    # Suri 2018 Table S1 (sup 6): 0.0478 (2.7% RSE)
+    lcl  <- log(0.0478); label("ADC clearance (CL, L/h)")                                    # Suri 2018 Table S1 (sup 6): 0.0478 (2.7% RSE)
     lvc  <- log(3.5);    label("ADC central volume (V1, L)")                                  # Suri 2018 Table S1 (sup 6): 3.5 (1.2% RSE)
-    lq   <- log(0.0673); label("ADC inter-compartmental clearance to peripheral 1 (Q2, L/hr)")# Suri 2018 Table S1 (sup 6): 0.0673 (3.1% RSE)
+    lq   <- log(0.0673); label("ADC inter-compartmental clearance to peripheral 1 (Q2, L/h)")# Suri 2018 Table S1 (sup 6): 0.0673 (3.1% RSE)
     lvp  <- log(3.67);   label("ADC peripheral volume 1 (V2, L)")                             # Suri 2018 Table S1 (sup 6): 3.67 (2.3% RSE)
-    lq2  <- log(0.0125); label("ADC inter-compartmental clearance to peripheral 2 (Q3, L/hr)")# Suri 2018 Table S1 (sup 6): 0.0125 (3.3% RSE)
+    lq2  <- log(0.0125); label("ADC inter-compartmental clearance to peripheral 2 (Q3, L/h)")# Suri 2018 Table S1 (sup 6): 0.0125 (3.3% RSE)
     lvp2 <- log(5.79);   label("ADC peripheral volume 2 (V3, L)")                             # Suri 2018 Table S1 (sup 6): 5.79 (1.3% RSE)
 
     # ADC covariate effects (Suri 2018 supplement Table S1; reference values
@@ -121,13 +135,13 @@ Suri_2018_brentuximab <- function() {
     # MMAE structural parameters (Suri 2018 supplement Table S3; 2-compartment
     # linear with an upstream Target binding pool and Lag compartment fed by
     # ADC, mirroring the Mould-lab ADC framework also used in Zhou 2025).
-    lcl_mmae  <- log(0.577);   label("MMAE clearance (CLM, L/hr)")                                              # Suri 2018 Table S3 (sup 8): 0.577 (1.2% RSE)
+    lcl_mmae  <- log(0.577);   label("MMAE clearance (CLM, L/h)")                                              # Suri 2018 Table S3 (sup 8): 0.577 (1.2% RSE)
     lvc_mmae  <- log(16.0);    label("MMAE central volume (VM, L)")                                             # Suri 2018 Table S3 (sup 8): 16.0 (1.4% RSE)
-    lq_mmae   <- log(2.65);    label("MMAE inter-compartmental clearance (QM, L/hr)")                           # Suri 2018 Table S3 (sup 8): 2.65 (1.2% RSE)
+    lq_mmae   <- log(2.65);    label("MMAE inter-compartmental clearance (QM, L/h)")                           # Suri 2018 Table S3 (sup 8): 2.65 (1.2% RSE)
     lvp_mmae  <- log(14.2);    label("MMAE peripheral volume (VMP, L)")                                         # Suri 2018 Table S3 (sup 8): 14.2 (1.1% RSE)
-    lkd_mmae   <- log(0.00069); label("MMAE binding rate constant (Kd, 1/hr)")                                  # Suri 2018 Table S3 (sup 8): 0.00069 (1.6% RSE) — supplement table column header reads "Kd 1/h"; main paper page 994 mistakenly prints the unit as "L/h" (see vignette Errata section)
-    lalfm_mmae <- log(2.64);    label("Decay rate of ADC->MMAE proteolytic-conversion fraction (ALFM, 1/hr)")   # Suri 2018 Table S3 (sup 8): 2.64 (1.0% RSE) — main paper page 994 mistakenly prints the unit as "L/h" (see vignette Errata section)
-    lklag_mmae <- log(15.7);    label("Lag-compartment empty rate constant (Klag, 1/hr)")                       # Suri 2018 Table S3 (sup 8): 15.7 (1.0% RSE) — main paper page 994 mistakenly prints the unit as "L/h" (see vignette Errata section)
+    lkd_mmae   <- log(0.00069); label("MMAE binding rate constant (Kd, 1/h)")                                  # Suri 2018 Table S3 (sup 8): 0.00069 (1.6% RSE) — supplement table column header reads "Kd 1/h"; main paper page 994 mistakenly prints the unit as "L/h" (see vignette Errata section)
+    lalfm_mmae <- log(2.64);    label("Decay rate of ADC->MMAE proteolytic-conversion fraction (ALFM, 1/h)")   # Suri 2018 Table S3 (sup 8): 2.64 (1.0% RSE) — main paper page 994 mistakenly prints the unit as "L/h" (see vignette Errata section)
+    lklag_mmae <- log(15.7);    label("Lag-compartment empty rate constant (Klag, 1/h)")                       # Suri 2018 Table S3 (sup 8): 15.7 (1.0% RSE) — main paper page 994 mistakenly prints the unit as "L/h" (see vignette Errata section)
     # FM (fraction metabolized) is fixed to 1 in Suri 2018 Table S3 — encoded
     # as a literal constant in model() rather than an estimated parameter.
 

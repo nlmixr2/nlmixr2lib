@@ -15,9 +15,20 @@ Hansson_2013b_sunitinib <- function() {
   vignette <- "Hansson_2013b_sunitinib"
   paper_specific_etas <- c("etaibase")
 
-  units <- list(time = "hour", dosing = "mg", concentration = "mm (tumor SLD)")
+  units <- list(time = "h", dosing = "mg", concentration = "mm (tumor SLD)")
   ddmore_id <- "DDMODEL00000198"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    skit_drug = list(analyte = "soluble KIT", units = "mg", specimen = "plasma", verified = FALSE),
+    skit_pla  = list(analyte = "soluble KIT", units = "mg", specimen = "plasma", verified = FALSE),
+    svegfr3   = list(analyte = "soluble VEGFR-3", units = "mg", specimen = "plasma", verified = FALSE),
+    tumor     = list(analyte = "tumour SLD", units = "mg", specimen = "tumor", verified = FALSE)
+  )
 
   covariateData <- list(
     DOSE = list(
@@ -129,7 +140,7 @@ Hansson_2013b_sunitinib <- function() {
     #
     # Source paper THETA convention: rate constants reported in 1/week. The
     # .mod and the model() block convert to 1/h via the standard /24/7
-    # multiplier so all rates carry units of `units$time = "hour"`.
+    # multiplier so all rates carry units of `units$time = "h"`.
     # ----------------------------------------------------------------------
 
     # Tumor growth rate (paper Table 3: KG = 0.0118/week = 7.024e-5 /h).

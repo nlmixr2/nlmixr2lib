@@ -21,6 +21,16 @@ Holford_1992_tacrine <- function() {
     concentration = "(ADAS-cog total cognitive subscale score, 0-70, unitless)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    effect1 = list(analyte = "tacrine effect", units = NA_character_, specimen = "administration site", verified = FALSE),
+    effect2 = list(analyte = "tacrine effect", units = NA_character_, specimen = "administration site", verified = FALSE),
+    effect3 = list(analyte = "tacrine effect", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     IBW = list(
       description        = "Ideal body weight (Holford-Peace 1992 Devine variant: men IBW (kg) = 52 + 0.75 * (height_cm - 152); women IBW (kg) = 49 + 0.67 * (height_cm - 152)). Used to size-normalise the tacrine dose-rate input to the effect compartment.",

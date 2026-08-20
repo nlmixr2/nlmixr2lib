@@ -3,9 +3,22 @@ Sahota_2015_miridesap <- function() {
   reference <- "Sahota T, Berges A, Barton S, Cookson L, Zamuner S, Richards D. Target Mediated Drug Disposition Model of CPHPC in Patients With Systemic Amyloidosis. CPT Pharmacometrics Syst Pharmacol. 2015;4(2):e15. doi:10.1002/psp4.15."
   vignette <- "Sahota_2015_miridesap"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "ng/mL (CPHPC plasma); ng/mL-equivalent for SAP (mg/L * 1000)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot             = list(analyte = "miridesap", units = "mg", specimen = "administration site", verified = FALSE),
+    central           = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1       = list(analyte = "miridesap", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target      = list(analyte = "serum amyloid P (SAP)", units = "mg", specimen = "plasma", verified = FALSE),
+    target_peripheral = list(analyte = "serum amyloid P (SAP)", units = "mg", specimen = "plasma", verified = FALSE),
+    complex           = list(analyte = "miridesap-SAP complex", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -75,8 +88,8 @@ Sahota_2015_miridesap <- function() {
     e_crcl_cl <- 0.015 ; label("Linear slope of CRCL effect on CPHPC CL below the 80 mL/min threshold (per mL/min)")  # Sahota 2015 Table 2 (CRCL x clearance) and Eq. 1
 
     # ---- Subcutaneous depot (KSC and F fixed at prior estimates) ---------
-    lka     <- fixed(log(1.5)) ; label("Log SC absorption rate constant (log 1/h); KSC = 1.5 1/h - FIXED")                  # Sahota 2015 Table 2 (KSC: 1.5 FIX); Methods
-    lfdepot <- fixed(log(1))   ; label("Log SC bioavailability (log unitless); F = 1 - FIXED")                              # Sahota 2015 Methods: bioavailability assumed complete for SC doses
+    lka     <- fixed(log(1.5)) ; label("Log SC absorption rate constant (log 1/h); KSC = 1.5 1/h")                  # Sahota 2015 Table 2 (KSC: 1.5 FIX); Methods
+    lfdepot <- fixed(log(1))   ; label("Log SC bioavailability (log unitless); F = 1")                              # Sahota 2015 Methods: bioavailability assumed complete for SC doses
 
     # ---- SAP turnover ---------------------------------------------------
     lkout <- log(0.046) ; label("Log SAP elimination rate constant (log 1/h); KOUT = 0.046 1/h")    # Sahota 2015 Table 2 (KOUT)

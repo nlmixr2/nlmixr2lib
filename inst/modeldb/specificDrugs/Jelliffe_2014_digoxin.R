@@ -2,7 +2,16 @@ Jelliffe_2014_digoxin <- function() {
   description <- "Two-compartment population PK/PD model of digoxin in adults with first-order oral absorption, creatinine-clearance-dependent renal elimination, and a peripheral effect compartment normalized per body weight (Jelliffe et al. 2014, Ther Drug Monit; structural parameters carried from Reuning et al. 1973)."
   reference <- "Jelliffe R, Milman M, Schumitzky A, Bayard D, Van Guilder M. A Two-Compartment Population Pharmacokinetic-Pharmacodynamic Model of Digoxin in Adults, with Implications for Dosage. Ther Drug Monit. 2014 June;36(3):387-393. doi:10.1097/FTD.0000000000000023. PMCID: PMC4040260."
   vignette <- "Jelliffe_2014_digoxin"
-  units <- list(time = "hour", dosing = "ug", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "ug", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "digoxin", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "digoxin", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "digoxin", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -18,7 +27,7 @@ Jelliffe_2014_digoxin <- function() {
       units              = "mL/min/1.73 m^2",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Linear additive effect on the renal component of elimination: kel = knr + kr * CRCL. The paper estimated CRCL using the method of Jelliffe 2002 (Am J Nephrol 22:320-324). At a CRCL of 100 mL/min/1.73 m^2 the renal rate constant equals 0.0451 1/hr, equivalent to kr = 0.000451 1/hr per mL/min/1.73 m^2 (Methods, p3).",
+      notes              = "Linear additive effect on the renal component of elimination: kel = knr + kr * CRCL. The paper estimated CRCL using the method of Jelliffe 2002 (Am J Nephrol 22:320-324). At a CRCL of 100 mL/min/1.73 m^2 the renal rate constant equals 0.0451 1/h, equivalent to kr = 0.000451 1/h per mL/min/1.73 m^2 (Methods, p3).",
       source_name        = "CCr"
     )
   )
@@ -33,19 +42,19 @@ Jelliffe_2014_digoxin <- function() {
     disease_state  = "Adults requiring digoxin therapy (e.g., congestive heart failure with sinus rhythm; atrial fibrillation or flutter); model spans normal to anephric renal function via the CRCL covariate.",
     dose_range     = "Oral and intravenous; the paper illustrates loading doses of 0.875-1.149 mg given in 3 split doses 6 h apart followed by maintenance doses of 125-345 ug/day, but the structural model itself is dose-agnostic.",
     regions        = "Not specified",
-    notes          = "The structural parameters (Vc, Knr, Kr, Kcp, Kpc) are carried from the three normal-renal-function studies pooled by Reuning, Sams, and Notari (J Clin Pharmacol 1973;13:127-141, Table 1, p 129; Vc = 110 L for a 70 kg adult, total elimination rate 0.0747 1/hr split 39% nonrenal / 61% renal). The absorption rate Ka and oral bioavailability F = 0.65 are stated by Jelliffe 2014 (Methods, p2). Per-parameter variability was assumed at 20% CV (Methods, p3). Jelliffe 2014 then converted the continuous parameter distributions into a 64-point discrete distribution via the maximum-entropy method of Milman, Jiang, and Jelliffe (Comput Biol Med 2001;31:197-214) for use in the BestDose / USC RightDose adaptive-control software."
+    notes          = "The structural parameters (Vc, Knr, Kr, Kcp, Kpc) are carried from the three normal-renal-function studies pooled by Reuning, Sams, and Notari (J Clin Pharmacol 1973;13:127-141, Table 1, p 129; Vc = 110 L for a 70 kg adult, total elimination rate 0.0747 1/h split 39% nonrenal / 61% renal). The absorption rate Ka and oral bioavailability F = 0.65 are stated by Jelliffe 2014 (Methods, p2). Per-parameter variability was assumed at 20% CV (Methods, p3). Jelliffe 2014 then converted the continuous parameter distributions into a 64-point discrete distribution via the maximum-entropy method of Milman, Jiang, and Jelliffe (Comput Biol Med 2001;31:197-214) for use in the BestDose / USC RightDose adaptive-control software."
   )
 
   ini({
     # Mean parameter values from Table 2 (corroborated by the Methods narrative on p2-3 and the
     # discrete support points of Table 1). Per-kg / per-CRCL forms are reproduced verbatim;
     # the per-WT scaling and Kel = Knr + Kr * CRCL composition are applied inside model().
-    lka  <- log(0.6093);   label("First-order oral absorption rate (1/hr)")                                      # Table 2: Ka mean = 0.6093 (Table 1 support points 0.4874 and 0.7312)
+    lka  <- log(0.6093);   label("First-order oral absorption rate (1/h)")                                      # Table 2: Ka mean = 0.6093 (Table 1 support points 0.4874 and 0.7312)
     lvc  <- log(1.5714);   label("Central (serum) volume per kg body weight (L/kg)")                              # Table 2: Vc mean = 1.5714 L/kg (Methods p3: Vc = 110 L for a 70 kg adult)
-    lknr <- log(0.0288);   label("Nonrenal first-order elimination rate constant (1/hr)")                         # Table 2: Knr mean = 0.0288 (Methods p3: 39% of overall 0.0747 1/hr)
-    lkr  <- log(0.000451); label("Renal first-order elimination rate constant per CRCL unit (1/hr per mL/min/1.73 m^2)") # Table 2: Kr mean = 0.000451 (Methods p3: 0.0451 1/hr at CRCL = 100)
-    lkcp <- log(0.56);     label("Central-to-peripheral first-order rate constant (1/hr)")                        # Table 2: Kcp mean = 0.56 (Methods p3, from Reuning 1973)
-    lkpc <- log(0.15);     label("Peripheral-to-central first-order rate constant (1/hr)")                        # Table 2: Kpc mean = 0.15 (Methods p3, from Reuning 1973)
+    lknr <- log(0.0288);   label("Nonrenal first-order elimination rate constant (1/h)")                         # Table 2: Knr mean = 0.0288 (Methods p3: 39% of overall 0.0747 1/h)
+    lkr  <- log(0.000451); label("Renal first-order elimination rate constant per CRCL unit (1/h per mL/min/1.73 m^2)") # Table 2: Kr mean = 0.000451 (Methods p3: 0.0451 1/h at CRCL = 100)
+    lkcp <- log(0.56);     label("Central-to-peripheral first-order rate constant (1/h)")                        # Table 2: Kcp mean = 0.56 (Methods p3, from Reuning 1973)
+    lkpc <- log(0.15);     label("Peripheral-to-central first-order rate constant (1/h)")                        # Table 2: Kpc mean = 0.15 (Methods p3, from Reuning 1973)
     lfdepot <- fixed(log(0.65)); label("Oral bioavailability (fraction)")                                          # Methods p2: oral bioavailability assumed 0.65
 
     # IIV: paper assumes 20% CV per parameter (Methods p3: "The variability in the parameter
@@ -83,11 +92,15 @@ Jelliffe_2014_digoxin <- function() {
     # Oral bioavailability applied to the depot compartment
     f(depot) <- exp(lfdepot)
 
+    # Peripheral compartment exposed in the paper's normalization (amount per kg, ug/kg).
+    # Must be declared BEFORE the residual-error endpoint: statements placed after the
+    # `~` line are parsed into the error block, where a state reference such as
+    # peripheral1 is resolved as an input parameter and solving fails with
+    # "The following parameter(s) are required for solving: peripheral1".
+    Cp_ugkg <- peripheral1 / WT
+
     # Observation: serum concentration in ng/mL (dose ug / vc L = ug/L = ng/mL)
     Cc <- central / vc
     Cc ~ prop(propSd)
-
-    # Peripheral compartment exposed in the paper's normalization (amount per kg, ug/kg)
-    Cp_ugkg <- peripheral1 / WT
   })
 }

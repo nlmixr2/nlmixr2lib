@@ -2,7 +2,15 @@ Tsuda_2010_tamsulosin <- function() {
   description <- "One-compartment population PK model for oral modified-release tamsulosin hydrochloride in paediatric patients (2-16 years) with neuropathic and non-neuropathic bladder (Tsuda 2010), with first-order absorption after a lag time, allometric (WT/70)^0.75 on apparent clearance and (WT/70)^1 on apparent central volume (allometric exponents fixed at theory values), a power-form alpha-1-acid glycoprotein (AAG/20 uM) effect on both CL/F and V/F, correlated inter-individual variability on CL/F and V/F, independent IIV on ka, and a combined additive + proportional residual error."
   reference <- "Tsuda Y, Tatami S, Yamamura N, Tadayasu Y, Sarashina A, Liesenfeld K-H, Staab A, Schaefer H-G, Ieiri I, Higuchi S. Population pharmacokinetics of tamsulosin hydrochloride in paediatric patients with neuropathic and non-neuropathic bladder. British Journal of Clinical Pharmacology. 2010;70(1):88-101. doi:10.1111/j.1365-2125.2010.03662.x"
   vignette <- "Tsuda_2010_tamsulosin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tamsulosin", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tamsulosin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -138,8 +146,8 @@ Tsuda_2010_tamsulosin <- function() {
     # Body-weight exponents are theory-fixed at the final-model step (see
     # comment above); AAG exponents are estimated power-form covariates.
     # =========================================================================
-    e_wt_cl   <- fixed(0.75)   ; label("Allometric exponent of (WT/70) on CL/F (unitless; fixed at theory value)") # Tsuda 2010 Table 3 structural-model equation 'CL/F = theta_CL * (WT/70)^0.75 * ...'; Results 'Model building' Step 2: estimated 0.768 (95% CI 0.598-0.938), CI included 0.75 -> theory value used in final model
-    e_wt_vc   <- fixed(1.0)    ; label("Allometric exponent of (WT/70) on V/F (unitless; fixed at theory value)")  # Tsuda 2010 Table 3 structural-model equation 'V/F = theta_V * (WT/70) * ...'; Results 'Model building' Step 2: estimated 0.807 (95% CI 0.603-1.01), CI included 1 -> theory value used in final model
+    e_wt_cl   <- fixed(0.75)   ; label("Allometric exponent of (WT/70) on CL/F (unitless; theory value)") # Tsuda 2010 Table 3 structural-model equation 'CL/F = theta_CL * (WT/70)^0.75 * ...'; Results 'Model building' Step 2: estimated 0.768 (95% CI 0.598-0.938), CI included 0.75 -> theory value used in final model
+    e_wt_vc   <- fixed(1.0)    ; label("Allometric exponent of (WT/70) on V/F (unitless; theory value)")  # Tsuda 2010 Table 3 structural-model equation 'V/F = theta_V * (WT/70) * ...'; Results 'Model building' Step 2: estimated 0.807 (95% CI 0.603-1.01), CI included 1 -> theory value used in final model
     e_aag_cl  <- -0.844        ; label("Exponent of (AAG/20 uM) on CL/F (unitless; estimated)") # Tsuda 2010 Table 3 row 'theta_AAG_CL = -0.844' (RSE -15.1%)
     e_aag_vc  <- -0.663        ; label("Exponent of (AAG/20 uM) on V/F (unitless; estimated)")  # Tsuda 2010 Table 3 row 'theta_AAG_V = -0.663' (RSE -24.3%)
 

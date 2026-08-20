@@ -2,7 +2,7 @@ Mohamed_2012_gentamicin <- function() {
   description <- "In vitro (Escherichia coli ATCC 25922). Semi-mechanistic PKPD model of gentamicin bactericidal activity with adaptive resistance: drug-susceptible growing bacteria (bact_growing) plus insusceptible resting bacteria (bact_resting), with a binding model (ar_off / ar_on) by which gentamicin reduces its own Emax. Fit jointly to static and dynamic in-vitro time-kill curves."
   reference <- "Mohamed AF, Nielsen EI, Cars O, Friberg LE. Pharmacokinetic-pharmacodynamic model for gentamicin and its adaptive resistance with predictions of dosing schedules in newborn infants. Antimicrob Agents Chemother. 2012 Jan;56(1):179-188. doi:10.1128/AAC.00694-11. Model differential equations (Eqs 1-7), Figure 1 schematic, and final-model parameter estimates (Table 1) are in the main text."
   vignette <- "Mohamed_2012_gentamicin"
-  units <- list(time = "hour", dosing = "mg/L", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg/L", concentration = "mg/L")
 
   # paper-mechanistic states (bacterial populations, adaptive-resistance
   # binding states, and the in-vitro flask gentamicin concentration);
@@ -12,6 +12,18 @@ Mohamed_2012_gentamicin <- function() {
   # No patient covariates: this is an in-vitro mechanism-based PKPD model.
   # The gentamicin exposure is a state variable (cgent) dosed by the user,
   # not a covariate column.
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    bact_growing = list(analyte = "Escherichia coli ATCC 25922 (drug-susceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    bact_resting = list(analyte = "Escherichia coli ATCC 25922 (insusceptible)", units = NA_character_, specimen = "bile", verified = FALSE),
+    ar_off       = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    ar_on        = list(analyte = "gentamicin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    cgent        = list(analyte = "gentamicin", units = NA_character_, specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -36,7 +48,7 @@ Mohamed_2012_gentamicin <- function() {
   ini({
     # --- Bacterial population dynamics (Table 1) -----------------------------
     kgrowth <- 2.00          ; label("Rate constant of bacterial growth (1/h)")                              # Table 1: k_growth = 2.00 (95% CI 1.89-2.27)
-    kdeath  <- fixed(0.179)  ; label("Rate constant of natural bacterial death (1/h; FIXED)")               # Table 1: k_death = 0.179 (fix; from Nielsen 2007 / ref 36)
+    kdeath  <- fixed(0.179)  ; label("Rate constant of natural bacterial death (1/h)")               # Table 1: k_death = 0.179 (fix; from Nielsen 2007 / ref 36)
     bp      <- 2.09e6        ; label("Breakpoint total bacteria for k_SR > 0 (CFU/mL)")                     # Table 1: BP = 2.09e6 (95% CI 1.01e6-3.32e6)
     bmax    <- 8.26e8        ; label("Stationary-phase total bacterial count B_max (CFU/mL)")               # Table 1: B_max = 8.26e8 (95% CI 6.18e8-11.10e8)
 
@@ -47,7 +59,7 @@ Mohamed_2012_gentamicin <- function() {
     # --- Adaptive-resistance binding model (Table 1) -------------------------
     ar50    <- 0.113         ; label("AR_on value at which E_max is reduced by 50% (unitless)")             # Table 1: AR_50 = 0.113 (95% CI 0.0983-0.146)
     kon     <- 0.0426        ; label("Rate constant for development of adaptive resistance (L/(mg*h))")     # Table 1: k_on = 0.0426 (95% CI 0.0376-0.0478)
-    koff    <- fixed(0.0139) ; label("Rate constant for return to susceptibility (1/h; FIXED at ~50 h half-life)") # Table 1: k_off = 0.0139 (fix; ln(2)/0.0139 ~= 49.9 h)
+    koff    <- fixed(0.0139) ; label("Rate constant for return to susceptibility (1/h; ~50 h half-life)") # Table 1: k_off = 0.0139 (fix; ln(2)/0.0139 ~= 49.9 h)
 
     # --- Initial bacterial inoculum (typical value used in the paper's predictions) ---
     s0      <- 4.83e5        ; label("Initial susceptible-bacteria inoculum S(0) (CFU/mL)")                 # Methods: avg of all experimental start inocula 4.83e5; predictions used this value
@@ -62,7 +74,7 @@ Mohamed_2012_gentamicin <- function() {
     # phase-2 (terminal) value; override `lkel` at rxSolve() time for
     # static experiments (e.g. `params = c(lkel = log(1e-12))`) or
     # split the simulation around the 4-h flow-rate switch (see vignette).
-    lkel    <- fixed(log(0.037)) ; label("Log first-order gentamicin elimination from in-vitro flask (1/h; FIXED, dynamic phase-2 default)") # Methods: ke = 0 (static); 0.33 then 0.037 /h (dynamic in-vitro kinetic system, switched at 4 h)
+    lkel    <- fixed(log(0.037)) ; label("Log first-order gentamicin elimination from in-vitro flask (1/h;, dynamic phase-2 default)") # Methods: ke = 0 (static); 0.33 then 0.037 /h (dynamic in-vitro kinetic system, switched at 4 h)
 
     # --- Residual error (additive on natural-log CFU/mL scale) ---------------
     addSd   <- 1.69          ; label("Additive residual SD on ln(CFU/mL) scale (static experiments; see vignette for RE_dynamic and RRE)") # Table 1: RE_static = 1.69 (95% CI 1.52-1.83); RE_dynamic = 2.80 and RRE = 0.618 also reported but not encoded here

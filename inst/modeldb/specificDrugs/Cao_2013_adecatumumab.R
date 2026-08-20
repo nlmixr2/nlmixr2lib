@@ -4,6 +4,17 @@ Cao_2013_adecatumumab <- function() {
   vignette <- "Cao_2013_adecatumumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    plasma = list(analyte = "adecatumumab", units = "mg", specimen = "plasma", verified = FALSE),
+    tight  = list(analyte = "adecatumumab", units = "mg", specimen = "tissue", verified = FALSE),
+    leaky  = list(analyte = "adecatumumab", units = "mg", specimen = "tissue", verified = FALSE),
+    lymph  = list(analyte = "adecatumumab", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -16,13 +27,13 @@ Cao_2013_adecatumumab <- function() {
     disease_state  = "Hormone-refractory prostate cancer (adecatumumab anti-EpCAM human IgG1).",
     dose_range     = "Multiple-dose IV (per Oberneder 2006); see Cao 2013 Figure 5 adecatumumab panel.",
     regions        = NA,
-    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Oberneder R et al. Eur J Cancer 2006;42:2530-2538 (PMID 16930989). Adecatumumab has the highest CLp in the Cao 2013 human cohort (~0.030 L/hr), corresponding to its short ~15-day half-life. The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated."
+    notes          = "Cao 2013 Table 2, Model A. Parameters fit by Cao et al. to plasma concentration profiles digitized from Oberneder R et al. Eur J Cancer 2006;42:2530-2538 (PMID 16930989). Adecatumumab has the highest CLp in the Cao 2013 human cohort (~0.030 L/h), corresponding to its short ~15-day half-life. The fit used a typical-value structural mPBPK model in ADAPT 5; no IIV or covariate effects were estimated."
   )
 
   ini({
     sigma_tight <- 0.883; label("Vascular reflection coefficient for tight tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.883 (CV 9.64%)
     sigma_leaky <- 0.524; label("Vascular reflection coefficient for leaky tissues (unitless)")  # Cao 2013 Table 2 (Model A): 0.524 (CV 7.37%)
-    lcl   <- log(0.720); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0300 L/hr (CV 3.19%) = 0.720 L/day
+    lcl   <- log(0.720); label("Plasma clearance (CLp, L/day)")                            # Cao 2013 Table 2 (Model A): CLp = 0.0300 L/h (CV 3.19%) = 0.720 L/day
   })
 
   model({

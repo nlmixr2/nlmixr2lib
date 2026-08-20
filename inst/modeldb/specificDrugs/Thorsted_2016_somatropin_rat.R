@@ -27,6 +27,23 @@ Thorsted_2016_somatropin_rat <- function() {
     concentration = "ng/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "somatropin", units = "ug", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "somatropin", units = "ug", specimen = "plasma", verified = FALSE),
+    effect1     = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
+    effect2     = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
+    effect3     = list(analyte = "not applicable", units = "ug", specimen = "not applicable", verified = FALSE),
+    igf1        = list(analyte = "IGF-1", units = "ug", specimen = "plasma", verified = FALSE),
+    bw          = list(analyte = "body weight", units = "ug", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

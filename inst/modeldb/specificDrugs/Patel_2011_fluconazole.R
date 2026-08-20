@@ -27,7 +27,16 @@ Patel_2011_fluconazole <- function() {
     "doi:10.1128/AAC.00424-11"
   )
   vignette <- "Patel_2011_fluconazole"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "fluconazole", units = "mg", specimen = "plasma", verified = FALSE),
+    urine       = list(analyte = "fluconazole", units = "mg", specimen = "urine", verified = FALSE)
+  )
 
   covariateData <- list(
     FILT_AGE_HI = list(

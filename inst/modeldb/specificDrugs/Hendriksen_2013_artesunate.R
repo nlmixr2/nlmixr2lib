@@ -21,9 +21,18 @@ Hendriksen_2013_artesunate <- function() {
   )
   vignette  <- "Hendriksen_2013_artesunate"
   units     <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg",
     concentration = "mg/L"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central            = list(analyte = "artesunate", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dihydroart = list(analyte = "dihydroartemisinin", units = "mg", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -84,7 +93,7 @@ Hendriksen_2013_artesunate <- function() {
     # phase to estimate it (Hendriksen 2013 Results p.444 / Table 2: DUR
     # 1.00 min FIXED).
     ldur    <- fixed(log(1 / 60))
-    label("IM zero-order input duration (h); fixed at 1 min")
+    label("IM zero-order input duration (h); 1 min")
 
     # Allometric exponents, fixed in the source paper ("body weight was used
     # as a fixed allometric function on all elimination clearance (power of

@@ -15,6 +15,13 @@ Bisaso_2014_albumin <- function() {
   # document the units a user would supply if they ever introduced exogenous
   # albumin (e.g., IV human albumin therapy) via cmt = 'central'.
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "albumin", units = "g", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     TB_POS = list(
       description = "Active tuberculosis co-infection at study entry indicator",

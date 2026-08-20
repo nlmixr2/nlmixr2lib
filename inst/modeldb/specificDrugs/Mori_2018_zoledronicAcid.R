@@ -25,6 +25,16 @@ Mori_2018_zoledronicAcid <- function() {
 
   paper_specific_compartments <- c("bmd")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_kpd = list(analyte = "zoledronic acid", units = "mg", specimen = "administration site", verified = FALSE),
+    effect    = list(analyte = "zoledronic acid", units = "mg", specimen = "not applicable", verified = FALSE),
+    bmd       = list(analyte = "bone mineral density", units = "mg", specimen = "lymph", verified = FALSE)
+  )
+
   covariateData <- list(
     ON_TREATMENT = list(
       description        = "Treatment-arm indicator: 1 = subject is in the active zoledronic-acid arm (received yearly IV ZOL 5 mg); 0 = subject is in the placebo arm. Per-subject and time-fixed.",

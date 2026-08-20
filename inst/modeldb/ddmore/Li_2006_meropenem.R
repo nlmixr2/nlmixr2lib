@@ -9,10 +9,18 @@ Li_2006_meropenem <- function() {
     sep = " "
   )
   vignette <- "Li_2006_meropenem"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   ddmore_id    <- "DDMODEL00000213"
   replicate_of <- NULL
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "meropenem", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     AGE = list(
@@ -77,7 +85,7 @@ Li_2006_meropenem <- function() {
     # Covariate effects (power form via the .mdl INDIVIDUAL_VARIABLES log-linear block)
     e_age_cl  <- -0.34; label("AGE effect on CL: exponent of (AGE / 35) (unitless)")  # DDMODEL00000213 parObj COV_CL_AGE
     # COV_CL_CLCR was FIXED at the publication value because no CLCR distribution was reported in Li 2006.
-    e_crcl_cl <- fixed(0.62); label("CRCL effect on CL: exponent of (CRCL / 83), FIXED (unitless)")  # DDMODEL00000213 parObj COV_CL_CLCR (fix=true)
+    e_crcl_cl <- fixed(0.62); label("CRCL effect on CL: exponent of (CRCL / 83) (unitless)")  # DDMODEL00000213 parObj COV_CL_CLCR (fix=true)
     e_wt_vc   <- 0.99; label("WT effect on V1: exponent of (WT / 70) (unitless)")  # DDMODEL00000213 parObj COV_V1_WT
 
     # Inter-individual variability; DDMORE parObj reports OMEGA as variance directly (type is var).

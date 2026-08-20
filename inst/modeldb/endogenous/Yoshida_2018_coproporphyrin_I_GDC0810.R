@@ -16,7 +16,14 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     sep = " "
   )
   vignette <- "Yoshida_2018_coproporphyrin_I_GDC0810"
-  units <- list(time = "hour", dosing = "none", concentration = "nmol/L")
+  units <- list(time = "h", dosing = "none", concentration = "nmol/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "coproporphyrin I GDC0810", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CP_GDC_UM = list(
@@ -61,7 +68,7 @@ Yoshida_2018_coproporphyrin_I_GDC0810 <- function() {
     # estimates as plausibly transferable across DDI scenarios.
 
     logitfnh <- fixed(qlogis(0.129))
-    label("Logit of the non-hepatic fraction fNH of overall CPI clearance (unitless; fixed)")
+    label("Logit of the non-hepatic fraction fNH of overall CPI clearance (unitless)")
     # Table 2, GDC-0810-CPI: fNH = 12.9 % FIXED (not estimated). The
     # authors fix fNH to the rifampin-CPI estimated value because
     # their sensitivity analysis showed fNH has small influence on

@@ -19,11 +19,23 @@ Baron_2016_empagliflozin <- function() {
   )
   vignette <- "Baron_2016_empagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "mg empagliflozin (oral, once daily)",
     concentration = "Cc in nmol/L (= nM; converted from mg/L via MW 450.91 g/mol); FPG in mmol/L; HbA1c in % (NGSP)"
   )
   paper_specific_compartments <- c("hba1c")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "empagliflozin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "empagliflozin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "empagliflozin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    glucose     = list(analyte = "glucose", units = NA_character_, specimen = "plasma", verified = FALSE),
+    hba1c       = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
 
   covariateData <- list(
     AGE = list(
@@ -221,7 +233,7 @@ Baron_2016_empagliflozin <- function() {
     lq  <- log(6.34);   label("Apparent inter-compartmental clearance Q/F (L/h)")               # Table S1 row Q/F = 6.34 L/h
     lvp <- log(70.6);   label("Apparent peripheral volume V3/F (L) for the reference subject; renamed V3 -> vp per canonical compartment-name conventions")  # Table S1 row TV_V3 = 70.6 L
     lka <- log(0.196);  label("First-order absorption rate constant ka (1/h) for the reference subject")  # Table S1 row TV_ka = 0.196 1/h
-    lalag <- fixed(log(0.500)); label("Absorption lag time ALAG1 (h; fixed per Baron 2016 Methods)")  # Table S1 row ALAG1 = 0.500 h; FIX per Methods "The absorption lag time was fixed to 0.5 h"
+    lalag <- fixed(log(0.500)); label("Absorption lag time ALAG1 (h; per Baron 2016 Methods)")  # Table S1 row ALAG1 = 0.500 h; FIX per Methods "The absorption lag time was fixed to 0.5 h"
 
     # ---- PK covariate effects on CL/F (Table S1) ----
     # Power-form continuous effects exp(theta * log(cov / ref))
@@ -299,7 +311,7 @@ Baron_2016_empagliflozin <- function() {
 
     # FPG turnover - kFPGout was held FIXED in the Baron 2016 final model (Table S3 RSE = N/A;
     # 95% CI = 0.0407, 0.0407, indicating fixed rather than estimated).
-    lkfpgout <- fixed(log(0.0407)); label("First-order FPG elimination rate kFPGout (1/h; FIXED per Table S3)")  # Table S3 kFPGout = 0.0407 1/h; RSE N/A and bootstrap CI (0.0407, 0.0407) -> fixed
+    lkfpgout <- fixed(log(0.0407)); label("First-order FPG elimination rate kFPGout (1/h; per Table S3)")  # Table S3 kFPGout = 0.0407 1/h; RSE N/A and bootstrap CI (0.0407, 0.0407) -> fixed
 
     # Gmax (maximum fractional reduction in FPG with drug)
     lgmax <- log(0.217); label("Typical maximal fractional FPG reduction Gmax (Emax)")  # Table S3 TV_Gmax = 0.217 (i.e. 21.7%)

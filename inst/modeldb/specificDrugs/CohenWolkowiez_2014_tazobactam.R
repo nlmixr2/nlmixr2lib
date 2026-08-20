@@ -10,7 +10,14 @@ CohenWolkowiez_2014_tazobactam <- function() {
     sep = " "
   )
   vignette <- "CohenWolkowiez_2014_piperacillin_tazobactam"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "tazobactam", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -127,8 +134,8 @@ CohenWolkowiez_2014_tazobactam <- function() {
     lvc <- log(0.57);  label("Typical V per kg body weight (L/kg)")                                                                  # Cohen-Wolkowiez 2014 Table 4: typical V  value 0.57  L/kg (RSE 5.4%)
 
     # Allometric exponents (Cohen-Wolkowiez 2014 Table 2 base model and Population PK model building paragraph)
-    e_wt_cl <- fixed(1.0); label("Linear WT exponent on CL (unitless, fixed)")  # Population PK model building paragraph: WT exponent fixed at 1
-    e_wt_vc <- fixed(1.0); label("Linear WT exponent on V (unitless, fixed)")   # Population PK model building paragraph: WT exponent fixed at 1
+    e_wt_cl <- fixed(1.0); label("Linear WT exponent on CL (unitless)")  # Population PK model building paragraph: WT exponent fixed at 1
+    e_wt_vc <- fixed(1.0); label("Linear WT exponent on V (unitless)")   # Population PK model building paragraph: WT exponent fixed at 1
 
     # Covariate effects on CL (Cohen-Wolkowiez 2014 Table 4 final tazobactam model)
     e_page_cl       <- 1.35;  label("Power exponent on (PMA / 33 weeks) for CL (unitless)")                                    # Cohen-Wolkowiez 2014 Table 4: PMA covariate 1.35  (RSE 27.3%)

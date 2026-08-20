@@ -2,9 +2,20 @@ Fauchet_2015_lopinavir_placental <- function() {
   description <- "One-compartment first-order-absorption population PK model for total lopinavir in HIV-infected pregnant and nonpregnant women with a maternal-to-fetal effect-compartment placental-transfer chain and a downstream fetal-to-amniotic-fluid distribution-and-elimination chain; a 39% pregnancy effect is applied multiplicatively to apparent maternal CL (Fauchet 2015 MFLA submodel)."
   reference <- "Fauchet F, Treluyer JM, Illamola SM, Pressiat C, Lui G, Valade E, Mandelbrot L, Lechedanec J, Delmas S, Blanche S, Warszawski J, Urien S, Tubiana R, Hirt D, for the ANRS 135 PRIMEVA Study Group. Population approach to analyze the pharmacokinetics of free and total lopinavir in HIV-infected pregnant women and consequences for dose adjustment. Antimicrob Agents Chemother. 2015;59(9):5727-5735. doi:10.1128/AAC.00863-15"
   vignette <- "Fauchet_2015_lopinavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   paper_specific_compartments <- c("fetal", "amniotic")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "lopinavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "lopinavir", units = "mg", specimen = "plasma", verified = FALSE),
+    fetal    = list(analyte = "lopinavir", units = "mg", specimen = "tissue", verified = FALSE),
+    amniotic = list(analyte = "lopinavir", units = "mg", specimen = "tissue", verified = FALSE)
+  )
 
   covariateData <- list(
     PREG = list(
@@ -66,7 +77,7 @@ Fauchet_2015_lopinavir_placental <- function() {
     # Structural parameters from Fauchet 2015 Table 4 ('Population pharmacokinetic
     # parameters for lopinavir based on the MFLA model'). Apparent values absorb F;
     # CL and V are the maternal values for a nonpregnant reference subject.
-    lka  <- fixed(log(0.255)); label("Absorption rate constant (1/h, fixed)")                  # Table 4 row 'Ka' = 0.255 /h (footnote c 'Fixed value'); Results 'MFLA model' subsection: 'Our data did not allow estimation of a Ka value. The stability of the model was improved for a Ka value fixed to 0.255'
+    lka  <- fixed(log(0.255)); label("Absorption rate constant (1/h)")                  # Table 4 row 'Ka' = 0.255 /h (footnote c 'Fixed value'); Results 'MFLA model' subsection: 'Our data did not allow estimation of a Ka value. The stability of the model was improved for a Ka value fixed to 0.255'
     lcl  <- log(4.12);         label("Apparent nonpregnant maternal clearance (CL/F, L/h)")    # Table 4 row 'CL' = 4.12 L/h (nonpregnant reference; pregnancy applied via beta_CL_ENC)
     lvc  <- log(43.1);         label("Apparent maternal volume of distribution (V/F, L)")      # Table 4 row 'V' = 43.1 L
 

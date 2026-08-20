@@ -29,7 +29,17 @@ Svensson_2012_nevirapine <- function() {
     sep = " "
   )
   vignette <- "Svensson_2012_nevirapine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "nevirapine", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "nevirapine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -244,7 +254,7 @@ Svensson_2012_nevirapine <- function() {
     # concomitant TB treatment decreases F by 39%, encoded as a log-additive
     # multiplicative shift on the depot bioavailability.
     # =========================================================================
-    lfdepot     <- fixed(log(1.0));  label("Reference bioavailability F (fixed at 1.0; oral-only data, absolute F not identifiable)")  # Svensson 2012 Methods 'Modelling' paragraph 6 and Discussion paragraph 5: oral-only data implies that an absolute F is not estimable; the 'F (%) when TB treatment = 61.30' value is a RELATIVE bioavailability ratio against the reference fasted-no-TB state
+    lfdepot     <- fixed(log(1.0));  label("Reference bioavailability F (oral-only data, absolute F not identifiable)")  # Svensson 2012 Methods 'Modelling' paragraph 6 and Discussion paragraph 5: oral-only data implies that an absolute F is not estimable; the 'F (%) when TB treatment = 61.30' value is a RELATIVE bioavailability ratio against the reference fasted-no-TB state
     e_tb_pos_fdepot <- log(0.613);   label("Log-additive multiplicative shift on F for concomitant TB treatment (TB_POS = 1)")  # Svensson 2012 Table 2 'F (%) when TB treatment = 61.30 (RSE 8.70%)'; e_tb_pos_fdepot = log(0.613) = -0.490 reproduces the 39% decrease
 
     # =========================================================================
@@ -256,8 +266,8 @@ Svensson_2012_nevirapine <- function() {
     # be sufficient.'). Both exponents wrapped in fixed() per nlmixr2lib
     # convention.
     # =========================================================================
-    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F (unitless; fixed at 0.75 per Anderson-Holford)")  # Svensson 2012 Results 'Population pharmacokinetics' paragraph 2 (allometric coefficients fixed to customary 3/4 and 1)
-    e_wt_vc  <- fixed(1.00);  label("Allometric exponent of WT on V/F (unitless; fixed at 1 per Anderson-Holford)")  # Svensson 2012 Results 'Population pharmacokinetics' paragraph 2
+    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F (unitless; 0.75 per Anderson-Holford)")  # Svensson 2012 Results 'Population pharmacokinetics' paragraph 2 (allometric coefficients fixed to customary 3/4 and 1)
+    e_wt_vc  <- fixed(1.00);  label("Allometric exponent of WT on V/F (unitless; 1 per Anderson-Holford)")  # Svensson 2012 Results 'Population pharmacokinetics' paragraph 2
 
     # =========================================================================
     # Inter-individual / inter-occasion variability (Svensson 2012 Table 2).

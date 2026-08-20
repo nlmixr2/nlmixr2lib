@@ -10,7 +10,16 @@ Retlich_2015_linagliptin <- function() {
     "J Clin Pharmacol. 2010;50(8):873-885."
   )
   vignette <- "Retlich_2015_linagliptin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from nmol/L via MW 472.54 g/mol); RFU (DPP-4 activity)")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from nmol/L via MW 472.54 g/mol); RFU (DPP-4 activity)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -150,13 +159,13 @@ Retlich_2015_linagliptin <- function() {
     # but fixed to estimates of the previous model").
     lka <- log(0.441);   label("Typical Ka for tablet formulation 2 (marketed linagliptin tablet); 1/h")  # Table 4 row Ka,3
     lvc      <- log(715);     label("Apparent central volume of distribution VC/F (L)")                       # Table 4 row VC/F
-    lvp      <- fixed(log(1650));  label("Apparent peripheral volume of distribution VP/F (L; fixed from upstream Retlich 2010)") # Table 4 row VP/F, footnote d
-    lq       <- fixed(log(412));   label("Apparent inter-compartmental clearance QP/F (L/h; fixed from upstream Retlich 2010)")    # Table 4 row QP/F, footnote d
+    lvp      <- fixed(log(1650));  label("Apparent peripheral volume of distribution VP/F (L; from upstream Retlich 2010)") # Table 4 row VP/F, footnote d
+    lq       <- fixed(log(412));   label("Apparent inter-compartmental clearance QP/F (L/h; from upstream Retlich 2010)")    # Table 4 row QP/F, footnote d
     lcl      <- log(258);     label("Apparent clearance of the unbound linagliptin concentration CL/F (L/h)") # Table 4 row CL/F
     lbmaxc  <- log(4.97);    label("Typical Bmax_C: central-compartment DPP-4 binding-site concentration in males (nmol/L)")  # Table 4 row Bmax,C
-    lamax_p  <- fixed(log(1650));  label("Apparent peripheral binding-site amount Amax_P/F (nmol; fixed from upstream Retlich 2010)") # Table 4 row Amax,P/F
-    lkd      <- fixed(log(0.0652));label("DPP-4 dissociation constant Kd (nmol/L; fixed from upstream Retlich 2010)")                # Table 4 row Kd
-    lfdepot  <- fixed(log(1));     label("Reference relative bioavailability (F = 1, fixed at the typical-value reference)")        # Table 4 row F, footnote a
+    lamax_p  <- fixed(log(1650));  label("Apparent peripheral binding-site amount Amax_P/F (nmol; from upstream Retlich 2010)") # Table 4 row Amax,P/F
+    lkd      <- fixed(log(0.0652));label("DPP-4 dissociation constant Kd (nmol/L; from upstream Retlich 2010)")                # Table 4 row Kd
+    lfdepot  <- fixed(log(1));     label("Reference relative bioavailability (F = 1, the typical-value reference)")        # Table 4 row F, footnote a
 
     # ---- PK covariate effects (Retlich 2015 Table 4) ----
     e_pow_ka       <- fixed(0.7493);  label("Powder-formulation effect on log-Ka (log(0.933/0.441))")  # Table 4 rows Ka,1 vs Ka,3 (derived ratio)

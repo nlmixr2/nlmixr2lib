@@ -4,6 +4,15 @@ Peng_2024_SAL003 <- function() {
   vignette <- "Peng_2024_SAL003"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "SAL003", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "SAL003", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "SAL003", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline",
@@ -62,7 +71,7 @@ Peng_2024_SAL003 <- function() {
     label("SC absorption lag time Tlag (day)")                                                                # Peng 2024 Table 2: Tlag = 1.76 h (RSE 13.19%)
 
     lfdepot <- fixed(log(0.783))
-    label("Subcutaneous bioavailability F (fraction; FIXED at preclinical Macaca fascicularis value 78.3%)") # Peng 2024 Table 2 footnote a: F fixed at preclinical 78.3% from Macaca fascicularis; supplement Table S3: 0.783
+    label("Subcutaneous bioavailability F (fraction; preclinical Macaca fascicularis value 78.3%)") # Peng 2024 Table 2 footnote a: F fixed at preclinical 78.3% from Macaca fascicularis; supplement Table S3: 0.783
 
     # ---- Covariate effect on Vc ----
     # Peng 2024 Table 2: dVdWeight = 0.77 (RSE 20.74%). The paper does not state the

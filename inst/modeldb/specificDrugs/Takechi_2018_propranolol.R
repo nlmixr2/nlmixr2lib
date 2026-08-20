@@ -2,7 +2,15 @@ Takechi_2018_propranolol <- function() {
   description <- "One-compartment first-order absorption population PK model for oral propranolol in Japanese infants with infantile hemangioma (35-150 days postnatal age), with fixed allometric body-weight scaling and a power effect of postnatal age on apparent oral clearance; the companion logistic-regression PD model relating exposure (AUC), treatment duration, and gestational age to treatment-success probability is reproduced in the validation vignette."
   reference <- "Takechi T, Kumokawa T, Kato R, Higuchi T, Kaneko T, Ieiri I. Population Pharmacokinetics and Pharmacodynamics of Oral Propranolol in Pediatric Patients With Infantile Hemangioma. J Clin Pharmacol. 2018;58(10):1361-1370. doi:10.1002/jcph.1149"
   vignette <- "Takechi_2018_propranolol"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "propranolol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "propranolol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

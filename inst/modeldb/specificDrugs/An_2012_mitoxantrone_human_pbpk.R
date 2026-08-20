@@ -40,7 +40,23 @@ An_2012_mitoxantrone_human_pbpk <- function() {
     sep = " "
   )
   vignette <- "An_2012_mitoxantrone_pbpk"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    lung          = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    heart         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    spleen        = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    brain         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    liver         = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    kidney        = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    is_remainder  = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    int_remainder = list(analyte = "mitoxantrone", units = "mg", specimen = "tissue", verified = FALSE),
+    central       = list(analyte = "mitoxantrone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 

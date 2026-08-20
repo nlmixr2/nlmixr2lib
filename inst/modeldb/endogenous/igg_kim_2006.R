@@ -2,6 +2,14 @@ igg_kim_2006 <- function() {
   description <- "Immunoglobulin G (IgG) model for nonlinear metabolism in healthy subjects"
   reference <- "Kim J, Hayton WL, Robinson JM, Anderson CL. Kinetics of FcRn-mediated recycling of IgG and albumin in human: pathophysiology and therapeutic implications using a simplified mechanism-based model. Clin Immunol. 2007 Feb;122(2):146-55. doi: 10.1016/j.clim.2006.09.001. Epub 2006 Oct 13. PMID: 17046328; PMCID: PMC2791364."
   # parameters from table 1 in paper
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    igg = list(analyte = "Immunoglobulin G", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   ini({
     ljmax <- log(147); label("Maximal rate of FcRn-mediated recycling (Jmax); i.e., in vivo recycling capacity (mg/d/kg)")
     lkm <- log(21); label("Plasma concentration at which a half Jmax reached (Km); The Michaelis constant (mg/mL)")

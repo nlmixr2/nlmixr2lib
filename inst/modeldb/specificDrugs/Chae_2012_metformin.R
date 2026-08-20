@@ -2,7 +2,18 @@ Chae_2012_metformin <- function() {
   description <- "One-compartment population PK model with first-order absorption for oral metformin in healthy Korean adults, coupled to a three-transit Sun-Jusko signal-transduction PD model for the antihyperglycaemic effect (Chae 2012). Plasma drug concentration in the central compartment drives a Hill-type stimulation function DR = Emax * Cp^r / (EC50^r + Cp^r) that initiates a cascade of three secondary-messenger transit compartments (M1 -> M2 -> M3) with shared mean transit time tau. The third messenger M3 is the measured percent change in plasma glucose from baseline relative to a sugar-bolus control arm. Creatinine clearance enters CL/F as a power covariate with reference 106.5 mL/min and exponent 0.782."
   reference <- "Chae JW, Baek IH, Lee BY, Cho SK, Kwon KI. Population pharmacokinetic and pharmacodynamic analysis of metformin using the signal transduction model. Br J Clin Pharmacol. 2012;74(5):815-823. doi:10.1111/j.1365-2125.2012.04260.x"
   vignette <- "Chae_2012_metformin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ug/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot    = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    central  = list(analyte = "metformin", units = "mg", specimen = "plasma", verified = FALSE),
+    transit1 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit3 = list(analyte = "metformin", units = "mg", specimen = "administration site", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

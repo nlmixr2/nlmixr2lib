@@ -2,7 +2,15 @@ AbdelJalil_2013_tacrolimus <- function() {
   description <- "One-compartment population PK model for oral tacrolimus in paediatric liver transplant recipients (Abdel Jalil 2013), with first-order absorption (ka fixed at the literature value 4.5 1/h), an apparent volume of distribution fixed at the literature value 30 L/kg, allometric (WT/13.2 kg)^0.75 scaling on apparent clearance with the theory-based exponent fixed, multiplicative exponential effects of time post-transplantation (days) and CYP3A5*1 carrier status on CL/F, exponential (log-normal) inter-individual variability on CL/F, and proportional residual error."
   reference   <- "Abdel Jalil MH, Hawwa AF, McKiernan PJ, Shields MD, McElnay JC. Population pharmacokinetic and pharmacogenetic analysis of tacrolimus in paediatric liver transplant patients. Br J Clin Pharmacol. 2014;77(1):130-140. doi:10.1111/bcp.12174"
   vignette    <- "AbdelJalil_2013_tacrolimus"
-  units       <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units       <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -126,7 +134,7 @@ AbdelJalil_2013_tacrolimus <- function() {
 
     # Covariate effects on CL/F -- Abdel Jalil 2013 Results final equation:
     # CL/F_i = theta_1 * (WT/13.2)^0.75 * exp(theta_2 * TPT) * exp(theta_3 * CYP3A5_EXPR).
-    e_wt_cl          <- fixed(0.75) ; label("Allometric exponent of (WT/13.2 kg) on CL/F (unitless; fixed)")               # Abdel Jalil 2013 Methods: allometric exponent fixed to 0.75 (theory-based)
+    e_wt_cl          <- fixed(0.75) ; label("Allometric exponent of (WT/13.2 kg) on CL/F (unitless)")               # Abdel Jalil 2013 Methods: allometric exponent fixed to 0.75 (theory-based)
     e_pod_cl         <- -0.00158    ; label("Time-post-transplant exponential coefficient on CL/F (per day)")              # Abdel Jalil 2013 Table 5 theta_2 = -0.00158 /day (13.8% RSE)
     e_cyp3a5_expr_cl <- 0.4282      ; label("CYP3A5 expresser exponential coefficient on CL/F (unitless)")                 # Abdel Jalil 2013 Table 5 theta_3 = 0.4282 (25.5% RSE)
 

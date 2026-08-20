@@ -139,7 +139,7 @@
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
   # extractions (bc / eu / eb / fr / is / int / mrna / luc prefixes).
-  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut)$", # nolint: line_length_linter.
+  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor)$", # nolint: line_length_linter.
   # DAR-numbered ADC isoform compartments (`dar0_central`,
   # `dar4_peripheral1`, ...).
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
@@ -165,6 +165,20 @@
   # bact_intermediate_resistant1/2). The scheme is documented in
   # inst/references/compartment-names.md.
   bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$",
+  # Intracellular drug / active-metabolite pools inside red blood cells,
+  # carried as ODE states in concentration units (e.g. umol/L). Named
+  # `rbc_<analyte>` where <analyte> is the measured species inside the
+  # erythrocyte: `rbc_mtx` (methotrexate polyglutamates), `rbc_tgn`
+  # (6-thioguanine nucleotides). Deliberately NOT routed through
+  # registeredMetabolites, because the analyte is frequently the PARENT
+  # drug (methotrexate) rather than a metabolite, and recording a parent
+  # drug in the metabolite register would mislead later readers of that
+  # list. Distinct from the `erythrocytes` canonical, which is a red-cell
+  # COUNT pool (cells/L), not an intracellular drug concentration.
+  # Founding examples: Gebhard_2023_methotrexate,
+  # Gebhard_2023_mercaptopurine, Gebhard_2023_mercaptopurine_anc.
+  # Documented in inst/references/compartment-names.md.
+  rbcCompartmentRegex = "^rbc_[a-z0-9]+$",
   observationVar = "Cc",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs; expSd is the log-scale residual SD used with
@@ -398,7 +412,94 @@
   # Deprecated parent-suffix marker. A model that names a parent-side
   # parameter `<base>_adc` should drop the `_adc` suffix; the parent
   # uses the canonical name unsuffixed.
-  deprecatedParentSuffix = "_adc"
+  deprecatedParentSuffix = "_adc",
+
+  # Exact parameter names retired by issues #474-#477, mapped to their
+  # replacement. Each was a spelling that defeated name-based discovery:
+  # a consumer looking for allometric exponents by `e_wt_*`, for logit-scale
+  # bioavailability, or for TMDD constants by case-normalised stems would
+  # silently miss these models. Keeping the map here (rather than in prose)
+  # means `checkModelConventions()` reports an error-severity issue if one
+  # reappears, and `buildModelDb()` aborts on it (see
+  # `.conventionErrorsStopIfAny`) rather than merely printing a count.
+  renamedParameters = c(
+    # #474 allometric exponents -> e_wt_<param>
+    allo_cl = "e_wt_cl", allo_q = "e_wt_q", allo_vc = "e_wt_vc",
+    allovc = "e_wt_vc", allovp = "e_wt_vp",
+    dCLdWT = "e_wt_cl", dVdWT = "e_wt_vc",
+    # #475 logit-scale fractions: F vs absorption-pathway split
+    logitf1 = "logitfdepot (bioavailability) or logitffo/logitfburst (pathway split)",
+    logitfr = "logitffo (first-order arm) or logitfburst (burst/rapid-release)",
+    logitf1st = "logitffo",
+    # #476 CLL disambiguation
+    lcll = "lcl_ligand", cllira = "cl_lira", lcllira_ref = "lcl_lira_ref",
+    # #477 TMDD case / separator normalisation
+    lKss = "lkss", lkD = "lkd", lBmax = "lbmax", Km = "km",
+    kd_LR = "kd_lr", kd_T1 = "kd_t1", kd_T2 = "kd_t2",
+    # Same case-normalisation class, found while auditing the extraction
+    # skill's own docs against this map: 89 models used `vmax`, one used
+    # `Vmax`, and the skill taught the capitalised spelling.
+    Vmax = "vmax"
+  ),
+
+  # Issue #482: controlled vocabulary for the biological matrix a compartment
+  # represents, so "restrict to blood, serum or plasma" is a filter rather
+  # than a judgement call made by reading state names.
+  #
+  # Two entries are deliberately NOT matrices, because forcing every state
+  # into a specimen would be worse than saying so plainly:
+  #   "administration site" -- depot / transit states, which hold drug that
+  #     has not reached a biological matrix yet
+  #   "not applicable"      -- latent, PD and bookkeeping states (effect,
+  #     precursor*, cumhaz, circ, bacterial subpopulations, tumor-size
+  #     states). A database scan found these in 642 of the 1403 models with
+  #     ODEs, so the category carries real weight.
+  specimenVocabulary = c(
+    "plasma", "serum", "whole blood", "blood cell", "CSF", "brain ISF",
+    "vitreous", "aqueous humour", "retina", "tissue", "tumor", "lymph",
+    "endosome", "urine", "bile", "faeces", "saliva", "milk",
+    "synovial fluid", "epithelial lining fluid", "bronchoalveolar lavage",
+    "administration site", "not applicable"
+  ),
+
+  # Fields every compartmentData entry must carry. `analyte` and `units`
+  # answer "what molecule, in what amount"; `specimen` answers "in what
+  # matrix". `verified` records whether the entry was checked against the
+  # source paper -- a mechanically derived entry is not evidence.
+  compartmentDataFields = c("analyte", "units", "specimen", "verified"),
+
+  # Canonical spellings for the `units` block and for unit hints in labels.
+  # These are SPELLINGS, not conversions: "hour"/"hr" and "h" are the same
+  # unit written three ways, and a library that writes it three ways cannot be
+  # parsed by a consumer. Genuinely different units (min, day, s) stay
+  # distinct -- normalising those would silently misstate every value.
+  #
+  # A survey on 2026-08-03 found time = "hour" in 643 models, "h" in 208 and
+  # "hr" in 28, plus ~12 notations for second-order association rates.
+  canonicalTimeUnit = "h",
+  timeUnitSpellings = c(
+    hour = "h", hours = "h", hr = "h", hrs = "h",
+    minute = "min", minutes = "min", mins = "min",
+    days = "day", weeks = "week", months = "month", years = "year",
+    second = "s", seconds = "s", sec = "s", secs = "s"
+  ),
+  doseUnitSpellings = c(
+    microgram = "ug", micrograms = "ug", mcg = "ug",
+    milligram = "mg", milligrams = "mg",
+    nanogram = "ng", nanograms = "ng",
+    gram = "g", grams = "g"
+  ),
+
+  # Generic structural models (PK_1cmt, PK_2cmt, ...) are dimensionless by
+  # design and declare placeholders. These are correct, not unnormalised.
+  placeholderUnits = c("time_unit", "dose_unit", "conc_unit", "amount_unit",
+                       "vol_unit", "half_life", "none"),
+
+  # Second-order association rate constants. The library wrote these as
+  # 1/(nM*h), 1/nM/hour, nM^-1 h^-1, (pmol/L)^-1 h^-1, 1/(nM h) ... all the
+  # same shape. Canonical form is 1/(<concentration>*<time>), which keeps the
+  # concentration and time bases visible and greppable.
+  canonicalRateNotation = "1/(<conc>*<time>)"
 )
 
 # The following canonical-name lists are NOT carried on
@@ -438,14 +539,20 @@
 #' @noRd
 .parseCovariateColumns <- function(path) {
   lines <- readLines(path, warn = FALSE)
-  entries <- list()
+  # Accumulate into an explicit environment rather than using `<<-` from the
+  # inner flush() closure: environments have reference semantics, so a plain
+  # `<-` into `acc` mutates the shared accumulator. `<<-` walks the lexical
+  # scope chain at run time, which is hard to review and easy to break by
+  # moving code between scopes (lintr assignment_linter flags it).
+  acc <- new.env(parent = emptyenv())
+  acc$entries <- list()
   current <- NULL
   state <- "idle"
 
   flush <- function() {
     if (is.null(current)) return(invisible())
     for (nm in current$names) {
-      entries[[nm]] <<- list(
+      acc$entries[[nm]] <- list(
         units = current$units %||% "",
         type = current$type %||% "",
         scope = current$scope %||% NA_character_,
@@ -563,7 +670,7 @@
     }
   }
   flush()
-  entries
+  acc$entries
 }
 
 .loadCanonicalCovariates <- function(force = FALSE) {
@@ -607,7 +714,10 @@
 #' @noRd
 .parseTypedNamesMd <- function(path) {
   lines <- readLines(path, warn = FALSE)
-  entries <- list()
+  # Explicit environment accumulator; see .parseCovariateColumns for why this
+  # avoids a superassign from the inner flush() closure.
+  acc <- new.env(parent = emptyenv())
+  acc$entries <- list()
   current <- NULL
   state <- "idle"
 
@@ -630,7 +740,7 @@
     if (is.null(current)) return(invisible())
     if (is.null(current$type) || !nzchar(current$type)) return(invisible())
     for (nm in current$names) {
-      entries[[length(entries) + 1]] <<- list(
+      acc$entries[[length(acc$entries) + 1]] <- list(
         name = nm,
         type = current$type,
         aliases = current$aliases %||% character(),
@@ -713,7 +823,7 @@
     }
   }
   flush()
-  entries
+  acc$entries
 }
 
 .namesByType <- function(entries, type) {
@@ -799,6 +909,7 @@
 #   - numbered chains via conv$compartmentRegex (transit/effect/precursor/lat/depot)
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
 #   - target species in physiologic compartments via conv$targetLocationRegex
+#   - intracellular red-cell analyte pools via conv$rbcCompartmentRegex
 #   - metabolite-suffixed compartments: <canonical>_<metab>
 .matchesCompartment <- function(name, conv) {
   if (name %in% conv$compartments) return(TRUE)
@@ -809,6 +920,8 @@
       grepl(conv$pbpkSubCompartmentRegex, name)) return(TRUE)
   if (!is.null(conv$bacterialSubpopRegex) &&
       grepl(conv$bacterialSubpopRegex, name)) return(TRUE)
+  if (!is.null(conv$rbcCompartmentRegex) &&
+      grepl(conv$rbcCompartmentRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {

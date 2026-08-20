@@ -24,6 +24,13 @@ Niloy_2026_MTMSATrp_mouse <- function() {
   vignette <- "Niloy_2026_MTMSATrp_mouse"
   units    <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "MTMSATrp", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     COHDOSE = list(
       description        = "Per-subject IV bolus dose cohort, expressed in mg/kg",

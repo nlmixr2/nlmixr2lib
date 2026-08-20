@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- Simulation size reduced for build time: this vignette took >300 s to render,
+     against a 19 s median across the article set. Only the COHORT SIZE and/or
+     OBSERVATION GRID DENSITY were reduced -- no model, parameter, dose or
+     covariate value was touched, so the figures show the same behaviour. -->
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
 library(nlmixr2lib)
@@ -98,7 +103,7 @@ Original observed concentrations are not publicly available. The vignette simula
 set.seed(20180918)
 
 n_arm <- 200L
-obs_grid <- c(seq(0, 4, by = 0.1), seq(4.25, 24, by = 0.25))
+obs_grid <- c(seq(0, 4, by = 0.25), seq(4.5, 24, by = 0.5))
 
 make_atb200_arm <- function(n, at2221_dose, id_offset) {
   doses <- tibble::tibble(

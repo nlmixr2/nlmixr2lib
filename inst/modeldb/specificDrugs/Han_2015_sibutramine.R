@@ -12,6 +12,18 @@ Han_2015_sibutramine <- function() {
   vignette <- "Han_2015_sibutramine"
   units <- list(time = "day", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "sibutramine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "M1", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2  = list(analyte = "M2", units = "mg", specimen = "plasma", verified = FALSE),
+    bw          = list(analyte = "weight", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject age",
@@ -42,7 +54,7 @@ Han_2015_sibutramine <- function() {
       units              = "mg (sibutramine base equivalent)",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Use case (b) of the canonical DOSE: time-varying current daily dose driving a derived exposure metric inside the PD layer. Han 2015's published PD model drives the body-weight ODE from the steady-state sum AUC of the two active metabolites, AUC_ss,sum = AUC_M1 + AUC_M2 = Dose/CL_M1 + Dose/CL_M2 (paper equation 1, assuming complete sibutramine -> M1 -> M2 conversion). nlmixr2lib reproduces this by deriving AUC_ss,sum inside model() from the user-supplied current daily dose DOSE together with the individual M1 and M2 clearances (in L/hour, derived from the day-based cl and cl_m2 by dividing by 24). Per-subject daily dose in Han 2015: 0 mg/day for placebo; 8.37 mg/day sibutramine base initially in the active arm, escalated to 12.55 mg/day at week 4 if weight loss was less than 2 kg. Update DOSE over time in the user dataset to encode dose escalations. The DOSE covariate is supplied alongside (not in place of) any rxode2 AMT dose events that drive the depot compartment for PK simulation; the two channels are deliberately decoupled so the PD AUC_ss,sum reflects the steady-state assumption underlying Han 2015's exposure-response analysis.",
+      notes              = "Use case (b) of the canonical DOSE: time-varying current daily dose driving a derived exposure metric inside the PD layer. Han 2015's published PD model drives the body-weight ODE from the steady-state sum AUC of the two active metabolites, AUC_ss,sum = AUC_M1 + AUC_M2 = Dose/CL_M1 + Dose/CL_M2 (paper equation 1, assuming complete sibutramine -> M1 -> M2 conversion). nlmixr2lib reproduces this by deriving AUC_ss,sum inside model() from the user-supplied current daily dose DOSE together with the individual M1 and M2 clearances (in L/h, derived from the day-based cl and cl_m2 by dividing by 24). Per-subject daily dose in Han 2015: 0 mg/day for placebo; 8.37 mg/day sibutramine base initially in the active arm, escalated to 12.55 mg/day at week 4 if weight loss was less than 2 kg. Update DOSE over time in the user dataset to encode dose escalations. The DOSE covariate is supplied alongside (not in place of) any rxode2 AMT dose events that drive the depot compartment for PK simulation; the two channels are deliberately decoupled so the PD AUC_ss,sum reflects the steady-state assumption underlying Han 2015's exposure-response analysis.",
       source_name        = "DOSE"
     )
   )

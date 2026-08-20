@@ -6,6 +6,17 @@ Diao_2016_daclizumab_cd25 <- function() {
 
   paper_specific_compartments <- c("occ_cd25")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "daclizumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "daclizumab", units = "mg", specimen = "plasma", verified = FALSE),
+    occ_cd25    = list(analyte = "CD25 receptor occupancy", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

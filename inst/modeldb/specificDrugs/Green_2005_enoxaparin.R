@@ -8,11 +8,20 @@ Green_2005_enoxaparin <- function() {
     "doi:10.1111/j.1365-2125.2004.02253.x"
   )
   vignette <- "Green_2005_enoxaparin"
-  units <- list(time = "hour", dosing = "IU", concentration = "IU/L")
+  units <- list(time = "h", dosing = "IU", concentration = "IU/L")
   # Enoxaparin dose is expressed in anti-Xa International Units (IU) to
   # match the assay readout used to fit the model (anti-Xa IU/L). The
   # clinical dose (mg) is converted via the standard 100 IU per 1 mg
   # enoxaparin equivalence (Lovenox / Clexane prescribing information).
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "enoxaparin", units = "IU", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

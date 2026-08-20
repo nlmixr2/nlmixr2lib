@@ -4,6 +4,22 @@ Almquist_2016_ticagrelor <- function() {
   vignette    <- "Almquist_2016_ticagrelor"
   units       <- list(time = "min", dosing = "nmol/kg", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2     = list(analyte = "ticagrelor", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_tam     = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_tam = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral2_tam = list(analyte = "TAM (AR-C124910XX)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    target          = list(analyte = "MEDI2452", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    complex         = list(analyte = "ticagrelor and MEDI2452 complex", units = NA_character_, specimen = "plasma", verified = FALSE),
+    complex_tam     = list(analyte = "TAM (AR-C124910XX) and MEDI2452 complex", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -22,7 +38,7 @@ Almquist_2016_ticagrelor <- function() {
   ini({
     # Plasma and tissue volumes (body-weight-normalised, L/kg).
     # V (plasma) is fixed to the standard mouse plasma volume per Table 1.
-    lvc  <- fixed(log(0.05));   label("Plasma volume of distribution V (L/kg, fixed: standard mouse plasma volume)")            # Almquist 2016 Table 1, V = 0.05 L/kg (not estimated)
+    lvc  <- fixed(log(0.05));   label("Plasma volume of distribution V (L/kg, : standard mouse plasma volume)")            # Almquist 2016 Table 1, V = 0.05 L/kg (not estimated)
     lvp  <- log(1.12);          label("Volume V1 of rapidly exchanging tissue (L/kg)")                                          # Almquist 2016 Table 1, V1 refined estimate
     lvp2 <- log(1.8);           label("Volume V2 of slowly exchanging peripheral tissue (L/kg)")                                # Almquist 2016 Table 1, V2 refined estimate
 
@@ -31,7 +47,7 @@ Almquist_2016_ticagrelor <- function() {
     # clearances in the system so that V and V1 act as instantaneously
     # equilibrating sub-compartments of the apparent central compartment
     # (Almquist 2016 assumption II).
-    lq2 <- fixed(log(10));      label("Fast distributional clearance Cl_fast between V and V1 (L/min/kg, fixed: instantaneous equilibrium)")  # Almquist 2016 Table 1, Cl_fast = 10 L/min/kg (not estimated)
+    lq2 <- fixed(log(10));      label("Fast distributional clearance Cl_fast between V and V1 (L/min/kg, : instantaneous equilibrium)")  # Almquist 2016 Table 1, Cl_fast = 10 L/min/kg (not estimated)
     lq  <- log(0.041);          label("Distributional clearance Cl_d between V and V2 (L/min/kg)")                              # Almquist 2016 Table 1, Cl_d refined estimate
 
     # Ticagrelor non-metabolic elimination and metabolic conversion to TAM.
@@ -48,11 +64,11 @@ Almquist_2016_ticagrelor <- function() {
 
     # MEDI2452 binding to free ticagrelor / free TAM.
     lkon <- log(0.11);          label("Second-order MEDI2452-drug association rate k_on (1/(nM*min))")                          # Almquist 2016 Table 1, k_on refined estimate
-    lkd  <- fixed(log(0.02));   label("MEDI2452-drug dissociation constant K_d (nM, fixed at in vitro affinity)")               # Almquist 2016 Table 1, K_d = 0.02 nM (not estimated; Buchanan 2015 in vitro affinity)
+    lkd  <- fixed(log(0.02));   label("MEDI2452-drug dissociation constant K_d (nM, in vitro affinity)")               # Almquist 2016 Table 1, K_d = 0.02 nM (not estimated; Buchanan 2015 in vitro affinity)
 
     # Fraction of ticagrelor / TAM unbound to plasma protein. Held at the
     # internal AstraZeneca measurement (n = 38), not estimated in the PK fit.
-    f_unbound <- fixed(0.0020); label("Fraction of ticagrelor / TAM unbound to plasma protein (unitless, fixed: internal data)") # Almquist 2016 Table 1, f = 0.0020 (not estimated)
+    f_unbound <- fixed(0.0020); label("Fraction of ticagrelor / TAM unbound to plasma protein (unitless, : internal data)") # Almquist 2016 Table 1, f = 0.0020 (not estimated)
 
     # Residual error: multiplicative log-normal per the Data Analysis
     # paragraph (y_obs = y_pred * exp(eps), eps ~ N(0, expSd^2)).

@@ -8,6 +8,18 @@ Chakraborty_2012_canakinumab <- function() {
     concentration = "ug/mL (total canakinumab); pg/mL (total IL-1b)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "canakinumab", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "canakinumab", units = "mg", specimen = "plasma", verified = FALSE),
+    central_il1b     = list(analyte = "IL-1b", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_il1b = list(analyte = "IL-1b", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -71,7 +83,7 @@ Chakraborty_2012_canakinumab <- function() {
     lvp   <- log(2.71);   label("Peripheral volume VP (L) at 70 kg")                                               # Chakraborty 2012 Table IV
     lpsd  <- log(0.429);  label("Drug + complex permeability-surface area coefficient PSD (L/day)")                # Chakraborty 2012 Table IV
     lka   <- log(0.269);  label("Subcutaneous absorption rate ka (1/day) at 34 years, Sp2/0 cell line")            # Chakraborty 2012 Table IV
-    lcll  <- log(14.2);   label("Free IL-1b clearance CLL (L/day), CAPS")                                          # Chakraborty 2012 Table IV
+    lcl_ligand  <- log(14.2);   label("Free IL-1b clearance CLL (L/day), CAPS")                                          # Chakraborty 2012 Table IV
     lrli  <- log(9.57);   label("Endogenous IL-1b production rate RLI (ng/day), CAPS")                             # Chakraborty 2012 Table IV
     lkd   <- log(1.07);   label("Apparent IL-1b dissociation constant KD (nmol/L), CAPS")                          # Chakraborty 2012 Table IV
     lpsl  <- log(0.386);  label("Free-ligand permeability-surface area coefficient PSL (L/day)")                   # Chakraborty 2012 Table IV
@@ -106,7 +118,7 @@ Chakraborty_2012_canakinumab <- function() {
     etalvp  ~ 0.0817    # Chakraborty 2012 Table IV (VP  CV 29%)
     etalpsd ~ 0.280     # Chakraborty 2012 Table IV (PSD CV 53%)
     etalka  ~ 0.406     # Chakraborty 2012 Table IV (ka  CV 64%; reported on the NS0 row but applies to ka)
-    etalcll ~ 0.371     # Chakraborty 2012 Table IV (CLL CV 61%)
+    etalcl_ligand ~ 0.371     # Chakraborty 2012 Table IV (CLL CV 61%)
     etalrli ~ 0.261     # Chakraborty 2012 Table IV (RLI CV 51%)
     etalkd  ~ 0.395     # Chakraborty 2012 Table IV (KD  CV 63%)
     etalpsl ~ 0.254     # Chakraborty 2012 Table IV (PSL CV 50%)
@@ -140,7 +152,7 @@ Chakraborty_2012_canakinumab <- function() {
     vp    <- exp(lvp  + etalvp)  * (WT / 70)^e_wt_vp
     psd   <- exp(lpsd + etalpsd)
     ka    <- exp(lka  + etalka)  * (AGE / 34)^e_age_ka
-    cll   <- exp(lcll + etalcll)
+    cll   <- exp(lcl_ligand + etalcl_ligand)
     rli   <- exp(lrli + etalrli)
     kd    <- exp(lkd  + etalkd)
     psl   <- exp(lpsl + etalpsl)

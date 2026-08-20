@@ -13,6 +13,21 @@ Zou_2022_furmonertinib <- function() {
   vignette <- "Zou_2022_furmonertinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot               = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1            = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    transit2            = list(analyte = "furmonertinib", units = "mg", specimen = "administration site", verified = FALSE),
+    central             = list(analyte = "furmonertinib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1         = list(analyte = "furmonertinib", units = "mg", specimen = "plasma", verified = FALSE),
+    central_ast5902     = list(analyte = "AST5902", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ast5902 = list(analyte = "AST5902", units = "mg", specimen = "plasma", verified = FALSE),
+    enz_pool            = list(analyte = "EGFR", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list(
     ALP = list(
       description        = "Baseline serum alkaline phosphatase; liver-function marker used as a covariate on both parent (CLbase/F) and metabolite (Clm/(F*Fm)) apparent clearances via power scaling normalised to the cohort median 77.2 U/L (Zou 2022 Table 1 and Table 2).",

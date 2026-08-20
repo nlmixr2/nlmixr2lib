@@ -10,6 +10,19 @@ Attarwala_2023_mRNA3927 <- function() {
     concentration = "mg/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "mRNA-3927", units = "mg", specimen = "plasma", verified = FALSE),
+    effect      = list(analyte = "PCC protein", units = "mg", specimen = "not applicable", verified = FALSE),
+    pcc         = list(analyte = "PCC protein", units = "mg", specimen = "tissue", verified = FALSE),
+    pcc_p       = list(analyte = "PCC protein", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (used for allometric scaling across species).",
@@ -97,7 +110,7 @@ Attarwala_2023_mRNA3927 <- function() {
     # amenable to suppression. PCC here is the central PCC protein
     # concentration in liver (mass-per-tissue units).
     # =========================================================================
-    imax <- fixed(0.999);          label("Maximum inhibition fraction (fixed)")                    # Table 1 footnote m
+    imax <- fixed(0.999);          label("Maximum inhibition fraction")                    # Table 1 footnote m
 
     # ---- 2-methylcitrate (2-MC) ----
     le0_mc2    <- log(1.67);   label("E0 for 2-MC (umol/L)")                                       # Table 1, RSE 4.46%

@@ -20,7 +20,16 @@ Dunlap_2025_tacrolimus <- function() {
     "doi:10.1007/s40262-025-01529-w."
   )
   vignette <- "Dunlap_2025_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -155,8 +164,8 @@ Dunlap_2025_tacrolimus <- function() {
     # ----- Allometric exponents (fixed at theoretical values) -----
     # Dunlap 2025 Table 2 RCM: TVV1/F~TBW = 1 (FIX), TVCL/F~TBW = 0.75 (FIX),
     # TVV2/F~TBW = 1 (FIX), TVQ/F~TBW = 0.75 (FIX); reference 70 kg.
-    e_wt_cl_q   <- 0.75;  label("Allometric exponent of (TBW/70) on CL/F and Q/F (unitless; fixed)")  # Dunlap 2025 Table 2 RCM allometry on CL/F and Q/F (FIX)
-    e_wt_vc_vp  <- 1.00;  label("Allometric exponent of (TBW/70) on V1/F and V2/F (unitless; fixed)")  # Dunlap 2025 Table 2 RCM allometry on V1/F and V2/F (FIX)
+    e_wt_cl_q   <- fixed(0.75);  label("Allometric exponent of (TBW/70) on CL/F and Q/F (unitless)")  # Dunlap 2025 Table 2 RCM allometry on CL/F and Q/F (FIX)
+    e_wt_vc_vp  <- fixed(1.00);  label("Allometric exponent of (TBW/70) on V1/F and V2/F (unitless)")  # Dunlap 2025 Table 2 RCM allometry on V1/F and V2/F (FIX)
 
     # ----- Covariate effects on CL/F (Dunlap 2025 Eq. 6 / Table 2 RCM column) -----
     # Eq. 6: CL/F_i = TVCL/F * (TBW/70)^0.75 * (TVCL/F~RIC)^RIC *

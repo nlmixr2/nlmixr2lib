@@ -9,7 +9,15 @@ Bista_2015_fentanyl <- function() {
     "for extraction."
   )
   vignette <- "Bista_2015_fentanyl"
-  units <- list(time = "hr", dosing = "ug", concentration = "ug/L") # Methods + Tables 1 and 3: dose in ug/h, plasma concentration in ug/L
+  units <- list(time = "h", dosing = "ug", concentration = "ug/L") # Methods + Tables 1 and 3: dose in ug/h, plasma concentration in ug/L
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "fentanyl", units = "ug", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "fentanyl", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

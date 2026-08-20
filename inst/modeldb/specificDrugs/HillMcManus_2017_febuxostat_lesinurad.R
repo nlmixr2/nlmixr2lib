@@ -3,9 +3,26 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
   reference <- "Hill-McManus D, Soto E, Marshall S, Lane S, Hughes D. Impact of non-adherence on the safety and efficacy of uric acid-lowering therapies in the treatment of gout. Br J Clin Pharmacol. 2018;84(1):142-152. doi:10.1111/bcp.13427"
   vignette <- "HillMcManus_2017_febuxostat_lesinurad"
   units <- list(
-    time = "hour",
+    time = "h",
     dosing = "mg",
     concentration = "mg/dL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot_febx       = list(analyte = "febuxostat", units = "mg", specimen = "administration site", verified = FALSE),
+    central_febx     = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_febx = list(analyte = "febuxostat", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_lesn       = list(analyte = "lesinurad", units = "mg", specimen = "administration site", verified = FALSE),
+    central_lesn     = list(analyte = "lesinurad", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_lesn = list(analyte = "lesinurad", units = "mg", specimen = "plasma", verified = FALSE),
+    xanthine         = list(analyte = "hypoxanthine", units = "mg", specimen = "plasma", verified = FALSE),
+    urate            = list(analyte = "urate", units = "mg", specimen = "plasma", verified = FALSE),
+    xanthine_urine   = list(analyte = "hypoxanthine", units = "mg", specimen = "urine", verified = FALSE),
+    urate_urine      = list(analyte = "urate", units = "mg", specimen = "urine", verified = FALSE)
   )
 
   covariateData <- list(

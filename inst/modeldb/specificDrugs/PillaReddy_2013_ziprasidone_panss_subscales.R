@@ -36,7 +36,15 @@ PillaReddy_2013_ziprasidone_panss_subscales <- function() {
     sep = " "
   )
   vignette <- "PillaReddy_2013_panss_subscales"
-  units    <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "ziprasidone panss subscales", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ziprasidone panss subscales", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -158,7 +166,7 @@ PillaReddy_2013_ziprasidone_panss_subscales <- function() {
     etaemax_neg ~ 0.0900   # Part II Table 2 ziprasidone: IIV Emax negative SD = 0.30
     etaemax_gen ~ 0.0484   # Part II Table 2 ziprasidone: IIV Emax general  SD = 0.22
 
-    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general fixed at 50% CV
+    etaec50_pos ~ fixed(0.2231)  # Part II Table 2 footnote: IIV EC50 positive and general 50% CV
     etaec50_gen ~ fixed(0.2231)
     etaec50_neg ~ 1.5449         # Part II Table 2 ziprasidone: IIV EC50 negative = 192% CV; omega^2 = log(1 + 1.92^2) = 1.5449
 

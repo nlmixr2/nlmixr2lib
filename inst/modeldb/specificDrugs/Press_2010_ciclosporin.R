@@ -31,6 +31,16 @@ Press_2010_ciclosporin <- function() {
   vignette <- "Press_2010_ciclosporin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    transit1    = list(analyte = "ciclosporin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ciclosporin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight (baseline or time-varying)",
@@ -161,7 +171,7 @@ Press_2010_ciclosporin <- function() {
     # source paper.
 
     lfdepot <- fixed(log(0.5))
-    label("Oral bioavailability F (unitless; FIXED)")
+    label("Oral bioavailability F (unitless)")
     # Methods 'Structural model': "The value for the oral bioavailability
     # was fixed at 50%, as previously described [refs 3, 23] and used in
     # the clinically applied TDM model [ref 4]."
@@ -172,10 +182,10 @@ Press_2010_ciclosporin <- function() {
     # CL = 15 * (body weight/76)^0.75 ... typically with a value of 0.75
     # for clearance and 1 for volume of distribution [ref 24]."
     # ============================================================
-    allo_cl <- fixed(0.75)
-    label("Allometric exponent on CL (unitless; FIXED)")
-    allo_vc <- fixed(1.0)
-    label("Allometric exponent on Vc (unitless; FIXED)")
+    e_wt_cl <- fixed(0.75)
+    label("Allometric exponent on CL (unitless)")
+    e_wt_vc <- fixed(1.0)
+    label("Allometric exponent on Vc (unitless)")
 
     # ============================================================
     # Covariate effects -- concomitant high-dose prednisolone
@@ -250,8 +260,8 @@ Press_2010_ciclosporin <- function() {
     # ka and on f(depot).
     # ------------------------------------------------------------
     ka <- exp(lka + etalka) * (1 + e_pred_dose_high_ka * pred_high)
-    cl <- exp(lcl + etalcl) * (WT / 76)^allo_cl
-    vc <- exp(lvc + etalvc) * (WT / 76)^allo_vc
+    cl <- exp(lcl + etalcl) * (WT / 76)^e_wt_cl
+    vc <- exp(lvc + etalvc) * (WT / 76)^e_wt_vc
     vp <- exp(lvp)
     q  <- exp(lq)
     fdepot <- exp(lfdepot + etalfdepot) *

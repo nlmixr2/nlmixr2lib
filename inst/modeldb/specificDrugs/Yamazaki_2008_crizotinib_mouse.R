@@ -26,7 +26,18 @@ Yamazaki_2008_crizotinib_mouse <- function() {
     "doi:10.1124/dmd.107.019711. PMID 18381487."
   )
   vignette <- "Yamazaki_2008_crizotinib_mouse"
-  units <- list(time = "hour", dosing = "mg/kg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg/kg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot     = list(analyte = "crizotinib", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central   = list(analyte = "crizotinib", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect    = list(analyte = "cMet phosphorylation", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    tumor_vol = list(analyte = "tumour size", units = NA_character_, specimen = "tumor", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -71,7 +82,7 @@ Yamazaki_2008_crizotinib_mouse <- function() {
     lka     <- log(0.331);  label("Absorption rate constant ka (1/h)")                 # Table 1 PKPD 2 at 50 mg/kg (SE 0.018)
     lcl     <- log(1.80);   label("Apparent oral clearance CL/F (L/h/kg)")             # Table 1 PKPD 2 at 50 mg/kg (SE 0.17)
     lvc     <- log(5.56);   label("Apparent oral volume of distribution V/F (L/kg)")   # Table 1 PKPD 2 at 50 mg/kg (SE 0.68)
-    ltlag   <- fixed(log(0.8)); label("Absorption lag time tlag (h) -- fixed")         # Results paragraph 1 ("fixed absorption lag time of 0.8 h")
+    ltlag   <- fixed(log(0.8)); label("Absorption lag time tlag (h)")         # Results paragraph 1 ("fixed absorption lag time of 0.8 h")
 
     # ---- PD link model: cMet phosphorylation inhibition (GTL16 cohort) ----
     # Equations 1 (effect compartment) and 2 (Imax response) of Methods.

@@ -9,9 +9,20 @@ Nielsen_2011_moxifloxacin <- function() {
     sep = " "
   )
   vignette <- "Nielsen_2011_antibacterial_efficacy"
-  units <- list(time = "hour", dosing = "mg/L (drug input concentration)", concentration = "natural log CFU/mL (observation); mg/L (drug compartment)")
+  units <- list(time = "h", dosing = "mg/L (drug input concentration)", concentration = "natural log CFU/mL (observation); mg/L (drug compartment)")
 
   paper_specific_compartments <- c("bact_sensitive", "bact_resting")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central        = list(analyte = "moxifloxacin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    effect         = list(analyte = "moxifloxacin", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_sensitive = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (sensitive)", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    bact_resting   = list(analyte = "Streptococcus pyogenes M12 NCTC P1800 (resistant)", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -49,7 +60,7 @@ Nielsen_2011_moxifloxacin <- function() {
     # Drug-specific PK parameters (moxifloxacin)
     # =============================================================
     kdeg <- fixed(0)
-    label("Drug degradation rate kdeg in broth (1/h; FIXED at 0 per Methods 'Semimechanistic PKPD model')")  # Methods: "For the other drugs, the kdeg was set to zero" (moxifloxacin = 0)
+    label("Drug degradation rate kdeg in broth (1/h; per Methods 'Semimechanistic PKPD model')")  # Methods: "For the other drugs, the kdeg was set to zero" (moxifloxacin = 0)
 
     # ke is the in vitro kinetic-system elimination rate. The
     # default below corresponds to a 12.7-h simulated human
@@ -75,7 +86,7 @@ Nielsen_2011_moxifloxacin <- function() {
     # Starting inoculum
     # =============================================================
     lcfu0 <- fixed(log(1e6))
-    label("Log starting bacterial inoculum (CFU/mL; FIXED at 10^6 per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
+    label("Log starting bacterial inoculum (CFU/mL; per Methods)")  # Methods: "starting inoculum of 10^6 CFU/ml"
 
     # =============================================================
     # Residual error

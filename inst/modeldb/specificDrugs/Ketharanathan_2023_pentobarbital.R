@@ -13,6 +13,17 @@ Ketharanathan_2023_pentobarbital <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Single ODE state; NONMEM ADVAN1 TRANS2 with S1 = V, so `central` holds an
+  # amount in mg and Cc = central/vc is in mg/L. Ketharanathan 2023 is
+  # inconsistent about the matrix: Sect. 2.2 lists "blood serum pentobarbital
+  # concentrations" among the collected data, while the Laboratory Analysis
+  # section (2.3) - the authoritative assay description - states pentobarbital
+  # "was analysed in 100 uL plasma" by HPLC-DAD at 220 nm (LLOQ 0.5 mg/L, ULOQ
+  # 90 mg/L, internal standard secobarbital). Recorded as plasma per Sect. 2.3.
+  compartmentData <- list(
+    central = list(analyte = "pentobarbital", units = "mg", specimen = "plasma", verified = TRUE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",

@@ -4,6 +4,16 @@ PK_1cmt_tmdd_qss <- function() {
   vignette <- "tmdd_archetypes"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "drug", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "drug", units = "mg", specimen = "plasma", verified = FALSE),
+    total_target = list(analyte = "drug", units = "mg", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -29,7 +39,7 @@ PK_1cmt_tmdd_qss <- function() {
     lkint   <- log(1);    label("Drug-target complex internalization rate (kint, 1/day)")     # Gibiansky 2008 Eq 9 (k_int)
 
     # Binding (QSS)
-    lKss    <- log(1.1);  label("Steady-state binding constant (Kss = (koff + kint)/kon, mg/L)")  # Gibiansky 2008 Eq 7 (Kss)
+    lkss    <- log(1.1);  label("Steady-state binding constant (Kss = (koff + kint)/kon, mg/L)")  # Gibiansky 2008 Eq 7 (Kss)
 
     # IIV (generic archetype; single eta on each of CL, Vc, Ka)
     etalcl ~ 0.09
@@ -51,7 +61,7 @@ PK_1cmt_tmdd_qss <- function() {
     t0   <- exp(lT0)
     kdeg <- exp(lkdeg)
     kint <- exp(lkint)
-    kss  <- exp(lKss)
+    kss  <- exp(lkss)
     ksyn <- kdeg * t0  # steady-state relation: total_target(0) = T0
 
     # Initial conditions

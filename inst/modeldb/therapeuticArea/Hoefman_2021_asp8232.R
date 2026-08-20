@@ -226,14 +226,14 @@ Hoefman_2021_asp8232 <- function() {
     uacrSc  <- 0.858       ; label("UACR scale factor (unitless; ratio of FMV UACR to 24-h collection UACR)")          # Table 1, theta_20 = 0.858, RSE 2.5%
     AerProg <- 0.430       ; label("AER progression rate (unitless; multiplied by TAFD/10000; zero for ASP8232-treated subjects)")  # Table 1, theta_21 = 0.430, RSE 38%
     lIC50   <- log(5.95)   ; label("logIC50 of the albuminuria-lowering sigmoid Imax (unitless; on log-transformed Cu scale)")  # Table 1, theta_23 = 5.95, RSE 4.7%
-    Hill    <- fixed(10)   ; label("Hill coefficient of the albuminuria-lowering sigmoid Imax (unitless; FIXED)")      # Table 1, theta_24 = 10 [FIXED]
+    Hill    <- fixed(10)   ; label("Hill coefficient of the albuminuria-lowering sigmoid Imax (unitless)")      # Table 1, theta_24 = 10 [FIXED]
     sexSCr  <- 0.770       ; label("Sex effect on baseline sCr and uCr (female = 0.770 * male)")                        # Table 1, theta_25 = 0.770, RSE 2.4%
     ageSCr  <- -0.595      ; label("Age power exponent on baseline sCr ((AGE/70)^ageSCr; negative gives paper-stated 'sCr decreases with age')")  # Table 1, theta_26 = -0.595, RSE 17%
     albAer  <- -3.86       ; label("Baseline-albumin power exponent on baseline AER ((ALB/42)^albAer; negative gives paper-stated 'AER decreases with increasing baseline serum albumin')")  # Table 1, theta_27 = -3.86, RSE 22%
     sexEGFR <- 0.829       ; label("Sex effect on baseline eGFR CysC (female = 0.829 * male)")                         # Table 1, theta_28 = 0.829, RSE 5.3%
     bsaUvol <- 0.732       ; label("BSA power exponent on baseline urine volume ((2.034/BSA)^bsaUvol; positive gives paper-stated 'urine volume decreases with BSA')")  # Table 1, theta_29 = 0.732, RSE 41%
     bsaUCr  <- 1.21        ; label("BSA power exponent on baseline uCr ((2.034/BSA)^bsaUCr; positive gives paper-stated 'uCr decreases with BSA')")  # Table 1, theta_30 = 1.21, RSE 19%
-    EC50    <- fixed(52.9) ; label("EC50 of the creatinine-transporter-inhibition Emax on sCr (nM; FIXED from a separate multi-trial PopPK model, data on file)")  # Table 1, theta_31 = 52.9 [FIXED, data on file]
+    EC50    <- fixed(52.9) ; label("EC50 of the creatinine-transporter-inhibition Emax on sCr (nM; from a separate multi-trial PopPK model, data on file)")  # Table 1, theta_31 = 52.9 [FIXED, data on file]
     Ampli   <- 0.0783      ; label("Amplitude of the eGFR CysC circadian rhythm (fraction of baseline)")               # Table 1, theta_32 = 0.0783, RSE 46%
     tmax    <- 10.5        ; label("Time of maximum of the eGFR CysC circadian wave (hours)")                          # Table 1, theta_33 = 10.5, RSE 15%
 

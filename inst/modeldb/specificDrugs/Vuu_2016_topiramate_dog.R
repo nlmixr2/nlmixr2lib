@@ -38,6 +38,14 @@ Vuu_2016_topiramate_dog <- function() {
     )
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "topiramate", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Individual body weight at the time of TPM dosing.",

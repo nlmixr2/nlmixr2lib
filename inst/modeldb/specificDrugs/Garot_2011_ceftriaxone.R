@@ -2,7 +2,15 @@ Garot_2011_ceftriaxone <- function() {
   description <- "Two-compartment IV-infusion population PK model for ceftriaxone in critically ill adult ICU patients with sepsis, severe sepsis, or septic shock (Garot 2011)"
   reference <- "Garot D, Respaud R, Lanotte P, Simon N, Mercier E, Ehrmann S, Perrotin D, Dequin PF, Le Guellec C. Population pharmacokinetics of ceftriaxone in critically ill septic patients: a reappraisal. Br J Clin Pharmacol. 2011;72(5):758-767. doi:10.1111/j.1365-2125.2011.04005.x"
   vignette <- "Garot_2011_ceftriaxone"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "ceftriaxone", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CRCL = list(

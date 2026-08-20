@@ -21,7 +21,18 @@ Schipani_2013_atazanavir_ritonavir <- function() {
     "doi:10.1097/QAI.0b013e3182737231."
   )
   vignette <- "Schipani_2013_atazanavir_ritonavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_rtv   = list(analyte = "ritonavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central_rtv = list(analyte = "ritonavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -59,7 +70,7 @@ Schipani_2013_atazanavir_ritonavir <- function() {
     lvc    <- log(106)
     label("Atazanavir apparent volume of distribution, V/F (L)")                     # Table 2: V/F ATV = 106 L, RSE 7%
     lka    <- fixed(log(1.81))
-    label("Atazanavir first-order absorption rate, ka (1/h, FIXED)")                 # Table 2: ka ATV (per hour) fixed = 1.81 (final estimate of separate ATV model in Table 1)
+    label("Atazanavir first-order absorption rate, ka (1/h)")                 # Table 2: ka ATV (per hour) fixed = 1.81 (final estimate of separate ATV model in Table 1)
     ltlag  <- log(0.87)
     label("Atazanavir absorption lag time, Tlag (h)")                                # Table 2: Lag T ATV = 0.87 h, RSE 2%
 
@@ -72,7 +83,7 @@ Schipani_2013_atazanavir_ritonavir <- function() {
     lvc_rtv    <- log(124)
     label("Ritonavir apparent volume of distribution, V/F (L)")                      # Table 2: V/F RTV = 124 L, RSE 11%
     lka_rtv    <- fixed(log(0.898))
-    label("Ritonavir first-order absorption rate, ka (1/h, FIXED)")                  # Table 2: ka RTV (per hour) fixed = 0.898 (final estimate of separate RTV model in Table 1)
+    label("Ritonavir first-order absorption rate, ka (1/h)")                  # Table 2: ka RTV (per hour) fixed = 0.898 (final estimate of separate RTV model in Table 1)
     lalag_rtv  <- log(1.05)
     label("Ritonavir absorption lag time, Tlag (h)")                                 # Table 2: Lag T RTV = 1.05 h, RSE 1%
 

@@ -9,7 +9,15 @@ Chirehwa_2017_pyrazinamide <- function() {
     sep = " "
   )
   vignette <- "Chirehwa_2017_pyrazinamide"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "pyrazinamide", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "pyrazinamide", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     FFM = list(
@@ -83,7 +91,7 @@ Chirehwa_2017_pyrazinamide <- function() {
     lvc  <- log(43.2);   label("Apparent central volume of distribution V/F, FFM 42 kg (L)")           # Chirehwa 2017 Table 2 V/F = 43.2 (95% CI 41.5-44.7)
     lmtt <- log(0.542);  label("Mean transit time MTT through the absorption chain (h)")               # Chirehwa 2017 Table 2 MTT = 0.542 (95% CI 0.47-0.61)
     lnn  <- log(28);     label("Number of Savic-style transit compartments NN (continuous, unitless)") # Chirehwa 2017 Table 2 NN = 28 (95% CI 7-52)
-    lfdepot <- fixed(log(1));  label("Bioavailability (fixed at 1)")                                   # Chirehwa 2017 Table 2 F = 1 fixed
+    lfdepot <- fixed(log(1));  label("Bioavailability")                                   # Chirehwa 2017 Table 2 F = 1 fixed
 
     # =========================================================================
     # Allometric scaling on fat-free mass with exponents FIXED to the literature
@@ -93,8 +101,8 @@ Chirehwa_2017_pyrazinamide <- function() {
     # were close, 0.75 for CL and 1 for V, hence the exponents were fixed to
     # these literature values.'
     # =========================================================================
-    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F (unitless, fixed)")  # Chirehwa 2017 Methods/Results: fixed at the Anderson-Holford literature value
-    e_ffm_vc <- fixed(1.0);   label("Allometric exponent of FFM on V/F (unitless, fixed)")   # Chirehwa 2017 Methods/Results: fixed at the Anderson-Holford literature value
+    e_ffm_cl <- fixed(0.75);  label("Allometric exponent of FFM on CL/F (unitless)")  # Chirehwa 2017 Methods/Results: fixed at the Anderson-Holford literature value
+    e_ffm_vc <- fixed(1.0);   label("Allometric exponent of FFM on V/F (unitless)")   # Chirehwa 2017 Methods/Results: fixed at the Anderson-Holford literature value
 
     # =========================================================================
     # Linear increase in CL/F across the first month of TB treatment, attributed

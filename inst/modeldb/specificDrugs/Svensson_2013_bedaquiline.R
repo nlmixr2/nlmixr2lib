@@ -11,7 +11,22 @@ Svensson_2013_bedaquiline <- function() {
     sep = " "
   )
   vignette <- "Svensson_2013_bedaquiline"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2    = list(analyte = "bedaquiline (BDQ)", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m2     = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m2 = list(analyte = "N-desmethyl metabolite M2", units = "mg", specimen = "plasma", verified = FALSE),
+    central_m3     = list(analyte = "N,N-bis-desmethyl metabolite M3", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m3 = list(analyte = "N,N-bis-desmethyl metabolite M3", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

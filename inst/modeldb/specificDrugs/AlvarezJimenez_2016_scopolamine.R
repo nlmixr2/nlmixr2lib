@@ -20,6 +20,27 @@ AlvarezJimenez_2016_scopolamine <- function() {
     "red_nb0", "red_nb1", "red_nb2"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    nbRT     = list(analyte = "scopolamine hydrobromide concentration in plasma", units = "mg", specimen = "plasma", verified = FALSE),
+    sacInacc = list(analyte = "scopolamine hydrobromide effect on saccadic inaccuracy", units = "mg", specimen = "not applicable", verified = FALSE),
+    sacPV    = list(analyte = "scopolamine hydrobromide effect on saccadic peak velocity", units = "mg", specimen = "not applicable", verified = FALSE),
+    adTrack  = list(analyte = "scopolamine hydrobromide effect on adaptive tracker performance", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegAfc   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegApo   = list(analyte = "scopolamine hydrobromide effect on EEG alpha band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegDfc   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegDpo   = list(analyte = "scopolamine hydrobromide effect on EEG delta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegTfc   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Fz-Cz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    eegTpo   = list(analyte = "scopolamine hydrobromide effect on EEG theta band power in Pz-Oz lead", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb0  = list(analyte = "probability of correct answer for N-back 0 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb1  = list(analyte = "probability of correct answer for N-back 1 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    red_nb2  = list(analyte = "probability of correct answer for N-back 2 task", units = "mg", specimen = "not applicable", verified = FALSE),
+    central  = list(analyte = "scopolamine hydrobromide concentration in central compartment", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline",
@@ -104,9 +125,10 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lemax_sacInacc <- log(0.388)  ; label("EMAX for saccadic inaccuracy (fraction)")        # Table 2 EMAX = 0.388
     lkin_sacInacc  <- log(22.8)   ; label("kIN for saccadic inaccuracy (%/min)")            # Table 2 kIN = 22.8
     lkout_sacInacc <- log(3.33)   ; label("kOUT for saccadic inaccuracy (1/min)")           # Table 2 kOUT = 3.33
-    # Omega block between EC50 and EMAX (OC = 0.06 interpreted as covariance;
+    # Omega block between EC50 and EMAX (OC (omega correlation) = 0.06
+    # interpreted as covariance;
     # var_ec50 = log(1+0.137^2) = 0.0186, var_emax = log(1+0.499^2) = 0.2216).
-    etalec50_sacInacc + etalemax_sacInacc ~ c(0.0186, 0.06, 0.2216)                          # Table 2 IIV 13.7% / 49.9%, OC = 0.06
+    etalec50_sacInacc + etalemax_sacInacc ~ c(0.0186, 0.06, 0.2216)                          # Table 2 IIV 13.7% / 49.9%, OC (omega correlation) = 0.06
     etalkin_sacInacc  ~ 0.0175     ; label("IIV var on lkin_sacInacc (~13.2% CV)")           # Table 2 IIV(kIN) = 13.2%
     propSd_sacInacc   <- 0.22204   ; label("Proportional residual error for saccadic inaccuracy") # Table 2 sigma^2 = 0.0493
 
@@ -161,13 +183,14 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkout_eegDfc <- log(0.0166)   ; label("kOUT for EEG delta Fz-Cz (1/min)")                # Table 2 kOUT = 0.0166
     cab_eegDfc   <- 161           ; label("Age scale (CAB) on kIN for EEG delta Fz-Cz (years)") # Table 2 CAB = 161
     # Two omega blocks reported (EC50 vs EMAX; EMAX vs kIN). Interpreted as
-    # covariances per paper caption's imprecise labeling of OC. Encoded as a
+    # covariances per paper caption's imprecise labeling of OC (omega
+    # correlation). Encoded as a
     # 3-parameter block; the EC50-vs-kIN off-diagonal (not reported) is set
     # to zero via fixed().
     etalec50_eegDfc + etalemax_eegDfc + etalkin_eegDfc ~
       c(1.209,
         1.410, 2.418,
-        fixed(0), 0.153, 0.0800)                                                             # Table 2 IIV 154.5%/325.4%/28.9%, OC = 1.410 (EC50 vs EMAX), 0.153 (EMAX vs kIN)
+        fixed(0), 0.153, 0.0800)                                                             # Table 2 IIV 154.5%/325.4%/28.9%, OC (omega correlation) = 1.410 (EC50 vs EMAX), 0.153 (EMAX vs kIN)
     propSd_eegDfc   <- 0.184     ; label("Proportional residual error for EEG delta Fz-Cz")  # Table 2 sigma^2 = 0.0338
 
     # ---------- EEG delta Pz-Oz (uV) ----------
@@ -205,15 +228,16 @@ AlvarezJimenez_2016_scopolamine <- function() {
     # compartments for the delay are approximated by a single indirect-
     # response state with rate kIN_nb0. EMAX fixed to 1 per paper narrative.
     lec50_nb0 <- log(2140)        ; label("EC50 for 0-back correct-answer ratio (pg/mL)")     # Table 2 EC50 = 2140
-    lemax_nb0 <- fixed(log(1))    ; label("EMAX for 0-back correct-answer ratio (fixed at 1)") # Table 2 EMAX = 1 (fixed per paper)
+    lemax_nb0 <- fixed(log(1))    ; label("EMAX for 0-back correct-answer ratio") # Table 2 EMAX = 1 (fixed per paper)
     lkin_nb0  <- log(0.0354)      ; label("kIN for 0-back ratio (1/min); approximated single-compartment for 4-transit chain") # Table 2 kIN = 0.0354
     lkout_nb0 <- log(0.036)       ; label("kOUT for 0-back ratio (1/min)")                    # Table 2 kOUT = 0.036
     e0_nb0    <- 3.77             ; label("Baseline log-odds of 0-back correct answers")      # Table 2 E0 = 3.77 (expit(3.77) = 97.7%)
-    # Omega block: EMAX and E0 correlation (OC = 0.40 interpreted as covariance).
+    # Omega block: EMAX and E0 correlation (OC (omega correlation) = 0.40
+    # interpreted as covariance).
     # etalemax_nb0 (log-scale IIV on EMAX; EMAX fixed at 1 so IIV represents
     # subject-specific scale factor exp(eta) applied to 1) and etae0_nb0
     # (additive IIV on log-odds baseline).
-    etalemax_nb0 + etae0_nb0 ~ c(3.760, 0.40, 0.132)                                          # Table 2 IIV 631.3% / 37.8%, OC = 0.40
+    etalemax_nb0 + etae0_nb0 ~ c(3.760, 0.40, 0.132)                                          # Table 2 IIV 631.3% / 37.8%, OC (omega correlation) = 0.40
     addSd_nb0 <- 0.0624           ; label("Additive residual error for 0-back log-odds (log-odds units)") # Table 2 sigma^2 = 0.0039
 
     # ---------- N-back 1 (% correct, log-odds observation) ----------
@@ -233,7 +257,7 @@ AlvarezJimenez_2016_scopolamine <- function() {
     lkout_nb2 <- log(0.317)       ; label("kOUT for 2-back ratio (1/min)")                    # Table 2 kOUT = 0.317
     e0_nb2    <- 2.84             ; label("Baseline log-odds of 2-back correct answers")      # Table 2 E0 = 2.84 (expit(2.84) = 94.5%)
     # Omega block: EMAX and E0 (OC = 0.23 interpreted as covariance).
-    etalemax_nb2 + etae0_nb2 ~ c(0.868, 0.23, 0.115)                                          # Table 2 IIV 109.8% / 35.9%, OC = 0.23
+    etalemax_nb2 + etae0_nb2 ~ c(0.868, 0.23, 0.115)                                          # Table 2 IIV 109.8% / 35.9%, OC (omega correlation) = 0.23
     addSd_nb2 <- 0.0922           ; label("Additive residual error for 2-back log-odds (log-odds units)") # Table 2 sigma^2 = 0.0085
   })
 

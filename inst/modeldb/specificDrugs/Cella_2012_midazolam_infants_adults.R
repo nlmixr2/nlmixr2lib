@@ -16,7 +16,16 @@ Cella_2012_midazolam_infants_adults <- function() {
     sep = " "
   )
   vignette <- "Cella_2012_midazolam_paediatric_scaling"
-  units    <- list(time = "minute", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "min", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "midazolam infants adults", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "midazolam infants adults", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "midazolam infants adults", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -95,7 +104,7 @@ Cella_2012_midazolam_infants_adults <- function() {
     lq  <- log(1.34);        label("Inter-compartmental clearance (Q, L/min)")                     # Cella 2012 Table 2
     lvp <- log(16.5);        label("Peripheral volume of distribution (Vp, L)")                    # Cella 2012 Table 2
 
-    allo_cl <- fixed(0.75);  label("Allometric exponent of WT on CL (unitless)")                   # Cella 2012 Methods + Mahmood 1996 ref [46] (fixed at classic 0.75)
+    e_wt_cl <- fixed(0.75);  label("Allometric exponent of WT on CL (unitless)")                   # Cella 2012 Methods + Mahmood 1996 ref [46] (fixed at classic 0.75)
 
     # Inter-individual variability (Table 2 reports CV%; omega^2 = log(CV^2 + 1))
     #   CL : 39.9% CV -> log(0.399^2 + 1) = 0.14776
@@ -113,7 +122,7 @@ Cella_2012_midazolam_infants_adults <- function() {
     # Vp: constant population-typical absolute volume (no covariate effect).
     # Q and Ka: constant population-typical values (no covariate effect).
     ka <- exp(lka)
-    cl <- exp(lcl + etalcl) * (WT / 70)^allo_cl
+    cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
     vc <- exp(lvc) * WT
     q  <- exp(lq)
     vp <- exp(lvp + etalvp)

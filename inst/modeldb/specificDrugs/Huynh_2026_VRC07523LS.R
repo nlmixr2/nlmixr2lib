@@ -4,6 +4,15 @@ Huynh_2026_VRC07523LS <- function() {
   vignette <- "Huynh_2026_VRC07523LS"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "VRC07523LS", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "VRC07523LS", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "VRC07523LS", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -62,8 +71,8 @@ Huynh_2026_VRC07523LS <- function() {
     ldur    <- log(36 / 24);       label("Zero-order SC absorption duration D1 for an infant (day) - paper reports 36 hours")        # Huynh 2026 Table 2: theta7 (D1; hours) = 36
 
     # Allometric exponents - shared between CL and Q, and between Vc and Vp.
-    e_wt_cl_q  <- 0.85; label("Shared allometric exponent of WT on CL and Q (unitless)")                                              # Huynh 2026 Methods: "CL and Q by weight (WT^0.85)"
-    e_wt_vc_vp <- 1.0;  label("Shared allometric exponent of WT on Vc and Vp (unitless)")                                             # Huynh 2026 Methods: "V_ss by weight (WT^1.0)"
+    e_wt_cl_q  <- fixed(0.85); label("Shared allometric exponent of WT on CL and Q (unitless)")                                              # Huynh 2026 Methods: "CL and Q by weight (WT^0.85)"
+    e_wt_vc_vp <- fixed(1.0);  label("Shared allometric exponent of WT on Vc and Vp (unitless)")                                             # Huynh 2026 Methods: "V_ss by weight (WT^1.0)"
 
     # Binary covariate effects. Paper's reference category for CL and D1 is the
     # infant cohort (CHILD = 1); to preserve the published structural values,

@@ -6,6 +6,32 @@ Zuo_2016_UDCA <- function() {
 
   units <- list(time = "h", dosing = "mg", concentration = "umol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    stomach_udca    = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    intestine_udca  = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    portal_udca     = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    blood_udca      = list(analyte = "UDCA", units = "mg", specimen = "blood cell", verified = FALSE),
+    liver_udca      = list(analyte = "UDCA", units = "mg", specimen = "tissue", verified = FALSE),
+    biliary_udca    = list(analyte = "UDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    feces_udca      = list(analyte = "UDCA", units = "mg", specimen = "faeces", verified = FALSE),
+    intestine_gudca = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    portal_gudca    = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    blood_gudca     = list(analyte = "GUDCA", units = "mg", specimen = "blood cell", verified = FALSE),
+    liver_gudca     = list(analyte = "GUDCA", units = "mg", specimen = "tissue", verified = FALSE),
+    biliary_gudca   = list(analyte = "GUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    feces_gudca     = list(analyte = "GUDCA", units = "mg", specimen = "faeces", verified = FALSE),
+    intestine_tudca = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    portal_tudca    = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    blood_tudca     = list(analyte = "TUDCA", units = "mg", specimen = "blood cell", verified = FALSE),
+    liver_tudca     = list(analyte = "TUDCA", units = "mg", specimen = "tissue", verified = FALSE),
+    biliary_tudca   = list(analyte = "TUDCA", units = "mg", specimen = "administration site", verified = FALSE),
+    feces_tudca     = list(analyte = "TUDCA", units = "mg", specimen = "faeces", verified = FALSE)
+  )
+
   covariateData <- list(
     FRACABS = list(
       description       = "Fractional absorption of UDCA from stomach into circulation. Dose-dependent per the paper's regression on log(dose_mg): F=0.66 for 150 mg and F=0.31 for 1000 mg (R^2=0.99 over 200-2000 mg from Crosignani 1991 / Walker 1992).",
@@ -56,7 +82,7 @@ Zuo_2016_UDCA <- function() {
 
   ini({
     # Rate constants for UDCA (analyte index 0) - Table 1 columns 'UDCA'.
-    # All values are 1/hour. Log-transformed because the paper reports them
+    # All values are 1/h. Log-transformed because the paper reports them
     # as positive point estimates from least-squares parameter optimisation
     # (MATLAB Optimization Toolbox).
     lk_si    <- log(16.61); label("Stomach -> intestine rate constant K_SI (1/h, UDCA)")            # Table 1

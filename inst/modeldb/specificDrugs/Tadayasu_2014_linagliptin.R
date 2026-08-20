@@ -8,7 +8,16 @@ Tadayasu_2014_linagliptin <- function() {
     "doi:10.18433/j3s304."
   )
   vignette <- "Tadayasu_2014_linagliptin"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL (linagliptin total plasma concentration; converted from the internal nmol/L scale via MW 472.54 g/mol); % of baseline (DPP-4 activity)")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "linagliptin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "linagliptin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list()
 
@@ -37,7 +46,7 @@ Tadayasu_2014_linagliptin <- function() {
     # ---- Structural PK parameters (Tadayasu 2014 Table 3) ----
     # F1 = 1 is set as the structural reference (Table 3 row F1, footnote a / paper Methods);
     # the IIV on F1 (etalfdepot) captures relative bioavailability dispersion around 1.
-    lfdepot <- fixed(log(1));     label("Reference relative bioavailability (F1 = 1; fixed structural anchor)")        # Table 3 row F1
+    lfdepot <- fixed(log(1));     label("Reference relative bioavailability (F1 = 1; structural anchor)")        # Table 3 row F1
     lka     <- log(1.63);         label("First-order absorption rate constant Ka (1/h)")                                # Table 3 row KA
     lcl     <- log(121);          label("Apparent clearance of free linagliptin CL/F1 (L/h)")                            # Table 3 row CL/F1
     lvc     <- log(633);          label("Apparent central volume of distribution V2/F1 (L)")                             # Table 3 row V2/F1

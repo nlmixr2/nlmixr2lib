@@ -27,10 +27,18 @@ Johnston_2019_empagliflozin <- function() {
   )
   vignette <- "Johnston_2019_empagliflozin"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "n/a (no drug dosing events; empagliflozin exposure enters as the per-subject AUC_EMPA covariate from an upstream popPK)",
     concentration = "% HbA1c (NGSP; observation output -- not a drug concentration)",
     AUC_EMPA      = "nmol*h/L (empagliflozin steady-state AUC over the q24h dosing interval)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    hba1c_placebo = list(analyte = "HbA1c", units = NA_character_, specimen = "blood cell", verified = FALSE)
   )
 
   covariateData <- list(

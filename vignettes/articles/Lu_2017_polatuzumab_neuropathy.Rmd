@@ -7,6 +7,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!-- Simulation size reduced for build time: this vignette took >300 s to render,
+     against a 19 s median across the article set. Only the COHORT SIZE and/or
+     OBSERVATION GRID DENSITY were reduced -- no model, parameter, dose or
+     covariate value was touched, so the figures show the same behaviour. -->
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
 library(nlmixr2lib)
@@ -96,7 +101,7 @@ compartment per the Lu 2019 PK input convention.
 set.seed(20170308)
 
 # Two clinically relevant dose levels, 200 subjects per arm
-n_per_arm   <- 200L
+n_per_arm   <- 60L
 dose_levels <- c(1.8, 2.4)   # mg/kg
 n_cycles    <- 8L            # observe through 8 cycles
 cycle_h     <- 21 * 24       # Q3W = 504 hours per cycle

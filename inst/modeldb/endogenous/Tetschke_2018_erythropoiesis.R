@@ -3,6 +3,16 @@ Tetschke_2018_erythropoiesis <- function() {
   reference   <- "Tetschke M, Lilienthal P, Pottgiesser T, Fischer T, Schalk E, Sager S. Mathematical Modeling of Red Blood Cell Count Dynamics after Blood Loss. Processes. 2018;6(9):157. doi:10.3390/pr6090157"
   vignette    <- "Tetschke_2018_erythropoiesis"
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    precursor1 = list(analyte = "erythroblast", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    precursor2 = list(analyte = "pro-erythroblast", units = NA_character_, specimen = "not applicable", verified = FALSE),
+    thb        = list(analyte = "reticulocyte", units = NA_character_, specimen = "blood cell", verified = FALSE)
+  )
+
   covariateData <- list(
     THB_MASS = list(
       description        = "Subject baseline (steady-state) total hemoglobin mass in grams. Plasma-volume-independent measurement obtained by the optimised CO-rebreathing method (Schmidt 2005, Pottgiesser 2008); paper symbol Base.",

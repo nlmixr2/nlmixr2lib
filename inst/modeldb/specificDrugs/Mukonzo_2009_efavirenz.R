@@ -9,7 +9,16 @@ Mukonzo_2009_efavirenz <- function() {
     "doi:10.1111/j.1365-2125.2009.03516.x."
   )
   vignette <- "Mukonzo_2009_efavirenz"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "efavirenz", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "efavirenz", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     SEXF = list(
@@ -84,7 +93,7 @@ Mukonzo_2009_efavirenz <- function() {
     # Relative bioavailability anchor: Mukonzo 2009 Table 3 reports Frel = "1 FIX"
     # for the wild-type ABCB1 genotype; covariate effects shift mutant carriers
     # multiplicatively from this anchor.
-    lfdepot <- fixed(log(1)); label("Relative bioavailability Frel at ABCB1 rs3842 wild-type reference (fixed)")  # Mukonzo 2009 Table 3: Frel = 1 FIX
+    lfdepot <- fixed(log(1)); label("Relative bioavailability Frel at ABCB1 rs3842 wild-type reference")  # Mukonzo 2009 Table 3: Frel = 1 FIX
 
     # ---- Covariate effects ----
     # All four effects are fractional / multiplicative shifts from the reference

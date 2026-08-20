@@ -40,6 +40,22 @@ Kervezee_2014_quinidine_rat <- function() {
     "brain_deep", "brain_ecf", "csf_lv", "csf_tfv", "csf_cm", "csf_sas"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "quinidine unbound", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "quinidine unbound", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "quinidine unbound", units = "mg", specimen = "plasma", verified = FALSE),
+    brain_deep  = list(analyte = "quinidine unbound", units = "mg", specimen = "tissue", verified = FALSE),
+    brain_ecf   = list(analyte = "quinidine unbound", units = "mg", specimen = "tissue", verified = FALSE),
+    csf_lv      = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
+    csf_tfv     = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
+    csf_cm      = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE),
+    csf_sas     = list(analyte = "quinidine unbound", units = "mg", specimen = "CSF", verified = FALSE)
+  )
+
   covariateData <- list(
     PERIOD_ACTIVE = list(
       description        = paste(

@@ -30,7 +30,17 @@ Fauchet_2013_zidovudine <- function() {
     sep = " "
   )
   vignette <- "Fauchet_2013_zidovudine"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot        = list(analyte = "zidovudine", units = "mg", specimen = "administration site", verified = FALSE),
+    central      = list(analyte = "zidovudine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_gluc = list(analyte = "3'-azido-3'-deoxy-5'-glucuronylthymidine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -72,7 +82,7 @@ Fauchet_2013_zidovudine <- function() {
     # exponents and IIV variances are the published molar-frame values.
 
     # Structural PK -- ZDV parent (one-compartment with first-order absorption).
-    lka <- fixed(log(2.86)); label("First-order absorption rate constant ka of ZDV (1/h, FIXED at the Panhard 2007 estimate)")  # Table 3 footnote b: ka FIXED at 2.86 1/h (Panhard 2007 reference 28)
+    lka <- fixed(log(2.86)); label("First-order absorption rate constant ka of ZDV (1/h, the Panhard 2007 estimate)")  # Table 3 footnote b: ka FIXED at 2.86 1/h (Panhard 2007 reference 28)
     lcl <- log(89.7);        label("Apparent ZDV total elimination clearance CL_p/F at WT = 32.2 kg (L/h)")                     # Table 3: CL_p/F = 89.7 L/h, RSE 7.1%, 95% CI 77-102
     lvc <- log(229);         label("Apparent ZDV central volume of distribution V/F at WT = 32.2 kg (L)")                       # Table 3: V/F   = 229 L,   RSE 12.4%, 95% CI 181-291
 
@@ -118,7 +128,7 @@ Fauchet_2013_zidovudine <- function() {
     # Paper Table 3 reports the proportional residuals as sigma values
     # (0.56 and 0.69, RSE ~ 8%) interpreted as SDs in the linear-
     # concentration space (see vignette source trace for rationale).
-    addSd       <- fixed(0.025); label("ZDV additive residual SD (mg/L, FIXED at LOQ/2)")                                         # Table 3 footnote b: additive component FIXED at LOQ/2 = 0.025 mg/L = 0.1 umol/L molar
+    addSd       <- fixed(0.025); label("ZDV additive residual SD (mg/L, LOQ/2)")                                         # Table 3 footnote b: additive component FIXED at LOQ/2 = 0.025 mg/L = 0.1 umol/L molar
     propSd      <- 0.56;         label("ZDV proportional residual SD (fraction)")                                                  # Table 3: sigma_ZDV    = 0.56, RSE 8.5%, 95% CI 0.514-0.614
     propSd_gluc <- 0.69;         label("G-ZDV proportional residual SD (fraction)")                                                # Table 3: sigma_G-ZDV  = 0.69, RSE 7.0%, 95% CI 0.643-0.742
   })

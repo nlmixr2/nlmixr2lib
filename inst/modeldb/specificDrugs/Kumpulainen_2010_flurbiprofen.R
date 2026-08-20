@@ -10,6 +10,18 @@ Kumpulainen_2010_flurbiprofen <- function() {
   vignette <- "Kumpulainen_2010_flurbiprofen"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "flurbiprofen", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2      = list(analyte = "flurbiprofen", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2 = list(analyte = "flurbiprofen", units = "mg", specimen = "plasma", verified = FALSE),
+    csf         = list(analyte = "flurbiprofen", units = "mg", specimen = "CSF", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline",
@@ -77,7 +89,7 @@ Kumpulainen_2010_flurbiprofen <- function() {
     # documents the reparameterisation.
     lclin  <- log(0.12 * 6.8); label("CSF influx clearance clin = QCSF * UPTK (L/h)")                    # Table 2: QCSF * UPTK = 0.12 * 6.8 = 0.816 L/h (uptake ratio UPTK = 6.8)
     lclef  <- log(0.12);       label("CSF efflux clearance clef = QCSF (L/h)")                           # Table 2: QCSF = 0.12 L/h (RSE 0.27)
-    lvcsf  <- fixed(log(0.15)); label("CSF volume of distribution V_CSF (L, 70 kg reference; fixed)")    # Text (Results, popPK model): "The volume of the CSF compartment (0.15 l) was retrieved from the literature [13] and also scaled by weight." Held fixed at 0.15 L/70 kg.
+    lvcsf  <- fixed(log(0.15)); label("CSF volume of distribution V_CSF (L, 70 kg reference)")    # Text (Results, popPK model): "The volume of the CSF compartment (0.15 l) was retrieved from the literature [13] and also scaled by weight." Held fixed at 0.15 L/70 kg.
 
     # Plasma protein binding
     lfu    <- log(0.00031); label("Plasma fraction unbound fu (unitless)")                                # Table 2: protein-free fraction = 0.00031 (= 0.031%, RSE 0.043); also Results "fraction unbound found to be constant... protein-free fraction of 0.031%"
@@ -95,8 +107,8 @@ Kumpulainen_2010_flurbiprofen <- function() {
     # intercompartmental clearances Q2, Q and QCSF carry no WT
     # scaling in Table 2 and are encoded the same way here.
     # ============================================================
-    e_wt_cl    <- fixed(0.75); label("Allometric exponent on CL (fixed)")                                # Table 2: CL (l/h) * (WT/70)^0.75; Discussion: "the exponents were fixed to 1 and 0.75 in this study"
-    e_wt_vc_vp <- fixed(1);    label("Allometric exponent shared across all volumes V_central / V_shallow / V_deep / V_CSF (fixed)") # Table 2: V_central / V_shallow / V_deep all * (WT/70); Results: V_CSF "also scaled by weight"
+    e_wt_cl    <- fixed(0.75); label("Allometric exponent on CL")                                # Table 2: CL (l/h) * (WT/70)^0.75; Discussion: "the exponents were fixed to 1 and 0.75 in this study"
+    e_wt_vc_vp <- fixed(1);    label("Allometric exponent shared across all volumes V_central / V_shallow / V_deep / V_CSF") # Table 2: V_central / V_shallow / V_deep all * (WT/70); Results: V_CSF "also scaled by weight"
 
     # ============================================================
     # Inter-individual variability - Kumpulainen 2010 Table 2.

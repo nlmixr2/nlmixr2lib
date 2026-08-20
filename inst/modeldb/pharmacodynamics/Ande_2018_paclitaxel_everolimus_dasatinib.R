@@ -11,9 +11,24 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
   )
   vignette <- "Ande_2018_paclitaxel_everolimus_dasatinib"
   units <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "ug (PAC IV infusion); 50 nM target bath concentration (DE)",
     concentration = "nmol/L (PAC PD driver Cc); fold/L (caspase3Act, unitless relative-to-baseline); cells/L (tumorCells, total bioreactor count)"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "PAC", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "PAC", units = NA_character_, specimen = "plasma", verified = FALSE),
+    transit1    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit2    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit3    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit4    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    transit5    = list(analyte = "EVE/DAS", units = NA_character_, specimen = "administration site", verified = FALSE),
+    tumor       = list(analyte = "PAC, caspase3Act, tumorCells", units = NA_character_, specimen = "tumor", verified = FALSE)
   )
 
   covariateData <- list()
@@ -61,7 +76,7 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
     # giving a first-order washout of 0.53 / 500 * 60 = 0.0636 /h. Held
     # FIXED at this Methods-derived value.
     lkde <- fixed(log(0.0636))
-    label("DE bioreactor washout rate kde (1/h; FIXED from BelloCell perfusion mechanics)")  # Ande 2018 Methods (3DD Cell Culture System Calibration)
+    label("DE bioreactor washout rate kde (1/h; from BelloCell perfusion mechanics)")  # Ande 2018 Methods (3DD Cell Culture System Calibration)
 
     # ===================================================================
     # CASPASE-3 SIGNAL-TRANSDUCTION CHAIN
@@ -100,7 +115,7 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
     llambda1 <- log(7.3)
     label("Linear tumor-growth rate constant lambda1 (cells / h)")  # Ande 2018 Table 3
     lpsi     <- fixed(log(20))
-    label("Simeoni exponential-to-linear transition exponent psi (unitless; FIXED)")  # Ande 2018 Table 3
+    label("Simeoni exponential-to-linear transition exponent psi (unitless)")  # Ande 2018 Table 3
     lkd      <- log(0.0096)
     label("JIMT-1 cell-death rate constant kd (cells / h per unit caspase-3 change)")  # Ande 2018 Table 3
 
@@ -123,7 +138,7 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
     # 1000 = 853.91 / 1000 = 0.85391 ug/nmol. Held FIXED at the
     # tabulated PAC molar mass (PubChem CID 36314).
     lpac_mw <- fixed(log(0.85391))
-    label("Paclitaxel molar-mass conversion (ug per nmol; FIXED literature)")  # PubChem CID 36314 (paclitaxel MW 853.91 g/mol)
+    label("Paclitaxel molar-mass conversion (ug per nmol; literature)")  # PubChem CID 36314 (paclitaxel MW 853.91 g/mol)
 
     # ===================================================================
     # RESIDUAL ERROR (PLACEHOLDERS)
@@ -135,13 +150,13 @@ Ande_2018_paclitaxel_everolimus_dasatinib <- function() {
     # and deviations.
     # operator-chosen placeholder (paper reports no residual SD)
     addSd <- fixed(1)
-    label("Additive residual SD on paclitaxel concentration Cc (nM; FIXED placeholder)")
+    label("Additive residual SD on paclitaxel concentration Cc (nM; placeholder)")
     # operator-chosen placeholder
     addSd_caspase3Act <- fixed(0.1)
-    label("Additive residual SD on caspase-3 activity (relative-to-baseline units; FIXED placeholder)")
+    label("Additive residual SD on caspase-3 activity (relative-to-baseline units; placeholder)")
     # operator-chosen placeholder
     addSd_tumorCells <- fixed(5e6)
-    label("Additive residual SD on JIMT-1 cell count (cells; FIXED placeholder)")
+    label("Additive residual SD on JIMT-1 cell count (cells; placeholder)")
   })
 
   model({

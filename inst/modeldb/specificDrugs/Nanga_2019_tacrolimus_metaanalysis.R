@@ -2,7 +2,16 @@ Nanga_2019_tacrolimus_metaanalysis <- function() {
   description <- "MBMA. Two-compartment population PK meta-model for oral tacrolimus in solid organ transplantation (Nanga 2019), built from pooled individual-patient data across 7 historical NONMEM datasets (n = 281 paediatric + adult liver and kidney transplant recipients). Structural model: first-order absorption with fixed lag time, time-varying first-order elimination, allometric (WT/50 kg) scaling on apparent clearance and apparent central volume, multiplicative reduction of CL/F in hepatic-graft recipients, sigmoidal post-transplant-day recovery of CL/F, and reduced relative bioavailability for the oral syrup formulation. The literature-review summary table (Nanga 2019 Table 2: 76 published popPK models) is not used for parameter fitting and is not reproduced here."
   reference <- "Nanga TM, Doan TTP, Marquet P, Musuamba FT. Toward a robust tool for pharmacokinetic-based personalization of treatment with tacrolimus in solid organ transplantation: A model-based meta-analysis approach. Br J Clin Pharmacol. 2019;85(12):2793-2823. doi:10.1111/bcp.14110"
   vignette <- "Nanga_2019_tacrolimus_metaanalysis"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus metaanalysis", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -69,8 +78,8 @@ Nanga_2019_tacrolimus_metaanalysis <- function() {
     lvc   <- log(246.2)       ; label("Apparent central volume V2/F at WT = 50 kg (L)")                                       # Nanga 2019 Table 3 final V2/F = 246.2 L
     lq    <- log(24.2)        ; label("Apparent inter-compartmental clearance Q/F (L/h)")                                     # Nanga 2019 Table 3 final Q/F = 24.2 L/h
     lvp   <- log(109.9)       ; label("Apparent peripheral volume V3/F at WT = 50 kg (L)")                                    # Nanga 2019 Table 3 final V3/F = 109.9 L
-    lka   <- fixed(log(3.37)) ; label("Absorption rate constant ka (1/h; fixed)")                                              # Nanga 2019 Table 3 final KA = 3.37 1/h (fixed per Results section text, p.2815)
-    ltlag <- fixed(log(0.32)) ; label("Absorption lag time ALAG1 (h; fixed)")                                                  # Nanga 2019 Table 3 final ALAG1 = 0.32 h (fixed per Results section text, p.2815)
+    lka   <- fixed(log(3.37)) ; label("Absorption rate constant ka (1/h)")                                              # Nanga 2019 Table 3 final KA = 3.37 1/h (fixed per Results section text, p.2815)
+    ltlag <- fixed(log(0.32)) ; label("Absorption lag time ALAG1 (h)")                                                  # Nanga 2019 Table 3 final ALAG1 = 0.32 h (fixed per Results section text, p.2815)
 
     # Allometric exponents per Nanga 2019 Eq. (3): P_i = TVp * (WT_i / WT_med)^theta_WT.
     e_wt_cl <- 0.61  ; label("Allometric exponent of (WT / 50 kg) on CL/F (unitless)")            # Nanga 2019 Table 3 WT_CL = 0.61

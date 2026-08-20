@@ -21,9 +21,16 @@ SanchezPena_2005_enoxaparin <- function() {
   )
   vignette <- "SanchezPena_2005_enoxaparin"
   units    <- list(
-    time          = "hour",
+    time          = "h",
     dosing        = "IU",
     concentration = "IU/mL"
+  )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "enoxaparin", units = "IU", specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -158,7 +165,7 @@ SanchezPena_2005_enoxaparin <- function() {
     # pre-dose reading; the paper added this constant to the dose-driven
     # prediction and held it fixed during estimation.
     bl_antiXa <- fixed(0.0725)
-    label("Basal anti-Xa activity (IU/mL); fixed")  # Sanchez-Pena 2005 Table 2: Basal anti-Xa = 0.0725 IU/mL (FIXED)
+    label("Basal anti-Xa activity (IU/mL)")  # Sanchez-Pena 2005 Table 2: Basal anti-Xa = 0.0725 IU/mL (FIXED)
 
     # Inter-individual variability. CL and V use an exponential (log-normal)
     # model so the etas attach to the log-transformed structural parameters;

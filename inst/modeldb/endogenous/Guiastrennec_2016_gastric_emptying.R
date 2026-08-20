@@ -54,6 +54,34 @@ Guiastrennec_2016_gastric_emptying <- function() {
     concentration = "umol/L (acetaminophen Cc); secondary outputs in pmol/L (TCCK) and mL (gallbladder volume GVol)"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    stomach     = list(analyte = "acetaminophen", units = NA_character_, specimen = "administration site", verified = FALSE),
+    upper_si    = list(analyte = "acetaminophen", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "acetaminophen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "acetaminophen", units = NA_character_, specimen = "plasma", verified = FALSE),
+    stom_fat    = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stom_prot   = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    stom_carb   = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    fat_usi     = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_usi    = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_usi    = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    fat_duod    = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_duod   = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_duod   = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    fat_jej     = list(analyte = "fats", units = NA_character_, specimen = "administration site", verified = FALSE),
+    prot_jej    = list(analyte = "proteins", units = NA_character_, specimen = "administration site", verified = FALSE),
+    carb_jej    = list(analyte = "carbohydrates", units = NA_character_, specimen = "administration site", verified = FALSE),
+    pool_f      = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cckf        = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    pool_l      = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    cckl        = list(analyte = "cholecystokinin (CCK)", units = NA_character_, specimen = "plasma", verified = FALSE),
+    gallbladder = list(analyte = "bile salts", units = NA_character_, specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight at baseline. Linear-deviation effect on the baseline gallbladder volume (BASEBILE_eff = BASEBILE * (1 + 0.0119 * (WT - 88))).",
@@ -133,7 +161,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     lvc       <- log(19.5)          ; label("Acetaminophen central volume VC/F (L)")                       # Table 3 GE column: V_c/F = 1.95E+01
     lq        <- log(1.56)          ; label("Acetaminophen inter-compartmental clearance Q/F (L/min)")     # Table 3 GE column: Q/F = 1.56E+00
     lvp       <- log(48.1)          ; label("Acetaminophen peripheral volume VP/F (L)")                    # Table 3 GE column: V_p/F = 4.81E+01
-    lfdepot   <- fixed(log(1))      ; label("Relative acetaminophen bioavailability F1 (FIXED at 1)")      # Table 3 GE column: F_1 = 1 fixed, BSV 22% CV
+    lfdepot   <- fixed(log(1))      ; label("Relative acetaminophen bioavailability F1")      # Table 3 GE column: F_1 = 1 fixed, BSV 22% CV
     lhl_ka    <- log(8.19)          ; label("Acetaminophen absorption half-life HL-KA (min, prior Hens 2008)") # Table 3 GE column: HL-K_A = 8.19 (prior 6.8 +/- 0.9)
 
     # ---------------------------------------------------------------------
@@ -152,8 +180,8 @@ Guiastrennec_2016_gastric_emptying <- function() {
     # ---------------------------------------------------------------------
     lkg0      <- log(1.06)          ; label("Baseline gastric-emptying rate constant KG0 (1/min)")          # Table 3 GE column: K_G0 = 1.06; BSV 155% CV
     lkul      <- log(0.0266)        ; label("Upper- to lower-SI calorie transfer rate KUL (1/min)")         # Table 3 GE column: K_UL = 2.66E-02; BSV 56% CV
-    ramax     <- fixed(2.292)       ; label("Maximal nonlinear absorption rate of nutrients RA_MAX (g/min; FIXED from glucose, Hens 2008)")   # Table 3 GE column: RA_MAX = 2.292 fixed
-    km        <- fixed(25.12)       ; label("Michaelis constant for nutrient absorption K_M (g equivalent; FIXED from glucose, Hens 2008)")   # Table 3 GE column: K_M = 25.12 fixed
+    ramax     <- fixed(2.292)       ; label("Maximal nonlinear absorption rate of nutrients RA_MAX (g/min; from glucose, Hens 2008)")   # Table 3 GE column: RA_MAX = 2.292 fixed
+    km        <- fixed(25.12)       ; label("Michaelis constant for nutrient absorption K_M (g equivalent; from glucose, Hens 2008)")   # Table 3 GE column: K_M = 25.12 fixed
     lslpcal_mag <- log(0.0173)      ; label("Log of the caloric-feedback slope magnitude |SLPCAL| (1/kcal); the sign is fixed negative in model()") # Table 3 GE column: SLP_CAL = 2 0.0173; BSV 19% CV
     sig       <- 0.285              ; label("Sigmoidicity of the gastric-emptying onset Hill function SIG (unitless)") # Table 3 GE column: SIG = 0.285
     lt50ogtt  <- log(15.7)          ; label("Half-onset time of GE for glucose-only (OGTT) drinks T50OGTT (min)") # Table 3 GE column: T_50OGTT = 15.7
@@ -182,10 +210,10 @@ Guiastrennec_2016_gastric_emptying <- function() {
     smax_cckf   <- 0.193            ; label("Maximal stimulatory effect on CCKF release SMAX-CCKF (unitless)")  # Table 3 CCK column: S_MAX-CCKF = 1.93E-01
     ls50_cckf   <- log(0.592)       ; label("Duodenal-nutrient-signal at half-maximum CCKF stimulation S50-CCKF (g-equivalent)")    # Table 3 CCK column: S_50-CCKF = 5.92E-01
     slp_cckl    <- 0.0377           ; label("Slope of jejunal-nutrient linear stimulation on CCKL release SLP_CCKL (1/g)") # Table 3 CCK column: SLP_CCKL = 3.77E-02
-    lkdj        <- fixed(log(0.0833)) ; label("Duodenum-to-jejunum nutrient transfer rate KDJ (1/min; FIXED, Hens 2008)") # Table 3 CCK column: K_DJ = 8.33E-02 fixed
-    lkji        <- fixed(log(0.0111)) ; label("Upper- to lower-jejunum nutrient transfer rate KJI (1/min; FIXED, Hens 2008)") # Table 3 CCK column: K_JI = 1.11E-02 fixed
-    potfatc     <- fixed(100)       ; label("Fat potency on CCK release POTfatC (%; FIXED reference)")      # Table 3 CCK column: POT_fatC = 100 fixed
-    potprotc    <- fixed(0)         ; label("Protein potency on CCK release POTprotC (%; FIXED at 0, not supported)")  # Table 3 CCK column: POT_protC = 0 fixed
+    lkdj        <- fixed(log(0.0833)) ; label("Duodenum-to-jejunum nutrient transfer rate KDJ (1/min;, Hens 2008)") # Table 3 CCK column: K_DJ = 8.33E-02 fixed
+    lkji        <- fixed(log(0.0111)) ; label("Upper- to lower-jejunum nutrient transfer rate KJI (1/min;, Hens 2008)") # Table 3 CCK column: K_JI = 1.11E-02 fixed
+    potfatc     <- fixed(100)       ; label("Fat potency on CCK release POTfatC (%; reference)")      # Table 3 CCK column: POT_fatC = 100 fixed
+    potprotc    <- fixed(0)         ; label("Protein potency on CCK release POTprotC (%, not supported)")  # Table 3 CCK column: POT_protC = 0 fixed
     potcarbc    <- 10.1             ; label("Carbohydrate potency on CCK release POTcarbC (%)")             # Table 3 CCK column: POT_carbC = 1.01E+01
     e_t2dm_potcarbc <- -0.811       ; label("DIS_DIAB effect on POTcarbC (multiplicative -81.1%)")              # Table 3 CCK column: T2D-POT_carbC = 2 8.11E-01
 
@@ -203,7 +231,7 @@ Guiastrennec_2016_gastric_emptying <- function() {
     lkrb         <- log(0.0618)     ; label("Gallbladder release rate constant K_RB (1/min)")               # Table 3 GBE column: K_RB = 6.18E-02; BSV 90% CV
     smax_bile    <- 6.62            ; label("Maximal gallbladder-release stimulatory effect SMAX-BILE (unitless)")  # Table 3 GBE column: S_MAX-BILE = 6.62
     ls50_bile    <- log(5.52)       ; label("Duodenal-signal at half-maximum gallbladder release S50-BILE (g-equivalent)") # Table 3 GBE column: S_50-BILE = 5.52; BSV 80% CV
-    potfatb      <- fixed(100)      ; label("Fat potency on GBE POTfatB (%; FIXED reference)")              # Table 3 GBE column: POT_fatB = 100 fixed
+    potfatb      <- fixed(100)      ; label("Fat potency on GBE POTfatB (%; reference)")              # Table 3 GBE column: POT_fatB = 100 fixed
     potprotb     <- 67.9            ; label("Protein potency on GBE POTprotB (%)")                          # Table 3 GBE column: POT_protB = 6.79E+01
     potcarbb     <- 2.25            ; label("Carbohydrate potency on GBE POTcarbB (%)")                     # Table 3 GBE column: POT_carbB = 2.25
     e_wt_base_bile <- 0.0119        ; label("WT-deviation effect on BASEBILE (+1.19%/kg above reference 88 kg)")  # Table 3 GBE column: WT-BASE_BILE = 1 1.19%/kg

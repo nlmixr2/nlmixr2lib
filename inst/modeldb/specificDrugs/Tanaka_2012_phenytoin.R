@@ -4,6 +4,15 @@ Tanaka_2012_phenytoin <- function() {
   vignette <- "Tanaka_2012_phenytoin"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "phenytoin", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "phenytoin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -41,7 +50,7 @@ Tanaka_2012_phenytoin <- function() {
     # Allometric exponents on body weight (Tanaka 2012 Equation 1, p494).
     # Reference weight 60 kg (average Japanese adult male; Results p493-494).
     e_wt_cl <- 0.569;      label("Body-weight exponent on CL (unitless)")  # Table 3 theta_2: 0.569
-    e_wt_vc <- fixed(1);   label("Body-weight exponent on V2, fixed (unitless)")  # Results p494: "The influence factor of V2 was fixed to 1"; no theta entry in Table 3
+    e_wt_vc <- fixed(1);   label("Body-weight exponent on V2 (unitless)")  # Results p494: "The influence factor of V2 was fixed to 1"; no theta entry in Table 3
     e_wt_vp <- 0.584;      label("Body-weight exponent on V3 (unitless)")  # Table 3 theta_6: 0.584
 
     # Inter-subject variability (variances reported on omega^2 scale in Table 3).

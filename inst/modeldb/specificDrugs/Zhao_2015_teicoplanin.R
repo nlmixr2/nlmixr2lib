@@ -2,7 +2,15 @@ Zhao_2015_teicoplanin <- function() {
   description <- "Two-compartment IV-injection population PK model for teicoplanin in 85 children with malignant hematological disease (Zhao 2015). Body weight enters Vc and Vp with the fixed allometric exponent 1 and enters CL and Q with the fixed allometric exponent 0.75; Schwartz-formula creatinine clearance enters CL via a power exponent estimated at 0.606. Reference subject: WT = 27.1 kg, CRCL = 179 mL/min. The published model was used to derive age-band mg/kg dosing (18 mg/kg for infants, 14 mg/kg for children, 12 mg/kg for adolescents) and a patient-tailored daily dose (target AUC * CL_i) to attain the AUC(0,24 h) target of 750 mg.L/h."
   reference <- "Zhao W, Zhang D, Storme T, Baruchel A, Decleves X, Jacqz-Aigrain E. Population pharmacokinetics and dosing optimization of teicoplanin in children with malignant haematological disease. Br J Clin Pharmacol. 2015;80(5):1197-1207. doi:10.1111/bcp.12710"
   vignette <- "Zhao_2015_teicoplanin"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "teicoplanin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -58,10 +66,10 @@ Zhao_2015_teicoplanin <- function() {
     # The two volume exponents (1) and the two clearance exponents (0.75) are
     # fixed a priori (Results: "allometric coefficients of 0.75 for CL and Q,
     # 1 for V1 and V2"). The CRCL exponent is estimated.
-    e_wt_vc   <- fixed(1);     label("Power exponent on (WT/27.1) for Vc (fixed)")                       # Zhao 2015 Results: V1 allometric coefficient fixed at 1
-    e_wt_vp   <- fixed(1);     label("Power exponent on (WT/27.1) for Vp (fixed)")                       # Zhao 2015 Results: V2 allometric coefficient fixed at 1
-    e_wt_q    <- fixed(0.75);  label("Power exponent on (WT/27.1) for Q (fixed)")                        # Zhao 2015 Results: Q  allometric coefficient fixed at 0.75
-    e_wt_cl   <- fixed(0.75);  label("Power exponent on (WT/27.1) for CL (fixed)")                       # Zhao 2015 Results: CL allometric coefficient fixed at 0.75
+    e_wt_vc   <- fixed(1);     label("Power exponent on (WT/27.1) for Vc")                       # Zhao 2015 Results: V1 allometric coefficient fixed at 1
+    e_wt_vp   <- fixed(1);     label("Power exponent on (WT/27.1) for Vp")                       # Zhao 2015 Results: V2 allometric coefficient fixed at 1
+    e_wt_q    <- fixed(0.75);  label("Power exponent on (WT/27.1) for Q")                        # Zhao 2015 Results: Q  allometric coefficient fixed at 0.75
+    e_wt_cl   <- fixed(0.75);  label("Power exponent on (WT/27.1) for CL")                       # Zhao 2015 Results: CL allometric coefficient fixed at 0.75
     e_crcl_cl <- 0.606;        label("Power exponent on (CRCL/179) for CL")                              # Zhao 2015 Table 2: theta5 = 0.606 (RSE 25.7%)
 
     # Inter-individual variability (Zhao 2015 Table 2 "Inter-individual

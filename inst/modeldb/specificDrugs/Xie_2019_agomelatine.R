@@ -6,10 +6,25 @@ Xie_2019_agomelatine <- function () {
   vignette <- "Xie_2019_agomelatine"
   units <-
     list(
-      time = "hr",
+      time = "h",
       dosing = "mg",
       concentration = "ng/mL" # applied to all three plasma outputs: calmt (agomelatine), c3oh (3-hydroxy-agomelatine), c7dm (7-desmethyl-agomelatine)
     )
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "agomelatine", units = "mg", specimen = "administration site", verified = FALSE),
+    depot2          = list(analyte = "agomelatine", units = "mg", specimen = "administration site", verified = FALSE),
+    liver           = list(analyte = "agomelatine", units = "mg", specimen = "tissue", verified = FALSE),
+    central         = list(analyte = "agomelatine", units = "mg", specimen = "plasma", verified = FALSE),
+    central_3oh     = list(analyte = "agomelatine-3OH", units = "mg", specimen = "plasma", verified = FALSE),
+    central_7dm     = list(analyte = "agomelatine-7DM", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_7dm = list(analyte = "agomelatine-7DM", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "agomelatine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

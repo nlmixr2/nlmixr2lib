@@ -4,6 +4,18 @@ LeTilly_2021_trastuzumab <- function() {
   vignette <- "LeTilly_2021_trastuzumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "trastuzumab", units = "mg", specimen = "plasma", verified = FALSE),
+    csf     = list(analyte = "trastuzumab", units = "mg", specimen = "CSF", verified = FALSE),
+    lat0    = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE),
+    lat1    = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE),
+    lat2    = list(analyte = "HER2", units = "mg", specimen = "administration site", verified = FALSE)
+  )
+
   covariateData <- list(
     # Le Tilly 2021 tested body weight, glycorrhachia, and presence of an
     # intrathecal drug delivery device as candidate covariates (Methods,

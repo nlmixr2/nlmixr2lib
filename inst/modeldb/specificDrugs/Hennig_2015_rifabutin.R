@@ -4,6 +4,18 @@ Hennig_2015_rifabutin <- function() {
   vignette <- "Hennig_2015_rifabutin"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot                    = list(analyte = "Rifabutin", units = "mg", specimen = "administration site", verified = FALSE),
+    central                  = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1              = list(analyte = "Rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    central_desacetylrbn     = list(analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_desacetylrbn = list(analyte = "25-O-desacetyl rifabutin", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight",
@@ -74,7 +86,7 @@ Hennig_2015_rifabutin <- function() {
     lvp  <- log(4897.8); label("Rifabutin apparent peripheral volume Vp/F (L per 70 kg)")             # Hennig 2015 Table 2 (Final model row 'Vpe/F (L/70kg)')
     lcl_form_desacetylrbn <- log(21.2); label("Rifabutin-to-des-rifabutin apparent formation clearance Cle/F (L/h per 70 kg)") # Hennig 2015 Table 2 (Final model row 'Cle/F (metabolism of RBN to des-RBN)') ; allometrically weight-scaled per Hennig 2015 Methods/Results lines 100-102 and 127-128.
     ltlag <- log(1.6);   label("Rifabutin absorption lag time (h)")                                   # Hennig 2015 Table 2 (Final model row 'Lag time (h)')
-    lfdepot <- fixed(log(1)); label("Rifabutin bioavailability F (typical value FIXED to 1)")         # Hennig 2015 Table 2 (Final model row 'Bioavailability F (Fixed)') ; fixed at population value 1 because absolute F is not identifiable from oral-only data.
+    lfdepot <- fixed(log(1)); label("Rifabutin bioavailability F (typical value)")         # Hennig 2015 Table 2 (Final model row 'Bioavailability F (Fixed)') ; fixed at population value 1 because absolute F is not identifiable from oral-only data.
 
     # Sex covariate effect on rifabutin V/F (males 1.84x higher than
     # females). Coded as 1 + e_sex_vc * (1 - SEXF) so the female
@@ -97,8 +109,8 @@ Hennig_2015_rifabutin <- function() {
     # ============================================================
     lcl_desacetylrbn <- log(196.7); label("Des-rifabutin apparent elimination clearance Clm/F (L/h)")        # Hennig 2015 Table 2 (Final model row 'Clm/F (L/h)' under 'des-Rifabutin parameters')
     lvc_desacetylrbn <- log(3.9);   label("Des-rifabutin apparent central volume Vm/F (L)")                  # Hennig 2015 Table 2 (Final model row 'Vm/F (L)' under 'des-Rifabutin parameters')
-    lq_desacetylrbn  <- fixed(log(0.15));   label("Des-rifabutin apparent inter-compartmental clearance Qm/F (L/h; FIXED)")  # Hennig 2015 Table 2 'Qm/F (L/h) (Fixed)'
-    lvp_desacetylrbn <- fixed(log(536.8));  label("Des-rifabutin apparent peripheral volume Vm-per/F (L; FIXED)")           # Hennig 2015 Table 2 'Vm-per/F (L) (Fixed)'
+    lq_desacetylrbn  <- fixed(log(0.15));   label("Des-rifabutin apparent inter-compartmental clearance Qm/F (L/h)")  # Hennig 2015 Table 2 'Qm/F (L/h) (Fixed)'
+    lvp_desacetylrbn <- fixed(log(536.8));  label("Des-rifabutin apparent peripheral volume Vm-per/F (L)")           # Hennig 2015 Table 2 'Vm-per/F (L) (Fixed)'
 
     # ============================================================
     # Inter-individual variability (between-subject variability,

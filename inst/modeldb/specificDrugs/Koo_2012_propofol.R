@@ -29,7 +29,7 @@ Koo_2012_propofol <- function() {
   )
   vignette <- "Koo_2012_propofol"
   units <- list(
-    time          = "minute",
+    time          = "min",
     dosing        = "(not applicable; effect-site propofol concentration is supplied as the time-varying covariate CEFFECT)",
     concentration = "ug/mL (propofol effect-site concentration via CEFFECT)"
   )

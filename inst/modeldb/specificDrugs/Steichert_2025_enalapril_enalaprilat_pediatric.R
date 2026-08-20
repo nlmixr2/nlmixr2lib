@@ -2,7 +2,17 @@ Steichert_2025_enalapril_enalaprilat_pediatric <- function() {
   description <- "Simultaneous parent + active-metabolite population PK model for oral enalapril (ODMT) and enalaprilat in ACEi-naive children with heart failure (Steichert 2025, LENA studies). Combined one-compartment model for enalapril (first-order absorption with a lag) coupled with a one-compartment model for enalaprilat via a fixed fraction metabolised fm = 0.7. Allometric scaling (fixed exponents 0.75 on CL, 1 on V) referenced to 5 kg body weight. Covariate effects retained in the final model: age and serum creatinine on the apparent clearance of enalaprilat, and modified Ross score on the apparent volume of distribution of enalaprilat."
   reference   <- "Steichert M, Cawello W, Laeer S; LENA Consortium. Population Pharmacokinetic Analysis of Enalapril and Enalaprilat in Newly Treated Children with Heart Failure: Implications for Safe Dosing of Enalapril (LENA Studies). Clin Pharmacokinet. 2025;64(7):1103-1118. doi:10.1007/s40262-025-01520-5"
   vignette    <- "Steichert_2025_enalapril_enalaprilat_pediatric"
-  units       <- list(time = "hour", dosing = "ug", concentration = "ug/L")
+  units       <- list(time = "h", dosing = "ug", concentration = "ug/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot         = list(analyte = "enalapril", units = "ug", specimen = "administration site", verified = FALSE),
+    central       = list(analyte = "enalapril", units = "ug", specimen = "plasma", verified = FALSE),
+    central_enaat = list(analyte = "enalaprilat", units = "ug", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -70,7 +80,7 @@ Steichert_2025_enalapril_enalaprilat_pediatric <- function() {
     # weighted median). ka and fm are fixed (see below); lcl / lvc / lcl_enaat /
     # lvc_enaat / ltlag are estimated point estimates.
     lka       <- fixed(log(0.6))
-    label("Absorption rate constant of enalapril (1/h), fixed from a prior LENA analysis")            # Table 2: ka = 0.6 1/h, Fixed (paper text Section 2.2.1)
+    label("Absorption rate constant of enalapril (1/h), from a prior LENA analysis")            # Table 2: ka = 0.6 1/h, Fixed (paper text Section 2.2.1)
     lcl       <- log(4.61)
     label("Apparent clearance of enalapril CL_ENA/F at 5 kg (L/h)")                                    # Table 2: CL_ENA/F = 4.61 L/h at BW = 5 kg (RSE 12.6%)
     lvc       <- log(4.98)
@@ -84,17 +94,17 @@ Steichert_2025_enalapril_enalaprilat_pediatric <- function() {
 
     # Fixed structural constants (Steichert 2025 Section 2.2.1).
     lfm       <- fixed(log(0.7))
-    label("Fraction of enalapril metabolised to enalaprilat (fixed)")                                   # Section 2.2.1: fm = 0.7, fixed from literature [ref 9]
+    label("Fraction of enalapril metabolised to enalaprilat")                                   # Section 2.2.1: fm = 0.7, fixed from literature [ref 9]
 
     # Fixed allometric exponents (Steichert 2025 Section 2.2.1; Table 2).
     e_wt_cl       <- fixed(0.75)
-    label("Allometric exponent on CL_ENA/F (fixed)")                                                    # Table 2: Weight on CL_ENA/F = 0.75, Fixed
+    label("Allometric exponent on CL_ENA/F")                                                    # Table 2: Weight on CL_ENA/F = 0.75, Fixed
     e_wt_cl_enaat <- fixed(0.75)
-    label("Allometric exponent on CL_ENAAT/F (fixed)")                                                  # Table 2: Weight on CL_ENAAT/F = 0.75, Fixed
+    label("Allometric exponent on CL_ENAAT/F")                                                  # Table 2: Weight on CL_ENAAT/F = 0.75, Fixed
     e_wt_vc       <- fixed(1)
-    label("Allometric exponent on Vd_ENA/F (fixed)")                                                    # Table 2: Weight on Vd_ENA/F = 1, Fixed
+    label("Allometric exponent on Vd_ENA/F")                                                    # Table 2: Weight on Vd_ENA/F = 1, Fixed
     e_wt_vc_enaat <- fixed(1)
-    label("Allometric exponent on Vd_ENAAT/F (fixed)")                                                  # Table 2: Weight on Vd_ENAAT/F = 1, Fixed
+    label("Allometric exponent on Vd_ENAAT/F")                                                  # Table 2: Weight on Vd_ENAAT/F = 1, Fixed
 
     # Estimated covariate effects retained in the final model.
     # Age enters as a power exponent (CL_ENAAT/F multiplied by (AGE/0.34)^0.311).

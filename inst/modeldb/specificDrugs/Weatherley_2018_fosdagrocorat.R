@@ -38,6 +38,17 @@ Weatherley_2018_fosdagrocorat <- function() {
   vignette <- "Weatherley_2018_fosdagrocorat"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "fosdagrocorat", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "PF-00251802", units = "mg", specimen = "plasma", verified = FALSE),
+    central_noxide = list(analyte = "PF-04015475", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight at baseline.",
@@ -100,26 +111,26 @@ Weatherley_2018_fosdagrocorat <- function() {
     label("Apparent Metabolite-1 inter-compartmental clearance Q/F at 70 kg reference (L/h)")  # Weatherley 2018 Table 2: Q = 11.6 L/h
 
     lvp <- fixed(log(209))
-    label("Apparent Metabolite-1 peripheral volume V4/F at 70 kg reference (L; fixed)")  # Weatherley 2018 Table 2 + Results page 58: V4 was re-estimated to 209 L, then re-fixed at this value because re-estimation produced only a 0.464 OFV drop
+    label("Apparent Metabolite-1 peripheral volume V4/F at 70 kg reference (L)")  # Weatherley 2018 Table 2 + Results page 58: V4 was re-estimated to 209 L, then re-fixed at this value because re-estimation produced only a 0.464 OFV drop
 
     lfdepot <- fixed(log(1))
-    label("Metabolite-1 fraction-of-dose absorbed F1 (fixed at 1; apparent F absorbed via prodrug conversion)")  # Weatherley 2018 Methods + Table 2: F1 FIXED = 1; all parameters are apparent values F-scaled by the prodrug-to-Metabolite-1 conversion
+    label("Metabolite-1 fraction-of-dose absorbed F1 (apparent F absorbed via prodrug conversion)")  # Weatherley 2018 Methods + Table 2: F1 FIXED = 1; all parameters are apparent values F-scaled by the prodrug-to-Metabolite-1 conversion
 
     # ------------------------------------------------------------------
     # METABOLITE-1 COVARIATE EFFECTS
     # ------------------------------------------------------------------
 
     e_wt_cl <- fixed(0.75)
-    label("Allometric exponent for body weight on Metabolite-1 CL (unitless; fixed)")  # Weatherley 2018 Results page 58: 'fixed standard allometric scaling ... power 0.75 for CL and Q'
+    label("Allometric exponent for body weight on Metabolite-1 CL (unitless)")  # Weatherley 2018 Results page 58: 'fixed standard allometric scaling ... power 0.75 for CL and Q'
 
     e_wt_vc <- fixed(1.00)
-    label("Allometric exponent for body weight on Metabolite-1 V2 (unitless; fixed)")  # Weatherley 2018 Results page 58: 'fixed standard allometric scaling ... power 1.0 for V2 and V4'
+    label("Allometric exponent for body weight on Metabolite-1 V2 (unitless)")  # Weatherley 2018 Results page 58: 'fixed standard allometric scaling ... power 1.0 for V2 and V4'
 
     e_wt_q <- fixed(0.75)
-    label("Allometric exponent for body weight on Metabolite-1 Q (unitless; fixed)")  # Weatherley 2018 Results page 58
+    label("Allometric exponent for body weight on Metabolite-1 Q (unitless)")  # Weatherley 2018 Results page 58
 
     e_wt_vp <- fixed(1.00)
-    label("Allometric exponent for body weight on Metabolite-1 V4 (unitless; fixed)")  # Weatherley 2018 Results page 58
+    label("Allometric exponent for body weight on Metabolite-1 V4 (unitless)")  # Weatherley 2018 Results page 58
 
     e_sexf_cl <- -0.268
     label("Linear coefficient for female-vs-male on Metabolite-1 CL (unitless; -26.8% change)")  # Weatherley 2018 Table 2: -32.9 / -26.8 / -31.2 / -26.8% across the four data subsets; final 'Without BLQ or taper' column uses -26.8

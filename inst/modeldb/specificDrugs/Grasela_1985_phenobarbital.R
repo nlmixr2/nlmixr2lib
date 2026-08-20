@@ -9,7 +9,14 @@ Grasela_1985_phenobarbital <- function() {
     sep = " "
   )
   vignette <- "Grasela_1985_phenobarbital"
-  units    <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "phenobarbital", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -83,7 +90,7 @@ Grasela_1985_phenobarbital <- function() {
     # model can be loaded and simulated deterministically; see Errata in
     # the vignette. Users who re-fit on real data must replace this with
     # an estimated proportional (or combined) error term.
-    propSd <- fixed(0); label("Proportional residual error (fraction; FIXED AT ZERO - not reported in source)")  # abstract: not reported
+    propSd <- fixed(0); label("Proportional residual error (fraction; ZERO - not reported in source)")  # abstract: not reported
   })
   model({
     # 1. Individual PK parameters. CL and V scale LINEARLY with body weight

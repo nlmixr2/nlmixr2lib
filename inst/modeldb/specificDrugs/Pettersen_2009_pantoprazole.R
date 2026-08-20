@@ -10,7 +10,15 @@ Pettersen_2009_pantoprazole <- function() {
     sep = " "
   )
   vignette    <- "Pettersen_2009_pantoprazole"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pantoprazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -154,10 +162,10 @@ Pettersen_2009_pantoprazole <- function() {
     # ===== Allometric exponents (Pettersen 2009 Methods, fixed) =====
     # "The power factor for body weight was fixed at 0.75 for clearances
     # and 1 for volumes, as is common practice in paediatric studies."
-    e_wt_cl <- fixed(0.75); label("Allometric exponent on (WT/20) for CL (unitless, fixed)") # Pettersen 2009 Methods, Population PK analysis paragraph 4
-    e_wt_vc <- fixed(1.00); label("Allometric exponent on (WT/20) for Vc (unitless, fixed)") # Pettersen 2009 Methods, Population PK analysis paragraph 4
-    e_wt_q  <- fixed(0.75); label("Allometric exponent on (WT/20) for Q (unitless, fixed)")  # Pettersen 2009 Methods, Population PK analysis paragraph 4
-    e_wt_vp <- fixed(1.00); label("Allometric exponent on (WT/20) for V2 (unitless, fixed)") # Pettersen 2009 Methods, Population PK analysis paragraph 4
+    e_wt_cl <- fixed(0.75); label("Allometric exponent on (WT/20) for CL (unitless)") # Pettersen 2009 Methods, Population PK analysis paragraph 4
+    e_wt_vc <- fixed(1.00); label("Allometric exponent on (WT/20) for Vc (unitless)") # Pettersen 2009 Methods, Population PK analysis paragraph 4
+    e_wt_q  <- fixed(0.75); label("Allometric exponent on (WT/20) for Q (unitless)")  # Pettersen 2009 Methods, Population PK analysis paragraph 4
+    e_wt_vp <- fixed(1.00); label("Allometric exponent on (WT/20) for V2 (unitless)") # Pettersen 2009 Methods, Population PK analysis paragraph 4
 
     # ===== Covariate effects on CL (Pettersen 2009 Table 3, final-model equation) =====
     # CL = 5.28 * (WT/20)^0.75 * 0.377^SIRS * (AGE/5)^0.316 *
@@ -186,7 +194,7 @@ Pettersen_2009_pantoprazole <- function() {
     # source NONMEM run at 1e-5 mg/L (Table 3 footnote: "The additive error
     # was fixed in the model"); the proportional SD was estimated at 19.5%
     # CV.
-    addSd  <- fixed(0.00001); label("Additive residual SD (mg/L, fixed)")     # Pettersen 2009 Table 3: additive SD = 0.00001 mg/L, FIXED
+    addSd  <- fixed(0.00001); label("Additive residual SD (mg/L)")     # Pettersen 2009 Table 3: additive SD = 0.00001 mg/L, FIXED
     propSd <- 0.195;          label("Proportional residual SD (fraction)")    # Pettersen 2009 Table 3: proportional SD = 19.5%, RSE 22.5%
   })
 

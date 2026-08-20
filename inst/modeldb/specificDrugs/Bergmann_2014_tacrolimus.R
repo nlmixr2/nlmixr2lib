@@ -2,7 +2,16 @@ Bergmann_2014_tacrolimus <- function() {
   description <- "Two-compartment population PK model for oral tacrolimus in adult kidney transplant recipients (Bergmann 2014), with first-order absorption after a lag time, allometric (WT/70 kg)^0.75 scaling on apparent clearance, multiplicative CYP3A5*1-carrier effect on CL/F, linear hematocrit and post-transplant-day effects on CL/F, linear free prednisolone Cmax effect on V1/F, correlated inter-individual variability across V1/F, ka, and V2/F, and proportional residual error."
   reference <- "Bergmann TK, Hennig S, Barraclough KA, Isbel NM, Staatz CE. Population Pharmacokinetics of Tacrolimus in Adult Kidney Transplant Patients: Impact of CYP3A5 Genotype on Starting Dose. Ther Drug Monit. 2014;36(1):62-70. doi:10.1097/FTD.0b013e31829f1ab8"
   vignette <- "Bergmann_2014_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(
@@ -88,7 +97,7 @@ Bergmann_2014_tacrolimus <- function() {
     e_cyp3a5_expr_cl <- 1.60     ; label("CYP3A5*1-carrier multiplicative factor on CL/F (theta_CYP3A5; expressers have 60% higher CL/F)") # Bergmann 2014 Table 2 theta_CYP3A5 = 1.60
     e_hct_cl         <- -1.01    ; label("Hematocrit linear-deviation coefficient on CL/F (per unit fraction, centred at 0.33)")          # Bergmann 2014 Table 2 theta_HEM = -1.01
     e_pod_cl         <- -0.0021  ; label("Post-transplant-day linear-deviation coefficient on CL/F (per day, centred at 22.7 d, capped at 180 d)") # Bergmann 2014 Table 2 theta_POD = -0.21% per day
-    e_wt_cl          <- 0.75     ; label("Allometric exponent of (WT/70 kg) on CL/F (unitless; fixed)")                                    # Bergmann 2014 Table 2 footnote: power 0.75 fixed (allometric theory)
+    e_wt_cl          <- fixed(0.75)     ; label("Allometric exponent of (WT/70 kg) on CL/F (unitless)")                                    # Bergmann 2014 Table 2 footnote: power 0.75 fixed (allometric theory)
 
     # Covariate effect on V1/F -- Bergmann 2014 Table 2 footnote: V1/F_i =
     # theta_V1/F * (1 + theta_PRED * (PredCmax,free - 155.5)).

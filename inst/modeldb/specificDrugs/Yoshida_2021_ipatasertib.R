@@ -30,6 +30,21 @@ Yoshida_2021_ipatasertib <- function() {
   vignette <- "Yoshida_2021_ipatasertib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot          = list(analyte = "ipatasertib", units = "mg", specimen = "administration site", verified = FALSE),
+    central        = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1    = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2    = list(analyte = "ipatasertib", units = "mg", specimen = "plasma", verified = FALSE),
+    depot_m1       = list(analyte = "M1 (G-037720)", units = "mg", specimen = "administration site", verified = FALSE),
+    central_m1     = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral2_m1 = list(analyte = "M1 (G-037720)", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     AGE = list(
       description        = "Subject baseline age in years.",
@@ -108,7 +123,7 @@ Yoshida_2021_ipatasertib <- function() {
     label("Ipatasertib zero-order absorption duration Dur (h)")        # run230.lst FINAL PARAMETER ESTIMATE TH9 = 3.48E-01; Table 3
 
     lfdepot <- fixed(log(1))
-    label("Ipatasertib bioavailability anchor F (FIXED at 1; absolute F not identifiable from oral data)")  # run230.lst $THETA TH8 = 1 FIX; Yoshida 2021 Methods
+    label("Ipatasertib bioavailability anchor F (absolute F not identifiable from oral data)")  # run230.lst $THETA TH8 = 1 FIX; Yoshida 2021 Methods
 
     # ------------------------------------------------------------------
     # PARENT (ipatasertib) COVARIATE EFFECTS
@@ -185,7 +200,7 @@ Yoshida_2021_ipatasertib <- function() {
     label("M1 apparent zero-order formation duration Dur (h, treated as apparent zero-order absorption duration)")  # Yoshida 2021 Table 4 Dur_M1
 
     lfdepot_m1 <- fixed(log(1))
-    label("M1 bioavailability anchor F (FIXED at 1; subsumes fraction-formed and first-pass)")  # Yoshida 2021 Methods (M1 absorption parameters are apparent)
+    label("M1 bioavailability anchor F (subsumes fraction-formed and first-pass)")  # Yoshida 2021 Methods (M1 absorption parameters are apparent)
 
     # ------------------------------------------------------------------
     # METABOLITE (M1) COVARIATE EFFECTS

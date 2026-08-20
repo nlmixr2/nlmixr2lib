@@ -4,6 +4,15 @@ Schutte_2018_desmopressin <- function() {
   vignette <- "Schutte_2018_desmopressin"
   units <- list(time = "h", dosing = "unit (DDAVP-triggered FVIII release; arbitrary)", concentration = "IU/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "desmopressin", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "desmopressin", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "desmopressin", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FVIIIRECENT = list(
       description        = "Most recently measured FVIII coagulant activity (FVIII:C) <=1 day before the desmopressin administration, in the absence of any treatment effect on the measurement. Per-occasion baseline-capacity index distinct from the model's observed FVIII:C time profile.",

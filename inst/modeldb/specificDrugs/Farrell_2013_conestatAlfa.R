@@ -4,6 +4,13 @@ Farrell_2013_conestatAlfa <- function() {
   vignette    <- "Farrell_2013_conestatAlfa"
   units       <- list(time = "h", dosing = "U", concentration = "U/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central = list(analyte = "conestatAlfa", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (baseline)",

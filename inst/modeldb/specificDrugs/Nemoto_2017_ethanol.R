@@ -2,7 +2,15 @@ Nemoto_2017_ethanol <- function() {
   description <- "Bayesian population PK model for orally ingested ethanol (alcohol) in 34 healthy Japanese adults (Nemoto 2017). One-compartment model with first-order absorption and Michaelis-Menten elimination; covariates: sex, age, body weight, ALDH2 and ADH1B genotypes. Final model fit by a fully conditional MCMC Bayesian analysis with informative priors derived from Seng et al. 2014 (Chinese + Indian cohort)."
   reference   <- "Nemoto A, Masaaki M, Yamaoka K. A Bayesian Approach for Population Pharmacokinetic Modeling of Alcohol in Japanese Individuals. Curr Ther Res Clin Exp. 2017;85:1-7. doi:10.1016/j.curtheres.2017.04.001"
   vignette    <- "Nemoto_2017_ethanol"
-  units       <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "ethanol", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "ethanol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     WT = list(

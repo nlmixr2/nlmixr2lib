@@ -27,6 +27,17 @@ Kamal_2013_oseltamivir <- function() {
   vignette <- "Kamal_2013_oseltamivir"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot            = list(analyte = "oseltamivir", units = "mg", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "oseltamivir", units = "mg", specimen = "plasma", verified = FALSE),
+    central_oselcarb = list(analyte = "oseltamivir carboxylate", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Total body weight (baseline).",
@@ -92,8 +103,8 @@ Kamal_2013_oseltamivir <- function() {
     # Structural fixed effects (metabolite oseltamivir carboxylate, OC) -- Kamal 2013 Table 2.
     # Apparent clearance / volume conditioned on F (parent) and fm (assumed 1).
 
-    lcl_oc <- log(20.7);  label("OC apparent clearance CLm/F at 70 kg adult, CRCL 95 (CLm/F, L/h)")    # Kamal 2013 Table 2: CLm/F coefficient = 20.7 L/h, %SEM 3.36
-    lvc_oc <- log(238);   label("OC apparent central volume Vcm/F at 70 kg adult, age 21 (Vcm/F, L)")  # Kamal 2013 Table 2: Vcm/F coefficient = 238 L, %SEM 5.16
+    lcl_oselcarb <- log(20.7);  label("OC apparent clearance CLm/F at 70 kg adult, CRCL 95 (CLm/F, L/h)")    # Kamal 2013 Table 2: CLm/F coefficient = 20.7 L/h, %SEM 3.36
+    lvc_oselcarb <- log(238);   label("OC apparent central volume Vcm/F at 70 kg adult, age 21 (Vcm/F, L)")  # Kamal 2013 Table 2: Vcm/F coefficient = 238 L, %SEM 5.16
 
     # Covariate effects on apparent OP CLp/F.
 
@@ -101,8 +112,8 @@ Kamal_2013_oseltamivir <- function() {
 
     # Covariate effects on apparent OC CLm/F.
 
-    e_wt_cl_oc   <- 0.560; label("Power exponent of (WT/70) on OC CLm/F (unitless)")     # Kamal 2013 Table 2: power of WT on CLm/F = 0.560, %SEM 6.63
-    e_crcl_cl_oc <- 0.487; label("Power exponent of (CRCL/95) on OC CLm/F (unitless)")    # Kamal 2013 Table 2: power of CLCR on CLm/F = 0.487, %SEM 9.01
+    e_wt_cl_oselcarb   <- 0.560; label("Power exponent of (WT/70) on OC CLm/F (unitless)")     # Kamal 2013 Table 2: power of WT on CLm/F = 0.560, %SEM 6.63
+    e_crcl_cl_oselcarb <- 0.487; label("Power exponent of (CRCL/95) on OC CLm/F (unitless)")    # Kamal 2013 Table 2: power of CLCR on CLm/F = 0.487, %SEM 9.01
 
     # Covariate effects on apparent OC Vcm/F.
     # The Vcm/F equation is ADDITIVE in age (paper text and Table 2):
@@ -112,22 +123,22 @@ Kamal_2013_oseltamivir <- function() {
     # Assumptions / deviations for caution about negative Vcm/F at
     # extreme low-weight elderly covariate combinations.
 
-    e_wt_vc_oc  <- 0.830; label("Power exponent of (WT/70) on OC Vcm/F (unitless)")              # Kamal 2013 Table 2: power of WT on Vcm/F = 0.830, %SEM 18.7
-    e_age_vc_oc <- -2.25; label("Linear additive slope of (AGE - 21) on OC Vcm/F (L/year)")       # Kamal 2013 Table 2: slope of age on Vcm/F = -2.25 L/year, %SEM 31.2
+    e_wt_vc_oselcarb  <- 0.830; label("Power exponent of (WT/70) on OC Vcm/F (unitless)")              # Kamal 2013 Table 2: power of WT on Vcm/F = 0.830, %SEM 18.7
+    e_age_vc_oselcarb <- -2.25; label("Linear additive slope of (AGE - 21) on OC Vcm/F (L/year)")       # Kamal 2013 Table 2: slope of age on Vcm/F = -2.25 L/year, %SEM 31.2
 
     # Inter-individual variability. Paper reports diagonal omega^2 as
     # lognormal % CV; the canonical conversion omega^2 = log(CV^2 + 1)
     # is used here. Two off-diagonal covariances are reported on the
-    # eta (log) scale: omega(etalcl, etalcl_oc) = 0.0987 and
-    # omega(etalvp, etalvc_oc) = 0.218 (Kamal 2013 Table 2 'Covariance'
+    # eta (log) scale: omega(etalcl, etalcl_oselcarb) = 0.0987 and
+    # omega(etalvp, etalvc_oselcarb) = 0.218 (Kamal 2013 Table 2 'Covariance'
     # rows). The reported r^2 values (0.372 and 0.274) are computed in
     # the paper using the small-omega approximation r ~= omega_xy /
     # (CV_x * CV_y) and therefore differ slightly from the implied
     # log-scale correlation; see the vignette Errata.
 
-    etalcl + etalcl_oc ~ c(0.16317,
+    etalcl + etalcl_oselcarb ~ c(0.16317,
                            0.09870, 0.13688)                                            # Kamal 2013 Table 2: omega^2(CLp/F) = log(0.421^2+1) = 0.16317; omega(CLp,CLm) = 0.0987; omega^2(CLm/F) = log(0.383^2+1) = 0.13688
-    etalvp + etalvc_oc ~ c(0.34064,
+    etalvp + etalvc_oselcarb ~ c(0.34064,
                            0.21800, 0.35515)                                            # Kamal 2013 Table 2: omega^2(Vp/F) = log(0.637^2+1) = 0.34064; omega(Vp,Vcm) = 0.218; omega^2(Vcm/F) = log(0.653^2+1) = 0.35515
     etalka ~ 0.08999                                                                     # Kamal 2013 Table 2: omega^2(ka) = log(0.307^2+1) = 0.08999 (30.7% CV)
     etalvc ~ 0.39231                                                                     # Kamal 2013 Table 2: omega^2(Vcp/F) = log(0.693^2+1) = 0.39231 (69.3% CV)
@@ -143,8 +154,8 @@ Kamal_2013_oseltamivir <- function() {
     # Errata for the small notation slip.
 
     propSd    <- 0.405;  label("OP proportional residual SD on linear concentration (fraction)")  # Kamal 2013 Table 2: sigma_CCV for oseltamivir = 40.5% CV
-    propSd_oc <- 0.140;  label("OC proportional residual SD on linear concentration (fraction)")  # Kamal 2013 Table 2: sigma_CCV for OC = 14.0% CV
-    addSd_oc  <- 0.0179; label("OC additive residual SD on linear concentration (mg/L)")          # Kamal 2013 Table 2: sigma_ADD for OC = 17.9 ng/mL = 0.0179 mg/L
+    propSd_oselcarb <- 0.140;  label("OC proportional residual SD on linear concentration (fraction)")  # Kamal 2013 Table 2: sigma_CCV for OC = 14.0% CV
+    addSd_oselcarb  <- 0.0179; label("OC additive residual SD on linear concentration (mg/L)")          # Kamal 2013 Table 2: sigma_ADD for OC = 17.9 ng/mL = 0.0179 mg/L
   })
 
   model({
@@ -163,13 +174,13 @@ Kamal_2013_oseltamivir <- function() {
 
     # Individual parameters (OC, metabolite). Vcm/F is additive in age
     # AFTER the WT power scaling: Vcm/F = 238*(WT/70)^0.830 -
-    # 2.25*(AGE - 21). IIV is applied via exp(etalvc_oc) on the entire
+    # 2.25*(AGE - 21). IIV is applied via exp(etalvc_oselcarb) on the entire
     # covariate-adjusted typical value.
-    cl_oc <- exp(lcl_oc + etalcl_oc) *
-             (WT / ref_wt)^e_wt_cl_oc *
-             (CRCL / ref_crcl)^e_crcl_cl_oc
-    vc_oc <- (exp(lvc_oc) * (WT / ref_wt)^e_wt_vc_oc +
-              e_age_vc_oc * (AGE - ref_age)) * exp(etalvc_oc)
+    cl_oselcarb <- exp(lcl_oselcarb + etalcl_oselcarb) *
+             (WT / ref_wt)^e_wt_cl_oselcarb *
+             (CRCL / ref_crcl)^e_crcl_cl_oselcarb
+    vc_oselcarb <- (exp(lvc_oselcarb) * (WT / ref_wt)^e_wt_vc_oselcarb +
+              e_age_vc_oselcarb * (AGE - ref_age)) * exp(etalvc_oselcarb)
 
     # Micro-constants. kel (= cl/vc) is the OP-to-OC first-order
     # conversion rate constant; OP elimination as unchanged prodrug
@@ -178,19 +189,19 @@ Kamal_2013_oseltamivir <- function() {
     kel    <- cl    / vc
     k12    <- q     / vc
     k21    <- q     / vp
-    kel_oc <- cl_oc / vc_oc
+    kel_oselcarb <- cl_oselcarb / vc_oselcarb
 
     # ODE system.
     d/dt(depot)       <- -ka * depot
     d/dt(central)     <-  ka * depot - kel * central - k12 * central + k21 * peripheral1
     d/dt(peripheral1) <-  k12 * central - k21 * peripheral1
-    d/dt(central_oc)  <-  kel * central - kel_oc * central_oc
+    d/dt(central_oselcarb)  <-  kel * central - kel_oselcarb * central_oselcarb
 
     # Observations. Dose in mg / volume in L => concentration in mg/L.
     Cc    <- central    / vc
-    Cc_oc <- central_oc / vc_oc
+    Cc_oselcarb <- central_oselcarb / vc_oselcarb
 
     Cc    ~ prop(propSd)
-    Cc_oc ~ add(addSd_oc) + prop(propSd_oc)
+    Cc_oselcarb ~ add(addSd_oselcarb) + prop(propSd_oselcarb)
   })
 }

@@ -19,7 +19,15 @@ Antignac_2007_tacrolimus <- function() {
     "doi:10.1111/j.1365-2125.2007.02895.x"
   )
   vignette <- "Antignac_2007_tacrolimus"
-  units <- list(time = "hour", dosing = "mg", concentration = "ng/mL")
+  units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "tacrolimus", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "tacrolimus", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     POD = list(
@@ -129,7 +137,7 @@ Antignac_2007_tacrolimus <- function() {
     label("Oral bioavailability F (fraction)")
     # Antignac 2007 Table 4 F Mean = 13.7% = 0.137
     lka <- fixed(log(4.5))
-    label("Absorption rate constant ka (1/h; FIXED from Jusko 1995)")
+    label("Absorption rate constant ka (1/h; from Jusko 1995)")
     # Antignac 2007 Table 4 'ka, fixed (1/h)' = 4.5; held fixed per
     # Results 'Population pharmacokinetics' (ka could not be estimated
     # from trough-only data; refitting with ka in {1.5, 2, 3} produced

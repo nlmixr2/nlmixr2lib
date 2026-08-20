@@ -4,6 +4,14 @@ Zhou_2021_belimumab <- function() {
   vignette <- "Zhou_2021_belimumab"
   units <- list(time = "day", dosing = "mg", concentration = "mg/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    central     = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "belimumab", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     FFM = list(
       description        = "Fat-free mass (Janmahasatian formula)",

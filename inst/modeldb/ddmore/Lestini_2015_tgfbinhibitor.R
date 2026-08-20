@@ -16,6 +16,16 @@ Lestini_2015_tgfbinhibitor <- function() {
   ddmore_id    <- "DDMODEL00000192"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "drug", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "drug", units = "mg", specimen = "plasma", verified = FALSE),
+    effect  = list(analyte = "E", units = "mg", specimen = "not applicable", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

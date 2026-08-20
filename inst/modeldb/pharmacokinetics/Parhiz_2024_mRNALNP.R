@@ -8,6 +8,37 @@ Parhiz_2024_mRNALNP <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    blood        = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "whole blood", verified = FALSE),
+    bldeg        = list(analyte = "LNP", units = "ug", specimen = "administration site", verified = FALSE),
+    vp_lung      = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_heart     = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_kidney    = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_spleen    = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    vp_portal    = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "lymph", verified = FALSE),
+    vp_remainder = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "lymph", verified = FALSE),
+    vp_liver     = list(analyte = "mRNA-LNP complex", units = "ug", specimen = "tissue", verified = FALSE),
+    int_lung     = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_lung    = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_lung     = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_heart    = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_heart   = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_heart    = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_kidney   = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_kidney  = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_kidney   = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_spleen   = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_spleen  = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_spleen   = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE),
+    int_liver    = list(analyte = "LNP", units = "ug", specimen = "tissue", verified = FALSE),
+    mrna_liver   = list(analyte = "mRNA", units = "ug", specimen = "tissue", verified = FALSE),
+    luc_liver    = list(analyte = "Luciferase", units = "ug", specimen = "tissue", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(

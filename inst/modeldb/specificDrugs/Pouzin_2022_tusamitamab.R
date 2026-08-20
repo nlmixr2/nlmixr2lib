@@ -8,6 +8,33 @@ Pouzin_2022_tusamitamab <- function() {
     concentration = "uM (umol/L) in antibody-equivalent for ADC and NAB; uM for free DM4 and MeDM4"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    dar8_central     = list(analyte = "tusamitamab ravtansine DAR8", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar8_peripheral1 = list(analyte = "tusamitamab ravtansine DAR8", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar7_central     = list(analyte = "tusamitamab ravtansine DAR7", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar7_peripheral1 = list(analyte = "tusamitamab ravtansine DAR7", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar6_central     = list(analyte = "tusamitamab ravtansine DAR6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar6_peripheral1 = list(analyte = "tusamitamab ravtansine DAR6", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar5_central     = list(analyte = "tusamitamab ravtansine DAR5", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar5_peripheral1 = list(analyte = "tusamitamab ravtansine DAR5", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar4_central     = list(analyte = "tusamitamab ravtansine DAR4", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar4_peripheral1 = list(analyte = "tusamitamab ravtansine DAR4", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar3_central     = list(analyte = "tusamitamab ravtansine DAR3", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar3_peripheral1 = list(analyte = "tusamitamab ravtansine DAR3", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar2_central     = list(analyte = "tusamitamab ravtansine DAR2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar2_peripheral1 = list(analyte = "tusamitamab ravtansine DAR2", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar1_central     = list(analyte = "tusamitamab ravtansine DAR1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    dar1_peripheral1 = list(analyte = "tusamitamab ravtansine DAR1", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_nab      = list(analyte = "naked antibody chain", units = NA_character_, specimen = "plasma", verified = FALSE),
+    peripheral1_nab  = list(analyte = "naked antibody chain", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_dm4      = list(analyte = "DM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE),
+    central_medm4    = list(analyte = "MeDM4 catabolite", units = NA_character_, specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
@@ -73,8 +100,8 @@ Pouzin_2022_tusamitamab <- function() {
     # V fixed to 1 L.
     lcldm4    <- log(240);    label("Apparent DM4 clearance CL_DM4 (L/day; V_DM4 fixed to 1 L)")                 # Pouzin 2022 Table 4: CL_DM4 = 240 L/day
     lclmedm4  <- log(0.256);  label("Apparent MeDM4 clearance CL_MeDM4 (L/day; V_MeDM4 fixed to 1 L)")           # Pouzin 2022 Table 4: CL_MeDM4 = 0.256 L/day
-    lvdm4     <- fixed(log(1));   label("Apparent DM4 volume V_DM4 (L; FIXED)")                                  # Pouzin 2022 Methods: V_DM4 fixed to 1 L
-    lvmedm4   <- fixed(log(1));   label("Apparent MeDM4 volume V_MeDM4 (L; FIXED)")                              # Pouzin 2022 Methods: V_MeDM4 fixed to 1 L
+    lvdm4     <- fixed(log(1));   label("Apparent DM4 volume V_DM4 (L)")                                  # Pouzin 2022 Methods: V_DM4 fixed to 1 L
+    lvmedm4   <- fixed(log(1));   label("Apparent MeDM4 volume V_MeDM4 (L)")                              # Pouzin 2022 Methods: V_MeDM4 fixed to 1 L
     lfrmedm4  <- log(0.0107); label("Apparent fraction of DM4 elimination producing MeDM4, FR_MeDM4 (unitless)") # Pouzin 2022 Table 4: FR_MeDM4 = 0.0107
 
     # ----- Administered DAR fractions (Pouzin 2022 Tables 3 & 4) -----

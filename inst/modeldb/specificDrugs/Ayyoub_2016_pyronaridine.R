@@ -29,6 +29,15 @@ Ayyoub_2016_pyronaridine <- function() {
     concentration = "ug/mL"
   )
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot       = list(analyte = "pyronaridine", units = "mg", specimen = "administration site", verified = FALSE),
+    central     = list(analyte = "pyronaridine", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1 = list(analyte = "pyronaridine", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     WT = list(
       description        = "Body weight",
@@ -132,9 +141,9 @@ Ayyoub_2016_pyronaridine <- function() {
     # 'Base model development' p. 1453: exponents fixed at 0.75 on clearance
     # parameters and 1.0 on volume parameters; reference weight 20 kg).
     e_wt_cl_q  <- fixed(0.75)
-    label("Fixed allometric WT exponent shared across CL/F and Q/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 0.75
+    label("Allometric WT exponent shared across CL/F and Q/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 0.75
     e_wt_vc_vp <- fixed(1.00)
-    label("Fixed allometric WT exponent shared across V2/F and V3/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 1.00
+    label("Allometric WT exponent shared across V2/F and V3/F (unitless)")  # Ayyoub 2016 Methods p. 1453: fixed at the theoretical 1.00
 
     # Covariate effects retained after backward elimination (P < 0.001).
     # Age on V3/F: power covariate centred on the 7 yr cohort median.

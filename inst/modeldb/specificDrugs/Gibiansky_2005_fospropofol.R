@@ -13,6 +13,18 @@ Gibiansky_2005_fospropofol <- function() {
 
   units       <- list(time = "min", dosing = "mg", concentration = "ug/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    central         = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1     = list(analyte = "GPI 15715", units = "mg", specimen = "plasma", verified = FALSE),
+    delay           = list(analyte = "propofol", units = "mg", specimen = "administration site", verified = FALSE),
+    central_ppf     = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE),
+    peripheral1_ppf = list(analyte = "propofol", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     LBM = list(
       description        = "Lean body mass (lean body weight) at study entry.",
@@ -95,7 +107,7 @@ Gibiansky_2005_fospropofol <- function() {
     # identifiable on CL_PR = K10_PR * Vc_PR = 4.53 L/min; the K10_PR
     # estimate moves to maintain CL_PR as Vc_PR is varied. The IIV on Vc_PR
     # was still estimated (Table 2: omega^2 = 0.0699, RSE 29%).
-    lvc_ppf  <- fixed(log(6.91)); label("Propofol central volume Vc_PR (L; fixed, see poster Table 1 footnote)")            # Table 1: Vc_PR = 6.91 L FIXED
+    lvc_ppf  <- fixed(log(6.91)); label("Propofol central volume Vc_PR (L;, see poster Table 1 footnote)")            # Table 1: Vc_PR = 6.91 L FIXED
     lk10_ppf <- log(0.655);   label("Propofol elimination rate K10_PR (1/min)")                                              # Table 1: K10_PR = 0.655 1/min, RSE 8.0%
     lk12_ppf <- log(0.732);   label("Propofol central-to-peripheral rate constant K12_PR (1/min)")                          # Table 1: K12_PR = 0.732 1/min, RSE 11%
     lk21_ppf <- log(0.0383);  label("Propofol peripheral-to-central rate constant K21_PR (1/min)")                          # Table 1: K21_PR = 0.0383 1/min, RSE 20%

@@ -12,6 +12,20 @@ Jin_2014_simvastatin <- function() {
   vignette <- "Jin_2014_simvastatin"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot1           = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot2           = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
+    depot3           = list(analyte = "simvastatin lactone", units = "nmol", specimen = "administration site", verified = FALSE),
+    central          = list(analyte = "simvastatin lactone", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1      = list(analyte = "simvastatin lactone", units = "nmol", specimen = "plasma", verified = FALSE),
+    central_acid     = list(analyte = "simvastatin acid", units = "nmol", specimen = "plasma", verified = FALSE),
+    peripheral1_acid = list(analyte = "simvastatin acid", units = "nmol", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     # Jin 2014 tested AGE, body weight (WT), and height as candidate
     # covariates on both the parent (simvastatin lactone) and the

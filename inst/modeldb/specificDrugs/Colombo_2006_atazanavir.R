@@ -2,7 +2,15 @@ Colombo_2006_atazanavir <- function() {
   description <- "One-compartment first-order-absorption population PK model with absorption lag-time for orally administered atazanavir in HIV-1 infected adults; binary low-dose ritonavir (RTV) coadministration reduces apparent oral clearance by 46% (Colombo 2006)."
   reference <- "Colombo S, Buclin T, Cavassini M, Decosterd LA, Telenti A, Biollaz J, Csajka C. Population pharmacokinetics of atazanavir in patients with human immunodeficiency virus infection. Antimicrob Agents Chemother. 2006;50(11):3801-3808. doi:10.1128/aac.00098-06"
   vignette <- "Colombo_2006_atazanavir"
-  units <- list(time = "hour", dosing = "mg", concentration = "mg/L")
+  units <- list(time = "h", dosing = "mg", concentration = "mg/L")
+
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. Derived mechanically; verified = FALSE means it has
+  # NOT been checked against the source paper.
+  compartmentData <- list(
+    depot   = list(analyte = "atazanavir", units = "mg", specimen = "administration site", verified = FALSE),
+    central = list(analyte = "atazanavir", units = "mg", specimen = "plasma", verified = FALSE)
+  )
 
   covariateData <- list(
     CONMED_RTV = list(
@@ -118,7 +126,7 @@ Colombo_2006_atazanavir <- function() {
     # Inter-individual variability (omega^2 = log(CV^2 + 1))
     etalcl     ~ 0.065413        # Table 3: CV(CL/F) = 26% (RSE 56%); log(1 + 0.26^2) = 0.065413
     etalvc     ~ 0.080750        # Table 3: CV(V/F)  = 29% (RSE 80%); log(1 + 0.29^2) = 0.080750
-    etalka     ~ fixed(0.911640) # Table 3: CV(ka)   = 122%, fixed (rich-data substudy); log(1 + 1.22^2) = 0.911640
+    etalka     ~ fixed(0.911640) # Table 3: CV(ka) = 122% (rich-data substudy); log(1 + 1.22^2) = 0.911640
     etalfdepot ~ 0.184403        # Table 3: CV(F)    = 45% (RSE 49%); log(1 + 0.45^2) = 0.184403
 
     # Residual error (sparse routine-TDM cohort, Table 3): combined proportional

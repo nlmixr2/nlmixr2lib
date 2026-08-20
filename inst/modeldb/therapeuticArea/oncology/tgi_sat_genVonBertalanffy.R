@@ -2,14 +2,24 @@ tgi_sat_genVonBertalanffy <- function() {
   description <- "One compartment TGI model where tumor growth is limited by a loss term, with saturation."
   reference <- "nlmixr2lib template"
   units <- list(time = "time_unit", dosing = "dose_unit", concentration = "conc_unit/vol_unit")
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot      = list(analyte = "drug", units = NA_character_, specimen = "administration site", verified = FALSE),
+    central    = list(analyte = "drug", units = NA_character_, specimen = "plasma", verified = FALSE),
+    tumor_size = list(analyte = "tumour cells", units = NA_character_, specimen = "not applicable", verified = FALSE)
+  )
+
   ini({
     lrbase <- 0.3; label("Initial tumor size (TS0)") 
     ltsmax <- 0.9; label("Maximum tumor size at saturation (TSmax)")
-    lka <- 0.45 ; label("Absorption rate (Ka)")
+    lka <- 0.45 ; label("Absorption rate (Ka, 1/time_unit)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
-    lkg <- 0.7; label("Birth rate")
-    lkd <- 0.7; label ("Death rate")
+    lkg <- 0.7; label("Tumor growth (birth) rate (1/time_unit)")
+    lkdeath <- 0.7; label("Tumor cell-death rate (1/time_unit)")
     lgamma <- 0.95; label("proliferative cells as a fraction of the full tumor volume (gamma)")
     propSd <- 0.5 ; label("PK proportional residual error (fraction)")
     propSd_tumor_size <- 0.5 ; label("Tumor size proportional residual error (fraction)")
@@ -22,7 +32,7 @@ tgi_sat_genVonBertalanffy <- function() {
     cl <- exp(lcl)
     vc  <- exp(lvc)
     kg <- exp(lkg)
-    kd <-exp(lkd)
+    kdeath <-exp(lkdeath)
     gamma <- exp(lgamma)
     
     kel <- cl / vc
@@ -31,7 +41,7 @@ tgi_sat_genVonBertalanffy <- function() {
     
     d/dt(depot) <- -ka*depot
     d/dt(central) <- ka*depot-kel*central
-    d/dt(tumor_size) <- kg*tumor_size^(gamma)-kd*tumor_size
+    d/dt(tumor_size) <- kg*tumor_size^(gamma)-kdeath*tumor_size
     
     Cc <- central / vc
     Cc ~ prop(propSd)

@@ -41,6 +41,16 @@ Kim_2008_aripiprazole <- function() {
   vignette <- "Kim_2008_aripiprazole"
   units    <- list(time = "h", dosing = "mg", concentration = "ng/mL")
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    depot           = list(analyte = "aripiprazole", units = "mg", specimen = "administration site", verified = FALSE),
+    central         = list(analyte = "aripiprazole", units = "mg", specimen = "plasma", verified = FALSE),
+    central_dehyari = list(analyte = "dehydroaripiprazole", units = "mg", specimen = "plasma", verified = FALSE)
+  )
+
   covariateData <- list(
     CYP2D6_EM = list(
       description        = "CYP2D6 extensive-metabolizer phenotype indicator",
@@ -235,7 +245,7 @@ Kim_2008_aripiprazole <- function() {
     # fixed to 1.06 h-1 in accordance with previous population analysis [20]").
     # ========================================================================
     lka <- fixed(log(1.06))
-    label("Absorption rate constant Ka (1/h, FIXED)")  # Kim 2008 Table 3 row 'k_a (h-1) = 1.06 (FIXED)'
+    label("Absorption rate constant Ka (1/h)")  # Kim 2008 Table 3 row 'k_a (h-1) = 1.06 (FIXED)'
 
     # ========================================================================
     # Apparent clearance of aripiprazole, CYP2D6 stratum-specific typical

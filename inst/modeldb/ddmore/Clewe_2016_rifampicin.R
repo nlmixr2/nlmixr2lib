@@ -17,6 +17,16 @@ Clewe_2016_rifampicin <- function() {
   ddmore_id <- "DDMODEL00000240"
   replicate_of <- NULL
 
+  # Issue #482: what each ODE state holds, in what amount units, in what
+  # biological matrix. analyte/specimen proposed by a local model from the
+  # model description; units derived from the units block. verified = FALSE
+  # means NOT checked against the source paper.
+  compartmentData <- list(
+    fbugs = list(analyte = "M. tuberculosis H37Rv fast-multiplying bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    sbugs = list(analyte = "M. tuberculosis H37Rv slow-multiplying bacteria", units = NA_character_, specimen = "bile", verified = FALSE),
+    nbugs = list(analyte = "M. tuberculosis H37Rv non-multiplying bacteria", units = NA_character_, specimen = "bile", verified = FALSE)
+  )
+
   covariateData <- list()
 
   population <- list(
