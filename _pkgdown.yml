@@ -2518,6 +2518,8 @@ navbar:
         href: articles/Williams_2016_rituximab_biosimilar.html
       - text: "Rituximab pla2r (Liang 2024)"
         href: articles/Liang_2024_rituximab.html
+      - text: "Rivaroxaban (Wang 2025)"
+        href: articles/Wang_2025_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2018)"
         href: articles/Willmann_2018_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2021)"
@@ -4536,7 +4538,7 @@ articles:
   - articles/Wang_2024_saxagliptin_dpp4_rat
   - articles/Wang_2024_sugemalimab
   - articles/Wang_2024_tacrolimus
-  - articles/Warren_2025_pde4_il13_atopic_dermatitis
+  - articles/Wang_2025_rivaroxaban
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
   - articles/Watt_2015_fluconazole
