@@ -2,8 +2,6 @@
 
 # development version
 
-- Add Siebinga 2024 [177Lu]Lu-PSMA-I&T ([doi:10.1186/s40658-024-00642-2](https://doi.org/10.1186/s40658-024-00642-2)) - men with metastatic castration-resistant prostate cancer.
-
 - Register three new canonical parameter names in
   `inst/references/parameter-names.md`: `boxcox_<param>` for a Box-Cox shape
   parameter applied to an interindividual random effect (distinct from
