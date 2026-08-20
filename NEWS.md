@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Park 2025 anti-CD19 CAR-T cell therapy in systemic lupus erythematosus ([doi:10.1111/cts.70146](https://doi.org/10.1111/cts.70146)) -- adults with severe refractory SLE.
+- Add Brossard 2025 emapalumab ([doi:10.1111/cts.70163](https://doi.org/10.1111/cts.70163)) -- children and young adults with macrophage activation syndrome associated with Still's disease.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
