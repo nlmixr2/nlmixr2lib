@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yu 2025 vancomycin ([doi:10.1007/s40268-025-00523-8](https://doi.org/10.1007/s40268-025-00523-8)) -- Chinese pediatric inpatients (birth to 15 years) receiving IV vancomycin.
+- Add Cheng 2026 levamisole interspecies models ([doi:10.1007/s40005-025-00770-6](https://doi.org/10.1007/s40005-025-00770-6)) -- joint allometric two-compartment and minimal-PBPK fits across duck, rabbit, chicken, goat, dog, sheep, pig and human.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
