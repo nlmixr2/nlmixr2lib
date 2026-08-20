@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abouelhassan 2024 sulbactam ([doi:10.1093/jacamr/dlae203](https://doi.org/10.1093/jacamr/dlae203)) -- mouse (ICR/CD-1 neutropenic *Acinetobacter baumannii* pneumonia model) and healthy adults, both with an epithelial lining fluid compartment.
+- Add Panetta 2024 palbociclib ([doi:10.3390/pharmaceutics16121528](https://doi.org/10.3390/pharmaceutics16121528)) -- children and young adults with recurrent, progressive or refractory brain tumors.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
