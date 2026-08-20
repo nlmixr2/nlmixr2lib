@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tao 2025 meropenem ([doi:10.3389/fphar.2025.1643553](https://doi.org/10.3389/fphar.2025.1643553)) -- critically ill adult and elderly surgical-ICU patients with Pseudomonas aeruginosa infections.
+- Add Yao 2025 flurbiprofen enantiomers ([doi:10.2147/DDDT.S542722](https://doi.org/10.2147/DDDT.S542722)) -- Chinese adults with postoperative pain after joint replacement, with paired plasma and cerebrospinal-fluid sampling.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
