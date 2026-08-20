@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Okada 2024 triazolam ([doi:10.1186/s40360-024-00777-z](https://doi.org/10.1186/s40360-024-00777-z)) - young and elderly adults.
+- Add Henthorn 2024 delta-9-tetrahydrocannabinol ([doi:10.1097/FTD.0000000000001224](https://doi.org/10.1097/FTD.0000000000001224)) - adults inhaling commercial-market cannabis, occasional and daily users.
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
