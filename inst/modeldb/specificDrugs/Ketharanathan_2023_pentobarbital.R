@@ -48,7 +48,8 @@ Ketharanathan_2023_pentobarbital <- function() {
     age_median     = "1.3 years (overall); 0.31 years (status epilepticus), 12 years (severe traumatic brain injury)",
     weight_range   = "3-87 kg",
     weight_median  = "10 kg (overall); 6.3 kg (status epilepticus), 40 kg (severe traumatic brain injury)",
-    sex_female_pct = 58,
+    sex_female_pct = 42, # Table 1: male 14/22 (64%) status epilepticus + 7/14 (50%) severe traumatic brain injury = 21/36; female 8 + 7 = 15/36 = 42%. Table 1 is typeset with its sub-row labels offset one line below their values - the "Gender, n (%)" and "Pentobarbital*" category headers each carry a value row while the last sub-row of each block ("Female", "Max Infusion") is blank. The offset direction is pinned by the sibling block: read with the same offset, the severe traumatic brain injury loading dose is 1 [0-20] mg/kg, matching the per-protocol 1 mg/kg of Sect. 2.1, and the infusion min/max ranges reproduce the 0.5-10 and 0.05-5 mg/kg/h ranges quoted in Sect. 3.1. Read without the offset they do not.
+
     race_ethnicity = "Not reported",
     disease_state  = "Critically ill children (< 18 years) admitted to a paediatric intensive care unit with either refractory status epilepticus (n = 22) or severe traumatic brain injury defined by a Glasgow Coma Scale <= 8 with refractory intracranial hypertension (n = 14). Diagnosis itself was tested as a covariate and was not retained in the final model.",
     dose_range     = "Continuous intravenous infusion. Per-protocol dosing: status epilepticus 5 mg/kg loading dose then 3 mg/kg/h; traumatic brain injury 1 mg/kg loading dose then 2 mg/kg/h. Observed infusion rates 0.5-10 mg/kg/h (status epilepticus, median 3) and 0.05-5 mg/kg/h (severe traumatic brain injury, median 2); infusion durations 1-15 days.",

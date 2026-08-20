@@ -520,6 +520,36 @@ knitr::kable(
 )
 ```
 
+```{r nca-narrative-values, include = FALSE}
+# The prose below quotes numbers out of this table. Compute them from the same
+# NCA object that produced it so the narrative can never drift from the render.
+nca_med <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "half.life")) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(value = median(PPORRES, na.rm = TRUE), .groups = "drop")
+
+nca_val <- function(a, p) {
+  v <- nca_med$value[nca_med$arm == a & nca_med$PPTESTCD == p]
+  stopifnot(length(v) == 1L)
+  v
+}
+
+arm_se  <- "SE: 6 kg, 3.5 mg/kg/h"
+arm_tbi <- "sTBI: 40 kg, 2 mg/kg/h"
+arm_ref <- "Reference: 70 kg, 1.75 mg/kg/h"
+
+pd_se  <- 100 * (nca_val(arm_se,  "cmax") - 27.0) / 27.0
+pd_tbi <- 100 * (nca_val(arm_tbi, "cmax") - 25.0) / 25.0
+pd_hl  <- 100 * (nca_val(arm_ref, "half.life") - 24.68) / 24.68
+
+# Weight at which the typical-value half-life equals the published 24.68 h.
+# t1/2 = log(2) * Vc / CL is proportional to WT^(1 - 0.75) = WT^0.25, so this
+# inverts in closed form.
+theta_all <- rxode2::rxode(readModelDb("Ketharanathan_2023_pentobarbital"))$theta
+hl_ref_70 <- log(2) * exp(theta_all[["lvc"]]) / exp(theta_all[["lcl"]])
+wt_match  <- 70 * (24.68 / hl_ref_70)^4
+```
+
 ```{r nca-footnote, echo = FALSE, results = "asis"}
 fn <- attr(cmp, "footnote")
 if (!is.null(fn)) cat(fn, "\n")
@@ -529,17 +559,27 @@ The comparison is made on the individual-prediction scale (`Cc`), which is the
 scale of the published typical-value figures; the 7.22 mg/L additive residual
 error is an observation-level term and is not part of Figure 2-4.
 
-Both plateau concentrations agree with the published values to within 1.5%, and
-the reference-condition half-life is 11% above the cohort figure -- no row
-exceeds the 20% tolerance.
+The two plateau concentrations land within
+`r sprintf("%.1f%%", max(abs(c(pd_se, pd_tbi))))` of the published values and the
+reference-condition half-life is `r sprintf("%+.1f%%", pd_hl)` against the cohort
+figure -- no row exceeds the 20% tolerance. These arms carry the 34.8% IIV on
+clearance, so each simulated entry is the median over
+`r n_per_arm` subjects rather than a typical-value plateau; the corresponding
+typical-value steady states are
+`r sprintf("%.1f", 3.5 * 6 / (exp(theta_all[["lcl"]]) * (6 / 70)^0.75 * (26 / 36)^theta_all[["e_creat_cl"]]))`
+and
+`r sprintf("%.1f", 2 * 40 / (exp(theta_all[["lcl"]]) * (40 / 70)^0.75 * (26 / 36)^theta_all[["e_creat_cl"]]))`
+mg/L, which bracket the published 27 and 25 mg/L more tightly still.
 
 The two dashed half-life rows have no published counterpart to compare against,
 and they are worth reading carefully. Because half-life in this model is
 `log(2) * Vc / CL` and the two allometric exponents differ (1 on volume, 0.75 on
 clearance), half-life is proportional to weight to the power 0.25 by
 construction. The single cohort figure of 24.68 h therefore cannot hold across a
-3-87 kg population; it corresponds to a patient of about 46 kg at the model's
-reference creatinine. The SE and sTBI arms are shorter still (11.0 h and 17.7 h)
+3-87 kg population; it corresponds to a patient of about
+`r sprintf("%.0f", wt_match)` kg at the model's reference creatinine. The SE and
+sTBI arms are shorter still (`r sprintf("%.1f", nca_val(arm_se, "half.life"))` h
+and `r sprintf("%.1f", nca_val(arm_tbi, "half.life"))` h)
 for a second reason: those arms replicate the Figure 3 scenario at creatinine
 26 umol/L, which is below the 36 umol/L normalisation constant and so raises
 clearance by a factor of `(26/36)^-0.919 = 1.35`. The table below isolates the
@@ -628,6 +668,18 @@ tibble(WT = c(3, 6, 10, 20, 40, 70, 87)) |>
   reproduced only at about 46 kg. It is compared in the NCA table against the
   model's reference condition only; the per-indication arms carry no published
   half-life. See the discussion and table above.
+
+* **Table 1 is typeset with a one-row label offset.** In both the "Gender" and
+  "Pentobarbital" blocks of Table 1 the category header carries a row of values
+  while the last sub-row of the block ("Female", "Max Infusion") is blank, so the
+  sub-row labels sit one line below the values they belong to. The sibling block
+  pins the direction: read with the offset, the sTBI loading dose is 1 [0-20]
+  mg/kg -- exactly the per-protocol 1 mg/kg of Sect. 2.1 -- and the min/max
+  infusion rows reproduce the 0.5-10 and 0.05-5 mg/kg/h ranges quoted in
+  Sect. 3.1; read without it, neither does. The `population` metadata therefore
+  records 42% female (15 of 36), not 58%. Sex is not a covariate in the model
+  (gender gave a dOFV of only 1.574 and was not retained), so this affects the
+  metadata only and no simulated quantity.
 
 * **Covariates held constant over time.** Creatinine and CRP were time-varying
   covariates in the original NONMEM dataset. The simulations here hold them
