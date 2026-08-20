@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fan 2025 Nb457-NbHSA-Nb457 anti-CD4 trimeric nanobody and ibalizumab TMDD PK-PD models ([doi:10.1128/spectrum.00805-25](https://doi.org/10.1128/spectrum.00805-25)) -- HIV-1-infected humanized NDG-HuPBL mice, plus allometric human projections.
+- Add Stoschus 2025 phenobarbital ([doi:10.1111/epi.18517](https://doi.org/10.1111/epi.18517)) -- critically ill adults with refractory and superrefractory status epilepticus.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

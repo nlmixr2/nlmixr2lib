@@ -2336,6 +2336,8 @@ navbar:
         href: articles/Jones_2011_PF04878691_HCV.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
+      - text: "Phenobarbital (Stoschus 2025)"
+        href: articles/Stoschus_2025_phenobarbital.html
       - text: "Phenobarbital mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Phenytoin (Hennig 2015)"
@@ -4591,6 +4593,7 @@ articles:
   - articles/Stevens_2012_remoxipride
   - articles/Stocker_2012_oxypurinol
   - articles/Storset_2014_tacrolimus
+  - articles/Stoschus_2025_phenobarbital
   - articles/Stricker_2013_aminocaproicAcid
   - articles/Stricker_2015_aminocaproic_acid
   - articles/Stringer_2015_pioglitazone
