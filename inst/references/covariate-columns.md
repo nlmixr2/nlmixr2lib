@@ -11262,6 +11262,80 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Larsen_2018_factorviia_mouse.R` (Larsen 2018 pooled C57BI/6 + NMRI mice with fractional C57BI/6 effect on V and CL for rFVIIa: `V_C57BI6 = V * 0.588`, `CL_C57BI6 = CL * 0.87` per Table 2).
 - **Notes:** Analogous to the `RACE_<GROUP>` naming family for human race indicators: `STRAIN_<GROUP>` gives each within-species strain-of-interest its own binary indicator, with the reference strain implicitly encoded as `0`. A future mouse popPK model that pools additional strains (e.g., BALB/c, C3H) should register a parallel canonical (`STRAIN_BALBC`, `STRAIN_C3H`, ...) rather than overload this one. Ratified alongside the Larsen 2018 rFVIIa mouse extraction.
 
+### STRAIN_NUDE (**canonical for athymic-nude mouse-strain indicator**)
+- **Description:** Binary within-species mouse-strain indicator: 1 = subject is an Hsd:Athymic Nude-Foxn1nu mouse, 0 = subject is a severe-combined-immunodeficient (SCID, C.B-17/IcrHan(R)Hsd-Prkdcscid) mouse. Used when a preclinical popPK analysis pools the two immunocompromised strains routinely used for xenograft work and estimates strain-specific absorption, bioavailability or study-scaling parameters.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (SCID mouse in DeJongh 2025; other reference strains permitted for future extractions provided the per-paper reference is documented in `covariateData[[STRAIN_NUDE]]$notes`).
+- **Source aliases:**
+  - `STR` -- used in `DeJongh_2025_azd7648_mouse.R` (AZD7648 NONMEM dataset; `STR = 0` SCID, `STR = 1` nude).
+  - `STRN` -- used in `DeJongh_2025_olaparib_mouse.R` (olaparib NONMEM dataset; `STRN = 1` SCID, `STRN = 2` nude, so the indicator is `STRN - 1`).
+- **Example models:** `DeJongh_2025_azd7648_mouse.R` (gates both the absorption rate constant -- estimated at 2.77 1/h in SCID, fixed at 9.9 1/h in nude mice for want of absorption-phase samples -- and a -52% relative bioavailability in nude mice), `DeJongh_2025_olaparib_mouse.R` (splits the study S1734 relative-bioavailability factor by strain).
+- **Notes:** Member of the `STRAIN_<GROUP>` family established by `STRAIN_C57BI6`, which explicitly invites parallel canonicals for additional strains. Note the two DeJongh 2025 source datasets encode the same biological covariate on different numeric scales (0/1 vs 1/2); the canonical column is always the 0/1 indicator, and the per-model `source_name` records which raw column it came from. Ratified alongside the DeJongh 2025 AZD7648 + olaparib extraction.
+
+### DOSE_AZD7648_MGKGD (**canonical for concomitant AZD7648 total daily dose per kg body weight**)
+- **Description:** Total daily dose of co-administered AZD7648 (a DNA-dependent protein kinase inhibitor) in mg per kg body weight per day. Carried on every record so a drug-drug-interaction equation can read the co-medication dose level without back-computing it from the AZD7648 event records. It is the total across the dosing day, so a 75 mg/kg twice-daily regimen carries the value 150. Zero for olaparib monotherapy and for vehicle controls.
+- **Units:** mg/kg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the driver of the Emax-shaped clearance-interaction term `CmS = 1 - DOSE_AZD7648_MGKGD / (DOSE_AZD7648_MGKGD + CmD50)` of DeJongh 2025 Equations 7-8, with `CmD50 = 82.5 mg/kg/day`. `DOSE_AZD7648_MGKGD = 0` gives `CmS = 1` (no interaction, olaparib clearance unchanged); `DOSE_AZD7648_MGKGD = 82.5` halves olaparib clearance.
+- **Source aliases:**
+  - `CMDDOS` -- used in `DeJongh_2025_olaparib_mouse.R` (olaparib population-PK NONMEM dataset, co-medication dose column).
+  - `AZD7648` / `DOSE_AZD (mg/kg)` -- used in `DeJongh_2025_azd7648_olaparib_xenograft_mouse.R` (PK-PD dataset, supplementary file 7 of DeJongh 2025).
+- **Example models:** `DeJongh_2025_olaparib_mouse.R`, `DeJongh_2025_azd7648_olaparib_xenograft_mouse.R`.
+- **Notes:** Sibling canonical in the `DOSE_<DRUG>_MGKGD` family for daily co-medication doses, as anticipated by the `DOSE_RTV_MGKG` notes ("Drug-self-dose covariates for other drugs should register sibling canonicals (e.g., `DOSE_<DRUG>_MGKG` for per-administration or `DOSE_<DRUG>_MGKGD` for daily)"). Specific scope because the CmD50 value is tied to the DeJongh 2025 mouse analysis, and because only one source study (S1734) contained olaparib arms with and without AZD7648 co-treatment. Ratified alongside the DeJongh 2025 AZD7648 + olaparib extraction.
+
+### STUDY_S1143 (**canonical for DeJongh 2025 olaparib mouse study S1143 cohort indicator**)
+- **Description:** 1 = animal enrolled in mouse study S1143 (2, 5, 10, 50 or 100 mg/kg olaparib as a single oral dose in nude mice); 0 = the reference study S11448. Selects the study-specific relative oral bioavailability of olaparib.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study S11448, the 20 mg/kg intravenous / 50 mg/kg oral study in nude mice that anchors absolute bioavailability for the whole pooled analysis).
+- **Source aliases:** derived from the `STUDY` column of the olaparib NONMEM dataset (`STUDY == 1143` -> 1).
+- **Example models:** `DeJongh_2025_olaparib_mouse.R` (selects `lfdepot_s1143`, F1 = 0.174).
+- **Notes:** DeJongh 2025 Results: "Relative oral bioavailability was found to vary substantially between some studies, even within the same mice strain, and was accounted for in the final PK model by fitting a descriptive inter-study scaling factor on this parameter." One binary per non-reference study, following the decomposed-binary-indicator convention rather than a single integer study code. Ratified alongside the DeJongh 2025 AZD7648 + olaparib extraction.
+
+### STUDY_S1721 (**canonical for DeJongh 2025 olaparib mouse study S1721 cohort indicator**)
+- **Description:** 1 = animal enrolled in mouse study S1721 (50, 75 or 100 mg/kg olaparib as single and multiple oral doses in nude mice); 0 = the reference study S11448. Selects the study-specific relative oral bioavailability of olaparib.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study S11448).
+- **Source aliases:** derived from the `STUDY` column of the olaparib NONMEM dataset (`STUDY == 1721` -> 1).
+- **Example models:** `DeJongh_2025_olaparib_mouse.R` (selects `lfdepot_s1721`, F1 = 0.489).
+- **Notes:** See `STUDY_S1143`. Ratified alongside the DeJongh 2025 AZD7648 + olaparib extraction.
+
+### STUDY_S1734 (**canonical for DeJongh 2025 olaparib mouse study S1734 cohort indicator**)
+- **Description:** 1 = animal enrolled in mouse study S1734 (100 mg/kg olaparib as single and multiple oral doses in SCID and nude mice, with and without AZD7648 co-treatment); 0 = the reference study S11448. Selects the study-specific relative oral bioavailability of olaparib, which S1734 estimates separately per strain -- so this indicator is combined with `STRAIN_NUDE`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study S11448).
+- **Source aliases:** derived from the `STUDY` column of the olaparib NONMEM dataset (`STUDY == 1734` -> 1).
+- **Example models:** `DeJongh_2025_olaparib_mouse.R` (selects `lfdepot_s1734scid`, F1 = 0.598, or `lfdepot_s1734nude`, F1 = 0.238).
+- **Notes:** S1734 is the only source study containing olaparib arms both with and without AZD7648 co-treatment, so it is the sole study informing the `CmD50` drug-drug-interaction parameter; the source control stream applies the interaction term conditionally on this study. The library model applies the interaction unconditionally, which is equivalent because `DOSE_AZD7648_MGKGD` is 0 outside the co-treated arms. Ratified alongside the DeJongh 2025 AZD7648 + olaparib extraction.
+
+### STUDY_S1770 (**canonical for DeJongh 2025 olaparib mouse study S1770 cohort indicator**)
+- **Description:** 1 = animal enrolled in mouse study S1770 (multiple oral olaparib doses with and without AZD7648 co-treatment in SCID mice); 0 = the reference study S11448. Selects the study-specific relative oral bioavailability of olaparib.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study S11448).
+- **Source aliases:** derived from the `STUDY` column of the olaparib NONMEM dataset (`STUDY == 1770` -> 1).
+- **Example models:** `DeJongh_2025_olaparib_mouse.R` (selects `lfdepot_s1770`, F1 = 1.48).
+- **Notes:** See `STUDY_S1143`. Values above 1 are possible because the source parameterises olaparib clearance in absolute L/h while the volumes are weight-normalised L/kg; the per-study bioavailability factor absorbs that scale mismatch as well as genuine formulation / exposure differences. Ratified alongside the DeJongh 2025 AZD7648 + olaparib extraction.
+
+### STUDY_S1816 (**canonical for DeJongh 2025 olaparib mouse study S1816 cohort indicator**)
+- **Description:** 1 = animal enrolled in mouse study S1816 (multiple oral olaparib doses with AZD7648 co-treatment in SCID mice); 0 = the reference study S11448. Selects the study-specific relative oral bioavailability of olaparib.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study S11448).
+- **Source aliases:** derived from the `STUDY` column of the olaparib NONMEM dataset (`STUDY == 1816` -> 1).
+- **Example models:** `DeJongh_2025_olaparib_mouse.R` (selects `lfdepot_s1816`, F1 = 4.18).
+- **Notes:** This is the factor the authors carried into the DeJongh 2025 tumour PK-PD model (`DeJongh_2025_azd7648_olaparib_xenograft_mouse.R` fixes `lfdepot_olaparib` at 4.1817), because the xenograft studies had no olaparib PK of their own. See `STUDY_S1770` on why the value exceeds 1. Ratified alongside the DeJongh 2025 AZD7648 + olaparib extraction.
+
 ### IP_FA (**canonical for tablet-transit inflection-point time from fundus to antrum**)
 - **Description:** Individual inflection-point time (h) at which the sigmoid step function governing tablet movement from the fundus to the antrum equals 0.5 (paper Equation 1 form: `STEP(t) = 1 / (1 + exp(-SIG * (t - IP)))`). Used in the Gastro-Intestinal Transit Time (GITT) absorption model of Henin 2012 to drive per-subject tablet residence time in the fundus. The paper samples IP per subject from a fixed log-normal distribution `IP = MRT * exp(eta)` with `eta ~ N(0, VRT)` and MRT / VRT taken from the upstream Bergstrand 2009 Markov-chain fit (Table II of Henin 2012): MRT_fundus = 0.4 h (fasted) / 1.04 h (fed), VRT_fundus = 0.46 / 1.09 h^2 (CV 100%).
 - **Units:** h

@@ -270,8 +270,10 @@ navbar:
         href: articles/Garrett_2014_axitinib.html
       - text: "Axomadol (MangasSanjuan 2016)"
         href: articles/MangasSanjuan_2016_axomadol.html
-      - text: "AZD6088 rat (Viberg 2012)"
-        href: articles/Viberg_2012_AZD6088_rat.html
+      - text: "Azd7648 mouse (DeJongh 2025)"
+        href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
+      - text: "Azd7648 olaparib xenograft mouse (DeJongh 2025)"
+        href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
       - text: "Azithromycin (Merchan 2015)"
         href: articles/Merchan_2015_azithromycin.html
       - text: "Azithromycin (Sampson 2014)"
@@ -1940,6 +1942,8 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Olanzapine rat (Johnson 2011)"
         href: articles/Johnson_2011_olanzapine_rat.html
+      - text: "Olaparib mouse (DeJongh 2025)"
+        href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
       - text: "Olaratumab (Mo 2018)"
         href: articles/Mo_2018_olaratumab.html
       - text: "Olodaterol (Borghardt 2016)"
@@ -3472,7 +3476,9 @@ articles:
   - articles/Darpo_2014_racSotalol
   - articles/Darwish_2025_trofinetide
   - articles/Davis_2008_maraviroc
-  - articles/deAlwis_1998_ondansetron
+  - articles/DeCock_2012_propyleneGlycol
+  - articles/DeJongh_2014_antithrombin
+  - articles/DeJongh_2025_azd7648_olaparib_xenograft
   - articles/Debord_2001_cyclosporin
   - articles/Decker_2024_baricitinib
   - articles/DeCock_2012_propyleneGlycol
