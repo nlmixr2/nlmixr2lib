@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Michelet 2025 BI 754111 anti-LAG-3 two-pore minimal-PBPK model ([doi:10.1002/psp4.13285](https://doi.org/10.1002/psp4.13285)) -- adults with anti-PD-1-refractory NSCLC or HNSCC in an 89Zr-immuno-PET biodistribution study.
+- Add Budiansah 2025 DOTATATE ([doi:10.1186/s40658-025-00726-7](https://doi.org/10.1186/s40658-025-00726-7)) -- adults with neuroendocrine tumours or meningiomas undergoing peptide receptor radionuclide therapy dosimetry.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
