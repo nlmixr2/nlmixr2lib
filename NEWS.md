@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Braniff 2025 lorlatinib signaling / shell-and-core tumor QSP model ([doi:10.1002/psp4.13270](https://doi.org/10.1002/psp4.13270)) -- adults with ALK-positive advanced non-small cell lung cancer.
+- Add Crass 2025 pegcetacoplan geographic-atrophy lesion-area models
+  ([doi:10.1002/psp4.13264](https://doi.org/10.1002/psp4.13264))
+  -- adults with geographic atrophy secondary to age-related macular degeneration.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
