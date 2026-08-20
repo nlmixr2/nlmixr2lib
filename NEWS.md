@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gao 2025 cefquinome ([doi:10.3390/vetsci12040294](https://doi.org/10.3390/vetsci12040294)) -- Ili foals, with an ex vivo PK/PD-integration model against *Escherichia coli*.
+- Add Athanassa 2025 minocycline ([doi:10.1093/jac/dkaf090](https://doi.org/10.1093/jac/dkaf090)) -- critically ill adults with ventilator-associated pneumonia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
