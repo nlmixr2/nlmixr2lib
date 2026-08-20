@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Perlstein 2025 TV-46000 long-acting subcutaneous risperidone ([doi:10.1007/s40120-025-00723-z](https://doi.org/10.1007/s40120-025-00723-z)) -- healthy volunteers and adults with schizophrenia or schizoaffective disorder.
+- Add Lee 2025 levofloxacin ([doi:10.3390/ph18050621](https://doi.org/10.3390/ph18050621)) -- healthy Korean adults given a single 500 mg intravenous infusion.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
