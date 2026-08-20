@@ -3240,8 +3240,8 @@ navbar:
         href: articles/Shen_2024_vancomycin.html
       - text: "Vancomycin (Staatz 2005)"
         href: articles/Staatz_2005_gentamicin_vancomycin.html
-      - text: "Vancomycin (Takada 2025)"
-        href: articles/Takada_2025_vancomycin.html
+      - text: "Vancomycin (Yu 2025)"
+        href: articles/Yu_2025_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
         href: articles/Zhao_2014_vancomycin.html
       - text: "Varenicline (Ravva 2009)"
@@ -4880,6 +4880,7 @@ articles:
   - articles/Yu_2017_mycophenolic_acid
   - articles/Yu_2022_ofatumumab
   - articles/Yu_2024_ilaprazole
+  - articles/Yu_2025_vancomycin
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
