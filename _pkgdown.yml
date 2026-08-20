@@ -246,6 +246,8 @@ navbar:
         href: articles/Schipani_2013_atazanavir_ritonavir.html
       - text: "Atenolol qsp (Fu 2022)"
         href: articles/Fu_2022_atenolol_qsp.html
+      - text: "Atenolol rat pbpk (Kir 2025)"
+        href: articles/Kir_2025_atenolol_metoprolol_malnutrition.html
       - text: "Atezolizumab carboplatin nabpaclitaxel qsp (Wang 2024)"
         href: articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp.html
       - text: "Atezolizumab cibisatamab qsp (Anbari 2023)"
@@ -1776,6 +1778,8 @@ navbar:
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Metoprolol (Eugene 2016)"
         href: articles/Eugene_2016_metoprolol.html
+      - text: "Metoprolol rat pbpk (Kir 2025)"
+        href: articles/Kir_2025_atenolol_metoprolol_malnutrition.html
       - text: "Metronidazole (CohenWolkowiez 2012)"
         href: articles/CohenWolkowiez_2012_metronidazole.html
       - text: "Metronidazole (Suyagh 2011)"
@@ -3908,6 +3912,7 @@ articles:
   - articles/Kim_2024_meropenem
   - articles/Kim_2025_evogliptin
   - articles/Kimura_2023_glucarpidase
+  - articles/Kir_2025_atenolol_metoprolol_malnutrition
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleiber_2017_clonidine
   - articles/Kleideiter_2017_cebranopadol

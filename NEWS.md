@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhao 2025 methotrexate ([doi:10.3389/fphar.2025.1548203](https://doi.org/10.3389/fphar.2025.1548203)) -- Chinese children and adults with intracranial germ cell tumors.
+- Add Kir 2025 atenolol and metoprolol minimal-PBPK absorption models ([doi:10.1007/s13318-025-00943-6](https://doi.org/10.1007/s13318-025-00943-6)) -- non-malnourished and malnourished rats (Sprague-Dawley).
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
