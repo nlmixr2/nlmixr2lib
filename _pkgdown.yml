@@ -1728,6 +1728,14 @@ navbar:
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
+      - text: "Mig1 exp1 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
+      - text: "Mig1 exp2 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
+      - text: "Mig1 exp3 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
+      - text: "Mig1 exp4 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
       - text: "Miglustat (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Miltefosine (Dorlo 2008)"
@@ -3134,6 +3142,7 @@ articles:
   - articles/AlSallami_2016_unfractionatedHeparin
   - articles/Ali_2018_amodiaquine
   - articles/Allegaert_2015_paracetamol
+  - articles/Almquist_2015_Mig1
   - articles/Almquist_2016_ticagrelor
   - articles/Almquist_2022_anifrolumab
   - articles/Alqahtani_2018_cefuroxime
