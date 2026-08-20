@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rosenborg 2025 inhaled fluticasone propionate and salmeterol ([doi:10.2147/DDDT.S480189](https://doi.org/10.2147/DDDT.S480189)) - healthy adults in three dry-powder-inhaler bioequivalence crossover studies.
+- Add Muthukrishnan 2025 clazakizumab ([doi:10.1111/cts.70381](https://doi.org/10.1111/cts.70381)) -- adults with end-stage kidney disease receiving maintenance dialysis.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
