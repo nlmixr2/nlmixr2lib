@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Saeheng 2024 Atractylodes lancea ([doi:10.1186/s12906-024-04618-8](https://doi.org/10.1186/s12906-024-04618-8)) - patients with advanced-stage intrahepatic cholangiocarcinoma.
+- Add Bian 2024 lefamulin popPK plus epithelial lining fluid models ([doi:10.3389/fphar.2024.1456741](https://doi.org/10.3389/fphar.2024.1456741)) -- pooled Phase 1 healthy adults, Phase 2 skin-infection patients, and Phase 3 community-acquired bacterial pneumonia patients.
+
+- Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
