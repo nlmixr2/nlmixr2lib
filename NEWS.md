@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Bian 2024 lefamulin popPK plus epithelial lining fluid models ([doi:10.3389/fphar.2024.1456741](https://doi.org/10.3389/fphar.2024.1456741)) -- pooled Phase 1 healthy adults, Phase 2 skin-infection patients, and Phase 3 community-acquired bacterial pneumonia patients.
-
-- Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
+- Add Wang 2024 RNA lipid nanoparticles ([doi:10.1016/j.apsb.2024.06.011](https://doi.org/10.1016/j.apsb.2024.06.011)) - ionizable-lipid PBPK in Sprague-Dawley rats, CD-1 and C57BL/6 mice, and healthy volunteers given patisiran, plus a cellular trafficking model in HeLa cells.
 
 - Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 

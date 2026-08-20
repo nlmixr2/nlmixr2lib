@@ -1360,6 +1360,12 @@ navbar:
         href: articles/Jeon_2013_interferonAlfa2a.html
       - text: "IonisFxirx (Willmann 2021)"
         href: articles/Willmann_2021_fxi_aso.html
+      - text: "IonizableLipid hela qsp (Wang 2024)"
+        href: articles/Wang_2024_rnaLipidNanoparticle.html
+      - text: "IonizableLipid mouse pbpk (Wang 2024)"
+        href: articles/Wang_2024_rnaLipidNanoparticle.html
+      - text: "IonizableLipid rat pbpk (Wang 2024)"
+        href: articles/Wang_2024_rnaLipidNanoparticle.html
       - text: "Ipatasertib (Yoshida 2021)"
         href: articles/Yoshida_2021_ipatasertib.html
       - text: "Ipilimumab (Feng 2014)"
@@ -2034,6 +2040,8 @@ navbar:
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
         href: articles/Kim_2015_paroxetine.html
+      - text: "Patisiran human pbpk (Wang 2024)"
+        href: articles/Wang_2024_rnaLipidNanoparticle.html
       - text: "Patritumab (Lee 2023)"
         href: articles/Lee_2023_patritumab.html
       - text: "Patritumab (Lu 2022)"

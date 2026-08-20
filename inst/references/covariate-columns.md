@@ -10607,16 +10607,72 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Zhang_2023_valproic_acid_base.R`, `Zhang_2023_valproic_acid_exponent.R`, `Zhang_2023_valproic_acid_onebindingsite.R`, `Zhang_2023_valproic_acid_langmuir.R`, `Zhang_2023_valproic_acid_ddemax.R`, `Zhang_2023_valproic_acid_nonsaturable.R` (all six models of the Zhang 2023 comparison encode `ka <- exp(lka + e_form_tablet_ka * FORM_TABLET + e_form_vpa_sr_ka * FORM_VPA_SR)` with `lka` FIXED at `log(2.64)` for the syrup reference and both shifts FIXED at the log-ratio of the published formulation-specific `Ka` values).
 - **Notes:** Specific scope because the fixed `Ka` triple (2.64 / 1.57 / 0.46 1/h) is a valproate-specific literature convention propagated across several paediatric valproate popPK papers (Ding 2015, Gu 2021, Teixeira-da-Silva 2022 and thence Zhang 2023). Distinct from `FORM_QUIN_SR` (quinidine bisulphate slow-release, where the contrast additionally carries a salt-vs-base stoichiometric conversion) and from the modified-release `FORM_FLV_BID_XR` / `FORM_LOV_BID_XR` pair (fluvastatin / lovastatin extended-release, where the indicator also encodes a dosing-frequency change). Trough-only therapeutic-drug-monitoring datasets identify absorption poorly, which is exactly why the source papers fix rather than estimate these constants -- do not re-estimate `lka` from a trough-only cohort.
 
-### FORM_NOSCAPINE_TEST (**canonical for the reformulated noscapine oral-suspension test-product indicator**)
-- **Description:** 1 = the noscapine dose was given as the reformulated oral suspension (InfectoPharm, Heppenheim) that served as the *test* product in the Chen 2024 bioequivalence study; 0 = the Nipaxon 5 mg/mL oral suspension (McNeil, Solna) *reference* product. Per-dose-record indicator -- in a crossover design the same subject carries 1 on one period's dose row and 0 on the other's.
+### FORM_LNP_SM102 (**canonical for SM-102 ionizable-lipid RNA-lipid-nanoparticle formulation indicator**)
+- **Description:** 1 = the RNA-lipid-nanoparticle (LNP) dose was formulated with SM-102 as its ionizable lipid; 0 = the per-paper reference ionizable lipid (DLin-MC3-DMA / MC3 in `Wang_2024_*`). Subject- / arm-level indicator selecting an entire ionizable-lipid-specific parameter column. In an LNP the ionizable lipid is roughly half the particle by mole and governs plasma-protein adsorption, receptor-mediated uptake, particle disassembly and biodegradability, so swapping it changes the disposition parameters rather than only a bioavailability factor -- which is why the indicator selects several parameters at once.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (Nipaxon reference oral suspension), which is the relative-bioavailability anchor F = 1.
+- **Reference category:** 0 (DLin-MC3-DMA / MC3, the ionizable lipid of the first approved siRNA-LNP drug patisiran and the standard against which newer lipids are benchmarked). Pairs with `FORM_LNP_LIPID5` to encode the three-level MC3 / SM-102 / Lipid 5 stratification, with MC3 as the reference level when both indicators are 0 -- the same derived-reference pattern as `FORM_TABLET` + `FORM_CAPSULE` in `Kleideiter_2017_cebranopadol.R`.
 - **Source aliases:**
-  - `formulation (test vs reference)` -- Chen 2024 (Sect. 2.1 describes the two products; Table 4 reports the single formulation parameter `F1 (%) = 82.8`).
-- **Example models:** `Chen_2024_noscapine.R` (gates relative bioavailability only: `f(transit1) <- exp((lf1 + etalf1) * FORM_NOSCAPINE_TEST)` with `lf1 = log(0.828)`, so reference doses get F = 1 exactly while test doses get 82.8% carrying 34.1% CV inter-individual variability).
-- **Notes:** Both products are oral suspensions of the same strength, so the contrast is a *product* difference, not a dosage-form difference -- hence the drug-plus-product naming rather than reuse of `FORM_SUSPENSION` (which distinguishes a suspension from another dosage form and would be uninformative when both arms are suspensions). Bioavailability is the *only* parameter that differs by formulation: Chen 2024 Sect. 3.3.2 reports that "only apparent bioavailability differed between test and reference preparations", and the Discussion attributes it to "a lower amount of drug released from the suspension" rather than to an absorption-rate difference. Contrast with `FORM_QUIN_SR` / `FORM_VPA_SR`, where the formulation indicator switches an absorption-rate or duration parameter as well. Specific scope because the contrast identifies two named commercial noscapine products. Ratified 2026-08-06 alongside the Chen 2024 noscapine extraction.
+  - `SM-102` -- the column heading of the Wang 2024 Figure 4A fitted-parameter table.
+- **Example models:** `Wang_2024_ionizableLipid_rat_pbpk.R` (selects the spleen and "other organs" permeabilities, the "other organs" elimination rate, and the Eq. (8) scaling factors on the uptake, disassembly and metabolism rates; the liver permeability is deliberately *not* switched because Wang 2024 section 3.1.2 reports that "the permeability rate of MC3 applies to SM-102").
+- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` canonical family, with `LNP` standing for the delivery system rather than for a single INN because the same ionizable lipid is used across many different RNA payloads. Distinct from the small-molecule `FORM_*` dosage-form indicators (`FORM_TABLET`, `FORM_CAPSULE`), which contrast presentations of one drug substance; here the indicator identifies a different chemical entity within the carrier. Register a sibling `FORM_LNP_<lipid>` canonical for each further ionizable lipid rather than overloading this entry.
+
+### FORM_LNP_LIPID5 (**canonical for Lipid 5 ionizable-lipid RNA-lipid-nanoparticle formulation indicator**)
+- **Description:** 1 = the RNA-LNP dose was formulated with Lipid 5 as its ionizable lipid; 0 = the per-paper reference ionizable lipid (MC3 in `Wang_2024_*`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (DLin-MC3-DMA / MC3). Paired with `FORM_LNP_SM102`; both 0 selects MC3, and the two are mutually exclusive.
+- **Source aliases:**
+  - `Lipid 5` -- the column heading of the Wang 2024 Figure 4A fitted-parameter table.
+- **Example models:** `Wang_2024_ionizableLipid_rat_pbpk.R` (selects all three permeabilities including the liver one, which Wang 2024 section 3.1.2 reports "had to be down-regulated to get a satisfactory fitting" unlike SM-102, plus the "other organs" elimination rate and the Eq. (8) uptake / disassembly / metabolism scaling factors).
+- **Notes:** Sibling of `FORM_LNP_SM102` under the `FORM_<drug>_<formulation>` family. Lipid 5 and SM-102 differ only in the position of one ester linker, which is why the two share several parameters but not the liver permeability.
+
+### FORM_LNP_DMAPBLP78 (**canonical for 78 nm DMAP-BLP RNA-lipid-nanoparticle formulation indicator**)
+- **Description:** 1 = the RNA-LNP dose was formulated with the ionizable lipid DMAP-BLP at a particle diameter of about 78 nm; 0 = the per-paper reference formulation (MC3 at about 80 nm in `Wang_2024_*`). This indicator carries a joint lipid-and-size contrast rather than size alone, because the source study changed both together.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (MC3 LNP at about 80 nm). Pairs with `FORM_LNP_DMAPBLP45` to encode the three-level 80 nm MC3 / 78 nm DMAP-BLP / 45 nm DMAP-BLP stratification, with the MC3 arm as the reference level when both indicators are 0.
+- **Source aliases:**
+  - `DMAP-BLP` -- the column heading of the Wang 2024 Figure 5B fitted-parameter table.
+  - `DMAP-DLP` -- the spelling used in Wang 2024 Results section 3.1.3 and Figure S6 for the same lipid; the Methods and figure-table spelling `DMAP-BLP` is canonical here.
+- **Example models:** `Wang_2024_ionizableLipid_mouse_pbpk.R` (selects the spleen and "other organs" permeabilities and the plasma dissociation rate kf = 0.0414 1/h; the liver permeability, uptake rate and "other organs" elimination rate are inherited from the 80 nm arm under the Figure 5B "#" footnote).
+- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` family. Particle diameter is embedded in the indicator name rather than carried as a separate continuous covariate because the source paper fitted a discrete parameter set per particle-size arm rather than a size-parameterised relationship; a future model that fits a continuous size-permeability relationship should register a continuous `SIZE_LNP_NM` covariate instead of extending this family.
+
+### FORM_LNP_DMAPBLP45 (**canonical for 45 nm DMAP-BLP RNA-lipid-nanoparticle formulation indicator**)
+- **Description:** 1 = the RNA-LNP dose was formulated with the ionizable lipid DMAP-BLP at a particle diameter of about 45 nm; 0 = the per-paper reference formulation (MC3 at about 80 nm in `Wang_2024_*`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (MC3 LNP at about 80 nm). Paired with `FORM_LNP_DMAPBLP78`; both 0 selects the MC3 arm, and the two are mutually exclusive.
+- **Source aliases:**
+  - `DMAP-BLP` -- the column heading of the Wang 2024 Figure 5C fitted-parameter table.
+- **Example models:** `Wang_2024_ionizableLipid_mouse_pbpk.R` (selects an independently re-fitted parameter set: a much higher uptake rate of 125.06 vs 5.24 mL/mmol/h, a lower liver permeability, and the plasma dissociation rate kf = 0.1089 1/h from Figure 6A).
+- **Notes:** Sibling of `FORM_LNP_DMAPBLP78`. The contrast between the two is the paper's central size comparison: the smaller particle is taken up into the liver much faster yet knocks down its target gene less effectively.
+
+### FORM_LNP_MC3 (**canonical for DLin-MC3-DMA ionizable-lipid RNA-lipid-nanoparticle formulation indicator**)
+- **Description:** 1 = the RNA-LNP was formulated with DLin-MC3-DMA (MC3) as its ionizable lipid; 0 = the per-paper reference ionizable lipid (C12-200 in `Wang_2024_ionizableLipid_hela_qsp.R`). Use this indicator when MC3 is a comparator rather than the reference; when MC3 is the reference, leave the sibling `FORM_LNP_*` indicators at 0 instead of adding this column.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the per-paper reference ionizable lipid; C12-200 in Wang 2024's cellular model, which is the formulation the shared trafficking rates were fitted to). Pairs with `FORM_LNP_L319` to encode the three-level C12-200 / MC3 / L319 stratification.
+- **Source aliases:**
+  - `MC3` -- the column heading of the Wang 2024 Figure 9D parameter-comparison table.
+- **Example models:** `Wang_2024_ionizableLipid_hela_qsp.R` (selects the MC3 endosomal-escape rate krel = 0.0058 1/h; MC3's own cytoplasmic-delivery fraction frel was not measured and is assumed equal to the L319 value of 0.5).
+- **Notes:** Sibling of `FORM_LNP_SM102` / `FORM_LNP_LIPID5` / `FORM_LNP_L319` under the `FORM_<drug>_<formulation>` family. MC3 is the reference level in Wang 2024's in-vivo models but a comparator in its cellular model, which is why it needs its own indicator; the reference level of an `FORM_LNP_*` set is always documented per model rather than assumed.
+
+### FORM_LNP_L319 (**canonical for L319 ionizable-lipid RNA-lipid-nanoparticle formulation indicator**)
+- **Description:** 1 = the RNA-LNP was formulated with L319 as its ionizable lipid; 0 = the per-paper reference ionizable lipid (C12-200 in `Wang_2024_ionizableLipid_hela_qsp.R`).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (C12-200). Paired with `FORM_LNP_MC3`; both 0 selects C12-200, and the two are mutually exclusive.
+- **Source aliases:**
+  - `L319` -- the column heading of the Wang 2024 Figure 9D parameter-comparison table.
+- **Example models:** `Wang_2024_ionizableLipid_hela_qsp.R` (selects the L319 endosomal-escape rate krel = 0.0157 1/h; L319 is the only formulation for which the cytoplasmic-delivery fraction frel was measured directly, at 0.5).
+- **Notes:** Sibling of `FORM_LNP_MC3` under the `FORM_<drug>_<formulation>` family.
 
 ## Receptor-binding ligand selection and pharmacological-chain inputs
 
