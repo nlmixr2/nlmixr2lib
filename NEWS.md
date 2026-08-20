@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zeng 2026 atezolizumab ([doi:10.1007/s00228-025-03974-9](https://doi.org/10.1007/s00228-025-03974-9)) -- adults with metastatic non-small cell lung cancer; all parameters fixed, transcribed from the FDA CDER review of BLA 761041Orig1s000.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.

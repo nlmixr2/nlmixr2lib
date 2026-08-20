@@ -246,6 +246,8 @@ navbar:
         href: articles/Schipani_2013_atazanavir_ritonavir.html
       - text: "Atenolol qsp (Fu 2022)"
         href: articles/Fu_2022_atenolol_qsp.html
+      - text: "Atezolizumab (Zeng 2026)"
+        href: articles/Zeng_2026_atezolizumab.html
       - text: "Atezolizumab carboplatin nabpaclitaxel qsp (Wang 2024)"
         href: articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp.html
       - text: "Atezolizumab cibisatamab qsp (Anbari 2023)"
@@ -4386,6 +4388,7 @@ articles:
   - articles/Zecchin_2016_tumorovarian
   - articles/Zeng_2009_acyclovir
   - articles/Zeng_2010_mycophenolic_acid
+  - articles/Zeng_2026_atezolizumab
   - articles/Zhang_2011_nutlin3a
   - articles/Zhang_2012_bivalirudin
   - articles/Zhang_2012_lopinavir_ritonavir
