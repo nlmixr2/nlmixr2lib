@@ -2,7 +2,7 @@
 
 # development version
 
-- Add He 2025 lidocaine ([doi:10.2147/DDDT.S485389](https://doi.org/10.2147/DDDT.S485389)) -- Chinese adults undergoing partial hepatectomy, with the MEGX and GX active metabolites.
+- Add Richardson 2025 automated model-search popPK models for ribociclib, camizestrant, osimertinib, olaparib and tezepelumab ([doi:10.1038/s43856-025-01054-8](https://doi.org/10.1038/s43856-025-01054-8)) -- one synthetic cohort and four pooled Phase 1 adult cohorts.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
