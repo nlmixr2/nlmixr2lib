@@ -2,7 +2,7 @@
 
 # development version
 
-- Add de Vries 2025 durvalumab ([doi:10.1007/s40262-025-01555-8](https://doi.org/10.1007/s40262-025-01555-8)) -- adults with non-small cell lung cancer.
+- Add Resendiz-Galvan 2025 cycloserine ([doi:10.1128/aac.00101-25](https://doi.org/10.1128/aac.00101-25)) - Indian adolescents and adults with multidrug-resistant tuberculosis.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
