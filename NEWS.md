@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nakai 2025 tranexamic acid ([doi:10.1007/s00228-025-03802-0](https://doi.org/10.1007/s00228-025-03802-0)) -- adults undergoing cardiac surgery with cardiopulmonary bypass.
+- Add Deferm 2025 postpartum maternal physiology and milk composition ([doi:10.3389/fphar.2025.1517069](https://doi.org/10.3389/fphar.2025.1517069)) -- healthy breastfeeding women from birth to 12 months postpartum.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
