@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Khwarg 2024 proguanil ([doi:10.1111/cts.70103](https://doi.org/10.1111/cts.70103)) -- healthy Korean male adults genotyped for SLC22A1 (OCT1) 1022C>T.
+- Add Yang 2024 zastaprazan ([doi:10.1002/psp4.13228](https://doi.org/10.1002/psp4.13228)) -- patients with erosive gastroesophageal reflux disease and healthy volunteers.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
