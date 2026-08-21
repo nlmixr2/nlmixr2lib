@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wu 2025 sitafloxacin ([doi:10.3389/fphar.2025.1476158](https://doi.org/10.3389/fphar.2025.1476158)) -- Japanese and Chinese healthy volunteers, subjects with renal impairment, and patients with respiratory-tract infection.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
