@@ -901,6 +901,51 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Example models:** `Zurlinden_2016_paracetamol.R`.
 - **Notes:** Non-PBPK renal-clearance models use the bare `urine` form. Both are acceptable for their respective conventions.
 
+### a_metabolized (**canonical PBPK cumulative-metabolism integrator**)
+- **Type:** compartment
+- **Role:** Cumulative amount of parent chemical metabolized, integrating the metabolic rate (`d/dt(a_metabolized) <- r_metab`). Not an anatomical compartment: it is a process accumulator carried so that the model's mass balance closes and so that cumulative metabolized amount -- the toxicologically relevant dose metric for reactive-metabolite carcinogens -- is available as an output.
+- **Source aliases:**
+  - `AM` -- Boone 2025 (Berkeley Madonna listing, `AM' = RAM ;amount metabolized- mg`).
+- **Example models:** `Boone_2025_vinylchloride_pbpk.R` (founding example).
+- **Notes:** Sits on the same `a_<role>` amount namespace as `a_urine`, which is likewise a sink accumulator rather than an organ. Use this rather than a bare `metabolized` state.
+
+### a_inhaled (**canonical PBPK cumulative-inhalation integrator**)
+- **Type:** compartment
+- **Role:** Cumulative amount of chemical inhaled, integrating alveolar ventilation times inhaled air concentration (`d/dt(a_inhaled) <- qp * ci`). Process accumulator for the inhalation route; paired with `a_exhaled` so that net absorbed amount is their difference.
+- **Source aliases:**
+  - `AINH` -- Boone 2025 (Berkeley Madonna listing, `AINH' = QP*CI ;Amount inhaled`).
+- **Example models:** `Boone_2025_vinylchloride_pbpk.R` (founding example).
+
+### a_exhaled (**canonical PBPK cumulative-exhalation integrator**)
+- **Type:** compartment
+- **Role:** Cumulative amount of chemical exhaled, integrating alveolar ventilation times alveolar (exhaled) concentration (`d/dt(a_exhaled) <- qp * c_alveolar`). Process accumulator for pulmonary elimination of a volatile chemical.
+- **Source aliases:**
+  - `AX` -- Boone 2025 (Berkeley Madonna listing, `AX' = QP*CX ;Amount exhaled`).
+- **Example models:** `Boone_2025_vinylchloride_pbpk.R` (founding example).
+- **Notes:** `a_inhaled - a_exhaled` reproduces the listing's separate net-absorption state (`InhDOSE' = QP*(CI-CX)`), which is therefore derived algebraically rather than carried as a redundant compartment.
+
+### a_oral (**canonical PBPK cumulative-ingestion integrator**)
+- **Type:** compartment
+- **Role:** Cumulative amount of chemical ingested, integrating the oral intake rate (`d/dt(a_oral) <- r_oral`). Process accumulator for the oral route; distinct from `depot` / `a_gut`, which hold the amount still awaiting absorption, whereas this state only ever increases and is never drained.
+- **Source aliases:**
+  - `AORAL` -- Boone 2025 (Berkeley Madonna listing, `AORAL' = Roral ;amount ingested-mg`).
+- **Example models:** `Boone_2025_vinylchloride_pbpk.R` (founding example).
+
+### a_dermal_absorbed (**canonical PBPK cumulative-dermal-uptake integrator**)
+- **Type:** compartment
+- **Role:** Cumulative net amount of chemical transferred across the skin surface from an external medium (typically contaminated water), integrating the dermal flux (`d/dt(a_dermal_absorbed) <- r_dermal`). Process accumulator for the dermal route.
+- **Source aliases:**
+  - `ASkin` -- Boone 2025 (Berkeley Madonna listing, `ASkin' = RASkin ;amount of chemical transferred-mg`).
+- **Example models:** `Boone_2025_vinylchloride_pbpk.R` (founding example).
+- **Notes:** Distinct from `a_skin`, which is the flow-limited skin *organ* amount. The flux is signed (it reverses when skin concentration exceeds the external medium), so this accumulator is a net transfer, not a gross uptake.
+
+### a_dermal_eliminated (**canonical PBPK cumulative-dermal-loss integrator**)
+- **Type:** compartment
+- **Role:** Cumulative amount of chemical lost back out through the skin, integrating the outward limb of the dermal flux (`d/dt(a_dermal_eliminated) <- r_dermal_out`). Paired with `a_dermal_absorbed` so that gross dermal uptake and gross dermal loss can be inspected separately.
+- **Source aliases:**
+  - `ASkinOut` -- Boone 2025 (Berkeley Madonna listing, `ASkinOut' = (Kp*SA/1000)*(CSk/PSkliq)*SKINH20 ;rate of loss through skin (mg/hr)`).
+- **Example models:** `Boone_2025_vinylchloride_pbpk.R` (founding example).
+
 ### a_gut (**canonical PBPK gut absorption compartment**)
 - **Type:** compartment
 - **Role:** Gut absorption / intestinal compartment in mass-balance PBPK extractions.

@@ -2892,6 +2892,8 @@ navbar:
         href: articles/Schmitt_2018_vinflunine.html
       - text: "Vinpocetine (Petric 2023)"
         href: articles/Petric_2023_vinpocetine.html
+      - text: "Vinylchloride pbpk (Boone 2025)"
+        href: articles/Boone_2025_vinylchloride.html
       - text: "Visilizumab (Cao 2013)"
         href: articles/Cao_2013_visilizumab.html
       - text: "Vismodegib (Lu 2015)"
@@ -3222,6 +3224,7 @@ articles:
   - articles/Bogason_2011_daunorubicin
   - articles/Bonate_2004_apomine
   - articles/Bonner_2015_gastric_emptying
+  - articles/Boone_2025_vinylchloride
   - articles/Borghardt_2016_olodaterol
   - articles/Bosch_2022_liraglutide_qsp
   - articles/Bosch_2024_cotadutide_qsp

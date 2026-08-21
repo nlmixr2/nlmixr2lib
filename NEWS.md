@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Boone 2025 vinyl chloride PBPK ([doi:10.3390/jox15020042](https://doi.org/10.3390/jox15020042)) -- 70 kg reference adult; community exposure reconstruction after the 2012 Paulsboro, New Jersey train derailment.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
