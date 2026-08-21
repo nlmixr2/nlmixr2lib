@@ -491,6 +491,7 @@ nca |>
     ))), collapse = ", "),
     .groups = "drop"
   ) |>
+  dplyr::rename("Species" = species) |>
   knitr::kable(caption = "Clearance is identical across dose levels within each species, as a linear model requires.")
 ```
 
@@ -549,7 +550,9 @@ fitted number appears in no table, figure caption or text, and the article has
 no supplementary material. It was recovered here by digitising the median line
 of Figure 4J and solving for the `PS` that reproduces it; the optimiser returns
 0.499 mL/min against the authors' evident round value of 0.5, and at `PS = 0.5`
-the model matches the digitised curve to within about 5% (table above). Because
+the model matches the digitised curve to
+`r sprintf("%.0f%%", mean(abs(ps_cmp$"% diff")))` on average and
+`r sprintf("%.0f%%", max(abs(ps_cmp$"% diff")))` at worst (table above). Because
 `PS` governs distribution and not elimination, **AUC and clearance are
 mathematically independent of it** -- the back-solve affects the adipose
 profile and the terminal phase only, and none of the AUC or clearance validation
@@ -562,30 +565,123 @@ own equations, and the profiles show the equations are right.** The packaged
 implementation reproduces the human Table 3 predictions to within about 2% on
 Cmax, AUC and clearance at all three doses, and reproduces all eight of the
 paper's Results 3.1.3 organ clearances exactly. For rats and dogs, however, the
-simulated AUC to infinity is a constant 1.93-fold higher than the Table 3
-predicted column at *every* dose level, even though the predicted rat terminal
-half-life matches (58.7 min simulated versus 58.2 reported). Two further
-observations locate the problem in the Table 3 summary rather than in the model:
+simulated AUC to infinity is systematically higher than the Table 3 predicted
+column -- by the *same* factor at every dose level within a species, though a
+different factor between the two species -- even though the predicted terminal
+half-lives match. Every number quoted in this section is computed below rather
+than transcribed, so it cannot drift out of step with the packaged models.
+
+```{r table3-window}
+trapz <- function(t, conc) sum(diff(t) * (head(conc, -1) + tail(conc, -1)) / 2)
+
+published_auc <- published |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::select(species, dose_label, `Table 3 predicted` = PPORRES)
+
+auc_window <- sims |>
+  dplyr::filter(species != "human") |>
+  dplyr::group_by(species, dose_label) |>
+  dplyr::summarise(
+    `Model AUC(0-inf)`  = trapz(time, Cc),
+    `Model AUC(5-inf)`  = trapz(time[time >= 5], Cc[time >= 5]),
+    .groups = "drop"
+  ) |>
+  dplyr::inner_join(published_auc, by = c("species", "dose_label")) |>
+  dplyr::mutate(
+    `Model / Table 3` = `Model AUC(0-inf)` / `Table 3 predicted`,
+    `Table 3 within window range` =
+      `Table 3 predicted` > `Model AUC(5-inf)` &
+      `Table 3 predicted` < `Model AUC(0-inf)`
+  )
+
+auc_window |>
+  dplyr::rename("Species" = species, "Dose" = dose_label) |>
+  knitr::kable(
+    digits = c(0, 0, 3, 3, 2, 3, 0),
+    caption = paste(
+    "Zhu 2024 Table 3's predicted animal AUC against the packaged model's AUC",
+    "over two windows (mg*min/L). The ratio is constant across doses within a",
+      "species -- as a linear model requires -- and Table 3 falls between the",
+      "model's AUC from 5 min onward and its AUC to infinity in every arm."
+    )
+  )
+```
+
+```{r table3-window-gate}
+# The overprediction must be a pure scale factor within each species (linear
+# model), and the sampling-window explanation must actually hold in every arm.
+ratio_spread <- auc_window |>
+  dplyr::group_by(species) |>
+  dplyr::summarise(spread = diff(range(`Model / Table 3`)), .groups = "drop")
+stopifnot(
+  nrow(auc_window) == 6L,
+  all(auc_window$`Table 3 within window range`),
+  max(ratio_spread$spread) < 0.01
+)
+```
+
+```{r table3-ratios, echo = FALSE}
+ratio_by_species <- auc_window |>
+  dplyr::group_by(species) |>
+  dplyr::summarise(ratio = mean(`Model / Table 3`), .groups = "drop")
+rat_ratio <- ratio_by_species$ratio[ratio_by_species$species == "rat"]
+dog_ratio <- ratio_by_species$ratio[ratio_by_species$species == "dog"]
+
+hl_sim_rat <- nca$PPORRES[nca$species == "rat" & nca$dose_label == "1 mg/kg" &
+                            nca$PPTESTCD == "half.life"]
+# Plasma clearance implied by the packaged rat model, mL/min/kg.
+rat_model_cl <- with(
+  auc_window[auc_window$species == "rat" & auc_window$dose_label == "1 mg/kg", ],
+  1 * 0.25 / `Model AUC(0-inf)` / 0.25 * 1000
+)
+```
+
+The factor is `r sprintf("%.2f", rat_ratio)`-fold in the rat and
+`r sprintf("%.2f", dog_ratio)`-fold in the dog, while the predicted rat terminal
+half-life matches (`r sprintf("%.1f", hl_sim_rat)` min simulated versus 58.2
+reported). Two further observations locate the problem in the Table 3 summary
+rather than in the model:
 
 * The paper's own stated systemic clearance for the rat -- 75.0 mL/min/kg,
-  Results 3.1.3 -- agrees with the implemented equations, whereas Table 3's
-  predicted rat clearance of 129-132 mL/min/kg does not. The two numbers appear
-  in the same paper and are mutually inconsistent, since AUC = Dose / CL.
-* Digitising the rat plasma profile of Figure 4A gives 107, 51.3 and 29.8 ng/mL
-  at 30, 60 and 90 min, against 110, 49.6 and 30.0 ng/mL from the packaged
-  model. The *figures* therefore agree with the printed equations; only the
-  Table 3 AUC/CL column for the animal species does not.
+  Results 3.1.3 -- agrees with the implemented equations, which give
+  `r sprintf("%.0f", rat_model_cl)` mL/min/kg of plasma clearance (the small
+  residual gap is the blood-to-plasma ratio plus sequential gut-to-liver
+  extraction, neither of which the paper's simple sum of organ clearances
+  captures). Table 3's predicted rat clearance of 129-132 mL/min/kg agrees with
+  neither. The two numbers appear in the same paper and are mutually
+  inconsistent, since AUC = Dose / CL.
+* The rat plasma profile of Figure 4A agrees with the packaged model, so the
+  *figures* support the printed equations; only the Table 3 AUC/CL column for
+  the animal species does not.
+
+```{r fig4a-check}
+fig4a <- tibble::tibble(
+  time = c(30, 60, 90),
+  `Digitised Fig 4A (ng/mL)` = c(107, 51.3, 29.8)   # rat plasma, 2 mg/kg
+) |>
+  dplyr::mutate(
+    `Model (ng/mL)` = approx(rat2$time, rat2$Cc * 1000, xout = time)$y,
+    `% diff` = 100 * (`Model (ng/mL)` - `Digitised Fig 4A (ng/mL)`) /
+      `Digitised Fig 4A (ng/mL)`
+  ) |>
+  dplyr::rename("Time (min)" = time)
+
+knitr::kable(fig4a, digits = c(0, 1, 1, 1),
+             caption = "Packaged rat model versus the digitised Figure 4A plasma profile (2 mg/kg IV bolus).")
+stopifnot(max(abs(fig4a$`% diff`)) < 15)
+```
 
 The most likely mechanism is the sampling window. Rats and dogs received an IV
 **bolus** with the first sample at 5 min, so an NCA that starts at the first
 observed concentration misses the steep 0-5 min distribution phase entirely;
 humans received a 1 h **infusion**, which has no such spike, and their numbers
 reconcile. Consistent with this, the paper's rat and dog predicted AUC values
-sit between the model's AUC to infinity and its AUC computed from 5 min onward.
-Following the standing policy that a printed equation outranks a conflicting
-summary, the equations as printed are what is implemented; the rat and dog AUC
-rows of the comparison table above are starred for this reason and should not be
-read as an implementation defect.
+sit between the model's AUC to infinity and its AUC computed from 5 min onward
+in every arm -- which the table above checks explicitly. Following the standing
+policy that a printed equation outranks a conflicting summary, the equations as
+printed are what is implemented; the rat and dog AUC rows of the comparison
+table above are starred for this reason and should not be read as an
+implementation defect.
 
 **3. Dog multiple-dose regimen is stated inconsistently.** Methods 2.3.3 says
 the dogs received 1 mg/kg qd for 7 days; Table 3 labels the dog multiple-dose row
