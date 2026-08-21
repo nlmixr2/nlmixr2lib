@@ -362,9 +362,33 @@ Median Tmax is about
 `r round(0.283 + 1.95, 2)` h expected for the typical individual, which is the
 right-skew effect noted above rather than a discrepancy: with lognormal IIV of
 121.7% CV on the lag time and 90.8% CV on the zero-order duration, the median
-subject's `tlag + d1` is longer than the sum of the population medians. Cmax and
-Cmin move in opposite directions across the renal-function arms while AUC0-12
-rises monotonically as renal function falls, exactly as Equation 7 requires.
+subject's `tlag + d1` is longer than the sum of the population medians. Cmax,
+Cmin, Cavg and AUC0-12 all rise monotonically as renal function falls, exactly
+as Equation 7 requires, and Cmin rises proportionally faster than Cmax, so the
+peak-to-trough fluctuation narrows with worsening renal function -- the
+signature of increased accumulation over the fixed 12 h interval as clearance
+drops. Both claims are asserted rather than left as prose:
+
+```{r nca-monotonicity}
+ord <- nca_med |> arrange(match(arm, paste0("CLcr ", crcl_levels, " mL/min/70 kg")))
+mono <- tibble(
+  Metric = c("Cmax,ss", "Cmin,ss", "Cavg,ss", "AUC0-12", "Cmax/Cmin"),
+  `CLcr 25` = c(ord$cmax[1], ord$cmin[1], ord$cav[1], ord$auclast[1], ord$cmax[1] / ord$cmin[1]),
+  `CLcr 100` = c(ord$cmax[4], ord$cmin[4], ord$cav[4], ord$auclast[4], ord$cmax[4] / ord$cmin[4])
+)
+mono$`Ratio 25/100` <- mono$`CLcr 25` / mono$`CLcr 100`
+knitr::kable(mono, digits = 2)
+
+# Every exposure metric decreases strictly as renal function improves ...
+stopifnot(
+  all(diff(ord$cmax) < 0), all(diff(ord$cmin) < 0),
+  all(diff(ord$cav) < 0), all(diff(ord$auclast) < 0)
+)
+# ... and the peak-to-trough fluctuation widens strictly in the same direction,
+# i.e. Cmin falls faster than Cmax.
+stopifnot(all(diff(ord$cmax / ord$cmin) > 0))
+```
+
 
 ## Gate 1 -- AUC0-12 against the paper's Equation 7
 
