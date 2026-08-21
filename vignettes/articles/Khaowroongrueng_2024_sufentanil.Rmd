@@ -178,10 +178,15 @@ events <- dplyr::bind_rows(
   as.data.frame()
 
 # Disjoint-ID guard, and confirm the indicators never overlap.
+# Every id must belong to exactly one arm: a shared id across arms would
+# silently merge two subjects into one receiving the summed dose history.
 stopifnot(
-  !anyDuplicated(unique(events[, c("id", "time", "evid")])),
+  all(tapply(events$arm, events$id, dplyr::n_distinct) == 1L),
   all(events$CPB_ON + events$CPB_REWARM <= 1L),
-  dplyr::n_distinct(events$id) == 2L * n_per_arm
+  dplyr::n_distinct(events$id) == 2L * n_per_arm,
+  # The counterfactual arm must never switch either indicator on.
+  all(events$CPB_ON[events$arm != "CPB surgery"] == 0L),
+  all(events$CPB_REWARM[events$arm != "CPB surgery"] == 0L)
 )
 ```
 
