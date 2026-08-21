@@ -2596,6 +2596,8 @@ navbar:
         href: articles/Kirubakaran_2022_tacrolimus.html
       - text: "Tacrolimus (Lu 2015)"
         href: articles/Lu_2015_tacrolimus.html
+      - text: "Tacrolimus (Miano 2024)"
+        href: articles/Miano_2024_tacrolimus.html
       - text: "Tacrolimus (Moes 2016)"
         href: articles/Moes_2016_tacrolimus.html
       - text: "Tacrolimus (MohammedAli 2023)"
@@ -3866,6 +3868,7 @@ articles:
   - articles/Mercier_2014_tramadol_tapentadol
   - articles/Mi_2023_cefquinome_pbpk
   - articles/Mi_2024_aditoprim
+  - articles/Miano_2024_tacrolimus
   - articles/Milakovic_2024_linezolid
   - articles/Milosheska_2016_lamotrigine
   - articles/Minichmayr_2024_ceftaroline
