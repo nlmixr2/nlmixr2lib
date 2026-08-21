@@ -194,7 +194,7 @@ events <- Map(
   as.data.frame()
 
 # Disjoint-ID guard (duplicate ids across arms silently merge into one subject).
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 stopifnot(length(unique(events$id)) == n_per_group * nrow(fig6_design))
 ```
 
