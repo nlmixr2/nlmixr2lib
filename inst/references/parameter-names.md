@@ -1231,12 +1231,21 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** IDR / TGI template family.
 - **Notes:** Codified 2026-05-28 per the naming audit (replaces the five legacy names listed above).
 
+### fe (**canonical fraction of drug excreted unchanged in urine**)
+- **Type:** paper-named-param
+- **Role:** Fraction of systemically available drug excreted unchanged in the urine; unitless, in [0, 1]. The renal share of total clearance, and therefore the natural coefficient for splitting a total clearance into a renal and a non-renal (usually hepatic-metabolic) arm: `CLi = CL * (fe * RENALFUNC_REL + (1 - fe) * HEPFUNC_REL)`. Normally held `fixed()`, because it is a mass-balance property of the compound (a urinary-recovery or radiolabel ADME measurement, or -- where no human value exists -- an animal renal-clearance-to-total-clearance ratio) rather than a quantity the model estimates.
+- **Source aliases:**
+  - `NFE` / `nfe` -- "normal fraction excreted unchanged (in healthy volunteers)", the Edsim++ / MwPharm `ORG` organ-function-object symbol. Same orientation and scale, no transformation. The "normal / healthy volunteer" qualifier is a statement about the *study population* the value was measured in, not a different quantity: record it in the model's `description` and in the parameter's source-trace comment, following the register's convention of carrying population context in `covariateData` / `description` rather than in the canonical name.
+  - `fe,u`, `Fe`, `fu,r` -- assorted paper spellings for urinary recovery of unchanged drug.
+- **Example models:** `Visscher_2025_parathyroidHormone.R` (founding example; `fe <- fixed(0.3)`, the healthy-subject renal share of rhPTH(1-84) total clearance, taken from Hruska et al's canine estimate that renal clearance is on average 30% of total clearance, and used as the reference against which `RENALFUNC_REL` scales the renal arm of Visscher 2025 Eq. 3).
+- **Notes:** Ratified 2026-08-20 alongside the Visscher 2025 rhPTH(1-84) extraction (sidecar request-001 / response-001, question q2, operator answer B -- the generic `fe` was chosen over the paper symbol `nfe` so the obvious generic name is not left unclaimed for the many future renal-elimination models that will want it). Distinct from `fu` (fraction unbound in *plasma*, a protein-binding property) and from `fm` (fraction metabolised through a named pathway): `fe` is a whole-body excretion mass-balance fraction. Distinct also from the covariates `RENALFUNC_REL` / `HEPFUNC_REL`, which are per-subject organ-function multipliers -- `fe` sets how much of the clearance each of those multipliers governs, while the covariates set how far that arm departs from normal. Pairs naturally with both.
+
 ### fu (**canonical fraction unbound in plasma**)
 - **Type:** paper-named-param
 - **Role:** Fraction unbound in plasma; fixed unitless multiplier (in [0, 1]) used in cerebral-microdialysis-style CNS-distribution models where only free drug crosses the BBB.
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
-- **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`.
+- **Notes:** Usually held fixed at the in-vitro equilibrium-dialysis-derived value. The BBB transfer term is `CLin * fu * Cp`. Distinct from `fe` (fraction excreted unchanged in urine, a whole-body mass-balance fraction).
 
 ### mic (**canonical minimum inhibitory concentration**)
 - **Type:** paper-named-param
