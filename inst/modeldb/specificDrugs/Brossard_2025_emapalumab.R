@@ -168,9 +168,6 @@ Brossard_2025_emapalumab <- function() {
     etalkdeg_ferritin ~ 0.136900                                                                               # Table 2 Ferritin Degradation rate IIV 0.37 -> 0.37^2
 
     # --- PD: emapalumab potency ---------------------------------------------
-    # PENDING SIDECAR request-002 (q1 of request-001 was deferred by the
-    # operator as a data-provenance question and left unanswered).
-    #
     # Brossard 2025 reports Imax for each marker but NO potency (IC50 / EC50)
     # for the emapalumab-concentration-to-inhibition link, and prints no
     # equations at all. Methods 2.2 nevertheless states that "emapalumab
@@ -184,7 +181,9 @@ Brossard_2025_emapalumab <- function() {
     # of magnitude above it, so over the observed 0-56 day window this is
     # numerically indistinguishable from fully-saturated inhibition; the two
     # readings differ only on extrapolation to lower doses or to washout.
-    # Do not ship without an operator decision.
+    # A single shared potency is used for all three markers, with the three
+    # published Imax values carrying the marker-specific extent of inhibition.
+    # It is held fixed() so it can never be read as a fit to this dataset.
     lec50 <- fixed(log(0.0248)); label("Emapalumab concentration giving half-maximal inhibition of PD marker production (ug/mL)")  # NOT FROM THIS PAPER - Jacqmin 2022 Supplementary Table 7; see vignette Errata
   })
 

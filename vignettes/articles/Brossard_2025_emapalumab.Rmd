@@ -783,15 +783,18 @@ rather than shortened by target-mediated disposition as in primary HLH.
   states that "emapalumab concentrations were assumed to affect (inhibit) PD
   marker production rates", and Figure 1 draws the central compartment acting on
   all three production arrows, so a concentration-driven link exists but its
-  potency was never reported. The model file currently fixes `lec50` at
+  potency was never reported. The model file therefore fixes `lec50` at
   **0.0248 ug/mL, imported from the upstream primary-HLH analysis** (Jacqmin et
   al. 2022, Br J Clin Pharmacol 88:2128-2139, Supplementary Table 7, IC50 =
-  24.8 ng/mL) and **not from this paper**. Emapalumab troughs in this regimen
-  sit roughly three orders of magnitude above that value, so over the observed
+  24.8 ng/mL) and **not from this paper**. One shared potency serves all three
+  markers, with the three published Imax values (98.3%, 87.3%, 99.6%) carrying
+  the marker-specific extent of inhibition; it is held `fixed()` so it cannot be
+  mistaken for a fit to this dataset. Emapalumab troughs in this regimen sit
+  roughly three orders of magnitude above that value, so over the observed
   0-56 day window this is numerically indistinguishable from treating inhibition
   as fully saturated; the two readings diverge only when extrapolating to lower
-  doses or well into washout. This choice is pending an operator decision and
-  should be reviewed before the model is used for dose exploration.
+  doses or well into washout. Any use of this model for dose exploration below
+  the studied regimen rests on that imported potency, not on Brossard 2025.
 * **Terminal half-life runs 6-12% below the published values while clearance
   matches to 0.15%.** For the upstream reference patient the model returns
   terminal half-lives of 16.9 / 12.2 / 6.4 / 2.9 days against the published
