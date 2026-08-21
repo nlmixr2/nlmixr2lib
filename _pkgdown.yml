@@ -1248,6 +1248,10 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Higenamine (Feng 2012)"
         href: articles/Feng_2012_higenamine.html
+      - text: "Hosu53 dog (Na 2025)"
+        href: articles/Na_2025_hosu53.html
+      - text: "Hosu53 mouse (Na 2025)"
+        href: articles/Na_2025_hosu53.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
       - text: "Hydroxychloroquine (Carmichael 2003)"
@@ -3914,6 +3918,7 @@ articles:
   - articles/NA_NA_tte_gompertz_ev2
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
+  - articles/Na_2025_hosu53
   - articles/Nader_2017_adalimumab
   - articles/Nagy_2017_obiltoxaximab
   - articles/Naik_2013_fasiglifam

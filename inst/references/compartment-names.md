@@ -524,6 +524,23 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 
 ## Endogenous metabolic species
 
+### dho (**canonical plasma dihydroorotate turnover pool**)
+- **Type:** compartment
+- **Role:** Plasma dihydroorotate (DHO), the substrate of dihydroorotate dehydrogenase (DHODH) and the class pharmacodynamic biomarker for DHODH inhibitors. Carried as an indirect-response turnover pool whose first-order degradation rate (`kout`, the DHODH-catalysed oxidation of DHO to orotate) is inhibited by drug, so DHO *accumulates* under inhibition rather than being depleted. State holds a concentration (umol/L). Initialised at the drug-free steady state: `dho(0) <- rbase` with `kin = rbase * kout`.
+- **Source aliases:**
+  - `DHO` -- universal abbreviation in the DHODH-inhibitor literature.
+  - `dihydroorotate` -- expanded form used in figure axes and assay descriptions.
+  - `R` -- the generic response symbol used in the printed indirect-response equation of the founding paper.
+- **Example models:** `Na_2025_hosu53_dog.R` and `Na_2025_hosu53_mouse.R` (doi:10.3390/pharmaceutics17040412; `d/dt(dho) = kin - kout * (1 - Cc^hill / (Cc^hill + ic50^hill)) * dho`, `dho(0) = rbase`, `kin = rbase * kout`).
+- **Notes:** Registered 2026-08-21 (sidecar `oare_PMC12030426` request-001 q1, option A). Registered as a general canonical rather than declared via `paper_specific_compartments` because plasma DHO is the shared PD biomarker of the whole DHODH-inhibitor class -- leflunomide / teriflunomide, brequinar, BAY2402234, and RP7214 all read out on it, and the founding paper's own Discussion compares DHO levels across four of them -- so subsequent DHODH-inhibitor extractions reuse this name instead of re-litigating it. Because inhibition *blocks* DHO consumption, the steady-state relation under a held drug concentration is `dho_ss = rbase * (1 + (Cc/ic50)^hill)`, i.e. DHO rises to a plateau; do not encode a DHODH inhibitor as a production-inhibition (`kin`-suppression) model. Distinct from the `DHODH_HAP2` and `DHODH_RS3213422` covariate columns of `Hopkins_2015_leflunomide.R`, which are host *genotypes*, not a biomarker state. `DHO` is the canonical UPPERCASE observation-output sibling (next entry).
+
+### DHO (**canonical uppercase plasma-dihydroorotate observation output**)
+- **Type:** compartment
+- **Role:** Uppercase observation-output sibling of `dho`, for models that expose the plasma-dihydroorotate biomarker as a separate uppercase observable (`DHO <- dho; DHO ~ prop(propSd_DHO)`) rather than fitting the lowercase ODE state directly. See the `dho` entry above for the quantity, the mechanism, and the units.
+- **Source aliases:** none.
+- **Example models:** `Na_2025_hosu53_dog.R` and `Na_2025_hosu53_mouse.R` observe the lowercase state directly (`dho ~ prop(propSd_dho)`), which is equally permitted; no shipped model yet uses the uppercase form.
+- **Notes:** Registered 2026-08-21 alongside `dho`. Exactly parallel to the registered `ANC` / `anc` and `PRU` / `pru` pairs: the uppercase form is the clinical-acronym observable, the lowercase form is the ODE state. The split is required because `checkModelConventions()` enforces lowercase ODE-state names while biomarker observables in this register are conventionally uppercase. Registered pre-emptively so that a later DHODH-inhibitor extraction reporting DHO as a named clinical endpoint does not have to re-open the naming question.
+
 ### glucose (**canonical plasma glucose**)
 - **Type:** compartment
 - **Role:** Endogenous plasma glucose used by glucose / lactate turnover sub-models with drug-stimulated production. State holds a concentration (mmol/L), mirroring the source paper's mass-balance parameterisation. Also used by integrated glucose-insulin homeostasis models (e.g., Silber 2007 framework, Hong 2013 HGC / MTT models) as the dynamic-state glucose amount or concentration; per-model `units` field documents which.

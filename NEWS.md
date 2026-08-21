@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Na 2025 HOSU-53 (JBZ-001) PK/PD models ([doi:10.3390/pharmaceutics17040412](https://doi.org/10.3390/pharmaceutics17040412)) -- mice and beagle dogs.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
