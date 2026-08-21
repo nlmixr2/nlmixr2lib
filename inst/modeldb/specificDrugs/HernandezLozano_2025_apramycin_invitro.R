@@ -4,6 +4,11 @@ HernandezLozano_2025_apramycin_invitro <- function() {
   vignette <- "HernandezLozano_2025_apramycin"
   units <- list(time = "h", dosing = "mg/L (bath concentration)", concentration = "mg/L")
 
+  # Declared explicitly because the dosing target is neither `depot` nor
+  # `central`: this is a static in vitro system, so the "dose" is the bath
+  # concentration placed directly into the `apramycin` state at time 0.
+  dosing <- c("apramycin")
+
   # Bacterial states follow the notation of Figure 1: subpopulation 1 is the
   # main, apramycin-susceptible population and subpopulation 2 the
   # less-susceptible ("resistant") one; within each, S is the growing
