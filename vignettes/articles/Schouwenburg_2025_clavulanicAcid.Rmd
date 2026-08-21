@@ -236,8 +236,10 @@ events4 <- dplyr::bind_rows(Map(
 ))
 
 # Disjoint IDs across arms are mandatory: duplicate IDs silently merge into a
-# single subject receiving the summed dose.
-stopifnot(!anyDuplicated(unique(events4[, c("id", "time", "evid")])))
+# single subject receiving the summed dose. Check anyDuplicated() on the frame
+# itself -- wrapping it in unique() first would deduplicate the very rows the
+# gate is looking for, so the assertion could never go red.
+stopifnot(!anyDuplicated(events4[, c("id", "time", "evid")]))
 cat("arms:", dplyr::n_distinct(events4$arm),
     " subjects:", dplyr::n_distinct(events4$id),
     " rows:", nrow(events4), "\n")
@@ -545,7 +547,7 @@ ev_nca <- dplyr::bind_rows(lapply(seq_len(nrow(nca_grid)), function(i) {
   ev$treatment <- r$treatment
   ev
 }))
-stopifnot(!anyDuplicated(unique(ev_nca[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(ev_nca[, c("id", "time", "evid")]))
 
 sim_nca_raw <- rxode2::rxSolve(ui, events = ev_nca, omega = NA,
                                keep = c("treatment", "WT")) |>
