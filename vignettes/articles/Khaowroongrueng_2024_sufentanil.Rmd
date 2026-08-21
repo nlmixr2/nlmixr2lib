@@ -349,13 +349,116 @@ ggplot(fig3, aes(time, Mean, colour = arm, fill = arm)) +
   theme(legend.position = "top", plot.caption = element_text(hjust = 0))
 ```
 
-The CPB arm shows the two features the paper describes: an abrupt drop in
-concentration at CPB commencement despite the 60 ug bolus (V1 increases
-2.74-fold by hemodilution), and a faster decline through CPB and rewarming
-(clearance increased 2.80-fold). The counterfactual no-CPB arm, which receives
-the same doses, stays well above the anaesthesia band through the bypass window
--- which is the paper's argument that a regimen derived from non-CPB patients is
-"not suitable" for cardiac surgery with CPB.
+The two CPB effects act in opposite directions at commencement, so the net step
+is computed rather than asserted. Results states the extra 60 ug bolus was given
+"to account for the hemodilution effect", i.e. it is meant to offset the
+2.74-fold rise in V1; whether it under- or over-compensates is a quantitative
+question about this model.
+
+```{r cpb-onset}
+mean_cc <- function(t, arm_name) {
+  mean(sim$Cc[sim$arm == arm_name & abs(sim$time - t) < 1e-9], na.rm = TRUE)
+}
+
+# Mean central amount just before CPB, used to build the "dilution alone"
+# counterfactual: what the concentration would have been at commencement had
+# the 60 ug bolus not been given and only the 2.74-fold V1 step applied.
+amt_pre  <- mean(sim$central[sim$arm == "CPB surgery" &
+                             abs(sim$time - (t_cpb_start - eps)) < 1e-9])
+dilution_only <- amt_pre / (72.5 * 2.74)
+
+cc_pre    <- mean_cc(t_cpb_start - eps, "CPB surgery")
+cc_onset  <- mean_cc(t_cpb_start,       "CPB surgery")
+onset_pct <- 100 * (cc_onset / cc_pre - 1)
+
+onset <- tibble::tibble(
+  Quantity = c(
+    "CPB arm, just before CPB (2.5 h)",
+    "CPB arm, at commencement (2.74-fold V1 step + 60 ug bolus)",
+    "Counterfactual: 2.74-fold dilution alone, no bolus",
+    "CPB arm, end of CPB (4.0 h, before V1 reverts)",
+    "CPB arm, start of rewarming (V1 reverts to baseline)",
+    "No-CPB arm, at CPB start (2.5 h)",
+    "No-CPB arm, at CPB end (5.0 h)"
+  ),
+  `Mean Cc (ng/mL)` = c(
+    cc_pre, cc_onset, dilution_only,
+    mean_cc(t_rewarm - eps, "CPB surgery"),
+    mean_cc(t_rewarm,       "CPB surgery"),
+    mean_cc(t_cpb_start,    "No CPB (counterfactual)"),
+    mean_cc(t_cpb_end,      "No CPB (counterfactual)")
+  )
+)
+
+knitr::kable(onset, digits = 3, caption = paste(
+  "Mean simulated concentrations across the bypass window. The",
+  "dilution-alone row is a counterfactual, not a simulated arm: it applies",
+  "the 2.74-fold V1 step to the observed pre-CPB amount without the 60 ug",
+  "bolus."
+))
+
+# When the counterfactual arm's mean profile drops back below the 0.6 ng/mL
+# anaesthesia ceiling, expressed as a fraction of the way through the bypass
+# window. Quoted in the narrative below.
+noc <- sim |>
+  dplyr::filter(arm == "No CPB (counterfactual)", !is.na(Cc),
+                time >= t_cpb_start, time <= t_cpb_end) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(mean_cc = mean(Cc), .groups = "drop")
+t_cross  <- min(noc$time[noc$mean_cc < 0.6])
+frac_win <- (t_cross - t_cpb_start) / (t_cpb_end - t_cpb_start)
+
+# Monte-Carlo precision of the mean profile at this cohort size: the largest
+# standard error of the mean across the observation grid, as a percentage of the
+# mean at that time. Quoted in "Assumptions and deviations" below.
+sem_max <- sim |>
+  dplyr::filter(arm == "CPB surgery", !is.na(Cc), time > 0) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(sem_pct = 100 * sd(Cc) / sqrt(dplyr::n()) / mean(Cc),
+                   .groups = "drop") |>
+  dplyr::pull(sem_pct) |>
+  max()
+
+stopifnot(
+  # The bolus more than offsets hemodilution: the net step at commencement is UP.
+  onset_pct > 0,
+  # Dilution alone would have cut the concentration by more than half.
+  dilution_only < 0.5 * cc_pre,
+  # Clearance is 2.80-fold higher through CPB, so the decline is faster: the
+  # concentration must fall below its pre-CPB level by the end of the phase.
+  mean_cc(t_rewarm - eps, "CPB surgery") < cc_pre,
+  # The counterfactual arm never drops below the CPB arm during the window.
+  mean_cc(t_cpb_start, "No CPB (counterfactual)") > cc_onset
+)
+```
+
+The 60 ug bolus therefore **over**-compensates: the mean concentration steps
+*up* by `r sprintf("%.1f%%", onset_pct)` at commencement
+(`r sprintf("%.3f", cc_pre)` to `r sprintf("%.3f", cc_onset)` ng/mL), whereas the
+2.74-fold dilution acting alone would have taken it to
+`r sprintf("%.3f", dilution_only)` ng/mL. What the CPB arm does show is the
+second effect, the 2.80-fold clearance increase: the concentration falls from
+`r sprintf("%.3f", cc_onset)` to
+`r sprintf("%.3f", mean_cc(t_rewarm - eps, "CPB surgery"))` ng/mL over the 1.5 h
+bypass phase, well below its pre-CPB level. V1 then reverts at the start of
+rewarming and the concentration jumps to
+`r sprintf("%.3f", mean_cc(t_rewarm, "CPB surgery"))` ng/mL, the highest mean in
+this arm -- which is why the NCA table above reports Tmax at 4.0 h rather than at
+a dosing time.
+
+The counterfactual no-CPB arm, receiving an identical dosing history, runs above
+the CPB arm throughout the bypass window
+(`r sprintf("%.3f", mean_cc(t_cpb_start, "No CPB (counterfactual)"))` ng/mL at
+CPB start, declining to
+`r sprintf("%.3f", mean_cc(t_cpb_end, "No CPB (counterfactual)"))` ng/mL by CPB
+end) -- it starts well above the 0.6 ng/mL anaesthesia ceiling and does not drop
+back into the 0.3-0.6 band until `r sprintf("%.2f", t_cross)` h, about
+`r sprintf("%.0f%%", 100 * frac_win)` of the way through the window. This is the
+model-side
+counterpart of the paper's Discussion claim that "using pharmacokinetic
+parameters obtained from patients undergoing general anesthesia for sufentanil
+TCI during cardiac surgery with CPB is not suitable": ignoring the phase effects
+overstates exposure during bypass.
 
 # PKNCA validation
 
@@ -464,8 +567,9 @@ comparison |>
   ))
 
 # The end-of-surgery target is the paper's most specific quantitative claim
-# about this regimen: halting the infusion at 6 h "aligns with a target
-# concentration of 0.15 ng/mL at the conclusion of the surgery".
+# about this regimen: Results recommends the infusion "be halted after 6 h,
+# aligning with a target concentration of 0.15 ng/mL at the conclusion of the
+# surgery", on the assumption that surgery concludes within 1.5 h of cessation.
 stopifnot(
   cc_at(t_surg_end) > 0.12, cc_at(t_surg_end) < 0.19,
   # Mean exposure across the surgical window sits inside the anaesthesia band.
@@ -473,34 +577,48 @@ stopifnot(
 )
 ```
 
-The end-of-surgery concentration (0.165 ng/mL) and the mean over the surgical
-window (0.373 ng/mL) both land where the paper says they should. The pre-CPB
-value does not: at 0.430 ng/mL it sits below the "at least 0.5-0.7 ng/mL"
-figure quoted in Methods, "Simulations".
+The end-of-surgery concentration (`r sprintf("%.3f", cc_at(t_surg_end))` ng/mL)
+and the mean over the surgical window (`r sprintf("%.3f", mean(maint))` ng/mL)
+both land where the paper says they should. The pre-CPB value does not: at
+`r sprintf("%.3f", cc_at(t_cpb_start - eps))` ng/mL it sits below the "at least
+0.5-0.7 ng/mL" figure quoted in Methods, "Simulations".
 
-Methods ties that figure to two doses jointly: "doses of sufentanil were varied
-to propose a loading dose (25-40 ug) and an additional IV bolus dose (50-80 ug)
-corresponding to a target concentration of at least 0.5-0.7 ng/mL for pre-CPB
-control". The band itself is carried over from the literature (the paper's
-reference 25, Hudson et al.), not estimated here. Sweeping both doses across the
-ranges the paper explored locates where the band is reachable.
+Methods ties that figure to three quantities jointly: "doses of sufentanil were
+varied to propose a loading dose (25-40 ug) and an additional IV bolus dose
+(50-80 ug) corresponding to a target concentration of at least 0.5-0.7 ng/mL for
+pre-CPB control, and an infusion rate (30-45 ug/h) corresponding to a target
+concentration of 0.3-0.6 ng/mL for adequate anesthesia". The band itself is
+carried over from the literature (the paper's reference 25, Hudson et al.), not
+estimated here. The sweep below therefore spans the full grid the paper explored
+-- all three ranges, not just the two bolus doses -- so that the question "is the
+band reachable anywhere in the explored space?" is actually tested rather than
+assumed.
 
 ```{r dose-sweep}
-sweep_grid <- tidyr::expand_grid(loading = c(25, 30, 40),
-                                 bolus   = c(50, 60, 80)) |>
+sweep_grid <- tidyr::expand_grid(loading  = c(25, 30, 40),
+                                 bolus    = c(50, 60, 80),
+                                 infusion = c(30, 40, 45)) |>
   dplyr::mutate(i = dplyr::row_number(),
-                arm = paste0(loading, " ug loading + ", bolus, " ug bolus"))
+                arm = paste0(loading, " / ", bolus, " / ", infusion))
 
 ev_sweep <- lapply(seq_len(nrow(sweep_grid)), function(k) {
   g <- sweep_grid[k, ]
   make_arm(1L, arm = g$arm, on_cpb = TRUE, id_offset = 1000L * g$i) |>
-    dplyr::mutate(amt = dplyr::case_when(
-      # The loading bolus is the t = 0 dose record with rate == 0.
-      evid == 1L & time == 0 & rate == 0 ~ g$loading,
-      # The additional bolus is the dose record at CPB commencement.
-      evid == 1L & time == t_cpb_start   ~ g$bolus,
-      TRUE                               ~ amt
-    ))
+    dplyr::mutate(
+      # `amt` is computed before `rate` is overwritten, so the rate == 0 /
+      # rate > 0 tests below still see the original infusion flag.
+      amt = dplyr::case_when(
+        # The loading bolus is the t = 0 dose record with rate == 0.
+        evid == 1L & time == 0 & rate == 0 ~ g$loading,
+        # The infusion is the t = 0 dose record with rate > 0; its total amount
+        # must track the rate so the duration stays at t_inf_stop.
+        evid == 1L & time == 0 & rate >  0 ~ g$infusion * t_inf_stop,
+        # The additional bolus is the dose record at CPB commencement.
+        evid == 1L & time == t_cpb_start   ~ g$bolus,
+        TRUE                               ~ amt
+      ),
+      rate = ifelse(evid == 1L & time == 0 & rate > 0, g$infusion, rate)
+    )
 }) |>
   dplyr::bind_rows() |>
   dplyr::mutate(etalcl = 0) |>
@@ -515,38 +633,71 @@ sweep <- sweep_sim |>
   dplyr::mutate(when = ifelse(time < t_cpb_start, "before", "after")) |>
   dplyr::select(arm, when, Cc) |>
   tidyr::pivot_wider(names_from = when, values_from = Cc) |>
+  dplyr::left_join(sweep_grid, by = "arm") |>
+  dplyr::arrange(infusion, bolus, loading)
+
+# Summary quantities the narrative below quotes, so the prose cannot drift from
+# the table.
+sweep_max_before <- max(sweep$before)
+sweep_n_before   <- sum(sweep$before >= 0.5)
+sweep_n_after    <- sum(sweep$after  >= 0.5)
+# Spread attributable to the loading dose alone, holding bolus and infusion at
+# the recommended 60 ug / 40 ug/h.
+sweep_rec <- sweep |> dplyr::filter(bolus == 60, infusion == 40)
+
+sweep |>
   dplyr::transmute(
-    `Loading + additional bolus`      = arm,
+    `Loading (ug)`                    = loading,
+    `CPB bolus (ug)`                  = bolus,
+    `Infusion (ug/h)`                 = infusion,
     `Cc just before CPB (ng/mL)`      = round(before, 3),
     `Cc just after CPB bolus (ng/mL)` = round(after, 3),
     `Either >= 0.5 ng/mL`             = ifelse(pmax(before, after) >= 0.5,
                                                "yes", "no")
-  )
+  ) |>
+  knitr::kable(caption = paste(
+    "Typical-value concentrations at CPB commencement across the full",
+    "loading-dose, additional-bolus and infusion-rate grid Khaowroongrueng",
+    "2024 explored (Methods, 'Simulations')."
+  ))
 
-knitr::kable(sweep, caption = paste(
-  "Typical-value concentrations at CPB commencement across the loading-dose",
-  "and additional-bolus ranges Khaowroongrueng 2024 explored",
-  "(Methods, 'Simulations')."
-))
+stopifnot(
+  # The claim in the narrative: the pre-CPB band is not reached anywhere in the
+  # explored grid before the additional bolus is given.
+  sweep_n_before == 0L,
+  # It IS reached post-bolus somewhere in the grid.
+  sweep_n_after > 0L
+)
 ```
 
 The sweep shows the pre-CPB concentration is almost insensitive to the loading
 dose: by 2.5 h the loading bolus has largely distributed and cleared (V2 = 390 L,
-CL = 51.8 L/h), so the concentration is set by the 40 ug/h infusion, which has
-not yet reached steady state (`40 / 51.8` = 0.772 ng/mL). It is the **additional
-bolus at CPB commencement** that lifts the concentration into the 0.5-0.7 band,
-and only at the top of the explored 50-80 ug range -- the recommended 60 ug
-bolus gives 0.456 ng/mL immediately after dosing.
+CL = 51.8 L/h), so the level is set mostly by the infusion, which has not yet
+reached steady state (at the recommended 40 ug/h the asymptote is
+`40 / 51.8` = 0.772 ng/mL). Holding the bolus and infusion at the recommended
+60 ug and 40 ug/h, the entire 25-40 ug loading range moves the pre-CPB
+concentration only from `r sprintf("%.3f", min(sweep_rec$before))` to
+`r sprintf("%.3f", max(sweep_rec$before))` ng/mL. It is the **additional bolus at
+CPB commencement** that lifts the concentration into the 0.5-0.7 band, and only
+at the top of the explored 50-80 ug range -- the recommended 60 ug bolus gives
+`r sprintf("%.3f", sweep_rec$after[sweep_rec$loading == 30])` ng/mL immediately
+after dosing.
 
 So the recommended regimen does not attain the pre-CPB band under this model, and
-no combination in the explored grid attains it *before* CPB. Two readings are
-consistent with the paper: either the 0.5-0.7 ng/mL criterion was applied to the
-post-bolus concentration at CPB initiation (where 80 ug reaches it), or the
-recommendation deliberately trades it off, as Results implies by choosing 30 ug
-"considering the target concentrations at various CPB phases". The paper does not
-tabulate its own simulated concentrations, and Figure 3 is a raster image, so
-this cannot be settled from the sources on disk. It is recorded as an open
-discrepancy rather than resolved by adjusting any parameter.
+**no combination anywhere in the paper's explored grid attains it before CPB**:
+across all `r nrow(sweep)` loading / bolus / infusion combinations the highest
+pre-CPB concentration is `r sprintf("%.3f", sweep_max_before)` ng/mL, reached at
+the top of the loading and infusion ranges (40 ug loading, 45 ug/h infusion --
+the additional bolus is given at CPB commencement and so cannot affect the
+pre-CPB value), still short of 0.5. Post-bolus the band is attainable, in
+`r sweep_n_after` of `r nrow(sweep)` combinations. Two readings are consistent
+with the paper: either the 0.5-0.7 ng/mL criterion was applied to the post-bolus
+concentration at CPB initiation, or the recommendation deliberately trades it off,
+as Results implies by choosing 30 ug "considering the target concentrations at
+various CPB phases". The paper does not tabulate its own simulated
+concentrations, and Figure 3 is a raster image, so this cannot be settled from
+the sources on disk. It is recorded as an open discrepancy rather than resolved
+by adjusting any parameter.
 
 # Assumptions and deviations
 
@@ -592,17 +743,27 @@ discrepancy rather than resolved by adjusting any parameter.
 * **Simulation scenario, not observed data.** The observed concentrations are
   not public. The virtual cohort follows the phase timeline and dosing the
   authors specify for their own simulation (Methods, "Simulations"), using
-  200 subjects per arm rather than the paper's 1000 replicates; the mean
-  profile is insensitive to that difference at 24 %CV on clearance alone.
+  200 subjects per arm rather than the paper's 1000 replicates. With IIV on
+  clearance only (24.2 %CV), the Monte-Carlo standard error of the mean profile
+  at 200 per arm peaks at `r sprintf("%.2f%%", sem_max)` of the mean across the
+  observation grid, so the mean profile the figure and tables report is well
+  determined at this cohort size.
 * **OPEN DISCREPANCY -- the pre-CPB "0.5-0.7 ng/mL" target is not attained.**
   The simulated mean concentration just before CPB under the recommended
-  regimen is 0.430 ng/mL (typical value 0.422), against the "at least
-  0.5-0.7 ng/mL for pre-CPB control" quoted in Methods, "Simulations". The dose
-  sweep above shows this is not a loading-dose effect: across the paper's entire
-  explored 25-40 ug loading range the pre-CPB concentration moves only from
-  0.417 to 0.430 ng/mL, because by 2.5 h the bolus has distributed into the
-  390 L peripheral compartment and been cleared at 51.8 L/h, leaving the not-yet
-  steady-state 40 ug/h infusion to set the level. Only the additional bolus at
+  regimen is `r sprintf("%.3f", cc_at(t_cpb_start - eps))` ng/mL (typical value
+  `r sprintf("%.3f", sweep_rec$before[sweep_rec$loading == 30])`), against the
+  "at least 0.5-0.7 ng/mL for pre-CPB control" quoted in Methods,
+  "Simulations". The dose sweep above shows this is not a loading-dose effect:
+  holding the bolus and infusion at their recommended values, the paper's entire
+  25-40 ug loading range moves the pre-CPB concentration only from
+  `r sprintf("%.3f", min(sweep_rec$before))` to
+  `r sprintf("%.3f", max(sweep_rec$before))` ng/mL, because by 2.5 h the bolus
+  has distributed into the 390 L peripheral compartment and been cleared at
+  51.8 L/h, leaving the not-yet steady-state infusion to set the level. Sweeping
+  the paper's full three-way grid (loading, additional bolus and infusion rate)
+  does not close the gap either: the highest pre-CPB concentration anywhere in
+  the `r nrow(sweep)` combinations is
+  `r sprintf("%.3f", sweep_max_before)` ng/mL. Only the additional bolus at
   CPB commencement reaches the band, and only at the top of its explored 50-80 ug
   range. The paper does not tabulate its simulated concentrations and Figure 3 is
   a raster image, so this cannot be settled from the sources on disk. **No
