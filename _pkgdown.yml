@@ -1292,6 +1292,8 @@ navbar:
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Jiang 2023)"
         href: articles/Jiang_2023_imatinib.html
+      - text: "Imatinib (Said 2025)"
+        href: articles/Said_2025_imatinib.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
       - text: "Imetelstat (GonzalezSales 2024)"
@@ -4055,6 +4057,7 @@ articles:
   - articles/Sadaf_2024_glutamine
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Sahota_2015_miridesap
+  - articles/Said_2025_imatinib
   - articles/Sakurai_2007_lansoprazole
   - articles/Saleh_2023_leicns_pk30_mouse_brain
   - articles/Salem_2014_efavirenz
