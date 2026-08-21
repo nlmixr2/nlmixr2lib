@@ -100,6 +100,8 @@ navbar:
         href: articles/Mould_2007_alemtuzumab.html
       - text: "Alemtuzumab wbc (Mould 2007)"
         href: articles/Mould_2007_alemtuzumab.html
+      - text: "Alfentanil pbpk (Han 2025)"
+        href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
       - text: "Alirocumab (Djebli 2017)"
         href: articles/Djebli_2017_alirocumab.html
       - text: "Alirocumab (Martinez 2019)"
@@ -1044,6 +1046,8 @@ navbar:
         href: articles/Oosten_2016_fentanyl.html
       - text: "Fentanyl iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Fentanyl pbpk (Han 2025)"
+        href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
       - text: "Fesoterodine (Oishi 2014)"
@@ -1728,6 +1732,8 @@ navbar:
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
+      - text: "Midazolam pbpk (Han 2025)"
+        href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
       - text: "Miglustat (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Miltefosine (Dorlo 2008)"
@@ -2532,6 +2538,8 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
+      - text: "Sufentanil pbpk (Han 2025)"
+        href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
@@ -3525,6 +3533,7 @@ articles:
   - articles/Han_2015_sibutramine
   - articles/Han_2016_bevacizumab
   - articles/Han_2018_methionineMetabolismCycle
+  - articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk
   - articles/Hanberg_2018_meropenem
   - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_OS

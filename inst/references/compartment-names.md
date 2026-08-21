@@ -834,6 +834,22 @@ The MTP framework partitions the bacterial population into three states. The ori
 - **Source aliases:** none.
 - **Example models:** `NA_NA_paracetamol.R`, `Allegaert_2015_paracetamol.R`.
 
+### cecum (**canonical cecum compartment**)
+- **Type:** compartment
+- **Role:** Cecum compartment in GI-segment absorption models. Canonical large-intestine subsegment immediately downstream of the ileum, completing the `stomach` -> `duodenum` -> `jejunum` -> `ileum` -> `cecum` -> `colon` luminal transit chain.
+- **Source aliases:**
+  - `A4` -- fourth intestinal-lumen transit state in `Han_2025_midazolam_pbpk.R` and its fentanyl / alfentanil / sufentanil siblings (Han 2025 Supplementary Eq S3 and the deposited Supplementary File S2 rxode2 script).
+- **Example models:** `Han_2025_midazolam_pbpk.R`, `Han_2025_fentanyl_pbpk.R`, `Han_2025_alfentanil_pbpk.R`, `Han_2025_sufentanil_pbpk.R`.
+- **Notes:** Routine extension of the registered `duodenum` / `jejunum` / `ileum` small-intestine family to the two large-intestine segments that whole-gut PBPK absorption cascades resolve. Drug absorption is conventionally set to zero in this segment (Han 2025 Section 2.2: "For oral administration, drug absorption only occurs in duodenum, jejunum and ileum"), so the state normally carries transit only. The perfused *wall* of this segment is a separate state; models that resolve it use the `wall_<segment>` paper-specific form set by `Luo_2024_remimazolam_pbpk.R`.
+
+### colon (**canonical colon compartment**)
+- **Type:** compartment
+- **Role:** Colon compartment in GI-segment absorption models. Canonical terminal large-intestine subsegment downstream of the `cecum`; the final state of the luminal transit chain, draining out of the body by faecal transit.
+- **Source aliases:**
+  - `A5` -- fifth intestinal-lumen transit state in `Han_2025_midazolam_pbpk.R` and its fentanyl / alfentanil / sufentanil siblings (Han 2025 Supplementary Eq S3 and the deposited Supplementary File S2 rxode2 script).
+- **Example models:** `Han_2025_midazolam_pbpk.R`, `Han_2025_fentanyl_pbpk.R`, `Han_2025_alfentanil_pbpk.R`, `Han_2025_sufentanil_pbpk.R`.
+- **Notes:** Sibling of `cecum`; see that entry for the family rationale. Distinct from `gut_lumen`, which is a single lumped non-absorbed reservoir used by enterohepatic-recirculation models rather than one segment of a resolved transit chain.
+
 ---
 
 ## PBPK organ-amount compartments (a_<organ> namespace)
