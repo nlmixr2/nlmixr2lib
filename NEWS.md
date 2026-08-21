@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hernandez-Lozano 2025 apramycin translational PKPD models ([doi:10.1093/jac/dkae409](https://doi.org/10.1093/jac/dkae409)) -- in vitro (Escherichia coli EN591 and ATCC 700336), mouse (C3H/HeJ) complicated urinary tract infection, and a simulated human efficacy prediction.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
