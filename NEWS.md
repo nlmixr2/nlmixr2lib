@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Abdullah-Koolmees 2024 voriconazole and posaconazole whole-body PBPK ([doi:10.1007/s13318-024-00916-1](https://doi.org/10.1007/s13318-024-00916-1)) -- a typical 73-kg adult, simulated as healthy, bacterially infected and ICU patient types with and without concomitant flucloxacillin.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.

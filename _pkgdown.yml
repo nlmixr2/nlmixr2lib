@@ -2134,6 +2134,8 @@ navbar:
         href: articles/Shu_2024_posaconazole.html
       - text: "Posaconazole (vanIersel 2018)"
         href: articles/vanIersel_2018_posaconazole.html
+      - text: "Posaconazole pbpk (AbdullahKoolmees 2024)"
+        href: articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi.html
       - text: "Posdinemab (PerezRuixo 2025)"
         href: articles/PerezRuixo_2025_posdinemab.html
       - text: "Pozelimab (Lin 2024)"
@@ -2914,6 +2916,8 @@ navbar:
         href: articles/Muto_2015_voriconazole.html
       - text: "Voriconazole (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Voriconazole pbpk (AbdullahKoolmees 2024)"
+        href: articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi.html
       - text: "Vortioxetine (Naik 2016)"
         href: articles/Naik_2016_vortioxetine.html
       - text: "Vosoritide (Qi 2024)"
@@ -3110,6 +3114,7 @@ articles:
   - articles/Abdelgawad_2024_linezolid
   - articles/AbdulAziz_2016_doripenem
   - articles/Abduljalil_2009_clarithromycin
+  - articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abuqayyas_2012_8C2
