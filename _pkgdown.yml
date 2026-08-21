@@ -1032,6 +1032,8 @@ navbar:
         href: articles/Chen_2024_febuxostat.html
       - text: "Febuxostat (Hirai 2016)"
         href: articles/Hirai_2016_febuxostat.html
+      - text: "Febuxostat (Iwama 2024)"
+        href: articles/Iwama_2024_febuxostat.html
       - text: "Febuxostat lesinurad (HillMcManus 2017)"
         href: articles/HillMcManus_2017_febuxostat_lesinurad.html
       - text: "Felodipine (Henin 2012)"
@@ -3610,6 +3612,7 @@ articles:
   - articles/Iida_2008_nicorandil
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ivaturi_2017_RBP_7000
+  - articles/Iwama_2024_febuxostat
   - articles/Jackson_2022_ixekizumab
   - articles/JacoboCabral_2015_tacrolimus
   - articles/Jacobs_2016_colistin
