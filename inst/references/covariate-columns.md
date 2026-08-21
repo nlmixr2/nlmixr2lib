@@ -9760,6 +9760,17 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Friberg_2012_voriconazole.R` (drives several effects: -0.382 Study-1 pediatric modifier on Km and Vmax,1; non-adult uplift on Q (+0.637); adolescent ka modifier; non-adult CL IIV scaling (+1.70); F1 IIV magnitude switching between adult and non-adult; per-study residual-error switching across the four levels Study 1, Study 2, Studies 3+4, Study 5).
 - **Notes:** Departs from the binary `STUDY1` / `STUDY5` / `STUDY_PKU015` precedent because the Friberg 2012 analysis uses five distinct studies and four of them carry distinct typical-value or residual-error coefficients (Studies 3 and 4 share one residual-error magnitude). Encoding as a single integer column avoids registering five paired binary indicators; the model file derives `(STUDY_VORI == 1)` style indicators inline. Renamed from `STDY_VORI` to `STUDY_VORI` on 2026-06-19 per the canonical-register standardization audit (operator decision: typo correction - `STDY` was a missing-vowel abbreviation of `STUDY`).
 
+### STUDY_SALEM (**canonical for Derippe 2024 mouse venetoclax Salem 2021 ABBV-167 prodrug study indicator**)
+- **Description:** 1 = mouse from Salem 2021 (Mol Cancer Ther 20(6):999-1008), which gave a single 5 mg/kg intravenous dose of the venetoclax prodrug ABBV-167 and measured the venetoclax that appeared from it; 0 = mouse from Eisenmann 2020 (J Chromatogr B 1152:122176), which gave a single 10 mg/kg oral dose of venetoclax itself. Subject-level (time-fixed). The indicator is load-bearing beyond a scale factor because the two structural parameters change physical meaning across its levels: in the Eisenmann cohort `ka` is a first-order oral absorption rate constant and `vc` is a volume of distribution, whereas in the Salem cohort `ka` is the prodrug-to-venetoclax biotransformation rate constant and `vc` additionally absorbs the unknown fraction biotransformed.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (Eisenmann 2020 oral venetoclax study).
+- **Source aliases:**
+  - `Study` -- the column header of the Supplement's "Mice PK modeling" parameter table, whose levels are printed as "Eisenman et al." and "Salem".
+- **Example models:** `Derippe_2024_venetoclax_mouse.R` (carries both a ka effect, 1.65 vs 0.856 1/h, and a volume effect, 3.56 vs 6.54 L/kg).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Must be paired with `SEXF`: the Derippe 2024 supplement treats sex as a three-level covariate on volume (female, male, and "unknown / second experiment"), where the third level is exactly the Salem cohort. The model file multiplies the male volume factor by `(1 - STUDY_SALEM)` so the sex term is inert for Salem rows regardless of what `SEXF` holds there; set `SEXF = 0` for Salem records.
+
 ### ORAL_VORI (**canonical for Friberg 2012 voriconazole observation-during-oral-dose-phase indicator**)
 - **Description:** 1 = observation collected when the most recent administered voriconazole dose was oral (powder for oral suspension or tablet); 0 = observation collected when the most recent administered dose was IV. Per-observation (record-level) indicator.
 - **Units:** (binary)

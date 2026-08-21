@@ -2884,6 +2884,10 @@ navbar:
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Vedolizumab (Waterhouse 2024)"
         href: articles/Waterhouse_2024_vedolizumab.html
+      - text: "Venetoclax apoptosis qsp (Derippe 2024)"
+        href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
+      - text: "Venetoclax mouse (Derippe 2024)"
+        href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
       - text: "Verapamil rat (Syvanen 2011)"
         href: articles/Syvanen_2011_verapamil_rat.html
       - text: "Vildagliptin (Landersdorfer 2012)"
@@ -3369,6 +3373,7 @@ articles:
   - articles/Delor_2013_alzheimer
   - articles/Denti_2010_glucoseMinimal
   - articles/Denti_2018_levofloxacin
+  - articles/Derippe_2024_BH3_mimetics_virtual_tumors
   - articles/Desai_2016_isavuconazole
   - articles/Desai_2024_crisprCas9
   - articles/Desikan_2022_covidVaccine
