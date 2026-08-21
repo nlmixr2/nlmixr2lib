@@ -186,6 +186,27 @@ Mao_2024_sirolimus <- function() {
     # retained here with the additive standard deviation fixed at zero
     # rather than invented; see the vignette "Assumptions and deviations"
     # section. With addSd = 0 this reduces exactly to Eq. 3 (proportional).
+    #
+    # SCALE CAVEAT (unresolved in the source; see the vignette). The value
+    # is read as a standard deviation because Table 2 tags the row "(%)",
+    # and a variance cannot carry a percent unit. The authors appear to
+    # have used that tag deliberately: the covariance row in the same block
+    # ("omega cov CL/F V/F" = 0.0665) carries NO percent sign, exactly as a
+    # covariance should not. Two independent signals nevertheless point the
+    # other way -- that the printed 3.3 could be a VARIANCE (sigma^2 =
+    # 0.033, i.e. sigma = 18.2 percent):
+    #   (a) its RSE of 10 percent matches the asymptotic variance bound
+    #       sqrt(2/n_obs) = sqrt(2/216) = 9.6 percent, not the SD bound
+    #       sqrt(1/(2*n_obs)) = 4.8 percent;
+    #   (b) the scatter of observations about the INDIVIDUAL predictions in
+    #       Figure 1A is visibly wider than a 3.3 percent SD would allow --
+    #       and eta shrinkage biases that scatter DOWNWARD, so it is a
+    #       lower bound on sigma.
+    # The published label is followed here because it is the paper's own
+    # explicit statement, but the choice is flagged rather than buried.
+    # Practical impact is modest: between-subject variability dominates the
+    # steady-state trough, so the total trough CV moves only from about
+    # 30 percent to about 35 percent between the two readings.
     propSd <- 0.033;   label("Proportional residual error (fraction)")       # Table 2: epsilon_por = 3.3 percent
     addSd  <- fixed(0); label("Additive residual error (ng/mL)")             # Results text says combined (Eq. 4); Table 2 publishes no additive value
   })

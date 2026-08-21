@@ -759,6 +759,26 @@ stopifnot(abs(t_half_model - 48.5) < 0.5)
   `addSd <- fixed(0)`, which reduces exactly to the proportional model of Eq. 3.
   No additive value was invented. Anyone refitting this model to their own data
   should free `addSd`.
+- **Residual error: the scale of `3.3` is not fully resolved by the source.**
+  The value is encoded as a standard deviation (`propSd = 0.033`) because
+  Table 2 tags the row `(%)`, and a variance cannot carry a percent unit. The
+  authors look to have applied that tag deliberately: the covariance row in the
+  same block (`omega cov CL/F V/F = 0.0665`) carries no percent sign, exactly as
+  a covariance should not. Two independent signals nevertheless point toward the
+  printed `3.3` being a *variance* (`sigma^2 = 0.033`, i.e. `sigma` = 18.2%):
+  (a) its RSE of 10% matches the asymptotic variance bound
+  `sqrt(2/n_obs) = sqrt(2/216) =` 9.6%, rather than the standard-deviation bound
+  `sqrt(1/(2*n_obs)) =` 4.8%; and (b) the scatter of observations about the
+  *individual* predictions in Figure 1A of the source is visibly wider than a
+  3.3% standard deviation permits -- and because eta shrinkage biases that
+  scatter downward, it is a lower bound on `sigma`. The paper never prints the
+  residual-error equation with numbers substituted, so neither reading can be
+  confirmed from the text. The published label is followed here because it is
+  the paper's own explicit statement, and the alternative is recorded rather
+  than buried. The practical consequence is modest: between-subject variability
+  dominates the steady-state trough, so the total trough CV moves only from
+  roughly 30% to roughly 35% between the two readings, leaving the medians (and
+  therefore the dose-versus-hematocrit conclusions) unchanged.
 - **Between-subject variability scale.** Table 2 reports the random effects as
   "omega CL/F (%) = 32.4" and "omega V/F (%) = 42.7". These are read as omega
   itself -- the standard deviation of eta on the natural-log scale of Eq. 1 --
