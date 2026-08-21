@@ -649,7 +649,10 @@ tab3 |>
 1. **The two regimens deliver identical daily doses** (400 mg QD and
    200 mg BID are both 400 mg/day), so any model in which clearance is
    dose-independent must give them the *same* steady-state AUC0-24. Table 3
-   reports them 23% apart.
+   reports them 23% apart. (Table 2 instead lists the q12h arm at a 200 mg
+   *daily* dose. Under that alternative reading the BID arm delivers half as
+   much drug as the QD arm, which makes a 23% *higher* reported AUC more
+   anomalous, not less -- see *Assumptions and deviations*.)
 2. **Both Table 3 AUC values exceed** `D_daily / (CL/F)` = 4,211 ng*h/mL, by
    17% and 44% respectively. No parameterisation of Equations 3-5 can produce
    a steady-state AUC above that ceiling, because CL/F is the only route out
@@ -742,6 +745,21 @@ sensitive of the two to the missing dose effect.
   biliary uptake (0.023 1/h) with near-instant release (2 1/h) is the same
   pattern as `Courlet_2023_cabamiquine`, whose source supplement uses the
   identical `k2g` / `kg1` notation and fixes them at 0.0039 and 15 1/h.
+* **Table 2's regimen labels contradict the Results prose and the Methods.**
+  Table 2 lists the two simulated regimens as "dose regimen used in clinical
+  trials" at a 200 mg *daily* dose q12h, and "tested dose regimen" at 400 mg
+  q24h. The Results text reverses those roles -- "the Cmax and AUC values at
+  steady state of 200 mg BID (tested dose regimen) were higher than those of
+  400 mg QD (dose regimen used in clinical trials)" -- and the Methods report
+  that the actual clinical multiple-dose arms were 200 mg QD and 400 mg QD,
+  neither of which was q12h, so the q12h arm cannot be the regimen "used in
+  clinical trials". The Results prose and Table 3's own row labels are
+  mutually consistent, so this vignette follows them and simulates the BID arm
+  as 200 mg every 12 h (400 mg/day). Taking Table 2 literally instead
+  (100 mg every 12 h) would put that arm's steady-state AUC0-24 ceiling at
+  `D_daily/(CL/F)` = 2,105 ng*h/mL, which the published 6,078 ng*h/mL exceeds
+  by 2.9-fold: that reading deepens the Table 3 inconsistency rather than
+  resolving it, so the choice of reading does not affect any conclusion here.
 * **No demographic distributions are sampled.** The paper publishes no
   baseline demographic table and develops no covariate model, so the virtual
   cohort varies only the model's own random effects. `population` omits
