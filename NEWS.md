@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ivanova 2024 anti-alpha-synuclein immunotherapy ([doi:10.1002/psp4.13223](https://doi.org/10.1002/psp4.13223)) -- QSP model of alpha-synuclein pathology in Parkinson's-disease-like mice.
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
