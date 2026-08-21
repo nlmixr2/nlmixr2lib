@@ -62,7 +62,8 @@ The same information is available programmatically via the model's `population`
 metadata.
 
 ```{r population}
-str(readModelDb("Melander_2025_cetirizine")()$population, max.level = 1)
+mod_meta <- rxode2::rxode(readModelDb("Melander_2025_cetirizine"))
+str(mod_meta$population, max.level = 1)
 ```
 
 # Source trace
