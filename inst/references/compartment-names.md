@@ -3867,15 +3867,29 @@ Sibling-drug suffix for the Yang 2024 mechanistic opioid-induced-respiratory-dep
   - `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232), where ampicillin is the unsuffixed parent.
 - **Notes:** Registered 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction. `Soto_2014_ampicillin_sulbactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_sbt` / `peripheral1_sbt` / `propSd_sbt` convention warnings. Sulbactam is a sibling drug, not a metabolite: in both source papers the two analytes are dosed as a fixed-ratio combination and fitted simultaneously without interconversion.
 
-### taz (**canonical tazobactam sibling-drug suffix**)
+### sdz (**canonical sulfadiazine sibling-drug suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Tazobactam (beta-lactamase-inhibitor penicillanic-acid sulfone) sibling-drug suffix, used when tazobactam is co-modelled with its partner beta-lactam (piperacillin) and is not the unsuffixed parent. Drives `central_taz` / `peripheral1_taz` compartments, `lcl_taz` / `lvc_taz` / `lq_taz` / `lvp_taz` PK parameters, drug-specific covariate-effect and extraction-ratio forms (`ltdec50_taz`, `logitedia_taz`), and the `propSd_taz` / `addSd_taz` residuals on the `Cc_taz` tazobactam plasma concentration.
+- **Role:** Sulfadiazine (short-acting sulfonamide) sibling-drug suffix, used when sulfadiazine is co-modelled with trimethoprim in the licensed 1:5 TMP:sulfonamide veterinary combinations and trimethoprim is the unsuffixed parent. Drives `depot_sdz` / `depot2_sdz` / `central_sdz` / `peripheral1_sdz` compartments, the `lka_sdz` / `lka2_sdz` / `lfdepot_sdz` / `lfdepot2_sdz` / `lcl_sdz` / `lvc_sdz` / `lq_sdz` / `lvp_sdz` PK parameters, the `e_wt_cl_sdz` / `e_wt_vc_sdz` covariate effects, and the `expSd_sdz` residual on the `Cc_sdz` plasma concentration.
 - **Source aliases:**
-  - `TAZ` -- abbreviation used throughout `Kong_2025_piperacillin_tazobactam.R` (Table 2 / Table 3 footnotes "TAZ tazobactam"; ESM NONMEM variables `CL_DIA_TAZ`, `ER_TAZ`, `LGT_TAZ`, `kdia_TAZ`, `CPRE_TAZ`, `TPROP`, `TADD`).
-  - `(2)` -- NONMEM L2 drug index / `$MODEL` compartments 3-4 (`TAZ_CENT`, `TAZ_PERI`) for tazobactam in `Kong_2025_piperacillin_tazobactam.R`.
-- **Example models:**
-  - `Kong_2025_piperacillin_tazobactam.R` (doi:10.1007/s40262-025-01527-y), where piperacillin is the unsuffixed parent (NONMEM compartments 1-2) and tazobactam carries the suffix (NONMEM compartments 3-4).
-- **Notes:** Registered 2026-08-20 (sidecar request-001 / response-001 q1, option A) alongside the Kong 2025 piperacillin/tazobactam ESKD haemodialysis extraction. Direct structural analogue of the `sbt` (sulbactam) entry above: tazobactam is a sibling drug, not a metabolite -- piperacillin and tazobactam are dosed as a fixed 8:1 combination and fitted simultaneously via the NONMEM L2 data item without interconversion. Piperacillin is the unsuffixed parent because it is the therapeutically active beta-lactam, matching the `sbt` convention where the partner beta-lactam (ampicillin) or the newer inhibitor (durlobactam) takes the unsuffixed slot. Note that nlmixr2lib also carries single-analyte piperacillin and tazobactam models extracted from papers that fitted the two drugs separately (`CohenWolkowiez_2014_piperacillin.R` / `CohenWolkowiez_2014_tazobactam.R`, `Nichols_2016_piperacillin.R` / `Nichols_2016_tazobactam.R`); those correctly use the unsuffixed canonical names in their own files because each is a single-drug model. The `taz` suffix applies only when both analytes live in ONE jointly-fitted file.
+  - `SDZ` -- abbreviation used throughout `Boulanger_2025_trimethoprim_sulfonamides_pig.R`.
+- **Example models:** `Boulanger_2025_trimethoprim_sulfonamides_pig.R` (doi:10.1080/01652176.2025.2565351).
+- **Notes:** Registered 2026-08-18 alongside the Boulanger 2025 pig TMP/sulfonamide extraction. Distinct from the existing `pyra` / sulfadoxine antimalarial pairing: sulfadiazine is a different sulfonamide and here the partner drug is trimethoprim, not pyrimethamine. A sibling drug, not a metabolite -- the two analytes are dosed as a fixed-ratio combination product and fitted simultaneously without interconversion.
+
+### sdmx (**canonical sulfadimethoxine sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulfadimethoxine (long-acting sulfonamide) sibling-drug suffix, used when sulfadimethoxine is co-modelled with trimethoprim as the unsuffixed parent. Drives `depot_sdmx` / `central_sdmx` / `peripheral1_sdmx` compartments, the `lka_sdmx` / `lfdepot_sdmx` / `lcl_sdmx` / `lvc_sdmx` / `lq_sdmx` / `lvp_sdmx` PK parameters, and the `expSd_sdmx` residual on the `Cc_sdmx` plasma concentration.
+- **Source aliases:**
+  - `SDMX` -- abbreviation used throughout `Boulanger_2025_trimethoprim_sulfonamides_pig.R`.
+- **Example models:** `Boulanger_2025_trimethoprim_sulfonamides_pig.R` (doi:10.1080/01652176.2025.2565351).
+- **Notes:** Registered 2026-08-18 alongside the Boulanger 2025 pig TMP/sulfonamide extraction. Sulfadimethoxine is the longest-acting of the three sulfonamides in that paper (CL 0.015 L/h/kg, terminal half-life 14.8 h) and is the one whose accumulation on daily dosing drives the declining TMP:S ratio.
+
+### smx (**canonical sulfamethoxazole sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sulfamethoxazole sibling-drug suffix, used when sulfamethoxazole is co-modelled with trimethoprim as the unsuffixed parent (the human co-trimoxazole pairing and its veterinary equivalents). Drives `depot_smx` / `central_smx` / `peripheral1_smx` compartments, the `lka_smx` / `lfdepot_smx` / `lcl_smx` / `lvc_smx` / `lq_smx` / `lvp_smx` PK parameters, and the `expSd_smx` residual on the `Cc_smx` plasma concentration.
+- **Source aliases:**
+  - `SMX` -- abbreviation used throughout `Boulanger_2025_trimethoprim_sulfonamides_pig.R`.
+- **Example models:** `Boulanger_2025_trimethoprim_sulfonamides_pig.R` (doi:10.1080/01652176.2025.2565351).
+- **Notes:** Registered 2026-08-18 alongside the Boulanger 2025 pig TMP/sulfonamide extraction. Trimethoprim is the unsuffixed parent in that model because it is common to all three combination products; a future co-trimoxazole extraction that treats sulfamethoxazole as the primary analyte should still use this suffix for consistency rather than promoting SMX to the unsuffixed slot.
 
 ---
 

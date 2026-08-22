@@ -3274,6 +3274,8 @@ navbar:
         href: articles/Okada_2024_triazolam.html
       - text: "Triflusal (Park 2014)"
         href: articles/Park_2014_triflusal.html
+      - text: "Trimethoprim sulfonamides pig (Boulanger 2025)"
+        href: articles/Boulanger_2025_trimethoprim_sulfonamides_pig.html
       - text: "Tripegfilgrastim (Lee 2023)"
         href: articles/Lee_2023_tripegfilgrastim.html
       - text: "Triptorelin (Tornoe 2006)"
@@ -3763,6 +3765,7 @@ articles:
   - articles/Bouazza_2012_clindamycin
   - articles/Bouazza_2025_prednisolone
   - articles/Boucher_2018_naproxen_mbma
+  - articles/Boulanger_2025_trimethoprim_sulfonamides_pig
   - articles/Brain_2008_ifosfamide
   - articles/Braniff_2025_lorlatinib_qsp
   - articles/Brekkan_2016_factorIX
