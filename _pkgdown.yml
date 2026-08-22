@@ -1288,8 +1288,8 @@ navbar:
         href: articles/FiedlerKelly_2020_fremanezumab_em.html
       - text: "Furmonertinib (Zou 2022)"
         href: articles/Zou_2022_furmonertinib.html
-      - text: "FXa inhibitors mbma (Yoshioka 2018)"
-        href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
+      - text: "Furosemide (Hornik 2025)"
+        href: articles/Hornik_2025_furosemide.html
       - text: "FxiLica (Willmann 2021)"
         href: articles/Willmann_2021_fxi_aso.html
       - text: "G csf (Melhem 2018)"
@@ -4157,6 +4157,7 @@ articles:
   - articles/Horita_2018_isoniazid
   - articles/Horita_2018_pyrazinamide
   - articles/Horita_2018_rifampicin
+  - articles/Hornik_2025_furosemide
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
   - articles/Hu_2026_clesrovimab
