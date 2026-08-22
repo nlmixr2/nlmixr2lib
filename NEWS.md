@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hornik 2025 furosemide ([doi:10.1007/s40262-025-01515-2](https://doi.org/10.1007/s40262-025-01515-2)) -- adults with chronic heart failure and volume overload, allometrically scaled to adolescents.
+- Add Zhao 2025 paracetamol ([doi:10.1002/bcp.70028](https://doi.org/10.1002/bcp.70028)) - children and adults with spinal muscular atrophy and healthy controls.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

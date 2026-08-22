@@ -2314,8 +2314,8 @@ navbar:
         href: articles/Wattanakul_2016_paracetamol.html
       - text: "Paracetamol (Wu 2025)"
         href: articles/Wu_2025_paracetamol.html
-      - text: "ParathyroidHormone (Visscher 2025)"
-        href: articles/Visscher_2025_parathyroidHormone.html
+      - text: "Paracetamol (Zhao 2025)"
+        href: articles/Zhao_2025_paracetamol.html
       - text: "Paritaprevir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
@@ -5104,7 +5104,7 @@ articles:
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
   - articles/Zhao_2024_ciprofloxacin_colistin
-  - articles/Zhao_2025_methotrexate
+  - articles/Zhao_2025_paracetamol
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
