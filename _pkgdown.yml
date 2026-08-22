@@ -2960,6 +2960,8 @@ navbar:
         href: articles/Xu_2011_sirukumab.html
       - text: "Sitafloxacin (Rodjun 2023)"
         href: articles/Rodjun_2023_colistin_sitafloxacin.html
+      - text: "Sitafloxacin (Wu 2025)"
+        href: articles/Wu_2025_sitafloxacin.html
       - text: "Sn38 organoid (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Snake venom (Sanhajariya 2018)"
@@ -5030,6 +5032,7 @@ articles:
   - articles/Wu_2024_gfr_maturation
   - articles/Wu_2024_inotuzumab
   - articles/Wu_2025_paracetamol
+  - articles/Wu_2025_sitafloxacin
   - articles/Wurthwein_2013_caspofungin
   - articles/Xia_2024_warfarin
   - articles/Xia_2025_pfuroylamphenmulin
