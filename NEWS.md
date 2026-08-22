@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ji 2025 TDI01 ([doi:10.3389/fphar.2025.1477607](https://doi.org/10.3389/fphar.2025.1477607)) -- healthy Chinese adults.
+- Add Said 2025 imatinib ([doi:10.1002/psp4.13299](https://doi.org/10.1002/psp4.13299)) -- adults with COVID-19 ARDS pooled with CML/GIST oncology patients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

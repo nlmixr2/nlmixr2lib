@@ -3328,6 +3328,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Zou_2022_furmonertinib.R` (doi:10.1038/s41401-021-00798-y).
 
+### ndmima (**canonical N-desmethyl-imatinib suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desmethyl-imatinib (DM-imatinib, CGP74588), the sole active metabolite of imatinib, formed by CYP3A4- and CYP2C8-mediated N-demethylation. Used as a compartment / parameter / residual-SD suffix in joint parent-plus-metabolite popPK models that follow imatinib and DM-imatinib in plasma simultaneously.
+- **Source aliases:**
+  - `DM-imatinib` / `DMIMA` -- the source-paper abbreviation and control-stream token used by Said 2025; the canonical suffix keeps the `ndm` N-desmethyl marker instead.
+- **Example models:** `Said_2025_imatinib.R` (doi:10.1002/psp4.13299; `central_ndmima`, `lcl_ndmima`, `lvc_ndmima`, `etalcl_ndmima`, `etalvc_ndmima`, `Cc_ndmima`, `expSd_ndmima`, `e_conmed_il6ri_cl_ndmima`).
+- **Notes:** Follows the `ndmsel` (N-desmethyl-selumetinib) pattern ratified on 2026-06-19: the `ndm` marker plus a readable drug contraction, so the suffix reads as n-desmethyl-ima. The paper's own printed abbreviation `DM-imatinib` would contract to `dmima`, which drops the N-desmethyl marker that the 2026-06-19 standardization deliberately introduced, and `ndmi` contracts the drug to a single letter; both were rejected. Operator decision on task sidecar `oare_PMC11919263` request-001 q1. Registered 2026-08-21 alongside the Said 2025 imatinib extraction.
+
 ### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-selumetinib, active selumetinib metabolite (~3-5-fold more potent for MEK1 inhibition than parent), formed by oxidative N-demethylation.

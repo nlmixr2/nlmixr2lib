@@ -1484,12 +1484,8 @@ navbar:
         href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Jiang 2023)"
         href: articles/Jiang_2023_imatinib.html
-      - text: "Imatinib (Judson 2005)"
-        href: articles/Yang_2025_imatinib_external_evaluation.html
-      - text: "Imatinib (MenonAndersen 2009)"
-        href: articles/Yang_2025_imatinib_external_evaluation.html
-      - text: "Imatinib (Petain 2008)"
-        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Said 2025)"
+        href: articles/Said_2025_imatinib.html
       - text: "Imatinib (Schindler 2017)"
         href: articles/Schindler_2017_imatinib.html
       - text: "Imatinib (Schmidli 2005)"
@@ -4680,6 +4676,7 @@ articles:
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Saeheng_2024_atractylodesLancea
   - articles/Sahota_2015_miridesap
+  - articles/Said_2025_imatinib
   - articles/Sakurai_2007_lansoprazole
   - articles/Saleh_2023_leicns_pk30_mouse_brain
   - articles/Salem_2014_efavirenz
