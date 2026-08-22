@@ -42,6 +42,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
 - `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
 - `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` -- intracellular drug / active-metabolite pools inside red blood cells, carried as ODE states in concentration units (`rbc_mtx`, `rbc_tgn`). Deliberately kept out of `registeredMetabolites` because the analyte is frequently the *parent* drug (methotrexate), and recording a parent drug in the metabolite register would mislead later readers of that list. See the "Intracellular red-cell analyte pools" section below for the naming rule and the per-analyte entries.
+- `slabCompartmentRegex = "^[a-z][a-z_]*_slab[0-9]+$"` -- method-of-lines spatial discretisation slabs of a single tissue (`buccal_slab1` ... `buccal_slab20`). The `<tissue>_slab<n>` stem states explicitly that the numbering indexes numerical discretisation elements of one tissue, not distinct anatomical structures. See the "Method-of-lines spatial discretisation slabs" section below.
 - `compartmentRegex` and the four extension patterns above are extended only when a new paper introduces a structurally new shape. Adding a new spelled-out organ to the `pbpkSubCompartmentRegex` is a routine extension; introducing a new chain prefix is a naming-audit decision.
 
 ---
@@ -1144,6 +1145,54 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
   - `Athytissue` / `Cthytissue` -- Decrane 2023 (paper p. 3).
 - **Example models:** `Decrane_2023_oxyfluorfen_rat.R` (founding example), `Decrane_2023_oxyfluorfen_human.R`.
 
+### a_heart (**canonical PBPK heart-amount compartment**)
+- **Type:** compartment
+- **Role:** Heart (myocardium) organ compartment in mass-balance PBPK extractions, holding the total tissue amount. Flow-limited on `Q_heart * (CA - C_heart/P_heart)`, except where the source model inverts a saturable tissue-binding isotherm to obtain the venous-outflow concentration (Salehi 2025 / Rostami 2022 carry a Langmuir `BMH` / `KBH` pair on the heart).
+- **Source aliases:**
+  - `AH` / `CH` / `CVH` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings.
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example).
+- **Notes:** The bare `heart` form is also canonical and is used by the Zhang 2011 / An 2012 bare-organ family; PBPK organ-amount models use the `a_` prefix alongside `a_liver` / `a_kidney` / `a_muscle`.
+
+### a_lung (**canonical PBPK lung-amount compartment**)
+- **Type:** compartment
+- **Role:** Perfused lung tissue compartment in mass-balance PBPK extractions, arranged in **parallel** with the other systemic tissues (fed from arterial blood, draining to venous blood). Distinct from `a_pulmonary`, which is the in-series gas-exchange compartment that the whole cardiac output passes through.
+- **Source aliases:**
+  - `ALNG` / `CLNG` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings.
+- **Example models:** none yet.
+- **Notes:** Registered alongside `a_pulmonary` so a model that resolves both the parallel lung tissue and the in-series gas-exchange space has canonical names for each. `Salehi_2025_nicotine_pbpk.R` omits the parallel lung tissue because its blood flow `QLNGC` is absent from Rostami 2022 Table 1 and is `0` in the published code, leaving the compartment inert. The bare `lung` form is also canonical for the Zhang 2011 bare-organ family.
+
+### a_pulmonary (**canonical PBPK pulmonary gas-exchange compartment**)
+- **Type:** compartment
+- **Role:** Pulmonary (alveolar) gas-exchange compartment placed **in series** between venous and arterial blood, so the entire cardiac output passes through it: `d/dt(a_pulmonary) = QC * (CV_venous - CV_pulmonary)` and the arterial compartment is fed by `QC * CV_pulmonary`. This is a genuinely distinct role from the parallel-perfused `a_lung` tissue compartment, which sits alongside the other systemic organs and receives only its own fractional blood flow; a whole-body PBPK can legitimately carry both at once.
+- **Source aliases:**
+  - `APUL` / `CPUL` / `CVPUL` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings.
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example).
+- **Notes:** Its volume is derived from the pulmonary surface area and epithelial width (`SAPUL * WTPUL`) rather than a body-weight fraction. Do not substitute `a_lung`: the in-series versus in-parallel placement changes first-pass behaviour for every inhaled or intravenously dosed compound.
+
+### a_buccal (**canonical PBPK buccal submucosa compartment**)
+- **Type:** compartment
+- **Role:** Perfused submucosal tissue of the buccal cavity in oral-transmucosal PBPK extractions. Receives drug both by perfusion from arterial blood and by permeation across the overlying epithelium, and drains to venous blood: `d/dt(a_buccal) = Q_buccal * (CA - CV_buccal) + R_blood`, where `R_blood` is the sink-face flux delivered by an epithelial diffusion chain (see the `<tissue>_slab<n>` family).
+- **Source aliases:**
+  - `ABUS` / `CVBUS` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings ("buccal submucosa").
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example).
+- **Notes:** The submucosa is the *perfused* space; the epithelium above it is resolved separately as a diffusion chain and is not the same state. Its volume is surface area times epithelial width (`SABU * WTBU`), not a body-weight fraction.
+
+### a_conducting_airway (**canonical PBPK conducting-airway submucosa compartment**)
+- **Type:** compartment
+- **Role:** Perfused submucosal tissue of the conducting airways (trachea and bronchi) in respiratory-tract PBPK extractions. Flow-limited against arterial blood on its own fractional blood flow `QCAC`. Registered as a distinct anatomical region rather than folded into `a_lung` because the conducting, transitional and pulmonary regions carry different surface areas, epithelial widths and perfusion fractions, and because inhalation models deposit different fractions of an inhaled dose into each.
+- **Source aliases:**
+  - `ACAS` / `CVCAS` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings.
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example).
+- **Notes:** Volume is `SACA * WTCA`. Paired with `a_transitional_airway`; the two together plus `a_pulmonary` make up the respiratory-tract tissue of the Corley-derived airway geometry.
+
+### a_transitional_airway (**canonical PBPK transitional-airway submucosa compartment**)
+- **Type:** compartment
+- **Role:** Perfused submucosal tissue of the transitional (bronchiolar) airways, between the conducting airways and the alveolar region. Flow-limited against arterial blood on its own fractional blood flow `QTAC`.
+- **Source aliases:**
+  - `ATAS` / `CVTAS` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings.
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example).
+- **Notes:** Volume is `SATA * WTTA`. Paired with `a_conducting_airway`.
+
 ### a_fast (**canonical bimodal-disease fast-progression arm**)
 - **Type:** compartment
 - **Role:** Bimodal disease-progression state for the fast-progression arm in Delor 2013 Alzheimer mixture-of-progression-rates PD model. Per-subject mixture weight selects between this fast arm and the slow arm.
@@ -1156,6 +1205,28 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Role:** Bimodal disease-progression state for the slow-progression arm. Paired with `a_fast`.
 - **Source aliases:** none.
 - **Example models:** `Delor_2013_alzheimer.R`.
+
+---
+
+## Method-of-lines spatial discretisation slabs (`<tissue>_slab<n>` namespace)
+
+Some mechanistic papers describe transport through a tissue with a **partial** differential equation -- most commonly Fick's second law, `dC/dt = D d2C/dx2`, across an epithelium or membrane of finite thickness. rxode2 solves ODEs only, so such a model is encoded as a *method of lines*: the spatial coordinate is divided into `N` equal slabs and each slab's drug amount becomes one ODE state, with diffusive fluxes between neighbours.
+
+Name those states `<tissue>_slab<n>`, numbered from the boundary at which drug enters (slab 1) toward the far boundary (slab N). The `_slab` element is deliberately explicit: it tells a reader that slab 7 is a numerical discretisation element of a single tissue, not a seventh anatomical structure. The family composes with any tissue stem, so a later nasal, skin or airway-epithelium permeation model reuses it directly (`nasal_slab<n>`, `skin_slab<n>`, ...) without registering a new chain prefix.
+
+Rules for using the family:
+
+- **Only when the spatial profile is load-bearing.** If the diffusion time across the tissue is short relative to the timescale of interest, the tissue is well mixed and a single canonical compartment is the right encoding. Justify the chain by comparing the diffusion time `l^2/D` with the exposure duration.
+- **Report the convergence check.** State the slab count adopted and the evidence that it converged (e.g. a table of a summary metric against `N`). The count is a numerical choice, not a property of the paper, so it must be auditable.
+- **Pair with a perfused compartment.** The slabs are the unperfused diffusion medium; the drug they deliver has to arrive somewhere. Feed the sink-face flux into a canonical perfused compartment (`a_buccal`, `a_skin`, ...).
+
+### `<tissue>_slab<n>` (**canonical method-of-lines spatial discretisation chain**)
+- **Type:** compartment
+- **Role:** One spatial slab of a tissue across which a diffusion PDE is solved by the method of lines. Slab 1 carries the entry-face boundary condition (a flux, or a partition-coefficient-mediated concentration), interior slabs exchange with their two neighbours by `D * A / h * (C_i - C_i+1)`, and the far face carries the exit boundary condition -- typically a perfect sink `C(t, l) = 0`, whose flux is computed over a half-cell distance and delivered to the paired perfused compartment.
+- **Source aliases:**
+  - `Ctiss(x)` -- Salehi 2025 Equation 1 (the continuous field these slabs discretise).
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `buccal_slab1` .. `buccal_slab20`, 20 slabs across a 1.75 mm effective buccal epithelium with `D = 1.2e-5 cm^2/s`, perfect sink at the far face feeding `a_buccal`).
+- **Notes:** Validated by `slabCompartmentRegex` rather than by an enumerated list, since the slab count varies per model. Do not use this family for physiologically distinct serial compartments -- those get role-based names.
 
 ---
 
@@ -4194,6 +4265,14 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 - **Role:** Glucuronide suffix used by paracetamol PBPK template / placeholder extraction. Sibling of the Allegaert 2015 `gluc`.
 - **Source aliases:** none.
 - **Example models:** `NA_NA_paracetamol.R`.
+
+### cot (**canonical cotinine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Cotinine, the major proximate metabolite of nicotine (about 80 percent of hepatic nicotine metabolism) and the standard long-half-life biomarker of nicotine exposure. Used by nicotine PBPK / popPK extractions that carry a cotinine sub-model alongside the parent.
+- **Source aliases:**
+  - `AVBM` / `AABM` / `AML` / `AMR` / `AMM` / `AMF` / `AMS` -- Salehi 2025 and Rostami 2022 nicotine PBPK MCSim listings, where the metabolite states carry an infix `M` rather than a suffix.
+- **Example models:** `Salehi_2025_nicotine_pbpk.R` (founding example; `a_venous_cot`, `a_arterial_cot`, `a_liver_cot`, `a_muscle_cot`, `a_fat_cot`, `a_rapidly_perfused_cot`, `a_slowly_perfused_cot`, `a_hepatic_cot`, `a_urine_cot`).
+- **Notes:** Short-form suffix consistent with the register's other short metabolite suffixes (`3oh`, `7oh`, `8oh`, `cloca`). Nicotine glucuronide, the other named nicotine conjugate, reuses the existing generic `gluc` suffix rather than earning its own.
 
 ### metab (**canonical generic-metabolite template suffix**)
 - **Type:** metabolite-suffix

@@ -2150,6 +2150,8 @@ navbar:
         href: articles/Svensson_2012_nevirapine.html
       - text: "Nicorandil (Iida 2008)"
         href: articles/Iida_2008_nicorandil.html
+      - text: "Nicotine pbpk (Salehi 2025)"
+        href: articles/Salehi_2025_nicotine_pbpk.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
       - text: "Nilotinib (Mauro 2025)"
@@ -4710,6 +4712,7 @@ articles:
   - articles/Said_2025_imatinib
   - articles/Sakurai_2007_lansoprazole
   - articles/Saleh_2023_leicns_pk30_mouse_brain
+  - articles/Salehi_2025_nicotine_pbpk
   - articles/Salem_2014_efavirenz
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Boulanger 2025 trimethoprim + sulfadiazine / sulfadimethoxine / sulfamethoxazole ([doi:10.1080/01652176.2025.2565351](https://doi.org/10.1080/01652176.2025.2565351)) -- healthy growing pigs.
+- Add Salehi 2025 nicotine ([doi:10.1002/jcph.70038](https://doi.org/10.1002/jcph.70038)) -- adults who use nicotine pouches or moist smokeless tobacco.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
