@@ -2152,8 +2152,10 @@ navbar:
         href: articles/Iida_2008_nicorandil.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
-      - text: "Nifedipine rat (Kiriyama 2024)"
-        href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
+      - text: "Nilotinib (Mauro 2025)"
+        href: articles/Mauro_2025_nilotinib.html
+      - text: "Nilotinib lowfat (Mauro 2025)"
+        href: articles/Mauro_2025_nilotinib.html
       - text: "Nimotuzumab (Castro-Surez 2020)"
         href: articles/Castro-Surez_2020_nimotuzumab.html
       - text: "Nintedanib (Schmid 2017)"
@@ -4452,6 +4454,7 @@ articles:
   - articles/Martinez_2019_alirocumab
   - articles/Masters_2022_avelumab
   - articles/Matsumoto_2005_TF_505
+  - articles/Mauro_2025_nilotinib
   - articles/Mazzocco_2015_temozolomide
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam
