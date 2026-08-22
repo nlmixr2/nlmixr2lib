@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Wolowich 2025 delta-9-tetrahydrocannabinol heart-rate PK/PD models ([doi:10.1007/s13318-025-00941-8](https://doi.org/10.1007/s13318-025-00941-8)) -- healthy volunteers given a single intravenous bolus.
+- Add de Cacqueray 2022 cefepime ([doi:10.1016/j.cmi.2022.05.007](https://doi.org/10.1016/j.cmi.2022.05.007)) -- critically ill infants and children aged 1.1 months to 17.6 years.
+
+- Add Zhao 2020 cefepime ([doi:10.3389/fphar.2020.00014](https://doi.org/10.3389/fphar.2020.00014)) -- Chinese neonates and young infants with postmenstrual age below 48 weeks.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
