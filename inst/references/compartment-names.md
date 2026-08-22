@@ -2424,6 +2424,13 @@ The corresponding transport parameters are `lkinf_rbc` / `lkeff_rbc` (first-orde
 - **Source aliases:** none.
 - **Example models:** `Sadouki_2025_meropenem.R`.
 
+### parasites (**canonical generic parasite burden pool**)
+- **Type:** compartment
+- **Role:** Generic protozoan-parasite burden pool and its paired PD output, the parasite counterpart of `bacteria` / `cfu` and `virus` / `viralLoad`. Holds a parasite count or density -- parasites/mL of whole blood in visceral-leishmaniasis qPCR models, parasites/uL in malaria parasitaemia models, or a normalised surviving-viability fraction in in-vitro kill assays. Document the actual unit per-model via `compartmentData$parasites$units`.
+- **Source aliases:** `parasitaemia`, `parasitemia`, `blood parasite load`, `parasite load`, `P`, `N`.
+- **Example models:** `Verrest_2024_leishmania.R` (Leishmania blood parasite load in parasites/mL, whole blood; growth minus drug kill minus host immune suppression, floored at 1 parasite/mL), `Cao_2017_dha_ring_early.R`, `Cao_2017_dha_ring_mid.R`, `Cao_2017_dha_troph_early.R`, `Cao_2017_dha_troph_late.R` (in-vitro P. falciparum surviving-viability fraction normalised to 1 at t = 0).
+- **Notes:** Registered as a canonical state after five models had independently declared it through `paper_specific_compartments`; a recurring pathogen-burden endpoint rather than a per-paper mechanism. Use the plural bare form `parasites` for a single undifferentiated pool. Models that resolve the parasite population into life-cycle stages or drug-response subpopulations keep the `parasite_<subpopulation>` prefixed form (`parasite_sensitive` / `parasite_refractory` in `Hien_2017_cipargamin.R`; `parasite_tinyrings` / `parasite_smallrings` / `parasite_largerings` / `parasite_matureschizonts` / `parasite_spleen` in `Hietala_2010_artemether_parasitemia.R`), which remain paper-specific because the stage vocabulary does not generalise across parasite species.
+
 ---
 
 ## PD biomarker chain (Ait-Oudhia 2012 IL-1beta cascade)
@@ -2675,6 +2682,34 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
   - `DEX` -- Mody 2023 notation.
 - **Example models:** `Mody_2023_doxorubicin_dexrazoxane_jimt1.R` (founding example), `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_jimt1.R`, `Mody_2023_doxorubicin_dexrazoxane_clinical_mdamb468.R`.
 - **Notes:** Deliberately spelled out in full rather than abbreviated to the paper's `DEX`, because `dex` would collide with dexamethasone and dexmedetomidine and permanently burn the token on the less common drug. The resulting asymmetry with the abbreviated `dox` is intentional; ratified by operator sidecar on 2026-08-04.
+
+### amphotericinb (**canonical amphotericin B K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Amphotericin B drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_amphotericinb`, `lkel_amphotericinb`, `kel_amphotericinb`) and for the paired drug-specific linear kill slope (`lslope_amphotericinb`, `slope_amphotericinb`).
+- **Source aliases:** `Amb` (Verrest 2024 Table 2 `lambda_Amb`), `AmB`, `LAmB`, `AmBisome` (the liposomal formulation trade name used throughout the visceral-leishmaniasis literature).
+- **Example models:** `Verrest_2024_leishmania.R`.
+- **Notes:** Full INN name (lowercase, with the `B` folded into the token) per the `sunitinib` / `irinotecan` precedent. The abbreviated `amb` form is deliberately NOT used: it collides with ambrisentan and ambroxol. The suffix names the drug substance, not the formulation -- a future model of conventional amphotericin B deoxycholate reuses this token and distinguishes the formulation through the model file and a `FORM_<drug>_<formulation>` covariate if needed.
+
+### ssg (**canonical sodium stibogluconate K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Sodium stibogluconate drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_ssg`, `lkel_ssg`, `kel_ssg`) and for the paired drug-specific linear kill slope (`lslope_ssg`, `slope_ssg`).
+- **Source aliases:** `SSG` (Verrest 2024 Table 2 `lambda_SSG` and throughout), `sodium stibogluconate`, `Pentostam`.
+- **Example models:** `Verrest_2024_leishmania.R`.
+- **Notes:** Abbreviated rather than full-name form -- an intentional exception to the `sunitinib` / `irinotecan` full-INN preference. "SSG" is the universal designation for this pentavalent-antimonial in the leishmaniasis clinical and modelling literature (including the source paper, which never spells the name out after first use), and `sodiumstibogluconate` has no precedent in any register or published model.
+
+### miltefosine (**canonical miltefosine drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Miltefosine drug-name suffix for drug-specific parameters in multi-drug PD models (`lslope_miltefosine`, `slope_miltefosine`), and for K-PD compartments and rate constants (`depot_kpd_miltefosine`, `lkel_miltefosine`) should a future model need them.
+- **Source aliases:** `MF` (Verrest 2024 Table 2 `lambda_MF`), `MIL`, `HePC` (hexadecylphosphocholine), `Impavido`.
+- **Example models:** `Verrest_2024_leishmania.R`.
+- **Notes:** Full INN name (lowercase) per the `sunitinib` / `irinotecan` precedent. In `Verrest_2024_leishmania.R` the miltefosine concentration itself is not an ODE state -- it arrives as the `CP_MILTEFOSINE_UGML` covariate -- so only the kill-slope parameter carries the suffix. The registry's standalone miltefosine popPK model is `Dorlo_2017_miltefosine.R`, which needs no suffix because miltefosine is its sole analyte.
+
+### fexinidazole (**canonical fexinidazole drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Fexinidazole drug-name suffix for drug-specific parameters in multi-drug PD models (`lslope_fexinidazole`, `slope_fexinidazole`), and for K-PD compartments and rate constants (`depot_kpd_fexinidazole`, `lkel_fexinidazole`) should a future model need them.
+- **Source aliases:** `fexi` (Verrest 2024 Table 2 `lambda_fexi`).
+- **Example models:** `Verrest_2024_leishmania.R`.
+- **Notes:** Full INN name (lowercase) per the `sunitinib` / `irinotecan` precedent. The suffix names the parent nitroimidazole. In `Verrest_2024_leishmania.R` the PD driver is actually the SUM of the two active metabolites, fexinidazole sulfoxide (M1) and fexinidazole sulfone (M2); that metabolite-sum semantics is carried by the covariate name `CP_FEXINIDAZOLE_M1M2_UGML`, not by this suffix. A future fexinidazole PK model that carries M1 and M2 as separate ODE states should register distinct `m1` / `m2`-style metabolite suffixes rather than overloading this one.
 
 ---
 
