@@ -37,7 +37,7 @@ A single token can appear under both Types (e.g., `lzd` is both a bare drug-stat
 
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists:
 
-- `compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$"` -- numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...). Numeric suffix is required (single-state members use the bare canonical `effect` / `depot`).
+- `compartmentRegex = "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator)[0-9]+$"` -- numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...), erythrocyte age-transit chains (`erythrocytes1`, ..., `erythrocytes4`), the paired corpuscular-hemoglobin chain (`mch1`, ..., `mch4`), and Gabrielsson-Hjorth moderator / tolerance chains (`moderator1`, `moderator2`, ...). Numeric suffix is required (single-state members use the bare canonical `effect` / `depot` / `erythrocytes` / `mch` / `moderator`).
 - `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
 - `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
@@ -2420,9 +2420,10 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 ### erythrocytes (**canonical erythrocyte pool**)
 - **Type:** compartment
 - **Role:** Red blood cell pool.
-- **Source aliases:** none.
-- **Example models:** `Dao_2020_sultiame.R`.
-- **Notes:** This is a red-cell **count** state (cells per volume). It is NOT the state to use for a drug or active metabolite accumulating *inside* erythrocytes -- that role belongs to the `rbc_<analyte>` family (see "Intracellular red-cell analyte pools"), whose states carry drug concentration (e.g. umol/L). The two are physically different quantities and must not be conflated.
+- **Source aliases:**
+  - `RBC_1..RBC_4` -- used in `Rognas_2025_bitopertin.R` (numbered age-transit form).
+- **Example models:** `Dao_2020_sultiame.R` (single state); `Rognas_2025_bitopertin.R` (`erythrocytes1`..`erythrocytes4` chain).
+- **Notes:** This is a red-cell **count** state (cells per volume). It is NOT the state to use for a drug or active metabolite accumulating *inside* erythrocytes -- that role belongs to the `rbc_<analyte>` family (see "Intracellular red-cell analyte pools"), whose states carry drug concentration (e.g. umol/L). The two are physically different quantities and must not be conflated. Numbered variants `erythrocytes1`, `erythrocytes2`, ... are accepted via `compartmentRegex` for erythrocyte **age-transit chains**, in which equal-transit-time bins partition the circulating pool so that the transit times sum to the erythrocyte lifespan and the sum over bins is the observed RBC count; see "Erythropoiesis cascade states" below. Use the bare `erythrocytes` for a single lumped pool.
 
 ### rbc_mtx (**canonical intracellular red-cell methotrexate pool**)
 - **Type:** compartment
@@ -2451,6 +2452,59 @@ Validated by `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` in `R/conventions.R`, NOT
 Use `rbc_<analyte>` when the model carries the red-cell pool as an ODE state with its own influx / efflux kinetics. When a paper instead models red-cell drug **algebraically** as a fixed proportion of plasma (e.g. `Crbc <- slprbc * Cc` in `Gastonguay_2005_efaproxiral.R`, or the saturable whole-blood binding in `Storset_2014_tacrolimus.R`), no compartment is needed and no `rbc_` state should be introduced.
 
 The corresponding transport parameters are `lkinf_rbc` / `lkeff_rbc` (first-order influx / efflux rate constants) and `lvmax_rbc` / `lkm_rbc` (saturable influx); see `parameter-names.md`.
+
+---
+
+## Erythropoiesis cascade states
+
+Semi-mechanistic erythropoiesis models carry the marrow-to-blood maturation cascade explicitly: an erythroid precursor pool (`precursor1`) feeds reticulocytes that mature and are released into blood, which in turn feed an erythrocyte age-transit chain. The four reticulocyte states below cross the two axes the cascade needs -- maturity (immature, RNA-rich vs mature) and location (bone marrow vs blood) -- because the observed reticulocyte count and the immature reticulocyte fraction (IRF) are both computed from the two *blood* states, so all four are load-bearing rather than bookkeeping.
+
+The chain members `erythrocytes<n>` and `mch<n>` are validated by `compartmentRegex`, not by an entry per numbered state; register the bare canonical and let the numbering follow (as for `transit<n>` / `precursor<n>`).
+
+### ret_imm_marrow (**canonical immature bone-marrow reticulocyte pool**)
+- **Type:** compartment
+- **Role:** Immature (RNA-rich) reticulocytes resident in the bone marrow, fed by the erythroid precursor pool and leaving either by premature release into blood or by maturing in the marrow.
+- **Source aliases:**
+  - `RET_imm, bm` / `PRE_RET1` -- used in `Rognas_2025_bitopertin.R` (Suppl. Eq. 2; `$MODEL` comp 2).
+- **Example models:** `Rognas_2025_bitopertin.R`.
+
+### ret_mat_marrow (**canonical mature bone-marrow reticulocyte pool**)
+- **Type:** compartment
+- **Role:** Mature reticulocytes resident in the bone marrow, fed by marrow maturation of `ret_imm_marrow` and released into blood.
+- **Source aliases:**
+  - `RET_mat, bm` / `PRE_RET2` -- used in `Rognas_2025_bitopertin.R` (Suppl. Eq. 3; `$MODEL` comp 3).
+- **Example models:** `Rognas_2025_bitopertin.R`.
+
+### ret_imm_blood (**canonical immature circulating reticulocyte pool**)
+- **Type:** compartment
+- **Role:** Immature reticulocytes in blood, arriving by premature release from the marrow; the numerator of the immature reticulocyte fraction (IRF) observable.
+- **Source aliases:**
+  - `RET_imm, bl` / `RET1` -- used in `Rognas_2025_bitopertin.R` (Suppl. Eq. 4; `$MODEL` comp 4).
+- **Example models:** `Rognas_2025_bitopertin.R`.
+
+### ret_mat_blood (**canonical mature circulating reticulocyte pool**)
+- **Type:** compartment
+- **Role:** Mature reticulocytes in blood. With `ret_imm_blood` this forms the observed total reticulocyte count, and it is the state that supplies the erythrocyte age-transit chain.
+- **Source aliases:**
+  - `RET_mat, bl` / `RET2` -- used in `Rognas_2025_bitopertin.R` (Suppl. Eq. 5; `$MODEL` comp 5).
+- **Example models:** `Rognas_2025_bitopertin.R`.
+
+### mch (**canonical corpuscular-hemoglobin content state**)
+- **Type:** compartment
+- **Role:** Mean hemoglobin content per erythrocyte (pg/cell), carried as a state so that hemoglobin loaded into newly produced cells can be modulated independently of cell production.
+- **Source aliases:**
+  - `MCH_1..MCH_4` -- used in `Rognas_2025_bitopertin.R` (Eq. 4 / Fig. 2).
+- **Example models:** `Rognas_2025_bitopertin.R` (`mch1`..`mch4`).
+- **Notes:** Numbered variants `mch1`, `mch2`, ... are accepted via `compartmentRegex`; the numbering **pairs elementwise with `erythrocytes<n>`**, so `mch<n>` is the per-cell hemoglobin content of the erythrocytes in age bin `n`. Total blood hemoglobin is then the sum of the products across pairs (`sum(erythrocytes<n> * mch<n>)`) and the observed MCH is that total divided by the total erythrocyte count. This is a per-cell **content** state and is distinct from `hb` / `thb`, which are hemoglobin **concentration** PD outputs; in a paired-chain model the total is an algebraic observable assigned to `thb`, not a state, so the two coexist without conflict.
+
+### moderator (**canonical moderator / tolerance state**)
+- **Type:** compartment
+- **Role:** Gabrielsson-Hjorth moderator (tolerance) state -- a first-order delay driven by a system state with **no mass transfer** into or out of the biological pool it tracks, whose terminal member divides (or otherwise scales) the production rate it modulates, producing tolerance / reservoir-depletion behaviour.
+- **Source aliases:**
+  - `TOL_n` / `M1`, `M2` -- used in `Rognas_2025_bitopertin.R` (Fig. 2; `$MODEL` comps 14-15).
+  - `M_n` -- used in `Ahlstrom_2010_nicotinicAcid_rat.R` (Eq. 4).
+- **Example models:** `Rognas_2025_bitopertin.R` (`moderator1`, `moderator2`).
+- **Notes:** Numbered variants `moderator1`, `moderator2`, ... are accepted via `compartmentRegex`. Registered because `precursor<n>` -- the prefix `Ahlstrom_2010_nicotinicAcid_rat.R` overloads for its 8-compartment moderator chain, with an in-file comment calling that the "closest existing convention" -- is unavailable in any model where `precursor<n>` already names a real biological precursor pool, which is exactly the collision `Rognas_2025_bitopertin.R` hits. New models should use `moderator<n>`; per rule 5 of "How to use this register", `Ahlstrom_2010_nicotinicAcid_rat.R` is not retrofitted here.
 
 ---
 

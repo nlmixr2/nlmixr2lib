@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2025 iohexol + creatinine joint GFR / OCT2-MATE model ([doi:10.1002/cpt.3612](https://doi.org/10.1002/cpt.3612)) -- healthy adult volunteers.
+- Add Rognas 2025 bitopertin ([doi:10.1007/s10928-025-09990-7](https://doi.org/10.1007/s10928-025-09990-7)) -- healthy adults (ratifies seven new erythropoiesis compartment canonicals: `ret_imm_marrow`, `ret_mat_marrow`, `ret_imm_blood`, `ret_mat_blood`, and the numbered-chain prefixes `erythrocytes<n>`, `mch<n>` and `moderator<n>`).
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

@@ -16,6 +16,10 @@ Lower case. Snake case only when combining concepts.
 - `transit1`, `transit2`, … — transit-compartment absorption chains.
 - `precursor1`, `precursor2`, … — precursor / maturation chains (e.g., platelet maturation in Petrov 2024 romiplostim).
 - `lat0`, `lat1`, `lat2`, … — latency chains (e.g., CSF/BBB delay in LeTilly 2021 trastuzumab).
+- `moderator1`, `moderator2`, … — Gabrielsson–Hjorth moderator (tolerance) chains: a first-order delay cascade driven by a system state with **no mass transfer**, whose terminal member scales the production rate it modulates. Use this rather than overloading `precursor<n>` (which `Ahlstrom_2010_nicotinicAcid_rat.R`, predating the canonical, does). Founding example: `Rognas_2025_bitopertin.R`.
+- `ret_imm_marrow`, `ret_mat_marrow`, `ret_imm_blood`, `ret_mat_blood` — reticulocyte pools crossed by maturity (immature / mature) and location (bone marrow / blood) in semi-mechanistic erythropoiesis models. The two blood states give the observed reticulocyte count and the immature reticulocyte fraction (IRF). Founding example: `Rognas_2025_bitopertin.R`.
+- `erythrocytes` — erythrocyte (red-cell) **count** pool. Numbered `erythrocytes1`, `erythrocytes2`, … form an age-transit chain whose equal transit times sum to the erythrocyte lifespan and whose bin sum is the observed RBC count. Never use this for a drug accumulating *inside* red cells — that is the `rbc_<analyte>` family.
+- `mch1`, `mch2`, … — mean corpuscular hemoglobin content (pg/cell), paired elementwise with `erythrocytes<n>`, so total hemoglobin is `sum(erythrocytes<n> * mch<n>)`. Distinct from `hb` / `thb`, which are hemoglobin *concentration* PD outputs.
 - `target` — free (unbound) target species in explicit-binding TMDD models.
 - `complex` — drug–target complex in explicit-binding TMDD models (Mager & Jusko 2001).
 - `total_target` — total (free + bound) target in QSS / MM TMDD approximations where the bound species is not carried as a separate state (Gibiansky et al. 2008).
@@ -130,7 +134,7 @@ Generic numbered compartments (`central1`, `central2`, `cmt1`, `comp_a`) are
 **forbidden** — use the canonical `central` / `peripheral1` / `peripheral2`
 names. The only numeric suffixes the conventions allow are:
 
-1. The blessed chain prefixes: `transit<n>`, `effect<n>`, `precursor<n>`, `lat<n>`, `depot<n>` (for parallel-absorption / IOV models with multiple absorption routes — `depot` + `depot2` is the common idiom).
+1. The blessed chain prefixes: `transit<n>`, `effect<n>`, `precursor<n>`, `lat<n>`, `depot<n>` (for parallel-absorption / IOV models with multiple absorption routes — `depot` + `depot2` is the common idiom), `erythrocytes<n>` / `mch<n>` (paired erythrocyte-age and corpuscular-hemoglobin chains), and `moderator<n>` (Gabrielsson–Hjorth tolerance chains).
 2. DAR-numbered ADC isoforms: `dar<n>_<base>` (e.g., `dar0_central`, `dar3_peripheral1`). Each `dar<n>` represents a biologically distinct drug-antibody-ratio isoform of the parent ADC, not arbitrary numbering.
 3. Metabolite-suffixed compartments: `<canonical>_<metab>` (see § Parent drug + metabolite below).
 4. Target species in physiologic compartments: `target_<location>` / `complex_<location>` where `<location>` is `csf` or `isf` (the `targetLocationRegex` in `R/conventions.R`).
