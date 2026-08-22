@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Boone 2025 vinyl chloride PBPK ([doi:10.3390/jox15020042](https://doi.org/10.3390/jox15020042)) -- 70 kg reference adult; community exposure reconstruction after the 2012 Paulsboro, New Jersey train derailment.
+- Add Miano 2024 tacrolimus ([doi:10.1016/j.jhlto.2024.100134](https://doi.org/10.1016/j.jhlto.2024.100134)) -- adult lung transplant recipients during the first 14 postoperative days.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
