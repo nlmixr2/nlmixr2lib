@@ -2906,6 +2906,8 @@ navbar:
         href: articles/Nikanjam_2019_siltuximab.html
       - text: "Simvastatin (Jin 2014)"
         href: articles/Jin_2014_simvastatin.html
+      - text: "Sirolimus (Fan 2024)"
+        href: articles/Fan_2024_sirolimus.html
       - text: "Sirolimus (Golubovic 2019)"
         href: articles/Golubovic_2019_sirolimus.html
       - text: "Sirolimus (Jiao 2009)"
@@ -3965,8 +3967,7 @@ articles:
   - articles/Facius_2018_roflumilast
   - articles/Faelens_2021_infliximab
   - articles/Falkenhagen_2023_warfarin_qsp
-  - articles/Fan_2025_antiCD4_nanobody_HIV
-  - articles/Fan_2025_iron_wholebody_pbpk
+  - articles/Fan_2024_sirolimus
   - articles/Fang_2010_etanercept
   - articles/Fanta_2007_ciclosporin
   - articles/Farrell_2012_farletuzumab
