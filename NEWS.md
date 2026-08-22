@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wu 2025 sitafloxacin ([doi:10.3389/fphar.2025.1476158](https://doi.org/10.3389/fphar.2025.1476158)) -- Japanese and Chinese healthy volunteers, subjects with renal impairment, and patients with respiratory-tract infection.
+- Add Zhang 2025 abemaciclib CDK4/6 occupancy and pRB / TOPO-IIa biomarker QSP model ([doi:10.1021/acsomega.4c09472](https://doi.org/10.1021/acsomega.4c09472)) -- patients with metastatic breast cancer, including brain metastases.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
