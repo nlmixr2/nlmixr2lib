@@ -583,14 +583,18 @@ claim_ld_monotone <- all(apply(
   }
 ))
 
-# Claim 4: in ECMO patients a 3 g loading dose clears the P. aeruginosa
-# breakpoint of 8 mg/L with margin, whereas 2 g only just reaches it --
-# the paper's "3 g but not 2 g LD restored CFR to >=80%".
+# Claim 4: in ECMO patients a 3 g loading dose lifts the ceiling clear of
+# the P. aeruginosa breakpoint of 8 mg/L, whereas 2 g only just reaches it
+# (8.94 mg/L, i.e. it does technically clear 8 mg/L but with no margin) --
+# the typical-value counterpart of the paper's "3 g but not 2 g LD restored
+# CFR to >=80%".
 ecmo_2g <- max(vapply(infusions, function(i) ceiling_of("ECMO", i, "2 g LD"),
                       numeric(1)))
 ecmo_3g <- min(vapply(infusions, function(i) ceiling_of("ECMO", i, "3 g LD"),
                       numeric(1)))
-claim_3g <- ecmo_3g > 8 && ecmo_3g > ecmo_2g
+# "with margin" and "only just" are asserted, not just asserted-in-prose:
+# 3 g must clear the breakpoint by >50%, 2 g must sit within 20% of it.
+claim_3g <- ecmo_3g > 1.5 * 8 && ecmo_2g < 1.2 * 8 && ecmo_3g > ecmo_2g
 
 # Ordinal agreement across all twelve regimens.
 rho <- suppressWarnings(
@@ -604,7 +608,7 @@ tibble::tibble(
     "ECMO lowers the attainment ceiling for all 6 regimens",
     "Without a loading dose, 4 h extended infusion is worse than 0.5 h intermittent",
     "Attainment is non-decreasing in loading-dose size (0 <= 2 g <= 3 g)",
-    "In ECMO, a 3 g loading dose clears 8 mg/L with margin where 2 g does not",
+    "In ECMO, a 3 g loading dose clears 8 mg/L with margin; 2 g only just reaches it",
     "Spearman correlation of ceiling vs published CFR across 12 regimens"
   ),
   result = c(claim_ecmo, claim_ei_worse, claim_ld_monotone, claim_3g,
