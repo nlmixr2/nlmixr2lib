@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liu 2024 Spatholobi Caulis constituents 3'-methoxydaidzein, 8-O-methylretusin, daidzin and isolariciresinol ([doi:10.3390/ph17121621](https://doi.org/10.3390/ph17121621)) -- rats given a single oral gavage of Spatholobi Caulis aqueous extract.
+- Add Lee 2024 L-serine (AST-001) PK-PD ([doi:10.3389/fphar.2024.1452526](https://doi.org/10.3389/fphar.2024.1452526)) -- children aged 2-11 years with autism spectrum disorder.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

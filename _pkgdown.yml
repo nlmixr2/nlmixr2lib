@@ -1796,6 +1796,8 @@ navbar:
         href: articles/Chen_2021_lorlatinib.html
       - text: "Losmapimod (Yang 2013)"
         href: articles/Yang_2013_losmapimod.html
+      - text: "Lserine (Lee 2024)"
+        href: articles/Lee_2024_lserine.html
       - text: "Lu177psma617 (Siebinga 2023)"
         href: articles/Siebinga_2023_lu177psma617.html
       - text: "Lu177psmaIT (Siebinga 2024)"
@@ -4377,6 +4379,7 @@ articles:
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
   - articles/Lee_2024_eculizumab
+  - articles/Lee_2024_lserine
   - articles/Lee_2024_topiramate
   - articles/Lee_2025_levofloxacin
   - articles/Lee_2025_piperacillin_tazobactam
