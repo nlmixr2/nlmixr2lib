@@ -198,8 +198,12 @@ navbar:
         href: articles/Ueshima_2018_apixaban.html
       - text: "Apomine (Bonate 2004)"
         href: articles/Bonate_2004_apomine.html
-      - text: "Apremilast (Warren 2025)"
-        href: articles/Warren_2025_pde4_il13_atopic_dermatitis.html
+      - text: "Apramycin human (HernandezLozano 2025)"
+        href: articles/HernandezLozano_2025_apramycin.html
+      - text: "Apramycin invitro (HernandezLozano 2025)"
+        href: articles/HernandezLozano_2025_apramycin.html
+      - text: "Apramycin mouse (HernandezLozano 2025)"
+        href: articles/HernandezLozano_2025_apramycin.html
       - text: "Apx3330 (Silva 2024)"
         href: articles/Silva_2024_apx3330.html
       - text: "Arginine (Brussee 2016)"
@@ -4156,6 +4160,7 @@ articles:
   - articles/Hennig_2015_rifabutin
   - articles/Henthorn_2024_tetrahydrocannabinol
   - articles/Heo_2016_amlodipine_valsartan
+  - articles/HernandezLozano_2025_apramycin
   - articles/Heuberger_2018_salbutamol
   - articles/Hien_2017_cipargamin
   - articles/Hietala_2010_artemether_lumefantrine_malaria
