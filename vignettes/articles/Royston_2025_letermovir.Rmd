@@ -452,13 +452,24 @@ med_480 <- med$median_ng_mL[med$treatment == "480 mg QD"]
 stopifnot(med_480 > 123, med_480 < 518)
 ```
 
-Both arms simulate below their published median: the 480 mg arm by about a
-third (though comfortably inside the published IQR of 123-518 ng/mL), and the
-240 mg + cyclosporine arm by roughly 2.3-fold. Neither is tuned away. Two
-distinct things are going on, and they are worth separating.
+```{r prose-numbers, include = FALSE}
+# Computed inline so the narrative below cannot drift from the rendered tables.
+med_csa <- med$median_ng_mL[med$treatment == "240 mg QD + CSA"]
+typ_trough_480 <- 1000 * sim_typ$Cc[sim_typ$treatment == "480 mg QD" &
+                                      sim_typ$time == tau * n_occ]
+fold_480 <- 260 / med_480
+fold_csa <- 418 / med_csa
+```
 
-**The level.** The typical-value trough is 206 ng/mL at 480 mg, but the *median
-of the simulated population* is lower still, near 178. That gap is not a bug:
+Both arms simulate below their published median: the 480 mg arm by
+`r sprintf("%.2f", fold_480)`-fold (though comfortably inside the published IQR
+of 123-518 ng/mL), and the 240 mg + cyclosporine arm by
+`r sprintf("%.2f", fold_csa)`-fold. Neither is tuned away. Two distinct things
+are going on, and they are worth separating.
+
+**The level.** The typical-value trough is `r sprintf("%.0f", typ_trough_480)`
+ng/mL at 480 mg, but the *median of the simulated population* is lower still,
+near `r sprintf("%.0f", med_480)`. That gap is not a bug:
 the trough is a non-linear function of three random effects, and `etalka` in
 particular carries a fixed IIV of 0.72 on the log scale -- a roughly four-fold
 spread in absorption rate either side of the median. Since a slower `ka`
@@ -665,6 +676,14 @@ stopifnot(sd_pooled > 0.58, abs(sd_pooled - sqrt(0.58^2 + 0.62^2)) < 0.1)
   means adding further `etaiov_cl_<n>` entries. All occasions share the single
   published IOV variance, so the cap affects only how many distinct occasions
   can be simulated, never the variance itself.
+* **The IOV etas are not mu-referenced.** rxode2 has no `| occ` IOV level, so
+  the occasion effect is carried as a sum of indicator-weighted etas
+  (`oc1 * etaiov_cl_1 + ...`) rather than as a single term added directly to
+  `lcl`. Every solve therefore emits `some etas defaulted to non-mu
+  referenced` for `etaiov_cl_1`..`etaiov_cl_8`. The warning is expected and
+  does not affect simulation, which is what this vignette does and what the
+  library ships the model for; it means only that a future *estimation* run
+  would not get nlmixr2's mu-referencing speed-ups on the IOV terms.
 * **Screened covariates are documented, not implemented.** Royston 2025 reports
   univariable associations between CL/F and body weight, age, serum albumin,
   vomiting, acute GvHD, prednisone and posaconazole use, but tabulates no
