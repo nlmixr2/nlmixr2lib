@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Van Wart 2025 tobramycin ([doi:10.1128/aac.00908-24](https://doi.org/10.1128/aac.00908-24)) -- adults with pneumonia, with serum and epithelial lining fluid concentrations.
+- Add Roberts 2025 remdesivir and GS-441524 ([doi:10.1007/s40262-025-01496-2](https://doi.org/10.1007/s40262-025-01496-2)) -- hospitalised adults with COVID-19.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
