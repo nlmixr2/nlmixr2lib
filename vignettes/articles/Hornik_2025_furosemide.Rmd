@@ -399,11 +399,13 @@ fn <- attr(cmp, "footnote")
 if (!is.null(fn)) cat(fn, "\n")
 ```
 
-No row exceeds the 20% tolerance. Every simulated value nonetheless sits about
-4% below the published one, and the offset is almost identical for AUC and for
-Cmax across all four groups -- the signature of a single multiplicative factor
-rather than a structural disagreement. That factor is bioavailability, as the
-next section shows.
+No row exceeds the 20% tolerance. Every simulated value nonetheless sits below
+the published one, and across the three adolescent bands the shortfall is close
+to 4% and near-identical for AUC and for Cmax -- the signature of a single
+multiplicative factor rather than a structural disagreement. That factor is
+bioavailability, as the next section shows. The adult row is the exception
+(about 5% low on AUC but 7% low on Cmax); it is a different kind of target, for
+the reason given at the end of that section.
 
 # Reconciling the reported bioavailability
 
@@ -509,7 +511,28 @@ bioavailability question, because a scale factor cannot change a coefficient of
 variation. Table 2 reports AUC CV% of 3.51, 3.92 and 3.26 and Cmax CV% of 3.84,
 4.28 and 3.58 for the three adolescent bands; the simulated CV% in the table
 above match those to within about 0.1 percentage point, which confirms the
-uniform-within-band weight distribution and the 0.75 allometric exponent.
+uniform-within-band weight distribution and the 0.75 allometric exponent. That
+agreement is asserted here rather than left as a prose claim:
+
+```{r cv-assert}
+published_cv <- tibble::tribble(
+  ~grp,           ~PPTESTCD, ~reference_cv,   # Table 2, CV% in parentheses
+  "42.5-50.0 kg", "AUClast", 3.51,
+  ">50-60 kg",    "AUClast", 3.92,
+  ">60-70 kg",    "AUClast", 3.26,
+  "42.5-50.0 kg", "Cmax",    3.84,
+  ">50-60 kg",    "Cmax",    4.28,
+  ">60-70 kg",    "Cmax",    3.58
+)
+
+cv_check <- rescaled |>
+  dplyr::inner_join(published_cv, by = c("grp", "PPTESTCD")) |>
+  dplyr::mutate(cv_diff_pp = cv_pct - reference_cv)
+
+# Guard against a silently empty join before testing the values themselves.
+stopifnot(nrow(cv_check) == nrow(published_cv))
+stopifnot(all(abs(cv_check$cv_diff_pp) < 0.12))
+```
 
 The adult row is the one group that does not tighten under `F = 1` (about 1% low
 on AUC and 3% low on Cmax). That is expected: Table 2 reports CV% of 18.70 for
