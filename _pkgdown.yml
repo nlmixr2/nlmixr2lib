@@ -1068,6 +1068,10 @@ navbar:
         href: articles/Diep_2022_eplontersen.html
       - text: "EpoetinAlfa (PerezRuixo 2008)"
         href: articles/PerezRuixo_2008_epoetinAlfa.html
+      - text: "EpoetinAlfa erythroferrone cia rat (Zhang 2025)"
+        href: articles/Zhang_2025_erythroferrone.html
+      - text: "EpoetinAlfa erythroferrone ckd rat (Zhang 2025)"
+        href: articles/Zhang_2025_erythroferrone.html
       - text: "EpoetinBeta (Hayashi 1998)"
         href: articles/Hayashi_1998_epoetinBeta.html
       - text: "Ergothioneine pbpk (Okumura 2025)"
@@ -5112,12 +5116,7 @@ articles:
   - articles/Zhang_2024_f53b_pbpk
   - articles/Zhang_2024_nedosiran
   - articles/Zhang_2024_sertraline
-  - articles/Zhang_2024_tucatinib
-  - articles/Zhang_2024_valproic_acid
-  - articles/Zhang_2025_cefiderocol
-  - articles/Zhang_2025_dupilumab_fev1
-  - articles/Zhang_2025_nedosiran
-  - articles/Zhang_2026_tebipenem
+  - articles/Zhang_2025_erythroferrone
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir

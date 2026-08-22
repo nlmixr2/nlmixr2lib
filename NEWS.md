@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Eaton 2025 dabigatran ([doi:10.1177/02676591231226291](https://doi.org/10.1177/02676591231226291)) -- anaesthetised sheep, with idarucizumab reversal.
+- Add Zhang 2025 epoetin alfa erythroferrone PK/PD models ([doi:10.1021/acsptsci.4c00575](https://doi.org/10.1021/acsptsci.4c00575)) -- rat (Sprague-Dawley) models of adenine-induced CKD anemia and carboplatin-induced anemia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
