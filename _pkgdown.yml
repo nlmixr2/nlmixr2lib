@@ -66,6 +66,8 @@ navbar:
         href: articles/Takahashi_2023_abatacept.html
       - text: "Abatacept (Zhong 2026)"
         href: articles/Zhong_2026_abatacept.html
+      - text: "Abemaciclib cns pbpk (Wickramasinghe 2025)"
+        href: articles/Wickramasinghe_2025_spatial_cns_pbpk.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
@@ -4300,6 +4302,7 @@ articles:
   - articles/Wi_2017_teicoplanin
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wicha_2018_rifampicin
+  - articles/Wickramasinghe_2025_spatial_cns_pbpk
   - articles/Wilbaux_2014_ovarianCancer_ca125
   - articles/Wilbaux_2015_prostate
   - articles/Wilbaux_2022_roblitinib
