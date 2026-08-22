@@ -1074,7 +1074,23 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Role:** First-order rate constant for in-vivo formation of an active metabolite from the parent central compartment, used when the source paper parameterises metabolite formation independently of the parent's total clearance.
 - **Source aliases:** none.
 - **Example models:** `Krause_2017_selexipag.R` (parent -> ACT-333679 active metabolite).
-- **Notes:** Fraction-metabolised is implicit (`kmet * Vc_parent / CL_parent`) rather than estimated as `fm`.
+- **Notes:** Fraction-metabolised is implicit (`kmet * Vc_parent / CL_parent`) rather than estimated as `fm`. Distinct from `k_presystemic_central_sa` and its siblings, which describe PRE-systemic (first-pass) metabolite formation out of the `presystemic` compartment rather than systemic conversion out of `central`. Also has a log-transformed primary form `lkmet` (`Krause_2017_selexipag.R`, `Koh_2025_aspirin.R`).
+
+### k_presystemic_central (**canonical pre-systemic-to-parent-central transfer rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant carrying INTACT parent drug out of the `presystemic` compartment into the parent's `central` compartment, in oral models that resolve first-pass metabolism as an explicit structural step. Paired with `k_presystemic_central_<metab>`, the competing route that carries pre-systemically formed metabolite straight into the metabolite's central compartment; the two rate constants together determine the pre-systemic extraction ratio. Log-transformed primary form `lk_presystemic_central`.
+- **Source aliases:**
+  - `k23` -- Koh 2025 Table 1 / Appendix 1 micro-constant notation (pre-systemic compartment 2 to ASA central compartment 3).
+- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; k23 = 2.32 1/h, RSE 4.11%).
+- **Notes:** Registered 2026-08-22 (sidecar `oare_PMC12433208` request-001 q4, option A). Named by source-and-destination role rather than by the paper's `k23` / `k24` digits: the registered micro-constant names `k12` / `k21` / `k13` / `k31` are bound to the standard central/peripheral topology, whose numbering is fixed, whereas this paper's numbering indexes its own non-standard pre-systemic compartment, so the digits carry no transferable meaning and would silently break if a state were inserted.
+
+### k_presystemic_central_sa (**canonical pre-systemic metabolite-formation rate constant (salicylic acid)**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant carrying pre-systemically formed metabolite out of the `presystemic` compartment directly into the metabolite's `central_<metab>` compartment -- i.e. the drug that is hydrolysed / metabolised in the gut wall before ever reaching the systemic circulation. The `_sa` form is the salicylic-acid member; the general shape is `k_presystemic_central_<metab>` for any registered metabolite suffix. Log-transformed primary form `lk_presystemic_central_sa`.
+- **Source aliases:**
+  - `k24` -- Koh 2025 Table 1 / Appendix 1 micro-constant notation (pre-systemic compartment 2 to SA central compartment 4).
+- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; k24 = 0.57 1/h, fixed from Dings & Lehr per Koh 2025 reference 14 to aid convergence).
+- **Notes:** Registered 2026-08-22 alongside `k_presystemic_central` (sidecar `oare_PMC12433208` request-001 q4, option A). Distinct from `kmet`, which is SYSTEMIC parent-to-metabolite conversion out of `central`; a model carrying both is precisely how the pre-systemic and systemic contributions are separated.
 
 ### fm (**canonical fraction metabolised**)
 - **Type:** paper-named-param

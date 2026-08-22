@@ -61,6 +61,15 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Source aliases:** none.
 - **Example models:** universal in popPK extractions.
 
+### presystemic (**canonical pre-systemic first-pass compartment**)
+- **Type:** compartment
+- **Role:** Pre-systemic (gut-wall / portal) compartment for oral models that resolve first-pass metabolism as an explicit structural step rather than folding it into bioavailability. Absorbed drug lands here first and then drains by two or more competing first-order routes -- typically intact parent onward to the parent's `central` compartment, and pre-systemically formed metabolite directly into the metabolite's `central_<metab>` compartment -- so the pre-systemic and systemic metabolite-formation pathways are separately identifiable. Every absorption arm (zero-order, first-order, transit) delivers into this state rather than into `central`.
+- **Source aliases:**
+  - `PSYS` -- Monolix compartment name in `Koh_2025_aspirin.R` (Koh 2025 Appendix 1).
+  - `GUT` -- the authors' own earlier, commented-out name for the same state in the Koh 2025 Monolix source.
+- **Example models:** `Koh_2025_aspirin.R` (dual zero-order + first-order absorption into `presystemic`, which drains via `k_presystemic_central` to the ASA central compartment and via `k_presystemic_central_sa` to the salicylic-acid central compartment).
+- **Notes:** Deliberately distinct from the registered `gut`, which denotes a perfused PBPK organ compartment with its own volume and blood flow; `presystemic` is a semi-mechanistic pre-systemic pool with no physiologic volume and is not interchangeable with it. Also distinct from `depot`: a depot holds drug that has not yet been absorbed, whereas `presystemic` holds absorbed drug that has not yet reached the systemic circulation. Registered 2026-08-22 (sidecar `oare_PMC12433208` request-001 q1, option A).
+
 ### peripheral1 (**canonical first peripheral compartment**)
 - **Type:** compartment
 - **Role:** First peripheral / tissue distribution compartment in 2- and 3-compartment models. Connected to central via inter-compartmental clearance `q` (and volume `vp`).
@@ -1158,6 +1167,23 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** `Jung_2024_clopidogrel.R` (`d/dt(pru)`, `pru(0) <- kin / kout`, observed as `PRU <- pru`).
 - **Notes:** Registered 2026-08-06 alongside `PRU`. Exactly parallel to the registered `ANC` / `anc` pair: the uppercase form is the biomarker observable, the lowercase form is the state.
+
+### TXB2 (**canonical serum thromboxane B2 concentration**)
+- **Type:** compartment
+- **Role:** Serum thromboxane B2 concentration, the standard ex-vivo readout of platelet cyclooxygenase-1 (COX-1) activity and therefore the pharmacodynamic endpoint for aspirin and other irreversible COX-1 inhibitors. TXB2 is the stable hydrolysis product of thromboxane A2 and is measured in serum after whole-blood clotting (ELISA), so it reports the maximal thromboxane-generating capacity of the sampled platelets rather than a circulating concentration. Carried as a turnover (indirect-response) pool whose zero-order production is inhibited by drug; the uppercase form is the observation output.
+- **Source aliases:**
+  - `TXB2` -- universal in the antiplatelet literature.
+  - `thromboxane B2` -- expanded form used in figure axes and table headers.
+  - `R` -- the generic turnover-state symbol used in the Koh 2025 Monolix source and its printed equation.
+- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; `d/dt(txb2) = kin * (1 - Imax * Cc^hill / (Cc^hill + ic50^hill)) - kout * txb2`, `txb2(0) = rbase = 26.4 ug/L`, observed as `TXB2 <- txb2`).
+- **Notes:** Registered 2026-08-22 (sidecar `oare_PMC12433208` request-001 q2, option A). `txb2` is the canonical LOWERCASE sibling for the ODE state -- the same split already registered for `PRU` / `pru` and `ANC` / `anc`, and required because `checkModelConventions()` enforces lowercase ODE-state names while the biomarker observables are uppercase. Registered as a general canonical rather than a paper-specific state because serum TXB2 is the shared COX-1 target-engagement endpoint across the antiplatelet class. Distinct from `PRU`, which is platelet REACTIVITY on a P2Y12-pathway assay: the two are different pathways (COX-1 vs P2Y12), different assays, and not convertible.
+
+### txb2 (**canonical lowercase thromboxane B2 ODE state**)
+- **Type:** compartment
+- **Role:** Lowercase sibling of `TXB2`, used for the thromboxane B2 turnover ODE state itself so the state name follows the all-lowercase ODE-state convention while the observation output keeps the uppercase clinical acronym. See the `TXB2` entry above for the quantity and the assay.
+- **Source aliases:** none.
+- **Example models:** `Koh_2025_aspirin.R` (`d/dt(txb2)`, `txb2(0) <- rbase`, observed as `TXB2 <- txb2`).
+- **Notes:** Registered 2026-08-22 alongside `TXB2`, exactly parallel to the `PRU` / `pru` and `ANC` / `anc` pairs.
 
 ### WBC (**canonical white blood cell count**)
 - **Type:** compartment
@@ -2921,6 +2947,16 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Joerger_2006_methotrexate.R` (3-cmt MTX parent + 2-cmt 7-OH-MTX metabolite, joint NONMEM ADVAN5 fit; metabolic fraction fixed at 10 percent per Joerger 2006 Results page 75).
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `7dm` precedent.
+
+### sa (**canonical salicylic-acid metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Salicylic acid (SA), the deacetylation (hydrolysis) metabolite of acetylsalicylic acid. Formed both pre-systemically in the gut wall and systemically from circulating aspirin, and it is the dominant circulating salicylate species after an oral aspirin dose. Gives `central_sa` / `peripheral1_sa` compartments, `lcl_sa` / `lvc_sa` / `lvp_sa` / `lq_sa` parameters, the `Cc_sa` observation and the `propSd_sa` residual SD.
+- **Source aliases:**
+  - `SA` -- universal abbreviation in the aspirin literature.
+  - `salicylate` -- expanded form used in assay and table headers.
+  - `CSA` / `PSA` -- the Monolix central / peripheral compartment names in `Koh_2025_aspirin.R` (Koh 2025 Appendix 1).
+- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; two-compartment SA disposition fed both by pre-systemic hydrolysis from `presystemic` and by systemic conversion `kmet` from the ASA `central` compartment).
+- **Notes:** Registered 2026-08-22 (sidecar `oare_PMC12433208` request-001 q3, option A). A two-character token is in style for this register (`gx`, `h4`, `m1`, `m2`, `bw`) and `sa` is the standard abbreviation for salicylic acid in the aspirin literature; the longer `sal` / `salicylate` alternatives were considered and rejected as unnecessary. Do not confuse with the `PSA` alias above, which is this paper's Monolix name for the SA PERIPHERAL compartment and has nothing to do with prostate-specific antigen.
 
 ### m1 (**canonical paper-named M1 metabolite suffix**)
 - **Type:** metabolite-suffix
