@@ -700,15 +700,22 @@ stopifnot(dMed$lo < 100)
     hemoglobin endpoint.
 
 13. **Compartment naming.** The 15 states use the canonical `precursor1` for
-    the bone-marrow erythroid precursor pool; the reticulocyte quartet
-    (`ret_imm_marrow`, `ret_mat_marrow`, `ret_imm_blood`, `ret_mat_blood`),
-    the erythrocyte age-transit chain (`erythrocytes1`-`erythrocytes4`), the
-    paired corpuscular-hemoglobin chain (`mch1`-`mch4`) and the moderator
-    pair (`moderator1`, `moderator2`) are role-based names for states with no
-    existing canonical entry. The moderator chain deliberately does not reuse
-    the `precursor<n>` prefix that `Ahlstrom_2010_nicotinicAcid_rat.R` uses
-    for a Gabrielsson-Hjorth moderator chain, because `precursor1` is already
-    taken here by an actual biological precursor pool.
+    the bone-marrow erythroid precursor pool. The other 14 states introduced
+    seven new canonical compartment names, ratified alongside this extraction
+    and registered in `inst/references/compartment-names.md`: the reticulocyte
+    quartet (`ret_imm_marrow`, `ret_mat_marrow`, `ret_imm_blood`,
+    `ret_mat_blood`) as individual entries, and the erythrocyte age-transit
+    chain (`erythrocytes1`-`erythrocytes4`), paired corpuscular-hemoglobin
+    chain (`mch1`-`mch4`) and moderator pair (`moderator1`, `moderator2`) as
+    numbered-chain prefixes added to `compartmentRegex` in `R/conventions.R`.
+    `erythrocytes` already existed as a single-state canonical and was
+    extended with the chain numbering rather than duplicated. The moderator
+    chain deliberately does not reuse the `precursor<n>` prefix that
+    `Ahlstrom_2010_nicotinicAcid_rat.R` uses for a Gabrielsson-Hjorth
+    moderator chain, because `precursor1` is already taken here by an actual
+    biological precursor pool; `moderator<n>` now exists so future models do
+    not have to make that compromise. `checkModelConventions()` reports no
+    issues for this model.
 
 14. **Species and scope.** Healthy adults under 50 years only; the paper
     notes this excludes older populations who may respond differently, and
