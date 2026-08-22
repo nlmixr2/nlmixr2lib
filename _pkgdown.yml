@@ -442,6 +442,8 @@ navbar:
         href: articles/Long-Boyle_2015_busulfan.html
       - text: "Busulfan (Schreib 2024)"
         href: articles/Schreib_2024_busulfan.html
+      - text: "Busulfan (Xu 2023)"
+        href: articles/Xu_2023_busulfan.html
       - text: "Butanediol rat (Fung 2008)"
         href: articles/Fung_2008_butanediol_rat.html
       - text: "C3G (Jeon 2012)"
@@ -4972,7 +4974,7 @@ articles:
   - articles/Xu_2019_sarilumab
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
-  - articles/Xu_2025_aficamten
+  - articles/Xu_2023_busulfan
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab

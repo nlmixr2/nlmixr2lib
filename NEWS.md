@@ -2,7 +2,7 @@
 
 # development version
 
-* Add Ketharanathan 2023 pentobarbital ([doi:10.1007/s40262-023-01249-z](https://doi.org/10.1007/s40262-023-01249-z)) -- critically ill children in the paediatric intensive care unit treated for refractory status epilepticus or severe traumatic brain injury.
+- Add Xu 2023 busulfan ([doi:10.1002/psp4.13004](https://doi.org/10.1002/psp4.13004)) -- Chinese adults and children undergoing allogeneic hematopoietic stem cell transplantation.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
