@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lee 2024 L-serine (AST-001) PK-PD ([doi:10.3389/fphar.2024.1452526](https://doi.org/10.3389/fphar.2024.1452526)) -- children aged 2-11 years with autism spectrum disorder.
+- Add Mao 2024 sirolimus ([doi:10.2147/DDDT.S503463](https://doi.org/10.2147/DDDT.S503463)) -- adult liver transplant recipients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
