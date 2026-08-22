@@ -31,7 +31,7 @@ test_that("event table has the dose, reset and observation records", {
   expect_equal(doses$amt[3], 511784.5, tolerance = 1e-5)
 
   resets <- ev[ev$evid == 6L, ]
-  expect_equal(resets$cmt, rep("cytokine_auc", 3L))
+  expect_equal(resets$cmt, rep("cauc", 3L))
   expect_equal(resets$amt, Poels_2025_elranatamab_qsp_cauc_multiplier(1:3))
   # the reset must follow its dose at the same time
   expect_true(all(which(ev$evid == 6L) > which(ev$evid == 1L)[seq_len(3L)]))
@@ -73,13 +73,13 @@ test_that("dose_mg is recycled and inputs are validated", {
   expect_error(Poels_2025_elranatamab_qsp_events(0, -1, 0))
 })
 
-test_that("the emitted evid = 6 records really rescale cytokine_auc", {
+test_that("the emitted evid = 6 records really rescale cauc", {
   # Guards the helper against a change in rxode2's multiply-event semantics,
   # using a minimal model so the test stays fast.
   skip_if_not_installed("rxode2")
   toy <- rxode2::rxode2({
     d / dt(depot) <- -0.001 * depot
-    d / dt(cytokine_auc) <- 1
+    d / dt(cauc) <- 1
   })
   ev <- Poels_2025_elranatamab_qsp_events(
     dose_time = c(0, 10, 20), dose_mg = 76, obs_time = c(9.999, 19.999, 29.999),
@@ -91,5 +91,5 @@ test_that("the emitted evid = 6 records really rescale cytokine_auc", {
   mult <- Poels_2025_elranatamab_qsp_cauc_multiplier(1:3)
   # Closed form: reset at dose k multiplies, then 10 h of unit accumulation.
   expected <- Reduce(function(prev, k) prev * mult[k] + 10, 1:3, accumulate = TRUE, init = 0)[-1]
-  expect_equal(out$cytokine_auc, expected, tolerance = 1e-3)
+  expect_equal(out$cauc, expected, tolerance = 1e-3)
 })

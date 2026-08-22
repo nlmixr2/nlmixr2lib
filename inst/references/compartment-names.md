@@ -512,14 +512,96 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Example models:** `Betts_2019_pf_06671008_qsp.R`.
 - **Notes:** Founding example Betts 2019 (Eq 15 dDPcadt/dt). Canonical name is `drug_pcad_tumor` for the founding P-cadherin example; per-antigen suffixed forms (`drug_her2_tumor`, `drug_cea_tumor`, etc.) can be registered as new canonicals when future CD3 bispecifics targeting other antigens are extracted. The internalization rate `kint` distinguishes this compartment from `drug_cd3_tumor`, which is not internalized in the current model class.
 
-### drug_bcma_tumor (**canonical drug-BCMA dimer at the tumor site**)
+### drug_bcma_bonemarrow (**canonical drug-BCMA dimer in bone marrow**)
 - **Type:** compartment
-- **Role:** Drug bound to membrane B-cell maturation antigen (BCMA) on myeloma cells at the tumor site of action. Formed by mass-action binding of free drug to BCMA receptors; can bind free CD3 to yield the productive `trimer`, or dissociate back to free drug and BCMA. The per-antigen sibling of `drug_pcad_tumor`, registered per the extension path documented in that entry ("per-antigen suffixed forms ... can be registered as new canonicals when future CD3 bispecifics targeting other antigens are extracted").
+- **Role:** Drug bound to membrane B-cell maturation antigen (BCMA) on myeloma cells in the bone marrow (pM). Formed by mass-action binding of free drug to BCMA receptors; binds free CD3 to yield the productive `trimer`, or dissociates back to free drug and BCMA. The per-antigen, per-site sibling of `drug_pcad_tumor`, registered per the extension path documented in that entry.
 - **Source aliases:**
   - `Ab_BCMA_BM` -- Poels 2025 paper notation.
   - `DBCMA` -- Poels 2025 Supplementary Table 2 code alias.
 - **Example models:** `Poels_2025_elranatamab_qsp.R`.
-- **Notes:** Founding example Poels 2025 (Supplementary Eq 15). Unlike `drug_pcad_tumor` this state carries no internalization term, because Poels 2025 does not model BCMA-complex endocytosis. In Poels 2025 the tumor site of action is the bone marrow, so the `_tumor` suffix denotes the site-of-action compartment rather than a solid-tumor mass; the paper's own Supplementary Table 2 labels these states "in tumor compartment". The soluble counterpart of the antigen is carried separately (`sbcma_tumor`, `drug_sbcma_tumor`) because soluble BCMA acts as a drug sink rather than a productive binding partner.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 15). Unlike `drug_pcad_tumor` this state carries no internalisation term, because Poels 2025 does not model BCMA-complex endocytosis. The soluble counterpart of the antigen is carried separately (`target_bonemarrow`, `complex_bonemarrow`) because soluble BCMA acts as a drug sink rather than a productive binding partner.
+
+### drug_cd3_central (**canonical drug-CD3 dimer in the central compartment**)
+- **Type:** compartment
+- **Role:** Drug-CD3 receptor dimer on circulating T cells (pM). The central-compartment sibling of `drug_cd3_tumor`: T-cell engagers bind CD3 in blood as well as at the site of action, and that binding is a real drug sink even though it is not pharmacologically productive.
+- **Source aliases:**
+  - `Ab_CD3_c` -- Poels 2025 paper notation.
+  - `DCD3 c` -- Poels 2025 Supplementary Table 2 code alias.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 5). Betts 2019 explicitly excluded the plasma CD3 dimer as negligible (<1% saturation) in mouse; Poels 2025 carries it because at clinical BsAb concentrations circulating CD3 occupancy is substantial.
+
+### drug_cd3_bonemarrow (**canonical drug-CD3 dimer in bone marrow**)
+- **Type:** compartment
+- **Role:** Drug-CD3 receptor dimer on T cells in the bone marrow site of action (pM). The bone-marrow sibling of `drug_cd3_tumor`; binds free BCMA to yield the productive `trimer`. Its accumulation is the mechanism behind the bell-shaped dose-response: at high drug concentrations CD3 is sequestered as dimer and cannot form trimers.
+- **Source aliases:**
+  - `Ab_CD3_BM` -- Poels 2025 paper notation.
+  - `DCD3 BM` -- Poels 2025 Supplementary Table 2 code alias.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 18). Use `drug_cd3_tumor` for solid-tumour sites and this name when the site of action is marrow (haematological malignancies).
+
+### target_bonemarrow (**canonical soluble target in bone marrow**)
+- **Type:** compartment
+- **Role:** Free (unbound) soluble target shed into the bone marrow (pM). Site-suffixed member of the registered `target` family, in the same sense as `target_csf` / `target_isf`. In Poels 2025 the shedding rate is proportional to tumour burden, which makes this state a burden-tracking drug sink rather than a fixed pool.
+- **Source aliases:**
+  - `sBCMA_BM` -- Poels 2025 paper notation for soluble BCMA in marrow.
+  - `sBCMA BM` -- Poels 2025 Supplementary Table 2 code alias.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 14). Not matched by the existing `targetLocationRegex`, which admits only `csf` / `isf` / `peripheral<n>`; registered explicitly here. The bare `target` carries the same species in the central compartment.
+
+### complex_bonemarrow (**canonical drug-soluble-target complex in bone marrow**)
+- **Type:** compartment
+- **Role:** Drug bound to soluble target in the bone marrow (pM). Site-suffixed member of the registered `complex` family and the binding partner of `target_bonemarrow`. Non-productive: it cannot recruit CD3 to form a trimer, so it is pure drug sink.
+- **Source aliases:**
+  - `Ab_sBCMA_BM` -- Poels 2025 paper notation.
+  - `DsBCMA BM` -- Poels 2025 Supplementary Table 2 code alias.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eqs 16-17). The bare `complex` carries the same species in the central compartment.
+
+### tcell_central (**canonical circulating CD3+ T-cell pool**)
+- **Type:** compartment
+- **Role:** CD3+ T-cell concentration in the central compartment (cells/uL). Total CD3 receptor availability is derived from this state and a per-cell receptor density, so it sets the ceiling on drug-CD3 dimer and trimer formation. Distinct from `pbmc` (all mononuclear cells) and from `bcell` / `bcell_periph`.
+- **Source aliases:**
+  - `Tc_c` -- Poels 2025 paper notation.
+  - `TC c` -- Poels 2025 Supplementary Table 2 code alias.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 6). T-cell-engager models generally need an explicit effector-cell pool; Betts 2019 collapsed it to the fixed scalar `tcellst_tumor`, and this pair of canonicals is the dynamic form.
+
+### tcell_bonemarrow (**canonical bone-marrow CD3+ T-cell pool**)
+- **Type:** compartment
+- **Role:** CD3+ T-cell concentration at the bone-marrow site of action (cells/uL). Exchanges with `tcell_central`; egress can be inhibited by local cytokine and trimer levels, which is how T-cell-engager models represent activation-driven retention of effector cells at the tumour.
+- **Source aliases:**
+  - `Tc_BM` -- Poels 2025 paper notation.
+  - `TC BM` -- Poels 2025 Supplementary Table 2 code alias.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eqs 28-29). Baseline marrow T cells are not independent of `tcell_central`: the paper asserts steady state at t = 0, which fixes the ratio at `(k_TC_c_BM * Vc) / (k_TC_BM_c * V_BM)`.
+
+### mprotein (**canonical serum monoclonal M-protein**)
+- **Type:** compartment
+- **Role:** Serum monoclonal immunoglobulin (M-protein, M-spike) concentration (g/L), produced in proportion to total myeloma-cell burden and cleared first-order. With `flc` it is the pair of paraprotein biomarkers the IMWG response criteria are defined on, so it is the usual efficacy read-out for multiple-myeloma models.
+- **Source aliases:**
+  - `M_P` -- Poels 2025 paper notation.
+  - `MProtein` -- Poels 2025 Supplementary Table 2 code alias.
+  - `M-spike`, `SPEP`.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 11). Note `Collins_2023_belantamab_mprotein.R` carries M-protein in the generic `tumor` compartment; that predates this canonical and is a candidate for migration. Units are g/L -- Poels 2025 Figure 2b labels its M-protein axis "(g/dL)" over a 0-65 range, which is a figure error (Supplementary Table 2 gives g/L over 0-70).
+
+### flc (**canonical involved serum free light chain**)
+- **Type:** compartment
+- **Role:** Involved serum free light chain concentration (mg/L), produced in proportion to total myeloma-cell burden and cleared first-order. Used as the response biomarker for patients whose M-protein is not measurable at baseline (IMWG threshold 0.5 g/dL), so the two states together give an "integrated paraprotein" per patient.
+- **Source aliases:**
+  - `FLC` -- Poels 2025 paper notation and Supplementary Table 2 code alias.
+  - `sFLC`, `involved FLC`.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 12). FLC clears far faster than M-protein (Poels 2025 uses 0.1733/h vs 0.0021/h), so the two biomarkers respond on very different timescales to the same tumour dynamics.
+
+### cytokine_bonemarrow, cytokine_transit1, cytokine_transit2, cytokine_transit3, cytokine_transit4, cytokine_transit5, cytokine_central (**canonical pro-inflammatory cytokine release chain**)
+- **Type:** compartment
+- **Role:** A generic pro-inflammatory cytokine (pg/mL) released at the site of action in response to T-cell activation, delayed through five transit compartments, and appearing in circulation. `cytokine_bonemarrow` is the release compartment, `cytokine_transit1` .. `cytokine_transit5` the delay chain, `cytokine_central` the circulating pool that clinical cytokine measurements are compared against.
+- **Source aliases:**
+  - `C_BM`, `C1`-`C5`, `C_c` -- Poels 2025 paper notation.
+  - `cytokine BM`, `Cytokine i`, `Cytokine c` -- Poels 2025 Supplementary Table 2 code aliases.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eqs 7, 30-35), adapting Chen et al. (2019) Clin Transl Sci 12:600-608. **Deliberately generic rather than `il6_*`.** Poels 2025 models "a pro-inflammatory cytokine (e.g., IL-6)" and calibrates it against observed IL-6; naming the states `il6_*` would overclaim, because IL-6 is the calibration data rather than the modelled species, and it would leave the registered `il6` canonical -- which means actual IL-6 -- competing for the name. Record the IL-6 calibration provenance in the model's source-trace comments. Operator naming ruling, task sidecar oare_PMC12402305 request-001 q2.
 
 ### trimer (**canonical drug-CD3-antigen ternary complex in tumor**)
 - **Type:** compartment

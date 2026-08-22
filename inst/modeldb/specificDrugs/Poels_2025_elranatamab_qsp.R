@@ -24,51 +24,45 @@ Poels_2025_elranatamab_qsp <- function() {
   # PMC12402305_aux_ELREXFIO_USPI_dailymed.txt), so 76 mg = 5.1178e5 pmol.
   units <- list(time = "h", dosing = "pmol", concentration = "pM")
 
-  # States whose role has no canonical entry in inst/references/compartment-names.md.
-  # Canonical states used unchanged: depot, central, peripheral1, tumor,
-  # drug_cd3_tumor, trimer, cycling_cells, damaged_cells1-3. `drug_bcma_tumor`
-  # is registered as a new canonical in this PR, following the per-antigen
-  # extension path documented under `drug_pcad_tumor`.
-  paper_specific_compartments <- c(
-    "sbcma_central", "sbcma_tumor",
-    "drug_sbcma_central", "drug_sbcma_tumor", "drug_cd3_central",
-    "tcell_central", "tcell_tumor",
-    "mprotein", "flc",
-    "cytokine_central", "cytokine_tumor",
-    "cytokine_transit1", "cytokine_transit2", "cytokine_transit3",
-    "cytokine_transit4", "cytokine_transit5",
-    "cytokine_auc"
-  )
+  # Every ODE state maps onto a canonical compartment name, except the
+  # cumulative cytokine exposure bookkeeping state. The eleven new canonicals
+  # this model founds are registered in inst/references/compartment-names.md as
+  # part of this change; the naming was approved by the operator (task sidecar
+  # oare_PMC12402305, request-001 q1 = A and q2 = A) with the cytokine chain
+  # deliberately kept in the generic `cytokine_*` namespace rather than `il6_*`,
+  # because the paper models a generic pro-inflammatory cytokine and IL-6 is
+  # only the calibration data.
+  paper_specific_compartments <- c("cauc")
 
   compartmentData <- list(
     depot              = list(analyte = "elranatamab",                     units = "pmol", specimen = "administration site", verified = TRUE),
     central            = list(analyte = "elranatamab",                     units = "pM",   specimen = "serum",               verified = TRUE),
     peripheral1        = list(analyte = "elranatamab",                     units = "pM",   specimen = "serum",               verified = TRUE),
-    sbcma_central      = list(analyte = "soluble BCMA",                    units = "pM",   specimen = "serum",               verified = TRUE),
-    drug_sbcma_central = list(analyte = "elranatamab-soluble BCMA dimer",  units = "pM",   specimen = "serum",               verified = TRUE),
+    target      = list(analyte = "soluble BCMA",                    units = "pM",   specimen = "serum",               verified = TRUE),
+    complex = list(analyte = "elranatamab-soluble BCMA dimer",  units = "pM",   specimen = "serum",               verified = TRUE),
     drug_cd3_central   = list(analyte = "elranatamab-CD3 dimer",           units = "pM",   specimen = "serum",               verified = TRUE),
     tcell_central      = list(analyte = "CD3+ T cells",                    units = "cells/uL", specimen = "whole blood",           verified = TRUE),
     cytokine_central   = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "serum",             verified = TRUE),
     mprotein           = list(analyte = "monoclonal M-protein",            units = "g/L",  specimen = "serum",               verified = TRUE),
     flc                = list(analyte = "involved serum free light chain", units = "mg/L", specimen = "serum",               verified = TRUE),
-    tumor              = list(analyte = "elranatamab",                     units = "pM",   specimen = "tumor",         verified = TRUE),
-    sbcma_tumor        = list(analyte = "soluble BCMA",                    units = "pM",   specimen = "tumor",         verified = TRUE),
-    drug_bcma_tumor    = list(analyte = "elranatamab-membrane BCMA dimer", units = "pM",   specimen = "tumor",         verified = TRUE),
-    drug_sbcma_tumor   = list(analyte = "elranatamab-soluble BCMA dimer",  units = "pM",   specimen = "tumor",         verified = TRUE),
-    drug_cd3_tumor     = list(analyte = "elranatamab-CD3 dimer",           units = "pM",   specimen = "tumor",         verified = TRUE),
+    bonemarrow              = list(analyte = "elranatamab",                     units = "pM",   specimen = "tumor",         verified = TRUE),
+    target_bonemarrow        = list(analyte = "soluble BCMA",                    units = "pM",   specimen = "tumor",         verified = TRUE),
+    drug_bcma_bonemarrow    = list(analyte = "elranatamab-membrane BCMA dimer", units = "pM",   specimen = "tumor",         verified = TRUE),
+    complex_bonemarrow   = list(analyte = "elranatamab-soluble BCMA dimer",  units = "pM",   specimen = "tumor",         verified = TRUE),
+    drug_cd3_bonemarrow     = list(analyte = "elranatamab-CD3 dimer",           units = "pM",   specimen = "tumor",         verified = TRUE),
     trimer             = list(analyte = "elranatamab-CD3-BCMA trimer",     units = "pM",   specimen = "tumor",         verified = TRUE),
     cycling_cells      = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
     damaged_cells1     = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
     damaged_cells2     = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
     damaged_cells3     = list(analyte = "multiple myeloma cells",          units = "cells/uL", specimen = "tumor",     verified = TRUE),
-    tcell_tumor        = list(analyte = "CD3+ T cells",                    units = "cells/uL", specimen = "tumor",     verified = TRUE),
-    cytokine_tumor     = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "tumor",       verified = TRUE),
+    tcell_bonemarrow        = list(analyte = "CD3+ T cells",                    units = "cells/uL", specimen = "tumor",     verified = TRUE),
+    cytokine_bonemarrow     = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "tumor",       verified = TRUE),
     cytokine_transit1  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
     cytokine_transit2  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
     cytokine_transit3  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
     cytokine_transit4  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
     cytokine_transit5  = list(analyte = "pro-inflammatory cytokine (IL-6)", units = "pg/mL", specimen = "not applicable",    verified = TRUE),
-    cytokine_auc       = list(analyte = "cumulative cytokine exposure",    units = "pg/mL*h", specimen = "not applicable",   verified = TRUE)
+    cauc       = list(analyte = "cumulative cytokine exposure",    units = "pg/mL*h", specimen = "not applicable",   verified = TRUE)
   )
 
   # The published model carries no covariate columns: patient-to-patient
@@ -84,7 +78,7 @@ Poels_2025_elranatamab_qsp <- function() {
       type        = "continuous",
       notes       = paste(
         "Not a data covariate in this model: baseline sBCMA enters as the",
-        "initial condition of the `sbcma_central` state via the",
+        "initial condition of the `target` state via the",
         "`sbcma0_central` parameter (pM). Convert with the paper's own scale,",
         "185 pM per ng/mL, so the published 100 ng/mL cut-off is 18500 pM",
         "(Supplementary Table 2 range 185-153520 pM maps onto the 1-830 ng/mL",
@@ -295,8 +289,8 @@ Poels_2025_elranatamab_qsp <- function() {
     #    steady-state relations are used so an untreated simulation holds its
     #    baseline; see vignette Assumptions and deviations.
     # =================================================================
-    tcell0_tumor <- ktc_c_bm * vc / (ktc_bm_c * vbm) * tcell0_central          # from Suppl Eq 28 at t = 0
-    sbcma0_tumor <- kdeg_sbcma * vc / (ktr_sbcma_bm_c * vbm) * sbcma0_central  # from Suppl Eq 14 at t = 0
+    tcell0_bonemarrow <- ktc_c_bm * vc / (ktc_bm_c * vbm) * tcell0_central          # from Suppl Eq 28 at t = 0
+    sbcma0_bonemarrow <- kdeg_sbcma * vc / (ktr_sbcma_bm_c * vbm) * sbcma0_central  # from Suppl Eq 14 at t = 0
 
     # =================================================================
     # 5. Receptor pools (Suppl Eqs 8-9, 20-23)
@@ -306,10 +300,10 @@ Poels_2025_elranatamab_qsp <- function() {
     cd3_tot_central  <- tcell_central * cd3_density * recpt_to_pm             # Suppl Eq 8
     cd3_free_central <- cd3_tot_central - drug_cd3_central                    # Suppl Eq 9
 
-    cd3_tot_tumor  <- tcell_tumor * cd3_density * recpt_to_pm                 # Suppl Eq 20
-    bcma_tot_tumor <- mm_tot * bcma_density * recpt_to_pm                     # Suppl Eq 21
-    bcma_free_tumor <- bcma_tot_tumor - drug_bcma_tumor - trimer              # Suppl Eq 22
-    cd3_free_tumor  <- cd3_tot_tumor - drug_cd3_tumor - trimer                # Suppl Eq 23
+    cd3_tot_bonemarrow  <- tcell_bonemarrow * cd3_density * recpt_to_pm                 # Suppl Eq 20
+    bcma_tot_bonemarrow <- mm_tot * bcma_density * recpt_to_pm                     # Suppl Eq 21
+    bcma_free_bonemarrow <- bcma_tot_bonemarrow - drug_bcma_bonemarrow - trimer              # Suppl Eq 22
+    cd3_free_bonemarrow  <- cd3_tot_bonemarrow - drug_cd3_bonemarrow - trimer                # Suppl Eq 23
 
     # =================================================================
     # 6. Trimer-driven kill with time-dependent resistance
@@ -333,10 +327,10 @@ Poels_2025_elranatamab_qsp <- function() {
     # =================================================================
     # 7. Cytokine release and T-cell retention (Suppl Eqs 29, 38)
     # =================================================================
-    cyt_bar     <- (cytokine_tumor + cytokine_transit1 + cytokine_transit2 +
+    cyt_bar     <- (cytokine_bonemarrow + cytokine_transit1 + cytokine_transit2 +
                       cytokine_transit3 + cytokine_transit4 + cytokine_transit5) / 6
     cyt_bar_pos <- max(cyt_bar, 0)
-    cauc_pos    <- max(cytokine_auc, 0)
+    cauc_pos    <- max(cauc, 0)
 
     t_inh <- imax_tc *
       (cyt_bar_pos^n_cytokine_tc / (ksat_tc^n_cytokine_tc + cyt_bar_pos^n_cytokine_tc)) *
@@ -352,27 +346,27 @@ Poels_2025_elranatamab_qsp <- function() {
     d/dt(depot) <- -ka * depot                                                # amount, pmol
 
     d/dt(central) <- ka * depot / vc - k12 * central + k21 * vp / vc * peripheral1 -
-      kon_bcma * central * sbcma_central + koff_bcma * drug_sbcma_central -
+      kon_bcma * central * target + koff_bcma * complex -
       kon_cd3 * central * cd3_free_central + koff_cd3 * drug_cd3_central -
-      ktr_ab_c_bm * central + ktr_ab_bm_c * vbm / vc * tumor -
+      ktr_ab_c_bm * central + ktr_ab_bm_c * vbm / vc * bonemarrow -
       kel * central                                                           # Suppl Eq 1
 
     d/dt(peripheral1) <- k12 * vc / vp * central - k21 * peripheral1          # implied by Suppl Eq 1 (not printed separately)
 
-    d/dt(sbcma_central) <-
-      kdeg_sbcma * (sbcma0_central / sbcma0_tumor * sbcma_tumor - sbcma_central) -
-      kon_bcma * central * sbcma_central + koff_bcma * drug_sbcma_central     # Suppl Eqs 2-3
+    d/dt(target) <-
+      kdeg_sbcma * (sbcma0_central / sbcma0_bonemarrow * target_bonemarrow - target) -
+      kon_bcma * central * target + koff_bcma * complex     # Suppl Eqs 2-3
 
-    d/dt(drug_sbcma_central) <-
-      kon_bcma * central * sbcma_central - koff_bcma * drug_sbcma_central +
-      ktr_sbcma_bm_c * vbm / vc * drug_sbcma_tumor - kel * drug_sbcma_central # Suppl Eq 4
+    d/dt(complex) <-
+      kon_bcma * central * target - koff_bcma * complex +
+      ktr_sbcma_bm_c * vbm / vc * complex_bonemarrow - kel * complex # Suppl Eq 4
 
     d/dt(drug_cd3_central) <-
       kon_cd3 * central * cd3_free_central - koff_cd3 * drug_cd3_central      # Suppl Eq 5
 
     d/dt(tcell_central) <-
       kel_tc * tcell0_central - (kel_tc + ktc_c_bm) * tcell_central +
-      ktc_bm_c * tcell_tumor * vbm / vc * (1 - t_inh)                         # Suppl Eq 6
+      ktc_bm_c * tcell_bonemarrow * vbm / vc * (1 - t_inh)                         # Suppl Eq 6
 
     d/dt(cytokine_central) <-
       beta_prod + ktr_cyt * cytokine_transit5 * vbm / vc -
@@ -383,38 +377,38 @@ Poels_2025_elranatamab_qsp <- function() {
     d/dt(flc)      <- kdeg_flc * (flc0 / mm0) * mm_tot - kdeg_flc * flc                      # Suppl Eq 12
 
     # --- Bone marrow drug and sBCMA (Suppl Eqs 13-14) ----------------
-    d/dt(tumor) <-
-      koff_bcma * drug_sbcma_tumor - kon_bcma * tumor * sbcma_tumor +
-      koff_cd3 * drug_cd3_tumor - kon_cd3 * tumor * cd3_free_tumor +
-      koff_bcma * drug_bcma_tumor - kon_bcma * tumor * bcma_free_tumor -
-      ktr_ab_bm_c * tumor + ktr_ab_c_bm * vc / vbm * central                  # Suppl Eq 13
+    d/dt(bonemarrow) <-
+      koff_bcma * complex_bonemarrow - kon_bcma * bonemarrow * target_bonemarrow +
+      koff_cd3 * drug_cd3_bonemarrow - kon_cd3 * bonemarrow * cd3_free_bonemarrow +
+      koff_bcma * drug_bcma_bonemarrow - kon_bcma * bonemarrow * bcma_free_bonemarrow -
+      ktr_ab_bm_c * bonemarrow + ktr_ab_c_bm * vc / vbm * central                  # Suppl Eq 13
 
-    d/dt(sbcma_tumor) <-
+    d/dt(target_bonemarrow) <-
       kdeg_sbcma * vc / vbm * (sbcma0_central / mm0) * mm_tot -
-      ktr_sbcma_bm_c * sbcma_tumor -
-      kon_bcma * tumor * sbcma_tumor + koff_bcma * drug_sbcma_tumor           # Suppl Eq 14
+      ktr_sbcma_bm_c * target_bonemarrow -
+      kon_bcma * bonemarrow * target_bonemarrow + koff_bcma * complex_bonemarrow           # Suppl Eq 14
 
     # --- Dimers and trimer in bone marrow (Suppl Eqs 15-19) ----------
-    d/dt(drug_bcma_tumor) <-
-      kon_bcma * tumor * bcma_free_tumor - koff_bcma * drug_bcma_tumor -
-      kon_cd3 * drug_bcma_tumor * cd3_free_tumor + koff_cd3 * trimer          # Suppl Eq 15
+    d/dt(drug_bcma_bonemarrow) <-
+      kon_bcma * bonemarrow * bcma_free_bonemarrow - koff_bcma * drug_bcma_bonemarrow -
+      kon_cd3 * drug_bcma_bonemarrow * cd3_free_bonemarrow + koff_cd3 * trimer          # Suppl Eq 15
 
     # Suppl Eq 17 puts the factor VBM/Vc on the loss of the marrow drug-sBCMA
     # dimer as well as on its gain in central (Eq 4). The free-drug pair
     # (Eqs 1 and 13) carries the factor on the gain term only, so the printed
     # dimer pair is not mass-conserving. Transcribed as printed; flagged in
     # the vignette Assumptions and deviations.
-    d/dt(drug_sbcma_tumor) <-
-      kon_bcma * tumor * sbcma_tumor - koff_bcma * drug_sbcma_tumor -
-      ktr_sbcma_bm_c * vbm / vc * drug_sbcma_tumor                            # Suppl Eqs 16-17
+    d/dt(complex_bonemarrow) <-
+      kon_bcma * bonemarrow * target_bonemarrow - koff_bcma * complex_bonemarrow -
+      ktr_sbcma_bm_c * vbm / vc * complex_bonemarrow                            # Suppl Eqs 16-17
 
-    d/dt(drug_cd3_tumor) <-
-      kon_cd3 * tumor * cd3_free_tumor - koff_cd3 * drug_cd3_tumor -
-      kon_bcma * drug_cd3_tumor * bcma_free_tumor + koff_bcma * trimer        # Suppl Eq 18
+    d/dt(drug_cd3_bonemarrow) <-
+      kon_cd3 * bonemarrow * cd3_free_bonemarrow - koff_cd3 * drug_cd3_bonemarrow -
+      kon_bcma * drug_cd3_bonemarrow * bcma_free_bonemarrow + koff_bcma * trimer        # Suppl Eq 18
 
     d/dt(trimer) <-
-      kon_bcma * drug_cd3_tumor * bcma_free_tumor - koff_bcma * trimer +
-      kon_cd3 * drug_bcma_tumor * cd3_free_tumor - koff_cd3 * trimer          # Suppl Eq 19
+      kon_bcma * drug_cd3_bonemarrow * bcma_free_bonemarrow - koff_bcma * trimer +
+      kon_cd3 * drug_bcma_bonemarrow * cd3_free_bonemarrow - koff_cd3 * trimer          # Suppl Eq 19
 
     # --- Myeloma cells: Simeoni growth with transduction chain --------
     growth_num <- kg0 * (1 - mm_tot / mm_max)
@@ -425,16 +419,16 @@ Poels_2025_elranatamab_qsp <- function() {
     d/dt(damaged_cells3) <- 4 / tau_mm * (damaged_cells2 - damaged_cells3)                         # Suppl Eq 27
 
     # --- T cells and cytokines in bone marrow (Suppl Eqs 28, 30-36) ---
-    d/dt(tcell_tumor) <-
-      ktc_c_bm * vc / vbm * tcell_central - ktc_bm_c * tcell_tumor * (1 - t_inh)  # Suppl Eq 28
+    d/dt(tcell_bonemarrow) <-
+      ktc_c_bm * vc / vbm * tcell_central - ktc_bm_c * tcell_bonemarrow * (1 - t_inh)  # Suppl Eq 28
 
-    d/dt(cytokine_tumor)    <- r_syn * (1 - ih) - (ktr_cyt + kdeg_cyt) * cytokine_tumor              # Suppl Eq 30
-    d/dt(cytokine_transit1) <- ktr_cyt * cytokine_tumor    - (ktr_cyt + kdeg_cyt) * cytokine_transit1  # Suppl Eq 31
+    d/dt(cytokine_bonemarrow)    <- r_syn * (1 - ih) - (ktr_cyt + kdeg_cyt) * cytokine_bonemarrow              # Suppl Eq 30
+    d/dt(cytokine_transit1) <- ktr_cyt * cytokine_bonemarrow    - (ktr_cyt + kdeg_cyt) * cytokine_transit1  # Suppl Eq 31
     d/dt(cytokine_transit2) <- ktr_cyt * cytokine_transit1 - (ktr_cyt + kdeg_cyt) * cytokine_transit2  # Suppl Eq 32
     d/dt(cytokine_transit3) <- ktr_cyt * cytokine_transit2 - (ktr_cyt + kdeg_cyt) * cytokine_transit3  # Suppl Eq 33
     d/dt(cytokine_transit4) <- ktr_cyt * cytokine_transit3 - (ktr_cyt + kdeg_cyt) * cytokine_transit4  # Suppl Eq 34
     d/dt(cytokine_transit5) <- ktr_cyt * cytokine_transit4 - (ktr_cyt + kdeg_cyt) * cytokine_transit5  # Suppl Eq 35
-    d/dt(cytokine_auc)      <- cytokine_tumor - beta_prod                                             # Suppl Eq 36
+    d/dt(cauc)      <- cytokine_bonemarrow - beta_prod                                             # Suppl Eq 36
 
     # =================================================================
     # 9. Dose-level adjustments
@@ -448,7 +442,7 @@ Poels_2025_elranatamab_qsp <- function() {
     #
     # with N the number of doses given. This is a DISCRETE state reset, which
     # an rxode2 ODE cannot express, so it is delivered from the event table as
-    # an `evid = 6` (multiply) record on `cytokine_auc` at each drug-dose time,
+    # an `evid = 6` (multiply) record on `cauc` at each drug-dose time,
     # carrying the reciprocal of that divisor as its `amt`.
     # nlmixr2lib::Poels_2025_elranatamab_qsp_events() builds a compliant event
     # table and is the supported way to simulate this model; the multiplier is
@@ -462,46 +456,46 @@ Poels_2025_elranatamab_qsp <- function() {
     depot(0)              <- 0
     central(0)            <- 0
     peripheral1(0)        <- 0
-    tumor(0)              <- 0
-    sbcma_central(0)      <- sbcma0_central
-    sbcma_tumor(0)        <- sbcma0_tumor
-    drug_sbcma_central(0) <- 0
+    bonemarrow(0)              <- 0
+    target(0)      <- sbcma0_central
+    target_bonemarrow(0)        <- sbcma0_bonemarrow
+    complex(0) <- 0
     drug_cd3_central(0)   <- 0
-    drug_bcma_tumor(0)    <- 0
-    drug_sbcma_tumor(0)   <- 0
-    drug_cd3_tumor(0)     <- 0
+    drug_bcma_bonemarrow(0)    <- 0
+    complex_bonemarrow(0)   <- 0
+    drug_cd3_bonemarrow(0)     <- 0
     trimer(0)             <- 0
     tcell_central(0)      <- tcell0_central
-    tcell_tumor(0)        <- tcell0_tumor
+    tcell_bonemarrow(0)        <- tcell0_bonemarrow
     cycling_cells(0)      <- mm0
     damaged_cells1(0)     <- 0
     damaged_cells2(0)     <- 0
     damaged_cells3(0)     <- 0
     mprotein(0)           <- mprotein0
     flc(0)                <- flc0
-    cytokine_tumor(0)     <- 0
+    cytokine_bonemarrow(0)     <- 0
     cytokine_transit1(0)  <- 0
     cytokine_transit2(0)  <- 0
     cytokine_transit3(0)  <- 0
     cytokine_transit4(0)  <- 0
     cytokine_transit5(0)  <- 0
     cytokine_central(0)   <- cytokine0_central
-    cytokine_auc(0)       <- 0
+    cauc(0)       <- 0
 
     # =================================================================
     # 11. Observations
     # =================================================================
     Cc          <- central                                                   # free elranatamab in serum (pM)
-    CcTotal     <- central + drug_sbcma_central + drug_cd3_central           # total-analyte assay equivalent (pM)
-    sbcmaFree   <- sbcma_central / sbcma_pm_per_ngml                         # free serum sBCMA (ng/mL)
+    CcTotal     <- central + complex + drug_cd3_central           # total-analyte assay equivalent (pM)
+    sbcmaFree   <- target / sbcma_pm_per_ngml                         # free serum sBCMA (ng/mL)
     mProtein    <- mprotein                                                  # serum M-protein (g/L)
     flcSerum    <- flc                                                       # involved serum FLC (mg/L)
     cytokineSerum <- cytokine_central                                        # serum IL-6-like cytokine (pg/mL)
     tumorBurden <- mm_tot                                                    # total myeloma burden in marrow (cells/uL)
     # "Effective binding ratio" of the Results text: trimers per BCMA receptor.
-    bindingRatio <- trimer / (bcma_tot_tumor + eps_kill)
+    bindingRatio <- trimer / (bcma_tot_bonemarrow + eps_kill)
     # R_trimer of Supplementary Eq 39: trimer per BCMA-bound drug complex.
-    trimerFraction <- trimer / (trimer + drug_bcma_tumor + eps_kill)
+    trimerFraction <- trimer / (trimer + drug_bcma_bonemarrow + eps_kill)
 
     Cc ~ prop(propSd)
   })

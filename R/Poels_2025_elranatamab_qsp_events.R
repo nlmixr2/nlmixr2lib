@@ -2,14 +2,14 @@
 #'
 #' `Poels_2025_elranatamab_qsp` reproduces the dose-to-dose attenuation of
 #' cytokine release described by Poels et al. (2025) Supplementary Eq 37, which
-#' rescales the cumulative cytokine exposure state `cytokine_auc` at the start
+#' rescales the cumulative cytokine exposure state `cauc` at the start
 #' of every dosing interval:
 #'
 #' \deqn{C_{auc,N}(0) = \frac{C_{auc,N-1}(\tau)}{5\left(1 - \frac{(N+1)^2}{1.3^2 + (N+1)^2}\right)}}
 #'
 #' where \eqn{N} is the number of doses given. That is a discrete state reset,
 #' which cannot be written inside an rxode2 ODE. This helper therefore emits it
-#' as an `evid = 6` (multiply) record on `cytokine_auc` at each dose time,
+#' as an `evid = 6` (multiply) record on `cauc` at each dose time,
 #' carrying the reciprocal of the Eq 37 divisor as its `amt`, alongside the
 #' subcutaneous dose records and the requested observation records.
 #'
@@ -109,7 +109,7 @@ Poels_2025_elranatamab_qsp_events <- function(dose_time,
       time = dose_time,
       amt = Poels_2025_elranatamab_qsp_cauc_multiplier(seq_along(dose_time)),
       evid = 6L,
-      cmt = "cytokine_auc",
+      cmt = "cauc",
       .ord = 2L,
       stringsAsFactors = FALSE
     )
@@ -133,7 +133,7 @@ Poels_2025_elranatamab_qsp_events <- function(dose_time,
 #'
 #' @param n Integer vector of dose indices (1 for the first dose).
 #'
-#' @return Numeric vector of multipliers applied to the `cytokine_auc` state.
+#' @return Numeric vector of multipliers applied to the `cauc` state.
 #'
 #' @examples
 #' Poels_2025_elranatamab_qsp_cauc_multiplier(1:5)

@@ -44,7 +44,7 @@ A `data.frame` with columns `id`, `time`, `amt`, `evid` and `cmt`,
 \description{
 `Poels_2025_elranatamab_qsp` reproduces the dose-to-dose attenuation of
 cytokine release described by Poels et al. (2025) Supplementary Eq 37, which
-rescales the cumulative cytokine exposure state `cytokine_auc` at the start
+rescales the cumulative cytokine exposure state `cauc` at the start
 of every dosing interval:
 }
 \details{
@@ -52,7 +52,7 @@ of every dosing interval:
 
 where \eqn{N} is the number of doses given. That is a discrete state reset,
 which cannot be written inside an rxode2 ODE. This helper therefore emits it
-as an `evid = 6` (multiply) record on `cytokine_auc` at each dose time,
+as an `evid = 6` (multiply) record on `cauc` at each dose time,
 carrying the reciprocal of the Eq 37 divisor as its `amt`, alongside the
 subcutaneous dose records and the requested observation records.
 

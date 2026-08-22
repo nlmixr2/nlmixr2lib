@@ -10,7 +10,7 @@ Poels_2025_elranatamab_qsp_cauc_multiplier(n)
 \item{n}{Integer vector of dose indices (1 for the first dose).}
 }
 \value{
-Numeric vector of multipliers applied to the `cytokine_auc` state.
+Numeric vector of multipliers applied to the `cauc` state.
 }
 \description{
 Reciprocal of the Poels 2025 Supplementary Eq 37 divisor,

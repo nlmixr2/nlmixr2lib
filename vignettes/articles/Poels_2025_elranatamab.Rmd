@@ -196,27 +196,27 @@ stopifnot(length(param) > 40L)   # a silently-empty parse would render an empty 
 tibble::tribble(
   ~`Model element`, ~`Source location`,
   "d/dt(central) - free BsAb in circulation", "Suppl Note 1 Eq 1",
-  "d/dt(sbcma_central) - free sBCMA in circulation", "Suppl Note 1 Eqs 2-3",
-  "d/dt(drug_sbcma_central) - BsAb-sBCMA dimer, central", "Suppl Note 1 Eq 4",
+  "d/dt(target) - free sBCMA in circulation", "Suppl Note 1 Eqs 2-3",
+  "d/dt(complex) - BsAb-sBCMA dimer, central", "Suppl Note 1 Eq 4",
   "d/dt(drug_cd3_central) - BsAb-CD3 dimer, central", "Suppl Note 1 Eq 5",
   "d/dt(tcell_central) - circulating T cells", "Suppl Note 1 Eq 6",
   "d/dt(cytokine_central) - circulating cytokine", "Suppl Note 1 Eq 7",
   "CD3 receptor pool, central", "Suppl Note 1 Eqs 8-10",
   "d/dt(mprotein), d/dt(flc) - paraproteins", "Suppl Note 1 Eqs 11-12",
-  "d/dt(tumor) - free BsAb in bone marrow", "Suppl Note 1 Eq 13",
-  "d/dt(sbcma_tumor) - free sBCMA in bone marrow", "Suppl Note 1 Eq 14",
-  "d/dt(drug_bcma_tumor) - BsAb-BCMA dimer", "Suppl Note 1 Eq 15",
-  "d/dt(drug_sbcma_tumor) - BsAb-sBCMA dimer, marrow", "Suppl Note 1 Eqs 16-17",
-  "d/dt(drug_cd3_tumor) - BsAb-CD3 dimer, marrow", "Suppl Note 1 Eq 18",
+  "d/dt(bonemarrow) - free BsAb in bone marrow", "Suppl Note 1 Eq 13",
+  "d/dt(target_bonemarrow) - free sBCMA in bone marrow", "Suppl Note 1 Eq 14",
+  "d/dt(drug_bcma_bonemarrow) - BsAb-BCMA dimer", "Suppl Note 1 Eq 15",
+  "d/dt(complex_bonemarrow) - BsAb-sBCMA dimer, marrow", "Suppl Note 1 Eqs 16-17",
+  "d/dt(drug_cd3_bonemarrow) - BsAb-CD3 dimer, marrow", "Suppl Note 1 Eq 18",
   "d/dt(trimer) - BsAb-CD3-BCMA trimer", "Suppl Note 1 Eq 19",
   "BCMA and CD3 receptor pools, marrow", "Suppl Note 1 Eqs 20-23",
   "d/dt(cycling_cells), d/dt(damaged_cells1-3) - Simeoni growth and kill", "Suppl Note 1 Eqs 24-27",
   "KMkill - trimer-driven kill rate", "Suppl Note 1 Sect 1.2.2 (unnumbered)",
   "km_kill_t - time-dependent resistance", "Suppl Note 1 Sect 1.2.2 (unnumbered)",
-  "d/dt(tcell_tumor) - marrow T cells", "Suppl Note 1 Eq 28",
+  "d/dt(tcell_bonemarrow) - marrow T cells", "Suppl Note 1 Eq 28",
   "t_inh - T-cell egress inhibition", "Suppl Note 1 Eq 29",
-  "d/dt(cytokine_tumor), d/dt(cytokine_transit1-5), d/dt(cytokine_auc)", "Suppl Note 1 Eqs 30-36",
-  "cytokine_auc reset at each dose (event-table evid = 6)", "Suppl Note 1 Eq 37",
+  "d/dt(cytokine_bonemarrow), d/dt(cytokine_transit1-5), d/dt(cauc)", "Suppl Note 1 Eqs 30-36",
+  "cauc reset at each dose (event-table evid = 6)", "Suppl Note 1 Eq 37",
   "IH and Rsyn - cytokine release inhibition and rate", "Suppl Note 1 Eq 38",
   "trimerFraction - standardised trimer proportion", "Suppl Note 1 Eq 39",
   "Initial conditions of every state", "Suppl Table 2",
@@ -268,7 +268,7 @@ first_last <- untreated[c(1L, nrow(untreated)), ]
 
 ## (1) T cells are conserved at baseline in both compartments.
 tcell_drift <- max(abs(untreated$tcell_central / untreated$tcell_central[1] - 1),
-                   abs(untreated$tcell_tumor / untreated$tcell_tumor[1] - 1))
+                   abs(untreated$tcell_bonemarrow / untreated$tcell_bonemarrow[1] - 1))
 
 ## (2) With no trimer there is no cytokine release, so circulating cytokine
 ##     relaxes to the basal balance beta_prod / kdeg_cyt.
@@ -835,7 +835,7 @@ step |>
     regimen, time = time / 24,
     `Tumour burden (cells/uL)` = tumorBurden,
     `Trimer : tumour cell` = trimer / tumorBurden,
-    `BsAb-CD3 dimer : marrow T cell` = drug_cd3_tumor / tcell_tumor
+    `BsAb-CD3 dimer : marrow T cell` = drug_cd3_bonemarrow / tcell_bonemarrow
   ) |>
   tidyr::pivot_longer(-c(regimen, time)) |>
   ggplot(aes(time, value, colour = regimen)) +
@@ -853,7 +853,7 @@ step_summary <- after_switch |>
   dplyr::group_by(Regimen = regimen) |>
   dplyr::summarise(
     `Mean trimer : tumour cell` = signif(mean(trimer / tumorBurden), 3),
-    `Mean BsAb-CD3 dimer : T cell` = signif(mean(drug_cd3_tumor / tcell_tumor), 3),
+    `Mean BsAb-CD3 dimer : T cell` = signif(mean(drug_cd3_bonemarrow / tcell_bonemarrow), 3),
     .groups = "drop"
   )
 burden_at <- function(reg, tt) {
@@ -995,7 +995,7 @@ plus the paper's persistent-responder enrolment logic).
   `tau_resis` and then rises to `alpha_resis`. This is the only equation
   changed from its printed form.
 * **Mass balance of the marrow BsAb-sBCMA dimer.** Supplementary Eq 17 places
-  the factor `V_BM / V_c` on the *loss* of `drug_sbcma_tumor` as well as on its
+  the factor `V_BM / V_c` on the *loss* of `complex_bonemarrow` as well as on its
   *gain* in the central compartment (Eq 4); the free-drug pair (Eqs 1 and 13)
   carries that factor on the gain term only. The printed dimer pair is
   therefore not mass-conserving. It is transcribed exactly as printed.
@@ -1017,7 +1017,7 @@ plus the paper's persistent-responder enrolment logic).
   `Vc`, `Vp`: `k12 = Q/Vc` and `k21 = Q/Vp` reproduce Eq 1's
   `k21 * (Vp/Vc) * [Ab_p]` term exactly.
 * **Dose-counter reset delivered from the event table.** Supplementary Eq 37 is
-  a discrete reassignment of `cytokine_auc` at each dose, which no rxode2 ODE
+  a discrete reassignment of `cauc` at each dose, which no rxode2 ODE
   can express. It is emitted as an `evid = 6` multiply record by
   `Poels_2025_elranatamab_qsp_events()`. Computing the multiplier there rather
   than in `model()` keeps it independent of rxode2's internal ordering of
