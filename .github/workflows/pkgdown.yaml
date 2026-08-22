@@ -89,6 +89,10 @@ jobs:
       # reference/news/search sections -- deploying a site with no index.
       PKGDOWN_SHARDS: ""
       PKGDOWN_SHARD: ""
+      # Build ONLY the non-article sections. The shards already rendered every
+      # article and they are restored above; without this the script's
+      # unsharded path re-renders all of them, throwing away the sharding.
+      PKGDOWN_ASSEMBLE: "1"
     permissions:
       contents: write
     steps:

@@ -49,6 +49,17 @@ stopifnot(
 )
 sharded <- nshards > 1L
 
+# Assemble mode: the shards already rendered every article and the workflow has
+# restored them into docs/articles, so this run must build ONLY the non-article
+# sections. Without it the assemble job re-renders all ~1500 articles itself --
+# the unsharded path below renders unconditionally -- which silently costs the
+# entire benefit of sharding and still exits 0. Observed 2026-08-22: the
+# assemble job was still re-rendering an hour in.
+assemble_only <- nzchar(Sys.getenv("PKGDOWN_ASSEMBLE", ""))
+if (assemble_only && sharded) {
+  stop("PKGDOWN_ASSEMBLE and PKGDOWN_SHARDS>1 are mutually exclusive")
+}
+
 # Single-syscall logger; writes < PIPE_BUF (4 KB) are atomic on Linux, so
 # concurrent workers will not interleave mid-line.
 log_line <- function(...) {
@@ -79,6 +90,10 @@ if (sharded) {
   articles <- articles[idx]
   log_line("SHARD ", shard, "/", nshards, ": rendering ",
            length(articles), " of ", n_all, " articles")
+} else if (assemble_only) {
+  log_line("ASSEMBLE: skipping the article render; building non-article ",
+           "sections over the ", length(articles), " restored article(s)")
+  articles <- character(0)
 } else {
   log_line("Rendering ", length(articles), " articles in parallel...")
 }
