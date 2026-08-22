@@ -2298,6 +2298,8 @@ navbar:
         href: articles/Decrane_2023_oxyfluorfen.html
       - text: "Oxypurinol (Stocker 2012)"
         href: articles/Stocker_2012_oxypurinol.html
+      - text: "Oxytetracycline cattle (Winter 2024)"
+        href: articles/Winter_2024_oxytetracycline_cattle.html
       - text: "Ozanezumab (Berges 2015)"
         href: articles/Berges_2015_ozanezumab.html
       - text: "Ozoralizumab (Takeuchi 2023)"
@@ -4981,7 +4983,7 @@ articles:
   - articles/Willmann_2022_rivaroxaban
   - articles/Willmann_2024_elinzanetant
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
-  - articles/Winchell_2024_posaconazole
+  - articles/Winter_2024_oxytetracycline_cattle
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
   - articles/Woillard_2014_ciclosporin
