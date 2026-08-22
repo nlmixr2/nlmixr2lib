@@ -22,6 +22,19 @@ name: pkgdown.yaml
 
 permissions: read-all
 
+# One in-flight pkgdown run per ref. A new push to a PR CANCELS the superseded
+# run -- all four render shards and the assemble job together, since the group
+# is workflow-level. Before this, the group embedded github.run_id on pull
+# requests, which made every run its own group: superseded runs kept going and
+# several ~90 min builds ran concurrently against the same PR.
+#
+# Pushes to main / releases deliberately do NOT cancel: that path deploys to
+# gh-pages, and interrupting it half-way would publish a partial site. Those
+# runs queue behind each other instead.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 env:
   # Number of runner jobs the article render fans out over. Keep the matrix
   # below in sync -- GitHub cannot compute a matrix from an expression here.
@@ -38,8 +51,6 @@ jobs:
       fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
-    concurrency:
-      group: pkgdown-render-${{ matrix.shard }}-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       # Parallel article rendering knob, consumed by
@@ -78,8 +89,6 @@ jobs:
   assemble:
     needs: render
     runs-on: ubuntu-latest
-    concurrency:
-      group: pkgdown-assemble-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       PKGDOWN_WORKERS: ""
