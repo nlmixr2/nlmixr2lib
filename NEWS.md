@@ -4,6 +4,8 @@
 
 - Add Winchell 2024 posaconazole ([doi:10.1128/aac.01197-23](https://doi.org/10.1128/aac.01197-23)) - pediatric patients aged 2 to 17 years with neutropenia.
 
+- Add Siebinga 2024 [177Lu]Lu-PSMA-I&T ([doi:10.1186/s40658-024-00642-2](https://doi.org/10.1186/s40658-024-00642-2)) - men with metastatic castration-resistant prostate cancer.
+
 - Add Kuroda 2023 cephalothin ([doi:10.1294/jes.34.111](https://doi.org/10.1294/jes.34.111)) - Thoroughbred horses given intramuscular and intravenous doses.
 
 - Add Huppe 2023 fosfomycin ([doi:10.1038/s41598-023-45084-5](https://doi.org/10.1038/s41598-023-45084-5)) - critically ill adults with renal insufficiency during continuous venovenous hemodialysis.
