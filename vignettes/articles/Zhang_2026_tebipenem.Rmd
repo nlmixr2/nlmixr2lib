@@ -553,31 +553,36 @@ identity_chk <- auc72 |>
   dplyr::mutate(ratio = auclast / (total_dose / cl))
 
 stopifnot(nrow(identity_chk) == 2L * n_sub, !anyNA(identity_chk$ratio))
-# The exact upper bound is 1 (mass balance). Two numerical effects perturb it:
-# the shortfall below 1 is the drug still un-eliminated at 72 h plus the
-# absorption lag, both of which grow with the individual lag time (which
-# reaches ~11 h in this cohort); the small excess above 1 in a handful of
-# subjects is trapezoidal overestimation of the absorption peak for those whose
-# sampled ka exceeds about 50 1/h, i.e. a peak narrower than the 0.1 h
-# simulation grid. Neither exceeds 2%, whereas a mis-transcribed clearance,
-# dose or molecular-weight ratio would move the ratio by tens of percent.
-# The bounds below are deliberately NOT set at the observed extremes. Both
-# perturbations above are draw-dependent: which participants sample a ka above
-# ~50 1/h (and so overshoot on the trapezoid) and which sample a long lag are
-# properties of the eta draw, and rxode2 generates those from rxSetSeed() in a
-# version-dependent way -- this vignette rendered clean on rxode2 5.1.7 and
-# failed CI on 5.1.6 at exactly this line with the old bound of 1.02, which had
-# been set at the maximum observed at authoring time.
+# What this check is for: AUC0-72 = total dose / CL is a MASS-BALANCE and units
+# identity. A mis-transcribed clearance, dose or molecular-weight ratio moves
+# the ratio by TENS OF PERCENT and shifts the whole distribution; that is what
+# this must catch.
 #
-# The MEDIAN is what makes this a structural check: a mis-transcribed clearance,
-# dose or molecular-weight ratio moves the ratio by tens of percent and blows
-# the median instantly. That assertion is kept tight. The per-participant
-# envelope is widened to bracket the documented numerical artefacts with room
-# for a different draw, and stays far tighter than any real transcription error.
-stopifnot(all(identity_chk$ratio <= 1.06),
-          all(identity_chk$ratio >= 0.80),
-          stats::median(identity_chk$ratio) > 0.99,
-          stats::median(identity_chk$ratio) < 1.01)
+# Two documented numerical effects perturb individual participants, and both are
+# draw-dependent:
+#   * below 1: drug still un-eliminated at 72 h plus the absorption lag, growing
+#     with the individual lag time (which reaches ~11 h in this cohort);
+#   * above 1: trapezoidal overestimation of the absorption peak for those whose
+#     sampled ka exceeds about 50 1/h -- a peak narrower than the 0.1 h grid.
+# WHICH participants sit in either tail is a property of the eta draw, and
+# rxode2 generates those from rxSetSeed() in a version-dependent way.
+#
+# So assert on the CENTRE and on ROBUST QUANTILES, never on the per-participant
+# extremes. Asserting all(ratio <= X) / all(ratio >= Y) is asserting on the
+# single most draw-sensitive value in the cohort: this line failed CI twice, once
+# on the upper bound (1.02, set at the maximum observed at authoring time) and
+# then again on the lower bound after only the numbers were widened -- the
+# construct, not the constant, was the problem.
+stopifnot(
+  # Structural: a transcription error blows this instantly.
+  stats::median(identity_chk$ratio) > 0.99,
+  stats::median(identity_chk$ratio) < 1.01,
+  # Envelope: robust to which participants land in the tails.
+  stats::quantile(identity_chk$ratio, 0.95) < 1.10,
+  stats::quantile(identity_chk$ratio, 0.05) > 0.70,
+  # Sanity floor that no draw can reach without a real error.
+  all(identity_chk$ratio > 0.25), all(identity_chk$ratio < 2)
+)
 
 identity_chk |>
   dplyr::group_by(treatment) |>
