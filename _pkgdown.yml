@@ -808,6 +808,10 @@ navbar:
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
+      - text: "Diazepam human pbpk (Yau 2023)"
+        href: articles/Yau_2023_middle_out_pbpk_translation.html
+      - text: "Diazepam monkey pbpk (Yau 2023)"
+        href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Diazepam pbpk kpu human (Yau 2023)"
         href: articles/Yau_2023_diazepam_pbpk.html
       - text: "Diazepam pbpk kpu rat (Yau 2023)"
@@ -820,6 +824,8 @@ navbar:
         href: articles/Yau_2023_diazepam_pbpk.html
       - text: "Diazepam pbpk scalar rat (Yau 2023)"
         href: articles/Yau_2023_diazepam_pbpk.html
+      - text: "Diazepam rat pbpk (Yau 2023)"
+        href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Diclazuril chicken pbpk (Yang 2023)"
         href: articles/Yang_2023_diclazuril.html
       - text: "Diclofenac (Henin 2012)"
@@ -2010,18 +2016,12 @@ navbar:
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam infants adults (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
+      - text: "Midazolam monkey pbpk (Yau 2023)"
+        href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
-      - text: "Midazolam pbpk (Gu 2025)"
-        href: articles/Gu_2025_heart_failure_pbpk.html
-      - text: "Mig1 exp1 (Almquist 2015)"
-        href: articles/Almquist_2015_Mig1.html
-      - text: "Mig1 exp2 (Almquist 2015)"
-        href: articles/Almquist_2015_Mig1.html
-      - text: "Mig1 exp3 (Almquist 2015)"
-        href: articles/Almquist_2015_Mig1.html
-      - text: "Mig1 exp4 (Almquist 2015)"
-        href: articles/Almquist_2015_Mig1.html
+      - text: "Midazolam rat pbpk (Yau 2023)"
+        href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Miglustat (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Miltefosine (Dorlo 2008)"
@@ -4995,6 +4995,7 @@ articles:
   - articles/Yassen_2025_asundexian
   - articles/Yates_2023_dose_response_shape
   - articles/Yau_2023_diazepam_pbpk
+  - articles/Yau_2023_middle_out_pbpk_translation
   - articles/Ye_2017_ethaselen
   - articles/Yin_2020_pexidartinib
   - articles/Yin_2021_pexidartinib
