@@ -359,7 +359,7 @@ Ashraf_2024_codeine <- function() {
     wt_ref <- 80   # population median body weight (kg), Online Resource 1 Eqs. 3-4
     as_ref <- 2    # reference CYP2D6 activity score, paper Section 3.2
 
-    allo_cl <- (WT / wt_ref)^e_wt_cl_q
+    allo_cl_factor <- (WT / wt_ref)^e_wt_cl_q
     allo_v  <- (WT / wt_ref)^e_wt_vc_vp
 
     # ------------------------------------------------------------
@@ -367,7 +367,7 @@ Ashraf_2024_codeine <- function() {
     # codeine clearance carries no IIV (paper Table 2).
     # ------------------------------------------------------------
     ka     <- exp(lka + etalka)
-    cl     <- exp(lcl) * allo_cl
+    cl     <- exp(lcl) * allo_cl_factor
     vc     <- exp(lvc + etalvc) * allo_v
     fdepot <- exp(lfdepot + etalfdepot)
 
@@ -375,7 +375,7 @@ Ashraf_2024_codeine <- function() {
     # Individual metabolite parameters. Only morphine clearance carries
     # IIV. The glucuronide parameters are not weight-scaled.
     # ------------------------------------------------------------
-    cl_morphine <- exp(lcl_morphine + etalcl_morphine) * allo_cl
+    cl_morphine <- exp(lcl_morphine + etalcl_morphine) * allo_cl_factor
     vc_morphine <- exp(lvc_morphine) * allo_v
     cl_c6g      <- exp(lcl_c6g)
     vc_c6g      <- exp(lvc_c6g)
