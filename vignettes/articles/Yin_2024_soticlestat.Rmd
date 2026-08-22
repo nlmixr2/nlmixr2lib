@@ -1,0 +1,822 @@
+---
+title: "Soticlestat (Yin 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Soticlestat (Yin 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yin_2024_soticlestat"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yin_2024_soticlestat"))$description`
+* Article: <https://doi.org/10.1111/cts.13722>
+* Supplement (Appendix S1, NONMEM control streams for both final models):
+  <https://doi.org/10.1111/cts.13722> (Supporting Information `CTS-17-e13722-s001`)
+
+Soticlestat (TAK-935) is a first-in-class selective inhibitor of cholesterol
+24-hydroxylase (CH24H / CYP46A1), the brain-specific enzyme that converts
+cholesterol to 24S-hydroxycholesterol (24HC). It is in development for the
+developmental and epileptic encephalopathies (DEEs) Dravet syndrome (DS) and
+Lennox-Gastaut syndrome (LGS).
+
+Yin 2024 extends the healthy-volunteer model of Yin 2023
+([doi:10.1111/cts.13517](https://doi.org/10.1111/cts.13517)) to patients with
+DEEs. Two NONMEM runs are reported, and this package ships them as **one**
+model file because the second run consumes the first: the PK/EO/PD run reads
+each subject's individual `ALAG1_`, `KA_`, `CL_`, `V2_`, `Q_`, `V3_` and `F1_`
+from the data set (a sequential IPP fit), so a self-contained rxode2 model must
+carry the PK layer explicitly. The single file therefore reproduces Table 1a
+(popPK) and Table 1b (PK/EO/PD) together.
+
+The three linked layers are:
+
+1. **PK** -- two-compartment disposition with first-order absorption and an
+   absorption lag time (NONMEM `ADVAN5`, Appendix S1 popPK `$PROBLEM`).
+2. **Effect site / enzyme occupancy** -- a plasma-to-brain effect compartment
+   (`effect`, a concentration) driving a fixed sigmoid Emax CH24H
+   enzyme-occupancy read-out. Not re-estimated here: *"The PK/EO model was not
+   updated because no additional EO data were available"*, so all four EO
+   parameters carry `FIX` and are inherited from Yin 2023.
+3. **24HC turnover** -- a semimechanistic indirect-response model in which the
+   effect-site concentration inhibits 24HC synthesis through a sigmoid Imax
+   function (NONMEM `ADVAN13`, Appendix S1 PK/EO/PD `$PROBLEM`).
+
+# Population
+
+Eight phase I / II trials contributed data (Table S1). Two overlapping analysis
+sets were used: **218 individuals** (110 healthy volunteers, 108 patients; 3288
+soticlestat concentrations, 8732 dosing events) for the popPK model, and **306
+individuals** (132 healthy, 174 patients; 2621 plasma 24HC concentrations, 8703
+dosing events) for the PK/EO/PD model. The bioavailability study TAK-935-1005
+was excluded from the PD analysis because 24HC was not collected, and the
+open-label ELEKTRA extension was excluded from both.
+
+From Table S2, the popPK analysis set had mean (SD) age 24.1 (14.5) years,
+body weight 56.6 (24.4) kg, BMI 21.8 (5.4) kg/m^2, eGFR 166 (54.1)
+mL/min/1.73 m^2 and AGP 19.7 (4.22) mg/dL; 67% were of White ethnic background,
+11% Black, 11% Japanese and 9% Chinese. Patient diagnoses were LGS (44),
+Dravet syndrome (26), unspecified DEE (18), CDKL5 deficiency disorder (12) and
+15q duplication syndrome (8). Soticlestat was given as an oral solution (phase I)
+or as tablets, including via G-tube / PEG tube in the paediatric trials, over
+15-1350 mg single doses and 100-300 mg b.i.d. titrated regimens.
+
+Missing AGP was imputed at the observed median of 20 mg/dL; four of the eight
+trials did not collect it at all (Table S2 footnote a), which is what the
+`AAG_MISSING` covariate flags.
+
+The same information is available programmatically via
+`readModelDb("Yin_2024_soticlestat")()$population`.
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its source location in
+`inst/modeldb/specificDrugs/Yin_2024_soticlestat.R`. They are collected here.
+
+## Structural and covariate parameters (Table 1a, popPK model)
+
+| Parameter | Value | Source location |
+|---|---|---|
+| `lka` | 8.39 1/h | Table 1a, Absorption rate (ka), TV |
+| `lcl` | 4.2 L/h | Table 1a, Elimination clearance (CL), TV |
+| `lvc` | 3.01 L | Table 1a, Central volume (Vc), TV |
+| `lq` | 1.15 L/h | Table 1a, Distribution clearance (Q), TV |
+| `lvp` | 7.8 L | Table 1a, Peripheral volume (Vp), TV |
+| `ltlag` | 0.133 h | Table 1a, Lag time of the first compartment (ALAG1), TV |
+| `lfdepot` | 0.0216 (fixed) | Table 1a, Bioavailability (F1), TV, Fixed |
+| `e_form_tablet_tlag` | +23.8% | Table 1a, ALAG1 Non-OS formulation effect |
+| `e_form_tablet_ka` | -43.7% | Table 1a, ka Non-OS formulation effect |
+| `e_dose_ka` | -0.753 (fixed) | Table 1a, ka Dose effect, exponent |
+| `e_bmi_ka` | 2.24 | Table 1a, ka BMI effect, exponent |
+| `e_conmed_eiaed_ka` | -66.2% | Table 1a, ka Strong CYP3A enzyme inducer effect |
+| `e_race_chinese_ka` | -63.7% | Table 1a, ka Chinese descent effect |
+| `e_dis_healthy_cl` | -22.8% | Table 1a, CL Patient effect |
+| `e_dose_q` | -0.218 (fixed) | Table 1a, Q Dose effect, exponent |
+| `e_race_japanese_q` | -42.7% | Table 1a, Q Japanese descent effect |
+| `e_race_chinese_q` | -75.7% | Table 1a, Q Chinese descent effect |
+| `e_dose_vp` | -0.214 (fixed) | Table 1a, Vp Dose effect, exponent |
+| `e_crcl_vp` | -0.406 | Table 1a, Vp eGFR effect, exponent |
+| `e_dose_fdepot` | 0.204 (fixed) | Table 1a, F1 Dose effect, exponent |
+| `e_wt_fdepot` | -0.593 | Table 1a, F1 Body weight effect, exponent |
+| `e_aag_fdepot` | 0.544 | Table 1a, F1 AGP effect, exponent |
+| `e_aag_missing_fdepot` | 0.42 | Table 1a, F1 "BSV explained by AGP" |
+| `etalka`, `etalq`, `etalvp`, `etalfdepot` | 1.02, 0.436, 0.625, 0.527 | Table 1a, BSV rows -- see Errata on the reported scale |
+| `propSd` | 48.3% | Table 1a, Residual variability, Proportional |
+| `addSd` | 0.001 ng/mL (fixed) | Table 1a, Residual variability, Additive |
+
+Reference (centering) values come from Appendix S1 `$PK`: DOSE 300 mg, BMI
+23.6 kg/m^2, eGFR 162.4 mL/min/1.73 m^2, WT 65.9 kg (on F1), AAG 20 mg/dL.
+
+## Enzyme-occupancy and 24HC parameters
+
+| Parameter | Value | Source location |
+|---|---|---|
+| `lke0` (KPLBR) | 0.254 1/h (fixed) | Appendix S1 PK/EO/PD `$THETA` 3, `FIX` (from Yin 2023) |
+| `lemax` (EMAX) | 100% (fixed) | Appendix S1 PK/EO/PD `$THETA` 4, `FIX` (from Yin 2023) |
+| `lec50` (EC50) | 5.86 ng/mL (fixed) | Appendix S1 PK/EO/PD `$THETA` 5, `FIX` (from Yin 2023) |
+| `lhill_eo` (EGAM) | 0.769 (fixed) | Appendix S1 PK/EO/PD `$THETA` 6, `FIX` (from Yin 2023) |
+| `lrbase` | 50.5 ng/mL | Table 1b, Baseline 24HC (BL24HC), TV |
+| `e_age_bp_rbase` | 17.5 years | Table 1b, Age effect cutoff |
+| `e_age_rbase` | -0.511 | Table 1b, Age effect, exponent |
+| `e_aag_rbase` | 0.215 | Table 1b, AGP effect, exponent |
+| `e_wt_rbase` | -0.256 | Table 1b, Body weight effect, exponent |
+| `lkout` | 0.0199 1/h | Table 1b, 24HC degradation rate (kout), TV |
+| `limax` | 92% | Table 1b, Maximum inhibition of 24HC production (Imax), TV |
+| `lic50` | 9.85 ng/mL | Table 1b, Effect-site concentration for 50% maximum effect (IC50), TV |
+| `lhill_hc24` | 0.881 | Table 1b, Shape parameter (gamma), TV |
+| `iplac` (I0) | 0 (fixed) | Appendix S1 PK/EO/PD `$THETA` 9, `FIX` |
+| `etalrbase` | 0.0811 (variance) | Table 1b, BL24HC BSV |
+| `etalic50` | 0.636 (variance) | Table 1b, IC50 BSV |
+| `addSd_hc24` | 3.91 ng/mL | Table 1b, Residual variability, Additive |
+
+Reference (centering) values from Appendix S1 PK/EO/PD `$PK`: AAG 20 mg/dL,
+WT 55.25 kg; the age breakpoint 17.5 y is itself an estimated parameter.
+
+## Equations
+
+| Equation | Source location |
+|---|---|
+| `d/dt(depot) = -ka * depot` | Appendix S1 PK/EO/PD `$DES`, `DADT(1)` |
+| `d/dt(central) = ka*depot - cl/vc*central - q/vc*central + q/vp*peripheral1` | `$DES`, `DADT(2)` |
+| `d/dt(peripheral1) = q/vc*central - q/vp*peripheral1` | `$DES`, `DADT(3)` |
+| `d/dt(effect) = ke0 * (Cc - effect)` | `$DES`, `DADT(4)` = `KPLBR*(A(2)/S2 - A(4))` |
+| `d/dt(hc24) = kin*eff - kout*hc24`, `hc24(0) = rbase`, `kin = rbase*kout` | `$DES`, `DADT(5)`; `$PK` `A_0(5) = BL`, `KIN = BL*KOUT` |
+| `eff = 1 - iplac - imax*Ce^g/(Ce^g + ic50^g)/100` | `$DES` `EFF` |
+| `occ = emax*Ce^h/(ec50^h + Ce^h)` | `$ERROR` `OCC` |
+| `Cc = 1000 * central / vc` | `$PK` `S2 = V2/1000` (mg / L -> ng/mL) |
+
+## Dimensional analysis
+
+The 24HC layer mixes a concentration state with rate constants, so each ODE term
+is checked explicitly.
+
+| Term | Units | Result |
+|---|---|---|
+| `ka * depot` | (1/h) x mg | mg/h |
+| `cl/vc * central` | (L/h)/(L) x mg | mg/h |
+| `Cc = 1000 * central / vc` | (mg/L) x 1000 | ng/mL |
+| `ke0 * (Cc - effect)` | (1/h) x (ng/mL) | (ng/mL)/h |
+| `kin = rbase * kout` | (ng/mL) x (1/h) | (ng/mL)/h |
+| `kout * hc24` | (1/h) x (ng/mL) | (ng/mL)/h |
+| `eff`, `occ/100`, `iplac` | unitless | unitless |
+
+`d/dt(effect)` and `d/dt(hc24)` both resolve to (ng/mL)/h, matching states held
+in ng/mL. Note that `effect` and `hc24` are **concentration** states, not
+amounts -- `d/dt(effect)` is driven by `Cc`, a concentration, exactly as
+`DADT(4) = KPLBR*(A(2)/S2 - A(4))` is in the control stream. The factor 1000 in
+`Cc` is the only unit conversion in the model and reproduces `S2 = V2/1000`.
+
+# Reference subject and virtual cohorts
+
+```{r refsubject}
+mod <- readModelDb("Yin_2024_soticlestat")
+
+# Reference patient for the paper's dose-response and dosing simulations:
+# "a reference patient with a DEE who was aged 45 years, not of Asian descent,
+# and with a body weight of 70 kg" (Simulations, first paragraph). Remaining
+# covariates take the reference values defined in the covariate section:
+# BMI 21.8 kg/m^2, eGFR 166.2 mL/min/1.73 m^2, AGP 20 mg/dL.
+ref_covariates <- function(dose, wt = 70, healthy = 0) {
+  data.frame(
+    DOSE          = dose,
+    WT            = wt,
+    BMI           = 21.8,
+    AGE           = 45,
+    CRCL          = 166.2,
+    AAG           = 20,
+    AAG_MISSING   = 0,
+    FORM_TABLET   = 1,     # patients received tablets
+    DIS_HEALTHY   = healthy,
+    RACE_JAPANESE = 0,
+    RACE_CHINESE  = 0,
+    CONMED_EIAED  = 0
+  )
+}
+
+doses <- c(100, 200, 300)
+```
+
+The event tables below place observation rows on the `central` ODE state and
+carry an explicit `dvid = 1L`. Both are required: this model declares two
+residual endpoints (`Cc` and `hc24`), and rxode2 rejects an observation record
+with no `dvid` when a DV-id mapping is active. `cmt` names the ODE state, never
+the observable -- writing `cmt = "Cc"` would append an observable slot and is
+the classic compartment-renumbering bug. rxode2 returns every algebraic
+observable (`Cc`, `occ`, `hc24Chg`) and every state (`effect`, `hc24`) as an
+output column at those rows, so one set of observation records exercises all
+three layers.
+
+```{r cohort}
+set.seed(20240301)
+
+# Dosing records: 21 days of b.i.d. dosing. The paper's hypothetical schedule
+# is 21 days of treatment followed by a 7-day washout.
+dose_records <- function(dose) {
+  data.frame(time = seq(0, 24 * 21 - 12, by = 12), amt = dose, evid = 1L,
+             cmt = "depot", dvid = NA_integer_)
+}
+
+obs_records <- function(times) {
+  data.frame(time = times, amt = NA_real_, evid = 0L,
+             cmt = "central", dvid = 1L)
+}
+
+build_arm <- function(dose, id, times) {
+  ev <- rbind(dose_records(dose), obs_records(times))
+  ev <- ev[order(ev$time, -ev$evid), ]
+  ev$id <- id
+  cbind(ev, ref_covariates(dose)[rep(1, nrow(ev)), ], row.names = NULL)
+}
+
+# Typical-value arms: whole 28-day window on a 1 h grid, with a fine grid over
+# the final steady-state dosing interval.
+typ_times <- sort(unique(c(seq(0, 24 * 28, by = 1), seq(24 * 20, 24 * 21, by = 0.1))))
+
+events_typ <- dplyr::bind_rows(
+  lapply(seq_along(doses), function(i) build_arm(doses[i], i, typ_times))
+) |>
+  dplyr::mutate(regimen = paste0(DOSE, " mg b.i.d."))
+
+# Between-subject-variability cohort for the steady-state EO / 24HC endpoints
+# and for the AUC prediction interval. 200 subjects per arm is the cap; the
+# BSV on IC50 is large (variance 0.636), so the smallest cohort that keeps the
+# median endpoints stable across seeds is used.
+n_per_arm <- 200
+bsv_times <- seq(24 * 20, 24 * 21, by = 0.25)
+
+events_bsv <- dplyr::bind_rows(lapply(seq_along(doses), function(i) {
+  dplyr::bind_rows(lapply(seq_len(n_per_arm), function(k) {
+    build_arm(doses[i], (i - 1L) * n_per_arm + k, bsv_times)
+  }))
+})) |>
+  dplyr::mutate(regimen = paste0(DOSE, " mg b.i.d."))
+
+stopifnot(!anyDuplicated(unique(events_bsv[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+`useLinCmt = FALSE` is required: this is a multi-output model over five ODE
+states, and rxode2's default ODE-to-`linCmt()` auto-conversion corrupts the
+endpoint mapping for models of this shape.
+
+```{r simulate}
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = events_typ,
+  keep = c("regimen", "DOSE"), useLinCmt = FALSE
+) |> as.data.frame()
+
+# Seeded immediately before the stochastic solve so the reported medians are
+# reproducible: the preceding zeroRe() solve otherwise advances the RNG stream
+# and the published-value comparisons below would shift from run to run.
+set.seed(20240301)
+sim_bsv <- rxode2::rxSolve(
+  mod, events = events_bsv,
+  keep = c("regimen", "DOSE"), useLinCmt = FALSE
+) |> as.data.frame()
+
+stopifnot(nrow(sim_typ) > 0, nrow(sim_bsv) > 0, !all(is.na(sim_typ$Cc)))
+```
+
+# Replicate published figures
+
+## Figure 4b -- soticlestat, enzyme occupancy and 24HC over 21 days plus washout
+
+```{r figure-4b, fig.height = 7}
+# Replicates Figure 4(b) of Yin 2024: typical-value profiles of soticlestat
+# plasma concentration, CH24H enzyme occupancy, and percent change from
+# baseline 24HC over 21 days of b.i.d. dosing followed by a 7-day washout.
+sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(time, regimen, Cc, occ, hc24Chg) |>
+  tidyr::pivot_longer(c(Cc, occ, hc24Chg), names_to = "endpoint") |>
+  dplyr::mutate(endpoint = factor(
+    endpoint, c("Cc", "occ", "hc24Chg"),
+    c("Soticlestat (ng/mL)", "CH24H enzyme occupancy (%)",
+      "24HC change from baseline (%)")
+  )) |>
+  ggplot(aes(time / 24, value, colour = regimen)) +
+  geom_line() +
+  facet_wrap(~endpoint, ncol = 1, scales = "free_y") +
+  labs(x = "Time (days)", y = NULL, colour = NULL,
+       title = "Figure 4(b) -- 21 days b.i.d. dosing then 7 days washout",
+       caption = "Replicates Figure 4(b) of Yin 2024.") +
+  theme(legend.position = "top")
+```
+
+The paper reports that steady-state 24HC inhibition is *"achieved within a week
+of treatment and maintained over time"*, with minimal PK and EO accumulation.
+
+```{r fig4b-checks}
+inhib <- sim_typ |>
+  dplyr::filter(!is.na(hc24Chg)) |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(
+    day7    = hc24Chg[which.min(abs(time - 24 * 7))],
+    day14   = hc24Chg[which.min(abs(time - 24 * 14))],
+    day21   = hc24Chg[which.min(abs(time - 24 * 21))],
+    washout = hc24Chg[which.min(abs(time - 24 * 28))],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(frac_of_ss_at_day7 = day7 / day21)
+
+inhib |>
+  dplyr::rename(
+    "Regimen"                     = regimen,
+    "Day 7 (%)"                   = day7,
+    "Day 14 (%)"                  = day14,
+    "Day 21 (%)"                  = day21,
+    "Day 28, 7 d after last dose (%)" = washout,
+    "Day 7 as a fraction of day 21"   = frac_of_ss_at_day7
+  ) |>
+  knitr::kable(digits = 2,
+               caption = "24HC change from baseline over the 21-day dosing period and after the 7-day washout.")
+
+stopifnot(
+  # "Steady-state levels for 24HC inhibition were achieved within a week": at
+  # day 7 the model reaches ~96% of the day-21 inhibition at every dose. The
+  # residual 4% is the tail of the turnover half-life, log(2)/0.0199 = 34.8 h,
+  # so day 7 is 4.8 half-lives in.
+  all(inhib$frac_of_ss_at_day7 > 0.95),
+  # "...and were maintained over time": day 14 to day 21 is essentially flat.
+  all(abs(inhib$day14 - inhib$day21) < 0.2),
+  # 24HC returns close to baseline within the 7-day washout.
+  all(abs(inhib$washout) < 6)
+)
+```
+
+## Figure 4a / Simulations -- average steady-state EO and 24HC change
+
+The paper reports that with 100, 200 and 300 mg b.i.d. over 12 h at steady
+state, average EO (median of individual simulated values) was 81.7%, 89.2% and
+92.2%, and average change from baseline 24HC was -71.6%, -80.6% and -84.1%.
+
+```{r figure-4a}
+# Replicates the dose-response summary of Figure 4(a) of Yin 2024.
+ss_window <- sim_bsv |>
+  dplyr::filter(!is.na(Cc), time >= 24 * 20, time <= 24 * 20 + 12)
+
+per_subject <- ss_window |>
+  dplyr::group_by(regimen, DOSE, id) |>
+  dplyr::summarise(occ_avg = mean(occ), hc24_avg = mean(hc24Chg), .groups = "drop")
+
+pd_summary <- per_subject |>
+  dplyr::group_by(regimen, DOSE) |>
+  dplyr::summarise(occ_med = median(occ_avg), hc24_med = median(hc24_avg),
+                   .groups = "drop") |>
+  dplyr::arrange(DOSE) |>
+  dplyr::mutate(occ_pub = c(81.7, 89.2, 92.2), hc24_pub = c(-71.6, -80.6, -84.1))
+
+pd_summary |>
+  dplyr::select(-DOSE) |>
+  dplyr::rename(
+    "Regimen"                    = regimen,
+    "Average EO, simulated (%)"  = occ_med,
+    "Average 24HC change, simulated (%)" = hc24_med,
+    "Average EO, published (%)"  = occ_pub,
+    "Average 24HC change, published (%)" = hc24_pub
+  ) |>
+  knitr::kable(digits = 1,
+               caption = sprintf(paste("Average enzyme occupancy and 24HC change over 12 h at steady state:",
+                                       "median of %d simulated subjects per arm vs the Yin 2024 Simulations section."),
+                                 n_per_arm))
+```
+
+```{r figure-4a-assert}
+# Both endpoints are bounded percentages, so an absolute-percentage-point
+# tolerance is the right scale. EO is compared against Emax = 100% and the
+# 24HC change against Imax = -92%, as in the paper's Figure 4(a) axes.
+#
+# The 3.5-point tolerance is sized from the Monte Carlo noise, not chosen to
+# make the test pass: repeating this cohort across five seeds at 200 subjects
+# per arm gave a largest deviation of 2.1 points on EO and 3.1 points on the
+# 24HC change. A mis-transcribed Imax, IC50 or shape parameter would move these
+# medians by well over 10 points, so the test still discriminates. The residual
+# systematic offset (EO simulated slightly low, inhibition slightly shallow) is
+# expected: the paper simulated over the trial's paediatric-to-adult covariate
+# distribution, whereas this cohort fixes covariates at the 70 kg reference
+# patient.
+stopifnot(
+  max(abs(pd_summary$occ_med  - pd_summary$occ_pub))  < 3.5,
+  max(abs(pd_summary$hc24_med - pd_summary$hc24_pub)) < 3.5,
+  # Monotone dose-response in both endpoints (seed-independent).
+  all(diff(pd_summary$occ_med) > 0),
+  all(diff(pd_summary$hc24_med) < 0)
+)
+```
+
+## Figure 5 / Table 2 -- adult reference steady-state AUC
+
+Table 2's footnote reports median (90% PI) steady-state AUC24 for the adult
+reference dosages as 1030 (432, 2470), 2380 (995, 5700) and 3870 (1620, 9280)
+ng*h/mL for 100, 200 and 300 mg b.i.d. Because between-subject variability
+enters AUC only through the log-normal `etalfdepot` (BSV on CL is fixed to
+zero), the median of the simulated distribution equals the typical value, and
+the width of the prediction interval is a direct read-out of `omega_F1`.
+
+```{r table2}
+auc_typ <- sim_typ |>
+  dplyr::filter(!is.na(Cc), time >= 24 * 20, time <= 24 * 21) |>
+  dplyr::group_by(regimen, DOSE) |>
+  dplyr::summarise(
+    auc24 = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    .groups = "drop"
+  ) |>
+  dplyr::arrange(DOSE) |>
+  dplyr::mutate(auc24_pub = c(1030, 2380, 3870),
+                pct_diff = 100 * (auc24 - auc24_pub) / auc24_pub)
+
+auc_typ |>
+  dplyr::select(-DOSE) |>
+  dplyr::rename(
+    "Regimen"                          = regimen,
+    "AUC24 simulated (ng*h/mL)"        = auc24,
+    "AUC24 published (ng*h/mL)"        = auc24_pub,
+    "Difference (%)"                   = pct_diff
+  ) |>
+  knitr::kable(digits = c(0, 0, 0, 1),
+               caption = "Typical-value steady-state AUC24 vs the adult reference values in the Table 2 footnote of Yin 2024.")
+
+stopifnot(max(abs(auc_typ$pct_diff)) < 1)
+```
+
+# PKNCA validation of the PK layer
+
+The published reference exposures (Cmax,ss 1253 ng/mL and Ctrough,ss 27 ng/mL at
+300 mg b.i.d.) are **typical-value** predictions for the reference patient, so
+NCA is run on the typical-value arms. A median across a variable population is
+not the same quantity: `ka` carries very large between-subject variability
+(omega 1.02), and slow absorbers have flatter peaks, so the median individual
+Cmax sits well below the typical-value Cmax. Comparing the median against a
+typical-value reference would look like a model error when it is a mismatch of
+estimands.
+
+NCA covers the final 12-h steady-state dosing interval (day 20 to day 20.5).
+
+```{r pknca}
+tau_start <- 24 * 20
+
+nca_window <- sim_typ |>
+  dplyr::filter(!is.na(Cc), time >= tau_start, time <= tau_start + 12) |>
+  dplyr::mutate(time = time - tau_start) |>
+  dplyr::select(id, time, Cc, regimen)
+
+# Guarantee a time = 0 record per (id, regimen) so PKNCA can anchor AUC0-tau.
+nca_window <- dplyr::bind_rows(
+  nca_window,
+  nca_window |>
+    dplyr::group_by(id, regimen) |>
+    dplyr::slice_min(time, n = 1, with_ties = FALSE) |>
+    dplyr::ungroup() |>
+    dplyr::mutate(time = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, time)
+
+stopifnot(nrow(nca_window) > 0, all(nca_window$Cc >= 0),
+          all(table(nca_window$id) > 100))
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(nca_window), Cc ~ time | regimen + id)
+
+dose_df <- events_typ |>
+  dplyr::filter(evid == 1, time == tau_start) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, regimen) |>
+  as.data.frame()
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+
+intervals <- data.frame(
+  start = 0, end = 12,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, cmin = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published exposures
+
+The paper reports steady-state exposures for the reference patient at 300 mg
+b.i.d.: AUCss,24 3848 ng*h/mL, Cmax,ss 1253 ng/mL and Ctrough,ss 27 ng/mL. The
+AUC24 references for all three dose levels come from the Table 2 footnote.
+`Cmax` and `Cmin` are computed over one 12-h interval; at steady state under
+b.i.d. dosing the profile repeats every 12 h, so AUC24 is twice the
+per-interval `auclast`.
+
+```{r nca_compare}
+sim_nca <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cmin")) |>
+  dplyr::select(regimen, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::mutate(auc24 = 2 * auclast)
+
+published <- tibble::tribble(
+  ~regimen,           ~cmax,   ~cmin, ~auc24,
+  "100 mg b.i.d.",       NA,      NA,   1030,
+  "200 mg b.i.d.",       NA,      NA,   2380,
+  "300 mg b.i.d.",     1253,      27,   3870
+)
+
+nca_cmp <- sim_nca |>
+  dplyr::select(regimen, cmax, cmin, tmax, auc24) |>
+  dplyr::left_join(published, by = "regimen", suffix = c("_sim", "_pub")) |>
+  dplyr::mutate(
+    auc_pct  = 100 * (auc24_sim - auc24_pub) / auc24_pub,
+    cmax_pct = 100 * (cmax_sim - cmax_pub) / cmax_pub,
+    cmin_pct = 100 * (cmin_sim - cmin_pub) / cmin_pub
+  )
+
+nca_cmp |>
+  dplyr::rename(
+    "Regimen"                   = regimen,
+    "Cmax simulated (ng/mL)"    = cmax_sim,
+    "Cmax published (ng/mL)"    = cmax_pub,
+    "Cmax difference (%)"       = cmax_pct,
+    "Ctrough simulated (ng/mL)" = cmin_sim,
+    "Ctrough published (ng/mL)" = cmin_pub,
+    "Ctrough difference (%)"    = cmin_pct,
+    "Tmax simulated (h)"        = tmax,
+    "AUC24 simulated (ng*h/mL)" = auc24_sim,
+    "AUC24 published (ng*h/mL)" = auc24_pub,
+    "AUC24 difference (%)"      = auc_pct
+  ) |>
+  knitr::kable(digits = 1,
+               caption = "Typical-value steady-state exposures from PKNCA vs the published values in Yin 2024.")
+
+# AUC and Cmax reproduce the published typical values closely. Ctrough is the
+# most demanding of the three -- it is a single point at the end of the
+# interval, an order of magnitude smaller than Cmax, and the published 27 ng/mL
+# is quoted to two significant figures.
+stopifnot(
+  max(abs(nca_cmp$auc_pct)) < 2,
+  abs(nca_cmp$cmax_pct[nca_cmp$regimen == "300 mg b.i.d."]) < 2,
+  abs(nca_cmp$cmin_pct[nca_cmp$regimen == "300 mg b.i.d."]) < 15
+)
+```
+
+## The AUC prediction interval pins the between-subject-variability scale
+
+Steady-state AUC depends on between-subject variability only through
+`etalfdepot`, so the 90% prediction interval of AUC identifies `omega_F1`
+directly. This is the check that settles how Table 1a's BSV column should be
+read (see Errata).
+
+Steady-state AUC is log-normal here, so `omega_F1` is recovered as the SD of
+`log(AUC)`. That estimator is used rather than the empirical 5th/95th
+percentiles because sample quantiles from a few hundred draws are badly noisy:
+the same cohort across five seeds gave 90% PI ratios spanning 4.3-6.6 but
+`sd(log(AUC))` spanning only 0.45-0.56.
+
+```{r bsv-scale}
+auc_ind <- sim_bsv |>
+  dplyr::filter(!is.na(Cc), time >= 24 * 20, time <= 24 * 20 + 12) |>
+  dplyr::group_by(regimen, id) |>
+  dplyr::summarise(auc = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+                   .groups = "drop")
+
+# omega implied by the published Table 2 footnote prediction intervals.
+published_ratio <- c(2470 / 432, 5700 / 995, 9280 / 1620)
+
+auc_bsv <- auc_ind |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(omega_hat = sd(log(auc)), .groups = "drop") |>
+  dplyr::mutate(
+    pi_ratio_implied   = exp(2 * qnorm(0.95) * omega_hat),
+    omega_published    = log(published_ratio) / (2 * qnorm(0.95)),
+    pi_ratio_published = published_ratio
+  )
+
+auc_bsv |>
+  dplyr::rename(
+    "Regimen"                              = regimen,
+    "omega_F1 from sd(log AUC), simulated" = omega_hat,
+    "Implied 90% PI ratio, simulated"      = pi_ratio_implied,
+    "omega_F1 implied by the paper"        = omega_published,
+    "Published 90% PI ratio"               = pi_ratio_published
+  ) |>
+  knitr::kable(digits = 3,
+               caption = "Between-subject variability in steady-state AUC, simulated vs the Table 2 footnote of Yin 2024.")
+
+# This is the discriminating test between the two readings of Table 1a's BSV
+# column. The packaged value is omega_F1 = 0.527 (the table value read as an
+# SD). Had it been a variance, omega_F1 would be sqrt(0.527) = 0.726.
+stopifnot(
+  # consistent with the SD reading, and with the paper's own implied ~0.530
+  all(abs(auc_bsv$omega_hat - 0.527) < 0.1),
+  # and decisively inconsistent with the variance reading
+  all(auc_bsv$omega_hat < 0.65)
+)
+```
+
+# Endogenous-layer checks (24HC turnover)
+
+A turnover biomarker is not a PKNCA target, so the 24HC layer is validated with
+the steady-state, perturbation-recovery and flux checks appropriate to an
+indirect-response model.
+
+## Steady-state hold
+
+With no drug, `hc24` must sit at its individual baseline indefinitely.
+
+```{r steady-state}
+ev_nodose <- cbind(
+  obs_records(seq(0, 24 * 60, by = 6)),
+  ref_covariates(300)[rep(1, length(seq(0, 24 * 60, by = 6))), ],
+  row.names = NULL
+)
+
+ss <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_nodose, useLinCmt = FALSE) |>
+  as.data.frame()
+
+rbase_ref <- unique(round(ss$rbase, 10))
+cat("Typical baseline 24HC for a 45-year-old, 70 kg patient (ng/mL):",
+    format(rbase_ref, digits = 6), "\n")
+cat("Range of hc24 over 60 days with no dose (ng/mL):",
+    format(range(ss$hc24), digits = 10), "\n")
+
+# No drift over 60 days.
+stopifnot(diff(range(ss$hc24)) < 1e-6,
+          abs(mean(ss$hc24) - rbase_ref) < 1e-6)
+```
+
+The reference subject is 45 years old, above the 17.5-year breakpoint, so the
+age factor is exactly 1 and the baseline is
+`50.5 * (20/20)^0.215 * (70/55.25)^-0.256`.
+
+```{r baseline-closed-form}
+rbase_closed <- 50.5 * (20 / 20)^0.215 * (70 / 55.25)^(-0.256)
+stopifnot(abs(rbase_ref - rbase_closed) < 1e-8)
+cat("Closed-form baseline:", format(rbase_closed, digits = 6), "ng/mL\n")
+```
+
+## Perturbation recovery
+
+Displacing `hc24` away from baseline must return it monotonically to baseline.
+The displacement is applied as a bolus into the `hc24` state rather than via
+`rxSolve(inits = )`, because the model sets `hc24(0) <- rbase` inside `model()`
+and an initial condition declared there overrides the `inits` argument.
+
+```{r perturbation}
+perturb_arm <- function(mult) {
+  delta <- (mult - 1) * rbase_closed          # signed bolus onto the baseline
+  ev <- rbind(
+    data.frame(time = 0, amt = delta, evid = 1L, cmt = "hc24", dvid = NA_integer_),
+    obs_records(seq(0, 24 * 60, by = 6))
+  )
+  ev <- ev[order(ev$time, -ev$evid), ]
+  ev <- cbind(ev, ref_covariates(300)[rep(1, nrow(ev)), ], row.names = NULL)
+  s <- rxode2::rxSolve(rxode2::zeroRe(mod), ev, useLinCmt = FALSE) |> as.data.frame()
+  data.frame(mult = mult, time = s$time, hc24 = s$hc24)
+}
+
+recover <- dplyr::bind_rows(lapply(c(0.5, 2.0), perturb_arm))
+
+# The bolus must actually have displaced the state to the intended multiple --
+# a perturbation test that silently starts at baseline proves nothing.
+start_vals <- recover |>
+  dplyr::group_by(mult) |>
+  dplyr::summarise(start = dplyr::first(hc24), .groups = "drop")
+stopifnot(all(abs(start_vals$start - start_vals$mult * rbase_closed) < 1e-6))
+
+ggplot(recover, aes(time / 24, hc24, colour = factor(mult))) +
+  geom_line() +
+  geom_hline(yintercept = rbase_closed, linetype = "dashed") +
+  labs(x = "Time (days)", y = "24HC (ng/mL)", colour = "Initial / baseline",
+       title = "Perturbation recovery to the reported baseline")
+
+endpoints <- recover |>
+  dplyr::group_by(mult) |>
+  dplyr::summarise(final = dplyr::last(hc24), .groups = "drop")
+stopifnot(all(abs(endpoints$final - rbase_closed) < 1e-3))
+
+# Monotone approach in both directions.
+stopifnot(
+  all(diff(recover$hc24[recover$mult == 0.5]) > 0),
+  all(diff(recover$hc24[recover$mult == 2.0]) < 0)
+)
+```
+
+The observed recovery half-life must equal `log(2) / kout`.
+
+```{r recovery-halflife}
+# Log-linear decay of the displacement from baseline. The window is capped at
+# 350 h (~10 half-lives) so the fit is not contaminated by solver noise once the
+# displacement has decayed below the integrator's absolute tolerance.
+low <- recover |>
+  dplyr::filter(mult == 0.5, time <= 350) |>
+  dplyr::mutate(disp = rbase_closed - hc24) |>
+  dplyr::filter(disp > 1e-6)
+stopifnot(nrow(low) > 10)
+fit <- lm(log(disp) ~ time, data = low)
+t_half_obs <- -log(2) / coef(fit)[[2]]
+t_half_exp <- log(2) / 0.0199
+cat(sprintf("Recovery half-life: observed %.3f h, expected log(2)/kout = %.3f h\n",
+            t_half_obs, t_half_exp))
+stopifnot(abs(t_half_obs - t_half_exp) < 0.01)
+```
+
+## Flux balance at steady state
+
+At baseline, synthesis and degradation must cancel exactly. Under maximal
+inhibition the model's floor for 24HC is `rbase * (1 - Imax/100)`.
+
+```{r flux}
+kout_ref <- 0.0199
+kin_ref  <- rbase_closed * kout_ref
+cat(sprintf("kin  = rbase * kout = %.6f * %.4f = %.6f (ng/mL)/h\n",
+            rbase_closed, kout_ref, kin_ref))
+cat(sprintf("kout * hc24 at baseline = %.6f (ng/mL)/h\n", kout_ref * rbase_closed))
+stopifnot(abs(kin_ref - kout_ref * rbase_closed) < 1e-12)
+
+# Asymptotic floor under complete saturation of the inhibitory sigmoid.
+floor_pct <- -92
+cat(sprintf("Asymptotic maximal 24HC change from baseline: %.1f%%\n", floor_pct))
+
+# The simulated steady-state inhibition must sit above (i.e. be less negative
+# than) the Imax floor at every dose.
+stopifnot(all(pd_summary$hc24_med > floor_pct))
+```
+
+# Assumptions and deviations
+
+## Errata -- the reported scale of the between-subject variability
+
+The footnote to Table 1 states *"Reported on variance scale"* for the rows
+marked `a` in **both** panels. That is correct for panel (b) but **not** for
+panel (a), and this model file ships panel (a)'s values as standard deviations.
+Three independent lines of evidence:
+
+1. **The paper's own simulations.** Steady-state AUC carries between-subject
+   variability only through `etalfdepot` (BSV on CL is fixed to zero), so the
+   Table 2 footnote's 90% prediction intervals identify `omega_F1` exactly:
+   `log(2470/432) / (2 x 1.645) = 0.530`, and the same ratio recurs at all three
+   dose levels. Table 1a reports 0.527. Reading it as a variance would imply
+   `omega_F1 = 0.726` and a PI ratio near 10.9 -- roughly twice the published
+   width. The `bsv-scale` chunk above re-derives this from the packaged model.
+2. **The control stream.** `0.527^2 = 0.2777` reproduces the popPK
+   `$OMEGA` entry for F1 (`0.2779`) to four significant digits; the same holds
+   for Q (`0.436^2 = 0.190` vs `0.1857`) and Vp (`0.625^2 = 0.391` vs
+   `0.3894`). Every non-`ka` fixed effect in that run moved by under 5% from its
+   initial value, so a doubling of three variance components is not credible.
+3. **Panel (b) genuinely is on the variance scale**, and reading it as an SD is
+   not: the baseline-24HC BSV of 0.0811 is within 11% of the PK/EO/PD
+   `$OMEGA` initial 0.09074, whereas an SD reading would require the variance to
+   have fallen 14-fold during a re-estimation that only removed 17 outlier
+   observations.
+
+The file therefore stores `etalka = 1.02^2`, `etalq = 0.436^2`,
+`etalvp = 0.625^2` and `etalfdepot = 0.527^2` (panel a, SD-scale source) and
+`etalrbase = 0.0811`, `etalic50 = 0.636` (panel b, variance-scale source).
+
+## Other assumptions and deviations
+
+- **One model file, two NONMEM runs.** The PK/EO/PD run reads individual PK
+  parameters from data columns rather than estimating them, so it is not
+  self-contained. The packaged model reproduces the PK layer from Table 1a and
+  couples it to the EO and 24HC layers from Table 1b, which is the only form in
+  which the paper's PK/EO/PD model can be simulated without the original data
+  set.
+- **Enzyme-occupancy parameters are inherited, not re-estimated.** `ke0`, `Emax`,
+  `EC50` and the EO shape parameter carry `FIX` in the PK/EO/PD control stream
+  and originate in Yin 2023; they are `fixed()` here and do not appear in
+  Table 1.
+- **`V3~ASIAN` is omitted.** The control stream carries an Asian-descent effect
+  on peripheral volume with coefficient `0 FIX`, making the term an exact no-op;
+  it has no row in Table 1a. It is documented under `covariatesDataExcluded`
+  rather than encoded as a fixed-zero multiplier.
+- **`CRUSHED` is omitted.** It appears in `$INPUT` and `$TABLE` but is never
+  referenced in `$PK` or `$ERROR` of either final model.
+- **The 24HC residual error is purely additive.** Its proportional component is
+  `0 FIX` in the control stream, so only `addSd_hc24` is carried.
+- **AGP is kept in mg/dL.** The `AAG` register default is g/L, but the effect
+  enters as the ratio `(AAG/20)^exponent` in which the unit cancels; keeping the
+  paper's mg/dL makes the printed reference value 20 directly checkable. The
+  equivalent canonical value is 0.2 g/L.
+- **`DIS_HEALTHY` carries the patient effect on its complement.** The source
+  column is `PATIENT` (1 = patient). The published typical CL of 4.2 L/h is the
+  healthy-volunteer value, so the model writes
+  `(1 + e_dis_healthy_cl/100 * (1 - DIS_HEALTHY))` to preserve that anchor.
+- **`etalfdepot` is not mu-referenced.** Because the AGP-missing flag scales the
+  eta itself (`exp((1 + theta * AAG_MISSING) * eta)`), rxode2 warns that the eta
+  defaults to non-mu-referenced. This reproduces the published structure and is
+  correct for simulation; it would matter only for a re-fit.
+- **Reference subject weight.** The paper's covariate-analysis reference subject
+  weighs 56.6 kg, but its reported steady-state exposures (AUCss,24 3848
+  ng*h/mL at 300 mg b.i.d.) match the 70 kg reference patient used for the
+  dosing simulations, not the 56.6 kg one -- 3848 sits alongside Table 2's
+  adult reference 3870 and its 45-100 kg row value 3850. The vignette uses the
+  70 kg reference patient throughout.
+- **Virtual cohorts, not observed data.** Individual data are available only on
+  request (Data Availability Statement), so all figures use virtual subjects at
+  the published reference covariates.

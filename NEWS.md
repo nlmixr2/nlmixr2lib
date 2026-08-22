@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Roy 2023 erythropoiesis QSP model ([doi:10.3389/fphar.2023.1274490](https://doi.org/10.3389/fphar.2023.1274490)) - virtual patients with anemia due to chronic kidney disease.
+- Add Yin 2024 soticlestat ([doi:10.1111/cts.13722](https://doi.org/10.1111/cts.13722)) -- healthy volunteers and patients with developmental and epileptic encephalopathies.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

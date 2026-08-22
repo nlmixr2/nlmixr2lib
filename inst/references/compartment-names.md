@@ -2121,6 +2121,14 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Pu_2021_evinacumab.R`.
 
+### hc24 (**canonical 24S-hydroxycholesterol PD output**)
+- **Type:** compartment
+- **Role:** 24S-hydroxycholesterol (24HC, cerebrosterol) biomarker PD output; the turnover pool of the brain-specific cholesterol 24-hydroxylase (CH24H / CYP46A1) reaction product, measured in plasma.
+- **Source aliases:**
+  - `24HC` -- NONMEM `$MODEL COMP=(24HC)` in Yin 2024 Appendix S1; a leading digit is not a legal R symbol, so the canonical moves it to the end.
+  - `HC24` -- Yin 2024 `$ERROR` output variable.
+- **Example models:** `Yin_2024_soticlestat.R` (indirect-response turnover with `kin = rbase * kout` and sigmoid-Imax inhibition of synthesis by the soticlestat effect-site concentration).
+
 ### cox2 (**canonical COX-2 enzyme activity PD output**)
 - **Type:** compartment
 - **Role:** COX-2 enzyme activity PD output.
