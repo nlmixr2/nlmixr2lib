@@ -2,12 +2,7 @@
 
 # development version
 
-- Add Yang 2024 naloxone auto-injector and its four mechanistic opioid-induced
-  respiratory depression reversal models -- buprenorphine, morphine, fentanyl
-  and carfentanil ([doi:10.1002/psp4.13215](https://doi.org/10.1002/psp4.13215))
-  - healthy adults.
-
-- Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
+- Add Ivanova 2024 anti-alpha-synuclein immunotherapy ([doi:10.1002/psp4.13223](https://doi.org/10.1002/psp4.13223)) -- QSP model of alpha-synuclein pathology in Parkinson's-disease-like mice.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
