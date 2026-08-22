@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ashraf 2024 codeine ([doi:10.1007/s40262-024-01433-9](https://doi.org/10.1007/s40262-024-01433-9)) -- CYP2D6-genotyped adults undergoing ambulatory surgery.
+- Add Suzuki 2024 mycophenolic acid ([doi:10.1111/cts.70097](https://doi.org/10.1111/cts.70097)) -- adult kidney transplant recipients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
