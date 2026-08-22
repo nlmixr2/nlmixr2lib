@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Alqurain 2024 vancomycin ([doi:10.2147/DDDT.S496512](https://doi.org/10.2147/DDDT.S496512)) -- non-critical-care adults aged 40 years and older on medical wards in Saudi Arabia.
+- Add Zhu 2024 SPT-07A (D-borneol) whole-body PBPK ([doi:10.3390/pharmaceutics16121596](https://doi.org/10.3390/pharmaceutics16121596)) -- three models: rats (Sprague-Dawley), beagle dogs, and healthy human adults.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
