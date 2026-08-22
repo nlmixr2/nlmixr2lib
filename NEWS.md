@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Marques 2025 oral salbutamol ([doi:10.3390/pharmaceutics17010039](https://doi.org/10.3390/pharmaceutics17010039)) -- virtual (PBPK-generated) patients aged 5-65 years.
+- Add Han 2025 midazolam, fentanyl, alfentanil and sufentanil age-dependent whole-body PBPK models ([doi:10.3390/pharmaceutics17020214](https://doi.org/10.3390/pharmaceutics17020214)) -- preterm neonates through adults to the oldest old.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
