@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Na 2025 HOSU-53 (JBZ-001) PK/PD models ([doi:10.3390/pharmaceutics17040412](https://doi.org/10.3390/pharmaceutics17040412)) -- mice and beagle dogs.
+- Add Fromage 2025 mycophenolic acid ([doi:10.1111/bcp.16374](https://doi.org/10.1111/bcp.16374)) -- solid organ transplant, haematopoietic cell transplant and autoimmune disease patients on enteric-coated mycophenolate sodium.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
