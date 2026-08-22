@@ -179,6 +179,21 @@
   # Gebhard_2023_mercaptopurine, Gebhard_2023_mercaptopurine_anc.
   # Documented in inst/references/compartment-names.md.
   rbcCompartmentRegex = "^rbc_[a-z0-9]+$",
+  # Method-of-lines spatial discretisation slabs of a single tissue.
+  # rxode2 solves ODEs only, so a paper that writes transport through a
+  # tissue as a diffusion PDE (Fick's second law across an epithelium of
+  # finite thickness) is encoded by dividing the spatial coordinate into N
+  # equal slabs, one ODE state each. The `_slab` element states explicitly
+  # that the numbering indexes numerical discretisation elements of ONE
+  # tissue rather than N distinct anatomical structures, and the
+  # `<tissue>_` stem lets the family compose with any tissue (buccal,
+  # nasal, skin, airway epithelium) without registering a new chain prefix
+  # per paper. Validated by regex rather than an enumerated list because
+  # the slab count is a per-model numerical choice. Founding example:
+  # Salehi_2025_nicotine_pbpk (buccal_slab1..buccal_slab20 across a
+  # 1.75 mm effective buccal epithelium). Documented in
+  # inst/references/compartment-names.md.
+  slabCompartmentRegex = "^[a-z][a-z_]*_slab[0-9]+$",
   observationVar = "Cc",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs; expSd is the log-scale residual SD used with
@@ -910,6 +925,7 @@
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
 #   - target species in physiologic compartments via conv$targetLocationRegex
 #   - intracellular red-cell analyte pools via conv$rbcCompartmentRegex
+#   - method-of-lines diffusion slabs via conv$slabCompartmentRegex
 #   - metabolite-suffixed compartments: <canonical>_<metab>
 .matchesCompartment <- function(name, conv) {
   if (name %in% conv$compartments) return(TRUE)
@@ -922,6 +938,8 @@
       grepl(conv$bacterialSubpopRegex, name)) return(TRUE)
   if (!is.null(conv$rbcCompartmentRegex) &&
       grepl(conv$rbcCompartmentRegex, name)) return(TRUE)
+  if (!is.null(conv$slabCompartmentRegex) &&
+      grepl(conv$slabCompartmentRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {
