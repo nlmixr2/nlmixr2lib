@@ -2320,6 +2320,8 @@ navbar:
         href: articles/Wattanakul_2016_paracetamol.html
       - text: "Paracetamol (Wu 2025)"
         href: articles/Wu_2025_paracetamol.html
+      - text: "ParathyroidHormone (Visscher 2025)"
+        href: articles/Visscher_2025_parathyroidHormone.html
       - text: "Paritaprevir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
@@ -4911,6 +4913,7 @@ articles:
   - articles/Viberg_2006_cefuroxime
   - articles/Viberg_2012_AZD6088_rat
   - articles/Vinnard_2017_rifampicin
+  - articles/Visscher_2025_parathyroidHormone
   - articles/Voller_2017_phenobarbital
   - articles/vonHentig_2009_saquinavir
   - articles/Vorontsova_2022_misoprostol
