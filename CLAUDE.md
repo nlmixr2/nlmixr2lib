@@ -41,3 +41,40 @@ For full details see `vignettes/create-model-library.Rmd` and `.claude/skills/ex
 
 - `devtools::check()` must pass. Model files are validated via `buildModelDb()` (filename ↔ function-name match, parseable `ini()` / `model()`).
 - Vignettes must build cleanly; they use `PKNCA` (in `Suggests`) for NCA validation.
+
+## Vignette assertions over a simulated cohort
+
+`stopifnot(all(x <= C))` / `max(x) < C`, where `x` is one value per simulated
+subject and `C` was chosen from the extreme observed while authoring, is the
+single most common way a vignette passes locally and then fails CI. It has cost
+this repo three CI rounds at ~75 min each.
+
+The reason is that the extreme of a random cohort is not reproducible across
+rxode2 builds. Vignettes call `rxode2::rxSetSeed()` for common random numbers,
+which fixes the draw *within* an rxode2 version but not *across* versions — CI
+resolves rxode2 from CRAN while a developer may have a newer r-universe build.
+Measured on `Zhang_2026_tebipenem`: the per-subject minimum was 0.876 on
+rxode2 5.1.7 and below 0.80 on 5.1.6, purely from which subjects sampled a long
+absorption lag.
+
+So assert on the **centre** and on **robust quantiles**, never on the extremes:
+
+```r
+stopifnot(
+  # Structural: a mis-transcribed clearance, dose or unit moves the whole
+  # distribution by tens of percent and blows this instantly.
+  abs(median(chk$pct_diff)) < 5,
+  # Envelope: robust to which subjects land in the tails.
+  quantile(abs(chk$pct_diff), 0.9) < 15
+)
+```
+
+This applies when the two sides being compared differ by a *physical*
+mechanism that varies per subject — an absorption lag, a Michaelis-Menten arm,
+trapezoidal error on a narrow peak. It does **not** apply to a check whose two
+sides use the same drawn parameters (a solve against its own closed form), where
+the difference is pure numerical error and a tight `all()` bound is correct and
+should be kept.
+
+Worked examples: `deVries_2025_durvalumab.Rmd` and `Zhang_2026_tebipenem.Rmd`,
+both of which carry the reasoning inline.

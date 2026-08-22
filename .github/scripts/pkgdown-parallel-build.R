@@ -14,11 +14,51 @@
 #
 # The PKGDOWN_WORKERS env var is the single managed knob. Blank => use
 # parallel::detectCores(); a positive integer overrides (e.g. to cap memory).
+#
+# SHARDING (PKGDOWN_SHARDS / PKGDOWN_SHARD). A GitHub-hosted runner gives 4
+# vCPUs, so one job renders at 4-way concurrency and no faster. With ~1500
+# articles that is a ~5 h job against a 6 h hard limit. Setting PKGDOWN_SHARDS
+# to N and PKGDOWN_SHARD to 1..N makes this script render only its slice and
+# SKIP the wrap-up site build, so N runner jobs can render in parallel and a
+# final job assembles the site from their combined docs/ output.
+#
+# The slice is INTERLEAVED (articles[seq(shard, n, by = nshards)]), not
+# contiguous. Article cost varies widely, but interleaving over ~1500 articles
+# distributes the expensive ones evenly across shards without needing a cost
+# table -- there is nothing to keep up to date and nothing to go stale.
 
 env <- Sys.getenv("PKGDOWN_WORKERS", "")
 ncores <- if (nzchar(env)) as.integer(env) else parallel::detectCores()
 stopifnot(is.finite(ncores), ncores >= 1L)
 Sys.setenv(PKGDOWN_WORKERS = ncores)
+
+# Shard selection. Both unset (or PKGDOWN_SHARDS = 1) => whole-site build,
+# byte-identical to the pre-sharding behaviour.
+.int_env <- function(nm, default) {
+  v <- Sys.getenv(nm, "")
+  if (!nzchar(v)) return(default)
+  n <- suppressWarnings(as.integer(v))
+  if (is.na(n)) stop(sprintf("%s must be an integer, got '%s'", nm, v))
+  n
+}
+nshards <- .int_env("PKGDOWN_SHARDS", 1L)
+shard <- .int_env("PKGDOWN_SHARD", 1L)
+stopifnot(
+  "PKGDOWN_SHARDS must be >= 1" = nshards >= 1L,
+  "PKGDOWN_SHARD must be in 1..PKGDOWN_SHARDS" = shard >= 1L && shard <= nshards
+)
+sharded <- nshards > 1L
+
+# Assemble mode: the shards already rendered every article and the workflow has
+# restored them into docs/articles, so this run must build ONLY the non-article
+# sections. Without it the assemble job re-renders all ~1500 articles itself --
+# the unsharded path below renders unconditionally -- which silently costs the
+# entire benefit of sharding and still exits 0. Observed 2026-08-22: the
+# assemble job was still re-rendering an hour in.
+assemble_only <- nzchar(Sys.getenv("PKGDOWN_ASSEMBLE", ""))
+if (assemble_only && sharded) {
+  stop("PKGDOWN_ASSEMBLE and PKGDOWN_SHARDS>1 are mutually exclusive")
+}
 
 # Single-syscall logger; writes < PIPE_BUF (4 KB) are atomic on Linux, so
 # concurrent workers will not interleave mid-line.
@@ -39,7 +79,24 @@ pkg <- pkgdown::as_pkgdown(".")
 pkgdown::init_site(pkg)
 
 articles <- pkg$vignettes$name[pkg$vignettes$type == "rmd"]
-log_line("Rendering ", length(articles), " articles in parallel...")
+n_all <- length(articles)
+if (sharded) {
+  # Interleaved, so consecutive (and therefore similarly-named / similarly
+  # structured) articles land on different shards.
+  # seq(shard, n_all, by = nshards) errors with "wrong sign in 'by'" when
+  # shard > n_all (more shards than articles), so take the empty slice
+  # explicitly rather than letting the build fail on a degenerate split.
+  idx <- if (shard > n_all) integer(0) else seq(shard, n_all, by = nshards)
+  articles <- articles[idx]
+  log_line("SHARD ", shard, "/", nshards, ": rendering ",
+           length(articles), " of ", n_all, " articles")
+} else if (assemble_only) {
+  log_line("ASSEMBLE: skipping the article render; building non-article ",
+           "sections over the ", length(articles), " restored article(s)")
+  articles <- character(0)
+} else {
+  log_line("Rendering ", length(articles), " articles in parallel...")
+}
 t0 <- Sys.time()
 
 # Spawn a forked worker rendering one article. Returns the mcparallel job.
@@ -179,6 +236,15 @@ log_line("Parallel article render finished in ", format(Sys.time() - t0))
 # GitHub-pages metadata). lazy = TRUE makes build_articles() short-circuit on
 # articles whose HTML is newer than their Rmd; clean = FALSE preserves the
 # articles we just rendered.
+if (sharded) {
+  # A shard renders articles and nothing else. The assemble job runs this
+  # script with PKGDOWN_SHARDS unset, over the combined docs/ from every
+  # shard, and pkgdown's lazy check skips the articles already present.
+  log_line("SHARD ", shard, "/", nshards,
+           " done; skipping wrap-up (the assemble job builds the site)")
+  quit(save = "no", status = 0L)
+}
+
 log_line("Building non-article sections (reference, news, sitemap, ...)")
 t1 <- Sys.time()
 pkgdown::build_site_github_pages(

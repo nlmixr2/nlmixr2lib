@@ -255,6 +255,81 @@ IIV follows the standard pattern (`etalfbw`, `etalhill_bw`, `etaltbw50`); use
 
 Founding example: `Oualha_2018_enoxaparin.R`.
 
+## Lactation: milk-to-plasma transfer
+
+Canonical milk-to-plasma **concentration** ratio: **`lcmpr`** (log-transformed),
+bare name `cmpr` inside `model()`. Dimensionless.
+
+Use `cmpr` when a lactation popPK paper estimates a milk:plasma concentration
+ratio as a model parameter and the milk data are too sparse to support a
+separate milk compartment. Breast-milk concentration is then an algebraic
+observable rather than an ODE state:
+
+```
+cmpr  <- exp(lcmpr + etalcmpr)
+Cmilk <- cmpr * Cc
+```
+
+The ratio may carry IIV (`etalcmpr`) and covariate effects — a power function of
+time postpartum is common during the colostrum period. Pair it with the
+`Cmilk` observable and the `propSd_Cmilk` residual (the milk observable follows
+the paper-named multi-output exemption in `compartment-names.md`, alongside the
+registered `propSd_Ccsf` / `propSd_Cbrain` precedents).
+
+Source-paper aliases that translate without a sidecar: `MPRcon`, `M/P`.
+
+Do **not** encode an AUC-based milk:plasma ratio as a parameter unless the paper
+actually parameterises the model on exposure ratio. Papers commonly report an
+`MPRauc` as a *derived simulation output*; compute that in the vignette from the
+simulated profiles instead.
+
+Distinct from `kp_milk` below: `cmpr` is **fitted** to paired maternal plasma and
+milk observations, whereas a `kp` is a predicted or literature-fixed partition
+constant feeding a mechanistic milk compartment. The two coexist.
+
+Founding example: `Li_2023_ornidazole.R` (ornidazole into colostrum;
+`lcmpr = log(0.58)`, IIV variance 0.327, power effect of time postpartum).
+
+## Tissue partition coefficients
+
+Canonical per-tissue partition-coefficient family: **`lkp_<tissue>`**
+(log-transformed), bare names `kp_<tissue>` inside `model()`. Unitless. Each is
+the equilibrium ratio of concentration in one named anatomical tissue to
+concentration in plasma or blood, driving that tissue's perfusion- or
+permeability-limited distribution term:
+
+```
+d/dt(liver) <- q_liver * (Cc - liver / vliver / kp_liver) - ...
+```
+
+`<tissue>` is the same lowercase anatomical token as the corresponding PBPK
+compartment name in `compartment-names.md`, so `lkp_liver` belongs to the
+`liver` compartment. Members in use include `adipose`, `bone`, `brain`, `csf`,
+`gut`, `heart`, `intestine`, `kidney`, `liver`, `lung`, `milk`, `muscle`,
+`other`, `rest`, `skin`, `spleen`, `trachea`. A new anatomical tissue may be
+added without a fresh naming sidecar so long as the token matches the canonical
+compartment name. Usually fixed from the paper's physicochemical predictions
+(Rodgers-Rowland, Poulin-Theil) or measured tissue:plasma ratios, but may be
+estimated when the paper fits them.
+
+`kp_milk` / `lkp_milk` is the lactation member — the milk:plasma partition
+coefficient for **mechanistic milk-compartment** models. Use it only when the
+paper supplies a partition coefficient as a mechanistic input; use `cmpr` above
+when the paper estimates a concentration ratio as a popPK parameter.
+
+Three boundaries to respect:
+
+- `kpu<n>` is a *cluster*-indexed unbound partition coefficient shared by several
+  tissues, not one named organ; `sf<n>` scales a predicted Kpu rather than
+  replacing it. Neither is a member of this family.
+- `lkp_f` and `lkp_hb` (`Li_2015_taspoglutide_mbma.R`) are placebo-response rate
+  constants for fasting plasma glucose and HbA1c, and `lkpin` / `lkpout` are
+  precursor-pool turnover constants. These share the prefix but are **not**
+  partition coefficients.
+- Bare `kp_*` names that qualify rather than name a tissue (`kp_free`,
+  `kp_bound`, `kp_preg`) or index a loop (`kp_i`) are local `model()`
+  intermediates, not canonicals.
+
 ## Transform prefixes
 
 - `l` — natural log (`lka`, `lcl`, `lfdepot`)

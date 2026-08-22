@@ -8,13 +8,13 @@ Moein_2024_apitolisib_mouse <- function() {
     "(2) an indirect-response model in which apitolisib inhibits the",
     "production rate of phosphorylated Akt (pAkt) measured in TUMOR TISSUE,",
     "expressed as %pAkt relative to a drug-free control baseline of 100%;",
-    "(3) exponential tumor-volume growth at net rate kg opposed by a",
+    "(3) exponential tumor-volume growth at net rate p opposed by a",
     "sigmoidal shrinkage rate ks driven by the percent pAkt inhibition",
     "I = 100 - %pAkt. Imax and the pAkt Hill exponent are fixed at 1, and",
     "kout is not estimated but derived as kin/%pAkt(0) = kin/100, so the",
     "biomarker pool equilibrates essentially instantaneously and %pAkt",
     "tracks the plasma concentration directly. Only the five efficacy",
-    "parameters (kg, kmax, ki50, gamma2, proportional error) and the two",
+    "parameters (p, kmax, ki50, gamma2, proportional error) and the two",
     "tumor IIV terms were estimated in this integrated fit."
   )
   reference <- paste(
@@ -110,10 +110,10 @@ Moein_2024_apitolisib_mouse <- function() {
     # Layer 3: integrated PK-PD-efficacy tumor model (Methods Eqs. 4-5,
     # Table 3). These five thetas plus the two omegas below are the ONLY
     # quantities estimated in this integrated fit.
-    #   d(Tumor)/dt = kg*Tumor - ks*Tumor
+    #   d(Tumor)/dt = p*Tumor - ks*Tumor
     #   ks = kmax * I^gamma2 / (ki50^gamma2 + I^gamma2),  I = 100 - %pAkt
     # ------------------------------------------------------------------
-    lkg       <- log(0.0057); label("Net tumor growth rate constant kg (1/h)")                                       # Table 3: Kg = 0.0057 1/h (RSE 3.9%)
+    lp       <- log(0.0057); label("Net tumor growth rate constant p (Kg in the paper; 1/h)")                                       # Table 3: Kg = 0.0057 1/h (RSE 3.9%)
     lkmax     <- log(0.0194); label("Maximum tumor shrinkage rate constant kmax (1/h)")                              # Table 3: Kmax = 0.0194 1/h (RSE 43.2%)
     lki50     <- log(67.2);   label("Percent pAkt inhibition giving 50% of kmax, ki50 (% pAkt inhibition)")          # Table 3: KI50 = 67.2 %pAkt inhibition (RSE 12.6%)
     lhill_ks  <- log(9.4);    label("Sigmoidicity factor of the pAkt-inhibition/shrinkage curve, gamma2 (unitless)") # Table 3: gamma2 = 9.4 (RSE 208.5%)
@@ -136,7 +136,7 @@ Moein_2024_apitolisib_mouse <- function() {
     # (sqrt(0.0276) = 16.6%, sqrt(0.0529) = 23.0%), which confirms the
     # values are variances and not SDs.
     # ------------------------------------------------------------------
-    etalkg   ~ 0.0276  # Table 3: IIV Kg variance = 0.0276 (RSE 29.6%, Variability 16.6%, shrinkage 22.6%)
+    etalp   ~ 0.0276  # Table 3: IIV Kg variance = 0.0276 (RSE 29.6%, Variability 16.6%, shrinkage 22.6%)
     etalkmax ~ 0.0529  # Table 3: IIV Kmax variance = 0.0529 (RSE 54.6%, Variability 23.0%, shrinkage 45.8%)
 
     # ------------------------------------------------------------------
@@ -162,7 +162,7 @@ Moein_2024_apitolisib_mouse <- function() {
     ic50         <- exp(lic50)
     kin          <- exp(lkin)
     hill_pakt    <- exp(lhill_pakt)
-    kg           <- exp(lkg + etalkg)
+    p            <- exp(lp + etalp)
     kmax         <- exp(lkmax + etalkmax)
     ki50         <- exp(lki50)
     hill_ks      <- exp(lhill_ks)
@@ -199,7 +199,7 @@ Moein_2024_apitolisib_mouse <- function() {
     # cannot produce a negative base for the non-integer power below.
     inhib_pakt_pct <- max(0, 100 - pakt)
     ks <- kmax * inhib_pakt_pct^hill_ks / (ki50^hill_ks + inhib_pakt_pct^hill_ks)
-    d/dt(tumor_vol) <- kg * tumor_vol - ks * tumor_vol
+    d/dt(tumor_vol) <- p * tumor_vol - ks * tumor_vol
     tumor_vol(0)    <- rbase_tumor                                  # mm^3
 
     # ----- 5. Observations (three independent endpoints) ----------------

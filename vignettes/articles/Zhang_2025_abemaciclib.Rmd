@@ -1,0 +1,865 @@
+---
+title: "Abemaciclib CDK4/6 occupancy and pRB / TOPO-IIa biomarker QSP (Zhang 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Abemaciclib CDK4/6 occupancy and pRB / TOPO-IIa biomarker QSP (Zhang 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Zhang_2025_abemaciclib_qsp"))$reference`
+* Article (open access, CC BY-NC-ND 4.0): <https://doi.org/10.1021/acsomega.4c09472>
+* PMC record: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11904693/>
+
+```{r load-model}
+mod <- readModelDb("Zhang_2025_abemaciclib_qsp")
+ui  <- rxode2::rxode2(mod)
+mod
+```
+
+Abemaciclib (ABE) is a CDK4/6 inhibitor used in hormone-receptor-positive,
+HER2-negative metastatic breast cancer (MBC). Zhang 2025 asks whether the
+standard 200 mg twice-daily (BID) regimen delivers enough *intracranial* target
+engagement to treat brain metastases while staying under a plasma safety
+ceiling, and it answers the question by chaining three layers: a whole-body PBPK
+model that predicts abemaciclib and metabolite concentrations in plasma and
+cerebrospinal fluid (CSF), a target-engagement layer that converts those
+concentrations into CDK4 and CDK6 occupancy, and a cell-cycle transit model that
+converts occupancy into pRB and TOPO-IIa expression.
+
+Abemaciclib is unusual among CDK4/6 inhibitors in that three of its metabolites
+-- M2, M18 and M20 -- are pharmacologically active against CDK4/6 with
+affinities comparable to (and for CDK6, better than) the parent's, and together
+they carry a large share of the circulating drug-related material. Any model
+that predicts occupancy from parent concentration alone will understate it, so
+all four analytes are carried explicitly here.
+
+# What is extracted, and what is not
+
+Zhang 2025 contains three modelling layers. The first is **not** extracted.
+
+| Layer | Content | Extracted? | Why |
+|---|---|---|---|
+| 1 | Whole-body PBPK for ABE + M2 + M18 + M20 in plasma, brain and CSF, built in PK-Sim 9.1 | **No** | A platform port. The Methods state that "system-specific parameters were predominantly sourced from the existing PK-Sim database" and that tissue distribution used PK-Sim's built-in Rodgers and Rowland method. Table 1 publishes drug-specific properties only -- no organ volumes, no blood flows, no partition-coefficient table, no GI transit model, no ODEs -- and no `.pksim5` project was deposited. The layer is not reproducible from the published sources, and filling the gaps from platform defaults would be fabrication. |
+| 2 | CDK4/6 target engagement (Eq 1), four analytes competing for a shared CDK4 pool and a shared CDK6 pool, in plasma and in CSF | **Yes** | Eq 1 is printed in full and every constant it needs (8 Kd values, `koff`, 4 `fup`, 4 `KCSF,p`, 4 MW, `CDK4/6_0`) is in main-text Table 1. |
+| 3 | pRB / TOPO-IIa cell-cycle transit biomarker chain (Eqs 4-7, framework from Tate 2014) | **Yes** | Eqs 4-7 are printed in full and `kRB`, `kTO`, `kHH`, `kel` are in Table 1. |
+
+Because layer 1 is not extracted, the four analyte concentrations that drive
+layer 2 are **supplied by the user** as the canonical time-varying covariates
+`CP_ABE_NGML`, `CP_M2_NGML`, `CP_M18_NGML` and `CP_M20_NGML`. This mirrors the
+authors' own design, in which the PBPK hands concentrations to the
+target-engagement equations, and follows the `Liang_2024_osimertinib_qsp`
+precedent. The covariates carry **total** plasma concentrations; the
+albumin-scaled fraction unbound and the CSF-to-plasma partition are applied
+inside `model()`.
+
+# Population
+
+```{r population}
+pop <- ui$population
+str(pop)
+```
+
+The model is a deterministic mechanism model. Zhang 2025 propagated variability
+through PK-Sim virtual-population physiology rather than estimating
+between-subject variance or a residual-error model for these two layers, so the
+extracted file carries no etas and no error model. Every parameter is wrapped in
+`fixed()`.
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source location. The
+table below collects them.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Eq 1 target engagement `d/dt(complex) = koff/Kd * CDK_free * C_free - koff * complex` | n/a | Methods 2.1, Eq 1 (p. 9247), after Wong 2019 (ref 38) |
+| Eq 2 albumin scaling of `fup` | n/a | Methods 2.1, Eq 2 (p. 9248), after Alsmadi 2021 (ref 30) |
+| Eqs 4-6 cell-cycle transit chain | n/a | Methods 2.2, Eqs 4-6 (p. 9248), framework from Tate 2014 (ref 37) |
+| Eq 7 `kin = pRB0 * (kpRB + kel)` | n/a | Methods 2.2, Eq 7 (p. 9248) |
+| `mw_abe` / `mw_m2` / `mw_m18` / `mw_m20` | 506.6 / 478.5 / 494.5 / 522.6 g/mol | Table 1, physicochemical block, MW row |
+| `fup_abe` / `fup_m2` / `fup_m18` / `fup_m20` | 0.039 / 0.093 / 0.046 / 0.030 | Table 1, physicochemical block, `f_up` row |
+| `alb_ref` | 31 g/L (3.1 g/dL) | Table 1, physiological block, albumin row; Methods 2.1 |
+| `kcsf_abe` / `kcsf_m2` / `kcsf_m18` / `kcsf_m20` | 0.68 / 0.14 / 1.0 / 0.91 | Table 1, `K_CSF,P` row; Methods 2.1 (M18 assumed 1.0, no data) |
+| `kd4_*` (CDK4) | 0.6 / 1.2 / 1.2 / 1.5 nmol/L | Table 1, "Kd (nM) for CDK4/6" row, first of each pair |
+| `kd6_*` (CDK6) | 8.2 / 1.3 / 2.7 / 1.9 nmol/L | Table 1, "Kd (nM) for CDK4/6" row, second of each pair |
+| `koff` | 6.0 /h (published 0.10 /min) | Table 1, `koff` row |
+| `cdk0` | 100 nmol/L (published 0.1 uM) | Methods 2.1, "The starting expression of CDK4/6 (CDK4/6_0) was set at default 0.1 uM" |
+| `krb` / `kto` / `khh` / `kel_pc` | 0.16 / 0.14 / 0.21 / 0.05 /h | Table 1, biomarker block |
+| `prb0` | 1 (scale factor) | Eq 7; no numeric value published -- see "Assumptions and deviations" |
+
+## Units table (dimensional analysis)
+
+Mechanistic models are where unit slips hide, so every term is checked
+explicitly. The model's declared time base is hours and its concentration base
+is nmol/L.
+
+| Symbol | Units | Check |
+|---|---|---|
+| `CP_*_NGML` | ng/mL | covariate input, total concentration |
+| `fu_*` | unitless | `1 / (1 + B * ALB)`, `B` in L/g, `ALB` in g/L |
+| `cf_*` | nmol/L | `ng/mL * (1) / (g/mol) * 1000` = `(1e-9 g / 1e-3 L) / (g/mol) * 1000` = `nmol/L` |
+| `ccsf_*` | nmol/L | unitless ratio x nmol/L |
+| `cdk0`, `free_cdk*`, `complex_*` | nmol/L | pool declared as a concentration, not an amount |
+| `koff` | 1/h | Table 1 value 0.10 /min x 60 = 6.0 /h |
+| `kd4_*`, `kd6_*` | nmol/L | Table 1 reports nM |
+| `koff / kd * free_cdk * cf` | `(1/h) / (nmol/L) * (nmol/L) * (nmol/L)` = nmol/L/h | matches `d/dt(complex)` |
+| `koff * complex` | `(1/h) * (nmol/L)` = nmol/L/h | matches |
+| `occ*` | percent | `100 * (cdk0 - free) / cdk0`, nmol/L cancels |
+| `co` | unitless fraction | `occ / 100` |
+| `krb`, `kto`, `khh`, `kel_pc` | 1/h | Table 1; `kel` is printed without units but must be 1/h because Eq 7 adds it to `kpRB` |
+| `kin` | 1/h | `prb0` (unitless) x (1/h) |
+| `precursor`, `prb`, `topo2a` | fraction of untreated baseline | `kin - kel*PC - krb*PC*(1-CO)`: (1/h) throughout, matches `d/dt(state)` |
+
+`koff` and `cdk0` are the only two values that required a unit conversion from
+the published form (min to h, and uM to nmol/L). Both conversions are recorded
+in the `ini()` comments.
+
+## Parameter table: paper vs. model file
+
+```{r param-table}
+theta_tab <- ui$iniDf |>
+  dplyr::filter(!is.na(.data$ntheta)) |>
+  dplyr::transmute(
+    Parameter = .data$name,
+    Value     = .data$est,
+    Fixed     = .data$fix,
+    Label     = .data$label
+  )
+
+knitr::kable(
+  theta_tab,
+  digits  = 4,
+  caption = sprintf("All %d parameters, every one fixed to a published value.",
+                    nrow(theta_tab))
+)
+```
+
+```{r param-check}
+# Every parameter must be fixed: this is a deterministic mechanism model.
+stopifnot(all(ui$iniDf$fix[!is.na(ui$iniDf$ntheta)]))
+# And there must be no random effects at all.
+stopifnot(all(is.na(ui$iniDf$neta1)))
+cat("All", sum(!is.na(ui$iniDf$ntheta)), "parameters fixed; 0 random effects.\n")
+```
+
+# Building the analyte exposure drivers
+
+The un-extracted PBPK layer is what would normally supply `CP_*_NGML`. To
+validate the extracted layers we reconstruct the drivers from published numbers
+only:
+
+1. **Parent concentration** comes from Zhang 2025 Table 2, *predicted* column,
+   the Patnaik 2016 repeated-dose regimens at steady state.
+2. **Metabolite concentrations** come from the mass split stated in the
+   Introduction (citing the FDA multidiscipline review, ref 14): M2, M18 and
+   M20 contribute 13%, 5% and 26% of total plasma mass in vivo, leaving 56% for
+   the parent. Each metabolite is therefore `CP_ABE_NGML * pct / 56`. Because
+   the split is by *mass* and the covariates are in ng/mL, no molar conversion
+   is needed at this step; the model converts each analyte to nmol/L with its
+   own molecular weight.
+
+This reconstruction is an approximation and is the largest source of uncertainty
+in everything below -- see "Assumptions and deviations".
+
+```{r drivers}
+# Zhang 2025 Table 2, predicted column (Patnaik 2016 regimens, steady state).
+regimens <- tibble::tribble(
+  ~regimen,       ~cmin_abe, ~cmax_abe,
+  "100 mg BID",   144,       198,
+  "150 mg BID",   174,       250,
+  "200 mg BID",   231,       333
+)
+
+# Introduction (ref 14): M2 13%, M18 5%, M20 26% of total plasma mass;
+# the parent therefore carries the remaining 56%.
+mass_pct    <- c(abe = 56, m2 = 13, m18 = 5, m20 = 26)
+stopifnot(sum(mass_pct) == 100)
+metab_ratio <- mass_pct[c("m2", "m18", "m20")] / mass_pct[["abe"]]
+
+add_metabolites <- function(d, abe_col) {
+  d |>
+    dplyr::mutate(
+      CP_ABE_NGML = .data[[abe_col]],
+      CP_M2_NGML  = .data[[abe_col]] * metab_ratio[["m2"]],
+      CP_M18_NGML = .data[[abe_col]] * metab_ratio[["m18"]],
+      CP_M20_NGML = .data[[abe_col]] * metab_ratio[["m20"]]
+    )
+}
+
+knitr::kable(
+  regimens |>
+    add_metabolites("cmin_abe") |>
+    dplyr::select(regimen, CP_ABE_NGML, CP_M2_NGML, CP_M18_NGML, CP_M20_NGML) |>
+    dplyr::rename(
+      "Regimen"      = regimen,
+      "ABE (ng/mL)"  = CP_ABE_NGML,
+      "M2 (ng/mL)"   = CP_M2_NGML,
+      "M18 (ng/mL)"  = CP_M18_NGML,
+      "M20 (ng/mL)"  = CP_M20_NGML
+    ),
+  digits  = 1,
+  caption = "Reconstructed steady-state trough concentrations of the four active analytes."
+)
+```
+
+```{r sim-helper}
+# The reference albumin: Table 1 gives 3.1 g/dL in patients = 31 g/L, and the
+# Table 1 fup values are the patient values, so ALB = 31 recovers them exactly.
+ALB_PATIENT <- 31
+
+# Build an observation-only event table. There are no dosing events in the
+# extracted layers -- the drug enters entirely through the covariates. `cmt`
+# points at a real ODE state (`prb`), never at an algebraic observable.
+make_events <- function(conc, times, alb = ALB_PATIENT, id = 1L) {
+  tidyr::expand_grid(id = id, time = times) |>
+    dplyr::mutate(
+      evid        = 0L,
+      amt         = 0,
+      cmt         = "prb",
+      ALB         = alb,
+      CP_ABE_NGML = conc[["abe"]],
+      CP_M2_NGML  = conc[["m2"]],
+      CP_M18_NGML = conc[["m18"]],
+      CP_M20_NGML = conc[["m20"]]
+    )
+}
+
+conc_at_trough <- function(cmin_abe) {
+  c(abe = cmin_abe,
+    m2  = cmin_abe * metab_ratio[["m2"]],
+    m18 = cmin_abe * metab_ratio[["m18"]],
+    m20 = cmin_abe * metab_ratio[["m20"]])
+}
+```
+
+# Validation
+
+The extracted layers have no dose, no absorption phase and no elimination
+profile, so NCA is not the right check. Instead we use the four patterns for
+mechanistic models: a baseline hold, a mass-balance check, an analytic
+steady-state comparison, and a perturbation-recovery (washout) run.
+
+## 1. Baseline hold (zero exposure)
+
+With all four analyte concentrations set to zero, every occupancy must be
+exactly 0 and both biomarkers must sit at exactly 100% of the untreated
+baseline, indefinitely. This is the check that the analytic initial conditions
+written into `model()` really are the drug-free steady state of Eqs 4-6.
+
+```{r baseline-hold}
+ev_zero  <- make_events(c(abe = 0, m2 = 0, m18 = 0, m20 = 0), seq(0, 336, by = 4))
+sim_zero <- rxode2::rxSolve(mod, ev_zero) |> as.data.frame()
+
+baseline_summary <- sim_zero |>
+  dplyr::summarise(
+    dplyr::across(
+      c(occCdk4Plasma, occCdk6Plasma, occCdk4Csf, occCdk6Csf, prbPct, topoPct),
+      list(min = min, max = max)
+    )
+  )
+str(as.list(baseline_summary))
+
+stopifnot(
+  max(abs(sim_zero$occCdk4Plasma)) < 1e-8,
+  max(abs(sim_zero$occCdk6Plasma)) < 1e-8,
+  max(abs(sim_zero$occCdk4Csf))    < 1e-8,
+  max(abs(sim_zero$occCdk6Csf))    < 1e-8,
+  max(abs(sim_zero$prbPct  - 100)) < 1e-6,
+  max(abs(sim_zero$topoPct - 100)) < 1e-6
+)
+cat("Baseline holds to <1e-6 % over 14 days.\n")
+```
+
+## 2. Mass balance: each CDK pool is conserved
+
+Free CDK plus every bound complex must equal `cdk0` = 100 nmol/L at all times,
+in all four pools. This is the check that the shared-pool competitive structure
+is wired correctly -- if any analyte were given its own private pool, or if a
+`free_cdk` term were omitted from one of the eight association limbs, the sum
+would drift.
+
+```{r mass-balance}
+ev_200  <- make_events(conc_at_trough(231), seq(0, 336, by = 2))
+sim_200 <- rxode2::rxSolve(mod, ev_200) |> as.data.frame()
+
+cdk0 <- ui$iniDf$est[ui$iniDf$name == "cdk0"]
+
+mb <- sim_200 |>
+  dplyr::summarise(
+    dplyr::across(
+      c(totalCdk4Plasma, totalCdk6Plasma, totalCdk4Csf, totalCdk6Csf),
+      ~ max(abs(.x - cdk0))
+    )
+  )
+knitr::kable(mb, digits = 12,
+             caption = "Maximum absolute deviation of each pool total from 100 nmol/L.")
+
+stopifnot(all(unlist(mb) < 1e-6))
+cat("All four CDK pools conserved to <1e-6 nmol/L.\n")
+```
+
+## 3. Analytic steady state of the competitive-binding layer
+
+Because the analyte concentrations are external covariates rather than depleted
+species, Eq 1's equilibrium has an exact closed form. Setting
+`d/dt(complex_i) = 0` gives `complex_i = free_cdk * C_i / Kd_i`, and summing
+over the four analytes with `free_cdk = cdk0 - sum(complex)` yields
+
+$$\text{occupancy} = \frac{S}{1 + S}, \qquad S = \sum_i \frac{C_{\text{free},i}}{K_{d,i}}$$
+
+which is a multi-ligand Langmuir isotherm. The simulated occupancy must match it
+to solver precision.
+
+```{r analytic-occupancy}
+th <- setNames(ui$iniDf$est, ui$iniDf$name)
+
+# Eq 2 rearranged: fup(ALB) = 1 / (1 + B * ALB) with B = (1/fup_ref - 1)/alb_ref.
+fu_at <- function(fup_ref, alb) 1 / (1 + (1 / fup_ref - 1) / th[["alb_ref"]] * alb)
+
+analytic_occupancy <- function(conc, alb = ALB_PATIENT) {
+  an  <- c("abe", "m2", "m18", "m20")
+  fu  <- vapply(an, function(a) fu_at(th[[paste0("fup_", a)]], alb), numeric(1))
+  mw  <- vapply(an, function(a) th[[paste0("mw_", a)]], numeric(1))
+  kc  <- vapply(an, function(a) th[[paste0("kcsf_", a)]], numeric(1))
+  cf  <- conc[an] * fu / mw * 1000          # free plasma, nmol/L
+  ccs <- kc * cf                            # free CSF, nmol/L
+  iso <- function(cc, kd) {
+    s <- sum(cc / kd)
+    100 * s / (1 + s)
+  }
+  kd4 <- vapply(an, function(a) th[[paste0("kd4_", a)]], numeric(1))
+  kd6 <- vapply(an, function(a) th[[paste0("kd6_", a)]], numeric(1))
+  c(occCdk4Plasma = iso(cf,  kd4), occCdk6Plasma = iso(cf,  kd6),
+    occCdk4Csf    = iso(ccs, kd4), occCdk6Csf    = iso(ccs, kd6))
+}
+
+# Compare the analytic isotherm against the ODE plateau at 200 mg BID trough.
+ode_plateau <- sim_200 |>
+  dplyr::filter(time == max(time)) |>
+  dplyr::select(occCdk4Plasma, occCdk6Plasma, occCdk4Csf, occCdk6Csf) |>
+  unlist()
+ana <- analytic_occupancy(conc_at_trough(231))
+
+knitr::kable(
+  tibble::tibble(
+    Trace      = names(ana),
+    `Analytic (%)` = as.numeric(ana),
+    `ODE (%)`      = as.numeric(ode_plateau[names(ana)]),
+    `Difference`   = as.numeric(ode_plateau[names(ana)] - ana)
+  ),
+  digits  = 8,
+  caption = "Multi-ligand Langmuir isotherm vs. the solved ODE, 200 mg BID trough."
+)
+
+stopifnot(max(abs(ode_plateau[names(ana)] - ana)) < 1e-6)
+cat("ODE reproduces the analytic isotherm to <1e-6 percentage points.\n")
+```
+
+The biomarker chain has an exact closed form too. At constant `CO`, setting
+Eqs 4-6 to zero gives `PC = kin / (kel + kpRB(1-CO))` and
+
+$$\frac{pRB}{pRB_{\text{baseline}}} = \frac{TOPO}{TOPO_{\text{baseline}}}
+  = \frac{(1-CO)(k_{el} + k_{pRB})}{k_{el} + k_{pRB}(1-CO)}$$
+
+Two things follow that the paper's own Figure 3 can check: the pRB and TOPO-IIa
+plateaus must **coincide**, and each is a specific function of `CO`.
+
+```{r analytic-biomarker}
+biomarker_plateau <- function(co) {
+  100 * (1 - co) * (th[["kel_pc"]] + th[["krb"]]) /
+    (th[["kel_pc"]] + th[["krb"]] * (1 - co))
+}
+
+co_200  <- ana[["occCdk6Csf"]] / 100          # the model's CO driver: CSF CDK6
+sim_end <- sim_200 |> dplyr::filter(time == max(time))
+
+knitr::kable(
+  tibble::tibble(
+    Quantity   = c("pRB (% baseline)", "TOPO-IIa (% baseline)", "Analytic plateau (%)"),
+    Value      = c(sim_end$prbPct, sim_end$topoPct, biomarker_plateau(co_200))
+  ),
+  digits  = 6,
+  caption = "Biomarker plateau: simulated vs. closed form, 200 mg BID trough."
+)
+
+stopifnot(
+  abs(sim_end$prbPct  - biomarker_plateau(co_200)) < 1e-4,
+  abs(sim_end$topoPct - biomarker_plateau(co_200)) < 1e-4,
+  abs(sim_end$prbPct  - sim_end$topoPct)           < 1e-4
+)
+cat("pRB and TOPO-IIa plateaus coincide and match the closed form.\n")
+```
+
+The coinciding-plateaus prediction is confirmed by the paper: Zhang 2025 Figure
+3 shows pRB and TOPO-IIa settling at effectively the same percentage of baseline
+at both dose levels (roughly 36% and 35-36% at 150 mg BID; roughly 28-30% and
+28-29% at 200 mg BID). That is a structural check on the ODE transcription that
+does not depend on the reconstructed exposure at all.
+
+## 4. Perturbation recovery (washout)
+
+Dose to steady state, then withdraw the drug. Occupancy must collapse on the
+`koff` timescale and both biomarkers must return to exactly 100% of baseline.
+
+```{r washout}
+t_stop  <- 336
+times_w <- c(seq(0, t_stop, by = 2), seq(t_stop + 0.25, t_stop + 336, by = 0.25))
+conc200 <- conc_at_trough(231)
+
+ev_wash <- make_events(conc200, times_w) |>
+  dplyr::mutate(
+    dplyr::across(
+      c(CP_ABE_NGML, CP_M2_NGML, CP_M18_NGML, CP_M20_NGML),
+      ~ ifelse(time > t_stop, 0, .x)
+    )
+  )
+
+sim_wash <- rxode2::rxSolve(mod, ev_wash, covsInterpolation = "locf") |>
+  as.data.frame()
+
+final <- sim_wash |> dplyr::filter(time == max(time))
+cat(sprintf("After 14 days of washout: CSF CDK6 occupancy = %.3g %%, pRB = %.4f %%, TOPO-IIa = %.4f %%\n",
+            final$occCdk6Csf, final$prbPct, final$topoPct))
+
+stopifnot(
+  final$occCdk6Csf     < 1e-8,
+  abs(final$prbPct  - 100) < 1e-3,
+  abs(final$topoPct - 100) < 1e-3
+)
+```
+
+```{r washout-figure}
+sim_wash |>
+  dplyr::select(time, `CSF CDK6 occupancy` = occCdk6Csf,
+                `pRB` = prbPct, `TOPO-IIa` = topoPct) |>
+  tidyr::pivot_longer(-time, names_to = "quantity", values_to = "value") |>
+  ggplot(aes(time / 24, value)) +
+  geom_vline(xintercept = t_stop / 24, linetype = "dashed", colour = "grey40") +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~quantity, scales = "free_y") +
+  labs(x = "Time (days)", y = "% ",
+       title = "Perturbation recovery: 14 days at 200 mg BID trough, then washout",
+       caption = "Dashed line marks drug withdrawal. Both biomarkers return to 100% of baseline.")
+```
+
+Occupancy relaxes with a half-life of `log(2)/koff`, a few minutes, while the
+biomarkers relax on the much slower cell-cycle timescale set by `kel`, `kRB`,
+`kTO` and `kHH`. The separation of timescales is what makes the constant-`CO`
+approximation used below reasonable.
+
+# Replicating the paper's occupancy results
+
+## Occupancy across the published regimens (Figure 5)
+
+Zhang 2025 Figure 5 plots CDK4 and CDK6 occupancy in CSF (panels A, B, C, E, G)
+and in plasma (panels D, F) across dosing regimens. The paper's efficacy
+criterion is a **trough** occupancy of at least 90% (Methods 2.6), so the
+comparison below is made at the published trough concentrations.
+
+```{r figure-5-table}
+occ_by_regimen <- regimens |>
+  dplyr::rowwise() |>
+  dplyr::mutate(tibble::as_tibble_row(analytic_occupancy(conc_at_trough(cmin_abe)))) |>
+  dplyr::ungroup()
+
+occ_by_regimen |>
+  dplyr::select(regimen, occCdk4Plasma, occCdk6Plasma, occCdk4Csf, occCdk6Csf) |>
+  dplyr::rename(
+    "Regimen"          = regimen,
+    "Plasma CDK4 (%)"  = occCdk4Plasma,
+    "Plasma CDK6 (%)"  = occCdk6Plasma,
+    "CSF CDK4 (%)"     = occCdk4Csf,
+    "CSF CDK6 (%)"     = occCdk6Csf
+  ) |>
+  knitr::kable(digits = 1,
+               caption = "Trough CDK occupancy reconstructed from Table 2 predicted Cmin.")
+```
+
+The paper makes two quantitative claims in words that this table can be scored
+against directly, without digitising a figure.
+
+```{r section-3-6-claims}
+row_at <- function(reg) {
+  r <- occ_by_regimen[occ_by_regimen$regimen == reg, ]
+  if (nrow(r) != 1L) stop("no unique row for regimen '", reg, "'")
+  r
+}
+
+r150 <- row_at("150 mg BID")
+r200 <- row_at("200 mg BID")
+
+claims <- tibble::tribble(
+  ~`Paper claim (Section 3.6)`,                         ~`Model`,              ~Met,
+  "150 mg BID: CSF CDK4 occupancy exceeds 90%",         r150$occCdk4Csf,       r150$occCdk4Csf > 90,
+  "150 mg BID: CSF CDK6 occupancy exceeds 80%",         r150$occCdk6Csf,       r150$occCdk6Csf > 80,
+  "200 mg BID: plasma CDK4 occupancy exceeds 90%",      r200$occCdk4Plasma,    r200$occCdk4Plasma > 90,
+  "200 mg BID: plasma CDK6 occupancy exceeds 90%",      r200$occCdk6Plasma,    r200$occCdk6Plasma > 90,
+  "200 mg BID: CSF CDK4 occupancy exceeds 90%",         r200$occCdk4Csf,       r200$occCdk4Csf > 90,
+  "200 mg BID: CSF CDK6 occupancy exceeds 90%",         r200$occCdk6Csf,       r200$occCdk6Csf > 90
+)
+
+claims |>
+  dplyr::mutate(Model = round(Model, 1),
+                Met   = ifelse(Met, "yes", "NO")) |>
+  dplyr::rename("Model (%)" = Model, "Reproduced" = Met) |>
+  knitr::kable(caption = "The paper's own prose claims, scored against the reconstruction.")
+```
+
+Five of the six claims are reproduced. The one that is not -- CSF CDK6 at
+200 mg BID, where the model returns about 86% against the paper's "above 90%" --
+is examined quantitatively under "Assumptions and deviations" below, where the
+shortfall is split between the reconstructed exposure drivers and the fixed
+CSF-to-plasma partition ratio.
+
+```{r figure-5-plot}
+occ_by_regimen |>
+  dplyr::select(regimen, occCdk4Plasma, occCdk6Plasma, occCdk4Csf, occCdk6Csf) |>
+  tidyr::pivot_longer(-regimen, names_to = "trace", values_to = "occupancy") |>
+  dplyr::mutate(
+    matrix  = ifelse(grepl("Csf", trace), "CSF", "Plasma"),
+    isoform = ifelse(grepl("Cdk4", trace), "CDK4", "CDK6")
+  ) |>
+  ggplot(aes(regimen, occupancy, fill = isoform)) +
+  geom_col(position = position_dodge(width = 0.8), width = 0.7) +
+  geom_hline(yintercept = 90, linetype = "dashed", colour = "grey30") +
+  facet_wrap(~matrix) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = NULL, y = "Trough CDK occupancy (%)", fill = NULL,
+       title = "Trough CDK4 / CDK6 occupancy by regimen",
+       caption = paste("Compare Figure 5 of Zhang 2025 (CSF: panels C, E, G; plasma: panels D, F).",
+                       "Dashed line is the paper's 90% efficacy threshold (Methods 2.6)."))
+```
+
+## Biomarker time course (Figure 3)
+
+Zhang 2025 Figure 3 shows pRB (panels A, B) and TOPO-IIa (panels C, D)
+expression at steady state under 150 and 200 mg BID. Section 3.3 notes that
+"the changes in pRB and TOPO-IIa are similar at predose and postdose,
+indicating sustained PD effects over the 12 h dosing interval", which is what
+licenses driving the biomarker layer with a constant trough `CO` here.
+
+```{r figure-3}
+biomarker_sim <- function(cmin_abe, label) {
+  ev <- make_events(conc_at_trough(cmin_abe), seq(0, 336, by = 2))
+  rxode2::rxSolve(mod, ev) |>
+    as.data.frame() |>
+    dplyr::mutate(regimen = label)
+}
+
+bio <- dplyr::bind_rows(
+  biomarker_sim(174, "150 mg BID"),
+  biomarker_sim(231, "200 mg BID")
+)
+
+bio |>
+  dplyr::select(time, regimen, `pRB` = prbPct, `TOPO-IIa` = topoPct) |>
+  tidyr::pivot_longer(c(`pRB`, `TOPO-IIa`), names_to = "biomarker", values_to = "pct") |>
+  ggplot(aes(time / 24, pct, colour = regimen)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~biomarker) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Time (days)", y = "% of untreated baseline", colour = NULL,
+       title = "pRB and TOPO-IIa expression under continuous BID dosing",
+       caption = "Replicates Figure 3 of Zhang 2025 (A, B = pRB; C, D = TOPO-IIa).")
+```
+
+```{r figure-3-compare}
+# Zhang 2025 Figure 3, predicted (red) plateau, read off the published panels.
+published_bio <- tibble::tribble(
+  ~regimen,     ~prb_paper, ~topo_paper,
+  "150 mg BID", 36,         35.5,
+  "200 mg BID", 29,         28.5
+)
+
+bio_plateau <- bio |>
+  dplyr::filter(time == max(time), .by = regimen) |>
+  dplyr::select(regimen, prb_model = prbPct, topo_model = topoPct)
+
+dplyr::left_join(bio_plateau, published_bio, by = "regimen") |>
+  dplyr::transmute(
+    "Regimen"                = regimen,
+    "pRB model (%)"          = round(prb_model, 1),
+    "pRB Figure 3 (%)"       = prb_paper,
+    "TOPO-IIa model (%)"     = round(topo_model, 1),
+    "TOPO-IIa Figure 3 (%)"  = topo_paper
+  ) |>
+  knitr::kable(caption = "Biomarker plateaus: model vs. Zhang 2025 Figure 3.")
+```
+
+```{r figure-3-gap, include = FALSE}
+bio_gap <- dplyr::left_join(bio_plateau, published_bio, by = "regimen") |>
+  dplyr::mutate(gap = prb_model - prb_paper)
+```
+
+The model under-predicts the inhibition at both dose levels, by about
+`r sprintf("%.0f", mean(bio_gap$gap))` percentage points of baseline. This is the CSF-occupancy deviation propagating
+downstream, not an independent discrepancy: `CO` is the CSF CDK6 occupancy, that
+occupancy is under-predicted, and `(1 - CO)` amplifies the shortfall. The
+quantitative chain is set out below.
+
+## Albumin sensitivity (Figure 4H-J)
+
+Albumin is the covariate the paper singles out: it scales the fraction unbound
+of all four analytes through Eq 2, and Section 3.5 reports that raising albumin
+to 6.0 g/dL drops CSF occupancy below the 90% efficacy threshold. In the source
+paper albumin acts on the PBPK layer as well; here only the binding limb is
+reproduced, so the sensitivity shown is the binding component alone.
+
+```{r albumin-sweep}
+alb_grid <- seq(10, 60, by = 1)   # 1.0-6.0 g/dL, the Methods 2.5 sweep range
+
+alb_sweep <- tibble::tibble(ALB = alb_grid) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(tibble::as_tibble_row(analytic_occupancy(conc_at_trough(231), alb = ALB))) |>
+  dplyr::ungroup()
+
+# The model must reproduce the Table 1 fup values exactly at the patient albumin.
+fu_check <- vapply(c("abe", "m2", "m18", "m20"),
+                   function(a) fu_at(th[[paste0("fup_", a)]], ALB_PATIENT), numeric(1))
+published_fup <- c(abe = 0.039, m2 = 0.093, m18 = 0.046, m20 = 0.030)
+stopifnot(max(abs(fu_check - published_fup)) < 1e-12)
+cat("Eq 2 reproduces the Table 1 fup values exactly at ALB = 31 g/L.\n")
+
+alb_sweep |>
+  tidyr::pivot_longer(-ALB, names_to = "trace", values_to = "occupancy") |>
+  dplyr::mutate(
+    matrix  = ifelse(grepl("Csf", trace), "CSF", "Plasma"),
+    isoform = ifelse(grepl("Cdk4", trace), "CDK4", "CDK6")
+  ) |>
+  ggplot(aes(ALB / 10, occupancy, colour = isoform)) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = 90, linetype = "dashed", colour = "grey30") +
+  geom_vline(xintercept = 3.1, linetype = "dotted", colour = "grey30") +
+  facet_wrap(~matrix) +
+  labs(x = "Plasma albumin (g/dL)", y = "Trough CDK occupancy (%)", colour = NULL,
+       title = "Albumin sensitivity at the 200 mg BID trough",
+       caption = paste("Compare Figure 4H-J of Zhang 2025. Dotted line is the patient mean",
+                       "(3.1 g/dL); dashed line is the 90% efficacy threshold."))
+```
+
+```{r albumin-direction}
+# The paper's qualitative claim: higher albumin -> lower unbound -> lower occupancy.
+# Assert monotone decrease rather than a single rank comparison.
+stopifnot(all(diff(alb_sweep$occCdk6Csf)    < 0))
+stopifnot(all(diff(alb_sweep$occCdk4Csf)    < 0))
+stopifnot(all(diff(alb_sweep$occCdk6Plasma) < 0))
+stopifnot(all(diff(alb_sweep$occCdk4Plasma) < 0))
+cat(sprintf(
+  "CSF CDK6 occupancy falls monotonically from %.1f%% at 1.0 g/dL to %.1f%% at 6.0 g/dL.\n",
+  alb_sweep$occCdk6Csf[alb_sweep$ALB == 10],
+  alb_sweep$occCdk6Csf[alb_sweep$ALB == 60]
+))
+```
+
+# Assumptions and deviations
+
+## Which occupancy drives `CO`? (resolved by reproduction, not preference)
+
+Zhang 2025 defines the biomarker driver in one sentence after Eq 6 -- "CO is the
+CDK occupancy fraction" -- and never says which of the four occupancy traces it
+computes is meant. Figure 4's legend is literally "Plasma CDK4 / Plasma CDK6 /
+CSF CDK4 / CSF CDK6" and every Figure 5 panel plots the isoforms separately, so
+the phrase is under-determined by a factor of four. The choice matters: `CO`
+enters as `(1 - CO)`, so near saturation a four-point change in `CO` nearly
+halves the predicted biomarker response.
+
+The extracted model uses **CSF CDK6 occupancy**. The evidence:
+
+```{r co-identification}
+co_candidates <- tibble::tibble(
+  Trace = c("Plasma CDK4", "Plasma CDK6", "CSF CDK4", "CSF CDK6 (selected)"),
+  `150 mg BID (%)` = round(c(r150$occCdk4Plasma, r150$occCdk6Plasma,
+                             r150$occCdk4Csf,    r150$occCdk6Csf), 1),
+  `200 mg BID (%)` = round(c(r200$occCdk4Plasma, r200$occCdk6Plasma,
+                             r200$occCdk4Csf,    r200$occCdk6Csf), 1)
+)
+
+# Back-solve the CO the authors actually used, by inverting the biomarker
+# plateau formula on Zhang 2025 Figure 3's predicted plateaus.
+co_from_plateau <- function(pct) {
+  y <- pct / 100
+  k <- th[["kel_pc"]]; r <- th[["krb"]]
+  # y = (1-co)(k+r) / (k + r(1-co))  ->  solve for co
+  u <- y * k / ((k + r) - y * r)     # u = 1 - co
+  1 - u
+}
+
+back_solved <- c(`150 mg BID` = co_from_plateau(36), `200 mg BID` = co_from_plateau(29))
+cat(sprintf("CO back-solved from Zhang 2025 Figure 3: %.1f%% at 150 mg BID, %.1f%% at 200 mg BID.\n",
+            100 * back_solved[["150 mg BID"]], 100 * back_solved[["200 mg BID"]]))
+
+knitr::kable(co_candidates,
+             caption = "The four candidate CO traces in this reconstruction.")
+```
+
+1. **The paper's own prose is the decisive evidence, and it needs no figure
+   digitisation.** Section 3.6 states that "with 150 mg of BID of ABE, CDK4
+   occupancy exceeds 90% and CDK6 occupancy exceeds 80% (Figure 5E)", and the
+   Figure 5 caption assigns panel E to CSF. The `CO` back-solved from Figure 3's
+   150 mg BID plateau is about 88%, which sits inside the band the authors
+   describe for CSF CDK6 (above 80%, and pointedly not described as above 90%
+   the way CDK4 is) and is inconsistent with any trace the paper places above
+   90%.
+2. **The rival reading loses on arithmetic.** Reading "CDK4/6 occupancy" as one
+   pooled quantity -- defensible, since the paper writes that phrase throughout
+   and Table 1 gives Kd as a single paired "CDK4/6" row -- puts `CO` near 96%,
+   which the plateau formula maps to roughly 11-15% of baseline against Figure
+   3's ~36%. That is a visibly wrong curve, not a close call.
+3. **Site agrees with the paper's thesis.** Section 3.6 opens "Intracranial
+   CDK4/6 occupancy serves as predictors of clinical efficacy".
+
+The counter-argument, recorded so a reader can weigh it: the pRB / TOPO-IIa
+observations the biomarker layer was verified against are *skin* biopsies from
+Patnaik 2016, not brain lesions, which on biological grounds would argue for a
+plasma trace. The Discussion states this explicitly and assumes the tumour-skin
+difference is negligible.
+
+Note that the reconstruction's *own* CSF CDK6 column above
+(`r sprintf("%.1f%% / %.1f%%", r150$occCdk6Csf, r200$occCdk6Csf)`) sits below the
+back-solved
+`r sprintf("%.1f%% / %.1f%%", 100 * back_solved[["150 mg BID"]], 100 * back_solved[["200 mg BID"]])`,
+and is not itself the discriminator -- it inherits the CSF under-prediction
+described next. The identification rests on the paper's own occupancy statements,
+not on this reconstruction's numbers.
+
+This choice was ratified by the operator (task `oare_PMC11904693`, sidecar
+request-001, answer D, 2026-08-20). To explore an alternative, change the single
+`co <- occCdk6Csf / 100` line in the model file.
+
+## Deviation: CSF CDK6 occupancy falls short at 200 mg BID
+
+The extracted CSF limb applies the fixed Table 1 `KCSF,p` ratios to the free
+plasma concentration, exactly as Methods 2.1 describes. It reproduces both
+Section 3.6 claims at 150 mg BID, but returns about 86% for CSF CDK6 at
+200 mg BID where the paper states "above 90%".
+
+There are two candidate causes, and they can be told apart quantitatively.
+
+**Candidate 1: the reconstructed exposure is too low.** The drivers here come
+from Table 2's *predicted geometric mean* trough plus the 13/5/26% mass split,
+and that reconstruction is already known to sit below the paper's own quoted
+number: Section 3.6 gives a mean total-analyte plasma Cmin of 498 ng/mL at
+200 mg BID, against the reconstructed total computed in the chunk below.
+Scaling the drivers up to match closes part, but not all, of the occupancy gap.
+
+```{r deviation-exposure-test}
+recon_total_200 <- sum(conc_at_trough(231))
+paper_total_200 <- 498     # Section 3.6, "mean plasma Cmin is 498 ng/mL (total plasma analytes)"
+scale_needed    <- paper_total_200 / recon_total_200
+
+scaled <- analytic_occupancy(conc_at_trough(231) * scale_needed)
+
+cat(sprintf(
+  "Reconstructed total-analyte trough: %.0f ng/mL vs. the paper's 498 ng/mL (x%.3f).\n",
+  recon_total_200, scale_needed))
+cat(sprintf(
+  "Rescaling the drivers moves CSF CDK6 occupancy from %.1f%% to %.1f%% -- still short of 90%%.\n",
+  r200$occCdk6Csf, scaled[["occCdk6Csf"]]))
+
+# How much MORE exposure would be needed to reach exactly 90%?
+s_needed <- 0.90 / (1 - 0.90)                       # isotherm inverse: occ = S/(1+S)
+s_now    <- r200$occCdk6Csf / (100 - r200$occCdk6Csf)
+cat(sprintf("Reaching 90%% would need the CSF driver to be %.2fx the reconstructed value.\n",
+            s_needed / s_now))
+```
+
+**Candidate 2: the fixed partition ratio omits saturable efflux.** Abemaciclib
+and its metabolites are ABCB1 / ABCG2 substrates at the blood-brain barrier;
+Table 1 gives M2 and M20 efflux CLint,u values 5-8x the parent's, and Section
+3.5 reports that a 2-4 fold change in ABCB1 expression alone moves CSF occupancy
+across the 90% threshold. A *fixed* `KCSF,p` makes CSF exposure strictly
+proportional to plasma exposure, so any dose-dependent saturation of that efflux
+is invisible to the extracted layer.
+
+The two causes are not mutually exclusive, and the on-disk sources cannot
+separate them: doing so would need the PBPK layer's CSF concentration-time
+output, which is neither tabulated nor deposited. The residual gap after the
+exposure correction (about 1.7 percentage points of occupancy, or a factor of
+about 1.4 in CSF driver concentration) bounds how much Candidate 2 could be
+contributing.
+
+Consequence: CSF CDK6 occupancy at 200 mg BID is under-predicted, and because
+`CO` enters as `(1 - CO)` the shortfall is amplified into an
+approximately `r sprintf("%.0f", mean(bio_gap$gap))`-percentage-point
+under-prediction of biomarker inhibition (see the Figure 3
+comparison above). This is documented rather than tuned away; fitting `KCSF,p`
+or the mass split to recover the paper's numbers would substitute a fitted
+constant for a published one and hide the gap.
+
+## Other assumptions
+
+- **`prb0 = 1` is exact, not a guess.** Eq 7 defines `kin = pRB0 * (kpRB + kel)`
+  and says only that "pRB0 is the baseline expression in patients"; no numeric
+  value appears anywhere in the paper. Eqs 4-6 are linear in `kin`, so `PC`,
+  `pRB` and `TOPO-IIa` all scale proportionally to `pRB0`, and every quantity
+  the paper reports is a percent-of-baseline ratio (Figure 3's y-axes are
+  "Change in pRB (% of baseline)"), which is invariant to `pRB0`. Fixing it at 1
+  makes the states read directly as fractions of the untreated baseline.
+- **Shared competitive pools are confirmed, not assumed.** Methods 2.1 states
+  that the four analytes are "simulated in the same manner simultaneously, and
+  the sum of the occupancy by ABE and metabolites gave the total CDK4/6
+  occupancy". Independent per-analyte pools are ruled out arithmetically:
+  summing four independently computed occupancies exceeds 100% at the paper's
+  own reported exposures, whereas the shared-pool form is bounded by
+  construction (validation 2 above).
+- **Two pools per matrix, not one.** CDK4 and CDK6 are kept separate because the
+  paper reports them separately everywhere (Figure 4's legend, every Figure 5
+  panel, and the Section 3.6 sentence that gives different thresholds for the
+  two isoforms).
+- **`kel` units.** Table 1 prints `kel 0.05` with no unit while `kRB`, `kTO` and
+  `kHH` all carry `(h-1)`. It is taken as 1/h, which is forced by Eq 7 summing
+  `kel` with `kpRB`.
+- **Exposure drivers are reconstructed, not the paper's PBPK output.** Parent
+  concentrations are Table 2's *predicted* steady-state values; metabolite
+  concentrations come from the Introduction's 13% / 5% / 26% mass split. Two
+  caveats follow. First, the split is a whole-profile average applied at the
+  trough, whereas metabolite-to-parent ratios vary within a dosing interval.
+  Second, the reconstruction does not reproduce the paper's own summary number:
+  at 200 mg BID it gives a total four-analyte trough of
+  `r sprintf("%.0f", recon_total_200)` ng/mL, against the 498 ng/mL "mean plasma
+  Cmin of total analytes" quoted in Section 3.6 -- a
+  `r sprintf("%.0f%%", 100 * (1 - recon_total_200 / 498))` gap, consistent with
+  Table 2 reporting geometric means while Section 3.6 quotes an arithmetic mean
+  over a population with 44% CV. Users with a real abemaciclib PBPK or popPK
+  model should supply `CP_*_NGML` from it rather than from this reconstruction.
+- **Constant-`CO` biomarker driver.** The Figure 3 replication holds the analyte
+  concentrations at the published trough rather than cycling them over the 12 h
+  interval. Section 3.3 licenses this directly: "the changes in pRB and TOPO-IIa
+  are similar at predose and postdose, indicating sustained PD effects over the
+  12 h dosing interval". The separation of timescales shown in validation 4
+  (occupancy relaxes in minutes, biomarkers over days) is the mechanistic reason.
+- **Supporting Information not obtained.** The ACS Supporting Information PDF
+  (Table S1, predicted vs. observed single-dose plasma PK in healthy volunteers;
+  Tables S2-S3, sensitivity coefficients) could not be retrieved -- EuropePMC's
+  supplementary-files endpoint returns HTTP 500, the NCBI OA package href 404s
+  over HTTPS, the PMC `/bin/` route 404s, and the publisher route is behind the
+  ACS Cloudflare gate. It is not a blocker: every model parameter is in
+  main-text Table 1, and S1-S3 are validation and sensitivity *output*. Had S1
+  been available it would have supplied measured metabolite exposure ratios in
+  place of the 13% / 5% / 26% mass split used above. Logged for operator
+  acquisition.
+- **No erratum.** A search of the ACS landing page and PubMed found no
+  correction notice for this article.
+- **What the paper concludes about these biomarkers.** The Discussion states
+  that pRB and TOPO-IIa inhibition was of similar magnitude at 150 and 200 mg
+  BID and that the two biomarkers are therefore *not* treated as predictive of
+  clinical response; the paper uses CDK4/6 occupancy above 90% as its efficacy
+  criterion instead. The biomarker layer is extracted because the authors built
+  and published it, not because it is the paper's decision variable.
