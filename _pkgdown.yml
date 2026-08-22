@@ -2454,6 +2454,8 @@ navbar:
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Piperacillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Piperacillin tazobactam (Kong 2025)"
+        href: articles/Kong_2025_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Wenker 2024)"
         href: articles/Wenker_2024_piperacillin_tazobactam.html
       - text: "Piperaquine (Hoglund 2012)"
@@ -4287,7 +4289,7 @@ articles:
   - articles/Kohl_2010_posaconazole
   - articles/Kollo_2026_selumetinib
   - articles/Koloskoff_2025_ganciclovir
-  - articles/Kong_2025_sudapyridine
+  - articles/Kong_2025_piperacillin_tazobactam
   - articles/Koo_2012_propofol
   - articles/Koolen_2010_docetaxel
   - articles/Koopman_2023_factorix
