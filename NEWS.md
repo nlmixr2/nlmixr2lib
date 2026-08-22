@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Song 2025 infliximab ([doi:10.5009/gnl240503](https://doi.org/10.5009/gnl240503)) -- Korean adults with inflammatory bowel disease on maintenance intravenous or subcutaneous therapy.
+- Add Wickramasinghe 2025 abemaciclib ([doi:10.1002/psp4.70026](https://doi.org/10.1002/psp4.70026)) -- 9-compartment spatial CNS and brain-tumor PBPK model in adults with glioblastoma.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

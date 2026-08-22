@@ -4281,9 +4281,51 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Source aliases:** `PV`, `pv`.
 - **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`.
 
-### cycloguanil (**canonical cycloguanil active metabolite suffix**)
-- **Type:** metabolite-suffix
-- **Role:** Cycloguanil, the active triazine antifolate metabolite formed from the biguanide prodrug proguanil by CYP2C19-mediated oxidative cyclisation in the hepatocyte. It is the species responsible for proguanil's dihydrofolate-reductase-inhibiting antimalarial activity, so a joint proguanil model carries it as the pharmacologically relevant output rather than as a disposal route. Assayed in the same ug/L range as the parent (cycloguanil Cmax is roughly a third of proguanil Cmax), and the cycloguanil-to-proguanil AUC ratio is the reported "metabolic ratio" used as a CYP2C19 / OCT1 activity readout.
-- **Source aliases:** none.
-- **Example models:** `Khwarg_2024_proguanil.R` (`liver_cycloguanil`, `transit1_cycloguanil`, `transit2_cycloguanil`, `central_cycloguanil`, `Cc_cycloguanil`, `lcl_cycloguanil`, `lktr_cycloguanil`, `propSd_cycloguanil`, `addSd_cycloguanil`; a semi-physiologic well-stirred-liver joint parent-metabolite model in which cycloguanil is formed inside the liver compartment and effluxes to systemic plasma through two transit compartments; doi:10.1111/cts.70103).
-- **Notes:** The metabolite is formed in a `liver_cycloguanil` state rather than directly in `central_cycloguanil` because the founding model's formation flux is the hepatic extraction flux out of the parent's `liver` compartment; the `<canonical>_cycloguanil` suffix therefore composes with `liver` and `transit<n>` as well as with `central`. Do not use a `cyclo` abbreviation -- it is ambiguous against cyclophosphamide and cyclosporine metabolite naming.
+### brain_csf_adjacent (**canonical CSF-adjacent brain parenchyma compartment**)
+- **Type:** compartment
+- **Role:** The brain parenchyma lying within about 2 mm of the cerebrospinal-fluid tract -- the shell of brain tissue that exchanges directly with ventricular and subarachnoid CSF by ependymal diffusion and by paravascular (glymphatic) bulk flow. Registered as the explicit counterpart of `brain_deep`, which is the remaining parenchyma further than 2 mm from the CSF tract: spatial CNS PBPK models split the parenchyma this way because drug reaching the deep brain through the CSF route must first traverse this shell. Holds a total drug concentration; the unbound, unionized driving concentration is the region's `fu` times `lambda` times the state.
+- **Source aliases:** `Cbm1`, `bm1`, `brain parenchyma 1`.
+- **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; the 9-CNS model's `Cbm1`, 10 percent of the 1.2 L brain volume).
+- **Notes:** Named for the anatomical relationship the source papers use ("brain tissue adjacent to the CSF tract") rather than `brain_superficial`, which would wrongly exclude periventricular tissue, or `brain_periventricular`, which would wrongly exclude tissue adjacent to the cranial and spinal subarachnoid spaces. Distinct from `brain_ecf`, which is a parenchymal extracellular-fluid compartment spanning the whole brain rather than a spatially-defined sub-region.
+
+### brain_csf_ventricular (**canonical ventricular-system CSF compartment**)
+- **Type:** compartment
+- **Role:** Cerebrospinal fluid of the whole ventricular system, treated as one well-stirred compartment. Receives drug across the blood-CSF barrier and from the adjacent brain parenchyma, and discharges by CSF flow to the cranial and spinal subarachnoid spaces. Use this name when a model resolves ventricular CSF from subarachnoid CSF but does not subdivide the ventricles.
+- **Source aliases:** `Cvcsf`, `vcsf`, `ventricular CSF`.
+- **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; 16.7 percent of the 0.15 L total human CSF volume).
+- **Notes:** Deliberately NOT the same role as `brain_csf_lv`, which is specifically the lateral ventricle -- the first CSF compartment downstream of choroid-plexus secretion -- and is paired with `brain_csf_tfv` for the third and fourth ventricles in rat SBPK models that resolve them separately. Reusing `brain_csf_lv` for a whole-ventricular-system state would silently rename a larger compartment as a smaller one. A model that resolves the ventricles individually should use the `brain_csf_lv` / `brain_csf_tfv` pair instead of this entry.
+
+### brain_csf_sas_cranial (**canonical cranial subarachnoid CSF compartment**)
+- **Type:** compartment
+- **Role:** Cranial (intracranial) subarachnoid-space CSF in models that resolve the cranial and spinal subarachnoid compartments separately. Receives CSF flow from the ventricular system, exchanges drug with the adjacent brain parenchyma and with tumour regions by diffusion and paravascular bulk flow, and drains to blood through the arachnoid villi and through the olfactory mucosa and cranial nerve sheaths.
+- **Source aliases:** `Cccsf`, `ccsf`, `cranial subarachnoid CSF`.
+- **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; 30 percent of the 0.15 L total human CSF volume).
+- **Notes:** The already-registered `brain_csf_sas` is explicitly defined as the cranial and spinal subarachnoid spaces COMBINED, so it cannot be reused for either half. Use `brain_csf_sas` when a model lumps them and this entry plus `brain_csf_sas_spinal` when it does not.
+
+### brain_csf_sas_spinal (**canonical spinal subarachnoid CSF compartment**)
+- **Type:** compartment
+- **Role:** Spinal subarachnoid-space CSF in models that resolve the cranial and spinal subarachnoid compartments separately. Receives CSF flow from the ventricular system, shuttles CSF with the cranial subarachnoid space, and drains to blood through the arachnoid villi and the spinal nerve sheaths. Typically has no barrier with brain tissue, so in permeability-limited CNS models it carries only flow terms.
+- **Source aliases:** `Cscsf`, `scsf`, `spinal subarachnoid CSF`.
+- **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; 0.08 L in the human model).
+- **Notes:** Paired with `brain_csf_sas_cranial`; see that entry for why the combined `brain_csf_sas` is not reused.
+
+### tumor_rim (**canonical infiltrative tumor-rim compartment**)
+- **Type:** compartment
+- **Role:** The infiltrative, non-contrast-enhancing rim of a solid brain tumour, where tight junctions of the blood-brain-tumour barrier are still largely intact so drug delivery resembles normal parenchyma more than it resembles the tumour interior. First member of the spatial `tumor_<region>` namespace: a state holding a drug CONCENTRATION in a named spatial region of a tumour, for models that resolve intratumoural heterogeneity in barrier integrity, interstitial pH and oedema-driven fluid dynamics.
+- **Source aliases:** `CT1`, `T1`, `tumor mass 1`, `non-enhancing tumor`, `NET`.
+- **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; interstitial pH 6.8, paravascular bulk flow doubled by tumour oedema, volume 0.07 L).
+- **Notes:** The `tumor_<region>` namespace is distinct from all three existing tumour-related patterns: the bare `tumor` state holds a tumour SIZE in a TGI model, `tumor_size` / `TS` is the TGI output state, and `is_tumor` / `int_tumor` are the extracellular / intracellular sub-compartments of a permeability-limited PBPK tumour that is NOT spatially resolved. Ratified 2026-08-20 alongside `tumor_bulk` and `tumor_core`.
+
+### tumor_bulk (**canonical bulk tumor compartment**)
+- **Type:** compartment
+- **Role:** The bulky, contrast-enhancing body of a solid brain tumour, where the blood-brain-tumour barrier tight junctions are substantially disrupted (a 2- to 50-fold rise in passive permeability relative to intact BBB) and the interstitium is more acidic than normal parenchyma. Sits between `tumor_rim` and `tumor_core` in the spatial `tumor_<region>` namespace.
+- **Source aliases:** `CT2`, `T2`, `tumor mass 2`, `enhancing tumor`, `ET`.
+- **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; interstitial pH 6.5, paravascular bulk flow reduced 25 percent by raised interstitial pressure, volume 0.035 L).
+- **Notes:** See `tumor_rim` for how the `tumor_<region>` namespace differs from `tumor`, `tumor_size` / `TS` and `is_tumor` / `int_tumor`.
+
+### tumor_core (**canonical tumor-core compartment**)
+- **Type:** compartment
+- **Role:** The innermost core of a solid brain tumour: the most disrupted barrier, the most acidic interstitium, and the lowest convective bulk flow because interstitial pressure is highest there. Terminal member of the spatial `tumor_<region>` chain, reached from `tumor_bulk` by diffusion and bulk flow as well as directly from the tumour vasculature.
+- **Source aliases:** `CT3`, `T3`, `tumor mass 3`, `tumor core`.
+- **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; interstitial pH 6.2, paravascular bulk flow reduced 50 percent, volume 0.0035 L).
+- **Notes:** See `tumor_rim` for how the `tumor_<region>` namespace differs from `tumor`, `tumor_size` / `TS` and `is_tumor` / `int_tumor`.
