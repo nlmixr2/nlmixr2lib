@@ -512,6 +512,15 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Example models:** `Betts_2019_pf_06671008_qsp.R`.
 - **Notes:** Founding example Betts 2019 (Eq 15 dDPcadt/dt). Canonical name is `drug_pcad_tumor` for the founding P-cadherin example; per-antigen suffixed forms (`drug_her2_tumor`, `drug_cea_tumor`, etc.) can be registered as new canonicals when future CD3 bispecifics targeting other antigens are extracted. The internalization rate `kint` distinguishes this compartment from `drug_cd3_tumor`, which is not internalized in the current model class.
 
+### drug_bcma_tumor (**canonical drug-BCMA dimer at the tumor site**)
+- **Type:** compartment
+- **Role:** Drug bound to membrane B-cell maturation antigen (BCMA) on myeloma cells at the tumor site of action. Formed by mass-action binding of free drug to BCMA receptors; can bind free CD3 to yield the productive `trimer`, or dissociate back to free drug and BCMA. The per-antigen sibling of `drug_pcad_tumor`, registered per the extension path documented in that entry ("per-antigen suffixed forms ... can be registered as new canonicals when future CD3 bispecifics targeting other antigens are extracted").
+- **Source aliases:**
+  - `Ab_BCMA_BM` -- Poels 2025 paper notation.
+  - `DBCMA` -- Poels 2025 Supplementary Table 2 code alias.
+- **Example models:** `Poels_2025_elranatamab_qsp.R`.
+- **Notes:** Founding example Poels 2025 (Supplementary Eq 15). Unlike `drug_pcad_tumor` this state carries no internalization term, because Poels 2025 does not model BCMA-complex endocytosis. In Poels 2025 the tumor site of action is the bone marrow, so the `_tumor` suffix denotes the site-of-action compartment rather than a solid-tumor mass; the paper's own Supplementary Table 2 labels these states "in tumor compartment". The soluble counterpart of the antigen is carried separately (`sbcma_tumor`, `drug_sbcma_tumor`) because soluble BCMA acts as a drug sink rather than a productive binding partner.
+
 ### trimer (**canonical drug-CD3-antigen ternary complex in tumor**)
 - **Type:** compartment
 - **Role:** Productive drug-CD3-antigen ternary complex (trimer) in the tumor extracellular space (nM). Forms an immune synapse-mimetic bridge between a T cell and an antigen-expressing tumor cell; the paper's PD driver linking bispecific PK to tumor cell killing via `kkill = kmax * trimer / (kc50 + trimer)`. Reversible mass-action formation from either dimer (`drug_cd3_tumor` + free antigen, or `drug_pcad_tumor` + free CD3) with dissociation back to either dimer.
