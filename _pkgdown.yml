@@ -2980,8 +2980,10 @@ navbar:
         href: articles/Yu_2015_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
-      - text: "Sunitinib OS (Hansson 2013)"
-        href: articles/Hansson_2013_sunitinib_OS.html
+      - text: "TDI01 (Ji 2025)"
+        href: articles/Ji_2025_TDI01.html
+      - text: "TF 505 (Matsumoto 2005)"
+        href: articles/Matsumoto_2005_TF_505.html
       - text: "Tacrine (Holford 1992)"
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (AbdelJalil 2013)"
@@ -4191,6 +4193,7 @@ articles:
   - articles/Jeong_2022_torsemide
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
+  - articles/Ji_2025_TDI01
   - articles/Jia_2015_unfractionatedHeparin
   - articles/Jia_2025_tak_071
   - articles/Jian_2025_peginterferon_alfa_2b
