@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bjornsson 2023 buprenorphine / CAM2038 depot ([doi:10.1007/s40262-023-01288-6](https://doi.org/10.1007/s40262-023-01288-6)) -- healthy adults and adults with opioid use disorder.
+- Add Roy 2023 erythropoiesis QSP model ([doi:10.3389/fphar.2023.1274490](https://doi.org/10.3389/fphar.2023.1274490)) - virtual patients with anemia due to chronic kidney disease.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
