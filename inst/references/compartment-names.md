@@ -3193,6 +3193,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Knibbe_2009_morphine.R` (DDMODEL00000248).
 
+### c6g (**canonical codeine-6-glucuronide suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Codeine-6-glucuronide, the major glucuronide metabolite of codeine and the product of the non-CYP2D6 (UGT2B7) branch of codeine elimination. Direct sibling of the `m3g` / `m6g` morphine-glucuronide suffixes registered above.
+- **Source aliases:**
+  - `C6G` -- Ashraf 2024 (paper Fig. 1 and Table 2).
+- **Example models:** `Ashraf_2024_codeine.R` (joint codeine + morphine + C6G + M3G popPK; `central_c6g`, `Cc_c6g`, `lcl_c6g`, `lvc_c6g`, `expSd_c6g`).
+
 ### gluc (**canonical glucuronide phase-II conjugate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Phase-II glucuronide conjugate suffix (Allegaert 2015 paracetamol-glucuronide).
@@ -3531,11 +3538,12 @@ Parent-drug suffixes used with `urine_<X>` (or `central_<X>`) excretion compartm
 - **Source aliases:** none.
 - **Example models:** `Allegaert_2015_paracetamol.R`.
 
-### morphine (**canonical morphine parent-drug suffix**)
+### morphine (**canonical morphine parent-drug / metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Morphine parent-drug suffix for `urine_morphine` tracking.
-- **Source aliases:** none.
-- **Example models:** `Pierre_2017_morphine.R`.
+- **Role:** Morphine suffix, used in two roles. (1) Parent-drug suffix for `urine_morphine` excretion tracking in models where morphine is the parent. (2) Metabolite suffix for models in which morphine is a **non-parent** analyte -- notably codeine popPK, where CYP2D6 O-demethylation of codeine forms morphine; there the morphine states and parameters take the suffix (`central_morphine`, `Cc_morphine`, `lcl_morphine`, `expSd_morphine`) and codeine keeps the bare canonical names.
+- **Source aliases:**
+  - `mor` -- Ashraf 2024 subscript notation (`f_mor`, `k_e,mor`, `CL_mor`, `V_c,mor`); the full `morphine` token is used rather than registering a second `mor` canonical for the same molecule.
+- **Example models:** `Pierre_2017_morphine.R` (parent-drug role, `urine_morphine`), `Ashraf_2024_codeine.R` (metabolite role: morphine formed from codeine via CYP2D6).
 
 ---
 

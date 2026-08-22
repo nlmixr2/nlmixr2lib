@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xu 2024 linezolid ([doi:10.2147/DDDT.S474470](https://doi.org/10.2147/DDDT.S474470)) -- adults with hospital-acquired pneumonia and renal insufficiency.
+- Add Ashraf 2024 codeine ([doi:10.1007/s40262-024-01433-9](https://doi.org/10.1007/s40262-024-01433-9)) -- CYP2D6-genotyped adults undergoing ambulatory surgery.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
