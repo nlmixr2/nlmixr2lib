@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Rong 2019 and van Hest 2005 mycophenolic acid models, as re-implemented by Maizaud 2025 ([doi:10.1371/journal.pone.0330854](https://doi.org/10.1371/journal.pone.0330854)) - adult kidney transplant recipients on tacrolimus (Rong) or ciclosporin (van Hest).
+
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
 - Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.

@@ -1784,6 +1784,8 @@ navbar:
         href: articles/Jiao_2008_mycophenolic_acid.html
       - text: "Mycophenolic acid (Park 2023)"
         href: articles/Park_2023_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Rong 2019)"
+        href: articles/Maizaud_2025_missed_mycophenolate_doses.html
       - text: "Mycophenolic acid (Sherwin 2012)"
         href: articles/Sherwin_2012_mycophenolic_acid.html
       - text: "Mycophenolic acid (Yu 2017)"
@@ -1794,6 +1796,8 @@ navbar:
         href: articles/Zhao_2010_mycophenolic_acid.html
       - text: "Mycophenolic acid (deWinter 2009)"
         href: articles/deWinter_2009_mycophenolic_acid.html
+      - text: "Mycophenolic acid (vanHest 2005)"
+        href: articles/Maizaud_2025_missed_mycophenolate_doses.html
       - text: "NAcetylglutamine rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
       - text: "Nab paclitaxel (Chen 2014)"
@@ -3836,6 +3840,7 @@ articles:
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Macpherson_2015_rosuvastatin
+  - articles/Maizaud_2025_missed_mycophenolate_doses
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
   - articles/Majid_2024_lenvatinib
   - articles/Maleki_2024_brepocitinib
