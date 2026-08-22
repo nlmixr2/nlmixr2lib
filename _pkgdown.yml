@@ -3358,6 +3358,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Vancomycin (Alqahtani 2018)"
         href: articles/Alqahtani_2018_vancomycin.html
+      - text: "Vancomycin (Alqurain 2024)"
+        href: articles/Alqurain_2024_vancomycin.html
       - text: "Vancomycin (Buelga 2005)"
         href: articles/Buelga_2005_vancomycin.html
       - text: "Vancomycin (Chung 2013)"
@@ -3675,6 +3677,7 @@ articles:
   - articles/Almquist_2022_anifrolumab
   - articles/Alqahtani_2018_cefuroxime
   - articles/Alqahtani_2018_vancomycin
+  - articles/Alqurain_2024_vancomycin
   - articles/Alshehri_2023_ivermectin
   - articles/Alsultan_2017_pyrazinamide
   - articles/AlvarezJimenez_2016_scopolamine

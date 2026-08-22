@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Melander 2025 cetirizine ([doi:10.1111/bcpt.14100](https://doi.org/10.1111/bcpt.14100)) -- breast milk of lactating women.
+- Add Alqurain 2024 vancomycin ([doi:10.2147/DDDT.S496512](https://doi.org/10.2147/DDDT.S496512)) -- non-critical-care adults aged 40 years and older on medical wards in Saudi Arabia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
