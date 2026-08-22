@@ -1380,6 +1380,13 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Shin_2006_quinidine_QT.R` (Bazett-corrected QT interval; founding example), `Fostvedt_2021_glasdegib_QTcF.R` (Fridericia, as `QTcF`), `Fostvedt_2021_glasdegib_QTcS.R` (study-specific correction, as `QTcS`).
 - **Notes:** `QTcF` / `QTcS` promoted from translate-to-`QTc` aliases to canonical sibling names 2026-06-28 so single-output models that name the observation by its specific correction (rather than the generic `QTc`) pass the convention check. New models should still prefer the generic `QTc` where the correction is incidental; use the specific name only when the correction is the defining feature of the endpoint (as in the paired Fostvedt 2021 QTcF / QTcS glasdegib analyses).
 
+### fHR (**canonical fractional heart-rate response**)
+- **Type:** compartment
+- **Role:** Fractional increase in heart rate relative to the individual's own maximal increase: `fHR(t) = deltaHR(t) / max(deltaHR)`, a unitless quantity bounded in `[0, 1]`. Used as the observation variable in PK/PD models that normalise each subject's heart-rate excursion to their own maximum instead of modelling beats per minute, so that `Emax` is a fraction rather than a bpm change. The authors of the founding example interpret it as the probability of reaching an individual's maximal heart rate, which is why they fit Hill-type functions to it.
+- **Source aliases:** `fHRi,t`, `fBPM`, `fracBPM` (Wolowich 2025 supplement parameter tables) -- translate to `fHR`.
+- **Example models:** `Wolowich_2025_thc.R`, `Wolowich_2025_thc_11oh.R`, `Wolowich_2025_thc_gedm.R` (founding examples; IV delta-9-THC acute tachycardia in healthy volunteers).
+- **Notes:** Distinct from the bpm-valued heart-rate observable `HR` used by `Feng_2012_higenamine.R`, `Hwang_2023_carvedilol.R` and the `Langdon_2010_PF00821385_*.R` pair -- do NOT use `fHR` for a model whose endpoint is beats per minute, and do not use `HR` for a normalised endpoint, because the residual-error magnitude and `Emax` are on incomparable scales. The `f` prefix carries its usual register meaning of "fraction" (`fdepot`, `fm`, `ffo`). Residual error follows the standard per-output rule: `addSd_fHR`. Back-transforming to bpm requires the per-individual baseline and maximal delta-HR, which are data-normalisation constants rather than fitted parameters, so a model observing `fHR` is not directly comparable to one observing `HR`.
+
 ### serumK (**canonical serum potassium**)
 - **Type:** compartment
 - **Role:** Serum potassium concentration PD output / turnover-state, in mmol/L. Used as the observation variable in indirect-response / turnover models of drug-induced potassium shifts (mineralocorticoid-receptor antagonists, potassium-sparing diuretics, RAAS inhibitors). Standard clinical-laboratory biomarker reported on essentially every comprehensive metabolic panel; KDIGO and ESC thresholds for hyperkalemia are at 5.5 and 6.0 mmol/L. Distinct from any drug-PK central compartment because the modelled species is the endogenous electrolyte rather than the dosed drug.
@@ -3597,12 +3604,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Heathman_2024_efavirenz.R`.
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier. Founding example: `Heathman_2024_efavirenz.R`.
 
-### ac886 (**canonical AC886 quizartinib-metabolite suffix**)
+### 11oh (**canonical 11-hydroxy-delta-9-tetrahydrocannabinol suffix**)
 - **Type:** metabolite-suffix
-- **Role:** AC886, the pharmacologically active N-desalkyl metabolite of quizartinib formed predominantly via CYP3A4. AC886 is roughly equipotent with the parent for FLT3-ITD inhibition and circulates at comparable exposure, so it is followed as a second plasma analyte in joint parent + metabolite popPK models.
-- **Source aliases:** none (the paper, both NONMEM control streams and the assay all use the bare compound code `AC886`).
-- **Example models:** `Vaddady_2024_quizartinib.R` (doi:10.1111/cts.70074); compartments `central_ac886` / `peripheral1_ac886`, observation `Cc_ac886`, parameters `lcl_ac886` / `lvc_ac886` / `lvp_ac886` / `lq_ac886` / `etalvc_ac886` / `propSd_ac886`.
-- **Notes:** Ratified by sidecar request-001 / response-001, question q1, option A. Suffix starts with a letter but contains digits; the convention check matches on `endsWith(name, "_<metab>")` so the mixed alphanumeric form is fine.
+- **Role:** 11-hydroxy-delta-9-tetrahydrocannabinol (11-OH-THC, commonly written THC-OH), the principal pharmacologically active metabolite of delta-9-tetrahydrocannabinol, formed by CYP2C9-dependent hydroxylation at the 11 position and itself further oxidised to the terminal carboxy metabolite. MW 330.46 g/mol.
+- **Source aliases:** `THC-OH`, `THCOH`, `11-OH-THC` (Wolowich 2025) -- translate to `11oh`.
+- **Example models:** `Wolowich_2025_thc.R`, `Wolowich_2025_thc_11oh.R`, `Wolowich_2025_thc_gedm.R` (2-compartment 11-OH-THC metabolite fed through one transit compartment from a 3-compartment THC parent).
+- **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `5oh` / `7oh` / `8oh` / `9oh` precedent. Registered as the positional-hydroxy form rather than a parent-derived `thcoh` so the positional-hydroxy family stays intact -- the family names the hydroxylation POSITION, not the parent, which is why `9oh` was chosen for 9-hydroxyrisperidone even though that metabolite has a drug name of its own (paliperidone). Disambiguation is by model context, as for the other five. A future extraction needing the terminal carboxy metabolite (THC-COOH) should register a separate token for it; `11oh` covers only the active hydroxy metabolite.
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
 

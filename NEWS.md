@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wickramasinghe 2025 abemaciclib ([doi:10.1002/psp4.70026](https://doi.org/10.1002/psp4.70026)) -- 9-compartment spatial CNS and brain-tumor PBPK model in adults with glioblastoma.
+- Add Wolowich 2025 delta-9-tetrahydrocannabinol heart-rate PK/PD models ([doi:10.1007/s13318-025-00941-8](https://doi.org/10.1007/s13318-025-00941-8)) -- healthy volunteers given a single intravenous bolus.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

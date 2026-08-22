@@ -1444,14 +1444,20 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
 - **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
 
-### dp_slope (**canonical bare linear disease-progression slope**)
+### gedm_alpha, gedm_beta, gedm_delta, gedm_gamma (**canonical GEDM two-drug interaction hyperparameters**)
 - **Type:** paper-named-param
-- **Role:** Slope of linear natural disease progression, in units of the modelled endpoint per unit time, entering the prediction additively as `progression = dp_slope * time`. Used for placebo-arm / untreated drift in a disease-progression model where the endpoint changes approximately linearly over the observation window, alongside a baseline (`lrbase`) and a drug-effect term. Deliberately **untransformed** (no `l` prefix): see Notes.
+- **Role:** The four dimensionless hyperparameters of the Gabrielsson & Weiner *general empirical dynamic model* (GEDM) for two interacting agonists. With the reduced concentrations `u1 = C1 / EC50_1` and `u2 = C2 / EC50_2`, the response surface is
+
+  ```
+  E = Emax * (u1 + gedm_alpha * u2 + gedm_beta * u1 * u2) /
+            (1  + u1 + gedm_delta * u2 + gedm_gamma * u1 * u2)
+  ```
+
+  `gedm_alpha` is the second drug's intrinsic efficacy relative to the first; `gedm_beta` is the numerator (efficacy) interaction term for the doubly-occupied state; `gedm_delta` and `gedm_gamma` are the corresponding denominator (affinity / occupancy) terms. Their relative magnitudes are what classify the interaction -- `gedm_beta = 1 + gedm_alpha` with `gedm_alpha = 1` gives two independent Emax models, `gedm_beta = gedm_alpha = 0` gives a purely competitive interaction, and `gedm_beta > gedm_delta` with `gedm_alpha > 0` is synergism (Gabrielsson & Weiner's criteria table, reproduced as Table 6 of the founding example).
 - **Source aliases:**
-  - `Kprog` -- Lee 2024 Table 1 and Figure 1 (`Natural progression = Kprog x time`).
-  - `SLP`, `ALPHA`, `k_prog`, `Kdis` -- equivalent notation in other disease-progression papers.
-- **Example models:** `Lee_2024_lserine.R` (`dp_slope` = 0.015 K-VABS-II-ABC score/day, with a normally-distributed `etadp_slope` of SD 0.018).
-- **Notes:** Registered 2026-08-14. This canonical is intentionally bare rather than log-transformed, and there is **no** `ldp_slope` counterpart. A disease-progression slope is one of the few structural parameters that must be allowed to take either sign: papers routinely report an **additive (normal) random effect** on it whose spread puts a meaningful fraction of the population at a negative individual slope (patients who decline rather than improve). A log-normal `exp(ldp_slope + etaldp_slope)` parameterisation cannot represent that, so it would silently truncate the population. Encode as `dp_slope <- <value>` in `ini()` with `etadp_slope ~ <sd>^2`, and combine additively inside `model()` (`dp_slope + etadp_slope`), not multiplicatively. Founding example: Lee 2024, whose Results state Kprog was estimated "with a standard deviation of random effects of 0.018 in a normal eta distribution" around 0.015/day -- which places roughly 20% of the population at a negative slope, and which reproduces the paper's published placebo percentiles where a log-normal cannot. When a paper instead reports a strictly-positive progression slope with a log-normal (CV%) random effect, the log-transformed `l`-prefix convention applies as usual and a `ldp_slope` entry may be registered at that point.
+  - `alpha`, `beta`, `delta`, `gamma` -- the bare Greek letters as printed in Gabrielsson & Weiner and in Wolowich 2025 Table 2 / Table 5.
+- **Example models:** `Wolowich_2025_thc_gedm.R` (founding example; effect-site delta-9-THC as agonist and plasma 11-OH-THC as the interacting species, driving fractional heart rate: `gedm_alpha` 0.74, `gedm_beta` 0.94, `gedm_delta` 0.48, `gedm_gamma` 0.50).
+- **Notes:** Registered 2026-08-22. The `gedm_` prefix is load-bearing, not stylistic: bare `gamma` is already reserved in this register for Friberg feedback exponents, TGI power-law exponents and gamma-distribution shape parameters, and bare `beta` sits one character from the `beta_cl` nonlinear-clearance slope. Keeping the Greek letters behind the prefix preserves the trace back to the published criteria table, which is stated purely in terms of alpha, beta and delta. Kept on the **bare linear scale** with no `l` prefix -- all four are bounded interaction coefficients that the criteria compare directly against `0`, `1` and each other, and `gedm_beta = 0` is one of the published criteria, so a log transform would make the competitive case unreachable. IIV follows the standard pattern (`etagedm_alpha`, ...). Do not reuse these names for the *general pharmacodynamic interaction* (GPDI) model of Wicha et al., which is a different parameterisation and uses `int_<state>_<drugs>` (see `Chen_2017_TB_MTP_GPDI_mouse.R`).
 
 ## Nested (multi-level) random effects
 
