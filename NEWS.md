@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ivanova 2024 anti-alpha-synuclein immunotherapy ([doi:10.1002/psp4.13223](https://doi.org/10.1002/psp4.13223)) -- QSP model of alpha-synuclein pathology in Parkinson's-disease-like mice.
+- Add Abdullah-Koolmees 2024 voriconazole and posaconazole whole-body PBPK ([doi:10.1007/s13318-024-00916-1](https://doi.org/10.1007/s13318-024-00916-1)) -- a typical 73-kg adult, simulated as healthy, bacterially infected and ICU patient types with and without concomitant flucloxacillin.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
