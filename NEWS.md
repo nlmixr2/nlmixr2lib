@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Winter 2024 oxytetracycline ([doi:10.3389/fmicb.2024.1498219](https://doi.org/10.3389/fmicb.2024.1498219)) -- calves and adult cattle.
+- Add Schouwenburg 2025 clavulanic acid ([doi:10.1002/cpt.3423](https://doi.org/10.1002/cpt.3423)) -- preterm and term neonates and infants up to 1 year of age.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
