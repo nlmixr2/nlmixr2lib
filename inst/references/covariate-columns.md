@@ -1090,6 +1090,30 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Liesenfeld_2013_dabigatran.R`.
 - **Notes:** Pairs with `DIAL` and `BFR`. Ratified canonically on 2026-05-16 alongside the Liesenfeld 2013 dabigatran extraction.
 
+### VASCACC_AVF1N (**canonical for single-needle arteriovenous-fistula vascular-access indicator**)
+- **Description:** 1 = the haemodialysis session was performed through an arteriovenous fistula cannulated in a SINGLE-needle setup (one needle alternately draws and returns blood, so a fraction of already-dialysed blood is recirculated); 0 = any other access type. Per-subject (or per-session) indicator describing how the patient is cannulated for extracorporeal therapy, as distinct from the circuit-setting covariates `BFR` / `DFR` / `Q_CVVH` (flow rates) and the therapy-presence flags `RRT_HEMODIAL_STATUS` / `RRT_HEMODIAL_ACTIVE`. Access type matters pharmacokinetically because it changes the effective solute presentation to the dialyser: a single-needle fistula recirculates blood, so the nominal pump blood flow rate overstates the flow of undialysed blood reaching the membrane.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (tunnelled dialysis catheter, TDC), shared with the sister canonical `VASCACC_AVF2N`; the pair decomposes the three-level access classification (TDC / AVF single-needle / AVF double-needle) into two binary indicators with TDC as the implicit reference (both indicators 0).
+- **Source aliases:**
+  - `CVC0SN1DN2` (three-level integer selector, 0 = TDC, 1 = single-needle AVF, 2 = double-needle AVF; decompose to binary indicators) -- used in `Kong_2025_piperacillin_tazobactam.R` (ESM NONMEM `$PK`: `LGT_TAZ = THETA(18)`; `IF(CVC0SN1DN2.EQ.1) LGT_TAZ = THETA(19)`; `IF(CVC0SN1DN2.EQ.2) LGT_TAZ = THETA(20)`).
+  - `AVF 1N` -- Kong 2025 Table 1 / Table 3 row label ("AVF 1N single-needle arteriovenous fistula").
+- **Example models:** `Kong_2025_piperacillin_tazobactam.R` (selects the tazobactam dialyser extraction ratio: 73.9% for single-needle AVF versus the 80.1% TDC reference and 73.5% for double-needle AVF, Table 3; retained in backward elimination at p < 0.001, dOFV -22.88).
+- **Notes:** Sister canonical to `VASCACC_AVF2N`. Decomposed-binary-indicator encoding follows the register's settled convention for multi-level categoricals (`RENALIMP_MILD` / `RENALIMP_MOD` / `RENALIMP_SEV`, the parallel `HEPIMP_*` family, and `RACE_<GROUP>`); an integer selector column was explicitly rejected because it would imply an ordering between access types that does not exist. Kong 2025 additionally applied a time-averaged blood flow rate for single-needle sessions when computing `BFR` (Methods 2.4), so a model that carries both `VASCACC_AVF1N` and `BFR` should document in `covariateData` notes whether the recirculation correction has already been folded into the supplied `BFR` values. Ratified canonically on 2026-08-20 (sidecar request-001 / response-001 q2, option A) alongside the Kong 2025 piperacillin/tazobactam ESKD haemodialysis extraction. General scope because vascular access type is a universally recorded haemodialysis patient characteristic and is a plausible determinant of effective dialyser clearance in any ESKD antibiotic popPK.
+
+### VASCACC_AVF2N (**canonical for double-needle arteriovenous-fistula vascular-access indicator**)
+- **Description:** 1 = the haemodialysis session was performed through an arteriovenous fistula cannulated in a DOUBLE-needle setup (separate arterial-draw and venous-return needles, so there is no single-needle recirculation); 0 = any other access type. Per-subject (or per-session) indicator describing how the patient is cannulated for extracorporeal therapy; see the sister entry `VASCACC_AVF1N` for the family rationale and the distinction from the circuit-flow and therapy-presence covariates.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (tunnelled dialysis catheter, TDC), shared with `VASCACC_AVF1N`; both indicators 0 selects the TDC reference level.
+- **Source aliases:**
+  - `CVC0SN1DN2` (three-level integer selector, level 2; decompose to binary indicators) -- used in `Kong_2025_piperacillin_tazobactam.R`.
+  - `AVF 2N` -- Kong 2025 Table 1 / Table 3 row label ("AVF 2N double-needle arteriovenous fistula").
+- **Example models:** `Kong_2025_piperacillin_tazobactam.R` (selects the tazobactam dialyser extraction ratio: 73.5% for double-needle AVF versus the 80.1% TDC reference, Table 3).
+- **Notes:** Sister canonical to `VASCACC_AVF1N`; the two are mutually exclusive (a subject with both set to 1 is invalid). Ratified canonically on 2026-08-20 (sidecar request-001 / response-001 q2, option A) alongside the Kong 2025 piperacillin/tazobactam ESKD haemodialysis extraction. Kong 2025 found the access-type effect statistically significant but clinically limited (Discussion: "the difference in extraction ratio between the vascular access types were limited and therefore not expected to be clinically relevant"), and the analogous access-type effect on the PIPERACILLIN extraction ratio did NOT survive backward elimination (dOFV +11.26), so piperacillin keeps a single 64.0% extraction ratio.
+
 ### ECMO_PUMP_SPEED (**canonical for extracorporeal-membrane-oxygenation centrifugal-pump rotational speed**)
 - **Description:** Rotational speed of the extracorporeal-membrane-oxygenation (ECMO) centrifugal blood pump during VA-ECMO or VV-ECMO support. Continuous covariate; treated as time-fixed per subject in Yang 2017 (the per-subject pump speed reported in the source data was the prevailing speed during the PK sampling window; pump-speed adjustments during sampling were not modelled as time-varying). For future models that resolve session-level changes in pump speed, the covariate is naturally time-varying and the per-model `covariateData[[ECMO_PUMP_SPEED]]$notes` should document the time resolution.
 - **Units:** RPM (revolutions per minute)

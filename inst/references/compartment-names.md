@@ -3391,6 +3391,16 @@ Sibling-drug suffix for the Kleijn 2011 sugammadex-mediated reversal of rocuroni
   - `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232), where ampicillin is the unsuffixed parent.
 - **Notes:** Registered 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction. `Soto_2014_ampicillin_sulbactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_sbt` / `peripheral1_sbt` / `propSd_sbt` convention warnings. Sulbactam is a sibling drug, not a metabolite: in both source papers the two analytes are dosed as a fixed-ratio combination and fitted simultaneously without interconversion.
 
+### taz (**canonical tazobactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Tazobactam (beta-lactamase-inhibitor penicillanic-acid sulfone) sibling-drug suffix, used when tazobactam is co-modelled with its partner beta-lactam (piperacillin) and is not the unsuffixed parent. Drives `central_taz` / `peripheral1_taz` compartments, `lcl_taz` / `lvc_taz` / `lq_taz` / `lvp_taz` PK parameters, drug-specific covariate-effect and extraction-ratio forms (`ltdec50_taz`, `logitedia_taz`), and the `propSd_taz` / `addSd_taz` residuals on the `Cc_taz` tazobactam plasma concentration.
+- **Source aliases:**
+  - `TAZ` -- abbreviation used throughout `Kong_2025_piperacillin_tazobactam.R` (Table 2 / Table 3 footnotes "TAZ tazobactam"; ESM NONMEM variables `CL_DIA_TAZ`, `ER_TAZ`, `LGT_TAZ`, `kdia_TAZ`, `CPRE_TAZ`, `TPROP`, `TADD`).
+  - `(2)` -- NONMEM L2 drug index / `$MODEL` compartments 3-4 (`TAZ_CENT`, `TAZ_PERI`) for tazobactam in `Kong_2025_piperacillin_tazobactam.R`.
+- **Example models:**
+  - `Kong_2025_piperacillin_tazobactam.R` (doi:10.1007/s40262-025-01527-y), where piperacillin is the unsuffixed parent (NONMEM compartments 1-2) and tazobactam carries the suffix (NONMEM compartments 3-4).
+- **Notes:** Registered 2026-08-20 (sidecar request-001 / response-001 q1, option A) alongside the Kong 2025 piperacillin/tazobactam ESKD haemodialysis extraction. Direct structural analogue of the `sbt` (sulbactam) entry above: tazobactam is a sibling drug, not a metabolite -- piperacillin and tazobactam are dosed as a fixed 8:1 combination and fitted simultaneously via the NONMEM L2 data item without interconversion. Piperacillin is the unsuffixed parent because it is the therapeutically active beta-lactam, matching the `sbt` convention where the partner beta-lactam (ampicillin) or the newer inhibitor (durlobactam) takes the unsuffixed slot. Note that nlmixr2lib also carries single-analyte piperacillin and tazobactam models extracted from papers that fitted the two drugs separately (`CohenWolkowiez_2014_piperacillin.R` / `CohenWolkowiez_2014_tazobactam.R`, `Nichols_2016_piperacillin.R` / `Nichols_2016_tazobactam.R`); those correctly use the unsuffixed canonical names in their own files because each is a single-drug model. The `taz` suffix applies only when both analytes live in ONE jointly-fitted file.
+
 ---
 
 ## Anthracycline cardioprotection sibling-drug suffixes
