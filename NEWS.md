@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mauro 2025 nilotinib ([doi:10.1007/s00280-025-04777-6](https://doi.org/10.1007/s00280-025-04777-6)) -- healthy adults receiving Danziten tablets or Tasigna capsules under four prandial conditions.
+- Add Song 2025 infliximab ([doi:10.5009/gnl240503](https://doi.org/10.5009/gnl240503)) -- Korean adults with inflammatory bowel disease on maintenance intravenous or subcutaneous therapy.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
