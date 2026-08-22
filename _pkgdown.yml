@@ -582,6 +582,8 @@ navbar:
         href: articles/Wade_2015_certolizumab.html
       - text: "Cetagliptin (Zhou 2024)"
         href: articles/Zhou_2024_cetagliptin.html
+      - text: "Cetirizine (Melander 2025)"
+        href: articles/Melander_2025_cetirizine.html
       - text: "Cetuximab (Dirks 2008)"
         href: articles/Dirks_2008_cetuximab.html
       - text: "ChlorogenicAcid rat (Chen 2024)"
@@ -4467,6 +4469,7 @@ articles:
   - articles/MedellinGaribay_2015_gentamicin
   - articles/Mehta_2023_tb_lesion_mpbpk
   - articles/Meid_2024_spironolactone_qsp
+  - articles/Melander_2025_cetirizine
   - articles/Melhem_2018_g_csf
   - articles/Melhem_2022_dostarlimab
   - articles/Menon_2024_parkinsonPathogenesis
