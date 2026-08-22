@@ -602,6 +602,8 @@ navbar:
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
       - text: "Cotadutide qsp (Bosch 2024)"
         href: articles/Bosch_2024_cotadutide_qsp.html
+      - text: "Cr51edta tc99mdtpa (Gracia 2025)"
+        href: articles/Gracia_2025_cr51edta_tc99mdtpa.html
       - text: "Crisantaspase (Sassen 2017)"
         href: articles/Sassen_2017_crisantaspase.html
       - text: "CrisprCas9 human (Desai 2024)"
@@ -3497,6 +3499,7 @@ articles:
   - articles/Goti_2018_vancomycin
   - articles/Goulooze_2022_finerenone
   - articles/Goulooze_2022_finerenone_uacr_egfr
+  - articles/Gracia_2025_cr51edta_tc99mdtpa
   - articles/Granda_2024_kidney_pbpk
   - articles/Grasela_1985_phenobarbital
   - articles/Green_2003_enoxaparin
