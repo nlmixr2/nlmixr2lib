@@ -2,7 +2,11 @@
 
 # development version
 
-- Add Hernandez-Lozano 2025 apramycin translational PKPD models ([doi:10.1093/jac/dkae409](https://doi.org/10.1093/jac/dkae409)) -- in vitro (Escherichia coli EN591 and ATCC 700336), mouse (C3H/HeJ) complicated urinary tract infection, and a simulated human efficacy prediction.
+- Add Izat 2025 zaleplon ([doi:10.1002/psp4.13255](https://doi.org/10.1002/psp4.13255)) -- healthy adult women and men, intravenous.
+
+- Add Izat 2025 ziprasidone ([doi:10.1002/psp4.13255](https://doi.org/10.1002/psp4.13255)) -- healthy adult men, intravenous.
+
+- Add Izat 2025 zoniporide ([doi:10.1002/psp4.13255](https://doi.org/10.1002/psp4.13255)) -- healthy adult men, intravenous.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

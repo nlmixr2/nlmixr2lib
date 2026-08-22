@@ -3484,12 +3484,8 @@ navbar:
         href: articles/Zhang_2024_XZP5610.html
       - text: "Zalcitabine (Adams 1998)"
         href: articles/Adams_1998_zalcitabine.html
-      - text: "Zanubrutinib acalabrutinib ibrutinib qsp (Demin 2025)"
-        href: articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.html
-      - text: "Zastaprazan (Yang 2024)"
-        href: articles/Yang_2024_zastaprazan.html
-      - text: "Zavegepant (Comisar 2025)"
-        href: articles/Comisar_2025_zavegepant.html
+      - text: "Zaleplon (Izat 2025)"
+        href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zidovudine (Fauchet 2013)"
@@ -3500,12 +3496,16 @@ navbar:
         href: articles/PiresdeMello_2018_zika_FAV_HFIM.html
       - text: "Zika FAV IFN RBV (PiresdeMello 2018)"
         href: articles/PiresdeMello_2018_zika_FAV_IFN_RBV.html
+      - text: "Ziprasidone (Izat 2025)"
+        href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Ziprasidone panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Zolbetuximab (Yamada 2025)"
         href: articles/Yamada_2025_zolbetuximab.html
       - text: "ZoledronicAcid (Mori 2018)"
         href: articles/Mori_2018_zoledronicAcid.html
+      - text: "Zoniporide (Izat 2025)"
+        href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zonisamide (Hashimoto 1994)"
         href: articles/Hashimoto_1994_zonisamide.html
       # AUTOGEN:specific_drugs:END
@@ -4214,7 +4214,7 @@ articles:
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
-  - articles/Iwama_2024_febuxostat
+  - articles/Izat_2025_aldehyde_oxidase_substrates
   - articles/Jackson_2022_ixekizumab
   - articles/JacoboCabral_2015_tacrolimus
   - articles/Jacobs_2016_colistin
