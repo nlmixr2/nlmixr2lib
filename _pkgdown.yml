@@ -54,8 +54,6 @@ navbar:
         href: articles/Takahashi_2023_abatacept.html
       - text: "Abatacept (Zhong 2026)"
         href: articles/Zhong_2026_abatacept.html
-      - text: "Abemaciclib qsp (Zhang 2025)"
-        href: articles/Zhang_2025_abemaciclib.html
       - text: "ABT 102 (Othman 2013)"
         href: articles/Othman_2013_ABT_102.html
       - text: "Acetaminophen (vanRongen 2016)"
@@ -1234,6 +1232,8 @@ navbar:
         href: articles/Wade_2008_fluconazole.html
       - text: "Fluconazole (Watt 2015)"
         href: articles/Watt_2015_fluconazole.html
+      - text: "Fluconazole (Zhang 2025)"
+        href: articles/Zhang_2025_fluconazole.html
       - text: "Fludarabine (Langenhorst 2019)"
         href: articles/Langenhorst_2019_fludarabine.html
       - text: "Fludarabine (VarelaGonzalezAller 2025)"
@@ -2976,10 +2976,8 @@ navbar:
         href: articles/Yu_2015_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
-      - text: "TDI01 (Ji 2025)"
-        href: articles/Ji_2025_TDI01.html
-      - text: "TF 505 (Matsumoto 2005)"
-        href: articles/Matsumoto_2005_TF_505.html
+      - text: "Sunitinib OS (Hansson 2013)"
+        href: articles/Hansson_2013_sunitinib_OS.html
       - text: "Tacrine (Holford 1992)"
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (AbdelJalil 2013)"
@@ -5086,7 +5084,6 @@ articles:
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_sertraline
   - articles/Zhang_2024_XZP5610
-  - articles/Zhang_2025_abemaciclib
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir

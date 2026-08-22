@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Miano 2024 tacrolimus ([doi:10.1016/j.jhlto.2024.100134](https://doi.org/10.1016/j.jhlto.2024.100134)) -- adult lung transplant recipients during the first 14 postoperative days.
+- Add Zhang 2025 fluconazole ([doi:10.3389/fphar.2025.1564070](https://doi.org/10.3389/fphar.2025.1564070)) -- critically ill adults with acute renal failure receiving continuous renal replacement therapy.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
