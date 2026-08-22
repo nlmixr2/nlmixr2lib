@@ -61,16 +61,50 @@ Li_2025_modakafuspAlfa <- function() {
 
   ini({
     # ---- Structural PK disposition (Li 2025 Table 2).
-    # The model time base here is DAYS. Li 2025 reports CL and Q in L/day and
-    # everything else on a per-hour basis; the source NONMEM stream works
-    # entirely in hours (its $PK carries the comment "dose in nmol, conc in
-    # nmol/L, time in hr"). Per-hour rate constants are therefore multiplied
-    # by 24 below and the L/day clearances are used exactly as printed.
+    # The model time base here is DAYS. The source NONMEM stream works entirely
+    # in hours (its $PK carries the comment "dose in nmol, conc in nmol/L, time
+    # in hr"), so per-hour quantities from Table 2 are multiplied by 24 below.
     # Amounts are nmol and concentrations nM, as in the source stream.
-    lcl     <- log(0.0553)   ; label("Linear clearance of unbound drug from the central compartment (L/day)")        # Li 2025 Table 2: CL = 0.0553 L/day (%RSE 8.97)
+    #
+    # UNIT CORRECTION -- Table 2 heads the CL and Q rows "(L/day)", but both
+    # values are per HOUR. Four independent lines of evidence, none of which
+    # depends on the others:
+    #   1. The control stream states the units outright. Its $THETA block
+    #      annotates each estimate with a unit comment, and the two clearance
+    #      lines read:
+    #        (-5.81, -3.30, 5.81)  ; CL   ; L/hr
+    #        (-6.91, -1.90, 5.81)  ; CLD  ; L/hr
+    #      CLD is the stream's name for Q (CLD=EXP(MU_3+ETA(3)), K12=CLD/VC).
+    #      This is the authors' own labelling of the very parameters Table 2
+    #      tabulates, and it says per hour.
+    #   2. NONMEM bounds. Those same bounds are on the log scale of the hourly
+    #      time base. log(0.0553) = -2.895 sits inside them and near the
+    #      initial estimate of -3.30; log(0.0553/24) = -6.073 lies OUTSIDE the
+    #      lower bound of -5.81, so NONMEM could not have returned it. For Q,
+    #      log(0.137) = -1.988 lands essentially on the initial estimate of
+    #      -1.90 (the L/day reading, -5.166, is within CLD's wider lower bound
+    #      of -6.91, so for Q this line of evidence is corroborating rather
+    #      than excluding).
+    #   3. The stream's own time base is hours throughout (kon = 3.6 1/(nM*h),
+    #      koff = 3600 1/h, Vmax in nmol/h, "infusion rate in nmol/hr",
+    #      "S1=VC ; dose in nmol, conc in nmol/L, time in hr"), and Table 2
+    #      labels those same constants per hour. Only the two clearance rows
+    #      carry a "/day" heading.
+    #   4. The paper's own Figure 2. At 3.0 mg/kg the simulated median crosses
+    #      the 6.25 ng/mL LLOQ at about week 1.3 and falls below 1 ng/mL by
+    #      week 2 (the panel annotates 14.3% of observations below LLOQ at week
+    #      1 and 100% by week 2). Reading CL as 0.0553 L/day puts the typical
+    #      profile at ~1.2e4 ng/mL on day 7 and delays the LLOQ crossing to
+    #      week 3; reading it as 0.0553 L/h gives ~1.1e2 ng/mL on day 7 and a
+    #      crossing at week 1.45. A linear CL of 0.0553 L/day would also imply
+    #      a terminal half-life near 114 days for a 9 L Vss, longer than any
+    #      antibody therapeutic and irreconcilable with the paper's "general
+    #      lack of drug accumulation".
+    # See the vignette Errata.
+    lcl     <- log(0.0553 * 24); label("Linear clearance of unbound drug from the central compartment (L/day)")      # Li 2025 Table 2: CL = 0.0553 (%RSE 8.97), tabulated as "L/day" but in fact L/h; x24 for the day time base
     lvc     <- log(5.08)     ; label("Central volume of distribution for a 80.8 kg patient (L)")                     # Li 2025 Table 2: Vc coefficient for a typical 80.8 kg patient = 5.08 L (%RSE 6.44)
     e_wt_vc <- 0.509         ; label("Power exponent on (WT/80.8) for the central volume (unitless)")                # Li 2025 Table 2: Vc-weight exponent = 0.509 (%RSE 30.4); Table 2 footnote b: TVVc (L) = 5.08 * (Weight/80.8)^0.509
-    lq      <- log(0.137)    ; label("Intercompartmental clearance (L/day)")                                         # Li 2025 Table 2: Q = 0.137 L/day (%RSE 16.4)
+    lq      <- log(0.137 * 24); label("Intercompartmental clearance (L/day)")                                        # Li 2025 Table 2: Q = 0.137 (%RSE 16.4), tabulated as "L/day" but in fact L/h; x24 for the day time base
     lvp     <- log(4.01)     ; label("Peripheral volume of distribution (L)")                                        # Li 2025 Table 2: Vp = 4.01 L (%RSE 16.7)
 
     # ---- Saturable (Michaelis-Menten approximation) elimination pathway.

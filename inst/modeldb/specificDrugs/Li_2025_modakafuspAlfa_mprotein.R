@@ -80,11 +80,13 @@ Li_2025_modakafuspAlfa_mprotein <- function() {
     # with each patient's post hoc PK parameters held fixed, so carrying the
     # published typical values and their IIV here is what makes this file
     # simulatable on its own. Time base is DAYS; per-hour rate constants from
-    # Li 2025 Table 2 are multiplied by 24.
-    lcl     <- log(0.0553)   ; label("Linear clearance of unbound drug from the central compartment (L/day)")        # Li 2025 Table 2: CL = 0.0553 L/day (%RSE 8.97)
+    # Li 2025 Table 2 are multiplied by 24. Table 2 heads the CL and Q rows
+    # "(L/day)", but both values are per HOUR; see the annotated derivation in
+    # modellib('Li_2025_modakafuspAlfa') and the vignette Errata.
+    lcl     <- log(0.0553 * 24); label("Linear clearance of unbound drug from the central compartment (L/day)")      # Li 2025 Table 2: CL = 0.0553 (%RSE 8.97), tabulated as "L/day" but in fact L/h; x24 for the day time base
     lvc     <- log(5.08)     ; label("Central volume of distribution for a 80.8 kg patient (L)")                     # Li 2025 Table 2: Vc coefficient for a typical 80.8 kg patient = 5.08 L (%RSE 6.44)
     e_wt_vc <- 0.509         ; label("Power exponent on (WT/80.8) for the central volume (unitless)")                # Li 2025 Table 2: Vc-weight exponent = 0.509 (%RSE 30.4); Table 2 footnote b
-    lq      <- log(0.137)    ; label("Intercompartmental clearance (L/day)")                                         # Li 2025 Table 2: Q = 0.137 L/day (%RSE 16.4)
+    lq      <- log(0.137 * 24); label("Intercompartmental clearance (L/day)")                                        # Li 2025 Table 2: Q = 0.137 (%RSE 16.4), tabulated as "L/day" but in fact L/h; x24 for the day time base
     lvp     <- log(4.01)     ; label("Peripheral volume of distribution (L)")                                        # Li 2025 Table 2: Vp = 4.01 L (%RSE 16.7)
     lvmax   <- log(4.77 * 24); label("Maximum rate of Michaelis-Menten elimination (nmol/day)")                      # Li 2025 Table 2: Vmax = 4.77 nmol/h (%RSE 13.6); x24 for the day time base
     lkm     <- log(1.26)     ; label("Unbound drug concentration producing half of Vmax (nM)")                       # Li 2025 Table 2: KM = 1.26 nM (%RSE 40.0). The PK-PD control stream hardcodes LTVKM = 0.229, i.e. exp(0.229) = 1.257 nM, confirming the Table 2 value.
