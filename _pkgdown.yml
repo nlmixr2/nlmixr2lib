@@ -2386,12 +2386,12 @@ navbar:
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pegasparaginase (Kloos 2021)"
         href: articles/Kloos_2021_pegasparaginase.html
-      - text: "Pegcetacoplan ga doseresponse (Crass 2025)"
-        href: articles/Crass_2025_pegcetacoplan_geographic_atrophy.html
-      - text: "Pegcetacoplan ga exposureresponse (Crass 2025)"
-        href: articles/Crass_2025_pegcetacoplan_geographic_atrophy.html
-      - text: "Pegcetacoplan ga progression (Crass 2025)"
-        href: articles/Crass_2025_pegcetacoplan_geographic_atrophy.html
+      - text: "Pegcetacoplan (Crass 2024)"
+        href: articles/Crass_2024_pegcetacoplan.html
+      - text: "Pegcetacoplan hemoglobin (Crass 2024)"
+        href: articles/Crass_2024_pegcetacoplan.html
+      - text: "Pegcetacoplan ldh (Crass 2024)"
+        href: articles/Crass_2024_pegcetacoplan.html
       - text: "Pegfilgrastim (Brekkan 2018)"
         href: articles/Brekkan_2018_pegfilgrastim.html
       - text: "Peginesatide (Naik 2013)"
@@ -3907,7 +3907,7 @@ articles:
   - articles/Cooper_2015_sertraline
   - articles/Couffignal_2014_imipenem
   - articles/Courlet_2023_cabamiquine
-  - articles/Crass_2025_pegcetacoplan_geographic_atrophy
+  - articles/Crass_2024_pegcetacoplan
   - articles/Crommentuyn_2005_lopinavir
   - articles/Csajka_2004_indinavir
   - articles/Csajka_2005_ephedrine_caffeine
