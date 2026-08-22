@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Xu 2023 busulfan ([doi:10.1002/psp4.13004](https://doi.org/10.1002/psp4.13004)) -- Chinese adults and children undergoing allogeneic hematopoietic stem cell transplantation.
+- Add Bjornsson 2023 buprenorphine / CAM2038 depot ([doi:10.1007/s40262-023-01288-6](https://doi.org/10.1007/s40262-023-01288-6)) -- healthy adults and adults with opioid use disorder.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
