@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhu 2024 SPT-07A (D-borneol) whole-body PBPK ([doi:10.3390/pharmaceutics16121596](https://doi.org/10.3390/pharmaceutics16121596)) -- three models: rats (Sprague-Dawley), beagle dogs, and healthy human adults.
+- Add Liu 2024 Spatholobi Caulis constituents 3'-methoxydaidzein, 8-O-methylretusin, daidzin and isolariciresinol ([doi:10.3390/ph17121621](https://doi.org/10.3390/ph17121621)) -- rats given a single oral gavage of Spatholobi Caulis aqueous extract.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
