@@ -2684,6 +2684,12 @@ navbar:
         href: articles/Hamren_2008_tesaglitazar.html
       - text: "Tesofensine (Lehr 2010)"
         href: articles/Lehr_2010_tesofensine.html
+      - text: "Thc (Wolowich 2025)"
+        href: articles/Wolowich_2025_thc_heart_rate.html
+      - text: "Thc 11oh (Wolowich 2025)"
+        href: articles/Wolowich_2025_thc_heart_rate.html
+      - text: "Thc gedm (Wolowich 2025)"
+        href: articles/Wolowich_2025_thc_heart_rate.html
       - text: "Theophylline (Rovei 1982)"
         href: articles/Rovei_1982_theophylline.html
       - text: "Theophylline (Suda 2008)"
@@ -4321,6 +4327,7 @@ articles:
   - articles/Wojciechowski_2015_rheumatoidArthritis
   - articles/Wojciechowski_2022_domagrozumab
   - articles/Wojciechowski_2023_ritlecitinib
+  - articles/Wolowich_2025_thc_heart_rate
   - articles/Wright_2013_allopurinol
   - articles/Wright_2016_allopurinol
   - articles/Wu_2012_modafinil

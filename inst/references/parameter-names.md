@@ -1327,6 +1327,21 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Siebinga_2023_lu177psma617.R` (`cal_bias_blood` = 0.273 MBq/L, fixed; the paper attributes it to calibration uncertainty from extreme calibration ranges for blood samples).
 - **Notes:** Registered 2026-07-30. A positive `cal_bias_<matrix>` raises the prediction, so it forces predictions above the drug-free baseline; Siebinga 2023 notes this is the source of the apparent under-prediction of low blood observations in its CWRES plots.
 
+### gedm_alpha, gedm_beta, gedm_delta, gedm_gamma (**canonical GEDM two-drug interaction hyperparameters**)
+- **Type:** paper-named-param
+- **Role:** The four dimensionless hyperparameters of the Gabrielsson & Weiner *general empirical dynamic model* (GEDM) for two interacting agonists. With the reduced concentrations `u1 = C1 / EC50_1` and `u2 = C2 / EC50_2`, the response surface is
+
+  ```
+  E = Emax * (u1 + gedm_alpha * u2 + gedm_beta * u1 * u2) /
+            (1  + u1 + gedm_delta * u2 + gedm_gamma * u1 * u2)
+  ```
+
+  `gedm_alpha` is the second drug's intrinsic efficacy relative to the first; `gedm_beta` is the numerator (efficacy) interaction term for the doubly-occupied state; `gedm_delta` and `gedm_gamma` are the corresponding denominator (affinity / occupancy) terms. Their relative magnitudes are what classify the interaction -- `gedm_beta = 1 + gedm_alpha` with `gedm_alpha = 1` gives two independent Emax models, `gedm_beta = gedm_alpha = 0` gives a purely competitive interaction, and `gedm_beta > gedm_delta` with `gedm_alpha > 0` is synergism (Gabrielsson & Weiner's criteria table, reproduced as Table 6 of the founding example).
+- **Source aliases:**
+  - `alpha`, `beta`, `delta`, `gamma` -- the bare Greek letters as printed in Gabrielsson & Weiner and in Wolowich 2025 Table 2 / Table 5.
+- **Example models:** `Wolowich_2025_thc_gedm.R` (founding example; effect-site delta-9-THC as agonist and plasma 11-OH-THC as the interacting species, driving fractional heart rate: `gedm_alpha` 0.74, `gedm_beta` 0.94, `gedm_delta` 0.48, `gedm_gamma` 0.50).
+- **Notes:** Registered 2026-08-22. The `gedm_` prefix is load-bearing, not stylistic: bare `gamma` is already reserved in this register for Friberg feedback exponents, TGI power-law exponents and gamma-distribution shape parameters, and bare `beta` sits one character from the `beta_cl` nonlinear-clearance slope. Keeping the Greek letters behind the prefix preserves the trace back to the published criteria table, which is stated purely in terms of alpha, beta and delta. Kept on the **bare linear scale** with no `l` prefix -- all four are bounded interaction coefficients that the criteria compare directly against `0`, `1` and each other, and `gedm_beta = 0` is one of the published criteria, so a log transform would make the competitive case unreachable. IIV follows the standard pattern (`etagedm_alpha`, ...). Do not reuse these names for the *general pharmacodynamic interaction* (GPDI) model of Wicha et al., which is a different parameterisation and uses `int_<state>_<drugs>` (see `Chen_2017_TB_MTP_GPDI_mouse.R`).
+
 ## Nested (multi-level) random effects
 
 Registered 2026-08-06 with the `Qi_2024_vosoritide.R` extraction, the first
