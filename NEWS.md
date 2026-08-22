@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Fan 2024 sirolimus ([doi:10.3389/fphar.2024.1457614](https://doi.org/10.3389/fphar.2024.1457614)) - Chinese children with vascular anomalies, aged 0.08-12 years.
+- Add Khaowroongrueng 2024 sufentanil ([doi:10.1002/psp4.13205](https://doi.org/10.1002/psp4.13205)) - adult Korean patients undergoing cardiopulmonary bypass surgery.
+
+- Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

@@ -2950,10 +2950,8 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
-      - text: "Sudapyridine (Kong 2025)"
-        href: articles/Kong_2025_sudapyridine.html
-      - text: "Sufentanil (Nie 2025)"
-        href: articles/Nie_2025_sufentanil.html
+      - text: "Sufentanil (Khaowroongrueng 2024)"
+        href: articles/Khaowroongrueng_2024_sufentanil.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
         href: articles/Kleijn_2011_sugammadex_rocuronium.html
       - text: "Sugemalimab (Wang 2024)"
@@ -4246,8 +4244,7 @@ articles:
   - articles/Kervezee_2014_quinidine_rat
   - articles/Ketharanathan_2023_pentobarbital
   - articles/Khan_2015_ciprofloxacin
-  - articles/Khwarg_2024_donepezil
-  - articles/Khwarg_2024_proguanil
+  - articles/Khaowroongrueng_2024_sufentanil
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2008_aripiprazole
   - articles/Kim_2015_paroxetine
