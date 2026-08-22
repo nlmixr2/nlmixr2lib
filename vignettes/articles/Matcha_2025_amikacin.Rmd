@@ -192,35 +192,56 @@ the paper's own Discussion reads more naturally under the power form (see
 Assumptions below).
 
 Within one nomogram row the target window is held fixed, so the total dose rate
-prescribed for a cell must be proportional to that cell's clearance. Comparing
-the lightest and heaviest weight bands therefore measures the weight effect
-directly, with no free parameters.
+prescribed for a cell must be proportional to that cell's clearance. Reading the
+whole weight axis of a row therefore measures the *shape* of the weight effect
+directly, with no free parameters -- a stronger test than comparing only the two
+end bands, because a wrong functional form has to miss the interior bands too.
 
 ```{r weight-model-check}
-wt_lo_mid <- 2.245  # midpoint of the 2.00-2.49 kg band
-wt_hi_mid <- 4.250  # midpoint of the 4.00-4.50 kg band
+wt_mid <- c(2.245, 2.745, 3.245, 3.745, 4.250)  # midpoints of the five WT bands
 
-# Table 3, PNA 1-7 days, SCr 0.15-0.29 mg/dL row.
-rate_lo <- 17 / 24 * wt_lo_mid  # 17 mg/kg q24h
-rate_hi <-  9 / 12 * wt_hi_mid  #  9 mg/kg q12h
-observed_ratio <- rate_hi / rate_lo
-
-exponential_ratio <- exp(0.308 * (wt_hi_mid - wt_lo_mid))
-power_ratio       <- (wt_hi_mid / wt_lo_mid)^0.308
-
-c(observed = observed_ratio,
-  exponential = exponential_ratio,
-  power = power_ratio)
-
-# The exponential form must be the closer of the two by a wide margin.
-stopifnot(
-  abs(exponential_ratio - observed_ratio) < abs(power_ratio - observed_ratio) / 3
+# Two independent rows of Table 3, both at PNA 1-7 days.
+rows <- list(
+  "SCr 0.15-0.29" = list(mg_per_kg = c(17, 15, 12, 11, 9), tau = c(24, 21, 18, 15, 12)),
+  "SCr 0.50-0.74" = list(mg_per_kg = c(16, 13, 12, 10, 9), tau = c(36, 30, 30, 24, 21))
 )
+
+# Dose rate (mg/h) for each cell, expressed relative to the lightest band.
+relative_rate <- function(c_row) {
+  rate <- c_row$mg_per_kg * wt_mid / c_row$tau
+  rate / rate[1]
+}
+
+wt_check <- tibble::tibble(
+  row      = rep(names(rows), each = length(wt_mid)),
+  wt       = rep(wt_mid, length(rows)),
+  observed = unlist(lapply(rows, relative_rate), use.names = FALSE)
+) |>
+  dplyr::mutate(
+    exponential = exp(0.308 * (wt - wt_mid[1])),
+    power       = (wt / wt_mid[1])^0.308
+  )
+
+wt_check
+
+# Mean absolute relative error of each candidate form across all 10 cells.
+err <- wt_check |>
+  dplyr::summarise(
+    exponential = mean(abs(exponential - observed) / observed),
+    power       = mean(abs(power - observed) / observed)
+  )
+err
+
+# The exponential form must track the nomogram closely AND beat the allometric
+# form by a wide margin. Both bounds have ample headroom (measured: ~3% vs ~19%),
+# so neither is filed down to the observed value.
+stopifnot(err$exponential < 0.10, err$exponential < err$power / 3)
 ```
 
-The nomogram implies a 2.0-fold clearance increase across the weight range; the
-exponential form predicts 1.85 and the allometric form only 1.22. The
-exponential reading is adopted.
+Across all ten cells the exponential form tracks the published nomogram to about
+3% on average, while the allometric power form is off by about 19% and
+understates the size of the effect roughly four-fold: at the heaviest band it predicts a 1.22-fold clearance
+increase where the nomogram demands 1.8-2.0. The exponential reading is adopted.
 
 A second, independent consequence of the exponential-and-uncentred weight model
 is that `VC` carries no covariate at all, so the peak concentration `dose / VC`
@@ -230,8 +251,8 @@ prescribe about 38 mg, which is `38 / 1.281` = 30 mg/L -- the paper's stated
 peak target.
 
 ```{r peak-target-check}
-dose_lo <- 17 * wt_lo_mid
-dose_hi <-  9 * wt_hi_mid
+dose_lo <- 17 * wt_mid[1]   # 17 mg/kg at the 2.00-2.49 kg band midpoint
+dose_hi <-  9 * wt_mid[5]   #  9 mg/kg at the 4.00-4.50 kg band midpoint
 vc      <- 1.281
 
 c(dose_lo_mg = dose_lo, dose_hi_mg = dose_hi,
@@ -248,8 +269,11 @@ Original observed data are not publicly available, so the figures below use
 virtual neonates whose covariate distributions approximate Table 1.
 
 ```{r cohort-helpers}
-set.seed(20250418)
-rxode2::rxSetSeed(20250418)
+# Each stochastic block below seeds itself immediately before it draws, rather
+# than relying on one global seed here. A single top-of-file seed would make
+# every draw depend on the cumulative RNG consumption of every chunk above it,
+# so merely inserting or reordering a chunk would silently shift every result
+# and assertion downstream.
 
 DAYS_PER_MONTH <- 30.4375  # canonical PNA column is in months; the paper uses days
 
@@ -295,6 +319,8 @@ n_dose_for_ss <- function(tau) pmax(3L, pmin(12L, as.integer(ceiling(120 / tau))
 ## Population cohort (Figures 1 and 3)
 
 ```{r cohort-pop}
+set.seed(20250418)
+
 n_pop <- 200
 
 subj_pop <- tibble::tibble(
@@ -360,6 +386,8 @@ is taken at the end of the 30-min infusion and trough at the end of the dosing
 interval, at both the first dose and steady state.
 
 ```{r cohort-nomogram}
+set.seed(20250419)
+
 nomogram <- tibble::tribble(
   ~pna_band, ~scr_band, ~wt_band, ~mg_per_kg, ~tau,
   # PNA 1-7 days
@@ -440,6 +468,10 @@ nrow(events_nom)
 # Simulation
 
 ```{r simulate}
+# rxSolve draws the between-subject etas, so this block is stochastic too and
+# carries its own seed for rxode2's generator.
+rxode2::rxSetSeed(20250420)
+
 mod <- readModelDb("Matcha_2025_amikacin")
 
 sim_pop <- rxode2::rxSolve(
@@ -552,7 +584,12 @@ intervals <- data.frame(
   cl.obs     = TRUE
 )
 
-nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+# progress = FALSE suppresses PKNCA's progress bar, whose timing-dependent
+# output is otherwise the only thing that differs between two renders.
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals,
+                   options = list(progress = FALSE))
+)
 
 nca_res$result |>
   dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs",
@@ -602,7 +639,8 @@ typ_nca <- dplyr::bind_rows(
 typ_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
   PKNCA::PKNCAconc(typ_nca, Cc ~ time | label + id),
   PKNCA::PKNCAdose(dose_df, amt ~ time | label + id),
-  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE)
+  intervals = data.frame(start = 0, end = Inf, aucinf.obs = TRUE),
+  options = list(progress = FALSE)
 ))
 
 cl_expected <-
@@ -835,15 +873,20 @@ stopifnot(all(ceilings$ceiling_pct > 40), all(ceilings$ceiling_pct < 50))
   raster of page 3 of the article PDF (bounding boxes from `pdftotext -bbox`).
   Each was then corroborated against a second, independent source: Eq. 4 against
   the Table 3 nomogram arithmetic above, and Eq. 8 against supplementary
-  Table S1, which prints it in code form. No value was inferred.
+  Table S1, which prints it in code form. A third, purely mechanical check
+  supports Eq. 4: in the `pdftotext -bbox` output the token `WT0:308` sits at
+  yMin 487.1 while the adjacent `Exp` sits at 489.0, so the weight term is
+  positionally a superscript on `Exp` rather than a base of a power. No value
+  was inferred.
 * **Eq. 4's exponential weight model is independently confirmed by Table 3.**
-  Within the PNA 1-7 day / SCr 0.15-0.29 row the nomogram moves from
-  17 mg/kg q24h at 2.00-2.49 kg to 9 mg/kg q12h at 4.00-4.50 kg. Taking band
-  midpoints, total dose rate rises from 1.59 to 3.19 mg/h, a ratio of 2.0.
   Since dose rate must track clearance to hold the same concentration window,
-  the exponential form predicts `exp(0.308 * (4.25 - 2.25))` = 1.85, whereas an
-  allometric power form `(4.25 / 2.25)^0.308` would predict only 1.22. The
-  exponential reading is the only one compatible with the published nomogram.
+  the five weight bands of a nomogram row measure the weight effect with no free
+  parameters. Across all five bands of two independent rows (10 cells; see the
+  weight-model check above) the exponential form matches the published dose
+  rates to about 3% on average, while the allometric power form is off by about
+  19% and understates the effect roughly four-fold at the heaviest band
+  (1.22-fold predicted against 1.8-2.0 demanded). The exponential reading is the
+  only one compatible with the published nomogram.
 * **`log` is the natural logarithm** in Eq. 8. The model was fitted in
   Julia/Pumas, where `log` is the natural log, and supplementary Table S1
   writes the equation in that code form. Using base-10 instead would shift
@@ -904,12 +947,20 @@ stopifnot(all(ceilings$ceiling_pct > 40), all(ceilings$ceiling_pct < 50))
   covariates". The paper used 100 virtual subjects per cell; 50 are used here to
   keep the vignette inside its render-time budget.
 * **Peak-window attainment does not reproduce; trough attainment does.**
-  Simulated first-dose trough attainment is 50.4% against the published ~50%,
-  but simulated peak attainment is below the published ~50% on both the
-  first-dose and steady-state bases. As shown above, the perfectly-centred
-  upper bound implied by the model's own between-subject variability is about
-  45% for *either* endpoint, so a ~50% figure for both is at or just past what
-  the published parameters permit. This is reported as a discrepancy in the
+  Simulated first-dose trough attainment is
+  `r sprintf("%.1f%%", attainment_summary$Within[attainment_summary$endpoint == "Trough" & attainment_summary$dosing == "First dose"])`
+  against the published ~50%, but simulated peak attainment
+  (`r sprintf("%.1f%%", attainment_summary$Within[attainment_summary$endpoint == "Peak" & attainment_summary$dosing == "First dose"])`
+  at the first dose,
+  `r sprintf("%.1f%%", attainment_summary$Within[attainment_summary$endpoint == "Peak" & attainment_summary$dosing == "Steady state"])`
+  at steady state) is below the published ~50% on both bases. As shown above,
+  the perfectly-centred upper bound implied by the model's own between-subject
+  variability is
+  `r sprintf("%.1f%%", ceilings$ceiling_pct[ceilings$endpoint == "Peak"])` for
+  the peak and
+  `r sprintf("%.1f%%", ceilings$ceiling_pct[ceilings$endpoint == "Trough"])` for
+  the trough, so a ~50% figure for both is at or just past what the published
+  parameters permit. This is reported as a discrepancy in the
   source rather than corrected in the model, and no parameter was tuned. The
   paper does not state how many of its 100 virtual subjects per cell were
   simulated per replicate, nor whether attainment was pooled across cells or
