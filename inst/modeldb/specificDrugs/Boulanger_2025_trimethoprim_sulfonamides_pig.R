@@ -33,6 +33,18 @@ Boulanger_2025_trimethoprim_sulfonamides_pig <- function() {
   )
   vignette <- "Boulanger_2025_trimethoprim_sulfonamides_pig"
   units    <- list(time = "h", dosing = "mg/kg", concentration = "ug/mL")
+  # Declared explicitly: buildModelDb()'s dosing heuristic only recognises the
+  # literal names `depot` and `central`, so without this field the registry
+  # would record just "depot,central" and hide the eight sibling-drug and
+  # intramuscular dosing targets. Table 1 doses every one of these: IV into the
+  # four central compartments, oral into the four `depot`s, IM into `depot2`
+  # (TMP) and `depot2_sdz` (SDZ).
+  dosing   <- c(
+    "depot", "depot2", "central",
+    "depot_sdz", "depot2_sdz", "central_sdz",
+    "depot_sdmx", "central_sdmx",
+    "depot_smx", "central_smx"
+  )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
   # biological matrix. Doses are administered per kilogram of body weight
