@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Derippe 2024 BH3-mimetic apoptosis QSP, mouse venetoclax PK, and SU-DHL-4 xenograft growth models ([doi:10.1002/psp4.13158](https://doi.org/10.1002/psp4.13158)) -- SU-DHL-4 and KARPAS-422 lymphoma cell lines in vitro, with a mouse xenograft bridge.
+- Add Kiriyama 2024 nifedipine and captopril ([doi:10.1002/prp2.1249](https://doi.org/10.1002/prp2.1249)) -- spontaneously hypertensive rats under urethane anaesthesia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
