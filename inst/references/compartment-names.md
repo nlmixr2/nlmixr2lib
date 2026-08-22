@@ -592,16 +592,6 @@ The three canonicals below describe the drug-target-effector-cell mass-action bi
 - **Example models:** `Poels_2025_elranatamab_qsp.R`.
 - **Notes:** Founding example Poels 2025 (Supplementary Eqs 28-29). Baseline marrow T cells are not independent of `tcell_central`: the paper asserts steady state at t = 0, which fixes the ratio at `(k_TC_c_BM * Vc) / (k_TC_BM_c * V_BM)`.
 
-### mprotein (**canonical serum monoclonal M-protein**)
-- **Type:** compartment
-- **Role:** Serum monoclonal immunoglobulin (M-protein, M-spike) concentration (g/L), produced in proportion to total myeloma-cell burden and cleared first-order. With `flc` it is the pair of paraprotein biomarkers the IMWG response criteria are defined on, so it is the usual efficacy read-out for multiple-myeloma models.
-- **Source aliases:**
-  - `M_P` -- Poels 2025 paper notation.
-  - `MProtein` -- Poels 2025 Supplementary Table 2 code alias.
-  - `M-spike`, `SPEP`.
-- **Example models:** `Poels_2025_elranatamab_qsp.R`.
-- **Notes:** Founding example Poels 2025 (Supplementary Eq 11). Note `Collins_2023_belantamab_mprotein.R` carries M-protein in the generic `tumor` compartment; that predates this canonical and is a candidate for migration. Units are g/L -- Poels 2025 Figure 2b labels its M-protein axis "(g/dL)" over a 0-65 range, which is a figure error (Supplementary Table 2 gives g/L over 0-70).
-
 ### flc (**canonical involved serum free light chain**)
 - **Type:** compartment
 - **Role:** Involved serum free light chain concentration (mg/L), produced in proportion to total myeloma-cell burden and cleared first-order. Used as the response biomarker for patients whose M-protein is not measurable at baseline (IMWG threshold 0.5 g/dL), so the two states together give an "integrated paraprotein" per patient.
@@ -2524,14 +2514,18 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:** none.
 - **Example models:** `Schindler_2016_sunitinib.R`.
 
-### mprotein (**canonical serum M-protein PD output**)
+### mprotein (**canonical serum M-protein**)
 - **Type:** compartment
-- **Role:** Serum M-protein (monoclonal immunoglobulin, "myeloma protein", paraprotein) concentration in g/L, the International Myeloma Working Group standard measure of tumor burden in multiple myeloma and the endpoint on which objective response and progressive disease are defined. Used as the state of tumor-growth-inhibition models fitted to myeloma trials, in the same role that `sld` and `tumor_size` play for solid-tumor RECIST endpoints and that `psa` plays for prostate cancer.
+- **Role:** Serum monoclonal immunoglobulin (M-protein, M-spike, paraprotein) concentration in g/L: the International Myeloma Working Group standard measure of tumor burden in multiple myeloma, and the endpoint objective response and progressive disease are defined on. Produced in proportion to total myeloma-cell burden and cleared first-order. Used as the state of tumor-growth-inhibition models fitted to myeloma trials, in the same role that `sld` and `tumor_size` play for solid-tumor RECIST endpoints and that `psa` plays for prostate cancer. With `flc` it is the pair of paraprotein biomarkers the IMWG response criteria are defined on.
 - **Source aliases:**
+  - `M_P` -- Poels 2025 paper notation.
+  - `MProtein` -- Poels 2025 Supplementary Table 2 code alias.
   - `MP` -- Li 2025 notation.
+  - `M-spike`, `SPEP`.
   - `M-protein`, `M protein`, `myeloma protein`, `paraprotein` -- clinical long forms.
-- **Example models:** `Li_2025_modakafuspAlfa_mprotein.R` (founding example; Claret tumor-growth-inhibition model with exponential growth `kg`, a saturable Emax kill term driven by unbound modakafusp alfa, and an exponentially appearing resistance term).
-- **Notes:** A serum-biomarker PD output in the same family as `psa`, `crp`, `igg`, `total_igg` and `sdma`, and registered for the same reason: it is a recurring, assay-defined endpoint rather than a paper-mechanistic state. Deliberately NOT `tumor_size` / `sld`: M-protein is a serum protein concentration in g/L, not a lesion dimension, and a model can carry both if a paper reports plasmacytoma measurements alongside the paraprotein. Serum free light chain, which substitutes for M-protein in oligosecretory myeloma, would be a separate entry (`flc`) and is not registered here because no model needs it yet.
+- **Example models:** `Poels_2025_elranatamab_qsp.R` (Supplementary Eq 11); `Li_2025_modakafuspAlfa_mprotein.R` (Claret tumor-growth-inhibition model with exponential growth `kg`, a saturable Emax kill term driven by unbound modakafusp alfa, and an exponentially appearing resistance term).
+- **Notes:** A serum-biomarker PD output in the same family as `psa`, `crp`, `igg`, `total_igg` and `sdma`, and registered for the same reason: it is a recurring, assay-defined endpoint rather than a paper-mechanistic state. Deliberately NOT `tumor_size` / `sld`: M-protein is a serum protein concentration in g/L, not a lesion dimension, and a model can carry both if a paper reports plasmacytoma measurements alongside the paraprotein. Serum free light chain, which substitutes for M-protein in oligosecretory myeloma, is registered separately as `flc`. Units are g/L -- Poels 2025 Figure 2b labels its M-protein axis "(g/dL)" over a 0-65 range, which is a figure error (Supplementary Table 2 gives g/L over 0-70). Note `Collins_2023_belantamab_mprotein.R` carries M-protein in the generic `tumor` compartment; that predates this canonical and is a candidate for migration.
+- **Registered twice, merged 2026-08-22:** two branches independently registered this canonical (Poels 2025 elranatamab under the CD3-bispecific section, Li 2025 modakafusp alfa under lab values). Same concept, same units, same Type -- merged here under lab values, which is where the serum-biomarker family lives.
 
 ### mbl (**canonical bare mean bacterial load**)
 - **Type:** compartment
@@ -3613,14 +3607,6 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Zou_2022_furmonertinib.R` (doi:10.1038/s41401-021-00798-y).
 
-### ndmima (**canonical N-desmethyl-imatinib suffix**)
-- **Type:** metabolite-suffix
-- **Role:** N-desmethyl-imatinib (DM-imatinib, CGP74588), the sole active metabolite of imatinib, formed by CYP3A4- and CYP2C8-mediated N-demethylation. Used as a compartment / parameter / residual-SD suffix in joint parent-plus-metabolite popPK models that follow imatinib and DM-imatinib in plasma simultaneously.
-- **Source aliases:**
-  - `DM-imatinib` / `DMIMA` -- the source-paper abbreviation and control-stream token used by Said 2025; the canonical suffix keeps the `ndm` N-desmethyl marker instead.
-- **Example models:** `Said_2025_imatinib.R` (doi:10.1002/psp4.13299; `central_ndmima`, `lcl_ndmima`, `lvc_ndmima`, `etalcl_ndmima`, `etalvc_ndmima`, `Cc_ndmima`, `expSd_ndmima`, `e_conmed_il6ri_cl_ndmima`).
-- **Notes:** Follows the `ndmsel` (N-desmethyl-selumetinib) pattern ratified on 2026-06-19: the `ndm` marker plus a readable drug contraction, so the suffix reads as n-desmethyl-ima. The paper's own printed abbreviation `DM-imatinib` would contract to `dmima`, which drops the N-desmethyl marker that the 2026-06-19 standardization deliberately introduced, and `ndmi` contracts the drug to a single letter; both were rejected. Operator decision on task sidecar `oare_PMC11919263` request-001 q1. Registered 2026-08-21 alongside the Said 2025 imatinib extraction.
-
 ### ndmsel (**canonical N-desmethyl-selumetinib suffix**)
 - **Type:** metabolite-suffix
 - **Role:** N-desmethyl-selumetinib, active selumetinib metabolite (~3-5-fold more potent for MEK1 inhibition than parent), formed by oxidative N-demethylation.
@@ -3635,7 +3621,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:**
   - `CGP74588` -- the Novartis compound code, used interchangeably with the chemical name in the imatinib literature.
   - `N-desmethyl imatinib` / `metabolite` -- Yang 2025 Table 1 column headings (`CLm/fm`, `V1m/fm`, `Qm/fm`, `V2m/fm`).
-- **Example models:** `Petain_2008_imatinib.R` (one-compartment metabolite; `central_ndmima`), `MenonAndersen_2009_imatinib.R` (two-compartment metabolite; `central_ndmima`, `peripheral1_ndmima`).
+- **Example models:** `Petain_2008_imatinib.R` (one-compartment metabolite; `central_ndmima`), `MenonAndersen_2009_imatinib.R` (two-compartment metabolite; `central_ndmima`, `peripheral1_ndmima`), `Said_2025_imatinib.R` (merged from a duplicate register entry during merge dedup).
 - **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib) rather than a bare `ndi`, so the suffix reads as `n-desmethyl-ima`. Both founding models parameterise the metabolite as apparent with respect to the unidentifiable fraction metabolized (`CLm/fm`, `V1m/fm`), so `central_ndmima` holds an fm-scaled amount; the predicted metabolite concentration is nonetheless the true one, because the same `fm` divides both the clearance and the volume. Registered on 2026-08-18 alongside the Yang 2025 imatinib external-evaluation extraction.
 
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
