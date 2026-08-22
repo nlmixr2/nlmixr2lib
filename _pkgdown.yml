@@ -3430,6 +3430,8 @@ navbar:
         href: articles/Hamberg_2007_warfarin_pkpd_pgx.html
       - text: "Warfarin s (Lane 2011)"
         href: articles/Lane_2011_warfarin.html
+      - text: "Warfarin s (Ohara 2014)"
+        href: articles/Ohara_2014_warfarin_s.html
       - text: "Warfarin vk2 (Zhou 2016)"
         href: articles/Zhou_2016_warfarin_vk2.html
       - text: "XZP5610 (Zhang 2024)"
@@ -4532,6 +4534,7 @@ articles:
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
   - articles/Ogungbenro_2009_penciclovir
+  - articles/Ohara_2014_warfarin_s
   - articles/Oishi_2014_fesoterodine
   - articles/Ojara_2024_lamivudine
   - articles/Okada_2024_triazolam
