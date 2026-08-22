@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ohara 2014 S-warfarin PK/PD ([doi:10.1371/journal.pone.0105891](https://doi.org/10.1371/journal.pone.0105891)) -- Chinese adults in Taiwan starting warfarin induction therapy.
+- Add van Os 2024 temocillin PK/PD ([doi:10.1093/jac/dkae243](https://doi.org/10.1093/jac/dkae243)) -- four in vitro *Escherichia coli* strains, with plasma pharmacokinetics from critically ill patients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

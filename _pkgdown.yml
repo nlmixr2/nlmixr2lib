@@ -3116,6 +3116,14 @@ navbar:
         href: articles/VanWart_2025_telavancin.html
       - text: "Temocapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Temocillin atcc25922 (vanOs 2024)"
+        href: articles/vanOs_2024_temocillin.html
+      - text: "Temocillin isolmic16 (vanOs 2024)"
+        href: articles/vanOs_2024_temocillin.html
+      - text: "Temocillin isolmic4 (vanOs 2024)"
+        href: articles/vanOs_2024_temocillin.html
+      - text: "Temocillin isolmic8 (vanOs 2024)"
+        href: articles/vanOs_2024_temocillin.html
       - text: "Temozolomide (Mazzocco 2015)"
         href: articles/Mazzocco_2015_temozolomide.html
       - text: "Tenofovir (Baheti 2011)"
@@ -5117,6 +5125,7 @@ articles:
   - articles/vanHasselt_2015_eribulin
   - articles/vanIersel_2018_posaconazole
   - articles/vanMaanen_2025_amyloid
+  - articles/vanOs_2024_temocillin
   - articles/vanRongen_2015_midazolam
   - articles/vanRongen_2016_acetaminophen
   - articles/vanRongen_2017_midazolam
