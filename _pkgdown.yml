@@ -2110,6 +2110,16 @@ navbar:
         href: articles/Dowling_2008_naloxone.html
       - text: "Naloxone (Laffont 2024)"
         href: articles/Laffont_2024_naloxone.html
+      - text: "Naloxone (Yang 2024)"
+        href: articles/Yang_2024_naloxone_opioid_reversal.html
+      - text: "Naloxone buprenorphine (Yang 2024)"
+        href: articles/Yang_2024_naloxone_opioid_reversal.html
+      - text: "Naloxone carfentanil (Yang 2024)"
+        href: articles/Yang_2024_naloxone_opioid_reversal.html
+      - text: "Naloxone fentanyl (Yang 2024)"
+        href: articles/Yang_2024_naloxone_opioid_reversal.html
+      - text: "Naloxone morphine (Yang 2024)"
+        href: articles/Yang_2024_naloxone_opioid_reversal.html
       - text: "Naltrexone bupropion (Sharma 2018)"
         href: articles/Sharma_2018_naltrexone_bupropion.html
       - text: "Naproxcinod (Bjornsson 2011)"
@@ -5005,10 +5015,7 @@ articles:
   - articles/Yang_2023_diclazuril
   - articles/Yang_2023_ganciclovir_model_repository
   - articles/Yang_2024_axatilimab
-  - articles/Yang_2024_dabigatran
-  - articles/Yang_2024_meropenem_pbpk
-  - articles/Yang_2024_zastaprazan
-  - articles/Yang_2025_imatinib_external_evaluation
+  - articles/Yang_2024_naloxone_opioid_reversal
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2025_flurbiprofen
