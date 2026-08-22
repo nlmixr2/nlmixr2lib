@@ -32,6 +32,22 @@ navbar:
         href: articles/Wang_2024_saxagliptin_dpp4_rat.html
       - text: "8C2 (Abuqayyas 2012)"
         href: articles/Abuqayyas_2012_8C2.html
+      - text: "8Omethylretusin rat (Liu 2024)"
+        href: articles/Liu_2024_spatholobiCaulis.html
+      - text: "ABT 102 (Othman 2013)"
+        href: articles/Othman_2013_ABT_102.html
+      - text: "ADC human qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC invitro qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC mouse qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ASP8232 (Snelder 2020)"
+        href: articles/Snelder_2020_ASP8232.html
+      - text: "AT9283 (Duong 2017)"
+        href: articles/Duong_2017_AT9283.html
+      - text: "AZD6088 rat (Viberg 2012)"
+        href: articles/Viberg_2012_AZD6088_rat.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
       - text: "Abacavir (Chandasana 2024b)"
@@ -56,6 +72,8 @@ navbar:
         href: articles/Zhong_2026_abatacept.html
       - text: "Abemaciclib cns pbpk (Wickramasinghe 2025)"
         href: articles/Wickramasinghe_2025_spatial_cns_pbpk.html
+      - text: "Abemaciclib qsp (Zhang 2025)"
+        href: articles/Zhang_2025_abemaciclib.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
@@ -72,12 +90,6 @@ navbar:
         href: articles/Nader_2017_adalimumab.html
       - text: "Adalimumab (Zheng 2012)"
         href: articles/Zheng_2012_minipig_mab.html
-      - text: "ADC human qsp (Scheuher 2023)"
-        href: articles/Scheuher_2023_ADC_platform_qsp.html
-      - text: "ADC invitro qsp (Scheuher 2023)"
-        href: articles/Scheuher_2023_ADC_platform_qsp.html
-      - text: "ADC mouse qsp (Scheuher 2023)"
-        href: articles/Scheuher_2023_ADC_platform_qsp.html
       - text: "Adecatumumab (Cao 2013)"
         href: articles/Cao_2013_adecatumumab.html
       - text: "Aditoprim pbpk (Mi 2024)"
@@ -198,6 +210,8 @@ navbar:
         href: articles/HernandezLozano_2025_apramycin.html
       - text: "Apramycin mouse (HernandezLozano 2025)"
         href: articles/HernandezLozano_2025_apramycin.html
+      - text: "Apremilast (Warren 2025)"
+        href: articles/Warren_2025_pde4_il13_atopic_dermatitis.html
       - text: "Apx3330 (Silva 2024)"
         href: articles/Silva_2024_apx3330.html
       - text: "Arginine (Brussee 2016)"
@@ -240,14 +254,10 @@ navbar:
         href: articles/Lv_2025_asc10a.html
       - text: "Asenapine (Dogterom 2018)"
         href: articles/Dogterom_2018_asenapine.html
-      - text: "ASP8232 (Snelder 2020)"
-        href: articles/Snelder_2020_ASP8232.html
       - text: "Astegolimab (Kotani 2022)"
         href: articles/Kotani_2022_astegolimab.html
       - text: "Asundexian (Yassen 2025)"
         href: articles/Yassen_2025_asundexian.html
-      - text: "AT9283 (Duong 2017)"
-        href: articles/Duong_2017_AT9283.html
       - text: "Atazanavir (Colombo 2006)"
         href: articles/Colombo_2006_atazanavir.html
       - text: "Atazanavir (Dickinson 2009)"
@@ -296,8 +306,10 @@ navbar:
         href: articles/Garrett_2014_axitinib.html
       - text: "Axomadol (MangasSanjuan 2016)"
         href: articles/MangasSanjuan_2016_axomadol.html
-      - text: "AZD6088 rat (Viberg 2012)"
-        href: articles/Viberg_2012_AZD6088_rat.html
+      - text: "Azd7648 mouse (DeJongh 2025)"
+        href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
+      - text: "Azd7648 olaparib xenograft mouse (DeJongh 2025)"
+        href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
       - text: "Azithromycin (Merchan 2015)"
         href: articles/Merchan_2015_azithromycin.html
       - text: "Azithromycin (Sampson 2014)"
@@ -310,14 +322,22 @@ navbar:
         href: articles/Xie_2025_aztreonam_avibactam.html
       - text: "Aztreonam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
-      - text: "Bapineuzumab (Hu 2014)"
-        href: articles/Hu_2014_bapineuzumab.html
-      - text: "Baricitinib (Decker 2024)"
-        href: articles/Decker_2024_baricitinib.html
       - text: "BAY81 8973 (Garmann 2017)"
         href: articles/Garmann_2017_BAY81_8973.html
       - text: "BAY94 9027 (Solms 2020)"
         href: articles/Solms_2020_BAY94_9027.html
+      - text: "BI754111 mpbpk (Michelet 2025)"
+        href: articles/Michelet_2025_BI754111_mpbpk.html
+      - text: "BIIB023 (Galluppi 2016)"
+        href: articles/Galluppi_2016_BIIB023.html
+      - text: "Balcinrenone (Parkinson 2025)"
+        href: articles/Parkinson_2025_balcinrenone.html
+      - text: "Bapineuzumab (Hu 2014)"
+        href: articles/Hu_2014_bapineuzumab.html
+      - text: "Baricitinib (Decker 2024)"
+        href: articles/Decker_2024_baricitinib.html
+      - text: "Baricitinib (Decker 2026)"
+        href: articles/Decker_2026_baricitinib.html
       - text: "Bedaquiline (Svensson 2013)"
         href: articles/Svensson_2013_bedaquiline.html
       - text: "Bedaquiline (Svensson 2014)"
@@ -390,14 +410,18 @@ navbar:
         href: articles/Papachristos_2020_bevacizumab_pkpd.html
       - text: "Bevacizumab qss (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_qss.html
-      - text: "BIIB023 (Galluppi 2016)"
-        href: articles/Galluppi_2016_BIIB023.html
       - text: "Biib107 (Toukam 2025)"
         href: articles/Toukam_2025_biib107.html
       - text: "Bitopertin (Rognas 2025)"
         href: articles/Rognas_2025_bitopertin.html
       - text: "Bivalirudin (Zhang 2012)"
         href: articles/Zhang_2012_bivalirudin.html
+      - text: "Bnt162b2 molecular qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
+      - text: "Bnt162b2 over60 qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
+      - text: "Bnt162b2 qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Borneol dog pbpk (Zhu 2024)"
         href: articles/Zhu_2024_borneol_pbpk.html
       - text: "Borneol human pbpk (Zhu 2024)"
@@ -428,8 +452,12 @@ navbar:
         href: articles/Schoemaker_2017_brivaracetam.html
       - text: "Brodalumab (Timmermann 2019)"
         href: articles/Timmermann_2019_brodalumab.html
+      - text: "Bumetanide pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Buprenorphine (Bjornsson 2023)"
         href: articles/Bjornsson_2023_buprenorphine.html
+      - text: "Busulfan (Balis 2025)"
+        href: articles/Balis_2025_busulfan.html
       - text: "Busulfan (Choe 2012)"
         href: articles/Choe_2012_busulfan.html
       - text: "Busulfan (Lawson 2022)"
@@ -444,6 +472,8 @@ navbar:
         href: articles/Fung_2008_butanediol_rat.html
       - text: "C3G (Jeon 2012)"
         href: articles/Jeon_2012_C3G.html
+      - text: "CC292 (Li 2017)"
+        href: articles/Li_2017_CC292.html
       - text: "Cabamiquine (Courlet 2023)"
         href: articles/Courlet_2023_cabamiquine.html
       - text: "Cabamiquine pk (Courlet 2023)"
@@ -470,6 +500,8 @@ navbar:
         href: articles/Blesch_2003_capecitabine.html
       - text: "Capecitabine (Urien 2005)"
         href: articles/Urien_2005_capecitabine.html
+      - text: "Captopril pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Captopril rat (Kiriyama 2024)"
         href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
       - text: "Carbenicillin qsp (LopezArguello 2023)"
@@ -490,8 +522,6 @@ navbar:
         href: articles/Lin_2024_casirivimab.html
       - text: "Caspofungin (Wurthwein 2013)"
         href: articles/Wurthwein_2013_caspofungin.html
-      - text: "CC292 (Li 2017)"
-        href: articles/Li_2017_CC292.html
       - text: "Cebranopadol (Kleideiter 2017)"
         href: articles/Kleideiter_2017_cebranopadol.html
       - text: "Cebranopadol (Kleideiter 2018)"
@@ -512,6 +542,10 @@ navbar:
         href: articles/Shoji_2016_cefepime.html
       - text: "Cefepime (Valadez 2025)"
         href: articles/Valadez_2025_cefepime.html
+      - text: "Cefepime (Zhao 2020)"
+        href: articles/Gotta_2025_cefepime_infant_neurotoxicity.html
+      - text: "Cefepime (deCacqueray 2022)"
+        href: articles/Gotta_2025_cefepime_infant_neurotoxicity.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefiderocol (Zhang 2025)"
@@ -636,6 +670,8 @@ navbar:
         href: articles/Savic_2017_cladribine.html
       - text: "Clarithromycin (Abduljalil 2009)"
         href: articles/Abduljalil_2009_clarithromycin.html
+      - text: "Clarithromycin (Shah 2025)"
+        href: articles/Shah_2025_clarithromycin.html
       - text: "ClavulanicAcid (Schouwenburg 2025)"
         href: articles/Schouwenburg_2025_clavulanicAcid.html
       - text: "Clazakizumab (Muthukrishnan 2025)"
@@ -716,10 +752,14 @@ navbar:
         href: articles/Kurup_2024_DZIF10c.html
       - text: "Dabigatran (Liesenfeld 2013)"
         href: articles/Liesenfeld_2013_dabigatran.html
-      - text: "Dabigatran aPTT (Liesenfeld 2006)"
-        href: articles/Liesenfeld_2006_dabigatran.html
+      - text: "Dabigatran (Yang 2024)"
+        href: articles/Yang_2024_dabigatran.html
       - text: "Dabigatran ECT (Liesenfeld 2006)"
         href: articles/Liesenfeld_2006_dabigatran.html
+      - text: "Dabigatran aPTT (Liesenfeld 2006)"
+        href: articles/Liesenfeld_2006_dabigatran.html
+      - text: "Dabigatran sheep (Eaton 2025)"
+        href: articles/Eaton_2025_dabigatran_sheep.html
       - text: "Daclizumab (Othman 2014)"
         href: articles/Othman_2014_daclizumab.html
       - text: "Daclizumab cd25 (Diao 2016)"
@@ -732,6 +772,8 @@ navbar:
         href: articles/Mondick_2006_dactinomycin.html
       - text: "Daidzin rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
+      - text: "Dalbavancin (Baiardi 2025)"
+        href: articles/Baiardi_2025_dalbavancin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Danoprevir (Canini 2015)"
@@ -846,11 +888,11 @@ navbar:
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Dilmapimod (Yang 2016)"
         href: articles/Yang_2016_dilmapimod.html
+      - text: "Dimethyltryptamine LZc (Eckernas 2023)"
+        href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine alphaPower (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
-        href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
-      - text: "Dimethyltryptamine LZc (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Docetaxel (Janssen 2023)"
         href: articles/Janssen_2023_pregnancy_cytotoxics.html
@@ -952,6 +994,8 @@ navbar:
         href: articles/Keizer_2011_E7820.html
       - text: "E7820 mouse (Keizer 2011)"
         href: articles/Keizer_2011_E7820.html
+      - text: "EGF IFN chimera (DoldanMartelli 2013)"
+        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
       - text: "Eculizumab (Lee 2024)"
         href: articles/Lee_2024_eculizumab.html
       - text: "Edoxaban (Jonsson 2015)"
@@ -986,8 +1030,8 @@ navbar:
         href: articles/Vucicevic_2025_efavirenz.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
-      - text: "EGF IFN chimera (DoldanMartelli 2013)"
-        href: articles/DoldanMartelli_2013_EGF_IFN_chimera.html
+      - text: "Elinzanetant (Willmann 2024)"
+        href: articles/Willmann_2024_elinzanetant.html
       - text: "Elotuzumab (Ide 2020)"
         href: articles/Ide_2020_elotuzumab.html
       - text: "Elranatamab qsp (Poels 2025)"
@@ -1104,10 +1148,12 @@ navbar:
         href: articles/Toffoli_2001_etoposide.html
       - text: "Etrolizumab (Moein 2022)"
         href: articles/Moein_2022_etrolizumab.html
-      - text: "Everolimus (deWit 2016)"
-        href: articles/deWit_2016_everolimus.html
+      - text: "Everolimus (Mo 2025)"
+        href: articles/Mo_2025_everolimus.html
       - text: "Everolimus (TerHeine 2018)"
         href: articles/TerHeine_2018_everolimus.html
+      - text: "Everolimus (deWit 2016)"
+        href: articles/deWit_2016_everolimus.html
       - text: "Evinacumab (Pu 2021)"
         href: articles/Pu_2021_evinacumab.html
       - text: "Evogliptin (Kim 2025)"
@@ -1126,6 +1172,14 @@ navbar:
         href: articles/Cirincione_2017_exenatide_er.html
       - text: "Exendin939 (Ng 2018)"
         href: articles/Ng_2018_exendin939.html
+      - text: "F53b human pbpk (Zhang 2024)"
+        href: articles/Zhang_2024_f53b_pbpk.html
+      - text: "F53b human prepregnancy pbpk (Zhang 2024)"
+        href: articles/Zhang_2024_f53b_pbpk.html
+      - text: "F53b mouse pbpk (Zhang 2024)"
+        href: articles/Zhang_2024_f53b_pbpk.html
+      - text: "FXa inhibitors mbma (Yoshioka 2018)"
+        href: articles/Yoshioka_2018_FXa_inhibitors_mbma.html
       - text: "Factor viii (Hazendonk 2016)"
         href: articles/Hazendonk_2016_factor_viii.html
       - text: "Factor viii (Noe 1996)"
@@ -1190,6 +1244,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Fentanyl pbpk (Han 2025)"
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
+      - text: "FerricCarboxymaltose rat (Cao 2025)"
+        href: articles/Cao_2025_ferricCarboxymaltose.html
       - text: "Ferumoxytol (Plock 2014)"
         href: articles/Plock_2014_ferumoxytol.html
       - text: "Fesoterodine (Oishi 2014)"
@@ -1292,10 +1348,16 @@ navbar:
         href: articles/Zou_2022_furmonertinib.html
       - text: "Furosemide (Hornik 2025)"
         href: articles/Hornik_2025_furosemide.html
+      - text: "Furosemide pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "FxiLica (Willmann 2021)"
         href: articles/Willmann_2021_fxi_aso.html
       - text: "G csf (Melhem 2018)"
         href: articles/Melhem_2018_g_csf.html
+      - text: "GNbAC1 (Cao 2013)"
+        href: articles/Cao_2013_GNbAC1.html
+      - text: "Gabapentin (AlZubaydi 2024)"
+        href: articles/AlZubaydi_2024_gabapentin.html
       - text: "Galcanezumab (Kielbasa 2020)"
         href: articles/Kielbasa_2020_galcanezumab.html
       - text: "Ganciclovir (Acosta 2007)"
@@ -1412,14 +1474,14 @@ navbar:
         href: articles/Kimura_2023_glucarpidase.html
       - text: "Glutamine (Sadaf 2024)"
         href: articles/Sadaf_2024_glutamine.html
-      - text: "GNbAC1 (Cao 2013)"
-        href: articles/Cao_2013_GNbAC1.html
       - text: "Granisetron (Li 2023)"
         href: articles/Li_2023_granisetron.html
       - text: "Guselkumab (Chen 2022)"
         href: articles/Chen_2022_guselkumab.html
       - text: "Guselkumab (Yao 2018)"
         href: articles/Yao_2018_guselkumab.html
+      - text: "HL2351 (Ngo 2020)"
+        href: articles/Ngo_2020_HL2351.html
       - text: "Haloperidol (Franken 2017)"
         href: articles/Franken_2017_haloperidol.html
       - text: "Haloperidol panss subscales (PillaReddy 2013)"
@@ -1490,6 +1552,12 @@ navbar:
         href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Jiang 2023)"
         href: articles/Jiang_2023_imatinib.html
+      - text: "Imatinib (Judson 2005)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (MenonAndersen 2009)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imatinib (Petain 2008)"
+        href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Said 2025)"
         href: articles/Said_2025_imatinib.html
       - text: "Imatinib (Schindler 2017)"
@@ -1552,6 +1620,22 @@ navbar:
         href: articles/Marcantonio_2022_efa.html
       - text: "Infliximab (Song 2025)"
         href: articles/Song_2025_infliximab.html
+      - text: "Infliximab aubourg (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
+      - text: "Infliximab dubinsky (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
+      - text: "Infliximab fasanmade combined (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
+      - text: "Infliximab fasanmade pediatric (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
+      - text: "Infliximab passot adult (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
+      - text: "Infliximab passot pediatric (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
+      - text: "Infliximab ternant (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
+      - text: "Infliximab wojciechowski (Kim 2025)"
+        href: articles/Kim_2025_infliximab.html
       - text: "Inotuzumab (Wu 2024)"
         href: articles/Wu_2024_inotuzumab.html
       - text: "Interferon alfa 2b (Chatelut 1999)"
@@ -1728,6 +1812,8 @@ navbar:
         href: articles/Tsuji_2017_linezolid.html
       - text: "Linezolid (Xu 2024)"
         href: articles/Xu_2024_linezolid.html
+      - text: "Linezolid (Zavrelova 2025)"
+        href: articles/Zavrelova_2025_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"
         href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -1776,6 +1862,10 @@ navbar:
         href: articles/Siebinga_2023_lu177psma617.html
       - text: "Lu177psmaIT (Siebinga 2024)"
         href: articles/Siebinga_2024_lu177psmaIT.html
+      - text: "Lu177psmaIT pbpk (Golzaryan 2025)"
+        href: articles/Golzaryan_2025_lu177psmaIT_pbpk.html
+      - text: "Lumefantrine (Chotsiri 2019)"
+        href: articles/Chotsiri_2019_lumefantrine.html
       - text: "Lumefantrine (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Lumefantrine (Hoglund 2015)"
@@ -1812,10 +1902,10 @@ navbar:
         href: articles/Betts_2018_mAb_linear_PK.html
       - text: "MAb human (Betts 2018)"
         href: articles/Betts_2018_mAb_linear_PK.html
-      - text: "Mab mpbpk human (Muliaditan 2025)"
-        href: articles/Muliaditan_2025_mab_mpbpk.html
-      - text: "Mab mpbpk nhp (Muliaditan 2025)"
-        href: articles/Muliaditan_2025_mab_mpbpk.html
+      - text: "MAb human (Patidar 2024)"
+        href: articles/Patidar_2024_mAb_size_charge_fcrn.html
+      - text: "MAb mouse (Patidar 2024)"
+        href: articles/Patidar_2024_mAb_size_charge_fcrn.html
       - text: "MAb tg32mouse (Betts 2018)"
         href: articles/Betts_2018_mAb_linear_PK.html
       - text: "MAb1 (Zheng 2012)"
@@ -1834,6 +1924,30 @@ navbar:
         href: articles/Zheng_2012_minipig_mab.html
       - text: "MAb8 (Zheng 2012)"
         href: articles/Zheng_2012_minipig_mab.html
+      - text: "MBG453 (Xu 2023)"
+        href: articles/Xu_2023_MBG453.html
+      - text: "MEDI528 (Cao 2013)"
+        href: articles/Cao_2013_MEDI528.html
+      - text: "MHD rat (Clinckers 2008)"
+        href: articles/Clinckers_2008_MHD_rat.html
+      - text: "MI 219 (Zou 2012)"
+        href: articles/Zou_2012_MI_219.html
+      - text: "MK3577 (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
+      - text: "MK3577 t2dm (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
+      - text: "MRNA0184 cyno (Kaushal 2024)"
+        href: articles/Kaushal_2024_mRNA0184.html
+      - text: "MRNA0184 human (Kaushal 2024)"
+        href: articles/Kaushal_2024_mRNA0184.html
+      - text: "MRNA3927 (Attarwala 2023)"
+        href: articles/Attarwala_2023_mRNA3927.html
+      - text: "MTMSATrp mouse (Niloy 2026)"
+        href: articles/Niloy_2026_MTMSATrp_mouse.html
+      - text: "Mab mpbpk human (Muliaditan 2025)"
+        href: articles/Muliaditan_2025_mab_mpbpk.html
+      - text: "Mab mpbpk nhp (Muliaditan 2025)"
+        href: articles/Muliaditan_2025_mab_mpbpk.html
       - text: "Magnesium sulfate (Easterling 2018)"
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
@@ -1852,12 +1966,8 @@ navbar:
         href: articles/Kuester_2008_matuzumab.html
       - text: "Mavrilimumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
-      - text: "MBG453 (Xu 2023)"
-        href: articles/Xu_2023_MBG453.html
       - text: "Mecillinam (Koumaki 2023)"
         href: articles/Koumaki_2023_mecillinam.html
-      - text: "MEDI528 (Cao 2013)"
-        href: articles/Cao_2013_MEDI528.html
       - text: "Medi7836 (Hood 2021)"
         href: articles/Hood_2021_medi7836.html
       - text: "Mefloquine (Hoglund 2018)"
@@ -1916,10 +2026,10 @@ navbar:
         href: articles/Chae_2012_metformin.html
       - text: "Metformin (Choi 2018)"
         href: articles/Choi_2018_metformin.html
-      - text: "Metformin (vanRongen 2018)"
-        href: articles/vanRongen_2018_metformin.html
       - text: "Metformin (Yoon 2013)"
         href: articles/Yoon_2013_metformin.html
+      - text: "Metformin (vanRongen 2018)"
+        href: articles/vanRongen_2018_metformin.html
       - text: "Methotrexate (Gebhard 2023)"
         href: articles/Gebhard_2023_leukemia_maintenance_therapy.html
       - text: "Methotrexate (Joerger 2006)"
@@ -1950,10 +2060,6 @@ navbar:
         href: articles/Randell_2024_metronidazole.html
       - text: "Metronidazole (Suyagh 2011)"
         href: articles/Suyagh_2011_metronidazole.html
-      - text: "MHD rat (Clinckers 2008)"
-        href: articles/Clinckers_2008_MHD_rat.html
-      - text: "MI 219 (Zou 2012)"
-        href: articles/Zou_2012_MI_219.html
       - text: "Micafungin (Leroux 2018)"
         href: articles/Leroux_2018_fluconazole_micafungin.html
       - text: "Micafungin (Martial 2017)"
@@ -1988,8 +2094,20 @@ navbar:
         href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Midazolam pbpk (Brussee 2018)"
         href: articles/Brussee_2018_midazolam_pbpk.html
+      - text: "Midazolam pbpk (Gu 2025)"
+        href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Midazolam pbpk (Han 2025)"
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
+      - text: "Midazolam rat pbpk (Yau 2023)"
+        href: articles/Yau_2023_middle_out_pbpk_translation.html
+      - text: "Mig1 exp1 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
+      - text: "Mig1 exp2 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
+      - text: "Mig1 exp3 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
+      - text: "Mig1 exp4 (Almquist 2015)"
+        href: articles/Almquist_2015_Mig1.html
       - text: "Miglustat (Hajjar 2018)"
         href: articles/Hajjar_2018_pompe_disease.html
       - text: "Miltefosine (Dorlo 2008)"
@@ -2010,10 +2128,6 @@ navbar:
         href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mizoribine (Honda 2006)"
         href: articles/Honda_2006_mizoribine.html
-      - text: "MK3577 (Peng 2014)"
-        href: articles/Peng_2014_MK3577.html
-      - text: "MK3577 t2dm (Peng 2014)"
-        href: articles/Peng_2014_MK3577.html
       - text: "Modafinil (Wu 2012)"
         href: articles/Wu_2012_modafinil.html
       - text: "ModakafuspAlfa (Li 2025)"
@@ -2026,14 +2140,14 @@ navbar:
         href: articles/Hwang_2023_monalizumab.html
       - text: "Moroctocog (Abrantes 2017)"
         href: articles/Abrantes_2017_moroctocog.html
-      - text: "Morphine (deHoogd 2017)"
-        href: articles/deHoogd_2017_morphine.html
       - text: "Morphine (Elkomy 2015)"
         href: articles/Elkomy_2015_morphine.html
       - text: "Morphine (Franken 2015)"
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
+      - text: "Morphine (deHoogd 2017)"
+        href: articles/deHoogd_2017_morphine.html
       - text: "Moxifloxacin (Colin 2014)"
         href: articles/Colin_2014_moxifloxacin.html
       - text: "Moxifloxacin (Hong 2015)"
@@ -2044,14 +2158,8 @@ navbar:
         href: articles/Morganroth_2015_moxifloxacin.html
       - text: "Moxifloxacin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
-      - text: "MRNA0184 cyno (Kaushal 2024)"
-        href: articles/Kaushal_2024_mRNA0184.html
-      - text: "MRNA0184 human (Kaushal 2024)"
-        href: articles/Kaushal_2024_mRNA0184.html
-      - text: "MRNA3927 (Attarwala 2023)"
-        href: articles/Attarwala_2023_mRNA3927.html
-      - text: "MTMSATrp mouse (Niloy 2026)"
-        href: articles/Niloy_2026_MTMSATrp_mouse.html
+      - text: "Mrna1273 qsp (Dasti 2025)"
+        href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Mu receptor binding (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "MycophenolateMofetil (Tsyplakova 2025)"
@@ -2060,8 +2168,6 @@ navbar:
         href: articles/Tsyplakova_2025_mycophenolate.html
       - text: "Mycophenolic acid (Barau 2012)"
         href: articles/Barau_2012_mycophenolic_acid.html
-      - text: "Mycophenolic acid (deWinter 2009)"
-        href: articles/deWinter_2009_mycophenolic_acid.html
       - text: "Mycophenolic acid (Dong 2014)"
         href: articles/Dong_2014_mycophenolic_acid.html
       - text: "Mycophenolic acid (Fromage 2025)"
@@ -2092,8 +2198,6 @@ navbar:
         href: articles/Chen_2024_guhongInjection.html
       - text: "Nab paclitaxel (Chen 2014)"
         href: articles/Chen_2014_nab_paclitaxel.html
-      - text: "NAcetylglutamine rat (Chen 2024)"
-        href: articles/Chen_2024_guhongInjection.html
       - text: "Nadroparin (Chen 2024)"
         href: articles/Chen_2024_nadroparin.html
       - text: "Nalmefene (Kyhl 2016)"
@@ -2154,6 +2258,8 @@ navbar:
         href: articles/Salehi_2025_nicotine_pbpk.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
+      - text: "Nifedipine rat (Kiriyama 2024)"
+        href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
       - text: "Nilotinib (Mauro 2025)"
         href: articles/Mauro_2025_nilotinib.html
       - text: "Nilotinib lowfat (Mauro 2025)"
@@ -2296,10 +2402,38 @@ navbar:
         href: articles/Berges_2015_ozanezumab.html
       - text: "Ozoralizumab (Takeuchi 2023)"
         href: articles/Takeuchi_2023_ozoralizumab.html
-      - text: "Paclitaxel (deJonge 2005)"
-        href: articles/deJonge_2005_paclitaxel.html
+      - text: "PAmAb (Cao 2013)"
+        href: articles/Cao_2013_PAmAb.html
+      - text: "PCoumaricAcid rat (Chen 2024)"
+        href: articles/Chen_2024_guhongInjection.html
+      - text: "PF 06939999 (Guo 2022)"
+        href: articles/Guo_2022_PF_06939999.html
+      - text: "PF00821385 dog (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
+      - text: "PF00821385 human (Langdon 2010)"
+        href: articles/Langdon_2010_PF00821385.html
+      - text: "PF04236921 (Li 2018)"
+        href: articles/Li_2018_PF04236921.html
+      - text: "PF04455242 human (Chang 2011)"
+        href: articles/Chang_2011_PF04455242_prolactin.html
+      - text: "PF04455242 rat (Chang 2011)"
+        href: articles/Chang_2011_PF04455242_prolactin.html
+      - text: "PF04457845 qsp (Benson 2014)"
+        href: articles/Benson_2014_PF04457845_qsp.html
+      - text: "PF04878691 (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 lymphocyte (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 oas (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PF04878691 viralLoad (Jones 2011)"
+        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "PRO95780 (Cao 2013)"
+        href: articles/Cao_2013_PRO95780.html
       - text: "Paclitaxel (Janssen 2023)"
         href: articles/Janssen_2023_pregnancy_cytotoxics.html
+      - text: "Paclitaxel (deJonge 2005)"
+        href: articles/deJonge_2005_paclitaxel.html
       - text: "Paclitaxel myelosuppression (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pacmilimab qsp (Ippolito 2024)"
@@ -2314,8 +2448,10 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Palivizumab (Robbie 2012)"
         href: articles/Robbie_2012_palivizumab.html
-      - text: "PAmAb (Cao 2013)"
-        href: articles/Cao_2013_PAmAb.html
+      - text: "Pamiparib (Wickramasinghe 2025)"
+        href: articles/Wickramasinghe_2025_pamiparib.html
+      - text: "Pamiparib unbound (Wickramasinghe 2025)"
+        href: articles/Wickramasinghe_2025_pamiparib.html
       - text: "Panitumumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Pantoprazole (Pettersen 2009)"
@@ -2330,6 +2466,8 @@ navbar:
         href: articles/Wu_2025_paracetamol.html
       - text: "Paracetamol (Zhao 2025)"
         href: articles/Zhao_2025_paracetamol.html
+      - text: "ParathyroidHormone (Visscher 2025)"
+        href: articles/Visscher_2025_parathyroidHormone.html
       - text: "Paritaprevir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Paroxetine (Kim 2015)"
@@ -2348,14 +2486,18 @@ navbar:
         href: articles/Ouerdani_2015_pazopanib.html
       - text: "Pazopanib mouse (Ouerdani 2015)"
         href: articles/Ouerdani_2015_pazopanib_mouse.html
-      - text: "PCoumaricAcid rat (Chen 2024)"
-        href: articles/Chen_2024_guhongInjection.html
       - text: "Pefloxacin (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Pegasparaginase (Kloos 2021)"
         href: articles/Kloos_2021_pegasparaginase.html
       - text: "Pegcetacoplan (Crass 2024)"
         href: articles/Crass_2024_pegcetacoplan.html
+      - text: "Pegcetacoplan ga doseresponse (Crass 2025)"
+        href: articles/Crass_2025_pegcetacoplan_geographic_atrophy.html
+      - text: "Pegcetacoplan ga exposureresponse (Crass 2025)"
+        href: articles/Crass_2025_pegcetacoplan_geographic_atrophy.html
+      - text: "Pegcetacoplan ga progression (Crass 2025)"
+        href: articles/Crass_2025_pegcetacoplan_geographic_atrophy.html
       - text: "Pegcetacoplan hemoglobin (Crass 2024)"
         href: articles/Crass_2024_pegcetacoplan.html
       - text: "Pegcetacoplan ldh (Crass 2024)"
@@ -2412,28 +2554,8 @@ navbar:
         href: articles/Yin_2021_pexidartinib.html
       - text: "Pf 06671008 qsp (Betts 2019)"
         href: articles/Betts_2019_pf_06671008.html
-      - text: "PF 06939999 (Guo 2022)"
-        href: articles/Guo_2022_PF_06939999.html
-      - text: "PF00821385 dog (Langdon 2010)"
-        href: articles/Langdon_2010_PF00821385.html
-      - text: "PF00821385 human (Langdon 2010)"
-        href: articles/Langdon_2010_PF00821385.html
-      - text: "PF04236921 (Li 2018)"
-        href: articles/Li_2018_PF04236921.html
-      - text: "PF04455242 human (Chang 2011)"
-        href: articles/Chang_2011_PF04455242_prolactin.html
-      - text: "PF04455242 rat (Chang 2011)"
-        href: articles/Chang_2011_PF04455242_prolactin.html
-      - text: "PF04457845 qsp (Benson 2014)"
-        href: articles/Benson_2014_PF04457845_qsp.html
-      - text: "PF04878691 (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
-      - text: "PF04878691 lymphocyte (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
-      - text: "PF04878691 oas (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
-      - text: "PF04878691 viralLoad (Jones 2011)"
-        href: articles/Jones_2011_PF04878691_HCV.html
+      - text: "Pfuroylamphenmulin (Xia 2025)"
+        href: articles/Xia_2025_pfuroylamphenmulin.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
       - text: "Phenobarbital (Stoschus 2025)"
@@ -2510,6 +2632,8 @@ navbar:
         href: articles/Dvorackova_2023_posaconazole.html
       - text: "Posaconazole (Kohl 2010)"
         href: articles/Kohl_2010_posaconazole.html
+      - text: "Posaconazole (Shu 2024)"
+        href: articles/Shu_2024_posaconazole.html
       - text: "Posaconazole (Winchell 2024)"
         href: articles/Winchell_2024_posaconazole.html
       - text: "Posaconazole (vanIersel 2018)"
@@ -2544,8 +2668,6 @@ navbar:
         href: articles/Wattanakul_2024_primaquine_lactation.html
       - text: "Primaquine motherinfant (Wattanakul 2024)"
         href: articles/Wattanakul_2024_primaquine_lactation.html
-      - text: "PRO95780 (Cao 2013)"
-        href: articles/Cao_2013_PRO95780.html
       - text: "Procainamide (Mohamed 2013)"
         href: articles/Mohamed_2013_procainamide.html
       - text: "Proguanil (Khwarg 2024)"
@@ -2608,10 +2730,10 @@ navbar:
         href: articles/Fattinger_1991_quinidine.html
       - text: "Quinidine (Westerhout 2013)"
         href: articles/Westerhout_2013_quinidine.html
-      - text: "Quinidine mouse pbpk (Saleh 2023)"
-        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Quinidine QT (Shin 2006)"
         href: articles/Shin_2006_quinidine_QT.html
+      - text: "Quinidine mouse pbpk (Saleh 2023)"
+        href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Quinidine rat (Kervezee 2014)"
         href: articles/Kervezee_2014_quinidine_rat.html
       - text: "Quinidine rat (Syvanen 2012)"
@@ -2626,6 +2748,10 @@ navbar:
         href: articles/Vaddady_2024_quizartinib.html
       - text: "R methadone (Aruldhas 2021)"
         href: articles/Aruldhas_2021_methadone.html
+      - text: "RBP 7000 (Ivaturi 2017)"
+        href: articles/Ivaturi_2017_RBP_7000.html
+      - text: "RFIXFc (Diao 2014)"
+        href: articles/Diao_2014_rFIXFc.html
       - text: "RacSotalol QTcF (Darpo 2014)"
         href: articles/Darpo_2014_racSotalol.html
       - text: "RacSotalol QTcI (Darpo 2014)"
@@ -2656,8 +2782,6 @@ navbar:
         href: articles/Xu_2013_ranibizumab.html
       - text: "Ranitidine (Hawwa 2013)"
         href: articles/Hawwa_2013_ranitidine.html
-      - text: "RBP 7000 (Ivaturi 2017)"
-        href: articles/Ivaturi_2017_RBP_7000.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Roberts 2025)"
@@ -2682,8 +2806,6 @@ navbar:
         href: articles/Cerqueira_2025_resveratrol.html
       - text: "Rezafungin (Roepcke 2023)"
         href: articles/Roepcke_2023_rezafungin.html
-      - text: "RFIXFc (Diao 2014)"
-        href: articles/Diao_2014_rFIXFc.html
       - text: "Rfviii rat (VargasChristensen 2019)"
         href: articles/VargasChristensen_2019_rfviii_rat.html
       - text: "Rfxiii cyno (Dodds 2005)"
@@ -2832,18 +2954,34 @@ navbar:
         href: articles/Aruldhas_2021_methadone.html
       - text: "S33138 (Bertrand 2011)"
         href: articles/Bertrand_2011_S33138.html
+      - text: "SAL003 (Peng 2024)"
+        href: articles/Peng_2024_SAL003.html
+      - text: "SHetA2 dog (Sharma 2018)"
+        href: articles/Sharma_2018_SHetA2.html
+      - text: "SHetA2 human (Sharma 2018)"
+        href: articles/Sharma_2018_SHetA2.html
+      - text: "SHetA2 mouse (Sharma 2018)"
+        href: articles/Sharma_2018_SHetA2.html
+      - text: "SHetA2 rat (Sharma 2018)"
+        href: articles/Sharma_2018_SHetA2.html
+      - text: "SKL10406 (Park 2014)"
+        href: articles/Park_2014_SKL10406.html
+      - text: "SPI 62 (Wu 2023)"
+        href: articles/Wu_2023_SPI_62.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
       - text: "Sacituzumab (Sathe 2025)"
         href: articles/Sathe_2025_sacituzumab.html
-      - text: "SAL003 (Peng 2024)"
-        href: articles/Peng_2024_SAL003.html
       - text: "Salbutamol (Heuberger 2018)"
         href: articles/Heuberger_2018_salbutamol.html
       - text: "Salbutamol (Marques 2024)"
         href: articles/Marques_2024_salbutamol.html
       - text: "Salbutamol (Marques 2025)"
         href: articles/Marques_2025_salbutamol.html
+      - text: "Salbutamol rat pbpk (Wen 2025)"
+        href: articles/Wen_2025_pulmonary_pbpk.html
+      - text: "Salmeterol (Rosenborg 2025)"
+        href: articles/Rosenborg_2025_fluticasone_salmeterol.html
       - text: "Sapropterin (Feillet 2008)"
         href: articles/Feillet_2008_sapropterin.html
       - text: "Sapropterin (Muntau 2017)"
@@ -2888,14 +3026,10 @@ navbar:
         href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
         href: articles/Lu_2014_sglt_qsp.html
-      - text: "SHetA2 dog (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
-      - text: "SHetA2 human (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
-      - text: "SHetA2 mouse (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
-      - text: "SHetA2 rat (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
+      - text: "ShikimicAcid pig iv (Mo 2024)"
+        href: articles/Mo_2024_shikimicAcid.html
+      - text: "ShikimicAcid pig oral (Mo 2024)"
+        href: articles/Mo_2024_shikimicAcid.html
       - text: "Sibutramine (Han 2015)"
         href: articles/Han_2015_sibutramine.html
       - text: "Sifalimumab (Narwal 2013)"
@@ -2922,8 +3056,8 @@ navbar:
         href: articles/Xu_2011_sirukumab.html
       - text: "Sitafloxacin (Rodjun 2023)"
         href: articles/Rodjun_2023_colistin_sitafloxacin.html
-      - text: "SKL10406 (Park 2014)"
-        href: articles/Park_2014_SKL10406.html
+      - text: "Sitafloxacin (Wu 2025)"
+        href: articles/Wu_2025_sitafloxacin.html
       - text: "Sn38 organoid (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Snake venom (Sanhajariya 2018)"
@@ -2954,10 +3088,14 @@ navbar:
         href: articles/Parmar_2023_spectinamides_pbpk.html
       - text: "Spectinamide 1810 rat pbpk (Parmar 2023)"
         href: articles/Parmar_2023_spectinamides_pbpk.html
-      - text: "SPI 62 (Wu 2023)"
-        href: articles/Wu_2023_SPI_62.html
       - text: "Spironolactone qsp (Meid 2024)"
         href: articles/Meid_2024_spironolactone_qsp.html
+      - text: "Sudapyridine (Kong 2025)"
+        href: articles/Kong_2025_sudapyridine.html
+      - text: "Sufentanil (Khaowroongrueng 2024)"
+        href: articles/Khaowroongrueng_2024_sufentanil.html
+      - text: "Sufentanil (Nie 2025)"
+        href: articles/Nie_2025_sufentanil.html
       - text: "Sufentanil pbpk (Han 2025)"
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
       - text: "Sugammadex rocuronium (Kleijn 2011)"
@@ -2976,22 +3114,26 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Sulfadoxine (Karunajeewa 2009)"
         href: articles/Karunajeewa_2009_sulfadoxinePyrimethamine.html
-      - text: "SulfadoxinePyrimethamine (deKock 2017)"
-        href: articles/deKock_2017_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (Odongo 2015)"
         href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
+      - text: "SulfadoxinePyrimethamine (deKock 2017)"
+        href: articles/deKock_2017_sulfadoxinePyrimethamine.html
       - text: "Sumatriptan (Lee 2015)"
         href: articles/Lee_2015_sumatriptan.html
       - text: "Sunitinib (Ait-Oudhia 2016)"
         href: articles/Ait-Oudhia_2016_sunitinib.html
-      - text: "Sunitinib (vanErp 2010)"
-        href: articles/vanErp_2010_sunitinib.html
       - text: "Sunitinib (Yu 2015)"
         href: articles/Yu_2015_sunitinib.html
-      - text: "Sunitinib irinotecan mouse (Wilson 2015)"
-        href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "Sunitinib (vanErp 2010)"
+        href: articles/vanErp_2010_sunitinib.html
       - text: "Sunitinib OS (Hansson 2013)"
         href: articles/Hansson_2013_sunitinib_OS.html
+      - text: "Sunitinib irinotecan mouse (Wilson 2015)"
+        href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "TDI01 (Ji 2025)"
+        href: articles/Ji_2025_TDI01.html
+      - text: "TF 505 (Matsumoto 2005)"
+        href: articles/Matsumoto_2005_TF_505.html
       - text: "Tacrine (Holford 1992)"
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (AbdelJalil 2013)"
@@ -3154,6 +3296,10 @@ navbar:
         href: articles/Hamren_2008_tesaglitazar.html
       - text: "Tesofensine (Lehr 2010)"
         href: articles/Lehr_2010_tesofensine.html
+      - text: "Tetrahydrocannabinol (Henthorn 2024)"
+        href: articles/Henthorn_2024_tetrahydrocannabinol.html
+      - text: "Tezepelumab (Richardson 2025)"
+        href: articles/Richardson_2025_automated_popPK.html
       - text: "Thc (Wolowich 2025)"
         href: articles/Wolowich_2025_thc_heart_rate.html
       - text: "Thc 11oh (Wolowich 2025)"
@@ -3260,14 +3406,14 @@ navbar:
         href: articles/Yin_2021_trastuzumabDeruxtecan.html
       - text: "TrastuzumabDeruxtecan mbma (Asiimwe 2025)"
         href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
-      - text: "Trastuzumabemtansine (Lu 2014)"
-        href: articles/Lu_2014_trastuzumabemtansine.html
       - text: "TrastuzumabEmtansine mbma (Asiimwe 2025)"
         href: articles/Asiimwe_2025_trastuzumab_ADCs_mbma.html
       - text: "TrastuzumabEmtansine mechanistic (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_mechanistic.html
       - text: "TrastuzumabEmtansine reduced (Bender 2014)"
         href: articles/Bender_2014_trastuzumabEmtansine_reduced.html
+      - text: "Trastuzumabemtansine (Lu 2014)"
+        href: articles/Lu_2014_trastuzumabemtansine.html
       - text: "Tremelimumab (Hwang 2022)"
         href: articles/Hwang_2022_tremelimumab.html
       - text: "Treosulfan (Danielak 2017)"
@@ -3318,6 +3464,12 @@ navbar:
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Ustekinumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "VRC07523LS (Huynh 2026)"
+        href: articles/Huynh_2026_VRC07523LS.html
+      - text: "Valbenazine (Nguyen 2025)"
+        href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
+      - text: "Valbenazine tmc (Nguyen 2025)"
+        href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valganciclovir (Vezina 2010)"
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
@@ -3426,6 +3578,8 @@ navbar:
         href: articles/Shen_2025_voriconazole.html
       - text: "Voriconazole (Wahlby 2004)"
         href: articles/Wahlby_2004_time_varying_covariates.html
+      - text: "Voriconazole (Zakria 2026)"
+        href: articles/Zakria_2026_voriconazole.html
       - text: "Voriconazole pbpk (AbdullahKoolmees 2024)"
         href: articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi.html
       - text: "Vortioxetine (Naik 2016)"
@@ -3434,8 +3588,6 @@ navbar:
         href: articles/Qi_2024_vosoritide.html
       - text: "Vrc01 (Huang 2017)"
         href: articles/Huang_2017_vrc01.html
-      - text: "VRC07523LS (Huynh 2026)"
-        href: articles/Huynh_2026_VRC07523LS.html
       - text: "VwfFviii humateP (Bauer 2023)"
         href: articles/Bauer_2023_vonWillebrandFactor.html
       - text: "Warfarin (Savic 2010)"
@@ -3462,6 +3614,12 @@ navbar:
         href: articles/Adams_1998_zalcitabine.html
       - text: "Zaleplon (Izat 2025)"
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
+      - text: "Zanubrutinib acalabrutinib ibrutinib qsp (Demin 2025)"
+        href: articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.html
+      - text: "Zastaprazan (Yang 2024)"
+        href: articles/Yang_2024_zastaprazan.html
+      - text: "Zavegepant (Comisar 2025)"
+        href: articles/Comisar_2025_zavegepant.html
       - text: "Zenocutuzumab (deVriesSchultink 2020)"
         href: articles/deVriesSchultink_2020_zenocutuzumab.html
       - text: "Zidovudine (Fauchet 2013)"
@@ -3543,10 +3701,10 @@ navbar:
         href: articles/Li_2006_meropenem.html
       - text: "Meropenem (Themans 2019)"
         href: articles/Themans_2019_meropenem.html
-      - text: "Midazolam (vanRongen 2018)"
-        href: articles/vanRongen_2018_midazolam.html
       - text: "Midazolam (Vet 2016)"
         href: articles/Vet_2016_midazolam.html
+      - text: "Midazolam (vanRongen 2018)"
+        href: articles/vanRongen_2018_midazolam.html
       - text: "Morphine (Knibbe 2009)"
         href: articles/Knibbe_2009_morphine.html
       - text: "Morphine (Valitalo 2017)"
@@ -3567,10 +3725,10 @@ navbar:
         href: articles/Allegaert_2015_paracetamol.html
       - text: "Paracetamol (Cook 2016)"
         href: articles/Cook_2016_paracetamol.html
-      - text: "Paracetamol (vanWijk 2019)"
-        href: articles/vanWijk_2019_paracetamol.html
       - text: "Paracetamol (Zurlinden 2016)"
         href: articles/Zurlinden_2016_paracetamol.html
+      - text: "Paracetamol (vanWijk 2019)"
+        href: articles/vanWijk_2019_paracetamol.html
       - text: "Phenobarbital (Voller 2017)"
         href: articles/Voller_2017_phenobarbital.html
       - text: "Pimasertib (Girard 2012)"
@@ -3619,22 +3777,23 @@ articles:
 - title: General
   desc: Cross-cutting guides and the list of models.
   contents:
+  - PK_2cmt_mAb_Davda_2014
   - covariate-columns
   - create-model-library
   - list-of-models
   - markov
-  - PK_2cmt_mAb_Davda_2014
   - tmdd_archetypes
 - title: internal
   desc: Drug-specific validation vignettes. They are reached from the Specific drug models and DDMoRe models navbar dropdowns; this group hides them from the main Articles index.
   contents:
   - articles/Abbasi_2023_gentamicin
   - articles/Abboud_2009_epinephrine
-  - articles/Abdelgawad_2024_linezolid
   - articles/AbdelJalil_2013_tacrolimus
+  - articles/Abdelgawad_2024_linezolid
   - articles/AbdulAziz_2016_doripenem
   - articles/Abduljalil_2009_clarithromycin
   - articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi
+  - articles/Abouelhassan_2024_sulbactam_elf_pneumonia
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
   - articles/Abuqayyas_2012_8C2
@@ -3657,6 +3816,9 @@ articles:
   - articles/AitOudhia_2024_sotatercept
   - articles/Akbar_2025_voriconazole
   - articles/Aksenov_2018_uricAcid
+  - articles/AlSallami_2016_unfractionatedHeparin
+  - articles/AlZubaydi_2024_gabapentin
+  - articles/AlfoseaCuadrado_2024_reserpine_rat
   - articles/Ali_2018_amodiaquine
   - articles/Allegaert_2015_paracetamol
   - articles/Almquist_2015_Mig1
@@ -3664,7 +3826,7 @@ articles:
   - articles/Almquist_2022_anifrolumab
   - articles/Alqahtani_2018_cefuroxime
   - articles/Alqahtani_2018_vancomycin
-  - articles/AlSallami_2016_unfractionatedHeparin
+  - articles/Alqurain_2024_vancomycin
   - articles/Alshehri_2023_ivermectin
   - articles/Alsultan_2017_pyrazinamide
   - articles/AlvarezJimenez_2016_scopolamine
@@ -3751,8 +3913,8 @@ articles:
   - articles/Blair_2004_raltitrexed
   - articles/Blesch_2003_capecitabine
   - articles/Boak_2014_linezolid
-  - articles/Boer_2015_cisplatin
   - articles/Boer-Perez_2026_piperacillin
+  - articles/Boer_2015_cisplatin
   - articles/Bogason_2011_daunorubicin
   - articles/Bonate_2004_apomine
   - articles/Bonner_2015_gastric_emptying
@@ -3802,15 +3964,15 @@ articles:
   - articles/Candelaria_2018_rituximab
   - articles/Canini_2015_danoprevir
   - articles/Canini_2018_setrobuvir
-  - articles/Cao_2013_adecatumumab
-  - articles/Cao_2013_gevokizumab
   - articles/Cao_2013_GNbAC1
-  - articles/Cao_2013_mab7E3
-  - articles/Cao_2013_mab8C2
   - articles/Cao_2013_MEDI528
-  - articles/Cao_2013_mepolizumab
   - articles/Cao_2013_PAmAb
   - articles/Cao_2013_PRO95780
+  - articles/Cao_2013_adecatumumab
+  - articles/Cao_2013_gevokizumab
+  - articles/Cao_2013_mab7E3
+  - articles/Cao_2013_mab8C2
+  - articles/Cao_2013_mepolizumab
   - articles/Cao_2013_siltuximab
   - articles/Cao_2013_tefibazumab
   - articles/Cao_2013_visilizumab
@@ -3845,8 +4007,8 @@ articles:
   - articles/Chen_2014_nab_paclitaxel
   - articles/Chen_2015_voriconazole
   - articles/Chen_2016_tenofovir_emtricitabine
-  - articles/Chen_2017_tacrolimus
   - articles/Chen_2017_TB_MTP_GPDI_mouse
+  - articles/Chen_2017_tacrolimus
   - articles/Chen_2020_luspatercept
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2021_lorlatinib
@@ -3862,6 +4024,7 @@ articles:
   - articles/Chen_2024_remimazolam
   - articles/Chen_2024_rituximab
   - articles/Chen_2025_iohexol_creatinine
+  - articles/Chen_2025_remimazolam
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
   - articles/Chi_2018_propofol
@@ -3884,8 +4047,8 @@ articles:
   - articles/Clegg_2024_nirsevimab
   - articles/Clewe_2015_rifampicin
   - articles/Clewe_2016_rifampicin
-  - articles/Clewe_2018_rifampicin
   - articles/Clewe_2018_TB_MTP_GPDI_invitro
+  - articles/Clewe_2018_rifampicin
   - articles/Clinckers_2008_MHD_rat
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
@@ -3904,6 +4067,7 @@ articles:
   - articles/Couffignal_2014_imipenem
   - articles/Courlet_2023_cabamiquine
   - articles/Crass_2024_pegcetacoplan
+  - articles/Crass_2025_pegcetacoplan_geographic_atrophy
   - articles/Crommentuyn_2005_lopinavir
   - articles/Csajka_2004_indinavir
   - articles/Csajka_2005_ephedrine_caffeine
@@ -3914,17 +4078,16 @@ articles:
   - articles/Darwish_2025_trofinetide
   - articles/Dasti_2025_mrna_vaccines
   - articles/Davis_2008_maraviroc
-  - articles/deAlwis_1998_ondansetron
+  - articles/DeCock_2012_propyleneGlycol
+  - articles/DeJongh_2014_antithrombin
+  - articles/DeJongh_2025_azd7648_olaparib_xenograft
   - articles/Debord_2001_cyclosporin
   - articles/Decker_2024_baricitinib
-  - articles/DeCock_2012_propyleneGlycol
+  - articles/Decker_2026_baricitinib
   - articles/Decrane_2023_oxyfluorfen
-  - articles/deHoogd_2017_morphine
-  - articles/deJonge_2005_paclitaxel
-  - articles/DeJongh_2014_antithrombin
-  - articles/deKock_2017_sulfadoxinePyrimethamine
-  - articles/Delattre_2010_amikacin
+  - articles/Deferm_2025_lactation_physiology
   - articles/DelFrari_2018_propranolol
+  - articles/Delattre_2010_amikacin
   - articles/Delor_2013_alzheimer
   - articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp
   - articles/Denti_2010_glucoseMinimal
@@ -3934,10 +4097,6 @@ articles:
   - articles/Desai_2024_crisprCas9
   - articles/Desikan_2022_covidVaccine
   - articles/Desmee_2015_PSA_mCRPC
-  - articles/deVriesSchultink_2018_cardiotoxicity
-  - articles/deVriesSchultink_2020_zenocutuzumab
-  - articles/deWinter_2009_mycophenolic_acid
-  - articles/deWit_2016_everolimus
   - articles/Dhoro_2015_efavirenz
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
@@ -3971,12 +4130,12 @@ articles:
   - articles/Dvorackova_2023_posaconazole
   - articles/Easterling_2018_magnesium_sulfate
   - articles/Eaton_2025_dabigatran_sheep
+  - articles/Ebihara_2025_tebipenem
   - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edstein_2001_tafenoquine
   - articles/Eissing_2024_finerenone
   - articles/Ekhart_2008_carboplatin
   - articles/Elassaiss-Schaap_2017_pembrolizumab
-  - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/Elishmereni_2011_il21
   - articles/Elkomy_2015_morphine
   - articles/EudyByrne_2021_buprenorphine
@@ -3987,6 +4146,8 @@ articles:
   - articles/Faelens_2021_infliximab
   - articles/Falkenhagen_2023_warfarin_qsp
   - articles/Fan_2024_sirolimus
+  - articles/Fan_2025_antiCD4_nanobody_HIV
+  - articles/Fan_2025_iron_wholebody_pbpk
   - articles/Fang_2010_etanercept
   - articles/Fanta_2007_ciclosporin
   - articles/Farrell_2012_farletuzumab
@@ -4109,11 +4270,11 @@ articles:
   - articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk
   - articles/Hanberg_2018_meropenem
   - articles/Hanley_2024_brigatinib
+  - articles/Hansson_2013_sunitinib_OS
   - articles/Hansson_2013_sunitinib_dbp
   - articles/Hansson_2013_sunitinib_hfs
   - articles/Hansson_2013_sunitinib_myelosuppression
   - articles/Hansson_2013_sunitinib_os
-  - articles/Hansson_2013_sunitinib_OS
   - articles/Hansson_2013a_sunitinib
   - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
@@ -4199,6 +4360,7 @@ articles:
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
+  - articles/Iwama_2024_febuxostat
   - articles/Izat_2025_aldehyde_oxidase_substrates
   - articles/Jackson_2022_ixekizumab
   - articles/JacoboCabral_2015_tacrolimus
@@ -4274,6 +4436,8 @@ articles:
   - articles/Ketharanathan_2023_pentobarbital
   - articles/Khan_2015_ciprofloxacin
   - articles/Khaowroongrueng_2024_sufentanil
+  - articles/Khwarg_2024_donepezil
+  - articles/Khwarg_2024_proguanil
   - articles/Kielbasa_2020_galcanezumab
   - articles/Kim_2008_aripiprazole
   - articles/Kim_2015_paroxetine
@@ -4286,6 +4450,7 @@ articles:
   - articles/Kim_2025_evogliptin
   - articles/Kim_2025_infliximab
   - articles/Kimura_2023_glucarpidase
+  - articles/Kir_2025_atenolol_metoprolol_malnutrition
   - articles/Kiriyama_2024_nifedipine_captopril_rat
   - articles/Kirubakaran_2022_tacrolimus
   - articles/Kleiber_2017_clonidine
@@ -4307,6 +4472,7 @@ articles:
   - articles/Kollo_2026_selumetinib
   - articles/Koloskoff_2025_ganciclovir
   - articles/Kong_2025_piperacillin_tazobactam
+  - articles/Kong_2025_sudapyridine
   - articles/Koo_2012_propofol
   - articles/Koolen_2010_docetaxel
   - articles/Koopman_2023_factorix
@@ -4359,6 +4525,8 @@ articles:
   - articles/Laouenan_2015_ribavirin
   - articles/Larsen_2018_haemophilia_animal_popPK
   - articles/Lawson_2022_busulfan
+  - articles/LeJouan_2005_quinine
+  - articles/LeTilly_2021_trastuzumab
   - articles/Le_2015_lampalizumab
   - articles/Le_2015_lampalizumab_cyno
   - articles/Lee_2011_parkinson_progression
@@ -4376,12 +4544,10 @@ articles:
   - articles/Lee_2025_piperacillin_tazobactam
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
-  - articles/LeJouan_2005_quinine
   - articles/Leroux_2016_cefotaxime
   - articles/Leroux_2018_fluconazole_micafungin
   - articles/Leshinsky_2017_caspofungin_cat
   - articles/Lestini_2015_tgfbinhibitor
-  - articles/LeTilly_2021_trastuzumab
   - articles/Leuppi-Taegtmeyer_2019_colistin
   - articles/Levitt_2005_propofol_pbpk
   - articles/Li_2006_meropenem
@@ -4390,8 +4556,8 @@ articles:
   - articles/Li_2012_dexamethasone_rat
   - articles/Li_2014_penicillinG
   - articles/Li_2015_taspoglutide_mbma
-  - articles/Li_2017_brentuximab
   - articles/Li_2017_CC292
+  - articles/Li_2017_brentuximab
   - articles/Li_2017_cediranib
   - articles/Li_2018_PF04236921
   - articles/Li_2018_vancomycin
@@ -4413,25 +4579,26 @@ articles:
   - articles/Lignet_2023_m8891
   - articles/Lin_2018_voriconazole
   - articles/Lin_2020_glasdegib_AML_overall_survival
+  - articles/Lin_2024_TB_multistate
   - articles/Lin_2024_casirivimab
   - articles/Lin_2024_pozelimab
-  - articles/Lin_2024_TB_multistate
   - articles/Lindauer_2017_lacosamide
   - articles/Lindauer_2017_pembrolizumab
   - articles/Lioger_2017_rituximab
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2023_mAb_mouse_pbpk
   - articles/Liu_2024_spatholobiCaulis
+  - articles/Liu_2025_avatrombopag
   - articles/Livio_2014_tobramycin
-  - articles/Llanos_2017_gentamicin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
+  - articles/Llanos_2017_gentamicin
   - articles/Lodise_2018_iclaprim
   - articles/LohyDas_2018_artesunate
   - articles/Lommerse_2019_raltegravir
   - articles/Lon_2013_abatacept
-  - articles/Long_2017_necitumumab
   - articles/Long-Boyle_2015_busulfan
+  - articles/Long_2017_necitumumab
   - articles/LopezArguello_2023_pbp_binding_pseudomonas
   - articles/Lowe_2009_omalizumab
   - articles/Lu_2014_sglt_qsp
@@ -4460,8 +4627,9 @@ articles:
   - articles/Marcantonio_2022_efa
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
-  - articles/Marques_2024_salbutamol
   - articles/MarquesMinana_2010_vancomycin
+  - articles/Marques_2024_salbutamol
+  - articles/Marques_2025_salbutamol
   - articles/Marquez-Megias_2023_adalimumab
   - articles/Marsot_2017_rifampicin
   - articles/Martial_2017_micafungin
@@ -4487,6 +4655,7 @@ articles:
   - articles/Mi_2023_cefquinome_pbpk
   - articles/Mi_2024_aditoprim
   - articles/Miano_2024_tacrolimus
+  - articles/Michelet_2025_BI754111_mpbpk
   - articles/Milakovic_2024_linezolid
   - articles/Milosheska_2016_lamotrigine
   - articles/Minichmayr_2024_ceftaroline
@@ -4540,6 +4709,7 @@ articles:
   - articles/NA_NA_tte_gompertz_ev2
   - articles/NA_NA_tte_loglogistic
   - articles/NA_NA_tte_lognormal
+  - articles/Na_2024_tovecimig
   - articles/Na_2025_hosu53
   - articles/Nader_2017_adalimumab
   - articles/Nagy_2017_obiltoxaximab
@@ -4643,8 +4813,8 @@ articles:
   - articles/Pettersen_2009_pantoprazole
   - articles/Philippe_2015_cyclosporine
   - articles/Pierre_2017_morphine
-  - articles/Pillai_2004_ibandronate
   - articles/PillaReddy_2013_panss_subscales
+  - articles/Pillai_2004_ibandronate
   - articles/PillayFuentesLorente_2024_albendazole
   - articles/PiresdeMello_2018_zika_FAV_HFIM
   - articles/PiresdeMello_2018_zika_FAV_IFN_RBV
@@ -4717,8 +4887,8 @@ articles:
   - articles/Salinger_2013_magnesiumSulfate
   - articles/Sampson_2014_azithromycin
   - articles/Sampson_2014_gentamicin
-  - articles/Sanchez_2011_efavirenz
   - articles/SanchezPena_2005_enoxaparin
+  - articles/Sanchez_2011_efavirenz
   - articles/Sanghavi_2020_ipilimumab
   - articles/Sanhajariya_2018_snake_venom
   - articles/Sano_2023_fesoterodine
@@ -4754,8 +4924,8 @@ articles:
   - articles/Shah_2023_benzylpenicillin
   - articles/Shah_2025_clarithromycin
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
-  - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2018_SHetA2
+  - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2023_nitrofurantoin
   - articles/Sheiner_1979_tubocurarine
   - articles/Shekar_2014_meropenem
@@ -4800,6 +4970,7 @@ articles:
   - articles/Soehoel_2022_tralokinumab
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027
+  - articles/Song_2025_infliximab
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
   - articles/Staatz_2005_gentamicin_vancomycin
@@ -4910,20 +5081,8 @@ articles:
   - articles/Valitalo_2017_morphine
   - articles/Valke_2024_factorviii_thrombin_plasmin
   - articles/Valle_2005_exemestane
-  - articles/vandenBerg_2021_finerenone
-  - articles/vandenBerg_2021_uprifosbuvir
-  - articles/vanderWalt_2013_dapagliflozin
-  - articles/vanErp_2010_sunitinib
-  - articles/vanHasselt_2013_eribulin
-  - articles/vanHasselt_2015_eribulin
-  - articles/vanIersel_2018_posaconazole
-  - articles/vanMaanen_2025_amyloid
-  - articles/vanRongen_2015_midazolam
-  - articles/vanRongen_2016_acetaminophen
-  - articles/vanRongen_2017_midazolam
-  - articles/vanRongen_2018_metformin
-  - articles/vanRongen_2018_midazolam
   - articles/VanWart_2004_garenoxacin
+  - articles/VanWart_2025_telavancin
   - articles/VanWart_2025_tobramycin
   - articles/Varatharajan_2016_daunorubicin
   - articles/VarelaGonzalezAller_2025_fludarabine
@@ -4945,7 +5104,6 @@ articles:
   - articles/Vinnard_2017_rifampicin
   - articles/Visscher_2025_parathyroidHormone
   - articles/Voller_2017_phenobarbital
-  - articles/vonHentig_2009_saquinavir
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
   - articles/Vucicevic_2025_efavirenz
@@ -4997,6 +5155,7 @@ articles:
   - articles/Wi_2017_teicoplanin
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wicha_2018_rifampicin
+  - articles/Wickramasinghe_2025_pamiparib
   - articles/Wickramasinghe_2025_spatial_cns_pbpk
   - articles/Wilbaux_2014_ovarianCancer_ca125
   - articles/Wilbaux_2015_prostate
@@ -5015,6 +5174,8 @@ articles:
   - articles/Willmann_2022_rivaroxaban
   - articles/Willmann_2024_elinzanetant
   - articles/Wilson_2015_sunitinib_irinotecan_mouse
+  - articles/Winchell_2024_posaconazole
+  - articles/Winning_2025_certepetide
   - articles/Winter_2024_oxytetracycline_cattle
   - articles/Wittau_2015_meropenem
   - articles/Woillard_2011_tacrolimus
@@ -5047,7 +5208,9 @@ articles:
   - articles/Xu_2019_sarilumab
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
+  - articles/Xu_2023_busulfan
   - articles/Xu_2024_linezolid
+  - articles/Xu_2025_aficamten
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
@@ -5063,7 +5226,11 @@ articles:
   - articles/Yang_2023_diclazuril
   - articles/Yang_2023_ganciclovir_model_repository
   - articles/Yang_2024_axatilimab
+  - articles/Yang_2024_dabigatran
+  - articles/Yang_2024_meropenem_pbpk
   - articles/Yang_2024_naloxone_opioid_reversal
+  - articles/Yang_2024_zastaprazan
+  - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2025_flurbiprofen
@@ -5116,8 +5283,19 @@ articles:
   - articles/Zhang_2022_ormutivimab
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
-  - articles/Zhang_2024_sertraline
   - articles/Zhang_2024_XZP5610
+  - articles/Zhang_2024_f53b_pbpk
+  - articles/Zhang_2024_nedosiran
+  - articles/Zhang_2024_sertraline
+  - articles/Zhang_2024_tucatinib
+  - articles/Zhang_2024_valproic_acid
+  - articles/Zhang_2025_abemaciclib
+  - articles/Zhang_2025_cefiderocol
+  - articles/Zhang_2025_dupilumab_fev1
+  - articles/Zhang_2025_erythroferrone
+  - articles/Zhang_2025_fluconazole
+  - articles/Zhang_2025_nedosiran
+  - articles/Zhang_2026_tebipenem
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
   - articles/Zhao_2013_abacavir
@@ -5126,6 +5304,7 @@ articles:
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
   - articles/Zhao_2024_ciprofloxacin_colistin
+  - articles/Zhao_2025_methotrexate
   - articles/Zhao_2025_paracetamol
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
@@ -5136,8 +5315,8 @@ articles:
   - articles/Zhou_2010_digoxin
   - articles/Zhou_2016_warfarin_vk2
   - articles/Zhou_2021_belimumab
-  - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2024_HER2breastCancer_qsp
+  - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
   - articles/Zhou_2025_tacrolimus
   - articles/Zhu_2014_tacrolimus
@@ -5156,5 +5335,34 @@ articles:
   - articles/Zuo_2024_apatinib
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
+  - articles/deAlwis_1998_ondansetron
+  - articles/deHoogd_2017_morphine
+  - articles/deJonge_2005_paclitaxel
+  - articles/deKock_2017_sulfadoxinePyrimethamine
+  - articles/deVriesSchultink_2018_cardiotoxicity
+  - articles/deVriesSchultink_2020_zenocutuzumab
+  - articles/deVries_2025_durvalumab
+  - articles/deWinter_2009_mycophenolic_acid
+  - articles/deWit_2016_everolimus
+  - articles/elDesoky_1997_theophylline_pediatric_asthma
+  - articles/vanErp_2010_sunitinib
+  - articles/vanHasselt_2013_eribulin
+  - articles/vanHasselt_2015_eribulin
+  - articles/vanIersel_2018_posaconazole
+  - articles/vanMaanen_2025_amyloid
+  - articles/vanOs_2024_temocillin
+  - articles/vanRongen_2015_midazolam
+  - articles/vanRongen_2016_acetaminophen
+  - articles/vanRongen_2017_midazolam
+  - articles/vanRongen_2018_metformin
+  - articles/vanRongen_2018_midazolam
+  - articles/vanWijk_2019_paracetamol
+  - articles/vandenBerg_2021_finerenone
+  - articles/vandenBerg_2021_uprifosbuvir
+  - articles/vandenBerg_2025_genericMab
+  - articles/vandenMaagdenberg_2025_a2ar_tme_qsp
+  - articles/vanderGaag_2025_osimertinib_pbpk
+  - articles/vanderWalt_2013_dapagliflozin
+  - articles/vonHentig_2009_saquinavir
   internal: true
 # AUTOGEN:articles:END
