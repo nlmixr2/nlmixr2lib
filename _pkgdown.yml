@@ -1742,8 +1742,8 @@ navbar:
         href: articles/Taubert_2016_linezolid.html
       - text: "Linezolid (Tsuji 2017)"
         href: articles/Tsuji_2017_linezolid.html
-      - text: "Linezolid (Zavrelova 2025)"
-        href: articles/Zavrelova_2025_linezolid.html
+      - text: "Linezolid (Xu 2024)"
+        href: articles/Xu_2024_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"
         href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
       - text: "Liraglutide (CarlssonPetri 2021)"
@@ -5005,7 +5005,7 @@ articles:
   - articles/Xu_2019_sarilumab
   - articles/Xu_2020_daratumumab
   - articles/Xu_2023_MBG453
-  - articles/Xu_2023_busulfan
+  - articles/Xu_2024_linezolid
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab

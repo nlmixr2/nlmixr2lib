@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Iwama 2024 febuxostat ([doi:10.1002/prp2.70032](https://doi.org/10.1002/prp2.70032)) -- Japanese pediatric patients with hyperuricemia including gout and adults who were healthy or had renal dysfunction.
+- Add Xu 2024 linezolid ([doi:10.2147/DDDT.S474470](https://doi.org/10.2147/DDDT.S474470)) -- adults with hospital-acquired pneumonia and renal insufficiency.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
