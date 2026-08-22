@@ -419,7 +419,7 @@
   # CL + CL_HD); `_dialysis` the broader continuous / general dialysis
   # extracorporeal arm (e.g. Eyler 2014 ertapenem: CL_total = CLS +
   # DIAL * CLdial for CVVHD/CVVHDF).
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis"),
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "tsnet"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(

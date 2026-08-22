@@ -1556,6 +1556,8 @@ navbar:
         href: articles/Chatelut_1999_interferon_alfa_2b.html
       - text: "InterferonAlfa2a (Jeon 2013)"
         href: articles/Jeon_2013_interferonAlfa2a.html
+      - text: "Iohexol creatinine (Chen 2025)"
+        href: articles/Chen_2025_iohexol_creatinine.html
       - text: "IonisFxirx (Willmann 2021)"
         href: articles/Willmann_2021_fxi_aso.html
       - text: "IonizableLipid hela qsp (Wang 2024)"
@@ -3844,7 +3846,7 @@ articles:
   - articles/Chen_2024_noscapine
   - articles/Chen_2024_remimazolam
   - articles/Chen_2024_rituximab
-  - articles/Chen_2025_remimazolam
+  - articles/Chen_2025_iohexol_creatinine
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
   - articles/Chi_2018_propofol
