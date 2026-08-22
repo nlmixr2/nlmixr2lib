@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fromage 2025 mycophenolic acid ([doi:10.1111/bcp.16374](https://doi.org/10.1111/bcp.16374)) -- solid organ transplant, haematopoietic cell transplant and autoimmune disease patients on enteric-coated mycophenolate sodium.
+- Add Van Wart 2025 tobramycin ([doi:10.1128/aac.00908-24](https://doi.org/10.1128/aac.00908-24)) -- adults with pneumonia, with serum and epithelial lining fluid concentrations.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
