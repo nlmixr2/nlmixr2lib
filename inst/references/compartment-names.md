@@ -1813,6 +1813,14 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
 
+### sstr (**canonical lumped somatostatin-receptor-expressing organ group**)
+- **Type:** compartment
+- **Role:** Single lumped compartment aggregating the organs that express the somatostatin receptor (SSTR) but are not modelled individually -- in the founding example the lungs, pancreas, stomach, thyroid and liver, pooled into one state with a combined volume of 4 L and a combined maximum binding capacity of 2.4 nmol/L. Used by lumped semi-physiological radioligand / theranostics models, where the named organs of interest (spleen, kidney, tumor) are carried explicitly and the remaining receptor-positive tissue is aggregated so that receptor-mediated uptake is still mass-balanced without a full whole-body PBPK structure. Distinct from the canonical `other` "rest of body" compartment, which in the same models is a non-receptor-expressing sink with no binding capacity.
+- **Source aliases:**
+  - "other SSTR-expressing organs" / "SSTR-expressing compartment" / compartment 5 (Siebinga 2023 EJNMMI Phys, Figure 2 and Methods).
+- **Example models:** `Siebinga_2023_ga68hadotatate.R`, `Siebinga_2023_lu177hadotatate.R`.
+- **Notes:** Named for the receptor rather than for any one organ, because the membership of the lumped group is study-specific while the mechanistic role (aggregate receptor-positive tissue competing for ligand) is not. Future radioligand families should use the analogous lowercase receptor token for their own lumped receptor-organ compartment -- `psma` for prostate-specific membrane antigen, `fap` for fibroblast activation protein, and so on -- rather than reusing `sstr` for a different receptor. Record the specific organs pooled into the compartment in the model file's `description`, since that membership is not recoverable from the name. Ratified canonically on 2026-07-31 (sidecar request 001 of task `oare_PMC10449733`, question q3 option A) alongside the Siebinga 2023 HA-DOTATATE extraction.
+
 ### intestine (**canonical bare intestine compartment**)
 - **Type:** compartment
 - **Role:** Bare intestine compartment.
