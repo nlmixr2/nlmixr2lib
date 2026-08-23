@@ -1,4 +1,4 @@
-Zheng_2012_mAb7 <- function() {
+Zheng_2012_mAb7_minipig <- function() {
   description <- paste(
     "Preclinical (Gottingen minipig). Two-compartment population PK model",
     "with first-order SC absorption plus parallel linear and saturable",

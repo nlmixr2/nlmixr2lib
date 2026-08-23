@@ -1,4 +1,4 @@
-Zheng_2012_adalimumab <- function() {
+Zheng_2012_adalimumab_minipig <- function() {
   description <- paste(
     "Preclinical (Gottingen minipig). Two-compartment population PK model",
     "for adalimumab with first-order SC absorption and linear central",

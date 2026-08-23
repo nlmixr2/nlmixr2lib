@@ -2,28 +2,7 @@
 
 # development version
 
-- Registered the `fm_<pathway>` fraction-metabolised family and put a gate
-  behind it. `fm` was already a canonical, but its pathway suffixes were not, so
-  nothing caught two spellings of one concept: `fm_other` / `fm_others` for the
-  residual route, and `fm_h4` / `fm_H4` for the clopidogrel H4 pathway. The
-  seven members in use (`fm_cyp3a4`, `fm_cyp3a5`, `fm_h4`, `fm_ko516_frac`,
-  `fm_m3g`, `fm_m6g`, `fm_other`) are now enumerated in
-  `inst/references/parameter-names.md`, fixing the residual route as the
-  singular `fm_other` (matching the registered `lkp_other` / `kp_other`), the pathway token
-  as lowercase, and a trailing `_frac` as marking a share *of* `fm` rather than
-  of total clearance. `buildModelDb()` now fails on any `fm_`-prefixed name
-  bound in `ini()` or `model()` that is missing from that heading, so the next
-  respelling is a red build rather than a shipped model. **Not breaking for
-  simulation code**: both duplicate spellings were confined to comments and
-  vignette prose in `Jung_2024_clopidogrel`, which now use that paper's own
-  `fmH4` / `fmcarbo` / `fmothers` notation -- already what the vignette's
-  executable chunks used -- and no shipped parameter was renamed. Two names
-  colliding on the prefix are documented as *not* members: `fm_range` in
-  `Robarge_2017_efavirenz` is fat mass (the `FM` covariate, beside
-  `ffm_range`), and `Svensson_2013_bedaquiline` quotes `fm_M2` / `fm_M3` inside
-  `label()` strings as source-paper notation. Both are correct as written and
-  are outside the gate by construction, which inspects bound names rather than
-  text.
+- Rename the nine Zheng 2012 Gottingen minipig mAb models ([doi:10.4161/mabs.4.2.19387](https://doi.org/10.4161/mabs.4.2.19387)) to carry the `_minipig` species suffix: `Zheng_2012_mAb1` .. `Zheng_2012_mAb8` and `Zheng_2012_adalimumab` become `Zheng_2012_mAb1_minipig` .. `Zheng_2012_mAb8_minipig` and `Zheng_2012_adalimumab_minipig`. This matches the species-suffix convention used elsewhere in `specificDrugs/` and, for the adalimumab entry, disambiguates a preclinical minipig model from the four human adalimumab popPK models in the library (Drweesh 2026, Marcantonio 2022, Marquez-Megias 2023, Nader 2017). Code calling `readModelDb()` with the old names must be updated.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 

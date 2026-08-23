@@ -1,4 +1,4 @@
-Zheng_2012_mAb8 <- function() {
+Zheng_2012_mAb8_minipig <- function() {
   description <- paste(
     "Preclinical (Gottingen minipig). Two-compartment IV-only population",
     "PK model for the non-disclosed humanized IgG antibody mAb8",
