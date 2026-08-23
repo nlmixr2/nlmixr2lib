@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Olsson Gisleskog 2025 ibrutinib ([doi:10.1002/psp4.70061](https://doi.org/10.1002/psp4.70061)) -- patients 65 years and older with previously untreated mantle cell lymphoma in the phase 3 SHINE study.
+
 - Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
 
 - Add Yau 2023 diazepam and midazolam simplified PBPK models ([doi:10.1002/psp4.12915](https://doi.org/10.1002/psp4.12915)) -- rat, cynomolgus monkey and the human translation.
