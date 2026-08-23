@@ -1478,6 +1478,8 @@ navbar:
         href: articles/Fan_2025_antiCD4_nanobody_HIV.html
       - text: "Ibandronate (Pillai 2004)"
         href: articles/Pillai_2004_ibandronate.html
+      - text: "Ibrutinib (OlssonGisleskog 2025)"
+        href: articles/OlssonGisleskog_2025_ibrutinib.html
       - text: "Ibrutinib competing risk (Ibrahim 2023)"
         href: articles/Ibrahim_2023_ibrutinib.html
       - text: "Ibrutinib dbp (Ibrahim 2023)"
@@ -4690,6 +4692,7 @@ articles:
   - articles/Olagunju_2018_efavirenz
   - articles/Olivo_2024_methotrexate
   - articles/Ollier_2015_ropivacaine
+  - articles/OlssonGisleskog_2025_ibrutinib
   - articles/Oniki_2018_BMI_NAFLD
   - articles/Onita_2025_sulbactam
   - articles/Oosten_2016_fentanyl

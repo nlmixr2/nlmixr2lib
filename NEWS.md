@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Matcha 2025 amikacin ([doi:10.1038/s41390-025-04044-7](https://doi.org/10.1038/s41390-025-04044-7)) -- term neonates.
+- Add Olsson Gisleskog 2025 ibrutinib ([doi:10.1002/psp4.70061](https://doi.org/10.1002/psp4.70061)) -- patients 65 years and older with previously untreated mantle cell lymphoma in the phase 3 SHINE study.
 
 - Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
 
