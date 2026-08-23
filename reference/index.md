@@ -4,6 +4,10 @@
 
 - [`Mann2022Equilibrate()`](https://nlmixr2.github.io/nlmixr2lib/reference/Mann2022Equilibrate.md)
   : Pre-equilibrate the Mann 2022 respiratory-physiology states
+- [`Poels_2025_elranatamab_qsp_cauc_multiplier()`](https://nlmixr2.github.io/nlmixr2lib/reference/Poels_2025_elranatamab_qsp_cauc_multiplier.md)
+  : Eq 37 cumulative-cytokine-exposure multiplier
+- [`Poels_2025_elranatamab_qsp_events()`](https://nlmixr2.github.io/nlmixr2lib/reference/Poels_2025_elranatamab_qsp_events.md)
+  : Build an event table for the Poels 2025 elranatamab QSP model
 - [`addBaseline1exp()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaseline1exp.md)
   : Add baseline that decays exponential with time
 - [`addBaselineConst()`](https://nlmixr2.github.io/nlmixr2lib/reference/addBaselineConst.md)

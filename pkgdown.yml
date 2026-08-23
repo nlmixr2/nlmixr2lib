@@ -8,9 +8,12 @@ articles:
   articles/AbdelJalil_2013_tacrolimus: AbdelJalil_2013_tacrolimus.html
   articles/AbdulAziz_2016_doripenem: AbdulAziz_2016_doripenem.html
   articles/Abduljalil_2009_clarithromycin: Abduljalil_2009_clarithromycin.html
+  articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi: AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi.html
+  articles/Abouelhassan_2024_sulbactam_elf_pneumonia: Abouelhassan_2024_sulbactam_elf_pneumonia.html
   articles/Abrantes_2017_moroctocog: Abrantes_2017_moroctocog.html
   articles/Abuhelwa_2015_itraconazole: Abuhelwa_2015_itraconazole.html
   articles/Abuqayyas_2012_8C2: Abuqayyas_2012_8C2.html
+  articles/Adamiszak_2025_fluconazole: Adamiszak_2025_fluconazole.html
   articles/Adams_1998_zalcitabine: Adams_1998_zalcitabine.html
   articles/Adeojo_2024_levonorgestrel: Adeojo_2024_levonorgestrel.html
   articles/Admiraal_2023_iminobiotin: Admiraal_2023_iminobiotin.html
@@ -29,16 +32,20 @@ articles:
   articles/AitOudhia_2024_sotatercept: AitOudhia_2024_sotatercept.html
   articles/Akbar_2025_voriconazole: Akbar_2025_voriconazole.html
   articles/Aksenov_2018_uricAcid: Aksenov_2018_uricAcid.html
+  articles/AlfoseaCuadrado_2024_reserpine_rat: AlfoseaCuadrado_2024_reserpine_rat.html
   articles/Ali_2018_amodiaquine: Ali_2018_amodiaquine.html
   articles/Allegaert_2015_paracetamol: Allegaert_2015_paracetamol.html
+  articles/Almquist_2015_Mig1: Almquist_2015_Mig1.html
   articles/Almquist_2016_ticagrelor: Almquist_2016_ticagrelor.html
   articles/Almquist_2022_anifrolumab: Almquist_2022_anifrolumab.html
   articles/Alqahtani_2018_cefuroxime: Alqahtani_2018_cefuroxime.html
   articles/Alqahtani_2018_vancomycin: Alqahtani_2018_vancomycin.html
+  articles/Alqurain_2024_vancomycin: Alqurain_2024_vancomycin.html
   articles/AlSallami_2016_unfractionatedHeparin: AlSallami_2016_unfractionatedHeparin.html
   articles/Alshehri_2023_ivermectin: Alshehri_2023_ivermectin.html
   articles/Alsultan_2017_pyrazinamide: Alsultan_2017_pyrazinamide.html
   articles/AlvarezJimenez_2016_scopolamine: AlvarezJimenez_2016_scopolamine.html
+  articles/AlZubaydi_2024_gabapentin: AlZubaydi_2024_gabapentin.html
   articles/An_2012_mitoxantrone_pbpk: An_2012_mitoxantrone_pbpk.html
   articles/Anbari_2023_atezolizumab_cibisatamab_qsp: Anbari_2023_atezolizumab_cibisatamab_qsp.html
   articles/Ande_2018_paclitaxel_everolimus_dasatinib: Ande_2018_paclitaxel_everolimus_dasatinib.html
@@ -57,16 +64,21 @@ articles:
   articles/Areberg_2006_escitalopram: Areberg_2006_escitalopram.html
   articles/Aregbe_2012_alvespimycin: Aregbe_2012_alvespimycin.html
   articles/Aruldhas_2021_methadone: Aruldhas_2021_methadone.html
+  articles/Ashraf_2024_codeine: Ashraf_2024_codeine.html
   articles/Asiimwe_2025_trastuzumab_ADCs_mbma: Asiimwe_2025_trastuzumab_ADCs_mbma.html
   articles/Asimus_2007_artemisinin: Asimus_2007_artemisinin.html
+  articles/Assmus_2025_benznidazole_mouse: Assmus_2025_benznidazole_mouse.html
+  articles/Athanassa_2025_minocycline: Athanassa_2025_minocycline.html
   articles/Attarwala_2023_mRNA3927: Attarwala_2023_mRNA3927.html
   articles/Ayyar_2024_givosiran: Ayyar_2024_givosiran.html
   articles/Ayyoub_2016_pyronaridine: Ayyoub_2016_pyronaridine.html
   articles/Azechi_2024_tamibarotene_pediatric: Azechi_2024_tamibarotene_pediatric.html
   articles/Back_2018_fenofibrate: Back_2018_fenofibrate.html
   articles/Baheti_2011_tenofovir: Baheti_2011_tenofovir.html
+  articles/Baiardi_2025_dalbavancin: Baiardi_2025_dalbavancin.html
   articles/Bajaj_2017_nivolumab_ddmore: Bajaj_2017_nivolumab_ddmore.html
   articles/Bajaj_2017_nivolumab: Bajaj_2017_nivolumab.html
+  articles/Balis_2025_busulfan: Balis_2025_busulfan.html
   articles/Barau_2012_mycophenolic_acid: Barau_2012_mycophenolic_acid.html
   articles/Barnett_2018_coproporphyrin_I: Barnett_2018_coproporphyrin_I.html
   articles/Barnett_2018_rifampicin: Barnett_2018_rifampicin.html
@@ -98,6 +110,7 @@ articles:
   articles/Betts_2018_mAb_linear_PK: Betts_2018_mAb_linear_PK.html
   articles/Betts_2019_pf_06671008: Betts_2019_pf_06671008.html
   articles/Bi_2017_peginterferon_alfa_2a: Bi_2017_peginterferon_alfa_2a.html
+  articles/Bian_2024_lefamulin: Bian_2024_lefamulin.html
   articles/Bienczak_2016_efavirenz: Bienczak_2016_efavirenz.html
   articles/Bienczak_2016_nevirapine: Bienczak_2016_nevirapine.html
   articles/Bienczak_2025_ligelizumab: Bienczak_2025_ligelizumab.html
@@ -112,6 +125,7 @@ articles:
   articles/Bizzotto_2011_The_AAPS_Journal: Bizzotto_2011_The_AAPS_Journal.html
   articles/Bizzotto_2016_glucose: Bizzotto_2016_glucose.html
   articles/Bjornsson_2011_naproxcinod: Bjornsson_2011_naproxcinod.html
+  articles/Bjornsson_2023_buprenorphine: Bjornsson_2023_buprenorphine.html
   articles/Blair_2004_raltitrexed: Blair_2004_raltitrexed.html
   articles/Blesch_2003_capecitabine: Blesch_2003_capecitabine.html
   articles/Boak_2014_linezolid: Boak_2014_linezolid.html
@@ -120,6 +134,7 @@ articles:
   articles/Bogason_2011_daunorubicin: Bogason_2011_daunorubicin.html
   articles/Bonate_2004_apomine: Bonate_2004_apomine.html
   articles/Bonner_2015_gastric_emptying: Bonner_2015_gastric_emptying.html
+  articles/Boone_2025_vinylchloride: Boone_2025_vinylchloride.html
   articles/Borghardt_2016_olodaterol: Borghardt_2016_olodaterol.html
   articles/Bosch_2022_liraglutide_qsp: Bosch_2022_liraglutide_qsp.html
   articles/Bosch_2024_cotadutide_qsp: Bosch_2024_cotadutide_qsp.html
@@ -128,13 +143,17 @@ articles:
   articles/Bouazza_2010_lamivudine: Bouazza_2010_lamivudine.html
   articles/Bouazza_2011_lamivudine: Bouazza_2011_lamivudine.html
   articles/Bouazza_2012_clindamycin: Bouazza_2012_clindamycin.html
+  articles/Bouazza_2025_prednisolone: Bouazza_2025_prednisolone.html
   articles/Boucher_2018_naproxen_mbma: Boucher_2018_naproxen_mbma.html
+  articles/Boulanger_2025_trimethoprim_sulfonamides_pig: Boulanger_2025_trimethoprim_sulfonamides_pig.html
   articles/Brain_2008_ifosfamide: Brain_2008_ifosfamide.html
+  articles/Braniff_2025_lorlatinib_qsp: Braniff_2025_lorlatinib_qsp.html
   articles/Brekkan_2016_factorIX: Brekkan_2016_factorIX.html
   articles/Brill_2014_midazolam: Brill_2014_midazolam.html
   articles/Brillac_2025_isatuximab: Brillac_2025_isatuximab.html
   articles/Brochot_2015_darunavir: Brochot_2015_darunavir.html
   articles/Brooks_2021_tacrolimus: Brooks_2021_tacrolimus.html
+  articles/Brossard_2025_emapalumab: Brossard_2025_emapalumab.html
   articles/Brown_2017_osimertinib: Brown_2017_osimertinib.html
   articles/Bruno_2005_trastuzumab: Bruno_2005_trastuzumab.html
   articles/Brussee_2016_arginine: Brussee_2016_arginine.html
@@ -142,6 +161,7 @@ articles:
   articles/BuchwalderCsajka_1999_angiotensin: BuchwalderCsajka_1999_angiotensin.html
   articles/Budha_2015_rg7652: Budha_2015_rg7652.html
   articles/Budha_2023_tislelizumab: Budha_2023_tislelizumab.html
+  articles/Budiansah_2025_dotatate_pbpk: Budiansah_2025_dotatate_pbpk.html
   articles/Buelga_2005_vancomycin: Buelga_2005_vancomycin.html
   articles/Buil-Bruna_2015_lanreotide: Buil-Bruna_2015_lanreotide.html
   articles/Bukkems_2021_raltegravir: Bukkems_2021_raltegravir.html
@@ -152,6 +172,7 @@ articles:
   articles/Bulitta_2010_colistin: Bulitta_2010_colistin.html
   articles/Bulitta_2010_piperacillin: Bulitta_2010_piperacillin.html
   articles/Bulitta_2011_cefpirome: Bulitta_2011_cefpirome.html
+  articles/ButraguenoLaiseca_2025_teicoplanin: ButraguenoLaiseca_2025_teicoplanin.html
   articles/Byrne_2022_imr687: Byrne_2022_imr687.html
   articles/Caldes_2009_ganciclovir: Caldes_2009_ganciclovir.html
   articles/Cammarata_2024_sulbactam_durlobactam: Cammarata_2024_sulbactam_durlobactam.html
@@ -172,6 +193,7 @@ articles:
   articles/Cao_2013_tefibazumab: Cao_2013_tefibazumab.html
   articles/Cao_2013_visilizumab: Cao_2013_visilizumab.html
   articles/Cao_2017_dha_artemisinin_stress_model: Cao_2017_dha_artemisinin_stress_model.html
+  articles/Cao_2025_ferricCarboxymaltose: Cao_2025_ferricCarboxymaltose.html
   articles/Capparelli_2005_cefepime: Capparelli_2005_cefepime.html
   articles/Cardilin_2018_radiation_radiosensitizer_mouse: Cardilin_2018_radiation_radiosensitizer_mouse.html
   articles/CarlssonPetri_2018_semaglutide: CarlssonPetri_2018_semaglutide.html
@@ -181,6 +203,9 @@ articles:
   articles/Castro-Surez_2020_nimotuzumab: Castro-Surez_2020_nimotuzumab.html
   articles/Catalan-Latorre_2018_taurine_rat: Catalan-Latorre_2018_taurine_rat.html
   articles/Cella_2012_midazolam_paediatric_scaling: Cella_2012_midazolam_paediatric_scaling.html
+  articles/Cendros_2025_enflicoxib: Cendros_2025_enflicoxib.html
+  articles/Centanni_2025_sunitinib_thrombocytopenia: Centanni_2025_sunitinib_thrombocytopenia.html
+  articles/Cerqueira_2025_resveratrol: Cerqueira_2025_resveratrol.html
   articles/Chae_2012_metformin: Chae_2012_metformin.html
   articles/Chairat_2016_oseltamivir: Chairat_2016_oseltamivir.html
   articles/Chakraborty_2012_canakinumab: Chakraborty_2012_canakinumab.html
@@ -214,7 +239,10 @@ articles:
   articles/Chen_2024_noscapine: Chen_2024_noscapine.html
   articles/Chen_2024_remimazolam: Chen_2024_remimazolam.html
   articles/Chen_2024_rituximab: Chen_2024_rituximab.html
+  articles/Chen_2025_iohexol_creatinine: Chen_2025_iohexol_creatinine.html
+  articles/Chen_2025_remimazolam: Chen_2025_remimazolam.html
   articles/Cheng_2026_immunoglobulin: Cheng_2026_immunoglobulin.html
+  articles/Cheng_2026_levamisole_interspecies: Cheng_2026_levamisole_interspecies.html
   articles/Chi_2018_propofol: Chi_2018_propofol.html
   articles/Chien_2022_imatinib: Chien_2022_imatinib.html
   articles/Chigutsa_2011_rifampicin: Chigutsa_2011_rifampicin.html
@@ -223,6 +251,8 @@ articles:
   articles/Choe_2012_busulfan: Choe_2012_busulfan.html
   articles/Choi_2011_remifentanil: Choi_2011_remifentanil.html
   articles/Choi_2018_metformin: Choi_2018_metformin.html
+  articles/Chotsiri_2019_lumefantrine: Chotsiri_2019_lumefantrine.html
+  articles/Choules_2024_vedotin_ddi: Choules_2024_vedotin_ddi.html
   articles/Choy_2016_T2DM_WHIG: Choy_2016_T2DM_WHIG.html
   articles/Chua_2025_mirikizumab: Chua_2025_mirikizumab.html
   articles/Chung_2013_vancomycin: Chung_2013_vancomycin.html
@@ -241,7 +271,10 @@ articles:
   articles/Cojutti_2023_ceftobiprole: Cojutti_2023_ceftobiprole.html
   articles/Colin_2014_moxifloxacin: Colin_2014_moxifloxacin.html
   articles/Collins_2023_belantamab_mprotein: Collins_2023_belantamab_mprotein.html
+  articles/Collins_2025_midazolam: Collins_2025_midazolam.html
   articles/Colombo_2006_atazanavir: Colombo_2006_atazanavir.html
+  articles/Comisar_2025_rimegepant: Comisar_2025_rimegepant.html
+  articles/Comisar_2025_zavegepant: Comisar_2025_zavegepant.html
   articles/Conil_2007_ceftazidime: Conil_2007_ceftazidime.html
   articles/Conil_2010_tobramycin: Conil_2010_tobramycin.html
   articles/Conrado_2014_alzheimer: Conrado_2014_alzheimer.html
@@ -250,6 +283,8 @@ articles:
   articles/Couffignal_2014_imipenem: Couffignal_2014_imipenem.html
   articles/Courlet_2023_cabamiquine: Courlet_2023_cabamiquine.html
   covariate-columns: covariate-columns.html
+  articles/Crass_2024_pegcetacoplan: Crass_2024_pegcetacoplan.html
+  articles/Crass_2025_pegcetacoplan_geographic_atrophy: Crass_2025_pegcetacoplan_geographic_atrophy.html
   create-model-library: create-model-library.html
   articles/Crommentuyn_2005_lopinavir: Crommentuyn_2005_lopinavir.html
   articles/Csajka_2004_indinavir: Csajka_2004_indinavir.html
@@ -258,25 +293,33 @@ articles:
   articles/Danielak_2017_treosulfan: Danielak_2017_treosulfan.html
   articles/Dao_2020_sultiame: Dao_2020_sultiame.html
   articles/Darpo_2014_racSotalol: Darpo_2014_racSotalol.html
+  articles/Darwish_2025_trofinetide: Darwish_2025_trofinetide.html
+  articles/Dasti_2025_mrna_vaccines: Dasti_2025_mrna_vaccines.html
   articles/Davis_2008_maraviroc: Davis_2008_maraviroc.html
   articles/deAlwis_1998_ondansetron: deAlwis_1998_ondansetron.html
   articles/Debord_2001_cyclosporin: Debord_2001_cyclosporin.html
   articles/Decker_2024_baricitinib: Decker_2024_baricitinib.html
+  articles/Decker_2026_baricitinib: Decker_2026_baricitinib.html
   articles/DeCock_2012_propyleneGlycol: DeCock_2012_propyleneGlycol.html
   articles/Decrane_2023_oxyfluorfen: Decrane_2023_oxyfluorfen.html
+  articles/Deferm_2025_lactation_physiology: Deferm_2025_lactation_physiology.html
   articles/deHoogd_2017_morphine: deHoogd_2017_morphine.html
   articles/deJonge_2005_paclitaxel: deJonge_2005_paclitaxel.html
   articles/DeJongh_2014_antithrombin: DeJongh_2014_antithrombin.html
+  articles/DeJongh_2025_azd7648_olaparib_xenograft: DeJongh_2025_azd7648_olaparib_xenograft.html
   articles/deKock_2017_sulfadoxinePyrimethamine: deKock_2017_sulfadoxinePyrimethamine.html
   articles/Delattre_2010_amikacin: Delattre_2010_amikacin.html
   articles/DelFrari_2018_propranolol: DelFrari_2018_propranolol.html
   articles/Delor_2013_alzheimer: Delor_2013_alzheimer.html
+  articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp: Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.html
   articles/Denti_2010_glucoseMinimal: Denti_2010_glucoseMinimal.html
   articles/Denti_2018_levofloxacin: Denti_2018_levofloxacin.html
+  articles/Derippe_2024_BH3_mimetics_virtual_tumors: Derippe_2024_BH3_mimetics_virtual_tumors.html
   articles/Desai_2016_isavuconazole: Desai_2016_isavuconazole.html
   articles/Desai_2024_crisprCas9: Desai_2024_crisprCas9.html
   articles/Desikan_2022_covidVaccine: Desikan_2022_covidVaccine.html
   articles/Desmee_2015_PSA_mCRPC: Desmee_2015_PSA_mCRPC.html
+  articles/deVries_2025_durvalumab: deVries_2025_durvalumab.html
   articles/deVriesSchultink_2018_cardiotoxicity: deVriesSchultink_2018_cardiotoxicity.html
   articles/deVriesSchultink_2020_zenocutuzumab: deVriesSchultink_2020_zenocutuzumab.html
   articles/deWinter_2009_mycophenolic_acid: deWinter_2009_mycophenolic_acid.html
@@ -305,12 +348,16 @@ articles:
   articles/Dorlo_2017_miltefosine: Dorlo_2017_miltefosine.html
   articles/Dowling_2008_naloxone: Dowling_2008_naloxone.html
   articles/Drweesh_2026_adalimumab: Drweesh_2026_adalimumab.html
+  articles/Duan_2024_linezolid: Duan_2024_linezolid.html
+  articles/Duffull_2025_tmdd_model_instability: Duffull_2025_tmdd_model_instability.html
   articles/Dunlap_2025_tacrolimus: Dunlap_2025_tacrolimus.html
   articles/Dunn_2025_tranexamicAcid: Dunn_2025_tranexamicAcid.html
   articles/Duong_2016_WHIG_T2DM: Duong_2016_WHIG_T2DM.html
   articles/Duong_2017_AT9283: Duong_2017_AT9283.html
   articles/Dvorackova_2023_posaconazole: Dvorackova_2023_posaconazole.html
   articles/Easterling_2018_magnesium_sulfate: Easterling_2018_magnesium_sulfate.html
+  articles/Eaton_2025_dabigatran_sheep: Eaton_2025_dabigatran_sheep.html
+  articles/Ebihara_2025_tebipenem: Ebihara_2025_tebipenem.html
   articles/Eckernas_2023_dimethyltryptamine_EEG: Eckernas_2023_dimethyltryptamine_EEG.html
   articles/Edstein_2001_tafenoquine: Edstein_2001_tafenoquine.html
   articles/Eissing_2024_finerenone: Eissing_2024_finerenone.html
@@ -326,6 +373,9 @@ articles:
   articles/Facius_2018_roflumilast: Facius_2018_roflumilast.html
   articles/Faelens_2021_infliximab: Faelens_2021_infliximab.html
   articles/Falkenhagen_2023_warfarin_qsp: Falkenhagen_2023_warfarin_qsp.html
+  articles/Fan_2024_sirolimus: Fan_2024_sirolimus.html
+  articles/Fan_2025_antiCD4_nanobody_HIV: Fan_2025_antiCD4_nanobody_HIV.html
+  articles/Fan_2025_iron_wholebody_pbpk: Fan_2025_iron_wholebody_pbpk.html
   articles/Fang_2010_etanercept: Fang_2010_etanercept.html
   articles/Fanta_2007_ciclosporin: Fanta_2007_ciclosporin.html
   articles/Farrell_2012_farletuzumab: Farrell_2012_farletuzumab.html
@@ -343,6 +393,7 @@ articles:
   articles/Feng_2012_higenamine: Feng_2012_higenamine.html
   articles/Feng_2014_ipilimumab: Feng_2014_ipilimumab.html
   articles/Ferron_2013_cabazitaxel: Ferron_2013_cabazitaxel.html
+  articles/Fiandaca_2025_mRNABiTE: Fiandaca_2025_mRNABiTE.html
   articles/Fiedler-Kelly_2019_fremanezumab: Fiedler-Kelly_2019_fremanezumab.html
   articles/FiedlerKelly_2020_fremanezumab_cm: FiedlerKelly_2020_fremanezumab_cm.html
   articles/FiedlerKelly_2020_fremanezumab_em: FiedlerKelly_2020_fremanezumab_em.html
@@ -353,6 +404,7 @@ articles:
   articles/Foster_2023_enrofloxacin_cat: Foster_2023_enrofloxacin_cat.html
   articles/Fostvedt_2021_glasdegib: Fostvedt_2021_glasdegib.html
   articles/Fournier_2018_amoxicillin: Fournier_2018_amoxicillin.html
+  articles/Francke_2025_tacrolimus: Francke_2025_tacrolimus.html
   articles/Franken_2015_morphine: Franken_2015_morphine.html
   articles/Franken_2017_haloperidol: Franken_2017_haloperidol.html
   articles/Franken_2017_midazolam: Franken_2017_midazolam.html
@@ -364,6 +416,7 @@ articles:
   articles/Friberg_2012_voriconazole: Friberg_2012_voriconazole.html
   articles/Frobel_2013_ciclosporin: Frobel_2013_ciclosporin.html
   articles/Frohlich_2018_mRNA_translation: Frohlich_2018_mRNA_translation.html
+  articles/Fromage_2025_mycophenolic_acid: Fromage_2025_mycophenolic_acid.html
   articles/Frymoyer_2013_gentamicin: Frymoyer_2013_gentamicin.html
   articles/Frymoyer_2013_mycophenolic_acid: Frymoyer_2013_mycophenolic_acid.html
   articles/Frymoyer_2017_infliximab: Frymoyer_2017_infliximab.html
@@ -376,13 +429,16 @@ articles:
   articles/Galluppi_2021_ulotaront: Galluppi_2021_ulotaront.html
   articles/Gandhi_2021_abatacept: Gandhi_2021_abatacept.html
   articles/Ganesan_2023_tebipenem: Ganesan_2023_tebipenem.html
+  articles/Gao_2025_cefquinome: Gao_2025_cefquinome.html
   articles/Gaohua_2012_pregnancy_pbpk: Gaohua_2012_pregnancy_pbpk.html
   articles/Gaohua_2023_permeabilityLimited_pbpk: Gaohua_2023_permeabilityLimited_pbpk.html
+  articles/Garcia_2025_garadacimab: Garcia_2025_garadacimab.html
   articles/Garg_2014_pertuzumab: Garg_2014_pertuzumab.html
   articles/Garmann_2017_BAY81_8973: Garmann_2017_BAY81_8973.html
   articles/Garonzik_2016_daptomycin: Garonzik_2016_daptomycin.html
   articles/Garot_2011_ceftriaxone: Garot_2011_ceftriaxone.html
   articles/Garrett_2014_axitinib: Garrett_2014_axitinib.html
+  articles/Gaspar_2025_fexofenadine: Gaspar_2025_fexofenadine.html
   articles/Gastonguay_2005_efaproxiral: Gastonguay_2005_efaproxiral.html
   articles/Gatti_1996_dapsone: Gatti_1996_dapsone.html
   articles/Gebhard_2023_leukemia_maintenance_therapy: Gebhard_2023_leukemia_maintenance_therapy.html
@@ -396,14 +452,17 @@ articles:
   articles/Gilkey_2015_DiRnanoparticle: Gilkey_2015_DiRnanoparticle.html
   articles/Girard_2012_pimasertib: Girard_2012_pimasertib.html
   articles/Gisleskog_1999_dutasteride: Gisleskog_1999_dutasteride.html
+  articles/Glatard_2025_octreotide: Glatard_2025_octreotide.html
   articles/Goel_2016_Sonidegib: Goel_2016_Sonidegib.html
   articles/Goggin_2004_emfilermin: Goggin_2004_emfilermin.html
   articles/Golubovic_2019_sirolimus: Golubovic_2019_sirolimus.html
+  articles/Golzaryan_2025_lu177psmaIT_pbpk: Golzaryan_2025_lu177psmaIT_pbpk.html
   articles/Gong_2023_pemigatinib: Gong_2023_pemigatinib.html
   articles/GonzalezSales_2015_testosterone: GonzalezSales_2015_testosterone.html
   articles/GonzalezSales_2024_imetelstat: GonzalezSales_2024_imetelstat.html
   articles/Goteti_2024_SLE_mbma: Goteti_2024_SLE_mbma.html
   articles/Goti_2018_vancomycin: Goti_2018_vancomycin.html
+  articles/Gotta_2025_cefepime_infant_neurotoxicity: Gotta_2025_cefepime_infant_neurotoxicity.html
   articles/Goulooze_2022_finerenone_uacr_egfr: Goulooze_2022_finerenone_uacr_egfr.html
   articles/Goulooze_2022_finerenone: Goulooze_2022_finerenone.html
   articles/Granda_2024_kidney_pbpk: Granda_2024_kidney_pbpk.html
@@ -414,6 +473,8 @@ articles:
   articles/Grimsley_1999_vancomycin: Grimsley_1999_vancomycin.html
   articles/Grover_2011_tacrolimus: Grover_2011_tacrolimus.html
   articles/Grzesk_2016_m3M3FBS: Grzesk_2016_m3M3FBS.html
+  articles/Gu_2025_heart_failure_pbpk: Gu_2025_heart_failure_pbpk.html
+  articles/Gu_2025_rivaroxaban: Gu_2025_rivaroxaban.html
   articles/Guiastrennec_2016_gastric_emptying: Guiastrennec_2016_gastric_emptying.html
   articles/Guo_2022_PF_06939999: Guo_2022_PF_06939999.html
   articles/Gupta_2006_peginterferon_alfa_2b: Gupta_2006_peginterferon_alfa_2b.html
@@ -434,6 +495,7 @@ articles:
   articles/Han_2015_sibutramine: Han_2015_sibutramine.html
   articles/Han_2016_bevacizumab: Han_2016_bevacizumab.html
   articles/Han_2018_methionineMetabolismCycle: Han_2018_methionineMetabolismCycle.html
+  articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk: Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
   articles/Hanberg_2018_meropenem: Hanberg_2018_meropenem.html
   articles/Hanley_2024_brigatinib: Hanley_2024_brigatinib.html
   articles/Hansson_2013_sunitinib_dbp: Hansson_2013_sunitinib_dbp.html
@@ -446,6 +508,7 @@ articles:
   articles/Hansson_2013c_sunitinib: Hansson_2013c_sunitinib.html
   articles/Hanzel_2021_infliximab: Hanzel_2021_infliximab.html
   articles/Hao_2018_tacrolimus: Hao_2018_tacrolimus.html
+  articles/Harada_2025_cyanide_pbpk: Harada_2025_cyanide_pbpk.html
   articles/Harrold_2020_filgrastim_ars: Harrold_2020_filgrastim_ars.html
   articles/Harrold_2020_radiation_neutropenia: Harrold_2020_radiation_neutropenia.html
   articles/Harun_2019_cysticFibrosis: Harun_2019_cysticFibrosis.html
@@ -456,6 +519,7 @@ articles:
   articles/Hayashi_2007_omalizumab: Hayashi_2007_omalizumab.html
   articles/Hazendonk_2016_factor_viii: Hazendonk_2016_factor_viii.html
   articles/He_2012_lamotrigine: He_2012_lamotrigine.html
+  articles/He_2025_lidocaine: He_2025_lidocaine.html
   articles/Heathman_2024_efavirenz: Heathman_2024_efavirenz.html
   articles/Hempel_2003_daunorubicin_liposomal: Hempel_2003_daunorubicin_liposomal.html
   articles/Hendriksen_2013_artesunate: Hendriksen_2013_artesunate.html
@@ -467,7 +531,9 @@ articles:
   articles/Hennig_2013_tobra: Hennig_2013_tobra.html
   articles/Hennig_2015_phenytoin: Hennig_2015_phenytoin.html
   articles/Hennig_2015_rifabutin: Hennig_2015_rifabutin.html
+  articles/Henthorn_2024_tetrahydrocannabinol: Henthorn_2024_tetrahydrocannabinol.html
   articles/Heo_2016_amlodipine_valsartan: Heo_2016_amlodipine_valsartan.html
+  articles/HernandezLozano_2025_apramycin: HernandezLozano_2025_apramycin.html
   articles/Heuberger_2018_salbutamol: Heuberger_2018_salbutamol.html
   articles/Hien_2017_cipargamin: Hien_2017_cipargamin.html
   articles/Hietala_2010_artemether_lumefantrine_malaria: Hietala_2010_artemether_lumefantrine_malaria.html
@@ -499,11 +565,13 @@ articles:
   articles/Horita_2018_isoniazid: Horita_2018_isoniazid.html
   articles/Horita_2018_pyrazinamide: Horita_2018_pyrazinamide.html
   articles/Horita_2018_rifampicin: Horita_2018_rifampicin.html
+  articles/Hornik_2025_furosemide: Hornik_2025_furosemide.html
   articles/Hu_2014_bapineuzumab: Hu_2014_bapineuzumab.html
   articles/Hu_2017_peginterferon_beta_1a: Hu_2017_peginterferon_beta_1a.html
   articles/Hu_2026_clesrovimab: Hu_2026_clesrovimab.html
   articles/Hua_2015_anrukinzumab: Hua_2015_anrukinzumab.html
   articles/Huang_2017_vrc01: Huang_2017_vrc01.html
+  articles/Huang_2025_dexmedetomidine: Huang_2025_dexmedetomidine.html
   articles/Huppe_2023_fosfomycin: Huppe_2023_fosfomycin.html
   articles/Hurtado_2014_levofloxacin_rat: Hurtado_2014_levofloxacin_rat.html
   articles/Hussein_1997_lamotrigine: Hussein_1997_lamotrigine.html
@@ -518,7 +586,10 @@ articles:
   articles/Ide_2020_elotuzumab: Ide_2020_elotuzumab.html
   articles/Iida_2008_nicorandil: Iida_2008_nicorandil.html
   articles/Ippolito_2024_pacmilimab_qsp: Ippolito_2024_pacmilimab_qsp.html
+  articles/Ivanova_2024_synucleinopathy_qsp: Ivanova_2024_synucleinopathy_qsp.html
   articles/Ivaturi_2017_RBP_7000: Ivaturi_2017_RBP_7000.html
+  articles/Iwama_2024_febuxostat: Iwama_2024_febuxostat.html
+  articles/Izat_2025_aldehyde_oxidase_substrates: Izat_2025_aldehyde_oxidase_substrates.html
   articles/Jackson_2022_ixekizumab: Jackson_2022_ixekizumab.html
   articles/JacoboCabral_2015_tacrolimus: JacoboCabral_2015_tacrolimus.html
   articles/Jacobs_2016_colistin: Jacobs_2016_colistin.html
@@ -537,10 +608,14 @@ articles:
   articles/Jeong_2022_torsemide: Jeong_2022_torsemide.html
   articles/Ji_2017_vancomycin: Ji_2017_vancomycin.html
   articles/Ji_2018_tacrolimus: Ji_2018_tacrolimus.html
+  articles/Ji_2025_TDI01: Ji_2025_TDI01.html
   articles/Jia_2015_unfractionatedHeparin: Jia_2015_unfractionatedHeparin.html
+  articles/Jia_2025_tak_071: Jia_2025_tak_071.html
+  articles/Jian_2025_peginterferon_alfa_2b: Jian_2025_peginterferon_alfa_2b.html
   articles/Jiang_2008_gemcitabine: Jiang_2008_gemcitabine.html
   articles/Jiang_2023_imatinib: Jiang_2023_imatinib.html
   articles/Jiang_2024_empagliflozin: Jiang_2024_empagliflozin.html
+  articles/Jiang_2025_filgrastim: Jiang_2025_filgrastim.html
   articles/Jiao_2008_mycophenolic_acid: Jiao_2008_mycophenolic_acid.html
   articles/Jiao_2009_sirolimus: Jiao_2009_sirolimus.html
   articles/Jin_2014_simvastatin: Jin_2014_simvastatin.html
@@ -560,6 +635,7 @@ articles:
   articles/Jung_2024_clopidogrel: Jung_2024_clopidogrel.html
   articles/Jung_2024_vancomycin: Jung_2024_vancomycin.html
   articles/Kado_2020_benzathine_benzylpenicillin_g: Kado_2020_benzathine_benzylpenicillin_g.html
+  articles/Kado_2023_benzathine_benzylpenicillin_g: Kado_2023_benzathine_benzylpenicillin_g.html
   articles/Kakara_2014_statins_LDLC: Kakara_2014_statins_LDLC.html
   articles/Kamal_2013_oseltamivir: Kamal_2013_oseltamivir.html
   articles/Kamal_2015_oseltamivir: Kamal_2015_oseltamivir.html
@@ -570,6 +646,7 @@ articles:
   articles/Kappelhoff_2005_ritonavir: Kappelhoff_2005_ritonavir.html
   articles/Karaiskos_2015_colistin: Karaiskos_2015_colistin.html
   articles/Karakitsios_2024_gevokizumab: Karakitsios_2024_gevokizumab.html
+  articles/Karakitsios_2025_bedaquiline_lung_pbpk: Karakitsios_2025_bedaquiline_lung_pbpk.html
   articles/Karlsson_2009_voriconazole: Karlsson_2009_voriconazole.html
   articles/Karunajeewa_2009_sulfadoxinePyrimethamine: Karunajeewa_2009_sulfadoxinePyrimethamine.html
   articles/Kassir_2014_tacrolimus: Kassir_2014_tacrolimus.html
@@ -584,8 +661,11 @@ articles:
   articles/Kemal_2026_nemtabrutinib: Kemal_2026_nemtabrutinib.html
   articles/Kerbusch_2000_ifosfamide: Kerbusch_2000_ifosfamide.html
   articles/Kervezee_2014_quinidine_rat: Kervezee_2014_quinidine_rat.html
+  articles/Ketharanathan_2023_pentobarbital: Ketharanathan_2023_pentobarbital.html
   articles/Khan_2015_ciprofloxacin: Khan_2015_ciprofloxacin.html
+  articles/Khaowroongrueng_2024_sufentanil: Khaowroongrueng_2024_sufentanil.html
   articles/Khwarg_2024_donepezil: Khwarg_2024_donepezil.html
+  articles/Khwarg_2024_proguanil: Khwarg_2024_proguanil.html
   articles/Kielbasa_2020_galcanezumab: Kielbasa_2020_galcanezumab.html
   articles/Kim_2008_aripiprazole: Kim_2008_aripiprazole.html
   articles/Kim_2015_paroxetine: Kim_2015_paroxetine.html
@@ -595,7 +675,11 @@ articles:
   articles/Kim_2018_tacrolimus: Kim_2018_tacrolimus.html
   articles/Kim_2023_pyrazinamide: Kim_2023_pyrazinamide.html
   articles/Kim_2024_meropenem: Kim_2024_meropenem.html
+  articles/Kim_2025_evogliptin: Kim_2025_evogliptin.html
+  articles/Kim_2025_infliximab: Kim_2025_infliximab.html
   articles/Kimura_2023_glucarpidase: Kimura_2023_glucarpidase.html
+  articles/Kir_2025_atenolol_metoprolol_malnutrition: Kir_2025_atenolol_metoprolol_malnutrition.html
+  articles/Kiriyama_2024_nifedipine_captopril_rat: Kiriyama_2024_nifedipine_captopril_rat.html
   articles/Kirubakaran_2022_tacrolimus: Kirubakaran_2022_tacrolimus.html
   articles/Kleiber_2017_clonidine: Kleiber_2017_clonidine.html
   articles/Kleideiter_2017_cebranopadol: Kleideiter_2017_cebranopadol.html
@@ -611,8 +695,12 @@ articles:
   articles/Knibbe_2005_propofol: Knibbe_2005_propofol.html
   articles/Knibbe_2009_morphine: Knibbe_2009_morphine.html
   articles/Knights_2015_aripiprazole: Knights_2015_aripiprazole.html
+  articles/Kobuchi_2025_dapagliflozin: Kobuchi_2025_dapagliflozin.html
   articles/Kohl_2010_posaconazole: Kohl_2010_posaconazole.html
+  articles/Kollo_2026_selumetinib: Kollo_2026_selumetinib.html
   articles/Koloskoff_2025_ganciclovir: Koloskoff_2025_ganciclovir.html
+  articles/Kong_2025_piperacillin_tazobactam: Kong_2025_piperacillin_tazobactam.html
+  articles/Kong_2025_sudapyridine: Kong_2025_sudapyridine.html
   articles/Koo_2012_propofol: Koo_2012_propofol.html
   articles/Koolen_2010_docetaxel: Koolen_2010_docetaxel.html
   articles/Koopman_2023_factorix: Koopman_2023_factorix.html
@@ -637,8 +725,10 @@ articles:
   articles/Kunisawa_2014_olprinone: Kunisawa_2014_olprinone.html
   articles/Kunisawa_2015_landiolol: Kunisawa_2015_landiolol.html
   articles/Kuroda_2023_cephalothin: Kuroda_2023_cephalothin.html
+  articles/Kurup_2024_DZIF10c: Kurup_2024_DZIF10c.html
   articles/Kutumova_2024_albuminNanoparticles: Kutumova_2024_albuminNanoparticles.html
   articles/Kyhl_2016_nalmefene: Kyhl_2016_nalmefene.html
+  articles/Lacroix_2025_polymyxinB_mucin: Lacroix_2025_polymyxinB_mucin.html
   articles/Lacy_2018_cabozantinib_exposure_response: Lacy_2018_cabozantinib_exposure_response.html
   articles/Lacy_2018_cabozantinib: Lacy_2018_cabozantinib.html
   articles/Laffont_2024_nalmefene: Laffont_2024_nalmefene.html
@@ -647,6 +737,7 @@ articles:
   articles/Lahu_2010_roflumilast: Lahu_2010_roflumilast.html
   articles/Lakota_2018_ertapenem: Lakota_2018_ertapenem.html
   articles/Lallemand_2023_benzylpenicillin_horse: Lallemand_2023_benzylpenicillin_horse.html
+  articles/Lam_2025_ondansetron: Lam_2025_ondansetron.html
   articles/Lamoth_2009_imipenem: Lamoth_2009_imipenem.html
   articles/Landersdorfer_2007_flucloxacillin: Landersdorfer_2007_flucloxacillin.html
   articles/Landersdorfer_2009_gemifloxacin: Landersdorfer_2009_gemifloxacin.html
@@ -673,7 +764,10 @@ articles:
   articles/Lee_2023_tripegfilgrastim: Lee_2023_tripegfilgrastim.html
   articles/Lee_2023_tylosin: Lee_2023_tylosin.html
   articles/Lee_2024_eculizumab: Lee_2024_eculizumab.html
+  articles/Lee_2024_lserine: Lee_2024_lserine.html
   articles/Lee_2024_topiramate: Lee_2024_topiramate.html
+  articles/Lee_2025_levofloxacin: Lee_2025_levofloxacin.html
+  articles/Lee_2025_piperacillin_tazobactam: Lee_2025_piperacillin_tazobactam.html
   articles/Leger_2004_topotecan: Leger_2004_topotecan.html
   articles/Lehr_2010_tesofensine: Lehr_2010_tesofensine.html
   articles/LeJouan_2005_quinine: LeJouan_2005_quinine.html
@@ -699,7 +793,11 @@ articles:
   articles/Li_2021_daratumumab_qsstmdd: Li_2021_daratumumab_qsstmdd.html
   articles/Li_2023_granisetron: Li_2023_granisetron.html
   articles/Li_2023_ornidazole: Li_2023_ornidazole.html
+  articles/Li_2024_norepinephrine: Li_2024_norepinephrine.html
   articles/Li_2024_orin1001: Li_2024_orin1001.html
+  articles/Li_2025_amikacin: Li_2025_amikacin.html
+  articles/Li_2025_doxycycline_florfenicol_ducks: Li_2025_doxycycline_florfenicol_ducks.html
+  articles/Li_2025_modakafuspAlfa: Li_2025_modakafuspAlfa.html
   articles/Liang_2023_polymyxinB: Liang_2023_polymyxinB.html
   articles/Liang_2024_osimertinib: Liang_2024_osimertinib.html
   articles/Liang_2024_rituximab: Liang_2024_rituximab.html
@@ -718,6 +816,8 @@ articles:
   list-of-models: list-of-models.html
   articles/Litjens_2023_linezolid_tuberculous_meningitis: Litjens_2023_linezolid_tuberculous_meningitis.html
   articles/Liu_2023_mAb_mouse_pbpk: Liu_2023_mAb_mouse_pbpk.html
+  articles/Liu_2024_spatholobiCaulis: Liu_2024_spatholobiCaulis.html
+  articles/Liu_2025_avatrombopag: Liu_2025_avatrombopag.html
   articles/Livio_2014_tobramycin: Livio_2014_tobramycin.html
   articles/Llanos_2017_gentamicin: Llanos_2017_gentamicin.html
   articles/Llanos-Paez_2017_gentamicin: Llanos-Paez_2017_gentamicin.html
@@ -746,16 +846,19 @@ articles:
   articles/Ma_2020_sarilumab_anc: Ma_2020_sarilumab_anc.html
   articles/Ma_2020_sarilumab_das28crp: Ma_2020_sarilumab_das28crp.html
   articles/Macpherson_2015_rosuvastatin: Macpherson_2015_rosuvastatin.html
+  articles/Maizaud_2025_missed_mycophenolate_doses: Maizaud_2025_missed_mycophenolate_doses.html
   articles/Majekodunmi_2017_HIV_HCV_CD4_recovery: Majekodunmi_2017_HIV_HCV_CD4_recovery.html
   articles/Majid_2024_lenvatinib: Majid_2024_lenvatinib.html
   articles/Maleki_2024_brepocitinib: Maleki_2024_brepocitinib.html
   articles/MangasSanjuan_2016_axomadol: MangasSanjuan_2016_axomadol.html
+  articles/Mao_2024_sirolimus: Mao_2024_sirolimus.html
   articles/Marathe_2023_belzutifan: Marathe_2023_belzutifan.html
   articles/Marcantonio_2022_efa: Marcantonio_2022_efa.html
   articles/Marier_2002_tobramycin_rat_conventional: Marier_2002_tobramycin_rat_conventional.html
   articles/Marier_2002_tobramycin_rat_liposomal: Marier_2002_tobramycin_rat_liposomal.html
   markov: markov.html
   articles/Marques_2024_salbutamol: Marques_2024_salbutamol.html
+  articles/Marques_2025_salbutamol: Marques_2025_salbutamol.html
   articles/MarquesMinana_2010_vancomycin: MarquesMinana_2010_vancomycin.html
   articles/Marquez-Megias_2023_adalimumab: Marquez-Megias_2023_adalimumab.html
   articles/Marsot_2017_rifampicin: Marsot_2017_rifampicin.html
@@ -763,12 +866,16 @@ articles:
   articles/Martinez_2019_alirocumab: Martinez_2019_alirocumab.html
   articles/Masters_2022_avelumab: Masters_2022_avelumab.html
   articles/Matsumoto_2005_TF_505: Matsumoto_2005_TF_505.html
+  articles/Mauro_2025_nilotinib: Mauro_2025_nilotinib.html
   articles/Mazzocco_2015_temozolomide: Mazzocco_2015_temozolomide.html
+  articles/McBride_2025_radamts13_qsp: McBride_2025_radamts13_qsp.html
+  articles/McCann_2025_midazolam: McCann_2025_midazolam.html
   articles/McLachlan_1996_fluconazole: McLachlan_1996_fluconazole.html
   articles/McLaughlin_2024_tld_1: McLaughlin_2024_tld_1.html
   articles/MedellinGaribay_2015_gentamicin: MedellinGaribay_2015_gentamicin.html
   articles/Mehta_2023_tb_lesion_mpbpk: Mehta_2023_tb_lesion_mpbpk.html
   articles/Meid_2024_spironolactone_qsp: Meid_2024_spironolactone_qsp.html
+  articles/Melander_2025_cetirizine: Melander_2025_cetirizine.html
   articles/Melhem_2018_g_csf: Melhem_2018_g_csf.html
   articles/Melhem_2022_dostarlimab: Melhem_2022_dostarlimab.html
   articles/Menon_2024_parkinsonPathogenesis: Menon_2024_parkinsonPathogenesis.html
@@ -777,6 +884,8 @@ articles:
   articles/Mercier_2014_tramadol_tapentadol: Mercier_2014_tramadol_tapentadol.html
   articles/Mi_2023_cefquinome_pbpk: Mi_2023_cefquinome_pbpk.html
   articles/Mi_2024_aditoprim: Mi_2024_aditoprim.html
+  articles/Miano_2024_tacrolimus: Miano_2024_tacrolimus.html
+  articles/Michelet_2025_BI754111_mpbpk: Michelet_2025_BI754111_mpbpk.html
   articles/Milakovic_2024_linezolid: Milakovic_2024_linezolid.html
   articles/Milosheska_2016_lamotrigine: Milosheska_2016_lamotrigine.html
   articles/Minichmayr_2024_ceftaroline: Minichmayr_2024_ceftaroline.html
@@ -784,10 +893,13 @@ articles:
   articles/Mitra_2026_ziftomenib: Mitra_2026_ziftomenib.html
   articles/Miyano_2022_atopicDermatitis_qsp: Miyano_2022_atopicDermatitis_qsp.html
   articles/Mo_2018_olaratumab: Mo_2018_olaratumab.html
+  articles/Mo_2024_shikimicAcid: Mo_2024_shikimicAcid.html
+  articles/Mo_2025_everolimus: Mo_2025_everolimus.html
   articles/MocWilleford_2024_rlyb212: MocWilleford_2024_rlyb212.html
   articles/Mody_2023_doxorubicin_dexrazoxane_breast_cancer: Mody_2023_doxorubicin_dexrazoxane_breast_cancer.html
   articles/Mody_2023_doxorubicin_dexrazoxane: Mody_2023_doxorubicin_dexrazoxane.html
   articles/Moein_2022_etrolizumab: Moein_2022_etrolizumab.html
+  articles/Moein_2024_apitolisib: Moein_2024_apitolisib.html
   articles/Moes_2016_tacrolimus: Moes_2016_tacrolimus.html
   articles/Moffett_2017_antithrombin: Moffett_2017_antithrombin.html
   articles/Mohamed_2012_colistin: Mohamed_2012_colistin.html
@@ -795,11 +907,13 @@ articles:
   articles/Mohamed_2013_procainamide: Mohamed_2013_procainamide.html
   articles/Mohamed_2016_colistin_meropenem: Mohamed_2016_colistin_meropenem.html
   articles/MohammedAli_2023_tacrolimus: MohammedAli_2023_tacrolimus.html
+  articles/MohammedAli_2025_tacrolimus: MohammedAli_2025_tacrolimus.html
   articles/Molto_2016_atazanavir_ritonavir: Molto_2016_atazanavir_ritonavir.html
   articles/Momper_2016_fluconazole: Momper_2016_fluconazole.html
   articles/Mondick_2006_dactinomycin: Mondick_2006_dactinomycin.html
   articles/Moore_1999_lamivudine: Moore_1999_lamivudine.html
   articles/Moore_2016_vancomycin: Moore_2016_vancomycin.html
+  articles/Morath_2025_apixaban: Morath_2025_apixaban.html
   articles/Morganroth_2015_moxifloxacin: Morganroth_2015_moxifloxacin.html
   articles/Mori_2018_zoledronicAcid: Mori_2018_zoledronicAcid.html
   articles/Morris_2011_artesunate: Morris_2011_artesunate.html
@@ -817,6 +931,8 @@ articles:
   articles/Muntau_2017_sapropterin: Muntau_2017_sapropterin.html
   articles/Muthukrishnan_2025_clazakizumab: Muthukrishnan_2025_clazakizumab.html
   articles/Muto_2015_voriconazole: Muto_2015_voriconazole.html
+  articles/Na_2024_tovecimig: Na_2024_tovecimig.html
+  articles/Na_2025_hosu53: Na_2025_hosu53.html
   articles/NA_NA_lidocaine: NA_NA_lidocaine.html
   articles/NA_NA_miridesap: NA_NA_miridesap.html
   articles/NA_NA_paracetamol: NA_NA_paracetamol.html
@@ -830,6 +946,7 @@ articles:
   articles/Naik_2013_fasiglifam: Naik_2013_fasiglifam.html
   articles/Naik_2013_peginesatide: Naik_2013_peginesatide.html
   articles/Naik_2016_vortioxetine: Naik_2016_vortioxetine.html
+  articles/Nakai_2025_tranexamicAcid: Nakai_2025_tranexamicAcid.html
   articles/Nanga_2019_tacrolimus_metaanalysis: Nanga_2019_tacrolimus_metaanalysis.html
   articles/Narwal_2013_sifalimumab: Narwal_2013_sifalimumab.html
   articles/Nath_2007_melphalan: Nath_2007_melphalan.html
@@ -841,9 +958,11 @@ articles:
   articles/Ng_2018_exendin939: Ng_2018_exendin939.html
   articles/Ngamprasertwong_2016_propofol_sheep: Ngamprasertwong_2016_propofol_sheep.html
   articles/Ngo_2020_HL2351: Ngo_2020_HL2351.html
+  articles/Nguyen_2025_valbenazine_huntington_chorea: Nguyen_2025_valbenazine_huntington_chorea.html
   articles/Ni_2013_ciclosporin: Ni_2013_ciclosporin.html
   articles/Nicholas_2009_ponezumab: Nicholas_2009_ponezumab.html
   articles/Nichols_2016_piperacillin_tazobactam: Nichols_2016_piperacillin_tazobactam.html
+  articles/Nie_2025_sufentanil: Nie_2025_sufentanil.html
   articles/Niebecker_2015_edoxaban: Niebecker_2015_edoxaban.html
   articles/Nielsen_2007_semimechanistic_antibiotic_pd: Nielsen_2007_semimechanistic_antibiotic_pd.html
   articles/Nielsen_2011_antibacterial_efficacy: Nielsen_2011_antibacterial_efficacy.html
@@ -855,12 +974,18 @@ articles:
   articles/Odongo_2015_sulfadoxinePyrimethamine: Odongo_2015_sulfadoxinePyrimethamine.html
   articles/Ogasawara_2020_durvalumab: Ogasawara_2020_durvalumab.html
   articles/Ogungbenro_2009_penciclovir: Ogungbenro_2009_penciclovir.html
+  articles/Ohara_2014_warfarin_s: Ohara_2014_warfarin_s.html
   articles/Oishi_2014_fesoterodine: Oishi_2014_fesoterodine.html
+  articles/Ojara_2024_lamivudine: Ojara_2024_lamivudine.html
+  articles/Okada_2024_triazolam: Okada_2024_triazolam.html
   articles/Okada_2025_rocatinlimab: Okada_2025_rocatinlimab.html
+  articles/Okumura_2025_ergothioneine_pbpk: Okumura_2025_ergothioneine_pbpk.html
+  articles/Olafuyi_2025_propyleneGlycol: Olafuyi_2025_propyleneGlycol.html
   articles/Olagunju_2018_efavirenz: Olagunju_2018_efavirenz.html
   articles/Olivo_2024_methotrexate: Olivo_2024_methotrexate.html
   articles/Ollier_2015_ropivacaine: Ollier_2015_ropivacaine.html
   articles/Oniki_2018_BMI_NAFLD: Oniki_2018_BMI_NAFLD.html
+  articles/Onita_2025_sulbactam: Onita_2025_sulbactam.html
   articles/Oosten_2016_fentanyl: Oosten_2016_fentanyl.html
   articles/Othman_2007_carvedilol: Othman_2007_carvedilol.html
   articles/Othman_2013_ABT_102: Othman_2013_ABT_102.html
@@ -873,9 +998,11 @@ articles:
   articles/Overgaard_2016_liraglutide: Overgaard_2016_liraglutide.html
   articles/Overgaard_2019_semaglutide: Overgaard_2019_semaglutide.html
   articles/Ozawa_2007_docetaxel: Ozawa_2007_docetaxel.html
+  articles/Ozdin_2025_dexamethasone: Ozdin_2025_dexamethasone.html
   articles/Padari_2012_meropenem: Padari_2012_meropenem.html
   articles/Padari_2018_penicillin_G: Padari_2018_penicillin_G.html
   articles/Padoin_1998_cephalexin_rat: Padoin_1998_cephalexin_rat.html
+  articles/Panetta_2024_palbociclib: Panetta_2024_palbociclib.html
   articles/Panoilia_2015_bevacizumab: Panoilia_2015_bevacizumab.html
   articles/Papachristos_2020_bevacizumab_pk: Papachristos_2020_bevacizumab_pk.html
   articles/Papachristos_2020_bevacizumab_pkpd: Papachristos_2020_bevacizumab_pkpd.html
@@ -887,11 +1014,15 @@ articles:
   articles/Park_2014_SKL10406: Park_2014_SKL10406.html
   articles/Park_2014_triflusal: Park_2014_triflusal.html
   articles/Park_2023_mycophenolic_acid: Park_2023_mycophenolic_acid.html
+  articles/Park_2025_cd19_cart_sle_qsp: Park_2025_cd19_cart_sle_qsp.html
+  articles/Parkinson_2025_balcinrenone: Parkinson_2025_balcinrenone.html
   articles/Parmar_2023_spectinamides_pbpk: Parmar_2023_spectinamides_pbpk.html
   articles/ParraGuillen_2013_tumor_immunotherapy: ParraGuillen_2013_tumor_immunotherapy.html
   articles/Passey_2011_tacrolimus: Passey_2011_tacrolimus.html
   articles/Patel_2011_fluconazole: Patel_2011_fluconazole.html
   articles/Patel_2017_selumetinib: Patel_2017_selumetinib.html
+  articles/Patel_2025_eteplirsen: Patel_2025_eteplirsen.html
+  articles/Patidar_2024_mAb_size_charge_fcrn: Patidar_2024_mAb_size_charge_fcrn.html
   articles/Paule_2011_hydroxyurea: Paule_2011_hydroxyurea.html
   articles/Pei_2016_iloperidone: Pei_2016_iloperidone.html
   articles/Pei_2023_tacrolimus: Pei_2023_tacrolimus.html
@@ -905,6 +1036,7 @@ articles:
   articles/PerezRuixo_2015_oxaliplatin_platelet_dynamics: PerezRuixo_2015_oxaliplatin_platelet_dynamics.html
   articles/PerezRuixo_2020_esketamine: PerezRuixo_2020_esketamine.html
   articles/PerezRuixo_2025_posdinemab: PerezRuixo_2025_posdinemab.html
+  articles/Perlstein_2025_risperidone_tv46000: Perlstein_2025_risperidone_tv46000.html
   articles/Perrottet_2009_ganciclovir: Perrottet_2009_ganciclovir.html
   articles/Petric_2023_vinpocetine: Petric_2023_vinpocetine.html
   articles/Petrov_2024_romiplostim: Petrov_2024_romiplostim.html
@@ -921,6 +1053,7 @@ articles:
   articles/Plan_2012_bmd_fracture: Plan_2012_bmd_fracture.html
   articles/Plan_2012_pain: Plan_2012_pain.html
   articles/Plock_2014_ferumoxytol: Plock_2014_ferumoxytol.html
+  articles/Poels_2025_elranatamab: Poels_2025_elranatamab.html
   articles/Polito_2016_fludrocortisone: Polito_2016_fludrocortisone.html
   articles/Pouzin_2022_tusamitamab: Pouzin_2022_tusamitamab.html
   articles/Press_2010_ciclosporin: Press_2010_ciclosporin.html
@@ -935,40 +1068,52 @@ articles:
   articles/Ramachandran_2023_tuberculosis_eptb_pbpk: Ramachandran_2023_tuberculosis_eptb_pbpk.html
   articles/Rambiritch_2016_glibenclamide: Rambiritch_2016_glibenclamide.html
   articles/Ramharter_2019_mefloquine: Ramharter_2019_mefloquine.html
+  articles/Randell_2024_metronidazole: Randell_2024_metronidazole.html
   articles/Rao_2023_covid19_qsp: Rao_2023_covid19_qsp.html
   articles/Ravva_2009_varenicline: Ravva_2009_varenicline.html
   articles/Rees_2018_meropenem_ciprofloxacin: Rees_2018_meropenem_ciprofloxacin.html
   articles/Reijers_2016_trastuzumab: Reijers_2016_trastuzumab.html
   articles/Rekic_2011_atazanavir: Rekic_2011_atazanavir.html
   articles/Renard_2011_indacaterol: Renard_2011_indacaterol.html
+  articles/ResendizGalvan_2025_cycloserine: ResendizGalvan_2025_cycloserine.html
   articles/Retlich_2015_linagliptin: Retlich_2015_linagliptin.html
   articles/Revilla_2010_vancomycin: Revilla_2010_vancomycin.html
   articles/Ribba_2022_ctdna_tumor_size: Ribba_2022_ctdna_tumor_size.html
   articles/Riccobene_2016_ceftaroline: Riccobene_2016_ceftaroline.html
+  articles/Richardson_2025_automated_popPK: Richardson_2025_automated_popPK.html
   articles/Rietveld_2025_docetaxel: Rietveld_2025_docetaxel.html
   articles/Robarge_2017_efavirenz: Robarge_2017_efavirenz.html
   articles/Robbie_2012_palivizumab: Robbie_2012_palivizumab.html
   articles/Roberts_2011_vancomycin: Roberts_2011_vancomycin.html
   articles/Roberts_2016_topotecan: Roberts_2016_topotecan.html
+  articles/Roberts_2025_remdesivir: Roberts_2025_remdesivir.html
   articles/Rodjun_2023_colistin_sitafloxacin: Rodjun_2023_colistin_sitafloxacin.html
   articles/Rodrigues_2017_oxcarbazepine: Rodrigues_2017_oxcarbazepine.html
   articles/Roepcke_2018_tak_079: Roepcke_2018_tak_079.html
   articles/Roepcke_2023_rezafungin: Roepcke_2023_rezafungin.html
+  articles/Rognas_2025_bitopertin: Rognas_2025_bitopertin.html
+  articles/Rolsma_2025_betalactams_cysticfibrosis: Rolsma_2025_betalactams_cysticfibrosis.html
   articles/Rosario_2008_maraviroc: Rosario_2008_maraviroc.html
   articles/Rosario_2015_vedolizumab: Rosario_2015_vedolizumab.html
   articles/Rose_2016_follitropin_delta: Rose_2016_follitropin_delta.html
+  articles/Rosenborg_2025_fluticasone_salmeterol: Rosenborg_2025_fluticasone_salmeterol.html
   articles/Rovei_1982_theophylline: Rovei_1982_theophylline.html
   articles/Rower_2017_tacrolimus: Rower_2017_tacrolimus.html
+  articles/Roy_2023_erythropoiesis_qsp: Roy_2023_erythropoiesis_qsp.html
   articles/Royer_2010_HuHMFG1: Royer_2010_HuHMFG1.html
   articles/Royer_2011_cisplatin: Royer_2011_cisplatin.html
   articles/Rozman_2017_rituximab: Rozman_2017_rituximab.html
   articles/Ruhs_2012_methotrexate: Ruhs_2012_methotrexate.html
   articles/Rymut_2023_anti_tryptase: Rymut_2023_anti_tryptase.html
   articles/Sadaf_2024_glutamine: Sadaf_2024_glutamine.html
+  articles/Sadiq_2024_tozorakimab: Sadiq_2024_tozorakimab.html
   articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin: Sadouki_2025_meropenem_gentamicin_ciprofloxacin.html
+  articles/Saeheng_2024_atractylodesLancea: Saeheng_2024_atractylodesLancea.html
   articles/Sahota_2015_miridesap: Sahota_2015_miridesap.html
+  articles/Said_2025_imatinib: Said_2025_imatinib.html
   articles/Sakurai_2007_lansoprazole: Sakurai_2007_lansoprazole.html
   articles/Saleh_2023_leicns_pk30_mouse_brain: Saleh_2023_leicns_pk30_mouse_brain.html
+  articles/Salehi_2025_nicotine_pbpk: Salehi_2025_nicotine_pbpk.html
   articles/Salem_2014_efavirenz: Salem_2014_efavirenz.html
   articles/Salinger_2013_magnesiumSulfate: Salinger_2013_magnesiumSulfate.html
   articles/Sampson_2014_azithromycin: Sampson_2014_azithromycin.html
@@ -1000,25 +1145,31 @@ articles:
   articles/Schoemaker_2017_brivaracetam: Schoemaker_2017_brivaracetam.html
   articles/Schoemaker_2018_levetiracetam: Schoemaker_2018_levetiracetam.html
   articles/Schoenmakers_2025_betamethasone: Schoenmakers_2025_betamethasone.html
+  articles/Schouwenburg_2025_clavulanicAcid: Schouwenburg_2025_clavulanicAcid.html
   articles/Schreib_2024_busulfan: Schreib_2024_busulfan.html
   articles/Schutte_2018_desmopressin: Schutte_2018_desmopressin.html
   articles/Selvaggio_2021_mRNA_vaccine_QSP: Selvaggio_2021_mRNA_vaccine_QSP.html
   articles/Seng_2015_isoniazid: Seng_2015_isoniazid.html
+  articles/Sexton_2024_lanadelumab_qsp: Sexton_2024_lanadelumab_qsp.html
   articles/Shah_2012_mAb_PBPK: Shah_2012_mAb_PBPK.html
   articles/Shah_2023_benzylpenicillin: Shah_2023_benzylpenicillin.html
+  articles/Shah_2025_clarithromycin: Shah_2025_clarithromycin.html
   articles/Sharma_2016_hydroxyprogesteroneCaproate: Sharma_2016_hydroxyprogesteroneCaproate.html
   articles/Sharma_2018_naltrexone_bupropion: Sharma_2018_naltrexone_bupropion.html
   articles/Sharma_2018_SHetA2: Sharma_2018_SHetA2.html
   articles/Sharma_2023_nitrofurantoin: Sharma_2023_nitrofurantoin.html
+  articles/Sheiner_1979_tubocurarine: Sheiner_1979_tubocurarine.html
   articles/Shekar_2014_meropenem: Shekar_2014_meropenem.html
   articles/Shen_2013_belatacept: Shen_2013_belatacept.html
   articles/Shen_2024_vancomycin: Shen_2024_vancomycin.html
+  articles/Shen_2025_voriconazole: Shen_2025_voriconazole.html
   articles/Sheng_2013_ABPM: Sheng_2013_ABPM.html
   articles/Sheng_2016_quinine_rat: Sheng_2016_quinine_rat.html
   articles/Sherer_2012_AAA: Sherer_2012_AAA.html
   articles/Sherwin_2012_mycophenolic_acid: Sherwin_2012_mycophenolic_acid.html
   articles/Sherwin_2012_risperidone: Sherwin_2012_risperidone.html
   articles/Shi_2018_ceftazidime: Shi_2018_ceftazidime.html
+  articles/Shigetome_2025_paroxetine: Shigetome_2025_paroxetine.html
   articles/Shin_2006_quinidine_QT: Shin_2006_quinidine_QT.html
   articles/Shin_2014_sevoflurane: Shin_2014_sevoflurane.html
   articles/Shin_2017_levetiracetam: Shin_2017_levetiracetam.html
@@ -1040,6 +1191,7 @@ articles:
   articles/Simpson_2013_mefloquine: Simpson_2013_mefloquine.html
   articles/Singh_2025_donidalorsen: Singh_2025_donidalorsen.html
   articles/Singu_2024_gentamicin: Singu_2024_gentamicin.html
+  articles/Sinha_2026_oxcarbazepine: Sinha_2026_oxcarbazepine.html
   articles/Sloan_2017_rifampicin: Sloan_2017_rifampicin.html
   articles/Smith_2017_clindamycin: Smith_2017_clindamycin.html
   articles/Smuszkiewicz_2017_dexmedetomidine: Smuszkiewicz_2017_dexmedetomidine.html
@@ -1049,6 +1201,7 @@ articles:
   articles/Soehoel_2022_tralokinumab: Soehoel_2022_tralokinumab.html
   articles/Solana_2014_omeprazole: Solana_2014_omeprazole.html
   articles/Solms_2020_BAY94_9027: Solms_2020_BAY94_9027.html
+  articles/Song_2025_infliximab: Song_2025_infliximab.html
   articles/Soto_2014_ampicillin_sulbactam: Soto_2014_ampicillin_sulbactam.html
   articles/Soy_2015_benznidazole: Soy_2015_benznidazole.html
   articles/Staatz_2005_gentamicin_vancomycin: Staatz_2005_gentamicin_vancomycin.html
@@ -1060,6 +1213,7 @@ articles:
   articles/Stevens_2012_remoxipride: Stevens_2012_remoxipride.html
   articles/Stocker_2012_oxypurinol: Stocker_2012_oxypurinol.html
   articles/Storset_2014_tacrolimus: Storset_2014_tacrolimus.html
+  articles/Stoschus_2025_phenobarbital: Stoschus_2025_phenobarbital.html
   articles/Stricker_2013_aminocaproicAcid: Stricker_2013_aminocaproicAcid.html
   articles/Stricker_2015_aminocaproic_acid: Stricker_2015_aminocaproic_acid.html
   articles/Stringer_2015_pioglitazone: Stringer_2015_pioglitazone.html
@@ -1074,6 +1228,7 @@ articles:
   articles/Suri_2018_brentuximab: Suri_2018_brentuximab.html
   articles/Suyagh_2011_metronidazole: Suyagh_2011_metronidazole.html
   articles/Suyagh_2012_canrenone: Suyagh_2012_canrenone.html
+  articles/Suzuki_2024_mycophenolic_acid: Suzuki_2024_mycophenolic_acid.html
   articles/Svensson_2012_nevirapine: Svensson_2012_nevirapine.html
   articles/Svensson_2013_bedaquiline: Svensson_2013_bedaquiline.html
   articles/Svensson_2014_bedaquiline_arv: Svensson_2014_bedaquiline_arv.html
@@ -1087,6 +1242,7 @@ articles:
   articles/Syvanen_2011_verapamil_rat: Syvanen_2011_verapamil_rat.html
   articles/Syvanen_2012_quinidine_rat: Syvanen_2012_quinidine_rat.html
   articles/Tadayasu_2014_linagliptin: Tadayasu_2014_linagliptin.html
+  articles/Takada_2025_vancomycin: Takada_2025_vancomycin.html
   articles/Takahashi_2023_abatacept: Takahashi_2023_abatacept.html
   articles/Takama_2007_darbepoetin: Takama_2007_darbepoetin.html
   articles/Takechi_2018_propranolol: Takechi_2018_propranolol.html
@@ -1096,6 +1252,7 @@ articles:
   articles/Tan_2009_artesunate: Tan_2009_artesunate.html
   articles/Tanaka_2012_phenytoin: Tanaka_2012_phenytoin.html
   articles/Tang_2019_amoxicillin: Tang_2019_amoxicillin.html
+  articles/Tao_2025_meropenem: Tao_2025_meropenem.html
   articles/Tarning_2008_piperaquine: Tarning_2008_piperaquine.html
   articles/Tarning_2012_artemether: Tarning_2012_artemether.html
   articles/Tarning_2012_dihydroartemisinin_piperaquine: Tarning_2012_dihydroartemisinin_piperaquine.html
@@ -1120,6 +1277,7 @@ articles:
   articles/Thoueille_2023_lopinavir: Thoueille_2023_lopinavir.html
   articles/Thoueille_2023_tenofovir_ckd: Thoueille_2023_tenofovir_ckd.html
   articles/Thuo_2011_ciprofloxacin: Thuo_2011_ciprofloxacin.html
+  articles/Tian_2025_pirtobrutinib: Tian_2025_pirtobrutinib.html
   articles/Tikiso_2021_abacavir: Tikiso_2021_abacavir.html
   articles/Timmermann_2019_brodalumab: Timmermann_2019_brodalumab.html
   articles/Ting_2014_tobramycin_inhaled: Ting_2014_tobramycin_inhaled.html
@@ -1131,18 +1289,24 @@ articles:
   articles/Tornoe_2006_HPG_axis: Tornoe_2006_HPG_axis.html
   articles/Tortorici_2017_a1pi: Tortorici_2017_a1pi.html
   articles/Toukam_2025_biib107: Toukam_2025_biib107.html
+  articles/Toutain_2025_doxycycline_pig: Toutain_2025_doxycycline_pig.html
   articles/Tremoulet_2014_ampicillin: Tremoulet_2014_ampicillin.html
+  articles/Trujillo_2025_proinsulin_qsp: Trujillo_2025_proinsulin_qsp.html
   articles/Tsai_2023_ceftriaxone: Tsai_2023_ceftriaxone.html
   articles/Tsuda_2010_tamsulosin: Tsuda_2010_tamsulosin.html
   articles/Tsuji_2017_linezolid: Tsuji_2017_linezolid.html
+  articles/Tsyplakova_2025_mycophenolate: Tsyplakova_2025_mycophenolate.html
+  articles/Tuey_2024_cholecalciferol: Tuey_2024_cholecalciferol.html
   articles/Tuffal_2023_avalglucosidase_alfa: Tuffal_2023_avalglucosidase_alfa.html
   articles/Ueshima_2018_apixaban: Ueshima_2018_apixaban.html
   articles/Ulldemolins_2015_meropenem: Ulldemolins_2015_meropenem.html
   articles/Urien_2004_cisplatin: Urien_2004_cisplatin.html
   articles/Urien_2005_capecitabine: Urien_2005_capecitabine.html
   articles/Urien_2013_anakinra: Urien_2013_anakinra.html
+  articles/Vaddady_2024_quizartinib: Vaddady_2024_quizartinib.html
   articles/Valade_2014_emtricitabine: Valade_2014_emtricitabine.html
   articles/Valade_2015_emtricitabine: Valade_2015_emtricitabine.html
+  articles/Valadez_2025_cefepime: Valadez_2025_cefepime.html
   articles/Valenzuela_2011_oxaliplatin: Valenzuela_2011_oxaliplatin.html
   articles/Valenzuela_2025_nipocalimab: Valenzuela_2025_nipocalimab.html
   articles/Valitalo_2017_ketorolac: Valitalo_2017_ketorolac.html
@@ -1151,20 +1315,27 @@ articles:
   articles/Valle_2005_exemestane: Valle_2005_exemestane.html
   articles/vandenBerg_2021_finerenone: vandenBerg_2021_finerenone.html
   articles/vandenBerg_2021_uprifosbuvir: vandenBerg_2021_uprifosbuvir.html
+  articles/vandenBerg_2025_genericMab: vandenBerg_2025_genericMab.html
+  articles/vandenMaagdenberg_2025_a2ar_tme_qsp: vandenMaagdenberg_2025_a2ar_tme_qsp.html
+  articles/vanderGaag_2025_osimertinib_pbpk: vanderGaag_2025_osimertinib_pbpk.html
   articles/vanderWalt_2013_dapagliflozin: vanderWalt_2013_dapagliflozin.html
   articles/vanErp_2010_sunitinib: vanErp_2010_sunitinib.html
   articles/vanHasselt_2013_eribulin: vanHasselt_2013_eribulin.html
   articles/vanHasselt_2015_eribulin: vanHasselt_2015_eribulin.html
   articles/vanIersel_2018_posaconazole: vanIersel_2018_posaconazole.html
   articles/vanMaanen_2025_amyloid: vanMaanen_2025_amyloid.html
+  articles/vanOs_2024_temocillin: vanOs_2024_temocillin.html
   articles/vanRongen_2015_midazolam: vanRongen_2015_midazolam.html
   articles/vanRongen_2016_acetaminophen: vanRongen_2016_acetaminophen.html
   articles/vanRongen_2017_midazolam: vanRongen_2017_midazolam.html
   articles/vanRongen_2018_metformin: vanRongen_2018_metformin.html
   articles/vanRongen_2018_midazolam: vanRongen_2018_midazolam.html
   articles/VanWart_2004_garenoxacin: VanWart_2004_garenoxacin.html
+  articles/VanWart_2025_telavancin: VanWart_2025_telavancin.html
+  articles/VanWart_2025_tobramycin: VanWart_2025_tobramycin.html
   articles/vanWijk_2019_paracetamol: vanWijk_2019_paracetamol.html
   articles/Varatharajan_2016_daunorubicin: Varatharajan_2016_daunorubicin.html
+  articles/VarelaGonzalezAller_2025_fludarabine: VarelaGonzalezAller_2025_fludarabine.html
   articles/VargasChristensen_2019_rfviii_rat: VargasChristensen_2019_rfviii_rat.html
   articles/Vargo_2014_statins_ezetimibe_mbma: Vargo_2014_statins_ezetimibe_mbma.html
   articles/Vasalou_2023_dendriticNanoparticle: Vasalou_2023_dendriticNanoparticle.html
@@ -1174,16 +1345,19 @@ articles:
   articles/VelezdeMendizabal_2012_lumiracoxib_rat: VelezdeMendizabal_2012_lumiracoxib_rat.html
   articles/VelezdeMendizabal_2013_multipleSclerosis: VelezdeMendizabal_2013_multipleSclerosis.html
   articles/Venisse_2008_candida_albicans: Venisse_2008_candida_albicans.html
+  articles/Verrest_2024_leishmania: Verrest_2024_leishmania.html
   articles/Vet_2016_midazolam: Vet_2016_midazolam.html
   articles/Vezina_2010_valganciclovir: Vezina_2010_valganciclovir.html
   articles/Vezina_2014_valganciclovir: Vezina_2014_valganciclovir.html
   articles/Viberg_2006_cefuroxime: Viberg_2006_cefuroxime.html
   articles/Viberg_2012_AZD6088_rat: Viberg_2012_AZD6088_rat.html
   articles/Vinnard_2017_rifampicin: Vinnard_2017_rifampicin.html
+  articles/Visscher_2025_parathyroidHormone: Visscher_2025_parathyroidHormone.html
   articles/Voller_2017_phenobarbital: Voller_2017_phenobarbital.html
   articles/vonHentig_2009_saquinavir: vonHentig_2009_saquinavir.html
   articles/Vorontsova_2022_misoprostol: Vorontsova_2022_misoprostol.html
   articles/Vos_2025_iminobiotin: Vos_2025_iminobiotin.html
+  articles/Vucicevic_2025_efavirenz: Vucicevic_2025_efavirenz.html
   articles/Vuu_2016_topiramate_dog: Vuu_2016_topiramate_dog.html
   articles/Wada_2023_sparsentan: Wada_2023_sparsentan.html
   articles/Wade_2008_fluconazole: Wade_2008_fluconazole.html
@@ -1209,9 +1383,12 @@ articles:
   articles/Wang_2024_evorpacept_qsp: Wang_2024_evorpacept_qsp.html
   articles/Wang_2024_omega3PUFA: Wang_2024_omega3PUFA.html
   articles/Wang_2024_risperidone_lai_switching: Wang_2024_risperidone_lai_switching.html
+  articles/Wang_2024_rnaLipidNanoparticle: Wang_2024_rnaLipidNanoparticle.html
   articles/Wang_2024_saxagliptin_dpp4_rat: Wang_2024_saxagliptin_dpp4_rat.html
   articles/Wang_2024_sugemalimab: Wang_2024_sugemalimab.html
   articles/Wang_2024_tacrolimus: Wang_2024_tacrolimus.html
+  articles/Wang_2025_rivaroxaban: Wang_2025_rivaroxaban.html
+  articles/Warren_2025_pde4_il13_atopic_dermatitis: Warren_2025_pde4_il13_atopic_dermatitis.html
   articles/Waterhouse_2024_vedolizumab: Waterhouse_2024_vedolizumab.html
   articles/Watson_2010_liraglutide: Watson_2010_liraglutide.html
   articles/Watt_2015_fluconazole: Watt_2015_fluconazole.html
@@ -1222,12 +1399,15 @@ articles:
   articles/Weber_1993_remikiren: Weber_1993_remikiren.html
   articles/Weber_2015_fluticasone_inhaled: Weber_2015_fluticasone_inhaled.html
   articles/Wen_2016_enrofloxacin_Pmultocida: Wen_2016_enrofloxacin_Pmultocida.html
+  articles/Wen_2025_pulmonary_pbpk: Wen_2025_pulmonary_pbpk.html
   articles/Wenker_2024_piperacillin_tazobactam: Wenker_2024_piperacillin_tazobactam.html
   articles/Westerhout_2012_acetaminophen_rat_pbpk: Westerhout_2012_acetaminophen_rat_pbpk.html
   articles/Westerhout_2013_quinidine: Westerhout_2013_quinidine.html
   articles/Wi_2017_teicoplanin: Wi_2017_teicoplanin.html
   articles/Wicha_2017_linezolid_meropenem_vancomycin: Wicha_2017_linezolid_meropenem_vancomycin.html
   articles/Wicha_2018_rifampicin: Wicha_2018_rifampicin.html
+  articles/Wickramasinghe_2025_pamiparib: Wickramasinghe_2025_pamiparib.html
+  articles/Wickramasinghe_2025_spatial_cns_pbpk: Wickramasinghe_2025_spatial_cns_pbpk.html
   articles/Wilbaux_2014_ovarianCancer_ca125: Wilbaux_2014_ovarianCancer_ca125.html
   articles/Wilbaux_2015_prostate: Wilbaux_2015_prostate.html
   articles/Wilbaux_2022_roblitinib: Wilbaux_2022_roblitinib.html
@@ -1235,6 +1415,7 @@ articles:
   articles/Wilkins_2008_rifampicin: Wilkins_2008_rifampicin.html
   articles/Wilkins_2011_isoniazid: Wilkins_2011_isoniazid.html
   articles/Willemin_2024_interleukin6_cyp_pbpk: Willemin_2024_interleukin6_cyp_pbpk.html
+  articles/Willemin_2024_interleukin6_cyp_talquetamab: Willemin_2024_interleukin6_cyp_talquetamab.html
   articles/Willemze_2008_ciclosporin: Willemze_2008_ciclosporin.html
   articles/Williams_2012_valproic_acid_pediatric: Williams_2012_valproic_acid_pediatric.html
   articles/Williams_2016_rituximab_biosimilar: Williams_2016_rituximab_biosimilar.html
@@ -1242,13 +1423,18 @@ articles:
   articles/Willmann_2021_fxi_aso: Willmann_2021_fxi_aso.html
   articles/Willmann_2021_rivaroxaban: Willmann_2021_rivaroxaban.html
   articles/Willmann_2022_rivaroxaban: Willmann_2022_rivaroxaban.html
+  articles/Willmann_2024_elinzanetant: Willmann_2024_elinzanetant.html
   articles/Wilson_2015_sunitinib_irinotecan_mouse: Wilson_2015_sunitinib_irinotecan_mouse.html
+  articles/Winchell_2024_posaconazole: Winchell_2024_posaconazole.html
+  articles/Winning_2025_certepetide: Winning_2025_certepetide.html
+  articles/Winter_2024_oxytetracycline_cattle: Winter_2024_oxytetracycline_cattle.html
   articles/Wittau_2015_meropenem: Wittau_2015_meropenem.html
   articles/Woillard_2011_tacrolimus: Woillard_2011_tacrolimus.html
   articles/Woillard_2014_ciclosporin: Woillard_2014_ciclosporin.html
   articles/Wojciechowski_2015_rheumatoidArthritis: Wojciechowski_2015_rheumatoidArthritis.html
   articles/Wojciechowski_2022_domagrozumab: Wojciechowski_2022_domagrozumab.html
   articles/Wojciechowski_2023_ritlecitinib: Wojciechowski_2023_ritlecitinib.html
+  articles/Wolowich_2025_thc_heart_rate: Wolowich_2025_thc_heart_rate.html
   articles/Wright_2013_allopurinol: Wright_2013_allopurinol.html
   articles/Wright_2016_allopurinol: Wright_2016_allopurinol.html
   articles/Wu_2012_modafinil: Wu_2012_modafinil.html
@@ -1258,21 +1444,31 @@ articles:
   articles/Wu_2024_gfr_maturation: Wu_2024_gfr_maturation.html
   articles/Wu_2024_inotuzumab: Wu_2024_inotuzumab.html
   articles/Wu_2025_paracetamol: Wu_2025_paracetamol.html
+  articles/Wu_2025_sitafloxacin: Wu_2025_sitafloxacin.html
   articles/Wurthwein_2013_caspofungin: Wurthwein_2013_caspofungin.html
   articles/Xia_2024_warfarin: Xia_2024_warfarin.html
+  articles/Xia_2025_pfuroylamphenmulin: Xia_2025_pfuroylamphenmulin.html
   articles/Xiang_2018_baicalein: Xiang_2018_baicalein.html
+  articles/Xiang_2025_tacrolimus: Xiang_2025_tacrolimus.html
   articles/Xie_2000_m3g_rat: Xie_2000_m3g_rat.html
   articles/Xie_2019_agomelatine: Xie_2019_agomelatine.html
+  articles/Xie_2025_aztreonam_avibactam: Xie_2025_aztreonam_avibactam.html
+  articles/Xie_2025_midazolam: Xie_2025_midazolam.html
   articles/Xu_2011_sirukumab: Xu_2011_sirukumab.html
   articles/Xu_2013_ranibizumab: Xu_2013_ranibizumab.html
   articles/Xu_2019_sarilumab: Xu_2019_sarilumab.html
   articles/Xu_2020_daratumumab: Xu_2020_daratumumab.html
+  articles/Xu_2023_busulfan: Xu_2023_busulfan.html
   articles/Xu_2023_MBG453: Xu_2023_MBG453.html
+  articles/Xu_2024_linezolid: Xu_2024_linezolid.html
+  articles/Xu_2025_aficamten: Xu_2025_aficamten.html
   articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas: Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
   articles/Yadav_2017_imipenem_tobramycin: Yadav_2017_imipenem_tobramycin.html
+  articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab: Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab.html
   articles/Yamada_2025_zolbetuximab: Yamada_2025_zolbetuximab.html
   articles/Yamamoto_2023_tominersen: Yamamoto_2023_tominersen.html
   articles/Yamazaki_2008_crizotinib_mouse: Yamazaki_2008_crizotinib_mouse.html
+  articles/Yan_2024_amisulpride: Yan_2024_amisulpride.html
   articles/Yang_2010_rosuvastatin_mbma: Yang_2010_rosuvastatin_mbma.html
   articles/Yang_2013_losmapimod: Yang_2013_losmapimod.html
   articles/Yang_2016_dilmapimod: Yang_2016_dilmapimod.html
@@ -1281,16 +1477,23 @@ articles:
   articles/Yang_2023_diclazuril: Yang_2023_diclazuril.html
   articles/Yang_2023_ganciclovir_model_repository: Yang_2023_ganciclovir_model_repository.html
   articles/Yang_2024_axatilimab: Yang_2024_axatilimab.html
+  articles/Yang_2024_dabigatran: Yang_2024_dabigatran.html
   articles/Yang_2024_meropenem_pbpk: Yang_2024_meropenem_pbpk.html
+  articles/Yang_2024_naloxone_opioid_reversal: Yang_2024_naloxone_opioid_reversal.html
+  articles/Yang_2024_zastaprazan: Yang_2024_zastaprazan.html
+  articles/Yang_2025_imatinib_external_evaluation: Yang_2025_imatinib_external_evaluation.html
   articles/Yano_1993_theophylline: Yano_1993_theophylline.html
   articles/Yao_2018_guselkumab: Yao_2018_guselkumab.html
+  articles/Yao_2025_flurbiprofen: Yao_2025_flurbiprofen.html
   articles/Yassen_2025_asundexian: Yassen_2025_asundexian.html
   articles/Yates_2023_dose_response_shape: Yates_2023_dose_response_shape.html
   articles/Yau_2023_diazepam_pbpk: Yau_2023_diazepam_pbpk.html
+  articles/Yau_2023_middle_out_pbpk_translation: Yau_2023_middle_out_pbpk_translation.html
   articles/Ye_2017_ethaselen: Ye_2017_ethaselen.html
   articles/Yin_2020_pexidartinib: Yin_2020_pexidartinib.html
   articles/Yin_2021_pexidartinib: Yin_2021_pexidartinib.html
   articles/Yin_2021_trastuzumabDeruxtecan: Yin_2021_trastuzumabDeruxtecan.html
+  articles/Yin_2024_soticlestat: Yin_2024_soticlestat.html
   articles/Yoneyama_2017_emicizumab: Yoneyama_2017_emicizumab.html
   articles/Yoo_2009_cilostazol: Yoo_2009_cilostazol.html
   articles/Yoon_2013_metformin: Yoon_2013_metformin.html
@@ -1304,16 +1507,20 @@ articles:
   articles/Yu_2017_mycophenolic_acid: Yu_2017_mycophenolic_acid.html
   articles/Yu_2022_ofatumumab: Yu_2022_ofatumumab.html
   articles/Yu_2024_ilaprazole: Yu_2024_ilaprazole.html
+  articles/Yu_2025_vancomycin: Yu_2025_vancomycin.html
   articles/Yuan_2019_concizumab: Yuan_2019_concizumab.html
   articles/Yukawa_1990_phenytoin: Yukawa_1990_phenytoin.html
   articles/Yukawa_2002_clonazepam_pediatric: Yukawa_2002_clonazepam_pediatric.html
+  articles/Zakria_2026_voriconazole: Zakria_2026_voriconazole.html
   articles/Zandvliet_2008_carboplatin: Zandvliet_2008_carboplatin.html
   articles/Zandvliet_2016_corifollitropin_alfa: Zandvliet_2016_corifollitropin_alfa.html
+  articles/Zavrelova_2025_linezolid: Zavrelova_2025_linezolid.html
   articles/Zazo_2024_ceftazidime_avibactam: Zazo_2024_ceftazidime_avibactam.html
   articles/Zecchin_2016_survival: Zecchin_2016_survival.html
   articles/Zecchin_2016_tumorovarian: Zecchin_2016_tumorovarian.html
   articles/Zeng_2009_acyclovir: Zeng_2009_acyclovir.html
   articles/Zeng_2010_mycophenolic_acid: Zeng_2010_mycophenolic_acid.html
+  articles/Zeng_2026_atezolizumab: Zeng_2026_atezolizumab.html
   articles/Zhang_2011_nutlin3a: Zhang_2011_nutlin3a.html
   articles/Zhang_2012_bivalirudin: Zhang_2012_bivalirudin.html
   articles/Zhang_2012_lopinavir_ritonavir_pedi: Zhang_2012_lopinavir_ritonavir_pedi.html
@@ -1327,8 +1534,19 @@ articles:
   articles/Zhang_2022_ormutivimab: Zhang_2022_ormutivimab.html
   articles/Zhang_2023_brazikumab: Zhang_2023_brazikumab.html
   articles/Zhang_2023_valproic_acid_protein_binding: Zhang_2023_valproic_acid_protein_binding.html
+  articles/Zhang_2024_f53b_pbpk: Zhang_2024_f53b_pbpk.html
+  articles/Zhang_2024_nedosiran: Zhang_2024_nedosiran.html
   articles/Zhang_2024_sertraline: Zhang_2024_sertraline.html
+  articles/Zhang_2024_tucatinib: Zhang_2024_tucatinib.html
+  articles/Zhang_2024_valproic_acid: Zhang_2024_valproic_acid.html
   articles/Zhang_2024_XZP5610: Zhang_2024_XZP5610.html
+  articles/Zhang_2025_abemaciclib: Zhang_2025_abemaciclib.html
+  articles/Zhang_2025_cefiderocol: Zhang_2025_cefiderocol.html
+  articles/Zhang_2025_dupilumab_fev1: Zhang_2025_dupilumab_fev1.html
+  articles/Zhang_2025_erythroferrone: Zhang_2025_erythroferrone.html
+  articles/Zhang_2025_fluconazole: Zhang_2025_fluconazole.html
+  articles/Zhang_2025_nedosiran: Zhang_2025_nedosiran.html
+  articles/Zhang_2026_tebipenem: Zhang_2026_tebipenem.html
   articles/Zhao_2010_mycophenolic_acid: Zhao_2010_mycophenolic_acid.html
   articles/Zhao_2012_abacavir: Zhao_2012_abacavir.html
   articles/Zhao_2013_abacavir: Zhao_2013_abacavir.html
@@ -1337,6 +1555,8 @@ articles:
   articles/Zhao_2015_teicoplanin: Zhao_2015_teicoplanin.html
   articles/Zhao_2018_omeprazole: Zhao_2018_omeprazole.html
   articles/Zhao_2024_ciprofloxacin_colistin: Zhao_2024_ciprofloxacin_colistin.html
+  articles/Zhao_2025_methotrexate: Zhao_2025_methotrexate.html
+  articles/Zhao_2025_paracetamol: Zhao_2025_paracetamol.html
   articles/Zheng_2012_minipig_mab: Zheng_2012_minipig_mab.html
   articles/Zheng_2014_azithromycin: Zheng_2014_azithromycin.html
   articles/Zheng_2016_sifalimumab: Zheng_2016_sifalimumab.html
@@ -1349,10 +1569,12 @@ articles:
   articles/Zhou_2024_cetagliptin: Zhou_2024_cetagliptin.html
   articles/Zhou_2024_HER2breastCancer_qsp: Zhou_2024_HER2breastCancer_qsp.html
   articles/Zhou_2025_brentuximab: Zhou_2025_brentuximab.html
+  articles/Zhou_2025_tacrolimus: Zhou_2025_tacrolimus.html
   articles/Zhu_2014_tacrolimus: Zhu_2014_tacrolimus.html
   articles/Zhu_2017_lebrikizumab: Zhu_2017_lebrikizumab.html
   articles/Zhu_2023_omalizumab_pediatric: Zhu_2023_omalizumab_pediatric.html
   articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer: Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
+  articles/Zhu_2024_borneol_pbpk: Zhu_2024_borneol_pbpk.html
   articles/Zhu_2024_pyrotinib: Zhu_2024_pyrotinib.html
   articles/Zieck_2023_ceftazidime: Zieck_2023_ceftazidime.html
   articles/Zierhut_2008_osteoprotegerin: Zierhut_2008_osteoprotegerin.html
@@ -1361,9 +1583,10 @@ articles:
   articles/Zou_2022_furmonertinib: Zou_2022_furmonertinib.html
   articles/Zufferey_2018_fondaparinux: Zufferey_2018_fondaparinux.html
   articles/Zuo_2016_UDCA: Zuo_2016_UDCA.html
+  articles/Zuo_2024_apatinib: Zuo_2024_apatinib.html
   articles/Zurlinden_2016_paracetamol: Zurlinden_2016_paracetamol.html
   articles/Zvada_2010_rifapentine: Zvada_2010_rifapentine.html
-last_built: 2026-08-08T16:48Z
+last_built: 2026-08-22T23:46Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

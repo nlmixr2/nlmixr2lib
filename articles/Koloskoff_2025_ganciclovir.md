@@ -432,6 +432,7 @@ units field as “log10 copies/mL”.
   output unit (`log10 copies/mL`). Renaming `viralLoad` to `Cc` would
   mislead readers about what the observation actually represents. The
   deviations are intentional.
+
 - **PD-only scope.** This nlmixr2lib model implements only the PD layer
   of the source paper. AUC_GCV (the q12h-interval ganciclovir AUC, in
   mg\*h/L) is a time-varying covariate **supplied by the user**, not
@@ -442,48 +443,80 @@ units field as “log10 copies/mL”.
   who want a coupled simulation can either pre-compute AUC values from
   any PK source or wait for a future task that bundles the Franck 2021
   PK model and pipes its `AUC_0-12` output into this PD model.
+
 - **No PKNCA validation.** The model has no drug-concentration output
   and no dosing events; PKNCA’s NCA recipes do not apply. The validation
   strategy is endogenous / mechanistic: steady-state,
   perturbation-recovery, dimensional analysis, and side-by-side
   reproduction of the source paper’s Monte Carlo Tables 3 and 4.
+
 - **IIV on kin and Emax removed.** Per Koloskoff 2025 Results, the IIVs
   on `kin` and `Emax` were removed because they had no impact on
   individual fit. The implemented model places IIV only on `kout` and
   `EC50`, matching the final published parameterisation.
+
 - **Monte Carlo n-subjects reduced for vignette wall-time.** The
   published simulations used 1000 subjects per AUC level; the vignette
   uses 300 to keep wall-time under the 5-minute pkgdown gate. The
   simulated probabilities track the published Tables 3 and 4 in shape
-  (monotonic increase with AUC, plateau past `AUC_0-24 ~ 60` mg\*h/L)
-  but read 5-15 percentage points lower than the published values across
-  the AUC grid. The systematic shortfall is consistent with two
-  implementation-level differences from the source’s Monolix `simulx`
-  Monte Carlo: (a) the smaller `n_sub`, and (b) potentially different
-  conventions for which trajectory components (IIV vs IIV+residual;
-  observation vs underlying state) drive the threshold comparisons. The
-  vignette compares the noisy `sim` column at day N against each
-  subject’s deterministic baseline state; the source’s `simulx`
-  simulation may use a different stratification. The reproduction is
-  qualitative; users seeking exact-match dosing-target probabilities
-  should run Monolix `simulx` against the published parameter set.
+  (monotonic increase with AUC, monotonic increase with time, plateau
+  past `AUC_0-24 ~ 60` mg\*h/L), but they do not reproduce them
+  numerically: the day-7 column reads roughly **twice** the published
+  value, while the day-14 / 21 / 28 columns read 5-15 percentage points
+  **below** it. The published curve is therefore steeper in time than
+  the one this parameter set produces.
+
+  Two candidate explanations were tested off-vignette at the paper’s own
+  `n_sub = 1000` (so Monte-Carlo noise is not a confounder),
+  thresholding on the observation with residual error (`sim`) versus on
+  the underlying individual state (`ipredSim`):
+
+  | Threshold readout | Mean signed error | Mean absolute error | Max absolute error |
+  |----|----|----|----|
+  | `sim` (IIV + residual) | -2.1 pp | 6.6 pp | 15.6 pp |
+  | `ipredSim` (IIV only) | -3.6 pp | 5.9 pp | 10.4 pp |
+
+  Dropping residual error sharpens the day-7 column as expected
+  (proportional noise on a viral load far above the LLOQ spuriously
+  pushes subjects under the threshold early), but it does **not** close
+  the late-timepoint gap, and neither readout reproduces the published
+  table. So neither the reduced `n_sub` nor the residual-error
+  convention explains the discrepancy, and the vignette’s use of `sim`
+  is not the cause.
+
+  The most likely remaining cause is not determinable from the paper:
+  this model ties each subject’s baseline to `kin / kout_i`, so the IIV
+  on `kout` couples a *high* baseline to a *slow* decline in the same
+  subject. Those doubly-disadvantaged subjects dominate the
+  late-timepoint failures and depress PTA at days 21-28. If the source’s
+  `simulx` run instead seeded baselines from the observed baseline
+  distribution (median 3.61, range 2.57-4.85 log10 copies/mL)
+  independently of the sampled `kout`, that correlation would vanish and
+  the late PTA would rise. Koloskoff 2025 does not state which
+  convention was used. The reproduction here is therefore qualitative;
+  users seeking exact-match dosing-target probabilities should run
+  Monolix `simulx` against the published parameter set.
+
 - **Q24h-to-q12h AUC convention.** Per Koloskoff 2025 Methods Section
   2.1, AUC values from q24h regimens were divided by two so all data
   live in a q12h framework. Downstream users mirroring the source
   dataset’s encoding must follow the same convention when populating
   `AUC_GCV`.
+
 - **Below-LLOQ handling.** The source paper used the NONMEM M4 method
   (Bergstrand and Karlsson 2009) to handle the 42 of 184 viral-load
   observations that were below the LLOQ. Forward simulation in nlmixr2
   does not exercise the censoring likelihood, so the LLOQ handling is
   omitted in this packaged model; the `LLOQ_log10 = log10(200) = 2.301`
   threshold is applied post-hoc in the Table 4 reproduction above.
+
 - **Time-varying covariate carry-forward.** `AUC_GCV` is supplied at
   every observation record in the event tables above. rxode2’s default
   time-varying-covariate semantics carry the value forward between
   records (locf), so step-function exposure histories (e.g., AUC changes
   at TDM dose adjustments) can be encoded by inserting one record per
   change point.
+
 - **Initial condition tied to kin/kout.** `viralLoad(0) <- kin / kout`
   is the steady-state baseline that the indirect-response equation
   implies at `AUC_GCV = 0`. Because IIV is on `kout` (not on `kin`),

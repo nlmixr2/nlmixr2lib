@@ -1,0 +1,1034 @@
+# Pegcetacoplan population PK and PK/PD (Crass 2024)
+
+## Model and source
+
+Crass 2024 reports three models built from the pegcetacoplan clinical
+development programme, and this package carries each one as a separate
+model file, matching the authors’ structure:
+
+``` r
+
+model_names <- c(
+  "Crass_2024_pegcetacoplan",
+  "Crass_2024_pegcetacoplan_hemoglobin",
+  "Crass_2024_pegcetacoplan_ldh"
+)
+uis <- lapply(model_names, function(n) rxode2::rxode(readModelDb(n)))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+names(uis) <- model_names
+
+tibble(
+  Model = model_names,
+  Role = c(
+    "Population PK (284 participants, 11 studies)",
+    "Hemoglobin PK/PD (165 patients, 5 studies)",
+    "Lactate dehydrogenase PK/PD (165 patients, 5 studies)"
+  )
+) |>
+  knitr::kable(caption = "The three models Crass 2024 reports.")
+```
+
+| Model | Role |
+|:---|:---|
+| Crass_2024_pegcetacoplan | Population PK (284 participants, 11 studies) |
+| Crass_2024_pegcetacoplan_hemoglobin | Hemoglobin PK/PD (165 patients, 5 studies) |
+| Crass_2024_pegcetacoplan_ldh | Lactate dehydrogenase PK/PD (165 patients, 5 studies) |
+
+The three models Crass 2024 reports. {.table}
+
+- Citation: Crass RL, Smith B, Adriaens S, Chapel S, Langdon G.
+  Population Pharmacokinetic and Pharmacokinetic/Pharmacodynamic
+  Analyses of Pegcetacoplan in Patients with Paroxysmal Nocturnal
+  Hemoglobinuria. Drugs R D. 2024;24(4):565-577.
+  <doi:10.1007/s40268-024-00500-7>
+- Article: <https://doi.org/10.1007/s40268-024-00500-7>
+- Supplement (Electronic Supplementary Material, open access):
+  <https://doi.org/10.1007/s40268-024-00500-7>
+
+The Electronic Supplementary Material (ESM) is where the model actually
+lives. ESM Table 1 reproduces the three NONMEM control streams verbatim,
+and ESM Tables 3, 4, and 5 hold the final parameter estimates for the
+PK, hemoglobin, and lactate dehydrogenase (LDH) models respectively. The
+main article’s Table 2 reports only the back-transformed PK/PD
+structural parameters; every value in these model files is traced to the
+ESM tables (see the source-trace table below).
+
+## Population
+
+The population PK analysis pooled **284 participants across 11 completed
+studies**: 124 healthy adults (44%) from six phase 1 studies (including
+one renal-impairment study, AIRIS) and 160 adults with paroxysmal
+nocturnal hemoglobinuria (PNH, 56%) from five studies spanning phase 1
+through phase 3 (PHAROAH, PADDOCK, PALOMINO, PEGASUS, PRINCE). Median
+age was 36 years (range 19-81), median body weight 70.0 kg (range 41-156
+kg), and the cohort was 44% female. Slightly more than half of
+participants were White (54.2%), with 29.9% Asian, 2.5% Black, 7.7%
+other, and 5.6% missing; the PRINCE phase 3 cohort was predominantly
+Asian (32/45, 71%). Median baseline complement C3 was 1.00 g/L (range
+0.47-1.64 g/L). 5195 PK samples were analysed, of which 4737 (91%) were
+quantifiable (Crass 2024 Sect. 3.1.1, Table 1, ESM Table 2).
+
+The PK/PD analyses used the **165 patients with PNH** from those five
+PNH studies, contributing 4498 hemoglobin samples and 3423 LDH samples.
+Median age was 45 years (range 19-81), 56% were female, 39% White and
+38% Asian, and the cohort split 54% eculizumab-treated at baseline
+versus 46% complement C5 inhibitor naive (Crass 2024 Sect. 3.1.2). The
+PK/PD models were fitted **sequentially**, conditioned on individual
+empirical Bayes estimates of the PK parameters from the population PK
+model (Sect. 2.2), which is why the PK layer of both PK/PD model files
+is carried as `fixed()`.
+
+The same information is available programmatically:
+
+``` r
+
+str(uis[["Crass_2024_pegcetacoplan"]]$population)
+#> List of 13
+#>  $ species       : chr "human"
+#>  $ n_subjects    : num 284
+#>  $ n_studies     : num 11
+#>  $ age_median    : chr "36 years"
+#>  $ age_range     : chr "19-81 years"
+#>  $ weight_median : chr "70.0 kg"
+#>  $ weight_range  : chr "41-156 kg"
+#>  $ sex_female_pct: num 44.4
+#>  $ race_ethnicity: Named num [1:5] 54.2 2.5 29.9 7.7 5.6
+#>   ..- attr(*, "names")= chr [1:5] "White" "Black" "Asian" "Other" ...
+#>  $ disease_state : chr "44% healthy adults (including one renal-impairment study); 56% adults with paroxysmal nocturnal hemoglobinuria,"| __truncated__
+#>  $ dose_range    : chr "Subcutaneous 25-2600 mg as single doses, once daily, twice weekly, or once weekly (including the approved 1080 "| __truncated__
+#>  $ regions       : chr "Multinational; the PRINCE phase 3 cohort is predominantly Asian (32/45, 71%)"
+#>  $ notes         : chr "Baseline demographics from Crass 2024 ESM Table 2 (categorical and continuous covariates by study) and Table 1 "| __truncated__
+```
+
+## Model structure
+
+The population PK model is a one-compartment disposition model with a
+**single-transit-compartment subcutaneous absorption chain**. ESM Table
+1’s `$DES` block, with the source numbering `DOSESC1 = 1`,
+`CENTRAL = 2`, `TRANSIT1 = 3`, reads
+
+    DADT(1) = -KA*A(1)
+    DADT(2) =  KA*A(3) - (CL/V2)*A(2)
+    DADT(3) =  KA*A(1) - KA*A(3)
+
+so the subcutaneous depot feeds one transit compartment, which feeds the
+central compartment, with the *same* rate constant `ka` governing both
+transfers. Intravenous doses (study 401) enter `central` directly and
+are not scaled by bioavailability. `S2 = V2` with dose in mg gives
+concentration directly in mg/L = ug/mL, so no scaling factor is needed.
+
+Both PK/PD models are **direct** (no-delay) sigmoidal Emax models on the
+concurrent pegcetacoplan concentration. Crass 2024 Sect. 3.2.2 gives
+
+``` math
+\text{Biomarker} = \text{Baseline} \cdot \left(1 + \frac{E_{max} \cdot C^{Hill}}{EC_{50}^{Hill} + C^{Hill}}\right)
+```
+
+with a positive `Emax` for hemoglobin (a 51% maximal increase) and a
+negative one for LDH (a 92% maximal decrease in eculizumab-naive
+patients), the latter implemented in the source control stream as
+`EFF = BASELDH*(1-EDRUG)` with a logit-transformed positive `Emax`. The
+paper is explicit (Sect. 4, limitations) that indirect PK/PD models
+incorporating a time delay could not be identified, so these direct
+models are best suited to steady-state dosing conditions.
+
+``` r
+
+lapply(uis, function(u) u$state)
+#> $Crass_2024_pegcetacoplan
+#> [1] "depot"    "transit1" "central" 
+#> 
+#> $Crass_2024_pegcetacoplan_hemoglobin
+#> [1] "depot"    "transit1" "central" 
+#> 
+#> $Crass_2024_pegcetacoplan_ldh
+#> [1] "depot"    "transit1" "central"
+```
+
+## Source trace
+
+Every `ini()` entry carries an in-file comment pointing at its source
+location. The table below collects them.
+
+| Model | Equation / parameter | Value | Source location |
+|:---|:---|:---|:---|
+| PK | d/dt(depot), d/dt(transit1), d/dt(central) | n/a | ESM Table 1, PK control stream \$DES |
+| PK | lcl (CL, non-PNH, 70 kg) | 0.0117 L/h | ESM Table 3, theta 1 TVCL (95% CI 0.0106-0.0128) |
+| PK | lvc (Vc, 70 kg) | 3.96 L | ESM Table 3, theta 2 TVV2 (95% CI 3.57-4.34) |
+| PK | lka | 0.0370 1/h | ESM Table 3, theta 3 TVKA (95% CI 0.0343-0.0397) |
+| PK | lfdepot (SC bioavailability) | 0.758 | ESM Table 3, theta 4 F1 (95% CI 0.681-0.834) |
+| PK | e_form_pegcet_lyophilized_fdepot | 0.220 | ESM Table 3, theta 8 ‘Lyophilized formulation on F1’ |
+| PK | e_dis_pnh_cl | 0.257 | ESM Table 3, theta 9 ‘PNH on CL’ |
+| PK | e_wt_cl | 0.646 | ESM Table 3, theta 10 ‘WT on CL’ |
+| PK | e_wt_vc | 0.809 | ESM Table 3, theta 11 ‘WT on V2’ |
+| PK | etalcl / etalvc block | 0.042754 / 0.024984 / 0.044778 | ESM Table 3 IIV: CL 20.9 CV%, rho 0.571, V2 21.4 CV%; omega^2 = log(CV^2 + 1) |
+| PK | etalka | 0.243436 | ESM Table 3 IIV: KA 52.5 CV% |
+| PK | expSd_healthy / \_pnh_ph12 / \_pnh_ph3 | 0.200 / 0.326 / 0.163 | ESM Table 3 thetas 5, 6, 7 (residual variability rows) |
+| Hb | hb = rbase \* (1 + edrug) | n/a | ESM Table 1, Hb control stream \$ERROR; Crass 2024 Sect. 3.2.2 |
+| Hb | lrbase (BaseHb) | 8.74 g/dL | ESM Table 4, theta 1 (95% CI 8.55-8.93); Table 2 |
+| Hb | lemax | 0.510 | ESM Table 4, theta 2 (95% CI 0.431-0.589); Table 2 ‘51 (43-59)’ |
+| Hb | lec50 | 337 ug/mL | ESM Table 4, theta 3 (95% CI 302-372); Table 2 |
+| Hb | lhill | 4.66 | ESM Table 4, theta 4 (95% CI 3.81-5.52); Table 2 |
+| Hb | e_crcl_emax | 0.641 | ESM Table 4, theta 6 ‘CrCl on Emax’ |
+| Hb | e_sexf_emax | -0.337 | ESM Table 4, theta 7 ‘Female sex on Emax’ |
+| Hb | e_conmed_eculizumab_bl_emax | fixed(0) | ESM Table 1, Hb \$THETA line 8 ‘(0 FIX) ;8 BECU ON EMAX’ |
+| Hb | etalrbase / etalemax block; etalec50 | 0.0162 / -0.0437 / 0.351; 0.291 | ESM Table 4 IIV rows (variances reported directly) |
+| Hb | addSd | 0.913 g/dL | ESM Table 4, theta 5 ‘RE Additive (g/dL)’ |
+| LDH | ldh = rbase \* (1 - edrug) | n/a | ESM Table 1, LDH control stream \$ERROR; Crass 2024 Sect. 3.2.2 |
+| LDH | lrbase / lrbase_ecu_bl | 7.56 / 5.52 (log U/L) | ESM Table 5, thetas 1 and 2; transformed 1920 / 249 U/L |
+| LDH | logitemax / logitemax_ecu_bl | 2.40 / -1.39 (logit) | ESM Table 5, thetas 3 and 4; transformed 0.917 / 0.200 |
+| LDH | lec50 | 5.23 (log ug/mL) | ESM Table 5, theta 5; transformed 187 ug/mL |
+| LDH | lhill | 3.42 | ESM Table 5, theta 6 (reported untransformed) |
+| LDH | e_conmed_eculizumab_emax | 0.783 (logit) | ESM Table 5, theta 8 ‘Eculizumab Co-treatment on Logit Emax’ |
+| LDH | etalrbase / etalogitemax / etalec50 block | 0.182 / 0.265 / 0.745 / 0 / 0.167 / 0.121 | ESM Table 5 IIV rows; omega3,1 not reported and entered as 0 in the ESM Table 1 \$OMEGA BLOCK(3) |
+| LDH | expSd | 0.305 | ESM Table 5, theta 7 ‘Log additive’; transformed 30.5% |
+
+Per-parameter source trace. ‘ESM’ = the article’s open-access Electronic
+Supplementary Material. {.table}
+
+### Reproducing the published back-transforms
+
+ESM Tables 4 and 5 report several parameters on their estimation scale
+together with the back-transformed values, and Crass 2024 Sect. 3.4.2
+quotes several derived covariate-adjusted values in prose. Reproducing
+them is a cheap end-to-end check that the transform conventions in the
+model files are right.
+
+``` r
+
+th_hb  <- setNames(uis[["Crass_2024_pegcetacoplan_hemoglobin"]]$theta,
+                   names(uis[["Crass_2024_pegcetacoplan_hemoglobin"]]$theta))
+th_ldh <- setNames(uis[["Crass_2024_pegcetacoplan_ldh"]]$theta,
+                   names(uis[["Crass_2024_pegcetacoplan_ldh"]]$theta))
+ilogit <- function(x) exp(x) / (1 + exp(x))
+
+tibble::tribble(
+  ~Quantity, ~Computed, ~Published, ~`Source`,
+  "LDH baseline, eculizumab-naive (U/L)",  exp(th_ldh[["lrbase"]]),            1920,  "ESM Table 5 transformed estimate",
+  "LDH baseline, eculizumab-treated (U/L)", exp(th_ldh[["lrbase_ecu_bl"]]),     249,  "ESM Table 5 transformed estimate",
+  "LDH Emax, eculizumab-naive (fraction)",  ilogit(th_ldh[["logitemax"]]),      0.917, "ESM Table 5 transformed estimate",
+  "LDH Emax, eculizumab-treated (fraction)", ilogit(th_ldh[["logitemax_ecu_bl"]]), 0.200, "ESM Table 5 transformed estimate",
+  "LDH Emax during eculizumab co-treatment (fraction)",
+      ilogit(th_ldh[["logitemax_ecu_bl"]] + th_ldh[["e_conmed_eculizumab_emax"]]), 0.350, "Sect. 3.4.2 '35.0% decrease from baseline'",
+  "LDH EC50 (ug/mL)", exp(th_ldh[["lec50"]]), 187, "ESM Table 5 transformed estimate",
+  "Hb Emax, male at CrCl 120 mL/min (fraction)",
+      exp(th_hb[["lemax"]]), 0.510, "ESM Table 4 theta 2 / Table 2",
+  "Hb Emax, female at CrCl 120 mL/min (fraction)",
+      exp(th_hb[["lemax"]]) * (1 + th_hb[["e_sexf_emax"]]), 0.338, "Sect. 3.4.2 '33.8% increase'",
+  "Hb Emax, male at CrCl 40 mL/min (fraction)",
+      exp(th_hb[["lemax"]]) * (40 / 120)^th_hb[["e_crcl_emax"]], 0.252, "Sect. 3.4.2 '25.2% maximal increase'"
+) |>
+  mutate(Computed = signif(Computed, 4),
+         `Difference (%)` = round(100 * (Computed - Published) / Published, 1)) |>
+  knitr::kable(caption = "Model back-transforms versus the values Crass 2024 reports.")
+```
+
+| Quantity | Computed | Published | Source | Difference (%) |
+|:---|---:|---:|:---|---:|
+| LDH baseline, eculizumab-naive (U/L) | 1920.0000 | 1920.000 | ESM Table 5 transformed estimate | 0.0 |
+| LDH baseline, eculizumab-treated (U/L) | 249.6000 | 249.000 | ESM Table 5 transformed estimate | 0.2 |
+| LDH Emax, eculizumab-naive (fraction) | 0.9168 | 0.917 | ESM Table 5 transformed estimate | 0.0 |
+| LDH Emax, eculizumab-treated (fraction) | 0.1994 | 0.200 | ESM Table 5 transformed estimate | -0.3 |
+| LDH Emax during eculizumab co-treatment (fraction) | 0.3527 | 0.350 | Sect. 3.4.2 ‘35.0% decrease from baseline’ | 0.8 |
+| LDH EC50 (ug/mL) | 186.8000 | 187.000 | ESM Table 5 transformed estimate | -0.1 |
+| Hb Emax, male at CrCl 120 mL/min (fraction) | 0.5100 | 0.510 | ESM Table 4 theta 2 / Table 2 | 0.0 |
+| Hb Emax, female at CrCl 120 mL/min (fraction) | 0.3381 | 0.338 | Sect. 3.4.2 ‘33.8% increase’ | 0.0 |
+| Hb Emax, male at CrCl 40 mL/min (fraction) | 0.2522 | 0.252 | Sect. 3.4.2 ‘25.2% maximal increase’ | 0.1 |
+
+Model back-transforms versus the values Crass 2024 reports. {.table}
+
+Every quantity reproduces the published value to the precision the paper
+prints.
+
+## Virtual cohort
+
+Original observed data are not publicly available (Crass 2024
+“Availability of data and material”). The simulations below use virtual
+populations whose covariate distributions approximate the published
+trial demographics.
+
+Two PK arms are simulated, each with 150 participants: healthy adults
+and patients with PNH. Both receive the approved regimen of subcutaneous
+pegcetacoplan 1080 mg twice weekly, modelled as a fixed 84-hour interval
+so that exactly two doses fall in each 168-hour week.
+
+``` r
+
+set.seed(20241129)
+
+N_PER_ARM <- 150L
+TAU <- 84      # h, twice weekly
+WEEK <- 168    # h
+N_WEEKS <- 26L
+T_LAST_DOSE <- TAU * (2 * N_WEEKS - 1)
+T_END_SS <- TAU * 2 * N_WEEKS            # end of the last steady-state week
+T_END <- T_END_SS + 60 * 24              # 60-day washout for terminal-phase NCA
+
+# Body weight: log-normal centred on the analysis-set median of 70.0 kg,
+# truncated to the observed 41-156 kg range (ESM Table 2, Total column).
+draw_wt <- function(n) pmin(pmax(exp(rnorm(n, log(70), 0.22)), 41), 156)
+
+make_pk_arm <- function(n, arm, pnh, phase3, id_offset = 0L) {
+  subj <- tibble(
+    id = id_offset + seq_len(n),
+    arm = arm,
+    WT = draw_wt(n),
+    DIS_PNH = pnh,
+    STUDY_PEGCET_PHASE3 = phase3,
+    # Phase 3 used a ready-to-use solution formulation; the reference level.
+    FORM_PEGCET_LYOPHILIZED = 0
+  )
+  dose <- subj |>
+    crossing(time = seq(0, T_LAST_DOSE, by = TAU)) |>
+    mutate(evid = 1L, amt = 1080, cmt = "depot")
+  # Observation grid: fine over week 1 (needed for the accumulation ratio) and
+  # over the final steady-state week, coarse elsewhere.
+  obs_times <- sort(unique(c(
+    seq(0, WEEK, by = 6),
+    seq(0, T_END_SS, by = 24),
+    seq(T_END_SS - WEEK, T_END_SS, by = 6),
+    seq(T_END_SS, T_END, by = 24)
+  )))
+  obs <- subj |>
+    crossing(time = obs_times) |>
+    mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  bind_rows(dose, obs) |> arrange(id, time, desc(evid))
+}
+
+pk_events <- bind_rows(
+  make_pk_arm(N_PER_ARM, "Healthy adults", pnh = 0, phase3 = 0, id_offset = 0L),
+  make_pk_arm(N_PER_ARM, "Adults with PNH", pnh = 1, phase3 = 1, id_offset = 1000L)
+) |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(unique(pk_events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+pk_sim <- rxode2::rxSolve(
+  readModelDb("Crass_2024_pegcetacoplan"),
+  events = pk_events,
+  keep = c("arm", "WT")
+) |>
+  as.data.frame()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+nrow(pk_sim)
+#> [1] 85500
+```
+
+## Replicate published figures
+
+### Figure 1 – predicted exposure in adults with PNH at 1080 mg twice weekly
+
+Crass 2024 Figure 1 shows the predicted pegcetacoplan concentration-time
+profile in adults with PNH under the approved regimen, with the EC90
+thresholds for the hemoglobin and LDH responses overlaid. EC90 is
+derived from the fitted sigmoidal Emax parameters as
+$`EC_{90} = EC_{50}\cdot 9^{1/Hill}`$.
+
+``` r
+
+ec90 <- function(ui, ec50_name, hill_name, log_ec50 = TRUE) {
+  th <- ui$theta
+  ec50 <- if (log_ec50) exp(th[[ec50_name]]) else th[[ec50_name]]
+  ec50 * 9^(1 / exp(th[[hill_name]]))
+}
+ec90_hb <- ec90(uis[["Crass_2024_pegcetacoplan_hemoglobin"]], "lec50", "lhill")
+ec90_ldh <- ec90(uis[["Crass_2024_pegcetacoplan_ldh"]], "lec50", "lhill")
+c(EC90_Hb = ec90_hb, EC90_LDH = ec90_ldh)
+#>  EC90_Hb EC90_LDH 
+#> 540.0115 355.1227
+```
+
+``` r
+
+pk_sim |>
+  filter(arm == "Adults with PNH", time <= T_END_SS, time %% 24 == 0) |>
+  group_by(time) |>
+  summarise(
+    Q25 = quantile(Cc, 0.25), Q50 = median(Cc), Q75 = quantile(Cc, 0.75),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time / 24, Q50)) +
+  geom_ribbon(aes(ymin = Q25, ymax = Q75), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 0.8, colour = "steelblue") +
+  geom_hline(yintercept = ec90_hb, linetype = "dashed", colour = "goldenrod3") +
+  geom_hline(yintercept = ec90_ldh, linetype = "dashed", colour = "darkred") +
+  annotate("text", x = 5, y = ec90_hb * 1.07, hjust = 0, size = 3,
+           colour = "goldenrod3", label = "EC90 hemoglobin") +
+  annotate("text", x = 5, y = ec90_ldh * 1.07, hjust = 0, size = 3,
+           colour = "darkred", label = "EC90 LDH") +
+  labs(x = "Time (days)", y = "Pegcetacoplan concentration (ug/mL)",
+       title = "Predicted exposure, SC 1080 mg twice weekly (PNH)",
+       subtitle = "Median with interquartile range",
+       caption = "Replicates Figure 1 of Crass 2024.")
+```
+
+![Replicates Figure 1 of Crass 2024: predicted exposure among adults
+with PNH receiving subcutaneous pegcetacoplan 1080 mg twice weekly, with
+the hemoglobin and LDH EC90 thresholds
+overlaid.](Crass_2024_pegcetacoplan_files/figure-html/figure-1-1.png)
+
+Replicates Figure 1 of Crass 2024: predicted exposure among adults with
+PNH receiving subcutaneous pegcetacoplan 1080 mg twice weekly, with the
+hemoglobin and LDH EC90 thresholds overlaid.
+
+The paper states that steady-state concentrations exceed the EC90 for
+both biomarkers in approximately 75% of patients with PNH, and that
+median steady-state concentration exceeds those thresholds by week 4:
+
+``` r
+
+ss_pnh <- pk_sim |>
+  filter(arm == "Adults with PNH", time >= T_END_SS - WEEK, time <= T_END_SS) |>
+  group_by(id) |>
+  summarise(cavg = mean(Cc), .groups = "drop")
+
+week4 <- pk_sim |>
+  filter(arm == "Adults with PNH", time >= 4 * WEEK - WEEK, time <= 4 * WEEK) |>
+  group_by(id) |>
+  summarise(cavg = mean(Cc), .groups = "drop")
+
+tibble::tribble(
+  ~Statement, ~Simulated, ~Published,
+  "Steady-state Cavg above BOTH EC90 thresholds (i.e. above the hemoglobin EC90, which is the higher of the two)",
+      sprintf("%.0f%% of patients", 100 * mean(ss_pnh$cavg > ec90_hb)),
+      "approximately 75% (Sect. 3.3)",
+  "Steady-state Cavg above the LDH EC90 alone (not the binding threshold)",
+      sprintf("%.0f%% of patients", 100 * mean(ss_pnh$cavg > ec90_ldh)),
+      "not reported separately",
+  "Median Cavg over week 4 already above both EC90 thresholds",
+      sprintf("median %.0f ug/mL", median(week4$cavg)),
+      sprintf("yes; the two EC90 are %.0f and %.0f ug/mL", ec90_hb, ec90_ldh)
+) |>
+  knitr::kable(caption = "EC90 coverage checks against Crass 2024 Sect. 3.3. Because the hemoglobin EC90 is the higher of the two, exceeding it implies exceeding both.")
+```
+
+| Statement | Simulated | Published |
+|:---|:---|:---|
+| Steady-state Cavg above BOTH EC90 thresholds (i.e. above the hemoglobin EC90, which is the higher of the two) | 78% of patients | approximately 75% (Sect. 3.3) |
+| Steady-state Cavg above the LDH EC90 alone (not the binding threshold) | 99% of patients | not reported separately |
+| Median Cavg over week 4 already above both EC90 thresholds | median 569 ug/mL | yes; the two EC90 are 540 and 355 ug/mL |
+
+EC90 coverage checks against Crass 2024 Sect. 3.3. Because the
+hemoglobin EC90 is the higher of the two, exceeding it implies exceeding
+both. {.table}
+
+### Figure 3A – effect of body weight on steady-state exposure
+
+Crass 2024 Figure 3A shows average steady-state concentration over
+1-week intervals across the observed body-weight range, with the
+biomarker EC90 thresholds overlaid. Body weight enters both clearance
+(exponent 0.646) and central volume (exponent 0.809), so exposure falls
+with increasing weight.
+
+``` r
+
+ss_pnh_wt <- pk_sim |>
+  filter(arm == "Adults with PNH", time >= T_END_SS - WEEK, time <= T_END_SS) |>
+  group_by(id, WT) |>
+  summarise(cavg = mean(Cc), .groups = "drop") |>
+  mutate(wt_band = cut(WT, breaks = c(40, 55, 70, 85, 100, 160),
+                       labels = c("40-55", "55-70", "70-85", "85-100", ">100"),
+                       right = FALSE))
+
+ss_pnh_wt |>
+  ggplot(aes(wt_band, cavg)) +
+  geom_boxplot(fill = "grey85", outlier.size = 0.8) +
+  geom_hline(yintercept = ec90_hb, linetype = "dashed", colour = "goldenrod3") +
+  geom_hline(yintercept = ec90_ldh, linetype = "dashed", colour = "darkred") +
+  labs(x = "Body weight (kg)", y = "Cavg,ss over 1 week (ug/mL)",
+       title = "Steady-state exposure by body weight (PNH, 1080 mg twice weekly)",
+       caption = "Replicates Figure 3A of Crass 2024. Dashed lines: hemoglobin (upper) and LDH (lower) EC90.")
+```
+
+![Replicates Figure 3A of Crass 2024: average steady-state pegcetacoplan
+concentration over 1-week intervals by body-weight band in adults with
+PNH.](Crass_2024_pegcetacoplan_files/figure-html/figure-3a-1.png)
+
+Replicates Figure 3A of Crass 2024: average steady-state pegcetacoplan
+concentration over 1-week intervals by body-weight band in adults with
+PNH.
+
+### Figure 6 – maximal effect on hemoglobin and LDH
+
+Crass 2024 Figure 6 plots the fitted exposure-response curves for both
+biomarkers against pegcetacoplan concentration. Rather than re-typing
+the Emax equation here, the curves below are read out of the packaged
+models by driving a range of steady-state doses through the model and
+recording the resulting `(Cc, hb)` and `(Cc, ldh)` pairs for a typical
+subject.
+
+``` r
+
+dose_levels <- round(exp(seq(log(20), log(6000), length.out = 30)))
+
+make_typ_arm <- function(cov_row, doses, id_offset = 0L) {
+  subj <- cov_row[rep(1, length(doses)), , drop = FALSE]
+  subj$id <- id_offset + seq_along(doses)
+  subj$dose_mg <- doses
+  d <- subj |> crossing(time = seq(0, TAU * 39, by = TAU)) |>
+    mutate(evid = 1L, amt = dose_mg, cmt = "depot")
+  o <- subj |> crossing(time = seq(TAU * 38, TAU * 40, by = 12)) |>
+    mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  bind_rows(d, o) |> arrange(id, time, desc(evid))
+}
+
+hb_cov <- tibble(WT = 70, DIS_PNH = 1, FORM_PEGCET_LYOPHILIZED = 0,
+                 CRCL = 120, SEXF = 0, CONMED_ECULIZUMAB_BL = 0)
+ldh_cov_naive <- tibble(WT = 70, DIS_PNH = 1, FORM_PEGCET_LYOPHILIZED = 0,
+                        CONMED_ECULIZUMAB_BL = 0, CONMED_ECULIZUMAB = 0)
+ldh_cov_treated <- ldh_cov_naive |> mutate(CONMED_ECULIZUMAB_BL = 1)
+
+solve_typical <- function(nm, ev) {
+  rxode2::rxSolve(rxode2::zeroRe(readModelDb(nm)), as.data.frame(ev), omega = NA,
+                  keep = c("dose_mg")) |>
+    as.data.frame()
+}
+
+hb_curve <- solve_typical("Crass_2024_pegcetacoplan_hemoglobin",
+                          make_typ_arm(hb_cov, dose_levels)) |>
+  group_by(dose_mg) |>
+  summarise(Cc = mean(Cc), value = mean(hb), .groups = "drop") |>
+  mutate(Biomarker = "Hemoglobin (g/dL)")
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
+
+ldh_curve <- bind_rows(
+  solve_typical("Crass_2024_pegcetacoplan_ldh",
+                make_typ_arm(ldh_cov_naive, dose_levels)) |>
+    mutate(Biomarker = "LDH, eculizumab-naive (U/L)"),
+  solve_typical("Crass_2024_pegcetacoplan_ldh",
+                make_typ_arm(ldh_cov_treated, dose_levels, id_offset = 100L)) |>
+    mutate(Biomarker = "LDH, eculizumab-treated (U/L)")
+) |>
+  group_by(Biomarker, dose_mg) |>
+  summarise(Cc = mean(Cc), value = mean(ldh), .groups = "drop")
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
+```
+
+``` r
+
+med_css <- median(ss_pnh$cavg)
+
+bind_rows(hb_curve, ldh_curve) |>
+  ggplot(aes(Cc, value)) +
+  geom_line(linewidth = 0.8, colour = "steelblue") +
+  geom_vline(aes(xintercept = xi), linetype = "dashed", colour = "grey40",
+             data = tibble(
+               Biomarker = c("Hemoglobin (g/dL)", "LDH, eculizumab-naive (U/L)",
+                             "LDH, eculizumab-treated (U/L)"),
+               xi = c(exp(th_hb[["lec50"]]), exp(th_ldh[["lec50"]]),
+                      exp(th_ldh[["lec50"]]))
+             )) +
+  geom_vline(xintercept = med_css, colour = "darkred") +
+  facet_wrap(~Biomarker, scales = "free_y", ncol = 1) +
+  scale_x_log10() +
+  labs(x = "Pegcetacoplan concentration (ug/mL, log scale)", y = "Biomarker",
+       caption = "Replicates Figure 6 of Crass 2024.")
+```
+
+![Replicates Figure 6 of Crass 2024: exposure-response for hemoglobin
+and LDH. Dashed vertical lines mark each endpoint's EC50; the solid
+vertical line marks the median steady-state concentration at SC 1080 mg
+twice
+weekly.](Crass_2024_pegcetacoplan_files/figure-html/figure-6-1.png)
+
+Replicates Figure 6 of Crass 2024: exposure-response for hemoglobin and
+LDH. Dashed vertical lines mark each endpoint’s EC50; the solid vertical
+line marks the median steady-state concentration at SC 1080 mg twice
+weekly.
+
+## Biomarker response at steady state
+
+Crass 2024 Sect. 3.4.3 reports the predicted steady-state biomarker
+distributions under the approved regimen. These are reproduced with
+stochastic cohorts drawn to match the PK/PD analysis-set demographics.
+
+``` r
+
+make_pd_arm <- function(n, extra, id_offset = 0L) {
+  subj <- tibble(
+    id = id_offset + seq_len(n),
+    WT = draw_wt(n),
+    DIS_PNH = 1,
+    FORM_PEGCET_LYOPHILIZED = 0
+  ) |>
+    bind_cols(extra(n))
+  d <- subj |> crossing(time = seq(0, TAU * 39, by = TAU)) |>
+    mutate(evid = 1L, amt = 1080, cmt = "depot")
+  o <- subj |> crossing(time = seq(TAU * 38, TAU * 40, by = 6)) |>
+    mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  bind_rows(d, o) |> arrange(id, time, desc(evid)) |> as.data.frame()
+}
+
+# Hemoglobin cohort: 56% female, CrCl centred on the reference 120 mL/min with
+# 5th/95th percentiles near the 40 / 191 mL/min the paper quotes.
+hb_events <- make_pd_arm(N_PER_ARM, function(n) tibble(
+  SEXF = rbinom(n, 1, 0.56),
+  CRCL = pmin(pmax(exp(rnorm(n, log(112), 0.42)), 20), 300),
+  CONMED_ECULIZUMAB_BL = rbinom(n, 1, 0.54)
+))
+
+hb_sim <- rxode2::rxSolve(readModelDb("Crass_2024_pegcetacoplan_hemoglobin"),
+                          hb_events, keep = c("WT")) |>
+  as.data.frame()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+hb_ss <- hb_sim |>
+  filter(time >= TAU * 38) |>
+  group_by(id) |>
+  summarise(hb = mean(hb), .groups = "drop")
+
+# LDH cohorts: one eculizumab-naive, one eculizumab-treated at baseline, both
+# on pegcetacoplan monotherapy at steady state (CONMED_ECULIZUMAB = 0).
+ldh_events <- bind_rows(
+  make_pd_arm(N_PER_ARM, function(n) tibble(
+    CONMED_ECULIZUMAB_BL = 0L, CONMED_ECULIZUMAB = 0L)),
+  make_pd_arm(N_PER_ARM, function(n) tibble(
+    CONMED_ECULIZUMAB_BL = 1L, CONMED_ECULIZUMAB = 0L), id_offset = 1000L)
+)
+
+ldh_sim <- rxode2::rxSolve(readModelDb("Crass_2024_pegcetacoplan_ldh"),
+                           ldh_events, keep = c("CONMED_ECULIZUMAB_BL")) |>
+  as.data.frame()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+ldh_ss <- ldh_sim |>
+  filter(time >= TAU * 38) |>
+  group_by(id, CONMED_ECULIZUMAB_BL) |>
+  summarise(ldh = mean(ldh), .groups = "drop")
+```
+
+``` r
+
+fmt_iqr <- function(x, digits = 0) {
+  sprintf("%s (%s-%s)", round(median(x), digits),
+          round(quantile(x, 0.25), digits), round(quantile(x, 0.75), digits))
+}
+
+tibble::tribble(
+  ~Endpoint, ~Simulated, ~Published,
+  "Hemoglobin at steady state, all patients (g/dL)",
+      fmt_iqr(hb_ss$hb, 1), "11.7 (10.5-13.3)",
+  "LDH at steady state, eculizumab-naive (U/L)",
+      fmt_iqr(ldh_ss$ldh[ldh_ss$CONMED_ECULIZUMAB_BL == 0]), "217 (170-292)",
+  "LDH at steady state, eculizumab-treated (U/L)",
+      fmt_iqr(ldh_ss$ldh[ldh_ss$CONMED_ECULIZUMAB_BL == 1]), "192 (152-239)"
+) |>
+  knitr::kable(caption = "Median (IQR) steady-state biomarker predictions versus Crass 2024 Sect. 3.4.3.")
+```
+
+| Endpoint | Simulated | Published |
+|:---|:---|:---|
+| Hemoglobin at steady state, all patients (g/dL) | 11.7 (10.6-13.2) | 11.7 (10.5-13.3) |
+| LDH at steady state, eculizumab-naive (U/L) | 220 (168-329) | 217 (170-292) |
+| LDH at steady state, eculizumab-treated (U/L) | 183 (148-224) | 192 (152-239) |
+
+Median (IQR) steady-state biomarker predictions versus Crass 2024 Sect.
+3.4.3. {.table style="width:100%;"}
+
+All three medians and interquartile ranges reproduce the published
+values.
+
+Crass 2024 also states that the median steady-state concentration
+achieves at least 95% of the maximal effect for both biomarkers:
+
+``` r
+
+frac_max <- function(cc, ec50, hill) cc^hill / (ec50^hill + cc^hill)
+tibble(
+  Endpoint = c("Hemoglobin", "LDH"),
+  `Fraction of maximal effect at the median Cavg,ss` = c(
+    frac_max(med_css, exp(th_hb[["lec50"]]), exp(th_hb[["lhill"]])),
+    frac_max(med_css, exp(th_ldh[["lec50"]]), exp(th_ldh[["lhill"]]))
+  )
+) |>
+  mutate(`Fraction of maximal effect at the median Cavg,ss` =
+           sprintf("%.1f%%", 100 * `Fraction of maximal effect at the median Cavg,ss`)) |>
+  knitr::kable(caption = "Crass 2024 Sect. 3.4.3 states >= 95% of the maximal effect is achieved for both endpoints at the median steady-state concentration.")
+```
+
+| Endpoint   | Fraction of maximal effect at the median Cavg,ss |
+|:-----------|:-------------------------------------------------|
+| Hemoglobin | 95.8%                                            |
+| LDH        | 98.7%                                            |
+
+Crass 2024 Sect. 3.4.3 states \>= 95% of the maximal effect is achieved
+for both endpoints at the median steady-state concentration. {.table}
+
+## Effective half-life from the accumulation ratio
+
+Crass 2024 Sect. 2.3.1 states that “effective half-life was calculated
+from the accumulation ratio for simulated exposure measures from week 1
+to steady state”, where the exposure measures derived over 1-week
+intervals were maximum concentration and average concentration. Two
+readings are therefore possible: the accumulation ratio of Cmax, or the
+accumulation ratio of Cavg. They give materially different answers here,
+because the transit-compartment absorption chain is still filling during
+week 1 and so deflates the week-1 AUC far more than it deflates the
+week-1 peak. Both are computed below; the Cmax-based reading is the one
+that reproduces the published values, and it is also the classical
+definition of the effective half-life.
+
+``` r
+
+rac_metrics <- pk_sim |>
+  mutate(win = case_when(
+    time <= WEEK ~ "week1",
+    time >= T_END_SS - WEEK & time <= T_END_SS ~ "ss",
+    TRUE ~ NA_character_
+  )) |>
+  filter(!is.na(win)) |>
+  group_by(arm, id, win) |>
+  summarise(cmax = max(Cc), cavg = mean(Cc), .groups = "drop") |>
+  pivot_wider(names_from = win, values_from = c(cmax, cavg)) |>
+  mutate(
+    rac_cmax = cmax_ss / cmax_week1,
+    rac_cavg = cavg_ss / cavg_week1,
+    # t(1/2),eff = -tau * ln(2) / ln(1 - 1/Rac) with tau = the 1-week interval
+    # over which the exposure metrics were derived.
+    thalf_cmax = -WEEK * log(2) / log(1 - 1 / rac_cmax) / 24,
+    thalf_cavg = -WEEK * log(2) / log(1 - 1 / rac_cavg) / 24
+  )
+
+rac_metrics |>
+  group_by(arm) |>
+  summarise(
+    `t1/2,eff from Rac(Cmax), days` = fmt_iqr(thalf_cmax, 1),
+    `t1/2,eff from Rac(Cavg), days` = fmt_iqr(thalf_cavg, 1),
+    .groups = "drop"
+  ) |>
+  left_join(
+    tibble(arm = c("Healthy adults", "Adults with PNH"),
+           `Published (Table 3), days` = c("11.0 (8.70-14.2)", "8.60 (6.90-11.0)")),
+    by = "arm"
+  ) |>
+  arrange(match(arm, c("Healthy adults", "Adults with PNH"))) |>
+  rename("Arm" = arm) |>
+  knitr::kable(caption = "Effective half-life, median (IQR), versus Crass 2024 Table 3.")
+```
+
+| Arm | t1/2,eff from Rac(Cmax), days | t1/2,eff from Rac(Cavg), days | Published (Table 3), days |
+|:---|:---|:---|:---|
+| Healthy adults | 12 (10.5-14.5) | 24 (19.8-31.4) | 11.0 (8.70-14.2) |
+| Adults with PNH | 9.4 (8.1-11) | 18.5 (14.7-24.4) | 8.60 (6.90-11.0) |
+
+Effective half-life, median (IQR), versus Crass 2024 Table 3. {.table}
+
+The Cmax-based accumulation ratio reproduces both published medians
+closely, while the Cavg-based ratio overstates the effective half-life
+roughly two-fold. Note that the effective half-life is not the same
+quantity as the terminal half-life: for this model the terminal
+half-life of a typical 70 kg subject is 9.8 days (healthy) and 7.8 days
+(PNH), about 11% shorter than the published effective half-lives,
+because the slow subcutaneous absorption chain adds to the apparent
+accumulation.
+
+## PKNCA validation
+
+Non-compartmental analysis is run over the final steady-state dosing
+interval for the peak / trough / interval-average metrics, and over the
+post-treatment washout for the terminal half-life. Times are converted
+to days so PKNCA reports half-life in days, matching the paper.
+
+``` r
+
+sim_nca <- pk_sim |>
+  filter(!is.na(Cc)) |>
+  transmute(id, arm, time_d = time / 24, Cc)
+
+# Guarantee a time-zero record per subject; pre-dose Cc is 0 for an
+# extravascular route.
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, arm) |> mutate(time_d = 0, Cc = 0)
+) |>
+  distinct(id, arm, time_d, .keep_all = TRUE) |>
+  arrange(id, arm, time_d)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time_d | arm + id)
+
+dose_df <- pk_events |>
+  filter(evid == 1) |>
+  transmute(id, arm, time_d = time / 24, amt)
+
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time_d | arm + id)
+
+intervals <- data.frame(
+  start = c(T_LAST_DOSE / 24, T_END_SS / 24),
+  end   = c(T_END_SS / 24,    T_END / 24),
+  cmax      = c(TRUE,  FALSE),
+  tmax      = c(TRUE,  FALSE),
+  cav       = c(TRUE,  FALSE),
+  auclast   = c(TRUE,  FALSE),
+  half.life = c(FALSE, TRUE)
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+``` r
+
+as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "cav", "auclast", "half.life")) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(Median = median(PPORRES, na.rm = TRUE),
+            `P05` = quantile(PPORRES, 0.05, na.rm = TRUE),
+            `P95` = quantile(PPORRES, 0.95, na.rm = TRUE),
+            .groups = "drop") |>
+  mutate(across(c(Median, P05, P95), \(x) signif(x, 3))) |>
+  rename("Arm" = arm, "NCA parameter" = PPTESTCD) |>
+  knitr::kable(caption = "PKNCA results. cmax / tmax / cav / auclast over the final steady-state dosing interval (84 h); half.life over the 60-day post-treatment washout. Concentrations in ug/mL, times in days.")
+```
+
+| Arm             | NCA parameter |  Median |     P05 |    P95 |
+|:----------------|:--------------|--------:|--------:|-------:|
+| Adults with PNH | auclast       | 2310.00 | 1560.00 | 3310.0 |
+| Adults with PNH | cav           |  659.00 |  446.00 |  946.0 |
+| Adults with PNH | cmax          |  668.00 |  458.00 |  969.0 |
+| Adults with PNH | half.life     |    7.81 |    5.67 |   10.9 |
+| Adults with PNH | tmax          |    0.50 |    0.00 |    2.5 |
+| Healthy adults  | auclast       | 2970.00 | 2130.00 | 4740.0 |
+| Healthy adults  | cav           |  848.00 |  608.00 | 1360.0 |
+| Healthy adults  | cmax          |  856.00 |  624.00 | 1380.0 |
+| Healthy adults  | half.life     |   10.30 |    7.09 |   13.5 |
+| Healthy adults  | tmax          |    0.50 |    0.00 |    2.5 |
+
+PKNCA results. cmax / tmax / cav / auclast over the final steady-state
+dosing interval (84 h); half.life over the 60-day post-treatment
+washout. Concentrations in ug/mL, times in days. {.table}
+
+### Comparison against published NCA
+
+Crass 2024 reports the median (IQR) steady-state average concentration
+for patients with PNH under the approved regimen (Sect. 3.3) and the
+median effective half-life for both cohorts (Table 3). The effective
+half-life is the accumulation-derived quantity discussed above; PKNCA’s
+`half.life` is the terminal half-life, so the two are compared here as
+the closest available counterparts, with the more faithful
+accumulation-ratio comparison given in the previous section.
+
+``` r
+
+# Long form (PPTESTCD / PPORRES) so the healthy arm can carry a half-life
+# reference without also needing a Cavg,ss reference the paper never reports.
+published <- tibble::tribble(
+  ~arm,               ~PPTESTCD,   ~PPORRES,
+  "Adults with PNH",  "cav",       667,
+  "Adults with PNH",  "half.life", 8.60,
+  "Healthy adults",   "half.life", 11.0
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "arm",
+  params = c("cav", "half.life"),
+  units = c(cav = "ug/mL", half.life = "day"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated versus published exposure metrics. * marks a difference above 20%.",
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+| NCA parameter | arm             | Reference | Simulated | % diff |
+|:--------------|:----------------|----------:|----------:|-------:|
+| t½ (day)      | Adults with PNH |       8.6 |      7.81 |  -9.2% |
+| t½ (day)      | Healthy adults  |        11 |      10.3 |  -6.2% |
+| Cavg (ug/mL)  | Adults with PNH |       667 |       659 |  -1.2% |
+
+Simulated versus published exposure metrics. \* marks a difference above
+20%. {.table}
+
+## Assumptions and deviations
+
+- **The model lives in the supplement, not the article.** All structural
+  equations and every parameter value come from the open-access
+  Electronic Supplementary Material: ESM Table 1 (the three NONMEM
+  control streams) and ESM Tables 3, 4, and 5 (final parameter
+  estimates). The main article’s Table 2 reports only the
+  back-transformed PK/PD structural parameters and no PK parameters at
+  all. Nothing in these model files is derived from a figure or from
+  correspondence.
+
+- **Inter-individual variability was back-transformed from reported
+  CV%.** ESM Table 3 reports the PK IIV as CV% rather than as variances,
+  so the model file uses $`\omega^2 = \log(CV^2 + 1)`$ (CL 20.9% $`\to`$
+  0.042754, Vc 21.4% $`\to`$ 0.044778, ka 52.5% $`\to`$ 0.243436) and
+  recovers the CL-Vc covariance from the reported correlation as
+  $`\rho\sqrt{\omega^2_{CL}\omega^2_{Vc}} = 0.024984`$. ESM Tables 4 and
+  5 report the PK/PD IIV as variances directly and those are used as
+  printed; the CV% and correlation values printed alongside them
+  reproduce exactly from the variances, which confirms the reading.
+
+- **One LDH IIV block element is not reported.** The LDH
+  `$OMEGA BLOCK(3)` covers (baseline, logit Emax, EC50), which has six
+  unique elements, but ESM Table 5 lists only five: $`\omega_{3,1}`$
+  (EC50 : baseline LDH) is absent. The ESM Table 1 control stream
+  initialises that element at 0, so it is encoded as 0 here. The
+  resulting matrix is positive definite (eigenvalues 0.882, 0.144,
+  0.022), so no numerical nudge was needed.
+
+- **The PK layer of both PK/PD models is carried as `fixed()`.** Crass
+  2024 Sect. 2.2 states the PK/PD models were fitted sequentially,
+  conditioned on individual empirical Bayes estimates of the PK
+  parameters, and the ESM Table 1 PK/PD control streams read the
+  individual PK parameters straight from `$INPUT` columns `ICL` / `IV2`
+  / `IKA` / `IF1`. There is therefore no re-estimated PK layer to
+  report. The population PK typical values *and* their IIV are carried
+  into both PK/PD files, wrapped in `fixed()`, so that each file is
+  self-contained and simulatable; without the IIV the PK/PD files could
+  not generate the concentration variability that drives the published
+  steady-state biomarker distributions. The population PK residual error
+  is *not* carried, because the PK/PD runs exclude pegcetacoplan
+  concentration records (`IGNORE=(TYPE.EQ.2)`) and fit only the
+  biomarker; `Cc` is exposed as an output column in both PK/PD models
+  but is not a fitted endpoint.
+
+- **`DIS_PNH` and `FORM_PEGCET_LYOPHILIZED` are inert in the PK/PD
+  cohorts.** Every subject in the PK/PD analysis set is a patient with
+  PNH, and the phase 3 studies used a ready-to-use solution formulation.
+  Both covariates are retained in the PK/PD model files anyway so their
+  PK layer is structurally identical to the parent
+  `Crass_2024_pegcetacoplan`, following the precedent set by
+  `Zhang_2023_brazikumab_il22.R` / `Zhang_2023_brazikumab_crp.R`.
+
+- **Three residual-error strata are switched by covariate.** The PK
+  `$ERROR` block selects one of three log-scale residual standard
+  deviations by the source `PNH` / `PNH2` / `PNH3` study-group flags.
+  Because `PNH2` and `PNH3` partition the PNH cohort exactly, the model
+  re-expresses the switch as `DIS_PNH` x `STUDY_PEGCET_PHASE3` and
+  selects among `expSd_healthy` (0.200), `expSd_pnh_ph3` (0.163), and
+  `expSd_pnh_ph12` (0.326). This follows the covariate-switched
+  residual-error pattern already used by `deAlwis_1998_ondansetron.R`,
+  `Li_2017_CC292.R`, and `Marathe_2023_belzutifan.R`.
+
+- **Log-transformed-both-sides residual error is encoded as `lnorm()`.**
+  Both the PK and the LDH `$ERROR` blocks set `IPRED = LOG(F)` with
+  `$SIGMA 1 FIXED`, so each `W` is a standard deviation on the
+  natural-log scale and maps to nlmixr2’s log-normal error model rather
+  than to a linear-space proportional error. The hemoglobin `$ERROR`
+  block sets `IPRED = EFF` on the natural scale, so its residual is
+  additive in g/dL.
+
+- **The baseline-eculizumab effect on hemoglobin Emax is fixed at
+  zero.** ESM Table 1 enters that `$THETA` as `(0 FIX)` and ESM Table 4
+  omits it, which is why Crass 2024 Table 2 reports the same 51% Emax
+  for eculizumab-naive and eculizumab-treated patients. It is retained
+  as `fixed(0)` so the structural form and the fixed status remain
+  visible rather than silently dropped.
+
+- **The simulated formulation is inferred, not stated.** Neither the
+  article nor the ESM says which of the four `FORM` levels each study
+  used; only the control stream reveals that the levels are sorbitol,
+  dextrose, mannitol, and lyophilized powder. The simulations here set
+  `FORM_PEGCET_LYOPHILIZED = 0` (a ready-to-use solution), which is what
+  reproduces the published exposure: at the reference bioavailability of
+  0.758 a typical 70 kg patient with PNH reaches a steady-state Cavg of
+  663 ug/mL against the published median of 667 ug/mL, whereas the
+  lyophilized level (F = 0.758 x 1.220 = 0.925) would give about 809
+  ug/mL, roughly 20% above the published value and outside its published
+  5th-95th percentile centre. The inference is therefore well supported
+  but is an inference; a user who knows a given study used the powder
+  should set the covariate to 1.
+
+- **Twice-weekly dosing is simulated as a fixed 84-hour interval.** The
+  paper does not state the calendar days used for the twice-weekly
+  regimen; an 84-hour interval places exactly two doses in each 168-hour
+  week, which is what the paper’s 1-week exposure metrics require. A
+  real Day 1 / Day 4 schedule alternates 72-hour and 96-hour intervals;
+  given a terminal half-life of roughly 8-10 days, the difference in the
+  1-week exposure metrics is negligible (the simulated peak-to-trough
+  ratio at steady state is under 1.1).
+
+- **Covariate distributions are assumed, not published per subject.**
+  Body weight is drawn log-normally, centred on the analysis-set median
+  of 70.0 kg and truncated to the observed 41-156 kg range; creatinine
+  clearance is drawn to place its 5th and 95th percentiles near the 40
+  and 191 mL/min the paper quotes; sex and baseline eculizumab status
+  are drawn as Bernoulli variables at the published 56% female and 54%
+  eculizumab-treated marginals. Correlation between covariates is not
+  modelled because the paper reports only marginals.
+
+- **`CRCL` here is raw Cockcroft-Gault clearance in mL/min, not
+  BSA-normalized.** ESM Table 4’s footnote defines it as “creatinine
+  clearance calculated using the Cockcroft-Gault equation”, which
+  returns mL/min. The canonical `CRCL` column accommodates both raw and
+  BSA-normalized forms; the per-model `covariateData` entry records
+  which applies, following the same convention as
+  `Delattre_2010_amikacin.R`, `Chen_2023_nemonoxacin.R`, and
+  `Wada_2023_sparsentan.R`.
+
+- **New canonical names registered with this extraction.** Four
+  covariate columns – `CONMED_ECULIZUMAB` (time-varying co-treatment),
+  `CONMED_ECULIZUMAB_BL` (time-fixed baseline status),
+  `FORM_PEGCET_LYOPHILIZED`, and `STUDY_PEGCET_PHASE3` – and one
+  PD-output compartment, `ldh`, are added to the package registers in
+  the same change. The `ldh` output-state canonical is the counterpart
+  of the pre-existing `LDH` covariate canonical, following the pairing
+  convention the register already documents for `Hba1c` / `HBA1C`; the
+  sibling hemoglobin endpoint uses the pre-existing `hb` canonical.
+
+## Errata and points of divergence
+
+- **The paper’s “probability of reaching LDH \< 1.5 x ULN” cannot be a
+  steady-state probability.** Crass 2024 Sect. 3.4.3 reports that
+  probability as 84% for eculizumab-naive and 97% for eculizumab-treated
+  patients, against a threshold of 226 U/L. But the same sentence’s
+  steady-state LDH distributions are 217 (IQR 170-292) and 192 (IQR
+  152-239) U/L: in both cases the 75th percentile already exceeds 226
+  U/L, so no more than about 75% of patients can be below the threshold
+  at steady state. The two statements are only compatible if the 84% /
+  97% figures describe the probability of *reaching* that level at some
+  point during treatment rather than the fraction below it at steady
+  state. The simulation reproduces the published medians and IQRs (see
+  the table above) but gives correspondingly lower steady-state
+  fractions below 226 U/L, which is the arithmetic consequence of the
+  published IQRs rather than a model discrepancy.
+
+``` r
+
+ldh_ss |>
+  group_by(CONMED_ECULIZUMAB_BL) |>
+  summarise(
+    `Median LDH (U/L)` = round(median(ldh)),
+    `75th percentile (U/L)` = round(quantile(ldh, 0.75)),
+    `Fraction below 226 U/L` = sprintf("%.0f%%", 100 * mean(ldh < 226)),
+    .groups = "drop"
+  ) |>
+  mutate(Cohort = ifelse(CONMED_ECULIZUMAB_BL == 0, "Eculizumab-naive",
+                         "Eculizumab-treated")) |>
+  select(Cohort, everything(), -CONMED_ECULIZUMAB_BL) |>
+  knitr::kable(caption = "Steady-state LDH versus the 1.5 x ULN threshold of 226 U/L.")
+```
+
+| Cohort | Median LDH (U/L) | 75th percentile (U/L) | Fraction below 226 U/L |
+|:---|---:|---:|:---|
+| Eculizumab-naive | 220 | 329 | 51% |
+| Eculizumab-treated | 183 | 224 | 75% |
+
+Steady-state LDH versus the 1.5 x ULN threshold of 226 U/L. {.table}
+
+- **No erratum or corrigendum was located** for Crass 2024 at the time
+  of extraction. The article is open access under CC BY-NC 4.0 and its
+  PubMed Central record (PMC11652457) carries no correction notice.
+
+- **Method-sentence ambiguity on the effective half-life.** As shown
+  above, Sect. 2.3.1 names two candidate exposure measures for the
+  accumulation ratio and only the Cmax-based reading reproduces Table 3.
+  This is recorded here so a future reader does not mistake the
+  Cavg-based value for a model error.

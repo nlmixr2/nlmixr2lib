@@ -1,0 +1,820 @@
+# Aldehyde oxidase substrates: intravenous PK (Izat 2025)
+
+## Models and source
+
+This paper contributes three models, one per compound:
+
+``` r
+
+model_names <- c("Izat_2025_zaleplon",
+                 "Izat_2025_ziprasidone",
+                 "Izat_2025_zoniporide")
+uis <- lapply(model_names, function(n) rxode2::rxode(readModelDb(n)))
+names(uis) <- model_names
+```
+
+- Citation: Izat N, Bolleddula J, Carione P, Huertas Valentin L, Jones
+  RS, Kulkarni P, Moss D, Peterkin VC, Tian DD, Treyer A,
+  Venkatakrishnan K, Zientek MA, Barber J, Houston JB, Galetin A,
+  Scotcher D. (2025). Establishing a physiologically based
+  pharmacokinetic framework for aldehyde oxidase and dual aldehyde
+  oxidase-CYP substrates. CPT Pharmacometrics Syst Pharmacol
+  14(1):164-178. <doi:10.1002/psp4.13255>.
+- Article: <https://doi.org/10.1002/psp4.13255>
+- Supplement (Appendix S1):
+  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11706420/>
+
+## What these models are, and what they are not
+
+Izat 2025 is a **framework paper**. It builds Simcyp (version 21) PBPK
+models for six aldehyde-oxidase (AO) substrates – capmatinib,
+idelalisib, lenvatinib, zaleplon, ziprasidone and zoniporide – in order
+to ask whether PBPK can predict AO-mediated clearance, the fraction
+metabolised by AO (`fmAO`) versus by CYP3A4 (`fmCYP3A4`), and the
+resulting CYP3A4 drug-drug-interaction risk.
+
+Simcyp’s whole-body mass-balance equations are proprietary and appear
+nowhere in the paper or Appendix S1. The corpus contains sixteen
+numbered equations and not one of them is a disposition equation:
+Equations S1-S7 and S10-S13 are bench-assay arithmetic, Equation S8 is a
+permeability correlation, and Equations S14-S16 are a *static*
+(time-free, algebraic) AO-DDI calculator. The platform model therefore
+cannot be encoded as published.
+
+What *is* completely reported, in Table 1, is each compound’s
+**disposition card**: the steady-state volume of distribution, the
+volume of the single adjusting compartment (SAC) and the
+inter-compartmental clearance where a minimal-PBPK layout was used, the
+observed intravenous plasma clearance, and the observed renal clearance.
+Appendix S1 Supplement 2 states the minimal-PBPK structure in the
+paper’s own words – “a non-physiological central compartment excluding
+the liver and portal vein coupled with a non-physiological non-central
+compartment, facilitating adjustment of systemic compartment
+concentration profile (SAC)”. That is enough to rebuild the
+**intravenous** disposition of three of the six compounds as ordinary
+compartmental models.
+
+### Why only the intravenous arms
+
+The oral arms of this paper are deliberately **not** reduced. Oral
+bioavailability in the source is `F = fa * Fg * fh`, and while Table 1
+prints `fa` and Appendix S1 gives `Fg`, the hepatic availability
+`fh = 1 - CL/Q_H` requires the hepatic blood flow `Q_H`. `Q_H` is
+mentioned twice in the prose and **never given a value**; neither is
+liver weight, and neither is body weight. Supplying `Q_H` from the
+Simcyp platform default would be exactly the substitution that this
+package’s PBPK sourcing rule forbids – and it is not a rounding-level
+choice, because moving `Q_H` from 70 to 110 L/h moves the predicted
+zaleplon oral Cmax from 0.62 to 1.29 times observed.
+
+The intravenous arms have no such dependency. They need the reported
+clearance, the reported volume, and one assumption – a 70 kg reference
+body weight, since Table 1 states every volume in L/kg and no weight is
+printed. That is the standing “undefined reference value maps to a
+rounded standard” convention, and it is the *only* external input
+anywhere in the three models below.
+
+Capmatinib, idelalisib and lenvatinib are oral-only in this paper and
+are not extracted from it. Capmatinib additionally fails a cross-dose
+consistency check: its observed oral clearance is 36.1 L/h at 200 mg and
+51.7 L/h at 600 mg, genuinely nonlinear, while Table 1 carries a single
+weighted-mean 42.3 L/h that cannot serve both doses.
+
+### What is not reproducible
+
+**Every headline result of the paper.** The `fmAO` / `fmCYP3A4` split,
+the empirical scaling factors applied to in vitro intrinsic clearance,
+and all of the CYP3A4 DDI area-ratio predictions against ketoconazole,
+itraconazole, rifampicin and carbamazepine depend on the unpublished
+Simcyp enzyme-abundance layer and on proprietary Certara perpetrator
+compound files. These models reproduce the intravenous control profiles
+only. See [Assumptions and deviations](#assumptions-and-deviations).
+
+## Population
+
+Each compound’s intravenous data come from a single published study,
+listed in Appendix S1 Table S3.
+
+``` r
+
+pop_tab <- do.call(rbind, lapply(model_names, function(n) {
+  p <- uis[[n]]$population
+  data.frame(
+    Model      = n,
+    Species    = p$species,
+    N          = p$n_subjects,
+    `Age (y)`  = p$age_range,
+    `% female` = p$sex_female_pct,
+    Dose       = p$dose_range,
+    check.names = FALSE
+  )
+}))
+knitr::kable(pop_tab, row.names = FALSE,
+             caption = "Population per compound (Izat 2025 Appendix S1 Table S3).")
+```
+
+| Model | Species | N | Age (y) | % female | Dose |
+|:---|:---|---:|:---|---:|:---|
+| Izat_2025_zaleplon | human | 10 | 19-32 years | 50 | Single 5 mg intravenous infusion. |
+| Izat_2025_ziprasidone | human | 12 | 19-37 years | 0 | Single 5 mg intravenous infusion. |
+| Izat_2025_zoniporide | human | 4 | 18-55 years | 0 | Single 80 mg intravenous infusion. |
+
+Population per compound (Izat 2025 Appendix S1 Table S3). {.table}
+
+- **Zaleplon** – Rosen 1999 (Appendix S1 Table S3 reference 22). Ten
+  healthy volunteers aged 19-32 y received 5 mg intravenously. Table S3
+  records the female fraction as “0 or 1”, i.e. separate all-female and
+  all-male cohorts, which is why Table 1 reports two clearances for this
+  compound and no other.
+- **Ziprasidone** – Miceli 2005 (reference 23). Twelve healthy men aged
+  19-37 y received 5 mg intravenously.
+- **Zoniporide** – Dalvie 2010 (reference 13). Four healthy men aged
+  18-55 y received 80 mg intravenously in a combined pharmacokinetic and
+  mass-balance study.
+
+None of the three studies reports a body weight, and neither does
+Appendix S1.
+
+## Source trace
+
+Every value in every `ini()` block, with its source location.
+
+``` r
+
+trace_tab <- tibble::tribble(
+  ~Model,        ~Parameter,    ~Value,     ~Source,
+  "zaleplon",    "lvc",         "81.1993 L", "Table 1: Vss 1.16 L/kg, Vsac 0.00001 L/kg; (1.16 - 0.00001) * 70 kg",
+  "zaleplon",    "lcl",         "71.58 L/h", "Table 1 'CLiv/oral (L/h) [CV%]': 71.58 [20.2] (i.v., male)",
+  "zaleplon",    "e_sexf_cl",   "log(0.733585)", "Table 1: 52.51 L/h (i.v., female) / 71.58 L/h (i.v., male)",
+  "zaleplon",    "propSd",      "0 (fixed)", "No residual-error model is reported anywhere in the source",
+  "ziprasidone", "lvc",         "70.7 L",    "Table 1: Vss 1.01 L/kg; 1.01 * 70 kg",
+  "ziprasidone", "lcl",         "23.04 L/h", "Table 1 'CLiv/oral (L/h) [CV%]': 23.04 [14] (i.v.)",
+  "ziprasidone", "propSd",      "0 (fixed)", "No residual-error model is reported anywhere in the source",
+  "zoniporide",  "lvc",         "119.0 L",   "Table 1: Vss 1.70 L/kg; 1.70 * 70 kg",
+  "zoniporide",  "lcl_renal",   "16.2 L/h",  "Table 1 'CLRenal (L/h)': 16.2",
+  "zoniporide",  "lcl_nonren",  "79.15 L/h", "Table 1: CLiv 95.35 [5.7] minus CLRenal 16.2",
+  "zoniporide",  "propSd",      "0 (fixed)", "No residual-error model is reported anywhere in the source"
+)
+knitr::kable(trace_tab, caption = "Source trace for every fixed parameter.")
+```
+
+| Model | Parameter | Value | Source |
+|:---|:---|:---|:---|
+| zaleplon | lvc | 81.1993 L | Table 1: Vss 1.16 L/kg, Vsac 0.00001 L/kg; (1.16 - 0.00001) \* 70 kg |
+| zaleplon | lcl | 71.58 L/h | Table 1 ‘CLiv/oral (L/h) \[CV%\]’: 71.58 \[20.2\] (i.v., male) |
+| zaleplon | e_sexf_cl | log(0.733585) | Table 1: 52.51 L/h (i.v., female) / 71.58 L/h (i.v., male) |
+| zaleplon | propSd | 0 (fixed) | No residual-error model is reported anywhere in the source |
+| ziprasidone | lvc | 70.7 L | Table 1: Vss 1.01 L/kg; 1.01 \* 70 kg |
+| ziprasidone | lcl | 23.04 L/h | Table 1 ‘CLiv/oral (L/h) \[CV%\]’: 23.04 \[14\] (i.v.) |
+| ziprasidone | propSd | 0 (fixed) | No residual-error model is reported anywhere in the source |
+| zoniporide | lvc | 119.0 L | Table 1: Vss 1.70 L/kg; 1.70 \* 70 kg |
+| zoniporide | lcl_renal | 16.2 L/h | Table 1 ‘CLRenal (L/h)’: 16.2 |
+| zoniporide | lcl_nonren | 79.15 L/h | Table 1: CLiv 95.35 \[5.7\] minus CLRenal 16.2 |
+| zoniporide | propSd | 0 (fixed) | No residual-error model is reported anywhere in the source |
+
+Source trace for every fixed parameter. {.table}
+
+The model equations are the standard one-compartment intravenous system
+(`d/dt(central) = -kel * central`, `kel = cl / vc`,
+`Cc = 1000 * central / vc`) with no nonstandard terms. The `1000`
+converts mg/L to the ng/mL used throughout Appendix S1 Table S10. Each
+compound is one compartment for a different, explicitly stated reason:
+
+- **Zaleplon** is classified “Minimal PBPK” in Table 1, but its reported
+  SAC parameters are `Vsac = 0.00001 L/kg` and `Q = 0 L/h`. An
+  inter-compartmental clearance of exactly zero means the SAC never
+  receives drug, so the reduction to one compartment is **exact**, not
+  an approximation.
+- **Ziprasidone** and **zoniporide** are classified “Full PBPK”. In a
+  full-PBPK layout the multi-tissue structure *is* the distribution
+  model, and the only distribution quantity Table 1 reports is the
+  lumped steady-state volume that the fitted global
+  partition-coefficient scalar was tuned to recover. No tissue volumes,
+  blood flows or partition coefficients are printed, and no `Vsac` or
+  `Q` is given. These two reductions are therefore genuinely
+  mono-exponential approximations of multi-exponential profiles, and the
+  cost shows up in Cmax below (about 15% low and 14% high respectively).
+  That is reported, not tuned away.
+
+### Reproducing the derivations
+
+``` r
+
+BW <- 70  # kg -- assumed reference weight; see Errata
+
+# Table 1 inputs, verbatim.
+tab1 <- tibble::tribble(
+  ~drug,          ~Vss_Lkg, ~Vsac_Lkg, ~CL_Lh,  ~CLrenal_Lh,
+  "zaleplon_F",       1.16,   0.00001,  52.51,          0,
+  "zaleplon_M",       1.16,   0.00001,  71.58,          0,
+  "ziprasidone",      1.01,        NA,  23.04,          0,
+  "zoniporide",       1.70,        NA,  95.35,       16.2
+)
+
+derived <- tab1 |>
+  dplyr::mutate(
+    vc_L      = (Vss_Lkg - dplyr::coalesce(Vsac_Lkg, 0)) * BW,
+    kel_perh  = CL_Lh / vc_L,
+    thalf_h   = log(2) / kel_perh
+  )
+knitr::kable(derived |> dplyr::mutate(dplyr::across(where(is.numeric),
+                                                    \(x) signif(x, 5))),
+             caption = "Derived one-compartment parameters at BW = 70 kg.")
+```
+
+| drug        | Vss_Lkg | Vsac_Lkg | CL_Lh | CLrenal_Lh |    vc_L | kel_perh | thalf_h |
+|:------------|--------:|---------:|------:|-----------:|--------:|---------:|--------:|
+| zaleplon_F  |    1.16 |    1e-05 | 52.51 |        0.0 |  81.199 |  0.64668 | 1.07190 |
+| zaleplon_M  |    1.16 |    1e-05 | 71.58 |        0.0 |  81.199 |  0.88153 | 0.78630 |
+| ziprasidone |    1.01 |       NA | 23.04 |        0.0 |  70.700 |  0.32588 | 2.12700 |
+| zoniporide  |    1.70 |       NA | 95.35 |       16.2 | 119.000 |  0.80126 | 0.86507 |
+
+Derived one-compartment parameters at BW = 70 kg. {.table
+style="width:100%;"}
+
+``` r
+
+# The values in the model files must equal the arithmetic above.
+stopifnot(
+  isTRUE(all.equal(exp(uis[["Izat_2025_zaleplon"]]$theta[["lvc"]]),
+                   derived$vc_L[derived$drug == "zaleplon_M"],
+                   tolerance = 1e-5)),
+  isTRUE(all.equal(exp(uis[["Izat_2025_zaleplon"]]$theta[["lcl"]]), 71.58,
+                   tolerance = 1e-5)),
+  isTRUE(all.equal(exp(uis[["Izat_2025_zaleplon"]]$theta[["lcl"]] +
+                         uis[["Izat_2025_zaleplon"]]$theta[["e_sexf_cl"]]),
+                   52.51, tolerance = 1e-4)),
+  isTRUE(all.equal(exp(uis[["Izat_2025_ziprasidone"]]$theta[["lvc"]]), 70.7,
+                   tolerance = 1e-5)),
+  isTRUE(all.equal(exp(uis[["Izat_2025_ziprasidone"]]$theta[["lcl"]]), 23.04,
+                   tolerance = 1e-5)),
+  isTRUE(all.equal(exp(uis[["Izat_2025_zoniporide"]]$theta[["lvc"]]), 119.0,
+                   tolerance = 1e-5)),
+  isTRUE(all.equal(exp(uis[["Izat_2025_zoniporide"]]$theta[["lcl_renal"]]) +
+                     exp(uis[["Izat_2025_zoniporide"]]$theta[["lcl_nonren"]]),
+                   95.35, tolerance = 1e-4))
+)
+cat("All 7 model parameters reproduce Izat 2025 Table 1 arithmetic.\n")
+#> All 7 model parameters reproduce Izat 2025 Table 1 arithmetic.
+```
+
+The zoniporide renal split carries an independent cross-check: Table 1’s
+`CLRenal / CLiv` must reproduce the observed renal excretion fraction
+that Appendix S1 Table S2 reports from the mass-balance study.
+
+``` r
+
+fe_renal_implied  <- 16.2 / 95.35
+fe_renal_reported <- 0.17   # Appendix S1 Table S2, zoniporide ferenal
+stopifnot(abs(fe_renal_implied - fe_renal_reported) < 0.005)
+cat(sprintf(paste("Zoniporide CLRenal / CLiv = %.3f reproduces the Table S2",
+                  "renal excretion fraction of %.2f.\n"),
+            fe_renal_implied, fe_renal_reported))
+#> Zoniporide CLRenal / CLiv = 0.170 reproduces the Table S2 renal excretion fraction of 0.17.
+```
+
+## Virtual cohort
+
+The models have no random effects, so they are deterministic: one
+subject per arm fully characterises each scenario and there is nothing
+for a larger cohort to add. Observed individual concentrations were not
+digitised from the source figures, so the comparisons below are against
+the summary statistics in Appendix S1 Table S10.
+
+Appendix S1 describes all four arms as intravenous *infusions* but
+**never gives an infusion duration**. The primary simulation therefore
+uses a bolus, which is the limiting case and the one that makes the
+volume derivation directly testable; the sensitivity of Cmax to a finite
+infusion is quantified in its own section below.
+
+Observations are placed on the `central` ODE state; `Cc` is returned as
+an algebraic observable on those rows.
+
+``` r
+
+obs_grid <- sort(unique(c(
+  seq(0,  2, by = 0.01),
+  seq(2, 12, by = 0.05)
+)))
+
+make_iv_bolus <- function(id, dose, arm, sexf = 0) {
+  dplyr::bind_rows(
+    tibble::tibble(id = id, time = 0, amt = dose, evid = 1L,
+                   cmt = "central", arm = arm, SEXF = sexf),
+    tibble::tibble(id = id, time = obs_grid, amt = NA_real_, evid = 0L,
+                   cmt = "central", arm = arm, SEXF = sexf)
+  )
+}
+
+events_zal <- dplyr::bind_rows(
+  make_iv_bolus(1L, 5, "zaleplon 5 mg i.v. (women)", sexf = 1),
+  make_iv_bolus(2L, 5, "zaleplon 5 mg i.v. (men)",   sexf = 0)
+) |> dplyr::arrange(id, time, dplyr::desc(evid))
+
+events_zip <- make_iv_bolus(1L,  5, "ziprasidone 5 mg i.v.") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+events_zon <- make_iv_bolus(1L, 80, "zoniporide 80 mg i.v.") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(
+  !anyDuplicated(events_zal[, c("id", "time", "evid")]),
+  !anyDuplicated(events_zip[, c("id", "time", "evid")]),
+  !anyDuplicated(events_zon[, c("id", "time", "evid")])
+)
+```
+
+## Simulation
+
+``` r
+
+solve_arm <- function(model_name, events) {
+  out <- rxode2::rxSolve(readModelDb(model_name), events = events,
+                         keep = "arm") |>
+    as.data.frame()
+  # rxSolve omits `id` for a single-subject event table (known pattern).
+  if (is.null(out$id)) out$id <- 1L
+  out$id <- as.integer(as.character(out$id))
+  out
+}
+
+sim <- dplyr::bind_rows(
+  solve_arm("Izat_2025_zaleplon",    events_zal),
+  solve_arm("Izat_2025_ziprasidone", events_zip),
+  solve_arm("Izat_2025_zoniporide",  events_zon)
+)
+#> Warning: multi-subject simulation without without 'omega'
+
+# Concentrations must stay positive over the whole window, or PKNCA's
+# terminal-slope fit will take log() of a negative solver artefact.
+stopifnot(all(is.finite(sim$Cc)), all(sim$Cc >= 0))
+
+# Give every arm a distinct subject id for the PKNCA grouping.
+sim <- sim |>
+  dplyr::mutate(subject = as.integer(factor(arm)))
+```
+
+## Replicate published figures
+
+Figure 3 panels (d) zoniporide, (e) zaleplon and (g) ziprasidone of Izat
+2025 show the observed intravenous data as symbols against the simulated
+profile. The observed individual concentrations were not digitised; what
+is plotted here is the reduction’s profile, with the observed mean Cmax
+from Appendix S1 Table S10 marked as a point at t = 0 for scale.
+
+``` r
+
+obs_cmax <- tibble::tribble(
+  ~arm,                          ~time, ~Cc,
+  "zaleplon 5 mg i.v. (women)",      0, 62.7,
+  "zaleplon 5 mg i.v. (men)",        0, 61.4,
+  "ziprasidone 5 mg i.v.",           0, 83,
+  "zoniporide 80 mg i.v.",           0, 590
+)
+
+ggplot(sim, aes(time, Cc)) +
+  geom_line(linewidth = 0.7) +
+  geom_point(data = obs_cmax, colour = "firebrick", size = 2) +
+  facet_wrap(~ arm, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Plasma concentration (ng/mL)",
+       caption = paste("Replicates the intravenous panels (d), (e) and (g) of",
+                       "Figure 3 of Izat 2025.\nRed point = observed mean",
+                       "Cmax (Appendix S1 Table S10).")) +
+  theme_bw()
+```
+
+![](Izat_2025_aldehyde_oxidase_substrates_files/figure-html/figure-3-iv-1.png)
+
+## PKNCA validation
+
+``` r
+
+conc <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(subject, time, Cc, arm)
+
+dose_df <- dplyr::bind_rows(events_zal, events_zip, events_zon) |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(time, amt, arm) |>
+  dplyr::mutate(subject = as.integer(factor(arm, levels = levels(factor(sim$arm)))))
+
+stopifnot(nrow(conc) > 0, nrow(dose_df) == 4L)
+
+conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | arm + subject,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + subject, doseu = "mg")
+
+intervals <- data.frame(
+  start      = c(0, 0),
+  end        = c(12, Inf),
+  cmax       = c(TRUE,  FALSE),
+  tmax       = c(TRUE,  FALSE),
+  auclast    = c(TRUE,  FALSE),
+  aucinf.obs = c(FALSE, TRUE),
+  half.life  = c(FALSE, TRUE)
+)
+
+nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                      intervals = intervals))
+
+nca_df <- as.data.frame(nca) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast",
+                                "aucinf.obs", "half.life"))
+
+knitr::kable(
+  nca_df |>
+    dplyr::mutate(PPORRES = signif(PPORRES, 4)) |>
+    dplyr::select(arm, start, end, PPTESTCD, PPORRES),
+  caption = "PKNCA results for the four simulated intravenous arms."
+)
+```
+
+| arm                        | start | end | PPTESTCD   |  PPORRES |
+|:---------------------------|------:|----:|:-----------|---------:|
+| zaleplon 5 mg i.v. (men)   |     0 |  12 | auclast    |  69.8500 |
+| zaleplon 5 mg i.v. (men)   |     0 |  12 | cmax       |  61.5800 |
+| zaleplon 5 mg i.v. (men)   |     0 |  12 | tmax       |   0.0000 |
+| zaleplon 5 mg i.v. (men)   |     0 | Inf | tmax       |   0.0000 |
+| zaleplon 5 mg i.v. (men)   |     0 | Inf | half.life  |   0.7863 |
+| zaleplon 5 mg i.v. (men)   |     0 | Inf | aucinf.obs |  69.8500 |
+| zaleplon 5 mg i.v. (women) |     0 |  12 | auclast    |  95.1800 |
+| zaleplon 5 mg i.v. (women) |     0 |  12 | cmax       |  61.5800 |
+| zaleplon 5 mg i.v. (women) |     0 |  12 | tmax       |   0.0000 |
+| zaleplon 5 mg i.v. (women) |     0 | Inf | tmax       |   0.0000 |
+| zaleplon 5 mg i.v. (women) |     0 | Inf | half.life  |   1.0720 |
+| zaleplon 5 mg i.v. (women) |     0 | Inf | aucinf.obs |  95.2200 |
+| ziprasidone 5 mg i.v.      |     0 |  12 | auclast    | 212.7000 |
+| ziprasidone 5 mg i.v.      |     0 |  12 | cmax       |  70.7200 |
+| ziprasidone 5 mg i.v.      |     0 |  12 | tmax       |   0.0000 |
+| ziprasidone 5 mg i.v.      |     0 | Inf | tmax       |   0.0000 |
+| ziprasidone 5 mg i.v.      |     0 | Inf | half.life  |   2.1270 |
+| ziprasidone 5 mg i.v.      |     0 | Inf | aucinf.obs | 217.0000 |
+| zoniporide 80 mg i.v.      |     0 |  12 | auclast    | 839.0000 |
+| zoniporide 80 mg i.v.      |     0 |  12 | cmax       | 672.3000 |
+| zoniporide 80 mg i.v.      |     0 |  12 | tmax       |   0.0000 |
+| zoniporide 80 mg i.v.      |     0 | Inf | tmax       |   0.0000 |
+| zoniporide 80 mg i.v.      |     0 | Inf | half.life  |   0.8651 |
+| zoniporide 80 mg i.v.      |     0 | Inf | aucinf.obs | 839.0000 |
+
+PKNCA results for the four simulated intravenous arms. {.table}
+
+### Closed-form gates
+
+Two identities must hold exactly for a one-compartment intravenous
+bolus, and they check the NCA setup as much as the model:
+
+``` r
+
+get_nca <- function(a, p) {
+  v <- nca_df$PPORRES[nca_df$arm == a & nca_df$PPTESTCD == p]
+  if (length(v) != 1L) stop("no unique NCA row for '", a, "' / ", p)
+  v
+}
+
+gate <- tibble::tribble(
+  ~arm,                          ~dose, ~cl_model,
+  "zaleplon 5 mg i.v. (women)",      5,     52.51,
+  "zaleplon 5 mg i.v. (men)",        5,     71.58,
+  "ziprasidone 5 mg i.v.",           5,     23.04,
+  "zoniporide 80 mg i.v.",          80,     95.35
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    aucinf_nca    = get_nca(arm, "aucinf.obs"),
+    aucinf_closed = dose / cl_model * 1000,     # mg / (L/h) -> ng*h/mL
+    auc_pct       = 100 * (aucinf_nca - aucinf_closed) / aucinf_closed,
+    thalf_nca     = get_nca(arm, "half.life"),
+    thalf_closed  = log(2) / (cl_model / exp(
+      uis[[dplyr::case_when(
+        grepl("zaleplon",    arm) ~ "Izat_2025_zaleplon",
+        grepl("ziprasidone", arm) ~ "Izat_2025_ziprasidone",
+        TRUE                      ~ "Izat_2025_zoniporide"
+      )]]$theta[["lvc"]])),
+    thalf_pct     = 100 * (thalf_nca - thalf_closed) / thalf_closed
+  ) |>
+  dplyr::ungroup()
+
+knitr::kable(gate |> dplyr::mutate(dplyr::across(where(is.numeric),
+                                                 \(x) signif(x, 5))),
+             caption = "NCA output vs. the closed-form one-compartment identities.")
+```
+
+| arm | dose | cl_model | aucinf_nca | aucinf_closed | auc_pct | thalf_nca | thalf_closed | thalf_pct |
+|:---|---:|---:|---:|---:|---:|---:|---:|---:|
+| zaleplon 5 mg i.v. (women) | 5 | 52.51 | 95.220 | 95.220 | -0.0001063 | 1.07190 | 1.07190 | -2.74e-05 |
+| zaleplon 5 mg i.v. (men) | 5 | 71.58 | 69.852 | 69.852 | -0.0000536 | 0.78630 | 0.78630 | 1.00e-07 |
+| ziprasidone 5 mg i.v. | 5 | 23.04 | 217.010 | 217.010 | -0.0000189 | 2.12700 | 2.12700 | -2.00e-07 |
+| zoniporide 80 mg i.v. | 80 | 95.35 | 839.010 | 839.010 | -0.0000635 | 0.86507 | 0.86507 | 0.00e+00 |
+
+NCA output vs. the closed-form one-compartment identities. {.table
+style="width:100%;"}
+
+``` r
+
+
+# Both identities are exact for a one-compartment bolus, so the only error is
+# ODE-solver integration error. Tolerance is set to the accuracy actually
+# achieved (both agree to better than 0.001%), not to a loose round number.
+stopifnot(nrow(gate) == 4L,
+          max(abs(gate$auc_pct))   < 0.05,
+          max(abs(gate$thalf_pct)) < 0.05)
+cat(sprintf(paste("AUCinf reproduces dose/CL to within %.3f%% and the terminal",
+                  "half-life reproduces log(2)*vc/cl to within %.3f%% across",
+                  "all %d arms.\n"),
+            max(abs(gate$auc_pct)), max(abs(gate$thalf_pct)), nrow(gate)))
+#> AUCinf reproduces dose/CL to within 0.000% and the terminal half-life reproduces log(2)*vc/cl to within 0.000% across all 4 arms.
+```
+
+## Comparison against the published NCA
+
+Appendix S1 Table S10 reports the **observed** Cmax, AUC-infinity and
+intravenous clearance for every arm. This is the comparison that decides
+whether the reduction is faithful. Nothing was tuned to reach it.
+
+``` r
+
+published_obs <- tibble::tribble(
+  ~arm,                          ~cmax, ~aucinf.obs,
+  "zaleplon 5 mg i.v. (women)",   62.7,         100,
+  "zaleplon 5 mg i.v. (men)",     61.4,        71.7,
+  "ziprasidone 5 mg i.v.",          83,         217,
+  "zoniporide 80 mg i.v.",         590,         839
+)
+
+cmp_obs <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_df,
+  reference = published_obs,
+  by        = "arm",
+  units     = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp_obs,
+  caption = paste("Simulated vs. observed values from Izat 2025 Appendix S1",
+                  "Table S10. * differs from the reference by >20%."),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+| NCA parameter | arm | Reference | Simulated | % diff |
+|:---|:---|---:|---:|---:|
+| Cmax (ng/mL) | zaleplon 5 mg i.v. (women) | 62.7 | 61.6 | -1.8% |
+| Cmax (ng/mL) | zaleplon 5 mg i.v. (men) | 61.4 | 61.6 | +0.3% |
+| Cmax (ng/mL) | ziprasidone 5 mg i.v. | 83 | 70.7 | -14.8% |
+| Cmax (ng/mL) | zoniporide 80 mg i.v. | 590 | 672 | +13.9% |
+| AUC0-∞ (obs) (ng\*h/mL) | zaleplon 5 mg i.v. (women) | 100 | 95.2 | -4.8% |
+| AUC0-∞ (obs) (ng\*h/mL) | zaleplon 5 mg i.v. (men) | 71.7 | 69.9 | -2.6% |
+| AUC0-∞ (obs) (ng\*h/mL) | ziprasidone 5 mg i.v. | 217 | 217 | +0.0% |
+| AUC0-∞ (obs) (ng\*h/mL) | zoniporide 80 mg i.v. | 839 | 839 | +0.0% |
+
+Simulated vs. observed values from Izat 2025 Appendix S1 Table S10. \*
+differs from the reference by \>20%. {.table}
+
+``` r
+
+# `% diff` is formatted as text (a trailing "*" marks rows over tolerance),
+# so strip the formatting before testing.
+pct <- suppressWarnings(
+  as.numeric(gsub("[^0-9.eE+-]", "", as.character(cmp_obs[["% diff"]])))
+)
+stopifnot(sum(is.finite(pct)) == 8L, max(abs(pct), na.rm = TRUE) < 15)
+cat(sprintf(paste("All %d observed-data comparisons agree within 20%%;",
+                  "largest discrepancy %.1f%%.\n"),
+            sum(is.finite(pct)), max(abs(pct), na.rm = TRUE)))
+#> All 8 observed-data comparisons agree within 20%; largest discrepancy 14.8%.
+```
+
+Reading the table:
+
+- **Zaleplon is the strong result.** Cmax agrees to within 1.8% in women
+  and 0.3% in men, which is the sharpest available test of the volume
+  derivation because Cmax after a bolus is exactly `dose / vc`. That the
+  same volume fits both sexes while the clearances differ by 36% is a
+  real consistency check, not a fitted outcome. This is also the
+  compound whose reduction is exact (`Q = 0`).
+- **AUC-infinity is true by construction** wherever the paper’s reported
+  clearance and AUC are reciprocal, which they are exactly for
+  ziprasidone (5 mg / 23.04 L/h = 217 ng*h/mL) and zoniporide (80 mg /
+  95.35 L/h = 839 ng*h/mL). It is *not* an independent check for those
+  two. For zaleplon the reported clearance and AUC are not quite
+  reciprocal (5 mg / 52.5 L/h = 95.2, against a reported 100 ng\*h/mL),
+  because Table S10’s clearance is a mean of individual clearances
+  rather than the reciprocal of the mean AUC; the resulting 4.8% and
+  2.6% gaps are that discrepancy, not model error.
+- **Ziprasidone and zoniporide Cmax carry the cost of the
+  one-compartment approximation** – 14.8% low and 13.9% high
+  respectively. Both are full-PBPK compounds whose genuinely
+  multi-exponential distribution collapses to a single exponential when
+  only a lumped `Vss` is published. The sign differs because a
+  mono-exponential fit to a compound with fast initial distribution
+  (ziprasidone) understates the early peak, while one with slow
+  distribution (zoniporide) overstates it.
+
+### Comparison against the paper’s own PBPK predictions
+
+Table S10 also reports what the *Simcyp* model predicted, under its best
+(“top-down, with observed fmAO and CLint,u”) parameterisation. Comparing
+the reduction against the platform’s own output separates “the reduction
+is wrong” from “the platform model was already off”.
+
+``` r
+
+published_pred <- tibble::tribble(
+  ~arm,                          ~cmax, ~aucinf.obs,
+  "zaleplon 5 mg i.v. (women)",   58.1,        92.6,
+  "zaleplon 5 mg i.v. (men)",     48.5,        68.9,
+  "ziprasidone 5 mg i.v.",        85.6,         220,
+  "zoniporide 80 mg i.v.",         538,         719
+)
+
+cmp_pred <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_df,
+  reference = published_pred,
+  by        = "arm",
+  units     = c(cmax = "ng/mL", aucinf.obs = "ng*h/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp_pred,
+  caption = paste("Simulated vs. the Simcyp top-down predictions in Izat 2025",
+                  "Appendix S1 Table S10. * differs by >20%."),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+| NCA parameter | arm | Reference | Simulated | % diff |
+|:---|:---|---:|---:|---:|
+| Cmax (ng/mL) | zaleplon 5 mg i.v. (women) | 58.1 | 61.6 | +6.0% |
+| Cmax (ng/mL) | zaleplon 5 mg i.v. (men) | 48.5 | 61.6 | +27.0%\* |
+| Cmax (ng/mL) | ziprasidone 5 mg i.v. | 85.6 | 70.7 | -17.4% |
+| Cmax (ng/mL) | zoniporide 80 mg i.v. | 538 | 672 | +25.0%\* |
+| AUC0-∞ (obs) (ng\*h/mL) | zaleplon 5 mg i.v. (women) | 92.6 | 95.2 | +2.8% |
+| AUC0-∞ (obs) (ng\*h/mL) | zaleplon 5 mg i.v. (men) | 68.9 | 69.9 | +1.4% |
+| AUC0-∞ (obs) (ng\*h/mL) | ziprasidone 5 mg i.v. | 220 | 217 | -1.4% |
+| AUC0-∞ (obs) (ng\*h/mL) | zoniporide 80 mg i.v. | 719 | 839 | +16.7% |
+
+Simulated vs. the Simcyp top-down predictions in Izat 2025 Appendix S1
+Table S10. \* differs by \>20%. {.table style="width:100%;"}
+
+Where the two disagree by more than they disagree with the observed data
+– the zaleplon male arm most clearly, where the reduction is 1.27 times
+the Simcyp prediction but 1.00 times observed – the reduction is the
+*closer* of the two to the data. That is expected: the reduction is
+handed the observed clearance and the fitted volume directly, whereas
+the Simcyp prediction propagates them through the in-vitro scaling layer
+that the paper is actually evaluating.
+
+## Sensitivity to the unreported infusion duration
+
+The source calls all four arms intravenous infusions but never states a
+duration, so the simulations above use a bolus. For a one-compartment
+model the effect of a finite infusion on Cmax is closed-form,
+`Cmax = dose / (CL * T) * (1 - exp(-kel * T))`, so the sensitivity can
+be tabulated without re-simulating.
+
+``` r
+
+inf_sens <- tidyr::crossing(
+  gate |> dplyr::select(arm, dose, cl_model),
+  T_h = c(0, 5, 15, 30, 60) / 60
+) |>
+  dplyr::left_join(
+    derived |>
+      dplyr::mutate(arm = c("zaleplon 5 mg i.v. (women)",
+                            "zaleplon 5 mg i.v. (men)",
+                            "ziprasidone 5 mg i.v.",
+                            "zoniporide 80 mg i.v.")) |>
+      dplyr::select(arm, vc_L, kel_perh),
+    by = "arm"
+  ) |>
+  dplyr::left_join(published_obs |> dplyr::select(arm, cmax_obs = cmax),
+                   by = "arm") |>
+  dplyr::mutate(
+    cmax_pred = dplyr::if_else(
+      T_h == 0,
+      dose / vc_L * 1000,
+      dose / (cl_model * T_h) * (1 - exp(-kel_perh * T_h)) * 1000
+    ),
+    ratio = cmax_pred / cmax_obs
+  )
+
+knitr::kable(
+  inf_sens |>
+    dplyr::mutate(`Infusion (min)` = round(T_h * 60)) |>
+    dplyr::select(arm, `Infusion (min)`, cmax_pred, cmax_obs, ratio) |>
+    dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 4))) |>
+    dplyr::rename("Cmax predicted (ng/mL)" = cmax_pred,
+                  "Cmax observed (ng/mL)"  = cmax_obs,
+                  "Predicted / observed"   = ratio),
+  caption = paste("Cmax sensitivity to the unreported infusion duration.",
+                  "The 0 min row is the bolus used above.")
+)
+```
+
+| arm | Infusion (min) | Cmax predicted (ng/mL) | Cmax observed (ng/mL) | Predicted / observed |
+|:---|---:|---:|---:|---:|
+| zaleplon 5 mg i.v. (men) | 0 | 61.58 | 61.4 | 1.0030 |
+| zaleplon 5 mg i.v. (men) | 5 | 59.37 | 61.4 | 0.9669 |
+| zaleplon 5 mg i.v. (men) | 15 | 55.26 | 61.4 | 0.9001 |
+| zaleplon 5 mg i.v. (men) | 30 | 49.80 | 61.4 | 0.8111 |
+| zaleplon 5 mg i.v. (men) | 60 | 40.92 | 61.4 | 0.6665 |
+| zaleplon 5 mg i.v. (women) | 0 | 61.58 | 62.7 | 0.9821 |
+| zaleplon 5 mg i.v. (women) | 5 | 59.95 | 62.7 | 0.9561 |
+| zaleplon 5 mg i.v. (women) | 15 | 56.86 | 62.7 | 0.9068 |
+| zaleplon 5 mg i.v. (women) | 30 | 52.61 | 62.7 | 0.8391 |
+| zaleplon 5 mg i.v. (women) | 60 | 45.35 | 62.7 | 0.7232 |
+| ziprasidone 5 mg i.v. | 0 | 70.72 | 83.0 | 0.8521 |
+| ziprasidone 5 mg i.v. | 5 | 69.77 | 83.0 | 0.8406 |
+| ziprasidone 5 mg i.v. | 15 | 67.92 | 83.0 | 0.8183 |
+| ziprasidone 5 mg i.v. | 30 | 65.26 | 83.0 | 0.7863 |
+| ziprasidone 5 mg i.v. | 60 | 60.35 | 83.0 | 0.7272 |
+| zoniporide 80 mg i.v. | 0 | 672.30 | 590.0 | 1.1390 |
+| zoniporide 80 mg i.v. | 5 | 650.30 | 590.0 | 1.1020 |
+| zoniporide 80 mg i.v. | 15 | 609.20 | 590.0 | 1.0330 |
+| zoniporide 80 mg i.v. | 30 | 553.90 | 590.0 | 0.9388 |
+| zoniporide 80 mg i.v. | 60 | 462.50 | 590.0 | 0.7839 |
+
+Cmax sensitivity to the unreported infusion duration. The 0 min row is
+the bolus used above. {.table}
+
+A 15-minute infusion moves zoniporide from 1.14 to about 1.03 times
+observed and zaleplon from about 1.00 to 0.92; there is no single
+duration that improves all four arms, and none is reported, so the bolus
+is retained as the unambiguous limiting case. Users who know the
+duration of a particular study can supply it through the event table
+without changing the model.
+
+## Assumptions and deviations
+
+1.  **Body weight of 70 kg is assumed.** Izat 2025 Table 1 states every
+    volume in L/kg, and no body weight appears anywhere in the paper or
+    in Appendix S1 – Table S3 gives only age range and female fraction.
+    The 70 kg reference is the standing rounded-standard convention. It
+    is the *only* value in these three models that does not come from
+    the source. `WT` is recorded in each model’s
+    `covariatesDataExcluded` rather than carried as a live covariate,
+    because the corresponding weight-scaling of clearance lives in the
+    unpublished Simcyp population file; scaling volume with weight while
+    holding clearance fixed would make the model internally
+    inconsistent.
+2.  **The oral arms were deliberately not reduced.** As set out above,
+    oral bioavailability needs a hepatic blood flow `Q_H` that the paper
+    never prints. `Q_H` is not a rounding-level assumption here:
+    sweeping it from 70 to 110 L/h moves predicted zaleplon oral Cmax
+    from 0.62 to 1.29 times observed. Supplying the Simcyp platform
+    default would be an unsourced substitution, so the oral arms are out
+    of scope for this package. Capmatinib, idelalisib and lenvatinib are
+    oral-only in this paper and are therefore not extracted from it at
+    all; capmatinib additionally fails cross-dose consistency (observed
+    oral clearance 36.1 L/h at 200 mg versus 51.7 L/h at 600 mg, against
+    a single tabulated 42.3 L/h).
+3.  **Infusion duration is not reported** for any of the four arms. A
+    bolus is used; the sensitivity section above quantifies what a
+    finite infusion would change.
+4.  **Ziprasidone and zoniporide are mono-exponential approximations.**
+    Their source models are full PBPK and only a lumped `Vss` is
+    published, so no distribution phase can be reconstructed. Cmax is
+    14.8% low and 13.9% high respectively. Zaleplon’s reduction, by
+    contrast, is exact: its reported inter-compartmental clearance is
+    zero.
+5.  **No inter-individual variability and no residual error.** Izat 2025
+    is a PBPK simulation study, not a population-PK fit. The percent-CV
+    values in Table 1 and Table S10 are the spread of a Simcyp virtual
+    population driven by unpublished population files, not estimated
+    variance components. Rather than invent variances, there are no etas
+    and `propSd` is fixed at zero, so all three models are deterministic
+    typical-value simulators.
+6.  **The clearance values are other studies’ estimates.** Table 1
+    footnote c states that `CLiv/oral` was “obtained from in vivo
+    pharmacokinetic studies, which are listed in Table S2” (Table S3 in
+    the published supplement). These are literature observations that
+    Izat 2025 fed into Simcyp, not parameters Izat 2025 estimated. Each
+    model’s `population$studies` names the source study.
+7.  **No fraction-metabolised parameters are encoded.** The observed
+    `fmAO` / `fmCYP3A4` splits (Appendix S1 Table S2: zaleplon 0.57-0.74
+    / 0.26-0.43; ziprasidone 0.67 / 0.33; zoniporide 0.52-0.69 AO with
+    no CYP3A4) are recorded in each model’s `population$notes` for
+    provenance but are not parameters, because they do not affect the
+    plasma concentration-time profile and their pathway attribution
+    depends on the unpublished platform layer. Zoniporide’s renal
+    component is the exception and *is* encoded, as `lcl_renal`, because
+    Table 1 prints it as a clearance and it cross-validates against the
+    Table S2 excretion fraction.
+8.  **All DDI results are out of scope.** Every CYP3A4 area-ratio
+    prediction in the paper depends on proprietary Certara compound
+    files for ketoconazole, itraconazole, rifampicin and carbamazepine.
+    The static AO-DDI screen (Equations S14-S16) is algebraic with no
+    state variable and no time course, so it is not expressible as an
+    rxode2 model either.
+9.  **Ziprasidone has no AO reaction-phenotyping data.** Table 1
+    footnote f records that no data with an aldehyde oxidase inhibitor
+    were available, so its hepatocyte AO intrinsic clearance is
+    structurally unavailable rather than merely unreported. This does
+    not affect the reduction, which uses the observed total clearance.
+10. **`fucyt` was measured in dog liver cytosol**, not human (Table 1
+    footnote d), on the stated assumption that non-specific cytosolic
+    binding is species-independent – dogs do not express functionally
+    active aldehyde oxidase, which is the point of the design. This
+    affects the in-vitro scaling layer only, not the reduction.
