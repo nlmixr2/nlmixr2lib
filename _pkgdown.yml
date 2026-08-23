@@ -120,6 +120,8 @@ navbar:
         href: articles/Delattre_2010_amikacin.html
       - text: "Amikacin (Li 2025)"
         href: articles/Li_2025_amikacin.html
+      - text: "Amikacin (Matcha 2025)"
+        href: articles/Matcha_2025_amikacin.html
       - text: "Amikacin (Tod 1998)"
         href: articles/Tod_1998_amikacin.html
       - text: "Aminocaproic acid (Stricker 2015)"
@@ -4568,6 +4570,7 @@ articles:
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
   - articles/Masters_2022_avelumab
+  - articles/Matcha_2025_amikacin
   - articles/Matsumoto_2005_TF_505
   - articles/Mauro_2025_nilotinib
   - articles/Mazzocco_2015_temozolomide
