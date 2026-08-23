@@ -33,14 +33,15 @@ Language: en-US
 Suggests:
     covr,
     dplyr,
+    ggplot2,
     knitr,
+    mvtnorm,
     PKNCA,
     rmarkdown,
-    testthat (>= 3.0.0),
-    tidyr,
-    ggplot2,
     scales,
+    testthat (>= 3.0.0),
     tibble,
+    tidyr,
     withr,
     yaml
 Config/testthat/edition: 3

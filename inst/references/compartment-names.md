@@ -62,6 +62,15 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Source aliases:** none.
 - **Example models:** universal in popPK extractions.
 
+### presystemic (**canonical pre-systemic first-pass compartment**)
+- **Type:** compartment
+- **Role:** Pre-systemic (gut-wall / portal) compartment for oral models that resolve first-pass metabolism as an explicit structural step rather than folding it into bioavailability. Absorbed drug lands here first and then drains by two or more competing first-order routes -- typically intact parent onward to the parent's `central` compartment, and pre-systemically formed metabolite directly into the metabolite's `central_<metab>` compartment -- so the pre-systemic and systemic metabolite-formation pathways are separately identifiable. Every absorption arm (zero-order, first-order, transit) delivers into this state rather than into `central`.
+- **Source aliases:**
+  - `PSYS` -- Monolix compartment name in `Koh_2025_aspirin.R` (Koh 2025 Appendix 1).
+  - `GUT` -- the authors' own earlier, commented-out name for the same state in the Koh 2025 Monolix source.
+- **Example models:** `Koh_2025_aspirin.R` (dual zero-order + first-order absorption into `presystemic`, which drains via `k_presystemic_central` to the ASA central compartment and via `k_presystemic_central_sa` to the salicylic-acid central compartment).
+- **Notes:** Deliberately distinct from the registered `gut`, which denotes a perfused PBPK organ compartment with its own volume and blood flow; `presystemic` is a semi-mechanistic pre-systemic pool with no physiologic volume and is not interchangeable with it. Also distinct from `depot`: a depot holds drug that has not yet been absorbed, whereas `presystemic` holds absorbed drug that has not yet reached the systemic circulation. Registered 2026-08-22 (sidecar `oare_PMC12433208` request-001 q1, option A).
+
 ### peripheral1 (**canonical first peripheral compartment**)
 - **Type:** compartment
 - **Role:** First peripheral / tissue distribution compartment in 2- and 3-compartment models. Connected to central via inter-compartmental clearance `q` (and volume `vp`).
@@ -1444,6 +1453,23 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Example models:** `Jung_2024_clopidogrel.R` (`d/dt(pru)`, `pru(0) <- kin / kout`, observed as `PRU <- pru`).
 - **Notes:** Registered 2026-08-06 alongside `PRU`. Exactly parallel to the registered `ANC` / `anc` pair: the uppercase form is the biomarker observable, the lowercase form is the state.
 
+### TXB2 (**canonical serum thromboxane B2 concentration**)
+- **Type:** compartment
+- **Role:** Serum thromboxane B2 concentration, the standard ex-vivo readout of platelet cyclooxygenase-1 (COX-1) activity and therefore the pharmacodynamic endpoint for aspirin and other irreversible COX-1 inhibitors. TXB2 is the stable hydrolysis product of thromboxane A2 and is measured in serum after whole-blood clotting (ELISA), so it reports the maximal thromboxane-generating capacity of the sampled platelets rather than a circulating concentration. Carried as a turnover (indirect-response) pool whose zero-order production is inhibited by drug; the uppercase form is the observation output.
+- **Source aliases:**
+  - `TXB2` -- universal in the antiplatelet literature.
+  - `thromboxane B2` -- expanded form used in figure axes and table headers.
+  - `R` -- the generic turnover-state symbol used in the Koh 2025 Monolix source and its printed equation.
+- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; `d/dt(txb2) = kin * (1 - Imax * Cc^hill / (Cc^hill + ic50^hill)) - kout * txb2`, `txb2(0) = rbase = 26.4 ug/L`, observed as `TXB2 <- txb2`).
+- **Notes:** Registered 2026-08-22 (sidecar `oare_PMC12433208` request-001 q2, option A). `txb2` is the canonical LOWERCASE sibling for the ODE state -- the same split already registered for `PRU` / `pru` and `ANC` / `anc`, and required because `checkModelConventions()` enforces lowercase ODE-state names while the biomarker observables are uppercase. Registered as a general canonical rather than a paper-specific state because serum TXB2 is the shared COX-1 target-engagement endpoint across the antiplatelet class. Distinct from `PRU`, which is platelet REACTIVITY on a P2Y12-pathway assay: the two are different pathways (COX-1 vs P2Y12), different assays, and not convertible.
+
+### txb2 (**canonical lowercase thromboxane B2 ODE state**)
+- **Type:** compartment
+- **Role:** Lowercase sibling of `TXB2`, used for the thromboxane B2 turnover ODE state itself so the state name follows the all-lowercase ODE-state convention while the observation output keeps the uppercase clinical acronym. See the `TXB2` entry above for the quantity and the assay.
+- **Source aliases:** none.
+- **Example models:** `Koh_2025_aspirin.R` (`d/dt(txb2)`, `txb2(0) <- rbase`, observed as `TXB2 <- txb2`).
+- **Notes:** Registered 2026-08-22 alongside `TXB2`, exactly parallel to the `PRU` / `pru` and `ANC` / `anc` pairs.
+
 ### WBC (**canonical white blood cell count**)
 - **Type:** compartment
 - **Role:** White blood cell count PD output.
@@ -1812,6 +1838,14 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Role:** Bare spleen organ compartment.
 - **Source aliases:** none.
 - **Example models:** `Zhang_2011_nutlin3a.R`.
+
+### sstr (**canonical lumped somatostatin-receptor-expressing organ group**)
+- **Type:** compartment
+- **Role:** Single lumped compartment aggregating the organs that express the somatostatin receptor (SSTR) but are not modelled individually -- in the founding example the lungs, pancreas, stomach, thyroid and liver, pooled into one state with a combined volume of 4 L and a combined maximum binding capacity of 2.4 nmol/L. Used by lumped semi-physiological radioligand / theranostics models, where the named organs of interest (spleen, kidney, tumor) are carried explicitly and the remaining receptor-positive tissue is aggregated so that receptor-mediated uptake is still mass-balanced without a full whole-body PBPK structure. Distinct from the canonical `other` "rest of body" compartment, which in the same models is a non-receptor-expressing sink with no binding capacity.
+- **Source aliases:**
+  - "other SSTR-expressing organs" / "SSTR-expressing compartment" / compartment 5 (Siebinga 2023 EJNMMI Phys, Figure 2 and Methods).
+- **Example models:** `Siebinga_2023_ga68hadotatate.R`, `Siebinga_2023_lu177hadotatate.R`.
+- **Notes:** Named for the receptor rather than for any one organ, because the membership of the lumped group is study-specific while the mechanistic role (aggregate receptor-positive tissue competing for ligand) is not. Future radioligand families should use the analogous lowercase receptor token for their own lumped receptor-organ compartment -- `psma` for prostate-specific membrane antigen, `fap` for fibroblast activation protein, and so on -- rather than reusing `sstr` for a different receptor. Record the specific organs pooled into the compartment in the model file's `description`, since that membership is not recoverable from the name. Ratified canonically on 2026-07-31 (sidecar request 001 of task `oare_PMC10449733`, question q3 option A) alongside the Siebinga 2023 HA-DOTATATE extraction.
 
 ### intestine (**canonical bare intestine compartment**)
 - **Type:** compartment
@@ -3269,6 +3303,22 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** mAb popPK extractions tracking NAb.
 
+### alb (**canonical endogenous serum albumin species suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Endogenous serum albumin, carried as a co-modelled species alongside a dosed therapeutic protein in multi-protein PBPK / QSP models. Albumin and IgG share the antibody catabolic machinery (fluid-phase pinocytosis into the endosome, FcRn-mediated salvage, lysosomal degradation), so mechanistic antibody PBPK models that use albumin as a biomarker of protein turnover must integrate albumin through the *same* whole-body compartment set as the drug. The suffix marks those albumin states: `plasma_alb`, `lnode_alb`, `urine_alb`, `vp_<organ>_alb`, `is_<organ>_alb`, `eu_<organ>_alb`, `eb_<organ>_alb`, and the albumin-site free-FcRn pool `fr_<organ>_alb`. Also valid on parameters that are albumin-specific rather than drug-specific (`lfcrn_alb`, `lcss_alb`).
+- **Source aliases:**
+  - `ALB` -- Proctor 2026 Appendix S3 species prefix (`ALB_LU_V`, `ALB_PL_V`, ...).
+- **Example models:** `Proctor_2026_durvalumab_pbpk.R`.
+- **Notes:** Follows the `np` precedent immediately below: a second species travelling through the same anatomical compartment set as the parent, with the unsuffixed state holding the dosed drug. Deliberately distinct from `uacr` (urine albumin-to-creatinine ratio, a renal damage biomarker) and from `albumin` used as an observation variable in g/L; this token names the ODE species, not the reported output. Do NOT use for albumin-*binding* or albumin-*conjugated* drug forms -- an albumin-conjugated API is a conjugation state and belongs under `np` or a named-payload suffix.
+
+### igg (**canonical endogenous IgG species suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Endogenous immunoglobulin G, carried as a co-modelled species alongside a dosed therapeutic antibody. Endogenous IgG *competes with the dosed antibody for the same FcRn binding site*, so a mechanistic antibody PBPK model cannot get the drug's non-linear FcRn-salvage clearance right without integrating the endogenous pool through the same compartment set. The suffix marks those states: `plasma_igg`, `lnode_igg`, `urine_igg`, `vp_<organ>_igg`, `is_<organ>_igg`, `eu_<organ>_igg`, `eb_<organ>_igg`, and the IgG-site free-FcRn pool `fr_<organ>_igg`; also valid on IgG-specific parameters (`lfcrn_igg`, `lcss_igg`).
+- **Source aliases:**
+  - `ENIGG` -- Proctor 2026 Appendix S3 species prefix for endogenous IgG (`ENIGG_LU_V`, ...). The paper's `EXIGG` (exogenous IgG) prefix maps to the UNSUFFIXED canonical states, per the parent-drug-is-unsuffixed rule.
+- **Example models:** `Proctor_2026_durvalumab_pbpk.R`.
+- **Notes:** Registered as a metabolite-suffix alongside the pre-existing `igg` **compartment** entry (the Kim 2006 single-pool endogenous IgG turnover state) -- the two entries describe the same analyte in different structural roles, exactly as `plasma` is registered both as an mPBPK compartment and as a residual-plasma sub-compartment suffix. Distinct from `total_igg` (a serum-IgG PD *output*) and from `ige` / `tab` / `nab`: `tab` is total *therapeutic* antibody in an ADC model, whereas `igg` here is the patient's own antibody pool.
+
 ### np (**canonical nanoparticle-conjugated species suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Nanoparticle- / carrier-conjugated form of a drug in dual-species nanoparticle biodistribution models, where the bare canonical compartment name holds the released (free) drug and the `_np` suffix holds the still-conjugated drug travelling with its carrier.
@@ -3374,6 +3424,16 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Joerger_2006_methotrexate.R` (3-cmt MTX parent + 2-cmt 7-OH-MTX metabolite, joint NONMEM ADVAN5 fit; metabolic fraction fixed at 10 percent per Joerger 2006 Results page 75).
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `7dm` precedent.
+
+### sa (**canonical salicylic-acid metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Salicylic acid (SA), the deacetylation (hydrolysis) metabolite of acetylsalicylic acid. Formed both pre-systemically in the gut wall and systemically from circulating aspirin, and it is the dominant circulating salicylate species after an oral aspirin dose. Gives `central_sa` / `peripheral1_sa` compartments, `lcl_sa` / `lvc_sa` / `lvp_sa` / `lq_sa` parameters, the `Cc_sa` observation and the `propSd_sa` residual SD.
+- **Source aliases:**
+  - `SA` -- universal abbreviation in the aspirin literature.
+  - `salicylate` -- expanded form used in assay and table headers.
+  - `CSA` / `PSA` -- the Monolix central / peripheral compartment names in `Koh_2025_aspirin.R` (Koh 2025 Appendix 1).
+- **Example models:** `Koh_2025_aspirin.R` (doi:10.2147/DDDT.S533428; two-compartment SA disposition fed both by pre-systemic hydrolysis from `presystemic` and by systemic conversion `kmet` from the ASA `central` compartment).
+- **Notes:** Registered 2026-08-22 (sidecar `oare_PMC12433208` request-001 q3, option A). A two-character token is in style for this register (`gx`, `h4`, `m1`, `m2`, `bw`) and `sa` is the standard abbreviation for salicylic acid in the aspirin literature; the longer `sal` / `salicylate` alternatives were considered and rejected as unnecessary. Do not confuse with the `PSA` alias above, which is this paper's Monolix name for the SA PERIPHERAL compartment and has nothing to do with prostate-specific antigen.
 
 ### m1 (**canonical paper-named M1 metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -3695,7 +3755,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `pyrazol metabolite` -- the name used throughout Cendros 2025 and Cendros 2022; the source papers never give the metabolite a chemical or code name, so the token is taken from the papers' own term.
   - `M` / `M2` / `MP` -- the `CLM`, `VM`, `VM2`, `VMP`, `CLMP`, `CLM2` parameter-symbol stems in Cendros 2025 Table 1.
 - **Example models:** `Cendros_2025_enflicoxib.R` (founding example; doi:10.3389/fvets.2025.1645857).
-- **Notes:** The token is the source papers' own descriptor rather than a chemical name because none is published for this metabolite. `pyrazol` (not `pyrazole`) matches the spelling used consistently in Cendros 2025. Deliberately scoped in this register to enflicoxib's metabolite even though "pyrazol" names a generic heterocycle: a future model whose analyte is a *different* drug's pyrazole metabolite must register its own drug-scoped token (e.g. `pyrazol_<drug>`) rather than reuse this one, following the same collision-avoidance reasoning that kept `dexrazoxane` spelled out in full rather than abbreviated to `dex`.
+- **Notes:** The token is the source papers' own descriptor rather than a chemical name because none is published for this metabolite. `pyrazol` (not `pyrazole`) matches the spelling used consistently in Cendros 2025. Deliberately scoped in this register to enflicoxib's metabolite even though "pyrazol" names a generic heterocycle. Ratified by operator sidecar on 2026-08-20 with the Cendros 2025 enflicoxib extraction, which retained the bare token in preference to the drug-scoped alternatives `pyrazol_enf` and `enflicoxib_pyrazol`: the metabolite-suffix convention already accepts short, chemically-descriptive tokens that are disambiguated only by model context, as the positional-hydroxy family (`3oh`, `5oh`, `7oh`, `8oh`, `9oh`) does -- `9oh` is used even though that metabolite has a conventional drug name of its own -- and the register likewise honours a source's own term elsewhere (`MIC` is documented as "the near-universal paper symbol"). If a second drug ever needs a pyrazol-metabolite suffix, that is the point at which both tokens are disambiguated, per the canonical-clash policy; it is not a reason to pre-emptively scope this one. The adjacency with `pyra` (pyrimethamine, an unrelated drug) was weighed and accepted for the same reason.
 
 ### oxy (**canonical oxypurinol suffix**)
 - **Type:** metabolite-suffix
@@ -4179,15 +4239,33 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 
 ---
 
+## Transporter-DDI perpetrator drug suffixes
+
+Perpetrator (inhibitor) drug suffixes used when an endogenous-biomarker or
+victim-drug model carries the perpetrator's own PK as coupled ODE states in the
+same file, rather than importing its concentration as a time-varying covariate.
+Each suffix drives `central_<drug>` / `depot_<drug>` compartments, the matching
+`lcl_<drug>` / `lvc_<drug>` / `lka_<drug>` PK parameters, the `Cc_<drug>`
+concentration output, and the `propSd_<drug>` / `addSd_<drug>` residuals.
+
+### prob (**canonical probenecid perpetrator drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Probenecid (organic-anion transport inhibitor) perpetrator drug suffix, used when a model carries probenecid's own one-compartment first-order-absorption PK as coupled states in order to drive a concentration-dependent OAT1/OAT3 inhibition term on a co-modelled substrate or endogenous biomarker.
+- **Source aliases:**
+  - `PROB` -- the near-universal paper symbol, used in `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (Table 2, Figure 2).
+- **Example models:** `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (doi:10.1002/cpt.70023; `depot_prob` / `central_prob` drive `cu_prob` into the competitive OAT3 term on GCDCA-S renal clearance).
+- **Notes:** Distinct from the covariate canonicals `CONMED_PROBENECID` (binary co-administration indicator) and `CP_PRB_MGL` (probenecid plasma concentration supplied directly as a time-varying column). Use `prob` only when the probenecid PK is carried as ODE states inside the model file; when the concentration is supplied externally, use `CP_PRB_MGL` and register no compartment. Probenecid MW = 285.34 g/mol, so a 500 mg oral dose is 1752 umol.
+
 ## TB-treatment drug suffixes (combination antibiotic)
 
 TB-treatment drug suffixes used in combination-antibiotic `central_<drug>` / `depot_<drug>` / `peripheral1_<drug>` PK subsystems. Each suffix is the canonical drug INN lowercase abbreviation.
 
 ### rif (**canonical rifampicin drug suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Rifampicin drug suffix in combination TB models.
-- **Source aliases:** none.
-- **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`, `Clewe_2018_TB_MTP_GPDI_in_vitro.R`.
+- **Role:** Rifampicin drug suffix, used both in combination TB models and as a perpetrator suffix when a transporter-DDI model carries rifampicin's own PK as coupled ODE states to drive an OATP1B inhibition term (see the "Transporter-DDI perpetrator drug suffixes" section above).
+- **Source aliases:**
+  - `RIF` -- used in `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (Table 2, Figure 2).
+- **Example models:** `Chen_2017_TB_MTP_GPDI_mouse.R`, `Clewe_2018_TB_MTP_GPDI_in_vitro.R`, `Ujihira_2025_glycochenodeoxycholicAcidSulfate.R` (perpetrator use; `central_rif` with zero-order absorption drives `cu_rif` into the competitive OATP1B3 term on GCDCA-S hepatobiliary clearance).
 
 ### inh (**canonical isoniazid drug suffix**)
 - **Type:** metabolite-suffix
@@ -4302,7 +4380,7 @@ Antibiotic combination-PK drug suffixes (linezolid, vancomycin, meropenem long f
 ### cloca (**canonical clopidogrel carboxylic acid suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Clopidogrel carboxylic acid (CLO-CA), the pharmacologically inactive hydrolysis product formed from clopidogrel by carboxylesterase-1 (CES1). It is the major circulating clopidogrel species -- roughly 85-90% of the absorbed dose is routed to it, and plasma concentrations are about 2000-fold higher than those of the parent, so it is assayed in ug/mL where clopidogrel is assayed in ng/mL. Distinct from `h4`, the active thiol metabolite of the same parent drug, which sits on the competing CYP-mediated oxidation branch; a joint model can carry both suffixes.
-- **Source aliases:** `CLO-CA`, `SR 26334` (the Sanofi development code for the carboxylic acid metabolite), `carbo` (Jung 2024's abbreviation, used in `fm_carbo` / `sigma_carbo`), `m2` (Jung 2024 Table 2 parameter subscripts `V_m2`, `V_p2`, `CL_m2`, `Q_m2`, a positional index rather than an analyte name).
+- **Source aliases:** `CLO-CA`, `SR 26334` (the Sanofi development code for the carboxylic acid metabolite), `carbo` (Jung 2024's abbreviation, used in `fmcarbo` / `sigma_carbo`), `m2` (Jung 2024 Table 2 parameter subscripts `V_m2`, `V_p2`, `CL_m2`, `Q_m2`, a positional index rather than an analyte name).
 - **Example models:** `Pejcic_2024_clopidogrel.R` (`central_cloca`, `peripheral1_cloca`, `Cc_cloca`, `lcl_cloca`, `lvc_cloca`, `lq_cloca`, `lvp_cloca`; doi:10.3390/pharmaceutics16050685), `Jung_2024_clopidogrel.R` (same suffix set, carried alongside `central_h4` in a joint parent + both-metabolites model; doi:10.1002/psp4.13053).
 - **Notes:** The generic `acid` suffix is unavailable for this analyte -- it is already the canonical simvastatin acid suffix -- and a bare carboxylate abbreviation is a poor canonical anyway (the `oc` -> `oselcarb` rename records exactly that collision pressure), so the drug-prefixed `cloca` form is used.
 

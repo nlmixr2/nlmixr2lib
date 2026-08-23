@@ -67,7 +67,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkDeprecatedNames(ui, conv),
     .checkFixedLabelAgreement(ui, conv),
     .checkTimeVaryingClearanceNames(ui, conv),
-    .checkCompartmentData(ui, conv)
+    .checkCompartmentData(ui, conv),
+    .checkFmFamily(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -1472,6 +1473,108 @@ checkModelConventions <- function(model, verbose = TRUE) {
               "or reword the label if it was in fact estimated.")
       ))
     }
+  }
+  issues
+}
+
+# Fraction-metabolised pathway family (`fm_<pathway>`) -----------------------
+#
+# `fm` has been registered as a canonical for a long time, but the `<pathway>`
+# suffixes were not, so nothing consumed the fact that two models had spelled
+# the same pathway differently. `fm_other` and `fm_others` both shipped, as did
+# `fm_h4` and `fm_H4`; the drift was found by hand in 2026-08, not by the
+# build. Registering the family in parameter-names.md is what makes this check
+# enumerating: a pathway is legal because it appears in that heading, so a new
+# spelling fails here until someone adds it deliberately.
+#
+# Scope is every name BOUND inside `ini()` or `model()` -- parameters, not
+# prose. That distinction is load-bearing, and it is why this reads the parsed
+# `ui` rather than grepping the source:
+#   * Source-paper notation quoted in a `label()` string is prose.
+#     `Svensson_2013_bedaquiline.R` labels its apparent metabolite parameters
+#     "...CL_M2/(F*fm_M2)...", matching the `CL_M2` / `V_M2` symbols beside it.
+#   * `fm` also abbreviates FAT MASS, the canonical `FM` covariate.
+#     `Robarge_2017_efavirenz.R` carries `fm_range` in its `population`
+#     metadata next to `ffm_range`.
+# Both are correct as written; neither is a fraction metabolised, and neither
+# is bound in `ini()` or `model()`, so both stay out of scope by construction
+# rather than by an exception list that would rot.
+.fmFamilyPattern <- "^fm_"
+
+# Symbols on the left of an assignment anywhere in one expression. Recursive
+# because rxode2 permits `if (...) { ... }` inside model(), and a name bound in
+# a branch is bound just the same -- a flat scan of the top-level statements
+# would miss it silently, which is the failure mode this whole check exists to
+# remove.
+.assignedNamesIn <- function(e, acc = character(0)) {
+  if (!is.call(e)) return(acc)
+  op <- tryCatch(as.character(e[[1]]), error = function(e) character(0))
+  if (length(op) && op[[1]] %in% c("<-", "=") && length(e) >= 2L &&
+      is.name(e[[2]])) {
+    acc <- c(acc, as.character(e[[2]]))
+  }
+  for (i in seq_along(e)) {
+    part <- tryCatch(e[[i]], error = function(e) NULL)
+    if (is.call(part)) acc <- .assignedNamesIn(part, acc)
+  }
+  acc
+}
+
+# Assignment targets in the model block, as symbols rather than text. Sibling
+# of `.modelBlockLines()`, which deparses; going through `ui$lstExpr` keeps
+# comments and string literals out without having to strip them by regex.
+.modelBlockAssignedNames <- function(ui) {
+  exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
+  if (!length(exprs)) return(character(0))
+  out <- character(0)
+  for (e in exprs) out <- .assignedNamesIn(e, out)
+  unique(out)
+}
+
+# Nearest registered member, for the two drifts this check exists to stop:
+# a case difference (`fm_H4`) and a stray plural (`fm_others`).
+.fmFamilyNearMiss <- function(nm, registered) {
+  if (!length(registered)) return(NA_character_)
+  hit <- registered[tolower(registered) == tolower(nm)]
+  if (length(hit)) return(hit[[1]])
+  hit <- registered[tolower(registered) == sub("s$", "", tolower(nm))]
+  if (length(hit)) return(hit[[1]])
+  hit <- registered[paste0(tolower(registered), "s") == tolower(nm)]
+  if (length(hit)) return(hit[[1]])
+  NA_character_
+}
+
+.checkFmFamily <- function(ui, conv) {
+  issues <- .emptyIssues()
+  registered <- grep(.fmFamilyPattern, conv$paperNamedParams, value = TRUE)
+  bound <- character(0)
+  ini <- ui$iniDf
+  if (!is.null(ini) && nrow(ini) > 0) bound <- c(bound, ini$name)
+  bound <- unique(c(bound, .modelBlockAssignedNames(ui)))
+  unregistered <- setdiff(grep(.fmFamilyPattern, bound, value = TRUE), registered)
+  for (nm in unregistered) {
+    near <- .fmFamilyNearMiss(nm, registered)
+    suggestion <-
+      if (is.na(near)) {
+        paste("If this is a genuinely new elimination pathway, add it to the",
+              "`### fm_...` family heading in inst/references/parameter-names.md;",
+              "`<pathway>` must be lowercase and must match the enzyme or the",
+              "canonical metabolite suffix it names. If the parameter is not a",
+              "fraction metabolised, rename it so it does not claim the `fm_`",
+              "prefix.")
+      } else {
+        sprintf(paste("Rename to '%s', the registered spelling. If this is",
+                      "instead a distinct pathway that merely looks similar,",
+                      "add it to the `### fm_...` family heading in",
+                      "inst/references/parameter-names.md."), near)
+      }
+    issues <- rbind(issues, .issue(
+      "fm_family", "error", nm,
+      sprintf(paste("'%s' is not a registered `fm_<pathway>` fraction-metabolised",
+                    "parameter (registered: %s)."),
+              nm, paste(registered, collapse = ", ")),
+      suggestion
+    ))
   }
   issues
 }
