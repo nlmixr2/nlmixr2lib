@@ -920,6 +920,8 @@ navbar:
         href: articles/Diep_2026_donidalorsen.html
       - text: "Donidalorsen (Singh 2025)"
         href: articles/Singh_2025_donidalorsen.html
+      - text: "Dordaviprone (Jaiswal 2025)"
+        href: articles/Jaiswal_2025_dordaviprone.html
       - text: "Doripenem (AbdulAziz 2016)"
         href: articles/AbdulAziz_2016_doripenem.html
       - text: "Doripenem (Lee 2017)"
@@ -4368,6 +4370,7 @@ articles:
   - articles/Jadhav_2023_bempedoicAcid
   - articles/Jager_2011_gemtuzumab
   - articles/Jain_2011_sorafenib
+  - articles/Jaiswal_2025_dordaviprone
   - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Janssen_2023_pregnancy_cytotoxics
   - articles/Jansson_2008_eflornithine
