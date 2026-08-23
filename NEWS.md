@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Koh 2025 enteric-coated aspirin ([doi:10.2147/DDDT.S533428](https://doi.org/10.2147/DDDT.S533428)) -- healthy Korean adults.
+- Add Royston 2025 letermovir ([doi:10.1128/aac.00697-25](https://doi.org/10.1128/aac.00697-25)) -- adult allogeneic hematopoietic cell transplant recipients.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
