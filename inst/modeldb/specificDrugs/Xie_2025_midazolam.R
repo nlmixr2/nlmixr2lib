@@ -372,7 +372,9 @@ Xie_2025_midazolam <- function() {
     vc_1ohm <- exp(lvc_1ohm)
 
     # Mass-unit formation fraction (see the molecular-weight note above).
-    fm_mass <- fm_1ohm * mw_1ohm / mw_mdz
+    # NOT an fm_<pathway> member: this is fm_1ohm converted to a mass basis,
+    # not a share of clearance, so it is deliberately outside that family.
+    f_mass_1ohm <- fm_1ohm * mw_1ohm / mw_mdz
 
     # ------------------------------------------------------------------
     # ODE system, exactly as drawn in Xie 2025 Figure 2. Midazolam leaves
@@ -383,7 +385,7 @@ Xie_2025_midazolam <- function() {
     # `central` supplied by the event table.
     # ------------------------------------------------------------------
     d/dt(central)      <- -cl * central / vc
-    d/dt(central_1ohm) <-  fm_mass * cl * central / vc -
+    d/dt(central_1ohm) <-  f_mass_1ohm * cl * central / vc -
                            cl_1ohm * central_1ohm / vc_1ohm
 
     # ------------------------------------------------------------------
