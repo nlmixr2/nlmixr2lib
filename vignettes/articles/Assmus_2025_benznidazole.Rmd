@@ -176,7 +176,9 @@ events <- do.call(bind_rows, lapply(seq_len(nrow(arms)), function(i) {
   build_events(subj, a, grid_full)
 }))
 
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+# anyDuplicated() must see the raw rows: wrapping this in unique() would remove
+# the duplicates first and the assertion could never go red.
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 stopifnot(dplyr::n_distinct(events$id) == N_PER_ARM * nrow(arms))
 ```
 
@@ -187,6 +189,11 @@ below need: it contains the PK layer verbatim, plus the cumulative-AUC state and
 the qPCR-positivity probability.
 
 ```{r simulate}
+# Every stochastic block seeds itself. base::set.seed() governs only the
+# covariate draws above; the between-subject etas are drawn by rxode2's own
+# RNG, which answers to rxSetSeed() alone.
+rxode2::rxSetSeed(20250922)
+
 sim <- rxode2::rxSolve(
   pd, events = events,
   keep = c("arm", "WT", "SEXF", "CONMED_FOSRAVUCONAZOLE", "CT_TCRUZI_BASE")
@@ -505,8 +512,18 @@ and trigger PKNCA's "AUC range starting before the first measurement" warning
 once per subject.
 
 ```{r pknca-cohort}
+# Seeded independently of the multiple-dose block above, so that editing one
+# cohort cannot silently shift the other's results.
+set.seed(20250923)
+rxode2::rxSetSeed(20250923)
+
 LLOQ  <- 0.05   # mg/L = 50 ng/mL (Methods, Quantification of benznidazole)
-N_SD  <- 50L    # single-dose cohort per arm; half-life is precisely determined
+# Single-dose cohort per arm, under the 200/arm cap. Sized at 150 rather than a
+# token 50 because the arm-level MEDIANS are what the S1 Table comparison below
+# asserts on, and MTT carries 61.6 % CV: at n = 50 the sampling error on a
+# median TMAX is already several per cent, which would leave the 20 % tolerance
+# hostage to which subjects happened to draw a long absorption.
+N_SD  <- 150L
 sd_times <- sort(unique(c(seq(0, 12, by = 0.1), seq(12, 120, by = 1))))
 
 sd_events <- do.call(bind_rows, lapply(seq_len(nrow(arms)), function(i) {
