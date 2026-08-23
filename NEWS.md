@@ -2,9 +2,544 @@
 
 # development version
 
-- Add Lin 2024 pulmonary TB treatment-outcome multistate model ([doi:10.1093/jac/dkae256](https://doi.org/10.1093/jac/dkae256)) -- adults with drug-resistant pulmonary tuberculosis on bedaquiline plus a multidrug background regimen.
+- Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
-- Add Ai 2024 ractopamine ([doi:10.3389/fvets.2024.1399043](https://doi.org/10.3389/fvets.2024.1399043)) - whole-body PBPK in Liaoning cashmere goats.
+- Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
+
+- Add Koh 2025 enteric-coated aspirin ([doi:10.2147/DDDT.S533428](https://doi.org/10.2147/DDDT.S533428)) -- healthy Korean adults.
+
+- Add Royston 2025 letermovir ([doi:10.1128/aac.00697-25](https://doi.org/10.1128/aac.00697-25)) -- adult allogeneic hematopoietic cell transplant recipients.
+
+- Add Matcha 2025 amikacin ([doi:10.1038/s41390-025-04044-7](https://doi.org/10.1038/s41390-025-04044-7)) -- term neonates.
+
+- Add Olsson Gisleskog 2025 ibrutinib ([doi:10.1002/psp4.70061](https://doi.org/10.1002/psp4.70061)) -- patients 65 years and older with previously untreated mantle cell lymphoma in the phase 3 SHINE study.
+
+- Add Ujihira 2025 glycochenodeoxycholic acid 3-O-sulfate, an endogenous OATP1B3 / OAT3 biomarker ([doi:10.1002/cpt.70023](https://doi.org/10.1002/cpt.70023)) -- healthy adults.
+
+- Add Chigutsa 2025 tirzepatide ([doi:10.1002/cpt.3750](https://doi.org/10.1002/cpt.3750)) -- adults with obesity or overweight without type 2 diabetes (SURMOUNT-1).
+
+- Add Ibrahim 2025 ibrutinib ([doi:10.1002/psp4.70124](https://doi.org/10.1002/psp4.70124)) -- adults with treatment-naive or relapsed/refractory chronic lymphocytic leukemia.
+
+- Add Boivin-Champeaux 2026 acute hepatitis B virus QSP model ([doi:10.1002/psp4.70172](https://doi.org/10.1002/psp4.70172)) -- adults with acute HBV infection pooled from eight published cohorts.
+
+- Add Proctor 2026 durvalumab ([doi:10.1002/psp4.70185](https://doi.org/10.1002/psp4.70185)) -- adults with advanced cancer; a whole-body two-pore PBPK model of cachexia-driven time-dependent clearance plus the empirical popPK comparator.
+
+- Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
+
+- Add Yau 2023 diazepam and midazolam simplified PBPK models ([doi:10.1002/psp4.12915](https://doi.org/10.1002/psp4.12915)) -- rat, cynomolgus monkey and the human translation.
+
+* Add Ketharanathan 2023 pentobarbital ([doi:10.1007/s40262-023-01249-z](https://doi.org/10.1007/s40262-023-01249-z)) -- critically ill children in the paediatric intensive care unit treated for refractory status epilepticus or severe traumatic brain injury.
+
+- Add Xu 2023 busulfan ([doi:10.1002/psp4.13004](https://doi.org/10.1002/psp4.13004)) -- Chinese adults and children undergoing allogeneic hematopoietic stem cell transplantation.
+
+- Add Bjornsson 2023 buprenorphine / CAM2038 depot ([doi:10.1007/s40262-023-01288-6](https://doi.org/10.1007/s40262-023-01288-6)) -- healthy adults and adults with opioid use disorder.
+
+- Add Zhu 2024 pyrotinib ([doi:10.3389/fphar.2024.1432944](https://doi.org/10.3389/fphar.2024.1432944)) - Chinese patients with HER2-positive breast cancer.
+
+- Add Kado 2023 benzathine benzylpenicillin G ([doi:10.1128/aac.00962-23](https://doi.org/10.1128/aac.00962-23)) - healthy adults receiving high-dose subcutaneous infusions.
+
+- Add Roy 2023 erythropoiesis QSP model ([doi:10.3389/fphar.2023.1274490](https://doi.org/10.3389/fphar.2023.1274490)) - virtual patients with anemia due to chronic kidney disease.
+
+- Add Yin 2024 soticlestat ([doi:10.1111/cts.13722](https://doi.org/10.1111/cts.13722)) -- healthy volunteers and patients with developmental and epileptic encephalopathies.
+
+- Add Li 2024 ORIN1001 ([doi:10.3389/fphar.2024.1322557](https://doi.org/10.3389/fphar.2024.1322557)) - Chinese patients with advanced solid tumors.
+
+- Add Winchell 2024 posaconazole ([doi:10.1128/aac.01197-23](https://doi.org/10.1128/aac.01197-23)) - pediatric patients aged 2 to 17 years with neutropenia.
+
+- Register three new canonical parameter names in
+  `inst/references/parameter-names.md`: `boxcox_<param>` for a Box-Cox shape
+  parameter applied to an interindividual random effect (distinct from
+  `lambda_<output>`, which transforms the *residual* error), `lkd_direct` /
+  `lkd_delay` for linear drug-effect coefficients on a turnover loss rate
+  (distinct from `kd`, a mechanistic dissociation rate), and `e_wt_k` for a
+  single allometric exponent a paper applies to every rate constant at once.
+  The `sf<n>` note that had pointed at the deprecated `allo_<param>` spelling
+  now points at `e_wt_<param>`, which is what `checkModelConventions()`
+  actually enforces.
+
+- Add Verrest 2024 *Leishmania* blood parasite dynamics ([doi:10.1371/journal.pntd.0012078](https://doi.org/10.1371/journal.pntd.0012078)) - Eastern African visceral leishmaniasis patients treated with liposomal amphotericin B, sodium stibogluconate, miltefosine, or fexinidazole.
+
+- Add Derippe 2024 BH3-mimetic apoptosis QSP, mouse venetoclax PK, and SU-DHL-4 xenograft growth models ([doi:10.1002/psp4.13158](https://doi.org/10.1002/psp4.13158)) -- SU-DHL-4 and KARPAS-422 lymphoma cell lines in vitro, with a mouse xenograft bridge.
+
+- Add Kiriyama 2024 nifedipine and captopril ([doi:10.1002/prp2.1249](https://doi.org/10.1002/prp2.1249)) -- spontaneously hypertensive rats under urethane anaesthesia.
+
+- Add Moein 2024 apitolisib ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) - 786-O xenograft mice and patients with advanced solid tumors.
+
+- Add Alfosea-Cuadrado 2024 reserpine ([doi:10.3390/pharmaceutics16081101](https://doi.org/10.3390/pharmaceutics16081101)) - male Sprague-Dawley rats in the reserpine-induced myalgia model of fibromyalgia.
+
+- Add Okada 2024 triazolam ([doi:10.1186/s40360-024-00777-z](https://doi.org/10.1186/s40360-024-00777-z)) - young and elderly adults.
+
+- Add Henthorn 2024 delta-9-tetrahydrocannabinol ([doi:10.1097/FTD.0000000000001224](https://doi.org/10.1097/FTD.0000000000001224)) - adults inhaling commercial-market cannabis, occasional and daily users.
+
+- Add Ohara 2014 S-warfarin PK/PD ([doi:10.1371/journal.pone.0105891](https://doi.org/10.1371/journal.pone.0105891)) -- Chinese adults in Taiwan starting warfarin induction therapy.
+
+- Add van Os 2024 temocillin PK/PD ([doi:10.1093/jac/dkae243](https://doi.org/10.1093/jac/dkae243)) -- four in vitro *Escherichia coli* strains, with plasma pharmacokinetics from critically ill patients.
+
+- Add Fan 2024 sirolimus ([doi:10.3389/fphar.2024.1457614](https://doi.org/10.3389/fphar.2024.1457614)) - Chinese children with vascular anomalies, aged 0.08-12 years.
+
+- Add Khaowroongrueng 2024 sufentanil ([doi:10.1002/psp4.13205](https://doi.org/10.1002/psp4.13205)) - adult Korean patients undergoing cardiopulmonary bypass surgery.
+
+- Add Yang 2024 naloxone auto-injector and its four mechanistic opioid-induced
+  respiratory depression reversal models -- buprenorphine, morphine, fentanyl
+  and carfentanil ([doi:10.1002/psp4.13215](https://doi.org/10.1002/psp4.13215))
+  - healthy adults.
+
+- Add Ivanova 2024 anti-alpha-synuclein immunotherapy ([doi:10.1002/psp4.13223](https://doi.org/10.1002/psp4.13223)) -- QSP model of alpha-synuclein pathology in Parkinson's-disease-like mice.
+
+- Add Zhang 2024 F-53B ([doi:10.1021/acs.est.4c05405](https://doi.org/10.1021/acs.est.4c05405)) - gestational PBPK in pregnant mice, plus pre-pregnant and pregnant human extrapolations.
+
+- Add Zhang 2024 tucatinib ([doi:10.1007/s40262-024-01412-0](https://doi.org/10.1007/s40262-024-01412-0)) - healthy participants and patients with HER2+ metastatic breast or colorectal cancer.
+
+- Add Zuo 2024 apatinib ([doi:10.1186/s12885-024-13118-4](https://doi.org/10.1186/s12885-024-13118-4)) - Chinese adults with solid tumours.
+
+- Add Duan 2024 linezolid ([doi:10.1128/aac.01148-24](https://doi.org/10.1128/aac.01148-24)) - Chinese premature neonates undergoing therapeutic drug monitoring.
+
+- Add Saeheng 2024 Atractylodes lancea ([doi:10.1186/s12906-024-04618-8](https://doi.org/10.1186/s12906-024-04618-8)) - patients with advanced-stage intrahepatic cholangiocarcinoma.
+
+- Add Bian 2024 lefamulin popPK plus epithelial lining fluid models ([doi:10.3389/fphar.2024.1456741](https://doi.org/10.3389/fphar.2024.1456741)) -- pooled Phase 1 healthy adults, Phase 2 skin-infection patients, and Phase 3 community-acquired bacterial pneumonia patients.
+
+- Add Wang 2024 RNA lipid nanoparticles ([doi:10.1016/j.apsb.2024.06.011](https://doi.org/10.1016/j.apsb.2024.06.011)) - ionizable-lipid PBPK in Sprague-Dawley rats, CD-1 and C57BL/6 mice, and healthy volunteers given patisiran, plus a cellular trafficking model in HeLa cells.
+
+- Add Abdullah-Koolmees 2024 voriconazole and posaconazole whole-body PBPK ([doi:10.1007/s13318-024-00916-1](https://doi.org/10.1007/s13318-024-00916-1)) -- a typical 73-kg adult, simulated as healthy, bacterially infected and ICU patient types with and without concomitant flucloxacillin.
+
+- Add Iwama 2024 febuxostat ([doi:10.1002/prp2.70032](https://doi.org/10.1002/prp2.70032)) -- Japanese pediatric patients with hyperuricemia including gout and adults who were healthy or had renal dysfunction.
+
+- Add Willemin 2024 interleukin-6 / CYP modulation after talquetamab ([doi:10.1007/s11523-024-01093-6](https://doi.org/10.1007/s11523-024-01093-6)) - adults with relapsed/refractory multiple myeloma and cytokine release syndrome.
+
+- Add Chotsiri 2019 lumefantrine ([doi:10.1002/cpt.1531](https://doi.org/10.1002/cpt.1531)) -- children aged 6-59 months with uncomplicated malaria, with and without severe acute malnutrition.
+
+- Add Xu 2024 linezolid ([doi:10.2147/DDDT.S474470](https://doi.org/10.2147/DDDT.S474470)) -- adults with hospital-acquired pneumonia and renal insufficiency.
+
+- Add Li 2024 norepinephrine ([doi:10.1007/s40262-024-01430-y](https://doi.org/10.1007/s40262-024-01430-y)) -- healthy volunteers, awake and under propofol/remifentanil general anesthesia.
+
+- Add Ashraf 2024 codeine ([doi:10.1007/s40262-024-01433-9](https://doi.org/10.1007/s40262-024-01433-9)) -- CYP2D6-genotyped adults undergoing ambulatory surgery.
+
+- Add Choules 2024 enfortumab vedotin and brentuximab vedotin ([doi:10.1007/s10928-023-09877-5](https://doi.org/10.1007/s10928-023-09877-5)) -- adults with metastatic urothelial carcinoma or CD30-positive lymphoma; compartmental reductions of the published Simcyp ADC-module PBPK models, with the MMAE payload and its CYP3A4/P-gp drug interactions.
+
+- Add Patidar 2024 platform monoclonal-antibody minimal-PBPK models ([doi:10.1007/s10928-023-09899-z](https://doi.org/10.1007/s10928-023-09899-z)) -- mouse (wild-type and FcRn knockout) and 70 kg adult human.
+
+- Add Ojara 2024 lamivudine ([doi:10.1002/psp4.13274](https://doi.org/10.1002/psp4.13274)) -- breastfeeding Ugandan women living with HIV, with paired maternal plasma and breast-milk data.
+
+- Add Sexton 2024 lanadelumab kallikrein-kinin system QSP model ([doi:10.1007/s10928-024-09919-6](https://doi.org/10.1007/s10928-024-09919-6)) -- adults with hereditary angioedema due to C1-inhibitor deficiency.
+
+- Add Zhang 2024 valproic acid ([doi:10.3389/fphar.2024.1423411](https://doi.org/10.3389/fphar.2024.1423411)) -- Chinese children and adults with epilepsy or after neurosurgery.
+
+- Add Tuey 2024 cholecalciferol ([doi:10.3390/ijms252212279](https://doi.org/10.3390/ijms252212279)) -- adults with chronic kidney disease and vitamin D insufficiency or deficiency.
+
+- Add Vaddady 2024 quizartinib and its active metabolite AC886 ([doi:10.1111/cts.70074](https://doi.org/10.1111/cts.70074)) -- adults with newly diagnosed or relapsed/refractory FLT3-ITD-positive acute myeloid leukemia, healthy volunteers and subjects with hepatic impairment.
+
+- Add Sadiq 2024 tozorakimab ([doi:10.1111/bcp.16195](https://doi.org/10.1111/bcp.16195)) -- healthy adults and patients with mild COPD.
+
+- Add Zhang 2024 nedosiran ([doi:10.1111/bcp.16194](https://doi.org/10.1111/bcp.16194)) -- healthy adults and patients with primary hyperoxaluria type 1 or 2.
+
+- Add Yang 2024 dabigatran ([doi:10.3389/fphar.2024.1454612](https://doi.org/10.3389/fphar.2024.1454612)) -- healthy Chinese adults.
+
+- Add Na 2024 tovecimig / ABL001 / CTX-009 ([doi:10.1111/cas.16363](https://doi.org/10.1111/cas.16363)) -- adults with relapsed or refractory solid tumors.
+
+- Add Mo 2024 shikimic acid ([doi:10.1021/acs.jafc.4c09250](https://doi.org/10.1021/acs.jafc.4c09250)) -- growing pigs (Landrace x Large White) dosed intravenously and intragastrically.
+
+- Add Suzuki 2024 mycophenolic acid ([doi:10.1111/cts.70097](https://doi.org/10.1111/cts.70097)) -- adult kidney transplant recipients.
+
+- Add Kurup 2024 DZIF-10c ([doi:10.1007/s10928-024-09947-2](https://doi.org/10.1007/s10928-024-09947-2)) -- pooled adults (SARS-CoV-2 infected and uninfected) and cynomolgus macaques.
+
+- Add Khwarg 2024 proguanil ([doi:10.1111/cts.70103](https://doi.org/10.1111/cts.70103)) -- healthy Korean male adults genotyped for SLC22A1 (OCT1) 1022C>T.
+
+- Add Yang 2024 zastaprazan ([doi:10.1002/psp4.13228](https://doi.org/10.1002/psp4.13228)) -- patients with erosive gastroesophageal reflux disease and healthy volunteers.
+
+- Add Willmann 2024 elinzanetant ([doi:10.1002/psp4.13226](https://doi.org/10.1002/psp4.13226)) -- healthy volunteers and women with vasomotor symptoms associated with menopause.
+
+- Add Crass 2024 pegcetacoplan population PK and hemoglobin / LDH PK/PD models ([doi:10.1007/s40268-024-00500-7](https://doi.org/10.1007/s40268-024-00500-7)) -- healthy adults and adults with paroxysmal nocturnal hemoglobinuria.
+
+- Add Winter 2024 oxytetracycline ([doi:10.3389/fmicb.2024.1498219](https://doi.org/10.3389/fmicb.2024.1498219)) -- calves and adult cattle.
+
+- Add Schouwenburg 2025 clavulanic acid ([doi:10.1002/cpt.3423](https://doi.org/10.1002/cpt.3423)) -- preterm and term neonates and infants up to 1 year of age.
+
+- Add Melander 2025 cetirizine ([doi:10.1111/bcpt.14100](https://doi.org/10.1111/bcpt.14100)) -- breast milk of lactating women.
+
+- Add Abouelhassan 2024 sulbactam ([doi:10.1093/jacamr/dlae203](https://doi.org/10.1093/jacamr/dlae203)) -- mouse (ICR/CD-1 neutropenic *Acinetobacter baumannii* pneumonia model) and healthy adults, both with an epithelial lining fluid compartment.
+
+- Add Alqurain 2024 vancomycin ([doi:10.2147/DDDT.S496512](https://doi.org/10.2147/DDDT.S496512)) -- non-critical-care adults aged 40 years and older on medical wards in Saudi Arabia.
+
+- Add Zhu 2024 SPT-07A (D-borneol) whole-body PBPK ([doi:10.3390/pharmaceutics16121596](https://doi.org/10.3390/pharmaceutics16121596)) -- three models: rats (Sprague-Dawley), beagle dogs, and healthy human adults.
+
+- Add Panetta 2024 palbociclib ([doi:10.3390/pharmaceutics16121528](https://doi.org/10.3390/pharmaceutics16121528)) -- children and young adults with recurrent, progressive or refractory brain tumors.
+
+- Add Liu 2024 Spatholobi Caulis constituents 3'-methoxydaidzein, 8-O-methylretusin, daidzin and isolariciresinol ([doi:10.3390/ph17121621](https://doi.org/10.3390/ph17121621)) -- rats given a single oral gavage of Spatholobi Caulis aqueous extract.
+
+- Add Al-Zubaydi 2024 gabapentin ([doi:10.3390/pharmaceutics16121514](https://doi.org/10.3390/pharmaceutics16121514)) -- hospitalized adults with therapeutic drug monitoring concentrations.
+
+- Add Lee 2024 L-serine (AST-001) PK-PD ([doi:10.3389/fphar.2024.1452526](https://doi.org/10.3389/fphar.2024.1452526)) -- children aged 2-11 years with autism spectrum disorder.
+
+- Add Yan 2024 amisulpride ([doi:10.2147/DDDT.S469149](https://doi.org/10.2147/DDDT.S469149)) - Chinese adult inpatients with schizophrenia.
+
+- Add Mao 2024 sirolimus ([doi:10.2147/DDDT.S503463](https://doi.org/10.2147/DDDT.S503463)) -- adult liver transplant recipients.
+
+- Add Jiang 2025 filgrastim ([doi:10.1111/cts.70121](https://doi.org/10.1111/cts.70121)) -- healthy Korean adult men.
+
+- Add Hernandez-Lozano 2025 apramycin translational PKPD models ([doi:10.1093/jac/dkae409](https://doi.org/10.1093/jac/dkae409)) -- in vitro (Escherichia coli EN591 and ATCC 700336), mouse (C3H/HeJ) complicated urinary tract infection, and a simulated human efficacy prediction.
+
+- Add Comisar 2025 zavegepant ([doi:10.1002/psp4.13257](https://doi.org/10.1002/psp4.13257)) -- healthy adults and patients with migraine dosed intravenously, intranasally, or orally.
+
+- Add Izat 2025 zaleplon ([doi:10.1002/psp4.13255](https://doi.org/10.1002/psp4.13255)) -- healthy adult women and men, intravenous.
+
+- Add Izat 2025 ziprasidone ([doi:10.1002/psp4.13255](https://doi.org/10.1002/psp4.13255)) -- healthy adult men, intravenous.
+
+- Add Izat 2025 zoniporide ([doi:10.1002/psp4.13255](https://doi.org/10.1002/psp4.13255)) -- healthy adult men, intravenous.
+
+- Add Eaton 2025 dabigatran ([doi:10.1177/02676591231226291](https://doi.org/10.1177/02676591231226291)) -- anaesthetised sheep, with idarucizumab reversal.
+
+- Add Cerqueira 2025 resveratrol ([doi:10.3390/nu17010181](https://doi.org/10.3390/nu17010181)) -- rat (Wistar, male); separate intravenous and oral models.
+
+- Add Centanni 2025 sunitinib thrombocytopenia ([doi:10.1007/s40273-024-01438-z](https://doi.org/10.1007/s40273-024-01438-z)) -- adults with imatinib-resistant gastrointestinal stromal tumours (GIST).
+
+- Add Zhang 2025 epoetin alfa erythroferrone PK/PD models ([doi:10.1021/acsptsci.4c00575](https://doi.org/10.1021/acsptsci.4c00575)) -- rat (Sprague-Dawley) models of adenine-induced CKD anemia and carboplatin-induced anemia.
+
+- Add Marques 2025 oral salbutamol ([doi:10.3390/pharmaceutics17010039](https://doi.org/10.3390/pharmaceutics17010039)) -- virtual (PBPK-generated) patients aged 5-65 years.
+
+- Add Gaspar 2025 fexofenadine ([doi:10.1007/s40262-024-01470-4](https://doi.org/10.1007/s40262-024-01470-4)) -- hospitalized older adult polymorbid patients pooled with healthy volunteers.
+
+- Add Darwish 2025 trofinetide ([doi:10.1007/s12325-024-03056-9](https://doi.org/10.1007/s12325-024-03056-9)) -- healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury.
+
+- Add Golzaryan 2025 [177Lu]Lu-PSMA I&T ([doi:10.1038/s41598-025-86159-9](https://doi.org/10.1038/s41598-025-86159-9)) - men with metastatic castration-resistant prostate cancer; a 21-compartment whole-body PBPK model with parallel labelled and unlabelled circulations.
+
+- Add Lam 2025 ondansetron ([doi:10.1111/cts.70147](https://doi.org/10.1111/cts.70147)) -- neonates with neonatal opioid withdrawal syndrome.
+
+- Add Kim 2025 evogliptin ([doi:10.1002/psp4.13263](https://doi.org/10.1002/psp4.13263)) -- adults spanning normal renal function through end-stage renal disease on hemodialysis.
+
+- Add Braniff 2025 lorlatinib signaling / shell-and-core tumor QSP model ([doi:10.1002/psp4.13270](https://doi.org/10.1002/psp4.13270)) -- adults with ALK-positive advanced non-small cell lung cancer.
+
+- Add Crass 2025 pegcetacoplan geographic-atrophy lesion-area models
+  ([doi:10.1002/psp4.13264](https://doi.org/10.1002/psp4.13264))
+  -- adults with geographic atrophy secondary to age-related macular degeneration.
+
+- Add Balis 2025 busulfan ([doi:10.1007/s00280-025-04757-w](https://doi.org/10.1007/s00280-025-04757-w)) -- infants and children receiving busulfan-containing stem cell transplant conditioning.
+
+- Add Park 2025 anti-CD19 CAR-T cell therapy in systemic lupus erythematosus ([doi:10.1111/cts.70146](https://doi.org/10.1111/cts.70146)) -- adults with severe refractory SLE.
+
+- Add Brossard 2025 emapalumab ([doi:10.1111/cts.70163](https://doi.org/10.1111/cts.70163)) -- children and young adults with macrophage activation syndrome associated with Still's disease.
+
+- Add Nakai 2025 tranexamic acid ([doi:10.1007/s00228-025-03802-0](https://doi.org/10.1007/s00228-025-03802-0)) -- adults undergoing cardiac surgery with cardiopulmonary bypass.
+
+- Add Deferm 2025 postpartum maternal physiology and milk composition ([doi:10.3389/fphar.2025.1517069](https://doi.org/10.3389/fphar.2025.1517069)) -- healthy breastfeeding women from birth to 12 months postpartum.
+
+- Add Nie 2025 epidural sufentanil ([doi:10.2147/DDDT.S500189](https://doi.org/10.2147/DDDT.S500189)) -- primiparous women receiving patient-controlled epidural labour analgesia.
+
+- Add DeJongh 2025 AZD7648 and olaparib ([doi:10.1007/s10928-025-09962-x](https://doi.org/10.1007/s10928-025-09962-x)) -- mice (SCID and athymic nude, FaDu ATM-knockout xenograft).
+
+- Add Rolsma 2025 cefepime, meropenem, piperacillin and tazobactam ([doi:10.1093/infdis/jiae451](https://doi.org/10.1093/infdis/jiae451)) -- children and adults with cystic fibrosis.
+
+- Add Baiardi 2025 dalbavancin ([doi:10.3390/antibiotics14020190](https://doi.org/10.3390/antibiotics14020190)) -- adults receiving multidose long-term therapy for difficult-to-treat Gram-positive infections.
+
+- Add Han 2025 midazolam, fentanyl, alfentanil and sufentanil age-dependent whole-body PBPK models ([doi:10.3390/pharmaceutics17020214](https://doi.org/10.3390/pharmaceutics17020214)) -- preterm neonates through adults to the oldest old.
+
+- Add Olafuyi 2025 propylene glycol ([doi:10.1002/jcph.6150](https://doi.org/10.1002/jcph.6150)) - healthy adults and term neonates; compartmental reductions of the published Simcyp full-PBPK models, with saturable ADH-mediated clearance.
+
+- Add Wu 2025 sitafloxacin ([doi:10.3389/fphar.2025.1476158](https://doi.org/10.3389/fphar.2025.1476158)) -- Japanese and Chinese healthy volunteers, subjects with renal impairment, and patients with respiratory-tract infection.
+
+- Add Fan 2025 intravenous iron whole-body PBPK models ([doi:10.1007/s13346-024-01675-x](https://doi.org/10.1007/s13346-024-01675-x)) -- mice on iron-deficient, iron-adequate and iron-loaded diets, plus ferric carboxymaltose extrapolations to rat (iron-deficiency anaemia) and adults with iron-deficiency anaemia.
+
+- Add Butragueno-Laiseca 2025 teicoplanin ([doi:10.1093/jac/dkaf012](https://doi.org/10.1093/jac/dkaf012)) -- critically ill children, including those on continuous kidney replacement therapy.
+
+- Add Xie 2025 midazolam ([doi:10.2147/DDDT.S495647](https://doi.org/10.2147/DDDT.S495647)) -- mechanically ventilated Chinese adult ICU patients.
+
+- Add Takada 2025 vancomycin ([doi:10.1186/s40780-025-00423-8](https://doi.org/10.1186/s40780-025-00423-8)) -- Japanese inpatients aged 75 years and older with a body mass index below 25 kg/m^2.
+
+- Add Li 2025 doxycycline PK and doxycycline + florfenicol PK/PD models ([doi:10.1016/j.psj.2025.104922](https://doi.org/10.1016/j.psj.2025.104922)) -- Riemerella anatipestifer-infected ducks (Tadorna tadorna).
+
+- Add Zhang 2025 abemaciclib CDK4/6 occupancy and pRB / TOPO-IIa biomarker QSP model ([doi:10.1021/acsomega.4c09472](https://doi.org/10.1021/acsomega.4c09472)) -- patients with metastatic breast cancer, including brain metastases.
+
+- Add Winning 2025 certepetide ([doi:10.1002/cpdd.1502](https://doi.org/10.1002/cpdd.1502)) -- adults with metastatic pancreatic ductal adenocarcinoma.
+
+- Add Ji 2025 TDI01 ([doi:10.3389/fphar.2025.1477607](https://doi.org/10.3389/fphar.2025.1477607)) -- healthy Chinese adults.
+
+- Add Said 2025 imatinib ([doi:10.1002/psp4.13299](https://doi.org/10.1002/psp4.13299)) -- adults with COVID-19 ARDS pooled with CML/GIST oncology patients.
+
+- Add Michelet 2025 BI 754111 anti-LAG-3 two-pore minimal-PBPK model ([doi:10.1002/psp4.13285](https://doi.org/10.1002/psp4.13285)) -- adults with anti-PD-1-refractory NSCLC or HNSCC in an 89Zr-immuno-PET biodistribution study.
+
+- Add Boone 2025 vinyl chloride PBPK ([doi:10.3390/jox15020042](https://doi.org/10.3390/jox15020042)) -- 70 kg reference adult; community exposure reconstruction after the 2012 Paulsboro, New Jersey train derailment.
+
+- Add Miano 2024 tacrolimus ([doi:10.1016/j.jhlto.2024.100134](https://doi.org/10.1016/j.jhlto.2024.100134)) -- adult lung transplant recipients during the first 14 postoperative days.
+
+- Add Budiansah 2025 DOTATATE ([doi:10.1186/s40658-025-00726-7](https://doi.org/10.1186/s40658-025-00726-7)) -- adults with neuroendocrine tumours or meningiomas undergoing peptide receptor radionuclide therapy dosimetry.
+
+- Add Warren 2025 apremilast and orismilast ([doi:10.1007/s13555-025-01371-9](https://doi.org/10.1007/s13555-025-01371-9)) -- adults with atopic dermatitis, plus an in vitro human whole-blood IL-13 inhibition layer for each drug.
+
+- Add Zhang 2025 fluconazole ([doi:10.3389/fphar.2025.1564070](https://doi.org/10.3389/fphar.2025.1564070)) -- critically ill adults with acute renal failure receiving continuous renal replacement therapy.
+
+- Add Visscher 2025 parathyroid hormone rhPTH(1-84) ([doi:10.1111/bcp.16342](https://doi.org/10.1111/bcp.16342)) -- a single adult with chronic postsurgical hypoparathyroidism.
+
+- Add Wen 2025 salbutamol pulmonary PBPK ([doi:10.1002/psp4.13316](https://doi.org/10.1002/psp4.13316)) -- rat (male Wistar Han) after intratracheal instillation.
+
+- Add Demin 2025 zanubrutinib, acalabrutinib and ibrutinib BTK-occupancy QSP model ([doi:10.1002/psp4.13307](https://doi.org/10.1002/psp4.13307)) -- virtual patients with B-cell malignancies.
+
+- Add Zhang 2025 cefiderocol ([doi:10.1007/s12325-025-03147-1](https://doi.org/10.1007/s12325-025-03147-1)) - healthy Chinese adults.
+
+- Add Adamiszak 2025 fluconazole ([doi:10.3390/pharmaceutics17040488](https://doi.org/10.3390/pharmaceutics17040488)) -- hemato-oncologic pediatric patients aged 7 months to 18 years.
+
+- Add Na 2025 HOSU-53 (JBZ-001) PK/PD models ([doi:10.3390/pharmaceutics17040412](https://doi.org/10.3390/pharmaceutics17040412)) -- mice and beagle dogs.
+
+- Add Wickramasinghe 2025 pamiparib ([doi:10.3390/pharmaceutics17040524](https://doi.org/10.3390/pharmaceutics17040524)) -- adults with newly diagnosed or recurrent glioblastoma.
+
+- Add Gao 2025 cefquinome ([doi:10.3390/vetsci12040294](https://doi.org/10.3390/vetsci12040294)) -- Ili foals, with an ex vivo PK/PD-integration model against *Escherichia coli*.
+
+- Add Fromage 2025 mycophenolic acid ([doi:10.1111/bcp.16374](https://doi.org/10.1111/bcp.16374)) -- solid organ transplant, haematopoietic cell transplant and autoimmune disease patients on enteric-coated mycophenolate sodium.
+
+- Add Athanassa 2025 minocycline ([doi:10.1093/jac/dkaf090](https://doi.org/10.1093/jac/dkaf090)) -- critically ill adults with ventilator-associated pneumonia.
+
+- Add Lacroix 2025 polymyxin B ([doi:10.1128/aac.01535-24](https://doi.org/10.1128/aac.01535-24)) -- in vitro time-kill against two multidrug-resistant Acinetobacter baumannii clinical isolates, with and without 1% mucin.
+
+- Add Van Wart 2025 tobramycin ([doi:10.1128/aac.00908-24](https://doi.org/10.1128/aac.00908-24)) -- adults with pneumonia, with serum and epithelial lining fluid concentrations.
+
+- Add Roberts 2025 remdesivir and GS-441524 ([doi:10.1007/s40262-025-01496-2](https://doi.org/10.1007/s40262-025-01496-2)) -- hospitalised adults with COVID-19.
+
+- Add Mauro 2025 nilotinib ([doi:10.1007/s00280-025-04777-6](https://doi.org/10.1007/s00280-025-04777-6)) -- healthy adults receiving Danziten tablets or Tasigna capsules under four prandial conditions.
+
+- Add Wang 2025 rivaroxaban ([doi:10.3389/fphar.2025.1574949](https://doi.org/10.3389/fphar.2025.1574949)) - Chinese adults with non-valvular atrial fibrillation.
+
+- Add Song 2025 infliximab ([doi:10.5009/gnl240503](https://doi.org/10.5009/gnl240503)) -- Korean adults with inflammatory bowel disease on maintenance intravenous or subcutaneous therapy.
+
+- Add Garcia 2025 garadacimab ([doi:10.1002/psp4.70009](https://doi.org/10.1002/psp4.70009)) -- healthy volunteers and adolescents and adults with hereditary angioedema.
+
+- Add van der Gaag 2025 osimertinib target-site PBPK model ([doi:10.1002/psp4.70006](https://doi.org/10.1002/psp4.70006)) -- adults with advanced-stage EGFR-mutated non-small cell lung cancer.
+
+- Add Wickramasinghe 2025 abemaciclib ([doi:10.1002/psp4.70026](https://doi.org/10.1002/psp4.70026)) -- 9-compartment spatial CNS and brain-tumor PBPK model in adults with glioblastoma.
+
+- Add Patel 2025 eteplirsen ([doi:10.1002/psp4.70001](https://doi.org/10.1002/psp4.70001)) -- boys with Duchenne muscular dystrophy aged 6 months to 16 years.
+
+- Add Assmus 2025 benznidazole ([doi:10.1371/journal.pntd.0012968](https://doi.org/10.1371/journal.pntd.0012968)) -- mouse (BALB/c), uninfected satellite PK cohort and chronic *Trypanosoma cruzi* infection efficacy cohort.
+
+- Add McCann 2025 midazolam ([doi:10.1111/cts.70247](https://doi.org/10.1111/cts.70247)) -- children and young adults with and without obesity receiving standard-of-care IV midazolam.
+
+- Add Kobuchi 2025 dapagliflozin ([doi:10.7150/ijms.111519](https://doi.org/10.7150/ijms.111519)) -- Japanese outpatients with type 2 diabetes mellitus treated for one year in routine practice.
+
+- Add Zhao 2025 methotrexate ([doi:10.3389/fphar.2025.1548203](https://doi.org/10.3389/fphar.2025.1548203)) -- Chinese children and adults with intracranial germ cell tumors.
+
+- Add Kir 2025 atenolol and metoprolol minimal-PBPK absorption models ([doi:10.1007/s13318-025-00943-6](https://doi.org/10.1007/s13318-025-00943-6)) -- non-malnourished and malnourished rats (Sprague-Dawley).
+
+- Add Wolowich 2025 delta-9-tetrahydrocannabinol heart-rate PK/PD models ([doi:10.1007/s13318-025-00941-8](https://doi.org/10.1007/s13318-025-00941-8)) -- healthy volunteers given a single intravenous bolus.
+
+- Add Sheiner 1979 d-tubocurarine ([doi:10.1002/cpt1979253358](https://doi.org/10.1002/cpt1979253358)) -- adults undergoing elective surgery with normal renal function or chronic end-stage renal failure.
+
+- Add Perlstein 2025 TV-46000 long-acting subcutaneous risperidone ([doi:10.1007/s40120-025-00723-z](https://doi.org/10.1007/s40120-025-00723-z)) -- healthy volunteers and adults with schizophrenia or schizoaffective disorder.
+
+- Add Lee 2025 levofloxacin ([doi:10.3390/ph18050621](https://doi.org/10.3390/ph18050621)) -- healthy Korean adults given a single 500 mg intravenous infusion.
+
+- Add de Cacqueray 2022 cefepime ([doi:10.1016/j.cmi.2022.05.007](https://doi.org/10.1016/j.cmi.2022.05.007)) -- critically ill infants and children aged 1.1 months to 17.6 years.
+
+- Add Zhao 2020 cefepime ([doi:10.3389/fphar.2020.00014](https://doi.org/10.3389/fphar.2020.00014)) -- Chinese neonates and young infants with postmenstrual age below 48 weeks.
+
+- Add van den Maagdenberg 2025 A2AR / anti-PD-L1 tumour-microenvironment QSP model ([doi:10.1021/acs.jcim.5c00107](https://doi.org/10.1021/acs.jcim.5c00107)) -- mouse (MCA205 syngeneic tumour model).
+
+- Add Onita 2025 sulbactam ([doi:10.1093/jpids/piaf043](https://doi.org/10.1093/jpids/piaf043)) -- pediatric patients from 4 weeks to 16 years, pooled from 23 published studies.
+
+- Add van den Berg 2025 generic monoclonal antibody meta-analytic models ([doi:10.1080/19420862.2025.2512217](https://doi.org/10.1080/19420862.2025.2512217)) -- medians across 160 published population PK models of 69 marketed IgG mAbs in adults.
+
+- Add Valadez 2025 cefepime ([doi:10.1128/aac.00102-25](https://doi.org/10.1128/aac.00102-25)) -- mechanically ventilated adults in the ICU with suspected hospital-acquired pneumonia, with and without ECMO.
+
+- Add Okumura 2025 ergothioneine PBPK model ([doi:10.1002/fsn3.70382](https://doi.org/10.1002/fsn3.70382)) -- healthy Japanese adults taking daily oral ergothioneine supplements.
+
+- Add Xia 2025 p-furoylamphenmulin ([doi:10.1016/j.psj.2025.105249](https://doi.org/10.1016/j.psj.2025.105249)) -- Mycoplasma gallisepticum-infected specific-pathogen-free chickens.
+
+- Add Gu 2025 rivaroxaban ([doi:10.3389/fphar.2025.1562259](https://doi.org/10.3389/fphar.2025.1562259)) - Chinese healthy volunteers and patients after radiofrequency ablation for non-valvular atrial fibrillation.
+
+- Add Hornik 2025 furosemide ([doi:10.1007/s40262-025-01515-2](https://doi.org/10.1007/s40262-025-01515-2)) -- adults with chronic heart failure and volume overload, allometrically scaled to adolescents.
+
+- Add Shigetome 2025 paroxetine ([doi:10.1002/psp4.70032](https://doi.org/10.1002/psp4.70032)) -- Japanese adults with major depressive disorder; population PK plus a MADRS exposure-response model.
+
+- Add Cao 2025 ferric carboxymaltose ([doi:10.1021/acsptsci.5c00097](https://doi.org/10.1021/acsptsci.5c00097)) -- rats (Sprague-Dawley) with iron deficiency anemia.
+
+- Add Glatard 2025 octreotide ([doi:10.1007/s40262-025-01522-3](https://doi.org/10.1007/s40262-025-01522-3)) -- healthy adults and adults with acromegaly.
+
+- Fix the dose basis in the Steichert 2025 enalapril + enalaprilat vignette
+  ([doi:10.1007/s40262-025-01520-5](https://doi.org/10.1007/s40262-025-01520-5)) --
+  doses are enalapril free base, so 0.25 mg enalapril maleate is 191.1 ug, not
+  250 ug. The vignette now reproduces the published enalaprilat Cmax,1 instead of
+  overshooting it by 31%.
+
+- Add Shah 2025 clarithromycin ([doi:10.3390/antibiotics14060559](https://doi.org/10.3390/antibiotics14060559)) -- critically ill adults receiving intravenous clarithromycin.
+
+- Add Liu 2025 avatrombopag ([doi:10.3390/ph18060903](https://doi.org/10.3390/ph18060903)) -- healthy Chinese adults dosed fasting or after a high-fat meal.
+
+- Add Zhao 2025 paracetamol ([doi:10.1002/bcp.70028](https://doi.org/10.1002/bcp.70028)) - children and adults with spinal muscular atrophy and healthy controls.
+
+- Add Van Wart 2025 telavancin ([doi:10.1128/aac.01382-24](https://doi.org/10.1128/aac.01382-24)) - healthy subjects and patients with complicated skin and skin-structure infection, hospital-acquired or ventilator-associated bacterial pneumonia, or uncomplicated bacteremia, spanning the full range of renal function including hemodialysis.
+
+- Add Harada 2025 cyanide ([doi:10.1007/s11419-025-00713-8](https://doi.org/10.1007/s11419-025-00713-8)) -- adults in fire-related deaths examined at forensic autopsy.
+
+- Add Dasti 2025 multiscale mRNA vaccine QSP models for BNT162b2 (general adult
+  and over-60 populations), mRNA-1273, and the single-cell antigen-presentation
+  molecular layer
+  ([doi:10.1002/psp4.70041](https://doi.org/10.1002/psp4.70041))
+  -- healthy adults receiving prophylactic COVID-19 mRNA vaccination; the early
+  antigen-presenting-cell events are calibrated on rhesus macaque data.
+
+- Add Toutain 2025 doxycycline ([doi:10.1111/jvp.13511](https://doi.org/10.1111/jvp.13511)) -- pigs of 8.5-100.6 kg dosed intravenously or orally in feed, drinking water or by stomach tube.
+
+- Add Kong 2025 piperacillin/tazobactam ([doi:10.1007/s40262-025-01527-y](https://doi.org/10.1007/s40262-025-01527-y)) -- adults with end-stage kidney disease on intermittent haemodialysis.
+
+- Add Fiandaca 2025 mRNA-encoded BiTE short-chain and long-chain multiscale PBPK models ([doi:10.1016/j.omtn.2025.102606](https://doi.org/10.1016/j.omtn.2025.102606)) -- mouse (immunodeficient, tumour-bearing).
+
+- Add Chen 2025 iohexol + creatinine joint GFR / OCT2-MATE model ([doi:10.1002/cpt.3612](https://doi.org/10.1002/cpt.3612)) -- healthy adult volunteers.
+
+- Add Li 2025 modakafusp alfa ([doi:10.1111/cts.70296](https://doi.org/10.1111/cts.70296)) - adults with relapsed or refractory multiple myeloma.
+
+- Add Chen 2025 remimazolam ([doi:10.3389/fphar.2025.1526266](https://doi.org/10.3389/fphar.2025.1526266)) -- critically ill adults receiving continuous infusion for ICU sedation.
+
+- Add Rognas 2025 bitopertin ([doi:10.1007/s10928-025-09990-7](https://doi.org/10.1007/s10928-025-09990-7)) -- healthy adults (ratifies seven new erythropoiesis compartment canonicals: `ret_imm_marrow`, `ret_mat_marrow`, `ret_imm_blood`, `ret_mat_blood`, and the numbered-chain prefixes `erythrocytes<n>`, `mch<n>` and `moderator<n>`).
+
+- Add Ebihara 2025 tebipenem ([doi:10.3390/antibiotics14070648](https://doi.org/10.3390/antibiotics14070648)) -- Japanese adults, stratified by renal function.
+
+- Add He 2025 lidocaine ([doi:10.2147/DDDT.S485389](https://doi.org/10.2147/DDDT.S485389)) -- Chinese adults undergoing partial hepatectomy, with the MEGX and GX active metabolites.
+
+- Add Richardson 2025 automated model-search popPK models for ribociclib, camizestrant, osimertinib, olaparib and tezepelumab ([doi:10.1038/s43856-025-01054-8](https://doi.org/10.1038/s43856-025-01054-8)) -- one synthetic cohort and four pooled Phase 1 adult cohorts.
+
+- Add Xie 2025 aztreonam-avibactam ([doi:10.1128/aac.01950-24](https://doi.org/10.1128/aac.01950-24)) -- healthy adults and hospitalized adults with complicated intra-abdominal infection, nosocomial pneumonia, complicated urinary tract infection, or bloodstream infection, spanning augmented renal clearance through end-stage renal disease.
+
+- Add Kong 2025 sudapyridine ([doi:10.1016/j.ejps.2025.107160](https://doi.org/10.1016/j.ejps.2025.107160)) - Chinese healthy volunteers and drug-susceptible / multidrug-resistant tuberculosis patients.
+
+- Add Comisar 2025 rimegepant ([doi:10.1002/psp4.70051](https://doi.org/10.1002/psp4.70051)) -- healthy adults, elderly adults with stable chronic illness, and adults with renal or hepatic impairment.
+
+- Add Zhang 2025 dupilumab FEV1 PK/PD ([doi:10.1002/psp4.70057](https://doi.org/10.1002/psp4.70057)) -- adults and adolescents with uncontrolled moderate-to-severe asthma.
+
+- Add Vucicevic 2025 efavirenz ([doi:10.7759/cureus.88533](https://doi.org/10.7759/cureus.88533)) -- Caucasian adults with HIV-1 in Serbia.
+
+- Add Lee 2025 piperacillin and tazobactam ([doi:10.3390/ph18081124](https://doi.org/10.3390/ph18081124)) - healthy Korean adults.
+
+- Add Rong 2019 and van Hest 2005 mycophenolic acid models, as re-implemented by Maizaud 2025 ([doi:10.1371/journal.pone.0330854](https://doi.org/10.1371/journal.pone.0330854)) - adult kidney transplant recipients on tacrolimus (Rong) or ciclosporin (van Hest).
+
+- Add Poels 2025 elranatamab QSP model ([doi:10.1038/s41540-025-00585-z](https://doi.org/10.1038/s41540-025-00585-z)) -- adults with relapsed or refractory multiple myeloma.
+
+- Add Randell 2024 metronidazole ([doi:10.1128/aac.01533-23](https://doi.org/10.1128/aac.01533-23)) -- critically ill preterm and term infants.
+
+- Add Zavrelova 2025 linezolid ([doi:10.1111/cts.70346](https://doi.org/10.1111/cts.70346)) -- hematooncological adults with suspected or proven Gram-positive sepsis.
+
+- Add Zhang 2025 nedosiran ([doi:10.1007/s40262-025-01540-1](https://doi.org/10.1007/s40262-025-01540-1)) -- healthy volunteers and children and adults with primary hyperoxaluria.
+
+- Add Francke 2025 tacrolimus full and starting-dose models ([doi:10.1007/s40262-025-01533-0](https://doi.org/10.1007/s40262-025-01533-0)) - adult living and deceased donor kidney transplant recipients.
+
+- Add Huang 2025 dexmedetomidine nasal spray ([doi:10.3389/fphar.2025.1662364](https://doi.org/10.3389/fphar.2025.1662364)) -- Chinese healthy volunteers and adults undergoing elective abdominal surgery.
+
+- Add Yamada 2025 fluorouracil and oxaliplatin ([doi:10.1007/s00280-025-04808-2](https://doi.org/10.1007/s00280-025-04808-2)) -- adults with locally advanced unresectable or metastatic gastric or gastroesophageal junction adenocarcinoma receiving mFOLFOX6 with or without zolbetuximab.
+
+- Add Xiang 2025 tacrolimus ([doi:10.2147/DDDT.S542786](https://doi.org/10.2147/DDDT.S542786)) -- adult renal transplant recipients.
+
+- Add 14 published imatinib population PK models transcribed from the Yang 2025 external evaluation ([doi:10.1007/s11523-025-01172-2](https://doi.org/10.1007/s11523-025-01172-2)) -- Judson 2005, Schmidli 2005, Widmer 2006, Petain 2008, Demetri 2009, Menon-Andersen 2009, Yamakawa 2011, Eechoute 2012, Golabchifar 2014, Gotta 2014, Di Paolo 2014, Wang 2019, Shriyan 2022 and He 2023; adults with chronic myeloid leukemia or gastrointestinal stromal tumor, two of them also including children.
+
+- Add Bouazza 2025 prednisolone ([doi:10.1002/bcp.70103](https://doi.org/10.1002/bcp.70103)) -- paediatric and adult patients with active systemic lupus erythematosus.
+
+- Add Mohammed Ali 2025 tacrolimus ([doi:10.3390/pharmaceutics17091185](https://doi.org/10.3390/pharmaceutics17091185)) -- stable adult renal transplant recipients converted from IR-Tac to LCP-Tac.
+
+- Add Shen 2025 voriconazole ([doi:10.3389/fphar.2025.1671652](https://doi.org/10.3389/fphar.2025.1671652)) -- immunocompromised children under 2 years of age.
+
+- Add de Vries 2025 durvalumab ([doi:10.1007/s40262-025-01555-8](https://doi.org/10.1007/s40262-025-01555-8)) -- adults with non-small cell lung cancer.
+
+- Add Boulanger 2025 trimethoprim + sulfadiazine / sulfadimethoxine / sulfamethoxazole ([doi:10.1080/01652176.2025.2565351](https://doi.org/10.1080/01652176.2025.2565351)) -- healthy growing pigs.
+
+- Add Salehi 2025 nicotine ([doi:10.1002/jcph.70038](https://doi.org/10.1002/jcph.70038)) -- adults who use nicotine pouches or moist smokeless tobacco.
+
+- Add Resendiz-Galvan 2025 cycloserine ([doi:10.1128/aac.00101-25](https://doi.org/10.1128/aac.00101-25)) - Indian adolescents and adults with multidrug-resistant tuberculosis.
+
+- Add Cendros 2025 enflicoxib ([doi:10.3389/fvets.2025.1645857](https://doi.org/10.3389/fvets.2025.1645857)) -- dogs with naturally occurring osteoarthritis.
+
+- Add Tao 2025 meropenem ([doi:10.3389/fphar.2025.1643553](https://doi.org/10.3389/fphar.2025.1643553)) -- critically ill adult and elderly surgical-ICU patients with Pseudomonas aeruginosa infections.
+
+- Add Yao 2025 flurbiprofen enantiomers ([doi:10.2147/DDDT.S542722](https://doi.org/10.2147/DDDT.S542722)) -- Chinese adults with postoperative pain after joint replacement, with paired plasma and cerebrospinal-fluid sampling.
+
+- Add Mo 2025 everolimus ([doi:10.12793/tcp.2025.33.e14](https://doi.org/10.12793/tcp.2025.33.e14)) -- healthy adult Korean males.
+
+- Add Kim 2025 infliximab, a panel of eight externally validated population PK models ([doi:10.1002/psp4.70089](https://doi.org/10.1002/psp4.70089)) -- adults and children with inflammatory bowel disease.
+
+- Add McBride 2025 recombinant ADAMTS13 ([doi:10.1002/psp4.70063](https://doi.org/10.1002/psp4.70063)) -- patients with congenital thrombotic thrombocytopenic purpura.
+
+- Add Duffull 2025 monoclonal antibody TMDD models, full and target-saturated simplification ([doi:10.1002/psp4.70049](https://doi.org/10.1002/psp4.70049)) -- 80 simulated subjects, unnamed mAb.
+
+- Add Comisar 2025 rimegepant ([doi:10.1111/cts.70360](https://doi.org/10.1111/cts.70360)) -- pooled adults and children 6 to <12 years with a history of migraine.
+
+- Add Tsyplakova 2025 mycophenolate sodium and mycophenolate mofetil ([doi:10.3390/medsci13040235](https://doi.org/10.3390/medsci13040235)) -- adult renal transplant recipients.
+
+- Add Karakitsios 2025 bedaquiline lung PBPK models ([doi:10.1002/bcp.70163](https://doi.org/10.1002/bcp.70163)) -- mouse, rat (Sprague-Dawley), beagle dog, and adults with pulmonary drug-resistant tuberculosis.
+
+- Add Rosenborg 2025 inhaled fluticasone propionate and salmeterol ([doi:10.2147/DDDT.S480189](https://doi.org/10.2147/DDDT.S480189)) - healthy adults in three dry-powder-inhaler bioequivalence crossover studies.
+
+- Add Jia 2025 TAK-071 ([doi:10.1002/cpdd.1579](https://doi.org/10.1002/cpdd.1579)) -- healthy adults and participants with Parkinson disease and cognitive impairment.
+
+- Add Fan 2025 Nb457-NbHSA-Nb457 anti-CD4 trimeric nanobody and ibalizumab TMDD PK-PD models ([doi:10.1128/spectrum.00805-25](https://doi.org/10.1128/spectrum.00805-25)) -- HIV-1-infected humanized NDG-HuPBL mice, plus allometric human projections.
+
+- Add Stoschus 2025 phenobarbital ([doi:10.1111/epi.18517](https://doi.org/10.1111/epi.18517)) -- critically ill adults with refractory and superrefractory status epilepticus.
+
+- Add Parkinson 2025 balcinrenone ([doi:10.1007/s40262-025-01572-7](https://doi.org/10.1007/s40262-025-01572-7)) -- healthy participants, participants with renal impairment, and patients with heart failure and chronic kidney disease.
+
+- Add Ozdin 2025 dexamethasone, erythrocyte-encapsulated ([doi:10.1002/psp4.70103](https://doi.org/10.1002/psp4.70103)) -- healthy adults and pediatric patients with ataxia telangiectasia.
+
+- Add Nguyen 2025 valbenazine ([doi:10.1002/jcph.70092](https://doi.org/10.1002/jcph.70092)) -- healthy adults and patients with tardive dyskinesia or Huntington's disease chorea.
+
+- Add Gu 2025 whole-body heart-failure PBPK models for digoxin, furosemide, bumetanide, torasemide, captopril, valsartan, felodipine and midazolam ([doi:10.3390/pharmaceutics17111394](https://doi.org/10.3390/pharmaceutics17111394)) -- healthy adults and chronic heart-failure patients in NYHA classes II-IV.
+
+- Add Zhou 2025 tacrolimus ([doi:10.1007/s00228-025-03920-9](https://doi.org/10.1007/s00228-025-03920-9)) -- Chinese adult lung transplant recipients in the first three months post-transplantation.
+
+- Add Jian 2025 peginterferon alfa-2b / Pegbing ([doi:10.1002/psp4.70104](https://doi.org/10.1002/psp4.70104)) -- healthy volunteers and chronic hepatitis B patients.
+
+- Add Tian 2025 pirtobrutinib ([doi:10.1002/psp4.70134](https://doi.org/10.1002/psp4.70134)) - healthy adults; a compartmental reduction of the published Simcyp minimal-PBPK model.
+
+- Add Xu 2025 aficamten ([doi:10.1002/psp4.70099](https://doi.org/10.1002/psp4.70099)) - healthy adults and adults with obstructive hypertrophic cardiomyopathy.
+
+- Add Collins 2025 midazolam ([doi:10.1002/psp4.70116](https://doi.org/10.1002/psp4.70116)) -- healthy volunteers given oral midazolam as a CYP3A probe with single-dose and multiple-dose efavirenz.
+
+- Add Varela-Gonzalez-Aller 2025 fludarabine ([doi:10.3390/pharmaceutics17121592](https://doi.org/10.3390/pharmaceutics17121592)) -- adults with relapsed/refractory large B-cell lymphoma receiving fludarabine-based lymphodepletion before CAR T-cell therapy.
+
+- Add Trujillo 2025 proinsulin/glucose homeostasis QSP model ([doi:10.3390/pharmaceutics17121522](https://doi.org/10.3390/pharmaceutics17121522)) -- four virtual patients spanning healthy physiology and the type 2 diabetes spectrum.
+
+- Add Zhang 2026 tebipenem ([doi:10.1111/cts.70453](https://doi.org/10.1111/cts.70453)) -- Japanese children aged 0.5-16 years, simulated for Bangladeshi children aged 24-59 months with shigellosis.
+
+- Add Sinha 2026 oxcarbazepine ([doi:10.1007/s40262-025-01579-0](https://doi.org/10.1007/s40262-025-01579-0)) -- children and young adults aged 44 days to 20.9 years, 52% with obesity.
+
+- Add Yu 2025 vancomycin ([doi:10.1007/s40268-025-00523-8](https://doi.org/10.1007/s40268-025-00523-8)) -- Chinese pediatric inpatients (birth to 15 years) receiving IV vancomycin.
+
+- Add Cheng 2026 levamisole interspecies models ([doi:10.1007/s40005-025-00770-6](https://doi.org/10.1007/s40005-025-00770-6)) -- joint allometric two-compartment and minimal-PBPK fits across duck, rabbit, chicken, goat, dog, sheep, pig and human.
+
+- Add Morath 2025 apixaban ([doi:10.1007/s40262-025-01534-z](https://doi.org/10.1007/s40262-025-01534-z)) -- adults with postoperative atrial fibrillation after cardiac surgery, with and without concomitant amiodarone.
+
+- Add Decker 2026 baricitinib ([doi:10.1007/s40262-025-01563-8](https://doi.org/10.1007/s40262-025-01563-8)) -- pediatric patients aged 2 to <18 years with moderate-to-severe atopic dermatitis.
+
+- Add Zakria 2026 voriconazole ([doi:10.1080/20523211.2025.2601420](https://doi.org/10.1080/20523211.2025.2601420)) -- adult Pakistani cancer patients, elderly (> 65 y) versus young.
+
+- Add Li 2025 amikacin ([doi:10.1186/s12879-025-11747-z](https://doi.org/10.1186/s12879-025-11747-z)) -- Chinese premature infants receiving therapeutic drug monitoring.
+
+- Add Zeng 2026 atezolizumab ([doi:10.1007/s00228-025-03974-9](https://doi.org/10.1007/s00228-025-03974-9)) -- adults with metastatic non-small cell lung cancer; all parameters fixed, transcribed from the FDA CDER review of BLA 761041Orig1s000.
+
+- Add Kollo 2026 selumetinib ([doi:10.1002/psp4.70156](https://doi.org/10.1002/psp4.70156)) - children aged 5-16 years with inoperable neurofibromatosis type I or plexiform neurofibromas.
+
+- Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
+
+- Add Decrane 2023 oxyfluorfen ([doi:10.1016/j.crtox.2023.100138](https://doi.org/10.1016/j.crtox.2023.100138)) -- rat (Sprague-Dawley) and extrapolated human.
+
+- Add Courlet 2023 cabamiquine ([doi:10.1128/aac.00891-23](https://doi.org/10.1128/aac.00891-23)) - healthy adult men in induced blood stage and sporozoite malaria challenge studies.
+
+- Add Hanley 2024 brigatinib ([doi:10.1002/psp4.13106](https://doi.org/10.1002/psp4.13106)) - healthy adults; a compartmental reduction of the published Simcyp minimal-PBPK model.
+
+- Add Majid 2024 lenvatinib ([doi:10.1002/psp4.13130](https://doi.org/10.1002/psp4.13130)) - patients with radioiodine-refractory differentiated thyroid cancer.
+
+- Add Aoki 2024 intra-target microdosing PBPK-PKRO model
+  ([doi:10.3389/fphar.2024.1366160](https://doi.org/10.3389/fphar.2024.1366160))
+  -- drug-agnostic simulated small-molecule compounds, no human subjects.
+
+- Add Chen 2024 IL-6-mediated CYP3A suppression ([doi:10.1002/psp4.13073](https://doi.org/10.1002/psp4.13073)) -- adults with relapsed/refractory non-Hodgkin lymphoma receiving mosunetuzumab.
+
+- Add Saleh 2023 LeiCNS-PK3.0 mouse CNS PBPK models for cyclophosphamide,
+  quinidine, erlotinib, phenobarbital, colchicine, ribociclib, topotecan,
+  cefadroxil, prexasertib and methotrexate
+  ([doi:10.1007/s11095-023-03554-5](https://doi.org/10.1007/s11095-023-03554-5))
+  -- laboratory mice (CD1 nude, NMRI, FVB, ICR, C57BL/6 Pept2+/+).
+
+- Add Granda 2024 tenofovir, oseltamivir carboxylate and kynurenic acid ([doi:10.1111/cts.13678](https://doi.org/10.1111/cts.13678)) - adult outpatients spanning CKD stages 1-5.
+
+- Add Wattanakul 2024 primaquine ([doi:10.1038/s41467-024-47908-y](https://doi.org/10.1038/s41467-024-47908-y)) -- lactating women with *Plasmodium vivax* infection and their breastfed infants.
+
+- Add Pei 2023 tacrolimus PBPK and popPK models ([doi:10.3390/pharmaceutics15112580](https://doi.org/10.3390/pharmaceutics15112580)) -- adult heart transplant recipients.
+
+- Add Wojciechowski 2023 ritlecitinib ([doi:10.1007/s40262-023-01318-3](https://doi.org/10.1007/s40262-023-01318-3)) - three model iterations covering healthy participants and patients with rheumatoid arthritis, ulcerative colitis, alopecia areata or vitiligo, plus moderate hepatic and severe renal impairment.
+
+- Add Walsh 2024 buprenorphine ([doi:10.1038/s41386-023-01793-z](https://doi.org/10.1038/s41386-023-01793-z)) - non-treatment-seeking adults with moderate to severe opioid use disorder.
 
 - Canonical unit spellings. The machine-readable `units` block wrote the same
   time unit three ways -- `"hour"` in 643 models, `"h"` in 208 and `"hr"` in 28
