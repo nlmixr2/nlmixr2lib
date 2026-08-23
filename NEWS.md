@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Feng 2019 ipilimumab mixture tumor growth dynamics model ([doi:10.1002/psp4.12454](https://doi.org/10.1002/psp4.12454)) -- adults with advanced melanoma.
+
 - Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
 
 - Add Yau 2023 diazepam and midazolam simplified PBPK models ([doi:10.1002/psp4.12915](https://doi.org/10.1002/psp4.12915)) -- rat, cynomolgus monkey and the human translation.
