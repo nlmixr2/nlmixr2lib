@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ujihira 2025 glycochenodeoxycholic acid 3-O-sulfate, an endogenous OATP1B3 / OAT3 biomarker ([doi:10.1002/cpt.70023](https://doi.org/10.1002/cpt.70023)) -- healthy adults.
+- Add Chigutsa 2025 tirzepatide ([doi:10.1002/cpt.3750](https://doi.org/10.1002/cpt.3750)) -- adults with obesity or overweight without type 2 diabetes (SURMOUNT-1).
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
