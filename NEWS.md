@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ibrahim 2025 ibrutinib ([doi:10.1002/psp4.70124](https://doi.org/10.1002/psp4.70124)) -- adults with treatment-naive or relapsed/refractory chronic lymphocytic leukemia.
+- Add Boivin-Champeaux 2026 acute hepatitis B virus QSP model ([doi:10.1002/psp4.70172](https://doi.org/10.1002/psp4.70172)) -- adults with acute HBV infection pooled from eight published cohorts.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
