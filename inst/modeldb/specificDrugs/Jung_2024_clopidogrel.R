@@ -196,9 +196,9 @@ Jung_2024_clopidogrel <- function() {
     # NESTED METABOLIZED FRACTIONS (LOGIT SCALE)
     # ==================================================================
     # Jung 2024 Methods 'PK model' defines two nested fractions with
-    #   fm_H4    = fm1 * fm2
-    #   fm_carbo = (1 - fm1) * fm2
-    #   fm_others= 1 - fm2
+    #   fmH4     = fm1 * fm2
+    #   fmcarbo  = (1 - fm1) * fm2
+    #   fmothers = 1 - fm2
     # i.e. fm2 is the fraction of the hepatic metabolic flux that goes to
     # the two MEASURED metabolites and fm1 is the share of that flux
     # routed to the active H4 thiol. Both typical values were FIXED, not
