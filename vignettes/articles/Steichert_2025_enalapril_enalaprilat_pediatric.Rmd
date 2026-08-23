@@ -103,8 +103,21 @@ set.seed(42L)
 # The paper's simulation dose (Section 2.3): 0.25 mg enalapril maleate
 # ODMT, single dose. The model's internal AMT unit is ug (matching the
 # reported concentration unit ug/L so that Cc = amount / V comes out
-# directly in ug/L), so we express 0.25 mg as 250 ug.
-DOSE_UG <- 250
+# directly in ug/L).
+#
+# The dose must be expressed as the enalapril FREE BASE, not the maleate
+# salt: the serum assay quantifies enalapril / enalaprilat free acids in
+# ug/L (Section 2.1.4), so the apparent volumes that convert amount to
+# concentration are on a free-base basis. Converting by the molecular
+# weight ratio enalapril / enalapril maleate = 376.45 / 492.52 = 0.76433:
+#   0.25 mg enalapril maleate = 0.25 * 0.76433 = 0.1911 mg = 191.1 ug base.
+# This is verified against the paper below: dosing the base equivalent
+# reproduces the published Cmax,1 of 1.85 ug/L at Ross = 0 to within 0.1%,
+# whereas dosing 250 ug (the salt mass) overshoots it by 31%.
+MW_ENALAPRIL      <- 376.45  # g/mol, enalapril free base
+MW_ENALAPRIL_MALEATE <- 492.52  # g/mol, enalapril maleate salt
+SALT_FACTOR       <- MW_ENALAPRIL / MW_ENALAPRIL_MALEATE  # 0.76433
+DOSE_UG           <- 250 * SALT_FACTOR  # 191.1 ug enalapril base
 
 # Common observation grid: 0 - 240 h post-first-dose per Fig 4 / Section 2.3.
 OBS_TIMES <- sort(unique(c(seq(0, 12, by = 0.25), seq(13, 24, by = 1),
@@ -241,7 +254,7 @@ ggplot(cmax_by_ross, aes(SCORE_ROSS, cmax_enaat)) +
   scale_x_continuous(breaks = 0:11) +
   labs(x = "Modified Ross score", y = "Enalaprilat Cmax,1 (ug/L)",
        title = "Predicted Cmax,1 vs Ross score (typical value, zero IIV)",
-       caption = "One typical-value simulation per Ross score. Reference weight 5 kg, age 0.34 y, SCR 23.37 umol/L, 0.25 mg (250 ug) enalapril maleate dose. Approximates Fig 6 of Steichert 2025 using the Table 2 point estimates.")
+       caption = "One typical-value simulation per Ross score. Reference weight 5 kg, age 0.34 y, SCR 23.37 umol/L, 0.25 mg enalapril maleate (= 191.1 ug enalapril base) dose. Approximates Fig 6 of Steichert 2025 using the Table 2 point estimates.")
 ```
 
 # PKNCA validation
@@ -312,13 +325,20 @@ nca_res_ena  <- suppressWarnings(PKNCA::pk.nca(nca_data_ena))
 Steichert 2025 Section 3.3 reports two enalaprilat Cmax,1 values that
 can be checked directly against the simulation: 1.85 ug/L (median) at
 Ross = 0 and 6.79 ug/L (median) at Ross = 11, both after 0.25 mg
-enalapril maleate. The paper's medians come from bootstrap fixed-effect
-distributions (Section 2.3), so a systematic gap between the typical-
-value simulated Cmax and the published bootstrap median is expected
-(the bootstrap sampling introduces right-skewness in the Cmax
-distribution, so the bootstrap median lies below the point-estimate
-typical value). The important thing to verify is the *ratio* between
-Ross = 0 and Ross = 11.
+enalapril maleate. Dosing the enalapril free-base equivalent
+(191.1 ug, see the cohort chunk) reproduces both, so this is an
+absolute check on the model, not just a check of the Ross-score
+*ratio*.
+
+Note that the salt correction is load-bearing here. Dosing the salt
+mass (250 ug) instead overshoots the published Cmax,1 by 31% at every
+Ross score. That offset cannot be attributed to the paper's use of
+bootstrap medians (Section 2.3): substituting the Table 2
+bootstrap-median parameter set for the point estimates moves the
+predicted Cmax,1 at Ross = 0 from 2.42 to 2.46 ug/L -- slightly *up*,
+not down toward 1.85. A constant 0.764 ratio across Ross scores, equal
+to the enalapril / enalapril maleate molecular-weight ratio, identifies
+the dose basis as the cause.
 
 ```{r nca-compare}
 sim_cmax_by_ross <- cmax_by_ross |>
@@ -345,7 +365,7 @@ cmp <- sim_cmax_by_ross |>
   )
 
 knitr::kable(cmp, digits = c(0, 2, 2, 1, 0),
-             caption = "Simulated typical-value vs published bootstrap-median enalaprilat Cmax,1 (Steichert 2025 Section 3.3). * flags rows differing by more than 20%. Ratio check: simulated Ross=11 / Ross=0 = 3.75 vs. published 3.67 (within 3%).")
+             caption = "Simulated typical-value vs published bootstrap-median enalaprilat Cmax,1 (Steichert 2025 Section 3.3), after the enalapril maleate -> free-base salt correction. * flags rows differing by more than 20%.")
 
 ratio_check <- tibble::tibble(
   metric = c("Simulated (typical-value)", "Published (bootstrap median)"),
@@ -360,24 +380,33 @@ knitr::kable(ratio_check, digits = 3,
              caption = "Cmax,1(Ross=11) / Cmax,1(Ross=0) ratio - simulated typical value vs published bootstrap median.")
 ```
 
-The Ross=11-to-Ross=0 ratio matches the paper's ratio to within a few
-percent, confirming that the Vd_ENAAT / Ross-score covariate
-relationship is encoded correctly. Absolute values differ from the
-paper's bootstrap medians because the bootstrap sampling depresses
-the median relative to the typical-value fit (see Section 2.3).
+Both the absolute Cmax,1 values and the Ross=11-to-Ross=0 ratio match
+the paper, confirming that the Vd_ENAAT / Ross-score covariate
+relationship and the overall dose-to-concentration scale are encoded
+correctly. The residual difference at Ross = 11 is larger than at
+Ross = 0 because the published values are medians over 988 bootstrap
+parameter sets, and the Ross-score coefficient (-0.15, RSE 26.3%) is
+amplified by `exp(-0.15 * (11 - 4))` at the top of the score range,
+widening the bootstrap spread there.
 
 # Assumptions and deviations
 
-- **Dosing convention.** The paper doses 0.25 mg enalapril maleate
-  ODMT (Steichert 2025 Section 2.3). The model's internal AMT unit is
-  micrograms (matching the reported concentration unit ug/L so that
-  Cc = amount / V drops out directly in ug/L for both parent and
-  metabolite outputs). The vignette's simulations therefore pass
-  `amt = 250` (ug) rather than `amt = 0.25` (mg). The published
-  apparent PK parameters (CL_ENA/F, Vd_ENA/F, CL_ENAAT/F, Vd_ENAAT/F)
-  implicitly absorb any molecular-weight conversion between the
-  maleate salt dosed and the enalapril / enalaprilat free acids
-  assayed in serum.
+- **Dosing convention and salt correction.** The paper doses 0.25 mg
+  enalapril maleate ODMT (Steichert 2025 Section 2.3). The model's
+  internal AMT unit is micrograms (matching the reported concentration
+  unit ug/L so that Cc = amount / V drops out directly in ug/L for both
+  parent and metabolite outputs). Doses must be supplied as the
+  enalapril **free base**, because the serum assay quantifies the
+  enalapril and enalaprilat free acids (Section 2.1.4) and the apparent
+  volumes therefore convert a free-base amount into the reported
+  concentration. The vignette passes
+  `amt = 250 * 376.45 / 492.52 = 191.1` ug rather than `amt = 250` ug.
+  The paper does not state this conversion explicitly; it is inferred
+  from, and verified against, the two Cmax,1 values reported in
+  Section 3.3 (see the Fig 6 comparison above), where the free-base
+  dose reproduces 1.85 ug/L at Ross = 0 to within 0.1% and the salt
+  mass overshoots by 31%. Users supplying doses in mg of enalapril
+  maleate must apply the same 0.76433 factor.
 - **IIV omega scale.** Steichert 2025 Table 2 footnote (a) reports IIV
   as `CV% = sqrt(omega^2) * 100`, so `omega^2 = (CV/100)^2`. The model
   file uses this convention directly (`etalcl ~ 0.4264 = 0.653^2`

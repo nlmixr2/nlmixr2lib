@@ -129,12 +129,17 @@
     "depot_kpd"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
-  # depot) and metabolite-suffixed compartments are validated
-  # separately via .matchesCompartment() so that the registered
-  # metabolite list can be honored at runtime; this static regex
-  # covers only the numbered-chain patterns. `depot[0-9]+` accommodates
-  # parallel-absorption models with two or more depots.
-  compartmentRegex = "^(transit|effect|precursor|lat|depot)[0-9]+$",
+  # depot / erythrocytes / mch / moderator) and metabolite-suffixed
+  # compartments are validated separately via .matchesCompartment() so
+  # that the registered metabolite list can be honored at runtime; this
+  # static regex covers only the numbered-chain patterns. `depot[0-9]+`
+  # accommodates parallel-absorption models with two or more depots.
+  # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
+  # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
+  # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
+  # (tolerance) chain.
+  compartmentRegex =
+    "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
@@ -179,6 +184,21 @@
   # Gebhard_2023_mercaptopurine, Gebhard_2023_mercaptopurine_anc.
   # Documented in inst/references/compartment-names.md.
   rbcCompartmentRegex = "^rbc_[a-z0-9]+$",
+  # Method-of-lines spatial discretisation slabs of a single tissue.
+  # rxode2 solves ODEs only, so a paper that writes transport through a
+  # tissue as a diffusion PDE (Fick's second law across an epithelium of
+  # finite thickness) is encoded by dividing the spatial coordinate into N
+  # equal slabs, one ODE state each. The `_slab` element states explicitly
+  # that the numbering indexes numerical discretisation elements of ONE
+  # tissue rather than N distinct anatomical structures, and the
+  # `<tissue>_` stem lets the family compose with any tissue (buccal,
+  # nasal, skin, airway epithelium) without registering a new chain prefix
+  # per paper. Validated by regex rather than an enumerated list because
+  # the slab count is a per-model numerical choice. Founding example:
+  # Salehi_2025_nicotine_pbpk (buccal_slab1..buccal_slab20 across a
+  # 1.75 mm effective buccal epithelium). Documented in
+  # inst/references/compartment-names.md.
+  slabCompartmentRegex = "^[a-z][a-z_]*_slab[0-9]+$",
   observationVar = "Cc",
   # propSd and addSd are the canonical proportional and additive
   # residual-error SDs; expSd is the log-scale residual SD used with
@@ -303,6 +323,20 @@
     # cytosolic arylketone reductases (Rodrigues 2017 BJCP
     # doi:10.1111/bcp.13392).
     "mhd",
+    # Naloxone as a co-administered SECOND ANALYTE (not a metabolite) in
+    # mechanistic opioid-overdose-reversal PK-PD models. Yang 2024
+    # (doi:10.1002/psp4.13215) couples an opioid agonist -- the parent,
+    # which keeps the unsuffixed canonical names -- to a full naloxone
+    # PK model (depot_naloxone, transit1..3_naloxone, central_naloxone,
+    # peripheral1_naloxone, effect_naloxone; lcl_naloxone, lvc_naloxone,
+    # lktr_naloxone, lke0_naloxone, lec50_naloxone) that competes with
+    # the agonist at the mu-opioid receptor. One suffix covers all four
+    # of that paper's opioid pairings, whereas making naloxone the
+    # parent would have required four (buprenorphine / morphine /
+    # fentanyl / carfentanil). Founding examples:
+    # Yang_2024_naloxone_buprenorphine, Yang_2024_naloxone_morphine,
+    # Yang_2024_naloxone_fentanyl, Yang_2024_naloxone_carfentanil.
+    "naloxone",
     # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
     # models in which both enantiomers are followed in plasma but no
     # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP
@@ -385,7 +419,15 @@
     # parent + metabolite joint popPK models for high-dose methotrexate
     # therapy (Joerger 2006 Br J Clin Pharmacol 62(1):71-80
     # doi:10.1111/j.1365-2125.2005.02513.x).
-    "7ohmtx"
+    "7ohmtx",
+    # AC886, the pharmacologically active metabolite of quizartinib
+    # (an N-desalkyl derivative formed predominantly via CYP3A4).
+    # AC886 is roughly equipotent with the parent for FLT3-ITD
+    # inhibition and circulates at comparable exposure, so it is
+    # followed as a second analyte in joint parent + metabolite popPK
+    # models (Vaddady 2024 doi:10.1111/cts.70074). Sidecar
+    # request-001 / response-001, question q1, option A.
+    "ac886"
   ),
   # Suffixes allowed for multi-component CL parameters. `_ss` denotes
   # the steady-state arm; `_time` the time-varying decay arm; `_renal`
@@ -397,7 +439,7 @@
   # CL + CL_HD); `_dialysis` the broader continuous / general dialysis
   # extracorporeal arm (e.g. Eyler 2014 ertapenem: CL_total = CLS +
   # DIAL * CLdial for CVVHD/CVVHDF).
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis"),
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "tsnet"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
@@ -906,10 +948,12 @@
 
 # Compartment name validator. Recognizes:
 #   - canonical names from conv$compartments
-#   - numbered chains via conv$compartmentRegex (transit/effect/precursor/lat/depot)
+#   - numbered chains via conv$compartmentRegex
+#     (transit/effect/precursor/lat/depot/erythrocytes/mch/moderator)
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
 #   - target species in physiologic compartments via conv$targetLocationRegex
 #   - intracellular red-cell analyte pools via conv$rbcCompartmentRegex
+#   - method-of-lines diffusion slabs via conv$slabCompartmentRegex
 #   - metabolite-suffixed compartments: <canonical>_<metab>
 .matchesCompartment <- function(name, conv) {
   if (name %in% conv$compartments) return(TRUE)
@@ -922,6 +966,8 @@
       grepl(conv$bacterialSubpopRegex, name)) return(TRUE)
   if (!is.null(conv$rbcCompartmentRegex) &&
       grepl(conv$rbcCompartmentRegex, name)) return(TRUE)
+  if (!is.null(conv$slabCompartmentRegex) &&
+      grepl(conv$slabCompartmentRegex, name)) return(TRUE)
   for (metab in conv$registeredMetabolites) {
     suf <- paste0("_", metab)
     if (endsWith(name, suf)) {

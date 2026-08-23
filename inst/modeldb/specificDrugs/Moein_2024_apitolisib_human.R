@@ -10,13 +10,13 @@ Moein_2024_apitolisib_human <- function() {
     "production rate of phosphorylated Akt (pAkt) measured in PLATELET-RICH",
     "PLASMA as a surrogate for tumor target modulation, expressed as %pAkt",
     "relative to a drug-free baseline of 100%; (3) exponential growth of the",
-    "RECIST sum of longest diameters at net rate kg opposed by a sigmoidal",
+    "RECIST sum of longest diameters at net rate p opposed by a sigmoidal",
     "shrinkage rate ks driven by the percent pAkt inhibition",
     "I = 100 - %pAkt. Imax and the pAkt Hill exponent are fixed at 1, and",
     "kout is not estimated but derived as kin/%pAkt(0) = kin/100, so the",
     "biomarker pool equilibrates essentially instantaneously and %pAkt",
     "tracks the plasma concentration directly. Only the five efficacy",
-    "parameters (kg, kmax, ki50, gamma2, proportional error) and the four",
+    "parameters (p, kmax, ki50, gamma2, proportional error) and the four",
     "tumor IIV terms were estimated in this integrated fit.",
     "Companion preclinical model: modellib('Moein_2024_apitolisib_mouse')."
   )
@@ -79,11 +79,13 @@ Moein_2024_apitolisib_human <- function() {
       "LC-MS/MS with an LLOQ of 0.5 ng/mL.",
       "In the integrated fit, patients WITH pAkt data used their individual",
       "IC50 estimate and patients WITHOUT pAkt data used the typical IC50",
-      "(Methods Sect. 2.5). Per-tumor-type individual IC50 means ranged from",
-      "4.0 to 26.1 ug/L (Supplementary Table S1); the mean for the two",
-      "metastatic renal cell carcinoma patients was 16.2 ug/L, i.e. at the",
-      "high end and closest to the 403 ug/L tumor-tissue estimate in the",
-      "companion 786-O RCC xenograft model.",
+      "(Methods Sect. 2.5). Individual IC50 estimates ranged from 4.03 to",
+      "26.1 ug/L across patients (Discussion; Supplementary Table S1 breaks",
+      "this down by primary tumor type). The two metastatic renal cell",
+      "carcinoma patients -- the tumor type matching the companion 786-O RCC",
+      "xenograft -- had a mean IC50 of 16.2 ug/L (range 13.3 to 19.1), at the",
+      "high end of the distribution but still ~25-fold below the 403 ug/L",
+      "tumor-tissue estimate in the xenograft model.",
       "Body-weight-normalized PK at a 70 kg reference weight: CL/F 0.304",
       "L/h/kg, V1/F 3.01 L/kg, V2/F 9.13 L/kg, CLd/F 0.085 L/h/kg (Results",
       "Sect. 3.1.2). Apitolisib fraction unbound in human plasma was 38.8%,",
@@ -123,7 +125,7 @@ Moein_2024_apitolisib_human <- function() {
     lic50      <- fixed(log(9.32));   label("Apitolisib concentration giving 50% of Imax on pAkt, IC50 (ug/L)")  # Table 2: IC50 = 9.32 ug/L (RSE 12.7%)
     lkin       <- fixed(log(88699));  label("pAkt zero-order production rate kin (%/h)")                         # Table 2: kin = 88,699 %/h (RSE 3.8%)
     imax       <- fixed(1);           label("Maximum fractional inhibition of pAkt production, Imax (unitless)") # Table 2: Imax = 1 (fix), to allow 100% biomarker inhibition
-    lhill_pakt <- fixed(log(1));      label("Hill exponent on the apitolisib-pAkt inhibition, gamma1 (unitless)") # Table 2: gamma1 = 1 (fix); footnote ** "estimate was 0.868-0.937; therefore it was fixed to 1 in the final model"
+    lhill_pakt <- fixed(log(1));      label("Hill exponent on the apitolisib-pAkt inhibition, gamma1 (unitless)") # Table 2: gamma1 = 1 (fix); footnote ** reports the estimate was 0.868-0.937, therefore it was fixed to 1 in the final model
     # kout is NOT a free parameter: Table 2 footnote * and Online Resource 1
     # Sect. II state kout = kin / %pAkt(0) with %pAkt(0) = 100%, giving the
     # tabulated 886.99 1/h. It is derived in model() rather than declared here.
@@ -132,14 +134,14 @@ Moein_2024_apitolisib_human <- function() {
     # Layer 3: integrated PK-PD-efficacy tumor model (Methods Eqs. 4-5,
     # Table 4). These five thetas plus the four omegas below are the ONLY
     # quantities estimated in this integrated fit.
-    #   d(Tumor)/dt = kg*Tumor - ks*Tumor
+    #   d(Tumor)/dt = p*Tumor - ks*Tumor
     #   ks = kmax * I^gamma2 / (ki50^gamma2 + I^gamma2),  I = 100 - %pAkt
     #
-    # Table 4 reports kg and kmax per WEEK; the / 168 converts to the 1/h
+    # Table 4 reports Kg and Kmax per WEEK; the / 168 converts to the 1/h
     # time base of this file (168 h per week, the same factor Online
     # Resource 2 part II uses in the opposite direction).
     # ------------------------------------------------------------------
-    lkg      <- log(0.0097 / 168); label("Net tumor growth rate constant kg (1/h; = 0.0097 1/week)")                  # Table 4: Kg = 0.0097 1/week (RSE 20.7%)
+    lp      <- log(0.0097 / 168); label("Net tumor growth rate constant p (Kg in the paper; 1/h, = 0.0097 1/week)")                  # Table 4: Kg = 0.0097 1/week (RSE 20.7%)
     lkmax    <- log(0.0142 / 168); label("Maximum tumor shrinkage rate constant kmax (1/h; = 0.0142 1/week)")         # Table 4: Kmax = 0.0142 1/week (RSE 43.9%)
     lki50    <- log(58.0);         label("Percent pAkt inhibition giving 50% of kmax, ki50 (% pAkt inhibition)")      # Table 4: KI50 = 58.0 %pAkt inhibition (RSE 34.3%)
     lhill_ks <- log(6.52);         label("Sigmoidicity factor of the pAkt-inhibition/shrinkage curve, gamma2 (unitless)") # Table 4: gamma2 = 6.52 (RSE 101.4%)
@@ -174,10 +176,10 @@ Moein_2024_apitolisib_human <- function() {
     etalka   ~ fixed(2.09);    # Results Sect. 3.1.2: IIV ka variance = 2.09 (RSE 16.4%, shrinkage 13.2%)
     etalic50 ~ fixed(0.296);   # Table 2: IIV IC50 variance = 0.296 (RSE 44.3%, shrinkage 15.5%)
 
-    etalkg      ~ 0.668;          # Table 4: IIV Kg variance = 0.668 (RSE 34.9%, Variability 81.7%, shrinkage 37.9%)
+    etalp      ~ 0.668;          # Table 4: IIV Kg variance = 0.668 (RSE 34.9%, Variability 81.7%, shrinkage 37.9%)
     etalkmax    ~ 0.377;          # Table 4: IIV Kmax variance = 0.377 (RSE 44.6%, Variability 61.4%, shrinkage 55.8%)
-    etalki50    ~ fixed(0.0225);  # Table 4: IIV KI50 variance = 0.0225 (fix) -- Online Resource 1 Sect. II: 'fixed to a small value (0.0225) to enhance the numerical estimation capability'
-    etalhill_ks ~ fixed(0.0225);  # Table 4: IIV gamma2 variance = 0.0225 (fix) -- same rationale
+    etalki50    ~ fixed(0.0225);  # Table 4: IIV KI50 variance = 0.0225 -- Online Resource 1 Sect. II held it at a small value (0.0225) to enhance the numerical estimation capability
+    etalhill_ks ~ fixed(0.0225);  # Table 4: IIV gamma2 variance = 0.0225 -- same rationale as etalki50
 
     # ------------------------------------------------------------------
     # Residual error.
@@ -205,7 +207,7 @@ Moein_2024_apitolisib_human <- function() {
     ic50         <- exp(lic50 + etalic50)
     kin          <- exp(lkin)
     hill_pakt    <- exp(lhill_pakt)
-    kg           <- exp(lkg + etalkg)
+    p            <- exp(lp + etalp)
     kmax         <- exp(lkmax + etalkmax)
     ki50         <- exp(lki50 + etalki50)
     hill_ks      <- exp(lhill_ks + etalhill_ks)
@@ -247,7 +249,7 @@ Moein_2024_apitolisib_human <- function() {
     # cannot produce a negative base for the non-integer power below.
     inhib_pakt_pct <- max(0, 100 - pakt)
     ks <- kmax * inhib_pakt_pct^hill_ks / (ki50^hill_ks + inhib_pakt_pct^hill_ks)
-    d/dt(tumor_size) <- kg * tumor_size - ks * tumor_size
+    d/dt(tumor_size) <- p * tumor_size - ks * tumor_size
     tumor_size(0)    <- rbase_tumor                                 # mm (RECIST SLD)
 
     # ----- 5. Observations (three independent endpoints) ----------------
