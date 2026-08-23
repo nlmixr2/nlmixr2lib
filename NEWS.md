@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Cao 2025 busulfan ([doi:10.3389/fphar.2025.1632588](https://doi.org/10.3389/fphar.2025.1632588)) -- Chinese children undergoing allogeneic hematopoietic cell transplantation.
+
 - Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
 
 - Add Yau 2023 diazepam and midazolam simplified PBPK models ([doi:10.1002/psp4.12915](https://doi.org/10.1002/psp4.12915)) -- rat, cynomolgus monkey and the human translation.

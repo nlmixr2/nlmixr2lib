@@ -458,6 +458,8 @@ navbar:
         href: articles/Bjornsson_2023_buprenorphine.html
       - text: "Busulfan (Balis 2025)"
         href: articles/Balis_2025_busulfan.html
+      - text: "Busulfan (Cao 2025)"
+        href: articles/Cao_2025_busulfan.html
       - text: "Busulfan (Choe 2012)"
         href: articles/Choe_2012_busulfan.html
       - text: "Busulfan (Lawson 2022)"
@@ -3977,6 +3979,7 @@ articles:
   - articles/Cao_2013_tefibazumab
   - articles/Cao_2013_visilizumab
   - articles/Cao_2017_dha_artemisinin_stress_model
+  - articles/Cao_2025_busulfan
   - articles/Cao_2025_ferricCarboxymaltose
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
