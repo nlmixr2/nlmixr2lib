@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chigutsa 2025 tirzepatide ([doi:10.1002/cpt.3750](https://doi.org/10.1002/cpt.3750)) -- adults with obesity or overweight without type 2 diabetes (SURMOUNT-1).
+- Add Ibrahim 2025 ibrutinib ([doi:10.1002/psp4.70124](https://doi.org/10.1002/psp4.70124)) -- adults with treatment-naive or relapsed/refractory chronic lymphocytic leukemia.
 
 - Add Moein 2024 apitolisib translational PK/PD models ([doi:10.1007/s40268-024-00459-5](https://doi.org/10.1007/s40268-024-00459-5)) -- mouse (786-O renal cell adenocarcinoma xenograft) and adults with advanced solid tumors or non-Hodgkin's lymphoma.
 
