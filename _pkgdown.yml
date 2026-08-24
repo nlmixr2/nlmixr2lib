@@ -976,6 +976,8 @@ navbar:
         href: articles/Toutain_2025_doxycycline_pig.html
       - text: "Droperidol (Foo 2016)"
         href: articles/Foo_2016_droperidol.html
+      - text: "DrugA (Zhang 2025)"
+        href: articles/Zhang_2025_drugA.html
       - text: "Dupilumab (Kovalenko 2016)"
         href: articles/Kovalenko_2016_dupilumab.html
       - text: "Dupilumab (Kovalenko 2020)"
@@ -5331,6 +5333,7 @@ articles:
   - articles/Zhang_2024_valproic_acid
   - articles/Zhang_2025_abemaciclib
   - articles/Zhang_2025_cefiderocol
+  - articles/Zhang_2025_drugA
   - articles/Zhang_2025_dupilumab_fev1
   - articles/Zhang_2025_erythroferrone
   - articles/Zhang_2025_fluconazole

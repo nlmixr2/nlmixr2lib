@@ -4318,6 +4318,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Cammarata_2024_sulbactam_durlobactam.R` (China, Taiwan, or South Korea; proportional shifts of -0.199 on durlobactam total CL and -0.263 on durlobactam Vc, with no sulbactam region effect; 45 of 373 pooled subjects, 12.1%).
 - **Notes:** Scope `specific`, matching every other member of the `REGION_*` family. Sibling to the single-country `REGION_JAPAN` / `REGION_FRANCE` / ... entries and to `REGION_EUROPE` / `REGION_ROW`. When a source paper reports BOTH a region effect and a race effect, register the race arm separately under the `RACE_*` family and keep the two columns distinct -- Cammarata 2024 explicitly found race and country of origin non-significant while East Asian region was significant. Ratified canonically on 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction.
 
+### REGION_CHINA (**canonical for China study-site / enrollment-country indicator**)
+- **Description:** 1 = subject enrolled at a study site in China, 0 = enrolled elsewhere. Single-country member of the `REGION_*` family, recording where a subject was enrolled rather than self-reported race or ethnicity. Distinct from `REGION_EASTASIA`, which is a broader multi-country regional grouping: encoding a China-specific effect as East Asian silently widens the claim beyond what the source fitted. Distinct also from the `RACE_ASIAN*` family, which records self-reported race.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-China / rest of world).
+- **Source aliases:**
+  - `POP` -- Zhang 2025 Data S4 control streams, coded 2 = Region X (China) and 1 = non-Region X, so `REGION_CHINA = POP - 1`.
+  - `CN`, `cn`, `CHINA`, `REGION = China` -- variant spellings of the same enrollment-country indicator.
+- **Example models:** `Zhang_2025_drugA.R` (multiplicative effect on PASI IC50, `ic50 * R_regionX^REGION_CHINA`, with R_regionX = 2.6 as the paper's borderline clinically relevant inter-regional difference).
+- **Notes:** Scope `specific`, matching every other member of the `REGION_*` family. Sibling to the single-country `REGION_JAPAN` / `REGION_FRANCE` / `REGION_ITALY` / ... entries. Provenance caveat for the founding example: the Zhang 2025 *article* anonymises the region as "Region X" throughout and never names China; the identification comes from the authors' own deposited Data S4 R code comments (`n_cn` "sample size for cn (Region X)" and "add label for Chinese and ROW populations (POP=2 is Region X, POP=1 is non-Region X)"). Ratified canonically on 2026-08-23 alongside that extraction (sidecar request-001 q2, option A).
+
 ## Pediatric comorbidities
 
 ### DIS_CLD_PREM (**canonical for chronic lung disease of prematurity**)
