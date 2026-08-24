@@ -27,17 +27,17 @@ per antibody, sharing this single vignette.
 ``` r
 
 model_names <- c(
-  "Zheng_2012_mAb1",
-  "Zheng_2012_mAb2",
-  "Zheng_2012_mAb3",
-  "Zheng_2012_mAb4",
-  "Zheng_2012_mAb5",
-  "Zheng_2012_mAb6",
-  "Zheng_2012_mAb7",
-  "Zheng_2012_mAb8",
-  "Zheng_2012_adalimumab"
+  "Zheng_2012_mAb1_minipig",
+  "Zheng_2012_mAb2_minipig",
+  "Zheng_2012_mAb3_minipig",
+  "Zheng_2012_mAb4_minipig",
+  "Zheng_2012_mAb5_minipig",
+  "Zheng_2012_mAb6_minipig",
+  "Zheng_2012_mAb7_minipig",
+  "Zheng_2012_mAb8_minipig",
+  "Zheng_2012_adalimumab_minipig"
 )
-mods <- setNames(lapply(model_names, readModelDb), sub("^Zheng_2012_", "", model_names))
+mods <- setNames(lapply(model_names, readModelDb), sub("_minipig$", "", sub("^Zheng_2012_", "", model_names)))
 ```
 
 ## Population
@@ -60,7 +60,7 @@ differences between mAbs.
 
 The per-antibody `population` metadata (n_subjects, mean body weights,
 dose, administration site) is preserved on each model file – for example
-`readModelDb("Zheng_2012_mAb1")()$population`.
+`readModelDb("Zheng_2012_mAb1_minipig")()$population`.
 
 ## Source trace
 

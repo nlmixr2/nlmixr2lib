@@ -228,10 +228,10 @@ mod
 #>         vc <- exp(lvc)
 #>         cl_1ohm <- exp(lcl_1ohm + etalcl_1ohm) * (WT/wt_ref)^e_wt_cl_1ohm
 #>         vc_1ohm <- exp(lvc_1ohm)
-#>         fm_mass <- fm_1ohm * mw_1ohm/mw_mdz
+#>         f_mass_1ohm <- fm_1ohm * mw_1ohm/mw_mdz
 #>         d/dt(central) <- -cl * central/vc
-#>         d/dt(central_1ohm) <- fm_mass * cl * central/vc - cl_1ohm * 
-#>             central_1ohm/vc_1ohm
+#>         d/dt(central_1ohm) <- f_mass_1ohm * cl * central/vc - 
+#>             cl_1ohm * central_1ohm/vc_1ohm
 #>         Cc <- central/vc * 1000
 #>         Cc_1ohm <- central_1ohm/vc_1ohm * 1000
 #>         Cc ~ add(addSd) + prop(propSd)

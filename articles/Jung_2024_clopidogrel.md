@@ -773,7 +773,7 @@ and 3-4 times the EM dose. {.table}
   half-maximal effect. Samples above the upper limit of quantification
   are routinely diluted and re-assayed, which would reconcile the two
   statements, but the paper does not say so.
-- **`fm_others` is not carried as a state.** The `1 - fm2` share of the
+- **`fmothers` is not carried as a state.** The `1 - fm2` share of the
   hepatic metabolic flux goes to unmeasured metabolites and appears only
   as the part of `CLc` not routed into either metabolite compartment,
   exactly as in the paper’s equations.
@@ -783,7 +783,7 @@ and 3-4 times the EM dose. {.table}
   random effect propagates to both.
 - **The `(1 - fm1) * fm2` split is confirmed three independent ways.**
   Methods ‘PK model’, the printed `dAm2/dt` equation, and the Table 3
-  footnote all give `fm_carbo = (1 - fm1) * fm2`, and Table 3’s numbers
+  footnote all give `fmcarbo = (1 - fm1) * fm2`, and Table 3’s numbers
   agree (`(1 - 0.125) * 0.960 = 0.840`). Worth stating explicitly
   because a two-column text extraction of the PDF displaces the
   parentheses onto their own line, making the expression look like
