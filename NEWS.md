@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Sun 2025 paclitaxel ([doi:10.1111/cts.70404](https://doi.org/10.1111/cts.70404)) -- adult women with breast cancer receiving weekly paclitaxel.
+
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
 - Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
