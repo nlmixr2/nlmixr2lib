@@ -630,6 +630,8 @@ navbar:
         href: articles/Simpson_2013_chloroquine.html
       - text: "Cholecalciferol (Tuey 2024)"
         href: articles/Tuey_2024_cholecalciferol.html
+      - text: "Cholecalciferol pbpk (Muhamad 2025)"
+        href: articles/Muhamad_2025_cholecalciferol_pbpk.html
       - text: "Ciclosporin (Fanta 2007)"
         href: articles/Fanta_2007_ciclosporin.html
       - text: "Ciclosporin (Frobel 2013)"
@@ -4725,6 +4727,7 @@ articles:
   - articles/Morris_2011_telapristone
   - articles/Mosha_2014_artemether_lumefantrine
   - articles/Mould_2007_alemtuzumab
+  - articles/Muhamad_2025_cholecalciferol_pbpk
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukonzo_2009_efavirenz
   - articles/Mulder_2025_ribavirin
