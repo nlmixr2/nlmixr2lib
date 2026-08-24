@@ -546,6 +546,75 @@ test_that("numbered precursor/lat chains are accepted", {
   expect_equal(nrow(cmts), 0)
 })
 
+test_that("every blessed chain prefix accepts numbered members and the register documents the same regex", {
+  # `compartmentRegex` is the ONLY thing that clears the "Compartment 'x1' is
+  # not a canonical name" warning for a numbered chain -- a compartment-names.md
+  # entry alone does nothing. Ratifying a chain canonical is therefore two edits
+  # (the regex in R, the documentation in the register) and they silently drift.
+  # This test enumerates the prefixes out of the regex itself, so a newly
+  # blessed prefix is covered the moment it is added, and it pins the R constant
+  # to the string the register advertises.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  prefixes <- strsplit(
+    sub("\\)\\[0-9\\]\\+\\$$", "", sub("^\\^\\(", "", conv$compartmentRegex)),
+    "|", fixed = TRUE
+  )[[1]]
+  expect_true(length(prefixes) >= 9L)
+  expect_true(all(grepl("^[a-z_]+$", prefixes)))
+  # Every ratified chain prefix accepts its numbered members ...
+  for (p in prefixes) {
+    expect_true(nlmixr2lib:::.matchesCompartment(paste0(p, "1"), conv), info = p)
+    expect_true(nlmixr2lib:::.matchesCompartment(paste0(p, "12"), conv), info = p)
+  }
+  # ... and an unblessed stem is still rejected, so the check can go red.
+  expect_false(nlmixr2lib:::.matchesCompartment("necrotic1", conv))
+  expect_false(nlmixr2lib:::.matchesCompartment("granuloma3", conv))
+
+  # The register's documented regex must be byte-identical to the R constant.
+  md <- readLines(nlmixr2lib:::.compartmentNamesPath(), warn = FALSE)
+  bullet <- grep("^- `compartmentRegex = ", md, value = TRUE)
+  expect_length(bullet, 1L)
+  documented <- sub("^- `compartmentRegex = \"(.*?)\"`.*$", "\\1", bullet,
+                    perl = TRUE)
+  expect_equal(documented, conv$compartmentRegex)
+  # Each prefix is also named in that bullet's prose, so the reader-facing
+  # description cannot fall behind the pattern.
+  for (p in prefixes) {
+    expect_true(grepl(paste0("`", p, "1`"), bullet, fixed = TRUE), info = p)
+  }
+})
+
+test_that("the caseum<n> TB granuloma chain is accepted", {
+  # Ratified 2026-08-24 with Karakitsios_2025_bedaquiline_mouse_pbpk.R; before
+  # ratification the mouse and human models needed the
+  # `paper_specific_compartments` escape hatch for these six states.
+  good <- function() {
+    description <- "Caseous-granuloma catenary chain"
+    reference <- "R"
+    units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
+    ini({
+      lcl <- 1; label("CL (L/h)")
+      lvc <- 1; label("Vc (L)")
+      lkcas <- log(0.01); label("Caseum diffusion rate (1/h)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      kcas <- exp(lkcas)
+      d/dt(central) <- -cl / vc * central
+      d/dt(lesion) <- kcas * (central / vc - lesion)
+      d/dt(caseum1) <- kcas * (lesion - caseum1) - kcas * caseum1 + kcas * caseum2
+      d/dt(caseum2) <- kcas * caseum1 - kcas * caseum2
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(good, verbose = FALSE))
+  cmts <- res[res$category == "compartments", ]
+  expect_equal(nrow(cmts), 0)
+})
+
 test_that("shared-exponent covariate effects (e_<cov>_<param1>_<param2>) are accepted", {
   good <- function() {
     description <- "Shared allometric exponent"

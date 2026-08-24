@@ -457,7 +457,7 @@
 
 - Add Tsyplakova 2025 mycophenolate sodium and mycophenolate mofetil ([doi:10.3390/medsci13040235](https://doi.org/10.3390/medsci13040235)) -- adult renal transplant recipients.
 
-- Add Karakitsios 2025 bedaquiline lung PBPK models ([doi:10.1002/bcp.70163](https://doi.org/10.1002/bcp.70163)) -- mouse, rat (Sprague-Dawley), beagle dog, and adults with pulmonary drug-resistant tuberculosis.
+- Add Karakitsios 2025 bedaquiline lung PBPK models ([doi:10.1002/bcp.70163](https://doi.org/10.1002/bcp.70163)) -- mouse, rat (Sprague-Dawley), beagle dog, and adults with pulmonary drug-resistant tuberculosis (ratifies the new numbered-chain compartment canonical `caseum<n>`, the concentric rings of the necrotic caseous core of a tuberculosis granuloma, numbered outward-to-inward from the outer caseum edge; the mouse and human models previously carried these states under the `paper_specific_compartments` escape hatch).
 
 - Add Rosenborg 2025 inhaled fluticasone propionate and salmeterol ([doi:10.2147/DDDT.S480189](https://doi.org/10.2147/DDDT.S480189)) - healthy adults in three dry-powder-inhaler bioequivalence crossover studies.
 

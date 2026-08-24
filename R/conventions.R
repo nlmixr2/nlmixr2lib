@@ -129,7 +129,7 @@
     "depot_kpd"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
-  # depot / erythrocytes / mch / moderator) and metabolite-suffixed
+  # depot / erythrocytes / mch / moderator / caseum) and metabolite-suffixed
   # compartments are validated separately via .matchesCompartment() so
   # that the registered metabolite list can be honored at runtime; this
   # static regex covers only the numbered-chain patterns. `depot[0-9]+`
@@ -137,9 +137,11 @@
   # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
   # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
   # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
-  # (tolerance) chain.
+  # (tolerance) chain. `caseum[0-9]+` is the catenary chain of concentric
+  # rings of the necrotic caseous core of a tuberculosis granuloma,
+  # numbered outward-to-inward from the outer caseum edge.
   compartmentRegex =
-    "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator)[0-9]+$",
+    "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator|caseum)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
@@ -949,7 +951,7 @@
 # Compartment name validator. Recognizes:
 #   - canonical names from conv$compartments
 #   - numbered chains via conv$compartmentRegex
-#     (transit/effect/precursor/lat/depot/erythrocytes/mch/moderator)
+#     (transit/effect/precursor/lat/depot/erythrocytes/mch/moderator/caseum)
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
 #   - target species in physiologic compartments via conv$targetLocationRegex
 #   - intracellular red-cell analyte pools via conv$rbcCompartmentRegex
