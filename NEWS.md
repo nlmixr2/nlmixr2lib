@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Perlstein 2026 extended-release injectable olanzapine TV-44749 and oral olanzapine ([doi:10.1002/jcph.70144](https://doi.org/10.1002/jcph.70144)) -- healthy adults and adults with schizophrenia or schizoaffective disorder.
+
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
 - Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.

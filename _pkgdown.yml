@@ -2338,6 +2338,10 @@ navbar:
         href: articles/Yu_2022_ofatumumab.html
       - text: "Ofloxacin (Chigutsa 2012)"
         href: articles/Chigutsa_2012_ofloxacin.html
+      - text: "Olanzapine lai (Perlstein 2026)"
+        href: articles/Perlstein_2026_olanzapine.html
+      - text: "Olanzapine oral (Perlstein 2026)"
+        href: articles/Perlstein_2026_olanzapine.html
       - text: "Olanzapine panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Olanzapine rat (Johnson 2011)"
@@ -4843,6 +4847,7 @@ articles:
   - articles/PerezRuixo_2020_esketamine
   - articles/PerezRuixo_2025_posdinemab
   - articles/Perlstein_2025_risperidone_tv46000
+  - articles/Perlstein_2026_olanzapine
   - articles/Perrottet_2009_ganciclovir
   - articles/Petric_2023_vinpocetine
   - articles/Petrov_2024_romiplostim

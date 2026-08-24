@@ -394,19 +394,47 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lra (**canonical log-transformed Weibull-absorption rate-scaling parameter**)
 - **Type:** log-transformed-pk
-- **Role:** Log of the rate-scaling parameter inside a Piotrovskij-style Weibull time-dependent ka (1 / time). The product `(ra * tad)^gam1` drives the time-dependence of ka; larger `ra` shifts the ka rise earlier. The bare counterpart inside `model()` is `ra`.
+- **Role:** Log of the rate-scaling parameter inside a Weibull absorption / release function (1 / time). Serves two related structures. (1) The Piotrovskij-style time-dependent ka, `ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))`, where the product `(ra * tad)^gam1` drives the time-dependence of ka and larger `ra` shifts the ka rise earlier. (2) A prescribed Weibull *release* input function of the form `S(t) = exp(-(ra * t)^gam1)` giving the fraction of a depot dose still unreleased, whose hazard `h(t) = gam1 * ra * (ra * t)^(gam1 - 1)` empties a depot compartment. Both are the same one-parameter Weibull time scale. The bare counterpart inside `model()` is `ra`.
 - **Source aliases:**
   - `RA` -- NONMEM `$THETA` convention used in Weibull-absorption control streams.
-- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
-- **Notes:** Distinct from `lka` (simple first-order absorption) and from any infusion-rate parameter. Used together with `lkamax` and `lgam1`. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+  - `TD` -- release-function papers commonly report the **time to release 63.2%** of the dose rather than the rate scaler; the two are exact reciprocals, `ra = 1 / TD`, so a source reporting `TD = 117 h` becomes `lra <- log(1/117)`. Always spell the reciprocal out in the in-file comment, because the `ini()` value is then not the number printed in the source table.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example, saturating-ka form), `Perlstein_2026_olanzapine_lai.R` (release-input form; `TD = 117 h` released as `ra = 1/117`).
+- **Notes:** Distinct from `lka` (simple first-order absorption) and from any infusion-rate parameter. Used together with `lkamax` and `lgam1` in the saturating-ka form, and with `lgam1` alone (plus the second-process partners `lra2` / `lgam2`) in the release-input form. Ratified canonically alongside the Desai 2016 isavuconazole extraction; extended to the release-input reading 2026-08-24 (operator sidecar `oare_PMC12775547` request-001 / response-001, question q1, answer B, which directed reuse of these stems rather than founding a parallel `trel` / `ssrel` family).
 
 ### lgam1 (**canonical log-transformed Weibull-absorption shape parameter**)
 - **Type:** log-transformed-pk
-- **Role:** Log of the unitless Weibull shape (sigmoidicity) parameter inside a Piotrovskij-style time-dependent ka. Larger values make the ka rise more abruptly; `gam1 = 1` reduces the Weibull form to a simple saturating exponential. The bare counterpart inside `model()` is `gam1`.
+- **Role:** Log of the unitless Weibull shape (sigmoidicity) parameter paired with `lra`, in either the Piotrovskij-style time-dependent ka or the Weibull release-input function (see `lra` for both forms). Larger values make the rise more abrupt; `gam1 = 1` reduces the Weibull form to a simple saturating exponential in the ka form and to first-order release in the release form. The bare counterpart inside `model()` is `gam1`.
 - **Source aliases:**
   - `GAM1` / `GAMMA1` -- NONMEM `$THETA` convention used in Weibull-absorption control streams.
-- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
-- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent) and from `lgamma` (Friberg myelosuppression feedback / TGI growth exponents). The `gam1` suffix follows the NONMEM convention for Weibull-absorption sigmoidicity. Ratified canonically alongside the Desai 2016 isavuconazole extraction.
+  - `SS` -- "sigmoidicity factor" in release-function papers (e.g. Perlstein 2026 Table 1). Note that `ss` on its own is a **reserved rxode2 symbol** (steady state) and cannot be used as a parameter or state name -- `rxode2()` hard-errors with `'ss' cannot be a state or lhs expression` -- which is one reason a paper's `SS` / `SS1` notation must be renamed to `gam1` / `gam2`.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example, saturating-ka form), `Perlstein_2026_olanzapine_lai.R` (release-input form; `SS = 1.4`).
+- **Notes:** Distinct from `lhill` (sigmoidal Emax / Imax exponent) and from `lgamma` (Friberg myelosuppression feedback / TGI growth exponents). The `gam1` suffix follows the NONMEM convention for Weibull-absorption sigmoidicity. Ratified canonically alongside the Desai 2016 isavuconazole extraction; extended to the release-input reading 2026-08-24 (operator sidecar `oare_PMC12775547` q1 = B).
+
+### lra2 (**canonical log-transformed second-process Weibull release rate-scaling parameter**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the rate-scaling parameter of the **second** Weibull process in a multi-phase release input function (1 / time), the direct partner of `lra`. Used for long-acting-injectable depots whose in vivo release is described as a mixture of two parallel Weibull processes, `r(t) = frel * exp(-(ra * t)^gam1) + (1 - frel) * exp(-(ra2 * t)^gam2)`, where `r(t)` is the fraction of the dose still unreleased. The second process is typically the slower, more sigmoidal, sustained-release phase. The bare counterpart inside `model()` is `ra2`.
+- **Source aliases:**
+  - `TD1` / `TD1_0` -- time to release 63.2% of the second process's dose fraction, the reciprocal of `ra2` (Perlstein 2026 Table 1). As with `lra`, spell the reciprocal out in the in-file comment.
+  - `RA2` -- the natural NONMEM `$THETA` spelling when a control stream numbers the two processes.
+- **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example; `TD1_0 = 323 h`, encoded as `lra2 <- log(1/323)`, with a linear dose effect `e_dose_ra2 = 0.0939 h/mg` applied on the reciprocal so the paper's printed additive form `TD1 = TD1_0 + TD1_1 * DOSE` is preserved exactly).
+- **Notes:** Ratified 2026-08-24 (operator sidecar `oare_PMC12775547` request-001 / response-001, question q1, answer B). The operator's ruling was explicit: a double-Weibull release input is the existing Weibull machinery applied twice, so it takes the registered `ra` / `gam1` stems plus numbered second-process partners, rather than a parallel `trel` / `ssrel` family. A third or later process would continue the numbering (`lra3` / `lgam3`). Distinct from `lkamax`, which has no analogue in the release-input form: a release mixture has no asymptotic rate constant, only a fraction split. Prior art with paper-local names: `Bonner_2015_gastric_emptying.R` implements the same double-Weibull mixture as `lgamma1` / `lbeta1` / `lgamma2` / `lbeta2` / `llogit_pr`; it is not retrofitted, per the register's standing rule that existing files are not migrated.
+
+### lgam2 (**canonical log-transformed second-process Weibull release shape parameter**)
+- **Type:** log-transformed-pk
+- **Role:** Log of the unitless Weibull shape (sigmoidicity) parameter of the **second** release process, the direct partner of `lgam1` in the double-Weibull release input function described under `lra2`. The bare counterpart inside `model()` is `gam2`.
+- **Source aliases:**
+  - `SS1` -- "sigmoidicity factor for the second process" (Perlstein 2026 Table 1). See the `lgam1` entry for why a paper's `SS` / `SS1` notation cannot be carried across literally.
+  - `GAM2` / `GAMMA2` -- NONMEM `$THETA` convention.
+- **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example; `SS1 = 3.25`, a markedly more sigmoidal second phase than the first process's `SS = 1.4`).
+- **Notes:** Ratified 2026-08-24 (operator sidecar `oare_PMC12775547` q1 = B), alongside `lra2`. Note the deliberate asymmetry in the numbering: the FIRST process keeps the unsuffixed-except-for-`1` NONMEM name `gam1` (which predates this entry) while its rate partner is the unnumbered `ra`, so a two-process release model reads `ra` / `gam1` then `ra2` / `gam2`. This is inherited from the Desai 2016 registration and is not worth churning existing files over.
+
+### logitfrel (**canonical logit-transformed release-process fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Logit-scale encoding of the fraction of a dose entering the **first** process of a multi-phase release input function (unitless, bounded in (0, 1)); the remaining `1 - frel` enters the second process. Inside `model()` the bare form is `frel = 1 / (1 + exp(-logitfrel_ind))` where `logitfrel_ind` collects the fixed effect, covariate shifts, and IIV on the logit scale -- so IIV is additive on the logit, not multiplicative. Collect the fixed effect and eta on their own line (`logitfrel_ind <- logitfrel + etalogitfrel`) so the term stays in a mu-referenced position; rxode2 otherwise warns that the eta defaulted to non-mu-referenced.
+- **Source aliases:**
+  - `FF` -- "fraction of the available dose released in the first process" (Perlstein 2026 Methods p. 4 and Table 1).
+- **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example; `FF = 0.236`, encoded as `logitfrel <- log(0.236 / (1 - 0.236))`, with the rapid first process carrying 23.6% of the dose and the sustained second process the remaining 76.4%).
+- **Notes:** Ratified 2026-08-24 (operator sidecar `oare_PMC12775547` request-001 / response-001, question q1, answer B). The operator directed the **logit** scale specifically, rejecting a log-scale `lfrel`, for the reason already recorded under `logitfm` and `logitfdepot`: a log-scale encoding of a bounded quantity can leak above 1 under moderate eta or covariate values. Follows the `logit`-transform-prefix family (`logitffo`, `logitemax`, `logitfm`, `logitfdepot`). Distinct from `logitfdepot` / `lfdepot`, which is a **bioavailability** -- the fraction of the administered dose that reaches the depot at all -- whereas `logitfrel` splits an already-bioavailable dose between two parallel release kinetics; a model can legitimately carry both. Also distinct from `fr` ("fraction of MAT in transit delay"). Three or more processes would take `logitfrel2` etc., but a softmax / stick-breaking encoding should be considered at that point.
 
 ### lbeta_cl (**canonical log-transformed exponential-nonlinear-CL slope**)
 - **Type:** log-transformed-pk
@@ -734,10 +762,32 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 
 ### gam1 (**canonical bare Weibull-absorption shape parameter**)
 - **Type:** bare-pk
-- **Role:** Bare counterpart of `lgam1`. Unitless Weibull shape (sigmoidicity) parameter inside a Piotrovskij-style time-dependent ka.
+- **Role:** Bare counterpart of `lgam1`. Unitless Weibull shape (sigmoidicity) parameter inside a Piotrovskij-style time-dependent ka, or of the first process of a Weibull release input function.
 - **Source aliases:**
   - `GAM1` / `GAMMA1` -- NONMEM convention.
-- **Example models:** `Desai_2016_isavuconazole.R` (founding example).
+  - `SS` -- release-function "sigmoidicity factor"; cannot be carried across literally because `ss` is a reserved rxode2 symbol.
+- **Example models:** `Desai_2016_isavuconazole.R` (founding example), `Perlstein_2026_olanzapine_lai.R` (release-input form).
+
+### ra2 (**canonical bare second-process Weibull release rate-scaling parameter**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lra2`. Rate-scaling parameter of the second Weibull process in a multi-phase release input function (1 / time). Used inside `model()` after being exponentiated from `lra2`, and after any covariate effect on the release TIME has been applied on the reciprocal.
+- **Source aliases:**
+  - `TD1` / `TD1_0` -- the reciprocal release time; `RA2` -- NONMEM convention.
+- **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example).
+
+### gam2 (**canonical bare second-process Weibull release shape parameter**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lgam2`. Unitless Weibull shape (sigmoidicity) parameter of the second process of a Weibull release input function.
+- **Source aliases:**
+  - `SS1` -- release-function "sigmoidicity factor for the second process"; `GAM2` / `GAMMA2` -- NONMEM convention.
+- **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example).
+
+### frel (**canonical bare release-process fraction**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `logitfrel`. Fraction of the dose entering the first process of a multi-phase release input function (unitless, in (0, 1)); the second process receives `1 - frel`. Used inside `model()` after the inverse-logit back-transform, and normally applied as the bioavailability split across two parallel depot compartments (`f(depot) <- frel`, `f(depot2) <- 1 - frel`).
+- **Source aliases:**
+  - `FF` -- "fraction of the available dose released in the first process".
+- **Example models:** `Perlstein_2026_olanzapine_lai.R` (founding example).
 
 ### beta_cl (**canonical bare exponential-nonlinear-CL slope**)
 - **Type:** bare-pk
