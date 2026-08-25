@@ -1700,6 +1700,8 @@ navbar:
         href: articles/Fau_2020_isatuximab.html
       - text: "Isavuconazole (Desai 2016)"
         href: articles/Desai_2016_isavuconazole.html
+      - text: "Isb2001 qsp (ChandralayamAyyappaMenon 2026)"
+        href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
       - text: "Isolariciresinol rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
       - text: "Isoniazid (Horita 2018)"
@@ -3276,6 +3278,8 @@ navbar:
         href: articles/Ganesan_2023_tebipenem.html
       - text: "Tebipenem (Zhang 2026)"
         href: articles/Zhang_2026_tebipenem.html
+      - text: "Teclistamab qsp (ChandralayamAyyappaMenon 2026)"
+        href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
       - text: "Tefibazumab (Cao 2013)"
         href: articles/Cao_2013_tefibazumab.html
       - text: "Teicoplanin (ButraguenoLaiseca 2025)"
@@ -4026,6 +4030,7 @@ articles:
   - articles/Chan_2023_nirmatrelvir
   - articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric
   - articles/Chandasana_2024_dolutegravir_lamivudine
+  - articles/ChandralayamAyyappaMenon_2026_isb2001
   - articles/Chang_2011_PF04455242_prolactin
   - articles/Charles_2007_tafenoquine
   - articles/Chatelut_1999_interferon_alfa_2b
