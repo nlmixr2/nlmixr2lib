@@ -262,7 +262,7 @@ trap <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) /
 
 typ_subject <- tibble::tibble(id = 1L, WT = typ_wt, PNA = typ_pna)
 ev_typ <- make_events(typ_subject, mgkg = 3, n_dose = 20)
-stopifnot(!anyDuplicated(unique(ev_typ[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(ev_typ[, c("id", "time", "evid")]))
 
 sim_typ <- rxode2::rxSolve(mod_typical, events = ev_typ,
                            keep = c("WT", "PNA"), useLinCmt = FALSE) |>
@@ -336,7 +336,7 @@ set.seed(20140121)
 
 ev_3 <- make_events(cohort |> dplyr::select(id, WT, PNA, age_group),
                     mgkg = 3, n_dose = 10)
-stopifnot(!anyDuplicated(unique(ev_3[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(ev_3[, c("id", "time", "evid")]))
 
 sim_3 <- rxode2::rxSolve(mod, events = ev_3,
                          keep = c("WT", "PNA", "age_group"),
