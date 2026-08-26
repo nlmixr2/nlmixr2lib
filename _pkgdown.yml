@@ -224,6 +224,8 @@ navbar:
         href: articles/Knights_2015_aripiprazole.html
       - text: "Aripiprazole (Koue 2007)"
         href: articles/Koue_2007_aripiprazole.html
+      - text: "Armodafinil (Darwish 2012)"
+        href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
       - text: "Artemether (Hietala 2010)"
         href: articles/Hietala_2010_artemether_lumefantrine_malaria.html
       - text: "Artemether (Hoglund 2015)"
@@ -2154,6 +2156,8 @@ navbar:
         href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mizoribine (Honda 2006)"
         href: articles/Honda_2006_mizoribine.html
+      - text: "Modafinil (Darwish 2012)"
+        href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
       - text: "Modafinil (Wu 2012)"
         href: articles/Wu_2012_modafinil.html
       - text: "ModakafuspAlfa (Li 2025)"
@@ -4105,6 +4109,7 @@ articles:
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
   - articles/Darpo_2014_racSotalol
+  - articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder
   - articles/Darwish_2025_trofinetide
   - articles/Dasti_2025_mrna_vaccines
   - articles/Davis_2008_maraviroc
