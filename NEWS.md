@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Claret 2014 week-8 disease control rate as a predictor of overall survival and progression-free survival ([doi:10.1002/jcph.191](https://doi.org/10.1002/jcph.191)) -- Western and Chinese adults with first-line non-small cell lung cancer treated with chemotherapy with or without bevacizumab.
+
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
 - Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
