@@ -1793,6 +1793,36 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 
 ---
 
+### pctofftime (**canonical percentage-OFF-time PD output**)
+- **Type:** compartment
+- **Role:** Percentage of a patient's awake time spent in the OFF state (the state of reduced levodopa benefit, with re-emergent motor symptoms) in Parkinson disease with levodopa-related motor response complications. The standard primary efficacy endpoint of adjunctive-therapy trials in that population, recorded from patient diaries. **Sign convention: LOWER is better** -- a treatment effect drives the state down, so an Emax term acting on this endpoint carries a negative Emax. The state is a percentage on a 0-100 scale but is not bounded by the model, so it should not be given a logit / probit transform unless the source paper declares one.
+- **Source aliases:** `POFF` -- Knebel 2012 paper notation (the structural equations write `POFFi = PDDPEi + IEi` and the observation `POFF = POFFi * exp(eps1) + eps2`).
+- **Example models:** `Knebel_2012_istradefylline_offtime.R` (sum of a disease-progression/placebo-response Emax term in study time, proportional to the individual baseline `E0`, and an additive istradefylline Emax term in steady-state exposure `AUC_ISTRA`).
+- **Notes:** Ratified canonically alongside the Knebel 2012 istradefylline extraction, following the lowercase run-together convention of `das28` / `madrsenh` / `cows` / `druglikingvascfb`. Distinct from the covariate `OFFTIME_BL` in `covariate-columns.md`, which carries the baseline daily OFF time in **hours per day** rather than as a percentage; the two are related through each subject's awake-time denominator, which Knebel 2012 does not report, so neither can be derived from the other. Also distinct from the endpoint's own structural baseline, which is the `e0` parameter rather than a separate state. A future Parkinson model fitting the ABSOLUTE daily OFF time in hours should register a companion `offtime`, and one fitting the change from baseline should register `pctofftimecfb`, exactly as `das28` and `das28cfb` are separated.
+
+### prob_dyskinesia (**canonical dyskinesia adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient reports aggravation of dyskinesia as a treatment-emergent adverse event at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure, not a time-to-event or per-visit incidence.
+- **Source aliases:** none.
+- **Example models:** `Knebel_2012_istradefylline_dyskinesia.R` (sigmoid Emax in steady-state istradefylline exposure, additive on the logit scale; `logit(p) = BD0 + EmaxPD * AUC^gamma / (EC50D^gamma + AUC^gamma)`).
+- **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Distinct from `sur` (a survival probability derived from a cumulative hazard) and from `prob_scc` (a state-occupancy probability in a multistate model): this endpoint has no time dimension at all -- it is the probability of the event having occurred at some point over the whole study, so it is constant in `time` for a given exposure. The founding model exposes it with a small placeholder additive residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises a Bernoulli likelihood on the observed 0/1 indicator and has no observation-error model. Ratified canonically alongside the Knebel 2012 istradefylline extraction.
+
+### prob_dizziness (**canonical dizziness adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient reports dizziness (predominantly lightheadedness) as a treatment-emergent adverse event at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Knebel_2012_istradefylline_dizziness.R` (sigmoid Emax in steady-state istradefylline exposure, additive on the logit scale; `logit(p) = BDZ0 + EmaxPDZ * AUC^gamma / (EC50DZ^gamma + AUC^gamma)`, with an estimated Hill coefficient of 10 that makes the curve effectively a step at the EC50).
+- **Notes:** A probability output in `[0, 1]`. Sibling of `prob_dyskinesia`, registered alongside it from the same source paper, and following the `prob_<endpoint>` shape founded by `prob_roc`. Constant in `time` for a given exposure, as for `prob_dyskinesia`. The founding model exposes it with a small placeholder additive residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises a Bernoulli likelihood on the observed 0/1 indicator. Ratified canonically alongside the Knebel 2012 istradefylline extraction.
+
+### prob_nausea (**canonical nausea adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability that a patient reports nausea as a treatment-emergent adverse event at any point during a study. A per-subject binary outcome modelled by logistic regression on drug exposure.
+- **Source aliases:** none.
+- **Example models:** `Knebel_2012_istradefylline_nausea.R` (unbounded power model in steady-state istradefylline exposure, additive on the logit scale; `logit(p) = BNS0 + SLOP * AUC^power`).
+- **Notes:** A probability output in `[0, 1]`. Sibling of `prob_dyskinesia` and `prob_dizziness`, registered alongside them from the same source paper, and following the `prob_<endpoint>` shape founded by `prob_roc`. Constant in `time` for a given exposure. Note that the founding model's exposure term is a POWER function rather than the sigmoid Emax used by its two siblings, so it has no asymptote: extrapolating exposure far beyond the range studied drives the probability toward 1 with no mechanistic ceiling. That contrast is the source paper's central safety finding (dyskinesia and dizziness risk plateau above 40 mg/d whereas nausea risk keeps rising), so the differing functional forms must be preserved rather than harmonised. The founding model exposes the output with a small placeholder additive residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises a Bernoulli likelihood on the observed 0/1 indicator. Ratified canonically alongside the Knebel 2012 istradefylline extraction.
+
+---
+
 ## PBPK bare organ-amount compartments (Zhang 2011 family)
 
 PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full-body PBPK extractions that don't prefix the organ name with `a_` / `vp_`. New PBPK extractions should prefer the spelled-out `a_<organ>` namespace, but the bare forms remain canonical for paper-mechanistic models that already use them. Registered 2026-05-29 per the naming-audit compartment-warning cleanup.
