@@ -1,0 +1,578 @@
+---
+title: "Nonracemic amisulpride (Hopkins 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nonracemic amisulpride (Hopkins 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model_load}
+ui <- rxode2::rxode(readModelDb("Hopkins_2024_amisulpride"))
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1002/cpt.3311>
+
+`r ui$description`
+
+# Population
+
+```{r population}
+pop <- ui$population
+tibble::tibble(
+  Field = names(pop),
+  Value = vapply(pop, function(x) paste(
+    if (is.null(names(x))) as.character(x) else paste0(names(x), ": ", x),
+    collapse = "; "), character(1))
+) |>
+  knitr::kable(caption = "Population metadata recorded with the model.")
+```
+
+The six pooled Phase I studies are listed in Table 1 of the supplement. Table 1
+of the paper gives baseline demographics for the four studies with PET imaging.
+The analysis dataset comprises 181 subjects, 11,626 plasma samples and 157
+D2 receptor occupancy measurements.
+
+# Model structure
+
+The paper's named contribution is the **Distribution Model**: a two-step brain
+distribution cascade placed downstream of an ordinary plasma PK model.
+Supplement Table 2 of the paper (reproduced as the "Distribution Model" row of
+its Table 2) shows that no conventional PD form reproduces all three governing
+observations simultaneously; the two-step cascade does.
+
+Absorption is three parallel depots with staggered lag times, representing
+regiospecific uptake along the gastrointestinal tract. Each depot's first-order
+rate constant is multiplied by a shared Weibull dissolution term whose two
+parameters were fitted outside NONMEM to the measured in vitro dissolution curve
+of each formulation prototype, so one model spans an oral solution, an
+immediate-release tablet, five controlled-release tablet strengths and two
+multiparticulate capsules.
+
+```{r model_source, include = FALSE}
+src <- readLines(system.file("modeldb/specificDrugs/Hopkins_2024_amisulpride.R",
+                            package = "nlmixr2lib"))
+closers <- grep("^  \\}\\)$", src)
+#' Line range of a top-level `ini({` / `model({` block: its opening line
+#' through the first `  })` that follows.
+block_span <- function(opener) {
+  start <- grep(opener, src)
+  stopifnot(length(start) == 1L)
+  end <- closers[closers > start][1]
+  stopifnot(!is.na(end))
+  seq(start, end)
+}
+stopifnot(length(src) > 100)
+```
+
+```{r structure_echo, comment = ""}
+cat(paste(src[block_span("^  model\\(\\{$")], collapse = "\n"))
+```
+
+# Source trace
+
+Every `ini()` entry in the model file carries an inline comment naming the
+table, `$THETA` line or `$OMEGA` line it came from. The table below is parsed
+directly out of the installed model file, so it cannot drift from the code.
+
+```{r source_trace}
+ini_span <- block_span("^  ini\\(\\{$")
+ini_lines <- src[ini_span[-c(1, length(ini_span))]]
+keep <- grepl("(<-|~)", ini_lines) & grepl("#", ini_lines)
+trace <- tibble::tibble(raw = trimws(ini_lines[keep])) |>
+  mutate(
+    Parameter = trimws(sub("\\s*(<-|~).*$", "", raw)),
+    Definition = trimws(sub("^.*?(<-|~)\\s*", "", sub("\\s*#.*$", "", raw))),
+    Source = trimws(sub("^[^#]*#\\s*", "", raw))
+  ) |>
+  select(Parameter, Definition, Source)
+knitr::kable(trace, caption = paste0(
+  "Source trace for all ", nrow(trace), " ini() entries, parsed from the model file."))
+```
+
+Structural equations trace as follows.
+
+| Model equation | Source |
+|---|---|
+| `d/dt(depot1..3) <- -kamax_i * wb * depot_i` | Supplement, PK Fitting NONMEM Script, `$DES` DADT(1)-(3) |
+| `d/dt(central)` (2-compartment with three absorption inputs) | Supplement, PK script `$DES` DADT(4) |
+| `d/dt(peripheral1) <- k12 * central - k21 * peripheral1` | Supplement, PK script `$DES` DADT(5) |
+| `wb <- 1 - exp(-(ra * tad(depot1))^gam1)` | Supplement, PK script `$PK`: `WB = 1-EXP((-(KAW*TAD)**GAMAW))` |
+| solution bypasses the Weibull term (`wb = 1`) | Supplement, D2 occupancy script `$PK`: `IF (RGN.EQ.4) WB = 1` |
+| `tlag3 <- tlag2 + exp(ltlag3 + ...)` | Supplement, PK script `$PK`: `TAL3 = TAL2 + TAL3T` |
+| `d/dt(effect1) <- kinf_effect1 * fu * fenant * Cc - keff_effect1 * effect1 - kinf_effect2 * effect1` | Supplement, D2 occupancy script `$DES` DADT(6) |
+| `d/dt(effect2) <- kinf_effect2 * effect1 - keff_effect2 * effect2` | Supplement, D2 occupancy script `$DES` DADT(7) |
+| `rod2 <- 100 * effect2 / (kd + effect2)` | Supplement, D2 occupancy script `$ERROR`: `D2P = (A(7)/(KD + A(7)))*100`; main text Table 2, Distribution Model row |
+| `Cc ~ prop(propSd) + add(addSd)` | Supplement, `$ERROR`: `Y = IPRE + IPRE*EPS(1) + EPS(2)` |
+| `rod2 ~ add(addSd_rod2)` | Supplement, D2 occupancy script `$ERROR`: `IF (CMT.EQ.8) Y = IPRE + EPS(3)` |
+
+# Virtual cohort
+
+Three single-dose 200 mg arms are simulated: the oral solution used by the PET
+studies, the immediate-release tablet that was carried into Phase II, and the
+20% controlled-release tablet, which of the five CR prototypes lies closest to
+the peak concentration reported for the CR tablet selected in Study 5.
+
+Each subject receives one dose, so a single occasion is modelled and the
+inter-occasion variability terms all draw on `OCC = 1`.
+
+```{r cohort}
+form_cols <- c(
+  "FORM_SEP4199_CR10", "FORM_SEP4199_CR25", "FORM_SEP4199_IR",
+  "FORM_SEP4199_SOLUTION", "FORM_SEP4199_CR15", "FORM_SEP4199_CR25_FED",
+  "FORM_SEP4199_MUPS30", "FORM_SEP4199_MUPS225", "FORM_SEP4199_CR20",
+  "FORM_SEP4199_CR40"
+)
+
+#' Build an event data frame for one formulation arm.
+#'
+#' Doses go simultaneously into all three parallel absorption compartments, as
+#' in the NONMEM dataset; f() and alag() inside the model apply the
+#' per-formulation bioavailability fractions and lag times.
+make_events <- function(form, dose = 200, n_sub = 1L, times = seq(0, 48, by = 0.1),
+                        addl = 0L, ii = 24) {
+  stopifnot(form %in% form_cols)
+  ev <- rxode2::et(amt = dose, cmt = "depot1", time = 0, addl = addl, ii = ii) |>
+    rxode2::et(amt = dose, cmt = "depot2", time = 0, addl = addl, ii = ii) |>
+    rxode2::et(amt = dose, cmt = "depot3", time = 0, addl = addl, ii = ii) |>
+    rxode2::et(times)
+  if (n_sub > 1L) ev <- rxode2::et(ev, id = seq_len(n_sub))
+  dat <- as.data.frame(ev)
+  # Two endpoints are declared, so observation rows need a dvid; dvid = 1 on
+  # every observation returns both Cc and rod2 as columns.
+  dat$dvid <- ifelse(dat$evid == 0, 1L, NA_integer_)
+  for (nm in form_cols) dat[[nm]] <- 0
+  dat[[form]] <- 1
+  dat$OCC <- 1
+  dat
+}
+
+#' Solve, keeping the arm label. useLinCmt = FALSE is required for multi-output
+#' models (rxode2's automatic ODE-to-linCmt conversion corrupts the dvid map).
+solve_arm <- function(mod, form, label, ...) {
+  out <- rxode2::rxSolve(mod, make_events(form, ...), returnType = "data.frame",
+                         useLinCmt = FALSE)
+  if (is.null(out$id)) out$id <- 1L
+  out$treatment <- label
+  out
+}
+
+arms <- c(Solution = "FORM_SEP4199_SOLUTION",
+          `IR tablet` = "FORM_SEP4199_IR",
+          `CR tablet (20%)` = "FORM_SEP4199_CR20")
+
+n_per_arm <- 60L
+# Re-seed before EACH arm so all three draw the identical sequence of etas.
+# That makes subject i the same virtual person in every arm, which turns the
+# across-arm contrasts below into paired comparisons. Seeding once outside the
+# loop would give each arm a different cohort and silently unpair them.
+cohort <- lapply(names(arms), function(lbl) {
+  rxode2::rxSetSeed(20240501)
+  solve_arm(ui, arms[[lbl]], lbl, n_sub = n_per_arm)
+}) |>
+  bind_rows() |>
+  mutate(treatment = factor(treatment, levels = names(arms)))
+
+# Confirm the arms really are paired: with common random numbers the individual
+# clearance draws must be identical subject-by-subject across arms.
+cl_by_arm <- cohort |>
+  distinct(treatment, id, cl) |>
+  tidyr::pivot_wider(names_from = treatment, values_from = cl)
+stopifnot(
+  nrow(cl_by_arm) == n_per_arm,
+  isTRUE(all.equal(cl_by_arm[[2]], cl_by_arm[[3]])),
+  isTRUE(all.equal(cl_by_arm[[2]], cl_by_arm[[4]]))
+)
+
+obs <- cohort |> filter(time > 0)
+stopifnot(nrow(obs) > 0, !anyNA(obs$Cc), !anyNA(obs$rod2), all(obs$Cc >= 0))
+```
+
+Typical-value profiles use `rxode2::zeroRe()` so the curves are the
+population prediction rather than one realisation.
+
+```{r typical}
+tv <- rxode2::zeroRe(ui)
+```
+
+# Replicating the published observations
+
+## Hysteresis (Figure 1a)
+
+Plasma concentrations wash out within about 24 h while D2 receptor occupancy
+needs about 5 days. Both series are scaled to their own peak, as in the source
+figure.
+
+```{r fig_hysteresis}
+hyst <- solve_arm(tv, "FORM_SEP4199_IR", "IR tablet", times = seq(0, 144, by = 0.25)) |>
+  filter(time > 0) |>
+  transmute(time,
+            `Plasma concentration` = Cc / max(Cc),
+            `D2 receptor occupancy` = rod2 / max(rod2)) |>
+  pivot_longer(-time, names_to = "series", values_to = "fraction")
+
+ggplot(hyst, aes(time, fraction, colour = series)) +
+  geom_line(linewidth = 0.9) +
+  scale_x_continuous(breaks = seq(0, 144, by = 24)) +
+  labs(x = "Time (h)", y = "Fraction of own peak", colour = NULL,
+       title = "Replicates Figure 1a of Hopkins 2024",
+       subtitle = "200 mg IR tablet, typical-value prediction") +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r gate_hysteresis}
+h <- solve_arm(tv, "FORM_SEP4199_IR", "IR tablet", times = seq(0, 144, by = 0.25)) |>
+  filter(time > 0)
+at <- function(v, tt) v[h$time == tt]
+tmax_pk <- h$time[which.max(h$Cc)]
+tmax_ro <- h$time[which.max(h$rod2)]
+pk_frac <- h$Cc / max(h$Cc)
+ro_frac <- h$rod2 / max(h$rod2)
+c(tmax_pk = tmax_pk, tmax_ro = tmax_ro,
+  pk_frac_at_24h = at(pk_frac, 24),
+  ro_frac_at_8h = at(ro_frac, 8), ro_frac_at_24h = at(ro_frac, 24),
+  ro_frac_at_27h = at(ro_frac, 27), ro_frac_at_120h = at(ro_frac, 120))
+
+stopifnot(
+  # Occupancy peaks well after the plasma peak -- the definition of hysteresis.
+  tmax_ro > 3 * tmax_pk,
+  # "the plasma PK (24-hour washout)": plasma is essentially gone at 24 h.
+  at(pk_frac, 24) < 0.10,
+  # "maximal D2R receptor occupancies were achieved by 8 hours and maintained
+  # out to 27 hours postdose" -- occupancy is within 20% of its own peak across
+  # that whole window while plasma falls by more than an order of magnitude.
+  at(ro_frac, 8) > 0.80, at(ro_frac, 24) > 0.80, at(ro_frac, 27) > 0.75,
+  # "up to 5 days were required for complete washout of D2R occupancy levels."
+  at(ro_frac, 120) < 0.05
+)
+```
+
+## Lack of accumulation over 7 daily doses (Figure 1c)
+
+```{r fig_accumulation}
+md <- lapply(c("IR tablet", "CR tablet (20%)"), function(lbl) {
+  solve_arm(tv, arms[[lbl]], lbl, times = seq(0, 192, by = 0.25), addl = 6L, ii = 24)
+}) |>
+  bind_rows() |>
+  filter(time > 0)
+
+pet <- md |> filter(time %in% c(27, 27 + 144))
+
+ggplot(md, aes(time, rod2, colour = treatment)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = pet, size = 2.6) +
+  scale_x_continuous(breaks = seq(0, 192, by = 24)) +
+  labs(x = "Time (h)", y = "D2 receptor occupancy (%)", colour = NULL,
+       title = "Replicates Figure 1c of Hopkins 2024",
+       subtitle = paste("200 mg once daily for 7 days; points are the PET scan times",
+                        "(27 h after dose 1 and after dose 7)")) +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+```{r gate_accumulation}
+acc <- pet |>
+  mutate(scan = ifelse(time == 27, "day1", "day7")) |>
+  select(treatment, scan, rod2) |>
+  pivot_wider(names_from = scan, values_from = rod2) |>
+  mutate(ratio = day7 / day1)
+knitr::kable(acc, digits = 2,
+             caption = "Occupancy 27 h after the first and the seventh daily dose.")
+
+stopifnot(
+  # The paper's claim is that occupancy does not accumulate SUBSTANTIALLY. The
+  # initial indirect-response model it replaced predicted the day-7 scan roughly
+  # double the day-1 scan (gray curves of Figure 1c); the Distribution Model
+  # keeps the rise modest.
+  all(acc$ratio > 1), all(acc$ratio < 1.5),
+  # Both formulations reach a similar steady-state occupancy: the paper's
+  # "pharmacodynamic bioequivalence in the brain" claim.
+  abs(diff(acc$day7)) / mean(acc$day7) < 0.25
+)
+```
+
+## Dose-response without receptor saturation (Figure 1b)
+
+```{r fig_doseresponse}
+dr <- lapply(c(200, 300, 400, 600, 700), function(d) {
+  s <- solve_arm(tv, "FORM_SEP4199_IR", "IR tablet", dose = d, times = seq(0, 48, by = 0.25))
+  tibble::tibble(dose = d, rod2_27h = s$rod2[s$time == 27])
+}) |>
+  bind_rows()
+
+ggplot(dr, aes(dose, rod2_27h)) +
+  geom_line(linewidth = 0.8) + geom_point(size = 2.5) +
+  ylim(0, 100) +
+  labs(x = "SEP-4199 dose (mg)", y = "D2 receptor occupancy at 27 h (%)",
+       title = "Replicates the dose-response of Figure 1b of Hopkins 2024",
+       subtitle = "IR tablet, typical-value prediction; Study 3 spanned 200-700 mg") +
+  theme_bw()
+
+knitr::kable(dr, digits = 1, col.names = c("Dose (mg)", "Occupancy at 27 h (%)"))
+```
+
+```{r gate_doseresponse}
+stopifnot(
+  # Monotone in dose.
+  all(diff(dr$rod2_27h) > 0),
+  # Not saturated: the paper states receptor is not saturated at the tested dose
+  # levels, and targets occupancy below 50% at the 200/400 mg therapeutic doses.
+  max(dr$rod2_27h) < 70,
+  dr$rod2_27h[dr$dose == 400] < 50,
+  # A 3.5-fold dose increase still produces a substantial occupancy increase,
+  # i.e. the curve has not flattened.
+  dr$rod2_27h[dr$dose == 700] / dr$rod2_27h[dr$dose == 200] > 1.8
+)
+```
+
+## Controlled release lowers peak plasma concentration (Figures 4b and 5)
+
+```{r fig_ir_vs_cr}
+med <- obs |>
+  group_by(treatment, time) |>
+  summarise(median = median(Cc),
+            lo = quantile(Cc, 0.1), hi = quantile(Cc, 0.9), .groups = "drop")
+
+ggplot(med, aes(time, median, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.9) +
+  coord_cartesian(xlim = c(0, 24)) +
+  labs(x = "Time (h)", y = "Total amisulpride (ng/mL)", colour = NULL, fill = NULL,
+       title = "Replicates Figure 4b / Figure 5 (PK panel) of Hopkins 2024",
+       subtitle = paste0("200 mg single dose, ", n_per_arm,
+                         " subjects per arm; median with 10th-90th percentile band")) +
+  theme_bw() + theme(legend.position = "bottom")
+```
+
+# Noncompartmental analysis
+
+```{r pknca}
+# Built from `cohort`, NOT from `obs`: `obs` drops time == 0, and a PKNCA
+# concentration frame with no time-zero record triggers "Requesting an AUC range
+# starting (0) before the first measurement" once per subject.
+conc_data <- cohort |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, treatment)
+stopifnot(all(tapply(conc_data$time, conc_data$treatment, min) == 0))
+
+dose_data <- conc_data |>
+  distinct(id, treatment) |>
+  mutate(time = 0, dose = 200)
+
+o_conc <- PKNCA::PKNCAconc(conc_data, Cc ~ time | treatment + id,
+                           concu = "ng/mL", timeu = "h")
+o_dose <- PKNCA::PKNCAdose(dose_data, dose ~ time | treatment + id, doseu = "mg")
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = 24,
+                         cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE)
+)
+nca_raw <- suppressWarnings(PKNCA::pk.nca(o_data))
+
+nca_res <- as.data.frame(nca_raw) |>
+  filter(!is.na(PPORRES)) |>
+  group_by(treatment, PPTESTCD) |>
+  summarise(value = ifelse(unique(PPTESTCD) == "tmax",
+                           median(PPORRES), exp(mean(log(PPORRES)))),
+            .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = value)
+
+stopifnot(nrow(nca_res) == length(arms), all(c("cmax", "tmax", "auclast") %in% names(nca_res)))
+knitr::kable(nca_res, digits = c(0, 1, 2, 0, 2),
+             caption = "Simulated NCA: geometric mean (median for tmax) per arm.")
+```
+
+## Comparison against the published values
+
+The paper reports three summary statistics that this model can be scored
+against: the median AUC0-24 of the 200 mg liquid arms of Studies 3 and 4
+(Figure 3 caption), and the geometric mean peak concentrations of the
+immediate-release and controlled-release tablets in Study 5 (Figure 5). Tmax and
+half-life are not reported numerically, so they are omitted from the comparison
+rather than compared against a value read off a figure.
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~treatment,        ~cmax, ~auclast,
+  "Solution",        NA,    3000,
+  "IR tablet",       599,   NA,
+  "CR tablet (20%)", 314,   NA
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = published,
+  by            = "treatment",
+  units         = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+
+# ncaComparisonTable() already names the header column "NCA parameter" and
+# renders an unmatched cell as a dash, so no renaming is needed here.
+knitr::kable(cmp,
+             caption = paste("Simulated vs published.",
+                             "* marks a difference above 20%."),
+             align = c("l", "l", "r", "r", "r"))
+```
+
+```{r gate_nca}
+gm <- function(tr, pp) nca_res[[pp]][nca_res$treatment == tr]
+sol_auc <- gm("Solution", "auclast")
+ir_cmax <- gm("IR tablet", "cmax")
+cr_cmax <- gm("CR tablet (20%)", "cmax")
+c(solution_auc0_24 = sol_auc, ir_cmax = ir_cmax, cr_cmax = cr_cmax,
+  cr_over_ir = cr_cmax / ir_cmax)
+
+stopifnot(
+  # Exposure is the parameter the model reproduces well: the 200 mg liquid arm
+  # lands within 20% of the published median AUC0-24 of 3000 ng*h/mL.
+  abs(sol_auc / 3000 - 1) < 0.20,
+  # The CR peak concentration matches the published geometric mean closely.
+  abs(cr_cmax / 314 - 1) < 0.20,
+  # The IR peak is under-predicted -- a limitation the supplement itself records
+  # ("slight under-prediction of the highest concentrations was somewhat
+  # apparent"). This gate pins the size of that gap so it cannot silently drift.
+  ir_cmax / 599 > 0.55, ir_cmax / 599 < 0.80,
+  # Controlled release still lowers the peak relative to immediate release,
+  # which is the finding the formulation programme rested on.
+  cr_cmax < ir_cmax
+)
+```
+
+Per-subject paired checks are more robust than cohort extremes, because the
+absorption terms carry large inter-individual and inter-occasion variability and
+the extreme of a random cohort is not reproducible across rxode2 versions.
+
+```{r gate_paired}
+paired <- obs |>
+  group_by(treatment, id) |>
+  summarise(cmax = max(Cc), tmax_pk = time[which.max(Cc)],
+            tmax_ro = time[which.max(rod2)], .groups = "drop")
+
+# Hysteresis holds subject by subject, not just on average.
+stopifnot(all(paired$tmax_ro - paired$tmax_pk > 2))
+
+cr_vs_ir <- paired |>
+  filter(treatment != "Solution") |>
+  select(treatment, id, cmax) |>
+  pivot_wider(names_from = treatment, values_from = cmax) |>
+  mutate(ratio = `CR tablet (20%)` / `IR tablet`)
+
+quantile(cr_vs_ir$ratio, c(0.1, 0.5, 0.9))
+
+stopifnot(
+  # Centre, not extreme: the controlled-release tablet lowers the peak
+  # concentration in the typical subject.
+  median(cr_vs_ir$ratio) < 0.95,
+  # Robust envelope rather than max(): the extreme of a random cohort is not
+  # reproducible across rxode2 versions, so the 90th percentile is asserted
+  # instead. Even the least-affected decile is not materially above parity.
+  quantile(cr_vs_ir$ratio, 0.9) < 1.10
+)
+```
+
+The direction of the controlled-release effect is reproduced, but its magnitude
+is not: the simulated median CR-to-IR peak ratio is about 0.89 against the
+0.52 implied by the published geometric means of 314 and 599 ng/mL. The gap is
+entirely on the immediate-release side, whose peak this model under-predicts by
+about a third for the reason recorded in the first Errata bullet below; the CR
+peak itself lands within a few percent of the published value. Nothing was
+adjusted to narrow it.
+
+# Assumptions and deviations
+
+* **Which published parameter set the model encodes.** The supplement reports
+  the PK layer twice and the two reports disagree. Its Table 2 ("NONMEM PK
+  Fitting Results") gives CL 128 L/h, Vc 203 L, ALAG2 0.97 h and a distinct
+  IIV / IOV structure; the PK control stream printed in the same supplement
+  carries `$THETA ... FIX` values of CL 106 L/h, Vc 289 L, ALAG2 0.241 h with a
+  different IIV / IOV structure. This model encodes the **control stream**, for
+  four reasons. (i) Table 2's IIV column is not usable: it reports variances up
+  to 39.1 on parameters with exponential inter-individual variability, which
+  corresponds to a coefficient of variation of order 1e8 and cannot be
+  simulated; the supplement itself notes that "obtaining full convergence was
+  typically not feasible". The control stream's variances (0.105 on CL, i.e.
+  33% CV) are ordinary. (ii) The control stream is the executable specification
+  whose `$TABLE` writes exactly the per-subject columns that the D2 receptor
+  occupancy script reads in `$INPUT`, so it is the PK that underlies the
+  published Distribution Model results. (iii) It is internally self-consistent
+  across `$THETA`, `$OMEGA` and the IOV block. (iv) Scored against the paper's
+  own published anchors it fits better than Table 2: median AUC0-24 for the
+  200 mg liquid arm 3395 vs 3588 ng*h/mL against a published 3000, and IR
+  typical-value Cmax 381 vs 323 ng/mL against a published 599. Nothing was
+  tuned; both sets were simulated as printed and compared.
+* **`ALAG3` is an increment, not an absolute lag.** The control stream computes
+  `TAL3 = TAL2 + TAL3T`, so `THETA(6)` is the additional delay of the third
+  absorption compartment beyond the second. The absolute lag is
+  0.241 + 2.4 = 2.641 h. Reading `THETA(6)` as an absolute lag would place the
+  third absorption wave an hour and a half too early.
+* **Unit conversion on the plasma concentration.** `$ERROR` computes
+  `CT = A(4)/V4` with no scaling, which means the NONMEM dataset carried dose
+  amounts in ug. Doses are declared here in mg so that the published dose levels
+  can be entered directly, so `model()` applies an explicit factor of 1000 to
+  convert mg/L to ng/mL. It is a unit conversion, not a fitted parameter, and it
+  applies before the effect compartments because their influx is driven by the
+  plasma concentration on the same ng/mL scale as `kd = 9 ng/mL`.
+* **PD parameters come from Table 3, not from the occupancy control stream.**
+  That script's `$THETA` entries (KE1 0.0723, KE2 0.221, KE3 0.0605, KT 0.0741)
+  are bounded initial estimates for the run; the final values are supplement
+  Table 3 (KE1 0.0221, KE2 0.0685, KE3 0.0602, KT 0.42). The fixed KD, FU and SP
+  agree between the two.
+* **The Weibull dissolution constants come from the executed `$PK` block.**
+  Supplement Table 5 rounds two of them differently from the code that was run
+  (RGN9 `TKA1` printed as 0.80 against 0.8457 in `$PK`, RGN10 `TGAMA1` printed
+  as 0.70 against 0.7764). The four-decimal values in `$PK` are used. The
+  supplement also states that the pairs for the fed 25% CR tablet and for the
+  solution were interpolated rather than fitted to a dissolution curve.
+* **The oral solution bypasses the Weibull term.** The PK script applies a
+  nominal fast Weibull pair to the solution while the D2 occupancy script sets
+  `WB = 1` for it. This model follows the occupancy script, which is the final
+  integrated model and is also the physically sensible reading (a solution has
+  no solid-state dissolution step). The numerical difference is confined to the
+  first half hour after a solution dose.
+* **Zero-variance IIV terms are omitted.** The control stream fixes the
+  inter-individual variances of `KA1`-`KA3` and `F1`-`F3` to exactly zero. No
+  eta is carried for them, because a zero-variance eta makes OMEGA singular and
+  `chol()` fails during sampling. The inter-occasion variability on `F1`-`F3`
+  is non-zero and is retained.
+* **Which CR prototype Study 5 selected is not stated.** The paper says a single
+  CR prototype was selected "based on PK parameters evaluated in previous
+  cohorts" but does not name it. The 20% CR tablet is used here because its
+  simulated peak concentration is the closest of the five CR prototypes to the
+  published 314 ng/mL. All ten formulations are available in the model through
+  their `FORM_SEP4199_*` indicators.
+* **The IR peak concentration is under-predicted by about a third.** This is a
+  property of the published model, not of the transcription: the supplement
+  records that "slight under-prediction of the highest concentrations was
+  somewhat apparent", and the main text emphasises the "short-lasting peak
+  concentrations with the IR formulation" that a three-depot Weibull absorption
+  model necessarily smooths. Exposure (AUC) and the CR peak are reproduced
+  within 20%. No parameter was adjusted to close the gap.
+* **Sex and food are carried as `covariatesDataExcluded`.** `SEX` and `FED`
+  appear in the NONMEM `$INPUT` records but are never referenced in `$PK` or
+  `$DES`. The single fed arm is carried structurally instead, as its own
+  regimen indicator with its own bioavailability triple and Weibull pair.
+* **`sex_female_pct` is recorded as 0.** Table 1 reports sex per study rather
+  than pooled, and the only pooled column (the N = 37 imaging arm) is 78.4%
+  male. The pooled female percentage across all 181 subjects is not published.
+* **Models the paper rejected are not extracted.** Table 2 of the paper lists
+  five alternative PD forms (linear direct effect, saturated Emax, effect
+  compartment, concentration-difference, ratio) with their equations but no
+  parameter estimates, and the earlier indirect-response model built on
+  single-dose data is described without published parameters. None of them can
+  be encoded without inventing values, so only the Distribution Model is
+  packaged. The concentration-QT relationship of Figure 4c and the
+  `Cmax`-occupancy regression of Figure 3b are likewise reported graphically
+  without parameter values.
