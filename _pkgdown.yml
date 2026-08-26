@@ -288,6 +288,8 @@ navbar:
         href: articles/Anbari_2023_atezolizumab_cibisatamab_qsp.html
       - text: "Atorvastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
+      - text: "Atorvastatin (Knebel 2013)"
+        href: articles/Knebel_2013_atorvastatin.html
       - text: "AtractylodesLancea group1day1 (Saeheng 2024)"
         href: articles/Saeheng_2024_atractylodesLancea.html
       - text: "AtractylodesLancea group2day14 (Saeheng 2024)"
@@ -4497,6 +4499,7 @@ articles:
   - articles/Kloprogge_2015_lumefantrine
   - articles/Kloprogge_2018_lumefantrine
   - articles/Klunder_2017_upadacitinib
+  - articles/Knebel_2013_atorvastatin
   - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
