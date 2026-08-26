@@ -2388,6 +2388,8 @@ navbar:
         href: articles/Chairat_2016_oseltamivir.html
       - text: "Oseltamivir (Kamal 2013)"
         href: articles/Kamal_2013_oseltamivir.html
+      - text: "Oseltamivir (Kamal 2014)"
+        href: articles/Kamal_2014_oseltamivir.html
       - text: "Oseltamivir (Kamal 2015)"
         href: articles/Kamal_2015_oseltamivir.html
       - text: "Oseltamivir (Standing 2012)"
@@ -4443,6 +4445,7 @@ articles:
   - articles/Kado_2023_benzathine_benzylpenicillin_g
   - articles/Kakara_2014_statins_LDLC
   - articles/Kamal_2013_oseltamivir
+  - articles/Kamal_2014_oseltamivir
   - articles/Kamal_2015_oseltamivir
   - articles/Kang_2020_cefpirome
   - articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk
