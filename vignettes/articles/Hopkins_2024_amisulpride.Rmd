@@ -487,8 +487,9 @@ The direction of the controlled-release effect is reproduced, but its magnitude
 is not: the simulated median CR-to-IR peak ratio is about 0.89 against the
 0.52 implied by the published geometric means of 314 and 599 ng/mL. The gap is
 entirely on the immediate-release side, whose peak this model under-predicts by
-about a third for the reason recorded in the first Errata bullet below; the CR
-peak itself lands within a few percent of the published value. Nothing was
+about 40% (cohort geometric mean 356 against a published 599 ng/mL) for the
+reason recorded in the first Errata bullet below; the CR peak itself lands
+within a percent of the published value (314.3 against 314 ng/mL). Nothing was
 adjusted to narrow it.
 
 # Assumptions and deviations
@@ -553,7 +554,9 @@ adjusted to narrow it.
   simulated peak concentration is the closest of the five CR prototypes to the
   published 314 ng/mL. All ten formulations are available in the model through
   their `FORM_SEP4199_*` indicators.
-* **The IR peak concentration is under-predicted by about a third.** This is a
+* **The IR peak concentration is under-predicted by about 40%.** The cohort
+  geometric mean is 356 ng/mL against a published 599, and the typical-value
+  prediction is 381 ng/mL, i.e. about a third low. This is a
   property of the published model, not of the transcription: the supplement
   records that "slight under-prediction of the highest concentrations was
   somewhat apparent", and the main text emphasises the "short-lasting peak
