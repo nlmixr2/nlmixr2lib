@@ -863,6 +863,21 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** widespread sigmoid-Emax PD extractions.
 
+### led50 (**canonical log-transformed half-maximal DOSE**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed administered DOSE producing a half-maximal response, i.e. the dose-axis sibling of `lec50`. Carries the units of the administered dose (mg, ug, umol/kg, ...), NOT concentration units. The founding use is a saturable relative bioavailability of the standard-saturation (`Emax`) form `frel = ed50 / (dose + ed50)`, which equals 1 as the dose approaches 0 and 0.5 at `dose = ed50`. Inside `model()` the bare name is `ed50`.
+- **Source aliases:**
+  - `D50` -- Kastrissios 2006 notation ("the dose at which `Frel` is half maximal"; Table IV row "D50 for F, mg" = 221 mg).
+- **Example models:** `Kastrissios_2006_apricoxib.R` (founding example; `led50 <- log(221)` with `frel <- exp(e_evening_fdepot * evening) * ed50 / (podo(depot) + ed50)` applied via `f(depot)`, reproducing the paper's abstract claim of a "50% reduction at 221 mg").
+- **Notes:** Ratified 2026-08-26 alongside the Kastrissios 2006 apricoxib (CS-706) extraction (sidecar request-001 q3, option A). Deliberately axis-agnostic in the same way `lki50` is: the name records only that the sigmoid's x-axis is the administered DOSE, so a future dose-response PD model whose half-maximal point is a dose rather than a plasma concentration can reuse it. Distinct from `lec50` / `lic50`, which are half-maximal CONCENTRATIONS -- reusing `lec50` for a dose would make the model's units incoherent and mislead a reader into treating the value as a plasma concentration. Distinct also from the covariate-effect family `e_<cov>_<param>`: `ed50` is a structural constant of the bioavailability (or dose-response) model, not a slope on a covariate. Not every dose-dependent-`F` model needs it -- `Wada_2023_sparsentan.R` and `Comisar_2025_rimegepant.R` both use power forms on the `DOSE` covariate and `Maleki_2024_brepocitinib.R` uses a `DOSE_HIGH` step; reach for `led50` only when the source reports a genuine half-maximal dose constant. A downstream user must read the dose units off `label()`, since they are model-specific by construction.
+
+### ed50 (**canonical bare half-maximal DOSE**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `led50`; the half-maximal-response administered dose on the linear scale, for use inside `model()`.
+- **Source aliases:**
+  - `D50` -- Kastrissios 2006 notation.
+- **Example models:** `Kastrissios_2006_apricoxib.R`.
+
 ### lki50 (**canonical log-transformed half-maximal upstream-biomarker level driving a downstream effect rate**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed half-maximal point of a sigmoid whose DRIVER is an upstream biomarker response rather than a drug concentration, entering a downstream effect-RATE expression: `rate = rmax * I^hill / (ki50^hill + I^hill)`, where `I` is the biomarker response on its own axis (percent inhibition of a phosphoprotein, percent receptor occupancy, fold-change of a transcript). Carries the units of that biomarker axis, NOT concentration units. Inside `model()` the bare name is `ki50`.
