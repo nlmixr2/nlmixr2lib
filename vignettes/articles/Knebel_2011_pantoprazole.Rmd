@@ -719,9 +719,38 @@ knitr::kable(
 
 # Errata and source-quality notes
 
-Three labelling or consistency problems in Table I of Knebel 2011 are worth
-recording. None affects the model, since none of the affected rows feeds a
-parameter -- `AGE` is a data column the user supplies, not an estimate.
+## The Discussion's IOV interval disagrees with Table IV
+
+The Discussion reports the granule bioavailability inter-occasion variability as
+"a point estimate (95% CI) interoccasion CV of 56.7% (37.7, 61.4)". Table IV's
+OMEGA4.4 row gives the variance as 0.321 with a bootstrap 95% CI of
+(0.142, 0.519). Taking square roots:
+
+```{r iov-ci}
+tibble::tibble(
+  Quantity    = c("Point estimate", "Lower 95% bound", "Upper 95% bound"),
+  `Table IV variance` = c(0.321, 0.142, 0.519),
+  `sqrt(variance), %` = round(100 * sqrt(c(0.321, 0.142, 0.519)), 1),
+  `Discussion, %`     = c(56.7, 37.7, 61.4)
+) |>
+  knitr::kable(caption = "The Discussion's IOV point estimate and lower bound reproduce Table IV exactly under the square-root rule; its upper bound does not.")
+```
+
+The point estimate (56.7) and the lower bound (37.7) reproduce Table IV
+*exactly* as the square root of the printed variance, so the upper bound should
+be 72.0%, not 61.4%. This cuts two ways. It is a genuine internal inconsistency
+in the paper -- but because two of the three numbers match to the last printed
+digit, it is also independent corroboration of this vignette's central decoding
+decision above: Table IV's "CV%" column really is the plain square root of the
+printed variance, not a log-normal `sqrt(exp(omega^2) - 1)` transform. The model
+uses only the point estimate, so nothing downstream depends on which bound is
+right.
+
+## Table I labelling and internal consistency
+
+Three further labelling or consistency problems, all in Table I. None affects the
+model, since none of the affected rows feeds a parameter -- `AGE` is a data
+column the user supplies, not an estimate.
 
 - The row "Preterm age, mos" reports a minimum of 1, maximum of 15, and median
   of 6. The Results text describes the same 77 patients as "ranging from 1 to 15
