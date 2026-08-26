@@ -2562,6 +2562,8 @@ navbar:
         href: articles/Li_2014_penicillinG.html
       - text: "PenicillinG swine (Li 2014)"
         href: articles/Li_2014_penicillinG.html
+      - text: "Pentadecanoic triheptadecanoic (Mascarenhas 2015)"
+        href: articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic.html
       - text: "Pentobarbital (Ketharanathan 2023)"
         href: articles/Ketharanathan_2023_pentobarbital.html
       - text: "Perampanel (Silva 2023)"
@@ -4668,6 +4670,7 @@ articles:
   - articles/Marsot_2017_rifampicin
   - articles/Martial_2017_micafungin
   - articles/Martinez_2019_alirocumab
+  - articles/Mascarenhas_2015_pentadecanoic_triheptadecanoic
   - articles/Masters_2022_avelumab
   - articles/Matcha_2025_amikacin
   - articles/Matsumoto_2005_TF_505

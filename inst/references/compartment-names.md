@@ -3958,6 +3958,21 @@ Sibling-drug suffix for the Yang 2024 mechanistic opioid-induced-respiratory-dep
 
 ---
 
+## Diagnostic-test co-analyte sibling suffixes
+
+Suffix for a second analyte that is co-administered with the parent as part of a
+single named diagnostic test, where the *contrast* between the two analytes -- not
+either concentration alone -- is the read-out. The parent keeps the unsuffixed
+canonical names; the co-analyte carries the suffix throughout.
+
+### hepta (**canonical heptadecanoic-acid co-analyte suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Heptadecanoic acid (HA, C17:0) co-analyte suffix for the malabsorption blood test (MBT), in which pentadecanoic acid (PA, C15:0, the unsuffixed parent) is absorbed without pancreatic lipase while heptadecanoic acid must first be liberated by lipase hydrolysis of the co-administered triglyceride triheptadecanoic acid (THA). The postdose difference between the two is the measure of pancreatic-based fat absorption, so both analytes are fit simultaneously and each needs its own full disposition + absorption chain. Drives the `depot_hepta` / `central_hepta` compartments, the `Cc_hepta` observation, and the `lcl_hepta` / `lvc_hepta` / `lka_hepta` / `lmtt_hepta` / `lnn_hepta` / `lrbase_hepta` parameters.
+- **Source aliases:** `HA` -- the paper's own abbreviation. **Deliberately not adopted as the suffix**: `_ha` is already the hepatic-artery suffix across the PBPK models (`q_ha`, `fq_ha`, `qp_ha`, `qg_ha`, `fco_ha` in 32 files, `q_ha` alone appearing 119 times), so `_ha` on a clearance would be ambiguous between hepatic-artery blood flow and a heptadecanoic-acid clearance. Operator-ratified 2026-08-26.
+- **Example models:** `Mascarenhas_2015_pentadecanoic_triheptadecanoic.R` (doi:10.1002/jcph.484).
+
+---
+
 ## Combination antimalarial / antibiotic sibling-drug suffixes
 
 ### pyra (**canonical pyrimethamine sibling-drug suffix**)
