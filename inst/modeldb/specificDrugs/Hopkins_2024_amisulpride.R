@@ -190,7 +190,6 @@ Hopkins_2024_amisulpride <- function() {
     n_studies      = 6L,
     age_range      = "32-39 years (per-study means; Table 1)",
     disease_state  = "healthy volunteers",
-    sex_female_pct = 0,
     race_ethnicity = c(White = 68, Black = 19, Other = 14),
     dose_range     = "25-700 mg single oral doses, plus 200 and 400 mg once daily for 7 days",
     regions        = "UK (Studies 1, 3, 4, 5 conducted under MHRA Clinical Trial Authorization)",
@@ -203,9 +202,11 @@ Hopkins_2024_amisulpride <- function() {
       "samples and 157 D2 receptor occupancy measurements. Sex percentages are given per study rather",
       "than pooled; Studies 1 and 3 were all male, Study 4 was 64 percent male and Study 5 was 53 and 44",
       "percent male in Parts 1 and 2. The race percentages recorded here are those of the N = 37 imaging",
-      "arm, the only pooled column in Table 1. sex_female_pct is set to 0 because the only pooled",
-      "column reported (the imaging arm) is 78.4 percent male and no pooled female percentage is given;",
-      "see the vignette Assumptions section."
+      "arm, the only pooled column in Table 1. sex_female_pct is deliberately absent: Table 1 reports sex",
+      "per study rather than pooled, the ascending-single-dose study enrolled male subjects only per its",
+      "title, and no sex breakdown is published for Study 2 or for Study 5 as a whole, so no pooled female",
+      "percentage across the 181 subjects can be computed. Women were enrolled (Study 4 was 36 percent",
+      "female and Study 5 Parts 1 and 2 were 47 and 56 percent female), so recording 0 would be wrong."
     )
   )
 
@@ -325,7 +326,7 @@ Hopkins_2024_amisulpride <- function() {
 
     kd     <- fixed(9);    label("D2 receptor binding affinity in brain compartment 2 units, KD (ng/mL)")  # Supplement Table 3: KD = 9 (FIX); occupancy control stream $THETA TH5 9 FIX
     fu     <- fixed(0.83); label("Fraction of amisulpride unbound in plasma, FU (unitless)")               # Supplement Table 3: FU = 0.83 (FIX); occupancy control stream $THETA TH6 0.83 FIX
-    fenant <- fixed(0.15); label("Fraction of total measured amisulpride that is the D2-active enantiomer esamisulpride, SP (unitless)") # Supplement Table 3: SP = 0.15 (FIX); the fixed 85:15 aramisulpride:esamisulpride ratio of SEP-4199 (Methods, Drugs)
+    f_esamisulpride <- fixed(0.15); label("Fraction of total measured amisulpride that is the D2-active enantiomer esamisulpride, SP (unitless)") # Supplement Table 3: SP = 0.15 (FIX); the fixed 85:15 aramisulpride:esamisulpride ratio of SEP-4199 (Methods, Drugs)
 
     # ---------------------------------------------------------------------
     # Inter-individual variability. PK values are the $OMEGA ... FIX diagonal
@@ -415,7 +416,7 @@ Hopkins_2024_amisulpride <- function() {
     # ---------------------------------------------------------------------
     propSd     <- sqrt(0.15); label("Proportional residual error on plasma concentration (fraction)")  # PK / occupancy $SIGMA EPS(1) variance 0.15 -> SD 0.3873
     addSd      <- sqrt(10);   label("Additive residual error on plasma concentration (ng/mL)")         # PK / occupancy $SIGMA EPS(2) variance 10 -> SD 3.1623
-    addSd_rod2 <- sqrt(52.2); label("Additive residual error on D2 receptor occupancy (percent)")      # Occupancy $SIGMA EPS(3) variance 52.2 -> SD 7.2250
+    addSd_D2RO <- sqrt(52.2); label("Additive residual error on D2 receptor occupancy (percent)")      # Occupancy $SIGMA EPS(3) variance 52.2 -> SD 7.2250
   })
 
   model({
@@ -577,7 +578,7 @@ Hopkins_2024_amisulpride <- function() {
       k21 * peripheral1 - (kel + k12) * central
     d/dt(peripheral1) <- k12 * central - k21 * peripheral1
     # DADT(6) = KE1*FU*SP*(A(4)/V4) - KE2*A(6) - KT*A(6)
-    d/dt(effect1) <- kinf_effect1 * fu * fenant * Cc - keff_effect1 * effect1 - kinf_effect2 * effect1
+    d/dt(effect1) <- kinf_effect1 * fu * f_esamisulpride * Cc - keff_effect1 * effect1 - kinf_effect2 * effect1
     # DADT(7) = KT*A(6) - KE3*A(7)
     d/dt(effect2) <- kinf_effect2 * effect1 - keff_effect2 * effect2
 
@@ -594,9 +595,9 @@ Hopkins_2024_amisulpride <- function() {
     # 8. Observations. $ERROR: CT = A(4)/V4 with a combined error model,
     #    and D2P = (A(7)/(KD + A(7)))*100 with an additive error model.
     # -------------------------------------------------------------------
-    rod2 <- 100 * effect2 / (kd + effect2)
+    D2RO <- 100 * effect2 / (kd + effect2)
 
     Cc ~ prop(propSd) + add(addSd)
-    rod2 ~ add(addSd_rod2)
+    D2RO ~ add(addSd_D2RO)
   })
 }

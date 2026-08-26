@@ -113,11 +113,11 @@ Structural equations trace as follows.
 | `wb <- 1 - exp(-(ra * tad(depot1))^gam1)` | Supplement, PK script `$PK`: `WB = 1-EXP((-(KAW*TAD)**GAMAW))` |
 | solution bypasses the Weibull term (`wb = 1`) | Supplement, D2 occupancy script `$PK`: `IF (RGN.EQ.4) WB = 1` |
 | `tlag3 <- tlag2 + exp(ltlag3 + ...)` | Supplement, PK script `$PK`: `TAL3 = TAL2 + TAL3T` |
-| `d/dt(effect1) <- kinf_effect1 * fu * fenant * Cc - keff_effect1 * effect1 - kinf_effect2 * effect1` | Supplement, D2 occupancy script `$DES` DADT(6) |
+| `d/dt(effect1) <- kinf_effect1 * fu * f_esamisulpride * Cc - keff_effect1 * effect1 - kinf_effect2 * effect1` | Supplement, D2 occupancy script `$DES` DADT(6) |
 | `d/dt(effect2) <- kinf_effect2 * effect1 - keff_effect2 * effect2` | Supplement, D2 occupancy script `$DES` DADT(7) |
-| `rod2 <- 100 * effect2 / (kd + effect2)` | Supplement, D2 occupancy script `$ERROR`: `D2P = (A(7)/(KD + A(7)))*100`; main text Table 2, Distribution Model row |
+| `D2RO <- 100 * effect2 / (kd + effect2)` | Supplement, D2 occupancy script `$ERROR`: `D2P = (A(7)/(KD + A(7)))*100`; main text Table 2, Distribution Model row |
 | `Cc ~ prop(propSd) + add(addSd)` | Supplement, `$ERROR`: `Y = IPRE + IPRE*EPS(1) + EPS(2)` |
-| `rod2 ~ add(addSd_rod2)` | Supplement, D2 occupancy script `$ERROR`: `IF (CMT.EQ.8) Y = IPRE + EPS(3)` |
+| `D2RO ~ add(addSd_D2RO)` | Supplement, D2 occupancy script `$ERROR`: `IF (CMT.EQ.8) Y = IPRE + EPS(3)` |
 
 # Virtual cohort
 
@@ -152,7 +152,7 @@ make_events <- function(form, dose = 200, n_sub = 1L, times = seq(0, 48, by = 0.
   if (n_sub > 1L) ev <- rxode2::et(ev, id = seq_len(n_sub))
   dat <- as.data.frame(ev)
   # Two endpoints are declared, so observation rows need a dvid; dvid = 1 on
-  # every observation returns both Cc and rod2 as columns.
+  # every observation returns both Cc and D2RO as columns.
   dat$dvid <- ifelse(dat$evid == 0, 1L, NA_integer_)
   for (nm in form_cols) dat[[nm]] <- 0
   dat[[form]] <- 1
@@ -198,7 +198,7 @@ stopifnot(
 )
 
 obs <- cohort |> filter(time > 0)
-stopifnot(nrow(obs) > 0, !anyNA(obs$Cc), !anyNA(obs$rod2), all(obs$Cc >= 0))
+stopifnot(nrow(obs) > 0, !anyNA(obs$Cc), !anyNA(obs$D2RO), all(obs$Cc >= 0))
 ```
 
 Typical-value profiles use `rxode2::zeroRe()` so the curves are the
@@ -221,7 +221,7 @@ hyst <- solve_arm(tv, "FORM_SEP4199_IR", "IR tablet", times = seq(0, 144, by = 0
   filter(time > 0) |>
   transmute(time,
             `Plasma concentration` = Cc / max(Cc),
-            `D2 receptor occupancy` = rod2 / max(rod2)) |>
+            `D2 receptor occupancy` = D2RO / max(D2RO)) |>
   pivot_longer(-time, names_to = "series", values_to = "fraction")
 
 ggplot(hyst, aes(time, fraction, colour = series)) +
@@ -238,9 +238,9 @@ h <- solve_arm(tv, "FORM_SEP4199_IR", "IR tablet", times = seq(0, 144, by = 0.25
   filter(time > 0)
 at <- function(v, tt) v[h$time == tt]
 tmax_pk <- h$time[which.max(h$Cc)]
-tmax_ro <- h$time[which.max(h$rod2)]
+tmax_ro <- h$time[which.max(h$D2RO)]
 pk_frac <- h$Cc / max(h$Cc)
-ro_frac <- h$rod2 / max(h$rod2)
+ro_frac <- h$D2RO / max(h$D2RO)
 c(tmax_pk = tmax_pk, tmax_ro = tmax_ro,
   pk_frac_at_24h = at(pk_frac, 24),
   ro_frac_at_8h = at(ro_frac, 8), ro_frac_at_24h = at(ro_frac, 24),
@@ -271,7 +271,7 @@ md <- lapply(c("IR tablet", "CR tablet (20%)"), function(lbl) {
 
 pet <- md |> filter(time %in% c(27, 27 + 144))
 
-ggplot(md, aes(time, rod2, colour = treatment)) +
+ggplot(md, aes(time, D2RO, colour = treatment)) +
   geom_line(linewidth = 0.8) +
   geom_point(data = pet, size = 2.6) +
   scale_x_continuous(breaks = seq(0, 192, by = 24)) +
@@ -285,8 +285,8 @@ ggplot(md, aes(time, rod2, colour = treatment)) +
 ```{r gate_accumulation}
 acc <- pet |>
   mutate(scan = ifelse(time == 27, "day1", "day7")) |>
-  select(treatment, scan, rod2) |>
-  pivot_wider(names_from = scan, values_from = rod2) |>
+  select(treatment, scan, D2RO) |>
+  pivot_wider(names_from = scan, values_from = D2RO) |>
   mutate(ratio = day7 / day1)
 knitr::kable(acc, digits = 2,
              caption = "Occupancy 27 h after the first and the seventh daily dose.")
@@ -308,7 +308,7 @@ stopifnot(
 ```{r fig_doseresponse}
 dr <- lapply(c(200, 300, 400, 600, 700), function(d) {
   s <- solve_arm(tv, "FORM_SEP4199_IR", "IR tablet", dose = d, times = seq(0, 48, by = 0.25))
-  tibble::tibble(dose = d, rod2_27h = s$rod2[s$time == 27])
+  tibble::tibble(dose = d, rod2_27h = s$D2RO[s$time == 27])
 }) |>
   bind_rows()
 
@@ -459,7 +459,7 @@ the extreme of a random cohort is not reproducible across rxode2 versions.
 paired <- obs |>
   group_by(treatment, id) |>
   summarise(cmax = max(Cc), tmax_pk = time[which.max(Cc)],
-            tmax_ro = time[which.max(rod2)], .groups = "drop")
+            tmax_ro = time[which.max(D2RO)], .groups = "drop")
 
 # Hysteresis holds subject by subject, not just on average.
 stopifnot(all(paired$tmax_ro - paired$tmax_pk > 2))
@@ -564,9 +564,13 @@ adjusted to narrow it.
   appear in the NONMEM `$INPUT` records but are never referenced in `$PK` or
   `$DES`. The single fed arm is carried structurally instead, as its own
   regimen indicator with its own bioavailability triple and Weibull pair.
-* **`sex_female_pct` is recorded as 0.** Table 1 reports sex per study rather
-  than pooled, and the only pooled column (the N = 37 imaging arm) is 78.4%
-  male. The pooled female percentage across all 181 subjects is not published.
+* **`sex_female_pct` is deliberately absent from `population`.** Table 1 reports
+  sex per study rather than pooled; the ascending-single-dose study enrolled male
+  subjects only per its title; and no sex breakdown is published for Study 2 or
+  for Study 5 as a whole. A pooled female percentage across the 181 subjects
+  therefore cannot be computed. Women were enrolled -- Study 4 was 36% female and
+  Study 5 Parts 1 and 2 were 47% and 56% female -- so recording 0 would assert an
+  all-male cohort that the source contradicts.
 * **Models the paper rejected are not extracted.** Table 2 of the paper lists
   five alternative PD forms (linear direct effect, saturated Emax, effect
   compartment, concentration-difference, ratio) with their equations but no
