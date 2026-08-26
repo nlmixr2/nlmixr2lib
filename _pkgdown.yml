@@ -1978,6 +1978,10 @@ navbar:
         href: articles/Easterling_2018_magnesium_sulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
+      - text: "ManaglinatDialanetil activeMoiety (Kastrissios 2012)"
+        href: articles/Kastrissios_2012_managlinatDialanetil.html
+      - text: "ManaglinatDialanetil linked (Kastrissios 2012)"
+        href: articles/Kastrissios_2012_managlinatDialanetil.html
       - text: "Maraviroc (Chan 2008)"
         href: articles/Chan_2008_maraviroc.html
       - text: "Maraviroc (Davis 2008)"
@@ -4455,6 +4459,7 @@ articles:
   - articles/Karlsson_2009_voriconazole
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kassir_2014_tacrolimus
+  - articles/Kastrissios_2012_managlinatDialanetil
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
   - articles/Kawamura_2018_eribulin
