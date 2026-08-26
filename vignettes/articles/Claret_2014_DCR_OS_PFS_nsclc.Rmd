@@ -345,6 +345,11 @@ For PFS, bevacizumab acts through both that route and the retained `DRUG_BEV`
 term.
 
 ```{r hr-replication}
+# Seeded in this chunk rather than only in setup: this is the vignette's one
+# stochastic block and its assertions are numeric, so the draw must not depend
+# on how much random-number consumption happens to precede it.
+set.seed(20140301)
+
 n_per_arm <- 200L        # capped per the 200-participants-per-arm vignette policy
 n_rep     <- 1000L       # the paper simulated 1,000 replicates
 
@@ -362,6 +367,14 @@ se_os   <- c(int = 0.0613, dcr = 0.0646, alb = 0.0601, lsc = 0.0308)
 est_pfs <- c(int =  0.466, dcr = 1.378, bev =  0.232, lsc = -0.641)
 se_pfs  <- c(int = 0.0477, dcr = 0.0525, bev = 0.0429, lsc = 0.0282)
 
+# Cox hazard ratio for the bevacizumab arm, given event times, the simulated
+# censoring times and the arm indicator. Defined at top level rather than nested
+# inside one_replicate() so the arguments it depends on are visible at the call.
+arm_hazard_ratio <- function(tt, cens, arm) {
+  ev <- as.integer(tt <= cens)
+  unname(exp(coef(survival::coxph(survival::Surv(pmin(tt, cens), ev) ~ arm))))
+}
+
 one_replicate <- function(...) {
   o <- rnorm(4, est_os,  se_os)
   p <- rnorm(4, est_pfs, se_pfs)
@@ -375,11 +388,8 @@ one_replicate <- function(...) {
 
   # Methods: censoring simulated from Uniform(8, 30) months.
   cens <- runif(2L * n_per_arm, 8, 30)
-  cox <- function(tt) {
-    ev <- as.integer(tt <= cens)
-    unname(exp(coef(survival::coxph(survival::Surv(pmin(tt, cens), ev) ~ arm))))
-  }
-  c(os = cox(t_os), pfs = cox(t_pfs))
+  c(os  = arm_hazard_ratio(t_os,  cens, arm),
+    pfs = arm_hazard_ratio(t_pfs, cens, arm))
 }
 
 hr <- as.data.frame(t(vapply(seq_len(n_rep), one_replicate, numeric(2))))
