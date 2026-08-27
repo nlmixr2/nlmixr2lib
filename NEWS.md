@@ -28,6 +28,8 @@
 
 - Add Yau 2023 diazepam and midazolam simplified PBPK models ([doi:10.1002/psp4.12915](https://doi.org/10.1002/psp4.12915)) -- rat, cynomolgus monkey and the human translation.
 
+- Add Stringer 2013 sipoglitazar ([doi:10.1177/0091270012447121](https://doi.org/10.1177/0091270012447121)) -- healthy volunteers and adults with type 2 diabetes; the UGT2B15 genotype model and the parallel latent-subpopulation mixture model.
+
 * Add Ketharanathan 2023 pentobarbital ([doi:10.1007/s40262-023-01249-z](https://doi.org/10.1007/s40262-023-01249-z)) -- critically ill children in the paediatric intensive care unit treated for refractory status epilepticus or severe traumatic brain injury.
 
 - Add Xu 2023 busulfan ([doi:10.1002/psp4.13004](https://doi.org/10.1002/psp4.13004)) -- Chinese adults and children undergoing allogeneic hematopoietic stem cell transplantation.
