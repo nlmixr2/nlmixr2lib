@@ -119,15 +119,15 @@ Elmokadem_2023_mavoglurant_pbpk <- function() {
     # PBPK MODEL section: "several tissue:plasma partition coefficients (Kb)"
     # were fixed. The supplement writes each as exp(x), so x is the value
     # transcribed here on the log scale.
-    lkp_lung     <- fixed(0.8334)  ; label("Lung:plasma partition coefficient, log scale")         # supplement mavoPBPKGenODE.stan: KbLU = exp(0.8334)
-    lkp_heart    <- fixed(1.1205)  ; label("Heart:plasma partition coefficient, log scale")        # supplement mavoPBPKGenODE.stan: KbHT = exp(1.1205)
-    lkp_skin     <- fixed(-0.5238) ; label("Skin:plasma partition coefficient, log scale")         # supplement mavoPBPKGenODE.stan: KbSK = exp(-0.5238)
-    lkp_spleen   <- fixed(0.3224)  ; label("Spleen:plasma partition coefficient, log scale")       # supplement mavoPBPKGenODE.stan: KbSP = exp(0.3224)
-    lkp_pancreas <- fixed(0.3224)  ; label("Pancreas:plasma partition coefficient, log scale")     # supplement mavoPBPKGenODE.stan: KbPA = exp(0.3224)
-    lkp_liver    <- fixed(1.7604)  ; label("Liver:plasma partition coefficient, log scale")        # supplement mavoPBPKGenODE.stan: KbLI = exp(1.7604)
-    lkp_stomach  <- fixed(0.3224)  ; label("Stomach:plasma partition coefficient, log scale")      # supplement mavoPBPKGenODE.stan: KbST = exp(0.3224)
-    lkp_gut      <- fixed(1.2026)  ; label("Gut:plasma partition coefficient, log scale")          # supplement mavoPBPKGenODE.stan: KbGU = exp(1.2026)
-    lkp_kidney   <- fixed(1.3171)  ; label("Kidney:plasma partition coefficient, log scale")       # supplement mavoPBPKGenODE.stan: KbKI = exp(1.3171)
+    lkp_lung     <- fixed(0.8334)  ; label("Lung:plasma partition coefficient (unitless)")         # supplement mavoPBPKGenODE.stan: KbLU = exp(0.8334)
+    lkp_heart    <- fixed(1.1205)  ; label("Heart:plasma partition coefficient (unitless)")        # supplement mavoPBPKGenODE.stan: KbHT = exp(1.1205)
+    lkp_skin     <- fixed(-0.5238) ; label("Skin:plasma partition coefficient (unitless)")         # supplement mavoPBPKGenODE.stan: KbSK = exp(-0.5238)
+    lkp_spleen   <- fixed(0.3224)  ; label("Spleen:plasma partition coefficient (unitless)")       # supplement mavoPBPKGenODE.stan: KbSP = exp(0.3224)
+    lkp_pancreas <- fixed(0.3224)  ; label("Pancreas:plasma partition coefficient (unitless)")     # supplement mavoPBPKGenODE.stan: KbPA = exp(0.3224)
+    lkp_liver    <- fixed(1.7604)  ; label("Liver:plasma partition coefficient (unitless)")        # supplement mavoPBPKGenODE.stan: KbLI = exp(1.7604)
+    lkp_stomach  <- fixed(0.3224)  ; label("Stomach:plasma partition coefficient (unitless)")      # supplement mavoPBPKGenODE.stan: KbST = exp(0.3224)
+    lkp_gut      <- fixed(1.2026)  ; label("Gut:plasma partition coefficient (unitless)")          # supplement mavoPBPKGenODE.stan: KbGU = exp(1.2026)
+    lkp_kidney   <- fixed(1.3171)  ; label("Kidney:plasma partition coefficient (unitless)")       # supplement mavoPBPKGenODE.stan: KbKI = exp(1.3171)
 
     # ---- Blood binding ----------------------------------------------------
     bp <- fixed(0.61)  ; label("Blood:plasma concentration ratio (unitless)")                      # supplement mavoPBPKGenODE.stan: BP = 0.61
