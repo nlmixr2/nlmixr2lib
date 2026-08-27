@@ -6407,6 +6407,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Budiansah_2025_dotatate_pbpk.R` (whole-body sst2 PBPK in which the tumour is the only tumour-type-specific region: the indicator switches the tumour interstitial fraction 0.3 vs 0.23, vascular fraction 0.1 vs 0.11, serum flow density 1.0 vs 0.9 mL/min/g and permeability-surface density 0.2 vs 0.31 mL/min/g).
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Distinct from `TUMTP_MTC` (medullary thyroid carcinoma), which is a specific neuroendocrine histology that a paper pooling all NETs would subsume; register the finer-grained canonical alongside when a source resolves NET subtypes. In radioligand-therapy papers the tumour type usually enters as a physiologic switch (perfusion, permeability, interstitial fraction) rather than as a covariate-effect coefficient on a PK parameter. Ratified canonically on 2026-08-14 alongside the Budiansah 2025 [111In]In-DOTA-TATE PBPK extraction.
 
+### TUMTP_PANC (**canonical for pancreatic-cancer tumor-type indicator**)
+- **Description:** 1 = pancreatic cancer (metastatic pancreatic adenocarcinoma), 0 = other tumor types (per-source-paper reference cohort). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = all other tumor types. In `Zhu_2013_ganitumab.R` the complement is "other advanced solid cancers" (the pooled non-pancreatic advanced-solid-tumour cohort of Studies 2 and 3).
+- **Source aliases:**
+  - Categorical "cancer type" / "tumour type" column with a pancreatic level -- decompose into `TUMTP_PANC = as.integer(cancer_type == "pancreatic")`.
+- **Example models:** `Zhu_2013_ganitumab.R` (ganitumab popPK; the single most significant covariate in the analysis -- pancreatic cancer type raises typical CL 1.7-fold, from 0.679 to 1.154 L/day, and typical Vc 1.3-fold, from 3.85 to 5.13 L, relative to the non-pancreatic reference).
+- **Notes:** Follows the `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern; a subject may carry at most one `TUMTP_<GROUP>` indicator, and all-zero means the reference group. Note the boundary with `TUMTP_OTHER`: papers whose analysis plan buries pancreatic ductal adenocarcinoma inside a heterogeneous "other" residual bucket (e.g. `Sathe_2024_sacituzumab.R`, `Sathe_2025_sacituzumab.R`) must keep using `TUMTP_OTHER` -- `TUMTP_PANC` is only for analyses that resolve pancreatic cancer as its own contrast. Ratified canonically on 2026-08-27 alongside the Zhu 2013 ganitumab extraction.
+
 ### TUMTP_LEUK (**canonical for leukemia tumor-type indicator**)
 - **Description:** 1 = leukemia (any subtype -- AML / ALL / CLL / CML pooled), 0 = other tumor types. Time-fixed per subject.
 - **Units:** (binary)

@@ -1404,6 +1404,8 @@ navbar:
         href: articles/Yang_2023_ganciclovir_model_repository.html
       - text: "Ganciclovir (Zhou 1996)"
         href: articles/Yang_2023_ganciclovir_model_repository.html
+      - text: "Ganitumab (Zhu 2013)"
+        href: articles/Zhu_2013_ganitumab.html
       - text: "Gantenerumab (Grimm 2023)"
         href: articles/Grimm_2023.html
       - text: "Garadacimab (Garcia 2025)"
@@ -5359,6 +5361,7 @@ articles:
   - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
   - articles/Zhou_2025_tacrolimus
+  - articles/Zhu_2013_ganitumab
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2023_omalizumab_pediatric
