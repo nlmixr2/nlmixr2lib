@@ -308,6 +308,8 @@ navbar:
         href: articles/Yang_2024_axatilimab.html
       - text: "Axitinib (Garrett 2014)"
         href: articles/Garrett_2014_axitinib.html
+      - text: "Axitinib (Rini 2013)"
+        href: articles/Rini_2013_axitinib.html
       - text: "Axomadol (MangasSanjuan 2016)"
         href: articles/MangasSanjuan_2016_axomadol.html
       - text: "Azd7648 mouse (DeJongh 2025)"
@@ -4888,6 +4890,7 @@ articles:
   - articles/Riccobene_2016_ceftaroline
   - articles/Richardson_2025_automated_popPK
   - articles/Rietveld_2025_docetaxel
+  - articles/Rini_2013_axitinib
   - articles/Robarge_2017_efavirenz
   - articles/Robbie_2012_palivizumab
   - articles/Roberts_2011_vancomycin
