@@ -80,20 +80,22 @@ export(setCombineType)
 export(simMarkov)
 export(snakeCombine)
 export(updateOncologyXenograftSimeoni2004)
-importFrom(rxode2,assertCompartmentExists)
-importFrom(rxode2,assertCompartmentName)
-importFrom(rxode2,assertParameterValue)
-importFrom(rxode2,assertRxUi)
-importFrom(rxode2,assertRxUiEstimatedResiduals)
-importFrom(rxode2,assertRxUiMixedOnly)
-importFrom(rxode2,assertRxUiMuRefOnly)
-importFrom(rxode2,assertRxUiNormal)
-importFrom(rxode2,assertRxUiPopulationOnly)
-importFrom(rxode2,assertRxUiPrediction)
-importFrom(rxode2,assertRxUiRandomOnIdOnly)
-importFrom(rxode2,assertRxUiSingleEndpoint)
-importFrom(rxode2,assertRxUiTransformNormal)
-importFrom(rxode2,assertVariableName)
-importFrom(rxode2,expit)
-importFrom(rxode2,logit)
+importFrom(rxode2,
+  assertCompartmentExists,
+  assertCompartmentName,
+  assertParameterValue,
+  assertRxUi,
+  assertRxUiEstimatedResiduals,
+  assertRxUiMixedOnly,
+  assertRxUiMuRefOnly,
+  assertRxUiNormal,
+  assertRxUiPopulationOnly,
+  assertRxUiPrediction,
+  assertRxUiRandomOnIdOnly,
+  assertRxUiSingleEndpoint,
+  assertRxUiTransformNormal,
+  assertVariableName,
+  expit,
+  logit
+)
 importFrom(stats,setNames)
