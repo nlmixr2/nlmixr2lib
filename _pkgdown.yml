@@ -146,6 +146,8 @@ navbar:
         href: articles/Marcantonio_2022_efa.html
       - text: "Amlitelimab (Tiraboschi 2025)"
         href: articles/Tiraboschi_2025_amlitelimab.html
+      - text: "Amlodipine (Song 2013)"
+        href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Amlodipine valsartan (Heo 2016)"
         href: articles/Heo_2016_amlodipine_valsartan.html
       - text: "Amodiaquine (Ali 2018)"
@@ -1508,6 +1510,8 @@ navbar:
         href: articles/Na_2025_hosu53.html
       - text: "HuHMFG1 (Royer 2010)"
         href: articles/Royer_2010_HuHMFG1.html
+      - text: "Hydrochlorothiazide (Song 2013)"
+        href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Hydroxychloroquine (Carmichael 2003)"
         href: articles/Carmichael_2003_hydroxychloroquine.html
       - text: "HydroxyprogesteroneCaproate (Sharma 2016)"
@@ -2348,6 +2352,12 @@ navbar:
         href: articles/DeJongh_2025_azd7648_olaparib_xenograft.html
       - text: "Olaratumab (Mo 2018)"
         href: articles/Mo_2018_olaratumab.html
+      - text: "Olmesartan (Song 2013)"
+        href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
+      - text: "Olmesartan amlodipine hydrochlorothiazide dbp (Song 2013)"
+        href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
+      - text: "Olmesartan amlodipine hydrochlorothiazide sbp (Song 2013)"
+        href: articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide.html
       - text: "Olodaterol (Borghardt 2016)"
         href: articles/Borghardt_2016_olodaterol.html
       - text: "Olokizumab (Kretsos 2014)"
@@ -5009,6 +5019,7 @@ articles:
   - articles/Soehoel_2022_tralokinumab
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027
+  - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
   - articles/Song_2025_infliximab
   - articles/Soto_2014_ampicillin_sulbactam
   - articles/Soy_2015_benznidazole
