@@ -3068,6 +3068,8 @@ navbar:
         href: articles/Nikanjam_2019_siltuximab.html
       - text: "Simvastatin (Jin 2014)"
         href: articles/Jin_2014_simvastatin.html
+      - text: "Sipoglitazar (Stringer 2014)"
+        href: articles/Stringer_2014_sipoglitazar.html
       - text: "Sirolimus (Fan 2024)"
         href: articles/Fan_2024_sirolimus.html
       - text: "Sirolimus (Golubovic 2019)"
@@ -5024,6 +5026,7 @@ articles:
   - articles/Stoschus_2025_phenobarbital
   - articles/Stricker_2013_aminocaproicAcid
   - articles/Stricker_2015_aminocaproic_acid
+  - articles/Stringer_2014_sipoglitazar
   - articles/Stringer_2015_pioglitazone
   - articles/Stroh_2013_rolofylline
   - articles/Struemper_2017_belimumab
