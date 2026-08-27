@@ -1,0 +1,852 @@
+---
+title: "Levonorgestrel contraceptives: IUS, implant, oral (Reinecke 2018)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Levonorgestrel contraceptives: IUS, implant, oral (Reinecke 2018)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20181212)
+set.seed(20181212)
+```
+
+# Model and source
+
+Reinecke and colleagues pooled 10 clinical pharmacology studies in 3424 healthy
+premenopausal women into one integrated population PK analysis of levonorgestrel
+(LNG) covering six marketed contraceptives and three routes of administration.
+The analysis was built in steps, and the paper reports each step as a final
+model with its own parameter table. This vignette validates all of them.
+
+```{r modelmap, echo = FALSE}
+model_map <- tibble::tribble(
+  ~Model, ~`Paper's name`, ~`Parameter source`, ~Products,
+  "Reinecke_2018_levonorgestrel_ivOral",   "Final iv-oral model",       "Table S2, block 1", "IV 90 ug; oral 30/90/150/270 ug",
+  "Reinecke_2018_levonorgestrel_progestinOnlyPill",      "Final comprehensive model, oral arm",  "Table S2, block 2", "Progestin-only pill (Microlut/Norgeston, 30 ug/day)",
+  "Reinecke_2018_levonorgestrel_lngIus20", "Final comprehensive model, LNG-IUS 20 arm", "Table S2, block 2", "LNG-IUS 20 (Mirena)",
+  "Reinecke_2018_levonorgestrel_lngIus12", "Final comprehensive model, LNG-IUS 12 arm", "Table S2, block 2", "LNG-IUS 12 (Kyleena)",
+  "Reinecke_2018_levonorgestrel_lngIus8",  "Final comprehensive model, LNG-IUS 8 arm",  "Table S2, block 2", "LNG-IUS 8 (Jaydess/Skyla)",
+  "Reinecke_2018_levonorgestrel_coc",      "Final COC model",           "Table S2, block 3", "Combined oral contraceptive (Miranova, 100 ug LNG + 20 ug EE/day)",
+  "Reinecke_2018_levonorgestrel_implant",  "Final implant model",       "Table S2, block 4", "Subdermal implant (Jadelle, 2 x 75 mg)",
+  "Reinecke_2018_levonorgestrel_iusRelease", "Final intrauterine system release model", "Table S1", "All three intrauterine systems (release only, no disposition)"
+)
+knitr::kable(model_map, caption = "The eight packaged models and the paper model each one encodes.")
+```
+
+```{r load_models}
+mods <- lapply(model_map$Model, function(nm) rxode2::rxode(readModelDb(nm)))
+names(mods) <- model_map$Model
+cat(mods[[1]]$reference)
+```
+
+The last of the eight is release-only: the paper fitted the device release
+sub-model to residual-content data *alone*, independently of disposition, so
+that the release parameters are not influenced by absorption of released drug
+into serum, and that fit is what generated the published in-vivo release rates.
+It carries a single state (the device reservoir) and no SHBG.
+
+The other seven share one structure, given verbatim in Supplemental Table S3a:
+
+* Two-compartment levonorgestrel disposition in which **only unbound drug is
+  eliminated or distributed** -- the ODE carries `(k20 + k23) * fuLNG * central`
+  rather than `(k20 + k23) * central`.
+* `fuLNG` is the closed-form root of reversible LNG binding to SHBG
+  (KDS = 1.82 nmol/L) and to albumin (KDA = 18209 nmol/L, held constant at
+  ALB = 700000 nmol/L).
+* SHBG is an indirect-response turnover state, `kin = SBL * KOUT`, whose
+  synthesis is linearly inhibited by a delay compartment carrying a smoothed
+  molar LNG signal.
+* The devices add a release sub-model; the combined oral contraceptive adds a
+  fixed three-compartment ethinylestradiol model that linearly **stimulates**
+  SHBG synthesis.
+
+Amounts are in mg and volumes in L, so `central / vc` is mg/L and
+`(central / vc) * 1e6 / MWLNG` is nmol/L exactly as written in Table S3a.
+
+# Population
+
+```{r population, echo = FALSE}
+tibble::tibble(
+  Model        = sub("^Reinecke_2018_levonorgestrel_", "", model_map$Model),
+  `N subjects` = vapply(mods, function(m) as.integer(m$meta$population$n_subjects), integer(1)),
+  `Age`        = vapply(mods, function(m) {a <- m$meta$population$age_range; if (is.null(a)) NA_character_ else a}, character(1)),
+  `Body weight`= vapply(mods, function(m) {a <- m$meta$population$weight_range; if (is.null(a)) NA_character_ else a}, character(1))
+) |>
+  knitr::kable(caption = "Population per packaged model (Table 1 of the paper).")
+```
+
+All subjects were healthy premenopausal women. The pooled intrauterine-system
+data had a median age of 28 years and a median body weight of 66 kg over
+N = 2790 women with recorded covariates; the pooled oral data had a median age
+of 35 years and a median weight of 62 kg over N = 51.
+
+Table 1 of the paper lists the intrauterine products with their labels **offset
+by one row** relative to their study numbers: the 94-subject / study-89532 row
+is printed against "LNG-IUS 12", but the Data section states that study 89532
+is an LNG-IUS 20 study, footnote a says "no age and body weight data available
+in study 89532 (LNG-IUS 20)", and Table 2 heads its first block "LNG-IUS 20
+(studies 89532 and 308901)". The packaged models therefore assign 239 + 94 =
+333 women to LNG-IUS 20, 1306 to LNG-IUS 12 and 1245 to LNG-IUS 8.
+
+# Source trace
+
+```{r source_trace, echo = FALSE}
+tibble::tribble(
+  ~Item, ~`Source location`,
+  "All ODEs (release, disposition, free fraction, delay, SHBG turnover, ethinylestradiol)", "Supplemental Table S3a",
+  "MWLNG 312.5 g/mol, MWE 296.4 g/mol, KDS 1.82 nmol/L, KDA 18209 nmol/L, ALB 700000 nmol/L", "Supplemental Table S3a; ALB range corroborated in the Discussion",
+  "Final iv-oral: Ka 2.03, Vc 22.0, CL 279, Vp 5120, Q 649, SBL 70.7, tau 13.7, RI 0.232, KOUT 0.00313, F_oral 0.770, C_WGHT,Foral -1.10", "Supplemental Table S2, 'final iv-oral model'",
+  "Final comprehensive: Ka 2.06, Vc 20.7, CL 243, Vp 4690, Q 600, SBL_iv,oral 76.4, SBL_IUS 51.5, F_oral 0.751, C_WGHT,Foral -1.09, C_WGHT,CL 0.823, C_WGHT,SBL -0.950", "Supplemental Table S2, 'final comprehensive model'",
+  "Comprehensive release: LNG-IUS 20 C12 8.57e-6, C13 303e-6, T1 61.2; LNG-IUS 12 C12 298 ng/h, C13 0.139, T1 9100; LNG-IUS 8 C12 222 ng/h, C13 0.0257, T1 756", "Supplemental Table S2, 'final comprehensive model'",
+  "Logit bioavailabilities 3.51 / 5.09 / 4.24 (F = 0.971 / 0.994 / 0.986)", "Supplemental Table S2, 'final comprehensive model'",
+  "Final COC: F_COC 0.751, C_WGHT,F,COC -1.64, Ka 2.35, CL 175, SBL 62.6, KOUT 0.00615, R_S 17.0", "Supplemental Table S2, 'final COC model'",
+  "Ethinylestradiol PK (F 0.45, ALAG 0.39, KA 1.23, Vc 22.5, CL 13.5, Vp1 211, Q1 63.4, Vp2 22.5, Q2 79.6, tau 24), all fixed", "Supplemental Table S2, 'final COC model', footnote k",
+  "Final implant: IC12 1320 ng/h, IC13 0.0246, IT1 3640, logit F 0.664 (F = 0.660)", "Supplemental Table S2, 'final implant model'",
+  "IIV variances and covariances (all four models)", "Supplemental Table S2 random-effects blocks, back-transformed via footnote d: OMEGA^2 = log(1 + CV^2)",
+  "Residual errors", "Supplemental Table S2; proportional rows are already SDs (footnote d), additive residual-content rows are variances (see Errata)",
+  "Release-only model: C12/C13 per device, shared FC1 64300 and FC2 0.0164, derived T1 4.37 / 4580 / 141 h, additive SIGMAs 1.43 / 0.435 / 0.234 mg", "Supplemental Table S1 (including footnote d for T1 = FC1 x (C13 - FC2))",
+  "Device loading: implant 150 mg", "Introduction ('2 rods containing 75 mg of levonorgestrel each')",
+  "Device loading: LNG-IUS 20 52 mg, LNG-IUS 12 19.5 mg, LNG-IUS 8 13.5 mg", "Not stated anywhere in the paper; back-solved from Table 4 and cross-checked against a packaged sibling model -- see Errata"
+) |>
+  knitr::kable(caption = "Provenance of every equation and parameter in the packaged models.")
+```
+
+# Free fraction of levonorgestrel
+
+The Discussion offers an internal consistency check: levonorgestrel clearance is
+known to be about 1 mL/min/kg, i.e. 3.9 L/h at 65 kg; the model's unbound
+clearance of 279 L/h multiplied by a free fraction of "approximately 1.5%"
+gives 4.2 L/h. Reproducing the free fraction is therefore a direct test of the
+binding equation.
+
+```{r free_fraction}
+fu_check <- rxode2::rxSolve(
+  mods$Reinecke_2018_levonorgestrel_lngIus20,
+  params = c(WT = 66),
+  events = rxode2::et(amt = 52, cmt = "depot") |>
+    rxode2::et(c(25, 365, 5 * 365) * 24, cmt = "Cc") |>
+    as.data.frame() |> dplyr::mutate(WT = 66),
+  addDosing = FALSE, omega = NA
+) |> as.data.frame()
+
+fu_tab <- fu_check |>
+  dplyr::transmute(
+    `Time (days)`       = round(time / 24),
+    `Total LNG (ng/L)`  = round(Cc, 1),
+    `SHBG (nmol/L)`     = round(shbg, 1),
+    `Free fraction (%)` = round(100 * CcUnbound / Cc, 2),
+    `CL x fu (L/h)`     = round(243 * CcUnbound / Cc, 2)
+  )
+knitr::kable(fu_tab, caption = "Free fraction of levonorgestrel at typical LNG-IUS 20 exposure.")
+
+# The paper states fu is "approximately 1.5%". Assert on the centre.
+stopifnot(all(abs(100 * fu_check$CcUnbound / fu_check$Cc - 1.5) < 0.3))
+```
+
+The free fraction lands at about 1.5% and `CL x fu` at about 3.8 L/h, matching
+both figures quoted in the Discussion.
+
+# Covariate back-transforms pin the reference body weights
+
+None of the three body-weight reference values is stated in prose. Each is
+recoverable because Supplemental Table S2 prints, alongside every estimated
+bioavailability, the same quantity evaluated at other body weights. Those
+derived values are an answer key for the reference weight.
+
+```{r ref_weights}
+fcheck <- function(f_ref, wt_ref, exponent, wts) f_ref * (wts / wt_ref)^exponent
+
+ref_wt_tab <- tibble::tribble(
+  ~Model, ~`Body weight (kg)`, ~Published, ~Recomputed,
+  "iv-oral, F_oral",       62.0, 0.825, fcheck(0.770, 66, -1.10, 62.0),
+  "iv-oral, F_oral",       62.4, 0.819, fcheck(0.770, 66, -1.10, 62.4),
+  "iv-oral, F_oral",       61.0, 0.840, fcheck(0.770, 66, -1.10, 61.0),
+  "comprehensive, F_oral", 62.0, 0.804, fcheck(0.751, 66, -1.09, 62.0),
+  "comprehensive, F_oral", 62.4, 0.798, fcheck(0.751, 66, -1.09, 62.4),
+  "comprehensive, F_oral", 61.0, 0.818, fcheck(0.751, 66, -1.09, 61.0),
+  "COC, F_COC",            62.0, 0.791, fcheck(0.751, 64, -1.64, 62.0),
+  "COC, F_COC",            61.0, 0.813, fcheck(0.751, 64, -1.64, 61.0)
+) |>
+  dplyr::mutate(`Difference (%)` = round(100 * (Recomputed - Published) / Published, 2),
+                Recomputed = round(Recomputed, 4))
+knitr::kable(ref_wt_tab, caption = "Reference body weights recovered from the derived bioavailabilities in Supplemental Table S2.")
+
+stopifnot(max(abs(ref_wt_tab$`Difference (%)`)) < 0.5)
+
+# The logit-scale bioavailabilities back-transform to the values Table S2
+# prints in parentheses.
+logitF <- c(`LNG-IUS 20` = 3.51, `LNG-IUS 12` = 5.09, `LNG-IUS 8` = 4.24, Implant = 0.664)
+stopifnot(max(abs(round(plogis(logitF), 3) - c(0.971, 0.994, 0.986, 0.660))) < 1e-3)
+```
+
+The comprehensive-model row is labelled "median[WGHT]=65kg" in Table S2, but
+65 kg does not reproduce its own derived values (0.751 x (62/65)^-1.09 = 0.791,
+against a printed 0.804). 66 kg reproduces all three to three decimal places,
+and 66 kg is the value the F_LNG-IUS rows carry and the value the Implant Model
+section names. The packaged models use 66 kg and record the discrepancy in the
+Errata.
+
+# In-vivo release rates (Table 4)
+
+For the three intrauterine systems Table 4 was generated from the release-only
+fit of Supplemental Table S1, which is packaged as
+`Reinecke_2018_levonorgestrel_iusRelease`. That model selects its device with
+three mutually exclusive indicators and carries the release reservoir as its only
+state. For the implant, the paper developed no separate release model -- Table 4
+was generated from the final implant model itself, so the implant column is
+reproduced from `Reinecke_2018_levonorgestrel_implant`.
+
+```{r release_setup}
+tp_days <- c(25, 30, 60, 90, 180, 270, 365, 2 * 365, 3 * 365, 4 * 365, 5 * 365)
+
+# Device loading, mg (see the back-solve below and the Errata).
+loading <- c(lngIus20 = 52, lngIus12 = 19.5, lngIus8 = 13.5, implant = 150)
+
+# The release-only model's device indicators (exactly one is 1).
+ius_indicator <- list(
+  lngIus20 = c(FORM_LNG_IUS20 = 1, FORM_LNG_IUS12 = 0, FORM_LNG_IUS8 = 0),
+  lngIus12 = c(FORM_LNG_IUS20 = 0, FORM_LNG_IUS12 = 1, FORM_LNG_IUS8 = 0),
+  lngIus8  = c(FORM_LNG_IUS20 = 0, FORM_LNG_IUS12 = 0, FORM_LNG_IUS8  = 1)
+)
+
+# `amt` is an explicit argument rather than a lookup so that the loading
+# back-solve below can vary it without reaching outside the function.
+# A missing name here would otherwise return NULL, and rxSolve() with a NULL
+# object returns an rxControl rather than erroring -- which surfaces much later
+# as an unrelated coercion failure. Fail at the lookup instead.
+getModel <- function(suffix) {
+  nm <- paste0("Reinecke_2018_levonorgestrel_", suffix)
+  if (is.null(mods[[nm]])) {
+    stop("no packaged model named '", nm, "'; available: ",
+         paste(sub("^Reinecke_2018_levonorgestrel_", "", names(mods)), collapse = ", "))
+  }
+  mods[[nm]]
+}
+
+solve_device <- function(device, days, wt, params = NULL, amt = loading[[device]]) {
+  mod <- getModel(device)
+  ev <- rxode2::et(amt = amt, cmt = "depot") |>
+    rxode2::et(days * 24, cmt = "Cc") |>
+    as.data.frame()
+  ev$WT <- wt
+  args <- list(object = mod, events = ev, addDosing = FALSE, omega = NA)
+  if (!is.null(params)) args$params <- params
+  as.data.frame(do.call(rxode2::rxSolve, args))
+}
+
+# The release-only model has no random effects, so it takes no `omega`
+# argument. Observations are placed on the `depot` ODE state rather than on the
+# `iusResidual` endpoint that shadows it: both give byte-identical output here,
+# but naming the state is the library convention and avoids injecting a cmt
+# slot for an algebraic observable.
+solve_release_only <- function(device, days, amt = loading[[device]]) {
+  ev <- rxode2::et(amt = amt, cmt = "depot") |>
+    rxode2::et(days * 24, cmt = "depot") |>
+    as.data.frame()
+  for (nm in names(ius_indicator[[device]])) ev[[nm]] <- ius_indicator[[device]][[nm]]
+  as.data.frame(rxode2::rxSolve(
+    getModel("iusRelease"), events = ev, addDosing = FALSE
+  ))
+}
+
+# One release-rate solve for either kind of model, at a chosen loading.
+release_rate_at <- function(device, days, amt = loading[[device]]) {
+  s <- if (device == "implant") solve_device(device, days, wt = 66, amt = amt) else
+    solve_release_only(device, days, amt = amt)
+  s$releaseRate
+}
+
+published_rate <- tibble::tribble(
+  ~device,    ~day,    ~published,
+  "lngIus20", tp_days, c(21.7, 21.6, 21.3, 21.0, 20.3, 19.6, 18.9, 16.4, 14.2, 12.4, 10.7),
+  "lngIus12", tp_days, c(15.4, 15.2, 14.1, 13.3, 11.6, 10.6, 9.90, 8.60, 8.07, 7.78, 7.59),
+  "lngIus8",  tp_days, c(13.4, 12.0, 8.93, 7.78, 6.56, 6.15, 5.93, 5.61, 5.51, NA, NA),
+  "implant",  tp_days, c(53.0, 52.2, 49.2, 46.8, 42.4, 39.9, 38.2, 35.1, 33.9, 33.2, 32.8)
+) |> tidyr::unnest(c(day, published))
+```
+
+## Device loading is recovered from Table 4
+
+The reservoir loading of each device is a simulation input, not a model
+parameter -- but nothing can be dosed without it, and the paper states it only
+for the implant ("2 rods containing 75 mg of levonorgestrel each"). For the
+three intrauterine systems it appears nowhere in the text, tables or supplement.
+
+It is nevertheless pinned by the paper's own data. The release model is fully
+specified by Supplemental Table S1, and the release rate at any time depends on
+the content still in the reservoir, so fitting the initial content to the
+published release rates of Table 4 recovers it. The implant is the control: its
+loading *is* stated, so the gap between its back-solved and stated value
+measures how accurate the method is here.
+
+```{r loading_backsolve}
+# One-parameter fit of the initial reservoir content to the Table 4 release
+# rates, using only the packaged models.
+backsolve_loading <- function(device) {
+  pub  <- published_rate$published[published_rate$device == device]
+  keep <- !is.na(pub)
+  days <- tp_days[keep]
+  pub  <- pub[keep]
+  ss <- function(a0) sum((release_rate_at(device, days, amt = a0) / pub - 1)^2)
+  stats::optimize(ss, c(1, 400))$minimum
+}
+
+stated <- c(lngIus20 = NA, lngIus12 = NA, lngIus8 = NA, implant = 150)
+loading_tab <- dplyr::bind_rows(lapply(names(loading), function(d) {
+  tibble::tibble(Device = d,
+                 `Back-solved (mg)`     = round(backsolve_loading(d), 2),
+                 `Stated in paper (mg)` = stated[[d]],
+                 `Used here (mg)`       = loading[[d]])
+})) |>
+  dplyr::mutate(`Difference from used (%)` =
+                  round(100 * (`Back-solved (mg)` / `Used here (mg)` - 1), 1))
+knitr::kable(loading_tab,
+             caption = "Reservoir loading back-solved from the Table 4 release rates.")
+```
+
+```{r loading_assert}
+# The implant calibrates the method: its loading IS stated, so the error there
+# bounds how well this back-solve can do, given that Table 4 and Table S1 are
+# printed to three significant digits.
+implant_err <- abs(loading_tab$`Difference from used (%)`[loading_tab$Device == "implant"])
+stopifnot(implant_err < 4)
+
+# Every device's back-solved loading agrees with the value used, to within the
+# accuracy the implant control just demonstrated.
+stopifnot(max(abs(loading_tab$`Difference from used (%)`)) <= max(4, implant_err))
+```
+
+The back-solve lands within a few percent of 52, 19.5 and 13.5 mg -- and within
+the same few percent of the *stated* 150 mg for the implant, which is what
+licenses reading the intrauterine numbers the same way. Independently, the
+packaged sibling model `modellib("Jensen_2023_lngIus52mg")` -- a successor
+eight-year analysis of the same device by an overlapping author group, which
+fixes its own `logitfdepot` and `lri` to the very values Reinecke 2018
+estimated -- records the LNG-IUS 20 reservoir as 52 mg.
+
+## The T1 reparameterisation
+
+Supplemental Table S1 does not estimate the time-dependency parameter `T1` per
+device; it estimates two shared correlation factors and derives
+`T1 = FC1 x (C13 - FC2)`, with `FC2 = 0` for LNG-IUS 20 (footnote d). The
+packaged model encodes that relation rather than the derived numbers, so
+recovering the three printed `T1` values tests the reparameterisation.
+
+```{r t1_reparam}
+t1_check <- dplyr::bind_rows(lapply(names(ius_indicator), function(d) {
+  tibble::tibble(Device = d, `T1 derived (h)` = solve_release_only(d, tp_days[1])$t1[[1]])
+})) |>
+  dplyr::mutate(`T1 printed (h)` = c(4.37, 4580, 141),
+                `Difference (%)` = round(100 * (`T1 derived (h)` / `T1 printed (h)` - 1), 2),
+                `T1 derived (h)` = signif(`T1 derived (h)`, 4))
+knitr::kable(t1_check,
+             caption = "T1 = FC1 x (C13 - FC2) recovers the T1 values printed in Supplemental Table S1.")
+
+# Table S1 prints T1 to three significant digits, so agreement to 0.5% is the
+# most a correct implementation can achieve.
+stopifnot(max(abs(t1_check$`Difference (%)`)) < 0.5)
+```
+
+## Release rates against Table 4
+
+```{r release_rates}
+rate_sim <- dplyr::bind_rows(lapply(names(loading), function(d) {
+  tibble::tibble(device = d, day = tp_days,
+                 simulated = release_rate_at(d, tp_days))
+}))
+
+rate_cmp <- dplyr::inner_join(published_rate, rate_sim, by = c("device", "day")) |>
+  dplyr::filter(!is.na(published)) |>
+  dplyr::mutate(pct_diff = 100 * (simulated - published) / published)
+stopifnot(nrow(rate_cmp) == 42L)   # 11 + 11 + 9 + 11 time points
+
+rate_cmp |>
+  dplyr::transmute(Device = device, `Day` = day,
+                   `Published (ug/day)` = published,
+                   `Simulated (ug/day)` = round(simulated, 2),
+                   `Difference (%)` = round(pct_diff, 1)) |>
+  knitr::kable(caption = "In-vivo levonorgestrel release rates: packaged models vs Table 4.")
+```
+
+```{r release_assert}
+# Every one of the 42 published release rates is reproduced. These are
+# typical-value solves of a deterministic release model against a
+# deterministic published table, so a tight bound on ALL points is the
+# right assertion here -- there is no per-subject sampling to average over.
+stopifnot(
+  max(abs(rate_cmp$pct_diff)) < 2.5,
+  abs(median(rate_cmp$pct_diff)) < 1
+)
+```
+
+```{r fig_release, fig.cap = "Replicates Figure 4B of Reinecke 2018: simulated in-vivo release rates over the first year of treatment."}
+rate_curve <- dplyr::bind_rows(lapply(names(loading), function(d) {
+  grid <- c(1, 2, 5, seq(10, 365, by = 5))
+  s <- if (d == "implant") solve_device(d, grid, wt = 66) else solve_release_only(d, grid)
+  dplyr::transmute(s, device = d, day = time / 24, rate = releaseRate)
+}))
+
+ggplot(rate_curve, aes(day, rate, colour = device)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = dplyr::filter(rate_cmp, day <= 365),
+             aes(day, published, colour = device), shape = 1, size = 2.5) +
+  scale_y_log10() +
+  labs(x = "Time after insertion (days)", y = "In-vivo release rate (ug/day, log scale)",
+       colour = "Product",
+       subtitle = "Lines: packaged models. Open circles: Table 4 of Reinecke 2018.") +
+  theme_bw()
+```
+
+# Total levonorgestrel concentrations (Table 2)
+
+Table 2 gives geometric-mean total levonorgestrel serum concentrations at eleven
+predefined time points for each device. Those are geometric means of individual
+post-hoc estimates over each study's own weight distribution, so the right
+comparison is a typical-value prediction at each study's median weight.
+
+```{r conc_tab2}
+conc_spec <- tibble::tribble(
+  ~device,    ~wt,  ~published,
+  "lngIus20", 66,   c(196, 194, 189, 187, 184, 180, 177, 164, 152, 142, 133),
+  "lngIus12", 65,   c(152, 151, 144, 139, 127, 119, 112, 98.0, 91.1, 87.0, 84.8),
+  "lngIus8",  66,   c(127, 120, 99.5, 89.4, 76.3, 70.8, 67.9, 63.8, 58.1, NA, NA),
+  "implant",  58,   c(413, 404, 376, 361, 328, 309, 297, 275, 265, 261, 259)
+)
+
+conc_cmp <- dplyr::bind_rows(lapply(seq_len(nrow(conc_spec)), function(i) {
+  r <- conc_spec[i, ]
+  solve_device(r$device, tp_days, wt = r$wt) |>
+    dplyr::transmute(device = r$device, day = time / 24, simulated = Cc, shbg = shbg) |>
+    dplyr::mutate(published = r$published[[1]])
+})) |>
+  dplyr::filter(!is.na(published)) |>
+  dplyr::mutate(pct_diff = 100 * (simulated - published) / published)
+stopifnot(nrow(conc_cmp) == 42L)
+
+conc_cmp |>
+  dplyr::transmute(Device = device, Day = day,
+                   `Published (ng/L)` = published,
+                   `Simulated (ng/L)` = round(simulated, 1),
+                   `Difference (%)` = round(pct_diff, 1)) |>
+  knitr::kable(caption = "Typical-value total levonorgestrel concentrations vs the Table 2 geometric means.")
+```
+
+```{r conc_assert}
+# A typical-value prediction against a geometric mean of post-hoc estimates
+# over a real weight distribution: assert on the centre and on a robust
+# quantile, not on the single worst point.
+stopifnot(
+  abs(median(conc_cmp$pct_diff)) < 3,
+  stats::quantile(abs(conc_cmp$pct_diff), 0.9) < 5
+)
+
+# The single largest deviation is LNG-IUS 8 at 3 years, its last time point.
+worst <- conc_cmp[which.max(abs(conc_cmp$pct_diff)), ]
+stopifnot(worst$device == "lngIus8", worst$day == 3 * 365, worst$pct_diff < 10)
+```
+
+The one deviation above 5% is LNG-IUS 8 at three years (+7.3%), the final time
+point of a three-year device where only 273 of the 1245 women still contributed
+data (Table 2), so the published geometric mean there describes a small
+surviving subset rather than the whole cohort.
+
+```{r fig_conc, fig.cap = "Replicates Figure 4A of Reinecke 2018: simulated typical total levonorgestrel concentrations for the three intrauterine systems and the implant."}
+conc_curve <- dplyr::bind_rows(lapply(seq_len(nrow(conc_spec)), function(i) {
+  r <- conc_spec[i, ]
+  solve_device(r$device, c(1, 5, seq(10, 5 * 365, by = 15)), wt = r$wt) |>
+    dplyr::transmute(device = r$device, day = time / 24, Cc = Cc)
+}))
+
+ggplot(conc_curve, aes(day / 365, Cc, colour = device)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = conc_cmp, aes(day / 365, published, colour = device),
+             shape = 1, size = 2.2) +
+  scale_y_log10() +
+  labs(x = "Time after insertion (years)", y = "Total levonorgestrel (ng/L, log scale)",
+       colour = "Product",
+       subtitle = "Lines: packaged models. Open circles: Table 2 of Reinecke 2018.") +
+  theme_bw()
+```
+
+# Oral contraceptives (Table 3) and PKNCA
+
+The progestin-only pill and the combined oral contraceptive were dosed once
+daily; Table 3 reports Cmin, Cmax and Cav on day 1 and at steady state
+(day 21). Cav was obtained in NONMEM by integrating concentration over the
+24-hour dose interval and dividing by 24, so `Cav = AUC(0-24) / 24` and a PKNCA
+`auclast` over the interval is the matching quantity.
+
+```{r oral_sim}
+oral_spec <- tibble::tribble(
+  ~treatment, ~model,               ~wt,  ~lng_mg, ~ee_mg,
+  "POP",      "progestinOnlyPill",  62.4, 0.03,    NA_real_,
+  "COC",      "coc",                64.0, 0.10,    0.02
+)
+
+sim_oral <- function(i) {
+  r   <- oral_spec[i, ]
+  mod <- getModel(r$model)
+  ev  <- rxode2::et(amt = r$lng_mg, cmt = "depot", ii = 24, until = 20 * 24)
+  if (!is.na(r$ee_mg)) {
+    ev <- rxode2::et(ev, amt = r$ee_mg, cmt = "depot_ethinylestradiol",
+                     ii = 24, until = 20 * 24)
+  }
+  ev <- rxode2::et(ev, seq(0, 21 * 24, by = 0.25), cmt = "Cc") |> as.data.frame()
+  ev$WT <- r$wt
+  rxode2::rxSolve(mod, events = ev, addDosing = FALSE, omega = NA) |>
+    as.data.frame() |>
+    dplyr::mutate(treatment = r$treatment)
+}
+oral_raw <- dplyr::bind_rows(lapply(seq_len(nrow(oral_spec)), sim_oral))
+
+# Re-base each 24 h dose interval to its own time origin so day 1 and day 21
+# can share a single PKNCA interval of 0-24 h.
+oral_win <- dplyr::bind_rows(
+  oral_raw |> dplyr::filter(time <= 24) |> dplyr::mutate(day = "day 1", t = time),
+  oral_raw |> dplyr::filter(time >= 20 * 24) |> dplyr::mutate(day = "day 21", t = time - 20 * 24)
+) |>
+  dplyr::mutate(group = paste(treatment, day)) |>
+  dplyr::select(group, treatment, day, t, Cc, CcUnbound, shbg)
+stopifnot(dplyr::n_distinct(oral_win$group) == 4L)
+```
+
+```{r pknca}
+sim_nca <- oral_win |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::transmute(id = 1L, group, time = t, Cc)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | group + id)
+
+dose_df <- oral_win |>
+  dplyr::distinct(group, treatment) |>
+  dplyr::mutate(id = 1L, time = 0,
+                amt = ifelse(treatment == "POP", 0.03, 0.10)) |>
+  dplyr::select(id, group, time, amt)
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time | group + id)
+
+intervals <- data.frame(start = 0, end = 24, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r nca_compare}
+# Table 3 of Reinecke 2018, converted to the PKNCA parameter codes. Cav is
+# reported directly; auclast = Cav * 24 h.
+published_oral <- tibble::tribble(
+  ~group,        ~cmax, ~auclast,
+  "POP day 1",   721,   214 * 24,
+  "POP day 21",  884,   327 * 24,
+  "COC day 1",   2222,  644 * 24,
+  "COC day 21",  3537,  1676 * 24
+)
+
+cmp_nca <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = published_oral,
+  by            = "group",
+  params        = c("cmax", "auclast"),
+  units         = c(cmax = "ng/L", auclast = "ng*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp_nca,
+             caption = "Simulated vs published oral-contraceptive exposure (Table 3). * marks a difference above 20%.")
+```
+
+```{r nca_assert}
+nca_df <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::select(group, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::inner_join(published_oral, by = "group", suffix = c("_sim", "_pub"))
+stopifnot(nrow(nca_df) == 4L)
+
+nca_df <- nca_df |>
+  dplyr::mutate(cmax_pct = 100 * (cmax_sim - cmax_pub) / cmax_pub,
+                auc_pct  = 100 * (auclast_sim - auclast_pub) / auclast_pub)
+stopifnot(
+  max(abs(nca_df$cmax_pct)) < 10,
+  max(abs(nca_df$auc_pct))  < 10
+)
+```
+
+Both Cmax and AUC(0-24) sit within 10% of the published values for all four
+treatment-by-day groups; none is starred.
+
+Table 3's day-1 Cmin is the pre-dose trough of the *following* dose, so it is
+compared separately against the concentration at 24 hours rather than through
+PKNCA (`cmin` over a 0-24 h interval that starts at a zero concentration would
+return that zero). Unbound exposures are compared against Supplemental
+Table S8.
+
+```{r oral_extra}
+oral_extra <- oral_win |>
+  dplyr::group_by(group) |>
+  dplyr::summarise(
+    `Cmin, total (ng/L)`   = Cc[which.min(abs(t - 24))],
+    `Cav, unbound (ng/L)`  = mean(CcUnbound),
+    `SHBG mean (nmol/L)`   = mean(shbg),
+    .groups = "drop"
+  ) |>
+  dplyr::inner_join(
+    tibble::tribble(
+      ~group,       ~cmin_pub, ~ucav_pub, ~shbg_pub,
+      "POP day 1",  105,       2.43,      86.7,
+      "POP day 21", 184,       4.20,      69.0,
+      "COC day 1",  354,       8.58,      63.2,
+      "COC day 21", 1120,      17.7,      101
+    ), by = "group")
+stopifnot(nrow(oral_extra) == 4L)
+
+oral_extra |>
+  dplyr::transmute(
+    Group = group,
+    `Cmin sim` = round(`Cmin, total (ng/L)`), `Cmin pub` = cmin_pub,
+    `Unbound Cav sim` = round(`Cav, unbound (ng/L)`, 2), `Unbound Cav pub` = ucav_pub,
+    `SHBG sim` = round(`SHBG mean (nmol/L)`, 1), `SHBG pub` = shbg_pub
+  ) |>
+  knitr::kable(caption = "Trough, unbound exposure (Table S8) and SHBG (Table S7) for the oral contraceptives.")
+
+# Trough and unbound exposure track the publication closely.
+stopifnot(
+  max(abs(100 * (oral_extra$`Cav, unbound (ng/L)` - oral_extra$ucav_pub) / oral_extra$ucav_pub)) < 10,
+  max(abs(100 * (oral_extra$`Cmin, total (ng/L)`[oral_extra$group %in% c("POP day 21", "COC day 21")] -
+                   oral_extra$cmin_pub[oral_extra$group %in% c("POP day 21", "COC day 21")]) /
+            oral_extra$cmin_pub[oral_extra$group %in% c("POP day 21", "COC day 21")])) < 10
+)
+# SHBG carries the bias the paper itself reports for the COC fit.
+stopifnot(max(abs(100 * (oral_extra$`SHBG mean (nmol/L)` - oral_extra$shbg_pub) / oral_extra$shbg_pub)) < 15)
+```
+
+```{r fig_oral, fig.cap = "Replicates Figure 3E-F of Reinecke 2018: simulated steady-state total levonorgestrel over the day-21 dose interval."}
+ggplot(dplyr::filter(oral_win, day == "day 21"), aes(t, Cc, colour = treatment)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(data = tibble::tibble(treatment = c("POP", "COC"), cmax = c(884, 3537)),
+             aes(yintercept = cmax, colour = treatment), linetype = 2) +
+  labs(x = "Time after the day-21 dose (h)", y = "Total levonorgestrel (ng/L)",
+       colour = "Product",
+       subtitle = "Dashed lines: published steady-state Cmax (Table 3).") +
+  theme_bw()
+```
+
+# Between-subject variability
+
+The comprehensive model carries correlated inter-individual variability on
+clearance (CV 20.0%) and on the SHBG baseline (CV 43.9%), with a correlation of
+-0.79. Table 2 reports a geometric CV of about 39% for the LNG-IUS 12 total
+levonorgestrel concentration, which also contains between-subject differences in
+body weight. Simulating a cohort with the study's weight distribution should
+land near that. Inter-individual variability alone, at a fixed 65 kg, accounts
+for about 35% of the roughly 40% published; the weight spread supplies the
+remainder.
+
+```{r vpc_cohort}
+# Reseed immediately before the only stochastic block in this vignette. The
+# setup chunk's seed is not enough: every chunk between there and here consumes
+# (or fails to consume) random numbers in a version-dependent way, so the draw
+# that reaches this point is not reproducible unless it is reseeded here.
+rxode2::rxSetSeed(20181212)
+set.seed(20181212)
+
+n_sub <- 200L
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  # Log-normal weights matched to the study 310442 median (65 kg) and range
+  # (39-160 kg); the paper reports no SD, so the log-scale SD is chosen to
+  # place the 5th-95th percentiles inside the observed range.
+  WT = pmin(pmax(stats::rlnorm(n_sub, log(65), 0.22), 39), 160)
+)
+ev_vpc <- dplyr::bind_rows(lapply(seq_len(n_sub), function(i) {
+  dplyr::bind_rows(
+    tibble::tibble(id = i, time = 0, amt = 19.5, evid = 1L, cmt = "depot"),
+    tibble::tibble(id = i, time = tp_days * 24, amt = NA_real_, evid = 0L, cmt = "Cc")
+  )
+})) |>
+  dplyr::left_join(cohort, by = "id")
+
+sim_vpc <- rxode2::rxSolve(mods$Reinecke_2018_levonorgestrel_lngIus12,
+                           events = as.data.frame(ev_vpc),
+                           keep = "WT", addDosing = FALSE) |>
+  as.data.frame()
+
+vpc_summary <- sim_vpc |>
+  dplyr::filter(!is.na(Cc), Cc > 0) |>
+  dplyr::group_by(day = time / 24) |>
+  dplyr::summarise(
+    `Geometric mean (ng/L)` = exp(mean(log(Cc))),
+    `Geometric CV (%)`      = 100 * sqrt(exp(stats::var(log(Cc))) - 1),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(`Published geometric CV (%)` =
+                  c(39.5, 39.2, 39.0, 39.1, 39.5, 39.8, 39.9, 40.1, 40.3, 40.9, 39.9))
+stopifnot(nrow(vpc_summary) == 11L)
+
+vpc_summary |>
+  dplyr::mutate(dplyr::across(-day, ~ round(.x, 1))) |>
+  knitr::kable(caption = "LNG-IUS 12 cohort of 200 women vs the Table 2 geometric CVs.")
+
+# The simulated dispersion is compared against the published dispersion on the
+# centre, not on any single time point: which subjects land in the tails is not
+# reproducible across rxode2 versions.
+#
+# The threshold carries deliberate margin. A geometric CV estimated from n
+# subjects has a sampling standard error of roughly CV / sqrt(2n), which is
+# about 2 percentage points here, and the comparison is not like-for-like in
+# any case: the simulated CV contains inter-individual variability and body
+# weight but no residual error, while the published CV is computed from
+# individual post-hoc estimates that carry all three. Agreement to within a few
+# percentage points is the most this check can meaningfully assert, so a
+# tighter bound would be testing the random draw rather than the model.
+stopifnot(
+  abs(median(vpc_summary$`Geometric CV (%)`) -
+        median(vpc_summary$`Published geometric CV (%)`)) < 8
+)
+```
+
+# Assumptions and deviations
+
+* **Device loading is not stated in the paper for the intrauterine systems.**
+  The implant's 150 mg is given in the Introduction ("2 rods containing 75 mg of
+  levonorgestrel each"), but the reservoir contents of LNG-IUS 20, LNG-IUS 12
+  and LNG-IUS 8 appear nowhere in the text, tables or supplement. They are
+  **back-solved from the paper's own Table 4** in the "Device loading" section
+  above: the release model is fully specified by Supplemental Table S1, and the
+  release rate depends on the content still in the reservoir, so fitting the
+  initial content to the published release rates recovers it. That gives
+  approximately 52, 20.0 and 13.4 mg, and the loadings used are 52, 19.5 and
+  13.5 mg. The implant is the control that makes this auditable: its loading is
+  stated, and the same back-solve returns about 153 mg against the stated
+  150 mg, so the method is good to roughly 2 to 3% here -- which is exactly the
+  band the three intrauterine values fall in. The LNG-IUS 20 value is
+  corroborated independently by the packaged sibling model
+  `modellib("Jensen_2023_lngIus52mg")`, a successor analysis of the same device
+  that records a 52 mg reservoir. The loadings are simulation inputs, not model
+  parameters -- a user with a different reservoir amount simply doses the
+  `depot` compartment differently.
+
+* **Bioavailability enters differently for the intrauterine systems and for the
+  implant.** Supplemental Table S2 footnote e says only that "implementation for
+  IUS differs from implementation for the implant for numerical reasons",
+  without saying how. The IUS models apply `f(depot)`, following the
+  identically-structured successor model in
+  `modellib("Jensen_2023_lngIus52mg")`, which was published by an overlapping
+  author group for the same device and which likewise writes `f(depot)`. The
+  implant model instead scales the flux arriving in the central compartment and
+  lets the implant deplete at the full release rate. That placement is forced by
+  the paper's own numbers: the implant holds 150 mg, and only the full 150 mg
+  reproduces the Table 4 release rate of 53.0 ug/day at 24 days
+  (`1320e-6 + 0.0246 * 150 / (3640 + 576)` = 2.19e-3 mg/h = 52.6 ug/day).
+  Applying F to the implant dose instead would start the reservoir at
+  0.660 x 150 = 99 mg and give 45.5 ug/day, 14% low -- and the loading
+  back-solve above, which returns about 153 mg rather than about 99 mg,
+  independently confirms the full-reservoir reading.
+
+  A consequence worth stating: because the three IUS models scale the *dose*,
+  their `iusResidual` output is the content of an F-scaled reservoir rather than
+  the physical device content, which understates it by 1 - F, i.e. 2.9% for
+  LNG-IUS 20, 0.6% for LNG-IUS 12 and 1.4% for LNG-IUS 8. That is below the
+  additive residual error on the residual-content endpoint in every case, and
+  the release-only model (`Reinecke_2018_levonorgestrel_iusRelease`), which has
+  no bioavailability term at all, predicts the physical content directly.
+
+* **The comprehensive model's F_oral reference weight is 66 kg, not the 65 kg
+  its Table S2 row is labelled with.** The label contradicts the three derived
+  bioavailabilities printed in the same row block; 66 kg reproduces all three
+  to three decimal places, and is the weight the F_LNG-IUS rows and the Implant
+  Model section both name. Treated as a typographical error in the paper.
+
+* **Additive residual-content errors in Table S2 are variances, not standard
+  deviations.** The proportional rows are explicitly transformed by footnote d
+  (`CV(%) = sqrt(SIGMA^2) x 100`), but the additive rows are not. Table S1
+  reports the same three quantities from the release-only fit to the same
+  residual-content data as 1.43 / 0.435 / 0.234 mg, and
+  `sqrt(1.99 / 0.189 / 0.0541) = 1.411 / 0.435 / 0.233 mg` reproduces all three.
+  The packaged models therefore take the square root. The implant's 19.1 is
+  treated the same way for consistency within the table, giving an SD of
+  4.37 mg on a 150 mg implant; there is no Table S1 counterpart to cross-check
+  it against, so this one entry is an inference rather than a verified fact.
+  Residual error does not affect any typical-value prediction in this vignette.
+
+* **Table S3a's ethinylestradiol stimulation term cites a compartment index
+  that its own ODE listing does not define.** The SHBG block writes the
+  stimulation as `IND = RSE*A(13)`, but the listing runs from `DADT(1)` to
+  `DADT(11)` and the ethinylestradiol delay compartment is `DADT(11)`. `A(13)`
+  is read here as a stale index carried over from the full control stream, and
+  the packaged combined-oral-contraceptive model uses the ethinylestradiol delay
+  state. Two things settle this: the term is structurally parallel to the
+  levonorgestrel inhibition `INH = RI*A(5)`, which likewise reads its own drug's
+  delay compartment, and the delay compartment is the only ethinylestradiol
+  state with a `tau_EE` to go with it. The result is verified numerically -- the
+  model reproduces the Table S7 combined-oral-contraceptive SHBG baseline of
+  63.2 nmol/L on day 1 to three significant digits.
+
+* **The two supplemental tables report the additive residual errors on
+  different scales.** The Table S2 rows are variances (square-rooted in the
+  packaged models); the Table S1 rows are standard deviations and are used
+  as-is in `Reinecke_2018_levonorgestrel_iusRelease`. This is the same
+  cross-check described above, read in the other direction, and it is
+  corroborated by the packaged `modellib("Jensen_2023_lngIus52mg")`, whose
+  source is an actual NONMEM `$SIGMA` block -- where the entry is a variance by
+  definition -- and which square-roots it the same way.
+
+* **Table 1's intrauterine product labels are offset by one row** relative to
+  their study numbers and subject counts; the packaged models follow the Data
+  section, footnote a and Table 2 instead. See the Population section.
+
+* **The inhibition of SHBG synthesis is not capped.** Table S3a writes
+  `DADT(6) = KIN*(1-INH+IND) - KOUT*A(6)` with no bound on `INH = RI*A(5)`, and
+  the packaged models encode that verbatim. The successor NONMEM code behind
+  `modellib("Jensen_2023_lngIus52mg")` caps `INH` at 1. At the exposures the
+  paper studied the uncapped term stays below 1 for the levonorgestrel-only
+  products, and in the combined oral contraceptive the ethinylestradiol
+  stimulation term `IND` more than offsets it, so the distinction does not bite
+  here -- but it would at higher levonorgestrel exposures.
+
+* **Age was screened and rejected** in both covariate steps. No point estimate
+  is reported, so it is recorded in `covariatesDataExcluded` rather than
+  `covariateData`.
+
+* **`checkModelConventions()` warns that the release-only model's single output
+  is not named `Cc`, and that warning is accepted deliberately.** The only
+  endpoint of `Reinecke_2018_levonorgestrel_iusRelease` is `iusResidual`, the
+  levonorgestrel remaining in the explanted device. That is an amount in mg, not
+  a concentration, so renaming it to `Cc` would be actively wrong -- the model
+  has no disposition and predicts no concentration at all. `iusResidual` is
+  already the established name for this quantity elsewhere in the library
+  (`modellib("Jensen_2023_lngIus52mg")` and the three Reinecke intrauterine
+  models), where it does not trip the check only because those models are
+  multi-output. The convention rule fires here purely because this is the first
+  model in which the residual-content endpoint stands alone.
+
+* **The virtual cohort's weight distribution is an assumption.** The paper
+  reports medians and ranges but no standard deviation, so the log-scale SD of
+  0.22 was chosen to place the 5th-95th percentiles inside the observed
+  39-160 kg range.
+
+* **Observation records use `cmt = "Cc"`.** These are multi-endpoint models
+  (total levonorgestrel, SHBG and residual device content), and rxode2 requires
+  observation records on such a model to name the endpoint rather than the ODE
+  state; `cmt = "central"` is rejected with a dvid-to-cmt mapping error. Every
+  algebraic observable is still returned as a column, so `shbg`,
+  `iusResidual`, `releaseRate` and `CcUnbound` are all available on those rows.
+
+* **SHBG for the combined oral contraceptive runs about 11% below the published
+  steady-state mean.** The paper reports the same direction of bias for its own
+  fit ("with only a slight bias for SHBG over time", Results). The
+  progestin-only-pill SHBG runs about 12% low against Table S7, which reflects
+  study 15687's cohort having a higher baseline than the model's typical value
+  rather than a structural error -- the typical-value baseline is a single
+  number and Table S7 reports geometric means of individual post-hoc estimates.
+
+# Session info
+
+```{r session_info}
+sessionInfo()
+```

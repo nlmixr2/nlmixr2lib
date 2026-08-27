@@ -10124,6 +10124,36 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Pejcic_2024_clopidogrel.R` (selects between the fixed reference `F = 1` and the estimated study-specific generic relative bioavailability `Fgen_st1 = 1.08` / `Fgen_st2 = 0.960`; `frel <- exp(lfdepot) * (1 - FORM_CLO_GENERIC) + exp(lfgenTv) * FORM_CLO_GENERIC`).
 - **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` canonical family. Time-varying within subject in a crossover design -- each subject receives both products, one per period -- so it must be set per dose record and is naturally paired with `OCC`. Distinct from `FORM_TABLET` / `FORM_CAPSULE`, which contrast dosage forms; here both arms are the same dosage form and the covariate identifies the manufacturer's product. Register a sibling `FORM_<drug>_GENERIC` canonical for other generic-vs-reference bioequivalence extractions rather than reusing this drug-specific entry.
 
+### FORM_LNG_IUS20 (**canonical for the levonorgestrel-releasing intrauterine system 20 (Mirena) device indicator**)
+- **Description:** 1 = the modelled device is the levonorgestrel-releasing intrauterine system 20 (LNG-IUS 20, Mirena), 0 = one of the sibling intrauterine systems. Mutually exclusive with `FORM_LNG_IUS12` and `FORM_LNG_IUS8`; exactly one of the three is 1 in any record. The three devices differ in reservoir loading, release kinetics and indicated duration of use, so the indicator selects a whole parameter set rather than scaling a single effect.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** none of the three indicators is a reference level in the usual sense -- the set is a mutually-exclusive selector, not a contrast against a baseline formulation. `FORM_LNG_IUS20 = 1` additionally selects a structurally different release law (see Notes).
+- **Source aliases:** not a data column in the source publication; Reinecke 2018 coded the device as a NONMEM branch on the treatment identifier (`If LNG-IUS 20: ... If LNG-IUS 12, LNG-IUS 8, implant: ...`, Supplemental Table S3a). Product-name aliases: `Mirena`, `LNG-IUS 52 mg`, `LNG-IUS 20`.
+- **Example models:** `Reinecke_2018_levonorgestrel_iusRelease.R` (selects the LNG-IUS 20 release parameters and, uniquely among the three devices, switches release process 1 from zero-order to first-order in the remaining reservoir content and sets the shared correlation factor `fc2` to zero: `input1 <- FORM_LNG_IUS20 * c12 * depot + (1 - FORM_LNG_IUS20) * c12` and `input2 <- c13 * (FORM_LNG_IUS20 + depot / (t1 + t))`).
+- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` canonical family, alongside `FORM_CLO_GENERIC`. Registered because the levonorgestrel intrauterine systems are distinct drug-device products, not dosage forms of one product, so `FORM_TABLET` / `FORM_CAPSULE`-style dosage-form canonicals do not apply. This indicator is load-bearing on model STRUCTURE and not only on parameter values: LNG-IUS 20 is the one device whose first release process is first-order and whose `fc2` is zero. A single-device model for LNG-IUS 20 (for example `Jensen_2023_lngIus52mg.R` or `Reinecke_2018_levonorgestrel_lngIus20.R`) needs no indicator at all and should not declare one -- the indicators exist only for models that carry more than one device in one file.
+
+### FORM_LNG_IUS12 (**canonical for the levonorgestrel-releasing intrauterine system 12 (Kyleena) device indicator**)
+- **Description:** 1 = the modelled device is the levonorgestrel-releasing intrauterine system 12 (LNG-IUS 12, Kyleena), 0 = one of the sibling intrauterine systems. Mutually exclusive with `FORM_LNG_IUS20` and `FORM_LNG_IUS8`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** not a reference level; one of a mutually-exclusive selector set (see `FORM_LNG_IUS20`).
+- **Source aliases:** not a data column in the source publication (see `FORM_LNG_IUS20`). Product-name aliases: `Kyleena`, `LNG-IUS 19.5 mg`, `LNG-IUS 12`.
+- **Example models:** `Reinecke_2018_levonorgestrel_iusRelease.R` (selects the LNG-IUS 12 release parameters; shares the zero-order first release process and the fitted correlation factor `fc2` with LNG-IUS 8).
+- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` canonical family. LNG-IUS 12 and LNG-IUS 8 share both the release law and the `fc2` estimate in Reinecke 2018, differing only in reservoir loading and in their own `c12` / `c13` values, so a model carrying only those two devices needs a single indicator rather than two. See `FORM_LNG_IUS20` for the family rationale.
+
+### FORM_LNG_IUS8 (**canonical for the levonorgestrel-releasing intrauterine system 8 (Jaydess/Skyla) device indicator**)
+- **Description:** 1 = the modelled device is the levonorgestrel-releasing intrauterine system 8 (LNG-IUS 8, marketed as Jaydess and as Skyla), 0 = one of the sibling intrauterine systems. Mutually exclusive with `FORM_LNG_IUS20` and `FORM_LNG_IUS12`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** not a reference level; one of a mutually-exclusive selector set (see `FORM_LNG_IUS20`).
+- **Source aliases:** not a data column in the source publication (see `FORM_LNG_IUS20`). Product-name aliases: `Jaydess`, `Skyla`, `LNG-IUS 13.5 mg`, `LNG-IUS 8`.
+- **Example models:** `Reinecke_2018_levonorgestrel_iusRelease.R` (selects the LNG-IUS 8 release parameters; shares the zero-order first release process and the fitted correlation factor `fc2` with LNG-IUS 12).
+- **Notes:** Follows the auto-approved `FORM_<drug>_<formulation>` canonical family. The device numeral in the product name is the nominal in-vivo release rate in ug/day, not the reservoir loading (LNG-IUS 8 is loaded with 13.5 mg), so do not read a dose from the canonical name. See `FORM_LNG_IUS20` for the family rationale.
+
 ### FORM_CAPSULE (**canonical for capsule formulation indicator**)
 - **Description:** 1 = capsule formulation, 0 = the per-paper comparator non-capsule formulation. The complement formulation is paper-defined: solution for Hennig 2006 / 2007 itraconazole, tablet for Gupta 2016 lenvatinib, Doryx delayed-release tablet (with `FORM_DOX_DORYX_MPC = 0`) for Hopkins 2017 doxycycline. Document the comparator and the reference-category bioavailability per-model in `covariateData[[FORM_CAPSULE]]$notes`.
 - **Units:** (binary)
