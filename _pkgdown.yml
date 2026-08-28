@@ -3560,6 +3560,14 @@ navbar:
         href: articles/Yu_2025_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
         href: articles/Zhao_2014_vancomycin.html
+      - text: "Vancomycin carreno (Tong 2026)"
+        href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin goti (Tong 2026)"
+        href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin hughes (Tong 2026)"
+        href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin thomson (Tong 2026)"
+        href: articles/Tong_2026_vancomycin.html
       - text: "Varenicline (Ravva 2009)"
         href: articles/Ravva_2009_varenicline.html
       - text: "Vatalanib (Wang 2014)"
@@ -5093,6 +5101,7 @@ articles:
   - articles/Tiraboschi_2025_amlitelimab
   - articles/Tod_1998_amikacin
   - articles/Toffoli_2001_etoposide
+  - articles/Tong_2026_vancomycin
   - articles/Tornoe_2006_HPG_axis
   - articles/Tortorici_2017_a1pi
   - articles/Toukam_2025_biib107
