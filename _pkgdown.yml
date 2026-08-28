@@ -2994,6 +2994,8 @@ navbar:
         href: articles/Park_2014_SKL10406.html
       - text: "SPI 62 (Wu 2023)"
         href: articles/Wu_2023_SPI_62.html
+      - text: "Sabirnetug (Siemers 2025)"
+        href: articles/Siemers_2025_sabirnetug.html
       - text: "Sacituzumab (Sathe 2024)"
         href: articles/Sathe_2024_sacituzumab.html
       - text: "Sacituzumab (Sathe 2025)"
@@ -4989,6 +4991,7 @@ articles:
   - articles/Siebinga_2023_hadotatate
   - articles/Siebinga_2023_lu177psma617
   - articles/Siebinga_2024_lu177psmaIT
+  - articles/Siemers_2025_sabirnetug
   - articles/Sikma_2020_tacrolimus_thoracic
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
