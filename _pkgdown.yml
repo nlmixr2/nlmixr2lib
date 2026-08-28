@@ -42,6 +42,12 @@ navbar:
         href: articles/Scheuher_2023_ADC_platform_qsp.html
       - text: "ADC mouse qsp (Scheuher 2023)"
         href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "APTM aucmic (Yang 2026)"
+        href: articles/Yang_2026_APTM.html
+      - text: "APTM cmaxmic (Yang 2026)"
+        href: articles/Yang_2026_APTM.html
+      - text: "APTM timekill (Yang 2026)"
+        href: articles/Yang_2026_APTM.html
       - text: "ASP8232 (Snelder 2020)"
         href: articles/Snelder_2020_ASP8232.html
       - text: "AT9283 (Duong 2017)"
@@ -5271,6 +5277,7 @@ articles:
   - articles/Yang_2024_naloxone_opioid_reversal
   - articles/Yang_2024_zastaprazan
   - articles/Yang_2025_imatinib_external_evaluation
+  - articles/Yang_2026_APTM
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2025_flurbiprofen
