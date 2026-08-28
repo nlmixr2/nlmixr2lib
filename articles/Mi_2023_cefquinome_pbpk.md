@@ -380,31 +380,16 @@ single_mc <- bind_rows(
 #> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
 #> Warning: 'ii' requires non zero additional doses ('addl') or steady state
 #> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
-#> Warning: 'ii' requires non zero additional doses ('addl') or steady state
-#> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
-#> Warning: 'ii' requires non zero additional doses ('addl') or steady state
-#> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
 #> DINTDY-  T (=R1) illegal      
 #>       T not in interval TCUR - HU (= R1) to TCUR (=R2)      
 #> DINTDY-  T (=R1) illegal      
 #>       T not in interval TCUR - HU (= R1) to TCUR (=R2)      
 #> DLSODA-  Trouble in DINTDY.  ITASK = I1, TOUT = R1
 #> IDID=-3, illegal input detected (see printed message).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
+#> Warning: 'ii' requires non zero additional doses ('addl') or steady state
+#> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
+#> Warning: 'ii' requires non zero additional doses ('addl') or steady state
+#> dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero
 #> DLSODA-  At T (=R1), too much accuracy requested  
 #>       for precision of machine..  See TOLSF (=R2) 
 #> IDID=-2, excess accuracy requested (tolerances too small).
@@ -417,15 +402,7 @@ repeat_mc <- bind_rows(
 #> DLSODA-  At T (=R1), too much accuracy requested  
 #>       for precision of machine..  See TOLSF (=R2) 
 #> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 996787 warning(s) for subject(s): 106
 ```
 
 ## Replicate published figures
@@ -555,44 +532,12 @@ wdi_mc <- bind_rows(
 #>       corrector convergence failed repeatedly     
 #>       or with ABS(H) = HMIN   
 #> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
-#> DLSODA-  At T (=R1) and step size H (=R2), the    
-#>       corrector convergence failed repeatedly     
-#>       or with ABS(H) = HMIN   
-#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
-#> DLSODA-  At T (=R1) and step size H (=R2), the    
-#>       corrector convergence failed repeatedly     
-#>       or with ABS(H) = HMIN   
-#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
 #> DINTDY-  T (=R1) illegal      
 #>       T not in interval TCUR - HU (= R1) to TCUR (=R2)      
 #> DINTDY-  T (=R1) illegal      
 #>       T not in interval TCUR - HU (= R1) to TCUR (=R2)      
 #> DLSODA-  Trouble in DINTDY.  ITASK = I1, TOUT = R1
 #> IDID=-3, illegal input detected (see printed message).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
 #> DLSODA-  At T (=R1) and step size H (=R2), the    
 #>       corrector convergence failed repeatedly     
 #>       or with ABS(H) = HMIN   
@@ -601,6 +546,19 @@ wdi_mc <- bind_rows(
 #>       corrector convergence failed repeatedly     
 #>       or with ABS(H) = HMIN   
 #> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> DLSODA-  At T (=R1) and step size H (=R2), the    
+#>       corrector convergence failed repeatedly     
+#>       or with ABS(H) = HMIN   
+#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
+#> [lsoda -- internal t + h = t (h too small for machine precision)]: 999140 warning(s) for subject(s): 197
 
 mrl <- c(Liver = 0.1, Kidney = 0.2)
 
@@ -664,8 +622,8 @@ wdi_daily |>
 |:---------------------------|:-------|----:|:---------|:---------|:------|:------|
 | 2 mg/kg once daily (label) | Kidney | 0.2 | 0.468 \* | 0.139    | 0.042 | 0.013 |
 | 2 mg/kg once daily (label) | Liver  | 0.1 | 0.264 \* | 0.078    | 0.023 | 0.007 |
-| 3 mg/kg twice daily        | Kidney | 0.2 | 1.163 \* | 0.349 \* | 0.105 | 0.032 |
-| 3 mg/kg twice daily        | Liver  | 0.1 | 0.607 \* | 0.178 \* | 0.053 | 0.016 |
+| 3 mg/kg twice daily        | Kidney | 0.2 | 1.226 \* | 0.367 \* | 0.111 | 0.033 |
+| 3 mg/kg twice daily        | Liver  | 0.1 | 0.596 \* | 0.175 \* | 0.053 | 0.016 |
 | 5 mg/kg twice daily        | Kidney | 0.2 | 1.833 \* | 0.544 \* | 0.164 | 0.049 |
 | 5 mg/kg twice daily        | Liver  | 0.1 | 1.059 \* | 0.308 \* | 0.093 | 0.028 |
 
@@ -909,114 +867,12 @@ tmic <- bind_rows(lapply(
        c(2, 12), c(3, 12), c(4, 12), c(5, 12)),
   function(x) tmic_arm(x[1], x[2])
 ))
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1) and step size H (=R2), the    
-#>       corrector convergence failed repeatedly     
-#>       or with ABS(H) = HMIN   
-#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
-#> DLSODA-  At T (=R1) and step size H (=R2), the    
-#>       corrector convergence failed repeatedly     
-#>       or with ABS(H) = HMIN   
-#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
-#> DLSODA-  At T (=R1) and step size H (=R2), the    
-#>       corrector convergence failed repeatedly     
-#>       or with ABS(H) = HMIN   
-#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
-#> DLSODA-  At T (=R1) and step size H (=R2), the    
-#>       corrector convergence failed repeatedly     
-#>       or with ABS(H) = HMIN   
-#> IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
 #> DINTDY-  T (=R1) illegal      
 #>       T not in interval TCUR - HU (= R1) to TCUR (=R2)      
 #> DINTDY-  T (=R1) illegal      
 #>       T not in interval TCUR - HU (= R1) to TCUR (=R2)      
 #> DLSODA-  Trouble in DINTDY.  ITASK = I1, TOUT = R1
 #> IDID=-3, illegal input detected (see printed message).
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Warning..Internal T (=R1) and H (=R2) are
-#>       such that in the machine, T + H = T on the next step  
-#>      (H = step size). Solver will continue anyway.
-#> DLSODA-  Above warning has been issued I1 times.  
-#>      It will not be issued again for this problem.
-#> DLSODA-  At current T (=R1), MXSTEP (=I1) steps   
-#>       taken on this call before reaching TOUT     
-#> IDID=-1, unhandled exception
 #> DLSODA-  At T (=R1), too much accuracy requested  
 #>       for precision of machine..  See TOLSF (=R2) 
 #> IDID=-2, excess accuracy requested (tolerances too small).
@@ -1029,42 +885,6 @@ tmic <- bind_rows(lapply(
 #> DLSODA-  At T (=R1), too much accuracy requested  
 #>       for precision of machine..  See TOLSF (=R2) 
 #> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At T (=R1), too much accuracy requested  
-#>       for precision of machine..  See TOLSF (=R2) 
-#> IDID=-2, excess accuracy requested (tolerances too small).
-#> DLSODA-  At current T (=R1), MXSTEP (=I1) steps   
-#>       taken on this call before reaching TOUT     
-#> IDID=-1, unhandled exception
 ```
 
 ``` r
@@ -1146,8 +966,8 @@ tmic_summary |>
 | 5 mg/kg q12h | PELF, MIC 1 | 37.3 / 45.8 / 60.4 | 31.3 / 40.6 / 51.6 | 1.13 |
 | 5 mg/kg q12h | Plasma, MIC 0.25 | 56.2 / 72.9 / 99.0 | 41.4 / 53.5 / 69.7 | 1.36 |
 | 5 mg/kg q12h | Plasma, MIC 1 | 31.2 / 39.6 / 54.2 | 26.2 / 32.6 / 40.9 | 1.21 |
-| 2 mg/kg q24h | PELF, MIC 0.25 | 19.8 / 28.1 / 38.5 | 17.6 / 22.1 / 27.8 | 1.27 |
-| 2 mg/kg q24h | PELF, MIC 1 | 9.4 / 15.6 / 20.9 | 9.0 / 13.4 / 18.0 | 1.17 |
+| 2 mg/kg q24h | PELF, MIC 0.25 | 21.0 / 27.1 / 37.3 | 17.6 / 22.1 / 27.8 | 1.23 |
+| 2 mg/kg q24h | PELF, MIC 1 | 10.4 / 15.6 / 20.8 | 9.0 / 13.4 / 18.0 | 1.17 |
 | 2 mg/kg q24h | Plasma, MIC 0.25 | 17.7 / 25.0 / 33.3 | 15.3 / 19.3 / 24.1 | 1.30 |
 | 2 mg/kg q24h | Plasma, MIC 1 | 9.4 / 12.5 / 16.7 | 8.1 / 10.1 / 12.6 | 1.24 |
 | 3 mg/kg q24h | PELF, MIC 0.25 | 24.0 / 33.3 / 43.9 | 20.2 / 25.2 / 32.0 | 1.32 |
@@ -1243,7 +1063,7 @@ tibble(
 
 | Quantity                            | Value     |
 |:------------------------------------|:----------|
-| Max \|relative mass-balance error\| | 2.998e-14 |
+| Max \|relative mass-balance error\| | 2.032e-14 |
 | Fraction excreted renally at 240 h  | 0.9546    |
 | Fraction excreted in bile at 240 h  | 0.04533   |
 

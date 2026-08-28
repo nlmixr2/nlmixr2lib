@@ -684,21 +684,26 @@ sessionInfo()
 #> [4] nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):
-#>  [1] tidyr_1.3.2        generics_0.1.4     sass_0.4.10        xml2_1.6.0        
-#>  [5] digest_0.6.39      magrittr_2.0.5     RColorBrewer_1.1-3 evaluate_1.0.5    
-#>  [9] grid_4.6.1         fastmap_1.2.0      lotri_1.0.4        jsonlite_2.0.0    
-#> [13] whisker_0.4.1      rxode2ll_2.0.16    backports_1.5.1    purrr_1.2.2       
-#> [17] scales_1.4.0       textshaping_1.0.5  jquerylib_0.1.4    cli_3.6.6         
-#> [21] crayon_1.5.3       symengine_0.2.13   rlang_1.3.0        withr_3.0.3       
-#> [25] cachem_1.1.0       yaml_2.3.12        otel_0.2.0         tools_4.6.1       
-#> [29] parallel_4.6.1     memoise_2.0.1      checkmate_2.3.4    vctrs_0.7.3       
-#> [33] R6_2.6.1           lifecycle_1.0.5    fs_2.1.0           ragg_1.5.2        
-#> [37] PreciseSums_0.7    fontawesome_0.5.3  pkgconfig_2.0.3    desc_1.4.3        
-#> [41] rex_1.2.2          pkgdown_2.2.1      RcppParallel_6.2.0 pillar_1.11.1     
-#> [45] bslib_0.12.0       gtable_0.3.6       glue_1.8.1         data.table_1.18.4 
-#> [49] Rcpp_1.1.2         systemfonts_1.3.2  tidyselect_1.2.1   xfun_0.60         
-#> [53] tibble_3.3.1       sys_3.4.3          knitr_1.51         farver_2.1.2      
-#> [57] dparser_1.3.1-13   htmltools_0.5.9    labeling_0.4.3     rmarkdown_2.31    
-#> [61] compiler_4.6.1     S7_0.2.2           downlit_0.4.5      askpass_1.2.1     
-#> [65] openssl_2.4.2
+#>  [1] tidyr_1.3.2         generics_0.1.4      sass_0.4.10        
+#>  [4] xml2_1.6.0          digest_0.6.39       magrittr_2.0.5     
+#>  [7] RColorBrewer_1.1-3  evaluate_1.0.5      grid_4.6.1         
+#> [10] fastmap_1.2.0       lotri_1.0.4         jsonlite_2.0.0     
+#> [13] whisker_0.4.1       rxode2ll_2.0.16     backports_1.5.1    
+#> [16] purrr_1.2.2         scales_1.4.0        textshaping_1.0.5  
+#> [19] jquerylib_0.1.4     cli_3.6.6           crayon_1.5.3       
+#> [22] symengine_0.2.13    rlang_1.3.0         withr_3.0.3        
+#> [25] cachem_1.1.0        yaml_2.3.12         otel_0.2.0         
+#> [28] tools_4.6.1         parallel_4.6.1      memoise_2.0.1      
+#> [31] checkmate_2.3.4     vctrs_0.7.3         R6_2.6.1           
+#> [34] lifecycle_1.0.5     fs_2.1.0            ragg_1.5.2         
+#> [37] PreciseSums_0.7     fontawesome_0.5.3   pkgconfig_2.0.3    
+#> [40] desc_1.4.3          rex_1.2.2           pkgdown_2.2.1      
+#> [43] RcppParallel_6.2.1  pillar_1.11.1       bslib_0.12.0       
+#> [46] gtable_0.3.6        glue_1.8.1          data.table_1.18.6.1
+#> [49] Rcpp_1.1.2          systemfonts_1.3.2   tidyselect_1.2.1   
+#> [52] xfun_0.60           tibble_3.3.1        sys_3.4.3          
+#> [55] knitr_1.51          farver_2.1.2        dparser_1.3.1-13   
+#> [58] htmltools_0.5.9     labeling_0.4.3      rmarkdown_2.31     
+#> [61] compiler_4.6.1      S7_0.2.2            downlit_0.4.5      
+#> [64] askpass_1.2.1       openssl_2.4.2
 ```
