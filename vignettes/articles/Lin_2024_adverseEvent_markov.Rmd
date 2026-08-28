@@ -17,14 +17,19 @@ library(tidyr)
 library(ggplot2)
 rxode2::rxSetSeed(20260828)
 set.seed(20260828)
+
+# readModelDb() returns the raw model *function*; parse it once here so that
+# metadata accessors ($reference, $description, $population) work. Never write
+# readModelDb("X")$population -- a closure is not subsettable.
+mod <- rxode2::rxode(nlmixr2lib::readModelDb("Lin_2024_adverseEvent_markov"))
 ```
 
 # Model and source
 
-* Citation: `r readModelDb("Lin_2024_adverseEvent_markov")$reference`
-* Description: `r readModelDb("Lin_2024_adverseEvent_markov")$description`
+* Citation: `r mod$reference`
+* Description: `r mod$description`
 * Article: [Front Pharmacol. 2025;15:1487062](https://doi.org/10.3389/fphar.2024.1487062)
-* Supplementary material: `DataSheet1.docx` (Supplementary Table S1, Figures S1-S3).
+* Supplementary material: Supplementary Table S1 and Figures S1-S3.
 
 Lin 2024 is a methods paper about **exposure-response (ER) analysis**, not a drug
 monograph. To study how the time-averaged concentration to event
@@ -44,7 +49,7 @@ used here as a quantitative answer key.
 # Population
 
 ```{r population}
-pop <- readModelDb("Lin_2024_adverseEvent_markov")$population
+pop <- mod$population
 str(pop, max.level = 1)
 ```
 
@@ -118,8 +123,6 @@ CYCLE_D <- 28L
 EOT_D   <- CYCLES * CYCLE_D                  # 112 days of treatment
 VISIT_H <- 168 * seq_len(EOT_D / 7)          # weekly AE assessments (16 visits)
 
-mod <- readModelDb("Lin_2024_adverseEvent_markov")
-
 events <- rxode2::et(amt = DOSE, ii = 24, until = 24 * (EOT_D - 1), cmt = "depot") |>
   rxode2::et(VISIT_H)
 ```
@@ -171,9 +174,15 @@ c(min_prob = min(probs), max_rowsum_error = max(abs(rowsums - 1)))
 
 # Replicating Figure 1B: the pharmacokinetic profile
 
-Figure 1B shows the simulated concentration-time profile: dosing for 16 weeks
-followed by washout, concentrations in ng/mL peaking near 190 and troughing near
-40.
+Figure 1B shows a simulated concentration-time profile in ng/mL: 16 weeks of
+daily dosing, drawn as a dense oscillating band, followed by washout to baseline
+by about week 17. Its y-axis runs 0 to 200 ng/mL and the band spans roughly 25
+to 195 ng/mL.
+
+This replication is used as a **scale and structure** check: it confirms the
+mg -> ng/mL conversion and the dosing / washout schedule. It is deliberately
+*not* asserted as a numeric match to the figure -- see the note after the
+chunk.
 
 ```{r fig1b, fig.cap = "Replicates Figure 1B of Lin 2024: typical-subject PK profile over 25 weeks."}
 modT <- rxode2::zeroRe(mod)
@@ -190,26 +199,53 @@ ggplot2::ggplot(pk_typ, ggplot2::aes(.data$time / 168, .data$Cc)) +
 
 ```{r fig1b-check}
 ss <- dplyr::filter(pk_typ, .data$time >= 24 * 21, .data$time <= 24 * (EOT_D - 1))
+late <- dplyr::filter(pk_typ, .data$time > 24 * (EOT_D + 21))
 fig1b <- c(
-  peak_ngml   = max(ss$Cc),
-  trough_ngml = min(ss$Cc),
-  cavss_ngml  = mean(ss$Cc)
+  peak_ngml    = max(ss$Cc),
+  trough_ngml  = min(ss$Cc),
+  # Exact steady-state average, taken from the model's own `auc` accumulator
+  # (integrated by the solver, so independent of the 4 h output grid) between
+  # two whole-day points inside the steady-state window.
+  cavss_ngml   = (ss$auc[nrow(ss)] - ss$auc[1]) / (ss$time[nrow(ss)] - ss$time[1]),
+  # Dose / (CL * tau): 60 mg -> ng over CL 17.7 L/h -> mL/h across 24 h.
+  cavss_theory = 1e6 * DOSE / (17.7 * 1000 * 24),
+  washout_pct  = 100 * max(late$Cc) / max(ss$Cc)
 )
-round(fig1b, 1)
+round(fig1b, 2)
 ```
 
-The typical-subject profile on a 4-hour output grid peaks at
+On a 4-hour output grid the typical-subject profile peaks at
 `r round(fig1b[["peak_ngml"]])` ng/mL and troughs at
-`r round(fig1b[["trough_ngml"]])` ng/mL, matching the ~190 / ~40 read off
-Figure 1B. (The true instantaneous Cmax is higher -- Tmax is about 1 h -- so the
-published figure, like this replication, is limited by its output grid. The
-agreement therefore confirms the **units** and the dosing regimen, which is what
-it is used for here.)
+`r round(fig1b[["trough_ngml"]])` ng/mL, against roughly 195 and 25 read off
+Figure 1B. The model therefore runs **above** the published figure at both ends,
+and the difference is not a units problem: the steady-state average
+concentration, `r round(fig1b[["cavss_ngml"]])` ng/mL, agrees with the exact
+identity `Dose / (CL * tau)` = `r round(fig1b[["cavss_theory"]])` ng/mL, which is
+fixed by Table 1's `CL` alone.
+
+Two things about Figure 1B explain the gap, and neither is recoverable from the
+paper: its y-axis stops at 200 ng/mL, so a taller peak would simply be clipped;
+and the caption does not say whether the trace is the typical subject or one
+random individual drawn with the Table 1 IIV (54% CV on clearance would move a
+single subject's band easily this far). The figure is therefore treated here as
+an order-of-magnitude anchor on the concentration scale rather than a
+quantitative target -- the ng/mL conversion is pinned instead by the
+Supplementary Table S1 answer key (Assumptions item 3), which shifts by 80
+percentage points of incidence if the factor of 1000 is dropped.
 
 ```{r fig1b-assert}
 stopifnot(
-  fig1b[["peak_ngml"]]   > 150, fig1b[["peak_ngml"]]   < 240,
-  fig1b[["trough_ngml"]] > 25,  fig1b[["trough_ngml"]] < 60
+  # Units: a missing or spurious factor of 1000 would put these decades away.
+  # Bounds are deliberately wide -- this is a scale check, not a figure match.
+  fig1b[["peak_ngml"]]   > 50, fig1b[["peak_ngml"]]   < 500,
+  fig1b[["trough_ngml"]] > 5,  fig1b[["trough_ngml"]] < 100,
+  # Steady-state average must equal Dose/(CL*tau). Both sides are typical-value
+  # (etas zeroed) and the left side comes from the solver-integrated `auc`
+  # state, so this is pure integration error and is bounded tightly. It also
+  # exercises the `auc` accumulator that drives the whole AE layer.
+  abs(fig1b[["cavss_ngml"]] - fig1b[["cavss_theory"]]) / fig1b[["cavss_theory"]] < 0.005,
+  # Structure: dosing stops at EoT and the drug washes out, as the figure shows.
+  fig1b[["washout_pct"]] < 1
 )
 ```
 
@@ -334,6 +370,15 @@ knitr::kable(
   caption = "Replicates Table 2 of Lin 2024, row 'Sample Size = 200 / drug effect 0.5'."
 )
 ```
+
+The **trend** reproduces: the p-value falls monotonically across the five
+derivations and crosses 0.05 between EoT + 21 and EoT + 28 days, which is the
+paper's headline claim. The absolute p-values run larger than the published ones
+(0.54 vs 0.309 at EoT; 0.012 vs 0.000944 at EoT + 28 d), and that is expected
+rather than a discrepancy: a logistic-regression p-value is a function of the one
+realised event pattern, so it is far more variable across simulation replicates
+than the incidence rate validated above. Only the ordering is asserted, and only
+on the median over replicates.
 
 ```{r cavte-assert}
 stopifnot(
@@ -498,43 +543,61 @@ Supplementary Table S1 rather than assumed silently.
 1. **Transition grid (weekly).** The paper states neither how often the Markov
    chain transitions nor (assumption 2) whether the logit driver is the
    instantaneous or a time-averaged concentration. Both were resolved together
-   by sweeping the candidates against Supplementary Table S1. The sweep below
-   was run offline while authoring (it is a one-off comparison of *rejected*
-   alternatives, so it is recorded here rather than re-run on every render; the
-   selected combination is recomputed inline in Validation 1). Mean absolute
-   error, in percentage points, over the six drug-effect magnitudes at N = 200:
+   by sweeping the candidates against Supplementary Table S1. The sweep is an
+   authoring-time comparison of *rejected* alternatives, so it is recorded here
+   rather than re-run on every render; the selected combination is recomputed
+   inline in Validation 1. Mean absolute error, in percentage points, over the
+   six drug-effect magnitudes at N = 200:
 
    | Transition grid | Trough (dose-time) | Mid-interval | Interval average | Cumulative average |
    |---|---|---|---|---|
-   | **Weekly (16 visits)** | 9.6 | 2.7 | 1.5 | **1.4** |
-   | Every 2 weeks (8 visits) | 20.1 | 13.1 | 11.4 | 11.4 |
-   | Daily (112 visits) | 20.0 | 23.5 | 24.4 | 24.5 |
-   | Per cycle (4 visits) | 30.1 | 23.7 | 22.3 | 22.2 |
+   | **Weekly (16 visits)** | 9.3 | 1.5 | 0.8 | 1.1 |
+   | Every 2 weeks (8 visits) | 20.1 | 20.3 | 10.3 | 10.5 |
+   | Daily (112 visits) | 21.0 | 24.8 | 25.7 | 25.5 |
+   | Per cycle (4 visits) | 30.3 | 30.3 | 21.2 | 21.3 |
 
    The **grid** is identified sharply, and independently of the driver: every
-   weekly entry beats every non-weekly entry. A weekly assessment grid is also
-   consistent with Figure 1B, whose x-axis is in weeks, and with 112 days being
-   exactly 16 weeks.
+   weekly entry beats every non-weekly entry, with a gap of more than 8
+   percentage points between the worst weekly cell and the best non-weekly one.
+   A weekly assessment grid is also consistent with Figure 1B, whose x-axis is
+   in weeks, and with 112 days being exactly 16 weeks.
+
+   These MAE values are Monte-Carlo estimates (200 subjects, 20 chain
+   replicates per cell) and shift by a few tenths of a percentage point between
+   seeds. Only differences much larger than that -- the weekly-vs-non-weekly
+   gap, and the exclusion of the trough driver in assumption 2 -- are treated as
+   informative.
 
 2. **Concentration driver (cumulative time-average).** Within the weekly grid
-   the driver is only *weakly* identified. Mid-interval instantaneous (2.7 pp),
-   interval-average (1.5 pp) and cumulative-average (1.4 pp) are all consistent
-   with the answer key; only the trough reading (9.6 pp, under-predicting by up
-   to 19 pp at drug effect = 1) is clearly excluded. The three survivors agree
-   because `EC50` = 6.05 ng/mL sits far below every steady-state concentration
-   (`Cmin` is about 40 ng/mL), so the Emax term is near saturation for all of
-   them; and the trough is excluded for a sampling-phase reason rather than a
-   physiological one, because weekly visits fall on dose times and, with 54% CV
-   on clearance, the fastest-clearing subjects have almost no pre-dose
-   concentration.
+   the driver is only *weakly* identified. Mid-interval instantaneous (1.5 pp),
+   interval-average (0.8 pp) and cumulative-average (1.1 pp) are all consistent
+   with the answer key, and are within Monte-Carlo noise of one another, so
+   their relative ranking carries no information. Only the trough reading is
+   clearly excluded: at 9.3 pp it under-predicts by 18.7 percentage points at
+   drug effect = 1 (65.8% simulated vs 84.5% published). The three survivors
+   agree because `EC50` = 6.05 ng/mL sits far below every steady-state
+   concentration (`Cmin` is about 40 ng/mL), so the Emax term is near saturation
+   for all of them; and the trough is excluded for a sampling-phase reason
+   rather than a physiological one, because weekly visits fall on dose times
+   and, with 54% CV on clearance, the fastest-clearing subjects have almost no
+   pre-dose concentration.
 
-   The **cumulative time-averaged concentration** was chosen among the three
-   survivors because it is the only one that does not depend on a within-day
-   sampling phase the paper never states, and because it is the paper's own
-   `CavTE` definition. It is implemented in the model as `cavg = auc / t`. This
-   is an authoring-time structural choice, not a fitted one: no parameter value
-   was altered, and the answer key does not sharply distinguish it from the two
-   other surviving drivers.
+   Because the answer key cannot separate the three survivors, the
+   **cumulative time-averaged concentration** was chosen on two grounds
+   independent of the fit: it is the only candidate that does not depend on a
+   within-day sampling phase the paper never states, and it is the paper's own
+   `CavTE` definition (Introduction). It is implemented in the model as
+   `cavg = auc / t`. This is an authoring-time structural choice, not a fitted
+   one -- no parameter value was altered to obtain it.
+
+   The residual tension to be aware of when reusing this model: Methods 2.1 says
+   the logits are "positively dependent on concentration in the central
+   compartment", which reads most naturally as the *instantaneous* `Cc`. That
+   reading is not excluded by anything here -- mid-interval instantaneous fits
+   the answer key just as well -- but it cannot be implemented without inventing
+   a within-day visit time the paper does not report. A user who prefers the
+   literal reading can drive the logits with `Cc` in place of `cavg` and choose
+   that visit phase explicitly.
 
 3. **Concentration units (ng/mL).** Table 1 reports `EC50` in ng/mL while dose
    is in mg and volume in L, so `central / vc` (mg/L) is scaled by 1000. This is
@@ -578,11 +641,20 @@ Supplementary Table S1 rather than assumed silently.
 
 ## Errata
 
-No erratum or corrigendum was found for this article. The supplement
-(`DataSheet1.docx`) was retrieved through the Europe PMC supplementary-files
-endpoint; the publisher's own supplement link and the NCBI direct-download URL
-both failed at the time of extraction.
+No erratum or corrigendum was found for this article.
 
-Note that Figure 1's caption in the published PDF contains an unresolved
-cross-reference artifact ("Reference source not found."). This does not affect
-any parameter value.
+The supplement is on disk as a valid Word document and contains Supplementary
+Table S1 (the observed incidence rates used as the answer key above) and the
+captions for Supplementary Figures S1-S3. Note that the figure captions in the
+supplement lost their numbering in conversion (all three read "Figure S"), so
+figures are referred to here by the numbers used in the main text.
+
+Two presentation quirks in the source, neither of which changes a value:
+
+* **Table 1 lists `B22` before `B21`.** The transition rows run B01, B02, B11,
+  B12, **B22**, B21 -- the last two are out of order relative to every other
+  pair. Transcribing that block by row position instead of by the `Parameter`
+  label silently swaps the two previous-grade-2 parameters. This model file is
+  keyed on the labels: `b21` = -0.563 and `b22` = -0.684, as printed.
+* Figure 1's caption contains an unresolved cross-reference artifact
+  ("Reference source not found.").

@@ -138,8 +138,8 @@ Lin_2024_adverseEvent_markov <- function() {
     # Emax drug effect on the logit scale (Methods 2.1: "maximal drug effect
     # implemented on a logit scale, as described previously (Zingmark 2005)").
     # The Emax applied depends on the previous event grade.
-    lemax_px0 <- log(4.73) ; label("Maximum drug effect on the AE cumulative logits when previous grade = 0")   # Table 1 Emax0 = 4.73
-    lemax_px1 <- log(1.09) ; label("Maximum drug effect on the AE cumulative logits when previous grade >= 1")  # Table 1 Emax1 = 1.09
+    lemax_px0 <- log(4.73) ; label("Maximum drug effect on the AE cumulative logits when previous grade = 0 (log-odds units)")   # Table 1 Emax0 = 4.73
+    lemax_px1 <- log(1.09) ; label("Maximum drug effect on the AE cumulative logits when previous grade >= 1 (log-odds units)")  # Table 1 Emax1 = 1.09
     lec50     <- log(6.05) ; label("Concentration at half-maximal drug effect on the AE logits (ng/mL)")        # Table 1 EC50 = 6.05 ng/mL
 
     # Table 1 reports 10.0% IIV (CV%) on every proportional-odds parameter.
