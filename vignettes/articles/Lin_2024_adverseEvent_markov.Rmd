@@ -371,10 +371,19 @@ knitr::kable(
 )
 ```
 
+```{r cavte-prose, include = FALSE}
+# Computed inline so the narrative below cannot drift from the rendered table.
+# The assertions in the next chunk guarantee pv[1] > 0.05 > pv[length(pv)], so
+# `cross` is always in 1..length(pv)-1.
+deriv <- tab2[["CavTE derivation"]]
+cross <- sum(pv > 0.05)
+```
+
 The **trend** reproduces: the p-value falls monotonically across the five
-derivations and crosses 0.05 between EoT + 21 and EoT + 28 days, which is the
-paper's headline claim. The absolute p-values run larger than the published ones
-(0.54 vs 0.309 at EoT; 0.012 vs 0.000944 at EoT + 28 d), and that is expected
+derivations and crosses 0.05 between `r deriv[cross]` and `r deriv[cross + 1L]`,
+which is the paper's headline claim. The absolute p-values run larger than the
+published ones (`r signif(pv[1], 2)` vs 0.309 at EoT;
+`r signif(pv[length(pv)], 2)` vs 0.000944 at EoT + 28 d), and that is expected
 rather than a discrepancy: a logistic-regression p-value is a function of the one
 realised event pattern, so it is far more variable across simulation replicates
 than the incidence rate validated above. Only the ordering is asserted, and only
