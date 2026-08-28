@@ -3324,6 +3324,8 @@ navbar:
         href: articles/Lehr_2010_tesofensine.html
       - text: "Tetrahydrocannabinol (Henthorn 2024)"
         href: articles/Henthorn_2024_tetrahydrocannabinol.html
+      - text: "Tetrahydrocannabinol (Storgaard 2026)"
+        href: articles/Storgaard_2026_tetrahydrocannabinol.html
       - text: "Tezepelumab (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Thc (Wolowich 2025)"
@@ -5020,6 +5022,7 @@ articles:
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
   - articles/Stocker_2012_oxypurinol
+  - articles/Storgaard_2026_tetrahydrocannabinol
   - articles/Storset_2014_tacrolimus
   - articles/Stoschus_2025_phenobarbital
   - articles/Stricker_2013_aminocaproicAcid
