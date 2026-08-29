@@ -505,7 +505,7 @@ articles:
   articles/Hansson_2013_sunitinib_hfs: Hansson_2013_sunitinib_hfs.html
   articles/Hansson_2013_sunitinib_myelosuppression: Hansson_2013_sunitinib_myelosuppression.html
   articles/Hansson_2013_sunitinib_os: Hansson_2013_sunitinib_os.html
-  articles/Hansson_2013_sunitinib_OS: Hansson_2013_sunitinib_OS.html
+  articles/Hansson_2013_sunitinib_svegfr3_os: Hansson_2013_sunitinib_svegfr3_os.html
   articles/Hansson_2013a_sunitinib: Hansson_2013a_sunitinib.html
   articles/Hansson_2013b_sunitinib: Hansson_2013b_sunitinib.html
   articles/Hansson_2013c_sunitinib: Hansson_2013c_sunitinib.html
@@ -1598,7 +1598,7 @@ articles:
   articles/Zuo_2024_apatinib: Zuo_2024_apatinib.html
   articles/Zurlinden_2016_paracetamol: Zurlinden_2016_paracetamol.html
   articles/Zvada_2010_rifapentine: Zvada_2010_rifapentine.html
-last_built: 2026-08-28T19:17Z
+last_built: 2026-08-29T18:10Z
 urls:
   reference: https://nlmixr2.github.io/nlmixr2lib/reference
   article: https://nlmixr2.github.io/nlmixr2lib/articles

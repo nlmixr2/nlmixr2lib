@@ -1597,8 +1597,8 @@
     <li><a class="dropdown-item" href="../articles/Ait-Oudhia_2016_sunitinib.html">Sunitinib (Ait-Oudhia 2016)</a></li>
     <li><a class="dropdown-item" href="../articles/Yu_2015_sunitinib.html">Sunitinib (Yu 2015)</a></li>
     <li><a class="dropdown-item" href="../articles/vanErp_2010_sunitinib.html">Sunitinib (vanErp 2010)</a></li>
-    <li><a class="dropdown-item" href="../articles/Hansson_2013_sunitinib_OS.html">Sunitinib OS (Hansson 2013)</a></li>
     <li><a class="dropdown-item" href="../articles/Wilson_2015_sunitinib_irinotecan_mouse.html">Sunitinib irinotecan mouse (Wilson 2015)</a></li>
+    <li><a class="dropdown-item" href="../articles/Hansson_2013_sunitinib_svegfr3_os.html">Sunitinib svegfr3 os (Hansson 2013)</a></li>
     <li><a class="dropdown-item" href="../articles/Ji_2025_TDI01.html">TDI01 (Ji 2025)</a></li>
     <li><a class="dropdown-item" href="../articles/Matsumoto_2005_TF_505.html">TF 505 (Matsumoto 2005)</a></li>
     <li><a class="dropdown-item" href="../articles/Holford_1992_tacrine.html">Tacrine (Holford 1992)</a></li>
@@ -16263,7 +16263,7 @@ derived-exposure expressions; not a covariate effect coefficient.</li>
 <code>CL</code> – used in the Hansson 2013 sunitinib biomarker / TGI
 / fatigue / OS PD-model family (DDMODEL00000197 and siblings, including
 DDMODEL00000222 and the paper-derived
-<code>Hansson_2013_sunitinib_OS.R</code>) and in
+<code>Hansson_2013_sunitinib_svegfr3_os.R</code>) and in
 <code>Schindler_2016_sunitinib.R</code> (DDMODEL00000221) as the posthoc
 CL column from the paper’s upstream 2-compartment popPK fit.</li>
 </ul>
@@ -16278,10 +16278,10 @@ growth inhibition variant; same per-subject <code>CL</code> column as
 Hansson 2013a/c), <code>Hansson_2013c_sunitinib.R</code>
 (DDMODEL00000222; uses a per-record <code>CL</code> column with
 subject-specific values 30-43 L/h in the bundle’s three-subject
-simulated dataset), <code>Hansson_2013_sunitinib_OS.R</code> (parametric
-overall-survival Weibull TTE from Hansson 2013 e84 paper text; same
-per-subject <code>CL</code> covariate fed in alongside DOSE for the
-per-cycle exposure summary auc = DOSE / CLI),
+simulated dataset), <code>Hansson_2013_sunitinib_svegfr3_os.R</code>
+(parametric overall-survival Weibull TTE from Hansson 2013 e84 paper
+text; same per-subject <code>CL</code> covariate fed in alongside DOSE
+for the per-cycle exposure summary auc = DOSE / CLI),
 <code>Schindler_2016_sunitinib.R</code> (DDMODEL00000221; per-subject
 post-hoc CL fed in as the <code>CL</code> column, vignette uses 50 L/h
 literature-typical sunitinib CL/F per Houk 2010),
@@ -16517,9 +16517,9 @@ driver <code>bm = (svegfr3 - BAS_SVEGFR3) / BAS_SVEGFR3</code>.</li>
 <li>
 <code>BAS3</code> – used in <code>Hansson_2013b_sunitinib.R</code>
 (DDMODEL00000198), <code>Hansson_2013c_sunitinib.R</code>
-(DDMODEL00000222), and <code>Hansson_2013_sunitinib_OS.R</code> as the
-posthoc sVEGFR-3 baseline column from the paper’s upstream Hansson 2013a
-biomarker indirect-response fit (DDMODEL00000197).</li>
+(DDMODEL00000222), and <code>Hansson_2013_sunitinib_svegfr3_os.R</code>
+as the posthoc sVEGFR-3 baseline column from the paper’s upstream
+Hansson 2013a biomarker indirect-response fit (DDMODEL00000197).</li>
 </ul>
 </li>
 <li>
@@ -16528,7 +16528,7 @@ biomarker indirect-response fit (DDMODEL00000197).</li>
 inhibition with sVEGFR-3 driven shrinkage),
 <code>Hansson_2013c_sunitinib.R</code> (DDMODEL00000222; bundle’s
 three-subject simulated dataset reports BAS_SVEGFR3 values 42554-57365
-pg/mL), <code>Hansson_2013_sunitinib_OS.R</code> (parametric
+pg/mL), <code>Hansson_2013_sunitinib_svegfr3_os.R</code> (parametric
 overall-survival Weibull TTE from Hansson 2013 e84 paper text; sVEGFR-3
 dynamics simulated inline using the upstream biomarker-PD per-subject
 parameters), <code>Hansson_2013_sunitinib_myelosuppression.R</code>
@@ -16588,9 +16588,9 @@ coefficient.</li>
 <li>
 <code>MRT3</code> – used in <code>Hansson_2013b_sunitinib.R</code>
 (DDMODEL00000198), <code>Hansson_2013c_sunitinib.R</code>
-(DDMODEL00000222), and <code>Hansson_2013_sunitinib_OS.R</code> as the
-posthoc sVEGFR-3 MRT column from the paper’s upstream Hansson 2013a
-biomarker indirect-response fit (DDMODEL00000197).</li>
+(DDMODEL00000222), and <code>Hansson_2013_sunitinib_svegfr3_os.R</code>
+as the posthoc sVEGFR-3 MRT column from the paper’s upstream Hansson
+2013a biomarker indirect-response fit (DDMODEL00000197).</li>
 </ul>
 </li>
 <li>
@@ -16599,7 +16599,7 @@ biomarker indirect-response fit (DDMODEL00000197).</li>
 <code>Hansson_2013c_sunitinib.R</code> (DDMODEL00000222; bundle’s
 three-subject simulated dataset reports MRT_SVEGFR3 values 313-408 h,
 broadly consistent with the Hansson 2013a typical sVEGFR-3 MRT of 401
-h), <code>Hansson_2013_sunitinib_OS.R</code> (parametric
+h), <code>Hansson_2013_sunitinib_svegfr3_os.R</code> (parametric
 overall-survival Weibull TTE; sVEGFR-3 dynamics simulated inline using
 the upstream biomarker-PD per-subject MRT),
 <code>Hansson_2013_sunitinib_myelosuppression.R</code> (Hansson 2013 e85
@@ -16650,9 +16650,9 @@ carries the same units; document per-model via
 <li>
 <code>EC53</code> – used in <code>Hansson_2013b_sunitinib.R</code>
 (DDMODEL00000198), <code>Hansson_2013c_sunitinib.R</code>
-(DDMODEL00000222), and <code>Hansson_2013_sunitinib_OS.R</code> as the
-posthoc sVEGFR-3 EC50 column from the paper’s upstream Hansson 2013a
-biomarker indirect-response fit (DDMODEL00000197).</li>
+(DDMODEL00000222), and <code>Hansson_2013_sunitinib_svegfr3_os.R</code>
+as the posthoc sVEGFR-3 EC50 column from the paper’s upstream Hansson
+2013a biomarker indirect-response fit (DDMODEL00000197).</li>
 </ul>
 </li>
 <li>
@@ -16662,9 +16662,9 @@ biomarker indirect-response fit (DDMODEL00000197).</li>
 three-subject simulated dataset reports EC50_SVEGFR3 values 1.0-2.8
 mg<em>h/L, consistent with the Hansson 2013a typical sVEGFR-3 IC50
 typical value of 1.0 mg</em>h/L),
-<code>Hansson_2013_sunitinib_OS.R</code> (parametric overall-survival
-Weibull TTE; sVEGFR-3 dynamics simulated inline using the upstream
-biomarker-PD per-subject EC50),
+<code>Hansson_2013_sunitinib_svegfr3_os.R</code> (parametric
+overall-survival Weibull TTE; sVEGFR-3 dynamics simulated inline using
+the upstream biomarker-PD per-subject EC50),
 <code>Hansson_2013_sunitinib_myelosuppression.R</code> (Hansson 2013 e85
 paper-direct extraction), <code>Hansson_2013_sunitinib_hfs.R</code>
 (Hansson 2013 e85 paper-direct extraction),
