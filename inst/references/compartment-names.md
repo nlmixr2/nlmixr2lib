@@ -1205,6 +1205,46 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 - **Source aliases:** none.
 - **Example models:** `Delor_2013_alzheimer.R`.
 
+### a_small_intestine (**canonical PBPK lumped small-intestine luminal compartment**)
+- **Type:** compartment
+- **Role:** Luminal drug amount in the small intestine **distal to the duodenum**, treated as one lumped segment. Used by oral PBPK models whose absorption cascade resolves the duodenum separately (because it carries its own absorption rate constant) but lumps everything downstream of it into a single "remaining small intestine" state. Receives transit from `duodenum`, loses drug to absorption and to onward transit into `a_large_intestine`.
+- **Source aliases:**
+  - `AOSI` -- Sun 2026 (Supporting Information Berkeley Madonna listing, `d/dt(AOSI) = ROSI ; AOSI amount of the drug in the other small intestine (mg)`); the main text calls the segment "the remaining small intestine".
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Deliberately distinct from the full-resolution `duodenum` / `jejunum` / `ileum` chain (`Han_2025_midazolam_pbpk.R` and siblings). Use those when the paper resolves each anatomical segment with its own transit and absorption constants; use this when the paper lumps the post-duodenal small bowel into one state, as veterinary oral PBPK models commonly do. Labelling a lumped jejunum+ileum state `jejunum` would misreport the model's anatomical resolution, which is why the lumped form is registered separately. The organ token `small_intestine` is already whitelisted in `pbpkSubCompartmentRegex`, so this entry is a well-formed member of the established `a_<organ>` amount namespace. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### a_large_intestine (**canonical PBPK lumped large-intestine luminal compartment**)
+- **Type:** compartment
+- **Role:** Luminal drug amount in the large intestine, treated as one lumped segment. Terminal luminal state of a lumped oral-absorption cascade: receives transit from `a_small_intestine` and drains to `a_feces`. Drug absorption is conventionally zero in this segment, so the state normally carries transit only.
+- **Source aliases:**
+  - `ALI` -- Sun 2026 (Supporting Information Berkeley Madonna listing, `d/dt(ALI) = RLI ; ALI amount of the drug in the large intestine (mg)`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Lumped counterpart of the full-resolution `cecum` / `colon` pair; see `a_small_intestine` for the family rationale. The organ token `large_intestine` is already whitelisted in `pbpkSubCompartmentRegex`. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### a_feces (**canonical PBPK faecal excretion sink**)
+- **Type:** compartment
+- **Role:** Cumulative amount of drug excreted in faeces, integrating the faecal excretion rate (`d/dt(a_feces) <- r_feces`). A terminal bookkeeping sink with no feedback into the dynamics, carried so that a published mass balance can be checked and so that the faecally-eliminated fraction is available as an output. Not an anatomical compartment.
+- **Source aliases:**
+  - `Af` -- Sun 2026 (Supporting Information Berkeley Madonna listing, `d/dt(Af) = Rf ; Af amount of the drug in the feces (mg)`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Sits on the same `a_<role>` amount namespace as the other sink accumulators `a_urine` and `a_metabolized`. Distinct from `a_large_intestine`, which holds drug still in the gut lumen and can still transit onward, whereas this state only ever increases. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### a_bile (**canonical PBPK biliary excretion pool**)
+- **Type:** compartment
+- **Role:** Cumulative amount of drug excreted into bile, integrating the biliary excretion rate (`d/dt(a_bile) <- r_bile`). Used by whole-body PBPK models that resolve hepatobiliary elimination as a distinct route from renal elimination. In models with enterohepatic recirculation the same biliary flux is *also* returned to an upstream luminal compartment, so this state is a cumulative record of biliary output rather than a closed sink.
+- **Source aliases:**
+  - `Amet` -- Sun 2026 (Supporting Information Berkeley Madonna listing, `d/dt(Amet) = Rmet`, whose own comment reads "the amount of drug metabolized in liver" although the main text describes the route as biliary excretion).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Distinct from `a_metabolized`, which accumulates drug lost to metabolic conversion and can never be returned to the gut lumen; choose between the two by the route the source paper names, not by the variable name in a deposited control stream. `Mi_2023_cefquinome_pbpk.R` declares the same concept as a `paper_specific_compartments` entry named `bile`, because no canonical existed when it was extracted; migrating it to this name is a follow-up, not part of the founding extraction. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### a_oral_absorbed (**canonical PBPK cumulative-oral-absorption integrator**)
+- **Type:** compartment
+- **Role:** Cumulative amount of drug absorbed out of the gut lumen into the systemic or portal circulation, integrating the total absorption flux summed over every absorbing luminal segment (`d/dt(a_oral_absorbed) <- r_absorb`). Process accumulator carried so that the input side of a published mass balance can be evaluated.
+- **Source aliases:**
+  - `AAO` -- Sun 2026 (Supporting Information Berkeley Madonna listing, `d/dt(AAO) = RAO ; AAO amount of the drug absorbed from small intestine (mg)`, with `Input = AAO` in the mass-balance block).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Direct route-analogue of the registered `a_dermal_absorbed` (cumulative dermal uptake), and registered on the same reasoning; it is a member of the established `a_<route>_absorbed` family rather than a new shape. Distinct from `a_oral`, which accumulates the amount *ingested* (i.e. the administered dose) rather than the amount that actually crossed the gut wall; a model with incomplete bioavailability needs both to close its mass balance. Also distinct from `depot` / `a_gut` / `a_small_intestine`, which hold drug still awaiting absorption and can be drained, whereas this state only ever increases. Registered 2026-08-29 alongside the Sun 2026 tilmicosin extraction.
+
 ---
 
 ## Method-of-lines spatial discretisation slabs (`<tissue>_slab<n>` namespace)

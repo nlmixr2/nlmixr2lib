@@ -442,6 +442,54 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Yamada_2025_oxaliplatin.R` (simultaneous free + total plasma platinum after oxaliplatin; `fp = 0.194 * exp(-0.0393 * TALD) + 0.0318`, all three estimated, with IIV on `fp0_A` and `fp0_B` but none on `alpha` -- founding example).
 - **Notes:** Distinct from `lbfu` (registered in the skill-side naming reference), which is the **linear** time-varying unbound-fraction slope of the form `fu = fu_ref + bfu * (t - t_ref)` anchored to a study-level reference time and usually fixed from literature. Choose between the two by the source paper's own printed equation, not by convenience: `lbfu` for a linear drift with a literature-fixed slope, this family for an estimated exponential decay re-started by each dose. Unlike `lbfu`, these three are normally estimated, because a paper that fits free and total concentrations simultaneously identifies them directly from the free:total ratio. Characteristic of platinum drugs, whose binding to plasma protein is irreversible and time dependent rather than a rapid reversible equilibrium; do not reuse this family for concentration-dependent (saturable) binding, which needs a capacity/affinity parameterisation instead. Ratified 2026-08-18 alongside the Yamada 2025 oxaliplatin extraction.
 
+### lkst (**canonical log-transformed gastric emptying rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for gastric emptying, i.e. transit of drug out of the `stomach` compartment into the first intestinal segment (1 / time). Founding member of the lumped gastrointestinal transit family below.
+- **Source aliases:**
+  - `Kst` -- Sun 2026 Table 2 ("gastric emptying rate constant", 0.8 /h) and the Supporting Information Berkeley Madonna listing (`RAST = RDOSEoral - Kst * AST`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Distinct from `lka`, which moves drug from a depot into the *systemic* circulation; `lkst` moves drug between two luminal compartments and is not an absorption term. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### lkt_duodenum (**canonical log-transformed duodenal transit rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for luminal transit out of the `duodenum` into the next small-intestinal segment (1 / time).
+- **Source aliases:**
+  - `Kd` -- Sun 2026 Table 2 ("duodenal transit rate constant", 2.2 /h) and the Supporting Information listing (`RDI = Kst * AST - Kd * ADI - Ka1 * ADI + Rmet`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Paired with `lka_duodenum`, which drains the same compartment by absorption rather than by transit; the two compete for the duodenal amount and must not be conflated. Named `lkt_<segment>` (transit out of the named segment) so the family extends to any resolved luminal segment. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### lkt_ileocolic (**canonical log-transformed ileocolic transit rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for luminal transit across the ileocolic junction, i.e. out of the small intestine into the large intestine (1 / time).
+- **Source aliases:**
+  - `Kint` -- Sun 2026 Table 2 ("ileocolic transit rate constant", 2.0 /h) and the Supporting Information listing (`ROSI = Kdm * ADI - Ka2 * AOSI - Kint * AOSI`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Named for the anatomical junction it crosses rather than for the donating segment, following the source paper's own term, so the name stays correct whether the donor is a lumped `a_small_intestine` or a resolved `ileum`. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### lka_duodenum (**canonical log-transformed duodenal absorption rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for absorption of drug out of the `duodenum` lumen into the systemic or portal circulation (1 / time). Segment-resolved counterpart of `lka`.
+- **Source aliases:**
+  - `Ka1` -- Sun 2026 Table 2 ("duodenal absorption rate constant", 0.8 /h) and the Supporting Information listing (`RAO = Ka1 * ADI + Ka2 * AOSI`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Use the segment-suffixed `lka_<segment>` form only when the model resolves more than one absorbing luminal segment with distinct rate constants; a single-site oral model keeps the plain `lka`. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### lka_small_intestine (**canonical log-transformed lumped small-intestinal absorption rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for absorption out of the lumped post-duodenal small intestine (`a_small_intestine`) into the systemic or portal circulation (1 / time). Sibling of `lka_duodenum`.
+- **Source aliases:**
+  - `Ka2` -- Sun 2026 Table 2 ("remaining small intestinal absorption rate constant", 0.007 /h) and the Supporting Information listing (`RAO = Ka1 * ADI + Ka2 * AOSI`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** Segment suffix matches the compartment it drains, so it is `_small_intestine` (lumped) rather than `_jejunum` / `_ileum` (resolved). Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
+### lkf (**canonical log-transformed faecal excretion rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for excretion of drug from the terminal luminal compartment into faeces (1 / time). Drains `a_large_intestine` into the `a_feces` sink.
+- **Source aliases:**
+  - `Kf` -- Sun 2026 Table 2 ("fecal excretion rate", 0.05 /h) and the Supporting Information listing (`Rf = Kf * ALI`).
+- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
+- **Notes:** A transit constant out of the body, not a clearance: it multiplies a luminal *amount*, so it carries units of 1 / time rather than volume / time. Distinct from `lcl_nonren`, which is the hepatobiliary clearance feeding drug *into* the gut. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+
 ---
 
 ## Bare structural PK parameters

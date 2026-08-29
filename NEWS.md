@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Sun 2026 tilmicosin ([doi:10.1021/acs.jafc.5c11368](https://doi.org/10.1021/acs.jafc.5c11368)) -- healthy swine, with hollow-fiber PK/PD against *Pasteurella multocida*.
+
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
