@@ -3318,6 +3318,8 @@ navbar:
         href: articles/Lu_2016_tenofovir.html
       - text: "Tenofovir reduced (Thoueille 2023)"
         href: articles/Thoueille_2023_tenofovir_ckd.html
+      - text: "Tepotinib (Hu 2025)"
+        href: articles/Hu_2025_tepotinib.html
       - text: "Tesaglitazar (Hamren 2008)"
         href: articles/Hamren_2008_tesaglitazar.html
       - text: "Tesofensine (Lehr 2010)"
@@ -4371,6 +4373,7 @@ articles:
   - articles/Hornik_2025_furosemide
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
+  - articles/Hu_2025_tepotinib
   - articles/Hu_2026_clesrovimab
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
