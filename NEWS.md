@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zurawska 2026 piperacillin ([doi:10.1128/aac.01760-25](https://doi.org/10.1128/aac.01760-25)) -- critically ill adults with hospital-acquired pneumonia, including those on continuous renal replacement therapy.
+
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
 - Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
