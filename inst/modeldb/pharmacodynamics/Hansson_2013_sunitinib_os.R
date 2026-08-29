@@ -12,6 +12,11 @@ Hansson_2013_sunitinib_os <- function() {
     "modellib('Hansson_2013_sunitinib_dbp'),",
     "modellib('Hansson_2013c_sunitinib') [fatigue],",
     "modellib('Hansson_2013_sunitinib_hfs').",
+    "NOT to be confused with modellib('Hansson_2013_sunitinib_svegfr3_os'),",
+    "a DIFFERENT overall-survival model from the companion paper published",
+    "back-to-back in the same issue (e84, doi:10.1038/psp.2013.61):",
+    "that one is driven by the sVEGFR-3 biomarker, this one by",
+    "adverse-effect predictors.",
     sep = " "
   )
   vignette <- "Hansson_2013_sunitinib_os"

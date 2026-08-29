@@ -1,4 +1,4 @@
-Hansson_2013_sunitinib_OS <- function() {
+Hansson_2013_sunitinib_svegfr3_os <- function() {
   description <- "Parametric overall-survival (Weibull TTE) model in adults with imatinib-resistant gastrointestinal stromal tumours (GIST) on sunitinib. The hazard for death is a Weibull baseline (lam_haz, alfa_haz) modulated log-linearly by the model-predicted relative change in soluble VEGFR-3 (sVEGFR-3) from individual baseline and by observed baseline tumour size (sum of longest diameters, SLD). The sVEGFR-3 time course is simulated in-model as a one-compartment indirect-response turnover with simple-Imax inhibition of Kin driven by the per-cycle exposure summary auc = DOSE / CLI. A parallel Weibull censoring hazard (lam_cens, alfa_cens) is included so the model can drive prospective Kaplan-Meier simulations with censoring per the paper's published procedure. The model has no PK ODE and consumes individual posthoc upstream-PD parameters (BAS_SVEGFR3, MRT_SVEGFR3, EC50_SVEGFR3) and posthoc upstream-PK clearance (CLI) plus observed baseline tumour size (TUMSZ, mm) as data covariates. No IIV reported in the source for the OS or censoring hazard parameters."
   reference <- paste(
     "Hansson EK, Amantea MA, Westwood P, Milligan PA, Houk BE,",
@@ -11,9 +11,14 @@ Hansson_2013_sunitinib_OS <- function() {
     "from the same paper are available as",
     "modellib('Hansson_2013a_sunitinib') (DDMODEL00000197) and",
     "modellib('Hansson_2013b_sunitinib') (DDMODEL00000198).",
+    "NOT to be confused with modellib('Hansson_2013_sunitinib_os'),",
+    "a DIFFERENT overall-survival model from the companion paper published",
+    "back-to-back in the same issue (e85, doi:10.1038/psp.2013.62):",
+    "that one is driven by adverse-effect predictors, this one by the",
+    "sVEGFR-3 biomarker.",
     sep = " "
   )
-  vignette <- "Hansson_2013_sunitinib_OS"
+  vignette <- "Hansson_2013_sunitinib_svegfr3_os"
   paper_specific_compartments <- c("cumhaz_cens")
   units <- list(
     time = "h",
