@@ -9,6 +9,9 @@
   published back-to-back (e84 doi:10.1038/psp.2013.61, sVEGFR-3-driven; e85
   doi:10.1038/psp.2013.62, adverse-effect-driven); both now cross-reference each
   other explicitly.
+
+- Add Hu 2026 utreloxastat ([doi:10.1002/jcph.70171](https://doi.org/10.1002/jcph.70171)) -- healthy adults in a first-in-human study.
+
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
 - Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
