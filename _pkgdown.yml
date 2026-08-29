@@ -2018,6 +2018,8 @@ navbar:
         href: articles/Gebhard_2023_leukemia_maintenance_therapy.html
       - text: "Meropenem (Bergen 2017)"
         href: articles/Bergen_2017_meropenem.html
+      - text: "Meropenem (ButraguenoLaiseca 2024)"
+        href: articles/ButraguenoLaiseca_2024_meropenem.html
       - text: "Meropenem (Fukumoto 2023)"
         href: articles/Fukumoto_2023_meropenem.html
       - text: "Meropenem (Germovsek 2018)"
@@ -3985,6 +3987,7 @@ articles:
   - articles/Bulitta_2010_colistin
   - articles/Bulitta_2010_piperacillin
   - articles/Bulitta_2011_cefpirome
+  - articles/ButraguenoLaiseca_2024_meropenem
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
   - articles/Caldes_2009_ganciclovir
