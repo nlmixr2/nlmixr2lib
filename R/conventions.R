@@ -136,10 +136,12 @@
   # accommodates parallel-absorption models with two or more depots.
   # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
   # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
-  # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
+  # models; `reticulocytes[0-9]+` is the reticulocyte age-transit chain
+  # that sits one stage upstream of `erythrocytes[0-9]+` in the same
+  # cascade; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
   # (tolerance) chain.
   compartmentRegex =
-    "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator)[0-9]+$",
+    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
@@ -949,7 +951,8 @@
 # Compartment name validator. Recognizes:
 #   - canonical names from conv$compartments
 #   - numbered chains via conv$compartmentRegex
-#     (transit/effect/precursor/lat/depot/erythrocytes/mch/moderator)
+#     (transit/effect/precursor/lat/depot/erythrocytes/reticulocytes/mch/
+#     moderator)
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
 #   - target species in physiologic compartments via conv$targetLocationRegex
 #   - intracellular red-cell analyte pools via conv$rbcCompartmentRegex
