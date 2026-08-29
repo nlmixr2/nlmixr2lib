@@ -415,7 +415,21 @@ appropriate to this model class.
 
 # Errata
 
-No erratum, corrigendum or author correction was located for this article. The
-Elsevier supplement (`mmc1.docx`) contains only Supplemental Tables 1 and 2
+One erratum exists, and it changes **nothing** in this model.
+
+> Siemers E, et al. Erratum to "INTERCEPT-AD, a phase 1 study of intravenous
+> sabirnetug in participants with mild cognitive impairment or mild dementia due
+> to Alzheimer's disease" [J Prev Alzheimers Dis 2025;12(1):100005].
+> J Prev Alzheimers Dis. 2025;12(7):100213.
+> doi:10.1016/j.tjpad.2025.100213 (PMID 40450514, PMC12321635).
+
+Its entire content is the restoration of the Declaration of Competing Interest
+section, which the publisher had rendered as "none" during production despite the
+authors having supplied a full declaration. It revises no parameter estimate, no
+equation, no unit and no reported value, so the main article remains the sole
+source for every number in this model. It is recorded here rather than in the
+model file's `reference` field for that reason.
+
+The Elsevier supplement (`mmc1.docx`) contains only Supplemental Tables 1 and 2
 (cognitive assessments for study Parts A and B); it contains no model equations,
 no parameter values and no control stream.
