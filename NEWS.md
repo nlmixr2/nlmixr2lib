@@ -32,6 +32,8 @@
 
 - Add Xu 2023 busulfan ([doi:10.1002/psp4.13004](https://doi.org/10.1002/psp4.13004)) -- Chinese adults and children undergoing allogeneic hematopoietic stem cell transplantation.
 
+- Add Mahadevan 2026 polymyxin B + meropenem + fosfomycin mechanism-based time-kill models ([doi:10.1128/aac.00782-25](https://doi.org/10.1128/aac.00782-25)) -- six carbapenem-resistant Klebsiella pneumoniae clinical isolates in vitro; one file per isolate.
+
 - Add Bjornsson 2023 buprenorphine / CAM2038 depot ([doi:10.1007/s40262-023-01288-6](https://doi.org/10.1007/s40262-023-01288-6)) -- healthy adults and adults with opioid use disorder.
 
 - Add Zhu 2024 pyrotinib ([doi:10.3389/fphar.2024.1432944](https://doi.org/10.3389/fphar.2024.1432944)) - Chinese patients with HER2-positive breast cancer.

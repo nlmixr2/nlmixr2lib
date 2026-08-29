@@ -2094,13 +2094,13 @@ Lowercase / uppercase casing variants and mutation suffixes used by combination-
 Semi-mechanistic time-kill / hollow-fiber-infection-model (HFIM) PD models (Bulitta / Wicha / Landersdorfer life-cycle growth lineage) partition the bacterial population by antibiotic-resistance phenotype. The canonical scheme spells the phenotype out so the resistance status of each subpopulation is self-documenting in the state name, rather than using the terse single-letter `s` / `i` / `r` source labels:
 
 - **Single-drug models** name each subpopulation `bact_<phenotype>`, where `<phenotype>` is one of the spelled-out resistance phenotypes `susceptible`, `intermediate`, or `resistant`.
-- **Combination-therapy (two-drug) models** name each subpopulation by its joint per-drug status as a spelled-out compound `bact_<drug1pheno>_<drug2pheno>` (the two phenotype tokens are in the model's drug order; e.g., for a meropenem + ciprofloxacin model `bact_resistant_intermediate` is the meropenem-resistant / ciprofloxacin-intermediate subpopulation).
+- **Combination-therapy (N-drug) models** name each subpopulation by its joint per-drug status as a spelled-out compound `bact_<drug1pheno>_<drug2pheno>[_<drug3pheno>...]` (one phenotype token per drug, in the model's drug order; e.g., for a meropenem + ciprofloxacin model `bact_resistant_intermediate` is the meropenem-resistant / ciprofloxacin-intermediate subpopulation, and for a polymyxin B + meropenem + fosfomycin model `bact_intermediate_resistant_resistant` is the polymyxin B-intermediate / meropenem-resistant / fosfomycin-resistant subpopulation). The token count is not capped at two: a model with three or more drugs carries one token per drug.
 - An **optional trailing digit** indexes the Bulitta / Wicha two-state bacterial life cycle: `1` = vegetative / resting state, `2` = replicating state (the state-2 cells replicate back into state-1 daughter cells). Subpopulations without a life-cycle split carry no trailing digit.
 
 These states are **not** registered as individual H3 entries; they are matched at runtime by the `bacterialSubpopRegex` constant in `R/conventions.R`:
 
 ```
-^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$
+^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))*[0-9]*$
 ```
 
 (The regex is a structural pattern and lives in R alongside the other `*Regex` compartment constants documented in the "Regex constants" header section, not as a name list in this file.)
@@ -2109,6 +2109,7 @@ These states are **not** registered as individual H3 entries; they are matched a
   - `Garonzik_2016_daptomycin.R` -- single-drug: `bact_susceptible1` / `bact_susceptible2`, `bact_intermediate1` / `bact_intermediate2`, `bact_resistant1` / `bact_resistant2` (three subpopulations of decreasing daptomycin susceptibility, each with the two-state life cycle).
   - `Rees_2018_meropenem_ciprofloxacin.R` -- two-drug (meropenem + ciprofloxacin): `bact_susceptible_susceptible1` / `2`, `bact_resistant_intermediate1` / `2`, `bact_intermediate_resistant1` / `2`.
   - `Landersdorfer_2018_imipenem_tobramycin.R` -- two-drug (imipenem + tobramycin): same `bact_<drug1pheno>_<drug2pheno>` compound scheme with the two-state life-cycle digit.
+  - `Mahadevan_2026_polymyxinB_meropenem_fosfomycin_BRKP61.R` (and its five isolate siblings) -- founding **three-drug** example (polymyxin B + meropenem + fosfomycin, tokens in that order): `bact_intermediate_resistant_resistant1` / `2` paired with `bact_resistant_intermediate_intermediate1` / `2`; other isolates use `bact_intermediate_intermediate_intermediate1` / `2`, `bact_resistant_resistant_resistant1` / `2` and `bact_resistant_resistant_intermediate1` / `2`.
 
 ---
 
