@@ -2532,12 +2532,16 @@ navbar:
         href: articles/Brekkan_2018_pegfilgrastim.html
       - text: "Peginesatide (Naik 2013)"
         href: articles/Naik_2013_peginesatide.html
+      - text: "Peginterferon alfa 24wk mbma (Hanan 2026)"
+        href: articles/Hanan_2026_peginterferon_alfa_hbsag_loss.html
       - text: "Peginterferon alfa 2a (Bi 2017)"
         href: articles/Bi_2017_peginterferon_alfa_2a.html
       - text: "Peginterferon alfa 2b (Gupta 2006)"
         href: articles/Gupta_2006_peginterferon_alfa_2b.html
       - text: "Peginterferon alfa 2b (Jian 2025)"
         href: articles/Jian_2025_peginterferon_alfa_2b.html
+      - text: "Peginterferon alfa eot mbma (Hanan 2026)"
+        href: articles/Hanan_2026_peginterferon_alfa_hbsag_loss.html
       - text: "Peginterferon beta 1a (Hu 2017)"
         href: articles/Hu_2017_peginterferon_beta_1a.html
       - text: "Pembrolizumab (Ahamadi 2017)"
@@ -4299,6 +4303,7 @@ articles:
   - articles/Han_2016_bevacizumab
   - articles/Han_2018_methionineMetabolismCycle
   - articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk
+  - articles/Hanan_2026_peginterferon_alfa_hbsag_loss
   - articles/Hanberg_2018_meropenem
   - articles/Hanley_2024_brigatinib
   - articles/Hansson_2013_sunitinib_OS
