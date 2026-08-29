@@ -1933,8 +1933,10 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 ### other (**canonical bare "other" lumped compartment**)
 - **Type:** compartment
 - **Role:** Bare "other" lumped tissue compartment in full-body PBPK extractions.
-- **Source aliases:** none.
-- **Example models:** `Zhang_2011_nutlin3a.R`.
+- **Source aliases:**
+  - `T` / `C_T` -- the bulk soft-tissue store of Ward 2026, which bundles muscle, soft tissue and liver into one well-mixed pool because they carry similar magnesium concentrations.
+- **Example models:** `Zhang_2011_nutlin3a.R`, `Ward_2026_magnesium_pbpk.R`.
+- **Notes:** The `other` role is defined by the LUMPING (a single pool standing in for every organ the model does not resolve individually), not by the pool being small or residual. Ward 2026's `other` is the dominant magnesium store of the whole model -- 52.7 L, and roughly three quarters of the systemic buildup time constant -- and is still correctly `other`, because the paper never resolves muscle from liver from generic soft tissue. Ratified 2026-08-28 (sidecar `oare_PMC12878740` q1 = C), which explicitly declined to register a second bare-lumped-tissue canonical named `tissue` for this role.
 
 ### skin (**canonical bare skin compartment**)
 - **Type:** compartment
@@ -4646,3 +4648,15 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Source aliases:** `CT3`, `T3`, `tumor mass 3`, `tumor core`.
 - **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; interstitial pH 6.2, paravascular bulk flow reduced 50 percent, volume 0.0035 L).
 - **Notes:** See `tumor_rim` for how the `tumor_<region>` namespace differs from `tumor`, `tumor_size` / `TS` and `is_tumor` / `int_tumor`.
+
+---
+
+## Implant-adjacent local tissue
+
+### implant_zone (**canonical peri-implant local tissue compartment**)
+- **Type:** compartment
+- **Role:** The localized tissue immediately surrounding a degradable implant, which is the first pool to receive material released as the implant corrodes before that material equilibrates with the bulk `other` soft-tissue store and with systemic circulation. A small, well-mixed spatial sub-volume carved out of the surrounding tissue compartment: it exchanges with `serum` on the same clearances as the bulk tissue it was carved from, but carries the whole implant release term, so its concentration transiently runs far above the systemic level. Its volume is a modelling choice rather than a measured physiologic quantity (it has no anatomic boundary), and the systemic predictions of such a model are insensitive to it while the local concentration scales as its reciprocal.
+- **Source aliases:**
+  - `I` / `C_I` -- Ward 2026 eq 4, "a compartment representing the localized tissue in the immediate vicinity of the implant (I) ... that will initially absorb Mg(II) ions released from the implant".
+- **Example models:** `Ward_2026_magnesium_pbpk.R` (founding example; `VI` chosen so `VI/VTtot = 1e-4`, giving 5.27 mL per screw, about 20 times the volume of the 3.2 x 32 mm implant itself).
+- **Notes:** Distinct from `depot`, which holds an administered dose awaiting first-order absorption into `central`: `implant_zone` is a physiologic tissue volume with its own bidirectional perfusion exchange, and the release into it is a zero-order corrosion flux rather than a dose. Distinct also from the `<organ>_isf` interstitial-fluid states, which are a permeability-limited sub-compartment of a named organ rather than a spatial neighbourhood of a foreign body. Ratified 2026-08-28 (sidecar `oare_PMC12878740` q1 = C). The founding paper anticipates the class generalizing -- its framework "is likely to be applicable to many other degradable implant materials, such as polymers and zinc implants" -- so later degradable-implant extractions should reuse this token rather than minting a per-material variant.
