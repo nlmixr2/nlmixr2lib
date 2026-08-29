@@ -1745,6 +1745,62 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Shin_2014_sevoflurane.R`.
 
+### prob_orr_central (**canonical central-assessment overall-response probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient achieves an overall response (complete response, including uncertified CR, or partial response) as adjudicated by **independent central review**, in a static landmark exposure-response logistic model. The central-vs-investigator distinction is load-bearing and is why this is a separate canonical from `prob_orr_investigator`: the two adjudications are separate endpoints fit as separate models on different analysis sets, and central review is the regulatory-grade assessment.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual).
+- **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Static (no time dimension): unlike `prob_scc`, which is a state-occupancy probability evolving under a multistate ODE, this is a landmark probability evaluated once per subject from baseline covariates and a scalar exposure metric. Founding models expose it with a small placeholder residual so the nlmixr2 observation machinery accepts the model; the source analysis uses an exact Bernoulli likelihood and estimates no residual error.
+
+### prob_orr_investigator (**canonical investigator-assessment overall-response probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient achieves an overall response as adjudicated by the **treating investigator**, in a static landmark exposure-response logistic model. Sibling of `prob_orr_central`; kept distinct because investigator assessment is typically available on a larger analysis set and yields a systematically different response rate and exposure slope.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_orr_investigator.R` (Bayesian logistic exposure-response for ORR by investigator assessment in relapsed/refractory ATLL, pooled across the J101 phase I and J201 phase II trials).
+- **Notes:** See `prob_orr_central` for the shared conventions. In the founding paper the investigator-assessed model was fit on 38 patients versus 25 for central assessment, and estimated a steeper exposure slope (odds ratio 1.22 vs 1.08 per 250 ng*h/mL); the authors attribute the difference to the smaller central-assessment sample rather than to a real biological difference.
+
+### prob_anemia (**canonical severe-anemia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) anemia event, assessed from laboratory hemoglobin values rather than from investigator-reported adverse-event terms, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_anemia.R` (Bayesian logistic exposure-safety model; baseline hemoglobin is the dominant covariate, odds ratio 0.417 per 20 g/L increase).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from a modelled hemoglobin *concentration* state in a semi-mechanistic erythropoiesis model (`hb_state` and relatives): `prob_anemia` is the probability of crossing a categorical toxicity-grade threshold, not a hemoglobin value.
+
+### prob_anc_decrease (**canonical severe-neutropenia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) decrease in absolute neutrophil count, assessed from laboratory ANC values, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_anc_decrease.R` (Bayesian logistic exposure-safety model; baseline ANC odds ratio 0.594 per 2.5 x 10^9/L increase).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from the `circ` / neutrophil-count states of Friberg-family semi-mechanistic myelosuppression models, which carry an ANC value through an ODE chain; this is a threshold-crossing probability with no time dimension.
+
+### prob_plt_decrease (**canonical severe-thrombocytopenia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) decrease in platelet count, assessed from laboratory platelet values, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_plt_decrease.R` (Bayesian logistic exposure-safety model; the steepest exposure-safety relationship in the founding paper, odds ratio 2.03 per 250 ng*h/mL of unbound AUCss, and the largest single covariate effect, baseline platelet odds ratio 0.230 per 100 x 10^9/L).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from the circulating-platelet ODE state of platelet-dynamics models such as `PerezRuixo_2015_oxaliplatin_platelet_dynamics.R`; this is a threshold-crossing probability, not a count.
+
+### prob_teae_grade3 (**canonical any-severe-treatment-emergent-adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences **any** CTCAE grade >= 3 treatment-emergent adverse event, pooled across all preferred terms, in a static landmark exposure-safety logistic model. The composite "any severe TEAE" endpoint is the standard whole-tolerability summary in oncology exposure-safety analyses.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_teae_grade3.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.653).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Composite and therefore not mutually exclusive with the laboratory-value endpoints (`prob_anemia`, `prob_anc_decrease`, `prob_plt_decrease`), which are subsets of it; a model consuming several of these simultaneously must not treat them as competing risks.
+
+### prob_dose_interruption (**canonical dose-interruption probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient requires a **dose interruption** (temporary hold) because of a treatment-emergent adverse event, in a static landmark exposure-safety logistic model. A tolerability rather than a toxicity endpoint: it measures whether the prescribed regimen could be maintained.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_dose_interruption.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.514).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_reduction`; interruption is the more frequent and less severe of the two dose-modification endpoints, so the pair is usually modelled and reported together.
+
+### prob_dose_reduction (**canonical dose-reduction probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient requires a **permanent dose reduction** because of a treatment-emergent adverse event, in a static landmark exposure-safety logistic model. Interpreted as the point at which a clinician judges the risk of the assigned dose to be unwarranted, which makes it the natural upper-bound criterion in a benefit-risk / region-of-practical-equivalence exposure analysis.
+- **Source aliases:** none.
+- **Example models:** `Fukae_2024_valemetostat_dose_reduction.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.0774, and the endpoint the founding paper used to set the upper limit of its target exposure range).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_interruption`. The founding paper's rationale for singling this endpoint out is worth carrying forward: maintaining the initial dose after an adverse event plausibly represents acceptance of a warranted risk, so the probability of *reduction* is the sharper tolerability criterion.
+
 ### prolactin (**canonical serum prolactin output**)
 - **Type:** compartment
 - **Role:** Serum prolactin PD output (endocrinology).
