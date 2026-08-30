@@ -3568,6 +3568,8 @@ navbar:
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Vedolizumab (Waterhouse 2024)"
         href: articles/Waterhouse_2024_vedolizumab.html
+      - text: "Venetoclax (Zhao 2026)"
+        href: articles/Zhao_2026_venetoclax.html
       - text: "Venetoclax apoptosis qsp (Derippe 2024)"
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
       - text: "Venetoclax mouse (Derippe 2024)"
@@ -5346,6 +5348,7 @@ articles:
   - articles/Zhao_2024_ciprofloxacin_colistin
   - articles/Zhao_2025_methotrexate
   - articles/Zhao_2025_paracetamol
+  - articles/Zhao_2026_venetoclax
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
   - articles/Zheng_2016_sifalimumab
