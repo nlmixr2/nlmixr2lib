@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Teixeira 2026 meloxicam ([doi:10.3390/ph19030412](https://doi.org/10.3390/ph19030412)) - female mixed-breed dogs undergoing ovariohysterectomy, free vs polymeric-nanocapsule oral formulations.
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
