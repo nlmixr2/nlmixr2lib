@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Thoueille 2026 inhaled salmeterol and alpha-hydroxysalmeterol ([doi:10.1002/psp4.70187](https://doi.org/10.1002/psp4.70187)) -- healthy adults, chronic asthmatics and athletes/endurance-trained individuals.
+- Add Hanan 2026 pegylated-interferon-alfa HBsAg-loss model-based meta-analysis ([doi:10.1002/psp4.70164](https://doi.org/10.1002/psp4.70164)) -- adults with chronic hepatitis B virus infection.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
