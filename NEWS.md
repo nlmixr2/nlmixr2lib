@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lin 2024 adverse-event grade proportional-odds Markov model ([doi:10.3389/fphar.2024.1487062](https://doi.org/10.3389/fphar.2024.1487062)) -- simulated subjects on a de-identified oral compound.
+- Add Siemers 2025 sabirnetug ([doi:10.1016/j.tjpad.2024.100005](https://doi.org/10.1016/j.tjpad.2024.100005)) -- adults with mild cognitive impairment or mild dementia due to Alzheimer's disease.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
