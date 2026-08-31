@@ -938,8 +938,10 @@ navbar:
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
-      - text: "Dimethyltryptamine LZc (Eckernas 2023)"
-        href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
+      - text: "Dndi6148 human (Henninger 2026)"
+        href: articles/Henninger_2026_dndi6148.html
+      - text: "Dndi6148 mouse (Henninger 2026)"
+        href: articles/Henninger_2026_dndi6148.html
       - text: "Docetaxel (Janssen 2023)"
         href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Docetaxel (Koolen 2010)"
@@ -4597,6 +4599,7 @@ articles:
   - articles/Hennig_2013_tobra
   - articles/Hennig_2015_phenytoin
   - articles/Hennig_2015_rifabutin
+  - articles/Henninger_2026_dndi6148
   - articles/Henthorn_2024_tetrahydrocannabinol
   - articles/Heo_2016_amlodipine_valsartan
   - articles/HernandezLozano_2025_apramycin
