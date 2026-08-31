@@ -2634,6 +2634,8 @@ navbar:
         href: articles/Tian_2025_pirtobrutinib.html
       - text: "Pitavastatin (Kakara 2014)"
         href: articles/Kakara_2014_statins_LDLC.html
+      - text: "Plozasiran (Ousey 2026)"
+        href: articles/Ousey_2026_plozasiran.html
       - text: "Polatuzumab (Lu 2019)"
         href: articles/Lu_2019_polatuzumab.html
       - text: "Polatuzumab neuropathy (Lu 2017)"
@@ -4801,6 +4803,7 @@ articles:
   - articles/Oualha_2018_enoxaparin
   - articles/Ouerdani_2015_pazopanib
   - articles/Ouerdani_2015_pazopanib_mouse
+  - articles/Ousey_2026_plozasiran
   - articles/Overgaard_2016_liraglutide
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
