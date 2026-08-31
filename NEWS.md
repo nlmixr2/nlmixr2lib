@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kim 2026 midazolam ([doi:10.1097/ALN.0000000000005811](https://doi.org/10.1097/ALN.0000000000005811)) -- adults on venoarterial ECMO and after decannulation.
+- Add Yu 2026 tenofovir ([doi:10.1007/s40262-025-01589-y](https://doi.org/10.1007/s40262-025-01589-y)) -- non-pregnant, pregnant and postpartum women taking tenofovir disoproxil fumarate or tenofovir alafenamide.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

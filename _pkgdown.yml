@@ -3484,6 +3484,8 @@ navbar:
         href: articles/Mazzocco_2015_temozolomide.html
       - text: "Tenofovir (Baheti 2011)"
         href: articles/Baheti_2011_tenofovir.html
+      - text: "Tenofovir (Yu 2026)"
+        href: articles/Yu_2026_tenofovir.html
       - text: "Tenofovir alafenamide (Thoueille 2023)"
         href: articles/Thoueille_2023_tenofovir_ckd.html
       - text: "Tenofovir combined (Lu 2016)"
@@ -3496,6 +3498,10 @@ navbar:
         href: articles/Granda_2024_kidney_pbpk.html
       - text: "Tenofovir prdi (Lu 2016)"
         href: articles/Lu_2016_tenofovir.html
+      - text: "Tenofovir pregnancy taf (Yu 2026)"
+        href: articles/Yu_2026_tenofovir.html
+      - text: "Tenofovir pregnancy tfv (Yu 2026)"
+        href: articles/Yu_2026_tenofovir.html
       - text: "Tenofovir reduced (Thoueille 2023)"
         href: articles/Thoueille_2023_tenofovir_ckd.html
       - text: "Tepotinib (Hu 2025)"
@@ -5577,6 +5583,7 @@ articles:
   - articles/Yu_2022_ofatumumab
   - articles/Yu_2024_ilaprazole
   - articles/Yu_2025_vancomycin
+  - articles/Yu_2026_tenofovir
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
