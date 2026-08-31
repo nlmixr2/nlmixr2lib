@@ -134,6 +134,8 @@ navbar:
         href: articles/Stricker_2015_aminocaproic_acid.html
       - text: "AminocaproicAcid (Stricker 2013)"
         href: articles/Stricker_2013_aminocaproicAcid.html
+      - text: "Amisulpride (Hopkins 2024)"
+        href: articles/Hopkins_2024_amisulpride.html
       - text: "Amisulpride (Yan 2024)"
         href: articles/Yan_2024_amisulpride.html
       - text: "Amivantamab (Marcantonio 2022)"
@@ -2150,8 +2152,10 @@ navbar:
         href: articles/An_2012_mitoxantrone_pbpk.html
       - text: "Mizoribine (Honda 2006)"
         href: articles/Honda_2006_mizoribine.html
-      - text: "Modafinil (Darwish 2012)"
-        href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
+      - text: "MK3577 (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
+      - text: "MK3577 t2dm (Peng 2014)"
+        href: articles/Peng_2014_MK3577.html
       - text: "Modafinil (Wu 2012)"
         href: articles/Wu_2012_modafinil.html
       - text: "ModakafuspAlfa (Li 2025)"
@@ -2172,10 +2176,6 @@ navbar:
         href: articles/Franken_2015_morphine.html
       - text: "Morphine (Pierre 2017)"
         href: articles/Pierre_2017_morphine.html
-      - text: "Morphine (deHoogd 2017)"
-        href: articles/deHoogd_2017_morphine.html
-      - text: "Motesanib (Gosselin 2015)"
-        href: articles/Gosselin_2015_motesanib.html
       - text: "Moxifloxacin (Colin 2014)"
         href: articles/Colin_2014_moxifloxacin.html
       - text: "Moxifloxacin (Hong 2015)"
@@ -4398,6 +4398,7 @@ articles:
   - articles/Hood_2021_medi7836
   - articles/Hopkins_2015_leflunomide
   - articles/Hopkins_2017_doxycycline
+  - articles/Hopkins_2024_amisulpride
   - articles/Horita_2018_ethambutol
   - articles/Horita_2018_isoniazid
   - articles/Horita_2018_pyrazinamide
