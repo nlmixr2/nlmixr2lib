@@ -4030,8 +4030,8 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 ### 11oh (**canonical 11-hydroxy-delta-9-tetrahydrocannabinol suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 11-hydroxy-delta-9-tetrahydrocannabinol (11-OH-THC, commonly written THC-OH), the principal pharmacologically active metabolite of delta-9-tetrahydrocannabinol, formed by CYP2C9-dependent hydroxylation at the 11 position and itself further oxidised to the terminal carboxy metabolite. MW 330.46 g/mol.
-- **Source aliases:** `THC-OH`, `THCOH`, `11-OH-THC` (Wolowich 2025) -- translate to `11oh`.
-- **Example models:** `Wolowich_2025_thc.R`, `Wolowich_2025_thc_11oh.R`, `Wolowich_2025_thc_gedm.R` (2-compartment 11-OH-THC metabolite fed through one transit compartment from a 3-compartment THC parent).
+- **Source aliases:** `THC-OH`, `THCOH`, `11-OH-THC` (Wolowich 2025; also `THC-OH` in Storgaard 2026) -- translate to `11oh`.
+- **Example models:** `Wolowich_2025_thc.R`, `Wolowich_2025_thc_11oh.R`, `Wolowich_2025_thc_gedm.R` (2-compartment 11-OH-THC metabolite fed through one transit compartment from a 3-compartment THC parent), `Storgaard_2026_tetrahydrocannabinol.R` (2-compartment 11-OH-THC metabolite fed by an apparent formation clearance from a 1-compartment oromucosal THC parent).
 - **Notes:** Suffix starts with a digit; the convention check matches on `endsWith(name, "_<metab>")` rather than treating the metabolite name as an R identifier, following the `3oh` / `5oh` / `7oh` / `8oh` / `9oh` precedent. Registered as the positional-hydroxy form rather than a parent-derived `thcoh` so the positional-hydroxy family stays intact -- the family names the hydroxylation POSITION, not the parent, which is why `9oh` was chosen for 9-hydroxyrisperidone even though that metabolite has a drug name of its own (paliperidone). Disambiguation is by model context, as for the other five. A future extraction needing the terminal carboxy metabolite (THC-COOH) should register a separate token for it; `11oh` covers only the active hydroxy metabolite.
 
 ### ohsal (**canonical alpha-hydroxysalmeterol suffix**)
