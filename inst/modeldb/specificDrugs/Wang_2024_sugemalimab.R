@@ -1,5 +1,5 @@
 Wang_2024_sugemalimab <- function() {
-  description <- "Two-compartment population PK model with sigmoidal-cl_hill_max time-varying clearance for intravenous sugemalimab (anti-PD-L1 IgG4) in adults with advanced solid tumours or lymphomas across nine Phase I-III trials (Wang 2024)"
+  description <- "Two-compartment population PK model with sigmoidal-cl_time_max time-varying clearance for intravenous sugemalimab (anti-PD-L1 IgG4) in adults with advanced solid tumours or lymphomas across nine Phase I-III trials (Wang 2024)"
   reference <- "Wang K, Pan C, Xu F, Tse AN, Sheng Y. Comprehensive population pharmacokinetic modelling of sugemalimab, an anti-programmed death-ligand 1 (PD-L1) human monoclonal antibody, in patients with solid tumours or lymphomas across multiple Phase I-III studies. Br J Clin Pharmacol. 2025;91(3):748-760. doi:10.1111/bcp.16276"
   vignette <- "Wang_2024_sugemalimab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
@@ -118,14 +118,14 @@ Wang_2024_sugemalimab <- function() {
     lq      <- log(0.489); label("Intercompartmental clearance Q (L/day)")                     # Wang 2024 Table 3: exp(theta3) = 0.489 L/day
     lvp     <- log(1.57);  label("Peripheral volume Vp (L)")                                   # Wang 2024 Table 3: exp(theta4) = 1.57 L
 
-    # Time-varying CL Hill-cl_hill_max function (Wang 2024 Methods equation):
-    #   CL(t) = exp(CL0 + cl_hill_max * t^cl_hill_gamma / (T50^cl_hill_gamma + t^cl_hill_gamma))
-    # so CL(0) = exp(CL0) and CL(t -> inf) = exp(CL0 + cl_hill_max). With
-    # cl_hill_max = -0.528, the asymptotic CL is exp(-0.528) = 0.590 of baseline,
+    # Time-varying CL Hill-cl_time_max function (Wang 2024 Methods equation):
+    #   CL(t) = exp(CL0 + cl_time_max * t^cl_time_hill / (T50^cl_time_hill + t^cl_time_hill))
+    # so CL(0) = exp(CL0) and CL(t -> inf) = exp(CL0 + cl_time_max). With
+    # cl_time_max = -0.528, the asymptotic CL is exp(-0.528) = 0.590 of baseline,
     # i.e., a 41.0% reduction at full saturation.
-    cl_hill_max     <-      -0.528;     label("Reference cl_hill_max of time-varying CL (theta5; unitless, negative = CL decreases at full saturation)") # Wang 2024 Table 3: theta5 = -0.528
-    lcl_hill_t50     <- log(53.6);       label("log T50 - time at which half of cl_hill_max is reached (log days)") # Wang 2024 Table 3: theta6 = 53.6 day
-    lcl_hill_gamma  <- log(2.60);       label("log cl_hill_gamma - sigmoidicity (Hill coefficient) of the time-on-CL function (log unitless)") # Wang 2024 Table 3: theta7 = 2.60
+    cl_time_max     <-      -0.528;     label("Reference cl_time_max of time-varying CL (theta5; unitless, negative = CL decreases at full saturation)") # Wang 2024 Table 3: theta5 = -0.528
+    lcl_t50     <- log(53.6);       label("log T50 - time at which half of cl_time_max is reached (log days)") # Wang 2024 Table 3: theta6 = 53.6 day
+    lcl_time_hill  <- log(2.60);       label("log cl_time_hill - sigmoidicity (Hill coefficient) of the time-on-CL function (log unitless)") # Wang 2024 Table 3: theta7 = 2.60
 
     # Continuous covariate effects on CL and Vc - power form on log-transformed
     # covariates, equivalent to (cov / ref)^exponent in linear space (Wang 2024
@@ -154,8 +154,8 @@ Wang_2024_sugemalimab <- function() {
     e_escc_vc   <- log(1.08);  label("Exponential coefficient of ESCC tumour type (TTYPE5) on Vc (unitless; log(exp(theta22)))") # Wang 2024 Table 3: exp(theta22) = 1.08
 
     # IIV. CL and Vc form a 2x2 log-normal block; Vp and T50 are independent
-    # log-normal etas; cl_hill_max has an independent additive eta on the linear
-    # scale (Wang 2024 Table 3 footnote: "cl_hill_max_i = theta5 + eta_Emax,i").
+    # log-normal etas; cl_time_max has an independent additive eta on the linear
+    # scale (Wang 2024 Table 3 footnote: "cl_time_max_i = theta5 + eta_Emax,i").
     # Q has no IIV reported. Source CV%-to-omega^2 conversions (log-normal):
     #   omega^2 = log(1 + CV%^2)
     #   CL  19.5%  -> 0.0373
@@ -164,14 +164,14 @@ Wang_2024_sugemalimab <- function() {
     #   T50 64.2%  -> 0.3451
     # Source covariance Cov(CL, Vc) = 0.0161 reported directly on the
     # omega-block scale; correlation = 0.0161 / sqrt(0.0373 * 0.0237) = 0.541.
-    # cl_hill_max additive-eta variance: source CV% 18.5% interpreted as
-    # SD(eta_Emax) / |cl_hill_max| -> SD = 0.185 * 0.528 = 0.0977,
+    # cl_time_max additive-eta variance: source CV% 18.5% interpreted as
+    # SD(eta_Emax) / |cl_time_max| -> SD = 0.185 * 0.528 = 0.0977,
     # variance = 0.00955.
     etalcl + etalvc ~ c(0.0373,
                         0.0161, 0.0237)  # Wang 2024 Table 3: IIV CL 19.5%, IIV Vc 15.5%, Cov(CL,Vc) 0.0161
     etalvp   ~ 0.3847                    # Wang 2024 Table 3: IIV Vp 68.5%
-    etacl_hill_max  ~ 0.00955                   # Wang 2024 Table 3: IIV cl_hill_max 18.5% (additive eta on linear-scale cl_hill_max)
-    etalcl_hill_t50  ~ 0.3451                    # Wang 2024 Table 3: IIV T50 64.2%
+    etacl_time_max  ~ 0.00955                   # Wang 2024 Table 3: IIV cl_time_max 18.5% (additive eta on linear-scale cl_time_max)
+    etalcl_t50  ~ 0.3451                    # Wang 2024 Table 3: IIV T50 64.2%
 
     # Residual error. Source residual model: ln(y_ij) = ln(yhat_ij) + eps_ij
     # with var(eps) = sigma^2; sigma reported as 17.9% in Wang 2024 Table 3.
@@ -207,11 +207,11 @@ Wang_2024_sugemalimab <- function() {
     q  <- exp(lq)              # Q has no IIV in Wang 2024
     vp <- exp(lvp + etalvp)
 
-    # Time-varying CL: sigmoidal cl_hill_max function of time since first dose.
-    cl_hill_t50    <- exp(lcl_hill_t50 + etalcl_hill_t50)
-    cl_hill_gamma <- exp(lcl_hill_gamma)
-    cl_hill_max_i <- cl_hill_max + etacl_hill_max
-    cl     <- cl0 * exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
+    # Time-varying CL: sigmoidal cl_time_max function of time since first dose.
+    cl_t50    <- exp(lcl_t50 + etalcl_t50)
+    cl_time_hill <- exp(lcl_time_hill)
+    cl_time_max_i <- cl_time_max + etacl_time_max
+    cl     <- cl0 * exp(cl_time_max_i * t^cl_time_hill / (cl_t50^cl_time_hill + t^cl_time_hill))
 
     # Two-compartment micro-constants.
     kel <- cl / vc
