@@ -2,29 +2,7 @@
 
 # development version
 
-- Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
-
-- Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
-
-- Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
-
-- Add Koh 2025 enteric-coated aspirin ([doi:10.2147/DDDT.S533428](https://doi.org/10.2147/DDDT.S533428)) -- healthy Korean adults.
-
-- Add Royston 2025 letermovir ([doi:10.1128/aac.00697-25](https://doi.org/10.1128/aac.00697-25)) -- adult allogeneic hematopoietic cell transplant recipients.
-
-- Add Matcha 2025 amikacin ([doi:10.1038/s41390-025-04044-7](https://doi.org/10.1038/s41390-025-04044-7)) -- term neonates.
-
-- Add Olsson Gisleskog 2025 ibrutinib ([doi:10.1002/psp4.70061](https://doi.org/10.1002/psp4.70061)) -- patients 65 years and older with previously untreated mantle cell lymphoma in the phase 3 SHINE study.
-
-- Add Ujihira 2025 glycochenodeoxycholic acid 3-O-sulfate, an endogenous OATP1B3 / OAT3 biomarker ([doi:10.1002/cpt.70023](https://doi.org/10.1002/cpt.70023)) -- healthy adults.
-
-- Add Chigutsa 2025 tirzepatide ([doi:10.1002/cpt.3750](https://doi.org/10.1002/cpt.3750)) -- adults with obesity or overweight without type 2 diabetes (SURMOUNT-1).
-
-- Add Ibrahim 2025 ibrutinib ([doi:10.1002/psp4.70124](https://doi.org/10.1002/psp4.70124)) -- adults with treatment-naive or relapsed/refractory chronic lymphocytic leukemia.
-
-- Add Boivin-Champeaux 2026 acute hepatitis B virus QSP model ([doi:10.1002/psp4.70172](https://doi.org/10.1002/psp4.70172)) -- adults with acute HBV infection pooled from eight published cohorts.
-
-- Add Proctor 2026 durvalumab ([doi:10.1002/psp4.70185](https://doi.org/10.1002/psp4.70185)) -- adults with advanced cancer; a whole-body two-pore PBPK model of cachexia-driven time-dependent clearance plus the empirical popPK comparator.
+- Add Feng 2019 ipilimumab mixture tumor growth dynamics model ([doi:10.1002/psp4.12454](https://doi.org/10.1002/psp4.12454)) -- adults with advanced melanoma.
 
 - Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
 
