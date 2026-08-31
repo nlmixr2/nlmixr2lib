@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Assmus 2025 benznidazole ([doi:10.1371/journal.pntd.0013522](https://doi.org/10.1371/journal.pntd.0013522)) -- adults with chronic indeterminate Chagas disease in the BENDITA trial; population PK plus a qPCR-positivity exposure-response model.
+- Add Jaiswal 2025 dordaviprone ([doi:10.1002/psp4.70093](https://doi.org/10.1002/psp4.70093)) -- healthy adults; a reduction of the published Simcyp minimal-PBPK CYP3A4 drug-interaction model.
 
 - Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
 
