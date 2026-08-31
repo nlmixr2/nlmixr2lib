@@ -1734,6 +1734,8 @@ navbar:
         href: articles/Valitalo_2017_ketorolac.html
       - text: "Kynurenicacid pbpk (Granda 2024)"
         href: articles/Granda_2024_kidney_pbpk.html
+      - text: "Lacosamide (Yu 2026)"
+        href: articles/Yu_2026_lacosamide.html
       - text: "Lacosamide dropout (Lindauer 2017)"
         href: articles/Lindauer_2017_lacosamide.html
       - text: "Lacosamide seizure (Lindauer 2017)"
@@ -5297,6 +5299,7 @@ articles:
   - articles/Yu_2022_ofatumumab
   - articles/Yu_2024_ilaprazole
   - articles/Yu_2025_vancomycin
+  - articles/Yu_2026_lacosamide
   - articles/Yuan_2019_concizumab
   - articles/Yukawa_1990_phenytoin
   - articles/Yukawa_2002_clonazepam_pediatric
