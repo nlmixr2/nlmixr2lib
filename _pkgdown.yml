@@ -3606,6 +3606,8 @@ navbar:
         href: articles/Dunn_2025_tranexamicAcid.html
       - text: "TranexamicAcid (Nakai 2025)"
         href: articles/Nakai_2025_tranexamicAcid.html
+      - text: "TranexamicAcid (Stitt 2026)"
+        href: articles/Stitt_2026_tranexamicAcid.html
       - text: "Trastuzumab (Bruno 2005)"
         href: articles/Bruno_2005_trastuzumab.html
       - text: "Trastuzumab (LeTilly 2021)"
@@ -5282,6 +5284,7 @@ articles:
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
   - articles/Stevens_2012_remoxipride
+  - articles/Stitt_2026_tranexamicAcid
   - articles/Stocker_2012_oxypurinol
   - articles/Storset_2014_tacrolimus
   - articles/Stoschus_2025_phenobarbital
