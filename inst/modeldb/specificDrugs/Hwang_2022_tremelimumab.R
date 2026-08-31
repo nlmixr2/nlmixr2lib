@@ -83,11 +83,11 @@ Hwang_2022_tremelimumab <- function() {
     #   CL    = CL_BASE * exp(EMPIR) * covariate effects * exp(eta_CL)
     # so EMPIR(0) = 0 and EMPIR(t -> Inf) = (Tmax + eta_Tmax). A common TC50
     # is shared between the two regimens, with regimen-specific Tmax and lambda.
-    cl_hill_max_mono   <-  0.151; label("Asymptotic log-change in CL on monotherapy (unitless)")          # Hwang 2022 Table 3: covariate 4 Tmax (monotherapy)            =  0.151
-    cl_hill_t50        <- 95.1;   label("Time at which the change in CL is 50%% of the asymptote (days)") # Hwang 2022 Table 3: covariate 5 TC50 (common)                = 95.1
-    cl_hill_gamma_mono <- 14.5;   label("Sigmoidicity exponent of time on CL on monotherapy (unitless)")  # Hwang 2022 Table 3: covariate 6 Lambda (monotherapy)         = 14.5
-    cl_hill_max_combo  <- -0.187; label("Asymptotic log-change in CL on combination with durvalumab (unitless)") # Hwang 2022 Table 3: covariate 7 Tmax (combination therapy)   = -0.187
-    cl_hill_gamma_combo <- 3.20;  label("Sigmoidicity exponent of time on CL on combination with durvalumab (unitless)") # Hwang 2022 Table 3: covariate 8 Lambda (combination therapy) =  3.20
+    cl_time_max_mono   <-  0.151; label("Asymptotic log-change in CL on monotherapy (unitless)")          # Hwang 2022 Table 3: covariate 4 Tmax (monotherapy)            =  0.151
+    cl_t50        <- 95.1;   label("Time at which the change in CL is 50%% of the asymptote (days)") # Hwang 2022 Table 3: covariate 5 TC50 (common)                = 95.1
+    cl_time_hill_mono <- 14.5;   label("Sigmoidicity exponent of time on CL on monotherapy (unitless)")  # Hwang 2022 Table 3: covariate 6 Lambda (monotherapy)         = 14.5
+    cl_time_max_combo  <- -0.187; label("Asymptotic log-change in CL on combination with durvalumab (unitless)") # Hwang 2022 Table 3: covariate 7 Tmax (combination therapy)   = -0.187
+    cl_time_hill_combo <- 3.20;  label("Sigmoidicity exponent of time on CL on combination with durvalumab (unitless)") # Hwang 2022 Table 3: covariate 8 Lambda (combination therapy) =  3.20
 
     # IIV (Hwang 2022 Table 3). Reported values are variances on the internal
     # NONMEM scale (omega^2); the published "CV%" column equals
@@ -104,7 +104,7 @@ Hwang_2022_tremelimumab <- function() {
     # both regimens — a single shared eta is added to whichever regimen-
     # specific Tmax theta is active. Reported as omega^2 = 0.151
     # (38.9%% sqrt-based "CV%").
-    etacl_hill_max ~ 0.151  # Hwang 2022 Table 3: omega^2_Tmax = 0.151 (38.9%% CV)
+    etacl_time_max ~ 0.151  # Hwang 2022 Table 3: omega^2_Tmax = 0.151 (38.9%% CV)
 
     # Residual error (Hwang 2022 Table 3). Combined proportional + additive
     # in linear concentration space. NONMEM control stream
@@ -119,12 +119,12 @@ Hwang_2022_tremelimumab <- function() {
     # supplement NONMEM EMPIR = TMAX * TIME^LAM / (TC50^LAM + TIME^LAM)).
     # COMBO_DURVA = 0 picks the monotherapy Tmax and lambda; COMBO_DURVA = 1
     # picks the combination-with-durvalumab values. The single additive eta
-    # etacl_hill_max is added to whichever Tmax is active.
-    cl_hill_max_active   <- cl_hill_max_mono   * (1 - COMBO_DURVA) + cl_hill_max_combo   * COMBO_DURVA
-    cl_hill_gamma_active <- cl_hill_gamma_mono * (1 - COMBO_DURVA) + cl_hill_gamma_combo * COMBO_DURVA
-    cl_hill_max_i        <- cl_hill_max_active + etacl_hill_max
-    cl_tv_mult       <- cl_hill_max_i * t^cl_hill_gamma_active /
-      (cl_hill_t50^cl_hill_gamma_active + t^cl_hill_gamma_active)
+    # etacl_time_max is added to whichever Tmax is active.
+    cl_time_max_active   <- cl_time_max_mono   * (1 - COMBO_DURVA) + cl_time_max_combo   * COMBO_DURVA
+    cl_time_hill_active <- cl_time_hill_mono * (1 - COMBO_DURVA) + cl_time_hill_combo * COMBO_DURVA
+    cl_time_max_i        <- cl_time_max_active + etacl_time_max
+    cl_tv_mult       <- cl_time_max_i * t^cl_time_hill_active /
+      (cl_t50^cl_time_hill_active + t^cl_time_hill_active)
 
     # 2. Individual structural parameters (Hwang 2022 page 1609). cl_base is
     # the t = 0 individual clearance after covariate adjustment; cl is the

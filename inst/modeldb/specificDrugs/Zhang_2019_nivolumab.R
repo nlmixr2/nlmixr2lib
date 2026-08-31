@@ -42,7 +42,7 @@ Zhang_2019_nivolumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (ECOG PS 0; fully active)",
-      notes              = "Multiplicative effect on baseline CL (exp(0.181) = 1.198 fold higher CL when PS>0) and additive effect on the time-varying-CL cl_hill_max parameter. Zhang 2019 uses the binary collapse PS=0 vs. PS>0 rather than the full ECOG scale.",
+      notes              = "Multiplicative effect on baseline CL (exp(0.181) = 1.198 fold higher CL when PS>0) and additive effect on the time-varying-CL cl_time_max parameter. Zhang 2019 uses the binary collapse PS=0 vs. PS>0 rather than the full ECOG scale.",
       source_name        = "PS"
     ),
     RACE_BLACK = list(
@@ -90,7 +90,7 @@ Zhang_2019_nivolumab <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (no ipilimumab coadministration)",
-      notes              = "Additive effect on the time-varying-CL cl_hill_max parameter (Emax_IPICO = -0.0668; subjects on any nivolumab + ipilimumab combination show an additional 6.7% reduction of CL at full saturation relative to monotherapy or chemotherapy combination). Source column name IPICO. Coexists with CONMED_IPI_3Q3W / CONMED_IPI_1Q6W because those act on baseline CL rather than on cl_hill_max.",
+      notes              = "Additive effect on the time-varying-CL cl_time_max parameter (Emax_IPICO = -0.0668; subjects on any nivolumab + ipilimumab combination show an additional 6.7% reduction of CL at full saturation relative to monotherapy or chemotherapy combination). Source column name IPICO. Coexists with CONMED_IPI_3Q3W / CONMED_IPI_1Q6W because those act on baseline CL rather than on cl_time_max.",
       source_name        = "IPICO"
     )
   )
@@ -122,13 +122,13 @@ Zhang_2019_nivolumab <- function() {
     lq      <- log(34.9 * 24 / 1000); label("Intercompartmental clearance Q at reference covariates (L/day)") # Zhang 2019 Table 2: Q REF = 34.9 mL/h
     lvp     <- log(2.70);             label("Peripheral volume Vp at reference covariates (L)")           # Zhang 2019 Table 2: VP REF = 2.70 L
 
-    # Time-varying CL Hill-cl_hill_max function (Zhang 2019 final-model equation):
-    #   CL(t) = CL0 * exp(cl_hill_max * t^HILL / (T50^HILL + t^HILL))
-    # T50 reported in hours; converted to days. HILL is unitless. cl_hill_max is on
+    # Time-varying CL Hill-cl_time_max function (Zhang 2019 final-model equation):
+    #   CL(t) = CL0 * exp(cl_time_max * t^HILL / (T50^HILL + t^HILL))
+    # T50 reported in hours; converted to days. HILL is unitless. cl_time_max is on
     # the linear scale (negative = CL decreases over time).
-    cl_hill_max     <-      -0.240;            label("Reference cl_hill_max of time-varying CL (Zhang 2019 'cl_hill_max REF'; unitless, negative = CL decreases at full saturation)") # Zhang 2019 Table 2: cl_hill_max REF = -0.240
-    lcl_hill_t50     <- log(2200 / 24);         label("log T50 - time at which half of cl_hill_max is reached (log days)") # Zhang 2019 Table 2: T50 = 2200 hour
-    lcl_hill_gamma    <- log(2.77);              label("log HILL - sigmoidicity of the time-on-CL function (log unitless)") # Zhang 2019 Table 2: HILL = 2.77
+    cl_time_max     <-      -0.240;            label("Reference cl_time_max of time-varying CL (Zhang 2019 'cl_time_max REF'; unitless, negative = CL decreases at full saturation)") # Zhang 2019 Table 2: cl_time_max REF = -0.240
+    lcl_t50     <- log(2200 / 24);         label("log T50 - time at which half of cl_time_max is reached (log days)") # Zhang 2019 Table 2: T50 = 2200 hour
+    lcl_time_hill    <- log(2.77);              label("log HILL - sigmoidicity of the time-on-CL function (log unitless)") # Zhang 2019 Table 2: HILL = 2.77
 
     # Continuous covariate effects on CL and Vc (power form on log-transformed covariates,
     # equivalent to (cov/ref)^exponent in linear space; Zhang 2019 final-model equation).
@@ -149,10 +149,10 @@ Zhang_2019_nivolumab <- function() {
     # Categorical covariate effects on Vc (exponential form).
     e_sexf_vc <- -0.161; label("Exponential coefficient of female sex on Vc (unitless)") # Zhang 2019 Table 2: VC SEX = -0.161
 
-    # Additive covariate effects on cl_hill_max (Zhang 2019 cl_hill_max equation:
-    #   cl_hill_max_i = Emax_REF + Emax_PS * I[PS>0] + Emax_IPICO * I[IPICO=1] + eta_Emax_i).
-    e_ecog_cl_hill_max  <- -0.138;  label("Additive effect of ECOG PS > 0 on cl_hill_max (unitless)")          # Zhang 2019 Table 2: cl_hill_max PS = -0.138
-    e_ipico_cl_hill_max <- -0.0668; label("Additive effect of any ipilimumab coadministration on cl_hill_max (unitless)") # Zhang 2019 Table 2: cl_hill_max IPICO = -0.0668
+    # Additive covariate effects on cl_time_max (Zhang 2019 cl_time_max equation:
+    #   cl_time_max_i = Emax_REF + Emax_PS * I[PS>0] + Emax_IPICO * I[IPICO=1] + eta_Emax_i).
+    e_ecog_cl_time_max  <- -0.138;  label("Additive effect of ECOG PS > 0 on cl_time_max (unitless)")          # Zhang 2019 Table 2: cl_time_max PS = -0.138
+    e_ipico_cl_time_max <- -0.0668; label("Additive effect of any ipilimumab coadministration on cl_time_max (unitless)") # Zhang 2019 Table 2: cl_time_max IPICO = -0.0668
 
     # IIV. CL and Vc form a 2x2 log-normal block; Q and Vp are independent etas
     # constrained to share the variance of CL and Vc respectively per the
@@ -160,12 +160,12 @@ Zhang_2019_nivolumab <- function() {
     # that of CL ... the IIV random effect of VP follows the same distribution
     # as that of VC"; Q and Vp do not appear in the Table 2 random-effects
     # block because their variances are pinned, not separately estimated).
-    # cl_hill_max has an independent additive (not log-normal) eta on the linear scale.
+    # cl_time_max has an independent additive (not log-normal) eta on the linear scale.
     etalcl + etalvc ~ c(0.157,
                         0.0596, 0.152)  # Zhang 2019 Table 2: omega^2_CL, cov(CL,VC), omega^2_VC
     etalq    ~ 0.157   # constrained equal to omega^2_CL (Zhang 2019 Methods)
     etalvp   ~ 0.152   # constrained equal to omega^2_VC (Zhang 2019 Methods)
-    etacl_hill_max  ~ 0.0874  # Zhang 2019 Table 2: omega^2_Emax = 0.0874 (additive eta on linear-scale cl_hill_max)
+    etacl_time_max  ~ 0.0874  # Zhang 2019 Table 2: omega^2_Emax = 0.0874 (additive eta on linear-scale cl_time_max)
 
     # Residual error (proportional only). Source value 0.245 is the standard
     # deviation on the linear scale per the table footnote naming the column
@@ -199,11 +199,11 @@ Zhang_2019_nivolumab <- function() {
     q  <- exp(lq  + etalq)  * (WT / 80)^e_wt_cl
     vp <- exp(lvp + etalvp) * (WT / 80)^e_wt_vc
 
-    # Time-varying CL: Hill-cl_hill_max function of time since first dose.
-    cl_hill_t50  <- exp(lcl_hill_t50)
-    cl_hill_gamma <- exp(lcl_hill_gamma)
-    cl_hill_max_i <- cl_hill_max + e_ecog_cl_hill_max * ECOG_GE1 + e_ipico_cl_hill_max * CONMED_IPI_ANY + etacl_hill_max
-    cl <- cl0 * exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
+    # Time-varying CL: Hill-cl_time_max function of time since first dose.
+    cl_t50  <- exp(lcl_t50)
+    cl_time_hill <- exp(lcl_time_hill)
+    cl_time_max_i <- cl_time_max + e_ecog_cl_time_max * ECOG_GE1 + e_ipico_cl_time_max * CONMED_IPI_ANY + etacl_time_max
+    cl <- cl0 * exp(cl_time_max_i * t^cl_time_hill / (cl_t50^cl_time_hill + t^cl_time_hill))
 
     # Two-compartment micro-constants.
     kel <- cl / vc

@@ -3158,10 +3158,10 @@ navbar:
         href: articles/Yu_2015_sunitinib.html
       - text: "Sunitinib (vanErp 2010)"
         href: articles/vanErp_2010_sunitinib.html
-      - text: "Sunitinib OS (Hansson 2013)"
-        href: articles/Hansson_2013_sunitinib_OS.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
+      - text: "Sunitinib svegfr3 os (Hansson 2013)"
+        href: articles/Hansson_2013_sunitinib_svegfr3_os.html
       - text: "TDI01 (Ji 2025)"
         href: articles/Ji_2025_TDI01.html
       - text: "TF 505 (Matsumoto 2005)"
@@ -4307,11 +4307,11 @@ articles:
   - articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk
   - articles/Hanberg_2018_meropenem
   - articles/Hanley_2024_brigatinib
-  - articles/Hansson_2013_sunitinib_OS
   - articles/Hansson_2013_sunitinib_dbp
   - articles/Hansson_2013_sunitinib_hfs
   - articles/Hansson_2013_sunitinib_myelosuppression
   - articles/Hansson_2013_sunitinib_os
+  - articles/Hansson_2013_sunitinib_svegfr3_os
   - articles/Hansson_2013a_sunitinib
   - articles/Hansson_2013b_sunitinib
   - articles/Hansson_2013c_sunitinib
