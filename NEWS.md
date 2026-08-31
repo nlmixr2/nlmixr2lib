@@ -2,15 +2,8 @@
 
 # development version
 
-- Add Sun 2026 tilmicosin ([doi:10.1021/acs.jafc.5c11368](https://doi.org/10.1021/acs.jafc.5c11368)) -- healthy swine, with hollow-fiber PK/PD against *Pasteurella multocida*.
+- Add Tong 2026 vancomycin ([doi:10.1093/jacamr/dlag016](https://doi.org/10.1093/jacamr/dlag016)) -- four MIPD models (modified Goti, capped Thomson, Carreno, Hughes) in hospitalized adults.
 
-- Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
-  vignette to match, resolving a case-only filename collision with the sibling
-  `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
-  filesystems (issue 492). The two are DIFFERENT models from companion papers
-  published back-to-back (e84 doi:10.1038/psp.2013.61, sVEGFR-3-driven; e85
-  doi:10.1038/psp.2013.62, adverse-effect-driven); both now cross-reference each
-  other explicitly.
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
 - Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
