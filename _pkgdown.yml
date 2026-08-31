@@ -208,6 +208,8 @@ navbar:
         href: articles/Morath_2025_apixaban.html
       - text: "Apixaban (Ueshima 2018)"
         href: articles/Ueshima_2018_apixaban.html
+      - text: "Apixaban pbpk (Tsuchitani 2026)"
+        href: articles/Tsuchitani_2026_apixaban_pbpk.html
       - text: "Apomine (Bonate 2004)"
         href: articles/Bonate_2004_apomine.html
       - text: "Apramycin human (HernandezLozano 2025)"
@@ -5368,6 +5370,7 @@ articles:
   - articles/Tremoulet_2014_ampicillin
   - articles/Trujillo_2025_proinsulin_qsp
   - articles/Tsai_2023_ceftriaxone
+  - articles/Tsuchitani_2026_apixaban_pbpk
   - articles/Tsuda_2010_tamsulosin
   - articles/Tsuji_2017_linezolid
   - articles/Tsyplakova_2025_mycophenolate

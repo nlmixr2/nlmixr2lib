@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stitt 2026 tranexamic acid ([doi:10.1111/trf.70047](https://doi.org/10.1111/trf.70047)) -- adults with severe traumatic injury, allometrically scaled for extrapolation to children with trauma-related bleeding.
+- Add Tsuchitani 2026 apixaban ([doi:10.1002/psp4.70163](https://doi.org/10.1002/psp4.70163)) - healthy adults; whole-body PBPK with enterohepatic circulation.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
