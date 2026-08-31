@@ -1008,8 +1008,8 @@ navbar:
         href: articles/Proctor_2026_durvalumab_cachexia.html
       - text: "Dutasteride (Gisleskog 1999)"
         href: articles/Gisleskog_1999_dutasteride.html
-      - text: "Dutogliptin (Marier 2014)"
-        href: articles/Marier_2014_dutogliptin.html
+      - text: "DZIF10c (Kurup 2024)"
+        href: articles/Kurup_2024_DZIF10c.html
       - text: "E7820 human (Keizer 2011)"
         href: articles/Keizer_2011_E7820.html
       - text: "E7820 mouse (Keizer 2011)"
@@ -3388,6 +3388,8 @@ navbar:
         href: articles/Yano_1993_theophylline.html
       - text: "Theophylline pediatric asthma (elDesoky 1997)"
         href: articles/elDesoky_1997_theophylline_pediatric_asthma.html
+      - text: "ThrombomodulinAlfa (Mouksassi 2015)"
+        href: articles/Mouksassi_2015_thrombomodulinAlfa.html
       - text: "Ticagrelor (Almquist 2016)"
         href: articles/Almquist_2016_ticagrelor.html
       - text: "Ticarcillin qsp (LopezArguello 2023)"
@@ -4737,8 +4739,6 @@ articles:
   - articles/Marcantonio_2022_efa
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
-  - articles/Marier_2014_dutogliptin
-  - articles/MarquesMinana_2010_vancomycin
   - articles/Marques_2024_salbutamol
   - articles/Marques_2025_salbutamol
   - articles/MarquesMinana_2010_vancomycin
@@ -4804,6 +4804,7 @@ articles:
   - articles/Morris_2011_artesunate
   - articles/Morris_2011_telapristone
   - articles/Mosha_2014_artemether_lumefantrine
+  - articles/Mouksassi_2015_thrombomodulinAlfa
   - articles/Mould_2007_alemtuzumab
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukonzo_2009_efavirenz
