@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Henninger 2026 DNDI-6148 ([doi:10.1111/cts.70535](https://doi.org/10.1111/cts.70535)) -- two files: the murine target-site PK/PD fit in *Leishmania major*-infected BALB/c mice, and its allometrically scaled human translation for efficacious-dose prediction in cutaneous leishmaniasis.
+
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
