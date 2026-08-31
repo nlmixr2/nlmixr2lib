@@ -2024,7 +2024,7 @@ The table below collects them for review.</p>
 <td>Gupta 2006 Table 3 (theta_CL0)</td>
 </tr>
 <tr class="even">
-<td><code>lcl_hill_t50</code></td>
+<td><code>lcl_t50</code></td>
 <td>
 <code>log(23.8 * 28)</code> = <code>log(666.4)</code> days</td>
 <td>Gupta 2006 Table 3 (theta_T50 in 28-day units)</td>
@@ -2059,7 +2059,7 @@ The table below collects them for review.</p>
 </tr>
 <tr class="odd">
 <td>
-<code>etalcl_hill_t50</code> IIV</td>
+<code>etalcl_t50</code> IIV</td>
 <td>
 <code>0.7833</code> (CV 109%)</td>
 <td>Gupta 2006 Table 3 (omega(CV) T50) -&gt;
@@ -2206,7 +2206,7 @@ evaluates it at the points Gupta 2006 highlights – weeks 4 (42.3 L/day)
 and 48 (29.3 L/day) – and confirms a 30.8% reduction in clearance from
 week 4 to week 48.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">typical_cl</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t_days</span>, <span class="va">cl0</span> <span class="op">=</span> <span class="fl">44.1</span>, <span class="va">cl_hill_t50</span> <span class="op">=</span> <span class="fl">666.4</span><span class="op">)</span> <span class="va">cl0</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">t_days</span> <span class="op">/</span> <span class="va">cl_hill_t50</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">typical_cl</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">t_days</span>, <span class="va">cl0</span> <span class="op">=</span> <span class="fl">44.1</span>, <span class="va">cl_t50</span> <span class="op">=</span> <span class="fl">666.4</span><span class="op">)</span> <span class="va">cl0</span> <span class="op">/</span> <span class="op">(</span><span class="fl">1</span> <span class="op">+</span> <span class="va">t_days</span> <span class="op">/</span> <span class="va">cl_t50</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">cl_traj</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>  day    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">7</span> <span class="op">*</span> <span class="fl">48</span>, length.out <span class="op">=</span> <span class="fl">200</span><span class="op">)</span>,</span>

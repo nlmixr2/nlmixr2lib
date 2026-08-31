@@ -7668,8 +7668,8 @@ logit) with an estimable lag time and faster absorption rate, and a
 minority Group 2 subpopulation (3 %) with no lag time and slower
 absorption (Table 3). Apparent oral clearance is time-dependent via an
 empirical sigmoid Emax auto-induction model in elapsed time (CL = CL0 +
-CLmax * time^n / (cl_hill_t50^n + time^n); Table 3), reaching 50 % of
-the maximal induction-driven increment in about two days. Relative
+CLmax * time^n / (cl_t50^n + time^n); Table 3), reaching 50 % of the
+maximal induction-driven increment in about two days. Relative
 bioavailability F1 is dose-saturable (F1 = D50 / (Dose + D50)) with an
 additional fractional food effect (1 + theta_food * FED), where the
 F1max anchor is structurally fixed at 1 (Table 3). Cancer patients have
@@ -21590,7 +21590,7 @@ Theory-based allometric exponents for body weight (1 on Vc, 0.75 on CL,
 -0.25 on Kback) are fixed. Final covariates: sex, dose, time, and MF /
 MM malignancy on CL; sex and MM malignancy on Vc; MF malignancy and
 baseline spleen volume on Bmax. The time effect encodes a hyperbolic
-decay of baseline CL: CL(t) = CL * cl_hill_t50 / (t + cl_hill_t50).
+decay of baseline CL: CL(t) = CL * cl_t50 / (t + cl_t50).
 </td>
 </tr>
 <tr>
@@ -22298,7 +22298,7 @@ melanoma (Feng 2014)
 </td>
 <td style="text-align:left;">
 Two-compartment population PK model for intravenous ipilimumab
-(anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid cl_hill_max
+(anti-CTLA-4 IgG1) with time-varying clearance via a sigmoid cl_time_max
 function in patients with advanced solid tumors receiving ipilimumab
 alone or in combination with nivolumab (Sanghavi 2020)
 </td>
@@ -36406,7 +36406,7 @@ rocuronium MW = 529.78 g/mol and sugammadex MW = 2178.01 g/mol
 (Wang 2024)</a>
 </td>
 <td style="text-align:left;">
-Two-compartment population PK model with sigmoidal-cl_hill_max
+Two-compartment population PK model with sigmoidal-cl_time_max
 time-varying clearance for intravenous sugemalimab (anti-PD-L1 IgG4) in
 adults with advanced solid tumours or lymphomas across nine Phase I-III
 trials (Wang 2024)

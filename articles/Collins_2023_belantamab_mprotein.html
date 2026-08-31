@@ -2278,19 +2278,19 @@ Cov(KGR~LAMBDA), Cov(KD~LAMBDA), omega^2 LAMBDA)</td>
 </tr>
 <tr class="even">
 <td>
-<code>cl_hill_max</code> (IMAX)</td>
+<code>cl_time_max</code> (IMAX)</td>
 <td>-0.309</td>
 <td>Table S1</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lcl_hill_t50</code> (TI50)</td>
+<code>lcl_t50</code> (TI50)</td>
 <td>56.9 days</td>
 <td>Table S1</td>
 </tr>
 <tr class="even">
 <td>
-<code>cl_hill_gamma</code> (Gamma)</td>
+<code>cl_time_hill</code> (Gamma)</td>
 <td>3.81</td>
 <td>Table S1</td>
 </tr>
@@ -3027,7 +3027,7 @@ reproduction of a Collins 2023 result.</p>
 <span>  <span class="st">"Vss = Vc + Vp (L)"</span>,              <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">vc</span> <span class="op">+</span> <span class="va">vp</span>, <span class="fl">2</span><span class="op">)</span>,                 <span class="fl">10.84</span>,</span>
 <span>  <span class="st">"Intercompartmental Q (L/day)"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">q</span>, <span class="fl">3</span><span class="op">)</span>,                       <span class="fl">0.711</span>,</span>
 <span>  <span class="st">"Initial terminal t1/2 (days)"</span>,   <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span> <span class="op">/</span> <span class="va">beta_rate</span>, <span class="fl">1</span><span class="op">)</span>,      <span class="fl">13.0</span>,</span>
-<span>  <span class="st">"Steady-state CL (L/day)"</span>,        <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">cl0</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">th</span><span class="op">[[</span><span class="st">"cl_hill_max"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">0.619</span>,</span>
+<span>  <span class="st">"Steady-state CL (L/day)"</span>,        <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="va">cl0</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="va">th</span><span class="op">[[</span><span class="st">"cl_time_max"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span>, <span class="fl">3</span><span class="op">)</span>, <span class="fl">0.619</span>,</span>
 <span>  <span class="st">"Cmax at 2.5 mg/kg, 76.2 kg (ug/mL)"</span>,</span>
 <span>                                    <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fl">76.2</span> <span class="op">*</span> <span class="fl">2.5</span> <span class="op">/</span> <span class="va">vc</span>, <span class="fl">1</span><span class="op">)</span>,         <span class="fl">44.2</span></span>
 <span><span class="op">)</span></span>

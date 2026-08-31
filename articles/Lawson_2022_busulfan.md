@@ -69,8 +69,8 @@ The table below collects them in one place for review.
 | `lvc` (V1, L) | log(40.6) | Lawson 2022 Table 3 (V1 = 40.6 L/59 kg NFM) |
 | `lq` (Q, L/h) | log(1.92) | Lawson 2022 Table 3 (Q = 1.92 L/h/56.1 kg NFM) |
 | `lvp` (V2, L) | log(3.57) | Lawson 2022 Table 3 (V2 = 3.57 L/59 kg NFM) |
-| `cl_hill_max` | -0.198 | Lawson 2022 Table 3 (Delta CL_max) |
-| `cl_hill_t50` (h) | 50.6 | Lawson 2022 Table 3 (T50 for time-associated CL) |
+| `cl_time_max` | -0.198 | Lawson 2022 Table 3 (Delta CL_max) |
+| `cl_t50` (h) | 50.6 | Lawson 2022 Table 3 (T50 for time-associated CL) |
 | `ffat_cl`, `ffat_v1`, `ffat_q`, `ffat_v2` | 0.509, 0.203, 0, 0.203 (fixed) | Lawson 2022 Table 3 footnote (per McCune 2014) |
 | `hill_mat` | 2.3 (fixed) | Lawson 2022 Table 3 + Methods (Equation 3) |
 | `tm50_mat` (weeks) | 45.6 (fixed) | Lawson 2022 Table 3 + Methods (Equation 3) |

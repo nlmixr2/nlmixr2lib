@@ -2043,9 +2043,9 @@ control stream.</p>
 <span>  <span class="st">"Vc (L)"</span>,                        <span class="st">"3.25"</span>,        <span class="st">"MOESM1 NONMEM $THETA(4)"</span>,</span>
 <span>  <span class="st">"Q (L/day)"</span>,                     <span class="st">"0.603"</span>,       <span class="st">"MOESM1 NONMEM $THETA(5)"</span>,</span>
 <span>  <span class="st">"Vp (L)"</span>,                        <span class="st">"2.88"</span>,        <span class="st">"MOESM1 NONMEM $THETA(6)"</span>,</span>
-<span>  <span class="st">"cl_hill_max (IMAX)"</span>,            <span class="st">"-0.193"</span>,      <span class="st">"MOESM1 NONMEM $THETA(15)"</span>,</span>
-<span>  <span class="st">"cl_hill_t50 (day)"</span>,             <span class="st">"62.8"</span>,        <span class="st">"MOESM1 NONMEM $THETA(16)"</span>,</span>
-<span>  <span class="st">"cl_hill_gamma"</span>,                 <span class="st">"2.67"</span>,        <span class="st">"MOESM1 NONMEM $THETA(17)"</span>,</span>
+<span>  <span class="st">"cl_time_max (IMAX)"</span>,            <span class="st">"-0.193"</span>,      <span class="st">"MOESM1 NONMEM $THETA(15)"</span>,</span>
+<span>  <span class="st">"cl_t50 (day)"</span>,             <span class="st">"62.8"</span>,        <span class="st">"MOESM1 NONMEM $THETA(16)"</span>,</span>
+<span>  <span class="st">"cl_time_hill"</span>,                 <span class="st">"2.67"</span>,        <span class="st">"MOESM1 NONMEM $THETA(17)"</span>,</span>
 <span>  <span class="st">"WT exponent on CL"</span>,             <span class="st">"0.668"</span>,       <span class="st">"MOESM1 NONMEM $THETA(7)"</span>,</span>
 <span>  <span class="st">"ALB exponent on CL"</span>,            <span class="st">"-0.901"</span>,      <span class="st">"MOESM1 NONMEM $THETA(8)"</span>,</span>
 <span>  <span class="st">"TUMSZ exponent on CL"</span>,          <span class="st">"0.116"</span>,       <span class="st">"MOESM1 NONMEM $THETA(9)"</span>,</span>
@@ -2057,7 +2057,7 @@ control stream.</p>
 <span>  <span class="st">"IIV CL (variance)"</span>,             <span class="st">"0.069169"</span>,    <span class="st">"MOESM1 NONMEM $OMEGA ETA(1)"</span>,</span>
 <span>  <span class="st">"IIV Vc (variance)"</span>,             <span class="st">"0.029584"</span>,    <span class="st">"MOESM1 NONMEM $OMEGA ETA(2)"</span>,</span>
 <span>  <span class="st">"IIV Vp (variance)"</span>,             <span class="st">"0.123904"</span>,    <span class="st">"MOESM1 NONMEM $OMEGA ETA(3)"</span>,</span>
-<span>  <span class="st">"IIV cl_hill_max (variance)"</span>,    <span class="st">"0.804609"</span>,    <span class="st">"MOESM1 NONMEM $OMEGA ETA(4)"</span>,</span>
+<span>  <span class="st">"IIV cl_time_max (variance)"</span>,    <span class="st">"0.804609"</span>,    <span class="st">"MOESM1 NONMEM $OMEGA ETA(4)"</span>,</span>
 <span>  <span class="st">"Proportional residual SD"</span>,      <span class="st">"0.034"</span>,       <span class="st">"MOESM1 NONMEM $THETA(1), $ERROR W"</span>,</span>
 <span>  <span class="st">"Additive residual SD (ug/mL)"</span>,  <span class="st">"18.1"</span>,        <span class="st">"MOESM1 NONMEM $THETA(2), $ERROR W"</span>,</span>
 <span>  <span class="st">"Reference WT / ALB / TUMSZ"</span>,    <span class="st">"77 kg / 40 g/L / 63 mm"</span>, <span class="st">"MOESM1 NONMEM $PK"</span>,</span>
@@ -2106,17 +2106,17 @@ control stream.</p>
 <td align="left">MOESM1 NONMEM $THETA(6)</td>
 </tr>
 <tr class="odd">
-<td align="left">cl_hill_max (IMAX)</td>
+<td align="left">cl_time_max (IMAX)</td>
 <td align="left">-0.193</td>
 <td align="left">MOESM1 NONMEM $THETA(15)</td>
 </tr>
 <tr class="even">
-<td align="left">cl_hill_t50 (day)</td>
+<td align="left">cl_t50 (day)</td>
 <td align="left">62.8</td>
 <td align="left">MOESM1 NONMEM $THETA(16)</td>
 </tr>
 <tr class="odd">
-<td align="left">cl_hill_gamma</td>
+<td align="left">cl_time_hill</td>
 <td align="left">2.67</td>
 <td align="left">MOESM1 NONMEM $THETA(17)</td>
 </tr>
@@ -2176,7 +2176,7 @@ control stream.</p>
 <td align="left">MOESM1 NONMEM $OMEGA ETA(3)</td>
 </tr>
 <tr class="odd">
-<td align="left">IIV cl_hill_max (variance)</td>
+<td align="left">IIV cl_time_max (variance)</td>
 <td align="left">0.804609</td>
 <td align="left">MOESM1 NONMEM $OMEGA ETA(4)</td>
 </tr>
@@ -2560,7 +2560,7 @@ reproducible rather than approximable.</p>
 <span>  <span class="va">mod_det</span>, events <span class="op">=</span> <span class="fu">build_events</span><span class="op">(</span><span class="va">cohort_det</span>, <span class="va">reg_b</span><span class="op">)</span>,</span>
 <span>  keep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"WT"</span>, <span class="st">"ALB"</span>, <span class="st">"TUMSZ"</span>, <span class="st">"SEXF"</span>, <span class="st">"ADA_POS"</span><span class="op">)</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'</span></span>
 <span><span class="co">#&gt; Warning: multi-subject simulation without without 'omega'</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NULL.html" class="external-link">is.null</a></span><span class="op">(</span><span class="va">sim_det</span><span class="op">$</span><span class="va">id</span><span class="op">)</span><span class="op">)</span> <span class="va">sim_det</span><span class="op">$</span><span class="va">id</span> <span class="op">&lt;-</span> <span class="fl">1L</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">sim_det</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span>, <span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">sim_det</span><span class="op">$</span><span class="va">Cc</span> <span class="op">&gt;=</span> <span class="fl">0</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span>
@@ -2706,7 +2706,7 @@ geometric mean.</p>
 </h2>
 <p>The reproduction above depends on the published seed and on
 <code><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed()</a></code> behaviour. A gate that depends on neither: at
-steady state on 840 mg q6w, far past <code>cl_hill_t50</code>, the
+steady state on 840 mg q6w, far past <code>cl_t50</code>, the
 time-varying multiplier has saturated, so clearance is effectively
 constant within a dosing interval and mass balance requires</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mrow><mi mathvariant="normal">A</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">C</mi></mrow><mi>τ</mi></msub><mo>=</mo><mfrac><mi>D</mi><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mi>∞</mi></msub></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mi>∞</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">L</mi></mrow><mo>⋅</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mrow><mi mathvariant="normal">I</mi><mi mathvariant="normal">M</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">X</mi></mrow><mo>⋅</mo><mfrac><msup><mi>t</mi><mi>γ</mi></msup><mrow><msubsup><mi>T</mi><mn>50</mn><mi>γ</mi></msubsup><mo>+</mo><msup><mi>t</mi><mi>γ</mi></msup></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">\mathrm{AUC}_\tau = \frac{D}{\mathrm{CL}_\infty},
@@ -2738,7 +2738,7 @@ together.</p>
 <span><span class="va">ss</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_det</span>, events <span class="op">=</span> <span class="va">ev_ss</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">time</span> <span class="op">&gt;=</span> <span class="va">last_start</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html" class="external-link">is.na</a></span><span class="op">(</span><span class="va">Cc</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>tsc <span class="op">=</span> <span class="va">time</span> <span class="op">-</span> <span class="va">last_start</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">ss</span><span class="op">$</span><span class="va">Cc</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">auc_tau_sim</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.calc.auxc.html" class="external-link">pk.calc.auc.last</a></span><span class="op">(</span>conc <span class="op">=</span> <span class="va">ss</span><span class="op">$</span><span class="va">Cc</span>, time <span class="op">=</span> <span class="va">ss</span><span class="op">$</span><span class="va">tsc</span><span class="op">)</span></span>
@@ -2805,9 +2805,9 @@ day):</p>
 <span>  `30 min`       <span class="op">=</span> <span class="fu">cmax_for_duration</span><span class="op">(</span><span class="fl">30</span> <span class="op">/</span> <span class="op">(</span><span class="fl">60</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  `60 min`       <span class="op">=</span> <span class="fu">cmax_for_duration</span><span class="op">(</span><span class="fl">60</span> <span class="op">/</span> <span class="op">(</span><span class="fl">60</span> <span class="op">*</span> <span class="fl">24</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">cmax_inf</span>, pct_drop_60min <span class="op">=</span> <span class="fl">100</span> <span class="op">*</span> <span class="op">(</span><span class="va">cmax_inf</span><span class="op">[[</span><span class="st">"60 min"</span><span class="op">]</span><span class="op">]</span> <span class="op">-</span> <span class="va">cmax_inf</span><span class="op">[[</span><span class="st">"bolus"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span> <span class="op">/</span></span>
 <span>    <span class="va">cmax_inf</span><span class="op">[[</span><span class="st">"bolus"</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="co">#&gt;          bolus         30 min         60 min pct_drop_60min </span></span>
@@ -3259,7 +3259,7 @@ noise.</caption>
 <h3 id="monte-carlo-error-is-the-dominant-residual-difference">Monte Carlo error is the dominant residual difference<a class="anchor" aria-label="anchor" href="#monte-carlo-error-is-the-dominant-residual-difference"></a>
 </h3>
 <p>The comparison above is a 200-subject cohort against a 1000-subject
-one, with an independent IIV draw. <code>cl_hill_max</code> carries an
+one, with an independent IIV draw. <code>cl_time_max</code> carries an
 IIV variance of 0.804609, so the cycle-7 trough is by far the most
 dispersed metric and the least precisely estimated in either cohort. The
 sampling noise below is the scale against which any remaining gap should

@@ -114,13 +114,13 @@ one place.
 | `lvp` (Vp, L) | log(3.62) | Table S3: Vp |
 | `lvmax` (Vmax, mg/(L·h)) | log(0.136) | Table S3: Vm |
 | `lkm` (Km, mg/L) | log(0.300) | Table S3: Km |
-| `cl_hill_max` | 0.664 | Table S3: CLm |
-| `lcl_hill_t50` (KCL, h) | log(1055) | Table S3: KCL |
-| `lcl_hill_gamma` (γ, unitless) | log(3.91) | Table S3: γ |
+| `cl_time_max` | 0.664 | Table S3: CLm |
+| `lcl_t50` (KCL, h) | log(1055) | Table S3: KCL |
+| `lcl_time_hill` (γ, unitless) | log(3.91) | Table S3: γ |
 | `e_wt_cl` | 0.621 | Table S3: CLinf ~ Wght |
 | `e_b2m_cl` | 0.343 | Table S3: CLinf ~ B2M |
 | `e_nigg_cl` | -0.751 | Table S3: CLinf ~ Ig=Not_IgG |
-| `e_nigg_cl_hill_t50` | -0.931 | Table S3: KCL ~ Ig=Not_IgG (main text rounds to -0.930) |
+| `e_nigg_cl_t50` | -0.931 | Table S3: KCL ~ Ig=Not_IgG (main text rounds to -0.930) |
 | `e_wt_vc` | 0.472 | Table S3: Vc ~ Wght |
 | `e_p2f2_vc` | -0.137 | Table S3: Vc ~ Form=P2F2 |
 | `e_asian_vc` | -0.275 | Table S3: Vc ~ Race=Asian |
@@ -128,9 +128,9 @@ one place.
 | `e_wt_vp` | 0.719 | Table S3: Vp ~ Wght |
 | `e_wt_q` | 0.477 | Table S3: Q ~ Wght (RSE 57.5 %) |
 | IIV `etalcl` ω = 47.5 % | 0.2035 | log(0.475² + 1) |
-| IIV `etacl_hill_max` ω = 97.2 % (normal) | 0.4164 | (0.664 × 0.972)² |
-| IIV `etalcl_hill_t50` ω = 115 % | 0.8427 | log(1.15² + 1) |
-| IIV `etalcl_hill_gamma` ω = 118 % | 0.8723 | log(1.18² + 1) |
+| IIV `etacl_time_max` ω = 97.2 % (normal) | 0.4164 | (0.664 × 0.972)² |
+| IIV `etalcl_t50` ω = 115 % | 0.8427 | log(1.15² + 1) |
+| IIV `etalcl_time_hill` ω = 118 % | 0.8723 | log(1.18² + 1) |
 | IIV `etalvc` ω = 25.7 % | 0.0640 | log(0.257² + 1) |
 | IIV `etalq` ω = 85.8 % | 0.5519 | log(0.858² + 1) |
 | IIV `etalvp` ω = 45.6 % | 0.1889 | log(0.456² + 1) |
@@ -270,8 +270,8 @@ make_typical_arm <- function(mm_nigg) {
 }
 
 typical <- bind_rows(make_typical_arm(0L), make_typical_arm(1L))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etacl_hill_max', 'etalcl_hill_t50', 'etalcl_hill_gamma', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etacl_hill_max', 'etalcl_hill_t50', 'etalcl_hill_gamma', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etacl_time_max', 'etalcl_t50', 'etalcl_time_hill', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etacl_time_max', 'etalcl_t50', 'etalcl_time_hill', 'etalvc', 'etalq', 'etalvp', 'etalvmax', 'etalkm'
 ```
 
 ## Replicate published figures

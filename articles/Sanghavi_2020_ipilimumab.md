@@ -8,7 +8,7 @@
   Pharmacol. 2020;9(1):29-39. <doi:10.1002/psp4.12477>
 - Description: Two-compartment population PK model for intravenous
   ipilimumab (anti-CTLA-4 IgG1) with time-varying clearance via a
-  sigmoid cl_hill_max function in patients with advanced solid tumors
+  sigmoid cl_time_max function in patients with advanced solid tumors
   receiving ipilimumab alone or in combination with nivolumab (Sanghavi
   2020)
 - Article: <https://doi.org/10.1002/psp4.12477>
@@ -71,8 +71,8 @@ collects them in one place for review.
 | `lq` (Q, L/day) | log(27.9 × 0.024) | Table 2: Q_REF = 27.9 mL/h |
 | `lvp` (VP, L) | log(3.18) | Table 2: VP_REF |
 | `Emax` (monotherapy) | -0.0644 | Table 2: Emax_REF |
-| `lcl_hill_t50` (T50, days) | log(2540 / 24) = log(105.83) | Table 2: T50 = 2,540 h |
-| `lcl_hill_gamma` (HILL exponent) | log(7.43) | Table 2: HILL |
+| `lcl_t50` (T50, days) | log(2540 / 24) = log(105.83) | Table 2: T50 = 2,540 h |
+| `lcl_time_hill` (HILL exponent) | log(7.43) | Table 2: HILL |
 | `e_wt_cl_q` (WT on CL/Q) | 0.694 | Table 2: CL_BBWT |
 | `e_wt_vc_vp` (WT on Vc/Vp) | 0.600 | Table 2: V_BBWT |
 | `e_logldh_cl` | 0.703 | Table 2: CL_log-BLDH |
@@ -80,7 +80,7 @@ collects them in one place for review.
 | `e_line_cl` (1L vs 2L+) | -0.0949 | Table 2: CL_LINE |
 | `e_n1q3w_cl` | 0.0950 | Table 2: CL_N1Q3W |
 | `e_n3q2w_cl` | 0.191 | Table 2: CL_N3Q2W |
-| `e_combo_cl_hill_max` | -0.202 | Table 2: Emax_COMBO |
+| `e_combo_cl_time_max` | -0.202 | Table 2: Emax_COMBO |
 | IIV `etalcl + etalvc` block | c(0.112, 0.0404, 0.0884) | Table 2: ω²_CL, cov, ω²_VC |
 | `etaEmax` | 0.0158 | Table 2: ω²_Emax |
 | `propSd` | 0.223 | Table 2: Proportional |
@@ -193,7 +193,7 @@ events_ref <- bind_rows(
 
 sim_ref <- rxode2::rxSolve(mod_typical, events = events_ref,
                            returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_time_max'
 ```
 
 ## Replicate published figures
@@ -226,8 +226,8 @@ make_typical_arm <- function(combo) {
   res[res$time > 0, ]
 }
 cl_traj <- bind_rows(make_typical_arm(0L), make_typical_arm(1L))
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_hill_max'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_time_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_time_max'
 
 ggplot(cl_traj, aes(time, cl / cl0, colour = treatment)) +
   geom_line(linewidth = 1) +

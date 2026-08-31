@@ -2051,19 +2051,19 @@ function returned by <code><a href="../reference/readModelDb.html">readModelDb()
 </tr>
 <tr class="odd">
 <td>
-<code>lcl_hill_max</code> (CLmax)</td>
+<code>lcl_time_max</code> (CLmax)</td>
 <td>320 mL/h = 0.320 L/h</td>
 <td>Table 3</td>
 </tr>
 <tr class="even">
 <td>
-<code>lcl_hill_t50</code> (t50)</td>
+<code>lcl_t50</code> (t50)</td>
 <td>46.4 h</td>
 <td>Table 3</td>
 </tr>
 <tr class="odd">
 <td>
-<code>lcl_hill_gamma</code> (induction shape parameter n)</td>
+<code>lcl_time_hill</code> (induction shape parameter n)</td>
 <td>6.40</td>
 <td>Table 3</td>
 </tr>
@@ -2170,7 +2170,7 @@ theta_food x FED)</td>
 </tr>
 <tr class="odd">
 <td>
-<code>etalcl_hill_t50</code> (BSV t50)</td>
+<code>etalcl_t50</code> (BSV t50)</td>
 <td>log(0.88^2 + 1) = 0.5594</td>
 <td>Table 3 BSV t50 = 88%</td>
 </tr>
@@ -2231,7 +2231,7 @@ below use typical-value forward simulations
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_50qd</span> <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="va">events_50qd</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_hill_t50', 'etalka'</span></span></code></pre></div>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_t50', 'etalka'</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="replicate-published-figures">Replicate published figures<a class="anchor" aria-label="anchor" href="#replicate-published-figures"></a>
@@ -2333,9 +2333,9 @@ half-life was 41 h in cancer patients and 32 h in healthy volunteers
 <span><span class="co"># CL(t) in each population over 21 days</span></span>
 <span><span class="va">days</span>  <span class="op">&lt;-</span> <span class="fl">1</span><span class="op">:</span><span class="fl">21</span></span>
 <span><span class="va">hours</span> <span class="op">&lt;-</span> <span class="va">days</span> <span class="op">*</span> <span class="fl">24</span></span>
-<span><span class="va">cl_hill_gamma</span>  <span class="op">&lt;-</span> <span class="fl">6.40</span></span>
-<span><span class="va">cl_hill_t50</span>   <span class="op">&lt;-</span> <span class="fl">46.4</span></span>
-<span><span class="va">cl_hill_max</span> <span class="op">&lt;-</span> <span class="fl">0.320</span></span>
+<span><span class="va">cl_time_hill</span>  <span class="op">&lt;-</span> <span class="fl">6.40</span></span>
+<span><span class="va">cl_t50</span>   <span class="op">&lt;-</span> <span class="fl">46.4</span></span>
+<span><span class="va">cl_time_max</span> <span class="op">&lt;-</span> <span class="fl">0.320</span></span>
 <span></span>
 <span><span class="va">cl0_healthy</span> <span class="op">&lt;-</span> <span class="fl">0.0407</span></span>
 <span><span class="va">vc_healthy</span>  <span class="op">&lt;-</span> <span class="fl">12.3</span></span>
@@ -2344,18 +2344,18 @@ half-life was 41 h in cancer patients and 32 h in healthy volunteers
 <span><span class="va">q_common</span>    <span class="op">&lt;-</span> <span class="fl">0.198</span></span>
 <span><span class="va">vp_common</span>   <span class="op">&lt;-</span> <span class="fl">1.83</span></span>
 <span></span>
-<span><span class="va">induction</span> <span class="op">&lt;-</span> <span class="va">hours</span><span class="op">^</span><span class="va">cl_hill_gamma</span> <span class="op">/</span> <span class="op">(</span><span class="va">cl_hill_t50</span><span class="op">^</span><span class="va">cl_hill_gamma</span> <span class="op">+</span> <span class="va">hours</span><span class="op">^</span><span class="va">cl_hill_gamma</span><span class="op">)</span></span>
+<span><span class="va">induction</span> <span class="op">&lt;-</span> <span class="va">hours</span><span class="op">^</span><span class="va">cl_time_hill</span> <span class="op">/</span> <span class="op">(</span><span class="va">cl_t50</span><span class="op">^</span><span class="va">cl_time_hill</span> <span class="op">+</span> <span class="va">hours</span><span class="op">^</span><span class="va">cl_time_hill</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">hl_long</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span></span>
 <span>  <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
 <span>    day        <span class="op">=</span> <span class="va">days</span>,</span>
 <span>    population <span class="op">=</span> <span class="st">"Healthy males"</span>,</span>
 <span>    t1_2_alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">induction</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_healthy</span> <span class="op">+</span> <span class="va">cl_hill_max</span> <span class="op">*</span> <span class="va">i</span></span>
+<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_healthy</span> <span class="op">+</span> <span class="va">cl_time_max</span> <span class="op">*</span> <span class="va">i</span></span>
 <span>      <span class="fu">two_cmt_half_lives</span><span class="op">(</span><span class="va">cl_t</span>, <span class="va">vc_healthy</span>, <span class="va">q_common</span>, <span class="va">vp_common</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span>    <span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    t1_2_beta  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">induction</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_healthy</span> <span class="op">+</span> <span class="va">cl_hill_max</span> <span class="op">*</span> <span class="va">i</span></span>
+<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_healthy</span> <span class="op">+</span> <span class="va">cl_time_max</span> <span class="op">*</span> <span class="va">i</span></span>
 <span>      <span class="fu">two_cmt_half_lives</span><span class="op">(</span><span class="va">cl_t</span>, <span class="va">vc_healthy</span>, <span class="va">q_common</span>, <span class="va">vp_common</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span>    <span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span>,</span>
@@ -2363,11 +2363,11 @@ half-life was 41 h in cancer patients and 32 h in healthy volunteers
 <span>    day        <span class="op">=</span> <span class="va">days</span>,</span>
 <span>    population <span class="op">=</span> <span class="st">"Cancer patients"</span>,</span>
 <span>    t1_2_alpha <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">induction</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_cancer</span> <span class="op">+</span> <span class="va">cl_hill_max</span> <span class="op">*</span> <span class="va">i</span></span>
+<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_cancer</span> <span class="op">+</span> <span class="va">cl_time_max</span> <span class="op">*</span> <span class="va">i</span></span>
 <span>      <span class="fu">two_cmt_half_lives</span><span class="op">(</span><span class="va">cl_t</span>, <span class="va">vc_cancer</span>, <span class="va">q_common</span>, <span class="va">vp_common</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
 <span>    <span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>    t1_2_beta  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="va">induction</span>, <span class="kw">function</span><span class="op">(</span><span class="va">i</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_cancer</span> <span class="op">+</span> <span class="va">cl_hill_max</span> <span class="op">*</span> <span class="va">i</span></span>
+<span>      <span class="va">cl_t</span> <span class="op">&lt;-</span> <span class="va">cl0_cancer</span> <span class="op">+</span> <span class="va">cl_time_max</span> <span class="op">*</span> <span class="va">i</span></span>
 <span>      <span class="fu">two_cmt_half_lives</span><span class="op">(</span><span class="va">cl_t</span>, <span class="va">vc_cancer</span>, <span class="va">q_common</span>, <span class="va">vp_common</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span>    <span class="op">}</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">numeric</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -2441,12 +2441,12 @@ healthy male and a typical cancer patient.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id_label <span class="op">=</span> <span class="fl">1L</span>,</span>
 <span>                treatment <span class="op">=</span> <span class="st">"Typical healthy male, 50 mg qd"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_hill_t50', 'etalka'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_t50', 'etalka'</span></span>
 <span><span class="va">sim_typ_cancer</span>  <span class="op">&lt;-</span> <span class="fu">rxode2</span><span class="fu">::</span><span class="fu"><a href="https://nlmixr2.github.io/rxode2/reference/rxSolve.html" class="external-link">rxSolve</a></span><span class="op">(</span><span class="va">mod_typical</span>, <span class="fu">ss_events</span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>id_label <span class="op">=</span> <span class="fl">2L</span>,</span>
 <span>                treatment <span class="op">=</span> <span class="st">"Typical cancer patient, 50 mg qd"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_hill_t50', 'etalka'</span></span>
+<span><span class="co">#&gt; ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etalcl_t50', 'etalka'</span></span>
 <span></span>
 <span><span class="va">sim_typ</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">sim_typ_healthy</span>, <span class="va">sim_typ_cancer</span><span class="op">)</span></span>
 <span></span>

@@ -825,7 +825,7 @@ Fasanmade 2011 primary publication, which is not on disk.
     currently uses it as a covariate column.
   - *Petitcollin* models immunisation as a logistic-in-time multiplier
     on clearance (`clvar^(expit(-baserisk + beta*t))`). This is a third
-    form of time-varying clearance beyond the `cl_hill_` and `cl_exp_`
+    form of time-varying clearance beyond the `cl_time_*` and `cl_exp_`
     stems registered in `references/parameter-names.md`, and
     [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
     warns on a clearance expression that references time without one of

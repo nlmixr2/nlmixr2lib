@@ -34,7 +34,7 @@ library(PKNCA)
   studies. Br J Clin Pharmacol. 2025;91(3):748-760.
   <doi:10.1111/bcp.16276>
 - Description: Two-compartment population PK model with
-  sigmoidal-cl_hill_max time-varying clearance for intravenous
+  sigmoidal-cl_time_max time-varying clearance for intravenous
   sugemalimab (anti-PD-L1 IgG4) in adults with advanced solid tumours or
   lymphomas across nine Phase I-III trials (Wang 2024)
 - Article: <https://doi.org/10.1111/bcp.16276>
@@ -99,8 +99,8 @@ collects them in one place for review.
 | `lq` (Q, L/day) | log(0.489) | Wang 2024 Table 3: exp(theta3) = 0.489 L/day |
 | `lvp` (Vp, L) | log(1.57) | Wang 2024 Table 3: exp(theta4) = 1.57 L |
 | `Emax` (unitless; theta5) | -0.528 | Wang 2024 Table 3: theta5 = -0.528 |
-| `lcl_hill_t50` (T50, log days) | log(53.6) | Wang 2024 Table 3: theta6 = 53.6 day |
-| `lcl_hill_gamma` (lambda, log unitless) | log(2.60) | Wang 2024 Table 3: theta7 = 2.60 |
+| `lcl_t50` (T50, log days) | log(53.6) | Wang 2024 Table 3: theta6 = 53.6 day |
+| `lcl_time_hill` (lambda, log unitless) | log(2.60) | Wang 2024 Table 3: theta7 = 2.60 |
 | `e_wt_cl` | 0.585 | Wang 2024 Table 3: theta8 = 0.585 |
 | `e_wt_vc` | 0.471 | Wang 2024 Table 3: theta9 = 0.471 |
 | `e_alb_cl` | -0.836 | Wang 2024 Table 3: theta10 = -0.836 |
@@ -122,7 +122,7 @@ collects them in one place for review.
 | Cov(CL, Vc) | 0.0161 | Wang 2024 Table 3: Cov CL_Vc = 0.0161 |
 | IIV Vp (`etalvp`) | omega^2 = log(1 + 0.685^2) = 0.3847 | Wang 2024 Table 3: IIV Vp 68.5 % CV |
 | IIV Emax (`etaEmax`) | (0.185 \* 0.528)^2 = 0.00955 | Wang 2024 Table 3: IIV Emax 18.5 % CV (additive on linear scale; ‘approximate CV%’ = SD / abs(Emax)) |
-| IIV T50 (`etalcl_hill_t50`) | omega^2 = log(1 + 0.642^2) = 0.3451 | Wang 2024 Table 3: IIV T50 64.2 % CV |
+| IIV T50 (`etalcl_t50`) | omega^2 = log(1 + 0.642^2) = 0.3451 | Wang 2024 Table 3: IIV T50 64.2 % CV |
 | Residual error | propSd = 0.179 | Wang 2024 Table 3: residual error 17.9 % (log-additive sigma; equivalent to nlmixr2 prop()) |
 | Reference covariates | WT 61 kg, ALB 41.5 g/L, TUMSZ 47 mm, male (SEXF=0), ADA-negative (ADA_POS=0), all TUMTP\_\*=0 (NSCLC) | Wang 2024 Table 3 footnote (typical lung cancer male patient) |
 
@@ -134,7 +134,7 @@ Equation forms (Wang 2024 Table 3 footnote):
   `Vc = exp(theta2) * (WT/61)^theta9 * (ALB/41.5)^theta11 * exp(theta13 * SEXF) * exp(theta19..22 * TTYPE_indicators)`.
 - Q: `Q = exp(theta3)`; Vp: `Vp = exp(theta4)`.
 - Time-varying CL:
-  `CL(t) = CL0 * exp(Emax_i * t^cl_hill_gamma / (T50^cl_hill_gamma + t^cl_hill_gamma))`.
+  `CL(t) = CL0 * exp(Emax_i * t^cl_time_hill / (T50^cl_time_hill + t^cl_time_hill))`.
 - Emax_i: additive linear-scale eta `Emax_REF + eta_Emax_i`.
 
 ## Covariate column naming
@@ -318,10 +318,10 @@ t_grid <- seq(0, 365, by = 5)
 cl0_typical <- 0.259                # L/day at reference covariates
 emax_ref    <- -0.528               # Wang 2024 theta5
 t50_d       <- 53.6                 # Wang 2024 theta6 (days)
-cl_hill_gamma      <- 2.60                 # Wang 2024 theta7
+cl_time_hill      <- 2.60                 # Wang 2024 theta7
 
 cl_t <- cl0_typical *
-  exp(emax_ref * t_grid^cl_hill_gamma / (t50_d^cl_hill_gamma + t_grid^cl_hill_gamma))
+  exp(emax_ref * t_grid^cl_time_hill / (t50_d^cl_time_hill + t_grid^cl_time_hill))
 
 cl_traj <- tibble::tibble(time = t_grid, cl = cl_t)
 
@@ -331,7 +331,7 @@ ggplot(cl_traj, aes(time, cl)) +
     x        = "Time (days since first dose)",
     y        = "Typical CL (L/day)",
     title    = "Time-varying CL trajectory at reference covariates",
-    subtitle = "Sigmoidal Emax decline (T50 = 53.6 days, cl_hill_gamma = 2.60, max reduction 41.0%)"
+    subtitle = "Sigmoidal Emax decline (T50 = 53.6 days, cl_time_hill = 2.60, max reduction 41.0%)"
   ) +
   theme_bw()
 ```

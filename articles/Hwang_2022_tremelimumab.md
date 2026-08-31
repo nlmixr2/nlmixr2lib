@@ -113,14 +113,14 @@ The table below collects them in one place for review.
 | `e_alb_cl` (power, ALB on CL) | -0.996 | Hwang 2022 Table 3, covariate 1 ALB on CL |
 | `e_wt_vc` (power, WT on Vc) | 0.606 | Hwang 2022 Table 3, covariate 2 WT on Vc |
 | `e_wt_cl` (power, WT on CL) | 0.638 | Hwang 2022 Table 3, covariate 3 WT on CL |
-| `cl_hill_max_mono` (Tmax mono) | 0.151 | Hwang 2022 Table 3, covariate 4 Tmax (monotherapy) |
-| `cl_hill_t50` (TC50, days) | 95.1 | Hwang 2022 Table 3, covariate 5 TC50 (common) |
-| `cl_hill_gamma_mono` (lambda mono) | 14.5 | Hwang 2022 Table 3, covariate 6 Lambda (monotherapy) |
-| `cl_hill_max_combo` (Tmax combo) | -0.187 | Hwang 2022 Table 3, covariate 7 Tmax (combination therapy) |
-| `cl_hill_gamma_combo` (lambda combo) | 3.20 | Hwang 2022 Table 3, covariate 8 Lambda (combination) |
+| `cl_time_max_mono` (Tmax mono) | 0.151 | Hwang 2022 Table 3, covariate 4 Tmax (monotherapy) |
+| `cl_t50` (TC50, days) | 95.1 | Hwang 2022 Table 3, covariate 5 TC50 (common) |
+| `cl_time_hill_mono` (lambda mono) | 14.5 | Hwang 2022 Table 3, covariate 6 Lambda (monotherapy) |
+| `cl_time_max_combo` (Tmax combo) | -0.187 | Hwang 2022 Table 3, covariate 7 Tmax (combination therapy) |
+| `cl_time_hill_combo` (lambda combo) | 3.20 | Hwang 2022 Table 3, covariate 8 Lambda (combination) |
 | `etalcl` (omega^2 on lcl) | 0.113 (33.6% CV) | Hwang 2022 Table 3, IIV on CL |
 | `etalvc` (omega^2 on lvc) | 0.0536 (23.2% CV) | Hwang 2022 Table 3, IIV on Vc |
-| `etacl_hill_max` (omega^2 on Tmax) | 0.151 (38.9% CV) | Hwang 2022 Table 3, IIV on Tmax |
+| `etacl_time_max` (omega^2 on Tmax) | 0.151 (38.9% CV) | Hwang 2022 Table 3, IIV on Tmax |
 | `propSd` | 0.306 | Hwang 2022 Table 3, proportional residual error |
 | `addSd` | 0.119 ug/mL | Hwang 2022 Table 3, additive residual error |
 
@@ -305,10 +305,10 @@ mod_typ  <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_typ_mono  <- rxode2::rxSolve(mod_typ, events = build_typ_events(0),
                                  returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_time_max'
 sim_typ_combo <- rxode2::rxSolve(mod_typ, events = build_typ_events(1),
                                  returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etacl_time_max'
 
 cl_curves <- dplyr::bind_rows(
   dplyr::mutate(sim_typ_mono,  regimen = "Monotherapy"),
@@ -498,10 +498,10 @@ cat(sprintf("Typical-subject terminal half-life = %.1f days\n", t_half))
   At a typical reference subject, the resulting one-year typical-value
   CL increase is `exp(0.151) - 1 = 16.3%`, consistent with Hwang 2022’s
   reported “approximately 16%” (page 1609).
-- **Convention deviation: `etacl_hill_max` IIV.** The shared additive
+- **Convention deviation: `etacl_time_max` IIV.** The shared additive
   eta on the regimen-active Tmax does not pair with a single
   fixed-effect parameter named `cl_tmax` in `ini()`; instead, two
-  regimen-specific `cl_hill_max_mono` and `cl_hill_max_combo` fixed
+  regimen-specific `cl_time_max_mono` and `cl_time_max_combo` fixed
   effects are mixed at runtime by `COMBO_DURVA`.
   [`nlmixr2lib::checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   flags this with a `parameter_naming` warning. The structure faithfully

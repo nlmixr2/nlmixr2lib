@@ -93,8 +93,8 @@ below collects them in one place for review.
 | `lq` (Q, L/day) | log(0.0191\*24) | Kuchimanchi 2024 Table 2, Q = 0.0191 L/h |
 | `lvp` (Vp, L) | log(2.48) | Kuchimanchi 2024 Table 2, Vp |
 | `lImax` (log\|I_max\|) | log(0.113) | Kuchimanchi 2024 Table 2, I_max = -0.113 |
-| `lcl_hill_t50` (T50, days) | log(145) | Kuchimanchi 2024 Table 2, T50 = 145 days |
-| `lcl_hill_gamma` (Hill) | log(7.05) | Kuchimanchi 2024 Table 2, Hill |
+| `lcl_t50` (T50, days) | log(145) | Kuchimanchi 2024 Table 2, T50 = 145 days |
+| `lcl_time_hill` (Hill) | log(7.05) | Kuchimanchi 2024 Table 2, Hill |
 | `e_wt_cl` | 0.523 | Kuchimanchi 2024 Table 2, Effect of WT on CL |
 | `e_wt_vc_vp` | 0.48 | Kuchimanchi 2024 Table 2, Effect of WT on Vc and Vp |
 | `e_age_cl` | -0.238 | Kuchimanchi 2024 Table 2, Effect of age on CL |

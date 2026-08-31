@@ -598,7 +598,7 @@ mod
 #>     totalCdk6Csf    <- free_cdk6_csf + complex_cdk6_abe_csf + complex_cdk6_m2_csf + complex_cdk6_m18_csf + complex_cdk6_m20_csf
 #>   })
 #> }
-#> <environment: 0x55cbf5ee6bc0>
+#> <environment: 0x55b948e5e010>
 ```
 
 Abemaciclib (ABE) is a CDK4/6 inhibitor used in

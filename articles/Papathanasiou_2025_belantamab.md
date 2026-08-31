@@ -98,8 +98,8 @@ below collects them in one place for review.
 | `lq` (Q, L/day) | log(0.711) | Table 2, row Q |
 | `lvp` (Vp, L) | log(6.63) | Table 2, row ADC Vp |
 | `imax` (Imax, unitless) | -0.403 | Table 2, row Imax |
-| `lcl_hill_t50` (log days) | log(66.4) | Table 2, row TI50 |
-| `cl_hill_gamma` (Hill, unitless) | 2.87 | Table 2, row Gamma |
+| `lcl_t50` (log days) | log(66.4) | Table 2, row TI50 |
+| `cl_time_hill` (Hill, unitless) | 2.87 | Table 2, row Gamma |
 | `e_wt_vc_vp` (shared WT power on Vc, Vp) | 0.929 | Table 2, theta_V_WTBL |
 | `e_wt_cl_q` (shared WT power on CL, Q) | 0.542 | Table 2, theta_CL_WTBL |
 | `e_alb_cl` (ALB power on CL) | -0.698 | Table 2, theta_CL_ALBBL |
@@ -117,8 +117,8 @@ below collects them in one place for review.
 | IIV block `etalcl + etalvc` | c(0.06593, 0.0328, 0.03922) | Table 2, CL CV 26.1%, Vc CV 20.0%, cov 0.0328 |
 | `etalq` | 0.03546 | Table 2, Q CV 19.0% |
 | `etalvp` | 0.08945 | Table 2, Vp CV 30.6% |
-| `etacl_hill_max` (additive) | 0.01366 | Table 2, Imax CV 29.0% (normal-distribution form, theta = -0.403) |
-| `etalcl_hill_t50` | 0.39236 | Table 2, TI50 CV 69.3% |
+| `etacl_time_max` (additive) | 0.01366 | Table 2, Imax CV 29.0% (normal-distribution form, theta = -0.403) |
+| `etalcl_t50` | 0.39236 | Table 2, TI50 CV 69.3% |
 | `propSd` | 0.2516 | Table 2, additive-on-log-scale variance 0.0633 (sqrt) |
 
 Equations: structural two-compartment micro-constant form with
@@ -296,10 +296,10 @@ mod_typ      <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_cl_mono  <- rxode2::rxSolve(mod_typ, events = build_cl_events(0),
                                 returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etacl_hill_max', 'etalcl_hill_t50'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etacl_time_max', 'etalcl_t50'
 sim_cl_combo <- rxode2::rxSolve(mod_typ, events = build_cl_events(1),
                                 returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etacl_hill_max', 'etalcl_hill_t50'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etacl_time_max', 'etalcl_t50'
 sim_cl <- dplyr::bind_rows(
   dplyr::mutate(sim_cl_mono,  treatment = "Monotherapy"),
   dplyr::mutate(sim_cl_combo, treatment = "Combination")

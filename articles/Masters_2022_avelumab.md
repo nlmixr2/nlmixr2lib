@@ -66,7 +66,7 @@ The table below collects them in one place for review.
 | `lvp` (V2, L) | log(0.7278) | Masters 2022 Table 1, θ_V2 |
 | `lq` (Q, L/day) | log(0.03352 × 24) | Masters 2022 Table 1, θ_Q (see *Assumptions*) |
 | `lImax` (log\|Imax\|) | log(0.08533) | Masters 2022 Table 1, θ_Imax = −0.08533 |
-| `lcl_hill_t50` (T50, days) | log(99.24) | Masters 2022 Table 1, θ_T50 |
+| `lcl_t50` (T50, days) | log(99.24) | Masters 2022 Table 1, θ_T50 |
 | `lgamma` (Hill shape) | log(2.086) | Masters 2022 Table 1, θ_γ |
 | `e_wt_cl` (allometric on CL) | 0.4714 | Masters 2022 Table 1, θ_weight_on_CL |
 | `e_wt_vc` (allometric on Vc) | 0.4694 | Masters 2022 Table 1, θ_weight_on_V1 |

@@ -86,12 +86,12 @@ refer to `Output_real_Nivo-PPK.lst` in the DDMORE bundle.
 | `e_race_asian_cl` (exp, Asian on CL) | -0.125 | TH18 = -1.25E-01 (CL_RAAS); \$PK lines 151, 174 |
 | `e_wt_vc` (power, WT on VC) | 0.597 | TH20 = 5.97E-01 (VC_BBWT); \$PK line 159 |
 | `e_sex_vc` (exp, male-indicator on VC) | 0.152 | TH21 = 1.52E-01 (VC_SEX); \$PK lines 160, 179 |
-| `cl_hill_max` (Emax, unitless) | -0.295 | TH22 = -2.95E-01 (CL_EMAX); \$PK line 79 |
-| `cl_hill_t50` (T50, h) | 1410 | TH23 = 1.41E+03 h (CL_T50); \$PK line 80 |
-| `cl_hill_gamma` (Hill, unitless) | 3.15 | TH24 = 3.15 (CL_HILL); \$PK line 81 |
+| `cl_time_max` (Emax, unitless) | -0.295 | TH22 = -2.95E-01 (CL_EMAX); \$PK line 79 |
+| `cl_t50` (T50, h) | 1410 | TH23 = 1.41E+03 h (CL_T50); \$PK line 80 |
+| `cl_time_hill` (Hill, unitless) | 3.15 | TH24 = 3.15 (CL_HILL); \$PK line 81 |
 | IIV block `etalcl + etalvc` | c(0.123, 0.0432, 0.123) | OMEGA BLOCK(2): var(ETA1)=1.23E-01, cov=4.32E-02, var(ETA2)=1.23E-01 |
 | `etalvp` | 0.258 | OMEGA: var(ETA3)=2.58E-01 |
-| `etacl_hill_max` (additive, per Eq. 3) | 0.0719 | OMEGA: var(ETA4)=7.19E-02 |
+| `etacl_time_max` (additive, per Eq. 3) | 0.0719 | OMEGA: var(ETA4)=7.19E-02 |
 | `propSd` | 0.215 | TH6 = 2.15E-01 (PERR); SIGMA fixed at 1, additive TH5 fixed at 0 |
 
 Reference covariates (`$PK` lines 100, 113, 132-133, 168-179): white
@@ -232,7 +232,7 @@ events_cl <- data.frame(
 mod_typ <- rxode2::zeroRe(mod)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 sim_cl  <- rxSolve(mod_typ, events = events_cl, returnType = "data.frame")
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'
 sim_cl  <- sim_cl[sim_cl$time > 0, ]
 
 ggplot(sim_cl, aes(time / 24, cl / cl_base)) +
@@ -320,7 +320,7 @@ sub <- raw |>
 
 sim_self <- rxSolve(rxode2::zeroRe(mod), events = sub, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'
 #> Warning: multi-subject simulation without without 'omega'
 
 ggplot(dplyr::filter(sim_self, time > 0), aes(time / 24, Cc, group = id)) +
@@ -416,7 +416,7 @@ cross-checked against the packaged model:
 | Quantity | Bajaj 2017 | This model (DDMORE bundle) |
 |----|----|----|
 | Baseline CL at reference covariates | 9.4 mL/h (TH1 in `.lst`) | `exp(lcl) = 9.4 mL/h` |
-| Mean maximal reduction in CL from baseline | ~24.5% | `1 - exp(cl_hill_max) = 1 - exp(-0.295) = 25.5%` |
+| Mean maximal reduction in CL from baseline | ~24.5% | `1 - exp(cl_time_max) = 1 - exp(-0.295) = 25.5%` |
 | Geometric mean terminal t\_{1/2}(alpha) | 32.5 h (CV 24.8%) | Dominated by CL/Vc; ~35 h at t = 0 |
 | Geometric mean terminal t\_{1/2}(beta), SS | 25 days (CV 77.5%) | Consistent with `half.life` column above |
 
@@ -467,7 +467,7 @@ coding error.
 - **Time-varying CL parameterization.** `Output_real_Nivo-PPK.lst` `$PK`
   line 122 expresses Emax as additive: `EMAX = AEMAX + ZEMAX` (rather
   than log-normal). The packaged model preserves this verbatim
-  (`cl_hill_max_i = cl_hill_max + etacl_hill_max`). At a stochastic
+  (`cl_time_max_i = cl_time_max + etacl_time_max`). At a stochastic
   simulation with the published omega^2_EMAX = 0.0719 (SD 0.268), a
   small fraction of individuals will draw Emax \> 0 and show a slight CL
   *increase* over time - this is a feature of the additive

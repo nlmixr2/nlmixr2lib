@@ -74,8 +74,8 @@ The table below collects them in one place for review.
 | `lq` (Q, L/day) | log(0.547) | Melhem 2022 Table 3, Q |
 | `lvp` (Vp, L) | log(2.10) | Melhem 2022 Table 3, Vp |
 | `lImax` (log\|I_max\|) | log(0.161) | Melhem 2022 Table 3, I_max = -0.161 |
-| `lcl_hill_t50` (T50, days) | log(108) | Melhem 2022 Table 3, T50 |
-| `lcl_hill_gamma` (Hill) | log(5.29) | Melhem 2022 Table 3, Hill |
+| `lcl_t50` (T50, days) | log(108) | Melhem 2022 Table 3, T50 |
+| `lcl_time_hill` (Hill) | log(5.29) | Melhem 2022 Table 3, Hill |
 | `e_wt_cl` | 0.470 | Melhem 2022 Table 3, Effect of WT on CL |
 | `e_wt_vc_vp` | 0.419 | Melhem 2022 Table 3, Effect of WT on Vc and Vp |
 | `e_age_cl` | -0.227 | Melhem 2022 Table 3, Effect of age on CL |

@@ -95,9 +95,9 @@ source_trace <- tibble::tribble(
   "Vc (L)",                        "3.25",        "MOESM1 NONMEM $THETA(4)",
   "Q (L/day)",                     "0.603",       "MOESM1 NONMEM $THETA(5)",
   "Vp (L)",                        "2.88",        "MOESM1 NONMEM $THETA(6)",
-  "cl_hill_max (IMAX)",            "-0.193",      "MOESM1 NONMEM $THETA(15)",
-  "cl_hill_t50 (day)",             "62.8",        "MOESM1 NONMEM $THETA(16)",
-  "cl_hill_gamma",                 "2.67",        "MOESM1 NONMEM $THETA(17)",
+  "cl_time_max (IMAX)",            "-0.193",      "MOESM1 NONMEM $THETA(15)",
+  "cl_t50 (day)",             "62.8",        "MOESM1 NONMEM $THETA(16)",
+  "cl_time_hill",                 "2.67",        "MOESM1 NONMEM $THETA(17)",
   "WT exponent on CL",             "0.668",       "MOESM1 NONMEM $THETA(7)",
   "ALB exponent on CL",            "-0.901",      "MOESM1 NONMEM $THETA(8)",
   "TUMSZ exponent on CL",          "0.116",       "MOESM1 NONMEM $THETA(9)",
@@ -109,7 +109,7 @@ source_trace <- tibble::tribble(
   "IIV CL (variance)",             "0.069169",    "MOESM1 NONMEM $OMEGA ETA(1)",
   "IIV Vc (variance)",             "0.029584",    "MOESM1 NONMEM $OMEGA ETA(2)",
   "IIV Vp (variance)",             "0.123904",    "MOESM1 NONMEM $OMEGA ETA(3)",
-  "IIV cl_hill_max (variance)",    "0.804609",    "MOESM1 NONMEM $OMEGA ETA(4)",
+  "IIV cl_time_max (variance)",    "0.804609",    "MOESM1 NONMEM $OMEGA ETA(4)",
   "Proportional residual SD",      "0.034",       "MOESM1 NONMEM $THETA(1), $ERROR W",
   "Additive residual SD (ug/mL)",  "18.1",        "MOESM1 NONMEM $THETA(2), $ERROR W",
   "Reference WT / ALB / TUMSZ",    "77 kg / 40 g/L / 63 mm", "MOESM1 NONMEM $PK",
@@ -133,9 +133,9 @@ knitr::kable(source_trace)
 | Vc (L) | 3.25 | MOESM1 NONMEM \$THETA(4) |
 | Q (L/day) | 0.603 | MOESM1 NONMEM \$THETA(5) |
 | Vp (L) | 2.88 | MOESM1 NONMEM \$THETA(6) |
-| cl_hill_max (IMAX) | -0.193 | MOESM1 NONMEM \$THETA(15) |
-| cl_hill_t50 (day) | 62.8 | MOESM1 NONMEM \$THETA(16) |
-| cl_hill_gamma | 2.67 | MOESM1 NONMEM \$THETA(17) |
+| cl_time_max (IMAX) | -0.193 | MOESM1 NONMEM \$THETA(15) |
+| cl_t50 (day) | 62.8 | MOESM1 NONMEM \$THETA(16) |
+| cl_time_hill | 2.67 | MOESM1 NONMEM \$THETA(17) |
 | WT exponent on CL | 0.668 | MOESM1 NONMEM \$THETA(7) |
 | ALB exponent on CL | -0.901 | MOESM1 NONMEM \$THETA(8) |
 | TUMSZ exponent on CL | 0.116 | MOESM1 NONMEM \$THETA(9) |
@@ -147,7 +147,7 @@ knitr::kable(source_trace)
 | IIV CL (variance) | 0.069169 | MOESM1 NONMEM \$OMEGA ETA(1) |
 | IIV Vc (variance) | 0.029584 | MOESM1 NONMEM \$OMEGA ETA(2) |
 | IIV Vp (variance) | 0.123904 | MOESM1 NONMEM \$OMEGA ETA(3) |
-| IIV cl_hill_max (variance) | 0.804609 | MOESM1 NONMEM \$OMEGA ETA(4) |
+| IIV cl_time_max (variance) | 0.804609 | MOESM1 NONMEM \$OMEGA ETA(4) |
 | Proportional residual SD | 0.034 | MOESM1 NONMEM \$THETA(1), \$ERROR W |
 | Additive residual SD (ug/mL) | 18.1 | MOESM1 NONMEM \$THETA(2), \$ERROR W |
 | Reference WT / ALB / TUMSZ | 77 kg / 40 g/L / 63 mm | MOESM1 NONMEM \$PK |
@@ -393,7 +393,7 @@ sim_det <- rxode2::rxSolve(
   mod_det, events = build_events(cohort_det, reg_b),
   keep = c("WT", "ALB", "TUMSZ", "SEXF", "ADA_POS"), returnType = "data.frame"
 )
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'
 #> Warning: multi-subject simulation without without 'omega'
 if (is.null(sim_det$id)) sim_det$id <- 1L
 stopifnot(nrow(sim_det) > 0, all(sim_det$Cc >= 0, na.rm = TRUE))
@@ -507,9 +507,8 @@ geometric mean.
 The reproduction above depends on the published seed and on
 [`set.seed()`](https://rdrr.io/r/base/Random.html) behaviour. A gate
 that depends on neither: at steady state on 840 mg q6w, far past
-`cl_hill_t50`, the time-varying multiplier has saturated, so clearance
-is effectively constant within a dosing interval and mass balance
-requires
+`cl_t50`, the time-varying multiplier has saturated, so clearance is
+effectively constant within a dosing interval and mass balance requires
 
 ``` math
 \mathrm{AUC}_\tau = \frac{D}{\mathrm{CL}_\infty},
@@ -544,7 +543,7 @@ ev_ss <- bind_rows(
 ss <- rxode2::rxSolve(mod_det, events = ev_ss, returnType = "data.frame") |>
   filter(time >= last_start, !is.na(Cc)) |>
   mutate(tsc = time - last_start)
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'
 stopifnot(all(ss$Cc > 0))
 
 auc_tau_sim <- PKNCA::pk.calc.auc.last(conc = ss$Cc, time = ss$tsc)
@@ -619,9 +618,9 @@ cmax_inf <- c(
   `30 min`       = cmax_for_duration(30 / (60 * 24)),
   `60 min`       = cmax_for_duration(60 / (60 * 24))
 )
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
-#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_hill_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalvp', 'etacl_time_max'
 c(cmax_inf, pct_drop_60min = 100 * (cmax_inf[["60 min"]] - cmax_inf[["bolus"]]) /
     cmax_inf[["bolus"]])
 #>          bolus         30 min         60 min pct_drop_60min 
@@ -876,7 +875,7 @@ spread within each source is that source’s own simulation noise.
 ### Monte Carlo error is the dominant residual difference
 
 The comparison above is a 200-subject cohort against a 1000-subject one,
-with an independent IIV draw. `cl_hill_max` carries an IIV variance of
+with an independent IIV draw. `cl_time_max` carries an IIV variance of
 0.804609, so the cycle-7 trough is by far the most dispersed metric and
 the least precisely estimated in either cohort. The sampling noise below
 is the scale against which any remaining gap should be read.
