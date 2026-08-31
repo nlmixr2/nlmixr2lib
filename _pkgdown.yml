@@ -1548,6 +1548,10 @@ navbar:
         href: articles/Ibrahim_2025_ibrutinib.html
       - text: "Ibuprofen (Hirt 2008)"
         href: articles/Hirt_2008_ibuprofen.html
+      - text: "Ibuprofen microgravity (Idkaidek 2011)"
+        href: articles/Idkaidek_2011_ibuprofen.html
+      - text: "Ibuprofen normalGravity (Idkaidek 2011)"
+        href: articles/Idkaidek_2011_ibuprofen.html
       - text: "Iclaprim (Lodise 2018)"
         href: articles/Lodise_2018_iclaprim.html
       - text: "Ifosfamide (Brain 2008)"
@@ -4423,6 +4427,7 @@ articles:
   - articles/Ibrahim_2025_ibrutinib
   - articles/Ide_2009_pravastatin
   - articles/Ide_2020_elotuzumab
+  - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
   - articles/Ippolito_2024_pacmilimab_qsp
   - articles/Ivanova_2024_synucleinopathy_qsp

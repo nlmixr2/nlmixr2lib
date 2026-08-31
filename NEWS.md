@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hopkins 2024 nonracemic amisulpride (SEP-4199) ([doi:10.1002/cpt.3311](https://doi.org/10.1002/cpt.3311)) -- healthy adult volunteers.
+- Add Idkaidek 2011 ibuprofen at normal gravity and under simulated microgravity ([doi:10.1177/0091270010388652](https://doi.org/10.1177/0091270010388652)) -- healthy adult men in an antiorthostatic bed-rest crossover.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
