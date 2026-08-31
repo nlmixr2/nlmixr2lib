@@ -120,6 +120,8 @@ navbar:
         href: articles/Wright_2013_allopurinol.html
       - text: "Allopurinol (Wright 2016)"
         href: articles/Wright_2016_allopurinol.html
+      - text: "Alprazolam (Klein 2026)"
+        href: articles/Klein_2026_alprazolam.html
       - text: "Alvespimycin (Aregbe 2012)"
         href: articles/Aregbe_2012_alvespimycin.html
       - text: "Amatuximab (Gupta 2016)"
@@ -4720,6 +4722,7 @@ articles:
   - articles/Kleideiter_2017_cebranopadol
   - articles/Kleideiter_2018_cebranopadol
   - articles/Kleijn_2011_sugammadex_rocuronium
+  - articles/Klein_2026_alprazolam
   - articles/Kloft_2004_sibrotuzumab
   - articles/Kloos_2021_pegasparaginase
   - articles/Kloprogge_2013_lumefantrine

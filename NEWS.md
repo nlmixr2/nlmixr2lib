@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mukker 2026 tuvusertib concentration-QTcF, concentration-heart-rate and in vitro hERG models ([doi:10.1111/cts.70496](https://doi.org/10.1111/cts.70496)) -- patients with advanced solid tumors.
+- Add Klein 2026 inhaled Staccato alprazolam ([doi:10.1111/epi.18643](https://doi.org/10.1111/epi.18643)) -- adults and adolescents with epilepsy.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
