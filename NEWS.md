@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fukae 2024 valemetostat exposure-response ([doi:10.1002/psp4.13203](https://doi.org/10.1002/psp4.13203)) -- adults with relapsed/refractory adult T-cell leukemia/lymphoma and other non-Hodgkin lymphomas.
+- Add Lin 2024 adverse-event grade proportional-odds Markov model ([doi:10.3389/fphar.2024.1487062](https://doi.org/10.3389/fphar.2024.1487062)) -- simulated subjects on a de-identified oral compound.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
