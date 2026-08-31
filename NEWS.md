@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zurawska 2026 piperacillin ([doi:10.1128/aac.01760-25](https://doi.org/10.1128/aac.01760-25)) -- critically ill adults with hospital-acquired pneumonia, including those on continuous renal replacement therapy.
+- Add Mukker 2026 tuvusertib concentration-QTcF, concentration-heart-rate and in vitro hERG models ([doi:10.1111/cts.70496](https://doi.org/10.1111/cts.70496)) -- patients with advanced solid tumors.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

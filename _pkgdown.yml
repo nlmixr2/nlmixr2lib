@@ -3638,12 +3638,12 @@ navbar:
         href: articles/Zhang_2024_tucatinib.html
       - text: "Tusamitamab (Pouzin 2022)"
         href: articles/Pouzin_2022_tusamitamab.html
-      - text: "Tuvusertib (Mukker 2026)"
-        href: articles/Mukker_2026_tuvusertib.html
-      - text: "Tuvusertib hematology (Mukker 2026)"
-        href: articles/Mukker_2026_tuvusertib.html
-      - text: "Tuvusertib mouse tgi (Mukker 2026)"
-        href: articles/Mukker_2026_tuvusertib.html
+      - text: "Tuvusertib HR (Mukker 2026)"
+        href: articles/Mukker_2026_tuvusertib_QTc.html
+      - text: "Tuvusertib QTcF (Mukker 2026)"
+        href: articles/Mukker_2026_tuvusertib_QTc.html
+      - text: "Tuvusertib hERG (Mukker 2026)"
+        href: articles/Mukker_2026_tuvusertib_QTc.html
       - text: "Tylosin Apleuropneumoniae healthy (Lee 2023)"
         href: articles/Lee_2023_tylosin.html
       - text: "Tylosin Apleuropneumoniae infected (Lee 2023)"
@@ -4965,7 +4965,7 @@ articles:
   - articles/Mould_2007_alemtuzumab
   - articles/Muhamad_2025_cholecalciferol_pbpk
   - articles/Mukai_2019_mogamulizumab
-  - articles/Mukker_2026_tuvusertib
+  - articles/Mukker_2026_tuvusertib_QTc
   - articles/Mukonzo_2009_efavirenz
   - articles/Mulder_2025_ribavirin
   - articles/Muliaditan_2025_mab_mpbpk
