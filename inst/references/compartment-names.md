@@ -826,25 +826,15 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
-## Co-substrate / cofactor depletion pools
+## Mechanism-agnostic clearance-modulating capacity states
 
-Baseline-normalised reservoirs of a *consumable co-substrate* that a drug's own
-metabolism draws down (or, as published in the founding example, drives), making
-elimination time-varying over a treatment course. Structurally these are the
-mirror image of the enzyme-induction reservoirs above: both are dimensionless
-states initialised at 1 that multiply a clearance term, but an induction pool is
-driven by a *concentration* signal through an indirect-response loop, whereas a
-co-substrate pool is driven by *metabolic flux* -- the amount of drug actually
-turned over. Name the state for the co-substrate, not for the drug.
-
-### gsh_pool (**canonical normalised glutathione co-substrate pool**)
+### clearance_capacity (**canonical clearance-modulating capacity state**)
 - **Type:** compartment
-- **Role:** Relative amount of glutathione available to conjugate a drug, expressed as a fraction of its own pre-treatment baseline and initialised at 1. Multiplies the elimination rate constant of the drug whose metabolism is glutathione-dependent, and is itself driven by that drug's metabolic flux, so a multi-day course produces time-varying clearance.
+- **Role:** Dimensionless turnover state, held at 1 in the absence of drug, whose amount multiplies apparent clearance so that clearance varies with time and with drug concentration. Production is a zero-order rate `kcl` and drug-free loss is the first-order rate constant `kcl`, so the two cancel at baseline; drug enters by scaling the loss constant (`kcl * (1 + slp * Cc)` for suppression) or the production term (for induction). A falling state amount means falling clearance, hence greater-than-dose-proportional exposure.
 - **Source aliases:**
-  - `GSH` -- `$MODEL COMP=(GSH)` in the Cao 2025 Supplementary Text S2 control stream.
-  - `A_GSH` -- the symbol used in Cao 2025 Equation 2.
-- **Example models:** `Cao_2025_busulfan.R`.
-- **Notes:** Dimensionless and normalised, so it is deliberately NOT named `gsh`: the bare name belongs to the "Endogenous metabolic species" family, every member of which carries a real measured concentration, and Cao 2025 explicitly states that active glutathione levels were not assayed and "full GSH dynamics could not be reconstructed". Initial condition `gsh_pool(0) <- 1`. The coupling constant that scales metabolic flux to the pool is the paired parameter `sdep_gsh` (see `parameter-names.md`); the two are introduced together and should stay paired. Registered 2026-08-23 with the Cao 2025 busulfan extraction, per operator sidecar `oare_PMC12426406` request-002 q1 = A, which selected `gsh_pool` over bare `gsh` and over a role-generic `cofactor_pool` on exactly the normalisation argument above. Extend to a sibling (`sdep_<pool>` / `<pool>_pool`) for any other consumable co-substrate, e.g. NADPH, sulfate, or acetyl-CoA.
+  - `A4` / "clearance compartment" -- used in `Mukker_2026_tuvusertib.R` (Figure 2a schematic, which prints the rate laws verbatim: `KEL = (CL/VC)*A4`, production into `A4` `= KCL`, loss constant of `A4` `= KCL*(1 + SLP*CP)`).
+- **Example models:** `Mukker_2026_tuvusertib.R`, `Mukker_2026_tuvusertib_hematology.R`.
+- **Notes:** Ratified 2026-08-29 as a canonical distinct from the `enzyme` / `enz_pool` / `enzyme_<isoform>` reservoirs above. Those name a specific biological mechanism -- an enzyme pool being induced or suppressed -- and were founded on rifampicin autoinduction. `clearance_capacity` names only the *functional* role, for the recurring case where a source fits a relative capacity state that scales clearance but makes no mechanistic claim about what it represents; Mukker 2026 calls it only a "clearance compartment". Use `enzyme` / `enz_pool` when the source attributes the state to an enzyme, and `clearance_capacity` when it does not. Initial condition is `clearance_capacity(0) <- 1` (relative to the drug-free baseline), the same convention the enzyme pools use. Deliberately not numbered: no source to date resolves more than one such state, so it is registered as a bare name rather than added to `compartmentRegex`.
 
 ---
 
@@ -1521,6 +1511,14 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Role:** Red blood cell count PD output.
 - **Source aliases:** none.
 - **Example models:** anemia PD models.
+
+### RET (**canonical reticulocyte count**)
+- **Type:** compartment
+- **Role:** Total reticulocyte count PD output. In a cascade model this is the algebraic sum over the `reticulocytes<n>` age-transit chain; in a lumped model it is the single circulating reticulocyte state observed directly.
+- **Source aliases:**
+  - `RET` -- used in `Mukker_2026_tuvusertib_hematology.R` (Table 2) and in the upstream Zhang 2017 baricitinib framework it inherits.
+- **Example models:** `Mukker_2026_tuvusertib_hematology.R`.
+- **Notes:** Ratified 2026-08-29 as the reticulocyte counterpart to `RBC`, with which it is routinely summed to form hemoglobin (`hb <- shb * (RET + RBC)`). Follows the uppercase **count-output** convention of `RBC` / `WBC` / `ANC` rather than the lowercase biomarker convention of `hb` / `thb` / `ldh`, so that a model carrying both counts reads consistently. The residual-error parameter is correspondingly `addSd_RET`, matching `addSd_RBC`. Distinct from the four `ret_*` maturity-by-location canonicals (`ret_imm_marrow` / `ret_mat_marrow` / `ret_imm_blood` / `ret_mat_blood`), which are *states* in a different decomposition of the same anatomical pool; `RET` is the observed total.
 
 ### INR (**canonical international normalised ratio**)
 - **Type:** compartment
@@ -2794,7 +2792,18 @@ The corresponding transport parameters are `lkinf_rbc` / `lkeff_rbc` (first-orde
 
 Semi-mechanistic erythropoiesis models carry the marrow-to-blood maturation cascade explicitly: an erythroid precursor pool (`precursor1`) feeds reticulocytes that mature and are released into blood, which in turn feed an erythrocyte age-transit chain. The four reticulocyte states below cross the two axes the cascade needs -- maturity (immature, RNA-rich vs mature) and location (bone marrow vs blood) -- because the observed reticulocyte count and the immature reticulocyte fraction (IRF) are both computed from the two *blood* states, so all four are load-bearing rather than bookkeeping.
 
-The chain members `erythrocytes<n>` and `mch<n>` are validated by `compartmentRegex`, not by an entry per numbered state; register the bare canonical and let the numbering follow (as for `transit<n>` / `precursor<n>`).
+The chain members `erythrocytes<n>`, `reticulocytes<n>` and `mch<n>` are validated by `compartmentRegex`, not by an entry per numbered state; register the bare canonical and let the numbering follow (as for `transit<n>` / `precursor<n>`).
+
+Two distinct decompositions of the reticulocyte pool are registered, and a model uses one or the other, never both. The four `ret_*` canonicals below cross **maturity x location** (immature / mature, marrow / blood) and are used when the source needs the immature reticulocyte fraction as an observable. `reticulocytes<n>` instead partitions the pool into equal-transit-time **age bins**, and is used when the source writes reticulocyte maturation as a transit chain whose bin sum is the observed count.
+
+### reticulocytes (**canonical reticulocyte age-transit chain**)
+- **Type:** compartment
+- **Role:** Reticulocyte age-transit chain: equal-transit-time bins whose transit times sum to the reticulocyte maturation time and whose bin sum is the observed reticulocyte count (`RET`). Sits between the erythroid progenitor chain (`prol` / `precursor<n>`) and the red-cell chain (`erythrocytes<n>`) in the semi-mechanistic erythropoiesis cascade, with a single shared transit rate constant.
+- **Source aliases:**
+  - `B5..B8` -- used in `Mukker_2026_tuvusertib_hematology.R` (Figure 2b).
+  - `RET_T4..RET_T7` -- the upstream Zhang 2017 baricitinib framework (CPT:PSP 6:804-813, Eqs. 8-20) that Mukker 2026 inherits.
+- **Example models:** `Mukker_2026_tuvusertib_hematology.R` (`reticulocytes1`..`reticulocytes4`).
+- **Notes:** Ratified 2026-08-29 as the exact structural parallel to `erythrocytes<n>` one stage downstream, so a full cascade reads `prol -> precursor1..3 -> reticulocytes1..4 -> erythrocytes1..4`. Numbered variants are accepted via `compartmentRegex`; the bare `reticulocytes` is registered here and the numbering follows. Where the source instead resolves maturity and location, use the `ret_*` canonicals below -- the two schemes describe the same anatomical pool under different decompositions and must not be mixed within one model. The observed total is the `RET` PD output, not one of these states.
 
 ### ret_imm_marrow (**canonical immature bone-marrow reticulocyte pool**)
 - **Type:** compartment

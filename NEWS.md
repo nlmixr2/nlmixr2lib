@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ward 2026 magnesium bone implant PBPK ([doi:10.1021/acsomega.5c06910](https://doi.org/10.1021/acsomega.5c06910)) -- average healthy 70 kg adults.
+- Add Mukker 2026 tuvusertib ([doi:10.1002/cpt.70029](https://doi.org/10.1002/cpt.70029)) -- adults with advanced solid tumors, plus a mouse ARID1A-mutant xenograft tumor-growth model.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
