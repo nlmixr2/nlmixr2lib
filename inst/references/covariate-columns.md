@@ -306,7 +306,9 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Scope:** general
 - **Source aliases:**
   - `PNA` -- used in Zhao 2018 (paper Methods 'Population pharmacokinetic-pharmacogenetic modelling' and Table 2 report PNA in DAYS; the canonical PNA carries months, so Zhao 2018's `F_PNA = (PNA_days / 38)^0.472` is reparameterised inside `model()` as `F_PNA = (PNA_months / 1.249)^0.472` using the conversion `PNA_months = PNA_days / 30.4375` and reference `1.249 months = 38 days / 30.4375`).
-- **Example models:** `Hu_2026_clesrovimab.R`, `Zhao_2018_omeprazole.R` (power effect on the formation clearance of 5-hydroxy-omeprazole: `(PNA / 1.249)^0.472`; PNA reference 1.249 months / 38 days from Zhao 2018 Table 2 cohort median).
+  - `Age (h)` -- used in Bardhi 2026 (`Bardhi_2026_ampicillin_foal.R`), whose neonatal-foal cohort spans 9-194.5 h of life and whose covariate is centred on the weighted-mean age of 61.8 h. Same reparameterisation as Zhao 2018 but from HOURS: `model()` recovers hours with `PNA * 730.5` (1 month = 30.4375 days = 730.5 h) before forming the age ratio, so the centring value 61.8 h corresponds to 0.0846 months. Bardhi 2026 Table 2's legend prints "61.8 years", a typographical slip for hours.
+- **Example models:** `Hu_2026_clesrovimab.R`, `Zhao_2018_omeprazole.R` (power effect on the formation clearance of 5-hydroxy-omeprazole: `(PNA / 1.249)^0.472`; PNA reference 1.249 months / 38 days from Zhao 2018 Table 2 cohort median), `Bardhi_2026_ampicillin_foal.R` (veterinary; power effects on both clearance, exponent 0.40, and peripheral volume, exponent 1.38, of `(age_h / 61.8)`).
+- **Notes:** Sub-daily postnatal ages are legitimate members of this canonical -- Bardhi 2026's hospitalized neonatal foals are enrolled from 9 h of life -- and are carried in months like every other PNA value, with the source unit recovered inside `model()`.
 
 ### GA (**canonical for gestational age at birth**)
 - **Description:** Gestational age at birth. Time-fixed per subject.

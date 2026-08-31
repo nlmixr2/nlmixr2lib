@@ -200,6 +200,8 @@ navbar:
         href: articles/Beredaki_2024_amphotericinB_liposomal.html
       - text: "Ampicillin (Tremoulet 2014)"
         href: articles/Tremoulet_2014_ampicillin.html
+      - text: "Ampicillin foal (Bardhi 2026)"
+        href: articles/Bardhi_2026_ampicillin_foal.html
       - text: "Ampicillin sulbactam (Soto 2014)"
         href: articles/Soto_2014_ampicillin_sulbactam.html
       - text: "Amyloid (vanMaanen 2025)"
@@ -4127,6 +4129,7 @@ articles:
   - articles/Bajaj_2017_nivolumab_ddmore
   - articles/Balis_2025_busulfan
   - articles/Barau_2012_mycophenolic_acid
+  - articles/Bardhi_2026_ampicillin_foal
   - articles/Barnett_2018_coproporphyrin_I
   - articles/Barnett_2018_rifampicin
   - articles/Barnett_2018_rosuvastatin

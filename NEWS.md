@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2026 APTM, a novel pleuromutilin derivative ([doi:10.1016/j.psj.2026.106560](https://doi.org/10.1016/j.psj.2026.106560)) -- Mycoplasma gallisepticum in vitro and in specific-pathogen-free chickens.
+- Add Bardhi 2026 ampicillin ([doi:10.1093/jvimsj/aalag021](https://doi.org/10.1093/jvimsj/aalag021)) -- hospitalized neonatal foals.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
