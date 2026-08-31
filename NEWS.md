@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Zhou 2026 tacrolimus ([doi:10.2147/DDDT.S576598](https://doi.org/10.2147/DDDT.S576598)) -- adult Chinese patients with nephrotic syndrome.
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive

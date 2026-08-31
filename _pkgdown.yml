@@ -3224,6 +3224,8 @@ navbar:
         href: articles/Xiang_2025_tacrolimus.html
       - text: "Tacrolimus (Zhou 2025)"
         href: articles/Zhou_2025_tacrolimus.html
+      - text: "Tacrolimus (Zhou 2026)"
+        href: articles/Zhou_2026_tacrolimus.html
       - text: "Tacrolimus (Zhu 2014)"
         href: articles/Zhu_2014_tacrolimus.html
       - text: "Tacrolimus egfr (Xiang 2025)"
@@ -5359,6 +5361,7 @@ articles:
   - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
   - articles/Zhou_2025_tacrolimus
+  - articles/Zhou_2026_tacrolimus
   - articles/Zhu_2014_tacrolimus
   - articles/Zhu_2017_lebrikizumab
   - articles/Zhu_2023_omalizumab_pediatric
