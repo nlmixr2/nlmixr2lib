@@ -506,7 +506,7 @@ knitr::kable(
 
 | Interval Start | Interval End | regimen | N | Cmax (ug/mL) | Tmax (hr) | Clast (ug/mL) | Half-life (hr) | $`\lambda_z`$ (1/hr) | AUCinf,obs (hr\*ug/mL) | AUCinf,pred (hr\*ug/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 20 mg/kg IV single | 100 | 17.1 \[0.000\] | 0.250 \[0.250, 0.250\] | 0.544 \[0.000\] | 9.60 \[9.45e-16\] | 0.0722 \[0.000\] | NC | NC |
+| 0 | Inf | 20 mg/kg IV single | 100 | 17.1 \[0.000\] | 0.250 \[0.250, 0.250\] | 0.544 \[0.000\] | 9.60 \[1.29e-15\] | 0.0722 \[0.000\] | NC | NC |
 
 Single-dose NCA after 20 mg/kg IV bolus, typical-value simulation across
 the Shin 2017 cohort weight distribution. {.table}

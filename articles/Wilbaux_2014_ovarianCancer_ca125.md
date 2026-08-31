@@ -259,10 +259,10 @@ a sensible range.
 
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [intdy -- t = 4.67603e-310 illegal]: 10 warning(s) for subject(s): Unknown
-#> [intdy -- t = 4.67605e-310 illegal]: 1 warning(s) for subject(s): Unknown
-#> [intdy -- t = 6.93192e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown
-#> [intdy -- t = 6.93202e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 4.66054e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 4.66075e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 6.92322e-310 illegal]: 10 warning(s) for subject(s): Unknown
+#> [intdy -- t = 6.92324e-310 illegal]: 1 warning(s) for subject(s): Unknown
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).

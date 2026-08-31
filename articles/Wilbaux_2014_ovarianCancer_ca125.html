@@ -2315,10 +2315,10 @@ a sensible range.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_vpc</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod</span>, <span class="va">ev_one</span>, nSub <span class="op">=</span> <span class="va">n_subj</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.67603e-310 illegal]: 10 warning(s) for subject(s): Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.67605e-310 illegal]: 1 warning(s) for subject(s): Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.93192e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.93202e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.66054e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.66075e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.92322e-310 illegal]: 10 warning(s) for subject(s): Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.92324e-310 illegal]: 1 warning(s) for subject(s): Unknown</span></span>
 <span><span class="co">#&gt; [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown</span></span>
 <span><span class="co"># rxSolve duplicates rows when multiple cmts are observed at the same time;</span></span>
 <span><span class="co"># dedup by (sim.id, time).</span></span>

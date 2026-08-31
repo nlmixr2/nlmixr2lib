@@ -282,10 +282,11 @@ vpc <- scenarios |>
   }) |>
   ungroup() |>
   mutate(scenario = factor(scenario, levels = scenarios$scenario))
-#> [intdy -- t = 6.93202e-310 illegal]: 8 warning(s) for subject(s): Unknown
-#> [intdy -- t = 4.67605e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown, Unknown
-#> [intdy -- t = 4.67605e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown
-#> [intdy -- t = 6.93202e-310 illegal]: 1 warning(s) for subject(s): Unknown
+#> [intdy -- t = 4.66075e-310 illegal]: 8 warning(s) for subject(s): Unknown
+#> [intdy -- t = 4.66075e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 4.66074e-310 illegal]: 1 warning(s) for subject(s): Unknown
+#> [intdy -- t = 4.66075e-310 illegal]: 9 warning(s) for subject(s): Unknown
+#> [intdy -- t = 6.92324e-310 illegal]: 5 warning(s) for subject(s): Unknown
 
 vpc_median <- vpc |>
   group_by(scenario, time) |>
