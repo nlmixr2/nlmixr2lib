@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
 - Rename the sigmoidal-in-time clearance parameter family so the names state the
   structure rather than only the curve shape, across all 20 models that use it:
   `cl_hill_max` -> `cl_time_max`, `cl_hill_t50` -> `cl_t50`, `cl_hill_gamma` ->

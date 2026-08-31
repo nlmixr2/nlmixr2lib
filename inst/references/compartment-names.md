@@ -2330,6 +2330,20 @@ Population body-composition / disease-risk PD output states from the Oniki 2018 
 - **Source aliases:** none.
 - **Example models:** `Oniki_2018_nafld_risk.R`.
 
+### p_car (**canonical continuous-abstinence-rate-probability PD output**)
+- **Type:** compartment
+- **Role:** Probability of continuous smoking abstinence (continuous abstinence rate, CAR) PD output (0..1); the expit of a baseline logit that demographic and nicotine-dependence covariates multiply, plus an additive linear drug-exposure term. Sibling of `p_nafld` and `prob_roc`.
+- **Source aliases:** `CAR` -- the printed endpoint abbreviation in the smoking-cessation literature.
+- **Example models:** `Ravva_2010_varenicline_car_w9_12.R` (weeks 9-12 endpoint, full covariate model), `Ravva_2010_varenicline_car_w4_7_study1.R` and `Ravva_2010_varenicline_car_w4_7_study2.R` (weeks 4-7 endpoint, preliminary exposure-only fits).
+- **Notes:** The endpoint is defined over a stated multi-week abstinence window (Ravva 2010 uses both a weeks 4-7 and a weeks 9-12 window), and the window is a property of the model rather than of the output name -- record it in the model `description` and `units$concentration` rather than encoding it into the state name, so that models of different windows share one canonical.
+
+### p_nausea (**canonical nausea-probability PD output**)
+- **Type:** compartment
+- **Role:** Probability of a nausea adverse event PD output (0..1); the expit of a baseline logit that demographic and nicotine-dependence covariates multiply, plus an additive linear drug-exposure term and an optional exponentially decaying week-of-treatment term. Sibling of `p_nafld`, `p_car` and `prob_roc`.
+- **Source aliases:** none.
+- **Example models:** `Ravva_2010_varenicline_nausea.R`.
+- **Notes:** Nausea is one of the most commonly modelled dose-limiting tolerability endpoints, so this canonical is expected to be reused across drug classes; it names the adverse event, not the drug. A model of a different adverse event should register its own `p_<event>` sibling rather than overload this name.
+
 ---
 
 ## Bare drug-effect mechanistic states
