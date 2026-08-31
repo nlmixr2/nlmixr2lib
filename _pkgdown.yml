@@ -2062,6 +2062,8 @@ navbar:
         href: articles/Billard_1995_methoxsalen.html
       - text: "Methoxsalen plasma (Billard 1995)"
         href: articles/Billard_1995_methoxsalen.html
+      - text: "MethoxyPolyethyleneGlycolEpoetinBeta (Chanu 2010)"
+        href: articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
       - text: "Metoprolol (Eugene 2016)"
@@ -4038,6 +4040,7 @@ articles:
   - articles/Chandasana_2024_dolutegravir_lamivudine
   - articles/ChandralayamAyyappaMenon_2026_isb2001
   - articles/Chang_2011_PF04455242_prolactin
+  - articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta
   - articles/Charles_2007_tafenoquine
   - articles/Chatelut_1999_interferon_alfa_2b
   - articles/Chatterjee_2016_pembrolizumab

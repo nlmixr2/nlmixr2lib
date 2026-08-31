@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chandralayam Ayyappa Menon 2026 ISB 2001 and teclistamab QSP models ([doi:10.1002/cpt.70319](https://doi.org/10.1002/cpt.70319)) -- adults with relapsed and/or refractory multiple myeloma.
+- Add Chanu 2010 methoxy polyethylene glycol-epoetin beta (C.E.R.A.) ([doi:10.1177/0091270009343931](https://doi.org/10.1177/0091270009343931)) -- ESA-naive and ESA-treated adults with chronic kidney disease on dialysis.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
