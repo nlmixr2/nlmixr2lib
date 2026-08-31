@@ -13434,50 +13434,82 @@ Covariates whose value is a property of the **administered molecule** rather tha
 - **Example models:** `VarelaGonzalezAller_2025_fludarabine.R` (founding example; axi-cel-referenced multiplicative factor 3.9/4.4 = 0.8864 on the non-renal clearance arm of fludarabine, re-expressed from the paper's two-level categorical clearance intercept; 38 axi-cel / 18 tisa-cel).
 - **Notes:** Named-product member of the `CONMED_<INN>` family; both axicabtagene ciloleucel and tisagenlecleucel are INNs. **Timing caveat, important for interpretation:** in lymphodepletion popPK models the cell product is infused on day 0 while the conditioning chemotherapy is given on the preceding days, so the product has not been administered during any modelled observation. An effect on a conditioning drug's PK is therefore a planned-treatment / cohort marker -- a proxy for unmeasured differences between the populations selected for each product (disease biology, prior therapies, tumour burden) -- and not a pharmacokinetic drug-drug interaction; the founding paper says so explicitly in its Discussion. Record that reading in the per-model `covariateData[[CONMED_TISACEL]]$notes` rather than implying a mechanistic interaction. Keep the per-product dose difference (30 vs 25 mg/m^2 fludarabine phosphate in the founding example) in the event table, not in this covariate. Register sibling named canonicals (`CONMED_LISOCEL`, `CONMED_BREXUCEL`, `CONMED_IDECEL`, `CONMED_CILTACEL`, ...) for other cell products rather than overloading this entry, and reserve a future `CONMED_CART_ANY` for sources that pool CAR T-cell therapy as a class.
 
-### MW (**canonical for molecular weight of the modelled drug supplied as a data column**)
-- **Description:** Molecular weight of the drug (or drug moiety) the record refers to, supplied to the model as a data column rather than hard-coded as a parameter. Use this when one model file spans several different molecules -- a cross-drug meta-analysis, an in-vitro potency panel, or any model whose equations convert between a mass-per-volume concentration and a molar concentration and therefore need a per-record molecular weight. A single-drug PBPK or popPK model should keep its molecular weight as an `ini()` parameter or a literal constant instead; `MW` exists for the case where the molecule varies from record to record.
-- **Units:** g/mol (equivalently Da). Document per model via `covariateData[[MW]]$units`.
+### DBP (**canonical for diastolic blood pressure**)
+- **Description:** Subject diastolic blood pressure, in mmHg. Captured at baseline or serially during a study. The diastolic sibling of `SBP`, completing the covariate pair that mirrors the `dbp` / `sbp` PD-state pair in `compartment-names.md`. Used where hemodynamic state is a covariate on a non-PK endpoint (blood-pressure exposure-response, disease progression, survival) or on clearance. Document baseline-vs-time-varying status per model in `covariateData[[DBP]]$notes`.
+- **Units:** mmHg
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- enters as a unit-conversion factor. The most common form is the ng/mL to nM conversion `C_nM = C_ngmL * 1000 / MW`; the mirror conversion is `C_ngmL = C_nM * MW / 1000`.
+- **Reference category:** n/a -- used with power scaling `(DBP / ref)^exponent`, linear-deviation forms `(1 + e * (DBP - ref))`, or additive-log forms `beta * log(DBP)`. Reference values observed: 102 mmHg (Song 2013 Table 2 pooled-Phase-III mean baseline seated trough diastolic pressure in treated hypertensive patients); 80 mmHg is the population-adult clinical normal midpoint.
 - **Source aliases:**
-  - `MW` -- Panday 2025 Table S2 parameter rows and Supplemental Methods Eq. S1; same orientation and units as the canonical.
-  - `MolWt`, `MOLWT`, `M_r` -- common alternative spellings in physicochemical data tables.
-- **Example models:** `Panday_2025_sert_tremor_cavg_mbma.R` and `Panday_2025_sert_tremor_cmax_mbma.R` (g/mol; per-drug molecular weights spanning 20 SERT inhibitors, 221.34 for tapentadol to 441.5 for vilazodone, used in Eq. S1 to put the reported plasma concentration on the same molar basis as the nanomolar in vitro SERT potency; founding example).
-- **Notes:** Do NOT use `MW` as a stand-in for a salt-factor or free-base correction -- those are a separate concern and belong in the dosing records or in an explicit `ini()` conversion parameter. Where a paper reports the molecular weight of a salt form but doses on a free-base basis, record which basis the value is on in `covariateData[[MW]]$notes`.
+  - `Baseline BP` -- Song 2013 Table 3 / Table S6 row label for the baseline seated trough diastolic pressure entering both the placebo and the olmesartan / amlodipine drug-effect terms of the diastolic exposure-response model; same orientation, no value transformation.
+  - `SeDBP` -- seated trough diastolic blood pressure, the Song 2013 measurement convention.
+  - `DBP` -- source-paper column name; same orientation, no value transformation.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R` (baseline seated trough DBP; enters the placebo term as `(DBP / 102)^3.19` and the olmesartan and amlodipine drug-effect terms as `(DBP / 102)^2.46` and `(DBP / 102)^4.12` -- founding example).
+- **Notes:** Registered alongside the Song 2013 CS-8635 exposure-response extraction as the diastolic counterpart of the previously registered `SBP`. Keep the two as separate columns rather than a single `BP` column with a type flag: papers routinely fit systolic and diastolic responses as independent models with different covariate sets (Song 2013 retains an age effect on the olmesartan effect for diastolic only, and a sex effect on the amlodipine effect for systolic only), so a downstream dataset must be able to carry both simultaneously. Distinct from `DBP_REL`, which carries a drug-induced *relative* change from baseline rather than an absolute pressure.
 
-### KPUU_BRAIN (**canonical for the unbound-brain to unbound-plasma partition coefficient supplied as a data column**)
-- **Description:** Steady-state ratio of the unbound drug concentration in brain to the unbound drug concentration in plasma (`K_p,uu`), supplied to the model as a data column. This is the transporter-aware brain-penetration descriptor: a value near 1 indicates passive equilibration, values below 1 indicate net efflux (P-gp / BCRP), and values above 1 indicate net uptake. Distinct from the total brain-to-plasma ratio `K_p`, which is confounded by nonspecific binding in both matrices; the two relate as `K_p,uu = K_p * f_u,brain / f_u,plasma`. Use this covariate when the molecule varies from record to record (a cross-drug CNS meta-analysis or potency panel); a single-drug CNS-PBPK model should keep its partition coefficient as an `ini()` parameter in the `lkp_<tissue>` family instead.
-- **Units:** (unitless ratio)
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- enters multiplicatively on the unbound plasma concentration to give the unbound brain concentration: `C_br,ub = C_pl,ub * KPUU_BRAIN`.
-- **Source aliases:**
-  - `Kpuu`, `K_p,uu` -- Panday 2025 Table S2 (`Kpuu` and `unbound brain to plasma ratio` parameter rows) and Supplemental Methods Eq. S2b; same orientation as the canonical.
-  - `Kp,uu,brain`, `Kpuu_brain` -- expanded spellings common in CNS drug-discovery literature.
-- **Example models:** `Panday_2025_sert_tremor_cavg_mbma.R` and `Panday_2025_sert_tremor_cmax_mbma.R` (unitless; per-drug values across 20 SERT inhibitors, 0.04 for milnacipran to 2.3 for tramadol and tapentadol, mostly rodent-derived, driving Eq. S2b; founding example).
-- **Notes:** Values in the CNS literature are predominantly rodent-derived even when the clinical endpoint being modelled is human -- record the source species in `covariateData[[KPUU_BRAIN]]$notes`, because the cross-species assumption is usually the dominant uncertainty in the predicted brain exposure. Where a source reports only `K_p` and a brain fraction unbound, convert with `K_p * f_u,brain / f_u,plasma` and say so in the notes; where the brain fraction unbound was measured in brain homogenate, check whether the source applied a lysosomal pH-partition correction (Friden et al.) before the conversion, since an uncorrected homogenate value overpredicts `f_u,brain` for basic drugs. If a future extraction needs the analogous descriptor for another barrier-protected tissue, prefer a sibling canonical in the same shape (`KPUU_CSF`, `KPUU_TUMOR`) rather than overloading this entry.
-
-### IC50_SERT (**canonical for in vitro serotonin-reuptake-transporter inhibitory potency supplied as a data column**)
-- **Description:** Half-maximal inhibitory concentration of the drug against the serotonin reuptake transporter (SERT, `SLC6A4`), measured in vitro and expressed relative to the FREE (unbound) drug concentration in the assay. Supplied as a per-record data column so that one model can span many SERT inhibitors. Used as the denominator of a target-coverage metric, `coverage = C_unbound_at_site / IC50_SERT`.
-- **Units:** nM (document per model via `covariateData[[IC50_SERT]]$units`; uM is also common in the source literature and must be converted).
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- enters as the denominator of a target-coverage ratio.
-- **Source aliases:**
-  - `SERT IC50`, `IC50_SERT`, `SERT_IC50` -- Panday 2025 Table S2 parameter rows and Supplemental Methods Eqs. S7 and S8; same orientation as the canonical.
-  - `SERT K_D` / `SERT kD` -- a DIFFERENT quantity (equilibrium binding affinity rather than functional uptake-inhibition potency). Panday 2025 ran a parallel analysis substituting `K_D` for `IC50` in the same equation; because that substitution changes only the supplied value and the accompanying fitted parameter set, it is recorded here as an alias with a mandatory note rather than as a separate canonical. State explicitly in `covariateData[[IC50_SERT]]$notes` which of the two a given model's values are, because the fitted EC50 differs substantially between them.
-- **Example models:** `Panday_2025_sert_tremor_cavg_mbma.R` and `Panday_2025_sert_tremor_cmax_mbma.R` (nM; free-corrected geometric-mean potencies across 20 SERT inhibitors, 0.34 nM for paroxetine to about 3220 nM for tapentadol and tramadol; founding example).
-- **Notes:** Values must be on a free-drug basis before use. Where the source assay contained serum or albumin, the measured potency is a total-drug potency and has to be corrected to the unbound assay concentration first; where the assay was protein-free, the measured value is already the free potency. Record which applies per model. Where several literature values exist for one drug, the established convention (Panday 2025) is to use their geometric mean. Proposed as the founding member of an `IC50_<TARGET>` family so that future off-target-safety or target-coverage extractions can register siblings (`IC50_HERG`, `IC50_NET`, `IC50_DAT`) without a fresh naming decision; `<TARGET>` is the upper-case common abbreviation of the molecular target.
-
-### CMAX (**canonical for maximum drug plasma concentration over a dosing interval supplied as a data column**)
-- **Description:** Maximum plasma concentration of the modelled drug over a dosing interval, supplied as a data column. The peak-exposure counterpart of `CAV`: use `CMAX` when the model's exposure-response driver is the peak rather than the interval average. As with `CAV`, the value is an input the user supplies -- typically an individual empirical-Bayes prediction from a previously published population PK model, or a study-arm-level summary in a model-based meta-analysis -- not a quantity the model derives.
-- **Units:** ng/mL (document per model via `covariateData[[CMAX]]$units`; mg/L, ug/mL and nM are all common in source papers).
+### AUC_OLM (**canonical for per-subject steady-state AUC of olmesartan**)
+- **Description:** Per-subject steady-state area under the olmesartan plasma concentration-time curve over the 24 h dosing interval, AUCss, computed as Dose / (CL/F) from the individual post hoc Bayesian clearance estimate of an olmesartan population PK model.
+- **Units:** `ng*h/mL` (document per-model via `covariateData[[AUC_OLM]]$units` if a different exposure unit is reported).
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- used in Emax/EC50 (e.g. `Emax * CMAX / (EC50 + CMAX)`) or power drug-effect terms, or as the exposure input to a mechanistic target-coverage chain. Set to 0 for placebo periods.
+- **Reference category:** n/a -- enters via a saturable Emax form `emax_om * AUC_OLM / (AUC_OLM + eauc50_om)` on the blood-pressure drug-effect term. Set `AUC_OLM = 0` to drop olmesartan from the combination (the olmesartan mono-effect and every interaction term containing it vanish). Reference values observed: EAUC50 = 1850 ng*h/mL (diastolic) and 1590 ng*h/mL (systolic) in Song 2013 Table 3.
 - **Source aliases:**
-  - `Cmax`, `CMAX`, `Cmax,ss` -- standard spellings.
-  - `plasma steady state total Cmax`, `steady state plasma total Cmax`, `plasma steady state cmax` -- Panday 2025 Table S2 parameter-row labels; same orientation as the canonical, in ng/mL, on a TOTAL (bound + unbound) basis.
-- **Example models:** `Panday_2025_sert_tremor_cmax_mbma.R` (ng/mL, study-arm-level steady-state total Cmax across 20 SERT inhibitors; converted to a molar unbound brain concentration via Eqs. S1 and S2b and then to a SERT target coverage driving an Emax model of tremor incidence).
-- **Notes:** Specific scope for the same reason as `CAV` -- the value is intrinsically tied to the modelled drug, with no shared meaning across drugs or studies. Each model's `covariateData[[CMAX]]$notes` must state (a) whether the value is a TOTAL or an UNBOUND concentration, (b) whether it is a single-dose or steady-state Cmax, and (c) how it was derived (empirical-Bayes from a named upstream popPK model, a study-arm summary, or a label-reported value). Distinct from `CMAX_M1`, which is specifically the month-1 maximum concentration in its founding model. Where a model needs both the peak and the interval average, use `CMAX` and `CAV` together rather than inventing a combined column.
+  - `AUCOM` / `AUC_OM` -- Song 2013 Results notation for the olmesartan steady-state exposure entering the exposure-response models.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (saturable Emax olmesartan arm of the CS-8635 triple-combination blood-pressure exposure-response models -- founding examples).
+- **Notes:** Specific scope because the column meaning is tied to olmesartan and to the q24h steady-state AUC convention. Member of the `AUC_<DRUG>` family (`AUC_CARBO`, `AUC_GEM`, `AUC_GCV`, `AUC_LCM`, `AUC_CBZ`, `AUC_PAZO`, `AUC_RTV`, `AUC_EMPA`, `AUC_IBRU`, `AUC_VERUB`, ...). The upstream model that generates this column is `modellib('Song_2013_olmesartan')`; because Song 2013 defines AUCss as Dose / (CL/F) exactly, the column can be computed in closed form from that model's clearance without integrating a profile. A future model using a different olmesartan exposure metric (Cmax, Ctrough, a q12h-interval AUC) should register a parallel canonical rather than overload `AUC_OLM`.
+
+### AUC_AML (**canonical for per-subject steady-state AUC of amlodipine**)
+- **Description:** Per-subject steady-state area under the amlodipine plasma concentration-time curve over the 24 h dosing interval, AUCss, computed as Dose / (CL/F) from the individual post hoc Bayesian clearance estimate of an amlodipine population PK model.
+- **Units:** `ng*h/mL` (document per-model via `covariateData[[AUC_AML]]$units` if a different exposure unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via a saturable Emax form `emax_aml * AUC_AML / (AUC_AML + eauc50_aml)` on the blood-pressure drug-effect term. Set `AUC_AML = 0` to drop amlodipine from the combination. Reference values observed: EAUC50 = 453 ng*h/mL (diastolic) and 309 ng*h/mL (systolic) in Song 2013 Table 3.
+- **Source aliases:**
+  - `AUCAML` -- Song 2013 Results notation for the amlodipine steady-state exposure entering the exposure-response models.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (saturable Emax amlodipine arm of the CS-8635 triple-combination blood-pressure exposure-response models -- founding examples).
+- **Notes:** Specific scope because the column meaning is tied to amlodipine and to the q24h steady-state AUC convention. Member of the `AUC_<DRUG>` family. The upstream model that generates this column is `modellib('Song_2013_amlodipine')`. Song 2013 found a *saturable* amlodipine exposure-response relationship where the same group's earlier work had used a linear one, attributing the change to the enrichment of the dataset with the CS8635-A-U301 (TRINITY) study -- so a model that reuses this column with a linear slope is describing a different, earlier analysis and should say so in its notes.
+
+### AUC_HCTZ (**canonical for per-subject steady-state AUC of hydrochlorothiazide**)
+- **Description:** Per-subject steady-state area under the hydrochlorothiazide plasma concentration-time curve over the 24 h dosing interval, AUCss, computed as Dose / (CL/F) from the individual post hoc Bayesian clearance estimate of a hydrochlorothiazide population PK model.
+- **Units:** `ng*h/mL` (document per-model via `covariateData[[AUC_HCTZ]]$units` if a different exposure unit is reported).
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via a LINEAR slope form `slope_hctz * AUC_HCTZ / 1000` on the blood-pressure drug-effect term, the slope being reported per 1000 ng*h/mL. Set `AUC_HCTZ = 0` to drop hydrochlorothiazide from the combination. Reference values observed: slopes -3.3 mmHg (diastolic) and -9.38 mmHg (systolic) per 1000 ng*h/mL in Song 2013 Table 3.
+- **Source aliases:**
+  - `AUCHCTZ` -- Song 2013 Results notation for the hydrochlorothiazide steady-state exposure entering the exposure-response models.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (linear hydrochlorothiazide arm of the CS-8635 triple-combination blood-pressure exposure-response models -- founding examples).
+- **Notes:** Specific scope because the column meaning is tied to hydrochlorothiazide and to the q24h steady-state AUC convention. Member of the `AUC_<DRUG>` family. The upstream model that generates this column is `modellib('Song_2013_hydrochlorothiazide')`. Unlike its olmesartan and amlodipine siblings the hydrochlorothiazide arm is unsaturated over the studied 12.5-25 mg dose range, so the per-1000-unit slope convention matters: supplying the raw AUC to a model expecting the divided form overstates the diuretic effect by three orders of magnitude.
+
+### STUDY_CS8635_A_U301 (**canonical for CS8635-A-U301 (TRINITY) study indicator**)
+- **Description:** 1 = subject enrolled in CS8635-A-U301 (TRINITY), the pivotal phase III factorial trial of the olmesartan / amlodipine / hydrochlorothiazide triple fixed-dose combination CS-8635, 0 = another study in the pooled exposure-response analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the other two pooled phase III studies, CS8663-A-U301 and 866-318). The three study indicators partition the pooled dataset and sum to 1 for every subject.
+- **Source aliases:**
+  - `Study CS8635-A-U301` -- Song 2013 Table 3 / Tables S6 and S7 placebo-effect row label.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (selects the study-specific placebo effect, -3.80 mmHg diastolic / -4.20 mmHg systolic; in the systolic model it also gates the Hispanic-ethnicity effect on the placebo term).
+- **Notes:** Member of the `STUDY_<id>` family. Song 2013 estimated the placebo effect as a separate numerical value per contributing study rather than as a single pooled intercept, so all three indicators must be supplied together; a dataset that leaves all three at 0 produces a zero placebo effect, which is not a state the model was fitted to.
+
+### STUDY_CS8663_A_U301 (**canonical for CS8663-A-U301 (COACH) study indicator**)
+- **Description:** 1 = subject enrolled in CS8663-A-U301 (COACH), the pivotal phase III factorial trial of the olmesartan / amlodipine dual fixed-dose combination, 0 = another study in the pooled exposure-response analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (CS8635-A-U301 and 866-318).
+- **Source aliases:**
+  - `Study CS8663-A-U301` -- Song 2013 Table 3 / Tables S6 and S7 placebo-effect row label.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R` (selects the -3.57 mmHg placebo effect and gates the Black-race effect on the placebo term, which Song 2013 retained only within this study), `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (selects the -3.45 mmHg placebo effect).
+- **Notes:** Member of the `STUDY_<id>` family. Note the study-gated covariate: the Black-race effect on the diastolic placebo response (-0.607) applies only to subjects in this study, so the indicator does double duty as a placebo selector and as an interaction gate.
+
+### STUDY_866_318 (**canonical for 866-318 study indicator**)
+- **Description:** 1 = subject enrolled in 866-318 (written SE866-318 in the parameter tables), the phase III placebo-controlled factorial trial of the olmesartan / hydrochlorothiazide dual fixed-dose combination, 0 = another study in the pooled exposure-response analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (CS8635-A-U301 and CS8663-A-U301).
+- **Source aliases:**
+  - `Study SE866-318` -- Song 2013 Table 3 / Tables S6 and S7 placebo-effect row label.
+  - `866-318` -- the form used in the Song 2013 main text and in Table 2.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (selects the study-specific placebo effect, -6.08 mmHg diastolic / -5.26 mmHg systolic -- markedly larger than in the other two studies).
+- **Notes:** Member of the `STUDY_<id>` family. The leading digit in the canonical name is preceded by `STUDY_` so the identifier remains a valid R name; the source study code has no alphabetic prefix.

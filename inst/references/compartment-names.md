@@ -4737,3 +4737,17 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 - **Source aliases:** `CT3`, `T3`, `tumor mass 3`, `tumor core`.
 - **Example models:** `Wickramasinghe_2025_abemaciclib_cns_pbpk.R` (founding example; interstitial pH 6.2, paravascular bulk flow reduced 50 percent, volume 0.0035 L).
 - **Notes:** See `tumor_rim` for how the `tumor_<region>` namespace differs from `tumor`, `tumor_size` / `TS` and `is_tumor` / `int_tumor`.
+
+### ddbp (**canonical change-from-baseline diastolic blood pressure PD output**)
+- **Type:** compartment
+- **Role:** Change from baseline in seated trough diastolic blood pressure (mmHg), used as the observation variable of a direct (algebraic, non-ODE) steady-state exposure-response model. Negative values are blood-pressure lowering; add the subject's baseline `DBP` to recover an absolute pressure. This is the change-from-baseline sibling of the absolute-pressure turnover state `dbp`: use `dbp` when the model integrates a blood-pressure turnover ODE and observes the pressure itself, and `ddbp` when the model predicts the treatment-induced delta directly, which is what a trough-BP exposure-response analysis reports.
+- **Source aliases:** `dSeDBP`, `dDBP`, `change from baseline in SeDBP`.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R` (founding example; placebo plus three AUCss-driven monotherapy effects plus pairwise and three-way interaction terms, with an additive inter-subject random effect and additive residual error, both in mmHg).
+- **Notes:** Registered alongside the Song 2013 CS-8635 extraction. Not an ODE state -- the model that founded it has no `d/dt()` at all -- so a model using `ddbp` needs no `compartmentData` entry for it. Registered here rather than left unregistered because `checkModelConventions()` resolves single-output observation variables against this register. Systolic sibling: `dsbp`. Distinct from the covariate `DBP_REL`, which carries a drug-induced *relative* (fractional) change rather than an absolute mmHg delta.
+
+### dsbp (**canonical change-from-baseline systolic blood pressure PD output**)
+- **Type:** compartment
+- **Role:** Change from baseline in seated trough systolic blood pressure (mmHg), used as the observation variable of a direct (algebraic, non-ODE) steady-state exposure-response model; the systolic sibling of `ddbp`. Negative values are blood-pressure lowering; add the subject's baseline `SBP` to recover an absolute pressure.
+- **Source aliases:** `dSeSBP`, `dSBP`, `change from baseline in SeSBP`.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (founding example).
+- **Notes:** Registered alongside the Song 2013 CS-8635 extraction. Not an ODE state, so no `compartmentData` entry is required. As with the `dbp` / `sbp` turnover pair, systolic and diastolic responses are fitted as separate models with different retained covariate sets, so keep them as two outputs in two files rather than collapsing them into one multi-output model. Diastolic sibling: `ddbp`.

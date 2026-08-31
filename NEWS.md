@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Siccardi 2012 efavirenz ([doi:10.1038/clpt.2012.61](https://doi.org/10.1038/clpt.2012.61)) -- European HIV-1-positive adults and healthy volunteers.
+- Add Song 2013 olmesartan / amlodipine / hydrochlorothiazide (CS-8635) ([doi:10.1002/cpdd.17](https://doi.org/10.1002/cpdd.17)) -- adults with hypertension.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
