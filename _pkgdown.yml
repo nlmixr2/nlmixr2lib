@@ -34,6 +34,26 @@ navbar:
         href: articles/Abuqayyas_2012_8C2.html
       - text: "8Omethylretusin rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
+      - text: "ABT 102 (Othman 2013)"
+        href: articles/Othman_2013_ABT_102.html
+      - text: "ADC human qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC invitro qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC mouse qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "APTM aucmic (Yang 2026)"
+        href: articles/Yang_2026_APTM.html
+      - text: "APTM cmaxmic (Yang 2026)"
+        href: articles/Yang_2026_APTM.html
+      - text: "APTM timekill (Yang 2026)"
+        href: articles/Yang_2026_APTM.html
+      - text: "ASP8232 (Snelder 2020)"
+        href: articles/Snelder_2020_ASP8232.html
+      - text: "AT9283 (Duong 2017)"
+        href: articles/Duong_2017_AT9283.html
+      - text: "AZD6088 rat (Viberg 2012)"
+        href: articles/Viberg_2012_AZD6088_rat.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
       - text: "Abacavir (Chandasana 2024b)"
@@ -5566,7 +5586,7 @@ articles:
   - articles/Yang_2024_naloxone_opioid_reversal
   - articles/Yang_2024_zastaprazan
   - articles/Yang_2025_imatinib_external_evaluation
-  - articles/Yang_2025_matrine_pig_pbpk
+  - articles/Yang_2026_APTM
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2025_flurbiprofen
