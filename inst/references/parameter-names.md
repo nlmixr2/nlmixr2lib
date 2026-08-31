@@ -257,7 +257,7 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `TCLchange` -- Park 2025.
   - `tNab` -- Yoneyama 2017 (an onset time gating a covariate effect on CL/F, the same MTIME construction).
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
-- **Notes:** For the piecewise-constant form `cl <- cl_early * (t < tclchange) + cl_late * (t >= tclchange)`, which is a switch between two mutually exclusive arms and NOT the additive decomposition that `lcl_ss` / `lcl_time` describe. The naming of that form is deliberately asymmetric: **the early arm is carried by the plain canonical `lcl`**, so there is no `lcl_early`, and a covariate acting before the breakpoint takes the ordinary two-token shape (`e_sexf_cl`). Only the post-breakpoint arm needs its own name (`lcl_late`). In NONMEM this structure is written with MTIME. Use `lcl_hill_t50` instead when the time-course is a smooth sigmoid rather than a step.
+- **Notes:** For the piecewise-constant form `cl <- cl_early * (t < tclchange) + cl_late * (t >= tclchange)`, which is a switch between two mutually exclusive arms and NOT the additive decomposition that `lcl_ss` / `lcl_time` describe. The naming of that form is deliberately asymmetric: **the early arm is carried by the plain canonical `lcl`**, so there is no `lcl_early`, and a covariate acting before the breakpoint takes the ordinary two-token shape (`e_sexf_cl`). Only the post-breakpoint arm needs its own name (`lcl_late`). In NONMEM this structure is written with MTIME. Use `lcl_t50` instead when the time-course is a smooth sigmoid rather than a step.
 
 ### lcl_late (**canonical log-transformed post-breakpoint clearance arm**)
 - **Type:** log-transformed-pk

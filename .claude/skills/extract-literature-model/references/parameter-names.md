@@ -692,16 +692,17 @@ clearance expression references `t` / `time` without one of these.
 
 | Form | Stem | Roles |
 |---|---|---|
-| Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_hill_` | `cl_hill_max`, `cl_hill_t50`, `cl_hill_gamma` |
+| Sigmoidal in time: `cl <- cl_base * exp(max * t^g / (t50^g + t^g))` | `cl_time_` | `cl_time_max`, `cl_t50`, `cl_time_hill` |
 | Exponential decay to a constant: `cl <- cl_exp_inf + cl_exp_component * exp(-k * t)` | `cl_exp_` | `cl_exp_inf`, `cl_exp_component`, `cl_exp_kdes` |
 
-Prefix `l` for the log scale (`lcl_hill_t50`), `eta` for the IIV partner
-(`etacl_hill_max`), `e_<cov>_` for a covariate effect
+Prefix `l` for the log scale (`lcl_t50`), `eta` for the IIV partner
+(`etacl_time_max`), `e_<cov>_` for a covariate effect
 (`e_nhl_cl_exp_kdes`).
 
-Do **not** reuse `emax`, `imax`, `gamma`, `hill` or `t50` for clearance
+Do **not** use `emax`, `imax`, `gamma`, `hill` or `t50` BARE for clearance
 time-dependence: all of them are also standard PD parameter names, and several
-models carry both a PD `emax` and a clearance one.
+models carry both a PD `emax` and a clearance one. The `cl_` prefix is what
+keeps `cl_t50` and `cl_time_hill` distinct from their PD namesakes.
 
 **The symbol the ODE consumes is the total clearance.** Name components so they
 cannot be mistaken for it -- `cl_exp_component`, not `cl_time` or `cl_t_now`. A
@@ -709,4 +710,4 @@ decaying component can fall by dozens of orders of magnitude over a treatment
 course, which is meaningless in isolation but looks like a clearance value.
 
 Periodic (diurnal / circadian) variation is a different structure and keeps its
-own names; do not fold it into `cl_hill_` or `cl_exp_`.
+own names; do not fold it into `cl_time_` or `cl_exp_`.

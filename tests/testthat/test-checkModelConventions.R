@@ -1334,7 +1334,7 @@ test_that("no model in the database still uses a pre-#481 time-varying clearance
       rhs <- sub("#.*$", "", sub("^[^<]*<-", "", ln))
       rhs <- gsub('"[^"]*"', "", rhs)
       if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) next
-      if (grepl("cl_time_max|cl_t50|cl_time_hill|cl_exp_", rhs)) next
+      if (grepl(nlmixr2lib:::.timeVaryingClearanceAcceptPattern, rhs)) next
       offenders <- c(offenders, basename(f))
     }
   }

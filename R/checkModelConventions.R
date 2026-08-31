@@ -1349,7 +1349,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # (step / NONMEM MTIME) form, which is the only one of the three whose early arm
 # keeps the plain `cl` name -- so there is no `cl_*` stem on the left of its
 # switch and the breakpoint is what identifies the structure.
-.timeVaryingClearanceAcceptPattern <- "cl_hill_|cl_exp_|tclchange"
+.timeVaryingClearanceAcceptPattern <- "cl_time_max|cl_t50|cl_time_hill|cl_exp_|tclchange"
 
 # The `ini({})` block declares parameters and their labels; only `model({})`
 # contains the equations. Scanning the whole function makes label prose such as
@@ -1374,7 +1374,7 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # is prose about the parameter, not a reference to the time variable.
     rhs <- gsub("\"[^\"]*\"", "", rhs)
     if (!grepl(.bareTimePattern, rhs, perl = TRUE)) next
-    if (grepl("cl_time_max|cl_t50|cl_time_hill|cl_exp_", rhs)) next
+    if (grepl(.timeVaryingClearanceAcceptPattern, rhs)) next
     nm <- trimws(sub("\\s*<-.*$", "", ln))
     issues <- rbind(issues, .issue(
       "time_varying_clearance", "warning", nm,
