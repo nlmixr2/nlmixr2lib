@@ -3518,6 +3518,12 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tilmicosin (Chen 2023)"
         href: articles/Chen_2023_tilmicosin.html
+      - text: "Tilmicosin pbpk (Sun 2026)"
+        href: articles/Sun_2026_tilmicosin.html
+      - text: "Tilmicosin pkpd pif (Sun 2026)"
+        href: articles/Sun_2026_tilmicosin.html
+      - text: "Tilmicosin pkpd plasma (Sun 2026)"
+        href: articles/Sun_2026_tilmicosin.html
       - text: "Tipifarnib (PerezRuixo 2006)"
         href: articles/PerezRuixo_2006_tipifarnib.html
       - text: "Tirzepatide (Chigutsa 2025)"
@@ -5290,7 +5296,7 @@ articles:
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
   - articles/Sun_2023_maribavir
-  - articles/Sun_2025_paclitaxel
+  - articles/Sun_2026_tilmicosin
   - articles/Suri_2018_brentuximab
   - articles/Suyagh_2011_metronidazole
   - articles/Suyagh_2012_canrenone
