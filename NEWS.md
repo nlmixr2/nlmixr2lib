@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Park 2025 efineptakin alfa (rhIL-7-hyFc) ([doi:10.2147/DDDT.S564085](https://doi.org/10.2147/DDDT.S564085)) -- adults with locally advanced or metastatic solid tumours.
+- Add Zhou 2025 fruquintinib concentration-QTc ([doi:10.1002/jcph.70051](https://doi.org/10.1002/jcph.70051)) -- adults with previously treated metastatic colorectal cancer in the phase 3 FRESCO-2 ECG substudy.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
