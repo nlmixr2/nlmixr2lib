@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rini 2013 axitinib ([doi:10.1002/jcph.73](https://doi.org/10.1002/jcph.73)) -- pooled healthy volunteers and patients with metastatic renal cell carcinoma or other solid tumours.
+- Add Siccardi 2012 efavirenz ([doi:10.1038/clpt.2012.61](https://doi.org/10.1038/clpt.2012.61)) -- European HIV-1-positive adults and healthy volunteers.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

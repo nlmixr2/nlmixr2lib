@@ -1054,6 +1054,8 @@ navbar:
         href: articles/Salem_2014_efavirenz.html
       - text: "Efavirenz (Sanchez 2011)"
         href: articles/Sanchez_2011_efavirenz.html
+      - text: "Efavirenz (Siccardi 2012)"
+        href: articles/Siccardi_2012_efavirenz.html
       - text: "Efavirenz (Vucicevic 2025)"
         href: articles/Vucicevic_2025_efavirenz.html
       - text: "Eflornithine rat (Jansson 2008)"
@@ -5100,6 +5102,7 @@ articles:
   - articles/Shoji_2017_fosdagrocorat_oc
   - articles/Shoji_2017_fosdagrocorat_p1np
   - articles/Shu_2024_posaconazole
+  - articles/Siccardi_2012_efavirenz
   - articles/Sidhu_1998_artemisinin
   - articles/Siebinga_2023_hadotatate
   - articles/Siebinga_2023_lu177psma617
