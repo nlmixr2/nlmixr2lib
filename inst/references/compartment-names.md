@@ -3508,11 +3508,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Jonsson_2015_edoxaban.R` (doi:10.1002/jcph.541; joint edoxaban + M4 renal-impairment popPK with a urine compartment), `Gosselin_2015_motesanib.R` (doi:10.1002/cpdd.196; sequential motesanib + M4 popPK in advanced solid tumors, two-compartment parent driving a one-compartment metabolite).
 - **Notes:** Fourth member of the generic numbered-metabolite suffix family alongside `m1`, `m2` and `m3`, following the same convention of lowercasing a source paper's `M<n>` designation. Because `M<n>` designations are per-programme and carry no cross-paper chemical meaning, this token is shared by unrelated metabolites of unrelated drugs and the specific entity is recorded per model, in the model file's `description` and `compartmentData`, not in the suffix. Distinct from `m3g` / `m6g` (morphine glucuronides) and from `m2` / `m3` (bedaquiline demethylation products) -- the suffix matcher compares with `endsWith(name, "_m4")` so there is no collision. Do not confuse with `dm4` / `medm4`, which are the maytansinoid ADC payload suffixes.
 
-### m8 (**canonical hydroxy-tert-butylamide (M8) suffix**)
+### m8 (**canonical paper-named M8 metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** Hydroxy-tert-butylamide (M8) active metabolite of nelfinavir; formed by CYP2C19-mediated hydroxylation of nelfinavir and eliminated by CYP3A4. Equipotent to the parent drug against HIV-1 protease.
+- **Role:** Generic M8 metabolite suffix used by parent + metabolite popPK extractions in which the source paper names the metabolite simply "M8". Each model file's `description` / `reference` text identifies the specific compound; the `m8` suffix is the shared notational token, disambiguated by drug context in the same way as `m1`, `m2`, `m3` and `m4`. Drug contexts registered so far: in `Hirt_2006_nelfinavir.R`, M8 is hydroxy-tert-butylamide, the active metabolite of nelfinavir formed by CYP2C19-mediated hydroxylation and eliminated by CYP3A4, equipotent to the parent against HIV-1 protease; in `Niu_2017_veliparib.R`, M8 is the primary active metabolite of the PARP inhibitor veliparib (ABT-888), formed principally by CYP2D6 and reported to be roughly 5-fold less potent than the parent.
 - **Source aliases:** none.
-- **Example models:** `Hirt_2006_nelfinavir.R`.
+- **Example models:** `Hirt_2006_nelfinavir.R`, `Niu_2017_veliparib.R`.
+- **Notes:** Generalised from the nelfinavir-specific entry to the drug-context-disambiguated form alongside the Niu 2017 veliparib extraction, following the precedent set by `m3` (bedaquiline / sudapyridine). A nelfinavir `m8` and a veliparib `m8` never co-occur in one model file, so the shared token carries no ambiguity within a model.
 
 ### m27 (**canonical elinzanetant M27 metabolite suffix**)
 - **Type:** metabolite-suffix

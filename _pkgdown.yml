@@ -3616,6 +3616,8 @@ navbar:
         href: articles/Rosario_2015_vedolizumab.html
       - text: "Vedolizumab (Waterhouse 2024)"
         href: articles/Waterhouse_2024_vedolizumab.html
+      - text: "Veliparib (Niu 2017)"
+        href: articles/Niu_2017_veliparib.html
       - text: "Venetoclax apoptosis qsp (Derippe 2024)"
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
       - text: "Venetoclax mouse (Derippe 2024)"
@@ -4855,6 +4857,7 @@ articles:
   - articles/Nielsen_2015_vigabatrin
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
+  - articles/Niu_2017_veliparib
   - articles/Noe_1996_factor_viii
   - articles/Novakovic_2017_cladribine
   - articles/ObrinkHansen_2015_piperacillin
