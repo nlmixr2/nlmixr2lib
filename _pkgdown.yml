@@ -3174,6 +3174,8 @@ navbar:
         href: articles/Wen_2025_pulmonary_pbpk.html
       - text: "Salmeterol (Rosenborg 2025)"
         href: articles/Rosenborg_2025_fluticasone_salmeterol.html
+      - text: "Salmeterol (Thoueille 2026)"
+        href: articles/Thoueille_2026_salmeterol.html
       - text: "Sapropterin (Feillet 2008)"
         href: articles/Feillet_2008_sapropterin.html
       - text: "Sapropterin (Muntau 2017)"
@@ -5354,6 +5356,7 @@ articles:
   - articles/Thorsted_2016_somatropin_rat
   - articles/Thoueille_2023_lopinavir
   - articles/Thoueille_2023_tenofovir_ckd
+  - articles/Thoueille_2026_salmeterol
   - articles/Thuo_2011_ciprofloxacin
   - articles/Tian_2025_pirtobrutinib
   - articles/Tikiso_2021_abacavir

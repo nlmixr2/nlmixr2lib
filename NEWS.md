@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tsuchitani 2026 apixaban ([doi:10.1002/psp4.70163](https://doi.org/10.1002/psp4.70163)) - healthy adults; whole-body PBPK with enterohepatic circulation.
+- Add Thoueille 2026 inhaled salmeterol and alpha-hydroxysalmeterol ([doi:10.1002/psp4.70187](https://doi.org/10.1002/psp4.70187)) -- healthy adults, chronic asthmatics and athletes/endurance-trained individuals.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
