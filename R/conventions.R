@@ -158,9 +158,11 @@
   # PK-PD models. Subpopulations are named by spelled-out resistance
   # phenotype `bact_<phenotype>` where <phenotype> is one of
   # `susceptible` / `intermediate` / `resistant`. For combination-therapy
-  # (two-drug) models the joint per-drug status is a spelled-out compound
-  # `bact_<drug1pheno>_<drug2pheno>` (drug order = the model's drug
-  # order). An optional trailing digit indexes the Bulitta / Wicha
+  # (N-drug) models the joint per-drug status is a spelled-out compound
+  # `bact_<drug1pheno>_<drug2pheno>[_<drug3pheno>...]` (drug order = the
+  # model's drug order); the number of phenotype tokens equals the number
+  # of drugs, so the pattern is open-ended rather than capped at two. An
+  # optional trailing digit indexes the Bulitta / Wicha
   # two-state bacterial life cycle (1 = vegetative / resting, 2 =
   # replicating). The phenotype words are required to be spelled out in
   # full (no `s`/`i`/`r` abbreviations) so the state names are
@@ -169,9 +171,11 @@
   # Rees_2018_meropenem_ciprofloxacin and
   # Landersdorfer_2018_imipenem_tobramycin (two-drug, converging to
   # bact_susceptible_susceptible1/2, bact_resistant_intermediate1/2,
-  # bact_intermediate_resistant1/2). The scheme is documented in
+  # bact_intermediate_resistant1/2), and
+  # Mahadevan_2026_polymyxinB_meropenem_fosfomycin_* (three-drug, e.g.
+  # bact_intermediate_resistant_resistant1/2). The scheme is documented in
   # inst/references/compartment-names.md.
-  bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$",
+  bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))*[0-9]*$",
   # Intracellular drug / active-metabolite pools inside red blood cells,
   # carried as ODE states in concentration units (e.g. umol/L). Named
   # `rbc_<analyte>` where <analyte> is the measured species inside the

@@ -2782,6 +2782,18 @@ navbar:
         href: articles/Lacroix_2025_polymyxinB_mucin.html
       - text: "PolymyxinB AB122D12 (Lacroix 2025)"
         href: articles/Lacroix_2025_polymyxinB_mucin.html
+      - text: "PolymyxinB meropenem fosfomycin BRKP28 (Mahadevan 2026)"
+        href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "PolymyxinB meropenem fosfomycin BRKP61 (Mahadevan 2026)"
+        href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "PolymyxinB meropenem fosfomycin BRKP67 (Mahadevan 2026)"
+        href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "PolymyxinB meropenem fosfomycin BRKP76 (Mahadevan 2026)"
+        href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "PolymyxinB meropenem fosfomycin KP00161 (Mahadevan 2026)"
+        href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
+      - text: "PolymyxinB meropenem fosfomycin KP00521 (Mahadevan 2026)"
+        href: articles/Mahadevan_2026_polymyxinB_combination_CRKP.html
       - text: "Ponezumab (Nicholas 2009)"
         href: articles/Nicholas_2009_ponezumab.html
       - text: "Posaconazole (Dvorackova 2023)"
@@ -4869,6 +4881,7 @@ articles:
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Macpherson_2015_rosuvastatin
+  - articles/Mahadevan_2026_polymyxinB_combination_CRKP
   - articles/Maizaud_2025_missed_mycophenolate_doses
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
   - articles/Majid_2024_lenvatinib
