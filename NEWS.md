@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Claret 2014 motesanib tumor size and overall survival ([doi:10.1038/clpt.2014.11](https://doi.org/10.1038/clpt.2014.11)) -- adults with advanced nonsquamous non-small cell lung cancer in the MONET1 study.
+- Add Claret 2014 week-8 disease control rate OS and PFS models ([doi:10.1002/jcph.191](https://doi.org/10.1002/jcph.191)) -- Western and Chinese adults with first-line non-small cell lung cancer.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
