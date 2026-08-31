@@ -2196,6 +2196,8 @@ navbar:
         href: articles/Xie_2025_midazolam.html
       - text: "Midazolam children adolescents (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
+      - text: "Midazolam ecmo (Kim 2026)"
+        href: articles/Kim_2026_midazolam.html
       - text: "Midazolam infants adults (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam monkey pbpk (Yau 2023)"
@@ -2206,6 +2208,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Midazolam pbpk (Han 2025)"
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
+      - text: "Midazolam postecmo (Kim 2026)"
+        href: articles/Kim_2026_midazolam.html
       - text: "Midazolam rat pbpk (Yau 2023)"
         href: articles/Yau_2023_middle_out_pbpk_translation.html
       - text: "Mig1 exp1 (Almquist 2015)"
@@ -4714,6 +4718,7 @@ articles:
   - articles/Kim_2024_meropenem
   - articles/Kim_2025_evogliptin
   - articles/Kim_2025_infliximab
+  - articles/Kim_2026_midazolam
   - articles/Kimura_2023_glucarpidase
   - articles/Kir_2025_atenolol_metoprolol_malnutrition
   - articles/Kiriyama_2024_nifedipine_captopril_rat
