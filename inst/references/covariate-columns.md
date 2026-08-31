@@ -2561,6 +2561,17 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Notes:** The mass-scale sibling of `DOSE_VPA_MGKGD` (same drug, same self-daily-dose concept, per-patient rather than per-kilogram). Both are needed because Zhang 2023 uses the per-kilogram scale in its Eq. 7 simple exponent model and the per-patient scale in its Eq. 5 dose-dependent maximum effect model -- do not merge them or convert one into the other inside `model()`, since the reference values (25 mg/kg/d and 37.4 mg/d respectively) are not interconvertible without a weight. The scale for Eq. 5 is an operator-ratified reading (sidecar `oare_PMC10587682` q2): Eq. 5's text defines `DD` in mg/kg/day and Ding 2015 tabulates DD50 = 37.4 against a mg/kg/day daily dose, but only the mg/day reading reproduces Zhang's own reported clearance (0.307 L/h against a base-model 0.311 L/h) and its near-zero MDPE; the mg/kg/day reading gives 0.153 L/h and a typical concentration roughly 2.7-fold the observed median. The conflicting evidence -- Supplementary Figure S5A favours mg/kg/day -- is recorded in that model's vignette Errata. Never name a dose covariate column bare `DOSE`: `rxode2::etTrans()` consumes a column of that name (any casing) before `model()` sees it.
 - **Register a further `DOSE_<DRUG>_MGD` sibling** rather than reusing this name for another drug.
 
+### DOSE_VGB_MGD (**canonical for total daily vigabatrin dose**)
+- **Description:** Patient's total daily vigabatrin dosage (mg/day), summed across the twice-daily administrations and NOT normalised by body weight. Per-record (time-varying) covariate: dosage was titrated in every contributing study, so the column is updated as the patient escalates. Set to 0 mg/day during a baseline run-in and for placebo subjects.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters as the driver of the "normalized dosage" exposure surrogate `dosenorm = DOSE_VGB_MGD * (WT/60)^e_wt_dosenorm`, which in turn drives a quadratic drug effect `exp(aquad * (dosenorm/3000)^2 - blin * (dosenorm/3000))`. A value of 0 makes `dosenorm` 0 and the drug-effect term exactly 1.
+- **Source aliases:**
+  - `DOSE` -- used in `Nielsen_2015_vigabatrin.R` (Nielsen 2015 Equation 10e, "a patient's actual dosage (in mg)").
+- **Example models:** `Nielsen_2015_vigabatrin.R` (daily seizure-count dose-response; adult flat dosages of 1, 3 and 6 g/day and pediatric weight-banded or mg/kg dosing, pooled across five trials).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (siblings: `DOSE_VPA_MGD` for valproic acid, `DOSE_TPM_MGD` for topiramate, `DOSE_EMPA_MGD`, `DOSE_LOR_MGD`). Flat mg/day rather than per-kg because the pooled analysis carries both adult flat dosing and pediatric mg/kg dosing on a single mass scale; a future extraction that needs the per-kilogram scale should register a sibling `DOSE_VGB_MGKGD` rather than reuse this name. **Study 118 dosing-weight cap:** in the Nielsen 2015 pool, participants in Study 118 weighing more than 60 kg received their mg/kg dosage as if they weighed 60 kg. The authors corrected the analysis dataset for this before the final model run, so a simulation reproducing that study must cap the dosing weight at 60 kg when converting mg/kg to mg/day -- the cap belongs in the dataset that fills this column, not in `model()`. Distinct from the rxode2 / nlmixr2 event column `amt`, which carries the amount of an individual administration; this is a per-record covariate carrying the current daily-dose LEVEL. Never name a dose covariate column bare `DOSE`: `rxode2::etTrans()` consumes a column of that name (any casing) before `model()` sees it. Ratified canonically alongside the Nielsen 2015 vigabatrin extraction.
+
 ### DOSE_MPA_MGD (**canonical for total daily mycophenolic acid dose**)
 - **Description:** Patient's own total daily dose of mycophenolic acid (MPA), summed across the two daily administrations and NOT normalised by body weight. Expressed on a single MPA-equivalent mass scale so that enteric-coated mycophenolate sodium (EC-MPS) and mycophenolate mofetil (MMF) daily doses are directly comparable. Per-subject / per-occasion covariate; constant within a dosing interval and updated when the prescriber alters the daily dose.
 - **Units:** mg/d
@@ -11212,6 +11223,39 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
   - `SSID` in the NONMEM control stream (`SSID = 1` -> Servier -> `STUDY_FU2022_AZ = 0`; `SSID = 2` -> AstraZeneca -> `STUDY_FU2022_AZ = 1`; `SSID = 3` -> GSK external validation, excluded from the estimation dataset via `IGNORE=(SSID.EQ.3)` and encoded as `STUDY_FU2022_AZ = 0` alongside Study 1 for the packaged model).
 - **Example models:** `Fu_2022_atenolol_qsp.R` (switches six per-study typical values: BSL_HR = 79.4 (S1) vs 77.0 (S2) bpm, V0 = 9.92 (S1) vs 9.15 (S2) mL, BSL_CTRM = 3777 (S1) vs 2422 (S2) mmHg/s, Amp = 0.0931 (S1) vs 0.168 (S2), Hor_HR = 7.86 (S1) vs 19.4 (S2) h, Hor_CTR = 9.82 (S1) vs 21.8 (S2) h; Fu 2022 Table 2 final-model column).
 - **Notes:** Specific scope because the contrast is tied to the multi-site Servier/AstraZeneca beagle-dog telemetry pool used by Fu 2022 to develop the CVS-CTR systems model. Sibling of `STUDY_C2201` (Bienczak 2025 ligelizumab), `STUDY_ING111521` (Zhang 2015 dolutegravir), `STUDY_LBSL` (Zhou 2021 belimumab), `STUDY_M281_004` (Vivacity-MG nipocalimab), `STUDY_MD` (Cirincione 2017 ER exenatide multi-dose), `STUDY_PKU015` (Qi 2014 sapropterin pediatric), and `STUDY_RIV201` (Tammara 2017 rivipansel); member of the `STUDY_<name>` family of paper-specific study cohort indicators. Subject-level (time-fixed); set once from the trial identifier on each subject record. Ratified canonically alongside the Fu 2022 CVS-CTR extraction.
+
+### STUDY_118 (**canonical for Nielsen 2015 vigabatrin pediatric Study 118 cohort indicator**)
+- **Description:** 1 = subject enrolled in pediatric Study 118 (n = 125; placebo or vigabatrin 20, 60 or 100 mg/kg/day) of the Nielsen 2015 pooled vigabatrin seizure-count analysis; 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled adult studies 24 and 25).
+- **Source aliases:**
+  - `ST118` -- used in `Nielsen_2015_vigabatrin.R` (Nielsen 2015 Equations 10c and 10f preamble, "indicators equal to 1 if ith patient was from Studies 118, 192, or 221, respectively, or zero otherwise").
+- **Example models:** `Nielsen_2015_vigabatrin.R` (shifts log overdispersion by -0.671 and the asymptotic time effect by +0.120, and raises the log SD of the baseline-rate random effect by +0.586).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family of paper-specific study cohort indicators (siblings `STUDY_PKU015`, `STUDY_C2201`, `STUDY_FU2022_AZ`, `STUDY1`). Because the three pediatric studies enrolled only children and studies 24/25 only adults, `STUDY_118 + STUDY_192 + STUDY_221` doubles as the pediatric-cohort flag; the model uses its complement to gate the adults-only Box-Cox transform on the baseline-rate random effect. Study 118 is the cohort whose asymptotic time effect is *smaller* than adults' and whose AS shift moved when active-treatment data were added -- the paper flags this as unexplained. See also the Study 118 60-kg dosing-weight cap documented under `DOSE_VGB_MGD`. Ratified canonically alongside the Nielsen 2015 vigabatrin extraction.
+
+### STUDY_192 (**canonical for Nielsen 2015 vigabatrin pediatric Study 192 cohort indicator**)
+- **Description:** 1 = subject enrolled in pediatric Study 192 (n = 55; placebo or weight-banded vigabatrin 0.5-4 g/day) of the Nielsen 2015 pooled vigabatrin seizure-count analysis; 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled adult studies 24 and 25).
+- **Source aliases:**
+  - `ST192` -- used in `Nielsen_2015_vigabatrin.R` (Nielsen 2015 Equation 10c).
+- **Example models:** `Nielsen_2015_vigabatrin.R` (shifts log overdispersion by -0.940 and the asymptotic time effect by -0.584, and raises the log SD of the baseline-rate random effect by +0.886).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family; sibling of `STUDY_118` and `STUDY_221`. Study 192's placebo arm is the single group whose observed seizure rate fell outside the final model's 90% prediction interval in the paper's visual predictive check (over-predicted in both the baseline and post-baseline periods); the authors could identify no covariate or trial difference explaining it. Ratified canonically alongside the Nielsen 2015 vigabatrin extraction.
+
+### STUDY_221 (**canonical for Nielsen 2015 vigabatrin pediatric Study 221 cohort indicator**)
+- **Description:** 1 = subject enrolled in pediatric Study 221 (n = 85; placebo or weight-banded vigabatrin 0.5-4 g/day) of the Nielsen 2015 pooled vigabatrin seizure-count analysis; 0 = otherwise. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the pooled adult studies 24 and 25).
+- **Source aliases:**
+  - `ST221` -- used in `Nielsen_2015_vigabatrin.R` (Nielsen 2015 Equation 10c).
+- **Example models:** `Nielsen_2015_vigabatrin.R` (shifts log overdispersion by -1.420 and the asymptotic time effect by -0.374, and raises the log SD of the baseline-rate random effect by +0.358).
+- **Notes:** Member of the `STUDY_<id>` auto-approve family; sibling of `STUDY_118` and `STUDY_192`. Studies 192 and 221 are the two pediatric cohorts with a *larger* maximum time (placebo) effect than adults, which the paper reconciles with the Rheims meta-analysis finding that placebo responder rates are about 1.9-fold greater in children than adults. Ratified canonically alongside the Nielsen 2015 vigabatrin extraction.
 
 ### STUDY_C2201 (**canonical for Bienczak 2025 ligelizumab study C2201 cohort indicator**)
 - **Description:** 1 = subject enrolled in study C2201 (NCT02477332; Novartis Phase 2b ligelizumab dose-finding study in adult CSU patients) of the Bienczak 2025 pooled ligelizumab PopPK analysis; 0 = any other study in the pool (A2103, C2101, C2202, C2302, or C2303). Used to switch the typical CL/F magnitude in study C2201.

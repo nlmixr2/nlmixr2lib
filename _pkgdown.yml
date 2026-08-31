@@ -3574,6 +3574,8 @@ navbar:
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
       - text: "Verapamil rat (Syvanen 2011)"
         href: articles/Syvanen_2011_verapamil_rat.html
+      - text: "Vigabatrin (Nielsen 2015)"
+        href: articles/Nielsen_2015_vigabatrin.html
       - text: "Vildagliptin (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vinflunine (Schmitt 2018)"
@@ -4771,6 +4773,7 @@ articles:
   - articles/Niebecker_2015_edoxaban
   - articles/Nielsen_2007_semimechanistic_antibiotic_pd
   - articles/Nielsen_2011_antibacterial_efficacy
+  - articles/Nielsen_2015_vigabatrin
   - articles/Nikanjam_2019_siltuximab
   - articles/Niloy_2026_MTMSATrp_mouse
   - articles/Noe_1996_factor_viii
