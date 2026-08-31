@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bardhi 2026 ampicillin ([doi:10.1093/jvimsj/aalag021](https://doi.org/10.1093/jvimsj/aalag021)) -- hospitalized neonatal foals.
+- Add Rolsma 2026 cefepime ([doi:10.1093/ofid/ofag069](https://doi.org/10.1093/ofid/ofag069)) -- critically ill children in intensive care.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

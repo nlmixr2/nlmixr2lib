@@ -34,26 +34,6 @@ navbar:
         href: articles/Abuqayyas_2012_8C2.html
       - text: "8Omethylretusin rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
-      - text: "ABT 102 (Othman 2013)"
-        href: articles/Othman_2013_ABT_102.html
-      - text: "ADC human qsp (Scheuher 2023)"
-        href: articles/Scheuher_2023_ADC_platform_qsp.html
-      - text: "ADC invitro qsp (Scheuher 2023)"
-        href: articles/Scheuher_2023_ADC_platform_qsp.html
-      - text: "ADC mouse qsp (Scheuher 2023)"
-        href: articles/Scheuher_2023_ADC_platform_qsp.html
-      - text: "APTM aucmic (Yang 2026)"
-        href: articles/Yang_2026_APTM.html
-      - text: "APTM cmaxmic (Yang 2026)"
-        href: articles/Yang_2026_APTM.html
-      - text: "APTM timekill (Yang 2026)"
-        href: articles/Yang_2026_APTM.html
-      - text: "ASP8232 (Snelder 2020)"
-        href: articles/Snelder_2020_ASP8232.html
-      - text: "AT9283 (Duong 2017)"
-        href: articles/Duong_2017_AT9283.html
-      - text: "AZD6088 rat (Viberg 2012)"
-        href: articles/Viberg_2012_AZD6088_rat.html
       - text: "Abacavir (Archary 2019)"
         href: articles/Archary_2019_abacavir.html
       - text: "Abacavir (Chandasana 2024b)"
@@ -594,6 +574,8 @@ navbar:
         href: articles/Jonckheere_2019_cefepime.html
       - text: "Cefepime (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
+      - text: "Cefepime (Rolsma 2026)"
+        href: articles/Rolsma_2026_cefepime.html
       - text: "Cefepime (Shoji 2016)"
         href: articles/Shoji_2016_cefepime.html
       - text: "Cefepime (Valadez 2025)"
@@ -5187,6 +5169,7 @@ articles:
   - articles/Roepcke_2023_rezafungin
   - articles/Rognas_2025_bitopertin
   - articles/Rolsma_2025_betalactams_cysticfibrosis
+  - articles/Rolsma_2026_cefepime
   - articles/Rosario_2008_maraviroc
   - articles/Rosario_2015_vedolizumab
   - articles/Rose_2016_follitropin_delta
