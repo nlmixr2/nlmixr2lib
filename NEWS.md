@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Subrtova 2026 daptomycin ([doi:10.1128/aac.01532-25](https://doi.org/10.1128/aac.01532-25)) -- adults with serious Gram-positive infections.
+- Add Taylor 2026 methotrexate ([doi:10.1007/s40262-026-01618-4](https://doi.org/10.1007/s40262-026-01618-4)) -- adults with lymphoma receiving high-dose methotrexate.
 
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling

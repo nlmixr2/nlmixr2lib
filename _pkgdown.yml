@@ -2152,6 +2152,8 @@ navbar:
         href: articles/Ruhs_2012_methotrexate.html
       - text: "Methotrexate (Taylor 2020)"
         href: articles/Taylor_2020_methotrexate.html
+      - text: "Methotrexate (Taylor 2026)"
+        href: articles/Taylor_2026_methotrexate.html
       - text: "Methotrexate (Zhao 2025)"
         href: articles/Zhao_2025_methotrexate.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
@@ -5352,6 +5354,7 @@ articles:
   - articles/Taubert_2016_linezolid
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
+  - articles/Taylor_2026_methotrexate
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
   - articles/Terranova_2018_paclitaxel
