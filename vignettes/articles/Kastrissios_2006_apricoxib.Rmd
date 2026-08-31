@@ -473,7 +473,20 @@ obs_coh <- peaks_lin$cmax_norm / peaks_lin$cmax_norm[peaks_lin$dose_mg == 2]
 # present to confirm the cohort behaves like the typical value -- the tight
 # gate is the typical-value one.
 stopifnot(max(abs(obs_coh / expected - 1)) < 3 * mc_se_pct / 100)
-stopifnot(all(diff(peaks$cmax_norm) < 0))
+# The claim is that dose-normalised Cmax DECLINES across the dose range
+# (less-than-proportional exposure), asserted as an overall decline plus a
+# per-step tolerance rather than strict monotonicity. Adjacent doses differ by
+# less than the Monte-Carlo noise on a median of n_arm, so a pair inverts on a
+# cohort redraw -- and the cohort is not fixed across machines, because
+# rxSetSeed() fixes rxode2's RNG stream per solver thread, not across thread
+# counts. Realised step differences ran -0.368 .. +0.121 over 1/2/4/16 threads,
+# so the strict form passed at 16 (the authoring machine) and failed at 1, 2
+# and 4 with nothing about the model changed. A genuine loss of saturation
+# would break the overall decline, which is asserted directly.
+stopifnot(
+  peaks$cmax_norm[nrow(peaks)] < peaks$cmax_norm[1],
+  all(diff(peaks$cmax_norm) < 0.25)
+)
 stopifnot(diff(range(peaks$tmax)) <= 0.5)
 cat(sprintf("cohort Cmax CV up to %.1f%%; median MC-SE %.2f%%; tolerance %.2f%%\n",
             max(peaks$cv_pct), mc_se_pct, 3 * mc_se_pct))

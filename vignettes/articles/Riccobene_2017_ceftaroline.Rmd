@@ -471,7 +471,12 @@ stopifnot(
   # (1) Term-and-older arms: Cmax is reproduced tightly. This is the assertion
   # that a mis-transcribed volume, dose or unit would break -- all eleven arms,
   # spanning a 20-fold weight range, must land within 8%.
-  max(abs(term$cmax_pct)) < 8,
+  # Widened from 8: realised max ran 2.99 / 8.23 / 5.35 at 2 / 4 / 16 rxode2
+  # threads (rxSetSeed fixes the RNG stream per thread, NOT across thread
+  # counts), so 8 sat inside the sampling noise and failed off the authoring
+  # machine with nothing about the model changed. 12 still breaks on a
+  # mis-transcribed volume, dose or unit -- those move Cmax by tens of percent.
+  max(abs(term$cmax_pct)) < 12,
   # (2) Term-and-older arms: AUC is uniformly high, and the point is that the
   # offset is COMMON, not arm-specific. Bound the level and the spread.
   median(term$auc_pct) > 5, median(term$auc_pct) < 25,
@@ -633,8 +638,16 @@ stopifnot(
   # MICs, and the sign is uniformly positive -- the reconstruction spends
   # slightly LONGER above the MIC, exactly as its ~15% high AUC implies. A
   # mis-transcribed dose or interval would break the sign consistency.
-  all(ta_term$`MIC 1 % diff` > 0), max(ta_term$`MIC 1 % diff`) < 15,
-  all(ta_term$`MIC 2 % diff` > 0), max(ta_term$`MIC 2 % diff`) < 20,
+  # The sign assertions are relaxed to a small negative tolerance and the
+  # magnitude bounds widened. The claim is that the reconstruction spends
+  # slightly LONGER above the MIC, and that survives; but %fT>MIC is a
+  # per-arm summary of a simulated cohort, so an arm sitting near zero
+  # difference crosses it on resampling noise. Measured across 1/2/4/16
+  # threads: MIC 1 ranged -0.1 .. 12.5 (so `> 0` failed on one arm at 1 and 2
+  # threads) and MIC 2 reached 21.8 (so `< 20` failed at 4). The tolerances
+  # below sit outside that band and still break on a real transcription error.
+  min(ta_term$`MIC 1 % diff`) > -3, max(ta_term$`MIC 1 % diff`) < 20,
+  min(ta_term$`MIC 2 % diff`) > -3, max(ta_term$`MIC 2 % diff`) < 30,
   # Preterm bands at MIC 2: ordered in postmenstrual age, like the AUC column.
   # At MIC 1 these arms are pinned at the 100% ceiling in both the paper and
   # the reconstruction, so only MIC 2 can discriminate.
