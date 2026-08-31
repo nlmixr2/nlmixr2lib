@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mandema 2011 anticoagulants dose-response meta-analysis ([doi:10.1038/clpt.2011.232](https://doi.org/10.1038/clpt.2011.232)) -- adults undergoing total hip or knee replacement surgery.
+- Add Mandema 2011 biologic DMARDs ([doi:10.1038/clpt.2011.256](https://doi.org/10.1038/clpt.2011.256)) -- adults with rheumatoid arthritis.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
