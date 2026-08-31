@@ -2,7 +2,15 @@
 
 # development version
 
-- Add Rolsma 2026 cefepime ([doi:10.1093/ofid/ofag069](https://doi.org/10.1093/ofid/ofag069)) -- critically ill children in intensive care.
+- Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
+  vignette to match, resolving a case-only filename collision with the sibling
+  `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
+  filesystems (issue 492). The two are DIFFERENT models from companion papers
+  published back-to-back (e84 doi:10.1038/psp.2013.61, sVEGFR-3-driven; e85
+  doi:10.1038/psp.2013.62, adverse-effect-driven); both now cross-reference each
+  other explicitly.
+
+- Add Hu 2026 utreloxastat ([doi:10.1002/jcph.70171](https://doi.org/10.1002/jcph.70171)) -- healthy adults in a first-in-human study.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

@@ -3316,8 +3316,8 @@ navbar:
         href: articles/Yu_2015_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
-      - text: "Sunitinib OS (Hansson 2013)"
-        href: articles/Hansson_2013_sunitinib_OS.html
+      - text: "Sunitinib svegfr3 os (Hansson 2013)"
+        href: articles/Hansson_2013_sunitinib_svegfr3_os.html
       - text: "Tacrine (Holford 1992)"
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (AbdelJalil 2013)"
@@ -3682,6 +3682,8 @@ navbar:
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Ustekinumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "Utreloxastat (Hu 2026)"
+        href: articles/Hu_2026_utreloxastat.html
       - text: "Valbenazine (Nguyen 2025)"
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valbenazine tmc (Nguyen 2025)"
@@ -4619,6 +4621,7 @@ articles:
   - articles/Hu_2017_peginterferon_beta_1a
   - articles/Hu_2025_tepotinib
   - articles/Hu_2026_clesrovimab
+  - articles/Hu_2026_utreloxastat
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
   - articles/Huang_2025_dexmedetomidine
