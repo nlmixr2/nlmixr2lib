@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cao 2025 busulfan ([doi:10.3389/fphar.2025.1632588](https://doi.org/10.3389/fphar.2025.1632588)) -- Chinese children undergoing allogeneic hematopoietic cell transplantation.
+- Add Assmus 2025 benznidazole ([doi:10.1371/journal.pntd.0013522](https://doi.org/10.1371/journal.pntd.0013522)) -- adults with chronic indeterminate Chagas disease in the BENDITA trial; population PK plus a qPCR-positivity exposure-response model.
 
 - Add Almquist 2015 Mig1 nuclear-localization models ([doi:10.1371/journal.pone.0124050](https://doi.org/10.1371/journal.pone.0124050)) -- in vitro single yeast cells (Saccharomyces cerevisiae); four per-experiment fits.
 
