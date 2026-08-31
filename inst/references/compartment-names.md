@@ -2442,7 +2442,9 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Source aliases:**
   - `24HC` -- NONMEM `$MODEL COMP=(24HC)` in Yin 2024 Appendix S1; a leading digit is not a legal R symbol, so the canonical moves it to the end.
   - `HC24` -- Yin 2024 `$ERROR` output variable.
-- **Example models:** `Yin_2024_soticlestat.R` (indirect-response turnover with `kin = rbase * kout` and sigmoid-Imax inhibition of synthesis by the soticlestat effect-site concentration).
+- **Example models:**
+  - `Yin_2024_soticlestat.R` (indirect-response turnover with `kin = rbase * kout` and sigmoid-Imax inhibition of synthesis by the soticlestat effect-site concentration).
+  - `Yin_2023_soticlestat.R` (the healthy-adult analysis that the 2024 patient model carries its enzyme-occupancy sub-model forward from; same turnover structure, with `hc24` as one of three endpoints alongside `Cc` and `occ`).
 
 ### cox2 (**canonical COX-2 enzyme activity PD output**)
 - **Type:** compartment

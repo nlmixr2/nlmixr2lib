@@ -3192,6 +3192,8 @@ navbar:
         href: articles/Jain_2011_sorafenib.html
       - text: "Sotatercept (AitOudhia 2024)"
         href: articles/AitOudhia_2024_sotatercept.html
+      - text: "Soticlestat (Yin 2023)"
+        href: articles/Yin_2023_soticlestat.html
       - text: "Soticlestat (Yin 2024)"
         href: articles/Yin_2024_soticlestat.html
       - text: "Sparsentan (Wada 2023)"
@@ -5443,6 +5445,7 @@ articles:
   - articles/Yin_2020_pexidartinib
   - articles/Yin_2021_pexidartinib
   - articles/Yin_2021_trastuzumabDeruxtecan
+  - articles/Yin_2023_soticlestat
   - articles/Yin_2024_soticlestat
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoo_2009_cilostazol
