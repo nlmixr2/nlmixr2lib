@@ -42,7 +42,7 @@ Lahu_2010_roflumilast <- function() {
       units              = "years",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (AGE/40)^-0.471 on N-oxide CL and (AGE/40)^-0.269 on N-oxide Frel; reference age 40 years per Lahu 2010 Methods (page 591). The two age effects on N-oxide CL and Frel partially cancel so that AUC_N-oxide increases approximately as (AGE/40)^0.202 with age (Lahu 2010 Results page 598).",
+      notes              = "Power scaling (AGE/40)^-0.471 on N-oxide CL and (AGE/40)^-0.269 on N-oxide Frel; reference age 40 years per Lahu 2010 Methods (page 591). The two age effects on N-oxide CL and Frel partially cancel so that AUC_N-oxide increases approximately as (AGE/40)^0.202 with age (Lahu 2010 Results page 598). Age on the PARENT CL was tested in the full model and dropped by the WAM selection (theta_12 = -0.140, SE 0.0550; FDA NDA 22-522 review Table 6), which is why no age effect appears on parent CL in the shipped model. Cohort age was 38.2 +/- 14.7 years, so the 40-year reference sits essentially at the cohort mean.",
       source_name        = "Age"
     ),
     WT = list(
@@ -50,7 +50,7 @@ Lahu_2010_roflumilast <- function() {
       units              = "kg",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Power scaling (WT/70)^1.00 on N-oxide Vd; reference weight 70 kg per Lahu 2010 equation 7. Body weight on parent V1 was tested in the full model (theta_17 = 0.497) but dropped from the WAM-selected final model. Body weight on parent CL competed with sex in the full model and was removed to stabilise the full-model fit (Lahu 2010 Discussion page 602).",
+      notes              = "Power scaling (WT/70)^1.00 on N-oxide Vd; reference weight 70 kg per Lahu 2010 equation 7. Body weight on parent V1 was tested in the full model (theta_17 = 0.497, SE 0.161 per FDA NDA 22-522 review Table 6) but dropped from the WAM-selected final model. Body weight on N-oxide CL was likewise tested and dropped (theta_9 = -0.497, SE 0.185; FDA review Table 7). Body weight on parent CL competed with sex in the full model and was removed to stabilise the full-model fit (Lahu 2010 Discussion page 602). The N-oxide Vd exponent itself moved from 0.824 (SE 0.142) in the full model to exactly 1.00 (SE 0.117) in the final-with-race model. Cohort weight was 75.4 +/- 11.2 kg, so the 70 kg reference is a round anchor rather than the cohort mean.",
       source_name        = "Weight"
     ),
     SEXF = list(
@@ -58,7 +58,7 @@ Lahu_2010_roflumilast <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (male).",
-      notes              = "Lahu 2010 uses the inverted convention Sex = 1 for male in equations 6 and 7. The canonical SEXF column inverts this; the model() block applies the source coefficient via the male indicator (1 - SEXF). Effects: +19.1% on parent CL when male (theta_13); +46.7% on N-oxide CL when male (theta_8); +23.1% on N-oxide Frel when male (theta_14). The paper's model-equation intercept (when all binary covariates equal 0) is therefore the FEMALE, non-smoking, White, healthy reference; the paper's narrative text describes the reference as 'male, non-smoking, White, healthy, 40-year-old subjects' but the equation parameterisation has female as the SEX = 0 intercept. See vignette Errata.",
+      notes              = "Lahu 2010 uses the inverted convention Sex = 1 for male in equations 6 and 7. The canonical SEXF column inverts this; the model() block applies the source coefficient via the male indicator (1 - SEXF). Effects: +19.1% on parent CL when male (theta_13); +46.7% on N-oxide CL when male (theta_8); +23.1% on N-oxide Frel when male (theta_14). The paper's model-equation intercept (when all binary covariates equal 0) is therefore the FEMALE, non-smoking, White, healthy reference; the paper's narrative text instead describes the reference as 'male, non-smoking, White, healthy, 40-year-old subjects'. That contradiction is RESOLVED in favour of the equation reading: the FDA NDA 22-522 Clinical Pharmacology review (printed pages 77-80), reproducing the sponsor's own study report 114/2005, states the female reference three separate times -- 'the clearance (theta_3) is 10.5 +/- 0.490 L/hr for nonsmoking, non-black, non-Hispanic females', 'the metabolite CL (theta_3) is 0.883 +/- 0.0472 L/hr for a 40-year-old, 70 kg, nonsmoking female', and 'The bioavailability (FRel) ... was fixed to 1 for a 40-year-old non-black, non-Hispanic female'. An independent regulatory reviewer working from the sponsor's source report read the intercept the same way this extraction does, so the paper's prose is the erroneous side. Female sex distribution of the model-building dataset is 87 of 338 (25.7%). See vignette Errata.",
       source_name        = "Sex"
     ),
     SMOKE = list(
@@ -66,7 +66,7 @@ Lahu_2010_roflumilast <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (non-smoker).",
-      notes              = "Linear additive effects: +30.7% on parent CL (theta_15) and +23.5% on N-oxide CL (theta_10). Lahu 2010 Methods page 591: 'Smoking status was defined as current smoking or non-smoking, irrespective of previous smoking status.' Mechanism is increased CYP1A2 activity in smokers (~79% higher per Funck-Brentano 2006; Lahu 2010 Discussion page 602).",
+      notes              = "Linear additive effects: +30.7% on parent CL (theta_15) and +23.5% on N-oxide CL (theta_10). Lahu 2010 Methods page 591: 'Smoking status was defined as current smoking or non-smoking, irrespective of previous smoking status.' Mechanism is increased CYP1A2 activity in smokers (~79% higher per Funck-Brentano 2006; Lahu 2010 Discussion page 602). Smoking on N-oxide Frel was tested and dropped (theta_16 = 0.0129, SE 0.0335; FDA NDA 22-522 review Table 7). Smokers were 109 of 338 (32.2%) of the model-building dataset.",
       source_name        = "Smoking"
     ),
     FED = list(
@@ -74,7 +74,7 @@ Lahu_2010_roflumilast <- function() {
       units              = "(binary)",
       type               = "binary",
       reference_category = "0 (fasted).",
-      notes              = "Linear additive effects: -30.8% on parent tlag (theta_9; surprising negative sign, see vignette Errata), -69.9% on parent ka (theta_11, food slows absorption), and +236% on N-oxide D1 (theta_6, food prolongs metabolite zero-order input duration). The food effect on tlag had robustness issues in the source bootstrap (only 61% of bootstrap replicates negative; Lahu 2010 page 599), but the paper notes that tlag does not influence steady-state exposure so the finding was not considered critical.",
+      notes              = "Linear additive effects: -30.8% on parent tlag (theta_9; surprising negative sign, see vignette Errata), -69.9% on parent ka (theta_11, food slows absorption), and +236% on N-oxide D1 (theta_6, food prolongs metabolite zero-order input duration). The food effect on tlag had robustness issues in the source bootstrap (only 61% of bootstrap replicates negative; Lahu 2010 page 599), but the paper notes that tlag does not influence steady-state exposure so the finding was not considered critical. The large SE the FDA NDA 22-522 review reports for this coefficient (theta_9 = -0.308, SE 0.296, i.e. the interval spans zero) independently corroborates that it is data-poor. Food on parent Frel (theta_19 = 0.0214, SE 0.0720) and on N-oxide Frel (theta_18 = 0.0133, SE 0.0347) were also tested and dropped.",
       source_name        = "Food"
     ),
     RACE_BLACK = list(
@@ -106,15 +106,15 @@ Lahu_2010_roflumilast <- function() {
   population <- list(
     n_subjects     = 338L,
     n_studies      = 28L,
-    age_range      = "Phase I healthy volunteers and phase II / III COPD patients; demographic table S-2 of the source supplement is not on disk for this extraction (see vignette Errata).",
-    weight_range   = NULL,
-    sex_female_pct = NULL,
-    race_ethnicity = "Pooled White, Black, and Hispanic with White (any non-Black or non-Hispanic race) as the reference category per Lahu 2010 Methods page 591.",
+    age_range      = "Mean 38.2 years, SD 14.7 years in the 338-subject phase I healthy-volunteer model-building dataset; individual minimum and maximum are not reported. The reference age of 40 years used in the covariate equations therefore sits essentially at the cohort mean. Ages of the phase II / III COPD patients contributing the COPD extension are not tabulated in either source (FDA NDA 22-522 Clinical Pharmacology review Table 5, printed page 75).",
+    weight_range   = "Mean 75.4 kg, SD 11.2 kg in the 338-subject phase I healthy-volunteer model-building dataset; individual minimum and maximum are not reported. Note that the reference weight of 70 kg used in the N-oxide Vd equation is a round allometric anchor rather than the cohort mean (FDA NDA 22-522 Clinical Pharmacology review Table 5, printed page 75).",
+    sex_female_pct = 25.7,
+    race_ethnicity = "Pooled White, Black, and Hispanic with White (any non-Black or non-Hispanic race) as the reference category per Lahu 2010 Methods page 591. Phase I model-building dataset composition (n = 338): non-Black / non-Hispanic 296 (87.6%), Black 27 (7.99%), Hispanic 15 (4.44%) (FDA NDA 22-522 Clinical Pharmacology review Table 5, printed page 75).",
     disease_state  = "Pooled adult healthy volunteers (21 phase I index studies + 5 phase I validation studies for roflumilast) and patients with moderate-to-severe COPD (1 phase II [IN-108] + 1 phase III [BY217/M2-110; ClinicalTrials.gov NCT00062582] study used for the COPD extension). The phase III COPD trial enrolled patients with moderate-to-severe COPD treated with roflumilast 500 mcg or placebo orally once daily for 24 weeks.",
     dose_range     = "Oral roflumilast tablets 250-1000 ug in dose-proportionality and dose-escalation phase I studies; standard once-daily dose 500 ug (= 0.5 mg) in the majority of phase I studies and in the phase II / III COPD studies. Note that the Lahu 2010 paper Methods text reports the standard dose as '500 mg', which is a typographical error in the source -- the marketed roflumilast (Daxas / Daliresp) is 500 micrograms once daily and the trial protocol (NCT00062582) and dose-proportionality reference (Bethke 2007) both confirm 250-1000 micrograms. The model file uses ug as the dosing unit and ug/L as the concentration unit so that user-supplied amt values are read directly in micrograms.",
     regions        = "Multinational; specific country composition not reported in the on-disk source.",
     n_observations = "Roflumilast parent: 7705 observations from 338 subjects in the phase I index dataset; an additional 771 observations from 228 subjects contributed to the COPD extension. Roflumilast N-oxide: 7112 observations from 298 subjects in the phase I index dataset; an additional 703 observations from 208 subjects contributed to the COPD extension. Concentrations were quantified by HPLC with tandem mass-spectrometry detection (Lahu 2010 Methods page 591).",
-    notes          = "Demographic table S-2 (per-subject covariate distributions across studies, including age, weight, sex, smoking status, race, and food-effect cohort balance) is in the Supplemental Digital Content and is not available on disk for this extraction; only the narrative description from the main paper is reproduced here. Twenty-eight studies (21 + 5 + 1 + 1) contributed observations across the joint dataset; the phase II (IN-108) study identifier and the phase III study (BY217/M2-110, NCT00062582) are named in Lahu 2010 Methods. NONMEM version V level 1.1 was used for fitting; the HYBRID method was used (FOCE for all parameters except tlag for the parent and D1 for the metabolite, both estimated by FO)."
+    notes          = "Demographic table S-2 of the Lahu 2010 Supplemental Digital Content is not available on disk for this extraction, but its phase I equivalent was recovered from the FDA NDA 22-522 Clinical Pharmacology review (Table 5, printed page 75), which reproduces the sponsor's own population PK study report 114/2005 -- the same analysis Lahu published. That table gives, for the n = 338 phase I model-building dataset: female 87 (25.7%) / male 251 (74.3%); non-smokers 229 (67.8%) / smokers 109 (32.2%); alcohol non-users 104 (30.8%) / users 234 (69.2%); non-Black non-Hispanic 296 (87.6%) / Black 27 (7.99%) / Hispanic 15 (4.44%); age 38.2 +/- 14.7 years; weight 75.4 +/- 11.2 kg. Every stratum sums to 338. ALCOHOL USE was a tested covariate that the published paper never mentions: the FDA review's full-model columns carry Alcohol on N-oxide CL (theta_11 = 0.00354, SE 0.0626) and on N-oxide Frel (theta_17 = -0.0239, SE 0.0338), both indistinguishable from zero and both dropped by the WAM selection. Alcohol is therefore deliberately absent from covariateData -- it is not a covariate of the shipped model. Twenty-eight studies (21 + 5 + 1 + 1) contributed observations across the joint dataset; the phase II (IN-108) study identifier and the phase III study (BY217/M2-110, NCT00062582) are named in Lahu 2010 Methods. NONMEM version V level 1.1 was used for fitting; the HYBRID method was used (FOCE for all parameters except tlag for the parent and D1 for the metabolite, both estimated by FO)."
   )
 
   ini({
@@ -126,6 +126,21 @@ Lahu_2010_roflumilast <- function() {
     # the COPD-specific coefficients (theta_22 on CL, theta_25 on V1).
     # The model-equation intercept (when all binary covariates = 0 and
     # age = 40) is FEMALE, non-smoker, White, healthy, fasted.
+    #
+    # SECONDARY CORROBORATION. Every non-COPD value below was verified
+    # against an independent reproduction of the same analysis: the FDA
+    # NDA 22-522 Clinical Pharmacology review, Tables 6 (parent, printed
+    # page 77) and 7 (N-oxide, printed page 79), which reprint the
+    # sponsor's population PK study report 114/2005 -- Lahu was the
+    # sponsor's modeller, so the NDA and the journal article report the
+    # same fit. All 40 parent + N-oxide values below reproduce the FDA
+    # "Final With Race" columns exactly, with ZERO disagreements. The
+    # FDA tables additionally carry standard errors that the paper's
+    # Table I omits; they are not transcribed here parameter-by-
+    # parameter, but the full digitisation is recorded in the vignette
+    # "Source trace" section. The COPD coefficients are the exception:
+    # the FDA review's COPD section has no parameter table, so those
+    # remain sourced solely from the paper's Table I.
 
     ltlag <- log(0.158)
     label("Roflumilast absorption lag time at fasted reference (h)")        # Lahu 2010 Table I final-for-COPD: theta_1 = 0.158 h
@@ -277,7 +292,11 @@ Lahu_2010_roflumilast <- function() {
     # with three off-diagonals. No IIV is reported on N-oxide tlag
     # (the paper's eq 7 shows tlag = theta * exp(eta_tlag) but Table I
     # does not list an omega^2 for the N-oxide tlag; see vignette
-    # Errata).
+    # Errata). The omission is REAL, not a typesetting loss in the
+    # journal: the FDA NDA 22-522 review's Table 7 (printed page 79),
+    # reproducing the sponsor's own study report 114/2005, likewise
+    # lists an omega block over D1, CL and V only, across all four of
+    # its Base / Full / Initial Final / Final With Race columns.
 
     etald1_noxide + etalcl_noxide + etalvd_noxide ~
       c(0.268,

@@ -85,11 +85,39 @@ nlmixr2lib::readModelDb("Lahu_2010_roflumilast")$population
 ```
 
 Demographic table S-2 of the source supplement (per-subject covariate
-distributions across the 28 studies, including age / weight / sex /
-smoking-status / race / food-effect counts) is in Supplemental Digital
-Content 1 and is not on disk for this extraction; only the narrative
-summary from the main paper is reproduced here. See "Assumptions and
-deviations" below.
+distributions across the 28 studies) is in Supplemental Digital
+Content 1 and is not on disk for this extraction. Its phase I
+equivalent was instead recovered from the FDA NDA 22-522 Clinical
+Pharmacology review (Table 5, printed page 75), which reprints the
+sponsor's own population PK study report 114/2005 -- the same analysis
+Lahu published. For the n = 338 phase I model-building dataset:
+
+| Stratum | n | Percent |
+|---------|---|---------|
+| Female                   |  87 | 25.7 |
+| Male                     | 251 | 74.3 |
+| Non-smokers              | 229 | 67.8 |
+| Smokers                  | 109 | 32.2 |
+| Alcohol non-users        | 104 | 30.8 |
+| Alcohol users            | 234 | 69.2 |
+| Non-Black, non-Hispanic  | 296 | 87.6 |
+| Black                    |  27 | 7.99 |
+| Hispanic                 |  15 | 4.44 |
+
+Age 38.2 +/- 14.7 years and weight 75.4 +/- 11.2 kg (mean +/- SD; no
+individual minima or maxima are reported). Every stratum sums to 338,
+matching `population$n_subjects`. The 40-year reference age used in the
+covariate equations therefore sits essentially at the cohort mean,
+whereas the 70 kg reference weight is a round allometric anchor rather
+than the cohort mean of 75.4 kg.
+
+That table also reveals a covariate the published paper never
+mentions: **alcohol use** was tested and dropped. The FDA review's
+full-model columns carry Alcohol on N-oxide CL (theta_11 = 0.00354,
+SE 0.0626) and on N-oxide Frel (theta_17 = -0.0239, SE 0.0338), both
+indistinguishable from zero. Alcohol is consequently absent from the
+model's `covariateData`, since it is not a covariate of the shipped
+model. See "Assumptions and deviations" below.
 
 # Source trace
 
@@ -152,6 +180,79 @@ body weight 70 kg (Lahu 2010 equation 7). Reference category for
 binary covariates: SEXF = 1 (female), SMOKE = 0 (non-smoker),
 RACE_BLACK = 0 / RACE_HISPANIC = 0 (White), FED = 0 (fasted),
 DIS_COPD = 0 (healthy).
+
+## Independent corroboration: FDA NDA 22-522
+
+Every non-COPD value in the table above has a second, independent
+source. The FDA Clinical Pharmacology review for NDA 22-522
+(roflumilast; Nycomed, submitted 2009) reprints the sponsor's
+population PK study report 114/2005 as its **Table 6** (roflumilast
+parent, printed page 77; sponsor's Table 9) and **Table 7**
+(roflumilast N-oxide, printed page 79; sponsor's Table 12). Lahu was
+the sponsor's modeller, so the NDA review and the Clin Pharmacokinet
+article report the same fit rather than two analyses.
+
+**All 40 shipped parent and N-oxide values reproduce the FDA
+"Final With Race" columns exactly -- zero disagreements.** No
+parameter required an authority determination and none was altered.
+The FDA tables add three things the journal article's Table I does
+not carry:
+
+* **Standard errors on every final parameter.** For example parent
+  CL 10.5 (SE 0.490), N-oxide CL 0.883 (SE 0.0472), N-oxide Vd
+  65.8 (SE 1.94), N-oxide Vd weight exponent 1.00 (SE 0.117). The
+  food-on-parent-tlag coefficient's SE of 0.296 against an estimate
+  of -0.308 independently confirms the data-poor status the paper's
+  bootstrap flagged.
+* **The model-building ladder** -- Base / Full / Initial Final /
+  Final With Race, with objective function values (parent
+  -9023.112 / -9391.524 / -9383.408 / -9397.811; N-oxide
+  -10,310.430 / -10,982.441 / -10,974.671 / -11,064.271) and the WAM
+  "drop from base" and "nearness to full" statistics. This makes the
+  covariate selection the paper describes narratively auditable, and
+  it is what exposes the tested-and-dropped covariates recorded in
+  `covariateData` (parent age on CL, parent and N-oxide weight, the
+  Frel food and smoking terms, and alcohol).
+* **Confirmation that the omegas are variances, not SDs.** The
+  reviewer quotes inter-subject variability as CV percent, and each
+  value reproduces `100 * sqrt(omega^2)` against the tabulated
+  variance: parent CL 41.5 percent base to 36.9 percent final
+  (sqrt(0.172), sqrt(0.136)); N-oxide CL 44.0 to 38.7 percent
+  (sqrt(0.194), sqrt(0.150)); N-oxide Vd 28.5 to 21.2 percent
+  (sqrt(0.0814), sqrt(0.0449)). Six of six exact -- an external
+  falsifier for the variance-scale parameterisation used in `ini()`.
+
+The reviewer also works six numerical covariate examples, all of which
+reproduce against the packaged `model()` block rather than merely
+against `ini()`, so they validate the `(1 + theta * covariate)` linear
+form and the `ref_age <- 40` / `ref_wt <- 70` constants as well as the
+parameter values:
+
+| FDA worked example | Packaged model |
+|--------------------|----------------|
+| Parent tlag fed = 0.109 h    | 0.158 * (1 - 0.308) = 0.109 |
+| Parent ka fed = 0.160 1/h    | 0.533 * (1 - 0.699) = 0.160 |
+| N-oxide D1 fed = 7.43 h      | 2.21 * (1 + 2.36) = 7.43 |
+| N-oxide CL at age 75 = 0.657 L/h | 0.883 * (75/40)^-0.471 = 0.657 |
+| N-oxide Vd at 100 kg = 94.0 L    | 65.8 * (100/70)^1.00 = 94.0 |
+| N-oxide Frel at age 75 = 0.844   | (75/40)^-0.269 = 0.844 |
+
+**The COPD coefficients are the exception.** The FDA review's COPD
+section (printed pages 85-88) contains goodness-of-fit figures and
+narrative only -- there is no COPD parameter table. Its narrative is
+consistent with the shipped values (parent CL "reduced by 39.4
+percent" against `e_copd_cl` = -0.394; central volume "increased by
+nearly two-fold" against `e_copd_vc` = 1.84; N-oxide volume
+"decreased by 21 percent" against -0.214; N-oxide clearance
+"decreased by ... 8 percent" against -0.0785) but supplies no
+independent digits or SEs. The shipped COPD block therefore remains
+sourced solely from Lahu 2010 Table I.
+
+Source: FDA Center for Drug Evaluation and Research, Clinical
+Pharmacology and Biopharmaceutics Review, NDA 22-522 (roflumilast /
+DALIRESP), 348 pages. Tables 6 and 7 are page images in the released
+PDF; they were digitised for this vignette by rendering the containing
+pages at 200-400 dpi.
 
 # Virtual cohort
 
@@ -425,21 +526,35 @@ transcription error).
   influence steady-state exposure. The packaged model preserves the
   published sign; consumers concerned about food-effect predictions
   should be aware that this particular coefficient is data-poor.
-* **Sex-coding inversion vs canonical SEXF.** Lahu 2010 equations 6
-  and 7 use Sex = 1 for male and Sex = 0 for female. The canonical
-  SEXF column inverts this (1 = female, 0 = male). The model() block
-  applies the source coefficients via (1 - SEXF) so that the
-  model-equation intercept (when SEXF = 1) is the female reference --
-  this matches the paper's parameterisation. The paper's narrative
-  text describes the reference population as "male, non-smoking,
-  White, healthy, 40-year-old" (Methods page 591 and Results page
-  599), which would conventionally suggest a male-baseline encoding,
-  but the model equations clearly use female as the intercept (so a
-  male subject has CL_parent = 10.5 * 1.191 = 12.5 L/h, consistent
-  with the paper's own statement on page 602 that "clearance of
-  roflumilast was 19 percent greater in men than in women"). The
-  vignette and downstream simulations all use the equation-derived
-  female-as-intercept convention.
+* **Sex-coding inversion vs canonical SEXF (resolved; the paper's
+  prose is wrong).** Lahu 2010 equations 6 and 7 use Sex = 1 for male
+  and Sex = 0 for female. The canonical SEXF column inverts this
+  (1 = female, 0 = male). The model() block applies the source
+  coefficients via (1 - SEXF) so that the model-equation intercept
+  (when SEXF = 1) is the female reference. The paper's narrative text
+  describes the reference population as "male, non-smoking, White,
+  healthy, 40-year-old" (Methods page 591 and Results page 599),
+  which would conventionally suggest a male-baseline encoding, but the
+  model equations clearly use female as the intercept (so a male
+  subject has CL_parent = 10.5 * 1.191 = 12.5 L/h, consistent with the
+  paper's own statement on page 602 that "clearance of roflumilast was
+  19 percent greater in men than in women").
+
+  This was previously carried here as an unresolved internal
+  contradiction. It is now settled in favour of the equation reading.
+  The FDA NDA 22-522 Clinical Pharmacology review, reproducing the
+  sponsor's own population PK study report 114/2005, states the female
+  reference three separate times: "the clearance (theta_3) is
+  10.5 +/- 0.490 L/hr for nonsmoking, non-black, non-Hispanic
+  **females**" (printed page 77); "the metabolite CL (theta_3) is
+  0.883 +/- 0.0472 L/hr for a 40-year-old, 70 kg, nonsmoking
+  **female**" (printed page 79); and "The bioavailability (FRel) ...
+  was fixed to 1 for a 40-year-old non-black, non-Hispanic
+  **female**" (printed page 80). An independent regulatory reviewer
+  working from the sponsor's source report read the intercept exactly
+  as this extraction does, so the journal article's prose -- not its
+  equations -- is the erroneous side. The vignette and downstream
+  simulations use the equation-derived female-as-intercept convention.
 * **No IIV reported for roflumilast N-oxide tlag.** Lahu 2010
   equation 7 displays the structural form
   `tlag_i = theta_1 * exp(eta_tlag,i)` for the N-oxide model, but
@@ -447,16 +562,35 @@ transcription error).
   packaged model omits the eta on N-oxide tlag entirely (no
   `etaltlag_noxide` parameter); the typical tlag = 0.156 h is used
   for every subject. This is consistent with the WAM-based parsimony
-  selection in the source: the N-oxide IIV(tlag) was presumably
-  removed during model reduction.
-* **No supplement on disk.** Supplemental Digital Content 1 (table
-  S-2 demographic distributions, table S-6 NCA predictive-performance
+  selection in the source: the N-oxide IIV(tlag) was removed during
+  model reduction.
+
+  The omission is real rather than a typesetting loss in the journal
+  article. The FDA NDA 22-522 review's Table 7 (printed page 79), an
+  independent reproduction of the sponsor's study report 114/2005,
+  likewise lists an omega block over D1, CL and V only -- and does so
+  across all four of its Base, Full, Initial Final and Final With Race
+  columns, so the eta was absent from the base model onward rather
+  than dropped partway through covariate selection.
+* **No supplement on disk; demographics recovered from the FDA
+  review instead.** Supplemental Digital Content 1 (table S-2
+  demographic distributions, table S-6 NCA predictive-performance
   AUC24 deviations, figure S-1 goodness-of-fit plots, figures S-2 to
   S-5 bootstrap distributions, etc.) was not on disk for this
   extraction. The "Source trace" table and the PKNCA validation
   comparison values were derived from the main paper text and
-  Table I; supplement-specific demographic distributions are
-  approximated in the virtual cohort.
+  Table I.
+
+  The demographic distributions that table S-2 would have supplied
+  for the phase I model-building dataset were subsequently recovered
+  from the FDA NDA 22-522 review's Table 5 and are tabulated in the
+  "Population" section above; they now populate `population$age_range`,
+  `population$weight_range`, `population$sex_female_pct` and
+  `population$race_ethnicity` in the model file. Note that Table 5
+  reports mean and SD only -- individual age and weight minima and
+  maxima are still unavailable, so the virtual cohort below continues
+  to use approximated ranges. No equivalent demographic table exists
+  for the phase II / III COPD extension in either source.
 * **Two dose events per administration.** Because the parent and the
   N-oxide are fitted with independent absorption processes, each
   user-supplied roflumilast administration must produce two dose rows
@@ -482,6 +616,21 @@ transcription error).
   can compute it from the simulated AUC trajectories using equation 4
   with the cited IC50 and fu values (paper Methods page 595, citing
   Hermann 2006).
+
+  The FDA NDA 22-522 review was checked as a possible second source
+  for the adverse-event coefficients the paper withholds, and **does
+  not supply them**. The string "logistic" does not occur anywhere in
+  the 348-page review. Its exposure-response-for-safety section is a
+  plain dose-versus-incidence table (diarrhoea, nausea and weight loss
+  at 0, 250 and 500 micrograms) with no model and no fitted
+  coefficients; for effectiveness the review states outright that the
+  relationship between exposure and the primary endpoints "was not
+  characterized" because concentrations were not measured in the
+  registration trials. tPDE4i appears only as an ANOVA endpoint in a
+  drug-interaction summary (sponsor report 252/2008), which reports
+  treatment ratios of mean tPDE4i but not the composite's defining
+  constants. This gap therefore stands, and the FDA review does not
+  need to be revisited for it.
 * **No erratum located.** A targeted PubMed and Clin Pharmacokinet
   landing-page search in May 2026 did not surface any erratum,
   corrigendum, or correction notice for this article. Should one be

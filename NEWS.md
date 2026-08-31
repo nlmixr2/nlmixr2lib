@@ -2,13 +2,23 @@
 
 # development version
 
-- Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
-  vignette to match, resolving a case-only filename collision with the sibling
-  `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
-  filesystems (issue 492). The two are DIFFERENT models from companion papers
-  published back-to-back (e84 doi:10.1038/psp.2013.61, sVEGFR-3-driven; e85
-  doi:10.1038/psp.2013.62, adverse-effect-driven); both now cross-reference each
-  other explicitly.
+- Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
+  Pharmacology review, which reprints the sponsor's population PK study report
+  114/2005 -- the same analysis Lahu published. All 40 shipped parent and
+  N-oxide `ini()` values reproduce the review's "Final With Race" columns
+  exactly; **no parameter changed**. The review supplies provenance the journal
+  article omits: the phase I demographics table now fills
+  `population$sex_female_pct`, `population$weight_range`,
+  `population$age_range` and `population$race_ethnicity` (previously `NULL` or
+  placeholder text); alcohol use and several other tested-and-dropped
+  covariates are recorded in `covariateData` notes; and two vignette errata are
+  downgraded from open questions to confirmed readings -- the female-reference
+  intercept (the FDA reviewer states it three times, so the paper's prose
+  rather than its equations is wrong) and the genuine absence of inter-
+  individual variability on N-oxide `tlag`. The withheld tPDE4i and
+  adverse-event logistic-regression layer is *not* recoverable from the review;
+  that gap is now documented as closed to further search.
+
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
 - Add Gracia 2025 51Cr-EDTA and 99mTc-DTPA GFR tracers ([doi:10.1007/s00467-025-06828-9](https://doi.org/10.1007/s00467-025-06828-9)) -- oncopediatric children receiving cisplatin and/or ifosfamide.
