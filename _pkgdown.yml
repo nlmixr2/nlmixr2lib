@@ -1726,6 +1726,14 @@ navbar:
         href: articles/Wilkins_2011_isoniazid.html
       - text: "Isoniazid pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Istradefylline dizziness (Knebel 2012)"
+        href: articles/Knebel_2012_istradefylline.html
+      - text: "Istradefylline dyskinesia (Knebel 2012)"
+        href: articles/Knebel_2012_istradefylline.html
+      - text: "Istradefylline nausea (Knebel 2012)"
+        href: articles/Knebel_2012_istradefylline.html
+      - text: "Istradefylline offtime (Knebel 2012)"
+        href: articles/Knebel_2012_istradefylline.html
       - text: "Itraconazole (Abuhelwa 2015)"
         href: articles/Abuhelwa_2015_itraconazole.html
       - text: "Itraconazole (Hennig 2006)"
@@ -4551,7 +4559,7 @@ articles:
   - articles/Kloprogge_2015_lumefantrine
   - articles/Kloprogge_2018_lumefantrine
   - articles/Klunder_2017_upadacitinib
-  - articles/Knebel_2011_pantoprazole
+  - articles/Knebel_2012_istradefylline
   - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
