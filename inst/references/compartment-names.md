@@ -4945,6 +4945,15 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 
 ## Co-substrate / cofactor depletion pools
 
+Baseline-normalised reservoirs of a *consumable co-substrate* that a drug's own
+metabolism draws down (or, as published in the founding example, drives), making
+elimination time-varying over a treatment course. Structurally these are the
+mirror image of the enzyme-induction reservoirs above: both are dimensionless
+states initialised at 1 that multiply a clearance term, but an induction pool is
+driven by a *concentration* signal through an indirect-response loop, whereas a
+co-substrate pool is driven by *metabolic flux* -- the amount of drug actually
+turned over. Name the state for the co-substrate, not for the drug.
+
 ### gsh_pool (**canonical normalised glutathione co-substrate pool**)
 - **Type:** compartment
 - **Role:** Relative amount of glutathione available to conjugate a drug, expressed as a fraction of its own pre-treatment baseline and initialised at 1. Multiplies the elimination rate constant of the drug whose metabolism is glutathione-dependent, and is itself driven by that drug's metabolic flux, so a multi-day course produces time-varying clearance.

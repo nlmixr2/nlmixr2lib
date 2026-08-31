@@ -513,11 +513,12 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lkst (**canonical log-transformed gastric emptying rate constant**)
 - **Type:** log-transformed-pk
-- **Role:** First-order rate constant for gastric emptying, i.e. transit of drug out of the `stomach` compartment into the first intestinal segment (1 / time). Founding member of the lumped gastrointestinal transit family below.
+- **Role:** First-order rate constant for gastric emptying: transit of drug out of a `stomach` compartment into the first intestinal segment / intestinal lumen, in oral PBPK models that resolve the gastric and intestinal lumen as explicit states (1 / time). The bare counterpart inside `model()` is `kst`. Founding member of the lumped gastrointestinal transit family below.
 - **Source aliases:**
-  - `Kst` -- Sun 2026 Table 2 ("gastric emptying rate constant", 0.8 /h) and the Supporting Information Berkeley Madonna listing (`RAST = RDOSEoral - Kst * AST`).
-- **Example models:** `Sun_2026_tilmicosin_pbpk.R` (founding example).
-- **Notes:** Distinct from `lka`, which moves drug from a depot into the *systemic* circulation; `lkst` moves drug between two luminal compartments and is not an absorption term. Registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A).
+  - `Kst` -- used in `Ai_2024_ractopamine_goat_pbpk.R`; also Sun 2026 Table 2 ("gastric emptying rate constant", 0.8 /h) and the Supporting Information Berkeley Madonna listing (`RAST = RDOSEoral - Kst * AST`).
+  - `kst`, `k_st`, `KST` -- generic acslX / Berkeley-Madonna spellings.
+- **Example models:** `Ai_2024_ractopamine_goat_pbpk.R` (`Kst` = 0.0910 1/h, gastric contents into gut lumen in goats; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kst` = 0.8545 1/h, reconstructed gastric depot into the sampled intestinal lumen in pigs), `Sun_2026_tilmicosin_pbpk.R` (`Kst` = 0.8 1/h in swine).
+- **Notes:** Distinct from `lka`, which moves drug from a depot into the *systemic* circulation; `lkst` moves drug between two luminal compartments and is not an absorption term. Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B), and independently re-registered 2026-08-29 by operator ruling on the `oare_PMC12903901` sidecar (q1, option A) before the two branches were consolidated; this entry is the union of both. Precedent existed in the repository before ratification -- `Ai_2024_ractopamine_goat_pbpk.R` already carried `lkst` in `ini()`, and `Luo_2024_*_pbpk.R`, `Back_2018_fenofibrate.R` and `Guiastrennec_2016_gastric_emptying.R` carried the same concept as `model()` literals named `kt_sto` / `kg`. Register the constant in `ini()` rather than burying it as a `model()` literal whenever the source paper optimised it, so that half of one optimisation is not hidden from the reader.
 
 ### lkt_duodenum (**canonical log-transformed duodenal transit rate constant**)
 - **Type:** log-transformed-pk

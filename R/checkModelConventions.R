@@ -1380,8 +1380,9 @@ checkModelConventions <- function(model, verbose = TRUE) {
       "time_varying_clearance", "warning", nm,
       sprintf("'%s' makes clearance depend on time but uses none of the canonical names.", nm),
       paste("Use cl_time_max / cl_t50 / cl_time_hill for a sigmoidal-in-time",
-            "clearance, or cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
-            "exponential decay, so the structure can be found by name (issue #481).")
+            "clearance, cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
+            "exponential decay, or tclchange / cl_late for a piecewise-constant",
+            "step, so the structure can be found by name (issue #481).")
     ))
   }
   issues
