@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Codaccioni 2024 hepatic CYP3A4 ontogeny, Salem vs modified Upreti ([doi:10.1002/jcph.2452](https://doi.org/10.1002/jcph.2452)) -- paediatric system-parameter model, birth to adulthood.
+- Add Darwish 2012 armodafinil and modafinil ([doi:10.1177/0091270011417825](https://doi.org/10.1177/0091270011417825)) -- patients with excessive sleepiness associated with shift work disorder.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
