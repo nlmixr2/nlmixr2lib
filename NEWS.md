@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Riccobene 2017 ceftaroline ([doi:10.1002/jcph.809](https://doi.org/10.1002/jcph.809)) -- children from birth to under 18 years pooled with adults.
+- Add Riggs 2012 albinterferon alfa-2b ([doi:10.1177/0091270011399576](https://doi.org/10.1177/0091270011399576)) -- adults with chronic hepatitis C virus infection.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
