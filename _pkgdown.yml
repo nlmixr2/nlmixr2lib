@@ -2478,6 +2478,8 @@ navbar:
         href: articles/Wickramasinghe_2025_pamiparib.html
       - text: "Panitumumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "Pantoprazole (Knebel 2011)"
+        href: articles/Knebel_2011_pantoprazole.html
       - text: "Pantoprazole (Pettersen 2009)"
         href: articles/Pettersen_2009_pantoprazole.html
       - text: "Paracetamol (Anderson 1998)"
@@ -4549,7 +4551,7 @@ articles:
   - articles/Kloprogge_2015_lumefantrine
   - articles/Kloprogge_2018_lumefantrine
   - articles/Klunder_2017_upadacitinib
-  - articles/Knebel_2008_epoetinDelta
+  - articles/Knebel_2011_pantoprazole
   - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
