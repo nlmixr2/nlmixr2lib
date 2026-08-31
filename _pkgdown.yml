@@ -824,6 +824,8 @@ navbar:
         href: articles/Kobuchi_2025_dapagliflozin.html
       - text: "Dapagliflozin (vanderWalt 2013)"
         href: articles/vanderWalt_2013_dapagliflozin.html
+      - text: "Dapagliflozin pbpk (Nemitz 2026)"
+        href: articles/Nemitz_2026_dapagliflozin_pbpk.html
       - text: "Dapsone (Gatti 1996)"
         href: articles/Gatti_1996_dapsone.html
       - text: "Dapsone (Hall 2017)"
@@ -3692,8 +3694,6 @@ navbar:
         href: articles/Aguiar_2021_ustekinumab.html
       - text: "Ustekinumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
-      - text: "Utreloxastat (Hu 2026)"
-        href: articles/Hu_2026_utreloxastat.html
       - text: "Valbenazine (Nguyen 2025)"
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valbenazine tmc (Nguyen 2025)"
@@ -5032,6 +5032,7 @@ articles:
   - articles/Narwal_2013_sifalimumab
   - articles/Nath_2007_melphalan
   - articles/Nath_2010_melphalan
+  - articles/Nemitz_2026_dapagliflozin_pbpk
   - articles/Nemoto_2017_ethanol
   - articles/Nestorov_2014_factorviii
   - articles/Netterberg_2017_docetaxel
