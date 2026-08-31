@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Mao 2012 vernakalant ([doi:10.1177/0091270011408425](https://doi.org/10.1177/0091270011408425)) -- adults with atrial fibrillation or atrial flutter and healthy volunteers.
+- Add Marier 2010 teduglutide ([doi:10.1177/0091270009342252](https://doi.org/10.1177/0091270009342252)) -- healthy adults and patients with short bowel syndrome, Crohn's disease, or moderate hepatic impairment.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
