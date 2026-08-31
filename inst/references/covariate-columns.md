@@ -9798,6 +9798,54 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Marathe_2023_belzutifan.R` (two distinct linear-deviation effects: on apparent clearance `cl_ugt2b17 = 1 + e_ugt2b17_em_cl * UGT2B17_EM + e_ugt2b17_pm_cl * UGT2B17_PM` with `e_ugt2b17_pm_cl = -0.24`, i.e. -24.2% CL/F versus the intermediate-metabolizer reference (5.63 -> 4.27 L/h); and on relative bioavailability `f(depot) = exp(lfdepot) * (1 + e_ugt2b17_pm_fdepot * UGT2B17_PM)` with `e_ugt2b17_pm_fdepot = 0.11`, i.e. +11.0% F versus the pooled intermediate + extensive reference; Marathe 2023 Table 2, Table 2 caption equation `F = 1 * (1 + F-UGT2B17P)`, and Table 3).
 - **Notes:** Companion to `UGT2B17_EM`; see that entry's Notes for the three-level decomposition rationale and the phenotype-versus-genotype naming choice. Follows the `CYP2C19_PM` (Zhao 2018 omeprazole) and `CYP2D6_PM` (Knights 2015 aripiprazole) precedents. Marathe 2023 attributes the positive bioavailability effect to reduced first-pass glucuronidation in the gut when UGT2B17 activity is absent (Discussion), which is mechanistically consistent with the negative CL/F effect from the same deletion. The UGT2B17 deletion is strongly ancestry-stratified: Marathe 2023 reports the UGT2B17/CYP2C19 dual-PM phenotype frequency at ~0.5% in the overall US population but up to 15% in East Asians. Ratified canonically alongside the Marathe 2023 belzutifan extraction.
 
+### UGT2B15_STAR2_HET (**canonical for UGT2B15*1/*2 heterozygote indicator**)
+- **Description:** Binary genotype indicator for the *UGT2B15* `*1/*2` heterozygote group at the D85Y (Asp85Tyr) coding polymorphism. 1 = subject carries exactly one reduced-function `*2` (Y85) allele (genotype `*1/*2`); 0 = otherwise (the union of `*1/*1` wild-type homozygotes and `*2/*2` variant homozygotes; the paired indicator `UGT2B15_STAR2_HOM` flags the homozygous-variant group). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 with `UGT2B15_STAR2_HOM = 0` (the `*1/*1` wild-type homozygote / extensive-metabolizer stratum).
+- **Source aliases:**
+  - `UGT2B15*1/*2` -- Stringer 2013 Table 1 genotype-frequency column and Table 2 row label `CL (*1/*2)`.
+- **Example models:** `Stringer_2013_sipoglitazar.R` (three stratum-specific typical clearances selected by the paired indicators: `lcl_s1s1 = log(4.46)`, `lcl_s1s2 = log(3.25)`, `lcl_s2s2 = log(1.53)` L/h; Stringer 2013 Table 2).
+- **Notes:** Follows the `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` and `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` paired-binary precedents for a three-level star-allele genotype whose typical parameter value differs in each stratum. The `_STAR2_` token names the reduced-function allele, matching the paper's `*2` nomenclature; UGT2B15*2 is the D85Y substitution (rs1902023) that lowers glucuronidation activity, so unlike `CYP3A5_STAR1_*` the indicator counts the LOSS-of-function allele and clearance falls as the indicator turns on. Distinct from the `UGT2B15_IM` / `UGT2B15_PM` phenotype canonicals below: those name a LATENT mixture-model subpopulation inferred from observed clearance, whereas these two name the OBSERVED germline genotype. Also distinct from the `UGT2B7_*` genotype canonicals (a different UGT isoform). Genotype frequencies in the pooled Stringer 2013 population (n = 1151) were `*1/*1` 22%, `*1/*2` 51%, `*2/*2` 27%. Ratified canonically alongside the Stringer 2013 sipoglitazar extraction.
+
+  **Concurrent-branch note for the consolidation merge.** The companion paper Stringer 2014 (*J Clin Pharmacol* 54(4):453-461, doi:10.1002/jcph.227) is being extracted on branch `claude/manacq_Stringer_2014_jcph_227`, which registers `UGT2B15_STAR2_HET` and `UGT2B15_STAR2_HOM` independently and to the same definition. Keep **one** entry per name when the two branches are merged and union the Source-aliases and Example-models lists; that branch additionally registers `UGT2B15_MISSING` (an ungenotyped stratum that Stringer 2013 does not have), which stands on its own.
+
+  **Cross-paper caution about which clearances belong to which genotype.** Stringer 2014 Table 1 fixes the per-genotype sipoglitazar clearances at 5.04 / 3.35 / 1.53 L/h for `*1/*1` / `*1/*2` / `*2/*2`. Those are the *mixture-model* estimates from supplementary Table A1 of Stringer 2013, where they belong to the latent EM / IM / PM subpopulations, not to the genotype. The genotype-stratified estimates of Stringer 2013 Table 2 are 4.46 / 3.25 / 1.53 L/h. A model that needs "the published sipoglitazar clearance for genotype X" must therefore say which of the two Stringer 2013 models it means; `Stringer_2013_sipoglitazar.R` carries the Table 2 set and `Stringer_2013_sipoglitazar_mixture.R` carries the Table A1 set.
+
+### UGT2B15_STAR2_HOM (**canonical for UGT2B15*2/*2 homozygote indicator**)
+- **Description:** Binary genotype indicator for the *UGT2B15* `*2/*2` homozygous-variant group at the D85Y (Asp85Tyr) coding polymorphism. 1 = subject carries two reduced-function `*2` (Y85) alleles (genotype `*2/*2`, the "poor metabolizer" genotype); 0 = otherwise (the union of `*1/*1` and `*1/*2`; the paired indicator `UGT2B15_STAR2_HET` flags the heterozygous group). Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 with `UGT2B15_STAR2_HET = 0` (the `*1/*1` wild-type homozygote / extensive-metabolizer stratum).
+- **Source aliases:**
+  - `UGT2B15*2/*2` -- Stringer 2013 Table 1 genotype-frequency column and Table 2 row label `CL (*2/*2)`.
+- **Example models:** `Stringer_2013_sipoglitazar.R` (selects `lcl_s2s2 = log(1.53)` L/h, i.e. 66% lower apparent clearance than the `*1/*1` stratum; Stringer 2013 Table 2 and Covariate Analysis paragraph).
+- **Notes:** Paired with `UGT2B15_STAR2_HET`; see that entry's Notes for the three-level decomposition rationale, the genotype-versus-phenotype naming boundary, the concurrent-branch dedupe note, and the cross-paper caution about which set of published clearances belongs to which genotype. Ratified canonically alongside the Stringer 2013 sipoglitazar extraction.
+
+### UGT2B15_IM (**canonical for UGT2B15 intermediate-metabolizer phenotype indicator**)
+- **Description:** 1 = subject is assigned to the *UGT2B15* intermediate-metabolizer (IM) subpopulation; 0 = any other UGT2B15 phenotype (extensive or poor). Time-fixed per subject. Paired with `UGT2B15_PM` to encode the three-level EM (both indicators 0, reference) / IM / PM phenotype with two binary indicators.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 with `UGT2B15_PM = 0` (the UGT2B15 extensive-metabolizer stratum).
+- **Source aliases:**
+  - `POP2 (CL2 IM)` -- Stringer 2013 supplementary mixture-model analysis, where the latent subpopulation assignment is estimated from apparent clearance alone via NONMEM `$MIX` without using the genotype.
+- **Example models:** `Stringer_2013_sipoglitazar_mixture.R` (selects `lcl_im = log(3.35)` L/h; Stringer 2013 supplementary Table A1. The mixture prior weights estimated by the model are EM 0.18, IM 0.522, PM 0.30).
+- **Notes:** Follows the `UGT2B17_EM` / `UGT2B17_PM`, `CYP2D6_EM` / `CYP2D6_IM` / `CYP2D6_PM` and `CYP2C19_IM` / `CYP2C19_PM` paired-binary precedents for multi-level metabolizer phenotypes. This canonical names the LATENT subpopulation membership a mixture model assigns from observed clearance, which is deliberately distinct from the observed germline genotype indicators `UGT2B15_STAR2_HET` / `UGT2B15_STAR2_HOM` above: Stringer 2013 fits both and reports that 61 of 744 subjects (8%) genotyped `*1/*1` or `*1/*2` were assigned to the PM subpopulation, i.e. phenotype and genotype disagree in a small but clinically relevant fraction. A model that assigns subpopulations from a genotype should use the `_STAR2_` genotype indicators, not these. Ratified canonically alongside the Stringer 2013 sipoglitazar extraction.
+
+### UGT2B15_PM (**canonical for UGT2B15 poor-metabolizer phenotype indicator**)
+- **Description:** 1 = subject is assigned to the *UGT2B15* poor-metabolizer (PM) subpopulation; 0 = any other UGT2B15 phenotype (extensive or intermediate). Time-fixed per subject. Paired with `UGT2B15_IM` to encode the three-level EM (reference) / IM / PM phenotype with two binary indicators.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 with `UGT2B15_IM = 0` (the UGT2B15 extensive-metabolizer stratum).
+- **Source aliases:**
+  - `POP3 (CL3 PM)` -- Stringer 2013 supplementary mixture-model analysis.
+- **Example models:** `Stringer_2013_sipoglitazar_mixture.R` (selects `lcl_pm = log(1.53)` L/h; Stringer 2013 supplementary Table A1).
+- **Notes:** Companion to `UGT2B15_IM`; see that entry's Notes for the latent-phenotype-versus-observed-genotype boundary. Ratified canonically alongside the Stringer 2013 sipoglitazar extraction.
+
 ### ABCB1_C1236T_HET (**canonical for ABCB1 C1236T heterozygote indicator**)
 - **Description:** Binary genotype indicator for the *ABCB1* (P-glycoprotein, MDR1) C1236T heterozygote group at rs1128503 (exon 12, synonymous Gly412Gly). 1 = subject carries exactly one variant allele (genotype T/C); 0 = otherwise (the union of C/C homozygous wild-type and T/T homozygous variant strata). Time-fixed per subject (germline genotype).
 - **Units:** (binary)
@@ -12220,6 +12268,16 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** `Prop RSV_ATM phase 2/3` -- the Xie 2025 Table S3 row label, which is the only place the stratum is named.
 - **Example models:** `Xie_2025_aztreonam_avibactam.R` (selects `propSdPhase23 = 0.533`; Xie 2025 Table S3 row `Prop RSV_ATM phase 2/3` = 53.3%).
 - **Notes:** Specific scope; see `STUDY_AZTAVI_PHASE2` for the family rationale. **Stratum membership is not defined by any source on disk.** Xie 2025 Table S3 reports this fourth aztreonam proportional magnitude alongside separate phase 2 (theta21) and phase 3 (theta22) magnitudes, and neither the paper, its supplement, nor the predecessor Das 2024 says which records make up the pooled phase-2/3 stratum as distinct from the other two. The column is registered so the published parameter set can be carried complete rather than silently dropping theta23; assigning records to it is left to the user, and the founding model's vignette records the gap in its Errata. Because this selects only a residual-error magnitude, it affects the simulated observation and not the typical-value or individual-prediction profile. Ratified canonically on 2026-08-17 alongside the Xie 2025 aztreonam-avibactam extraction.
+
+### STUDY_SIPO_PHASE2 (**canonical for Stringer 2013 sipoglitazar phase II patient-study residual-error stratum indicator**)
+- **Description:** 1 = the observation belongs to the pooled phase II type-2-diabetes patient studies (EC201 and EC202) of the Stringer 2013 sipoglitazar analysis; 0 = the observation belongs to the phase I healthy-volunteer study (006), which is the reference stratum. Used to switch the proportional residual-error magnitude between the two populations and to switch on the inter-individual variability that Stringer 2013 places on the phase II residual error.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (phase I healthy-volunteer study 006, dense single-dose sampling).
+- **Source aliases:** derived per record from the study identifier (006 -> 0; EC201 / EC202 -> 1).
+- **Example models:** `Stringer_2013_sipoglitazar.R` and `Stringer_2013_sipoglitazar_mixture.R` (select `propSdPhase2 = sqrt(0.167) = 0.409` with IIV 76.9% CV instead of `propSdPhase1 = sqrt(0.0552) = 0.235`; Stringer 2013 Table 2 and supplementary Table A1).
+- **Notes:** Specific scope because the contrast is tied to the Stringer 2013 pooled analysis. Member of the `STUDY_<DRUG>_PHASE<N>` family alongside `STUDY_AZTAVI_PHASE2` / `STUDY_AZTAVI_PHASE3` (Xie 2025), `STUDY_SULDUR_PHASE2` / `STUDY_SULDUR_PHASE3` (Cammarata 2024), `STUDY_LEFAMULIN_PHASE1` / `STUDY_LEFAMULIN_PHASE2` (Bian 2024) and `STUDY_NIPOCALIMAB_PHASE1` (Valenzuela 2025). Only one indicator is needed here because the analysis has exactly two residual-error strata. Stringer 2013 explains the split in its supplementary methods: the phase II samples were all intended as troughs but the actual time after dose was never recorded, so the phase II residual carries both assay error and an unrecorded-time component, and an IIV term on that residual dropped the objective function by 508 points and the residual error from 131% to 24%. Ratified canonically alongside the Stringer 2013 sipoglitazar extraction.
 
 ### STUDY_CIAI_PH2 (**canonical for the phase 2 cIAI study cohort indicator in the ceftazidime-avibactam / aztreonam-avibactam model lineage**)
 - **Description:** 1 = subject enrolled in the Phase 2 complicated-intra-abdominal-infection study of the ceftazidime-avibactam development program (labelled "Study2002" in Xie 2025 Table S3); 0 = otherwise. A study-cohort effect that is retained across successive models in this lineage and stacks ON TOP OF the infection-type covariate `DIS_CIAI` for those subjects rather than replacing it.
