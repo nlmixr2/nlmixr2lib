@@ -210,6 +210,8 @@ navbar:
         href: articles/HernandezLozano_2025_apramycin.html
       - text: "Apremilast (Warren 2025)"
         href: articles/Warren_2025_pde4_il13_atopic_dermatitis.html
+      - text: "Apricoxib (Kastrissios 2006)"
+        href: articles/Kastrissios_2006_apricoxib.html
       - text: "Apx3330 (Silva 2024)"
         href: articles/Silva_2024_apx3330.html
       - text: "Arginine (Brussee 2016)"
@@ -4498,6 +4500,7 @@ articles:
   - articles/Karlsson_2009_voriconazole
   - articles/Karunajeewa_2009_sulfadoxinePyrimethamine
   - articles/Kassir_2014_tacrolimus
+  - articles/Kastrissios_2006_apricoxib
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
   - articles/Kawamura_2018_eribulin

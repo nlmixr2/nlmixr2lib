@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kamal 2014 oseltamivir ([doi:10.1038/clpt.2014.120](https://doi.org/10.1038/clpt.2014.120)) -- infants aged 2 weeks through 11 months with influenza.
+- Add Kastrissios 2006 apricoxib (CS-706) ([doi:10.1177/0091270006287122](https://doi.org/10.1177/0091270006287122)) -- healthy adult volunteers.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
