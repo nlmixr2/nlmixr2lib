@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Soria-Chacartegui 2026 tramadol ([doi:10.1007/s13318-026-00986-3](https://doi.org/10.1007/s13318-026-00986-3)) - European healthy volunteers genotyped for CYP2D6.
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
