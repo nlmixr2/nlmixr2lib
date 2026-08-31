@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Marier 2010 teduglutide ([doi:10.1177/0091270009342252](https://doi.org/10.1177/0091270009342252)) -- healthy adults and patients with short bowel syndrome, Crohn's disease, or moderate hepatic impairment.
+- Add Marier 2014 dutogliptin ([doi:10.1002/cpdd.87](https://doi.org/10.1002/cpdd.87)) -- healthy subjects and patients with type 2 diabetes mellitus.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
