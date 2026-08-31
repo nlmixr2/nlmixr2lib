@@ -1074,6 +1074,10 @@ navbar:
         href: articles/Johnston_2021_empagliflozin.html
       - text: "Empagliflozin popPK (Johnston 2021)"
         href: articles/Johnston_2021_empagliflozin.html
+      - text: "Empagliflozin t1dm (Mondick 2018)"
+        href: articles/Mondick_2018_empagliflozin.html
+      - text: "Empagliflozin t2dm (Mondick 2018)"
+        href: articles/Mondick_2018_empagliflozin.html
       - text: "Emtricitabine (Valade 2014)"
         href: articles/Valade_2014_emtricitabine.html
       - text: "Emtricitabine (Valade 2015)"
@@ -4791,6 +4795,7 @@ articles:
   - articles/Molto_2016_atazanavir_ritonavir
   - articles/Momper_2016_fluconazole
   - articles/Mondick_2006_dactinomycin
+  - articles/Mondick_2018_empagliflozin
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
   - articles/Morath_2025_apixaban
