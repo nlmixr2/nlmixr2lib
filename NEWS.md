@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Knebel 2013 atorvastatin and o-hydroxyatorvastatin ([doi:10.1002/jcph.66](https://doi.org/10.1002/jcph.66)) -- children and adolescents with heterozygous familial hypercholesterolemia.
+- Add Machavaram 2013 interleukin-6 / CYP3A4 suppression ([doi:10.1038/clpt.2013.79](https://doi.org/10.1038/clpt.2013.79)) -- adults with rheumatoid arthritis, bone marrow transplant or surgical trauma.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
