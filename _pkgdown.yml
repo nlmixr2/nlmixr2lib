@@ -828,6 +828,8 @@ navbar:
         href: articles/Hall_2017_dapsone.html
       - text: "Daptomycin (Garonzik 2016)"
         href: articles/Garonzik_2016_daptomycin.html
+      - text: "Daptomycin (Subrtova 2026)"
+        href: articles/Subrtova_2026_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
       - text: "Daratumumab qsstmdd (Li 2021)"
@@ -5309,6 +5311,7 @@ articles:
   - articles/Struemper_2017_belimumab
   - articles/Struemper_2025_tumorsize_OS_nsclc
   - articles/Su_2016_dexmedetomidine
+  - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
