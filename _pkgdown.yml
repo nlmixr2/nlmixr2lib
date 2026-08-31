@@ -2054,6 +2054,8 @@ navbar:
         href: articles/Weatherley_2009_maraviroc_iv.html
       - text: "Maribavir (Sun 2023)"
         href: articles/Sun_2023_maribavir.html
+      - text: "Matrine pig pbpk (Yang 2025)"
+        href: articles/Yang_2025_matrine_pig_pbpk.html
       - text: "Matuzumab (Kuester 2008)"
         href: articles/Kuester_2008_matuzumab.html
       - text: "Mavoglurant pbpk (Elmokadem 2023)"
@@ -5491,6 +5493,7 @@ articles:
   - articles/Yang_2024_naloxone_opioid_reversal
   - articles/Yang_2024_zastaprazan
   - articles/Yang_2025_imatinib_external_evaluation
+  - articles/Yang_2025_matrine_pig_pbpk
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2025_flurbiprofen

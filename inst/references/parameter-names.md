@@ -483,6 +483,34 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Yamada_2025_oxaliplatin.R` (simultaneous free + total plasma platinum after oxaliplatin; `fp = 0.194 * exp(-0.0393 * TALD) + 0.0318`, all three estimated, with IIV on `fp0_A` and `fp0_B` but none on `alpha` -- founding example).
 - **Notes:** Distinct from `lbfu` (registered in the skill-side naming reference), which is the **linear** time-varying unbound-fraction slope of the form `fu = fu_ref + bfu * (t - t_ref)` anchored to a study-level reference time and usually fixed from literature. Choose between the two by the source paper's own printed equation, not by convenience: `lbfu` for a linear drift with a literature-fixed slope, this family for an estimated exponential decay re-started by each dose. Unlike `lbfu`, these three are normally estimated, because a paper that fits free and total concentrations simultaneously identifies them directly from the free:total ratio. Characteristic of platinum drugs, whose binding to plasma protein is irreversible and time dependent rather than a rapid reversible equilibrium; do not reuse this family for concentration-dependent (saturable) binding, which needs a capacity/affinity parameterisation instead. Ratified 2026-08-18 alongside the Yamada 2025 oxaliplatin extraction.
 
+### lkst (**canonical log-transformed gastric emptying rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant draining a `stomach` depot into the intestinal lumen, in oral PBPK models that resolve the gastric and intestinal lumen as explicit states (1 / time). The bare counterpart inside `model()` is `kst`.
+- **Source aliases:**
+  - `Kst` -- used in `Ai_2024_ractopamine_goat_pbpk.R`.
+  - `kst`, `k_st`, `KST` -- generic acslX / Berkeley-Madonna spellings.
+- **Example models:** `Ai_2024_ractopamine_goat_pbpk.R` (`Kst` = 0.0910 1/h, gastric contents into gut lumen in goats; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kst` = 0.8545 1/h, reconstructed gastric depot into the sampled intestinal lumen in pigs).
+- **Notes:** Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B). Precedent existed in the repository before ratification -- `Ai_2024_ractopamine_goat_pbpk.R` already carried `lkst` in `ini()`, and `Luo_2024_*_pbpk.R`, `Back_2018_fenofibrate.R` and `Guiastrennec_2016_gastric_emptying.R` carried the same concept as `model()` literals named `kt_sto` / `kg`. Register the constant in `ini()` rather than burying it as a `model()` literal whenever the source paper optimised it, so that half of one optimisation is not hidden from the reader.
+
+### lkfec (**canonical log-transformed faecal excretion rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for unabsorbed drug leaving the intestinal lumen as faeces, competing with absorption out of the same compartment (1 / time). The bare counterpart inside `model()` is `kfec`.
+- **Source aliases:**
+  - `ke` -- used in `Yang_2025_matrine_pig_pbpk.R`.
+  - `Kgut`, `kgut`, `kint`, `kF`, `k_e` -- generic spellings; note that `Kgut` / `kint` name the compartment or the interval, not the process.
+- **Example models:** `Yang_2025_matrine_pig_pbpk.R` (`ke` = 0.007358 1/h, unabsorbed matrine leaving the pig intestinal lumen; founding example).
+- **Notes:** Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B). `lkfec` was chosen over the alternative `lkgut` because it names the **process** -- excretion out of the gut lumen to faeces -- rather than the compartment; `lkgut` would read to a later user as a general gut-transit rate and could be misapplied to the absorption or the emptying step. `lkgut` remains in `Yang_2023_diclazuril_chicken_pbpk.R` and `Ai_2024_ractopamine_goat_pbpk.R` as an unregistered legacy spelling that predates this entry; use `lkfec` in new models. Do **not** mint a gut-specific absorption name for the competing route out of the same compartment -- that remains the ordinary canonical `lka`.
+
+### lkbile (**canonical log-transformed biliary excretion rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for **parent drug** leaving the `liver` compartment by biliary excretion, either into `gut_lumen` (enterohepatic recirculation) or into a terminal faecal / bile sink (1 / time). The bare counterpart inside `model()` is `kbile`.
+- **Source aliases:**
+  - `KbileC` -- used in `Zhang_2024_f53b_mouse_pbpk.R`.
+  - `kbi` -- used in `Yang_2025_matrine_pig_pbpk.R`.
+  - `Kbile`, `k_bi` -- generic spellings.
+- **Example models:** `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC` = 0.00001, allometrically scaled terminal biliary elimination from liver to faeces; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kbi` = 0.05835 1/h, liver back into the intestinal lumen, which is what produces the observed two-phase luminal decay).
+- **Notes:** Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B). Deliberately **not** `kbm`, and `kbm` must not be widened to cover this case: `kbm` is registered as the biliary-*metabolite* excretion rate constant, moving a **metabolite** out of a **plasma / central** compartment, whereas `lkbile` moves **parent drug** out of **`liver`**. Broadening `kbm` would silently change the meaning of an existing entry that `Hamren_2008_tesaglitazar.R` depends on. The two can coexist in one model: a parent drug excreted in bile via `lkbile` and its glucuronide returned via `kbm` / `kicv`.
+
 ---
 
 ## Bare structural PK parameters
@@ -819,6 +847,16 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `Kp` -- near-universal PBPK notation, subscripted by tissue.
 - **Example models:** `Levitt_2005_propofol_pbpk.R`, `Mi_2023_cefquinome_pbpk.R`, `Gaohua_2012_pregnancy_pbpk_midazolam.R`, `Litjens_2023_linezolid_cns_pbpk.R`, `Yang_2023_diclazuril_chicken_pbpk.R`, `Kang_2023_artesunate_hamster_pbpk.R`.
 - **Notes:** Registered 2026-08-05 together with the log-transformed family; see `lkp_adipose, ...` above for the family shape, for the `kp_milk` lactation member, for the boundary against `kpu<n>` / `sf<n>` / `cmpr`, and for the prefix-collision names that are not partition coefficients. Many PBPK models compute additional bare `kp_*` names that are qualifiers rather than tissues (`kp_free`, `kp_bound`, `kp_preg`) or per-tissue loop indices (`kp_i`); those are local `model()` intermediates and are intentionally not registered as canonicals.
+
+### kst, kfec, kbile (**canonical bare gastrointestinal transit and enterohepatic rate constants**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lkst`, `lkfec` and `lkbile`. `kst` empties a `stomach` depot into the intestinal lumen; `kfec` removes unabsorbed drug from the intestinal lumen as faeces, in competition with `ka`; `kbile` moves parent drug out of `liver` into `gut_lumen` or a terminal bile sink. All are 1 / time.
+- **Source aliases:**
+  - `Kst`, `kt_sto`, `kg` -- gastric emptying.
+  - `ke`, `Kgut`, `kint`, `kF` -- faecal excretion.
+  - `KbileC`, `kbi`, `Kbile` -- biliary excretion.
+- **Example models:** `Ai_2024_ractopamine_goat_pbpk.R`, `Zhang_2024_f53b_mouse_pbpk.R`, `Yang_2025_matrine_pig_pbpk.R`.
+- **Notes:** Registered 2026-08-20 together with the log-transformed family; see `lkst`, `lkfec` and `lkbile` above for the ratification rationale, for why `lkfec` is preferred over the legacy `lkgut` spelling, and for the boundary against `kbm`. Some PBPK models compute these in place as `model()` literals rather than exponentiating an `ini()` entry; register them in `ini()` whenever the source paper reports them as optimised quantities.
 
 ---
 

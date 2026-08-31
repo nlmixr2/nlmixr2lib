@@ -144,6 +144,40 @@ Source-paper aliases that translate to `ltlag` without sidecar:
 Inside `model()` the bare name is `tlag`. Apply via `alag(depot) <- tlag`
 or `alag(<cmt>) <- tlag` (preferred over carrying a separate `lag` compartment).
 
+## Gastrointestinal transit and enterohepatic rate constants
+
+First-order rate constants for the gut-lumen mass balance in oral PBPK models
+that resolve the gastric and intestinal lumen as explicit states (`stomach`,
+`gut_lumen`). All three are log-transformed in `ini()`; bare names inside
+`model()` drop the `l` prefix. Units 1/time.
+
+- `lkst` -- **gastric emptying rate constant**, draining the `stomach` depot into
+  the intestinal lumen. Source-paper aliases: `Kst`, `kst`, `k_st`, `KST`.
+  Founding example: `Ai_2024_ractopamine_goat_pbpk.R` (`Kst = 0.0910 /h`); also
+  `Yang_2025_matrine_pig_pbpk.R` (`kst = 0.8545 /h`).
+- `lkfec` -- **faecal excretion rate constant** for unabsorbed drug leaving
+  `gut_lumen` as faeces. Names the *process* (excretion to faeces) rather than
+  the compartment, so it cannot be misread as a general gut-transit rate.
+  Source-paper aliases: `ke`, `k_e`, `Kgut`, `kgut`, `kint`, `kF`. Founding
+  example: `Yang_2025_matrine_pig_pbpk.R` (`ke = 0.007358 /h`).
+- `lkbile` -- **biliary excretion rate constant** for parent drug leaving the
+  `liver` compartment, either into `gut_lumen` (enterohepatic recirculation) or
+  as a terminal biliary elimination route. Source-paper aliases: `kbi`, `k_bi`,
+  `Kbile`, `KbileC`. Founding example: `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC`,
+  terminal biliary elimination); also `Yang_2025_matrine_pig_pbpk.R`
+  (`kbi = 0.05835 /h`, liver into gut lumen).
+
+Three boundaries to respect:
+
+- `lkbile` is **not** `kbm`. `kbm` is registered as the biliary-*metabolite*
+  excretion rate constant (a metabolite leaving a plasma / central compartment);
+  `lkbile` is parent drug leaving `liver`. Do not widen `kbm` to cover this case.
+- `lkgut` appears in `Yang_2023_diclazuril_chicken_pbpk.R` and
+  `Ai_2024_ractopamine_goat_pbpk.R` for the same concept as `lkfec`. It predates
+  this section and is an unregistered legacy spelling; use `lkfec` in new models.
+- The absorption rate constant out of `gut_lumen` remains the ordinary canonical
+  `lka` -- do not mint a gut-specific absorption name.
+
 ## Time-varying protein binding
 
 Canonical slope for linear time-varying unbound-fraction models:
