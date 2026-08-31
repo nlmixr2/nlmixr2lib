@@ -352,6 +352,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Balcinrenone (Parkinson 2025)"
         href: articles/Parkinson_2025_balcinrenone.html
+      - text: "Baloxavir (Retout 2026)"
+        href: articles/Retout_2026_baloxavir.html
       - text: "Bapineuzumab (Hu 2014)"
         href: articles/Hu_2014_bapineuzumab.html
       - text: "Baricitinib (Decker 2024)"
@@ -5161,6 +5163,7 @@ articles:
   - articles/Renard_2011_indacaterol
   - articles/ResendizGalvan_2025_cycloserine
   - articles/Retlich_2015_linagliptin
+  - articles/Retout_2026_baloxavir
   - articles/Revilla_2010_vancomycin
   - articles/Ribba_2022_ctdna_tumor_size
   - articles/Riccobene_2016_ceftaroline
