@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sun 2025 paclitaxel ([doi:10.1111/cts.70404](https://doi.org/10.1111/cts.70404)) -- adult women with breast cancer receiving weekly paclitaxel.
+- Add Hu 2025 tepotinib ([doi:10.3389/fphar.2025.1685468](https://doi.org/10.3389/fphar.2025.1685468)) -- adults with MET-aberrant non-small cell lung cancer; the human PK submodule of a MET-pathway QSP model. Parameters are transcribed verbatim, but the source's own printed values do not reproduce its own published PK figure; read the vignette before using it to predict exposure.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
