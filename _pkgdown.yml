@@ -3596,6 +3596,22 @@ navbar:
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
       - text: "Valbenazine tmc (Nguyen 2025)"
         href: articles/Nguyen_2025_valbenazine_huntington_chorea.html
+      - text: "Valemetostat anc decrease (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat anemia (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat dose interruption (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat dose reduction (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat orr central (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat orr investigator (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat plt decrease (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valemetostat teae grade3 (Fukae 2024)"
+        href: articles/Fukae_2024_valemetostat_exposure_response.html
       - text: "Valganciclovir (Vezina 2010)"
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
@@ -4348,6 +4364,7 @@ articles:
   - articles/Fu_2022_atenolol_qsp
   - articles/Fu_2023_cardiovascular
   - articles/Fuchs_2014_gentamicin
+  - articles/Fukae_2024_valemetostat_exposure_response
   - articles/Fukumoto_2023_meropenem
   - articles/Fung_2008_butanediol_rat
   - articles/Galluppi_2016_BIIB023
