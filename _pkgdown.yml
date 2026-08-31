@@ -3614,6 +3614,8 @@ navbar:
         href: articles/Derippe_2024_BH3_mimetics_virtual_tumors.html
       - text: "Verapamil rat (Syvanen 2011)"
         href: articles/Syvanen_2011_verapamil_rat.html
+      - text: "Vernakalant (Mao 2012)"
+        href: articles/Mao_2012_vernakalant.html
       - text: "Vildagliptin (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_vildagliptin.html
       - text: "Vinflunine (Schmitt 2018)"
@@ -4723,6 +4725,7 @@ articles:
   - articles/Maleki_2024_brepocitinib
   - articles/Mandema_2011_biologicDMARDs_mbma
   - articles/MangasSanjuan_2016_axomadol
+  - articles/Mao_2012_vernakalant
   - articles/Mao_2024_sirolimus
   - articles/Marathe_2023_belzutifan
   - articles/Marcantonio_2022_efa
