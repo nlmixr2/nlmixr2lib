@@ -1374,15 +1374,14 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # is prose about the parameter, not a reference to the time variable.
     rhs <- gsub("\"[^\"]*\"", "", rhs)
     if (!grepl(.bareTimePattern, rhs, perl = TRUE)) next
-    if (grepl(.timeVaryingClearanceAcceptPattern, rhs)) next
+    if (grepl("cl_time_max|cl_t50|cl_time_hill|cl_exp_", rhs)) next
     nm <- trimws(sub("\\s*<-.*$", "", ln))
     issues <- rbind(issues, .issue(
       "time_varying_clearance", "warning", nm,
       sprintf("'%s' makes clearance depend on time but uses none of the canonical names.", nm),
-      paste("Use cl_hill_max / cl_hill_t50 / cl_hill_gamma for a sigmoidal-in-time",
-            "clearance, cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
-            "exponential decay, or tclchange / cl_late for a piecewise-constant",
-            "step, so the structure can be found by name (issue #481).")
+      paste("Use cl_time_max / cl_t50 / cl_time_hill for a sigmoidal-in-time",
+            "clearance, or cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
+            "exponential decay, so the structure can be found by name (issue #481).")
     ))
   }
   issues

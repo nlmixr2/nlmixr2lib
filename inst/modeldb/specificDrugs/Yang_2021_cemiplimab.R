@@ -87,9 +87,9 @@ Yang_2021_cemiplimab <- function() {
     # paper's reported ~35.9% mean reduction within 16 weeks of treatment
     # (Yang 2021 Base model section). Emax can be negative, so it is not log-
     # transformed in the model file; T50 is positive and is log-transformed.
-    cl_hill_max  <- -0.410;     label("Maximal log-fold change in CL EMAX_REF (unitless)")                         # Yang 2021 Table 3: Emax = -0.410
-    lcl_hill_t50  <- log(28.9);  label("Time at which the change in CL is 50%% of EMAX, T50_REF (days)")            # Yang 2021 Table 3: T50  = 28.9 days
-    cl_hill_gamma  <- 2.79;       label("Hill / sigmoidicity exponent of time on CL (unitless)")                     # Yang 2021 Table 3: HILL = 2.79
+    cl_time_max  <- -0.410;     label("Maximal log-fold change in CL EMAX_REF (unitless)")                         # Yang 2021 Table 3: Emax = -0.410
+    lcl_t50  <- log(28.9);  label("Time at which the change in CL is 50%% of EMAX, T50_REF (days)")            # Yang 2021 Table 3: T50  = 28.9 days
+    cl_time_hill  <- 2.79;       label("Hill / sigmoidicity exponent of time on CL (unitless)")                     # Yang 2021 Table 3: HILL = 2.79
 
     # Covariate effects on shared CL/Q (Yang 2021 Final PopPK model
     # Eqs. for CL_i and Q_i; all power-form). Same exponent on CL and Q.
@@ -110,8 +110,8 @@ Yang_2021_cemiplimab <- function() {
     # on Emax and T50 are independent.
     etalcl + etalvc ~ c(0.0870,
                         0.0422, 0.0432)                                                                    # Yang 2021 Table 3: omega^2_CLQ = 0.0870, cov_CLQ:VSS = 0.0422, omega^2_VSS = 0.0432
-    etacl_hill_max ~ 0.228                                                                                        # Yang 2021 Table 3: omega^2_Emax = 0.228 (Emax_i = EMAX_REF * exp(eta))
-    etalcl_hill_t50 ~ 0.610                                                                                        # Yang 2021 Table 3: omega^2_T50  = 0.610 (T50_i  = T50_REF  * exp(eta))
+    etacl_time_max ~ 0.228                                                                                        # Yang 2021 Table 3: omega^2_Emax = 0.228 (Emax_i = EMAX_REF * exp(eta))
+    etalcl_t50 ~ 0.610                                                                                        # Yang 2021 Table 3: omega^2_T50  = 0.610 (T50_i  = T50_REF  * exp(eta))
 
     # Residual error (Yang 2021 Final PopPK model: log-transformed
     # additive-plus-proportional, Y = F + F*ERR(1) + ERR(2)). RUVCV maps
@@ -149,9 +149,9 @@ Yang_2021_cemiplimab <- function() {
     # Time-varying clearance (Yang 2021 Final PopPK model Eq. for CL_i).
     # Multiplicative IIV on Emax (Emax_i = EMAX_REF * exp(eta)) and on T50
     # (T50_i = T50_REF * exp(eta)).
-    cl_hill_max_i <- cl_hill_max * exp(etacl_hill_max)
-    cl_hill_t50_i  <- exp(lcl_hill_t50 + etalcl_hill_t50)
-    cl <- cl_base * exp(cl_hill_max_i * t^cl_hill_gamma / (cl_hill_t50_i^cl_hill_gamma + t^cl_hill_gamma))
+    cl_time_max_i <- cl_time_max * exp(etacl_time_max)
+    cl_t50_i  <- exp(lcl_t50 + etalcl_t50)
+    cl <- cl_base * exp(cl_time_max_i * t^cl_time_hill / (cl_t50_i^cl_time_hill + t^cl_time_hill))
 
     kel <- cl / vc
     k12 <- q  / vc

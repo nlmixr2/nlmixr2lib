@@ -1233,7 +1233,7 @@ test_that("a time-dependent clearance using non-canonical names is flagged", {
   res <- suppressWarnings(checkModelConventions(oldStyle, verbose = FALSE))
   hit <- res[res$category == "time_varying_clearance", ]
   expect_equal(nrow(hit), 1L)
-  expect_match(hit$suggestion, "cl_hill_max", fixed = TRUE)
+  expect_match(hit$suggestion, "cl_time_max", fixed = TRUE)
 })
 
 test_that("the canonical time-varying clearance stems are accepted", {
@@ -1244,14 +1244,14 @@ test_that("the canonical time-varying clearance stems are accepted", {
     ini({
       lcl <- 1; label("Clearance (CL, L/day)")
       lvc <- 1; label("Central volume (Vc, L)")
-      cl_hill_max <- -0.3;  label("Maximum fractional change in CL over time (unitless)")
-      cl_hill_gamma <- 2.5; label("Sigmoidicity of the time effect on CL (unitless)")
-      cl_hill_t50 <- 50;    label("Time of half-maximal change in CL (day)")
+      cl_time_max <- -0.3;  label("Maximum fractional change in CL over time (unitless)")
+      cl_time_hill <- 2.5; label("Sigmoidicity of the time effect on CL (unitless)")
+      cl_t50 <- 50;    label("Time of half-maximal change in CL (day)")
       propSd <- 0.1; label("Proportional residual error (fraction)")
     })
     model({
       cl <- exp(lcl) *
-        exp(cl_hill_max * t^cl_hill_gamma / (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
+        exp(cl_time_max * t^cl_time_hill / (cl_t50^cl_time_hill + t^cl_time_hill))
       vc <- exp(lvc)
       d/dt(central) <- -cl / vc * central
       Cc <- central / vc
@@ -1334,10 +1334,7 @@ test_that("no model in the database still uses a pre-#481 time-varying clearance
       rhs <- sub("#.*$", "", sub("^[^<]*<-", "", ln))
       rhs <- gsub('"[^"]*"', "", rhs)
       if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) next
-      # Same constant the checker uses, NOT a copy of its literal: when these
-      # were two literals, ratifying a new canonical updated one and left this
-      # test flagging the model that founded it.
-      if (grepl(nlmixr2lib:::.timeVaryingClearanceAcceptPattern, rhs)) next
+      if (grepl("cl_time_max|cl_t50|cl_time_hill|cl_exp_", rhs)) next
       offenders <- c(offenders, basename(f))
     }
   }
