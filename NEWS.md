@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Knebel 2012 istradefylline ([doi:10.1177/0091270011420566](https://doi.org/10.1177/0091270011420566)) -- adults with Parkinson disease and levodopa-related motor complications.
+- Add Knebel 2013 atorvastatin and o-hydroxyatorvastatin ([doi:10.1002/jcph.66](https://doi.org/10.1002/jcph.66)) -- children and adolescents with heterozygous familial hypercholesterolemia.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
