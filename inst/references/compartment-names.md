@@ -866,6 +866,17 @@ turned over. Name the state for the co-substrate, not for the drug.
 
 ---
 
+## PASI psoriasis-severity score
+
+### pasi (**canonical PASI score output compartment**)
+- **Type:** compartment
+- **Role:** Psoriasis Area and Severity Index (PASI) score output compartment for psoriasis PD models. Holds the ABSOLUTE score on the standard 0-72 clinical scale, so an indirect-response model initialises it at the baseline PASI (`pasi(0) <- rbase`) and its ODE is a synthesis / degradation balance whose steady state is that baseline. A future model that fits the PASI CHANGE FROM BASELINE directly should register a companion `pasicfb`, exactly as `das28` and `das28cfb` are separated; do not overload this name with a change score.
+- **Source aliases:** `PASI` -- Zhang 2025 paper notation and the `COMP=(PASI,DEFOBS)` state of its Data S4 control stream.
+- **Example models:** `Zhang_2025_drugA.R` (indirect-response PASI model with Imax inhibition of plaque formation by an effect-compartment concentration, plus a placebo effect that multiplies the degradation rate).
+- **Notes:** Ratified canonically on 2026-08-23 alongside the Zhang 2025 anti-psoriatic Drug A extraction (sidecar request-001 q1, option A). Follows the lowercase run-together convention of `das28` / `deltaUPDRS` / `druglikingvascfb`. Distinct from the canonical `score`, which is registered specifically as a generic PAIN score and is not a general clinical-score slot. All previously registered psoriasis models are PK-only, so this is the first PASI PD state in the library.
+
+---
+
 ## Abuse-liability and opioid-withdrawal clinical scores
 
 ### druglikingvascfb (**canonical period-corrected drug liking VAS change-score output compartment**)
