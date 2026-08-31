@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kastrissios 2012 managlinat dialanetil (CS-917) ([doi:10.1177/0091270010396373](https://doi.org/10.1177/0091270010396373)) -- adults with type 2 diabetes mellitus.
+- Add Knebel 2008 epoetin delta ([doi:10.1177/0091270008318218](https://doi.org/10.1177/0091270008318218)) -- pediatric patients with chronic kidney disease.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

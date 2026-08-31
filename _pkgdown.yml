@@ -1124,6 +1124,8 @@ navbar:
         href: articles/Zhang_2025_erythroferrone.html
       - text: "EpoetinBeta (Hayashi 1998)"
         href: articles/Hayashi_1998_epoetinBeta.html
+      - text: "EpoetinDelta (Knebel 2008)"
+        href: articles/Knebel_2008_epoetinDelta.html
       - text: "Ergothioneine pbpk (Okumura 2025)"
         href: articles/Okumura_2025_ergothioneine_pbpk.html
       - text: "Eribulin (Kawamura 2018)"
@@ -4547,6 +4549,7 @@ articles:
   - articles/Kloprogge_2015_lumefantrine
   - articles/Kloprogge_2018_lumefantrine
   - articles/Klunder_2017_upadacitinib
+  - articles/Knebel_2008_epoetinDelta
   - articles/Knibbe_2005_propofol
   - articles/Knibbe_2009_morphine
   - articles/Knights_2015_aripiprazole
