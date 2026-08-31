@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Muhamad 2025 cholecalciferol PBPK ([doi:10.3390/nu17193028](https://doi.org/10.3390/nu17193028)) -- healthy Cape Town schoolchildren aged 6-11 years.
+- Add Park 2025 efineptakin alfa (rhIL-7-hyFc) ([doi:10.2147/DDDT.S564085](https://doi.org/10.2147/DDDT.S564085)) -- adults with locally advanced or metastatic solid tumours.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

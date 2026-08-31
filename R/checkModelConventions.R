@@ -1340,6 +1340,16 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # appear in that same expression.
 .clearanceLhsPattern <- "^\\s*(cl[a-z0-9_]*|[a-z0-9_]*_cl|td_cl)\\s*<-"
 .bareTimePattern <- "(?<![A-Za-z0-9_.])(t|time)(?![A-Za-z0-9_])"
+# The canonical stems that make a time-dependent clearance expression
+# acceptable. Kept as ONE constant because the registry-wide enumerating test in
+# test-checkModelConventions.R applies the same rule to the model files on disk:
+# when this lived as a duplicated literal in both places, ratifying `tclchange`
+# updated the checker and left the test flagging the very model that founded the
+# canonical. `tclchange` is the breakpoint symbol of the piecewise-constant
+# (step / NONMEM MTIME) form, which is the only one of the three whose early arm
+# keeps the plain `cl` name -- so there is no `cl_*` stem on the left of its
+# switch and the breakpoint is what identifies the structure.
+.timeVaryingClearanceAcceptPattern <- "cl_hill_|cl_exp_|tclchange"
 
 # The `ini({})` block declares parameters and their labels; only `model({})`
 # contains the equations. Scanning the whole function makes label prose such as
@@ -1364,14 +1374,15 @@ checkModelConventions <- function(model, verbose = TRUE) {
     # is prose about the parameter, not a reference to the time variable.
     rhs <- gsub("\"[^\"]*\"", "", rhs)
     if (!grepl(.bareTimePattern, rhs, perl = TRUE)) next
-    if (grepl("cl_hill_|cl_exp_", rhs)) next
+    if (grepl(.timeVaryingClearanceAcceptPattern, rhs)) next
     nm <- trimws(sub("\\s*<-.*$", "", ln))
     issues <- rbind(issues, .issue(
       "time_varying_clearance", "warning", nm,
       sprintf("'%s' makes clearance depend on time but uses none of the canonical names.", nm),
       paste("Use cl_hill_max / cl_hill_t50 / cl_hill_gamma for a sigmoidal-in-time",
-            "clearance, or cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
-            "exponential decay, so the structure can be found by name (issue #481).")
+            "clearance, cl_exp_inf / cl_exp_component / cl_exp_kdes for an",
+            "exponential decay, or tclchange / cl_late for a piecewise-constant",
+            "step, so the structure can be found by name (issue #481).")
     ))
   }
   issues

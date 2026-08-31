@@ -250,6 +250,23 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Source aliases:** none.
 - **Example models:** time-varying-clearance popPK extractions.
 
+### ltclchange (**canonical log-transformed clearance-step breakpoint time**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale time, measured from treatment initiation, at which a piecewise-constant ("step") time-varying clearance switches from its early arm to its late arm (time).
+- **Source aliases:**
+  - `TCLchange` -- Park 2025.
+  - `tNab` -- Yoneyama 2017 (an onset time gating a covariate effect on CL/F, the same MTIME construction).
+- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Notes:** For the piecewise-constant form `cl <- cl_early * (t < tclchange) + cl_late * (t >= tclchange)`, which is a switch between two mutually exclusive arms and NOT the additive decomposition that `lcl_ss` / `lcl_time` describe. The naming of that form is deliberately asymmetric: **the early arm is carried by the plain canonical `lcl`**, so there is no `lcl_early`, and a covariate acting before the breakpoint takes the ordinary two-token shape (`e_sexf_cl`). Only the post-breakpoint arm needs its own name (`lcl_late`). In NONMEM this structure is written with MTIME. Use `lcl_hill_t50` instead when the time-course is a smooth sigmoid rather than a step.
+
+### lcl_late (**canonical log-transformed post-breakpoint clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Clearance in force after the breakpoint of a piecewise-constant time-varying clearance (volume / time). Paired with `ltclchange`; the pre-breakpoint arm is the plain `lcl`.
+- **Source aliases:**
+  - `CL>TCLchange` -- Park 2025.
+- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Notes:** Only the LATE arm carries a suffix, because the early arm is an ordinary clearance already covered by `lcl`. Covariates may act on the two arms independently -- in the founding example sex acts on `lcl` only and the late arm is sex-independent.
+
 ### lcl_renal (**canonical log-transformed renal clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** Renal (glomerular-filtration / tubular-secretion) component of an additive renal + non-renal clearance decomposition `CL_total = CL_renal + CL_nonren`.
@@ -653,6 +670,23 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Role:** Bare counterpart of `lcl_time`. Time-decay component of a time-varying clearance decomposition.
 - **Source aliases:** none.
 - **Example models:** time-varying-clearance popPK extractions.
+
+### tclchange (**canonical bare clearance-step breakpoint time**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ltclchange`. Time from treatment initiation at which a piecewise-constant clearance steps between its early and late arms.
+- **Source aliases:**
+  - `TCLchange` -- Park 2025.
+  - `tNab` -- Yoneyama 2017.
+- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Notes:** The early arm is carried by the plain `cl`; there is no `cl_early`. See `ltclchange` for the full form.
+
+### cl_late (**canonical bare post-breakpoint clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_late`. Clearance in force after the `tclchange` breakpoint.
+- **Source aliases:**
+  - `CL>TCLchange` -- Park 2025.
+- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
 
 ### cl_renal (**canonical bare renal clearance arm**)
 - **Type:** bare-pk

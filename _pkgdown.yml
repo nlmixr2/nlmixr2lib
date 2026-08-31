@@ -1070,6 +1070,8 @@ navbar:
         href: articles/Siccardi_2012_efavirenz.html
       - text: "Efavirenz (Vucicevic 2025)"
         href: articles/Vucicevic_2025_efavirenz.html
+      - text: "Efineptakin alfa (Park 2025)"
+        href: articles/Park_2025_efineptakin_alfa.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
       - text: "EGF IFN chimera (DoldanMartelli 2013)"
@@ -5006,6 +5008,7 @@ articles:
   - articles/Park_2014_triflusal
   - articles/Park_2023_mycophenolic_acid
   - articles/Park_2025_cd19_cart_sle_qsp
+  - articles/Park_2025_efineptakin_alfa
   - articles/Parkinson_2025_balcinrenone
   - articles/Parmar_2023_spectinamides_pbpk
   - articles/ParraGuillen_2013_tumor_immunotherapy

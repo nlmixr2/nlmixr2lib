@@ -1193,6 +1193,63 @@ test_that("the canonical time-varying clearance stems are accepted", {
   expect_equal(sum(res$category == "time_varying_clearance"), 0L)
 })
 
+test_that("the piecewise-constant (step) time-varying clearance form is accepted", {
+  # The step form is named asymmetrically: the early arm keeps the plain `cl`,
+  # so no `cl_*` stem appears on the left of the switch. `tclchange` is what
+  # identifies the structure. Founding example: Park_2025_efineptakin_alfa.
+  stepStyle <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;         label("Clearance before the breakpoint (CL, L/day)")
+      lcl_late <- 2;    label("Clearance after the breakpoint (CL, L/day)")
+      ltclchange <- 3;  label("Time at which clearance steps up (day)")
+      lvc <- 1;         label("Central volume (Vc, L)")
+      propSd <- 0.1;    label("Proportional residual error (fraction)")
+    })
+    model({
+      tclchange <- exp(ltclchange)
+      cl <- exp(lcl) * (t < tclchange) + exp(lcl_late) * (t >= tclchange)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(stepStyle, verbose = FALSE))
+  expect_equal(sum(res$category == "time_varying_clearance"), 0L)
+})
+
+test_that("a step clearance without the tclchange breakpoint name is still flagged", {
+  # The accept rule must be the canonical name, not merely "the expression
+  # contains a comparison against t" -- otherwise any ad-hoc breakpoint symbol
+  # would slip through and the structure would stop being greppable.
+  adHocStep <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;      label("Clearance before the breakpoint (CL, L/day)")
+      lcl2 <- 2;     label("Clearance after the breakpoint (CL, L/day)")
+      tswitch <- 14; label("Time at which clearance steps up (day)")
+      lvc <- 1;      label("Central volume (Vc, L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) * (t < tswitch) + exp(lcl2) * (t >= tswitch)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(adHocStep, verbose = FALSE))
+  hit <- res[res$category == "time_varying_clearance", ]
+  expect_equal(nrow(hit), 1L)
+  expect_match(hit$suggestion, "tclchange", fixed = TRUE)
+})
+
 test_that("no model in the database still uses a pre-#481 time-varying clearance name", {
   # Enumerating rather than spot-checking: a newly added model that reuses the
   # old spellings fails here until it is migrated.
@@ -1208,7 +1265,10 @@ test_that("no model in the database still uses a pre-#481 time-varying clearance
       rhs <- sub("#.*$", "", sub("^[^<]*<-", "", ln))
       rhs <- gsub('"[^"]*"', "", rhs)
       if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) next
-      if (grepl("cl_hill_|cl_exp_", rhs)) next
+      # Same constant the checker uses, NOT a copy of its literal: when these
+      # were two literals, ratifying a new canonical updated one and left this
+      # test flagging the model that founded it.
+      if (grepl(nlmixr2lib:::.timeVaryingClearanceAcceptPattern, rhs)) next
       offenders <- c(offenders, basename(f))
     }
   }
