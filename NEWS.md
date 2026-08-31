@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Butragueno-Laiseca 2022 piperacillin ([doi:10.1016/j.cmi.2022.03.031](https://doi.org/10.1016/j.cmi.2022.03.031)) -- critically ill children with and without continuous kidney replacement therapy.
+- Add Butragueno-Laiseca 2024 meropenem ([doi:10.1128/aac.01729-23](https://doi.org/10.1128/aac.01729-23)) -- critically ill children in a paediatric ICU, with and without continuous kidney replacement therapy.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
