@@ -1,5 +1,5 @@
 GonzalezSales_2024_imetelstat <- function() {
-  description <- "Three-compartment population PK model for imetelstat (GRN163L), a 13-mer N3'-P5' thio-phosphoramidate oligonucleotide telomerase inhibitor, fit to 4375 plasma concentrations from 424 adults with hematologic malignancies (lower-risk MDS, myelofibrosis, multiple myeloma, ET/PV, CLD) or solid tumors who received IV imetelstat 0.4-11.7 mg/kg weekly to every-4-weeks (Gonzalez-Sales 2024). Imetelstat is described by a two-compartment nonlinear disposition model with saturable binding/distribution to a peripheral binding (BIND) compartment (Snoeck 1999 / Peletier 2017 parameterisation): free drug binds reversibly to a target pool with capacity Bmax (Kon, Koff); bound drug is internalised to a deep peripheral tissue (Kint) and returns to central as free drug (Kback); free drug also undergoes linear elimination from central (CL). Theory-based allometric exponents for body weight (1 on Vc, 0.75 on CL, -0.25 on Kback) are fixed. Final covariates: sex, dose, time, and MF / MM malignancy on CL; sex and MM malignancy on Vc; MF malignancy and baseline spleen volume on Bmax. The time effect encodes a hyperbolic decay of baseline CL: CL(t) = CL * cl_hill_t50 / (t + cl_hill_t50)."
+  description <- "Three-compartment population PK model for imetelstat (GRN163L), a 13-mer N3'-P5' thio-phosphoramidate oligonucleotide telomerase inhibitor, fit to 4375 plasma concentrations from 424 adults with hematologic malignancies (lower-risk MDS, myelofibrosis, multiple myeloma, ET/PV, CLD) or solid tumors who received IV imetelstat 0.4-11.7 mg/kg weekly to every-4-weeks (Gonzalez-Sales 2024). Imetelstat is described by a two-compartment nonlinear disposition model with saturable binding/distribution to a peripheral binding (BIND) compartment (Snoeck 1999 / Peletier 2017 parameterisation): free drug binds reversibly to a target pool with capacity Bmax (Kon, Koff); bound drug is internalised to a deep peripheral tissue (Kint) and returns to central as free drug (Kback); free drug also undergoes linear elimination from central (CL). Theory-based allometric exponents for body weight (1 on Vc, 0.75 on CL, -0.25 on Kback) are fixed. Final covariates: sex, dose, time, and MF / MM malignancy on CL; sex and MM malignancy on Vc; MF malignancy and baseline spleen volume on Bmax. The time effect encodes a hyperbolic decay of baseline CL: CL(t) = CL * cl_t50 / (t + cl_t50)."
   reference <- "Gonzalez-Sales M, Lennox AL, Huang F, Pamulapati C, Wan Y, Sun L, Berry T, Kelly Behrs M, Feller F, Morcos PN. (2024). Population pharmacokinetics of imetelstat, a first-in-class oligonucleotide telomerase inhibitor. CPT Pharmacometrics Syst Pharmacol 13(7):1264-1277. doi:10.1002/psp4.13160."
   vignette <- "GonzalezSales_2024_imetelstat"
   units <- list(
@@ -175,12 +175,12 @@ GonzalezSales_2024_imetelstat <- function() {
     e_dis_mf_cl <- 0.511; label("Exponential coefficient of DIS_MF on CL (unitless)")                        # Table 2: 'Effect of MF on CL' = 0.511 (RSE 10.9%); MF patients have exp(0.511) = 1.67-fold higher CL
     e_sexf_cl  <- -0.299; label("Exponential coefficient of SEXF on CL (unitless)")                          # Table 2: 'Effect of sex on CL' = -0.299 (RSE 17.1%); females have exp(-0.299) = 0.74-fold lower CL
 
-    # Time-on-CL effect: hyperbolic decay of baseline CL with characteristic half-time cl_hill_t50.
+    # Time-on-CL effect: hyperbolic decay of baseline CL with characteristic half-time cl_t50.
     # Supplement S1 line 107-108 / 122: TIME_CL = TIME/(TIME+T50); CL = TVCL * ... * (1 - TIME_CL)
     #                                         = TVCL * ... * T50 / (T50 + TIME).
-    # At t = 0, CL = TVCL (baseline). At t = cl_hill_t50, CL = TVCL/2 (half of baseline). As t -> Inf,
-    # CL -> 0 in the limit; in practice the function decays slowly given cl_hill_t50 ~ 245 days.
-    lcl_hill_t50 <- log(5880); label("Half-time of the time effect on CL (cl_hill_t50, hours)")              # Table 2: 'Effect of time on CL' = 5880 h (RSE 6.37%)
+    # At t = 0, CL = TVCL (baseline). At t = cl_t50, CL = TVCL/2 (half of baseline). As t -> Inf,
+    # CL -> 0 in the limit; in practice the function decays slowly given cl_t50 ~ 245 days.
+    lcl_t50 <- log(5880); label("Half-time of the time effect on CL (cl_t50, hours)")              # Table 2: 'Effect of time on CL' = 5880 h (RSE 6.37%)
 
     # Covariate effects on Vc (multiplicative; categorical effects via exp(coef * indicator)).
     e_dis_mm_vc <- -0.233; label("Exponential coefficient of DIS_MM on Vc (unitless)")                       # Table 2: 'Effect of MM malignancy on Vc' = -0.233 (RSE 28.3%); MM patients have exp(-0.233) = 0.79-fold Vc
@@ -223,8 +223,8 @@ GonzalezSales_2024_imetelstat <- function() {
     # ---- Time-on-CL hyperbolic decay (Gonzalez-Sales 2024 supplement S1) ----
     # f_time_cl(t) = T50 / (T50 + t)  =  1 - t / (T50 + t).
     # Equivalent forms; the second matches the supplement's TIME_CL = TIME/(TIME+T50) variable.
-    cl_hill_t50  <- exp(lcl_hill_t50)
-    f_time_cl    <- cl_hill_t50 / (t + cl_hill_t50)
+    cl_t50  <- exp(lcl_t50)
+    f_time_cl    <- cl_t50 / (t + cl_t50)
 
     # ---- Spleen-volume effect on Bmax (gated to MF subjects) ----
     # For MF subjects (DIS_MF = 1): f_splv_bmax = (SPLV / 3010)^e_splv_bmax.

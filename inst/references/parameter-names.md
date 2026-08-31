@@ -630,6 +630,44 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Source aliases:** none.
 - **Example models:** time-varying-clearance popPK extractions.
 
+
+### cl_time_max (**canonical maximum magnitude of a sigmoidal-in-time clearance change**)
+- **Type:** bare-pk
+- **Role:** Magnitude of the log-clearance change approached as `t >> cl_t50`, in the
+  sigmoidal-in-time clearance form
+  `td_cl <- exp(cl_time_max_i * t^cl_time_hill / (cl_t50^cl_time_hill + t^cl_time_hill))`.
+  Log form `lcl_time_max`; the per-individual value after IIV is written `cl_time_max_i`.
+- **Source aliases:**
+  - `cl_hill_max` / `lcl_hill_max` -- prior name (pre-2026-08-31 rename; see Notes).
+- **Example models:** `Kuchimanchi_2024_dostarlimab.R`, `Masters_2022_avelumab.R`, `PK_2cmt_tdcl_des.R`.
+- **Notes:** Renamed from `cl_hill_max` on 2026-08-31 so the family name states the
+  STRUCTURE (time-varying clearance, `cl_time_*`) rather than only the shape of the curve.
+  `hill` now appears solely on the shape coefficient `cl_time_hill`, where it is meaningful.
+  Ties the family to the registered `cl_time` / `lcl_time` stem. The trio was used in ~20
+  shipped models for a long time without a register entry; documented here as part of that
+  rename. Distinct from maturation Hill coefficients such as `e_page_cl_hill`
+  (`Tikiso_2021_abacavir.R`), which are covariate effects on CL maturation, not time.
+
+### cl_t50 (**canonical half-time of a sigmoidal-in-time clearance change**)
+- **Type:** bare-pk
+- **Role:** Time at which half of `cl_time_max` has been reached, in the same sigmoidal
+  form. Log form `lcl_t50`. Units are the model's time unit.
+- **Source aliases:**
+  - `cl_hill_t50` / `lcl_hill_t50` -- prior name (pre-2026-08-31 rename).
+- **Example models:** `Kuchimanchi_2024_dostarlimab.R`, `Masters_2022_avelumab.R`.
+- **Notes:** Named without a `time` infix because `t50` already denotes a time; see
+  [[cl_time_max]] for the rename rationale.
+
+### cl_time_hill (**canonical Hill coefficient of a sigmoidal-in-time clearance change**)
+- **Type:** bare-pk
+- **Role:** Sigmoid steepness exponent of the same time-varying clearance form. Log form
+  `lcl_time_hill`.
+- **Source aliases:**
+  - `cl_hill_gamma` / `lcl_hill_gamma` -- prior name (pre-2026-08-31 rename).
+- **Example models:** `Kuchimanchi_2024_dostarlimab.R`, `Masters_2022_avelumab.R`.
+- **Notes:** This is the one member where `hill` is the correct role token -- it names the
+  shape coefficient itself. See [[cl_time_max]] for the rename rationale.
+
 ### cl_renal (**canonical bare renal clearance arm**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `lcl_renal`. Renal component of an additive renal + non-renal clearance decomposition.
@@ -783,7 +821,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `Circadian rhythm during daytime (%)` -- Chen 2025 Table 3 row label (3.70, reported as a percentage and as a magnitude only; the sign is fixed by the model code and by the Results statement that GFR and nCTS fluctuate between 104% and 91.6% of the mean).
   - `CIR_DAY` / `THETA(13)` -- Chen 2025 NONMEM control-stream token.
 - **Example models:** `Chen_2025_iohexol_creatinine.R` (founding example; `cl_circ_famp_day = 0.0370398`, a +3.70% daytime peak on both the glomerular-filtration clearance and the net-tubular-secretion arm, which share a single amplitude pair).
-- **Notes:** Named parameter-first / role-token-last to match the one existing precedent for the `_famp` role token, `kel_exp_famp`. Registered as `paper-named-param` rather than `bare-pk` for exactly the reason recorded there: the amplitude is signed, is estimated on the natural scale, and must NEVER be log-transformed (a `bare-pk` registration would make `checkModelConventions()` demand an `l`-prefixed form). The `circ_` token marks *periodic* structure and is deliberately kept distinct from the monotone time-varying-clearance families `cl_hill_*` and `cl_exp_*`. The same rhythm applied to a volume, a production rate, or a biomarker baseline would generalise as `v_circ_famp_day`, `ksyn_circ_famp_day`, etc. Distinct from `lamp` / `ltacro` (Gonzalez-Sales 2015 testosterone circadian IDR), which parameterise an ABSOLUTE amplitude in the state's own units together with an estimated acrophase; here the phase is fixed by the day / night split and the amplitude is a fraction of the typical value. Pairs with [[cl_circ_famp_night]]. Ratified 2026-08-20 (task `oare_PMC12272311` sidecar question q3, answer A).
+- **Notes:** Named parameter-first / role-token-last to match the one existing precedent for the `_famp` role token, `kel_exp_famp`. Registered as `paper-named-param` rather than `bare-pk` for exactly the reason recorded there: the amplitude is signed, is estimated on the natural scale, and must NEVER be log-transformed (a `bare-pk` registration would make `checkModelConventions()` demand an `l`-prefixed form). The `circ_` token marks *periodic* structure and is deliberately kept distinct from the monotone time-varying-clearance families `cl_time_*` and `cl_exp_*`. The same rhythm applied to a volume, a production rate, or a biomarker baseline would generalise as `v_circ_famp_day`, `ksyn_circ_famp_day`, etc. Distinct from `lamp` / `ltacro` (Gonzalez-Sales 2015 testosterone circadian IDR), which parameterise an ABSOLUTE amplitude in the state's own units together with an estimated acrophase; here the phase is fixed by the day / night split and the amplitude is a fraction of the typical value. Pairs with [[cl_circ_famp_night]]. Ratified 2026-08-20 (task `oare_PMC12272311` sidecar question q3, answer A).
 
 ### cl_circ_famp_night (**canonical nighttime circadian fractional amplitude on clearance**)
 - **Type:** paper-named-param

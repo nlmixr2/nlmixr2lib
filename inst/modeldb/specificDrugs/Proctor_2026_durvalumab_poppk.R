@@ -62,9 +62,9 @@ Proctor_2026_durvalumab_poppk <- function() {
     # log-transformed here. This form is confirmed numerically: at t = 420 days
     # it gives exp(-0.185 * 0.8336) - 1 = -14.3%, matching the paper's statement
     # that the popPK model predicts a 14% decline in CL after 60 weeks.
-    cl_hill_max    <- fixed(-0.185)     ; label("Log of the maximal fold-change in linear clearance over time (Imax)")  # Table S3 Imax -0.185
-    lcl_hill_t50   <- fixed(log(173.1)) ; label("Time of half-maximal change in clearance TI50 (day)")                  # Table S3 TI50 173.1 day
-    lcl_hill_gamma <- fixed(log(1.817)) ; label("Hill slope of the time-dependent clearance function (gamma)")           # Table S3 gamma 1.817
+    cl_time_max    <- fixed(-0.185)     ; label("Log of the maximal fold-change in linear clearance over time (Imax)")  # Table S3 Imax -0.185
+    lcl_t50   <- fixed(log(173.1)) ; label("Time of half-maximal change in clearance TI50 (day)")                  # Table S3 TI50 173.1 day
+    lcl_time_hill <- fixed(log(1.817)) ; label("Hill slope of the time-dependent clearance function (gamma)")           # Table S3 gamma 1.817
 
     # Table S3 reports no residual error; fixed at zero per the standing policy
     # for unreported RUV (documented in the vignette Errata).
@@ -78,16 +78,16 @@ Proctor_2026_durvalumab_poppk <- function() {
     vp             <- exp(lvp)
     vmax           <- exp(lvmax)
     km             <- exp(lkm)
-    cl_hill_t50    <- exp(lcl_hill_t50)
-    cl_hill_gamma  <- exp(lcl_hill_gamma)
+    cl_t50    <- exp(lcl_t50)
+    cl_time_hill  <- exp(lcl_time_hill)
 
     # Time-dependent linear clearance (Eq 2). t is in days, matching TI50.
     # t is clamped at zero because a negative base raised to the non-integer
     # Hill exponent is undefined; clamping returns CL0 before the first dose,
     # which is the correct pre-treatment value rather than a silent fudge.
     tdcl <- max(t, 0)
-    cl <- cl0 * exp(cl_hill_max * tdcl^cl_hill_gamma /
-                      (cl_hill_t50^cl_hill_gamma + tdcl^cl_hill_gamma))
+    cl <- cl0 * exp(cl_time_max * tdcl^cl_time_hill /
+                      (cl_t50^cl_time_hill + tdcl^cl_time_hill))
 
     k12 <- q / vc
     k21 <- q / vp

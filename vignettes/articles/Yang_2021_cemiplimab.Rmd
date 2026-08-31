@@ -94,9 +94,9 @@ The table below collects them in one place for review.
 | `lvc` (V2_REF, L)                    | log(3.32)       | Yang 2021 Table 3, TVV2                                           |
 | `lq`  (Q_REF, L/day)                 | log(0.638)      | Yang 2021 Table 3, TVQ                                            |
 | `lvp` (V3_REF, L)                    | log(1.65)       | Yang 2021 Table 3, TVV3                                           |
-| `cl_hill_max` (EMAX_REF, log-fold)          | -0.410          | Yang 2021 Table 3, Emax                                           |
-| `lcl_hill_t50` (T50_REF, days)               | log(28.9)       | Yang 2021 Table 3, T50                                            |
-| `cl_hill_gamma` (HILL, unitless)              | 2.79            | Yang 2021 Table 3, HILL                                           |
+| `cl_time_max` (EMAX_REF, log-fold)          | -0.410          | Yang 2021 Table 3, Emax                                           |
+| `lcl_t50` (T50_REF, days)               | log(28.9)       | Yang 2021 Table 3, T50                                            |
+| `cl_time_hill` (HILL, unitless)              | 2.79            | Yang 2021 Table 3, HILL                                           |
 | `e_wt_cl_q` (power, WT on CL/Q)      | 0.477           | Yang 2021 Table 3, WGT_ON_CLQ                                     |
 | `e_alb_cl_q` (power, ALB on CL/Q)    | -0.926          | Yang 2021 Table 3, ALB_ON_CLQ                                     |
 | `e_igg_cl_q` (power, IGG on CL/Q)    | 0.184           | Yang 2021 Table 3, IGG_ON_CLQ                                     |
@@ -104,8 +104,8 @@ The table below collects them in one place for review.
 | `e_wt_vc_vp` (power, WT on V2/V3)    | 0.970           | Yang 2021 Table 3, WGT_ON_VSS                                     |
 | `e_bmi_vc_vp` (power, BMI on V2/V3)  | -0.560          | Yang 2021 Table 3, BMI_ON_VSS                                     |
 | IIV block `etalcl + etalvc`          | c(0.0870, 0.0422, 0.0432) | Yang 2021 Table 3, IIV_CLQ, IIV_CLQ:VSS, IIV_VSS        |
-| `etacl_hill_max`                            | 0.228           | Yang 2021 Table 3, IIV_Emax                                       |
-| `etalcl_hill_t50`                            | 0.610           | Yang 2021 Table 3, IIV_T50                                        |
+| `etacl_time_max`                            | 0.228           | Yang 2021 Table 3, IIV_Emax                                       |
+| `etalcl_t50`                            | 0.610           | Yang 2021 Table 3, IIV_T50                                        |
 | `propSd`                             | 0.188           | Yang 2021 Table 3, RUVCV                                          |
 | `addSd` (mg/L)                       | 1.48            | Yang 2021 Table 3, RUVSD                                          |
 
