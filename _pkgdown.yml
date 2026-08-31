@@ -1842,6 +1842,22 @@ navbar:
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
         href: articles/Adeojo_2024_levonorgestrel.html
+      - text: "Levonorgestrel coc (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel implant (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel iusRelease (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel ivOral (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel lngIus12 (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel lngIus20 (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel lngIus8 (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
+      - text: "Levonorgestrel progestinOnlyPill (Reinecke 2018)"
+        href: articles/Reinecke_2018_levonorgestrel_contraceptives.html
       - text: "Lidocaine (He 2025)"
         href: articles/He_2025_lidocaine.html
       - text: "Ligelizumab (Bienczak 2025)"
@@ -4965,6 +4981,7 @@ articles:
   - articles/Ravva_2009_varenicline
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reijers_2016_trastuzumab
+  - articles/Reinecke_2018_levonorgestrel_contraceptives
   - articles/Rekic_2011_atazanavir
   - articles/Renard_2011_indacaterol
   - articles/ResendizGalvan_2025_cycloserine
