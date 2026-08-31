@@ -1334,6 +1334,9 @@ test_that("no model in the database still uses a pre-#481 time-varying clearance
       rhs <- sub("#.*$", "", sub("^[^<]*<-", "", ln))
       rhs <- gsub('"[^"]*"', "", rhs)
       if (!grepl(nlmixr2lib:::.bareTimePattern, rhs, perl = TRUE)) next
+      # Same constant the checker uses, NOT a copy of its literal: when these
+      # were two literals, ratifying a new canonical updated one and left this
+      # test flagging the model that founded it.
       if (grepl(nlmixr2lib:::.timeVaryingClearanceAcceptPattern, rhs)) next
       offenders <- c(offenders, basename(f))
     }
