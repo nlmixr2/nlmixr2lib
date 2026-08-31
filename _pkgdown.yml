@@ -938,10 +938,8 @@ navbar:
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Dimethyltryptamine betaPower (Eckernas 2023)"
         href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
-      - text: "Dndi6148 human (Henninger 2026)"
-        href: articles/Henninger_2026_dndi6148.html
-      - text: "Dndi6148 mouse (Henninger 2026)"
-        href: articles/Henninger_2026_dndi6148.html
+      - text: "Dimethyltryptamine LZc (Eckernas 2023)"
+        href: articles/Eckernas_2023_dimethyltryptamine_EEG.html
       - text: "Docetaxel (Janssen 2023)"
         href: articles/Janssen_2023_pregnancy_cytotoxics.html
       - text: "Docetaxel (Koolen 2010)"
@@ -3140,6 +3138,12 @@ navbar:
         href: articles/Macpherson_2015_rosuvastatin.html
       - text: "Rosuvastatin mbma (Yang 2010)"
         href: articles/Yang_2010_rosuvastatin_mbma.html
+      - text: "Rozanolixizumab (LledoGarcia 2022)"
+        href: articles/LledoGarcia_2022_rozanolixizumab.html
+      - text: "Rozanolixizumab cyno (LledoGarcia 2022)"
+        href: articles/LledoGarcia_2022_rozanolixizumab.html
+      - text: "Rozanolixizumab translated (LledoGarcia 2022)"
+        href: articles/LledoGarcia_2022_rozanolixizumab.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
       - text: "Rutin rat (Chen 2024)"
@@ -3332,8 +3336,8 @@ navbar:
         href: articles/Yu_2015_sunitinib.html
       - text: "Sunitinib irinotecan mouse (Wilson 2015)"
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
-      - text: "Sunitinib svegfr3 os (Hansson 2013)"
-        href: articles/Hansson_2013_sunitinib_svegfr3_os.html
+      - text: "Sunitinib OS (Hansson 2013)"
+        href: articles/Hansson_2013_sunitinib_OS.html
       - text: "Tacrine (Holford 1992)"
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (AbdelJalil 2013)"
@@ -4903,6 +4907,7 @@ articles:
   - articles/Llanos_2017_gentamicin
   - articles/Llanos-Paez_2017_gentamicin
   - articles/Llanos-Paez_2020_gentamicin
+  - articles/LledoGarcia_2022_rozanolixizumab
   - articles/Lodise_2018_iclaprim
   - articles/LohyDas_2018_artesunate
   - articles/Lommerse_2019_raltegravir
