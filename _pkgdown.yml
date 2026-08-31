@@ -2088,6 +2088,8 @@ navbar:
         href: articles/Ramharter_2019_mefloquine.html
       - text: "Mefloquine (Simpson 2013)"
         href: articles/Simpson_2013_mefloquine.html
+      - text: "Meloxicam dog (Teixeira 2026)"
+        href: articles/Teixeira_2026_meloxicam_dog.html
       - text: "Melphalan (Nath 2007)"
         href: articles/Nath_2007_melphalan.html
       - text: "Melphalan total (Nath 2010)"
@@ -5360,7 +5362,7 @@ articles:
   - articles/Taubert_2016_linezolid
   - articles/Taubert_2018_finafloxacin
   - articles/Taylor_2020_methotrexate
-  - articles/Taylor_2026_methotrexate
+  - articles/Teixeira_2026_meloxicam_dog
   - articles/TerHeine_2014_tamoxifen
   - articles/TerHeine_2018_everolimus
   - articles/Terranova_2018_paclitaxel
