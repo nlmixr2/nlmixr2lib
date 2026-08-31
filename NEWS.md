@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2025 matrine ([doi:10.3389/fvets.2025.1620161](https://doi.org/10.3389/fvets.2025.1620161)) -- pigs, intestinal-lumen exposure after oral dosing.
+- Add Dohmann 2025 piperacillin ([doi:10.1002/bcp.70153](https://doi.org/10.1002/bcp.70153)) -- adults with renal impairment or on intermittent haemodialysis in a non-intensive-care ward setting.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
