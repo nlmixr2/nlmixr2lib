@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhu 2013 ganitumab ([doi:10.1002/cpdd.48](https://doi.org/10.1002/cpdd.48)) -- adults with metastatic pancreatic cancer or other advanced solid cancers.
+- Add Butragueno-Laiseca 2022 piperacillin ([doi:10.1016/j.cmi.2022.03.031](https://doi.org/10.1016/j.cmi.2022.03.031)) -- critically ill children with and without continuous kidney replacement therapy.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 

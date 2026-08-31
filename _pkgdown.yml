@@ -2682,6 +2682,8 @@ navbar:
         href: articles/Bulitta_2007_piperacillin.html
       - text: "Piperacillin (Bulitta 2010)"
         href: articles/Bulitta_2010_piperacillin.html
+      - text: "Piperacillin (ButraguenoLaiseca 2022)"
+        href: articles/ButraguenoLaiseca_2022_piperacillin.html
       - text: "Piperacillin (CohenWolkowiez 2014)"
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
       - text: "Piperacillin (Jeon 2014)"
@@ -4081,6 +4083,7 @@ articles:
   - articles/Bulitta_2010_colistin
   - articles/Bulitta_2010_piperacillin
   - articles/Bulitta_2011_cefpirome
+  - articles/ButraguenoLaiseca_2022_piperacillin
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
   - articles/Caldes_2009_ganciclovir
