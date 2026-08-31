@@ -582,6 +582,8 @@ navbar:
         href: articles/Minichmayr_2024_ceftaroline.html
       - text: "Ceftaroline (Riccobene 2016)"
         href: articles/Riccobene_2016_ceftaroline.html
+      - text: "Ceftaroline (Riccobene 2017)"
+        href: articles/Riccobene_2017_ceftaroline.html
       - text: "Ceftazidime (Bulitta 2010)"
         href: articles/Bulitta_2010_ceftazidime.html
       - text: "Ceftazidime (Conil 2007)"
@@ -4989,6 +4991,7 @@ articles:
   - articles/Revilla_2010_vancomycin
   - articles/Ribba_2022_ctdna_tumor_size
   - articles/Riccobene_2016_ceftaroline
+  - articles/Riccobene_2017_ceftaroline
   - articles/Richardson_2025_automated_popPK
   - articles/Rietveld_2025_docetaxel
   - articles/Robarge_2017_efavirenz
