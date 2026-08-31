@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Darwish 2012 armodafinil and modafinil ([doi:10.1177/0091270011417825](https://doi.org/10.1177/0091270011417825)) -- patients with excessive sleepiness associated with shift work disorder.
+- Add Gosselin 2015 motesanib and its active metabolite M4 ([doi:10.1002/cpdd.196](https://doi.org/10.1002/cpdd.196)) -- patients with advanced solid tumors.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
