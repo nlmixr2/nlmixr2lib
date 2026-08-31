@@ -459,8 +459,16 @@
   # HEMODIALYSIS covariate (e.g. Veinstein 2013 gentamicin: CL_total =
   # CL + CL_HD); `_dialysis` the broader continuous / general dialysis
   # extracorporeal arm (e.g. Eyler 2014 ertapenem: CL_total = CLS +
-  # DIAL * CLdial for CVVHD/CVVHDF).
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "tsnet"),
+  # DIAL * CLdial for CVVHD/CVVHDF); `_crrt` the continuous-RRT
+  # extracorporeal arm specifically, gated by RRT_CRRT_ACTIVE and
+  # scaled by RRT_CRRT_EFFLUENT_FLOW (e.g. Zurawska 2026 piperacillin,
+  # which carries `_crrt` and `_hemodialysis` as two separate arms in
+  # one model). Sidecar request-001 / response-001, question q2,
+  # option C: `_crrt` is adopted now and the follow-up question of
+  # renaming the whole family onto the covariate register's
+  # RRT_<MODALITY>_<KIND> shape -- which would also fold the older,
+  # near-duplicate `_dialysis` suffix in -- is queued separately.
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
