@@ -337,6 +337,21 @@
     # Yang_2024_naloxone_buprenorphine, Yang_2024_naloxone_morphine,
     # Yang_2024_naloxone_fentanyl, Yang_2024_naloxone_carfentanil.
     "naloxone",
+    # Heptadecanoic acid (HA, C17:0) as a co-administered SECOND ANALYTE
+    # (not a metabolite of the parent) in the malabsorption blood test
+    # (MBT). Mascarenhas 2015 (doi:10.1002/jcph.484) simultaneously fits
+    # two odd-chain fatty acids: pentadecanoic acid (PA, C15:0) -- the
+    # parent, which keeps the unsuffixed canonical names -- and
+    # heptadecanoic acid, liberated by pancreatic-lipase hydrolysis of
+    # the co-administered triglyceride triheptadecanoic acid (THA).
+    # The paper's own abbreviation "ha" is NOT usable as the suffix
+    # because `_ha` is already the hepatic-artery suffix throughout the
+    # PBPK models (q_ha, fq_ha, qp_ha, qg_ha, fco_ha across 32 files);
+    # adopting it would make `q_ha` ambiguous between hepatic-artery
+    # blood flow and a heptadecanoic-acid clearance. Operator-ratified
+    # 2026-08-26 (sidecar manacq_Mascarenhas_2015_jcph_484 request-001).
+    # Founding example: Mascarenhas_2015_pentadecanoic_triheptadecanoic.
+    "hepta",
     # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
     # models in which both enantiomers are followed in plasma but no
     # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP

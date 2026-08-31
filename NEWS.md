@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Marier 2014 dutogliptin ([doi:10.1002/cpdd.87](https://doi.org/10.1002/cpdd.87)) -- healthy subjects and patients with type 2 diabetes mellitus.
+- Add Mascarenhas 2015 pentadecanoic and triheptadecanoic acid ([doi:10.1002/jcph.484](https://doi.org/10.1002/jcph.484)) -- children and adults with cystic fibrosis and pancreatic insufficiency, plus healthy comparison subjects.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
