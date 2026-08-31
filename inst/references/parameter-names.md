@@ -363,6 +363,30 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** delayed-absorption oral PK models.
 - **Notes:** Replaces the legacy `lalag` / `llag` forms per the 2026-05-28 naming audit.
 
+### lka_early (**canonical log-transformed absorption rate constant before a sequential-absorption switch**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order absorption rate constant applying from the dose until the sequential-absorption switch time `tkacut` (1/time).
+- **Source aliases:**
+  - `Ka1` -- used in `vanSchaick_2016_prucalopride_pediatric.R` (van Schaick 2016 Table 3; the paper's "absorption rate at time less than MTIME").
+- **Example models:** `vanSchaick_2016_prucalopride_pediatric.R`.
+- **Notes:** Paired with `lka_late` and `tkacut` for papers describing absorption as two *sequential* first-order processes. The window suffix names the window, not the paper's ordinal symbol: `lka1` / `lka2` are deliberately NOT canonical here, because a bare ordinal encodes only sequence and not which time window the rate belongs to, and `lka2` already denotes an IV-conversion rate in `Kumpulainen_2010_flurbiprofen.R`. When a paper reports three or more stages whose boundaries are study-design windows rather than a reported parameter, prefer the boundary-labelled form used by `Othman_2007_carvedilol.R` (`lka_cr_0to2` / `lka_cr_2to4` / `lka_cr_gt4`, boundaries as literals in `model()`) and omit `tkacut`. Ratified canonically alongside the van Schaick 2016 pediatric prucalopride extraction.
+
+### lka_late (**canonical log-transformed absorption rate constant after a sequential-absorption switch**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order absorption rate constant applying after the sequential-absorption switch time `tkacut` (1/time).
+- **Source aliases:**
+  - `Ka2` -- used in `vanSchaick_2016_prucalopride_pediatric.R` (van Schaick 2016 Table 3; the paper's "absorption rate at time greater than MTIME").
+- **Example models:** `vanSchaick_2016_prucalopride_pediatric.R`.
+- **Notes:** See `lka_early` for the family rationale and for when to prefer the boundary-labelled `Othman_2007_carvedilol.R` form instead. Ratified canonically alongside the van Schaick 2016 pediatric prucalopride extraction.
+
+### tkacut (**canonical sequential-absorption switch time**)
+- **Type:** paper-named-param
+- **Role:** Time after dose at which absorption switches from one first-order rate to the next, in the model's time unit (time).
+- **Source aliases:**
+  - `MTIME` -- used in `vanSchaick_2016_prucalopride_pediatric.R` (van Schaick 2016 Table 3, "cut-off time between first and second absorption rate"; the symbol comes from the NONMEM model-event-time mechanism used to implement the switch).
+- **Example models:** `vanSchaick_2016_prucalopride_pediatric.R` (`tkacut <- fixed(0.734)` h, with `lka_early` = log(0.792 /h) before and `lka_late` = log(3.87 /h) after).
+- **Notes:** Carried on the LINEAR scale, so a held-constant value is written `tkacut <- fixed(0.734)`; use `ltkacut` if a future paper estimates the switch time on the log scale. Named `tkacut` rather than `mtime` to avoid colliding with rxode2's `mtime()` model-event-time function. Apply inside `model()` by assigning the early rate first and letting the late window over-write it, switching on time after dose so the sequence resets at every administration: `ka <- exp(lka_early + etalka_early); if (tad(depot) >= tkacut) ka <- exp(lka_late + etalka_late)`. Note that when the two windows carry different IIVs the conditional assignment is not mu-referenced and rxode2 warns accordingly; that is expected and affects re-estimation, not simulation. Reach for `tkacut` only when the switch time is itself a reported parameter -- for study-design window boundaries use literals as in `Othman_2007_carvedilol.R`. Ratified canonically alongside the van Schaick 2016 pediatric prucalopride extraction.
+
 ### ltacro (**canonical log-transformed acrophase**)
 - **Type:** log-transformed-pk
 - **Role:** Log-scale peak-time (acrophase) parameter for circadian-IDR templates (time of day at which the rhythm peaks).

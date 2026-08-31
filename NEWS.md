@@ -2,22 +2,7 @@
 
 # development version
 
-- Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
-  Pharmacology review, which reprints the sponsor's population PK study report
-  114/2005 -- the same analysis Lahu published. All 40 shipped parent and
-  N-oxide `ini()` values reproduce the review's "Final With Race" columns
-  exactly; **no parameter changed**. The review supplies provenance the journal
-  article omits: the phase I demographics table now fills
-  `population$sex_female_pct`, `population$weight_range`,
-  `population$age_range` and `population$race_ethnicity` (previously `NULL` or
-  placeholder text); alcohol use and several other tested-and-dropped
-  covariates are recorded in `covariateData` notes; and two vignette errata are
-  downgraded from open questions to confirmed readings -- the female-reference
-  intercept (the FDA reviewer states it three times, so the paper's prose
-  rather than its equations is wrong) and the genuine absence of inter-
-  individual variability on N-oxide `tlag`. The withheld tPDE4i and
-  adverse-event logistic-regression layer is *not* recoverable from the review;
-  that gap is now documented as closed to further search.
+- Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
