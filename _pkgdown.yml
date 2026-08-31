@@ -2486,6 +2486,8 @@ navbar:
         href: articles/Anderson_1998_paracetamol.html
       - text: "Paracetamol (Krekels 2015)"
         href: articles/Krekels_2015_paracetamol.html
+      - text: "Paracetamol (Lau 2026)"
+        href: articles/Lau_2026_paracetamol.html
       - text: "Paracetamol (Wattanakul 2016)"
         href: articles/Wattanakul_2016_paracetamol.html
       - text: "Paracetamol (Wu 2025)"
@@ -4558,6 +4560,7 @@ articles:
   - articles/Langenhorst_2019_fludarabine
   - articles/Laouenan_2015_ribavirin
   - articles/Larsen_2018_haemophilia_animal_popPK
+  - articles/Lau_2026_paracetamol
   - articles/Lawson_2022_busulfan
   - articles/LeJouan_2005_quinine
   - articles/LeTilly_2021_trastuzumab
