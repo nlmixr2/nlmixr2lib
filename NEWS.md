@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2025 anti-psoriatic "Drug A" ([doi:10.1002/psp4.70090](https://doi.org/10.1002/psp4.70090)) -- adults with plaque psoriasis in a simulated multi-regional phase 2 trial.
+- Add Muhamad 2025 cholecalciferol PBPK ([doi:10.3390/nu17193028](https://doi.org/10.3390/nu17193028)) -- healthy Cape Town schoolchildren aged 6-11 years.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
