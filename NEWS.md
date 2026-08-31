@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chanu 2010 methoxy polyethylene glycol-epoetin beta (C.E.R.A.) ([doi:10.1177/0091270009343931](https://doi.org/10.1177/0091270009343931)) -- ESA-naive and ESA-treated adults with chronic kidney disease on dialysis.
+- Add Claret 2014 motesanib tumor size and overall survival ([doi:10.1038/clpt.2014.11](https://doi.org/10.1038/clpt.2014.11)) -- adults with advanced nonsquamous non-small cell lung cancer in the MONET1 study.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
