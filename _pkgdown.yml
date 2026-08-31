@@ -2980,6 +2980,8 @@ navbar:
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Ribociclib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Ribociclib qsp (Zhang 2026)"
+        href: articles/Zhang_2026_ribociclib.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifampicin (Barnett 2018)"
@@ -5599,6 +5601,7 @@ articles:
   - articles/Zhang_2025_erythroferrone
   - articles/Zhang_2025_fluconazole
   - articles/Zhang_2025_nedosiran
+  - articles/Zhang_2026_ribociclib
   - articles/Zhang_2026_tebipenem
   - articles/Zhao_2010_mycophenolic_acid
   - articles/Zhao_2012_abacavir
