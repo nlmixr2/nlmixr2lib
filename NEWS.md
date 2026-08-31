@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Nemitz 2026 dapagliflozin whole-body PBPK/PD ([doi:10.3390/pharmaceutics18030287](https://doi.org/10.3390/pharmaceutics18030287)) -- healthy adults, type 1 and type 2 diabetes, and renal or hepatic impairment.
+
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
