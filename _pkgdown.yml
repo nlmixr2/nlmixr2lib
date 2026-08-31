@@ -2038,6 +2038,8 @@ navbar:
         href: articles/Sun_2023_maribavir.html
       - text: "Matuzumab (Kuester 2008)"
         href: articles/Kuester_2008_matuzumab.html
+      - text: "Mavoglurant pbpk (Elmokadem 2023)"
+        href: articles/Elmokadem_2023_mavoglurant_pbpk.html
       - text: "Mavrilimumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
       - text: "MBG453 (Xu 2023)"
@@ -4285,6 +4287,7 @@ articles:
   - articles/elDesoky_1997_theophylline_pediatric_asthma
   - articles/Elishmereni_2011_il21
   - articles/Elkomy_2015_morphine
+  - articles/Elmokadem_2023_mavoglurant_pbpk
   - articles/EudyByrne_2021_buprenorphine
   - articles/Eugene_2016_metoprolol
   - articles/Eyler_2014_ertapenem

@@ -36,6 +36,7 @@ Suggests:
     ggplot2,
     knitr,
     mvtnorm,
+    nlmixr2data,
     PKNCA,
     rmarkdown,
     scales,
