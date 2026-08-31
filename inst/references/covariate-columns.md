@@ -13647,82 +13647,24 @@ Covariates whose value is a property of the **administered molecule** rather tha
 - **Example models:** `VarelaGonzalezAller_2025_fludarabine.R` (founding example; axi-cel-referenced multiplicative factor 3.9/4.4 = 0.8864 on the non-renal clearance arm of fludarabine, re-expressed from the paper's two-level categorical clearance intercept; 38 axi-cel / 18 tisa-cel).
 - **Notes:** Named-product member of the `CONMED_<INN>` family; both axicabtagene ciloleucel and tisagenlecleucel are INNs. **Timing caveat, important for interpretation:** in lymphodepletion popPK models the cell product is infused on day 0 while the conditioning chemotherapy is given on the preceding days, so the product has not been administered during any modelled observation. An effect on a conditioning drug's PK is therefore a planned-treatment / cohort marker -- a proxy for unmeasured differences between the populations selected for each product (disease biology, prior therapies, tumour burden) -- and not a pharmacokinetic drug-drug interaction; the founding paper says so explicitly in its Discussion. Record that reading in the per-model `covariateData[[CONMED_TISACEL]]$notes` rather than implying a mechanistic interaction. Keep the per-product dose difference (30 vs 25 mg/m^2 fludarabine phosphate in the founding example) in the event table, not in this covariate. Register sibling named canonicals (`CONMED_LISOCEL`, `CONMED_BREXUCEL`, `CONMED_IDECEL`, `CONMED_CILTACEL`, ...) for other cell products rather than overloading this entry, and reserve a future `CONMED_CART_ANY` for sources that pool CAR T-cell therapy as a class.
 
-### DBP (**canonical for diastolic blood pressure**)
-- **Description:** Subject diastolic blood pressure, in mmHg. Captured at baseline or serially during a study. The diastolic sibling of `SBP`, completing the covariate pair that mirrors the `dbp` / `sbp` PD-state pair in `compartment-names.md`. Used where hemodynamic state is a covariate on a non-PK endpoint (blood-pressure exposure-response, disease progression, survival) or on clearance. Document baseline-vs-time-varying status per model in `covariateData[[DBP]]$notes`.
-- **Units:** mmHg
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- used with power scaling `(DBP / ref)^exponent`, linear-deviation forms `(1 + e * (DBP - ref))`, or additive-log forms `beta * log(DBP)`. Reference values observed: 102 mmHg (Song 2013 Table 2 pooled-Phase-III mean baseline seated trough diastolic pressure in treated hypertensive patients); 80 mmHg is the population-adult clinical normal midpoint.
-- **Source aliases:**
-  - `Baseline BP` -- Song 2013 Table 3 / Table S6 row label for the baseline seated trough diastolic pressure entering both the placebo and the olmesartan / amlodipine drug-effect terms of the diastolic exposure-response model; same orientation, no value transformation.
-  - `SeDBP` -- seated trough diastolic blood pressure, the Song 2013 measurement convention.
-  - `DBP` -- source-paper column name; same orientation, no value transformation.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R` (baseline seated trough DBP; enters the placebo term as `(DBP / 102)^3.19` and the olmesartan and amlodipine drug-effect terms as `(DBP / 102)^2.46` and `(DBP / 102)^4.12` -- founding example).
-- **Notes:** Registered alongside the Song 2013 CS-8635 exposure-response extraction as the diastolic counterpart of the previously registered `SBP`. Keep the two as separate columns rather than a single `BP` column with a type flag: papers routinely fit systolic and diastolic responses as independent models with different covariate sets (Song 2013 retains an age effect on the olmesartan effect for diastolic only, and a sex effect on the amlodipine effect for systolic only), so a downstream dataset must be able to carry both simultaneously. Distinct from `DBP_REL`, which carries a drug-induced *relative* change from baseline rather than an absolute pressure.
-
-### AUC_OLM (**canonical for per-subject steady-state AUC of olmesartan**)
-- **Description:** Per-subject steady-state area under the olmesartan plasma concentration-time curve over the 24 h dosing interval, AUCss, computed as Dose / (CL/F) from the individual post hoc Bayesian clearance estimate of an olmesartan population PK model.
-- **Units:** `ng*h/mL` (document per-model via `covariateData[[AUC_OLM]]$units` if a different exposure unit is reported).
+### DOSE_PHAGE_PFU (**canonical for administered bacteriophage dose in plaque-forming units**)
+- **Description:** The bacteriophage dose administered on the current dose record, expressed in plaque-forming units (PFU). Per-dose-record covariate. Used by phage PBPK models whose state system is carried in percent-injected-dose (%ID) rather than PFU: the dose event itself is then always `amt = 100`, and this column supplies the PFU scale that the mononuclear-phagocyte-system carrying capacity is calibrated in.
+- **Units:** PFU
 - **Type:** continuous
 - **Scope:** specific
-- **Reference category:** n/a -- enters via a saturable Emax form `emax_om * AUC_OLM / (AUC_OLM + eauc50_om)` on the blood-pressure drug-effect term. Set `AUC_OLM = 0` to drop olmesartan from the combination (the olmesartan mono-effect and every interaction term containing it vanish). Reference values observed: EAUC50 = 1850 ng*h/mL (diastolic) and 1590 ng*h/mL (systolic) in Song 2013 Table 3.
+- **Reference category:** n/a -- enters the MPS carrying-capacity conversion `A_RES [%ID per 1e5 phagocytes] = 10^A_MPS * 100 / DOSE_PHAGE_PFU`, where `A_MPS` is the literature capacity in `log10(PFU / 1e5 cells)`. Because the capacity is a fixed absolute number of phage particles, raising the dose lowers the fraction of the dose the MPS can hold, which is the model's only source of dose non-linearity.
 - **Source aliases:**
-  - `AUCOM` / `AUC_OM` -- Song 2013 Results notation for the olmesartan steady-state exposure entering the exposure-response models.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (saturable Emax olmesartan arm of the CS-8635 triple-combination blood-pressure exposure-response models -- founding examples).
-- **Notes:** Specific scope because the column meaning is tied to olmesartan and to the q24h steady-state AUC convention. Member of the `AUC_<DRUG>` family (`AUC_CARBO`, `AUC_GEM`, `AUC_GCV`, `AUC_LCM`, `AUC_CBZ`, `AUC_PAZO`, `AUC_RTV`, `AUC_EMPA`, `AUC_IBRU`, `AUC_VERUB`, ...). The upstream model that generates this column is `modellib('Song_2013_olmesartan')`; because Song 2013 defines AUCss as Dose / (CL/F) exactly, the column can be computed in closed form from that model's clearance without integrating a profile. A future model using a different olmesartan exposure metric (Cmax, Ctrough, a q12h-interval AUC) should register a parallel canonical rather than overload `AUC_OLM`.
+  - `Mean Phage Dose (Log10 PFU)` -- Echterhof 2026 Table S1 reports the dose on the log10 scale (10.7 Luz24, 10.1 OMKO1, 11.9 PAML-31-1); the covariate column carries the untransformed PFU value, so supply `10^x`.
+- **Example models:** `Echterhof_2026_phage_mouse_pbpk.R` (founding example), `Echterhof_2026_phage_rat_pbpk.R`, `Echterhof_2026_phage_human_pbpk.R`.
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_MTX_MGM2`, `DOSE_EMPA_MGD`). A dedicated column is required rather than the generic `DOSE` canonical for exactly the reason given in the `DOSE_MTX_MGM2` entry: `amt` is in %ID while the capacity relation is calibrated in PFU, so carrying both in one column would silently mix units. `<DRUG>` is `PHAGE` rather than a strain name because the capacity term is a property of the phagocyte, not of the phage strain -- Echterhof 2026 applies the same `A_MPS` to Luz24, OMKO1 and PAML-31-1. A model that carries its states natively in PFU does not need this column at all.
 
-### AUC_AML (**canonical for per-subject steady-state AUC of amlodipine**)
-- **Description:** Per-subject steady-state area under the amlodipine plasma concentration-time curve over the 24 h dosing interval, AUCss, computed as Dose / (CL/F) from the individual post hoc Bayesian clearance estimate of an amlodipine population PK model.
-- **Units:** `ng*h/mL` (document per-model via `covariateData[[AUC_AML]]$units` if a different exposure unit is reported).
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- enters via a saturable Emax form `emax_aml * AUC_AML / (AUC_AML + eauc50_aml)` on the blood-pressure drug-effect term. Set `AUC_AML = 0` to drop amlodipine from the combination. Reference values observed: EAUC50 = 453 ng*h/mL (diastolic) and 309 ng*h/mL (systolic) in Song 2013 Table 3.
-- **Source aliases:**
-  - `AUCAML` -- Song 2013 Results notation for the amlodipine steady-state exposure entering the exposure-response models.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (saturable Emax amlodipine arm of the CS-8635 triple-combination blood-pressure exposure-response models -- founding examples).
-- **Notes:** Specific scope because the column meaning is tied to amlodipine and to the q24h steady-state AUC convention. Member of the `AUC_<DRUG>` family. The upstream model that generates this column is `modellib('Song_2013_amlodipine')`. Song 2013 found a *saturable* amlodipine exposure-response relationship where the same group's earlier work had used a linear one, attributing the change to the enrichment of the dataset with the CS8635-A-U301 (TRINITY) study -- so a model that reuses this column with a linear slope is describing a different, earlier analysis and should say so in its notes.
-
-### AUC_HCTZ (**canonical for per-subject steady-state AUC of hydrochlorothiazide**)
-- **Description:** Per-subject steady-state area under the hydrochlorothiazide plasma concentration-time curve over the 24 h dosing interval, AUCss, computed as Dose / (CL/F) from the individual post hoc Bayesian clearance estimate of a hydrochlorothiazide population PK model.
-- **Units:** `ng*h/mL` (document per-model via `covariateData[[AUC_HCTZ]]$units` if a different exposure unit is reported).
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- enters via a LINEAR slope form `slope_hctz * AUC_HCTZ / 1000` on the blood-pressure drug-effect term, the slope being reported per 1000 ng*h/mL. Set `AUC_HCTZ = 0` to drop hydrochlorothiazide from the combination. Reference values observed: slopes -3.3 mmHg (diastolic) and -9.38 mmHg (systolic) per 1000 ng*h/mL in Song 2013 Table 3.
-- **Source aliases:**
-  - `AUCHCTZ` -- Song 2013 Results notation for the hydrochlorothiazide steady-state exposure entering the exposure-response models.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (linear hydrochlorothiazide arm of the CS-8635 triple-combination blood-pressure exposure-response models -- founding examples).
-- **Notes:** Specific scope because the column meaning is tied to hydrochlorothiazide and to the q24h steady-state AUC convention. Member of the `AUC_<DRUG>` family. The upstream model that generates this column is `modellib('Song_2013_hydrochlorothiazide')`. Unlike its olmesartan and amlodipine siblings the hydrochlorothiazide arm is unsaturated over the studied 12.5-25 mg dose range, so the per-1000-unit slope convention matters: supplying the raw AUC to a model expecting the divided form overstates the diuretic effect by three orders of magnitude.
-
-### STUDY_CS8635_A_U301 (**canonical for CS8635-A-U301 (TRINITY) study indicator**)
-- **Description:** 1 = subject enrolled in CS8635-A-U301 (TRINITY), the pivotal phase III factorial trial of the olmesartan / amlodipine / hydrochlorothiazide triple fixed-dose combination CS-8635, 0 = another study in the pooled exposure-response analysis.
+### STUDY_PAML31 (**canonical for the PAML-31-1 bacteriophage study-arm indicator**)
+- **Description:** 1 = the PAML-31-1 phage study arm; 0 = the Luz24 or OMKO1 arms, which share one typical value. Time-fixed per subject. Selects the covariate-adjusted active surface clearance in the Echterhof 2026 phage PBPK.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (the other two pooled phase III studies, CS8663-A-U301 and 866-318). The three study indicators partition the pooled dataset and sum to 1 for every subject.
+- **Reference category:** 0 (Luz24 and OMKO1 pooled), which carries the structural typical value `CL_Active`.
 - **Source aliases:**
-  - `Study CS8635-A-U301` -- Song 2013 Table 3 / Tables S6 and S7 placebo-effect row label.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (selects the study-specific placebo effect, -3.80 mmHg diastolic / -4.20 mmHg systolic; in the systolic model it also gates the Hispanic-ethnicity effect on the placebo term).
-- **Notes:** Member of the `STUDY_<id>` family. Song 2013 estimated the placebo effect as a separate numerical value per contributing study rather than as a single pooled intercept, so all three indicators must be supplied together; a dataset that leaves all three at 0 produces a zero placebo effect, which is not a state the model was fitted to.
-
-### STUDY_CS8663_A_U301 (**canonical for CS8663-A-U301 (COACH) study indicator**)
-- **Description:** 1 = subject enrolled in CS8663-A-U301 (COACH), the pivotal phase III factorial trial of the olmesartan / amlodipine dual fixed-dose combination, 0 = another study in the pooled exposure-response analysis.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (CS8635-A-U301 and 866-318).
-- **Source aliases:**
-  - `Study CS8663-A-U301` -- Song 2013 Table 3 / Tables S6 and S7 placebo-effect row label.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R` (selects the -3.57 mmHg placebo effect and gates the Black-race effect on the placebo term, which Song 2013 retained only within this study), `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (selects the -3.45 mmHg placebo effect).
-- **Notes:** Member of the `STUDY_<id>` family. Note the study-gated covariate: the Black-race effect on the diastolic placebo response (-0.607) applies only to subjects in this study, so the indicator does double duty as a placebo selector and as an interaction gate.
-
-### STUDY_866_318 (**canonical for 866-318 study indicator**)
-- **Description:** 1 = subject enrolled in 866-318 (written SE866-318 in the parameter tables), the phase III placebo-controlled factorial trial of the olmesartan / hydrochlorothiazide dual fixed-dose combination, 0 = another study in the pooled exposure-response analysis.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (CS8635-A-U301 and CS8663-A-U301).
-- **Source aliases:**
-  - `Study SE866-318` -- Song 2013 Table 3 / Tables S6 and S7 placebo-effect row label.
-  - `866-318` -- the form used in the Song 2013 main text and in Table 2.
-- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R`, `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (selects the study-specific placebo effect, -6.08 mmHg diastolic / -5.26 mmHg systolic -- markedly larger than in the other two studies).
-- **Notes:** Member of the `STUDY_<id>` family. The leading digit in the canonical name is preceded by `STUDY_` so the identifier remains a valid R name; the source study code has no alphabetic prefix.
+  - `PAML-31` -- the categorical covariate level named in Echterhof 2026 Results ("a categorical covariate to describe a PAML-31-specific reduction in CL_Active").
+- **Example models:** `Echterhof_2026_phage_mouse_pbpk.R` (founding example), `Echterhof_2026_phage_rat_pbpk.R`, `Echterhof_2026_phage_human_pbpk.R`.
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` family. Registered on the study family rather than as a phage-strain column because each phage was run as its own experiment -- Table S1 is captioned "Phage dose and mouse weights for each phage study" and Results describes the correlation as being with "experiments conducted using the PAML-31 phage" -- so the indicator confounds strain with study and should not be read as a pure biophysical strain effect. **Encoding caveat:** Echterhof 2026 Table 1 reports the covariate coefficient `theta_PAML31 = -1.94` alongside both an unadjusted `CL_Active` (1.29e-2 L/h/kg) and a covariate-adjusted `CL_Active,PAML` (1.34e-3 L/h/kg), and no standard transform connects the three (`exp(-1.94) = 1.85e-3`, and the two tabulated clearances are 9.63-fold apart while the prose claims 10.7-fold). The founding models therefore switch DIRECTLY between the two tabulated clearances and never evaluate `theta`; a future extraction that recovers a coherent coefficient should record the resolution here.

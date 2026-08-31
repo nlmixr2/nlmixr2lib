@@ -2724,6 +2724,12 @@ navbar:
         href: articles/Jones_2011_PF04878691_HCV.html
       - text: "Pfuroylamphenmulin (Xia 2025)"
         href: articles/Xia_2025_pfuroylamphenmulin.html
+      - text: "Phage human pbpk (Echterhof 2026)"
+        href: articles/Echterhof_2026_phage_pbpk.html
+      - text: "Phage mouse pbpk (Echterhof 2026)"
+        href: articles/Echterhof_2026_phage_pbpk.html
+      - text: "Phage rat pbpk (Echterhof 2026)"
+        href: articles/Echterhof_2026_phage_pbpk.html
       - text: "Phenobarbital (Grasela 1985)"
         href: articles/Grasela_1985_phenobarbital.html
       - text: "Phenobarbital (Stoschus 2025)"
@@ -4376,6 +4382,7 @@ articles:
   - articles/Easterling_2018_magnesium_sulfate
   - articles/Eaton_2025_dabigatran_sheep
   - articles/Ebihara_2025_tebipenem
+  - articles/Echterhof_2026_phage_pbpk
   - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edstein_2001_tafenoquine
   - articles/Eissing_2024_finerenone
