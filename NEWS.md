@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kastrissios 2006 apricoxib (CS-706) ([doi:10.1177/0091270006287122](https://doi.org/10.1177/0091270006287122)) -- healthy adult volunteers.
+- Add Kastrissios 2012 managlinat dialanetil (CS-917) ([doi:10.1177/0091270010396373](https://doi.org/10.1177/0091270010396373)) -- adults with type 2 diabetes mellitus.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
