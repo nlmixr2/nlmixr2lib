@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Niu 2017 veliparib and its M8 metabolite ([doi:10.1002/jcph.892](https://doi.org/10.1002/jcph.892)) -- patients with BRCA 1/2-mutated cancer or PARP-sensitive tumor types.
+- Add Panday 2025 SERT inhibitors tremor MBMA ([doi:10.1002/cpt.3696](https://doi.org/10.1002/cpt.3696)) -- 29,677 adults across 33 treatment arms and 20 serotonin reuptake transporter inhibitors.
 
 - Add Siebinga 2023 [68Ga]Ga- and [177Lu]Lu-HA-DOTATATE ([doi:10.1186/s40658-023-00565-4](https://doi.org/10.1186/s40658-023-00565-4)) - adults with neuroendocrine tumors.
 
