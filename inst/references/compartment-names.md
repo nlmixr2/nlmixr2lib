@@ -4107,6 +4107,27 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Thoueille_2026_salmeterol.R` (`central_ohsal` metabolite plasma compartment fed by the systemic conversion rate constant `kmet`, plus a `urine_ohsal` cumulative urinary-excretion compartment fed by `kurine_ohsal`; joint plasma-and-urine popPK for WADA doping control).
 - **Notes:** Ratified 2026-08-20 (task `oare_PMC12823318` sidecar request-001 q1, answer A). Registered as the marker-plus-drug-contraction form `ohsal` rather than the initialism `ahs` or the bare `ohs`, matching the ratified `ndmsel` (N-desmethyl + selexipag) pattern: both halves of the token are load-bearing, so a reader who does not know the paper can still recover "OH-salmeterol". `ahs` drops the drug and `ohs` drops nothing distinguishing it from a future generic hydroxy suffix, which is why neither was chosen. Deliberately NOT a member of the positional-hydroxy family (`3oh` / `5oh` / `7oh` / `8oh` / `9oh` / `11oh`), because the published name gives the hydroxylation position as a Greek letter (alpha) rather than a locant number, and `alphaoh` would be neither the paper's spelling nor a member of that numeric family. Distinct from `sulf` (the salbutamol sulphate conjugate of `Heuberger_2018_salbutamol.R`), the sibling beta-2-agonist doping-control model: both are urinary doping-control metabolites of an inhaled beta-2 agonist, but they are different molecules formed by different routes (Phase I hydroxylation versus Phase II sulphation) and each parent has exactly one registered metabolite token.
 
+### r134450 (**canonical R-134450 managlinat dialanetil metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** R-134450, the first and pharmacologically inactive metabolite of the oral fructose-1,6-bisphosphatase-inhibitor prodrug CS-917 (INN managlinat dialanetil). CS-917 is rapidly de-esterified by an esterase to R-134450, which in turn undergoes intracellular hydrolysis in the liver by phosphoramidase to the active moiety R-125338. Drives `central_r134450` / `peripheral1_r134450`, the `lcl_r134450` / `lvc_r134450` / `lq_r134450` / `lvp_r134450` parameters, the `e_<cov>_<param>_r134450` covariate effects, and the `propSd_r134450` / `addSd_r134450` residuals; the CS-917 parent keeps the canonical unsuffixed names.
+- **Source aliases:** `R-134450`, `R134450` -- Kastrissios 2012 Figure 1 and Table III. The paper supplies no chemical or INN name for this metabolite, so the development code is the only available token.
+- **Example models:** `Kastrissios_2012_managlinatDialanetil_linked.R` (doi:10.1177/0091270010396373).
+- **Notes:** Registered 2026-08-26 alongside the Kastrissios 2012 CS-917 extraction (sidecar request-001 q1, operator answer A), together with its cascade siblings `r125338` and `r143047`. Development-code suffixes were chosen over the generic numbered `m1` / `m2` / `m3` family because this paper never uses an `M<n>` designation -- the numbering would have been invented by the librarian -- and because the R-codes keep each compound self-identifying, which matters here since the MIDDLE member of the cascade is the active moiety the paper is about. Follows the established development-code precedent (`gs441524`, `su12662`, `az5104`, `cdb4453`, `cns7054`, `ko739`, `m3034`, `25d3`). Every clearance and volume carrying this suffix is apparent in the compound sense `CL/(F * fm)`: Kastrissios 2012 p. 408 states the metabolite terms "were expressed relative to the oral bioavailability of CS-917 and the fraction of CS-917 metabolized to moiety of interest, neither of which were known". Because that unknown fraction is absorbed into the downstream apparent volume, the inter-moiety transfer is written as the FULL upstream elimination flux with no fractional multiplier.
+
+### r125338 (**canonical R-125338 managlinat dialanetil active-moiety suffix**)
+- **Type:** metabolite-suffix
+- **Role:** R-125338, the active moiety of the prodrug CS-917 (INN managlinat dialanetil) and a potent specific non-nucleotide inhibitor of human liver fructose-1,6-bisphosphatase, the enzyme catalysing the rate-limiting step of gluconeogenesis. Formed from R-134450 by hepatic phosphoramidase; eliminated by considerable renal excretion plus N-acetylation to R-143047. Drives `central_r125338` / `peripheral1_r125338`, the `lcl_r125338` / `lvc_r125338` / `lq_r125338` / `lvp_r125338` parameters, the `e_<cov>_<param>_r125338` covariate effects, and the `propSd_r125338` / `addSd_r125338` residuals.
+- **Source aliases:** `R-125338`, `R125338` -- Kastrissios 2012 Figure 1 and Table III. No chemical or INN name is supplied by the paper.
+- **Example models:** `Kastrissios_2012_managlinatDialanetil_linked.R` (doi:10.1177/0091270010396373), where R-125338 is the third member of the linked cascade and therefore carries the suffix.
+- **Notes:** Registered 2026-08-26 with `r134450` and `r143047` (same sidecar). Note the deliberate asymmetry with the companion model `Kastrissios_2012_managlinatDialanetil_activeMoiety.R`, which fits R-125338 data ALONE: there R-125338 is the parent analyte, so it takes the bare canonical names (`central`, `peripheral1`, `Cc`, `lcl`, `lvc`) and this suffix does not appear. That follows the standing parent-wins rule already recorded for `morphine` (suffixed in codeine models, bare when morphine is the parent) and `olaparib`. Apparent-parameter and 1:1-flux semantics as for `r134450`.
+
+### r143047 (**canonical R-143047 managlinat dialanetil metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** R-143047, the terminal inactive N-acetylated metabolite of the CS-917 (managlinat dialanetil) cascade, formed from the active moiety R-125338 by N-acetylation. Forms slowly and exhibits a long half-life, which is why it is the only cascade member whose apparent central volume (338 L) exceeds its apparent clearance by more than an order of magnitude. Drives `central_r143047`, the `lcl_r143047` / `lvc_r143047` parameters, the `e_<cov>_<param>_r143047` covariate effects, and the `propSd_r143047` / `addSd_r143047` residuals.
+- **Source aliases:** `R-143047`, `R143047` -- Kastrissios 2012 Figure 1 and Table III. No chemical or INN name is supplied by the paper.
+- **Example models:** `Kastrissios_2012_managlinatDialanetil_linked.R` (doi:10.1177/0091270010396373).
+- **Notes:** Registered 2026-08-26 with `r134450` and `r125338` (same sidecar). Modelled as 1-compartment; the paper reports no improvement from adding a second compartment. Apparent-parameter and 1:1-flux semantics as for `r134450` -- and note that here the unknown absorbed fraction is genuinely well below 1, because R-125338 is cleared by renal excretion in parallel with the N-acetylation route that forms this metabolite.
+
 ## Cell-type suffixes (Friberg multi-cell-type chains)
 
 Cell-type suffixes used with Friberg-style `circ_<celltype>` myelosuppression compartments and `precursor1_<celltype>` ... `precursorN_<celltype>` maturation chains for paired-output multi-cell models. Registered 2026-05-28 per the naming audit.
@@ -4898,6 +4919,20 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
 
 ---
 
+### ddbp (**canonical change-from-baseline diastolic blood pressure PD output**)
+- **Type:** compartment
+- **Role:** Change from baseline in seated trough diastolic blood pressure (mmHg), used as the observation variable of a direct (algebraic, non-ODE) steady-state exposure-response model. Negative values are blood-pressure lowering; add the subject's baseline `DBP` to recover an absolute pressure. This is the change-from-baseline sibling of the absolute-pressure turnover state `dbp`: use `dbp` when the model integrates a blood-pressure turnover ODE and observes the pressure itself, and `ddbp` when the model predicts the treatment-induced delta directly, which is what a trough-BP exposure-response analysis reports.
+- **Source aliases:** `dSeDBP`, `dDBP`, `change from baseline in SeDBP`.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_dbp.R` (founding example; placebo plus three AUCss-driven monotherapy effects plus pairwise and three-way interaction terms, with an additive inter-subject random effect and additive residual error, both in mmHg).
+- **Notes:** Registered alongside the Song 2013 CS-8635 extraction. Not an ODE state -- the model that founded it has no `d/dt()` at all -- so a model using `ddbp` needs no `compartmentData` entry for it. Registered here rather than left unregistered because `checkModelConventions()` resolves single-output observation variables against this register. Systolic sibling: `dsbp`. Distinct from the covariate `DBP_REL`, which carries a drug-induced *relative* (fractional) change rather than an absolute mmHg delta.
+
+### dsbp (**canonical change-from-baseline systolic blood pressure PD output**)
+- **Type:** compartment
+- **Role:** Change from baseline in seated trough systolic blood pressure (mmHg), used as the observation variable of a direct (algebraic, non-ODE) steady-state exposure-response model; the systolic sibling of `ddbp`. Negative values are blood-pressure lowering; add the subject's baseline `SBP` to recover an absolute pressure.
+- **Source aliases:** `dSeSBP`, `dSBP`, `change from baseline in SeSBP`.
+- **Example models:** `Song_2013_olmesartan_amlodipine_hydrochlorothiazide_sbp.R` (founding example).
+- **Notes:** Registered alongside the Song 2013 CS-8635 extraction. Not an ODE state, so no `compartmentData` entry is required. As with the `dbp` / `sbp` turnover pair, systolic and diastolic responses are fitted as separate models with different retained covariate sets, so keep them as two outputs in two files rather than collapsing them into one multi-output model. Diastolic sibling: `ddbp`.
+
 ## Implant-adjacent local tissue
 
 ### implant_zone (**canonical peri-implant local tissue compartment**)
@@ -4907,3 +4942,16 @@ Permeability-limited whole-body PBPK subcompartment suffixes. Each tissue carrie
   - `I` / `C_I` -- Ward 2026 eq 4, "a compartment representing the localized tissue in the immediate vicinity of the implant (I) ... that will initially absorb Mg(II) ions released from the implant".
 - **Example models:** `Ward_2026_magnesium_pbpk.R` (founding example; `VI` chosen so `VI/VTtot = 1e-4`, giving 5.27 mL per screw, about 20 times the volume of the 3.2 x 32 mm implant itself).
 - **Notes:** Distinct from `depot`, which holds an administered dose awaiting first-order absorption into `central`: `implant_zone` is a physiologic tissue volume with its own bidirectional perfusion exchange, and the release into it is a zero-order corrosion flux rather than a dose. Distinct also from the `<organ>_isf` interstitial-fluid states, which are a permeability-limited sub-compartment of a named organ rather than a spatial neighbourhood of a foreign body. Ratified 2026-08-28 (sidecar `oare_PMC12878740` q1 = C). The founding paper anticipates the class generalizing -- its framework "is likely to be applicable to many other degradable implant materials, such as polymers and zinc implants" -- so later degradable-implant extractions should reuse this token rather than minting a per-material variant.
+
+## Co-substrate / cofactor depletion pools
+
+### gsh_pool (**canonical normalised glutathione co-substrate pool**)
+- **Type:** compartment
+- **Role:** Relative amount of glutathione available to conjugate a drug, expressed as a fraction of its own pre-treatment baseline and initialised at 1. Multiplies the elimination rate constant of the drug whose metabolism is glutathione-dependent, and is itself driven by that drug's metabolic flux, so a multi-day course produces time-varying clearance.
+- **Source aliases:**
+  - `GSH` -- `$MODEL COMP=(GSH)` in the Cao 2025 Supplementary Text S2 control stream.
+  - `A_GSH` -- the symbol used in Cao 2025 Equation 2.
+- **Example models:** `Cao_2025_busulfan.R`.
+- **Notes:** Dimensionless and normalised, so it is deliberately NOT named `gsh`: the bare name belongs to the "Endogenous metabolic species" family, every member of which carries a real measured concentration, and Cao 2025 explicitly states that active glutathione levels were not assayed and "full GSH dynamics could not be reconstructed". Initial condition `gsh_pool(0) <- 1`. The coupling constant that scales metabolic flux to the pool is the paired parameter `sdep_gsh` (see `parameter-names.md`); the two are introduced together and should stay paired. Registered 2026-08-23 with the Cao 2025 busulfan extraction, per operator sidecar `oare_PMC12426406` request-002 q1 = A, which selected `gsh_pool` over bare `gsh` and over a role-generic `cofactor_pool` on exactly the normalisation argument above. Extend to a sibling (`sdep_<pool>` / `<pool>_pool`) for any other consumable co-substrate, e.g. NADPH, sulfate, or acetyl-CoA.
+
+---

@@ -561,6 +561,27 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ---
 
+### lkfec (**canonical log-transformed faecal excretion rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for unabsorbed drug leaving the intestinal lumen as faeces, competing with absorption out of the same compartment (1 / time). The bare counterpart inside `model()` is `kfec`.
+- **Source aliases:**
+  - `ke` -- used in `Yang_2025_matrine_pig_pbpk.R`.
+  - `Kgut`, `kgut`, `kint`, `kF`, `k_e` -- generic spellings; note that `Kgut` / `kint` name the compartment or the interval, not the process.
+- **Example models:** `Yang_2025_matrine_pig_pbpk.R` (`ke` = 0.007358 1/h, unabsorbed matrine leaving the pig intestinal lumen; founding example).
+- **Notes:** Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B). `lkfec` was chosen over the alternative `lkgut` because it names the **process** -- excretion out of the gut lumen to faeces -- rather than the compartment; `lkgut` would read to a later user as a general gut-transit rate and could be misapplied to the absorption or the emptying step. `lkgut` remains in `Yang_2023_diclazuril_chicken_pbpk.R` and `Ai_2024_ractopamine_goat_pbpk.R` as an unregistered legacy spelling that predates this entry; use `lkfec` in new models. Do **not** mint a gut-specific absorption name for the competing route out of the same compartment -- that remains the ordinary canonical `lka`.
+
+### lkbile (**canonical log-transformed biliary excretion rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for **parent drug** leaving the `liver` compartment by biliary excretion, either into `gut_lumen` (enterohepatic recirculation) or into a terminal faecal / bile sink (1 / time). The bare counterpart inside `model()` is `kbile`.
+- **Source aliases:**
+  - `KbileC` -- used in `Zhang_2024_f53b_mouse_pbpk.R`.
+  - `kbi` -- used in `Yang_2025_matrine_pig_pbpk.R`.
+  - `Kbile`, `k_bi` -- generic spellings.
+- **Example models:** `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC` = 0.00001, allometrically scaled terminal biliary elimination from liver to faeces; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kbi` = 0.05835 1/h, liver back into the intestinal lumen, which is what produces the observed two-phase luminal decay).
+- **Notes:** Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B). Deliberately **not** `kbm`, and `kbm` must not be widened to cover this case: `kbm` is registered as the biliary-*metabolite* excretion rate constant, moving a **metabolite** out of a **plasma / central** compartment, whereas `lkbile` moves **parent drug** out of **`liver`**. Broadening `kbm` would silently change the meaning of an existing entry that `Hamren_2008_tesaglitazar.R` depends on. The two can coexist in one model: a parent drug excreted in bile via `lkbile` and its glucuronide returned via `kbm` / `kicv`.
+
+---
+
 ## Bare structural PK parameters
 
 The bare counterparts of the log-transformed parameters above. Used when the source paper estimates the parameter directly on the linear scale, or when the parameter appears in the `model()` block as the exponentiated form `<base> <- exp(l<base> + eta_<base>)`.
@@ -950,6 +971,23 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Notes:** Registered 2026-08-20 together with the log-transformed family; see `lkst`, `lkfec` and `lkbile` above for the ratification rationale, for why `lkfec` is preferred over the legacy `lkgut` spelling, and for the boundary against `kbm`. Some PBPK models compute these in place as `model()` literals rather than exponentiating an `ini()` entry; register them in `ini()` whenever the source paper reports them as optimised quantities.
 
 ---
+
+### tclchange (**canonical bare clearance-step breakpoint time**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ltclchange`. Time from treatment initiation at which a piecewise-constant clearance steps between its early and late arms.
+- **Source aliases:**
+  - `TCLchange` -- Park 2025.
+  - `tNab` -- Yoneyama 2017.
+- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Notes:** The early arm is carried by the plain `cl`; there is no `cl_early`. See `ltclchange` for the full form.
+
+### cl_late (**canonical bare post-breakpoint clearance arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lcl_late`. Clearance in force after the `tclchange` breakpoint.
+- **Source aliases:**
+  - `CL>TCLchange` -- Park 2025.
+- **Example models:** `Park_2025_efineptakin_alfa.R`.
+- **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
 
 ## Paper-named mechanistic parameters
 
@@ -1820,6 +1858,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `UR_PROD` -- Thoueille 2026 Data S1 `$PK` / `$DES` and Table 2.
 - **Example models:** `Thoueille_2026_salmeterol.R` (`urprod = 0.079 L/h`, i.e. 79 mL/h, estimated jointly with the PK to approximate physiologic micturition for the studies that did not record urine volumes; IIV of 73% CV retained only for records whose concentration was not corrected for urine specific gravity; founding example).
 - **Notes:** Ratified 2026-08-20 (task `oare_PMC12823318` sidecar request-001 q3, answer B). Registered in the unpunctuated bare form `urprod` rather than the underscored `ur_prod`, consistent with the register's bare-PK style (`fdepot`, `bmax`, `vmax`) and with the `fumin` / `fumax` ruling. `Heuberger_2018_salbutamol.R` writes a `ur_prod_h` local inside `model()` for the same physical quantity, but there it is *derived* from cardiac-output physiology rather than estimated, so it is a `model()` intermediate and not an `ini()` parameter; that file is not migrated. **Do NOT reuse the registered `kpro`**: that canonical is a first-order biological-synthesis rate constant for a paper-mechanistic production term, and overloading it with a zero-order urine-volume rate would give one name two meanings and two dimensionalities -- the pattern rejected for `enzyme_liver`, `ppc` and `thres`.
+
+### sdep_gsh (**canonical glutathione-pool depletion scaling factor**)
+- **Type:** paper-named-param
+- **Role:** Founding member of an `sdep_<pool>` family -- "Scaling factor coupling metabolic flux to DEPletion of a named co-substrate pool". It converts the rate at which a drug is metabolised into the rate of change of the paired baseline-normalised `<pool>_pool` compartment, in the form `d/dt(gsh_pool) <- (sdep_gsh / vc) * gsh_pool * kel * central`. Units are volume per amount (L/mg in the founding example), since the pool itself is dimensionless and the flux `kel * central` has units of amount per time.
+- **Source aliases:**
+  - `S_GSH` / `SGSH` -- Cao 2025 Equation 2, Table 2, and Supplementary Text S2 `$PK` (`TVS_GSH = THETA(9)`).
+- **Example models:** `Cao_2025_busulfan.R` (`sdep_gsh = fixed(0.00259)` L/mg, carried over from Langenhorst 2020, with the covariate effect `e_gst_sdep_gsh = 0.28` on baseline GST activity).
+- **Notes:** Registered 2026-08-23 with the Cao 2025 busulfan extraction, per operator sidecar `oare_PMC12426406` request-002 q2 = A. Written bare (no `l` prefix) because it is a mechanistic constant reported as a point value rather than an estimated positive-constrained parameter, per the "Endogenous / mechanistic parameters" guidance. Two rejected alternatives are recorded here so the next reader does not re-open them: `s_gsh` (verbatim from the paper) founds an `s_` prefix with no precedent in this register AND collides visually with NONMEM `$PK` compartment *scale* factors, which appear in this very control stream as `S1 = V1/1000`; and `kdep_gsh` would sit visually with the registered `kdeg` / `kdes` / `kint` / `krel` family, but every member of that family is a first-order RATE constant with units 1/time, whereas this parameter is a scaling factor with units L/mg -- naming it `k*` would be a units lie. Pairs 1:1 with the `gsh_pool` compartment (see `compartment-names.md`); a new co-substrate takes a matched `sdep_<pool>` / `<pool>_pool` pair. The covariate effect follows the ordinary `e_<cov>_<param>` grammar with a shortened covariate token, `e_gst_sdep_gsh`, matching the `e_dpp4_bmaxc` precedent in `Retlich_2015_linagliptin.R` rather than spelling out the full `GST_BL_NMOL_MIN_ML` column name.
 
 ## Nested (multi-level) random effects
 
