@@ -826,6 +826,28 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Co-substrate / cofactor depletion pools
+
+Baseline-normalised reservoirs of a *consumable co-substrate* that a drug's own
+metabolism draws down (or, as published in the founding example, drives), making
+elimination time-varying over a treatment course. Structurally these are the
+mirror image of the enzyme-induction reservoirs above: both are dimensionless
+states initialised at 1 that multiply a clearance term, but an induction pool is
+driven by a *concentration* signal through an indirect-response loop, whereas a
+co-substrate pool is driven by *metabolic flux* -- the amount of drug actually
+turned over. Name the state for the co-substrate, not for the drug.
+
+### gsh_pool (**canonical normalised glutathione co-substrate pool**)
+- **Type:** compartment
+- **Role:** Relative amount of glutathione available to conjugate a drug, expressed as a fraction of its own pre-treatment baseline and initialised at 1. Multiplies the elimination rate constant of the drug whose metabolism is glutathione-dependent, and is itself driven by that drug's metabolic flux, so a multi-day course produces time-varying clearance.
+- **Source aliases:**
+  - `GSH` -- `$MODEL COMP=(GSH)` in the Cao 2025 Supplementary Text S2 control stream.
+  - `A_GSH` -- the symbol used in Cao 2025 Equation 2.
+- **Example models:** `Cao_2025_busulfan.R`.
+- **Notes:** Dimensionless and normalised, so it is deliberately NOT named `gsh`: the bare name belongs to the "Endogenous metabolic species" family, every member of which carries a real measured concentration, and Cao 2025 explicitly states that active glutathione levels were not assayed and "full GSH dynamics could not be reconstructed". Initial condition `gsh_pool(0) <- 1`. The coupling constant that scales metabolic flux to the pool is the paired parameter `sdep_gsh` (see `parameter-names.md`); the two are introduced together and should stay paired. Registered 2026-08-23 with the Cao 2025 busulfan extraction, per operator sidecar `oare_PMC12426406` request-002 q1 = A, which selected `gsh_pool` over bare `gsh` and over a role-generic `cofactor_pool` on exactly the normalisation argument above. Extend to a sibling (`sdep_<pool>` / `<pool>_pool`) for any other consumable co-substrate, e.g. NADPH, sulfate, or acetyl-CoA.
+
+---
+
 ## DAS28 disease-activity score
 
 ### das28 (**canonical DAS28 output compartment**)
