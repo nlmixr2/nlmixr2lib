@@ -302,6 +302,10 @@ navbar:
         href: articles/Molto_2016_atazanavir_ritonavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
         href: articles/Schipani_2013_atazanavir_ritonavir.html
+      - text: "Atenolol iso rat (vanSteeg 2007)"
+        href: articles/vanSteeg_2007_atenolol_isoprenaline_rat.html
+      - text: "Atenolol noniso rat (vanSteeg 2007)"
+        href: articles/vanSteeg_2007_atenolol_isoprenaline_rat.html
       - text: "Atenolol qsp (Fu 2022)"
         href: articles/Fu_2022_atenolol_qsp.html
       - text: "Atenolol rat pbpk (Kir 2025)"
@@ -1794,6 +1798,8 @@ navbar:
         href: articles/Wilkins_2011_isoniazid.html
       - text: "Isoniazid pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
+      - text: "Isoprenaline rat (vanSteeg 2007)"
+        href: articles/vanSteeg_2007_atenolol_isoprenaline_rat.html
       - text: "Istradefylline dizziness (Knebel 2012)"
         href: articles/Knebel_2012_istradefylline.html
       - text: "Istradefylline dyskinesia (Knebel 2012)"
@@ -5768,6 +5774,7 @@ articles:
   - articles/vanRongen_2018_metformin
   - articles/vanRongen_2018_midazolam
   - articles/vanSchaick_2016_prucalopride_pediatric
+  - articles/vanSteeg_2007_atenolol_isoprenaline_rat
   - articles/vanWijk_2019_paracetamol
   - articles/vandenBerg_2021_finerenone
   - articles/vandenBerg_2021_uprifosbuvir
