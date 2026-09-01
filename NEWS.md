@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Bhagunde 2026 lecanemab plasma-biomarker PK/PD models ([doi:10.1002/trc2.70246](https://doi.org/10.1002/trc2.70246)) -- adults with early Alzheimer's disease.
+
 - Rename the sigmoidal-in-time clearance parameter family so the names state the
   structure rather than only the curve shape, across all 20 models that use it:
   `cl_hill_max` -> `cl_time_max`, `cl_hill_t50` -> `cl_t50`, `cl_hill_gamma` ->

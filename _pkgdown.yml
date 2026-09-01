@@ -1772,6 +1772,12 @@ navbar:
         href: articles/Sakurai_2007_lansoprazole.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
+      - text: "Lecanemab abeta4240 (Bhagunde 2026)"
+        href: articles/Bhagunde_2026_lecanemab_biomarkers.html
+      - text: "Lecanemab gfap (Bhagunde 2026)"
+        href: articles/Bhagunde_2026_lecanemab_biomarkers.html
+      - text: "Lecanemab ptau181 (Bhagunde 2026)"
+        href: articles/Bhagunde_2026_lecanemab_biomarkers.html
       - text: "Lefamulin higher ppb (Bian 2024)"
         href: articles/Bian_2024_lefamulin.html
       - text: "Lefamulin original ppb (Bian 2024)"
@@ -3921,6 +3927,7 @@ articles:
   - articles/Bertrand_2011_S33138
   - articles/Betts_2018_mAb_linear_PK
   - articles/Betts_2019_pf_06671008
+  - articles/Bhagunde_2026_lecanemab_biomarkers
   - articles/Bi_2017_peginterferon_alfa_2a
   - articles/Bian_2024_lefamulin
   - articles/Bienczak_2016_efavirenz
