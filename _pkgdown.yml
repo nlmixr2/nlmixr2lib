@@ -604,6 +604,18 @@ navbar:
         href: articles/Bulitta_2011_cefpirome.html
       - text: "Cefpirome (Kang 2020)"
         href: articles/Kang_2020_cefpirome.html
+      - text: "Cefquinome enrofloxacin lung aucmic (Wei 2026)"
+        href: articles/Wei_2026_enrofloxacin_cefquinome.html
+      - text: "Cefquinome enrofloxacin lung cmaxmic (Wei 2026)"
+        href: articles/Wei_2026_enrofloxacin_cefquinome.html
+      - text: "Cefquinome enrofloxacin lung tmic (Wei 2026)"
+        href: articles/Wei_2026_enrofloxacin_cefquinome.html
+      - text: "Cefquinome enrofloxacin plasma aucmic (Wei 2026)"
+        href: articles/Wei_2026_enrofloxacin_cefquinome.html
+      - text: "Cefquinome enrofloxacin plasma cmaxmic (Wei 2026)"
+        href: articles/Wei_2026_enrofloxacin_cefquinome.html
+      - text: "Cefquinome enrofloxacin plasma tmic (Wei 2026)"
+        href: articles/Wei_2026_enrofloxacin_cefquinome.html
       - text: "Cefquinome foal (Gao 2025)"
         href: articles/Gao_2025_cefquinome.html
       - text: "Cefquinome pbpk (Mi 2023)"
@@ -5546,6 +5558,7 @@ articles:
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren
   - articles/Weber_2015_fluticasone_inhaled
+  - articles/Wei_2026_enrofloxacin_cefquinome
   - articles/Wen_2016_enrofloxacin_Pmultocida
   - articles/Wen_2025_pulmonary_pbpk
   - articles/Wenker_2024_piperacillin_tazobactam
