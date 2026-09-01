@@ -3794,6 +3794,8 @@ navbar:
         href: articles/Buelga_2005_vancomycin.html
       - text: "Vancomycin (Chung 2013)"
         href: articles/Chung_2013_vancomycin.html
+      - text: "Vancomycin (Ding 2026)"
+        href: articles/Ding_2026_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
         href: articles/Goti_2018_vancomycin.html
       - text: "Vancomycin (Grimsley 1999)"
@@ -4429,6 +4431,7 @@ articles:
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
+  - articles/Ding_2026_vancomycin
   - articles/Dirks_2008_cetuximab
   - articles/Djebli_2017_alirocumab
   - articles/Djerada_2014_nefopam
