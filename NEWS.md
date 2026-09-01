@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Sulaiman 2026 piperacillin/tazobactam ([doi:10.1093/jac/dkag199](https://doi.org/10.1093/jac/dkag199)) -- critically ill adults with sepsis or septic shock in Malaysian intensive care units.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and

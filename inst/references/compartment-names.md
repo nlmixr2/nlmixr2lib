@@ -4254,6 +4254,17 @@ canonical names; the co-analyte carries the suffix throughout.
   - `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232), where ampicillin is the unsuffixed parent.
 - **Notes:** Registered 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction. `Soto_2014_ampicillin_sulbactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_sbt` / `peripheral1_sbt` / `propSd_sbt` convention warnings. Sulbactam is a sibling drug, not a metabolite: in both source papers the two analytes are dosed as a fixed-ratio combination and fitted simultaneously without interconversion.
 
+### taz (**canonical tazobactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Tazobactam (beta-lactamase-inhibitor penicillanic acid sulfone) sibling-drug suffix, used when tazobactam is co-modelled with its fixed-ratio partner piperacillin and piperacillin is the unsuffixed parent. Drives `central_taz` / `peripheral1_taz` compartments, `lcl_taz` / `lvc_taz` / `lq_taz` / `lvp_taz` PK parameters, the `e_<cov>_<param>_taz` covariate-effect forms (e.g. `e_crcl_cl_taz`), the per-occasion `etaiov_<param>_taz_<k>` slots, and the `propSd_taz` / `addSd_taz` residuals on the `Cc_taz` tazobactam plasma concentration.
+- **Source aliases:**
+  - `TAZ` -- abbreviation used throughout `Kong_2025_piperacillin_tazobactam.R` (ESM control stream `LGT_TAZ`, `kdia_TAZ`, `CPRE_TAZ`).
+  - `taz` -- subscript used in the Table 2 parameter names of `Sulaiman_2026_piperacillin_tazobactam.R` (`CLtaz`, `Vtaz`).
+- **Example models:**
+  - `Kong_2025_piperacillin_tazobactam.R` (doi:10.1007/s40262-025-01527-y), joint two-compartment ESKD/haemodialysis model.
+  - `Sulaiman_2026_piperacillin_tazobactam.R` (doi:10.1093/jac/dkag199), joint one-compartment model in critically ill adults with sepsis or septic shock.
+- **Notes:** Registered 2026-09-01 alongside the Sulaiman 2026 extraction. `Kong_2025_piperacillin_tazobactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_taz` / `peripheral1_taz` / `propSd_taz` / `addSd_taz` convention warnings -- the same situation `sbt` was in before the Cammarata 2024 extraction. Tazobactam is a sibling drug, not a metabolite: it is co-formulated with piperacillin in a fixed 8:1 ratio, dosed into its own central compartment, and fitted alongside piperacillin without interconversion.
+
 ### sdz (**canonical sulfadiazine sibling-drug suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Sulfadiazine (short-acting sulfonamide) sibling-drug suffix, used when sulfadiazine is co-modelled with trimethoprim in the licensed 1:5 TMP:sulfonamide veterinary combinations and trimethoprim is the unsuffixed parent. Drives `depot_sdz` / `depot2_sdz` / `central_sdz` / `peripheral1_sdz` compartments, the `lka_sdz` / `lka2_sdz` / `lfdepot_sdz` / `lfdepot2_sdz` / `lcl_sdz` / `lvc_sdz` / `lq_sdz` / `lvp_sdz` PK parameters, the `e_wt_cl_sdz` / `e_wt_vc_sdz` covariate effects, and the `expSd_sdz` residual on the `Cc_sdz` plasma concentration.

@@ -2790,6 +2790,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Piperacillin tazobactam (Kong 2025)"
         href: articles/Kong_2025_piperacillin_tazobactam.html
+      - text: "Piperacillin tazobactam (Sulaiman 2026)"
+        href: articles/Sulaiman_2026_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Wenker 2024)"
         href: articles/Wenker_2024_piperacillin_tazobactam.html
       - text: "Piperaquine (Hoglund 2012)"
@@ -5381,6 +5383,7 @@ articles:
   - articles/Su_2016_dexmedetomidine
   - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
+  - articles/Sulaiman_2026_piperacillin_tazobactam
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
   - articles/Sun_2023_maribavir
