@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Songvut 2026 andrographolide ([doi:10.3389/fphar.2026.1781740](https://doi.org/10.3389/fphar.2026.1781740)) -- adults with mild COVID-19.
 - Rename the sigmoidal-in-time clearance parameter family so the names state the
   structure rather than only the curve shape, across all 20 models that use it:
   `cl_hill_max` -> `cl_time_max`, `cl_hill_t50` -> `cl_t50`, `cl_hill_gamma` ->
