@@ -2424,8 +2424,8 @@ navbar:
         href: articles/Mauro_2025_nilotinib.html
       - text: "Nilotinib lowfat (Mauro 2025)"
         href: articles/Mauro_2025_nilotinib.html
-      - text: "Nimotuzumab (CastroSuarez 2020)"
-        href: articles/CastroSuarez_2020_nimotuzumab.html
+      - text: "Nimotuzumab (deCastroSuarez 2020)"
+        href: articles/deCastroSuarez_2020_nimotuzumab.html
       - text: "Nintedanib (Schmid 2017)"
         href: articles/Schmid_2017_nintedanib.html
       - text: "Nipocalimab (Valenzuela 2025)"
@@ -4298,7 +4298,6 @@ articles:
   - articles/CarlssonPetri_2021_liraglutide
   - articles/Carmichael_2003_hydroxychloroquine
   - articles/Castelli_2022_dextroamphetamine
-  - articles/CastroSuarez_2020_nimotuzumab
   - articles/CatalanLatorre_2018_taurine_rat
   - articles/Cella_2012_midazolam_paediatric_scaling
   - articles/Cendros_2025_enflicoxib
@@ -5747,6 +5746,7 @@ articles:
   - articles/Zurlinden_2016_paracetamol
   - articles/Zvada_2010_rifapentine
   - articles/deAlwis_1998_ondansetron
+  - articles/deCastroSuarez_2020_nimotuzumab
   - articles/deHoogd_2017_morphine
   - articles/deJonge_2005_paclitaxel
   - articles/deKock_2017_sulfadoxinePyrimethamine

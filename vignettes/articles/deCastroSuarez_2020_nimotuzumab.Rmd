@@ -70,7 +70,7 @@ Body weight, height, age, BSA, CrCL, serum creatinine, total kidney volume
 a stepwise covariate-search procedure (forward p < 0.05, backward p < 0.01);
 none was retained as statistically significant on any PK parameter.
 
-Programmatically: `readModelDb("CastroSuarez_2020_nimotuzumab")` carries the
+Programmatically: `readModelDb("deCastroSuarez_2020_nimotuzumab")` carries the
 same metadata in the `meta$population` field of the returned `rxode2` UI
 object (or via the model's `population` element when the model function is
 called directly).
@@ -78,7 +78,7 @@ called directly).
 ## Source trace
 
 Every numeric value in
-`inst/modeldb/specificDrugs/CastroSuarez_2020_nimotuzumab.R` comes from the
+`inst/modeldb/specificDrugs/deCastroSuarez_2020_nimotuzumab.R` comes from the
 following locations in de Castro-Suárez N, Trame MN, Mangas-Sanjuan V, et al.,
 *Pharmaceutics* 2020;12(12):1147
 ([doi:10.3390/pharmaceutics12121147](https://doi.org/10.3390/pharmaceutics12121147)).
@@ -108,7 +108,7 @@ No errata were located on PubMed, the MDPI landing page, or Google Scholar
 | **V~1~ change (D = 50 mg) [%] = 53** *(applied as 53 % decrease in V~1~ for 50 mg cohort — see Errata)* | Table 2, "V1 change (D = 50 mg)" row | `V1 * (1 − 0.53 * (DOSE == 50))` |
 
 The ODE system implemented in
-`inst/modeldb/specificDrugs/CastroSuarez_2020_nimotuzumab.R` is mathematically
+`inst/modeldb/specificDrugs/deCastroSuarez_2020_nimotuzumab.R` is mathematically
 equivalent to the paper's Eqs. (1)–(3): the model file tracks total drug
 amount and uses the closed-form QSS algebraic solution
 `cfree = ½·((C_total − R − Kss) + √((C_total − R − Kss)² + 4·Kss·C_total))`
@@ -203,7 +203,7 @@ typical-value simulation with `rxode2::zeroRe()` for the deterministic
 profiles in Figure 4.
 
 ```{r simulate}
-mod <- readModelDb("CastroSuarez_2020_nimotuzumab")
+mod <- readModelDb("deCastroSuarez_2020_nimotuzumab")
 
 set.seed(20201202)
 sim_full <- rxode2::rxSolve(mod, events = d_sim) |>
@@ -502,4 +502,4 @@ that 100 mg is the maximum effective single dose.
 
 ## Reference
 
-* `r rxode2::rxode(readModelDb("CastroSuarez_2020_nimotuzumab"))$reference`
+* `r rxode2::rxode(readModelDb("deCastroSuarez_2020_nimotuzumab"))$reference`
