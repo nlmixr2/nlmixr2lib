@@ -901,6 +901,60 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** widespread sigmoid-Emax PD extractions.
 
+### tvec50 (**canonical time-zero value of a time-varying EC50**)
+- **Type:** paper-named-param
+- **Role:** Value of a drifting potency `ec50t` at time zero, i.e. the intercept of the
+  sigmoidal-in-time EC50 form
+  `ec50t <- tvec50 + ec50_time_max * t^ec50_time_hill / (ec50_t50^ec50_time_hill + t^ec50_time_hill)`.
+  Concentration units. Log form `ltvec50`. Use plain [[ec50]] when potency is constant;
+  reach for this family only when the source paper estimates a drift of EC50 with
+  treatment duration (pharmacodynamic tolerance / attenuation of response).
+- **Source aliases:**
+  - `tvEC50` -- used in `Zhang_2016_burosumab.R` (Zhang 2016 Table 3, "tvEC50, EC50,t at time 0").
+- **Example models:** `Zhang_2016_burosumab.R`.
+- **Notes:** The derived time-varying quantity itself is written `ec50t` inside `model()`,
+  following the earlier `Jeon_2013_interferonAlfa2a.R` precedent. The `ec50_time_*` / `ec50_t50`
+  trio mirrors the registered [[cl_time_max]] / [[cl_t50]] / [[cl_time_hill]] family, on EC50
+  instead of clearance: the family name states the STRUCTURE (a sigmoidal-in-time change) and
+  `hill` appears only on the shape coefficient. Note the two families differ in how the sigmoid
+  enters -- the clearance family is multiplicative on log-clearance (`exp(...)`), whereas
+  Zhang 2016 equation 10 is additive on EC50 -- so read the model body, not just the names.
+
+### ec50_time_max (**canonical maximum magnitude of a sigmoidal-in-time EC50 change**)
+- **Type:** paper-named-param
+- **Role:** Change in EC50 approached as `t >> ec50_t50` in the sigmoidal-in-time EC50 form,
+  in the same concentration units as [[tvec50]]. Log form `lec50_time_max`.
+- **Source aliases:**
+  - `a` -- used in `Zhang_2016_burosumab.R` (Zhang 2016 Table 3 row `a`, tabulated in ng/mL/week
+    and glossed "maximum rate of increase of EC50,t"; in the paper's equation 10 it multiplies a
+    dimensionless saturating function of time, so it is an increment rather than a rate. The
+    vignette gate reproduces all three published EC50,t values under the increment reading).
+- **Example models:** `Zhang_2016_burosumab.R`.
+- **Notes:** Sibling of [[cl_time_max]]; see [[tvec50]] for the family rationale.
+
+### ec50_t50 (**canonical half-time of a sigmoidal-in-time EC50 change**)
+- **Type:** paper-named-param
+- **Role:** Time at which half of [[ec50_time_max]] has been reached, in the same sigmoidal
+  form. Log form `lec50_t50`. Units are whatever time unit the source equation uses, which
+  need not be the model's time unit -- convert inside `model()` and say so.
+- **Source aliases:** none.
+- **Example models:** `Zhang_2016_burosumab.R` (fixed at 32 weeks, a constant printed only
+  inside Zhang 2016 equation 10 and absent from Table 3; the model converts the solver's days
+  to weeks before evaluating the sigmoid).
+- **Notes:** Named without a `time` infix because `t50` already denotes a time, matching
+  [[cl_t50]].
+
+### ec50_time_hill (**canonical Hill coefficient of a sigmoidal-in-time EC50 change**)
+- **Type:** paper-named-param
+- **Role:** Sigmoid steepness exponent of the same time-varying EC50 form. Log form
+  `lec50_time_hill`.
+- **Source aliases:**
+  - `g` / `gamma` -- used in `Zhang_2016_burosumab.R` (Zhang 2016 Table 3, glossed "Hill
+    coefficient"; it is the exponent on TIME in equation 10, not on concentration).
+- **Example models:** `Zhang_2016_burosumab.R`.
+- **Notes:** Distinct from [[hill]], which is the sigmoidicity exponent on CONCENTRATION in a
+  sigmoid Emax / Imax term. A model may carry both. Sibling of [[cl_time_hill]].
+
 ### lki50 (**canonical log-transformed half-maximal upstream-biomarker level driving a downstream effect rate**)
 - **Type:** paper-named-param
 - **Role:** Log-transformed half-maximal point of a sigmoid whose DRIVER is an upstream biomarker response rather than a drug concentration, entering a downstream effect-RATE expression: `rate = rmax * I^hill / (ki50^hill + I^hill)`, where `I` is the biomarker response on its own axis (percent inhibition of a phosphoprotein, percent receptor occupancy, fold-change of a transcript). Carries the units of that biomarker axis, NOT concentration units. Inside `model()` the bare name is `ki50`.

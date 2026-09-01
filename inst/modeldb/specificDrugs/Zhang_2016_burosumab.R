@@ -196,11 +196,11 @@ Zhang_2016_burosumab <- function() {
     label("Maximum effect on serum Pi change from baseline (mg/dL)")            # Zhang 2016 Table 3: Emax = 1.5 mg/dL (FIX). Note to Table 3: "Emax value was fixed to achieve the covariance step and obtain precision of the parameters"; the fixed value came from data exploration and previous run results (Results 'Population PK-PD Modeling')
     ltvec50 <- log(1799.6)
     label("EC50,t at time zero, tvEC50 (ng/mL)")                                # Zhang 2016 Table 3: tvEC50 = 1799.6 ng/mL (RSE 15.9%)
-    lssec50 <- log(4605.5)
+    lec50_time_max <- log(4605.5)
     label("Maximum increase of EC50,t above tvEC50 (ng/mL)")                    # Zhang 2016 Table 3: a = 4605.5 ng/mL/week (RSE 16.8%), labelled "maximum rate of increase of EC50,t"; in equation 10 it multiplies a dimensionless saturating function of time, so it acts as the asymptotic increment of EC50,t (see the model file note below)
-    lhill_ec50t <- log(2.88)
+    lec50_time_hill <- log(2.88)
     label("Hill coefficient of the EC50,t rise over time (unitless)")           # Zhang 2016 Table 3: g = 2.88 (RSE 17.1%), the exponent on t in equation 10
-    lt50_ec50t <- fixed(log(32))
+    lec50_t50 <- fixed(log(32))
     label("Time to half-maximal rise of EC50,t (weeks)")                        # Zhang 2016 equation 10: the denominator is (32^g + t^g), i.e. a structural constant of 32 weeks printed only inside the equation and absent from Table 3; see the model file note below
 
     # ---- PK-PD between-subject variability ----
@@ -244,7 +244,7 @@ Zhang_2016_burosumab <- function() {
     # recoverable from Table 3 alone:
     #   (a) the 32 in the denominator is a structural constant printed only
     #       inside the equation. It is carried here as the fixed parameter
-    #       t50_ec50t so it is visible and source-traced rather than buried as
+    #       ec50_t50 so it is visible and source-traced rather than buried as
     #       a magic number.
     #   (b) "a" is tabulated with units of ng/mL/week and described as the
     #       "maximum rate of increase", but in equation 10 it multiplies a
@@ -260,12 +260,12 @@ Zhang_2016_burosumab <- function() {
     # to EC50,t(t) * exp(eta) while keeping the parameters mu-referenced.
     tweek <- t / 7
     tvec50 <- exp(ltvec50 + etaltvec50)
-    ssec50 <- exp(lssec50 + etaltvec50)
-    hill_ec50t <- exp(lhill_ec50t)
-    t50_ec50t <- exp(lt50_ec50t)
+    ec50_time_max <- exp(lec50_time_max + etaltvec50)
+    ec50_time_hill <- exp(lec50_time_hill)
+    ec50_t50 <- exp(lec50_t50)
 
-    ec50t <- tvec50 + ssec50 * tweek^hill_ec50t /
-      (t50_ec50t^hill_ec50t + tweek^hill_ec50t)
+    ec50t <- tvec50 + ec50_time_max * tweek^ec50_time_hill /
+      (ec50_t50^ec50_time_hill + tweek^ec50_time_hill)
 
     # ---- 5. Emax effect on serum phosphate, Zhang 2016 equation 9 ----
     # dPi is the change from baseline in serum Pi, with baseline defined as the
