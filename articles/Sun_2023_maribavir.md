@@ -315,7 +315,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x5639d02d1598>
+#> <environment: 0x56146a3248e0>
 ```
 
 ### Cross-validation of the control stream against Table S2

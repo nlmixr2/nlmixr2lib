@@ -593,7 +593,7 @@ mod
 #>     Crbc ~ prop(propSd_Crbc)
 #>   })
 #> }
-#> <environment: 0x5639cabd17b8>
+#> <environment: 0x56145e79ceb8>
 ```
 
 ## Population
@@ -1085,7 +1085,7 @@ c(
   mean_pct_diff = mean(table2_cmp$pct_diff)
 )
 #>          n_cells max_abs_pct_diff    mean_pct_diff 
-#>       48.0000000        1.1103160       -0.7858274
+#>       48.0000000        1.1103161       -0.7858274
 ```
 
 Every one of the 48 published cells is reproduced to within 1.2%, with a
@@ -1478,7 +1478,7 @@ c(
   drift_fraction_pct = 100 * rise_diet / rise_total
 )
 #>      total_rise_umol_L diet_only_drift_umol_L     drift_fraction_pct 
-#>               6.783074               2.887496              42.569131
+#>               6.783074               2.887496              42.569133
 ```
 
 About 43% of the modelled 16-week rise at 8 mg/day is baseline drift
