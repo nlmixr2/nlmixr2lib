@@ -532,7 +532,11 @@ stopifnot(
   get_pta("75 mg/kg q12h") > get_pta("50 mg/kg q12h"),
   get_pta("50 mg/kg q12h") > get_pta("25 mg/kg q12h"),
   # The paper's two clear-cut negatives at MIC 4 mg/L, with wide margins.
+  # Both are cohort *means* over n_arm subjects, not cohort extremes, so they
+  # are far steadier across rxode2 builds than a max()/min() would be; the
+  # bounds sit 0.20 and 0.06 above the realised maxima quoted above.
   get_pta("25 mg/kg q12h") < 0.75,
+  get_pta("50 mg/kg q12h") < 0.90,
   # The paper's clearest positive.
   get_pta("25 mg/kg q6h")  >= 0.90,
   # A mis-transcribed CL, V, dose or maturation term moves these PTAs by tens
