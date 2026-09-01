@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ma 2026 colistin sulfate ([doi:10.2147/DDDT.S600942](https://doi.org/10.2147/DDDT.S600942)) -- critically ill adults with carbapenem-resistant infections.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
