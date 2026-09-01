@@ -30,7 +30,7 @@ library(ggplot2)
   `modellib("Hansson_2013b_sunitinib")` (DDMODEL00000198).
 
 This vignette validates the Hansson 2013 e84 overall-survival (OS) model
-packaged as `Hansson_2013_sunitinib_OS` under
+packaged as `Hansson_2013_sunitinib_svegfr3_os` under
 `inst/modeldb/specificDrugs/`. The OS sub-model is a parametric Weibull
 time-to-event (TTE) hazard with log-linear covariate effects of the
 model-predicted relative change in soluble VEGFR-3 (sVEGFR-3) over time
@@ -71,7 +71,7 @@ The same information is available programmatically via the model's
 `population` metadata:
 
 ```{r population-meta}
-m  <- rxode2::rxode2(readModelDb("Hansson_2013_sunitinib_OS"))
+m  <- rxode2::rxode2(readModelDb("Hansson_2013_sunitinib_svegfr3_os"))
 str(m$meta$population, max.level = 1)
 ```
 
@@ -79,7 +79,7 @@ str(m$meta$population, max.level = 1)
 
 Per-parameter origin is captured as in-file comments next to each
 `ini()` entry in
-`inst/modeldb/specificDrugs/Hansson_2013_sunitinib_OS.R`. The table
+`inst/modeldb/specificDrugs/Hansson_2013_sunitinib_svegfr3_os.R`. The table
 below collects them in one place; rates reported in 1/week in the paper
 are converted to 1/h via `/24/7` to match `units$time = "h"` (the
 same convention used by `Hansson_2013a` / `Hansson_2013b`).
@@ -223,7 +223,7 @@ medians) to verify the mechanistic shape of the sVEGFR-3 / hazard /
 survival outputs.
 
 ```{r typ-sim}
-mod <- readModelDb("Hansson_2013_sunitinib_OS")
+mod <- readModelDb("Hansson_2013_sunitinib_svegfr3_os")
 
 typ_events <- data.frame(
   id           = 1L,

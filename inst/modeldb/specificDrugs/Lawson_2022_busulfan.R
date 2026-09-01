@@ -65,10 +65,10 @@ Lawson_2022_busulfan <- function() {
     lvp <- log(3.57);  label("Typical peripheral volume of distribution at adult reference (V2, L)")       # Lawson 2022 Table 3
 
     # Time-associated CL decline within a treatment course (Lawson 2022 Equation 1, simplified
-    # to gamma = 1; CL_t = CL * exp(cl_hill_max * t / (cl_hill_t50 + t)) where t is time since the
+    # to gamma = 1; CL_t = CL * exp(cl_time_max * t / (cl_t50 + t)) where t is time since the
     # start of the first infusion).
-    cl_hill_max    <- -0.198;  label("Maximum fractional change in CL over a treatment course (unitless)")      # Lawson 2022 Table 3
-    cl_hill_t50 <-  50.6;   label("Time at which 50% of cl_hill_max is attained (h)")                             # Lawson 2022 Table 3
+    cl_time_max    <- -0.198;  label("Maximum fractional change in CL over a treatment course (unitless)")      # Lawson 2022 Table 3
+    cl_t50 <-  50.6;   label("Time at which 50% of cl_time_max is attained (h)")                             # Lawson 2022 Table 3
 
     # Fat-mass fractions for parameter-specific NFM (fixed a priori per McCune 2014).
     ffat_cl <- fixed(0.509);  label("Fraction of fat mass contributing to NFM on CL (unitless)")    # Lawson 2022 Table 3
@@ -118,7 +118,7 @@ Lawson_2022_busulfan <- function() {
     # Time-associated CL multiplier over the treatment course (Lawson 2022 Equation 1 with
     # gamma = 1, Table 3). The simulation clock t must equal time since the first dose (i.e.,
     # dosing in the event table starts at t = 0); at t = 0 the multiplier is 1.
-    time_factor_cl <- exp(cl_hill_max * t / (cl_hill_t50 + t))
+    time_factor_cl <- exp(cl_time_max * t / (cl_t50 + t))
 
     # Individual PK parameters.
     cl <- exp(lcl + etalcl) * size_cl * maturation_cl * time_factor_cl

@@ -113,13 +113,13 @@ Zeng_2026_atezolizumab <- function() {
     lq  <- fixed(log(0.603)); label("Intercompartmental clearance (Q, L/day)")                   # Zeng 2026 Supplement, NONMEM $THETA(5)
     lvp <- fixed(log(2.88));  label("Peripheral volume of distribution at reference (Vp, L)")    # Zeng 2026 Supplement, NONMEM $THETA(6)
 
-    # Sigmoidal time-varying clearance: cl <- cl_base * exp(cl_hill_max_i *
-    # t^gamma / (t50^gamma + t^gamma)). cl_hill_max is negative, so clearance
+    # Sigmoidal time-varying clearance: cl <- cl_base * exp(cl_time_max_i *
+    # t^gamma / (t50^gamma + t^gamma)). cl_time_max is negative, so clearance
     # falls with time on treatment, by a factor of exp(-0.193) = 0.824 as
-    # t >> cl_hill_t50. Kept on the natural scale because it is signed.
-    cl_hill_max   <- fixed(-0.193); label("Maximal fractional change in log-CL over time (unitless)")     # Zeng 2026 Supplement, NONMEM $THETA(15) IMAX
-    cl_hill_t50   <- fixed(62.8);   label("Time at which half of cl_hill_max is reached (day)")           # Zeng 2026 Supplement, NONMEM $THETA(16) T50
-    cl_hill_gamma <- fixed(2.67);   label("Hill / sigmoidicity exponent of time on CL (unitless)")        # Zeng 2026 Supplement, NONMEM $THETA(17) GAMMA
+    # t >> cl_t50. Kept on the natural scale because it is signed.
+    cl_time_max   <- fixed(-0.193); label("Maximal fractional change in log-CL over time (unitless)")     # Zeng 2026 Supplement, NONMEM $THETA(15) IMAX
+    cl_t50   <- fixed(62.8);   label("Time at which half of cl_time_max is reached (day)")           # Zeng 2026 Supplement, NONMEM $THETA(16) T50
+    cl_time_hill <- fixed(2.67);   label("Hill / sigmoidicity exponent of time on CL (unitless)")        # Zeng 2026 Supplement, NONMEM $THETA(17) GAMMA
 
     # Covariate effects on CL. WT, ALB and TUMSZ enter as power terms; ADA
     # status enters as a multiplicative factor raised to the 0/1 indicator,
@@ -138,11 +138,11 @@ Zeng_2026_atezolizumab <- function() {
     # IIV, all FIXED. The four $OMEGA entries are variances on the log scale
     # and are exact squares of the standard deviations the FDA review reports:
     # 0.263^2 = 0.069169 (CL), 0.172^2 = 0.029584 (Vc), 0.352^2 = 0.123904
-    # (Vp), 0.897^2 = 0.804609 (cl_hill_max).
+    # (Vp), 0.897^2 = 0.804609 (cl_time_max).
     etalcl         ~ fixed(0.069169)  # Zeng 2026 Supplement, NONMEM $OMEGA ETA(1), IIV on CL
     etalvc         ~ fixed(0.029584)  # Zeng 2026 Supplement, NONMEM $OMEGA ETA(2), IIV on V1
     etalvp         ~ fixed(0.123904)  # Zeng 2026 Supplement, NONMEM $OMEGA ETA(3), IIV on V2
-    etacl_hill_max ~ fixed(0.804609)  # Zeng 2026 Supplement, NONMEM $OMEGA ETA(4), IIV on IMAX
+    etacl_time_max ~ fixed(0.804609)  # Zeng 2026 Supplement, NONMEM $OMEGA ETA(4), IIV on IMAX
 
     # Combined additive plus proportional residual error, FIXED. The control
     # stream computes W = SQRT(THETA(1)**2 * IPRED**2 + THETA(2)**2) with
@@ -169,11 +169,11 @@ Zeng_2026_atezolizumab <- function() {
     q  <- exp(lq)
 
     # Time-varying clearance. IIV enters multiplicatively on the signed
-    # cl_hill_max, as IMAX = THETA(15) * EXP(ETA(4)) in the control stream,
+    # cl_time_max, as IMAX = THETA(15) * EXP(ETA(4)) in the control stream,
     # so the sign of the effect is preserved for every subject.
-    cl_hill_max_i <- cl_hill_max * exp(etacl_hill_max)
-    cl <- cl_base * exp(cl_hill_max_i * t^cl_hill_gamma /
-                          (cl_hill_t50^cl_hill_gamma + t^cl_hill_gamma))
+    cl_time_max_i <- cl_time_max * exp(etacl_time_max)
+    cl <- cl_base * exp(cl_time_max_i * t^cl_time_hill /
+                          (cl_t50^cl_time_hill + t^cl_time_hill))
 
     kel <- cl / vc
     k12 <- q  / vc

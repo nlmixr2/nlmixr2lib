@@ -85,9 +85,9 @@ source_trace <- tibble::tribble(
   "Vc (L)",                        "3.25",        "MOESM1 NONMEM $THETA(4)",
   "Q (L/day)",                     "0.603",       "MOESM1 NONMEM $THETA(5)",
   "Vp (L)",                        "2.88",        "MOESM1 NONMEM $THETA(6)",
-  "cl_hill_max (IMAX)",            "-0.193",      "MOESM1 NONMEM $THETA(15)",
-  "cl_hill_t50 (day)",             "62.8",        "MOESM1 NONMEM $THETA(16)",
-  "cl_hill_gamma",                 "2.67",        "MOESM1 NONMEM $THETA(17)",
+  "cl_time_max (IMAX)",            "-0.193",      "MOESM1 NONMEM $THETA(15)",
+  "cl_t50 (day)",             "62.8",        "MOESM1 NONMEM $THETA(16)",
+  "cl_time_hill",                 "2.67",        "MOESM1 NONMEM $THETA(17)",
   "WT exponent on CL",             "0.668",       "MOESM1 NONMEM $THETA(7)",
   "ALB exponent on CL",            "-0.901",      "MOESM1 NONMEM $THETA(8)",
   "TUMSZ exponent on CL",          "0.116",       "MOESM1 NONMEM $THETA(9)",
@@ -99,7 +99,7 @@ source_trace <- tibble::tribble(
   "IIV CL (variance)",             "0.069169",    "MOESM1 NONMEM $OMEGA ETA(1)",
   "IIV Vc (variance)",             "0.029584",    "MOESM1 NONMEM $OMEGA ETA(2)",
   "IIV Vp (variance)",             "0.123904",    "MOESM1 NONMEM $OMEGA ETA(3)",
-  "IIV cl_hill_max (variance)",    "0.804609",    "MOESM1 NONMEM $OMEGA ETA(4)",
+  "IIV cl_time_max (variance)",    "0.804609",    "MOESM1 NONMEM $OMEGA ETA(4)",
   "Proportional residual SD",      "0.034",       "MOESM1 NONMEM $THETA(1), $ERROR W",
   "Additive residual SD (ug/mL)",  "18.1",        "MOESM1 NONMEM $THETA(2), $ERROR W",
   "Reference WT / ALB / TUMSZ",    "77 kg / 40 g/L / 63 mm", "MOESM1 NONMEM $PK",
@@ -390,7 +390,7 @@ published value, which accounts for most of the 2% gap on the geometric mean.
 
 The reproduction above depends on the published seed and on `set.seed()`
 behaviour. A gate that depends on neither: at steady state on 840 mg q6w, far
-past `cl_hill_t50`, the time-varying multiplier has saturated, so clearance is
+past `cl_t50`, the time-varying multiplier has saturated, so clearance is
 effectively constant within a dosing interval and mass balance requires
 
 $$\mathrm{AUC}_\tau = \frac{D}{\mathrm{CL}_\infty},
@@ -658,7 +658,7 @@ bind_rows(
 ### Monte Carlo error is the dominant residual difference
 
 The comparison above is a 200-subject cohort against a 1000-subject one, with an
-independent IIV draw. `cl_hill_max` carries an IIV variance of 0.804609, so the
+independent IIV draw. `cl_time_max` carries an IIV variance of 0.804609, so the
 cycle-7 trough is by far the most dispersed metric and the least precisely
 estimated in either cohort. The sampling noise below is the scale against which
 any remaining gap should be read.
