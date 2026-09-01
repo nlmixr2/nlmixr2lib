@@ -1866,6 +1866,8 @@ navbar:
         href: articles/Sakurai_2007_lansoprazole.html
       - text: "Lebrikizumab (Zhu 2017)"
         href: articles/Zhu_2017_lebrikizumab.html
+      - text: "Lecanemab (Cao 2026)"
+        href: articles/Cao_2026_lecanemab.html
       - text: "Lefamulin higher ppb (Bian 2024)"
         href: articles/Bian_2024_lefamulin.html
       - text: "Lefamulin original ppb (Bian 2024)"
@@ -4292,6 +4294,7 @@ articles:
   - articles/Cao_2017_dha_artemisinin_stress_model
   - articles/Cao_2025_busulfan
   - articles/Cao_2025_ferricCarboxymaltose
+  - articles/Cao_2026_lecanemab
   - articles/Capparelli_2005_cefepime
   - articles/Cardilin_2018_radiation_radiosensitizer_mouse
   - articles/CarlssonPetri_2018_semaglutide
