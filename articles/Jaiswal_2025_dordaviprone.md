@@ -360,23 +360,43 @@ oos <- nca_wide |>
   dplyr::filter(arm %in% c("125 mg alone", "375 mg alone")) |>
   dplyr::left_join(published_sad, by = "arm", suffix = c("", "_pub"))
 
-# These bounds are deliberately NOT set at the value achieved when this was
-# written. A bound equal to the observed result has zero margin and fails on
-# any draw or solver build that moves the result at all -- which is exactly
-# what happened: `<= 0.05` for Tmax failed on rxode2 5.1.7 having been written
-# against a run that achieved 0.05 h.
-#
-# Tmax is the worst case because it is QUANTISED by the observation grid:
-# tgrid above is seq(0, 12, by = 0.05), so Tmax can only ever land on a 0.05 h
-# multiple and `<= 0.05` permits exactly ONE grid step. Allow five, which still
-# pins the absorption phase to a quarter of an hour.
-#
-# All three remain far stricter than the 20% agreement the prose above claims
-# for this comparison, so the out-of-sample check keeps its force.
+# Report what was achieved rather than only asserting a bound on it.
+oos_acc <- data.frame(
+  arm          = oos$arm,
+  auc_pct_diff = 100 * (oos$aucinf.obs / oos$aucinf.obs_pub - 1),
+  cmax_pct_diff = 100 * (oos$cmax / oos$cmax_pub - 1),
+  tmax_diff_h  = oos$tmax - oos$tmax_pub
+)
+knitr::kable(
+  oos_acc,
+  digits  = c(0, 2, 2, 3),
+  caption = "Out-of-sample accuracy at the two doses not used for calibration."
+)
+```
+
+| arm          | auc_pct_diff | cmax_pct_diff | tmax_diff_h |
+|:-------------|-------------:|--------------:|------------:|
+| 125 mg alone |         8.54 |         -5.61 |        0.05 |
+| 375 mg alone |         9.30 |         -3.21 |        0.00 |
+
+Out-of-sample accuracy at the two doses not used for calibration.
+{.table}
+
+``` r
+
+
+# Tmax is read off a discrete observation grid (0.05 h through the absorption
+# phase), so it is quantised and cannot be compared more finely than one grid
+# step. Note that comparing against the bare step would sit exactly on an
+# IEEE754 boundary -- 1.30 - 1.25 evaluates to 0.050000000000000044, which is
+# strictly greater than 0.05 -- so the bound carries an explicit epsilon. This
+# is a resolution limit of the simulation grid, not a tuned tolerance.
+tmax_grid_h <- 0.05
+
 stopifnot(
-  max(abs(oos$aucinf.obs / oos$aucinf.obs_pub - 1)) < 0.15,  # ~9.3% when written
-  max(abs(oos$cmax / oos$cmax_pub - 1))            < 0.10,   # ~5.6% when written
-  max(abs(oos$tmax - oos$tmax_pub))                <= 0.25   # 5 grid steps
+  max(abs(oos$aucinf.obs / oos$aucinf.obs_pub - 1)) < 0.10,  # achieved ~9.3%
+  max(abs(oos$cmax / oos$cmax_pub - 1))            < 0.06,   # achieved ~5.6%
+  max(abs(oos$tmax - oos$tmax_pub)) <= tmax_grid_h + 1e-8    # within one grid step
 )
 ```
 
