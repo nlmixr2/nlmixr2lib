@@ -32,9 +32,22 @@ Read this once at dispatch, before starting the 6-phase workflow. Every trigger 
 
 - **Worktree branch already pushed in a prior run.** `git log origin/<branch>..HEAD` shows no new commits and the branch exists upstream with task content. Sidecar to decide: verify and exit, or tear down and re-extract.
 
+## Mandatory pre-skip check - look inside the figure panels
+
+**Before any report may record a "parameters unreported" skip - a `skip_reason` in the `no-structural-model` / `parameters-unreported` / `nca-only` family, or a sidecar option arguing the model cannot be reconstructed - pull the publisher's figure files and read them.** A parameter value printed as an annotation *inside a plot panel* is invisible to every text-based path: the `_trimmed.md` (where the figure collapses to `<!-- image -->`), `pdftotext`, and docling all miss it. Such a value is a printed value carrying full printed-value authority, not a digitised one - no curve is fitted and no pixel measured.
+
+How to look:
+
+- EuropePMC: `https://www.ebi.ac.uk/europepmc/webservices/rest/{PMCID}/supplementaryFiles` returns a zip containing the publisher's `grN.jpg` figure files at native resolution.
+- Lead PDF on disk: `pdftoppm -r 300 -f <page> -l <page> -png <paper>.pdf out`, then crop the annotation region and upscale it before reading.
+
+Record in the report *which* figures were looked at. The tell that makes this check high-yield: **a two-parameter model form (Emax / Imax / Hill / linear-slope) where exactly ONE parameter is reported in the text** - the missing one is very often in the panel.
+
+Founding case: `Siemers_2025_sabirnetug`. That paper's `EC50 = 136 ng/mL` appears *only* inside the Fig. 3 plot panel - not in the prose, not in Table 3, not in the figure caption, not in the supplement. An earlier task (`agcand_13066760`) verified all four of those negatives, concluded the Emax model was unreconstructable, and skipped the paper. The value was there the whole time.
+
 ## Parameter sourcing (Phase 4)
 
-- **Required parameter absent from every on-disk source.** Don't substitute from training data. Sidecar with options: (A) author-correspondence email, (B) approximate (QSS / steady-state / fixed-from-class) and document in vignette Errata, (C) skip.
+- **Required parameter absent from every on-disk source.** Don't substitute from training data. Establish "absent" only after running the mandatory pre-skip figure-panel check above. Sidecar with options: (A) author-correspondence email, (B) approximate (QSS / steady-state / fixed-from-class) and document in vignette Errata, (C) skip.
 - **`$THETA` reported with 0% RSE but no FIX flag.** Could be fixed or estimated; the encoding choice (`fixed()` wrapper or not) materially affects re-fits.
 - **NCA disagreement > ~20%.** PKNCA output disagrees with published NCA after careful review. Do not tune — confirm the source has been correctly transcribed first.
 

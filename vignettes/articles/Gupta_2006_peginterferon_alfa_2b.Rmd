@@ -55,12 +55,12 @@ table below collects them for review.
 | Equation / parameter | Value | Source location |
 |----------------------|-------|-----------------|
 | `lcl`                | `log(44.1)` L/day at CLcr 120 mL/min | Gupta 2006 Table 3 (theta_CL0) |
-| `lcl_hill_t50`               | `log(23.8 * 28)` = `log(666.4)` days | Gupta 2006 Table 3 (theta_T50 in 28-day units) |
+| `lcl_t50`               | `log(23.8 * 28)` = `log(666.4)` days | Gupta 2006 Table 3 (theta_T50 in 28-day units) |
 | `lvc`                | `log(149)` L                         | Gupta 2006 Table 3 (V) |
 | `lka` (fixed)        | `log(1.9)` 1/day                     | Gupta 2006 Table 3 (Ka, FIXED at Phase I CHC mean per refs 9-10) |
 | `e_crcl_cl`          | `0.21`                               | Gupta 2006 Table 3 (theta_CLcr) |
 | `etalcl` IIV         | `0.1156` (CV 35%)                    | Gupta 2006 Table 3 (omega(CV) CL0) -> `omega^2 = log(0.35^2 + 1)` |
-| `etalcl_hill_t50` IIV        | `0.7833` (CV 109%)                   | Gupta 2006 Table 3 (omega(CV) T50) -> `omega^2 = log(1.09^2 + 1)` |
+| `etalcl_t50` IIV        | `0.7833` (CV 109%)                   | Gupta 2006 Table 3 (omega(CV) T50) -> `omega^2 = log(1.09^2 + 1)` |
 | `etalvc` IIV         | `0.2986` (CV 59%)                    | Gupta 2006 Table 3 (omega(CV) V)   -> `omega^2 = log(0.59^2 + 1)` |
 | `propSd`             | `0.414` (proportional CV 41.4%)      | Gupta 2006 Table 3 (sigma_epsilon = 41.4; see Errata) |
 | CL covariate form    | `CL0 = 44.1 * (CRCL / 120)^0.21 * exp(eta_CL0)` | Gupta 2006 Methods covariate equation |
@@ -158,7 +158,7 @@ points Gupta 2006 highlights -- weeks 4 (42.3 L/day) and 48 (29.3 L/day) -- and
 confirms a 30.8% reduction in clearance from week 4 to week 48.
 
 ```{r figure-4}
-typical_cl <- function(t_days, cl0 = 44.1, cl_hill_t50 = 666.4) cl0 / (1 + t_days / cl_hill_t50)
+typical_cl <- function(t_days, cl0 = 44.1, cl_t50 = 666.4) cl0 / (1 + t_days / cl_t50)
 
 cl_traj <- tibble::tibble(
   day    = seq(0, 7 * 48, length.out = 200),

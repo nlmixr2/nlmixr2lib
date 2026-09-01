@@ -3,6 +3,16 @@
 # development version
 
 - Add Dings 2026 cafedrine/theodrenaline and ephedrine ([doi:10.3390/pharmaceutics18030296](https://doi.org/10.3390/pharmaceutics18030296)) - parturients with spinal-anaesthesia-induced hypotension during caesarean section, plus a companion neonatal acid-base outcome model.
+- Rename the sigmoidal-in-time clearance parameter family so the names state the
+  structure rather than only the curve shape, across all 20 models that use it:
+  `cl_hill_max` -> `cl_time_max`, `cl_hill_t50` -> `cl_t50`, `cl_hill_gamma` ->
+  `cl_time_hill` (with matching `l`-prefixed, `eta`-prefixed and `_i` forms). The
+  family now extends the registered `cl_time` stem, and `hill` survives only on the
+  shape coefficient where it is meaningful. `checkModelConventions()` and its test
+  were updated to recognise the new names. The trio had been in use for ~20 models
+  with no register entry; all three are now documented in `parameter-names.md`.
+  Unrelated maturation Hill coefficients (`e_page_cl_hill`, `e_pna_cl_hill`) are
+  deliberately unchanged.
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
