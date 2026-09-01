@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Riggs 2013 empagliflozin ([doi:10.1002/jcph.147](https://doi.org/10.1002/jcph.147)) - adults with type 2 diabetes mellitus.
 - Rename the sigmoidal-in-time clearance parameter family so the names state the
   structure rather than only the curve shape, across all 20 models that use it:
   `cl_hill_max` -> `cl_time_max`, `cl_hill_t50` -> `cl_t50`, `cl_hill_gamma` ->
