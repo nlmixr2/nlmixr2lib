@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Saporta 2026 meropenem ([doi:10.1128/aac.01788-25](https://doi.org/10.1128/aac.01788-25)) - neutropenic, intermediately suppressed and immunocompetent mice with Klebsiella pneumoniae lung infection.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
