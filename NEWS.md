@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Tang 2026 vixarelimab ([doi:10.1002/psp4.70230](https://doi.org/10.1002/psp4.70230)) -- healthy volunteers and patients with chronic pruritic conditions.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
