@@ -1,4 +1,4 @@
-"AitOudhia_2016_sunitinib" <- function() {
+AitOudhia_2016_sunitinib <- function() {
   description <- paste0(
     "Joint population PK/PD model for sunitinib and its equipotent active ",
     "metabolite SU12662 in adults with advanced hepatocellular carcinoma (HCC) ",

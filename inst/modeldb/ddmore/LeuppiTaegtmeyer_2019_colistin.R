@@ -1,4 +1,4 @@
-`LeuppiTaegtmeyer_2019_colistin` <- function() {
+LeuppiTaegtmeyer_2019_colistin <- function() {
   description <- "Six-structural-compartment population PK model for colistimethate sodium (CMS, prodrug) and colistin (Col, active metabolite) during continuous renal replacement therapy (CRRT) in critically ill adults. CMS converts to Col by first-order metabolism (CL1M); Col is cleared by metabolism (CL2M). Both CMS and Col exchange with a CRRT filter compartment (driven by blood flow QBL and patient hematocrit HCT) and a downstream cartridge / effluent compartment (driven by effluent flow QEFF and species-specific sieving coefficients SC_CMS and SC_COL). Filter and cartridge priming volumes are fixed device constants (V_filter = 0.2 L, V_cart = 0.3 L). Bioavailability factor F = 1155.5/1749.8 on the dose compartment converts mg of CMS sodium administered into mg colistin-base equivalents (the molar-mass ratio of colistin to CMS sodium); central concentrations are reported as mg/L colistin-base equivalents."
   reference <- paste(
     "Leuppi-Taegtmeyer A, Decosterd LA, Osthoff M, Mueller NJ, Buclin T, Corti N.",

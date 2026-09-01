@@ -1,4 +1,4 @@
-`FiedlerKelly_2019_fremanezumab` <- function() {
+FiedlerKelly_2019_fremanezumab <- function() {
   description <- "Two-compartment population PK model for fremanezumab (anti-CGRP IgG2 delta-a/kappa mAb) with first-order SC absorption, absorption lag time, and route-specific central volume / residual error supporting both IV and SC administration in healthy adults and adults with chronic or episodic migraine (Fiedler-Kelly 2019)."
   reference <- paste(
     "Fiedler-Kelly JB, Cohen-Barak O, Morris DN, Yoon E, Yeo KR, Ludwig EA,",

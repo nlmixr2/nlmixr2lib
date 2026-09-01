@@ -1,4 +1,4 @@
-`BoerPerez_2026_piperacillin` <- function() {
+BoerPerez_2026_piperacillin <- function() {
   description <- "One-compartment population PK model for piperacillin in preterm and term neonates with severe infections (Boer-Perez 2026); body-weight allometric scaling, sigmoidal postmenstrual-age maturation on CL fixed from Rhodin 2009, and a power effect of serum creatinine on CL."
   reference <- paste(
     "Boer-Perez FS, Lima-Rogel V, Romano-Moreno S, Mejia-Elizondo AR,",

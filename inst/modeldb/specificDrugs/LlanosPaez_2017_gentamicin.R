@@ -1,4 +1,4 @@
-`LlanosPaez_2017_gentamicin` <- function() {
+LlanosPaez_2017_gentamicin <- function() {
   description <- "Two-compartment population PK model for gentamicin in pediatric oncology patients (Llanos-Paez 2017 AAC) extended with a renal-cortex accumulation compartment and an Emax model of relative renal-function reduction (Llanos-Paez 2017 AAPS J)."
   reference <- paste(
     "Llanos-Paez CC, Staatz CE, Hennig S.",

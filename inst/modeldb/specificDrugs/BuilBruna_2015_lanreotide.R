@@ -1,4 +1,4 @@
-`BuilBruna_2015_lanreotide` <- function() {
+BuilBruna_2015_lanreotide <- function() {
   description <- "One-compartment population PK model with parallel first- and zero-order subcutaneous absorption for lanreotide Autogel/Depot in patients with gastroenteropancreatic neuroendocrine tumors (Buil-Bruna 2015). A linear effect of body weight on apparent clearance and a small categorical effect of sex on the first-order absorbed fraction are retained; absolute bioavailability F is not identifiable and is structurally anchored at 1, so apparent CL/F and Vd/F are reported. Concentrations are predicted in ng/mL; residual error is additive on the log-transformed observations (LTBS), mapped to proportional in linear space."
   reference <- "Buil-Bruna N, Garrido MJ, Dehez M, Manon A, Nguyen TXQ, Gomez-Panzani EL, Troconiz IF. Population Pharmacokinetic Analysis of Lanreotide Autogel/Depot in the Treatment of Neuroendocrine Tumors: Pooled Analysis of Four Clinical Trials. Clin Pharmacokinet. 2016;55(4):461-473. doi:10.1007/s40262-015-0329-4"
   vignette <- "BuilBruna_2015_lanreotide"

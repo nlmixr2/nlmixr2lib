@@ -1,4 +1,4 @@
-"PerezGuille_2018_dexmedetomidine" <- function() {
+PerezGuille_2018_dexmedetomidine <- function() {
   description <- "Two-compartment IV population PK with sigmoidal Imax PD on heart rate (HR) and mean arterial pressure (MAP) fractional responses for dexmedetomidine in Mexican Mestizo children (2-18 y) undergoing ambulatory surgery, with a priori allometric scaling on CL and Q (exponent 0.75) and V1 and V2 (exponent 1) at a 70 kg reference weight (Perez-Guille et al. 2018, Tables 2 and 3, allometric model)"
   reference <- paste(
     "Perez-Guille MG, Toledo-Lopez A, Rivera-Espinosa L, Alemon-Medina R,",
