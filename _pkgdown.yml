@@ -3967,8 +3967,8 @@ navbar:
         href: articles/Khan_2015_ciprofloxacin.html
       - text: "Cladribine (Novakovic 2017)"
         href: articles/Novakovic_2017_cladribine.html
-      - text: "Colistin (Leuppi-Taegtmeyer 2019)"
-        href: articles/Leuppi-Taegtmeyer_2019_colistin.html
+      - text: "Colistin (LeuppiTaegtmeyer 2019)"
+        href: articles/LeuppiTaegtmeyer_2019_colistin.html
       - text: "Colistin meropenem (Mohamed 2016)"
         href: articles/Mohamed_2016_colistin_meropenem.html
       - text: "DDMoRe: lidocaine"
@@ -4896,7 +4896,7 @@ articles:
   - articles/Leroux_2018_fluconazole_micafungin
   - articles/Leshinsky_2017_caspofungin_cat
   - articles/Lestini_2015_tgfbinhibitor
-  - articles/Leuppi-Taegtmeyer_2019_colistin
+  - articles/LeuppiTaegtmeyer_2019_colistin
   - articles/Levitt_2005_propofol_pbpk
   - articles/Li_2006_meropenem
   - articles/Li_2010_taranabant
