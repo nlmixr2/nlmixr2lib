@@ -3666,6 +3666,14 @@ navbar:
         href: articles/Yamada_2025_zolbetuximab.html
       - text: "ZoledronicAcid (Mori 2018)"
         href: articles/Mori_2018_zoledronicAcid.html
+      - text: "Zolpidem (Kim 2026)"
+        href: articles/Kim_2026_zolpidem.html
+      - text: "Zolpidem crt (Kim 2026)"
+        href: articles/Kim_2026_zolpidem.html
+      - text: "Zolpidem dsst (Kim 2026)"
+        href: articles/Kim_2026_zolpidem.html
+      - text: "Zolpidem vas (Kim 2026)"
+        href: articles/Kim_2026_zolpidem.html
       - text: "Zoniporide (Izat 2025)"
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
       - text: "Zonisamide (Hashimoto 1994)"
@@ -4482,6 +4490,7 @@ articles:
   - articles/Kim_2024_meropenem
   - articles/Kim_2025_evogliptin
   - articles/Kim_2025_infliximab
+  - articles/Kim_2026_zolpidem
   - articles/Kimura_2023_glucarpidase
   - articles/Kir_2025_atenolol_metoprolol_malnutrition
   - articles/Kiriyama_2024_nifedipine_captopril_rat
