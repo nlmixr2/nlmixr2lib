@@ -3386,6 +3386,8 @@ navbar:
         href: articles/Yamamoto_2023_tominersen.html
       - text: "Topiramate (Ahmed 2015)"
         href: articles/Ahmed_2015_topiramate.html
+      - text: "Topiramate (Bamgboye 2026)"
+        href: articles/Bamgboye_2026_topiramate.html
       - text: "Topiramate (Lee 2024)"
         href: articles/Lee_2024_topiramate.html
       - text: "Topiramate dog (Vuu 2016)"
@@ -3891,6 +3893,7 @@ articles:
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
   - articles/Balis_2025_busulfan
+  - articles/Bamgboye_2026_topiramate
   - articles/Barau_2012_mycophenolic_acid
   - articles/Barnett_2018_coproporphyrin_I
   - articles/Barnett_2018_rifampicin
