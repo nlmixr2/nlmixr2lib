@@ -94,7 +94,16 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Role:** Generic effect compartment (Sheiner 1979) used to introduce a hysteresis between plasma concentration and PD response.
 - **Source aliases:** none.
 - **Example models:** PK-PD models with effect-compartment hysteresis.
-- **Notes:** Numbered variants `effect1`, `effect2`, ... are accepted via `compartmentRegex` for multi-effect chains.
+- **Notes:** Numbered variants `effect1`, `effect2`, ... are accepted via `compartmentRegex` for multi-effect chains. When a model carries **two co-existing** effect-delay chains of different speed, use the `effect_slow<n>` / `effect_fast<n>` families below instead of trying to partition a single `effect<n>` numbering between them.
+
+### effect_slow1, effect_slow2, effect_slow3, effect_fast1, effect_fast2, effect_fast3, effect_fast4 (**canonical dual-rate effect-delay cascade families**)
+- **Type:** compartment
+- **Role:** Two parallel first-order lag cascades that smooth the same kinetic driver on two different time scales, whose terminal members are summed to form a single PD driver. `effect_slow<n>` is the slower chain (long transit time, carrying the persistence of the response) and `effect_fast<n>` is the faster chain (short transit time, carrying the onset). Each chain is a plain first-order cascade `d/dt(effect_slow1) = ktr_slow * (driver - effect_slow1)`, `d/dt(effect_slow2) = ktr_slow * (effect_slow1 - effect_slow2)`, and so on; every stage of a chain shares one rate constant. Because each stage is driven by a *concentration* rather than receiving a mass transfer, the states carry the driver's concentration units, not an amount.
+- **Source aliases:**
+  - `A2`, `A3`, `A4` -- Dings 2026 Eqs A2-A4 (slow chain, `ktr1`).
+  - `A5`, `A6`, `A7`, `A8` -- Dings 2026 Eqs A5-A8 (fast chain, `ktr2`).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (three slow stages at `ktr_slow` = 0.107/min, mean transit time 28.0 min; four fast stages at `ktr_fast` = 1.76/min, mean transit time 2.27 min; `conc = effect_slow3 + effect_fast4` drives three parallel Emax haemodynamic endpoints).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine K/PD extraction (task `oare_PMC13029352`, sidecar request-001 q1=A). Arbitrary chain lengths are accepted via `compartmentRegex`, which allows an optional `_slow` / `_fast` qualifier on the numbered-chain prefixes; the headings above enumerate only the stage counts the founding model uses. Mean transit time for a chain of `n` stages is `n / ktr` (**not** `(n + 1) / ktr` -- that form belongs to rxode2's `transit()` closed form, where the dosing depot counts as a stage). Prefer these over `transit<n>` when the cascade smooths a PD signal rather than transporting a dose through an absorption path; `transit<n>` remains correct for absorption. The paired rate-constant parameters are `lktr_slow` / `lktr_fast` in `parameter-names.md`.
 
 ### target (**canonical target compartment**)
 - **Type:** compartment
@@ -1693,7 +1702,23 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Role:** Systolic blood pressure (mmHg) indirect-response turnover state and PD output; the systolic sibling of `dbp`. In Ibrahim 2023 ibrutinib, `sbp` turns over via a zero-order production `kin` and first-order loss `kout` fed by a single upstream `transit1` compartment, with the daily ibrutinib AUC(0-24) stimulating `kin` through an Emax function; the state both carries the ODE and is the single observation variable.
 - **Source aliases:** none.
 - **Example models:** `Ibrahim_2023_ibrutinib_sbp.R`.
-- **Notes:** Registered 2026-07-30 alongside the Ibrahim 2023 ibrutinib extraction, completing the blood-pressure pair with the previously registered `dbp` (Hansson 2013 sunitinib). Holds a blood-pressure value (mmHg), not a drug concentration. Systolic and diastolic pressure are fitted as separate models in both founding papers, so keep them as two states in two files rather than collapsing them into one multi-output model; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`.
+- **Notes:** Registered 2026-07-30 alongside the Ibrahim 2023 ibrutinib extraction, completing the blood-pressure pair with the previously registered `dbp` (Hansson 2013 sunitinib). Holds a blood-pressure value (mmHg), not a drug concentration. Systolic and diastolic pressure are fitted as separate models in both founding papers, so keep them as two states in two files rather than collapsing them into one multi-output model; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`. A paper that fits systolic pressure *jointly* with mean arterial pressure and heart rate uses `sbp` alongside `map` / `hr` as parallel outputs of one multi-output model -- see `Dings_2026_cafedrine_theodrenaline_ephedrine.R`.
+
+### map (**canonical mean arterial pressure PD state**)
+- **Type:** compartment
+- **Role:** Mean arterial pressure (mmHg) PD output; the mean-pressure sibling of `sbp` and `dbp`. May be an indirect-response turnover state, or -- as in Dings 2026 -- an algebraic Emax output computed from an upstream effect-delay cascade and an at-diagnosis baseline anchor.
+- **Source aliases:**
+  - `MAP` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A13.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `map = MAP_BL + (rmax_map - MAP_BL) * conc/(conc + ec50_map) + ...`, fitted jointly with `sbp` and `hr` as one three-output model).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine K/PD extraction (task `oare_PMC13029352`, sidecar request-001 q2=A), completing the haemodynamic output family with the previously registered `sbp` (Ibrahim 2023) and `dbp` (Hansson 2013). Holds a blood-pressure value (mmHg), not a drug concentration. Distinct from the raw absolute-value *covariate* anchors `MAP_PRESURG` / `MAP_BL` in `covariate-columns.md`: those are pre-treatment data values used to centre and anchor the model, whereas `map` is the model's predicted output at any time.
+
+### hr (**canonical heart-rate PD state**)
+- **Type:** compartment
+- **Role:** Heart rate (beats/min) PD output. May be an indirect-response turnover state, or -- as in Dings 2026 -- an algebraic Emax output computed from an upstream effect-delay cascade and an at-diagnosis baseline anchor.
+- **Source aliases:**
+  - `HR` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A12.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + e_event_hr * iu`, fitted jointly with `map` and `sbp`).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine K/PD extraction (task `oare_PMC13029352`, sidecar request-001 q2=A). Holds a rate in beats/min, not a drug concentration. Distinct from the `HR` *covariate* (an observed heart-rate data value used as a covariate on clearance, e.g. `Ngamprasertwong_2016_propofol_sheep.R`) and from its anchor siblings `HR_PRESURG` / `HR_BL`: those are inputs, `hr` is the predicted output.
 
 ### bm (**canonical delayed biomarker-signal effect state**)
 - **Type:** compartment

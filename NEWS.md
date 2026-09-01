@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Dings 2026 cafedrine/theodrenaline and ephedrine ([doi:10.3390/pharmaceutics18030296](https://doi.org/10.3390/pharmaceutics18030296)) - parturients with spinal-anaesthesia-induced hypotension during caesarean section, plus a companion neonatal acid-base outcome model.
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive

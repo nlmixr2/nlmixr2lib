@@ -629,6 +629,104 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Darpo_2014_racSotalol_QTcI.R`, `Darpo_2014_racSotalol_QTcF.R` (PD-only linear mixed-effects E-R model for DeltaQTcI / DeltaQTcF after single 160 mg oral rac-sotalol; QTC_BL is each subject's pre-dose day-0 mean QTc by the corresponding correction method, time-fixed for the analysis).
 - **Notes:** General scope because pre-dose QTc baseline is a universally applicable ECG-derived per-subject covariate in any concentration-DeltaQTc model. The QT correction method (Bazett, Fridericia, individual, study-population-specific) is model-specific and is the per-model documentation responsibility of `covariateData[[QTC_BL]]$notes`; do NOT register parallel canonicals like `QTCI_BL` or `QTCF_BL` for different correction methods (the unit, role, and centering pattern are identical -- only the precise QT-to-QTc conversion formula differs upstream of the model). Future concentration-DeltaQTc papers using a non-zero centering reference different from the Darpo 2014 rounded standard 390 ms should document the per-model reference in `covariateData[[QTC_BL]]$notes`. Ratified canonically on 2026-06-30 alongside the Darpo 2014 rac-sotalol concentration-QTc extraction.
 
+### The `_PRESURG` / `_BL` haemodynamic anchor pair
+
+Perioperative haemodynamic models frequently need a subject's vital signs at **two distinct pre-treatment anchors**, and the distinction is load-bearing rather than cosmetic: the two anchors bracket the physiological insult the model is about to describe, and a model can carry both as covariates on the *same* structural parameter with **opposite signs**.
+
+- `_PRESURG` -- the last value recorded **before the anaesthetic / surgical intervention**, i.e. the subject's own undisturbed physiological set-point.
+- `_BL` -- the value at the moment treatment starts (here, at hypotension diagnosis, immediately before the first antihypotensive bolus). This keeps `_BL`'s established at-first-dose meaning used throughout this register (`QTC_BL`, `HGB_BL`, `FERRITIN_BL`).
+
+Do **not** collapse the two onto one column, and do not use a single `_PRE` suffix for both -- `_PRE` reads as either anchor and has blurred them in draft extractions. When a paper reports only one pre-treatment value, use `_BL` unless it is explicitly pre-intervention. Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine extraction (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### MAP_PRESURG (**canonical for pre-surgery mean arterial pressure**)
+- **Description:** Mean arterial pressure recorded before the anaesthetic / surgical intervention -- the subject's undisturbed baseline set-point. See the `_PRESURG` / `_BL` anchor-pair note above.
+- **Units:** mmHg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(MAP_PRESURG / ref)^exponent`. Reference values observed: 100 mmHg (Dings 2026 population median; cohort mean 101 mmHg in both treatment arms).
+- **Source aliases:**
+  - `MAP` (pre-surgery row of Dings 2026 Table 2) -- same orientation, no value transformation. The source distinguishes the two anchors by table row rather than by column name, so the row label must be carried into the column name at data-assembly time.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (power effect on the maximum attainable MAP: `rmax_map = 119 * (MAP_PRESURG/100)^0.499 * (MAP_BL/64)^-0.53`; a higher undisturbed set-point raises the attainable ceiling).
+- **Notes:** General scope -- a pre-intervention vital-sign anchor applies to any perioperative or procedural model. Sibling of `SBP_PRESURG` and `HR_PRESURG`; paired with `MAP_BL`. The corresponding model *output* state is `map` in `compartment-names.md` -- this column is an input, not a prediction. Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### MAP_BL (**canonical for mean arterial pressure at treatment baseline**)
+- **Description:** Mean arterial pressure at the moment treatment starts -- in the founding model, at hypotension diagnosis, immediately before the first antihypotensive bolus. See the `_PRESURG` / `_BL` anchor-pair note above.
+- **Units:** mmHg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling and as the additive baseline anchor of an Emax equation. Reference values observed: 64 mmHg (Dings 2026 population median; cohort means 64.2 and 64.5 mmHg).
+- **Source aliases:**
+  - `MAP` (baseline row of Dings 2026 Table 2) -- same orientation, no value transformation.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (serves two distinct roles: the additive baseline of the MAP Emax equation `map = MAP_BL + (rmax_map - MAP_BL) * ...`, **and** a power covariate on the ceiling with exponent -0.53, opposite in sign to `MAP_PRESURG`'s +0.499).
+- **Notes:** General scope. The opposite-signed pairing with `MAP_PRESURG` on one parameter is the clearest demonstration of why the two anchors must stay separate columns -- collapsing them would cancel most of the covariate model. Sibling of `SBP_BL`, `HR_BL`, `DBP_BL`. Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### SBP_PRESURG (**canonical for pre-surgery systolic blood pressure**)
+- **Description:** Systolic blood pressure recorded before the anaesthetic / surgical intervention. See the `_PRESURG` / `_BL` anchor-pair note above.
+- **Units:** mmHg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- power scaling. Reference values observed: 139 mmHg (Dings 2026 population median; cohort means 139 and 138 mmHg).
+- **Source aliases:**
+  - `SBP` (pre-surgery row of Dings 2026 Table 2) -- same orientation, no value transformation.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`rmax_sbp = 169 * (SBP_PRESURG/139)^0.577 * (SBP_BL/92)^-0.494`).
+- **Notes:** General scope. The absolute-value pre-intervention sibling of the already-registered `SBP` (which is the unqualified / time-varying systolic pressure). Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### SBP_BL (**canonical for systolic blood pressure at treatment baseline**)
+- **Description:** Systolic blood pressure at the moment treatment starts. See the `_PRESURG` / `_BL` anchor-pair note above.
+- **Units:** mmHg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- power scaling and additive Emax baseline anchor. Reference values observed: 92 mmHg (Dings 2026 population median; cohort means 92.3 and 93 mmHg).
+- **Source aliases:**
+  - `SBP` (baseline row of Dings 2026 Table 2) -- same orientation, no value transformation.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (additive baseline of the SBP Emax equation and a power covariate on the ceiling, exponent -0.494).
+- **Notes:** General scope. Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### HR_PRESURG (**canonical for pre-surgery heart rate**)
+- **Description:** Heart rate recorded before the anaesthetic / surgical intervention. See the `_PRESURG` / `_BL` anchor-pair note above.
+- **Units:** beats/min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- power scaling. Reference values observed: 92 beats/min (Dings 2026 population median; cohort means 92.6 and 91.7 beats/min).
+- **Source aliases:**
+  - `HR` (pre-surgery row of Dings 2026 Table 2) -- same orientation, no value transformation.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`rmax_hr = 77.8 * (HR_PRESURG/92)^0.399 * (1 + 0.15 * TRT_EPHEDRINE)`).
+- **Notes:** General scope. The pre-intervention anchor sibling of the already-registered `HR` (unqualified / time-varying heart rate used as a covariate on clearance). Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### HR_BL (**canonical for heart rate at treatment baseline**)
+- **Description:** Heart rate at the moment treatment starts. See the `_PRESURG` / `_BL` anchor-pair note above.
+- **Units:** beats/min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- additive Emax baseline anchor. Reference values observed: 84 beats/min (Dings 2026 population median; cohort means 85.4 and 87.5 beats/min).
+- **Source aliases:**
+  - `HR` (baseline row of Dings 2026 Table 2) -- same orientation, no value transformation.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (additive baseline of the HR Emax equation, `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + ...`; no covariate effect is estimated on it).
+- **Notes:** General scope. Completes the `_BL` anchor set with `MAP_BL`, `SBP_BL` and `DBP_BL`. `HR_BL` was not in the ratified name list of sidecar request-001 q4 (which covered `MAP_PRESURG`, `MAP_BL`, `SBP_PRESURG`, `SBP_BL`, `HR_PRESURG`, `DBP_BL`), but Dings 2026 Eq. A12 requires the at-diagnosis heart-rate anchor as the additive baseline of the HR Emax term, so it is registered here as the mechanical fourth member of the same ratified family rather than as a new concept. Registered 2026-09-01 (task `oare_PMC13029352`).
+
+### DBP_BL (**canonical for diastolic blood pressure at treatment baseline**)
+- **Description:** Diastolic blood pressure at the moment treatment starts. See the `_PRESURG` / `_BL` anchor-pair note above.
+- **Units:** mmHg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- power scaling. Reference values observed: 50 mmHg (Dings 2026 typical-parturient value; see notes).
+- **Source aliases:**
+  - `DBP` (baseline row) / `DBPBL` -- same orientation, no value transformation.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (power effect on the K/PD apparent volume: `vc = 1 * (DBP_BL/50)^-1.49`; a lower baseline diastolic pressure -- a more profound sympathetic block -- inflates the apparent distribution volume and so blunts the effective driving concentration).
+- **Notes:** General scope. The absolute-value counterpart of the already-registered `DBP_REL` (a *relative* change from baseline, unitless), and the diastolic member of the `_BL` anchor set. Dings 2026 does not tabulate baseline DBP in Table 2, so the 50 mmHg centring value is taken from the typical-parturient definition in the paper's Section 3.4, which Section 2.3 defines as the population median covariate values; it is internally consistent with the tabulated baseline MAP and SBP via `MAP = DBP + (SBP - DBP)/3` (50 + (92 - 50)/3 = 64 mmHg, matching the reported baseline MAP of 64 mmHg). Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### DUR_MAP_BELOW_PRESURG (**canonical for cumulative duration of mean arterial pressure below the pre-surgery anchor**)
+- **Description:** Cumulative minutes for which a subject's mean arterial pressure stays below their own `MAP_PRESURG` value, over a defined window (in the founding model, from antihypotensive treatment until umbilical-cord clamping). A per-subject exposure-to-hypotension metric rather than an instantaneous measurement: it integrates both the depth-independent *time* spent hypotensive and, implicitly, the adequacy of treatment. Typically derived from a simulated or observed MAP-time profile rather than recorded directly.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters linear regressions directly with a per-minute coefficient. Reference values observed: cohort means 10.1 min (cafedrine/theodrenaline) and 10.2 min (ephedrine) in Dings 2026 Table 2.
+- **Source aliases:**
+  - `TIMEMAP` -- Dings 2026 Section 2.3 symbol; same orientation and units, no transformation.
+  - `Duration MAP<pre-surgery MAP` -- Dings 2026 Tables A2 / A3 row label.
+- **Example models:** `Dings_2026_neonatal_acidosis.R` (the single strongest predictor of both neonatal umbilical-arterial pH, -0.00177 per minute, and base excess, -0.105 mmol/L per minute).
+- **Notes:** General scope -- a duration-below-own-baseline exposure metric generalises to any endpoint driven by cumulative hypotension or hypoperfusion. Named against the `_PRESURG` anchor because that is the comparator that defines it; a variant measured against a different anchor should be registered as a separate canonical (e.g. `DUR_MAP_BELOW_BL`) rather than silently reusing this one, since the two are numerically very different. The founding paper's convention when MAP never recovers within the window is documented in `covariateData[[DUR_MAP_BELOW_PRESURG]]$notes` of the founding model. Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
 
 ## Organ and lesion volumes (`ORGVOL_<ORGAN>` family)
 
@@ -4395,6 +4493,62 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Notes:** Not derivable from `DIS_HEALTHY` by complement, and not mutually exclusive with `DIS_DIAB`: the Jadhav 2023 popPK dataset contained 49 participants with diabetes alone plus 310 with hyperlipidemia and diabetes (Table 1 footnote c), so all three flags can be jointly set. Distinct from `DIS_HEFH` / `DIS_HOFH`, which identify the heterozygous and homozygous familial-hypercholesterolemia subsets; a HeFH patient normally also carries `DIS_HYPERLIP = 1`, so record the per-model convention in `covariateData[[DIS_HYPERLIP]]$notes` whenever both appear. Also distinct from the continuous lipid-panel canonicals (`LDLC`, `HDLC`), which carry the measured concentration rather than the diagnosis. Ratified canonically on 2026-07-27 alongside the Jadhav 2023 bempedoic acid extraction (sidecar request 001, operator answer A).
 
 ## Surgical history / disease state
+
+### SPINAL_BLOCK (**canonical for spinal (neuraxial) block height**)
+- **Description:** The most cephalad dermatome anaesthetised by a neuraxial (spinal / epidural) block, recorded as a **thoracic segment number** (5 = T5, 6 = T6, ...). Determines how much of the sympathetic chain is blocked and therefore the expected severity of the resulting vasodilatory hypotension.
+- **Units:** thoracic segment number
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with power scaling `(SPINAL_BLOCK / ref)^exponent` or as a linear per-segment regression term. Reference values observed: 5 (T5; Dings 2026 population median; cohort means 5.79 for cafedrine/theodrenaline and 5.02 for ephedrine).
+- **Source aliases:**
+  - `Spinal block height` -- Dings 2026 Table 2 and Tables A2 / A3 row label; same orientation, no value transformation.
+  - `SPINAL` -- Dings 2026 Table A1 covariate-effect label.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (power effect on the additive anaesthesia blood-pressure effect: `eff_anaes_bp = -9.78 * (SPINAL_BLOCK/5)^-2.05`), `Dings_2026_neonatal_acidosis.R` (linear per-segment terms of +0.00534 on umbilical-arterial pH and +0.3 mmol/L on base excess).
+- **Notes:** **The orientation is inverted relative to the plain-English phrase "block height", and this must be documented in every model that uses it.** Because the value is a segment *number*, a **lower** number means an **anatomically higher** (more extensive) block: T4 blocks more sympathetic outflow than T6. So a lower `SPINAL_BLOCK` predicts a *larger* fall in blood pressure and *worse* neonatal acid-base status. That inverse orientation is what reconciles the negative power exponent in the founding paper's Table A1 with the positive per-segment coefficients in its Tables A2 / A3: all three say the same thing, that a higher block is worse. Do not "correct" the sign of a coefficient on this column without first confirming which orientation the source used. General scope -- neuraxial block height applies to any obstetric, orthopaedic or abdominal regional-anaesthesia model. Registered 2026-09-01 alongside the Dings 2026 extraction (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### T_ANAESTHESIA (**canonical for time from anaesthesia induction to the modelled treatment**)
+- **Description:** Elapsed time between induction of anaesthesia and the start of the modelled treatment (time zero of the model). A positive number: anaesthesia precedes treatment. Lets a model account for how far an anaesthesia-driven physiological effect has already progressed when the treatment begins. Member of the auto-approved `T_<event>` canonical family.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters an exponential decay term. Reference values observed: 7 min (Dings 2026 typical parturient).
+- **Source aliases:**
+  - `TIMEAN` -- Dings 2026 Eq. A11 symbol; same orientation and units, no transformation.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (sets the initial condition of the `effect_anaesthesia` state, `effect_anaesthesia(0) = exp(-kdel * T_ANAESTHESIA)`, so that the anaesthesia blood-pressure effect already realised before treatment is absorbed into the observed baseline and only the *remaining* fall is predicted forward).
+- **Notes:** General scope. Registered 2026-09-01 (task `oare_PMC13029352`); a `T_<event>` family member, auto-approved under the standing naming policy.
+
+### T_INCISION (**canonical for time from the modelled treatment to surgical incision**)
+- **Description:** Time of surgical incision relative to model time zero (the modelled treatment). Used to derive a time-varying 0/1 indicator **inside** `model()` as `t >= T_INCISION`, which avoids carrying a time-varying covariate column. Member of the auto-approved `T_<event>` family.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a. Reference values observed: 5 min after treatment (Dings 2026 typical parturient).
+- **Source aliases:**
+  - `I` -- Dings 2026 Eqs A12-A14 use the derived indicator directly (0 before incision, 1 after).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`iu = (t >= T_INCISION) + (t >= T_UTEROTOMY)`, which adds `eff_event_hr` = 2.75 beats/min and `eff_event_pp` = 2.39 mmHg of pulse pressure per event).
+- **Notes:** General scope. Supplying the event *time* as a time-fixed covariate and deriving the indicator in `model()` is strongly preferred over supplying the indicator as a time-varying column: rxode2 silently drops covariate columns assigned onto an `rxEt` object, so a time-varying indicator is a recurring source of vignettes that render cleanly while modelling nothing. Registered 2026-09-01 (task `oare_PMC13029352`); auto-approved `T_<event>` family member.
+
+### T_UTEROTOMY (**canonical for time from the modelled treatment to uterotomy**)
+- **Description:** Time of uterotomy (incision of the uterus during caesarean section) relative to model time zero. Used to derive a 0/1 indicator inside `model()` as `t >= T_UTEROTOMY`. Member of the auto-approved `T_<event>` family.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a. Reference values observed: 9 min after treatment (Dings 2026 typical parturient).
+- **Source aliases:**
+  - `U` -- Dings 2026 Eqs A12-A14 use the derived indicator directly.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (second of the two intraoperative stimulation events; see `T_INCISION`).
+- **Notes:** Specific scope -- uterotomy is meaningful only for caesarean-section cohorts. Registered 2026-09-01 (task `oare_PMC13029352`); auto-approved `T_<event>` family member.
+
+### T_CORDCLAMP_SAMPLING (**canonical for time from umbilical-cord clamping to blood sampling**)
+- **Description:** Delay between clamping the umbilical cord and drawing the umbilical-arterial blood-gas sample. A pre-analytical covariate rather than a physiological one: continued anaerobic metabolism in the sampled blood raises measured lactate with elapsed time, so this delay must be adjusted for when comparing neonatal acid-base results. Member of the auto-approved `T_<event>` family.
+- **Units:** min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- linear regression term. Reference values observed: cohort means 7.81 min (cafedrine/theodrenaline) and 4.65 min (ephedrine) in Dings 2026 Table 2; the between-arm difference is significant (p < 0.001).
+- **Source aliases:**
+  - `Cord clamping to blood sampling` -- Dings 2026 Table A4 row label.
+- **Example models:** `Dings_2026_neonatal_acidosis.R` (+0.708 mg/dL lactate per minute of delay -- the largest single term in the lactate regression, and a confounder for the between-treatment lactate comparison precisely because the delay itself differed by arm).
+- **Notes:** Specific scope -- an obstetric / neonatal blood-gas pre-analytical covariate. Worth carrying even when not significant, because it is a measurement artefact that can otherwise be mistaken for a treatment effect. Registered 2026-09-01 (task `oare_PMC13029352`); auto-approved `T_<event>` family member.
 
 ### POD (**canonical for post-operative day**)
 - **Description:** Days elapsed since the qualifying surgical event (e.g., solid-organ transplantation, major resection). Time-varying within subject; integer- or fractional-day valued; rises monotonically from 0 at the day of surgery. Captures time-since-surgery effects on PK that are not explained by other covariates -- e.g., post-transplant clearance of immunosuppressants typically declines toward a steady value over the first weeks-to-months as graft function, fluid status, hematocrit, and corticosteroid taper stabilise.
@@ -10595,6 +10749,61 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** none (the source paper uses the drug name directly).
 - **Example models:** `Mercier_2014_tramadol_tapentadol_mbma.R` (enters the extent-of-reduction R additively via `e_tapentadol_emax * TAPENTADOL`; no dose-response is fit because tapentadol was studied only over the narrow 100-250 mg bid range in the Mercier 2014 database; 8 of 81 arms were tapentadol arms).
 - **Notes:** MBMA study-arm-level treatment indicator, sibling of `NAPROXEN` and `TRAMADOL` in the per-drug MBMA arm-indicator family. Specific scope. Pairs with `TRAMADOL` in the Mercier 2014 extraction; the two are mutually exclusive per arm. Registered 2026-07-26 alongside the Mercier 2014 tramadol + tapentadol MBMA extraction.
+
+### TRT_EPHEDRINE (**canonical for ephedrine treatment-arm indicator**)
+- **Description:** Binary treatment-arm indicator: 1 = the subject received ephedrine, 0 = the subject did not. Unlike the `NAPROXEN` / `TRAMADOL` / `TAPENTADOL` MBMA arm indicators, this is a property of an **individual patient** in a two-armed observational study, not of a trial arm in a meta-analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. **The reference differs by model and must be documented per model** -- in `Dings_2026_cafedrine_theodrenaline_ephedrine.R` the reference is the cafedrine/theodrenaline arm (every subject received one drug or the other), whereas in `Dings_2026_neonatal_acidosis.R` the reference is *untreated* and `TRT_CAFEDRINE_THEODRENALINE` is carried as a separate indicator alongside it.
+- **Source aliases:**
+  - `Treatment with E` / `Treatment with ephedrine` -- Dings 2026 Tables A1, A3 and A4 row labels.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (raises the maximum attainable heart rate by a fraction of 0.15 and lowers all three EC50 values by a fraction of 0.711, both via the paper's `1 + COV * theta` categorical form), `Dings_2026_neonatal_acidosis.R` (+2.64 mmol/L base excess and +5.46 mg/dL lactate relative to untreated).
+- **Notes:** Specific scope (a per-drug arm indicator). The `TRT_` prefix distinguishes a patient-level randomised / assigned treatment indicator from the bare-INN MBMA arm indicators (`NAPROXEN`, `TRAMADOL`, `TAPENTADOL`) and from the `CONMED_<INN>` concomitant-medication family; use `TRT_<INN>` when the drug is the study treatment under investigation. Pairs with `TRT_CAFEDRINE_THEODRENALINE`; the two are mutually exclusive per subject. Registered 2026-09-01 alongside the Dings 2026 extraction (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### TRT_CAFEDRINE_THEODRENALINE (**canonical for cafedrine/theodrenaline treatment-arm indicator**)
+- **Description:** Binary treatment-arm indicator: 1 = the subject received the 20:1 fixed combination of cafedrine and theodrenaline, 0 = the subject did not. A patient-level indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (subject did not receive cafedrine/theodrenaline). See the reference-category caveat on `TRT_EPHEDRINE`.
+- **Source aliases:**
+  - `Treatment with C/T` -- Dings 2026 Table A3 row label.
+- **Example models:** `Dings_2026_neonatal_acidosis.R` (+3.26 mmol/L neonatal base excess relative to untreated newborns -- the larger of the two treatment effects, which is the paper's central comparative finding).
+- **Notes:** Specific scope. A single canonical for the fixed-dose combination rather than two separate indicators, because the two components are never given apart -- cafedrine and theodrenaline are co-formulated at a fixed 20:1 ratio and doses are expressed as cafedrine equivalents. Do not split into `TRT_CAFEDRINE` and `TRT_THEODRENALINE`: no source reports them independently and the model cannot identify separate effects. Sibling of `TRT_EPHEDRINE`; mutually exclusive with it. Registered 2026-09-01 (task `oare_PMC13029352`, sidecar request-001 q4=A).
+
+### DOSE_BUPIVACAINE_MG (**canonical for administered intrathecal bupivacaine dose**)
+- **Description:** Total dose of bupivacaine administered for the neuraxial block, in mg. Determines the extent and duration of the sympathetic block and hence the depth of the resulting hypotension. Member of the auto-approved `DOSE_<drug>_<units>` family.
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- linear regression term. Reference values observed: cohort means 10.5 mg (cafedrine/theodrenaline) and 10.2 mg (ephedrine) in Dings 2026 Table 2.
+- **Source aliases:**
+  - `Bupivacaine amount` -- Dings 2026 Tables A3 / A4 row label.
+- **Example models:** `Dings_2026_neonatal_acidosis.R` (-0.186 mmol/L base excess and +1.05 mg/dL lactate per mg of maternal bupivacaine).
+- **Notes:** General scope -- bupivacaine is used for neuraxial and peripheral blocks across many surgical populations. Registered 2026-09-01 (task `oare_PMC13029352`); auto-approved `DOSE_<drug>_<units>` family member.
+
+### MAXHR_KPD (**canonical for individual maximum attainable heart rate from an upstream K/PD fit**)
+- **Description:** A subject's individual (empirical-Bayes) estimate of the maximum attainable heart rate parameter from an upstream haemodynamic K/PD model, supplied to a downstream model as a covariate. A model-derived quantity, not a measurement.
+- **Units:** beats/min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- linear regression term. Reference values observed: population typical values 77.8 beats/min (cafedrine/theodrenaline) and 89.5 beats/min (ephedrine) in Dings 2026 Table A1.
+- **Source aliases:**
+  - `Model parameter MAXHR` -- Dings 2026 Table A3 row label.
+- **Example models:** `Dings_2026_neonatal_acidosis.R` (-0.0256 mmol/L neonatal base excess per beat/min -- the quantitative link behind the paper's conclusion that a lower maternal peak heart rate benefits the newborn).
+- **Notes:** Specific scope -- the value is only meaningful as the `rmax_hr` parameter of the paired `Dings_2026_cafedrine_theodrenaline_ephedrine.R` model, and a downstream model consuming it must obtain it from that model rather than from an unrelated fit. Same upstream-posthoc-input pattern as `BAS_SVEGFR3`, `IBASE` and `MBL_END`. Registered 2026-09-01 (task `oare_PMC13029352`); a mechanically required consequence of sidecar request-001 q5=A (which ratified the paired neonatal-regression file), not a separately ratified name.
+
+### KEL_KPD (**canonical for individual K/PD elimination rate constant from an upstream fit**)
+- **Description:** A subject's individual (empirical-Bayes) estimate of the elimination rate constant of an upstream kinetic/pharmacodynamic (K/PD) model, supplied to a downstream model as a covariate. In a K/PD framework this is a functional descriptor of how quickly the drug *effect* dissipates, **not** a systemic pharmacokinetic elimination rate -- no drug concentrations were measured.
+- **Units:** 1/min
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- linear regression term. Reference values observed: population typical value 0.0971/min (Dings 2026 Table A1, `CL` = 0.0971 L/min with `V` fixed to 1 L), corresponding to a 7.14 min effect half-life.
+- **Source aliases:**
+  - `Model parameter kel` -- Dings 2026 Table A3 row label.
+- **Example models:** `Dings_2026_neonatal_acidosis.R` (-1.74 mmol/L neonatal base excess per 1/min; a slower effect decay -- a smaller `kel` -- predicts better neonatal acid-base status).
+- **Notes:** Specific scope, for the same reason as `MAXHR_KPD`. The founding paper's Discussion cautions explicitly against a causal reading of this term, since within a K/PD framework the parameter may absorb unmeasured determinants of response duration; a model consuming this covariate should carry that caveat. The units in the founding source's Table A3 are printed as `mmol/L x min`, which is the reciprocal of the per-`(1/min)` coefficient unit the regression actually implies -- see the Errata section of the paired vignette. Registered 2026-09-01 (task `oare_PMC13029352`); a mechanically required consequence of sidecar request-001 q5=A.
 
 ### QBL, QEFF (**canonical for baseline / effective renal Q in HD/CRRT renal-replacement models**)
 - **Description:** Renal-replacement-therapy clearance terms used in hemodialysis (HD) / continuous renal replacement therapy (CRRT) popPK models for renally cleared drugs.
