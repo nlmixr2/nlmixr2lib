@@ -367,6 +367,95 @@ When the model turns out to be right, **tighten** the assertion to
 the accuracy actually achieved rather than loosening it — that is
 what makes it catch a future regression.
 
+**That rule applies to DETERMINISTIC quantities only.** For anything
+computed from a simulated cohort, "the accuracy actually achieved"
+is one draw on one machine, and tightening to it produces an
+assertion that fails everywhere else. See pattern 12.
+
+## 12. An assertion that passes locally and fails in CI
+
+**Cause.** `rxSetSeed()` makes an rxode2 simulation reproducible for
+a **given number of solver threads**, not across thread counts: the
+parallel RNG streams are partitioned per thread. A dev box solving
+on 16 threads and a CI runner on 2 therefore draw *different
+cohorts* from identical source. `set.seed()` does not help — it
+seeds R's RNG, not rxode2's.
+
+Any assertion on a cohort-derived quantity that is tight enough to
+sit inside that spread will pass where it was written and fail
+where it runs. This is the single largest source of CI-only vignette
+failures: a 2026-08-31 consolidation shipped **twelve** of them, and
+CI reported only four because each render shard aborts on its first
+failure.
+
+**Three shapes to never write on a simulated quantity:**
+
+```r
+# 1. The SIGN or ORDERING of a near-zero effect.
+stopifnot(slope < 0)                    # flat effect -> sign is a coin flip
+stopifnot(all(diff(pv) < 0))            # every adjacent pair ordered
+stopifnot(all(x > 0))                   # one arm sits on zero
+stopifnot(spread_C < spread_A)          # two noisy ranges raced
+
+# 2. EXACT zero or equality.
+stopifnot(all(pct_over_limit == 0))     # "no subject exceeds" = one draw
+
+# 3. A bound with no headroom over one observed run.
+stopifnot(abs(pct_diff) < 2)            # 2 was simply what that run gave
+```
+
+**Write instead:**
+
+```r
+# Magnitude, not sign, when the claim is that an effect is small:
+stopifnot(abs(slope) < 8)
+# Trend, not step-by-step monotonicity:
+stopifnot(pv[length(pv)] < pv[1])
+# A tolerance that admits the noise, not exact zero:
+stopifnot(mean(pct_over_limit) < 2)
+# An ABSOLUTE bound the paper itself states, not a race between two
+# noisy statistics:
+stopifnot(spread_C <= 15)   # paper reports 74/72/65%, a 9-point spread
+```
+
+**Choosing a bound.** Never take it from one run. Render the vignette
+at more than one thread count and set the bound outside the range you
+observe, then record that range in a comment so the next reader does
+not "tighten" it back:
+
+```r
+# Realised 2.99 / 8.23 / 5.35 at 2 / 4 / 16 threads; 8 sat inside the
+# noise. 12 still breaks on a mis-transcribed volume, dose or unit,
+# which move Cmax by tens of percent.
+stopifnot(max(abs(cmax_pct)) < 12)
+```
+
+Check the loosened form can still go red. Widening a bound on a
+**proportion** past 100, or on a percentage past its achievable
+range, produces a gate that cannot fail — worse than no gate
+(pattern 10).
+
+**When the assertion is right and the model disagrees, record the
+deviation — do not widen until it passes.** If a claim is
+reproducibly outside tolerance rather than flickering at its edge,
+flag it and exclude it from the gate, keeping it visible in the
+rendered table:
+
+```r
+claim <- function(text, value, achieved, deviation = FALSE) { ... }
+stopifnot(all(tab$Pass[!tab$Deviation]))
+```
+
+and say in prose what is not reproduced, with the measured values
+and the likely mechanism. A vignette that documents a known
+disagreement is worth more than one whose gate was widened until the
+disagreement disappeared.
+
+**Do NOT "fix" this by pinning threads inside the vignette.** The
+cohort would then depend on a call the reader has to notice, and the
+published numbers would still be one draw. Write assertions that
+hold for any cohort the model can produce.
+
 ## Process reminder
 
 The runner-merge-claude-branches skill runs `verify_vignettes_parallel.R`
