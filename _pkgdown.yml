@@ -1958,6 +1958,8 @@ navbar:
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "MI 219 (Zou 2012)"
         href: articles/Zou_2012_MI_219.html
+      - text: "MIT001 (Bae 2026)"
+        href: articles/Bae_2026_MIT001.html
       - text: "MK3577 (Peng 2014)"
         href: articles/Peng_2014_MK3577.html
       - text: "MK3577 t2dm (Peng 2014)"
@@ -3886,6 +3888,7 @@ articles:
   - articles/Ayyoub_2016_pyronaridine
   - articles/Azechi_2024_tamibarotene_pediatric
   - articles/Back_2018_fenofibrate
+  - articles/Bae_2026_MIT001
   - articles/Baheti_2011_tenofovir
   - articles/Baiardi_2025_dalbavancin
   - articles/Bajaj_2017_nivolumab

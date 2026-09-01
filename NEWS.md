@@ -12,6 +12,9 @@
   with no register entry; all three are now documented in `parameter-names.md`.
   Unrelated maturation Hill coefficients (`e_page_cl_hill`, `e_pna_cl_hill`) are
   deliberately unchanged.
+
+- Add Bae 2026 MIT-001 ([doi:10.1002/jcph.70189](https://doi.org/10.1002/jcph.70189)) -- healthy Korean adults.
+
 - Rename `Hansson_2013_sunitinib_OS` to `Hansson_2013_sunitinib_svegfr3_os` and its
   vignette to match, resolving a case-only filename collision with the sibling
   `Hansson_2013_sunitinib_os` that broke `git clone` on case-insensitive
