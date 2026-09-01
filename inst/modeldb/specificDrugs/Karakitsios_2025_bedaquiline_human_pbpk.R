@@ -32,14 +32,11 @@ Karakitsios_2025_bedaquiline_human_pbpk <- function() {
   vignette <- "Karakitsios_2025_bedaquiline_lung_pbpk"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
-  # cas1-cas6 are the paper's spatial binning of the necrotic caseous core into
-  # 300-micrometre rings measured from the outer caseum edge (Supporting
-  # Information, "PBPK models for the infected lung"). There is no canonical
-  # chain prefix for this role; declared here pending operator ratification of
-  # a `caseum<n>` canonical.
-  paper_specific_compartments <- c(
-    "caseum1", "caseum2", "caseum3", "caseum4", "caseum5", "caseum6"
-  )
+  # caseum1-caseum6 (the paper's cas1-cas6) are its spatial binning of the
+  # necrotic caseous core into 300-micrometre rings measured outward-to-inward
+  # from the outer caseum edge (Supporting Information, "PBPK models for the
+  # infected lung"). `caseum<n>` is a canonical chain prefix -- see
+  # inst/references/compartment-names.md.
 
   compartmentData <- list(
     depot       = list(analyte = "bedaquiline", units = "mg", specimen = "administration site", verified = TRUE),

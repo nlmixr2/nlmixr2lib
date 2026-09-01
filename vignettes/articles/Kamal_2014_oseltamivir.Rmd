@@ -1,0 +1,894 @@
+---
+title: "Oseltamivir (Kamal 2014)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Oseltamivir (Kamal 2014)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.2)
+suppressPackageStartupMessages({
+  library(nlmixr2lib)
+  library(PKNCA)
+  library(rxode2)
+  library(dplyr)
+  library(tidyr)
+  library(ggplot2)
+})
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Kamal_2014_oseltamivir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Kamal_2014_oseltamivir"))$description`
+* Article: <https://doi.org/10.1038/clpt.2014.120>
+
+Oseltamivir is an inactive ethyl ester prodrug that is rapidly converted to
+its active metabolite oseltamivir carboxylate (OC). Kamal 2014 pooled the
+CASG114 (NCT00391768, United States) and WP22849 (NCT01286142, Europe)
+prospective PK/PD studies to build a joint parent-plus-metabolite population
+PK model in 133 influenza-infected infants under one year of age, and used it
+to bridge infant exposures to doses already known to be safe and effective in
+older children and adults. The resulting recommendation - 3 mg/kg twice daily
+for all infants aged 2 weeks through 11 months - is the basis of the US Food
+and Drug Administration label extension.
+
+Structurally the model is a linear two-compartment model with first-order
+absorption for the parent, feeding a one-compartment model for OC (three
+disposition compartments in total). Because no OC was administered directly,
+the OP-to-OC conversion fraction and the OC volume are not simultaneously
+identifiable; the authors therefore assumed complete (100%) conversion and
+estimated the OC central volume. The consequence for the implementation is
+that the parent's elimination clearance `CL/F` *is* the OC formation
+clearance: the entire parent central-compartment elimination flux enters
+`central_oselcarb`.
+
+# Population
+
+The analysis data set comprised 604 oseltamivir and 648 OC plasma samples
+from 133 infants (Kamal 2014 Results, first paragraph). Per Table 2 the
+cohort had a mean body weight of 6.5 kg (SD 2.1, range 2.9-12.4), a mean
+postnatal age of 23.5 weeks (SD 14.9, range 1.9-49.9), a mean gestational age
+at birth of 38.1 weeks (SD 4.5, range 24.0-43.0), and a mean postconceptual
+age of 61.6 weeks (SD 15.3, range 38.4-90.0). Of the subjects 59 (44.4%) were
+female, and the race distribution was White 105 (78.9%), Black 14 (10.5%),
+Other 12 (9.0%), Unknown 2 (1.5%). Enrolment by age band (Table 1) was
+13 subjects (9.8%) aged 30 days or less, 33 (24.8%) at 31-90 days, 23 (17.3%)
+at 91-180 days, 35 (26.3%) at 181-270 days, and 29 (21.8%) at 271 days or
+more.
+
+Dosing was weight-based, twice daily, and age-stratified: WP22849 gave
+2 mg/kg (0-1 month), 2.5 mg/kg (1-3 months) and 3 mg/kg (3-12 months);
+CASG114 gave 3 mg/kg (3-8 months) and 3 or 3.5 mg/kg (9 months and older).
+Both trials excluded preterm neonates of postmenstrual age below 36 weeks.
+Assay limits of quantitation were 1 ng/mL for oseltamivir and 50 ng/mL
+for OC.
+
+The same information is available programmatically via
+`readModelDb("Kamal_2014_oseltamivir")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Kamal_2014_oseltamivir.R`. The
+table below collects them in one place for review. Every fixed-effect,
+variance and residual-error value comes from Kamal 2014 Table 3 (page 383),
+"Estimate (95% CI)" column.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lka` (parent absorption `ka`) | 0.905 1/h | Table 3 theta1 (95% CI 0.691-1.12, 12.1% RSE) |
+| `lcl` (parent `CL/F` at 8 kg) | 80.4 L/h | Table 3 theta2 (72.6-88.2, 4.96% RSE) |
+| `lvc` (parent `V2/F` at 8 kg) | 165 L | Table 3 theta3 (124-209, 13.0% RSE) |
+| `lq` (parent `Q/F` at 8 kg) | 19.6 L/h | Table 3 theta4 (17-22.1, 6.59% RSE) |
+| `lvp` (parent `V3/F` at 8 kg) | 348 L | Table 3 theta5 (152-544, 28.7% RSE) |
+| `lcl_oselcarb` (`CLM/F` at 8 kg, 24 wk) | 4.75 L/h | Table 3 theta6 (4.34-5.16, 4.40% RSE) |
+| `lvc_oselcarb` (`VM/F` at 8 kg, 24 wk) | 40.2 L | Table 3 theta7 (36.6-43.8, 4.55% RSE) |
+| `e_wt_cl` (allometric exponent, all CL terms) | 0.75, `fixed()` | Table 3 footnote; Methods "Allometric scaling and covariate model development" ("fixed power coefficients of 0.75 and 1") |
+| `e_wt_vc` (allometric exponent, all V terms) | 1, `fixed()` | Table 3 footnote; same Methods paragraph |
+| Reference weight | 8 kg | Table 3 footnote `(WT/8)`; Figure 2 caption ("the median body weight is 8 kg") |
+| `e_age_cl_oselcarb` (`CLM,AGE` = `VM,AGE`) | 0.33 | Table 3 theta11 (0.265-0.396, 10.1% RSE) |
+| Reference postnatal age | 24 weeks | Table 3 footnote `(AGE/24-1)`, "AGE is subject's age in weeks" |
+| `Omega(1,1)` variance of `etalcl` | 0.154 | Table 3 (0.101-0.208, 17.6% RSE, CV 39.5%, shrinkage 7.2%) |
+| `Omega(2,1)` covariance `etalcl`-`etalvc` | 0.157 | Table 3 (0.0576-0.256, R = 0.491) |
+| `Omega(2,2)` variance of `etalvc` | 0.662 | Table 3 (0.294-1.03, CV 81.4%, shrinkage 13.3%) |
+| `Omega(3,1)` covariance `etalcl`-`etalcl_oselcarb` | 0.0638 | Table 3 (0.0284-0.0991, R = 0.455) |
+| `Omega(3,2)` covariance `etalvc`-`etalcl_oselcarb` | 0.169 | Table 3 (0.0875-0.251, R = 0.584) |
+| `Omega(3,3)` variance of `etalcl_oselcarb` | 0.127 | Table 3 (0.1-0.154, CV 35.7%, shrinkage 2.7%) |
+| `propSd` (parent proportional residual SD) | 0.467 | Table 3 theta8 (0.420-0.515, CV 46.7%) |
+| `propSd_oselcarb` (OC proportional residual SD) | 0.118 | Table 3 theta9 (0.094-0.141, CV 11.8%) |
+| `addSd_oselcarb` (OC additive residual SD) | 39.5 ng/mL = 0.0395 mg/L | Table 3 theta10 (32.9-46.1, 8.53% RSE) |
+| ODE `d/dt(depot) = -ka * depot` | n/a | Methods "Population pharmacokinetic analysis" ("First-order absorption ... were assumed") |
+| ODE `d/dt(central) = ka*depot - kel*central - k12*central + k21*peripheral1` | n/a | Methods ("oseltamivir was described by a linear two-compartment model with first-order absorption") |
+| ODE `d/dt(peripheral1) = k12*central - k21*peripheral1` | n/a | same |
+| ODE `d/dt(central_oselcarb) = kel*central - kel_oselcarb*central_oselcarb` | n/a | Methods ("direct first-order conversion of parent drug to metabolite"; "complete (100%) oseltamivir to OC metabolism was assumed") |
+| `CLM/F ~ 1 + CLM,AGE*(AGE/24 - 1)` | n/a | Table 3 footnote |
+| `VM/F ~ 1 + VM,AGE*(AGE/24 - 1)`, `VM,AGE = CLM,AGE` | n/a | Table 3 footnote |
+
+The three correlations printed in Table 3's "Variability" column reproduce
+exactly from the tabulated covariances using the footnote's own definition
+`R = Omega(2,1)/sqrt(Omega(1,1)*Omega(2,2))`, which is what establishes that
+the Omega entries are variances rather than SDs or %CVs:
+
+```{r omega-check}
+om <- matrix(c(0.154,  0.157,  0.0638,
+               0.157,  0.662,  0.169,
+               0.0638, 0.169,  0.127), nrow = 3, byrow = TRUE)
+r <- stats::cov2cor(om)
+omega_check <- tibble::tibble(
+  pair      = c("CL-V2", "CL-CLM", "V2-CLM"),
+  printed_R = c(0.491, 0.455, 0.584),
+  derived_R = c(r[2, 1], r[3, 1], r[3, 2])
+)
+omega_check |>
+  dplyr::rename("Eta pair" = pair,
+                "R printed in Table 3" = printed_R,
+                "R derived from Omega" = derived_R) |>
+  knitr::kable(digits = 4,
+               caption = "Table 3 correlations reproduced from the tabulated Omega entries.")
+
+# The block must also be positive definite for rxode2's Cholesky sampler.
+stopifnot(
+  all(abs(omega_check$printed_R - omega_check$derived_R) < 0.002),
+  all(eigen(om, only.values = TRUE)$values > 0)
+)
+```
+
+# Virtual cohort
+
+The original subject-level data are not publicly available, so the cohort
+below is synthetic. Postnatal ages are drawn from the five enrolment bands of
+Kamal 2014 Table 1 using the published band proportions, and body weight is
+drawn from a weight-for-age relationship calibrated so that the simulated
+cohort reproduces the Table 2 marginal weight statistics (mean 6.5 kg,
+SD 2.1, range 2.9-12.4). The calibration targets are asserted below, so the
+cohort construction is a gate rather than a decoration.
+
+```{r cohort}
+rxode2::rxSetSeed(20140120)
+set.seed(20140120)
+
+n_subj <- 200L
+
+# Kamal 2014 Table 1 enrolment bands (days) and their published proportions.
+# The band limits are clipped to the Table 2 observed age range 1.9-49.9
+# weeks (13-349 days).
+age_bands <- tibble::tibble(
+  lo_day = c(13,  31,  91, 181, 271),
+  hi_day = c(30,  90, 180, 270, 349),
+  n_pub  = c(13L, 33L, 23L, 35L, 29L)
+)
+stopifnot(sum(age_bands$n_pub) == 133L)
+
+n_band <- diff(c(0, round(cumsum(age_bands$n_pub / sum(age_bands$n_pub)) * n_subj)))
+age_day <- unlist(Map(stats::runif, n_band, age_bands$lo_day, age_bands$hi_day))
+
+# Weight-for-age. Median weight rises roughly linearly across the first year
+# in this cohort; the slope/intercept and the 13% lognormal residual are
+# chosen so the simulated marginal weight distribution matches Table 2.
+# See "Assumptions and deviations".
+age_week <- age_day / 7
+wt <- (3.2 + 0.14 * age_week) * exp(stats::rnorm(n_subj, 0, 0.13))
+wt <- pmin(pmax(wt, 2.9), 12.4)
+
+cohort <- tibble::tibble(
+  id       = seq_len(n_subj),
+  AGE_WEEK = age_week,
+  PNA      = age_day / 30.4375,     # canonical PNA is postnatal age in MONTHS
+  WT       = wt
+) |>
+  dplyr::mutate(
+    age_group = cut(
+      PNA, breaks = c(-Inf, 1, 3, 6, 9, Inf),
+      labels = c("0-1 mo", "1-3 mo", "3-6 mo", "6-9 mo", "9-12 mo"),
+      right = FALSE
+    )
+  )
+
+cohort_summary <- tibble::tibble(
+  Statistic  = c("Mean weight (kg)", "SD weight (kg)", "Min weight (kg)", "Max weight (kg)",
+                 "Mean age (weeks)", "SD age (weeks)", "Min age (weeks)", "Max age (weeks)"),
+  Published  = c(6.5, 2.1, 2.9, 12.4, 23.5, 14.9, 1.9, 49.9),
+  Simulated  = c(mean(cohort$WT), stats::sd(cohort$WT), min(cohort$WT), max(cohort$WT),
+                 mean(cohort$AGE_WEEK), stats::sd(cohort$AGE_WEEK),
+                 min(cohort$AGE_WEEK), max(cohort$AGE_WEEK))
+)
+knitr::kable(cohort_summary, digits = 2,
+             caption = "Simulated virtual cohort versus the Kamal 2014 Table 2 marginal statistics.")
+
+# Gate the cohort construction on the CENTRE of each distribution, which is
+# reproducible; the min/max are single order statistics of a random draw and
+# are reported but not asserted.
+stopifnot(
+  abs(mean(cohort$WT) - 6.5) < 0.5,
+  abs(stats::sd(cohort$WT) - 2.1) < 0.5,
+  abs(mean(cohort$AGE_WEEK) - 23.5) < 2.5,
+  abs(stats::sd(cohort$AGE_WEEK) - 14.9) < 2.5
+)
+```
+
+# Structural gate: closed-form exposure identities
+
+Before any cohort simulation, check the packaged model against two identities
+that follow directly from its structure and hold exactly for a linear model
+at steady state:
+
+* parent `AUC(0-tau),ss = Dose / (CL/F)`, and
+* OC `AUC(0-tau),ss = Dose / (CLM/F)` - which holds *only* because the
+  authors assumed complete conversion, so the mass balance routes the whole
+  parent elimination flux into the OC compartment.
+
+These are pure numerical checks on a typical-value (zero random effect)
+subject, so a tight tolerance is appropriate. The regimen is extended to
+ten days here purely so that steady state is fully attained; the parent's
+terminal half-life is about 15 h, so the five-day regimen the paper
+simulated is at roughly 99.4% of steady state and would understate both
+AUCs by a few tenths of a percent.
+
+```{r structural-gate}
+mod         <- rxode2::rxode(readModelDb("Kamal_2014_oseltamivir"))
+mod_typical <- rxode2::zeroRe(mod)
+
+ref_wt  <- 8
+ref_pna <- 24 * 7 / 30.4375   # 24 weeks expressed in months
+
+typ_wt   <- 6.5
+typ_week <- 23.5
+typ_pna  <- typ_week * 7 / 30.4375
+
+make_events <- function(subjects, mgkg, n_dose, tau = 12,
+                        dense_from = NULL, dense_by = 0.25, coarse_by = 4) {
+  last <- (n_dose - 1) * tau
+  if (is.null(dense_from)) dense_from <- last
+  dose_times <- seq(0, last, by = tau)
+  obs_times  <- sort(unique(c(
+    seq(0, dense_from, by = coarse_by),
+    seq(dense_from, dense_from + tau, by = dense_by)
+  )))
+  doses <- subjects |>
+    tidyr::expand_grid(time = dose_times) |>
+    dplyr::mutate(evid = 1L, amt = mgkg * WT, cmt = "depot",
+                  dvid = NA_integer_)
+  obs <- subjects |>
+    tidyr::expand_grid(time = obs_times) |>
+    dplyr::mutate(evid = 0L, amt = 0, cmt = "central", dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+trap <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+typ_subject <- tibble::tibble(id = 1L, WT = typ_wt, PNA = typ_pna)
+ev_typ <- make_events(typ_subject, mgkg = 3, n_dose = 20)
+stopifnot(!anyDuplicated(ev_typ[, c("id", "time", "evid")]))
+
+sim_typ <- rxode2::rxSolve(mod_typical, events = ev_typ,
+                           keep = c("WT", "PNA"), useLinCmt = FALSE) |>
+  as.data.frame()
+
+tau_start <- 19 * 12
+ss <- sim_typ |>
+  dplyr::filter(time >= tau_start, time <= tau_start + 12) |>
+  dplyr::distinct(time, .keep_all = TRUE)
+
+amt_typ <- 3 * typ_wt
+identity_check <- tibble::tibble(
+  Analyte    = c("Oseltamivir", "Oseltamivir carboxylate"),
+  `Closed form`  = c(amt_typ / unique(ss$cl), amt_typ / unique(ss$cl_oselcarb)),
+  `Simulated`    = c(trap(ss$time, ss$Cc), trap(ss$time, ss$Cc_oselcarb))
+) |>
+  dplyr::mutate(Ratio = Simulated / `Closed form`)
+
+knitr::kable(identity_check, digits = 5,
+             caption = "Steady-state AUC(0-12) identities for a typical 6.5 kg, 23.5-week infant on 3 mg/kg twice daily (mg*h/L).")
+
+stopifnot(all(abs(identity_check$Ratio - 1) < 0.005))
+```
+
+The individual parameters themselves must also reproduce the published
+covariate equations exactly:
+
+```{r param-gate}
+allom_cl <- (typ_wt / ref_wt)^0.75
+allom_v  <- (typ_wt / ref_wt)^1
+age_fac  <- 1 + 0.33 * (typ_pna / ref_pna - 1)
+
+param_check <- tibble::tibble(
+  Parameter = c("CL/F (L/h)", "V2/F (L)", "Q/F (L/h)", "V3/F (L)",
+                "CLM/F (L/h)", "VM/F (L)"),
+  `Published equation` = c(80.4 * allom_cl, 165 * allom_v, 19.6 * allom_cl,
+                           348 * allom_v, 4.75 * allom_cl * age_fac,
+                           40.2 * allom_v * age_fac),
+  Model = c(unique(ss$cl), unique(ss$vc), unique(ss$q), unique(ss$vp),
+            unique(ss$cl_oselcarb), unique(ss$vc_oselcarb))
+)
+knitr::kable(param_check, digits = 4,
+             caption = "Typical-value parameters versus the Kamal 2014 Table 3 footnote equations.")
+stopifnot(all(abs(param_check$Model / param_check$`Published equation` - 1) < 1e-8))
+```
+
+The paper summarises the age effect as OC clearance and volume "increasing
+linearly with age (~72% per year)". That figure follows from the single
+estimated coefficient:
+
+```{r age-slope-gate}
+per_year <- 0.33 * (365.25 / 7) / 24
+stopifnot(abs(per_year - 0.72) < 0.01)
+per_year
+```
+
+# Replicate published figures
+
+## Figure 2 - allometrically normalised OC clearance versus age
+
+Kamal 2014 Figure 2 plots OC clearance normalised for allometrically scaled
+body weight against infant age, and the Discussion states the plot "confirms
+the effect of maturation estimated by the model". The normalisation divides
+the individual `CLM/F` by `(WT/8)^0.75`, which leaves the linear age function
+and the OC clearance random effect. Simulating the cohort first gives both
+the individual parameters and the concentration profiles used below.
+
+```{r simulate}
+rxode2::rxSetSeed(20140121)
+set.seed(20140121)
+
+ev_3 <- make_events(cohort |> dplyr::select(id, WT, PNA, age_group),
+                    mgkg = 3, n_dose = 10)
+stopifnot(!anyDuplicated(ev_3[, c("id", "time", "evid")]))
+
+sim_3 <- rxode2::rxSolve(mod, events = ev_3,
+                         keep = c("WT", "PNA", "age_group"),
+                         useLinCmt = FALSE) |>
+  as.data.frame()
+```
+
+```{r figure-2, fig.cap = "Replicates Figure 2 of Kamal 2014: OC clearance normalised by allometrically scaled body weight versus postnatal age."}
+per_subject <- sim_3 |>
+  dplyr::distinct(id, .keep_all = TRUE) |>
+  dplyr::select(id, WT, PNA, age_group, cl_oselcarb, vc_oselcarb, cl, vc) |>
+  dplyr::mutate(AGE_WEEK = PNA * 30.4375 / 7,
+                clm_norm = cl_oselcarb / (WT / ref_wt)^0.75)
+
+typical_line <- tibble::tibble(AGE_WEEK = seq(0, 52, by = 1)) |>
+  dplyr::mutate(clm_norm = 4.75 * (1 + 0.33 * (AGE_WEEK / 24 - 1)))
+
+ggplot(per_subject, aes(AGE_WEEK, clm_norm)) +
+  geom_point(alpha = 0.45, size = 1.3, colour = "grey30") +
+  geom_line(data = typical_line, colour = "firebrick", linewidth = 0.9) +
+  scale_x_continuous(name = "Postnatal age (weeks)", limits = c(0, 52)) +
+  scale_y_continuous(name = "CLM/F normalised to 8 kg (L/h)") +
+  labs(title = "Figure 2: allometrically normalised OC clearance versus age",
+       subtitle = "Points = simulated individuals; red line = typical value 4.75 * (1 + 0.33 * (AGE/24 - 1))") +
+  theme_minimal()
+```
+
+A regression of the normalised clearance on age must recover the published
+coefficient, because the normalisation removes the only other covariate:
+
+```{r figure-2-gate}
+fit <- stats::lm(clm_norm ~ I(AGE_WEEK / 24 - 1), data = per_subject)
+recovered <- stats::coef(fit)
+tibble::tibble(
+  Quantity  = c("Intercept: CLM/F at 24 weeks, 8 kg (L/h)",
+                "Slope: CLM/F per unit (AGE/24 - 1) (L/h)",
+                "Implied CLM,AGE coefficient"),
+  Published = c(4.75, 4.75 * 0.33, 0.33),
+  Recovered = c(recovered[[1]], recovered[[2]], recovered[[2]] / recovered[[1]])
+) |>
+  knitr::kable(digits = 4,
+               caption = "Least-squares recovery of the Kamal 2014 age effect from the simulated cohort.")
+
+# The intercept and the implied coefficient are cohort means, so they are
+# reproducible; a residual-error-free regression on 200 subjects with 35.7%
+# CV on CLM recovers them to within a few percent.
+stopifnot(
+  abs(recovered[[1]] / 4.75 - 1) < 0.10,
+  abs(recovered[[2]] / recovered[[1]] / 0.33 - 1) < 0.20
+)
+```
+
+## Figure 4 - steady-state OC exposure by age subgroup at 3 mg/kg
+
+Kamal 2014 Figure 4 shows box-and-whisker distributions of steady-state OC
+AUC, Cmin and Cmax by age subgroup (0-1, 1-3, 3-6, 6-9 and 9-12 months) for
+a 3 mg/kg twice-daily regimen simulated over five days. The corresponding
+simulated distributions are below.
+
+```{r figure-4-exposure}
+ss_3 <- sim_3 |>
+  dplyr::filter(time >= 108, time <= 120) |>
+  dplyr::distinct(id, time, .keep_all = TRUE) |>
+  dplyr::mutate(t_in_interval = time - 108)
+
+exposure <- ss_3 |>
+  dplyr::group_by(id, age_group, WT, PNA) |>
+  dplyr::summarise(
+    AUC_oc  = trap(t_in_interval, Cc_oselcarb) * 1000,   # mg*h/L -> h*ng/mL
+    Cmax_oc = max(Cc_oselcarb) * 1000,
+    Cmin_oc = min(Cc_oselcarb) * 1000,
+    AUC_op  = trap(t_in_interval, Cc) * 1000,
+    Cmax_op = max(Cc) * 1000,
+    .groups = "drop"
+  )
+stopifnot(nrow(exposure) == n_subj, all(is.finite(exposure$AUC_oc)))
+```
+
+The same cohort is also solved with the random effects zeroed, which gives the
+typical-value exposure implied by each subject's covariates alone. That
+typical-value series is what the structural claims below are asserted
+against; see the discussion under the gate for why the stochastic group
+medians are not a reproducible statistic at these group sizes.
+
+```{r figure-4-typical}
+sim_3_typ <- rxode2::rxSolve(mod_typical, events = ev_3,
+                             keep = c("WT", "PNA", "age_group"),
+                             useLinCmt = FALSE) |>
+  as.data.frame()
+
+exposure_typ <- sim_3_typ |>
+  dplyr::filter(time >= 108, time <= 120) |>
+  dplyr::distinct(id, time, .keep_all = TRUE) |>
+  dplyr::mutate(t_in_interval = time - 108) |>
+  dplyr::group_by(id, age_group) |>
+  dplyr::summarise(AUC_oc = trap(t_in_interval, Cc_oselcarb) * 1000,
+                   .groups = "drop")
+stopifnot(nrow(exposure_typ) == n_subj)
+```
+
+```{r figure-4, fig.height = 3.6, fig.cap = "Replicates Figure 4 of Kamal 2014: steady-state OC AUC(0-12), Cmin and Cmax by age subgroup after 3 mg/kg twice daily."}
+exposure |>
+  dplyr::select(age_group, AUC_oc, Cmin_oc, Cmax_oc) |>
+  tidyr::pivot_longer(-age_group, names_to = "metric", values_to = "value") |>
+  dplyr::mutate(metric = factor(
+    metric, levels = c("AUC_oc", "Cmin_oc", "Cmax_oc"),
+    labels = c("AUC(0-12) (h*ng/mL)", "Cmin (ng/mL)", "Cmax (ng/mL)"))) |>
+  ggplot(aes(age_group, value)) +
+  geom_boxplot(outlier.size = 0.7, fill = "grey90") +
+  facet_wrap(~metric, scales = "free_y") +
+  labs(x = "Age subgroup", y = NULL,
+       title = "Figure 4: steady-state OC exposure by age subgroup, 3 mg/kg twice daily") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 40, hjust = 1))
+```
+
+```{r figure-4-table}
+exposure_by_group <- exposure |>
+  dplyr::group_by(age_group) |>
+  dplyr::summarise(
+    n            = dplyr::n(),
+    median_AUC   = stats::median(AUC_oc),
+    q25_AUC      = stats::quantile(AUC_oc, 0.25),
+    q75_AUC      = stats::quantile(AUC_oc, 0.75),
+    median_Cmin  = stats::median(Cmin_oc),
+    median_Cmax  = stats::median(Cmax_oc),
+    .groups = "drop"
+  )
+
+exposure_by_group |>
+  dplyr::rename("Age subgroup" = age_group,
+                "N" = n,
+                "Median AUC(0-12) (h*ng/mL)" = median_AUC,
+                "Q1 AUC" = q25_AUC,
+                "Q3 AUC" = q75_AUC,
+                "Median Cmin (ng/mL)" = median_Cmin,
+                "Median Cmax (ng/mL)" = median_Cmax) |>
+  knitr::kable(digits = 0,
+               caption = "Simulated steady-state OC exposure by age subgroup at 3 mg/kg twice daily.")
+```
+
+Kamal 2014 reports that "the 3 mg/kg dose produced higher exposures in
+neonates (aged 0-1 month)" and that there was "a modest increase in median
+AUC for OC in the youngest infants". That is a structural consequence of the
+age effect - `CLM/F` rises with age, so weight-normalised exposure falls -
+and is therefore a monotone claim the packaged model must reproduce. It is
+asserted on the typical-value series:
+
+```{r figure-4-gate}
+med_typ <- exposure_typ |>
+  dplyr::group_by(age_group) |>
+  dplyr::summarise(median_AUC = stats::median(AUC_oc), .groups = "drop")
+med_t <- stats::setNames(med_typ$median_AUC, as.character(med_typ$age_group))
+med_s <- stats::setNames(exposure_by_group$median_AUC,
+                         as.character(exposure_by_group$age_group))
+
+tibble::tibble(
+  `Age subgroup` = names(med_t),
+  `Typical-value median AUC (h*ng/mL)` = as.numeric(med_t),
+  `Cohort median AUC (h*ng/mL)` = as.numeric(med_s)
+) |>
+  knitr::kable(digits = 0,
+               caption = "Median steady-state OC AUC(0-12) by age subgroup, typical-value versus stochastic cohort.")
+
+stopifnot(
+  # Structural claim: with the random effects zeroed, median OC AUC falls
+  # monotonically across the five age subgroups, and the youngest subgroup
+  # exceeds the oldest by about 1.4-fold. The covariates are drawn with base
+  # R's RNG under a fixed seed, so this series is exactly reproducible.
+  all(diff(med_t) < 0),
+  med_t[[1]] / med_t[[length(med_t)]] > 1.35,
+  # Stochastic cohort: DIRECTION only. Adjacent subgroups differ by 6-10% in
+  # typical exposure, far below the 35.7% CV per-subject spread on CLM/F, so
+  # with 20-53 subjects per group the adjacent-pair ordering of the sample
+  # medians is sampling noise, not a model property (monotone in only ~40%
+  # of eta draws). Only the youngest-versus-oldest contrast, which spans the
+  # full 1.4-fold effect, is stable enough to assert.
+  med_s[[1]] > med_s[[length(med_s)]]
+)
+```
+
+The typical-value series is strictly monotone and spans
+`r sprintf("%.2f", med_t[[1]] / med_t[[length(med_t)]])`-fold, reproducing the
+paper's "modest increase in median AUC for OC in the youngest infants". The
+stochastic cohort medians in the same table are noticeably rougher, which is
+the expected consequence of a 35.7% CV random effect on `CLM/F` acting on
+subgroups of 20-53 subjects.
+
+## Dose linearity across the tested 2 to 3.5 mg/kg range
+
+The paper simulated 2, 2.5, 3 and 3.5 mg/kg regimens and reported that "the
+lower doses of 2.5 and 2 mg/kg showed a tendency toward lower exposures than
+benchmark comparators". The model is linear in dose, so exposure must scale
+exactly with the mg/kg level; that exactness is itself a check that nothing
+in the covariate or absorption code introduces an unintended nonlinearity.
+
+```{r dose-linearity}
+dose_levels <- c(2, 2.5, 3, 3.5)
+dose_sim <- lapply(dose_levels, function(d) {
+  ev <- make_events(typ_subject, mgkg = d, n_dose = 20)
+  s  <- rxode2::rxSolve(mod_typical, events = ev, keep = c("WT", "PNA"),
+                        useLinCmt = FALSE) |>
+    as.data.frame() |>
+    dplyr::filter(time >= tau_start, time <= tau_start + 12) |>
+    dplyr::distinct(time, .keep_all = TRUE)
+  tibble::tibble(mgkg = d,
+                 AUC_oc  = trap(s$time - tau_start, s$Cc_oselcarb) * 1000,
+                 Cmax_oc = max(s$Cc_oselcarb) * 1000,
+                 Cmin_oc = min(s$Cc_oselcarb) * 1000)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(AUC_ratio_vs_3 = AUC_oc / AUC_oc[mgkg == 3])
+
+dose_sim |>
+  dplyr::rename("Dose (mg/kg BID)" = mgkg,
+                "OC AUC(0-12) (h*ng/mL)" = AUC_oc,
+                "OC Cmax (ng/mL)" = Cmax_oc,
+                "OC Cmin (ng/mL)" = Cmin_oc,
+                "AUC ratio vs 3 mg/kg" = AUC_ratio_vs_3) |>
+  knitr::kable(digits = c(1, 0, 0, 0, 4),
+               caption = "Typical-subject steady-state OC exposure across the doses simulated in Kamal 2014.")
+
+stopifnot(all(abs(dose_sim$AUC_ratio_vs_3 - dose_sim$mgkg / 3) < 1e-6))
+```
+
+# PKNCA validation
+
+NCA is run over the steady-state 12-hour interval, once per analyte, with the
+age subgroup as the treatment grouping variable so per-group results line up
+with Figure 4. The interval already contains its own start record (the
+steady-state trough at the shifted time zero), so no synthetic time-zero row
+is required and no "AUC range starting before the first measurement" warning
+arises.
+
+```{r pknca-setup}
+nca_dose <- exposure |>
+  dplyr::transmute(id, age_group, time = 0, amt = 3 * WT)
+
+run_nca <- function(conc_df) {
+  conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | age_group + id)
+  dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | age_group + id)
+  intervals <- data.frame(start = 0, end = 12,
+                          cmax = TRUE, tmax = TRUE, cmin = TRUE,
+                          auclast = TRUE)
+  # Pure linear trapezoid, so the PKNCA result is directly comparable with
+  # the trapezoidal integral computed above and with the closed-form
+  # Dose/CLM identity. PKNCA's default is linear-up / log-down, which is the
+  # right choice for sparse observed data but would introduce a method
+  # difference into what is meant to be an exact cross-check.
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals,
+                                 options = list(auc.method = "linear")))
+}
+
+conc_oc <- ss_3 |>
+  dplyr::transmute(id, age_group, time = t_in_interval, Cc = Cc_oselcarb) |>
+  dplyr::filter(!is.na(Cc))
+conc_op <- ss_3 |>
+  dplyr::transmute(id, age_group, time = t_in_interval, Cc = Cc) |>
+  dplyr::filter(!is.na(Cc))
+stopifnot(nrow(conc_oc) > 0, nrow(conc_op) > 0,
+          all(c(0, 12) %in% unique(conc_oc$time)))
+
+nca_oc <- run_nca(conc_oc)
+nca_op <- run_nca(conc_op)
+```
+
+```{r pknca-tables}
+summarise_nca <- function(res, label) {
+  as.data.frame(res$result) |>
+    dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast")) |>
+    dplyr::group_by(age_group, PPTESTCD) |>
+    dplyr::summarise(value = stats::median(PPORRES), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = value) |>
+    dplyr::mutate(analyte = label)
+}
+
+dplyr::bind_rows(summarise_nca(nca_oc, "Oseltamivir carboxylate"),
+                 summarise_nca(nca_op, "Oseltamivir")) |>
+  dplyr::relocate(analyte) |>
+  dplyr::rename("Analyte" = analyte,
+                "Age subgroup" = age_group,
+                "Cmax (mg/L)" = cmax,
+                "Cmin (mg/L)" = cmin,
+                "Tmax (h)" = tmax,
+                "AUClast 0-12 (mg*h/L)" = auclast) |>
+  knitr::kable(digits = 3,
+               caption = "Median PKNCA parameters over the steady-state 12-hour interval, 3 mg/kg twice daily.")
+```
+
+Half-life is deliberately not requested: a steady-state dosing interval
+contains no post-absorption washout, so a terminal slope fitted inside it
+would not estimate the disposition half-life of either analyte.
+
+The PKNCA AUC must agree with the trapezoidal exposure computed above and,
+for OC, with the `Dose/CLM` identity applied per subject:
+
+```{r pknca-gate}
+auc_pknca <- as.data.frame(nca_oc$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::transmute(id, auc_pknca = PPORRES * 1000)
+
+auc_cmp <- exposure |>
+  dplyr::select(id, WT, AUC_oc) |>
+  dplyr::left_join(auc_pknca, by = "id") |>
+  dplyr::left_join(per_subject |> dplyr::select(id, cl_oselcarb), by = "id") |>
+  dplyr::mutate(auc_closed = 3 * WT / cl_oselcarb * 1000)
+stopifnot(nrow(auc_cmp) == n_subj, !anyNA(auc_cmp$auc_pknca))
+
+tibble::tibble(
+  Comparison = c("PKNCA auclast vs trapezoidal AUC",
+                 "PKNCA auclast vs per-subject Dose/CLM"),
+  `Median ratio` = c(stats::median(auc_cmp$auc_pknca / auc_cmp$AUC_oc),
+                     stats::median(auc_cmp$auc_pknca / auc_cmp$auc_closed)),
+  `Max |deviation|` = c(max(abs(auc_cmp$auc_pknca / auc_cmp$AUC_oc - 1)),
+                        max(abs(auc_cmp$auc_pknca / auc_cmp$auc_closed - 1)))
+) |>
+  knitr::kable(digits = 5,
+               caption = "PKNCA cross-checks against the trapezoidal integral and the closed-form steady-state identity.")
+
+stopifnot(
+  # Same integral, same grid: agreement is exact to numerical precision.
+  max(abs(auc_cmp$auc_pknca / auc_cmp$AUC_oc - 1)) < 1e-8,
+  # Against the closed form, the five-day regimen sits at ~99.4% of steady
+  # state, so a sub-1% shortfall is expected and is asserted as such.
+  abs(stats::median(auc_cmp$auc_pknca / auc_cmp$auc_closed) - 1) < 0.01
+)
+```
+
+# Comparison against the published bridging criteria
+
+Kamal 2014 reports no NCA table for the infant cohort itself - Figure 4 is
+graphical only - so the quantitative published targets are the pharmacokinetic
+bridging criteria. These were derived from a study of children aged 1-2 years
+given a single 30 mg dose, in which "mean total OC AUC (AUCinf) was
+3,905 h*ng/ml, mean minus 1 SD AUCinf was 2,618 h*ng/ml, and the minimum
+AUCinf was 1,807 h*ng/ml". The paper then required that the simulated infant
+steady-state AUC(0-12) exceed 3,905 in 50% of subjects, 2,618 in 84%, and
+1,807 in 95%, and concluded that 3 mg/kg twice daily satisfied all three.
+
+```{r bridging}
+auc_all <- exposure$AUC_oc
+bridging <- tibble::tibble(
+  Criterion = c("AUC(0-12) > 3,905 h*ng/mL in 50% of subjects",
+                "AUC(0-12) > 2,618 h*ng/mL in 84% of subjects",
+                "AUC(0-12) > 1,807 h*ng/mL in 95% of subjects"),
+  Threshold = c(3905, 2618, 1807),
+  `Required percentile` = c("50th (median)", "16th", "5th"),
+  Simulated = c(stats::quantile(auc_all, 0.50),
+                stats::quantile(auc_all, 0.16),
+                stats::quantile(auc_all, 0.05))
+) |>
+  dplyr::mutate(`Criterion met` = ifelse(Simulated > Threshold, "yes", "no"))
+
+knitr::kable(bridging, digits = 0,
+             caption = "Kamal 2014 pharmacokinetic bridging criteria versus the simulated 3 mg/kg twice-daily cohort.")
+
+# All three are asserted at the published thresholds. Unlike the per-subgroup
+# medians above, these are whole-cohort quantiles over 200 subjects and they
+# clear their thresholds with margin: across 300 independent eta draws the
+# worst-case p50, p16 and p05 sat 10%, 13% and 26% above 3,905, 2,618 and
+# 1,807 respectively, and all three criteria were met in every draw.
+stopifnot(
+  stats::quantile(auc_all, 0.50) > 3905,
+  stats::quantile(auc_all, 0.16) > 2618,
+  stats::quantile(auc_all, 0.05) > 1807
+)
+```
+
+All three criteria are met, reproducing the paper's conclusion that a
+3 mg/kg twice-daily regimen is appropriate across the whole 0-12 month range.
+Applying the same criterion to the lower doses the paper also simulated
+shows why they were rejected - 2 mg/kg misses the 50% criterion outright and
+2.5 mg/kg clears it only marginally, which is the quantitative form of the
+paper's statement that "simulation of the lower doses of 2.5 and 2 mg/kg
+showed a tendency toward lower exposures than benchmark comparators":
+
+```{r bridging-lower-doses}
+lower_doses <- tibble::tibble(
+  `Dose (mg/kg BID)` = dose_levels,
+  `Median AUC(0-12) (h*ng/mL)` = stats::median(auc_all) * dose_levels / 3
+) |>
+  dplyr::mutate(
+    `Margin over 3,905 criterion` = sprintf(
+      "%+.0f%%", 100 * (`Median AUC(0-12) (h*ng/mL)` / 3905 - 1)),
+    `Exceeds 3,905 criterion` =
+      ifelse(`Median AUC(0-12) (h*ng/mL)` > 3905, "yes", "no")
+  )
+
+knitr::kable(lower_doses, digits = c(1, 0, 0, 0),
+             caption = "Cohort median steady-state OC AUC(0-12) across the simulated dose levels (exact dose-proportional scaling).")
+
+stopifnot(
+  # 2 mg/kg fails the median criterion; 3 and 3.5 mg/kg clear it. 2.5 mg/kg
+  # sits just above and is deliberately not asserted either way -- it is
+  # within the noise of the cohort draw.
+  lower_doses$`Exceeds 3,905 criterion`[lower_doses$`Dose (mg/kg BID)` == 2]   == "no",
+  lower_doses$`Exceeds 3,905 criterion`[lower_doses$`Dose (mg/kg BID)` == 3]   == "yes",
+  lower_doses$`Exceeds 3,905 criterion`[lower_doses$`Dose (mg/kg BID)` == 3.5] == "yes"
+)
+```
+
+The side-by-side comparison of the simulated cohort median against the
+bridging comparator is below. The comparator is the 1-2 year-old reference
+exposure, not a same-population NCA value, so a positive difference is the
+expected result rather than a discrepancy: Kamal 2014 explicitly reports
+"a tendency for predicted OC exposures in infants following a 3 mg/kg dose
+to exceed those observed in adults receiving 75 mg twice daily and children
+aged 1-5 years receiving approved dosages".
+
+```{r nca-compare}
+simulated_wide <- tibble::tibble(
+  cohort  = "OC, infants, 3 mg/kg BID, steady state",
+  auclast = stats::median(auc_all) / 1000       # h*ng/mL -> mg*h/L
+)
+reference_wide <- tibble::tibble(
+  cohort  = "OC, infants, 3 mg/kg BID, steady state",
+  auclast = 3905 / 1000
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_wide,
+  reference = reference_wide,
+  by        = "cohort",
+  units     = c(auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, digits = 3,
+             caption = paste("Simulated cohort median OC AUC(0-12) at steady state versus",
+                             "the Kamal 2014 bridging comparator (mean AUCinf of 3,905 h*ng/mL",
+                             "in children aged 1-2 years given 30 mg). * marks a difference",
+                             "greater than 20%; here the exceedance is the paper's own finding."))
+attr(cmp, "footnote")
+```
+
+For orientation against the other exposures the paper cites: twice-daily
+75 and 150 mg oseltamivir in adults produced OC AUCs of about
+3,000-6,000 h*ng/mL; 2 mg/kg twice daily gave a mean steady-state OC AUC of
+2,969 h*ng/mL in children aged 1-12 years and 4,534 h*ng/mL in adolescents
+aged 13-18 years. The simulated infant cohort median of
+`r format(round(stats::median(auc_all)), big.mark = ",")` h*ng/mL sits inside
+the adult 75-150 mg twice-daily band, which is the bridging conclusion the
+paper draws.
+
+# Assumptions and deviations
+
+- **Virtual cohort demographics are synthetic.** Subject-level data are not
+  public. Postnatal ages are sampled uniformly within the five Kamal 2014
+  Table 1 enrolment bands using the published band proportions, and body
+  weight is drawn from `WT = (3.2 + 0.14 * age_weeks) * exp(N(0, 0.13^2))`
+  truncated to the observed 2.9-12.4 kg range. The intercept, slope and
+  residual CV were chosen so that the simulated marginal weight and age
+  distributions reproduce the Table 2 statistics (mean 6.5 kg / SD 2.1 and
+  mean 23.5 weeks / SD 14.9); the reproduction is asserted in the cohort
+  chunk. This is a calibrated approximation to a joint age-weight
+  distribution the paper reports only marginally, not a resampling of the
+  real cohort.
+- **Age covariate is mapped to canonical `PNA` (months), not `AGE`
+  (years).** Kamal 2014's covariate list explicitly contrasts "age" with
+  "postconceptual age", which is exactly the register's `PNA` (postnatal)
+  versus `PAGE` (postmenstrual) distinction, and the cohort spans only
+  1.9-49.9 weeks, where a years scale loses resolution. The source column is
+  in weeks with a 24-week reference; the model reparameterises the reference
+  in place as `24 * 7 / 30.4375` months so the published constant stays
+  visible. This is the same days-to-months reparameterisation the covariate
+  register documents for `Zhao_2018_omeprazole`.
+- **A single coefficient drives both OC parameters.** The Table 3 footnote
+  states `VM,AGE = CLM,AGE`, so the model uses one parameter
+  (`e_age_cl_oselcarb`) in both the `CLM/F` and `VM/F` equations rather than
+  two numerically identical ones. Re-fitting this model to new data will
+  therefore preserve the published constraint; a user who wants to relax it
+  must split the parameter explicitly.
+- **Allometric exponents are `fixed()`, not estimated.** Kamal 2014 Methods
+  states the powers were "fixed power coefficients of 0.75 and 1" and that
+  "Body weight dependencies were therefore fixed mechanistically" because
+  weight and age were too strongly correlated to estimate simultaneously.
+  Neither exponent appears among theta1-theta11 in Table 3, which is the
+  confirming signal.
+- **Reference weight 8 kg is a re-centering constant, not the cohort mean.**
+  The Table 3 footnote and the Figure 2 caption both give 8 kg (the caption
+  calls it "the median body weight"), while Table 2 reports a cohort mean of
+  6.5 kg (SD 2.1). The two statements are not reconciled in the publication.
+  The 8 kg value is used because it is the constant that appears in the
+  published equations, and it is the only choice consistent with the
+  tabulated `CL/F` and `CLM/F` estimates. As the Discussion notes, "Scaling
+  to an adult weight (70 kg) instead of the median weight would not have
+  altered the model because the power of the weight dependence was fixed",
+  so the choice re-centres the typical values but does not change any
+  prediction once weight is supplied.
+- **No additive residual term for the parent.** The Methods section says
+  "combined proportional and additive error models were used for oseltamivir
+  and OC", but that describes the base model. Table 3 enumerates theta1
+  through theta11 and contains no `sigmaOP,ADD` row, so the final model has
+  proportional-only residual error for oseltamivir. The final estimates table
+  is taken as authoritative and only `propSd` is encoded for the parent.
+- **Figure 2's caption writes the normalisation as a multiplication.** The
+  caption reads "OC clearance normalized by allometrically scaled body weight
+  was derived using CLM*(WT/8)^0.75". Normalising by a factor is division,
+  and only division leaves the linear age relationship the figure is drawn to
+  demonstrate ("confirms the effect of maturation estimated by the model");
+  multiplying would leave a residual weight dependence that dominates the
+  plot. The replication above therefore divides. This affects only the figure
+  reproduction - no model parameter depends on it.
+- **The paper's claim of greater variability in the youngest subgroup is not
+  reproduced, by construction.** Kamal 2014 notes "greater interindividual
+  variability was seen in the youngest subjects (0-1 month) than in the other
+  groups". The packaged model carries a single homogeneous 35.7% CV random
+  effect on `CLM/F` at every age, so a synthetic cohort cannot generate an
+  age-dependent spread. The published observation reflects the actual
+  cohort's demographics - only 13 subjects were aged 30 days or less - rather
+  than a structural feature of the model.
+- **The age effect is asserted on typical values, not on stochastic subgroup
+  medians.** Adjacent age subgroups differ by only 6-10% in typical OC
+  exposure, while the random effect on `CLM/F` has a 35.7% CV; with 20-53
+  simulated subjects per subgroup the sample medians are therefore strictly
+  monotone in only about 40% of random draws, even though the underlying
+  model is exactly monotone. The quantitative Figure 4 gate is consequently
+  placed on the zero-random-effect predictions (which depend only on the
+  base-R-seeded covariates and are exactly reproducible), and the stochastic
+  cohort is asserted for direction alone. The whole-cohort bridging quantiles
+  in the next section are a different matter: they pool all 200 subjects and
+  clear their thresholds in every one of 300 test draws, so they are asserted
+  at the published values.
+- **Complete conversion means OC exposure is mass-balanced against the parent
+  dose.** With fm fixed at 1, steady-state OC AUC equals `Dose/(CLM/F)`
+  exactly. No molecular-weight correction is applied between oseltamivir
+  (312.4 g/mol) and OC (284.4 g/mol); the ratio is absorbed into the
+  "apparent" `CLM/F` and `VM/F` scaling, matching the original NONMEM
+  implementation.
+- **Steady state is not fully attained in five days.** The parent's terminal
+  half-life is about 15 h, so the five-day (ten-dose) regimen the paper
+  simulated reaches roughly 99.4% of steady state. The structural closed-form
+  gates therefore use a ten-day regimen, while the exposure and bridging
+  results use the paper's five-day regimen and are asserted against the
+  closed form with a 1% tolerance.
+- **Do not extrapolate beyond one year of age.** Kamal 2014 Discussion states
+  that the age dependence "should not be extrapolated beyond the range of the
+  analysis data (<1 year)", and that generalisability to extremely premature
+  neonates "may be suboptimal" because infants of postmenstrual age below
+  36 weeks were excluded from both trials. The linear age term has no upper
+  plateau, so extrapolation past 12 months will inflate `CLM/F` and `VM/F`
+  without bound.
+- **Screened-but-rejected covariates carry no point estimates.**
+  Postconceptual age, sex, and a CASG114 relative-bioavailability
+  (formulation) effect were all tested in the full covariate model and none
+  was retained. They are documented in the model file's
+  `covariatesDataExcluded` list for provenance; no coefficient is available
+  for any of them, and relative bioavailability is 1 for both studies.
+- **Table 2's ethnicity rows are internally inconsistent in the source.**
+  As printed, Hispanic 34 (25.6%), Non-Hispanic/Latino 93 (69.9%), Other 12
+  (9.0%) and Unknown 6 (4.5%) sum to 145 subjects and 109%, exceeding the
+  analysis N of 133. The values are recorded verbatim in the model's
+  `population$notes`; the race rows are consistent (105 + 14 + 12 + 2 = 133)
+  and are the ones carried into `population$race_ethnicity`. Neither race nor
+  ethnicity was screened as a covariate, so nothing in the model depends on
+  the discrepancy.

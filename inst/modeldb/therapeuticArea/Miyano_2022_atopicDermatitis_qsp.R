@@ -114,8 +114,9 @@ Miyano_2022_atopicDermatitis_qsp <- function() {
   # d9 Th cells, d10 IL-4, d11 IL-13, d12 IL-17A, d13 IL-22, d14 IL-31,
   # d15 IFN-gamma, d16 TSLP, d17 OX40L) were determined from published in
   # vivo (serum) human half-lives (Miyano 2022 Methods section 2.4, Table
-  # S5 -- S5 is in the paper supplement which is not on disk; the numerical
-  # values here are reproduced from the authors' companion mu.csv).
+  # S5). The values here were taken from the authors' companion mu.csv and
+  # have since been checked against Table S5 itself (supplement obtained
+  # 2026-08-24): all 11 agree to 4 significant figures.
   #
   # The 40 remaining parameters were tuned to reproduce mean and CV of
   # baseline biological factor levels (Table S2) plus mean EASI and EASI-75

@@ -1,0 +1,1065 @@
+---
+title: "Daptomycin (Subrtova 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Daptomycin (Subrtova 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>",
+  fig.width = 7, fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+mod <- rxode2::rxode(readModelDb("Subrtova_2026_daptomycin"))
+cat("* Citation: ", mod$reference, "\n\n", sep = "")
+cat("* Description: ", mod$description, "\n\n", sep = "")
+```
+
+* Article: <https://doi.org/10.1128/aac.01532-25> (Antimicrob Agents Chemother 2026;70(3):e01532-25, open access CC-BY)
+* Supplement (Table S1, Fig S1-S5): `aac.01532-25-s0001.docx`, retrieved from the
+  EuropePMC supplementary-files endpoint for PMC12959151. Table S1 is the
+  model-building OFV trail and independently confirms the structural, error and
+  covariate model selections used here; Figures S1-S5 are diagnostic plots. The
+  supplement carries no parameter value that is absent from the main text.
+
+Subrtova and colleagues fitted a one-compartment model with linear elimination to
+143 routine therapeutic-drug-monitoring serum concentrations from 31 adults treated
+with intravenous daptomycin for serious Gram-positive infections. The CKD-EPI 2021
+estimated glomerular filtration rate, entered as a time-varying regressor, was the
+only covariate retained; every body-size descriptor was tested and rejected. The
+paper then converts the clearance-eGFR relationship into a once-daily dosing
+nomogram with a loading dose.
+
+# Population
+
+```{r population, echo = FALSE, results = "asis"}
+pop <- mod$population
+cat(sprintf("* Species: %s\n", pop$species))
+cat(sprintf("* Subjects / observations: %d patients, %d serum concentrations\n",
+            pop$n_subjects, pop$n_observations))
+cat(sprintf("* Age: median %s (range %s)\n", pop$age_median, pop$age_range))
+cat(sprintf("* Weight: median %s (range %s)\n", pop$weight_median, pop$weight_range))
+cat(sprintf("* Female: %.1f%%\n", pop$sex_female_pct))
+cat(sprintf("* Renal function: %s\n", pop$renal_function))
+cat(sprintf("* Dosing: %s\n", pop$dose_range))
+cat(sprintf("* Region: %s\n", pop$regions))
+```
+
+Baseline demographics are Subrtova 2026 Table 1. Patients receiving renal
+replacement support were excluded, so the model carries no information about
+dialysis or CRRT. The same metadata is available programmatically via
+`readModelDb("Subrtova_2026_daptomycin")()$population`.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `Vd = Vd_pop` (no covariate on volume) | n/a | Table 2, Fixed effects block |
+| `CL = CL_pop * (eGFR/90)^beta_CL_eGFR` | n/a | Table 2, Fixed effects block |
+| `lvc` (Vd_pop) | 11.47 L (R.S.E. 6.88%) | Table 2; Results: "daptomycin Vd and CL were 11.47 L and 0.69 L/h" |
+| `lcl` (CL_pop at eGFR 90 mL/min) | 0.69 L/h (R.S.E. 5.13%) | Table 2; Results, same sentence |
+| `le_crcl_cl` (beta_CL_eGFR) | 0.40 (R.S.E. 32.40%) | Table 2, Fixed effects block |
+| `etalvc` (BSV on Vd) | 18.0% (R.S.E. 29.8%) | Table 2, "Between subject variability (%)" |
+| `etalcl` (BSV on CL) | 20.0% (R.S.E. 22.3%) | Table 2, "Between subject variability (%)" |
+| `etale_crcl_cl` (BSV on beta_CL_eGFR) | 39.0% (R.S.E. 29.8%) | Table 2, "Between subject variability (%)" |
+| `propSd` (proportional error) | 0.28 (R.S.E. 7.72%) | Table 2, "Error model parameter" |
+| One compartment, linear elimination, proportional RUV | n/a | Results, "Population pharmacokinetic analysis", first paragraph; Table S1 (1-cmt 1st-order OFV 1201.98 beats 2-cmt at max R.S.E. 7.76e17 and saturation at 1202.01; proportional error OFV 1201.98 beats constant 1269.52 and combined 1202.05) |
+| Total-CL parameterisation rather than split renal / non-renal CL | n/a | Table S1, "Time-varying covariate model": `CL = CL_pop * (eGFR2021/90)^beta` (OFV 1173.24, max R.S.E. 32.4%) selected over `CL = CLnr_pop + CLr_pop * (eGFR2021/90)^beta` (OFV 1178.16, max R.S.E. 1.37e8, shrinkage 100%) |
+| Intravenous infusion, 30 or 60 min, no absorption term | n/a | Methods, "Study design"; Results, "Study population" |
+| Reference eGFR 90 mL/min | n/a | Results: "an individual with normal renal function status (eGFR = 90 mL/min)" |
+| Nomogram AUC24 targets 832 and 665.5 mg*h/L | n/a | Discussion: midpoints of the 666-998 and 333-998 mg*h/L windows |
+| Cmin-to-AUC24 regression `AUC24 = 27.39*Cmin + 340.4` | r2 = 0.9552, p < 0.0001 | Figure 1, equation printed inside the plot panel |
+| Toxicity-threshold conversion Cmin 24 mg/L -> AUC24 998 mg*h/L | 997.76 | Figure 1 equation evaluated at Cmin = 24; quoted as 998 in the Discussion |
+| Loading dose factor 1.36 | n/a | Results, Monte Carlo simulations; Table 3 "Median AUC24 ratio (day 7 vs day 1)" |
+| Three random effects (i.e. the BSV on `beta_CL_eGFR` is real) | p = 7 | Table S1, final-model row: OFV 1173.24 / AIC 1187.24 / BIC 1197.28 inverted for the parameter count; see "Confirming the random-effect count from Table S1" below |
+
+Published reference values used as validation targets below:
+
+| Quantity | Published value | Source location |
+|---|---|---|
+| CL and t1/2 at eGFR 30 mL/min | 0.44 L/h, 18.1 h | Results, "Population pharmacokinetic analysis" |
+| CL and t1/2 at eGFR 90 mL/min | 0.69 L/h, 11.5 h | Results, same paragraph |
+| CL and t1/2 at eGFR 130 mL/min | 0.80 L/h, 9.9 h | Results, same paragraph |
+| Day-7 AUC24, SmPC 6 mg/kg q24h | 747.8 mg*h/L (90% CI 670.6-834.3) | Table 3, "SmPC" column |
+| Day-7 AUC24, nomogram MIC 1 mg/L | 821 mg*h/L (751.6-906.2) | Table 3 |
+| Day-7 AUC24, nomogram MIC 0.5 mg/L | 658.4 mg*h/L (601.8-717.5) | Table 3 |
+| Day-1 AUC24, nomogram + LD, MIC 1 mg/L | 825.9 mg*h/L (778.1-872.5) | Table 3 |
+| Day-1 AUC24, nomogram + LD, MIC 0.5 mg/L | 660.7 mg*h/L (622.3-699.3) | Table 3 |
+| Day-7 / day-1 AUC24 ratio, no loading dose | 1.34-1.37 | Table 3, bottom row |
+
+# Structural parameters as packaged
+
+```{r params}
+th <- setNames(mod$iniDf$est, mod$iniDf$name)
+vd_pop  <- exp(th[["lvc"]])
+cl_pop  <- exp(th[["lcl"]])
+beta_cl <- exp(th[["le_crcl_cl"]])
+
+# Typical clearance as a function of eGFR (Subrtova 2026 Table 2, Fixed effects).
+cl_typical <- function(crcl) cl_pop * (crcl / 90)^beta_cl
+
+c(Vd_pop_L = vd_pop, CL_pop_L_per_h = cl_pop, beta_CL_eGFR = beta_cl)
+
+# Guard: the packaged values are the published ones.
+stopifnot(
+  all.equal(vd_pop, 11.47, tolerance = 1e-6),
+  all.equal(cl_pop, 0.69, tolerance = 1e-6),
+  all.equal(beta_cl, 0.40, tolerance = 1e-6)
+)
+```
+
+# Confirming the random-effect count from Table S1
+
+The single structural decision in this extraction that is *not* stated in words
+by the paper is whether Table 2's third "Between subject variability" row --
+39.0% on `beta_CL_eGFR` -- is a genuine third random effect or a mislabelled
+duplicate. A random effect on a covariate coefficient is unusual enough to be
+worth proving rather than assuming, and the supplement proves it.
+
+Monolix reports `AIC = OFV + 2p` and `BIC = OFV + p*log(N_subjects)`, with
+`N = 31` here. Supplementary Table S1 gives OFV, AIC *and* BIC for every
+candidate model, which over-determines `p`: each row yields an independent
+estimate from the AIC and from the BIC, and they must agree at an integer.
+
+```{r params-count}
+tableS1 <- tibble::tribble(
+  ~model,                                  ~OFV,     ~AIC,     ~BIC,
+  "1-cmt, 1st order (base)",                1201.98,  1211.98,  1219.15,
+  "2-cmt, 1st order",                       1185.58,  1203.58,  1216.49,
+  "1-cmt, saturable elimination",           1202.01,  1216.01,  1226.05,
+  "1-cmt, constant error",                  1269.52,  1279.52,  1286.69,
+  "1-cmt, combined error",                  1202.05,  1214.05,  1222.66,
+  "CL = CLnr + CLr*(eGFR/90)^beta",         1178.16,  1196.16,  1209.06,
+  "CL = CL_pop*(eGFR/90)^beta (FINAL)",     1173.24,  1187.24,  1197.28
+)
+
+n_subjects <- 31L      # Results, Study population: "Thirty-one patients"
+
+param_count <- tableS1 |>
+  mutate(
+    p_from_aic = (AIC - OFV) / 2,
+    p_from_bic = (BIC - OFV) / log(n_subjects)
+  )
+
+# The two routes must agree, and must land on an integer. If Monolix's
+# information-criterion convention were anything other than assumed, this would
+# not close on every one of the seven rows.
+stopifnot(
+  nrow(param_count) == 7L,
+  max(abs(param_count$p_from_aic - round(param_count$p_from_aic))) < 1e-8,
+  max(abs(param_count$p_from_bic - round(param_count$p_from_bic))) < 0.005,
+  all(round(param_count$p_from_aic) == round(param_count$p_from_bic))
+)
+
+param_count |>
+  mutate(p = round(p_from_aic),
+         across(c(p_from_aic, p_from_bic), \(x) round(x, 3))) |>
+  rename("Table S1 model" = model, "p (from AIC)" = p_from_aic,
+         "p (from BIC)" = p_from_bic, "Estimated parameters" = p) |>
+  knitr::kable(
+    caption = paste(
+      "Number of estimated parameters recovered from Subrtova 2026 Table S1 by",
+      "inverting Monolix's AIC = OFV + 2p and BIC = OFV + p*log(31). The AIC and",
+      "BIC routes are independent and agree on an integer for all seven rows."
+    ),
+    align = c("l", rep("r", 5))
+  )
+```
+
+The final model returns `p = 7`. The fixed effects account for three
+(`Vd_pop`, `CL_pop`, `beta_CL_eGFR`) and the proportional error for one, leaving
+**three** random effects -- so the 39.0% on `beta_CL_eGFR` is a real omega and
+`etale_crcl_cl` belongs in the packaged model. Six would be the count if that row
+were a duplicate. The base model on the same arithmetic returns `p = 5`
+(`Vd_pop`, `CL_pop`, two omegas, one residual), consistent with the final model
+adding exactly one fixed effect and one random effect when eGFR entered.
+
+```{r params-count-assert}
+p_final <- round(param_count$p_from_aic[param_count$model ==
+                                          "CL = CL_pop*(eGFR/90)^beta (FINAL)"])
+p_base  <- round(param_count$p_from_aic[param_count$model ==
+                                          "1-cmt, 1st order (base)"])
+
+n_omega_implied <- p_final - 3L - 1L    # minus 3 fixed effects, minus 1 residual
+n_omega_packaged <- sum(mod$iniDf$neta1 > 0 & mod$iniDf$neta1 == mod$iniDf$neta2,
+                        na.rm = TRUE)
+
+c(p_base = p_base, p_final = p_final,
+  omegas_implied_by_TableS1 = n_omega_implied,
+  omegas_in_packaged_model  = n_omega_packaged)
+
+stopifnot(
+  p_base  == 5L,
+  p_final == 7L,
+  n_omega_implied == 3L,
+  # The packaged model must carry exactly the random effects Table S1 pays for.
+  n_omega_packaged == n_omega_implied
+)
+```
+
+# Deterministic replication: the clearance / half-life ladder (Figure 2)
+
+The Results paragraph gives three (eGFR, CL, t1/2) triples. Both sides of this
+check use the *same* parameter values -- there is no per-subject sampling -- so
+the comparison is a pure arithmetic identity and is asserted tightly.
+
+```{r ladder-events}
+egfr_ladder <- c(30, 90, 130)
+ladder_dose <- 750            # mg, the cohort median dose (Results, Study population)
+inf_dur     <- 0.5            # h, 30-min infusion
+
+# Fine early sampling resolves the infusion ramp; the decay phase is exact under
+# PKNCA's linear-up / log-down trapezoid for a mono-exponential. The window stops
+# at 72 h so the last concentration stays above the assay LLOQ of 0.32 mg/L even
+# for the fastest-clearing arm (Methods, Bioanalytical assay).
+ladder_times <- sort(unique(c(
+  seq(0, 0.5, by = 0.05), seq(0.75, 4, by = 0.25), seq(5, 24, by = 1),
+  seq(26, 72, by = 2)
+)))
+
+ladder_subj <- tibble(id = seq_along(egfr_ladder), CRCL = egfr_ladder) |>
+  mutate(arm = sprintf("eGFR %d mL/min", CRCL))
+
+ladder_dosing <- ladder_subj |>
+  mutate(time = 0, amt = ladder_dose, evid = 1L, cmt = "central",
+         rate = ladder_dose / inf_dur)
+ladder_obs <- ladder_subj |>
+  crossing(time = ladder_times) |>
+  mutate(amt = NA_real_, evid = 0L, cmt = "central", rate = NA_real_)
+
+ladder_ev <- bind_rows(ladder_dosing, ladder_obs) |>
+  arrange(id, time, desc(evid)) |>
+  select(id, time, amt, evid, cmt, rate, CRCL, arm) |>
+  as.data.frame()
+```
+
+```{r ladder-solve}
+# zeroRe() alone is not enough once a stochastic solve has run in the same
+# session -- rxode2 retains the previous omega. `omega = NA` is the explicit
+# no-random-effects sentinel.
+mod_typ <- rxode2::zeroRe(mod)
+ladder_sim <- rxode2::rxSolve(mod_typ, events = ladder_ev,
+                              keep = c("arm"), omega = NA) |>
+  as.data.frame()
+
+# Mechanical guard that the typical-value solve really is typical: exactly one
+# cl per eGFR level (three subjects, three distinct values, no eta noise).
+stopifnot(n_distinct(round(ladder_sim$cl, 10)) == length(egfr_ladder))
+```
+
+```{r figure-2, fig.cap = "Replicates Figure 2 of Subrtova 2026: typical daptomycin clearance and elimination half-life against CKD-EPI 2021 eGFR. Points mark the three (eGFR, CL, t1/2) triples quoted in the Results."}
+fig2 <- tibble(CRCL = seq(15, 135, by = 1)) |>
+  mutate(CL = cl_typical(CRCL), `t1/2` = log(2) * vd_pop / CL) |>
+  pivot_longer(c(CL, `t1/2`), names_to = "quantity", values_to = "value")
+
+fig2_pts <- tibble(
+  CRCL     = egfr_ladder,
+  CL       = c(0.44, 0.69, 0.80),
+  `t1/2`   = c(18.1, 11.5, 9.9)
+) |>
+  pivot_longer(c(CL, `t1/2`), names_to = "quantity", values_to = "value")
+
+ggplot(fig2, aes(CRCL, value)) +
+  geom_line(linewidth = 0.8) +
+  geom_point(data = fig2_pts, colour = "firebrick", size = 2.5) +
+  facet_wrap(~quantity, scales = "free_y",
+             labeller = as_labeller(c(CL = "CL (L/h)", "t1/2" = "t1/2 (h)"))) +
+  labs(x = "eGFR CKD-EPI 2021 (mL/min)", y = NULL,
+       caption = "Line: packaged model. Points: values quoted in Subrtova 2026 Results.") +
+  theme_bw()
+```
+
+## PKNCA validation of the ladder
+
+```{r ladder-nca, warning = FALSE}
+ladder_nca <- ladder_sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, arm)
+
+ladder_nca <- bind_rows(
+  ladder_nca,
+  ladder_nca |> distinct(id, arm) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, arm, time, .keep_all = TRUE) |>
+  arrange(id, arm, time)
+
+ladder_dose_df <- ladder_ev |>
+  filter(evid == 1) |>
+  select(id, time, amt, arm) |>
+  mutate(route = "intravascular", duration = inf_dur)
+
+conc_ladder <- PKNCA::PKNCAconc(ladder_nca, Cc ~ time | arm + id,
+                                concu = "mg/L", timeu = "h")
+dose_ladder <- PKNCA::PKNCAdose(ladder_dose_df, amt ~ time | arm + id,
+                                doseu = "mg")
+
+ladder_intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE,
+  half.life = TRUE, cl.obs = TRUE, vz.obs = TRUE
+)
+
+ladder_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_ladder, dose_ladder, intervals = ladder_intervals)
+)
+```
+
+`PKNCA::cl.obs` is `dose / AUCinf` and here carries units of mg / (mg/L * h) = L/h,
+directly comparable to the published clearances. `vz.obs` is `cl.obs / lambda.z`,
+which for a one-compartment model equals Vd exactly.
+
+```{r ladder-compare}
+published_ladder <- tibble::tribble(
+  ~arm,                  ~half.life, ~cl.obs, ~vz.obs,
+  "eGFR 30 mL/min",      18.1,       0.44,    11.47,
+  "eGFR 90 mL/min",      11.5,       0.69,    11.47,
+  "eGFR 130 mL/min",      9.9,       0.80,    11.47
+)
+
+cmp_ladder <- nlmixr2lib::ncaComparisonTable(
+  simulated = ladder_res,
+  reference = published_ladder,
+  by        = "arm",
+  units     = c(half.life = "h", cl.obs = "L/h", vz.obs = "L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp_ladder,
+  caption = paste(
+    "Simulated (PKNCA on the packaged model, typical values) vs published",
+    "clearance, half-life and volume at three eGFR levels.",
+    "* marks a difference above 20%."
+  ),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+```{r ladder-assert}
+# Both sides are the same deterministic arithmetic, so the only slack is the
+# paper's own two-significant-figure rounding of CL (0.44, 0.69, 0.80) and
+# three-figure rounding of t1/2. Assert tightly.
+ladder_chk <- as.data.frame(ladder_res$result) |>
+  filter(PPTESTCD %in% c("half.life", "cl.obs", "vz.obs")) |>
+  select(arm, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  left_join(published_ladder, by = "arm", suffix = c("_sim", "_pub")) |>
+  mutate(
+    d_hl = 100 * (half.life_sim - half.life_pub) / half.life_pub,
+    d_cl = 100 * (cl.obs_sim - cl.obs_pub) / cl.obs_pub,
+    d_vz = 100 * (vz.obs_sim - vz.obs_pub) / vz.obs_pub
+  )
+
+stopifnot(
+  nrow(ladder_chk) == length(egfr_ladder),
+  max(abs(ladder_chk$d_cl)) < 1.5,   # rounding of 0.4446 -> 0.44 is 1.05%
+  max(abs(ladder_chk$d_hl)) < 1.5,
+  # Vz is not rounding-limited: the paper's Vd is exact at 11.47 and PKNCA
+  # recovers it from cl.obs / lambda.z to floating-point accuracy. Achieved
+  # 1e-4%, so this is asserted at 0.01% rather than at a nominal 0.5%.
+  max(abs(ladder_chk$d_vz)) < 0.01
+)
+ladder_chk |>
+  select(arm, d_cl, d_hl, d_vz) |>
+  mutate(across(where(is.numeric), \(x) round(x, 3)))
+```
+
+# The dosing nomogram (Figure 4)
+
+The nomogram inverts the clearance-eGFR relationship: a once-daily maintenance
+dose that puts a *typical* patient at a target steady-state exposure is
+`MD = AUC24_target * CL_typical(eGFR)`. The Discussion fixes the targets as the
+midpoints of the therapeutic windows -- 832 mg*h/L for MIC 1 mg/L (window
+666-998) and 665.5 mg*h/L for MIC 0.5 mg/L (window 333-998), where 998 mg*h/L is
+the authors' AUC24 equivalent of the Cmin 24 mg/L toxicity threshold.
+
+```{r nomogram}
+auc_target <- c(`MIC 1 mg/L` = 832, `MIC 0.5 mg/L` = 665.5)
+ld_factor  <- 1.36     # Results / Discussion: loading dose = 1.36 x maintenance dose
+
+nomogram_dose <- function(crcl, target) target * cl_typical(crcl)
+```
+
+```{r figure-4, fig.cap = "Replicates Figure 4 of Subrtova 2026: once-daily maintenance dose from the CKD-EPI 2021 eGFR, at MIC 1 mg/L (black) and MIC 0.5 mg/L (red)."}
+tibble(CRCL = seq(15, 135, by = 1)) |>
+  mutate(`MIC 1 mg/L`   = nomogram_dose(CRCL, auc_target[["MIC 1 mg/L"]]),
+         `MIC 0.5 mg/L` = nomogram_dose(CRCL, auc_target[["MIC 0.5 mg/L"]])) |>
+  pivot_longer(-CRCL, names_to = "MIC", values_to = "dose") |>
+  ggplot(aes(CRCL, dose, colour = MIC)) +
+  geom_line(linewidth = 0.8) +
+  scale_colour_manual(values = c("MIC 1 mg/L" = "black", "MIC 0.5 mg/L" = "firebrick")) +
+  labs(x = "eGFR CKD-EPI 2021 (mL/min)",
+       y = "Maintenance dose (mg once daily, 30-min infusion)") +
+  theme_bw() + theme(legend.position = "top")
+```
+
+Figure 4 is an independent answer key for two quantities that appear nowhere else
+as numbers: the AUC24 targets 832 and 665.5 mg*h/L, which are stated only in the
+Discussion prose, and the eGFR normalisation constant of 90 mL/min. The published
+curves are read off the plotted figure at three eGFR values below; a read-off
+carries roughly +/- 2% digitisation error, so the check is asserted at 2.5%. Any
+error in either target, or a normalisation other than 90 mL/min, would move the
+computed curve by far more than that.
+
+```{r figure-4-readoff}
+# Doses read off Subrtova 2026 Figure 4 (the plotted curves; the paper tabulates
+# no nomogram doses). Provenance: figure digitisation, not paper text.
+nomogram_readoff <- tibble::tribble(
+  ~CRCL, ~`MIC 1 mg/L`, ~`MIC 0.5 mg/L`,
+  20,    312,           250,
+  60,    490,           392,
+  130,   665,           532
+)
+
+nomo_chk <- nomogram_readoff |>
+  pivot_longer(-CRCL, names_to = "MIC", values_to = "dose_fig") |>
+  mutate(
+    dose_model = nomogram_dose(CRCL, unname(auc_target[MIC])),
+    pct_diff   = 100 * (dose_model - dose_fig) / dose_fig
+  )
+
+# Achieved max 0.8%, comfortably inside plausible read-off error; asserted at
+# 2.5% to leave room for the digitisation while still failing on any real
+# transcription error (a wrong AUC24 target or a normalisation other than
+# 90 mL/min moves these by tens of percent).
+stopifnot(nrow(nomo_chk) == 6, max(abs(nomo_chk$pct_diff)) < 2.5)
+
+nomo_chk |>
+  mutate(across(c(dose_model, pct_diff), \(x) round(x, 1))) |>
+  rename(
+    "eGFR (mL/min)"          = CRCL,
+    "MIC"                    = MIC,
+    "Figure 4 read-off (mg)" = dose_fig,
+    "Packaged model (mg)"    = dose_model,
+    "% difference"           = pct_diff
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Maintenance dose computed from the packaged model against doses read off",
+      "Subrtova 2026 Figure 4. Agreement confirms the AUC24 targets (832 and",
+      "665.5 mg*h/L) and the 90 mL/min eGFR normalisation."
+    ),
+    align = c("r", "l", "r", "r", "r")
+  )
+```
+
+# Virtual cohort
+
+The original TDM records are not public, and the paper's Monte Carlo simulations
+resampled its own 31 patients. This vignette instead builds a 200-subject virtual
+cohort whose weight and eGFR marginals match Table 1 (log-normal, matched on the
+reported median and interquartile range, truncated to the reported range). Weight
+and eGFR are drawn independently because the paper reports no correlation between
+them; weight enters only through the weight-based SmPC arm, never through the
+model.
+
+```{r cohort}
+set.seed(20260126)
+n_sub <- 200L
+
+# sdlog implied by the reported IQR of a log-normal
+sdlog_from_iqr <- function(q1, q3) log(q3 / q1) / (2 * stats::qnorm(0.75))
+
+cohort <- tibble(
+  id   = seq_len(n_sub),
+  WT   = pmin(pmax(stats::rlnorm(n_sub, log(84),   sdlog_from_iqr(73,   92)),   48),   124),
+  CRCL = pmin(pmax(stats::rlnorm(n_sub, log(81.6), sdlog_from_iqr(58.9, 98.9)), 16.3), 130.1)
+)
+
+summarise(cohort,
+          WT_median = median(WT), WT_q1 = quantile(WT, .25), WT_q3 = quantile(WT, .75),
+          CRCL_median = median(CRCL), CRCL_q1 = quantile(CRCL, .25),
+          CRCL_q3 = quantile(CRCL, .75)) |>
+  round(1)
+```
+
+# Simulation of the four dosing strategies (Figure 3)
+
+Five arms are simulated: the SmPC weight-based regimen, and the eGFR nomogram at
+each MIC with and without the loading dose. Table 3's "real dosage used" column
+cannot be reproduced -- those doses were chosen patient-by-patient by the
+attending physician and then adjusted by TDM.
+
+Every arm is solved from the *same* covariate table with the RNG reseeded
+immediately before each `rxSolve()`, so the arms share their between-subject
+random effects (common random numbers). Cross-arm comparisons are therefore
+paired and are not confounded by Monte Carlo noise.
+
+```{r arms}
+dose_times <- seq(0, 144, by = 24)      # seven once-daily doses; day 7 = [144, 168]
+day_grid   <- c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.75, 1, 1.5, 2, 3, 4, 6, 8,
+                10, 12, 16, 20)
+obs_times  <- sort(unique(c(as.vector(outer(day_grid, dose_times, "+")), 168)))
+
+make_arm_events <- function(label, md_vec, ld_vec) {
+  dosing <- cohort |>
+    mutate(md = md_vec, ld = ld_vec) |>
+    crossing(time = dose_times) |>
+    mutate(amt = if_else(time == 0, ld, md), evid = 1L, cmt = "central",
+           rate = amt / inf_dur)
+  obs <- cohort |>
+    crossing(time = obs_times) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", rate = NA_real_)
+  bind_rows(dosing, obs) |>
+    mutate(arm = label) |>
+    arrange(id, time, desc(evid)) |>
+    select(id, time, amt, evid, cmt, rate, WT, CRCL, arm) |>
+    as.data.frame()
+}
+
+md_mic1   <- nomogram_dose(cohort$CRCL, auc_target[["MIC 1 mg/L"]])
+md_mic05  <- nomogram_dose(cohort$CRCL, auc_target[["MIC 0.5 mg/L"]])
+smpc_dose <- 6 * cohort$WT                      # SmPC 6 mg/kg once daily
+
+arm_events <- list(
+  make_arm_events("SmPC 6 mg/kg",        smpc_dose, smpc_dose),
+  make_arm_events("Nomogram MIC 1",      md_mic1,   md_mic1),
+  make_arm_events("Nomogram + LD MIC 1", md_mic1,   ld_factor * md_mic1),
+  make_arm_events("Nomogram MIC 0.5",    md_mic05,  md_mic05),
+  make_arm_events("Nomogram + LD MIC 0.5", md_mic05, ld_factor * md_mic05)
+)
+
+# Disjoint (id, time, evid) keys within each arm's own event table.
+stopifnot(vapply(arm_events,
+                 function(e) !anyDuplicated(e[, c("id", "time", "evid")]),
+                 logical(1)))
+```
+
+```{r solve-arms}
+solve_arm <- function(ev, seed = 20260126L) {
+  # Common random numbers. rxode2 draws its random effects from its own
+  # internal generator, so base::set.seed() alone does NOT make the etas
+  # reproducible across calls -- rxode2::rxSetSeed() is the documented control.
+  rxode2::rxSetSeed(seed)
+  set.seed(seed)
+  rxode2::rxSolve(mod, events = ev, keep = c("WT", "arm")) |>
+    as.data.frame()
+}
+
+sim <- bind_rows(lapply(arm_events, solve_arm))
+
+# Common-random-numbers guard: an id's clearance must be identical in all five
+# arms (same covariates, same etas). If this fails, every paired cross-arm
+# comparison below is measuring Monte Carlo noise instead of the regimen.
+stopifnot(
+  nrow(distinct(sim, id, cl = round(cl, 10))) == n_sub,
+  all(sim$Cc >= 0, na.rm = TRUE)
+)
+```
+
+```{r figure-3, fig.cap = "Replicates panels B-F of Figure 3 of Subrtova 2026: simulated daptomycin serum concentration-time profiles over seven days. Line = median, band = 5th-95th percentile of the 200-subject virtual cohort."}
+sim |>
+  filter(!is.na(Cc)) |>
+  group_by(arm, time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc),
+            Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  mutate(arm = factor(arm, levels = c(
+    "SmPC 6 mg/kg", "Nomogram MIC 1", "Nomogram + LD MIC 1",
+    "Nomogram MIC 0.5", "Nomogram + LD MIC 0.5"))) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~arm) +
+  labs(x = "Time (h)", y = "Daptomycin serum concentration (mg/L)") +
+  theme_bw()
+```
+
+# PKNCA validation: day-1 and day-7 exposure
+
+```{r cohort-nca, warning = FALSE}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, arm)
+
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, arm) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, arm, time, .keep_all = TRUE) |>
+  arrange(arm, id, time)
+
+dose_df <- bind_rows(arm_events) |>
+  filter(evid == 1) |>
+  select(id, time, amt, arm) |>
+  mutate(route = "intravascular", duration = inf_dur)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+
+# Day 1 = [0, 24]; day 7 = [144, 168], the interval after the seventh dose.
+intervals <- data.frame(
+  start   = c(0, 144),
+  end     = c(24, 168),
+  auclast = TRUE, cmax = TRUE, cmin = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_tbl <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("auclast", "cmax", "cmin")) |>
+  mutate(day = if_else(start == 0, "day1", "day7")) |>
+  select(arm, id, day, PPTESTCD, PPORRES) |>
+  pivot_wider(names_from = c(PPTESTCD, day), values_from = PPORRES)
+```
+
+## Per-subject steady-state identity: AUC0-tau = dose / CL
+
+At steady state a one-compartment model satisfies `AUC0-tau = dose / CL` exactly.
+Both sides use the *same* drawn parameters for the same subject, so the residual
+is pure numerical error plus the small shortfall from not being fully
+accumulated by day 7 in the slowest-clearing subjects. This is the strongest
+available check that the packaged clearance -- covariate model and all -- is
+transcribed correctly.
+
+```{r ss-identity}
+subj_cl <- sim |> distinct(id, cl)
+subj_md <- bind_rows(arm_events) |>
+  filter(evid == 1, time == 144) |>
+  select(id, arm, md = amt)
+
+ss_chk <- nca_tbl |>
+  left_join(subj_cl, by = "id") |>
+  left_join(subj_md, by = c("id", "arm")) |>
+  mutate(auc_pred = md / cl,
+         pct_diff = 100 * (auclast_day7 - auc_pred) / auc_pred)
+
+summarise(ss_chk,
+          median_pct = median(pct_diff),
+          p90_abs    = quantile(abs(pct_diff), 0.9),
+          max_abs    = max(abs(pct_diff))) |>
+  round(3)
+
+stopifnot(
+  nrow(ss_chk) == n_sub * length(arm_events),
+  !anyNA(ss_chk$pct_diff),
+  # Centre and robust quantile are stable across rxode2 versions (they average
+  # over the whole cohort), so they carry the tight bounds: achieved 0.002% and
+  # 0.13%. The MAXIMUM is the slowest-clearing subject in the draw, which does
+  # move when a different rxode2 build resamples the etas, so it keeps headroom.
+  abs(median(ss_chk$pct_diff)) < 0.1,
+  quantile(abs(ss_chk$pct_diff), 0.9) < 0.5,
+  max(abs(ss_chk$pct_diff)) < 5
+)
+```
+
+## Per-subject accumulation ratio
+
+For the three arms without a loading dose the day-7 / day-1 AUC24 ratio must
+equal the closed-form accumulation factor `1 / (1 - exp(-kel * 24))`. Again both
+sides share the subject's drawn parameters.
+
+```{r accumulation}
+subj_kel <- sim |> distinct(id, kel)
+
+acc_chk <- nca_tbl |>
+  filter(!grepl("LD", arm)) |>
+  left_join(subj_kel, by = "id") |>
+  mutate(ratio_sim  = auclast_day7 / auclast_day1,
+         ratio_pred = 1 / (1 - exp(-kel * 24)),
+         pct_diff   = 100 * (ratio_sim - ratio_pred) / ratio_pred)
+
+summarise(acc_chk,
+          median_ratio_sim = median(ratio_sim),
+          median_pct_diff  = median(pct_diff),
+          p90_abs          = quantile(abs(pct_diff), 0.9)) |>
+  round(3)
+
+# Achieved 0.44% (median) and 0.53% (p90). The residual is the trapezoidal
+# discretisation of `auclast` on the observation grid, not a model error.
+stopifnot(
+  abs(median(acc_chk$pct_diff)) < 1,
+  quantile(abs(acc_chk$pct_diff), 0.9) < 1
+)
+```
+
+The paper reports a day-7 / day-1 AUC24 ratio of 1.34-1.37 across its three
+non-loading-dose regimens (Table 3, bottom row) and uses 1.36 as the loading-dose
+multiplier. The virtual cohort's median accumulation factor is printed above.
+
+```{r accumulation-vs-paper}
+med_acc <- median(acc_chk$ratio_sim)
+# Achieved 2.1% below the paper's 1.36. Asserted at 5%: the packaged parameters
+# must reproduce the accumulation ratio the loading dose was derived FROM,
+# which is the arithmetic link between the model and the paper's dosing advice.
+stopifnot(abs(med_acc - ld_factor) / ld_factor < 0.05)
+sprintf("median accumulation factor: %.3f (paper: 1.34-1.37, loading-dose factor 1.36)",
+        med_acc)
+```
+
+## Comparison against Table 3
+
+```{r table3-compare}
+published_t3 <- tibble::tribble(
+  ~arm,                     ~day,    ~auc24_pub, ~ci_lo,  ~ci_hi,
+  "SmPC 6 mg/kg",           "day 7",  747.8,      670.6,   834.3,
+  "Nomogram MIC 1",         "day 7",  821.0,      751.6,   906.2,
+  "Nomogram + LD MIC 1",    "day 7",  825.7,      754.8,   906.6,
+  "Nomogram MIC 0.5",       "day 7",  658.4,      601.8,   717.5,
+  "Nomogram + LD MIC 0.5",  "day 7",  660.6,      606.0,   719.4,
+  "SmPC 6 mg/kg",           "day 1",  557.1,      519.0,   598.1,
+  "Nomogram MIC 1",         "day 1",  602.8,      567.9,   636.9,
+  "Nomogram + LD MIC 1",    "day 1",  825.9,      778.1,   872.5,
+  "Nomogram MIC 0.5",       "day 1",  481.5,      455.5,   510.4,
+  "Nomogram + LD MIC 0.5",  "day 1",  660.7,      622.3,   699.3
+)
+
+t3_sim <- nca_tbl |>
+  select(arm, id, `day 1` = auclast_day1, `day 7` = auclast_day7) |>
+  pivot_longer(c(`day 1`, `day 7`), names_to = "day", values_to = "auc24") |>
+  group_by(arm, day) |>
+  summarise(auc24_sim = median(auc24), .groups = "drop")
+
+t3 <- left_join(published_t3, t3_sim, by = c("arm", "day")) |>
+  mutate(pct_diff = 100 * (auc24_sim - auc24_pub) / auc24_pub) |>
+  arrange(day, arm)
+
+stopifnot(nrow(t3) == nrow(published_t3), !anyNA(t3$auc24_sim))
+
+t3 |>
+  mutate(across(c(auc24_pub, auc24_sim, pct_diff), \(x) round(x, 1))) |>
+  transmute(Regimen = arm, Day = day,
+            `Published median AUC24 (mg*h/L)` = auc24_pub,
+            `Published 90% CI` = sprintf("%.1f-%.1f", ci_lo, ci_hi),
+            `Simulated median AUC24 (mg*h/L)` = auc24_sim,
+            `% difference` = pct_diff) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated median AUC24 in the virtual cohort vs Subrtova 2026 Table 3.",
+      "The published values are medians over 500 replicates of the study's own",
+      "31 patients; the simulated values are medians over an independent",
+      "200-subject virtual cohort, so exact agreement is not expected."
+    ),
+    align = c("l", "l", "r", "l", "r", "r")
+  )
+```
+
+```{r table3-assert}
+# The two sides differ by cohort composition (a 200-subject log-normal draw vs
+# 500 resamples of 31 real patients with time-varying eGFR), yet all ten
+# published AUC24 values are reproduced to within 1.1%, and the median
+# discrepancy is 0.4%. The bounds below are set just above what is actually
+# achieved rather than at a nominal "close enough" level, so that a future
+# regression in the covariate model has somewhere to fail.
+#
+# The residual headroom is sized by the one thing that is NOT reproducible
+# across rxode2 versions: rxSetSeed() fixes the eta draw within a version but
+# not between versions, and the standard error of a median over 200 subjects at
+# this variability is about 2%. Hence ~2 standard errors of slack, no more.
+nomo <- filter(t3, arm != "SmPC 6 mg/kg")
+stopifnot(
+  abs(median(t3$pct_diff))   < 4,
+  # Nomogram arms are structurally the tightest: the dose is computed FROM the
+  # model's own clearance-eGFR curve, so the cohort's eGFR distribution largely
+  # cancels and only the eta draw remains.
+  max(abs(nomo$pct_diff))    < 6,
+  max(abs(t3$pct_diff))      < 8
+)
+round(summarise(t3, median_pct = median(pct_diff), max_abs = max(abs(pct_diff))), 2)
+```
+
+The nomogram arms are the cleanest test of the packaged model: their dose is
+computed from the model's own clearance-eGFR relationship, so the simulated
+day-7 AUC24 must land on the design target regardless of how the cohort's eGFR
+is distributed.
+
+```{r nomogram-hits-target}
+target_chk <- t3_sim |>
+  filter(day == "day 7", arm != "SmPC 6 mg/kg") |>
+  mutate(target = if_else(grepl("MIC 1", arm),
+                          auc_target[["MIC 1 mg/L"]], auc_target[["MIC 0.5 mg/L"]]),
+         pct_diff = 100 * (auc24_sim - target) / target)
+
+# Achieved max 1.3%; asserted at 5% (about two standard errors of a 200-subject
+# median). This is the single most direct test that the packaged clearance-eGFR
+# relationship is the one the nomogram was built from.
+stopifnot(nrow(target_chk) == 4, max(abs(target_chk$pct_diff)) < 5)
+target_chk |>
+  select(arm, auc24_sim, target, pct_diff) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2)))
+```
+
+The loading dose is designed so that day-1 exposure already equals the
+steady-state exposure. Table 3 reports a day-7 / day-1 ratio of exactly 1.0 for
+both loading-dose arms.
+
+```{r loading-dose-check}
+ld_chk <- nca_tbl |>
+  filter(grepl("LD", arm)) |>
+  mutate(ratio = auclast_day7 / auclast_day1) |>
+  group_by(arm) |>
+  summarise(median_ratio = median(ratio), .groups = "drop")
+
+stopifnot(all(abs(ld_chk$median_ratio - 1) < 0.05))
+mutate(ld_chk, median_ratio = round(median_ratio, 3))
+```
+
+# Probability of target attainment (Table 3)
+
+```{r pta}
+pta <- nca_tbl |>
+  group_by(arm) |>
+  summarise(
+    `PTA AUC24 >= 333 (%)` = 100 * mean(auclast_day7 >= 333),
+    `PTA AUC24 >= 666 (%)` = 100 * mean(auclast_day7 >= 666),
+    `PTA Cmin > 24 mg/L (%)` = 100 * mean(cmin_day7 > 24),
+    .groups = "drop"
+  )
+
+pta_pub <- tibble::tribble(
+  ~arm,                      ~pub_333, ~pub_666, ~pub_cmin,
+  "SmPC 6 mg/kg",            100,      64.5,     19.4,
+  "Nomogram MIC 1",          100,      80.7,     19.4,
+  "Nomogram + LD MIC 1",     100,      80.7,     19.4,
+  "Nomogram MIC 0.5",        100,      48.4,      8.1,
+  "Nomogram + LD MIC 0.5",   100,      48.4,      9.7
+)
+
+left_join(pta, pta_pub, by = "arm") |>
+  transmute(Regimen = arm,
+            `Sim AUC24 >= 333 (%)`   = round(`PTA AUC24 >= 333 (%)`, 1),
+            `Pub AUC24 >= 333 (%)`   = pub_333,
+            `Sim AUC24 >= 666 (%)`   = round(`PTA AUC24 >= 666 (%)`, 1),
+            `Pub AUC24 >= 666 (%)`   = pub_666,
+            `Sim Cmin > 24 mg/L (%)` = round(`PTA Cmin > 24 mg/L (%)`, 1),
+            `Pub Cmin > 24 mg/L (%)` = pub_cmin) |>
+  knitr::kable(
+    caption = paste(
+      "Day-7 probability of target attainment, simulated virtual cohort vs",
+      "Subrtova 2026 Table 3. Published percentages are quantised to 1/31 =",
+      "3.2% because they are computed over 31 resampled patients."
+    ),
+    align = c("l", rep("r", 6))
+  )
+```
+
+The paper's headline claim is a *paired* comparison: "dosing according to the
+proposed eGFR-based nomogram resulted in a significantly higher proportion of
+patients meeting the PK/PD target for efficacy (80.7% vs 64.5% at MIC = 1 mg/L)"
+(Discussion). Because the arms here share their random effects, the direction of
+that comparison is a per-subject effect and is asserted directly.
+
+```{r pta-assert}
+pta_666 <- setNames(pta$`PTA AUC24 >= 666 (%)`, pta$arm)
+pta_cmp <- left_join(pta, pta_pub, by = "arm")
+stopifnot(nrow(pta_cmp) == nrow(pta_pub), !anyNA(pta_cmp$pub_666))
+
+stopifnot(
+  # Discussion claim 1: the nomogram beats weight-based SmPC dosing at MIC 1.
+  pta_666[["Nomogram MIC 1"]] > pta_666[["SmPC 6 mg/kg"]],
+  # Discussion claim 2: at 333 mg*h/L every regimen attains the target.
+  all(pta$`PTA AUC24 >= 333 (%)` == 100),
+  # The direction alone is a weak check -- it would pass on a badly mis-scaled
+  # clearance. Assert the MAGNITUDES against Table 3 as well. Achieved max 2.3
+  # percentage points; the published values are themselves quantised to
+  # 1/31 = 3.2 points, so 10 points is roughly three quantisation steps.
+  max(abs(pta_cmp$`PTA AUC24 >= 666 (%)` - pta_cmp$pub_666)) < 10,
+  # Cmin is the noisiest comparison of the three: it is a single time point and
+  # this cohort carries no residual error, whereas the paper's Simulx runs did.
+  # Achieved max 3.7 points.
+  max(abs(pta_cmp$`PTA Cmin > 24 mg/L (%)` - pta_cmp$pub_cmin)) < 12
+)
+sprintf("PTA AUC24 >= 666: nomogram %.1f%% vs SmPC %.1f%% (paper: 80.7%% vs 64.5%%)",
+        pta_666[["Nomogram MIC 1"]], pta_666[["SmPC 6 mg/kg"]])
+```
+
+# Trough as a surrogate for exposure (Figure 1)
+
+```{r figure-1, fig.cap = "Replicates Figure 1 of Subrtova 2026: day-7 trough concentration against day-7 AUC24, SmPC 6 mg/kg arm. The dashed lines mark the paper's conversion of the Cmin 24 mg/L toxicity threshold to an AUC24 of 998 mg*h/L."}
+fig1 <- filter(nca_tbl, arm == "SmPC 6 mg/kg")
+
+ggplot(fig1, aes(cmin_day7, auclast_day7)) +
+  geom_point(alpha = 0.5) +
+  geom_smooth(method = "lm", formula = y ~ x, se = FALSE, colour = "firebrick") +
+  geom_vline(xintercept = 24, linetype = "dashed") +
+  geom_hline(yintercept = 998, linetype = "dashed") +
+  labs(x = "Day-7 trough concentration Cmin (mg/L)",
+       y = "Day-7 AUC24 (mg*h/L)") +
+  theme_bw()
+```
+
+Figure 1 does not merely plot the relationship: it prints its own fitted
+regression inside the panel, `AUC24 = 27.39 * Cmin + 340.4` with `r2 = 0.9552`.
+That equation is an answer key for the 998 mg*h/L conversion, which the
+Discussion quotes as a bare number -- and 998 is exactly what the printed
+equation returns at `Cmin = 24`. Checking that first pins the paper's internal
+arithmetic independently of anything simulated here.
+
+```{r figure-1-published-equation}
+# Subrtova 2026 Figure 1, equation printed inside the plot panel.
+fig1_slope     <- 27.39
+fig1_intercept <- 340.4
+
+auc_at_cmin24_pub <- fig1_slope * 24 + fig1_intercept
+
+c(published_slope = fig1_slope, published_intercept = fig1_intercept,
+  AUC24_at_Cmin24_from_published_equation = round(auc_at_cmin24_pub, 2),
+  quoted_in_discussion = 998)
+
+# The Discussion's 998 mg*h/L -- which anchors BOTH nomogram targets used above
+# (832 = midpoint of 666-998, 665.5 = midpoint of 333-998) -- is reproduced from
+# the paper's own Figure 1 equation to within rounding. This is a pure
+# arithmetic identity between two published numbers, so it is asserted tightly.
+stopifnot(abs(auc_at_cmin24_pub - 998) < 0.5)
+```
+
+The virtual cohort's own regression is then compared against the published one.
+
+```{r figure-1-conversion}
+fit <- stats::lm(auclast_day7 ~ cmin_day7, data = fig1)
+auc_at_cmin24 <- unname(stats::predict(fit, data.frame(cmin_day7 = 24)))
+r2 <- summary(fit)$r.squared
+
+c(sim_slope        = round(unname(coef(fit)[2]), 2),
+  published_slope  = fig1_slope,
+  model_implied_AUC24_at_Cmin24 = round(auc_at_cmin24, 0),
+  paper_conversion = 998,
+  sim_r_squared    = round(r2, 3),
+  published_r_squared = 0.9552)
+
+# Both of the paper's Figure 1 claims are asserted rather than merely displayed.
+stopifnot(
+  # "Excellent predictive performance" of Cmin for AUC24. The published r2 is
+  # 0.9552 on 31 empirical Bayes estimates; EBE shrinkage pulls subjects toward
+  # the typical value and inflates r2 relative to a fresh draw, so the virtual
+  # cohort is expected to sit lower and is asserted only to be tight.
+  r2 > 0.75,
+  # The 998 mg*h/L conversion anchors BOTH nomogram targets, so a large
+  # discrepancy here would undermine the targets used above.
+  abs(auc_at_cmin24 - 998) / 998 < 0.10,
+  # The slope is the structural half of the relationship: it is 24 h divided by
+  # the accumulation-weighted clearance, so a mis-transcribed CL moves it
+  # proportionally. Asserted against the published 27.39 at 25%, which is wide
+  # enough for the cohort-composition difference but far tighter than the
+  # order-of-magnitude error a bad clearance would produce.
+  abs(coef(fit)[2] - fig1_slope) / fig1_slope < 0.25
+)
+```
+
+The regression is tight (see `sim_r_squared` above), reproducing the paper's claim
+of "excellent predictive performance of steady-state trough levels for estimation
+of total daptomycin exposure". The conversion point lands within about 1.2% of the
+paper's 998 mg*h/L -- see *Assumptions and deviations* for why it is not expected
+to reproduce exactly.
+
+# Assumptions and deviations
+
+- **Between-subject variability scale.** Table 2's "Between subject variability
+  (%)" column reports 18.0 / 20.0 / 39.0 without saying whether these are CV% or
+  the standard deviation of the log-scale random effect. They are read here as
+  CV%, so `omega^2 = log(CV^2 + 1)`. The column is definitely **not** a variance:
+  with N = 31 the Cramer-Rao floor on the relative standard error of a variance
+  is `sqrt(2/31) = 25.4%`, and the CL row's reported R.S.E. of 22.3% falls below
+  it, which is arithmetically impossible for a variance. CV% and a bare SD cannot
+  be separated from the paper, but the two readings differ by at most 4% relative
+  on omega at these magnitudes (39% CV gives omega 0.376 against an SD reading of
+  0.390), which is well inside the precision of every check in this vignette.
+
+- **Random effect on the covariate exponent.** Table 2 reports a between-subject
+  variability of 39.0% on `beta_CL_eGFR` as well as on Vd and CL. That is unusual
+  for a covariate coefficient but follows from the estimation setup: the Methods
+  state that the time-varying covariates "were tested by incorporating them as
+  regressors", and a Monolix regressor forces its coefficient to be declared as an
+  individual parameter, which by default carries a random effect. The Methods also
+  state that "the model parameters were assumed to be log-normally distributed",
+  which fixes the distribution. It is encoded faithfully here rather than dropped.
+
+  This is confirmed by parameter count rather than left as an inference -- see
+  *Confirming the random-effect count from Table S1* above, which solves the
+  supplement's own OFV / AIC / BIC trail for the number of estimated parameters
+  and recovers seven (three fixed effects, three random effects, one residual)
+  for the final model.
+
+- **eGFR size normalisation.** The paper labels the covariate "mL/min" in Table 1
+  and in the Table 2 footnote, but the CKD-EPI 2021 equation natively returns
+  mL/min/1.73 m^2 and the paper never states that it de-indexed for body surface
+  area. The values in Table 1 (median 81.6, range 16.3-130.1) are the ones the
+  model was fitted to and are what should be supplied, whichever normalisation
+  they carry. In a cohort with a median BSA of 1.98 m^2 the two readings differ by
+  about 14% in eGFR and, through the 0.40 exponent, about 5% in clearance.
+
+- **Bootstrap column internal inconsistency (not model-affecting).** Table 2's
+  bootstrap column reports the CL between-subject variability as "18.2
+  (17.0-18.0)" -- a median outside its own confidence interval. The bootstrap
+  intervals throughout that column are also implausibly narrow for 500 replicates
+  of 31 patients (e.g. CL_pop "0.70 (0.69-0.70)"). Only the final-model estimates
+  are used here; the bootstrap column is not.
+
+- **Loading-dose factor stated twice with different values.** The Results, the
+  Discussion and Table 3 all give the loading dose as 1.36 times the maintenance
+  dose, consistent with Table 3's measured day-7 / day-1 AUC24 ratios of
+  1.34-1.37. The Conclusion instead says 1.42. The 1.36 value is used here because
+  it is the one the simulations in Table 3 were actually run with, and because
+  the accumulation ratio computed from the packaged parameters (printed above)
+  reproduces it.
+
+- **Cmin-to-AUC24 conversion.** The Discussion converts the Cmin 24 mg/L toxicity
+  threshold into an AUC24 of 998 mg*h/L using the regression in Figure 1, and
+  that 998 anchors both nomogram targets. Figure 1 prints its fitted equation
+  inside the plot panel -- `AUC24 = 27.39 * Cmin + 340.4`, `r2 = 0.9552` -- which
+  is the only place either coefficient appears; the Discussion quotes 998 as a
+  bare number. Evaluating the printed equation at `Cmin = 24` gives 997.76, so
+  the paper's conversion is internally exact and is verified as such above. The
+  regression fitted here on the virtual cohort predicts a slightly higher AUC24
+  at Cmin = 24 (about 1.2% higher; printed above), because the conversion depends
+  on the accumulation factor and hence on the eGFR composition of the cohort it
+  is fitted to; the paper's Figure 1 was fitted to empirical Bayes estimates for
+  its own 31 patients, which cannot be reconstructed from the publication. The
+  same shrinkage explains why the published `r2` of 0.9552 exceeds the virtual
+  cohort's: empirical Bayes estimates are pulled toward the typical value, which
+  tightens the apparent relationship relative to a fresh random draw. The
+  published targets 832 and 665.5 mg*h/L are reproduced as stated rather than
+  recomputed, since they are the authors' design choice.
+
+- **Virtual cohort.** Weight and eGFR are drawn as independent truncated
+  log-normals matched to the Table 1 median and IQR; the paper reports no
+  correlation between them. eGFR is held constant per subject over the seven
+  simulated days, whereas the paper's own simulations used each patient's
+  observed time-varying eGFR trajectory. Body weight enters only through the
+  weight-based SmPC arm; it is not a covariate in the model.
+
+- **Residual variability is excluded from the exposure metrics.** `Cc` in the
+  rxode2 output is the individual prediction without residual error, so AUC24,
+  Cmax and Cmin here are noise-free. The paper's Simulx simulations included the
+  proportional residual error. Proportional error is median-unbiased, so the
+  medians compared above are unaffected; the simulated PTA percentages are
+  slightly less dispersed than the published ones.
+
+- **Table 3 "real dosage used" column is not reproduced.** Those doses were chosen
+  patient-by-patient by the attending physician and subsequently adjusted by TDM,
+  and the per-patient regimens are not published.
+
+- **Supplement.** `aac.01532-25-s0001.docx` was retrieved and consulted. It holds
+  Table S1 (the model-building OFV trail) and Figures S1-S5 (covariate screening
+  plots, eta diagnostics, GOF, and two VPCs). It carries no parameter value that
+  is absent from Table 2 or the Results text; its contribution to this extraction
+  is confirmatory, and the two Table S1 rows that discriminate the final model are
+  recorded in the source trace above.
+
+- **Figure-sourced values.** Two sets of numbers here come from figures rather
+  than from the text or a table, and they differ in kind. The Figure 1 regression
+  coefficients (27.39, 340.4, `r2` 0.9552) are *printed as text inside the plot
+  panel*, so they are exact published values, not estimates -- they simply appear
+  nowhere else in the paper. The six maintenance doses in the Figure 4 read-off
+  check are genuinely *digitised* from the plotted curves, since the paper
+  tabulates no nomogram doses. The latter are
+  used solely as a confirmatory target for quantities already fixed by the
+  Discussion prose (the 832 and 665.5 mg*h/L AUC24 targets), never as an input to
+  the packaged model, and the corresponding assertion is loosened to 2.5% to
+  absorb digitisation error.
+
+- **No dialysis or CRRT.** Patients on renal replacement support were excluded
+  from the analysis dataset, so the model must not be extrapolated to them.

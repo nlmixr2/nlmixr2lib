@@ -129,22 +129,27 @@
     "depot_kpd"
   ),
   # Bare numbered chains (transit / effect / precursor / lat / dar /
-  # depot / erythrocytes / mch / moderator) and metabolite-suffixed
+  # depot / erythrocytes / reticulocytes / mch / moderator / caseum) and
+  # metabolite-suffixed
   # compartments are validated separately via .matchesCompartment() so
   # that the registered metabolite list can be honored at runtime; this
   # static regex covers only the numbered-chain patterns. `depot[0-9]+`
   # accommodates parallel-absorption models with two or more depots.
   # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
   # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
-  # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
-  # (tolerance) chain.
+  # models; `reticulocytes[0-9]+` is the reticulocyte age-transit chain
+  # that sits one stage upstream of `erythrocytes[0-9]+` in the same
+  # cascade; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
+  # (tolerance) chain. `caseum[0-9]+` is the catenary chain of concentric
+  # rings of the necrotic caseous core of a tuberculosis granuloma,
+  # numbered outward-to-inward from the outer caseum edge.
   compartmentRegex =
-    "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator)[0-9]+$",
+    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
   # extractions (bc / eu / eb / fr / is / int / mrna / luc prefixes).
-  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor)$", # nolint: line_length_linter.
+  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$", # nolint: line_length_linter.
   # DAR-numbered ADC isoform compartments (`dar0_central`,
   # `dar4_peripheral1`, ...).
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
@@ -156,9 +161,11 @@
   # PK-PD models. Subpopulations are named by spelled-out resistance
   # phenotype `bact_<phenotype>` where <phenotype> is one of
   # `susceptible` / `intermediate` / `resistant`. For combination-therapy
-  # (two-drug) models the joint per-drug status is a spelled-out compound
-  # `bact_<drug1pheno>_<drug2pheno>` (drug order = the model's drug
-  # order). An optional trailing digit indexes the Bulitta / Wicha
+  # (N-drug) models the joint per-drug status is a spelled-out compound
+  # `bact_<drug1pheno>_<drug2pheno>[_<drug3pheno>...]` (drug order = the
+  # model's drug order); the number of phenotype tokens equals the number
+  # of drugs, so the pattern is open-ended rather than capped at two. An
+  # optional trailing digit indexes the Bulitta / Wicha
   # two-state bacterial life cycle (1 = vegetative / resting, 2 =
   # replicating). The phenotype words are required to be spelled out in
   # full (no `s`/`i`/`r` abbreviations) so the state names are
@@ -167,9 +174,11 @@
   # Rees_2018_meropenem_ciprofloxacin and
   # Landersdorfer_2018_imipenem_tobramycin (two-drug, converging to
   # bact_susceptible_susceptible1/2, bact_resistant_intermediate1/2,
-  # bact_intermediate_resistant1/2). The scheme is documented in
+  # bact_intermediate_resistant1/2), and
+  # Mahadevan_2026_polymyxinB_meropenem_fosfomycin_* (three-drug, e.g.
+  # bact_intermediate_resistant_resistant1/2). The scheme is documented in
   # inst/references/compartment-names.md.
-  bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))?[0-9]*$",
+  bacterialSubpopRegex = "^bact_(susceptible|intermediate|resistant)(_(susceptible|intermediate|resistant))*[0-9]*$",
   # Intracellular drug / active-metabolite pools inside red blood cells,
   # carried as ODE states in concentration units (e.g. umol/L). Named
   # `rbc_<analyte>` where <analyte> is the measured species inside the
@@ -337,6 +346,21 @@
     # Yang_2024_naloxone_buprenorphine, Yang_2024_naloxone_morphine,
     # Yang_2024_naloxone_fentanyl, Yang_2024_naloxone_carfentanil.
     "naloxone",
+    # Heptadecanoic acid (HA, C17:0) as a co-administered SECOND ANALYTE
+    # (not a metabolite of the parent) in the malabsorption blood test
+    # (MBT). Mascarenhas 2015 (doi:10.1002/jcph.484) simultaneously fits
+    # two odd-chain fatty acids: pentadecanoic acid (PA, C15:0) -- the
+    # parent, which keeps the unsuffixed canonical names -- and
+    # heptadecanoic acid, liberated by pancreatic-lipase hydrolysis of
+    # the co-administered triglyceride triheptadecanoic acid (THA).
+    # The paper's own abbreviation "ha" is NOT usable as the suffix
+    # because `_ha` is already the hepatic-artery suffix throughout the
+    # PBPK models (q_ha, fq_ha, qp_ha, qg_ha, fco_ha across 32 files);
+    # adopting it would make `q_ha` ambiguous between hepatic-artery
+    # blood flow and a heptadecanoic-acid clearance. Operator-ratified
+    # 2026-08-26 (sidecar manacq_Mascarenhas_2015_jcph_484 request-001).
+    # Founding example: Mascarenhas_2015_pentadecanoic_triheptadecanoic.
+    "hepta",
     # Stereo-isomer (R / S) suffixes for enantiomer-resolved popPK
     # models in which both enantiomers are followed in plasma but no
     # interconversion is modelled (e.g. Valitalo 2017 ketorolac BJCP
@@ -438,8 +462,16 @@
   # HEMODIALYSIS covariate (e.g. Veinstein 2013 gentamicin: CL_total =
   # CL + CL_HD); `_dialysis` the broader continuous / general dialysis
   # extracorporeal arm (e.g. Eyler 2014 ertapenem: CL_total = CLS +
-  # DIAL * CLdial for CVVHD/CVVHDF).
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "tsnet"),
+  # DIAL * CLdial for CVVHD/CVVHDF); `_crrt` the continuous-RRT
+  # extracorporeal arm specifically, gated by RRT_CRRT_ACTIVE and
+  # scaled by RRT_CRRT_EFFLUENT_FLOW (e.g. Zurawska 2026 piperacillin,
+  # which carries `_crrt` and `_hemodialysis` as two separate arms in
+  # one model). Sidecar request-001 / response-001, question q2,
+  # option C: `_crrt` is adopted now and the follow-up question of
+  # renaming the whole family onto the covariate register's
+  # RRT_<MODALITY>_<KIND> shape -- which would also fold the older,
+  # near-duplicate `_dialysis` suffix in -- is queued separately.
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
@@ -949,7 +981,8 @@
 # Compartment name validator. Recognizes:
 #   - canonical names from conv$compartments
 #   - numbered chains via conv$compartmentRegex
-#     (transit/effect/precursor/lat/depot/erythrocytes/mch/moderator)
+#     (transit/effect/precursor/lat/depot/erythrocytes/reticulocytes/mch/
+#     moderator/caseum)
 #   - DAR-numbered ADC isoforms via conv$darCompartmentRegex
 #   - target species in physiologic compartments via conv$targetLocationRegex
 #   - intracellular red-cell analyte pools via conv$rbcCompartmentRegex
