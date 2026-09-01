@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Groenendaal 2007 morphine ([doi:10.1038/sj.bjp.0707258](https://doi.org/10.1038/sj.bjp.0707258)) -- male Wistar rats, EEG effect with P-glycoprotein interaction.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
