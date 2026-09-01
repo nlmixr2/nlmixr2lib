@@ -1400,6 +1400,12 @@ navbar:
         href: articles/Weber_2015_fluticasone_inhaled.html
       - text: "Fluvoxamine rat (Geldof 2008)"
         href: articles/Geldof_2008_fluvoxamine_rat.html
+      - text: "Fluvoxamine sert brain rat (Geldof 2008)"
+        href: articles/Geldof_2008_fluvoxamine_sert_occupancy.html
+      - text: "Fluvoxamine sert ecf rat (Geldof 2008)"
+        href: articles/Geldof_2008_fluvoxamine_sert_occupancy.html
+      - text: "Fluvoxamine sert plasma rat (Geldof 2008)"
+        href: articles/Geldof_2008_fluvoxamine_sert_occupancy.html
       - text: "Follitropin delta (Rose 2016)"
         href: articles/Rose_2016_follitropin_delta.html
       - text: "Fondaparinux (Zufferey 2018)"
@@ -4542,6 +4548,7 @@ articles:
   - articles/Gatti_1996_dapsone
   - articles/Gebhard_2023_leukemia_maintenance_therapy
   - articles/Geldof_2008_fluvoxamine_rat
+  - articles/Geldof_2008_fluvoxamine_sert_occupancy
   - articles/Georges_2009_ceftazidime
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
