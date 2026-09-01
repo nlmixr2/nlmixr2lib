@@ -147,7 +147,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Type:** compartment
 - **Role:** Renal-cortex accumulation compartment used by aminoglycoside nephrotoxicity models. Tracks drug amount sequestered in the renal cortex via saturable uptake from central plus first-order tubular reabsorption back out (Rougier 2003 / Croes 2011 mechanism).
 - **Source aliases:** none.
-- **Example models:** `Llanos-Paez_2017_gentamicin.R`.
+- **Example models:** `LlanosPaez_2017_gentamicin.R`.
 
 ### csf (**canonical cerebrospinal-fluid compartment**)
 - **Type:** compartment
@@ -395,7 +395,7 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Type:** compartment
 - **Role:** Soluble vascular endothelial growth factor receptor 2 plasma compartment used by indirect-response biomarker PD models for angiogenesis inhibitors.
 - **Source aliases:** none.
-- **Example models:** `Ait-Oudhia_2016_sunitinib.R`, `Hansson_2013a_sunitinib.R`.
+- **Example models:** `AitOudhia_2016_sunitinib.R`, `Hansson_2013a_sunitinib.R`.
 
 ### svegfr3 (**canonical soluble VEGFR-3 plasma compartment**)
 - **Type:** compartment
@@ -412,7 +412,7 @@ The Cao 2013 mAb mPBPK family uses paper-anatomical compartment names that are a
 - **Type:** compartment
 - **Role:** Tumor / tumour-size compartment in oncology TGI models.
 - **Source aliases:** none.
-- **Example models:** `Ait-Oudhia_2016_sunitinib.R`, `NA_NA_sunitinib.R`, `Schindler_2016_sunitinib.R`, `Wilbaux_2015_prostate.R`.
+- **Example models:** `AitOudhia_2016_sunitinib.R`, `NA_NA_sunitinib.R`, `Schindler_2016_sunitinib.R`, `Wilbaux_2015_prostate.R`.
 - **Notes:** `tumor` is also a registered organ of the `pbpkSubCompartmentRegex` header pattern, so a permeability-limited tumour / target-tissue PBPK model carries drug in `is_tumor` (the vascular + interstitial, i.e. extracellular, space) and `int_tumor` (the intracellular space) -- exactly as `is_liver` / `int_liver` do for the liver. Source aliases for those two sub-compartments include `C_tumourEx` / `C_tumourIC` (`Aoki_2024_intratarget_microdosing_pbpk.R`, whose Table 1 calls the same two spaces "volume of target" and "volume of inner-cellular space of the target"). Note the distinction from the bare `tumor` state above, which holds a tumour *size* in a TGI model rather than a drug concentration, and from `ecf`, the single lumped brain / tumour extracellular-fluid space used by microdialysis models that do not resolve an intracellular compartment.
 
 ### tumor_size, TS (**canonical TGI tumor-size output state**)
@@ -4411,7 +4411,7 @@ Per-paper metabolite / sibling-drug suffix additions discovered during the 2026-
 - **Type:** metabolite-suffix
 - **Role:** SU12662 sunitinib active metabolite suffix.
 - **Source aliases:** none.
-- **Example models:** `Ait-Oudhia_2016_sunitinib.R`.
+- **Example models:** `AitOudhia_2016_sunitinib.R`.
 
 ### dact (**canonical desacetylcefotaxime metabolite suffix**)
 - **Type:** metabolite-suffix

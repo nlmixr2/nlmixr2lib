@@ -30,7 +30,7 @@ library(ggplot2)
 * Description: `r rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_cm"))$meta$description`
 * Article: <https://doi.org/10.1111/head.13855>
 
-This vignette covers the chronic-migraine (CM) exposure-response model from Fiedler-Kelly 2020. The companion EM model is `FiedlerKelly_2020_fremanezumab_em`. The fremanezumab population PK is *not* fitted in this paper; per-subject Cav values are taken from the Fiedler-Kelly 2019 popPK model (`Fiedler-Kelly_2019_fremanezumab` in this library).
+This vignette covers the chronic-migraine (CM) exposure-response model from Fiedler-Kelly 2020. The companion EM model is `FiedlerKelly_2020_fremanezumab_em`. The fremanezumab population PK is *not* fitted in this paper; per-subject Cav values are taken from the Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab` in this library).
 
 The CM model relates monthly moderate-to-severe (M/S) headache days to fremanezumab Cav and time-on-treatment via a Hill-in-time placebo and a power-of-Cav drug effect, both centered on individual baseline:
 
@@ -233,7 +233,7 @@ PKNCA is the wrong validation target here for the same reasons as in the EM vign
 - **Time unit is months (28-day periods).** As in the EM vignette.
 - **Placebo time-course form is operator-confirmed from Figure 2B.** Supplementary Table S4 lists `Maximum response (placebo)`, `T50 placebo`, and `Hill coefficient for placebo`, all FIXED. The Hill-in-time form `placebo_eff(t) = MaxPLC * t^Hill / (T50^Hill + t^Hill)` was visually read from Figure 2B by the operator during sidecar request 3 of this extraction.
 - **`CavMedian = 69 µg/mL` is visually inferred from Figure 2B.** The drug-effect intercept `drugInt = 0.157` is described in S4 as the "fractional reduction from baseline at median fremanezumab Cav", but the median Cav itself is *not* listed numerically in S4 nor in the trimmed text. The value 69 µg/mL was read from the x-axis position of the per-regimen median markers in Figure 2B (operator decision in sidecar request 3, answer `cm_cavmed = USER`) and reproduces the paper's narrative drug-effect ranges (12-16% across Cav 28-70 µg/mL; 18-19% at Cav 120 µg/mL). Users who can recover the exact published Cav_median from the analysis dataset should override `CavMedian` accordingly when the model is consumed.
-- **Cav as a per-period covariate, not a model output.** The CAV column must be supplied per row by the user, derived externally from the Fiedler-Kelly 2019 popPK model (`Fiedler-Kelly_2019_fremanezumab`).
+- **Cav as a per-period covariate, not a model output.** The CAV column must be supplied per row by the user, derived externally from the Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab`).
 - **Cav values in the virtual cohort.** Hand-tuned from the Results section's regimen medians; for exact reproduction of the paper's full simulation, drive the model with EB Cav from the Fiedler-Kelly 2019 popPK simulator.
 - **`ACUTE_MED_DAYS` distribution.** The virtual cohort draws from N(5.73, 7.01) truncated at 0 (Supplementary Table S2 mean and SD across the pooled CM cohort). The actual data is right-skewed with median 1.75 d/mo.
 - **Observation variable is `msHeadacheDays`, not `Cc`.** Convention waiver as in the EM vignette.

@@ -1,4 +1,4 @@
-`Boer-Perez_2026_piperacillin` <- function() {
+`BoerPerez_2026_piperacillin` <- function() {
   description <- "One-compartment population PK model for piperacillin in preterm and term neonates with severe infections (Boer-Perez 2026); body-weight allometric scaling, sigmoidal postmenstrual-age maturation on CL fixed from Rhodin 2009, and a power effect of serum creatinine on CL."
   reference <- paste(
     "Boer-Perez FS, Lima-Rogel V, Romano-Moreno S, Mejia-Elizondo AR,",
@@ -17,7 +17,7 @@
     "Pediatr Nephrol. 2009;24(1):67-76. doi:10.1007/s00467-008-0997-5.",
     sep = " "
   )
-  vignette <- "Boer-Perez_2026_piperacillin"
+  vignette <- "BoerPerez_2026_piperacillin"
   units    <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

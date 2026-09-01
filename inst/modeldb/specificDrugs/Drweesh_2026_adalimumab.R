@@ -12,7 +12,7 @@
     "Population Pharmacokinetic Model of Adalimumab Based on Prior Information",
     "Using Real World Data. Biomedicines. 2023;11(10):2822.",
     "doi:10.3390/biomedicines11102822;",
-    "see modellib('Marquez-Megias_2023_adalimumab').",
+    "see modellib('MarquezMegias_2023_adalimumab').",
     sep = " "
   )
   vignette <- "Drweesh_2026_adalimumab"

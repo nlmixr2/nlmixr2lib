@@ -1,7 +1,7 @@
-`Marquez-Megias_2023_adalimumab` <- function() {
+`MarquezMegias_2023_adalimumab` <- function() {
   description <- "One-compartment population PK model with first-order subcutaneous absorption and linear elimination for adalimumab in adults with inflammatory bowel disease, with albumin and anti-drug-antibody covariates on apparent clearance (Marquez-Megias 2023)"
   reference <- "Marquez-Megias S, Nalda-Molina R, Mas-Serrano P, Ramon-Lopez A. Population Pharmacokinetic Model of Adalimumab Based on Prior Information Using Real World Data. Biomedicines. 2023;11(10):2822. doi:10.3390/biomedicines11102822"
-  vignette <- "Marquez-Megias_2023_adalimumab"
+  vignette <- "MarquezMegias_2023_adalimumab"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

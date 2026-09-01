@@ -61,7 +61,7 @@ kg. The presence of anti-drug antibodies was confirmed in only 0.7% of
 samples and was not a significant covariate.
 
 The same information is available programmatically via
-`readModelDb("Fiedler-Kelly_2019_fremanezumab")$population` (note:
+`readModelDb("FiedlerKelly_2019_fremanezumab")$population` (note:
 `readModelDb()` returns the parsed model function, so this field is
 accessed as an attribute of the function body rather than a live list).
 
@@ -149,7 +149,7 @@ events_all <- bind_rows(events_monthly, events_quarterly)
 ## Simulation
 
 ```{r simulate}
-mod <- readModelDb("Fiedler-Kelly_2019_fremanezumab")
+mod <- readModelDb("FiedlerKelly_2019_fremanezumab")
 conc_unit <- rxode2::rxode(mod)$units[["concentration"]]
 
 sim <- events_all %>%
@@ -416,4 +416,4 @@ dose schedule or sampling grid rather than parameter tuning.
 
 ## Reference
 
-* `r rxode2::rxode(readModelDb("Fiedler-Kelly_2019_fremanezumab"))$reference`
+* `r rxode2::rxode(readModelDb("FiedlerKelly_2019_fremanezumab"))$reference`

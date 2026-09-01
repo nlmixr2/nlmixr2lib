@@ -1,4 +1,4 @@
-`Elassaiss-Schaap_2017_pembrolizumab` <- function() {
+`ElassaissSchaap_2017_pembrolizumab` <- function() {
   description <- "Two-compartment population PK model with parallel linear and Michaelis-Menten clearance plus a direct-response Imax PK/PD model on the ex vivo IL-2 stimulation ratio (PD-1 target engagement) for IV pembrolizumab (anti-PD-1 IgG4 mAb) in adults with advanced solid tumors (Elassaiss-Schaap 2017, KEYNOTE-001 parts A, A1, A2)."
   reference <- paste(
     "Elassaiss-Schaap J, Rossenu S, Lindauer A, Kang SP, de Greef R,",
@@ -7,7 +7,7 @@
     "Pembrolizumab in the KEYNOTE-001 Trial. CPT Pharmacometrics Syst",
     "Pharmacol. 2017;6(1):21-28. doi:10.1002/psp4.12132"
   )
-  vignette <- "Elassaiss-Schaap_2017_pembrolizumab"
+  vignette <- "ElassaissSchaap_2017_pembrolizumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

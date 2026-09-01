@@ -23,13 +23,13 @@ suppressPackageStartupMessages({
 * Citation: Lindauer A, Valiathan CR, Mehta K, Sriram V, de Greef R, Elassaiss-Schaap J, de Alwis DP. Translational Pharmacokinetic/Pharmacodynamic Modeling of Tumor Growth Inhibition Supports Dose-Range Selection of the Anti-PD-1 Antibody Pembrolizumab. CPT Pharmacometrics Syst Pharmacol. 2017;6(1):11-20.
 * DOI: <https://doi.org/10.1002/psp4.12130>
 * PMC supplements: <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5270293/>
-* Sibling models: `modellib('Ahamadi_2017_pembrolizumab')` (exposure-response in advanced solid tumors); `modellib('Elassaiss-Schaap_2017_pembrolizumab')` (KEYNOTE-001 popPK with direct-response IL-2 PD).
+* Sibling models: `modellib('Ahamadi_2017_pembrolizumab')` (exposure-response in advanced solid tumors); `modellib('ElassaissSchaap_2017_pembrolizumab')` (KEYNOTE-001 popPK with direct-response IL-2 PD).
 
 # Population
 
 The structural model was fit to data from MC38 colon-adenocarcinoma syngeneic-allograft C57BL/6 mice receiving either the chimeric mouse or parental rat DX400 surrogate anti-mouse-PD-1 antibody. The PK dataset combined two preclinical studies (216 + 100 plasma samples from 316 mice receiving 0.1 to 10 mg/kg IV on days 0, 7, and 14 or days 0 and 4; 40 below-quantification samples discarded). The PD dataset comprised 466 tumor-volume measurements (rat DX400 at vehicle, 0.1, 0.4, 1.4, or 5 mg/kg on days 0 and 4) and 139 receptor-occupancy measurements in blood and tumor (Lindauer 2017 Tables S1, S2).
 
-For human dose-response simulations the plasma-PK sub-model is replaced by the Elassaiss-Schaap 2017 KEYNOTE-001 popPK (`modellib('Elassaiss-Schaap_2017_pembrolizumab')`). The mini-PBPK tumor-tissue parameters (volume fractions, plasma flow, lymph flow, FcRn concentration, vascular and lymph reflection coefficients) are kept constant across species per the Shah & Betts 2012 platform assumption. KdegPD-1 is allometrically scaled with the standard -0.25 body-weight exponent. The reference adult is 70 kg.
+For human dose-response simulations the plasma-PK sub-model is replaced by the Elassaiss-Schaap 2017 KEYNOTE-001 popPK (`modellib('ElassaissSchaap_2017_pembrolizumab')`). The mini-PBPK tumor-tissue parameters (volume fractions, plasma flow, lymph flow, FcRn concentration, vascular and lymph reflection coefficients) are kept constant across species per the Shah & Betts 2012 platform assumption. KdegPD-1 is allometrically scaled with the standard -0.25 body-weight exponent. The reference adult is 70 kg.
 
 The same metadata is available programmatically:
 

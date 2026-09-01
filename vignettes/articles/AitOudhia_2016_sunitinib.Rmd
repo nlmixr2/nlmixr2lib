@@ -18,7 +18,7 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode(readModelDb("Ait-Oudhia_2016_sunitinib"))$reference`
+* Citation: `r rxode2::rxode(readModelDb("AitOudhia_2016_sunitinib"))$reference`
 * Article: <https://doi.org/10.1002/psp4.12084>
 
 The Ait-Oudhia 2016 paper develops a four-layer pharmacokinetic /
@@ -55,14 +55,14 @@ the `population` field of the model is populated from the main text.
 The same information is available programmatically:
 
 ```{r population, eval = FALSE}
-readModelDb("Ait-Oudhia_2016_sunitinib")$population
+readModelDb("AitOudhia_2016_sunitinib")$population
 ```
 
 # Source trace
 
 The per-parameter origin is recorded as an in-file comment on each
 `ini()` entry in
-`inst/modeldb/specificDrugs/Ait-Oudhia_2016_sunitinib.R`. The table
+`inst/modeldb/specificDrugs/AitOudhia_2016_sunitinib.R`. The table
 collects the trail in one place.
 
 | Equation / parameter | Value | Source location |
@@ -163,7 +163,7 @@ events <- bind_rows(lapply(seq_len(n_sim), make_subject)) |>
 # Simulation
 
 ```{r simulate}
-mod <- readModelDb("Ait-Oudhia_2016_sunitinib")
+mod <- readModelDb("AitOudhia_2016_sunitinib")
 sim <- rxode2::rxSolve(mod, events = events, keep = "TUM_VOL")
 sim <- as.data.frame(sim)
 sim$day <- sim$time / 24

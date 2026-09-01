@@ -93,11 +93,11 @@ CTLA-4-inhibitor naive. Demographic detail beyond "adults (>= 18
 years) with advanced solid tumors" is not reported in the source.
 
 The same metadata is available programmatically via
-`readModelDb("Elassaiss-Schaap_2017_pembrolizumab")$population` after
+`readModelDb("ElassaissSchaap_2017_pembrolizumab")$population` after
 the model is loaded:
 
 ```{r population-meta, eval = FALSE}
-nlmixr2lib::readModelDb("Elassaiss-Schaap_2017_pembrolizumab")$population
+nlmixr2lib::readModelDb("ElassaissSchaap_2017_pembrolizumab")$population
 ```
 
 # Source trace
@@ -148,7 +148,7 @@ target-engagement simulations supported, and the highest-tested
 **10 mg/kg Q3W** regimen.
 
 ```{r simulate}
-mod <- rxode2::rxode2(nlmixr2lib::readModelDb("Elassaiss-Schaap_2017_pembrolizumab"))
+mod <- rxode2::rxode2(nlmixr2lib::readModelDb("ElassaissSchaap_2017_pembrolizumab"))
 
 dose_interval_d <- 21
 n_doses         <- 6
