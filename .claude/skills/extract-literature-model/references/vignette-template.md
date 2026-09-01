@@ -94,6 +94,13 @@ no validation value and are the top render-timeout and token-cost cause. The
 multi-cohort example below uses 200 per arm — do not exceed it.
 
 ```{r cohort}
+# `set.seed()` seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned PER SOLVER THREAD -- so the cohort below is
+# reproducible on this machine and different on a machine with a different
+# thread count (a 2-core CI runner vs a 16-thread workstation). Nothing here
+# can make it identical across both. Write every assertion downstream so that
+# it holds for ANY cohort the model can produce; see pattern 12 of
+# references/known-vignette-failure-patterns.md.
 set.seed(<seed>)
 
 # Helper: build one cohort as a self-contained event table. `id_offset`
@@ -353,6 +360,24 @@ specific display order is wanted.
   ```
 
   immediately after the `bind_rows()` as a cheap regression guard.
+
+- **Assertions on simulated quantities must hold for ANY cohort, not just
+  yours.** `rxSetSeed()` fixes rxode2's RNG stream per solver thread and not
+  across thread counts, so CI draws a different cohort than you do and there is
+  no seed that makes them agree. Never assert the **sign or ordering** of a
+  near-zero effect (`slope < 0`, `all(diff(x) < 0)`, `all(x > 0)`, `a < b`
+  between two noisy statistics), never assert an **exact zero or equality**
+  (`all(pct_over_limit == 0)`), and never take a bound from a single run
+  (`< 2` because 2 is what you happened to see). Assert magnitudes, trends and
+  absolute bounds the paper itself states; render at more than one thread count
+  and put the bound outside the observed range, recording that range in a
+  comment so the next reader does not tighten it back. Then check the bound can
+  still go red — widening past the achievable range of a proportion or a
+  percentage yields a gate that cannot fail. If the model reproducibly
+  disagrees with a published claim, **record it as a known deviation** and
+  exclude it from the gate rather than widening until it passes. Full
+  discussion and worked before/after examples: pattern 12 of
+  `references/known-vignette-failure-patterns.md`.
 
 - **Always carry grouping labels through `rxSolve(..., keep = ...)` —
   never with a post-hoc `left_join`.** `keep` attaches source columns
