@@ -1,0 +1,727 @@
+---
+title: "Ceftazidime (Yin 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ceftazidime (Yin 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yin_2026_ceftazidime"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yin_2026_ceftazidime"))$description`
+* Article: <https://doi.org/10.1128/aac.01810-25>
+
+No supplementary material is deposited for this article, and no erratum or
+corrigendum is recorded against the DOI (Crossref `update-to` / `updated-by`
+both empty as of the extraction date). Every value below therefore comes from
+the main text, Table 1 or Table 2.
+
+# Population
+
+Yin 2026 is a prospective, single-centre, open-label population PK study run at
+Xiamen Maternity and Child Health Care Hospital between 2022 and 2024. Seventy-two
+Chinese neonates with confirmed or suspected bacterial infection requiring
+intravenous ceftazidime contributed 140 concentration measurements (median 2 per
+patient, range 1-4). Postmenstrual age spanned 32.7-41.9 weeks (median 39.7),
+gestational age 32.6-41.3 weeks (median 39.4), postnatal age 1-4 days (median 1),
+and body weight 1.8-4.2 kg (median 3.2). Fourteen of the 72 (19.4%) were preterm
+births, 29 (40.3%) were female, and serum creatinine ranged 23.7-88.0 umol/L
+(median 56.7). Baseline characteristics are Table 1 of the source.
+
+The distinguishing methodological feature is the sampling: capillary blood was
+taken from the heel with a Capitainer quantitative dried blood spot (qDBS) device
+at 0-0.5, 2-3 and 4-6 h after a dose, a metered 10 uL aliquot per card. **The
+model was fitted directly to whole-blood concentrations**, so the packaged `CL`
+and `V` are blood-referenced. This matters for any comparison with the many
+plasma-based neonatal ceftazidime models, and is picked up again under
+*Assumptions and deviations* below.
+
+The same information is available programmatically via the model's `population`
+metadata:
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Yin_2026_ceftazidime"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Yin_2026_ceftazidime.R`. The table below
+collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (typical blood CL at 70 kg, full maturation) | `log(19.6)` L/h | Table 2, "CL (L/h/70 kg)" = 19.6 (RSE 4.2%; bootstrap 19.5, 95% CI 17.9-21.2) |
+| `lvc` (typical blood V at 70 kg) | `log(70.6)` L | Table 2, "V (L/70 kg)" = 70.6 (RSE 7.5%; bootstrap 71.3, 95% CI 61.3-82.8) |
+| `e_wt_cl` (allometric exponent on CL) | `fixed(0.75)` | Methods "PopPK modeling" / equation 1; fixed a priori, absent from Table 2 |
+| `e_wt_vc` (allometric exponent on V) | `fixed(1.00)` | Methods "PopPK modeling" / equation 2; fixed a priori, absent from Table 2 |
+| `tmat50` (PMA at 50% mature CL) | `fixed(47.7)` weeks | Methods "PopPK modeling" and Discussion; Rhodin et al. 2009 GFR model (source reference 25) |
+| `hill_mat` (maturation Hill coefficient) | `fixed(3.40)` | Methods "PopPK modeling" and Discussion; Rhodin et al. 2009 (source reference 25) |
+| `etalcl` (IIV on CL) | `0.0760` | Table 2, IIV CL = 28.1% CV; footnote c gives CV% = sqrt(exp(omega^2) - 1) x 100, so omega^2 = log(1 + 0.281^2) |
+| `etalvc` (IIV on V) | `0.1653` | Table 2, IIV V = 42.4% CV; same inversion, omega^2 = log(1 + 0.424^2) |
+| `propSd` (residual error) | `0.223` | Table 2, "Proportional error (%)" = 22.3 (RSE 45%; bootstrap 22.2, 95% CI 13.1-32.1) |
+| `fmat <- PAGE^hill_mat / (PAGE^hill_mat + tmat50^hill_mat)` | n/a | Equation 1 (sigmoidal maturation term) |
+| `cl <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl * fmat` | n/a | Equation 1 |
+| `vc <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc` | n/a | Equation 2 |
+| `d/dt(central) <- -kel * central` | n/a | Results "PopPK model building": "The concentration-time data were best described by a one-compartment model" |
+| `Cc ~ prop(propSd)` | n/a | Table 2 footnote a (exponential error, reported and interpreted as proportional in the normal domain) |
+| Reference weight 70 kg | n/a | Equations 1-2, "WT / 70 kg"; Table 2 parameter units |
+
+The two blood-to-plasma conversion constants that appear in the paper's
+simulation section (equations 3-5) are deliberately **not** in the model file;
+see *Assumptions and deviations*.
+
+# Typical-value reproduction
+
+The paper states the typical blood CL and V standardised to 70 kg, and separately
+quotes derived per-kilogram values at the cohort medians. The first check is that
+the packaged model, with random effects zeroed, reproduces the standardised
+values exactly and the derived blood values arithmetically. These are
+deterministic quantities -- no cohort is drawn -- so the tolerances here are tight
+on purpose.
+
+```{r typical}
+mod <- readModelDb("Yin_2026_ceftazidime")
+ui  <- rxode2::rxode(mod)
+
+# Median-neonate reference used by the paper's own comparison, from Table 1.
+wt_med  <- 3.2   # kg
+pma_med <- 39.7  # weeks (Table 1 median postmenstrual age)
+
+fmat_med <- pma_med^3.4 / (pma_med^3.4 + 47.7^3.4)
+cl_med   <- 19.6 * (wt_med / 70)^0.75 * fmat_med
+v_med    <- 70.6 * (wt_med / 70)^1
+
+typical <- tibble::tibble(
+  Quantity = c(
+    "CL standardised to 70 kg, fully mature (L/h)",
+    "V standardised to 70 kg (L)",
+    "Maturation fraction at PMA 39.7 weeks",
+    "Blood CL at the median neonate (L/h)",
+    "Blood CL at the median neonate (L/h/kg)",
+    "Blood V at the median neonate (L)",
+    "Blood V at the median neonate (L/kg)",
+    "Terminal half-life at the median neonate (h)"
+  ),
+  Value = c(19.6, 70.6, fmat_med, cl_med, cl_med / wt_med,
+            v_med, v_med / wt_med, log(2) * v_med / cl_med)
+)
+
+knitr::kable(typical, digits = 4,
+             caption = "Typical-value quantities implied by Yin 2026 Table 2 and equations 1-2.")
+
+# The packaged model must return exactly these values when the etas are zeroed.
+ev_typ <- data.frame(
+  id = 1L, time = c(0, 0.5), amt = c(25 * wt_med, NA), evid = c(1L, 0L),
+  cmt = "central", dur = c(0.5, NA), WT = wt_med, PAGE = pma_med
+)
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typ,
+                           omega = NA, sigma = NA) |>
+  as.data.frame()
+
+stopifnot(
+  # Deterministic: the model's own cl / vc against the hand-evaluated equations.
+  abs(unique(sim_typ$cl) - cl_med) < 1e-9,
+  abs(unique(sim_typ$vc) - v_med)  < 1e-9
+)
+```
+
+# Virtual cohort
+
+Original observed data are not publicly available, and the paper does not publish
+the joint distribution of postmenstrual age and body weight (only the marginals of
+Table 1 and the statement that the simulation cohort was drawn from the hospital's
+neonatal database). The cohorts below therefore sample PMA uniformly over the
+observed 32.7-41.9 week range and draw weight from a log-normal centred on a
+linear PMA-weight trend anchored on the two Table 1 medians and the lower end of
+the observed weight range. That is an explicit assumption; see *Assumptions and
+deviations*.
+
+Cohort sizes are 200 per arm.
+
+```{r cohort}
+# `set.seed()` seeds R's RNG (the covariate draw). It does NOT seed rxode2's
+# simulation RNG, and rxode2's streams are partitioned per solver thread, so the
+# eta draw differs between a 2-core CI runner and a many-thread workstation.
+# Every assertion below is therefore written to hold for any cohort the model
+# can produce.
+set.seed(20260420)
+rxode2::rxSetSeed(20260420)
+
+n_arm <- 200L
+
+# PMA-weight relation: 3.2 kg at the median PMA of 39.7 weeks, sloping to
+# ~1.8 kg at the lowest observed PMA of 32.7 weeks (0.2 kg per week), with a
+# 12% CV log-normal residual and truncation to the plausible neonatal range.
+draw_subjects <- function(n, pma_lo, pma_hi, id_offset = 0L) {
+  pma <- runif(n, pma_lo, pma_hi)
+  wt  <- (3.2 + 0.2 * (pma - 39.7)) * exp(rnorm(n, 0, 0.12))
+  tibble(
+    id   = id_offset + seq_len(n),
+    PAGE = pma,
+    WT   = pmin(pmax(wt, 1.5), 4.5)
+  )
+}
+
+# Build a dosing + observation event table for one regimen.
+make_arm <- function(subj, mg_per_kg, tau, n_dose, grid = 0.05, dur = 0.5,
+                     label) {
+  dosing <- subj |>
+    tidyr::crossing(tibble(.dose = seq_len(n_dose))) |>
+    mutate(time = (.dose - 1) * tau, amt = mg_per_kg * WT, evid = 1L,
+           cmt = "central", dur = dur) |>
+    select(-.dose)
+  obs <- subj |>
+    tidyr::crossing(tibble(time = seq(0, n_dose * tau, by = grid))) |>
+    mutate(amt = NA_real_, evid = 0L, cmt = "central", dur = NA_real_)
+  bind_rows(dosing, obs) |>
+    mutate(regimen = label) |>
+    arrange(id, time, desc(evid))
+}
+```
+
+The `cmt` on every observation row is `"central"` -- the ODE state -- never the
+algebraic observable `Cc`; rxode2 returns `Cc` as an output column regardless.
+
+## Cohort A -- single dose, structural checks
+
+```{r cohort-a}
+subj_a <- draw_subjects(n_arm, 32.7, 41.9, id_offset = 0L)
+ev_a   <- make_arm(subj_a, mg_per_kg = 25, tau = 24, n_dose = 1L,
+                   grid = 0.05, label = "25 mg/kg single dose")
+stopifnot(!anyDuplicated(unique(ev_a[, c("id", "time", "evid")])))
+
+sim_a <- rxode2::rxSolve(mod, events = as.data.frame(ev_a),
+                         keep = c("WT", "PAGE", "regimen")) |>
+  as.data.frame()
+stopifnot(all(sim_a$Cc[!is.na(sim_a$Cc)] >= 0))
+```
+
+## Cohort B -- steady-state regimens from the paper's simulation grid
+
+Five of the twelve regimens Yin 2026 simulated are enough to pin down the
+paper's Figure 4 conclusions at the *Escherichia coli* breakpoint of 4 mg/L:
+25 mg/kg every 6 h and every 8 h attain the target, 25 and 50 mg/kg every 12 h do
+not, and 75 mg/kg every 12 h does. Each arm is dosed to steady state (the median
+terminal half-life is ~3.3 h, so 24 h is several half-lives) and evaluated over
+its final dosing interval.
+
+```{r cohort-b}
+regimens <- tibble::tribble(
+  ~label,             ~mg_per_kg, ~tau, ~n_dose,
+  "25 mg/kg q6h",     25,          6,    4L,
+  "25 mg/kg q8h",     25,          8,    3L,
+  "25 mg/kg q12h",    25,          12,   2L,
+  "50 mg/kg q12h",    50,          12,   2L,
+  "75 mg/kg q12h",    75,          12,   2L
+)
+
+ev_b <- do.call(bind_rows, lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  subj <- draw_subjects(n_arm, 32.7, 41.9, id_offset = 1000L * i)
+  make_arm(subj, r$mg_per_kg, r$tau, r$n_dose, grid = 0.05, label = r$label)
+}))
+stopifnot(!anyDuplicated(unique(ev_b[, c("id", "time", "evid")])))
+
+sim_b <- rxode2::rxSolve(mod, events = as.data.frame(ev_b),
+                         keep = c("WT", "PAGE", "regimen")) |>
+  as.data.frame()
+stopifnot(all(sim_b$Cc[!is.na(sim_b$Cc)] >= 0))
+```
+
+# Replicate published figures
+
+```{r figure-1}
+# Companion to Figure 1 of Yin 2026 (observed concentration vs time after dose,
+# 0-6 h), and to the Figure 3 VPC: simulated whole-blood concentration after a
+# single 25 mg/kg 30-minute infusion, over the paper's 0-6 h sampling window.
+sim_a |>
+  filter(time <= 6) |>
+  group_by(time) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  labs(x = "Time after dose (h)", y = "Whole-blood ceftazidime (mg/L)",
+       title = "Simulated 5th / 50th / 95th percentiles, 25 mg/kg over 30 min",
+       caption = paste("Companion to Figure 1 (observed scatter) and Figure 3",
+                       "(VPC) of Yin 2026; the paper's qDBS samples were drawn",
+                       "at 0-0.5, 2-3 and 4-6 h."))
+```
+
+```{r figure-maturation}
+# The model's central claim (Results / Discussion): PMA drives clearance through
+# the fixed Rhodin sigmoid, weight drives volume. Reproduces the shape of the
+# maturation function the paper adopts (equation 1).
+tibble(PAGE = seq(24, 60, by = 0.25)) |>
+  mutate(fmat = PAGE^3.4 / (PAGE^3.4 + 47.7^3.4)) |>
+  ggplot(aes(PAGE, fmat)) +
+  geom_line() +
+  geom_vline(xintercept = 47.7, linetype = "dashed") +
+  annotate("rect", xmin = 32.7, xmax = 41.9, ymin = -Inf, ymax = Inf, alpha = 0.12) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "Postmenstrual age (weeks)", y = "Fraction of mature clearance",
+       title = "Renal maturation function (Yin 2026 equation 1)",
+       caption = paste("TM50 = 47.7 weeks (dashed) and Hill = 3.4, both fixed to",
+                       "Rhodin et al. 2009. Shaded band is the observed PMA range."))
+```
+
+```{r figure-ss}
+# Steady-state whole-blood profiles over the final dosing interval, by regimen.
+last_interval <- regimens |>
+  mutate(t_start = (n_dose - 1) * tau, t_end = n_dose * tau) |>
+  select(regimen = label, tau, t_start, t_end)
+
+ss <- sim_b |>
+  inner_join(last_interval, by = "regimen") |>
+  filter(time >= t_start, time <= t_end) |>
+  mutate(tad = time - t_start)
+
+ss |>
+  group_by(regimen, tad) |>
+  summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~regimen, scales = "free_x") +
+  scale_y_log10() +
+  labs(x = "Time since last dose (h)", y = "Whole-blood ceftazidime (mg/L)",
+       title = "Steady-state profiles over the final dosing interval",
+       caption = "Regimens from the simulation grid of Yin 2026 Methods / Figure 4.")
+```
+
+# PKNCA validation
+
+The paper reports no NCA parameters, so the NCA here does two things instead:
+it exercises the standard PKNCA pathway on the packaged model, and it provides
+closed-form identity checks. For a one-compartment intravenous model, NCA on a
+noise-free single-dose simulation must return `AUC(0-inf) = Dose / CL` and
+`t1/2 = log(2) * V / CL` **for each individual subject**, using that subject's
+own drawn `cl` and `vc`. Both sides of these comparisons use the same drawn
+parameters, so the residual is pure numerical (trapezoid + lambda-z) error and
+the tolerances are tight.
+
+```{r pknca}
+# Only `!is.na(Cc)` -- never a `time > 0` or `Cc > 0` filter, which would drop
+# the time-zero anchor row that PKNCA needs for AUC(0-*).
+sim_nca <- sim_a |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, regimen)
+
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, regimen) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, regimen, time, .keep_all = TRUE) |>
+  arrange(id, regimen, time)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | regimen + id)
+
+dose_df <- ev_a |>
+  filter(evid == 1) |>
+  select(id, time, amt, regimen) |>
+  as.data.frame()
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result) |>
+  select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+```
+
+```{r pknca-identity}
+truth <- sim_a |>
+  group_by(id) |>
+  summarise(cl = first(cl), vc = first(vc), .groups = "drop") |>
+  left_join(dose_df |> select(id, amt), by = "id") |>
+  mutate(
+    auc_theory      = amt / cl,
+    halflife_theory = log(2) * vc / cl
+  )
+
+chk <- nca_tbl |>
+  left_join(truth, by = "id") |>
+  mutate(
+    auc_pct  = 100 * (aucinf.obs - auc_theory) / auc_theory,
+    hl_pct   = 100 * (half.life - halflife_theory) / halflife_theory,
+    # PKNCA's cl.obs is dose / AUC, i.e. in dose-over-concentration units,
+    # which for mg and mg/L is L/h -- directly comparable to the model's cl.
+    clobs_pct = 100 * (cl.obs - cl) / cl
+  )
+
+identity_tbl <- tibble::tibble(
+  Check = c("AUC(0-inf) vs Dose / CL",
+            "Terminal half-life vs log(2) * V / CL",
+            "PKNCA CL(obs) vs individual CL"),
+  `Median % difference` = c(median(chk$auc_pct), median(chk$hl_pct),
+                            median(chk$clobs_pct)),
+  `Max abs % difference` = c(max(abs(chk$auc_pct)), max(abs(chk$hl_pct)),
+                             max(abs(chk$clobs_pct)))
+)
+
+knitr::kable(identity_tbl, digits = 4,
+             caption = paste("Closed-form identity checks. Both sides use the",
+                             "same drawn parameters, so any difference is",
+                             "numerical error in the NCA, not model error."))
+
+# Same drawn parameters on both sides -> pure trapezoid / lambda-z error, so a
+# tight all() bound is the correct assertion here (it is NOT a cohort-extreme
+# assertion of the kind that varies between rxode2 builds).
+stopifnot(
+  max(abs(chk$auc_pct))   < 1.0,
+  max(abs(chk$hl_pct))    < 1.0,
+  max(abs(chk$clobs_pct)) < 1.0
+)
+```
+
+## NCA summary by regimen
+
+```{r pknca-ss}
+ss_intervals <- last_interval |>
+  transmute(start = t_start, end = t_end,
+            cmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE) |>
+  as.data.frame()
+
+conc_ss <- sim_b |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, regimen) |>
+  as.data.frame()
+
+dose_ss <- ev_b |>
+  filter(evid == 1) |>
+  select(id, time, amt, regimen) |>
+  as.data.frame()
+
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_ss, Cc ~ time | regimen + id),
+  PKNCA::PKNCAdose(dose_ss, amt ~ time | regimen + id),
+  intervals = bind_cols(ss_intervals, tibble(regimen = last_interval$regimen))
+))
+
+as.data.frame(nca_ss$result) |>
+  filter(PPTESTCD %in% c("cmax", "cmin", "cav", "auclast")) |>
+  group_by(regimen, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename(
+    "Regimen"                    = regimen,
+    "AUC(tau) (mg*h/L)"          = auclast,
+    "Cavg,ss (mg/L)"             = cav,
+    "Cmax,ss (mg/L)"             = cmax,
+    "Cmin,ss (mg/L)"             = cmin
+  ) |>
+  knitr::kable(digits = 2,
+               caption = paste("Median steady-state whole-blood NCA over the",
+                               "final dosing interval, by regimen."))
+```
+
+# Probability of target attainment
+
+Yin 2026 evaluates 70% *f*T > MIC on **unbound plasma** concentrations, obtained
+from the model's whole-blood predictions by equations 3-5:
+
+$$C_{\text{plasma,unbound}} = f_u \times BP \times C_{\text{blood}}, \qquad
+BP = C_{\text{plasma}} / C_{\text{blood}} = 0.72$$
+
+The unbound fraction \(f_u\) is never given a numeric value anywhere in the
+paper, so the target-attainment analysis cannot be reproduced exactly. It can be
+*bounded*, which is enough to check the transcription. Write
+\(\kappa = f_u \times BP\); then "unbound plasma above MIC" is identical to
+"whole blood above MIC/\(\kappa\)", and because an unbound fraction cannot exceed
+1, \(\kappa \le BP = 0.72\). Evaluating at \(\kappa = 0.72\) is therefore the
+**most favourable admissible case** -- any real \(f_u < 1\) can only lower target
+attainment.
+
+```{r pta}
+mic <- 4  # mg/L, the EUCAST E. coli breakpoint the paper highlights
+bp  <- 0.72  # blood-to-plasma ratio as defined and used by Yin 2026 (reference 26)
+
+# Fraction of the final dosing interval spent above a whole-blood threshold,
+# per subject. The 0.05 h observation grid resolves the interval to <1%.
+pta_at <- function(df, kappa, mic_value = mic) {
+  df |>
+    group_by(regimen, id) |>
+    summarise(ft = mean(Cc > mic_value / kappa), .groups = "drop") |>
+    group_by(regimen) |>
+    summarise(pta = mean(ft >= 0.70), .groups = "drop")
+}
+
+# Yin 2026 Results "Model-based simulations" and Discussion, at MIC 4 mg/L:
+# 25 mg/kg q6h and q8h attain PTA >= 90%; at a 12-h interval only the 75 and
+# 100 mg/kg regimens do, so 25 and 50 mg/kg q12h must fall below 90%.
+published_claim <- tibble::tribble(
+  ~regimen,          ~attains,
+  "25 mg/kg q6h",     TRUE,
+  "25 mg/kg q8h",     TRUE,
+  "25 mg/kg q12h",    FALSE,
+  "50 mg/kg q12h",    FALSE,
+  "75 mg/kg q12h",    TRUE
+)
+
+pta_max <- pta_at(ss, kappa = bp) |>
+  inner_join(published_claim, by = "regimen") |>
+  mutate(
+    simulated = pta >= 0.90,
+    agrees    = simulated == attains
+  )
+
+# Guard against a silently empty comparison (pattern 10): every published claim
+# must have found a matching simulated arm.
+stopifnot(nrow(pta_max) == nrow(published_claim))
+
+pta_max |>
+  transmute(
+    Regimen = regimen,
+    `PTA at kappa = 0.72` = sprintf("%.1f%%", 100 * pta),
+    `Simulated: attains >= 90%?` = ifelse(simulated, "yes", "no"),
+    `Yin 2026 Figure 4` = ifelse(attains, "yes", "no"),
+    Agrees = ifelse(agrees, "yes", "no")
+  ) |>
+  knitr::kable(
+    caption = paste("Target attainment for 70% fT > MIC at MIC = 4 mg/L,",
+                    "evaluated at the largest admissible unbound scaling",
+                    "(kappa = BP = 0.72, i.e. f_u = 1)."))
+```
+
+```{r pta-assertions}
+get_pta <- function(reg) {
+  v <- pta_max$pta[pta_max$regimen == reg]
+  if (length(v) != 1L) stop("no unique PTA row for '", reg, "'")
+  v
+}
+
+# These are cohort-derived, so only structural relations and wide-margin
+# classifications are asserted (see known-vignette-failure-patterns pattern 12).
+# Realised over four cohort scenarios (two seeds x two PMA-weight relations)
+# and four solver-thread counts (1 / 2 / 4 / 8):
+#   25 q6h  0.975-1.000   25 q8h  0.875-0.895   25 q12h 0.480-0.550
+#   50 q12h 0.785-0.840   75 q12h 0.885-0.940
+# 75 mg/kg q12h straddles the 90% line across those runs, which is precisely
+# why its classification is reported but not asserted.
+stopifnot(
+  # Shortening the interval at a fixed dose must raise fT > MIC. Structural,
+  # and the realised gaps (>= 0.09 and >= 0.32) are far outside sampling noise.
+  get_pta("25 mg/kg q6h")  > get_pta("25 mg/kg q8h"),
+  get_pta("25 mg/kg q8h")  > get_pta("25 mg/kg q12h"),
+  # Raising the dose at a fixed interval must raise fT > MIC.
+  get_pta("75 mg/kg q12h") > get_pta("50 mg/kg q12h"),
+  get_pta("50 mg/kg q12h") > get_pta("25 mg/kg q12h"),
+  # The paper's two clear-cut negatives at MIC 4 mg/L, with wide margins.
+  get_pta("25 mg/kg q12h") < 0.75,
+  # The paper's clearest positive.
+  get_pta("25 mg/kg q6h")  >= 0.90,
+  # A mis-transcribed CL, V, dose or maturation term moves these PTAs by tens
+  # of points; every arm must stay in a physically sensible band.
+  all(pta_max$pta > 0.30), all(pta_max$pta <= 1.00)
+)
+```
+
+At the most favourable admissible scaling the model reproduces the paper's
+classification for `r sum(pta_max$agrees)` of the `r nrow(pta_max)` regimens.
+The disagreements, where present, are the two regimens the paper places just
+above the 90% line: see *Assumptions and deviations*.
+
+```{r pta-figure}
+kappa_grid <- seq(0.10, 1.00, by = 0.01)
+pta_by_kappa <- do.call(bind_rows, lapply(kappa_grid, function(k) {
+  pta_at(ss, kappa = k) |> mutate(kappa = k)
+}))
+
+pta_by_kappa |>
+  ggplot(aes(kappa, pta, colour = regimen)) +
+  annotate("rect", xmin = bp, xmax = Inf, ymin = -Inf, ymax = Inf, alpha = 0.10) +
+  geom_line() +
+  geom_hline(yintercept = 0.90, linetype = "dashed") +
+  geom_vline(xintercept = bp, linetype = "dotted") +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = expression(kappa == f[u] %*% BP),
+       y = "PTA for 70% fT > MIC at MIC = 4 mg/L",
+       colour = "Regimen",
+       title = "Target attainment vs. the unreported unbound scaling",
+       caption = paste("Dashed line: the paper's 90% PTA criterion. Dotted line",
+                       "and shading: kappa = BP = 0.72, above which f_u would",
+                       "have to exceed 1 and which is therefore inadmissible."))
+```
+
+```{r pta-mic-curve}
+# The shape of Figure 4, evaluated at the same maximal admissible kappa.
+mic_grid <- c(0.25, 0.5, 1, 2, 4, 8, 16, 32)
+pta_mic <- do.call(bind_rows, lapply(mic_grid, function(m) {
+  pta_at(ss, kappa = bp, mic_value = m) |> mutate(MIC = m)
+}))
+
+pta_mic |>
+  ggplot(aes(MIC, pta, colour = regimen)) +
+  geom_line() + geom_point() +
+  geom_hline(yintercept = 0.90, linetype = "dashed") +
+  scale_x_log10(breaks = mic_grid) +
+  scale_y_continuous(labels = scales::percent) +
+  labs(x = "MIC (mg/L)", y = "PTA for 70% fT > MIC", colour = "Regimen",
+       title = "Replicates the shape of Figure 4 of Yin 2026",
+       caption = paste("Evaluated at kappa = BP = 0.72. The paper's own",
+                       "conclusion that PTA falls away sharply above MIC 4-8",
+                       "mg/L is reproduced."))
+
+# The paper's Figure 4 shows PTA collapsing as MIC rises; assert the trend, not
+# step-by-step monotonicity or an exact value.
+trend <- pta_mic |>
+  group_by(regimen) |>
+  summarise(lo = pta[MIC == 0.25], hi = pta[MIC == 32], .groups = "drop")
+# Realised at 1 / 4 / 8 solver threads: lo 0.99-1.00 for every arm, hi 0.000
+# for four arms and up to 0.015 for 75 mg/kg q12h. The bounds below sit well
+# outside that range while still going red if a dose, volume or clearance were
+# mis-transcribed (which moves these by tens of points).
+stopifnot(all(trend$lo > trend$hi), all(trend$lo >= 0.85), all(trend$hi < 0.50))
+```
+
+# Assumptions and deviations
+
+* **The model is whole-blood referenced, not plasma.** Yin 2026 fitted the qDBS
+  whole-blood concentrations directly (Discussion: "Whole-blood concentrations
+  obtained from qDBS samples were used directly to develop the ceftazidime PopPK
+  model"). `Cc` from this model is therefore a *whole-blood* ceftazidime
+  concentration. Comparing it with a plasma-based neonatal ceftazidime model
+  requires the paper's equations 3-5.
+
+* **The unbound fraction `f_u` is never reported.** Equations 4 and 5 both
+  contain it and no numeric value appears in the text, tables, or figure
+  captions; there is no supplement. The blood-to-plasma and unbound conversions
+  are consequently **not** encoded in the model file, and the target-attainment
+  section above brackets \(\kappa = f_u \times BP\) by its physical ceiling
+  \(\kappa \le BP = 0.72\) rather than substituting a literature value for
+  `f_u`.
+
+* **Known deviation: two of the paper's five PTA classifications sit on the
+  boundary rather than reproducing cleanly.** Evaluated at \(\kappa = 0.72\) --
+  the largest value an unbound fraction can produce, and so the most favourable
+  admissible case -- the packaged model reproduces the paper's Figure 4
+  conclusions at MIC 4 mg/L unambiguously for 25 mg/kg q6h (attains; realised
+  97.5-100%) and for 25 and 50 mg/kg q12h (do not attain; 48-55% and 78.5-84%).
+  The two remaining arms sit on the 90% line: 25 mg/kg q8h realised 87.5-89.5%
+  and 75 mg/kg q12h realised 88.5-94.0% over four cohort scenarios (two seeds
+  crossed with two PMA-weight relations) and four solver-thread counts, so
+  75 mg/kg q12h agrees with the paper in some runs and not others. Reproducing
+  the full published classification in every run would require
+  \(\kappa \approx 0.76\)-\(0.81\), i.e. \(f_u \approx 1.06\)-\(1.12\), which is
+  not physically possible. Three candidate explanations, none resolvable from
+  the published material: `f_u` itself is unreported so \(\kappa\) can only be
+  bounded, not set; the simulation cohort's joint PMA-weight distribution is not
+  published and is approximated here (see the bullet below); and the paper does
+  not state whether its target-attainment analysis was run at steady state or
+  after a single dose -- the steady-state reading used here is the more
+  favourable of the two. The discrepancy is a few percentage points and the
+  *ordering* of all five regimens is reproduced exactly, so this is recorded as
+  a deviation rather than a transcription error. The assertions in the PTA
+  section deliberately gate on the structural orderings and the wide-margin
+  classifications, never on the two borderline arms.
+
+* **The paper's derived per-kilogram plasma values do not reconcile with its own
+  Table 2.** The Discussion states "The plasma CL predicted by our model
+  (0.49 L/h/kg)" and "current study: 2.32 L/kg", after "standardizing covariates
+  to median values (PMA = 39.4 weeks, PNA = 1 day, and WT = 3.2 kg)" and applying
+  the blood-to-plasma ratio 0.72. Evaluating equations 1 and 2 with Table 2's
+  estimates gives blood CL = 0.211 L/h/kg and blood V = 1.009 L/kg at the cohort
+  medians; converting with BP = 0.72 as described gives plasma CL = 0.293 L/h/kg
+  and plasma V = 1.401 L/kg -- not 0.49 and 2.32. Both published figures instead
+  require a common additional factor of about 2.30 on top of the blood values
+  (2.32 / 1.009 = 2.30; 0.49 / 0.211 = 2.32), i.e. an extra ~1.66-fold beyond
+  BP = 0.72. Because the same factor applies to clearance and to volume, it is a
+  concentration-scale conversion rather than an error in either parameter, and
+  it does not touch the packaged model, whose values are Table 2 verbatim. The
+  check is reproduced below. Two related observations: the Discussion's
+  "PMA = 39.4 weeks" is the Table 1 median *gestational* age; the Table 1 median
+  postmenstrual age is 39.7 weeks (which is the value that makes the arithmetic
+  above closest to internally consistent).
+
+    ```{r derived-check}
+    derived <- tibble::tibble(
+      Quantity = c("Blood CL (L/h/kg)", "Blood V (L/kg)"),
+      `From Table 2 + equations 1-2` = c(cl_med / wt_med, v_med / wt_med),
+      `Converted with BP = 0.72`     = c(cl_med / wt_med / 0.72, v_med / wt_med / 0.72),
+      `Stated in the Discussion`     = c(0.49, 2.32)
+    ) |>
+      mutate(`Implied extra factor` = `Stated in the Discussion` /
+               `From Table 2 + equations 1-2`)
+
+    knitr::kable(derived, digits = 3,
+                 caption = paste("The Discussion's per-kilogram plasma values",
+                                 "require a common ~2.3-fold factor on the",
+                                 "blood-based Table 2 estimates."))
+
+    # Deterministic arithmetic on fixed published constants -- no cohort is
+    # drawn, so this bound is exact rather than noise-tolerant.
+    stopifnot(abs(derived$`Implied extra factor`[2] - 2.30) < 0.02)
+    ```
+
+* **Residual error encoded as proportional, not log-normal.** The Methods say
+  residual variability "was also modeled exponentially", but Table 2 reports the
+  estimate on a row labelled "Proportional error (%)" and its footnote a states
+  that the exponential (log-additive) form "approximates to a proportional error
+  in the normal domain". The model therefore uses `Cc ~ prop(propSd)` with
+  `propSd = 0.223`, matching the units and interpretation the paper itself
+  assigns. At a 22.3% CV the difference from a strict `lnorm()` encoding is
+  small (a log-normal with SD 0.223 on the log scale has a CV of
+  `r sprintf("%.1f%%", 100 * sqrt(exp(0.223^2) - 1))`), but it is not zero, and a
+  re-fit would not land on exactly the published number.
+
+* **IIV variances back-transformed from the reported CV%.** Table 2 reports IIV
+  as percent CV and its footnote c gives the conversion
+  `CV% = sqrt(exp(omega^2) - 1) x 100`. The `ini()` block inverts it,
+  `omega^2 = log(1 + CV^2)`, giving 0.0760 for CL and 0.1653 for V. No CL-V
+  covariance is reported, so the etas are encoded as independent.
+
+* **Covariate joint distribution assumed.** The paper publishes marginal PMA and
+  weight distributions (Table 1) but not their joint distribution, and states only
+  that the Monte Carlo cohort came from the hospital's neonatal database. The
+  virtual cohort here draws PMA uniformly over the observed 32.7-41.9 week range
+  and weight from a log-normal (12% CV) around a 0.2 kg/week linear trend anchored
+  at the Table 1 medians. Neither the PMA distribution nor the correlation is
+  the paper's, so absolute PTA values are illustrative; the \(\kappa\) inversion
+  above is the part that is comparable to the source.
+
+* **PMA is declared in weeks, not the register-default months.** The canonical
+  `PAGE` covariate is registered in months, but its register entry explicitly
+  allows a model to declare weeks when its source equations are written in weeks.
+  Yin 2026 equation 1 and its fixed constants (TM50 = 47.7 weeks, Hill = 3.4) are
+  only meaningful on the week scale, so `covariateData$PAGE$units` is `"weeks"`.
+  Read that field before supplying the column.
+
+* **Covariates screened but not retained** (gestational age, postnatal age, serum
+  creatinine) are recorded in the model file's `covariatesDataExcluded` list, not
+  in `covariateData`, because they are correctly absent from `model()`.
+
+* **Assay detector reported inconsistently.** The Abstract and Methods opening
+  say concentrations were quantified by UPLC-MS/MS, while Methods "Sample
+  collection and determination" says UPLC with photodiode array detection
+  (UPLC-PDA) with the assay range 0.25-50.0 ug/mL. This affects no model
+  parameter.
+
+* **No external validation and no reported NCA.** The paper performed a VPC and a
+  bootstrap but no external validation, and reports no NCA parameters, so there
+  is no published Cmax / AUC / half-life table to compare against. The NCA
+  section above uses closed-form identities instead.

@@ -624,6 +624,8 @@ navbar:
         href: articles/Georges_2009_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
+      - text: "Ceftazidime (Yin 2026)"
+        href: articles/Yin_2026_ceftazidime.html
       - text: "Ceftazidime (Zieck 2023)"
         href: articles/Zieck_2023_ceftazidime.html
       - text: "Ceftazidime avibactam control (Zazo 2024)"
@@ -5645,6 +5647,7 @@ articles:
   - articles/Yin_2021_trastuzumabDeruxtecan
   - articles/Yin_2023_soticlestat
   - articles/Yin_2024_soticlestat
+  - articles/Yin_2026_ceftazidime
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoo_2009_cilostazol
   - articles/Yoon_2013_metformin
