@@ -19,6 +19,8 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
+- Add Tseng 2026 piperacillin ([doi:10.2147/DDDT.S602835](https://doi.org/10.2147/DDDT.S602835)) -- hospitalized adults with low body weight (BMI at or below 18.5 kg/m^2).
+
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
 - Add Feng 2019 ipilimumab mixture tumor growth dynamics model ([doi:10.1002/psp4.12454](https://doi.org/10.1002/psp4.12454)) -- adults with advanced melanoma.
