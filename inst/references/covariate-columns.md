@@ -4717,6 +4717,30 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Fukae_2024_valemetostat_anemia.R`, `Fukae_2024_valemetostat_anc_decrease.R`, `Fukae_2024_valemetostat_plt_decrease.R`, `Fukae_2024_valemetostat_teae_grade3.R`, `Fukae_2024_valemetostat_dose_interruption.R`, `Fukae_2024_valemetostat_dose_reduction.R` (all six Fukae 2024 exposure-safety logistic models; log-odds effects on both the logit intercept and the unbound-AUCss exposure slope, relative to the Japan-enrolled reference; 31 of 102 pooled R/R NHL patients, 30.4%).
 - **Notes:** Scope `specific`, matching every other member of the `REGION_*` family (`REGION_JAPAN`, `REGION_FRANCE`, `REGION_UK`, `REGION_SPAIN`, ...). Registered rather than folded into `REGION_JAPAN` with an inverted coefficient by operator decision on 2026-08-28 (task `oare_PMC11494914`, sidecar request 001, answer A): Fukae 2024's *reference* category is Japan and its indicator is the United States, so reusing `REGION_JAPAN` would have required negating every printed odds ratio and would misstate which level is the reference -- registering the indicator the paper actually printed keeps each `ini()` value readable straight off the published table for line-by-line source-trace audit. Distinct from the `RACE_*` family; see `REGION_EASTASIA` for the multi-country regional-grouping form.
 
+### REGION_CANADA (**canonical for Canada study-site / enrollment-country indicator**)
+- **Description:** 1 = subject enrolled and treated at a Canadian study site, 0 = enrolled outside Canada. Time-fixed per subject. Country-level study-site indicator used in multi-country trials that estimate a per-country shift in bioavailability, clearance or an observation-scaling factor.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Canada sites; the specific reference set varies per model -- in Gafar 2026 the reference is Indonesia, paired with `REGION_VIETNAM` for the third country).
+- **Source aliases:**
+  - `FRM` (value 1) -- Gafar 2026 encodes the country contrast through the *formulation* column of its NONMEM dataset because country and rifampicin product are completely confounded in the 2R2 trial (every Canadian participant received re-compounded Rofact capsules). No value transformation beyond selecting the level.
+  - `CTR`, `SITE`, `COUNTRY = Canada` -- variant spellings of the same enrollment-country indicator.
+- **Example models:** `Gafar_2026_rifampicin.R` (multiplicative factor 0.782 on prehepatic bioavailability, i.e. -21.8% versus the Indonesian reference; 87 of 440 participants, 19.8%).
+- **Notes:** Scope `specific`, matching every other member of the `REGION_*` family. Use this rather than a `FORM_*` name when the source paper's retained covariate is the country contrast even where the mechanism the authors propose is the formulation: Gafar 2026 fitted the two Vietnamese formulations separately and found no improvement (dOFV 1 point, 3 df, P > .05), so the identified effect is country-level and the formulation attribution is an interpretation. Record the country / formulation confounding in per-model `covariateData[[REGION_CANADA]]$notes`. Distinct from the `RACE_*` family.
+
+### REGION_VIETNAM (**canonical for Vietnam study-site / enrollment-country indicator**)
+- **Description:** 1 = subject enrolled and treated at a Vietnamese study site, 0 = enrolled outside Vietnam. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-Vietnam sites; the specific reference set varies per model -- in Gafar 2026 the reference is Indonesia, paired with `REGION_CANADA` for the third country).
+- **Source aliases:**
+  - `FRM` (values 2 and 3 pooled) -- Gafar 2026 encodes the country contrast through the formulation column; values 2 (Svizera) and 3 (Mekophar) are the two Vietnamese products and are pooled into a single indicator in the final model.
+  - `CTR`, `SITE`, `COUNTRY = Vietnam` -- variant spellings of the same enrollment-country indicator.
+- **Example models:** `Gafar_2026_rifampicin.R` (multiplicative factor 0.877 on prehepatic bioavailability, i.e. -12.3% versus the Indonesian reference; 88 of 440 participants, 20.0%).
+- **Notes:** Scope `specific`. See `REGION_CANADA` for the country-versus-formulation naming rationale. Indonesia, the reference country in Gafar 2026, carries no indicator of its own: a participant with `REGION_CANADA = 0` and `REGION_VIETNAM = 0` is in the reference group.
+
 ## Pediatric comorbidities
 
 ### DIS_CLD_PREM (**canonical for chronic lung disease of prematurity**)
