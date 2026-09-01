@@ -272,6 +272,8 @@ navbar:
         href: articles/LohyDas_2018_artesunate.html
       - text: "Artesunate (Morris 2011)"
         href: articles/Morris_2011_artesunate.html
+      - text: "Artesunate (Simpson 2006)"
+        href: articles/Simpson_2006_artesunate.html
       - text: "Artesunate (Simpson 2013)"
         href: articles/Simpson_2013_artesunate.html
       - text: "Artesunate (Tan 2009)"
@@ -5337,6 +5339,7 @@ articles:
   - articles/Sikma_2020_tacrolimus_unbound_plasma
   - articles/Silva_2023_perampanel
   - articles/Silva_2024_apx3330
+  - articles/Simpson_2006_artesunate
   - articles/Simpson_2013_artesunate
   - articles/Simpson_2013_chloroquine
   - articles/Simpson_2013_lumefantrine

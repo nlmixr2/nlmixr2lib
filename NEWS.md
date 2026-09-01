@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Simpson 2006 artesunate ([doi:10.1371/journal.pmed.0030444](https://doi.org/10.1371/journal.pmed.0030444)) -- adults and children with moderately severe falciparum malaria.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
