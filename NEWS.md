@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Blackman 2026 high-dose methotrexate ([doi:10.1007/s00228-026-04080-0](https://doi.org/10.1007/s00228-026-04080-0)) -- adults with leukemia, lymphoma, or sarcoma.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
