@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Snelder 2014 extended drug-independent cardiovascular systems (MAP / CO / HR / SV / TPR) model ([doi:10.1111/bph.12824](https://doi.org/10.1111/bph.12824)) -- conscious spontaneously hypertensive and normotensive Wistar-Kyoto rats.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
