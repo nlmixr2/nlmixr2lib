@@ -2183,6 +2183,14 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
   - `PAN` -- NONMEM `$MODEL` compartment label in Yau 2023 Appendix S1.
 - **Example models:** `Yau_2023_diazepam_pbpk_kpu_human.R`, `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_kpu_rat.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
 
+### testes (**canonical bare testes compartment**)
+- **Type:** compartment
+- **Role:** Bare testes organ compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration in the gonads; paired with `lung`, `liver`, `kidney`, `spleen`, `brain`, `heart`, `muscle`, `skin`, `adipose`, `bone`, `other` etc. in whole-body PBPK extractions that resolve testes as a distinct organ. Perfusion-rate-limited whole-body templates written for a male reference adult routinely carry testes as its own organ (1% of body weight, 1.076% of cardiac output at the 70 kg reference), because it is a recognised site of drug exposure with its own blood-tissue barrier. Registered as the bare-organ form for parity with the surrounding canonicals -- exactly as `heart`, `skin` and `pancreas` above.
+- **Source aliases:**
+  - `Ate` / `Ctestes` -- amount and concentration state labels in the Berkeley Madonna code deposited as the Supplementary Data of Jones and Rowland-Yeo 2013.
+- **Example models:** `Jones_2013_perfusionLimited_pbpk.R`.
+- **Notes:** Unlike `gut`, `spleen`, `stomach` and `pancreas`, testes is NOT a splanchnic organ: its venous outflow returns directly to `venous` blood rather than draining to `liver` through the portal vein. Models that resolve testes therefore include it in the venous-return sum, not in the portal tributary sum.
+
 ### tendon (**canonical bare tendon / connective-tissue compartment**)
 - **Type:** compartment
 - **Role:** Bare tendon (dense connective tissue) compartment in full-body PBPK extractions built on the Levitt PKQuest standard-human physiology, which resolves tendon as its own organ with a distinct mass and perfusion (3 kg, 0.6 L/h/kg at the 70 kg reference) separate from the `other` lumped remainder (5.56 kg, 1.2 L/h/kg). Total tissue (well-stirred) drug amount, paired with the surrounding bare organ compartments.

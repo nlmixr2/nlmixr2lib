@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Snelder 2013 drug-independent cardiovascular systems (MAP / CO / TPR) model ([doi:10.1111/bph.12190](https://doi.org/10.1111/bph.12190)) -- conscious male spontaneously hypertensive rats.
+- Add Jones 2013 generic perfusion-limited whole-body PBPK template
+  ([doi:10.1038/psp.2013.41](https://doi.org/10.1038/psp.2013.41)) -- no drug;
+  70 kg human reference physiology.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
