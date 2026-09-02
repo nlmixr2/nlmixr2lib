@@ -23,7 +23,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Tseng 2026 piperacillin ([doi:10.2147/DDDT.S602835](https://doi.org/10.2147/DDDT.S602835)) -- hospitalized adults with low body weight (BMI at or below 18.5 kg/m^2).
+- Add Ding 2026 vancomycin ([doi:10.1007/s11096-025-02077-w](https://doi.org/10.1007/s11096-025-02077-w)) -- adults undergoing cardiac surgery.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
