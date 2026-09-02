@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Schulthess 2017 frequency-domain response analysis PD archetypes
-  ([doi:10.1002/psp4.12266](https://doi.org/10.1002/psp4.12266)) -- 15
-  theoretical models (no data fitted, no subjects).
+- Add Nava 2018 busulfan ([doi:10.1111/bcp.13566](https://doi.org/10.1111/bcp.13566)) -- children and adolescents undergoing haematopoietic stem cell transplantation.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

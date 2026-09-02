@@ -526,6 +526,8 @@ navbar:
         href: articles/Lawson_2022_busulfan.html
       - text: "Busulfan (Long-Boyle 2015)"
         href: articles/Long-Boyle_2015_busulfan.html
+      - text: "Busulfan (Nava 2018)"
+        href: articles/Nava_2018_busulfan.html
       - text: "Busulfan (Schreib 2024)"
         href: articles/Schreib_2024_busulfan.html
       - text: "Busulfan (Xu 2023)"
@@ -5300,6 +5302,7 @@ articles:
   - articles/Narwal_2013_sifalimumab
   - articles/Nath_2007_melphalan
   - articles/Nath_2010_melphalan
+  - articles/Nava_2018_busulfan
   - articles/Nemitz_2026_dapagliflozin_pbpk
   - articles/Nemoto_2017_ethanol
   - articles/Nestorov_2014_factorviii
