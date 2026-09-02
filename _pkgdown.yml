@@ -1156,8 +1156,8 @@ navbar:
         href: articles/Siccardi_2012_efavirenz.html
       - text: "Efavirenz (Vucicevic 2025)"
         href: articles/Vucicevic_2025_efavirenz.html
-      - text: "Efavirenz invitro (Almond 2016)"
-        href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Efavirenz (Vujkovic 2018)"
+        href: articles/Vujkovic_2018_efavirenz.html
       - text: "Efineptakin alfa (Park 2025)"
         href: articles/Park_2025_efineptakin_alfa.html
       - text: "Eflornithine rat (Jansson 2008)"
@@ -5758,6 +5758,7 @@ articles:
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
   - articles/Vucicevic_2025_efavirenz
+  - articles/Vujkovic_2018_efavirenz
   - articles/Vuu_2016_topiramate_dog
   - articles/Wada_2023_sparsentan
   - articles/Wade_2008_fluconazole
