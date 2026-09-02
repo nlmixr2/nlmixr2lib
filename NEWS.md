@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Almond 2016 CYP3A4 induction by rifampicin, carbamazepine, phenobarbital, phenytoin, efavirenz and nifedipine ([doi:10.1124/dmd.115.066845](https://doi.org/10.1124/dmd.115.066845)) — cryopreserved human hepatocytes from four donors, plus healthy white adults for the in-vivo rifampicin reference.
+- Add Guo 2016 taurocholate ([doi:10.1124/jpet.116.231928](https://doi.org/10.1124/jpet.116.231928)) -- sandwich-cultured human hepatocytes from three donors.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
