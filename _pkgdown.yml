@@ -1074,6 +1074,8 @@ navbar:
         href: articles/Toutain_2025_doxycycline_pig.html
       - text: "Droperidol (Foo 2016)"
         href: articles/Foo_2016_droperidol.html
+      - text: "Drospirenone (Reif 2013)"
+        href: articles/Reif_2013_ethinylestradiol_drospirenone.html
       - text: "DrugA (Zhang 2025)"
         href: articles/Zhang_2025_drugA.html
       - text: "Dupilumab (Kovalenko 2016)"
@@ -1274,6 +1276,8 @@ navbar:
         href: articles/Nemoto_2017_ethanol.html
       - text: "Ethaselen (Ye 2017)"
         href: articles/Ye_2017_ethaselen.html
+      - text: "Ethinylestradiol (Reif 2013)"
+        href: articles/Reif_2013_ethinylestradiol_drospirenone.html
       - text: "Etoposide (Freyer 2000)"
         href: articles/Freyer_2000_AVI_regimen.html
       - text: "Etoposide (Toffoli 2001)"
@@ -5380,6 +5384,7 @@ articles:
   - articles/Ravva_2009_varenicline
   - articles/Ravva_2010_varenicline_exposure_response
   - articles/Rees_2018_meropenem_ciprofloxacin
+  - articles/Reif_2013_ethinylestradiol_drospirenone
   - articles/Reijers_2016_trastuzumab
   - articles/Reinecke_2018_levonorgestrel_contraceptives
   - articles/Rekic_2011_atazanavir

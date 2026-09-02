@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Leeds 2013 tecovirimat (ST-246) ([doi:10.1128/AAC.00959-12](https://doi.org/10.1128/AAC.00959-12)) -- two models: uninfected and monkeypox-virus-infected cynomolgus monkeys, and healthy adult volunteers.
+- Add Reif 2013 ethinylestradiol and drospirenone ([doi:10.1136/jfprhc-2012-100397](https://doi.org/10.1136/jfprhc-2012-100397)) -- healthy young women using an extended-cycle combined oral contraceptive.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
