@@ -3836,6 +3836,14 @@ navbar:
         href: articles/Tong_2026_vancomycin.html
       - text: "Varenicline (Ravva 2009)"
         href: articles/Ravva_2009_varenicline.html
+      - text: "Varenicline car w4 7 study1 (Ravva 2010)"
+        href: articles/Ravva_2010_varenicline_exposure_response.html
+      - text: "Varenicline car w4 7 study2 (Ravva 2010)"
+        href: articles/Ravva_2010_varenicline_exposure_response.html
+      - text: "Varenicline car w9 12 (Ravva 2010)"
+        href: articles/Ravva_2010_varenicline_exposure_response.html
+      - text: "Varenicline nausea (Ravva 2010)"
+        href: articles/Ravva_2010_varenicline_exposure_response.html
       - text: "Vatalanib (Wang 2014)"
         href: articles/Wang_2014_vatalanib.html
       - text: "Vedolizumab (Rosario 2015)"
@@ -5215,6 +5223,7 @@ articles:
   - articles/Randell_2024_metronidazole
   - articles/Rao_2023_covid19_qsp
   - articles/Ravva_2009_varenicline
+  - articles/Ravva_2010_varenicline_exposure_response
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reijers_2016_trastuzumab
   - articles/Reinecke_2018_levonorgestrel_contraceptives
