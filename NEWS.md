@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Snelder 2013 drug-independent cardiovascular systems (MAP / CO / TPR) model ([doi:10.1111/bph.12190](https://doi.org/10.1111/bph.12190)) -- conscious male spontaneously hypertensive rats.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
