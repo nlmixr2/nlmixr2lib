@@ -21,7 +21,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Troy 2020 arylsulfatase A / TAK-611 ([doi:10.1002/cpt.1752](https://doi.org/10.1002/cpt.1752)) -- children with metachromatic leukodystrophy receiving intrathecal enzyme replacement.
+- Add Li 2023 TQ-B3203 ([doi:10.3389/fphar.2023.1102244](https://doi.org/10.3389/fphar.2023.1102244)) -- Chinese adults with advanced solid tumors.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
