@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Feng 2026 imipenem PBPK ([doi:10.3389/fcimb.2026.1798911](https://doi.org/10.3389/fcimb.2026.1798911)) -- healthy adults, adults with renal impairment, and children aged 3-18 years with normal or impaired renal function.
+- Add Blackman 2026 high-dose methotrexate ([doi:10.1007/s00228-026-04080-0](https://doi.org/10.1007/s00228-026-04080-0)) -- adults with leukemia, lymphoma, or sarcoma.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
