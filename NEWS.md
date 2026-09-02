@@ -21,7 +21,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Muller 2009 amoxicillin ([doi:10.1128/AAC.00119-08](https://doi.org/10.1128/AAC.00119-08)) -- women in labour, the venous umbilical cord and their neonates.
+- Add Mandema 2005 gemcabene, statins and ezetimibe LDL-C dose-response MBMA ([doi:10.1208/aapsj070352](https://doi.org/10.1208/aapsj070352)) -- adults with hypercholesterolemia, plus healthy-volunteer, obese and low-HDL-C cohorts.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
