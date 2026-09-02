@@ -1590,6 +1590,27 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** anemia / EPO PD models, `Crass_2024_pegcetacoplan_hemoglobin.R` (direct sigmoidal Emax hemoglobin response to pegcetacoplan in paroxysmal nocturnal hemoglobinuria; algebraic output `hb <- rbase * (1 + edrug)` with additive residual error in g/dL).
 
+### sod (**canonical superoxide dismutase activity PD output**)
+- **Type:** compartment
+- **Role:** Serum / plasma superoxide dismutase (SOD) activity (U/mL) biomarker PD output. SOD is the primary enzymatic arm of the endogenous antioxidant defence, and antioxidant PK/PD models take it as an indirect-response endpoint whose zero-order production is stimulated by drug.
+- **Source aliases:** `SOD`.
+- **Example models:** `Shen_2026_shikimicAcid_broiler_sod.R` (founding example; effect-compartment-link indirect-response model in which shikimic acid linearly stimulates SOD production in broilers).
+- **Notes:** An enzyme *activity* (U/mL), not a concentration, so it is dimensionally distinct from the `taoc` and `mda` canonicals registered alongside it even though the three are measured on the same serum samples in the same experiments. Registered as part of the oxidative-status biomarker triad `taoc` / `sod` / `mda`; a model reporting all three registers one compartment per biomarker rather than a single pooled "antioxidant" state, because each is fitted with its own ke0 and turnover constants.
+
+### taoc (**canonical total antioxidant capacity PD output**)
+- **Type:** compartment
+- **Role:** Serum / plasma total antioxidant capacity (T-AOC, umol/mL) biomarker PD output. T-AOC is an integrated (assay-defined) measure of the aggregate reducing capacity of a sample, typically by FRAP or ABTS, and is used as the summary antioxidant-status endpoint alongside the individual enzyme and damage markers.
+- **Source aliases:** `T-AOC`, `TAOC`.
+- **Example models:** `Shen_2026_shikimicAcid_broiler_taoc.R` (founding example; effect-compartment-link indirect-response model in which shikimic acid linearly stimulates T-AOC production in broilers).
+- **Notes:** Assay-defined composite rather than a single molecular species, so its units follow the assay's calibration standard (Shen 2026 calibrates the FRAP assay against FeSO4 and reports umol/mL). Registered as part of the oxidative-status biomarker triad `taoc` / `sod` / `mda`. Distinct from `sod`, which is one enzymatic contributor to it, and from `mda`, which measures damage rather than capacity.
+
+### mda (**canonical malondialdehyde PD output**)
+- **Type:** compartment
+- **Role:** Serum / plasma malondialdehyde (MDA, nmol/mL) biomarker PD output. MDA is the standard end-product marker of lipid peroxidation, i.e. oxidative *damage*; in antioxidant PK/PD models it typically falls after drug, and is fitted as an indirect response in which drug stimulates the first-order loss.
+- **Source aliases:** `MDA`.
+- **Example models:** `Shen_2026_shikimicAcid_broiler_mda.R` (founding example; effect-compartment-link indirect-response model in which shikimic acid linearly stimulates MDA elimination in broilers).
+- **Notes:** Directionally opposite to `taoc` and `sod` - it measures accumulated oxidative damage rather than defensive capacity, so a beneficial drug effect is a decrease and the indirect-response model stimulates kout rather than kin. Registered as part of the oxidative-status biomarker triad `taoc` / `sod` / `mda`.
+
 ### ldh (**canonical serum lactate dehydrogenase PD output**)
 - **Type:** compartment
 - **Role:** Serum lactate dehydrogenase (LDH, U/L) biomarker PD output. LDH is the standard clinical marker of intravascular hemolysis and, more generally, of cell turnover / tissue damage; complement-inhibitor and hemolytic-disease PK/PD models take it as a direct or indirect response endpoint.
