@@ -2150,8 +2150,12 @@ navbar:
         href: articles/Davis_2008_maraviroc.html
       - text: "Maraviroc (Rosario 2008)"
         href: articles/Rosario_2008_maraviroc.html
+      - text: "Maraviroc hlm (Hyland 2008)"
+        href: articles/Hyland_2008_maraviroc_invitro.html
       - text: "Maraviroc iv (Weatherley 2009)"
         href: articles/Weatherley_2009_maraviroc_iv.html
+      - text: "Maraviroc rcyp3a4 (Hyland 2008)"
+        href: articles/Hyland_2008_maraviroc_invitro.html
       - text: "Maribavir (Sun 2023)"
         href: articles/Sun_2023_maribavir.html
       - text: "Matrine pig pbpk (Yang 2025)"
@@ -4821,6 +4825,7 @@ articles:
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_carvedilol
   - articles/Hwang_2023_monalizumab
+  - articles/Hyland_2008_maraviroc_invitro
   - articles/Ibrahim_2023_ibrutinib
   - articles/Ibrahim_2025_ibrutinib
   - articles/Ide_2009_pravastatin
