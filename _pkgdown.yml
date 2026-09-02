@@ -1122,6 +1122,8 @@ navbar:
         href: articles/Jiang_2024_empagliflozin.html
       - text: "Empagliflozin (Johnston 2019)"
         href: articles/Johnston_2019_empagliflozin.html
+      - text: "Empagliflozin (Riggs 2014)"
+        href: articles/Riggs_2014_empagliflozin.html
       - text: "Empagliflozin MEASE1 (Johnston 2021)"
         href: articles/Johnston_2021_empagliflozin.html
       - text: "Empagliflozin popPK (Johnston 2021)"
@@ -5227,6 +5229,7 @@ articles:
   - articles/Richardson_2025_automated_popPK
   - articles/Rietveld_2025_docetaxel
   - articles/Riggs_2012_albinterferon
+  - articles/Riggs_2014_empagliflozin
   - articles/Rini_2013_axitinib
   - articles/Robarge_2017_efavirenz
   - articles/Robbie_2012_palivizumab
