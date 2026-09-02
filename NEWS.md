@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhang 2023 aztreonam, amoxicillin and clavulanic acid ([doi:10.3390/pharmaceutics15010251](https://doi.org/10.3390/pharmaceutics15010251)) -- simulated adults with creatinine clearance 10-150 mL/min/1.73 m2.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
