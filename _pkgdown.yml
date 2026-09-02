@@ -2574,6 +2574,8 @@ navbar:
         href: articles/Luu_2017_nusinersen.html
       - text: "Nutlin3a (Zhang 2011)"
         href: articles/Zhang_2011_nutlin3a.html
+      - text: "ObeticholicAcid pbpk (Edwards 2016)"
+        href: articles/Edwards_2016_obeticholicAcid.html
       - text: "Obiltoxaximab (Nagy 2017)"
         href: articles/Nagy_2017_obiltoxaximab.html
       - text: "Obiltoxaximab survival (Nagy 2017)"
@@ -4650,6 +4652,7 @@ articles:
   - articles/Echterhof_2026_phage_pbpk
   - articles/Eckernas_2023_dimethyltryptamine_EEG
   - articles/Edstein_2001_tafenoquine
+  - articles/Edwards_2016_obeticholicAcid
   - articles/Eissing_2024_finerenone
   - articles/Ekhart_2008_carboplatin
   - articles/Elassaiss-Schaap_2017_pembrolizumab
