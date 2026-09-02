@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Chetty 2014 efalizumab CD11a target engagement and PASI response
-  ([doi:10.3389/fimmu.2014.00670](https://doi.org/10.3389/fimmu.2014.00670)) --
-  adults with moderate-to-severe plaque psoriasis.
+- Add Cortez 2015 long-acting injectable nevirapine ([doi:10.1128/AAC.03906-14](https://doi.org/10.1128/AAC.03906-14)) -- Sprague-Dawley rats for the two formulation fits, and breastfeeding infants for the HIV-prophylaxis projections.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
