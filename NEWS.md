@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Riggs 2014 empagliflozin exposure-response ([doi:10.1111/bcp.12453](https://doi.org/10.1111/bcp.12453)) -- adults with type 2 diabetes.
+- Add Chetty 2014 efalizumab CD11a target engagement and PASI response
+  ([doi:10.3389/fimmu.2014.00670](https://doi.org/10.3389/fimmu.2014.00670)) --
+  adults with moderate-to-severe plaque psoriasis.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

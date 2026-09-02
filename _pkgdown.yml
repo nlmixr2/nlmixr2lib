@@ -1120,6 +1120,10 @@ navbar:
         href: articles/Niebecker_2015_edoxaban.html
       - text: "Efalizumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
+      - text: "Efalizumab cd11a qsp (Chetty 2014)"
+        href: articles/Chetty_2014_efalizumab_cd11a_pasi.html
+      - text: "Efalizumab pasi (Chetty 2014)"
+        href: articles/Chetty_2014_efalizumab_cd11a_pasi.html
       - text: "Efaproxiral (Gastonguay 2005)"
         href: articles/Gastonguay_2005_efaproxiral.html
       - text: "Efavirenz (Bienczak 2016)"
@@ -4491,6 +4495,7 @@ articles:
   - articles/Chen_2025_remimazolam
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
+  - articles/Chetty_2014_efalizumab_cd11a_pasi
   - articles/Chi_2018_propofol
   - articles/Chien_2022_imatinib
   - articles/Chigutsa_2011_rifampicin
