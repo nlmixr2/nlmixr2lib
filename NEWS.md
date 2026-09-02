@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gafar 2026 rifampicin ([doi:10.1093/infdis/jiag052](https://doi.org/10.1093/infdis/jiag052)) -- adolescents and adults receiving tuberculosis preventive therapy in Canada, Indonesia and Vietnam.
+- Add Wei 2026 enrofloxacin + cefquinome ([doi:10.1186/s12917-026-05301-5](https://doi.org/10.1186/s12917-026-05301-5)) -- chicks with experimentally induced *Klebsiella pneumoniae* pneumonia.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
