@@ -526,6 +526,8 @@ navbar:
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cabozantinib tumor (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
+      - text: "Cafedrine theodrenaline ephedrine (Dings 2026)"
+        href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
       - text: "Camizestrant (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Canakinumab (AitOudhia 2012)"
@@ -2396,6 +2398,8 @@ navbar:
         href: articles/Chen_2023_nemonoxacin.html
       - text: "Nemtabrutinib (Kemal 2026)"
         href: articles/Kemal_2026_nemtabrutinib.html
+      - text: "Neonatal acidosis (Dings 2026)"
+        href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
       - text: "Nevirapine (Bienczak 2016)"
         href: articles/Bienczak_2016_nevirapine.html
       - text: "Nevirapine (Schipani 2011)"
@@ -4440,6 +4444,7 @@ articles:
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
+  - articles/Dings_2026_cafedrine_theodrenaline_ephedrine
   - articles/Dirks_2008_cetuximab
   - articles/Djebli_2017_alirocumab
   - articles/Djerada_2014_nefopam

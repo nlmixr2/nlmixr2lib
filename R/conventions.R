@@ -137,14 +137,19 @@
   # accommodates parallel-absorption models with two or more depots.
   # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
   # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
-  # models; `reticulocytes[0-9]+` is the reticulocyte age-transit chain
-  # that sits one stage upstream of `erythrocytes[0-9]+` in the same
-  # cascade; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
-  # (tolerance) chain. `caseum[0-9]+` is the catenary chain of concentric
-  # rings of the necrotic caseous core of a tuberculosis granuloma,
-  # numbered outward-to-inward from the outer caseum edge.
-  compartmentRegex =
-    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum)[0-9]+$",
+  # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
+  # (tolerance) chain. The optional `_slow` / `_fast` qualifier registers
+  # the dual-rate effect-delay cascade families (`effect_slow<n>` /
+  # `effect_fast<n>`): two parallel first-order lag chains of different
+  # speed whose terminal members are summed to form one PD driver. It is
+  # a qualifier rather than a separate prefix because both chains are the
+  # same kind of state, distinguished only by their rate constant.
+  # Documented in inst/references/compartment-names.md; founding example
+  # Dings_2026_cafedrine_theodrenaline_ephedrine.
+  compartmentRegex = paste0(
+    "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator)",
+    "(_slow|_fast)?[0-9]+$"
+  ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP

@@ -994,6 +994,46 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
 
+### lrbase (**canonical log-transformed baseline level of a PD / turnover state**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed baseline (pre-treatment steady-state) value of a PD, turnover or endogenous state, expressed in the units of the state itself -- not a concentration and not an increment. Inside `model()` the bare name is `rbase`, and the compartment initial condition is set as `<state>(0) <- rbase`. Per-output forms are suffixed: `lrbase_tumor`, `lrbase_anc`.
+- **Source aliases:**
+  - `R0`, `Base`, `BASE`, `BL`, `S0`, `TS0`, `R_baseline` -- common source-paper notations; all translate to `lrbase` without a sidecar.
+- **Example models:** 187 shipped models, e.g. `Zhang_2022_ormutivimab.R`, `Hansson_2013_sunitinib_dbp.R`, `Ibrahim_2023_ibrutinib_sbp.R`.
+- **Notes:** Documented 2026-09-01 as part of the Dings 2026 extraction (task `oare_PMC13029352`). This entry records a long-standing convention that had never been written into the register: `lrbase` was already in consistent use across 187 model files (log baseline testosterone, baseline COWA score, baseline endogenous FVIII, ...) and was cross-referenced from `le0`'s Notes as though registered. The deprecated legacy forms `lr0`, `lbl`, `lbase`, `lBase`, `ls0`, `lts0` should be migrated to `lrbase`. Distinct from `lemax` (an effect *increment*) and from `lrmax_<output>` (the plateau *level* reached under maximal drug effect); `lrbase` and `lrmax_<output>` are the two ends of the same scale, and `emax = rmax - rbase` relates them.
+
+### lemax, limax (**canonical log-transformed maximal drug-effect increment**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed maximum achievable drug effect in a sigmoid Emax / Imax PD model, expressed as the *increment* (or fractional increment) added to -- or removed from -- the baseline, never as an absolute attained level. Inside `model()` the bare names are `emax` / `imax`. Per-output forms are suffixed (`lemax_tumor`).
+- **Source aliases:**
+  - `lEmax`, `lEMAX`, `lImax` -- equivalent paper notation.
+- **Example models:** 181 shipped models, e.g. `deVriesSchultink_2018_trastuzumab_LVEF.R`, `Kleijn_2011_sugammadex_rocuronium.R`, `Boucher_2018_naproxen_mbma.R`.
+- **Notes:** Documented 2026-09-01 alongside `lrbase`, for the same reason -- an established convention (181 models) that had no register entry. Pairs with `lec50` (half-maximal concentration) and `lhill` (Hill exponent). **Do not use `lemax` when the source paper estimates the attained plateau level rather than the increment** -- that is `lrmax_<output>`; the two differ by the baseline and silently substituting one for the other misstates every prediction whose baseline is not zero.
+
+### lrmax_map, lrmax_sbp, lrmax_hr (**canonical log-transformed maximum attainable plateau level of a PD output**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed maximum attainable *level* of a PD endpoint under maximal drug effect, in the endpoint's own clinical units (mmHg, beats/min, ...) -- the plateau-level counterpart of `lrbase`. Used when the source paper estimates the ceiling of the response rather than the increment, so the Emax term must be recovered as a difference: `emax_map <- rmax_map - MAP_BL`. Inside `model()` the bare names are `rmax_map`, `rmax_sbp`, `rmax_hr`; the per-output suffix follows the registered multi-analyte precedent.
+- **Source aliases:**
+  - `MAXMAP`, `MAXSBP`, `MAXHR` -- Dings 2026 Table A1 parameter labels.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`rmax_hr` = 77.8 beats/min, `rmax_map` = 119 mmHg, `rmax_sbp` = 169 mmHg; each enters `endpoint = BL + (rmax - BL) * conc/(conc + ec50) + ...`).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine K/PD extraction (task `oare_PMC13029352`, sidecar request-001 q3=A). The plateau-level sibling of `lrbase`; `lemax` is explicitly **not** a substitute because it denotes an increment, so a model that reported `lemax = log(77.8)` for a 77.8 beats/min ceiling above an 84 beats/min baseline would predict a rise where the paper predicts a fall. A signed consequence worth noting: because the ceiling can sit *below* the baseline, the recovered `emax` may be negative (in the founding model `rmax_hr - HR_BL` = 77.8 - 84 = -6.2 beats/min for cafedrine/theodrenaline, and +5.5 for ephedrine after its +15% effect) -- which is exactly the paper's finding that one drug is heart-rate-neutral. Register additional `lrmax_<output>` members as new endpoints appear rather than reusing an existing one.
+
+### lktr, lktr_slow, lktr_fast (**canonical log-transformed first-order transit / effect-delay rate constant**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed first-order rate constant of a transit or effect-delay cascade (1/time). Inside `model()` the bare names are `ktr`, `ktr_slow`, `ktr_fast`. For a chain of `n` stages the mean transit time is `n / ktr`. `lktr` is the single-chain form; `lktr_slow` / `lktr_fast` are the qualified forms used when a model carries two parallel cascades of different speed, and they pair one-to-one with the `effect_slow<n>` / `effect_fast<n>` compartment families.
+- **Source aliases:**
+  - `lKTR`, `lktr1`, `lktr2` -- equivalent paper notation; `Ktr1` / `Ktr2` in Dings 2026 Table A1 map to `lktr_slow` / `lktr_fast` respectively (the paper numbers them by equation order, not by speed, so translate by the reported transit time rather than by the digit).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`ktr_slow` = 0.107/min over three stages, mean transit time 28.0 min; `ktr_fast` = 1.76/min over four stages, mean transit time 2.27 min).
+- **Notes:** `lktr` documented and the `_slow` / `_fast` qualified pair registered 2026-09-01 alongside the Dings 2026 extraction (task `oare_PMC13029352`, sidecar request-001 q1=A). Prefer the qualified names over numeric suffixes whenever the two chains differ in *role* (onset vs persistence), because a paper's numbering of its chains carries no guarantee of speed ordering -- in the founding paper `Ktr1` is the slower constant. The mean-transit-time relation is `n / ktr`, **not** `(n + 1) / ktr`; the latter applies only to rxode2's `transit()` closed form, where the dosing depot counts as a stage. Pairs with `lmtt` when a source parameterises by mean transit time instead.
+
+### lkdel (**canonical log-transformed rate constant of a procedure- or intervention-onset effect**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed first-order rate constant (1/time) governing how quickly the physiological effect of a non-drug clinical intervention (spinal anaesthesia, a surgical manoeuvre, a device) develops toward its full magnitude. Inside `model()` the bare name is `kdel`. Distinct from `ke0`, which is a plasma-to-effect-site *equilibration* rate for a drug.
+- **Source aliases:**
+  - `Kdel` -- Dings 2026 Table A1 ("Rate of BP effect of anesthesia").
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (`kdel` = 0.171/min; drives the decaying `effect_anaesthesia` state whose complement `exp(-kdel * T_ANAESTHESIA) - effect_anaesthesia` carries the progressive spinal-anaesthesia fall in blood pressure that continues after the antihypotensive bolus).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 extraction (task `oare_PMC13029352`). The paired magnitude parameter is the additive `eff_anaes_bp` (mmHg). Reuse only for the same intervention-onset role; a drug's effect-compartment equilibration stays `lke0`.
+
 ### kel_exp_famp (**canonical fractional amplitude of a time-varying elimination rate constant**)
 - **Type:** paper-named-param
 - **Role:** Dimensionless fractional amplitude of an exponential change in the elimination rate constant over a course of therapy: `kel(t) = kel * (1 + kel_exp_famp * (1 - exp(-kel_exp_kdes * t)))`, so `kel(0) = kel`, `kel(inf) = kel * (1 + kel_exp_famp)`, and a negative value means `kel` (and hence `CL`) falls over time.
