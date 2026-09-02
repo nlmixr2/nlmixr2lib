@@ -3912,6 +3912,8 @@ navbar:
         href: articles/Cao_2013_visilizumab.html
       - text: "Vismodegib (Lu 2015)"
         href: articles/Lu_2015_vismodegib.html
+      - text: "Vixarelimab (Tang 2026)"
+        href: articles/Tang_2026_vixarelimab.html
       - text: "VonicogAlfa (Bauer 2023)"
         href: articles/Bauer_2023_vonWillebrandFactor.html
       - text: "Voriconazole (Akbar 2025)"
@@ -5486,6 +5488,7 @@ articles:
   - articles/Tan_2009_artesunate
   - articles/Tanaka_2012_phenytoin
   - articles/Tang_2019_amoxicillin
+  - articles/Tang_2026_vixarelimab
   - articles/Tao_2025_meropenem
   - articles/Tarning_2008_piperaquine
   - articles/Tarning_2012_artemether
