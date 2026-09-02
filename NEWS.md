@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Cortez 2015 long-acting injectable nevirapine ([doi:10.1128/AAC.03906-14](https://doi.org/10.1128/AAC.03906-14)) -- Sprague-Dawley rats for the two formulation fits, and breastfeeding infants for the HIV-prophylaxis projections.
+- Add Chandorkar 2015 ceftolozane and tazobactam ([doi:10.1002/jcph.395](https://doi.org/10.1002/jcph.395)) -- healthy adults, adults with mild to severe renal impairment, and patients with complicated urinary tract or intra-abdominal infections.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

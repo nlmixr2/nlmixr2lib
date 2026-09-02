@@ -680,6 +680,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Ceftobiprole (Cojutti 2023)"
         href: articles/Cojutti_2023_ceftobiprole.html
+      - text: "Ceftolozane (Chandorkar 2015)"
+        href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
       - text: "Ceftriaxone (Garot 2011)"
         href: articles/Garot_2011_ceftriaxone.html
       - text: "Ceftriaxone (Tsai 2023)"
@@ -3590,6 +3592,8 @@ navbar:
         href: articles/Li_2015_taspoglutide_mbma.html
       - text: "Taurine rat (Catalan-Latorre 2018)"
         href: articles/Catalan-Latorre_2018_taurine_rat.html
+      - text: "Tazobactam (Chandorkar 2015)"
+        href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
       - text: "Tazobactam (CohenWolkowiez 2014)"
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
       - text: "Tazobactam (Lee 2025)"
@@ -4470,6 +4474,7 @@ articles:
   - articles/Chan_2023_nirmatrelvir
   - articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric
   - articles/Chandasana_2024_dolutegravir_lamivudine
+  - articles/Chandorkar_2015_ceftolozane_tazobactam
   - articles/ChandralayamAyyappaMenon_2026_isb2001
   - articles/Chang_2011_PF04455242_prolactin
   - articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta
