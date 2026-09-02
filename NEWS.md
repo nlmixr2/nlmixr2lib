@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zou 2026 meropenem ([doi:10.3389/fphar.2026.1778552](https://doi.org/10.3389/fphar.2026.1778552)) -- adults with severe postoperative infections in a general ICU.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
