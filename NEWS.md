@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sulaiman 2026 piperacillin/tazobactam ([doi:10.1093/jac/dkag199](https://doi.org/10.1093/jac/dkag199)) -- critically ill adults with sepsis or septic shock in Malaysian intensive care units.
+- Add Ma 2026 colistin sulfate ([doi:10.2147/DDDT.S600942](https://doi.org/10.2147/DDDT.S600942)) -- critically ill adults with carbapenem-resistant infections.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
