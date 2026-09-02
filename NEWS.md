@@ -21,7 +21,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Chung 2026 vancomycin ([doi:10.3390/children13050649](https://doi.org/10.3390/children13050649)) -- preterm and term neonates in the neonatal intensive care unit.
+- Add Ren 2026 rivaroxaban PK/PD ([doi:10.1016/j.rpth.2026.106618](https://doi.org/10.1016/j.rpth.2026.106618)) -- Chinese adults treated for pulmonary embolism.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
