@@ -3265,6 +3265,22 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Wilson_2015_sunitinib_irinotecan_mouse.R`.
 - **Notes:** Full INN name (lowercase) for the same reason as `sunitinib`.
 
+### capecitabine (**canonical capecitabine K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Capecitabine drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_capecitabine`, `lkel_capecitabine`, `kel_capecitabine`) and for the paired drug-effect parameters (`lkkill_capecitabine`, `lres_capecitabine`).
+- **Source aliases:**
+  - `CAPE` / `KD2` / `DM2` / `KP2` -- Bruno 2012 NONMEM `$MODEL` compartment label and `$PK` parameter names.
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (capecitabine as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol` for whole co-administered agents. Distinct from the capecitabine METABOLITE suffixes `dfcr`, `dfur`, `5fu` and `fbal`, which name the downstream chemical species in a capecitabine cascade PK model (`Urien_2005_capecitabine.R`, `Blesch_2003_capecitabine.R`); this suffix names capecitabine itself as the co-administered parent agent in a combination model, where the bare canonical names belong to neither drug.
+
+### docetaxel (**canonical docetaxel K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Docetaxel drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_docetaxel`, `lkel_docetaxel`, `kel_docetaxel`) and for the paired drug-effect parameters (`lkkill_docetaxel`, `lres_docetaxel`).
+- **Source aliases:**
+  - `DOCE` / `KD1` / `DM1` / `KP1` -- Bruno 2012 NONMEM `$MODEL` compartment label and `$PK` parameter names.
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (docetaxel as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol`. Docetaxel already appears in the library as a parent analyte with bare canonical names (`Koolen_2010_docetaxel.R`, `Ozawa_2007_docetaxel.R`, `Puisset_2007_docetaxel.R`, `Janssen_2023_docetaxel.R`, `Rietveld_2025_docetaxel.R`, `Netterberg_2017_docetaxel.R`); this suffix is for combination models in which neither drug can claim the bare names.
+
 ### olaparib (**canonical olaparib sibling-drug suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Olaparib drug-name suffix for the non-parent arm of AZD7648 + olaparib combination models, covering its full PK cascade (`depot_olaparib`, `central_olaparib`, `peripheral1_olaparib`, `effect_olaparib`) and the associated parameters (`lcl_olaparib`, `lvc_olaparib`, `lslope_olaparib`, `lfdepot_olaparib`).
