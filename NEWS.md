@@ -2,9 +2,7 @@
 
 # development version
 
-- Add the three Kemal 2026 nemtabrutinib exposure-response models
-  ([doi:10.1002/psp4.70257](https://doi.org/10.1002/psp4.70257)) -- adults with
-  hematologic malignancies.
+- Add Sulaiman 2026 piperacillin/tazobactam ([doi:10.1093/jac/dkag199](https://doi.org/10.1093/jac/dkag199)) -- critically ill adults with sepsis or septic shock in Malaysian intensive care units.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
