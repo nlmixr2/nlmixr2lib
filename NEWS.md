@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2016 burosumab ([doi:10.1002/jcph.611](https://doi.org/10.1002/jcph.611)) -- adults with X-linked hypophosphatemia.
+- Add Kim 2026 zolpidem ([doi:10.1002/psp4.70208](https://doi.org/10.1002/psp4.70208)) -- healthy Korean volunteers; PK plus three sequential PK-PD models for DSST, choice reaction time and sedation VAS.
 
 - Rename the sigmoidal-in-time clearance parameter family so the names state the
   structure rather than only the curve shape, across all 20 models that use it:
