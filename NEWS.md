@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rayner 2013 oseltamivir exposure-response models ([doi:10.1128/AAC.02440-12](https://doi.org/10.1128/AAC.02440-12)) — healthy adults experimentally inoculated with influenza A or B in two phase 2 studies.
+- Add Snelder 2013 drug-independent cardiovascular systems (MAP / CO / TPR) model ([doi:10.1111/bph.12190](https://doi.org/10.1111/bph.12190)) -- conscious male spontaneously hypertensive rats.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
