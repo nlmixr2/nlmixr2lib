@@ -2,9 +2,9 @@
 
 # development version
 
-- Add Roiko 2012 gamma-hydroxybutyric acid (GHB) blood-brain-barrier uptake
-  ([doi:10.1124/dmd.111.041749](https://doi.org/10.1124/dmd.111.041749)) --
-  in vitro, rat (RBE4) and human (hCMEC/D3) brain capillary endothelial cells.
+- Add Morse 2012 gamma-hydroxybutyrate red-cell transport
+  ([doi:10.1124/dmd.111.041285](https://doi.org/10.1124/dmd.111.041285)) --
+  in vitro rat Sprague-Dawley erythrocytes.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

@@ -1598,10 +1598,8 @@ navbar:
         href: articles/Karakitsios_2024_gevokizumab.html
       - text: "Gevokizumab mbma (Karakitsios 2024)"
         href: articles/Karakitsios_2024_gevokizumab.html
-      - text: "Ghb hcmecd3 (Roiko 2012)"
-        href: articles/Roiko_2012_ghb_brain_uptake.html
-      - text: "Ghb rbe4 (Roiko 2012)"
-        href: articles/Roiko_2012_ghb_brain_uptake.html
+      - text: "Ghb rbc invitro (Morse 2012)"
+        href: articles/Morse_2012_ghb_rbc_invitro.html
       - text: "Givosiran (Ayyar 2024)"
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glasdegib QTcF (Fostvedt 2021)"
@@ -5198,6 +5196,7 @@ articles:
   - articles/Mori_2018_zoledronicAcid
   - articles/Morris_2011_artesunate
   - articles/Morris_2011_telapristone
+  - articles/Morse_2012_ghb_rbc_invitro
   - articles/Mosha_2014_artemether_lumefantrine
   - articles/Mouksassi_2015_thrombomodulinAlfa
   - articles/Mould_2007_alemtuzumab

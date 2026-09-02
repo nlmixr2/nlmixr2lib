@@ -2882,6 +2882,13 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 - **Example models:** `Gebhard_2023_mercaptopurine.R`, `Gebhard_2023_mercaptopurine_anc.R`.
 - **Notes:** Registered 2026-07-30 alongside `rbc_mtx`. In the Gebhard 2023 PKPD model this state is the driver of the Friberg myelosuppression effect function (`Edrug = slope * rbc_tgn`).
 
+### rbc_ghb (**canonical intracellular red-cell gamma-hydroxybutyrate pool**)
+- **Type:** compartment
+- **Role:** gamma-Hydroxybutyrate (GHB) accumulated inside red blood cells. Fed by two parallel influx arms -- a saturable MCT1-mediated arm (`vmax_rbc`, `km_rbc`) and a linear band 3 / passive arm (`kinf_rbc`) -- driven by the extracellular GHB concentration.
+- **Source aliases:** none.
+- **Example models:** `Morse_2012_ghb_rbc_invitro.R`.
+- **Notes:** Registered 2026-09-02 alongside the Morse 2012 extraction. Two scope points distinguish it from `rbc_mtx` / `rbc_tgn`, which are in vivo clinical-PK states. First, **units**: this state holds an amount normalised per mg of red-cell protein (nmol/mg protein), not a concentration, because that is the normalisation an erythrocyte uptake assay reports and the source supplies no protein-per-cell-volume factor with which to convert. A per-mg-protein `rbc_<analyte>` state is a legitimate member of the family; record the units explicitly in `compartmentData` so the deviation from the family's usual concentration units is machine-readable. Second, **direction**: an in vitro initial-rate uptake experiment measures unidirectional influx over a window short enough to stay linear, so the state has influx only and carries no `keff_rbc` efflux term. Do not read the absence of efflux as a claim that none exists -- Morse 2012 states explicitly that bidirectional transport and trans-stimulation are expected in vivo and that equilibrium-exchange `km` and `vmax` would exceed the unidirectional values fitted here.
+
 ---
 
 ## Intracellular red-cell analyte pools (`rbc_<analyte>` namespace)
