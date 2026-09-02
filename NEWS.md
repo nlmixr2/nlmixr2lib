@@ -2,6 +2,10 @@
 
 # development version
 
+- Add Benson 2010 reboxetine hNET target-binding kinetics
+  ([doi:10.1111/j.1476-5381.2010.00719.x](https://doi.org/10.1111/j.1476-5381.2010.00719.x))
+  -- in vitro, HEK-293 membranes expressing human noradrenaline transporter.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and

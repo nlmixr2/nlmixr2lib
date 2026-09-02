@@ -2994,6 +2994,10 @@ navbar:
         href: articles/Xu_2013_ranibizumab.html
       - text: "Ranitidine (Hawwa 2013)"
         href: articles/Hawwa_2013_ranitidine.html
+      - text: "Reboxetine apparent qsp (Benson 2010)"
+        href: articles/Benson_2010_reboxetine_hnet_binding.html
+      - text: "Reboxetine qsp (Benson 2010)"
+        href: articles/Benson_2010_reboxetine_hnet_binding.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Roberts 2025)"
@@ -4191,6 +4195,7 @@ articles:
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
+  - articles/Benson_2010_reboxetine_hnet_binding
   - articles/Benson_2014_PF04457845_qsp
   - articles/Beredaki_2023_micafungin
   - articles/Beredaki_2024_amphotericinB_liposomal
