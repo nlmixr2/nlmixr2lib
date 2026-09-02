@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Yin 2026 ceftazidime ([doi:10.1128/aac.01810-25](https://doi.org/10.1128/aac.01810-25)) — Chinese neonates sampled by quantitative dried blood spot.
+- Add the three Kemal 2026 nemtabrutinib exposure-response models
+  ([doi:10.1002/psp4.70257](https://doi.org/10.1002/psp4.70257)) -- adults with
+  hematologic malignancies.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

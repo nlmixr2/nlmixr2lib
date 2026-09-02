@@ -1,5 +1,5 @@
 Kemal_2026_nemtabrutinib <- function() {
-  description <- "Two-compartment population PK model for nemtabrutinib (oral BTK inhibitor) in adults with hematologic malignancies including CLL/SLL (Kemal 2026, full covariate model)"
+  description <- "Two-compartment population PK model for nemtabrutinib (oral BTK inhibitor) in adults with hematologic malignancies including CLL/SLL (Kemal 2026, full covariate model). This is the PK layer of the paper; it generates the individual average on-treatment concentration (Cavg) that drives the paper's three exposure-response models. Sister model files from the same paper: modellib('Kemal_2026_nemtabrutinib_bor') for exposure-efficacy (best overall response in CLL/SLL), and modellib('Kemal_2026_nemtabrutinib_ae') / modellib('Kemal_2026_nemtabrutinib_hypertension') for the two exposure-safety endpoints."
   reference <- "Kemal CC, Zweers TJ, Krekels EHJ, Chatterjee MS. Population Pharmacokinetic Modeling and Exposure-Response Analyses of Nemtabrutinib in Patients With Hematologic Malignancies. CPT Pharmacometrics Syst Pharmacol. 2026;15(5). doi:10.1002/psp4.70257"
   vignette <- "Kemal_2026_nemtabrutinib"
   units <- list(time = "h", dosing = "mg", concentration = "ng/mL")
