@@ -96,6 +96,12 @@ navbar:
         href: articles/Nader_2017_adalimumab.html
       - text: "Adalimumab minipig (Zheng 2012)"
         href: articles/Zheng_2012_minipig_mab.html
+      - text: "Adalimumab phase1 (Kang 2020)"
+        href: articles/Kang_2020_adalimumab.html
+      - text: "Adalimumab phase3 base (Kang 2020)"
+        href: articles/Kang_2020_adalimumab.html
+      - text: "Adalimumab phase3 extension (Kang 2020)"
+        href: articles/Kang_2020_adalimumab.html
       - text: "Adecatumumab (Cao 2013)"
         href: articles/Cao_2013_adecatumumab.html
       - text: "Aditoprim pbpk (Mi 2024)"
@@ -4749,6 +4755,7 @@ articles:
   - articles/Kamal_2013_oseltamivir
   - articles/Kamal_2014_oseltamivir
   - articles/Kamal_2015_oseltamivir
+  - articles/Kang_2020_adalimumab
   - articles/Kang_2020_cefpirome
   - articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk
   - articles/Kapitanov_2025_dupilumab

@@ -2,6 +2,10 @@
 
 # development version
 
+- Add Kang 2020 adalimumab ([doi:10.1111/bcp.14330](https://doi.org/10.1111/bcp.14330))
+  as three models (`_phase1`, `_phase3_base`, `_phase3_extension`) -- healthy
+  male volunteers and adults with active rheumatoid arthritis.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
