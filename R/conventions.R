@@ -138,7 +138,10 @@
   # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
   # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
   # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
-  # (tolerance) chain. The optional `_slow` / `_fast` qualifier registers
+  # (tolerance) chain; `reticulocytes[0-9]+` is the reticulocyte chain that
+  # feeds the erythrocyte one, and `caseum[0-9]+` the concentric caseum
+  # rings of a tuberculosis granuloma.
+  # The optional `_slow` / `_fast` qualifier registers
   # the dual-rate effect-delay cascade families (`effect_slow<n>` /
   # `effect_fast<n>`): two parallel first-order lag chains of different
   # speed whose terminal members are summed to form one PD driver. It is
@@ -147,8 +150,8 @@
   # Documented in inst/references/compartment-names.md; founding example
   # Dings_2026_cafedrine_theodrenaline_ephedrine.
   compartmentRegex = paste0(
-    "^(transit|effect|precursor|lat|depot|erythrocytes|mch|moderator)",
-    "(_slow|_fast)?[0-9]+$"
+    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|",
+    "moderator|caseum)(_slow|_fast)?[0-9]+$"
   ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`

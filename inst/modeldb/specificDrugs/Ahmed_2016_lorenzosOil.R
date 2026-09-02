@@ -48,9 +48,12 @@ Ahmed_2016_lorenzosOil <- function() {
     # (Results, Population PD analyses). The block on (E0, EC50) carries the off-diagonal
     # covariance; Emax sits on its own diagonal eta.
     etale0 + etalec50 ~ c(
-      0.09464,                  # omega^2_E0   = log(0.315^2 + 1)                                        # Ahmed 2016 Table 2 BSV_E0 31.5%
-     -0.31579,                  # cov(E0, EC50) = -0.877 * sqrt(0.09464 * 1.36998)                       # Ahmed 2016 Table 2 corr(E0,EC50) -0.877
-      1.36998                   # omega^2_EC50 = log(1.713^2 + 1)                                        # Ahmed 2016 Table 2 BSV_EC50 171.3%
+      # omega^2_E0   = log(0.315^2 + 1)                                        # Ahmed 2016 Table 2 BSV_E0 31.5%
+      0.09464,
+      # cov(E0, EC50) = -0.877 * sqrt(0.09464 * 1.36998)                       # Ahmed 2016 Table 2 corr(E0,EC50) -0.877
+     -0.31579,
+      # omega^2_EC50 = log(1.713^2 + 1)                                        # Ahmed 2016 Table 2 BSV_EC50 171.3%
+      1.36998
     )
     etalemax ~ 0.003836         # omega^2_Emax = log(0.062^2 + 1)                                        # Ahmed 2016 Table 2 BSV_Emax 6.2%
 
