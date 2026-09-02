@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pohl 2022 linzagolix population PK and PK-oestradiol models ([doi:10.1111/bcp.15171](https://doi.org/10.1111/bcp.15171)) — healthy women and women with endometriosis.
+- Add Shchelokov 2023 nivolumab PD-1 receptor-occupancy QSP model ([doi:10.1080/19420862.2022.2156317](https://doi.org/10.1080/19420862.2022.2156317)) -- virtual patients with advanced solid tumors.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

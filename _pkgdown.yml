@@ -2572,6 +2572,8 @@ navbar:
         href: articles/Bajaj_2017_nivolumab.html
       - text: "Nivolumab (Zhang 2019)"
         href: articles/Zhang_2019_nivolumab.html
+      - text: "Nivolumab qsp (Shchelokov 2023)"
+        href: articles/Shchelokov_2023_nivolumab_qsp.html
       - text: "Norepinephrine (Li 2024)"
         href: articles/Li_2024_norepinephrine.html
       - text: "Norepinephrine (Oualha 2014)"
@@ -5549,6 +5551,7 @@ articles:
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2018_SHetA2
   - articles/Sharma_2023_nitrofurantoin
+  - articles/Shchelokov_2023_nivolumab_qsp
   - articles/Sheiner_1979_tubocurarine
   - articles/Shekar_2014_meropenem
   - articles/Shen_2013_belatacept
