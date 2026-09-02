@@ -67,6 +67,8 @@
 
 - Add Marier 2010 teduglutide ([doi:10.1177/0091270009342252](https://doi.org/10.1177/0091270009342252)) -- healthy adults and patients with short bowel syndrome, Crohn's disease, or moderate hepatic impairment.
 
+- Add Marier 2011 cenicriviroc (TBR-652) HIV-1 RNA and MCP-1 exposure-response models ([doi:10.1128/AAC.00713-10](https://doi.org/10.1128/AAC.00713-10)) -- HIV-1-infected, antiretroviral treatment-experienced, CCR5-antagonist-naive adults.
+
 - Add Marier 2014 dutogliptin ([doi:10.1002/cpdd.87](https://doi.org/10.1002/cpdd.87)) -- healthy subjects and patients with type 2 diabetes mellitus.
 
 - Add Mascarenhas 2015 pentadecanoic and triheptadecanoic acid ([doi:10.1002/jcph.484](https://doi.org/10.1002/jcph.484)) -- children and adults with cystic fibrosis and pancreatic insufficiency, plus healthy comparison subjects.

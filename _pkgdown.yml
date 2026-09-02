@@ -652,6 +652,10 @@ navbar:
         href: articles/Bulitta_2009_cefuroxime_axetil.html
       - text: "Cemiplimab (Yang 2021)"
         href: articles/Yang_2021_cemiplimab.html
+      - text: "Cenicriviroc hiv1rna (Marier 2011)"
+        href: articles/Marier_2011_cenicriviroc.html
+      - text: "Cenicriviroc mcp1 (Marier 2011)"
+        href: articles/Marier_2011_cenicriviroc.html
       - text: "Cephalexin rat (Padoin 1998)"
         href: articles/Padoin_1998_cephalexin_rat.html
       - text: "Cephalothin (Kuroda 2023)"
@@ -4983,6 +4987,7 @@ articles:
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
   - articles/Marier_2010_teduglutide
+  - articles/Marier_2011_cenicriviroc
   - articles/Marier_2014_dutogliptin
   - articles/MarquesMinana_2010_vancomycin
   - articles/Marques_2024_salbutamol
