@@ -2677,7 +2677,7 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Reference category:** n/a -- enters into the steady-state AUC computation `AUCss [nM*h] = DOSE_EMPA_MGD * 1e6 / 450.91 / cl` that drives the Emax stimulation of FPG elimination in the indirect-response PD model.
 - **Source aliases:**
   - `DOSE` -- used in `Baron_2016_empagliflozin.R` (Baron 2016 Methods; studied doses 1, 5, 10, 25, 50 mg QD per Table S2 with 10 and 25 mg dominating; 1129 / 40.9% and 1269 / 46.0% of patients respectively).
-- **Example models:** `Baron_2016_empagliflozin.R` (drives AUCss feeding Gmax * AUCss / (AUC50 + AUCss) -- AUC50 = 703 nM*h).
+- **Example models:** `Baron_2016_empagliflozin.R` (drives AUCss feeding Gmax * AUCss / (AUC50 + AUCss) -- AUC50 = 703 nM*h); `Riggs_2014_empagliflozin.R` (the predecessor exposure-response analysis by the same group; drives the STIM function that lowers FPG and raises urinary glucose excretion, with AUC50 = 626 nM*h for the pooled studies A + B + D and MW 450.9 rather than 450.91 g/mol as printed in that paper).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (e.g., `DOSE_PHT_MGKGD` for phenytoin). Distinct from `DOSE_PHT_MGKGD` (per-kg phenytoin daily-dose) -- empagliflozin is dosed in flat mg/day (no per-kg adjustment in label). Future once-daily SGLT2-inhibitor extractions should register sibling canonicals (e.g., `DOSE_DAPA_MGD` for dapagliflozin, `DOSE_CANA_MGD` for canagliflozin) rather than reuse this name. Ratified canonically on 2026-06-24 alongside the Baron 2016 empagliflozin extraction.
 
 ### DOSE_LOR_MGD (**canonical for daily lorlatinib dose**)
@@ -14966,14 +14966,57 @@ Covariates whose value is a property of the **administered molecule** rather tha
 - **Example models:** `Lau_2026_paracetamol.R` (founding example).
 - **Notes:** The most load-bearing of the two indicators. It selects the Study 2 gallbladder-emptying schedule (480 and 660 min post-dose, the latest of the three studies, consistent with the fasted state), four structural multipliers -- 1.94 on the oxidative intrinsic hepatic clearance, 0.650 on the PCM-GLU elimination clearance, 0.826 on the PCM-SUL elimination clearance and 1.59 on the PCM-CYS & PCM-MER elimination clearance -- the switch of the PCM-CYS & PCM-MER residual error from proportional to purely additive (0.288 umol/L), and the Study 2 fold increase in the combined paracetamol residual error (1.87). Lau 2026 Discussion attributes the structural multipliers to the higher BMI of the Study 2 cohort at total body weights comparable to the other studies, hypothesising metabolic-associated fatty liver disease (MAFLD) as the mechanism; the covariate is therefore a cohort marker standing in for an unmeasured hepatic-status covariate rather than a study-conduct artefact, and that reading should be preserved in the per-model `covariateData` notes.
 
-### STUDY_NO16853 (**canonical for the Bruno 2012 metastatic-breast-cancer study NO16853 cohort indicator**)
-- **Description:** Binary indicator for the randomized phase II noninferiority study NO16853 in the Bruno 2012 pooled metastatic-breast-cancer analysis: 1 = NO16853, 0 = the pivotal phase III study SO14999. Time-fixed per subject. Study NO16853 compared capecitabine 825 mg/m^2 twice daily with the registered 1,250 mg/m^2 dose, both plus docetaxel 75 mg/m^2; SO14999 established the registered dose against single-agent docetaxel roughly a decade earlier.
+### STUDY_EMPA_A (**canonical for Riggs empagliflozin study A cohort indicator**)
+- **Description:** 1 = patient enrolled in study A of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (EudraCT 2007-000654-32; phase I, randomised, double-blind, placebo-controlled, 8 days, 2.5 / 10 / 25 / 100 mg once daily or placebo, n = 48, Germany); 0 = otherwise. Subject-level (time-fixed).
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (study SO14999).
+- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A` .. `STUDY_EMPA_E`; exactly one is 1 per subject.
 - **Source aliases:**
-  - `STUD` -- Bruno 2012 NONMEM `$INPUT` column; the control stream tests `IF(STUD.EQ.2)`, i.e. `STUD = 2` is NO16853 and `STUD = 1` is SO14999.
-  - `Study effect` -- Bruno 2012 Table 1 and Table 2 covariate row label.
-- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (selects the study-specific additive residual error SD, sqrt(332) = 18.22 mm for SO14999 versus sqrt(112) = 10.58 mm for NO16853), `Bruno_2012_capecitabine_docetaxel_os.R` and `Bruno_2012_capecitabine_docetaxel_pfs.R` (log-normal accelerated-failure-time effects on log median OS and PFS, entered on Bruno 2012's 1 / 2 code as `e_studyno16853_tmed * (1 + STUDY_NO16853)`).
-- **Notes:** The indicator carries three distinct effects across the paper's three models, which is why it is a single column rather than three. Bruno 2012 attributes the longer survival in NO16853 to a change in the standard of care between the two studies (the prognostic factors in the model could not explain it) and the longer PFS partly to the different progression-assessment criteria -- WHO in SO14999, RECIST in NO16853 -- which is also the stated reason for the larger residual error in the older study. The clinical trial simulations in the paper were conditioned on NO16853, so `STUDY_NO16853 = 1` is the natural setting when re-running the published framework.
+  - `Study A` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
+- **Example models:** `Riggs_2014_empagliflozin.R` (selects the typical baseline FPG 7.85 mmol/L, Table 2 theta_1, and is the reference level for the baseline-UGE, gamma_base, Umax, Ustim50 and C*50 parameters).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. The five members are named for the drug rather than for the letter alone because the letters A-E are generic and would collide with any other paper that labels its cohorts the same way. Study A contributed no HbA1c to the Riggs 2014 exposure-response analysis (Table 1 footnote), so no baseline-HbA1c theta exists for it. The identical five-study set underlies the companion population PK analysis (Riggs 2013 J Clin Pharmacol 53:1028-1038), so a future extraction of that paper should reuse these five canonicals rather than register siblings.
+
+### STUDY_EMPA_B (**canonical for Riggs empagliflozin study B cohort indicator**)
+- **Description:** 1 = patient enrolled in study B of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00558571; phase I, randomised, double-blind, placebo-controlled, parallel-group, 4 weeks, 10 / 25 / 100 mg once daily or placebo, n = 78, Germany); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A` .. `STUDY_EMPA_E`.
+- **Source aliases:**
+  - `Study B` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
+- **Example models:** `Riggs_2014_empagliflozin.R` (selects baseline FPG 8.50 mmol/L, Table 2 theta_2, and baseline HbA1c 7.18 pct, theta_23, and scales the baseline UGE by theta_20 = 0.320; shares the reference gamma_base, Umax, Ustim50 and C*50 with study A).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. See [[STUDY_EMPA_A]] for the naming rationale and the shared five-study set.
+
+### STUDY_EMPA_C (**canonical for Riggs empagliflozin study C cohort indicator**)
+- **Description:** 1 = patient enrolled in study C of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00885118; phase II, randomised, double-blind, placebo-controlled, parallel-group, 4 weeks, 1 / 5 / 10 / 25 mg once daily or placebo, n = 100, Japan, Japanese patients only); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A` .. `STUDY_EMPA_E`.
+- **Source aliases:**
+  - `Study C` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
+- **Example models:** `Riggs_2014_empagliflozin.R` (the only study with its own value for every urinary-glucose-excretion and potency parameter: baseline UGE x theta_16 = 0.632, gamma_base x theta_17 = 1.16, Umax x theta_14 = 1.11, Ustim50 x theta_15 = 1.58 and C*50 x theta_19 = 0.169, giving a study C AUC50 of 106 nmol*h/L against the 626 nmol*h/L reference; also selects baseline FPG 8.76 mmol/L and baseline HbA1c 7.85 pct).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. This is the load-bearing member of the set: it is the only Japanese cohort and the only one whose potency parameters all differ from the pooled reference. Riggs 2014 Discussion attributes the greater low-dose response in study C partly to the lower body weight of the Japanese cohort (mean 67.9 kg against 81.4 - 94.6 kg elsewhere) and therefore its higher dose-normalised exposure, but notes that confounding precludes an exact explanation -- so the indicator is a cohort marker standing in for a partly unmeasured population difference rather than a study-conduct artefact. See [[STUDY_EMPA_A]] for the naming rationale.
+
+### STUDY_EMPA_D (**canonical for Riggs empagliflozin study D cohort indicator**)
+- **Description:** 1 = patient enrolled in study D of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00789035; phase IIb, randomised, double-blind, 12 weeks, 5 / 10 / 25 mg once daily, placebo or open-label metformin, multinational; n = 324 contributed to the exposure-response analyses after excluding the open-label metformin arm and two patients without PK samples); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A` .. `STUDY_EMPA_E`.
+- **Source aliases:**
+  - `Study D` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
+- **Example models:** `Riggs_2014_empagliflozin.R` (selects baseline FPG 9.30 mmol/L, Table 2 theta_3, and baseline HbA1c 7.85 pct, theta_24; shares the reference C*50 with studies A and B, whose pooled estimate is the primary AUC50 = 626 nmol*h/L).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Study D contributed no urinary-glucose-excretion observations, so the UGE parameters are not identified for it and fall back to the study A reference. Study D was empagliflozin monotherapy whereas study E was on background metformin; Riggs 2014 Discussion cites that difference as one candidate explanation for the ~2-fold difference between their AUC50 estimates. See [[STUDY_EMPA_A]] for the naming rationale.
+
+### STUDY_EMPA_E (**canonical for Riggs empagliflozin study E cohort indicator**)
+- **Description:** 1 = patient enrolled in study E of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00749190; phase IIb, randomised, double-blind, parallel-group, 12 weeks, 1 / 5 / 10 / 25 / 50 mg once daily, placebo or open-label sitagliptin, on background metformin, multinational, n = 424 after excluding the open-label sitagliptin arm); 0 = otherwise. Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A` .. `STUDY_EMPA_E`.
+- **Source aliases:**
+  - `Study E` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
+- **Example models:** `Riggs_2014_empagliflozin.R` (selects baseline FPG 9.49 mmol/L, Table 2 theta_4, and baseline HbA1c 7.89 pct, theta_25, and scales C*50 by theta_21 = 1.93, giving the study E AUC50 of 1210 nmol*h/L against the 626 nmol*h/L reference).
+- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Study E contributed no urinary-glucose-excretion observations, so the UGE parameters fall back to the study A reference. Its roughly two-fold higher AUC50 is the single largest inter-study difference in the Riggs 2014 model and drives the paper's sensitivity analysis: the same 10 and 25 mg doses give 80 / 90 pct of maximal response on the pooled A + B + D estimate but only 65 / 82 pct on the study E estimate. See [[STUDY_EMPA_A]] for the naming rationale.
