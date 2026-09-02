@@ -2634,6 +2634,12 @@ navbar:
         href: articles/Standing_2012_oseltamivir.html
       - text: "Oseltamivir pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Oseltamivir shedding (Rayner 2013)"
+        href: articles/Rayner_2013_oseltamivir_exposure_response.html
+      - text: "Oseltamivir symptomalleviation (Rayner 2013)"
+        href: articles/Rayner_2013_oseltamivir_exposure_response.html
+      - text: "Oseltamivir symptomscore (Rayner 2013)"
+        href: articles/Rayner_2013_oseltamivir_exposure_response.html
       - text: "Oseltamivircarboxylate pbpk (Granda 2024)"
         href: articles/Granda_2024_kidney_pbpk.html
       - text: "Osimertinib (Brown 2017)"
@@ -5382,7 +5388,7 @@ articles:
   - articles/Randell_2024_metronidazole
   - articles/Rao_2023_covid19_qsp
   - articles/Ravva_2009_varenicline
-  - articles/Ravva_2010_varenicline_exposure_response
+  - articles/Rayner_2013_oseltamivir_exposure_response
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reif_2013_ethinylestradiol_drospirenone
   - articles/Reijers_2016_trastuzumab

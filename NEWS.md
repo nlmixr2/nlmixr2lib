@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Reif 2013 ethinylestradiol and drospirenone ([doi:10.1136/jfprhc-2012-100397](https://doi.org/10.1136/jfprhc-2012-100397)) -- healthy young women using an extended-cycle combined oral contraceptive.
+- Add Rayner 2013 oseltamivir exposure-response models ([doi:10.1128/AAC.02440-12](https://doi.org/10.1128/AAC.02440-12)) — healthy adults experimentally inoculated with influenza A or B in two phase 2 studies.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
