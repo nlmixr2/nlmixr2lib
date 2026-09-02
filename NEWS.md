@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Edwards 2016 obeticholic acid ([doi:10.1111/cts.12421](https://doi.org/10.1111/cts.12421)) -- healthy adults and subjects with Child-Pugh A/B/C cirrhosis.
+- Add Gibbs 2017 evolocumab ([doi:10.1002/jcph.840](https://doi.org/10.1002/jcph.840)) -- healthy subjects and statin-treated patients with hypercholesterolemia.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
