@@ -1598,6 +1598,10 @@ navbar:
         href: articles/Karakitsios_2024_gevokizumab.html
       - text: "Gevokizumab mbma (Karakitsios 2024)"
         href: articles/Karakitsios_2024_gevokizumab.html
+      - text: "Ghb hcmecd3 (Roiko 2012)"
+        href: articles/Roiko_2012_ghb_brain_uptake.html
+      - text: "Ghb rbe4 (Roiko 2012)"
+        href: articles/Roiko_2012_ghb_brain_uptake.html
       - text: "Givosiran (Ayyar 2024)"
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glasdegib QTcF (Fostvedt 2021)"
@@ -5387,7 +5391,7 @@ articles:
   - articles/Roepcke_2018_tak_079
   - articles/Roepcke_2023_rezafungin
   - articles/Rognas_2025_bitopertin
-  - articles/Rohatagi_2008_apricoxib
+  - articles/Roiko_2012_ghb_brain_uptake
   - articles/Rolsma_2025_betalactams_cysticfibrosis
   - articles/Rolsma_2026_cefepime
   - articles/Rosario_2008_maraviroc

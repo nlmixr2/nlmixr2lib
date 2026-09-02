@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Feng 2011 escitalopram ([doi:10.2147/NDT.S15921](https://doi.org/10.2147/NDT.S15921)) -- adults with chronic psychiatric disorders in a MEMS-monitored depression cohort.
+- Add Roiko 2012 gamma-hydroxybutyric acid (GHB) blood-brain-barrier uptake
+  ([doi:10.1124/dmd.111.041749](https://doi.org/10.1124/dmd.111.041749)) --
+  in vitro, rat (RBE4) and human (hCMEC/D3) brain capillary endothelial cells.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
