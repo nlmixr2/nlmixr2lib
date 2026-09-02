@@ -3176,6 +3176,14 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`.
 - **Notes:** Registered 2026-08-19 alongside `depot_ip`. A single-route subcutaneous model should keep the bare canonical `depot`; use `depot_sc` only when the model carries a second, explicitly named dosing route.
 
+### depot_td (**canonical transdermal depot**)
+- **Type:** compartment
+- **Role:** Transdermal (patch) depot used in parallel-route popPK models, typically alongside `depot_oral` when one integrated model describes both a patch and an oral formulation feeding the same central compartment. The state holds the drug still resident in the *formulation reservoir* -- the patch matrix -- and is drained by a release rate constant into whatever absorption structure the paper puts between the patch and plasma (commonly a transit chain). It is therefore an unabsorbed-drug depot, not a skin *tissue* compartment: use the separately registered `skin` / `a_skin` / `vp_skin` canonicals for the perfused skin organ in a PBPK model, and `depot_td` for the drug that has not yet left the patch.
+- **Source aliases:**
+  - `SKIN` -- Jung 2023 NONMEM compartment name for the patch reservoir (`COMP = (SKIN)`, `DADT(4) = -KF*A(4) ; Skin (formulation)` in Code S3 and Code S5).
+- **Example models:** `Jung_2023_donepezil_singledose.R` (founding example; donepezil patch reservoir draining through `transit1` / `transit2` into `central`, with a fractal release rate).
+- **Notes:** Registered as a well-formed member of the existing `depot_<route>` family (`depot_im`, `depot_oral`, `depot_sc`, `depot_ip`, `depot_brain`), on the same reasoning recorded for `depot_ip`: the route is load-bearing, the two depots in an oral-plus-patch model are not interchangeable, they carry route-specific release/absorption rate constants, and a study arm selects exactly one of them. Preferred over the numbered `depot` / `depot2` form for that reason. `td` rather than `patch` so the token names the route (transdermal) rather than one dosage form, matching the route-naming of its siblings.
+
 ---
 
 ## K-PD virtual drug compartments
