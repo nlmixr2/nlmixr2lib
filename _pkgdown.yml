@@ -2412,6 +2412,14 @@ navbar:
         href: articles/Schipani_2011_nevirapine.html
       - text: "Nevirapine (Svensson 2012)"
         href: articles/Svensson_2012_nevirapine.html
+      - text: "Nevirapine human la1 (Cortez 2015)"
+        href: articles/Cortez_2015_nevirapine.html
+      - text: "Nevirapine human la2 (Cortez 2015)"
+        href: articles/Cortez_2015_nevirapine.html
+      - text: "Nevirapine rat la1 (Cortez 2015)"
+        href: articles/Cortez_2015_nevirapine.html
+      - text: "Nevirapine rat la2 (Cortez 2015)"
+        href: articles/Cortez_2015_nevirapine.html
       - text: "Nicorandil (Iida 2008)"
         href: articles/Iida_2008_nicorandil.html
       - text: "Nicotine pbpk (Salehi 2025)"
@@ -4385,6 +4393,7 @@ articles:
   - articles/Conrado_2014_alzheimer
   - articles/Cook_2016_paracetamol
   - articles/Cooper_2015_sertraline
+  - articles/Cortez_2015_nevirapine
   - articles/Couffignal_2014_imipenem
   - articles/Courlet_2023_cabamiquine
   - articles/Crass_2024_pegcetacoplan
