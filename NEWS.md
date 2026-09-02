@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Geldof 2008 fluvoxamine SERT occupancy PK-PD models ([doi:10.1038/bjp.2008.179](https://doi.org/10.1038/bjp.2008.179)) -- male Wistar rats, ex vivo 5-HT transporter occupancy in frontal cortex.
+- Add Rohatagi 2008 apricoxib ([doi:10.1111/j.1365-2125.2008.03175.x](https://doi.org/10.1111/j.1365-2125.2008.03175.x)) -- adults with acute postoperative dental pain.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

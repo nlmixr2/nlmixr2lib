@@ -236,6 +236,8 @@ navbar:
         href: articles/Warren_2025_pde4_il13_atopic_dermatitis.html
       - text: "Apricoxib (Kastrissios 2006)"
         href: articles/Kastrissios_2006_apricoxib.html
+      - text: "Apricoxib (Rohatagi 2008)"
+        href: articles/Rohatagi_2008_apricoxib.html
       - text: "Apx3330 (Silva 2024)"
         href: articles/Silva_2024_apx3330.html
       - text: "Arginine (Brussee 2016)"
@@ -5371,6 +5373,7 @@ articles:
   - articles/Roepcke_2018_tak_079
   - articles/Roepcke_2023_rezafungin
   - articles/Rognas_2025_bitopertin
+  - articles/Rohatagi_2008_apricoxib
   - articles/Rolsma_2025_betalactams_cysticfibrosis
   - articles/Rolsma_2026_cefepime
   - articles/Rosario_2008_maraviroc
