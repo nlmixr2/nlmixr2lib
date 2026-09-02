@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Fang 2013 pramlintide ([doi:10.1208/s12248-012-9409-7](https://doi.org/10.1208/s12248-012-9409-7)) -- adults with type 1 diabetes mellitus.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and

@@ -2854,6 +2854,8 @@ navbar:
         href: articles/PerezRuixo_2025_posdinemab.html
       - text: "Pozelimab (Lin 2024)"
         href: articles/Lin_2024_pozelimab.html
+      - text: "Pramlintide (Fang 2013)"
+        href: articles/Fang_2013_pramlintide.html
       - text: "Pravastatin (Ide 2009)"
         href: articles/Ide_2009_pravastatin.html
       - text: "Prednisolone (Bouazza 2025)"
@@ -4474,6 +4476,7 @@ articles:
   - articles/Fan_2025_antiCD4_nanobody_HIV
   - articles/Fan_2025_iron_wholebody_pbpk
   - articles/Fang_2010_etanercept
+  - articles/Fang_2013_pramlintide
   - articles/Fanta_2007_ciclosporin
   - articles/Farrell_2012_farletuzumab
   - articles/Farrell_2013_conestatAlfa
