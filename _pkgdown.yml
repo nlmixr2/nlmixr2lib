@@ -2310,6 +2310,8 @@ navbar:
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam ecmo (Kim 2026)"
         href: articles/Kim_2026_midazolam.html
+      - text: "Midazolam hlm (Hyland 2009)"
+        href: articles/Hyland_2009_midazolam_glucuronidation.html
       - text: "Midazolam infants adults (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
       - text: "Midazolam monkey pbpk (Yau 2023)"
@@ -2324,6 +2326,8 @@ navbar:
         href: articles/Kim_2026_midazolam.html
       - text: "Midazolam rat pbpk (Yau 2023)"
         href: articles/Yau_2023_middle_out_pbpk_translation.html
+      - text: "Midazolam rugt1a4 (Hyland 2009)"
+        href: articles/Hyland_2009_midazolam_glucuronidation.html
       - text: "Mig1 exp1 (Almquist 2015)"
         href: articles/Almquist_2015_Mig1.html
       - text: "Mig1 exp2 (Almquist 2015)"
@@ -4827,7 +4831,7 @@ articles:
   - articles/Hwang_2022_tremelimumab
   - articles/Hwang_2023_carvedilol
   - articles/Hwang_2023_monalizumab
-  - articles/Hyland_2008_maraviroc_invitro
+  - articles/Hyland_2009_midazolam_glucuronidation
   - articles/Ibrahim_2023_ibrutinib
   - articles/Ibrahim_2025_ibrutinib
   - articles/Ide_2009_pravastatin
