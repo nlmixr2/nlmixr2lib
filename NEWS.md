@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Chandorkar 2015 ceftolozane and tazobactam ([doi:10.1002/jcph.395](https://doi.org/10.1002/jcph.395)) -- healthy adults, adults with mild to severe renal impairment, and patients with complicated urinary tract or intra-abdominal infections.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
