@@ -19,6 +19,8 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
+- Add Kamal 2017 oseltamivir influenza-pandemic SEIR model ([doi:10.1111/bcp.13229](https://doi.org/10.1111/bcp.13229)) -- a simulated population of 100 000 individuals susceptible to pandemic influenza.
+
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
 - Add Feng 2019 ipilimumab mixture tumor growth dynamics model ([doi:10.1002/psp4.12454](https://doi.org/10.1002/psp4.12454)) -- adults with advanced melanoma.
