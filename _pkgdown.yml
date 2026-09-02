@@ -572,6 +572,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Captopril rat (Kiriyama 2024)"
         href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
+      - text: "Carbamazepine invitro (Almond 2016)"
+        href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Carbenicillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Carboplatin (Ekhart 2008)"
@@ -1152,6 +1154,8 @@ navbar:
         href: articles/Siccardi_2012_efavirenz.html
       - text: "Efavirenz (Vucicevic 2025)"
         href: articles/Vucicevic_2025_efavirenz.html
+      - text: "Efavirenz invitro (Almond 2016)"
+        href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Efineptakin alfa (Park 2025)"
         href: articles/Park_2025_efineptakin_alfa.html
       - text: "Eflornithine rat (Jansson 2008)"
@@ -2524,6 +2528,8 @@ navbar:
         href: articles/Salehi_2025_nicotine_pbpk.html
       - text: "NicotinicAcid rat (Ahlstrom 2010)"
         href: articles/Ahlstrom_2010_nicotinicAcid_rat.html
+      - text: "Nifedipine invitro (Almond 2016)"
+        href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Nifedipine rat (Kiriyama 2024)"
         href: articles/Kiriyama_2024_nifedipine_captopril_rat.html
       - text: "Nilotinib (Mauro 2025)"
@@ -2866,6 +2872,8 @@ navbar:
         href: articles/Grasela_1985_phenobarbital.html
       - text: "Phenobarbital (Stoschus 2025)"
         href: articles/Stoschus_2025_phenobarbital.html
+      - text: "Phenobarbital invitro (Almond 2016)"
+        href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Phenobarbital mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Phenytoin (Hennig 2015)"
@@ -2874,6 +2882,8 @@ navbar:
         href: articles/Tanaka_2012_phenytoin.html
       - text: "Phenytoin (Yukawa 1990)"
         href: articles/Yukawa_1990_phenytoin.html
+      - text: "Phenytoin invitro (Almond 2016)"
+        href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Piperacillin (Boer-Perez 2026)"
         href: articles/Boer-Perez_2026_piperacillin.html
       - text: "Piperacillin (Bulitta 2007)"
@@ -3184,6 +3194,10 @@ navbar:
         href: articles/Vinnard_2017_rifampicin.html
       - text: "Rifampicin (Wicha 2018)"
         href: articles/Wicha_2018_rifampicin.html
+      - text: "Rifampicin invitro (Almond 2016)"
+        href: articles/Almond_2016_cyp3a4_induction.html
+      - text: "Rifampicin invivo (Almond 2016)"
+        href: articles/Almond_2016_cyp3a4_induction.html
       - text: "Rifampicin pbpk (Ramachandran 2023)"
         href: articles/Ramachandran_2023_tuberculosis_eptb_pbpk.html
       - text: "Rifapentine (Zvada 2010)"
@@ -4283,6 +4297,7 @@ articles:
   - articles/AlfoseaCuadrado_2024_reserpine_rat
   - articles/Ali_2018_amodiaquine
   - articles/Allegaert_2015_paracetamol
+  - articles/Almond_2016_cyp3a4_induction
   - articles/Almquist_2015_Mig1
   - articles/Almquist_2016_ticagrelor
   - articles/Almquist_2022_anifrolumab

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chandorkar 2015 ceftolozane and tazobactam ([doi:10.1002/jcph.395](https://doi.org/10.1002/jcph.395)) -- healthy adults, adults with mild to severe renal impairment, and patients with complicated urinary tract or intra-abdominal infections.
+- Add Almond 2016 CYP3A4 induction by rifampicin, carbamazepine, phenobarbital, phenytoin, efavirenz and nifedipine ([doi:10.1124/dmd.115.066845](https://doi.org/10.1124/dmd.115.066845)) — cryopreserved human hepatocytes from four donors, plus healthy white adults for the in-vivo rifampicin reference.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
