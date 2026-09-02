@@ -2702,6 +2702,8 @@ navbar:
         href: articles/Elassaiss-Schaap_2017_pembrolizumab.html
       - text: "Pembrolizumab (Lindauer 2017)"
         href: articles/Lindauer_2017_pembrolizumab.html
+      - text: "Pemetrexed osimertinib mouse qsp (Hu 2026)"
+        href: articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp.html
       - text: "Pemigatinib (Gong 2023)"
         href: articles/Gong_2023_pemigatinib.html
       - text: "Pemigatinib creatinine (Gong 2023)"
@@ -4727,6 +4729,7 @@ articles:
   - articles/Hu_2017_peginterferon_beta_1a
   - articles/Hu_2025_tepotinib
   - articles/Hu_2026_clesrovimab
+  - articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp
   - articles/Hu_2026_utreloxastat
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
