@@ -1236,6 +1236,8 @@ navbar:
         href: articles/Pu_2021_evinacumab.html
       - text: "Evogliptin (Kim 2025)"
         href: articles/Kim_2025_evogliptin.html
+      - text: "Evolocumab (Gibbs 2017)"
+        href: articles/Gibbs_2017_evolocumab.html
       - text: "Evolocumab (Kuchimanchi 2018)"
         href: articles/Kuchimanchi_2018_evolocumab.html
       - text: "Evolocumab ldlc (Kuchimanchi 2018)"
@@ -4546,6 +4548,7 @@ articles:
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
   - articles/Gibbs_2011_amg221
+  - articles/Gibbs_2017_evolocumab
   - articles/Gibiansky_2005_fospropofol
   - articles/Gibiansky_2014_obinutuzumab
   - articles/Gilkey_2015_DiRnanoparticle

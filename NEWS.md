@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Gibbs 2017 evolocumab ([doi:10.1002/jcph.840](https://doi.org/10.1002/jcph.840)) -- healthy subjects and statin-treated patients with hypercholesterolemia.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
