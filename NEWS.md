@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lim 2026 leuprolide acetate 3-month depot ([doi:10.1007/s40272-025-00733-2](https://doi.org/10.1007/s40272-025-00733-2)) -- children aged 1-10 years with central precocious puberty.
+- Add Gafar 2026 rifampicin ([doi:10.1093/infdis/jiag052](https://doi.org/10.1093/infdis/jiag052)) -- adolescents and adults receiving tuberculosis preventive therapy in Canada, Indonesia and Vietnam.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
