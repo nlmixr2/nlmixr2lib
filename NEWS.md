@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2026 lurasidone ([doi:10.3389/fphar.2026.1810528](https://doi.org/10.3389/fphar.2026.1810528)) -- Chinese psychiatric inpatients aged 13-70 years.
+- Add Yin 2026 ceftazidime ([doi:10.1128/aac.01810-25](https://doi.org/10.1128/aac.01810-25)) — Chinese neonates sampled by quantitative dried blood spot.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
