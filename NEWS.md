@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Gibbs 2017 evolocumab ([doi:10.1002/jcph.840](https://doi.org/10.1002/jcph.840)) -- healthy subjects and statin-treated patients with hypercholesterolemia.
+- Add Schulthess 2017 frequency-domain response analysis PD archetypes
+  ([doi:10.1002/psp4.12266](https://doi.org/10.1002/psp4.12266)) -- 15
+  theoretical models (no data fitted, no subjects).
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
