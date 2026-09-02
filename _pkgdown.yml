@@ -3752,6 +3752,8 @@ navbar:
         href: articles/Hennig_2013_tobra.html
       - text: "Tobramycin (Conil 2010)"
         href: articles/Conil_2010_tobramycin.html
+      - text: "Tobramycin (Downes 2022)"
+        href: articles/Downes_2022_tobramycin.html
       - text: "Tobramycin (Hennig 2008)"
         href: articles/Hennig_2008_tobramycin.html
       - text: "Tobramycin (Livio 2014)"
@@ -4652,6 +4654,7 @@ articles:
   - articles/Dorlo_2008_miltefosine
   - articles/Dorlo_2017_miltefosine
   - articles/Dowling_2008_naloxone
+  - articles/Downes_2022_tobramycin
   - articles/Drweesh_2026_adalimumab
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability
