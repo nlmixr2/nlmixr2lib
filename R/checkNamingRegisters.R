@@ -129,9 +129,15 @@ checkNamingRegisters <- function(root = NULL) {
                 "([A-Za-z_][A-Za-z0-9_.]*)")
   })))
 
-  iss <- list()
+  # Accumulate into an explicit environment rather than using `<<-` from the
+  # inner add() closure: environments have reference semantics, so a plain
+  # `<-` into `acc` mutates the shared accumulator, and the assignment target
+  # is named at the assignment site. Matches `.parseCovariateColumns()`;
+  # lintr's assignment_linter rejects `<<-`.
+  acc <- new.env(parent = emptyenv())
+  acc$iss <- list()
   add <- function(register, check, name, line, detail) {
-    iss[[length(iss) + 1L]] <<- data.frame(
+    acc$iss[[length(acc$iss) + 1L]] <- data.frame(
       register = register, check = check, name = name, line = line,
       detail = detail, stringsAsFactors = FALSE)
   }
@@ -190,10 +196,10 @@ checkNamingRegisters <- function(root = NULL) {
       }
     }
   }
-  if (!length(iss)) {
+  if (!length(acc$iss)) {
     return(empty)
   }
-  res <- do.call(rbind, iss)
+  res <- do.call(rbind, acc$iss)
   rownames(res) <- NULL
   res
 }
