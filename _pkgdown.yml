@@ -1706,6 +1706,8 @@ navbar:
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem amikacin PA088 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
+      - text: "Imipenem pbpk (Feng 2026)"
+        href: articles/Feng_2026_imipenem_pbpk.html
       - text: "Imipenem qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Imipenem tobramycin PA001 (Yadav 2017)"
@@ -4579,6 +4581,7 @@ articles:
   - articles/Feng_2012_higenamine
   - articles/Feng_2014_ipilimumab
   - articles/Feng_2019_ipilimumab
+  - articles/Feng_2026_imipenem_pbpk
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiandaca_2025_mRNABiTE
   - articles/Fiedler-Kelly_2019_fremanezumab
