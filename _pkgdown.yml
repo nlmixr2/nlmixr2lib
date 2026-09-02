@@ -2364,8 +2364,8 @@ navbar:
         href: articles/Pierre_2017_morphine.html
       - text: "Morphine (deHoogd 2017)"
         href: articles/deHoogd_2017_morphine.html
-      - text: "Morphine rat eeg (Groenendaal 2007)"
-        href: articles/Groenendaal_2007_morphine_rat_eeg.html
+      - text: "Morphine brain rat (Groenendaal 2007)"
+        href: articles/Groenendaal_2007_morphine_brain_rat.html
       - text: "Motesanib (Gosselin 2015)"
         href: articles/Gosselin_2015_motesanib.html
       - text: "Moxifloxacin (Colin 2014)"
@@ -4695,7 +4695,7 @@ articles:
   - articles/Green_2005_enoxaparin
   - articles/Grimm_2023
   - articles/Grimsley_1999_vancomycin
-  - articles/Groenendaal_2007_morphine_rat_eeg
+  - articles/Groenendaal_2007_morphine_brain_rat
   - articles/Grover_2011_tacrolimus
   - articles/Grzesk_2016_m3M3FBS
   - articles/Gu_2025_heart_failure_pbpk
