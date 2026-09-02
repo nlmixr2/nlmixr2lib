@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nava 2018 busulfan ([doi:10.1111/bcp.13566](https://doi.org/10.1111/bcp.13566)) -- children and adolescents undergoing haematopoietic stem cell transplantation.
+- Add Chotsiri 2019 piperaquine ([doi:10.1038/s41467-019-08297-9](https://doi.org/10.1038/s41467-019-08297-9)) — children aged 2-58 months receiving seasonal malaria chemoprevention in Burkina Faso.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

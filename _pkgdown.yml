@@ -2922,6 +2922,8 @@ navbar:
         href: articles/Sulaiman_2026_piperacillin_tazobactam.html
       - text: "Piperacillin tazobactam (Wenker 2024)"
         href: articles/Wenker_2024_piperacillin_tazobactam.html
+      - text: "Piperaquine (Chotsiri 2019)"
+        href: articles/Chotsiri_2019_piperaquine.html
       - text: "Piperaquine (Hoglund 2012)"
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
@@ -4543,6 +4545,7 @@ articles:
   - articles/Choi_2011_remifentanil
   - articles/Choi_2018_metformin
   - articles/Chotsiri_2019_lumefantrine
+  - articles/Chotsiri_2019_piperaquine
   - articles/Choules_2024_vedotin_ddi
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chua_2025_mirikizumab
