@@ -3758,11 +3758,19 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17).
 
-### m2 (**canonical N-desmethyl-bedaquiline (M2) suffix**)
+### m2 (**canonical paper-named M2 metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** N-desmethyl-bedaquiline (M2) metabolite of bedaquiline.
-- **Source aliases:** none.
-- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
+- **Role:** A source paper's "M2" metabolite, whatever chemical entity that designation names in the paper at hand, following the same generic convention as `m1`, `m3`, `m4` and `m8`. Used as the metabolite suffix on the `central_m2` compartment, the `lcl_m2` / `lvc_m2` parameters, the `Cc_m2` observation and the `propSd_m2` / `addSd_m2` residuals. Drug contexts registered so far: in `Svensson_2013_bedaquiline.R` and `Svensson_2016_bedaquiline.R`, M2 is N-desmethyl-bedaquiline, the CYP3A4-mediated demethylation product of bedaquiline; in `Keunecke_2020_regorafenib_phase1.R` and `Keunecke_2020_regorafenib_phase3.R`, M-2 is regorafenib N-oxide (BAY 75-7495), a pharmacologically active metabolite formed pre-systemically that reaches concentrations close to the parent at steady state.
+- **Source aliases:** `M-2` -- the hyphenated form used throughout the regorafenib literature and in Keunecke 2020.
+- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219), `Keunecke_2020_regorafenib_phase1.R`, `Keunecke_2020_regorafenib_phase3.R` (doi:10.1111/bcp.14334).
+- **Notes:** Because `M<n>` designations are per-programme and carry no cross-paper chemical meaning, this token is shared by unrelated metabolites of unrelated drugs; the specific entity is recorded per model in the model file's `description` and `compartmentData`, not in the suffix. Generalised from the bedaquiline-only entry on 2026-09-02 alongside the Keunecke 2020 regorafenib extraction, matching the wording already used for `m1`, `m3`, `m4` and `m8`.
+
+### m5 (**canonical paper-named M5 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** A source paper's "M5" metabolite, whatever chemical entity that designation names in the paper at hand. Used as the metabolite suffix on the `central_m5` compartment, the `lcl_m5` / `lvc_m5` parameters, the `Cc_m5` observation and the `propSd_m5` / `addSd_m5` residuals in joint parent + metabolite popPK models. Drug contexts registered so far: in `Keunecke_2020_regorafenib_phase1.R` and `Keunecke_2020_regorafenib_phase3.R`, M-5 is regorafenib N-oxide N-desmethyl (BAY 81-8752), a pharmacologically active metabolite formed systemically from parent regorafenib that reaches concentrations close to the parent at steady state, although its free plasma concentration does not exceed the VEGFR-2 IC50.
+- **Source aliases:** `M-5` -- the hyphenated form used throughout the regorafenib literature and in Keunecke 2020.
+- **Example models:** `Keunecke_2020_regorafenib_phase1.R`, `Keunecke_2020_regorafenib_phase3.R` (doi:10.1111/bcp.14334; founding example).
+- **Notes:** Fifth member of the generic numbered-metabolite suffix family alongside `m1`, `m2`, `m3`, `m4` and `m8`, following the same convention of lowercasing a source paper's `M<n>` designation. As with the other members, the token carries no cross-paper chemical meaning and the specific entity is recorded per model. Registered 2026-09-02 as a routine extension of an existing family, alongside the Keunecke 2020 regorafenib extraction.
 
 ### m3 (**canonical paper-named M3 metabolite suffix**)
 - **Type:** metabolite-suffix
