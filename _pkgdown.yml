@@ -2048,6 +2048,8 @@ navbar:
         href: articles/VasquezBahena_2009_lumiracoxib_rat.html
       - text: "Lumiracoxib rat (VelezdeMendizabal 2012)"
         href: articles/VelezdeMendizabal_2012_lumiracoxib_rat.html
+      - text: "Lurasidone (Yang 2026)"
+        href: articles/Yang_2026_lurasidone.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
@@ -5751,7 +5753,7 @@ articles:
   - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yang_2025_matrine_pig_pbpk
   - articles/Yang_2026_APTM
-  - articles/Yang_2026_encorafenib
+  - articles/Yang_2026_lurasidone
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2025_flurbiprofen

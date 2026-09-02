@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Blackman 2026 high-dose methotrexate ([doi:10.1007/s00228-026-04080-0](https://doi.org/10.1007/s00228-026-04080-0)) -- adults with leukemia, lymphoma, or sarcoma.
+- Add Yang 2026 lurasidone ([doi:10.3389/fphar.2026.1810528](https://doi.org/10.3389/fphar.2026.1810528)) -- Chinese psychiatric inpatients aged 13-70 years.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
