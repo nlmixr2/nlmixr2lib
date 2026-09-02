@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Feng 2011 escitalopram ([doi:10.2147/NDT.S15921](https://doi.org/10.2147/NDT.S15921)) -- adults with chronic psychiatric disorders in a MEMS-monitored depression cohort.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
