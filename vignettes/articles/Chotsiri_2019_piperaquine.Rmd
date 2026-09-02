@@ -396,7 +396,14 @@ sim_arms <- rxode2::rxSolve(
 
 stopifnot(
   nrow(sim_arms) > 0, !anyNA(sim_arms$Cc),
-  all(sim_arms$Cc >= 0), all(sim_arms$sur >= 0), all(sim_arms$sur <= 1)
+  all(sim_arms$Cc >= 0), all(sim_arms$sur >= 0),
+  # `sur` is exp(-cumhaz) read off a numerical solve, so the exact bound of 1
+  # has to carry the solver's own accuracy: at the rtol = 1e-4 used above,
+  # cumhaz can dip a few times 1e-7 below zero near t = 0 and push `sur` just
+  # over 1. Measured worst case here is 1.0000002 (excess 2.1e-07). The 1e-6
+  # pad tolerates that while still failing loudly on a survival curve that is
+  # genuinely broken, which overshoots by orders of magnitude more.
+  all(sim_arms$sur <= 1 + 1e-6)
 )
 ```
 
