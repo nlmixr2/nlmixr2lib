@@ -490,6 +490,8 @@ navbar:
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Buprenorphine (Bjornsson 2023)"
         href: articles/Bjornsson_2023_buprenorphine.html
+      - text: "Burosumab (Zhang 2016)"
+        href: articles/Zhang_2016_burosumab.html
       - text: "Busulfan (Balis 2025)"
         href: articles/Balis_2025_busulfan.html
       - text: "Busulfan (Cao 2025)"
@@ -5697,6 +5699,7 @@ articles:
   - articles/Zhang_2012_lopinavir_ritonavir_pedi
   - articles/Zhang_2013_lopinavir_ritonavir
   - articles/Zhang_2015_dolutegravir
+  - articles/Zhang_2016_burosumab
   - articles/Zhang_2016_rilotumumab
   - articles/Zhang_2018_flurbiprofen
   - articles/Zhang_2019_nivolumab

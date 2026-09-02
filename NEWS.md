@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Salem 2013 drug-elimination-pathway ontogeny ([doi:10.1002/jcph.100](https://doi.org/10.1002/jcph.100)) -- healthy humans from birth to 20 years.
+- Add Zhang 2016 burosumab ([doi:10.1002/jcph.611](https://doi.org/10.1002/jcph.611)) -- adults with X-linked hypophosphatemia.
 
 - Rename the sigmoidal-in-time clearance parameter family so the names state the
   structure rather than only the curve shape, across all 20 models that use it:

@@ -1089,20 +1089,59 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Source aliases:** none.
 - **Example models:** widespread sigmoid-Emax PD extractions.
 
-### led50 (**canonical log-transformed half-maximal DOSE**)
+### tvec50 (**canonical time-zero value of a time-varying EC50**)
 - **Type:** paper-named-param
-- **Role:** Log-transformed administered DOSE producing a half-maximal response, i.e. the dose-axis sibling of `lec50`. Carries the units of the administered dose (mg, ug, umol/kg, ...), NOT concentration units. The founding use is a saturable relative bioavailability of the standard-saturation (`Emax`) form `frel = ed50 / (dose + ed50)`, which equals 1 as the dose approaches 0 and 0.5 at `dose = ed50`. Inside `model()` the bare name is `ed50`.
+- **Role:** Value of a drifting potency `ec50t` at time zero, i.e. the intercept of the
+  sigmoidal-in-time EC50 form
+  `ec50t <- tvec50 + ec50_time_max * t^ec50_time_hill / (ec50_t50^ec50_time_hill + t^ec50_time_hill)`.
+  Concentration units. Log form `ltvec50`. Use plain [[ec50]] when potency is constant;
+  reach for this family only when the source paper estimates a drift of EC50 with
+  treatment duration (pharmacodynamic tolerance / attenuation of response).
 - **Source aliases:**
-  - `D50` -- Kastrissios 2006 notation ("the dose at which `Frel` is half maximal"; Table IV row "D50 for F, mg" = 221 mg).
-- **Example models:** `Kastrissios_2006_apricoxib.R` (founding example; `led50 <- log(221)` with `frel <- exp(e_evening_fdepot * evening) * ed50 / (podo(depot) + ed50)` applied via `f(depot)`, reproducing the paper's abstract claim of a "50% reduction at 221 mg").
-- **Notes:** Ratified 2026-08-26 alongside the Kastrissios 2006 apricoxib (CS-706) extraction (sidecar request-001 q3, option A). Deliberately axis-agnostic in the same way `lki50` is: the name records only that the sigmoid's x-axis is the administered DOSE, so a future dose-response PD model whose half-maximal point is a dose rather than a plasma concentration can reuse it. Distinct from `lec50` / `lic50`, which are half-maximal CONCENTRATIONS -- reusing `lec50` for a dose would make the model's units incoherent and mislead a reader into treating the value as a plasma concentration. Distinct also from the covariate-effect family `e_<cov>_<param>`: `ed50` is a structural constant of the bioavailability (or dose-response) model, not a slope on a covariate. Not every dose-dependent-`F` model needs it -- `Wada_2023_sparsentan.R` and `Comisar_2025_rimegepant.R` both use power forms on the `DOSE` covariate and `Maleki_2024_brepocitinib.R` uses a `DOSE_HIGH` step; reach for `led50` only when the source reports a genuine half-maximal dose constant. A downstream user must read the dose units off `label()`, since they are model-specific by construction.
+  - `tvEC50` -- used in `Zhang_2016_burosumab.R` (Zhang 2016 Table 3, "tvEC50, EC50,t at time 0").
+- **Example models:** `Zhang_2016_burosumab.R`.
+- **Notes:** The derived time-varying quantity itself is written `ec50t` inside `model()`,
+  following the earlier `Jeon_2013_interferonAlfa2a.R` precedent. The `ec50_time_*` / `ec50_t50`
+  trio mirrors the registered [[cl_time_max]] / [[cl_t50]] / [[cl_time_hill]] family, on EC50
+  instead of clearance: the family name states the STRUCTURE (a sigmoidal-in-time change) and
+  `hill` appears only on the shape coefficient. Note the two families differ in how the sigmoid
+  enters -- the clearance family is multiplicative on log-clearance (`exp(...)`), whereas
+  Zhang 2016 equation 10 is additive on EC50 -- so read the model body, not just the names.
 
-### ed50 (**canonical bare half-maximal DOSE**)
+### ec50_time_max (**canonical maximum magnitude of a sigmoidal-in-time EC50 change**)
 - **Type:** paper-named-param
-- **Role:** Bare counterpart of `led50`; the half-maximal-response administered dose on the linear scale, for use inside `model()`.
+- **Role:** Change in EC50 approached as `t >> ec50_t50` in the sigmoidal-in-time EC50 form,
+  in the same concentration units as [[tvec50]]. Log form `lec50_time_max`.
 - **Source aliases:**
-  - `D50` -- Kastrissios 2006 notation.
-- **Example models:** `Kastrissios_2006_apricoxib.R`.
+  - `a` -- used in `Zhang_2016_burosumab.R` (Zhang 2016 Table 3 row `a`, tabulated in ng/mL/week
+    and glossed "maximum rate of increase of EC50,t"; in the paper's equation 10 it multiplies a
+    dimensionless saturating function of time, so it is an increment rather than a rate. The
+    vignette gate reproduces all three published EC50,t values under the increment reading).
+- **Example models:** `Zhang_2016_burosumab.R`.
+- **Notes:** Sibling of [[cl_time_max]]; see [[tvec50]] for the family rationale.
+
+### ec50_t50 (**canonical half-time of a sigmoidal-in-time EC50 change**)
+- **Type:** paper-named-param
+- **Role:** Time at which half of [[ec50_time_max]] has been reached, in the same sigmoidal
+  form. Log form `lec50_t50`. Units are whatever time unit the source equation uses, which
+  need not be the model's time unit -- convert inside `model()` and say so.
+- **Source aliases:** none.
+- **Example models:** `Zhang_2016_burosumab.R` (fixed at 32 weeks, a constant printed only
+  inside Zhang 2016 equation 10 and absent from Table 3; the model converts the solver's days
+  to weeks before evaluating the sigmoid).
+- **Notes:** Named without a `time` infix because `t50` already denotes a time, matching
+  [[cl_t50]].
+
+### ec50_time_hill (**canonical Hill coefficient of a sigmoidal-in-time EC50 change**)
+- **Type:** paper-named-param
+- **Role:** Sigmoid steepness exponent of the same time-varying EC50 form. Log form
+  `lec50_time_hill`.
+- **Source aliases:**
+  - `g` / `gamma` -- used in `Zhang_2016_burosumab.R` (Zhang 2016 Table 3, glossed "Hill
+    coefficient"; it is the exponent on TIME in equation 10, not on concentration).
+- **Example models:** `Zhang_2016_burosumab.R`.
+- **Notes:** Distinct from [[hill]], which is the sigmoidicity exponent on CONCENTRATION in a
+  sigmoid Emax / Imax term. A model may carry both. Sibling of [[cl_time_hill]].
 
 ### lki50 (**canonical log-transformed half-maximal upstream-biomarker level driving a downstream effect rate**)
 - **Type:** paper-named-param
