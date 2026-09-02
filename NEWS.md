@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Tang 2026 vixarelimab ([doi:10.1002/psp4.70230](https://doi.org/10.1002/psp4.70230)) -- healthy volunteers and patients with chronic pruritic conditions.
+- Add Ugolkov 2026 B cell immune response QSP model
+  ([doi:10.3389/fimmu.2026.1745710](https://doi.org/10.3389/fimmu.2026.1745710))
+  -- healthy mice, aggregated across 21 published studies.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
