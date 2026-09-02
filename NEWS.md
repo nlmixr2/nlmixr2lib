@@ -21,7 +21,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Ding 2026 vancomycin ([doi:10.1007/s11096-025-02077-w](https://doi.org/10.1007/s11096-025-02077-w)) -- adults undergoing cardiac surgery.
+- Add Chung 2026 vancomycin ([doi:10.3390/children13050649](https://doi.org/10.3390/children13050649)) -- preterm and term neonates in the neonatal intensive care unit.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 

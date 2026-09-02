@@ -3850,8 +3850,8 @@ navbar:
         href: articles/Buelga_2005_vancomycin.html
       - text: "Vancomycin (Chung 2013)"
         href: articles/Chung_2013_vancomycin.html
-      - text: "Vancomycin (Ding 2026)"
-        href: articles/Ding_2026_vancomycin.html
+      - text: "Vancomycin (Chung 2026)"
+        href: articles/Chung_2026_vancomycin.html
       - text: "Vancomycin (Goti 2018)"
         href: articles/Goti_2018_vancomycin.html
       - text: "Vancomycin (Grimsley 1999)"
@@ -4441,6 +4441,7 @@ articles:
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chua_2025_mirikizumab
   - articles/Chung_2013_vancomycin
+  - articles/Chung_2026_vancomycin
   - articles/Cirincione_2017_exenatide
   - articles/Cirincione_2017_exenatide_er
   - articles/CirrincioneDall_2011_tacrolimus
