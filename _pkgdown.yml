@@ -78,12 +78,12 @@ navbar:
         href: articles/Nader_2017_adalimumab.html
       - text: "Adalimumab minipig (Zheng 2012)"
         href: articles/Zheng_2012_minipig_mab.html
-      - text: "Adalimumab phase1 (Kang 2020)"
-        href: articles/Kang_2020_adalimumab.html
-      - text: "Adalimumab phase3 base (Kang 2020)"
-        href: articles/Kang_2020_adalimumab.html
-      - text: "Adalimumab phase3 extension (Kang 2020)"
-        href: articles/Kang_2020_adalimumab.html
+      - text: "ADC human qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC invitro qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
+      - text: "ADC mouse qsp (Scheuher 2023)"
+        href: articles/Scheuher_2023_ADC_platform_qsp.html
       - text: "Adecatumumab (Cao 2013)"
         href: articles/Cao_2013_adecatumumab.html
       - text: "Aditoprim pbpk (Mi 2024)"
@@ -2040,6 +2040,10 @@ navbar:
         href: articles/Zavrelova_2025_linezolid.html
       - text: "Linezolid cns pbpk (Litjens 2023)"
         href: articles/Litjens_2023_linezolid_tuberculous_meningitis.html
+      - text: "Linzagolix (Pohl 2022)"
+        href: articles/Pohl_2022_linzagolix.html
+      - text: "Linzagolix e2 (Pohl 2022)"
+        href: articles/Pohl_2022_linzagolix.html
       - text: "Liraglutide (CarlssonPetri 2021)"
         href: articles/CarlssonPetri_2021_liraglutide.html
       - text: "Liraglutide (Overgaard 2016)"
@@ -3130,10 +3134,8 @@ navbar:
         href: articles/Xu_2013_ranibizumab.html
       - text: "Ranitidine (Hawwa 2013)"
         href: articles/Hawwa_2013_ranitidine.html
-      - text: "Regorafenib phase1 (Keunecke 2020)"
-        href: articles/Keunecke_2020_regorafenib.html
-      - text: "Regorafenib phase3 (Keunecke 2020)"
-        href: articles/Keunecke_2020_regorafenib.html
+      - text: "RBP 7000 (Ivaturi 2017)"
+        href: articles/Ivaturi_2017_RBP_7000.html
       - text: "Relebactam qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Roberts 2025)"
@@ -3512,12 +3514,6 @@ navbar:
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
       - text: "Sunitinib svegfr3 os (Hansson 2013)"
         href: articles/Hansson_2013_sunitinib_svegfr3_os.html
-      - text: "Sutimlimab (Bartko 2018)"
-        href: articles/Bartko_2018_sutimlimab.html
-      - text: "TDI01 (Ji 2025)"
-        href: articles/Ji_2025_TDI01.html
-      - text: "TF 505 (Matsumoto 2005)"
-        href: articles/Matsumoto_2005_TF_505.html
       - text: "Tacrine (Holford 1992)"
         href: articles/Holford_1992_tacrine.html
       - text: "Tacrolimus (AbdelJalil 2013)"
@@ -5431,6 +5427,7 @@ articles:
   - articles/Plan_2012_pain
   - articles/Plock_2014_ferumoxytol
   - articles/Poels_2025_elranatamab
+  - articles/Pohl_2022_linzagolix
   - articles/Polito_2016_fludrocortisone
   - articles/Pouzin_2022_tusamitamab
   - articles/Press_2010_ciclosporin

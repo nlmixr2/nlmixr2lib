@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Downes 2022 tobramycin ([doi:10.1128/aac.02377-21](https://doi.org/10.1128/aac.02377-21)) -- hospitalized children under 5 years of age with cystic fibrosis.
+- Add Pohl 2022 linzagolix population PK and PK-oestradiol models ([doi:10.1111/bcp.15171](https://doi.org/10.1111/bcp.15171)) — healthy women and women with endometriosis.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
