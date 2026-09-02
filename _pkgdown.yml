@@ -1938,6 +1938,8 @@ navbar:
         href: articles/Duan_2024_linezolid.html
       - text: "Linezolid (Milakovic 2024)"
         href: articles/Milakovic_2024_linezolid.html
+      - text: "Linezolid (Nguyen 2026)"
+        href: articles/Nguyen_2026_linezolid.html
       - text: "Linezolid (Schmidt 2009)"
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "Linezolid (Taubert 2016)"
@@ -5094,6 +5096,7 @@ articles:
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
   - articles/Nguyen_2025_valbenazine_huntington_chorea
+  - articles/Nguyen_2026_linezolid
   - articles/Ni_2013_ciclosporin
   - articles/Nicholas_2009_ponezumab
   - articles/Nichols_2016_piperacillin_tazobactam

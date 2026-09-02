@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Nguyen 2026 linezolid ([doi:10.1007/s40262-026-01626-4](https://doi.org/10.1007/s40262-026-01626-4)) — Vietnamese adults with multidrug-resistant tuberculosis, joint plasma and saliva model.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
