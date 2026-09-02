@@ -3362,6 +3362,8 @@ navbar:
         href: articles/Wilson_2015_sunitinib_irinotecan_mouse.html
       - text: "Sunitinib svegfr3 os (Hansson 2013)"
         href: articles/Hansson_2013_sunitinib_svegfr3_os.html
+      - text: "Sutimlimab (Bartko 2018)"
+        href: articles/Bartko_2018_sutimlimab.html
       - text: "TDI01 (Ji 2025)"
         href: articles/Ji_2025_TDI01.html
       - text: "TF 505 (Matsumoto 2005)"
@@ -4179,6 +4181,7 @@ articles:
   - articles/Barnett_2018_rosuvastatin
   - articles/Baron_2016_empagliflozin
   - articles/Barras_2009_enoxaparin
+  - articles/Bartko_2018_sutimlimab
   - articles/Bastida_2018_tocilizumab
   - articles/Bauer_2023_vonWillebrandFactor
   - articles/Baverel_2015_tralokinumab
