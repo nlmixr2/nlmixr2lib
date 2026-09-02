@@ -3385,6 +3385,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Bellanti_2015_deferoxamine.R` (ug/mL; time-varying input on the linear `DFO = SLP * CSS_DFO` ferritin-degradation effect; 27 transfusion-dependent beta-thalassaemia major paediatric / adolescent patients on 20-60 mg/kg/day DFO 5 days per week).
 - **Notes:** Specific scope because the column is intrinsically tied to deferoxamine PK and to the linear `slope * CssAV` effect form used in this paper. Sibling drug-specific Css canonical: `CSS_RBV` (ribavirin). The companion `K_RBV` approach-to-Css rate constant is **not** needed here because Bellanti 2015 treats CssAV as a population-typical steady-state value rather than reconstructing the rise-to-Css trajectory. For new simulations: a user supplies `CSS_DFO` directly (either a constant typical-Css value, or a time-varying column that switches to 0 during drug holidays); the vignette walks through computing CssAV analytically from a desired dose schedule via `CssAV = (dose_per_week * F) / (CL_i * 168 h)` with `CL_i = 19.3 * (WT/70)^0.75 L/h` for allometric scaling to paediatric / adolescent body weights. Ratified canonically on 2026-05-22 alongside the Bellanti 2015 extraction.
 
+### CSS_LEC (**canonical for lecanemab average steady-state serum concentration from an upstream PK fit**)
+- **Description:** Subject-specific (and, in use, time-varying) average steady-state serum concentration of the anti-amyloid monoclonal antibody lecanemab, generated externally by the lecanemab population PK model (Hayato et al., cited as references 22 and 24 of Cao 2026) and fed into a downstream disease model as the drug-exposure driver. In `Cao_2026_lecanemab.R` it drives two additive clearance-enhancement terms on the amyloid aggregation cascade: `Eff_LECAF = 1 + DELECAF * CSS_LEC` on A-beta protofibril clearance and `Eff_LECAP = 1 + DELECAP * CSS_LEC` on A-beta plaque clearance. Treated as time-varying so treatment, washout and open-label-extension windows are expressed by switching the column between 0 and the on-treatment Css,av -- algebraically identical to the source paper's `if (treatment window) ... else Eff = 1` construction and generalising to any number of windows.
+- **Units:** ug/mL (micrograms per millilitre, equivalently mg/L). The paired drug-effect parameters carry the reciprocal units mL/ug. Document per-model via `covariateData[[CSS_LEC]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters directly into the linear drug-effect expressions. Set to 0 to disable the drug effect (placebo arms, pre-treatment natural-history periods, post-discontinuation washout). Reference value for the approved 10 mg/kg IV Q2W regimen: the Cao 2026 Vpop301 Css,av distribution (Supplementary Figure E21) is log-normal with a mode near 115-130 ug/mL and a median near 135 ug/mL, spanning roughly 30-370 ug/mL.
+- **Source aliases:**
+  - `CSSAV01` / `CSSAV02` (Cao 2026 Methods pseudocode; one column per treatment window, selected by the `TXSTR` / `TXEND` window bounds) -- collapse the per-window columns into a single time-varying `CSS_LEC` column for nlmixr2lib.
+  - `Css,av` (paper narrative symbol).
+- **Example models:** `Cao_2026_lecanemab.R` (ug/mL; time-varying input on the linear protofibril and plaque clearance-enhancement terms of an 11-ODE Alzheimer's-disease QSP model).
+- **Notes:** Member of the `CSS_<drug>` canonical family (siblings: `CSS_RBV` ribavirin, `CSS_ALBIFN` albinterferon alfa-2b, `CSS_DFO` deferoxamine) for a steady-state average concentration supplied by an upstream PK model rather than simulated in the same model. The `LEC` drug abbreviation matches the existing `AUC_LEC` entry. Distinct from `AUC_LEC`, which is the lecanemab AUC over a 4-week dosing interval: the two are not interconvertible without the dosing interval, and a model must use whichever quantity its own drug-effect parameter was estimated against. Cao 2026 additionally re-uses the same exposure channel for donanemab, aducanumab and gantenerumab via drug-specific exposure multipliers scaled to lecanemab's Css,av, but does not tabulate those multipliers; a future extraction that needs them should register sibling `CSS_<drug>` columns rather than overloading this one. Founding example: `Cao_2026_lecanemab.R`.
+
 ### CP0_MAT_NGML (**canonical for maternal plasma concentration at delivery used to initialise a neonate's central compartment**)
 - **Description:** Observed maternal plasma concentration of the modelled drug in a sample drawn at (or within minutes of) delivery, supplied as a static per-subject covariate on the neonate and used to set the neonate's central-compartment initial condition at t = 0. This is the standard way a mother-infant dyad analysis carries in-utero (transplacental) exposure into a neonatal PK model when the umbilical cord is not modelled as an intermediate compartment: the neonate is born with drug already on board, and the maternal sample is the only measurement of it. Distinct from the `CP_<DRUG>_<UNITS>` family, which is an *instantaneous, time-varying* concentration of an upstream drug fed per event record into a PD or perpetrator model -- `CP0_MAT_NGML` is time-fixed, one value per subject, of the same drug the model itself describes, and drives a state initial condition rather than an equation. Parallel in role to `PLAQUE_BL` and `HGB_BL` (per-subject observed baseline supplying a state's t = 0 value), differing in that the baseline was measured in a *different individual* (the mother) than the one being modelled.
 - **Units:** ng/mL. Document per-model via `covariateData[[CP0_MAT_NGML]]$units`; register a sibling only if a paper reports maternal concentrations in units that cannot be converted (the `_NGML` suffix is part of the canonical name, so a mg/L analysis should convert rather than add a name).
@@ -5596,6 +5608,52 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Source aliases:** none known; source NONMEM control streams typically use ad-hoc names (e.g., `AD`, `STATUS`, `DISGRP`).
 - **Example models:** `PerezRuixo_2025_posdinemab.R` (acts on baseline free p217+tau in CSF, R0; healthy R0 = 0.793 pmol/L vs AD R0 = 5.995 pmol/L, a 656% relative increase, no PK-parameter effects).
 - **Notes:** Used when a population PK/PD model pools healthy volunteers with Alzheimer's disease patients and the AD-vs-HV contrast is retained as a covariate on a target-related parameter (e.g., baseline p-tau, baseline p217+tau). Scope: specific because the complement reference category is paper-defined. Ratified canonically on 2026-04-28.
+
+### DIS_AD_LMCI (**canonical for baseline late-mild-cognitive-impairment stage indicator on the Alzheimer's disease continuum**)
+- **Description:** 1 = baseline clinical diagnosis of late mild cognitive impairment (LMCI); 0 = otherwise. Time-fixed per subject (a baseline stratum, not a time-varying disease state). One of four indicators -- `DIS_AD_LMCI`, `DIS_AD_MCI`, `DIS_AD_MILD`, `DIS_AD_DEMENTIA` -- that jointly encode the baseline clinical stage along the Alzheimer's disease continuum as binary contrasts against the earliest stage, early mild cognitive impairment (EMCI), which is the reference level (all four indicators 0). The four-indicator form (rather than an ordinal score) is required because source papers estimate a separate, non-monotonic coefficient per stage.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0; the reference level of the stage covariate is EMCI (early mild cognitive impairment), represented by setting all four `DIS_AD_*` stage indicators to 0. The four indicators are mutually exclusive.
+- **Source aliases:**
+  - `bDIAG` / `DIAG` (Monolix categorical baseline-diagnosis covariate) -- used in `Cao_2026_lecanemab.R`; derive `DIS_AD_LMCI = as.integer(bDIAG == "LMCI")`.
+  - `DX_BL` (the ADNI baseline-diagnosis column, with levels `CN` / `SMC` / `EMCI` / `LMCI` / `AD`).
+- **Example models:** `Cao_2026_lecanemab.R` (multiplicative log-scale effect on the ADAS-Cog scaling factor alpha_adas: `exp(0.13 * DIS_AD_LMCI)`).
+- **Notes:** Distinct from `DIS_AD`, which is a binary Alzheimer's-patient-vs-healthy-volunteer cohort flag; this family stratifies *within* an all-AD cohort by clinical stage. Pooled AD datasets routinely carry more than one diagnostic vocabulary -- Cao 2026 merges ADNI (EMCI / LMCI / mild AD dementia) with the lecanemab Studies 201 and 301 (MCI / mild dementia due to AD) -- so `DIS_AD_MCI` and `DIS_AD_LMCI` coexist, as do `DIS_AD_MILD` and `DIS_AD_DEMENTIA`, and the mapping from source category to indicator must be documented per-model in `covariateData[[...]]$notes`. Founding example: `Cao_2026_lecanemab.R`.
+
+### DIS_AD_MCI (**canonical for baseline mild-cognitive-impairment stage indicator on the Alzheimer's disease continuum**)
+- **Description:** 1 = baseline clinical diagnosis of mild cognitive impairment (MCI) recorded without an early / late qualifier; 0 = otherwise. Time-fixed per subject. See `DIS_AD_LMCI` for the family encoding.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0; family reference level EMCI.
+- **Source aliases:**
+  - `bDIAG` / `DIAG` (Monolix categorical baseline-diagnosis covariate): derive `DIS_AD_MCI = as.integer(bDIAG == "MCI")`.
+- **Example models:** `Cao_2026_lecanemab.R` (log-scale effects `exp(0.12 * DIS_AD_MCI)` on the A-beta monomer aggregation rate kAggAO and `exp(0.14 * DIS_AD_MCI)` on the ADAS-Cog scaling factor alpha_adas; 61.9-64.1% of the lecanemab Study 201 / 301 cohorts).
+- **Notes:** See `DIS_AD_LMCI`.
+
+### DIS_AD_MILD (**canonical for baseline mild-dementia-due-to-AD stage indicator**)
+- **Description:** 1 = baseline clinical diagnosis of mild dementia due to Alzheimer's disease; 0 = otherwise. Time-fixed per subject. See `DIS_AD_LMCI` for the family encoding.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0; family reference level EMCI.
+- **Source aliases:**
+  - `bDIAG` / `DIAG` (Monolix categorical baseline-diagnosis covariate): derive `DIS_AD_MILD = as.integer(bDIAG == "Mild_AD")`.
+- **Example models:** `Cao_2026_lecanemab.R` (log-scale effects `exp(0.032 * DIS_AD_MILD)` on kAggAO, `exp(0.18 * DIS_AD_MILD)` on alpha_cdr and `exp(0.16 * DIS_AD_MILD)` on alpha_adas; 35.9-38.1% of the lecanemab Study 201 / 301 cohorts).
+- **Notes:** See `DIS_AD_LMCI`. Kept distinct from `DIS_AD_DEMENTIA` because pooled analyses that merge trial and observational cohorts estimate separate coefficients for the two vocabularies' dementia categories (Cao 2026 Supplementary Table S14: 0.18 for `Mild_AD` vs 0.39 for `AD` on alpha_cdr).
+
+### DIS_AD_DEMENTIA (**canonical for baseline Alzheimer's-dementia stage indicator**)
+- **Description:** 1 = baseline clinical diagnosis of Alzheimer's dementia recorded under a vocabulary that does not carry a separate "mild dementia" level (in Cao 2026, the ADNI category "Mild AD dementia", printed as the level `AD` in Supplementary Table S14); 0 = otherwise. Time-fixed per subject. See `DIS_AD_LMCI` for the family encoding.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0; family reference level EMCI.
+- **Source aliases:**
+  - `bDIAG` (Monolix categorical baseline-diagnosis covariate): derive `DIS_AD_DEMENTIA = as.integer(bDIAG == "AD")`.
+  - `DX_BL` (ADNI baseline-diagnosis column): derive from the `AD` level.
+- **Example models:** `Cao_2026_lecanemab.R` (log-scale effects `exp(0.39 * DIS_AD_DEMENTIA)` on both alpha_cdr and alpha_adas; 27.6% of the ADNI cohort).
+- **Notes:** See `DIS_AD_LMCI` and `DIS_AD_MILD`.
 
 ### DIS_COPD (**canonical for chronic obstructive pulmonary disease patient indicator**)
 - **Description:** 1 = patient with chronic obstructive pulmonary disease (clinical COPD diagnosis, typically moderate-to-severe per GOLD criteria), 0 = non-COPD subject (typically healthy volunteer pooled in the source analysis). Time-fixed per subject.
@@ -9464,18 +9522,41 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Conrado_2014_alzheimer.R` (centring 0.72; multiplicative effect on baseline ADAS-Cog and on disease-progression slope: `factor = 1 + e * (APOE4_COUNT - 0.72)` with `e_blapoe4 = 0.0372` on baseline and `e_slapoe4 = 0.195` on slope).
 - **Notes:** APOE-epsilon4 carrier status is the strongest established genetic risk factor for late-onset Alzheimer's disease; the allele-count form (rather than a binary carrier indicator) is preferred when the source paper distinguishes heterozygous from homozygous carriers. Future models that report only a binary carrier indicator (any-epsilon4 vs none) should register a separate canonical (`APOE4_CARRIER`) rather than overloading `APOE4_COUNT`. The `unknown` category (often recorded as `APOE4 = 3` in CDISC datasets) is conventionally recoded by the source paper to the population-mean count to avoid dropping subjects; document the recoding rule used per-model. Ratified canonically on 2026-05-06 alongside the Conrado 2014 DDMORE extraction.
 
-### APOE4_CARRIER (**canonical for APOE-epsilon4 carrier status indicator**)
-- **Description:** 1 = subject carries at least one APOE-epsilon4 allele (heterozygous or homozygous), 0 = subject carries none. Time-invariant (germline genotype). Use this binary form when the source paper tests carrier-vs-noncarrier only and does not separate heterozygotes from homozygotes; use [[APOE4_COUNT]] instead when the paper distinguishes the two carrier genotypes.
+### APOE4_HET (**canonical for APOE-epsilon4 heterozygote indicator**)
+- **Description:** 1 = subject carries exactly one APOE-epsilon4 allele (heterozygous); 0 = otherwise (non-carrier or homozygote). Time-fixed per subject (germline genotype). Paired with `APOE4_HOM` to encode the three-level APOE-epsilon4 genotype as two binary indicators with the non-carrier genotype as the reference, following the `SLCO1B1_HAP15_HET` / `SLCO1B1_HAP15_HOM` and `CYP3A5_STAR1_HET` / `CYP3A5_STAR1_HOM` pattern that `APOE4_COUNT` names as the correct route when a paper distinguishes the two carrier genotypes non-additively.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
-- **Reference category:** 0 (APOE-epsilon4 non-carrier).
+- **Reference category:** 0 = APOE-epsilon4 non-carrier. `APOE4_HET` and `APOE4_HOM` are mutually exclusive; a non-carrier has both set to 0.
 - **Source aliases:**
-  - `APOE4` (two-level 0 / 1 carrier flag) -- the common CDISC / control-stream spelling; same orientation, no transformation.
-  - `APOE4 carrier`, `APOE4 carrier status` -- the prose forms used in Bhagunde 2026 Table 1 and Bhagunde 2026 CPT:PSP Table 1.
-  - Three-level allele-count columns (0 / 1 / 2): derive `APOE4_CARRIER = as.integer(APOE4_COUNT > 0)`. Do not derive in the other direction -- collapsing a count to a carrier flag loses information, so a model whose paper reports genotype-resolved effects should use `APOE4_COUNT`.
-- **Example models:** `Bhagunde_2026_lecanemab_abeta4240.R` (log-linear effect `exp(0.0138 * APOE4_CARRIER)` on the baseline plasma Abeta42/40 ratio), `Bhagunde_2026_lecanemab_ptau181.R` (ratio `1.07^APOE4_CARRIER` on the baseline plasma p-tau181), `Bhagunde_2026_lecanemab_gfap.R` (ratio `0.629^APOE4_CARRIER` on the logit-scale baseline amyloid plaque burden of the upstream amyloid-PET model).
-- **Notes:** Registered as the binary companion the [[APOE4_COUNT]] entry anticipated ("Future models that report only a binary carrier indicator (any-epsilon4 vs none) should register a separate canonical (`APOE4_CARRIER`) rather than overloading `APOE4_COUNT`"). APOE-epsilon4 carriage is the strongest established genetic risk factor for late-onset Alzheimer's disease and is a near-universal stratification factor in anti-amyloid antibody trials, where it also predicts amyloid-related imaging abnormalities. The two canonicals are mutually derivable in one direction only, so a dataset serving both model families should carry `APOE4_COUNT` and derive `APOE4_CARRIER` from it. Distinct from `APOE4_HOMO` -type indicators, which some ARIA-risk models use for the homozygous stratum specifically; register those separately if a future paper needs them.
+  - `APOEGEN` (Monolix / CDISC categorical genotype column with levels `Non-Carrier` / `Heterozygous` / `Homozygous`): derive `APOE4_HET = as.integer(APOEGEN == "Heterozygous")`.
+  - `APOE4` (raw CDISC coding 0 / 1 / 2 / 3 for non-carrier / heterozygous / homozygous / unknown): derive `APOE4_HET = as.integer(APOE4 == 1)`.
+- **Example models:** `Cao_2026_lecanemab.R` (multiplicative log-scale effect on the A-beta monomer aggregation rate kAggAO: `exp(0.15 * APOE4_HET + 0.18 * APOE4_HOM)`, i.e. +16.2% for heterozygotes and +19.7% for homozygotes relative to non-carriers).
+- **Notes:** Use `APOE4_HET` + `APOE4_HOM` (not `APOE4_COUNT`) whenever the source paper estimates separate, non-additive heterozygote and homozygote coefficients -- the additive allele-count form cannot represent a model in which the homozygote effect is not twice the heterozygote effect. Use `APOE4_CARRIER` when the paper collapses both carrier genotypes into a single binary contrast. A paper may use more than one of the three codings on different parameters (Cao 2026 uses the `_HET` / `_HOM` pair on an amyloid aggregation rate and `APOE4_CARRIER` on the cognitive-scale scaling factors), so the three canonicals coexist rather than supersede one another. Founding example: `Cao_2026_lecanemab.R`.
+
+### APOE4_HOM (**canonical for APOE-epsilon4 homozygote indicator**)
+- **Description:** 1 = subject carries two APOE-epsilon4 alleles (homozygous); 0 = otherwise (non-carrier or heterozygote). Time-fixed per subject (germline genotype). Companion to `APOE4_HET`; see that entry for the encoding rationale.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = APOE-epsilon4 non-carrier.
+- **Source aliases:**
+  - `APOEGEN` (categorical genotype column): derive `APOE4_HOM = as.integer(APOEGEN == "Homozygous")`.
+  - `APOE4` (raw CDISC coding 0 / 1 / 2 / 3): derive `APOE4_HOM = as.integer(APOE4 == 2)`.
+- **Example models:** `Cao_2026_lecanemab.R` (log-scale coefficient 0.18 on kAggAO; observed frequency 13.4-16.5% across the ADNI, Study 201 and Study 301 cohorts).
+- **Notes:** See `APOE4_HET`. APOE-epsilon4 homozygosity is the strongest common genetic risk factor for late-onset Alzheimer's disease and is separately labelled in the anti-amyloid antibody programmes because of its association with amyloid-related imaging abnormalities (ARIA), so papers frequently report it as its own stratum rather than folding it into an allele count. Founding example: `Cao_2026_lecanemab.R`.
+
+### APOE4_CARRIER (**canonical for binary APOE-epsilon4 carrier indicator**)
+- **Description:** 1 = subject carries at least one APOE-epsilon4 allele (heterozygous or homozygous); 0 = non-carrier. Time-fixed per subject (germline genotype). This is the binary collapse of the three-level genotype, for papers that fit a single carrier-vs-non-carrier contrast rather than distinguishing heterozygotes from homozygotes.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 = APOE-epsilon4 non-carrier.
+- **Source aliases:**
+  - `tAPOECarrier` (Monolix transformed binary carrier covariate) -- used in `Cao_2026_lecanemab.R`.
+  - `APOEGEN` / `APOE4` (three-level genotype): derive `APOE4_CARRIER = as.integer(APOE4_HET == 1 | APOE4_HOM == 1)`, equivalently `as.integer(APOE4_COUNT >= 1)`.
+- **Example models:** `Cao_2026_lecanemab.R` (multiplicative log-scale effects on the CDR-SB and ADAS-Cog scaling factors: `exp(-0.21 * APOE4_CARRIER)` on alpha_cdr and `exp(-0.097 * APOE4_CARRIER)` on alpha_adas).
+- **Notes:** Registered per the forward reference in the `APOE4_COUNT` entry ("Future models that report only a binary carrier indicator (any-epsilon4 vs none) should register a separate canonical (`APOE4_CARRIER`) rather than overloading `APOE4_COUNT`"). Prefer `APOE4_COUNT` when the paper models an additive per-allele effect, `APOE4_HET` + `APOE4_HOM` when it estimates separate non-additive genotype effects, and `APOE4_CARRIER` when it fits only the binary contrast. Founding example: `Cao_2026_lecanemab.R`.
 
 ### NAT2_SLOW (**canonical for NAT2 slow-acetylator phenotype indicator**)
 - **Description:** 1 = subject is an NAT2 (arylamine N-acetyltransferase 2) slow acetylator, defined by carrying two reduced-function NAT2 SNP alleles (homozygous variant for one or more of the canonical slow-acetylator SNPs rs1801279, rs1801280, rs1799930, rs1799931, OR heterozygous for two or more of those SNPs); 0 = subject is an intermediate or rapid acetylator (heterozygous for at most one of the canonical SNPs, or wild-type homozygous for all). Time-fixed per subject (germline genotype-derived phenotype). The intermediate and rapid (fast) phenotypes are pooled into the `0` category because the Horita 2018 source paper found no significant differences in t1/2, CL/F, or AUC0-8 between rapid and intermediate genotypes and combined them as the "nonslow" group; this pooling is the standard convention in the NAT2-aware antituberculosis-isoniazid popPK literature.
