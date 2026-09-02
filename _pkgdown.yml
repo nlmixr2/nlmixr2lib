@@ -124,6 +124,14 @@ navbar:
         href: articles/Klein_2026_alprazolam.html
       - text: "Alvespimycin (Aregbe 2012)"
         href: articles/Aregbe_2012_alvespimycin.html
+      - text: "Alvespimycin nep11 (Li 2026)"
+        href: articles/Li_2026_alvespimycin.html
+      - text: "Alvespimycin nep16 (Li 2026)"
+        href: articles/Li_2026_alvespimycin.html
+      - text: "Alvespimycin nep5 (Li 2026)"
+        href: articles/Li_2026_alvespimycin.html
+      - text: "Alvespimycin nep9 (Li 2026)"
+        href: articles/Li_2026_alvespimycin.html
       - text: "Amatuximab (Gupta 2016)"
         href: articles/Gupta_2016_amatuximab.html
       - text: "Amg221 (Gibbs 2011)"
@@ -4997,6 +5005,7 @@ articles:
   - articles/Li_2025_amikacin
   - articles/Li_2025_doxycycline_florfenicol_ducks
   - articles/Li_2025_modakafuspAlfa
+  - articles/Li_2026_alvespimycin
   - articles/Liang_2023_polymyxinB
   - articles/Liang_2024_osimertinib
   - articles/Liang_2024_rituximab
