@@ -174,6 +174,8 @@ navbar:
         href: articles/Muller_2009_amoxicillin.html
       - text: "Amoxicillin (Tang 2019)"
         href: articles/Tang_2019_amoxicillin.html
+      - text: "Amoxicillin (Zhang 2023)"
+        href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
       - text: "Amphenmulin chicken (Wang 2024)"
         href: articles/Wang_2024_amphenmulin.html
       - text: "Amphenmulin killrate (Wang 2024)"
@@ -372,6 +374,8 @@ navbar:
         href: articles/Zheng_2014_azithromycin.html
       - text: "Azithromycin (Zheng 2018)"
         href: articles/Zheng_2018_azithromycin.html
+      - text: "Aztreonam (Zhang 2023)"
+        href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
       - text: "Aztreonam avibactam (Xie 2025)"
         href: articles/Xie_2025_aztreonam_avibactam.html
       - text: "Aztreonam qsp (LopezArguello 2023)"
@@ -776,6 +780,8 @@ navbar:
         href: articles/Shah_2025_clarithromycin.html
       - text: "ClavulanicAcid (Schouwenburg 2025)"
         href: articles/Schouwenburg_2025_clavulanicAcid.html
+      - text: "ClavulanicAcid (Zhang 2023)"
+        href: articles/Zhang_2023_aztreonam_amoxicillin_clavulanate.html
       - text: "Clazakizumab (Muthukrishnan 2025)"
         href: articles/Muthukrishnan_2025_clazakizumab.html
       - text: "Clesrovimab (Hu 2026)"
@@ -5962,6 +5968,7 @@ articles:
   - articles/Zhang_2019_nivolumab
   - articles/Zhang_2021_dupilumab
   - articles/Zhang_2022_ormutivimab
+  - articles/Zhang_2023_aztreonam_amoxicillin_clavulanate
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_f53b_pbpk

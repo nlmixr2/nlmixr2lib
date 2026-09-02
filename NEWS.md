@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Shchelokov 2023 nivolumab PD-1 receptor-occupancy QSP model ([doi:10.1080/19420862.2022.2156317](https://doi.org/10.1080/19420862.2022.2156317)) -- virtual patients with advanced solid tumors.
+- Add Zhang 2023 aztreonam, amoxicillin and clavulanic acid ([doi:10.3390/pharmaceutics15010251](https://doi.org/10.3390/pharmaceutics15010251)) -- simulated adults with creatinine clearance 10-150 mL/min/1.73 m2.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
