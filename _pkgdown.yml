@@ -3582,6 +3582,10 @@ navbar:
         href: articles/Zhang_2026_tebipenem.html
       - text: "Teclistamab qsp (ChandralayamAyyappaMenon 2026)"
         href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
+      - text: "Tecovirimat cyno (Leeds 2013)"
+        href: articles/Leeds_2013_tecovirimat.html
+      - text: "Tecovirimat human (Leeds 2013)"
+        href: articles/Leeds_2013_tecovirimat.html
       - text: "Teduglutide (Marier 2010)"
         href: articles/Marier_2010_teduglutide.html
       - text: "Tefibazumab (Cao 2013)"
@@ -5034,6 +5038,7 @@ articles:
   - articles/Lee_2024_topiramate
   - articles/Lee_2025_levofloxacin
   - articles/Lee_2025_piperacillin_tazobactam
+  - articles/Leeds_2013_tecovirimat
   - articles/Leger_2004_topotecan
   - articles/Lehr_2010_tesofensine
   - articles/LeJouan_2005_quinine
