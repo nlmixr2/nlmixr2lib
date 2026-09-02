@@ -1154,6 +1154,8 @@ navbar:
         href: articles/Steichert_2025_enalapril_enalaprilat_pediatric.html
       - text: "Enalapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Encorafenib (Yang 2026)"
+        href: articles/Yang_2026_encorafenib.html
       - text: "Enflicoxib (Cendros 2025)"
         href: articles/Cendros_2025_enflicoxib.html
       - text: "Enfortumab (Choules 2024)"
@@ -5743,6 +5745,7 @@ articles:
   - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yang_2025_matrine_pig_pbpk
   - articles/Yang_2026_APTM
+  - articles/Yang_2026_encorafenib
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
   - articles/Yao_2025_flurbiprofen

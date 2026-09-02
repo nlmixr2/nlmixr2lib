@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Li 2026 alvespimycin (17-DMAG) NSGA-II Pareto-front models at NEP = 5, 9,
-  11 and 16 ([doi:10.1007/s10928-026-10036-9](https://doi.org/10.1007/s10928-026-10036-9))
-  -- adults with advanced solid tumors.
+- Add Yang 2026 encorafenib ([doi:10.1007/s40262-025-01608-y](https://doi.org/10.1007/s40262-025-01608-y)) -- adults with BRAF V600-mutant solid tumors and healthy participants.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
