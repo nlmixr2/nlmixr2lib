@@ -11090,16 +11090,60 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Wang_2023_dorzagliatin.R` (multiplicative exponential effect on CL/F: `exp(0.203 * STUDY_DORZA_EARLY)` = a 1.23-fold, i.e. 22.5% higher, apparent clearance in the early-phase studies; Wang 2023 Table 3 CL_STUDY = 1.23).
 - **Notes:** Specific scope; tied to the six-trial Hua Medicine dorzagliatin development programme. Subject-level (time-fixed); set from the trial identifier. Wang 2023 Discussion paragraph 2 documents the mechanism and why the effect lands on CL/F rather than on F: the early studies showed systematically lower exposure, plausibly a formulation difference, but because the later studies were mainly sparsely sampled "the model was unable to correct for prediction bias by bioavailability", so the between-trial difference was absorbed into apparent clearance. This is why the indicator is registered under the `STUDY_<id>` family rather than as a `FORM_<drug>_<formulation>` entry -- the formulation attribution is the paper's hypothesis, not its parameterisation. Directly analogous to `STUDY_LBSL` (a binary indicator over a *group* of early-phase studies switching CL and V magnitudes) and to `STUDY_FARLETUZUMAB_PHASE2` / `STUDY_POSA_PHASE3` / `STUDY_NIPOCALIMAB_PHASE1`. Follows the auto-approved `STUDY_<id>` canonical family.
 
-### STUDY_DE (**canonical for the Riggs 2013 empagliflozin Study-D / Study-E cohort indicator**)
-- **Description:** 1 = subject's observation comes from Riggs 2013 Study D (NCT00789035, 12-week Phase II) or Study E (NCT00749190, 12-week metformin add-on Phase II); 0 = Study A (EudraCT 2007-000654-32, 8-day), Study B (NCT00558571, 4-week) or Study C (NCT00885118, 4-week, Japanese patients). Selects which of two estimated residual-error pairs applies to the record.
+### STUDY_NOVA (**canonical for the NOVA niraparib trial cohort indicator**)
+- **Description:** 1 = record from NOVA (NCT01847274), the phase 3 randomised maintenance trial of niraparib in platinum-sensitive recurrent ovarian cancer; 0 = record from one of the other five studies pooled into the same analysis. Per-record (study-fixed) binary indicator, one of the five non-reference members of the six-study niraparib pool.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Reference category:** 0 (Studies A, B and C -- the shorter early-phase studies, which had the lower residual variability).
+- **Reference category:** 0 with `STUDY_QUADRA`, `STUDY_PRIMA`, `STUDY_TABLET` and `STUDY_HEPATIC` also 0, which selects PN001 (NCT00749502), the phase 1 dose-escalation study and the reference stratum of the set.
 - **Source aliases:**
-  - `STUDY` -- Riggs 2013 Methods ("Separate residual variance terms were included during model development to account for the greater variability in the empagliflozin concentrations observed from Studies D and E compared with Studies A, B, and C") and the Table 2 residual-variance block, which is split into "Studies A, B, and C" and "Studies D and E" sub-rows. Used in `Riggs_2013_empagliflozin.R`.
-- **Example models:** `Riggs_2013_empagliflozin.R` (switches the combined residual error only: proportional 19.6% CV + additive 0.179 nmol/L for Studies A/B/C versus proportional 35.7% CV + additive 0.010 nmol/L for Studies D/E; no structural or disposition parameter depends on it).
-- **Notes:** Specific scope; tied to the five-trial Boehringer Ingelheim empagliflozin Phase I/II programme pooled by Riggs 2013. Supply per observation record rather than per subject in principle, though in this analysis every subject contributes to exactly one study so it is effectively subject-level. Unusually for the `STUDY_<id>` family this indicator carries **no** fixed-effect meaning -- it exists purely to stratify the residual error, which is why the model computes the proportional and additive SDs as `propSd_studyabc * (1 - STUDY_DE) + propSd_studyde * STUDY_DE` and passes those model-computed variables into `prop()` / `add()`. Directly analogous to `STUDY_DORZA_EARLY`, which likewise uses one binary indicator to name a *group* of studies rather than a single trial. Follows the auto-approved `STUDY_<id>` canonical family.
+  - `study` -- Gaffney 2026 Table 1 trial identifier; Table 3 labels the residual-error rows "Res variability CV PN001 / NOVA / QUADRA / PRIMA / TABLET / HEPATIC".
+- **Example models:** `Gaffney_2026_niraparib.R` (selects the NOVA log-scale residual SD 0.350; applied inside `model()` as a five-indicator switch over the six study-specific magnitudes, with the bare `expSd` carrying the PN001 reference).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>` canonical family, named for the published trial rather than a phase number because all six niraparib studies are individually named and two of them share a phase. The between-study difference is confined to residual error (assay and sampling-design differences: NOVA and the other phase 2/3 studies are sparsely sampled, whereas TABLET and HEPATIC used intensive serial sampling), not to any structural or covariate parameter -- the same role `STUDY_ODYSSEY` plays in `Chandasana_2024b_dolutegravir.R`. Subject-level (time-fixed); set once from the trial identifier on each subject record. Exactly one of the five indicators is 1 per record, or all five are 0 for a PN001 record. Ratified canonically alongside the Gaffney 2026 niraparib extraction.
+
+### STUDY_QUADRA (**canonical for the QUADRA niraparib trial cohort indicator**)
+- **Description:** 1 = record from QUADRA (NCT02354586), the phase 2 single-arm trial of niraparib in relapsed high-grade serous advanced ovarian cancer; 0 = record from one of the other five studies pooled into the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with the other four niraparib study indicators also 0 (selects PN001).
+- **Source aliases:**
+  - `study` -- Gaffney 2026 Table 1 trial identifier.
+- **Example models:** `Gaffney_2026_niraparib.R` (selects the QUADRA log-scale residual SD 0.381).
+- **Notes:** See `STUDY_NOVA` for the family rationale and the five-indicator / PN001-reference convention. Ratified canonically alongside the Gaffney 2026 niraparib extraction.
+
+### STUDY_PRIMA (**canonical for the PRIMA niraparib trial cohort indicator**)
+- **Description:** 1 = record from PRIMA (NCT02655016), the phase 3 randomised trial of niraparib versus placebo as first-line maintenance after platinum-based chemotherapy in advanced ovarian cancer; 0 = record from one of the other five studies pooled into the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with the other four niraparib study indicators also 0 (selects PN001).
+- **Source aliases:**
+  - `study` -- Gaffney 2026 Table 1 trial identifier.
+- **Example models:** `Gaffney_2026_niraparib.R` (selects the PRIMA log-scale residual SD 0.451, the largest of the six).
+- **Notes:** See `STUDY_NOVA` for the family rationale and the five-indicator / PN001-reference convention. Ratified canonically alongside the Gaffney 2026 niraparib extraction.
+
+### STUDY_TABLET (**canonical for the TABLET niraparib trial cohort indicator**)
+- **Description:** 1 = record from TABLET (NCT03329001), the phase 1 open-label multicentre study in advanced solid tumours that evaluated tablet-versus-capsule bioequivalence and the effect of a high-fat meal on a single 300 mg niraparib dose; 0 = record from one of the other five studies pooled into the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with the other four niraparib study indicators also 0 (selects PN001).
+- **Source aliases:**
+  - `study` -- Gaffney 2026 Table 1 trial identifier.
+- **Example models:** `Gaffney_2026_niraparib.R` (selects the TABLET log-scale residual SD 0.324).
+- **Notes:** One of the two intensively sampled phase 1 studies added by Gaffney 2026 to the earlier niraparib pool, contributing 6487 of the 14,106 included observations (46%) and essentially all of the fed records that identify the `FED` effects on relative bioavailability and mean transit time. See `STUDY_NOVA` for the family rationale and the five-indicator / PN001-reference convention. Ratified canonically alongside the Gaffney 2026 niraparib extraction.
+
+### STUDY_HEPATIC (**canonical for the HEPATIC niraparib trial cohort indicator**)
+- **Description:** 1 = record from HEPATIC (NCT03359850), the phase 1 open-label multicentre study of a single 300 mg niraparib dose in patients with advanced solid tumours and either normal hepatic function or moderate hepatic impairment; 0 = record from one of the other five studies pooled into the same analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 with the other four niraparib study indicators also 0 (selects PN001).
+- **Source aliases:**
+  - `study` -- Gaffney 2026 Table 1 trial identifier.
+- **Example models:** `Gaffney_2026_niraparib.R` (selects the HEPATIC log-scale residual SD 0.146, the smallest of the six).
+- **Notes:** The study name describes the trial's hepatic-impairment design, but the indicator is a **study-membership** flag and not a hepatic-function covariate -- do not substitute it for `HEPIMP_MOD` or any other impairment column. Gaffney 2026 explicitly did not retain hepatic impairment as a model effect (only 8 of the 17 HEPATIC patients had moderate impairment, which the paper names as a limitation), so the study enters the model solely through its residual-error magnitude. A model that needs the impairment contrast itself must carry a separate impairment column. See `STUDY_NOVA` for the family rationale and the five-indicator / PN001-reference convention. Ratified canonically alongside the Gaffney 2026 niraparib extraction.
 
 ### REGI_BID (**canonical for twice-daily dosing-regimen indicator**)
 - **Description:** 1 = subject's dosing regimen is BID (twice daily), 0 = QD (once daily) or other non-BID regimen. Per-subject (regimen-fixed) categorical indicator for population analyses that pool QD and BID arms and test regimen as a covariate.

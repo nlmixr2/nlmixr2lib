@@ -2478,6 +2478,8 @@ navbar:
         href: articles/Schmid_2017_nintedanib.html
       - text: "Nipocalimab (Valenzuela 2025)"
         href: articles/Valenzuela_2025_nipocalimab.html
+      - text: "Niraparib (Gaffney 2026)"
+        href: articles/Gaffney_2026_niraparib.html
       - text: "Nirmatrelvir (Chan 2023)"
         href: articles/Chan_2023_nirmatrelvir.html
       - text: "Nirsevimab (Clegg 2024)"
@@ -4611,7 +4613,7 @@ articles:
   - articles/Fukae_2024_valemetostat_exposure_response
   - articles/Fukumoto_2023_meropenem
   - articles/Fung_2008_butanediol_rat
-  - articles/Gafar_2026_rifampicin
+  - articles/Gaffney_2026_niraparib
   - articles/Galluppi_2016_BIIB023
   - articles/Galluppi_2021_ulotaront
   - articles/Gandhi_2021_abatacept
