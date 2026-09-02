@@ -21,7 +21,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Bartko 2018 sutimlimab classical-complement-pathway inhibition model ([doi:10.1002/cpt.1111](https://doi.org/10.1002/cpt.1111)) -- healthy volunteers in a first-in-human single- and multiple-ascending-dose trial.
+- Add Troy 2020 arylsulfatase A / TAK-611 ([doi:10.1002/cpt.1752](https://doi.org/10.1002/cpt.1752)) -- children with metachromatic leukodystrophy receiving intrathecal enzyme replacement.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 

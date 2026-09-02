@@ -286,6 +286,8 @@ navbar:
         href: articles/Tan_2009_artesunate.html
       - text: "Artesunate hamster pbpk (Kang 2023)"
         href: articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk.html
+      - text: "ArylsulfataseA (Troy 2020)"
+        href: articles/Troy_2020_arylsulfataseA.html
       - text: "Asc10a (Lv 2025)"
         href: articles/Lv_2025_asc10a.html
       - text: "Asenapine (Dogterom 2018)"
@@ -5696,6 +5698,7 @@ articles:
   - articles/Toukam_2025_biib107
   - articles/Toutain_2025_doxycycline_pig
   - articles/Tremoulet_2014_ampicillin
+  - articles/Troy_2020_arylsulfataseA
   - articles/Trujillo_2025_proinsulin_qsp
   - articles/Tsai_2023_ceftriaxone
   - articles/Tseng_2026_piperacillin
