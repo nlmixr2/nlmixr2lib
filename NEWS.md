@@ -2,6 +2,10 @@
 
 # development version
 
+- Add Schulthess 2017 frequency-domain response analysis PD archetypes
+  ([doi:10.1002/psp4.12266](https://doi.org/10.1002/psp4.12266)) -- 15
+  theoretical models (no data fitted, no subjects).
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
