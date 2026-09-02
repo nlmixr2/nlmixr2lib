@@ -21,7 +21,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Vujkovic 2018 efavirenz ([doi:10.1038/s41397-018-0028-2](https://doi.org/10.1038/s41397-018-0028-2)) -- black African adults with HIV-1 initiating efavirenz-based therapy in Botswana.
+- Add Bartko 2018 sutimlimab classical-complement-pathway inhibition model ([doi:10.1002/cpt.1111](https://doi.org/10.1002/cpt.1111)) -- healthy volunteers in a first-in-human single- and multiple-ascending-dose trial.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
