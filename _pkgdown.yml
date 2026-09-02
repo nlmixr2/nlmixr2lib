@@ -1882,6 +1882,8 @@ navbar:
         href: articles/Majid_2024_lenvatinib.html
       - text: "Letermovir (Royston 2025)"
         href: articles/Royston_2025_letermovir.html
+      - text: "Leuprolide (Lim 2026)"
+        href: articles/Lim_2026_leuprolide.html
       - text: "Levalbuterol (Jaworowicz 2006)"
         href: articles/Jaworowicz_2006_levalbuterol.html
       - text: "Levamisole (KreeftmeijerVegter 2015)"
@@ -4981,6 +4983,7 @@ articles:
   - articles/Liesenfeld_2006_dabigatran
   - articles/Liesenfeld_2013_dabigatran
   - articles/Lignet_2023_m8891
+  - articles/Lim_2026_leuprolide
   - articles/Lin_2018_voriconazole
   - articles/Lin_2020_glasdegib_AML_overall_survival
   - articles/Lin_2024_casirivimab
