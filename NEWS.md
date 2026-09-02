@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Keunecke 2020 regorafenib ([doi:10.1111/bcp.14334](https://doi.org/10.1111/bcp.14334)) -- adults with advanced solid tumours, as a phase 1 and a phase 3 model.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
