@@ -142,9 +142,15 @@
   # cascade; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
   # (tolerance) chain. `caseum[0-9]+` is the catenary chain of concentric
   # rings of the necrotic caseous core of a tuberculosis granuloma,
-  # numbered outward-to-inward from the outer caseum edge.
+  # numbered outward-to-inward from the outer caseum edge. `hb[0-9]+` is
+  # the hemoglobin-concentration age-transit chain: equal-transit-time
+  # bins whose transit times sum to the mature red-cell lifespan and whose
+  # bin sum is total hemoglobin. It is the collapsed single-state form of
+  # the paired `erythrocytes[0-9]+` * `mch[0-9]+` product, used when a
+  # paper carries hemoglobin per age bin directly rather than a cell count
+  # and a per-cell content.
   compartmentRegex =
-    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum)[0-9]+$",
+    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum|hb)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP

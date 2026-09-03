@@ -850,6 +850,10 @@ navbar:
         href: articles/Takama_2007_darbepoetin.html
       - text: "Darbepoetin alfa (Agoram 2006)"
         href: articles/Agoram_2006_darbepoetin_alfa.html
+      - text: "Darbepoetin alfa cia (Agoram 2006)"
+        href: articles/Agoram_2006_darbepoetin_alfa_cia.html
+      - text: "Darbepoetin alfa cia hemoglobin (Agoram 2006)"
+        href: articles/Agoram_2006_darbepoetin_alfa_cia.html
       - text: "Darunavir (Brochot 2015)"
         href: articles/Brochot_2015_darunavir.html
       - text: "Dasabuvir (Mensing 2017)"
@@ -4111,6 +4115,7 @@ articles:
   - articles/Admiraal_2023_iminobiotin
   - articles/Agerso_2004_desmopressin
   - articles/Agoram_2006_darbepoetin_alfa
+  - articles/Agoram_2006_darbepoetin_alfa_cia
   - articles/Aguiar_2021_ustekinumab
   - articles/Ahamadi_2017_pembrolizumab
   - articles/Ahlstrom_2010_nicotinicAcid_rat
