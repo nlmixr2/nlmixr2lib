@@ -381,6 +381,17 @@ Use these columns only in a genuine dyad model, i.e. one that carries maternal a
 - **Example models:** `Wattanakul_2024_primaquine_motherinfant.R` (drives monoamine-oxidase-A maturation on the infant's primaquine clearance, `MF = PMA / (TM50 + PMA)` with `PMA = AGE_INFANT + 9.2` months for assumed full-term gestation of 40 weeks and `TM50 = 7.6` months; cohort median 5.0 months, range 1.6-21.7).
 - **Notes:** Months, not years -- lactation cohorts are dominated by infants under two years old, where a year scale loses resolution, and paediatric maturation functions are conventionally written in months or weeks of postmenstrual age. This matches the units of the general `PAGE` canonical. Distinct from `PAGE`: `AGE_INFANT` is postnatal, so a model that needs postmenstrual age must add the gestational term explicitly.
 
+### BREASTFEED_EXCLUSIVE (**canonical for exclusive-breastfeeding indicator**)
+- **Description:** Whether the modelled lactating subject was breastfeeding her infant exclusively (1) or mixing breast milk with formula or complementary food (0). Screened in lactation popPK analyses as a proxy for milk maturity and for the volume and composition of milk produced, both of which can influence drug concentration in milk. Unlike `WT_INFANT` and `AGE_INFANT`, this describes the feeding RELATIONSHIP rather than the dyad partner's own demographics, so it carries no `_INFANT` suffix.
+- **Units:** (binary)
+- **Type:** categorical
+- **Scope:** general
+- **Reference category:** 0 (not exclusively breastfeeding, i.e. mixed feeding).
+- **Source aliases:**
+  - `breastfeeding exclusivity` -- prose form used in `Baklouti_2026_amoxicillin.R` (Baklouti 2026 Methods section 2.3, "breastfeeding exclusivity (yes/no, categorical variable)") and screened under the same wording by `Melander_2025_cetirizine.R`.
+- **Example models:** `Baklouti_2026_amoxicillin.R` (screened in the stepwise covariate search and not retained; documented in `covariatesDataExcluded`).
+- **Notes:** Registered 2026-09-02 (operator sidecar `oare_PMC13206287` request-001 / response-001, question q3, option A) from a documentation-only use, deliberately ahead of the first model that RETAINS it. Lactation popPK is now a recurring family in this library (`Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R`, `Ojara_2024_lamivudine.R`, `Melander_2025_cetirizine.R`, `Deferm_2025_lactation_physiology.R`, `Baklouti_2026_amoxicillin.R`) and exclusivity is a standard screened covariate across it, so registering the name now pre-empts a divergent coinage later. `checkModelConventions()` does not validate names appearing only in `covariatesDataExcluded`, so this entry is documentation rather than a lint target until a model references it in `model()`.
+
 ## Nutritional status
 
 ### MAL_NOURISH (**canonical for malnutrition status indicator**)

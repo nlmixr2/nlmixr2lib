@@ -355,13 +355,13 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ### lkel (**canonical log-transformed elimination rate constant (K-PD)**)
 - **Type:** log-transformed-pk
-- **Role:** First-order elimination rate constant used when no explicit `vc` is estimated (K-PD or single-rate-constant elimination form).
+- **Role:** First-order elimination rate constant, in either of two settings: (a) K-PD or single-rate-constant elimination forms where no explicit `vc` is estimated, and (b) rate-constant-parameterised disposition models that DO estimate an explicit `lvc` alongside it, i.e. the source paper fits `ke` and `V/F` as two separate parameters rather than fitting a clearance. Case (b) must not be silently reparameterised to `lcl` + `lvc`: when the paper places independent random effects on `ke` and on `V`, the algebraically equivalent clearance form would require `etalcl = etalkel + etalvc`, a correlated eta block the authors did not fit, so the reparameterisation would change the model. This mirrors the register's existing acceptance of rate-constant parameterisations at `k12` / `k21`.
 - **Source aliases:**
   - `lke` -- legacy name; replaced 2026-05-28 by the naming audit.
   - `lkde` -- paper-named (Mazzocco 2015 / Shoji 2017 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `lkp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
-- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`.
-- **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R` (all case (a), no explicit `vc`); `Baklouti_2026_amoxicillin.R` (case (b), `ke = 0.31 1/h` estimated alongside `V/F = 82.38 L`, each with its own eta).
+- **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit. Role broadened 2026-09-02 to cover rate-constant-parameterised disposition models that also estimate an explicit volume (operator sidecar `oare_PMC13206287` request-001 / response-001, question q2, option A); the entry already carried the paper symbol `ke` as an alias, so registering a separate `lk10` would have duplicated it.
 
 ### lkel_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying elimination rate constant**)
 - **Type:** log-transformed-pk
@@ -676,13 +676,13 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 
 ### kel (**canonical bare elimination rate constant (K-PD)**)
 - **Type:** bare-pk
-- **Role:** First-order elimination rate constant in K-PD / single-rate-constant elimination models with no explicit `vc`.
+- **Role:** Bare (natural-scale) form of `lkel`: the first-order elimination rate constant, both in K-PD / single-rate-constant elimination models with no explicit `vc` and in rate-constant-parameterised disposition models that estimate an explicit `vc` beside it (see `lkel` for why such a model must not be reparameterised to `cl` / `vc`).
 - **Source aliases:**
   - `ke` -- legacy.
   - `kde` -- paper-named (Mazzocco 2015 / Shoji 2017 / Xia 2024 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `kp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `ps_elim`, `pc_elim` -- paper-named (Wilson 2015 p_S / p_C) bare drug-specific K-PD elim rates; replaced 2026-05-30 by `kel_sunitinib` / `kel_irinotecan`.
-- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`, `Baklouti_2026_amoxicillin.R` (rate-constant disposition with an explicit `vc`).
 
 ### kel_exp_kdes (**canonical bare decay-rate constant of a time-varying elimination rate constant**)
 - **Type:** bare-pk
@@ -1613,6 +1613,14 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `Kel-PBMC` -- used in `Yu_2026_tenofovir.R` (Yu 2026 Results 3.2.1 / Table 2, "elimination rate from PBMC").
 - **Example models:** `Yu_2026_tenofovir.R` (`Kel-PBMC = 0.0127 1/h`).
 - **Notes:** Registered 2026-08-25 (operator sidecar `oare_PMC12783228` request-001 / response-001, question q1, option A). The PBMC parallel of `lkeff_rbc`, and lumped in the same sense: `log(2) / keff_pbmc` is an intracellular residence half-life rather than a pure membrane-transport property. Yu 2026 quotes a PBMC tenofovir-diphosphate half-life of 60 h against `log(2) / 0.0127 = 54.6 h`, because the published figure is an effective half-life read from the simulated concentration-time profile rather than `log(2) / k`.
+
+### lkeff_milk, keff_milk (**canonical first-order elimination rate constant out of the breast-milk compartment**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for loss of drug out of the canonical `milk` compartment to a sink, lumping removal of milk from the breast by feeding or expression together with milk turnover into a single rate. Enters as the `- keff_milk * milk` term of the milk ODE, exactly as its `lkeff_rbc` / `lkeff_pbmc` siblings enter theirs. Use it only for a UNIDIRECTIONAL milk model in which nothing returns from milk to plasma; when the milk compartment exchanges back with `central`, the transfer is a `k_<from>_<to>` pair (`k_central_milk` / `k_milk_central`) or a `q_milk` / `pcmilk` clearance parameterisation instead.
+- **Source aliases:**
+  - `kmilk_e` -- used in `Baklouti_2026_amoxicillin.R` (paper symbol `k_milk,e`, "the elimination rate constant of amoxicillin from milk").
+- **Example models:** `Baklouti_2026_amoxicillin.R` (`kmilk_e = 0.33 1/h`).
+- **Notes:** Registered 2026-09-02 (operator sidecar `oare_PMC13206287` request-001 / response-001, question q1, option A). Extends the `keff_<pool>` efflux family from intracellular analyte pools (`rbc_<analyte>`, `pbmc_<analyte>`) to a secretory matrix compartment; the family's Role sentence already described the quantity verbatim. Distinct from `kmilkinf` (`Wattanakul_2024_primaquine_motherinfant.R`), which is the dyad milk-to-infant-depot transfer normally fixed high, and from `k_milk_central`, which returns drug to plasma. Lumped in the same sense as its siblings, and in this founding case deliberately so: Baklouti 2026's Discussion notes that "in our model, the drug is continuously eliminated from the milk compartment, whereas in reality, this elimination occurs only at the time of feedings", which makes the resulting relative-infant-dose estimate conservative. The ratio `k_central_milk / keff_milk` is the model's steady-state milk:plasma AUC ratio whenever `vmilk == vc`, which is the natural closed-form falsifier for an extraction using this name.
 
 ### lvmax_rbc, vmax_rbc (**canonical saturable-influx maximum rate into the red-cell analyte pool**)
 - **Type:** paper-named-param
