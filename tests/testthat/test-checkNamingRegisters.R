@@ -30,36 +30,55 @@ test_that("checkNamingRegisters detects each defect class it claims to", {
     "## Section one",
     "",
     "### real_token (**canonical that is fine**)",
+    "- **Type:** binary",
     "- **Example models:** `Real_2020_drug.R`.",
     "",
     "### real_token (**a duplicate of the entry above**)",
+    "- **Type:** binary",
     "- **Example models:** `Real_2020_drug.R`.",
     "",
     "### orphan_cite (**cites a file that does not exist**)",
+    "- **Type:** binary",
     "- **Example models:** `Nonexistent_1999_ghost.R`.",
     "",
     "### unused_canonical (**no model uses this**)",
+    "- **Type:** binary",
     "- **Example models:** `Real_2020_drug.R`.",
     "",
     "### no_examples_here (**has no example line**)",
+    "- **Type:** binary",
     "- **Description:** nothing.",
     "",
     "### bad_xref (**links nowhere**)",
+    "- **Type:** binary",
     "- **Example models:** `Real_2020_drug.R`.",
     "- **Notes:** see [[does_not_exist]].",
     "",
+    "### no_type_here (**declares no Type at all**)",
+    "- **Example models:** `Real_2020_drug.R`.",
+    "",
+    "### bogus_type_here (**Type outside the known vocabulary**)",
+    "- **Type:** wibble",
+    "- **Example models:** `Real_2020_drug.R`.",
+    "",
     "### deprecated_one (**DEPRECATED -- superseded by `real_token`**)",
-    "- **Notes:** tombstone; no examples and no use is correct here."
+    "- **Notes:** tombstone; no examples, no use and no Type is correct here."
   ), file.path(tmp, "inst", "references", "covariate-columns.md"))
 
   issues <- checkNamingRegisters(tmp)
   for (chk in c("duplicate-canonical", "orphan-example-model",
-                "registered-but-unused", "no-example-model", "broken-xref")) {
+                "registered-but-unused", "no-example-model", "broken-xref",
+                "no-type", "unknown-type")) {
     expect_true(chk %in% issues$check, info = chk)
   }
-  # The tombstone must NOT be reported: it legitimately has neither an example
-  # nor a use, and flagging it would push authors to delete deprecation
-  # records or to fabricate examples for them.
+  # A missing `Type:` is the quietest defect of the set -- it drops the entry
+  # out of the canonical list checkModelConventions() builds while every other
+  # register check stays green -- so pin which entry each fires on.
+  expect_true("no_type_here" %in% issues$name[issues$check == "no-type"])
+  expect_true("bogus_type_here" %in% issues$name[issues$check == "unknown-type"])
+  # The tombstone must NOT be reported: it legitimately has neither an example,
+  # nor a use, nor a Type, and flagging it would push authors to delete
+  # deprecation records or to fabricate examples and types for them.
   expect_false("deprecated_one" %in% issues$name)
 })
 
@@ -75,6 +94,7 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
     "## Bare compartments",
     "",
     "### igg (**bare compartment**)",
+    "- **Type:** compartment",
     "- **Example models:** `Real_2020_drug.R`.",
     "",
     "## Metabolite suffixes",
@@ -82,11 +102,13 @@ test_that("checkNamingRegisters does not flag legitimate register patterns", {
     "# The same token may be BOTH a bare compartment and a suffix, so the",
     "# duplicate check is per-section outside covariate-columns.md.",
     "### igg (**suffix form**)",
+    "- **Type:** metabolite-suffix",
     "- **Example models:** `Real_2020_drug.R`.",
     "",
     "# A suffix appears in source only inside a compound token (`central_dox`),",
     "# never bare, so the usage check has to match that form.",
     "### dox (**suffix used only as _dox**)",
+    "- **Type:** metabolite-suffix",
     "- **Example models:** `Real_2020_drug.R`.",
     "",
     "# `###` is also used for policy notes and patterns; neither is a canonical.",

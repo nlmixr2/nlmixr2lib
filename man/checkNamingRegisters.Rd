@@ -30,6 +30,11 @@ Checks performed:
   \item canonicals that no model uses;
   \item `[[cross-references]]` with no matching entry;
   \item entries with no `Example models:` line, outside an explicit
-    exemption list of universal parameters.
+    exemption list of universal parameters;
+  \item entries with no `Type:` line, or whose `Type:` is outside the
+    known vocabulary. A missing `Type:` is the quietest defect of the set:
+    the entry drops out of the canonical name list
+    [checkModelConventions()] builds, so the model-facing check stops
+    recognising the name while every other register check stays green.
 }
 }

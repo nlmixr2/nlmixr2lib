@@ -24,6 +24,17 @@
   "propSd", "addSd", "lnSd", "logitSd", "probitSd"
 )
 
+# The `- **Type:**` vocabulary. An entry whose Type is absent drops silently out
+# of the canonical name list that checkModelConventions() builds from these
+# files, so the model-facing check stops recognising it -- that is how `depot`
+# and `central` were briefly lost during a merge, with every other register
+# check still green. Kept as a closed set so a typo is caught rather than
+# silently minting a new type; a genuinely new type is one edit here.
+.knownTypes <- c(
+  "compartment", "continuous", "binary", "categorical", "count",
+  "metabolite-suffix", "paper-named-param", "log-transformed-pk", "bare-pk"
+)
+
 .allMatches <- function(x, pat) {
   m <- gregexpr(pat, x, perl = TRUE)
   hits <- regmatches(x, m)[[1]]
@@ -63,9 +74,17 @@
       cur <- list(name = nms[[1]], names = nms, section = sec, line = i,
                   pseudo = pseudo, deprecated = deprecated,
                   examples = character(), xrefs = character(),
-                  hasExampleField = FALSE, inEx = FALSE)
+                  hasExampleField = FALSE, inEx = FALSE,
+                  hasTypeField = FALSE, type = NA_character_)
     } else if (!is.null(cur)) {
       st <- trimws(ln)
+      if (startsWith(st, "- **Type:**")) {
+        cur$hasTypeField <- TRUE
+        # Trailing parentheticals qualify the type ("metabolite-suffix
+        # (deprecated)"); the leading token is the type itself.
+        cur$type <- trimws(sub("\\s*\\(.*$", "",
+                              sub("^- \\*\\*Type:\\*\\*\\s*", "", st)))
+      }
       if (grepl("Example models", st)) {
         cur$hasExampleField <- TRUE
         cur$inEx <- TRUE
@@ -100,7 +119,12 @@
 #'   \item canonicals that no model uses;
 #'   \item `[[cross-references]]` with no matching entry;
 #'   \item entries with no `Example models:` line, outside an explicit
-#'     exemption list of universal parameters.
+#'     exemption list of universal parameters;
+#'   \item entries with no `Type:` line, or whose `Type:` is outside the
+#'     known vocabulary. A missing `Type:` is the quietest defect of the set:
+#'     the entry drops out of the canonical name list
+#'     [checkModelConventions()] builds, so the model-facing check stops
+#'     recognising the name while every other register check stays green.
 #' }
 #'
 #' @param root Package root to check. `NULL` (default) uses the installed
@@ -184,6 +208,16 @@ checkNamingRegisters <- function(root = NULL) {
       if (!isTRUE(e$hasExampleField) && !(tok %in% .exampleExempt) &&
           !isTRUE(e$deprecated)) {
         add(f, "no-example-model", tok, e$line, "no `Example models:` line")
+      }
+      # A DEPRECATED tombstone is exempt: it is a pointer to the replacement
+      # canonical, not a declaration of a name that is still in use.
+      if (!isTRUE(e$hasTypeField) && !isTRUE(e$deprecated)) {
+        add(f, "no-type", tok, e$line, "no `Type:` line")
+      } else if (!is.na(e$type) && nzchar(e$type) &&
+                 !(e$type %in% .knownTypes)) {
+        add(f, "unknown-type", tok, e$line,
+            paste0("Type `", e$type, "` is not one of: ",
+                   paste(.knownTypes, collapse = ", ")))
       }
       for (x in unique(e$xrefs)) {
         t <- gsub('^["\']+|["\']+$', "", trimws(x))
