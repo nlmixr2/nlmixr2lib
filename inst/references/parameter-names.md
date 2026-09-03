@@ -581,6 +581,39 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC` = 0.00001, allometrically scaled terminal biliary elimination from liver to faeces; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kbi` = 0.05835 1/h, liver back into the intestinal lumen, which is what produces the observed two-phase luminal decay).
 - **Notes:** Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B). Deliberately **not** `kbm`, and `kbm` must not be widened to cover this case: `kbm` is registered as the biliary-*metabolite* excretion rate constant, moving a **metabolite** out of a **plasma / central** compartment, whereas `lkbile` moves **parent drug** out of **`liver`**. Broadening `kbm` would silently change the meaning of an existing entry that `Hamren_2008_tesaglitazar.R` depends on. The two can coexist in one model: a parent drug excreted in bile via `lkbile` and its glucuronide returned via `kbm` / `kicv`.
 
+### lka_fast, lka_slow (**canonical log-transformed rate constants of a PARALLEL two-route depot release**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constants (1 / time) of the fast and the slow route of a **simultaneous** (parallel) two-route release input function, in which a bolus is split across two depot compartments that empty at the same time at different rates. Bare forms inside `model()` are `ka_fast` and `ka_slow`; the dose split between them is `frel` / `logitfrel`. Both routes are active from the first dose onward -- this is the defining difference from the registered `lka_early` / `lka_late` pair, which is a **sequential** switch in which one rate replaces the other at a breakpoint `tkacut`.
+- **Source aliases:**
+  - `Ka1`, `Ka2` -- Snelder 2019 Tables 2 and S1.2 (the paper's positional numbering of the fast and slow routes).
+  - `KAFAST`, `KASLOW`, `lkafast`, `lkaslow` -- Tornoe 2006 degarelix notation, an unregistered spelling of the same concept.
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `Ka1` = 1.57 /h for the fast leuprorelin-SR release depot and `Ka2` = 0.000361 /h for the constant-rate slow release class), `Snelder_2019_leuprorelin_4m.R` (`Ka1` = 0.480 /h; `Ka2` = 0.00464 /h with a 160 h `ltlag`).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q2, operator answer A). The symmetric underscored pair was chosen over a positional `lka1` / `lka2`, which carries no mechanism, and over "bare `lka` for the fast route plus `lka_slow` for the slow one", which is exactly the "none keeps the bare canonical" ambiguity the stratum-suffix rule warns against. Reserve bare `lka` for genuine single-route absorption. `Tornoe_2006_degarelix.R` shipped `lkafast` / `lkaslow` before this entry existed and is a candidate for migration onto the canonical. A third parallel route named by its kinetics rather than its speed (a linearly ramping one, say) takes its own name -- see `lka_slope`.
+
+### lka_slope (**canonical log-transformed slope of a linearly time-ramping depot-release rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Slope of a first-order depot-release rate constant that grows **linearly with time after the first dose**, `k(t) = ka_slope * t`. Units are 1 / time^2, because the parameter is a d(rate constant)/dt rather than a rate constant. Bare form inside `model()` is `ka_slope`, applied as `k_ramp <- ka_slope * max(0, tafd())`; `max(0, ...)` returns 0 before the first dose in rxode2 and does not propagate `NA`, so pre-dose baseline observation rows are safe. Self-regulating in a repeated-dose depot: as `k(t)` grows, the depot amount falls in proportion, so the mass flux into central tracks the input rate and the plasma profile stays flat.
+- **Source aliases:**
+  - `Ka3_SLP`, `SLP` -- Snelder 2019 Table 2, Tables S1.1 / S1.2 and the Supplement 4 control stream (`K34 = SLP * TAD1 / 1E6`).
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `Ka3_SLP` = 0.331e-6 1/h^2 in the ramping mixture class of the leuprorelin-SR 6-month depot), `Snelder_2019_leuprorelin_1m.R` (9.83e-6 1/h^2), `Snelder_2019_leuprorelin_4m.R` (0.757e-6 1/h^2).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q1, operator answer A). A linear ramp is a distinct release shape in the long-acting-injectable literature and is **not** a member of any registered absorption family: `lka` is a constant; `lkamax` / `lra` / `lgam1` are the Piotrovskij / Weibull *saturating* form `ka(t) = kamax*(1 - exp(-(ra*tad)^gam1))`; and `lka_early` / `lka_late` + `tkacut` are a *sequential switch*. Named for the slope rather than the ramp (`lka_ramp` was the rejected alternative) so the 1/time^2 units are visible in the name, following the register's name-by-functional-form principle (cf. `cl_time_` / `cl_exp_`). Note that rxode2 5.1.7's mu-reference pass fails with "mu-ref err: subscript out of bounds" when the ramp is inlined into a mixture expression such as `MIX * ka_slope * max(0, tafd()) + (1 - MIX) * ka_slow`; hold the ramp in its own symbol first.
+
+### lfrel (**canonical log-transformed release-process fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale encoding of the same quantity as `logitfrel` -- the fraction of a dose entering the **first** process of a multi-phase release input function, the second receiving `1 - frel`. Use this form **only** when the source paper estimated the fraction on the natural (linear) scale with an exponential random effect, so that a logit encoding would misstate the published IIV distribution. `logitfrel` remains the default for new extractions.
+- **Source aliases:**
+  - `Fr` -- Snelder 2019 Table S1.1, reported on the natural scale (footnote: "Dose fraction fast absorption: 0.441 / Dose fraction slow absorption compartment: 0.559", 95% CI 0.407-0.475).
+- **Example models:** `Snelder_2019_leuprorelin_1m.R` (founding example; `Fr` = 0.441 with `omega^2` = 0.0229 and covariances to the `RBIO` and `Ka3_SLP` etas, all on the log scale).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. The operator's ruling under `logitfrel` (2026-08-24) directed the logit scale *for Perlstein 2026*, on the grounds that a log-scale encoding of a bounded quantity can leak above 1 under moderate eta. That risk is quantifiable rather than categorical and must be checked per paper: here `0.441 * exp(eta)` with `sd(eta) = 0.151` puts `P(frel > 1)` at about 3e-8. Where the risk is material, re-encode on the logit scale and convert the variance by the delta method, documenting the conversion. Do NOT reach for `lfrel` merely because a paper prints a fraction -- Snelder 2019's own 6-month and 4-month models print `Fr` on the LOGIT scale in the same paper (Table 2 footnote a; Table S1.2 footnote), and the tell is whether the footnote back-transforms the tabulated value or restates it.
+
+### logitfrel2 (**canonical logit-transformed second release-process fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Logit-scale share of the **non-first** portion of the dose that enters the second of three parallel release processes, so the three dose fractions are `frel`, `(1 - frel) * frel2` and `(1 - frel) * (1 - frel2)`. Bare form inside `model()` is `frel2 <- expit(logitfrel2 + etalogitfrel2)`. This is the "three or more processes take `logitfrel2` etc." extension anticipated by the `logitfrel` entry; it is a *nested* (stick-breaking) share, not a share of the whole dose.
+- **Source aliases:**
+  - `Fr2` -- Snelder 2019 Table S1.2 (`Fr2` = -1.62; the footnote gives `(1 - expit(Fr1)) * expit(Fr2)` = 0.11 and `(1 - expit(Fr1)) * (1 - expit(Fr2))` = 0.58).
+- **Example models:** `Snelder_2019_leuprorelin_4m.R` (founding example; three parallel depots carrying 0.310 / 0.114 / 0.576 of the leuprorelin-SR 4-month dose).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. A fourth process would take `logitfrel3` on the same nesting convention, but at that point a softmax / stick-breaking encoding should be considered, per the `logitfrel` entry. Because the share is nested, `etalogitfrel2` can be very large without implying an implausible dose split -- Snelder 2019 estimates `omega^2` = 4.24 on it.
+
 ---
 
 ## Bare structural PK parameters
@@ -990,6 +1023,30 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
 - **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
 
+### ka_fast, ka_slow (**canonical bare rate constants of a parallel two-route depot release**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lka_fast` / `lka_slow`. First-order rate constants (1 / time) of the fast and slow route of a simultaneous two-route release input function.
+- **Source aliases:**
+  - `Ka1`, `Ka2` -- Snelder 2019 positional numbering.
+- **Example models:** `Snelder_2019_leuprorelin.R`, `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `lka_fast, lka_slow` entry for the parallel-vs-sequential boundary against `ka_early` / `ka_late`.
+
+### ka_slope (**canonical bare slope of a linearly time-ramping depot-release rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lka_slope`. Slope (1 / time^2) of a depot-release rate constant that grows linearly with time after the first dose; the rate constant itself is `ka_slope * max(0, tafd())`.
+- **Source aliases:**
+  - `Ka3_SLP`, `SLP` -- Snelder 2019.
+- **Example models:** `Snelder_2019_leuprorelin.R`, `Snelder_2019_leuprorelin_1m.R`, `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `lka_slope` entry for the distinction from the Weibull and sequential-switch absorption families.
+
+### frel2 (**canonical bare second release-process fraction**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `logitfrel2`. Nested share of the non-first portion of the dose entering the second of three parallel release processes.
+- **Source aliases:**
+  - `Fr2` -- Snelder 2019 Table S1.2.
+- **Example models:** `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `logitfrel2` entry; the share is nested, not a fraction of the whole dose.
+
 ## Paper-named mechanistic parameters
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
@@ -1062,10 +1119,11 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 
 ### kd (**canonical mechanistic dissociation / dissociation-like rate**)
 - **Type:** paper-named-param
-- **Role:** Dissociation rate constant or paper-mechanistic "kd" parameter (paper-specific meaning).
-- **Source aliases:** none.
-- **Example models:** TMDD models.
-- **Notes:** Paper-mechanistic; verify the source paper's specific definition before reuse.
+- **Role:** Dissociation rate constant or paper-mechanistic "kd" parameter (paper-specific meaning). Also covers the **equilibrium** dissociation constant of a drug for its receptor, which has concentration units rather than 1/time; the log-transformed `lkd` form carries the `ini()` typical value where the source reports an exponential IIV. The two senses share the symbol in the literature, so the `label()` must state the units.
+- **Source aliases:**
+  - `Kd` -- Snelder 2019 Equation 1 and Table 3, the leuprorelin GnRH-receptor equilibrium dissociation constant in pg/mL.
+- **Example models:** TMDD models; `Snelder_2019_leuprorelin.R` (`Kd` = 4.36 pg/mL, RSE 36.5%, entering the competitive-occupancy term `frac = (agn + Cc/kd) / (1 + agn + Cc/kd)`).
+- **Notes:** Paper-mechanistic; verify the source paper's specific definition and units before reuse. Distinct from `lkd_direct` / `lkd_delay`, which are exposure-scaled linear drug-effect slopes and not dissociation constants at all.
 
 ### kd0 (**canonical baseline mechanistic dissociation rate**)
 - **Type:** paper-named-param
@@ -1996,6 +2054,39 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `Factor IIV CL_M-5` -- Keunecke 2020 Table 3 row label.
 - **Example models:** `Courlet_2023_cabamiquine.R` (`sd_ratio_kgrow = fixed(0.9171881)`, the liver-to-blood growth-rate IIV SD ratio, derived as `sqrt(0.0120274 / 0.0142973)` from Table 1 with the correlation fixed at 1; founding example), `Keunecke_2020_regorafenib_phase3.R` (`sd_ratio_cl_m5 = 2.21`, RSE 3.41%, so that `cl_m5 <- exp(lcl_m5 + sd_ratio_cl_m5 * etalcl_m2) * sex_cl_m5`; the Table 3 footnote's `0.385 * 2.21^2 = 1.88` is the implied M-5 variance; doi:10.1111/bcp.14334).
 - **Notes:** Heading added 2026-09-02 alongside the Keunecke 2020 regorafenib extraction, registering a shape that `Courlet_2023_cabamiquine.R` had already shipped unregistered -- per the register's "extend, never duplicate" rule, rather than founding a second name for the same construct. Distinct from a correlated omega block (`etaA + etaB ~ c(...)`), which estimates the covariance: `sd_ratio_<param>` is the *reduced* form used when that block is not identifiable, and it forces the correlation to exactly 1, so the second parameter's eta is deterministic given the first. Prefer the full omega block whenever the paper reports one; reach for this name only when the paper itself reports the reduction. Do not use `f_` (reserved for fractions and bioavailability) or a `k`-prefix (reserved for rate constants with 1/time units) -- the quantity is a unitless ratio.
+
+### ldr50, dr50 (**canonical half-maximal receptor-activation-fraction difference for agonist-induced receptor downregulation**)
+- **Type:** paper-named-param
+- **Role:** The value of the *excess* receptor-activation fraction above baseline, `FRAC - FRAC_0`, that elicits a half-maximal reduction in the receptor synthesis rate. Unitless (the driver is a fraction, so `dr50` lies in the same 0-0.5 range), strictly positive, so the log-transformed `ldr50` carries the `ini()` typical value and any exponential IIV. The term is INHIBITORY with an implicit maximum of 1 and is written `DRR = dr50^hill_dr / (dr50^hill_dr + max(0, frac - frac0)^hill_dr)`, multiplying the receptor synthesis rate `kin_rt`; the `max(0, ...)` reproduces the source guard that holds `DRR = 1` whenever occupancy has not risen above baseline.
+- **Source aliases:**
+  - `DR50` -- Snelder 2019 Equation 1 and Table 3; Romero 2012 triptorelin, the model Snelder 2019 adapts.
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `DR50` = 0.0486, RSE 22.6%, with `omega^2` = 0.696 and a full covariance block against `Kd`, `KoutT`, `BSLT`, `CPA` and `nHT`).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q3, operator answer A). Deliberately NOT folded into the registered `ki50`: `ki50`'s documented form is *stimulatory*, `rate = rmax * I^hill/(ki50^hill + I^hill)`, so reusing it would silently re-label an Imax-type term as an Emax-type one, and its axis is a biomarker readout rather than a receptor-occupancy fraction. Distinct from `lec50` for the same reason -- the driver here is not a concentration. The concept recurs across the GnRH-agonist downregulation family (Romero 2012 triptorelin, Gries 1999 hCG), so a future extraction of either should reuse this name. The Snelder 2019 Discussion warns that `dr50` (with `kd` and `hill_dr`) is conditional on the assumption `agonist_kd_ratio = 1` and "should not be used outside the context of the model".
+
+### lhill_dr, hill_dr, lhill_psa, hill_psa (**canonical suffixed Hill coefficients of two distinct sigmoids in one model**)
+- **Type:** paper-named-param
+- **Role:** Sigmoidicity exponents of, respectively, the receptor-downregulation sigmoid driven by a receptor-activation-fraction difference (`hill_dr`, paired with `dr50`) and the biomarker-to-biomarker sigmoid driven by a downstream analyte concentration (`hill_psa`, paired with `lemax` / `lec50`). Both unitless and strictly positive; the log-transformed forms carry the `ini()` typical values and any exponential IIV. Suffixed members of the registered `hill` family, following the same `<stem>_<suffix>` convention as `cl_time_hill` and `ec50_time_hill`.
+- **Source aliases:**
+  - `nHT` -- Snelder 2019 Equation 1 and Table 3 (the downregulation sigmoid).
+  - `nHP`, `nHp` -- Snelder 2019 Equation 5 and Table 4 (the testosterone-to-PSA sigmoid).
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `nHT` = 2.05, RSE 9.90%, and `nHP` = 2.49, RSE 13.8%, in one joint model).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (sidecar request-001 question q3, operator answer A). Registered because a single model carrying TWO Hill coefficients cannot use the bare canonical `hill` for both, and leaving one bare while suffixing the other is the "none keeps the bare canonical" ambiguity the stratum-suffix rule warns against. The suffix names the sigmoid, not the paper's symbol: `_dr` for a downregulation sigmoid, `_psa` for a sigmoid whose *output* is PSA. A model with only one sigmoid should keep the bare `hill`. Distinct from `gamma`, which stays a mechanistic-role designator for Friberg feedback and TGI power-law exponents.
+
+### agonist_kd_ratio (**canonical endogenous-agonist concentration relative to its own receptor Kd**)
+- **Type:** paper-named-param
+- **Role:** Unitless ratio of an endogenous agonist's (unknown) concentration to its dissociation constant for its own receptor, `[agonist] / Kd_agonist`, used to set baseline receptor occupancy in a competitive endogenous-agonist-versus-drug binding model. The two quantities are not separately identifiable from clinical data, so papers combine them into this single parameter and fix it, which fixes the baseline occupancy at `frac0 = agonist_kd_ratio / (1 + agonist_kd_ratio)`. Ligand-agnostic by design.
+- **Source aliases:**
+  - `GnRH` -- Snelder 2019 Methods 2.5 and Equation 1 ("Model parameter GnRH represents the ratio between the unknown GnRH concentration and its dissociation constant for the GnRH receptor ... arbitrarily fixed to 1 implying 50% activity of the GnRH receptors at baseline").
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `fixed(1)`, giving `frac0` = 0.5).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (sidecar request-001 question q4, operator answer A). Named for the concept rather than the ligand (`gnrh_kd_ratio` was the rejected alternative) so it generalises to any competitive endogenous-agonist receptor model -- Romero 2012 triptorelin and Gries 1999 hCG, both cited by Snelder 2019, share the construct. Distinct from `kd`, which is the dissociation constant itself and has concentration units, and from the occupancy-fraction names `RL_op` / `RL_antag`, which are ODE states rather than a fixed ratio. Whenever this parameter is fixed rather than estimated, every potency parameter estimated alongside it is conditional on the assumed value; say so in the model description and vignette Errata.
+
+### lcpa, cpa (**canonical constant antiandrogen suppression factor on endogenous agonist activity**)
+- **Type:** paper-named-param
+- **Role:** Unitless, strictly positive suppression factor by which a co-administered antiandrogen divides the endogenous-agonist activity ratio: `agonist_kd_ratio / (1 + cpa * CONMED_CYPROTERONE)`. The fractional reduction in endogenous agonist activity is therefore `cpa / (1 + cpa)`. Carries no driver concentration -- it is a constant while the co-medication effect is in force, gated on and off by a time-varying `CONMED_*` covariate column rather than by a PK profile. The log-transformed `lcpa` carries the `ini()` typical value and any exponential IIV.
+- **Source aliases:**
+  - `CPA`, `CPA0` -- Snelder 2019 Table 3 and Supplement 4 control stream (`AGNN = AGN / (1 + CPA)`).
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `CPA` = 4.13, RSE 17.1%, giving the paper's reported 80.5% reduction in endogenous GnRH activity and a consequent 67.3% reduction in typical testosterone; `omega^2` = 1.15 with covariances to every other testosterone-model eta).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. Encoded as a structural parameter rather than through the `e_<cov>_<param>` covariate-effect grammar because the source reports it in the fixed-effects parameter table with its own IIV and a full covariance row set against the other mechanistic etas, and the covariate-effect grammar has no slot for a random effect. Closest registered sibling is `iplac`, likewise a driver-free constant fractional modifier of a rate; the difference is that `iplac` is bounded in [0, 1] and subtracts, whereas `cpa` is an unbounded positive divisor. Distinct from `imax`, which is the maximum of a driver-dependent sigmoid inhibition. A future antiandrogen or flare-prophylaxis model that reports a *dose*- or *concentration*-dependent effect should not reuse this name.
 
 ## Nested (multi-level) random effects
 
