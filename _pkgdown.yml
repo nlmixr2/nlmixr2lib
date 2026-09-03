@@ -3856,6 +3856,8 @@ navbar:
         href: articles/Nielsen_2015_vigabatrin.html
       - text: "Vildagliptin (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_vildagliptin.html
+      - text: "Vildagliptin qsp (Landersdorfer 2012)"
+        href: articles/Landersdorfer_2012_vildagliptin_qsp.html
       - text: "Vinflunine (Schmitt 2018)"
         href: articles/Schmitt_2018_vinflunine.html
       - text: "Vinpocetine (Petric 2023)"
@@ -4863,6 +4865,7 @@ articles:
   - articles/Landersdorfer_2009_moxifloxacin
   - articles/Landersdorfer_2012_piperacillin
   - articles/Landersdorfer_2012_vildagliptin
+  - articles/Landersdorfer_2012_vildagliptin_qsp
   - articles/Landersdorfer_2013_nisin_amikacin_linezolid
   - articles/Landersdorfer_2018_imipenem_tobramycin
   - articles/Landersdorfer_2018_meropenem_tobramycin

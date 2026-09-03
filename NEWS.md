@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Landersdorfer 2012 vildagliptin GLP-1 / glucose / insulin QSP model ([doi:10.1111/j.1365-2125.2011.04109.x](https://doi.org/10.1111/j.1365-2125.2011.04109.x)) -- adults with type 2 diabetes.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
