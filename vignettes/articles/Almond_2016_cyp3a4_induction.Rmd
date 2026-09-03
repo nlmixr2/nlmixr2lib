@@ -567,11 +567,14 @@ the shipped single-parameter file cannot express, because it uses different
 in turn needs the tissue-specific `kdeg` values the paper never reports.
 
 ```{r invivo-checks}
-# This model has NO etas, so it must not be passed omega = NA and needs no
-# zeroRe() (pattern 9 of known-vignette-failure-patterns.md).
+# This model has NO etas, so it needs neither zeroRe() nor `omega = NA`
+# (pattern 9 of known-vignette-failure-patterns.md). Passing `omega = NA` to an
+# eta-free model is an error on the released rxode2 (5.1.6 -- "invalid 'times'
+# argument"); it is tolerated only on the unreleased 5.1.7. The in vitro solves
+# above DO keep `omega = NA` because those models carry etas.
 ev_iv <- data.frame(id = 1L, time = 0:3, evid = 0,
                     CP_RIF_UM = c(0, 0.32, 5, 1e6))
-iv <- rxode2::rxSolve(uis[["invivo"]], ev_iv, omega = NA,
+iv <- rxode2::rxSolve(uis[["invivo"]], ev_iv,
                       returnType = "data.frame")
 
 stopifnot(

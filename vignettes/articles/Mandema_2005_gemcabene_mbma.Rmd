@@ -189,7 +189,9 @@ solve_arms <- function(arms, keep = character()) {
   ev$time <- 0
   ev$amt  <- 0
   ev$evid <- 0L
-  out <- as.data.frame(rxode2::rxSolve(mod, events = ev, omega = NA))
+  # `mod` is eta-free, so `omega = NA` is unnecessary and errors on the
+  # released rxode2 (5.1.6: "invalid 'times' argument").
+  out <- as.data.frame(rxode2::rxSolve(mod, events = ev))
   stopifnot(nrow(out) == nrow(arms), !anyNA(out$Cc))
   cbind(arms[keep], pct_change_ldlc = out$Cc)
 }

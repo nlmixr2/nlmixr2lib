@@ -155,7 +155,10 @@ uptakeEvents <- function(conc, times) {
 
 solveUptake <- function(model, conc, times = c(0, 0.25)) {
   ev <- uptakeEvents(conc, times)
-  out <- rxode2::rxSolve(model, ev, omega = NA, returnType = "data.frame")
+  # Both models this is called with (rbe4, hcmecd3) are eta-free, so no
+  # `omega = NA` is needed -- and passing it errors on the released rxode2
+  # (5.1.6: "invalid 'times' argument").
+  out <- rxode2::rxSolve(model, ev, returnType = "data.frame")
   # rxSolve omits the `id` column when only one subject is solved, so it is
   # restored here before it is used to look the concentration back up.
   out$id <- if (is.null(out$id)) 1L else as.integer(as.character(out$id))
