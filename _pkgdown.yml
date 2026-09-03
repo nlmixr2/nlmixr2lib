@@ -198,6 +198,12 @@ navbar:
         href: articles/Soto_2014_ampicillin_sulbactam.html
       - text: "Amyloid (vanMaanen 2025)"
         href: articles/vanMaanen_2025_amyloid.html
+      - text: "Anacetrapib (Krishna 2011)"
+        href: articles/Krishna_2011_anacetrapib.html
+      - text: "Anacetrapib hdlc (Krishna 2011)"
+        href: articles/Krishna_2011_anacetrapib.html
+      - text: "Anacetrapib ldlc (Krishna 2011)"
+        href: articles/Krishna_2011_anacetrapib.html
       - text: "Anakinra (Urien 2013)"
         href: articles/Urien_2013_anakinra.html
       - text: "Angiotensin (BuchwalderCsajka 1999)"
@@ -4833,6 +4839,7 @@ articles:
   - articles/KreeftmeijerVegter_2015_levamisole
   - articles/Krekels_2015_paracetamol
   - articles/Kretsos_2014_olokizumab
+  - articles/Krishna_2011_anacetrapib
   - articles/Kroemer_2024_ceftazidime_avibactam_fosfomycin
   - articles/Ku_2018_diazepam
   - articles/Kuchimanchi_2018_evolocumab
