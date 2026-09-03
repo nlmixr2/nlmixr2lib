@@ -2102,3 +2102,116 @@ Vocabulary for permeability-limited whole-body PBPK models, in which each tissue
 - **Source aliases:** `Vd(t)`, `Vdss`
 - **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
 - **Notes:** Named `Vdt` rather than `vd` precisely so that the two never collide in one model.
+
+---
+
+## Extracorporeal circuit parameters (CRRT / ECMO / apheresis)
+
+Prescription, geometry and transport parameters of an extracorporeal blood circuit carried as *structure* (see the `circuit_*` / `reservoir_*` compartment namespace in `inst/references/compartment-names.md`). Like that namespace these names are modality-neutral, so an ECMO oxygenator or an apheresis column reuses them. The five `q*` flows are the settings a clinician dials into the machine and are exposed as fixed `ini()` entries so a user can re-point a circuit model at a different prescription with `rxSolve(params = ...)` rather than editing the model. Registered 2026-09-02 alongside the compartment family (task `oare_PMC13274749` sidecar question q1, answer A).
+
+### qbfr (**canonical extracorporeal circuit blood flow rate**)
+- **Type:** paper-named-param
+- **Role:** Blood flow rate drawn from the patient (or the ex vivo reservoir) through the circuit. Splits on the systemic haematocrit into the red-cell and plasma delivery fluxes.
+- **Source aliases:** `Q_BFR`, `BFR`, `blood flow rate`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Papers print this in mL/min while every other circuit flow is printed in mL/h; convert both to the model's `units$time` and say so in the parameter comment.
+
+### qdia (**canonical dialysate flow rate**)
+- **Type:** paper-named-param
+- **Role:** Countercurrent dialysate flow rate through a hemofilter or dialyser. Enters the effluent flow, `qeff = qdia + qfil`.
+- **Source aliases:** `Q_DIA`, `DIA`, `dialysate flow rate`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Zero for a pure hemofiltration (CVVH) prescription; non-zero for CVVHD and CVVHDF.
+
+### qpbp (**canonical pre-blood pump flow rate**)
+- **Type:** paper-named-param
+- **Role:** Pre-blood pump replacement fluid flow rate, infused into the blood line upstream of the filter. Dilutes the blood entering the filter, which is why the pre-filter haematocrit is `hct * qbfr / (qbfr + qpbp)`.
+- **Source aliases:** `Q_PBP`, `PBP`, `pre-blood pump`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### qrep (**canonical replacement fluid flow rate**)
+- **Type:** paper-named-param
+- **Role:** Total post-filter replacement fluid flow rate. Contributes to the blood-to-dialysate filtration flow `qfil = qpbp + qrep + qpfr` and is subtracted from the return-line flow.
+- **Source aliases:** `Q_REP`, `REP`, `replacement fluids`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### qpfr (**canonical patient fluid removal rate**)
+- **Type:** paper-named-param
+- **Role:** Net ultrafiltration rate removed from the patient (fluid removal prescription). Contributes to `qfil` and is subtracted from the return-line flow. Zero in a bench circuit that is not net-removing fluid.
+- **Source aliases:** `Q_PFR`, `UFR`, `patient fluid removal`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Papers sometimes tabulate the same quantity as `UFR` (ultrafiltration rate); check whether the tabulated number is the *net* patient removal or the *gross* filtrate flow before mapping it here, because the gross flow is `qfil`, not `qpfr`.
+
+### vreservoir (**canonical ex vivo blood reservoir volume**)
+- **Type:** paper-named-param
+- **Role:** Volume of the closed-loop blood reservoir of an ex vivo bench circuit; splits on the haematocrit into the `reservoir_plasma` and `reservoir_rbc` volumes.
+- **Source aliases:** `reservoir volume`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### vfilter (**canonical circuit blood-side volume**)
+- **Type:** paper-named-param
+- **Role:** Blood-side volume of the circuit's drug-contacting body -- the hemofilter (or oxygenator) together with the tubing prime volume; splits on the mean filter haematocrit into the `circuit_plasma` and `circuit_rbc` volumes.
+- **Source aliases:** `filter volume`, `Filter Blood Volume`, `Circuit Blood Volume`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Device product guides tabulate the filter blood volume and the circuit blood volume separately; a model that lumps the tubing into the filter state should carry the *circuit* volume here and say which it used.
+
+### vdialysate (**canonical hemofilter dialysate-side volume**)
+- **Type:** paper-named-param
+- **Role:** Dialysate-side volume of a hemofilter or dialyser; the volume of the `circuit_dialysate` state.
+- **Source aliases:** `dialysate volume`, `filter prime volume`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### safilter (**canonical hemofilter membrane surface area**)
+- **Type:** paper-named-param
+- **Role:** Semipermeable membrane surface area of a hemofilter, dialyser or oxygenator. Enters the diffusive membrane transfer term `dfilter * safilter / thfilter`.
+- **Source aliases:** `SA`, `Membrane Surface Area`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Printed in m2 by device product guides; carry it in whatever length unit makes `dfilter * safilter / thfilter` come out in the model's flow units, and record the conversion in the parameter comment.
+
+### thfilter (**canonical hemofilter membrane thickness**)
+- **Type:** paper-named-param
+- **Role:** Semipermeable membrane (fiber wall) thickness of a hemofilter, dialyser or oxygenator; the diffusion path length in `dfilter * safilter / thfilter`.
+- **Source aliases:** `h`, `membrane thickness`, `Fiber Wall Thickness`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### dfilter (**canonical membrane diffusion coefficient**)
+- **Type:** paper-named-param
+- **Role:** Diffusion coefficient of the drug across the hemofilter membrane (area / time). Together with `safilter` and `thfilter` it sets the diffusive permeability-surface product that drives drug from circuit plasma into the dialysate down the unbound concentration gradient.
+- **Source aliases:** `D`, `MembraneDiffusionCoefficient`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Usually an *estimated* quantity (optimized against ex vivo circuit data) rather than a device constant, so it is drug-specific as well as filter-specific.
+
+### krbc (**canonical red-cell to plasma concentration ratio**)
+- **Type:** paper-named-param
+- **Role:** Equilibrium ratio of the drug concentration in red blood cells to that in plasma; the target of the permeability-limited plasma / red-cell exchange, `flux = PS * (C_plasma - C_rbc / krbc)`. Related to the blood-to-plasma ratio by `B:P = krbc * hct + 1 - hct`.
+- **Source aliases:** `K_rbc`, `Partition coefficient (blood cells/plasma)`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** PK-Sim and similar platforms compute this internally from lipophilicity and the red-cell composition rather than exposing it as an input; when extracting from such a paper, evaluate the platform's own stored formula rather than substituting a literature blood-to-plasma ratio, and check the implied B:P against the published value.
+
+### permrbc (**canonical plasma to red-cell membrane permeability**)
+- **Type:** paper-named-param
+- **Role:** Membrane permeability (length / time) governing passive diffusion of drug between plasma and red blood cells. Multiplied by the exchange surface area and the fraction unbound to give the permeability-surface product.
+- **Source aliases:** `P (plasma->blood cells)`, `P (blood cells->plasma)`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** For small molecules the resulting permeability-surface product is typically orders of magnitude larger than the blood flow, so the two phases stay at equilibrium; carrying the exchange explicitly rather than assuming instant equilibrium keeps the assumption visible and testable.
+
+### satovrbc (**canonical red-cell exchange area per unit red-cell volume**)
+- **Type:** paper-named-param
+- **Role:** Effective plasma / red-cell exchange surface area per unit red-cell volume (inverse length). Multiplied by the haematocrit and the compartment volume it gives the exchange surface area for `permrbc`.
+- **Source aliases:** `A_to_V_bc`, `Surface/Volume ratio (blood cells)`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Platform implementations fold a fixed accessibility factor into this constant (Open Systems Pharmacology multiplies the geometric surface-to-volume ratio by 0.6); record whether the registered value is the geometric ratio or the effective one.
+
+### vmaxcrrt (**canonical maximum circuit adsorption rate**)
+- **Type:** paper-named-param
+- **Role:** Maximum rate (amount / time) of the saturable drug-loss process in an extracorporeal circuit -- adsorption to the membrane and tubing plus any filter clearance and degradation not modelled separately -- in `vmaxcrrt * C / (C + kmcrrt)`.
+- **Source aliases:** `V_max` (McKnite 2026 Results 3.3 and MoBi reaction `MidazolamDegradation`)
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Kept distinct from the registered `vmax` (metabolic Michaelis-Menten maximum rate) because it is a *device* property, drug- and circuit-specific rather than enzyme-specific, and because a circuit model may need both at once when the module is grafted onto a body model that metabolises the drug. Pairs with [[kmcrrt]].
+
+### kmcrrt (**canonical circuit adsorption half-saturation concentration**)
+- **Type:** paper-named-param
+- **Role:** Concentration at which the saturable circuit drug-loss process runs at half its maximum rate, in `vmaxcrrt * C / (C + kmcrrt)`. The low-concentration limit `vmaxcrrt / kmcrrt` is the effective first-order circuit clearance and is the quantity to compare against the flow-limited filter clearance `fu * qeff`.
+- **Source aliases:** `K_m` (McKnite 2026 Results 3.3 and MoBi reaction `MidazolamDegradation`)
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Papers report this in molar units (pmol/mL, umol/L) even when the model is built in mass units; convert with the molecular weight and record the arithmetic in the parameter comment. Pairs with [[vmaxcrrt]].

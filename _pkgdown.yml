@@ -2240,6 +2240,8 @@ navbar:
         href: articles/vanRongen_2017_midazolam.html
       - text: "Midazolam children adolescents (Cella 2012)"
         href: articles/Cella_2012_midazolam_paediatric_scaling.html
+      - text: "Midazolam crrt (McKnite 2026)"
+        href: articles/McKnite_2026_midazolam_crrt.html
       - text: "Midazolam ecmo (Kim 2026)"
         href: articles/Kim_2026_midazolam.html
       - text: "Midazolam infants adults (Cella 2012)"
@@ -4999,6 +5001,7 @@ articles:
   - articles/Mazzocco_2015_temozolomide
   - articles/McBride_2025_radamts13_qsp
   - articles/McCann_2025_midazolam
+  - articles/McKnite_2026_midazolam_crrt
   - articles/McLachlan_1996_fluconazole
   - articles/McLaughlin_2024_tld_1
   - articles/MedellinGaribay_2015_gentamicin

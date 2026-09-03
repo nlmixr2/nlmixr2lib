@@ -533,6 +533,7 @@
     "vitreous", "aqueous humour", "retina", "tissue", "tumor", "lymph",
     "endosome", "urine", "bile", "faeces", "saliva", "milk",
     "synovial fluid", "epithelial lining fluid", "bronchoalveolar lavage",
+    "dialysate",
     "administration site", "not applicable"
   ),
 
