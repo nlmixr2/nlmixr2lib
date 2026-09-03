@@ -703,7 +703,7 @@ sessionInfo()
 #> [49] Rcpp_1.1.2          systemfonts_1.3.2   tidyselect_1.2.1   
 #> [52] xfun_0.60           tibble_3.3.1        sys_3.4.3          
 #> [55] knitr_1.51          farver_2.1.2        dparser_1.3.1-13   
-#> [58] htmltools_0.5.9     labeling_0.4.3      rmarkdown_2.31     
+#> [58] htmltools_0.5.9     labeling_0.4.3      rmarkdown_2.32     
 #> [61] compiler_4.6.1      S7_0.2.2            downlit_0.4.5      
 #> [64] askpass_1.2.1       openssl_2.4.2
 ```

@@ -8,8 +8,28 @@
   Pharmacometrics Syst Pharmacol. 2026;15(5). <doi:10.1002/psp4.70257>
 - Description: Two-compartment population PK model for nemtabrutinib
   (oral BTK inhibitor) in adults with hematologic malignancies including
-  CLL/SLL (Kemal 2026, full covariate model)
+  CLL/SLL (Kemal 2026, full covariate model). This is the PK layer of
+  the paper; it generates the individual average on-treatment
+  concentration (Cavg) that drives the paper’s three exposure-response
+  models. Sister model files from the same paper:
+  modellib(‘Kemal_2026_nemtabrutinib_bor’) for exposure-efficacy (best
+  overall response in CLL/SLL), and
+  modellib(‘Kemal_2026_nemtabrutinib_ae’) /
+  modellib(‘Kemal_2026_nemtabrutinib_hypertension’) for the two
+  exposure-safety endpoints.
 - Article: <https://doi.org/10.1002/psp4.70257>
+
+This paper contributes four models to the library. The population PK
+model is the subject of the first half of this vignette; the three
+logistic exposure-response models it feeds are covered in the
+“Exposure-response models” section below.
+
+| Model | What it describes |
+|----|----|
+| `Kemal_2026_nemtabrutinib` | Two-compartment population PK, full covariate model |
+| `Kemal_2026_nemtabrutinib_bor` | Exposure-efficacy: best overall response in CLL/SLL |
+| `Kemal_2026_nemtabrutinib_ae` | Exposure-safety: any-grade drug-related adverse events |
+| `Kemal_2026_nemtabrutinib_hypertension` | Exposure-safety: any-grade hypertension |
 
 ## Population
 
@@ -438,6 +458,392 @@ sim_day1_summary |>
 Dose proportionality check across the \>= 30 mg linear-F regime.
 {.table}
 
+## Exposure-response models
+
+Kemal et al. fit three further models, all logistic regressions run with
+`glm` in R rather than in NONMEM, all driven by the same per-subject
+exposure metric: `Cavg`, the cumulative on-treatment AUC divided by the
+treatment duration, computed by simulating each participant’s actual
+dosing history through the population PK model above with that
+participant’s post hoc parameter estimates (Methods 2.3 and 2.4). The
+three fits are on different cohorts and different endpoints, and share
+no coefficients, so they are packaged as three separate model files that
+all point back to this vignette:
+
+| Model | Endpoint | Cohort | Coefficient source |
+|----|----|----|----|
+| `Kemal_2026_nemtabrutinib_bor` | Best overall response (PR or CR, iwCLL 2018) | CLL/SLL subset, n = 288 | Table S4 (printed) |
+| `Kemal_2026_nemtabrutinib_ae` | Any-grade drug-related AE | All treated, n = 578 | Figure 4 left panel (digitized) |
+| `Kemal_2026_nemtabrutinib_hypertension` | Any-grade hypertension | All treated, n = 578 | Figure 4 right panel (digitized) |
+
+Time on treatment enters the efficacy model through a saturable term,
+`T_TRT / (ET50 + T_TRT)` with ET50 fixed at 200 days, but was screened
+and explicitly rejected for both safety endpoints (“Time on therapy was
+not found to be a significant covariate for these exposure-safety
+relationships”, Results 3.5) – so the safety models carry exposure only.
+
+### Source trace for the exposure-response models
+
+| Component | Value | Source |
+|----|----|----|
+| `logit(p) = b0 + b1*Cavg + b2*[t/(ET50 + t)]` | – | Table S4 footnote (efficacy model form, verbatim) |
+| BOR intercept | -7.3978 | Table S4 (SE 0.9854; Z -7.508; p \< 0.001) |
+| BOR Cavg slope | 0.0019 per ng/mL | Table S4 (SE 0.0005; Z 3.636; p \< 0.001) |
+| BOR maximum time effect | 8.7637 | Table S4 (SE 1.1822; Z 7.413; p \< 0.001) |
+| BOR ET50 (fixed) | 200 days | Table S4 footnote (AIC-optimised, AIC 262.34) |
+| Follow-up scenarios drawn | 180 and 360 days | Figure 3 caption |
+| AE intercept / slope | 0.4733 / 0.001003 per ng/mL | Figure 4 left panel, **digitized** (see below) |
+| Hypertension intercept / slope | -2.3463 / 0.0007645 per ng/mL | Figure 4 right panel, **digitized** (see below) |
+| No time term in either safety model | – | Results 3.5 (prose), confirmed by the logit-linearity of the digitized curves |
+| Observed AE rates by exposure quartile | 108/145, 109/145, 107/144, 124/144 | Figure 4 left panel annotations |
+| Observed hypertension rates by exposure quartile | 13/145, 22/145, 28/144, 25/144 | Figure 4 right panel annotations |
+
+### Provenance of the two safety models: digitization, and how it was calibrated
+
+The article and its supplement print **no coefficients at all** for the
+two exposure-safety models. Table S4 tabulates the exposure-efficacy
+model alone; the safety relationships appear only as the fitted curves
+of Figure 4. Before falling back to digitization, both Figure 4 panels
+were rendered at 600 dpi and inspected for coefficient annotations
+printed inside the plot area – the only numbers there are the observed
+per-quartile event fractions listed in the source-trace table above.
+
+Each safety curve was then recovered by rendering its panel at 600 dpi,
+calibrating both axes on the tick marks, tracing the black fitted line
+at every x position where it could be isolated unambiguously (1042
+points for the AE panel, 1091 for hypertension, spanning the full `Cavg`
+range of roughly 25 to 2160 ng/mL), and fitting a straight line to the
+traced points on the logit scale.
+
+Two properties make this a stronger recovery than reading two points off
+a curve.
+
+**The functional form is confirmed rather than assumed.** The traced
+points are straight on the logit scale to within 0.010 (AE) and 0.032
+(hypertension) on that scale across the whole span – essentially the
+pixel-quantization limit. That is independent evidence both that `Cavg`
+enters linearly on the logit scale and that no time-on-treatment term is
+hiding in either curve, which is what Results 3.5 asserts in prose.
+
+**The pipeline is calibrated against an answer key inside the same
+paper.** Figure 3 draws the exposure-*efficacy* curve at two follow-up
+times, and *that* model’s coefficients are printed in Table S4. Running
+the identical digitization pipeline on Figure 3 therefore has a known
+right answer, and the chunk below reproduces that check.
+
+``` r
+
+# Curve positions recovered from Figure 3 by the same 600 dpi
+# trace-and-fit pipeline used on Figure 4, and the Table S4 values they
+# should reproduce.
+fig3_digitized <- data.frame(
+  follow_up_days     = c(180, 360),
+  digitized_intercept = c(-3.2399, -1.7624),
+  digitized_slope     = c(0.001922, 0.001924)
+)
+
+# Table S4 answer key, propagated through the published model form.
+s4_intercept <- -7.3978
+s4_slope     <-  0.0019
+s4_time_max  <-  8.7637
+s4_et50      <-  200
+
+fig3_digitized$key_intercept <-
+  s4_intercept + s4_time_max *
+  (fig3_digitized$follow_up_days / (s4_et50 + fig3_digitized$follow_up_days))
+
+fig3_digitized |>
+  dplyr::mutate(
+    intercept_error = digitized_intercept - key_intercept,
+    slope_vs_key    = digitized_slope - s4_slope
+  ) |>
+  dplyr::rename(
+    "Follow-up (days)"        = follow_up_days,
+    "Digitized intercept"     = digitized_intercept,
+    "Digitized slope"         = digitized_slope,
+    "Table S4 intercept"      = key_intercept,
+    "Intercept error"         = intercept_error,
+    "Slope minus Table S4"    = slope_vs_key
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Calibration of the digitization pipeline against the printed",
+      "Table S4 coefficients, via the two curves of Figure 3."
+    ),
+    digits = c(0, 4, 6, 4, 4, 6)
+  )
+```
+
+| Follow-up (days) | Digitized intercept | Digitized slope | Table S4 intercept | Intercept error | Slope minus Table S4 |
+|---:|---:|---:|---:|---:|---:|
+| 180 | -3.2399 | 0.001922 | -3.2466 | 0.0067 | 2.2e-05 |
+| 360 | -1.7624 | 0.001924 | -1.7640 | 0.0016 | 2.4e-05 |
+
+Calibration of the digitization pipeline against the printed Table S4
+coefficients, via the two curves of Figure 3. {.table}
+
+``` r
+
+
+stopifnot(
+  # The pipeline recovers each printed intercept to better than 0.01 on
+  # the logit scale.
+  all(abs(fig3_digitized$digitized_intercept - fig3_digitized$key_intercept) < 0.01),
+  # Both curves are drawn from ONE fitted slope, so the two independent
+  # traces must agree with each other far more tightly than either
+  # agrees with the two-significant-figure printed value.
+  abs(diff(fig3_digitized$digitized_slope)) < 1e-5,
+  # And they must round to the printed 0.0019.
+  all(abs(round(fig3_digitized$digitized_slope, 4) - s4_slope) < 1e-9)
+)
+```
+
+The recovered slopes, 0.001922 and 0.001924 from two independent curves,
+both round to the `0.0019` that Table S4 prints to two significant
+figures – so on this parameter the digitization is marginally *sharper*
+than the published table. The two safety-model coefficients therefore
+carry an uncertainty of well under 0.01 on the intercept and under 1% on
+the slope.
+
+### Replicating Figure 3 (exposure-efficacy)
+
+The efficacy model’s coefficients come from Table S4, and Figure 3 is
+drawn from the same fit, so evaluating the packaged model against the
+digitized Figure 3 curves is a genuine table-versus-figure consistency
+check on the paper itself.
+
+``` r
+
+mod_bor <- rxode2::rxode2(readModelDb("Kemal_2026_nemtabrutinib_bor"))
+
+er_grid <- tidyr::crossing(
+  CSS_NEMTA = seq(0, 2000, by = 25),
+  T_TRT     = c(180, 360)
+) |>
+  dplyr::mutate(id = dplyr::row_number(), time = 0)
+
+bor_pred <- rxode2::rxSolve(
+  mod_bor,
+  events = er_grid,
+  keep   = c("CSS_NEMTA", "T_TRT")
+) |>
+  as.data.frame() |>
+  dplyr::mutate(follow_up = factor(
+    T_TRT, levels = c(180, 360), labels = c("180 days", "360 days")
+  ))
+
+ggplot(bor_pred, aes(CSS_NEMTA, pbor, colour = follow_up)) +
+  geom_line(size = 0.9) +
+  scale_y_continuous(limits = c(0, 1)) +
+  scale_colour_manual(values = c("180 days" = "orange", "360 days" = "brown")) +
+  labs(
+    x        = "Cavg (ng/mL)",
+    y        = "Probability of best overall response",
+    colour   = "Simulated treatment time",
+    title    = "Exposure-efficacy: BOR vs nemtabrutinib Cavg in CLL/SLL",
+    caption  = "Replicates Figure 3 of Kemal 2026 (colours match the published figure)."
+  ) +
+  theme_bw()
+```
+
+![](Kemal_2026_nemtabrutinib_files/figure-html/er-efficacy-1.png)
+
+``` r
+
+# Independent check: the packaged Table S4 coefficients must reproduce
+# the curve positions digitized from the published Figure 3.
+fig3_curve_check <- tidyr::crossing(
+  CSS_NEMTA = c(0, 500, 1000, 1500, 2000),
+  T_TRT     = c(180, 360)
+) |>
+  dplyr::left_join(fig3_digitized, by = c("T_TRT" = "follow_up_days")) |>
+  dplyr::mutate(
+    from_figure = plogis(digitized_intercept + digitized_slope * CSS_NEMTA),
+    from_model  = plogis(
+      s4_intercept + s4_slope * CSS_NEMTA +
+        s4_time_max * (T_TRT / (s4_et50 + T_TRT))
+    ),
+    difference  = from_model - from_figure
+  )
+
+fig3_curve_check |>
+  dplyr::select(CSS_NEMTA, T_TRT, from_model, from_figure, difference) |>
+  dplyr::rename(
+    "Cavg (ng/mL)"                = CSS_NEMTA,
+    "Treatment time (days)"       = T_TRT,
+    "Packaged model (Table S4)"   = from_model,
+    "Digitized Figure 3"          = from_figure,
+    "Difference"                  = difference
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Packaged exposure-efficacy model against the published Figure 3",
+      "curves. Both sides describe the same fit, reached independently",
+      "through the supplement's table and through the article's figure."
+    ),
+    digits = 4
+  )
+```
+
+| Cavg (ng/mL) | Treatment time (days) | Packaged model (Table S4) | Digitized Figure 3 | Difference |
+|---:|---:|---:|---:|---:|
+| 0 | 180 | 0.0375 | 0.0377 | -0.0002 |
+| 0 | 360 | 0.1463 | 0.1465 | -0.0002 |
+| 500 | 180 | 0.0914 | 0.0929 | -0.0015 |
+| 500 | 360 | 0.3070 | 0.3099 | -0.0029 |
+| 1000 | 180 | 0.2064 | 0.2112 | -0.0047 |
+| 1000 | 360 | 0.5339 | 0.5403 | -0.0064 |
+| 1500 | 180 | 0.4021 | 0.4117 | -0.0096 |
+| 1500 | 360 | 0.7476 | 0.7547 | -0.0070 |
+| 2000 | 180 | 0.6349 | 0.6466 | -0.0117 |
+| 2000 | 360 | 0.8845 | 0.8895 | -0.0050 |
+
+Packaged exposure-efficacy model against the published Figure 3 curves.
+Both sides describe the same fit, reached independently through the
+supplement’s table and through the article’s figure. {.table}
+
+``` r
+
+
+stopifnot(
+  # Agreement is limited by Table S4 printing the Cavg slope to only two
+  # significant figures: the packaged model uses 0.0019, while the curve
+  # in Figure 3 is drawn from the roughly 0.001923 the digitization
+  # recovers. Over the full 2000 ng/mL range that rounding alone is worth
+  # about 0.046 on the logit scale, so the two sides are required to
+  # agree to 0.02 on the probability scale ...
+  max(abs(fig3_curve_check$difference)) < 0.02,
+  # ... and an order of magnitude better at low exposure, where the
+  # rounded slope has little leverage and the comparison is effectively
+  # testing the intercept and the time term instead.
+  max(abs(fig3_curve_check$difference[fig3_curve_check$CSS_NEMTA <= 500])) < 0.005
+)
+```
+
+The residual gap is systematic, one-signed, and grows with exposure – it
+is the two-significant-figure rounding of the printed slope, not a
+transcription error. At zero exposure, where that rounding has no
+leverage, the table and the figure agree to 0.0002 on the probability
+scale at both follow-up times, which confirms the intercept and the
+saturable time term independently.
+
+### Replicating Figure 4 (exposure-safety)
+
+``` r
+
+mod_ae  <- rxode2::rxode2(readModelDb("Kemal_2026_nemtabrutinib_ae"))
+mod_htn <- rxode2::rxode2(readModelDb("Kemal_2026_nemtabrutinib_hypertension"))
+
+safety_grid <- data.frame(CSS_NEMTA = seq(0, 2160, by = 20)) |>
+  dplyr::mutate(id = dplyr::row_number(), time = 0)
+
+ae_pred <- rxode2::rxSolve(mod_ae, events = safety_grid, keep = "CSS_NEMTA") |>
+  as.data.frame() |>
+  dplyr::transmute(CSS_NEMTA, probability = pae,
+                   endpoint = "Any-grade drug-related AE")
+
+htn_pred <- rxode2::rxSolve(mod_htn, events = safety_grid, keep = "CSS_NEMTA") |>
+  as.data.frame() |>
+  dplyr::transmute(CSS_NEMTA, probability = phtn,
+                   endpoint = "Any-grade hypertension")
+
+dplyr::bind_rows(ae_pred, htn_pred) |>
+  ggplot(aes(CSS_NEMTA, probability)) +
+  geom_line(size = 0.9) +
+  facet_wrap(~endpoint) +
+  scale_y_continuous(limits = c(0, 1)) +
+  labs(
+    x       = "Cavg (ng/mL)",
+    y       = "Probability of at least one event",
+    title   = "Exposure-safety relationships for nemtabrutinib monotherapy",
+    caption = "Replicates Figure 4 of Kemal 2026 (n = 578, all indications pooled)."
+  ) +
+  theme_bw()
+```
+
+![](Kemal_2026_nemtabrutinib_files/figure-html/er-safety-1.png)
+
+The sharpest available check on the two safety models does not depend on
+digitizing anything further. A logistic regression fit with an intercept
+reproduces the overall observed event rate in its own cohort, so the
+fitted curve evaluated near the cohort’s central exposure must land on
+the pooled event rate that Figure 4 prints as per-quartile fractions.
+The 65 mg arm supplies 434 of the 578 patients, and its `Cavg`
+distribution is centred between roughly 600 and 900 ng/mL, so the curve
+is required to bracket the observed rate across that band.
+
+``` r
+
+safety_obs <- data.frame(
+  endpoint = c("Any-grade drug-related AE", "Any-grade hypertension"),
+  # Figure 4 panel annotations, summed across the four exposure quartiles.
+  events   = c(108 + 109 + 107 + 124, 13 + 22 + 28 + 25),
+  n        = c(145 + 145 + 144 + 144, 145 + 145 + 144 + 144)
+) |>
+  dplyr::mutate(observed_rate = events / n)
+
+safety_band <- dplyr::bind_rows(ae_pred, htn_pred) |>
+  dplyr::filter(CSS_NEMTA >= 600, CSS_NEMTA <= 900) |>
+  dplyr::group_by(endpoint) |>
+  dplyr::summarise(
+    predicted_lo = min(probability),
+    predicted_hi = max(probability),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(safety_obs, by = "endpoint")
+
+safety_band |>
+  dplyr::select(endpoint, events, n, observed_rate, predicted_lo, predicted_hi) |>
+  dplyr::rename(
+    "Endpoint"                              = endpoint,
+    "Observed events"                       = events,
+    "N"                                     = n,
+    "Observed rate"                         = observed_rate,
+    "Model, Cavg 600 ng/mL"                 = predicted_lo,
+    "Model, Cavg 900 ng/mL"                 = predicted_hi
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Digitized exposure-safety models against the pooled observed event",
+      "rates printed in Figure 4. The predicted band over the dominant",
+      "65 mg arm's central exposure range must contain the observed rate."
+    ),
+    digits = 4
+  )
+```
+
+| Endpoint | Observed events | N | Observed rate | Model, Cavg 600 ng/mL | Model, Cavg 900 ng/mL |
+|:---|---:|---:|---:|---:|---:|
+| Any-grade drug-related AE | 448 | 578 | 0.7751 | 0.7456 | 0.7983 |
+| Any-grade hypertension | 88 | 578 | 0.1522 | 0.1315 | 0.1600 |
+
+Digitized exposure-safety models against the pooled observed event rates
+printed in Figure 4. The predicted band over the dominant 65 mg arm’s
+central exposure range must contain the observed rate. {.table}
+
+``` r
+
+
+stopifnot(
+  # Each digitized curve reproduces its own cohort's pooled event rate.
+  # A mis-recovered intercept would shift the curve off this band
+  # immediately: the two bands are only 0.05 and 0.03 wide.
+  with(safety_band, all(observed_rate > predicted_lo & observed_rate < predicted_hi)),
+  # Exposure raises the risk of both endpoints (the paper's qualitative
+  # finding); the AE endpoint is the more common one at every exposure.
+  all(diff(ae_pred$probability) > 0),
+  all(diff(htn_pred$probability) > 0),
+  all(ae_pred$probability > htn_pred$probability)
+)
+```
+
+Both curves rise across the observed exposure range, reproducing the
+paper’s finding of a significant trend between `Cavg` and each any-grade
+endpoint. Note that Kemal et al. found **no** trend for the Grade 3+
+versions of either endpoint, nor for any other safety or tolerability
+endpoint tested; those analyses have no published curve and are
+therefore not packaged.
+
 ## Assumptions and deviations
 
 - Covariate distributions in the virtual cohort were collapsed to the
@@ -465,3 +871,79 @@ Dose proportionality check across the \>= 30 mg linear-F regime.
   carried on the event table; this matches the NONMEM supplement’s
   `IF (DOSE < 30) THEN DOSE_F = 1 + THETA(7)` logic (dose-record level,
   not subject level).
+
+### Exposure-response models
+
+- **Non-paper provenance: both exposure-safety models are digitized.**
+  Kemal et al. print no coefficients for the any-grade drug-related AE
+  or the any-grade hypertension model anywhere in the article or its
+  supplement – Table S4 covers the exposure-efficacy model only. All
+  four values in `Kemal_2026_nemtabrutinib_ae` and
+  `Kemal_2026_nemtabrutinib_hypertension` were recovered by tracing the
+  fitted curves of Figure 4 at 600 dpi, as described and calibrated in
+  the “Provenance of the two safety models” section above. Before
+  digitizing, both panels were inspected at 600 dpi for coefficient
+  annotations printed inside the plot area; none exist. The
+  exposure-efficacy model `Kemal_2026_nemtabrutinib_bor` is **not**
+  affected – every one of its values is printed in Table S4.
+- The digitized coefficients carry an uncertainty of better than 0.01 on
+  the intercept and better than 1% on the slope, bounded empirically by
+  running the same pipeline against Figure 3, whose coefficients are
+  printed. They are quoted to four significant figures, which is
+  consistent with that bound; they should not be treated as exact to the
+  last digit the way the Table S4 values can be.
+- No standard errors are carried for the two safety models. The shaded
+  bands of Figure 4 are confidence intervals on a fitted probability,
+  which do not invert to standard errors on the coefficients without the
+  design matrix.
+- `Cavg` (`CSS_NEMTA`) enters all three exposure-response models
+  **uncentred**, matching the raw `glm` intercepts the paper reports.
+  Each intercept is therefore the log-odds at zero exposure, which lies
+  far outside the observed data and is not clinically interpretable on
+  its own. This differs from the otherwise closely analogous
+  `Riggs_2012_albinterferon_svr_gt1`, where the exposure term is centred
+  because that source tabulates fitted probabilities rather than
+  coefficients.
+- `ET50` in the efficacy model is encoded as `fixed(200)` days rather
+  than as an estimated parameter, because the Table S4 footnote reports
+  it was chosen by minimising AIC over a grid (best AIC 262.34) and then
+  held at that value for the analysis. No standard error is reported for
+  it.
+- Two covariates that Kemal et al. name as expected efficacy predictors,
+  prior lines of therapy and TP53 mutation status, are recorded in
+  `covariatesDataExcluded` rather than `covariateData`: neither could be
+  evaluated in this analysis (all patients had received prior therapy,
+  and TP53 status was widely missing), so no coefficient exists. Time on
+  treatment is likewise recorded as excluded in both safety models,
+  where it was screened and rejected.
+- The safety endpoints for which Kemal et al. report **no** exposure
+  trend – Grade 3+ drug-related AEs, Grade 3+ hypertension, any-grade
+  and Grade 3+ neutropenia, thrombocytopenia, anemia, infection,
+  arrhythmia, diarrhea, rash and hemorrhage, and all tolerability
+  endpoints – have no published curve or coefficient and are not
+  packaged.
+- **Convention deviations, and why they stand.** Each of the three
+  exposure-response models raises the same three
+  [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+  warnings, and all three are structural to a logistic endpoint rather
+  than defects: `rx.<endpoint>.binom` is auto-created by rxode2 for a
+  [`dbinom()`](https://rdrr.io/r/stats/Binomial.html) endpoint and is
+  reported as a residual-error parameter matching neither
+  `propSd`/`addSd` nor a label, and the observation variable (`bor`,
+  `ae`, `htn`) is not `Cc` because these models predict an event
+  probability, not a drug concentration. Renaming any of them would
+  misdescribe the model: there is no residual-error parameter to name,
+  because the source fits a fixed-effects `glm` in which all the
+  stochasticity lives in the Bernoulli endpoint. The already-shipped
+  `Riggs_2012_albinterferon_svr_gt1` – the direct structural precedent
+  for a logistic exposure-response sister model – raises the identical
+  three warnings, so this is established practice in the registry rather
+  than a new deviation. `CSS_NEMTA` is registered in
+  `inst/references/covariate-columns.md` in this same change and is not
+  flagged.
+- The exposure-response models consume `CSS_NEMTA` as an input column.
+  Generating it end-to-end for a new dosing scenario means simulating
+  the PK model above over a full treatment history and forming the
+  cumulative AUC divided by treatment duration; the chunks in this
+  section instead sweep `CSS_NEMTA` directly across its observed range,
+  which is what the published figures plot against.

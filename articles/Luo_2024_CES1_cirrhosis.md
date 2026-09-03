@@ -918,7 +918,7 @@ naive expectation that less CES1 must mean less metabolite.
     #> [40] rxode2ll_2.0.16     fastmap_1.2.0       grid_4.6.1         
     #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
     #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
-    #> [49] rmarkdown_2.31      otel_0.2.0          askpass_1.2.1      
+    #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      
     #> [52] ragg_1.5.2          memoise_2.0.1       evaluate_1.0.5     
     #> [55] knitr_1.51          PreciseSums_0.7     rlang_1.3.0        
     #> [58] downlit_0.4.5       Rcpp_1.1.2          glue_1.8.1         

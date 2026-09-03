@@ -137,7 +137,6 @@ deviations*.
 
 mod <- readModelDb("Maleki_2024_brepocitinib")
 rxode2::rxode(mod)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 #>  ── rxode2-based free-form 3-cmt ODE model ────────────────────────────────────── 
 #>  ── Initalization: ──  
 #> Fixed Effects ($theta): 
@@ -338,7 +337,6 @@ build_arm <- function(ids, dose, dose_times, obs_times, arm, covs = list()) {
 }
 
 mod_typ <- rxode2::zeroRe(mod)
-#> ℹ parameter labels from comments will be replaced by 'label()'
 #> Warning: No sigma parameters in the model
 ```
 
@@ -417,7 +415,6 @@ vpc_events <- build_arm(
 vpc_sim <- rxode2::rxSolve(
   mod, events = vpc_events, keep = c("arm"), returnType = "data.frame"
 )
-#> ℹ parameter labels from comments will be replaced by 'label()'
 stopifnot(length(unique(vpc_sim$id)) == n_pop)
 
 vpc_sim |>

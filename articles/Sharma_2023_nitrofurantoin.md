@@ -953,7 +953,7 @@ five days.
 ``` r
 
 gfr_levels <- c(70, 45, 20)
-n_gfr <- 50L   # deterministic quantile cohort; ratios are near-deterministic
+n_gfr <- 50L   # deterministic quantile cohort
 
 gfr_base <- make_human_cohort(
   n_gfr, dose_mg = 50, sexf = 1, tmax = 120, by = 0.25, ii = 6, until = 114
@@ -975,9 +975,19 @@ gfr_events <- bind_rows(
 )
 stopifnot(!anyDuplicated(unique(gfr_events[, c("id", "time", "evid")])))
 
-gfr_sim <- rxode2::rxSolve(
+# `solve_typical()`, not a bare rxSolve(): the covariate cohort above is
+# deterministic, but `human` carries 18 etas that rxode2 resamples on EVERY
+# solve, so a bare solve makes these arm contrasts Monte-Carlo estimates rather
+# than the typical-value contrasts the paper reports (~1.3-fold AUC). Measured
+# without IIV suppressed, the AUC fold-change wandered over 1.25-1.53 across
+# repeated renders -- enough to break both the lower and the upper bound of the
+# gate below, and enough to make the printed table irreproducible for a reader.
+# Suppressing IIV makes both the table and the assertions exact.
+gfr_sim <- solve_typical(
   human, gfr_events, keep = c("arm", "dose_mg"), returnType = "data.frame"
 )
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
 
 day5 <- gfr_sim |> filter(time >= 96, time <= 120)
 
@@ -1026,10 +1036,10 @@ arm_means |>
 
 | Renal function | Plasma Cmax (fold) | Plasma trough (fold) | Plasma AUC (fold) | Liver Cmax (fold) | Urinary recovery (% of dose) | Reduction in urinary recovery (%) |
 |:---|---:|---:|---:|---:|---:|---:|
-| GFR 20 mL/min | 1.24 | 1.80 | 1.37 | 1.14 | 22.33 | 35.98 |
-| GFR 45 mL/min | 1.12 | 1.36 | 1.20 | 1.10 | 27.77 | 20.37 |
-| GFR 70 mL/min | 1.13 | 1.34 | 1.19 | 1.10 | 31.33 | 10.15 |
-| Normal (age/BSA-predicted) | 1.00 | 1.00 | 1.00 | 1.00 | 34.87 | 0.00 |
+| GFR 20 mL/min | 1.19 | 1.59 | 1.29 | 1.11 | 22.16 | 36.34 |
+| GFR 45 mL/min | 1.11 | 1.29 | 1.16 | 1.06 | 27.64 | 20.62 |
+| GFR 70 mL/min | 1.07 | 1.16 | 1.10 | 1.04 | 30.43 | 12.59 |
+| Normal (age/BSA-predicted) | 1.00 | 1.00 | 1.00 | 1.00 | 34.81 | 0.00 |
 
 Gate 6. Day-5 steady-state exposure by renal function, cohort means over
 50 subjects per arm (the paper’s estimator). Replicates Figure 7 and
@@ -1074,9 +1084,9 @@ knitr::kable(
 
 | Quantity                          | Paper (Discussion / Results 3.5) | Model |
 |:----------------------------------|:---------------------------------|:------|
-| Plasma Cmax fold-change           | ~1.3                             | 1.24  |
-| Plasma AUC fold-change            | ~1.3                             | 1.37  |
-| Plasma trough fold-change         | ~2                               | 1.80  |
+| Plasma Cmax fold-change           | ~1.3                             | 1.19  |
+| Plasma AUC fold-change            | ~1.3                             | 1.29  |
+| Plasma trough fold-change         | ~2                               | 1.59  |
 | Reduction in urinary recovery (%) | ~30                              | 36    |
 
 Gate 6 summary: normal vs severe (20 mL/min) GFR. {.table
