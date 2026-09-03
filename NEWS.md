@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Pan 2026 adalimumab ([doi:10.1111/cts.70563](https://doi.org/10.1111/cts.70563)) -- adults with moderate-to-severe plaque psoriasis.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and

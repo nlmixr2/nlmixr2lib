@@ -94,6 +94,8 @@ navbar:
         href: articles/Marquez-Megias_2023_adalimumab.html
       - text: "Adalimumab (Nader 2017)"
         href: articles/Nader_2017_adalimumab.html
+      - text: "Adalimumab (Pan 2026)"
+        href: articles/Pan_2026_adalimumab.html
       - text: "Adalimumab minipig (Zheng 2012)"
         href: articles/Zheng_2012_minipig_mab.html
       - text: "Adecatumumab (Cao 2013)"
@@ -5140,6 +5142,7 @@ articles:
   - articles/Padari_2012_meropenem
   - articles/Padari_2018_penicillin_G
   - articles/Padoin_1998_cephalexin_rat
+  - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
   - articles/Panetta_2024_palbociclib
   - articles/Panoilia_2015_bevacizumab
