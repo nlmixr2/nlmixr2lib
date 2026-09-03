@@ -2,6 +2,12 @@
 
 # development version
 
+- Add Gaohua 2015 isoniazid, ethambutol and pyrazinamide permeability-limited
+  lung PBPK models
+  ([doi:10.1002/psp4.12034](https://doi.org/10.1002/psp4.12034)) -- virtual
+  healthy adults. First regional lung / epithelial-lining-fluid model in the
+  library.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
