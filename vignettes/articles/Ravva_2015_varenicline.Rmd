@@ -600,8 +600,16 @@ of the craving model, and is discussed next.
   Supplementary Table S1 covers only the Smoking Urges Scale model, and no
   coefficient for the MNWS model is printed anywhere on disk -- not in the text,
   not in Table S1, and not annotated in any figure panel (all of Figures 1-4 and
-  Supplementary Figures S1-S5 were inspected). It is unreconstructable rather
-  than out of scope.
+  Supplementary Figures S1-S5 were inspected). The exclusion stands on
+  *unidentifiability*, not merely on "no printed number": the only quantitative
+  trace of that model is Supplementary Figure S5, a VPC whose solid lines are
+  the **simulated mean** category probabilities, i.e. marginal over the
+  subject-level random effect. Recovering the four cumulative-logit intercepts
+  and the drug and placebo slopes from marginal probabilities requires the
+  magnitude of that random effect, which is not reported either, so the
+  back-solve is one-to-many and no digitisation of Figure S5 can close it. The
+  model is unreconstructable rather than out of scope; a later reader who
+  obtains the coefficients should add it as a sibling model file.
 - **No PK residual-error model is carried.** Table S1 reports only
   `sigma_(3,3) add,PD`; the PK residual variances implied by that (3,3) index are
   not printed in this paper. `Cc` is therefore exposed as an algebraic
