@@ -1546,6 +1546,8 @@ navbar:
         href: articles/Karakitsios_2024_gevokizumab.html
       - text: "Gevokizumab mbma (Karakitsios 2024)"
         href: articles/Karakitsios_2024_gevokizumab.html
+      - text: "Ghb rat (Felmlee 2010)"
+        href: articles/Felmlee_2010_ghb_rat.html
       - text: "Givosiran (Ayyar 2024)"
         href: articles/Ayyar_2024_givosiran.html
       - text: "Glasdegib QTcF (Fostvedt 2021)"
@@ -4485,6 +4487,7 @@ articles:
   - articles/Fauchet_2015_lopinavir
   - articles/FehlingKaschek_2019_trastuzumab_skbr3
   - articles/Feillet_2008_sapropterin
+  - articles/Felmlee_2010_ghb_rat
   - articles/Feng_2006_enoxaparin
   - articles/Feng_2008_risperidone
   - articles/Feng_2012_higenamine
