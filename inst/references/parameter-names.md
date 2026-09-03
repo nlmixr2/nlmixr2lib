@@ -581,6 +581,23 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC` = 0.00001, allometrically scaled terminal biliary elimination from liver to faeces; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kbi` = 0.05835 1/h, liver back into the intestinal lumen, which is what produces the observed two-phase luminal decay).
 - **Notes:** Ratified 2026-08-20 alongside the Yang 2025 matrine extraction (sidecar request 001, q1 option B). Deliberately **not** `kbm`, and `kbm` must not be widened to cover this case: `kbm` is registered as the biliary-*metabolite* excretion rate constant, moving a **metabolite** out of a **plasma / central** compartment, whereas `lkbile` moves **parent drug** out of **`liver`**. Broadening `kbm` would silently change the meaning of an existing entry that `Hamren_2008_tesaglitazar.R` depends on. The two can coexist in one model: a parent drug excreted in bile via `lkbile` and its glucuronide returned via `kbm` / `kicv`.
 
+### lwdist (**canonical log-transformed amplitude of a transient distribution-phase elimination flux**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale amplitude of an additive, dose-proportional elimination flux that is active immediately after a dose and decays exponentially with time after dose, standing in for a distribution phase in a model that carries no peripheral state: `d/dt(central) <- -kel * central - D * wdist * exp(-kdist * tad())`. Units 1 / time, since the flux is `dose * wdist`.
+- **Source aliases:**
+  - `w` -- Braem 2026 Equation 21 and Table S2.
+  - `q` -- Braem 2026 Equation 20 (the same quantity; the paper switches symbol between the ODE and its explicit solution).
+- **Example models:** `Bram_2026_biexponential.R` (`wdist = 0.1716832 1/h`, back-solved from the Table S2 macro-parameters).
+- **Notes:** Ratified 2026-09-02 with the Braem 2026 extraction (sidecar `oare_PMC13291805` request-001 q2 = A). Deliberately **not** a member of the registered `cl_exp_` / `cl_time_` time-varying-clearance families: those name a decaying component **of a clearance** that multiplies the state, whereas this term is an additive, state-independent flux proportional to the dose. Recording it as a clearance would be a category error visible to anyone reading the register. The `dist` token names what the term means -- Braem 2026's own Discussion reads it as "an increased observed elimination from the central compartment which corresponds to a distribution process until equilibration is reached" -- and keeps it clear of the PD `hill` / `emax` namespace. Pairs 1:1 with `lkdist`. Because the term carries no memory of previous doses, a model using it is valid for multiple dosing only when each dose falls after the previous distribution phase completes; the pseudo-compartment repair is in Braem 2026 Figure S2.
+
+### lkdist (**canonical log-transformed decay rate of a transient distribution-phase elimination flux**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order rate constant at which the `wdist` transient distribution-phase flux decays with time after dose (1 / time). In the explicit solution it is the fast macro-exponent, i.e. the `alpha` of the equivalent two-compartment model.
+- **Source aliases:**
+  - `p` -- Braem 2026 Equations 20 and 21 and Table S2.
+- **Example models:** `Bram_2026_biexponential.R` (`kdist = 0.46 1/h`, Table S2).
+- **Notes:** Ratified 2026-09-02 with `lwdist` (same sidecar). Not `lkel_exp_kdes`, which is the relaxation rate of a time-varying *elimination rate constant*; `kdist` decays a flux, not a rate constant. Not `lkde` / `lkel` either -- the ordinary first-order elimination of the same model is a separate parameter (`lkel`) and both appear together.
+
 ---
 
 ## Bare structural PK parameters
@@ -989,6 +1006,18 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `CL>TCLchange` -- Park 2025.
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
 - **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
+
+### wdist (**canonical bare amplitude of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lwdist`; the natural-scale amplitude used inside `model()` as `wdist <- exp(lwdist)`.
+- **Source aliases:** `w`, `q` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
+
+### kdist (**canonical bare decay rate of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkdist`; the natural-scale decay rate used inside `model()` as `kdist <- exp(lkdist)`.
+- **Source aliases:** `p` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
 
 ## Paper-named mechanistic parameters
 
@@ -1867,6 +1896,70 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
   - `S_GSH` / `SGSH` -- Cao 2025 Equation 2, Table 2, and Supplementary Text S2 `$PK` (`TVS_GSH = THETA(9)`).
 - **Example models:** `Cao_2025_busulfan.R` (`sdep_gsh = fixed(0.00259)` L/mg, carried over from Langenhorst 2020, with the covariate effect `e_gst_sdep_gsh = 0.28` on baseline GST activity).
 - **Notes:** Registered 2026-08-23 with the Cao 2025 busulfan extraction, per operator sidecar `oare_PMC12426406` request-002 q2 = A. Written bare (no `l` prefix) because it is a mechanistic constant reported as a point value rather than an estimated positive-constrained parameter, per the "Endogenous / mechanistic parameters" guidance. Two rejected alternatives are recorded here so the next reader does not re-open them: `s_gsh` (verbatim from the paper) founds an `s_` prefix with no precedent in this register AND collides visually with NONMEM `$PK` compartment *scale* factors, which appear in this very control stream as `S1 = V1/1000`; and `kdep_gsh` would sit visually with the registered `kdeg` / `kdes` / `kint` / `krel` family, but every member of that family is a first-order RATE constant with units 1/time, whereas this parameter is a scaling factor with units L/mg -- naming it `k*` would be a units lie. Pairs 1:1 with the `gsh_pool` compartment (see `compartment-names.md`); a new co-substrate takes a matched `sdep_<pool>` / `<pool>_pool` pair. The covariate effect follows the ordinary `e_<cov>_<param>` grammar with a shortened covariate token, `e_gst_sdep_gsh`, matching the `e_dpp4_bmaxc` precedent in `Retlich_2015_linagliptin.R` rather than spelling out the full `GST_BL_NMOL_MIN_ML` column name.
+
+## Neural-ODE (NODE) network parameters
+
+Registered 2026-09-02 with `Bram_2026_warfarin_node.R`, the first neural-ODE
+model in this library (operator sidecar `oare_PMC13291805` request-001 q1 = A).
+
+A low-dimensional neural ODE puts a small feed-forward neural network on the
+right-hand side of a differential equation in place of a mechanistic function.
+The network's fitted weights and biases are ordinary population parameters and
+need canonical names. The grammar is `nn_<slot>_<role>_<j>`:
+
+| Token | Meaning |
+|---|---|
+| `nn_w1_<role>_<j>` | input-to-hidden weight for hidden neuron `j` |
+| `nn_b1_<role>_<j>` | bias of hidden neuron `j` |
+| `nn_w2_<role>_<j>` | hidden-to-output weight for hidden neuron `j` |
+| `nn_beta_<role>` | softplus sharpness of the activation function |
+
+`<role>` is the network's **role label** -- what the network computes -- not the
+paper's symbol, matching how the rest of this register names roles rather than
+notation. `<j>` indexes the hidden neuron, starting at 1. Extending the family
+to a new network needs no fresh sidecar so long as the role token is
+descriptive and the slot tokens above are reused verbatim; a network with a
+different architecture (more than one hidden layer, a non-softplus activation)
+does need one, because the slot vocabulary would have to grow.
+
+These are `paper-named-param`, not `bare-pk`: weights and biases are **signed**,
+take negative values, and must never be log-transformed or carry multiplicative
+IIV. Their inter-individual variability is additive on the natural scale
+(Monolix `distribution=normal`), so the eta is `etann_w1_<role>_<j>` and the
+`model()` line is `w1_<role>_<j> <- nn_w1_<role>_<j> + etann_w1_<role>_<j>`.
+
+Do **not** confuse the `nn_` prefix with `lnn` / `nn_fix`, which is a
+sigmoidicity exponent in specific BDE / morphine-like models, or with `ntr`,
+the transit-chain length. The trailing `_<role>_<j>` slot structure is what
+distinguishes a network parameter from either.
+
+### nn_w1_rc_1, nn_w1_rc_2, nn_w1_rc_3, nn_w1_rc_4, nn_w1_rc_5 (**canonical NODE input-to-hidden weights, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Input-to-hidden-layer weights of the five-neuron network that replaces the production term of an indirect-response (`rc` = response-compartment) model. Unitless. In the pmxNODE encoding the weight enters as `-(w^2)`, i.e. squared and negated to enforce a monotone-decreasing response, so only the magnitude is identifiable.
+- **Source aliases:**
+  - `Wrc_11` .. `Wrc_15` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_b1_rc_1, nn_b1_rc_2, nn_b1_rc_3, nn_b1_rc_4, nn_b1_rc_5 (**canonical NODE hidden-layer biases, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Hidden-layer biases of the same five-neuron network. Unitless.
+- **Source aliases:**
+  - `brc_11` .. `brc_15` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_w2_rc_1, nn_w2_rc_2, nn_w2_rc_3, nn_w2_rc_4, nn_w2_rc_5 (**canonical NODE hidden-to-output weights, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Hidden-to-output-layer weights of the same five-neuron network. These carry the units of the quantity the network returns -- here a production rate, so response units per time.
+- **Source aliases:**
+  - `Wrc_21` .. `Wrc_25` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_beta_rc (**canonical NODE softplus sharpness, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Sharpness parameter of the softplus activation `softplus(x) = log(1 + exp(beta * x)) / beta`, which approaches a rectified linear unit as beta grows. Unitless, and normally fixed rather than estimated.
+- **Source aliases:**
+  - `beta` -- Braem 2026 Supporting Information Equation 2.
+- **Example models:** `Bram_2026_warfarin_node.R` (`nn_beta_rc = fixed(20)`, the pmxNODE default).
 
 ## Nested (multi-level) random effects
 

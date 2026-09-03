@@ -1578,6 +1578,16 @@ These are internationally standardised clinical abbreviations registered as cano
 - **Source aliases:** none.
 - **Example models:** anticoagulant PD models.
 
+### PCA (**canonical prothrombin complex activity**)
+- **Type:** compartment
+- **Role:** Prothrombin complex activity coagulation-test PD output, expressed as a percentage of normal activity. The vitamin-K-dependent clotting-factor complex whose synthesis warfarin and other coumarin anticoagulants inhibit; carried as an indirect-response turnover pool initialised at the drug-free baseline (`PCA(0) <- rbase`) and falling under drug. The activity counterpart of the clotting-time outputs `PT` / `INR` / `aPTT` / `ECT`, and the PD endpoint of the warfarin PK/PD dataset distributed with Monolix and nlmixr.
+- **Source aliases:**
+  - `PCA` -- the standard field abbreviation, used by Braem 2026.
+  - `pca` -- the `dvid` level in the deposited `warfarin_pkpd_data.csv`.
+  - `R` -- the generic response symbol in Braem 2026 Equation 16 and in the deposited `Warf_node.txt`; NOT usable as a canonical here because bare `R` is already registered as the resistant bacterial subpopulation.
+- **Example models:** `Bram_2026_warfarin_node.R`
+- **Notes:** Uppercase, following the `PT` / `INR` / `aPTT` / `ECT` coagulation-test-output family rather than the lowercase biomarker convention. Beware the acronym: in other fields `PCA` reads as "principal component analysis", and the lowercase-a form `PCa` appears in the description of `osteoclast` as a placebo-calcium modulation term in the Post 2013 bone-remodelling model. Neither is a compartment, so there is no collision in the register, but a future entry must not reuse this name for either. A model that fits prothrombin *time* rather than complex *activity* uses `PT`; the two are different measurements and must not be conflated.
+
 ### ECT (**canonical ecarin clotting time**)
 - **Type:** compartment
 - **Role:** Ecarin clotting time coagulation-test PD output (selective ecarin-activated thrombin assay used to monitor direct thrombin inhibitors).
