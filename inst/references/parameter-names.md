@@ -583,6 +583,32 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 ---
 
+### lflnode (**canonical log-transformed lymphatic-absorption fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Fraction of a subcutaneously absorbed dose that is routed through the `lnode` lymph-node compartment rather than entering `central` directly through the blood capillaries of the SC tissue (unitless, bounded in (0, 1)). The complementary fraction `1 - flnode` reaches plasma directly, so a single absorption rate constant `ka` empties the `depot` and the two destinations split its flux. The bare counterpart inside `model()` is `flnode`.
+- **Source aliases:**
+  - `Frc` -- Wu 2012 Table II and Eqs. (3), (5); Fig. 1 legend ("The fraction absorbed by the lymphatic compartment is given by Frc, and the fraction taken up by the blood capillaries is 1-Frc").
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`Frc` = 0.00964, CV 19.6%; founding example -- bevacizumab-IRDye 800CW after a 0.45 mg/kg footpad SC dose in SKH-1 mice).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q2, option A). Named by DESTINATION COMPARTMENT, exactly as `fdepot` names the fraction routed to `depot`, so the name inherits the `lnode` token and stays synchronised with `lv_lnode` and `lk_lnode_central`. Deliberately **not** any `flymph` / `f_lymph` spelling: `f_lymph` is already in use in `Lindauer_2017_pembrolizumab.R` and `Michelet_2025_BI754111_mpbpk.R` for a **different** quantity -- lymph flow as a fraction of plasma flow -- and the two would be indistinguishable to a reader. Also deliberately not `lffo`, which is the fraction routed to the FAST site of a parallel two-site absorption model; the lymphatic route is the slow one (into the node at `ka`, out of it at the much smaller `k_lnode_central`), so `lffo` would assert the opposite of the mechanism. Held on the log scale to match the sibling fraction canonicals `lfdepot` / `lffo`; use the `logitflnode` spelling instead if a future source estimates the fraction on the logit scale or carries IIV on it, per the reasoning in the `logitfdepot` entry.
+
+### lv_lnode (**canonical log-transformed lymph-node volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of distribution of the `lnode` lymph-node compartment, used to convert the node amount to the measured node concentration (`Clnode <- lnode / v_lnode`). The bare counterpart inside `model()` is `v_lnode`.
+- **Source aliases:**
+  - `VLN` -- Wu 2012 Table II, Eq. (7) (`ALN,sc = CLN,sc x VLN`) and Fig. 1 legend.
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`VLN` = 0.33 mL/kg, FIXED from the measured axillary-node weight at an assumed 1 g/mL specific density over mean SKH-1 body weight; founding example). Bare-form precedent that predates this entry: `Ramachandran_2023_rifampicin_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R` (`v_lnode` = 0.274 L, a hardcoded physiological constant).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q3, option A). Member of the `lv_<space>` family founded by `lv_elf`, and registered for the same reason that entry gives: the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a lymph node is a named physiological space rather than a peripheral compartment. Preferred over the paper's own compact `lvln` spelling because `lv_lnode` carries the `lnode` compartment token, which is already established in this register by `kp_lnode` / `lkp_lnode`. Register it in `ini()` -- wrapped in `fixed()` when the source fixes it from anatomy, as Wu 2012 does -- rather than hardcoding it in `model()`, so the value stays visible to anyone refitting the model.
+
+### lk_lnode_central (**canonical log-transformed lymph-node-to-central transfer rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant carrying drug out of the `lnode` lymph-node compartment into `central` (1 / time) -- the efferent-lymphatic return limb of a subcutaneous-absorption model. The bare counterpart inside `model()` is `k_lnode_central`.
+- **Source aliases:**
+  - `ka2` -- Wu 2012 Table II and Eqs. (3), (5); Fig. 1 legend ("ka2 is the first-order rate constant describing transfer from the lymphatic system to plasma").
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`ka2` = 0.723 /h, CV 9.64%; founding example).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q4, option A). Member of the registered `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_central_milk` / `k_milk_central`, `k_csf_plasma`, `k_presystemic_central`), whose own note directs that the family be used whenever a transfer connects `central` to a named non-numbered compartment. Deliberately **not** `lka2`, even though that is the paper's literal symbol: this register states that `lka1` / `lka2` are not canonical because a bare ordinal encodes only sequence, and `lka2` is already in wide use (`Mauro_2025_nilotinib.R`, `Khwarg_2024_donepezil_im.R`, `Perlstein_2025_risperidone_tv46000.R`, `Qi_2024_vosoritide.R`) for absorption from a SECOND DEPOT. Also not `lka_lnode`: the site-labelled absorption family (`lka_duodenum`, `lka_small_intestine`) describes absorption from a lumen outside the body, whereas the node is a modelled internal state, so this is a transfer and not an absorption.
+
+---
+
 ## Bare structural PK parameters
 
 The bare counterparts of the log-transformed parameters above. Used when the source paper estimates the parameter directly on the linear scale, or when the parameter appears in the `model()` block as the exponentiated form `<base> <- exp(l<base> + eta_<base>)`.
@@ -989,6 +1015,18 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `CL>TCLchange` -- Park 2025.
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
 - **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
+
+### flnode, v_lnode, k_lnode_central (**canonical bare lymph-node absorption-limb parameters**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lflnode`, `lv_lnode` and `lk_lnode_central`. `flnode` is the unitless fraction of an absorbed subcutaneous dose routed through the `lnode` compartment rather than straight into `central`; `v_lnode` is the lymph-node volume that converts the node amount to the `Clnode` observable; `k_lnode_central` is the first-order rate constant returning drug from the node to plasma (1 / time). Together they are the lymphatic limb of a subcutaneous-absorption model.
+- **Source aliases:**
+  - `Frc` -- lymphatic absorption fraction (Wu 2012).
+  - `VLN` -- lymph-node volume (Wu 2012).
+  - `ka2` -- node-to-plasma return rate constant (Wu 2012).
+- **Example models:** `Wu_2012_bevacizumab_mouse.R`. Bare-form `v_lnode` precedent as a hardcoded physiological constant: `Ramachandran_2023_rifampicin_pbpk.R` and its isoniazid / ethambutol / pyrazinamide siblings.
+- **Notes:** Registered 2026-09-02 together with the log-transformed family; see `lflnode`, `lv_lnode` and `lk_lnode_central` above for the ratification rationale, for the collision against the existing `f_lymph` (lymph FLOW fraction), and for why `ka2` is not carried as `lka2`. Pair with the `lnode` compartment, the `Clnode` observable, and the `propSd_Clnode` residual.
+
+---
 
 ## Paper-named mechanistic parameters
 

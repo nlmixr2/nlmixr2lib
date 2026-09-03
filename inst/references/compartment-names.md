@@ -1482,11 +1482,12 @@ PBPK organ-vascular concentration compartments used by membrane-limited PBPK ext
 - **Source aliases:** none.
 - **Example models:** `Shah_2012_mAb_PBPK.R`.
 
-### lnode (**canonical lymph-node return compartment**)
+### lnode (**canonical lymph-node compartment**)
 - **Type:** compartment
-- **Role:** Lymph-node return compartment in mAb PBPK models.
-- **Source aliases:** none.
-- **Example models:** `Shah_2012_mAb_PBPK.R`.
+- **Role:** Lymph-node compartment. Covers both the whole-body lymph-node return pool of mAb PBPK models -- where lymph drained from every tissue's interstitial space converges before returning to plasma -- and a single anatomically named draining node that receives part of a subcutaneous dose in a classical compartmental absorption model.
+- **Source aliases:** `A_LN`, `LN`, `C_LN` -- Wu 2012 Eqs. (3), (5), (7) and Fig. 1 (`ALN,sc`, `CLN,sc`).
+- **Example models:** `Shah_2012_mAb_PBPK.R` (whole-body lymph-node return pool); `Wu_2012_bevacizumab_mouse.R` (single draining axillary node receiving the lymphatic fraction of a footpad SC dose); `Ramachandran_2023_rifampicin_pbpk.R`, `Michelet_2025_BI754111_mpbpk.R`, `Proctor_2026_durvalumab_pbpk.R`.
+- **Notes:** Role text broadened 2026-09-02 from "Lymph-node return compartment in mAb PBPK models" (operator sidecar `oare_PMC3326166` request-001 / response-001, question q1, option A): the concept is identical in the two settings, and a second lymph-node canonical would have been a duplicate that also desynchronised the `lnode` token already carried by `kp_lnode` / `lkp_lnode` in the parameter register. Distinct from `lymph`, which is the lymph-FLUID recycling pool of the Cao 2013 mAb mPBPK family and is ring-fenced to it. Pairs with the `lv_lnode` / `v_lnode` volume, the `lflnode` / `flnode` lymphatic-absorption fraction, the `lk_lnode_central` / `k_lnode_central` return rate constant, and the `Clnode` observable with its `propSd_Clnode` residual.
 
 ---
 
