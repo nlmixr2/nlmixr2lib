@@ -223,7 +223,9 @@ ev_t3 <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
 })) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-stopifnot(!anyDuplicated(unique(ev_t3[, c("id", "time", "evid")])))
+# Test the frame directly: wrapping it in unique() would strip the very
+# duplicates this asserts the absence of, making the check unfalsifiable.
+stopifnot(!anyDuplicated(ev_t3[, c("id", "time", "evid")]))
 
 sim_t3 <- qi_solve(ev_t3, keep = c("regimen", "dose_mgkg"))
 
@@ -372,7 +374,7 @@ ev_pd <- dplyr::bind_rows(lapply(seq_len(nrow(subjects)), function(i) {
 })) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-stopifnot(!anyDuplicated(unique(ev_pd[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(ev_pd[, c("id", "time", "evid")]))
 
 # Between-subject variability on, residual error off (Figure 4 plots individual
 # post hoc exposures against the population prediction, not replicate assays).
