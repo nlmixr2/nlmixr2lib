@@ -14187,3 +14187,45 @@ Covariates whose value is a property of the **administered molecule** rather tha
   - `FLG1` -- the NONMEM flag in the deposited control stream (Supplementary Materials 3), set by `IF (ID.GT.300) FLG1=1`.
 - **Example models:** `Lau_2026_paracetamol.R` (founding example).
 - **Notes:** The most load-bearing of the two indicators. It selects the Study 2 gallbladder-emptying schedule (480 and 660 min post-dose, the latest of the three studies, consistent with the fasted state), four structural multipliers -- 1.94 on the oxidative intrinsic hepatic clearance, 0.650 on the PCM-GLU elimination clearance, 0.826 on the PCM-SUL elimination clearance and 1.59 on the PCM-CYS & PCM-MER elimination clearance -- the switch of the PCM-CYS & PCM-MER residual error from proportional to purely additive (0.288 umol/L), and the Study 2 fold increase in the combined paracetamol residual error (1.87). Lau 2026 Discussion attributes the structural multipliers to the higher BMI of the Study 2 cohort at total body weights comparable to the other studies, hypothesising metabolic-associated fatty liver disease (MAFLD) as the mechanism; the covariate is therefore a cohort marker standing in for an unmeasured hepatic-status covariate rather than a study-conduct artefact, and that reading should be preserved in the per-model `covariateData` notes.
+
+## Simulation / methodology covariates (`SIMCOV_<role>` family)
+
+Methodology papers demonstrate an estimator on synthetic data, and their covariates are
+frequently *meaning-free by construction* -- a standard-normal draw with no clinical
+referent, present only so the method has something to estimate a coefficient for. Such a
+column has no clinical concept to name it after, so it cannot be mapped onto any of the
+demographic, laboratory or disease-state canonicals above.
+
+The `SIMCOV_<role>` family covers exactly this case. The `<role>` suffix records **how the
+column enters the model**, not what it measures (there is nothing to measure) and not
+whether the data column itself varies with time:
+
+- `SIMCOV_TI` -- enters the model directly, as a time-invariant effect.
+- `SIMCOV_TV` -- enters the model through a time-varying transform.
+
+Reach for this family only when the source covariate is genuinely semantically empty. A
+synthetic covariate that still denotes a real physical quantity -- a simulated AUC, a
+simulated body weight -- takes the ordinary canonical for that quantity, or a `specific`-scope
+sibling such as `AUC_BAST_FW`.
+
+### SIMCOV_TI (**canonical for a meaning-free simulation covariate with a time-invariant effect**)
+- **Description:** A semantically-empty per-subject covariate used in a simulation or methodology study to demonstrate estimation of a **time-invariant** covariate effect. Carries no clinical interpretation; in the founding example it is a standard-normal draw (mean 0, SD 1) entering the log hazard directly.
+- **Units:** (z-score; standard normal, mean 0, SD 1 in the founding example -- record the actual generating distribution per model via `covariateData[["SIMCOV_TI"]]$units`)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous, and centred at 0 by construction when the generating distribution is standard normal, so the covariate contributes nothing at its own mean.
+- **Source aliases:**
+  - `COV1` -- Lin 2026 Methods 2.1 and the `$INPUT` column of Data S1/S2; per-subject constant column in the deposited Data S3 example dataset.
+- **Example models:** `Lin_2026_sc1cmt_coxTte.R` (founding example; enters the Cox hazard ratio as `beta1 * SIMCOV_TI` with `beta1 = 0.3`).
+- **Notes:** General scope, ratified 2026-09-02 (task `oare_PMC13106229` sidecar request-001 q1, answer A) so that future methodology extractions reuse the family rather than minting a per-paper name for a column that is interchangeable by construction. The operator considered and rejected source-tied `specific`-scope names on the `AUC_BAST_FW` pattern: `AUC_BAST_FW` is tied to a paper because it still denotes a real physical quantity whose value only makes sense for that hypothetical drug, whereas a meaning-free standard-normal draw carries no paper-specific semantics at all and so cannot collide. Paired with `SIMCOV_TV`; a study demonstrating more than one covariate of the same role should number them (`SIMCOV_TI2`, ...) rather than overload either name.
+
+### SIMCOV_TV (**canonical for a meaning-free simulation covariate with a time-varying effect**)
+- **Description:** A semantically-empty per-subject covariate used in a simulation or methodology study to demonstrate estimation of a **time-varying** covariate effect. Carries no clinical interpretation; in the founding example it is a standard-normal draw (mean 0, SD 1) that enters the log hazard multiplied by an explicit function of time.
+- **Units:** (z-score; standard normal, mean 0, SD 1 in the founding example -- record the actual generating distribution per model via `covariateData[["SIMCOV_TV"]]$units`)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- continuous, and centred at 0 by construction when the generating distribution is standard normal.
+- **Source aliases:**
+  - `COV2` -- Lin 2026 Methods 2.1 and the `$INPUT` column of Data S1/S2; per-subject constant column in the deposited Data S3 example dataset. The paper's `COVT2(t) = COV2 * log(t + 20)` is the model-side transform, not a data column.
+- **Example models:** `Lin_2026_sc1cmt_coxTte.R` (founding example; enters the Cox hazard ratio as `beta2 * SIMCOV_TV * log(t + 20)` with `beta2 = 0.05`).
+- **Notes:** General scope, ratified 2026-09-02 (task `oare_PMC13106229` sidecar request-001 q1, answer A). **The `TV` suffix denotes how the column ENTERS the model, not the data column's own time-variation** -- in the founding example the deposited `COV2` column is a per-subject constant, and the whole point of the paper is that a time-invariant draw can be given a time-varying effect. A model whose data column genuinely varies within a subject uses this same name; the distinction that matters downstream is the model-side one. The time transform itself is model-specific and belongs in `model()` with a source-trace comment, not in this register -- Lin 2026 explicitly describes its `log(t + 20)` form as "an arbitrary logarithmic time function for demonstration purposes" whose additive constant "has no clinical interpretation". Paired with `SIMCOV_TI`.
