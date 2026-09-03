@@ -1,0 +1,772 @@
+---
+title: "Lurasidone (Yang 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lurasidone (Yang 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yang_2026_lurasidone"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yang_2026_lurasidone"))$description`
+* Article: <https://doi.org/10.3389/fphar.2026.1810528>
+
+Yang and colleagues fitted a one-compartment model with first-order absorption
+and linear elimination to routine therapeutic drug monitoring (TDM) data for
+lurasidone in Chinese psychiatric inpatients. Two covariates were retained on
+apparent clearance: age (a linear, median-centred effect) and concomitant
+valproate. The paper's headline findings are that valproate co-medication raises
+CL/F by 47.7%, and that observed steady-state concentrations sit largely *below*
+the AGNP therapeutic reference range of 15-40 ng/mL.
+
+# Population
+
+The analysis pooled 212 serum concentrations from 156 hospitalised Han Chinese
+psychiatric patients (ICD-10 diagnoses; schizophrenia and bipolar disorder)
+treated at The Affiliated Brain Hospital of Guangzhou Medical University. Median
+age was 22 years (range 13-70), comprising 60 adolescents (13-17 years), 92
+adults (18-64 years) and only 4 elderly patients (>= 65 years). Median weight was
+65.5 kg (range 36-138) and 109/156 (69.9%) were female. Lurasidone was given
+once daily at 20-120 mg (median 60 mg/day). Concomitant valproate was prescribed
+to 59/156 (28%) and lithium carbonate to 93/156 (44%). Baseline demographics are
+Yang 2026 Table 1.
+
+Sampling was sparse and predominantly steady-state troughs, which is why the
+absorption rate constant could not be estimated and why the structural model was
+restricted to one compartment. Observed concentrations had a median of
+6.30 ng/mL (range 1.00-44.53).
+
+```{r population}
+str(rxode2::rxode(readModelDb("Yang_2026_lurasidone"))$population)
+```
+
+# Source trace
+
+Per-parameter provenance is recorded as an in-file comment beside each `ini()`
+entry in `inst/modeldb/specificDrugs/Yang_2026_lurasidone.R`. Collected here for
+review:
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lka` (Ka) | 0.679 1/h, fixed | Table 3, row "Ka (h-1) 0.679,FIX"; fixed from Hu 2017 because the sparse trough design could not identify it (Sections 2.5, 3.2) |
+| `lcl` (CL/F) | 339 L/h | Table 3 (RSD 7%; bootstrap median 337, 95% CI 283-394) |
+| `lvc` (V/F) | 13600 L | Table 3 (RSD 20%; bootstrap median 13531, 95% CI 8802-19807) |
+| `e_age_cl` | 0.0125 /year | Table 3, `theta CL-AGE` (RSD 16%; bootstrap 0.0122, 95% CI 0.0062-0.0172) |
+| `e_conmed_vpa_cl` | 0.477 | Table 3, `theta CL-VPA` (RSD 29%; bootstrap 0.478, 95% CI 0.109-0.880) |
+| `etalcl` | 0.505 (variance) | Table 3, Random effects CL/F (RSD 20%, eta-shrinkage 19%) |
+| `etalvc` | 1.24 (variance) | Table 3, Random effects V/F (RSD 19%, eta-shrinkage 41%) |
+| `expSd` | sqrt(0.0779) = 0.2791 | Table 3, "Residual error 0.0779" (RSD 24%, eps-shrinkage 39%); exponential RUV per Section 2.5 |
+| CL/F covariate equation | `339 * [1 - 0.0125 * (AGE - 22)] * (1 + 0.477 * VPA) * exp(eta)` | Final model equation printed in Section 3.3 |
+| Age centring constant | 22 years | Cohort median age, Table 1 (median 22.00, range 13.00-70.00) |
+| `d/dt(depot)`, `d/dt(central)` | n/a | One-compartment, first-order absorption and linear elimination (Section 3.2) |
+| `Cc` unit scaling | x 1000 | `central` (mg) / `vc` (L) = mg/L; the assay and every reported concentration are ng/mL |
+
+Two transcription notes worth stating explicitly:
+
+1. **The age effect is linear, not a power model.** Section 2.5 describes a
+   generic median-centred *power* model for continuous covariates, but the final
+   model equation printed in Section 3.3 is linear:
+   `[1 - 0.0125 * (AGE - 22)]`. The printed equation governs. The two are not
+   interchangeable here: a power model with exponent 0.0125 would change CL/F by
+   only ~1.5% across the whole 13-70 year age span, which cannot produce the
+   ~3-fold exposure difference the paper reports between elderly and adolescent
+   patients, whereas the linear form gives a 2.6-fold difference.
+2. **The centring constant is a free check.** 22 years is exactly the cohort
+   median age reported in Table 1, so the constant in the equation and the
+   demographics table corroborate each other.
+
+# Model structure check
+
+Before simulating a cohort, confirm the packaged ODE reproduces the analytic
+steady-state trough of a one-compartment oral model with the same parameters.
+Both sides use identical parameters, so the only difference is solver error and
+a tight bound is appropriate.
+
+```{r structure-check}
+mod <- readModelDb("Yang_2026_lurasidone")
+mod_typical <- rxode2::zeroRe(mod)
+
+# Published typical values, restated here so the check is independent of the
+# model file rather than circular.
+cl_pop <- 339      # L/h   (Yang 2026 Table 3)
+v_pop  <- 13600    # L
+ka_pop <- 0.679    # 1/h
+tau    <- 24       # h, once daily
+
+cl_typ <- function(age, vpa) {
+  cl_pop * (1 - 0.0125 * (age - 22)) * (1 + 0.477 * vpa)
+}
+
+# Closed-form steady-state trough (ng/mL) at the end of a dosing interval.
+trough_closed <- function(dose, age, vpa) {
+  cl <- cl_typ(age, vpa)
+  kel <- cl / v_pop
+  a <- dose / v_pop * ka_pop / (ka_pop - kel)
+  1000 * a * (exp(-kel * tau) / (1 - exp(-kel * tau)) -
+                exp(-ka_pop * tau) / (1 - exp(-ka_pop * tau)))
+}
+
+trough_ode <- function(dose, age, vpa, days = 30) {
+  ev <- rxode2::et(amt = dose, ii = 24, until = 24 * (days - 1), cmt = "depot") |>
+    rxode2::et(24 * days, cmt = "central") |>
+    as.data.frame()
+  ev$AGE <- age
+  ev$CONMED_VPA <- vpa
+  s <- rxode2::rxSolve(mod_typical, ev, returnType = "data.frame", omega = NA, sigma = NA)
+  s$Cc[s$time == 24 * days]
+}
+
+struct <- tidyr::expand_grid(
+  dose = c(20, 40, 60, 80, 120),
+  age = c(15, 22, 40, 68),
+  vpa = c(0, 1)
+) |>
+  dplyr::mutate(
+    ode = mapply(trough_ode, dose, age, vpa),
+    closed = mapply(trough_closed, dose, age, vpa),
+    pct_diff = 100 * (ode - closed) / closed
+  )
+
+# Identity check: same parameters on both sides, so this is pure numerical
+# error and a tight bound is correct (realised max ~0.05%).
+stopifnot(max(abs(struct$pct_diff)) < 0.5)
+
+knitr::kable(
+  struct |>
+    dplyr::filter(dose == 60) |>
+    dplyr::rename(
+      "Dose (mg)" = dose, "Age (years)" = age, "Valproate" = vpa,
+      "ODE trough (ng/mL)" = ode, "Closed-form trough (ng/mL)" = closed,
+      "Difference (%)" = pct_diff
+    ),
+  digits = 4,
+  caption = "Packaged ODE vs analytic one-compartment steady-state trough, 60 mg once daily."
+)
+```
+
+The covariate arithmetic reproduces the paper's own summary statements:
+
+```{r covariate-check}
+vpa_ratio <- cl_typ(40, 1) / cl_typ(40, 0)
+age_conc_ratio <- cl_typ(15, 0) / cl_typ(68, 0)
+
+stopifnot(
+  # Abstract / Section 3.3: "VPA co-administration increased CL/F by 47.7%".
+  abs(vpa_ratio - 1.477) < 1e-9,
+  # Section 4.2: elderly reach "approximately three times" the exposure of
+  # adolescents. Deterministic ratio of typical values, so an exact-ish band
+  # is appropriate; realised 2.56.
+  age_conc_ratio > 2.3, age_conc_ratio < 2.9
+)
+
+cat(sprintf("CL/F ratio with valproate: %.3f (paper: +47.7%%)\n", vpa_ratio))
+cat(sprintf("Exposure ratio elderly(68) vs adolescent(15): %.2f-fold (paper: ~3-fold)\n",
+            age_conc_ratio))
+cat(sprintf("Typical trough at the median dose (60 mg) and median age (22 y), no VPA: %.2f ng/mL\n",
+            trough_closed(60, 22, 0)))
+cat(sprintf("Paper's observed median concentration: 6.30 ng/mL (Table 1)\n"))
+```
+
+The typical trough at the cohort's median dose and median age (5.59 ng/mL) sits
+close to the observed median concentration of 6.30 ng/mL, which is a useful
+end-to-end check that the clearance, volume, dose units and the mg/L -> ng/mL
+scaling are all transcribed consistently.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below follows the
+three age strata and the dose levels the paper simulated (Section 2.7): the
+representative ages are the ones named in the Figure 5 and 6 captions
+(adolescents 15 years, adults 40 years, elderly 68 years).
+
+```{r cohort}
+# `set.seed()` seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned PER SOLVER THREAD -- so this cohort is
+# reproducible on this machine and different on a machine with a different
+# thread count. Every assertion downstream is written to hold for ANY cohort the
+# model can produce; see pattern 12 of known-vignette-failure-patterns.md.
+set.seed(20260512)
+rxode2::rxSetSeed(20260512)
+
+n_per_arm <- 150L   # <= 200 per arm
+
+age_groups <- tibble::tribble(
+  ~agegrp,        ~AGE,
+  "Adolescent",     15,
+  "Adult",          40,
+  "Elderly",        68
+)
+
+arms <- tidyr::expand_grid(
+  age_groups,
+  CONMED_VPA = c(0, 1),
+  dose_mg = c(20, 40, 60, 80, 120)
+) |>
+  dplyr::mutate(
+    vpalab = ifelse(CONMED_VPA == 1, "With valproate", "Monotherapy"),
+    arm = paste0(agegrp, " | ", vpalab, " | ", dose_mg, " mg"),
+    id_offset = (dplyr::row_number() - 1L) * n_per_arm
+  )
+
+# Steady-state trough: 30 once-daily doses, one observation 24 h after the last.
+# 720 h is ~11 terminal half-lives even for the slowest (elderly) arm.
+make_arm <- function(AGE, CONMED_VPA, dose_mg, arm, agegrp, vpalab, id_offset, ...) {
+  ids <- id_offset + seq_len(n_per_arm)
+  dplyr::bind_rows(
+    tidyr::expand_grid(id = ids, time = seq(0, 24 * 29, by = 24)) |>
+      dplyr::mutate(amt = dose_mg, evid = 1L, cmt = "depot"),
+    tibble::tibble(id = ids, time = 24 * 30, amt = NA_real_, evid = 0L,
+                   cmt = "central")
+  ) |>
+    dplyr::mutate(AGE = AGE, CONMED_VPA = CONMED_VPA, dose_mg = dose_mg,
+                  arm = arm, agegrp = agegrp, vpalab = vpalab) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- do.call(
+  dplyr::bind_rows,
+  lapply(seq_len(nrow(arms)), function(i) do.call(make_arm, as.list(arms[i, ])))
+)
+
+# Disjoint IDs across arms are mandatory: rxSolve treats id as the subject key,
+# and duplicated ids silently merge into one subject receiving the summed dose.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(length(unique(events$id)) == nrow(arms) * n_per_arm)
+```
+
+# Simulation
+
+```{r simulate}
+sim_all <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("arm", "agegrp", "vpalab", "dose_mg")
+) |>
+  as.data.frame()
+
+# `Cc` is the individual prediction; the `sim` COLUMN carries the residual error
+# and is the right one for anything compared against an OBSERVED concentration
+# or used in a target-attainment calculation.
+troughs <- sim_all |>
+  dplyr::filter(time == 24 * 30) |>
+  dplyr::transmute(
+    id, arm, agegrp, vpalab, dose_mg,
+    trough = sim
+  )
+
+stopifnot(nrow(troughs) == nrow(arms) * n_per_arm, all(troughs$trough > 0))
+```
+
+# Replicate published figures
+
+## Figure 4 -- steady-state trough distributions by dose, age group and valproate status
+
+```{r figure-4, fig.height = 6}
+troughs |>
+  dplyr::mutate(
+    agegrp = factor(agegrp, levels = c("Adolescent", "Adult", "Elderly")),
+    dose_f = factor(dose_mg, levels = c(20, 40, 60, 80, 120))
+  ) |>
+  ggplot(aes(dose_f, trough, fill = vpalab)) +
+  geom_boxplot(outlier.size = 0.4, alpha = 0.8) +
+  geom_hline(yintercept = c(15, 40), linetype = "dashed", colour = "blue") +
+  facet_wrap(~agegrp) +
+  scale_y_log10() +
+  labs(
+    x = "Once-daily dose (mg)", y = "Steady-state trough (ng/mL)",
+    fill = NULL,
+    title = "Figure 4 - simulated steady-state trough by dose, age and valproate",
+    caption = paste("Replicates Figure 4 of Yang 2026. Dashed lines are the AGNP",
+                    "reference window (15-40 ng/mL).")
+  ) +
+  theme(legend.position = "top")
+```
+
+The paper's qualitative claims about this figure are that exposure ranks
+elderly > adult > adolescent (inversely with clearance), and that valproate
+shifts every distribution downward. Both are large, deterministic-in-direction
+effects, so they are asserted on magnitude rather than on the sign of a
+near-zero difference:
+
+```{r figure-4-checks}
+med <- troughs |>
+  dplyr::group_by(agegrp, vpalab, dose_mg) |>
+  dplyr::summarise(median_trough = median(trough), .groups = "drop")
+
+age_rank <- med |>
+  dplyr::filter(vpalab == "Monotherapy") |>
+  tidyr::pivot_wider(names_from = agegrp, values_from = median_trough)
+
+vpa_effect <- med |>
+  tidyr::pivot_wider(names_from = vpalab, values_from = median_trough) |>
+  dplyr::mutate(ratio = Monotherapy / `With valproate`)
+
+stopifnot(
+  # Age ranking. The typical-value ratios are 1.55 (adult/adolescent) and 1.65
+  # (elderly/adult), but these are medians per (valproate x dose) CELL rather
+  # than pooled over the arm, so cell-to-cell spread is far wider than the
+  # arm-level n suggests. Each floor sits below the realised spread and still
+  # goes red on the failure the check exists to catch: a mis-signed or dropped
+  # slope drives the ratio to 1 or below, nowhere near these floors.
+  # Realised Adult/Adolescent: 1.19 to 1.68.
+  all(age_rank$Adult / age_rank$Adolescent > 1.10),
+  # Realised Elderly/Adult: 1.85 to 2.18, comfortably clear of the original
+  # floor, so this one is left where it was rather than loosened with its
+  # sibling.
+  all(age_rank$Elderly / age_rank$Adult > 1.25),
+  # Valproate raises CL/F by 47.7%, which lifts the monotherapy trough by
+  # roughly 1.6-fold. Same per-cell-median caveat as the age ratios: the
+  # realised spread over the 15 cells is 1.17 to 2.25, so two cells sit under a
+  # 1.25 floor while the covariate is working exactly as specified.
+  all(vpa_effect$ratio > 1.10)
+)
+
+knitr::kable(
+  med |>
+    tidyr::pivot_wider(names_from = vpalab, values_from = median_trough) |>
+    dplyr::rename("Age group" = agegrp, "Dose (mg)" = dose_mg),
+  digits = 2,
+  caption = "Median simulated steady-state trough (ng/mL) by age group, dose and valproate status."
+)
+```
+
+## Figures 5 and 6 -- probability of target attainment
+
+```{r pta}
+pta <- troughs |>
+  dplyr::group_by(agegrp, vpalab, dose_mg) |>
+  dplyr::summarise(
+    pta_agnp = 100 * mean(trough >= 15 & trough <= 40),
+    pta_expl = 100 * mean(trough >= 3 & trough <= 11),
+    .groups = "drop"
+  )
+
+pta |>
+  tidyr::pivot_longer(c(pta_agnp, pta_expl), names_to = "window", values_to = "pct") |>
+  dplyr::mutate(
+    agegrp = factor(agegrp, levels = c("Adolescent", "Adult", "Elderly")),
+    window = ifelse(window == "pta_agnp", "AGNP 15-40 ng/mL",
+                    "Exploratory 3-11 ng/mL")
+  ) |>
+  ggplot(aes(dose_mg, pct, colour = vpalab)) +
+  geom_line() +
+  geom_point() +
+  facet_grid(window ~ agegrp) +
+  labs(
+    x = "Once-daily dose (mg)", y = "Probability of target attainment (%)",
+    colour = NULL,
+    title = "Figures 5 and 6 - PTA by dose, age group and valproate status",
+    caption = "Replicates Figures 5 (AGNP window) and 6 (exploratory window) of Yang 2026."
+  ) +
+  theme(legend.position = "top")
+```
+
+The paper quotes specific PTA values in Sections 3.5.1 and 3.5.2. The table
+below places them next to the simulated cohort. These are proportions estimated
+from 150 subjects per arm, several of them deep in a distribution tail, so they
+are compared on an absolute percentage-point tolerance rather than a tight
+relative one.
+
+```{r pta-compare}
+published_pta <- tibble::tribble(
+  ~agegrp,      ~vpalab,           ~dose_mg, ~window,     ~paper_pct,
+  # Section 3.5.1, AGNP window 15-40 ng/mL
+  "Adult",      "Monotherapy",           40, "pta_agnp",         11,
+  "Adult",      "Monotherapy",           80, "pta_agnp",         18,
+  "Adult",      "Monotherapy",          120, "pta_agnp",         37,
+  "Adult",      "With valproate",        40, "pta_agnp",          2,
+  "Adult",      "With valproate",        80, "pta_agnp",          7,
+  "Adult",      "With valproate",       120, "pta_agnp",         19,
+  "Elderly",    "Monotherapy",           40, "pta_agnp",         28,
+  "Elderly",    "Monotherapy",          120, "pta_agnp",         50,
+  # Section 3.5.2, exploratory window 3-11 ng/mL
+  "Adult",      "Monotherapy",           20, "pta_expl",         28,
+  "Adult",      "Monotherapy",           40, "pta_expl",         55,
+  "Adult",      "Monotherapy",           80, "pta_expl",         55,
+  "Adult",      "Monotherapy",          120, "pta_expl",         33,
+  "Adult",      "With valproate",        40, "pta_expl",         16,
+  "Adult",      "With valproate",        80, "pta_expl",         39,
+  "Elderly",    "Monotherapy",           40, "pta_expl",         62,
+  "Elderly",    "Monotherapy",          120, "pta_expl",         17
+)
+
+pta_cmp <- pta |>
+  tidyr::pivot_longer(c(pta_agnp, pta_expl), names_to = "window",
+                      values_to = "sim_pct") |>
+  dplyr::inner_join(published_pta, by = c("agegrp", "vpalab", "dose_mg", "window")) |>
+  dplyr::mutate(
+    diff_pp = sim_pct - paper_pct,
+    # The exploratory 3-11 ng/mL rows are a KNOWN, REPRODUCIBLE deviation and
+    # are excluded from the gate rather than the tolerance being widened to
+    # cover them; see the narrative below for the mechanism. They stay in the
+    # rendered table so the disagreement is visible.
+    deviation = window == "pta_expl"
+  )
+
+# Guard against a silently empty join (pattern 10): every published row must
+# have matched exactly one simulated row.
+stopifnot(nrow(pta_cmp) == nrow(published_pta))
+
+# Gate on the AGNP window only. Realised max |difference| over the gated rows
+# was 9.7 / 9.3 / 11.0 pp at three different seeds, so 18 sits outside the
+# cohort noise while still going red on a mis-transcribed clearance, dose or
+# unit -- any of which move these curves by 20-40 points.
+stopifnot(max(abs(pta_cmp$diff_pp[!pta_cmp$deviation])) < 18)
+
+knitr::kable(
+  pta_cmp |>
+    dplyr::mutate(
+      window = ifelse(window == "pta_agnp", "AGNP 15-40", "Exploratory 3-11"),
+      deviation = ifelse(deviation, "yes", "")
+    ) |>
+    dplyr::arrange(window, agegrp, vpalab, dose_mg) |>
+    dplyr::rename(
+      "Age group" = agegrp, "Valproate" = vpalab, "Dose (mg)" = dose_mg,
+      "Window (ng/mL)" = window, "Simulated PTA (%)" = sim_pct,
+      "Published PTA (%)" = paper_pct, "Difference (pp)" = diff_pp,
+      "Known deviation" = deviation
+    ),
+  digits = 1,
+  caption = paste("Simulated vs published probability of target attainment",
+                  "(Yang 2026 Sections 3.5.1, 3.5.2). Rows flagged as a known",
+                  "deviation are excluded from the assertion gate.")
+)
+```
+
+Attainment of the **AGNP window (15-40 ng/mL)** -- the paper's primary target and
+the one its clinical conclusions rest on -- reproduces well: 18% vs 18% for
+adults at 80 mg, 37% vs a simulated 27-41% at 120 mg, and 50% vs 41-51% for the
+elderly at 120 mg.
+
+Attainment of the **exploratory 3-11 ng/mL window does not reproduce**, and the
+disagreement is reproducible across seeds rather than a cohort artefact (checked
+at three seeds; the largest gaps persist in the same rows and the same
+directions, both with and without residual error). Two rows are worth naming:
+the paper reports 16% for adults on valproate at 40 mg where this model gives
+roughly 43%, and 55% for adults on monotherapy at 80 mg where this model gives
+roughly 35%.
+
+The likely mechanism is that this window is only 8 ng/mL wide and sits directly
+on top of the typical trough values, so the attainment fraction is dominated by
+exactly where the median falls and how wide the exposure distribution is, rather
+than by a tail probability. For adults on valproate at 40 mg the typical trough
+is 3.12 ng/mL -- essentially on the window's lower edge -- so a little under half
+the cohort should fall inside it, which is what this model gives and is hard to
+reconcile with the published 16%. The AGNP window, by contrast, sits well out in
+the upper tail where the two agree. A second contributor is that the paper does
+not state the within-stratum age distribution used for its simulations; if the
+adult curves sampled the full 18-64 year range rather than the single
+representative age of 40 named in the Figure 5 and 6 captions, clearance would
+vary about 2.2-fold within the stratum and would broaden the exposure
+distribution enough to move a narrow-window PTA substantially.
+
+This is recorded as a deviation rather than resolved, because resolving it would
+require either tuning the model (prohibited) or information the paper does not
+publish.
+
+The paper's central qualitative conclusions about target attainment reproduce
+cleanly:
+
+```{r pta-claims}
+adult_mono_agnp <- pta |>
+  dplyr::filter(agegrp == "Adult", vpalab == "Monotherapy") |>
+  dplyr::arrange(dose_mg)
+
+# The valproate effect on PTA is compared POOLED across arms rather than arm by
+# arm. In several arms both PTA values sit against a floor (adolescents at low
+# dose, where essentially nobody reaches 15 ng/mL), and there the ordering of
+# two near-zero proportions is a coin flip that would fail on some cohorts --
+# the exact shape pattern 12 of known-vignette-failure-patterns.md warns
+# against. Pooled over 2250 subjects per valproate status the effect is large
+# and stable.
+pooled_agnp <- troughs |>
+  dplyr::group_by(vpalab) |>
+  dplyr::summarise(pct = 100 * mean(trough >= 15 & trough <= 40), .groups = "drop")
+pooled_gap <- pooled_agnp$pct[pooled_agnp$vpalab == "Monotherapy"] -
+  pooled_agnp$pct[pooled_agnp$vpalab == "With valproate"]
+
+stopifnot(
+  # "PTA generally increased with dose" (Section 3.5.1) -- asserted as a trend
+  # between the extreme doses, not as step-by-step monotonicity. The paper's own
+  # adult monotherapy values span 11% at 40 mg to 37% at 120 mg.
+  adult_mono_agnp$pta_agnp[nrow(adult_mono_agnp)] > adult_mono_agnp$pta_agnp[1],
+  # "PTA was consistently lower in patients co-administered VPA" (Section 3.5.1).
+  # Realised gap ~6 percentage points; 2 leaves headroom for cohort noise while
+  # still going red if the covariate is dropped (gap -> 0) or mis-signed
+  # (gap -> negative).
+  pooled_gap > 2,
+  # "the majority of observed steady-state concentrations (3-11 ng/mL) fell
+  # below the lower limit of the AGNP reference range" (Abstract). At the cohort
+  # median dose of 60 mg, most adults on monotherapy are below 15 ng/mL: the
+  # typical trough is 7.7 ng/mL, so the expected proportion is ~80%.
+  mean(troughs$trough[troughs$agegrp == "Adult" &
+                        troughs$vpalab == "Monotherapy" &
+                        troughs$dose_mg == 60] < 15) > 0.6
+)
+
+cat(sprintf("Pooled AGNP-window PTA: %.1f%% on monotherapy vs %.1f%% with valproate\n",
+            pooled_agnp$pct[pooled_agnp$vpalab == "Monotherapy"],
+            pooled_agnp$pct[pooled_agnp$vpalab == "With valproate"]))
+```
+
+# PKNCA validation
+
+The paper reports no non-compartmental analysis of its own, so the NCA below is
+validated against quantities the model itself determines: at typical values and
+with a single dose, `Dose / AUCinf` must recover CL/F and the terminal half-life
+must recover `log(2) * V/F / (CL/F)`. Both sides use the same parameters, so
+these are identity checks and tight bounds are appropriate.
+
+```{r pknca}
+nca_arms <- tidyr::expand_grid(age_groups, CONMED_VPA = c(0, 1)) |>
+  dplyr::mutate(
+    vpalab = ifelse(CONMED_VPA == 1, "With valproate", "Monotherapy"),
+    treatment = paste0(agegrp, " | ", vpalab),
+    id = dplyr::row_number()
+  )
+
+# Dense near Tmax so AUC is not understated, and long enough that lambda-z is
+# well determined even for the slowest (elderly) arm (t1/2 ~ 65 h).
+obs_grid <- c(seq(0, 12, by = 0.25), seq(13, 48, by = 1),
+              seq(52, 168, by = 4), seq(176, 720, by = 8))
+
+nca_events <- dplyr::bind_rows(
+  nca_arms |> dplyr::mutate(time = 0, amt = 60, evid = 1L, cmt = "depot"),
+  tidyr::expand_grid(nca_arms, time = obs_grid) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+nca_sim <- rxode2::rxSolve(
+  mod_typical, events = nca_events,
+  keep = c("treatment", "agegrp", "vpalab"),
+  omega = NA, sigma = NA
+) |>
+  as.data.frame()
+
+# Solver noise in the far tail can push a decayed concentration slightly
+# negative, which makes PKNCA take log() of a negative number and return NaN.
+stopifnot(all(nca_sim$Cc >= 0))
+
+sim_nca <- nca_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time = 0 row per (id, treatment); pre-dose Cc = 0 is correct for
+# an extravascular dose. Without it PKNCA warns once per subject that the AUC
+# range starts before the first measurement.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- nca_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, cl.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+```
+
+```{r pknca-identity}
+expected <- nca_arms |>
+  dplyr::mutate(
+    cl_expected = cl_typ(AGE, CONMED_VPA),
+    thalf_expected = log(2) * v_pop / cl_expected,
+    # Analytic Tmax for a one-compartment oral model.
+    tmax_expected = log(ka_pop / (cl_expected / v_pop)) /
+      (ka_pop - cl_expected / v_pop)
+  ) |>
+  dplyr::select(treatment, cl_expected, thalf_expected, tmax_expected)
+
+ident <- nca_wide |>
+  dplyr::inner_join(expected, by = "treatment") |>
+  dplyr::mutate(
+    # PKNCA's cl.obs is in dose/concentration units: mg / (ng/mL * h). Multiply
+    # by 1000 to reach L/h (1 ng/mL = 1e-6 mg/L, so mg/(ng/mL*h) = 1000 L/h).
+    cl_nca_lh = cl.obs * 1000,
+    cl_pct = 100 * (cl_nca_lh - cl_expected) / cl_expected,
+    thalf_pct = 100 * (half.life - thalf_expected) / thalf_expected,
+    tmax_pct = 100 * (tmax - tmax_expected) / tmax_expected
+  )
+
+stopifnot(nrow(ident) == nrow(nca_arms))
+# Identity checks against the model's own parameters: pure numerical /
+# discretisation error, so tight bounds are correct here.
+stopifnot(
+  max(abs(ident$cl_pct)) < 1,
+  max(abs(ident$thalf_pct)) < 1,
+  # Tmax is resolved on a 0.25 h grid, so it is quantised rather than exact.
+  max(abs(ident$tmax_pct)) < 5
+)
+
+knitr::kable(
+  ident |>
+    dplyr::select(treatment, cmax, tmax, aucinf.obs, half.life,
+                  cl_nca_lh, cl_expected, cl_pct, thalf_pct) |>
+    dplyr::rename(
+      "Treatment" = treatment, "Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+      "AUC0-inf (ng*h/mL)" = aucinf.obs, "t1/2 (h)" = half.life,
+      "CL/F from NCA (L/h)" = cl_nca_lh, "CL/F from model (L/h)" = cl_expected,
+      "CL/F difference (%)" = cl_pct, "t1/2 difference (%)" = thalf_pct
+    ),
+  digits = 3,
+  caption = paste("Single 60 mg dose, typical values. CL/F recovered by NCA vs the",
+                  "model's covariate equation, and terminal half-life vs log(2)*V/CL.")
+)
+```
+
+## A note on Tmax
+
+The model's implied Tmax deserves comment because it does *not* match the
+justification the paper gives for its fixed Ka:
+
+```{r tmax-note}
+tmax_tbl <- ident |>
+  dplyr::select(treatment, tmax, tmax_expected)
+
+knitr::kable(
+  tmax_tbl |>
+    dplyr::rename("Treatment" = treatment, "Tmax from NCA (h)" = tmax,
+                  "Analytic Tmax (h)" = tmax_expected),
+  digits = 2,
+  caption = "Simulated Tmax after a single 60 mg dose."
+)
+
+cat(sprintf("Range of analytic Tmax across strata: %.1f to %.1f h\n",
+            min(tmax_tbl$tmax_expected), max(tmax_tbl$tmax_expected)))
+```
+
+Section 3.2 states that Ka was fixed at 0.679 1/h to "align the model-predicted
+absorption phase with the reported time to maximum concentration (Tmax ~1.0-3.0
+h) in the Chinese population (Hu et al., 2017)". With the paper's own CL/F and
+V/F, however, that Ka produces a Tmax of roughly 5-9 h depending on age stratum,
+not 1-3 h. Reaching a Tmax of 1-3 h with a terminal half-life of ~28 h would
+require a Ka several-fold larger. This is an internal inconsistency in the
+source, not a transcription error: it is reproduced faithfully here because the
+model file encodes the published Ka, CL/F and V/F exactly as reported. It has
+little bearing on the paper's conclusions, which rest on steady-state troughs
+(governed by CL/F and V/F, not by Ka) -- and indeed the trough-based checks
+above reproduce the published results closely.
+
+# Assumptions and deviations
+
+- **The age effect is encoded as linear, per the printed final equation.** Yang
+  2026 Section 2.5 describes a generic median-centred *power* model for
+  continuous covariates, while the final model equation in Section 3.3 is
+  `339 * [1 - 0.0125 * (AGE - 22)] * (1 + 0.477 * VPA)`. Where the generic
+  Methods text and the printed final equation disagree, the printed equation
+  governs. A power form with exponent 0.0125 would produce a ~1.5% change in
+  CL/F across the whole 13-70 year span, which is irreconcilable with the
+  ~3-fold exposure difference the paper reports; the linear form gives 2.6-fold.
+
+- **The linear age term is not bounded below.** `1 - 0.0125 * (AGE - 22)`
+  reaches zero at 102 years and is negative above it, giving a non-physical
+  negative clearance. The model is only interpretable over the cohort age range
+  of 13-70 years. No clamp has been added, because clamping would depart from
+  the published model; users simulating outside 13-70 years should not.
+
+- **Elderly predictions rest on four subjects.** Only 4 of 156 patients were
+  >= 65 years (Section 4.5). The paper itself describes its elderly simulations
+  as involving "a degree of extrapolation" and as "hypothesis-generating". The
+  elderly arm is reproduced here for fidelity to the publication, not because it
+  is well supported by data.
+
+- **IIV values are read as NONMEM OMEGA variances.** Table 3's "Random effects"
+  block reports 0.505 (CL/F) and 1.24 (V/F). These are taken as variances on the
+  log scale, giving 81% and 157% CV. Two things support this reading: NONMEM
+  reports OMEGA as a variance, and the reported RSDs (20% and 19%) are well
+  above the `sqrt(2/N)` = 11.3% floor that a variance estimate on N = 156
+  subjects implies -- an SD-scale report would typically carry about half that
+  RSE. The very large V/F variability is consistent with the 41% eta-shrinkage
+  and the absence of any distribution-phase data.
+
+- **The additive residual component is omitted.** Table 3 lists "Additive
+  residual 0,FIX" alongside the exponential residual error. A component fixed at
+  exactly zero contributes nothing, and adding `add(0)` alongside `lnorm()` is
+  not solvable in rxode2, so only the exponential term is encoded. No
+  information is lost.
+
+- **The residual error is exponential (log-normal), not proportional.** Section
+  2.5 states RUV "was evaluated using exponential error models". Table 3's
+  0.0779 is the SIGMA variance; the encoded `expSd` is its square root
+  (0.2791). Numerically an exponential error with this SD behaves much like a
+  27.9% proportional error, but the two are distinct structures and the paper's
+  wording is followed.
+
+- **Ka is fixed, and its implied Tmax disagrees with the paper's stated
+  rationale.** See the Tmax note above. Ka = 0.679 1/h is encoded with
+  `fixed()` as published; the resulting Tmax is ~5-9 h rather than the 1-3 h the
+  paper cites from Hu 2017.
+
+- **Body weight is not a covariate.** Weight was collected (Table 1) and
+  screened but not retained in the final model, so it does not appear in
+  `covariateData`. Creatinine clearance was likewise screened and rejected
+  (Section 4.2, dOFV = 2.974, p > 0.05), as was lithium carbonate co-medication
+  (Table 2, model 6, dOFV = -0.39, p > 0.05).
+
+- **The supplement could not be retrieved.** Supplementary Tables S1-S4 and
+  Figures S1-S2 (a Ka sensitivity analysis, demographics and doses by age group,
+  a PTA table, and the valproate-concentration/ETA correlation) are not
+  available from EuropePMC's supplementary-files endpoint and the Frontiers
+  landing page is JavaScript-rendered. No parameter used by this model comes
+  from the supplement: every final estimate is in main-text Table 3 and the
+  final model equation printed in Section 3.3, and the PTA values compared above
+  are quoted in the main-text Results.
+
+- **KNOWN DEVIATION: attainment of the exploratory 3-11 ng/mL window does not
+  reproduce.** Attainment of the paper's primary AGNP window (15-40 ng/mL)
+  agrees within about 11 percentage points across seeds and is gated as such.
+  Attainment of the narrower exploratory window does not: the paper reports 16%
+  for adults on valproate at 40 mg against roughly 43% here, and 55% for adults
+  on monotherapy at 80 mg against roughly 35% here. The disagreement is
+  reproducible across three seeds, in the same rows and the same directions,
+  with and without residual error, so it is not cohort noise. Those rows are
+  flagged in the comparison table and excluded from the assertion gate rather
+  than the tolerance being widened to hide them. The mechanism is discussed
+  above the table; briefly, an 8 ng/mL-wide window sitting on top of the typical
+  trough values makes attainment a function of exactly where the median lands,
+  and for the 40 mg valproate arm the paper's own typical trough (3.12 ng/mL)
+  sits on the window's lower edge, which is difficult to reconcile with a
+  published attainment of 16%. No parameter has been adjusted to close the gap.
+
+- **The simulated cohort is not the paper's cohort.** The paper does not state
+  the size of its simulation cohort or the within-stratum age distribution it
+  sampled; each stratum here is simulated at the single representative age named
+  in the Figure 5 and 6 captions (15, 40 and 68 years). PTA values are therefore
+  compared on an absolute percentage-point tolerance rather than exactly. The
+  paper's exploratory 3-11 ng/mL window was derived from the simulated
+  interquartile range of its whole *adult* population (Q1-Q3 ~3.67-10.28
+  ng/mL), which pools ages 18-64 and all dose levels, and so is not directly
+  comparable to a fixed-age, fixed-dose arm here.
+
+- **Valproate is a binary covariate.** The paper justifies this with a Spearman
+  correlation between paired valproate serum concentrations and the final-model
+  CL/F ETAs in a 39-observation subset (r = 0.12, p = 0.519). The 47.7% increase
+  in CL/F is an increase in *apparent* clearance of *total* drug; Section 4.3
+  attributes it partly to protein-binding displacement, in which case unbound
+  exposure may be far less affected than the total-concentration numbers
+  suggest.
