@@ -366,9 +366,12 @@ The published Figure 2 mean cumulative urinary excretion at 360 min reads
 approximately 5.7, 27.5, 78 and 170 mg at 200, 400, 600 and 1,000 mg/kg. Those
 values are also recoverable arithmetically from Table II, since Eq. 14 gives
 `Ae,inf = CLR * AUC`: 0.197 x 29.3 = 5.8, 0.331 x 83.0 = 27.5,
-0.540 x 133.3 = 72.0 and 0.823 x 208.2 = 171.3 mg. The agreement between the
-figure and the table confirms that both report *population means including
-residual error* rather than typical values.
+0.540 x 133.3 = 72.0 and 0.823 x 208.2 = 171.3 mg. Three of the four agree
+closely with the figure; the 600 mg/kg point differs by about 8% (roughly 78 mg
+read off the figure against 72.0 mg from the table), which is within the
+precision of reading a value off a log-scaled panel. That correspondence is what
+identifies both the figure and the table as reporting *population means
+including residual error* rather than typical values.
 
 ```{r fig2-check}
 ae360 <- cohort |>
@@ -469,8 +472,9 @@ nca_sum |>
 
 The paper reports no Cmax / Tmax / half-life table, so the AUC column of Table II
 is the only published NCA quantity available for a side-by-side comparison. It
-was itself computed by linear-trapezoidal NCA in WinNonLin 5.2, so `auclast` over
-0-360 min is the matching parameter.
+was itself computed by NCA in WinNonLin 5.2 (source paper Methods, "Statistical
+and Non-Compartmental Analyses"; the paper does not state which trapezoidal rule
+was used), so `auclast` over 0-360 min is the matching parameter.
 
 ```{r nca-comparison}
 ref_nca <- data.frame(
@@ -541,17 +545,72 @@ context but is not part of the packaged model.
 **GFR units are misprinted in Table I.** Table I gives GFR as `10` with the unit
 `mg/min/kg`. That is dimensionally impossible in Eqs. 5-6, where GFR multiplies
 a concentration to produce a mass rate, so it must be a volumetric flow;
-`mg` is a typo for `mL`. Two readings remained. Simulating both against the
-paper's own Table II "GHB alone" column decides it unambiguously:
+`mg` is a typo for `mL`. Two readings remained, and simulating both against the
+paper's own Table II "GHB alone" column decides between them. The comparison is
+computed here rather than asserted, so the numbers and the conclusion cannot
+drift apart:
 
-* `GFR = 10 mL/min/kg` (3.0 mL/min at 0.3 kg) gives 31.2 / 87.5 / 135.2 / 208.9
-  against the published 29.3 / 83.0 / 133.3 / 208.2.
-* `GFR = 10 mL/min` absolute gives 17.9 / 33.3 / 46.5 / 70.9, low by a factor of
-  two or more at every dose.
+```{r gfr-reading}
+# The packaged model computes gfr <- exp(lgfr) * WT, so the per-kg reading is
+# lgfr = log(10) (giving 3.0 mL/min at 0.3 kg) and the absolute reading is
+# lgfr = log(10 / WT) (giving 10 mL/min regardless of weight).
+gfr_auc <- function(lgfr_val) {
+  vapply(DOSES, function(d) {
+    s <- rxode2::rxSolve(
+      mod, build_events(d, tgrid = seq(0, 360, by = 0.5)),
+      omega = NA, sigma = NA, addDosing = FALSE,
+      params = c(lgfr = lgfr_val), returnType = "data.frame"
+    )
+    s <- s[!is.na(s$Cc), ]
+    trap_auc(s$time, s$Cc)
+  }, numeric(1))
+}
 
-The per-kilogram reading is therefore correct, and it makes body weight the only
-covariate in the model (`gfr <- exp(lgfr) * WT`). Every other Table I flow and
-volume is an absolute per-rat value.
+gfr_cmp <- data.frame(
+  dose      = DOSES,
+  published = c(29.3, 83.0, 133.3, 208.2),
+  per_kg    = gfr_auc(log(10)),
+  absolute  = gfr_auc(log(10 / WT_KG))
+) |>
+  dplyr::mutate(
+    per_kg_pct   = 100 * (per_kg - published) / published,
+    absolute_pct = 100 * (absolute - published) / published
+  )
+```
+
+```{r gfr-reading-table, echo = FALSE}
+gfr_cmp |>
+  dplyr::transmute(
+    `GHB dose (mg/kg)`        = dose,
+    `Published AUC`           = published,
+    `GFR 10 mL/min/kg`        = round(per_kg, 1),
+    `% diff`                  = round(per_kg_pct, 1),
+    `GFR 10 mL/min absolute`  = round(absolute, 1),
+    `% diff `                 = round(absolute_pct, 1)
+  ) |>
+  knitr::kable(
+    caption = "Which GFR unit reading reproduces Table II. Deterministic typical-value solves."
+  )
+```
+
+```{r gfr-reading-assert}
+# Both sides are typical-value solves with no random draws, so exact bounds are
+# reproducible across rxode2 builds. The per-kg reading tracks the published
+# column; the absolute reading is low by a wide margin at every dose.
+stopifnot(
+  max(abs(gfr_cmp$per_kg_pct)) < 10,
+  all(gfr_cmp$absolute_pct < -30),
+  # And it is decisively the better reading dose by dose, not just on average.
+  all(abs(gfr_cmp$per_kg_pct) < abs(gfr_cmp$absolute_pct))
+)
+```
+
+The per-kilogram reading is therefore correct: it lands within 10% of the
+published AUC at every dose, whereas the absolute reading is more than 30% low
+at every dose (worst at the highest doses, where it misses by roughly a factor
+of three). That makes body weight the only covariate in the model
+(`gfr <- exp(lgfr) * WT`). Every other Table I flow and volume is an absolute
+per-rat value.
 
 **GFR is encoded as `fixed()` although Table I does not mark it.** Table I's
 footnote a ("Parameter was fixed to physiological value") appears on Vplasma,
