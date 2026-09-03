@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ravva 2015 varenicline cigarette-craving PK-PD ([doi:10.1093/ntr/ntu154](https://doi.org/10.1093/ntr/ntu154)) -- adult smokers not intending to quit.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
