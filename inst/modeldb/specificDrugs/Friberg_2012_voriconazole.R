@@ -146,9 +146,12 @@ Friberg_2012_voriconazole <- function() {
     # eta used by Vmax,1 in children. The block carries the 81% Km / Vmax,1 children correlation
     # reported in Results 'Voriconazole parameter estimates' (covariance = 0.81 * 1.36 * 0.239).
     etalkm_vmax1 + etalvmax1_ped ~ c(
-      1.36 * 1.36,                # var(etalkm_vmax1)         # Table 3: omega_Km-Vmax,1 = 1.36
-      0.81 * 1.36 * 0.239,        # cov(etalkm_vmax1, etalvmax1_ped) (81% Km / Vmax,1 children correlation)  # Results: Km and Vmax,1 in children 81% correlation
-      0.239 * 0.239               # var(etalvmax1_ped)         # Table 3: omega_Vmax1,ped = 0.239
+      # var(etalkm_vmax1)         # Table 3: omega_Km-Vmax,1 = 1.36
+      1.36 * 1.36,
+      # cov(etalkm_vmax1, etalvmax1_ped) (81% Km / Vmax,1 children correlation)  # Results: Km and Vmax,1 in children 81% correlation
+      0.81 * 1.36 * 0.239,
+      # var(etalvmax1_ped)         # Table 3: omega_Vmax1,ped = 0.239
+      0.239 * 0.239
     )
 
     # (2) CL log-normal IIV; the realised eta is scaled by (1 + 1.70 * notSTDY5) in non-adult studies.

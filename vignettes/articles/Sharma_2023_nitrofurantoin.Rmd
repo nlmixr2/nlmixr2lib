@@ -778,7 +778,7 @@ model's **female** physiology branch, dosing 50 mg every 6 h for five days.
 
 ```{r figure-7}
 gfr_levels <- c(70, 45, 20)
-n_gfr <- 50L   # deterministic quantile cohort; ratios are near-deterministic
+n_gfr <- 50L   # deterministic quantile cohort
 
 gfr_base <- make_human_cohort(
   n_gfr, dose_mg = 50, sexf = 1, tmax = 120, by = 0.25, ii = 6, until = 114
@@ -798,7 +798,15 @@ gfr_events <- bind_rows(
 )
 stopifnot(!anyDuplicated(unique(gfr_events[, c("id", "time", "evid")])))
 
-gfr_sim <- rxode2::rxSolve(
+# `solve_typical()`, not a bare rxSolve(): the covariate cohort above is
+# deterministic, but `human` carries 18 etas that rxode2 resamples on EVERY
+# solve, so a bare solve makes these arm contrasts Monte-Carlo estimates rather
+# than the typical-value contrasts the paper reports (~1.3-fold AUC). Measured
+# without IIV suppressed, the AUC fold-change wandered over 1.25-1.53 across
+# repeated renders -- enough to break both the lower and the upper bound of the
+# gate below, and enough to make the printed table irreproducible for a reader.
+# Suppressing IIV makes both the table and the assertions exact.
+gfr_sim <- solve_typical(
   human, gfr_events, keep = c("arm", "dose_mg"), returnType = "data.frame"
 )
 

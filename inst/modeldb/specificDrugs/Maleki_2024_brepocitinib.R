@@ -266,9 +266,12 @@ Maleki_2024_brepocitinib <- function() {
     # multiplicative uplift on the eta magnitude (see e_dis_healthy_eta*).
     # ==================================================================
     etalcl + etalvc ~ c(
-      0.42 * 0.42,                # var(etalcl)                              # Table 3 row 'omega2 CL/F (SD)' = 0.42
-      0.71 * 0.42 * 0.19,         # cov(etalcl, etalvc); rho = 0.71          # Table 3 row 'rho CL/F, Vc/F' = 0.71
-      0.19 * 0.19                 # var(etalvc)                              # Table 3 row 'omega2 Vc/F (SD)' = 0.19
+      # var(etalcl)                              # Table 3 row 'omega2 CL/F (SD)' = 0.42
+      0.42 * 0.42,
+      # cov(etalcl, etalvc); rho = 0.71          # Table 3 row 'rho CL/F, Vc/F' = 0.71
+      0.71 * 0.42 * 0.19,
+      # var(etalvc)                              # Table 3 row 'omega2 Vc/F (SD)' = 0.19
+      0.19 * 0.19
     )
 
     boxcox_cl             <- 0.26 ; label("Box-Cox shape parameter of the CL/F random effect (unitless)")   # Table 3 row 'Box-Cox transformation shape parameter on omega2 CL/F' = 0.26
