@@ -1248,6 +1248,14 @@ navbar:
         href: articles/Cirincione_2017_exenatide.html
       - text: "Exenatide er (Cirincione 2017)"
         href: articles/Cirincione_2017_exenatide_er.html
+      - text: "Exenatide glucose insulin rat (Gao 2012)"
+        href: articles/Gao_2012_exenatide.html
+      - text: "Exenatide human (Gao 2012)"
+        href: articles/Gao_2012_exenatide.html
+      - text: "Exenatide monkey (Gao 2012)"
+        href: articles/Gao_2012_exenatide.html
+      - text: "Exenatide rat (Gao 2012)"
+        href: articles/Gao_2012_exenatide.html
       - text: "Exendin939 (Ng 2018)"
         href: articles/Ng_2018_exendin939.html
       - text: "F53b human pbpk (Zhang 2024)"
@@ -4528,6 +4536,7 @@ articles:
   - articles/Galluppi_2021_ulotaront
   - articles/Gandhi_2021_abatacept
   - articles/Ganesan_2023_tebipenem
+  - articles/Gao_2012_exenatide
   - articles/Gao_2025_cefquinome
   - articles/Gaohua_2012_pregnancy_pbpk
   - articles/Gaohua_2023_permeabilityLimited_pbpk
