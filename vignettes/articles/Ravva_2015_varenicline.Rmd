@@ -277,7 +277,7 @@ round(summary_stats, 2)
 
 # This solve is deterministic (zeroRe, no random draws), so the only slack the
 # bounds need is figure-digitisation error. Observed on authoring:
-# median 1.25, q90 3.91, max 4.90 craving points. A mis-transcribed slope,
+# median 1.25, q90 3.87, max 4.90 craving points. A mis-transcribed slope,
 # rate constant or dose unit moves the whole set by tens of points and blows
 # all three instantly.
 stopifnot(
