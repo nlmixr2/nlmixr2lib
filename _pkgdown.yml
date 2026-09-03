@@ -4058,6 +4058,8 @@ navbar:
         href: articles/Tong_2026_vancomycin.html
       - text: "Varenicline (Ravva 2009)"
         href: articles/Ravva_2009_varenicline.html
+      - text: "Varenicline (Ravva 2015)"
+        href: articles/Ravva_2015_varenicline.html
       - text: "Varenicline car w4 7 study1 (Ravva 2010)"
         href: articles/Ravva_2010_varenicline_exposure_response.html
       - text: "Varenicline car w4 7 study2 (Ravva 2010)"
@@ -5504,6 +5506,7 @@ articles:
   - articles/Rao_2023_covid19_qsp
   - articles/Ravva_2009_varenicline
   - articles/Ravva_2010_varenicline_exposure_response
+  - articles/Ravva_2015_varenicline
   - articles/Rayner_2013_oseltamivir_exposure_response
   - articles/Rees_2018_meropenem_ciprofloxacin
   - articles/Reif_2013_ethinylestradiol_drospirenone

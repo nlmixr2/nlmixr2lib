@@ -18,6 +18,12 @@ Ravva_2015_varenicline <- function() {
     sep = " "
   )
   vignette <- "Ravva_2015_varenicline"
+  # Stated explicitly because the automatic detector only finds depot and
+  # central. Every dosing time carries TWO records: the varenicline dose into
+  # depot, and the dimensionless dummy dose of 1 into depot_placebo that drives
+  # the hypothetical placebo kinetic system (Ravva 2015 Methods). A simulation
+  # that omits the depot_placebo record silently drops the entire placebo term.
+  dosing <- c("depot", "depot_placebo")
   units <- list(
     time          = "h",
     dosing        = paste(
