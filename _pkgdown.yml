@@ -1790,6 +1790,8 @@ navbar:
         href: articles/Horita_2018_isoniazid.html
       - text: "Isoniazid (Seng 2015)"
         href: articles/Seng_2015_isoniazid.html
+      - text: "Isoniazid (Vinnard 2017)"
+        href: articles/Vinnard_2017_isoniazid.html
       - text: "Isoniazid (Wilkins 2011)"
         href: articles/Wilkins_2011_isoniazid.html
       - text: "Isoniazid pbpk (Ramachandran 2023)"
@@ -5499,6 +5501,7 @@ articles:
   - articles/Vezina_2014_valganciclovir
   - articles/Viberg_2006_cefuroxime
   - articles/Viberg_2012_AZD6088_rat
+  - articles/Vinnard_2017_isoniazid
   - articles/Vinnard_2017_rifampicin
   - articles/Visscher_2025_parathyroidHormone
   - articles/Voller_2017_phenobarbital
