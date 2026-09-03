@@ -37,7 +37,7 @@ A single token can appear under both Types (e.g., `lzd` is both a bare drug-stat
 
 The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2libConventionsStatic` because they are structural regular expressions rather than name lists:
 
-- `compartmentRegex = "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum)[0-9]+$"` -- numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...), erythrocyte age-transit chains (`erythrocytes1`, ..., `erythrocytes4`), the reticulocyte age-transit chain that feeds them (`reticulocytes1`, `reticulocytes2`, ...), the paired corpuscular-hemoglobin chain (`mch1`, ..., `mch4`), Gabrielsson-Hjorth moderator / tolerance chains (`moderator1`, `moderator2`, ...), and the concentric caseum rings of a tuberculosis granuloma (`caseum1`, ..., `caseum6`). Numeric suffix is required (a model that lumps the structure into one state uses the bare canonical `effect` / `depot` / `erythrocytes` / `reticulocytes` / `mch` / `moderator` / `caseum`).
+- `compartmentRegex = "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum)(_slow|_fast)?[0-9]+$"` -- numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...), erythrocyte age-transit chains (`erythrocytes1`, ..., `erythrocytes4`), the reticulocyte age-transit chain that feeds them (`reticulocytes1`, `reticulocytes2`, ...), the paired corpuscular-hemoglobin chain (`mch1`, ..., `mch4`), Gabrielsson-Hjorth moderator / tolerance chains (`moderator1`, `moderator2`, ...), and the concentric caseum rings of a tuberculosis granuloma (`caseum1`, ..., `caseum6`). Numeric suffix is required (a model that lumps the structure into one state uses the bare canonical `effect` / `depot` / `erythrocytes` / `reticulocytes` / `mch` / `moderator` / `caseum`). An optional `_slow` / `_fast` qualifier may sit between the prefix and the number, registering the dual-rate effect-delay cascade families (`effect_slow1`, `effect_fast1`, ...); see the `effect_slow<n>` / `effect_fast<n>` entry below.
 - `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
 - `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
@@ -94,7 +94,16 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Role:** Generic effect compartment (Sheiner 1979) used to introduce a hysteresis between plasma concentration and PD response.
 - **Source aliases:** none.
 - **Example models:** PK-PD models with effect-compartment hysteresis.
-- **Notes:** Numbered variants `effect1`, `effect2`, ... are accepted via `compartmentRegex` for multi-effect chains.
+- **Notes:** Numbered variants `effect1`, `effect2`, ... are accepted via `compartmentRegex` for multi-effect chains. When a model carries **two co-existing** effect-delay chains of different speed, use the `effect_slow<n>` / `effect_fast<n>` families below instead of trying to partition a single `effect<n>` numbering between them.
+
+### effect_slow1, effect_slow2, effect_slow3, effect_fast1, effect_fast2, effect_fast3, effect_fast4 (**canonical dual-rate effect-delay cascade families**)
+- **Type:** compartment
+- **Role:** Two parallel first-order lag cascades that smooth the same kinetic driver on two different time scales, whose terminal members are summed to form a single PD driver. `effect_slow<n>` is the slower chain (long transit time, carrying the persistence of the response) and `effect_fast<n>` is the faster chain (short transit time, carrying the onset). Each chain is a plain first-order cascade `d/dt(effect_slow1) = ktr_slow * (driver - effect_slow1)`, `d/dt(effect_slow2) = ktr_slow * (effect_slow1 - effect_slow2)`, and so on; every stage of a chain shares one rate constant. Because each stage is driven by a *concentration* rather than receiving a mass transfer, the states carry the driver's concentration units, not an amount.
+- **Source aliases:**
+  - `A2`, `A3`, `A4` -- Dings 2026 Eqs A2-A4 (slow chain, `ktr1`).
+  - `A5`, `A6`, `A7`, `A8` -- Dings 2026 Eqs A5-A8 (fast chain, `ktr2`).
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (three slow stages at `ktr_slow` = 0.107/min, mean transit time 28.0 min; four fast stages at `ktr_fast` = 1.76/min, mean transit time 2.27 min; `conc = effect_slow3 + effect_fast4` drives three parallel Emax haemodynamic endpoints).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine K/PD extraction (task `oare_PMC13029352`, sidecar request-001 q1=A). Arbitrary chain lengths are accepted via `compartmentRegex`, which allows an optional `_slow` / `_fast` qualifier on the numbered-chain prefixes; the headings above enumerate only the stage counts the founding model uses. Mean transit time for a chain of `n` stages is `n / ktr` (**not** `(n + 1) / ktr` -- that form belongs to rxode2's `transit()` closed form, where the dosing depot counts as a stage). Prefer these over `transit<n>` when the cascade smooths a PD signal rather than transporting a dose through an absorption path; `transit<n>` remains correct for absorption. The paired rate-constant parameters are `lktr_slow` / `lktr_fast` in `parameter-names.md`.
 
 ### target (**canonical target compartment**)
 - **Type:** compartment
@@ -1785,7 +1794,23 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Role:** Systolic blood pressure (mmHg) indirect-response turnover state and PD output; the systolic sibling of `dbp`. In Ibrahim 2023 ibrutinib, `sbp` turns over via a zero-order production `kin` and first-order loss `kout` fed by a single upstream `transit1` compartment, with the daily ibrutinib AUC(0-24) stimulating `kin` through an Emax function; the state both carries the ODE and is the single observation variable.
 - **Source aliases:** none.
 - **Example models:** `Ibrahim_2023_ibrutinib_sbp.R`.
-- **Notes:** Registered 2026-07-30 alongside the Ibrahim 2023 ibrutinib extraction, completing the blood-pressure pair with the previously registered `dbp` (Hansson 2013 sunitinib). Holds a blood-pressure value (mmHg), not a drug concentration. Systolic and diastolic pressure are fitted as separate models in both founding papers, so keep them as two states in two files rather than collapsing them into one multi-output model; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`.
+- **Notes:** Registered 2026-07-30 alongside the Ibrahim 2023 ibrutinib extraction, completing the blood-pressure pair with the previously registered `dbp` (Hansson 2013 sunitinib). Holds a blood-pressure value (mmHg), not a drug concentration. Systolic and diastolic pressure are fitted as separate models in both founding papers, so keep them as two states in two files rather than collapsing them into one multi-output model; the related drug-induced *relative* change covariate used downstream is `DBP_REL` in `covariate-columns.md`. A paper that fits systolic pressure *jointly* with mean arterial pressure and heart rate uses `sbp` alongside `map` / `hr` as parallel outputs of one multi-output model -- see `Dings_2026_cafedrine_theodrenaline_ephedrine.R`.
+
+### map (**canonical mean arterial pressure PD state**)
+- **Type:** compartment
+- **Role:** Mean arterial pressure (mmHg) PD output; the mean-pressure sibling of `sbp` and `dbp`. May be an indirect-response turnover state, or -- as in Dings 2026 -- an algebraic Emax output computed from an upstream effect-delay cascade and an at-diagnosis baseline anchor.
+- **Source aliases:**
+  - `MAP` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A13.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `map = MAP_BL + (rmax_map - MAP_BL) * conc/(conc + ec50_map) + ...`, fitted jointly with `sbp` and `hr` as one three-output model).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine K/PD extraction (task `oare_PMC13029352`, sidecar request-001 q2=A), completing the haemodynamic output family with the previously registered `sbp` (Ibrahim 2023) and `dbp` (Hansson 2013). Holds a blood-pressure value (mmHg), not a drug concentration. Distinct from the raw absolute-value *covariate* anchors `MAP_PRESURG` / `MAP_BL` in `covariate-columns.md`: those are pre-treatment data values used to centre and anchor the model, whereas `map` is the model's predicted output at any time.
+
+### hr (**canonical heart-rate PD state**)
+- **Type:** compartment
+- **Role:** Heart rate (beats/min) PD output. May be an indirect-response turnover state, or -- as in Dings 2026 -- an algebraic Emax output computed from an upstream effect-delay cascade and an at-diagnosis baseline anchor.
+- **Source aliases:**
+  - `HR` -- the near-universal clinical abbreviation; used directly in Dings 2026 Eq. A12.
+- **Example models:** `Dings_2026_cafedrine_theodrenaline_ephedrine.R` (algebraic Emax output `hr = HR_BL + (rmax_hr - HR_BL) * conc/(conc + ec50_hr) + e_event_hr * iu`, fitted jointly with `map` and `sbp`).
+- **Notes:** Registered 2026-09-01 alongside the Dings 2026 cafedrine/theodrenaline vs ephedrine K/PD extraction (task `oare_PMC13029352`, sidecar request-001 q2=A). Holds a rate in beats/min, not a drug concentration. Distinct from the `HR` *covariate* (an observed heart-rate data value used as a covariate on clearance, e.g. `Ngamprasertwong_2016_propofol_sheep.R`) and from its anchor siblings `HR_PRESURG` / `HR_BL`: those are inputs, `hr` is the predicted output.
 
 ### bm (**canonical delayed biomarker-signal effect state**)
 - **Type:** compartment
@@ -1837,6 +1862,20 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Role:** Viral load PD output (virology).
 - **Source aliases:** none.
 - **Example models:** `Koloskoff_2025_ganciclovir.R`.
+
+### dviralLoad (**canonical change-from-baseline log viral-load PD output**)
+- **Type:** compartment
+- **Role:** Change from baseline in log-transformed plasma viral load, used as the observation variable of a direct (algebraic, non-ODE) exposure-response model. Negative values are antiviral suppression; add the subject's baseline log viral load to recover an absolute level. This is the change-from-baseline sibling of the absolute PD state `viralLoad`, on the same pattern as `ddbp` / `dbp`: use `viralLoad` when the model integrates a viral-dynamics ODE and observes the load itself, and `dviralLoad` when the model predicts the treatment-induced delta directly, which is what a short-course antiviral monotherapy exposure-response analysis reports.
+- **Source aliases:** `delta log HIV-1 RNA`, `dlog HIV-1 RNA`, `change from baseline in HIV-1 RNA`, `dlog VL`.
+- **Example models:** `Marier_2011_cenicriviroc_hiv1rna.R` (founding example; simple intercept-free Emax model in the NCA-derived average steady-state cenicriviroc concentration `CSS_CVC`, observing the day-11 change from baseline in plasma HIV-1 RNA in log10 copies/mL).
+- **Notes:** Registered alongside the Marier 2011 cenicriviroc extraction. Not an ODE state -- the model that founded it has no `d/dt()` at all -- so a model using `dviralLoad` needs no `compartmentData` entry for it. Registered here rather than left unregistered because `checkModelConventions()` resolves single-output observation variables against this register (same rationale as `ddbp` / `dsbp`). **The logarithm base and the viral-load unit are per-model and must be documented in `units$concentration`**, because virology reporting conventions differ: HIV-1 RNA is conventionally log10 copies/mL, HCV RNA log10 IU/mL. The name is deliberately virus-agnostic; if a future paper models two viruses jointly, register virus-suffixed siblings rather than overloading this name. Distinct from the covariate `HCV_VLOAD`, which carries an observed *baseline* viral load on the linear scale as a model input rather than a predicted delta.
+
+### dmcp1 (**canonical change-from-baseline log MCP-1 PD output**)
+- **Type:** compartment
+- **Role:** Change from baseline in log-transformed plasma monocyte chemotactic protein 1 (MCP-1, also CCL2), used as the observation variable of a direct (algebraic, non-ODE) exposure-response model. MCP-1 is the endogenous ligand of the chemokine receptor CCR2, so this is a **target-engagement biomarker for CCR2 antagonism**, not an efficacy endpoint: blocking CCR2 blocks the receptor-mediated clearance route of its own ligand, and circulating MCP-1 rises. Positive values therefore indicate CCR2 blockade. Because the quantity is a change on the log scale it is a log fold-change; multiply a baseline concentration by `10^dmcp1` (base-10 models) to recover an absolute level.
+- **Source aliases:** `delta log MCP-1`, `dlog MCP-1`, `change from baseline in MCP-1`, `change from baseline in CCL2`.
+- **Example models:** `Marier_2011_cenicriviroc_mcp1.R` (founding example; simple intercept-free Emax model in the NCA-derived average steady-state cenicriviroc concentration `CSS_CVC`, observing the day-10 change from baseline in plasma MCP-1 in log10 pg/mL).
+- **Notes:** Registered alongside the Marier 2011 cenicriviroc extraction, as a member of the change-from-baseline PD-output family documented at `ddbp` / `dsbp` / `tmccfb`. Not an ODE state, so no `compartmentData` entry is required. The `d` prefix marks the change-from-baseline parameterisation; a future model of the ABSOLUTE MCP-1 concentration, or of an MCP-1 turnover ODE, should register a sibling `mcp1` rather than overload this name (same rule as `tmccfb` / `tmc` and `ddbp` / `dbp`). The logarithm base and the concentration unit are per-model and belong in `units$concentration`. Note that a source reporting MCP-1 on the linear rather than log scale needs the `mcp1` sibling, not a re-interpretation of this one.
 
 ### prob_roc (**canonical ROC-style logistic PD probability output**)
 - **Type:** compartment
@@ -2143,6 +2182,14 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
 - **Source aliases:**
   - `PAN` -- NONMEM `$MODEL` compartment label in Yau 2023 Appendix S1.
 - **Example models:** `Yau_2023_diazepam_pbpk_kpu_human.R`, `Yau_2023_diazepam_pbpk_scalar_human.R`, `Yau_2023_diazepam_pbpk_kpu_rat.R`, `Yau_2023_diazepam_pbpk_scalar_rat.R`.
+
+### testes (**canonical bare testes compartment**)
+- **Type:** compartment
+- **Role:** Bare testes organ compartment in full-body PBPK extractions. Total tissue (well-stirred) drug concentration in the gonads; paired with `lung`, `liver`, `kidney`, `spleen`, `brain`, `heart`, `muscle`, `skin`, `adipose`, `bone`, `other` etc. in whole-body PBPK extractions that resolve testes as a distinct organ. Perfusion-rate-limited whole-body templates written for a male reference adult routinely carry testes as its own organ (1% of body weight, 1.076% of cardiac output at the 70 kg reference), because it is a recognised site of drug exposure with its own blood-tissue barrier. Registered as the bare-organ form for parity with the surrounding canonicals -- exactly as `heart`, `skin` and `pancreas` above.
+- **Source aliases:**
+  - `Ate` / `Ctestes` -- amount and concentration state labels in the Berkeley Madonna code deposited as the Supplementary Data of Jones and Rowland-Yeo 2013.
+- **Example models:** `Jones_2013_perfusionLimited_pbpk.R`.
+- **Notes:** Unlike `gut`, `spleen`, `stomach` and `pancreas`, testes is NOT a splanchnic organ: its venous outflow returns directly to `venous` blood rather than draining to `liver` through the portal vein. Models that resolve testes therefore include it in the venous-return sum, not in the portal tributary sum.
 
 ### tendon (**canonical bare tendon / connective-tissue compartment**)
 - **Type:** compartment
@@ -2526,6 +2573,20 @@ Population body-composition / disease-risk PD output states from the Oniki 2018 
 - **Source aliases:** none.
 - **Example models:** `Oniki_2018_nafld_risk.R`.
 
+### p_car (**canonical continuous-abstinence-rate-probability PD output**)
+- **Type:** compartment
+- **Role:** Probability of continuous smoking abstinence (continuous abstinence rate, CAR) PD output (0..1); the expit of a baseline logit that demographic and nicotine-dependence covariates multiply, plus an additive linear drug-exposure term. Sibling of `p_nafld` and `prob_roc`.
+- **Source aliases:** `CAR` -- the printed endpoint abbreviation in the smoking-cessation literature.
+- **Example models:** `Ravva_2010_varenicline_car_w9_12.R` (weeks 9-12 endpoint, full covariate model), `Ravva_2010_varenicline_car_w4_7_study1.R` and `Ravva_2010_varenicline_car_w4_7_study2.R` (weeks 4-7 endpoint, preliminary exposure-only fits).
+- **Notes:** The endpoint is defined over a stated multi-week abstinence window (Ravva 2010 uses both a weeks 4-7 and a weeks 9-12 window), and the window is a property of the model rather than of the output name -- record it in the model `description` and `units$concentration` rather than encoding it into the state name, so that models of different windows share one canonical.
+
+### p_nausea (**canonical nausea-probability PD output**)
+- **Type:** compartment
+- **Role:** Probability of a nausea adverse event PD output (0..1); the expit of a baseline logit that demographic and nicotine-dependence covariates multiply, plus an additive linear drug-exposure term and an optional exponentially decaying week-of-treatment term. Sibling of `p_nafld`, `p_car` and `prob_roc`.
+- **Source aliases:** none.
+- **Example models:** `Ravva_2010_varenicline_nausea.R`.
+- **Notes:** Nausea is one of the most commonly modelled dose-limiting tolerability endpoints, so this canonical is expected to be reused across drug classes; it names the adverse event, not the drug. A model of a different adverse event should register its own `p_<event>` sibling rather than overload this name.
+
 ---
 
 ## Bare drug-effect mechanistic states
@@ -2828,6 +2889,13 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
   - `XE6MP` -- used in `Gebhard_2023_mercaptopurine.R` (paper symbol `X_E^6MP`; the observation is reported as "E-TGN").
 - **Example models:** `Gebhard_2023_mercaptopurine.R`, `Gebhard_2023_mercaptopurine_anc.R`.
 - **Notes:** Registered 2026-07-30 alongside `rbc_mtx`. In the Gebhard 2023 PKPD model this state is the driver of the Friberg myelosuppression effect function (`Edrug = slope * rbc_tgn`).
+
+### rbc_ghb (**canonical intracellular red-cell gamma-hydroxybutyrate pool**)
+- **Type:** compartment
+- **Role:** gamma-Hydroxybutyrate (GHB) accumulated inside red blood cells. Fed by two parallel influx arms -- a saturable MCT1-mediated arm (`vmax_rbc`, `km_rbc`) and a linear band 3 / passive arm (`kinf_rbc`) -- driven by the extracellular GHB concentration.
+- **Source aliases:** none.
+- **Example models:** `Morse_2012_ghb_rbc_invitro.R`.
+- **Notes:** Registered 2026-09-02 alongside the Morse 2012 extraction. Two scope points distinguish it from `rbc_mtx` / `rbc_tgn`, which are in vivo clinical-PK states. First, **units**: this state holds an amount normalised per mg of red-cell protein (nmol/mg protein), not a concentration, because that is the normalisation an erythrocyte uptake assay reports and the source supplies no protein-per-cell-volume factor with which to convert. A per-mg-protein `rbc_<analyte>` state is a legitimate member of the family; record the units explicitly in `compartmentData` so the deviation from the family's usual concentration units is machine-readable. Second, **direction**: an in vitro initial-rate uptake experiment measures unidirectional influx over a window short enough to stay linear, so the state has influx only and carries no `keff_rbc` efflux term. Do not read the absence of efflux as a claim that none exists -- Morse 2012 states explicitly that bidirectional transport and trans-stimulation are expected in vivo and that equilibrium-exchange `km` and `vmax` would exceed the unidirectional values fitted here.
 
 ---
 
@@ -3205,6 +3273,22 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Wilson_2015_sunitinib_irinotecan_mouse.R`.
 - **Notes:** Full INN name (lowercase) for the same reason as `sunitinib`.
 
+### capecitabine (**canonical capecitabine K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Capecitabine drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_capecitabine`, `lkel_capecitabine`, `kel_capecitabine`) and for the paired drug-effect parameters (`lkkill_capecitabine`, `lres_capecitabine`).
+- **Source aliases:**
+  - `CAPE` / `KD2` / `DM2` / `KP2` -- Bruno 2012 NONMEM `$MODEL` compartment label and `$PK` parameter names.
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (capecitabine as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol` for whole co-administered agents. Distinct from the capecitabine METABOLITE suffixes `dfcr`, `dfur`, `5fu` and `fbal`, which name the downstream chemical species in a capecitabine cascade PK model (`Urien_2005_capecitabine.R`, `Blesch_2003_capecitabine.R`); this suffix names capecitabine itself as the co-administered parent agent in a combination model, where the bare canonical names belong to neither drug.
+
+### docetaxel (**canonical docetaxel K-PD drug-name suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Docetaxel drug-name suffix for combination K-PD compartments and rate constants (`depot_kpd_docetaxel`, `lkel_docetaxel`, `kel_docetaxel`) and for the paired drug-effect parameters (`lkkill_docetaxel`, `lres_docetaxel`).
+- **Source aliases:**
+  - `DOCE` / `KD1` / `DM1` / `KP1` -- Bruno 2012 NONMEM `$MODEL` compartment label and `$PK` parameter names.
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (docetaxel as one of two additive K-PD drug-effect arms of a tumor-growth-inhibition model).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol`. Docetaxel already appears in the library as a parent analyte with bare canonical names (`Koolen_2010_docetaxel.R`, `Ozawa_2007_docetaxel.R`, `Puisset_2007_docetaxel.R`, `Janssen_2023_docetaxel.R`, `Rietveld_2025_docetaxel.R`, `Netterberg_2017_docetaxel.R`); this suffix is for combination models in which neither drug can claim the bare names.
+
 ### olaparib (**canonical olaparib sibling-drug suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Olaparib drug-name suffix for the non-parent arm of AZD7648 + olaparib combination models, covering its full PK cascade (`depot_olaparib`, `central_olaparib`, `peripheral1_olaparib`, `effect_olaparib`) and the associated parameters (`lcl_olaparib`, `lvc_olaparib`, `lslope_olaparib`, `lfdepot_olaparib`).
@@ -3218,6 +3302,13 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Source aliases:** `EE`, `ethinyl estradiol`, `ethinylestradiol`, `ethinyloestradiol`.
 - **Example models:** `Reinecke_2018_levonorgestrel_coc.R` (ethinylestradiol co-formulated with levonorgestrel in the combined oral contraceptive Miranova; its own three-compartment PK plus a delay compartment driving stimulation of SHBG synthesis, all parameters fixed from a prior ethinylestradiol popPK analysis).
 - **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` for whole co-administered agents: semantic clarity wins over abbreviation when the suffix names an entire sibling drug rather than a metabolite. Ethinylestradiol is a sibling drug, not a metabolite -- it is co-formulated in a fixed-dose combination and neither interconverts with nor derives from the progestin it accompanies. The progestin (levonorgestrel) keeps the bare canonical names because it is the parent analyte of the model.
+
+### osimertinib (**canonical osimertinib sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Osimertinib drug-name suffix for the non-parent arm of chemotherapy + osimertinib combination models, covering its full PK cascade (`depot_osimertinib`, `central_osimertinib`, `peripheral1_osimertinib`), the associated PK parameters (`lka_osimertinib`, `lkel_osimertinib`, `lk12_osimertinib`, `lk21_osimertinib`, `lvc_osimertinib`, `lvp_osimertinib`) and the PD parameters of the osimertinib-driven effect (`limax_osimertinib`, `lec50_osimertinib`, `lgamma_osimertinib`), plus the multi-output observation `Cc_osimertinib`.
+- **Source aliases:** `OSI`, `AZD9291` (development code).
+- **Example models:** `Hu_2026_pemetrexed_osimertinib_mouse_qsp.R` (osimertinib as the co-administered third-generation EGFR-TKI alongside the parent cytotoxic pemetrexed, with its own two-compartment oral PK driving EGFR-signal depletion in a QSP tumour-growth-inhibition model).
+- **Notes:** Full INN name (lowercase), matching the precedent set by `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol` for whole co-administered agents: semantic clarity wins over abbreviation when the suffix names an entire sibling drug rather than a metabolite. Distinct from `az5104`, the registered suffix for osimertinib's active N-desmethyl metabolite; a joint osimertinib-plus-AZ5104 popPK model (`Brown_2017_osimertinib.R`) keeps bare canonical names for osimertinib because osimertinib is the parent there and uses `az5104` for the metabolite arm.
 
 ### dox (**canonical doxorubicin drug-name suffix**)
 - **Type:** metabolite-suffix
@@ -3667,11 +3758,19 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Lehr_2010_tesofensine.R` (tesofensine M1, CYP3A4-formed, in vivo five-fold lower dopamine-reuptake potency than parent per Lehr 2010 Methods reference 17).
 
-### m2 (**canonical N-desmethyl-bedaquiline (M2) suffix**)
+### m2 (**canonical paper-named M2 metabolite suffix**)
 - **Type:** metabolite-suffix
-- **Role:** N-desmethyl-bedaquiline (M2) metabolite of bedaquiline.
-- **Source aliases:** none.
-- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219).
+- **Role:** A source paper's "M2" metabolite, whatever chemical entity that designation names in the paper at hand, following the same generic convention as `m1`, `m3`, `m4` and `m8`. Used as the metabolite suffix on the `central_m2` compartment, the `lcl_m2` / `lvc_m2` parameters, the `Cc_m2` observation and the `propSd_m2` / `addSd_m2` residuals. Drug contexts registered so far: in `Svensson_2013_bedaquiline.R` and `Svensson_2016_bedaquiline.R`, M2 is N-desmethyl-bedaquiline, the CYP3A4-mediated demethylation product of bedaquiline; in `Keunecke_2020_regorafenib_phase1.R` and `Keunecke_2020_regorafenib_phase3.R`, M-2 is regorafenib N-oxide (BAY 75-7495), a pharmacologically active metabolite formed pre-systemically that reaches concentrations close to the parent at steady state.
+- **Source aliases:** `M-2` -- the hyphenated form used throughout the regorafenib literature and in Keunecke 2020.
+- **Example models:** `Svensson_2013_bedaquiline.R`, `Svensson_2016_bedaquiline.R` (DDMODEL00000219), `Keunecke_2020_regorafenib_phase1.R`, `Keunecke_2020_regorafenib_phase3.R` (doi:10.1111/bcp.14334).
+- **Notes:** Because `M<n>` designations are per-programme and carry no cross-paper chemical meaning, this token is shared by unrelated metabolites of unrelated drugs; the specific entity is recorded per model in the model file's `description` and `compartmentData`, not in the suffix. Generalised from the bedaquiline-only entry on 2026-09-02 alongside the Keunecke 2020 regorafenib extraction, matching the wording already used for `m1`, `m3`, `m4` and `m8`.
+
+### m5 (**canonical paper-named M5 metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** A source paper's "M5" metabolite, whatever chemical entity that designation names in the paper at hand. Used as the metabolite suffix on the `central_m5` compartment, the `lcl_m5` / `lvc_m5` parameters, the `Cc_m5` observation and the `propSd_m5` / `addSd_m5` residuals in joint parent + metabolite popPK models. Drug contexts registered so far: in `Keunecke_2020_regorafenib_phase1.R` and `Keunecke_2020_regorafenib_phase3.R`, M-5 is regorafenib N-oxide N-desmethyl (BAY 81-8752), a pharmacologically active metabolite formed systemically from parent regorafenib that reaches concentrations close to the parent at steady state, although its free plasma concentration does not exceed the VEGFR-2 IC50.
+- **Source aliases:** `M-5` -- the hyphenated form used throughout the regorafenib literature and in Keunecke 2020.
+- **Example models:** `Keunecke_2020_regorafenib_phase1.R`, `Keunecke_2020_regorafenib_phase3.R` (doi:10.1111/bcp.14334; founding example).
+- **Notes:** Fifth member of the generic numbered-metabolite suffix family alongside `m1`, `m2`, `m3`, `m4` and `m8`, following the same convention of lowercasing a source paper's `M<n>` designation. As with the other members, the token carries no cross-paper chemical meaning and the specific entity is recorded per model. Registered 2026-09-02 as a routine extension of an existing family, alongside the Keunecke 2020 regorafenib extraction.
 
 ### m3 (**canonical paper-named M3 metabolite suffix**)
 - **Type:** metabolite-suffix
@@ -4253,6 +4352,17 @@ canonical names; the co-analyte carries the suffix throughout.
   - `Cammarata_2024_sulbactam_durlobactam.R` (doi:10.1128/aac.00485-24) where durlobactam is the unsuffixed parent (NONMEM compartments 1-2) and sulbactam carries the suffix (NONMEM compartments 3-4).
   - `Soto_2014_ampicillin_sulbactam.R` (doi:10.1111/bcp.12232), where ampicillin is the unsuffixed parent.
 - **Notes:** Registered 2026-07-28 alongside the Cammarata 2024 sulbactam-durlobactam extraction. `Soto_2014_ampicillin_sulbactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_sbt` / `peripheral1_sbt` / `propSd_sbt` convention warnings. Sulbactam is a sibling drug, not a metabolite: in both source papers the two analytes are dosed as a fixed-ratio combination and fitted simultaneously without interconversion.
+
+### taz (**canonical tazobactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Tazobactam (beta-lactamase-inhibitor penicillanic acid sulfone) sibling-drug suffix, used when tazobactam is co-modelled with its fixed-ratio partner piperacillin and piperacillin is the unsuffixed parent. Drives `central_taz` / `peripheral1_taz` compartments, `lcl_taz` / `lvc_taz` / `lq_taz` / `lvp_taz` PK parameters, the `e_<cov>_<param>_taz` covariate-effect forms (e.g. `e_crcl_cl_taz`), the per-occasion `etaiov_<param>_taz_<k>` slots, and the `propSd_taz` / `addSd_taz` residuals on the `Cc_taz` tazobactam plasma concentration.
+- **Source aliases:**
+  - `TAZ` -- abbreviation used throughout `Kong_2025_piperacillin_tazobactam.R` (ESM control stream `LGT_TAZ`, `kdia_TAZ`, `CPRE_TAZ`).
+  - `taz` -- subscript used in the Table 2 parameter names of `Sulaiman_2026_piperacillin_tazobactam.R` (`CLtaz`, `Vtaz`).
+- **Example models:**
+  - `Kong_2025_piperacillin_tazobactam.R` (doi:10.1007/s40262-025-01527-y), joint two-compartment ESKD/haemodialysis model.
+  - `Sulaiman_2026_piperacillin_tazobactam.R` (doi:10.1093/jac/dkag199), joint one-compartment model in critically ill adults with sepsis or septic shock.
+- **Notes:** Registered 2026-09-01 alongside the Sulaiman 2026 extraction. `Kong_2025_piperacillin_tazobactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_taz` / `peripheral1_taz` / `propSd_taz` / `addSd_taz` convention warnings -- the same situation `sbt` was in before the Cammarata 2024 extraction. Tazobactam is a sibling drug, not a metabolite: it is co-formulated with piperacillin in a fixed 8:1 ratio, dosed into its own central compartment, and fitted alongside piperacillin without interconversion.
 
 ### sdz (**canonical sulfadiazine sibling-drug suffix**)
 - **Type:** metabolite-suffix

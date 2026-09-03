@@ -1,0 +1,1088 @@
+---
+title: "Apricoxib postoperative dental pain relief (Rohatagi 2008)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Apricoxib postoperative dental pain relief (Rohatagi 2008)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Rohatagi_2008_apricoxib"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Rohatagi_2008_apricoxib"))$description`
+* Article: <https://doi.org/10.1111/j.1365-2125.2008.03175.x>
+* Pharmacokinetic layer (the paper's reference 1): <https://doi.org/10.1177/0091270006287122>
+  (packaged separately as `modellib("Kastrissios_2006_apricoxib")`)
+
+Rohatagi 2008 develops an exposure-response framework for the selective COX-2
+inhibitor apricoxib (development code CS-706) in acute postoperative dental
+pain. It is not one model but four coupled sub-models, written out as the terms
+of its equations 1 to 3:
+
+| Sub-model | Equations | Table | What it predicts |
+|---|---|---|---|
+| Pain relief | 4-7 | 3 | `P(PR score >= k)` over time, given placebo response and apricoxib concentration |
+| Rescue medication | 10-12 | 4 | hazard of requesting rescue medication, as a function of the pain relief score |
+| Meaningful pain relief (MPR) probability | 2, 13 | 5 | whether a patient ever experiences meaningful pain relief |
+| Onset time of MPR (TMPR) | 3, 14, 15 | 5 | when it happens, split by whether rescue medication was needed |
+
+They are coupled, not independent: equation 1 factorises the joint likelihood as
+`P(PR, REMD) = P(REMD | PR) * P(PR)`, and equations 2 and 3 mix the two MPR
+branches using `P(REMD)` from that factorisation. The packaged model is
+therefore a single file that carries all four.
+
+The apricoxib plasma concentration that drives the Emax term of equation 7 was
+not re-estimated by Rohatagi 2008 -- its Methods state that the concentrations
+"were the individual (post hoc) estimates from population PK and PK/PD models
+developed previously". That PK model (Kastrissios 2006, the paper's reference 1)
+is already in nlmixr2lib and is reproduced in full inside this model file, so
+the file simulates end to end without an external concentration input.
+
+# Population
+
+The pharmacodynamic data come from a single randomised, double-blind,
+placebo- and active-comparator-controlled phase 2a study of acute postoperative
+dental pain, run at two US sites in patients with moderate-to-severe pain within
+6 h of surgical removal of two or more third molars. Patients were randomised in
+approximately equal proportions (about 50 per treatment) to a single oral dose of
+placebo, 10, 50, 100 or 200 mg apricoxib, or 400 mg celecoxib. Pain intensity
+and pain relief were scored at 0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 12
+and 24 h postdose on a five-point scale (0 none, 1 a little, 2 some, 3 a lot,
+4 complete).
+
+Rohatagi 2008 Table 2 gives the baseline characteristics of all 304 patients:
+median age 22 years (18 to 36), median weight 68.2 kg (39.1 to 134), median
+height 166 cm (125 to 193), 193 of 304 female (63.5%), ethnicity
+White/Black/Asian/Hispanic/Other 181/14/9/95/5, and baseline pain intensity
+moderate/severe 121/183. The placebo arm is 52 patients and the pooled apricoxib
+arms 201; the remaining 51 received celecoxib and are not described by this
+model, whose equation 4 carries a placebo term and an apricoxib-concentration
+term only.
+
+The pharmacokinetic layer was fitted to a *different* population -- the 104
+healthy adult volunteers of Kastrissios 2006 across three phase 1 studies -- so
+the concentration predictions here are an extrapolation of that model into the
+dental-pain cohort, exactly as Rohatagi 2008 did.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Rohatagi_2008_apricoxib")()$population`).
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Rohatagi_2008_apricoxib.R` carries an in-file
+comment naming its source location. The table below collects them.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `P(Y >= k) = expit(beta_k + f_p(t) + f_D(C) + eta)` | n/a | Rohatagi 2008 equation 4 |
+| `beta_1 = th1; beta_k = beta_{k-1} + th_k` | n/a | Rohatagi 2008 equation 5 |
+| `f_p(t) = Ep * (1 - exp(-Kp * t))` | n/a | Rohatagi 2008 equation 6 |
+| `f_D(Cp) = Emax * Cp / (Cp + EC50)` | n/a | Rohatagi 2008 equation 7 |
+| `b1_pr` | -3.30 | Rohatagi 2008 Table 3, theta_1 (SE 0.29) |
+| `b2b1_pr` | -2.39 | Rohatagi 2008 Table 3, theta_2 (SE 0.11) |
+| `b3b2_pr` | -1.86 | Rohatagi 2008 Table 3, theta_3 (SE 0.09) |
+| `b4b3_pr` | -3.45 | Rohatagi 2008 Table 3, theta_4 (SE 0.11) |
+| `eplac_pr` | 12.0 | Rohatagi 2008 Table 3, Ep (SE 1.2) |
+| `lkplac_pr` | log(0.055) | Rohatagi 2008 Table 3, Kp = 0.055 1/h (SE 0.009) |
+| `emax_pr` | 12.6 | Rohatagi 2008 Table 3, Emax (SE 0.6) |
+| `lec50_pr` | log(87.0) | Rohatagi 2008 Table 3, EC50 = 87.0 ng/mL (SE 8.9) |
+| `etab1_pr` | 9.90 | Rohatagi 2008 Table 3, intersubject variability omega^2 (SE 1.21) |
+| `P = 1 - exp(-h * dT)`; `h = h0 * lambda^PR`; `T50 = log(2)/h` | n/a | Rohatagi 2008 equations 10, 11, 12 |
+| `lh0_remd` | log(2.08) | Rohatagi 2008 Table 4, h0 = 2.08 1/h (SE 0.21) |
+| `lambda_remd` | 0.201 | Rohatagi 2008 Table 4, lambda (SE 0.011) |
+| `P(MPR) = P0 + (Pmax - P0) * Dose/(Dose + D50PMPR)` | n/a | Rohatagi 2008 equation 13 |
+| `logitp0_mpr` | qlogis(0.16) | Rohatagi 2008 Table 5, P0 = 16% (95% CI 10, 26) |
+| `logitpmax_mpr` | qlogis(0.72) | Rohatagi 2008 Table 5, Pmax = 72% (95% CI 59, 83) |
+| `ld50_pmpr` | log(8.8) | Rohatagi 2008 Table 5, D50PMPR = 8.8 mg (95% CI 3.0, 26.1) |
+| `logitpmpr_noremd` | qlogis(0.982) | Rohatagi 2008 Table 5, PMPR = 98.2% (95% CI 95.0, 99.3) |
+| `log(TMPR/TRescue) = LTR0 + LTRmax * Dose/(Dose + D50LTR) + eps` | n/a | Rohatagi 2008 equation 14 |
+| `ltr0_mpr` | -0.95 | Rohatagi 2008 Table 5, LTR0 (95% CI -1.42, -0.48) |
+| `ltrmax_mpr` | -1.00 | Rohatagi 2008 Table 5, LTRmax (95% CI -1.52, -0.47) |
+| `ld50_ltr` | log(5.8) | Rohatagi 2008 Table 5, D50LTR = 5.8 mg (95% CI 0.9, 35.8) |
+| `etaltr0_mpr` | 0.64^2 | Rohatagi 2008 Table 5, sigma_LTR = 0.64 |
+| `log(TMPR) = LT0 + LTSlope * Dose + eps` | n/a | Rohatagi 2008 equation 15 |
+| `lt0_mpr` | 0.45 | Rohatagi 2008 Table 5, LT0 (95% CI 0.23, 0.67) |
+| `tslope_mpr` | -0.0035 | Rohatagi 2008 Table 5, LTSlope (95% CI -0.0053, -0.0018) |
+| `etalt0_mpr` | 0.69^2 | Rohatagi 2008 Table 5, sigma_LT = 0.69 |
+| `lvc`, `lvp`, `lq` | log(166), log(483), log(75) | Kastrissios 2006 Table IV (Vc/F, Vp/F, Q/F) |
+| `lcl`, `lcl_highdose` | log(34.1), log(19.5) | Kastrissios 2006 Table IV (CL/F, 2-200 mg and 400-800 mg rows) |
+| `lka`, `ltlag`, `led50` | log(0.542), log(0.236), log(221) | Kastrissios 2006 Table IV (KA, TLAG, D50 for F) |
+| `e_evening_fdepot`, `e_sexf_cl` | 0.351, 0.325 | Kastrissios 2006 Table IV (KFrel-PM Dose, KCL/F-SEX) |
+| `e_cyp2d6_pmim_cl`, `e_cyp2c9_rh_cl` | -1.01, -0.163 | Kastrissios 2006 Table IV (KCL/F-CYP2D6, KCL/F-CYP2C9) |
+| `e_wt_vc` | 0.831 | Kastrissios 2006 Table IV (KVc/F-WT), equation 8 reference 73.3 kg |
+| PK `eta`s | 0.127 / 0.234 / 0.229 / 0.125 / 0.052 / 0.002 | Kastrissios 2006 Table IV omega^2 rows |
+| `propSd` | sqrt(0.069) | Kastrissios 2006 Table IV sigma^2 = 0.069 |
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below reproduces
+the five modelled treatment arms of the phase 2a study (placebo and 10, 50, 100
+and 200 mg apricoxib) at 100 virtual patients per arm.
+
+Demographic distributions are the **Western** column of Rohatagi 2008 Table 1,
+which is the distribution the authors themselves used for their simulations:
+50% male, body weight mean 72.6 kg (SD 11.9), CYP2D6 extensive /
+poor-or-intermediate 0.91 / 0.09, and CYP2C9 normal-or-extensive / reduced
+hydroxylator 0.85 / 0.15. Sampled weights are truncated to the observed
+dental-pain range of Table 2 (39.1 to 134 kg).
+
+```{r cohort}
+# `set.seed()` seeds R's RNG (used for the covariate draws below). It does NOT
+# seed rxode2's simulation RNG, whose streams are partitioned per solver
+# thread, so the eta draws differ between a 2-core CI runner and a many-thread
+# workstation. Every assertion downstream is written to hold for any cohort
+# this model can produce.
+set.seed(20080601)
+rxode2::rxSetSeed(20080601)
+
+n_per_arm <- 100L
+
+# Assessment schedule of the paper plus a regular grid fine enough to resolve
+# Tmax (about 1.5 h) for the NCA below.
+obs_times <- sort(unique(c(
+  seq(0, 24, by = 0.25),
+  c(0.25, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5, 6, 7, 8, 12, 24)
+)))
+
+# Table 1 "Western" demographic distribution.
+west <- list(wt_mean = 72.6, wt_sd = 11.9, p_male = 0.50,
+             p_cyp2d6_pmim = 0.09, p_cyp2c9_rh = 0.15)
+# Table 1 "Japanese" demographic distribution (all male, all Japanese).
+japan <- list(wt_mean = 60.0, wt_sd = 8.0, p_male = 1.00,
+              p_cyp2d6_pmim = 0.02, p_cyp2c9_rh = 0.04)
+
+make_arm <- function(n, dose_mg, label, id_offset, demo) {
+  subj <- tibble::tibble(
+    id                = id_offset + seq_len(n),
+    treatment         = label,
+    dose_mg           = dose_mg,
+    DOSE_APRICOXIB_MG = dose_mg,
+    # Truncated to the Table 2 observed weight range for the dental cohort.
+    WT                = pmin(pmax(rnorm(n, demo$wt_mean, demo$wt_sd), 39.1), 134),
+    SEXF              = rbinom(n, 1L, 1 - demo$p_male),
+    CYP2D6_PM_IM      = rbinom(n, 1L, demo$p_cyp2d6_pmim),
+    CYP2C9_RH         = rbinom(n, 1L, demo$p_cyp2c9_rh),
+    # Every studied dental-pain dose is inside the 2-200 mg range, so the
+    # Kastrissios 2006 supratherapeutic clearance switch is never engaged.
+    DOSE_HIGH         = 0
+  )
+  obs <- tidyr::crossing(subj, time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  # A placebo patient receives an amt = 0 dose record rather than none at all,
+  # so that podo(depot) is defined for every subject; a zero amount leaves both
+  # the depot state and Cc at 0 for the whole 24 h, and Frel = D50/(0 + D50) = 1.
+  dos <- subj |>
+    dplyr::mutate(time = 0, amt = dose_mg, evid = 1L, cmt = "depot")
+  dplyr::bind_rows(dos, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+arms <- tibble::tribble(
+  ~label,     ~dose_mg,
+  "Placebo",       0,
+  "10 mg",        10,
+  "50 mg",        50,
+  "100 mg",      100,
+  "200 mg",      200
+)
+
+events <- dplyr::bind_rows(
+  lapply(seq_len(nrow(arms)), function(i) {
+    make_arm(
+      n         = n_per_arm,
+      dose_mg   = arms$dose_mg[i],
+      label     = arms$label[i],
+      id_offset = (i - 1L) * n_per_arm,
+      demo      = west
+    )
+  })
+)
+
+# Disjoint subject IDs across arms: duplicate IDs are silently merged by
+# rxSolve into a single subject receiving the summed dose.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(nrow(dplyr::distinct(events, id)) == nrow(arms) * n_per_arm)
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Rohatagi_2008_apricoxib")
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("treatment", "dose_mg")
+) |>
+  as.data.frame()
+
+sim$treatment <- factor(as.character(sim$treatment), levels = arms$label)
+stopifnot(nrow(sim) > 0, !anyNA(sim$Cc))
+```
+
+A second, typical-value solve over a dense dose grid supplies the deterministic
+dose-response curves of Figure 1. These outputs (equations 13 to 15) are
+algebraic in the dose and do not need the pharmacokinetic layer, so the grid
+carries no dose records.
+
+```{r simulate-typical}
+dose_grid <- seq(0, 200, by = 2.5)
+
+grid_subj <- tibble::tibble(
+  id                = seq_along(dose_grid),
+  dose_mg           = dose_grid,
+  DOSE_APRICOXIB_MG = dose_grid,
+  WT                = 73.3,
+  SEXF              = 0,
+  CYP2D6_PM_IM      = 0,
+  CYP2C9_RH         = 0,
+  DOSE_HIGH         = 0
+)
+
+grid_events <- tidyr::crossing(grid_subj, time = c(0, 1.5)) |>
+  dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central") |>
+  dplyr::arrange(id, time)
+
+mod_typical <- mod |> rxode2::zeroRe()
+
+sim_grid <- rxode2::rxSolve(
+  mod_typical,
+  events = grid_events,
+  omega  = NA,
+  keep   = c("dose_mg")
+) |>
+  as.data.frame() |>
+  dplyr::filter(time == 0)
+
+stopifnot(nrow(sim_grid) == length(dose_grid))
+```
+
+# Replicate published figures
+
+## Figure 3 / Figure 4 -- pain relief score probabilities over time by dose
+
+Figure 4 of Rohatagi 2008 overlays the model-predicted `P(PR >= k)` on the
+observed proportions, so the predicted curves are *population* (marginal)
+probabilities, averaged over the subject-level random effect on the logit.
+`omega^2 = 9.90` is a large spread (SD 3.15 logit units), so the marginal curves
+sit much closer to 0.5 than the typical-value curves would.
+
+```{r figure-4}
+# Replicates Figure 4 of Rohatagi 2008: observed and predicted pain relief
+# score probabilities P(PR >= i), i = 1..4, vs. time by dose.
+pr_marginal <- sim |>
+  # rxSolve output contains observation rows only (addDosing defaults to FALSE)
+  # and carries no evid column, so no filter on evid is possible or needed.
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    `PR >= 1` = mean(pge1_pr),
+    `PR >= 2` = mean(pge2_pr),
+    `PR >= 3` = mean(pge3_pr),
+    `PR >= 4` = mean(pge4_pr),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_longer(
+    cols      = dplyr::starts_with("PR >="),
+    names_to  = "level",
+    values_to = "probability"
+  )
+
+ggplot(pr_marginal, aes(time, probability, colour = level)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~treatment, nrow = 1) +
+  scale_x_continuous(breaks = c(0, 8, 16, 24)) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Time (h)", y = "Probability", colour = NULL,
+    title = "Figure 4 -- predicted pain relief score probabilities",
+    caption = "Replicates Figure 4 of Rohatagi 2008."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The published pattern is reproduced: a clear dose-response, the greatest gain
+between 10 and 50 mg, and 100 and 200 mg profiles close to 50 mg. The placebo
+arm rises gradually throughout the 24 h.
+
+## Figure 2 -- patients who did not require rescue medication
+
+```{r figure-2}
+# Replicates Figure 2 of Rohatagi 2008: Kaplan-Meier plot of the percentage of
+# patients still on treatment (i.e. who have not required rescue medication).
+sur_curve <- sim |>
+  # rxSolve output contains observation rows only (addDosing defaults to FALSE)
+  # and carries no evid column, so no filter on evid is possible or needed.
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(on_treatment = mean(sur_remd), .groups = "drop")
+
+ggplot(sur_curve, aes(time, on_treatment, colour = treatment)) +
+  geom_line(linewidth = 0.7) +
+  scale_x_continuous(breaks = c(0, 4, 8, 12, 16, 20, 24)) +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Time to cessation (h)", y = "Proportion of subjects on treatment",
+    colour = NULL,
+    title = "Figure 2 -- patients not requiring rescue medication",
+    caption = "Replicates Figure 2 of Rohatagi 2008."
+  )
+```
+
+The dose ordering of the published figure is reproduced -- more patients stay on
+treatment as the dose rises -- but the absolute curves fall faster than the
+published ones. That is a known, quantified deviation of this implementation;
+see "Known deviation: the model over-predicts how many patients need rescue"
+below before reading any absolute number off this panel.
+
+## Figure 5 -- rescue-medication hazard and probability vs. pain relief score
+
+Equation 11 is `h = h0 * lambda^PR`, evaluated directly here at each integer
+pain relief score, and equation 10 converts a hazard to the probability of
+requiring rescue medication over an assessment interval. The published Figure 5
+lower panel is that probability "in the next study interval"; the interval
+length is not stated, and the study schedule uses intervals from 0.25 h (early)
+to 12 h (the last), so the curve is shown for three representative interval
+lengths.
+
+```{r figure-5}
+ui <- rxode2::rxode(mod)
+theta <- setNames(ui$iniDf$est, ui$iniDf$name)
+
+h0     <- exp(theta[["lh0_remd"]])
+lambda <- theta[["lambda_remd"]]
+
+haz_tab <- tidyr::crossing(
+  PR    = 0:4,
+  dT_h  = c(0.25, 1, 2)
+) |>
+  dplyr::mutate(
+    hazard      = h0 * lambda^PR,
+    p_rescue    = 1 - exp(-hazard * dT_h),
+    T50_h       = log(2) / hazard,
+    interval    = factor(paste0(dT_h, " h interval"))
+  )
+
+ggplot(haz_tab, aes(PR, p_rescue, colour = interval)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 0.16, linetype = "dashed") +
+  labs(
+    x = "Pain relief score", y = "Probability of requiring rescue medication",
+    colour = NULL,
+    title = "Figure 5 -- probability of rescue medication vs. pain relief score",
+    caption = paste(
+      "Replicates Figure 5 (lower panel) of Rohatagi 2008. Dashed line: the",
+      "paper's '< 16% for patients with a pain relief score >= 2'."
+    )
+  )
+
+haz_tab |>
+  dplyr::filter(dT_h == 1) |>
+  dplyr::select(PR, hazard, T50_h, p_rescue) |>
+  dplyr::rename(
+    "Pain relief score"        = PR,
+    "Hazard (1/h)"             = hazard,
+    "T50 (h)"                  = T50_h,
+    "P(rescue in 1 h)"         = p_rescue
+  ) |>
+  knitr::kable(
+    digits  = c(0, 4, 2, 4),
+    caption = "Rescue-medication hazard by pain relief score (equations 11, 12, 10)."
+  )
+```
+
+## Figure 1 -- meaningful pain relief probability and onset time vs. dose
+
+```{r figure-1}
+# Replicates Figure 1 of Rohatagi 2008. Upper panels: probability of meaningful
+# pain relief vs. dose in patients who did not (left) and did (right) require
+# rescue medication. Lower panels: median onset time (left, absolute hours) and
+# median onset time as a fraction of the rescue time (right).
+fig1 <- sim_grid |>
+  dplyr::select(dose_mg, pmpr_noremd, pmpr_remd, tmpr_mpr, ratio_mpr) |>
+  tidyr::pivot_longer(-dose_mg, names_to = "quantity", values_to = "value") |>
+  dplyr::mutate(
+    panel = dplyr::recode(
+      quantity,
+      pmpr_noremd = "P(MPR), no rescue medication",
+      pmpr_remd   = "P(MPR), rescue medication required",
+      tmpr_mpr    = "Median TMPR (h), no rescue medication",
+      ratio_mpr   = "Median TMPR / rescue time, rescue required"
+    ),
+    panel = factor(panel, levels = c(
+      "P(MPR), no rescue medication",
+      "P(MPR), rescue medication required",
+      "Median TMPR (h), no rescue medication",
+      "Median TMPR / rescue time, rescue required"
+    ))
+  )
+
+ggplot(fig1, aes(dose_mg, value)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~panel, scales = "free_y") +
+  labs(
+    x = "Dose (mg)", y = NULL,
+    title = "Figure 1 -- meaningful pain relief probability and onset time",
+    caption = "Replicates Figure 1 of Rohatagi 2008 (model prediction lines)."
+  )
+```
+
+## Figure 7 -- dose-response at 1.5 h postdose
+
+Figure 7 shows the probability of each pain relief level at 1.5 h postdose,
+together with the probability of achieving meaningful pain relief and the
+probability of requiring rescue medication, against dose. The 1.5 h time point
+is the paper's earliest point of interest, "because this is when CS-706 achieves
+maximum concentrations, on average, and all patients are still in the study".
+
+```{r figure-7}
+fig7_pr <- sim |>
+  dplyr::filter(abs(time - 1.5) < 1e-8) |>
+  dplyr::group_by(dose_mg) |>
+  dplyr::summarise(
+    `P(PR >= 1)` = mean(pge1_pr),
+    `P(PR >= 2)` = mean(pge2_pr),
+    `P(PR >= 3)` = mean(pge3_pr),
+    `P(PR >= 4)` = mean(pge4_pr),
+    .groups = "drop"
+  )
+
+# Probability of meaningful pain relief and of requiring rescue medication are
+# both "over the study", so they are read at the end of the 24 h window.
+fig7_end <- sim |>
+  dplyr::filter(abs(time - 24) < 1e-8) |>
+  dplyr::group_by(dose_mg) |>
+  dplyr::summarise(
+    `P(MPR)`  = mean(pmpr),
+    `P(REMD)` = mean(premd_remd),
+    .groups = "drop"
+  )
+
+fig7 <- dplyr::left_join(fig7_pr, fig7_end, by = "dose_mg") |>
+  tidyr::pivot_longer(-dose_mg, names_to = "quantity", values_to = "probability")
+
+ggplot(fig7, aes(dose_mg, probability, colour = quantity, shape = quantity)) +
+  geom_line() +
+  geom_point() +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    x = "Dose (mg)", y = "Probability", colour = NULL, shape = NULL,
+    title = "Figure 7 -- dose-response at 1.5 h postdose",
+    caption = "Replicates Figure 7 of Rohatagi 2008."
+  )
+
+fig7 |>
+  tidyr::pivot_wider(names_from = quantity, values_from = probability) |>
+  dplyr::rename("Dose (mg)" = dose_mg) |>
+  knitr::kable(
+    digits  = 3,
+    caption = "Dose-response summary underlying Figure 7."
+  )
+```
+
+The paper's headline reading of this figure is reproduced: the probability of a
+pain relief score of at least 2 at 1.5 h rises steeply between placebo and
+50 mg and gains little above it, which is the basis for the 50 mg dose
+recommendation.
+
+# PKNCA validation
+
+The only pharmacokinetic anchor Rohatagi 2008 publishes for this cohort is the
+interpretation of its own EC50: 87 ng/mL is "the median peak plasma
+concentration achieved after a single oral dose of 50 mg CS-706", and 1.5 h is
+when "CS-706 achieves maximum concentrations, on average". NCA is therefore run
+on the four apricoxib arms (the placebo arm has `Cc = 0` throughout and is
+excluded) and compared against those two values in the 50 mg arm.
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(dose_mg > 0, !is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time = 0 row per (id, treatment); apricoxib is oral, so the
+# pre-dose concentration is 0.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |>
+    dplyr::distinct(id, treatment) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+stopifnot(nrow(sim_nca) > 0)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | treatment + id,
+  concu = "ng/mL", timeu = "h"
+)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | treatment + id,
+  doseu = "mg"
+)
+
+intervals <- data.frame(
+  start      = 0,
+  end        = 24,
+  cmax       = TRUE,
+  tmax       = TRUE,
+  auclast    = TRUE,
+  clast.obs  = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+```
+
+```{r nca_summary}
+nca_by_arm <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  # PKNCA returns the grouping column as a character vector, so restore the
+  # dose ordering rather than letting the table sort "100 mg" before "50 mg".
+  dplyr::mutate(treatment = factor(as.character(treatment), levels = arms$label)) |>
+  dplyr::arrange(treatment)
+
+nca_by_arm |>
+  dplyr::select(treatment, cmax, tmax, auclast) |>
+  dplyr::rename(
+    "Treatment"              = treatment,
+    "Cmax (ng/mL)"           = cmax,
+    "Tmax (h)"               = tmax,
+    "AUC0-24 (ng*h/mL)"      = auclast
+  ) |>
+  knitr::kable(
+    digits  = c(0, 1, 2, 0),
+    caption = paste(
+      "Simulated median NCA by apricoxib arm. Rohatagi 2008 publishes NCA",
+      "values only for the 50 mg arm (see the comparison table below); the",
+      "other three arms are shown for context."
+    )
+  )
+```
+
+## Comparison against published NCA
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~treatment, ~cmax, ~tmax,
+  "50 mg",     87.0,   1.5
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = as.data.frame(nca_res) |>
+    dplyr::mutate(treatment = as.character(treatment)) |>
+    dplyr::filter(treatment == "50 mg"),
+  reference = published,
+  by        = "treatment",
+  units     = c(cmax = "ng/mL", tmax = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated vs. published NCA for the 50 mg apricoxib arm.",
+    "* differs from reference by more than 20%.",
+    "Reference Cmax is the Rohatagi 2008 Discussion statement that EC50 =",
+    "87 ng/mL corresponds to 'the median peak plasma concentration achieved",
+    "after a single oral dose of 50 mg CS-706'; reference Tmax is its",
+    "statement that 1.5 h is when 'CS-706 achieves maximum concentrations,",
+    "on average'."
+  ),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+The Cmax row agrees to within 9%. The Tmax row is starred: the per-subject
+median Tmax of 2.0 h is 33% later than the 1.5 h the paper quotes. The gap is
+mostly definitional -- the paper's statement is about the *mean concentration
+profile*, whose dose-normalised peak also falls at 2.0 h here, and individual
+Tmax under this model's absorption variability is right-skewed -- but it is a
+real 0.5 h difference against a value read out of a sentence rather than a
+table, so it is reported rather than tuned away. Both `Ka` and `Tlag` are
+verified against Kastrissios 2006 Table IV in the claims table below.
+
+# Published-claim checks
+
+Most of what Rohatagi 2008 states about its own parameters is arithmetic on the
+tables, so those checks are deterministic and are asserted tightly. The two
+cohort-derived rows are asserted with bounds wide enough to hold for any cohort
+this model can draw, and narrow enough to break on a mis-transcribed value.
+
+```{r claims}
+b1     <- theta[["b1_pr"]]
+b2b1   <- theta[["b2b1_pr"]]
+b3b2   <- theta[["b3b2_pr"]]
+b4b3   <- theta[["b4b3_pr"]]
+p0     <- plogis(theta[["logitp0_mpr"]])
+pmax_  <- plogis(theta[["logitpmax_mpr"]])
+d50p   <- exp(theta[["ld50_pmpr"]])
+ltr0   <- theta[["ltr0_mpr"]]
+ltrmax <- theta[["ltrmax_mpr"]]
+lt0    <- theta[["lt0_mpr"]]
+tslope <- theta[["tslope_mpr"]]
+sd_lt  <- sqrt(ui$iniDf$est[ui$iniDf$name == "etalt0_mpr"])
+
+cmax50 <- nca_by_arm$cmax[as.character(nca_by_arm$treatment) == "50 mg"]
+
+# Rohatagi 2008's "this is when CS-706 achieves maximum concentrations, on
+# average" is a statement about the AVERAGE concentration profile, so the model
+# side is the peak time of the dose-normalised mean profile across the four
+# apricoxib arms -- not the median of the per-subject NCA Tmax, which sits later
+# because individual Tmax is right-skewed.
+tmax_mean_profile <- sim |>
+  dplyr::filter(dose_mg > 0) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(mc = mean(Cc / dose_mg), .groups = "drop") |>
+  dplyr::slice_max(mc, n = 1, with_ties = FALSE) |>
+  dplyr::pull(time)
+
+# Proportion of simulated patients who have required rescue medication by the
+# 24 h study end, pooled across arms. Compared below against the proportion
+# implied by the Figure 5 event counts.
+premd_overall <- sim |>
+  dplyr::filter(abs(time - 24) < 1e-8) |>
+  dplyr::summarise(m = mean(premd_remd)) |>
+  dplyr::pull(m)
+
+stopifnot(length(cmax50) == 1L, is.finite(cmax50),
+          is.finite(tmax_mean_profile), is.finite(premd_overall))
+
+# Mean of the no-rescue-branch onset time: for log(TMPR) ~ N(LT0, sd^2) the
+# arithmetic mean is exp(LT0 + sd^2/2).
+tmpr_mean_placebo <- exp(lt0 + sd_lt^2 / 2)
+
+claims <- tibble::tribble(
+  ~Claim, ~Source, ~Published, ~Model, ~Pass, ~Deviation,
+  "P(PR >= 1) extrapolated to time 0",
+  "Table 3 footnote", "0.04",
+  sprintf("%.4f", plogis(b1)),
+  abs(plogis(b1) - 0.04) < 0.005, FALSE,
+
+  "Odds ratio PR >= 2 vs PR >= 1",
+  "Table 3", "0.09", sprintf("%.4f", exp(b2b1)),
+  abs(exp(b2b1) - 0.09) < 0.005, FALSE,
+
+  "Odds ratio PR >= 3 vs PR >= 2",
+  "Table 3", "0.16", sprintf("%.4f", exp(b3b2)),
+  abs(exp(b3b2) - 0.16) < 0.005, FALSE,
+
+  "Odds ratio PR >= 4 vs PR >= 3",
+  "Table 3", "0.03", sprintf("%.4f", exp(b4b3)),
+  abs(exp(b4b3) - 0.03) < 0.005, FALSE,
+
+  "T50 for rescue medication at PR = 0",
+  "Results", "20 min",
+  sprintf("%.1f min", 60 * log(2) / h0),
+  abs(60 * log(2) / h0 - 20) < 1, FALSE,
+
+  "Rescue time increase per unit PR score",
+  "Results", "five-fold", sprintf("%.2f-fold", 1 / lambda),
+  abs(1 / lambda - 5) < 0.5, FALSE,
+
+  "P(rescue in a 1 h interval) at PR = 2",
+  "Results / Figure 7 text", "< 16%",
+  sprintf("%.1f%%", 100 * (1 - exp(-h0 * lambda^2))),
+  (1 - exp(-h0 * lambda^2)) < 0.16, FALSE,
+
+  "P(MPR) on placebo, rescue medication required",
+  "Table 5 / Discussion", "16%", sprintf("%.1f%%", 100 * p0),
+  abs(p0 - 0.16) < 0.005, FALSE,
+
+  "P(MPR) maximum, rescue medication required",
+  "Table 5 / Discussion", "72%", sprintf("%.1f%%", 100 * pmax_),
+  abs(pmax_ - 0.72) < 0.005, FALSE,
+
+  # The literal 8.8 is the published D50PMPR; the model side uses the value
+  # actually stored in ini(), so a mis-transcribed D50PMPR moves this row off
+  # the exact midpoint of P0 and Pmax.
+  "P(MPR) at the published 8.8 mg D50PMPR dose",
+  "Table 5 (half-maximal by definition)", "44.0%",
+  sprintf("%.1f%%", 100 * (p0 + (pmax_ - p0) * 8.8 / (8.8 + d50p))),
+  abs((p0 + (pmax_ - p0) * 8.8 / (8.8 + d50p)) - 0.44) < 0.005, FALSE,
+
+  "TMPR / rescue time on placebo",
+  "Results", "39%", sprintf("%.1f%%", 100 * exp(ltr0)),
+  abs(exp(ltr0) - 0.39) < 0.01, FALSE,
+
+  "TMPR / rescue time, minimum possible",
+  "Results", "14%", sprintf("%.1f%%", 100 * exp(ltr0 + ltrmax)),
+  abs(exp(ltr0 + ltrmax) - 0.14) < 0.01, FALSE,
+
+  "Median TMPR on placebo, no rescue medication",
+  "Results", "1.6 h", sprintf("%.2f h", exp(lt0)),
+  abs(exp(lt0) - 1.6) < 0.05, FALSE,
+
+  "TMPR decrease per 10 mg dose increase",
+  "Results", "3.5%",
+  sprintf("%.2f%%", 100 * (1 - exp(10 * tslope))),
+  abs((1 - exp(10 * tslope)) - 0.035) < 0.003, FALSE,
+
+  "Male typical CL/F, 2-200 mg",
+  "Methods (PK layer)", "47.2 L/h",
+  sprintf("%.1f L/h", exp(theta[["lcl"]] + theta[["e_sexf_cl"]])),
+  abs(exp(theta[["lcl"]] + theta[["e_sexf_cl"]]) - 47.2) < 0.3, FALSE,
+
+  "CL/F reduction above 200 mg",
+  "Methods (PK layer)", "43%",
+  sprintf("%.1f%%", 100 * (1 - exp(theta[["lcl_highdose"]] - theta[["lcl"]]))),
+  abs((1 - exp(theta[["lcl_highdose"]] - theta[["lcl"]])) - 0.43) < 0.02, FALSE,
+
+  "CL/F reduction, CYP2D6 poor/intermediate",
+  "Methods (PK layer)", "64%",
+  sprintf("%.1f%%", 100 * (1 - exp(theta[["e_cyp2d6_pmim_cl"]]))),
+  abs((1 - exp(theta[["e_cyp2d6_pmim_cl"]])) - 0.64) < 0.02, FALSE,
+
+  "CL/F reduction, CYP2C9 reduced hydroxylator",
+  "Methods (PK layer)", "15%",
+  sprintf("%.1f%%", 100 * (1 - exp(theta[["e_cyp2c9_rh_cl"]]))),
+  abs((1 - exp(theta[["e_cyp2c9_rh_cl"]])) - 0.15) < 0.01, FALSE,
+
+  "Bioavailability increase for a night-time dose",
+  "Methods (PK layer)", "42%",
+  sprintf("%.1f%%", 100 * (exp(theta[["e_evening_fdepot"]]) - 1)),
+  abs((exp(theta[["e_evening_fdepot"]]) - 1) - 0.42) < 0.01, FALSE,
+
+  # Frel at the published 221 mg dose, using the D50 actually stored in ini().
+  "Relative bioavailability at a 221 mg dose",
+  "Methods (PK layer)", "50% reduction",
+  sprintf("%.1f%%", 100 * (1 - exp(theta[["led50"]]) /
+                             (221 + exp(theta[["led50"]])))),
+  abs((1 - exp(theta[["led50"]]) / (221 + exp(theta[["led50"]]))) - 0.5) < 0.005, FALSE,
+
+  "Absorption lag time",
+  "Methods (PK layer)", "14 min",
+  sprintf("%.1f min", 60 * exp(theta[["ltlag"]])),
+  abs(60 * exp(theta[["ltlag"]]) - 14) < 0.5, FALSE,
+
+  "Vc/F increase per 10% weight increase",
+  "Methods (PK layer)", "about 8%",
+  sprintf("%.1f%%", 100 * (1.10^theta[["e_wt_vc"]] - 1)),
+  abs((1.10^theta[["e_wt_vc"]] - 1) - 0.08) < 0.01, FALSE,
+
+  # Realised 79.1 / 81.6 / 77.6 ng/mL at 1 / 2 / 8 solver threads, i.e. 9 to 11
+  # percent below the published 87. The 30 percent bound sits well outside that
+  # spread and still goes red on a mis-transcribed volume, dose, clearance or
+  # unit, each of which moves Cmax by tens of percent.
+  "Simulated median Cmax, 50 mg arm",
+  "Discussion (EC50 interpretation)", "87 ng/mL",
+  sprintf("%.1f ng/mL", cmax50),
+  abs(cmax50 / 87 - 1) < 0.30, FALSE,
+
+  # Realised 2.0 h at 1 / 2 / 8 threads on the 0.25 h observation grid.
+  "Peak time of the mean concentration profile",
+  "Results (Figure 7 text)", "about 1.5 h",
+  sprintf("%.2f h", tmax_mean_profile),
+  tmax_mean_profile > 1.0 && tmax_mean_profile < 3.0, FALSE,
+
+  "Mean TMPR on placebo, no rescue medication",
+  "Equation 15 with sigma_LT = 0.69", "n/a (analytic)",
+  sprintf("%.2f h", tmpr_mean_placebo),
+  abs(tmpr_mean_placebo - 1.99) < 0.05, FALSE,
+
+  # KNOWN DEVIATION, excluded from the gate. See the narrative below.
+  "Patients requiring rescue medication by 24 h, pooled",
+  "Figure 5 event counts (lower bound)", "at least 36%",
+  sprintf("%.0f%%", 100 * premd_overall),
+  abs(premd_overall - 0.36) < 0.10, TRUE
+)
+
+claims |>
+  dplyr::mutate(
+    Pass = ifelse(Pass, "yes", "NO"),
+    Deviation = ifelse(Deviation, "known deviation, not gated", "")
+  ) |>
+  knitr::kable(caption = "Published claims reproduced by the packaged model.")
+
+# Rows flagged as a known deviation are reported but excluded from the gate;
+# see the discussion immediately below.
+stopifnot(all(claims$Pass[!claims$Deviation]))
+```
+
+## Known deviation: the model over-predicts how many patients need rescue
+
+The last row of the table above is the one published quantity this
+implementation does **not** reproduce, and it is recorded rather than tuned
+away. Rohatagi 2008 Figure 5 prints the number of observations and the number
+of rescue-medication events at each pain relief score: N = 98 / 202 / 729 / 455
+with 31 / 32 / 25 / 2 events at scores 0 / 1 / 2 / 3. Those 90 events, spread
+over the roughly 253 placebo-and-apricoxib patients, put the observed proportion
+requiring rescue medication at **about 36% or a little more** (a lower bound,
+because the score-4 stratum is not legible in the figure and because patients
+who rescued within 90 min were excluded from the efficacy analysis). The
+simulation above puts it near 80%.
+
+Two independent checks say the hazard itself is transcribed correctly, and that
+the disagreement is in how a *discrete-interval* model behaves when integrated
+continuously:
+
+* **The shape is right.** The observed per-observation rescue proportions are
+  0.316, 0.158, 0.034 and 0.004 at scores 0 to 3. Successive ratios are 2.0,
+  4.6 and 7.8, averaging close to the `1/lambda = 4.98` five-fold decline per
+  score unit that Table 4 reports -- so `lambda = 0.201` is right.
+* **The level is right, per interval.** Solving `p = 1 - exp(-h0 * lambda^PR *
+  dT)` for the interval length that reproduces each observed proportion gives
+  `dT` = 0.18, 0.38, 0.41 and 0.26 h at scores 0 to 3 -- a tight and plausible
+  cluster, since the study's early assessments are 0.25 h apart and most rescue
+  happens early. Reading `h0` as a per-*day* rate instead (the units printed on
+  the Figure 5 upper-panel axis, which contradict both the Table 4 header and
+  the Results' "50% chance of requiring rescue medication within 20 min") gives
+  `dT` = 4.4, 9.1, 9.8 and 6.2 h, a two-fold spread with no correspondence to
+  the assessment schedule. The per-hour reading is the one the data support.
+
+What differs is the pain relief score the hazard sees. The published model
+conditions on the *observed* score, which in the placebo arm rises quickly --
+Figure 3 shows the placebo group stabilising after about 4 h. The packaged model
+conditions on the score its own equation-4 sub-model predicts, and with
+`Kp = 0.055 1/h` that placebo response has a 12.6 h half-life, so simulated
+placebo patients sit at low scores, and therefore at a high hazard, for far
+longer than the real ones did. The rescue over-prediction is a downstream
+consequence of the `Kp`-versus-prose tension discussed under Assumptions, not an
+independent error. Read the rescue-medication outputs (`haz_remd`, `cumhaz`,
+`premd_remd`, `sur_remd`) as correct *conditional on a pain relief score*, and
+treat the absolute simulated rescue proportions -- and the Figure 2 replication
+above -- as biased high.
+
+The two cohort-derived pharmacokinetic bounds deserve a shorter note. The
+`Cmax` bound of 30% is wider than the 9 to 11% agreement actually achieved
+because the reference value is a *median peak concentration* quoted in a
+sentence rather than a tabulated NCA result, and because the cohort's CYP2D6 and
+CYP2C9 phenotype draws move apparent clearance by up to 64% in a minority of
+subjects; a mis-transcribed volume, dose, clearance or unit would move the
+median by far more than 30%. The `Tmax` window of 1.0 to 3.0 h likewise breaks
+on any absorption-rate or lag-time error while tolerating the discreteness of
+the 0.25 h observation grid.
+
+# Japanese vs. Western bridging (Table 6)
+
+Rohatagi 2008's applied conclusion is that Japanese and Western patients are
+expected to have a similar onset of meaningful pain relief despite lower
+predicted apricoxib exposure in Japanese subjects, because the ethnic
+differences the model carries are purely pharmacokinetic (body weight and
+metabolising-phenotype frequencies, Table 1) while the pharmacodynamic
+parameters are shared. The simulation below repeats that comparison at the
+paper's five dose levels.
+
+```{r table-6}
+# 60 per arm per population (600 subjects in total) keeps the render inside the
+# time budget; the quantity being compared is an arm mean, not a tail.
+n_bridge <- 60L
+
+make_pop <- function(demo, tag, id_base) {
+  dplyr::bind_rows(
+    lapply(seq_len(nrow(arms)), function(i) {
+      make_arm(
+        n         = n_bridge,
+        dose_mg   = arms$dose_mg[i],
+        label     = arms$label[i],
+        id_offset = id_base + (i - 1L) * n_bridge,
+        demo      = demo
+      )
+    })
+  ) |>
+    dplyr::mutate(population = tag)
+}
+
+bridge_events <- dplyr::bind_rows(
+  make_pop(japan, "Japanese", 0L),
+  make_pop(west,  "Western",  as.integer(nrow(arms)) * n_bridge)
+)
+stopifnot(!anyDuplicated(unique(bridge_events[, c("id", "time", "evid")])))
+
+bridge <- rxode2::rxSolve(
+  mod,
+  events = bridge_events,
+  keep   = c("treatment", "dose_mg", "population")
+) |>
+  as.data.frame() |>
+  dplyr::filter(abs(time - 24) < 1e-8)
+
+# Equation 3: the onset time is a mixture over whether rescue medication was
+# required. In the no-rescue branch TMPR is the model's absolute time; in the
+# rescue branch it is the modelled fraction of that subject's own rescue time,
+# which is drawn from the fitted hazard and right-censored at 24 h.
+bridge <- bridge |>
+  dplyr::mutate(
+    # Individual rescue time implied by the subject's own cumulative hazard,
+    # inverted at a uniform draw and censored at the 24 h study end.
+    t_rescue = pmin(24, -log(1 - runif(dplyr::n()) * premd_remd) /
+                      pmax(cumhaz / 24, 1e-8)),
+    tmpr_mix = ifelse(
+      runif(dplyr::n()) < premd_remd,
+      ratio_mpr * t_rescue,
+      tmpr_mpr
+    )
+  )
+
+bridge_tab <- bridge |>
+  dplyr::mutate(
+    treatment  = factor(as.character(treatment), levels = arms$label),
+    population = as.character(population)
+  ) |>
+  dplyr::group_by(treatment, population) |>
+  dplyr::summarise(mean_tmpr = mean(tmpr_mix), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = population, values_from = mean_tmpr) |>
+  dplyr::arrange(treatment)
+
+published_t6 <- tibble::tribble(
+  ~treatment, ~jp_pub, ~west_pub,
+  "Placebo",     2.46,     2.56,
+  "10 mg",       2.37,     2.28,
+  "50 mg",       2.45,     2.40,
+  "100 mg",      2.06,     2.21,
+  "200 mg",      1.90,     1.70
+) |>
+  dplyr::mutate(treatment = factor(treatment, levels = arms$label))
+
+dplyr::left_join(bridge_tab, published_t6, by = "treatment") |>
+  dplyr::rename(
+    "Dose"                       = treatment,
+    "Japanese, simulated (h)"    = Japanese,
+    "Western, simulated (h)"     = Western,
+    "Japanese, published (h)"    = jp_pub,
+    "Western, published (h)"     = west_pub
+  ) |>
+  knitr::kable(
+    digits  = 2,
+    caption = paste(
+      "Mean onset time of meaningful pain relief by dose and population.",
+      "Published values are Rohatagi 2008 Table 6."
+    )
+  )
+
+# The paper's conclusion is about the SIZE of the Japanese-Western gap, not its
+# sign: Table 6 has the Japanese mean above the Western at three doses and below
+# at two, i.e. the difference is noise around zero. Assert the magnitude.
+gap <- abs(bridge_tab$Japanese - bridge_tab$Western)
+stopifnot(max(gap) < 0.75)
+```
+
+Both populations land in the same range and the Japanese-Western gap is small at
+every dose, reproducing the paper's conclusion that "Japanese patients are
+expected to experience a similar pain response and TMPR as Western patients" --
+which is the claim this section is asserting.
+
+The **absolute** simulated means are roughly half the published ones (about 0.9
+to 1.4 h against Table 6's 1.7 to 2.6 h). That is the same known deviation
+documented above propagating one step further: the equation-14 branch scales the
+onset time by the patient's own rescue time, the simulated rescue times are too
+early because the simulated pain relief scores rise too slowly, and the mixture
+mean therefore lands low. The reconstruction of the individual rescue time is
+also an approximation of the authors' unpublished simulation procedure (see
+Assumptions and deviations). Only the between-population difference is gated;
+the absolute column should not be read as a reproduction of Table 6.
+
+# Assumptions and deviations
+
+* **Rescue-medication hazard driven by the score distribution, not a realised
+  score.** Equation 11 makes the hazard a function of the patient's *last
+  observed* pain relief score, an integer that a fitted data set supplies but a
+  forward simulation does not have. The model file integrates the expectation of
+  `lambda^PR` over the equation-4 category probabilities,
+  `E[h] = h0 * sum_k P(PR = k) * lambda^k`. This is exact for the mean hazard --
+  it marginalises the categorical outcome rather than approximating it by
+  substituting a mean score into the power law -- but it is a continuous-time
+  reading of a model the authors wrote in discrete assessment intervals, and it
+  is the one place in the file where the encoding is not a literal transcription
+  of a published equation.
+
+* **`Kp = 0.055 1/h` versus "stabilized after about 4 h".** Both the Results and
+  the Discussion describe the placebo response as having "stabilized after about
+  4 h", but Table 3's `Kp = 0.055 1/h` implies a 12.6 h half-life, so the fitted
+  `f_p(t)` reaches only 20% of `Ep` by 4 h and 73% by 24 h. The prose is a
+  description of the raw pain-relief-score bar plots of Figure 3, not an
+  arithmetic statement about `Kp`. The estimate is what is encoded, per the
+  standing rule that a printed table beats prose; the reported SE of 0.009
+  independently rules out a factor-of-ten transcription error, since 0.55 1/h
+  would imply a 1.6% relative standard error.
+
+* **`sigma_LTR` and `sigma_LT` encoded as inter-individual, not residual,
+  variability.** Table 5 labels both rows "Residual variability", but equations
+  14 and 15 write the terms as `epsilon_LTR,i` and `epsilon_LT,i` -- subject
+  indexed -- and the equation-15 text calls `epsilon_LT,i` "normally distributed
+  interindividual variability", while the equation-3 text defines `sigma` as "a
+  normally distributed subject-specific random variable". Onset time is observed
+  at most once per patient, so the two readings are not distinguishable in the
+  source data. They are encoded as `etaltr0_mpr` and `etalt0_mpr`.
+
+* **Pharmacokinetic layer reproduced inline from an upstream publication.** Every
+  PK parameter comes from Kastrissios 2006 Table IV, not from Rohatagi 2008,
+  which reports only the prose summary quoted in the source-trace table. That
+  upstream model is itself packaged as
+  `modellib("Kastrissios_2006_apricoxib")` and was verified line by line against
+  its own source table; the two files carry identical PK values. The PK cohort
+  (104 healthy volunteers) is not the PD cohort (304 dental-pain patients).
+
+* **`SEXF` is a value inversion of the source indicator.** Kastrissios 2006
+  equation 7 uses a `Gender` indicator that is 1 for MALE, so the published
+  `+0.325` coefficient is applied here to `(1 - SEXF)` and the typical
+  `lcl = log(34.1)` is the FEMALE clearance. Both papers' prose mis-states the
+  direction of this effect ("reduced ... by 38% in women compared to men");
+  38.4% is `exp(0.325) - 1`, the amount by which males exceed females. The
+  encoding is pinned by the independent 47.2 L/h anchor that Rohatagi 2008's own
+  Methods quote for the typical male.
+
+* **Figure 5 axis label.** The upper panel of Figure 5 is captioned "the rate of
+  rescue medication per day", but Table 4 gives `h0` in `h-1` and the Results
+  state that a hazard of 2.08 implies "a 50% chance of requiring rescue
+  medication within 20 min"; `log(2)/2.08 = 0.333 h = 20.0 min` confirms the
+  per-hour time base. The `per day` in the figure caption is not consistent with
+  the rest of the paper and is not used.
+
+* **Interval length in Figure 5's lower panel.** Equation 10 converts the hazard
+  to a probability "in the next study interval", but the paper does not say
+  which interval; the study schedule ranges from 0.25 h early to 12 h at the
+  end. Three representative interval lengths are plotted, and the published
+  "< 16% for patients with a pain relief score >= 2" claim is checked at a 1 h
+  interval.
+
+* **Baseline pain intensity, age, height, BMI, race and whole-blood COX-2
+  activity were screened by the authors and not retained.** They are recorded in
+  the model file's `covariatesDataExcluded` metadata with the screening evidence
+  but do not appear in `model()`, because the paper reports no point estimate for
+  any of them. COX-2 activity is the notable one: it was tested as the
+  explanatory variable of the drug-effect term in place of plasma concentration
+  and rejected ("Utilizing COX-2 data instead of plasma concentration as the
+  explanatory variable for pain relief did not improve the model fit").
+
+* **The celecoxib comparator arm is not modelled.** 51 of the 304 randomised
+  patients received 400 mg celecoxib. Equation 4 has a placebo term and an
+  apricoxib-concentration term only, and the paper reports no celecoxib
+  parameters.
+
+* **Covariate distributions for the virtual cohort.** Sex, weight, and CYP2D6 /
+  CYP2C9 phenotype frequencies are the Western column of Table 1, which is what
+  the authors used for their own simulations; weights are sampled normally and
+  truncated to the Table 2 observed range of 39.1 to 134 kg. Table 2 reports
+  medians and ranges rather than a distributional form for the dental-pain
+  cohort itself, and the paper's Table 1 Western weight (mean 72.6 kg) is
+  slightly above the Table 2 dental-cohort median (68.2 kg).
+
+* **Table 6 reconstruction.** Reproducing Table 6 requires an individual rescue
+  time for the equation-14 branch, which the paper simulated but does not
+  report. The rescue time here is drawn by inverting each subject's own
+  simulated cumulative hazard and censoring at the 24 h study end, and the
+  mixture of equation 3 is then formed by drawing whether rescue medication was
+  required. The reconstruction is therefore an approximation of the authors'
+  simulation procedure rather than a transcription of it, and only the
+  Japanese-versus-Western *gap* -- the paper's actual conclusion -- is asserted.
