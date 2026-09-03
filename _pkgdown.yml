@@ -2526,6 +2526,8 @@ navbar:
         href: articles/Bjornsson_2011_naproxcinod.html
       - text: "Naproxen mbma (Boucher 2018)"
         href: articles/Boucher_2018_naproxen_mbma.html
+      - text: "Naproxen rat (Li 2017)"
+        href: articles/Li_2017_naproxen_rat.html
       - text: "Nb457trimer human (Fan 2025)"
         href: articles/Fan_2025_antiCD4_nanobody_HIV.html
       - text: "Nb457trimer mouse (Fan 2025)"
@@ -5187,6 +5189,7 @@ articles:
   - articles/Li_2017_CC292
   - articles/Li_2017_brentuximab
   - articles/Li_2017_cediranib
+  - articles/Li_2017_naproxen_rat
   - articles/Li_2018_PF04236921
   - articles/Li_2018_vancomycin
   - articles/Li_2019_abatacept
