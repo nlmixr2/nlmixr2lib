@@ -353,6 +353,15 @@ The corresponding derived observation variables are `Cmilk` / `Cmilk_<metab>` an
 - **Example models:** renally cleared small-molecule popPK extractions.
 - **Notes:** Per-metabolite `urine_<metab>` is accepted via the registered metabolite suffixes (e.g., `urine_apap`, `urine_morphine`). For PBPK extractions, the `a_urine` form on the PBPK organ-amount namespace is used instead.
 
+### dialysate (**canonical dialysate-excretion compartment**)
+- **Type:** compartment
+- **Role:** Dialysate-collection compartment for drug removed from the circulation by a dialysis circuit. Tracks the cumulative amount recovered in spent dialysate, which is the quantity a dialysate assay actually reports (an amount per collection interval, not a concentration). Structural analogue of `urine` on the dialysis route rather than the renal route: both are terminal cumulative-collection states fed by a clearance arm out of a central compartment, and both are assayed as interval-collected amounts.
+- **Source aliases:**
+  - `Dialysate (OC)` -- Patel 2015 Figure 1 compartment 6 label.
+  - `effluent` -- the term continuous-renal-replacement-therapy papers use for the same collected fluid. Registered as an alias rather than a sibling canonical because the state plays an identical structural role; the modality is carried by the clearance-arm name (`_ccpd` / `_capd` / `_hemodialysis` / `_crrt`) and by the session-gate covariate, not by the compartment name.
+- **Example models:** `Patel_2015_oseltamivir.R` (per-metabolite form `dialysate_oselcarb`; oseltamivir carboxylate removed from `central_oselcarb` by the two alternating peritoneal-dialysis arms `cl_ccpd_oselcarb` / `cl_capd_oselcarb` accumulates here and was fitted against dialysate amounts in micrograms, with the collection compartment "emptied and reset" at each interval boundary in the source NONMEM dataset).
+- **Notes:** Per-metabolite `dialysate_<metab>` is accepted via the registered metabolite suffixes, exactly as for `urine_<metab>`. Distinct from a dialysis *clearance* parameter (`lcl_hemodialysis`, `lcl_ccpd_oselcarb`) and from the dialysis *session gate* covariates (`RRT_HEMODIAL_ACTIVE`, `RRT_CCPD_ACTIVE`, `RRT_CAPD_ACTIVE`) -- this entry is only the collected-amount state. Because the state is cumulative, a model reproducing per-interval collected amounts must reset it at each interval boundary; see the `URINE_VOL_INTERVAL` register entry and `ButraguenoLaiseca_2024_meropenem.R` for the `evid = 5` reset idiom and the rxode2 ordering hazard it documents. Ratified 2026-09-02 per operator sidecar `oare_PMC4386947` request-001 / response-001, question q1, option A.
+
 ---
 
 ## mPBPK exception (Cao 2013 family)
