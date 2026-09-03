@@ -3302,6 +3302,10 @@ navbar:
         href: articles/Goel_2016_Sonidegib.html
       - text: "Sorafenib (Jain 2011)"
         href: articles/Jain_2011_sorafenib.html
+      - text: "Sorafenib bcrp (Agarwal 2011)"
+        href: articles/Agarwal_2011_sorafenib_transporters.html
+      - text: "Sorafenib pgp (Agarwal 2011)"
+        href: articles/Agarwal_2011_sorafenib_transporters.html
       - text: "Sotatercept (AitOudhia 2024)"
         href: articles/AitOudhia_2024_sotatercept.html
       - text: "Soticlestat (Yin 2023)"
@@ -4109,6 +4113,7 @@ articles:
   - articles/Adams_1998_zalcitabine
   - articles/Adeojo_2024_levonorgestrel
   - articles/Admiraal_2023_iminobiotin
+  - articles/Agarwal_2011_sorafenib_transporters
   - articles/Agerso_2004_desmopressin
   - articles/Agoram_2006_darbepoetin_alfa
   - articles/Aguiar_2021_ustekinumab
