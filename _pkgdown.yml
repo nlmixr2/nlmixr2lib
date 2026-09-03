@@ -4084,6 +4084,8 @@ navbar:
         href: articles/Syvanen_2011_verapamil_rat.html
       - text: "Vernakalant (Mao 2012)"
         href: articles/Mao_2012_vernakalant.html
+      - text: "VestronidaseAlfa (Qi 2019)"
+        href: articles/Qi_2019_vestronidaseAlfa.html
       - text: "Vigabatrin (Nielsen 2015)"
         href: articles/Nielsen_2015_vigabatrin.html
       - text: "Vildagliptin (Landersdorfer 2012)"
@@ -5494,6 +5496,7 @@ articles:
   - articles/Pu_2021_evinacumab
   - articles/Puisset_2007_docetaxel
   - articles/Qi_2014_sapropterin
+  - articles/Qi_2019_vestronidaseAlfa
   - articles/Qi_2024_vosoritide
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
