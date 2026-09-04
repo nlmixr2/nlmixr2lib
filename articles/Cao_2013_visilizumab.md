@@ -81,6 +81,9 @@ mod <- readModelDb("Cao_2013_visilizumab")
 sim <- rxode2::rxSolve(rxode2::rxode2(mod), events = events,
                        keep = "dose_mg_per_kg") |>
   as.data.frame()
+#> rxode2 already building model, waiting for lock file removal
+#> lock file: "/tmp/RtmprVc8It/rxode2/rx_1cd74de215b501eb1bdf5094f771a3e2__.rxd/rx_1cd74de215b501eb1bdf5094f771a3e2_.c.lock"
+#> ..
 # rxSolve drops the id column when there is a single subject; add it back
 # so PKNCA's `~ ... | id` formula has the column it expects.
 if (!"id" %in% names(sim)) sim$id <- 1L

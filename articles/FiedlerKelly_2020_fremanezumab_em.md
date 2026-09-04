@@ -41,8 +41,8 @@ chronic migraine (CM, separate vignette
 `FiedlerKelly_2020_fremanezumab_cm`). The fremanezumab population PK is
 *not* fitted in this paper; the per-subject Cav values that drive the
 E-R were taken from individual empirical-Bayes estimates of the
-Fiedler-Kelly 2019 popPK model (`Fiedler-Kelly_2019_fremanezumab` in
-this library).
+Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab` in this
+library).
 
 The EM model relates monthly migraine days to fremanezumab Cav and
 time-on-treatment via three additive components:
@@ -377,8 +377,8 @@ the Results section.
 - **Cav as a per-period covariate, not a model output.** This is a
   PD-only file. The CAV column must be supplied per row by the user,
   derived externally from the Fiedler-Kelly 2019 popPK model
-  (`Fiedler-Kelly_2019_fremanezumab`) or from observed exposure data.
-  CAV = 0 in placebo periods.
+  (`FiedlerKelly_2019_fremanezumab`) or from observed exposure data. CAV
+  = 0 in placebo periods.
 - **Cav values in the virtual cohort.** The per-period regimen Cav
   profiles in the cohort builder are simplified hand-tuned values
   intended to bracket the observed median Cavs reported in the Results

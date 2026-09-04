@@ -12,7 +12,7 @@
   <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5270293/>
 - Sibling models: `modellib('Ahamadi_2017_pembrolizumab')`
   (exposure-response in advanced solid tumors);
-  `modellib('Elassaiss-Schaap_2017_pembrolizumab')` (KEYNOTE-001 popPK
+  `modellib('ElassaissSchaap_2017_pembrolizumab')` (KEYNOTE-001 popPK
   with direct-response IL-2 PD).
 
 ## Population
@@ -29,7 +29,7 @@ and tumor (Lindauer 2017 Tables S1, S2).
 
 For human dose-response simulations the plasma-PK sub-model is replaced
 by the Elassaiss-Schaap 2017 KEYNOTE-001 popPK
-(`modellib('Elassaiss-Schaap_2017_pembrolizumab')`). The mini-PBPK
+(`modellib('ElassaissSchaap_2017_pembrolizumab')`). The mini-PBPK
 tumor-tissue parameters (volume fractions, plasma flow, lymph flow, FcRn
 concentration, vascular and lymph reflection coefficients) are kept
 constant across species per the Shah & Betts 2012 platform assumption.
@@ -217,7 +217,7 @@ mod
 #>         dose_range = "0.1-10 mg/kg IV Q2W or Q3W in the published dose-response simulations; 2 mg/kg Q3W is the recommended lowest maximally efficacious dose", 
 #>         regions = "Translational simulation (no clinical trial population)", 
 #>         notes = "The model is fit on mouse PK + receptor-occupancy + tumor-volume data from MC38-bearing C57BL/6 syngeneic allograft mice receiving the mouse or rat DX400 surrogate anti-mouse-PD-1 antibody (216 mouse + 100 rat antibody PK samples from 316 mice; 466 tumor-volume + 139 receptor-occupancy PD samples; see Lindauer 2017 Tables S1-S2). For human dose-response simulations the plasma-PK sub-model is replaced by the Elassaiss-Schaap 2017 KEYNOTE-001 PK; the tumor-tissue mini-PBPK and the PD-1 feedback parameters are kept constant across species, and KdegPD-1 is allometrically scaled. Three melanoma growth-rate scenarios (fast / medium / slow) and two kill-rate scaling assumptions (allometric / growth-proportional) are listed in Table 1 and Table S3; the default coefficients in this file encode the central reference (medium growth, allometric scaling). Run the validation vignette for the other five scenarios. FcRn is treated as a conserved species in the endosomal space (FcRn_free + complex = constant total), which is the standard Shah & Betts 2012 implementation and resolves apparent typos in the Lindauer 2017 supplement transcription of the FcRn dFcRn/dt equation. The bimolecular Kon * (free PD-1) consumption term in the supplement's central-compartment equation lacks the C1 antibody multiplier; the implementation here applies the canonical mass balance Kon * C_antibody * (free target). See the validation vignette Assumptions and deviations section for details.")
-#>     reference <- "Lindauer A, Valiathan CR, Mehta K, Sriram V, de Greef R, Elassaiss-Schaap J, de Alwis DP. Translational Pharmacokinetic/Pharmacodynamic Modeling of Tumor Growth Inhibition Supports Dose-Range Selection of the Anti-PD-1 Antibody Pembrolizumab. CPT Pharmacometrics Syst Pharmacol. 2017;6(1):11-20. doi:10.1002/psp4.12130. Human plasma PK adapted from Elassaiss-Schaap J et al. (2017) CPT Pharmacometrics Syst Pharmacol 6(1):21-28; see modellib('Elassaiss-Schaap_2017_pembrolizumab'). Tumor-tissue physiologic structure follows Shah DK, Betts AM. J Pharmacokinet Pharmacodyn. 2012;39:67-86. doi:10.1007/s10928-011-9232-2. Tumor-growth backbone from Simeoni M et al. Cancer Res. 2004;64(3):1094-1101."
+#>     reference <- "Lindauer A, Valiathan CR, Mehta K, Sriram V, de Greef R, Elassaiss-Schaap J, de Alwis DP. Translational Pharmacokinetic/Pharmacodynamic Modeling of Tumor Growth Inhibition Supports Dose-Range Selection of the Anti-PD-1 Antibody Pembrolizumab. CPT Pharmacometrics Syst Pharmacol. 2017;6(1):11-20. doi:10.1002/psp4.12130. Human plasma PK adapted from Elassaiss-Schaap J et al. (2017) CPT Pharmacometrics Syst Pharmacol 6(1):21-28; see modellib('ElassaissSchaap_2017_pembrolizumab'). Tumor-tissue physiologic structure follows Shah DK, Betts AM. J Pharmacokinet Pharmacodyn. 2012;39:67-86. doi:10.1007/s10928-011-9232-2. Tumor-growth backbone from Simeoni M et al. Cancer Res. 2004;64(3):1094-1101."
 #>     units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 #>     vignette <- "Lindauer_2017_pembrolizumab"
 #>     ini({

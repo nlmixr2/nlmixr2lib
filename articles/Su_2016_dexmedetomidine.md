@@ -543,5 +543,5 @@ infants.
 - **PD model not included.** Su 2016 develops a PK model only; sedation
   depth, heart rate, and blood pressure are reported as safety endpoints
   but not modelled mechanistically. Use
-  `Perez-Guille_2018_dexmedetomidine` or `Talke_2018_dexmedetomidine`
-  for PK-PD work in dexmedetomidine.
+  `PerezGuille_2018_dexmedetomidine` or `Talke_2018_dexmedetomidine` for
+  PK-PD work in dexmedetomidine.

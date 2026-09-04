@@ -39,8 +39,8 @@ This vignette covers the chronic-migraine (CM) exposure-response model
 from Fiedler-Kelly 2020. The companion EM model is
 `FiedlerKelly_2020_fremanezumab_em`. The fremanezumab population PK is
 *not* fitted in this paper; per-subject Cav values are taken from the
-Fiedler-Kelly 2019 popPK model (`Fiedler-Kelly_2019_fremanezumab` in
-this library).
+Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab` in this
+library).
 
 The CM model relates monthly moderate-to-severe (M/S) headache days to
 fremanezumab Cav and time-on-treatment via a Hill-in-time placebo and a
@@ -366,7 +366,7 @@ mirroring the operator-confirmed Figure 2B interpretation.
   accordingly when the model is consumed.
 - **Cav as a per-period covariate, not a model output.** The CAV column
   must be supplied per row by the user, derived externally from the
-  Fiedler-Kelly 2019 popPK model (`Fiedler-Kelly_2019_fremanezumab`).
+  Fiedler-Kelly 2019 popPK model (`FiedlerKelly_2019_fremanezumab`).
 - **Cav values in the virtual cohort.** Hand-tuned from the Results
   section’s regimen medians; for exact reproduction of the paper’s full
   simulation, drive the model with EB Cav from the Fiedler-Kelly 2019

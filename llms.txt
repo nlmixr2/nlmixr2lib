@@ -89,6 +89,8 @@ this way.
   : Converts first order absorption model to Weibull absorption model
 - [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
   : Check a model against nlmixr2lib conventions
+- [`checkNamingRegisters()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkNamingRegisters.md)
+  : Check the naming registers for structural defects
 - [`combinePaste2()`](https://nlmixr2.github.io/nlmixr2lib/reference/combinePaste2.md)
   : Combine two strings using a naming convention
 - [`convertEmax()`](https://nlmixr2.github.io/nlmixr2lib/reference/convertEmax.md)

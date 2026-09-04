@@ -531,7 +531,7 @@ unchanged.
   range the linear-space proportional form and the strict log-normal
   `lnorm()` form differ by less than 5 percent at the percentile tails;
   the `prop()` mapping matches the convention used by other LTBS models
-  in `nlmixr2lib` (e.g., `Buil-Bruna_2015_lanreotide.R`).
+  in `nlmixr2lib` (e.g., `BuilBruna_2015_lanreotide.R`).
 
 - **Per-dose AUC placeholder.** For demonstration the vignette uses a
   single representative per-dose AUC of 200 ng\*h/mL across all subjects

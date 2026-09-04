@@ -548,7 +548,7 @@ cat(sprintf("Observed mean trough (Table 1) = 7.8 mg/L\n"))
   within-model covariate structure here is empty. Users who want to
   encode the Marquez-Megias 2023 albumin and ADA_POS covariate model
   alongside the Drweesh CL update should use
-  `modellib("Marquez-Megias_2023_adalimumab")` instead.
+  `modellib("MarquezMegias_2023_adalimumab")` instead.
 
 - **IIV interpretation.** Marquez-Megias 2023 Table 3 reports
   `IIV_CL/F = 0.667` and `IIV_V/F = 0.477` without explicitly stating

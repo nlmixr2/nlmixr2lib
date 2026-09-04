@@ -243,7 +243,7 @@ t_grid <- c(0.25, 0.5, 1, 2, 3, 5, 7, 10, 14, 21, 28)
 # IV bolus: C(t) = D / V * exp(-kel * t)
 iv <- solve_typ(make_events(1, dose = 100, route = "iv", tau = 1e6, n_dose = 1,
                             obs = t_grid, covs = typical_covs()))
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:03
 iv_closed <- 100 / theta[["vc"]] * exp(-kel * t_grid)
 
 # SC: C(t) = F * D * ka / (V * (ka - kel)) * (exp(-kel t) - exp(-ka t))
