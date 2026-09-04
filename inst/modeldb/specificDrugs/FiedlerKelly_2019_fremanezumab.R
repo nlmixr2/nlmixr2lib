@@ -1,4 +1,4 @@
-`Fiedler-Kelly_2019_fremanezumab` <- function() {
+FiedlerKelly_2019_fremanezumab <- function() {
   description <- "Two-compartment population PK model for fremanezumab (anti-CGRP IgG2 delta-a/kappa mAb) with first-order SC absorption, absorption lag time, and route-specific central volume / residual error supporting both IV and SC administration in healthy adults and adults with chronic or episodic migraine (Fiedler-Kelly 2019)."
   reference <- paste(
     "Fiedler-Kelly JB, Cohen-Barak O, Morris DN, Yoon E, Yeo KR, Ludwig EA,",
@@ -8,7 +8,7 @@
     "doi:10.1111/bcp.14096 (PMID 31418911).",
     sep = " "
   )
-  vignette <- "Fiedler-Kelly_2019_fremanezumab"
+  vignette <- "FiedlerKelly_2019_fremanezumab"
   units <- list(time = "day", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

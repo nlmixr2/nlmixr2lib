@@ -1,4 +1,4 @@
-`Drweesh_2026_adalimumab` <- function() {
+Drweesh_2026_adalimumab <- function() {
   description <- "One-compartment population PK model with first-order subcutaneous absorption and linear elimination for adalimumab originator (Humira) and biosimilars (Amgevita, Hyrimoz) in adults with inflammatory bowel disease and other autoimmune disorders, fit to multicenter therapeutic-drug-monitoring trough data from Saudi Arabia and Qatar (Drweesh 2026). Structural backbone (V/F, IIV variances, residual error) inherited from Marquez-Megias 2023 because Drweesh 2026 reports only ka (fixed) and the typical clearance value."
   reference <- paste(
     "Drweesh H, Alotaibi A, Alqassim HA, Eid MM, Emsaad SA, Saad MO,",
@@ -12,7 +12,7 @@
     "Population Pharmacokinetic Model of Adalimumab Based on Prior Information",
     "Using Real World Data. Biomedicines. 2023;11(10):2822.",
     "doi:10.3390/biomedicines11102822;",
-    "see modellib('Marquez-Megias_2023_adalimumab').",
+    "see modellib('MarquezMegias_2023_adalimumab').",
     sep = " "
   )
   vignette <- "Drweesh_2026_adalimumab"

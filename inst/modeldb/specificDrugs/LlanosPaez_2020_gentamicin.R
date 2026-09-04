@@ -1,7 +1,7 @@
-`Llanos-Paez_2020_gentamicin` <- function() {
+LlanosPaez_2020_gentamicin <- function() {
   description <- "Two-compartment IV population PK model for gentamicin in pediatric oncology and nononcology patients (Llanos-Paez 2020); body composition is described by normal fat mass (NFM = FFM + Ffat * (TBW - FFM)) with separate Ffat estimates for CL (0.48) and V1 (0.10) and Ffat fixed to 0 for Q and V2; CL is driven by Holford 2017 GFR-maturation (PMA-based Hill function) and a power ratio of age/sex-matched physiological mean serum creatinine (Ceriotti 2008) over individual SCR; oncology cohort has 15.4% lower V1 and 32.1% lower Q than nononcology."
   reference <- "Llanos-Paez CC, Staatz CE, Lawson R, Hennig S. Differences in the Pharmacokinetics of Gentamicin between Oncology and Nononcology Pediatric Patients. Antimicrob Agents Chemother. 2020;64(2):e01730-19. doi:10.1128/AAC.01730-19. Structural model carried over from Llanos-Paez et al. 2017 Antimicrob Agents Chemother 61:e00205-17 (doi:10.1128/AAC.00205-17); GFR maturation function from Holford NHG. 2017. Systems pharmacology learning from GAVamycin (PAGANZ TM50 = 46.5 weeks PMA, Hill = 3.43, adult plateau = 119 mL/min); serum-creatinine reference from Ceriotti F, et al. 2008. Clin Chem 54:559-566 (doi:10.1373/clinchem.2007.099648)."
-  vignette <- "Llanos-Paez_2020_gentamicin"
+  vignette <- "LlanosPaez_2020_gentamicin"
   units <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

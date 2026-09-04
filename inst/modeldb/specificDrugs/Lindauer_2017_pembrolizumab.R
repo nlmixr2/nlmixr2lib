@@ -22,7 +22,7 @@ Lindauer_2017_pembrolizumab <- function() {
     "Pembrolizumab. CPT Pharmacometrics Syst Pharmacol. 2017;6(1):11-20.",
     "doi:10.1002/psp4.12130. Human plasma PK adapted from Elassaiss-Schaap J et",
     "al. (2017) CPT Pharmacometrics Syst Pharmacol 6(1):21-28;",
-    "see modellib('Elassaiss-Schaap_2017_pembrolizumab'). Tumor-tissue physiologic",
+    "see modellib('ElassaissSchaap_2017_pembrolizumab'). Tumor-tissue physiologic",
     "structure follows Shah DK, Betts AM. J Pharmacokinet Pharmacodyn.",
     "2012;39:67-86. doi:10.1007/s10928-011-9232-2. Tumor-growth backbone from",
     "Simeoni M et al. Cancer Res. 2004;64(3):1094-1101.",

@@ -1,4 +1,4 @@
-"Ait-Oudhia_2016_sunitinib" <- function() {
+AitOudhia_2016_sunitinib <- function() {
   description <- paste0(
     "Joint population PK/PD model for sunitinib and its equipotent active ",
     "metabolite SU12662 in adults with advanced hepatocellular carcinoma (HCC) ",
@@ -34,7 +34,7 @@
     "doi:10.1002/psp4.12084.",
     sep = " "
   )
-  vignette <- "Ait-Oudhia_2016_sunitinib"
+  vignette <- "AitOudhia_2016_sunitinib"
   units <- list(time = "h", dosing = "mg", concentration = "ug/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

@@ -1,7 +1,7 @@
-"Long-Boyle_2015_busulfan" <- function() {
+LongBoyle_2015_busulfan <- function() {
   description <- "One-compartment IV PK model with Michaelis-Menten elimination for busulfan in pediatric and young adult patients (0.1-24 yrs) undergoing hematopoietic cell transplant. Allometric body-weight scaling on intrinsic clearance (CLin, exponent fixed 0.75) and central volume (Vc, exponent fixed 1) with reference weight 22 kg; hockey-stick age effect on CLin (linear increase below the 12-yr breakpoint applied to AGE directly, multiplicative linear decrease above). Correlated IIV on CLin and Vc; combined proportional + additive residual error (Long-Boyle 2015)."
   reference   <- "Long-Boyle JR, Savic R, Yan S, Bartelink I, Musick L, French D, Law J, Horn B, Cowan MJ, Dvorak CC. Population Pharmacokinetics of Busulfan in Pediatric and Young Adult Patients Undergoing Hematopoietic Cell Transplant: A Model-Based Dosing Algorithm for Personalized Therapy and Implementation Into Routine Clinical Use. Ther Drug Monit. 2015;37(2):236-245. doi:10.1097/FTD.0000000000000131"
-  vignette    <- "Long-Boyle_2015_busulfan"
+  vignette    <- "LongBoyle_2015_busulfan"
   units       <- list(time = "h", dosing = "mg", concentration = "mg/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what

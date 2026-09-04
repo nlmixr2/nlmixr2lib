@@ -63,7 +63,7 @@
     # `$MODEL COMP=(CUMHAZ)` with `DADT(<cumhaz>) = HAZARD`.
     "cumhaz",
     # Renal-cortex accumulation compartment used by aminoglycoside
-    # nephrotoxicity models (Llanos-Paez_2017_gentamicin). Tracks drug
+    # nephrotoxicity models (LlanosPaez_2017_gentamicin). Tracks drug
     # amount sequestered in the renal cortex via saturable uptake from
     # the central compartment plus first-order tubular reabsorption back
     # out (Rougier 2003 / Croes 2011 mechanism).

@@ -35,7 +35,7 @@ Zhang_2025_fluconazole <- function() {
     # specimen = "not applicable": the source defines this state as a kinetic compartment for
     # CRRT elimination (Results 3.2, "the CRRT compartment describes drug elimination via CRRT")
     # and never assigns it a biological matrix. Vcrrt = 23.5 L is a body-scale apparent volume,
-    # so it is NOT the extracorporeal circuit (contrast Leuppi-Taegtmeyer_2019_colistin.R, whose
+    # so it is NOT the extracorporeal circuit (contrast LeuppiTaegtmeyer_2019_colistin.R, whose
     # filter/cartridge states carry litre-scale priming volumes).
     crrt    = list(analyte = "fluconazole", units = "mg", specimen = "not applicable", verified = TRUE)
   )

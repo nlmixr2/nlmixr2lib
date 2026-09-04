@@ -10,7 +10,7 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
       units              = "ug/mL",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Time-fixed within each 28-day dosing-interval aggregation. In Fiedler-Kelly 2020 the per-subject Cav values are derived from individual empirical-Bayes PK estimates from the previously-published Fiedler-Kelly 2019 population PK model (Fiedler-Kelly_2019_fremanezumab in this library). Set to 0 for placebo periods.",
+      notes              = "Time-fixed within each 28-day dosing-interval aggregation. In Fiedler-Kelly 2020 the per-subject Cav values are derived from individual empirical-Bayes PK estimates from the previously-published Fiedler-Kelly 2019 population PK model (FiedlerKelly_2019_fremanezumab in this library). Set to 0 for placebo periods.",
       source_name        = "CAV"
     ),
     ACUTE_MED_DAYS = list(

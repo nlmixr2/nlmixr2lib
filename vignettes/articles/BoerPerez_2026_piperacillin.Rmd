@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r readModelDb("Boer-Perez_2026_piperacillin")()$reference`
-* Description: `r readModelDb("Boer-Perez_2026_piperacillin")()$description`
+* Citation: `r readModelDb("BoerPerez_2026_piperacillin")()$reference`
+* Description: `r readModelDb("BoerPerez_2026_piperacillin")()$description`
 * Article: <https://doi.org/10.1128/aac.00998-25>
 
 # Population
@@ -43,12 +43,12 @@ external-validation cohort. Demographic and clinical details are summarized in
 Boer-Perez 2026 Table 1.
 
 The same metadata is available programmatically via
-`readModelDb("Boer-Perez_2026_piperacillin")()$population`.
+`readModelDb("BoerPerez_2026_piperacillin")()$population`.
 
 # Source trace
 
 The per-parameter origin is recorded inline next to each `ini()` entry in
-`inst/modeldb/specificDrugs/Boer-Perez_2026_piperacillin.R`. The table below
+`inst/modeldb/specificDrugs/BoerPerez_2026_piperacillin.R`. The table below
 collects them in one place for review.
 
 | Equation / parameter | Value | Source location |
@@ -148,7 +148,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # Simulation
 
 ```{r simulate}
-mod <- readModelDb("Boer-Perez_2026_piperacillin")()
+mod <- readModelDb("BoerPerez_2026_piperacillin")()
 
 # Stochastic VPC across IIV in CL and V
 sim <- rxode2::rxSolve(

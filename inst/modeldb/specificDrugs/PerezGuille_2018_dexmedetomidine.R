@@ -1,4 +1,4 @@
-"Perez-Guille_2018_dexmedetomidine" <- function() {
+PerezGuille_2018_dexmedetomidine <- function() {
   description <- "Two-compartment IV population PK with sigmoidal Imax PD on heart rate (HR) and mean arterial pressure (MAP) fractional responses for dexmedetomidine in Mexican Mestizo children (2-18 y) undergoing ambulatory surgery, with a priori allometric scaling on CL and Q (exponent 0.75) and V1 and V2 (exponent 1) at a 70 kg reference weight (Perez-Guille et al. 2018, Tables 2 and 3, allometric model)"
   reference <- paste(
     "Perez-Guille MG, Toledo-Lopez A, Rivera-Espinosa L, Alemon-Medina R,",
@@ -11,7 +11,7 @@
     "doi:10.1213/ANE.0000000000003413",
     sep = " "
   )
-  vignette <- "Perez-Guille_2018_dexmedetomidine"
+  vignette <- "PerezGuille_2018_dexmedetomidine"
   units <- list(time = "h", dosing = "ug", concentration = "ng/mL") # Methods: dose 0.7 ug/kg single IV infusion over 10-15 min; plasma DEX measured by HPLC-ESI-MS/MS (5 pg/mL LLOQ); Table 2 CL in L/h, V1/V2 in L; Table 3 IC50 in ng/mL; with central in ug and vc in L, Cc = central/vc has units ug/L = ng/mL.
 
   # Issue #482: what each ODE state holds, in what amount units, in what

@@ -61,7 +61,7 @@ Li_2025_amikacin <- function() {
         "The source paper reports PMA in WEEKS; the canonical PAGE column",
         "carries months, so model() converts back with pma_wk = PAGE * 4.35",
         "before evaluating either term, exactly as in",
-        "Boer-Perez_2026_piperacillin.R and CohenWolkowiez_2014_piperacillin.R.",
+        "BoerPerez_2026_piperacillin.R and CohenWolkowiez_2014_piperacillin.R.",
         "Cohort PMA: median 32.1 weeks (range 29.1-39.1), Li 2025 Table 1",
         "(equivalently PAGE median 7.38 months, range 6.69-8.99)."
       ),

@@ -50,7 +50,7 @@ TRACKER Duo) with an LLOQ of 0.1 mg/L. See Marquez-Megias 2023 Table 1
 for the full demographic summary.
 
 The same metadata is available programmatically via
-`readModelDb("Marquez-Megias_2023_adalimumab")$population`.
+`readModelDb("MarquezMegias_2023_adalimumab")$population`.
 
 # Source trace
 
@@ -173,7 +173,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # Simulation
 
 ```{r simulate}
-mod <- readModelDb("Marquez-Megias_2023_adalimumab")
+mod <- readModelDb("MarquezMegias_2023_adalimumab")
 
 sim <- rxode2::rxSolve(
   mod, events = events,
