@@ -3986,6 +3986,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Valproic acid (Ogusu 2014)"
+        href: articles/Ogusu_2014_valproic_acid.html
       - text: "Valproic acid (Zhang 2024)"
         href: articles/Zhang_2024_valproic_acid.html
       - text: "Valproic acid base (Zhang 2023)"
@@ -5400,6 +5402,7 @@ articles:
   - articles/Odongo_2015_sulfadoxinePyrimethamine
   - articles/Ogasawara_2020_durvalumab
   - articles/Ogungbenro_2009_penciclovir
+  - articles/Ogusu_2014_valproic_acid
   - articles/Ohara_2014_warfarin_s
   - articles/Oishi_2014_fesoterodine
   - articles/Ojara_2024_lamivudine

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ogusu 2014 valproic acid ([doi:10.1371/journal.pone.0111066](https://doi.org/10.1371/journal.pone.0111066)) -- Japanese patients with epilepsy, aged 2 to 52 years.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
