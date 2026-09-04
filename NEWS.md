@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2022 aripiprazole once monthly population PK and time-to-relapse exposure-response models ([doi:10.1002/cpdd.1022](https://doi.org/10.1002/cpdd.1022)) -- healthy adults and adults with schizophrenia or schizoaffective disorder.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.

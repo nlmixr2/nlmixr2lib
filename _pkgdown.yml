@@ -270,6 +270,10 @@ navbar:
         href: articles/Knights_2015_aripiprazole.html
       - text: "Aripiprazole (Koue 2007)"
         href: articles/Koue_2007_aripiprazole.html
+      - text: "Aripiprazole (Wang 2022)"
+        href: articles/Wang_2022_aripiprazole.html
+      - text: "Aripiprazole relapse (Wang 2022)"
+        href: articles/Wang_2022_aripiprazole.html
       - text: "Armodafinil (Darwish 2012)"
         href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
       - text: "Artemether (Hietala 2010)"
@@ -5838,6 +5842,7 @@ articles:
   - articles/Wang_2018_daclatasvir_asunaprevir
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
+  - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
   - articles/Wang_2024_amphenmulin
   - articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp
