@@ -208,6 +208,8 @@ navbar:
         href: articles/Beredaki_2024_amphotericinB_liposomal.html
       - text: "AmphotericinB liposomal cauris48h (Beredaki 2024)"
         href: articles/Beredaki_2024_amphotericinB_liposomal.html
+      - text: "Ampicillin (Setiawan 2023)"
+        href: articles/Setiawan_2023_ampicillin_sulbactam.html
       - text: "Ampicillin (Tremoulet 2014)"
         href: articles/Tremoulet_2014_ampicillin.html
       - text: "Ampicillin foal (Bardhi 2026)"
@@ -3542,6 +3544,8 @@ navbar:
         href: articles/Wang_2024_sugemalimab.html
       - text: "Sulbactam (Onita 2025)"
         href: articles/Onita_2025_sulbactam.html
+      - text: "Sulbactam (Setiawan 2023)"
+        href: articles/Setiawan_2023_ampicillin_sulbactam.html
       - text: "Sulbactam durlobactam (Cammarata 2024)"
         href: articles/Cammarata_2024_sulbactam_durlobactam.html
       - text: "Sulbactam human (Abouelhassan 2024)"
@@ -5601,6 +5605,7 @@ articles:
   - articles/Schutte_2018_desmopressin
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/Seng_2015_isoniazid
+  - articles/Setiawan_2023_ampicillin_sulbactam
   - articles/Sexton_2024_lanadelumab_qsp
   - articles/Shah_2012_mAb_PBPK
   - articles/Shah_2023_benzylpenicillin
