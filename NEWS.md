@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Lin 2023 recombinant Erwinia chrysanthemi asparaginase (JZP458) ([doi:10.1111/cts.13499](https://doi.org/10.1111/cts.13499)) -- pediatric and young-adult patients with acute lymphoblastic leukemia or lymphoblastic lymphoma.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
