@@ -4156,6 +4156,8 @@ navbar:
         href: articles/Adams_1998_zalcitabine.html
       - text: "Zaleplon (Izat 2025)"
         href: articles/Izat_2025_aldehyde_oxidase_substrates.html
+      - text: "Zaltoprofen (Jang 2023)"
+        href: articles/Jang_2023_zaltoprofen.html
       - text: "Zanubrutinib acalabrutinib ibrutinib qsp (Demin 2025)"
         href: articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp.html
       - text: "Zastaprazan (Yang 2024)"
@@ -4979,6 +4981,7 @@ articles:
   - articles/Jager_2011_gemtuzumab
   - articles/Jain_2011_sorafenib
   - articles/Jaiswal_2025_dordaviprone
+  - articles/Jang_2023_zaltoprofen
   - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Janssen_2023_pregnancy_cytotoxics
   - articles/Jansson_2008_eflornithine
