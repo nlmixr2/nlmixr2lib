@@ -194,6 +194,16 @@
 
 - Add Li 2023 TQ-B3203 ([doi:10.3389/fphar.2023.1102244](https://doi.org/10.3389/fphar.2023.1102244)) -- Chinese adults with advanced solid tumors.
 
+- Add Aumente 2006 methotrexate ([doi:10.2165/00003088-200645120-00007](https://doi.org/10.2165/00003088-200645120-00007)) -- Spanish children with acute lymphoblastic leukaemia.
+
+- Add Gao 2021 methotrexate ([doi:10.3389/fphar.2021.701452](https://doi.org/10.3389/fphar.2021.701452)) -- Chinese children with acute lymphoblastic leukaemia.
+
+- Add Hui 2019 methotrexate ([doi:10.1002/jcph.1349](https://doi.org/10.1002/jcph.1349)) -- Chinese children with acute lymphoblastic leukaemia.
+
+- Add Medellin-Garibay 2020 methotrexate ([doi:10.1007/s00280-019-03977-1](https://doi.org/10.1007/s00280-019-03977-1)) -- Mexican children with acute lymphoblastic leukaemia.
+
+- Add Jonsson 2011 methotrexate ([doi:10.1002/pbc.22999](https://doi.org/10.1002/pbc.22999)) -- Nordic children with acute lymphoblastic leukaemia.
+
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
   114/2005 -- the same analysis Lahu published. All 40 shipped parent and
