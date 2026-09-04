@@ -2310,12 +2310,22 @@ navbar:
         href: articles/Yoon_2013_metformin.html
       - text: "Metformin (vanRongen 2018)"
         href: articles/vanRongen_2018_metformin.html
+      - text: "Methotrexate (Aumente 2006)"
+        href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Blackman 2026)"
         href: articles/Blackman_2026_methotrexate.html
+      - text: "Methotrexate (Gao 2021)"
+        href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Gebhard 2023)"
         href: articles/Gebhard_2023_leukemia_maintenance_therapy.html
+      - text: "Methotrexate (Hui 2019)"
+        href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Joerger 2006)"
         href: articles/Joerger_2006_methotrexate.html
+      - text: "Methotrexate (Jonsson 2011)"
+        href: articles/Wang_2023_methotrexate.html
+      - text: "Methotrexate (MedellinGaribay 2020)"
+        href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Olivo 2024)"
         href: articles/Olivo_2024_methotrexate.html
       - text: "Methotrexate (Ruhs 2012)"
@@ -5839,6 +5849,7 @@ articles:
   - articles/Wang_2020_ontamalimab
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2023_dorzagliatin
+  - articles/Wang_2023_methotrexate
   - articles/Wang_2024_amphenmulin
   - articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp
   - articles/Wang_2024_evorpacept_qsp
