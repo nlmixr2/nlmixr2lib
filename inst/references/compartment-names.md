@@ -40,7 +40,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - `compartmentRegex = "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum)(_slow|_fast)?[0-9]+$"` -- numbered-chain compartments: transit absorption chains (`transit1`, `transit2`, ...), effect-compartment chains (`effect1`, `effect2`, ...), precursor pools for delayed-feedback IDR (`precursor1`, `precursor2`, ...), latent chains (`lat1`, ...), parallel-absorption depots (`depot1`, `depot2`, ...), erythrocyte age-transit chains (`erythrocytes1`, ..., `erythrocytes4`), the reticulocyte age-transit chain that feeds them (`reticulocytes1`, `reticulocytes2`, ...), the paired corpuscular-hemoglobin chain (`mch1`, ..., `mch4`), Gabrielsson-Hjorth moderator / tolerance chains (`moderator1`, `moderator2`, ...), and the concentric caseum rings of a tuberculosis granuloma (`caseum1`, ..., `caseum6`). Numeric suffix is required (a model that lumps the structure into one state uses the bare canonical `effect` / `depot` / `erythrocytes` / `reticulocytes` / `mch` / `moderator` / `caseum`). An optional `_slow` / `_fast` qualifier may sit between the prefix and the number, registering the dual-rate effect-delay cascade families (`effect_slow1`, `effect_fast1`, ...); see the `effect_slow<n>` / `effect_fast<n>` entry below.
 - `darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$"` -- DAR-numbered ADC isoform compartments (`dar0_central`, `dar4_peripheral1`, ...).
 - `targetLocationRegex = "^(target|complex)_(csf|isf|peripheral[0-9]?)$"` -- target species in physiologic / numbered-peripheral compartments (`target_csf`, `target_isf`, `target_peripheral`, `target_peripheral1`, `complex_peripheral`, ...).
-- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`).
+- `pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc|bound)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain_globus_pallidus|brain_olfactory_bulb|brain_cerebellum|brain|pituitary|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$` -- membrane-limited PBPK sub-compartments: vascular blood cells (`bc_`), endosomal unbound (`eu_`), endosomal FcRn-bound (`eb_`), endosomal free FcRn (`fr_`), interstitial space (`is_`), intracellular (`int_`), mRNA pool (`mrna_`), luciferase reporter (`luc_`), saturable bound / protein-complexed pool (`bound_`). See the "Saturable bound tissue pools" section below for `bound_`. Longer organ alternatives are listed before the prefixes they extend so the anchored alternation matches `brain_globus_pallidus` rather than stopping at `brain`.
 - `rbcCompartmentRegex = "^rbc_[a-z0-9]+$"` -- intracellular drug / active-metabolite pools inside red blood cells, carried as ODE states in concentration units (`rbc_mtx`, `rbc_tgn`). Deliberately kept out of `registeredMetabolites` because the analyte is frequently the *parent* drug (methotrexate), and recording a parent drug in the metabolite register would mislead later readers of that list. See the "Intracellular red-cell analyte pools" section below for the naming rule and the per-analyte entries.
 - `slabCompartmentRegex = "^[a-z][a-z_]*_slab[0-9]+$"` -- method-of-lines spatial discretisation slabs of a single tissue (`buccal_slab1` ... `buccal_slab20`). The `<tissue>_slab<n>` stem states explicitly that the numbering indexes numerical discretisation elements of one tissue, not distinct anatomical structures. See the "Method-of-lines spatial discretisation slabs" section below.
 - `compartmentRegex` and the four extension patterns above are extended only when a new paper introduces a structurally new shape. Adding a new spelled-out organ to the `pbpkSubCompartmentRegex` is a routine extension; introducing a new chain prefix is a naming-audit decision.
@@ -198,10 +198,27 @@ The `brain_<region>` namespace was adopted 2026-05-28 to disambiguate brain-anat
 
 ### brain_striatum (**canonical striatum compartment**)
 - **Type:** compartment
-- **Role:** Striatum extracellular drug compartment.
+- **Role:** Striatum extracellular drug compartment, i.e. caudate + putamen.
 - **Source aliases:**
   - `striatum` -- deprecated bare form.
 - **Example models:** `Stevens_2012_remoxipride.R`, `Grimm_2023_gantenerumab.R`.
+- **Notes:** Scoped to the striatum proper. Do NOT use it for the **globus pallidus**, which has its own canonical `brain_globus_pallidus`: the two are separate structures with separate volumes (Campbell 2023 supplementary Table S1 reports caudate 0.011, putamen 0.010 and globus pallidus 0.0022 as fractions of brain). Beware source code that says "striatum" but means the globus pallidus -- the Yoon 2019 rat manganese model and its Campbell 2023 primate recast both keep `ST` / `STM` variable names for a compartment whose volume is the globus pallidus.
+
+
+### brain_globus_pallidus (**canonical globus pallidus compartment**)
+- **Type:** compartment
+- **Role:** Globus pallidus, the basal-ganglia nucleus in which manganese and other divalent metals accumulate preferentially and which is the target region for metal-induced parkinsonian neurotoxicity. Holds the FREE (unbound) metal amount; the saturably bound pool alongside it is `bound_brain_globus_pallidus`.
+- **Source aliases:**
+  - `STM` / `ABRST` / `KINSTC` / `BMAXSTC` -- Campbell 2023 supplement code, which retains the `ST`/striatum variable names inherited from the Yoon 2019 adult-rat model it was recast from. The supplement itself annotates the volume assignment `VSTM = VSTMC * VBRN` with "striatum (globus pallidus for monkey and human)".
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+- **Notes:** Deliberately NOT `brain_striatum`, despite the source code's variable names. The compartment's volume fraction (0.0022 of brain in monkey, 0.0024 in human) is the "Globus Pallidus" row of Campbell 2023 Table 1, and supplementary Table S1 reports caudate (0.011), putamen (0.010) and globus pallidus (0.0022) as separate structures -- so the state is anatomically the globus pallidus and not the striatum, whose canonical `brain_striatum` remains scoped to caudate+putamen. Campbell 2023's headline sensitivity analysis (Table 3) is explicitly "peak Mn concentrations in the globus pallidus", so mapping it onto `brain_striatum` would mislabel the paper's primary endpoint.
+
+### brain_olfactory_bulb (**canonical olfactory bulb compartment**)
+- **Type:** compartment
+- **Role:** Olfactory bulb. Distinguished from every other brain region by receiving a direct nose-to-brain input from the nasal olfactory epithelium (`depot_brain`) in addition to its perfusion from brain blood, which makes it the first CNS region to rise after inhalation exposure to a nose-to-brain-transported agent. Holds the FREE amount; the bound pool is `bound_brain_olfactory_bulb`.
+- **Source aliases:**
+  - `OFB` / `ABROB` / `KINOBC` / `BMAXOBC` -- Campbell 2023 supplement code notation.
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
 
 ### brain_cortex (**canonical brain cortex compartment**)
 - **Type:** compartment
@@ -1279,6 +1296,35 @@ PBPK organ-amount compartments used by mass-balance whole-body PBPK extractions.
 
 ---
 
+## Saturable bound tissue pools (`bound_<organ>` namespace)
+
+Tissue-binding PBPK models split each tissue's burden into a **free** pool, which is what
+diffuses across the cell membrane and drives toxicity, and a **bound** pool held on a finite
+number of intracellular sites (metal-binding proteins, enzyme cofactor sites, storage
+organelles). Name the bound pool `bound_<organ>`, alongside the canonical free-pool name for
+that organ:
+
+```
+lung                 # free amount
+bound_lung           # saturably bound amount
+lung_vas             # organ vascular sub-pool (registered `vas` suffix)
+```
+
+Rules for using the family:
+
+- **The bound pool is capacity-limited and the free-site term must be shared.** Write the free
+  capacity as `bmax_<organ> - bound_<organ>` (minus any labelled-tracer bound pool, see `mn54`),
+  never as a fixed constant -- saturation of that capacity is the whole point of the structure
+  and is what produces the nonlinear dose response.
+- **Bound is not `deep`.** The registered `deep` suffix is a *kinetically* deep, slowly
+  exchanging pool (`liver_deep` in Ayyar 2024 givosiran). `bound_<organ>` is a *capacity*-limited
+  pool that may exchange very rapidly -- in Campbell 2023 the association/dissociation half-lives
+  are minutes. Choose by whether the defining property is slow exchange (`deep`) or a finite
+  number of sites (`bound_`).
+- **Report the equilibrium constant, not just the rates.** `KD = kd/ka` is the quantity that
+  transfers across tissues and species, so state it in the model file even when the paper
+  parameterises the pair.
+
 ## Method-of-lines spatial discretisation slabs (`<tissue>_slab<n>` namespace)
 
 Some mechanistic papers describe transport through a tissue with a **partial** differential equation -- most commonly Fick's second law, `dC/dt = D d2C/dx2`, across an epithelium or membrane of finite thickness. rxode2 solves ODEs only, so such a model is encoded as a *method of lines*: the spatial coordinate is divided into `N` equal slabs and each slab's drug amount becomes one ODE state, with diffusive fluxes between neighbours.
@@ -2138,6 +2184,22 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
   - `GL` / `A_GL` -- gut lumen state in `Ramachandran_2023_*_pbpk.R` (Appendix S1 section 1).
 - **Example models:** `Ramachandran_2023_rifampicin_pbpk.R` (founding example; `kr = 0.17 /h` for rifampicin enterohepatic circulation), `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R` (all three with `kr = 0`, so the lumen is a terminal faecal-transit sink).
 
+
+### enterocyte (**canonical intestinal epithelial storage pool**)
+- **Type:** compartment
+- **Role:** Intestinal epithelial (enterocyte) storage pool. Material is taken up into the epithelium from `gut_lumen` and returned to the lumen downstream by epithelial sloughing rather than passing into the systemic circulation, so the pool is a delaying sink on the faecal path and not an absorption step. Registered for nutrient / trace-metal PBPK models in which mucosal sequestration and turnover regulate net absorption.
+- **Source aliases:**
+  - `AGE` / `FENT` / `KENT` -- Campbell 2023 supplement code notation ("amount of Mn in enterocytes").
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+- **Notes:** Distinct from `presystemic`, which holds ABSORBED material en route to the systemic circulation. Material in `enterocyte` never reaches plasma -- it is destined for `gut_lumen_lower` and then `a_feces`.
+
+### gut_lumen_lower (**canonical lower-gastrointestinal luminal reservoir**)
+- **Type:** compartment
+- **Role:** Lower gastrointestinal luminal contents, downstream of the absorptive segment. Receives unabsorbed material from `gut_lumen`, sloughed epithelium from `enterocyte`, and the unreabsorbed fraction of biliary output, and drains first-order to `a_feces`. Registered so a model that resolves upper (absorptive) from lower (excretory) lumen has canonical names for both.
+- **Source aliases:**
+  - `ALGL` / `KFECES` -- Campbell 2023 supplement code notation ("amount of Mn in lower GI").
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+
 ### brain (**canonical bare brain compartment**)
 - **Type:** compartment
 - **Role:** Bare brain organ compartment in full-body PBPK extractions.
@@ -2169,6 +2231,23 @@ PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full
   - `T` / `C_T` -- the bulk soft-tissue store of Ward 2026, which bundles muscle, soft tissue and liver into one well-mixed pool because they carry similar magnesium concentrations.
 - **Example models:** `Zhang_2011_nutlin3a.R`, `Ward_2026_magnesium_pbpk.R`.
 - **Notes:** The `other` role is defined by the LUMPING (a single pool standing in for every organ the model does not resolve individually), not by the pool being small or residual. Ward 2026's `other` is the dominant magnesium store of the whole model -- 52.7 L, and roughly three quarters of the systemic buildup time constant -- and is still correctly `other`, because the paper never resolves muscle from liver from generic soft tissue. Ratified 2026-08-28 (sidecar `oare_PMC12878740` q1 = C), which explicitly declined to register a second bare-lumped-tissue canonical named `tissue` for this role.
+
+
+### pituitary (**canonical bare pituitary-gland compartment**)
+- **Type:** compartment
+- **Role:** Pituitary gland as a whole-organ compartment. In Campbell 2023 it is perfused from the brain blood pool (`brain_vascular`) alongside the resolved brain regions, and is one of the highest-manganese structures in the body. Holds the FREE amount; the bound pool is `bound_pituitary`.
+- **Source aliases:**
+  - `PIT` / `ABRPT` / `KINPTC` / `BMAXPTC` -- Campbell 2023 supplement code notation.
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+- **Notes:** Distinct from `lactotroph`, the register's only other pituitary-adjacent entry, which is a population of anterior-pituitary lactotroph CELLS in a prolactin-feedback QSP model rather than a drug/metal amount in the gland. Registered as a bare organ rather than `brain_pituitary` because the pituitary is an endocrine gland outside the blood-brain barrier, not brain parenchyma; the `brain_` namespace stays scoped to CNS parenchymal regions.
+
+### nasal_respiratory (**canonical nasal respiratory epithelium compartment**)
+- **Type:** compartment
+- **Role:** Perfused nasal respiratory epithelium -- the non-olfactory nasal mucosa. Exchanges with arterial blood at the nasal blood flow and receives deposited inhaled material from `depot_nasal`, providing the systemic-absorption path for the nasal fraction of an inhaled dose. Its volume is computed from a surface area and an assumed epithelial thickness rather than a body-weight fraction.
+- **Source aliases:**
+  - `ANOSE` / `VNRESP` / `SANRESP` -- Campbell 2023 supplement code notation.
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+- **Notes:** The counterpart olfactory epithelium is NOT a separate tissue compartment in this family -- material deposited there goes to `depot_brain` (the registered intranasal direct-to-brain depot) and is transported to `brain_olfactory_bulb`, because the olfactory route's interest is the direct CNS input rather than systemic absorption.
 
 ### skin (**canonical bare skin compartment**)
 - **Type:** compartment
@@ -3236,6 +3315,22 @@ The `depot_<route>` pattern distinguishes parallel dosing routes when a model ca
 - **Example models:** `Fan_2025_nb457trimer_mouse.R` (founding example), `Fan_2025_ibalizumab_mouse.R`, `Fan_2025_nb457trimer_human.R`, `Fan_2025_ibalizumab_human.R`.
 - **Notes:** Registered 2026-08-19 as a well-formed member of the existing `depot_<route>` family (`depot_im`, `depot_oral`, `depot_brain`). Deliberately preferred over the numbered `depot1` / `depot2` form because the route is load-bearing: the two depots in a parallel-route model are not interchangeable, they carry route-specific absorption rate constants, and a study arm selects exactly one of them.
 
+
+### depot_lung (**canonical pulmonary deposition depot**)
+- **Type:** compartment
+- **Role:** Inhaled material deposited on the pulmonary / tracheobronchial epithelium and not yet absorbed. Drains by two parallel first-order routes: a "deep" path into the perfused `lung` tissue and a "shallow" path directly into `arterial` blood. A deposition depot, not a tissue: it holds material sitting on an epithelial surface, so it has no volume and no concentration.
+- **Source aliases:**
+  - `ADEPLU` / `FDEPLU` / `KDEPLUC` / `KSHALLUC` -- Campbell 2023 supplement code notation.
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+
+### depot_nasal (**canonical nasal deposition depot**)
+- **Type:** compartment
+- **Role:** Inhaled material deposited on the nasal respiratory epithelium and not yet absorbed; drains first-order into `nasal_respiratory`. The respiratory-region sibling of `depot_brain`, which carries the olfactory-region deposit.
+- **Source aliases:**
+  - `ADEPNR` / `FDEPNR` / `KDEPNRC` -- Campbell 2023 supplement code notation.
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+- **Notes:** A well-formed member of the `depot_<route>` family, but note that the "route" element here names the deposition SITE within the airway rather than an administration route the way `depot_sc` / `depot_ip` / `depot_im` do. An inhalation PBPK that resolves regional deposition needs one depot per region: `depot_lung`, `depot_nasal`, and `depot_brain` for the olfactory region.
+
 ### depot_sc (**canonical subcutaneous depot**)
 - **Type:** compartment
 - **Role:** Subcutaneous depot used in parallel-route models where a bare `depot` would be ambiguous because a second dosing route is modelled explicitly. Pairs with the absorption rate constant `lka_sc` / `ka_sc`, which is already in use across the library.
@@ -3820,6 +3915,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** `[13C5]-elinzanetant`, `13C-elinzanetant` -- Willmann 2024 Table 2 and Figure 1 notation.
 - **Example models:** `Willmann_2024_elinzanetant.R` (100 ug [13C5]-elinzanetant intravenous microdose in study 21772, two-compartment, sharing CL, Q, Vc and Vp with the orally dosed parent; its metabolites were not measured, so the whole of CL leaves the system).
 - **Notes:** Generic across drugs -- reuse this suffix for any `[13C]`-labelled tracer arm. A future `d<n>` or `c14` sibling should be registered separately if a deuterium- or carbon-14-labelled tracer appears.
+
+
+### mn54 (**canonical [54Mn] radiotracer analyte suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Manganese-54 radiolabelled form of the analyte, administered as a carrier-free tracer alongside the endogenous / unlabelled pool so that whole-body retention and route-specific clearance can be followed without perturbing total body burden. Not a metabolite: the labelled species is chemically identical to the parent and carries its own full set of compartments. The labelled and unlabelled forms share every disposition parameter AND compete for the same saturable binding sites, so the free-site term is computed from the sum of both bound pools (`bmax - bound_<organ> - bound_<organ>_mn54`) and the two systems are genuinely coupled rather than separable.
+- **Source aliases:**
+  - `X`-prefixed states (`XAL`, `XABRST`, `XBMNLIV`, ...) -- Campbell 2023 supplement code, which prefixes every tracer state with `X`.
+- **Example models:** `Campbell_2023_manganese_monkey_pbpk.R`, `Campbell_2023_manganese_human_pbpk.R`.
+- **Notes:** The radiotracer sibling of `c13`, whose entry anticipated this extension ("a future `d<n>` or `c14` sibling should be registered separately"). Kept nuclide-specific rather than a generic `tracer` suffix so that a study dosing two labels can name its arms apart. Suffix position is last, after any sub-compartment prefix: `bound_liver_mn54`, `bone_vas_mn54`.
 
 ### ko739 (**canonical KO-739 ziftomenib active metabolite suffix**)
 - **Type:** metabolite-suffix
