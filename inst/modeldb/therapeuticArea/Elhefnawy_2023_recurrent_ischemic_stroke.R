@@ -36,7 +36,11 @@ Elhefnawy_2023_recurrent_ischemic_stroke <- function() {
     "Front Neurol. 2023;14:1118711. doi:10.3389/fneur.2023.1118711.",
     "Structural equations are Equations 1-5 and the unnumbered covariate",
     "equation in Methods; the piecewise scale / shape switching is defined in",
-    "the Table 2 footnote; all parameter estimates are Table 3.",
+    "the Table 2 footnote; all parameter estimates are Table 3. The covariate",
+    "screen (univariate testing, forward inclusion, backward elimination, each",
+    "as a change in objective function value) is Supplementary Table 1_S, the",
+    "single file in the EuropePMC open-access supplementary deposit for",
+    "PMC10176964; it contains no control stream and no parameter values.",
     sep = " "
   )
   vignette <- "Elhefnawy_2023_recurrent_ischemic_stroke"
@@ -85,42 +89,88 @@ Elhefnawy_2023_recurrent_ischemic_stroke <- function() {
   # Covariates that Elhefnawy 2023 collected and screened but did not retain in
   # the final model. Listed here for provenance only; none is referenced in
   # model(). The paper reports no point estimate for any of them, so no value
-  # could be transcribed even if one were wanted.
+  # could be transcribed even if one were wanted -- the screen is reported only
+  # as changes in objective function value.
+  #
+  # The screen itself is Supplementary Table 1_S, "Univariate and multivariate
+  # analysis of covariate effects on the hazard of recurrent IS after index IS",
+  # the single file in the EuropePMC open-access supplementary deposit for
+  # PMC10176964. Fifteen candidates were tested univariately against a base OFV
+  # of 2808.68; the significant ones went through stepwise forward inclusion
+  # (base OFV 2737.615) and then backward elimination. The Table 1_S footnote
+  # sets the thresholds: "Significance; p value < 0.05 in univariate analysis
+  # and stepwise forward inclusion. Significance < 0.01 in backward
+  # elimination." That stricter backward threshold is what reduces the model to
+  # the four covariates of Table 3 -- see DIS_DIAB below.
+  #
+  # These names are documentation labels for the paper's screen, not registered
+  # canonical covariate columns: none is used in model(), so none is added to
+  # inst/references/covariate-columns.md.
   covariatesDataExcluded <- list(
     DIS_DIAB = list(
       description = "Diabetes mellitus before the index stroke (3,493 / 7,697 = 45.38 percent).",
       units = "(binary)", type = "binary",
-      notes = "Screened in the univariate covariate step (Elhefnawy 2023 Methods, 'Collected variables' lists DM among the tested concomitant diseases) but not retained in the final model of Table 3. Table 1 additionally stratifies diabetes duration into <1, 1-5, 6-10 and >10 years; no duration effect was retained either."
+      notes = "The one covariate that reached the final elimination step and was still dropped. Strongly significant univariately (Suppl. Table 1_S, dOFV -21.75, p < 0.0001) and retained through forward inclusion (dOFV -3.96, p = 0.046, clearing the p < 0.05 forward threshold), but removing it in backward elimination cost only dOFV +3.88 (p = 0.048), short of the stricter p < 0.01 backward criterion, so it is absent from Table 3. Table 1 additionally stratifies diabetes duration into <1, 1-5, 6-10 and >10 years; no duration effect was retained either."
     ),
     DIS_HYPERURICEMIA = list(
       description = "Hyperuricemia (HU) before the index stroke (234 / 7,697 = 3.04 percent).",
       units = "(binary)", type = "binary",
-      notes = "Named explicitly among the screened concomitant diseases in Elhefnawy 2023 Methods, 'Collected variables'; not retained in Table 3."
+      notes = "Univariately significant (Suppl. Table 1_S, dOFV -4.65, p = 0.031) and carried into forward inclusion, where it added almost nothing (dOFV -1.055, p = 0.304) and was not retained."
     ),
     DIS_AF = list(
       description = "Atrial fibrillation before the index stroke (about 3.4 percent of the cohort).",
       units = "(binary)", type = "binary",
-      notes = "Reported in Elhefnawy 2023 Results and Table 1 but not retained in the final model. Note the direction in Table 1 is opposite to the usual clinical expectation (1.2 percent of recurrent vs 3.57 percent of non-recurrent patients)."
+      notes = "Not significant univariately (Suppl. Table 1_S, dOFV -0.44, p = 0.507) and never entered the stepwise procedure. Note the direction in Table 1 is opposite to the usual clinical expectation (1.2 percent of recurrent vs 3.57 percent of non-recurrent patients)."
     ),
     SEXF = list(
       description = "Female sex (4,289 / 7,697 = 55.72 percent).",
       units = "(binary)", type = "binary",
-      notes = "Demographic covariate screened per Elhefnawy 2023 Methods ('Based on demographic data and concomitant diseases'); not retained. Table 1 shows near-identical proportions in the recurrent (55.85 percent) and non-recurrent (55.71 percent) groups."
+      notes = "Screened as 'Gender' in Suppl. Table 1_S and among the weakest candidates tested (dOFV -0.435, p = 0.509); not retained. Table 1 shows near-identical proportions in the recurrent (55.85 percent) and non-recurrent (55.71 percent) groups."
     ),
-    AGE = list(
-      description = "Age at the index ischemic stroke (median 63.47 years).",
-      units = "year", type = "continuous",
-      notes = "Screened as a demographic covariate; not retained. Table 1 dichotomises at 60 years."
-    ),
-    SMOKER = list(
-      description = "Current smoker at the index stroke (about 48 percent of the cohort).",
+    FAMHX_STROKE = list(
+      description = "Family history of stroke (FHOS).",
       units = "(binary)", type = "binary",
-      notes = "Reported in Elhefnawy 2023 Results and Table 1; not retained in the final model despite a sizeable unadjusted imbalance (60.66 percent of recurrent vs 48.17 percent of non-recurrent patients)."
+      notes = "Screened univariately in Suppl. Table 1_S (dOFV -2.735, p = 0.09) and not carried forward. Prevalence is not reported in Table 1."
     ),
     NIHSS = list(
       description = "National Institutes of Health Stroke Scale severity of the index stroke, dichotomised by the paper into minor vs moderate/severe.",
       units = "(score)", type = "continuous",
-      notes = "Tabulated in Elhefnawy 2023 Table 1 and defined in the Table 3 footnote, but no NIHSS term appears in the final model."
+      notes = "Tabulated in Elhefnawy 2023 Table 1, defined in the Table 3 footnote, and screened univariately in Suppl. Table 1_S (dOFV -1.103, p = 0.293); no NIHSS term appears in the final model."
+    ),
+    CONMED_ANTIDIABETIC = list(
+      description = "Antidiabetic (ADM) prescribed at discharge from the index stroke admission.",
+      units = "(binary)", type = "binary",
+      notes = "Univariately significant (Suppl. Table 1_S, dOFV -5.39, p = 0.0202) and carried into forward inclusion, where it was the weakest candidate tested (dOFV -0.167, p = 0.682) and was not retained."
+    ),
+    CONMED_DIURETIC = list(
+      description = "Diuretic (DIU) prescribed at discharge (5.9 percent of the cohort).",
+      units = "(binary)", type = "binary",
+      notes = "Screened univariately in Suppl. Table 1_S (dOFV -2.87, p = 0.09); did not reach the p < 0.05 threshold for forward inclusion."
+    ),
+    CONMED_BETABLOCKER = list(
+      description = "Beta-blocker (BB) prescribed at discharge (10.6 percent of the cohort).",
+      units = "(binary)", type = "binary",
+      notes = "Screened univariately in Suppl. Table 1_S (dOFV -2.05, p = 0.152); not carried forward."
+    ),
+    CONMED_CCB = list(
+      description = "Calcium-channel blocker (CCB) prescribed at discharge (20.8 percent of the cohort).",
+      units = "(binary)", type = "binary",
+      notes = "Screened univariately in Suppl. Table 1_S (dOFV -1.52, p = 0.217); not carried forward."
+    ),
+    CONMED_ACEI = list(
+      description = "Angiotensin-converting-enzyme inhibitor (ACEI) prescribed at discharge (31.1 percent of the cohort).",
+      units = "(binary)", type = "binary",
+      notes = "The weakest candidate in the whole screen (Suppl. Table 1_S, dOFV -0.03, p = 0.862); not carried forward."
+    ),
+    AGE = list(
+      description = "Age at the index ischemic stroke (median 63.47 years).",
+      units = "year", type = "continuous",
+      notes = "Named as a screened demographic covariate in Elhefnawy 2023 Methods ('Based on demographic data and concomitant diseases') and dichotomised at 60 years in Table 1, but it does not appear among the fifteen candidates tabulated in Suppl. Table 1_S, so no objective-function change is available for it. Not retained."
+    ),
+    SMOKER = list(
+      description = "Current smoker at the index stroke (about 48 percent of the cohort).",
+      units = "(binary)", type = "binary",
+      notes = "Reported in Elhefnawy 2023 Results and Table 1 with a sizeable unadjusted imbalance (60.66 percent of recurrent vs 48.17 percent of non-recurrent patients), but like AGE it is absent from the Suppl. Table 1_S screen, so no objective-function change is available for it. Not retained."
     )
   )
 
@@ -246,8 +296,13 @@ Elhefnawy_2023_recurrent_ischemic_stroke <- function() {
     # of the base model", states "Between-subject variability around the
     # hazard was estimated, assuming an exponential distribution for the
     # random effect", but Table 3 reports no variance, no CV percent and
-    # no shrinkage for it, and there is no supplement on disk. The
-    # structural form is therefore known and the magnitude is not, so
+    # no shrinkage for it. The supplementary material was retrieved (the
+    # EuropePMC open-access deposit for PMC10176964 holds a single file,
+    # Suppl. Table 1_S) and is a covariate model-building table that
+    # reports only objective-function changes -- it carries no variance
+    # estimate either, so the magnitude is unavailable from every source
+    # in hand. The structural form is therefore known and the
+    # magnitude is not, so
     # the eta is declared on the log baseline hazard (the parameter the
     # paper says carried it) and fixed at zero rather than invented.
     # Simulations from this file are typical-value trajectories; see the

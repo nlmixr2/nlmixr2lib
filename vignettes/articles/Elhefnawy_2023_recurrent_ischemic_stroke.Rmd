@@ -562,9 +562,10 @@ published Kaplan-Meier of Figure 3.
 * **Between-subject variability is fixed at zero.** Elhefnawy 2023 Methods
   states that "between-subject variability around the hazard was estimated,
   assuming an exponential distribution for the random effect", but Table 3
-  reports no variance, no CV% and no shrinkage for it, and there is no
-  supplement on disk. The structural form is therefore known and the magnitude
-  is not, so `etalh0_early_ris` and `etalh0_late_ris` are declared and fixed at
+  reports no variance, no CV% and no shrinkage for it, and the supplementary
+  table (retrieved; see Errata) is a covariate model-building table that carries
+  no variance estimate either. The structural form is therefore known and the
+  magnitude is not, so `etalh0_early_ris` and `etalh0_late_ris` are declared and fixed at
   0 rather than invented. Everything in this vignette is a typical-value
   trajectory. The paper describes a single random effect on the hazard; two are
   declared here only so that each pairs with a fixed-effect parameter, and
@@ -652,8 +653,28 @@ questions -- how much does hyperlipidemia or an antiplatelet prescription move
 the hazard -- while its absolute recurrence predictions should not be used
 without resolving the baseline-hazard scale with the authors.
 
-No supplementary material was available on disk for this paper; the Frontiers
-supplementary-material link is referenced in the article but the file was not
-part of the open-access package retrieved for this extraction. A supplement
-containing the NONMEM control stream would very likely settle the scale
-question.
+**The supplementary material was retrieved and does not settle the scale
+question.** The Frontiers supplementary-material link referenced in the article
+resolves to a single file in the EuropePMC open-access deposit
+(`supplementaryFiles` for PMC10176964), Supplementary Table 1_S, "Univariate and
+multivariate analysis of covariate effects on the hazard of recurrent IS after
+index IS". It is a covariate model-building table only: univariate screening,
+forward inclusion and backward elimination, each reported as a change in
+objective function value with a p-value. It contains **no NONMEM control stream,
+no baseline-hazard parameter values, and no between-subject-variability
+estimate**, so it can neither confirm nor correct `theta1`, and it does not
+supply the missing BSV magnitude either. The two open questions above therefore
+remain open with every available source in hand.
+
+What the supplement does settle is the covariate screen. Fifteen candidates were
+tested univariately against a base objective function value of 2808.68; the
+significant ones carried forward were hyperlipidemia, ischemic heart disease,
+hypertension, diabetes, antiplatelet, antidiabetics and hyperuricemia. Its
+footnote states the criterion explicitly -- "Significance <0.01 in backward
+elimination" -- which is what removes diabetes from the final model: deleting it
+costs only `dOFV = +3.88` (p = 0.048), short of the stricter backward threshold,
+whereas antiplatelet (+10.93), hypertension (+24.67), ischemic heart disease
+(+32.291) and hyperlipidemia (+55.19) all clear it. That accounts exactly for
+the four covariates in Table 3 and confirms the covariate structure encoded
+here. The full screen, with each candidate's objective-function change, is
+recorded in the model file's `covariatesDataExcluded` metadata.
