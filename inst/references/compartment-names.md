@@ -4081,6 +4081,18 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Djerada_2014_nefopam.R` (doi:10.1111/bcp.12291).
 
+### dm3411 (**canonical DM-3411 brexpiprazole-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** DM-3411, the MAJOR circulating metabolite of brexpiprazole, formed mainly by CYP3A4 with a CYP2D6 contribution and not believed to contribute to the pharmacological effect. Followed in plasma alongside the parent and DM-3412 in joint parent + two-metabolite popPK models. Used as the metabolite suffix on the `central_dm3411` compartment, the `lcl_form_dm3411` / `lvc_dm3411` / `lcl_dm3411` parameters, the `e_bmi_vc_dm3411` covariate effect, the `Cc_dm3411` output, and the `propSd_dm3411` residual SD. Paired with `dm3412`, the minor CYP2D6-formed metabolite; the two are distinguished only by the final digit, so read the digit carefully -- DM-3411 carries roughly 34% of parent exposure whereas DM-3412 carries roughly 5%.
+- **Source aliases:** none. The source paper's clearance symbols are `CL_M2` (brexpiprazole-to-DM-3411 formation) and `CL_MET2` (DM-3411 elimination), which map onto `lcl_form_dm3411` and `lcl_dm3411` respectively; the volume symbol `V6` maps onto `lvc_dm3411`.
+- **Example models:** `Frederiksen_2023_brexpiprazole.R` (doi:10.1002/cpt.2791).
+
+### dm3412 (**canonical DM-3412 brexpiprazole-metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** DM-3412, the MINOR circulating metabolite of brexpiprazole, formed almost exclusively by CYP2D6 and not believed to contribute to the pharmacological effect. Its formation is the basis of the DM-3412:brexpiprazole metabolic ratio used as an in vivo surrogate of CYP2D6 activity. Used as the metabolite suffix on the `central_dm3412` / `peripheral1_dm3412` compartments, the `lcl_form_dm3412` / `lvc_dm3412` / `lvp_dm3412` / `lq_dm3412` / `lcl_dm3412` parameters, the `Cc_dm3412` output, and the `propSd_dm3412` residual SD. Paired with `dm3411`, the major CYP3A4-formed metabolite.
+- **Source aliases:** none. The source paper's clearance symbols are `CL_M1` (brexpiprazole-to-DM-3412 formation) and `CL_MET1` (DM-3412 elimination), which map onto `lcl_form_dm3412` and `lcl_dm3412` respectively; the volume and inter-compartmental symbols `V4`, `V5`, and `Q_MET` map onto `lvc_dm3412`, `lvp_dm3412`, and `lq_dm3412`.
+- **Example models:** `Frederiksen_2023_brexpiprazole.R` (doi:10.1002/cpt.2791).
+
 ### cysmer (**canonical APAP cysteine+mercapturate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Combined acetaminophen cysteine + mercapturate compartment used by CYP2E1-oxidation popPK models that lump the two oxidation metabolites (the species are in rapid equilibrium with overlapping disposition).

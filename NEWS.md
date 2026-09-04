@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Frederiksen 2023 brexpiprazole with its DM-3411 and DM-3412 metabolites ([doi:10.1002/cpt.2791](https://doi.org/10.1002/cpt.2791)) -- healthy subjects and patients with schizophrenia, major depressive disorder, or attention deficit hyperactivity disorder.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
