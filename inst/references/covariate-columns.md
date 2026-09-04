@@ -173,6 +173,39 @@ Covariate column names should be ALL CAPS. Current non-all-caps canonical names 
 - **Example models:** `Harun_2019_cysticFibrosis.R` (time-varying per-visit BMI z-score; linear-deviation effect on baseline FEV1% predicted with reference 0 and coefficient +0.0382 per z-score unit), `Muhamad_2025_cholecalciferol_pbpk.R` (baseline WHO 2007 BMI-for-age z-score driving the Monasor-Ortola 2021 cubic that splits body weight into the fat-mass and lean-mass 25(OH)D3 distribution compartments; source column `ZBMI`).
 - **Notes:** Distinct from `BMI` (raw kg/m^2 used in adult populations). Paediatric and adolescent studies routinely report BMI as a z-score relative to a growth reference (WHO 2007 Growth Reference for school-aged children, CDC 2000, etc.); document the reference standard the source paper used in `covariateData[[BMIZ]]$notes`. Promoted to `general` scope when `Muhamad_2025_cholecalciferol_pbpk.R` became the second paediatric model to use it (WHO 2007 reference; Harun 2019 is the other).
 
+### WAZ (**canonical for weight-for-age z-score (age- and sex-standardised)**)
+- **Description:** Weight-for-age z-score: the number of standard deviations a child's weight lies above or below the median weight for that child's age and sex in a growth-reference population (WHO Child Growth Standards unless a model documents otherwise). Unitless and centred at 0 in the reference population, so the reference value in a linear-deviation effect is 0 -- NOT a body weight in kg. Frequently time-varying in paediatric cohorts with repeated anthropometry; document baseline-vs-time-varying status per model in `covariateData[[WAZ]]$notes`. A low WAZ is the standard operational marker of underweight / malnutrition in children under five.
+- **Units:** unitless (z-score; standard-deviation units)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used with a linear-deviation form `(1 + e * (WAZ - ref))`. The reference is 0 (reference-population median) unless the source centres on its own cohort median; Wallender 2021 centres on -0.5. Coefficients are fractional change per 1 z-score unit.
+- **Source aliases:**
+  - `ZWA` -- used in the Wallender 2021 Source Data workbook (`Figure_6B` sheet column `zwa_di`, dichotomised at -2 for display only; the model itself carries the continuous score).
+- **Example models:** `Wallender_2021_piperaquine.R` (time-varying; linear-deviation effect on relative oral bioavailability, `(1 + 0.113 * (WAZ - (-0.5)))`, centred on the cohort median -0.5, so each 1 z-score decrease lowers F by 11.3%), `Chotsiri_2019_lumefantrine.R` (screened alongside `MUAC` and `WHZ` and found significant, but not retained in the final model; carried as documentation).
+- **Notes:** Distinct from raw `WT` (kg), which carries body size for allometric scaling -- a model may legitimately carry both, as `Wallender_2021_piperaquine.R` does (WT drives allometry on CL and V; WAZ drives bioavailability). Distinct from the binary `MAL_NOURISH`, which is a paper-defined malnourished / not-malnourished threshold indicator; a model retaining a continuous z-score effect must use `WAZ`, because binarising discards the dose-response. Siblings `HAZ` (height-for-age, the stunting axis) and `WHZ` (weight-for-height, the wasting axis) are registered separately -- the three are not interchangeable, and papers routinely screen all three and retain one. Document the growth reference used (WHO 2006 Child Growth Standards, CDC 2000, WHO 2007) in `covariateData[[WAZ]]$notes`.
+
+### HAZ (**canonical for height-for-age z-score (age- and sex-standardised)**)
+- **Description:** Height-for-age (or length-for-age) z-score; the standard anthropometric marker of chronic malnutrition / stunting. Unitless and centred at 0 in the reference population. Same conventions as `WAZ`.
+- **Units:** unitless (z-score; standard-deviation units)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- linear-deviation form, reference 0 unless the source centres on a cohort median.
+- **Source aliases:**
+  - `LAZ` -- length-for-age z-score, the same quantity for children measured recumbent rather than standing.
+- **Example models:** `Wallender_2021_piperaquine.R` (screened on relative oral bioavailability, 4.7% per z-score, delta-OFV -5.93; NOT retained in the final model -- carried in `covariatesDataExcluded`), `Chotsiri_2019_lumefantrine.R` (screened in the stepwise covariate search; not significant and not retained).
+- **Notes:** Stunting axis. See `WAZ` Notes for the `WT` / `MAL_NOURISH` distinctions, which apply identically.
+
+### WHZ (**canonical for weight-for-height z-score (sex-standardised)**)
+- **Description:** Weight-for-height (or weight-for-length) z-score; the standard anthropometric marker of acute malnutrition / wasting, and a WHO severe-acute-malnutrition criterion at `WHZ < -3`. Unitless and centred at 0 in the reference population.
+- **Units:** unitless (z-score; standard-deviation units)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- linear-deviation form, reference 0 unless the source centres on a cohort median.
+- **Source aliases:**
+  - `WLZ` -- weight-for-length z-score, the same quantity for children measured recumbent rather than standing.
+- **Example models:** `Wallender_2021_piperaquine.R` (screened on relative oral bioavailability, 4.4% per z-score, delta-OFV -6.47; NOT retained -- carried in `covariatesDataExcluded`), `Chotsiri_2019_lumefantrine.R` (screened alongside `MUAC` and `WAZ`; `MUAC` gave the larger drop in objective function and was retained instead).
+- **Notes:** Wasting axis; distinct from `MUAC`, the other continuous acute-malnutrition measure (raw mm), and from the binary `MAL_NOURISH`. See `WAZ` Notes.
+
 ### SEXF (**canonical for sex**)
 - **Description:** Biological sex indicator, 1 = female, 0 = male.
 - **Units:** (binary)
@@ -15310,3 +15343,47 @@ Covariates whose value is a property of the **administered molecule** rather tha
   - `Study effect` -- Bruno 2012 Table 1 and Table 2 covariate row label.
 - **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (selects the study-specific additive residual error SD, sqrt(332) = 18.22 mm for SO14999 versus sqrt(112) = 10.58 mm for NO16853), `Bruno_2012_capecitabine_docetaxel_os.R` and `Bruno_2012_capecitabine_docetaxel_pfs.R` (log-normal accelerated-failure-time effects on log median OS and PFS, entered on Bruno 2012's 1 / 2 code as `e_studyno16853_tmed * (1 + STUDY_NO16853)`).
 - **Notes:** The indicator carries three distinct effects across the paper's three models, which is why it is a single column rather than three. Bruno 2012 attributes the longer survival in NO16853 to a change in the standard of care between the two studies (the prognostic factors in the model could not explain it) and the longer PFS partly to the different progression-assessment criteria -- WHO in SO14999, RECIST in NO16853 -- which is also the stated reason for the larger residual error in the older study. The clinical trial simulations in the paper were conditioned on NO16853, so `STUDY_NO16853 = 1` is the natural setting when re-running the published framework.
+
+### SELFADMIN (**canonical for self-administered (not directly observed) dosing-occasion indicator**)
+- **Description:** 1 = the dosing occasion was self-administered, i.e. taken by the patient or a caregiver without direct supervision by study or clinic staff; 0 = the dosing occasion was directly observed therapy (DOT). Per-DOSING-OCCASION and time-varying within a subject -- a subject typically contributes both observed and unobserved occasions. Acts as an adherence proxy on relative oral bioavailability: an apparent reduction in F on unobserved occasions is the pharmacokinetic signature of missed or partial doses and should be interpreted as such rather than as a true absorption effect unless the source argues otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (directly observed therapy). Encoded multiplicatively as `e_selfadmin_fdepot^SELFADMIN` so the reference occasion is unmodified.
+- **Source aliases:**
+  - `theta Self-administered DP` -- Wallender 2021 Table 2 / Eq. 2 parameter label. Papers that code the complement (1 = directly observed) must invert to this canonical and record the inversion in `covariateData[[SELFADMIN]]$notes`.
+- **Example models:** `Wallender_2021_piperaquine.R` (multiplicative 0.397 on relative oral bioavailability when the second and third daily dihydroartemisinin-piperaquine doses were taken at home rather than in clinic, i.e. 60% lower apparent bioavailability; the authors attribute this to missed doses rather than to absorption).
+- **Notes:** Distinct from a continuous adherence fraction (percentage of prescribed doses taken), which would warrant a separate continuous canonical if a future paper reports one. Distinct from `OCC`, the integer occasion index used to multiplex inter-occasion variability -- the two are commonly carried together, as in Wallender 2021, where each DP course is both an IOV occasion and either observed or unobserved. The polarity is deliberately set to self-administered = 1 so that the coefficient is a bioavailability PENALTY and maps 1:1 onto how sources report it (a fold change below 1 relative to observed dosing), avoiding a reference-category inversion at transcription time. Ratified 2026-09-02 alongside the Wallender 2021 piperaquine extraction (operator decision, sidecar `oare_PMC8602248` request-001 q2, option A).
+
+### TRANSM_HIGH_2015 (**canonical for the 2015 high-malaria-transmission calendar-period indicator**)
+- **Description:** 1 = the record falls within the 2015 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. In Wallender 2021 the high-transmission period is defined as 1 March to 31 August annually in Tororo, Uganda; the complement (all low-transmission months across all study years, pooled) is the reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 -- pooled low-transmission periods. Enters as a multiplicative adjustment on the baseline malaria hazard.
+- **Source aliases:**
+  - `theta Transmission period 2015` -- Wallender 2021 Table 2 parameter label.
+- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 1.29 on the baseline incident-malaria hazard).
+- **Notes:** Specific scope because the calendar boundaries and the year-specific magnitudes are tied to one site's transmission history and its indoor-residual-spraying schedule (bendiocarb through 2015, pirimiphos-methyl from 2016), which is why the three annual multipliers span 1.29 to 7.83 rather than sharing a single seasonal value. A model at a different site, or one estimating a single season-independent high-transmission effect, must not reuse these columns; register a site- or study-specific member of the same family instead. Members of the family: `TRANSM_HIGH_2015`, `TRANSM_HIGH_2016`, `TRANSM_HIGH_2017`. The three indicators are mutually exclusive one-hot columns; setting all three to 0 selects the low-transmission reference. Distinct from `SEASON2` (RSV second-season indicator) and `SEMESTER` (paired winter/spring vs summer/fall indicator). Ratified 2026-09-02 alongside the Wallender 2021 piperaquine extraction (operator decision, sidecar `oare_PMC8602248` request-001 q3, option A).
+
+### TRANSM_HIGH_2016 (**canonical for the 2016 high-malaria-transmission calendar-period indicator**)
+- **Description:** 1 = the record falls within the 2016 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. Same calendar definition and reference as `TRANSM_HIGH_2015`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 -- pooled low-transmission periods.
+- **Source aliases:**
+  - `theta Transmission period 2016` -- Wallender 2021 Table 2 parameter label.
+- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 5.20 on the baseline incident-malaria hazard).
+- **Notes:** See `TRANSM_HIGH_2015`.
+
+### TRANSM_HIGH_2017 (**canonical for the 2017 high-malaria-transmission calendar-period indicator**)
+- **Description:** 1 = the record falls within the 2017 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. Same calendar definition and reference as `TRANSM_HIGH_2015`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 -- pooled low-transmission periods.
+- **Source aliases:**
+  - `theta Transmission period 2017` -- Wallender 2021 Table 2 parameter label.
+- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 7.83 on the baseline incident-malaria hazard).
+- **Notes:** See `TRANSM_HIGH_2015`.
