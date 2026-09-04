@@ -516,6 +516,8 @@ navbar:
         href: articles/Suri_2018_brentuximab.html
       - text: "Brentuximab (Zhou 2025)"
         href: articles/Zhou_2025_brentuximab.html
+      - text: "Brepocitinib (Hughes 2022)"
+        href: articles/Hughes_2022_brepocitinib.html
       - text: "Brepocitinib (Maleki 2024)"
         href: articles/Maleki_2024_brepocitinib.html
       - text: "Brigatinib (Hanley 2024)"
@@ -4949,6 +4951,7 @@ articles:
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
   - articles/Huang_2025_dexmedetomidine
+  - articles/Hughes_2022_brepocitinib
   - articles/Huppe_2023_fosfomycin
   - articles/Hurtado_2014_levofloxacin_rat
   - articles/Hussein_1997_lamotrigine
