@@ -644,6 +644,8 @@ navbar:
         href: articles/Ahsman_2010_cefotaxime.html
       - text: "Cefotaxime (Leroux 2016)"
         href: articles/Leroux_2016_cefotaxime.html
+      - text: "Cefotaxime (Roelofsen 2023)"
+        href: articles/Roelofsen_2023_cefotaxime.html
       - text: "Cefoxitin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefpirome (Bulitta 2011)"
@@ -5532,6 +5534,7 @@ articles:
   - articles/Roberts_2025_remdesivir
   - articles/Rodjun_2023_colistin_sitafloxacin
   - articles/Rodrigues_2017_oxcarbazepine
+  - articles/Roelofsen_2023_cefotaxime
   - articles/Roepcke_2018_tak_079
   - articles/Roepcke_2023_rezafungin
   - articles/Rognas_2025_bitopertin
