@@ -35,7 +35,7 @@ vanSchaick_2016_prucalopride_pediatric <- function() {
       units              = "months",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "van Schaick 2016 defines postmenstrual age as calculated age in weeks at start of treatment plus 40 weeks gestational age (Methods 'Structural model components', Table 2 footnote). Drives the fixed Rhodin 2009 renal-maturation Hill function on CL (equation 4), which is defined in WEEKS of PMA; the canonical PAGE unit is months, so model() converts as PMA_weeks = PAGE * 4.35 (same handling as Llanos-Paez_2020_gentamicin.R). Cohort medians 9.3 years (PRU-USA-12) and 8.6 years (SPD555-303); pooled range approximately 2.4-18.8 years PMA (Table 2).",
+      notes              = "van Schaick 2016 defines postmenstrual age as calculated age in weeks at start of treatment plus 40 weeks gestational age (Methods 'Structural model components', Table 2 footnote). Drives the fixed Rhodin 2009 renal-maturation Hill function on CL (equation 4), which is defined in WEEKS of PMA; the canonical PAGE unit is months, so model() converts as PMA_weeks = PAGE * 4.35 (same handling as LlanosPaez_2020_gentamicin.R). Cohort medians 9.3 years (PRU-USA-12) and 8.6 years (SPD555-303); pooled range approximately 2.4-18.8 years PMA (Table 2).",
       source_name        = "PMA"
     ),
     STUDY_SPD555303 = list(

@@ -25,7 +25,7 @@ library(ggplot2)
 # Model and source
 
 ```{r meta}
-mod_meta <- nlmixr2est::nlmixr(readModelDb("Llanos-Paez_2020_gentamicin"))$meta
+mod_meta <- nlmixr2est::nlmixr(readModelDb("LlanosPaez_2020_gentamicin"))$meta
 ```
 
 * Citation: `r mod_meta$reference`
@@ -35,7 +35,7 @@ mod_meta <- nlmixr2est::nlmixr(readModelDb("Llanos-Paez_2020_gentamicin"))$meta
 * GFR maturation parameters (Holford 2017): PAGANZ poster, TM50 = 46.5 weeks PMA, Hill = 3.43, adult plateau = 119 mL/min.
 * Serum creatinine reference values (Ceriotti 2008): <https://doi.org/10.1373/clinchem.2007.099648>
 
-This vignette validates the packaged `Llanos-Paez_2020_gentamicin` model
+This vignette validates the packaged `LlanosPaez_2020_gentamicin` model
 against the simulated exposure table reported in the source paper
 (Llanos-Paez 2020 Table 3). The validation strategy:
 
@@ -213,7 +213,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
 # Simulation
 
 ```{r simulate}
-mod         <- readModelDb("Llanos-Paez_2020_gentamicin")
+mod         <- readModelDb("LlanosPaez_2020_gentamicin")
 mod_typical <- rxode2::zeroRe(mod)
 
 sim_typical <- rxode2::rxSolve(

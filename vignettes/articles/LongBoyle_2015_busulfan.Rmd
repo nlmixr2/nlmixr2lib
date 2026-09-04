@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r readModelDb("Long-Boyle_2015_busulfan") |> attr("meta") |> (\(m) m$reference)()`
-* Description: `r readModelDb("Long-Boyle_2015_busulfan") |> attr("meta") |> (\(m) m$description)()`
+* Citation: `r readModelDb("LongBoyle_2015_busulfan") |> attr("meta") |> (\(m) m$reference)()`
+* Description: `r readModelDb("LongBoyle_2015_busulfan") |> attr("meta") |> (\(m) m$description)()`
 * Article: <https://doi.org/10.1097/FTD.0000000000000131>
 
 # Population
@@ -40,12 +40,12 @@ serotherapy. Seizure prophylaxis was lorazepam or levetiracetam. A total of
 FOCE-I.
 
 The same demographics are available programmatically via
-`attr(readModelDb("Long-Boyle_2015_busulfan"), "meta")$population`.
+`attr(readModelDb("LongBoyle_2015_busulfan"), "meta")$population`.
 
 # Source trace
 
 The per-parameter origin is also recorded as an in-file comment next to each
-`ini()` entry in `inst/modeldb/specificDrugs/Long-Boyle_2015_busulfan.R`. The
+`ini()` entry in `inst/modeldb/specificDrugs/LongBoyle_2015_busulfan.R`. The
 table below consolidates them.
 
 | Equation / parameter      | Value             | Source location                                                |
@@ -120,7 +120,7 @@ stopifnot(!anyDuplicated(events_table4[, c("id", "time", "evid")]))
 # Simulation
 
 ```{r simulate}
-mod <- readModelDb("Long-Boyle_2015_busulfan")
+mod <- readModelDb("LongBoyle_2015_busulfan")
 mod_typical <- rxode2::zeroRe(rxode2::rxode(mod))
 
 sim_typical <- rxode2::rxSolve(

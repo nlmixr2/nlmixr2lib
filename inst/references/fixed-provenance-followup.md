@@ -61,7 +61,7 @@ PR `fix/issues-474-479`. `Archary_2019_abacavir` / `Archary_2019_lamivudine`
 distribution"), `Aksenov_2018_uricAcid` ("The value of Rmax for febuxostat was fixed
 at 1") and `Caldes_2009_ganciclovir` (CL reported as `7.49 * (CLCR/57)`, a linear form
 whose exponent is 1 by construction) were confirmed against their source papers;
-`Bergmann_2014_tacrolimus`, `Boer-Perez_2026_piperacillin` and `Dunlap_2025_tacrolimus`
+`Bergmann_2014_tacrolimus`, `BoerPerez_2026_piperacillin` and `Dunlap_2025_tacrolimus`
 were taken on their self-declaring labels plus the exact 0.75 / 1.0 values;
 `Cao_2013_mab7E3` carries over the 0.950 already confirmed for its two siblings.
 

@@ -48,13 +48,13 @@ the first-order estimation method.
 
 The same information is available programmatically via the model's
 `population` metadata
-(`readModelDb("Catalan-Latorre_2018_taurine_rat")$population`).
+(`readModelDb("CatalanLatorre_2018_taurine_rat")$population`).
 
 # Source trace
 
 Per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in
-`inst/modeldb/specificDrugs/Catalan-Latorre_2018_taurine_rat.R`. The
+`inst/modeldb/specificDrugs/CatalanLatorre_2018_taurine_rat.R`. The
 table below collects them in one place for review.
 
 | Equation / parameter      | Value                                | Source location                       |
@@ -85,7 +85,7 @@ table below collects them in one place for review.
 # Loading the model
 
 ```{r load}
-mod <- readModelDb("Catalan-Latorre_2018_taurine_rat")
+mod <- readModelDb("CatalanLatorre_2018_taurine_rat")
 mod_typical <- rxode2::zeroRe(mod)
 ```
 

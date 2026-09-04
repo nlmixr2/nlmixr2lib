@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r rxode2::rxode2(readModelDb("Perez-Guille_2018_dexmedetomidine"))$reference`
-* Description: `r rxode2::rxode2(readModelDb("Perez-Guille_2018_dexmedetomidine"))$description`
+* Citation: `r rxode2::rxode2(readModelDb("PerezGuille_2018_dexmedetomidine"))$reference`
+* Description: `r rxode2::rxode2(readModelDb("PerezGuille_2018_dexmedetomidine"))$description`
 * Article: <https://doi.org/10.1213/ANE.0000000000003413>
 
 # Population
@@ -40,13 +40,13 @@ rate (HR) and mean arterial blood pressure (MAP) were recorded every
 5 min during surgery and post-operatively (Perez-Guille 2018 Methods).
 
 The same metadata is available programmatically via
-`readModelDb("Perez-Guille_2018_dexmedetomidine")$population`.
+`readModelDb("PerezGuille_2018_dexmedetomidine")$population`.
 
 # Source trace
 
 The per-parameter origin is recorded as an in-file comment next to each
 `ini()` entry in
-`inst/modeldb/specificDrugs/Perez-Guille_2018_dexmedetomidine.R`. The
+`inst/modeldb/specificDrugs/PerezGuille_2018_dexmedetomidine.R`. The
 table below collects them in one place.
 
 | Equation / parameter | Value | Source location |
@@ -139,7 +139,7 @@ stopifnot(!anyDuplicated(unique(events[, c("id", "time", "cmt", "evid")])))
 # Simulation
 
 ```{r simulate}
-mod       <- rxode2::rxode2(readModelDb("Perez-Guille_2018_dexmedetomidine"))
+mod       <- rxode2::rxode2(readModelDb("PerezGuille_2018_dexmedetomidine"))
 conc_unit <- mod$units[["concentration"]]
 
 sim <- rxode2::rxSolve(

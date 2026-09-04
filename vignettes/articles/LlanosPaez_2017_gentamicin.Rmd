@@ -19,8 +19,8 @@ library(ggplot2)
 
 # Model and source
 
-* Citation: `r readModelDb("Llanos-Paez_2017_gentamicin")()$reference`
-* Description: `r readModelDb("Llanos-Paez_2017_gentamicin")()$description`
+* Citation: `r readModelDb("LlanosPaez_2017_gentamicin")()$reference`
+* Description: `r readModelDb("LlanosPaez_2017_gentamicin")()$description`
 * Article: <https://doi.org/10.1208/s12248-017-0173-6>
 * Upstream PK source: <https://doi.org/10.1128/AAC.00205-17>
 
@@ -38,12 +38,12 @@ profile used for Fig 5 simulations is body weight 20 kg, FFM 15 kg, postmenstrua
 age (PMA) 309 weeks, postnatal age 5.2 years, and serum creatinine 34 umol/L.
 
 The same metadata is available programmatically via
-`readModelDb("Llanos-Paez_2017_gentamicin")()$population`.
+`readModelDb("LlanosPaez_2017_gentamicin")()$population`.
 
 # Source trace
 
 The per-parameter origin is recorded inline next to each `ini()` entry in
-`inst/modeldb/specificDrugs/Llanos-Paez_2017_gentamicin.R`. The table below
+`inst/modeldb/specificDrugs/LlanosPaez_2017_gentamicin.R`. The table below
 collects them in one place for review. "AAC" refers to the upstream PK source
 (Llanos-Paez 2017 AAC, doi:10.1128/AAC.00205-17). "AAPS" refers to the
 renal-cortex / renal-toxicity extension paper (Llanos-Paez 2017 AAPS J,
@@ -129,7 +129,7 @@ make_cohort <- function(dose_per_kg, n_days, id_offset = 0L) {
 # Simulation
 
 ```{r simulate}
-mod <- readModelDb("Llanos-Paez_2017_gentamicin")()
+mod <- readModelDb("LlanosPaez_2017_gentamicin")()
 mod_typical <- rxode2::zeroRe(mod)
 
 dose_levels <- c(7.1, 9.5, 10.8, 12.8, 14.6)

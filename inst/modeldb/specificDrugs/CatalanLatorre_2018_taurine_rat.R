@@ -1,4 +1,4 @@
-`Catalan-Latorre_2018_taurine_rat` <- function() {
+CatalanLatorre_2018_taurine_rat <- function() {
   description <- paste(
     "Preclinical (rat).",
     "Population PK model for taurine (2-aminoethylsulphonic acid) in male",
@@ -26,7 +26,7 @@
     "doi:10.1017/S0007114518000156.",
     sep = " "
   )
-  vignette <- "Catalan-Latorre_2018_taurine_rat"
+  vignette <- "CatalanLatorre_2018_taurine_rat"
   units <- list(
     time          = "h",
     dosing        = "mg",
