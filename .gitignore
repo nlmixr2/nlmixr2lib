@@ -28,3 +28,10 @@ post_merge_advance.sh
 # Vignette-gate render artifacts (verify_vignettes_parallel.R)
 *.knit.md
 vignettes/articles/*.html
+
+# R writes Rplots.pdf automatically whenever base graphics are drawn in a
+# non-interactive session (Rscript, devtools::check, a vignette render). It is
+# a stray artifact, never content -- but because it is untracked it trips the
+# task runner's "uncommitted work left" gate, which failed oare_PMC13176099 on
+# three consecutive full-effort dispatches before this was noticed.
+Rplots.pdf
