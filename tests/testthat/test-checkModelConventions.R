@@ -555,8 +555,14 @@ test_that("every blessed chain prefix accepts numbered members and the register 
   # blessed prefix is covered the moment it is added, and it pins the R constant
   # to the string the register advertises.
   conv <- nlmixr2lib:::.nlmixr2libConventions()
+  # Take everything between the leading `^(` and the `)` that closes the prefix
+  # alternation, so an optional trailing qualifier group -- currently
+  # `(_slow|_fast)?` -- does not leak into the prefix list. Anchoring on
+  # `)[0-9]+$` instead silently produced garbage prefixes the day the
+  # qualifier was added, and every assertion below then failed on the junk
+  # rather than on the thing it was written to check.
   prefixes <- strsplit(
-    sub("\\)\\[0-9\\]\\+\\$$", "", sub("^\\^\\(", "", conv$compartmentRegex)),
+    sub("\\).*$", "", sub("^\\^\\(", "", conv$compartmentRegex)),
     "|", fixed = TRUE
   )[[1]]
   expect_true(length(prefixes) >= 9L)
@@ -569,6 +575,15 @@ test_that("every blessed chain prefix accepts numbered members and the register 
   # ... and an unblessed stem is still rejected, so the check can go red.
   expect_false(nlmixr2lib:::.matchesCompartment("necrotic1", conv))
   expect_false(nlmixr2lib:::.matchesCompartment("granuloma3", conv))
+
+  # The optional dual-rate qualifier is part of the contract too: it was
+  # added by one branch while another dropped two prefixes, and only the
+  # enumeration above caught the loss. Pin both directions.
+  expect_true(nlmixr2lib:::.matchesCompartment("effect_slow1", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("effect_fast12", conv))
+  expect_true(nlmixr2lib:::.matchesCompartment("transit_slow3", conv))
+  expect_false(nlmixr2lib:::.matchesCompartment("effect_medium1", conv))
+  expect_false(nlmixr2lib:::.matchesCompartment("effect_slow", conv))
 
   # The register's documented regex must be byte-identical to the R constant.
   md <- readLines(nlmixr2lib:::.compartmentNamesPath(), warn = FALSE)
