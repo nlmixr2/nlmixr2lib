@@ -216,6 +216,8 @@ navbar:
         href: articles/Soto_2014_ampicillin_sulbactam.html
       - text: "Amyloid (vanMaanen 2025)"
         href: articles/vanMaanen_2025_amyloid.html
+      - text: "Anakinra (Jung 2023)"
+        href: articles/Jung_2023_fractal_kinetics.html
       - text: "Anakinra (Urien 2013)"
         href: articles/Urien_2013_anakinra.html
       - text: "Andrographolide (Songvut 2026)"
@@ -1042,8 +1044,12 @@ navbar:
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: "Donepezil im (Khwarg 2024)"
         href: articles/Khwarg_2024_donepezil.html
+      - text: "Donepezil multipledose (Jung 2023)"
+        href: articles/Jung_2023_fractal_kinetics.html
       - text: "Donepezil oral (Khwarg 2024)"
         href: articles/Khwarg_2024_donepezil.html
+      - text: "Donepezil singledose (Jung 2023)"
+        href: articles/Jung_2023_fractal_kinetics.html
       - text: "Donidalorsen (Diep 2026)"
         href: articles/Diep_2026_donidalorsen.html
       - text: "Donidalorsen (Singh 2025)"
@@ -1672,6 +1678,8 @@ navbar:
         href: articles/Chen_2022_guselkumab.html
       - text: "Guselkumab (Yao 2018)"
         href: articles/Yao_2018_guselkumab.html
+      - text: "HL2351 (Jung 2023)"
+        href: articles/Jung_2023_fractal_kinetics.html
       - text: "HL2351 (Ngo 2020)"
         href: articles/Ngo_2020_HL2351.html
       - text: "Haloperidol (Franken 2017)"
@@ -1742,6 +1750,8 @@ navbar:
         href: articles/Yu_2024_ilaprazole.html
       - text: "Iloperidone (Pei 2016)"
         href: articles/Pei_2016_iloperidone.html
+      - text: "Im depot (Jung 2023)"
+        href: articles/Jung_2023_fractal_kinetics.html
       - text: "Imatinib (Chien 2022)"
         href: articles/Chien_2022_imatinib.html
       - text: "Imatinib (Demetri 2009)"
@@ -5016,6 +5026,7 @@ articles:
   - articles/Jorga_2000_tolcapone
   - articles/Jullien_2005_abacavir
   - articles/Jullien_2006_lopinavir
+  - articles/Jung_2023_fractal_kinetics
   - articles/Jung_2024_clopidogrel
   - articles/Jung_2024_vancomycin
   - articles/Kado_2020_benzathine_benzylpenicillin_g
