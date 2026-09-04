@@ -1922,8 +1922,8 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient experiences **any** CTCAE grade >= 3 treatment-emergent adverse event, pooled across all preferred terms, in a static landmark exposure-safety logistic model. The composite "any severe TEAE" endpoint is the standard whole-tolerability summary in oncology exposure-safety analyses.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_teae_grade3.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.653).
-- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Composite and therefore not mutually exclusive with the laboratory-value endpoints (`prob_anemia`, `prob_anc_decrease`, `prob_plt_decrease`), which are subsets of it; a model consuming several of these simultaneously must not treat them as competing risks.
+- **Example models:** `Fukae_2024_valemetostat_teae_grade3.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.653), `Chen_2021_lorlatinib_teae_grade3.R` (frequentist binomial logistic exposure-safety model; the steady-state lorlatinib trough enters on the natural-log scale with odds ratio 3.214 per e-fold, alongside baseline total cholesterol and time on study prior to the event).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Composite and therefore not mutually exclusive with the laboratory-value endpoints (`prob_anemia`, `prob_anc_decrease`, `prob_plt_decrease`), which are subsets of it; a model consuming several of these simultaneously must not treat them as competing risks. Chen 2021 makes the same point for a different pair -- because hypercholesterolemia was the most common adverse event in that trial, many of its grade >= 3 TEAEs *were* hypercholesterolemia events, so `prob_teae_grade3` and its paper-specific sibling `prob_hypercholesterolemia` overlap heavily there too. The canonical spans both Bayesian and frequentist fits of the endpoint; the name refers to the endpoint definition, not to the estimation framework.
 
 ### prob_dose_interruption (**canonical dose-interruption probability output**)
 - **Type:** compartment
@@ -1938,6 +1938,34 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Fukae_2024_valemetostat_dose_reduction.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.0774, and the endpoint the founding paper used to set the upper limit of its target exposure range).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_dose_interruption`. The founding paper's rationale for singling this endpoint out is worth carrying forward: maintaining the initial dose after an adverse event plausibly represents acceptance of a warranted risk, so the probability of *reduction* is the sharper tolerability criterion.
+
+### prob_hypercholesterolemia (**canonical severe-hypercholesterolemia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) hypercholesterolemia event, assessed from laboratory total-cholesterol values, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Chen_2021_lorlatinib_hypercholesterolemia.R` (binomial logistic exposure-safety model; the maximum lorlatinib concentration prior to the event enters on the natural-log scale with odds ratio 5.256 per e-fold, the strongest exposure-safety relationship in the founding paper -- founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, and is registered on first sighting for the same reason the `prob_anemia` / `prob_anc_decrease` / `prob_plt_decrease` trio was: it is a well-formed member of an established, explicitly extensible family of laboratory-defined toxicity-grade endpoints, not a new modelling concept. Paired with `prob_hypertriglyceridemia` -- dyslipidemia is the characteristic on-target toxicity of the ALK/ROS1 inhibitor class, so the two recur together. Distinct from a modelled cholesterol *concentration* state in a semi-mechanistic lipid model: this is the probability of crossing a categorical toxicity-grade threshold, not a cholesterol value. Subsumed by `prob_teae_grade3` when both are present in one paper, and therefore not a competing risk against it.
+
+### prob_hypertriglyceridemia (**canonical severe-hypertriglyceridemia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a severe (CTCAE grade >= 3) hypertriglyceridemia event, assessed from laboratory triglyceride values, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Chen_2021_lorlatinib_hypertriglyceridemia.R` (binomial logistic safety model; no exposure term was retained, so the endpoint is driven by baseline triglycerides and Asian race -- founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Paired with `prob_hypercholesterolemia`; see that entry. Worth noting that a model carrying this output may legitimately have NO exposure covariate at all -- in the founding paper no lorlatinib exposure metric reached significance for this endpoint, which is a published null result rather than a reporting gap, and the correct encoding is the absence of the term rather than a `fixed(0)` coefficient.
+
+### prob_weight_gain (**canonical treatment-emergent weight-gain probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a treatment-emergent weight-gain adverse event at or above a stated CTCAE severity grade, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Chen_2021_lorlatinib_weight_gain.R` (binomial logistic safety model at the grade >= 2 threshold; no exposure term was retained, so the endpoint is driven by baseline body weight and time on study -- founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. The CTCAE severity threshold is NOT part of the name, because it varies by paper -- the founding model uses grade >= 2 while its three sibling endpoints in the same paper use grade >= 3, since weight gain rarely reaches grade 3. Record the threshold in the model's `description` and `units$concentration`. Distinct from a modelled body-weight state in a longitudinal weight-change model: this is a threshold-crossing probability, not a weight.
+
+### prob_icorr (**canonical intracranial-objective-response probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient achieves an intracranial objective response -- a complete or partial response of central-nervous-system lesions, scored by independent central review -- in a static landmark exposure-efficacy logistic model.
+- **Source aliases:** none.
+- **Example models:** `Chen_2021_lorlatinib_icorr.R` (binomial logistic efficacy model in the CNS-metastatic subset; no exposure term was retained, so the endpoint is driven by baseline alkaline phosphatase on the natural-log scale and baseline amylase -- founding example).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Distinct from `prob_orr_central` and `prob_orr_investigator`**, which score whole-body RECIST response: intracranial response is assessed on CNS lesions only, in the subset of patients with baseline brain metastasis, and can dissociate from the systemic response for a drug selected for blood-brain-barrier penetration -- which is exactly why the founding paper models it separately. The canonical carries no commitment to which assessor scored the response; the founding model uses independent central review, and a paper reporting both central and investigator intracranial assessments should follow the `prob_orr_central` / `prob_orr_investigator` precedent and suffix accordingly.
 
 ### prolactin (**canonical serum prolactin output**)
 - **Type:** compartment

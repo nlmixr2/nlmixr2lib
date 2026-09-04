@@ -2110,6 +2110,16 @@ navbar:
         href: articles/Ahmed_2016_lorenzosOil.html
       - text: "Lorlatinib (Chen 2021)"
         href: articles/Chen_2021_lorlatinib.html
+      - text: "Lorlatinib hypercholesterolemia (Chen 2021)"
+        href: articles/Chen_2021_lorlatinib_exposure_response.html
+      - text: "Lorlatinib hypertriglyceridemia (Chen 2021)"
+        href: articles/Chen_2021_lorlatinib_exposure_response.html
+      - text: "Lorlatinib icorr (Chen 2021)"
+        href: articles/Chen_2021_lorlatinib_exposure_response.html
+      - text: "Lorlatinib teae grade3 (Chen 2021)"
+        href: articles/Chen_2021_lorlatinib_exposure_response.html
+      - text: "Lorlatinib weight gain (Chen 2021)"
+        href: articles/Chen_2021_lorlatinib_exposure_response.html
       - text: "Losmapimod (Yang 2013)"
         href: articles/Yang_2013_losmapimod.html
       - text: "Lserine (Lee 2024)"
@@ -4581,6 +4591,7 @@ articles:
   - articles/Chen_2020_luspatercept
   - articles/Chen_2021_ganciclovir
   - articles/Chen_2021_lorlatinib
+  - articles/Chen_2021_lorlatinib_exposure_response
   - articles/Chen_2022_guselkumab
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
