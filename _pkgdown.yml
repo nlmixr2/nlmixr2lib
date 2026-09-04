@@ -2502,6 +2502,8 @@ navbar:
         href: articles/Chen_2014_nab_paclitaxel.html
       - text: "Nadroparin (Chen 2024)"
         href: articles/Chen_2024_nadroparin.html
+      - text: "Nalbuphine (Nie 2023)"
+        href: articles/Nie_2023_nalbuphine.html
       - text: "Nalmefene (Kyhl 2016)"
         href: articles/Kyhl_2016_nalmefene.html
       - text: "Nalmefene (Laffont 2024)"
@@ -5386,6 +5388,7 @@ articles:
   - articles/Ni_2013_ciclosporin
   - articles/Nicholas_2009_ponezumab
   - articles/Nichols_2016_piperacillin_tazobactam
+  - articles/Nie_2023_nalbuphine
   - articles/Nie_2025_sufentanil
   - articles/Niebecker_2015_edoxaban
   - articles/Nielsen_2007_semimechanistic_antibiotic_pd
