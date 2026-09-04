@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Ngo 2023 rivaroxaban ([doi:10.3390/ph16050684](https://doi.org/10.3390/ph16050684)) -- rats given rivaroxaban with or without carbamazepine, plus the allometric extrapolation of that fit to a 60 kg human.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
