@@ -290,11 +290,14 @@ Ogusu_2014_valproic_acid <- function() {
     # logit carry meaningful between-subject spread.
     # ==================================================================
 
-    etaltlag ~ 4.48e-9  # Ogusu 2014 Table 2 "v2 on ALAG" (NONMEM column, a variance); bootstrap SD 6.69e-5
-    etalka   ~ 7.77e-7  # Ogusu 2014 Table 2 "v2 on Ka"   (NONMEM column, a variance); bootstrap SD 8.82e-4
-    etalvc   ~ 1.83e-7  # Ogusu 2014 Table 2 "v2 on Vd/F" (NONMEM column, a variance); bootstrap SD 4.28e-4
-    etalcl   ~ 0.0587   # Ogusu 2014 Table 2 "v2 on CL/F" (NONMEM column, a variance); bootstrap SD 0.241, 95% CI 0.202-0.281
-    etalogit_ref ~ 12.3 # Ogusu 2014 Table 3 "v2 on logit (Pr)" (NONMEM column, a variance; SD 3.51); RSE 43.4%, bootstrap SD 3.48, 95% CI 2.29-10.7
+    # Single quotes only in these trailing comments: an ini() line with no
+    # label() whose comment contains a double quote is promoted into a label
+    # and breaks the parse (tests/testthat/test-checkModelConventions.R).
+    etaltlag ~ 4.48e-9  # Ogusu 2014 Table 2 'v2 on ALAG' (NONMEM column, a variance); bootstrap SD 6.69e-5
+    etalka   ~ 7.77e-7  # Ogusu 2014 Table 2 'v2 on Ka'   (NONMEM column, a variance); bootstrap SD 8.82e-4
+    etalvc   ~ 1.83e-7  # Ogusu 2014 Table 2 'v2 on Vd/F' (NONMEM column, a variance); bootstrap SD 4.28e-4
+    etalcl   ~ 0.0587   # Ogusu 2014 Table 2 'v2 on CL/F' (NONMEM column, a variance); bootstrap SD 0.241, 95% CI 0.202-0.281
+    etalogit_ref ~ 12.3 # Ogusu 2014 Table 3 'v2 on logit (Pr)' (NONMEM column, a variance; SD 3.51); RSE 43.4%, bootstrap SD 3.48, 95% CI 2.29-10.7
 
     # ==================================================================
     # RESIDUAL ERROR
