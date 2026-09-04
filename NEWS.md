@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hartinger 2023 intraperitoneal vancomycin ([doi:10.3390/pharmaceutics15051394](https://doi.org/10.3390/pharmaceutics15051394)) -- adults on continuous ambulatory peritoneal dialysis treated for PD-associated peritonitis.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
