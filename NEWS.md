@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Elhefnawy 2023 recurrent ischemic stroke time-to-event model ([doi:10.3389/fneur.2023.1118711](https://doi.org/10.3389/fneur.2023.1118711)) -- Malaysian registry adults after a first ischemic stroke.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.

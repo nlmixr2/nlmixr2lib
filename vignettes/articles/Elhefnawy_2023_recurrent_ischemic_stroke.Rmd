@@ -1,0 +1,659 @@
+---
+title: "Recurrent ischemic stroke after a first stroke (Elhefnawy 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Recurrent ischemic stroke after a first stroke (Elhefnawy 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Elhefnawy ME, Sheikh Ghadzi SM, Albitar O, Tangiisuran B, Zainal H,
+  Looi I, Sidek NN, Aziz ZA, Harun SN. Predictive model of recurrent ischemic
+  stroke: model development from real-world data. Front Neurol.
+  2023;14:1118711. doi:10.3389/fneur.2023.1118711.
+* Article: <https://doi.org/10.3389/fneur.2023.1118711> (Open Access, CC BY)
+* Model file: `modellib("Elhefnawy_2023_recurrent_ischemic_stroke")`
+
+This is a parametric time-to-event (TTE) model, not a PK or PK-PD model. There
+is no drug exposure term: secondary prevention enters only as a binary
+"antiplatelet prescribed at discharge" indicator. Time is in years.
+
+**Read the Errata section before using this model.** The published parameters
+do not reproduce the paper's own event counts or its own Kaplan-Meier visual
+predictive check; the arithmetic is set out there in full. Everything in this
+file is transcribed exactly as published and nothing has been tuned.
+
+```{r model}
+mod <- modellib("Elhefnawy_2023_recurrent_ischemic_stroke")
+mod
+```
+
+# Population
+
+National Neurology Registry (NNEUR) of Malaysia, a multicentre hospital-based
+registry covering 13 states. All patients with an index ischemic stroke
+registered from August 2009 to December 2016 were extracted: 7,697 adults over
+18 years of age, of whom 333 (4.32%) had at least one recurrent ischemic stroke
+within the maximum 7.37 years of follow-up. Median time to first recurrence was
+1.2 years; 108 of the 333 recurrences (31.43%) happened within the first 6
+months, and 36 patients went on to a second recurrence. Median age at the index
+stroke was 63.47 years and 55.72% of the cohort were women.
+
+Stroke was diagnosed by WHO criteria and confirmed by brain CT or MRI.
+Non-Malaysian citizens and non-ischemic diagnoses were excluded.
+
+Baseline prevalences used below are computed from the Elhefnawy 2023 Table 1
+counts, which reconcile exactly with the Results text (e.g. hyperlipidemia
+159 + 1,869 = 2,028 = 26.34%).
+
+```{r prevalence}
+prev <- tibble::tribble(
+  ~covariate,              ~recurrent, ~non_recurrent,
+  "DIS_HYPERLIP",                 159,           1869,
+  "DIS_IHD",                       77,            802,
+  "DIS_HYPERT",                   288,           5218,
+  "CONMED_ANTIPLATELET",          285,           6613
+) |>
+  dplyr::mutate(n = recurrent + non_recurrent, prevalence = n / 7697)
+
+prev |>
+  dplyr::rename(
+    "Covariate" = covariate,
+    "Recurrent IS (n = 333)" = recurrent,
+    "No recurrent IS (n = 7,364)" = non_recurrent,
+    "Total (n = 7,697)" = n,
+    "Prevalence" = prevalence
+  ) |>
+  knitr::kable(digits = 4)
+```
+
+# Source trace
+
+Every value in `ini()` and every equation in `model()`, with the place in
+Elhefnawy 2023 it came from.
+
+| Model element | Source location | Published value |
+|---|---|---|
+| `S(t) = exp(-cumhaz)` | Methods, Equation 1 | `S(t) = e^{-int_0^t h(t)dt}` |
+| Gompertz hazard form | Methods, Equation 3; Table 2 row 4 | `h(t) = theta_x * e^{(theta_y) t}` |
+| Piecewise scale / shape switching | Table 2 footnote | `theta_x = theta1 if t < 0.5 y, theta3 if t >= 0.5`; `theta_y = theta2 if t < 3 y, theta4 if t >= 3` |
+| Covariate model | Methods, unnumbered equation after Eq. 5 | `h(t) = h0(t) * exp(b1 X1 + ... + bn Xn)` |
+| `lh0_early_ris` | Table 3 row 1 (theta1, `<6 months`) | 0.238 /year, RSE 19.92% |
+| `lh0_late_ris` | Table 3 row 2 (theta3, `>=6 months`) | 0.0016 /year, RSE 21.62% |
+| `shape_early_ris` | Table 3 row 3 (theta2, alpha `<3`) | 1.63 /year, RSE 4.81% |
+| `shape_late_ris` | Table 3 row 4 (theta4, alpha `>=3`) | 0.23 /year, RSE 20.19% |
+| `e_dis_hyperlip_ris` | Table 3 row 5 (theta5) | 0.799, aHR 2.22 (1.81-2.72), RSE 12.89% |
+| `e_dis_ihd_ris` | Table 3 row 6 (theta6) | 0.745, aHR 2.10 (1.64-2.69), RSE 16.85% |
+| `e_dis_hypert_ris` | Table 3 row 7 (theta7) | 0.711, aHR 2.03 (1.52-2.71), RSE 20.62% |
+| `e_conmed_antiplatelet_ris` | Table 3 row 8 (theta8) | -0.514, aHR 0.59 (printed "0.79-0.44"), RSE 28.41% |
+| `tbreak_scale_ris` | Table 2 footnote; Table 3 row labels | 0.5 year (fixed, not estimated) |
+| `tbreak_shape_ris` | Table 2 footnote; Table 3 row labels | 3 years (fixed, not estimated) |
+| `etalh0_*_ris` | Methods, "Development of the base model" | BSV stated to be estimated; **magnitude never reported** -- fixed at 0 |
+| `addSd` | not in the source | placeholder for the nlmixr2 likelihood; see Assumptions |
+
+# Covariate patterns
+
+The model has four binary covariates, so a cohort is fully described by the 16
+covariate patterns and their weights. Enumerating them exactly, rather than
+drawing a random cohort, makes every number below deterministic and identical
+across rxode2 versions and thread counts.
+
+Elhefnawy 2023 does not publish the joint distribution of the four covariates,
+and its Limitations section states that "the comorbidities were analyzed
+independently". The pattern weights below therefore assume independence -- see
+Assumptions and deviations.
+
+```{r patterns}
+p <- setNames(prev$prevalence, prev$covariate)
+
+patterns <-
+  tidyr::expand_grid(
+    DIS_HYPERLIP        = 0:1,
+    DIS_IHD             = 0:1,
+    DIS_HYPERT          = 0:1,
+    CONMED_ANTIPLATELET = 0:1
+  ) |>
+  dplyr::mutate(
+    weight =
+      ifelse(DIS_HYPERLIP        == 1, p[["DIS_HYPERLIP"]],        1 - p[["DIS_HYPERLIP"]]) *
+      ifelse(DIS_IHD             == 1, p[["DIS_IHD"]],             1 - p[["DIS_IHD"]]) *
+      ifelse(DIS_HYPERT          == 1, p[["DIS_HYPERT"]],          1 - p[["DIS_HYPERT"]]) *
+      ifelse(CONMED_ANTIPLATELET == 1, p[["CONMED_ANTIPLATELET"]], 1 - p[["CONMED_ANTIPLATELET"]]),
+    id = dplyr::row_number()
+  )
+
+stopifnot(nrow(patterns) == 16L, abs(sum(patterns$weight) - 1) < 1e-12)
+```
+
+```{r solve}
+obs_times <- sort(unique(c(seq(0, 7.37, by = 0.01), 0.5, 3, 7.37)))
+
+events <-
+  patterns |>
+  dplyr::select(id, DIS_HYPERLIP, DIS_IHD, DIS_HYPERT, CONMED_ANTIPLATELET) |>
+  tidyr::expand_grid(time = obs_times) |>
+  dplyr::mutate(evid = 0, amt = 0) |>
+  dplyr::arrange(id, time)
+
+# omega = NA / sigma = NA: the etas are fixed at zero, and rxSolve would
+# otherwise reuse an omega left over from a previous solve in the session.
+sim <-
+  rxode2::rxSolve(mod, events, omega = NA, sigma = NA, returnType = "data.frame") |>
+  dplyr::as_tibble() |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::left_join(dplyr::select(patterns, id, weight), by = "id")
+```
+
+# Replicate Figure 1 -- baseline hazard by time interval
+
+Figure 1 of Elhefnawy 2023 plots the baseline hazard (all predictors set to
+zero) as a step: 0.238 over the first 6 months, dropping to essentially zero
+afterwards, and flat out to 7 years. That figure plots the *scale* parameter
+`theta_x` alone. The hazard the model actually integrates carries the Gompertz
+factor `exp(theta_y * t)` as well, so it rises within each interval; both are
+shown.
+
+```{r fig1, fig.cap = "Replicates Figure 1 of Elhefnawy 2023 (baseline hazard, all predictors zero). The step is the theta_x scale the paper plots; the curve is the full Gompertz hazard the model integrates."}
+base <- dplyr::filter(
+  sim,
+  DIS_HYPERLIP == 0, DIS_IHD == 0, DIS_HYPERT == 0, CONMED_ANTIPLATELET == 0
+)
+
+scale_step <- dplyr::mutate(base, scale_only = ifelse(time < 0.5, 0.238, 0.0016))
+
+ggplot(scale_step, aes(x = time)) +
+  geom_line(aes(y = scale_only, colour = "theta_x scale only (paper Figure 1)")) +
+  geom_line(aes(y = hazard_ris, colour = "full Gompertz hazard")) +
+  scale_colour_manual(values = c("theta_x scale only (paper Figure 1)" = "grey40",
+                                 "full Gompertz hazard" = "steelblue")) +
+  labs(x = "Years after index ischemic stroke", y = "Hazard (1/year)",
+       colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The step heights are the transcribed Table 3 values exactly, and the two
+switch points behave as the Table 2 footnote specifies (`theta1` applies while
+`t < 0.5`, `theta3` from `t >= 0.5`).
+
+```{r fig1-checks}
+h_at <- function(tt) base$hazard_ris[which.min(abs(base$time - tt))]
+
+stopifnot(
+  # t = 0: hazard is exactly theta1, because exp(theta2 * 0) = 1.
+  abs(h_at(0) - 0.238) < 1e-9,
+  # Each of the three regimes must equal its own published formula exactly.
+  # Scale switch at 0.5 y: theta1 applies at 0.49, theta3 from 0.50.
+  abs(h_at(0.49) - 0.238  * exp(1.63 * 0.49)) < 1e-9,
+  abs(h_at(0.50) - 0.0016 * exp(1.63 * 0.50)) < 1e-9,
+  # Shape switch at 3 y: theta2 applies at 2.99, theta4 from 3.00.
+  abs(h_at(2.99) - 0.0016 * exp(1.63 * 2.99)) < 1e-9,
+  abs(h_at(3.00) - 0.0016 * exp(0.23 * 3.00)) < 1e-9
+)
+```
+
+# Replicate Figure 2 -- adjusted hazard ratios
+
+Figure 2 and Table 3 report the adjusted hazard ratio for each retained
+covariate. Because all four covariates are 0/1 indicators, the hazard ratio is
+exactly `exp(coefficient)`, so this is an exact identity check on the
+transcription rather than a simulation.
+
+```{r fig2}
+coefs <- c(
+  DIS_HYPERLIP        = 0.799,
+  DIS_IHD             = 0.745,
+  DIS_HYPERT          = 0.711,
+  CONMED_ANTIPLATELET = -0.514
+)
+published_hr <- c(
+  DIS_HYPERLIP = 2.22, DIS_IHD = 2.10, DIS_HYPERT = 2.03,
+  CONMED_ANTIPLATELET = 0.59
+)
+
+hr_tab <- tibble::tibble(
+  covariate  = names(coefs),
+  paper_name = c("HPLD", "IHD", "HTN", "APLT"),
+  coefficient = as.numeric(coefs),
+  hr_from_model = exp(as.numeric(coefs)),
+  hr_published  = as.numeric(published_hr[names(coefs)])
+) |>
+  dplyr::mutate(pct_diff = 100 * (hr_from_model - hr_published) / hr_published)
+
+hr_tab |>
+  dplyr::rename(
+    "Covariate" = covariate,
+    "Paper name" = paper_name,
+    "Coefficient" = coefficient,
+    "exp(coefficient)" = hr_from_model,
+    "Published aHR" = hr_published,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 3)
+
+# All four reproduce the published adjusted hazard ratios. Three agree to
+# within 0.31%; the antiplatelet row is out by 1.37% because exp(-0.514) =
+# 0.5981 rounds to 0.60 rather than the 0.59 printed in Table 3 -- a rounding
+# slip in the paper, not a transcription error here.
+stopifnot(all(abs(hr_tab$pct_diff) < 2))
+```
+
+The same coefficients must also reproduce the hazard ratios the model itself
+produces, which confirms the `model()` block applies them multiplicatively on
+the hazard as Elhefnawy 2023 specifies.
+
+```{r fig2-model-hr}
+off <- dplyr::filter(sim, dplyr::if_all(dplyr::all_of(names(coefs)), ~ .x == 0))
+
+hr_from_sim <- function(cov_name) {
+  others <- setdiff(names(coefs), cov_name)
+  on <- dplyr::filter(
+    sim,
+    .data[[cov_name]] == 1,
+    dplyr::if_all(dplyr::all_of(others), ~ .x == 0)
+  )
+  ratio <- on$hazard_ris / off$hazard_ris[match(on$time, off$time)]
+  # Proportional hazards: the ratio must be constant in time.
+  stopifnot(diff(range(ratio)) < 1e-9)
+  mean(ratio)
+}
+
+sim_hr <- vapply(names(coefs), hr_from_sim, numeric(1))
+
+# The ratio must be constant in time (proportional hazards) and equal exp(beta).
+stopifnot(all(abs(sim_hr - exp(coefs)) < 1e-9))
+sim_hr
+```
+
+# Replicate Table 3 -- the "Half-life (Ln2/alpha)" column
+
+```{r halflife}
+hl <- tibble::tibble(
+  parameter = c("alpha (<3 years)", "alpha (>=3 years)"),
+  alpha = c(1.63, 0.23),
+  computed = log(2) / c(1.63, 0.23),
+  published = c(0.42, 3.008)
+)
+
+hl |>
+  dplyr::rename(
+    "Parameter" = parameter, "alpha (1/year)" = alpha,
+    "ln(2)/alpha (year)" = computed, "Published (year)" = published
+  ) |>
+  knitr::kable(digits = 3)
+
+stopifnot(all(abs(hl$computed - hl$published) < 0.02))
+```
+
+Note that Elhefnawy 2023 labels this column a half-life, but both alphas are
+printed positive, so within each interval the hazard *doubles* on this
+timescale rather than halving. The 5.06-month figure the paper gives alongside
+0.42 is 0.42 years expressed in months.
+
+# Internal identity -- closed form against numerical integration
+
+The model file evaluates the cumulative hazard in closed form rather than by an
+ODE, so that the two hazard discontinuities never reach the solver. That is
+only safe if the closed form really is the integral of the instantaneous hazard
+the same file reports. Integrating `hazard_ris` numerically on a fine grid must
+recover `cumhaz_ris`. Both sides use the same parameter values, so this is pure
+numerical error and a tight bound is the right check.
+
+```{r identity}
+# The two breakpoints are genuine jump discontinuities, so the grid carries a
+# point immediately below each one. Without them the single trapezoid that
+# straddles a jump averages the pre- and post-jump hazard across a full step
+# and injects an error far larger than the quadrature error being measured.
+fine <- sort(unique(c(seq(0, 7.37, by = 0.001),
+                      0.5 - 1e-8, 0.5, 3 - 1e-8, 3, 7.37)))
+fine_ev <-
+  patterns |>
+  dplyr::select(id, DIS_HYPERLIP, DIS_IHD, DIS_HYPERT, CONMED_ANTIPLATELET) |>
+  tidyr::expand_grid(time = fine) |>
+  dplyr::mutate(evid = 0, amt = 0) |>
+  dplyr::arrange(id, time)
+
+fine_sim <-
+  rxode2::rxSolve(mod, fine_ev, omega = NA, sigma = NA, returnType = "data.frame") |>
+  dplyr::as_tibble() |>
+  dplyr::mutate(id = as.integer(as.character(id)))
+
+trap <- function(x, y) c(0, cumsum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2))
+
+identity_chk <-
+  fine_sim |>
+  dplyr::group_by(id) |>
+  dplyr::arrange(time, .by_group = TRUE) |>
+  dplyr::mutate(cumhaz_numeric = trap(time, hazard_ris)) |>
+  dplyr::ungroup() |>
+  # Relative, not absolute: the covariate multiplier scales both sides
+  # identically, so an absolute bound would be ~10x tighter for the
+  # covariate-free pattern than for the all-comorbidities one and would say
+  # nothing about the closed form itself. Skip the first few grid points,
+  # where the cumulative hazard is still near zero.
+  dplyr::filter(time > 0.01) |>
+  dplyr::mutate(rel_err = abs(cumhaz_numeric - cumhaz_ris) / cumhaz_ris)
+
+max(identity_chk$rel_err)
+
+# Composite-trapezoid relative error on exp(a t) is about (a*dx)^2/12, so a
+# 0.001-year grid with a = 1.63 predicts ~2e-7. Assert an order of magnitude
+# tighter than the 1e-5 that would still be comfortable, across all 16
+# covariate patterns: this confirms the closed form really is the integral of
+# the model's own instantaneous hazard.
+stopifnot(max(identity_chk$rel_err) < 1e-5)
+```
+
+# Replicate Figure 3 -- survivor function against the published Kaplan-Meier
+
+Figure 3 of Elhefnawy 2023 is the Kaplan-Meier VPC over the whole registry
+cohort. The cohort-weighted survivor function is the weighted average of the 16
+covariate patterns.
+
+The reference values below come from two places. The value at 6 months is a
+**hard published count** -- Table 1 reports 108 recurrences within 6 months
+among 7,697 patients at risk. The remaining values are **read off Figure 3**
+and are accurate to roughly half a percentage point; they are used only to show
+the size and direction of a discrepancy that is far larger than the reading
+error.
+
+```{r fig3}
+pop_surv <-
+  sim |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(sur_pop = sum(weight * sur), .groups = "drop")
+
+published_km <- tibble::tibble(
+  time = c(0.5, 1, 2, 3, 7.37),
+  sur_published = c(0.977, 0.973, 0.962, 0.950, 0.918),
+  provenance = c("Table 1 count (108/7,697) and Figure 3",
+                 rep("read from Figure 3", 4))
+)
+
+ggplot(pop_surv, aes(time, 100 * sur_pop)) +
+  geom_line(colour = "steelblue", linewidth = 0.8) +
+  geom_point(data = published_km, aes(time, 100 * sur_published),
+             colour = "firebrick", size = 2) +
+  coord_cartesian(ylim = c(60, 100)) +
+  labs(x = "Time (years)",
+       y = "Probability of not having recurrent IS (%)",
+       caption = paste("Blue: cohort-weighted survivor function from the published parameters.",
+                       "Red: Elhefnawy 2023 Figure 3 / Table 1.")) +
+  theme_bw()
+```
+
+```{r fig3-table}
+cmp <-
+  published_km |>
+  dplyr::mutate(
+    sur_model = approx(pop_surv$time, pop_surv$sur_pop, xout = time)$y,
+    cumhaz_model     = -log(sur_model),
+    cumhaz_published = -log(sur_published),
+    fold_over        = cumhaz_model / cumhaz_published
+  )
+
+cmp |>
+  dplyr::select(time, sur_published, sur_model, cumhaz_published,
+                cumhaz_model, fold_over, provenance) |>
+  dplyr::rename(
+    "Time (year)" = time,
+    "Published S(t)" = sur_published,
+    "Model S(t)" = sur_model,
+    "Published cumulative hazard" = cumhaz_published,
+    "Model cumulative hazard" = cumhaz_model,
+    "Model / published" = fold_over,
+    "Reference provenance" = provenance
+  ) |>
+  knitr::kable(digits = 4)
+```
+
+The model overpredicts the cumulative hazard by roughly six- to twelve-fold at
+every time point once the cohort covariate distribution is applied (four- to
+eight-fold for a covariate-free patient). This is asserted, not merely
+displayed, so that the check fails loudly if a future edit silently changes the
+transcription in either direction.
+
+```{r fig3-assert}
+stopifnot(
+  # The discrepancy is real and large at every reference time.
+  all(cmp$fold_over > 4),
+  # ... and bounded, so an accidental order-of-magnitude edit to a theta
+  # would break this rather than pass unnoticed.
+  all(cmp$fold_over < 16)
+)
+```
+
+## The discrepancy does not depend on how the piecewise structure is read
+
+The reading above is the one the Table 2 footnote specifies. It is worth
+showing that no alternative reading rescues the transcription, because the
+first 6 months alone already falsify the scale: `theta1 = 0.238` per year is
+too large by roughly an order of magnitude regardless of what the shape
+parameter does.
+
+```{r alternatives}
+H_obs_6mo <- -log(1 - 108 / 7697)   # from the Table 1 count
+
+alternatives <- tibble::tribble(
+  ~reading,                                              ~H_6mo,
+  "As published: h = theta1 * exp(theta2 * t)",           0.238 / 1.63 * (exp(1.63 * 0.5) - 1),
+  "Constant hazard, no Gompertz factor: h = theta1",      0.238 * 0.5,
+  "Decaying Gompertz: h = theta1 * exp(-theta2 * t)",     0.238 / 1.63 * (1 - exp(-1.63 * 0.5)),
+  "Scale intervals swapped (theta3 first)",               0.0016 / 1.63 * (exp(1.63 * 0.5) - 1)
+) |>
+  dplyr::mutate(
+    fold_over = H_6mo / H_obs_6mo,
+    implied_6mo_incidence = 1 - exp(-H_6mo)
+  )
+
+alternatives |>
+  dplyr::rename(
+    "Structural reading" = reading,
+    "Cumulative hazard at 6 months" = H_6mo,
+    "Fold over published" = fold_over,
+    "Implied 6-month incidence" = implied_6mo_incidence
+  ) |>
+  knitr::kable(digits = 4)
+```
+
+Against the published 108 / 7,697 = 1.40%, the as-published reading implies
+17%, a flat hazard implies 11.9%, and a decaying Gompertz implies 7.8%. Only
+the fourth row -- swapping the two scale parameters, which contradicts both
+the Table 2 footnote and the Table 3 row labels -- lands low, and it
+undershoots by an order of magnitude in the other direction. Note also that
+this comparison is generous to the model: it ignores the covariate multiplier,
+whose cohort average is above one and therefore makes every row worse.
+
+```{r alternatives-assert}
+cohort_multiplier <- sum(
+  patterns$weight *
+    exp(0.799 * patterns$DIS_HYPERLIP + 0.745 * patterns$DIS_IHD +
+        0.711 * patterns$DIS_HYPERT - 0.514 * patterns$CONMED_ANTIPLATELET)
+)
+cohort_multiplier
+
+stopifnot(
+  # No reading consistent with the paper's own text lands near the published
+  # 6-month cumulative hazard.
+  all(alternatives$fold_over[1:3] > 4),
+  # The cohort covariate multiplier is above 1, so it cannot close the gap.
+  cohort_multiplier > 1
+)
+```
+
+# Replicate Figure 4 -- survival with and without antiplatelet
+
+Figure 4 splits the survivor function by whether the patient received an
+antiplatelet at discharge. Within each stratum the remaining three covariates
+are averaged over their published prevalences.
+
+```{r fig4, fig.cap = "Replicates Figure 4 of Elhefnawy 2023 (survival with vs without antiplatelet secondary prevention). The vertical scale differs from the paper's because of the overprediction documented in the Errata; the separation between the two arms is the reproducible feature."}
+by_aplt <-
+  sim |>
+  dplyr::group_by(CONMED_ANTIPLATELET, time) |>
+  dplyr::summarise(sur_arm = sum(weight * sur) / sum(weight), .groups = "drop") |>
+  dplyr::mutate(arm = ifelse(CONMED_ANTIPLATELET == 1,
+                             "(ii) receiving APLT", "(i) not receiving APLT"))
+
+ggplot(by_aplt, aes(time, 100 * sur_arm, colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time (years)", y = "Probability of not having recurrent IS (%)",
+       colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+The qualitative finding of Figure 4 -- antiplatelet-treated patients do better,
+and the gap widens over time -- reproduces. For any single covariate pattern
+the ratio of cumulative hazards between the two arms is exactly the published
+hazard ratio, because the covariate multiplier factors out of the integral.
+Averaging *survival* over the other three covariates is not the same as
+averaging *hazard*, so the stratum-level ratio sits slightly above
+`exp(-0.514)` and drifts upward as survival falls -- it is bounded below by the
+hazard ratio and stays within a few percent of it.
+
+```{r fig4-check}
+arm_ratio <-
+  by_aplt |>
+  dplyr::select(CONMED_ANTIPLATELET, time, sur_arm) |>
+  tidyr::pivot_wider(names_from = CONMED_ANTIPLATELET,
+                     values_from = sur_arm, names_prefix = "aplt") |>
+  dplyr::filter(time > 0) |>
+  dplyr::mutate(cumhaz_ratio = log(aplt1) / log(aplt0))
+
+range(arm_ratio$cumhaz_ratio)
+
+stopifnot(
+  # Bounded below by the published hazard ratio exp(-0.514) = 0.5981, which it
+  # attains at early times where survival is still near 1 and the Jensen gap
+  # from averaging survival rather than hazard has not yet opened.
+  all(arm_ratio$cumhaz_ratio >= exp(-0.514) - 1e-6),
+  # ... and never drifts more than a few percent above it.
+  all(arm_ratio$cumhaz_ratio < 0.64),
+  # The tightest point is within 0.1% of the published hazard ratio.
+  abs(min(arm_ratio$cumhaz_ratio) - exp(-0.514)) < 1e-3
+)
+```
+
+# NCA validation
+
+Not applicable. This model has no drug-concentration output -- it produces a
+hazard, a cumulative hazard and a survivor probability. PKNCA is not a
+meaningful check here, so the validation above uses the checks appropriate to a
+parametric time-to-event model instead: exact hazard-ratio identities against
+Table 3 and Figure 2, the closed-form-versus-numerical-integration identity for
+the cumulative hazard, the Table 3 half-life column, replication of Figures 1
+and 4, and a quantified comparison of the survivor function against the
+published Kaplan-Meier of Figure 3.
+
+# Assumptions and deviations
+
+* **Between-subject variability is fixed at zero.** Elhefnawy 2023 Methods
+  states that "between-subject variability around the hazard was estimated,
+  assuming an exponential distribution for the random effect", but Table 3
+  reports no variance, no CV% and no shrinkage for it, and there is no
+  supplement on disk. The structural form is therefore known and the magnitude
+  is not, so `etalh0_early_ris` and `etalh0_late_ris` are declared and fixed at
+  0 rather than invented. Everything in this vignette is a typical-value
+  trajectory. The paper describes a single random effect on the hazard; two are
+  declared here only so that each pairs with a fixed-effect parameter, and
+  anyone reinstating the variability should draw one value and use it for both.
+* **`addSd` is not from the source.** The source fits the parametric survival
+  (event-density) likelihood under LAPLACE, so there is no observation-error
+  model to translate. A placeholder additive residual of 0.001 is attached to
+  `sur` so that the nlmixr2 likelihood machinery accepts the model for forward
+  simulation.
+* **Covariate independence.** The 16-pattern weights assume the four covariates
+  are independent, because Elhefnawy 2023 does not publish their joint
+  distribution. The paper's own Limitations section says "the comorbidities
+  were analyzed independently", so this matches how the model was built, but it
+  is an assumption: hypertension, hyperlipidemia and ischemic heart disease are
+  positively correlated in real cohorts, which would concentrate risk in fewer
+  patients than assumed here.
+* **The Figure 3 reference points at 1, 2, 3 and 7.37 years are digitized**
+  from the published figure and are accurate to roughly half a percentage
+  point. The 6-month value is a hard count from Table 1. The conclusions drawn
+  from them concern a four- to eight-fold discrepancy, which is far outside the
+  digitization error.
+* **The cumulative hazard is evaluated in closed form, not by an ODE.** This is
+  an encoding choice, not a deviation from the published model: the piecewise
+  Gompertz integrates elementally, and integrating it analytically keeps the
+  two hazard discontinuities out of the solver, where they would be stepped
+  over and silently smeared. The closed form is verified against numerical
+  integration of the model's own instantaneous hazard above.
+* **Antiplatelet class composition is unknown.** The paper does not enumerate
+  which agents were pooled into the antiplatelet indicator, and the flag records
+  a prescription written at discharge rather than measured adherence.
+* **Hypertension and diabetes duration are not used.** Table 1 stratifies both
+  by duration, but only the presence/absence flags appear in the final model.
+
+# Errata
+
+**The published parameters do not reproduce the paper's own outputs.** This is
+recorded here in full because it is material to anyone using the model, and
+because nothing has been adjusted to hide it.
+
+The baseline-hazard scale for the first 6 months, `theta1 = 0.238` per year, is
+irreconcilable with the paper's own event counts:
+
+* Elhefnawy 2023 Table 1 reports 108 recurrences within 6 months among 7,697
+  patients at risk, a cumulative hazard of about 0.0141.
+* As published, `h(t) = 0.238 * exp(1.63 t)` integrates to 0.184 over the first
+  6 months -- 13-fold too high, implying a 17% 6-month recurrence rate against
+  the observed 1.40%.
+* The discrepancy is not an artefact of the Gompertz shape. A merely *constant*
+  hazard of 0.238 per year gives 0.119 over 6 months, still 8.5-fold too high.
+  The scale itself is too large.
+* The covariate multiplier cannot rescue it: averaged over the published
+  prevalences it is about 1.66, which makes the overprediction worse rather
+  than better.
+* Between-subject variability cannot rescue it either. A zero-mean random
+  effect on the log hazard leaves at least half the cohort at or above the
+  typical hazard, so the population survivor function is bounded well below the
+  published curve no matter how large the unreported variance is.
+
+The same overprediction persists across the whole follow-up when compared with
+the Figure 3 Kaplan-Meier VPC. For a covariate-free patient the model's
+cumulative hazard runs about 8-fold high at 6 months, 6-fold at 3 years and
+4-fold at 7.37 years; applying the cohort covariate distribution raises those
+to roughly 12-fold, 9-fold and 6-fold. The `Replicate Figure 3` section above
+asserts this numerically.
+
+Two smaller inconsistencies are noted for completeness:
+
+* **The sign of `theta4`.** Results states that the hazard showed "the
+  exponential increase ... in the first 3 years after the index IS and then
+  exponentially reduced afterward". With `theta4 = +0.23` as printed, the
+  hazard still increases after 3 years, only about seven times more slowly. The
+  "reduction" the sentence describes is produced by the downward jump at
+  `t = 3` that the scale/shape switching creates, not by a negative exponent.
+  The printed positive sign is what is encoded.
+* **The Table 3 "Half-life (Ln2/alpha)" column.** `ln(2)/alpha` is a doubling
+  time for a positive exponent, not a half-life. The arithmetic reproduces
+  (0.425 and 3.014 years against the published 0.42 and 3.008); only the label
+  is wrong.
+
+What *does* reproduce exactly is the entire covariate block: all four
+coefficients back out to the published adjusted hazard ratios to within the
+paper's own two-decimal rounding, and the relative effects in Figures 2 and 4
+are reproduced faithfully. The model is therefore usable for *relative* risk
+questions -- how much does hyperlipidemia or an antiplatelet prescription move
+the hazard -- while its absolute recurrence predictions should not be used
+without resolving the baseline-hazard scale with the authors.
+
+No supplementary material was available on disk for this paper; the Frontiers
+supplementary-material link is referenced in the article but the file was not
+part of the open-access package retrieved for this extraction. A supplement
+containing the NONMEM control stream would very likely settle the scale
+question.

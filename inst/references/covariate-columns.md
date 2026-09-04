@@ -5279,6 +5279,18 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Jadhav_2023_bempedoicAcid.R`, `Jadhav_2023_bempedoicAcid_ldlc.R` (proportional shift `CL/F * (1 + (-0.0945) * DIS_HYPERLIP)`, i.e. 9.5% lower apparent bempedoic acid clearance in participants with hyperlipidemia relative to the pooled healthy / non-hyperlipidemic reference; Jadhav 2023 Table 2).
 - **Notes:** Not derivable from `DIS_HEALTHY` by complement, and not mutually exclusive with `DIS_DIAB`: the Jadhav 2023 popPK dataset contained 49 participants with diabetes alone plus 310 with hyperlipidemia and diabetes (Table 1 footnote c), so all three flags can be jointly set. Distinct from `DIS_HEFH` / `DIS_HOFH`, which identify the heterozygous and homozygous familial-hypercholesterolemia subsets; a HeFH patient normally also carries `DIS_HYPERLIP = 1`, so record the per-model convention in `covariateData[[DIS_HYPERLIP]]$notes` whenever both appear. Also distinct from the continuous lipid-panel canonicals (`LDLC`, `HDLC`), which carry the measured concentration rather than the diagnosis.
 
+### DIS_IHD (**canonical for ischemic heart disease comorbidity / medical-history indicator**)
+- **Description:** 1 = patient has a history of (or current) ischemic heart disease (IHD, equivalently coronary heart disease / coronary artery disease -- stable angina, prior myocardial infarction, or documented coronary atherosclerosis); 0 = no IHD. Time-fixed at study entry per subject (medical-history flag rather than a time-varying ischemia measurement).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no ischemic heart disease comorbidity).
+- **Source aliases:**
+  - `IHD` -- used in `Elhefnawy_2023_recurrent_ischemic_stroke.R` (Elhefnawy 2023 Table 1 / Table 3 row name; ascertained by physician diagnosis, electronic record, or medication history).
+  - `CHD`, `CAD` -- common clinical-dataset abbreviations for the same diagnosis flag (coronary heart / artery disease).
+- **Example models:** `Elhefnawy_2023_recurrent_ischemic_stroke.R` (log-linear effect on the recurrent-ischemic-stroke hazard: `exp(0.745 * DIS_IHD)`, i.e. an adjusted hazard ratio of 2.10; Elhefnawy 2023 Table 3 theta6).
+- **Notes:** Member of the `DIS_<condition>` comorbidity-flag family; companion to `DIS_HYPERT` and `DIS_HYPERLIP`, with which it commonly co-occurs in cardiovascular-risk cohorts (all three are jointly settable). Individual-level binary flag -- distinct from `DIS_CHD_PERCENT`, which is a *study-arm aggregate prevalence percentage* used in MBMA models, and from `DIS_ACS`, which identifies an acute-coronary-syndrome cohort rather than a chronic-disease history. If a future paper needs to separate prior myocardial infarction from stable coronary disease, register a refinement (`DIS_MI_PRIOR`) rather than overloading this flag.
+
 ## Surgical history / disease state
 
 ### SPINAL_BLOCK (**canonical for spinal (neuraxial) block height**)
@@ -8075,6 +8087,18 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Source aliases:** `AMINO` -- used in `Rosario_2015_vedolizumab.R`.
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.02^CONMED_AMINO`).
 - **Notes:** Covers the full aminosalicylate class (5-ASA is the single active moiety shared by most agents); use `CONMED_AMINO` rather than `CONMED_5ASA` unless the source paper explicitly restricts the indicator to 5-ASA monotherapy.
+
+### CONMED_ANTIPLATELET (**canonical for concomitant antiplatelet indicator; class composition is paper-specific**)
+- **Description:** 1 = subject is receiving an antiplatelet agent (aspirin, clopidogrel, ticagrelor, prasugrel, ticlopidine, dipyridamole, cilostazol etc.) over the relevant observation window -- or, for per-time-point datasets, at the current time; 0 = no concomitant antiplatelet. Used both as a bleeding / cardiovascular-outcome covariate in event-risk models and as a PK covariate for substrates that share metabolic or transporter pathways with the thienopyridines. **The class membership pooled into the indicator is paper-specific and SHOULD be enumerated in `covariateData[[CONMED_ANTIPLATELET]]$notes` per model** -- sources range from aspirin-only through any-oral-antiplatelet. Composite class indicator following the `CONMED_DIURETIC` / `CONMED_STATIN` / `CONMED_AED` pooled-class pattern rather than the `CONMED_<INN>` per-drug pattern.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no concomitant antiplatelet of the paper-specific class set).
+- **Source aliases:**
+  - `APLT` -- used in `Elhefnawy_2023_recurrent_ischemic_stroke.R` (Elhefnawy 2023 Table 1 / Table 3 row name; the indicator records an antiplatelet *prescribed at discharge* from the index-stroke admission, so it encodes prescription rather than adherence, and the paper does not enumerate which agents were pooled).
+  - `ANTIPLT`, `ASA` -- common clinical-dataset abbreviations; use the aspirin-specific `CONMED_ASA` form only if a future source restricts the indicator to aspirin monotherapy while also carrying a separate broader antiplatelet column.
+- **Example models:** `Elhefnawy_2023_recurrent_ischemic_stroke.R` (log-linear effect on the recurrent-ischemic-stroke hazard: `exp(-0.514 * CONMED_ANTIPLATELET)`, i.e. an adjusted hazard ratio of 0.59 -- about a 40 percent reduction in recurrence hazard; Elhefnawy 2023 Table 3 theta8).
+- **Notes:** Composite indicator with paper-specific class membership; users simulating across models that share this column but differ in class membership MUST populate it according to each paper's own definition. Distinct from `CONMED_ANTICOAG`-style anticoagulant indicators (different mechanism and different bleeding profile) -- register those separately rather than pooling them here, even though registry datasets sometimes combine the two under an "antithrombotic" heading. When a paper requires drug-resolved encoding, register sibling `CONMED_<INN>` canonicals (e.g. `CONMED_CLOPIDOGREL`) rather than overloading this one. Related but distinct from the pharmacogenetic canonical `CYP2C19_S2_CARRIER`, which modulates the *activation* of clopidogrel rather than recording whether an antiplatelet is being taken.
 
 ### CONMED_AVD (**canonical for brentuximab vedotin + AVD (adriamycin/doxorubicin, vinblastine, dacarbazine) combination indicator**)
 - **Description:** 1 = subject is receiving brentuximab vedotin in combination with the AVD chemotherapy backbone (adriamycin a.k.a. doxorubicin, vinblastine, dacarbazine) for newly diagnosed advanced-stage Hodgkin lymphoma; 0 = otherwise (single-agent brentuximab vedotin). Encodes the A+AVD frontline regimen as a study-design covariate on ADC clearance.
