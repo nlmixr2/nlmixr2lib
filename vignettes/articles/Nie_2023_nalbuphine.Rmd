@@ -682,12 +682,16 @@ cat(sprintf(
 
 `tmax` is 0 by construction: nalbuphine is given as an intravenous injection,
 so the concentration maximum is the back-extrapolated C0 and there is no
-absorption phase. The simulated `aucinf.obs` runs a few percent above the exact
-`Dose / CL` because the linear trapezoidal rule over-reads the convex
-distribution phase on the paper's sparse early grid -- which is a property of
-the study's sampling design, faithfully reproduced, not a model defect. The
-`Dose / CL` identity above is the version of this check with the sampling
-artefact removed.
+absorption phase.
+
+The cohort-median `aucinf.obs` lands within about 0.1% of the exact
+`Dose / CL`, even though the paper's early sampling grid is coarse relative to
+a 3.7-minute distribution half-life. That is PKNCA's default lin-up / log-down
+integration doing its job: a linear trapezoid would over-read the convex
+decline between 3 and 15 min by several percent, whereas log-linear
+interpolation on the descending limb tracks it closely. The dense-grid
+`Dose / CL` identity above remains the stricter, sampling-free version of the
+same check.
 
 # Assumptions and deviations
 
