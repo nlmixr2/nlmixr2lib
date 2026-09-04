@@ -2607,7 +2607,7 @@ tolerance.</p>
 <span><span class="co"># IV bolus: C(t) = D / V * exp(-kel * t)</span></span>
 <span><span class="va">iv</span> <span class="op">&lt;-</span> <span class="fu">solve_typ</span><span class="op">(</span><span class="fu">make_events</span><span class="op">(</span><span class="fl">1</span>, dose <span class="op">=</span> <span class="fl">100</span>, route <span class="op">=</span> <span class="st">"iv"</span>, tau <span class="op">=</span> <span class="fl">1e6</span>, n_dose <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>                            obs <span class="op">=</span> <span class="va">t_grid</span>, covs <span class="op">=</span> <span class="fu">typical_covs</span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:03</span></span>
+<span><span class="co">#&gt; [====|====|====|====|====|====|====|====|====|====] 0:00:02</span></span>
 <span><span class="va">iv_closed</span> <span class="op">&lt;-</span> <span class="fl">100</span> <span class="op">/</span> <span class="va">theta</span><span class="op">[[</span><span class="st">"vc"</span><span class="op">]</span><span class="op">]</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">exp</a></span><span class="op">(</span><span class="op">-</span><span class="va">kel</span> <span class="op">*</span> <span class="va">t_grid</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># SC: C(t) = F * D * ka / (V * (ka - kel)) * (exp(-kel t) - exp(-ka t))</span></span>

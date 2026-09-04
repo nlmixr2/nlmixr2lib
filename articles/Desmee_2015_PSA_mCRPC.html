@@ -2679,11 +2679,11 @@ the pkgdown wall-clock budget.</p>
 <span>  <span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">ungroup</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">mutate</span><span class="op">(</span>scenario <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scenario</span>, levels <span class="op">=</span> <span class="va">scenarios</span><span class="op">$</span><span class="va">scenario</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.65143e-310 illegal]: 8 warning(s) for subject(s): Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.65143e-310 illegal]: 4 warning(s) for subject(s): Unknown, Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.94818e-310 illegal]: 3 warning(s) for subject(s): Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.65143e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.94818e-310 illegal]: 1 warning(s) for subject(s): Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.92415e-310 illegal]: 8 warning(s) for subject(s): Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.65954e-310 illegal]: 5 warning(s) for subject(s): Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.92415e-310 illegal]: 2 warning(s) for subject(s): Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.65954e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.92415e-310 illegal]: 1 warning(s) for subject(s): Unknown</span></span>
 <span></span>
 <span><span class="va">vpc_median</span> <span class="op">&lt;-</span> <span class="va">vpc</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">group_by</span><span class="op">(</span><span class="va">scenario</span>, <span class="va">time</span><span class="op">)</span> <span class="op">|&gt;</span></span>
