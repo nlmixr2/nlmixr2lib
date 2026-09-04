@@ -562,6 +562,8 @@ navbar:
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Cabozantinib (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib.html
+      - text: "Cabozantinib (Ly 2023)"
+        href: articles/Ly_2023_cabozantinib.html
       - text: "Cabozantinib dose modification (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cabozantinib tumor (Lacy 2018)"
@@ -5246,6 +5248,7 @@ articles:
   - articles/Luo_2024_CES1_cirrhosis
   - articles/Luu_2017_nusinersen
   - articles/Lv_2025_asc10a
+  - articles/Ly_2023_cabozantinib
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
   - articles/Ma_2026_colistinSulfate
