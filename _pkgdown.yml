@@ -600,6 +600,10 @@ navbar:
         href: articles/Zandvliet_2008_carboplatin.html
       - text: "Carfentanil iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
+      - text: "Carprofen moxidectinCorrected (Munn 2024)"
+        href: articles/Munn_2024_carprofen_moxidectin_internal_standard.html
+      - text: "Carprofen raw (Munn 2024)"
+        href: articles/Munn_2024_carprofen_moxidectin_internal_standard.html
       - text: "Carvedilol (Honda 2005)"
         href: articles/Honda_2005_carvedilol.html
       - text: "Carvedilol (Hwang 2023)"
@@ -5349,6 +5353,7 @@ articles:
   - articles/Muller_2009_amoxicillin
   - articles/Muller_2010_clindamycin
   - articles/Mulyukov_2018_ranibizumab
+  - articles/Munn_2024_carprofen_moxidectin_internal_standard
   - articles/Muntau_2017_sapropterin
   - articles/Muthukrishnan_2025_clazakizumab
   - articles/Muto_2015_voriconazole
