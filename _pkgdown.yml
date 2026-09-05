@@ -474,6 +474,8 @@ navbar:
         href: articles/Han_2016_bevacizumab.html
       - text: "Bevacizumab (Panoilia 2015)"
         href: articles/Panoilia_2015_bevacizumab.html
+      - text: "Bevacizumab mouse (Wu 2012)"
+        href: articles/Wu_2012_bevacizumab_mouse.html
       - text: "Bevacizumab pk (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_pk.html
       - text: "Bevacizumab pkpd (Papachristos 2020)"
@@ -5936,6 +5938,7 @@ articles:
   - articles/Wolowich_2025_thc_heart_rate
   - articles/Wright_2013_allopurinol
   - articles/Wright_2016_allopurinol
+  - articles/Wu_2012_bevacizumab_mouse
   - articles/Wu_2012_modafinil
   - articles/Wu_2012_sirolimus
   - articles/Wu_2014_FEV1_asthma
