@@ -3820,6 +3820,8 @@ navbar:
         href: articles/Tang_2023_tenecteplase.html
       - text: "Tenofovir (Baheti 2011)"
         href: articles/Baheti_2011_tenofovir.html
+      - text: "Tenofovir (Kawuma 2023)"
+        href: articles/Kawuma_2023_tenofovir.html
       - text: "Tenofovir (Yu 2026)"
         href: articles/Yu_2026_tenofovir.html
       - text: "Tenofovir alafenamide (Thoueille 2023)"
@@ -5187,6 +5189,7 @@ articles:
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
   - articles/Kawamura_2018_eribulin
+  - articles/Kawuma_2023_tenofovir
   - articles/Kay_2020_lumefantrine
   - articles/Kay_2022_lumefantrine
   - articles/Keij_2023_amoxicillin
