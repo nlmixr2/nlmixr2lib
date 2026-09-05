@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2024 olanzapine ([doi:10.2147/NDT.S455183](https://doi.org/10.2147/NDT.S455183)) -- adult inpatients with schizophrenia on routine therapeutic drug monitoring.
+- Add Hu 2024 nivolumab and ipilimumab ([doi:10.1002/psp4.13098](https://doi.org/10.1002/psp4.13098)) -- pooled adult and pediatric (1-17 years) oncology patients.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

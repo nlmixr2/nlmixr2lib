@@ -1942,6 +1942,8 @@ navbar:
         href: articles/Feng_2014_ipilimumab.html
       - text: "Ipilimumab (Feng 2019)"
         href: articles/Feng_2019_ipilimumab.html
+      - text: "Ipilimumab (Hu 2024)"
+        href: articles/Hu_2024_nivolumab_ipilimumab_pediatric.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
       - text: "Irinotecan (Zhu 2023)"
@@ -2736,6 +2738,8 @@ navbar:
         href: articles/Sharma_2023_nitrofurantoin.html
       - text: "Nivolumab (Bajaj 2017)"
         href: articles/Bajaj_2017_nivolumab.html
+      - text: "Nivolumab (Hu 2024)"
+        href: articles/Hu_2024_nivolumab_ipilimumab_pediatric.html
       - text: "Nivolumab (Zhang 2019)"
         href: articles/Zhang_2019_nivolumab.html
       - text: "Nivolumab qsp (Shchelokov 2023)"
@@ -5204,7 +5208,7 @@ articles:
   - articles/Hornik_2025_furosemide
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
-  - articles/Hu_2023_voriconazole
+  - articles/Hu_2024_nivolumab_ipilimumab_pediatric
   - articles/Hu_2025_tepotinib
   - articles/Hu_2026_clesrovimab
   - articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp
