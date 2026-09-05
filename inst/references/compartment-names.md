@@ -1469,6 +1469,66 @@ PBPK organ-vascular concentration compartments used by membrane-limited PBPK ext
 
 ---
 
+## Extracorporeal circuit compartments (`circuit_*` / `reservoir_*` namespace)
+
+States of an extracorporeal blood circuit -- continuous renal replacement therapy (CRRT), extracorporeal membrane oxygenation (ECMO / ECLS), apheresis, haemoperfusion -- carried as *structure* rather than as a covariate on clearance. The namespace is deliberately **modality-neutral** (`circuit_`, not `crrt_` / `ecmo_`) so that a later ECMO oxygenator or apheresis column reuses these names instead of minting a parallel set; the modality lives in the model's `description` and filename, not in the state names.
+
+The `reservoir_*` pair is the closed-loop blood pool of an *ex vivo* bench circuit. When the same circuit module is grafted onto a body model, the reservoir states are replaced by that model's venous blood compartment and only the `circuit_*` states remain -- which is exactly the ex-vivo-then-in-vivo workflow the founding paper describes.
+
+Do **not** use these for a model that represents the circuit only as an additive clearance term on a body compartment (e.g. `Kim_2026_midazolam_ecmo.R`, which carries the circuit as the covariate `Q_ECMO` on clearance and has no circuit states at all). This namespace is for models that carry circuit mass as ODE states.
+
+Ratified 2026-09-02 (task `oare_PMC13274749` sidecar question q1, answer A).
+
+### circuit_plasma (**canonical extracorporeal circuit plasma compartment**)
+- **Type:** compartment
+- **Role:** Plasma sub-compartment of the drug-contacting body of an extracorporeal circuit (the hemofilter, oxygenator or column together with its tubing prime volume). Receives blood from the patient or reservoir at the circuit blood flow rate split on the systemic hematocrit, returns it at the return-line flow split on the post-device hematocrit, and is the phase from which unbound drug crosses the membrane.
+- **Source aliases:**
+  - `HF1000|Plasma` -- McKnite 2026 deposited MoBi project; `CRRTpls` in Supplement S1 Equations 8-10.
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
+- **Notes:** Pairs with [[circuit_rbc]]. A circuit model that does not resolve the red-cell phase uses `circuit_plasma` alone for the whole blood-side volume only if the paper genuinely lumps them; otherwise carry both.
+
+### circuit_rbc (**canonical extracorporeal circuit red-cell compartment**)
+- **Type:** compartment
+- **Role:** Red blood cell sub-compartment of the drug-contacting body of an extracorporeal circuit, exchanging with [[circuit_plasma]] by permeability-limited passive diffusion toward the red-cell to plasma partition ratio and carried into and out of the circuit by the red-cell fraction of the blood flow.
+- **Source aliases:**
+  - `HF1000|BloodCells` -- McKnite 2026 deposited MoBi project; `CRRTrbc` in Supplement S1 Equation 7.
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
+- **Notes:** Distinct from the `rbc_<analyte>` namespace, which holds an intracellular analyte pool in *concentration* units inside the patient's own red cells; `circuit_rbc` is an amount state of the red-cell phase resident in the device at a given moment. Also distinct from `bcc` (central blood cells in mAb PBPK) and from `erythrocytes<n>` (red-cell *counts* in erythropoiesis chains).
+
+### circuit_dialysate (**canonical hemofilter dialysate compartment**)
+- **Type:** compartment
+- **Role:** Dialysate-side volume of a hemofilter or dialyser, separated from [[circuit_plasma]] by the semipermeable membrane. Gains drug by diffusion down the unbound concentration gradient and by convection with the filtrate, and drains to [[circuit_effluent]] at the effluent flow rate.
+- **Source aliases:**
+  - `PrisMax|Dialysate` -- McKnite 2026 deposited MoBi project; `Dialysate` in Supplement S1 Equations 9-11.
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
+- **Notes:** The membrane permeability-surface product `D * SA / h` is typically several orders of magnitude larger than every other circuit flow, so this state usually sits at quasi-equilibrium with the unbound plasma concentration; carry it as a state anyway, because it is what the effluent assay measures.
+
+### circuit_effluent (**canonical extracorporeal effluent waste compartment**)
+- **Type:** compartment
+- **Role:** Terminal accumulating waste receptacle downstream of [[circuit_dialysate]] -- the effluent bag. Holds the cumulative amount of drug removed from the circuit by the device, which is the quantity an effluent recovery calculation compares against.
+- **Source aliases:**
+  - `PrisMax|DialysateBag` -- McKnite 2026 deposited MoBi project; `Effluent waste` in Supplement S1 Equation 11.
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
+- **Notes:** Accumulation-only by construction: nothing leaves it and nothing upstream can be influenced by it, so it is the circuit analogue of `urine`.
+
+### reservoir_plasma (**canonical ex vivo circuit blood-reservoir plasma compartment**)
+- **Type:** compartment
+- **Role:** Plasma sub-compartment of the closed-loop blood reservoir of an *ex vivo* bench circuit. Stands in for the patient in a bench experiment: the circuit draws from it and returns to it, and it is the phase the ex vivo assay samples.
+- **Source aliases:**
+  - `Reservoir|Plasma` -- McKnite 2026 Figure 1B; `Venouspls` in Supplement S1 Equation 8, which is what the reservoir is replaced by when the module is grafted onto a body model.
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
+- **Notes:** Not the same concept as `plasma` (the central plasma compartment of the Cao 2013 mPBPK family) -- `reservoir_plasma` is an *apparatus* volume with no physiology behind it. Pairs with [[reservoir_rbc]].
+
+### reservoir_rbc (**canonical ex vivo circuit blood-reservoir red-cell compartment**)
+- **Type:** compartment
+- **Role:** Red blood cell sub-compartment of the closed-loop blood reservoir of an *ex vivo* bench circuit, exchanging with [[reservoir_plasma]] by permeability-limited passive diffusion toward the red-cell to plasma partition ratio.
+- **Source aliases:**
+  - `Reservoir|BloodCells` -- McKnite 2026 Figure 1B; `Venousrbc` in Supplement S1 Equation 7.
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example).
+- **Notes:** See the note on [[circuit_rbc]] for how this differs from `rbc_<analyte>`, `bcc` and `erythrocytes<n>`.
+
+---
+
 ## Whole-body blood / lymph compartments
 
 ### blood (**canonical whole-body blood compartment**)
