@@ -213,7 +213,7 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
-- Add Wu 2012 bevacizumab-IRDye 800CW ([doi:10.1208/s12248-012-9342-9](https://doi.org/10.1208/s12248-012-9342-9)) -- male SKH-1 mice given a single 0.45 mg/kg intravenous or subcutaneous dose.
+- Add Vinnard 2017 isoniazid ([doi:10.1111/bcp.13172](https://doi.org/10.1111/bcp.13172)) -- ART-naive adults with HIV/tuberculosis co-infection in Botswana.
 
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
