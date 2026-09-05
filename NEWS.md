@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tang 2023 tenecteplase ([doi:10.1002/jcph.2164](https://doi.org/10.1002/jcph.2164)) -- adults with acute myocardial infarction.
+- Add Alsultan 2023 vancomycin ([doi:10.3389/fped.2023.1093171](https://doi.org/10.3389/fped.2023.1093171)) -- very low birth weight neonates.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
