@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sethi 2024 acetaminophen + diclofenac opioid-sparing MBMA ([doi:10.1007/s40122-023-00569-z](https://doi.org/10.1007/s40122-023-00569-z)) -- adults with acute postoperative pain.
+- Add Ahmed 2024 vancomycin ([doi:10.2147/DDDT.S432439](https://doi.org/10.2147/DDDT.S432439)) -- Sudanese adult inpatients with renal impairment.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

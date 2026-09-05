@@ -4176,6 +4176,8 @@ navbar:
         href: articles/Kim_2015_valsartan.html
       - text: "Valsartan pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
+      - text: "Vancomycin (Ahmed 2024)"
+        href: articles/Ahmed_2024_vancomycin.html
       - text: "Vancomycin (Alqahtani 2018)"
         href: articles/Alqahtani_2018_vancomycin.html
       - text: "Vancomycin (Alqurain 2024)"
@@ -4560,6 +4562,7 @@ articles:
   - articles/Ahlstrom_2010_nicotinicAcid_rat
   - articles/Ahmed_2015_topiramate
   - articles/Ahmed_2016_lorenzosOil
+  - articles/Ahmed_2024_vancomycin
   - articles/Ahn_2014_parathyroidHormone
   - articles/Ahn_2023_vupanorsen
   - articles/Ahsman_2010_cefotaxime
