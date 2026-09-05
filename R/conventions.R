@@ -265,6 +265,14 @@
     # central compartment with its own apparent volume in the source's
     # ADVAN5 parent + 3-metabolite structure.
     "megx", "gx", "xyl",
+    # 4-Guanidinobenzoic acid, the terminal inactive metabolite of camostat
+    # mesylate, formed from the active metabolite GBPA (FOY-251) by
+    # arylesterase -- Kim 2023 doi:10.3390/pharmaceutics15092357. Camostat
+    # itself is never measured, so GBPA takes the bare canonical names as the
+    # model's parent analyte and only GBA carries a suffix; a "gbpa" suffix is
+    # deliberately not registered. Distinct from the human gene symbol GBA
+    # (glucocerebrosidase) -- this list holds analyte suffixes only.
+    "gba",
     # Morphine-3-glucuronide and morphine-6-glucuronide, the two major
     # glucuronide metabolites of morphine -- Knibbe 2009 DDMODEL00000248.
     "m3g", "m6g",

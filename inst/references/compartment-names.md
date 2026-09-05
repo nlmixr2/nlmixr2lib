@@ -3841,6 +3841,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `NA_NA_lidocaine.R`.
 
+### gba (**canonical 4-guanidinobenzoic acid camostat metabolite suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 4-Guanidinobenzoic acid (GBA), the terminal inactive metabolite of camostat mesylate, formed from the active metabolite GBPA (FOY-251) by arylesterase. Circulates at roughly twice the Cmax and four times the AUC of GBPA, so a joint camostat model carries it as a full second analyte with its own central compartment and clearance.
+- **Source aliases:** none.
+- **Example models:** `Kim_2023_camostat.R` (doi:10.3390/pharmaceutics15092357).
+- **Notes:** The camostat parent is never measured (it is hydrolysed by plasma carboxylesterase too rapidly to quantify), so GBPA -- itself a metabolite -- takes the bare canonical `central` / `lcl` / `lvc` names as the model's parent analyte, and only GBA carries a suffix. A `gbpa` suffix is deliberately NOT registered for that reason; registering one would invite a later extraction to suffix the parent, which the parent-wins rule forbids. Distinct from the unrelated human gene symbol GBA (glucocerebrosidase) -- this register holds analyte suffixes only.
+
 ### xyl (**canonical 2,6-xylidide lidocaine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 2,6-Xylidide (LID -> 2,6-XYL minor pathway) lidocaine metabolite.

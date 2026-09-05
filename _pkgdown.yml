@@ -570,6 +570,8 @@ navbar:
         href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
       - text: "Camizestrant (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
+      - text: "Camostat (Kim 2023)"
+        href: articles/Kim_2023_camostat.html
       - text: "Canakinumab (AitOudhia 2012)"
         href: articles/AitOudhia_2012_canakinumab.html
       - text: "Canakinumab (Chakraborty 2012)"
@@ -5062,6 +5064,7 @@ articles:
   - articles/Kim_2016_udenafil
   - articles/Kim_2017_fimasartan
   - articles/Kim_2018_tacrolimus
+  - articles/Kim_2023_camostat
   - articles/Kim_2023_pyrazinamide
   - articles/Kim_2024_meropenem
   - articles/Kim_2025_evogliptin
