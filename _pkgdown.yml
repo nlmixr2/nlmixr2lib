@@ -82,6 +82,8 @@ navbar:
         href: articles/Zhang_2025_abemaciclib.html
       - text: "Acetaminophen (vanRongen 2016)"
         href: articles/vanRongen_2016_acetaminophen.html
+      - text: "Acetaminophen diclofenac mbma (Sethi 2024)"
+        href: articles/Sethi_2024_acetaminophen_diclofenac_mbma.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
         href: articles/Westerhout_2012_acetaminophen_rat_pbpk.html
       - text: "Acyclovir (Zeng 2009)"
@@ -5601,6 +5603,7 @@ articles:
   - articles/Schutte_2018_desmopressin
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
   - articles/Seng_2015_isoniazid
+  - articles/Sethi_2024_acetaminophen_diclofenac_mbma
   - articles/Sexton_2024_lanadelumab_qsp
   - articles/Shah_2012_mAb_PBPK
   - articles/Shah_2023_benzylpenicillin
