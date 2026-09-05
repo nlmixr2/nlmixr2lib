@@ -2212,6 +2212,8 @@ navbar:
         href: articles/Muliaditan_2025_mab_mpbpk.html
       - text: "Magnesium sulfate (Easterling 2018)"
         href: articles/Easterling_2018_magnesium_sulfate.html
+      - text: "MagnesiumSulfate (Deng 2024)"
+        href: articles/Deng_2024_magnesiumSulfate.html
       - text: "MagnesiumSulfate (Salinger 2013)"
         href: articles/Salinger_2013_magnesiumSulfate.html
       - text: "ManaglinatDialanetil activeMoiety (Kastrissios 2012)"
@@ -4667,6 +4669,7 @@ articles:
   - articles/Delattre_2010_amikacin
   - articles/Delor_2013_alzheimer
   - articles/Demin_2025_zanubrutinib_acalabrutinib_ibrutinib_qsp
+  - articles/Deng_2024_magnesiumSulfate
   - articles/Denti_2010_glucoseMinimal
   - articles/Denti_2018_levofloxacin
   - articles/Derippe_2024_BH3_mimetics_virtual_tumors
