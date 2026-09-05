@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2017 naproxen ([doi:10.1124/dmd.116.074500](https://doi.org/10.1124/dmd.116.074500)) -- male and female Lewis rats with collagen-induced arthritis and healthy controls.
+- Add Qi 2019 vestronidase alfa ([doi:10.1007/s40262-018-0721-y](https://doi.org/10.1007/s40262-018-0721-y)) -- adults and children with mucopolysaccharidosis type VII.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
