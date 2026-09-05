@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hassouneh 2024 dasatinib ([doi:10.3390/ph17060671](https://doi.org/10.3390/ph17060671)) -- healthy Middle Eastern male volunteers.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
