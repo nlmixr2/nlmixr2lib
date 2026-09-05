@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sokolov 2023 dapagliflozin ([doi:10.3389/fphar.2023.1229255](https://doi.org/10.3389/fphar.2023.1229255)) -- adults with inadequately controlled type 1 diabetes.
+- Add Jeong 2023 rabeprazole ([doi:10.3390/biomedicines11113021](https://doi.org/10.3390/biomedicines11113021)) -- healthy Korean adults of both genders.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
