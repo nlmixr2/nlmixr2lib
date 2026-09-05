@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ravva 2015 varenicline cigarette-craving PK-PD ([doi:10.1093/ntr/ntu154](https://doi.org/10.1093/ntr/ntu154)) -- adult smokers not intending to quit.
+- Add Li 2017 naproxen ([doi:10.1124/dmd.116.074500](https://doi.org/10.1124/dmd.116.074500)) -- male and female Lewis rats with collagen-induced arthritis and healthy controls.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
