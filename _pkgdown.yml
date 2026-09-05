@@ -3950,8 +3950,18 @@ navbar:
         href: articles/AlSallami_2016_unfractionatedHeparin.html
       - text: "UnfractionatedHeparin (Jia 2015)"
         href: articles/Jia_2015_unfractionatedHeparin.html
+      - text: "Upadacitinib (Bhatnagar 2024)"
+        href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Upadacitinib (Klunder 2017)"
         href: articles/Klunder_2017_upadacitinib.html
+      - text: "Upadacitinib asas20 as (Bhatnagar 2024)"
+        href: articles/Bhatnagar_2024_upadacitinib.html
+      - text: "Upadacitinib asas20 nraxspa (Bhatnagar 2024)"
+        href: articles/Bhatnagar_2024_upadacitinib.html
+      - text: "Upadacitinib asas40 as (Bhatnagar 2024)"
+        href: articles/Bhatnagar_2024_upadacitinib.html
+      - text: "Upadacitinib asas40 nraxspa (Bhatnagar 2024)"
+        href: articles/Bhatnagar_2024_upadacitinib.html
       - text: "Uprifosbuvir pbpk (vandenBerg 2021)"
         href: articles/vandenBerg_2021_uprifosbuvir.html
       - text: "Ustekinumab (Aguiar 2021)"
@@ -4451,6 +4461,7 @@ articles:
   - articles/Betts_2018_mAb_linear_PK
   - articles/Betts_2019_pf_06671008
   - articles/Bhagunde_2026_lecanemab_biomarkers
+  - articles/Bhatnagar_2024_upadacitinib
   - articles/Bi_2017_peginterferon_alfa_2a
   - articles/Bian_2024_lefamulin
   - articles/Bienczak_2016_efavirenz
