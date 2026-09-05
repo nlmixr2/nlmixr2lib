@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nguyen 2026 linezolid ([doi:10.1007/s40262-026-01626-4](https://doi.org/10.1007/s40262-026-01626-4)) — Vietnamese adults with multidrug-resistant tuberculosis, joint plasma and saliva model.
+- Add Baklouti 2026 amoxicillin ([doi:10.1002/bcp.70434](https://doi.org/10.1002/bcp.70434)) -- breastfeeding women, maternal plasma and breast milk.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

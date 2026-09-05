@@ -184,6 +184,8 @@ navbar:
         href: articles/Heo_2016_amlodipine_valsartan.html
       - text: "Amodiaquine (Ali 2018)"
         href: articles/Ali_2018_amodiaquine.html
+      - text: "Amoxicillin (Baklouti 2026)"
+        href: articles/Baklouti_2026_amoxicillin.html
       - text: "Amoxicillin (Fournier 2018)"
         href: articles/Fournier_2018_amoxicillin.html
       - text: "Amoxicillin (Keij 2023)"
@@ -4427,6 +4429,7 @@ articles:
   - articles/Baiardi_2025_dalbavancin
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
+  - articles/Baklouti_2026_amoxicillin
   - articles/Balis_2025_busulfan
   - articles/Bamgboye_2026_topiramate
   - articles/Barau_2012_mycophenolic_acid
