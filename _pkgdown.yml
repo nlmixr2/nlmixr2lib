@@ -400,10 +400,8 @@ navbar:
         href: articles/Decker_2024_baricitinib.html
       - text: "Baricitinib (Decker 2026)"
         href: articles/Decker_2026_baricitinib.html
-      - text: "BAY81 8973 (Garmann 2017)"
-        href: articles/Garmann_2017_BAY81_8973.html
-      - text: "BAY94 9027 (Solms 2020)"
-        href: articles/Solms_2020_BAY94_9027.html
+      - text: "Bedaquiline (Shao 2023)"
+        href: articles/Shao_2023_bedaquiline.html
       - text: "Bedaquiline (Svensson 2013)"
         href: articles/Svensson_2013_bedaquiline.html
       - text: "Bedaquiline (Svensson 2014)"
@@ -5729,6 +5727,7 @@ articles:
   - articles/Shah_2012_mAb_PBPK
   - articles/Shah_2023_benzylpenicillin
   - articles/Shah_2025_clarithromycin
+  - articles/Shao_2023_bedaquiline
   - articles/Sharma_2016_hydroxyprogesteroneCaproate
   - articles/Sharma_2018_naltrexone_bupropion
   - articles/Sharma_2018_SHetA2
