@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2022 aripiprazole once monthly population PK and time-to-relapse exposure-response models ([doi:10.1002/cpdd.1022](https://doi.org/10.1002/cpdd.1022)) -- healthy adults and adults with schizophrenia or schizoaffective disorder.
+- Add Luo 2023 tigecycline ([doi:10.3389/fphar.2023.1083464](https://doi.org/10.3389/fphar.2023.1083464)) -- critically ill adult ICU patients.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
