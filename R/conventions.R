@@ -477,7 +477,17 @@
   # renaming the whole family onto the covariate register's
   # RRT_<MODALITY>_<KIND> shape -- which would also fold the older,
   # near-duplicate `_dialysis` suffix in -- is queued separately.
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet"),
+  # `_ccpd` and `_capd` are the two PERITONEAL-dialysis arms: continuous
+  # cycler-assisted peritoneal dialysis and continuous ambulatory
+  # peritoneal dialysis respectively, gated by RRT_CCPD_ACTIVE /
+  # RRT_CAPD_ACTIVE. They are separate tokens rather than one peritoneal
+  # arm because the two exchange schedules clear drug at materially
+  # different rates through the same membrane -- Patel 2015 estimates
+  # 0.319 vs 0.170 L/h/70 kg for oseltamivir carboxylate, a 1.9-fold
+  # difference -- so a single coefficient cannot stand in for both.
+  # Sidecar `oare_PMC4386947` request-001 / response-001, question q2,
+  # option A.
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet", "ccpd", "capd"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
@@ -538,6 +548,14 @@
     "plasma", "serum", "whole blood", "blood cell", "CSF", "brain ISF",
     "vitreous", "aqueous humour", "retina", "tissue", "tumor", "lymph",
     "endosome", "urine", "bile", "faeces", "saliva", "milk",
+    # Spent dialysate / effluent collected from a dialysis circuit. Companion
+    # to the `dialysate` compartment canonical ratified in sidecar
+    # `oare_PMC4386947` request-001 / response-001 question q1: a dialysate
+    # collection state needs a nameable matrix, and dialysate is a genuinely
+    # assayed specimen (Patel 2015 measured oseltamivir and oseltamivir
+    # carboxylate in plasma, dialysate and urine, each with its own validated
+    # LOQ and its own residual-error term).
+    "dialysate",
     "synovial fluid", "epithelial lining fluid", "bronchoalveolar lavage",
     "dialysate",
     "administration site", "not applicable"
