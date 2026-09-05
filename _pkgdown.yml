@@ -1002,6 +1002,8 @@ navbar:
         href: articles/Standing_2008_diclofenac.html
       - text: "Didanosine (Hirt 2009)"
         href: articles/Hirt_2009_didanosine.html
+      - text: "Difloxacin crucianCarp (Ma 2023)"
+        href: articles/Ma_2023_difloxacin_crucianCarp.html
       - text: "Digoxin (Jelliffe 2014)"
         href: articles/Jelliffe_2014_digoxin.html
       - text: "Digoxin (Zhou 2010)"
@@ -5248,6 +5250,7 @@ articles:
   - articles/Lv_2025_asc10a
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
+  - articles/Ma_2023_difloxacin_crucianCarp
   - articles/Ma_2026_colistinSulfate
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Macpherson_2015_rosuvastatin
