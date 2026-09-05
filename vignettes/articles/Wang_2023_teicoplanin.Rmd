@@ -1,0 +1,779 @@
+---
+title: "Teicoplanin (Wang 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Teicoplanin (Wang 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r meta}
+mod      <- readModelDb("Wang_2023_teicoplanin")
+mod_meta <- rxode2::rxode(mod)$meta
+```
+
+* Citation: `r mod_meta$reference`
+* Article (DOI): <https://doi.org/10.2147/DDDT.S413662>
+
+This vignette validates the packaged `Wang_2023_teicoplanin` model -- a
+two-compartment intravenous-infusion population PK model for teicoplanin
+built from 304 plasma concentrations in 108 critically ill adults in the
+ICU of Guangdong Provincial People's Hospital. The final model carries a
+single covariate: the CKD-EPI estimated glomerular filtration rate (eGFR)
+as a **linear** term on clearance, centred at 50 mL/min/1.73 m^2.
+
+The paper's quantitative deliverable is a Monte Carlo dosing-optimization
+analysis. Supplementary Tables S2-1 and S2-2 report, for eight candidate
+regimens crossed with four renal-function strata, the median (IQR) trough
+concentration at 72 h and at 168 h **and** the corresponding probability of
+target attainment -- 64 published trough medians and 64 published PTA values.
+Those are pure forward predictions of the packaged model, which makes them an
+unusually strong validation target, so this vignette reproduces all of them
+and compares against the published numbers.
+
+# Population
+
+```{r population}
+pop <- rxode2::rxode(mod)$population
+```
+
+The Wang 2023 cohort comprised 151 ICU patients contributing 347 plasma
+teicoplanin concentrations. The population PK model was built on the
+`r pop$n_subjects` patients who each contributed more than two samples
+(`r pop$n_concentrations` concentrations); the remaining 43 single-sample
+patients formed an external validation group. Median age was 56.5 years
+(range 21-91) and median weight 61 kg (range 40-115); 38 of 108 subjects
+(35.2%) were female.
+
+The defining feature of the cohort is severe renal impairment: median
+CKD-EPI eGFR 29.2 mL/min/1.73 m^2 (range 4.89-170), median Cockcroft-Gault
+creatinine clearance 34.8 mL/min, median serum creatinine 161 umol/L, and
+43 of 108 subjects (39.8%) receiving continuous renal replacement therapy.
+Median baseline APACHE II score was 25.5 (range 10-37). Pneumonia was the
+commonest infection site (73 of the recorded sites), followed by
+intra-abdominal infection (13) and bacteraemia (10).
+
+Teicoplanin was given by 1-hour intravenous infusion. Concentrations were
+measured by HPLC-MS/MS quantifying the teicoplanin A2-2 component, the most
+active of the five components of the teicoplanin mixture, as the surrogate
+for teicoplanin (LLOQ 1.0 mg/L, linear to 100.0 mg/L).
+
+# Source trace
+
+Every value in the packaged model, and every equation in `model()`, traced
+to its location in the source.
+
+```{r source-trace, echo = FALSE}
+trace <- tibble::tribble(
+  ~Quantity,                    ~Value,      ~`Source location`,
+  "CL (typical, eGFR = 50)",    "0.838 L/h", "Table 2, Final Model Estimate (RSE 8.4%); restated in Results and Abstract",
+  "Vc",                         "14.4 L",    "Table 2 (RSE 7.2%); Table 2 note 'Vc (L) = 14.4'",
+  "Q",                          "3.08 L/h",  "Table 2 (RSE 14.3%); Table 2 note 'Q (L/h) = 3.08'",
+  "Vp",                         "51.6 L",    "Table 2 (RSE 10.7%); Table 2 note 'Vp (L) = 51.6 x e^0.387'",
+  "theta eGFR-CL",              "0.00823",   "Table 2 (RSE 28.3%); Abstract 'eGFR adjustment factor of 0.00823'",
+  "CL covariate equation",      "CL = 0.838 * (1 + (eGFR - 50) * 0.0082)", "Table 2 notes; generic form in Supplementary Table S1 notes",
+  "omega CL",                   "37.7% -> var 0.142",  "Table 2, BSV block (RSE 20%)",
+  "omega Vc",                   "26.6% -> var 0.0708", "Table 2, BSV block (RSE 43.4%)",
+  "omega Q",                    "0 FIX (no eta)",      "Table 2, BSV block; Results 'inter-individual variabilities ... 0%'",
+  "omega Vp",                   "62.2% -> var 0.387",  "Table 2, BSV block (RSE 18%); confirmed by 'e^0.387' in the Table 2 note",
+  "Proportional residual error","31.7%",     "Table 2, RUV block (RSE 10.6%)",
+  "Two-compartment structure",  "central + peripheral1", "Results 'the data showed a better fit to two-compartment model'",
+  "IV infusion, 1 h",           "-",         "Methods, 'Dosing Regimen': 'The infusion time was 1 h.'",
+  "Exponential IIV, proportional RUV", "-",  "Results 'Exponential and proportional error models were selected'"
+)
+knitr::kable(trace)
+```
+
+Two transcription points are worth recording explicitly.
+
+**The minus sign in `(eGFR - 50)` is not text-extractable.** The Table 2
+notes are typeset in a symbol font whose minus glyph is dropped by
+`pdftotext` and by the markdown preprocessor, so the equation extracts as
+`0:838 * (1 + (eGFR 50) * 0:0082)` with a bare gap. Rendering page 6 of the
+PDF to an image resolves it as a subtraction, and the generic covariate form
+printed in the Supplementary Table S1 notes,
+`P_ij = P_tv,j * [1 + theta_j * (COV - COV_ave)] * e^eta_i`, corroborates it.
+The reproduction of 64 published simulation outputs below is a further,
+independent confirmation: the alternative readings (`+ 50`, or no centring at
+all) move the trough predictions by tens of percent.
+
+**`Vp (L) = 51.6 x e^0.387` in the Table 2 note is not a multiplier.**
+Taken literally it would give 76.0 L, contradicting both the Table 2 estimate
+and the Results text, which give the typical Vp as 51.6 L. The exponent is the
+between-subject variance: 0.622^2 = 0.3869, and 62.2% is exactly the Table 2
+`omega Vp`. The same identity fixes the omega convention for the whole table
+-- the published percentages are omega (the standard deviation on the log
+scale) times 100, not `sqrt(exp(omega^2) - 1)`.
+
+# Deterministic checks
+
+With between-subject and residual variability switched off, the model must
+satisfy exact internal identities. These are the tightest gates available
+because they contain no Monte Carlo noise.
+
+```{r deterministic}
+theta_cl <- 0.838
+theta_e  <- 0.00823
+
+# The covariate equation as printed in the Table 2 note.
+cl_at <- function(egfr) theta_cl * (1 + (egfr - 50) * theta_e)
+
+grid <- sort(unique(c(seq(0, 12, by = 0.1), seq(12, 48, by = 0.5),
+                      seq(48, 336, by = 2))))
+ev_single <- rbind(
+  data.frame(id = 1L, time = 0, amt = 400, evid = 1L, dur = 1,
+             cmt = "central", CRCL = 50),
+  data.frame(id = 1L, time = grid, amt = NA_real_, evid = 0L, dur = NA_real_,
+             cmt = "central", CRCL = 50)
+)
+ev_single <- ev_single[order(ev_single$time, -ev_single$evid), ]
+
+sim_single <- rxode2::rxSolve(mod, ev_single, omega = NA,
+                              returnType = "data.frame")
+sim_single$id <- 1L
+```
+
+```{r pknca-single}
+conc_obj <- PKNCA::PKNCAconc(dplyr::filter(sim_single, !is.na(Cc)),
+                             Cc ~ time | id)
+dose_obj <- PKNCA::PKNCAdose(data.frame(id = 1L, time = 0, dose = 400),
+                             dose ~ time | id)
+nca_single <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = Inf, cmax = TRUE, tmax = TRUE,
+                         auclast = TRUE, aucinf.obs = TRUE,
+                         half.life = TRUE, cl.obs = TRUE)
+))
+nca_val <- function(code) {
+  v <- as.data.frame(nca_single$result)
+  out <- v$PPORRES[v$PPTESTCD == code]
+  if (length(out) != 1L) stop("no unique NCA row for '", code, "'")
+  out
+}
+
+# Analytic terminal half-life of the two-compartment system.
+k10 <- theta_cl / 14.4
+k12 <- 3.08 / 14.4
+k21 <- 3.08 / 51.6
+beta_rate <- (k10 + k12 + k21 -
+              sqrt((k10 + k12 + k21)^2 - 4 * k10 * k21)) / 2
+
+det_tab <- tibble::tibble(
+  Identity = c("AUC(0-inf) after a single 400 mg dose = Dose / CL",
+               "PKNCA CL(obs) = model CL",
+               "PKNCA terminal half-life = analytic beta half-life"),
+  Expected = c(400 / theta_cl, theta_cl, log(2) / beta_rate),
+  Observed = c(nca_val("aucinf.obs"), nca_val("cl.obs"), nca_val("half.life"))
+) |>
+  dplyr::mutate(`% diff` = 100 * (Observed - Expected) / Expected)
+knitr::kable(det_tab, digits = c(0, 4, 4, 5))
+
+# These are numerical-integration identities with no cohort sampling, so an
+# exact bound is correct here (pattern: tighten deterministic gates). The
+# realised deviations are ~0.006% (AUC, CL) and ~0.3% (half-life, which is a
+# log-linear regression over a finite grid rather than a closed form).
+stopifnot(
+  abs(det_tab$`% diff`[1]) < 0.05,
+  abs(det_tab$`% diff`[2]) < 0.05,
+  abs(det_tab$`% diff`[3]) < 1
+)
+```
+
+The AUC identity is the single most informative gate on the transcription:
+it fails if the clearance value, the dose units, the concentration units or
+the compartment scaling is wrong by any amount.
+
+```{r cl-covariate-check}
+cov_tab <- tibble::tibble(
+  `eGFR (mL/min/1.73 m^2)` = c(4.89, 29.2, 30, 50, 60, 90, 130, 170),
+  `CL (L/h)`               = cl_at(c(4.89, 29.2, 30, 50, 60, 90, 130, 170)),
+  Note = c("cohort minimum", "cohort median", "stratum 1 boundary",
+           "centring value: CL = theta_CL exactly", "stratum 2 boundary",
+           "stratum 3 boundary", "stratum 4 boundary", "cohort maximum")
+)
+knitr::kable(cov_tab, digits = 3)
+
+# At the centring value the covariate term is exactly 1.
+stopifnot(abs(cl_at(50) - theta_cl) < 1e-12)
+# The linear form stays positive across and well beyond the observed range.
+stopifnot(cl_at(0) > 0)
+```
+
+# Recovering the published simulation design
+
+The paper does not state what eGFR value was used inside each renal-function
+stratum, nor whether the reported trough concentrations include residual
+error. Both choices materially change the predictions, so rather than guess
+we identify them from the 64 published trough medians.
+
+```{r sim-helpers}
+n_sub <- 200  # participants per arm
+
+make_events <- function(load_dose, n_load, maint_dose, egfr, n = n_sub,
+                        tmax = 180, obs_times = c(72, 168)) {
+  load_times  <- seq(0, by = 12, length.out = n_load)
+  # Maintenance starts one full 24 h interval after the last loading dose.
+  # This is the only schedule that places a trough exactly at both 72 h and
+  # 168 h, which is how the paper defines its two endpoints, for BOTH the
+  # q12h x 3 and q12h x 5 loading arms.
+  maint_times <- seq(max(load_times) + 24, tmax, by = 24)
+  do.call(rbind, lapply(seq_len(n), function(i) {
+    dosing <- data.frame(
+      id = i, time = c(load_times, maint_times),
+      amt = c(rep(load_dose, n_load), rep(maint_dose, length(maint_times))),
+      evid = 1L, dur = 1, cmt = "central", CRCL = egfr
+    )
+    obs <- data.frame(
+      id = i, time = obs_times, amt = NA_real_, evid = 0L, dur = NA_real_,
+      cmt = "central", CRCL = egfr
+    )
+    x <- rbind(dosing, obs)
+    x[order(x$time, -x$evid), ]
+  }))
+}
+
+regimens <- tibble::tribble(
+  ~regimen,                    ~load, ~n_load, ~maint, ~target, ~infection,
+  "400 mg q12hx3, 400 mg qd",  400,   3L,      400,    10,      "Gram-positive",
+  "400 mg q12hx5, 400 mg qd",  400,   5L,      400,    10,      "Gram-positive",
+  "600 mg q12hx3, 600 mg qd",  600,   3L,      600,    10,      "Gram-positive",
+  "600 mg q12hx5, 600 mg qd",  600,   5L,      600,    10,      "Gram-positive",
+  "800 mg q12hx3, 400 mg qd",  800,   3L,      400,    15,      "Deep-seated",
+  "800 mg q12hx3, 600 mg qd",  800,   3L,      600,    15,      "Deep-seated",
+  "800 mg q12hx3, 800 mg qd",  800,   3L,      800,    15,      "Deep-seated",
+  "800 mg q12hx5, 800 mg qd",  800,   5L,      800,    15,      "Deep-seated"
+)
+
+strata_levels <- c("eGFR <= 30", "eGFR 30-60", "eGFR 60-90", "eGFR 90-130")
+
+# Run every regimen x stratum cell at one eGFR value and return the
+# simulated 72 h and 168 h troughs. `Cc` is the individual prediction;
+# `sim` additionally carries the proportional residual error.
+sweep_egfr <- function(egfr_by_stratum) {
+  rxode2::rxSetSeed(42)
+  out <- list()
+  for (k in seq_along(strata_levels)) {
+    for (j in seq_len(nrow(regimens))) {
+      r <- regimens[j, ]
+      s <- rxode2::rxSolve(
+        mod,
+        make_events(r$load, r$n_load, r$maint, egfr_by_stratum[k]),
+        returnType = "data.frame"
+      )
+      out[[length(out) + 1L]] <- tibble::tibble(
+        stratum = strata_levels[k], regimen = r$regimen,
+        infection = r$infection, target = r$target,
+        time = rep(c(72, 168), each = n_sub),
+        ipred = c(s$Cc[s$time == 72], s$Cc[s$time == 168]),
+        obs   = c(s$sim[s$time == 72], s$sim[s$time == 168])
+      )
+    }
+  }
+  dplyr::bind_rows(out)
+}
+```
+
+```{r published-tables, echo = FALSE}
+# Wang 2023 Supplementary Tables S2-1 and S2-2, transcribed verbatim.
+published <- tibble::tribble(
+  ~stratum,      ~regimen,                   ~time, ~med,  ~q25,  ~q75,  ~pta,
+  "eGFR <= 30",  "400 mg q12hx3, 400 mg qd",    72,  10.5,  7.1,  14.4,  52.8,
+  "eGFR <= 30",  "400 mg q12hx5, 400 mg qd",    72,  13.7,  9.4,  18.9,  71.2,
+  "eGFR <= 30",  "600 mg q12hx3, 600 mg qd",    72,  15.7, 10.6,  21.9,  77.9,
+  "eGFR <= 30",  "600 mg q12hx5, 600 mg qd",    72,  20.7, 14.3,  29.2,  87.0,
+  "eGFR <= 30",  "800 mg q12hx3, 400 mg qd",    72,  16.9, 11.7,  24.7,  59.2,
+  "eGFR <= 30",  "800 mg q12hx3, 600 mg qd",    72,  18.7, 13.0,  26.1,  66.8,
+  "eGFR <= 30",  "800 mg q12hx3, 800 mg qd",    72,  21.2, 14.9,  29.3,  74.3,
+  "eGFR <= 30",  "800 mg q12hx5, 800 mg qd",    72,  27.1, 18.7,  37.3,  85.4,
+  "eGFR 30-60",  "400 mg q12hx3, 400 mg qd",    72,   8.9,  6.1,  12.0,  39.4,
+  "eGFR 30-60",  "400 mg q12hx5, 400 mg qd",    72,  11.0,  7.5,  15.7,  56.9,
+  "eGFR 30-60",  "600 mg q12hx3, 600 mg qd",    72,  13.4,  8.8,  18.4,  68.8,
+  "eGFR 30-60",  "600 mg q12hx5, 600 mg qd",    72,  16.6, 11.0,  23.3,  80.3,
+  "eGFR 30-60",  "800 mg q12hx3, 400 mg qd",    72,  13.6,  9.3,  19.7,  43.5,
+  "eGFR 30-60",  "800 mg q12hx3, 600 mg qd",    72,  15.4, 10.6,  22.7,  52.2,
+  "eGFR 30-60",  "800 mg q12hx3, 800 mg qd",    72,  17.0, 11.8,  23.7,  59.2,
+  "eGFR 30-60",  "800 mg q12hx5, 800 mg qd",    72,  22.8, 15.3,  33.6,  76.2,
+  "eGFR 60-90",  "400 mg q12hx3, 400 mg qd",    72,   7.1,  4.7,  10.1,  26.0,
+  "eGFR 60-90",  "400 mg q12hx5, 400 mg qd",    72,   9.2,  6.2,  13.5,  43.6,
+  "eGFR 60-90",  "600 mg q12hx3, 600 mg qd",    72,  10.9,  7.2,  15.3,  55.7,
+  "eGFR 60-90",  "600 mg q12hx5, 600 mg qd",    72,  13.5,  9.2,  20.4,  70.2,
+  "eGFR 60-90",  "800 mg q12hx3, 400 mg qd",    72,  11.4,  7.5,  16.6,  31.7,
+  "eGFR 60-90",  "800 mg q12hx3, 600 mg qd",    72,  13.4,  8.3,  18.9,  40.2,
+  "eGFR 60-90",  "800 mg q12hx3, 800 mg qd",    72,  14.0,  9.6,  19.6,  44.2,
+  "eGFR 60-90",  "800 mg q12hx5, 800 mg qd",    72,  18.8, 12.3,  27.1,  64.9,
+  "eGFR 90-130", "400 mg q12hx3, 400 mg qd",    72,   5.5,  3.6,   8.2,  13.8,
+  "eGFR 90-130", "400 mg q12hx5, 400 mg qd",    72,   7.5,  5.1,  11.1,  31.1,
+  "eGFR 90-130", "600 mg q12hx3, 600 mg qd",    72,   8.7,  5.6,  12.7,  40.4,
+  "eGFR 90-130", "600 mg q12hx5, 600 mg qd",    72,  11.2,  7.2,  16.1,  57.7,
+  "eGFR 90-130", "800 mg q12hx3, 400 mg qd",    72,   8.9,  6.0,  13.4,  18.7,
+  "eGFR 90-130", "800 mg q12hx3, 600 mg qd",    72,  10.3,  6.7,  14.9,  24.6,
+  "eGFR 90-130", "800 mg q12hx3, 800 mg qd",    72,  10.9,  7.4,  16.5,  30.4,
+  "eGFR 90-130", "800 mg q12hx5, 800 mg qd",    72,  14.0,  9.4,  21.8,  47.8,
+  "eGFR <= 30",  "400 mg q12hx3, 400 mg qd",   168,  13.9, 10.0,  20.1,  74.9,
+  "eGFR <= 30",  "400 mg q12hx5, 400 mg qd",   168,  15.0, 10.0,  21.0,  75.2,
+  "eGFR <= 30",  "600 mg q12hx3, 600 mg qd",   168,  20.6, 14.1,  28.6,  90.0,
+  "eGFR <= 30",  "600 mg q12hx5, 600 mg qd",   168,  22.8, 15.1,  31.8,  91.9,
+  "eGFR <= 30",  "800 mg q12hx3, 400 mg qd",   168,  16.5, 11.5,  23.2,  57.9,
+  "eGFR <= 30",  "800 mg q12hx3, 600 mg qd",   168,  21.5, 15.5,  29.7,  76.3,
+  "eGFR <= 30",  "800 mg q12hx3, 800 mg qd",   168,  28.3, 19.8,  38.3,  86.8,
+  "eGFR <= 30",  "800 mg q12hx5, 800 mg qd",   168,  30.4, 21.0,  41.6,  88.0,
+  "eGFR 30-60",  "400 mg q12hx3, 400 mg qd",   168,  10.8,  7.5,  15.4,  55.9,
+  "eGFR 30-60",  "400 mg q12hx5, 400 mg qd",   168,  11.5,  7.7,  17.0,  60.7,
+  "eGFR 30-60",  "600 mg q12hx3, 600 mg qd",   168,  16.2, 11.2,  23.9,  80.5,
+  "eGFR 30-60",  "600 mg q12hx5, 600 mg qd",   168,  17.2, 11.9,  24.9,  83.2,
+  "eGFR 30-60",  "800 mg q12hx3, 400 mg qd",   168,  12.2,  8.0,  17.9,  36.2,
+  "eGFR 30-60",  "800 mg q12hx3, 600 mg qd",   168,  17.3, 11.7,  24.5,  60.4,
+  "eGFR 30-60",  "800 mg q12hx3, 800 mg qd",   168,  21.6, 14.5,  29.4,  73.5,
+  "eGFR 30-60",  "800 mg q12hx5, 800 mg qd",   168,  23.6, 15.5,  34.4,  76.6,
+  "eGFR 60-90",  "400 mg q12hx3, 400 mg qd",   168,   8.3,  5.5,  12.0,  37.7,
+  "eGFR 60-90",  "400 mg q12hx5, 400 mg qd",   168,   9.3,  6.0,  13.6,  45.4,
+  "eGFR 60-90",  "600 mg q12hx3, 600 mg qd",   168,  13.0,  8.5,  18.5,  66.4,
+  "eGFR 60-90",  "600 mg q12hx5, 600 mg qd",   168,  13.9,  9.1,  20.3,  69.6,
+  "eGFR 60-90",  "800 mg q12hx3, 400 mg qd",   168,   9.8,  6.5,  14.8,  23.2,
+  "eGFR 60-90",  "800 mg q12hx3, 600 mg qd",   168,  13.5,  9.0,  20.4,  43.6,
+  "eGFR 60-90",  "800 mg q12hx3, 800 mg qd",   168,  16.4, 11.2,  23.8,  56.3,
+  "eGFR 60-90",  "800 mg q12hx5, 800 mg qd",   168,  18.6, 12.3,  26.4,  65.8,
+  "eGFR 90-130", "400 mg q12hx3, 400 mg qd",   168,   6.5,  4.0,   9.7,  23.4,
+  "eGFR 90-130", "400 mg q12hx5, 400 mg qd",   168,   6.9,  4.5,  10.3,  27.2,
+  "eGFR 90-130", "600 mg q12hx3, 600 mg qd",   168,   9.9,  6.4,  14.7,  48.4,
+  "eGFR 90-130", "600 mg q12hx5, 600 mg qd",   168,  10.5,  6.9,  15.1,  53.4,
+  "eGFR 90-130", "800 mg q12hx3, 400 mg qd",   168,   7.2,  4.5,  10.7,   9.9,
+  "eGFR 90-130", "800 mg q12hx3, 600 mg qd",   168,  10.0,  6.4,  14.9,  24.5,
+  "eGFR 90-130", "800 mg q12hx3, 800 mg qd",   168,  12.9,  8.9,  19.1,  40.9,
+  "eGFR 90-130", "800 mg q12hx5, 800 mg qd",   168,  13.8,  8.8,  20.4,  44.8
+) |>
+  dplyr::mutate(stratum = factor(stratum, levels = strata_levels))
+stopifnot(nrow(published) == 64L)
+```
+
+## Which eGFR was used inside each stratum?
+
+The two natural candidates are the midpoint of each band and its upper
+bound. They are easy to tell apart: across the eGFR range the model's trough
+predictions change by roughly a factor of two, so a 20-40 mL/min/1.73 m^2
+difference in the assumed eGFR is worth 10-20% on every cell.
+
+```{r design-egfr}
+summarise_medians <- function(sw, value_col) {
+  sw |>
+    dplyr::group_by(stratum, regimen, time) |>
+    dplyr::summarise(sim = stats::median(.data[[value_col]]), .groups = "drop") |>
+    dplyr::inner_join(published, by = c("stratum", "regimen", "time")) |>
+    dplyr::mutate(pct = 100 * (sim - med) / med)
+}
+
+sweep_mid  <- sweep_egfr(c(17.4, 45, 75, 110))
+sweep_edge <- sweep_egfr(c(30, 60, 90, 130))
+
+design_tab <- dplyr::bind_rows(
+  summarise_medians(sweep_mid,  "ipred") |>
+    dplyr::mutate(scheme = "stratum midpoint (17.4 / 45 / 75 / 110)"),
+  summarise_medians(sweep_edge, "ipred") |>
+    dplyr::mutate(scheme = "stratum upper bound (30 / 60 / 90 / 130)")
+) |>
+  dplyr::group_by(scheme) |>
+  dplyr::summarise(
+    `n cells`             = dplyr::n(),
+    `median |% diff|`     = stats::median(abs(pct)),
+    `90th pctile |% diff|`= stats::quantile(abs(pct), 0.9),
+    `median % diff`       = stats::median(pct),
+    .groups = "drop"
+  )
+knitr::kable(design_tab, digits = 1)
+```
+
+Simulating each stratum at its **upper bound** reproduces all 64 published
+trough medians with a median absolute deviation of a few percent, whereas the
+midpoint assumption leaves a systematic bias of roughly +16% on every cell.
+The upper bound is also the sensible design choice for a paper whose purpose
+is to recommend a regimen for a whole band: within a band the highest eGFR
+gives the highest clearance and hence the lowest trough, so it is the worst
+case the regimen must cover.
+
+```{r design-egfr-gate}
+edge_row <- design_tab[grepl("upper", design_tab$scheme), ]
+mid_row  <- design_tab[grepl("midpoint", design_tab$scheme), ]
+# The discrimination is large (a few percent against roughly sixteen), so a
+# factor-of-two separation is a bound with real headroom rather than one read
+# off a single run.
+stopifnot(
+  edge_row$`median |% diff|` < 10,
+  edge_row$`median |% diff|` < 0.5 * mid_row$`median |% diff|`
+)
+```
+
+All remaining comparisons use the stratum upper bound.
+
+## Do the published values carry residual error?
+
+The individual prediction and the simulated observation have the same median
+-- the residual error is proportional and symmetric about zero -- so the
+trough medians cannot distinguish them. The interquartile **width** can: the
+proportional residual error is 31.7%, which widens the IQR appreciably.
+
+```{r design-ruv}
+iqr_ratio <- function(sw, value_col) {
+  sw |>
+    dplyr::group_by(stratum, regimen, time) |>
+    dplyr::summarise(
+      ratio = stats::quantile(.data[[value_col]], 0.75) /
+              stats::quantile(.data[[value_col]], 0.25),
+      .groups = "drop"
+    )
+}
+pub_ratio <- published |> dplyr::mutate(ratio = q75 / q25)
+
+ruv_tab <- tibble::tibble(
+  Quantity = c("Published (Tables S2-1, S2-2)",
+               "Simulated, individual prediction only",
+               "Simulated, with proportional residual error"),
+  `Median IQR width ratio (q75/q25)` = c(
+    stats::median(pub_ratio$ratio),
+    stats::median(iqr_ratio(sweep_edge, "ipred")$ratio),
+    stats::median(iqr_ratio(sweep_edge, "obs")$ratio)
+  )
+)
+knitr::kable(ruv_tab, digits = 2)
+
+# The published spread matches the residual-error-inclusive simulation and is
+# clearly wider than the individual predictions alone. Published ratio 2.146;
+# realised simulated ratios across 2 / 4 / 16 solver threads were
+# 2.162 / 2.125 / 2.13 with residual error and 1.820 / 1.803 / 1.81 without,
+# so the two candidates are separated by ~0.33 and neither bound is read off
+# a single run.
+pub_r <- ruv_tab$`Median IQR width ratio (q75/q25)`[1]
+ip_r  <- ruv_tab$`Median IQR width ratio (q75/q25)`[2]
+ob_r  <- ruv_tab$`Median IQR width ratio (q75/q25)`[3]
+stopifnot(abs(ob_r - pub_r) < 0.25, ip_r < pub_r - 0.10)
+```
+
+The published interquartile widths match the simulated **observations**, so
+the paper's Monte Carlo reports concentrations that include the proportional
+residual error. The PTA comparisons below therefore use the same quantity.
+
+# Replicating Supplementary Tables S2-1 and S2-2
+
+```{r replicate-troughs}
+replication <- sweep_edge |>
+  dplyr::group_by(stratum, regimen, infection, target, time) |>
+  dplyr::summarise(
+    sim_med = stats::median(obs),
+    sim_pta = 100 * mean(obs >= dplyr::first(target)),
+    .groups = "drop"
+  ) |>
+  dplyr::inner_join(published, by = c("stratum", "regimen", "time")) |>
+  dplyr::mutate(
+    med_pct = 100 * (sim_med - med) / med,
+    pta_pp  = sim_pta - pta
+  )
+stopifnot(nrow(replication) == 64L)
+```
+
+```{r replicate-summary, echo = FALSE}
+summary_tab <- tibble::tibble(
+  Comparison = c("Median trough concentration (% difference)",
+                 "Probability of target attainment (percentage points)"),
+  `n cells`  = c(64L, 64L),
+  Median     = c(stats::median(abs(replication$med_pct)),
+                 stats::median(abs(replication$pta_pp))),
+  `90th pctile` = c(stats::quantile(abs(replication$med_pct), 0.9),
+                    stats::quantile(abs(replication$pta_pp), 0.9)),
+  Maximum    = c(max(abs(replication$med_pct)), max(abs(replication$pta_pp)))
+)
+knitr::kable(summary_tab, digits = 1)
+```
+
+```{r replicate-gate}
+# Bounds are set well outside what a single cohort draw gives. rxSetSeed()
+# fixes the rxode2 stream per solver-thread count, so a CI runner draws a
+# different cohort than a development box; these statistics are aggregates
+# over 64 cells, which damps but does not remove that. Measured across
+# 2 / 4 / 16 solver threads when authored:
+#   trough |% diff|  median 3.98 / 4.11 / 4.40, 90th pctile 8.99 / 9.41 / 9.20
+#   PTA |pp diff|    median 2.05 / 1.70 / 2.00, 90th pctile 4.92 / 5.68 / 6.00
+# The bounds below sit at roughly three times the observed medians and 2.5
+# times the observed 90th percentiles. A mis-transcribed clearance, dose,
+# volume or covariate sign moves the troughs by tens of percent and the PTAs
+# by tens of points, so they still go red on any real error -- the ruled-out
+# stratum-midpoint design alone lands at a median of ~16%.
+stopifnot(
+  stats::median(abs(replication$med_pct))         < 12,
+  stats::quantile(abs(replication$med_pct), 0.9)  < 25,
+  stats::median(abs(replication$pta_pp))          < 6,
+  stats::quantile(abs(replication$pta_pp), 0.9)   < 14
+)
+```
+
+The full 72 h comparison, one row per regimen and stratum:
+
+```{r trough-table-72, echo = FALSE}
+replication |>
+  dplyr::filter(time == 72) |>
+  dplyr::select(stratum, regimen, med, sim_med, med_pct, pta, sim_pta, pta_pp) |>
+  dplyr::arrange(stratum, regimen) |>
+  dplyr::rename(
+    "Stratum" = stratum, "Regimen" = regimen,
+    "Published Cmin (mg/L)" = med, "Simulated Cmin (mg/L)" = sim_med,
+    "% diff" = med_pct,
+    "Published PTA (%)" = pta, "Simulated PTA (%)" = sim_pta,
+    "pp diff" = pta_pp
+  ) |>
+  knitr::kable(digits = 1,
+               caption = "Replicates Wang 2023 Supplementary Tables S2-1 and S2-2, Cmin 72 h rows.")
+```
+
+And at 168 h:
+
+```{r trough-table-168, echo = FALSE}
+replication |>
+  dplyr::filter(time == 168) |>
+  dplyr::select(stratum, regimen, med, sim_med, med_pct, pta, sim_pta, pta_pp) |>
+  dplyr::arrange(stratum, regimen) |>
+  dplyr::rename(
+    "Stratum" = stratum, "Regimen" = regimen,
+    "Published Css (mg/L)" = med, "Simulated Css (mg/L)" = sim_med,
+    "% diff" = med_pct,
+    "Published PTA (%)" = pta, "Simulated PTA (%)" = sim_pta,
+    "pp diff" = pta_pp
+  ) |>
+  knitr::kable(digits = 1,
+               caption = "Replicates Wang 2023 Supplementary Tables S2-1 and S2-2, Css 168 h rows.")
+```
+
+# Replicating Figures 3 and 4
+
+```{r figure-3-4, echo = FALSE, fig.height = 6}
+replication |>
+  dplyr::mutate(
+    endpoint = ifelse(time == 72, "Cmin 72 h", "Css 168 h"),
+    panel = paste0(infection, " (target ", target, " mg/L)")
+  ) |>
+  tidyr::pivot_longer(c(pta, sim_pta), names_to = "source", values_to = "PTA") |>
+  dplyr::mutate(source = ifelse(source == "pta", "Published", "Simulated")) |>
+  ggplot(aes(x = stratum, y = PTA, colour = regimen, linetype = source,
+             group = interaction(regimen, source))) +
+  geom_line() +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 50, linetype = "dotted") +
+  facet_grid(endpoint ~ panel) +
+  labs(x = NULL, y = "Probability of target attainment (%)",
+       colour = "Regimen", linetype = NULL) +
+  theme_bw() +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1),
+        legend.position = "bottom", legend.box = "vertical") +
+  guides(colour = guide_legend(ncol = 2))
+```
+
+Replicates Figures 3 (Gram-positive panel, dotted 50% line, 10 mg/L target)
+and 4 (deep-seated panel, 15 mg/L target) of Wang 2023. Solid and dashed
+lines for the same regimen overlay closely across all four strata.
+
+# Replicating Table 3: the recommended regimens
+
+Table 3 of the paper names one regimen per infection type per stratum. The
+check here is that the packaged model reproduces the published PTA for each
+of those eight recommended cells.
+
+```{r table-3}
+recommended <- tibble::tribble(
+  ~stratum,      ~infection,      ~regimen,
+  "eGFR <= 30",  "Gram-positive", "400 mg q12hx3, 400 mg qd",
+  "eGFR 30-60",  "Gram-positive", "400 mg q12hx5, 400 mg qd",
+  "eGFR 60-90",  "Gram-positive", "600 mg q12hx3, 600 mg qd",
+  "eGFR 90-130", "Gram-positive", "600 mg q12hx5, 600 mg qd",
+  "eGFR <= 30",  "Deep-seated",   "800 mg q12hx3, 400 mg qd",
+  "eGFR 30-60",  "Deep-seated",   "800 mg q12hx3, 600 mg qd",
+  "eGFR 60-90",  "Deep-seated",   "800 mg q12hx3, 800 mg qd",
+  "eGFR 90-130", "Deep-seated",   "800 mg q12hx5, 800 mg qd"
+) |>
+  dplyr::mutate(stratum = factor(stratum, levels = strata_levels))
+
+rec_tab <- recommended |>
+  dplyr::inner_join(replication, by = c("stratum", "infection", "regimen")) |>
+  dplyr::select(stratum, infection, regimen, time, pta, sim_pta, pta_pp) |>
+  dplyr::arrange(infection, stratum, time)
+stopifnot(nrow(rec_tab) == 16L)
+
+rec_tab |>
+  dplyr::rename(
+    "Stratum" = stratum, "Infection type" = infection, "Regimen" = regimen,
+    "Endpoint (h)" = time, "Published PTA (%)" = pta,
+    "Simulated PTA (%)" = sim_pta, "pp diff" = pta_pp
+  ) |>
+  knitr::kable(digits = 1, caption = "Replicates Wang 2023 Table 3.")
+
+stopifnot(stats::median(abs(rec_tab$pta_pp)) < 8)
+```
+
+Four of the eight recommended cells fall below the paper's own stated
+"optimal if PTA > 50%" criterion at one or both endpoints -- for example
+deep-seated infection at eGFR 60-90 (published 44.2% at 72 h) and at
+eGFR 90-130 (published 47.8% at 72 h and 44.8% at 168 h). The paper presents
+these as the best available option rather than as regimens meeting the
+threshold; the Discussion notes that still-higher regimens reported elsewhere
+(15 mg/kg or 1000 mg) were judged not clinically applicable.
+
+# NCA of the recommended standard regimen
+
+The paper reports observed plasma Cmax and Cmin for the model-building
+cohort (Table 1). Those are compared here against a PKNCA analysis of a
+simulated cohort receiving the paper's own group-1 standard regimen
+(400 mg q12h x 3, then 400 mg q24h) at the cohort median eGFR.
+
+```{r nca-cohort}
+obs_grid <- sort(unique(c(seq(0, 180, by = 1), 145, 169)))
+ev_cohort <- do.call(rbind, lapply(seq_len(n_sub), function(i) {
+  dosing <- data.frame(
+    id = i, time = c(0, 12, 24, seq(48, 180, by = 24)),
+    amt = 400, evid = 1L, dur = 1, cmt = "central", CRCL = 29.2
+  )
+  obs <- data.frame(id = i, time = obs_grid, amt = NA_real_, evid = 0L,
+                    dur = NA_real_, cmt = "central", CRCL = 29.2)
+  x <- rbind(dosing, obs)
+  x[order(x$time, -x$evid), ]
+}))
+rxode2::rxSetSeed(42)
+sim_cohort <- rxode2::rxSolve(mod, ev_cohort, returnType = "data.frame")
+if (is.null(sim_cohort$id)) sim_cohort$id <- 1L
+```
+
+```{r nca-cohort-run}
+# One steady-state-approaching dosing interval, 144-168 h. The filter is
+# !is.na(Cc) only, so the interval-start record is retained.
+nca_input <- sim_cohort |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(conc = sim)
+
+conc_cohort <- PKNCA::PKNCAconc(nca_input, conc ~ time | id)
+dose_cohort <- PKNCA::PKNCAdose(
+  data.frame(id = seq_len(n_sub), time = 144, dose = 400), dose ~ time | id
+)
+nca_cohort <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_cohort, dose_cohort,
+  intervals = data.frame(start = 144, end = 168,
+                         cmax = TRUE, cmin = TRUE, tmax = TRUE, auclast = TRUE)
+))
+nca_res <- as.data.frame(nca_cohort$result)
+stopifnot(nrow(nca_res) > 0L)
+```
+
+```{r nca-comparison}
+reference <- data.frame(
+  cmax = 39.9,   # Wang 2023 Table 1, observed plasma Cmax, model-establishment group
+  cmin = 10.5    # Wang 2023 Table 1, observed plasma Cmin, model-establishment group
+)
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = reference,
+  params    = c("cmax", "cmin"),
+  units     = c(cmax = "mg/L", cmin = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(cmp, digits = 1)
+attr(cmp, "footnote")
+```
+
+This comparison is deliberately **not** gated, and the Cmax row is expected
+to be flagged. The two sides are not measuring the same thing: the published
+Cmax and Cmin are per-patient extremes of two or three sparse clinical
+samples pooled across all four dosing groups -- including the 91 patients on
+irregular doses at irregular intervals -- whereas the simulated values come
+from a dense grid under a single fixed 400 mg regimen at one eGFR. The Cmin
+comparison is nevertheless close, which is the more informative of the two
+because the paper's targets, its Monte Carlo endpoints and its dosing
+recommendations are all trough-based.
+
+```{r profile-figure, echo = FALSE}
+sim_cohort |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = stats::quantile(sim, 0.05), p50 = stats::median(sim),
+    p95 = stats::quantile(sim, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(x = time)) +
+  geom_ribbon(aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  geom_line(aes(y = p50)) +
+  geom_hline(yintercept = c(10, 15), linetype = "dashed") +
+  geom_vline(xintercept = c(72, 168), linetype = "dotted") +
+  labs(x = "Time after first dose (h)", y = "Teicoplanin (mg/L)") +
+  theme_bw()
+```
+
+Simulated concentration-time profile (median and 5th-95th percentiles,
+n = `r n_sub`) for the standard regimen at the cohort median eGFR of 29.2
+mL/min/1.73 m^2. Dashed lines mark the 10 and 15 mg/L trough targets; dotted
+lines mark the paper's two endpoints at 72 h and 168 h. The long terminal
+half-life (`r round(log(2) / beta_rate, 1)` h) is why the 168 h trough is
+still appreciably above the 72 h trough: the profile has not reached true
+steady state within the simulated week.
+
+# Assumptions and deviations
+
+* **Within-stratum eGFR is an inference, not a published value.** The paper
+  reports simulations "stratified by eGFR" but never states the eGFR used
+  inside each band. The stratum upper bound (30 / 60 / 90 / 130
+  mL/min/1.73 m^2) is identified above by reproducing the 64 published
+  trough medians, and is what this vignette uses. The stratum midpoint is
+  ruled out by a systematic +16% bias.
+* **Residual error is included in the reproduced trough distributions.** Also
+  an inference, identified from the published interquartile widths. The
+  medians are insensitive to this choice; the PTAs are not.
+* **The maintenance schedule starts 24 h after the last loading dose.** The
+  paper writes "a loading dose of 400 mg every 12 hours for three doses,
+  followed a maintenance dose of 400 mg every 24 hours" without giving the
+  gap. Starting maintenance one full interval after the last loading dose is
+  the only reading that places a trough exactly at both published endpoints
+  (72 h and 168 h) for the q12h x 3 and the q12h x 5 arms simultaneously.
+* **`omega Q` is encoded as no random effect on Q.** Table 2 reports it as
+  "0 FIX". Writing `etalq ~ fixed(0)` would make OMEGA singular and break
+  rxode2's Cholesky sampler; omitting the eta is mathematically identical.
+* **The reported `omega` percentages are treated as the log-scale standard
+  deviation times 100**, so the packaged variances are the squared
+  percentages. This is fixed by the paper's own printed `e^0.387` for Vp
+  against its 62.2% table entry, not assumed.
+* **Number of simulated subjects.** The paper does not state its Monte Carlo
+  replicate count. This vignette uses `r n_sub` per arm, the package cap.
+* **No body-weight or dose-per-kg scaling.** Body weight was screened and not
+  retained (Supplementary Table S1), so all doses are absolute mg, as in the
+  paper's own simulations.
+
+# Errata and internal inconsistencies in the source
+
+* **Delta OFV for eGFR on CL is reported inconsistently.** Results states
+  "eGFR was a covariate significantly associated with inter-individual
+  variability of systemic clearance (CL) (dOFV -23.189)". The Discussion
+  gives "eGFR (-20.374)" and Supplementary Table S1 gives -20.374 against a
+  base-model OFV of 1564.335 and a final-model OFV of 1543.961, which is
+  self-consistent. The value -23.189 appears nowhere else; the closest
+  Table S1 entry is -23.839, for serum creatinine on CL. The packaged model
+  and its metadata use -20.374. No model parameter depends on this.
+* **`Vp (L) = 51.6 x e^0.387` in the Table 2 note** reads as a multiplier but
+  is the between-subject variance; see the Source trace section above. The
+  typical Vp is 51.6 L per Table 2 and per the Results text.
+* **The minus sign in the CL covariate equation is lost by text extraction**
+  from the PDF; it was confirmed from the rendered page image and from the
+  supplement's generic covariate form. See the Source trace section.
+* **The Table 1 infection-site counts exceed the group sizes** (127 sites for
+  108 model-establishment patients, 47 for 43 validation patients),
+  consistent with patients carrying more than one infection site. The counts
+  are recorded verbatim in the model's `population` metadata.
+* **No erratum or corrigendum was found.** Crossref reports no `update-to`
+  and no `relation` entries for doi:10.2147/DDDT.S413662 as of the extraction
+  date.
