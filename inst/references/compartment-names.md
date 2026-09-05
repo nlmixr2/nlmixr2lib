@@ -366,6 +366,14 @@ The corresponding derived observation variables are `Cmilk` / `Cmilk_<metab>` an
 
 ---
 
+### infant_peripheral1, infant_peripheral2 (**canonical breastfed-infant peripheral compartments**)
+- **Type:** compartment
+- **Role:** Peripheral distribution compartments of the breastfed infant in a mother-to-infant dyad model. Registered alongside the rest of the namespace so a future dyad model with a multi-compartment infant disposition does not have to re-open the naming question; not exercised by the founding models, whose infant disposition is one-compartment per analyte.
+- **Source aliases:** none.
+- **Example models:** none yet (namespace member registered with `Wattanakul_2024_primaquine_motherinfant.R`).
+
+---
+
 ## Friberg myelosuppression chains
 
 ### circ (**canonical circulating-cell compartment**)
@@ -2245,6 +2253,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 
 ---
 
+### prob_seizure50 (**canonical over-50%-seizure-frequency-reduction probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient with epilepsy achieves an over-50% reduction in seizure frequency relative to their own pre-treatment baseline, in a logistic exposure-response model driven by an antiseizure-medication exposure metric. The "50% responder rate" is the standard primary efficacy endpoint of antiseizure-medication trials, so this output generalises well beyond its founding paper.
+- **Source aliases:** none. (The founding source writes the endpoint in prose as "an over 50% reduction in seizure frequency" and the model quantity as `Pr` / `Logit(Pr)`.)
+- **Example models:** `Nakashima_2015_valproic_acid.R` (founding example; logistic regression on the model-predicted steady-state trough valproate concentration, `prob_seizure50 <- expit(logit_int + logit_slope * Cc / 100)`, with age, seizure locus, *SCN1A* rs3812718 genotype and four concomitant antiseizure medications splitting between the logit intercept and the exposure slope; Nakashima 2015 Eq 6 and Table 3). Also its two age-subgroup companions `Nakashima_2015_valproic_acid_le18y.R` (Eq 7) and `Nakashima_2015_valproic_acid_ge19y.R` (Eq 8).
+- **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc` and the `Fukae_2024_valemetostat_*` family. The `50` suffix is load-bearing and must not be dropped: the responder threshold is a *definitional* part of the endpoint, trials also report 75%- and 90%-responder rates and seizure freedom, and a model of a different threshold is a different endpoint that needs its own sibling name (`prob_seizure75`, `prob_seizurefree`). Distinct from a modelled seizure *count* or seizure-rate state in a count / Poisson or Markov seizure-dynamics model, which carries a frequency through an ODE or a discrete-state chain; this is a per-patient threshold-crossing probability. Distinct also from the `SEIZURE_LOCUS_PARTIAL` and `SEIZURE_ACUTE` covariate columns in `covariate-columns.md`, which are predictors rather than endpoints. Unlike the `Fukae_2024_valemetostat_*` landmark models, the founding models here carry a genuine PK layer, so the probability is a function of a simulated concentration rather than of a covariate-supplied exposure metric; the founding models still expose it with a small placeholder additive residual because the source likelihood is Bernoulli and estimates no residual error. Registered alongside the Nakashima 2015 valproic acid extraction.
+
 ## PBPK bare organ-amount compartments (Zhang 2011 family)
 
 PBPK bare organ-amount compartments used by Zhang 2011 nutlin3a and similar full-body PBPK extractions that don't prefix the organ name with `a_` / `vp_`. New PBPK extractions should prefer the spelled-out `a_<organ>` namespace, but the bare forms remain canonical for paper-mechanistic models that already use them.
@@ -2697,6 +2712,12 @@ Physiological state variables of the Magosso / Ursino respiratory and cerebrovas
 - **Example models:** `Mann_2022_respiratory_physiology.R`.
 
 ---
+
+### t_pao2_below (**canonical sub-threshold-PaO2 dwell-time accumulator**)
+- **Type:** compartment
+- **Role:** Accumulator (min) of time arterial O2 partial pressure has spent below the critical cardiac-arrest threshold; grows while PaO2 is below threshold and slowly re-arms above it, gating the cardiovascular-collapse trigger.
+- **Source aliases:** none.
+- **Example models:** `Mann_2022_respiratory_physiology.R`.
 
 ## Mann 2022 mu-opioid receptor occupancy states
 
@@ -4002,6 +4023,12 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** DAR-resolved ADC popPK extractions.
 
 ---
+
+### mcmmaf (**canonical MC-MMAF payload suffix**)
+- **Type:** metabolite-suffix
+- **Role:** MC-MMAF (maleimidocaproyl-monomethyl auristatin F) ADC payload species suffix.
+- **Source aliases:** none.
+- **Example models:** ADC popPK extractions with MC-MMAF payload.
 
 ## Small-molecule metabolite suffixes
 
