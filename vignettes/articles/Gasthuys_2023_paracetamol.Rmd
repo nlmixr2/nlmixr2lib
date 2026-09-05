@@ -649,6 +649,14 @@ allometrically scaled CL and Vd.
   Figure 6 caption says 168 mg per administration, which is arithmetically
   inconsistent with its own 21 mL volume and is the dose of the companion dog
   study. Table 4 is used for the population metadata.
+- **Human `T2` is an absolute lag time, not a fraction.** The Table 3 footnote
+  glossary reads "T2 = fractional lag time", but the table's own row is headed
+  `T2 (h)` and reports 0.97, and Results 2.1 says only that "a lag time was
+  implemented" for the second dosing compartment. The units in the row heading
+  and the Results text are taken over the glossary, so `T2` is encoded as
+  `alag(depot2) <- 0.97 h`. The same footnote separately glosses "Tlag = lag
+  time", an abbreviation that appears nowhere in the table, which indicates the
+  glossary carries boilerplate not specific to this fit.
 - **Inter-occasion variability folded into between-subject variability.**
   nlmixr2lib has no idiomatic encoding for IOV separate from BSV. Per the
   convention already used by `Bienczak_2016_efavirenz`,
