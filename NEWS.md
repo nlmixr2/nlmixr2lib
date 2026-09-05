@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Volkova 2023 lipid-lowering MACE-component meta-regression ([doi:10.3389/fcvm.2023.1242845](https://doi.org/10.3389/fcvm.2023.1242845)) -- 270,471 adults with dyslipidemia across 54 statin and anti-PCSK9 randomised trials.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.

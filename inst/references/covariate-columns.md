@@ -2563,6 +2563,30 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Pu_2021_evinacumab.R` (mg/dL, baseline reference 211 mg/dL; power exponent -1.17 on IC50, where higher baseline LDL-C predicts a smaller IC50 and therefore greater sensitivity to evinacumab; LDL-C is also the PD output state initialised at the baseline value).
 - **Notes:** Cardiometabolic lipid-panel covariate. Distinct from `HDLC` (high-density lipoprotein cholesterol) and from any total-cholesterol or non-HDL-C derivation. When LDL-C is both the response variable AND a covariate (as in Pu 2021, where baseline LDLC drives IC50 and the time-varying state is the modelled PD), document the dual role in `covariateData[[LDLC]]$notes`.
 
+### LDLC_DELTA (**canonical for comparator-adjusted change in LDL cholesterol**)
+- **Description:** Comparator-adjusted (placebo-adjusted) absolute change in LDL-C achieved on treatment, i.e. the change from baseline in the active arm minus the change from baseline in the comparator arm. Negative values indicate LDL-C lowering relative to the comparator. Distinct from `LDLC`, which carries the pre-treatment concentration: this canonical is a *treatment response*, and in model-based meta-analysis it is the covariate through which achieved lipid lowering (rather than assigned dose or drug) predicts a downstream clinical outcome.
+- **Units:** mg/dL or mmol/L -- document the unit used in each model via `covariateData[[LDLC_DELTA]]$units` (1 mmol/L ~= 38.67 mg/dL for cholesterol). The unit is load-bearing because the coefficient is a per-unit slope.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- entered uncentred as a linear term; `LDLC_DELTA = 0` is the no-differential-lowering anchor at which the model intercept is defined.
+- **Source aliases:**
+  - `dLDLc`, `delta-LDLc` -- Volkova 2023 Table 1 / Section 2.2 symbol (set with a Greek capital delta in the source).
+  - `LDL-C change from baseline (placebo-adjusted)` -- common prose form.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (mg/dL; linear coefficients on the log risk ratio of coronary revascularization +0.007, coronary mortality +0.004 and nonfatal myocardial infarction +0.008 per mg/dL, with a renal-disease interaction of -0.005 per mg/dL on the nfMI slope).
+- **Notes:** Cardiometabolic lipid-panel covariate; derived counterpart of `LDLC`. Volkova 2023 Section 2.2 defines the general form for any lipid biomarker as `(Biom - Biom_baseline)_treatment - (Biom - Biom_baseline)_comparator`, measured at the latest available time point; record the measurement time point per model in `covariateData[[LDLC_DELTA]]$notes` because trials differ in when the on-treatment lipid panel was drawn. Should a future source need the analogous comparator-adjusted change in another lipid fraction, register a sibling on the same pattern (`HDLC_DELTA`, `REMC_DELTA`, `TRIG_DELTA`) rather than overloading this entry.
+
+### REMC (**canonical for remnant cholesterol**)
+- **Description:** Serum (or plasma) remnant cholesterol concentration -- the cholesterol carried by triglyceride-rich lipoproteins (VLDL and IDL in the fasting state, plus chylomicron remnants in the non-fasting state). Computed rather than assayed in most sources, as total cholesterol minus HDL-C minus LDL-C. An independent atherogenic and heart-failure risk factor distinct from the LDL-C fraction.
+- **Units:** mg/dL or mmol/L -- document the unit used in each model via `covariateData[[REMC]]$units` (1 mmol/L ~= 38.67 mg/dL for cholesterol).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- entered uncentred as a linear term in the founding example; a future model using power scaling should record its reference in `covariateData[[REMC]]$notes`. Observed baseline population mean: 30.72 mg/dL (Volkova 2023 Supplementary Table 3, across 53 trials).
+- **Source aliases:**
+  - `remC` -- Volkova 2023 Table 1 / Section 2.2 symbol.
+  - `RC`, `remnant-C`, `TRL-C` (triglyceride-rich lipoprotein cholesterol) -- common prose forms.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (mg/dL, baseline; linear coefficient -0.023 per mg/dL on the log risk ratio of heart failure -- higher baseline remnant cholesterol predicts greater heart-failure benefit from lipid-lowering therapy).
+- **Notes:** Cardiometabolic lipid-panel covariate, alongside `LDLC`, `HDLC`, `TCHOL` and `TRIG`. Almost always *derived*, not measured: when a source does not report it, the Friedewald relations give `TCHOL = LDLC + HDLC + TRIG/5` and hence `REMC = TCHOL - HDLC - LDLC` (Volkova 2023 Section 2.2). Record per model whether the value was reported or derived, and whether the panel was fasting -- the Friedewald derivation is invalid at high triglycerides (conventionally above ~400 mg/dL) and non-fasting samples include chylomicron remnants. Note the arithmetic identity `REMC = TCHOL - HDLC - LDLC` means `REMC` is collinear with the other three by construction; a model that carries `REMC` alongside all of `TCHOL`, `HDLC` and `LDLC` is over-parameterised.
+
 ### ANGPTL3 (**canonical for angiopoietin-like protein 3 concentration**)
 - **Description:** Total serum angiopoietin-like protein 3 (ANGPTL3) concentration. ANGPTL3 is the pharmacological target for anti-ANGPTL3 monoclonal antibodies (evinacumab) and antisense oligonucleotides (vupanorsen). Baseline ANGPTL3 acts as a soluble-target biomarker that contributes to target-mediated drug disposition; higher baseline target predicts a higher saturable Vmax.
 - **Units:** mg/L (equivalent to ug/mL). Document per-model via `covariateData[[ANGPTL3]]$units`.
@@ -10345,6 +10369,39 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Moein_2022_etrolizumab.R` (multiplicative effect on CL, +18% vs. left-sided colitis; large uncertainty due to 2% prevalence).
 - **Notes:** Paired with `DISEXT_EP`; together they encode the three-level disease-extension categorical.
 
+### PREVENT_PRIMARY (**canonical for primary-prevention cohort indicator**)
+- **Description:** 1 = the cohort (or, in a meta-analysis, the trial) enrolled a *primary*-prevention population, i.e. participants with no previous history of the clinical event the therapy is meant to prevent; 0 = it did not. First member of the mutually exclusive `PREVENT_PRIMARY` / `PREVENT_SECONDARY` / `PREVENT_MIXED` trio that decomposes a three-level prevention-category factor into binary indicators. Exactly one of the three is 1.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not a primary-prevention cohort). Because the trio is exhaustive, a model must either omit one level as the implicit reference or, as in the founding example, carry all three and give each its own coefficient with no separate intercept term.
+- **Source aliases:**
+  - `Prevention = Primary` -- Volkova 2023 Table 1 beta_2 sub-row label.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (selects the per-year age slope on the log risk ratio of unspecified stroke: +0.007/year in primary-prevention trials).
+- **Notes:** Cardiovascular-prevention framing, but the primary/secondary distinction generalises to any preventive indication (stroke, fracture, exacerbation), so this is registered as general scope. Sibling canonicals `PREVENT_SECONDARY` and `PREVENT_MIXED`. The event whose history defines the category is indication-specific and must be documented per model in `covariateData[[PREVENT_PRIMARY]]$notes` -- in Volkova 2023 it is a previous major adverse cardiac event.
+
+### PREVENT_SECONDARY (**canonical for secondary-prevention cohort indicator**)
+- **Description:** 1 = the cohort enrolled a *secondary*-prevention population, i.e. participants with a previous history of the clinical event the therapy is meant to prevent; 0 = it did not. Second member of the `PREVENT_*` indicator trio; see `PREVENT_PRIMARY`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not a secondary-prevention cohort).
+- **Source aliases:**
+  - `Prevention = Secondary` -- Volkova 2023 Table 1 beta_2 sub-row label.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (selects the per-year age slope on the log risk ratio of unspecified stroke: +0.010/year in secondary-prevention trials, a steeper loss of benefit with age than the primary-prevention slope).
+- **Notes:** Sibling of `PREVENT_PRIMARY` and `PREVENT_MIXED`; mutually exclusive with both. Secondary-prevention cohorts carry a higher baseline event rate, so a model that uses this indicator for an effect-size contrast should not also be relied on for the control-arm event rate unless the source models that separately.
+
+### PREVENT_MIXED (**canonical for mixed-or-unstated-prevention cohort indicator**)
+- **Description:** 1 = the cohort enrolled both primary- and secondary-prevention participants, **or** the source did not state the prevention category; 0 = otherwise. Third member of the `PREVENT_*` indicator trio; see `PREVENT_PRIMARY`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not a mixed / unstated cohort).
+- **Source aliases:**
+  - `Prevention = Both` -- Volkova 2023 Table 1 beta_2 sub-row label.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (selects the per-year age slope on the log risk ratio of unspecified stroke: +0.011/year).
+- **Notes:** Sibling of `PREVENT_PRIMARY` and `PREVENT_SECONDARY`. **This level routinely pools two different things** -- genuinely mixed cohorts and cohorts whose prevention category was simply never reported. Volkova 2023 Section 2.2 states explicitly that "when prevention type was not explicitly indicated in the published sources, a mixed category was assigned to a study", so 18 of its 54 trials sit in this level. Record per model whether the source distinguished the two, because a coefficient on this level is partly a missing-data indicator and not purely a population descriptor.
+
 ### PRIOR_TAXANE (**canonical for binary prior-taxane chemotherapy indicator**)
 - **Description:** 1 = subject received any prior taxane regimen (docetaxel, paclitaxel, cabazitaxel, etc.) before study entry, 0 = taxane-naive. Time-invariant within a subject (records treatment history at baseline). Oncology-pretreatment indicator: relevant for cohorts in which prior taxane exposure plausibly alters disease biology (e.g., advanced / castration-resistant prostate cancer, where taxane pretreatment is associated with more advanced disease and selects for taxane-resistant clones).
 - **Units:** (binary)
@@ -12209,6 +12266,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Dings_2026_neonatal_acidosis.R` (+3.26 mmol/L neonatal base excess relative to untreated newborns -- the larger of the two treatment effects, which is the paper's central comparative finding).
 - **Notes:** Specific scope. A single canonical for the fixed-dose combination rather than two separate indicators, because the two components are never given apart -- cafedrine and theodrenaline are co-formulated at a fixed 20:1 ratio and doses are expressed as cafedrine equivalents. Do not split into `TRT_CAFEDRINE` and `TRT_THEODRENALINE`: no source reports them independently and the model cannot identify separate effects. Sibling of `TRT_EPHEDRINE`; mutually exclusive with it.
 
+### TRT_PCSK9I (**canonical for anti-PCSK9 therapy-class treatment-arm indicator**)
+- **Description:** Binary treatment-arm indicator: 1 = the arm (or, in a meta-analysis, the trial) used an anti-PCSK9 agent, 0 = it did not. Deliberately a *class* indicator rather than a per-drug one: it pools the anti-PCSK9 monoclonal antibodies (evolocumab, alirocumab, bococizumab) with the anti-PCSK9 siRNA (inclisiran), because sources that contrast lipid-lowering mechanisms treat "anti-PCSK9" as one arm against statins.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. **The reference differs by model and must be documented per model** -- in `Volkova_2023_lipidLowering_mace_mbma.R` the reference is a *statin* trial (every trial used one class or the other), not an untreated arm.
+- **Source aliases:**
+  - `PCSK9 inhibitors` -- Volkova 2023 Table 1 beta_1 column label.
+  - `Therapy` -- Volkova 2023 Supplementary Table 4 covariate-search label for the same two-level factor.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (additive shift on the log risk ratio of each MACE component; significant only for coronary revascularization, +0.22, and nonfatal myocardial infarction, +0.242 -- in both cases *less* benefit than statins after adjusting for achieved LDL-C lowering).
+- **Notes:** Specific scope until a second model ratifies it. Member of the `TRT_<treatment>` family (see `TRT_EPHEDRINE` for the family's reference-category caveat); use `TRT_` when the agent is the study treatment under investigation, versus `CONMED_<INN>` for concomitant medication. Do **not** split into per-drug indicators unless a source estimates them separately -- Volkova 2023 pooled 7 anti-PCSK9 trials across three modalities and could not identify per-drug effects. Distinct from `PCSK9` and `FPCSK9`, which are measured serum concentrations of the target protein, not treatment indicators.
+
 ### DOSE_BUPIVACAINE_MG (**canonical for administered intrathecal bupivacaine dose**)
 - **Description:** Total dose of bupivacaine administered for the neuraxial block, in mg. Determines the extent and duration of the sympathetic block and hence the depth of the resulting hypotension. Member of the auto-approved `DOSE_<drug>_<units>` family.
 - **Units:** mg
@@ -12264,6 +12333,18 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Vargo_2014_statins_ezetimibe_mbma.R` (linear coefficient `e_chd_emax_statin = -0.000649` per percentage point on Emax_statin, i.e. a 24% CHD arm reduces Emax_statin by `0.000649 * 24 = 0.016`; the paper's typical-patient definition uses 24% CHD).
 - **Notes:** MBMA study-arm-level covariate; the canonical register's individual-level pop-PK covariates do not directly fit aggregate-percentage columns, so this canonical is specific-scope and explicitly carries a study-arm aggregate meaning. Future MBMA models should reuse for the CHD-cohort prevalence column.
 
+### DIS_HYPERT_PERCENT (**canonical for hypertension cohort prevalence percentage**)
+- **Description:** Study- or trial-level percentage (0-100) of the enrolled cohort carrying a hypertension diagnosis at baseline. Continuous covariate scaled in percent (not fraction). The aggregate counterpart of the individual-level binary `DIS_HYPERT`.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0% (no hypertensive patients enrolled).
+- **Source aliases:**
+  - `Hypertension` -- Volkova 2023 Table 1 covariate label.
+  - `Hypertension (%)` -- Volkova 2023 Supplementary Table 3 row label.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (linear coefficient +0.011 per percentage point on the log risk ratio of ischemic stroke, so a 75%-hypertensive trial population sees `exp(0.011 * 50) = 1.73`-fold less ischemic-stroke benefit from lipid-lowering therapy than a 25%-hypertensive one).
+- **Notes:** MBMA study-arm / trial-level covariate. Family precedent: `DIS_CHD_PERCENT` (Vargo 2014). Distinct from the per-subject binary `DIS_HYPERT` (an individual medical-history flag) and from continuous `SBP` / `DBP` blood-pressure measurements. The percent-vs-fraction scale is load-bearing because the coefficient is a per-percentage-point slope; confirm it against a published contrast before use.
+
 ### TUMTP_SQUAM_PCT (**canonical for squamous-tumor-histology cohort prevalence percentage**)
 - **Description:** Study-arm-level percentage (0-100) of the enrolled cohort whose tumor histology is squamous (versus non-squamous). Continuous covariate scaled in percent (not fraction). In non-small cell lung cancer (NSCLC) MBMA papers the arm's squamous fraction interacts with the chemotherapy treatment class (chemotherapy tends to be more effective on squamous NSCLC than on non-squamous NSCLC).
 - **Units:** %
@@ -12293,6 +12374,29 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Source aliases:** `%Asian race` / `Race.Asian` (Franzese 2026 Table 1 / Table S1 covariate label).
 - **Example models:** `Franzese_2026_pdl1_nsclc_mbma.R` (enters the OS ORR-slope as an interaction term `(eta_orr_os - 0.595) * (ORR/100) * (RACE_ASIAN_PCT/100)`; the paper's Discussion attributes the effect to regional trial-conduct differences rather than an inherent race effect).
 - **Notes:** MBMA study-arm-level covariate. Distinct from the per-subject binary `RACE_ASIAN` canonical (individual-level 0 or 1); here the arm's Asian fraction is a continuous proportion of participants. Also distinct from Yang 2010's use of `RACE_ASIAN` as a binary at the arm level (whole-arm-Asian vs whole-arm-Western), which is coarser than the continuous-fraction form. Family precedent: `DIS_CHD_PERCENT` (Vargo 2014).
+
+### K_CTRL (**canonical for control-arm event proportion over the planned follow-up**)
+- **Description:** The proportion of control-arm participants expected to experience the endpoint of interest over a planned trial's follow-up period; a fraction in (0, 1). A **trial-design input**, not a measured patient characteristic: it is what a study-level model needs, alongside an effect size, to turn a predicted treatment effect into a required enrolment. Time-dependent in principle -- the proportion accrues with follow-up duration -- so the value supplied is always tied to a stated follow-up length.
+- **Units:** (fraction)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous. Must be strictly greater than 0; the sample-size formula divides by it.
+- **Source aliases:**
+  - `k_i(t)` -- Volkova 2023 Section 2.4 / Supplementary File 2 symbol.
+  - `control-arm event rate`, `baseline risk`, `p_control` -- common prose forms.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (input to the `n_required` output; for a composite endpoint the paper's Supplementary File 3 shows the same formula applies with `k_sum = sum(k_i)` over the component events, assuming overlap between components is negligible).
+- **Notes:** MBMA / trial-design covariate; a fraction, never a percentage, so it does **not** belong to the `*_PERCENT` cohort-prevalence family. Pairs with `LOGRR_TARGET`; a sample-size calculation needs both. Supplied externally because the source that provides the effect size often does not publish the control-arm rate model in usable form -- Volkova 2023 fitted a control-arm event-rate meta-regression but reported it only as fitted lines in Supplementary Figure 1, with no coefficients printed anywhere. Where the source publishes worked sample-size results, a value can be recovered by inverting the published formula (the Volkova 2023 vignette does this for nonfatal myocardial infarction, recovering `k ~ 0.043` at 4 years consistently from two independent Figure 3 points).
+
+### LOGRR_TARGET (**canonical for the target log risk ratio in a trial sample-size calculation**)
+- **Description:** The log risk ratio a planned trial must demonstrate for the treatment benefit to reach statistical significance; the effect-size input to a sample-size calculation. A **trial-design input**, not a patient characteristic. Negative values favour the active treatment.
+- **Units:** (unitless log ratio)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- continuous. Must be strictly non-zero for a finite required sample size; as it approaches 0 the required enrolment diverges.
+- **Source aliases:**
+  - `theta_i`, `u_i` -- Volkova 2023 Supplementary File 2 and Section 2.4 symbols for the same quantity.
+- **Example models:** `Volkova_2023_lipidLowering_mace_mbma.R` (input to the `n_required` output; supply one of the model's own `logrr_*` predictions to size a single endpoint, or the Supplementary File 3 aggregate `theta_sum = log(sum(k_i * exp(theta_i)) / sum(k_i))` to size a composite endpoint).
+- **Notes:** MBMA / trial-design covariate; pairs with `K_CTRL`. Deliberately an *input* rather than an internally-computed quantity, so that one calculator serves both the single-endpoint and the composite-endpoint case. When the effect size is itself a prediction of the same model, reproducing a published sample size is a two-pass exercise (solve for the effect size, then re-solve supplying it here) -- that mirrors the two-stage structure of the source method rather than working around a limitation. Record in `covariateData[[LOGRR_TARGET]]$notes` whether a given value is a point estimate or a draw from the effect-size uncertainty distribution, since the published percentile ranges around a sample size come from sampling this input.
 
 ### FORM_ISA_P2F2 (**canonical for isatuximab P2F2 drug-material indicator**)
 <!-- AUDIT 2026-06-19: renamed from `FORM_P2F2` to `FORM_ISA_P2F2`. The prior name `FORM_P2F2` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
