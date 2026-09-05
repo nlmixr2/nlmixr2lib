@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Shao 2023 bedaquiline ([doi:10.3389/fphar.2023.1022090](https://doi.org/10.3389/fphar.2023.1022090)) -- Chinese adults with multidrug-resistant tuberculosis.
+- Add Setiawan 2023 ampicillin and sulbactam ([doi:10.1007/s40262-023-01219-5](https://doi.org/10.1007/s40262-023-01219-5)) -- hospitalised non-ICU adults with a wide range of renal function.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
