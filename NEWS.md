@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Miyagi 2011 hepatic UGT1A1 and UGT1A6 ontogeny ([doi:10.1124/dmd.110.037192](https://doi.org/10.1124/dmd.110.037192)) -- 50 pediatric liver donors, 13 days to 20 years.
+- Add Krishna 2011 anacetrapib popPK plus HDL-C and LDL-C exposure-response
+  models ([doi:10.1208/s12248-011-9254-0](https://doi.org/10.1208/s12248-011-9254-0))
+  -- healthy volunteers and patients with dyslipidemia.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

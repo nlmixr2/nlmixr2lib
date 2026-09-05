@@ -2763,8 +2763,16 @@ Standard clinical-biomarker / endogenous-output compartments. Widely-recognised 
 ### ldl (**canonical LDL-cholesterol PD output**)
 - **Type:** compartment
 - **Role:** LDL-cholesterol biomarker PD output.
-- **Source aliases:** none.
-- **Example models:** `Pu_2021_evinacumab.R`.
+- **Source aliases:**
+  - `LDL` -- Krishna 2011 Eqs. 2 and 9 output variable; casing only.
+- **Example models:** `Pu_2021_evinacumab.R`, `Krishna_2011_anacetrapib_ldlc.R` (an algebraic, stateless proportional-Emax output rather than a turnover state -- the canonical names the biomarker, not the mechanism used to produce it).
+
+### hdl (**canonical HDL-cholesterol PD output**)
+- **Type:** compartment
+- **Role:** HDL-cholesterol biomarker PD output. Sibling of `ldl`, completing the lipid-panel pair that any CETP-inhibitor, statin or lipid-lowering exposure-response model needs; a paper reporting both endpoints uses `hdl` and `ldl` rather than one combined name.
+- **Source aliases:**
+  - `HDL` -- Krishna 2011 Eqs. 1, 2 and 8 output variable; casing only.
+- **Example models:** `Krishna_2011_anacetrapib_hdlc.R` (algebraic proportional-Emax output driven by the anacetrapib steady-state trough concentration; no ODE state).
 
 ### hc24 (**canonical 24S-hydroxycholesterol PD output**)
 - **Type:** compartment
