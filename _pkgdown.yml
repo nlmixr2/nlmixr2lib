@@ -3154,6 +3154,8 @@ navbar:
         href: articles/Ivaturi_2017_RBP_7000.html
       - text: "RFIXFc (Diao 2014)"
         href: articles/Diao_2014_rFIXFc.html
+      - text: "Rabeprazole (Jeong 2023)"
+        href: articles/Jeong_2023_rabeprazole.html
       - text: "RacSotalol QTcF (Darpo 2014)"
         href: articles/Darpo_2014_racSotalol.html
       - text: "RacSotalol QTcI (Darpo 2014)"
@@ -4988,6 +4990,7 @@ articles:
   - articles/Jeon_2013_interferonAlfa2a
   - articles/Jeon_2014_piperacillin
   - articles/Jeong_2022_torsemide
+  - articles/Jeong_2023_rabeprazole
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
   - articles/Ji_2025_TDI01
