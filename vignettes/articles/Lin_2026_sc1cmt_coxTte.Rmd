@@ -424,8 +424,17 @@ pit_params <- data.frame(id = ev18$ID,
                          lkel = log(ev18$KE),
                          lvc = log(ev18$VC))
 
+# No `omega = NA` here. `mod_typ` is already `zeroRe()`d, so the etas are
+# zero either way, but passing `omega = NA` alongside a multi-subject
+# `params` makes rxode2 5.1.6 index a length-1 vector once per extra
+# subject ("subscript out of bounds (index i >= vector size 1)", i = 1..17).
+# The values it returned here happened to be correct -- they match a
+# per-subject reference solve exactly -- but an out-of-bounds read is not
+# something to rely on, and this assertion fired on CI while passing
+# locally. Dropping the redundant argument removes the read and leaves
+# every number below bit-identical.
 s_pit <- rxode2::rxSolve(mod_typ, params = pit_params, events = pit_events,
-                         omega = NA, returnType = "data.frame",
+                         returnType = "data.frame",
                          addDosing = FALSE)
 
 cumhaz_at_event <- s_pit %>%
@@ -467,8 +476,9 @@ reading survives. This is what settles the erratum independently of the
 pit_alt <- function(kh1_v, kh2_v) {
   m <- mod_typ %>%
     rxode2::ini(lkh1_haz = log(kh1_v), lkh2_haz = log(kh2_v))
+  # `omega = NA` omitted for the same reason as the `pit` chunk above.
   ch <- rxode2::rxSolve(m, params = pit_params, events = pit_events,
-                        omega = NA, returnType = "data.frame",
+                        returnType = "data.frame",
                         addDosing = FALSE) %>%
     group_by(id) %>% slice_tail(n = 1) %>% ungroup() %>%
     pull(cumhaz)
