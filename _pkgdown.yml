@@ -912,6 +912,8 @@ navbar:
         href: articles/Garonzik_2016_daptomycin.html
       - text: "Daptomycin (Subrtova 2026)"
         href: articles/Subrtova_2026_daptomycin.html
+      - text: "Daptomycin (Wu 2024)"
+        href: articles/Wu_2024_daptomycin.html
       - text: "Daratumumab (Xu 2020)"
         href: articles/Xu_2020_daratumumab.html
       - text: "Daratumumab qsstmdd (Li 2021)"
@@ -5903,6 +5905,7 @@ articles:
   - articles/Wu_2012_sirolimus
   - articles/Wu_2014_FEV1_asthma
   - articles/Wu_2023_SPI_62
+  - articles/Wu_2024_daptomycin
   - articles/Wu_2024_gfr_maturation
   - articles/Wu_2024_inotuzumab
   - articles/Wu_2025_paracetamol
