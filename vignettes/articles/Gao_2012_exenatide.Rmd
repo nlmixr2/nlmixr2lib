@@ -1,0 +1,1025 @@
+---
+title: "Exendin-4 target-mediated PK/PD in rats, monkeys and humans (Gao 2012)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Exendin-4 target-mediated PK/PD in rats, monkeys and humans (Gao 2012)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Gao and Jusko (2012) fitted one target-mediated drug disposition (TMDD)
+structure separately in three species and then bolted a glucose-insulin
+feedback pharmacodynamic model onto the rat fit. This vignette covers all four
+models the paper contributed to the library.
+
+| Model | Source | Species |
+|---|---|---|
+| `Gao_2012_exenatide_rat` | Table 2 | rat (Sprague-Dawley) |
+| `Gao_2012_exenatide_monkey` | Table 3, Monkeys | rhesus monkey |
+| `Gao_2012_exenatide_human` | Table 3, Humans | human |
+| `Gao_2012_exenatide_glucose_insulin_rat` | Tables 2 + 4, eqs. 5-7 | rat (Sprague-Dawley) |
+
+* Citation: `r rxode2::rxode(readModelDb("Gao_2012_exenatide_rat"))$reference`
+* Article: <https://doi.org/10.1124/dmd.111.042291> (PMCID PMC3336795, open access)
+
+The drug is filed under its International Nonproprietary Name **exenatide**;
+the paper throughout uses the research name *exendin-4*, which is what the
+narrative below follows.
+
+```{r load-models}
+mod_rat    <- readModelDb("Gao_2012_exenatide_rat")
+mod_monkey <- readModelDb("Gao_2012_exenatide_monkey")
+mod_human  <- readModelDb("Gao_2012_exenatide_human")
+mod_pd     <- readModelDb("Gao_2012_exenatide_glucose_insulin_rat")
+```
+
+None of the four models carries between-subject variability: every fit in the
+paper is a naive-pooled fit to mean profiles in ADAPT II. Every simulation
+below is therefore a single deterministic typical-value solve per arm, and no
+`rxode2::zeroRe()` or `omega = NA` is needed (there is no OMEGA to suppress).
+
+# Population
+
+Four separate experiments feed the four models.
+
+**Rat pharmacokinetics** (`Gao_2012_exenatide_rat`). Male Sprague-Dawley rats,
+350-370 g, n = 4-7 per route and dose group, given a single intravenous bolus,
+a single subcutaneous bolus, or a continuous intravenous infusion at 0.5, 5 and
+50 nmol (nmol/h for the infusion). Concentration data were supplied by Amylin
+Pharmaceuticals and assayed by a two-site sandwich assay with a minimum
+detectable concentration of 15 pM.
+
+**Rat pharmacodynamics** (`Gao_2012_exenatide_glucose_insulin_rat`). A separate
+cohort of male Sprague-Dawley rats spanning 80-420 g, n = 4-8 per arm, given a
+two-hour intravenous infusion of saline or of exendin-4 at 3, 30, 300 or
+3000 pmol/kg/min, with an intravenous D-glucose challenge of 5.7 mmol/kg
+beginning 30 min after the start of the infusion. **No drug concentrations
+were measured in this study**: the driving concentrations were simulated from
+the rat pharmacokinetic model, which is why the packaged model carries the
+Table 2 pharmacokinetic parameters alongside the Table 4 pharmacodynamic ones.
+
+**Monkey** (`Gao_2012_exenatide_monkey`). Male rhesus monkeys, 4.3 +/- 0.7 kg,
+n = 3, given a single subcutaneous injection of 1, 3 or 10 ug/kg or a single
+intravenous injection of 3 ug/kg (Ai et al. 2008; the concentration-time data
+were digitised by Gao and Jusko from that publication).
+
+**Human** (`Gao_2012_exenatide_human`). Three studies pooled: study A, eight
+subjects at 88.5 +/- 9.4 kg receiving 0.1-0.4 ug/kg subcutaneously; study B,
+eight subjects at 88.8 +/- 12.1 kg receiving 0.02-0.1 ug/kg subcutaneously;
+study C, eleven subjects (body mass index 21-29 kg/m2) receiving an intravenous
+infusion at 0.066 pmol/kg/min for 360 min.
+
+The same information is available programmatically, e.g.
+`readModelDb("Gao_2012_exenatide_glucose_insulin_rat")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry. The table below collects them in one place.
+
+## Structure
+
+| Equation | Source location |
+|---|---|
+| `d/dt(central)`, `d/dt(peripheral1)`, `d/dt(complex)` | Gao 2012 eqs. 1-3, p. 991 (published in concentration form `dC/dt`; multiplied through by `Vc` for the amount form rxode2 uses) |
+| `f(depot)`, `d/dt(depot)` | Gao 2012 eq. 4, p. 992: `input(t) = ka * F * Dose * exp(-ka * t) / Vc`, which is exactly a first-order depot with bioavailability `F` |
+| `rfree <- rtot - complex / vc` | Gao 2012 eq. 3 binding term `kon * (Rtot - RC) * C`; `Rtot` is constant (no receptor synthesis or degradation) |
+| `d/dt(glucose)` | Gao 2012 eq. 5, p. 992 |
+| `d/dt(insulin)` | Gao 2012 eq. 6, p. 992 |
+| `sadair` | Gao 2012 eq. 7, p. 992: `Sd = Smax * C / (k1 + C + k2 * C^2)` |
+| `kin_glucose`, `kin_insulin` | Gao 2012 Methods, "Pharmacodynamic Model": `kinG = koutG * Gb` and `kinI = koutI * Ib` |
+| `glucose(0)`, `insulin(0)` | Gao 2012 eqs. 5-6 initial conditions: `Glu(0) = Dose/VG + Gb`, `Ins(0) = Ib` |
+| `(delta_g > 0)` rectification | Gao 2012 Discussion, p. 996: "When glucose is not higher than basal values, the effect is shut off" |
+| eq. 8 (`Sd_RC`, driven by the receptor complex) | **not extracted** -- Gao 2012 Discussion rejects it on AIC and on prior Goto-Kakizaki rat evidence |
+
+## Parameters
+
+| Model | Parameter | Value | Source |
+|---|---|---|---|
+| rat, rat PK/PD | `lkel` | 0.0839 1/min | Table 2 (CV 10%) |
+| rat, rat PK/PD | `lk12` (`kpt`) | 0.0282 1/min | Table 2 (CV 15%) |
+| rat, rat PK/PD | `lk21` (`ktp`) | 0.0213 1/min | Table 2 (CV 5%) |
+| rat, rat PK/PD | `lvc` | 43.2 mL | Table 2 (CV 12%) |
+| rat, rat PK/PD | `lkon` | 0.0207 1/(nM*min) | Table 2 (CV 42%) |
+| rat, rat PK/PD | `lkoff` | 0.0153 1/min | Table 2 (CV 206%) |
+| rat, rat PK/PD | `lkint` | 0.0966 1/min | Table 2 (CV 38%) |
+| rat, rat PK/PD | `lrtot` | 5.21 nM | Table 2 (CV 5%) |
+| rat | `lka` | 0.00820 1/min | Table 2 `ka1` (CV 9%); `ka2` 0.00579, `ka3` 0.00273 for the 5 and 50 nmol groups |
+| rat | `lfdepot` | 1 (fixed) | Table 2; Results "Rat PK" |
+| monkey | `lkel` / `lk12` / `lk21` | 0.0346 / 0.0143 / 0.00593 1/min | Table 3, Monkeys |
+| monkey | `lvc` | 69.3 mL/kg | Table 3, Monkeys (CV 12%) |
+| monkey | `lkon` / `lkoff` / `lkint` | 0.272 1/(pM*min) / 0.0326 / 0.00211 1/min | Table 3, Monkeys |
+| monkey | `lrtot` | 60.6 pM | Table 3, Monkeys (CV 33%) |
+| monkey | `lka` | 0.0244 1/min | Table 3 range 0.0244-0.0142; upper end assigned to the lowest dose per Fig. 7A |
+| monkey | `lfdepot` | 0.688 | Table 3, Monkeys (CV 8%) -- estimated, unlike rat and human |
+| human | `lkel` / `lk12` / `lk21` | 0.013 / 0.0685 / 0.0846 1/min | Table 3, Humans |
+| human | `lvc` | 111 mL/kg | Table 3, Humans (CV 168%) |
+| human | `lkon` / `lkoff` / `lkint` | 0.000411 1/(pM*min) / 0.566 / 0.00342 1/min | Table 3, Humans |
+| human | `lrtot` | 1240 pM (fixed) | Table 3, Humans; Results "Human PK" |
+| human | `lka` | 0.0148 1/min | Table 3 range 0.00550-0.0148; upper end assigned to the lowest doses per Fig. 7A |
+| rat PK/PD | `lkout_glucose` | 0.046 1/min | Table 4 (CV 9%) |
+| rat PK/PD | `lkout_insulin` | 0.483 1/min | Table 4 (CV 50%) |
+| rat PK/PD | `lvg` | 0.208 L/kg | Table 4 (CV 5%) |
+| rat PK/PD | `lsstim_insulin_glucose` (`SIns`) | 0.157 1/nM | Table 4 (CV 46%) |
+| rat PK/PD | `lsstim_glucose_insulin` (`SGlu`) | 0.0684 1/mM | Table 4 (CV 20%) |
+| rat PK/PD | `lsmax` | 4.67 | Table 4 (CV 30%) |
+| rat PK/PD | `lkadair1` (`k1`) | 0.826 nM | Table 4 (CV 71%) |
+| rat PK/PD | `lkadair2` (`k2`) | 0.0153 1/nM | Table 4 (CV 69%) |
+| rat PK/PD | `FPG` (`Gb`), `INS_BL` (`Ib`) | per arm | **Not published** -- digitised from Fig. 5; see Assumptions and deviations |
+| all | `addSd*`, `propSd*` | 0 (fixed) | **Not published** -- Methods gives `Vi = (sigma1 + sigma2 * Y)^2` but no sigma values |
+
+# Part 1 -- the target-mediated pharmacokinetic model
+
+## Printed identities
+
+Two arithmetic identities that the paper states in prose are recomputed from
+the packaged `ini()` values. These do not require a solve, and they confirm the
+concentration scale each species runs on: the rat model is nanomolar
+(`kon` in 1/(nM*min)) while the monkey and human models are picomolar.
+
+```{r identities}
+ini_of <- function(mod) {
+  df <- rxode2::rxode(mod)$iniDf
+  stats::setNames(df$est, df$name)
+}
+
+# Every concentration-time plot below uses a log y axis, so rows with a
+# non-positive concentration (pre-absorption time-zero rows on the depot arms)
+# have to come out. This is a PLOTTING filter and must never be reused as the
+# PKNCA input filter, which needs its time-zero record kept.
+plot_positive <- function(d) d[!is.na(d$Cc) & d$Cc > 0, , drop = FALSE]
+p_rat    <- ini_of(mod_rat)
+p_monkey <- ini_of(mod_monkey)
+p_human  <- ini_of(mod_human)
+
+identities <- tibble::tibble(
+  species = c("rat", "monkey", "human"),
+  scale   = c("nM", "pM", "pM"),
+  kd_model = c(
+    exp(p_rat[["lkoff"]])    / exp(p_rat[["lkon"]]),
+    exp(p_monkey[["lkoff"]]) / exp(p_monkey[["lkon"]]),
+    exp(p_human[["lkoff"]])  / exp(p_human[["lkon"]])
+  ),
+  kd_published = c(0.74, 0.12, 1380),  # Abstract / Results; human 1.38 nM = 1380 pM
+  clc_model = c(
+    exp(p_rat[["lkel"]])    * exp(p_rat[["lvc"]])    * 1000,  # mL/min      (Vc absolute)
+    exp(p_monkey[["lkel"]]) * exp(p_monkey[["lvc"]]) * 1000,  # mL/min/kg   (Vc per kg)
+    exp(p_human[["lkel"]])  * exp(p_human[["lvc"]])  * 1000   # mL/min/kg   (Vc per kg)
+  ),
+  clc_published = c(3.62, 2.39, 1.48)
+) |>
+  dplyr::mutate(
+    kd_pct  = 100 * (kd_model  - kd_published)  / kd_published,
+    clc_pct = 100 * (clc_model - clc_published) / clc_published
+  )
+
+identities |>
+  dplyr::select(species, scale, kd_model, kd_published, kd_pct,
+                clc_model, clc_published, clc_pct) |>
+  dplyr::rename(
+    "Species"                 = species,
+    "Conc. scale"             = scale,
+    "KD = koff/kon (model)"   = kd_model,
+    "KD published"            = kd_published,
+    "KD % diff"               = kd_pct,
+    "CLc = kel*Vc (model)"    = clc_model,
+    "CLc published"           = clc_published,
+    "CLc % diff"              = clc_pct
+  ) |>
+  knitr::kable(
+    digits  = c(0, 0, 4, 2, 1, 3, 2, 1),
+    caption = paste(
+      "Printed identities recomputed from the packaged ini() values.",
+      "KD in the units of each species' concentration scale;",
+      "CLc in mL/min for the rat (absolute Vc) and mL/min/kg for monkey and human."
+    )
+  )
+```
+
+```{r identities-check}
+# KD is pure arithmetic on two printed estimates, so it must land on the
+# published value to within display rounding of koff and kon.
+stopifnot(all(abs(identities$kd_pct) < 1))
+
+# CLc likewise, EXCEPT for humans: Table 3 prints kel to two significant
+# figures (0.013), so kel*Vc can only reproduce 1.48 mL/min/kg to about 3%.
+stopifnot(
+  abs(identities$clc_pct[identities$species == "rat"])    < 0.5,
+  abs(identities$clc_pct[identities$species == "monkey"]) < 0.5,
+  abs(identities$clc_pct[identities$species == "human"])  < 5
+)
+```
+
+## Rat: single intravenous and subcutaneous doses (Figure 2)
+
+`ka` was estimated separately for each subcutaneous dose group and *decreases*
+with dose (Table 2 and Fig. 7A), with no published functional form linking the
+two. The packaged model carries the lowest-dose value, so the subcutaneous arms
+below override `ka` per dose group -- exactly what the model file's `ini()`
+comment instructs.
+
+```{r rat-events}
+# Helper: one deterministic arm. `dose_cmt` is an ODE state name, never an
+# algebraic observable such as `Cc` (see the skill's failure-pattern 2).
+make_arm <- function(id, dose, dose_cmt, times, label,
+                     rate = 0, extra = NULL) {
+  dosing <- data.frame(
+    id = id, time = 0, amt = dose, rate = rate, evid = 1L, cmt = dose_cmt
+  )
+  obs <- data.frame(
+    id = id, time = times, amt = NA_real_, rate = NA_real_,
+    evid = 0L, cmt = "central"
+  )
+  out <- dplyr::bind_rows(dosing, obs)
+  out$treatment <- label
+  if (!is.null(extra)) for (nm in names(extra)) out[[nm]] <- extra[[nm]]
+  dplyr::arrange(out, .data$time, dplyr::desc(.data$evid))
+}
+
+rat_doses <- c(0.5, 5, 50)                      # nmol
+rat_ka    <- c(0.00820, 0.00579, 0.00273)       # Table 2: ka1, ka2, ka3
+t_iv      <- sort(unique(c(seq(0, 240, by = 0.25))))
+t_sc      <- sort(unique(c(seq(0, 1440, by = 2))))
+
+rat_iv <- dplyr::bind_rows(lapply(seq_along(rat_doses), function(i) {
+  make_arm(i, rat_doses[i], "central", t_iv,
+           label = paste(rat_doses[i], "nmol IV"))
+}))
+
+rat_sc <- dplyr::bind_rows(lapply(seq_along(rat_doses), function(i) {
+  make_arm(10L + i, rat_doses[i], "depot", t_sc,
+           label = paste(rat_doses[i], "nmol SC"))
+}))
+
+stopifnot(!anyDuplicated(unique(rat_iv[, c("id", "time", "evid")])),
+          !anyDuplicated(unique(rat_sc[, c("id", "time", "evid")])))
+```
+
+```{r rat-figure-2}
+sim_rat_iv <- rxode2::rxSolve(
+  mod_rat, events = rat_iv, keep = "treatment", useLinCmt = FALSE
+) |> as.data.frame()
+
+# The subcutaneous arms each need their own ka, so solve one arm at a time
+# with the dose-group value substituted (Table 2 ka1 / ka2 / ka3).
+sim_rat_sc <- dplyr::bind_rows(lapply(seq_along(rat_doses), function(i) {
+  ev <- dplyr::filter(rat_sc, .data$id == 10L + i)
+  rxode2::rxSolve(
+    mod_rat, events = ev, params = c(lka = log(rat_ka[i])),
+    keep = "treatment", useLinCmt = FALSE
+  ) |> as.data.frame()
+}))
+
+dplyr::bind_rows(sim_rat_iv, sim_rat_sc) |>
+  plot_positive() |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  scale_x_continuous(limits = c(0, 600)) +
+  labs(x = "Time (min)", y = "Exendin-4 (nmol/L)", colour = NULL,
+       title = "Rat: single IV and SC doses",
+       caption = "Replicates Figure 2 of Gao 2012.")
+```
+
+The intravenous curves show the shape the paper describes: a rapid early
+decline at the lowest dose that flattens as the receptor pool saturates at
+higher doses. That nonlinearity is an *emergent* property of the target-binding
+structure, not a fitted parameter, which is what makes the next section the
+load-bearing test of the transcription.
+
+## Rat: the continuous-infusion clearance test (Table 1)
+
+Table 1 reports `Dose/Css` from continuous intravenous infusion at 0.5, 5 and
+50 nmol/h. Because clearance falls by more than a factor of two across that
+100-fold dose range purely through receptor saturation, reproducing it exercises
+`kon`, `koff`, `kint`, `Rtot`, `kel` and `Vc` jointly.
+
+```{r rat-infusion}
+inf_rates <- c(0.5, 5, 50) / 60          # nmol/h -> nmol/min
+inf_dur   <- 720                          # min; long enough to reach steady state
+
+rat_inf <- dplyr::bind_rows(lapply(seq_along(inf_rates), function(i) {
+  make_arm(20L + i, dose = inf_rates[i] * inf_dur, dose_cmt = "central",
+           times = seq(0, inf_dur, by = 1), rate = inf_rates[i],
+           label = paste(c(0.5, 5, 50)[i], "nmol/h"))
+}))
+
+sim_rat_inf <- rxode2::rxSolve(
+  mod_rat, events = rat_inf, keep = "treatment", useLinCmt = FALSE
+) |> as.data.frame()
+
+css_tbl <- sim_rat_inf |>
+  dplyr::group_by(.data$treatment) |>
+  dplyr::summarise(
+    css_600 = .data$Cc[which.min(abs(.data$time - 600))],
+    css     = .data$Cc[which.min(abs(.data$time - inf_dur))],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    rate_nmol_min = inf_rates[match(.data$treatment, paste(c(0.5, 5, 50), "nmol/h"))],
+    cl_model      = 1000 * .data$rate_nmol_min / .data$css,   # mL/min
+    cl_published  = c(7.25, 4.42, 3.17)[match(
+      .data$treatment, paste(c(0.5, 5, 50), "nmol/h"))],
+    pct_diff      = 100 * (.data$cl_model - .data$cl_published) / .data$cl_published
+  ) |>
+  dplyr::arrange(.data$rate_nmol_min)
+
+css_tbl |>
+  dplyr::select(treatment, css, cl_model, cl_published, pct_diff) |>
+  dplyr::rename(
+    "Infusion"                 = treatment,
+    "Css (nmol/L)"             = css,
+    "Dose/Css, model (mL/min)" = cl_model,
+    "Table 1 Dose/Css (mL/min)" = cl_published,
+    "% difference"             = pct_diff
+  ) |>
+  knitr::kable(digits = c(0, 3, 2, 2, 1),
+               caption = "Dose-dependent clearance from continuous IV infusion, against Gao 2012 Table 1.")
+```
+
+```{r rat-infusion-check}
+# The simulation must actually have reached steady state, or the clearance
+# above is meaningless. This also stops the check silently passing on a
+# still-rising profile.
+stopifnot(all(abs(css_tbl$css_600 / css_tbl$css - 1) < 0.01))
+
+# Clearance must FALL with dose. This is a large structural effect (the
+# published values fall 7.25 -> 3.17, a factor of 2.3) in a fully
+# deterministic solve, so asserting the ordering is safe here in a way it
+# would not be for a noisy per-subject statistic.
+stopifnot(all(diff(css_tbl$cl_model) < 0))
+stopifnot(all(diff(css_tbl$cl_published) < 0))
+
+# Magnitude: observed range of |% difference| is 4.6 / 2.7 / 17.3 across the
+# three arms. The bound is set well outside that so it stays a real gate
+# without being brittle; do not tighten it to the observed maximum.
+stopifnot(max(abs(css_tbl$pct_diff)) < 25)
+```
+
+The nonlinearity is reproduced in the right direction and to within 17% across
+a 100-fold dose range, with the two lower arms inside 5%.
+
+## Rat: PKNCA on the intravenous-bolus arms
+
+```{r rat-pknca}
+# Filter with `!is.na(Cc)` ONLY: adding `time > 0` or `Cc > 0` would drop the
+# time-zero row PKNCA needs to anchor AUC. The observation grid already starts
+# at time 0 and the dose record sorts ahead of it, so for this IV bolus the
+# time-zero concentration is the model's own dose/Vc -- exactly what PKNCA
+# wants. Assert that rather than patching a row in blind.
+nca_in <- sim_rat_iv |>
+  dplyr::filter(!is.na(.data$Cc)) |>
+  dplyr::select(id, time, Cc, treatment) |>
+  dplyr::arrange(id, treatment, time)
+
+t0 <- dplyr::filter(nca_in, .data$time == 0)
+stopifnot(
+  nrow(t0) == dplyr::n_distinct(nca_in$id),   # one time-zero row per arm
+  all(t0$Cc > 0)                              # ...and it is the post-bolus peak
+)
+
+conc_obj <- PKNCA::PKNCAconc(
+  nca_in, Cc ~ time | treatment + id, concu = "nmol/L", timeu = "min"
+)
+
+dose_df <- rat_iv |>
+  dplyr::filter(.data$evid == 1) |>
+  dplyr::select(id, time, amt, treatment) |>
+  dplyr::mutate(route = "intravascular")
+
+dose_obj <- PKNCA::PKNCAdose(
+  dose_df, amt ~ time | treatment + id, doseu = "nmol", route = "route"
+)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE,
+  cl.obs = TRUE, vss.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+stopifnot(nrow(as.data.frame(nca_res$result)) > 0)
+```
+
+Table 1 of the paper reports `CL`, `Vss` and the biexponential rate constants
+`lambda1` / `lambda2` obtained by non-compartmental analysis and WinNonlin
+curve-fitting of the *observed* rat data. `PKNCA` units come out as L/min and
+L, so they are converted to the paper's mL scale before the comparison.
+
+```{r rat-nca-compare}
+sim_nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::filter(.data$PPTESTCD %in% c("cmax", "aucinf.obs", "half.life",
+                                      "cl.obs", "vss.obs")) |>
+  dplyr::select(treatment, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = "PPTESTCD", values_from = "PPORRES") |>
+  dplyr::mutate(
+    cl.obs  = 1000 * .data$cl.obs,     # L/min -> mL/min
+    vss.obs = 1000 * .data$vss.obs     # L     -> mL
+  )
+
+published <- tibble::tribble(
+  ~treatment,   ~half.life, ~cl.obs, ~vss.obs,
+  "0.5 nmol IV", 0.693 / 0.0363, 4.99, 44.8,
+  "5 nmol IV",   0.693 / 0.0240, 3.40, 57.3,
+  "50 nmol IV",  0.693 / 0.0174, 3.39, 68.2
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::select(sim_nca_wide, treatment, half.life, cl.obs, vss.obs),
+  reference = published,
+  by        = "treatment",
+  units     = c(half.life = "min", cl.obs = "mL/min", vss.obs = "mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  digits  = 2,
+  caption = paste(
+    "Simulated NCA against Gao 2012 Table 1 (t1/2 taken as 0.693/lambda2).",
+    "* differs from the reference by more than 20%."
+  )
+)
+```
+
+Several rows are starred, and the reason is documented rather than tuned away.
+Table 1's `CL` and `Vss` come from non-compartmental analysis of observed data
+whose **first sample is at 5 min**, fitted biexponentially, so they miss the
+very rapid early target-mediated decline that the model's true `AUC(0-Inf)`
+includes. The paper's own arithmetic confirms this reading: Results states that
+`CLc` is "approximately 73% of total clearance at the lowest dose", and
+3.62 / 4.99 (the Table 1 value) = 72.5%, whereas 3.62 divided by the model's own
+0.5 nmol clearance is nearer 55%. **A target-mediated transcription should be
+validated on the infusion arm, not on the bolus arm** -- which is what the
+previous section does.
+
+```{r rat-nca-check}
+# The 50 nmol arm is the one where receptor binding is saturated and the
+# observed biexponential terminal phase IS the model's terminal phase, so
+# half-life must agree there.
+hl_50 <- sim_nca_wide$half.life[sim_nca_wide$treatment == "50 nmol IV"]
+stopifnot(abs(hl_50 - 0.693 / 0.0174) / (0.693 / 0.0174) < 0.15)
+
+# Model clearance must exceed the NCA clearance at every dose (the NCA misses
+# early exposure), and must still fall with dose.
+stopifnot(all(sim_nca_wide$cl.obs > published$cl.obs))
+stopifnot(all(diff(sim_nca_wide$cl.obs[
+  match(published$treatment, sim_nca_wide$treatment)]) < 0))
+```
+
+## Monkey and human (Figures 3 and 4)
+
+```{r monkey-human}
+mw <- 4186.6                    # g/mol, Gao 2012 Methods
+wt_monkey <- 4.3                # kg
+wt_human  <- 88.5               # kg
+
+# ug/kg -> pmol: (ug/kg * kg) / (g/mol) * 1e6
+ug_kg_to_pmol <- function(ug_per_kg, wt) ug_per_kg * wt / mw * 1e6
+
+monkey_doses <- c(1, 3, 10)     # ug/kg SC; 3 ug/kg also given IV
+monkey_ka    <- c(0.0244, 0.0205, 0.0142)  # Table 3 range; middle value from Fig. 7A
+
+t_mh <- sort(unique(seq(0, 1440, by = 2)))
+
+monkey_ev <- dplyr::bind_rows(lapply(seq_along(monkey_doses), function(i) {
+  make_arm(30L + i, ug_kg_to_pmol(monkey_doses[i], wt_monkey), "depot", t_mh,
+           label = paste0(monkey_doses[i], " ug/kg SC"),
+           extra = list(WT = wt_monkey))
+}))
+monkey_ev <- dplyr::bind_rows(
+  monkey_ev,
+  make_arm(40L, ug_kg_to_pmol(3, wt_monkey), "central", t_mh,
+           label = "3 ug/kg IV", extra = list(WT = wt_monkey))
+)
+
+sim_monkey <- dplyr::bind_rows(lapply(seq_along(monkey_doses), function(i) {
+  rxode2::rxSolve(
+    mod_monkey, events = dplyr::filter(monkey_ev, .data$id == 30L + i),
+    params = c(lka = log(monkey_ka[i])), keep = "treatment", useLinCmt = FALSE
+  ) |> as.data.frame()
+}))
+sim_monkey <- dplyr::bind_rows(
+  sim_monkey,
+  rxode2::rxSolve(mod_monkey, events = dplyr::filter(monkey_ev, .data$id == 40L),
+                  keep = "treatment", useLinCmt = FALSE) |> as.data.frame()
+)
+
+sim_monkey |>
+  plot_positive() |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  scale_x_continuous(limits = c(0, 720)) +
+  labs(x = "Time (min)", y = "Exendin-4 (pmol/L)", colour = NULL,
+       title = "Monkey: single IV and SC doses",
+       caption = "Replicates Figure 3 of Gao 2012.")
+```
+
+```{r human}
+human_sc  <- c(0.02, 0.05, 0.1, 0.2, 0.3, 0.4)     # ug/kg, studies A and B
+human_inf <- 0.066                                  # pmol/kg/min, study C, 360 min
+
+human_ev <- dplyr::bind_rows(lapply(seq_along(human_sc), function(i) {
+  make_arm(50L + i, ug_kg_to_pmol(human_sc[i], wt_human), "depot",
+           sort(unique(seq(0, 1440, by = 2))),
+           label = paste0(human_sc[i], " ug/kg SC"), extra = list(WT = wt_human))
+}))
+
+sim_human_sc <- rxode2::rxSolve(
+  mod_human, events = human_ev, keep = "treatment", useLinCmt = FALSE
+) |> as.data.frame()
+
+human_inf_rate <- human_inf * wt_human              # pmol/min
+human_inf_ev <- make_arm(
+  60L, dose = human_inf_rate * 360, dose_cmt = "central",
+  times = sort(unique(seq(0, 600, by = 2))), rate = human_inf_rate,
+  label = "0.066 pmol/kg/min IV, 360 min", extra = list(WT = wt_human)
+)
+
+sim_human_inf <- rxode2::rxSolve(
+  mod_human, events = human_inf_ev, keep = "treatment", useLinCmt = FALSE
+) |> as.data.frame()
+
+dplyr::bind_rows(sim_human_sc, sim_human_inf) |>
+  plot_positive() |>
+  ggplot(aes(time, Cc, colour = treatment)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  scale_x_continuous(limits = c(0, 720)) +
+  labs(x = "Time (min)", y = "Exendin-4 (pmol/L)", colour = NULL,
+       title = "Human: subcutaneous doses and a 360-min intravenous infusion",
+       caption = "Replicates Figure 4 of Gao 2012.")
+```
+
+```{r monkey-human-check}
+# Dose proportionality is BROKEN by target binding in both species: doubling
+# the dose more than doubles exposure once the receptor pool saturates. Check
+# the direction only -- these are the published structures, not fitted targets.
+sc_peak <- sim_human_sc |>
+  dplyr::group_by(.data$treatment) |>
+  dplyr::summarise(cmax = max(.data$Cc), .groups = "drop") |>
+  dplyr::mutate(dose = human_sc[match(
+    .data$treatment, paste0(human_sc, " ug/kg SC"))]) |>
+  dplyr::arrange(.data$dose)
+stopifnot(all(diff(sc_peak$cmax) > 0))
+stopifnot(sc_peak$cmax[nrow(sc_peak)] / sc_peak$cmax[1] >
+          max(sc_peak$dose) / min(sc_peak$dose))
+```
+
+## Allometry (Figure 7)
+
+Figure 7 panels B, C and D print fitted simple-allometry equations that the
+running text describes only qualitatively ("the allometric exponents for CLc
+and koff are close to 0.75, and that for Vc is close to 1"). Re-fitting the
+same regression from the packaged `ini()` values at the published body weights
+is a cross-species consistency check on all three model files at once.
+
+```{r allometry}
+bw <- c(rat = 0.36, monkey = wt_monkey, human = wt_human)
+
+allom_obs <- tibble::tibble(
+  species = names(bw),
+  BW      = as.numeric(bw),
+  CLc     = c(exp(p_rat[["lkel"]])    * exp(p_rat[["lvc"]])    * 1000,
+              exp(p_monkey[["lkel"]]) * exp(p_monkey[["lvc"]]) * 1000 * bw[["monkey"]],
+              exp(p_human[["lkel"]])  * exp(p_human[["lvc"]])  * 1000 * bw[["human"]]),
+  Vc      = c(exp(p_rat[["lvc"]])    * 1000,
+              exp(p_monkey[["lvc"]]) * 1000 * bw[["monkey"]],
+              exp(p_human[["lvc"]])  * 1000 * bw[["human"]]),
+  koff    = c(exp(p_rat[["lkoff"]]), exp(p_monkey[["lkoff"]]), exp(p_human[["lkoff"]]))
+)
+
+fit_allom <- function(y, x) {
+  cf <- stats::coef(stats::lm(log(y) ~ log(x)))
+  c(coefficient = unname(exp(cf[[1]])), exponent = unname(cf[[2]]))
+}
+
+allom_tbl <- dplyr::bind_rows(
+  c(parameter = "CLc (mL/min)", fit_allom(allom_obs$CLc,  allom_obs$BW)),
+  c(parameter = "Vc (mL)",      fit_allom(allom_obs$Vc,   allom_obs$BW)),
+  c(parameter = "koff (1/min)", fit_allom(allom_obs$koff, allom_obs$BW))
+) |>
+  dplyr::mutate(
+    dplyr::across(c("coefficient", "exponent"), as.numeric),
+    printed_coefficient = c(5.83, 101.6, 0.022),
+    printed_exponent    = c(0.655, 1.060, 0.663)
+  )
+
+allom_tbl |>
+  dplyr::rename(
+    "Parameter"           = parameter,
+    "Refit coefficient"   = coefficient,
+    "Refit exponent"      = exponent,
+    "Fig. 7 coefficient"  = printed_coefficient,
+    "Fig. 7 exponent"     = printed_exponent
+  ) |>
+  knitr::kable(digits = c(0, 3, 3, 3, 3),
+               caption = "Simple allometry refit from the packaged parameters, against the equations printed inside Figure 7 panels B, C and D.")
+```
+
+```{r allometry-check}
+# CLc and koff reproduce the printed equations essentially exactly; assert on
+# both the coefficient and the exponent for those two.
+clc  <- allom_tbl[allom_tbl$parameter == "CLc (mL/min)", ]
+koff <- allom_tbl[allom_tbl$parameter == "koff (1/min)", ]
+stopifnot(
+  abs(clc$exponent  - clc$printed_exponent)  < 0.05,
+  abs(koff$exponent - koff$printed_exponent) < 0.05,
+  abs(clc$coefficient  / clc$printed_coefficient  - 1) < 0.10,
+  abs(koff$coefficient / koff$printed_coefficient - 1) < 0.10
+)
+
+# Vc does NOT reproduce as tightly; see Assumptions and deviations. Keep a
+# loose gate so a gross transcription error would still be caught.
+vc <- allom_tbl[allom_tbl$parameter == "Vc (mL)", ]
+stopifnot(abs(vc$exponent - vc$printed_exponent) < 0.15,
+          abs(vc$coefficient / vc$printed_coefficient - 1) < 0.25)
+```
+
+`CLc` refits to `5.76 * BW^0.659` against the printed `5.83 * BW^0.655`, and
+`koff` to `0.0220 * BW^0.666` against the printed `0.022 * BW^0.663` -- both to
+within a percent on the coefficient and 0.005 on the exponent. `Vc` refits to
+an exponent near 0.99 against the printed 1.060; see Assumptions and deviations.
+
+# Part 2 -- the glucose-insulin pharmacodynamic model
+
+The pharmacodynamic study infused exendin-4 intravenously for two hours and
+injected D-glucose at 5.7 mmol/kg 30 min in. Because no drug concentrations
+were measured, the model's own pharmacokinetic layer supplies them.
+
+```{r pd-cohort}
+bw_pd <- 0.36     # kg; the PK study animals whose Table 2 parameters are reused
+
+pd_arms <- tibble::tribble(
+  ~arm,                 ~rate_pmol_kg_min, ~FPG,  ~INS_BL,
+  "saline",                             0,  9.60,     304,
+  "3 pmol/kg/min",                      3, 11.53,     399,
+  "30 pmol/kg/min",                    30, 10.42,     330,
+  "300 pmol/kg/min",                  300,  9.92,     287,
+  "3000 pmol/kg/min",                3000,  9.76,     329
+)
+pd_arms$arm <- factor(pd_arms$arm, levels = pd_arms$arm)
+
+t_pd <- sort(unique(c(seq(0, 120, by = 0.25), 30, 32, 33, 35)))
+
+make_pd_arm <- function(i) {
+  a    <- pd_arms[i, ]
+  rate <- a$rate_pmol_kg_min * bw_pd / 1000        # pmol/kg/min -> nmol/min
+  rows <- list(
+    # D-glucose challenge: 5.7 mmol/kg into the per-kilogram `glucose` state.
+    data.frame(id = i, time = 30, amt = 5.7, rate = 0, evid = 1L,
+               cmt = "glucose", dvid = NA_integer_),
+    # Observations sit on an ODE STATE; `dvid = 1` selects the first endpoint.
+    # rxode2 still returns Gc and Ic as columns on these rows.
+    data.frame(id = i, time = t_pd, amt = NA_real_, rate = NA_real_,
+               evid = 0L, cmt = "central", dvid = 1L)
+  )
+  if (rate > 0) {
+    rows <- c(list(data.frame(id = i, time = 0, amt = rate * 120, rate = rate,
+                              evid = 1L, cmt = "central", dvid = NA_integer_)),
+              rows)
+  }
+  out <- dplyr::bind_rows(rows)
+  out$arm <- as.character(a$arm)
+  out$FPG <- a$FPG
+  out$INS_BL <- a$INS_BL
+  dplyr::arrange(out, .data$time, dplyr::desc(.data$evid))
+}
+
+pd_ev <- dplyr::bind_rows(lapply(seq_len(nrow(pd_arms)), make_pd_arm))
+stopifnot(!anyDuplicated(unique(pd_ev[, c("id", "time", "evid")])))
+
+sim_pd <- rxode2::rxSolve(
+  mod_pd, events = pd_ev, keep = "arm", useLinCmt = FALSE
+) |>
+  as.data.frame() |>
+  dplyr::mutate(arm = factor(.data$arm, levels = levels(pd_arms$arm)))
+```
+
+## Simulated drug concentrations (Figure 6, top)
+
+```{r pd-figure-6}
+sim_pd |>
+  dplyr::filter(.data$arm != "saline") |>
+  plot_positive() |>
+  ggplot(aes(time, Cc * 1000, colour = arm)) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  labs(x = "Time (min)", y = "Exendin-4 (pmol/L)", colour = NULL,
+       title = "Exendin-4 during the pharmacodynamic-study infusions",
+       caption = "Replicates Figure 6 (top) of Gao 2012.")
+```
+
+```{r pd-figure-6-check}
+plateau <- sim_pd |>
+  dplyr::filter(.data$arm != "saline") |>
+  dplyr::group_by(.data$arm) |>
+  dplyr::summarise(
+    c30_nM  = .data$Cc[which.min(abs(.data$time - 30))],
+    c120_nM = .data$Cc[which.min(abs(.data$time - 120))],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    plateau_pM = 1000 * .data$c120_nM,
+    pct_of_ss  = 100 * .data$c30_nM / .data$c120_nM,
+    # Read off the Figure 6 (top) plateaus by pixel-calibrating the log axis.
+    fig6_pM    = c(1.4e2, 1.7e3, 2.4e4, 2.7e5)
+  )
+
+plateau |>
+  dplyr::select(arm, plateau_pM, fig6_pM, pct_of_ss) |>
+  dplyr::rename(
+    "Infusion"                     = arm,
+    "Plateau at 120 min (pmol/L)"  = plateau_pM,
+    "Figure 6 plateau (pmol/L)"    = fig6_pM,
+    "% of plateau reached by 30 min" = pct_of_ss
+  ) |>
+  knitr::kable(digits = c(0, 0, 0, 1),
+               caption = "Simulated exendin-4 plateaus against the digitised Figure 6 (top) values.")
+
+# Gao 2012 Results, "Pharmacodynamics": "Exendin-4 almost (>80%) reached
+# steady state after 30 min of infusion, at which time glucose was injected."
+# That is a published claim, checkable directly.
+stopifnot(all(plateau$pct_of_ss > 80))
+
+# Plateaus against the digitised figure. The Figure 6 values are read off a
+# four-decade log axis, so a 25% band is the resolution of the reading, not
+# a slack gate: a 10-fold unit error in the pmol/kg/min -> nmol/min
+# conversion would blow it by an order of magnitude.
+stopifnot(all(abs(plateau$plateau_pM / plateau$fig6_pM - 1) < 0.25))
+```
+
+## Glucose and insulin (Figure 5)
+
+```{r pd-figure-5, fig.height = 4}
+sim_pd |>
+  dplyr::select(time, arm, Gc, Ic) |>
+  dplyr::mutate(Ic = .data$Ic * 1000) |>       # nmol/L -> pmol/L, as plotted
+  tidyr::pivot_longer(c("Gc", "Ic"), names_to = "output", values_to = "value") |>
+  dplyr::mutate(output = dplyr::recode(.data$output,
+                                       Gc = "Glucose (mmol/L)",
+                                       Ic = "Insulin (pmol/L)")) |>
+  ggplot(aes(time, value, colour = arm)) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~output, scales = "free_y") +
+  labs(x = "Time (min)", y = NULL, colour = NULL,
+       title = "Glucose and insulin after the glucose challenge at 30 min",
+       caption = "Replicates Figure 5 of Gao 2012.")
+```
+
+The insulin panel is the point of the whole paper: the peak insulin response
+rises from saline through 30 pmol/kg/min and then **falls again** at
+3000 pmol/kg/min. That non-monotone dose-response is produced entirely by the
+quadratic term of the Adair function, and it is the reason `kadair2` exists.
+
+```{r pd-figure-5-check}
+pd_peaks <- sim_pd |>
+  dplyr::group_by(.data$arm) |>
+  dplyr::summarise(
+    g_base  = .data$Gc[which.min(abs(.data$time - 29))],
+    g_first = .data$Gc[which.min(abs(.data$time - 33))],
+    i_base_pM = 1000 * .data$Ic[which.min(abs(.data$time - 29))],
+    i_peak_pM = 1000 * max(.data$Ic),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    # Peak of the FITTED line in each Figure 5 right-hand panel, digitised.
+    fig5_peak_pM = c(750, 1230, 2000, 1950, 1180)
+  )
+
+pd_peaks |>
+  dplyr::select(arm, i_base_pM, i_peak_pM, fig5_peak_pM, g_base, g_first) |>
+  dplyr::rename(
+    "Arm"                          = arm,
+    "Baseline insulin (pmol/L)"    = i_base_pM,
+    "Peak insulin, model (pmol/L)" = i_peak_pM,
+    "Peak insulin, Fig. 5 (pmol/L)" = fig5_peak_pM,
+    "Baseline glucose (mmol/L)"    = g_base,
+    "Glucose at 33 min (mmol/L)"   = g_first
+  ) |>
+  knitr::kable(digits = c(0, 0, 0, 0, 2, 1),
+               caption = "Simulated glucose and insulin against the digitised Figure 5 fitted curves.")
+
+# The bell shape: the peak insulin response is maximal at one of the two
+# middle arms, NOT at the top dose. This is the paper's central PD finding
+# and it is fully deterministic here.
+peak_arm <- as.character(pd_peaks$arm[which.max(pd_peaks$i_peak_pM)])
+stopifnot(peak_arm %in% c("30 pmol/kg/min", "300 pmol/kg/min"))
+stopifnot(
+  pd_peaks$i_peak_pM[pd_peaks$arm == "3000 pmol/kg/min"] <
+    pd_peaks$i_peak_pM[pd_peaks$arm == "30 pmol/kg/min"],
+  pd_peaks$i_peak_pM[pd_peaks$arm == "saline"] <
+    pd_peaks$i_peak_pM[pd_peaks$arm == "3 pmol/kg/min"]
+)
+
+# Magnitudes against the digitised Figure 5 fitted peaks. Observed spread of
+# the ratio is +8% to +9% across all five arms; the 25% band leaves room for
+# the digitisation while still catching a real magnitude error.
+stopifnot(all(abs(pd_peaks$i_peak_pM / pd_peaks$fig5_peak_pM - 1) < 0.25))
+
+# Baselines must come straight back out of the covariates, unchanged.
+stopifnot(
+  all(abs(pd_peaks$g_base   - pd_arms$FPG)    < 1e-6),
+  all(abs(pd_peaks$i_base_pM - pd_arms$INS_BL) < 1e-6)
+)
+```
+
+## The Adair function and the optimal infusion rate (Figure 8)
+
+`Sd = Smax * C / (k1 + C + k2 * C^2)` peaks where the denominator's
+concentration-normalised form is minimised, i.e. at `C = sqrt(k1/k2)`. The
+paper reports, from the Figure 8 simulations, that "maximal insulin secretion
+with this experimental design would be reached at an infusion rate of
+120 pmol/kg/min". Sweeping the infusion rate through the packaged model tests
+the pharmacokinetic and pharmacodynamic parameter sets jointly, because the
+answer depends on where the *pharmacokinetics* puts the plateau concentration
+relative to where the *pharmacodynamics* wants it.
+
+```{r adair}
+p_pd <- ini_of(mod_pd)
+k1 <- exp(p_pd[["lkadair1"]])
+k2 <- exp(p_pd[["lkadair2"]])
+c_peak_analytic <- sqrt(k1 / k2)
+
+conc_grid <- 10^seq(-2, 3, length.out = 400)
+tibble::tibble(
+  C  = conc_grid,
+  Sd = exp(p_pd[["lsmax"]]) * conc_grid / (k1 + conc_grid + k2 * conc_grid^2)
+) |>
+  ggplot(aes(C, Sd)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = c_peak_analytic, linetype = "dashed") +
+  scale_x_log10() +
+  labs(x = "Free exendin-4 (nmol/L)", y = "Sd",
+       title = "Adair biphasic drug-effect function (Gao 2012 eq. 7)",
+       caption = paste0("Dashed line: sqrt(k1/k2) = ",
+                        round(c_peak_analytic, 2), " nmol/L."))
+```
+
+```{r figure-8}
+# Log grid over the studied range plus a fine grid where the peak sits, so
+# the argmax is resolved to 5 pmol/kg/min.
+rate_grid <- sort(unique(c(
+  round(10^seq(0, log10(3000), length.out = 30), 2),
+  seq(60, 240, by = 5)
+)))
+
+make_sweep_arm <- function(i) {
+  rate <- rate_grid[i] * bw_pd / 1000
+  dplyr::bind_rows(
+    data.frame(id = i, time = 0, amt = rate * 120, rate = rate, evid = 1L,
+               cmt = "central", dvid = NA_integer_),
+    data.frame(id = i, time = 30, amt = 5.7, rate = 0, evid = 1L,
+               cmt = "glucose", dvid = NA_integer_),
+    data.frame(id = i, time = seq(0, 120, by = 0.5), amt = NA_real_,
+               rate = NA_real_, evid = 0L, cmt = "central", dvid = 1L)
+  ) |>
+    dplyr::mutate(FPG = 9.60, INS_BL = 304, rate_grp = rate_grid[i]) |>
+    dplyr::arrange(.data$time, dplyr::desc(.data$evid))
+}
+
+sweep_ev <- dplyr::bind_rows(lapply(seq_along(rate_grid), make_sweep_arm))
+sweep <- rxode2::rxSolve(
+  mod_pd, events = sweep_ev, keep = "rate_grp", useLinCmt = FALSE
+) |>
+  as.data.frame() |>
+  dplyr::group_by(.data$rate_grp) |>
+  dplyr::summarise(
+    peak_insulin_pM = 1000 * max(.data$Ic),
+    c30_nM          = .data$Cc[which.min(abs(.data$time - 30))],
+    .groups = "drop"
+  )
+
+best <- sweep[which.max(sweep$peak_insulin_pM), ]
+
+ggplot(sweep, aes(rate_grp, peak_insulin_pM)) +
+  geom_line(linewidth = 0.7) +
+  geom_vline(xintercept = 120, linetype = "dashed") +
+  scale_x_log10() +
+  labs(x = "Exendin-4 infusion rate (pmol/kg/min)",
+       y = "Peak insulin after the glucose challenge (pmol/L)",
+       title = "Peak insulin response versus infusion rate",
+       caption = "Replicates Figure 8 of Gao 2012. Dashed line: the paper's stated optimum of 120 pmol/kg/min.")
+```
+
+```{r figure-8-check}
+knitr::kable(
+  tibble::tibble(
+    Quantity = c("Infusion rate maximising peak insulin (pmol/kg/min)",
+                 "Exendin-4 at 30 min at that rate (nmol/L)",
+                 "Adair peak sqrt(k1/k2) (nmol/L)"),
+    Model     = c(best$rate_grp, best$c30_nM, c_peak_analytic),
+    Published = c(120, NA, NA)
+  ),
+  digits = 2,
+  caption = "The paper's stated optimal infusion rate, recovered from the packaged model."
+)
+
+# Gao 2012 Discussion: maximal insulin secretion at 120 pmol/kg/min. The
+# model puts it at 130 on this grid. Band chosen to accept the grid
+# resolution and the digitised baselines while still failing on a real error.
+stopifnot(best$rate_grp > 90, best$rate_grp < 170)
+
+# ...and it lands there for the right reason: the concentration at the time of
+# the glucose challenge sits on the Adair peak.
+stopifnot(abs(best$c30_nM / c_peak_analytic - 1) < 0.15)
+```
+
+Recovering 120 pmol/kg/min from an independent sweep -- and confirming that the
+concentration at the moment of the glucose challenge lands on `sqrt(k1/k2)` --
+ties the Table 2 pharmacokinetic parameters and the Table 4 pharmacodynamic
+parameters together in a single number that appears nowhere in either table.
+
+# Assumptions and deviations
+
+- **No between-subject variability anywhere.** All four fits are naive-pooled
+  fits to mean profiles in ADAPT II, so there is no OMEGA block to transcribe
+  and none is invented.
+
+- **Residual error is unreported.** Methods gives the variance model
+  `Vi = (sigma1 + sigma2 * Y)^2` but reports neither `sigma1` nor `sigma2`, for
+  any output. Every `addSd` / `propSd` is therefore `fixed(0)` rather than
+  guessed. Users who want realistic residual noise must supply their own.
+
+- **`ka` is per dose group, with no published functional form.** Table 2 gives
+  three rat values that *decrease* with dose (0.00820, 0.00579, 0.00273 1/min)
+  and Table 3 gives only the range endpoints for monkeys (0.0244-0.0142) and
+  humans (0.00550-0.0148). Each model file carries the lowest-dose value; this
+  vignette overrides `lka` per arm. The monkey middle value (0.0205 1/min at
+  3 ug/kg) is **digitised from Figure 7A**, not printed in any table.
+
+- **`Gb` and `Ib` are digitised, not published.** Methods states only that "the
+  baseline conditions Gb and Ib were fixed as the measured predose values". The
+  per-arm `FPG` and `INS_BL` values used above were read off the pre-challenge
+  plateau of Figure 5 by pixel-calibrating the axis labels: glucose 9.60 /
+  11.53 / 10.42 / 9.92 / 9.76 mmol/L and insulin 304 / 399 / 330 / 287 /
+  329 pmol/L for saline / 3 / 30 / 300 / 3000 pmol/kg/min. The digitisation is
+  cross-checked by the paper's own initial condition, `Glu(0) = Dose/VG + Gb =`
+  5.7/0.208 + 9.60 = 37.0 mmol/L, which matches the plotted post-challenge peak
+  of the saline panel. Similarly, the Figure 5 insulin peaks and the Figure 6
+  plateaus used as comparison targets above are digitised.
+
+- **The glucose-elevation term is rectified at zero.** Equation 6 as printed
+  carries the bare difference `(Glu - Gb)`, but the Discussion states that
+  "when glucose is not higher than basal values, the effect is shut off".
+  Without the rectification, the drug term would turn negative during the
+  post-challenge undershoot and exendin-4 would spuriously *suppress* insulin
+  secretion. The model encodes the Discussion's reading.
+
+- **Equation 8 is deliberately not extracted.** The paper also tested the
+  drug-receptor complex `RC` as the pharmacodynamic driving function, and
+  rejected it on AIC, on the imprecision of its estimates, and on prior
+  Goto-Kakizaki rat evidence. Per the standing convention that a rejected
+  alternative's constants are omitted rather than carried as `fixed(0)`, only
+  equation 7 is implemented.
+
+- **Body weight for the pharmacodynamic arms.** The pharmacodynamic cohort
+  spans 80-420 g while the pharmacokinetic parameters it borrows come from
+  350-370 g animals. The paper does not state which weight it used to convert
+  its pmol/kg/min infusion rates. This vignette uses 0.36 kg, the midpoint of
+  the pharmacokinetic study; the resulting plateaus land within 20% of the
+  Figure 6 values across four decades of concentration, which supports the
+  choice.
+
+- **`Vc` allometry does not reproduce as tightly as `CLc` and `koff`.**
+  Refitting simple allometry from the packaged parameters at the published body
+  weights returns `5.76 * BW^0.659` for `CLc` (printed: `5.83 * BW^0.655`) and
+  `0.0220 * BW^0.666` for `koff` (printed: `0.022 * BW^0.663`), but an exponent
+  near 0.99 for `Vc` against the printed 1.060. The most likely cause is the
+  body weights the Figure 7 regression itself used, which are not stated: the
+  human `Vc` point plotted in Figure 7C reads at roughly 1.3e4 mL against the
+  9.8e3 mL implied by Table 3's 111 mL/kg at the reported 88.5 kg. Nothing in
+  the model files was adjusted to close the gap.
+
+- **The bolus-arm NCA disagrees with Table 1, and that is expected.** Table 1's
+  `CL` and `Vss` are non-compartmental values from observed data first sampled
+  at 5 min, so they miss the rapid early target-mediated decline. The model's
+  clearance is correspondingly 14-35% higher. The paper's own "approximately
+  73% of total clearance at the lowest dose" statement reproduces only against
+  the Table 1 number, confirming the reading. The infusion arm, where the
+  comparison is like-for-like, agrees to within 17%.
+
+- **Monkey and human binding parameters are barely identified.** Table 3
+  reports CV% of 179-2990% on `kon`, `koff` and `kint`. The monkey `KD` of
+  0.12 pM -- five thousand-fold below the rat value -- should not be read as a
+  real affinity. Both model files record this prominently in their
+  `description`.
+
+- **New canonical parameter names.** `lkadair1` / `lkadair2` (the Adair
+  biphasic constants) and the `lsstim_<driver>_<target>` family (linear
+  inter-pool stimulation factors) were ratified for this extraction and are
+  registered in `inst/references/parameter-names.md` with this paper as the
+  founding example.
