@@ -1,0 +1,647 @@
+---
+title: "Atacicept (Pitsiu 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Atacicept (Pitsiu 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Pitsiu_2023_atacicept"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Pitsiu_2023_atacicept"))$description`
+* Article: <https://doi.org/10.1002/psp4.12982> (open access; PMC10431037)
+* Supplement: `PSP4-12-1157-s001.txt` (the final NONMEM control stream) and
+  `PSP4-12-1157-s002.docx` (Table S1 demographics, Figure S1 schematic and
+  differential equations, Figure S2 CIVPCs), retrieved from the EuropePMC
+  supplementary-files endpoint for PMC10431037.
+
+Atacicept is a recombinant soluble fusion protein that blocks both BLyS
+(B lymphocyte stimulator, also called BAFF) and APRIL. Because both targets
+circulate and are bound by drug, atacicept shows target-mediated drug
+disposition; the assay measures *total* atacicept (unbound plus target-bound)
+after an acid-dissociation step, which is why the authors used a
+quasi-steady-state (QSS) approximation rather than a full TMDD model -- the full
+model needs both free and total measurements to be identifiable.
+
+# Population
+
+The model pools three trials: a phase I single-dose study in healthy volunteers
+(EMR700461-022, n = 37, 533 observations), APRIL-SLE (NCT00624338, phase II,
+n = 298, 1728 observations) and ADDRESS II (NCT01972568, phase IIb, n = 205,
+1379 observations) -- 540 subjects and 3640 total-atacicept serum records in
+all. 503 subjects (93.1%) had systemic lupus erythematosus; the remaining 37
+(6.9%) were healthy volunteers.
+
+Baseline characteristics (supplementary Table S1): 89.6% female; median age
+37 years (range 16-75); median body weight 65.0 kg (range 37.0-135); median
+creatinine clearance 110 mL/min (range 39.0-270). Race was 69.1% White, 20.0%
+Asian, 4.1% African/African American and 6.9% Other. Median baseline serum BLyS
+was 1.79 ng/mL (range 0.00-39.4), with 235 of 540 subjects (44%) below the
+1.56 ng/mL assay limit of quantification. Median baseline APRIL was 2011 pg/mL.
+Doses were 25, 75 or 150 mg subcutaneously.
+
+The same information is available programmatically via
+`readModelDb("Pitsiu_2023_atacicept")()$population`.
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Pitsiu_2023_atacicept"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+Every `ini()` entry in `inst/modeldb/specificDrugs/Pitsiu_2023_atacicept.R`
+carries an in-file comment naming its source. They are collected here for review.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL/F) | 0.324 L/h | Table 1, 95% CI 0.298-0.350, RSE 4.10% |
+| `lvc` (Vc/F) | 36.3 L | Table 1, 95% CI 31.9-40.7, RSE 6.14% |
+| `lq` (Q/F) | 0.149 L/h | Table 1, 95% CI 0.114-0.184, RSE 11.9% |
+| `lvp` (Vp/F) | 38.5 L | Table 1, 95% CI 31.0-46.0, RSE 9.90% |
+| `lka` (Ka) | 0.0705 1/h | Table 1, 95% CI 0.0595-0.0815, RSE 7.94% |
+| `lkss` (Kss) | 19.9 ng/mL | Table 1, 95% CI 14.4-25.4, RSE 14.1% |
+| `lkint` (Kint) | 0.000618 1/h | Table 1, 95% CI 0.000572-0.000664, RSE 3.83% |
+| `lkdeg` (Kdeg) | 0.00362 1/h | Table 1, 95% CI 0.00307-0.00417, RSE 7.82% |
+| `lrbase` (Rmax) | 715 ng/mL | Table 1, 95% CI 613-817, RSE 7.27% |
+| `e_wt_cl` | 0.75, fixed | Table 1 "Weight on CL", reported as "0.75 fixed" with no CI or RSE |
+| `e_wt_vc` | 1.00, fixed | Table 1 "Weight on Vc", reported as "1.00 fixed" with no CI or RSE |
+| `e_sblys_rbase` | 0.176 | Table 1 "BLyS on Rmax", 95% CI 0.120-0.232, RSE 16.2% |
+| `etalcl`, `etalvc`, `etalrbase`, `etalvp`, `etalka` | 0.233, 0.284, 0.102, 0.532, 0.182 | Table 1 IIV block (variances; see note below) |
+| `propSdNonSle` | 0.188 | Table 1 "Proportional error no SLE", 95% CI 0.181-0.195 |
+| `propSdSle` | 0.251 | Table 1 "Proportional error SLE", 95% CI 0.247-0.255 |
+| Free-drug QSS root `C` | n/a | Figure S1 equation 1; `$DES` line `CONC=0.5*(...)` |
+| `d/dt(depot)`, `d/dt(central)`, `d/dt(peripheral1)`, `d/dt(total_target)` | n/a | Figure S1 equations 3-6; `$DES` block of the supplementary control stream |
+| `total_target(0) <- rbase`, `ksyn <- rbase * kdeg` | n/a | `$PK` lines `A_0(4)=RMAX` and `KSYN = RMAX*KDEG` |
+| BLyS reference 2.56 ng/mL and BLQ imputation to 0.78 | n/a | `$PK` lines `IF(BLYS.EQ.0) BLYSB = 0.78` and `RMBLYS=((BLYSB/2.56)**THETA(14)) ; median excluding BLQ` |
+| Dose in ug, concentration in ng/mL, volume in L | n/a | `$PK` line `S2=V2; assuming AMT in ug, DV in ng/mL, V in L` |
+
+Two encoding notes that a reviewer should check directly against Table 1:
+
+* **The Omega entries are variances, not SDs.** Table 1's own footnote defines
+  the CV% column as `100*sqrt(omega^2)`, and each printed CV% reproduces from
+  the printed point estimate on that reading (`100*sqrt(0.233) = 48.3`,
+  `100*sqrt(0.284) = 53.3`, `100*sqrt(0.102) = 31.9`, `100*sqrt(0.532) = 72.9`,
+  `100*sqrt(0.182) = 42.7`), matching all five printed CV% values exactly.
+* **The residual terms are SDs on the fraction scale.** `$ERROR` sets `ADD=0.0`
+  and forms `W=SQRT(IPRED**2*PROP**2)`, so `PROP` is the proportional SD
+  directly; Table 1's CV% column is 100 times the point estimate (18.8%, 25.1%).
+
+```{r check-cv}
+# The CV% column of Table 1 reproduces from the variances on the sqrt reading.
+omega2 <- c(CL = 0.233, Vc = 0.284, Rmax = 0.102, Vp = 0.532, Ka = 0.182)
+published_cv <- c(CL = 48.3, Vc = 53.3, Rmax = 31.9, Vp = 72.9, Ka = 42.7)
+stopifnot(max(abs(100 * sqrt(omega2) - published_cv)) < 0.06)
+round(100 * sqrt(omega2), 1)
+```
+
+```{r check-blys-claim}
+# Results, "Effect of covariates": Rmax is 77% higher at the highest observed
+# BLyS (39.4 ng/mL) than at the lowest quantifiable value (1.56 ng/mL, the
+# LLOQ). This is a reference-free ratio, so it pins the exponent by itself.
+stopifnot(abs(100 * ((39.4 / 1.56)^0.176 - 1) - 77) < 0.6)
+round(100 * ((39.4 / 1.56)^0.176 - 1), 1)
+```
+
+# Units
+
+The model inherits the control stream's unit system verbatim: **dose amounts are
+in micrograms**, concentrations in ng/mL, volumes in L, time in hours. Because
+1 ug/L is 1 ng/mL, `amt / vc` lands directly in the concentration unit with no
+scaling factor. A 150 mg dose is therefore `amt = 150000`.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The validation below has two
+parts. The primary gate is **deterministic**: Pitsiu 2023 Tables 2 and 3 are
+typical-subject simulations, so reproducing them requires no cohort, no seed and
+no random draw at all -- every published value is a zero-parameter target. A
+small stochastic cohort follows to exercise the IIV and residual-error structure.
+
+```{r grid}
+tau      <- 168          # weekly dosing interval (h)
+ss_week  <- 52           # see "Which week is 'steady state'?" below
+n_weeks  <- 78           # simulate past week 52 so the sweep below can look further out
+sweep_weeks <- c(24, 52, 78)
+
+# Fine sampling only where a Cmax or an AUCtau is read off; 24 h elsewhere. A
+# coarse OUTPUT grid does not degrade the integration (lsoda adapts between
+# output points) but it does blunt max(Cc), so the windows that feed an NCA are
+# sampled at 0.25 h.
+fine_windows <- unlist(lapply(
+  c(1, sweep_weeks),
+  function(w) seq(tau * (w - 1), tau * w, by = 0.25)
+))
+obs_times <- sort(unique(c(fine_windows, seq(0, tau * n_weeks, by = 24))))
+
+# Table 2 sweeps body weight at the median BLyS; Table 3 sweeps baseline BLyS at
+# the median weight. BLyS is entered as 0 for the "BLOQ" row because that is the
+# source dataset's coding for a below-LLOQ sample -- the model reproduces the
+# paper's imputation to 0.78 ng/mL internally.
+typ_grid <- bind_rows(
+  crossing(panel = "Body weight (Table 2)",
+           WT = c(34, 57, 65, 77, 135), SBLYS = 1.8, dose_mg = c(25, 75, 150)),
+  crossing(panel = "Baseline BLyS (Table 3)",
+           WT = 65, SBLYS = c(0, 1.8, 2.7, 7.1), dose_mg = c(25, 75, 150))
+) |>
+  mutate(
+    id = row_number(),
+    DIS_SLE = 1,   # the simulated subject is an SLE patient; affects residual error only
+    blys_lbl = ifelse(SBLYS == 0, "BLOQ", format(SBLYS, trim = TRUE))
+  )
+
+typ_events <- bind_rows(
+  typ_grid |>
+    expand_grid(time = seq(0, tau * (n_weeks - 1), by = tau)) |>
+    mutate(evid = 1L, cmt = "depot", amt = dose_mg * 1000),  # mg -> ug
+  typ_grid |>
+    expand_grid(time = obs_times) |>
+    mutate(evid = 0L, cmt = "central", amt = NA_real_)
+) |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(unique(typ_events[, c("id", "time", "evid")])))
+nrow(typ_grid)
+```
+
+# Simulation
+
+```{r simulate-typical}
+mod     <- readModelDb("Pitsiu_2023_atacicept")
+mod_typ <- rxode2::zeroRe(mod)
+
+sim_typ <- rxode2::rxSolve(
+  mod_typ, events = typ_events,
+  keep = c("panel", "dose_mg", "WT", "SBLYS", "blys_lbl"),
+  atol = 1e-10, rtol = 1e-8, maxsteps = 200000L
+) |>
+  as.data.frame()
+
+stopifnot(nrow(sim_typ) > 0, !anyNA(sim_typ$Cc), all(sim_typ$Cc >= 0))
+```
+
+## Which week is "steady state"?
+
+Tables 2 and 3 are labelled "at steady-state", but this model does not reach a
+plateau by any of the trial durations: the target pool turns over slowly
+(`Kdeg = 0.00362 1/h`, a half-life of ~8 days) and accumulation continues for
+more than a year. The sweep below shows which nominal week the published numbers
+were actually read at, by scoring every one of the 15 published steady-state
+Cmax values in Table 2 against weeks 24, 52 and 78.
+
+```{r ss-week-sweep}
+published_cmax_ss <- tribble(
+  ~dose_mg, ~WT,  ~cmax,
+  25,  34,  4274,   25,  57,  3471,   25,  65,  3276,   25,  77,  3025,   25, 135, 2191,
+  75,  34,  7265,   75,  57,  5782,   75,  65,  5481,   75,  77,  5125,   75, 135, 4126,
+  150, 34, 11167,  150,  57,  8401,  150,  65,  7862,  150,  77,  7245,  150, 135, 5670
+)
+
+week_cmax <- function(week) {
+  sim_typ |>
+    filter(panel == "Body weight (Table 2)",
+           time >= tau * (week - 1), time <= tau * week) |>
+    group_by(dose_mg, WT) |>
+    summarise(sim_cmax = max(Cc), .groups = "drop") |>
+    mutate(week = week)
+}
+
+ss_sweep <- bind_rows(lapply(sweep_weeks, week_cmax)) |>
+  inner_join(published_cmax_ss, by = c("dose_mg", "WT")) |>
+  mutate(pct = 100 * (sim_cmax / cmax - 1)) |>
+  group_by(week) |>
+  summarise(max_abs_pct = max(abs(pct)),
+            median_abs_pct = median(abs(pct)), .groups = "drop")
+
+ss_sweep |>
+  rename("Nominal week" = week,
+         "Max |% diff|" = max_abs_pct,
+         "Median |% diff|" = median_abs_pct) |>
+  knitr::kable(digits = 2,
+               caption = "Published steady-state Cmax (Table 2, 15 values) scored against three nominal weeks.")
+
+# Week 52 -- the APRIL-SLE treatment duration -- is the unambiguous match, and
+# the profile is still rising at week 78, so the label means "end of treatment",
+# not "asymptote". Deterministic quantities, so a tight bound is appropriate.
+best <- ss_sweep$week[which.min(ss_sweep$max_abs_pct)]
+stopifnot(best == ss_week,
+          min(ss_sweep$max_abs_pct) < 1,
+          ss_sweep$max_abs_pct[ss_sweep$week == 24] > 2)
+```
+
+The week-24 reading is off by up to `r round(ss_sweep$max_abs_pct[ss_sweep$week == 24], 1)`%
+while week 52 matches to within
+`r round(ss_sweep$max_abs_pct[ss_sweep$week == 52], 2)`%, so the
+remaining validation reads the "steady-state" values over the 52nd dosing
+interval.
+
+# Replicate published figures
+
+```{r figure-2, fig.cap = "Replicates Figure 2 of Pitsiu 2023."}
+phase_lbl <- c("Week 1 (after first dose)", "Steady state (week 52)")
+
+profile_data <- function(panel_name) {
+  bind_rows(
+    sim_typ |> filter(panel == panel_name, time <= tau) |>
+      mutate(phase = phase_lbl[1], t_rel = time / 24),
+    sim_typ |> filter(panel == panel_name,
+                      time >= tau * (ss_week - 1), time <= tau * ss_week) |>
+      mutate(phase = phase_lbl[2], t_rel = (time - tau * (ss_week - 1)) / 24)
+  ) |>
+    mutate(phase = factor(phase, levels = phase_lbl),
+           dose = factor(paste(dose_mg, "mg"), levels = paste(c(25, 75, 150), "mg")))
+}
+
+profile_data("Body weight (Table 2)") |>
+  ggplot(aes(t_rel, Cc, colour = factor(WT), group = WT)) +
+  geom_line() +
+  facet_grid(dose ~ phase) +
+  labs(x = "Time since dose (days)", y = "Total atacicept (ng/mL)",
+       colour = "Weight (kg)",
+       title = "Figure 2 - typical profiles across the body-weight range",
+       caption = "Replicates Figure 2 of Pitsiu 2023 (min 34, Q1 57, median 65, Q3 77, max 135 kg).") +
+  theme_bw()
+```
+
+```{r figure-3, fig.cap = "Replicates Figure 3 of Pitsiu 2023."}
+profile_data("Baseline BLyS (Table 3)") |>
+  mutate(blys = factor(blys_lbl, levels = c("BLOQ", "1.8", "2.7", "7.1"))) |>
+  ggplot(aes(t_rel, Cc, colour = blys, group = blys)) +
+  geom_line() +
+  facet_grid(dose ~ phase) +
+  labs(x = "Time since dose (days)", y = "Total atacicept (ng/mL)",
+       colour = "Baseline BLyS\n(ng/mL)",
+       title = "Figure 3 - typical profiles across the baseline-BLyS range",
+       caption = "Replicates Figure 3 of Pitsiu 2023 (min/Q1 BLOQ, median 1.8, Q3 2.7, 97.5th percentile 7.1 ng/mL).") +
+  theme_bw()
+```
+
+# PKNCA validation
+
+Cmax and AUCtau are computed with PKNCA over the first dosing interval and over
+the 52nd, matching the two column blocks of the published tables. Each
+(covariate combination x phase) is presented to PKNCA as one profile whose time
+axis is reset to 0-168 h with a dose at time 0, so a single interval definition
+serves both phases.
+
+```{r pknca-prep}
+phase_windows <- tibble::tibble(
+  phase   = phase_lbl,
+  t_start = c(0, tau * (ss_week - 1))
+)
+
+nca_conc <- phase_windows |>
+  rowwise() |>
+  group_split() |>
+  lapply(function(w) {
+    sim_typ |>
+      filter(time >= w$t_start, time <= w$t_start + tau) |>
+      mutate(phase = w$phase, time = time - w$t_start)
+  }) |>
+  bind_rows() |>
+  filter(!is.na(Cc)) |>
+  mutate(
+    treatment = ifelse(
+      panel == "Body weight (Table 2)",
+      sprintf("%d mg, %g kg, %s", dose_mg, WT, ifelse(phase == phase_lbl[1], "week 1", "steady state")),
+      sprintf("%d mg, BLyS %s, %s", dose_mg, blys_lbl, ifelse(phase == phase_lbl[1], "week 1", "steady state"))
+    )
+  ) |>
+  mutate(id_nca = as.integer(factor(treatment))) |>
+  select(id_nca, time, Cc, treatment, panel, dose_mg, WT, blys_lbl)
+
+# The time-zero row must be PRESENT but must NOT be forced to zero: at steady
+# state, time 0 is the pre-dose trough, not a pre-first-dose zero. The
+# simulation grid puts an observation at both window edges, so assert that
+# rather than inserting a defensive Cc = 0 row (which would be wrong here).
+stopifnot(
+  all(table(nca_conc$treatment, nca_conc$time == 0)[, "TRUE"] == 1),
+  nrow(nca_conc) > 0
+)
+
+nca_dose <- nca_conc |>
+  distinct(id_nca, treatment, dose_mg) |>
+  mutate(time = 0, amt = dose_mg * 1000)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(nca_conc), Cc ~ time | treatment + id_nca,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(nca_dose), amt ~ time | treatment + id_nca,
+                             doseu = "ug")
+
+intervals <- data.frame(start = 0, end = tau, cmax = TRUE, tmax = TRUE, auclast = TRUE)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against Table 2 (body weight)
+
+```{r nca-compare-table2}
+# Pitsiu 2023 Table 2. AUCtau is printed in units of 1e6 ng/mL*h.
+published_t2 <- tribble(
+  ~dose_mg, ~WT,  ~cmax_w1, ~auc_w1, ~cmax_ss, ~auc_ss,
+  25,  34,  1118, 0.152,  4274, 0.640,
+  25,  57,   749, 0.110,  3471, 0.538,
+  25,  65,   670, 0.100,  3276, 0.511,
+  25,  77,   575, 0.086,  3025, 0.475,
+  25, 135,   335, 0.051,  2191, 0.350,
+  75,  34,  2884, 0.315,  7265, 0.982,
+  75,  57,  1910, 0.238,  5782, 0.831,
+  75,  65,  1718, 0.221,  5481, 0.798,
+  75,  77,  1497, 0.199,  5125, 0.758,
+  75, 135,   942, 0.138,  4126, 0.636,
+  150,  34, 5517, 0.547, 11167, 1.399,
+  150,  57, 3607, 0.406,  8401, 1.130,
+  150,  65, 3231, 0.375,  7862, 1.075,
+  150,  77, 2801, 0.337,  7245, 1.010,
+  150, 135, 1737, 0.233,  5670, 0.837
+)
+
+ref_t2 <- bind_rows(
+  published_t2 |> transmute(treatment = sprintf("%d mg, %g kg, week 1", dose_mg, WT),
+                            cmax = cmax_w1, auclast = auc_w1 * 1e6),
+  published_t2 |> transmute(treatment = sprintf("%d mg, %g kg, steady state", dose_mg, WT),
+                            cmax = cmax_ss, auclast = auc_ss * 1e6)
+)
+
+cmp_t2 <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res, reference = ref_t2, by = "treatment",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp_t2, digits = c(0, 0, 1, 1, 2),
+             caption = "Simulated vs. Pitsiu 2023 Table 2 (60 published values). * differs by >20%.")
+```
+
+## Comparison against Table 3 (baseline BLyS)
+
+```{r nca-compare-table3}
+published_t3 <- tribble(
+  ~dose_mg, ~blys_lbl, ~cmax_w1, ~auc_w1, ~cmax_ss, ~auc_ss,
+  25,  "BLOQ",  656, 0.096, 2972, 0.460,
+  25,  "1.8",   670, 0.100, 3276, 0.511,
+  25,  "2.7",   676, 0.101, 3434, 0.538,
+  25,  "7.1",   686, 0.103, 3835, 0.605,
+  75,  "BLOQ", 1689, 0.212, 5039, 0.724,
+  75,  "1.8",  1718, 0.221, 5481, 0.798,
+  75,  "2.7",  1733, 0.225, 5718, 0.838,
+  75,  "7.1",  1774, 0.238, 6352, 0.945,
+  150, "BLOQ", 3202, 0.365, 7388, 0.995,
+  150, "1.8",  3231, 0.375, 7862, 1.075,
+  150, "2.7",  3247, 0.380, 8118, 1.118,
+  150, "7.1",  3289, 0.394, 8806, 1.233
+)
+
+ref_t3 <- bind_rows(
+  published_t3 |> transmute(treatment = sprintf("%d mg, BLyS %s, week 1", dose_mg, blys_lbl),
+                            cmax = cmax_w1, auclast = auc_w1 * 1e6),
+  published_t3 |> transmute(treatment = sprintf("%d mg, BLyS %s, steady state", dose_mg, blys_lbl),
+                            cmax = cmax_ss, auclast = auc_ss * 1e6)
+)
+
+cmp_t3 <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res, reference = ref_t3, by = "treatment",
+  units = c(cmax = "ng/mL", auclast = "ng*h/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp_t3, digits = c(0, 0, 1, 1, 2),
+             caption = "Simulated vs. Pitsiu 2023 Table 3 (48 published values). * differs by >20%.")
+```
+
+## Gate
+
+```{r nca-gate}
+# ncaComparisonTable() returns a FORMATTED "% diff" column (character, carrying
+# the "*" tolerance flag), which is right for display but cannot be tested
+# numerically. Recompute the differences from the PKNCA results so the gate
+# fails on the numbers rather than on a formatting choice.
+sim_long <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  select(treatment, PPTESTCD, PPORRES)
+
+gate <- bind_rows(ref_t2, ref_t3) |>
+  pivot_longer(c(cmax, auclast), names_to = "PPTESTCD", values_to = "Reference") |>
+  inner_join(sim_long, by = c("treatment", "PPTESTCD")) |>
+  mutate(pct = 100 * (PPORRES / Reference - 1))
+
+all_pct <- gate$pct
+stopifnot(length(all_pct) == 108, !anyNA(all_pct))
+
+# These 108 comparisons are DETERMINISTIC -- typical-value solves against
+# printed typical-value predictions, with no cohort and no random draw, so the
+# only error sources are the paper's rounding and the integrator. A tight bound
+# is therefore correct here and is NOT the pattern-12 hazard (which concerns
+# quantities read off a simulated cohort). Realised max 0.46%; 2% leaves room
+# for solver differences across rxode2 builds while still going red on any
+# mis-transcribed parameter, dose or unit, all of which move these values by
+# tens of percent.
+stopifnot(max(abs(all_pct)) < 2)
+c(n_comparisons = length(all_pct),
+  max_abs_pct = round(max(abs(all_pct)), 3),
+  median_abs_pct = round(median(abs(all_pct)), 3))
+```
+
+All 108 published values -- 60 from Table 2 and 48 from Table 3, spanning
+Cmax and AUCtau, three dose levels, both the first and the 52nd dosing
+interval, five body weights and four baseline-BLyS levels -- are reproduced to
+better than 0.5%.
+
+The BLQ rows of Table 3 are load-bearing evidence for the imputation rule:
+simulating them with the LLOQ (1.56 ng/mL) instead of the control stream's
+LLOQ/2 (0.78 ng/mL) overpredicts steady-state Cmax by up to 9%, so the
+reproduction above confirms 0.78 is what the authors used.
+
+```{r covariate-magnitude-claims}
+# Abstract and Discussion: the steady-state AUCtau difference versus the median
+# is 20-32% for body weight and 7-18% for BLyS. Computed from the SIMULATED
+# AUCtau values (not the transcribed table), so this tests the model, the
+# transcription and the paper's prose claim together. Still deterministic --
+# typical-value solves -- so an exact bound is appropriate.
+sim_auc <- function(key) {
+  v <- gate$PPORRES[gate$treatment == key & gate$PPTESTCD == "auclast"]
+  if (length(v) != 1L) stop("no unique simulated AUCtau for ", key)
+  v
+}
+wt_pct <- vapply(c(34, 57, 77, 135), function(w) {
+  100 * abs(sim_auc(sprintf("150 mg, %g kg, steady state", w)) /
+              sim_auc("150 mg, 65 kg, steady state") - 1)
+}, numeric(1))
+blys_pct <- vapply(c("BLOQ", "2.7", "7.1"), function(b) {
+  100 * abs(sim_auc(sprintf("75 mg, BLyS %s, steady state", b)) /
+              sim_auc("75 mg, BLyS 1.8, steady state") - 1)
+}, numeric(1))
+stopifnot(round(max(wt_pct)) == 30, round(max(blys_pct)) == 18)
+list(weight_pct = round(wt_pct, 1), blys_pct = round(blys_pct, 1))
+```
+
+The largest weight effect at 150 mg is 30% and the largest BLyS effect at 75 mg
+is 18%, consistent with the paper's stated 20-32% and 7-18% ranges (which pool
+across all three dose levels).
+
+# Stochastic cohort
+
+The gate above is deterministic. This section exercises the IIV and the
+SLE-stratified residual error on a modest cohort, 200 subjects per dose arm over
+the 24-week ADDRESS II treatment period.
+
+```{r stochastic-cohort}
+# rxode2's RNG streams are partitioned per solver thread, so this cohort is
+# reproducible on a given machine and different on a machine with a different
+# thread count. Every assertion below is written to hold for ANY cohort the
+# model can produce.
+rxode2::rxSetSeed(20230811)
+set.seed(20230811)
+
+n_per_arm <- 200
+sto_weeks <- 24
+sto_times <- sort(unique(c(
+  seq(0, tau, by = 4),
+  seq(0, tau * sto_weeks, by = tau),
+  seq(tau * (sto_weeks - 1), tau * sto_weeks, by = 4)
+)))
+
+make_arm <- function(dose_mg, id_offset) {
+  subj <- tibble(
+    id = id_offset + seq_len(n_per_arm),
+    # Weight: lognormal matched to Table S1 (median 65.0 kg), truncated to the
+    # observed 37-135 kg range. BLyS: 44% BLQ (entered as 0, imputed by the
+    # model), the remainder lognormal about the 2.56 ng/mL quantifiable median.
+    WT = pmin(pmax(rlnorm(n_per_arm, log(65), 0.24), 37), 135),
+    SBLYS = ifelse(runif(n_per_arm) < 0.44, 0,
+                   pmin(rlnorm(n_per_arm, log(2.56), 0.55), 39.4)),
+    DIS_SLE = 1,
+    dose_mg = dose_mg,
+    arm = paste(dose_mg, "mg")
+  )
+  bind_rows(
+    subj |> expand_grid(time = seq(0, tau * (sto_weeks - 1), by = tau)) |>
+      mutate(evid = 1L, cmt = "depot", amt = dose_mg * 1000),
+    subj |> expand_grid(time = sto_times) |>
+      mutate(evid = 0L, cmt = "central", amt = NA_real_)
+  ) |>
+    arrange(id, time, desc(evid))
+}
+
+sto_events <- bind_rows(
+  make_arm(25,  0L),
+  make_arm(75,  1000L),
+  make_arm(150, 2000L)
+) |> as.data.frame()
+
+stopifnot(!anyDuplicated(unique(sto_events[, c("id", "time", "evid")])))
+
+# rxSolve on an rxUi is quadratic in the number of subjects in ONE call, so
+# solve one arm at a time and bind the results.
+sim_sto <- bind_rows(lapply(split(sto_events, sto_events$arm), function(p) {
+  as.data.frame(rxode2::rxSolve(
+    mod, events = p, keep = c("arm", "dose_mg", "WT", "SBLYS"),
+    atol = 1e-8, rtol = 1e-6, maxsteps = 200000L
+  ))
+}))
+
+stopifnot(nrow(sim_sto) > 0, !anyNA(sim_sto$Cc), all(sim_sto$Cc >= 0))
+length(unique(sim_sto$id))
+```
+
+```{r figure-1, fig.cap = "Central tendency and variability by dose, in the style of Figure 1 of Pitsiu 2023."}
+sim_sto |>
+  mutate(arm = factor(arm, levels = paste(c(25, 75, 150), "mg"))) |>
+  group_by(arm, time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+            .groups = "drop") |>
+  ggplot(aes(time / (24 * 7), Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~arm) +
+  scale_y_log10() +
+  labs(x = "Time (weeks)", y = "Total atacicept (ng/mL)",
+       title = "Simulated median and 5th-95th percentile by dose",
+       caption = paste("Style of Figure 1 of Pitsiu 2023 (CI visual predictive check).",
+                       n_per_arm, "subjects per arm over 24 weeks.")) +
+  theme_bw()
+```
+
+```{r stochastic-checks}
+# The 5th-95th spread of a lognormal eta on CL with variance 0.233 is roughly
+# a 3-fold ratio; assert a magnitude, not an exact value.
+spread <- sim_sto |>
+  filter(time == tau * (sto_weeks - 1)) |>
+  group_by(arm) |>
+  summarise(ratio = quantile(Cc, 0.95) / quantile(Cc, 0.05), .groups = "drop")
+
+# Dose proportionality is SUB-proportional here because target binding
+# saturates: doubling the dose more than doubles total drug at low doses.
+prop <- sim_sto |>
+  filter(time == tau * (sto_weeks - 1)) |>
+  group_by(dose_mg) |>
+  summarise(med = median(Cc), .groups = "drop") |>
+  arrange(dose_mg)
+
+# Trend claims and magnitude bounds only -- both hold for any cohort draw.
+stopifnot(
+  all(spread$ratio > 1.5), all(spread$ratio < 25),
+  prop$med[3] > prop$med[1],                       # 150 mg above 25 mg
+  prop$med[3] / prop$med[1] < 6 * 1.5              # not supra-proportional beyond 6x
+)
+list(spread = spread, median_trough = prop)
+```
+
+# Assumptions and deviations
+
+* **"Steady state" in Tables 2 and 3 means week 52, not an asymptote.** The
+  label is not defined in the paper. Scoring all 15 published steady-state Cmax
+  values against candidate weeks (section "Which week is 'steady state'?")
+  identifies week 52 -- the APRIL-SLE treatment duration -- to within 0.5%,
+  against up to 4.2% at week 24. Concentrations are still rising at week 78, so
+  a reader who simulates "to steady state" in the asymptotic sense will not
+  reproduce the tables.
+* **BLyS BLQ imputation is taken from the supplementary control stream, not the
+  main text.** `$PK` sets `BLYSB = 0.78` (LLOQ/2) when `BLYS` is 0. The main
+  text instead compares Rmax at 1.56 ng/mL (the LLOQ) as its "lowest BLyS
+  value", which is a different statement; using 1.56 for the BLQ rows of
+  Table 3 fails to reproduce them by up to 9%. The model implements the control
+  stream's 0.78, which reproduces the table.
+* **The BLyS reference of 2.56 ng/mL is the median EXCLUDING BLQ subjects.**
+  Table S1's overall median is 1.79 ng/mL. The control-stream comment
+  (`; median excluding BLQ`) settles it, and the reproduction confirms it.
+* **Dose amounts are in micrograms**, inherited from the control stream's
+  `S2=V2; assuming AMT in ug, DV in ng/mL, V in L`. This is unusual for the
+  library and is the most likely source of a 1000-fold error for a user who
+  assumes mg.
+* **`DIS_SLE` affects residual error only.** The paper tested SLE status as a
+  structural covariate and on relative bioavailability and found no PK
+  difference, so the flag does not enter the structural model. It must still be
+  supplied when simulating because `model()` references it when assembling
+  `propSd`.
+* **Q carries no IIV.** The control stream writes `Q = THETA(3)` with no
+  `EXP(ETA(...))`; the final model has IIV on CL, Vc, Vp, Ka and Rmax only.
+* **Covariates screened but not retained** (age, creatinine clearance, baseline
+  APRIL, sex, race, dose, and SLE-vs-healthy as a structural effect) are
+  recorded in the model file's `covariatesDataExcluded` metadata rather than
+  `covariateData`, so their provenance is preserved without implying they are
+  used. `SAPRIL` there is a documentation-only key and is deliberately not
+  registered as a canonical covariate name.
+* **The virtual cohort's covariate distributions are assumed**, not published.
+  Table S1 reports medians and ranges but not distributional forms; body weight
+  is drawn lognormal about the 65.0 kg median and BLyS as a 44%-BLQ mixture
+  about the 2.56 ng/mL quantifiable median, both truncated to the observed
+  ranges. The deterministic gate does not depend on these choices.
+* **No errata.** A search of the journal's correction feed and PubMed for
+  doi:10.1002/psp4.12982 found no erratum or corrigendum.
+* All parameter values come from the paper's Table 1, its supplementary
+  Table S1, or the supplementary NONMEM control stream. No value was digitised
+  from a figure, obtained by correspondence, or carried from another model.

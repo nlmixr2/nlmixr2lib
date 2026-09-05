@@ -314,6 +314,8 @@ navbar:
         href: articles/Kotani_2022_astegolimab.html
       - text: "Asundexian (Yassen 2025)"
         href: articles/Yassen_2025_asundexian.html
+      - text: "Atacicept (Pitsiu 2023)"
+        href: articles/Pitsiu_2023_atacicept.html
       - text: "Atazanavir (Colombo 2006)"
         href: articles/Colombo_2006_atazanavir.html
       - text: "Atazanavir (Dickinson 2009)"
@@ -5478,6 +5480,7 @@ articles:
   - articles/PillayFuentesLorente_2024_albendazole
   - articles/PiresdeMello_2018_zika_FAV_HFIM
   - articles/PiresdeMello_2018_zika_FAV_IFN_RBV
+  - articles/Pitsiu_2023_atacicept
   - articles/Plachouras_2009_colistin
   - articles/Plan_2012_bmd_fracture
   - articles/Plan_2012_pain
