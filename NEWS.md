@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Huh 2024 ritlecitinib ([doi:10.1007/s40262-024-01347-6](https://doi.org/10.1007/s40262-024-01347-6)) -- adolescents and adults with alopecia areata.
+- Add Abou-Auda 2024 gentamicin ([doi:10.1016/j.jsps.2024.102060](https://doi.org/10.1016/j.jsps.2024.102060)) -- children aged 1-14 years with and without acute lymphoblastic leukemia.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
