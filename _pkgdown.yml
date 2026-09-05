@@ -270,6 +270,8 @@ navbar:
         href: articles/Knights_2015_aripiprazole.html
       - text: "Aripiprazole (Koue 2007)"
         href: articles/Koue_2007_aripiprazole.html
+      - text: "Aripiprazole (Zhang 2024)"
+        href: articles/Zhang_2024_aripiprazole.html
       - text: "Armodafinil (Darwish 2012)"
         href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
       - text: "Artemether (Hietala 2010)"
@@ -6007,6 +6009,7 @@ articles:
   - articles/Zhang_2023_brazikumab
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_XZP5610
+  - articles/Zhang_2024_aripiprazole
   - articles/Zhang_2024_f53b_pbpk
   - articles/Zhang_2024_nedosiran
   - articles/Zhang_2024_sertraline
