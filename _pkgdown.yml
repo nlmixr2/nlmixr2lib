@@ -4120,6 +4120,8 @@ navbar:
         href: articles/Savic_2010_warfarin.html
       - text: "Warfarin (Xia 2024)"
         href: articles/Xia_2024_warfarin.html
+      - text: "Warfarin node (Bram 2026)"
+        href: articles/Bram_2026_node_lasso_model_development.html
       - text: "Warfarin qsp (Falkenhagen 2023)"
         href: articles/Falkenhagen_2023_warfarin_qsp.html
       - text: "Warfarin r (Hamberg 2007)"
@@ -4476,6 +4478,7 @@ articles:
   - articles/Boucher_2018_naproxen_mbma
   - articles/Boulanger_2025_trimethoprim_sulfonamides_pig
   - articles/Brain_2008_ifosfamide
+  - articles/Bram_2026_node_lasso_model_development
   - articles/Braniff_2025_lorlatinib_qsp
   - articles/Brekkan_2016_factorIX
   - articles/Brill_2014_midazolam

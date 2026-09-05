@@ -2,7 +2,7 @@
 
 # development version
 
-- Add McKnite 2026 midazolam CRRT circuit ([doi:10.1002/psp4.70240](https://doi.org/10.1002/psp4.70240)) -- ex vivo extracorporeal continuous renal replacement therapy circuit.
+- Add Braem 2026 warfarin neural ODE and bi-exponential models ([doi:10.1002/psp4.70285](https://doi.org/10.1002/psp4.70285)) — adults on single-dose oral warfarin, plus a simulated two-compartment dataset.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
