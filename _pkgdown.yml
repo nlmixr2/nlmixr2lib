@@ -4314,6 +4314,8 @@ navbar:
         href: articles/Yamada_2025_zolbetuximab.html
       - text: "ZoledronicAcid (Mori 2018)"
         href: articles/Mori_2018_zoledronicAcid.html
+      - text: "ZoledronicAcid mbma (Wang 2023)"
+        href: articles/Wang_2023_zoledronicAcid.html
       - text: "Zolpidem (Kim 2026)"
         href: articles/Kim_2026_zolpidem.html
       - text: "Zolpidem crt (Kim 2026)"
@@ -6060,7 +6062,7 @@ articles:
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
-  - articles/Wang_2023_teicoplanin
+  - articles/Wang_2023_zoledronicAcid
   - articles/Wang_2024_amphenmulin
   - articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp
   - articles/Wang_2024_evorpacept_qsp
