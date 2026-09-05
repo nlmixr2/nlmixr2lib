@@ -381,10 +381,10 @@ Nakashima_2015_valproic_acid <- function() {
     # note the bootstrap medians in Table 2 are much larger (8.82e-4,
     # 4.28e-4, 6.69e-5), which is the usual signature of a variance
     # pinned against its lower bound.
-    etalka   ~ fixed(7.77e-7)   # Ogusu 2014 Table 2 "omega^2 on Ka"
-    etalvc   ~ fixed(1.83e-7)   # Ogusu 2014 Table 2 "omega^2 on Vd/F"
-    etalcl   ~ fixed(0.0587)    # Ogusu 2014 Table 2 "omega^2 on CL/F"
-    etaltlag ~ fixed(4.48e-9)   # Ogusu 2014 Table 2 "omega^2 on ALAG"
+    etalka   ~ fixed(7.77e-7)   # Ogusu 2014 Table 2 'omega^2 on Ka'
+    etalvc   ~ fixed(1.83e-7)   # Ogusu 2014 Table 2 'omega^2 on Vd/F'
+    etalcl   ~ fixed(0.0587)    # Ogusu 2014 Table 2 'omega^2 on CL/F'
+    etaltlag ~ fixed(4.48e-9)   # Ogusu 2014 Table 2 'omega^2 on ALAG'
 
     # ==================================================================
     # PD LAYER -- Nakashima 2015 Eq 6, values from Table 3
@@ -434,7 +434,7 @@ Nakashima_2015_valproic_acid <- function() {
     # 12.9 and the final model 11.3, "a 12.4% decrease", and
     # (12.9 - 11.3)/12.9 = 12.4% confirms the two numbers are the same
     # quantity on the same scale.
-    etalogit_ref ~ 11.3         # Nakashima 2015 Table 3, "Individual random effect" 11.3 (SE 1.37); Results narrative cross-check 12.9 -> 11.3 = -12.4%
+    etalogit_ref ~ 11.3         # Nakashima 2015 Table 3, 'Individual random effect' 11.3 (SE 1.37); Results narrative cross-check 12.9 -> 11.3 = -12.4%
 
     # No residual error is reported or estimable: the source likelihood is
     # Bernoulli on a binary per-patient outcome (NONMEM LAPLACIAN), so

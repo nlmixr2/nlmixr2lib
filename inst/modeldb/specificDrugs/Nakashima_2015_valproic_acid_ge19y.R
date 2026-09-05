@@ -320,10 +320,10 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     e_pht_cl  <- fixed(1.43)    ; label("Fold-change in apparent clearance with concomitant phenytoin, from Ogusu 2014 (unitless)")       # Ogusu 2014 Eq 7 and Table 2 "PHT on CL/F"
     e_clb_cl  <- fixed(0.906)   ; label("Fold-change in apparent clearance with concomitant clobazam, from Ogusu 2014 (unitless)")        # Ogusu 2014 Eq 7 and Table 2 "CLB on CL/F"
 
-    etalka   ~ fixed(7.77e-7)   # Ogusu 2014 Table 2 "omega^2 on Ka"
-    etalvc   ~ fixed(1.83e-7)   # Ogusu 2014 Table 2 "omega^2 on Vd/F"
-    etalcl   ~ fixed(0.0587)    # Ogusu 2014 Table 2 "omega^2 on CL/F"
-    etaltlag ~ fixed(4.48e-9)   # Ogusu 2014 Table 2 "omega^2 on ALAG"
+    etalka   ~ fixed(7.77e-7)   # Ogusu 2014 Table 2 'omega^2 on Ka'
+    etalvc   ~ fixed(1.83e-7)   # Ogusu 2014 Table 2 'omega^2 on Vd/F'
+    etalcl   ~ fixed(0.0587)    # Ogusu 2014 Table 2 'omega^2 on CL/F'
+    etaltlag ~ fixed(4.48e-9)   # Ogusu 2014 Table 2 'omega^2 on ALAG'
 
     # ==================================================================
     # PD LAYER -- Nakashima 2015 Eq 8 (subjects aged 19 years or older)
@@ -380,7 +380,7 @@ Nakashima_2015_valproic_acid_ge19y <- function() {
     # logit scale, consistent with the all-age model (see
     # Nakashima_2015_valproic_acid.R for the 12.9 -> 11.3 = -12.4%
     # arithmetic that fixes the scale).
-    etalogit_ref ~ 9.71         # Nakashima 2015 Results: "The variations among individuals of the PK-PD models of the patients aged 18 years or younger and those aged 19 years or older were 11.5 and 9.71, respectively."
+    etalogit_ref ~ 9.71         # Nakashima 2015 Results: 'The variations among individuals of the PK-PD models of the patients aged 18 years or younger and those aged 19 years or older were 11.5 and 9.71, respectively.'
 
     # No residual error is reported or estimable: the source likelihood is
     # Bernoulli on a binary per-patient outcome. See

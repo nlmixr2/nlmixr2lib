@@ -149,8 +149,25 @@
   # the paired `erythrocytes[0-9]+` * `mch[0-9]+` product, used when a
   # paper carries hemoglobin per age bin directly rather than a cell count
   # and a per-cell content.
-  compartmentRegex =
-    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum|hb)[0-9]+$",
+  # The optional `_slow` / `_fast` qualifier registers the dual-rate
+  # effect-delay cascade families (`effect_slow<n>` / `effect_fast<n>`):
+  # two parallel first-order lag chains of different speed whose terminal
+  # members are summed to form one PD driver. It is a qualifier rather
+  # than a separate prefix because both chains are the same kind of state,
+  # distinguished only by their rate constant. Founding example
+  # Dings_2026_cafedrine_theodrenaline_ephedrine.
+  #
+  # NOTE TO FUTURE MERGES: this one line has now been silently NARROWED
+  # twice by `-X theirs`, because a branch cut from an older main carries
+  # a shorter prefix list and wins the conflict. Both times the loss was
+  # invisible to the register verifiers and caught only by the
+  # enumerating test in test-checkModelConventions.R. When resolving a
+  # conflict here, take the UNION of every prefix and every qualifier;
+  # never take one side wholesale.
+  compartmentRegex = paste0(
+    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|",
+    "moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
+  ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
