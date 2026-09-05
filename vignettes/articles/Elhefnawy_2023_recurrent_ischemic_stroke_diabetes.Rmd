@@ -1,0 +1,629 @@
+---
+title: "Recurrent ischemic stroke with and without diabetes (Elhefnawy 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Recurrent ischemic stroke with and without diabetes (Elhefnawy 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: Elhefnawy M, Noor Harun S, Leykhim T, Tangiisuran B, Zainal H,
+  Looi I, Sidek N, Abdul Aziz Z, Sheikh Ghadzi SM. A parametric time-to-event
+  modelling of recurrent ischemic stroke after index stroke among patients with
+  and without diabetes mellitus: implementation of temporal validation of the
+  model. Cureus. 2023;15(12):e50794. doi:10.7759/cureus.50794.
+* Article: <https://doi.org/10.7759/cureus.50794> (Open Access, CC BY 4.0)
+* Model files:
+  `modellib("Elhefnawy_2023_recurrent_ischemic_stroke_dm")` and
+  `modellib("Elhefnawy_2023_recurrent_ischemic_stroke_nondm")`
+
+The paper develops **two** parametric time-to-event (TTE) models of recurrent
+ischemic stroke after a first (index) ischemic stroke, one in each stratum of
+the National Neurology Registry of Malaysia split by diabetes status. The two
+models share a structure but have separate estimates and separate retained
+covariates, so they are packaged as two model files and documented here in one
+vignette.
+
+Neither is a PK or PK-PD model: there is no drug exposure term. Secondary
+prevention enters the non-diabetic model only as a binary "antihyperlipidemic
+prescribed" indicator. Time is in years throughout.
+
+**Read the Errata section before using either model.** The published
+baseline-hazard scale does not reproduce the paper's own event counts, and the
+paper's own clinical calculator does not reproduce its own parameters. The
+arithmetic is set out in full below. Everything in these files is transcribed
+exactly as published; nothing has been tuned.
+
+```{r model}
+mod_dm <- modellib("Elhefnawy_2023_recurrent_ischemic_stroke_dm")
+mod_nd <- modellib("Elhefnawy_2023_recurrent_ischemic_stroke_nondm")
+mod_dm
+```
+
+# Population
+
+National Neurology Registry (NNEUR) of Malaysia, a hospital-based registry
+covering 13 states. Patients with a first ischemic stroke registered between
+August 2009 and December 2016 were extracted and stratified by diabetes status.
+The endpoint is any subsequent ischemic stroke recorded in the registry;
+follow-up was censored at the last recorded observation, to a maximum of 7.37
+years. Diabetes was identified from physician diagnosis, antidiabetic
+medication history, the electronic record, or antidiabetic medications
+prescribed at discharge (Methods, "Data collection").
+
+The diabetic stratum was additionally validated **temporally** on a separate
+NNEUR cohort of 1,262 diabetic patients with index strokes registered January
+2017 to December 2020 (Methods, "Temporal validation"; Figure 4). No parameter
+estimates are reported for that cohort, so it is described but not encoded.
+
+```{r population}
+pop <- data.frame(
+  Quantity = c(
+    "Patients", "Recurrent ischemic strokes", "Recurrence (%)",
+    "Maximum follow-up (years)",
+    "Hypertension (%)", "Hyperlipidemia (%)", "Ischemic heart disease (%)",
+    "Atrial fibrillation (%)", "Hyperuricemia (%)",
+    "Current smoker (%)", "Female (%)",
+    "Antihyperlipidemic prescribed (%)", "Antiplatelet prescribed (%)"
+  ),
+  `Diabetic stratum` = c(
+    3493, 195, round(100 * 195 / 3493, 2), 7.37,
+    round(100 * (180 + 2863) / 3493, 2), round(100 * (96 + 1004) / 3493, 2),
+    round(100 * (52 + 420) / 3493, 2), round(100 * (4 + 87) / 3493, 2),
+    round(100 * (10 + 121) / 3493, 2), round(100 * (113 + 1630) / 3493, 2),
+    round(100 * (101 + 1647) / 3493, 2), round(100 * (167 + 2926) / 3493, 2),
+    round(100 * (167 + 2978) / 3493, 2)
+  ),
+  `Non-diabetic stratum` = c(
+    4204, 138, round(100 * 138 / 4204, 2), 7.37,
+    round(100 * (108 + 2355) / 4204, 2), round(100 * (63 + 865) / 4204, 2),
+    round(100 * (25 + 382) / 4204, 2), round(100 * (5 + 172) / 4204, 2),
+    round(100 * (6 + 97) / 4204, 2), round(100 * (89 + 1917) / 4204, 2),
+    round(100 * (53 + 1607) / 4204, 2), round(100 * (120 + 3682) / 4204, 2),
+    round(100 * (118 + 3635) / 4204, 2)
+  ),
+  check.names = FALSE
+)
+knitr::kable(pop, caption = "Cohort composition, computed from the recurrent and non-recurrent counts of Elhefnawy 2023 Table 1.")
+```
+
+The paper's own recurrence percentages disagree with its counts in the diabetic
+stratum: the Abstract prints 5.82%, the Results section prints 5.55%, and
+195 / 3,493 is 5.58%. The counts are used throughout this vignette.
+
+```{r population-check}
+stopifnot(
+  abs(100 * 195 / 3493 - 5.58) < 0.01,
+  abs(100 * 138 / 4204 - 3.28) < 0.01
+)
+```
+
+# Source trace
+
+```{r source-trace}
+trace <- tibble::tribble(
+  ~Item, ~`Source location`, ~Value,
+  "S(t) = exp(-integral h)", "Equation 1 (Methods, 'Base Model Development')", "structure",
+  "h(t) = h0 * exp(theta_y * t)", "Table 2 row 4 ('After inserting different time intervals', Gompertz)", "structure",
+  "h0 = theta1 if t < 0.5 y, theta3 if t >= 0.5 y", "Table 2 footnote; restated in Methods", "structure",
+  "theta_y = theta2 if t < 3 y, theta4 if t >= 3 y", "Table 2 footnote; restated in Methods", "structure",
+  "h = h0 * exp(beta_t*t + beta_cov*(cov))", "Equation 5, printed inline on page 2 of the PDF", "structure",
+  "theta1 (DM)", "Table 3 row 1, DM column", "0.356 /y (RSE 13.69%)",
+  "theta3 (DM)", "Table 3 row 2, DM column", "0.0023 /y (RSE 17.01%)",
+  "theta2 (DM)", "Table 3 row 3, DM column", "1.58 /y (RSE 5.98%)",
+  "theta4 (DM)", "Table 3 row 4, DM column", "0.242 /y (RSE 22.36%)",
+  "IHD effect (DM)", "Table 3 row 5, DM column", "0.876 (aHR 2.40, 1.79-3.20)",
+  "HPLD effect (DM)", "Table 3 row 6, DM column", "0.633 (aHR 1.88, 1.44-2.45)",
+  "theta1 (non-DM)", "Table 3 row 1, non-DM column", "0.253 /y (RSE 24.38%)",
+  "theta3 (non-DM)", "Table 3 row 2, non-DM column", "0.0018 /y (RSE 23.09%)",
+  "theta2 (non-DM)", "Table 3 row 3, non-DM column", "1.7 /y (RSE 6.37%)",
+  "theta4 (non-DM)", "Table 3 row 4, non-DM column", "0.213 /y (RSE 33.07%)",
+  "HPLD effect (non-DM)", "Table 3 row 6, non-DM column", "1.03 (aHR 2.801, 2.00-3.90)",
+  "HTN effect (non-DM)", "Table 3 row 7, non-DM column", "0.789 (aHR 2.201, 1.53-3.14)",
+  "Antihyperlipidemic effect (non-DM)", "Table 3 row 8, non-DM column", "-0.835 (aHR 0.433, 0.65-0.28)",
+  "Breakpoints 0.5 y and 3 y", "Table 2 footnote; not estimated (Table 2 counts 4 parameters)", "fixed",
+  "Between-subject variability", "not reported anywhere in the paper", "absent",
+  "Residual error", "n/a -- survival likelihood, LAPLACE (Methods, 'Model development')", "placeholder"
+)
+knitr::kable(trace, caption = "Provenance of every structural equation and every ini() value.")
+```
+
+# Structural behaviour
+
+## Baseline hazard: replicating Figure 1
+
+Figure 1 of Elhefnawy 2023 contrasts the baseline hazard during and after the
+first six months in each stratum. The Abstract and Results give the numbers
+directly: 0.356 and 0.253 within the first six months, 0.0023 and 0.0018
+afterwards.
+
+```{r figure1}
+baseline <- tibble::tribble(
+  ~Stratum,        ~Interval,          ~`Baseline hazard (1/year)`,
+  "Diabetes",      "< 6 months",       0.356,
+  "Diabetes",      ">= 6 months",      0.0023,
+  "No diabetes",   "< 6 months",       0.253,
+  "No diabetes",   ">= 6 months",      0.0018
+)
+ggplot(baseline, aes(Interval, `Baseline hazard (1/year)`, fill = Stratum)) +
+  geom_col(position = position_dodge()) +
+  scale_y_log10() +
+  labs(
+    title = "Replicates Figure 1 of Elhefnawy 2023",
+    subtitle = "Baseline hazard scale, log axis",
+    y = "Baseline hazard (1/year, log scale)"
+  ) +
+  theme_bw()
+```
+
+## The hazard trajectory and its two discontinuities
+
+The scale switches at 0.5 year and the shape switches independently at 3 years,
+so the hazard has **three** regimes and **two** downward jumps. The
+`hazard_ris` output of each model makes them visible.
+
+```{r hazard-traj}
+grid <- seq(0, 7.37, length.out = 1475)
+
+solve_pattern <- function(mod, covs, times = grid) {
+  d <- as.data.frame(rxode2::et(times))
+  for (nm in names(covs)) d[[nm]] <- covs[[nm]]
+  rxode2::rxSolve(mod, d, returnType = "data.frame")
+}
+
+haz <- bind_rows(
+  solve_pattern(mod_dm, list(DIS_IHD = 0, DIS_HYPERLIP = 0)) |>
+    transmute(time, hazard = hazard_ris, cumhaz = cumhaz_ris, sur, Stratum = "Diabetes"),
+  solve_pattern(mod_nd, list(DIS_HYPERLIP = 0, DIS_HYPERT = 0, CONMED_LIPIDLOWER = 0)) |>
+    transmute(time, hazard = hazard_ris, cumhaz = cumhaz_ris, sur, Stratum = "No diabetes")
+)
+
+ggplot(haz, aes(time, hazard, colour = Stratum)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  geom_vline(xintercept = c(0.5, 3), linetype = "dashed", colour = "grey50") +
+  labs(
+    title = "Baseline hazard of recurrent ischemic stroke, covariate-free patient",
+    subtitle = "Dashed lines: the scale switch at 0.5 y and the shape switch at 3 y",
+    x = "Years after the index stroke", y = "Hazard (1/year, log scale)"
+  ) +
+  theme_bw()
+```
+
+The jump sizes follow directly from the parameters and are asserted here so a
+later edit cannot silently change the structure.
+
+```{r discontinuities}
+jump <- tibble::tibble(
+  Stratum = c("Diabetes", "No diabetes"),
+  `Drop at 0.5 y (fold)` = c(0.356 / 0.0023, 0.253 / 0.0018),
+  `Drop at 3 y (fold)` = c(exp(1.58 * 3) / exp(0.242 * 3), exp(1.7 * 3) / exp(0.213 * 3))
+)
+knitr::kable(jump, digits = 1)
+
+stopifnot(
+  abs(0.356 / 0.0023 - 154.8) < 0.1,
+  abs(0.253 / 0.0018 - 140.6) < 0.1,
+  abs(exp(1.58 * 3) / exp(0.242 * 3) - 55.4) < 0.1,
+  abs(exp(1.7 * 3) / exp(0.213 * 3) - 86.6) < 0.1
+)
+```
+
+Note the direction. Elhefnawy 2023 Results says the hazard "increased
+exponentially during the first three years after the index IS and then
+exponentially reduced afterwards", but both late shape parameters are printed
+**positive** (0.242 and 0.213), so within the third regime the hazard still
+rises -- roughly seven-fold more slowly. The apparent reduction is the jump at
+t = 3 produced by the shape switch, not a negative exponent. The printed sign is
+encoded; see Errata.
+
+## Internal identity: the closed-form cumulative hazard
+
+The model evaluates the cumulative hazard analytically rather than by an ODE,
+which keeps the two discontinuities out of the solver. That closed form is
+checked here against trapezoidal integration of the model's own `hazard_ris`
+output, over every covariate pattern in both models. Both sides use the same
+drawn parameters, so this is pure numerical error and a tight bound is
+appropriate.
+
+```{r closed-form-check}
+fine <- seq(0, 7.37, length.out = 20001)
+
+max_rel_err <- function(mod, covs) {
+  s <- solve_pattern(mod, covs, fine)
+  trap <- cumsum(c(0, diff(s$time) *
+                     (head(s$hazard_ris, -1) + tail(s$hazard_ris, -1)) / 2))
+  max(abs(trap - s$cumhaz_ris) / pmax(s$cumhaz_ris, 1e-12))
+}
+
+dm_patterns <- expand.grid(DIS_IHD = 0:1, DIS_HYPERLIP = 0:1)
+nd_patterns <- expand.grid(DIS_HYPERLIP = 0:1, DIS_HYPERT = 0:1, CONMED_LIPIDLOWER = 0:1)
+
+dm_err <- vapply(seq_len(nrow(dm_patterns)),
+                 function(i) max_rel_err(mod_dm, as.list(dm_patterns[i, ])), numeric(1))
+nd_err <- vapply(seq_len(nrow(nd_patterns)),
+                 function(i) max_rel_err(mod_nd, as.list(nd_patterns[i, ])), numeric(1))
+
+cat(sprintf("Diabetic model:     %d covariate patterns, max relative error %.2e\n",
+            nrow(dm_patterns), max(dm_err)))
+cat(sprintf("Non-diabetic model: %d covariate patterns, max relative error %.2e\n",
+            nrow(nd_patterns), max(nd_err)))
+
+stopifnot(max(dm_err) < 1e-3, max(nd_err) < 1e-3)
+```
+
+# Reproducing the paper's published quantities
+
+## Adjusted hazard ratios (Table 3, Figure 2)
+
+Every retained covariate is a 0/1 indicator, so the adjusted hazard ratio is
+`exp()` of the coefficient. All five reproduce the printed values.
+
+```{r ahr}
+ahr <- tibble::tribble(
+  ~Model, ~Covariate, ~Coefficient, ~`Published aHR`,
+  "Diabetes",    "Ischemic heart disease",  0.876,  2.40,
+  "Diabetes",    "Hyperlipidemia",          0.633,  1.88,
+  "No diabetes", "Hyperlipidemia",          1.030,  2.801,
+  "No diabetes", "Hypertension",            0.789,  2.201,
+  "No diabetes", "Antihyperlipidemic",     -0.835,  0.433
+) |>
+  mutate(
+    `Recomputed aHR` = exp(Coefficient),
+    `Difference (%)` = 100 * (`Recomputed aHR` - `Published aHR`) / `Published aHR`
+  )
+knitr::kable(ahr, digits = 4,
+             caption = "exp(coefficient) against the adjusted hazard ratios of Elhefnawy 2023 Table 3.")
+
+stopifnot(max(abs(ahr$`Difference (%)`)) < 0.25)
+```
+
+The model files must produce the same ratios when solved, which is the check
+that the coefficients were wired into the right covariate columns.
+
+```{r ahr-from-solve}
+haz_at <- function(mod, covs, tt = 1) {
+  solve_pattern(mod, covs, c(0, tt))$hazard_ris[2]
+}
+solved_ahr <- c(
+  IHD_dm  = haz_at(mod_dm, list(DIS_IHD = 1, DIS_HYPERLIP = 0)) /
+            haz_at(mod_dm, list(DIS_IHD = 0, DIS_HYPERLIP = 0)),
+  HPLD_dm = haz_at(mod_dm, list(DIS_IHD = 0, DIS_HYPERLIP = 1)) /
+            haz_at(mod_dm, list(DIS_IHD = 0, DIS_HYPERLIP = 0)),
+  HPLD_nd = haz_at(mod_nd, list(DIS_HYPERLIP = 1, DIS_HYPERT = 0, CONMED_LIPIDLOWER = 0)) /
+            haz_at(mod_nd, list(DIS_HYPERLIP = 0, DIS_HYPERT = 0, CONMED_LIPIDLOWER = 0)),
+  HTN_nd  = haz_at(mod_nd, list(DIS_HYPERLIP = 0, DIS_HYPERT = 1, CONMED_LIPIDLOWER = 0)) /
+            haz_at(mod_nd, list(DIS_HYPERLIP = 0, DIS_HYPERT = 0, CONMED_LIPIDLOWER = 0)),
+  LL_nd   = haz_at(mod_nd, list(DIS_HYPERLIP = 0, DIS_HYPERT = 0, CONMED_LIPIDLOWER = 1)) /
+            haz_at(mod_nd, list(DIS_HYPERLIP = 0, DIS_HYPERT = 0, CONMED_LIPIDLOWER = 0))
+)
+print(round(solved_ahr, 4))
+
+stopifnot(max(abs(solved_ahr - c(2.40, 1.88, 2.801, 2.201, 0.433)) /
+                c(2.40, 1.88, 2.801, 2.201, 0.433)) < 0.0025)
+```
+
+## The Table 3 half-life column
+
+Table 3 carries a column labelled "Half-life (Ln2/alpha)" for each shape
+parameter. The arithmetic reproduces exactly for all four.
+
+```{r halflife}
+hl <- tibble::tribble(
+  ~Model, ~Shape, ~alpha, ~`Published (paper text)`,
+  "Diabetes",    "alpha (<3)",  1.58,  "0.43 (5.25 months)",
+  "Diabetes",    "alpha (>=3)", 0.242, "2.85 years",
+  "No diabetes", "alpha (<3)",  1.70,  "0.40 (4.88 months)",
+  "No diabetes", "alpha (>=3)", 0.213, "3.24 years"
+) |>
+  mutate(
+    `Recomputed (years)` = log(2) / alpha,
+    `Recomputed (months)` = 12 * log(2) / alpha
+  )
+knitr::kable(hl, digits = 3)
+
+stopifnot(
+  abs(log(2) / 1.58  - 0.4387) < 1e-3,
+  abs(log(2) / 0.242 - 2.8642) < 1e-3,
+  abs(log(2) / 1.70  - 0.4077) < 1e-3,
+  abs(log(2) / 0.213 - 3.2542) < 1e-3,
+  abs(12 * log(2) / 1.58 - 5.25) < 0.02,
+  abs(12 * log(2) / 1.70 - 4.88) < 0.02
+)
+```
+
+A naming caveat worth recording: for a **positive** exponent, `ln(2)/alpha` is a
+**doubling** time, not a half-life. The arithmetic is right; the column label is
+not.
+
+# Deterministic cohort simulation
+
+The paper reports no between-subject variability, so there is nothing to draw
+from and no reason to run a Monte Carlo cohort. Instead every covariate pattern
+is enumerated and weighted by its Table 1 prevalence (assuming independence
+between the indicators, which is all the marginal table supports). This gives
+the population-average recurrence-free survivor curve exactly and
+reproducibly -- there is no random number generation anywhere in this vignette.
+
+```{r cohort}
+p_ihd_dm  <- (52 + 420)  / 3493
+p_hpld_dm <- (96 + 1004) / 3493
+p_hpld_nd <- (63 + 865)  / 4204
+p_htn_nd  <- (108 + 2355) / 4204
+p_ll_nd   <- (120 + 3682) / 4204
+
+wt <- function(x, p) ifelse(x == 1, p, 1 - p)
+
+dm_cohort <- dm_patterns |>
+  mutate(weight = wt(DIS_IHD, p_ihd_dm) * wt(DIS_HYPERLIP, p_hpld_dm))
+nd_cohort <- nd_patterns |>
+  mutate(weight = wt(DIS_HYPERLIP, p_hpld_nd) * wt(DIS_HYPERT, p_htn_nd) *
+           wt(CONMED_LIPIDLOWER, p_ll_nd))
+
+stopifnot(abs(sum(dm_cohort$weight) - 1) < 1e-12,
+          abs(sum(nd_cohort$weight) - 1) < 1e-12)
+
+avg_survivor <- function(mod, cohort, covnames) {
+  parts <- lapply(seq_len(nrow(cohort)), function(i) {
+    s <- solve_pattern(mod, as.list(cohort[i, covnames]))
+    s$sur * cohort$weight[i]
+  })
+  tibble::tibble(time = grid, sur = Reduce(`+`, parts))
+}
+
+surv <- bind_rows(
+  avg_survivor(mod_dm, dm_cohort, c("DIS_IHD", "DIS_HYPERLIP")) |>
+    mutate(Stratum = "Diabetes"),
+  avg_survivor(mod_nd, nd_cohort, c("DIS_HYPERLIP", "DIS_HYPERT", "CONMED_LIPIDLOWER")) |>
+    mutate(Stratum = "No diabetes")
+)
+
+ggplot(surv, aes(time, sur, colour = Stratum)) +
+  geom_line(linewidth = 0.9) +
+  geom_hline(yintercept = c(1 - 195 / 3493, 1 - 138 / 4204) |> rev(),
+             linetype = "dotted", colour = "grey40") +
+  coord_cartesian(ylim = c(0, 1)) +
+  labs(
+    title = "Model-predicted probability of remaining free of recurrent stroke",
+    subtitle = "Compare Figure 3 of Elhefnawy 2023. Dotted lines: the observed recurrence-free fraction at 7.37 y",
+    x = "Years after the index stroke", y = "Recurrence-free probability"
+  ) +
+  theme_bw()
+```
+
+The paper's qualitative claim -- that recurrence-free survival is lower among
+patients with diabetes -- is reproduced by the packaged models. That claim
+holds throughout follow-up and is asserted here.
+
+```{r qualitative-claim}
+wide <- surv |> pivot_wider(names_from = Stratum, values_from = sur)
+stopifnot(all(wide$Diabetes <= wide$`No diabetes` + 1e-12))
+cat(sprintf("Predicted recurrence-free probability at 7.37 y: DM %.3f, non-DM %.3f\n",
+            tail(wide$Diabetes, 1), tail(wide$`No diabetes`, 1)))
+```
+
+# Errata
+
+Read this section before using either model. It is asserted numerically so that
+a later edit cannot quietly remove it.
+
+## 1. The baseline-hazard scale overpredicts the paper's own event count by roughly an order of magnitude
+
+This is the load-bearing defect. Elhefnawy 2023 Table 1 reports 195 recurrences
+among 3,493 diabetic patients and 138 among 4,204 non-diabetic patients over at
+most 7.37 years. Those counts pin the observed cumulative hazard. The published
+parameters give something far larger.
+
+```{r falsifier-main}
+obs_H <- c(Diabetes = -log(1 - 195 / 3493), `No diabetes` = -log(1 - 138 / 4204))
+
+pred_H_baseline <- c(
+  Diabetes      = tail(solve_pattern(mod_dm, list(DIS_IHD = 0, DIS_HYPERLIP = 0))$cumhaz_ris, 1),
+  `No diabetes` = tail(solve_pattern(mod_nd, list(DIS_HYPERLIP = 0, DIS_HYPERT = 0,
+                                                  CONMED_LIPIDLOWER = 0))$cumhaz_ris, 1)
+)
+
+# Cohort-average covariate multiplier under the Table 1 marginal prevalences.
+mult_dm <- sum(dm_cohort$weight * exp(0.876 * dm_cohort$DIS_IHD +
+                                        0.633 * dm_cohort$DIS_HYPERLIP))
+mult_nd <- sum(nd_cohort$weight * exp(1.030 * nd_cohort$DIS_HYPERLIP +
+                                        0.789 * nd_cohort$DIS_HYPERT +
+                                        (-0.835) * nd_cohort$CONMED_LIPIDLOWER))
+
+fals <- tibble::tibble(
+  Stratum = names(obs_H),
+  `Observed H(7.37)` = as.numeric(obs_H),
+  `Predicted H(7.37), covariate-free` = as.numeric(pred_H_baseline),
+  `Fold (covariate-free)` = as.numeric(pred_H_baseline / obs_H),
+  `Cohort covariate multiplier` = c(mult_dm, mult_nd),
+  `Fold (cohort-weighted)` = as.numeric(pred_H_baseline * c(mult_dm, mult_nd) / obs_H)
+)
+knitr::kable(fals, digits = 4)
+
+stopifnot(
+  fals$`Fold (covariate-free)`[1] > 7, fals$`Fold (covariate-free)`[1] < 10,
+  fals$`Fold (covariate-free)`[2] > 10, fals$`Fold (covariate-free)`[2] < 14,
+  fals$`Fold (cohort-weighted)`[1] > 11,
+  fals$`Fold (cohort-weighted)`[2] > 12
+)
+```
+
+Applying the covariate distribution makes it worse, not better, because both
+cohort multipliers exceed one.
+
+## 2. No alternative reading of the structure rescues it
+
+Four candidate re-readings were evaluated against the same observed cumulative
+hazard. All of them fail, and the constant-scale row is decisive: it removes the
+Gompertz shape entirely and is still several-fold too high, which localises the
+defect to the **scale** rather than to any misreading of the piecewise
+structure.
+
+```{r falsifier-alternatives}
+cum_closed <- function(t, h1, h3, a2, a4, tb1 = 0.5, tb2 = 3) {
+  seg <- function(h, a, lo, hi) h / a * (exp(a * hi) - exp(a * lo))
+  s <- seg(h1, a2, 0, min(t, tb1))
+  if (t > tb1) s <- s + seg(h3, a2, tb1, min(t, tb2))
+  if (t > tb2) s <- s + seg(h3, a4, tb2, t)
+  s
+}
+tmax <- 7.37
+alt <- tibble::tibble(
+  Reading = c("As published", "Constant scale, no Gompertz shape",
+              "Decaying Gompertz (shapes negated)", "The two scales swapped",
+              "Observed (Table 1 counts)"),
+  Diabetes = c(
+    cum_closed(tmax, 0.356, 0.0023, 1.58, 0.242),
+    0.356 * 0.5 + 0.0023 * (tmax - 0.5),
+    cum_closed(tmax, 0.356, 0.0023, -1.58, -0.242),
+    cum_closed(tmax, 0.0023, 0.356, 1.58, 0.242),
+    as.numeric(obs_H[1])
+  ),
+  `No diabetes` = c(
+    cum_closed(tmax, 0.253, 0.0018, 1.70, 0.213),
+    0.253 * 0.5 + 0.0018 * (tmax - 0.5),
+    cum_closed(tmax, 0.253, 0.0018, -1.70, -0.213),
+    cum_closed(tmax, 0.0018, 0.253, 1.70, 0.213),
+    as.numeric(obs_H[2])
+  )
+) |>
+  mutate(
+    `Fold, DM` = Diabetes / as.numeric(obs_H[1]),
+    `Fold, non-DM` = `No diabetes` / as.numeric(obs_H[2])
+  )
+knitr::kable(alt, digits = 4,
+             caption = "Cumulative hazard at 7.37 years under four readings of the published structure.")
+
+# Every alternative reading remains at least twice the observed cumulative
+# hazard; none is a rescue.
+stopifnot(all(alt$`Fold, DM`[1:4] > 2), all(alt$`Fold, non-DM`[1:4] > 2))
+
+# The first six months alone, with the shape removed, already exceed the whole
+# observed follow-up hazard several-fold.
+stopifnot(
+  0.356 * 0.5 / as.numeric(obs_H[1]) > 3,
+  0.253 * 0.5 / as.numeric(obs_H[2]) > 3
+)
+```
+
+A frailty term cannot rescue it either, and no unreported between-subject
+variability is available to invoke: a zero-mean random effect on a log hazard
+leaves at least half the cohort at or above the typical hazard, which bounds the
+population survivor function well below the published Kaplan-Meier curve however
+large the variance.
+
+## 3. The paper's own clinical calculator does not reproduce its own parameters, and is internally inconsistent
+
+Results, "Clinical Application", gives two scenarios from the authors'
+`MyReCuRIS_DM` calculator. Neither matches the Table 3 parameters, and scenario
+1 is impossible on its face: a cumulative recurrence probability cannot fall
+over time.
+
+```{r falsifier-calculator}
+prob <- function(mod, covs, t) 1 - solve_pattern(mod, covs, c(0, t))$sur[2]
+calc <- tibble::tibble(
+  Scenario = c("1: DM, no HPLD, no IHD", "1: DM, no HPLD, no IHD",
+               "2: DM with IHD", "2: DM with IHD"),
+  `Years after index stroke` = c(1, 4, 1, 4),
+  `Published (%)` = c(8.396, 4.917, 11.403, 18.989),
+  `Model (%)` = 100 * c(
+    prob(mod_dm, list(DIS_IHD = 0, DIS_HYPERLIP = 0), 1),
+    prob(mod_dm, list(DIS_IHD = 0, DIS_HYPERLIP = 0), 4),
+    prob(mod_dm, list(DIS_IHD = 1, DIS_HYPERLIP = 0), 1),
+    prob(mod_dm, list(DIS_IHD = 1, DIS_HYPERLIP = 0), 4)
+  )
+)
+knitr::kable(calc, digits = 3)
+
+# Scenario 1 falls from 1 y to 4 y, which no cumulative probability can do.
+stopifnot(calc$`Published (%)`[2] < calc$`Published (%)`[1])
+# The model's own predictions are monotone increasing, as they must be.
+stopifnot(calc$`Model (%)`[2] > calc$`Model (%)`[1],
+          calc$`Model (%)`[4] > calc$`Model (%)`[3])
+# The published scenario ratio does not equal the published IHD hazard ratio at
+# either time point.
+ratio_pub <- calc$`Published (%)`[c(3, 4)] / calc$`Published (%)`[c(1, 2)]
+stopifnot(all(abs(ratio_pub - 2.40) > 0.5))
+```
+
+## 4. The sign of the late shape parameter contradicts the Results prose
+
+Results says the hazard "exponentially reduced" after three years, but theta4 is
+printed positive in both strata (0.242 and 0.213), so the hazard continues to
+rise within the third regime. The reduction is the discontinuous drop at t = 3
+produced by the shape switch. The printed sign is encoded; only the prose is
+loose.
+
+## 5. Minor: the diabetic-stratum recurrence percentage is printed two different ways
+
+The Abstract says 5.82%, the Results section says 5.55%, and 195 / 3,493 is
+5.58%. The counts are used.
+
+## 6. The same defect is present in this group's companion publication
+
+The pooled-cohort model published by the same group (Elhefnawy 2023, Front
+Neurol 14:1118711, PMC10176964, packaged as
+`Elhefnawy_2023_recurrent_ischemic_stroke`) exhibits the same overprediction at
+the same order of magnitude (8.4- to 13-fold). That the defect recurs across two
+independent fits to the same registry, while the covariate block reproduces
+exactly in both, points to a systematic issue with how the baseline-hazard scale
+is reported rather than to a transcription error in either extraction.
+
+# Assumptions and deviations
+
+* **Values are transcribed verbatim and untuned.** No parameter was adjusted to
+  improve agreement with any published output. The discrepancies above are the
+  publication's, not this extraction's.
+* **These models are usable for relative risk, not absolute risk.** The hazard
+  ratios reproduce exactly and are the trustworthy part; the absolute recurrence
+  probabilities are roughly an order of magnitude too high.
+* **No between-subject variability.** The paper reports no random effect for
+  either stratum -- no variance, no CV%, no shrinkage, no omega row. The models
+  are encoded faithfully as typical-value models with no eta parameters. No
+  variance was invented.
+* **Residual error is a placeholder.** The source fits a parametric survival
+  likelihood under LAPLACE, so there is no observation-error model to translate.
+  A tiny additive residual (`addSd = 0.001`) is attached to the survivor output
+  so the nlmixr2 machinery accepts the model for forward simulation. It is not
+  from the source.
+* **Breakpoints are fixed, not estimated.** Table 2 counts the interval Gompertz
+  model as having four parameters (theta1-theta4), so the 0.5-year and 3-year
+  breakpoints carry no degrees of freedom.
+* **Covariate independence in the cohort weighting.** Table 1 gives only
+  marginal prevalences, so the enumerated cohort above assumes the indicators
+  are independent. The real registry almost certainly has positive correlation
+  between hypertension, hyperlipidemia and ischemic heart disease, which would
+  change the cohort-average multiplier somewhat. It would not change the
+  conclusion of the Errata section, whose covariate-free rows are unaffected.
+* **Equations 1-4 are images in the source PDF and did not extract as text.**
+  The Gompertz hazard form was read from Table 2 (which prints
+  `h(t) = h0 * e^(theta_y)t` in the model column), the piecewise switching from
+  the Table 2 footnote and the Methods restatement, and the covariate form from
+  the Equation 5 fragment that appears inline in the page-2 text layer,
+  `h = h0 * exp(beta_t + beta_cov(cov))`, read together with the Methods
+  sentence "where h0 is the baseline hazard, and beta_t is the shape parameter
+  of the Gompertz hazard function". These readings are mutually consistent and
+  are the only ones that reproduce the Table 3 half-life and aHR columns.
+* **The covariate screen is not in this paper.** Methods defers it to "a
+  previously published preprint", and the EuropePMC open-access deposit for
+  PMC10796130 contains no supplementary file. Screened-but-not-retained
+  covariates are therefore documented in each model file's
+  `covariatesDataExcluded` with prevalences from Table 1 but with no
+  objective-function changes.
+* **The temporal-validation cohort is not encoded.** The 1,262-patient
+  2017-2020 diabetic cohort has no separate parameter estimates in the paper.
+* **`CONMED_LIPIDLOWER` class composition is unknown.** The paper tabulates
+  "Antihyperlipidemic" without enumerating the agents. The Discussion argues the
+  effect in terms of statins, but the covariate as fitted is the broader class
+  indicator, so the broader canonical is used.
