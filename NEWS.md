@@ -59,6 +59,8 @@
 
 - Add Knebel 2013 atorvastatin and o-hydroxyatorvastatin ([doi:10.1002/jcph.66](https://doi.org/10.1002/jcph.66)) -- children and adolescents with heterozygous familial hypercholesterolemia.
 
+- Add Lin 2026 time-varying Cox time-to-event methodology model ([doi:10.1002/psp4.70253](https://doi.org/10.1002/psp4.70253)) -- simulation-only hypothetical subcutaneous drug; no molecule and no patients.
+
 - Add Machavaram 2013 interleukin-6 / CYP3A4 suppression ([doi:10.1038/clpt.2013.79](https://doi.org/10.1038/clpt.2013.79)) -- adults with rheumatoid arthritis, bone marrow transplant or surgical trauma.
 
 - Add Mandema 2011 anticoagulants dose-response meta-analysis ([doi:10.1038/clpt.2011.232](https://doi.org/10.1038/clpt.2011.232)) -- adults undergoing total hip or knee replacement surgery.

@@ -15100,124 +15100,44 @@ Covariates whose value is a property of the **administered molecule** rather tha
 - **Example models:** `Lau_2026_paracetamol.R` (founding example).
 - **Notes:** The most load-bearing of the two indicators. It selects the Study 2 gallbladder-emptying schedule (480 and 660 min post-dose, the latest of the three studies, consistent with the fasted state), four structural multipliers -- 1.94 on the oxidative intrinsic hepatic clearance, 0.650 on the PCM-GLU elimination clearance, 0.826 on the PCM-SUL elimination clearance and 1.59 on the PCM-CYS & PCM-MER elimination clearance -- the switch of the PCM-CYS & PCM-MER residual error from proportional to purely additive (0.288 umol/L), and the Study 2 fold increase in the combined paracetamol residual error (1.87). Lau 2026 Discussion attributes the structural multipliers to the higher BMI of the Study 2 cohort at total body weights comparable to the other studies, hypothesising metabolic-associated fatty liver disease (MAFLD) as the mechanism; the covariate is therefore a cohort marker standing in for an unmeasured hepatic-status covariate rather than a study-conduct artefact, and that reading should be preserved in the per-model `covariateData` notes.
 
-### STUDY_EMPA_A (**canonical for Riggs empagliflozin study A cohort indicator**)
-- **Description:** 1 = patient enrolled in study A of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (EudraCT 2007-000654-32; phase I, randomised, double-blind, placebo-controlled, 8 days, 2.5 / 10 / 25 / 100 mg once daily or placebo, n = 48, Germany); 0 = otherwise. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A`.. `STUDY_EMPA_E`; exactly one is 1 per subject.
-- **Source aliases:**
-  - `Study A` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
-- **Example models:** `Riggs_2014_empagliflozin.R` (selects the typical baseline FPG 7.85 mmol/L, Table 2 theta_1, and is the reference level for the baseline-UGE, gamma_base, Umax, Ustim50 and C*50 parameters).
-- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. The five members are named for the drug rather than for the letter alone because the letters A-E are generic and would collide with any other paper that labels its cohorts the same way. Study A contributed no HbA1c to the Riggs 2014 exposure-response analysis (Table 1 footnote), so no baseline-HbA1c theta exists for it. The identical five-study set underlies the companion population PK analysis (Riggs 2013 J Clin Pharmacol 53:1028-1038), so a future extraction of that paper should reuse these five canonicals rather than register siblings.
+## Simulation / methodology covariates (`SIMCOV_<role>` family)
 
-### STUDY_EMPA_B (**canonical for Riggs empagliflozin study B cohort indicator**)
-- **Description:** 1 = patient enrolled in study B of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00558571; phase I, randomised, double-blind, placebo-controlled, parallel-group, 4 weeks, 10 / 25 / 100 mg once daily or placebo, n = 78, Germany); 0 = otherwise. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A`.. `STUDY_EMPA_E`.
-- **Source aliases:**
-  - `Study B` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
-- **Example models:** `Riggs_2014_empagliflozin.R` (selects baseline FPG 8.50 mmol/L, Table 2 theta_2, and baseline HbA1c 7.18 pct, theta_23, and scales the baseline UGE by theta_20 = 0.320; shares the reference gamma_base, Umax, Ustim50 and C*50 with study A).
-- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. See [[STUDY_EMPA_A]] for the naming rationale and the shared five-study set.
+Methodology papers demonstrate an estimator on synthetic data, and their covariates are
+frequently *meaning-free by construction* -- a standard-normal draw with no clinical
+referent, present only so the method has something to estimate a coefficient for. Such a
+column has no clinical concept to name it after, so it cannot be mapped onto any of the
+demographic, laboratory or disease-state canonicals above.
 
-### STUDY_EMPA_C (**canonical for Riggs empagliflozin study C cohort indicator**)
-- **Description:** 1 = patient enrolled in study C of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00885118; phase II, randomised, double-blind, placebo-controlled, parallel-group, 4 weeks, 1 / 5 / 10 / 25 mg once daily or placebo, n = 100, Japan, Japanese patients only); 0 = otherwise. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A`.. `STUDY_EMPA_E`.
-- **Source aliases:**
-  - `Study C` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
-- **Example models:** `Riggs_2014_empagliflozin.R` (the only study with its own value for every urinary-glucose-excretion and potency parameter: baseline UGE x theta_16 = 0.632, gamma_base x theta_17 = 1.16, Umax x theta_14 = 1.11, Ustim50 x theta_15 = 1.58 and C*50 x theta_19 = 0.169, giving a study C AUC50 of 106 nmol*h/L against the 626 nmol*h/L reference; also selects baseline FPG 8.76 mmol/L and baseline HbA1c 7.85 pct).
-- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. This is the load-bearing member of the set: it is the only Japanese cohort and the only one whose potency parameters all differ from the pooled reference. Riggs 2014 Discussion attributes the greater low-dose response in study C partly to the lower body weight of the Japanese cohort (mean 67.9 kg against 81.4 - 94.6 kg elsewhere) and therefore its higher dose-normalised exposure, but notes that confounding precludes an exact explanation -- so the indicator is a cohort marker standing in for a partly unmeasured population difference rather than a study-conduct artefact. See [[STUDY_EMPA_A]] for the naming rationale.
+The `SIMCOV_<role>` family covers exactly this case. The `<role>` suffix records **how the
+column enters the model**, not what it measures (there is nothing to measure) and not
+whether the data column itself varies with time:
 
-### STUDY_EMPA_D (**canonical for Riggs empagliflozin study D cohort indicator**)
-- **Description:** 1 = patient enrolled in study D of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00789035; phase IIb, randomised, double-blind, 12 weeks, 5 / 10 / 25 mg once daily, placebo or open-label metformin, multinational; n = 324 contributed to the exposure-response analyses after excluding the open-label metformin arm and two patients without PK samples); 0 = otherwise. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A`.. `STUDY_EMPA_E`.
-- **Source aliases:**
-  - `Study D` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
-- **Example models:** `Riggs_2014_empagliflozin.R` (selects baseline FPG 9.30 mmol/L, Table 2 theta_3, and baseline HbA1c 7.85 pct, theta_24; shares the reference C*50 with studies A and B, whose pooled estimate is the primary AUC50 = 626 nmol*h/L).
-- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Study D contributed no urinary-glucose-excretion observations, so the UGE parameters are not identified for it and fall back to the study A reference. Study D was empagliflozin monotherapy whereas study E was on background metformin; Riggs 2014 Discussion cites that difference as one candidate explanation for the ~2-fold difference between their AUC50 estimates. See [[STUDY_EMPA_A]] for the naming rationale.
+- `SIMCOV_TI` -- enters the model directly, as a time-invariant effect.
+- `SIMCOV_TV` -- enters the model through a time-varying transform.
 
-### STUDY_EMPA_E (**canonical for Riggs empagliflozin study E cohort indicator**)
-- **Description:** 1 = patient enrolled in study E of the pooled empagliflozin analyses of Riggs 2013 / Riggs 2014 (NCT00749190; phase IIb, randomised, double-blind, parallel-group, 12 weeks, 1 / 5 / 10 / 25 / 50 mg once daily, placebo or open-label sitagliptin, on background metformin, multinational, n = 424 after excluding the open-label sitagliptin arm); 0 = otherwise. Subject-level (time-fixed).
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0. One of the mutually exclusive five-member set `STUDY_EMPA_A`.. `STUDY_EMPA_E`.
-- **Source aliases:**
-  - `Study E` -- the paper-text label used throughout Riggs 2014 Methods, Table 1 and Table 2.
-- **Example models:** `Riggs_2014_empagliflozin.R` (selects baseline FPG 9.49 mmol/L, Table 2 theta_4, and baseline HbA1c 7.89 pct, theta_25, and scales C*50 by theta_21 = 1.93, giving the study E AUC50 of 1210 nmol*h/L against the 626 nmol*h/L reference).
-- **Notes:** Follows the auto-approved `STUDY_<id>` canonical family. Study E contributed no urinary-glucose-excretion observations, so the UGE parameters fall back to the study A reference. Its roughly two-fold higher AUC50 is the single largest inter-study difference in the Riggs 2014 model and drives the paper's sensitivity analysis: the same 10 and 25 mg doses give 80 / 90 pct of maximal response on the pooled A + B + D estimate but only 65 / 82 pct on the study E estimate. See [[STUDY_EMPA_A]] for the naming rationale.
+Reach for this family only when the source covariate is genuinely semantically empty. A
+synthetic covariate that still denotes a real physical quantity -- a simulated AUC, a
+simulated body weight -- takes the ordinary canonical for that quantity, or a `specific`-scope
+sibling such as `AUC_BAST_FW`.
 
-### CRT_BL (**canonical for per-subject baseline choice reaction time**)
-- **Description:** Subject's pre-dose baseline choice reaction time (CRT), a psychomotor latency measured before any study drug is given and carried into the model as a time-fixed per-subject covariate. Choice reaction time is the interval between a stimulus and the correct discriminative motor response; slower (larger) values indicate poorer baseline psychomotor function. Used in CNS-depressant PD models where a subject's intrinsic psychomotor speed modulates drug sensitivity, entering the potency and/or steepness parameters as a ratio-normalised power term or a centered linear term. Distinct from the model's own estimated `lrbase` / BASE parameter: `CRT_BL` is an observed data column, whereas BASE is a structural parameter of the same endpoint.
-- **Units:** msec (document any per-model deviation in `covariateData[[CRT_BL]]$notes`).
+### SIMCOV_TI (**canonical for a meaning-free simulation covariate with a time-invariant effect**)
+- **Description:** A semantically-empty per-subject covariate used in a simulation or methodology study to demonstrate estimation of a **time-invariant** covariate effect. Carries no clinical interpretation; in the founding example it is a standard-normal draw (mean 0, SD 1) entering the log hazard directly.
+- **Units:** (z-score; standard normal, mean 0, SD 1 in the founding example -- record the actual generating distribution per model via `covariateData[["SIMCOV_TI"]]$units`)
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- enters either as a ratio power term `(CRT_BL / <ref>)^e_crt_bl_<param>` or as a centered linear term `1 + e_crt_bl_<param> * (CRT_BL - <ref>)`. Reference value observed: 438.5 msec (Kim 2026 cohort median in 30 healthy Korean volunteers).
+- **Reference category:** n/a -- continuous, and centred at 0 by construction when the generating distribution is standard normal, so the covariate contributes nothing at its own mean.
 - **Source aliases:**
-  - `CRTB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "CRT baseline 1h" because the study's baseline battery was run at 1 h on Day -1.
-- **Example models:** `Kim_2026_zolpidem_crt.R` (founding example; retained on BOTH EC50, as the power term `(CRT_BL/438.5)^-1.28`, and HILL, as the linear term `1 + 0.00637 * (CRT_BL - 438.5)`), `Kim_2026_zolpidem.R` / `Kim_2026_zolpidem_dsst.R` / `Kim_2026_zolpidem_vas.R` (screened but not retained; declared in `covariatesDataExcluded` to preserve the screen).
-- **Notes:** Member of the `_BL` per-subject-baseline suffix family, on the `QTC_BL` precedent -- a derived per-subject instrument readout taken before dosing that enters PD parameters as a centred or ratio-normalised term. The clock time at which the baseline battery was administered is study-specific (1 h on Day -1 in the founding example) and belongs in the per-model `covariateData[[CRT_BL]]$notes`, not in the canonical name; do NOT register parallel canonicals such as `CRT_BL_1H`. The name records the instrument, not the units, so a study reporting CRT in seconds uses the same canonical with `units` documented per-model.
+  - `COV1` -- Lin 2026 Methods 2.1 and the `$INPUT` column of Data S1/S2; per-subject constant column in the deposited Data S3 example dataset.
+- **Example models:** `Lin_2026_sc1cmt_coxTte.R` (founding example; enters the Cox hazard ratio as `beta1 * SIMCOV_TI` with `beta1 = 0.3`).
+- **Notes:** General scope, ratified 2026-09-02 (task `oare_PMC13106229` sidecar request-001 q1, answer A) so that future methodology extractions reuse the family rather than minting a per-paper name for a column that is interchangeable by construction. The operator considered and rejected source-tied `specific`-scope names on the `AUC_BAST_FW` pattern: `AUC_BAST_FW` is tied to a paper because it still denotes a real physical quantity whose value only makes sense for that hypothetical drug, whereas a meaning-free standard-normal draw carries no paper-specific semantics at all and so cannot collide. Paired with `SIMCOV_TV`; a study demonstrating more than one covariate of the same role should number them (`SIMCOV_TI2`, ...) rather than overload either name.
 
-### DSST_BL (**canonical for per-subject baseline digit symbol substitution test score**)
-- **Description:** Subject's pre-dose baseline score on the digit symbol substitution test (DSST), a pencil-and-paper or computerised cognitive test of motor speed, attention, working memory and visuoperceptual ability, scored as the number of correct substitutions completed in a fixed interval. Higher scores indicate better cognitive performance -- the opposite polarity to `CRT_BL`, where higher is worse. Carried into a model as a time-fixed per-subject covariate on PD parameters. Distinct from the model's own estimated `lrbase` / BASE parameter for the same endpoint.
-- **Units:** score (number of correct substitutions; document the test duration and any per-model scaling in `covariateData[[DSST_BL]]$notes`).
+### SIMCOV_TV (**canonical for a meaning-free simulation covariate with a time-varying effect**)
+- **Description:** A semantically-empty per-subject covariate used in a simulation or methodology study to demonstrate estimation of a **time-varying** covariate effect. Carries no clinical interpretation; in the founding example it is a standard-normal draw (mean 0, SD 1) that enters the log hazard multiplied by an explicit function of time.
+- **Units:** (z-score; standard normal, mean 0, SD 1 in the founding example -- record the actual generating distribution per model via `covariateData[["SIMCOV_TV"]]$units`)
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- enters either as a ratio power term `(DSST_BL / <ref>)^e_dsst_bl_<param>` or as a centered linear term `1 + e_dsst_bl_<param> * (DSST_BL - <ref>)`. Reference value observed: 72.5 score (Kim 2026 cohort median in 30 healthy Korean volunteers).
+- **Reference category:** n/a -- continuous, and centred at 0 by construction when the generating distribution is standard normal.
 - **Source aliases:**
-  - `DSSTB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "DSST baseline 1h".
-- **Example models:** `Kim_2026_zolpidem_dsst.R`, `Kim_2026_zolpidem_crt.R`, `Kim_2026_zolpidem_vas.R`, `Kim_2026_zolpidem.R` (founding extraction; screened as a candidate covariate on the PK and all three PD endpoints and not retained on any, so declared in `covariatesDataExcluded` in each -- the DSST baseline is instead estimated structurally as the BASE parameter with age as its covariate).
-- **Notes:** Member of the `_BL` per-subject-baseline suffix family, registered alongside `CRT_BL` and `VAS_SEDATION_BL` from the same founding paper. Deliberately NOT named `SCORE_DSST_BL`: the `SCORE_` prefix belongs to the composite clinical rating instruments (`SCORE_ADAS_COG`, `SCORE_MMSE`) that are reported as an instrument total without a pre-dose/post-dose baseline distinction, whereas the `_BL` family is specifically the pre-dose readout entering a PD parameter. Register a separate `SCORE_DSST` canonical if a future model needs a time-varying (non-baseline) DSST column.
-
-### VAS_SEDATION_BL (**canonical for per-subject baseline self-rated sedation on a visual analog scale**)
-- **Description:** Subject's pre-dose baseline self-rated sedation / drowsiness marked on a visual analog scale, carried into a model as a time-fixed per-subject covariate. A subjective patient-reported outcome, in contrast to the objective instruments `DSST_BL` (cognitive) and `CRT_BL` (psychomotor). Higher values indicate greater perceived sedation.
-- **Units:** mm on a 100 mm scale (document the scale length and anchor wording per-model in `covariateData[[VAS_SEDATION_BL]]$notes`; a 0-10 cm or 0-100 point scale maps onto the same canonical with `units` documented per-model).
-- **Type:** continuous
-- **Scope:** general
-- **Reference category:** n/a -- enters either as a ratio power term `(VAS_SEDATION_BL / <ref>)^e_vas_sedation_bl_<param>` or as a centered linear term. Reference value observed: 30.5 mm (Kim 2026 cohort median in 30 healthy Korean volunteers).
-- **Source aliases:**
-  - `VASB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "VAS baseline 1h".
-- **Example models:** `Kim_2026_zolpidem_vas.R`, `Kim_2026_zolpidem_dsst.R`, `Kim_2026_zolpidem_crt.R`, `Kim_2026_zolpidem.R` (founding extraction; screened as a candidate covariate and not retained anywhere, so declared in `covariatesDataExcluded` in each -- in the PK-VAS model the Day -1 baseline trajectory is instead estimated structurally as the four spline knots `logitrbase_t1..t4`, of which the 1 h knot is the model's counterpart to this observed column).
-- **Notes:** Member of the `_BL` per-subject-baseline suffix family. The canonical name identifies the INSTRUMENT (sedation VAS), not merely the scale type, precisely so it cannot collide with the other VAS-scaled entries already in this register that measure different constructs -- `BLPHYVAS` (physician's global assessment of disease activity) and `PGA_PT` (patient's global assessment of arthritis). Any future VAS-based baseline must likewise name its construct (`VAS_PAIN_BL`, `VAS_NAUSEA_BL`,...) rather than registering a bare `VAS_BL`.
-
-### AUC_ANDRO (**canonical for andrographolide AUC over the 0-4 h post-dose window**)
-- **Description:** Per-subject plasma andrographolide (AP1) area under the concentration-time curve over the 0-4 h post-dose window, used as the drug-exposure driver of pharmacodynamic models of standardized *Andrographis paniculata* preparations. Andrographolide is the labelled reference diterpenoid for *A. paniculata* products under Thai FDA quality-control requirements and the compound these analyses standardise on, even though the co-occurring diterpenoid 14-deoxy-11,12-didehydroandrographolide (AP3) reaches substantially higher plasma exposure. Time-fixed per subject in the founding example, which pairs one day-5 AUC value with one day-1-to-day-5 viral-load reduction; a longitudinal PK/PD model would instead update it per dosing interval.
-- **Units:** `ug*h/L` (equivalently `ng*h/mL`). Must be in the same units as the model's `auc50` so the sigmoid `AUC^hill / (auc50^hill + AUC^hill)` is dimensionless. Document per-model via `covariateData[[AUC_ANDRO]]$units`.
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- enters via a sigmoidal Emax form. `AUC_ANDRO = 0` makes the sigmoid vanish exactly and leaves the baseline effect. Reference values observed (Songvut 2026 Table 2, 30 mg andrographolide per dose): single-dose day-1 AUC(0-4 h) 28.54 +/- 8.72 ug*h/L, AUC(0-inf) 32.81 +/- 8.91 ug*h/L; day-5 AUC(0-4 h) under q8h dosing 30.12 +/- 15.83 ug*h/L with an observed range of roughly 8-57 ug*h/L (Figure 5).
-- **Source aliases:**
-  - `AUC0-4h` / `AUC(0-4h, day 5)` -- printed forms in Songvut 2026 Table 2, Section 2.4 and the Figure 5 x-axis label. The 0-4 h truncation is not arbitrary: plasma andrographolide falls below the 4.69 ng/mL lower limit of quantification by about 4 h post-dose, and the study restricted on-site time for infectious patients, so the window covers essentially the whole quantifiable profile.
-- **Example models:** `Songvut_2026_andrographolide.R` (drives the four-parameter sigmoidal Emax exposure-response curve for log10 SARS-CoV-2 RdRp viral-load reduction in mild COVID-19; `auc50` = 29.80 ug*h/L, `hill` = 8).
-- **Notes:** Specific scope because the column meaning is tied to andrographolide as the analyte and to the 0-4 h truncated-AUC convention. Member of the `AUC_<DRUG>` family (`AUC_CARBO`, `AUC_GEM`, `AUC_GCV`, `AUC_PAZO`, `AUC_RTV`, `AUC_VERUB`, `AUC_ADU`, `AUC_DON`, `AUC_GAN`, `AUC_LEC`, `AUC_IBRU`, `AUC_LCM`, `AUC_CBZ`, `AUC_AMPH`, `AUC_LEN`, `AUC_EMPA`,...), whose entries direct that a new drug or a new exposure convention take a sibling canonical rather than overload an existing one. Accordingly, a future *A. paniculata* model driven by a different metric (Cmax, AUC(0-inf), a steady-state 0-8 h interval AUC) or by a different diterpenoid should register a parallel canonical -- `AUC_ANDRO_INF`, `AUC_AP3` and so on -- rather than reuse this name; note in particular that AUC(0-4 h) and AUC(0-inf) are NOT interchangeable here even though they are numerically close, because the 4 h truncation is the convention the founding model's `auc50` was estimated against. There is no published population PK model for andrographolide from this formulation, so downstream users must supply the column from observed concentrations by non-compartmental analysis.
-
-### DOSE_APRICOXIB_MG (**canonical for administered apricoxib single-dose amount**)
-- **Description:** Administered single oral dose of the selective cyclooxygenase-2 inhibitor apricoxib (development code CS-706), in mg, with 0 for a placebo subject. Time-fixed per subject in the founding study (each patient with acute postoperative dental pain received one dose of placebo or 10, 50, 100 or 200 mg). Not a pharmacokinetic covariate -- the amount already appears on the depot dose record via `amt`, and the PK layer's own dose non-linearities read it from there via `podo(depot)` and the separate `DOSE_HIGH` indicator. Required as its own column because Rohatagi 2008 uses the dose as a subject-level regressor in three algebraic pharmacodynamic equations: `P(MPR) = P0 + (Pmax - P0) * Dose / (Dose + D50PMPR)` (equation 13), `log(TMPR / TRescue) = LTR0 + LTRmax * Dose / (Dose + D50LTR)` (equation 14) and `log(TMPR) = LT0 + LTSlope * Dose` (equation 15).
-- **Units:** mg
-- **Type:** continuous
-- **Scope:** specific
-- **Reference category:** n/a -- enters uncentred, so Dose = 0 is the placebo reference and returns the published placebo values directly: `P(MPR) = P0 = 16 percent` and `TMPR = exp(LT0) = 1.6 h`.
-- **Source aliases:**
-  - `Dose` -- used in `Rohatagi_2008_apricoxib.R` (Rohatagi 2008 equations 13 to 15, "Dose_i is the patient's dose"; studied levels 0 [placebo], 10, 50, 100 and 200 mg).
-- **Example models:** `Rohatagi_2008_apricoxib.R` (drives the saturable meaningful-pain-relief probability of equation 13, the saturable onset-time ratio of equation 14, and the log-linear onset time of equation 15).
-- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (siblings: `DOSE_CIPARGAMIN_MG`, `DOSE_CABAMIQUINE_MG`, `DOSE_TBPPI_MG`, `DOSE_RIMEGEPANT_MG`). A dedicated column rather than the generic `DOSE` canonical for two reasons: `DOSE` is consumed by `etTrans()` and is not visible inside `model()`, and a placebo subject has no dose record at all, so `podo(depot)` cannot distinguish "placebo" from "before the first dose" while an explicit 0 in this column can. `APRICOXIB` is the INN of the molecule the source papers name only by the Sankyo development code CS-706, per the library's generic-name-over-development-code convention. Distinct from `DOSE_HIGH`, which is the Kastrissios 2006 supratherapeutic-cohort indicator gating the two-typical-value apparent oral clearance and is always 0 in the Rohatagi 2008 dental-pain cohort. Populate this column with the same amount the depot dose record carries.
-
-### STUDY_NO16853 (**canonical for the Bruno 2012 metastatic-breast-cancer study NO16853 cohort indicator**)
-- **Description:** Binary indicator for the randomized phase II noninferiority study NO16853 in the Bruno 2012 pooled metastatic-breast-cancer analysis: 1 = NO16853, 0 = the pivotal phase III study SO14999. Time-fixed per subject. Study NO16853 compared capecitabine 825 mg/m^2 twice daily with the registered 1,250 mg/m^2 dose, both plus docetaxel 75 mg/m^2; SO14999 established the registered dose against single-agent docetaxel roughly a decade earlier.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 (study SO14999).
-- **Source aliases:**
-  - `STUD` -- Bruno 2012 NONMEM `$INPUT` column; the control stream tests `IF(STUD.EQ.2)`, i.e. `STUD = 2` is NO16853 and `STUD = 1` is SO14999.
-  - `Study effect` -- Bruno 2012 Table 1 and Table 2 covariate row label.
-- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (selects the study-specific additive residual error SD, sqrt(332) = 18.22 mm for SO14999 versus sqrt(112) = 10.58 mm for NO16853), `Bruno_2012_capecitabine_docetaxel_os.R` and `Bruno_2012_capecitabine_docetaxel_pfs.R` (log-normal accelerated-failure-time effects on log median OS and PFS, entered on Bruno 2012's 1 / 2 code as `e_studyno16853_tmed * (1 + STUDY_NO16853)`).
-- **Notes:** The indicator carries three distinct effects across the paper's three models, which is why it is a single column rather than three. Bruno 2012 attributes the longer survival in NO16853 to a change in the standard of care between the two studies (the prognostic factors in the model could not explain it) and the longer PFS partly to the different progression-assessment criteria -- WHO in SO14999, RECIST in NO16853 -- which is also the stated reason for the larger residual error in the older study. The clinical trial simulations in the paper were conditioned on NO16853, so `STUDY_NO16853 = 1` is the natural setting when re-running the published framework.
+  - `COV2` -- Lin 2026 Methods 2.1 and the `$INPUT` column of Data S1/S2; per-subject constant column in the deposited Data S3 example dataset. The paper's `COVT2(t) = COV2 * log(t + 20)` is the model-side transform, not a data column.
+- **Example models:** `Lin_2026_sc1cmt_coxTte.R` (founding example; enters the Cox hazard ratio as `beta2 * SIMCOV_TV * log(t + 20)` with `beta2 = 0.05`).
+- **Notes:** General scope, ratified 2026-09-02 (task `oare_PMC13106229` sidecar request-001 q1, answer A). **The `TV` suffix denotes how the column ENTERS the model, not the data column's own time-variation** -- in the founding example the deposited `COV2` column is a per-subject constant, and the whole point of the paper is that a time-invariant draw can be given a time-varying effect. A model whose data column genuinely varies within a subject uses this same name; the distinction that matters downstream is the model-side one. The time transform itself is model-specific and belongs in `model()` with a source-trace comment, not in this register -- Lin 2026 explicitly describes its `log(t + 20)` form as "an arbitrary logarithmic time function for demonstration purposes" whose additive constant "has no clinical interpretation". Paired with `SIMCOV_TI`.
