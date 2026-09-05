@@ -598,6 +598,8 @@ navbar:
         href: articles/Ekhart_2008_carboplatin.html
       - text: "Carboplatin (Zandvliet 2008)"
         href: articles/Zandvliet_2008_carboplatin.html
+      - text: "Carboxyprimaquine (Chotsiri 2024)"
+        href: articles/Chotsiri_2024_primaquine_metabolites.html
       - text: "Carfentanil iv (Mann 2022)"
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Carvedilol (Honda 2005)"
@@ -3064,10 +3066,14 @@ navbar:
         href: articles/Mehta_2023_tb_lesion_mpbpk.html
       - text: "Prexasertib mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
+      - text: "Primaquine (Chotsiri 2024)"
+        href: articles/Chotsiri_2024_primaquine_metabolites.html
       - text: "Primaquine (Wattanakul 2024)"
         href: articles/Wattanakul_2024_primaquine_lactation.html
       - text: "Primaquine motherinfant (Wattanakul 2024)"
         href: articles/Wattanakul_2024_primaquine_lactation.html
+      - text: "PrimaquineCarbamoylGlucuronide (Chotsiri 2024)"
+        href: articles/Chotsiri_2024_primaquine_metabolites.html
       - text: "Procainamide (Mohamed 2013)"
         href: articles/Mohamed_2013_procainamide.html
       - text: "Proguanil (Khwarg 2024)"
@@ -4607,6 +4613,7 @@ articles:
   - articles/Choi_2018_metformin
   - articles/Chotsiri_2019_lumefantrine
   - articles/Chotsiri_2019_piperaquine
+  - articles/Chotsiri_2024_primaquine_metabolites
   - articles/Choules_2024_vedotin_ddi
   - articles/Choy_2016_T2DM_WHIG
   - articles/Chua_2025_mirikizumab
