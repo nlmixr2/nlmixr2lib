@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chotsiri 2024 primaquine, carboxy-primaquine and primaquine carbamoyl-glucuronide ([doi:10.1186/s12936-024-04979-y](https://doi.org/10.1186/s12936-024-04979-y)) -- G6PD-deficient and G6PD-normal adult African males.
+- Add D'Agate 2024 aciclovir ([doi:10.1002/prp2.1193](https://doi.org/10.1002/prp2.1193)) -- term and pre-term neonates with suspected systemic herpes simplex virus infection.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
