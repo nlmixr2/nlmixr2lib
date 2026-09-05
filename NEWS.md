@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Su 2024 tigecycline ([doi:10.3389/fphar.2024.1342947](https://doi.org/10.3389/fphar.2024.1342947)) -- critically ill adults in a Chinese ICU.
+- Add Bhatnagar 2024 upadacitinib population PK and ASAS20/ASAS40 exposure-response models ([doi:10.1111/cts.13733](https://doi.org/10.1111/cts.13733)) -- adults with axial spondyloarthritis.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
