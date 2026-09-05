@@ -2432,6 +2432,8 @@ navbar:
         href: articles/Li_2025_modakafuspAlfa.html
       - text: "Mogamulizumab (Mukai 2019)"
         href: articles/Mukai_2019_mogamulizumab.html
+      - text: "Molnupiravir (Bihorel 2023)"
+        href: articles/Bihorel_2023_molnupiravir.html
       - text: "Monalizumab (Hwang 2023)"
         href: articles/Hwang_2023_monalizumab.html
       - text: "Moroctocog (Abrantes 2017)"
@@ -4456,6 +4458,7 @@ articles:
   - articles/Bienczak_2016_efavirenz
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
+  - articles/Bihorel_2023_molnupiravir
   - articles/Bijleveld_2016_gentamicin
   - articles/Bijleveld_2017_gentamicin
   - articles/Biliouris_2018_nusinersen
