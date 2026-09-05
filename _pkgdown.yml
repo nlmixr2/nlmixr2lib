@@ -2020,6 +2020,8 @@ navbar:
         href: articles/Wang_2012_levetiracetam.html
       - text: "Levocetirizine (Hussein 2005)"
         href: articles/Hussein_2005_levocetirizine.html
+      - text: "Levodopa (Suksai 2026)"
+        href: articles/Suksai_2026_levodopa.html
       - text: "Levofloxacin (Denti 2018)"
         href: articles/Denti_2018_levofloxacin.html
       - text: "Levofloxacin (Lee 2025)"
@@ -5707,7 +5709,7 @@ articles:
   - articles/Su_2016_dexmedetomidine
   - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
-  - articles/Sulaiman_2026_piperacillin_tazobactam
+  - articles/Suksai_2026_levodopa
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
   - articles/Sun_2023_maribavir

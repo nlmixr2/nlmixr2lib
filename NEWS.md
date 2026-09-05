@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Baklouti 2026 amoxicillin ([doi:10.1002/bcp.70434](https://doi.org/10.1002/bcp.70434)) -- breastfeeding women, maternal plasma and breast milk.
+- Add Suksai 2026 levodopa ([doi:10.3389/fphar.2026.1817435](https://doi.org/10.3389/fphar.2026.1817435)) -- virtual cohort of adults with Parkinson's disease.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
