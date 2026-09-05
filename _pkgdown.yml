@@ -1918,6 +1918,8 @@ navbar:
         href: articles/Hennig_2007_itraconazole.html
       - text: "Ivermectin (Alshehri 2023)"
         href: articles/Alshehri_2023_ivermectin.html
+      - text: "Ivermectin (Fimbo 2023)"
+        href: articles/Fimbo_2023_ivermectin.html
       - text: "Ixazomib (Gupta 2015)"
         href: articles/Gupta_2015_ixazomib.html
       - text: "Ixazomib (Gupta 2017)"
@@ -4758,6 +4760,7 @@ articles:
   - articles/FiedlerKelly_2019_fremanezumab
   - articles/FiedlerKelly_2020_fremanezumab_cm
   - articles/FiedlerKelly_2020_fremanezumab_em
+  - articles/Fimbo_2023_ivermectin
   - articles/Fisher_2008_fosamprenavir
   - articles/Flint_2017_s_ketamine
   - articles/Foissac_2011_atazanavir
