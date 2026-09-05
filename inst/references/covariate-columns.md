@@ -294,9 +294,9 @@ notes: <free text>
 - **Scope:** specific
 - **Reference category:** n/a -- typically used as `(WT_BASE - ref)` in an exponential or linear-deviation effect on a structural parameter, where `ref` is the cohort median baseline weight.
 - **Source aliases:**
-  - `BWT` (baseline weight) -- Wahlby 2004 source-column convention; used in `Wahlby_2004_pefloxacin.R`.
-- **Example models:** `Wahlby_2004_pefloxacin.R` (reference 65 kg; saturating "up to median WT" qualifier from Wahlby 2004 Methods plateaus the effect above 65 kg, encoded as `min(WT_BASE, 65) - 65`).
-- **Notes:** Specific scope because the BCOV/DCOV decomposition pattern is paper-defined: `WT_BASE` exists conceptually as a per-subject snapshot of baseline weight that the original modeller chose to enter separately from the time-varying weight column. Promote to `general` if a second paper ratifies the same baseline-weight column with consistent semantics. Distinct from time-fixed adult-cohort weight (where the per-subject weight is just constant by data design); use `WT_BASE` only when the source paper deliberately separates the BCOV from the time-varying COV.
+  - `BWT` (baseline weight) -- Wahlby 2004 source-column convention; also the Verrest 2023 `$INPUT` column name, annotated there as "BWT: baseline body weight (kg)"; used in `Wahlby_2004_pefloxacin.R` and `Verrest_2023_paromomycin.R`.
+- **Example models:** `Wahlby_2004_pefloxacin.R` (reference 65 kg; saturating "up to median WT" qualifier from Wahlby 2004 Methods plateaus the effect above 65 kg, encoded as `min(WT_BASE, 65) - 65`), `Verrest_2023_paromomycin.R` (reference 27.5 kg, the cohort median; standard allometric power scaling, exponent 0.75 on CL/F and Q/F and 1.00 on Vc/F and Vp/F, in Eastern African children and adults with visceral leishmaniasis).
+- **Notes:** Specific scope because the BCOV/DCOV decomposition pattern is paper-defined: `WT_BASE` exists conceptually as a per-subject snapshot of baseline weight that the original modeller chose to enter separately from the time-varying weight column. Distinct from time-fixed adult-cohort weight (where the per-subject weight is just constant by data design); use `WT_BASE` only when the source paper deliberately separates the BCOV from the time-varying COV. Verrest 2023 is a second, weaker ratification: its dataset carries both a time-varying `WT` and a baseline `BWT` column and its control stream deliberately writes the allometry against `BWT`, but it does **not** use Wahlby's within-subject delta form `(WT - WT_BASE)` -- it simply prefers baseline weight as the size descriptor. (The paper's own Table 3 equation prints the subscript as `WT_i,t`, which would imply the time-varying column; the control stream is the executed model and disagrees.) Scope is therefore left at `specific`; promote to `general` once a further paper ratifies the column, ideally one using the delta form.
 
 
 ### BSA_BASE (**canonical for per-subject baseline body surface area (time-fixed)**)
@@ -15831,46 +15831,13 @@ sibling such as `AUC_BAST_FW`.
 - **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (selects the study-specific additive residual error SD, sqrt(332) = 18.22 mm for SO14999 versus sqrt(112) = 10.58 mm for NO16853), `Bruno_2012_capecitabine_docetaxel_os.R` and `Bruno_2012_capecitabine_docetaxel_pfs.R` (log-normal accelerated-failure-time effects on log median OS and PFS, entered on Bruno 2012's 1 / 2 code as `e_studyno16853_tmed * (1 + STUDY_NO16853)`).
 - **Notes:** The indicator carries three distinct effects across the paper's three models, which is why it is a single column rather than three. Bruno 2012 attributes the longer survival in NO16853 to a change in the standard of care between the two studies (the prognostic factors in the model could not explain it) and the longer PFS partly to the different progression-assessment criteria -- WHO in SO14999, RECIST in NO16853 -- which is also the stated reason for the larger residual error in the older study. The clinical trial simulations in the paper were conditioned on NO16853, so `STUDY_NO16853 = 1` is the natural setting when re-running the published framework.
 
-### SELFADMIN (**canonical for self-administered (not directly observed) dosing-occasion indicator**)
-- **Description:** 1 = the dosing occasion was self-administered, i.e. taken by the patient or a caregiver without direct supervision by study or clinic staff; 0 = the dosing occasion was directly observed therapy (DOT). Per-DOSING-OCCASION and time-varying within a subject -- a subject typically contributes both observed and unobserved occasions. Acts as an adherence proxy on relative oral bioavailability: an apparent reduction in F on unobserved occasions is the pharmacokinetic signature of missed or partial doses and should be interpreted as such rather than as a true absorption effect unless the source argues otherwise.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** general
-- **Reference category:** 0 (directly observed therapy). Encoded multiplicatively as `e_selfadmin_fdepot^SELFADMIN` so the reference occasion is unmodified.
-- **Source aliases:**
-  - `theta Self-administered DP` -- Wallender 2021 Table 2 / Eq. 2 parameter label. Papers that code the complement (1 = directly observed) must invert to this canonical and record the inversion in `covariateData[[SELFADMIN]]$notes`.
-- **Example models:** `Wallender_2021_piperaquine.R` (multiplicative 0.397 on relative oral bioavailability when the second and third daily dihydroartemisinin-piperaquine doses were taken at home rather than in clinic, i.e. 60% lower apparent bioavailability; the authors attribute this to missed doses rather than to absorption).
-- **Notes:** Distinct from a continuous adherence fraction (percentage of prescribed doses taken), which would warrant a separate continuous canonical if a future paper reports one. Distinct from `OCC`, the integer occasion index used to multiplex inter-occasion variability -- the two are commonly carried together, as in Wallender 2021, where each DP course is both an IOV occasion and either observed or unobserved. The polarity is deliberately set to self-administered = 1 so that the coefficient is a bioavailability PENALTY and maps 1:1 onto how sources report it (a fold change below 1 relative to observed dosing), avoiding a reference-category inversion at transcription time. Ratified 2026-09-02 alongside the Wallender 2021 piperaquine extraction (operator decision, sidecar `oare_PMC8602248` request-001 q2, option A).
-
-### TRANSM_HIGH_2015 (**canonical for the 2015 high-malaria-transmission calendar-period indicator**)
-- **Description:** 1 = the record falls within the 2015 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. In Wallender 2021 the high-transmission period is defined as 1 March to 31 August annually in Tororo, Uganda; the complement (all low-transmission months across all study years, pooled) is the reference.
-- **Units:** (binary)
-- **Type:** binary
+### DOSE_MF_CUM_MGKG (**canonical for cumulative administered miltefosine dose per kg body weight**)
+- **Description:** The running total of miltefosine administered to the subject from treatment start up to the current record, divided by body weight, in mg/kg. Time-varying: it increases with every dose and then stays flat through follow-up. Distinct from the per-administration dose level carried by the rest of the `DOSE_<DRUG>_<UNITS>` family -- this column is a cumulative exposure-to-date counter, so its value at a given record depends on the whole preceding dosing history and it is only meaningful once that history is fully specified.
+- **Units:** mg/kg
+- **Type:** continuous
 - **Scope:** specific
-- **Reference category:** 0 -- pooled low-transmission periods. Enters as a multiplicative adjustment on the baseline malaria hazard.
+- **Reference category:** n/a -- enters relative bioavailability as a thresholded power term, held at exactly 1 below a switch value and equal to `(DOSE_MF_CUM_MGKG / ref)^exponent` at and above it. Values observed: switch at 60 mg/kg, normalizing reference 70 mg/kg, exponent -2.40 (Verrest 2023).
 - **Source aliases:**
-  - `theta Transmission period 2015` -- Wallender 2021 Table 2 parameter label.
-- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 1.29 on the baseline incident-malaria hazard).
-- **Notes:** Specific scope because the calendar boundaries and the year-specific magnitudes are tied to one site's transmission history and its indoor-residual-spraying schedule (bendiocarb through 2015, pirimiphos-methyl from 2016), which is why the three annual multipliers span 1.29 to 7.83 rather than sharing a single seasonal value. A model at a different site, or one estimating a single season-independent high-transmission effect, must not reuse these columns; register a site- or study-specific member of the same family instead. Members of the family: `TRANSM_HIGH_2015`, `TRANSM_HIGH_2016`, `TRANSM_HIGH_2017`. The three indicators are mutually exclusive one-hot columns; setting all three to 0 selects the low-transmission reference. Distinct from `SEASON2` (RSV second-season indicator) and `SEMESTER` (paired winter/spring vs summer/fall indicator). Ratified 2026-09-02 alongside the Wallender 2021 piperaquine extraction (operator decision, sidecar `oare_PMC8602248` request-001 q3, option A).
-
-### TRANSM_HIGH_2016 (**canonical for the 2016 high-malaria-transmission calendar-period indicator**)
-- **Description:** 1 = the record falls within the 2016 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. Same calendar definition and reference as `TRANSM_HIGH_2015`.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 -- pooled low-transmission periods.
-- **Source aliases:**
-  - `theta Transmission period 2016` -- Wallender 2021 Table 2 parameter label.
-- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 5.20 on the baseline incident-malaria hazard).
-- **Notes:** See `TRANSM_HIGH_2015`.
-
-### TRANSM_HIGH_2017 (**canonical for the 2017 high-malaria-transmission calendar-period indicator**)
-- **Description:** 1 = the record falls within the 2017 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. Same calendar definition and reference as `TRANSM_HIGH_2015`.
-- **Units:** (binary)
-- **Type:** binary
-- **Scope:** specific
-- **Reference category:** 0 -- pooled low-transmission periods.
-- **Source aliases:**
-  - `theta Transmission period 2017` -- Wallender 2021 Table 2 parameter label.
-- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 7.83 on the baseline incident-malaria hazard).
-- **Notes:** See `TRANSM_HIGH_2015`.
+  - `DDOS` -- the Verrest 2023 NONMEM `$INPUT` column, defined in that stream's dataset description as `AMTT/body weight` where `AMTT` is the total miltefosine dose administered.
+- **Example models:** `Verrest_2023_miltefosine.R` (second of the two bioavailability non-linearities in the Eastern African visceral-leishmaniasis combination-regimen model; reproduces the stagnation of miltefosine accumulation late in the 28-day arm, which the authors attribute to slow, saturable transport of miltefosine across the gastrointestinal membrane).
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (cf. `DOSE_MTX_MGM2`, `DOSE_PHT_MGKGD`, `DOSE_LIDOCAINE_MG`); `DOSE_LIDOCAINE_MG` is the closest structural analogue, being likewise a cumulative total rather than a dose level, but that column is a time-FIXED episode total whereas this one updates through the treatment course. A dedicated column is required rather than the bare `DOSE` canonical because rxode2's event-table translator consumes a column literally named `DOSE` and never exposes it to `model` (see the `DOSE_LIDOCAINE_MG` notes). Two cautions for anyone reusing the Verrest 2023 effect form. First, neither constant is printed in that paper's parameter table: the 60 mg/kg switch appears only in a table footnote and the 70 mg/kg normalizer only in the supplementary control stream, and both had to be confirmed against the paper's own worked example. Second, because the switch value and the normalizer differ, the published effect is **discontinuous** -- `(60/70)^-2.40 = 1.45`, so bioavailability steps up 45% at the switch, decays back through 1 at 70 mg/kg, and only then falls below 1. A future model should record its own switch and reference values explicitly in `covariateData[[DOSE_MF_CUM_MGKG]]$notes` rather than assuming Verrest 2023's pair.
