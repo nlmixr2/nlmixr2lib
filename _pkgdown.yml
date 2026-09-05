@@ -3958,8 +3958,8 @@ navbar:
         href: articles/Almquist_2016_ticagrelor.html
       - text: "Ticarcillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
-      - text: "Tigecycline (Luo 2023)"
-        href: articles/Luo_2023_tigecycline.html
+      - text: "Tigecycline (Su 2024)"
+        href: articles/Su_2024_tigecycline.html
       - text: "Tilmicosin (Chen 2023)"
         href: articles/Chen_2023_tilmicosin.html
       - text: "Tilmicosin pbpk (Sun 2026)"
@@ -5975,6 +5975,7 @@ articles:
   - articles/Struemper_2017_belimumab
   - articles/Struemper_2025_tumorsize_OS_nsclc
   - articles/Su_2016_dexmedetomidine
+  - articles/Su_2024_tigecycline
   - articles/Subrtova_2026_daptomycin
   - articles/Suda_2008_theophylline
   - articles/Suksai_2026_levodopa

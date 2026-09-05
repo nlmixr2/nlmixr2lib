@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rodriguez-Fernandez 2024 warfarin ([doi:10.1016/j.biopha.2023.115977](https://doi.org/10.1016/j.biopha.2023.115977)) -- Caribbean Hispanic (Puerto Rican) adults on long-term anticoagulation.
+- Add Su 2024 tigecycline ([doi:10.3389/fphar.2024.1342947](https://doi.org/10.3389/fphar.2024.1342947)) -- critically ill adults in a Chinese ICU.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
