@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nie 2023 nalbuphine ([doi:10.3389/fphar.2023.1130287](https://doi.org/10.3389/fphar.2023.1130287)) -- adults undergoing general anaesthesia surgery.
+- Add Seo 2023 cefepime ([doi:10.3947/ic.2022.0087](https://doi.org/10.3947/ic.2022.0087)) -- critically ill adults with hospital-acquired or ventilator-associated pneumonia.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
