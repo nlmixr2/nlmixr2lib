@@ -3806,6 +3806,8 @@ navbar:
         href: articles/vanOs_2024_temocillin.html
       - text: "Temozolomide (Mazzocco 2015)"
         href: articles/Mazzocco_2015_temozolomide.html
+      - text: "Tenecteplase (Tang 2023)"
+        href: articles/Tang_2023_tenecteplase.html
       - text: "Tenofovir (Baheti 2011)"
         href: articles/Baheti_2011_tenofovir.html
       - text: "Tenofovir (Yu 2026)"
@@ -5866,6 +5868,7 @@ articles:
   - articles/Tan_2009_artesunate
   - articles/Tanaka_2012_phenytoin
   - articles/Tang_2019_amoxicillin
+  - articles/Tang_2023_tenecteplase
   - articles/Tang_2026_vixarelimab
   - articles/Tao_2025_meropenem
   - articles/Tarning_2008_piperaquine
