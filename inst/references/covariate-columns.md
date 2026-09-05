@@ -6068,6 +6068,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Schreib_2024_busulfan.R` (exponential effect on the elimination rate constant: `exp(-0.210 * DIS_ALL)`, about a 19% lower `k` and `CL`; 13 of 124 patients, 10%).
 - **Notes:** Lineage-agnostic ALL indicator. Distinct from `DIS_BCPALL`, which is specifically B-cell *precursor* ALL against a paper-defined reference of B-cell non-Hodgkin lymphoma or other non-BCP-ALL indication; `DIS_BCPALL` additionally conflates disease type with a bioanalytical-assay difference in its founding model and is not interchangeable with `DIS_ALL`. Use `DIS_ALL` when the source pools all ALL lineages against a general non-ALL reference. Scope: specific because the complement reference category is paper-defined.
 
+### DIS_TALL (**canonical for T-cell acute lymphoblastic leukemia disease-subtype indicator**)
+- **Description:** 1 = patient whose disease subtype is T-cell acute lymphoblastic leukemia (T-ALL), 0 = any other ALL / lymphoblastic-lymphoma subtype pooled in the source analysis. Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-T-ALL; the complement group is paper-defined -- for Lin 2023 the reference pools B-cell ALL 74.1%, T-cell lymphoblastic lymphoma 9.6% and B-cell lymphoblastic lymphoma 0.6%).
+- **Source aliases:**
+  - `Disease subtype (T-ALL)` -- used in `Lin_2023_asparaginaseErwiniaRecombinant.R` (Lin 2023 Table 2 row label; the printed final-model equation multiplies clearance by `0.771 [if T-ALL disease subtype]`).
+- **Example models:** `Lin_2023_asparaginaseErwiniaRecombinant.R` (multiplicative fractional-change effect on serum-asparaginase-activity clearance: `0.771^DIS_TALL`, i.e. 22.9% lower CL in T-ALL; 26 of 166 patients, 15.7%).
+- **Notes:** The indicator is T-**ALL** specifically and NOT T-lineage generally: in the founding model the 9.6% of patients with T-cell lymphoblastic *lymphoma* sit in the reference group, because Lin 2023 screened primary disease (ALL vs LBL) and disease subtype (B-cell vs T-cell) as separate covariates and retained only the T-ALL cell of that cross-classification. Do not widen this name to "T-lineage" without registering a separate canonical. Distinct from `DIS_ALL` (lineage-agnostic ALL against a general non-ALL reference) and from `DIS_BCPALL` (B-cell precursor ALL against a B-cell non-Hodgkin-lymphoma reference); the three are complementary rather than interchangeable, and a source that resolves B- versus T-lineage within an all-ALL cohort wants `DIS_TALL`. Scope: specific until a second ALL popPK model ratifies the reference-category semantics.
+
 ### DIS_HLHXLP (**canonical for hemophagocytic lymphohistiocytosis / X-linked lymphoproliferative disease indicator**)
 - **Description:** 1 = patient with hemophagocytic lymphohistiocytosis (HLH) or X-linked lymphoproliferative disease (XLP), 0 = any other indication pooled in the source analysis. Time-fixed per subject. The two diagnoses are pooled into one indicator because the source analyses that use it treat them as a single disease group.
 - **Units:** (binary)

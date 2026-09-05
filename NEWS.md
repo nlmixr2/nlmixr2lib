@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Jansen 2023 itraconazole ([doi:10.1093/jac/dkad072](https://doi.org/10.1093/jac/dkad072)) -- allogeneic haematopoietic cell transplant recipients.
+- Add Lin 2023 recombinant Erwinia chrysanthemi asparaginase (JZP458) ([doi:10.1111/cts.13499](https://doi.org/10.1111/cts.13499)) -- pediatric and young-adult patients with acute lymphoblastic leukemia or lymphoblastic lymphoma.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

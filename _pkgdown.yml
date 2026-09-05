@@ -306,8 +306,8 @@ navbar:
         href: articles/Lv_2025_asc10a.html
       - text: "Asenapine (Dogterom 2018)"
         href: articles/Dogterom_2018_asenapine.html
-      - text: "ASP8232 (Snelder 2020)"
-        href: articles/Snelder_2020_ASP8232.html
+      - text: "AsparaginaseErwiniaRecombinant (Lin 2023)"
+        href: articles/Lin_2023_asparaginaseErwiniaRecombinant.html
       - text: "Aspirin (Koh 2025)"
         href: articles/Koh_2025_aspirin.html
       - text: "Astegolimab (Kotani 2022)"
@@ -5341,6 +5341,8 @@ articles:
   - articles/Lim_2026_leuprolide
   - articles/Lin_2018_voriconazole
   - articles/Lin_2020_glasdegib_AML_overall_survival
+  - articles/Lin_2023_asparaginaseErwiniaRecombinant
+  - articles/Lin_2024_TB_multistate
   - articles/Lin_2024_adverseEvent_markov
   - articles/Lin_2024_casirivimab
   - articles/Lin_2024_pozelimab
