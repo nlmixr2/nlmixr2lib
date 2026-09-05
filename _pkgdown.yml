@@ -1956,6 +1956,8 @@ navbar:
         href: articles/Hennig_2006_itraconazole.html
       - text: "Itraconazole (Hennig 2007)"
         href: articles/Hennig_2007_itraconazole.html
+      - text: "Itraconazole (Jansen 2023)"
+        href: articles/Jansen_2023_itraconazole.html
       - text: "Ivermectin (Alshehri 2023)"
         href: articles/Alshehri_2023_ivermectin.html
       - text: "Ixazomib (Gupta 2015)"
@@ -5100,7 +5102,7 @@ articles:
   - articles/Jager_2011_gemtuzumab
   - articles/Jain_2011_sorafenib
   - articles/Jaiswal_2025_dordaviprone
-  - articles/Jang_2023_zaltoprofen
+  - articles/Jansen_2023_itraconazole
   - articles/Janssen_2017_cabazitaxel_phenotyping
   - articles/Janssen_2023_pregnancy_cytotoxics
   - articles/Jansson_2008_eflornithine
