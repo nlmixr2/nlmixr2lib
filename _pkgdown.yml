@@ -4044,6 +4044,8 @@ navbar:
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
         href: articles/Takada_2025_vancomycin.html
+      - text: "Vancomycin (Yoon 2023)"
+        href: articles/Yoon_2023_vancomycin.html
       - text: "Vancomycin (Yu 2025)"
         href: articles/Yu_2025_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
@@ -5965,6 +5967,7 @@ articles:
   - articles/Yoneyama_2017_emicizumab
   - articles/Yoo_2009_cilostazol
   - articles/Yoon_2013_metformin
+  - articles/Yoon_2023_vancomycin
   - articles/Yoshida_2018_coproporphyrin_I_GDC0810
   - articles/Yoshida_2018_coproporphyrin_I_rifampin
   - articles/Yoshida_2021_ipatasertib

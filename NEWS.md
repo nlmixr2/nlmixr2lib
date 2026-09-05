@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yoon 2023 vancomycin ([doi:10.3389/fphar.2023.1252757](https://doi.org/10.3389/fphar.2023.1252757)) -- hospitalised Korean adults and children receiving intravenous vancomycin.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
