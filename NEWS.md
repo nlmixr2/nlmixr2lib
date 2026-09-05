@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Liang 2024 lenalidomide ([doi:10.1038/s41598-024-52460-2](https://doi.org/10.1038/s41598-024-52460-2)) -- Chinese adults with multiple myeloma, lymphoma or myelodysplastic syndrome.
+- Add Volkova 2023 lipid-lowering MACE-component meta-regression ([doi:10.3389/fcvm.2023.1242845](https://doi.org/10.3389/fcvm.2023.1242845)) -- 270,471 adults with dyslipidemia across 54 statin and anti-PCSK9 randomised trials.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
