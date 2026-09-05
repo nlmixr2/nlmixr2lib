@@ -1131,6 +1131,30 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 - **Example models:** `Snelder_2019_leuprorelin_4m.R`.
 - **Notes:** See the `logitfrel2` entry; the share is nested, not a fraction of the whole dose.
 
+### wdist (**canonical bare amplitude of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lwdist`; the natural-scale amplitude used inside `model()` as `wdist <- exp(lwdist)`.
+- **Source aliases:** `w`, `q` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
+
+### kdist (**canonical bare decay rate of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkdist`; the natural-scale decay rate used inside `model()` as `kdist <- exp(lkdist)`.
+- **Source aliases:** `p` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
+
+### flnode, v_lnode, k_lnode_central (**canonical bare lymph-node absorption-limb parameters**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lflnode`, `lv_lnode` and `lk_lnode_central`. `flnode` is the unitless fraction of an absorbed subcutaneous dose routed through the `lnode` compartment rather than straight into `central`; `v_lnode` is the lymph-node volume that converts the node amount to the `Clnode` observable; `k_lnode_central` is the first-order rate constant returning drug from the node to plasma (1 / time). Together they are the lymphatic limb of a subcutaneous-absorption model.
+- **Source aliases:**
+  - `Frc` -- lymphatic absorption fraction (Wu 2012).
+  - `VLN` -- lymph-node volume (Wu 2012).
+  - `ka2` -- node-to-plasma return rate constant (Wu 2012).
+- **Example models:** `Wu_2012_bevacizumab_mouse.R`. Bare-form `v_lnode` precedent as a hardcoded physiological constant: `Ramachandran_2023_rifampicin_pbpk.R` and its isoniazid / ethambutol / pyrazinamide siblings.
+- **Notes:** Registered 2026-09-02 together with the log-transformed family; see `lflnode`, `lv_lnode` and `lk_lnode_central` above for the ratification rationale, for the collision against the existing `f_lymph` (lymph FLOW fraction), and for why `ka2` is not carried as `lka2`. Pair with the `lnode` compartment, the `Clnode` observable, and the `propSd_Clnode` residual.
+
+---
+
 ## Paper-named mechanistic parameters
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
@@ -2265,6 +2289,62 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `CPA` = 4.13, RSE 17.1%, giving the paper's reported 80.5% reduction in endogenous GnRH activity and a consequent 67.3% reduction in typical testosterone; `omega^2` = 1.15 with covariances to every other testosterone-model eta).
 - **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. Encoded as a structural parameter rather than through the `e_<cov>_<param>` covariate-effect grammar because the source reports it in the fixed-effects parameter table with its own IIV and a full covariance row set against the other mechanistic etas, and the covariate-effect grammar has no slot for a random effect. Closest registered sibling is `iplac`, likewise a driver-free constant fractional modifier of a rate; the difference is that `iplac` is bounded in [0, 1] and subtracts, whereas `cpa` is an unbounded positive divisor. Distinct from `imax`, which is the maximum of a driver-dependent sigmoid inhibition. A future antiandrogen or flare-prophylaxis model that reports a *dose*- or *concentration*-dependent effect should not reuse this name.
 
+### led50 (**canonical log-transformed half-maximal DOSE**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed administered DOSE producing a half-maximal response, i.e. the dose-axis sibling of `lec50`. Carries the units of the administered dose (mg, ug, umol/kg, ...), NOT concentration units. The founding use is a saturable relative bioavailability of the standard-saturation (`Emax`) form `frel = ed50 / (dose + ed50)`, which equals 1 as the dose approaches 0 and 0.5 at `dose = ed50`. Inside `model()` the bare name is `ed50`.
+- **Source aliases:**
+  - `D50` -- Kastrissios 2006 notation ("the dose at which `Frel` is half maximal"; Table IV row "D50 for F, mg" = 221 mg).
+- **Example models:** `Kastrissios_2006_apricoxib.R` (founding example; `led50 <- log(221)` with `frel <- exp(e_evening_fdepot * evening) * ed50 / (podo(depot) + ed50)` applied via `f(depot)`, reproducing the paper's abstract claim of a "50% reduction at 221 mg").
+- **Notes:** Ratified 2026-08-26 alongside the Kastrissios 2006 apricoxib (CS-706) extraction (sidecar request-001 q3, option A). Deliberately axis-agnostic in the same way `lki50` is: the name records only that the sigmoid's x-axis is the administered DOSE, so a future dose-response PD model whose half-maximal point is a dose rather than a plasma concentration can reuse it. Distinct from `lec50` / `lic50`, which are half-maximal CONCENTRATIONS -- reusing `lec50` for a dose would make the model's units incoherent and mislead a reader into treating the value as a plasma concentration. Distinct also from the covariate-effect family `e_<cov>_<param>`: `ed50` is a structural constant of the bioavailability (or dose-response) model, not a slope on a covariate. Not every dose-dependent-`F` model needs it -- `Wada_2023_sparsentan.R` and `Comisar_2025_rimegepant.R` both use power forms on the `DOSE` covariate and `Maleki_2024_brepocitinib.R` uses a `DOSE_HIGH` step; reach for `led50` only when the source reports a genuine half-maximal dose constant. A downstream user must read the dose units off `label()`, since they are model-specific by construction.
+
+### ed50 (**canonical bare half-maximal DOSE**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `led50`; the half-maximal-response administered dose on the linear scale, for use inside `model()`.
+- **Source aliases:**
+  - `D50` -- Kastrissios 2006 notation.
+- **Example models:** `Kastrissios_2006_apricoxib.R`.
+
+### fm_cyp3a4 (**canonical fraction metabolised by CYP3A4**)
+- **Type:** paper-named-param
+- **Role:** Fraction of a drug's total metabolic clearance mediated by CYP3A4. Unitless, in [0, 1]. Almost always `fixed()` from a reaction-phenotyping or retrograde-modelling result rather than estimated. Load-bearing in any CYP3A4 drug-interaction model, because it sets the ceiling on the attainable AUC ratio for a complete inhibitor at `1 / (1 - fm_cyp3a4)` and determines what share of clearance a modulator can move at all.
+- **Source aliases:** `fm CYP3A4`, `fm,CYP3A4`, `fm3A4` -- the usual table-row spellings.
+- **Example models:** `Jaiswal_2025_dordaviprone.R` (`fm_cyp3a4` fixed at 0.8 per Jaiswal 2025 Table 1, the remaining 0.2 being CYP2D6; the implied ceiling of 1/0.2 = 5.0 on a complete-inhibitor AUC ratio sits just above the paper's reported strong-inhibitor value of 4.62, which is an internal consistency check on the reported value).
+- **Notes:** A member of the `fm_<pathway>` family -- the suffixed form of the registered `fm` canonical, where `<pathway>` names the enzyme or metabolite the fraction is routed through. Other members already shipping in the modeldb (`fm_carbo`, `fm_cyp3a5`, `fm_h4`, `fm_m3g`, `fm_m6g`, `fm_other`) are not individually registered here; only `fm_cyp3a4` was ratified with this entry, and a future extraction that needs another member should backfill it the same way. Use the enzyme-suffixed clearance arms (`lcl_2b6`, `lcl_2a6`, `lcl_ugt`) instead when the paper parameterises per-pathway *clearances* that sum to a total, and `fm_<pathway>` when it reports dimensionless fractions of a single total. **Known open item, deliberately not resolved here:** the modeldb contains both `fm_other` and `fm_others`; one is a typo and they should be reconciled when the family is next touched. Ratified 2026-08-20 (operator sidecar, `oare_PMC12521050` q2 = A).
+
+### lkadair1, kadair1, lkadair2, kadair2 (**canonical constants of the Adair biphasic effect function**)
+- **Type:** paper-named-param
+- **Role:** The two denominator constants of an Adair biphasic (bell-shaped) drug-effect function, `Sd = Smax * C / (kadair1 + C + kadair2 * C^2)`. `kadair1` is the LINEAR denominator constant and carries concentration units; `kadair2` is the QUADRATIC self-inhibition constant and carries RECIPROCAL concentration units, and it is the term that creates the descending limb, so the effect peaks at `C = sqrt(kadair1 / kadair2)`. Both are strictly positive and are log-transformed in `ini()` as `lkadair1` / `lkadair2`, bare inside `model()`. `Smax` uses the existing `lsmax` / `smax` naming. Use this family for any biphasic concentration-response of Adair or substrate-inhibition shape, not only for the glucose-insulin case.
+- **Source aliases:**
+  - `k1` / `k2` -- Gao 2012 eq. 7 and Table 4 ("First receptor binding constant", "Second receptor binding constant").
+- **Example models:** `Gao_2012_exenatide_glucose_insulin_rat.R` (`k1 = 0.826 nM`, `k2 = 0.0153 1/nM`; exendin-4's insulinotropic effect rises to a maximum near 7.4 nM and falls at higher concentrations, matching the bell-shaped in vitro and in vivo dose-response the paper cites; founding example).
+- **Notes:** Ratified 2026-09-02 (task `oare_PMC3336795` sidecar request-001 q1, answer A). The `adair` infix is load-bearing and deliberately NOT the paper's bare `k1` / `k2`: this register already carries `k1` and `k2` as the ASSOCIATION and DISSOCIATION rate constants of reversible binding, which are 1/(conc*time) and 1/time, so reusing them here would give one name two dimensionalities -- and the numbered pair would additionally be read as the `k12` / `k21` micro-constants. The two constants are numbered rather than role-named (`kadair` / `kadair_inh` was the rejected option B) to keep the direct visual mapping onto the paper's printed `k1` / `k2`; the role is recorded in the `label()`. Reusing `km` for `kadair1` (rejected option C) was declined because `km` denotes a true Michaelis constant of a saturable process, whereas `kadair1` is a denominator coefficient of a stimulation factor. Note that the paper's own mechanistic reading of the two constants (Discussion: a 1:1 complex that may dissociate or bind a second drug molecule) is an interpretation of an empirical fit, not a separately identified binding model -- the TMDD `kon` / `koff` of the same paper are the real binding constants.
+
+### lsstim_&lt;driver&gt;_&lt;target&gt;, sstim_&lt;driver&gt;_&lt;target&gt; (**canonical linear inter-pool stimulation factor**)
+- **Type:** paper-named-param
+- **Role:** Linear stimulation slope of one turnover pool on another pool's turnover, entering as `(1 + sstim_<driver>_<target> * (<driver> - <driver_baseline>))`. Units are the reciprocal of the DRIVER's concentration units, so two members of the same feedback loop routinely carry different scales. `<driver>` and `<target>` are the canonical compartment / analyte stems from `compartment-names.md`, named in that order, so the direction of the effect is readable without consulting the source. Log-transformed in `ini()` as `lsstim_<driver>_<target>`, bare inside `model()`. Pairs naturally with the `lkin_<analyte>` / `lkout_<analyte>` turnover family.
+- **Source aliases:**
+  - `SGlu` / `SIns` -- Gao 2012 eqs. 5-6 and Table 4 ("Stimulation factor of glucose on insulin secretion", "Stimulation factor of insulin on glucose disposal").
+- **Example models:** `Gao_2012_exenatide_glucose_insulin_rat.R` (`sstim_glucose_insulin = 0.0684 1/mM`, `sstim_insulin_glucose = 0.157 1/nM`; founding example).
+- **Notes:** Ratified 2026-09-02 (task `oare_PMC3336795` sidecar request-001 q2, answer A). The paper's own short names `sglu` / `sins` (rejected option B) were declined because they do not say which pool is driver and which is target -- fatal in a feedback loop where both pools are simultaneously both. `lslope_<target>` (rejected option C) was declined for the same ambiguity and because it would overload `slope`, which in this register denotes a concentration-response LINE (`lslope0` / `lslope_inf` in `Liesenfeld_2006_dabigatran_ECT.R`) or an assay cross-calibration slope (`cal_slope_<assay>`), neither of which is an indirect-response coefficient. Do NOT use this family for a drug's effect on a pool: a drug-driven stimulation of production or loss is `lsmax` / `lemax` with its own potency term. This family is specifically for a BIOMARKER driving another biomarker's turnover. When the driver's elevation is rectified at zero (the effect switching off below baseline), that gating belongs in `model()` as a `(delta > 0)` factor, not in a second parameter.
+
+### kon_placebo, koff_placebo (**canonical placebo kinetic-system onset and offset rate constants**)
+- **Type:** paper-named-param
+- **Role:** The two first-order rate constants (1 / time) of a hypothetical placebo "kinetic" system: `kon_placebo` moves a dimensionless dummy dose out of `depot_placebo` into `central_placebo`, and `koff_placebo` removes it from `central_placebo` (see the `depot_placebo` / `central_placebo` pair in `compartment-names.md`). Together they set the time-course -- onset, peak and washout -- of the placebo term of the effect model, whose magnitude is set separately by `slope_placebo`. Strictly positive, so `ini()` normally carries the log-transformed `lkon_placebo` / `lkoff_placebo` form; use it whenever the source reports the IIV as a percent CV.
+- **Source aliases:**
+  - `k_on`, `KON` -- "rate constant for onset of placebo response" (Ravva 2015 Supplementary Table S1).
+  - `k_off`, `KOFF` -- "rate constant for offset of placebo response" (Ravva 2015 Supplementary Table S1).
+- **Example models:** `Ravva_2015_varenicline.R` (`lkon_placebo = fixed(log(0.0112))`, `lkoff_placebo = fixed(log(0.130))`, both fixed from a placebo-data-only fit before the combined drug fit).
+- **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (sidecar `oare_PMC4832970` request-001 q1, operator answer B), spelled with the full `placebo` token to match `fpg_placebo` / `hba1c_placebo` / `skit_pla`; no `_pbo` suffix exists in these registers. The `_placebo` qualifier is what keeps these clear of the register's deliberate refusal to canonicalise a bare `kon` (see "Why `kon` is NOT canonicalised" below) -- these two carry exactly one dimensionality, 1 / time, because the driven quantity is a dimensionless dummy amount. Distinct from `k1` / `k2`, which are the association and dissociation rate constants of a real reversible binding reaction and whose association member is second-order. Distinct from `lkplacebo` in `Johnston_2019_empagliflozin.R` and `kpbo` in `Nguyen_2025_valbenazine_tmc.R`, which are single onset-rate constants of an *algebraic* asymptotic-exponential placebo term with no kinetic states behind them; use `kon_placebo` / `koff_placebo` only when the paper actually builds the two-state dummy-dose system, because only then does the rise-and-fall shape exist.
+
+### slope_placebo, slope_drug (**canonical linear placebo and drug effect slopes**)
+- **Type:** paper-named-param
+- **Role:** The two coefficients of an additive linear effect model in which the response decomposes as baseline plus placebo plus drug, `E = e0 + slope_placebo * <placebo driver> + slope_drug * <drug concentration>`. `slope_drug` multiplies a real drug concentration, so its units are effect per concentration unit; `slope_placebo` multiplies the placebo kinetic-system driver `central_placebo`, so its units are effect per unit dummy amount and are only interpretable together with the unit-dose convention of that system. Both are kept on the bare, untransformed scale: published values are typically negative (an improvement), which forbids a log transform, and the accompanying IIV is additive.
+- **Source aliases:**
+  - `PSLP`, "placebo response parameter" -- Ravva 2015 Supplementary Table S1.
+  - `DSLP`, "drug response parameter" -- Ravva 2015 Supplementary Table S1.
+- **Example models:** `Ravva_2015_varenicline.R` (`slope_placebo = -3.32` and `slope_drug = -0.192`, both on the logit scale of a 0-100 craving score, each with an additive eta).
+- **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (sidecar `oare_PMC4832970` request-001 q2, operator answer A: `slope_drug`, with its partner spelled `slope_placebo` to match the full-token placebo convention). The two are registered as a pair because the naming only makes sense as a pair -- a model with a single linear drug slope and no placebo arm should use the plain canonical `slope`. An additive eta is load-bearing rather than incidental when the typical slope is negative but small relative to its IIV: it lets a subject's individual slope take either sign, which is what per-subject IPRED panels of such papers show. When a paper fits several parallel linear models of different endpoints, suffix by endpoint (`slope_drug_<endpoint>`) the same way multi-output residual SDs are suffixed.
+
 ## Nested (multi-level) random effects
 
 model in this library to carry a second hierarchical level of random effects.
@@ -2611,3 +2691,33 @@ Prescription, geometry and transport parameters of an extracorporeal blood circu
 - **Source aliases:** `K_m` (McKnite 2026 Results 3.3 and MoBi reaction `MidazolamDegradation`)
 - **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
 - **Notes:** Papers report this in molar units (pmol/mL, umol/L) even when the model is built in mass units; convert with the molecular weight and record the arithmetic in the parameter comment. Pairs with [[vmaxcrrt]].
+
+## Neural-ODE (NODE) network parameters
+
+### nn_w1_rc_1, nn_w1_rc_2, nn_w1_rc_3, nn_w1_rc_4, nn_w1_rc_5 (**canonical NODE input-to-hidden weights, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Input-to-hidden-layer weights of the five-neuron network that replaces the production term of an indirect-response (`rc` = response-compartment) model. Unitless. In the pmxNODE encoding the weight enters as `-(w^2)`, i.e. squared and negated to enforce a monotone-decreasing response, so only the magnitude is identifiable.
+- **Source aliases:**
+  - `Wrc_11` .. `Wrc_15` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_b1_rc_1, nn_b1_rc_2, nn_b1_rc_3, nn_b1_rc_4, nn_b1_rc_5 (**canonical NODE hidden-layer biases, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Hidden-layer biases of the same five-neuron network. Unitless.
+- **Source aliases:**
+  - `brc_11` .. `brc_15` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_w2_rc_1, nn_w2_rc_2, nn_w2_rc_3, nn_w2_rc_4, nn_w2_rc_5 (**canonical NODE hidden-to-output weights, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Hidden-to-output-layer weights of the same five-neuron network. These carry the units of the quantity the network returns -- here a production rate, so response units per time.
+- **Source aliases:**
+  - `Wrc_21` .. `Wrc_25` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_beta_rc (**canonical NODE softplus sharpness, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Sharpness parameter of the softplus activation `softplus(x) = log(1 + exp(beta * x)) / beta`, which approaches a rectified linear unit as beta grows. Unitless, and normally fixed rather than estimated.
+- **Source aliases:**
+  - `beta` -- Braem 2026 Supporting Information Equation 2.
+- **Example models:** `Bram_2026_warfarin_node.R` (`nn_beta_rc = fixed(20)`, the pmxNODE default).
