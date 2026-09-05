@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gasthuys 2023 paracetamol ([doi:10.3390/ph17010053](https://doi.org/10.3390/ph17010053)) — healthy adult beagle dogs and healthy adult men, as two models.
+- Add Kamp 2023 meltdose tacrolimus ([doi:10.3390/pharmaceutics16010017](https://doi.org/10.3390/pharmaceutics16010017)) -- elderly de novo kidney transplant recipients.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

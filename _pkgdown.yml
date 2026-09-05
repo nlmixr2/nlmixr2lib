@@ -3760,6 +3760,8 @@ navbar:
         href: articles/JacoboCabral_2015_tacrolimus.html
       - text: "Tacrolimus (Ji 2018)"
         href: articles/Ji_2018_tacrolimus.html
+      - text: "Tacrolimus (Kamp 2023)"
+        href: articles/Kamp_2023_tacrolimus.html
       - text: "Tacrolimus (Kassir 2014)"
         href: articles/Kassir_2014_tacrolimus.html
       - text: "Tacrolimus (Kim 2018)"
@@ -5268,6 +5270,7 @@ articles:
   - articles/Kamal_2014_oseltamivir
   - articles/Kamal_2015_oseltamivir
   - articles/Kamal_2017_oseltamivir
+  - articles/Kamp_2023_tacrolimus
   - articles/Kang_2020_adalimumab
   - articles/Kang_2020_cefpirome
   - articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk
