@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2024 biapenem ([doi:10.3389/fphar.2024.1388150](https://doi.org/10.3389/fphar.2024.1388150)) -- adults with sepsis.
+- Add Hosseini 2024 FLT3L-Fc ([doi:10.3390/pharmaceutics16050660](https://doi.org/10.3390/pharmaceutics16050660)) -- cynomolgus monkeys and healthy adult volunteers.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
