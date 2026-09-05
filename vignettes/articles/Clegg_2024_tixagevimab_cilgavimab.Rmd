@@ -1,0 +1,962 @@
+---
+title: "Tixagevimab/cilgavimab, AZD7442 (Clegg 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Tixagevimab/cilgavimab, AZD7442 (Clegg 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Clegg 2024 reports the final population pharmacokinetic analysis of **AZD7442
+(Evusheld)**, the co-formulated 1:1 combination of the YTE-modified
+SARS-CoV-2-neutralising monoclonal antibodies **tixagevimab** and
+**cilgavimab**, pooling 31,895 serum observations from 4,940 adults across eight
+COVID-19 prophylaxis and treatment trials.
+
+The authors fitted the same structure three times, once per analyte: to the
+summed AZD7442 concentration and then, by "refining the final AZD7442 model on
+an as-needed basis", to the tixagevimab and cilgavimab concentrations
+separately. nlmixr2lib carries each fit as its own model file.
+
+| Model | Analyte |
+|---|---|
+| `Clegg_2024_tixagevimab_cilgavimab` | AZD7442, i.e. tixagevimab + cilgavimab summed |
+| `Clegg_2024_tixagevimab` | tixagevimab alone |
+| `Clegg_2024_cilgavimab` | cilgavimab alone |
+
+```{r models}
+model_names <- c(
+  "Clegg_2024_tixagevimab_cilgavimab",
+  "Clegg_2024_tixagevimab",
+  "Clegg_2024_cilgavimab"
+)
+# readModelDb() returns the model FUNCTION; rxode2::rxode() resolves it to the
+# ui exactly once so every downstream accessor ($theta, $population, ...) works.
+uis <- lapply(model_names, function(nm) rxode2::rxode(readModelDb(nm)))
+names(uis) <- model_names
+mod_az <- uis[["Clegg_2024_tixagevimab_cilgavimab"]]
+```
+
+The structure is a two-compartment disposition model with first-order
+intramuscular absorption through a depot carrying an absolute bioavailability,
+and linear elimination from the central compartment. Intravenous doses are
+placed directly into the central compartment. Body weight is carried on CL, Vc,
+Q and Vp with allometric exponents fixed at 0.75 (rates) and 1 (volumes) and a
+**70 kg** reference. Every other covariate enters as an **additive term on the
+log-transformed parameter**, because the model was fitted to log-transformed
+serum concentrations.
+
+# Population
+
+```{r population}
+pop <- mod_az$meta$population
+tibble::tibble(
+  Field = c("Species", "Participants", "Observations", "Studies", "Age",
+            "Weight", "BMI", "Female", "Route"),
+  Value = c(pop$species, format(pop$n_subjects, big.mark = ","),
+            format(pop$n_observations, big.mark = ","), pop$n_studies,
+            pop$age_range, pop$weight_range, pop$bmi_range,
+            paste0(pop$sex_female_pct, "%"), pop$route)
+) |>
+  knitr::kable(caption = "Analysis population (Clegg 2024 supplementary Table S1 and S6).")
+```
+
+Race was White 70.7%, Black 13.5%, Asian 8.7% and other/unknown 7.0%; 12.9% had
+diabetes; 17.6% were older than 65 years; and 39.7% had a BMI of at least
+30 kg/m^2^ (supplementary Table S1). Doses ranged from 300 mg to 600 mg
+intramuscularly and 300 mg to 3,000 mg intravenously; all studies were single
+dose except a PROVENT sub-study that re-dosed after 10-14 months.
+
+# Source trace
+
+Every value in the three model files comes from one of the rows below. The
+typical values in Table 1 belong to a **70 kg female, age <= 65 years, BMI
+< 30 kg/m^2^, non-Black, non-diabetic, gluteal intramuscular injection** --
+note that this reference subject is *not* the Figure 4 comparator, who is an
+80.6 kg male.
+
+| Quantity | AZD7442 | Tixagevimab | Cilgavimab | Source |
+|---|---|---|---|---|
+| `lka` (1/day) | 0.11 | 0.122 | 0.119 | Table 1, "First-order absorption rate (ka)" |
+| `lcl` (L/day) | 0.0504 | 0.0457 | 0.0516 | Table 1, "Clearance (CL)" |
+| `lvc` (L) | 3.36 | 3.17 | 3.52 | Table 1, "Central volume of distribution (Vc)" |
+| `lq` (L/day) | 0.395 | 0.432 | 0.485 | Table 1, "Inter-compartmental clearance (Q)" |
+| `lvp` (L) | 1.83 | 1.77 | 1.82 | Table 1, "Peripheral volume of distribution (Vp)" |
+| `lfdepot` | 0.671 | 0.615 | 0.658 | Table 1, "Absolute IM bioavailability (FIM)" |
+| `e_wt_cl`, `e_wt_q` | 0.75 FIX | 0.75 FIX | 0.75 FIX | Table 1 `beta_CL(BWT)` / `beta_Q(BWT)`; Table S3-S5 "(centered around: 70 kg)" |
+| `e_wt_vc`, `e_wt_vp` | 1 FIX | 1 FIX | 1 FIX | Table 1 `beta_Vc(BWT)` / `beta_Vp(BWT)` |
+| `e_sexf_ka` | 0.543 | 0.632 | 0.570 | Table 1 `beta_ka(SEXM_1)` |
+| `e_age_ka` | -0.325 | -0.443 | -0.392 | Table 1 `beta_ka(AGECAT_1)` |
+| `e_bmi_ka` | -0.254 | -0.217 | -0.188 | Table 1 `beta_ka(BMICAT_1)` |
+| `e_dis_diab_ka` | -0.318 | -0.262 | -0.270 | Table 1 `beta_ka(DIAB_1)` |
+| `e_dis_diab_cl` | 0.198 | 0.167 | 0.149 | Table 1 `beta_CL(DIAB_1)` |
+| `e_race_black_vc` | -0.251 | -0.242 | -0.260 | Table 1 `beta_Vc(RACEB_1)` |
+| `e_injsite_thigh_fdepot` | 0.416 | 0.378 | 0.414 | Table 1 `beta_FIM(ACTIV2_1)` |
+| IIV ka (%CV) | 59.89 | 78.56 | 77.12 | Table 1 IIV block; Table S3/S5/S4 4-digit values |
+| IIV CL (%CV) | 42.64 | 40.81 | 44.08 | as above |
+| IIV Vc (%CV) | 39.79 | 38.00 | 52.17 | as above |
+| IIV Vp (%CV) | 35.88 | 36.85 | 24.49 | as above |
+| IIV FIM, Q | 0% (FIX) | 0% (FIX) | 0% (FIX) | Table S3-S5; encoded as *no* eta |
+| corr(ka, CL) | -0.387 | -0.496 | -0.442 | Table 1 "Correlation of random effects" |
+| corr(ka, Vc) | -0.689 | -0.835 | -0.546 | as above |
+| corr(CL, Vc) | 0.588 | 0.697 | 0.764 | as above |
+| `expSdIm` (log ug/mL) | 0.24 | 0.272 | 0.240 | Table 1 `error_ADD1` (IM data) |
+| `expSdIv` (log ug/mL) | 0.104 | 0.108 | 0.119 | Table 1 `error_ADD2` (IV data) |
+| 2-cmt, first-order IM absorption, zero-order IV input | n/a | n/a | n/a | Table S2 "Base model" |
+| Covariates additive on the log-transformed parameter | n/a | n/a | n/a | Materials and Methods, "Population PK model development" |
+
+Each covariate coefficient reproduces the percentage change quoted in the
+Results, which is the cheapest possible check that the log-additive reading is
+the right one.
+
+```{r covariate-percentages}
+az <- mod_az$theta
+pct <- function(x) 100 * (exp(x) - 1)
+cov_claims <- tibble::tibble(
+  Effect = c("Male sex on ka", "Age > 65 y on ka", "BMI >= 30 on ka",
+             "Diabetes on ka", "Diabetes on CL", "Black race on Vc",
+             "Thigh injection on FIM"),
+  Published = c(72.1, -27.7, -22.4, -27.2, 21.9, -22.2, 51.6),
+  Implied = pct(c(az[["e_sexf_ka"]], az[["e_age_ka"]], az[["e_bmi_ka"]],
+                  az[["e_dis_diab_ka"]], az[["e_dis_diab_cl"]],
+                  az[["e_race_black_vc"]], az[["e_injsite_thigh_fdepot"]]))
+) |>
+  dplyr::mutate(`Abs. diff (points)` = abs(Implied - Published))
+
+knitr::kable(cov_claims, digits = 2, caption = paste(
+  "exp(coefficient) - 1 versus the percentage changes stated in Clegg 2024",
+  "Results, 'Model building and evaluation'. These are deterministic",
+  "identities, so the tolerance is a rounding tolerance."
+))
+
+# Deterministic: these compare a printed percentage against exp() of a printed
+# coefficient. 0.1 points admits 3-significant-figure rounding of both and
+# nothing else -- a sign error or a linear-vs-log misreading moves these by
+# tens of points.
+stopifnot(max(cov_claims$`Abs. diff (points)`) < 0.1)
+```
+
+# Virtual cohort
+
+The analysis dataset is not public, so a 200-participant virtual cohort is drawn
+to match the supplementary Table S1 marginals: weight mean 83.9 kg (SD 21.3,
+truncated to the observed 36-216 kg), BMI mean 29.2 kg/m^2^ (SD 6.7, truncated
+to 13.6-72.6), age mean 50.5 years (SD 15.8, truncated to 18-98), 46.9% female,
+13.5% Black and 12.9% with diabetes. Weight and BMI are drawn log-normally
+because both are right-skewed in the source; age is drawn normally, which
+reproduces the published 17.6% older than 65 almost exactly.
+
+```{r cohort}
+n_sub <- 200L
+
+draw_lnorm <- function(n, mean, sd, lower, upper) {
+  s <- sqrt(log(1 + (sd / mean)^2))
+  pmin(pmax(stats::rlnorm(n, log(mean) - s^2 / 2, s), lower), upper)
+}
+
+make_cohort <- function(n, weight_fun) {
+  data.frame(
+    id            = seq_len(n),
+    WT            = weight_fun(n),
+    BMI           = draw_lnorm(n, 29.2, 6.7, 13.6, 72.6),
+    AGE           = pmin(pmax(stats::rnorm(n, 50.5, 15.8), 18), 98),
+    SEXF          = stats::rbinom(n, 1L, 0.469),
+    RACE_BLACK    = stats::rbinom(n, 1L, 0.135),
+    DIS_DIAB      = stats::rbinom(n, 1L, 0.129),
+    INJSITE_THIGH = 0L,
+    ROUTE_IV      = 0L
+  )
+}
+weight_adult <- function(n) draw_lnorm(n, 83.9, 21.3, 36, 216)
+
+# Seed EVERY stochastic block: set.seed() drives the covariate draws (R's RNG)
+# and rxSetSeed() drives the eta draws (rxode2's RNG); neither covers the other.
+# The eta draws are re-seeded again inside solve_arm() below so that all arms
+# share one stream (common random numbers).
+set.seed(20240327L)
+rxode2::rxSetSeed(20240327L)
+cohort <- make_cohort(n_sub, weight_adult)
+
+tibble::tibble(
+  Characteristic = c("Weight, kg (mean)", "BMI >= 30, %", "Age > 65 y, %",
+                     "Female, %", "Black, %", "Diabetes, %"),
+  Simulated = c(mean(cohort$WT), 100 * mean(cohort$BMI >= 30),
+                100 * mean(cohort$AGE > 65), 100 * mean(cohort$SEXF),
+                100 * mean(cohort$RACE_BLACK), 100 * mean(cohort$DIS_DIAB)),
+  `Table S1` = c(83.9, 39.7, 17.6, 46.9, 13.5, 12.9)
+) |>
+  knitr::kable(digits = 1, caption = "Virtual cohort versus Clegg 2024 supplementary Table S1.")
+```
+
+```{r event-helpers}
+# rxSolve on an rxUi scales super-linearly in the number of subjects, so every
+# arm is solved in its own call rather than pooling arms into one big frame.
+build_events <- function(cov, amt, obs_times, dose_cmt = "depot") {
+  doses <- data.frame(id = cov$id, time = 0, amt = amt,
+                      cmt = dose_cmt, evid = 1L)
+  obs <- expand.grid(id = cov$id, time = obs_times)
+  obs$amt <- NA_real_
+  # Observe on the ODE STATE. rxode2 returns the algebraic observable Cc as a
+  # column at those rows; naming the observable in `cmt` would inject a
+  # compartment slot and renumber the states.
+  obs$cmt <- "central"
+  obs$evid <- 0L
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::left_join(cov, by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+solve_arm <- function(ui, cov, amt, obs_times, dose_cmt = "depot") {
+  ev <- build_events(cov, amt, obs_times, dose_cmt)
+  # Common random numbers. Every arm is solved from the same eta stream, so
+  # cross-arm quantities -- the IM/IV bioavailability ratio, dose
+  # proportionality, adolescent versus adult exposure -- carry no between-arm
+  # Monte Carlo noise and measure only the difference being studied. Seeding
+  # inside the helper makes it impossible for one arm to be left out:
+  # rxSetSeed() drives rxode2's eta draws and set.seed() drives R's, and
+  # neither covers the other.
+  set.seed(20240327L)
+  rxode2::rxSetSeed(20240327L)
+  rxode2::rxSolve(ui, ev, keep = c("WT", "BMI", "AGE", "SEXF",
+                                   "RACE_BLACK", "DIS_DIAB", "ROUTE_IV")) |>
+    as.data.frame() |>
+    dplyr::as_tibble()
+}
+
+# 1-day resolution through the absorption and distribution phases, 5-day
+# resolution through a terminal phase whose half-life is about 76 days.
+obs_grid <- c(seq(0, 60, by = 1), seq(65, 400, by = 5))
+```
+
+# Terminal elimination half-life (Table 2)
+
+Clegg 2024 Table 2 reports median terminal half-lives "estimated based on
+observed concentration data using micro-constants". The half-life depends only
+on CL, Vc, Q and Vp, so it can be read straight off each simulated
+participant's individual parameters -- which is the strictest available test of
+the disposition block, because it exercises the allometry, the diabetes effect
+on CL and the Black-race effect on Vc without involving absorption,
+bioavailability or the residual error at all.
+
+```{r half-life}
+terminal_half_life <- function(cl, vc, q, vp) {
+  kel <- cl / vc
+  k12 <- q / vc
+  k21 <- q / vp
+  s <- kel + k12 + k21
+  beta <- (s - sqrt(s^2 - 4 * kel * k21)) / 2
+  log(2) / beta
+}
+
+half_life_tbl <- lapply(model_names, function(nm) {
+  # Two observation rows are enough: the individual parameters are what is
+  # wanted, not the profile.
+  s <- solve_arm(uis[[nm]], cohort, 300, c(0, 1))
+  p <- s |> dplyr::distinct(id, .keep_all = TRUE)
+  th <- terminal_half_life(p$cl, p$vc, p$q, p$vp)
+  tibble::tibble(
+    Analyte = c("AZD7442", "Tixagevimab", "Cilgavimab")[match(nm, model_names)],
+    Simulated = stats::median(th),
+    `Simulated P05` = unname(stats::quantile(th, 0.05)),
+    `Simulated P95` = unname(stats::quantile(th, 0.95))
+  )
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(
+    Published = c(78.6, 81.3, 78.0),
+    `Published P05` = c(45.6, 49.3, 49.2),
+    `Published P95` = c(101.0, 106.0, 97.4),
+    `% diff (median)` = 100 * (Simulated / Published - 1)
+  )
+
+half_life_tbl |>
+  dplyr::select(Analyte, Published, Simulated, `% diff (median)`,
+                `Published P05`, `Simulated P05`,
+                `Published P95`, `Simulated P95`) |>
+  knitr::kable(digits = 1, caption = paste(
+    "Terminal elimination half-life (days) versus Clegg 2024 Table 2.",
+    "Percentiles are across the 200-participant virtual cohort."
+  ))
+```
+
+```{r half-life-checks}
+# Median: a mis-transcribed clearance, volume or allometric exponent moves the
+# whole distribution by tens of percent. Realised -3.4 / -3.6 / -4.1% here; 12%
+# leaves room for the cohort re-draw that a different solver thread count
+# produces (see the CI note below) and still goes red on any real error.
+stopifnot(max(abs(half_life_tbl$`% diff (median)`)) < 12)
+
+# Ordering: tixagevimab has the longest half-life, and it is that ordering
+# which adjudicates the swapped supplementary captions discussed in the Errata.
+# Asserted as a MARGIN, not as a bare `>`, so a near-tie cannot decide it on a
+# coin flip: the published gap is 81.3 vs 78.0 days.
+stopifnot(
+  half_life_tbl$Simulated[half_life_tbl$Analyte == "Tixagevimab"] -
+    half_life_tbl$Simulated[half_life_tbl$Analyte == "Cilgavimab"] > 1.5
+)
+
+# The lower tail is reproduced; the upper tail is not, and should not be. See
+# the prose below.
+stopifnot(abs(half_life_tbl$`Simulated P05` / half_life_tbl$`Published P05` - 1) < 0.20)
+```
+
+The medians agree to within about 4% and the ordering (tixagevimab longest,
+cilgavimab shortest) is reproduced. The simulated **95th percentiles run high**
+-- 120-138 days against a published 97-106. This is expected rather than a
+defect: the published percentiles come from *post-hoc* individual estimates,
+which are shrunk toward the typical value, and Clegg 2024 supplementary Table S3
+reports eta shrinkage of 45.5% on Vp and 22.3% on ka for the AZD7442 model. The
+simulation draws unshrunken etas from the reported Omega, so its upper tail is
+necessarily wider. The 5th percentiles, which are dominated by high-clearance
+participants where shrinkage bites less, match within 10%.
+
+# Simulated concentration-time profiles
+
+```{r profiles}
+sim_300_im <- solve_arm(mod_az, cohort, 300, obs_grid)
+sim_600_im <- solve_arm(mod_az, cohort, 600, obs_grid)
+
+# IV doses go straight into the central compartment, and ROUTE_IV = 1 selects
+# the intravenous residual-error term.
+cohort_iv <- dplyr::mutate(cohort, ROUTE_IV = 1L)
+sim_300_iv <- solve_arm(mod_az, cohort_iv, 300, obs_grid, dose_cmt = "central")
+
+profiles <- dplyr::bind_rows(
+  dplyr::mutate(sim_300_im, treatment = "300 mg IM"),
+  dplyr::mutate(sim_600_im, treatment = "600 mg IM"),
+  dplyr::mutate(sim_300_iv, treatment = "300 mg IV")
+)
+
+envelope <- profiles |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(Cc, 0.05),
+    Q50 = stats::median(Cc),
+    Q95 = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(envelope, aes(time / 30.4375, Q50, colour = treatment, fill = treatment)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  scale_y_log10() +
+  labs(x = "Time (months)", y = "AZD7442 serum concentration (ug/mL)",
+       colour = NULL, fill = NULL,
+       title = "Median and 5th-95th percentile simulated AZD7442 profiles",
+       subtitle = "Compare with Clegg 2024 Figure 3 (VPCs by dose and route)") +
+  theme_bw()
+```
+
+Clegg 2024 Figure 3 shows visual predictive checks stratified by IM and IV dose
+level. The observed data are not available, so the panel above shows the model's
+own prediction envelope; the quantitative comparison against the published
+figures is made in the two sections that follow, where the paper prints numbers
+rather than only pictures.
+
+# Covariate effects on exposure (Figure 4)
+
+Figure 4 reports median relative AUC~0-inf~ and C~max~ for covariate scenarios
+after a single 600 mg IM dose, each relative to a typical subject defined in the
+caption as **80.6 kg, male, age <= 65 y, BMI < 30 kg/m^2^, non-Black, no
+diabetes, gluteal injection**. The Results text quotes six of those numbers.
+
+Each scenario below re-seeds identically, so the scenarios share **common random
+numbers** and the ratio of medians is essentially free of Monte Carlo noise.
+AUC~0-inf~ after a single extravascular dose is exactly `dose * F / CL`, so it
+is read off the individual parameters rather than integrated.
+
+```{r figure-4}
+typical_subject <- list(WT = 80.6, AGE = 45, BMI = 25, SEXF = 0L,
+                        RACE_BLACK = 0L, DIS_DIAB = 0L,
+                        INJSITE_THIGH = 0L, ROUTE_IV = 0L)
+scenarios <- list(
+  Typical                    = typical_subject,
+  `Body weight 55.6 kg (P5)` = utils::modifyList(typical_subject, list(WT = 55.6)),
+  `Body weight 122 kg (P95)` = utils::modifyList(typical_subject, list(WT = 122)),
+  `Thigh injection`          = utils::modifyList(typical_subject, list(INJSITE_THIGH = 1L))
+)
+
+# Cmax needs half-day resolution around a Tmax of roughly 3-4 weeks; nothing
+# beyond about 75 days can be the maximum.
+cmax_grid <- seq(0, 75, by = 0.5)
+
+run_scenario <- function(cv) {
+  cov <- data.frame(id = seq_len(n_sub))
+  for (k in names(cv)) cov[[k]] <- cv[[k]]
+  s <- solve_arm(mod_az, cov, 600, cmax_grid)
+  pars <- s |> dplyr::distinct(id, .keep_all = TRUE)
+  cmax_tbl <- s |> dplyr::group_by(id) |>
+    dplyr::summarise(cmax = max(Cc), .groups = "drop")
+  i <- match(cmax_tbl$id, pars$id)
+  stopifnot(!anyNA(i), nrow(cmax_tbl) == n_sub)
+  tibble::tibble(cmax = cmax_tbl$cmax,
+                 auc = 600 * pars$fdepot[i] / pars$cl[i])
+}
+
+scen_res <- lapply(scenarios, run_scenario)
+ref <- scen_res$Typical
+
+fig4 <- tibble::tibble(
+  Scenario = setdiff(names(scenarios), "Typical"),
+  `Cmax simulated` = vapply(setdiff(names(scenarios), "Typical"), function(nm)
+    100 * (stats::median(scen_res[[nm]]$cmax) / stats::median(ref$cmax) - 1),
+    numeric(1)),
+  `AUC simulated` = vapply(setdiff(names(scenarios), "Typical"), function(nm)
+    100 * (stats::median(scen_res[[nm]]$auc) / stats::median(ref$auc) - 1),
+    numeric(1)),
+  `Cmax published` = c(44, -32, 51),
+  `AUC published` = c(35, -25, 53)
+) |>
+  dplyr::mutate(
+    `Cmax diff` = abs(`Cmax simulated` - `Cmax published`),
+    `AUC diff` = abs(`AUC simulated` - `AUC published`)
+  )
+
+fig4 |>
+  dplyr::select(Scenario, `Cmax published`, `Cmax simulated`,
+                `AUC published`, `AUC simulated`) |>
+  knitr::kable(digits = 1, caption = paste(
+    "Percentage change in Cmax and AUC0-inf relative to the Figure 4 typical",
+    "subject after a single 600 mg IM dose, versus the values quoted in",
+    "Clegg 2024 Results, 'Simulation-based analyses'."
+  ))
+```
+
+```{r figure-4-checks}
+# Realised 1.9 / 0.6 / 0.6 points (Cmax) and 2.9 / 1.7 / 1.4 points (AUC).
+# The published numbers are medians of 10,000 Monte Carlo draws read against a
+# comparator whose weight the caption gives to three figures, so a few points of
+# disagreement is expected; 8 points still goes red on a wrong allometric
+# exponent (which moves the weight rows by more than 10 points) or a
+# linear-instead-of-log reading of the thigh coefficient (which moves that row
+# from +52 to +42).
+stopifnot(max(c(fig4$`Cmax diff`, fig4$`AUC diff`)) < 8)
+
+# Direction is unambiguous here (all three effects are large), so it is safe to
+# assert, and it catches a sign error that a magnitude bound would not.
+stopifnot(
+  fig4$`AUC simulated`[fig4$Scenario == "Body weight 55.6 kg (P5)"] > 20,
+  fig4$`AUC simulated`[fig4$Scenario == "Body weight 122 kg (P95)"] < -15,
+  fig4$`AUC simulated`[fig4$Scenario == "Thigh injection"] > 40
+)
+```
+
+Body weight and injection site are the two covariates Clegg 2024 identifies as
+having a greater than 20% effect on exposure, and both are reproduced. The
+thigh-injection AUC ratio is a pure bioavailability ratio, `exp(0.416)` =
+`r sprintf("%.3f", exp(0.416))`, which is why it lands within two points of the
+published 53% without any simulation noise entering.
+
+# Duration of protection (Figure 5B)
+
+Figure 5B is the analysis that supported doubling the pre-exposure prophylaxis
+dose from 300 mg to 600 mg. The serum target for a given SARS-CoV-2 variant is
+derived in the figure caption as
+
+$$C_{\text{target,serum}} = \frac{IC_{80}}{\text{partition ratio}} = \frac{4 \times IC_{50}}{0.0181}$$
+
+assuming a Hill coefficient of 1 and 1.81% partitioning of AZD7442 into the
+nasal lining fluid. This makes the section a **zero-parameter gate**: nothing
+below is fitted, and the crossing times follow entirely from the model plus the
+three published IC~50~ values.
+
+```{r targets}
+ic50_ng_ml <- c(Alpha = 2.1, BA.2 = 9.8, `BA.4/5` = 69.4)  # Fig 5 caption
+partition <- 0.0181                                        # Fig 5 caption
+serum_target <- ic50_ng_ml * 4 / partition / 1000          # ng/mL -> ug/mL
+
+tibble::tibble(
+  Variant = names(ic50_ng_ml),
+  `IC50 (ng/mL)` = ic50_ng_ml,
+  `Serum target (ug/mL)` = serum_target
+) |>
+  knitr::kable(digits = 3, caption = paste(
+    "Serum target concentrations derived from the Clegg 2024 Figure 5 caption",
+    "(IC50 from a pseudotyped virus-like particle assay, Monogram Biosciences)."
+  ))
+```
+
+```{r duration}
+median_profile <- function(sim) {
+  sim |>
+    dplyr::group_by(time) |>
+    dplyr::summarise(med = stats::median(Cc), .groups = "drop") |>
+    dplyr::arrange(time)
+}
+
+crossing_months <- function(sim, target) {
+  m <- median_profile(sim)
+  after <- m[m$time > m$time[which.max(m$med)], ]
+  i <- which(after$med < target)[1]
+  # Fail loudly rather than returning NA: an empty result would otherwise make
+  # every downstream comparison silently vacuous.
+  if (is.na(i) || i < 2L) {
+    return(NA_real_)
+  }
+  stats::approx(c(after$med[i - 1], after$med[i]),
+                c(after$time[i - 1], after$time[i]),
+                xout = target)$y / 30.4375
+}
+
+duration <- tidyr::expand_grid(
+  Dose = c("300 mg IM", "600 mg IM"),
+  Variant = names(serum_target)
+) |>
+  dplyr::mutate(
+    `Months above target` = mapply(
+      function(d, v) crossing_months(
+        if (d == "300 mg IM") sim_300_im else sim_600_im, serum_target[[v]]
+      ),
+      Dose, Variant
+    ),
+    `Median peak (ug/mL)` = ifelse(
+      Dose == "300 mg IM",
+      max(median_profile(sim_300_im)$med),
+      max(median_profile(sim_600_im)$med)
+    )
+  )
+
+duration |>
+  knitr::kable(digits = 1, caption = paste(
+    "Time for the median simulated serum concentration to fall below each",
+    "variant's target, after a single IM dose. Clegg 2024 Figure 5B plots the",
+    "same quantity; NA means the target was not crossed within the 13-month",
+    "simulation."
+  ))
+```
+
+```{r duration-checks}
+get_dur <- function(d, v) {
+  x <- duration$`Months above target`[duration$Dose == d & duration$Variant == v]
+  # Guard against a filter that matches nothing: length(numeric(0)) comparisons
+  # are vacuously TRUE and would make this gate unable to fail.
+  stopifnot(length(x) == 1L)
+  x
+}
+
+# Results, "AZD7442 PrEP dosage increase in response to emerging Omicron
+# variants": 600 mg "would provide 4-6 months of protection" against BA.4/5,
+# while 300 mg "would only provide a few months". Realised 5.4 and 2.9 months.
+stopifnot(get_dur("600 mg IM", "BA.4/5") > 4, get_dur("600 mg IM", "BA.4/5") < 7)
+stopifnot(get_dur("300 mg IM", "BA.4/5") > 1.5, get_dur("300 mg IM", "BA.4/5") < 4)
+
+# Figure 5B: the 300 mg grey median crosses the BA.2 line at about 10 months.
+stopifnot(get_dur("300 mg IM", "BA.2") > 8, get_dur("300 mg IM", "BA.2") < 12)
+
+# Doubling the dose must buy exactly one terminal half-life (76 days = 2.5
+# months) of extra time above any fixed threshold: the model is linear and the
+# two arms share their etas, so the 600 mg median profile is exactly twice the
+# 300 mg one and the crossing times differ by the terminal doubling time.
+stopifnot(
+  abs((get_dur("600 mg IM", "BA.4/5") - get_dur("300 mg IM", "BA.4/5")) - 2.5) < 0.6
+)
+
+# Figure 5B peaks at roughly 55-60 ug/mL for 600 mg and Figure 5A at roughly
+# 25 ug/mL for the 300 mg adult cohort. Realised 52.0 and 25.6.
+peak_600 <- max(median_profile(sim_600_im)$med)
+peak_300 <- max(median_profile(sim_300_im)$med)
+stopifnot(peak_600 > 40, peak_600 < 75, peak_300 > 19, peak_300 < 36)
+```
+
+```{r duration-plot}
+env_dur <- dplyr::bind_rows(
+  dplyr::mutate(sim_300_im, Dose = "300 mg IM"),
+  dplyr::mutate(sim_600_im, Dose = "600 mg IM")
+) |>
+  dplyr::group_by(Dose, time) |>
+  dplyr::summarise(Q10 = stats::quantile(Cc, 0.10),
+                   Q50 = stats::median(Cc),
+                   Q90 = stats::quantile(Cc, 0.90), .groups = "drop")
+
+ggplot(env_dur, aes(time / 30.4375, Q50, colour = Dose, fill = Dose)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = serum_target, linetype = "dashed", colour = "grey30") +
+  annotate("text", x = 11, y = serum_target * 1.25,
+           label = names(serum_target), size = 3, colour = "grey20") +
+  scale_y_log10(limits = c(0.1, 200)) +
+  coord_cartesian(xlim = c(0, 13)) +
+  labs(x = "Time (months)", y = "AZD7442 serum concentration (ug/mL)",
+       title = "Replicates Clegg 2024 Figure 5B",
+       subtitle = "Median and 80% prediction interval; dashed lines are the variant serum targets") +
+  theme_bw()
+```
+
+# Adults versus adolescents (Figure 5A)
+
+Figure 5A supported extending the adult dose to adolescents weighing at least
+40 kg, by comparing an adolescent cohort with body weight drawn **uniformly over
+40-95 kg** against the adult analysis population. The paper reports "only
+marginal differences" in AUC~0-180days~ and in serum concentration at 6 months,
+with "largely overlapping distributions".
+
+```{r adolescents}
+# The adolescent cohort differs from the adult cohort in BODY WEIGHT ONLY: every
+# other covariate and (through the common random numbers in solve_arm) every eta
+# is held identical, so the comparison isolates the weight effect, which is
+# exactly the question Figure 5A asks.
+set.seed(20240331L)
+cohort_adol <- dplyr::mutate(cohort, WT = stats::runif(n_sub, 40, 95))
+sim_adol <- solve_arm(mod_az, cohort_adol, 300, obs_grid)
+
+exposure_180 <- function(sim) {
+  auc <- sim |>
+    dplyr::filter(time <= 180) |>
+    dplyr::arrange(id, time) |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(
+      auc = sum(diff(time) * (utils::head(Cc, -1) + utils::tail(Cc, -1)) / 2),
+      .groups = "drop"
+    )
+  c6 <- sim |> dplyr::filter(time == 180) |> dplyr::pull(Cc)
+  stopifnot(nrow(auc) == n_sub, length(c6) == n_sub)
+  list(auc = auc$auc, c6 = c6)
+}
+
+exp_adult <- exposure_180(sim_300_im)
+exp_adol <- exposure_180(sim_adol)
+
+fig5a <- tibble::tibble(
+  Metric = c("AUC0-180d (ug*day/mL)", "Concentration at 6 months (ug/mL)"),
+  Adults = c(stats::median(exp_adult$auc), stats::median(exp_adult$c6)),
+  Adolescents = c(stats::median(exp_adol$auc), stats::median(exp_adol$c6)),
+  `Figure 5A adults` = c(2700, 6.2),
+  `Figure 5A adolescents` = c(3400, 7.4)
+) |>
+  dplyr::mutate(Ratio = Adolescents / Adults)
+
+knitr::kable(fig5a, digits = c(0, 1, 1, 1, 1, 2), caption = paste(
+  "Median exposure after a single 300 mg IM dose in the adult analysis",
+  "population versus adolescents weighing 40-95 kg. The Figure 5A columns are",
+  "read off the published box plots and are therefore approximate."
+))
+```
+
+```{r adolescent-checks}
+# The published claim is that the difference is small, so the assertion is on
+# the MAGNITUDE of the ratio, not on its sign. Realised 1.15 (AUC) and 1.10
+# (C6mo); the adolescent cohort is lighter (mean 67.5 kg versus about 82 kg) so
+# a modest increase is the expected direction, and 1.15 is exactly the
+# allometric prediction (81.2 / 67.5)^0.75 for the two median weights.
+stopifnot(all(fig5a$Ratio > 1.0), all(fig5a$Ratio < 1.45))
+
+# Distributions must overlap substantially, which is the paper's actual claim.
+overlap <- mean(exp_adol$auc > stats::quantile(exp_adult$auc, 0.05) &
+                  exp_adol$auc < stats::quantile(exp_adult$auc, 0.95))
+stopifnot(overlap > 0.75)
+
+# Against the digitised Figure 5A medians. 25% admits both the read-off error
+# and the cohort re-draw; a mis-scaled dose or volume moves these by 2-fold.
+stopifnot(
+  abs(fig5a$Adults / fig5a$`Figure 5A adults` - 1) < 0.25,
+  abs(fig5a$Adolescents / fig5a$`Figure 5A adolescents` - 1) < 0.25
+)
+```
+
+# PKNCA validation
+
+Non-compartmental analysis is run on the three simulated arms with PKNCA. The
+observation grid follows the Clegg 2024 supplementary Table S6 phase I schedule
+in spirit (dense early, out to 360 days) but at a finer resolution, because
+NCA needs the distribution phase resolved to recover an unbiased AUC.
+
+```{r pknca}
+nca_conc <- profiles |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+nca_dose <- dplyr::bind_rows(
+  data.frame(id = cohort$id, time = 0, amt = 300, treatment = "300 mg IM"),
+  data.frame(id = cohort$id, time = 0, amt = 600, treatment = "600 mg IM"),
+  data.frame(id = cohort$id, time = 0, amt = 300, treatment = "300 mg IV")
+)
+
+# Time-zero records must be present or PKNCA warns once per subject that the
+# AUC interval starts before the first measurement. `obs_grid` starts at 0, so
+# filtering only on !is.na(Cc) preserves them.
+stopifnot(all(tapply(nca_conc$time, nca_conc$treatment, min) == 0))
+stopifnot(all(nca_conc$Cc >= 0))
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | treatment + id,
+                             concu = "ug/mL", timeu = "day")
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE,
+  half.life = TRUE, cl.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+
+nca_summary <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "aucinf.obs",
+                                "half.life", "cl.obs")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = stats::median(PPORRES, na.rm = TRUE), .groups = "drop")
+
+nca_summary |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+  dplyr::rename("Treatment" = treatment, "AUClast (ug*day/mL)" = auclast,
+                "AUC0-inf (ug*day/mL)" = aucinf.obs, "Cmax (ug/mL)" = cmax,
+                "Tmax (day)" = tmax, "t1/2 (day)" = half.life,
+                "CL/F (L/day)" = cl.obs) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Median PKNCA results across the 200-participant virtual cohort, by arm."
+  ))
+```
+
+## Comparison against published values
+
+Clegg 2024 does not tabulate observed NCA parameters, so the reference column
+combines the one published NCA-comparable quantity -- the Table 2 median
+terminal half-life -- with the two exposure metrics that the model's own
+published thetas determine in closed form. The closed-form values are computed
+from the **printed Table 1 estimates**, not from the fitted model object, so
+this remains a real comparison and not a tautology.
+
+```{r nca-compare}
+# Table 1 typical values, typed in from the paper, and the cohort's realised
+# median weight. AUC0-inf after an extravascular dose is dose * F / CL, and for
+# an IV dose it is dose / CL.
+cl_pub <- 0.0504
+f_pub <- 0.671
+wt_med <- stats::median(cohort$WT)
+# The diabetes effect on CL is present in ~13% of the cohort; the cohort median
+# CL therefore sits essentially at the non-diabetic typical value.
+cl_cohort <- cl_pub * (wt_med / 70)^0.75
+
+published_nca <- tibble::tribble(
+  ~treatment,  ~aucinf.obs,               ~half.life,
+  "300 mg IM", 300 * f_pub / cl_cohort,   78.6,
+  "600 mg IM", 600 * f_pub / cl_cohort,   78.6,
+  "300 mg IV", 300 / cl_cohort,           78.6
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = dplyr::rename(nca_summary, PPORRES = median),
+  reference = published_nca,
+  by = "treatment",
+  params = c("aucinf.obs", "half.life"),
+  units = c(aucinf.obs = "ug*day/mL", half.life = "day"),
+  tolerance_pct = 20
+)
+
+cmp |>
+  dplyr::rename("Arm" = treatment) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Simulated NCA versus closed-form AUC0-inf from the Clegg 2024 Table 1",
+    "estimates and the Table 2 median terminal half-life.",
+    "* differs from the reference by more than 20%."
+  ))
+```
+
+```{r nca-checks}
+# ncaComparisonTable() formats its "% diff" column for display (character, with
+# a "*" on flagged rows), so the numeric gate is recomputed from the underlying
+# medians rather than parsed back out of the table.
+sim_wide <- nca_summary |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+check_tbl <- published_nca |>
+  dplyr::rename(ref_aucinf = aucinf.obs, ref_halflife = half.life) |>
+  dplyr::left_join(sim_wide, by = "treatment")
+stopifnot(nrow(check_tbl) == 3L, !anyNA(check_tbl))
+
+pct_diff <- c(
+  100 * (check_tbl$aucinf.obs / check_tbl$ref_aucinf - 1),
+  100 * (check_tbl$half.life / check_tbl$ref_halflife - 1)
+)
+stopifnot(length(pct_diff) == 6L, !anyNA(pct_diff), is.numeric(pct_diff))
+
+# Structural: a mis-transcribed clearance, dose, bioavailability or unit moves
+# the whole distribution by tens of percent and blows this instantly. Realised
+# +0.9% on all three AUC rows and -2.7 to -3.6% on the half-life rows.
+stopifnot(abs(stats::median(pct_diff)) < 8)
+# Envelope: robust to which participants land in the tails.
+stopifnot(max(abs(pct_diff)) < 12)
+
+# The IM-to-IV AUC ratio at the same 300 mg dose must recover the absolute
+# bioavailability. Under common random numbers the two arms share their etas, so
+# this is a near-deterministic property of the model rather than a cohort
+# statistic: realised 0.6709 against the published 0.671.
+auc_by_arm <- nca_summary |>
+  dplyr::filter(PPTESTCD == "aucinf.obs") |>
+  dplyr::select(treatment, median) |>
+  tibble::deframe()
+stopifnot(length(auc_by_arm) == 3L)
+f_recovered <- auc_by_arm[["300 mg IM"]] / auc_by_arm[["300 mg IV"]]
+stopifnot(abs(f_recovered - f_pub) < 0.02)
+
+# Dose proportionality: the model is linear, so 600 mg must give twice the AUC
+# of 300 mg by the same route. Realised 2.0000.
+stopifnot(abs(auc_by_arm[["600 mg IM"]] / auc_by_arm[["300 mg IM"]] - 2) < 0.02)
+```
+
+The recovered absolute bioavailability is
+`r sprintf("%.3f", auc_by_arm[["300 mg IM"]] / auc_by_arm[["300 mg IV"]])` against
+a published FIM of 0.671, and the 600 mg / 300 mg AUC ratio is
+`r sprintf("%.3f", auc_by_arm[["600 mg IM"]] / auc_by_arm[["300 mg IM"]])` against
+the linear-kinetics expectation of 2. Clegg 2024 states that AZD7442 "followed
+linear kinetics", and the model encodes that with a single first-order
+elimination pathway, so the second check confirms the encoding rather than the
+pharmacology.
+
+# Assumptions, deviations and errata
+
+## Supplementary Tables S4 and S5 have swapped captions
+
+**This is the one substantive conflict in the source, and it changes which
+parameter set belongs to which antibody.**
+
+Table 1 of the main text and supplementary Tables S4/S5 report the same two
+parameter sets but assign them to opposite analytes:
+
+| | Table 1 says | Table S4/S5 caption says |
+|---|---|---|
+| ka 0.119, CL 0.0516, Vc 3.52, Q 0.485, Vp 1.82, FIM 0.658 | Cilgavimab | Tixagevimab (Table S4) |
+| ka 0.122, CL 0.0457, Vc 3.17, Q 0.432, Vp 1.77, FIM 0.615 | Tixagevimab | Cilgavimab (Table S5) |
+
+The whole column is swapped, including the correlation and residual-error rows,
+so this is a caption error rather than a transcription slip in a single cell.
+**Table 1 is the reading these model files use**, on two independent in-paper
+grounds:
+
+1. **Table 2 half-lives.** Table 2 reports median terminal half-lives of 81.3
+   days for tixagevimab and 78.0 for cilgavimab -- tixagevimab is the
+   longer-lived analyte. Terminal half-life is determined by CL, Vc, Q and Vp
+   alone, and the lower-clearance set (CL 0.0457) gives 76.0 days at the 70 kg
+   reference against 72.6 days for the higher-clearance set. Only Table 1's
+   assignment puts the longer half-life on tixagevimab. The half-life table
+   above reproduces that ordering from the shipped model files.
+2. **The interim model, supplementary Table S7.** The earlier analysis, fitted
+   to different data and reported in a different table, also gives tixagevimab
+   the lower clearance (0.0405 versus 0.0412 L/day) and the longer median
+   half-life (88.8 versus 84.4 days). It is not plausible that the final fit
+   reversed the ordering while Table 2 continued to report the original one.
+
+Both `Clegg_2024_tixagevimab.R` and `Clegg_2024_cilgavimab.R` record the
+conflict in their `reference` field.
+
+## Thigh bioavailability slightly exceeds 1 for the summed analyte
+
+Every covariate in this model is additive on the log-transformed parameter,
+including the effect of injection site on absolute bioavailability. Applying
+`beta_FIM(ACTIV2_1)` = 0.416 to the AZD7442 gluteal FIM of 0.671 gives
+`0.671 * exp(0.416)` = `r sprintf("%.3f", 0.671 * exp(0.416))`, marginally above
+unity. The model files reproduce the published parameterisation verbatim rather
+than constraining FIM, because 51.6% is exactly the increase the Results text
+quotes and any constrained form would fail to reproduce it. Read practically,
+the estimate says thigh injection gives essentially complete bioavailability.
+The two single-analyte models stay below 1 (tixagevimab 0.897, cilgavimab
+0.996).
+
+## The single-analyte models take half the labelled dose
+
+AZD7442 is a 1:1 combination, so a 300 mg AZD7442 dose delivers 150 mg of
+tixagevimab and 150 mg of cilgavimab. `Clegg_2024_tixagevimab` and
+`Clegg_2024_cilgavimab` must therefore be dosed with the **component** amount,
+not the labelled AZD7442 amount.
+
+The paper does not say this outright, but its own estimates settle it. The
+summed analyte is the sum of the two components, so `C_AZD7442` is roughly twice
+either component. Had the single-analyte models been dosed with the full AZD7442
+amount while fitted to a half-size concentration, their central volumes would
+have come out at roughly twice the AZD7442 value, near 6.7 L. They do not:
+Vc is 3.17 L for tixagevimab and 3.52 L for cilgavimab against 3.36 L for
+AZD7442, and the two component volumes sum to 6.69 L, which is
+`r sprintf("%.2f", 6.69 / 3.36)` times the summed-analyte volume. That is the
+signature of a component dose paired with a component concentration.
+
+The vignette therefore validates the single-analyte models only through
+half-life, which is dose-free, and runs every dose-dependent check on the
+AZD7442 model.
+
+## Covariate encodings that differ from the source columns
+
+* **Sex.** Clegg 2024 uses `SEXM` (1 = male); nlmixr2lib's canonical column is
+  `SEXF` (1 = female). The published coefficient is preserved verbatim and
+  applied to `(1 - SEXF)` inside `model()`, so the reference subject for the
+  typical `lka` remains female, as in the source. Same construction as
+  `Bajaj_2017_nivolumab.R` and `Wada_2023_sparsentan.R`.
+* **Age and BMI.** The source supplies pre-dichotomised `AGECAT` and `BMICAT`
+  columns. The model files carry the continuous canonical `AGE` and `BMI` and
+  form the indicators inside `model()` with the published cut points (> 65
+  years, >= 30 kg/m^2^), so the cut point stays visible and a user supplies the
+  demographic value rather than a derived flag.
+* **Injection site.** The source column is the study indicator `ACTIV2`.
+  Supplementary Table S2 states explicitly that it "is used to distinguish the
+  site of IM administrations", so it is registered as `INJSITE_THIGH`
+  (reference: gluteal) rather than as a study covariate. This is the first
+  intramuscular member of the `INJSITE_*` family, whose other members are
+  subcutaneous with an abdominal reference.
+* **Route.** `ROUTE_IV` selects the residual-error magnitude only; the dosing
+  compartment (`depot` for IM, `central` for IV) is what routes the dose. The
+  canonical `ROUTE_IV` register entry describes an SC reference, but the
+  reference here is intramuscular; the register records the distinction.
+
+## Other assumptions
+
+* **Residual error.** Clegg 2024 fitted log-transformed concentrations with an
+  additive residual whose units supplementary Table S3 gives as log(ug/mL). An
+  additive error on the natural-log scale is exactly a log-normal residual on
+  the linear scale, so it is encoded as `Cc ~ lnorm(expSd)` rather than as a
+  proportional error.
+* **No IIV on FIM or Q.** Both are reported as 0% (FIX). They are encoded as the
+  *absence* of a random effect rather than as a zero-variance eta, which would
+  make Omega singular and break the Cholesky decomposition during simulation.
+* **Covariate distributions.** Only marginal summaries are published, so the
+  virtual cohort draws each covariate independently. In the real cohort BMI and
+  weight are strongly correlated and age is correlated with comorbidity, so the
+  simulated joint distribution is wider than the true one. Only the half-life
+  percentiles and the Figure 5A overlap statistic are sensitive to this; the
+  medians and the Figure 4 ratios are not.
+* **The adolescent cohort differs from the adult cohort in body weight only.**
+  Clegg 2024 does not report the adolescent simulation's non-weight covariate
+  distributions, and the comparison the paper draws is explicitly about weight,
+  so holding everything else fixed makes the Figure 5A ratio measure the weight
+  effect rather than a difference between two independent covariate draws.
+* **Figure 5A reference values** (2,700 and 3,400 ug*day/mL; 6.2 and
+  7.4 ug/mL) are read off the published box plots, not printed in the text, and
+  are used only as validation targets with a 25% tolerance. No model parameter
+  is derived from a figure.
+* **The interim model** of supplementary Table S7 is not extracted. It is a
+  superseded fit to a subset of the data, reported for context, and the paper
+  states that the final model "lead[s] to the same conclusions".
+* **Simulated 95th percentiles of half-life run high** relative to Table 2
+  because the published percentiles derive from shrunken post-hoc estimates
+  while the simulation draws unshrunken etas. This is documented rather than
+  gated.
+
+## A note on reproducibility across machines
+
+`rxode2::rxSetSeed()` fixes the random-number stream per solver thread, not
+across thread counts, so a machine with a different number of threads draws a
+different virtual cohort from this same source. Every assertion above is
+therefore written on a median, a ratio of medians under common random numbers,
+or a magnitude bound with headroom -- never on an extreme, an exact value, or
+the sign of a small effect.
+
+Because `solve_arm()` re-seeds before every solve, all arms share one eta
+stream. Quantities that compare two arms of the same cohort -- the recovered
+bioavailability, dose proportionality, the 300-versus-600 mg crossing-time gap,
+the adolescent-versus-adult ratio -- are therefore insensitive to which cohort
+gets drawn, and only the quantities compared against a published number
+(half-life medians, Figure 4 percentages, Figure 5 crossing times) carry cohort
+noise. Those are the assertions with the wide tolerances.

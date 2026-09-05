@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Clegg 2024 AZD7442, tixagevimab and cilgavimab ([doi:10.1128/aac.01587-23](https://doi.org/10.1128/aac.01587-23)) -- adults in eight COVID-19 prophylaxis and treatment trials, as one model per analyte.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.

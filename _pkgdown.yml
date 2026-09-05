@@ -756,6 +756,8 @@ navbar:
         href: articles/Woillard_2014_ciclosporin.html
       - text: "Cilazapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Cilgavimab (Clegg 2024)"
+        href: articles/Clegg_2024_tixagevimab_cilgavimab.html
       - text: "Cilostazol (Yoo 2009)"
         href: articles/Yoo_2009_cilostazol.html
       - text: "Cipaglucosidase (Hajjar 2018)"
@@ -3800,6 +3802,10 @@ navbar:
         href: articles/Stein_2019_Tisagenlecleucel.html
       - text: "Tislelizumab (Budha 2023)"
         href: articles/Budha_2023_tislelizumab.html
+      - text: "Tixagevimab (Clegg 2024)"
+        href: articles/Clegg_2024_tixagevimab_cilgavimab.html
+      - text: "Tixagevimab cilgavimab (Clegg 2024)"
+        href: articles/Clegg_2024_tixagevimab_cilgavimab.html
       - text: "Tld 1 (McLaughlin 2024)"
         href: articles/McLaughlin_2024_tld_1.html
       - text: "Tobra (Hennig 2013)"
@@ -4619,6 +4625,7 @@ articles:
   - articles/Claret_2014_motesanib_nsclc
   - articles/Cleary_2023_risdiplam
   - articles/Clegg_2024_nirsevimab
+  - articles/Clegg_2024_tixagevimab_cilgavimab
   - articles/Clewe_2015_rifampicin
   - articles/Clewe_2016_rifampicin
   - articles/Clewe_2018_TB_MTP_GPDI_invitro
