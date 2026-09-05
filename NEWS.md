@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Munn 2024 carprofen tissue-cage models, raw and moxidectin-corrected ([doi:10.3389/fvets.2024.1332974](https://doi.org/10.3389/fvets.2024.1332974)) -- healthy merino sheep.
+- Add Liang 2024 lenalidomide ([doi:10.1038/s41598-024-52460-2](https://doi.org/10.1038/s41598-024-52460-2)) -- Chinese adults with multiple myeloma, lymphoma or myelodysplastic syndrome.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

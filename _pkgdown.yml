@@ -2070,6 +2070,8 @@ navbar:
         href: articles/Bian_2024_lefamulin.html
       - text: "Leflunomide (Hopkins 2015)"
         href: articles/Hopkins_2015_leflunomide.html
+      - text: "Lenalidomide (Liang 2024)"
+        href: articles/Liang_2024_lenalidomide.html
       - text: "Lenvatinib (Gupta 2016)"
         href: articles/Gupta_2016_lenvatinib.html
       - text: "Lenvatinib (Majid 2024)"
@@ -5458,6 +5460,7 @@ articles:
   - articles/Li_2025_modakafuspAlfa
   - articles/Li_2026_alvespimycin
   - articles/Liang_2023_polymyxinB
+  - articles/Liang_2024_lenalidomide
   - articles/Liang_2024_osimertinib
   - articles/Liang_2024_rituximab
   - articles/LiemMoolenaar_2011_scopolamine
