@@ -2,10 +2,7 @@
 
 # development version
 
-- Add Leber 2023 tacrolimus, ciclosporin, mycophenolate mofetil, everolimus and
-  methylprednisolone during CytoSorb hemoperfusion
-  ([doi:10.3389/fmed.2023.1258661](https://doi.org/10.3389/fmed.2023.1258661)) --
-  healthy sheep on an extracorporeal circuit.
+- Add Huh 2024 ritlecitinib ([doi:10.1007/s40262-024-01347-6](https://doi.org/10.1007/s40262-024-01347-6)) -- adolescents and adults with alopecia areata.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
