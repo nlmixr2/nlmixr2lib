@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Setiawan 2023 ampicillin and sulbactam ([doi:10.1007/s40262-023-01219-5](https://doi.org/10.1007/s40262-023-01219-5)) -- hospitalised non-ICU adults with a wide range of renal function.
+- Add Ly 2023 cabozantinib ([doi:10.1007/s40262-023-01210-0](https://doi.org/10.1007/s40262-023-01210-0)) -- healthy volunteers and patients with differentiated thyroid, renal cell, prostate or hepatocellular cancer.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
