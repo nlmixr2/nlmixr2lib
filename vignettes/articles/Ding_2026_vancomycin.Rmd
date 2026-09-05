@@ -226,7 +226,9 @@ events <- bind_rows(
 ) |>
   arrange(id, time, desc(evid))
 
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+# Test the frame directly: wrapping this in unique() would strip the very
+# duplicates being asserted against, making the check unfalsifiable.
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 ```
 
 # Simulation
@@ -468,7 +470,8 @@ cl_events <- bind_rows(
 ) |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
-stopifnot(!anyDuplicated(unique(cl_events[, c("id", "time", "evid")])))
+# As above: assert on the frame itself, not on a deduplicated copy of it.
+stopifnot(!anyDuplicated(cl_events[, c("id", "time", "evid")]))
 
 # `scenario` is the only column carried through `keep`: it appears nowhere as a
 # left-hand side in model(), so it cannot be shadowed by a model variable the
