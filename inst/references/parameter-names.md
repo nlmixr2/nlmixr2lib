@@ -353,6 +353,15 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `lduration` -- Gupta 2016 paper notation; an equivalent log-transformed entry.
 - **Example models:** `Aouri_2017_rilpivirine.R` (pure zero-order absorption directly into central; D1 = 4 h), `Goggin_2004_emfilermin.R` (zero-order SC absorption, D1 = 0.84 h), `Heathman_2024_efavirenz.R` (sequential zero-order then first-order; D1 = 1.74 h followed by KA = 0.165/h).
 
+### ld2 (**canonical log-transformed second-process zero-order absorption duration**)
+- **Type:** log-transformed-pk
+- **Role:** Duration of the zero-order input rate of the **second** process of a multi-phase zero-order release input function, the direct partner of `ld1`. Applied via `dur(depot2) <- d2` (dual-depot dual-input models) or `dur(central) <- d2` (a zero-order arm running in parallel with a first-order arm), and normally paired with `logitfrel` / `frel`, which splits the dose across the two processes. The bare counterpart inside `model` is `d2`.
+- **Source aliases:**
+  - `D2` -- the usual NONMEM `$PK` and paper notation (Jeon 2013, Kim 2017, Wang 2024, Laffont 2024).
+  - `dT2` -- Gasthuys 2023 paper notation ("duration of zero-order input into dosing compartment 2"), paired with that paper's `dT1`.
+- **Example models:** `Gasthuys_2023_paracetamol_human.R` (dual input function: `frel` of the dose released over `d1 = 0.22 h` into `depot`, the remaining `1 - frel` released over `d2 = 2.73 h` into a lagged `depot2`), `Jin_2014_simvastatin.R` (the same dual-depot `dur(depot2) <- d2` idiom), `Jeon_2013_interferonAlfa2a.R` (D2 = 20.2 h, with IIV `etald2`), `Kim_2017_fimasartan.R` (virtual duration of the zero-order arm of a parallel mixed input, D2 = 0.583 h), `Wang_2024_risperidone_consta.R` (immediate-release zero-order duration into central, D2 = 0.0467 day), `Laffont_2024_nalmefene.R` (D2 = 0.302 h), `Choi_2018_metformin.R` (D2 = 4.49 h).
+- **Notes:** Registered here to document a spelling that thirteen shipped models already use for exactly this role; per the register's standing rule those files are not modified. Follows the same operator ruling recorded under `lra2` / `lgam2`: a two-process release input is the existing single-process machinery applied twice, so it takes the registered stem plus a numbered second-process partner rather than a parallel family. A third process would continue the numbering (`ld3`). This numbered form is confined to the *parallel multi-phase release* case and is not a licence for bare ordinals generally -- see the `lka_early` / `lka_late` entry, which deliberately rejects `lka1` / `lka2` because a bare ordinal there would encode only sequence and not which time window the rate belongs to. Distinct from `dge` (duration of a post-prandial gallbladder-emptying gate), which is not an absorption input.
+
 ### lkel (**canonical log-transformed elimination rate constant (K-PD)**)
 - **Type:** log-transformed-pk
 - **Role:** First-order elimination rate constant used when no explicit `vc` is estimated (K-PD or single-rate-constant elimination form).
@@ -866,6 +875,14 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
   - `D1` -- NONMEM / paper notation.
   - `duration` -- alternate paper notation.
 - **Example models:** `Aouri_2017_rilpivirine.R`, `Goggin_2004_emfilermin.R`, `Heathman_2024_efavirenz.R`.
+
+### d2 (**canonical bare second-process zero-order absorption duration**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ld2`. Duration of the zero-order input rate of the second process of a multi-phase zero-order release input function; applied via `dur(depot2) <- d2` or `dur(central) <- d2`.
+- **Source aliases:**
+  - `D2` -- NONMEM / paper notation.
+  - `dT2` -- Gasthuys 2023 paper notation.
+- **Example models:** `Gasthuys_2023_paracetamol_human.R`, `Jeon_2013_interferonAlfa2a.R`, `Kim_2017_fimasartan.R`, `Wang_2024_risperidone_consta.R`, `Laffont_2024_nalmefene.R`.
 
 ### tlag (**canonical bare absorption lag time**)
 - **Type:** bare-pk
