@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Snelder 2019 leuprorelin ([doi:10.1111/bcp.13891](https://doi.org/10.1111/bcp.13891)) -- men with prostate cancer.
+- Add Patel 2020 sapanisertib concentration-QTc and concentration-RR models ([doi:10.1002/cpdd.808](https://doi.org/10.1002/cpdd.808)) -- adults with advanced solid tumors.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
