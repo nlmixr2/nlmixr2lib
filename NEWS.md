@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Hu 2023 voriconazole ([doi:10.1371/journal.pone.0288794](https://doi.org/10.1371/journal.pone.0288794)) -- Chinese paediatric haematology patients with invasive fungal infection.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.

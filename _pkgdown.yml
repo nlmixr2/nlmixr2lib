@@ -4110,6 +4110,8 @@ navbar:
         href: articles/Friberg_2012_voriconazole.html
       - text: "Voriconazole (Han 2010)"
         href: articles/Han_2010_voriconazole.html
+      - text: "Voriconazole (Hu 2023)"
+        href: articles/Hu_2023_voriconazole.html
       - text: "Voriconazole (Karlsson 2009)"
         href: articles/Karlsson_2009_voriconazole.html
       - text: "Voriconazole (Lin 2018)"
@@ -4942,6 +4944,7 @@ articles:
   - articles/Hornik_2025_furosemide
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
+  - articles/Hu_2023_voriconazole
   - articles/Hu_2025_tepotinib
   - articles/Hu_2026_clesrovimab
   - articles/Hu_2026_pemetrexed_osimertinib_mouse_qsp
