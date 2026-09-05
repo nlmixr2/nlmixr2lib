@@ -930,6 +930,8 @@ navbar:
         href: articles/Canini_2015_danoprevir.html
       - text: "Dapagliflozin (Kobuchi 2025)"
         href: articles/Kobuchi_2025_dapagliflozin.html
+      - text: "Dapagliflozin (Sokolov 2023)"
+        href: articles/Sokolov_2023_dapagliflozin.html
       - text: "Dapagliflozin (vanderWalt 2013)"
         href: articles/vanderWalt_2013_dapagliflozin.html
       - text: "Dapagliflozin mbma (Yao 2023)"
@@ -5894,6 +5896,7 @@ articles:
   - articles/Snelder_2019_leuprorelin
   - articles/Snelder_2020_ASP8232
   - articles/Soehoel_2022_tralokinumab
+  - articles/Sokolov_2023_dapagliflozin
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
