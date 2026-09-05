@@ -175,6 +175,14 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 - **Source aliases:** none.
 - **Example models:** `Campagne_2019_cyclophosphamide_mouse.R`.
 
+### saliva (**canonical salivary-fluid compartment**)
+- **Type:** compartment
+- **Role:** Secreted salivary fluid as a kinetically distinct state -- the sampling matrix a Salivette or equivalent collects. Used by saliva-based therapeutic-drug-monitoring models that retain saliva as its own compartment with its own transfer and loss rate constants, rather than as an algebraic rescaling of plasma. Pairs with the `kin_saliva` / `kout_saliva` members of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family for the central-to-saliva and saliva-to-central legs, and with `kel_saliva` for irreversible loss of drug out of saliva (swallowing plus salivary flow); the observed concentration output name is `Csaliva` with a `propSd_Csaliva` residual.
+- **Source aliases:**
+  - `SALIVA` -- Nguyen 2026 supplementary Table S7 `$MODEL COMP = (SALIVA)`; the same paper's Figure 1 calls it "the saliva bio-compartment".
+- **Example models:** `Nguyen_2026_linezolid.R` (founding example; oral linezolid in MDR-TB, saliva carried as a driven hypothetical effect compartment sharing the central volume).
+- **Notes:** Distinct from two neighbours that are deliberately different things. `salivary_gland` is the lumped salivary-gland *tissue* state of PSMA radioligand dosimetry models (`Siebinga_2023_lu177psma617.R`) -- gland parenchyma, not the secreted fluid. `fsaliva` / `lfsaliva` in `parameter-names.md` is the saliva:plasma *scale factor* for the no-kinetics case (`Xu_2023_busulfan.R`), and that entry rules itself out whenever a paper retains a separate compartment with its own rate constants, which is exactly the `saliva` case. The two structures are genuinely competing model forms and papers split both ways on the same question: Xu 2023 selected the scale factor over a distinct saliva compartment for busulfan (dOFV = -82.52), while Nguyen 2026 selected the distinct compartment over the scale factor for linezolid (d-2LL = -43.084, 2 df, p < 0.001). The canonical name carries no commitment as to whether the saliva state is mass-balance-coupled to central or driven (non-depleting) -- Nguyen 2026 is the latter -- nor to whether it has its own volume; when it shares the central volume, write `Csaliva <- saliva / vc`. Registered alongside the bare fluid-matrix compartments `csf`, `isf`, `ecf`, `elf`, `milk` and `urine`; `saliva` was already in the `specimenVocabulary` of `R/conventions.R` as a matrix before it became a compartment. Ratified 2026-09-02 (sidecar request-001 q1) with the Nguyen 2026 extraction.
+
 ---
 
 ## Brain-region namespace
