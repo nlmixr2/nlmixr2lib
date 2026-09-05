@@ -2573,6 +2573,15 @@ Indirect-response state variables of the Xiang 2018 baicalein anti-inflammatory 
 - **Source aliases:** none.
 - **Example models:** `Xiang_2018_baicalein.R`.
 
+### ifna (**canonical alpha-interferon indirect-response state**)
+- **Type:** compartment
+- **Role:** Plasma alpha-interferon (IFN-alpha) indirect-response / turnover state, in whatever activity or mass concentration units the source assay reports (IU/mL in the founding example, pg/mL in mass-based ELISAs). Drug STIMULATES synthesis -- typically through an Emax or log-linear function of the plasma drug concentration -- and the pool is removed by a first-order rate constant `kout`. The founding case has the baseline fixed at zero because unstimulated IFN-alpha was below the assay LOQ in every animal, so the production term is a bare `smax * Cc / (ec50 + Cc)` with no `kin` offset; a model whose source does report a measurable baseline uses the same state with the usual `kin` / `rbase` parameterisation.
+- **Source aliases:**
+  - `R` -- Benson 2010 equation 1 notation (`dR/dt = Smax * Cp / (SC50 + Cp) - kout * R`, "R is the plasma IFN-alpha concentration in international units per milliliter").
+  - `IFN-alpha`, `IFNa`, `IFN` -- prose and figure-axis notation.
+- **Example models:** `Benson_2010_bhma_mouse.R` (founding example -- IFN-alpha induced in male CD-1 mice by the TLR-7 agonist BHMA, `d/dt(ifna) <- smax * Cc / (ec50 + Cc) - kout * ifna` with `ifna(0) <- 0`).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2825998` request-001 q1, option A) as a new member of this inflammatory-mediator family, alongside `tnf` / `il6` / `inos` / `no`. The trailing `a` is the interferon SUBTYPE, not a stylistic flourish: IFN-beta and IFN-gamma are distinct, separately-assayed biomarkers that will want the sibling names `ifnb` and `ifng`, so a bare `ifn` (the strict `tnf` analogue -- `tnf` needs no subtype letter because TNF-beta is not a routine biomarker) would have forced an asymmetric retrofit later. Distinct from the generic registered `effect` state, which would erase the analyte from the state name; distinct also from the `cytokine_bonemarrow` / `cytokine_transit1..5` / `cytokine_central` family, which is a cytokine-release-syndrome release-and-delay chain for a generic UNNAMED cytokine rather than a named-analyte biomarker pool. The residual-error name is the standard non-parent-output form `addSd_ifna` / `propSd_ifna`.
+
 ---
 
 ## Radiation tumor-growth-inhibition states

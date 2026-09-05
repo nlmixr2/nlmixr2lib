@@ -474,10 +474,8 @@ navbar:
         href: articles/Papachristos_2020_bevacizumab_pkpd.html
       - text: "Bevacizumab qss (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_qss.html
-      - text: "BI754111 mpbpk (Michelet 2025)"
-        href: articles/Michelet_2025_BI754111_mpbpk.html
-      - text: "BIIB023 (Galluppi 2016)"
-        href: articles/Galluppi_2016_BIIB023.html
+      - text: "Bhma mouse (Benson 2010)"
+        href: articles/Benson_2010_bhma_mouse.html
       - text: "Biib107 (Toukam 2025)"
         href: articles/Toukam_2025_biib107.html
       - text: "Bitopertin (Rognas 2025)"
@@ -4429,7 +4427,7 @@ articles:
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
   - articles/Benkali_2010_tacrolimus
-  - articles/Benson_2010_reboxetine_hnet_binding
+  - articles/Benson_2010_bhma_mouse
   - articles/Benson_2014_PF04457845_qsp
   - articles/Beredaki_2023_micafungin
   - articles/Beredaki_2024_amphotericinB_liposomal

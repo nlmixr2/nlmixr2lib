@@ -21,6 +21,8 @@
   adverse-event logistic-regression layer is *not* recoverable from the review;
   that gap is now documented as closed to further search.
 
+- Add Benson 2010 BHMA / alpha interferon ([doi:10.1128/AAC.00551-09](https://doi.org/10.1128/AAC.00551-09)) -- male CD-1 outbred mice.
+
 - Add van Schaick 2016 prucalopride ([doi:10.1002/prp2.236](https://doi.org/10.1002/prp2.236)) -- children aged 6 months to 18 years with functional constipation.
 
 - Add Feng 2019 ipilimumab mixture tumor growth dynamics model ([doi:10.1002/psp4.12454](https://doi.org/10.1002/psp4.12454)) -- adults with advanced melanoma.
