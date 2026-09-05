@@ -3786,6 +3786,8 @@ navbar:
         href: articles/Ganesan_2023_tebipenem.html
       - text: "Tebipenem (Zhang 2026)"
         href: articles/Zhang_2026_tebipenem.html
+      - text: "Teclistamab (Miao 2023)"
+        href: articles/Miao_2023_teclistamab.html
       - text: "Teclistamab qsp (ChandralayamAyyappaMenon 2026)"
         href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
       - text: "Tecovirimat cyno (Leeds 2013)"
@@ -5473,6 +5475,7 @@ articles:
   - articles/Mi_2023_cefquinome_pbpk
   - articles/Mi_2024_aditoprim
   - articles/Miano_2024_tacrolimus
+  - articles/Miao_2023_teclistamab
   - articles/Michelet_2025_BI754111_mpbpk
   - articles/Milakovic_2024_linezolid
   - articles/Milosheska_2016_lamotrigine

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hu 2023 voriconazole ([doi:10.1371/journal.pone.0288794](https://doi.org/10.1371/journal.pone.0288794)) -- Chinese paediatric haematology patients with invasive fungal infection.
+- Add Miao 2023 teclistamab ([doi:10.1007/s11523-023-00989-z](https://doi.org/10.1007/s11523-023-00989-z)) -- adults with relapsed/refractory multiple myeloma.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
