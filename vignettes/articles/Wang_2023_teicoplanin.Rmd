@@ -764,6 +764,14 @@ steady state within the simulated week.
   self-consistent. The value -23.189 appears nowhere else; the closest
   Table S1 entry is -23.839, for serum creatinine on CL. The packaged model
   and its metadata use -20.374. No model parameter depends on this.
+* **The residual error is reported as two transposed values.** Table 2 gives
+  the proportional error as 31.7% (RSE 10.6%), but the Results text states
+  "the intra-individual variability was 37.1%" -- the same digits in a
+  different order. Table 2 is the correct one: its own bootstrap 95% CI for
+  this parameter, 21.4-36.4%, contains 31.7% and excludes 37.1%. The packaged
+  model uses `propSd = 0.317`. This matters for the reproduction above,
+  because the residual error sets the interquartile widths that identify
+  whether the published simulations carry residual error.
 * **`Vp (L) = 51.6 x e^0.387` in the Table 2 note** reads as a multiplier but
   is the between-subject variance; see the Source trace section above. The
   typical Vp is 51.6 L per Table 2 and per the Results text.

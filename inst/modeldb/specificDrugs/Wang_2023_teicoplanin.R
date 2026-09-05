@@ -257,6 +257,11 @@ Wang_2023_teicoplanin <- function() {
     # Residual variability: proportional only (Wang 2023 Results, 'Exponential
     # and proportional error models were selected to describe the
     # inter-individual and residual variability, respectively').
+    #
+    # The magnitude is printed two ways, with the digits transposed: Table 2
+    # gives 31.7% and the Results text gives 'the intra-individual variability
+    # was 37.1%'. Table 2 is used, because its own bootstrap 95% CI for this
+    # parameter (21.4-36.4%) contains 31.7% and excludes 37.1%.
     # ------------------------------------------------------------------
     propSd <- 0.317; label("Proportional residual error (fraction)")  # Wang 2023 Table 2: sigma proportional error = 31.7% (RSE 10.6%; bootstrap median 30.3%, 95% CI 21.4-36.4%), encoded as a fraction
   })
