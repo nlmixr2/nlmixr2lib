@@ -198,8 +198,10 @@ Chen_2023_vancomycin <- function() {
     # model', i.e. Y = F * exp(eps1) + eps2.
     #
     # rxode2 (tested on 5.1.7) cannot express the EXPONENTIAL arm combined with
-    # an additive arm: `Cc ~ lnorm(expSd) + add(addSd)` fails to build with
-    # "cannot find additive standard deviation for 'Cc'". The exponential arm is
+    # an additive arm: `Cc ~ lnorm(expSd) + add(addSd)` PARSES AND COMPILES, and
+    # then fails at rxSolve() with "cannot find additive standard deviation for
+    # 'Cc'". Verify at the solve, not the build -- a build-only check succeeds
+    # and makes this note look wrong. The exponential arm is
     # therefore encoded as its first-order equivalent, a PROPORTIONAL arm, which
     # is what F * exp(eps1) reduces to for a small eps1: F * exp(eps1) ~=
     # F * (1 + eps1). The approximation costs 0.8% on the residual magnitude --

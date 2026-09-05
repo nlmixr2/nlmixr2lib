@@ -721,9 +721,13 @@ the trough band for that reason.
 
 - **Residual error.** Chen 2023 used a combined additive and *exponential*
   residual model, `Y = F * exp(eps1) + eps2`. rxode2 (tested on 5.1.7) cannot
-  build a log-normal residual combined with an additive one -
-  `Cc ~ lnorm(expSd) + add(addSd)` fails with "cannot find additive standard
-  deviation for 'Cc'". The exponential arm is therefore encoded as its
+  simulate a log-normal residual combined with an additive one -
+  `Cc ~ lnorm(expSd) + add(addSd)` *parses and compiles*, then fails at
+  `rxSolve()` with "cannot find additive standard deviation for 'Cc'; this
+  parameter could be estimated by another endpoint, to fix move outside of
+  error expression." Confirm it at the solve, not the build: a build-only
+  check succeeds and makes this note look wrong. The exponential arm is
+  therefore encoded as its
   first-order equivalent proportional arm, `Cc ~ add(addSd) + prop(propSd)`
   with `propSd = 0.177`, since `F * exp(eps1)` reduces to `F * (1 + eps1)` for
   small `eps1`. The cost is 0.8% on the residual magnitude: the paper's
