@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2023 zoledronic acid ([doi:10.3389/fphar.2023.1089774](https://doi.org/10.3389/fphar.2023.1089774)) -- adults with primary osteoporosis, pooled from 10 published trials.
+- Add Gaspar 2023 apixaban ([doi:10.1002/psp4.13032](https://doi.org/10.1002/psp4.13032)) -- hospitalized adults from the OptimAT study.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
