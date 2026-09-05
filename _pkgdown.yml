@@ -4216,8 +4216,8 @@ navbar:
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
         href: articles/Takada_2025_vancomycin.html
-      - text: "Vancomycin (Yoon 2023)"
-        href: articles/Yoon_2023_vancomycin.html
+      - text: "Vancomycin (Yu 2023)"
+        href: articles/Yu_2023_vancomycin.html
       - text: "Vancomycin (Yu 2025)"
         href: articles/Yu_2025_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
@@ -6269,6 +6269,7 @@ articles:
   - articles/Yu_2015_sunitinib
   - articles/Yu_2017_mycophenolic_acid
   - articles/Yu_2022_ofatumumab
+  - articles/Yu_2023_vancomycin
   - articles/Yu_2024_ilaprazole
   - articles/Yu_2025_vancomycin
   - articles/Yu_2026_lacosamide

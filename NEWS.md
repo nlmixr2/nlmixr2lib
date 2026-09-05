@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fimbo 2023 ivermectin ([doi:10.1002/psp4.13038](https://doi.org/10.1002/psp4.13038)) -- children and adults dosed during a lymphatic filariasis mass drug administration campaign in Tanzania.
+- Add Yu 2023 vancomycin ([doi:10.3389/fphar.2023.1298397](https://doi.org/10.3389/fphar.2023.1298397)) -- critically ill adults receiving continuous renal replacement therapy.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
