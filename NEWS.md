@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Campbell 2023 manganese monkey and human PBPK ([doi:10.1093/toxsci/kfac123](https://doi.org/10.1093/toxsci/kfac123)) -- healthy monkeys and adult humans.
+- Add Jang 2023 zaltoprofen ([doi:10.3390/ph16020161](https://doi.org/10.3390/ph16020161)) -- healthy Korean male adults. Note: the published parameter set does not reproduce the source paper's own figures; see the vignette Errata.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
