@@ -1,0 +1,557 @@
+---
+title: "Aciclovir (D'Agate 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Aciclovir (D'Agate 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7,
+                      fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("DAgate_2024_aciclovir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("DAgate_2024_aciclovir"))$description`
+* Article: <https://doi.org/10.1002/prp2.1193>
+
+# Population
+
+D'Agate 2024 re-analysed pooled aciclovir plasma data from the two clinical
+studies reported by Sampson and colleagues. Study 1 was a single-centre,
+open-label pharmacokinetic study of infants at 23-42 weeks gestational age and
+under 61 days postnatal age with suspected systemic infection; Study 2 was a
+multicentre, open-label study of infants at 23-34 weeks gestational age and
+under 45 days postnatal age with suspected systemic herpes simplex virus
+infection.
+
+Thirty-two infants were enrolled and contributed 92 plasma samples. Nine
+samples were excluded before model development as contaminated or drawn during
+infusion, leaving **83 samples from 28 infants** in the final data set
+(Results, Section 4). Table 1 of the source reports, over the 32 enrolled:
+gestational age 30 weeks (range 23-40), post-menstrual age 31 weeks (25-41),
+postnatal age 3 days (1-30), birth weight 1295 g (420-4840), weight 1420 g
+(373-5720), 17 female / 15 male, 20 White / 11 Black / 1 Asian, and serum
+creatinine 0.9 mg/dL (0.3-1.8). One infant received vasopressin, four
+dopamine, and seven epinephrine.
+
+The same information is available programmatically via the model's
+`population` metadata (`readModelDb("DAgate_2024_aciclovir")()$population`).
+
+# Model structure
+
+Aciclovir disposition is a **one-compartment model with zero-order intravenous
+infusion and first-order elimination** (Results, Section 4.1). The final
+covariate model (Methods Eq. 3 and the equations printed inside Table 2) is
+
+```
+CL (L/h) = theta1 * (WT / 1.37)^0.75 * PMA^HILL / (PMA50^HILL + PMA^HILL) + CLCR
+V  (L)   = theta2 * (WT / 1.37)^1 * theta4^DIS
+```
+
+Three features are worth spelling out.
+
+* **Clearance is a sum, not a product.** `theta1` is the *residual* clearance
+  `theta_CL,res` that creatinine clearance does not explain; the Discussion
+  attributes it to tubular secretion plus hepatic metabolism. The individual
+  creatinine clearance enters additively at **unit slope**, representing
+  glomerular filtration, and the paper reports that it accounts for roughly a
+  quarter of total aciclovir clearance.
+* **`CLCR` is the individual, non-BSA-normalized value in L/h.** Methods
+  Section 2.3 computes the Schwartz estimate
+  `CLCR = k * HT / SCr` (`k = 0.33` below 36 weeks gestational age, `0.45`
+  otherwise; `HT` in cm, `SCr` in mg/L), which is BSA-normalized, and then
+  states that "the values obtained were converted from mL/min/1.73 m^2 to L/h
+  using the individual body surface area of the subject". The packaged model
+  therefore takes the canonical `CRCL` column as *raw* mL/min (individual, not
+  BSA-normalized) and applies the 0.06 mL/min-to-L/h conversion internally.
+* **`HILL` is 1 in the final model.** Table 2 prints the final clearance
+  equation with the maturation term collapsed to `PMA / (theta3 + PMA)`, and no
+  estimate, standard error or bootstrap interval for `HILL` appears anywhere in
+  the paper.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/DAgate_2024_aciclovir.R`. The table below
+collects them in one place.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| One compartment, zero-order infusion, first-order elimination | n/a | Results Section 4.1 |
+| `lcl` (theta1, residual CL at 1.37 kg) | 0.748 L/h | Table 2, RSE 18%, bootstrap 0.730 (0.429-1.04) |
+| `lvc` (theta2, V at 1.37 kg, no infection) | 1.93 L | Table 2, RSE 39%, bootstrap 1.89 (0.823-3.50) |
+| `e_wt_cl` (allometric exponent on CL) | 0.75 (fixed) | Methods Section 2.3 item 1; also printed in the Table 2 CL equation |
+| `e_wt_vc` (allometric exponent on V) | 1 (fixed) | Methods Section 2.3, "a pre-defined fixed allometric exponent with value 1" |
+| `pma_tm50` (theta3, PMA50) | 50 weeks (fixed) | Table 2, footnote b "Fixed to literature value" |
+| `pma_hill` (HILL) | 1 (fixed) | Table 2 final-model CL equation printed as `PMA/(theta3 + PMA)` |
+| `e_crcl_cl` (CLCR into CL) | unit slope; 0.06 L/h per mL/min | Table 2 CL equation `+ CLCR`; Methods Section 2.3 item 3 for the L/h conversion |
+| `e_infect_vc` (theta4, systemic infection on V) | 2.67 | Table 2, RSE 38%, bootstrap 2.74 (1.46-6.43); orientation from the Abstract |
+| `etalcl` variance (Omega1) | 0.451 (75.5% CV) | Table 2, RSE 13% |
+| `etalvc` variance (Omega2) | 0.646 (95.3% CV) | Table 2, RSE 23% |
+| `etalcl`-`etalvc` covariance | 0.442 (rho 82%) | Table 2, RSE 42.3% |
+| `propSd` | sqrt(0.143) = 0.378 | Table 2 sigma1 = 0.143 (37.8% CV), RSE 17% |
+| Reference weight 1.37 kg, reference PMA context | n/a | Methods, text beneath Eq. 2 and Eq. 3 |
+
+Two arithmetic identities confirm that the Table 2 Omega column holds
+**variances on the log scale** rather than standard deviations or CVs: the
+table's own footnote c defines the printed percentages as
+`sqrt(exp(Omega) - 1) * 100`, and `sqrt(exp(0.451) - 1) = 75.5%` and
+`sqrt(exp(0.646) - 1) = 95.3%` reproduce them exactly. The printed correlation
+follows from the same column: `0.442 / sqrt(0.451 * 0.646) = 0.819`, i.e. the
+82% shown in Table 2.
+
+# Structural check against the paper's own simulated exposures
+
+Table 3 of the source reports steady-state exposure for virtual cohorts of 100
+pre-term and 100 term neonates dosed per the summary of product
+characteristics, with the dosing interval selected from BSA-normalized
+creatinine clearance. Before simulating a cohort, evaluate the packaged model
+at Table 3's own **median** covariates for the two cells whose median
+creatinine clearance falls inside the reported dosing band: term neonates
+(median CLcr 46.2 mL/min/1.73 m^2, i.e. the 25-50 band, 20 mg/kg every 12 h)
+and pre-term neonates (median CLcr 23.53, i.e. the 10-25 band, 20 mg/kg every
+24 h). Doses are given as 1-hour intravenous infusions.
+
+```{r typical}
+mod <- readModelDb("DAgate_2024_aciclovir")
+
+cells <- tibble::tribble(
+  ~cohort,    ~tau, ~WT,  ~PAGE, ~BSA, ~CRCL_BSA, ~auc_pub, ~cmax_pub,
+  "Term",       12, 3.30, 41.71, 0.23,     46.20,      134,      15.2,
+  "Pre-term",   24, 1.18, 29.00, 0.12,     23.53,       70,      12.8
+) |>
+  # The model consumes the INDIVIDUAL (non-BSA-normalized) creatinine
+  # clearance; Table 3 tabulates the BSA-normalized value alongside the
+  # individual body surface area, so de-normalize with BSA / 1.73.
+  dplyr::mutate(CRCL = CRCL_BSA * BSA / 1.73,
+                id = dplyr::row_number(),
+                amt = 20 * WT)
+
+make_typical_events <- function(r) {
+  dplyr::bind_rows(
+    tibble::tibble(id = r$id, time = seq(0, 120 - r$tau, by = r$tau),
+                   amt = r$amt, evid = 1L, dur = 1, cmt = "central"),
+    tibble::tibble(id = r$id, time = seq(96, 120, by = 0.05),
+                   amt = NA_real_, evid = 0L, dur = NA_real_, cmt = "central")
+  ) |>
+    dplyr::mutate(WT = r$WT, PAGE = r$PAGE, CRCL = r$CRCL,
+                  DIS_INFECT_ACTIVE = 0)
+}
+
+ev_typical <- dplyr::bind_rows(
+  lapply(seq_len(nrow(cells)), function(i) make_typical_events(cells[i, ]))
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim_typical <-
+  rxode2::rxSolve(rxode2::zeroRe(mod), events = ev_typical) |>
+  as.data.frame()
+
+typ <- sim_typical |>
+  dplyr::filter(!is.na(Cc), time >= 96) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(
+    cl = dplyr::first(cl), vc = dplyr::first(vc), cmax = max(Cc),
+    auc24 = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(cells |> dplyr::select(id, cohort, tau, amt, auc_pub,
+                                          cmax_pub), by = "id") |>
+  dplyr::mutate(
+    daily_dose = amt * 24 / tau,
+    mass_balance = auc24 * cl / daily_dose,
+    auc_pct  = 100 * (auc24 - auc_pub) / auc_pub,
+    cmax_pct = 100 * (cmax - cmax_pub) / cmax_pub
+  )
+
+typ |>
+  dplyr::select(cohort, tau, cl, vc, auc24, auc_pub, auc_pct, cmax,
+                cmax_pub, cmax_pct) |>
+  dplyr::rename(
+    "Cohort" = cohort, "tau (h)" = tau, "CL (L/h)" = cl, "V (L)" = vc,
+    "AUC0-24 model" = auc24, "AUC0-24 paper" = auc_pub, "AUC % diff" = auc_pct,
+    "Cmax model" = cmax, "Cmax paper" = cmax_pub, "Cmax % diff" = cmax_pct
+  ) |>
+  knitr::kable(digits = 2,
+               caption = paste("Typical-value steady-state exposure at the",
+                               "Table 3 median covariates, against the",
+                               "published medians. AUC in mg*h/L, Cmax in",
+                               "mg/L."))
+```
+
+Two assertions gate this chunk.
+
+The first is an **internal identity** and is therefore held to numerical
+tolerance: at steady state the area under the curve over one 24-hour window,
+multiplied by the individual clearance, must equal the dose delivered in that
+window. Both sides use the same solved profile, so the only difference is
+trapezoidal error on a 0.05-hour grid.
+
+```{r typical-assert}
+stopifnot(
+  # Mass balance: AUC0-24,ss * CL == dose per 24 h. Deterministic; the only
+  # error is trapezoidal integration on the 0.05 h observation grid.
+  all(abs(typ$mass_balance - 1) < 0.005),
+  # Transcription gate against the paper's own Table 3 medians. Deterministic
+  # (typical values, no random effects), so the bound is set just outside the
+  # realised -4.0% / -1.8% for AUC and -9.8% / +0.9% for Cmax. A
+  # mis-transcribed clearance, volume, reference weight or dose moves these by
+  # tens of percent.
+  max(abs(typ$auc_pct)) < 12,
+  max(abs(typ$cmax_pct)) < 20
+)
+```
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below reproduces
+the two neonatal virtual populations of Table 3: 200 pre-term and 200 term
+neonates (the per-arm cap for this package's vignettes), each subject's
+covariates drawn log-normally with the median and range printed in Table 3.
+Body surface area is derived from body weight by geometric scaling
+(`BSA = BSA_median * (WT / WT_median)^(2/3)`), which reproduces the Table 3 BSA
+ranges from the Table 3 weight ranges to within about 0.01 m^2 in both cohorts.
+
+Between-subject random effects are drawn **in R** from the published
+`etalcl`/`etalvc` covariance matrix and carried as data columns, with
+`omega = NA` on the solve. `rxSetSeed()` fixes rxode2's own stream per solver
+thread and not across thread counts, so drawing the etas here instead makes the
+cohort - and therefore every assertion below - identical on any machine.
+
+```{r cohort}
+set.seed(20240521)
+
+# Log-scale SD implied by a printed median and range over ~100 subjects,
+# treating the range endpoints as approximately the 0.6th and 99.4th
+# percentiles (z = 2.5).
+log_sd_from_range <- function(lo, hi) log(hi / lo) / 5
+
+# Published IIV covariance (D'Agate 2024 Table 2): Omega1, covariance, Omega2.
+omega_pub <- matrix(c(0.451, 0.442,
+                      0.442, 0.646), nrow = 2, ncol = 2)
+
+make_cohort <- function(n, label, pma_m, pma_lo, pma_hi,
+                        wt_m, wt_lo, wt_hi, bsa_m,
+                        crcl_m, crcl_lo, crcl_hi, id_offset = 0L) {
+  wt <- wt_m * exp(stats::rnorm(n, 0, log_sd_from_range(wt_lo, wt_hi)))
+  etas <- matrix(stats::rnorm(2 * n), ncol = 2) %*% chol(omega_pub)
+  tibble::tibble(
+    id       = id_offset + seq_len(n),
+    cohort   = label,
+    PAGE     = pma_m * exp(stats::rnorm(n, 0,
+                                        log_sd_from_range(pma_lo, pma_hi))),
+    WT       = wt,
+    BSA      = bsa_m * (wt / wt_m)^(2 / 3),
+    CRCL_BSA = crcl_m * exp(stats::rnorm(n, 0,
+                                         log_sd_from_range(crcl_lo, crcl_hi))),
+    etalcl   = etas[, 1],
+    etalvc   = etas[, 2]
+  ) |>
+    dplyr::mutate(
+      CRCL = CRCL_BSA * BSA / 1.73,
+      # Table 3 simulated the general neonatal population rather than the
+      # infected sub-study; see "Assumptions and deviations".
+      DIS_INFECT_ACTIVE = 0,
+      # Renal dose adjustment exactly as listed in Methods Section 2.5, keyed
+      # on BSA-normalized CLcr for neonates.
+      tier = dplyr::case_when(CRCL_BSA > 50 ~ "CLcr > 50",
+                              CRCL_BSA > 25 ~ "CLcr 25-50",
+                              CRCL_BSA > 10 ~ "CLcr 10-25",
+                              TRUE          ~ "CLcr < 10"),
+      tau  = dplyr::case_when(CRCL_BSA > 50 ~ 8,
+                              CRCL_BSA > 25 ~ 12,
+                              TRUE          ~ 24),
+      amt  = dplyr::if_else(CRCL_BSA > 10, 20, 10) * WT,
+      arm  = paste(cohort, tier, sep = ", ")
+    )
+}
+
+subj <- dplyr::bind_rows(
+  make_cohort(200, "Pre-term", 29.00, 24.22, 38.73, 1.18, 0.32, 5.59, 0.12,
+              23.53, 15.18, 49.89, id_offset =   0L),
+  make_cohort(200, "Term",     41.71, 37.54, 45.30, 3.30, 1.28, 8.38, 0.23,
+              46.20, 27.01, 89.71, id_offset = 200L)
+)
+stopifnot(!anyDuplicated(subj$id))
+
+subj |>
+  dplyr::count(cohort, tier) |>
+  tidyr::pivot_wider(names_from = tier, values_from = n, values_fill = 0L) |>
+  knitr::kable(caption = paste("Subjects per renal dosing band. The pattern of",
+                               "populated cells matches Table 3, where the",
+                               "pre-term > 50 and term 10-25 cells are",
+                               "reported as absent."))
+```
+
+The dosing-band occupancy is itself a check on the covariate model: applying
+the paper's own creatinine-clearance dose rules to the paper's own creatinine
+clearance distributions leaves the pre-term `CLcr > 50` and term
+`CLcr 10-25` cells empty, exactly the two cells Table 3 leaves blank for these
+cohorts.
+
+```{r events}
+t_ss <- 96  # steady state is reached within about a day (t1/2 ~ 3 h)
+
+dose_rows <- subj |>
+  dplyr::group_by(id) |>
+  dplyr::reframe(time = seq(0, t_ss + 24 - unique(tau), by = unique(tau)),
+                 amt = unique(amt), evid = 1L, dur = 1, cmt = "central")
+
+obs_rows <- subj |>
+  dplyr::select(id) |>
+  tidyr::crossing(time = seq(t_ss, t_ss + 24, by = 0.25)) |>
+  dplyr::mutate(amt = NA_real_, evid = 0L, dur = NA_real_, cmt = "central")
+
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::left_join(
+    subj |> dplyr::select(id, arm, cohort, WT, PAGE, CRCL, DIS_INFECT_ACTIVE,
+                          etalcl, etalvc),
+    by = "id"
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, omega = NA, sigma = NA,
+                       keep = c("arm", "cohort")) |>
+  as.data.frame()
+
+stopifnot(all(sim$Cc[!is.na(sim$Cc)] >= 0))
+```
+
+`omega = NA` and `sigma = NA` suppress rxode2's own sampling: the between-
+subject variability is already carried in the `etalcl` / `etalvc` columns, and
+`Cc` is the individual prediction. Table 3's secondary parameters are
+model-predicted exposures, so no residual error is added.
+
+# Replicate published figures
+
+```{r figure-3}
+# Replicates the neonatal panels of Figure 3 of D'Agate 2024: steady-state
+# aciclovir concentration versus time within one 24-hour window.
+sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(time_ss = time - t_ss) |>
+  dplyr::group_by(arm, time_ss) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05),
+    Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(time_ss, Q50)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  ggplot2::geom_line() +
+  ggplot2::facet_wrap(~arm) +
+  ggplot2::scale_y_log10() +
+  ggplot2::labs(
+    x = "Time within the steady-state dosing day (h)",
+    y = "Aciclovir plasma concentration (mg/L)",
+    title = "Steady-state aciclovir profiles in pre-term and term neonates",
+    caption = paste("Replicates the neonatal panels of Figure 3 of D'Agate",
+                    "2024. Line = median, band = 5th-95th percentile.")
+  )
+```
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | arm + id)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1, time >= t_ss) |>
+  dplyr::select(id, time, amt, arm)
+
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time | arm + id)
+
+# The steady-state 24-hour window. Every subject has an observation exactly at
+# t_ss, so the AUC interval is anchored on a real measurement.
+intervals <- data.frame(
+  start   = t_ss,
+  end     = t_ss + 24,
+  cmax    = TRUE,
+  tmax    = TRUE,
+  auclast = TRUE,
+  cav     = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+
+nca_tbl <- as.data.frame(nca_res$result)
+stopifnot(nrow(nca_tbl) > 0, !anyNA(nca_tbl$PPORRES))
+```
+
+```{r pknca-summary}
+nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cav")) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(n = dplyr::n(),
+                   Median = median(PPORRES),
+                   `P5` = quantile(PPORRES, 0.05),
+                   `P95` = quantile(PPORRES, 0.95),
+                   .groups = "drop") |>
+  dplyr::rename("Arm" = arm, "NCA parameter" = PPTESTCD, "N" = n) |>
+  knitr::kable(digits = 2,
+               caption = paste("Simulated steady-state NCA by renal dosing",
+                               "band. AUClast is AUC0-24 at steady state",
+                               "(mg*h/L); Cmax and Cav in mg/L; Tmax in h."))
+```
+
+## Comparison against published NCA
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~arm,                   ~auclast, ~cmax,
+  "Term, CLcr > 50",           185,  12.7,
+  "Term, CLcr 25-50",          134,  15.2,
+  "Pre-term, CLcr 25-50",      134,  14.8,
+  "Pre-term, CLcr 10-25",       70,  12.8
+)
+
+# Guard against a silent no-op: every published arm must exist in the
+# simulation, otherwise the comparison table would render empty rows and the
+# assertions below would test nothing.
+stopifnot(all(published$arm %in% nca_tbl$arm))
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = published,
+  by            = "arm",
+  units         = c(cmax = "mg/L", auclast = "mg*h/L", tmax = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Simulated versus published steady-state exposure",
+                  "(D'Agate 2024 Table 3). * differs from the reference by",
+                  "more than 20%."),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+```{r nca_assert}
+pct_diff <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax")) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(median_sim = median(PPORRES), .groups = "drop") |>
+  dplyr::left_join(
+    published |> tidyr::pivot_longer(-arm, names_to = "PPTESTCD",
+                                     values_to = "published"),
+    by = c("arm", "PPTESTCD")
+  ) |>
+  dplyr::mutate(pct = 100 * (median_sim - published) / published)
+
+stopifnot(nrow(pct_diff) == 8L, !anyNA(pct_diff$pct))
+
+auc_pct  <- pct_diff$pct[pct_diff$PPTESTCD == "auclast"]
+# The term / CLcr > 50 Cmax cell is a documented deviation -- see
+# "Assumptions and deviations" -- and is excluded from the gate but kept
+# visible in the comparison table above.
+cmax_pct <- pct_diff$pct[pct_diff$PPTESTCD == "cmax" &
+                           pct_diff$arm != "Term, CLcr > 50"]
+
+stopifnot(
+  # Realised -19.7 / -5.7 / +0.6 / +10.4 for AUC0-24 and -16.4 / -4.6 / +10.1
+  # for the three gated Cmax cells. The cohort is drawn from R's RNG under
+  # set.seed() with rxode2 sampling disabled, so these are reproducible; the
+  # bound leaves headroom for solver and PKNCA-version differences while
+  # still breaking on a mis-transcribed clearance, volume or dose.
+  max(abs(auc_pct))  < 28,
+  max(abs(cmax_pct)) < 25
+)
+```
+
+The four AUC0-24 cells agree with the published medians to within 20%, and
+three of the four Cmax cells to within 17%.
+
+# Assumptions and deviations
+
+* **Volume-of-distribution covariate form.** Table 2 prints the volume equation
+  as `V (L) = theta2*(WT/1.37)*DIS*theta4`, which taken literally sets the
+  volume to zero for a subject without systemic infection. The Abstract states
+  the intended form: "Population estimate for volume of distribution was 1.93 L
+  with systemic infection increasing this value by almost 3-fold (2.67 times
+  higher)". The model therefore encodes `theta4^DIS`, i.e. a 2.67-fold
+  multiplier when `DIS_INFECT_ACTIVE = 1` and no change when it is 0.
+
+* **`HILL` is not reported.** The Methods Eq. 3 maturation term carries a Hill
+  coefficient, but no estimate for it appears in Table 2 or anywhere else in
+  the paper. Table 2's own printed final-model equation collapses the term to
+  `PMA / (theta3 + PMA)`, so `pma_hill` is encoded as `fixed(1)`.
+
+* **Systemic infection is switched off in the simulations.** The paper does not
+  state which value of `DIS` its Table 3 virtual cohorts carry. Setting
+  `DIS_INFECT_ACTIVE = 0` reproduces the published Cmax values; setting it to 1
+  divides every simulated Cmax by 2.67 and puts them far below the published
+  numbers (for example the term median falls from about 13 mg/L to about
+  5 mg/L). The Table 3 cohorts were also drawn from the NHANES and CALIPER
+  reference databases rather than from the infected study population, so
+  `DIS = 0` is both the numerically and the clinically consistent reading.
+
+* **Infusion duration 1 hour.** Neither the Methods nor Table 3 states the
+  infusion duration used for the simulations. One hour is the duration in the
+  summary of product characteristics the paper cites for the dosing regimens,
+  and it is corroborated numerically: the typical-value term neonate at the
+  Table 3 median covariates reaches a steady-state Cmax of 13.7 mg/L on a
+  1-hour infusion against the published 15.2 mg/L, whereas a bolus would
+  overshoot it.
+
+* **Covariate distributions are reconstructed, not published.** Table 3 gives a
+  median and range per covariate but no distributional form or correlation
+  structure. Post-menstrual age, weight and BSA-normalized creatinine clearance
+  are drawn log-normally with the log-scale SD implied by treating the printed
+  range endpoints as roughly the 0.6th and 99.4th percentiles of 100 subjects,
+  and body surface area is derived from weight by geometric (2/3-power)
+  scaling anchored at the published cohort medians. That derivation is not
+  taken from the paper, but it reproduces the Table 3 BSA ranges from the
+  Table 3 weight ranges in both cohorts, which is why it is preferred here to
+  sampling BSA independently of weight.
+
+* **Between-subject random effects are drawn in R.** They are passed to
+  `rxSolve()` as `etalcl` / `etalvc` data columns with `omega = NA`, rather
+  than sampled by rxode2. rxode2 partitions its RNG streams per solver thread,
+  so a thread-count difference between a workstation and a CI runner would
+  otherwise draw a different cohort and move every assertion above.
+
+* **Known deviation: Cmax in the term, CLcr > 50 cell.** The simulated median
+  Cmax is about 26% above the published 12.7 mg/L. The source of the
+  disagreement is visible inside Table 3 itself: at a constant 20 mg/kg unit
+  dose, the table reports a *lower* Cmax for the more frequent regimen
+  (term neonates 12.7 mg/L every 8 h against 15.2 mg/L every 12 h; infants
+  14.7 mg/L against 17.5 mg/L). A one-compartment model with first-order
+  elimination accumulates more, not less, as the interval shortens at constant
+  unit dose, so this ordering cannot arise from the published structural model
+  regardless of how the covariates are distributed. The corresponding AUC0-24
+  cell agrees to within 6%, so the transcription of clearance, volume and dose
+  is not implicated. The cell is reported in the comparison table and excluded
+  from the assertion gate rather than tuned away.
+
+* **Covariates screened but not retained.** Post-natal age, sex, race,
+  concomitant vasopressin / dopamine / epinephrine, birth weight and serum
+  creatinine as a covariate in its own right were all tested and dropped
+  (Methods Section 2.2 and Discussion). They are recorded in the model file's
+  `covariatesDataExcluded` metadata so the covariate screen is preserved
+  without implying an effect the paper did not estimate.
