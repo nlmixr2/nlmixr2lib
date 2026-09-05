@@ -2408,6 +2408,8 @@ navbar:
         href: articles/Dorlo_2008_miltefosine.html
       - text: "Miltefosine (Dorlo 2017)"
         href: articles/Dorlo_2017_miltefosine.html
+      - text: "Miltefosine (Verrest 2023)"
+        href: articles/Verrest_2023_miltefosine_paromomycin.html
       - text: "Minocycline (Athanassa 2025)"
         href: articles/Athanassa_2025_minocycline.html
       - text: "Miridesap (Sahota 2015)"
@@ -2822,6 +2824,8 @@ navbar:
         href: articles/Visscher_2025_parathyroidHormone.html
       - text: "Paritaprevir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
+      - text: "Paromomycin (Verrest 2023)"
+        href: articles/Verrest_2023_miltefosine_paromomycin.html
       - text: "Paroxetine (Kim 2015)"
         href: articles/Kim_2015_paroxetine.html
       - text: "Paroxetine (Shigetome 2025)"
@@ -5805,6 +5809,7 @@ articles:
   - articles/VelezdeMendizabal_2012_lumiracoxib_rat
   - articles/VelezdeMendizabal_2013_multipleSclerosis
   - articles/Venisse_2008_candida_albicans
+  - articles/Verrest_2023_miltefosine_paromomycin
   - articles/Verrest_2024_leishmania
   - articles/Vet_2016_midazolam
   - articles/Vezina_2010_valganciclovir
