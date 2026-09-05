@@ -3012,6 +3012,12 @@ navbar:
         href: articles/Tarning_2012_dihydroartemisinin_piperaquine.html
       - text: "Piperaquine (Tarning 2014)"
         href: articles/Tarning_2014_piperaquine.html
+      - text: "Piperaquine (Wallender 2021)"
+        href: articles/Wallender_2021_piperaquine.html
+      - text: "Piperaquine malaria (Wallender 2021)"
+        href: articles/Wallender_2021_piperaquine.html
+      - text: "Piperaquine qtc (Wallender 2021)"
+        href: articles/Wallender_2021_piperaquine.html
       - text: "Pirtobrutinib (Tian 2025)"
         href: articles/Tian_2025_pirtobrutinib.html
       - text: "Pitavastatin (Kakara 2014)"
@@ -5910,6 +5916,7 @@ articles:
   - articles/Wagh_2021_spectinamide_1810_mouse
   - articles/Wahlby_2004_time_varying_covariates
   - articles/Wahlquist_2024_propofol
+  - articles/Wallender_2021_piperaquine
   - articles/Walsh_2024_buprenorphine_opioidBlockade
   - articles/Wang_2010_romiplostim
   - articles/Wang_2011_raltegravir

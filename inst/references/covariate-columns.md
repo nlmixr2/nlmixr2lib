@@ -173,17 +173,38 @@ notes: <free text>
 - **Example models:** `Harun_2019_cysticFibrosis.R` (time-varying per-visit BMI z-score; linear-deviation effect on baseline FEV1% predicted with reference 0 and coefficient +0.0382 per z-score unit), `Muhamad_2025_cholecalciferol_pbpk.R` (baseline WHO 2007 BMI-for-age z-score driving the Monasor-Ortola 2021 cubic that splits body weight into the fat-mass and lean-mass 25(OH)D3 distribution compartments; source column `ZBMI`).
 - **Notes:** Distinct from `BMI` (raw kg/m^2 used in adult populations). Paediatric and adolescent studies routinely report BMI as a z-score relative to a growth reference (WHO 2007 Growth Reference for school-aged children, CDC 2000, etc.); document the reference standard the source paper used in `covariateData[[BMIZ]]$notes`. Promoted to `general` scope when `Muhamad_2025_cholecalciferol_pbpk.R` became the second paediatric model to use it (WHO 2007 reference; Harun 2019 is the other).
 
-### WAIST (**canonical for waist circumference**)
-- **Description:** Waist circumference measured by tape at baseline; an abdominal-adiposity anthropometric that is distinct from whole-body size. Enters population PK models as a normalised power term `(WAIST / ref)^exponent`.
-- **Units:** cm
+### WAZ (**canonical for weight-for-age z-score (age- and sex-standardised)**)
+- **Description:** Weight-for-age z-score: the number of standard deviations a child's weight lies above or below the median weight for that child's age and sex in a growth-reference population (WHO Child Growth Standards unless a model documents otherwise). Unitless and centred at 0 in the reference population, so the reference value in a linear-deviation effect is 0 -- NOT a body weight in kg. Frequently time-varying in paediatric cohorts with repeated anthropometry; document baseline-vs-time-varying status per model in `covariateData[[WAZ]]$notes`. A low WAZ is the standard operational marker of underweight / malnutrition in children under five.
+- **Units:** unitless (z-score; standard-deviation units)
 - **Type:** continuous
 - **Scope:** general
-- **Reference category:** n/a -- normalised power. Reference value observed: 101 cm (Pan 2026, the cohort median from Table 1).
+- **Reference category:** n/a -- used with a linear-deviation form `(1 + e * (WAZ - ref))`. The reference is 0 (reference-population median) unless the source centres on its own cohort median; Wallender 2021 centres on -0.5. Coefficients are fractional change per 1 z-score unit.
 - **Source aliases:**
-  - `WAIST` -- Pan 2026 NONMEM `$INPUT` (Data S1 Code S1).
-  - `Waist (cm)` -- Pan 2026 Table 1 row label.
-- **Example models:** `Pan_2026_adalimumab.R` (founding example; `(WAIST/101)^0.888` on apparent clearance of subcutaneous adalimumab in psoriasis, the strongest single covariate on CL after body weight).
-- **Notes:** Distinct from [[MUAC]] (mid-upper arm circumference), a nutritional-status proxy measured on the arm and stored in millimetres, used chiefly in paediatric and undernutrition cohorts. Distinct from [[VISCERAL_ABDOMINAL_FAT]], an imaging-derived cross-sectional area rather than a tape measurement. Distinct from [[BMI]], which is a whole-body ratio: the two are correlated, but they are not interchangeable, and Pan 2026 screened both and retained waist while rejecting BMI -- so a model that retains a waist effect must use this column rather than substituting BMI. Where a source paper codes missing waist measurements with a sentinel (Pan 2026 uses `-99` and sets the whole covariate term to 1), supply the model's reference value instead of the sentinel: the reference reproduces the "no effect" branch exactly, whereas a negative sentinel raised to a fractional power is undefined. Ratified 2026-09-02 alongside the Pan 2026 adalimumab extraction (sidecar request-001 q1, option A).
+  - `ZWA` -- used in the Wallender 2021 Source Data workbook (`Figure_6B` sheet column `zwa_di`, dichotomised at -2 for display only; the model itself carries the continuous score).
+- **Example models:** `Wallender_2021_piperaquine.R` (time-varying; linear-deviation effect on relative oral bioavailability, `(1 + 0.113 * (WAZ - (-0.5)))`, centred on the cohort median -0.5, so each 1 z-score decrease lowers F by 11.3%), `Chotsiri_2019_lumefantrine.R` (screened alongside `MUAC` and `WHZ` and found significant, but not retained in the final model; carried as documentation).
+- **Notes:** Distinct from raw `WT` (kg), which carries body size for allometric scaling -- a model may legitimately carry both, as `Wallender_2021_piperaquine.R` does (WT drives allometry on CL and V; WAZ drives bioavailability). Distinct from the binary `MAL_NOURISH`, which is a paper-defined malnourished / not-malnourished threshold indicator; a model retaining a continuous z-score effect must use `WAZ`, because binarising discards the dose-response. Siblings `HAZ` (height-for-age, the stunting axis) and `WHZ` (weight-for-height, the wasting axis) are registered separately -- the three are not interchangeable, and papers routinely screen all three and retain one. Document the growth reference used (WHO 2006 Child Growth Standards, CDC 2000, WHO 2007) in `covariateData[[WAZ]]$notes`.
+
+### HAZ (**canonical for height-for-age z-score (age- and sex-standardised)**)
+- **Description:** Height-for-age (or length-for-age) z-score; the standard anthropometric marker of chronic malnutrition / stunting. Unitless and centred at 0 in the reference population. Same conventions as `WAZ`.
+- **Units:** unitless (z-score; standard-deviation units)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- linear-deviation form, reference 0 unless the source centres on a cohort median.
+- **Source aliases:**
+  - `LAZ` -- length-for-age z-score, the same quantity for children measured recumbent rather than standing.
+- **Example models:** `Wallender_2021_piperaquine.R` (screened on relative oral bioavailability, 4.7% per z-score, delta-OFV -5.93; NOT retained in the final model -- carried in `covariatesDataExcluded`), `Chotsiri_2019_lumefantrine.R` (screened in the stepwise covariate search; not significant and not retained).
+- **Notes:** Stunting axis. See `WAZ` Notes for the `WT` / `MAL_NOURISH` distinctions, which apply identically.
+
+### WHZ (**canonical for weight-for-height z-score (sex-standardised)**)
+- **Description:** Weight-for-height (or weight-for-length) z-score; the standard anthropometric marker of acute malnutrition / wasting, and a WHO severe-acute-malnutrition criterion at `WHZ < -3`. Unitless and centred at 0 in the reference population.
+- **Units:** unitless (z-score; standard-deviation units)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- linear-deviation form, reference 0 unless the source centres on a cohort median.
+- **Source aliases:**
+  - `WLZ` -- weight-for-length z-score, the same quantity for children measured recumbent rather than standing.
+- **Example models:** `Wallender_2021_piperaquine.R` (screened on relative oral bioavailability, 4.4% per z-score, delta-OFV -6.47; NOT retained -- carried in `covariatesDataExcluded`), `Chotsiri_2019_lumefantrine.R` (screened alongside `MUAC` and `WAZ`; `MUAC` gave the larger drop in objective function and was retained instead).
+- **Notes:** Wasting axis; distinct from `MUAC`, the other continuous acute-malnutrition measure (raw mm), and from the binary `MAL_NOURISH`. See `WAZ` Notes.
 
 ### SEXF (**canonical for sex**)
 - **Description:** Biological sex indicator, 1 = female, 0 = male.
@@ -15424,6 +15445,95 @@ sibling such as `AUC_BAST_FW`.
 - **Scope:** general
 - **Reference category:** n/a -- continuous, and centred at 0 by construction when the generating distribution is standard normal.
 - **Source aliases:**
-  - `COV2` -- Lin 2026 Methods 2.1 and the `$INPUT` column of Data S1/S2; per-subject constant column in the deposited Data S3 example dataset. The paper's `COVT2(t) = COV2 * log(t + 20)` is the model-side transform, not a data column.
-- **Example models:** `Lin_2026_sc1cmt_coxTte.R` (founding example; enters the Cox hazard ratio as `beta2 * SIMCOV_TV * log(t + 20)` with `beta2 = 0.05`).
-- **Notes:** General scope, ratified 2026-09-02 (task `oare_PMC13106229` sidecar request-001 q1, answer A). **The `TV` suffix denotes how the column ENTERS the model, not the data column's own time-variation** -- in the founding example the deposited `COV2` column is a per-subject constant, and the whole point of the paper is that a time-invariant draw can be given a time-varying effect. A model whose data column genuinely varies within a subject uses this same name; the distinction that matters downstream is the model-side one. The time transform itself is model-specific and belongs in `model()` with a source-trace comment, not in this register -- Lin 2026 explicitly describes its `log(t + 20)` form as "an arbitrary logarithmic time function for demonstration purposes" whose additive constant "has no clinical interpretation". Paired with `SIMCOV_TI`.
+  - `DSSTB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "DSST baseline 1h".
+- **Example models:** `Kim_2026_zolpidem_dsst.R`, `Kim_2026_zolpidem_crt.R`, `Kim_2026_zolpidem_vas.R`, `Kim_2026_zolpidem.R` (founding extraction; screened as a candidate covariate on the PK and all three PD endpoints and not retained on any, so declared in `covariatesDataExcluded` in each -- the DSST baseline is instead estimated structurally as the BASE parameter with age as its covariate).
+- **Notes:** Member of the `_BL` per-subject-baseline suffix family, registered alongside `CRT_BL` and `VAS_SEDATION_BL` from the same founding paper. Deliberately NOT named `SCORE_DSST_BL`: the `SCORE_` prefix belongs to the composite clinical rating instruments (`SCORE_ADAS_COG`, `SCORE_MMSE`) that are reported as an instrument total without a pre-dose/post-dose baseline distinction, whereas the `_BL` family is specifically the pre-dose readout entering a PD parameter. Register a separate `SCORE_DSST` canonical if a future model needs a time-varying (non-baseline) DSST column. Ratified canonically on 2026-09-01 alongside the Kim 2026 zolpidem extraction.
+
+### VAS_SEDATION_BL (**canonical for per-subject baseline self-rated sedation on a visual analog scale**)
+- **Description:** Subject's pre-dose baseline self-rated sedation / drowsiness marked on a visual analog scale, carried into a model as a time-fixed per-subject covariate. A subjective patient-reported outcome, in contrast to the objective instruments `DSST_BL` (cognitive) and `CRT_BL` (psychomotor). Higher values indicate greater perceived sedation.
+- **Units:** mm on a 100 mm scale (document the scale length and anchor wording per-model in `covariateData[[VAS_SEDATION_BL]]$notes`; a 0-10 cm or 0-100 point scale maps onto the same canonical with `units` documented per-model).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- enters either as a ratio power term `(VAS_SEDATION_BL / <ref>)^e_vas_sedation_bl_<param>` or as a centered linear term. Reference value observed: 30.5 mm (Kim 2026 cohort median in 30 healthy Korean volunteers).
+- **Source aliases:**
+  - `VASB1` -- the `$INPUT` column name in the Kim 2026 deposited NONMEM control streams, glossed there as "VAS baseline 1h".
+- **Example models:** `Kim_2026_zolpidem_vas.R`, `Kim_2026_zolpidem_dsst.R`, `Kim_2026_zolpidem_crt.R`, `Kim_2026_zolpidem.R` (founding extraction; screened as a candidate covariate and not retained anywhere, so declared in `covariatesDataExcluded` in each -- in the PK-VAS model the Day -1 baseline trajectory is instead estimated structurally as the four spline knots `logitrbase_t1..t4`, of which the 1 h knot is the model's counterpart to this observed column).
+- **Notes:** Member of the `_BL` per-subject-baseline suffix family. The canonical name identifies the INSTRUMENT (sedation VAS), not merely the scale type, precisely so it cannot collide with the other VAS-scaled entries already in this register that measure different constructs -- `BLPHYVAS` (physician's global assessment of disease activity) and `PGA_PT` (patient's global assessment of arthritis). Any future VAS-based baseline must likewise name its construct (`VAS_PAIN_BL`, `VAS_NAUSEA_BL`, ...) rather than registering a bare `VAS_BL`. Ratified canonically on 2026-09-01 alongside the Kim 2026 zolpidem extraction.
+
+### AUC_ANDRO (**canonical for andrographolide AUC over the 0-4 h post-dose window**)
+- **Description:** Per-subject plasma andrographolide (AP1) area under the concentration-time curve over the 0-4 h post-dose window, used as the drug-exposure driver of pharmacodynamic models of standardized *Andrographis paniculata* preparations. Andrographolide is the labelled reference diterpenoid for *A. paniculata* products under Thai FDA quality-control requirements and the compound these analyses standardise on, even though the co-occurring diterpenoid 14-deoxy-11,12-didehydroandrographolide (AP3) reaches substantially higher plasma exposure. Time-fixed per subject in the founding example, which pairs one day-5 AUC value with one day-1-to-day-5 viral-load reduction; a longitudinal PK/PD model would instead update it per dosing interval.
+- **Units:** `ug*h/L` (equivalently `ng*h/mL`). Must be in the same units as the model's `auc50` so the sigmoid `AUC^hill / (auc50^hill + AUC^hill)` is dimensionless. Document per-model via `covariateData[[AUC_ANDRO]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters via a sigmoidal Emax form. `AUC_ANDRO = 0` makes the sigmoid vanish exactly and leaves the baseline effect. Reference values observed (Songvut 2026 Table 2, 30 mg andrographolide per dose): single-dose day-1 AUC(0-4 h) 28.54 +/- 8.72 ug*h/L, AUC(0-inf) 32.81 +/- 8.91 ug*h/L; day-5 AUC(0-4 h) under q8h dosing 30.12 +/- 15.83 ug*h/L with an observed range of roughly 8-57 ug*h/L (Figure 5).
+- **Source aliases:**
+  - `AUC0-4h` / `AUC(0-4h, day 5)` -- printed forms in Songvut 2026 Table 2, Section 2.4 and the Figure 5 x-axis label. The 0-4 h truncation is not arbitrary: plasma andrographolide falls below the 4.69 ng/mL lower limit of quantification by about 4 h post-dose, and the study restricted on-site time for infectious patients, so the window covers essentially the whole quantifiable profile.
+- **Example models:** `Songvut_2026_andrographolide.R` (drives the four-parameter sigmoidal Emax exposure-response curve for log10 SARS-CoV-2 RdRp viral-load reduction in mild COVID-19; `auc50` = 29.80 ug*h/L, `hill` = 8).
+- **Notes:** Specific scope because the column meaning is tied to andrographolide as the analyte and to the 0-4 h truncated-AUC convention. Member of the `AUC_<DRUG>` family (`AUC_CARBO`, `AUC_GEM`, `AUC_GCV`, `AUC_PAZO`, `AUC_RTV`, `AUC_VERUB`, `AUC_ADU`, `AUC_DON`, `AUC_GAN`, `AUC_LEC`, `AUC_IBRU`, `AUC_LCM`, `AUC_CBZ`, `AUC_AMPH`, `AUC_LEN`, `AUC_EMPA`, ...), whose entries direct that a new drug or a new exposure convention take a sibling canonical rather than overload an existing one. Accordingly, a future *A. paniculata* model driven by a different metric (Cmax, AUC(0-inf), a steady-state 0-8 h interval AUC) or by a different diterpenoid should register a parallel canonical -- `AUC_ANDRO_INF`, `AUC_AP3` and so on -- rather than reuse this name; note in particular that AUC(0-4 h) and AUC(0-inf) are NOT interchangeable here even though they are numerically close, because the 4 h truncation is the convention the founding model's `auc50` was estimated against. There is no published population PK model for andrographolide from this formulation, so downstream users must supply the column from observed concentrations by non-compartmental analysis. Ratified canonically alongside the Songvut 2026 andrographolide exposure-response extraction.
+
+### DOSE_APRICOXIB_MG (**canonical for administered apricoxib single-dose amount**)
+- **Description:** Administered single oral dose of the selective cyclooxygenase-2 inhibitor apricoxib (development code CS-706), in mg, with 0 for a placebo subject. Time-fixed per subject in the founding study (each patient with acute postoperative dental pain received one dose of placebo or 10, 50, 100 or 200 mg). Not a pharmacokinetic covariate -- the amount already appears on the depot dose record via `amt`, and the PK layer's own dose non-linearities read it from there via `podo(depot)` and the separate `DOSE_HIGH` indicator. Required as its own column because Rohatagi 2008 uses the dose as a subject-level regressor in three algebraic pharmacodynamic equations: `P(MPR) = P0 + (Pmax - P0) * Dose / (Dose + D50PMPR)` (equation 13), `log(TMPR / TRescue) = LTR0 + LTRmax * Dose / (Dose + D50LTR)` (equation 14) and `log(TMPR) = LT0 + LTSlope * Dose` (equation 15).
+- **Units:** mg
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters uncentred, so Dose = 0 is the placebo reference and returns the published placebo values directly: `P(MPR) = P0 = 16 percent` and `TMPR = exp(LT0) = 1.6 h`.
+- **Source aliases:**
+  - `Dose` -- used in `Rohatagi_2008_apricoxib.R` (Rohatagi 2008 equations 13 to 15, "Dose_i is the patient's dose"; studied levels 0 [placebo], 10, 50, 100 and 200 mg).
+- **Example models:** `Rohatagi_2008_apricoxib.R` (drives the saturable meaningful-pain-relief probability of equation 13, the saturable onset-time ratio of equation 14, and the log-linear onset time of equation 15).
+- **Notes:** Well-formed member of the auto-approved `DOSE_<DRUG>_<UNITS>` family (siblings: `DOSE_CIPARGAMIN_MG`, `DOSE_CABAMIQUINE_MG`, `DOSE_TBPPI_MG`, `DOSE_RIMEGEPANT_MG`). A dedicated column rather than the generic `DOSE` canonical for two reasons: `DOSE` is consumed by `etTrans()` and is not visible inside `model()`, and a placebo subject has no dose record at all, so `podo(depot)` cannot distinguish "placebo" from "before the first dose" while an explicit 0 in this column can. `APRICOXIB` is the INN of the molecule the source papers name only by the Sankyo development code CS-706, per the library's generic-name-over-development-code convention. Distinct from `DOSE_HIGH`, which is the Kastrissios 2006 supratherapeutic-cohort indicator gating the two-typical-value apparent oral clearance and is always 0 in the Rohatagi 2008 dental-pain cohort. Populate this column with the same amount the depot dose record carries.
+
+### STUDY_NO16853 (**canonical for the Bruno 2012 metastatic-breast-cancer study NO16853 cohort indicator**)
+- **Description:** Binary indicator for the randomized phase II noninferiority study NO16853 in the Bruno 2012 pooled metastatic-breast-cancer analysis: 1 = NO16853, 0 = the pivotal phase III study SO14999. Time-fixed per subject. Study NO16853 compared capecitabine 825 mg/m^2 twice daily with the registered 1,250 mg/m^2 dose, both plus docetaxel 75 mg/m^2; SO14999 established the registered dose against single-agent docetaxel roughly a decade earlier.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (study SO14999).
+- **Source aliases:**
+  - `STUD` -- Bruno 2012 NONMEM `$INPUT` column; the control stream tests `IF(STUD.EQ.2)`, i.e. `STUD = 2` is NO16853 and `STUD = 1` is SO14999.
+  - `Study effect` -- Bruno 2012 Table 1 and Table 2 covariate row label.
+- **Example models:** `Bruno_2012_capecitabine_docetaxel_tgi.R` (selects the study-specific additive residual error SD, sqrt(332) = 18.22 mm for SO14999 versus sqrt(112) = 10.58 mm for NO16853), `Bruno_2012_capecitabine_docetaxel_os.R` and `Bruno_2012_capecitabine_docetaxel_pfs.R` (log-normal accelerated-failure-time effects on log median OS and PFS, entered on Bruno 2012's 1 / 2 code as `e_studyno16853_tmed * (1 + STUDY_NO16853)`).
+- **Notes:** The indicator carries three distinct effects across the paper's three models, which is why it is a single column rather than three. Bruno 2012 attributes the longer survival in NO16853 to a change in the standard of care between the two studies (the prognostic factors in the model could not explain it) and the longer PFS partly to the different progression-assessment criteria -- WHO in SO14999, RECIST in NO16853 -- which is also the stated reason for the larger residual error in the older study. The clinical trial simulations in the paper were conditioned on NO16853, so `STUDY_NO16853 = 1` is the natural setting when re-running the published framework.
+
+### SELFADMIN (**canonical for self-administered (not directly observed) dosing-occasion indicator**)
+- **Description:** 1 = the dosing occasion was self-administered, i.e. taken by the patient or a caregiver without direct supervision by study or clinic staff; 0 = the dosing occasion was directly observed therapy (DOT). Per-DOSING-OCCASION and time-varying within a subject -- a subject typically contributes both observed and unobserved occasions. Acts as an adherence proxy on relative oral bioavailability: an apparent reduction in F on unobserved occasions is the pharmacokinetic signature of missed or partial doses and should be interpreted as such rather than as a true absorption effect unless the source argues otherwise.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (directly observed therapy). Encoded multiplicatively as `e_selfadmin_fdepot^SELFADMIN` so the reference occasion is unmodified.
+- **Source aliases:**
+  - `theta Self-administered DP` -- Wallender 2021 Table 2 / Eq. 2 parameter label. Papers that code the complement (1 = directly observed) must invert to this canonical and record the inversion in `covariateData[[SELFADMIN]]$notes`.
+- **Example models:** `Wallender_2021_piperaquine.R` (multiplicative 0.397 on relative oral bioavailability when the second and third daily dihydroartemisinin-piperaquine doses were taken at home rather than in clinic, i.e. 60% lower apparent bioavailability; the authors attribute this to missed doses rather than to absorption).
+- **Notes:** Distinct from a continuous adherence fraction (percentage of prescribed doses taken), which would warrant a separate continuous canonical if a future paper reports one. Distinct from `OCC`, the integer occasion index used to multiplex inter-occasion variability -- the two are commonly carried together, as in Wallender 2021, where each DP course is both an IOV occasion and either observed or unobserved. The polarity is deliberately set to self-administered = 1 so that the coefficient is a bioavailability PENALTY and maps 1:1 onto how sources report it (a fold change below 1 relative to observed dosing), avoiding a reference-category inversion at transcription time. Ratified 2026-09-02 alongside the Wallender 2021 piperaquine extraction (operator decision, sidecar `oare_PMC8602248` request-001 q2, option A).
+
+### TRANSM_HIGH_2015 (**canonical for the 2015 high-malaria-transmission calendar-period indicator**)
+- **Description:** 1 = the record falls within the 2015 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. In Wallender 2021 the high-transmission period is defined as 1 March to 31 August annually in Tororo, Uganda; the complement (all low-transmission months across all study years, pooled) is the reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 -- pooled low-transmission periods. Enters as a multiplicative adjustment on the baseline malaria hazard.
+- **Source aliases:**
+  - `theta Transmission period 2015` -- Wallender 2021 Table 2 parameter label.
+- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 1.29 on the baseline incident-malaria hazard).
+- **Notes:** Specific scope because the calendar boundaries and the year-specific magnitudes are tied to one site's transmission history and its indoor-residual-spraying schedule (bendiocarb through 2015, pirimiphos-methyl from 2016), which is why the three annual multipliers span 1.29 to 7.83 rather than sharing a single seasonal value. A model at a different site, or one estimating a single season-independent high-transmission effect, must not reuse these columns; register a site- or study-specific member of the same family instead. Members of the family: `TRANSM_HIGH_2015`, `TRANSM_HIGH_2016`, `TRANSM_HIGH_2017`. The three indicators are mutually exclusive one-hot columns; setting all three to 0 selects the low-transmission reference. Distinct from `SEASON2` (RSV second-season indicator) and `SEMESTER` (paired winter/spring vs summer/fall indicator). Ratified 2026-09-02 alongside the Wallender 2021 piperaquine extraction (operator decision, sidecar `oare_PMC8602248` request-001 q3, option A).
+
+### TRANSM_HIGH_2016 (**canonical for the 2016 high-malaria-transmission calendar-period indicator**)
+- **Description:** 1 = the record falls within the 2016 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. Same calendar definition and reference as `TRANSM_HIGH_2015`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 -- pooled low-transmission periods.
+- **Source aliases:**
+  - `theta Transmission period 2016` -- Wallender 2021 Table 2 parameter label.
+- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 5.20 on the baseline incident-malaria hazard).
+- **Notes:** See `TRANSM_HIGH_2015`.
+
+### TRANSM_HIGH_2017 (**canonical for the 2017 high-malaria-transmission calendar-period indicator**)
+- **Description:** 1 = the record falls within the 2017 annual high-malaria-transmission period at the study site; 0 = otherwise. Time-varying within subject. Same calendar definition and reference as `TRANSM_HIGH_2015`.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 -- pooled low-transmission periods.
+- **Source aliases:**
+  - `theta Transmission period 2017` -- Wallender 2021 Table 2 parameter label.
+- **Example models:** `Wallender_2021_piperaquine_malaria.R` (multiplicative 7.83 on the baseline incident-malaria hazard).
+- **Notes:** See `TRANSM_HIGH_2015`.
