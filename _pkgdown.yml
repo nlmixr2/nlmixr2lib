@@ -1032,6 +1032,8 @@ navbar:
         href: articles/Puisset_2007_docetaxel.html
       - text: "Docetaxel (Rietveld 2025)"
         href: articles/Rietveld_2025_docetaxel.html
+      - text: "Dolutegravir (Chandasana 2023)"
+        href: articles/Chandasana_2023_dolutegravir.html
       - text: "Dolutegravir (Chandasana 2024)"
         href: articles/Chandasana_2024_dolutegravir_lamivudine.html
       - text: "Dolutegravir (Chandasana 2024b)"
@@ -4559,6 +4561,7 @@ articles:
   - articles/Chakraborty_2012_canakinumab
   - articles/Chan_2008_maraviroc
   - articles/Chan_2023_nirmatrelvir
+  - articles/Chandasana_2023_dolutegravir
   - articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric
   - articles/Chandasana_2024_dolutegravir_lamivudine
   - articles/Chandorkar_2015_ceftolozane_tazobactam

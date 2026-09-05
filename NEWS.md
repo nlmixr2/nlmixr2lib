@@ -2,6 +2,16 @@
 
 # development version
 
+- Add Chandasana 2023 dolutegravir ([doi:10.1007/s40262-023-01289-5](https://doi.org/10.1007/s40262-023-01289-5)) -- infants, children and adolescents with HIV-1.
+
+- Correct `Chandasana_2024b_dolutegravir` against that primary source, which the
+  2024 paper applied without re-estimation: the dispersible-tablet `Ka` is
+  `0.854 x 2.04 = 1.74 1/h` (2.04 is a ratio, not an absolute rate), the food
+  effect on relative bioavailability applies to every formulation rather than to
+  the film-coated tablet alone, the additive residual errors are the standard
+  deviations 0.0405 and 0.300 ug/mL (Table 2 prints the variances), and the
+  CL/V/Ka etas form a full `$OMEGA BLOCK(3)` rather than being independent.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
