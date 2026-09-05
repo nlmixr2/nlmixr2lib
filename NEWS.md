@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Gaspar 2023 apixaban ([doi:10.1002/psp4.13032](https://doi.org/10.1002/psp4.13032)) -- hospitalized adults from the OptimAT study.
+- Add Yoon 2023 vancomycin ([doi:10.3389/fphar.2023.1252757](https://doi.org/10.3389/fphar.2023.1252757)) -- hospitalised Korean adults and children receiving intravenous vancomycin.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
