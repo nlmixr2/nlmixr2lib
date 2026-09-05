@@ -3266,6 +3266,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Remdesivir (Roberts 2025)"
         href: articles/Roberts_2025_remdesivir.html
+      - text: "Remdesivir (Tamura 2023)"
+        href: articles/Tamura_2023_remdesivir.html
       - text: "Remifentanil (Choi 2011)"
         href: articles/Choi_2011_remifentanil.html
       - text: "Remifentanil (Yang 2017)"
@@ -5857,6 +5859,7 @@ articles:
   - articles/Takeuchi_2023_ozoralizumab
   - articles/Talke_2018_dexmedetomidine
   - articles/Tammara_2017_rivipansel
+  - articles/Tamura_2023_remdesivir
   - articles/Tan_2009_artesunate
   - articles/Tanaka_2012_phenytoin
   - articles/Tang_2019_amoxicillin
