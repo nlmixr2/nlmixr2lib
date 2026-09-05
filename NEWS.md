@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yu 2023 vancomycin ([doi:10.3389/fphar.2023.1298397](https://doi.org/10.3389/fphar.2023.1298397)) -- critically ill adults receiving continuous renal replacement therapy.
+- Add Kawuma 2023 dolutegravir ([doi:10.1111/bcp.15604](https://doi.org/10.1111/bcp.15604)) -- healthy volunteers coadministered rifabutin or rifampicin.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
