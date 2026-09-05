@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Kawuma 2023 dolutegravir ([doi:10.1111/bcp.15604](https://doi.org/10.1111/bcp.15604)) -- healthy volunteers coadministered rifabutin or rifampicin.
+- Add Elhefnawy 2023 recurrent ischemic stroke time-to-event models, diabetic and non-diabetic strata ([doi:10.7759/cureus.50794](https://doi.org/10.7759/cureus.50794)) -- adults with a first ischemic stroke in the Malaysian national neurology registry.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
