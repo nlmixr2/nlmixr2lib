@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Polaskova 2024 vancomycin ([doi:10.3389/fphar.2024.1364681](https://doi.org/10.3389/fphar.2024.1364681)) -- adult obese inpatients during the first 3 days of therapy.
+- Add Ravix 2024 trametinib ([doi:10.3390/cancers16122193](https://doi.org/10.3390/cancers16122193)) -- adults treated for solid tumours.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
