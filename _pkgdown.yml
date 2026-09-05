@@ -2292,6 +2292,8 @@ navbar:
         href: articles/Ulldemolins_2015_meropenem.html
       - text: "Meropenem (Wittau 2015)"
         href: articles/Wittau_2015_meropenem.html
+      - text: "Meropenem (Zou 2026)"
+        href: articles/Zou_2026_meropenem.html
       - text: "Meropenem ciprofloxacin (Rees 2018)"
         href: articles/Rees_2018_meropenem_ciprofloxacin.html
       - text: "Meropenem pbpk (Yang 2024)"
@@ -6059,6 +6061,7 @@ articles:
   - articles/Zingmark_2003_clomethiazole
   - articles/Zou_2012_MI_219
   - articles/Zou_2022_furmonertinib
+  - articles/Zou_2026_meropenem
   - articles/Zufferey_2018_fondaparinux
   - articles/Zuo_2016_UDCA
   - articles/Zuo_2024_apatinib
