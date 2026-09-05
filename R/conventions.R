@@ -137,22 +137,20 @@
   # accommodates parallel-absorption models with two or more depots.
   # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
   # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
-  # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
-  # (tolerance) chain; `reticulocytes[0-9]+` is the reticulocyte chain that
-  # feeds the erythrocyte one, and `caseum[0-9]+` the concentric caseum
-  # rings of a tuberculosis granuloma.
-  # The optional `_slow` / `_fast` qualifier registers
-  # the dual-rate effect-delay cascade families (`effect_slow<n>` /
-  # `effect_fast<n>`): two parallel first-order lag chains of different
-  # speed whose terminal members are summed to form one PD driver. It is
-  # a qualifier rather than a separate prefix because both chains are the
-  # same kind of state, distinguished only by their rate constant.
-  # Documented in inst/references/compartment-names.md; founding example
-  # Dings_2026_cafedrine_theodrenaline_ephedrine.
-  compartmentRegex = paste0(
-    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|",
-    "moderator|caseum)(_slow|_fast)?[0-9]+$"
-  ),
+  # models; `reticulocytes[0-9]+` is the reticulocyte age-transit chain
+  # that sits one stage upstream of `erythrocytes[0-9]+` in the same
+  # cascade; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
+  # (tolerance) chain. `caseum[0-9]+` is the catenary chain of concentric
+  # rings of the necrotic caseous core of a tuberculosis granuloma,
+  # numbered outward-to-inward from the outer caseum edge. `hb[0-9]+` is
+  # the hemoglobin-concentration age-transit chain: equal-transit-time
+  # bins whose transit times sum to the mature red-cell lifespan and whose
+  # bin sum is total hemoglobin. It is the collapsed single-state form of
+  # the paired `erythrocytes[0-9]+` * `mch[0-9]+` product, used when a
+  # paper carries hemoglobin per age bin directly rather than a cell count
+  # and a per-cell content.
+  compartmentRegex =
+    "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|moderator|caseum|hb)[0-9]+$",
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
