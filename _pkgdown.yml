@@ -522,6 +522,8 @@ navbar:
         href: articles/Hughes_2022_brepocitinib.html
       - text: "Brepocitinib (Maleki 2024)"
         href: articles/Maleki_2024_brepocitinib.html
+      - text: "Brexpiprazole (Frederiksen 2023)"
+        href: articles/Frederiksen_2023_brexpiprazole.html
       - text: "Brigatinib (Hanley 2024)"
         href: articles/Hanley_2024_brigatinib.html
       - text: "Brivaracetam (Schoemaker 2017)"
@@ -4881,6 +4883,7 @@ articles:
   - articles/Franken_2017_haloperidol
   - articles/Franken_2017_midazolam
   - articles/Franzese_2026_pdl1_nsclc_mbma
+  - articles/Frederiksen_2023_brexpiprazole
   - articles/Frey_2010_tocilizumab
   - articles/Frey_2013_tocilizumab
   - articles/Freyer_2000_AVI_regimen
