@@ -4340,6 +4340,8 @@ navbar:
         href: articles/Huynh_2026_VRC07523LS.html
       - text: "VwfFviii humateP (Bauer 2023)"
         href: articles/Bauer_2023_vonWillebrandFactor.html
+      - text: "Warfarin (RodriguezFernandez 2024)"
+        href: articles/RodriguezFernandez_2024_warfarin.html
       - text: "Warfarin (Savic 2010)"
         href: articles/Savic_2010_warfarin.html
       - text: "Warfarin (Xia 2024)"
@@ -5812,7 +5814,7 @@ articles:
   - articles/Roberts_2025_remdesivir
   - articles/Rodjun_2023_colistin_sitafloxacin
   - articles/Rodrigues_2017_oxcarbazepine
-  - articles/Roelofsen_2023_cefotaxime
+  - articles/RodriguezFernandez_2024_warfarin
   - articles/Roepcke_2018_tak_079
   - articles/Roepcke_2023_rezafungin
   - articles/Rognas_2025_bitopertin
