@@ -1984,6 +1984,8 @@ navbar:
         href: articles/Hu_2024_nivolumab_ipilimumab_pediatric.html
       - text: "Ipilimumab (Sanghavi 2020)"
         href: articles/Sanghavi_2020_ipilimumab.html
+      - text: "Irinotecan (Rietveld 2024)"
+        href: articles/Rietveld_2024_irinotecan.html
       - text: "Irinotecan (Zhu 2023)"
         href: articles/Zhu_2023_oxaliplatin_irinotecan_colorectal_cancer.html
       - text: "Irinotecan mouse (Zhu 2023)"
@@ -5907,6 +5909,7 @@ articles:
   - articles/Riccobene_2016_ceftaroline
   - articles/Riccobene_2017_ceftaroline
   - articles/Richardson_2025_automated_popPK
+  - articles/Rietveld_2024_irinotecan
   - articles/Rietveld_2025_docetaxel
   - articles/Riggs_2012_albinterferon
   - articles/Riggs_2012_ckd_mbd_qsp

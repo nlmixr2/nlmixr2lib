@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Deng 2024 magnesium sulfate ([doi:10.1186/s12884-024-06620-x](https://doi.org/10.1186/s12884-024-06620-x)) -- Chinese women with preeclampsia.
+- Add Rietveld 2024 intraperitoneal irinotecan and SN-38 ([doi:10.1002/psp4.13136](https://doi.org/10.1002/psp4.13136)) -- adults with peritoneal metastases from colorectal cancer.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
