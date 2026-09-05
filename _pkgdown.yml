@@ -452,6 +452,8 @@ navbar:
         href: articles/Kado_2020_benzathine_benzylpenicillin_g.html
       - text: "Benzathine benzylpenicillin g (Kado 2023)"
         href: articles/Kado_2023_benzathine_benzylpenicillin_g.html
+      - text: "Benznidazole (Altcheh 2023)"
+        href: articles/Altcheh_2023_benznidazole.html
       - text: "Benznidazole (Assmus 2025)"
         href: articles/Assmus_2025_benznidazole.html
       - text: "Benznidazole (Soy 2015)"
@@ -4495,7 +4497,7 @@ articles:
   - articles/AlSallami_2016_unfractionatedHeparin
   - articles/Alshehri_2023_ivermectin
   - articles/Alsultan_2017_pyrazinamide
-  - articles/Alsultan_2023_vancomycin
+  - articles/Altcheh_2023_benznidazole
   - articles/AlvarezJimenez_2016_scopolamine
   - articles/AlZubaydi_2024_gabapentin
   - articles/An_2012_mitoxantrone_pbpk
