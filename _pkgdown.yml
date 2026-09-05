@@ -4140,10 +4140,16 @@ navbar:
         href: articles/Zhao_2014_vancomycin.html
       - text: "Vancomycin carreno (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin full (Downes 2023)"
+        href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin goti (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin hoek (Downes 2023)"
+        href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin hughes (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin schwartz (Downes 2023)"
+        href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin thomson (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
       - text: "Varenicline (Ravva 2009)"
@@ -4820,6 +4826,7 @@ articles:
   - articles/Dorlo_2017_miltefosine
   - articles/Dowling_2008_naloxone
   - articles/Downes_2022_tobramycin
+  - articles/Downes_2023_vancomycin
   - articles/Drweesh_2026_adalimumab
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Elhefnawy 2023 recurrent ischemic stroke time-to-event model ([doi:10.3389/fneur.2023.1118711](https://doi.org/10.3389/fneur.2023.1118711)) -- Malaysian registry adults after a first ischemic stroke.
+- Add Downes 2023 vancomycin ([doi:10.3390/pharmaceutics15051336](https://doi.org/10.3390/pharmaceutics15051336)) -- critically ill children aged 1-17 years in the PICU; three models (full, eGFR-Hoek, eGFR-Schwartz).
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
