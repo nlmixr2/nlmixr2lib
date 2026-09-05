@@ -133,8 +133,11 @@ fig6_obs <- tibble::tibble(
 # Simulation helper
 
 Both models are static, so a "simulation" is one row per concentration at
-`time = 0`. `omega = NA` is passed explicitly so `rxSolve()` cannot reuse an
-omega left over from an earlier call in the same session.
+`time = 0`. Neither model declares any eta, so no `omega` argument is passed:
+on the RELEASED rxode2 (5.1.6) `omega = NA` against an eta-free model errors
+with "invalid 'times' argument", because the omega dimension is `NA` and the
+zero-vector it builds becomes `rep(0, NA)`. It is tolerated only on the
+unreleased 5.1.7, so a vignette that passes it renders here and fails in CI.
 
 ```{r solve_helper}
 solveStatic <- function(model, conc_ngml) {
@@ -143,7 +146,7 @@ solveStatic <- function(model, conc_ngml) {
     time = 0,
     CP_SORAFENIB_NGML = conc_ngml
   )
-  rxode2::rxSolve(model, ev, omega = NA, returnType = "data.frame")
+  rxode2::rxSolve(model, ev, returnType = "data.frame")
 }
 ```
 

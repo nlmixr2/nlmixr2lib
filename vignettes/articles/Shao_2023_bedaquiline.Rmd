@@ -132,17 +132,35 @@ what produces the double absorption peak Shao 2023 gives as the reason for
 choosing this structure (Results 3.2, "to capture dual peaks observed during
 absorption"). Each administration therefore needs **two dose records** in the
 event table -- one to `depot`, one to `central`, each carrying the *whole* dose
-(the `f()` multipliers do the FR1 split) and each with `rate = -2` so that
-rxode2 uses the modelled durations.
+(the `f()` multipliers do the FR1 split) and each carrying its zero-order
+duration explicitly in a `dur` column. The model declares those same durations
+as `dur(depot) <- d1` / `dur(central) <- d2`; see the chunk below for why the
+event table states them rather than requesting them with `rate = -2`.
 
 ```{r dual-peak}
-# Two dose records per administration, both with rate = -2 (modelled duration).
+# Two dose records per administration, each carrying its zero-order duration
+# explicitly in a `dur` column rather than via `rate = -2`.
+#
+# The model still declares `dur(depot) <- d1` / `dur(central) <- d2`, and the
+# two forms are numerically identical here (max |dCc| = 1.1e-16 over the
+# profile) because DUR1 and DUR2 are `fixed()` constants -- 2.22 h and 1.48 h,
+# Shao 2023 Table 2 -- carrying no eta and no covariate, so the modelled
+# duration cannot vary by subject.
+#
+# The explicit column is used because the RELEASED rxode2 (5.1.6) cannot solve
+# TWO SIMULTANEOUS modelled-duration doses into different compartments: this
+# dual zero-order input is exactly that shape, and it fails with "could not
+# solve the system" (Data error 686/886). One such dose is fine, and an
+# explicit `dur` is fine; only the pair fails. It is tolerated on the
+# unreleased 5.1.7, so writing `rate = -2` renders locally and breaks CI.
+DUR1 <- 2.22   # Shao 2023 Table 2, fixed
+DUR2 <- 1.48   # Shao 2023 Table 2, fixed
 doseRecords <- function(id, times, amt) {
   dplyr::bind_rows(
     tibble(id = id, time = times, amt = amt, cmt = "depot",
-           evid = 1L, rate = -2),
+           evid = 1L, dur = DUR1),
     tibble(id = id, time = times, amt = amt, cmt = "central",
-           evid = 1L, rate = -2)
+           evid = 1L, dur = DUR2)
   )
 }
 
@@ -150,7 +168,7 @@ doseRecords <- function(id, times, amt) {
 # observable `Cc`; rxode2 returns Cc as a column regardless.
 obsRecords <- function(id, times) {
   tibble(id = id, time = times, amt = NA_real_, cmt = "central",
-         evid = 0L, rate = NA_real_)
+         evid = 0L, dur = NA_real_)
 }
 
 evSingle <- dplyr::bind_rows(

@@ -654,14 +654,20 @@ cat("Arms whose published median Cmax exceeds the ka = Inf ceiling: ",
 cat("Ratio range: ", sprintf("%.3f", min(published_ceiling$`Published / ceiling`)),
     " to ", sprintf("%.3f", max(published_ceiling$`Published / ceiling`)), "\n", sep = "")
 
-# Gate the FINDING, not a match. Every arm's published Cmax sits at or above the
-# instantaneous-absorption ceiling (realised ratios 0.974-1.228, 8 of 11 above
-# 1), so the whole column requires an absorption rate orders of magnitude above
-# the published 0.854 (FCT) / 1.74 (DT) 1/h. The bound depends on the cohort
-# only through kel, whose weight exponent is -0.101, so it is nearly cohort-
-# independent; 0.95 leaves room for that residual sensitivity while still going
-# red if the deviation were ever resolved.
-stopifnot(all(published_ceiling$`Published / ceiling` > 0.95))
+# Gate the FINDING, not a match. Every arm's published Cmax sits at or near the
+# instantaneous-absorption ceiling, so the whole column requires an absorption
+# rate orders of magnitude above the published 0.854 (FCT) / 1.74 (DT) 1/h.
+#
+# The bound is NOT cohort-independent, as an earlier comment here assumed. The
+# ratios move with the eta draw, and that draw moves with the SOLVER THREAD
+# COUNT, because rxSetSeed() fixes the random stream per thread rather than
+# across thread counts. Measured minima: 0.9794 (1 thread), 0.9146 (2), 0.9601
+# (4), 0.9739 (16) -- so a floor calibrated on any single run is fragile, and
+# 0.95 duly failed at 2 threads. 0.88 sits below the whole measured spread
+# while still going red on the thing this gate exists to catch: were the
+# deviation resolved, an adequate absorption rate would put these ratios far
+# below 1, not a few percent under it.
+stopifnot(all(published_ceiling$`Published / ceiling` > 0.88))
 ```
 
 Two independent reasons make this test conservative -- that is, the true
