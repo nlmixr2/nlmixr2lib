@@ -754,6 +754,8 @@ navbar:
         href: articles/Willemze_2008_ciclosporin.html
       - text: "Ciclosporin (Woillard 2014)"
         href: articles/Woillard_2014_ciclosporin.html
+      - text: "Ciclosporin sheep (Leber 2023)"
+        href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Cilazapril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
       - text: "Cilostazol (Yoo 2009)"
@@ -1322,6 +1324,8 @@ navbar:
         href: articles/TerHeine_2018_everolimus.html
       - text: "Everolimus (deWit 2016)"
         href: articles/deWit_2016_everolimus.html
+      - text: "Everolimus sheep (Leber 2023)"
+        href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Evinacumab (Pu 2021)"
         href: articles/Pu_2021_evinacumab.html
       - text: "Evogliptin (Kim 2025)"
@@ -2336,6 +2340,8 @@ navbar:
         href: articles/Chanu_2010_methoxyPolyethyleneGlycolEpoetinBeta.html
       - text: "Methylphenidate (Teuscher 2015)"
         href: articles/Teuscher_2015_methylphenidate.html
+      - text: "Methylprednisolone sheep (Leber 2023)"
+        href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Metoprolol (Eugene 2016)"
         href: articles/Eugene_2016_metoprolol.html
       - text: "Metoprolol rat pbpk (Kir 2025)"
@@ -2466,6 +2472,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "MycophenolateMofetil (Tsyplakova 2025)"
         href: articles/Tsyplakova_2025_mycophenolate.html
+      - text: "MycophenolateMofetil sheep (Leber 2023)"
+        href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "MycophenolateSodium (Tsyplakova 2025)"
         href: articles/Tsyplakova_2025_mycophenolate.html
       - text: "Mycophenolic acid (Barau 2012)"
@@ -3654,6 +3662,8 @@ navbar:
         href: articles/Nanga_2019_tacrolimus_metaanalysis.html
       - text: "Tacrolimus pbpk (Pei 2023)"
         href: articles/Pei_2023_tacrolimus.html
+      - text: "Tacrolimus sheep (Leber 2023)"
+        href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
       - text: "Tacrolimus startingdose (Francke 2025)"
         href: articles/Francke_2025_tacrolimus.html
       - text: "Tacrolimus thoracic (Sikma 2020)"
@@ -5155,6 +5165,7 @@ articles:
   - articles/LeTilly_2021_trastuzumab
   - articles/Le_2015_lampalizumab
   - articles/Le_2015_lampalizumab_cyno
+  - articles/Leber_2023_immunosuppressants_hemoperfusion
   - articles/Lee_2011_parkinson_progression
   - articles/Lee_2013_colistin
   - articles/Lee_2015_sumatriptan

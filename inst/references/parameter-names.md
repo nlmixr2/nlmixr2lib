@@ -288,6 +288,24 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Veinstein_2013_gentamicin.R` (primary `ini()` parameter with IIV; the dialysis arm is estimated as a structural THETA gated by `HEMODIALYSIS`).
 - **Notes:** Distinct from `lcl_renal` (= residual renal CL, an intrinsic-body component) and `lcl_nonren` (= non-renal intrinsic-body CL). `Liesenfeld_2013_dabigatran.R` derives an equivalent dialysis-arm quantity from the Michaels equation (a function of blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient) as a derived `cl_dialysis` expression in `model()` rather than a primary `ini()` parameter, so its file does not include `lcl_hemodialysis`. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_hemodialysis`.
 
+### lclmax_hemoadsorption (**canonical log-transformed maximum extracorporeal-hemoadsorption clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale MAXIMUM clearance of an extracorporeal hemoadsorption (hemoperfusion) cartridge -- the adsorption clearance at zero cartridge load, before any saturation has occurred. Paired with the canonical body-CL parameter `lcl` and with the per-time-point `HEMOADSORB_ACTIVE` covariate to express total clearance as `cl_total <- cl + HEMOADSORB_ACTIVE * cl_hemoadsorption`, where the time-varying arm decays from its maximum as the sorbent fills: `cl_hemoadsorption <- clmax_hemoadsorption * (1 - adsorbed / amax_hemoadsorption)`. The `max` element is load-bearing and must not be dropped to a bare `lcl_hemoadsorption`: the `ini()` value is the ceiling of a saturating arm, not the arm's typical value, and naming it `lcl_hemoadsorption` would misreport it as a constant clearance.
+- **Source aliases:**
+  - `CLmax` -- Leber 2023 Eq. 2 and Supplementary Table 2 notation (`CLmax CytoSorb [L/h]`).
+  - `CL_HP`, `CL_HA`, `CLmax_HP` -- variant abbreviations used in adjacent hemoperfusion / hemoadsorption PK literature.
+- **Example models:** `Leber_2023_tacrolimus_sheep.R` (4.02 L/h), `Leber_2023_ciclosporin_sheep.R` (2.80 L/h), `Leber_2023_mycophenolateMofetil_sheep.R` (3.71 L/h), `Leber_2023_everolimus_sheep.R` (3.23 L/h), `Leber_2023_methylprednisolone_sheep.R` (8.21 L/h; the paper notes this estimate exceeds the 7.2 L/h extracorporeal blood flow though its confidence interval covers it).
+- **Notes:** Joins the established `lcl_*` clearance-arm family (`lcl_ss`, `lcl_time`, `lcl_renal`, `lcl_nonren`, `lcl_hemodialysis`, `lcl_dialysis`, `lcl_crrt`, `lcl_tsnet`, ...) as another additive arm of the central clearance, with `hemoadsorption` registered in `R/conventions.R::clComponents` so covariate effects classify as `e_<cov>_clmax_hemoadsorption`. Deliberately device-generic: hemoadsorption is a distinct extracorporeal modality from intermittent hemodialysis (`_hemodialysis`) and continuous RRT (`_crrt`) -- it removes solute by sorbent binding rather than by diffusion or convection across a membrane, so it saturates, has no dialysate or effluent flow, and a coefficient calibrated on one modality does not transfer to another. Paired with `lamax_hemoadsorption` (the cartridge capacity) and the `adsorbed` state.
+
+### lamax_hemoadsorption (**canonical log-transformed extracorporeal-cartridge adsorption capacity**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale maximum drug amount an extracorporeal hemoadsorption cartridge can adsorb (Amax, an amount in mg). Registered by operator ruling 2026-09-05 (sidecar `oasweep_PMC10623319` request-001 q2) as the `_hemoadsorption` sibling of `lclmax_hemoadsorption`, naming the MODALITY rather than the generic process, so a future plasma-exchange or a second hemoperfusion arm gets its own sibling instead of colliding on a bare `adsorption`. Closely related to `lbmax` (**canonical log-transformed maximum binding capacity**): a sorbent cartridge is a saturable binding site and `Amax` is a ceiling on bound drug in the units of the state it saturates (`adsorbed`, mg). The modality-suffixed name was preferred over a `lbmax_<site>` variant so that the capacity and the clearance ceiling of one extracorporeal arm carry the same suffix and read as a pair.
+- **Source aliases:**
+  - `Amax` -- Leber 2023 Eq. 2 and Supplementary Table 2 notation (`Amax CytoSorb [mg]`).
+  - `A_max`, `Qmax` -- variant abbreviations used in the sorbent / adsorption-isotherm literature.
+- **Example models:** `Leber_2023_tacrolimus_sheep.R` (0.040 mg), `Leber_2023_ciclosporin_sheep.R` (1.15 mg), `Leber_2023_mycophenolateMofetil_sheep.R` (4.17 mg), `Leber_2023_everolimus_sheep.R` (0.0163 mg), `Leber_2023_methylprednisolone_sheep.R` (53.4 mg).
+- **Notes:** Distinct from `lvmax`, which is a maximum RATE; `lamax_hemoadsorption` is a maximum AMOUNT, and the two appear together in any saturable-adsorption model. The paper's own `A_half` glossary entry (drug amount at half the maximum adsorption capacity) belongs to the Emax-shaped alternative sub-model Leber 2023 did not retain, and is therefore not registered; a future paper that selects that form would pair `lamax_hemoadsorption` with a half-saturation amount on the `lkt_abs` pattern.
+
 ### lcl_tsnet (**canonical log-transformed net-tubular-secretion clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** Net renal tubular-secretion component of a renal clearance decomposition `CL_renal_total = GFR + CL_tsnet`, where the filtration arm is carried by the model's glomerular-filtration parameter (in the founding model, the co-administered iohexol probe's `cl`) and this arm carries the transporter-mediated secretory flux *net of tubular reabsorption*. The `tsnet` token keeps the NET qualifier deliberately: the quantity published under this name is secretion minus reabsorption, so a later model that resolves the two separately still has both gross-secretion and reabsorption names available. Applied with an analyte suffix when the model tracks more than one species (`lcl_tsnet_creatinine`).
@@ -822,6 +840,12 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 - **Role:** Bare counterpart of `lcl_hemodialysis`. Extracorporeal renal-replacement-therapy clearance arm; added to the body baseline `cl` only when the time-varying `HEMODIALYSIS` covariate is 1.
 - **Source aliases:** `CL_HD`, `CLHD`, `CL_HF`, `CL_HDF`.
 - **Example models:** `Veinstein_2013_gentamicin.R`.
+
+### clmax_hemoadsorption, amax_hemoadsorption (**canonical bare extracorporeal-hemoadsorption arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lclmax_hemoadsorption` and `lamax_hemoadsorption`, derived inside `model()`. `clmax_hemoadsorption` is the cartridge clearance at zero load (L/h) and `amax_hemoadsorption` the cartridge adsorption capacity (mg). The time-varying arm itself is named `cl_hemoadsorption` (without `max`) and is what gets added to `cl`: `cl_hemoadsorption <- HEMOADSORB_ACTIVE * clmax_hemoadsorption * (1 - adsorbed / amax_hemoadsorption)`.
+- **Source aliases:** `CLmax`, `Amax` (Leber 2023 Eq. 2).
+- **Example models:** `Leber_2023_tacrolimus_sheep.R`, `Leber_2023_ciclosporin_sheep.R`, `Leber_2023_mycophenolateMofetil_sheep.R`, `Leber_2023_everolimus_sheep.R`, `Leber_2023_methylprednisolone_sheep.R`.
 
 ### cl_tsnet (**canonical bare net-tubular-secretion clearance arm**)
 - **Type:** bare-pk

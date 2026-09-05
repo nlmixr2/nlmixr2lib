@@ -479,7 +479,13 @@
   # renaming the whole family onto the covariate register's
   # RRT_<MODALITY>_<KIND> shape -- which would also fold the older,
   # near-duplicate `_dialysis` suffix in -- is queued separately.
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet"),
+  # `_hemoadsorption` the extracorporeal HEMOADSORPTION (hemoperfusion /
+  # sorbent-cartridge) arm, gated by HEMOADSORB_ACTIVE (e.g. Leber 2023,
+  # CL_total = CL + CLmax * (1 - adsorbed / Amax)). A distinct
+  # modality from `_hemodialysis` and `_crrt`: it removes solute by
+  # sorbent binding rather than diffusion or convection, so it
+  # saturates and has no dialysate or effluent flow.
+  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet", "hemoadsorption"),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
