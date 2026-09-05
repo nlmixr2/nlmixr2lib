@@ -69,7 +69,9 @@ Three features are worth spelling out.
 * **`CLCR` is the individual, non-BSA-normalized value in L/h.** Methods
   Section 2.3 computes the Schwartz estimate
   `CLCR = k * HT / SCr` (`k = 0.33` below 36 weeks gestational age, `0.45`
-  otherwise; `HT` in cm, `SCr` in mg/L), which is BSA-normalized, and then
+  otherwise; `HT` in cm, and `SCr` in **mg/dL** -- the paper prints "mg/L",
+  which is a unit typo; see "Assumptions and deviations"), which is
+  BSA-normalized, and then
   states that "the values obtained were converted from mL/min/1.73 m^2 to L/h
   using the individual body surface area of the subject". The packaged model
   therefore takes the canonical `CRCL` column as *raw* mL/min (individual, not
@@ -221,7 +223,8 @@ neonates (the per-arm cap for this package's vignettes), each subject's
 covariates drawn log-normally with the median and range printed in Table 3.
 Body surface area is derived from body weight by geometric scaling
 (`BSA = BSA_median * (WT / WT_median)^(2/3)`), which reproduces the Table 3 BSA
-ranges from the Table 3 weight ranges to within about 0.01 m^2 in both cohorts.
+ranges from the Table 3 weight ranges to within 0.02 m^2 in both cohorts (worst
+case 0.018 m^2, at the top of the pre-term weight range).
 
 Between-subject random effects are drawn **in R** from the published
 `etalcl`/`etalvc` covariance matrix and carried as data columns, with
@@ -322,7 +325,9 @@ events <- dplyr::bind_rows(dose_rows, obs_rows) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   as.data.frame()
 
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+# NB: no unique() here -- unique() would remove the very duplicates this is
+# meant to detect, making the gate incapable of ever failing.
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 ```
 
 # Simulation
@@ -489,6 +494,24 @@ three of the four Cmax cells to within 17%.
 
 # Assumptions and deviations
 
+* **Erratum: the Schwartz serum-creatinine unit is mg/dL, not mg/L.** Methods
+  Section 2.3 states that in `CLCR = k * HT / SCr`, "SCr is the serum creatinine
+  concentration in mg/L". Taken literally that understates creatinine clearance
+  by a factor of ten. Table 3 supplies the check: applying the formula to the
+  pre-term cohort medians (`k = 0.33` at gestational age 27.44 weeks,
+  `HT = 40.31` cm, `SCr = 0.6`) gives 22.2 mL/min/1.73 m^2 against the
+  published 23.53 when `SCr` is read as mg/dL, and 2.2 when it is read as mg/L;
+  the term cohort gives 45.3 against a published 46.2, versus 4.5. Table 1 and
+  Table 3 both tabulate serum creatinine in mg/dL, so mg/dL is the intended
+  unit. This does not touch any packaged parameter -- the model consumes
+  `CRCL` as a data column -- but anyone building an input data set from the
+  paper's formula needs the corrected unit.
+
+  For the same reason the body-surface-area formula the paper cites for
+  de-normalizing `CLCR` is worth pinning down: Gehan and George's
+  `BSA = 0.0235 * HT^0.42246 * WT^0.51456` reproduces both published Table 3
+  medians (0.122 against 0.12 m^2 pre-term, 0.225 against 0.23 m^2 term).
+
 * **Volume-of-distribution covariate form.** Table 2 prints the volume equation
   as `V (L) = theta2*(WT/1.37)*DIS*theta4`, which taken literally sets the
   volume to zero for a subject without systemic infection. The Abstract states
@@ -503,13 +526,19 @@ three of the four Cmax cells to within 17%.
   `PMA / (theta3 + PMA)`, so `pma_hill` is encoded as `fixed(1)`.
 
 * **Systemic infection is switched off in the simulations.** The paper does not
-  state which value of `DIS` its Table 3 virtual cohorts carry. Setting
-  `DIS_INFECT_ACTIVE = 0` reproduces the published Cmax values; setting it to 1
-  divides every simulated Cmax by 2.67 and puts them far below the published
-  numbers (for example the term median falls from about 13 mg/L to about
-  5 mg/L). The Table 3 cohorts were also drawn from the NHANES and CALIPER
+  state which value of `DIS` its Table 3 virtual cohorts carry. Note first that
+  the choice is identified by Cmax alone: at steady state the AUC over one
+  dosing interval is dose / CL, and `DIS` acts only on volume, so the four
+  AUC0-24 cells are completely insensitive to it. On Cmax, `DIS = 0` is the
+  better reading in three of the four cells -- the median absolute deviation
+  from the published values is about 14% at `DIS = 0` against about 39% at
+  `DIS = 1`, where every cell falls 18-50% below the paper. The effect of the
+  switch is a factor of roughly 1.5-2.0 on Cmax rather than the full 2.67,
+  because the larger volume also lowers `kel = CL/V` and so slows the
+  elimination competing with the 1-hour infusion. Independently of the
+  arithmetic, the Table 3 cohorts were drawn from the NHANES and CALIPER
   reference databases rather than from the infected study population, so
-  `DIS = 0` is both the numerically and the clinically consistent reading.
+  `DIS = 0` is the clinically consistent reading as well.
 
 * **Infusion duration 1 hour.** Neither the Methods nor Table 3 states the
   infusion duration used for the simulations. One hour is the duration in the
@@ -537,17 +566,28 @@ three of the four Cmax cells to within 17%.
   otherwise draw a different cohort and move every assertion above.
 
 * **Known deviation: Cmax in the term, CLcr > 50 cell.** The simulated median
-  Cmax is about 26% above the published 12.7 mg/L. The source of the
-  disagreement is visible inside Table 3 itself: at a constant 20 mg/kg unit
-  dose, the table reports a *lower* Cmax for the more frequent regimen
-  (term neonates 12.7 mg/L every 8 h against 15.2 mg/L every 12 h; infants
-  14.7 mg/L against 17.5 mg/L). A one-compartment model with first-order
-  elimination accumulates more, not less, as the interval shortens at constant
-  unit dose, so this ordering cannot arise from the published structural model
-  regardless of how the covariates are distributed. The corresponding AUC0-24
-  cell agrees to within 6%, so the transcription of clearance, volume and dose
-  is not implicated. The cell is reported in the comparison table and excluded
-  from the assertion gate rather than tuned away.
+  Cmax is about 26% above the published 12.7 mg/L, and it is the only cell of
+  the eight that misses by more than 20%. What makes it stand out is an
+  *ordering*: at a constant 20 mg/kg unit dose, Table 3 reports a **lower**
+  Cmax for the more frequent regimen (term neonates 12.7 mg/L every 8 h against
+  15.2 mg/L every 12 h; infants 14.7 mg/L against 17.5 mg/L), whereas the
+  packaged model orders them the other way (16.0 against 14.5 mg/L).
+
+  The two cells are not merely two dosing intervals, so the comparison needs
+  care: they are also two different creatinine-clearance strata, and the
+  `CLcr > 50` subgroup has the higher clearance, which on its own pushes its
+  Cmax *down*. That confound is genuine, but the simulation here applies the
+  paper's own banding rules to the paper's own covariate distributions, so it
+  reproduces the same selection effect -- and in the model the extra
+  accumulation from the shorter interval still outweighs it. The residual
+  disagreement therefore sits in the published cell rather than in the
+  stratification.
+
+  The corresponding AUC0-24 cell agrees to within 6%, and AUC at steady state
+  is dose / CL, so the transcription of clearance and dose is not implicated;
+  whatever drives the Cmax ordering is confined to the peak. The cell is
+  reported in the comparison table and excluded from the assertion gate rather
+  than tuned away.
 
 * **Covariates screened but not retained.** Post-natal age, sex, race,
   concomitant vasopressin / dopamine / epinephrine, birth weight and serum

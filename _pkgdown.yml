@@ -84,6 +84,8 @@ navbar:
         href: articles/vanRongen_2016_acetaminophen.html
       - text: "Acetaminophen rat pbpk (Westerhout 2012)"
         href: articles/Westerhout_2012_acetaminophen_rat_pbpk.html
+      - text: "Aciclovir (DAgate 2024)"
+        href: articles/DAgate_2024_aciclovir.html
       - text: "Acyclovir (Zeng 2009)"
         href: articles/Zeng_2009_acyclovir.html
       - text: "Adalimumab (Drweesh 2026)"
@@ -4647,6 +4649,7 @@ articles:
   - articles/Crommentuyn_2005_lopinavir
   - articles/Csajka_2004_indinavir
   - articles/Csajka_2005_ephedrine_caffeine
+  - articles/DAgate_2024_aciclovir
   - articles/Danielak_2017_clopidogrel
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame
