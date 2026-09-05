@@ -4024,6 +4024,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Valproic acid (Nakashima 2015)"
+        href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid (Zhang 2024)"
         href: articles/Zhang_2024_valproic_acid.html
       - text: "Valproic acid base (Zhang 2023)"
@@ -4032,8 +4034,12 @@ navbar:
         href: articles/Zhang_2023_valproic_acid_protein_binding.html
       - text: "Valproic acid exponent (Zhang 2023)"
         href: articles/Zhang_2023_valproic_acid_protein_binding.html
+      - text: "Valproic acid ge19y (Nakashima 2015)"
+        href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid langmuir (Zhang 2023)"
         href: articles/Zhang_2023_valproic_acid_protein_binding.html
+      - text: "Valproic acid le18y (Nakashima 2015)"
+        href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid nonsaturable (Zhang 2023)"
         href: articles/Zhang_2023_valproic_acid_protein_binding.html
       - text: "Valproic acid onebindingsite (Zhang 2023)"
@@ -5441,6 +5447,7 @@ articles:
   - articles/Naik_2013_peginesatide
   - articles/Naik_2016_vortioxetine
   - articles/Nakai_2025_tranexamicAcid
+  - articles/Nakashima_2015_valproic_acid_seizure_control
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
   - articles/Nath_2007_melphalan
