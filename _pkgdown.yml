@@ -1000,6 +1000,8 @@ navbar:
         href: articles/Brochot_2015_darunavir.html
       - text: "Dasabuvir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
+      - text: "Dasatinib (Hassouneh 2024)"
+        href: articles/Hassouneh_2024_dasatinib.html
       - text: "Datopotamab (Hong 2025)"
         href: articles/Hong_2025_datopotamab.html
       - text: "Daunorubicin (Bogason 2011)"
@@ -5240,6 +5242,7 @@ articles:
   - articles/Hartinger_2023_vancomycin
   - articles/Harun_2019_cysticFibrosis
   - articles/Hashimoto_1994_zonisamide
+  - articles/Hassouneh_2024_dasatinib
   - articles/Hawwa_2008_mercaptopurine
   - articles/Hawwa_2013_ranitidine
   - articles/Hayashi_1998_epoetinBeta

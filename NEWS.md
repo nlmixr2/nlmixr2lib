@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ling 2024 adalimumab and etanercept biosimilars ([doi:10.3390/pharmaceutics16060702](https://doi.org/10.3390/pharmaceutics16060702)) -- biologic-naive adults with active rheumatoid arthritis.
+- Add Hassouneh 2024 dasatinib ([doi:10.3390/ph17060671](https://doi.org/10.3390/ph17060671)) -- healthy Middle Eastern male volunteers.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
