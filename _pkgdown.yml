@@ -1152,6 +1152,8 @@ navbar:
         href: articles/Gastonguay_2005_efaproxiral.html
       - text: "Efavirenz (Bienczak 2016)"
         href: articles/Bienczak_2016_efavirenz.html
+      - text: "Efavirenz (Chala 2023)"
+        href: articles/Chala_2023_efavirenz.html
       - text: "Efavirenz (Dhoro 2015)"
         href: articles/Dhoro_2015_efavirenz.html
       - text: "Efavirenz (Heathman 2024)"
@@ -4557,6 +4559,7 @@ articles:
   - articles/Chae_2012_metformin
   - articles/Chairat_2016_oseltamivir
   - articles/Chakraborty_2012_canakinumab
+  - articles/Chala_2023_efavirenz
   - articles/Chan_2008_maraviroc
   - articles/Chan_2023_nirmatrelvir
   - articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric
