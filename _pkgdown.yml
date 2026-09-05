@@ -92,6 +92,8 @@ navbar:
         href: articles/Zeng_2009_acyclovir.html
       - text: "Adalimumab (Drweesh 2026)"
         href: articles/Drweesh_2026_adalimumab.html
+      - text: "Adalimumab (Ling 2024)"
+        href: articles/Ling_2024_tnfi_biosimilars.html
       - text: "Adalimumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
       - text: "Adalimumab (MarquezMegias 2023)"
@@ -1384,6 +1386,8 @@ navbar:
         href: articles/PerezRuixo_2020_esketamine.html
       - text: "Etanercept (Fang 2010)"
         href: articles/Fang_2010_etanercept.html
+      - text: "Etanercept (Ling 2024)"
+        href: articles/Ling_2024_tnfi_biosimilars.html
       - text: "Eteplirsen (Patel 2025)"
         href: articles/Patel_2025_eteplirsen.html
       - text: "Ethambutol (Horita 2018)"
@@ -5589,6 +5593,7 @@ articles:
   - articles/Lin_2026_sc1cmt_coxTte
   - articles/Lindauer_2017_lacosamide
   - articles/Lindauer_2017_pembrolizumab
+  - articles/Ling_2024_tnfi_biosimilars
   - articles/Lioger_2017_rituximab
   - articles/Litjens_2023_linezolid_tuberculous_meningitis
   - articles/Liu_2023_mAb_mouse_pbpk

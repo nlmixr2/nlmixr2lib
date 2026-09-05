@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ravix 2024 trametinib ([doi:10.3390/cancers16122193](https://doi.org/10.3390/cancers16122193)) -- adults treated for solid tumours.
+- Add Ling 2024 adalimumab and etanercept biosimilars ([doi:10.3390/pharmaceutics16060702](https://doi.org/10.3390/pharmaceutics16060702)) -- biologic-naive adults with active rheumatoid arthritis.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
