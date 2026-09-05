@@ -2,7 +2,7 @@
 
 # development version
 
-- Add D'Agate 2024 aciclovir ([doi:10.1002/prp2.1193](https://doi.org/10.1002/prp2.1193)) -- term and pre-term neonates with suspected systemic herpes simplex virus infection.
+- Add Chen 2024 biapenem ([doi:10.3389/fphar.2024.1388150](https://doi.org/10.3389/fphar.2024.1388150)) -- adults with sepsis.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
