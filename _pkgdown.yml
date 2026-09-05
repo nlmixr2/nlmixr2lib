@@ -1036,6 +1036,8 @@ navbar:
         href: articles/Chandasana_2024_dolutegravir_lamivudine.html
       - text: "Dolutegravir (Chandasana 2024b)"
         href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
+      - text: "Dolutegravir (Kawuma 2023)"
+        href: articles/Kawuma_2023_dolutegravir.html
       - text: "Dolutegravir (Zhang 2015)"
         href: articles/Zhang_2015_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
@@ -5041,6 +5043,7 @@ articles:
   - articles/Kaufman_1999_phenylalanine
   - articles/Kaushal_2024_mRNA0184
   - articles/Kawamura_2018_eribulin
+  - articles/Kawuma_2023_dolutegravir
   - articles/Kay_2020_lumefantrine
   - articles/Kay_2022_lumefantrine
   - articles/Keij_2023_amoxicillin
