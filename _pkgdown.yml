@@ -1444,6 +1444,10 @@ navbar:
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
       - text: "Finerenone uacr (Goulooze 2022)"
         href: articles/Goulooze_2022_finerenone_uacr_egfr.html
+      - text: "Flt3lfc cyno (Hosseini 2024)"
+        href: articles/Hosseini_2024_flt3lfc.html
+      - text: "Flt3lfc human (Hosseini 2024)"
+        href: articles/Hosseini_2024_flt3lfc.html
       - text: "Flucloxacillin (Landersdorfer 2007)"
         href: articles/Landersdorfer_2007_flucloxacillin.html
       - text: "Fluconazole (Adamiszak 2025)"
@@ -4940,6 +4944,7 @@ articles:
   - articles/Horita_2018_pyrazinamide
   - articles/Horita_2018_rifampicin
   - articles/Hornik_2025_furosemide
+  - articles/Hosseini_2024_flt3lfc
   - articles/Hu_2014_bapineuzumab
   - articles/Hu_2017_peginterferon_beta_1a
   - articles/Hu_2025_tepotinib
