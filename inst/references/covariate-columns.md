@@ -12719,6 +12719,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Mercier_2014_tramadol_tapentadol_mbma.R` (enters the extent-of-reduction R additively via `e_tapentadol_emax * TAPENTADOL`; no dose-response is fit because tapentadol was studied only over the narrow 100-250 mg bid range in the Mercier 2014 database; 8 of 81 arms were tapentadol arms).
 - **Notes:** MBMA study-arm-level treatment indicator, sibling of `NAPROXEN` and `TRAMADOL` in the per-drug MBMA arm-indicator family. Specific scope. Pairs with `TRAMADOL` in the Mercier 2014 extraction; the two are mutually exclusive per arm.
 
+### ACETAMINOPHEN (**canonical for acetaminophen (paracetamol) treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received systemic acetaminophen (paracetamol), 0 = it did not. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (arm did not receive acetaminophen).
+- **Source aliases:**
+  - `ace` -- used in `Sethi_2024_acetaminophen_diclofenac_mbma.R` (Sethi 2024 Table 1 Treatments column; the parameter is `e.ace` in Table 3).
+- **Example models:** `Sethi_2024_acetaminophen_diclofenac_mbma.R` (additive `-18.93 mg` shift on arm-mean opioid PCA consumption via `e_acetaminophen_e0 * ACETAMINOPHEN`; set to 1 on the combination arms as well as the monotherapy arms, so the arm indicator and `DICLOFENAC` are NOT mutually exclusive in this extraction).
+- **Notes:** MBMA study-arm-level treatment indicator, sibling of `NAPROXEN`, `TRAMADOL` and `TAPENTADOL` in the per-drug MBMA arm-indicator family. Specific scope. Distinct from `CONMED_PARA`, which flags *concomitant* paracetamol taken alongside the drug under study at an individual-patient observation; use `ACETAMINOPHEN` when acetaminophen is itself a randomised study treatment at the trial-arm level. Dose-independent in the founding model: Sethi 2024 pooled arms at 1000-2400 mg because five trials could not identify a dose-response, so a future extraction that *does* fit an acetaminophen dose-response should pair this indicator with a `CONMED_ACETAMINOPHEN_DOSE`-style dose column rather than overload the indicator.
+
+### DICLOFENAC (**canonical for diclofenac treatment-arm indicator**)
+- **Description:** Binary study-arm treatment indicator: 1 = the arm received diclofenac, 0 = it did not. A property of the trial arm in a model-based meta-analysis (MBMA), not of an individual patient.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (arm did not receive diclofenac).
+- **Source aliases:**
+  - `dic` -- used in `Sethi_2024_acetaminophen_diclofenac_mbma.R` (Sethi 2024 Table 1 Treatments column; the parameter is `e.dic` in Table 3).
+- **Example models:** `Sethi_2024_acetaminophen_diclofenac_mbma.R` (additive `-28.41 mg` shift on arm-mean opioid PCA consumption via `e_diclofenac_e0 * DICLOFENAC`; set to 1 on the combination arms as well as the monotherapy arms, so the arm indicator and `ACETAMINOPHEN` are NOT mutually exclusive in this extraction).
+- **Notes:** MBMA study-arm-level treatment indicator, sibling of `NAPROXEN`, `TRAMADOL`, `TAPENTADOL` and `ACETAMINOPHEN` in the per-drug MBMA arm-indicator family. Specific scope. **The route is not encoded in the indicator and must be documented per model.** In the founding model every diclofenac arm was *systemic* (oral, rectal or intravenous, 75-100 mg) even though the source paper's title concerns topical diclofenac -- Sethi 2024 Supplementary Table S5 labels its rows "Systemic diclofenac", and the paper's move from systemic to topical is a qualitative Discussion extrapolation, not a fitted effect. A future extraction that distinguishes topical from systemic diclofenac arms should carry a separate `FORM_DICLOFENAC_TOPICAL`-style formulation indicator alongside this one. Dose-independent in the founding model (75 mg and 100 mg arms share one effect).
+
 ### TRT_EPHEDRINE (**canonical for ephedrine treatment-arm indicator**)
 - **Description:** Binary treatment-arm indicator: 1 = the subject received ephedrine, 0 = the subject did not. Unlike the `NAPROXEN` / `TRAMADOL` / `TAPENTADOL` MBMA arm indicators, this is a property of an **individual patient** in a two-armed observational study, not of a trial arm in a meta-analysis.
 - **Units:** (binary)
