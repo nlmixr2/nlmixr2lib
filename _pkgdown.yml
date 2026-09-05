@@ -4112,6 +4112,8 @@ navbar:
         href: articles/Goti_2018_vancomycin.html
       - text: "Vancomycin (Grimsley 1999)"
         href: articles/Grimsley_1999_vancomycin.html
+      - text: "Vancomycin (Hartinger 2023)"
+        href: articles/Hartinger_2023_vancomycin.html
       - text: "Vancomycin (Ji 2017)"
         href: articles/Ji_2017_vancomycin.html
       - text: "Vancomycin (Jung 2024)"
@@ -5013,6 +5015,7 @@ articles:
   - articles/Harada_2025_cyanide_pbpk
   - articles/Harrold_2020_filgrastim_ars
   - articles/Harrold_2020_radiation_neutropenia
+  - articles/Hartinger_2023_vancomycin
   - articles/Harun_2019_cysticFibrosis
   - articles/Hashimoto_1994_zonisamide
   - articles/Hawwa_2008_mercaptopurine

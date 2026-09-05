@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Downes 2023 vancomycin ([doi:10.3390/pharmaceutics15051336](https://doi.org/10.3390/pharmaceutics15051336)) -- critically ill children aged 1-17 years in the PICU; three models (full, eGFR-Hoek, eGFR-Schwartz).
+- Add Hartinger 2023 intraperitoneal vancomycin ([doi:10.3390/pharmaceutics15051394](https://doi.org/10.3390/pharmaceutics15051394)) -- adults on continuous ambulatory peritoneal dialysis treated for PD-associated peritonitis.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
