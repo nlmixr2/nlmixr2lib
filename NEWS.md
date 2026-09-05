@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sandra 2024 anti-HBV short interfering RNA HBsAg turnover MBMA ([doi:10.1002/psp4.13129](https://doi.org/10.1002/psp4.13129)) -- HBV-infected mice.
+- Add Chotsiri 2024 primaquine, carboxy-primaquine and primaquine carbamoyl-glucuronide ([doi:10.1186/s12936-024-04979-y](https://doi.org/10.1186/s12936-024-04979-y)) -- G6PD-deficient and G6PD-normal adult African males.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
