@@ -3460,6 +3460,12 @@ navbar:
         href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
         href: articles/Lu_2014_sglt_qsp.html
+      - text: "ShikimicAcid broiler mda (Shen 2026)"
+        href: articles/Shen_2026_shikimicAcid.html
+      - text: "ShikimicAcid broiler sod (Shen 2026)"
+        href: articles/Shen_2026_shikimicAcid.html
+      - text: "ShikimicAcid broiler taoc (Shen 2026)"
+        href: articles/Shen_2026_shikimicAcid.html
       - text: "ShikimicAcid pig iv (Mo 2024)"
         href: articles/Mo_2024_shikimicAcid.html
       - text: "ShikimicAcid pig oral (Mo 2024)"
@@ -5621,6 +5627,7 @@ articles:
   - articles/Shen_2013_belatacept
   - articles/Shen_2024_vancomycin
   - articles/Shen_2025_voriconazole
+  - articles/Shen_2026_shikimicAcid
   - articles/Sheng_2013_ABPM
   - articles/Sheng_2016_quinine_rat
   - articles/Sherer_2012_AAA
