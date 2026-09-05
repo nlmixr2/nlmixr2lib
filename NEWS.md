@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Karlsson 2010 acute-stroke disease progression on the NIHSS and Barthel
-  Index scales ([doi:10.1208/s12248-010-9230-0](https://doi.org/10.1208/s12248-010-9230-0))
-  -- placebo arm of a multinational acute-stroke trial; no drug.
+- Add Miyagi 2011 hepatic UGT1A1 and UGT1A6 ontogeny ([doi:10.1124/dmd.110.037192](https://doi.org/10.1124/dmd.110.037192)) -- 50 pediatric liver donors, 13 days to 20 years.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
