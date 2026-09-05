@@ -233,6 +233,17 @@ sim_table5 <- rxode2::rxSolve(
     dplyr::select(id, AGE, WT, CREAT, BUN, PAGE, SEXF, DIS_DIAB, DIS_RENAL, DIS_PNEUMONIA),
   omega = NA,
   useLinCmt = FALSE,      # ODE -> linCmt auto-conversion breaks multi-endpoint dvid mapping
+  # Ten days of q6h dosing (addl = 39) integrated across a 480-point covariate
+  # grid puts the stiffest corners of that grid near the default step ceiling.
+  # Standalone all 480 solve; under a loaded 16-worker vignette build three of
+  # them (age 80 at 50 kg, and BUN 40) instead returned `Cc = NA`, which
+  # propagated into a non-finite 15 / trough and failed the gate below. The
+  # solve returned all 480 subjects either way -- nothing was dropped by the
+  # join; the integration itself gave up on those three. Raising the ceiling
+  # removes the load sensitivity and changes nothing else: the trough range is
+  # identical to 8 significant figures (3.7271514 to 45.177341) with the three
+  # NAs resolved.
+  maxsteps = 100000L,
   returnType = "data.frame"
 ) |>
   dplyr::filter(time == t_ss)
