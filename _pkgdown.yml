@@ -4244,8 +4244,8 @@ navbar:
         href: articles/Qi_2024_vosoritide.html
       - text: "Vrc01 (Huang 2017)"
         href: articles/Huang_2017_vrc01.html
-      - text: "VRC07523LS (Huynh 2026)"
-        href: articles/Huynh_2026_VRC07523LS.html
+      - text: "Vupanorsen (Ahn 2023)"
+        href: articles/Ahn_2023_vupanorsen.html
       - text: "VwfFviii humateP (Bauer 2023)"
         href: articles/Bauer_2023_vonWillebrandFactor.html
       - text: "Warfarin (Savic 2010)"
@@ -4481,6 +4481,7 @@ articles:
   - articles/Ahmed_2015_topiramate
   - articles/Ahmed_2016_lorenzosOil
   - articles/Ahn_2014_parathyroidHormone
+  - articles/Ahn_2023_vupanorsen
   - articles/Ahsman_2010_cefotaxime
   - articles/Ai_2024_ractopamine_goat_pbpk
   - articles/AitOudhia_2012_canakinumab
