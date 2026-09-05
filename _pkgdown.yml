@@ -1378,6 +1378,8 @@ navbar:
         href: articles/deWit_2016_everolimus.html
       - text: "Everolimus (Mo 2025)"
         href: articles/Mo_2025_everolimus.html
+      - text: "Everolimus (Park 2023)"
+        href: articles/Park_2023_everolimus.html
       - text: "Everolimus (TerHeine 2018)"
         href: articles/TerHeine_2018_everolimus.html
       - text: "Evinacumab (Pu 2021)"
@@ -5685,6 +5687,7 @@ articles:
   - articles/Park_2001_ketoprofen
   - articles/Park_2014_SKL10406
   - articles/Park_2014_triflusal
+  - articles/Park_2023_everolimus
   - articles/Park_2023_mycophenolic_acid
   - articles/Park_2025_cd19_cart_sle_qsp
   - articles/Park_2025_efineptakin_alfa
