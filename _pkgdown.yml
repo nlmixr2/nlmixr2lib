@@ -870,6 +870,8 @@ navbar:
         href: articles/Yuan_2019_concizumab.html
       - text: "ConestatAlfa (Farrell 2013)"
         href: articles/Farrell_2013_conestatAlfa.html
+      - text: "Copanlisib (Morcos 2023)"
+        href: articles/Morcos_2023_copanlisib.html
       - text: "Corifollitropin alfa (Zandvliet 2016)"
         href: articles/Zandvliet_2016_corifollitropin_alfa.html
       - text: "Cotadutide qsp (Bosch 2024)"
@@ -5564,6 +5566,7 @@ articles:
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
   - articles/Morath_2025_apixaban
+  - articles/Morcos_2023_copanlisib
   - articles/Morganroth_2015_moxifloxacin
   - articles/Mori_2018_zoledronicAcid
   - articles/Morris_2011_artesunate

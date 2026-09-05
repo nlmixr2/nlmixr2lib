@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Vollmer 2023 cefepime-enmetazobactam ([doi:10.1093/ofid/ofad500.2147](https://doi.org/10.1093/ofid/ofad500.2147)) -- adults with complicated urinary tract infection or acute pyelonephritis, and healthy volunteers.
+- Add Morcos 2023 copanlisib ([doi:10.1002/psp4.13000](https://doi.org/10.1002/psp4.13000)) -- adults with advanced solid tumors or non-Hodgkin lymphoma across nine phase I-III studies.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
