@@ -919,6 +919,17 @@ The MTP framework partitions the bacterial population into three states. The ori
 
 ---
 
+## Tobacco craving and withdrawal clinical scores
+
+### smokingurges (**canonical Smoking Urges Scale craving output compartment**)
+- **Type:** compartment
+- **Role:** Cigarette-craving output for tobacco-dependence PD models, defined as the mean of the five Smoking Urges Scale items. Each item is an integer 0-100 where 0 is "Not at all" and 100 is "The strongest feeling possible", so the mean is an ABSOLUTE reading bounded on 0-100 and models of it are naturally written on a logit scale bounded by those endpoints (`expit(..., 0, 100)` with a `logitNorm(addSd, 0, 100)` residual). Because the endpoint is the absolute score there is no `cfb` suffix, following `desiretousevas` rather than `druglikingvascfb`; a future model fitting the change from baseline should register a sibling `smokingurgescfb`.
+- **Source aliases:** `mean (1-5) craving score`, `Smoking Urges Scale score` -- Ravva 2015 paper notation.
+- **Example models:** `Ravva_2015_varenicline.R` (baseline plus a placebo kinetic-system term plus a linear varenicline-concentration term, all summed on the logit scale).
+- **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction, as a family-conforming member of the clinical-score PD output family (`pasi`, `das28`, `cows`, `desiretousevas`, `tmccfb`) under the standing operator ruling that family-conforming names are auto-approved and only new-family mints are surfaced. Lowercase run-together instrument name, per that family. Distinct from `desiretousevas`, which is a single-item unipolar VAS for opioid craving; the Smoking Urges Scale is a five-item questionnaire and its endpoint is the item mean. The related Minnesota Nicotine Withdrawal Scale (MNWS) endpoints are NOT covered by this name -- an MNWS model needs its own canonical (the MNWS Question-1 "urge to smoke" item is an ordered category 0-4, not a 0-100 reading).
+
+---
+
 ## Depression-severity clinical scores
 
 ### madrsenh (**canonical MADRS enhancement-rate output compartment**)
@@ -3328,6 +3339,26 @@ The Li 2015 taspoglutide MBMA model maintains separate placebo and drug arms for
 - **Role:** HbA1c drug-arm output state.
 - **Source aliases:** none.
 - **Example models:** `Li_2015_taspoglutide_mbma.R`.
+
+---
+
+## Placebo kinetic-system compartments
+
+A recurring device in placebo-controlled PD modelling is to give the placebo response its own *hypothetical* kinetic system: a dimensionless dummy dose is administered at each dosing time into a depot, transferred at an onset rate constant into a second state, and lost from that state at an offset rate constant. The contents of the second state are the driver of the placebo term of the effect model. The pair below names those two states. They are amounts of a dimensionless dummy dose, not concentrations of anything measurable, so `compartmentData` records them with `specimen = "not applicable"`. Distinct from the MBMA `<endpoint>_placebo` arms above, which are *output* states holding a clinical endpoint in its own units; and distinct from a K-PD `depot_kpd`, which holds an amount of real administered drug.
+
+### depot_placebo (**canonical placebo kinetic-system depot**)
+- **Type:** compartment
+- **Role:** Depot of a hypothetical placebo "kinetic" system. Receives the dimensionless dummy dose (amount 1) at every dosing time -- for both the active and the placebo arm of a crossover, since the placebo response is assumed common to both -- and empties at the onset rate constant `kon_placebo` into `central_placebo`. Carries no drug and has no volume.
+- **Source aliases:** `DEPOT` (placebo box of Ravva 2015 Figure 1).
+- **Example models:** `Ravva_2015_varenicline.R`.
+- **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (sidecar `oare_PMC4832970` request-001 q1, operator answer B). Spelled with the full `placebo` token rather than an abbreviated `pbo`, matching the existing `fpg_placebo` / `hba1c_placebo` / `skit_pla` register entries; no `_pbo` suffix exists anywhere in the registers. Composes the canonical `depot` role with the `placebo` qualifier the same way `depot_im` composes it with a dosing route.
+
+### central_placebo (**canonical placebo kinetic-system driver state**)
+- **Type:** compartment
+- **Role:** Second state of a hypothetical placebo "kinetic" system, filled from `depot_placebo` at `kon_placebo` and emptied at `koff_placebo`. Its contents are the placebo driver that multiplies the placebo slope in the effect model (`slope_placebo * central_placebo`). Dimensionless: the driving quantity is an amount of dummy dose, so the slope's units are "effect per unit dummy amount" and are only interpretable against the same unit-dose convention the source model used.
+- **Source aliases:** `C_PBO` (Ravva 2015 Figure 1 and Methods, "the concentrations of varenicline and placebo in the central compartment of each kinetic system").
+- **Example models:** `Ravva_2015_varenicline.R`.
+- **Notes:** Ratified 2026-09-03 with `depot_placebo`; see that entry for the naming rationale. The unit-dose convention is load-bearing and must be stated in the model file: with a dummy dose of exactly 1 into `depot_placebo`, `central_placebo(t) = kon/(koff - kon) * (exp(-kon*t) - exp(-koff*t))`, whose amplitude is what the published placebo slope was estimated against. A `koff`-normalised alternative convention is shape-identical but differs in amplitude by `koff/kon`, so a paper's own forward-simulation figure is the discriminator -- see the Ravva 2015 vignette.
 
 ---
 
