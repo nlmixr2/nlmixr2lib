@@ -3294,6 +3294,8 @@ navbar:
         href: articles/Wang_2024_risperidone_lai_switching.html
       - text: "Risperidone tv46000 (Perlstein 2025)"
         href: articles/Perlstein_2025_risperidone_tv46000.html
+      - text: "Ritlecitinib (Huh 2024)"
+        href: articles/Huh_2024_ritlecitinib.html
       - text: "Ritlecitinib base (Wojciechowski 2023)"
         href: articles/Wojciechowski_2023_ritlecitinib.html
       - text: "Ritlecitinib final (Wojciechowski 2023)"
@@ -4949,6 +4951,7 @@ articles:
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
   - articles/Huang_2025_dexmedetomidine
+  - articles/Huh_2024_ritlecitinib
   - articles/Huppe_2023_fosfomycin
   - articles/Hurtado_2014_levofloxacin_rat
   - articles/Hussein_1997_lamotrigine
