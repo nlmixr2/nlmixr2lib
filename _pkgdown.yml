@@ -3514,6 +3514,10 @@ navbar:
         href: articles/Yin_2023_soticlestat.html
       - text: "Soticlestat (Yin 2024)"
         href: articles/Yin_2024_soticlestat.html
+      - text: "Sotrovimab (Sager 2023)"
+        href: articles/Sager_2023_sotrovimab.html
+      - text: "Sotrovimab progression (Sager 2023)"
+        href: articles/Sager_2023_sotrovimab.html
       - text: "Sparsentan (Wada 2023)"
         href: articles/Wada_2023_sparsentan.html
       - text: "Spectinamide 1599 mouse pbpk (Parmar 2023)"
@@ -5556,6 +5560,7 @@ articles:
   - articles/Sadiq_2024_tozorakimab
   - articles/Sadouki_2025_meropenem_gentamicin_ciprofloxacin
   - articles/Saeheng_2024_atractylodesLancea
+  - articles/Sager_2023_sotrovimab
   - articles/Sahota_2015_miridesap
   - articles/Said_2025_imatinib
   - articles/Sakurai_2007_lansoprazole
