@@ -1,16 +1,21 @@
 Ngo_2020_HL2351 <- function() {
-  description <- "Population PK model for HL2351 (hIL-1Ra-hyFc, ~97 kDa) in healthy adult Korean men: a quasi-steady-state target-mediated drug disposition (QSS-TMDD) model coupled with FcRn-mediated recycling. The injection-site depot feeds a separate distribution space where free drug equilibrates with FcRn (QSS dissociation constant AKSS1, total FcRn AFcRn_t); free drug moves to the central compartment either directly (Ka2) or by FcRn-mediated recycling of the FcRn-drug complex (Krec). In the central compartment free drug equilibrates with IL1R (QSS dissociation constant KSS2, total IL1R CIL1R_t), is taken up back to the distribution space (Kup), exchanged with one peripheral compartment (Q/F), and eliminated linearly (CL/F). The IL1R-drug complex degrades at Kdeg2. All drug amounts and concentrations are in nmol / nmol/L; convert mg dosing using molecular weight 97 kDa (1 mg HL2351 = approximately 10306 nmol)."
+  description <- "Population PK model for HL2351 (hIL-1Ra-hyFc, ~97 kDa) in healthy adult Korean men: a quasi-steady-state target-mediated drug disposition (QSS-TMDD) model coupled with FcRn-mediated recycling. The injection-site depot feeds a separate distribution space where free drug equilibrates with FcRn (QSS dissociation constant AKSS1, total FcRn AFcRn_t); free drug moves to the central compartment either directly (Ka2) or by FcRn-mediated recycling of the FcRn-drug complex (Krec). In the central compartment free drug equilibrates with IL1R (QSS dissociation constant KSS2, total IL1R CIL1R_t), is taken up back to the distribution space (Kup), exchanged with one peripheral compartment (Q/F), and eliminated linearly (CL/F). The IL1R-drug complex degrades at Kdeg2. All drug amounts and concentrations are in nmol / nmol/L; convert mg dosing using molecular weight 97 kDa (1 mg HL2351 = approximately 10.31 nmol)."
   reference <- "Ngo L, Lee J, Lim L, Lim H, Bae KS, Hong T, Bae S, Hong Y. Development of a Pharmacokinetic Model Describing Neonatal Fc Receptor-Mediated Recycling of HL2351, a Novel Hybrid Fc-Fused Interleukin-1 Receptor Antagonist, to Optimize Dosage Regimen. CPT Pharmacometrics Syst Pharmacol. 2020 Oct;9(10):584-595. doi:10.1002/psp4.12552. PMID: 32945613."
   vignette <- "Ngo_2020_HL2351"
   units <- list(time = "h", dosing = "nmol", concentration = "nmol/L")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
-  # biological matrix. Derived mechanically; verified = FALSE means it has
-  # NOT been checked against the source paper.
+  # biological matrix. Checked against Ngo 2020 Figure 1a when the FcRn
+  # absorption/distribution space was repointed from a duplicated
+  # `peripheral1` onto the `abs_site` canonical (2026-09-04). `abs_site` and
+  # `depot` share the "administration site" specimen because both sit at the
+  # subcutaneous injection region; the specimen vocabulary has no finer term
+  # for the absorption/lymphatic space.
   compartmentData <- list(
-    depot       = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = FALSE),
-    peripheral1 = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = FALSE),
-    central     = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = FALSE)
+    depot       = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
+    abs_site    = list(analyte = "HL2351", units = "nmol", specimen = "administration site", verified = TRUE),
+    central     = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE),
+    peripheral1 = list(analyte = "HL2351", units = "nmol", specimen = "plasma", verified = TRUE)
   )
 
   covariateData <- list()
@@ -88,13 +93,13 @@ Ngo_2020_HL2351 <- function() {
     kpc <- q  / vp
 
     # QSS approximation - Eqs. (4) and (5) of Ngo 2020.
-    # The state variables are TOTAL drug amounts: peripheral1 holds free drug + FcRn-drug
+    # The state variables are TOTAL drug amounts: abs_site holds free drug + FcRn-drug
     # complex (Atot1, nmol); central holds free drug + IL1R-drug complex
     # (total amount = Ctot2 * Vc, nmol). Free amounts/concentrations are derived
     # from the totals via the QSS quadratic.
-    diff1     <- peripheral1 - a_fcrn_t - a_kss1
-    a_dfree1  <- 0.5 * (diff1 + sqrt(diff1 * diff1 + 4 * a_kss1 * peripheral1))
-    a_fcrn_d  <- peripheral1 - a_dfree1                                     # FcRn-drug complex amount (nmol)
+    diff1     <- abs_site - a_fcrn_t - a_kss1
+    a_dfree1  <- 0.5 * (diff1 + sqrt(diff1 * diff1 + 4 * a_kss1 * abs_site))
+    a_fcrn_d  <- abs_site - a_dfree1                                        # FcRn-drug complex amount (nmol)
 
     c_tot2    <- central / vc
     diff2     <- c_tot2 - c_il1r_t - kss2
@@ -102,9 +107,11 @@ Ngo_2020_HL2351 <- function() {
     a_dfree2  <- c_dfree2 * vc                                       # free drug amount in central (nmol)
     a_il1r_d  <- (c_tot2 - c_dfree2) * vc                            # IL1R-drug complex amount (nmol)
 
-    # ODEs - mass balance on TOTAL drug amounts in each space (Ngo 2020 Figure 1a)
+    # ODEs - mass balance on TOTAL drug amounts in each space (Ngo 2020 Figure 1a),
+    # declared in the published compartment order: injection-site depot, FcRn
+    # absorption/distribution space, central, peripheral.
     d/dt(depot)       <- -ka1 * depot
-    d/dt(peripheral1)        <-  ka1 * depot - krec * a_fcrn_d - ka2 * a_dfree1 - kdeg1 * a_dfree1 + kup * a_dfree2
+    d/dt(abs_site)    <-  ka1 * depot - krec * a_fcrn_d - ka2 * a_dfree1 - kdeg1 * a_dfree1 + kup * a_dfree2
     d/dt(central)     <-  krec * a_fcrn_d + ka2 * a_dfree1 - kup * a_dfree2 - kel * a_dfree2 - kdeg2 * a_il1r_d - kcp * a_dfree2 + kpc * peripheral1
     d/dt(peripheral1) <-  kcp * a_dfree2 - kpc * peripheral1
 
