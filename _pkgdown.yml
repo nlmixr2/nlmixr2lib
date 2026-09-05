@@ -864,6 +864,8 @@ navbar:
         href: articles/ResendizGalvan_2025_cycloserine.html
       - text: "Cyclosporin (Debord 2001)"
         href: articles/Debord_2001_cyclosporin.html
+      - text: "Cyclosporine (Feng 2023)"
+        href: articles/Feng_2023_cyclosporine.html
       - text: "Cyclosporine (Philippe 2015)"
         href: articles/Philippe_2015_cyclosporine.html
       - text: "Cysteamine (Belldina 2003)"
@@ -4752,6 +4754,7 @@ articles:
   - articles/Feng_2012_higenamine
   - articles/Feng_2014_ipilimumab
   - articles/Feng_2019_ipilimumab
+  - articles/Feng_2023_cyclosporine
   - articles/Feng_2026_imipenem_pbpk
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiandaca_2025_mRNABiTE
