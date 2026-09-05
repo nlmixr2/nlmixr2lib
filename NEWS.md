@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nakashima 2015 valproic acid seizure-control exposure-response models ([doi:10.1371/journal.pone.0141266](https://doi.org/10.1371/journal.pone.0141266)) -- Japanese children and adults with epilepsy.
+- Add Ogusu 2014 valproic acid ([doi:10.1371/journal.pone.0111066](https://doi.org/10.1371/journal.pone.0111066)) -- Japanese patients with epilepsy, aged 2 to 52 years.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
