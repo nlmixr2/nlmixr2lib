@@ -1600,6 +1600,8 @@ navbar:
         href: articles/vandenBerg_2025_genericMab.html
       - text: "Gentamicin (Abbasi 2023)"
         href: articles/Abbasi_2023_gentamicin.html
+      - text: "Gentamicin (AbouAuda 2024)"
+        href: articles/AbouAuda_2024_gentamicin.html
       - text: "Gentamicin (Bijleveld 2016)"
         href: articles/Bijleveld_2016_gentamicin.html
       - text: "Gentamicin (Bijleveld 2017)"
@@ -4343,6 +4345,7 @@ articles:
   - articles/AbdulAziz_2016_doripenem
   - articles/Abduljalil_2009_clarithromycin
   - articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi
+  - articles/AbouAuda_2024_gentamicin
   - articles/Abouelhassan_2024_sulbactam_elf_pneumonia
   - articles/Abrantes_2017_moroctocog
   - articles/Abuhelwa_2015_itraconazole
