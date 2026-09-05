@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hu 2024 nivolumab and ipilimumab ([doi:10.1002/psp4.13098](https://doi.org/10.1002/psp4.13098)) -- pooled adult and pediatric (1-17 years) oncology patients.
+- Add Kim 2024 teicoplanin ([doi:10.3390/pharmaceutics16040499](https://doi.org/10.3390/pharmaceutics16040499)) -- healthy Korean adults with normal renal function.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

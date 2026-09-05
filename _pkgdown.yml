@@ -3882,8 +3882,8 @@ navbar:
         href: articles/ButraguenoLaiseca_2025_teicoplanin.html
       - text: "Teicoplanin (Chen 2023)"
         href: articles/Chen_2023_teicoplanin.html
-      - text: "Teicoplanin (Wang 2023)"
-        href: articles/Wang_2023_teicoplanin.html
+      - text: "Teicoplanin (Kim 2024)"
+        href: articles/Kim_2024_teicoplanin.html
       - text: "Teicoplanin (Wi 2017)"
         href: articles/Wi_2017_teicoplanin.html
       - text: "Teicoplanin (Zhao 2015)"
@@ -5338,6 +5338,7 @@ articles:
   - articles/Kim_2018_tacrolimus
   - articles/Kim_2023_pyrazinamide
   - articles/Kim_2024_meropenem
+  - articles/Kim_2024_teicoplanin
   - articles/Kim_2025_evogliptin
   - articles/Kim_2025_infliximab
   - articles/Kim_2026_midazolam
