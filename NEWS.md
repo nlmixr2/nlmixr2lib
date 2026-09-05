@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Altcheh 2023 benznidazole ([doi:10.1371/journal.pntd.0010850](https://doi.org/10.1371/journal.pntd.0010850)) -- neonates, infants and children with Chagas disease.
+- Add Chala 2023 efavirenz ([doi:10.1002/psp4.12951](https://doi.org/10.1002/psp4.12951)) -- antiretroviral-naive HIV-1-infected Ethiopian children aged 3-16 years.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
