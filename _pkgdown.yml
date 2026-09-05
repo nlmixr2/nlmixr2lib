@@ -3862,6 +3862,8 @@ navbar:
         href: articles/SoriaChacartegui_2026_tramadol.html
       - text: "Tramadol tapentadol mbma (Mercier 2014)"
         href: articles/Mercier_2014_tramadol_tapentadol.html
+      - text: "Trametinib (Ravix 2024)"
+        href: articles/Ravix_2024_trametinib.html
       - text: "TranexamicAcid (Dunn 2025)"
         href: articles/Dunn_2025_tranexamicAcid.html
       - text: "TranexamicAcid (Nakai 2025)"
@@ -5501,6 +5503,7 @@ articles:
   - articles/Ramharter_2019_mefloquine
   - articles/Randell_2024_metronidazole
   - articles/Rao_2023_covid19_qsp
+  - articles/Ravix_2024_trametinib
   - articles/Ravva_2009_varenicline
   - articles/Ravva_2010_varenicline_exposure_response
   - articles/Rayner_2013_oseltamivir_exposure_response
