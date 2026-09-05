@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bihorel 2023 molnupiravir ([doi:10.1002/psp4.13031](https://doi.org/10.1002/psp4.13031)) -- healthy adults and adults with COVID-19.
+- Add Fimbo 2023 ivermectin ([doi:10.1002/psp4.13038](https://doi.org/10.1002/psp4.13038)) -- children and adults dosed during a lymphatic filariasis mass drug administration campaign in Tanzania.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
