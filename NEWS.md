@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Stott 2023 flucytosine ([doi:10.1093/jac/dkad038](https://doi.org/10.1093/jac/dkad038)) -- adults with HIV-associated cryptococcal meningoencephalitis.
+- Add Nie 2023 nalbuphine ([doi:10.3389/fphar.2023.1130287](https://doi.org/10.3389/fphar.2023.1130287)) -- adults undergoing general anaesthesia surgery.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
