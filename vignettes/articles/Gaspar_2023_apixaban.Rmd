@@ -389,6 +389,10 @@ pm_um <- typ_cmin |>
 
 knitr::kable(
   rise |>
+    # Drop `ref` before pivoting: it varies by phenotype, so leaving it in
+    # makes pivot_wider treat each (stage, phenotype) as its own row and the
+    # table renders one value per row with NAs everywhere else.
+    select(-ref) |>
     tidyr::pivot_wider(names_from = pgp, values_from = c(cmin, pct_vs_stage1)) |>
     select(ckd, cmin_PM, cmin_NM, cmin_UM,
            pct_vs_stage1_PM, pct_vs_stage1_NM, pct_vs_stage1_UM) |>
