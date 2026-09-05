@@ -41,7 +41,18 @@ could not be identified from the sparse design and were fixed.
 # Population
 
 ```{r population, echo = FALSE}
-pop <- readModelDb("Chala_2023_efavirenz")()$population
+# `readModelDb()` returns the model *function*, so the population metadata is
+# reached through the parsed ui built above, not by calling the function.
+pop <- ui$population
+
+# The paragraphs below are hand-written, so assert the numbers they quote
+# against the model's own metadata; the two cannot drift apart silently.
+stopifnot(
+  identical(pop$species, "human"),
+  pop$n_subjects == 100,
+  pop$n_studies == 1,
+  pop$sex_female_pct == 42
+)
 ```
 
 One hundred combination-antiretroviral-therapy-naive children aged 3-16 years
@@ -64,7 +75,7 @@ dose (9 repeated at week 8), and 87 children gave a single mid-dose sample
 `ka` and two of the three IIV terms are fixed rather than estimated.
 
 The same information is available programmatically via
-`readModelDb("Chala_2023_efavirenz")()$population`.
+`rxode2::rxode(readModelDb("Chala_2023_efavirenz"))$population`.
 
 # Source trace
 
@@ -372,7 +383,11 @@ events <- bind_rows(dose_rows, obs_rows) |>
   arrange(id, time, desc(evid)) |>
   as.data.frame()
 
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+# No id/time/evid record is repeated. Note the deliberate absence of `unique()`
+# here: de-duplicating first would make the check vacuously true. The 312 h row
+# appears twice by design (the last dose and the first observation of the
+# window), which the `evid` column keeps distinct.
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 ```
 
 # Simulation
