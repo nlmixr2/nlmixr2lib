@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bhatnagar 2024 upadacitinib population PK and ASAS20/ASAS40 exposure-response models ([doi:10.1111/cts.13733](https://doi.org/10.1111/cts.13733)) -- adults with axial spondyloarthritis.
+- Add Zhang 2024 olanzapine ([doi:10.2147/NDT.S455183](https://doi.org/10.2147/NDT.S455183)) -- adult inpatients with schizophrenia on routine therapeutic drug monitoring.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

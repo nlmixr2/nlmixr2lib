@@ -2766,6 +2766,8 @@ navbar:
         href: articles/Yu_2022_ofatumumab.html
       - text: "Ofloxacin (Chigutsa 2012)"
         href: articles/Chigutsa_2012_ofloxacin.html
+      - text: "Olanzapine (Zhang 2024)"
+        href: articles/Zhang_2024_olanzapine.html
       - text: "Olanzapine lai (Perlstein 2026)"
         href: articles/Perlstein_2026_olanzapine.html
       - text: "Olanzapine oral (Perlstein 2026)"
@@ -6342,6 +6344,7 @@ articles:
   - articles/Zhang_2023_valproic_acid_protein_binding
   - articles/Zhang_2024_f53b_pbpk
   - articles/Zhang_2024_nedosiran
+  - articles/Zhang_2024_olanzapine
   - articles/Zhang_2024_sertraline
   - articles/Zhang_2024_tucatinib
   - articles/Zhang_2024_valproic_acid
