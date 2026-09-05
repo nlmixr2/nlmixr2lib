@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Pitsiu 2023 atacicept ([doi:10.1002/psp4.12982](https://doi.org/10.1002/psp4.12982)) -- healthy volunteers and adults with systemic lupus erythematosus.
+- Add Kim 2023 camostat mesylate ([doi:10.3390/pharmaceutics15092357](https://doi.org/10.3390/pharmaceutics15092357)) -- healthy Korean adult men.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
