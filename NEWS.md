@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Park 2023 everolimus ([doi:10.3389/fphar.2023.1197549](https://doi.org/10.3389/fphar.2023.1197549)) -- children and adults with refractory seizures associated with focal cortical dysplasia type II.
+- Add Bihorel 2023 molnupiravir ([doi:10.1002/psp4.13031](https://doi.org/10.1002/psp4.13031)) -- healthy adults and adults with COVID-19.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
