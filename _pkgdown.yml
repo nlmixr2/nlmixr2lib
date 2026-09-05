@@ -664,6 +664,10 @@ navbar:
         href: articles/Valadez_2025_cefepime.html
       - text: "Cefepime (Zhao 2020)"
         href: articles/Gotta_2025_cefepime_infant_neurotoxicity.html
+      - text: "Cefepime (deCacqueray 2022)"
+        href: articles/Gotta_2025_cefepime_infant_neurotoxicity.html
+      - text: "Cefepime enmetazobactam (Vollmer 2023)"
+        href: articles/Vollmer_2023_cefepime_enmetazobactam.html
       - text: "Cefepime qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Cefiderocol (Zhang 2025)"
@@ -6086,7 +6090,7 @@ articles:
   - articles/Vinnard_2017_rifampicin
   - articles/Visscher_2025_parathyroidHormone
   - articles/Voller_2017_phenobarbital
-  - articles/vonHentig_2009_saquinavir
+  - articles/Vollmer_2023_cefepime_enmetazobactam
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
   - articles/Vucicevic_2025_efavirenz

@@ -4685,6 +4685,16 @@ canonical names; the co-analyte carries the suffix throughout.
   - `Sulaiman_2026_piperacillin_tazobactam.R` (doi:10.1093/jac/dkag199), joint one-compartment model in critically ill adults with sepsis or septic shock.
 - **Notes:** `Kong_2025_piperacillin_tazobactam.R` had been using this suffix since its own extraction without a register entry, so registering it also clears that model's pre-existing `central_taz` / `peripheral1_taz` / `propSd_taz` / `addSd_taz` convention warnings -- the same situation `sbt` was in before the Cammarata 2024 extraction. Tazobactam is a sibling drug, not a metabolite: it is co-formulated with piperacillin in a fixed 8:1 ratio, dosed into its own central compartment, and fitted alongside piperacillin without interconversion.
 
+### enm (**canonical enmetazobactam sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Enmetazobactam (beta-lactamase-inhibitor penicillanic acid sulfone, the N-methylated analogue of tazobactam) sibling-drug suffix, used when enmetazobactam is co-modelled with its fixed-ratio partner cefepime and cefepime is the unsuffixed parent. Drives `central_enm` / `peripheral1_enm` compartments, `lcl_enm` / `lvc_enm` / `lq_enm` / `lvp_enm` PK parameters, the `e_<cov>_<param>_enm` covariate-effect forms (e.g. `e_crcl_cl_enm`, `e_cuti_vc_enm`), and the `propSd_enm` / `addSd_enm` residuals on the `Cc_enm` enmetazobactam plasma concentration.
+- **Source aliases:**
+  - `ENM` -- abbreviation used throughout the IDWeek 2023 abstract and the FDA NDA 216165 Integrated Review Table 101 parameter names (`Cl_ENM`, `V1_ENM`, `omega_ENM,CL_infected`, `beta_ENM,V1_INFECTION_cUTI`).
+  - `AAI101` -- Allecra development code for enmetazobactam, used in the study identifiers (`AAI101-PK-21-01`) and study numbering (AT-101 ... AT-301).
+- **Example models:**
+  - `Vollmer_2023_cefepime_enmetazobactam.R` (doi:10.1093/ofid/ofad500.2147), joint two-compartment-per-drug model pooled across Phase 1 to Phase 3, where cefepime is the unsuffixed parent.
+- **Notes:** Directly parallel to `taz`, and registered for the same reason: enmetazobactam is a sibling drug, not a metabolite -- it is co-formulated with cefepime in a fixed 4:1 mass ratio (EXBLIFEP, 2 g cefepime / 0.5 g enmetazobactam), dosed into its own central compartment, and fitted simultaneously with cefepime without interconversion. Do NOT reuse `taz`: enmetazobactam and tazobactam are distinct molecules with distinct clearances, and a model pairing cefepime with either one must name which inhibitor it carries.
+
 ### sdz (**canonical sulfadiazine sibling-drug suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Sulfadiazine (short-acting sulfonamide) sibling-drug suffix, used when sulfadiazine is co-modelled with trimethoprim in the licensed 1:5 TMP:sulfonamide veterinary combinations and trimethoprim is the unsuffixed parent. Drives `depot_sdz` / `depot2_sdz` / `central_sdz` / `peripheral1_sdz` compartments, the `lka_sdz` / `lka2_sdz` / `lfdepot_sdz` / `lfdepot2_sdz` / `lcl_sdz` / `lvc_sdz` / `lq_sdz` / `lvp_sdz` PK parameters, the `e_wt_cl_sdz` / `e_wt_vc_sdz` covariate effects, and the `expSd_sdz` residual on the `Cc_sdz` plasma concentration.
