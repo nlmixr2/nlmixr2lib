@@ -8076,6 +8076,17 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Rosario_2015_vedolizumab.R` (power-form on CLL: `CLL * 1.02^CONMED_AMINO`).
 - **Notes:** Covers the full aminosalicylate class (5-ASA is the single active moiety shared by most agents); use `CONMED_AMINO` rather than `CONMED_5ASA` unless the source paper explicitly restricts the indicator to 5-ASA monotherapy.
 
+### CONMED_ARIPIPRAZOLE (**canonical for concomitant aripiprazole coadministration indicator**)
+- **Description:** 1 = subject is co-prescribed aripiprazole (second-generation antipsychotic; CYP2D6 and CYP3A4 substrate, and a competitive inhibitor of CYP2D6 at clinical concentrations) at the PK observation, 0 = no concomitant aripiprazole. Time-fixed at the analysis baseline in the founding source, which draws comedication status from a retrospective medical log; time-varying encoding is appropriate wherever aripiprazole start / stop events are captured.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant aripiprazole).
+- **Source aliases:**
+  - `ARI` -- used in `Zhang_2024_olanzapine.R` (Zhang 2024 Equation 6: "ARI was aripiprazole, when patients took aripiprazole, ARI was 1, otherwise ARI was 0"; same 0/1 orientation).
+- **Example models:** `Zhang_2024_olanzapine.R` (linear-shift effect on apparent oral clearance: `cl *= (1 + e_ari_cl * CONMED_ARIPIPRAZOLE)` with `e_ari_cl = -0.392`, i.e. concomitant aripiprazole lowers olanzapine CL/F by 39.2%, equivalently a with:without clearance ratio of 0.608:1 as stated in the Discussion and plotted in Figure 1H; founding example).
+- **Notes:** Aripiprazole appears in the popPK literature on both sides of the DDI -- as the victim drug (`Knights_2015_aripiprazole.R`, `Koue_2007_aripiprazole.R`, `Kim_2008_aripiprazole.R`, where CYP2D6 phenotype is the covariate on aripiprazole's own clearance, encoded via `CYP2D6_PM`) and, here, as the perpetrator on a co-prescribed CYP2D6 substrate. Use `CONMED_ARIPIPRAZOLE` only for the perpetrator role; a model of aripiprazole itself does not need a covariate for the drug being modelled. Distinct from `CYP2D6_PM`: the comedication indicator captures a phenoconversion-like exposure shift in patients of unrecorded genotype, whereas `CYP2D6_PM` captures the germline poor-metaboliser phenotype, and a study measuring both should carry both columns. Specific scope until a second model registers aripiprazole as a covariate; promote to `general` once that happens. Zhang 2024's cohort prevalence was 4 of 65 patients (6.2%, Table 2), so the -0.392 estimate rests on a small exposed subgroup -- its bootstrap 95% interval [-0.535, -0.194] is correspondingly wide and should be quoted alongside the point estimate.
+
 ### CONMED_AVD (**canonical for brentuximab vedotin + AVD (adriamycin/doxorubicin, vinblastine, dacarbazine) combination indicator**)
 - **Description:** 1 = subject is receiving brentuximab vedotin in combination with the AVD chemotherapy backbone (adriamycin a.k.a. doxorubicin, vinblastine, dacarbazine) for newly diagnosed advanced-stage Hodgkin lymphoma; 0 = otherwise (single-agent brentuximab vedotin). Encodes the A+AVD frontline regimen as a study-design covariate on ADC clearance.
 - **Units:** (binary)
