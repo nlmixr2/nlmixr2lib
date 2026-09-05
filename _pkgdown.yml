@@ -574,6 +574,8 @@ navbar:
         href: articles/Dings_2026_cafedrine_theodrenaline_ephedrine.html
       - text: "Camizestrant (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
+      - text: "Canagliflozin mbma (Yao 2023)"
+        href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Canakinumab (AitOudhia 2012)"
         href: articles/AitOudhia_2012_canakinumab.html
       - text: "Canakinumab (Chakraborty 2012)"
@@ -910,6 +912,8 @@ navbar:
         href: articles/Kobuchi_2025_dapagliflozin.html
       - text: "Dapagliflozin (vanderWalt 2013)"
         href: articles/vanderWalt_2013_dapagliflozin.html
+      - text: "Dapagliflozin mbma (Yao 2023)"
+        href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Dapagliflozin pbpk (Nemitz 2026)"
         href: articles/Nemitz_2026_dapagliflozin_pbpk.html
       - text: "Dapsone (Gatti 1996)"
@@ -1226,6 +1230,8 @@ navbar:
         href: articles/Riggs_2014_empagliflozin.html
       - text: "Empagliflozin MEASE1 (Johnston 2021)"
         href: articles/Johnston_2021_empagliflozin.html
+      - text: "Empagliflozin mbma (Yao 2023)"
+        href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Empagliflozin popPK (Johnston 2021)"
         href: articles/Johnston_2021_empagliflozin.html
       - text: "Empagliflozin t1dm (Mondick 2018)"
@@ -3516,14 +3522,8 @@ navbar:
         href: articles/Shin_2014_sevoflurane.html
       - text: "Sglt qsp (Lu 2014)"
         href: articles/Lu_2014_sglt_qsp.html
-      - text: "SHetA2 dog (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
-      - text: "SHetA2 human (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
-      - text: "SHetA2 mouse (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
-      - text: "SHetA2 rat (Sharma 2018)"
-        href: articles/Sharma_2018_SHetA2.html
+      - text: "Sglt2 endpoints mbma (Yao 2023)"
+        href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "ShikimicAcid pig iv (Mo 2024)"
         href: articles/Mo_2024_shikimicAcid.html
       - text: "ShikimicAcid pig oral (Mo 2024)"
@@ -6114,6 +6114,7 @@ articles:
   - articles/Yang_2026_lurasidone
   - articles/Yano_1993_theophylline
   - articles/Yao_2018_guselkumab
+  - articles/Yao_2023_sglt2_inhibitors
   - articles/Yao_2025_flurbiprofen
   - articles/Yassen_2025_asundexian
   - articles/Yates_2023_dose_response_shape

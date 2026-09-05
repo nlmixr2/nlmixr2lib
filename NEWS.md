@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hughes 2022 brepocitinib ([doi:10.1002/cpdd.1163](https://doi.org/10.1002/cpdd.1163)) -- healthy volunteers and patients with plaque psoriasis or alopecia areata.
+- Add Yao 2023 SGLT2-inhibitor model-based meta-analysis ([doi:10.1002/psp4.12934](https://doi.org/10.1002/psp4.12934)) -- healthy subjects and adults with type 2 diabetes; population PK for dapagliflozin, canagliflozin and empagliflozin plus a class-level exposure/urinary-glucose-excretion/FPG/HbA1c endpoint model.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
