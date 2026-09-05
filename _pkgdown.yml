@@ -4320,6 +4320,8 @@ navbar:
         href: articles/Moore_2016_vancomycin.html
       - text: "Vancomycin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Vancomycin (Polaskova 2024)"
+        href: articles/Polaskova_2024_vancomycin.html
       - text: "Vancomycin (Revilla 2010)"
         href: articles/Revilla_2010_vancomycin.html
       - text: "Vancomycin (Roberts 2011)"
@@ -5872,6 +5874,7 @@ articles:
   - articles/Plock_2014_ferumoxytol
   - articles/Poels_2025_elranatamab
   - articles/Pohl_2022_linzagolix
+  - articles/Polaskova_2024_vancomycin
   - articles/Polito_2016_fludrocortisone
   - articles/Pouzin_2022_tusamitamab
   - articles/Press_2010_ciclosporin

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rietveld 2024 intraperitoneal irinotecan and SN-38 ([doi:10.1002/psp4.13136](https://doi.org/10.1002/psp4.13136)) -- adults with peritoneal metastases from colorectal cancer.
+- Add Polaskova 2024 vancomycin ([doi:10.3389/fphar.2024.1364681](https://doi.org/10.3389/fphar.2024.1364681)) -- adult obese inpatients during the first 3 days of therapy.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
