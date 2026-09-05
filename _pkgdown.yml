@@ -2160,8 +2160,12 @@ navbar:
         href: articles/VasquezBahena_2009_lumiracoxib_rat.html
       - text: "Lumiracoxib rat (VelezdeMendizabal 2012)"
         href: articles/VelezdeMendizabal_2012_lumiracoxib_rat.html
-      - text: "Lurasidone (Yang 2026)"
-        href: articles/Yang_2026_lurasidone.html
+      - text: "Lung pbpk ethambutol (Gaohua 2015)"
+        href: articles/Gaohua_2015_lung_pbpk.html
+      - text: "Lung pbpk isoniazid (Gaohua 2015)"
+        href: articles/Gaohua_2015_lung_pbpk.html
+      - text: "Lung pbpk pyrazinamide (Gaohua 2015)"
+        href: articles/Gaohua_2015_lung_pbpk.html
       - text: "Luspatercept (Chen 2020)"
         href: articles/Chen_2020_luspatercept.html
       - text: "M3g rat (Xie 2000)"
@@ -4819,6 +4823,7 @@ articles:
   - articles/Gao_2012_exenatide
   - articles/Gao_2025_cefquinome
   - articles/Gaohua_2012_pregnancy_pbpk
+  - articles/Gaohua_2015_lung_pbpk
   - articles/Gaohua_2023_permeabilityLimited_pbpk
   - articles/Garcia_2025_garadacimab
   - articles/Garg_2014_pertuzumab

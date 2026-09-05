@@ -2,7 +2,11 @@
 
 # development version
 
-- Add Patel 2015 oseltamivir ([doi:10.1111/bcp.12526](https://doi.org/10.1111/bcp.12526)) — adults with end-stage renal disease on automated peritoneal dialysis.
+- Add Gaohua 2015 isoniazid, ethambutol and pyrazinamide permeability-limited
+  lung PBPK models
+  ([doi:10.1002/psp4.12034](https://doi.org/10.1002/psp4.12034)) -- virtual
+  healthy adults. First regional lung / epithelial-lining-fluid model in the
+  library.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report
