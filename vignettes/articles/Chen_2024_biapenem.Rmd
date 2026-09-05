@@ -105,9 +105,10 @@ c(V1_plus_V2 = unname(v_total))
 
 # Errata and adjudications {#errata-and-adjudications}
 
-Three points in the paper required adjudication before the values above could be
-encoded. Each is recorded here with the evidence, because two of them change a
-number and the third is unresolved.
+Four points in the paper required adjudication. Each is recorded here with the
+evidence: the first changes a number, the second is an unresolved reading of
+the variance components, the third is a discrepancy against the paper's own
+simulations, and the fourth is a scope ruling on the paper's second analysis.
 
 ## 1. The in-text CL equation has lost a zero (resolved)
 
@@ -123,6 +124,12 @@ independent ways:
 crcl_grid <- c(3.5, 25, 56.5, 78.2, 150, 295.5)   # spans the observed range
 cl_table <- 8.33 * (1 + 0.0046 * (crcl_grid - 78.2))   # Table 2
 cl_text  <- 8.33 * (1 + 0.046  * (crcl_grid - 78.2))   # in-text equation
+
+# The packaged model must carry the Table 2 coefficient, not the in-text one.
+# Asserted against `mod` so this goes red if the model file is ever changed;
+# comparing the two literals to each other could not fail.
+stopifnot(isTRUE(all.equal(unname(mod$theta[["e_crcl_cl"]]), 0.0046,
+                           tolerance = 1e-12)))
 
 data.frame(CRCL = crcl_grid, CL_Table2 = cl_table, CL_intext = cl_text) |>
   dplyr::rename("CLCr (mL/min)" = CRCL,
@@ -212,6 +219,38 @@ near-zero exposure, which this parameter table does not generate.
 The [target attainment](#target-attainment) section below reproduces the
 analysis and quantifies the gap rather than tuning to it. **No parameter was
 adjusted to match the published curves.**
+
+## 4. The clinical-outcome logistic regression is not packaged as a model (scope ruling)
+
+Chen 2024 Table 5 reports a multivariable logistic regression of clinical
+success on two predictors: attainment of 70% *f*T>MIC (OR 7.07, 95% CI
+2.45-20.37) and hypoalbuminemia (OR 0.33, 95% CI 0.12-0.91). That is the
+paper's second analysis, and the standing policy is to extract every reported
+sub-model -- so its exclusion is a ruling, not an oversight.
+
+It is not packaged because it fails both tests that separate a fitted
+exposure-response model from a risk-factor association:
+
+* **Its exposure axis is a binary in-range indicator, not continuous
+  exposure.** The regressor is `70% fT>MIC achieved: yes/no`, already
+  dichotomised against the very threshold the analysis is meant to justify.
+  A packaged E-R model needs exposure entering as a continuous quantity
+  (`AUC`, `Cavg`, `Cmax`) so that the fitted model can map a simulated
+  exposure onto a probability. This one cannot: given a simulated profile it
+  can only re-consume the same yes/no flag.
+* **No intercept is published**, and it cannot be recovered. The reference
+  cell would need the joint distribution of the two predictors, but the
+  hypoalbuminemia marginal is never reported -- Table 4 gives albumin as a
+  mean +/- SD (30.00 +/- 3.54 success, 28.13 +/- 3.39 failure) with no
+  dichotomising threshold and no counts. Without an intercept the regression
+  yields odds ratios only, never an absolute probability.
+
+The odds ratios are also *not* reproducible from Table 4's counts, which
+confirms a genuine multivariable fit was run (the crude
+70% *f*T>MIC odds ratio from the 96/125 and 31/86 cell counts is 5.87 against
+the adjusted 7.07) -- the analysis is real, it is simply not a form that can
+be packaged as a predictive model. It is recorded here so a future reader does
+not re-derive the question.
 
 ## Other notes
 
@@ -448,7 +487,15 @@ stopifnot(
 # Chen 2024 Discussion: "the mean CL of BPM in patients with sepsis was
 # 8.33 L/h for CLCr of 78.2 mL/min", and compares against Ikawa 2008
 # (8.13 L/h at CLCr 77.5 mL/min).
-tv_cl <- function(crcl) 8.33 * (1 + 0.0046 * (crcl - 78.2))
+#
+# Built from the PACKAGED model's parameters, not from literals: a gate whose
+# both sides are hardcoded constants can never go red, so it would silently
+# pass even if the model file were mis-transcribed. Only the centering value
+# 78.2 is a literal, because it is a structural constant of the covariate
+# equation rather than an estimated parameter.
+tv_cl <- function(crcl) {
+  exp(mod$theta[["lcl"]]) * (1 + mod$theta[["e_crcl_cl"]] * (crcl - 78.2))
+}
 
 chk <- data.frame(
   Source = c("Chen 2024 (this model)", "Ikawa 2008 (cited comparator)"),
@@ -587,6 +634,9 @@ stopifnot(get_pta("600 mg q6h", 1) >= 75)
   published curves.
 * **Total rather than unbound concentration is used for *f*T>MIC.** Biapenem's
   unbound fraction is not reported anywhere in the paper or supplement.
+* **The Table 5 clinical-outcome logistic regression is not packaged.** Its
+  exposure axis is a binary in-range indicator rather than continuous exposure,
+  and no intercept is published or recoverable. Reasoning in Errata item 4.
 * **Covariate distributions are reconstructed, not observed.** CLCr and BUN are
   drawn log-normally to match the published median and mean and truncated to the
   published range; the true joint distribution (and any CLCr-BUN correlation,
