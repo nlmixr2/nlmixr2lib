@@ -2,11 +2,7 @@
 
 # development version
 
-- Add Jung 2023 fractal-kinetics models ([doi:10.3390/pharmaceutics15010304](https://doi.org/10.3390/pharmaceutics15010304)) -- five re-estimated population PK models: donepezil single- and multiple-dose, an undisclosed intramuscular depot, HL2351 and anakinra, in healthy adult volunteers.
-
-- Fix `Ngo_2020_HL2351`, which declared `d/dt(peripheral1)` twice and therefore built 3 ODE states instead of the published 4. The FcRn absorption/distribution space was silently dropped, so the model returned zero concentration at every time point. The space now uses the new `abs_site` canonical compartment.
-
-- Add a test that fails when any model declares the same `d/dt(<state>)` more than once, a defect that otherwise builds fewer ODE states than published without any error or warning.
+- Add Campbell 2023 manganese monkey and human PBPK ([doi:10.1093/toxsci/kfac123](https://doi.org/10.1093/toxsci/kfac123)) -- healthy monkeys and adult humans.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
