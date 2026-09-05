@@ -2916,6 +2916,10 @@ navbar:
         href: articles/Wu_2025_paracetamol.html
       - text: "Paracetamol (Zhao 2025)"
         href: articles/Zhao_2025_paracetamol.html
+      - text: "Paracetamol dog (Gasthuys 2023)"
+        href: articles/Gasthuys_2023_paracetamol.html
+      - text: "Paracetamol human (Gasthuys 2023)"
+        href: articles/Gasthuys_2023_paracetamol.html
       - text: "ParathyroidHormone (Visscher 2025)"
         href: articles/Visscher_2025_parathyroidHormone.html
       - text: "Paritaprevir (Mensing 2017)"
@@ -5036,6 +5040,7 @@ articles:
   - articles/Garot_2011_ceftriaxone
   - articles/Garrett_2014_axitinib
   - articles/Gaspar_2025_fexofenadine
+  - articles/Gasthuys_2023_paracetamol
   - articles/Gastonguay_2005_efaproxiral
   - articles/Gatti_1996_dapsone
   - articles/Gebhard_2023_leukemia_maintenance_therapy

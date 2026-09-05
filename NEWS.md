@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ahmed 2024 vancomycin ([doi:10.2147/DDDT.S432439](https://doi.org/10.2147/DDDT.S432439)) -- Sudanese adult inpatients with renal impairment.
+- Add Gasthuys 2023 paracetamol ([doi:10.3390/ph17010053](https://doi.org/10.3390/ph17010053)) — healthy adult beagle dogs and healthy adult men, as two models.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
