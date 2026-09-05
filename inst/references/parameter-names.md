@@ -1662,6 +1662,48 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Saporta_2026_meropenem.R` (`VL2 = 9.27 L/kg`, RSE 26%; an apparent volume, because the lung limb is driven by plasma without mass transfer so the whole limb absorbs the unknown partitioning).
 - **Notes:** Auto-approved 2026-09-01 as a well-formed member of the documented `lv_<compartment>` family founded by `lv_elf`, alongside the Saporta 2026 meropenem extraction (operator sidecar `oare_PMC13041408` request-001, "COMPARTMENT NAMES NEED NO SIDECAR" paragraph). Pairs with `lq_elf_lung`. Distinct from the `kp_lung` / `lkp_lung` tissue-to-plasma partition coefficients, which are whole-body-PBPK partitioning constants rather than a fitted compartment volume.
 
+### lq_kidney (**canonical log-transformed central-to-kidney inter-compartmental flow**)
+- **Type:** log-transformed-pk
+- **Role:** Blood (or plasma) flow perfusing a `kidney` compartment, applied as a bidirectional inter-compartmental clearance between `central` and `kidney` (volume / time). Third member of the `lq_<destination>` family founded by `lq_milk` and continued by `lq_elf`, for the same reason those exist: the bare `lq` / `lq2` mean exchange with `peripheral1` / `peripheral2` specifically, so a perfused organ compartment needs its own destination token. The bare form `q_kidney` is used inside `model()`. In a flow-limited organ the same `q_kidney` appears with opposite sign on both sides (`q_kidney * Cc` leaving central, `q_kidney * Ck` returning), so the organ is effectively well-stirred with a partition coefficient of 1 unless the model states otherwise.
+- **Source aliases:** `QR` -- Felmlee 2010 Table I ("Renal blood flow") and eqs. (1), (5).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`QR = 12.5 mL/min`, fixed to the rat physiological value; Table I footnote a).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Distinct from every `lcl_<arm>` name (`lcl_renal`, `lcl_nonren`, ...), which are additive arms of the CENTRAL clearance rather than a flow into a separate organ compartment; reading a perfusion flow as a clearance arm would delete the organ compartment entirely. Other perfused organs should take the same `lq_<organ>` shape.
+
+### lv_kidney (**canonical log-transformed kidney compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of a `kidney` compartment in a hybrid-physiological (semi-PBPK) model (volume). Second member of the `lv_<space>` family founded by `lv_elf`, for the reason given there: the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a named organ is not a numbered peripheral compartment. The bare form `v_kidney` is used inside `model()`, and the organ concentration is `kidney / v_kidney`.
+- **Source aliases:** `Vkidney` -- Felmlee 2010 Table I ("Kidney volume") and eqs. (5), (6).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`Vkidney = 4.0 mL`, fixed to the rat physiological value; Table I footnote a).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Paired with `lq_kidney` in the founding example but independent of it -- a model may carry a kidney volume without an explicit perfusion flow, or vice versa.
+
+### lgfr, gfr (**canonical glomerular filtration rate**)
+- **Type:** log-transformed-pk
+- **Role:** Glomerular filtration rate as a physiologic volumetric flow OUT of a kidney compartment and INTO a renal ultrafiltrate / tubular compartment (volume / time). It is deliberately NOT `cl_renal`: `lcl_renal` is an additive arm of the CENTRAL clearance that lumps filtration, secretion and reabsorption into one net number applied to plasma, whereas `gfr` is the filtration step alone, applied to the kidney compartment concentration, with reabsorption represented explicitly as a separate returning flux. The registered `lcl_tsnet` entry already presumes this parameter exists ("the filtration arm is carried by the model's glomerular-filtration parameter"). The bare form `gfr` is used inside `model()`.
+- **Source aliases:** `GFR` -- Felmlee 2010 Table I ("Glomerular filtration rate") and eqs. (5), (6).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`GFR = 10 mL/min/kg`, entering as `gfr <- exp(lgfr) * WT`; the only weight-scaled term in that model).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Physiology tables report GFR per unit body weight, so a source value is usually per-kg even when every other flow in the same table is an absolute per-animal value -- check the units column before wiring it in, and scale by `WT` inside `model()` rather than baking a body weight into the `ini()` value.
+
+### luf, uf (**canonical urine flow through the renal tubule**)
+- **Type:** log-transformed-pk
+- **Role:** Volumetric flow of ultrafiltrate along the renal tubule (volume / time), carrying drug by convection from one ultrafiltrate compartment to the next and finally into a cumulative `urine` compartment. The bare form `uf` is used inside `model()`.
+- **Source aliases:** `UF` -- Felmlee 2010 Table I ("Urine flow") and eqs. (6), (7), (8).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`UF = 0.1 mL/min`, fixed to the rat physiological value with an estimated 114% CV between-subject variability; Table I footnote a).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A, in preference to widening the registered `lurprod` / `urprod`). Kept distinct from `urprod` deliberately: `urprod` is scoped to an ESTIMATED zero-order rate of urine production that integrates the canonical `urine_vol` volume state, whereas `uf` is a FIXED physiological flow that moves drug mass between tubular compartments and never integrates a volume. The two are the same physical dimension and could be numerically equal in a given paper, but they occupy different structural roles, and the register's standing warning against giving one name two meanings applies.
+
+### lvmax_reab, vmax_reab (**canonical maximum rate of saturable renal tubular reabsorption**)
+- **Type:** log-transformed-pk
+- **Role:** Michaelis-Menten maximum rate for active (transporter-mediated) reabsorption of drug out of a renal ultrafiltrate compartment and back into the kidney (mass / time). Paired with `lkm_reab`; both are meaningless alone. Follows the documented `vmax_<process>` / `km_<process>` disambiguation pattern (`vmax_pah`, `km_pah`, `vmax_trans`, `km_trans`, and the registered `lvmax_rbc` / `lkm_rbc` pair), and is required whenever the bare `lvmax` / `lkm` are already taken by a metabolic arm in the same model.
+- **Source aliases:** `Vmax,R` -- Felmlee 2010 Table I ("Maximum renal reabsorption rate") and eqs. (4), (11)-(13).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`Vmax,R = 2.34 mg/min`, estimated; the reabsorption flux is `vmax_reab * Culf1 / (km_reab + Culf1)`).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Note the encoding convention in the founding example: the source paper defines a quantity it calls "Reabsorption" that is `Vmax,R / (Km,R + Culf1)` -- a CLEARANCE -- and then multiplies it by `Culf1` in the differential equations, so the mass flux is the usual Michaelis-Menten form.
+
+### lkm_reab, km_reab (**canonical Michaelis constant for saturable renal tubular reabsorption**)
+- **Type:** log-transformed-pk
+- **Role:** Michaelis-Menten constant (concentration at half-maximal rate) for active reabsorption of drug out of a renal ultrafiltrate compartment, expressed as a concentration in that compartment. Paired with `lvmax_reab`; both are meaningless alone.
+- **Source aliases:** `Km,R` -- Felmlee 2010 Table I ("Renal reabsorption Michaelis-Menten constant") and eqs. (4), (11)-(13).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`Km,R = 0.46 mg/mL`, estimated; the paper notes it agrees with the in-vitro MCT1 uptake `Km` of 0.48 mg/mL).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). A transport `Km` for reabsorption is generally far away from a metabolic `km` for the same drug -- in the founding example the reabsorption `km_reab` of 0.46 mg/mL sits against a metabolic `km` of 0.054 mg/mL in the same model, an eightfold separation -- so never fold them into one name. The reabsorption value is the transporter-affinity one: Felmlee 2010 Discussion places it inside the in-vitro MCT-isoform range of 0.48-1.9 mg/mL and notes that SMCT1, which also carries GHB in the proximal tubule, has a higher affinity still (0.17 and 0.07 mg/mL), close enough that the two transport processes are not separable in vivo.
+
 ### logitfdepot (**canonical logit-transformed depot fraction**)
 - **Type:** log-transformed-pk
 - **Role:** Logit-scale encoding of the fraction of a dose that reaches the depot compartment -- the same quantity as `lfdepot`, held on the logit scale so that it is bounded in (0, 1) regardless of the covariate and eta combination. Inside `model` the bare form is `f = exp(phi) / (1 + exp(phi))` where `phi` collects the fixed effect, covariate shifts, and IIV on the logit scale; IIV is therefore additive on the logit scale, not multiplicative.

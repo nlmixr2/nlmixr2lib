@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Agoram 2006 darbepoetin alfa popPK and hemoglobin PK/PD models ([doi:10.1208/aapsj080364](https://doi.org/10.1208/aapsj080364)) -- adults with nonmyeloid malignancies and chemotherapy-induced anemia.
+- Add Felmlee 2010 gamma-hydroxybutyric acid ([doi:10.1208/s12248-010-9197-x](https://doi.org/10.1208/s12248-010-9197-x)) -- male Sprague-Dawley rats.
 
 - Enrich `Lahu_2010_roflumilast` provenance from the FDA NDA 22-522 Clinical
   Pharmacology review, which reprints the sponsor's population PK study report

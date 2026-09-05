@@ -14184,6 +14184,29 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Notes:** See `CNSREG_PFC` for the family's naming rationale, the distinction from the `brain_<region>` compartment namespace, and the mutual-exclusivity requirement.
 
 
+### INH_MCT_KM_RATIO (**canonical for the inhibitor-to-Ki concentration ratio acting on the Michaelis constant of a saturable transport process**)
+- **Description:** Dimensionless steady-state inhibitor concentration ratio `R = [I] / Ki` applied as a `(1 + R)` multiplier on the Michaelis constant `Km` of a saturable (transporter-mediated) process. Together with the companion `INH_MCT_CONC_RATIO` it selects the inhibition mechanism in the standard enzyme / transporter inhibition algebra: with `INH_MCT_KM_RATIO = R` and `INH_MCT_CONC_RATIO = 0` the rate law is COMPETITIVE inhibition; with both set to `R` it is NONCOMPETITIVE; with `INH_MCT_KM_RATIO = 0` and `INH_MCT_CONC_RATIO = R` it is UNCOMPETITIVE. Both at 0 recovers the uninhibited rate law exactly, so a user who never sets either covariate gets the paper's fitted model. `R` is a ratio, not a concentration -- the inhibitor is assumed to be at steady state, so no inhibitor PK compartment is required.
+- **Units:** (unitless ratio)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (no inhibitor present; the rate law reduces to the uninhibited Michaelis-Menten form).
+- **Source aliases:**
+  - `R` (defined as `[I]/Ki`) -- Felmlee 2010 Methods ("where R equals I/Ki and the inhibitor is administered at steady-state") and eqs. (11)-(13). Used in `Felmlee_2010_ghb_rat.R`.
+- **Example models:** `Felmlee_2010_ghb_rat.R` (multiplies `km_reab` in the saturable renal-reabsorption clearance `reabsorption <- vmax_reab / (km_reab * (1 + INH_MCT_KM_RATIO) + Culf1 * (1 + INH_MCT_CONC_RATIO))`; the paper simulates `R` = 1, 10 and 100 in Table II and Fig. 3 and corroborates the competitive case experimentally with L-lactate co-administration in Table III).
+- **Notes:** Specific scope because the pair is tied to a monocarboxylate-transporter (MCT) inhibition design; a paper inhibiting a different transporter or an enzyme should register its own `INH_<TARGET>_*` pair rather than overload the MCT name, since the `Ki` that defines `R` is target-specific. The two-covariate encoding was ratified in preference to a single ratio plus a mechanism-code switch (operator sidecar `oare_PMC2895455` request-001 / response-001, question q2, option A, 2026-09-02) because selecting the branch inside `model()` would otherwise need `if`/`else` or magic-number arithmetic; the two-multiplier form encodes all three published mechanisms in one branch-free expression. Always set both members of the pair explicitly in a simulation event table -- leaving one unset is what silently converts a competitive simulation into an uncompetitive one.
+
+### INH_MCT_CONC_RATIO (**canonical for the inhibitor-to-Ki concentration ratio acting on the substrate-concentration term of a saturable transport process**)
+- **Description:** Dimensionless steady-state inhibitor concentration ratio `R = [I] / Ki` applied as a `(1 + R)` multiplier on the SUBSTRATE CONCENTRATION term in the denominator of a saturable (transporter-mediated) rate law. Companion to `INH_MCT_KM_RATIO`; see that entry for the mechanism-selection table (competitive / noncompetitive / uncompetitive) and the reduction to the uninhibited model when both are 0. Meaningless alone -- the two are always declared and set together.
+- **Units:** (unitless ratio)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** 0 (no inhibitor present; the substrate term is unmodified).
+- **Source aliases:**
+  - `R` (defined as `[I]/Ki`) -- Felmlee 2010 Methods and eqs. (12)-(13). Used in `Felmlee_2010_ghb_rat.R`.
+- **Example models:** `Felmlee_2010_ghb_rat.R` (multiplies the proximal-tubule ultrafiltrate concentration `Culf1` in the saturable renal-reabsorption clearance; set to 0 for the competitive simulations the paper actually tabulates, and to `R` for the noncompetitive and uncompetitive mechanisms the paper reports as "data not shown").
+- **Notes:** Specific scope, same rationale as `INH_MCT_KM_RATIO`. Note that the two covariates carry the SAME source symbol `R` -- the source paper writes one ratio and three separate equations, whereas the canonical encoding writes one equation and routes `R` to one or both multipliers. That is a deliberate re-factoring of the paper's algebra, not two distinct measured quantities, and the model file's `covariateData` notes must say so. Ratified canonically alongside the Felmlee 2010 GHB extraction (operator sidecar `oare_PMC2895455`, 2026-09-02).
+
+
 ## Infectious-disease subtype indicators
 
 ### HCV_GT1B (**canonical for hepatitis C virus genotype-1 subtype indicator: GT1B vs GT1A**)
