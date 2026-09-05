@@ -2,12 +2,17 @@
 
 # development version
 
-- Add Kim 2024 teicoplanin ([doi:10.3390/pharmaceutics16040499](https://doi.org/10.3390/pharmaceutics16040499)) -- healthy Korean adults with normal renal function.
-
-- Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
-
-- Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
-
+- Fix the never-smoker apparent clearance in `Baron_2016_empagliflozin` and
+  `Johnston_2021_empagliflozin_popPK`. Both papers report CL/F for a
+  **never-smoker** reference subject, and both model files recode the smoking
+  covariate onto the canonical former-smoker reference, but the base `lcl` was
+  left at the paper's never-smoker value. The `1 / 1.02` never-smoker multiplier
+  was therefore applied to a base that already represented a never smoker, so
+  every never-smoker prediction was 2% low and the former- and current-smoker
+  strata were shifted by the same factor. Rebasing `lcl` onto a former smoker
+  restores all three strata to their published values (Baron: 10.6 / 10.812 /
+  11.236 L/h; Johnston: 11.2 / 11.424 / 12.096 L/h). Baron's recoded smoking
+  multipliers are also written as exact quotients rather than 4-decimal literals.
 - Rename the sigmoidal-in-time clearance parameter family so the names state the
   structure rather than only the curve shape, across all 20 models that use it:
   `cl_hill_max` -> `cl_time_max`, `cl_hill_t50` -> `cl_t50`, `cl_hill_gamma` ->
