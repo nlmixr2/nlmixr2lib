@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hosseini 2024 FLT3L-Fc ([doi:10.3390/pharmaceutics16050660](https://doi.org/10.3390/pharmaceutics16050660)) -- cynomolgus monkeys and healthy adult volunteers.
+- Add Deng 2024 magnesium sulfate ([doi:10.1186/s12884-024-06620-x](https://doi.org/10.1186/s12884-024-06620-x)) -- Chinese women with preeclampsia.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
