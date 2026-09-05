@@ -150,6 +150,24 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Abouelhassan_2024_sulbactam_human.R` (VELF = 2.44 L in a plasma + peripheral + ELF model), `Abouelhassan_2024_sulbactam_mouse.R` (apparent ELF Vc/F = 0.5125 L/kg).
 - **Notes:** Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, following the existing `lvcsf` / `lvcns` precedent in `Luu_2017_nusinersen.R`. Distinct from `lvc`: `lvelf` never scales a plasma concentration. `Parmar_2023_spectinamide_1599_mouse_pbpk.R` carries the same quantity as a hardcoded physiologic constant `v_elf` inside `model` rather than as an `ini` parameter, which is correct for a PBPK model where the volume is anatomy rather than a fitted parameter.
 
+### lvcsf (**canonical log-transformed CSF / CNS compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the canonical `csf` compartment, used to convert the CSF drug amount to the CSF concentration `Ccsf <- csf / vcsf` (volume). Applies to plasma-plus-CSF popPK models in which `csf` is a lumbar-puncture-sampled distribution compartment. When the source paper writes the volume as `V/F` or `Vcns/F` the value is apparent and also absorbs bioavailability; say so in the `label` and the source-trace comment.
+- **Source aliases:**
+  - `V_CSF` -- Luu 2017 Table 2.
+  - `Vcns`, `Vcns/F` -- Stott 2023 Table 1, where the paper names the compartment "CNS" but samples it by lumbar puncture and reports the observation as a CSF concentration.
+- **Example models:** `Luu_2017_nusinersen.R` (V_CSF = 0.433 L, intrathecal antisense oligonucleotide), `Stott_2023_flucytosine.R` (apparent Vcns/F = 41.73 L, oral flucytosine).
+- **Notes:** Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, alongside `lvelf`. Distinct from `lvc`: `lvcsf` never scales a plasma concentration. Pairs with `k_central_csf` / `k_csf_central` when the CSF leg is parameterised by rate constants rather than by an inter-compartmental clearance.
+
+### lk12, lk21, lk13, lk31 (**canonical log-transformed inter-compartmental rate constants**)
+- **Type:** log-transformed-pk
+- **Role:** The `ini` forms of the canonical bare `k12` / `k21` / `k13` / `k31` rate constants -- first-order distribution between `central` and `peripheral1` (`lk12` / `lk21`) or `peripheral2` (`lk13` / `lk31`), in 1 / time. Used as the primary estimated quantities when a source paper parameterises distribution by rate constants rather than by an inter-compartmental clearance and a peripheral volume, which is what NONMEM ADVAN4 / ADVAN11 and Pmetrics / ADAPT models typically report, and which is forced when the dependent variable is an amount so peripheral volumes are not identifiable.
+- **Source aliases:**
+  - `k_23` / `k_32` -- Marier 2002 Table 1, under the depot = 1, central = 2, peripheral = 3 numbering.
+  - `K24` / `K42` -- Stott 2023 Table 1, under the gut = 1, central = 2, CNS = 3, peripheral = 4 numbering.
+- **Example models:** `Marier_2002_tobramycin_rat_liposomal.R`, `Marier_2002_tobramycin_rat_conventional.R`, `Stott_2023_flucytosine.R`, `Blair_2004_raltitrexed.R`, `Ekhart_2008_carboplatin.R`.
+- **Notes:** Bare counterparts of `k12` / `k21` / `k13` / `k31`; see those entries for the topology each index is bound to. The canonical nlmixr2 numbering treats `central` as 1 and the peripherals as 2 / 3 after the depot is split out, so a source paper's own subscripts must be re-mapped rather than transcribed -- `k_23` and `K24` both become `lk12` in the example models above. Prefer a role-based `k_<from>_<to>` name (or `kin_<tissue>` / `kout_<tissue>`) whenever the compartment at the far end is anatomically named rather than a generic `peripheral<n>`.
+
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between central and first peripheral compartment (volume / time).
@@ -799,6 +817,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `K12` / `K21` -- Abouelhassan 2024 Results. The paper's prose calls ELF "the third compartment" while its printed subscripts number ELF second; the printed subscripts are the ones that reproduce the paper's own Table 4 PTA, so the ELF pair is the printed `K12` / `K21`. See the source-trace note in `Abouelhassan_2024_sulbactam_human.R`.
 - **Example models:** `Abouelhassan_2024_sulbactam_human.R`.
 - **Notes:** Member of the established `k_<from>_<to>` directional-transfer family already used for `k_central_milk` / `k_milk_central` (`Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R`) and `k_csf_plasma` / `k_csf_brain` / `k_brain_csf` (`Biliouris_2018_nusinersen.R`). Use this family, not `k13` / `k31`, whenever a transfer connects `central` to a named non-numbered compartment: `k13` / `k31` are reserved for `central` <-> `peripheral2` and reusing them for a physiologic matrix hides which compartment the constant actually feeds. Pairs with `lvelf`.
+
+### k_central_csf, k_csf_central (**canonical bare central-to-CSF and CSF-to-central rate constants**)
+- **Type:** bare-pk
+- **Role:** First-order transfer rate constants between `central` and the canonical `csf` compartment (1 / time). Deliberately a directional PAIR rather than a single inter-compartmental clearance, for the same reason as `k_central_elf` / `k_elf_central`: plasma-to-CSF distribution is asymmetric, and the ratio `k_central_csf / k_csf_central` scaled by `vc / vcsf` is exactly the steady-state CSF:plasma penetration ratio that a CNS-infection PK analysis turns on. A symmetric `q` / `vcsf` parameterisation cannot express it -- in `Stott_2023_flucytosine.R` the two implied flows differ by 38% (`k_central_csf * vc` = 272 L/h against `k_csf_central * vcsf` = 376 L/h). The log-transformed `lk_central_csf` / `lk_csf_central` forms are used in `ini`.
+- **Source aliases:**
+  - `K23` / `K32` -- Stott 2023 Equations 2-3 and Table 1. The paper numbers its states 1 = gut, 2 = circulation, 3 = CNS, 4 = peripheral, so its `K23` / `K32` are the central-to-CSF pair and its `K24` / `K42` are the ordinary central-to-`peripheral1` pair (`k12` / `k21`).
+- **Example models:** `Stott_2023_flucytosine.R`.
+- **Notes:** Member of the established `k_<from>_<to>` directional-transfer family already used for `k_central_elf` / `k_elf_central` (`Abouelhassan_2024_sulbactam_human.R`), `k_central_milk` / `k_milk_central` (`Wattanakul_2024_primaquine.R`) and `k_csf_plasma` / `k_csf_brain` / `k_brain_csf` (`Biliouris_2018_nusinersen.R`). Use this family, not `k13` / `k31`, whenever a transfer connects `central` to a named non-numbered compartment: `k13` / `k31` are reserved for `central` <-> `peripheral2`, and a source paper's own subscripts index its own state numbering, so the digits carry no transferable meaning. Pairs with `lvcsf`. Distinct from `k_csf_plasma`, which names a one-way CSF-to-plasma efflux in a model that has no reciprocal plasma-to-CSF leg.
 
 ### fdepot (**canonical bare depot fraction**)
 - **Type:** bare-pk

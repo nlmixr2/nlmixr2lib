@@ -1480,6 +1480,8 @@ navbar:
         href: articles/Watt_2015_fluconazole.html
       - text: "Fluconazole (Zhang 2025)"
         href: articles/Zhang_2025_fluconazole.html
+      - text: "Flucytosine (Stott 2023)"
+        href: articles/Stott_2023_flucytosine.html
       - text: "Fludarabine (Langenhorst 2019)"
         href: articles/Langenhorst_2019_fludarabine.html
       - text: "Fludarabine (VarelaGonzalezAller 2025)"
@@ -5795,6 +5797,7 @@ articles:
   - articles/Storgaard_2026_tetrahydrocannabinol
   - articles/Storset_2014_tacrolimus
   - articles/Stoschus_2025_phenobarbital
+  - articles/Stott_2023_flucytosine
   - articles/Stricker_2013_aminocaproicAcid
   - articles/Stricker_2015_aminocaproic_acid
   - articles/Stringer_2013_sipoglitazar
