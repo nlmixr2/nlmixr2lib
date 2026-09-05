@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ma 2023 difloxacin ([doi:10.3390/vetsci10070416](https://doi.org/10.3390/vetsci10070416)) -- crucian carp (*Carassius auratus*) after a single oral dose.
+- Add Chen 2023 vancomycin ([doi:10.1093/jac/dkad202](https://doi.org/10.1093/jac/dkad202)) -- Chinese paediatric patients with varying renal function.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
