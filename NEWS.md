@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Qi 2019 vestronidase alfa ([doi:10.1007/s40262-018-0721-y](https://doi.org/10.1007/s40262-018-0721-y)) -- adults and children with mucopolysaccharidosis type VII.
+- Add Snelder 2019 leuprorelin ([doi:10.1111/bcp.13891](https://doi.org/10.1111/bcp.13891)) -- men with prostate cancer.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

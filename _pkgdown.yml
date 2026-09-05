@@ -2014,6 +2014,12 @@ navbar:
         href: articles/Royston_2025_letermovir.html
       - text: "Leuprolide (Lim 2026)"
         href: articles/Lim_2026_leuprolide.html
+      - text: "Leuprorelin (Snelder 2019)"
+        href: articles/Snelder_2019_leuprorelin.html
+      - text: "Leuprorelin 1m (Snelder 2019)"
+        href: articles/Snelder_2019_leuprorelin.html
+      - text: "Leuprorelin 4m (Snelder 2019)"
+        href: articles/Snelder_2019_leuprorelin.html
       - text: "Levalbuterol (Jaworowicz 2006)"
         href: articles/Jaworowicz_2006_levalbuterol.html
       - text: "Levamisole (KreeftmeijerVegter 2015)"
@@ -5705,6 +5711,7 @@ articles:
   - articles/Smythe_2013_gatifloxacin
   - articles/Snelder_2013_cardiovascular_rat
   - articles/Snelder_2014_cardiovascular_rat
+  - articles/Snelder_2019_leuprorelin
   - articles/Snelder_2020_ASP8232
   - articles/Soehoel_2022_tralokinumab
   - articles/Solana_2014_omeprazole
