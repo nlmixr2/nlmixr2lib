@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2023 vancomycin ([doi:10.1093/jac/dkad202](https://doi.org/10.1093/jac/dkad202)) -- Chinese paediatric patients with varying renal function.
+- Add Wang 2023 teicoplanin ([doi:10.2147/DDDT.S413662](https://doi.org/10.2147/DDDT.S413662)) -- critically ill adults in the intensive care unit.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

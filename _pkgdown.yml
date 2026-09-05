@@ -3798,6 +3798,8 @@ navbar:
         href: articles/ButraguenoLaiseca_2025_teicoplanin.html
       - text: "Teicoplanin (Chen 2023)"
         href: articles/Chen_2023_teicoplanin.html
+      - text: "Teicoplanin (Wang 2023)"
+        href: articles/Wang_2023_teicoplanin.html
       - text: "Teicoplanin (Wi 2017)"
         href: articles/Wi_2017_teicoplanin.html
       - text: "Teicoplanin (Zhao 2015)"
@@ -6046,7 +6048,7 @@ articles:
   - articles/Wang_2021_pertuzumab
   - articles/Wang_2022_aripiprazole
   - articles/Wang_2023_dorzagliatin
-  - articles/Wang_2023_methotrexate
+  - articles/Wang_2023_teicoplanin
   - articles/Wang_2024_amphenmulin
   - articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp
   - articles/Wang_2024_evorpacept_qsp
