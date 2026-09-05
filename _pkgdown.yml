@@ -3410,6 +3410,10 @@ navbar:
         href: articles/Willmann_2021_rivaroxaban.html
       - text: "Rivaroxaban (Willmann 2022)"
         href: articles/Willmann_2022_rivaroxaban.html
+      - text: "Rivaroxaban human (Ngo 2023)"
+        href: articles/Ngo_2023_rivaroxaban.html
+      - text: "Rivaroxaban rat (Ngo 2023)"
+        href: articles/Ngo_2023_rivaroxaban.html
       - text: "Rivipansel (Tammara 2017)"
         href: articles/Tammara_2017_rivipansel.html
       - text: "Rlyb212 (MocWilleford 2024)"
@@ -5530,6 +5534,7 @@ articles:
   - articles/Ng_2018_exendin939
   - articles/Ngamprasertwong_2016_propofol_sheep
   - articles/Ngo_2020_HL2351
+  - articles/Ngo_2023_rivaroxaban
   - articles/Nguyen_2025_valbenazine_huntington_chorea
   - articles/Nguyen_2026_linezolid
   - articles/Ni_2013_ciclosporin
