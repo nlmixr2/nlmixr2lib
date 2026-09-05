@@ -10664,6 +10664,39 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Xia_2024_warfarin.R` (per-allele CL contributions; 5.7% of the Han cohort were *1/*3 heterozygous per Xia 2024 Table 1), `Ohara_2014_warfarin_s.R` (dichotomised to a carrier flag via `CYP2C9_S3_COUNT > 0`; CL(S) in carriers is 0.543x the *1/*1 reference).
 - **Notes:** See `CYP2C9_S1_COUNT` for the broader rationale.
 
+### CYP2C9_S5_COUNT (**canonical for CYP2C9*5 reduced-function allele count**)
+- **Description:** Continuous individual-level CYP2C9*5 allele count: 0 = no *5 allele, 1 = one *5 allele (heterozygous), 2 = two *5 alleles (homozygous). Time-invariant (germline genotype). The *5 allele (rs28371686, D360E) encodes a markedly reduced-function CYP2C9 isoform found almost exclusively in individuals of African ancestry. Registered per the extension rule stated in `CYP2C9_S1_COUNT` Notes ("When a paper reports additional CYP2C9 alleles (e.g. *5, *6, *8, *11), register parallel canonicals"); with `CYP2C9_S6_COUNT` and `CYP2C9_S8_COUNT` it extends the `CYP2C9_S{1,2,3}_COUNT` family so the per-subject counts still sum to 2.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). In `RodriguezFernandez_2024_warfarin.R` this column is one of four summed into the pooled reduced-function allele class "n" (*3, *5, *6, *8) that Reyes-Gonzalez 2020 uses to select the CYP2C9-diplotype elimination rate constant.
+- **Source aliases:**
+  - `CYP2C9` (genotype string such as `"*1/*5"`, `"*2/*5"`): derive `CYP2C9_S5_COUNT = (number of *5 matches in the genotype string)`.
+- **Example models:** `RodriguezFernandez_2024_warfarin.R` (Caribbean Hispanic cohort with *1/*5 n=1 and *2/*5 n=1; the *5 allele contributes to the pooled "n" class whose diplotypes carry kel 0.0132 (*1/*n), 0.009 (*2/*n) and 0.0075 (*n/*n) 1/h).
+- **Notes:** See `CYP2C9_S1_COUNT` for the broader rationale. A model that pools *3/*5/*6/*8 must still declare the individual count columns rather than a single pooled column, so that a downstream user retains the resolved genotype and a future paper reporting allele-specific effects can use the same dataset.
+
+### CYP2C9_S6_COUNT (**canonical for CYP2C9*6 reduced-function allele count**)
+- **Description:** Continuous individual-level CYP2C9*6 allele count: 0 = no *6 allele, 1 = one *6 allele, 2 = two *6 alleles. Time-invariant (germline genotype). The *6 allele (rs9332131, a single-base deletion producing a frameshift) is a null allele found predominantly in individuals of African ancestry. Registered per the extension rule in `CYP2C9_S1_COUNT` Notes.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). One of the four columns summed into the pooled "n" reduced-function class in `RodriguezFernandez_2024_warfarin.R`.
+- **Source aliases:**
+  - `CYP2C9` (genotype string such as `"*1/*6"`): derive `CYP2C9_S6_COUNT = (number of *6 matches in the genotype string)`.
+- **Example models:** `RodriguezFernandez_2024_warfarin.R` (no *6 carriers in the Caribbean Hispanic cohort, but Reyes-Gonzalez 2020 explicitly names *6 as a member of the pooled "n" class, so the model is defined for *6 carriers and the column is referenced in `model()`).
+- **Notes:** See `CYP2C9_S1_COUNT` for the broader rationale. Registering a count column that is identically zero in the source cohort is correct when the source model's own allele-class definition names the allele -- it makes the model usable on a cohort that does carry it, and keeps the "counts sum to 2" invariant checkable.
+
+### CYP2C9_S8_COUNT (**canonical for CYP2C9*8 reduced-function allele count**)
+- **Description:** Continuous individual-level CYP2C9*8 allele count: 0 = no *8 allele, 1 = one *8 allele, 2 = two *8 alleles. Time-invariant (germline genotype). The *8 allele (rs7900194, R150H) encodes a reduced-function CYP2C9 isoform enriched in African-ancestry populations and is a major reason CYP2C9 genotyping panels restricted to *2 and *3 misclassify warfarin dose requirements in Black and admixed patients. Registered per the extension rule in `CYP2C9_S1_COUNT` Notes.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). One of the four columns summed into the pooled "n" reduced-function class in `RodriguezFernandez_2024_warfarin.R`.
+- **Source aliases:**
+  - `CYP2C9` (genotype string such as `"*1/*8"`): derive `CYP2C9_S8_COUNT = (number of *8 matches in the genotype string)`.
+- **Example models:** `RodriguezFernandez_2024_warfarin.R` (*1/*8 n=2 in the Caribbean Hispanic cohort, Table 1).
+- **Notes:** See `CYP2C9_S1_COUNT` for the broader rationale. The presence of *5 and *8 carriers is one of the features distinguishing admixed Caribbean Hispanic cohorts from the European cohorts underlying the Hamberg warfarin models, whose CYP2C9 covariate is limited to *1/*2/*3.
+
 ### CYP2C9_MISSING (**canonical for CYP2C9 genotype-missing indicator**)
 - **Description:** Binary indicator for a subject whose CYP2C9 genotype was not measured / not available. 1 = CYP2C9 genotype missing; 0 = CYP2C9 genotype known (in which case `CYP2C9_S1_COUNT + CYP2C9_S2_COUNT + CYP2C9_S3_COUNT = 2`). Companion to the `CYP2C9_S{1,2,3}_COUNT` per-allele canonicals so popPK models that estimate a separate typical-value covariate effect for the missing-genotype subgroup (rather than imputing it as wild-type) can do so faithfully.
 - **Units:** (binary)

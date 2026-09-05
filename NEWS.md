@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Rodriguez-Fernandez 2024 warfarin ([doi:10.1016/j.biopha.2023.115977](https://doi.org/10.1016/j.biopha.2023.115977)) -- Caribbean Hispanic (Puerto Rican) adults on long-term anticoagulation.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
