@@ -11406,6 +11406,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Chandasana_2024b_dolutegravir.R` (selects between the two study-specific residual-error magnitudes of the pooled dolutegravir pediatric model: proportional 28.6% plus additive 0.00164 ug/mL for the IMPAACT P1093 reference, and proportional 11.1% plus additive 0.090 ug/mL for ODYSSEY; applied inside `model()` as `propSd_i <- propSd * (1 - STUDY_ODYSSEY) + propSd_odyssey * STUDY_ODYSSEY` and likewise for the additive term).
 - **Notes:** Distinguishes the two pooled source studies of the pediatric dolutegravir popPK model. The between-study difference is confined to residual error (assay and sampling-design differences), not to any structural or covariate parameter. Records that belong to neither pooled study -- for example the IMPAACT 2019 external-validation cohort -- take 0 so the P1093 residual error applies, that being the pediatric dolutegravir single-entity study most comparable to IMPAACT 2019. Sibling of the other `STUDY_<id>` members.
 
+### STUDY_PHASE2A (**canonical for the vupanorsen phase IIa dose-finding study indicator**)
+- **Description:** 1 = participant enrolled in the phase IIa dose-finding study of vupanorsen in patients with hypertriglyceridemia, type 2 diabetes and nonalcoholic fatty liver disease (NCT03371355; N = 105), 0 = participant from any other study pooled into the analysis. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the phase I studies NCT02709850 and NCT04459767, which are the PD reference population, and the phase IIb study; mutually exclusive with `STUDY_PHASE2B`).
+- **Source aliases:**
+  - `Phase IIa` -- Ahn 2023 Table 1 column heading and Table 3 parameter rows ("Phase IIa factor in ANGPTL3 baseline", etc.).
+- **Example models:** `Ahn_2023_vupanorsen.R` (selects the phase IIa baseline factor for each of the three indirect-response end points -- ANGPTL3 0.978, triglycerides 1.46, non-HDL-cholesterol 0.840 -- applied inside `model()` as `e_study_phase2a_rbase_<endpoint>^STUDY_PHASE2A`; together with `STUDY_PHASE2B` it also forms the patient indicator that selects the single phase II potency factor on IC50, and the phase II residual-error magnitudes for the vupanorsen concentration).
+- **Notes:** Sibling of the other `STUDY_<id>` members, named by the study's development phase because the source paper identifies it that way throughout and reports no trial acronym for it (unlike the phase IIb study, TRANSLATE-TIMI 70). The between-study differences the indicator carries are confined to the PD layer (baseline and potency) and to the PK residual-error magnitude; no structural PK parameter depends on it. Scoped specific because the reference category is the paper's own pooled-study set.
+
+### STUDY_PHASE2B (**canonical for the TRANSLATE-TIMI 70 phase IIb study indicator**)
+- **Description:** 1 = participant enrolled in TRANSLATE-TIMI 70, the phase IIb dose-ranging study of vupanorsen in statin-treated patients with dyslipidemia (NCT04516291; N = 286), 0 = participant from any other study pooled into the analysis. Per-subject (study-fixed) binary indicator.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the phase I studies NCT02709850 and NCT04459767, which are the PD reference population, and the phase IIa study; mutually exclusive with `STUDY_PHASE2A`).
+- **Source aliases:**
+  - `Phase IIb` -- Ahn 2023 Table 1 column heading ("TRANSLATE TIMI 70: Phase IIb") and Table 3 parameter rows ("Phase IIb factor in ANGPTL3 baseline", etc.).
+- **Example models:** `Ahn_2023_vupanorsen.R` (selects the phase IIb baseline factor for each of the three indirect-response end points -- ANGPTL3 0.897, triglycerides 1.17, non-HDL-cholesterol 0.768 -- applied inside `model()` as `e_study_phase2b_rbase_<endpoint>^STUDY_PHASE2B`; together with `STUDY_PHASE2A` it also forms the patient indicator that selects the single phase II potency factor on IC50, and the phase II residual-error magnitudes for the vupanorsen concentration).
+- **Notes:** Sibling of the other `STUDY_<id>` members. Named by development phase rather than by the TRANSLATE-TIMI 70 acronym so that it pairs symmetrically with `STUDY_PHASE2A`, whose study has no acronym; the acronym is recorded here and in the model's `covariateData` notes. All 286 participants were statin-treated, so within this pooled analysis the indicator is confounded with baseline statin use. Scoped specific because the reference category is the paper's own pooled-study set.
+
 ### STUDY_TLS (**canonical for the TLS on-farm field trial cohort indicator**)
 - **Description:** 1 = record from the TLS trial, the 215-pig on-farm field trial of doxycycline administered in medicated feed (del Castillo 2006); 0 = record from one of the laboratory-condition in-feed trials pooled into the same analysis (AFSSA, BIOEQ, PARADOX, Company 9203, Company 9204). Per-dose-record (trial-fixed) binary indicator separating field-condition from laboratory-condition in-feed medication.
 - **Units:** (binary)
