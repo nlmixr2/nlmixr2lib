@@ -3666,6 +3666,10 @@ navbar:
         href: articles/LiemMoolenaar_2011_scopolamine.html
       - text: "Selexipag (Krause 2017)"
         href: articles/Krause_2017_selexipag.html
+      - text: "Selexipag adult (Axelsen 2024)"
+        href: articles/Axelsen_2024_selexipag.html
+      - text: "Selexipag pediatric (Axelsen 2024)"
+        href: articles/Axelsen_2024_selexipag.html
       - text: "Selumetinib (Kollo 2026)"
         href: articles/Kollo_2026_selumetinib.html
       - text: "Selumetinib (Patel 2017)"
@@ -4743,6 +4747,7 @@ articles:
   - articles/Assmus_2025_benznidazole_mouse
   - articles/Athanassa_2025_minocycline
   - articles/Attarwala_2023_mRNA3927
+  - articles/Axelsen_2024_selexipag
   - articles/Ayyar_2024_givosiran
   - articles/Ayyoub_2016_pyronaridine
   - articles/Azechi_2024_tamibarotene_pediatric
