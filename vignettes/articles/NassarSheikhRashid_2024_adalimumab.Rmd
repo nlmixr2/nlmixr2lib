@@ -251,7 +251,9 @@ subj_a <- tibble::tibble(
   dplyr::mutate(dose_mg = dose_for_wt(WT), arm = "Simulated JIA cohort")
 
 ev_a <- make_events(subj_a)
-stopifnot(!anyDuplicated(unique(ev_a[, c("id", "time", "evid")])))
+# No unique() here: anyDuplicated() applied to an already-deduplicated frame is
+# always 0, i.e. a gate that cannot go red. The frame itself is checked.
+stopifnot(!anyDuplicated(ev_a[, c("id", "time", "evid")]))
 ```
 
 ## Cohort B -- body-weight strata (Figure 2A)
@@ -287,7 +289,7 @@ subj_b <- dplyr::bind_rows(lapply(seq_len(nrow(bands)), function(k) {
                 arm = factor(arm, levels = bands$band))
 
 ev_b <- make_events(subj_b)
-stopifnot(!anyDuplicated(unique(ev_b[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(ev_b[, c("id", "time", "evid")]))
 ```
 
 ## Cohort C -- the observed JIA cohort (Table 1)
@@ -312,7 +314,7 @@ subj_c <- tibble::tibble(
   dplyr::mutate(dose_mg = dose_for_wt(WT), arm = "Observed-cohort demographics")
 
 ev_c <- make_events(subj_c)
-stopifnot(!anyDuplicated(unique(ev_c[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(ev_c[, c("id", "time", "evid")]))
 ```
 
 # Simulation
