@@ -529,15 +529,37 @@ the covariate distributions in Table 1 and the simulation settings in section
    creatinine levels were associated with lower tacrolimus CL/F") and the
    section 5 Conclusion ("higher CREA also led to a reduction in tacrolimus
    CL/F") both say CL/F. CL/F is used here because the paper's own Table 6
-   simulation adjudicates it: at the day-3 trough (72 h, six q12h doses) the
-   CL/F placement predicts a 2.40-fold rise across the 40-2000 umol/L grid
-   against the published 2.42-fold, with every intermediate point inside 10%,
-   whereas the V/F placement predicts only 1.80-fold at the same time point --
-   and, because V/F does not set the steady-state trough, the V/F placement
-   reverses the direction of the creatinine effect entirely as steady state is
-   approached, which contradicts the paper's own conclusion. A downstream user
-   who prefers the table label can move `e_creat_cl` onto `vc` in
-   `model()`; the coefficient value is unchanged either way.
+   simulation adjudicates it, subject to one stated reading of the paper.
+
+   The placement is confounded with the trough time, so both have to be
+   scanned. Comparing each placement's predicted fold-change profile across the
+   published 40-2000 umol/L grid against Table 6's:
+
+   | Trough time (q12h doses) | CREA on CL/F: worst fold error | CREA on V/F: worst fold error |
+   |---|---|---|
+   | 36 h (3 doses, day 2)     | 29.1% | 4.1% |
+   | 48 h (4 doses, day 3)     | 20.8% | 10.5% |
+   | 60 h (5 doses, day 3)     | 12.4% | 19.5% |
+   | **72 h (6 doses, day 3)** | **4.0%** | 26.8% |
+   | 84 h (7 doses, day 4)     | 7.8% | 32.6% |
+
+   The V/F placement reproduces Table 6 only at 36 h, which is day *2*. The
+   CL/F placement reproduces it at 72 h -- the end-of-day-3 trough, after six
+   complete q12h doses, which is the natural reading of "trough concentration
+   on the third day after tacrolimus administration" (section 3.4.1) and of the
+   Table 5 and Table 6 titles. At 72 h the CL/F placement predicts a 2.40-fold
+   rise against the published 2.42-fold with every intermediate point inside
+   10%, while the V/F placement gives only 1.80-fold; and because V/F does not
+   set the steady-state trough, the V/F placement keeps degrading with time and
+   eventually reverses the direction of the creatinine effect, contradicting
+   the paper's own conclusion.
+
+   This is the one substantive judgement call in the extraction, and it goes
+   against a table label the paper repeats four times. A user who prefers that
+   label can flip it by moving `e_creat_cl` from the `cl` line onto the `vc`
+   line in `model()`; the coefficient value is unchanged either way, and the
+   Table 6 assertion in this vignette will then fail loudly, which is the
+   intended behaviour.
 
 4. **`Ka` is an absorption, not an elimination, rate constant.** The Abstract
    and section 3.2.1 both call 8.39 1/h "the elimination rate constant (Ka)".
