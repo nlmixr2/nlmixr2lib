@@ -3348,6 +3348,8 @@ navbar:
         href: articles/Westerhout_2013_quinidine.html
       - text: "Quinidine QT (Shin 2006)"
         href: articles/Shin_2006_quinidine_QT.html
+      - text: "Quinidine horse (Kuroda 2024)"
+        href: articles/Kuroda_2024_quinidine_horse.html
       - text: "Quinidine mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Quinidine rat (Kervezee 2014)"
@@ -5504,6 +5506,7 @@ articles:
   - articles/Kunisawa_2014_olprinone
   - articles/Kunisawa_2015_landiolol
   - articles/Kuroda_2023_cephalothin
+  - articles/Kuroda_2024_quinidine_horse
   - articles/Kurup_2024_DZIF10c
   - articles/Kutumova_2024_albuminNanoparticles
   - articles/Kyhl_2016_nalmefene
