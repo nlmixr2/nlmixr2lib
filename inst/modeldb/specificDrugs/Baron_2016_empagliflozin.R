@@ -228,7 +228,15 @@ Baron_2016_empagliflozin <- function() {
     # ---- Structural PK parameters (Baron 2016 Table S1; reference subject: 50-year-old, ----
     # ---- non-smoking male, non-Asian, BMI 25, eGFR 100, TPRO 70 g/dL, ALT 20, AST 20, ----
     # ---- AP 70, LDH 160) ----
-    lcl <- log(10.6);   label("Apparent oral clearance CL/F (L/h) for the reference subject")  # Table S1 row TV_CL = 10.6 L/h
+    # Table S1 TV_CL = 10.6 L/h is CL/F for the paper's reference subject, who is a
+    # NON-smoker (never smoker). The smoking multipliers below are recoded onto the
+    # canonical FORMER-smoker reference, so the base value must be rebased onto a
+    # former smoker too (x theta_4 = 1.02). Without that, cl_smoke_never = 1/1.02 is
+    # applied to a base that already represents a never smoker and every never-smoker
+    # prediction comes out 2% low (10.6 / 1.02 = 10.39 L/h). With the rebasing, all
+    # three strata match the paper: never = 10.812 / 1.02 = 10.6 (Table S1 TV_CL);
+    # former = 10.812 = 10.6 x 1.02; current = 10.812 x 1.06 / 1.02 = 11.236 = 10.6 x 1.06.
+    lcl <- log(10.6 * 1.02);   label("Apparent oral clearance CL/F (L/h), rebased to the canonical former-smoker reference")  # Table S1 row TV_CL = 10.6 L/h (never smoker) x theta_4 = 1.02 (exsmoker vs never)
     lvc <- log(3.14);   label("Apparent central volume V2/F (L) for the reference subject; renamed V2 -> vc per canonical compartment-name conventions")     # Table S1 row TV_V2 = 3.14 L
     lq  <- log(6.34);   label("Apparent inter-compartmental clearance Q/F (L/h)")               # Table S1 row Q/F = 6.34 L/h
     lvp <- log(70.6);   label("Apparent peripheral volume V3/F (L) for the reference subject; renamed V3 -> vp per canonical compartment-name conventions")  # Table S1 row TV_V3 = 70.6 L
@@ -252,8 +260,11 @@ Baron_2016_empagliflozin <- function() {
     # SMOKE_NEVER + SMOKE_CURRENT pair (former smoker as the implicit reference).
     cl_female      <- 0.886; label("Multiplicative effect of female sex on CL/F")  # Table S1 theta_3 = 0.886
     cl_asian       <- 0.880; label("Multiplicative effect of Asian race on CL/F")  # Table S1 theta_7 = 0.880
-    cl_smoke_never   <- 0.9804; label("Multiplicative effect of never-smoker (vs former) on CL/F = 1 / theta_4_paper = 1 / 1.02")  # Recoded from Table S1 theta_4 = 1.02 (exsmoker vs never)
-    cl_smoke_current <- 1.0392; label("Multiplicative effect of current-smoker (vs former) on CL/F = theta_5_paper / theta_4_paper = 1.06 / 1.02")  # Recoded from Table S1 theta_5 = 1.06 (current smoker vs never) and theta_4 = 1.02 (exsmoker vs never)
+    # Written as exact quotients rather than the previous 4-dp literals (0.9804,
+    # 1.0392) so the recoding is exact and the arithmetic stays visible in the
+    # source trace, matching Johnston_2021_empagliflozin_popPK.
+    cl_smoke_never   <- 1 / 1.02;    label("Multiplicative effect of never-smoker (vs former) on CL/F = 1 / theta_4_paper = 1 / 1.02")  # Recoded from Table S1 theta_4 = 1.02 (exsmoker vs never)
+    cl_smoke_current <- 1.06 / 1.02; label("Multiplicative effect of current-smoker (vs former) on CL/F = theta_5_paper / theta_4_paper = 1.06 / 1.02")  # Recoded from Table S1 theta_5 = 1.06 (current smoker vs never) and theta_4 = 1.02 (exsmoker vs never)
 
     # ---- PK covariate effects on V2/F (paper); renamed to V_central = vc per canonical conventions (Table S1) ----
     e_age_vc  <- 0.795; label("Power exponent of (AGE/50) on V2/F (now vc)")        # Table S1 theta_13 = 0.795

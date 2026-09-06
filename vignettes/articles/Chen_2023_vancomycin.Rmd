@@ -1,0 +1,793 @@
+---
+title: "Vancomycin (Chen 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Chen 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Chen_2023_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Chen_2023_vancomycin"))$description`
+* Article: <https://doi.org/10.1093/jac/dkad202>
+
+# Population
+
+Chen 2023 is a retrospective single-centre therapeutic-drug-monitoring study of
+673 children treated with intravenous vancomycin at Xinhua Hospital, Shanghai,
+between June 2013 and June 2022, contributing 1547 serum concentrations (779
+troughs and 768 peaks). Postnatal age spanned 0.01 to 17.23 years (median 1.81,
+IQR 0.51-5.83) and body weight 1.4 to 69.0 kg (median 11.5, IQR 6.5-20.0);
+59.0% were male. 82.0% were ICU inpatients and 10.1% had undergone
+cardiothoracic surgery and were receiving vasoactive agents. Renal function
+spanned a wide range (eGFR by the paper's Equation 11: median 109
+mL/min/1.73 m^2, IQR 87-141, range 12-379), with 1.0% below 30 and 38.5% above
+120. The leading indications were pneumonia (40.6%), primary bloodstream
+infection (40.0%) and CNS infection (26.0%). Patients on renal replacement
+therapy or ECMO were excluded. Baseline demographics are Chen 2023 Table 1.
+
+A separate 53-subject external-validation cohort was recruited at Shanghai
+Children's Medical Center; it contained no cardiothoracic-surgery patients and
+only a single peak concentration, and was not used for estimation.
+
+The same information is available programmatically via
+`readModelDb("Chen_2023_vancomycin")()$population`.
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Chen_2023_vancomycin.R`. The table below
+collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `CL = TV(CL) * (WT/70)^0.75 * MF * (eGFR/109)^theta_eGFR * theta_1^CTS` | n/a | Table 3, "The final model", first equation |
+| `V  = TV(V) * (WT/70) * (36.2/ALB)^theta_ALB` | n/a | Table 3, "The final model", second equation |
+| `MF = 1 / (1 + (PMA/TM50)^Hill)` | n/a | Equation 6 (maturation model III) |
+| `eGFR = 40.7 * (height(m)/SCr)^0.64 * (30/BUN)^0.202` | n/a | Equation 11; restated in Table 3, "The final model", third equation |
+| eGFR cap at 120 mL/min/1.73 m^2 | 120 | Table 2 Model D ("eGFR 1 (Equation 11) with cap 120"); Results, "PPK modelling" |
+| Allometric exponent on CL | 0.75 (fixed) | Equations 1 and 5, printed without uncertainty |
+| Allometric exponent on V | 1 (fixed) | Equation 2; Methods after Equation 10: "allometric exponents for volume of distribution (V) were fixed to 1" |
+| `lcl` = TV(CL) | 7.75 L/h | Table 3 (RSE 2.3%; bootstrap 95% CI 7.43-8.13) |
+| `lvc` = TV(V) | 36.2 L | Table 3 (RSE 1.7%; bootstrap 95% CI 35.0-37.4) |
+| `pma_tm50` = TM50 | 37.0 weeks | Table 3 (RSE 4.6%; bootstrap 95% CI 33.5-40.2) |
+| `pma_hill` = Hill | -1.63 | Table 3 (RSE 13%; bootstrap 95% CI -2.11 to -1.24) |
+| `e_crcl_cl` = theta_eGFR | 1.01 | Table 3 (RSE 3.4%; bootstrap 95% CI 0.94-1.08) |
+| `e_cts_cl` = theta_1 | 0.761 | Table 3 (RSE 3.6%; bootstrap 95% CI 0.709-0.817) |
+| `e_alb_vc` = theta_ALB | 0.279 | Table 3 (RSE 26.7%; bootstrap 95% CI 0.135-0.423) |
+| eGFR reference | 109 mL/min/1.73 m^2 | Table 3 final-model equation; equals the Table 1 model-group median for Equation 11 |
+| ALB reference | 36.2 g/L | Table 3 final-model equation (Table 1 median 36.3 g/L) |
+| IIV on CL | 27.5 %CV | Table 3 (RSE 6.0%) |
+| IIV on V | 27.2 %CV | Table 3 (RSE 16.2%) |
+| Cov(CL, V) | 0.0536 | Table 3 (RSE 10.8%) |
+| `propSd` (exponential arm) | 17.7 %CV | Table 3 (RSE 10.6%); see Assumptions |
+| `addSd` | 0.154 mg/L | Table 3 (RSE 44.5%) |
+
+```{r load-model}
+mod <- readModelDb("Chen_2023_vancomycin")
+# Typical-value form: zero the between-subject variability but KEEP the
+# residual-error parameters, which the error model still needs to resolve.
+mod_tv <- rxode2::zeroRe(mod, which = "omega")
+```
+
+```{r helpers}
+# One dosing-regimen event table for one subject, expressed as a plain data
+# frame. `cmt` is set explicitly to the ODE STATE name (`central`) on every
+# row -- never to the algebraic observable `Cc`, which would auto-inject a
+# compartment slot and renumber the model.
+# `days` defaults to 10 so that even the slowest-clearing subject the cohort can
+# draw is at steady state by the final interval. The cohort's floor eGFR of 12
+# mL/min/1.73 m^2 in a neonate gives a terminal half-life near 27 h, so 3 days
+# of dosing leaves such a subject several percent short of steady state and
+# breaks the AUC24 = dose/CL identity below. Only dosing records are added --
+# observations stay on the final interval -- so the extra days are nearly free.
+make_events <- function(id, WT, PAGE, CRCL, ALB, CTS, mg_kg_day, tau,
+                        days = 10, obs_by = 0.1, tinf = 1) {
+  amt <- WT * mg_kg_day / (24 / tau)
+  last_dose <- days * 24 - tau
+  dose <- data.frame(
+    id = id, time = seq(0, last_dose, by = tau), amt = amt, evid = 1,
+    rate = amt / tinf
+  )
+  obs <- data.frame(
+    id = id, time = seq(last_dose, last_dose + tau, by = obs_by),
+    amt = NA_real_, evid = 0, rate = NA_real_
+  )
+  out <- rbind(dose, obs)
+  out$cmt <- "central"
+  out$WT <- WT; out$PAGE <- PAGE; out$CRCL <- CRCL; out$ALB <- ALB
+  out$SURG_CARD_VASOACTIVE <- CTS
+  out$tau <- tau; out$mg_kg_day <- mg_kg_day; out$last_dose <- last_dose
+  out[order(out$time, out$evid), ]
+}
+
+# Individual clearance and volume for one covariate combination, read straight
+# off the typical-value solve.
+typical_pk <- function(WT, PAGE, CRCL, ALB, CTS) {
+  ev <- make_events(1L, WT, PAGE, CRCL, ALB, CTS,
+                    mg_kg_day = 40, tau = 24, days = 1, obs_by = 1)
+  s <- rxode2::rxSolve(mod_tv, ev, returnType = "data.frame")
+  c(cl = s$cl[1], vc = s$vc[1], mf = s$maturation_cl[1],
+    crcl_capped = s$crcl_capped[1])
+}
+```
+
+# Structural identities
+
+These checks are deterministic: they use the typical-value model with no
+between-subject variability, so each is an exact algebraic identity of the
+published equations rather than a cohort statistic. They are gated tightly.
+
+```{r identities}
+tol <- 1e-8
+
+# 1. Maturation is exactly 50% at PMA = TM50 = 37.0 weeks (Chen 2023 Methods:
+#    "TM50 is the PMA at which CL maturation reaches 50% of that of adults").
+mf_at_tm50 <- typical_pk(10, 37.0, 109, 36.2, 0)[["mf"]]
+
+# 2. The eGFR ceiling: any eGFR above 120 must behave exactly like 120
+#    (Chen 2023 Table 2 Model D).
+cl_120 <- typical_pk(10, 200, 120, 36.2, 0)[["cl"]]
+cl_200 <- typical_pk(10, 200, 200, 36.2, 0)[["cl"]]
+cl_379 <- typical_pk(10, 200, 379, 36.2, 0)[["cl"]]  # cohort maximum eGFR
+
+# 3. Cardiothoracic surgery with vasoactive support multiplies CL by exactly
+#    theta_1 = 0.761, i.e. the "roughly 24% reduction" of the Discussion.
+cts_ratio <- typical_pk(10, 200, 109, 36.2, 1)[["cl"]] /
+  typical_pk(10, 200, 109, 36.2, 0)[["cl"]]
+
+# 4. At the reference albumin the volume term collapses to pure allometry:
+#    V = 36.2 * (WT/70).
+vc_ref <- typical_pk(10, 200, 109, 36.2, 0)[["vc"]]
+
+identities <- tibble::tibble(
+  Check = c(
+    "Maturation factor at PMA = TM50 (37.0 weeks)",
+    "CL at eGFR 200 equals CL at eGFR 120 (cap)",
+    "CL at eGFR 379 equals CL at eGFR 120 (cap)",
+    "CL(CTS) / CL(non-CTS)",
+    "V at ALB = 36.2 g/L equals 36.2 * (WT/70)"
+  ),
+  Expected = c(0.5, cl_120, cl_120, 0.761, 36.2 * 10 / 70),
+  Achieved = c(mf_at_tm50, cl_200, cl_379, cts_ratio, vc_ref)
+) |>
+  mutate(`Abs. difference` = abs(Achieved - Expected))
+
+knitr::kable(identities, digits = 10,
+             caption = "Deterministic structural identities of the Chen 2023 equations.")
+
+stopifnot(all(identities$`Abs. difference` < tol))
+```
+
+# The covariate model
+
+```{r covariate-curves, fig.height = 3.4}
+mat_curve <- tibble::tibble(PMA = seq(24, 600, by = 2)) |>
+  mutate(MF = vapply(PMA, function(p) typical_pk(10, p, 109, 36.2, 0)[["mf"]], numeric(1)))
+
+p_mat <- ggplot(mat_curve, aes(PMA, MF)) +
+  geom_line() +
+  geom_hline(yintercept = 0.5, linetype = "dotted") +
+  geom_vline(xintercept = 37, linetype = "dotted") +
+  scale_x_log10() +
+  labs(x = "Postmenstrual age (weeks, log scale)", y = "Maturation factor",
+       title = "Sigmoid PMA maturation on CL",
+       subtitle = "Chen 2023 Equation 6; TM50 = 37.0 weeks, Hill = -1.63")
+
+egfr_curve <- tibble::tibble(CRCL = seq(10, 380, by = 2)) |>
+  mutate(CL = vapply(CRCL, function(g) typical_pk(10, 200, g, 36.2, 0)[["cl"]], numeric(1)))
+
+p_egfr <- ggplot(egfr_curve, aes(CRCL, CL)) +
+  geom_line() +
+  geom_vline(xintercept = 120, linetype = "dotted") +
+  labs(x = expression("eGFR (mL/min/1.73 m"^2*")"), y = "CL (L/h), 10 kg mature child",
+       title = "Renal-function effect on CL, capped at 120",
+       subtitle = "Chen 2023 Table 2 Model D")
+
+print(p_mat)
+print(p_egfr)
+```
+
+## Replicating Figure 1
+
+Chen 2023 Figure 1 plots individual clearance in L/h/kg against eGFR, with
+separate smooths for cardiothoracic-surgery and non-cardiothoracic-surgery
+patients and a vertical marker at eGFR 120. The model reproduces both features:
+the CTS curve sits uniformly below the non-CTS curve, and both flatten
+completely above 120 because of the cap.
+
+```{r figure-1, fig.height = 4}
+fig1 <- tidyr::crossing(CRCL = seq(10, 380, by = 5), CTS = c(0, 1)) |>
+  rowwise() |>
+  mutate(cl_per_kg = typical_pk(11.5, 134, CRCL, 36.3, CTS)[["cl"]] / 11.5) |>
+  ungroup() |>
+  mutate(Group = ifelse(CTS == 1, "CTS patients", "Non-CTS patients"))
+
+ggplot(fig1, aes(CRCL, cl_per_kg, colour = Group, linetype = Group)) +
+  geom_line(linewidth = 0.9) +
+  geom_vline(xintercept = 120, linetype = "dashed", colour = "grey40") +
+  scale_colour_manual(values = c("CTS patients" = "darkred",
+                                 "Non-CTS patients" = "steelblue")) +
+  labs(x = expression("eGFR (mL/min/1.73 m"^2*")"), y = "Vancomycin CL (L/h/kg)",
+       title = "Figure 1 - vancomycin CL versus eGFR",
+       caption = paste("Replicates Figure 1 of Chen 2023 (typical 11.5 kg,",
+                       "PMA 134-week child). The dashed line marks eGFR 120.")) +
+  theme(legend.position = "bottom")
+
+# The cap must make both curves exactly flat above 120, and the CTS curve must
+# sit below the non-CTS curve everywhere. Both are algebraic consequences of
+# the equations, so they are gated exactly.
+flat <- fig1 |> filter(CRCL >= 120) |> group_by(Group) |>
+  summarise(spread = diff(range(cl_per_kg)), .groups = "drop")
+stopifnot(all(flat$spread < 1e-10))
+wide <- fig1 |> select(CRCL, Group, cl_per_kg) |>
+  tidyr::pivot_wider(names_from = Group, values_from = cl_per_kg)
+stopifnot(all(wide$`CTS patients` < wide$`Non-CTS patients`))
+```
+
+# Replicating Table 5: the published dosing recommendations
+
+This is the strongest available check on the transcription. Chen 2023 Table 5
+gives an optimal daily dose for each combination of age band, cardiothoracic-
+surgery status and eGFR band, chosen so that most patients reach an AUC24/MIC
+of 400-650 at steady state with an assumed MIC of 1 mg/L. The paper computes
+AUC24 as total daily dose divided by CL (Methods, "Simulations"), so a
+correctly transcribed clearance model must place a typical patient given each
+of those 32 recommended doses inside the 400-650 window.
+
+The representative body weight and postmenstrual age for each age band are
+chosen here, not taken from the paper, so the agreement below is not
+circular - it tests the clearance equation across a 13-fold weight range, a
+20-fold PMA range, both surgery states and all four renal strata at once.
+
+```{r table5}
+reps <- tibble::tribble(
+  ~age_group,            ~WT,  ~PAGE,
+  "0 to <1 month",        3.5,   42,
+  "1 month to <2 years",  8.0,   70,
+  "2 to <12 years",      18.0,  320,
+  "12 to <18 years",     45.0,  750
+)
+
+# Chen 2023 Table 5, Dose (mg/kg/day) column. Where the paper gives a range
+# (e.g. "25-30") the midpoint is used.
+tab5 <- tibble::tribble(
+  ~age_group,             ~CTS, ~egfr_band, ~dose,
+  "0 to <1 month",           0, "30-60",     27.5,
+  "0 to <1 month",           0, "60-90",     47.5,
+  "0 to <1 month",           0, "90-120",    60.0,
+  "0 to <1 month",           0, ">120",      75.0,
+  "0 to <1 month",           1, "30-60",     20.0,
+  "0 to <1 month",           1, "60-90",     35.0,
+  "0 to <1 month",           1, "90-120",    47.5,
+  "0 to <1 month",           1, ">120",      55.0,
+  "1 month to <2 years",     0, "30-60",     35.0,
+  "1 month to <2 years",     0, "60-90",     50.0,
+  "1 month to <2 years",     0, "90-120",    70.0,
+  "1 month to <2 years",     0, ">120",      80.0,
+  "1 month to <2 years",     1, "30-60",     25.0,
+  "1 month to <2 years",     1, "60-90",     40.0,
+  "1 month to <2 years",     1, "90-120",    55.0,
+  "1 month to <2 years",     1, ">120",      60.0,
+  "2 to <12 years",          0, "30-60",     32.5,
+  "2 to <12 years",          0, "60-90",     55.0,
+  "2 to <12 years",          0, "90-120",    70.0,
+  "2 to <12 years",          0, ">120",      80.0,
+  "2 to <12 years",          1, "30-60",     25.0,
+  "2 to <12 years",          1, "60-90",     40.0,
+  "2 to <12 years",          1, "90-120",    52.5,
+  "2 to <12 years",          1, ">120",      62.5,
+  "12 to <18 years",         0, "30-60",     25.0,
+  "12 to <18 years",         0, "60-90",     42.5,
+  "12 to <18 years",         0, "90-120",    65.0,
+  "12 to <18 years",         0, ">120",      70.0,
+  "12 to <18 years",         1, "30-60",     20.0,
+  "12 to <18 years",         1, "60-90",     32.5,
+  "12 to <18 years",         1, "90-120",    47.5,
+  "12 to <18 years",         1, ">120",      52.5
+)
+
+egfr_mid <- c("30-60" = 45, "60-90" = 75, "90-120" = 105, ">120" = 140)
+
+tab5 <- tab5 |>
+  left_join(reps, by = "age_group") |>
+  mutate(CRCL = unname(egfr_mid[egfr_band])) |>
+  rowwise() |>
+  mutate(cl = typical_pk(WT, PAGE, CRCL, 36.3, CTS)[["cl"]]) |>
+  ungroup() |>
+  mutate(
+    AUC24 = WT * dose / cl,
+    in_target = AUC24 >= 400 & AUC24 <= 650
+  )
+
+tab5 |>
+  mutate(Surgery = ifelse(CTS == 1, "CTS", "Non-CTS")) |>
+  select(`Age band` = age_group, Surgery, `eGFR band` = egfr_band,
+         `Dose (mg/kg/day)` = dose, `CL (L/h)` = cl,
+         `AUC24 (mg*h/L)` = AUC24, `In 400-650` = in_target) |>
+  knitr::kable(
+    digits = c(0, 0, 0, 1, 3, 0, 0),
+    caption = paste("Replicates Chen 2023 Table 5. Steady-state AUC24 for a",
+                    "representative patient in each band, given the paper's own",
+                    "recommended dose. MIC is assumed to be 1 mg/L, so AUC24",
+                    "equals AUC24/MIC.")
+  )
+
+# Deterministic given the representative covariates above, so gated on the
+# paper's own target window rather than on a tolerance. Realised range is
+# reported below so a future reader can see the headroom.
+stopifnot(all(tab5$in_target))
+```
+
+All `r nrow(tab5)` of the paper's recommended doses land inside the published
+400-650 target, with realised AUC24 spanning
+`r sprintf("%.0f", min(tab5$AUC24))` to `r sprintf("%.0f", max(tab5$AUC24))`
+mg*h/L - clustered near the centre of the window rather than scraping its
+edges. A mis-transcribed clearance term, allometric reference, maturation
+constant or eGFR exponent would move these by tens of percent and break the
+check immediately.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below reproduces
+the Chen 2023 Table 1 marginal distributions: the postnatal-age band
+proportions, a weight-for-age relationship with log-normal scatter (so weight
+and postmenstrual age stay physiologically coupled), and log-normal eGFR and
+normal albumin matched to the published medians and interquartile ranges. The
+cardiothoracic-surgery prevalence and the daily-dose distribution follow
+Table 1 as well.
+
+```{r cohort}
+# set.seed() seeds R's RNG for the covariate draw below. It does NOT seed
+# rxode2's simulation RNG, whose streams are partitioned per solver thread --
+# so the residual-error and IIV draws differ between a 16-thread workstation
+# and a 2-core CI runner. Every assertion downstream is written to hold for any
+# cohort the model can produce.
+set.seed(20230628)
+n_subj <- 200
+
+# Table 1 PNA bands and their proportions.
+band_p  <- c(6.1, 31.4, 14.1, 43.5, 4.9) / 100
+band_lo <- c(0.01, 1 / 12, 1, 2, 12)
+band_hi <- c(1 / 12, 1, 2, 12, 17.83)
+band <- sample(seq_along(band_p), n_subj, replace = TRUE, prob = band_p)
+pna_years <- band_lo[band] + runif(n_subj) * (band_hi[band] - band_lo[band])
+
+# Weight-for-age: a smooth infant-through-adolescent median with log-normal
+# scatter, then clipped to the Table 1 observed range.
+wt_median <- 3.3 + 6.2 * pna_years / (0.35 + pna_years) + 2.3 * pna_years
+iqr_z <- 2 * stats::qnorm(0.75)
+
+cohort <- tibble::tibble(
+  id  = seq_len(n_subj),
+  PNA = pna_years,
+  WT  = pmin(pmax(wt_median * exp(stats::rnorm(n_subj, 0, 0.22)), 1.4), 69.0),
+  # Chen 2023 Methods: PMA = GA + PNA, with GA imputed at 40 weeks above 1 year.
+  PAGE = pna_years * 52.18 + 40,
+  CRCL = pmin(pmax(exp(stats::rnorm(n_subj, log(109),
+                                    (log(141) - log(87)) / iqr_z)), 12), 379),
+  ALB  = pmin(pmax(stats::rnorm(n_subj, 36.3, (40.5 - 31.5) / iqr_z), 18.6), 57.9),
+  SURG_CARD_VASOACTIVE = stats::rbinom(n_subj, 1, 0.101),
+  tau = sample(c(6, 8, 12), n_subj, replace = TRUE),
+  mg_kg_day = pmin(pmax(exp(stats::rnorm(n_subj, log(40), 0.22)), 19.7), 70.0)
+)
+
+tibble::tibble(
+  Characteristic = c("WT (kg)", "PMA (weeks)", "eGFR (mL/min/1.73 m^2)",
+                     "ALB (g/L)", "Daily dose (mg/kg)"),
+  Simulated = c(
+    sprintf("%.1f [%.1f-%.1f]", median(cohort$WT),
+            quantile(cohort$WT, .25), quantile(cohort$WT, .75)),
+    sprintf("%.0f [%.0f-%.0f]", median(cohort$PAGE),
+            quantile(cohort$PAGE, .25), quantile(cohort$PAGE, .75)),
+    sprintf("%.0f [%.0f-%.0f]", median(cohort$CRCL),
+            quantile(cohort$CRCL, .25), quantile(cohort$CRCL, .75)),
+    sprintf("%.1f [%.1f-%.1f]", median(cohort$ALB),
+            quantile(cohort$ALB, .25), quantile(cohort$ALB, .75)),
+    sprintf("%.1f [%.1f-%.1f]", median(cohort$mg_kg_day),
+            quantile(cohort$mg_kg_day, .25), quantile(cohort$mg_kg_day, .75))
+  ),
+  `Chen 2023 Table 1` = c("11.5 [6.5-20.0]", "134 [66-344]", "109 [87-141]",
+                          "36.3 [31.5-40.5]", "40.0 [39.2-57.8]")
+) |>
+  knitr::kable(caption = "Virtual cohort versus Chen 2023 Table 1 (median [IQR]).")
+```
+
+```{r cohort-events}
+build_events <- function(df, dose_col, obs_by = 0.1) {
+  do.call(rbind, lapply(seq_len(nrow(df)), function(i) {
+    make_events(df$id[i], df$WT[i], df$PAGE[i], df$CRCL[i], df$ALB[i],
+                df$SURG_CARD_VASOACTIVE[i], df[[dose_col]][i], df$tau[i],
+                obs_by = obs_by)
+  }))
+}
+
+events <- build_events(cohort, "mg_kg_day")
+
+# IDs are already disjoint (one row-block per subject), but assert it anyway:
+# duplicate (id, time, evid) triples silently merge subjects in rxSolve.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+# Simulation
+
+Ten days of dosing brings every subject the cohort can draw to steady state -
+the typical terminal half-life is a few hours, and the slowest subject at the
+cohort's floor eGFR is near 27 h - and the final dosing interval is observed on
+a 0.1 h grid.
+
+```{r simulate}
+rxode2::rxSetSeed(20230628)
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("tau", "mg_kg_day", "last_dose", "WT", "CRCL",
+           "SURG_CARD_VASOACTIVE"),
+  returnType = "data.frame"
+) |>
+  filter(!is.na(Cc)) |>
+  mutate(tad = time - last_dose)
+
+stopifnot(nrow(sim) > 0, all(sim$Cc >= 0))
+```
+
+```{r vpc, fig.height = 4}
+sim |>
+  mutate(`Dosing interval` = paste0("q", tau, "h")) |>
+  group_by(`Dosing interval`, tad) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = quantile(Cc, 0.50),
+            Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~`Dosing interval`, scales = "free_x") +
+  labs(x = "Time after dose (h)", y = "Vancomycin concentration (mg/L)",
+       title = "Steady-state concentration-time profile by dosing interval",
+       subtitle = "Median with 5th-95th percentile band, 200 virtual subjects")
+```
+
+# PKNCA validation
+
+NCA is run over the final, steady-state dosing interval, grouped by dosing
+interval so per-group results are separable.
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  mutate(regimen = paste0("q", tau, "h")) |>
+  select(id, time, Cc, regimen, tau, last_dose)
+
+dose_df <- events |>
+  filter(evid == 1) |>
+  mutate(regimen = paste0("q", tau, "h")) |>
+  select(id, time, amt, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | regimen + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time | regimen + id)
+
+# One steady-state interval per subject: the last dosing interval.
+intervals <- sim_nca |>
+  distinct(id, regimen, tau, last_dose) |>
+  transmute(start = last_dose, end = last_dose + tau,
+            regimen, id,
+            cmax = TRUE, tmax = TRUE, cmin = TRUE,
+            auclast = TRUE, cav = TRUE) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result)
+```
+
+## Internal identity: AUC24 equals daily dose divided by clearance
+
+For a linear one-compartment model at steady state, the area under the curve
+across one dosing interval, scaled to 24 h, equals the total daily dose divided
+by clearance. That is exactly the relationship Chen 2023 uses to convert a dose
+into an AUC24/MIC (Methods, "Simulations"), so it is worth confirming that the
+packaged model honours it. Both sides here come from the same simulation, so
+the only difference is trapezoidal-integration error on a 0.1 h grid; the check
+is gated tightly.
+
+```{r auc-identity}
+auc_check <- nca_tbl |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, regimen, auclast = PPORRES) |>
+  left_join(cohort |> select(id, WT, mg_kg_day, tau), by = "id") |>
+  left_join(
+    sim |> distinct(id, cl_ind = cl),
+    by = "id"
+  ) |>
+  mutate(
+    auc24_nca = auclast * 24 / tau,
+    auc24_identity = WT * mg_kg_day / cl_ind,
+    pct_diff = 100 * (auc24_nca - auc24_identity) / auc24_identity
+  )
+
+tibble::tibble(
+  Statistic = c("Median |% difference|", "Maximum |% difference|"),
+  Value = c(median(abs(auc_check$pct_diff)), max(abs(auc_check$pct_diff)))
+) |>
+  knitr::kable(digits = 4,
+               caption = "AUC24 from PKNCA versus daily dose / CL.")
+
+# Trapezoidal error on a 0.1 h grid only; nothing stochastic enters the
+# comparison because both sides use the same drawn parameters, so this is
+# gated near the accuracy actually achieved rather than loosely. Realised max
+# 0.0143% at both 16 and 2 solver threads; 0.2 keeps an order of magnitude of
+# headroom for an unluckier draw while still going red on any real structural
+# error (a missed dose, a wrong interval, a window that is not yet at steady
+# state all move this by whole percent -- a 3-day run-in put it over 1%).
+stopifnot(max(abs(auc_check$pct_diff)) < 0.2)
+```
+
+## Comparison against the published concentrations
+
+Chen 2023 Table 1 reports the observed peak and trough concentrations of the
+model group. Its footnote c defines these by **sampling window**, not by
+extremum: "Peak: between 0 and 2 h after the end of infusion; trough: >2 h
+after the end of infusion." A trough sampled anywhere more than 2 h after the
+end of a 1 h infusion is therefore not a pre-dose trough, and comparing the
+published value against a true pre-dose concentration understates the model by
+roughly 40%. The table below shows both readings so the distinction is visible:
+the "NCA extremes" rows use PKNCA's Cmax and Cmin over the dosing interval,
+while the "Table 1 sampling windows" rows re-sample the same simulation using
+the paper's own window definitions.
+
+```{r nca_compare}
+# Re-sample each subject once inside each of the paper's two windows.
+set.seed(11)
+windowed <- sim |>
+  group_by(id) |>
+  summarise(
+    cmax = {
+      w <- Cc[tad >= 1 & tad <= 3]
+      if (length(w)) sample(w, 1) else NA_real_
+    },
+    cmin = {
+      w <- Cc[tad > 3 & tad <= first(tau)]
+      if (length(w)) sample(w, 1) else NA_real_
+    },
+    .groups = "drop"
+  ) |>
+  filter(!is.na(cmax), !is.na(cmin))
+stopifnot(nrow(windowed) > 100)
+
+simulated_long <- bind_rows(
+  nca_tbl |>
+    filter(PPTESTCD %in% c("cmax", "cmin")) |>
+    transmute(sampling = "NCA extremes over the dosing interval",
+              PPTESTCD, PPORRES),
+  windowed |>
+    tidyr::pivot_longer(c(cmax, cmin), names_to = "PPTESTCD",
+                        values_to = "PPORRES") |>
+    mutate(sampling = "Chen 2023 Table 1 sampling windows")
+)
+
+published <- tibble::tribble(
+  ~sampling,                                 ~cmax,  ~cmin,
+  "NCA extremes over the dosing interval",   19.91,  7.18,
+  "Chen 2023 Table 1 sampling windows",      19.91,  7.18
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = as.data.frame(simulated_long),
+  reference     = as.data.frame(published),
+  by            = "sampling",
+  units         = c(cmax = "mg/L", cmin = "mg/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  digits  = 2,
+  caption = paste("Simulated versus Chen 2023 Table 1 peak and trough",
+                  "concentrations (medians). Reference values are identical",
+                  "across both rows - only the simulated sampling scheme",
+                  "differs. * differs from reference by >20%.")
+)
+```
+
+Read against the paper's own sampling windows, the simulated peak and trough
+medians track the published values closely; read as NCA extremes they bracket
+them, which is the expected direction given that a window sample can only fall
+below the interval maximum and above the interval minimum.
+
+```{r compare-gate}
+# `cmp`'s "% diff" column is a formatted string carrying the >20% asterisk, so
+# the gate recomputes the window-matched differences from the data rather than
+# parsing it back out.
+ref_peak   <- 19.91  # Chen 2023 Table 1, model-group median peak (mg/L)
+ref_trough <- 7.18   # Chen 2023 Table 1, model-group median trough (mg/L)
+
+win_peak   <- 100 * (median(windowed$cmax) - ref_peak)   / ref_peak
+win_trough <- 100 * (median(windowed$cmin) - ref_trough) / ref_trough
+
+tibble::tibble(
+  Quantity = c("Peak (window 0-2 h post-infusion)",
+               "Trough (window >2 h post-infusion)"),
+  `Chen 2023 Table 1` = c(ref_peak, ref_trough),
+  `Simulated median` = c(median(windowed$cmax), median(windowed$cmin)),
+  `% difference` = c(win_peak, win_trough)
+) |>
+  knitr::kable(digits = 1,
+               caption = "Window-matched simulated concentrations versus Chen 2023 Table 1.")
+
+# These ARE cohort statistics, so the bound has to survive any cohort the model
+# can draw and any solver-thread count. Two effects sit inside it that no
+# amount of correct transcription removes: the virtual cohort matches Table 1
+# marginally but not jointly, and the published values come from clinically
+# triggered TDM sampling rather than a randomised design. Measured across
+# solver-thread counts, which draw different cohorts: peak +16.5% and trough
+# +32.4% at 16 threads, peak +11.0% and trough +25.8% at 2 threads. Do not
+# tighten 60 towards those: a mis-transcribed CL, V, dose or unit moves a
+# concentration by a factor rather than by tens of percent, so 60 still goes
+# red on any such error while admitting the cohort noise above.
+stopifnot(abs(win_peak) < 60, abs(win_trough) < 60)
+```
+
+## Optimal trough range
+
+Chen 2023 Figure 6 concludes that, under the Table 5 dosing regimens, the
+trough concentration corresponding to an AUC24/MIC of 400-650 falls inside a
+narrower band within 8-15 mg/L. The check below doses each virtual subject at
+their band's recommended dose and reports the resulting pre-dose trough
+distribution.
+
+```{r trough-range}
+band_of <- function(egfr) {
+  cut(pmin(egfr, 200), c(-Inf, 60, 90, 120, Inf),
+      labels = c("30-60", "60-90", "90-120", ">120"))
+}
+age_band_of <- function(pna) {
+  cut(pna, c(-Inf, 1 / 12, 2, 12, Inf),
+      labels = c("0 to <1 month", "1 month to <2 years",
+                 "2 to <12 years", "12 to <18 years"))
+}
+
+opt <- cohort |>
+  mutate(egfr_band = as.character(band_of(CRCL)),
+         age_group = as.character(age_band_of(PNA))) |>
+  filter(CRCL >= 30) |>
+  left_join(tab5 |> select(age_group, CTS, egfr_band, opt_dose = dose),
+            by = c("age_group", "egfr_band",
+                   "SURG_CARD_VASOACTIVE" = "CTS"))
+stopifnot(!anyNA(opt$opt_dose))
+
+opt_events <- build_events(opt, "opt_dose", obs_by = 0.25)
+
+rxode2::rxSetSeed(99)
+opt_sim <- rxode2::rxSolve(mod, events = opt_events,
+                           keep = c("tau", "mg_kg_day", "last_dose"),
+                           returnType = "data.frame") |>
+  filter(!is.na(Cc)) |>
+  mutate(tad = time - last_dose)
+
+trough <- opt_sim |>
+  group_by(id) |>
+  filter(abs(tad - first(tau)) < 1e-6) |>
+  ungroup()
+auc24 <- opt_sim |>
+  distinct(id, cl, mg_kg_day) |>
+  left_join(cohort |> select(id, WT), by = "id") |>
+  mutate(AUC24 = WT * mg_kg_day / cl)
+
+tibble::tibble(
+  Quantity = c("Pre-dose trough (mg/L)", "AUC24/MIC (MIC = 1 mg/L)"),
+  `Median [IQR]` = c(
+    sprintf("%.1f [%.1f-%.1f]", median(trough$Cc),
+            quantile(trough$Cc, .25), quantile(trough$Cc, .75)),
+    sprintf("%.0f [%.0f-%.0f]", median(auc24$AUC24),
+            quantile(auc24$AUC24, .25), quantile(auc24$AUC24, .75))
+  ),
+  `Chen 2023` = c("8-15 (Figure 6, optimal range)",
+                  "400-650 (target, Table 5)")
+) |>
+  knitr::kable(caption = paste("Virtual cohort dosed at its Chen 2023 Table 5",
+                               "recommended dose."))
+
+# The cohort median AUC24 must land in the paper's own target window. This is a
+# cohort statistic, but the window is 400-650 and the realised median is 524
+# at 16 solver threads and 500 at 2, both near its centre, so there is real
+# headroom on both sides.
+stopifnot(median(auc24$AUC24) > 400, median(auc24$AUC24) < 650)
+```
+
+The cohort median AUC24/MIC of `r sprintf("%.0f", median(auc24$AUC24))` sits
+near the centre of the paper's 400-650 target, which is the substantive claim
+of Table 5. The pre-dose trough distribution, median
+`r sprintf("%.1f", median(trough$Cc))` mg/L, sits a little below the 8-15 mg/L
+band of Figure 6. That is expected rather than contradictory: Figure 6 is built
+on the paper's own resampled virtual population, whose joint covariate
+structure this vignette reproduces only marginally (see Assumptions), and the
+trough is far more sensitive than the AUC to the volume term and to the
+dosing-interval mix, which is drawn uniformly over 6, 8 and 12 h here rather
+than following the paper's dose-dependent interval rules. No gate is placed on
+the trough band for that reason.
+
+# Assumptions and deviations
+
+- **Residual error.** Chen 2023 used a combined additive and *exponential*
+  residual model, `Y = F * exp(eps1) + eps2`. rxode2 (tested on 5.1.7) cannot
+  simulate a log-normal residual combined with an additive one -
+  `Cc ~ lnorm(expSd) + add(addSd)` *parses and compiles*, then fails at
+  `rxSolve()` with "cannot find additive standard deviation for 'Cc'; this
+  parameter could be estimated by another endpoint, to fix move outside of
+  error expression." Confirm it at the solve, not the build: a build-only
+  check succeeds and makes this note look wrong. The exponential arm is
+  therefore encoded as its
+  first-order equivalent proportional arm, `Cc ~ add(addSd) + prop(propSd)`
+  with `propSd = 0.177`, since `F * exp(eps1)` reduces to `F * (1 + eps1)` for
+  small `eps1`. The cost is 0.8% on the residual magnitude: the paper's
+  log-scale SD of 0.177 implies a linear-space CV of
+  `sqrt(exp(0.177^2) - 1) = 0.1784` against the 0.177 encoded. The additive arm
+  is carried unchanged at 0.154 mg/L.
+- **Between-subject variance scale.** Table 3 reports the CL and V
+  variabilities as 27.5% and 27.2% CV and, in the same block, their covariance
+  as 0.0536 on the OMEGA scale. The paper does not state which %CV convention
+  it used. Because the off-diagonal is given on the variance scale, the
+  diagonals are read on the same scale here, `omega^2 = (%CV / 100)^2`, giving
+  0.075625 and 0.073984 and an implied correlation of 0.717. Under the
+  alternative exact log-normal reading, `omega^2 = log(1 + CV^2)`, the
+  variances would be 0.072919 and 0.071392 and the correlation 0.743. The
+  difference is under 4% in variance and changes nothing in any check above.
+- **Albumin reference constant.** The Table 3 volume equation uses 36.2 in
+  `(36.2 / ALB)^theta_ALB`, numerically identical to the TV(V) estimate of
+  36.2 L that appears two lines above it. The Table 1 albumin median is
+  36.3 g/L, so 36.2 g/L is a plausible rounded cohort median and the
+  coincidence appears genuine. Were it instead a typesetting duplication and
+  the true reference 36.3, the effect on V would be
+  `(36.2/36.3)^0.279 = 0.9992`, i.e. under 0.1% - immaterial to every result
+  here. The printed 36.2 is used.
+- **eGFR is supplied uncapped.** The `CRCL` column takes the raw Equation 11
+  value; the 120 mL/min/1.73 m^2 ceiling is applied inside `model()` because it
+  is a fitted feature of the covariate model (Table 2 Model D), not a
+  data-preparation step. Supplying an already-capped value is harmless; the
+  `min()` is idempotent.
+- **Unit conversions for eGFR.** Equation 11 takes height in metres, serum
+  creatinine in mg/dL and BUN in mg/dL, whereas Chen 2023 Table 1 reports
+  height in cm, creatinine in umol/L and BUN in mmol/L. A user computing
+  `CRCL` from raw laboratory values must convert: cm / 100, umol/L / 88.4,
+  mmol/L * 2.8.
+- **Postmenstrual age is in weeks.** The canonical `PAGE` register default is
+  months, but the register entry explicitly permits weeks for models whose
+  source equations are written on that scale. TM50 = 37.0 weeks here, so this
+  model declares and uses weeks throughout.
+- **Representative covariates for Table 5.** The body weight and postmenstrual
+  age used for each Chen 2023 age band are chosen in this vignette, not taken
+  from the paper, which reports the recommendations by band rather than for a
+  named reference patient. The eGFR band midpoints (45, 75, 105 and 140
+  mL/min/1.73 m^2) are likewise chosen; 140 stands in for the open-ended
+  ">120" band, where the model's cap makes any value above 120 equivalent.
+  Where Table 5 gives a dose range, its midpoint is used.
+- **Virtual-cohort covariate distributions.** Chen 2023 reports Table 1
+  covariates marginally, not jointly. Weight and postmenstrual age are coupled
+  here through a weight-for-age relationship so no 3 kg neonate is assigned an
+  adolescent age, but eGFR, albumin, dosing interval and daily dose are drawn
+  independently of age and of each other. The real cohort's correlations - a
+  neonate is both smaller and more likely to be renally immature - are
+  therefore not reproduced, which is one reason the simulated concentration
+  distribution is wider than Table 1's.
+- **The published concentrations come from clinical TDM sampling**, which is
+  triggered by clinical concern rather than randomised, and their sampling
+  windows are broad (footnote c). The comparison above is therefore between a
+  randomly sampled virtual cohort and a clinically selected observed one, and
+  is gated with headroom accordingly.
+- **No external-validation cohort.** The 53-subject Shanghai Children's
+  Medical Center cohort is described in the population metadata but not
+  simulated; it contributed no parameter estimates.
+- All parameter values come from the paper's own text and tables. No value was
+  digitised from a figure, obtained by correspondence, or carried from an
+  upstream model.

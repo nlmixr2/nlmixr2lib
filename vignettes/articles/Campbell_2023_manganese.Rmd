@@ -1,0 +1,840 @@
+---
+title: "Manganese monkey and human PBPK (Campbell 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Manganese monkey and human PBPK (Campbell 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode2(readModelDb("Campbell_2023_manganese_monkey_pbpk"))$reference`
+* Article: <https://doi.org/10.1093/toxsci/kfac123>
+* Supplement (complete ODE listing + Table S1): <https://doi.org/10.1093/toxsci/kfac123> (Supplementary Material)
+
+Campbell et al. recast the Schroeter (2011) monkey and human manganese PBPK models
+so that manganese binds to saturable tissue sites **rapidly and reversibly**,
+following the structure Yoon et al. (2019) had established for the adult rat.
+In the older models the association/dissociation of bound manganese was slow and
+was deliberately made the rate-limiting step for loss of tissue manganese. Here
+the binding and dissociation rate constants are large (dissociation half-lives of
+minutes), a single equilibrium dissociation constant `KD` of roughly 0.5 uM is
+shared across tissues, and the tissue-to-tissue differences live entirely in the
+maximal binding capacity `Bmax`. Free manganese accumulates only once those sites
+saturate, which is what produces the sharply nonlinear tissue dose response above
+about 0.1 mg/m3.
+
+The paper's central methodological claim is a **cross-species transfer**: the
+tissue influx, efflux and binding-capacity parameters were estimated against
+monkey data only, then carried over unchanged (with allometric scaling) into the
+human model, where only the dietary absorbed fraction and the biliary clearance
+were re-fitted. This library therefore ships two files that share every
+chemical-specific parameter and differ only in physiology and gut handling.
+
+```{r load}
+monkey <- readModelDb("Campbell_2023_manganese_monkey_pbpk")
+human <- readModelDb("Campbell_2023_manganese_human_pbpk")
+mkUi <- rxode2::rxode2(monkey)
+huUi <- rxode2::rxode2(human)
+c(monkey_states = length(mkUi$state), human_states = length(huUi$state))
+```
+
+Each species carries 65 ODEs: a 34-state bulk-manganese system and a 31-state
+`54Mn` radiotracer twin. The tracer is not a separable linear sub-system --
+tracer and bulk manganese **compete for the same binding sites**, because the
+free-capacity term is `Bmax - bound_<organ> - bound_<organ>_mn54`.
+
+# Population
+
+```{r population}
+mkPop <- monkey()$population
+huPop <- human()$population
+tibble::tibble(
+  Field = c("Species", "Weight", "Dose range"),
+  Monkey = c(mkPop$species, mkPop$weight_range, mkPop$dose_range),
+  Human = c(huPop$species, huPop$weight_median, huPop$dose_range)
+) |>
+  knitr::kable()
+```
+
+Monkey data are the Dorman (2006a) 90-day inhalation study (4-6 animals per
+exposure concentration, MnSO4 aerosol at 0, 0.06, 0.3 and 1.5 mg Mn/m3, 6 h/day
+5 days/week) plus four whole-body `54Mn` tracer studies. Human data are almost
+entirely whole-body `54Mn` retention studies plus plasma manganese responses to
+controlled dietary change; there are **no human tissue time-course data**, so
+predicted human tissue concentrations rest on the cross-species parameter
+transfer rather than on direct observation.
+
+# Source trace
+
+Every value in both files carries an in-file comment naming its source location.
+The table below is the reviewer-facing summary.
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity, ~`Source location`,
+  "Body weight, tissue volume fractions, brain-region fractions, nasal surface areas and thickness, cardiac output, alveolar ventilation, tissue blood flows", "Table 1 (monkey and human columns)",
+  "Brain-region volume fractions for the monkey (2x right-hemisphere weights)", "Supplementary Table S1",
+  "Tissue influx / efflux diffusion rate constants (KIN*, KOUT*)", "Table 2, 'Cellular transport'; optimised to monkey, reused for human",
+  "Association rate constant (0.182 per ug/L per h, all 8 tissues)", "Table 2, 'Tissue binding constants'; Yoon et al. 2019",
+  "Equilibrium dissociation constants (20 or 25 ug/L)", "Table 2 (given as ka x KD); Discussion confirms '0.37 or 0.46 uM (20 or 25 ug/l)'",
+  "Maximal binding capacities (BMAX*)", "Table 2, 'Maximal storage tissue capacities'",
+  "Regional deposition fractions and epithelial clearances", "Table 2, 'Fraction deposited and olfactory bulb translocation' (airflow split taken from Methods -- see Errata)",
+  "GI parameters (FDIETUP, KGI, FENT, KENT, KFECES)", "Table 2, 'GI parameters' (human KGI corrected -- see Errata)",
+  "Biliary clearance and its Hill-type induction (KBILEC, KBINDUC, KM, SLOPE)", "Table 2 (continued); human KBILEC also confirmed in the Figure 9 caption",
+  "Full ODE structure, tissue vascular fraction (3%), output definitions", "Supplementary Material model listing",
+  "Exposure protocol (6 h/day, 5 days/week, 90 days)", "Figures 3 and 6 captions",
+  "Plasma = 20% of blood manganese", "Figure 10 caption"
+) |>
+  knitr::kable()
+```
+
+## Units
+
+```{r units-table, echo = FALSE}
+tibble::tribble(
+  ~Quantity, ~Unit, ~Note,
+  "Time", "h", "the supplement integrates in hours; figures plot days",
+  "State amounts", "ug Mn", "every ODE state is an amount, not a concentration",
+  "Volumes", "L", "body weight in kg is taken as L (density 1)",
+  "Tissue concentration output", "ug/g", "amount / (volume in L x 1000); the units of Figures 3 and 6",
+  "Blood concentration (Cc)", "ug/L", "arterial whole blood",
+  "Dietary intake", "mg/day", "converted internally to ug/h by x1000/24",
+  "Inhaled air concentration", "mg/m3", "numerically identical to ug/L of air",
+  "Association rate constant", "per ug/L per h", "so ka x KD has units 1/h",
+  "Biliary induction KM", "ug/g", "Table 2 labels it ug/l; the supplement compares it against ug/g -- see Errata"
+) |>
+  knitr::kable()
+```
+
+# Dimensional analysis
+
+Two checks worth stating explicitly, because both are places a transcription
+error would hide.
+
+**Binding.** `ka` is `per ug/L per h` and `KD` is `ug/L`, so the dissociation
+rate `kd = ka * KD` is `1/h`. The bound-pool ODE is
+`-kd * bound + ka * (free sites, ug) * (free conc, ug/L)`, which is
+`ug/h` on both terms. The equilibrium bound amount is therefore
+`Bmax * C / (KD + C)` -- an ordinary saturable isotherm.
+
+```{r dimensional-binding}
+ka <- 0.182
+kdVals <- c(globus_pallidus = 20, cerebellum = 20, other = 20, pituitary = 20,
+            liver = 25, lung = 25, bone = 25, olfactory_bulb = 25)
+mwMn <- 54.938  # g/mol
+tibble::tibble(
+  tissue = names(kdVals),
+  KD_ug_L = kdVals,
+  KD_uM = round(kdVals / mwMn, 3),
+  kd_per_h = round(ka * kdVals, 3),
+  kd_half_life_min = round(log(2) / (ka * kdVals) * 60, 1)
+) |>
+  knitr::kable()
+```
+
+The `KD` values in uM are 0.364 and 0.455 against the Discussion's printed "0.37
+or 0.46 uM", and both are near the "approximately 0.5 uM" the paper attributes to
+Yoon et al. (2019). The 25 ug/L value reproduces its printed 0.46 exactly; the
+20 ug/L value computes to 0.364, whose rounding interval does not quite reach the
+printed 0.37, so the paper has rounded 0.364 up by one in the last digit. The
+assertion below therefore checks the *conversion* rather than the paper's
+rounding -- it still goes red on a wrong molecular weight or a factor-of-ten unit
+slip, which is what it is there to catch.
+
+```{r dimensional-binding-check}
+kdUM <- unname(kdVals[c("globus_pallidus", "liver")]) / mwMn
+stopifnot(
+  # The ug/L -> uM conversion must land on the Discussion's printed pair to
+  # within its last printed digit (0.364 vs 0.37; 0.455 vs 0.46).
+  all(abs(kdUM - c(0.37, 0.46)) < 0.01),
+  # ... and every tissue must sit near the paper's "approximately 0.5 uM".
+  all(kdVals / mwMn > 0.3), all(kdVals / mwMn < 0.6)
+)
+```
+
+The Discussion additionally describes these dissociation rate constants as
+"equivalent to half-lives of 4-5 min". From the printed `ka` and `KD` the
+half-lives are 9.1-11.4 min, so that particular sentence does not follow from
+the printed parameters; it is a Discussion characterisation and no model
+parameter depends on it (recorded in the Errata).
+
+**Pituitary.** `bmax_pituitary` is 0.55 ug/L of tissue, essentially zero next to
+the other tissues' 100-7900 ug/L. That is not a typo: it makes pituitary
+manganese almost entirely *free*, so at steady state the pituitary tracks blood
+with a fixed amplification set only by the influx/efflux ratio and the
+volume bookkeeping. Typing that closed form from the printed Table 1 and Table 2
+values gives an independent check on the ODE implementation.
+
+```{r dimensional-pituitary}
+# Closed form from PRINTED values only (not read back from the model object):
+#   at steady state kin*A_brainblood = kout*A_pit, and brain blood is 3% of brain
+#   volume, so C_pit / C_brainblood = (kin/kout) * 0.03 / f_pituitary.
+amp_printed <- (0.016 / 0.012) * 0.03 / 0.00037
+amp_printed
+```
+
+That predicts a pituitary:blood ratio of about 108, so a baseline blood
+manganese of 0.010 ug/g implies roughly 1.08 ug/g in the pituitary -- which is
+what Figure 3H shows at day 0. The same arithmetic reproduces the Figure 3H peak
+(blood 0.075 ug/g x 108 = 8.1 ug/g of free plus vascular manganese). This is
+checked numerically against the solved model below.
+
+# Monkey: steady state on the background diet
+
+Both files start every state at zero, exactly as the supplement's listing does,
+with the note that "state variables must be initialized to the steady state
+amount or the model must be run to steady state before assessing any additional
+exposure". So the first step of any simulation is a burn-in.
+
+Campbell 2023 does not report the monkey dietary manganese intake numerically
+(the supplement's `INFAC` intake factor, needed for the ppm route, is not given).
+We therefore anchor the monkey scenario on the paper's own reported baseline:
+the dietary rate that places the model at the Figure 3F day-0 blood manganese of
+0.010 ug/g. This is a **calibrated scenario input, not a published parameter**,
+and it is the only quantity in this vignette that is fitted rather than read.
+
+```{r monkey-burnin}
+solveMn <- function(ui, params = list(), times, inits = NULL) {
+  m <- ui
+  if (length(params)) m <- do.call(rxode2::ini, c(list(m), params))
+  args <- list(m, events = rxode2::et(times), atol = 1e-9, rtol = 1e-9,
+               maxsteps = 1e6)
+  if (!is.null(inits)) args$inits <- inits
+  as.data.frame(do.call(rxode2::rxSolve, args))
+}
+steadyState <- function(ui, params = list(), days = 1500) {
+  r <- solveMn(ui, params, seq(0, days * 24, by = 24))
+  unlist(r[nrow(r), rxode2::rxState(ui)])
+}
+# Solve for the dietary rate reproducing the reported baseline blood Mn.
+bloodTarget <- 0.010  # ug/g, Figure 3F at day 0
+dietObj <- function(logDiet) {
+  r <- solveMn(mkUi, list(diet_mn_mgd = exp(logDiet)), seq(0, 1500 * 24, by = 24))
+  tail(r$Cc, 1) / 1000 - bloodTarget
+}
+mkDiet <- exp(stats::uniroot(dietObj, c(log(1e-3), log(200)), tol = 1e-9)$root)
+mkInit <- steadyState(mkUi, list(diet_mn_mgd = mkDiet))
+round(mkDiet, 2)
+```
+
+```{r monkey-ss-checks}
+mkSs <- solveMn(mkUi, list(diet_mn_mgd = mkDiet), seq(0, 1500 * 24, by = 24))
+mkLast <- mkSs[nrow(mkSs), ]
+# 1. Steady state: no drift over the final 100 days of the burn-in.
+tailRows <- mkSs$time >= (1400 * 24)
+drift <- diff(range(mkSs$Ctot_globus_pallidus[tailRows])) /
+  mean(mkSs$Ctot_globus_pallidus[tailRows])
+# 2. Mass balance: everything absorbed is either in the body or in faeces.
+# 3. The printed-value pituitary amplification, checked against the solve.
+ampSolved <- mkLast$Ctot_pituitary / (mkLast$Cc / 1000)
+c(relative_drift = signif(drift, 3),
+  mass_balance = signif(mkLast$Mn_balance, 8),
+  amp_solved = signif(ampSolved, 4),
+  amp_printed = signif(amp_printed, 4))
+```
+
+```{r monkey-ss-assert}
+stopifnot(
+  # Steady state reached: less than 0.1% spread over the last 100 days.
+  drift < 1e-3,
+  # Mass balance is an identity of the ODE system, so it should be exact.
+  abs(mkLast$Mn_balance - 1) < 1e-6,
+  # The solved pituitary:blood amplification must match the closed form typed
+  # from the printed Table 1 / Table 2 values. The solve includes the vascular
+  # term the closed form omits, so allow 15%.
+  abs(ampSolved / amp_printed - 1) < 0.15
+)
+```
+
+## Baseline tissue concentrations against Figure 3 day 0
+
+```{r monkey-baseline}
+fig3Baseline <- tibble::tribble(
+  ~output,                 ~tissue,             ~digitised,
+  "Ctot_liver",            "Liver",             2.40,
+  "Ctot_lung",             "Lung",              0.17,
+  "Ctot_bone",             "Bone",              0.13,
+  "Ctot_other",            "Rest of body",      0.16,
+  "Ctot_globus_pallidus",  "Globus pallidus",   0.55,
+  "Ctot_pituitary",        "Pituitary",         1.00,
+  "Ctot_cerebellum",       "Cerebellum",        0.43,
+  "Ctot_olfactory_bulb",   "Olfactory bulb",    0.33
+)
+baseCmp <- fig3Baseline |>
+  mutate(model = as.numeric(mkLast[output]),
+         pct_diff = 100 * (model - digitised) / digitised)
+baseCmp |>
+  select(-output) |>
+  rename("Tissue" = tissue, "Figure 3 day 0 (ug/g)" = digitised,
+         "Model (ug/g)" = model, "% difference" = pct_diff) |>
+  knitr::kable(digits = 3)
+```
+
+```{r monkey-baseline-assert}
+stopifnot(
+  # One calibrated scalar (the diet) has to carry eight tissues at once, so
+  # this is a structural check on the binding/transport parameters, not a fit.
+  abs(median(baseCmp$pct_diff)) < 15,
+  stats::quantile(abs(baseCmp$pct_diff), 0.9) < 35
+)
+```
+
+# Monkey: 90-day inhalation, replicating Figure 3
+
+```{r monkey-inhalation}
+mkInh <- solveMn(
+  mkUi,
+  list(diet_mn_mgd = mkDiet, conc_air_mgm3 = 1.5, expo_duration_days = 90),
+  seq(0, 180 * 24, by = 2), inits = mkInit
+)
+# The published curves are read at the end of the last exposure period.
+lastExposure <- max(which(mkInh$expo_on == 1))
+mkPeak <- mkInh[lastExposure, ]
+mkInh$day <- mkInh$time / 24
+mkInh |>
+  select(day, Liver = Ctot_liver, `Globus pallidus` = Ctot_globus_pallidus,
+         Pituitary = Ctot_pituitary, Cerebellum = Ctot_cerebellum,
+         `Olfactory bulb` = Ctot_olfactory_bulb, Bone = Ctot_bone) |>
+  pivot_longer(-day, names_to = "Tissue", values_to = "conc") |>
+  ggplot(aes(day, conc)) +
+  geom_line(linewidth = 0.3) +
+  facet_wrap(~Tissue, scales = "free_y") +
+  labs(x = "Time (days)", y = "Total Mn (ug/g)",
+       title = "Replicates Figure 3 of Campbell 2023 (monkey, 1.5 mg Mn/m3)",
+       subtitle = "90-day inhalation, 6 h/day, 5 days/week, then 90 days of clearance") +
+  theme_bw()
+```
+
+The sawtooth is the 6 h/day exposure cycle; the rapid post-exposure decline in
+the brain regions is the behaviour the rapid-dissociation structure was
+introduced to capture.
+
+The strongest available check is against the paper's **own published model
+curves** at the end of the last exposure -- this compares our implementation
+against theirs, so a transcription or structural error shows up directly.
+
+```{r monkey-fig3-peak}
+fig3Curve <- tibble::tribble(
+  ~output,                 ~tissue,            ~digitised,
+  "Ctot_liver",            "Liver",             4.30,
+  "Ctot_lung",             "Lung",              0.78,
+  "Ctot_bone",             "Bone",              0.30,
+  "Ctot_other",            "Rest of body",      0.47,
+  "Ctot_globus_pallidus",  "Globus pallidus",   3.10,
+  "Ctot_pituitary",        "Pituitary",         6.20,
+  "Ctot_cerebellum",       "Cerebellum",        1.15,
+  "Ctot_olfactory_bulb",   "Olfactory bulb",    3.00
+)
+peakCmp <- fig3Curve |>
+  mutate(model = as.numeric(mkPeak[output]),
+         pct_diff = 100 * (model - digitised) / digitised)
+peakCmp |>
+  select(-output) |>
+  rename("Tissue" = tissue, "Figure 3 model curve (ug/g)" = digitised,
+         "This implementation (ug/g)" = model, "% difference" = pct_diff) |>
+  knitr::kable(digits = 3)
+```
+
+```{r monkey-fig3-assert}
+stopifnot(
+  # Zero free parameters here: the diet was fixed by the baseline above and
+  # the exposure is fully specified, so this is our ODEs vs the authors' ODEs.
+  abs(median(peakCmp$pct_diff)) < 10,
+  max(abs(peakCmp$pct_diff)) < 25,
+  # Mass balance must still hold under a cycling inhalation exposure.
+  abs(mkPeak$Mn_balance - 1) < 1e-6
+)
+```
+
+# Monkey: dose response and binding-site saturation, replicating Figure 6
+
+```{r monkey-doseresponse}
+doseLevels <- c(0, 0.06, 0.3, 1.5)
+drRows <- lapply(doseLevels, function(cAir) {
+  r <- solveMn(mkUi,
+               list(diet_mn_mgd = mkDiet, conc_air_mgm3 = cAir,
+                    expo_duration_days = 90),
+               seq(0, 90 * 24, by = 2), inits = mkInit)
+  i <- if (cAir == 0) nrow(r) else max(which(r$expo_on == 1))
+  data.frame(conc_air = cAir,
+             globus_pallidus = r$Ctot_globus_pallidus[i],
+             pituitary = r$Ctot_pituitary[i],
+             liver = r$Ctot_liver[i],
+             blood = r$Cc[i] / 1000,
+             pct_sites_free_gp = r$Pfree_globus_pallidus[i],
+             pct_sites_free_liver = r$Pfree_liver[i])
+})
+dr <- dplyr::bind_rows(drRows)
+dr |>
+  rename("Air Mn (mg/m3)" = conc_air, "Globus pallidus (ug/g)" = globus_pallidus,
+         "Pituitary (ug/g)" = pituitary, "Liver (ug/g)" = liver,
+         "Blood (ug/g)" = blood, "% GP sites free" = pct_sites_free_gp,
+         "% liver sites free" = pct_sites_free_liver) |>
+  knitr::kable(digits = 4)
+```
+
+```{r monkey-doseresponse-assert}
+stopifnot(
+  # Monotone increase in the target region with exposure.
+  all(diff(dr$globus_pallidus) > 0),
+  # Globus-pallidus binding sites are progressively consumed.
+  all(diff(dr$pct_sites_free_gp) < 0),
+  # The globus pallidus runs essentially saturated: under 5% of its capacity is
+  # free even on the background diet alone, and under 1% at 1.5 mg/m3.
+  dr$pct_sites_free_gp[dr$conc_air == 0] < 5,
+  dr$pct_sites_free_gp[dr$conc_air == 1.5] < 1,
+  # The liver, by contrast, keeps a large reserve at every exposure level, so
+  # it buffers rather than accumulating free Mn.
+  all(dr$pct_sites_free_liver > 40),
+  all(dr$pct_sites_free_liver > 8 * dr$pct_sites_free_gp),
+  # Supralinearity: the 0.3 -> 1.5 fold change must exceed the 0.06 -> 0.3 one,
+  # even though both are 5-fold increments in air concentration.
+  (dr$globus_pallidus[4] / dr$globus_pallidus[3]) >
+    (dr$globus_pallidus[3] / dr$globus_pallidus[2]),
+  # And the target region must rise far more steeply than the liver over the
+  # same exposure range -- the contrast Figure 6 draws between panels A and G.
+  (dr$globus_pallidus[4] / dr$globus_pallidus[2]) >
+    2 * (dr$liver[4] / dr$liver[2])
+)
+```
+
+That block is the paper's mechanism stated as a test, and the numbers sharpen it
+in a way worth noting: the globus pallidus is **already about 96% saturated on
+the background diet alone** (4.1% of capacity free), so it has almost no spare
+buffering reserve and any additional manganese delivered to it appears as *free*
+manganese. The liver keeps roughly 65% of its much larger capacity free at
+baseline and still 44% at 1.5 mg/m3. That asymmetry is why globus-pallidus
+manganese rises 4.3-fold across the exposure range while liver manganese rises
+only 1.5-fold -- exactly the contrast Figure 6 draws between panels A and G, and
+the reason the brain is the target of concern.
+
+# Human: steady state and plasma manganese
+
+```{r human-burnin}
+huInit <- steadyState(huUi, days = 4000)
+huSs <- solveMn(huUi, times = seq(0, 4000 * 24, by = 24))
+huLast <- huSs[nrow(huSs), ]
+c(plasma_ug_L = signif(huLast$Cplasma, 4),
+  blood_ug_L = signif(huLast$Cc, 4),
+  mass_balance = signif(huLast$Mn_balance, 8))
+```
+
+```{r human-plasma-assert}
+stopifnot(
+  # Figure 10's observed average plasma Mn across six dietary periods spans
+  # 0.72-1.25 ug/L; a 3 mg/day background diet must land inside that.
+  huLast$Cplasma > 0.70, huLast$Cplasma < 1.30,
+  abs(huLast$Mn_balance - 1) < 1e-6
+)
+```
+
+## Replicating Figure 10: stepped dietary manganese
+
+Freeland-Graves (1994) fed five men six successive controlled diets. This is the
+one place a scenario input has to vary with time, which is done by supplying
+`diet_mn_mgd` as a data column -- rxode2 honours a data column that shadows an
+`ini()` parameter.
+
+```{r human-fig10}
+dietSchedule <- tibble::tribble(
+  ~from_day, ~to_day, ~diet_mn_mgd,
+  0,   21,  2.36,
+  21,  42,  2.89,
+  42,  63,  2.06,
+  63,  101, 1.21,
+  101, 112, 3.79,
+  112, 125, 2.65
+)
+dietSchedule |>
+  rename("From (day)" = from_day, "To (day)" = to_day,
+         "Diet (mg Mn/day)" = diet_mn_mgd) |>
+  knitr::kable()
+
+fig10Times <- seq(0, 125 * 24, by = 6)
+dietAt <- function(tHours) {
+  d <- tHours / 24
+  idx <- findInterval(d, dietSchedule$from_day, rightmost.closed = TRUE)
+  idx[idx < 1] <- 1
+  idx[idx > nrow(dietSchedule)] <- nrow(dietSchedule)
+  dietSchedule$diet_mn_mgd[idx]
+}
+fig10Ev <- data.frame(id = 1L, time = fig10Times, evid = 0L, amt = 0,
+                      diet_mn_mgd = dietAt(fig10Times))
+# Start from the steady state of the first dietary period, not of 3 mg/day.
+init10 <- steadyState(huUi, list(diet_mn_mgd = dietSchedule$diet_mn_mgd[1]),
+                      days = 4000)
+fig10 <- as.data.frame(rxode2::rxSolve(
+  huUi, fig10Ev, inits = init10, atol = 1e-9, rtol = 1e-9, maxsteps = 1e6
+))
+fig10$day <- fig10$time / 24
+# The caption reports one average plasma concentration per dietary period, not
+# per sampling day, so each observed mean is placed at its period MIDPOINT.
+obs10 <- dietSchedule |>
+  mutate(day = (from_day + to_day) / 2,
+         plasma = c(1.05, 1.25, 0.95, 0.72, 1.10, 0.97),
+         sd = c(0.15, 0.30, 0.55, 0.15, 0.20, 0.25))
+ggplot(fig10, aes(day, Cplasma)) +
+  geom_line() +
+  geom_pointrange(data = obs10,
+                  aes(day, plasma, ymin = plasma - sd, ymax = plasma + sd),
+                  inherit.aes = FALSE, size = 0.3) +
+  labs(x = "Time (days)", y = "Plasma Mn (ug/L)",
+       title = "Replicates Figure 10 of Campbell 2023",
+       subtitle = "Simulated plasma Mn (20% of blood) against Freeland-Graves 1994 period means") +
+  theme_bw()
+```
+
+```{r human-fig10-assert}
+fig10Cmp <- obs10 |>
+  mutate(model = approx(fig10$day, fig10$Cplasma, day)$y,
+         ratio = model / plasma,
+         within_sd = abs(model - plasma) <= sd)
+fig10Cmp |>
+  select(diet_mn_mgd, day, plasma, sd, model, ratio, within_sd) |>
+  rename("Diet (mg/day)" = diet_mn_mgd, "Period midpoint (day)" = day,
+         "Observed plasma (ug/L)" = plasma, "SD" = sd, "Model (ug/L)" = model,
+         "Model/observed" = ratio, "Within 1 SD" = within_sd) |>
+  knitr::kable(digits = 3)
+c(median_fold_error = signif(1 / median(fig10Cmp$ratio), 4))
+stopifnot(
+  # The whole simulated trajectory must stay in the physiological band for
+  # plasma Mn.
+  all(fig10$Cplasma > 0.4), all(fig10$Cplasma < 2.0),
+  # The discriminating check: the model must pick out the SAME dietary period
+  # as the observed data for both the lowest and the highest plasma Mn. This
+  # would fail on a sign error, a mis-ordered schedule, or a diet term that
+  # did not actually drive blood Mn.
+  which.min(fig10Cmp$model) == which.min(fig10Cmp$plasma),
+  which.max(fig10Cmp$model) == which.max(fig10Cmp$plasma),
+  # Level agreement. The model runs systematically low here (see Errata), so
+  # this bounds the offset rather than asserting it away.
+  1 / median(fig10Cmp$ratio) < 1.6,
+  max(pmax(fig10Cmp$ratio, 1 / fig10Cmp$ratio)) < 2.0
+)
+```
+
+The model reproduces *which* dietary period gives the lowest and the highest
+plasma manganese, and the shape of the response, but sits about 1.37-fold below
+the observed period means throughout. The largest single discrepancy is the
+3.79 mg/day period, where the observed mean has risen to 1.10 ug/L by the
+period midpoint while the model has only reached 0.62: the model's body pool
+equilibrates more slowly than the data suggest over an 11-day window. Both
+points are recorded in the Errata; nothing was tuned to reduce them.
+
+# Human: whole-body 54Mn retention
+
+The tracer is dosed as events. An intravenous dose is a bolus into
+`venous_mn54`; an oral dose **splits**, with `f_diet_uptake` of the dose going
+directly to `liver_mn54` (the absorbed fraction) and the remainder to
+`gut_lumen_mn54`, mirroring the supplement's partition of `KDIETR`.
+
+```{r human-tracer-fn}
+tracerRun <- function(route, fDietUp = 0.06, clBile = 0.051, days = 65) {
+  pars <- list(f_diet_uptake = fDietUp, cl_bile = clBile, dose_mn54 = 1)
+  ui <- do.call(rxode2::ini, c(list(huUi), pars))
+  init <- steadyState(huUi, pars, days = 4000)
+  ev <- if (route == "iv") {
+    rxode2::et(amt = 1, cmt = "venous_mn54", time = 0)
+  } else {
+    rbind(rxode2::et(amt = fDietUp, cmt = "liver_mn54", time = 0),
+          rxode2::et(amt = 1 - fDietUp, cmt = "gut_lumen_mn54", time = 0))
+  }
+  as.data.frame(rxode2::rxSolve(
+    ui, rxode2::et(ev, seq(0, days * 24, by = 6)), inits = init,
+    atol = 1e-10, rtol = 1e-10, maxsteps = 1e7
+  ))
+}
+retentionAt <- function(r, days) approx(r$time / 24, r$Retention_mn54, days)$y
+```
+
+## Intravenous tracer, replicating Figure 7
+
+```{r human-fig7}
+ivRun <- tracerRun("iv")
+ivRun$day <- ivRun$time / 24
+fig7 <- tibble::tibble(day = c(10, 20, 30, 40, 50, 60),
+                       digitised = c(78, 62, 50, 40, 32, 26)) |>
+  mutate(model = retentionAt(ivRun, day),
+         ratio = model / digitised)
+ggplot(ivRun, aes(day, Retention_mn54)) +
+  geom_line() +
+  geom_point(data = fig7, aes(day, digitised), inherit.aes = FALSE) +
+  scale_y_log10() +
+  labs(x = "Days", y = "Whole-body 54Mn retention (%)",
+       title = "Replicates Figure 7 of Campbell 2023",
+       subtitle = "Line = this implementation; points = digitised published curve") +
+  theme_bw()
+fig7 |>
+  rename("Day" = day, "Figure 7 curve (%)" = digitised,
+         "This implementation (%)" = model, "Ratio" = ratio) |>
+  knitr::kable(digits = 3)
+```
+
+```{r human-fig7-assert}
+stopifnot(
+  # The paper's own claim for these data is "within a factor of 2"; our
+  # agreement with its published curve is much tighter than that.
+  all(fig7$ratio > 0.8), all(fig7$ratio < 1.25),
+  # Retention must be monotonically decreasing and mass-balanced.
+  all(diff(ivRun$Retention_mn54) <= 1e-8),
+  abs(tail(ivRun$Mn54_balance, 1) - 1) < 1e-6
+)
+```
+
+## Oral tracer and the published sensitivity fan, replicating Figure 9
+
+Figure 9's caption prints all three (`FDIETUP`, `KBILEC`) pairs used to draw the
+solid line and the two dashed sensitivity curves. That makes this a
+**zero-parameter gate**: the inputs are printed, so the three output curves are
+fully determined and nothing can be tuned.
+
+```{r human-fig9}
+fanSpec <- tibble::tribble(
+  ~label,        ~f_diet_uptake, ~cl_bile, ~d10, ~d30, ~d60,
+  "solid",        0.06,           0.051,    5.0,  1.80, 1.30,
+  "upper dashed", 0.18,           0.017,    10.0, 4.50, 4.00,
+  "lower dashed", 0.02,           0.153,    0.7,  0.25, 0.15
+)
+fanRuns <- lapply(seq_len(nrow(fanSpec)), function(i) {
+  r <- tracerRun("oral", fanSpec$f_diet_uptake[i], fanSpec$cl_bile[i])
+  r$label <- fanSpec$label[i]
+  r$day <- r$time / 24
+  r
+})
+fanAll <- dplyr::bind_rows(fanRuns)
+ggplot(fanAll, aes(day, Retention_mn54, linetype = label)) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Days", y = "Whole-body 54Mn retention (%)", linetype = NULL,
+       title = "Replicates Figure 9 of Campbell 2023",
+       subtitle = "Oral 54Mn in a labelled meal, with the printed 3-fold opposed FDIETUP/KBILEC fan") +
+  theme_bw()
+fanCmp <- lapply(seq_along(fanRuns), function(i) {
+  r <- fanRuns[[i]]
+  data.frame(label = fanSpec$label[i], day = c(10, 30, 60),
+             digitised = c(fanSpec$d10[i], fanSpec$d30[i], fanSpec$d60[i]),
+             model = retentionAt(r, c(10, 30, 60)))
+}) |>
+  dplyr::bind_rows() |>
+  mutate(fold_error = pmax(model / digitised, digitised / model))
+fanCmp |>
+  rename("Curve" = label, "Day" = day, "Figure 9 (%)" = digitised,
+         "This implementation (%)" = model, "Fold error" = fold_error) |>
+  knitr::kable(digits = 3)
+```
+
+```{r human-fig9-assert}
+meanFold <- exp(mean(abs(log(fanCmp$model / fanCmp$digitised))))
+c(mean_fold_error = signif(meanFold, 4))
+stopifnot(
+  # Zero free parameters: all three input pairs are printed in the caption.
+  meanFold < 1.6,
+  max(fanCmp$fold_error) < 2.2,
+  # The fan must be correctly ORDERED at every time point: raising FDIETUP and
+  # lowering KBILEC together must raise retention, and vice versa.
+  all(with(fanCmp[fanCmp$label == "upper dashed", ], model) >
+        with(fanCmp[fanCmp$label == "solid", ], model)),
+  all(with(fanCmp[fanCmp$label == "solid", ], model) >
+        with(fanCmp[fanCmp$label == "lower dashed", ], model))
+)
+```
+
+The day-10 retention of each curve sits close to its own `FDIETUP` (3.9% for
+0.06, 11.2% for 0.18, 0.9% for 0.02). That is the structural signature of this
+model: by day 10 the unabsorbed fraction has cleared the gut entirely, so
+whole-body retention is essentially the absorbed fraction decaying slowly. It is
+also the observation that identifies the human `KGI` -- see the Errata.
+
+# Mass-balance and flux summary
+
+```{r mass-balance-summary}
+tibble::tribble(
+  ~Check, ~Value,
+  "Monkey, background diet at steady state", signif(mkLast$Mn_balance, 10),
+  "Monkey, end of 90-day 1.5 mg/m3 inhalation", signif(mkPeak$Mn_balance, 10),
+  "Human, background diet at steady state", signif(huLast$Mn_balance, 10),
+  "Human, 54Mn after iv tracer (day 65)", signif(tail(ivRun$Mn54_balance, 1), 10),
+  "Human, 54Mn after oral tracer (day 65)", signif(tail(fanRuns[[1]]$Mn54_balance, 1), 10)
+) |>
+  rename("Balance (should be 1)" = Value) |>
+  knitr::kable()
+```
+
+```{r mass-balance-assert}
+stopifnot(
+  abs(mkLast$Mn_balance - 1) < 1e-6,
+  abs(mkPeak$Mn_balance - 1) < 1e-6,
+  abs(huLast$Mn_balance - 1) < 1e-6,
+  abs(tail(ivRun$Mn54_balance, 1) - 1) < 1e-6,
+  abs(tail(fanRuns[[1]]$Mn54_balance, 1) - 1) < 1e-6
+)
+```
+
+Every manganese atom entering by diet or inhalation is accounted for either in
+the body or in cumulative faecal excretion, in both species, at steady state and
+under a cycling inhalation exposure, and for both the bulk and tracer systems.
+Because this is an identity of the ODE system rather than a fitted quantity, it
+goes red on almost any structural transcription error -- a dropped flux, a sign
+error, or a term written into the wrong compartment.
+
+# Assumptions and deviations
+
+## Errata: three corrections to the published parameter tables
+
+Each was decided by scoring both readings against the paper's own published
+figures, not by preference.
+
+**1. Table 2's `FDEPNO` / `FDEPNR` airflow-split factors are transposed.**
+Table 2 prints `FDEPNO = 0.4313*0.91` and `FDEPNR = 0.4313*0.09` for the monkey
+(and `0.3762*0.95` / `0.3762*0.05` for the human), i.e. the larger share of nasal
+deposition to the olfactory region. The Methods say the opposite: "the MPPD
+(ver. 3.04) head deposition was allocated to the respiratory and olfactory
+region of the nose according to an airflow allocation of **9% olfactory, 91%
+respiratory** (Kepler et al., 1998)". Using Table 2 as printed puts the
+olfactory bulb at 21.1 ug/g against the published Figure 3J curve of 3.0
+(**+602%**); using the Methods split gives 2.87 (**-4.4%**), and the median
+error across all nine Figure 3 tissues improves from 9.3% to 4.3%. Both files
+use the Methods split. Physiologically the olfactory epithelium receives only a
+small fraction of nasal airflow, which is consistent with the Methods.
+
+**2. Table 2's human `KGI` of 0.0026 /h is not the value the model uses; 0.06 /h
+is.** At 0.0026 /h the gut-lumen half-life is 267 h, so unabsorbed oral tracer
+is still in the gut at day 10 and Figure 9 retention comes out at ~54% instead
+of the published ~5%; the printed three-curve sensitivity fan also collapses,
+because retention is then dominated by gut contents rather than by `FDIETUP`. At
+0.06 /h (the monkey value, half-life 11.6 h) all nine Figure 9 anchors land at a
+1.15x mean fold error against 9.62x. The independent structural argument is in
+the section above: Figure 9's day-10 retention tracks each curve's `FDIETUP`
+directly, which is only possible once the gut has emptied. The human file uses
+0.06 /h.
+
+**3. The supplement's tracer mass-balance term double-integrates.** The listing
+has `dt(XLOSS) = XFECES`, but `XFECES` is already the cumulative faecal tracer
+state (`dt(XFECES) = XRFECES`); the bulk-manganese mirror is `dt(LOSS) = RFECES`,
+a rate. As printed, the authors' own `balance54` diagnostic -- documented as
+"value close to 1 means the model is mass balanced for 54Mn" -- cannot work.
+Both files use the cumulative faecal tracer directly, which makes tracer mass
+balance exactly 1 as intended.
+
+## Other discrepancies, recorded but not acted on
+
+* **Monkey `FDIETUP`.** Table 2 gives 2.00E-03; the Results text for the Dastur
+  (1971) simulation says "the baseline dietary uptake (0.0002) was used". The
+  files use Table 2's 0.002, following the rule that a printed parameter table
+  has authority over prose.
+* **Monkey body weight.** Table 1 lists 5.0 kg as the generic monkey reference,
+  while the Results state that "the body weight of 2.5 kg corresponded to the
+  average weight of the monkeys in Dorman et al. (2006a)" (and Dastur's animals
+  also averaged 2.5 kg). Table 1's footnote a directs the use of study-specific
+  weights where reported, so the monkey file defaults to 2.5 kg.
+* **Human female liver volume.** Table 1 prints "0.233" as the female liver
+  fraction of body weight, a decimal-point typo for 0.0233 (the male value is
+  0.0247 and every other female entry is within 15% of the male one). The file
+  uses the male reference values throughout, so the typo is inert here.
+* **Dissociation half-lives.** The Discussion describes the dissociation rate
+  constants as "equivalent to half-lives of 4-5 min"; from the printed `ka` and
+  `KD` they are 9.1-11.4 min (tabulated above). No model parameter depends on
+  the sentence.
+* **`KD` in uM.** The Discussion prints "0.37 or 0.46 uM (20 or 25 ug/l)". Using
+  the manganese molecular weight of 54.938 g/mol, 25 ug/L gives 0.455 uM, which
+  rounds to the printed 0.46; 20 ug/L gives 0.364 uM, which rounds to 0.36, so
+  the printed 0.37 is a one-in-the-last-digit round up. The files store the ug/L
+  values from Table 2, so nothing downstream is affected.
+* **Absolute human plasma manganese (Figure 10).** The model reproduces which
+  dietary period gives the lowest and highest plasma manganese, and the shape of
+  the response, but runs about 1.37-fold below the observed period means across
+  all six periods (worst case 1.78-fold, in the 3.79 mg/day period, where the
+  model's body pool equilibrates more slowly than the data over an 11-day
+  window). Note that Figure 10 is the only human comparison that pins the
+  ABSOLUTE steady-state level: the Figure 7 and 9 tracer comparisons are
+  retention ratios, which constrain the clearance and distribution rates but
+  cancel the absolute scale. The offset is therefore not inconsistent with those
+  fits. No parameter was adjusted to reduce it.
+* **Figure 10 x-axis.** The caption gives dietary periods spanning days 1-125,
+  but the published panel's x-axis ends near day 110 and reports one plasma mean
+  per period rather than per sampling day. Each observed mean is therefore placed
+  at its period midpoint here. A point-by-point comparison against specific
+  sampling days is not possible from the published caption.
+* **`KM` units.** Table 2 labels the biliary-induction `KM` as ug/l, but the
+  supplement compares it against `CART`, which is arterial ug/kg divided by
+  1000, i.e. ug/g. The ug/g reading is the one consistent with the code and is
+  what both files implement.
+* **Brain blood flow.** The supplement computes brain flow as
+  `QBRNC * QC * ((VSTMC + VOFBC + VCBMC + VPITC) / VBRNC)`. Dividing by `VBRNC`
+  is dimensionally odd, because the region fractions are already fractions of
+  brain. The printed form is nevertheless retained, because it is what
+  reproduces Figure 3: it puts the globus pallidus, pituitary and cerebellum
+  within 8-13% of the published curves, whereas dropping the divisor moves them
+  to 42-61% off.
+* **Vestigial state.** The listing's `ABILE` state has
+  `RABILE = RBILE - QBILE*CBILE` with `CBILE = RBILE/QBILE`, so its derivative
+  is identically zero. It is omitted; the bile *concentration* output it was
+  presumably meant to support is retained as `Cbile` in the monkey file.
+
+## Parameters not reported anywhere on disk
+
+Five constants sit in the supplement's `# Dosing Controls` block, which the
+supplement introduces with "Note: parameters are set in simulation scripts" --
+they are scenario inputs, not fitted parameters -- and no value for any of them
+appears in the paper, its supplement, or any other on-disk source. **No value
+has been invented for any of them.**
+
+```{r unreported, echo = FALSE}
+tibble::tribble(
+  ~Parameter, ~`Role`, ~`Consequence`,
+  "INFAC (f_intake_diet)", "converts a ppm diet to an intake rate", "the ppm dietary route is inert by default; use diet_mn_mgd instead (the route the paper specifies numerically)",
+  "IPFRAC, KIPSLOW (kip)", "intraperitoneal tracer sub-model", "Figure 4A (Dastur 1971 ip) is not reproduced",
+  "KSBQ (ksc)", "subcutaneous absorption rate", "Figure 5A (Newland 1987 sc infusion) is not reproduced",
+  "SANEWLAND", "scales predicted faecal tracer concentration", "Figure 5 faecal concentrations are not reproduced"
+) |>
+  knitr::kable()
+```
+
+Consequences for validation scope:
+
+* The **model itself is complete** -- every physiological (Table 1) and
+  chemical-specific (Table 2) parameter is reported, which is why the Figure 3,
+  6, 7, 9 and 10 reproductions above work.
+* The **human model is fully validatable**: its diet is specified in mg/day and
+  Figures 7, 9 and 10 use only fully specified routes.
+* The **monkey inhalation** validation -- the paper's primary monkey dataset and
+  the actual parameter-optimisation target -- is reproduced, with the dietary
+  rate calibrated to the reported Figure 3F baseline blood manganese and
+  labelled as a calibrated scenario input.
+* The monkey **intraperitoneal, subcutaneous and ppm-diet** tracer routes
+  (Figures 4A and 5) are implemented structurally but are **not validated here**.
+  Schroeter et al. (2011), the upstream source of `INFAC`, is not on disk.
+
+## Other assumptions
+
+* **Burn-in.** Both files start all states at zero, as the supplement's listing
+  does. Every simulation above therefore begins with a burn-in to steady state
+  on the background diet (1500 days for the monkey, 4000 for the human, both
+  verified to have converged). A user who skips the burn-in will get a
+  manganese-depleted animal.
+* **No variability.** The publication reports no inter-individual variability
+  and no residual error, so neither is encoded. Every simulation here is a
+  typical-value solve and none draws random numbers, so nothing in this vignette
+  depends on a seed or on the solver's thread count.
+* **Figure digitisation.** The Figure 3, 6, 7, 9 and 10 comparison values were
+  read off the published raster figures, so they carry digitisation error of
+  roughly a few percent (more on the log-scale retention panels). The assertion
+  thresholds above are set accordingly, and no model parameter was derived from
+  a figure.
+* **Species labels.** The supplement's code names the globus-pallidus states
+  `ST`/`STM` ("striatum"), a label inherited from the Yoon (2019) rat model. The
+  compartment is the globus pallidus: its volume fraction is Table 1's "Globus
+  Pallidus" row, supplementary Table S1 lists caudate, putamen and globus
+  pallidus separately, and the paper's sensitivity endpoint is explicitly the
+  globus pallidus. The canonical name `brain_globus_pallidus` is used.
