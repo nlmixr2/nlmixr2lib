@@ -1,0 +1,844 @@
+---
+title: "Mosunetuzumab (Bender 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Mosunetuzumab (Bender 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r readModelDb("Bender_2024_mosunetuzumab")()$reference`
+* Article: <https://doi.org/10.1111/cts.13825> (open access; PMC11134317)
+* Supplement: `CTS-17-e13825-s001.docx`, retrieved from the EuropePMC
+  supplementary-files endpoint for PMC11134317. **Table S3 of that supplement
+  is the full NONMEM control stream and is load-bearing for this extraction** --
+  the main article renders every governing equation as an undecodable formula
+  image, so the covariate functional forms, the competing-drug ODEs and the
+  receptor-occupancy expression are recoverable only from the control stream.
+
+Mosunetuzumab is a CD20xCD3 T-cell engaging bispecific antibody. Bender 2024
+describes a two-compartment IV disposition model with **time-dependent
+clearance**, coupled to a competitive equilibrium-binding calculation of the
+CD20 **receptor occupancy percentage (RO%)** that accounts for residual
+rituximab and obinutuzumab carried over from patients' prior lines of therapy.
+
+```{r model}
+mod <- readModelDb("Bender_2024_mosunetuzumab")
+mod
+```
+
+# Population
+
+The model was fit to 7250 mosunetuzumab PK observations from 439 patients with
+relapsed/refractory B-cell non-Hodgkin lymphoma enrolled in study GO29781
+(Bender 2024 Table 1). Median age was 63 years (range 19-96), median body
+weight 77.9 kg (37.1-163), median albumin 39 g/L and median baseline tumor SPD
+2970 mm^2 (96-70,900). 35.3% were female; 75.9% White, 17.5% Asian, 2.7% Black.
+Histology was 61.5% aggressive and 38.3% indolent NHL. Patients received 19
+different dose levels across a q3w fixed-dosing group (Group A, n = 32,
+0.05-2.8 mg) and a Cycle 1 step-up group (Group B, n = 407, 0.4/1/2.8 mg up to
+the approved 1/2/60/30 mg regimen).
+
+The defining feature of this population is prior anti-CD20 exposure: roughly
+half the patients still carried measurable drug at their first mosunetuzumab
+dose (rituximab n = 195, obinutuzumab n = 35, both n = 7), with a median
+residual concentration of 10 ug/mL among those affected.
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("Bender_2024_mosunetuzumab")()$population)
+```
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Bender_2024_mosunetuzumab.R` carries an in-file
+comment naming its source location. They are collected here for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CLbase) | 1.08 L/day | Bender 2024 Table 2 |
+| `lcl_exp_inf` (CLss) | 0.584 L/day | Bender 2024 Table 2 |
+| `lcl_exp_thalf` (HLtrans) | 16.3 day | Bender 2024 Table 2 |
+| `lvc` (V1) | 5.49 L | Bender 2024 Table 2 |
+| `lvp` (V2) | 6.17 L | Bender 2024 Table 2 |
+| `lq` (Q) | 1.46 L/day | Bender 2024 Table 2 |
+| `e_wt_cl_exp_inf` | 0.549 | Bender 2024 Table 2 (WT on CLss) |
+| `e_wt_vc` | 0.433 | Bender 2024 Table 2 (WT on V1) |
+| `e_wt_vp` | 0.737 | Bender 2024 Table 2 (WT on V2) |
+| `e_alb_cl` | -1.51 | Bender 2024 Table 2 (ALB on CLbase) |
+| `e_alb_vc` | -0.481 | Bender 2024 Table 2 (ALB on V1) |
+| `e_acd20_cl` | -0.573 | Bender 2024 Table 2 (aCD20 on CLbase) |
+| `e_tumsz_cl_exp_inf` | 0.0935 | Bender 2024 Table 2 (SPD on CLss) |
+| `e_sexf_cl_exp_inf` | -0.128 | Bender 2024 Table 2 (Sex on CLss) |
+| `e_sexf_vc` | -0.126 | Bender 2024 Table 2 (Sex on V1) |
+| `lkd_mosun`, `lkd_ritux`, `lkd_obin` | 10.2, 0.675, 0.600 ug/mL | Bender 2024 Table S3 `$PK` (`KD_TDB`, `KD_R`, `KD_G`, printed in ng/mL) |
+| `lthalf_ritux`, `lthalf_obin` | 24, 28 day | Bender 2024 Methods; Table S3 `$DES` `DADT(3)`, `DADT(5)` |
+| `etalcl + etalvc` block | 0.426 / 0.180 / 0.0981 | Bender 2024 Table 2 |
+| `etalcl_exp_inf + etalcl_exp_thalf` block | 0.0343 / -0.0892 / 0.739 | Bender 2024 Table 2 |
+| `etalvp` | 0.0621 | Bender 2024 Table 2 |
+| `expSd` | 0.259 | Bender 2024 Table 2 (additive on log scale) |
+| CL(t) transition equation | n/a | Bender 2024 Table S1 Model 2; Table S3 `$DES` `CLT` |
+| Weight / albumin / tumor power models | n/a | Bender 2024 Table S3 `$PK` definition blocks |
+| aCD20 ratio-of-logs covariate | n/a | Bender 2024 Table S3 `$PK` `CL0BLRITUX` |
+| Sex linear `(1 + theta)` multiplier | n/a | Bender 2024 Table S3 `$PK` `V1SEX`, `CLSSSEX` |
+| Rituximab / obinutuzumab decay ODEs | n/a | Bender 2024 Table S3 `$DES` `DADT(3)`, `DADT(5)` |
+| RO% equilibrium-binding expression | n/a | Bender 2024 Equation 1; Table S3 `$DES` `DADT(6)` |
+
+# Structural checks against the published equations
+
+These checks use the typical-value model (`zeroRe()`), so they are fully
+deterministic: no random draw, no seed, and no dependence on solver thread
+count. Every constant on the right-hand side is transcribed from the paper, so
+each check can go red if a value in the model file is wrong.
+
+```{r typical-model}
+mod_typ <- rxode2::zeroRe(mod)
+
+# Approved regimen (Bender 2024 Introduction): 1 mg Day 1, 2 mg Day 8, two
+# 60 mg loading doses on Days 15 and 22, then 30 mg q3w beginning Day 43.
+# Time origin t = 0 is Day 1.
+dose_times <- c(0, 7, 14, 21)
+dose_amts  <- c(1, 2, 60, 60)
+maint_time <- 42
+
+typical_covariates <- function(d,
+                               WT = 78, ALB = 39, SEXF = 0, TUMSZ = 2970,
+                               ritux = 0.5, obin = 0) {
+  d$WT <- WT
+  d$ALB <- ALB
+  d$SEXF <- SEXF
+  d$TUMSZ <- TUMSZ
+  d$CP_RITUXIMAB_UGML <- ritux
+  d$CP_OBINUTUZUMAB_UGML <- obin
+  # Bender 2024 Table 1 footnote e: aCD20 is the maximum of the two.
+  d$CP_ACD20_UGML <- pmax(ritux, obin)
+  d
+}
+
+# Sample the peak exactly: mosunetuzumab is given as an IV bolus in this
+# model, so Cmax sits at the dose time itself. A grid that only lands near
+# the dose turns max(Cc) into a sampling artefact.
+obs_times <- sort(unique(c(
+  seq(0, 200, by = 0.25),
+  dose_times + 1e-6,
+  seq(maint_time, 200, by = 21) + 1e-6
+)))
+
+ev_typ <- rxode2::et(amt = dose_amts, time = dose_times, cmt = "central") |>
+  rxode2::et(amt = 30, time = maint_time, ii = 21, addl = 7, cmt = "central") |>
+  rxode2::et(obs_times, cmt = "central")
+
+sim_typ <- rxode2::rxSolve(
+  mod_typ,
+  typical_covariates(as.data.frame(ev_typ)),
+  returnType = "data.frame"
+)
+
+at_time <- function(d, tt) d[which.min(abs(d$time - tt)), ]
+```
+
+## Time-dependent clearance
+
+Bender 2024 supplement Table S1 selects Model 2,
+`CL = CLbase + (CLss - CLbase) * {1 - exp[-(ln(2)/HLtrans) * t]}`. The check
+below compares the model's solved `cl` against that closed form evaluated with
+the **printed Table 2 estimates**, so a mis-transcribed CLbase, CLss or
+HLtrans breaks it.
+
+```{r cl-time}
+CLBASE  <- 1.08   # Bender 2024 Table 2
+CLSS    <- 0.584  # Bender 2024 Table 2
+HLTRANS <- 16.3   # Bender 2024 Table 2
+
+cl_closed <- CLSS + (CLBASE - CLSS) * exp(-log(2) / HLTRANS * sim_typ$time)
+cl_reldiff <- abs(sim_typ$cl - cl_closed) / cl_closed
+
+# Deterministic comparison against hard-coded published values, so a tight
+# bound is correct (this is NOT a cohort statistic). The residual is 3.9e-6,
+# not zero, because the tumor covariate's reference is the ROUNDED 54.5 mm
+# rather than the exact sqrt(2970) = 54.4977 mm, leaving the typical patient
+# a factor (54.4977/54.5)^0.0935 = 1 - 3.9e-6 away from a bare CLss. Any real
+# transcription error in CLbase, CLss or HLtrans is a percent-level effect,
+# so 1e-4 still goes red on one.
+stopifnot(max(cl_reldiff) < 1e-4)
+
+# The paper's own summary of the transition: "CLss dominates after 54 days
+# (i.e., 3.3 * HLtrans corresponds to 90% of steady state)". 1 - 2^-3.3
+# = 0.8985, so the exponential reading is confirmed to three digits. A
+# Hill/Emax-in-time transition would give 3.3/4.3 = 77% and fail here.
+frac_complete <- (CLBASE - at_time(sim_typ, 3.3 * HLTRANS)$cl) / (CLBASE - CLSS)
+stopifnot(abs(frac_complete - 0.90) < 0.01)
+
+data.frame(
+  Check = c("CL(0) = CLbase", "CL(HLtrans) midpoint", "CL(inf) = CLss",
+            "Fraction complete at 3.3*HLtrans"),
+  Model = c(at_time(sim_typ, 0)$cl, at_time(sim_typ, HLTRANS)$cl,
+            at_time(sim_typ, 200)$cl, frac_complete),
+  Published = c(CLBASE, CLSS + (CLBASE - CLSS) * 0.5, CLSS, 0.90)
+) |>
+  knitr::kable(digits = 4, caption = "Time-dependent clearance versus Bender 2024 Table S1 Model 2 and Table 2.")
+```
+
+## Residual competing-drug decay
+
+Bender 2024 Methods: *"Initial values for rituximab (Ritux) and obinutuzumab
+(Obin) model compartments were set to the observed baseline value, and
+elimination rates fixed to the respective terminal half-life value:
+HL_Ritux = 24 days and HL_Obin = 28 days."* Each state must therefore start at
+the patient's supplied baseline and halve exactly once over its half-life.
+
+```{r competing-decay}
+sim_cd <- rxode2::rxSolve(
+  mod_typ,
+  typical_covariates(as.data.frame(ev_typ), ritux = 20, obin = 40),
+  returnType = "data.frame"
+)
+
+stopifnot(
+  abs(at_time(sim_cd, 0)$ritux - 20) < 1e-6,   # seeded from CP_RITUXIMAB_UGML
+  abs(at_time(sim_cd, 0)$obin  - 40) < 1e-6,   # seeded from CP_OBINUTUZUMAB_UGML
+  abs(at_time(sim_cd, 24)$ritux / 20 - 0.5) < 1e-6,  # 24-day half-life
+  abs(at_time(sim_cd, 28)$obin  / 40 - 0.5) < 1e-6   # 28-day half-life
+)
+```
+
+## Covariate effects at the distribution extremes
+
+Bender 2024 Results state: *"With the exception of albumin, all covariate
+effects resulted in <= 31% change from the typical parameter values of CLbase,
+CLss, and V1 when evaluated at the extremes (i.e., 5th and 95th percentiles) of
+their distributions. Patients with albumin levels of 28 g/L (5th percentile)
+had 65% higher CLbase values than the typical patient."*
+
+Both statements are reproduced below directly from the model.
+
+```{r covariate-extremes}
+param_at <- function(param, ...) {
+  s <- rxode2::rxSolve(
+    mod_typ,
+    typical_covariates(as.data.frame(ev_typ), ...),
+    returnType = "data.frame"
+  )
+  s[[param]][1]
+}
+
+ref <- c(
+  clbase     = param_at("clbase"),
+  cl_exp_inf = param_at("cl_exp_inf"),
+  vc         = param_at("vc")
+)
+
+cov_tab <- dplyr::bind_rows(
+  data.frame(Covariate = "Albumin 28 g/L (5th pct)",   Parameter = "CLbase",
+             Ratio = param_at("clbase", ALB = 28) / ref[["clbase"]]),
+  data.frame(Covariate = "Albumin 46 g/L (95th pct)",  Parameter = "CLbase",
+             Ratio = param_at("clbase", ALB = 46) / ref[["clbase"]]),
+  data.frame(Covariate = "aCD20 55.91 ug/mL (95th pct)", Parameter = "CLbase",
+             Ratio = param_at("clbase", ritux = 55.91) / ref[["clbase"]]),
+  data.frame(Covariate = "Weight 50 kg (5th pct)",     Parameter = "CLss",
+             Ratio = param_at("cl_exp_inf", WT = 50) / ref[["cl_exp_inf"]]),
+  data.frame(Covariate = "Weight 112 kg (95th pct)",   Parameter = "CLss",
+             Ratio = param_at("cl_exp_inf", WT = 112) / ref[["cl_exp_inf"]]),
+  data.frame(Covariate = "Female",                     Parameter = "CLss",
+             Ratio = param_at("cl_exp_inf", SEXF = 1) / ref[["cl_exp_inf"]]),
+  data.frame(Covariate = "Tumor SPD 400 mm^2 (5th pct)",   Parameter = "CLss",
+             Ratio = param_at("cl_exp_inf", TUMSZ = 400) / ref[["cl_exp_inf"]]),
+  data.frame(Covariate = "Tumor SPD 13,900 mm^2 (95th pct)", Parameter = "CLss",
+             Ratio = param_at("cl_exp_inf", TUMSZ = 13900) / ref[["cl_exp_inf"]]),
+  data.frame(Covariate = "Female",                     Parameter = "V1",
+             Ratio = param_at("vc", SEXF = 1) / ref[["vc"]]),
+  data.frame(Covariate = "Albumin 28 g/L (5th pct)",   Parameter = "V1",
+             Ratio = param_at("vc", ALB = 28) / ref[["vc"]])
+)
+cov_tab$`Change (%)` <- 100 * (cov_tab$Ratio - 1)
+
+knitr::kable(cov_tab, digits = 3,
+             caption = "Covariate effects at the 5th / 95th percentiles of their distributions.")
+
+# Statement 1, exact: albumin 28 g/L gives 65% higher CLbase.
+alb_low <- cov_tab$Ratio[cov_tab$Covariate == "Albumin 28 g/L (5th pct)" &
+                           cov_tab$Parameter == "CLbase"]
+stopifnot(abs(alb_low - 1.65) < 0.005)
+
+# Statement 2: every NON-albumin effect changes its parameter by <= 31%.
+non_alb <- cov_tab[!grepl("^Albumin", cov_tab$Covariate), ]
+stopifnot(max(abs(non_alb$Ratio - 1)) <= 0.31)
+
+# The sex effect is a linear (1 + theta) multiplier, so it must reproduce the
+# Results text exactly: "12.8% slower" on CLss and "12.6% lower" on V1.
+stopifnot(
+  abs(cov_tab$Ratio[cov_tab$Covariate == "Female" & cov_tab$Parameter == "CLss"] - 0.872) < 1e-6,
+  abs(cov_tab$Ratio[cov_tab$Covariate == "Female" & cov_tab$Parameter == "V1"]   - 0.874) < 1e-6
+)
+```
+
+### Why the aCD20 covariate is a ratio of logarithms
+
+Bender 2024 Table S3 writes the effect as
+`CL0BLRITUX = (LOG(ACD20)/LOG(500))**THETA(13)`, with `ACD20` in **ng/mL**.
+That is a power model on the *ratio of logarithms*, not on the concentration
+ratio, and the article's generic covariate notation does not distinguish the
+two. The paper's own `<= 31%` statement settles it, and this check records the
+falsification so a future reader cannot silently "simplify" the model back to
+the naive form.
+
+```{r acd20-form}
+acd20_95 <- 55.91  # ug/mL, the 95th percentile (Bender 2024 Figure 2)
+THETA_ACD20 <- -0.573
+
+ratio_of_logs   <- (log(acd20_95 * 1000) / log(500))^THETA_ACD20
+concentration_ratio <- (acd20_95 * 1000 / 500)^THETA_ACD20
+
+data.frame(
+  Reading = c("Ratio of logarithms (implemented)", "Concentration ratio (rejected)"),
+  `CLbase fold change` = c(ratio_of_logs, concentration_ratio),
+  `Change (%)` = 100 * (c(ratio_of_logs, concentration_ratio) - 1),
+  `Within the paper's 31% bound` = c(abs(ratio_of_logs - 1) <= 0.31,
+                                     abs(concentration_ratio - 1) <= 0.31),
+  check.names = FALSE
+) |>
+  knitr::kable(digits = 3,
+               caption = "The two readings of the aCD20 covariate. Only the ratio-of-logarithms form is compatible with Bender 2024's statement that no non-albumin covariate moves a typical parameter by more than 31%.")
+
+stopifnot(
+  abs(ratio_of_logs - 1) <= 0.31,        # implemented form is admissible
+  abs(concentration_ratio - 1) > 0.31    # naive form is falsified by the paper
+)
+```
+
+# Receptor occupancy (Equation 1)
+
+Bender 2024 Equation 1 / Table S3 `DADT(6)` gives the competitive
+equilibrium-binding receptor occupancy
+
+$$\mathrm{RO\%} = \frac{100 \cdot C_{\mathrm{mosun}}}
+  {C_{\mathrm{mosun}} + K_{D,\mathrm{mosun}}
+   + \frac{K_{D,\mathrm{mosun}}}{K_{D,\mathrm{ritux}}} C_{\mathrm{ritux}}
+   + \frac{K_{D,\mathrm{mosun}}}{K_{D,\mathrm{obin}}} C_{\mathrm{obin}}}$$
+
+with Scatchard dissociation constants `KD_TDB = 10200`, `KD_R = 675` and
+`KD_G = 600` ng/mL. The published expression works in ng/mL; because RO% is a
+ratio in which every term carries the same concentration units, the model
+carries all four concentrations and all three KDs in ug/mL instead, which is
+exact.
+
+## The model's RO output matches the published expression
+
+```{r ro-implementation}
+KD_M <- 10.2; KD_R <- 0.675; KD_G <- 0.600  # ug/mL; Bender 2024 Table S3
+
+sim_ro <- rxode2::rxSolve(
+  mod_typ,
+  typical_covariates(as.data.frame(ev_typ), ritux = 12, obin = 30),
+  returnType = "data.frame"
+)
+
+ro_closed <- 100 * sim_ro$Cc /
+  (sim_ro$Cc + KD_M + (KD_M / KD_R) * sim_ro$ritux + (KD_M / KD_G) * sim_ro$obin)
+
+stopifnot(max(abs(sim_ro$RO - ro_closed)) < 1e-9)
+```
+
+## Figure 4: the published individual RO values are self-consistent
+
+Bender 2024 Figure 4 reports Day-21 RO% for four individual patients on the
+1/2/60/30 regimen. The two patients in the top row are described as having
+*"similar"* mosunetuzumab concentrations but RO% of **55%** and **0.86%** --
+the second patient carried 160 ug/mL of residual obinutuzumab.
+
+Inverting Equation 1 for each patient must therefore return roughly the same
+mosunetuzumab concentration. This is a strong test of the competing-ligand
+structure specifically: it exercises the `KD_M / KD_G` scaling factor, which is
+the part of the equation the article text does not spell out.
+
+```{r figure-4-consistency}
+invert_ro <- function(ro_pct, ritux, obin) {
+  # Solve RO = 100*C/(C + D) for C, where D collects the competing terms.
+  D <- KD_M + (KD_M / KD_R) * ritux + (KD_M / KD_G) * obin
+  ro_pct * D / (100 - ro_pct)
+}
+
+fig4 <- data.frame(
+  Patient = c("Top left (R 0.5, no G)", "Top right (R 0.5, G 160)"),
+  `RO% at Day 21` = c(55, 0.86),
+  `Rituximab (ug/mL)` = c(0.5, 0.5),
+  `Obinutuzumab (ug/mL)` = c(0, 160),
+  check.names = FALSE
+)
+fig4$`Implied Cmosun (ug/mL)` <- invert_ro(fig4$`RO% at Day 21`,
+                                           fig4$`Rituximab (ug/mL)`,
+                                           fig4$`Obinutuzumab (ug/mL)`)
+
+# Falsification arm: drop the KD_M/KD_G scaling on the obinutuzumab term, as
+# a reader might if they took "competing concentration" literally.
+invert_ro_unscaled <- function(ro_pct, ritux, obin) {
+  D <- KD_M + (KD_M / KD_R) * ritux + obin
+  ro_pct * D / (100 - ro_pct)
+}
+fig4$`Implied Cmosun, unscaled obin term` <-
+  invert_ro_unscaled(fig4$`RO% at Day 21`, fig4$`Rituximab (ug/mL)`,
+                     fig4$`Obinutuzumab (ug/mL)`)
+
+knitr::kable(fig4, digits = 3,
+             caption = "Inverting Bender 2024 Equation 1 on the two Figure 4 patients the paper describes as having similar mosunetuzumab concentrations.")
+
+implied <- fig4$`Implied Cmosun (ug/mL)`
+implied_unscaled <- fig4$`Implied Cmosun, unscaled obin term`
+
+# As implemented, the two patients agree to within about 10%, matching the
+# paper's description of their mosunetuzumab concentrations as "similar".
+stopifnot(abs(diff(implied)) / mean(implied) < 0.20)
+
+# Without the KD ratio the same two patients disagree by more than tenfold,
+# so this check genuinely discriminates the two readings.
+stopifnot(abs(diff(implied_unscaled)) / mean(implied_unscaled) > 1.0)
+```
+
+# Typical-value replication of Table S2
+
+Bender 2024 supplement Table S2 reports geometric-mean exposure endpoints for
+the approved 1/2/60/30 mg regimen. The comparison below uses the **typical
+patient** (all covariates at their cohort medians, no random effects), so it
+is deterministic. Because the model's parameters are log-normally distributed,
+the cohort geometric mean and the typical-value prediction coincide to first
+order, which is why this comparison is meaningful at all -- it is recorded as
+an approximate identity, not an exact one.
+
+Cycle boundaries follow the regimen: Cycle 3 Day 1 is study Day 43 (t = 42),
+so Cycle 4 spans t = 63 to t = 84.
+
+```{r table-s2}
+auc_between <- function(d, t0, t1) at_time(d, t1)$auc - at_time(d, t0)$auc
+in_window <- function(d, t0, t1) d[d$time >= t0 & d$time <= t1, ]
+
+c4 <- in_window(sim_typ, 63, 84)
+
+s2 <- data.frame(
+  Endpoint = c("AUC0-42 (day*ug/mL)", "Cmax over Cycles 1-2 (ug/mL)",
+               "Cycle 4 AUC (day*ug/mL)", "Cycle 4 Cmax (ug/mL)",
+               "Cycle 4 Cmin (ug/mL)", "AUCss = 30 mg / CLss (day*ug/mL)"),
+  Model = c(
+    auc_between(sim_typ, 0, 42),
+    max(in_window(sim_typ, 0, 42)$Cc),
+    auc_between(sim_typ, 63, 84),
+    max(c4$Cc),
+    min(c4$Cc),
+    30 / at_time(sim_typ, 84)$cl
+  ),
+  `Bender 2024 Table S2` = c(126, 13.6, 52.9, 7.02, 1.29, 55.3),
+  check.names = FALSE
+)
+s2$`% difference` <- 100 * (s2$Model - s2$`Bender 2024 Table S2`) /
+  s2$`Bender 2024 Table S2`
+
+knitr::kable(s2, digits = 3,
+             caption = "Typical-value predictions versus the geometric means of Bender 2024 Table S2.")
+
+# The five directly simulated endpoints reproduce Table S2 to within a few
+# percent. A mis-transcribed clearance, volume, dose or unit moves these by
+# tens of percent, so 6% has ample headroom while still being able to go red.
+# (The AUCss row is excluded: Table S2 derives it from the distribution of
+# individual CLss empirical Bayes estimates rather than from a solve, so the
+# typical-value identity 30/CLss is only an approximation of it.)
+stopifnot(max(abs(s2$`% difference`[1:5])) < 6)
+```
+
+# Virtual cohort
+
+The original observed data are not public. The cohort below approximates the
+Bender 2024 Table 1 covariate distributions: log-normal body weight and tumor
+SPD, a truncated normal albumin, and a residual anti-CD20 mixture in which
+44.4% of patients (195/439) carry detectable rituximab and 8.0% (35/439) carry
+detectable obinutuzumab, with a median of about 10 ug/mL among those affected
+(Bender 2024 Discussion).
+
+```{r cohort}
+# set.seed() seeds R's RNG, which is what the covariate draws below use. It
+# does NOT seed rxode2's simulation RNG, and rxode2's streams are partitioned
+# per solver thread -- so the residual-error draw differs between a 2-thread
+# CI runner and a 16-thread workstation. Every assertion downstream is
+# therefore written on a robust central statistic, never on an extreme.
+set.seed(20240513)
+rxode2::rxSetSeed(20240513)
+
+n_sub <- 200L
+
+rtrunc_norm <- function(n, mean, sd, lower, upper) {
+  x <- stats::rnorm(n, mean, sd)
+  pmin(pmax(x, lower), upper)
+}
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  # Median 77.9 kg; sdlog chosen so the 95th percentile lands near 112 kg
+  # (Bender 2024 Figure 2). Truncated to the Table 1 range.
+  WT = pmin(pmax(stats::rlnorm(n_sub, log(78), 0.22), 37.1), 163),
+  # Median 39 g/L. The Table 1 maximum of 480 g/L is a unit-error record that
+  # the control stream explicitly guards; it is excluded here.
+  ALB = rtrunc_norm(n_sub, 39, 5.5, 19, 50),
+  SEXF = stats::rbinom(n_sub, 1L, 0.353),
+  # Median SPD 2970 mm^2, truncated to the Table 1 range.
+  TUMSZ = pmin(pmax(stats::rlnorm(n_sub, log(2970), 0.94), 96), 70900)
+) |>
+  dplyr::mutate(
+    # 195/439 = 44.4% carried detectable rituximab; the remainder sit at the
+    # 0.5 ug/mL assay LOQ, which is why Table 1 reports a median of 0.500.
+    CP_RITUXIMAB_UGML = ifelse(
+      stats::rbinom(n_sub, 1L, 0.444) == 1L,
+      pmin(stats::rlnorm(n_sub, log(10), 1.1), 151),
+      0.5
+    ),
+    # 35/439 = 8.0% carried detectable obinutuzumab; Table 1 median is 0.
+    CP_OBINUTUZUMAB_UGML = ifelse(
+      stats::rbinom(n_sub, 1L, 0.080) == 1L,
+      pmin(stats::rlnorm(n_sub, log(10), 1.3), 305),
+      0
+    )
+  ) |>
+  dplyr::mutate(
+    CP_ACD20_UGML = pmax(CP_RITUXIMAB_UGML, CP_OBINUTUZUMAB_UGML),
+    acd20_group = ifelse(CP_ACD20_UGML > 1,
+                         "Residual anti-CD20 present",
+                         "At the assay LOQ"),
+    treatment = "1/2/60/30 mg IV q3w"
+  )
+
+stopifnot(
+  nrow(cohort) == n_sub,
+  # The covariate is a ratio of logarithms on the ng/mL scale, so it needs
+  # aCD20 > 1 ng/mL. The rituximab LOQ floor guarantees it.
+  all(cohort$CP_ACD20_UGML >= 0.5)
+)
+
+cohort_events <- rxode2::et(amt = dose_amts, time = dose_times, cmt = "central") |>
+  rxode2::et(amt = 30, time = maint_time, ii = 21, addl = 7, cmt = "central") |>
+  rxode2::et(obs_times, cmt = "central") |>
+  as.data.frame() |>
+  # Materialise the event table first: covariate columns assigned onto an
+  # rxEt object are silently dropped.
+  tidyr::crossing(cohort) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod,
+  cohort_events,
+  keep = c("treatment", "acd20_group", "CP_ACD20_UGML"),
+  returnType = "data.frame"
+)
+```
+
+## Mosunetuzumab and clearance time courses
+
+Replicates the structure of Bender 2024 Figure S5A: the concentration-time
+profile of the approved regimen alongside the falling individual clearance.
+
+```{r figure-s5a}
+conc_bands <- sim |>
+  dplyr::filter(time <= 150) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(conc_bands, aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  scale_y_log10() +
+  labs(x = "Time (day)", y = "Mosunetuzumab concentration (ug/mL)",
+       title = "Approved 1/2/60/30 mg regimen",
+       caption = "Median and 5th-95th percentile band; replicates the layout of Bender 2024 Figure S5A.")
+```
+
+```{r figure-s5a-cl}
+sim |>
+  dplyr::filter(time <= 150) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = quantile(cl, 0.05), Q50 = median(cl), Q95 = quantile(cl, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  geom_hline(yintercept = CLSS, linetype = "dashed") +
+  labs(x = "Time (day)", y = "Clearance (L/day)",
+       title = "Time-dependent clearance falling from CLbase toward CLss",
+       caption = "Dashed line is the typical CLss of 0.584 L/day (Bender 2024 Table 2).")
+```
+
+## Receptor occupancy over time
+
+Replicates the message of Bender 2024 Figure 4 and Figure S5B: the 60 mg
+loading doses lift RO% in Cycle 1, and RO% is far lower while residual
+anti-CD20 drug is still competing for the target.
+
+```{r figure-4-cohort}
+sim |>
+  dplyr::filter(time <= 150) |>
+  dplyr::group_by(time, acd20_group) |>
+  dplyr::summarise(
+    Q05 = quantile(RO, 0.05), Q50 = median(RO), Q95 = quantile(RO, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50, fill = acd20_group, colour = acd20_group)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.20, colour = NA) +
+  geom_line() +
+  labs(x = "Time (day)", y = "CD20 receptor occupancy (%)",
+       colour = NULL, fill = NULL,
+       title = "Mosunetuzumab CD20 RO% by baseline anti-CD20 status",
+       caption = "Replicates the mechanism shown in Bender 2024 Figure 4 and Figure S5B.") +
+  theme(legend.position = "bottom")
+```
+
+```{r ro-cohort-checks}
+ro_by_group <- sim |>
+  dplyr::filter(abs(time - 20) < 0.3) |>
+  dplyr::group_by(acd20_group) |>
+  dplyr::summarise(median_ro = median(RO), .groups = "drop")
+
+knitr::kable(ro_by_group, digits = 2,
+             caption = "Median Day-21 RO% by baseline anti-CD20 status.")
+
+# Bender 2024: "higher rituximab/obinutuzumab levels compete for the CD20
+# target, thereby reducing Mosun CD20 RO%". The direction of this effect is
+# structural (a strictly larger denominator), not a noisy contrast, so
+# asserting it is safe across cohorts.
+stopifnot(
+  ro_by_group$median_ro[ro_by_group$acd20_group == "At the assay LOQ"] >
+    ro_by_group$median_ro[ro_by_group$acd20_group == "Residual anti-CD20 present"]
+)
+
+# "Mosun CD20 RO% troughs are shown to maintain above 5%, even with the dose
+# reduction from 60 mg to 30 mg, due to the washout of residual
+# rituximab/obinutuzumab" (Discussion). Checked on the cohort median at the
+# Cycle 5 trough (t = 84), a central statistic rather than an extreme.
+trough_ro <- median(sim$RO[abs(sim$time - 84) < 0.3])
+stopifnot(trough_ro > 5)
+```
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time-zero record per subject so AUC intervals starting at 0 are
+# anchored. Mosunetuzumab is given intravenously and these are the first
+# doses, so the pre-dose concentration is 0.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- cohort_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+# Two windows, matching the two columns of Table S2 that are directly
+# simulable: the early two-cycle endpoint AUC0-42, and Cycle 4 (t = 63-84),
+# which the supplement identifies as a steady-state surrogate.
+intervals <- data.frame(
+  start   = c(0, 63),
+  end     = c(42, 84),
+  auclast = TRUE,
+  cmax    = TRUE,
+  cmin    = c(FALSE, TRUE),
+  tmax    = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against Bender 2024 Table S2
+
+`ncaComparisonTable()` pools the simulated subjects by their **median**.
+Table S2 reports geometric means; for the log-normally distributed parameters
+of this model the two coincide to first order, so the rows below are directly
+comparable.
+
+```{r nca-compare}
+# Keep `id` here: the per-subject frame is what the numeric gate below pivots
+# and summarises. `ncaComparisonTable()` pools across subjects itself, so it
+# gets the same frame with `id` dropped.
+nca_by_id <- as.data.frame(nca_res) |>
+  dplyr::mutate(
+    window = dplyr::case_when(
+      start == 0  & end == 42 ~ "Cycles 1-2 (Days 1-42)",
+      start == 63 & end == 84 ~ "Cycle 4"
+    )
+  ) |>
+  dplyr::filter(!is.na(window)) |>
+  dplyr::select(id, window, PPTESTCD, PPORRES)
+
+nca_long <- dplyr::select(nca_by_id, window, PPTESTCD, PPORRES)
+
+published <- tibble::tribble(
+  ~window,                  ~auclast, ~cmax,
+  "Cycles 1-2 (Days 1-42)", 126,      13.6,
+  "Cycle 4",                52.9,     7.02
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_long,
+  reference = published,
+  by        = "window",
+  units     = c(auclast = "day*ug/mL", cmax = "ug/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, caption = "Simulated cohort medians versus the Bender 2024 Table S2 geometric means. * marks a difference above 20%.")
+```
+
+```{r nca-checks}
+nca_wide <- nca_by_id |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+med <- function(w, p) median(nca_wide[[p]][nca_wide$window == w], na.rm = TRUE)
+
+nca_gate <- data.frame(
+  Endpoint  = c("AUC0-42", "Cmax Cycles 1-2", "Cycle 4 AUC", "Cycle 4 Cmax", "Cycle 4 Cmin"),
+  Simulated = c(med("Cycles 1-2 (Days 1-42)", "auclast"),
+                med("Cycles 1-2 (Days 1-42)", "cmax"),
+                med("Cycle 4", "auclast"), med("Cycle 4", "cmax"),
+                med("Cycle 4", "cmin")),
+  Published = c(126, 13.6, 52.9, 7.02, 1.29)
+)
+nca_gate$`% difference` <- 100 * (nca_gate$Simulated - nca_gate$Published) /
+  nca_gate$Published
+
+knitr::kable(nca_gate, digits = 3,
+             caption = "Cohort NCA medians versus Bender 2024 Table S2.")
+
+# Cohort statistic, so a looser bound than the typical-value gate above: the
+# assumed covariate distributions are approximations of Table 1, and the
+# median of a 200-subject draw carries its own sampling noise. 25% still goes
+# red on a mis-transcribed clearance, volume, dose or unit, which move these
+# endpoints by tens of percent.
+stopifnot(max(abs(nca_gate$`% difference`)) < 25)
+
+# Structural, not statistical: the two 60 mg loading doses make the early
+# two-cycle exposure larger than a maintenance cycle's, which is the whole
+# reason Bender 2024 defines AUC0-42 as a separate endpoint.
+stopifnot(med("Cycles 1-2 (Days 1-42)", "auclast") > med("Cycle 4", "auclast"))
+```
+
+# Assumptions and deviations
+
+## Covariate distributions
+
+* Body weight, albumin and tumor SPD distributions are **assumed** parametric
+  forms (log-normal, truncated normal, log-normal) chosen to match the medians
+  and approximate 5th/95th percentiles of Bender 2024 Table 1 and Figure 2. The
+  paper publishes only medians and ranges.
+* The residual anti-CD20 mixture (44.4% with detectable rituximab, 8.0% with
+  detectable obinutuzumab, median about 10 ug/mL among those affected) is
+  assembled from the patient counts in Table 1 and the median quoted in the
+  Discussion; the joint distribution of the two drugs is **assumed
+  independent**, whereas the paper reports 7 patients with both.
+* The Table 1 albumin maximum of 480 g/L is a unit-error record. The control
+  stream guards it (`IF(ALBUM.GT.200) ALBUMT = 39.00`); that guard is a
+  data-cleaning step and is deliberately **not** reproduced in `model()`, so a
+  user supplying an out-of-range albumin will get an out-of-range prediction
+  rather than a silent substitution.
+
+## Model-file decisions
+
+* **`aCD20` is supplied as a column, not computed with `max()` inside
+  `model()`.** The control stream feeds the covariate an NHL-type-dependent
+  *imputed* rituximab value (aggressive or unknown NHL -> 2105 ng/mL, indolent
+  NHL -> 500 ng/mL) for the 4.6% of patients with a missing measurement, while
+  seeding the ODE initial condition from the *raw* value. A `max()` taken
+  inside `model()` could not reproduce that split. This vignette's cohort has
+  no missing values, so it sets `CP_ACD20_UGML = pmax(...)` directly.
+* **The transition is parameterised by its half-life (`lcl_exp_thalf`), not by
+  a rate constant.** Bender 2024 selected this parameterisation explicitly
+  (Table S1: *"Model 2 was selected as the final model given that the HLtrans
+  and CLss parameterization was more amenable for steady-state calculations and
+  covariate analyses"*). Converting to the registered `cl_exp_kdes` rate
+  constant is mathematically exact but negates the HLtrans eta, which flips the
+  sign of the printed CLss-HLtrans covariance and would leave no number in the
+  model file matching Table 2.
+* `ritux`, `obin`, `auc` and `auc_ro` are declared as
+  `paper_specific_compartments`. The first two hold concentrations rather than
+  amounts, exactly as NONMEM compartments 3 and 5 do in Table S3; the last two
+  are the paper's own cumulative-endpoint integrators (compartments 4 and 6).
+* The receptor-occupancy expression is carried in ug/mL rather than the control
+  stream's ng/mL. RO% is a ratio in which every term shares the same
+  concentration units, so the `* 1000` factors cancel exactly. The **aCD20
+  covariate is different**: it is a ratio of logarithms and is *not*
+  scale-invariant, so `model()` converts back to ng/mL inside the logarithm.
+
+## Errata and internal inconsistencies in the source
+
+1. **`CL0DRUGMAT` is undefined in the printed control stream.** Table S3 sets
+   `CL0COV = CL0ALBUM * CL0BLRITUX * CL0DRUGMAT`, but `CL0DRUGMAT` is never
+   assigned anywhere in the listing. NONMEM would default it to 0, which would
+   zero CLbase entirely, so the printed listing cannot be the run as executed
+   (its `$INPUT` and `$DATA` blocks are likewise annotated "removed extraneous
+   info"). Table 2 and the Results text both enumerate exactly two CLbase
+   covariates -- albumin and aCD20 -- so the term is treated as absent from the
+   final model.
+2. **The body-weight `$THETA` comment is stale.** Table S3 labels `THETA(8)` as
+   `WT_CLbase`, but `$PK` applies it as `CLBWT = (BBWT/78)**THETA(8)` feeding
+   `TVCLSS`. The code's usage agrees with Table 2 ("Body weight on CLss") and
+   with the Results text, and is what the model implements.
+3. **Table 2 row-label typo.** The CLbase-V1 covariance row carries the symbol
+   `omega_CLbase,CLss`. The `$OMEGA BLOCK(2)` comments in Table S3 and the
+   reported correlation both identify it as CLbase-V1:
+   `0.180 / sqrt(0.426 * 0.0981) = 0.881`, matching footnote c's 0.882. The
+   prose label is correct; the symbol is wrong.
+4. **IIV on CLbase.** The Results text says 63%, while `sqrt(0.426) = 65.3%`.
+   The other four IIVs match the `sqrt(omega^2)` convention exactly (HLtrans
+   86.0 vs 86, CLss 18.5 vs 18, V1 31.3 vs 31, V2 24.9 vs 25), so 63% appears
+   to be a transcription slip. The model uses the Table 2 variance 0.426.
+5. **HLss = 16.1 days is not exactly reproducible** from the printed
+   CLss / V1 / V2 / Q. The standard two-compartment beta gives 15.54 days.
+   Beta is a near-cancellation (0.60895 - 0.51974), so it amplifies
+   three-significant-figure rounding of its inputs; V2 = 6.61 L (the upper 95%
+   CI bound) alone recovers 16.2 days. This is a derived summary quantity, not
+   a model input, and nothing in the model file depends on it.
+6. **`RO_TDBT`, an output-only duplicate of the RO expression in `$DES`,
+   references an undefined `GAZYVAI`** where `OBINI` is clearly meant. It feeds
+   no `DADT`; the `DADT(6)` form is well defined and is the one implemented.
+7. **The initial condition and the covariate use different rituximab values.**
+   The control stream seeds `A_0(3)` from the raw `BLRITUX` but passes the
+   imputed `BLRITUX2` into the covariate term, so for the 4.6% of patients with
+   a missing rituximab measurement the ODE and the covariate disagree by
+   construction. The model file preserves this by keeping
+   `CP_RITUXIMAB_UGML` and `CP_ACD20_UGML` as separate columns.
+
+## Not modelled
+
+* Bender 2024 Figure 2's covariate forest plot reports median AUC0-42 fold
+  changes with 90% confidence intervals derived by resampling the **observed**
+  439-patient covariate set. That dataset is not public, so the forest plot
+  itself is not reproduced here; the underlying covariate relationships are
+  instead checked directly at the published 5th/95th percentiles above.
+* The dose-delay restart simulations of Figure 5 are a clinical-guidance
+  application of the same model rather than a property of the model, and are
+  not reproduced.
