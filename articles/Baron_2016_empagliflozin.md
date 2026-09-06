@@ -324,8 +324,8 @@ knitr::kable(
 
 | treatment | n | delta_hba1c_median | delta_hba1c_q025 | delta_hba1c_q975 | delta_hba1c_published_median | delta_hba1c_published_q025 | delta_hba1c_published_q975 |
 |:---|---:|---:|---:|---:|---:|---:|---:|
-| 10 mg QD | 200 | -0.566 | -1.612 | -0.181 | -0.53 | -0.67 | -0.37 |
-| 25 mg QD | 200 | -0.667 | -1.859 | -0.193 | -0.59 | -0.74 | -0.44 |
+| 10 mg QD | 200 | -0.563 | -1.606 | -0.180 | -0.53 | -0.67 | -0.37 |
+| 25 mg QD | 200 | -0.666 | -1.857 | -0.193 | -0.59 | -0.74 | -0.44 |
 
 Simulated vs. Baron 2016 Table 3 (eGFR 60 - 90 mL / min / 1.73 m2 row
 used as a reference because the unstratified-overall row is not
@@ -408,14 +408,14 @@ knitr::kable(
 
 | NCA parameter   | treatment | Reference | Simulated |   % diff |
 |:----------------|:----------|----------:|----------:|---------:|
-| Cmax (nM)       | 10 mg QD  |       500 |       261 | -47.9%\* |
-| Cmax (nM)       | 25 mg QD  |      1250 |       694 | -44.5%\* |
+| Cmax (nM)       | 10 mg QD  |       500 |       258 | -48.4%\* |
+| Cmax (nM)       | 25 mg QD  |      1250 |       687 | -45.0%\* |
 | Tmax (h)        | 10 mg QD  |       1.5 |       1.5 |    +0.0% |
 | Tmax (h)        | 25 mg QD  |       1.5 |       1.5 |    +0.0% |
-| AUClast (nM\*h) | 10 mg QD  |      1800 |      1950 |    +8.5% |
-| AUClast (nM\*h) | 25 mg QD  |      4500 |      5160 |   +14.6% |
-| t½ (h)          | 10 mg QD  |        12 |      10.6 |   -11.3% |
-| t½ (h)          | 25 mg QD  |        12 |        11 |    -8.5% |
+| AUClast (nM\*h) | 10 mg QD  |      1800 |      1920 |    +6.7% |
+| AUClast (nM\*h) | 25 mg QD  |      4500 |      5070 |   +12.7% |
+| t½ (h)          | 10 mg QD  |        12 |      10.5 |   -12.2% |
+| t½ (h)          | 25 mg QD  |        12 |      10.9 |    -9.5% |
 
 Day 1 NCA vs published-typical reference (Baron 2016 Figure 1b
 qualitative ranges; the paper does not tabulate per-dose-group day 1

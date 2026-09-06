@@ -49,9 +49,11 @@ Description of the final model:
 > of all three analytes. Because the metabolite clearance random effects
 > were almost perfectly correlated, the authors reduced the model to a
 > single shared metabolite eta rescaled by a factor, so M-5 uses the M-2
-> eta multiplied by sd_ratio_cl_m5. All volumes and clearances are
-> apparent, relative to oral bioavailability and to the parent fraction
-> (1 - fm_m2).
+> eta multiplied by sd_ratio_cl_m5. The parent disposition is tabulated
+> as the composites CL_P/(1-FRM2), VC_P/(1-FRM2), Q_P/(1-FRM2) and
+> VP_P/(1-FRM2) and is rescaled by (1 - fm_m2) in model() to recover
+> CL_P, VC_P, Q_P and VP_P, which the metabolites inherit; all values
+> remain apparent, relative to oral bioavailability.
 
 ### Structure
 
@@ -83,6 +85,15 @@ Per Figure 1 of the paper:
 Because no intravenous or direct-metabolite data existed, the metabolite
 volumes, inter-compartmental flow and gallbladder rate constants are
 fixed to the parent values, and every volume and clearance is apparent.
+
+One bookkeeping point matters for the metabolites. Tables 2 and 3
+tabulate the parent disposition parameters as the composites
+`CL_P/(1-FRM2)`, `VC_P/(1-FRM2)`, `Q_P/(1-FRM2)` and `VP_P/(1-FRM2)`, so
+`model()` multiplies each by `(1 - fm_m2)` to recover `CL_P`, `VC_P`,
+`Q_P` and `VP_P` themselves - which are what the metabolites then
+inherit. The parent profile is unchanged by this (the factor cancels in
+every parent-only ratio), but the metabolite exposures are not; see item
+3 of *Assumptions and deviations*.
 
 ## Population
 
@@ -292,7 +303,7 @@ auc_ehc   <- auc_win(sim_ehc)
 auc_noehc <- auc_win(sim_noehc)
 c(EHC = auc_ehc, no_EHC = auc_noehc, ratio = auc_ehc / auc_noehc)
 #>        EHC     no_EHC      ratio 
-#> 39.7783920 39.7953933  0.9995728
+#> 39.7783920 39.7953932  0.9995728
 
 # Deterministic (typical-value) quantities: both sides use the same parameters,
 # so the only error is trapezoidal. A tight bound is correct here.
@@ -313,22 +324,29 @@ which tests a different part of the transcription. They follow from the
 fact that, over one dosing interval at steady state, every analyte’s
 elimination equals its formation:
 
-- parent: `AUC = Dose / CL_P` - tests the dose split, the
-  apparent-parameter convention and `CL_P`;
-- M-2: `AUC = Dose * fm_m2 / (1 - fm_m2) / CL_M-2` - tests the
-  pre-systemic branch and the `f(depot) = 1 / (1 - fm_m2)` scaling;
-- M-5: `AUC = Dose * fm_m5 / CL_M-5` - tests the systemic formation
-  term.
+- parent: `AUC = Dose / CL_P` - the tabulated `CL_P/(1-FRM2)` divided
+  into the full nominal dose, because the `(1 - fm_m2)` in the dose
+  split and the `(1 - fm_m2)` rescaling of the tabulated composite
+  cancel;
+- M-2: `AUC = Dose * fm_m2 / CL_M-2` - tests the pre-systemic branch,
+  which receives exactly `fm_m2` of the dose;
+- M-5: `AUC = Dose * fm_m5 * (1 - fm_m2) / CL_M-5` - tests the systemic
+  formation term. The `(1 - fm_m2)` is there because M-5 is formed from
+  *parent clearance*, and only `(1 - fm_m2)` of the dose ever becomes
+  parent.
 
-These compare a numerical solve against its own closed form using the
-*same* parameters, so the discrepancy is pure trapezoidal error and a
-tight bound is the right assertion (this is not a cohort-derived
-quantity).
+These are the paper’s own parameterisation, not a restatement of the
+model code: each right-hand side is built from the tabulated `CL` values
+and the two formation fractions alone, so a mis-scaled dose branch or a
+metabolite volume taken from the wrong side of the `/(1-FRM2)` composite
+would break them. The residual discrepancy is then pure trapezoidal
+error, and a tight bound is the right assertion (this is not a
+cohort-derived quantity).
 
-M-5 has a long terminal half-life (apparent Vss ~173 L over `CL_M-5` =
-0.746 L/h in the phase 1 model, i.e. roughly 160 h), so the run-in must
-be long: at day 21 M-5 is still 16% below steady state. 120 daily doses
-is used below.
+M-5 has a long terminal half-life (`VC_P + VP_P` =
+`(10.7 + 162) * (1 - fm_m2)` = 101 L over `CL_M-5` = 0.746 L/h in the
+phase 1 model, i.e. roughly 136 h), so the run-in must be long. 120
+daily doses is used below.
 
 ``` r
 
@@ -357,8 +375,8 @@ ss_p3 <- ss_auc(mod_p3, dose_t = 9,  SEXF = 0, BMI = 24.5)
 
 closed_form <- function(dose, fm2, fm5, cl, cl_m2, cl_m5) {
   c(parent = dose / cl,
-    m2 = dose * fm2 / (1 - fm2) / cl_m2,
-    m5 = dose * fm5 / cl_m5)
+    m2 = dose * fm2 / cl_m2,
+    m5 = dose * fm5 * (1 - fm2) / cl_m5)
 }
 cf_p1 <- closed_form(160, ss_p1[["fm_m2"]], ss_p1[["fm_m5"]], 4.02, 2.45, 0.746)
 cf_p3 <- closed_form(160, ss_p3[["fm_m2"]], ss_p3[["fm_m5"]], 3.05, 1.99, 1.42)
@@ -372,20 +390,20 @@ mb <- tibble::tibble(
   mutate(`% diff` = 100 * (Simulated / `Closed form` - 1))
 
 knitr::kable(mb, digits = 3,
-             caption = "Steady-state AUC(0-24) in mg*h/L against the model's own closed form.")
+             caption = "Steady-state AUC(0-24) in mg*h/L against the closed form implied by the paper's tabulated clearances and formation fractions.")
 ```
 
 | Model                             | Analyte     | Simulated | Closed form | % diff |
 |:----------------------------------|:------------|----------:|------------:|-------:|
 | Phase 1 (Table 2)                 | Regorafenib |    39.785 |      39.801 | -0.039 |
-| Phase 1 (Table 2)                 | M-2         |    45.773 |      45.791 | -0.039 |
-| Phase 1 (Table 2)                 | M-5         |    53.944 |      53.966 | -0.041 |
+| Phase 1 (Table 2)                 | M-2         |    26.907 |      26.917 | -0.039 |
+| Phase 1 (Table 2)                 | M-5         |    31.711 |      31.723 | -0.039 |
 | Phase 3 (Table 3), male, BMI 24.5 | Regorafenib |    52.438 |      52.459 | -0.039 |
-| Phase 3 (Table 3), male, BMI 24.5 | M-2         |    56.353 |      56.376 | -0.040 |
-| Phase 3 (Table 3), male, BMI 24.5 | M-5         |    28.340 |      28.351 | -0.039 |
+| Phase 3 (Table 3), male, BMI 24.5 | M-2         |    33.126 |      33.139 | -0.040 |
+| Phase 3 (Table 3), male, BMI 24.5 | M-5         |    16.659 |      16.666 | -0.039 |
 
-Steady-state AUC(0-24) in mg\*h/L against the model’s own closed form.
-{.table}
+Steady-state AUC(0-24) in mg\*h/L against the closed form implied by the
+paper’s tabulated clearances and formation fractions. {.table}
 
 ``` r
 
@@ -417,7 +435,7 @@ mw <- c(parent = 482.8, m2 = 498.8, m5 = 484.8)
 auc_um <- ss_p1[1:3] / mw * 1000
 round(auc_um, 1)
 #> parent     m2     m5 
-#>   82.4   91.8  111.3
+#>   82.4   53.9   65.4
 # All three within a factor of two of each other -- "nearly similar".
 stopifnot(max(auc_um) / min(auc_um) < 2)
 ```
@@ -493,10 +511,10 @@ knitr::kable(fig4, digits = 3,
 
 | Comparison | A: parent AUC | B: unbound total AUC | Figure 4A (read) | Figure 4B (read) |
 |:---|---:|---:|---:|---:|
-| Male : Female | 0.831 | 0.699 | 0.86 | 0.71 |
-| BMI \< 20 : BMI \>= 20 | 0.915 | 0.943 | 0.91 | 1.00 |
-| BMI \< 25 : BMI \>= 25 | 0.915 | 0.942 | 0.90 | 0.96 |
-| BMI \>= 30 : BMI \< 30 | 1.126 | 1.085 | 1.10 | 1.05 |
+| Male : Female | 0.831 | 0.737 | 0.86 | 0.71 |
+| BMI \< 20 : BMI \>= 20 | 0.915 | 0.934 | 0.91 | 1.00 |
+| BMI \< 25 : BMI \>= 25 | 0.915 | 0.933 | 0.90 | 0.96 |
+| BMI \>= 30 : BMI \< 30 | 1.126 | 1.098 | 1.10 | 1.05 |
 
 Reconstruction of the Figure 4 forest plots. Published values are read
 off the figure. {.table}
@@ -637,8 +655,8 @@ NCA is run on a phase 3 cohort over the final 24 h of a 60-day
 once-daily run-in, for all three analytes.
 
 Sixty daily doses put the *typical-value* profile of all three analytes
-at steady state to within rounding: the typical M-5 AUC(0-24) is 28.340
-mg*h/L at 60 days and 28.340 at 240 days. That is **not** true of every
+at steady state to within rounding: the typical M-5 AUC(0-24) is 16.659
+mg*h/L at 60 days and 16.659 at 240 days. That is **not** true of every
 individual in the cohort. M-5’s random effect is
 `sd_ratio_cl_m5 * etalcl_m2`, i.e. an SD of `2.21 * sqrt(0.385)` = 1.37
 on the log scale, and female sex cuts `CL_M-5` by a further 76%; the
@@ -728,24 +746,24 @@ nca_tbl |>
 
 | Analyte     | Parameter | Median | 5th pct | 95th pct |
 |:------------|:----------|-------:|--------:|---------:|
-| Regorafenib | AUClast   | 58.797 |  27.408 |  117.786 |
-| Regorafenib | Cavg      |  2.450 |   1.142 |    4.908 |
-| Regorafenib | Cmax      |  5.414 |   2.644 |   11.009 |
-| Regorafenib | Cmin      |  1.674 |   0.656 |    3.737 |
-| Regorafenib | Ctrough   |  2.729 |   0.949 |    6.081 |
+| Regorafenib | AUClast   | 58.672 |  27.406 |  117.786 |
+| Regorafenib | Cavg      |  2.445 |   1.142 |    4.908 |
+| Regorafenib | Cmax      |  5.424 |   2.607 |   11.738 |
+| Regorafenib | Cmin      |  1.674 |   0.660 |    3.737 |
+| Regorafenib | Ctrough   |  2.729 |   0.949 |    6.418 |
 | Regorafenib | Tmax      | 23.050 |   3.050 |   23.050 |
-| M-2         | AUClast   | 67.150 |  22.432 |  225.735 |
-| M-2         | Cavg      |  2.798 |   0.935 |    9.406 |
-| M-2         | Cmax      |  6.332 |   2.037 |   23.043 |
-| M-2         | Cmin      |  2.107 |   0.617 |    7.709 |
-| M-2         | Ctrough   |  3.432 |   0.946 |   13.050 |
-| M-2         | Tmax      | 23.050 |   9.050 |   23.050 |
-| M-5         | AUClast   | 43.590 |   3.233 |  280.622 |
-| M-5         | Cavg      |  1.816 |   0.135 |   11.693 |
-| M-5         | Cmax      |  4.366 |   0.280 |   29.060 |
-| M-5         | Cmin      |  1.508 |   0.089 |    9.758 |
-| M-5         | Ctrough   |  2.516 |   0.155 |   17.160 |
-| M-5         | Tmax      | 23.050 |  23.050 |   23.050 |
+| M-2         | AUClast   | 38.084 |  14.317 |  119.957 |
+| M-2         | Cavg      |  1.587 |   0.597 |    4.998 |
+| M-2         | Cmax      |  3.704 |   1.501 |   12.343 |
+| M-2         | Cmin      |  1.142 |   0.314 |    3.984 |
+| M-2         | Ctrough   |  1.902 |   0.491 |    6.871 |
+| M-2         | Tmax      | 23.050 |   3.050 |   23.050 |
+| M-5         | AUClast   | 24.528 |   1.740 |  224.067 |
+| M-5         | Cavg      |  1.022 |   0.072 |    9.336 |
+| M-5         | Cmax      |  2.512 |   0.181 |   23.199 |
+| M-5         | Cmin      |  0.809 |   0.053 |    7.758 |
+| M-5         | Ctrough   |  1.430 |   0.092 |   13.614 |
+| M-5         | Tmax      | 23.050 |   9.050 |   23.050 |
 
 Steady-state NCA over the 24 h dosing interval, 200 simulated phase 3
 subjects. {.table}
@@ -764,8 +782,8 @@ med_auc <- nca_tbl |> filter(Parameter == nlmixr2lib::ncaParamLabel("auclast"))
 published <- tibble::tibble(
   analyte = c("Regorafenib", "M-2", "M-5"),
   reference = c(160 / 3.05,
-                160 * ss_p3[["fm_m2"]] / (1 - ss_p3[["fm_m2"]]) / 1.99,
-                160 * ss_p3[["fm_m5"]] / 1.42)
+                160 * ss_p3[["fm_m2"]] / 1.99,
+                160 * ss_p3[["fm_m5"]] * (1 - ss_p3[["fm_m2"]]) / 1.42)
 )
 
 cmp <- med_auc |>
@@ -782,9 +800,9 @@ knitr::kable(cmp, digits = 2,
 
 | Analyte | Simulated cohort median (mg\*h/L) | Typical-value AUC0-24,ss (mg\*h/L) | % diff |
 |:---|---:|---:|---:|
-| Regorafenib | 58.80 | 52.46 | 12.08 |
-| M-2 | 67.15 | 56.38 | 19.11 |
-| M-5 | 43.59 | 28.35 | 53.75 |
+| Regorafenib | 58.67 | 52.46 | 11.84 |
+| M-2 | 38.08 | 33.14 | 14.92 |
+| M-5 | 24.53 | 16.67 | 47.17 |
 
 Cohort median steady-state AUC against the typical-value (male,
 reference BMI) prediction. {.table}
@@ -818,9 +836,13 @@ pars_ps <- sim_nca_raw |>
 
 cf_ps <- pars_ps |>
   transmute(id,
-            Regorafenib = 160 / cl,
-            `M-2`       = 160 * fm_m2 / (1 - fm_m2) / cl_m2,
-            `M-5`       = 160 * fm_m5 / cl_m5) |>
+            # `cl` in the solve is the parent's own CL_P, i.e. the tabulated
+            # CL_P/(1-FRM2) already multiplied by (1 - fm_m2); only
+            # (1 - fm_m2) of the dose reaches the parent, so that factor
+            # appears in the numerator here rather than cancelling.
+            Regorafenib = 160 * (1 - fm_m2) / cl,
+            `M-2`       = 160 * fm_m2 / cl_m2,
+            `M-5`       = 160 * fm_m5 * (1 - fm_m2) / cl_m5) |>
   pivot_longer(-id, names_to = "analyte", values_to = "closed_form")
 
 ps <- as.data.frame(nca_res$result) |>
@@ -843,9 +865,9 @@ knitr::kable(ps_summary, digits = 2,
 
 | analyte | median % diff | median \|% diff\| | 90th pct \|% diff\| | worst \|% diff\| |
 |:---|---:|---:|---:|---:|
-| Regorafenib | -0.19 | 0.19 | 0.20 | 4.45 |
-| M-2 | -0.19 | 0.19 | 0.99 | 16.54 |
-| M-5 | -0.53 | 0.55 | 36.62 | 94.08 |
+| Regorafenib | -0.19 | 0.19 | 0.20 | 4.19 |
+| M-2 | -0.19 | 0.19 | 0.29 | 8.63 |
+| M-5 | -0.20 | 0.20 | 18.85 | 91.95 |
 
 Per-subject steady-state AUC(0-24) against each subject’s own closed
 form. {.table}
@@ -934,15 +956,40 @@ PMC deposit (`BCP-86-2362-s001.docx`).
     the Results section and Figure 4.
 
 3.  **Apparent-parameter bookkeeping.** The authors tabulate the parent
-    parameters as `CL_P/(1-FRM2)`, `VC_P/(1-FRM2)`, `Q_P/(1-FRM2)` and
-    `VP_P/(1-FRM2)`, all additionally relative to `F_oral`. Those are
-    the values for a parent chain that receives the *full* nominal dose.
-    The model reproduces that convention by setting
-    `f(depot) = 1 / (1 - fm_m2)` ahead of the Figure 1 dose split, which
-    also puts the M-2 branch on the same apparent scale so that
-    “metabolite volumes fixed to the parent values” really means the
-    tabulated 10.7 L and 162 L. The steady-state identities above verify
-    the arithmetic.
+    parameters as the *composites* `CL_P/(1-FRM2)`, `VC_P/(1-FRM2)`,
+    `Q_P/(1-FRM2)` and `VP_P/(1-FRM2)`, all additionally relative to
+    `F_oral`. The model therefore multiplies each tabulated value by
+    `(1 - fm_m2)` to recover the parent’s own `CL_P`, `VC_P`, `Q_P` and
+    `VP_P`, and applies no `f(depot)`: the depot takes the full nominal
+    dose and the Figure 1 split sends `fm_m2` of it to M-2 and
+    `(1 - fm_m2)` to the parent.
+
+    This distinction is load-bearing and is the one place where the
+    arithmetic can be got wrong without the parent noticing. Every
+    parent-only quantity is a *ratio* in which the `(1 - FRM2)`
+    cancels - `cl/vc`, `q/vc`, `q/vp`, and the dose-over-volume
+    scaling - so the parent concentration-time profile is identical
+    whether or not the rescaling is applied. The metabolites are not:
+    they inherit `VC_P`, `VP_P` and `Q_P` by the paper’s identifiability
+    assumption (“it is assumed that their volume is the same as that of
+    parent regorafenib”, section 2.3.2), and reading the tabulated
+    composite as `VC_P` would inflate every metabolite volume by
+    `1/(1-FRM2)` = 1.70, slow metabolite elimination by the same factor,
+    and overstate both metabolite AUCs by 70%.
+
+    Two features of the paper fix the reading. First, the row labels
+    state the estimated quantity *is* the composite - had `10.7 L` been
+    `VC_P`, the row would read `VC_P`. Second, Table 1 is the
+    parent-**only** phase 1 model, in which no `FRM2` split exists and
+    the full dose reaches the parent; it reports the same `4.02 L/h` and
+    `10.7 L` that Table 2 then carries forward as Fixed but re-labels as
+    the `/(1-FRM2)` composites. That re-labelling is only coherent if
+    introducing the pre-systemic split scaled the parent’s true
+    parameters down by `(1 - FRM2)` while leaving its observable
+    profile - and hence the fitted number - unchanged. The steady-state
+    identities above are written against the paper’s parameterisation
+    rather than the model’s own, so they would fail if this were got
+    wrong.
 
 4.  **Absolute bioavailability and absolute formation fractions are not
     identifiable** from oral-only data, so `F_oral` never appears and

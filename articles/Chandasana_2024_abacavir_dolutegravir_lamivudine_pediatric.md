@@ -125,27 +125,42 @@ location. The table below collects them.
 
 ### Dolutegravir – Chandasana 2024 Table 2
 
+Chandasana 2024 did not fit the dolutegravir model: it applied the
+existing pediatric popPK model of Chandasana et al., Clin Pharmacokinet
+2023;62(10): 1445-1459 (its reference 15) to the IMPAACT 2019 data
+without re-estimation (NONMEM `MAXEVAL = 0`), and reproduces that
+model’s estimates in its Table 2. That primary paper is itself packaged
+as `modellib("Chandasana_2023_dolutegravir")`, and the values below were
+corrected against it. Chandasana 2024 Table 2 reproduces the two
+formulation effects as **ratios** without restating the products, prints
+the residual errors as **variances**, and explicitly defers the
+random-effects covariance matrix (“Further details about covariance
+matrix and full model can be found in the reference \[15\]”). Reading
+those rows at face value overstates the dispersible-tablet absorption
+rate 2.4-fold, understates the P1093 additive residual error 25-fold,
+and drops the CL/V/Ka correlations entirely. The `Source location`
+column below cites the primary wherever it, rather than Chandasana 2024,
+is what pins the value down.
+
 | Equation / parameter | Value | Source location |
 |----|----|----|
 | Structure: 1-compartment, first-order oral absorption | – | Chandasana 2024, “DTG Pediatric PopPK Model” |
 | `FMAT = PMA^HILL / (PMA^HILL + TM50^HILL)`; `PMA (weeks) = PNA (years) * 52 + 40` | – | Table 2 footnote |
-| `lka_fct` | Ka, FCT = 0.854 1/h (%RSE 11.2) | Table 2 |
-| `lka_dt` | Ka, DT and granules = 2.04 1/h (%RSE 15.7) | Table 2 |
+| `lka` | Ka, FCT = 0.854 1/h (%RSE 11.2) | Table 2 |
+| `e_form_dt_ka` | Ka ratio, DT and granules = 2.04 (%RSE 15.7), i.e. Ka = 0.854 x 2.04 = 1.74 1/h | Table 2; Chandasana 2023 Table S1 and control stream `KAFORM = THETA(17)**FORMK` |
 | `lcl` | CL/F = 1.03 L/h (%RSE 2.31) | Table 2 |
 | `lvc` | V/F = 13.6 L (%RSE 2.42) | Table 2 |
 | `e_wt_cl` | CL/F ~ (WT/70)^0.455 (%RSE 4.15) | Table 2 |
 | `e_wt_vc` | V/F ~ (WT/70)^0.556 (%RSE 3.87) | Table 2 |
 | `tmat50` | TM50 = 52.2 PMA weeks, FIXED | Table 2 |
 | `hill_mat` | Hill = 3.43, FIXED | Table 2 |
-| `e_food_fdepot` | F, without regard to food FCT = 1.10 (%RSE 3.03) | Table 2 |
+| `e_food_fdepot` | F, without regard to food = 1.10 (%RSE 3.03); applies to every formulation, so F for the DT without regard to food is 1.10 x 1.53 = 1.68 | Table 2; Chandasana 2023 Table S1 and control stream `F1 = 1 * THETA(4)**SFLAG * THETA(9)**FFLAG` |
 | `e_form_dt_fdepot` | F, fasted DT/granules = 1.53 (%RSE 3.26); fasted FCT = 1.00 reference | Table 2 |
-| `etalcl` | IIV CL/F = 29.4% CV -\> `log(1 + 0.294^2)` | Table 2 |
-| `etalvc` | IIV V/F = 26.4% CV -\> `log(1 + 0.264^2)` | Table 2 |
-| `etalka` | IIV KA = 107% CV -\> `log(1 + 1.07^2)` | Table 2 |
-| `etaiov_lcl_1/2` | IOV-CL/F = 33.9% CV -\> `log(1 + 0.339^2)` | Table 2 |
-| `etaiov_lka_1/2` | IOV-KA = 91.7% CV -\> `log(1 + 0.917^2)` | Table 2 |
-| `propSd` / `addSd` | P1093: proportional 28.6%, additive 0.00164 ug/mL | Table 2 |
-| `propSd_odyssey` / `addSd_odyssey` | ODYSSEY: proportional 11.1%, additive 0.090 ug/mL | Table 2 (continued) |
+| IIV block `etalcl`, `etalvc`, `etalka` | var 0.0863 / 0.0698 / 0.762; cov 0.0499, 0.0953, 0.138 (CV 29.4 / 26.4 / 107%) | Chandasana 2024 Table 2 defers the covariance matrix to its reference \[15\]; values from Chandasana 2023 Table 2 and control stream `$OMEGA BLOCK(3)` |
+| `etaiov_lcl_1/2` | IOV-CL/F variance 0.115 (CV 33.9%) | Table 2; Chandasana 2023 Table 2 |
+| `etaiov_lka_1/2` | IOV-KA variance 0.610 (CV 91.7%) | Table 2; Chandasana 2023 Table 2 |
+| `propSd` / `addSd` | P1093: proportional 28.6%, additive SD 0.0405 ug/mL (Table 2 prints the variance 0.00164) | Table 2; Chandasana 2023 Table 2 |
+| `propSd_odyssey` / `addSd_odyssey` | ODYSSEY: proportional 11.1%, additive SD 0.300 ug/mL (Table 2 prints the variance 0.0900) | Table 2 (continued); Chandasana 2023 Table 2 |
 
 ### Lamivudine – Chandasana 2024 Table 3
 
@@ -504,21 +519,21 @@ compare_drug(nca_dtg, published_dtg, "Dolutegravir")
 
 | NCA parameter      | band             | Reference | Simulated | % diff   |
 |:-------------------|:-----------------|:----------|:----------|:---------|
-| Cmax (ug/mL)       | \>=6 to \<10 kg  | 6.99      | 6.33      | -9.5%    |
-| Cmax (ug/mL)       | \>=10 to \<14 kg | 6.88      | 5.93      | -13.7%   |
-| Cmax (ug/mL)       | \>=14 to \<20 kg | 7.12      | 6.26      | -12.1%   |
-| Cmax (ug/mL)       | \>=20 to \<25 kg | 7.42      | 6.44      | -13.2%   |
-| Cmax (ug/mL)       | \>=25 to \<40 kg | 6.24      | 5.37      | -13.9%   |
-| Clast (ug/mL)      | \>=6 to \<10 kg  | 0.94      | 1.27      | +35.4%\* |
-| Clast (ug/mL)      | \>=10 to \<14 kg | 0.74      | 0.895     | +21.0%\* |
-| Clast (ug/mL)      | \>=14 to \<20 kg | 0.81      | 1.03      | +27.7%\* |
-| Clast (ug/mL)      | \>=20 to \<25 kg | 0.88      | 0.983     | +11.7%   |
-| Clast (ug/mL)      | \>=25 to \<40 kg | 0.95      | 1.15      | +21.4%\* |
-| AUClast (ug\*h/mL) | \>=6 to \<10 kg  | 70.6      | 78.7      | +11.5%   |
-| AUClast (ug\*h/mL) | \>=10 to \<14 kg | 65.4      | 65.1      | -0.4%    |
-| AUClast (ug\*h/mL) | \>=14 to \<20 kg | 68.6      | 72.7      | +6.0%    |
+| Cmax (ug/mL)       | \>=6 to \<10 kg  | 6.99      | 5.89      | -15.7%   |
+| Cmax (ug/mL)       | \>=10 to \<14 kg | 6.88      | 5.59      | -18.7%   |
+| Cmax (ug/mL)       | \>=14 to \<20 kg | 7.12      | 5.99      | -15.9%   |
+| Cmax (ug/mL)       | \>=20 to \<25 kg | 7.42      | 6.15      | -17.1%   |
+| Cmax (ug/mL)       | \>=25 to \<40 kg | 6.24      | 5.23      | -16.2%   |
+| Clast (ug/mL)      | \>=6 to \<10 kg  | 0.94      | 1.25      | +33.1%\* |
+| Clast (ug/mL)      | \>=10 to \<14 kg | 0.74      | 0.872     | +17.9%   |
+| Clast (ug/mL)      | \>=14 to \<20 kg | 0.81      | 1.03      | +27.5%\* |
+| Clast (ug/mL)      | \>=20 to \<25 kg | 0.88      | 0.996     | +13.2%   |
+| Clast (ug/mL)      | \>=25 to \<40 kg | 0.95      | 1.13      | +18.9%   |
+| AUClast (ug\*h/mL) | \>=6 to \<10 kg  | 70.6      | 78.6      | +11.4%   |
+| AUClast (ug\*h/mL) | \>=10 to \<14 kg | 65.4      | 65.4      | +0.1%    |
+| AUClast (ug\*h/mL) | \>=14 to \<20 kg | 68.6      | 72.6      | +5.9%    |
 | AUClast (ug\*h/mL) | \>=20 to \<25 kg | 72.4      | 75.1      | +3.8%    |
-| AUClast (ug\*h/mL) | \>=25 to \<40 kg | 66.8      | 69.4      | +3.9%    |
+| AUClast (ug\*h/mL) | \>=25 to \<40 kg | 66.8      | 69.4      | +4.0%    |
 
 Dolutegravir: simulated vs. Chandasana 2024 Table 4 geometric means. \*
 differs from reference by \>20%. {.table}
@@ -632,11 +647,11 @@ target_check |>
 | Abacavir | \>=14 to \<20 kg | 16.97 | 6.3-50.4 | TRUE |
 | Abacavir | \>=20 to \<25 kg | 16.60 | 6.3-50.4 | TRUE |
 | Abacavir | \>=25 to \<40 kg | 19.42 | 6.3-50.4 | TRUE |
-| Dolutegravir | \>=6 to \<10 kg | 76.11 | 37-134 | TRUE |
-| Dolutegravir | \>=10 to \<14 kg | 67.98 | 37-134 | TRUE |
+| Dolutegravir | \>=6 to \<10 kg | 76.12 | 37-134 | TRUE |
+| Dolutegravir | \>=10 to \<14 kg | 67.96 | 37-134 | TRUE |
 | Dolutegravir | \>=14 to \<20 kg | 70.96 | 37-134 | TRUE |
-| Dolutegravir | \>=20 to \<25 kg | 74.96 | 37-134 | TRUE |
-| Dolutegravir | \>=25 to \<40 kg | 68.23 | 37-134 | TRUE |
+| Dolutegravir | \>=20 to \<25 kg | 74.98 | 37-134 | TRUE |
+| Dolutegravir | \>=25 to \<40 kg | 68.19 | 37-134 | TRUE |
 | Lamivudine | \>=6 to \<10 kg | 11.33 | 6.3-26.5 | TRUE |
 | Lamivudine | \>=10 to \<14 kg | 10.77 | 6.3-26.5 | TRUE |
 | Lamivudine | \>=14 to \<20 kg | 10.78 | 6.3-26.5 | TRUE |
@@ -666,11 +681,11 @@ dtg_c24 |>
 
 | Weight band      | GM C24 (ug/mL) | Within 0.697-2.26 |
 |:-----------------|---------------:|:------------------|
-| \>=6 to \<10 kg  |          1.006 | TRUE              |
-| \>=10 to \<14 kg |          0.756 | TRUE              |
-| \>=14 to \<20 kg |          0.771 | TRUE              |
-| \>=20 to \<25 kg |          0.813 | TRUE              |
-| \>=25 to \<40 kg |          0.793 | TRUE              |
+| \>=6 to \<10 kg  |          1.100 | TRUE              |
+| \>=10 to \<14 kg |          0.828 | TRUE              |
+| \>=14 to \<20 kg |          0.866 | TRUE              |
+| \>=20 to \<25 kg |          0.915 | TRUE              |
+| \>=25 to \<40 kg |          0.913 | TRUE              |
 
 Simulated dolutegravir geometric-mean C24 against the Chandasana 2024
 target range. {.table}

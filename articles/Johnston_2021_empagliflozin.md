@@ -171,9 +171,9 @@ knitr::kable(comparison, digits = 1, caption = "PopPK PKNCA (n = 50 per arm) vs 
 
 | Dose (mg) | Simulated AUCss (nM\*h) | Simulated Cmax @ SS (nM) | Simulated Tmax (h) | Analytical AUCss (nM\*h) |
 |---:|---:|---:|---:|---:|
-| 2.5 | 490.3 | 70.9 | 1 | 495.0 |
-| 10.0 | 1879.7 | 275.3 | 1 | 1980.1 |
-| 25.0 | 4714.5 | 687.5 | 1 | 4950.3 |
+| 2.5 | 480.8 | 69.9 | 1 | 495.0 |
+| 10.0 | 1842.8 | 271.0 | 1 | 1980.1 |
+| 25.0 | 4621.8 | 677.9 | 1 | 4950.3 |
 
 PopPK PKNCA (n = 50 per arm) vs analytical AUCss = DOSE \* 1e6 / MW_empa
 / CL/F at the reference-subject clearance CL/F = 11.2 L/h. {.table}
