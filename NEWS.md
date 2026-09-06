@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Liu 2024 SAF-189s population PK and exposure-response models ([doi:10.3389/fphar.2024.1418549](https://doi.org/10.3389/fphar.2024.1418549)) -- Chinese adults with ALK+/ROS1+ non-small cell lung cancer and healthy Chinese volunteers.
+
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
 - Add Ravva 2010 varenicline exposure-response models ([doi:10.1038/clpt.2009.282](https://doi.org/10.1038/clpt.2009.282)) -- adult cigarette smokers in smoking-cessation trials.
