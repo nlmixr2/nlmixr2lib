@@ -164,7 +164,15 @@ Johnston_2021_empagliflozin_popPK <- function() {
     # ---- Structural PK parameters (Johnston 2021 Table S2; reference subject ----
     # ---- as summarised in Figure S1 caption: male, nonsmoker, TDID 0.6 IU/kg, ----
     # ---- AP 73 IU/L, TPRO 68 g/L, eGFR 99, WT 70 kg, age 44) ----
-    lcl   <- log(11.2);  label("Apparent oral clearance CL/F (L/h) for the reference subject")             # Table S2 theta_1 = 11.2 L/h
+    # Table S2 theta_1 = 11.2 L/h is CL/F for the paper's reference subject, who is a
+    # NEVER smoker. The smoking multipliers below are recoded onto the canonical
+    # FORMER-smoker reference, so the base value must be rebased onto a former smoker
+    # too (x theta_12 = 1.02). Without that, cl_smoke_never = 1/1.02 is applied to a
+    # base that already represents a never smoker and every never-smoker prediction
+    # comes out 2% low (11.2 / 1.02 = 10.98 L/h). With the rebasing, all three strata
+    # match the paper: never = 11.424 / 1.02 = 11.2 (Table S2 theta_1);
+    # former = 11.424 = 11.2 x 1.02; current = 11.424 x 1.08 / 1.02 = 12.096 = 11.2 x 1.08.
+    lcl   <- log(11.2 * 1.02);  label("Apparent oral clearance CL/F (L/h), rebased to the canonical former-smoker reference")  # Table S2 theta_1 = 11.2 L/h (never smoker) x theta_12 = 1.02 (ex-smoker vs never)
     lvc   <- log(1.69);  label("Apparent central volume V2/F (L) for the reference subject (renamed V2 -> vc per canonical convention)")  # Table S2 theta_2 = 1.69 L
     lq    <- log(6.14);  label("Apparent inter-compartmental clearance Q/F (L/h) for the reference subject")  # Table S2 theta_3 = 6.14 L/h
     lvp   <- log(82.2);  label("Apparent peripheral volume V3/F (L) for the reference subject (renamed V3 -> vp per canonical convention)") # Table S2 theta_4 = 82.2 L

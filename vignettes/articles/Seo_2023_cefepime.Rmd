@@ -1,0 +1,767 @@
+---
+title: "Cefepime (Seo 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefepime (Seo 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Seo_2023_cefepime"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Seo_2023_cefepime"))$description`
+* Article: <https://doi.org/10.3947/ic.2022.0087>
+* Supplementary Table 3 (probability of target attainment, 50% fT>MIC):
+  `ic-55-29-s003.xls`
+* Supplementary Table 4 (probability of target attainment, 100% fT>MIC and
+  100% fT>4xMIC): `ic-55-29-s004.xls`
+
+The two supplementary tables supply the 216 published probabilities this
+vignette is gated against. The journal's own supplement endpoint
+(`icjournal.org/DownloadSupplMaterial.php`) currently fails TLS verification
+with an expired certificate; the files were instead taken from the EuropePMC
+supplementary-file archive for PMC10079447, which serves the identical
+publisher-deposited workbooks:
+
+```
+https://www.ebi.ac.uk/europepmc/webservices/rest/PMC10079447/supplementaryFiles
+```
+
+Every published value hardcoded below was read back out of those workbooks
+programmatically and matched cell for cell (192 continuous-infusion cells from
+Supplementary Table 4, 24 intermittent cells from Supplementary Table 3).
+
+# Population
+
+Seo 2023 prospectively enrolled 21 critically ill adults (12 men, 9 women)
+treated with cefepime for hospital-acquired or ventilator-associated pneumonia
+at a single 840-bed tertiary referral hospital in Anyang, Republic of Korea,
+between September and November 2019. Patients received 2 g of cefepime as a
+30-minute intravenous infusion every 8, 12 or 24 h, and seven plasma samples
+were drawn across the first dosing interval, giving 144 concentrations for the
+population PK analysis.
+
+Baseline characteristics (Table 1): age mean 67.10 years (SD 10.47, median 67,
+IQR 62-76); weight mean 59.68 kg (SD 10.53, median 60, IQR 54.4-65); height mean
+164.05 cm (SD 8.64); body surface area mean 1.64 m^2 (SD 0.17). Illness severity
+was moderate-to-high (SOFA mean 5.05, APACHE II mean 17.33) and the cohort was
+hypoalbuminaemic (albumin mean 2.87 g/dL). Renal function spanned a wide range:
+Cockcroft-Gault creatinine clearance mean 79.02 mL/min (SD 47.67), median 77.2
+(IQR 45.3-125); serum creatinine median 0.80 mg/dL, with only two patients above
+2 mg/dL.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Seo_2023_cefepime")()$population`).
+
+# Source trace
+
+Every value in `inst/modeldb/specificDrugs/Seo_2023_cefepime.R` carries an
+in-file comment naming its source location. The table below collects them.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `CL = theta_1 * (CG / 77.21)^theta_2` | n/a | Table 2, "Structural model" header row |
+| `lcl` (theta_1) | 6.60 L/h | Table 2 (RSE 7.91%; bootstrap 6.63, 95% CI 5.55-7.64) |
+| `e_crcl_cl` (theta_2) | 0.656 | Table 2 (RSE 10.7%; bootstrap 0.650, 95% CI 0.438-0.796) |
+| `crcl_ref` | 77.21 mL/min | Table 2 equation denominator; Table 1 cohort median 77.2 mL/min |
+| `lvc` (V1) | 13.3 L | Table 2 (RSE 9.79%; bootstrap 13.4, 95% CI 10.8-16.5) |
+| `lq` (Q) | 16.5 L/h | Table 2 (RSE 18.7%; bootstrap 16.2, 95% CI 9.59-23.7) |
+| `lvp` (V2) | 13.0 L | Table 2 (RSE 10.6%; bootstrap 12.8, 95% CI 9.87-16.3) |
+| `etalcl` | 33.7% -> 0.113569 | Table 2, IIV CL (RSE 25.2%, shrinkage 0.000%) |
+| `etalvc` | 34.1% -> 0.116281 | Table 2, IIV V1 (RSE 24.9%, shrinkage 11.2%) |
+| `etalq` | 50.8% -> 0.258064 | Table 2, IIV Q (RSE 18.4%, shrinkage 19.6%) |
+| `etalvp` | 40.1% -> 0.160801 | Table 2, IIV V2 (RSE 21.2%, shrinkage 8.84%) |
+| `propSd` | 7.62% -> 0.0762 | Table 2, "Residual variability / Proportional error" (RSE 9.43%) |
+| `fu` | 0.81 | Methods, "PD target attainment": "The f was fixed at 81%" (citing Okamoto 1993) |
+| Exponential IIV, `theta_i = theta * exp(eta_i)` | n/a | Methods, "Population PK analysis" |
+| Two-compartment structure (ADVAN3 TRANS4) | n/a | Methods, "Population PK analysis"; Results, "Population PK analysis" |
+
+The IIV percentages are back-transformed with the NONMEM convention
+`omega^2 = (pct / 100)^2`. The paper prints no footnote defining its
+percentages, but the same "(%)" formatting is applied one block lower to the
+proportional residual error, where `sqrt(sigma^2) * 100` is the only sensible
+reading, so the internally consistent choice is to read the IIV column the same
+way. The alternative log-normal reading `omega^2 = log(1 + CV^2)` gives
+variances 5-11% smaller, which is immaterial against RSEs of 18-25% and
+bootstrap intervals spanning (for CL) 17.0-46.8%.
+
+# Structural checks against the published equations
+
+These checks are deterministic - they use a typical-value solve with the random
+effects zeroed - so they are exact identities of the transcribed model rather
+than Monte Carlo statistics, and they are asserted tightly.
+
+```{r structural}
+mod <- readModelDb("Seo_2023_cefepime")
+mod_typ <- rxode2::zeroRe(mod)
+
+# Helper: one steady-state dosing day. `dur` is the infusion duration; a
+# continuous infusion is dur = ii = 24.
+ss_events <- function(ids, amt, ii, dur, crcl, grid) {
+  ev <- rxode2::et(amt = amt, ii = ii, ss = 1, addl = 24 / ii - 1,
+                   dur = dur, cmt = "central") |>
+    rxode2::et(grid, cmt = "central") |>
+    rxode2::et(id = seq_along(ids))
+  out <- as.data.frame(ev)
+  out$id <- ids[out$id]
+  out |>
+    dplyr::select(-dplyr::any_of("CRCL")) |>
+    dplyr::left_join(data.frame(id = ids, CRCL = crcl), by = "id")
+}
+
+crcl_grid <- c(5, 20, 50, 77.21, 110, 150, 170)
+chk <- ss_events(seq_along(crcl_grid), amt = 2000, ii = 24, dur = 0.5,
+                 crcl = crcl_grid, grid = seq(0, 24, by = 0.05))
+sim_chk <- rxode2::rxSolve(mod_typ, chk, keep = "CRCL", returnType = "data.frame")
+
+par_chk <- sim_chk |>
+  dplyr::group_by(id, CRCL) |>
+  dplyr::summarise(cl = dplyr::first(cl), vc = dplyr::first(vc),
+                   q = dplyr::first(q), vp = dplyr::first(vp),
+                   fu_dev = max(abs(Cu - 0.81 * Cc)), .groups = "drop") |>
+  dplyr::mutate(cl_published = 6.60 * (CRCL / 77.21)^0.656)
+
+stopifnot(
+  # Table 2 clearance equation reproduced exactly at every renal function.
+  max(abs(par_chk$cl / par_chk$cl_published - 1)) < 1e-8,
+  # Covariate-free structural parameters equal the Table 2 point estimates.
+  max(abs(par_chk$vc - 13.3)) < 1e-8,
+  max(abs(par_chk$q  - 16.5)) < 1e-8,
+  max(abs(par_chk$vp - 13.0)) < 1e-8,
+  # The unbound concentration is exactly f = 81% of total.
+  max(par_chk$fu_dev) < 1e-10
+)
+
+par_chk |>
+  dplyr::transmute(
+    "CLCR (mL/min)"        = CRCL,
+    "CL, model (L/h)"      = round(cl, 4),
+    "CL, Table 2 eq (L/h)" = round(cl_published, 4),
+    "Vc (L)"               = vc,
+    "Q (L/h)"              = q,
+    "Vp (L)"               = vp
+  ) |>
+  knitr::kable(caption = "Typical-value structural parameters versus the Table 2 clearance equation.")
+```
+
+A second identity: for a linear model at steady state the area under the
+concentration-time curve over 24 h must equal the 24-hour dose divided by
+clearance, whatever the regimen. This exercises the full ODE system, the
+infusion handling and the steady-state initialisation at once.
+
+```{r auc-identity}
+regimens <- tibble::tribble(
+  ~arm,                        ~amt,  ~ii, ~dur,
+  "2 g q8h, 0.5 h infusion",   2000,    8,  0.5,
+  "2 g q8h, 4 h infusion",     2000,    8,  4.0,
+  "2 g q12h, 4 h infusion",    2000,   12,  4.0,
+  "0.25 g q8h, 0.5 h infusion", 250,    8,  0.5,
+  "0.75 g/day, continuous",     750,   24, 24.0
+)
+
+auc_chk <- lapply(seq_len(nrow(regimens)), function(i) {
+  r <- regimens[i, ]
+  ev <- ss_events(seq_along(crcl_grid), r$amt, r$ii, r$dur, crcl_grid,
+                  seq(0, 24, by = 0.01))
+  rxode2::rxSolve(mod_typ, ev, keep = "CRCL", returnType = "data.frame") |>
+    dplyr::group_by(id, CRCL) |>
+    dplyr::summarise(
+      cl   = dplyr::first(cl),
+      auc  = sum(diff(time) * (utils::head(Cc, -1) + utils::tail(Cc, -1)) / 2),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(arm = r$arm, auc_expected = r$amt * (24 / r$ii) / cl)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(ratio = auc / auc_expected)
+
+# Trapezoidal integration on a 0.01 h grid; the residual is numerical only.
+stopifnot(max(abs(auc_chk$ratio - 1)) < 2e-3)
+
+auc_chk |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    "Max |AUC(0-24) / (Dose24/CL) - 1|" = signif(max(abs(ratio - 1)), 3),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Regimen" = arm) |>
+  knitr::kable(caption = "Steady-state mass-balance identity across renal function and regimen.")
+```
+
+```{r typical-profiles, fig.cap = "Typical-value steady-state cefepime profiles by renal function. The dashed line is the 20 mg/L trough safety target used by Seo 2023 for intermittent infusion."}
+prof <- lapply(c("2 g q8h, 4 h infusion", "2 g q12h, 4 h infusion",
+                 "0.25 g q8h, 0.5 h infusion", "0.75 g/day, continuous"),
+  function(a) {
+    r <- regimens[regimens$arm == a, ]
+    ev <- ss_events(seq_along(crcl_grid), r$amt, r$ii, r$dur, crcl_grid,
+                    seq(0, 24, by = 0.05))
+    rxode2::rxSolve(mod_typ, ev, keep = "CRCL", returnType = "data.frame") |>
+      dplyr::mutate(arm = a)
+  }) |>
+  dplyr::bind_rows()
+
+prof |>
+  dplyr::filter(CRCL %in% c(20, 77.21, 150)) |>
+  dplyr::mutate(renal = factor(paste0("CLCR ", round(CRCL), " mL/min"),
+                               levels = paste0("CLCR ", c(20, 77, 150), " mL/min"))) |>
+  ggplot(aes(time, Cc, colour = renal)) +
+  geom_hline(yintercept = 20, linetype = "dashed", colour = "grey40") +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(x = "Time (h)", y = "Cefepime concentration (mg/L)", colour = NULL)
+```
+
+# Virtual cohorts
+
+Seo 2023 ran three Monte Carlo experiments in which creatinine clearance was
+drawn from a uniform distribution and virtual patients were binned into renal
+function groups; individual PK parameters were drawn log-normally using the
+Table 2 typical values and IIV. The cohorts below reproduce that design, with
+`CLCR ~ Uniform(band)` within each published band. The published simulations
+used 1,000-2,000 subjects per group; this vignette uses 200 per arm, the
+nlmixr2lib cap, so the per-cell Monte Carlo standard error is about 3.5
+percentage points rather than 1.5.
+
+```{r cohort}
+# `set.seed()` fixes the R-side CLCR draws (reproducible everywhere).
+# `rxSetSeed()` fixes rxode2's eta draws PER SOLVER THREAD only, so a machine
+# with a different thread count draws a different cohort. Every assertion below
+# is written to hold for any cohort the model can produce.
+set.seed(20230329)
+rxode2::rxSetSeed(20230329)
+
+n_per_arm <- 200L
+bands <- tibble::tribble(
+  ~band,     ~lo,  ~hi,
+  "0-10",      0,   10,
+  "10-30",    10,   30,
+  "30-60",    30,   60,
+  "60-90",    60,   90,
+  "90-130",   90,  130,
+  "130-170", 130,  170
+)
+
+make_arm <- function(arm, amt, ii, dur, lo, hi, id_offset, grid) {
+  ids <- id_offset + seq_len(n_per_arm)
+  ss_events(ids, amt, ii, dur, crcl = stats::runif(n_per_arm, lo, hi),
+            grid = grid) |>
+    dplyr::mutate(arm = arm)
+}
+```
+
+# Replicating Supplementary Table 4: continuous infusion
+
+Supplementary Table 4 tabulates the probability of attaining 100% fT>MIC with a
+steady-state trough below 35 mg/L, for four continuous-infusion daily doses
+across six renal function bands and ten MICs. All 192 cells at MIC 0.25-32 mg/L
+are reproduced below. A continuous infusion has a flat steady-state profile, so
+a coarse observation grid suffices.
+
+```{r ct-cohort}
+ct_doses <- tibble::tribble(
+  ~dose_label,  ~amt,
+  "0.75 g/day",  750,
+  "1.5 g/day",  1500,
+  "3 g/day",    3000,
+  "6 g/day",    6000
+)
+ct_arms <- tidyr::crossing(bands, ct_doses) |>
+  dplyr::mutate(arm = paste(dose_label, band, sep = " | "),
+                id_offset = (dplyr::row_number() - 1L) * n_per_arm)
+
+ct_events <- dplyr::bind_rows(lapply(
+  seq_len(nrow(ct_arms)),
+  function(i) {
+    a <- ct_arms[i, ]
+    make_arm(a$arm, a$amt, ii = 24, dur = 24, lo = a$lo, hi = a$hi,
+             id_offset = a$id_offset, grid = seq(0, 24, by = 1))
+  }
+))
+stopifnot(!anyDuplicated(unique(ct_events[, c("id", "time", "evid")])))
+
+ct_sim <- rxode2::rxSolve(mod, ct_events, keep = c("arm", "CRCL"),
+                          returnType = "data.frame")
+
+# Per-subject steady-state extremes. For a continuous infusion these are the
+# flat steady-state concentration.
+ct_subj <- ct_sim |>
+  dplyr::group_by(arm, id) |>
+  dplyr::summarise(cmin_total = min(Cc), cmin_free = min(Cu), .groups = "drop")
+```
+
+```{r ct-pta}
+mic_grid <- c(0.25, 0.5, 1, 2, 4, 8, 16, 32)
+
+ct_pta <- tidyr::crossing(ct_subj, mic = mic_grid) |>
+  dplyr::group_by(arm, mic) |>
+  dplyr::summarise(
+    # "f T>MIC" as written in the Methods: the UNBOUND concentration exceeds
+    # the MIC. Safety is always evaluated on the total trough (see Errata).
+    pta_free  = 100 * mean(cmin_free  > mic & cmin_total < 35),
+    # The same index evaluated on the TOTAL concentration.
+    pta_total = 100 * mean(cmin_total > mic & cmin_total < 35),
+    .groups = "drop"
+  ) |>
+  tidyr::separate_wider_delim(arm, delim = " | ",
+                              names = c("dose_label", "band"), cols_remove = FALSE)
+```
+
+The published values (Supplementary Table 4, "Continuous" block, 100% fT>MIC):
+
+```{r ct-published}
+ct_pub <- tibble::tribble(
+  ~mic, ~band,     ~`0.75 g/day`, ~`1.5 g/day`, ~`3 g/day`, ~`6 g/day`,
+    0.25, "0-10"     ,  60.0,  16.4,   0.0,   0.0,
+    0.25, "10-30"    , 100.0,  84.1,  16.8,   0.0,
+    0.25, "30-60"    , 100.0,  99.4,  68.5,  13.3,
+    0.25, "60-90"    , 100.0, 100.0,  92.0,  41.4,
+    0.25, "90-130"   , 100.0, 100.0,  98.3,  66.2,
+    0.25, "130-170"  , 100.0, 100.0, 100.0,  85.0,
+     0.5, "0-10"     ,  60.0,  16.4,   0.0,   0.0,
+     0.5, "10-30"    , 100.0,  84.1,  16.8,   0.0,
+     0.5, "30-60"    , 100.0,  99.4,  68.5,  13.3,
+     0.5, "60-90"    , 100.0, 100.0,  92.0,  41.4,
+     0.5, "90-130"   , 100.0, 100.0,  98.3,  66.2,
+     0.5, "130-170"  , 100.0, 100.0, 100.0,  85.0,
+       1, "0-10"     ,  60.0,  16.4,   0.0,   0.0,
+       1, "10-30"    , 100.0,  84.1,  16.8,   0.0,
+       1, "30-60"    , 100.0,  99.4,  68.5,  13.3,
+       1, "60-90"    , 100.0, 100.0,  92.0,  41.4,
+       1, "90-130"   , 100.0, 100.0,  98.3,  66.2,
+       1, "130-170"  , 100.0, 100.0, 100.0,  85.0,
+       2, "0-10"     ,  60.0,  16.4,   0.0,   0.0,
+       2, "10-30"    , 100.0,  84.1,  16.8,   0.0,
+       2, "30-60"    , 100.0,  99.4,  68.5,  13.3,
+       2, "60-90"    ,  99.4, 100.0,  92.0,  41.4,
+       2, "90-130"   ,  98.7, 100.0,  98.3,  66.2,
+       2, "130-170"  ,  88.6, 100.0, 100.0,  85.0,
+       4, "0-10"     ,  60.0,  16.4,   0.0,   0.0,
+       4, "10-30"    , 100.0,  84.1,  16.8,   0.0,
+       4, "30-60"    ,  93.9,  99.4,  68.5,  13.3,
+       4, "60-90"    ,  70.7,  99.4,  92.0,  41.4,
+       4, "90-130"   ,  45.5,  98.7,  98.3,  66.2,
+       4, "130-170"  ,  21.5,  88.6, 100.0,  85.0,
+       8, "0-10"     ,  60.0,  16.4,   0.0,   0.0,
+       8, "10-30"    ,  91.2,  84.1,  16.8,   0.0,
+       8, "30-60"    ,  38.1,  93.4,  68.5,  13.3,
+       8, "60-90"    ,  11.5,  70.7,  91.4,  41.4,
+       8, "90-130"   ,   2.6,  45.5,  97.0,  66.2,
+       8, "130-170"  ,   0.8,  21.5,  88.6,  85.0,
+      16, "0-10"     ,  47.3,  16.4,   0.0,   0.0,
+      16, "10-30"    ,  20.4,  75.2,  16.8,   0.0,
+      16, "30-60"    ,   1.1,  37.6,  62.4,  13.3,
+      16, "60-90"    ,   0.0,  11.5,  62.6,  40.8,
+      16, "90-130"   ,   0.0,   2.6,  43.7,  64.9,
+      16, "130-170"  ,   0.0,   0.8,  21.5,  73.6,
+      32, "0-10"     ,   0.0,   3.6,   0.0,   0.0,
+      32, "10-30"    ,   0.9,   4.4,   8.0,   0.0,
+      32, "30-60"    ,   0.0,   0.6,   6.6,   7.2,
+      32, "60-90"    ,   0.0,   0.0,   3.4,  12.1,
+      32, "90-130"   ,   0.0,   0.0,   0.9,  11.7,
+      32, "130-170"  ,   0.0,   0.0,   0.8,   6.5
+) |>
+  tidyr::pivot_longer(cols = dplyr::ends_with("g/day"),
+                      names_to = "dose_label", values_to = "published")
+
+ct_cmp <- dplyr::inner_join(ct_pta, ct_pub, by = c("mic", "band", "dose_label"))
+stopifnot(nrow(ct_cmp) == 192L)
+```
+
+```{r ct-metrics}
+rmse <- function(x, y) sqrt(mean((x - y)^2))
+ct_metrics <- tibble::tibble(
+  Reading = c("f T>MIC on unbound concentration (f = 0.81)",
+              "T>MIC on total concentration (f not applied)"),
+  RMSE            = c(rmse(ct_cmp$pta_free, ct_cmp$published),
+                      rmse(ct_cmp$pta_total, ct_cmp$published)),
+  `Max abs. dev.` = c(max(abs(ct_cmp$pta_free - ct_cmp$published)),
+                      max(abs(ct_cmp$pta_total - ct_cmp$published))),
+  `Mean dev.`     = c(mean(ct_cmp$pta_free - ct_cmp$published),
+                      mean(ct_cmp$pta_total - ct_cmp$published))
+)
+
+knitr::kable(ct_metrics, digits = 2,
+             caption = "Agreement with all 192 published continuous-infusion cells, under the two readings of the unbound-fraction correction.")
+```
+
+```{r ct-gate}
+dev_total <- ct_cmp$pta_total - ct_cmp$published
+dev_free  <- ct_cmp$pta_free  - ct_cmp$published
+
+# With 200 subjects per cell against the paper's 1,000, the Monte Carlo standard
+# error of a single cell difference is up to ~3.8 points, so an RMSE near 3 is
+# the floor for a perfectly matching implementation. Realised RMSE for the
+# total-concentration reading: 3.54 / 2.92 / 3.46 at 2 / 4 / 16 solver threads
+# (rxode2 partitions its RNG streams per thread, so the cohort differs). A bound
+# of 8 still goes red on a mis-transcribed clearance, volume or covariate
+# exponent, which move whole columns of this table by tens of points.
+stopifnot(rmse(ct_cmp$pta_total, ct_cmp$published) < 8)
+
+# The two readings are separated by far more than that noise: applying f = 0.81
+# to the concentration shifts the whole efficacy front by a quarter of a MIC
+# doubling and biases the table LOW. Realised mean deviation for the unbound
+# reading: -2.98 / -2.12 / -2.28; for the total reading -0.40 / +0.52 / +0.27;
+# RMSE gap between the readings 4.01 / 3.85 / 3.99. Assert the direction and
+# magnitude of the bias, not a race between two similar numbers.
+stopifnot(
+  mean(dev_free) < -1,              # unbound reading is systematically low
+  abs(mean(dev_total)) < 2,         # total reading is unbiased
+  rmse(ct_cmp$pta_free, ct_cmp$published) >
+    rmse(ct_cmp$pta_total, ct_cmp$published) + 1.5
+)
+```
+
+```{r ct-figure, fig.height = 6, fig.cap = "Replicates the continuous-infusion panels of Figure 4 of Seo 2023 (Supplementary Table 4). Points are the published probabilities of target attainment; lines are this model's reproduction using the total concentration. The dashed line is the 90% adequacy threshold."}
+ct_cmp |>
+  dplyr::mutate(band = factor(band, levels = bands$band),
+                dose_label = factor(dose_label, levels = ct_doses$dose_label)) |>
+  ggplot(aes(mic, pta_total, colour = band)) +
+  geom_hline(yintercept = 90, linetype = "dashed", colour = "grey40") +
+  geom_line() +
+  geom_point(aes(y = published), shape = 1, size = 1.8) +
+  facet_wrap(~dose_label) +
+  scale_x_log10(breaks = mic_grid) +
+  labs(x = "MIC (mg/L)", y = "PTA for 100% fT>MIC with Cmin < 35 mg/L (%)",
+       colour = "CLCR (mL/min)",
+       caption = "Replicates Figure 4 of Seo 2023 (continuous infusion arm).")
+```
+
+# Replicating Supplementary Table 3: intermittent infusion
+
+Supplementary Table 3 reports the probability of attaining 50% fT>MIC with a
+trough below 20 mg/L. The three regimens singled out in the Results and
+Discussion are reproduced here across the published MIC grid.
+
+```{r int-cohort}
+int_arms <- tibble::tribble(
+  ~arm,                                       ~amt, ~ii, ~dur, ~band,    ~lo, ~hi,
+  "2 g q12h, 4 h inf. | CLCR 90-130",         2000,  12,  4.0, "90-130",  90, 130,
+  "2 g q8h, 4 h inf. | CLCR 90-130",          2000,   8,  4.0, "90-130",  90, 130,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30",       250,   8,  0.5, "10-30",   10,  30
+) |>
+  dplyr::mutate(id_offset = (dplyr::row_number() - 1L) * n_per_arm)
+
+int_events <- dplyr::bind_rows(lapply(seq_len(nrow(int_arms)), function(i) {
+  a <- int_arms[i, ]
+  make_arm(a$arm, a$amt, a$ii, a$dur, a$lo, a$hi, a$id_offset,
+           grid = seq(0, 24, by = 0.05))
+}))
+stopifnot(!anyDuplicated(unique(int_events[, c("id", "time", "evid")])))
+
+int_sim <- rxode2::rxSolve(mod, int_events, keep = c("arm", "CRCL"),
+                           returnType = "data.frame")
+
+# One pass per MIC rather than a crossing() of the 289,000-row simulation
+# frame with the MIC grid, which would materialise 2.3 million rows.
+int_subj <- dplyr::bind_rows(lapply(mic_grid, function(m) {
+  int_sim |>
+    dplyr::group_by(arm, id) |>
+    dplyr::summarise(
+      ft_free  = 100 * mean(Cu > m),
+      ft_total = 100 * mean(Cc > m),
+      cmin     = min(Cc),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(mic = m)
+}))
+
+int_pta <- int_subj |>
+  dplyr::group_by(arm, mic) |>
+  dplyr::summarise(
+    pta_free  = 100 * mean(ft_free  >= 50 & cmin < 20),
+    pta_total = 100 * mean(ft_total >= 50 & cmin < 20),
+    .groups = "drop"
+  )
+```
+
+```{r int-published}
+int_pub <- tibble::tribble(
+  ~arm,                                   ~mic, ~published,
+  "2 g q12h, 4 h inf. | CLCR 90-130",     0.25,  98.7,
+  "2 g q12h, 4 h inf. | CLCR 90-130",     0.50,  98.7,
+  "2 g q12h, 4 h inf. | CLCR 90-130",     1.00,  98.7,
+  "2 g q12h, 4 h inf. | CLCR 90-130",     2.00,  98.3,
+  "2 g q12h, 4 h inf. | CLCR 90-130",     4.00,  97.8,
+  "2 g q12h, 4 h inf. | CLCR 90-130",     8.00,  90.0,
+  "2 g q12h, 4 h inf. | CLCR 90-130",    16.00,  39.0,
+  "2 g q12h, 4 h inf. | CLCR 90-130",    32.00,   1.3,
+  "2 g q8h, 4 h inf. | CLCR 90-130",      0.25,  82.3,
+  "2 g q8h, 4 h inf. | CLCR 90-130",      0.50,  82.3,
+  "2 g q8h, 4 h inf. | CLCR 90-130",      1.00,  82.3,
+  "2 g q8h, 4 h inf. | CLCR 90-130",      2.00,  82.3,
+  "2 g q8h, 4 h inf. | CLCR 90-130",      4.00,  82.3,
+  "2 g q8h, 4 h inf. | CLCR 90-130",      8.00,  81.8,
+  "2 g q8h, 4 h inf. | CLCR 90-130",     16.00,  73.6,
+  "2 g q8h, 4 h inf. | CLCR 90-130",     32.00,   4.8,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30",  0.25,  99.1,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30",  0.50,  99.1,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30",  1.00,  99.1,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30",  2.00,  99.1,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30",  4.00,  99.1,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30",  8.00,  56.6,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30", 16.00,   8.0,
+  "0.25 g q8h, 0.5 h inf. | CLCR 10-30", 32.00,   0.0
+)
+
+int_cmp <- dplyr::inner_join(int_pta, int_pub, by = c("arm", "mic"))
+stopifnot(nrow(int_cmp) == 24L)
+
+int_cmp |>
+  dplyr::transmute(
+    "Regimen"                        = arm,
+    "MIC (mg/L)"                     = mic,
+    "PTA, unbound (%)"               = round(pta_free, 1),
+    "PTA, total (%)"                 = round(pta_total, 1),
+    "PTA, Suppl. Table 3 (%)"        = published
+  ) |>
+  knitr::kable(caption = "Probability of attaining 50% fT>MIC with a steady-state trough below 20 mg/L, for the three regimens Seo 2023 singles out.")
+```
+
+```{r int-gate}
+# Unlike the continuous-infusion block, the intermittent tables are reproduced
+# by the UNBOUND reading (see Errata). Realised RMSE 5.14 / 3.90 / 3.93 at
+# 2 / 4 / 16 solver threads for the unbound reading, against 7.63 / 6.06 / 6.18
+# for the total-concentration reading.
+stopifnot(rmse(int_cmp$pta_free, int_cmp$published) < 12)
+
+# The three conclusions Seo 2023 draws from these rows, at the MIC of 4 mg/L
+# discussed in the Results. Each is asserted with headroom over the paper's
+# own 90% adequacy threshold rather than against the threshold itself, which
+# sits inside the 200-subject Monte Carlo noise for the two passing arms.
+pta_at <- function(regimen, m) {
+  v <- int_cmp$pta_free[int_cmp$arm == regimen & int_cmp$mic == m]
+  if (length(v) != 1L) stop("no unique row for '", regimen, "' at MIC ", m)
+  v
+}
+# Bounds are set outside the range realised across cohort draws, not on one
+# run. Realised at MIC 4 at 2 / 4 / 16 solver threads: q12h 98.0 / 97.0 / 93.5;
+# q8h 74.5 / 77.5 / 79.0; 0.25 g q8h 91.5 / 93.0 / 94.5; the q12h-minus-q8h gap
+# 23.5 / 19.5 / 14.5. The paper's own 90% adequacy line sits inside that spread
+# for the q12h arm, so it is not itself asserted.
+stopifnot(
+  # "2 g every 12 h over 4 h was optimal ... at an MIC of 4 mg/L"
+  pta_at("2 g q12h, 4 h inf. | CLCR 90-130", 4) > 85,
+  # "... whereas 2 g every 8 h through IV infusion over 4 h was not optimal."
+  pta_at("2 g q8h, 4 h inf. | CLCR 90-130", 4) < 88,
+  # "For patients with a CLCR of 10-30 mL/min, 0.25 g every 8 h through IV
+  #  infusion over 0.5 h was optimal when the MIC was 4 mg/L."
+  pta_at("0.25 g q8h, 0.5 h inf. | CLCR 10-30", 4) > 80,
+  # The ordering the paper's argument turns on: at the same unit dose, the
+  # less frequent regimen wins because the trough safety cap binds first.
+  pta_at("2 g q12h, 4 h inf. | CLCR 90-130", 4) -
+    pta_at("2 g q8h, 4 h inf. | CLCR 90-130", 4) > 8
+)
+```
+
+```{r int-figure, fig.cap = "Replicates the corresponding curves of Figure 3 of Seo 2023 (Supplementary Table 3). Points are published; lines are this model's reproduction on the unbound concentration."}
+int_cmp |>
+  ggplot(aes(mic, pta_free, colour = arm)) +
+  geom_hline(yintercept = 90, linetype = "dashed", colour = "grey40") +
+  geom_line() +
+  geom_point(aes(y = published), shape = 1, size = 1.8) +
+  scale_x_log10(breaks = mic_grid) +
+  labs(x = "MIC (mg/L)", y = "PTA for 50% fT>MIC with Cmin < 20 mg/L (%)",
+       colour = NULL,
+       caption = "Replicates Figure 3 of Seo 2023.") +
+  theme(legend.position = "bottom", legend.direction = "vertical")
+```
+
+# PKNCA validation
+
+Seo 2023 reports no non-compartmental analysis, so there is no published NCA
+table to compare against. The NCA below is instead gated on an exact internal
+identity that a mis-transcribed clearance, volume or dose would break: at steady
+state, `AUC(0-tau) = Dose / CL` for every individual in a linear model.
+
+```{r pknca}
+tau_by_arm <- int_arms |> dplyr::select(arm, tau = ii, amt)
+
+nca_conc <- int_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm) |>
+  dplyr::arrange(arm, id, time)
+
+# PKNCA anchors AUC(0-tau) on a time-zero record; the observation grid starts
+# at 0, so assert that rather than patching one in.
+stopifnot(
+  nrow(dplyr::filter(nca_conc, time == 0)) == 3L * n_per_arm,
+  !anyNA(nca_conc$Cc)
+)
+
+nca_dose <- int_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(nca_conc), Cc ~ time | arm + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(nca_dose), amt ~ time | arm + id,
+                             doseu = "mg")
+
+nca_intervals <- tau_by_arm |>
+  dplyr::transmute(arm, start = 0, end = tau,
+                   cmax = TRUE, tmax = TRUE, cmin = TRUE,
+                   auclast = TRUE, cav = TRUE, clast.obs = TRUE) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = nca_intervals))
+```
+
+```{r pknca-identity}
+subj_cl <- int_sim |>
+  dplyr::group_by(arm, id) |>
+  dplyr::summarise(cl = dplyr::first(cl), .groups = "drop")
+
+auc_tau <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(arm, id, auclast = PPORRES) |>
+  dplyr::inner_join(subj_cl, by = c("arm", "id")) |>
+  dplyr::inner_join(tau_by_arm, by = "arm") |>
+  dplyr::mutate(expected = amt / cl, ratio = auclast / expected)
+
+stopifnot(nrow(auc_tau) == 3L * n_per_arm)
+# PKNCA's linear-up / log-down rule on a 0.05 h grid; the deviation from the
+# exact identity is pure quadrature error. Realised max 9.3e-05 / 1.5e-04 /
+# 1.0e-04 at 2 / 4 / 16 solver threads (the cohort changes, the quadrature
+# accuracy does not), so a 1e-3 bound is tight and still catches any
+# mis-transcribed dose, clearance or infusion duration.
+stopifnot(max(abs(auc_tau$ratio - 1)) < 1e-3)
+
+auc_tau |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(
+    "Median AUC(0-tau), PKNCA (mg*h/L)" = round(stats::median(auclast), 1),
+    "Median Dose / CL (mg*h/L)"         = round(stats::median(expected), 1),
+    "Max abs. relative deviation"       = signif(max(abs(ratio - 1)), 3),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Regimen" = arm) |>
+  knitr::kable(caption = "Steady-state AUC(0-tau) from PKNCA against the exact linear-system identity Dose / CL.")
+```
+
+```{r pknca-summary}
+nca_summary <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "cav", "clast.obs")) |>
+  dplyr::group_by(arm, PPTESTCD) |>
+  dplyr::summarise(value = stats::median(PPORRES), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = value)
+
+nca_summary |>
+  dplyr::transmute(
+    "Regimen"                     = arm,
+    "Cmax,ss (mg/L)"              = round(cmax, 2),
+    "Tmax,ss (h)"                 = round(tmax, 2),
+    "Cmin,ss (mg/L)"              = round(cmin, 2),
+    "C at end of interval (mg/L)" = round(clast.obs, 2),
+    "Cavg,ss (mg/L)"              = round(cav, 2)
+  ) |>
+  knitr::kable(caption = "Median steady-state NCA parameters over one dosing interval (n = 200 per arm).")
+```
+
+Two shape checks that follow from the model having no absorption phase and a
+monotone post-infusion decline: `Tmax,ss` must equal the infusion duration, and
+the interval minimum must sit at the end of the interval, so `Cmin,ss` and the
+last observed concentration are the same quantity.
+
+```{r pknca-shape}
+shape <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("tmax", "cmin", "clast.obs")) |>
+  tidyr::pivot_wider(id_cols = c(arm, id), names_from = PPTESTCD,
+                     values_from = PPORRES) |>
+  dplyr::inner_join(int_arms |> dplyr::select(arm, dur), by = "arm")
+stopifnot(
+  nrow(shape) == 3L * n_per_arm,
+  max(abs(shape$tmax - shape$dur)) < 1e-8,
+  max(abs(shape$cmin - shape$clast.obs)) < 1e-8
+)
+```
+
+# Assumptions and deviations
+
+* **IIV back-transform.** Table 2 reports inter-individual variability as
+  percentages with no defining footnote. They are read as `omega * 100`, giving
+  `omega^2 = (pct / 100)^2`, for internal consistency with the proportional
+  residual error reported in the same "(%)" column of the same table. The
+  log-normal alternative `omega^2 = log(1 + CV^2)` gives variances 5-11%
+  smaller and is immaterial against the reported RSEs of 18-25%.
+
+* **Creatinine clearance units.** `CRCL` is carried as the raw Cockcroft-Gault
+  value in mL/min, not the canonical BSA-normalised mL/min/1.73 m^2. Seo 2023
+  Table 1 and the Table 2 clearance equation both use the raw value, and the
+  reference constant 77.21 mL/min is the raw cohort median. Supplying a
+  BSA-normalised value would mis-scale clearance. The same deviation is
+  documented in `Jonckheere_2019_cefepime.R` and `Delattre_2010_amikacin.R`.
+
+* **The unbound fraction is applied inconsistently in the paper's own
+  simulations.** The Methods state that "the f was fixed at 81%" and define the
+  PK/PD index on the unbound concentration. Reproducing the published tables
+  cell by cell shows that this holds for the intermittent-infusion blocks but
+  not for the continuous-infusion block:
+
+  * Supplementary Table 4, continuous block, all 192 cells at MIC 0.25-32:
+    comparing the **total** concentration against the MIC reproduces the
+    published values to within Monte Carlo noise, while applying `f = 0.81`
+    biases the whole table low by a quarter of a MIC doubling (see the
+    agreement table above). The 0-10 mL/min band, where the constraint is the
+    35 mg/L trough cap and the unbound fraction is irrelevant, matches under
+    both readings (published 60.0), which localises the discrepancy to the
+    efficacy term rather than to the PK parameters.
+  * Supplementary Table 3 and the intermittent blocks of Supplementary Table 4
+    are reproduced by the **unbound** reading. For 0.25 g q8h over 0.5 h in the
+    10-30 mL/min band at MIC 8, the unbound reading gives about 59% against a
+    published 56.6%, while the total-concentration reading gives about 75%.
+
+  The model file therefore keeps `fu = 0.81` as the paper states it, and this
+  vignette reports both readings wherever a target-attainment table is
+  reproduced. Users computing fT>MIC from `Cu` are following the paper's stated
+  method; users trying to match the published continuous-infusion numbers
+  should use `Cc`.
+
+* **Safety target is on the total concentration.** The 7.5 / 20 / 35 mg/L
+  trough caps come from neurotoxicity studies that report total plasma trough
+  concentrations (Boschung-Pasquier 2020; Huwyler 2017), and the 0-10 mL/min
+  band of Supplementary Table 4 - which is entirely safety-limited - is
+  reproduced only when the cap is applied to `Cc`. Every simulation here
+  evaluates the trough cap on the total concentration.
+
+* **Renal-function bands.** The Methods define the six Monte Carlo strata as
+  `0 < CLCR <= 10`, `11 <= CLCR <= 29`, `30 < CLCR <= 60`, `60 < CLCR <= 90`,
+  `90 < CLCR <= 130` and `130 < CLCR <= 170` mL/min, while the figure legends
+  label them 0-10, 10-30, 30-60, 60-90, 90-130 and 130-170. This vignette draws
+  `CLCR` uniformly over the figure-legend bounds; the difference affects only
+  the 10-30 band and is well inside the Monte Carlo noise.
+
+* **Cohort size.** The published simulations used 1,000 (Supplementary Tables
+  3-4) or 2,000 (Figure 2) virtual patients per group. This vignette uses 200
+  per arm, the nlmixr2lib cap, so per-cell Monte Carlo standard errors are about
+  3.5 rather than 1.5 percentage points. Assertion bounds are set outside that
+  noise; see the comments on each `stopifnot()`.
+
+* **Steady state.** The paper simulated steady-state concentration-time
+  profiles. This vignette uses rxode2's `ss = 1` flag rather than dosing to
+  convergence, which is exact rather than asymptotic; the mass-balance identity
+  `AUC(0-24) = Dose24 / CL` above confirms the steady-state initialisation.
+
+* **Not reproduced.** Figure 1 (goodness-of-fit plots) and Supplementary
+  Figure 1 (prediction- and variability-corrected visual predictive check)
+  require the observed concentrations, which are not published. Figure 2 and
+  Supplementary Table 1-2 weight the target attainment by EUCAST MIC
+  distributions for *E. coli*, *K. pneumoniae* and *P. aeruginosa*; those
+  distributions are an external data source rather than a model output and are
+  not reproduced here.
+
+* **No covariate other than renal function.** Sex, age, weight, height, body
+  surface area, serum protein, serum albumin and serum creatinine were screened
+  and not retained (Methods, "Population PK analysis"), so they are absent from
+  the model file rather than carried as unused metadata.

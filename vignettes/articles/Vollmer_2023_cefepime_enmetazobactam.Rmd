@@ -1,0 +1,770 @@
+---
+title: "Cefepime-enmetazobactam (Vollmer 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefepime-enmetazobactam (Vollmer 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+```
+
+```{r libraries, message = FALSE}
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(ggplot2)
+
+rxode2::rxSetSeed(20231014)  # IDWeek presentation date; common random numbers
+```
+
+# The model
+
+`Vollmer_2023_cefepime_enmetazobactam` is the joint population PK model for the
+fixed-ratio (4:1) cefepime-enmetazobactam combination EXBLIFEP, pooled across
+three Phase 1 studies, one Phase 2 study and the Phase 3 ALLIUM trial. Each drug
+gets its own two-compartment intravenous disposition; the two are tied together
+by a four-way OMEGA block whose cross-drug correlations exceed 0.93.
+
+```{r load-model}
+mod <- nlmixr2lib::modellib("Vollmer_2023_cefepime_enmetazobactam")
+typ <- rxode2::zeroRe(mod)   # typical-value (all etas zero) version
+mod
+```
+
+# Population
+
+The analysis set is 663 adults contributing 5,070 cefepime plasma observations
+(588 subjects) and 6,342 enmetazobactam plasma observations (649 subjects)
+across five studies: AT-101, AT-102 and AT-103 (Phase 1; n = 83, 30, 19),
+AT-201 (Phase 2; n = 43) and AT-301 / ALLIUM (Phase 3; n = 488). Twenty percent
+of the analysis set (132/663) are healthy volunteers and 80% are patients with a
+complicated urinary tract infection or acute pyelonephritis.
+
+```{r population}
+knitr::kable(
+  tibble::tribble(
+    ~Characteristic,                ~`Mean (range) or n (%)`,
+    "Age (years)",                  "51.62 (17-94)",
+    "Body weight (kg)",             "76.52 (45-135)",
+    "Body mass index (kg/m^2)",     "26.54 (16.9-45.9)",
+    "Body surface area (m^2)",      "1.89 (1.37-2.63)",
+    "eGFR (mL/min/1.73 m^2)",       "81.03 (4.4-166)",
+    "De-indexed eGFR (mL/min)",     "87.98 (5.21-195.84)",
+    "Female",                       "310 (47%)",
+    "White",                        "641 (97%)",
+    "Acute pyelonephritis",         "252 (38%)",
+    "Complicated UTI (all subtypes)", "279 (42%)",
+    "Healthy volunteer",            "132 (20%)"
+  ),
+  caption = "Baseline demographics of the population PK analysis set (FDA NDA 216165 Integrated Review Table 100)."
+)
+```
+
+Race could not be tested as a covariate at all: 97% of the analysis set was
+White, and the US label states there was insufficient information to evaluate a
+race effect. Body-surface area, body-mass index, creatinine clearance, albumin
+and bilirubin were formally screened and not retained; they are documented in
+the model's `covariatesDataExcluded` rather than declared as covariates.
+
+# Source trace
+
+The IDWeek abstract is the paper of record, but it publishes only the typical
+values for a 70 kg cUTI patient and their %CV. The complete parameter set comes
+from the two regulatory reproductions of the same sponsor study report,
+AAI101-PK-21-01, which agree with each other value for value.
+
+```{r source-trace}
+knitr::kable(
+  tibble::tribble(
+    ~Quantity, ~Source,
+    "Structural model (2 compartments per drug, linear CL, IV infusion)", "EMA EPAR EMA/63929/2024 p.46; FDA Integrated Review Figure 13",
+    "Cl, V1, Q, V2 for both drugs", "FDA Table 101 'Fixed effects'; EMA Tables 5 and 6",
+    "Q fixed, not estimated", "EMA EPAR p.46; FDA Table 101 RSE column reads 'fixed'",
+    "Reference individual: 70 kg, eGFR 100 mL/min, age 50 y, female, healthy", "EMA EPAR p.46 and Table 6 note",
+    "Covariate coefficients (9)", "FDA Table 101 'Covariate coefficients'; EMA Tables 5 and 6",
+    "IIV standard deviations (9, stratified by infection)", "FDA Table 101 'Standard deviations'",
+    "Random-effect correlations (7)", "FDA Table 101 'Correlations'; EMA Tables 5 and 6 for the within-drug ones",
+    "Residual error (3)", "FDA Table 101 'Observational error'; EMA Tables 5 and 6",
+    "Typical values for a 70 kg cUTI patient; terminal half-lives 2.2 / 2.0 h", "Vollmer 2023 IDWeek abstract 2529, embedded table",
+    "Baseline demographics", "FDA Integrated Review Table 100",
+    "Simulated steady-state exposures by renal function", "FDA Integrated Review Table 104",
+    "Observed steady-state NCA at the approved regimen", "US EXBLIFEP label (NDA 216165) Table 5"
+  ),
+  caption = "Where every model element comes from."
+)
+```
+
+# Check 1 -- the reference individual reproduces the published estimates
+
+Every covariate term is normalised so that it equals 1 at the reference
+individual. Solving at 70 kg, age 50, de-indexed eGFR 100 mL/min, female and
+healthy must therefore return the `ini()` estimates exactly.
+
+```{r reference-individual}
+base_cov <- function(...) {
+  out <- data.frame(WT = 70, AGE = 50, CRCL = 100, SEXF = 1, DIS_CUTI = 0)
+  rep <- list(...)
+  for (nm in names(rep)) out[[nm]] <- rep[[nm]]
+  out
+}
+
+# A single time-zero observation is enough to read the derived parameters back.
+params_at <- function(cov) {
+  s <- rxode2::rxSolve(
+    typ,
+    cbind(cov, id = 1L) |> mutate(time = 0, amt = 0, evid = 0L, cmt = "Cc"),
+    returnType = "data.frame"
+  )
+  c(cl = s$cl[1], vc = s$vc[1], q = s$q[1], vp = s$vp[1],
+    cl_enm = s$cl_enm[1], vc_enm = s$vc_enm[1], q_enm = s$q_enm[1], vp_enm = s$vp_enm[1])
+}
+
+ref <- params_at(base_cov())
+published <- c(cl = 5.95, vc = 11.2, q = 7.22, vp = 5.7,
+               cl_enm = 7.68, vc_enm = 13.2, q_enm = 7.16, vp_enm = 5.28)
+
+knitr::kable(
+  data.frame(
+    Parameter = c("Cefepime CL (L/h)", "Cefepime Vc (L)", "Cefepime Q (L/h)", "Cefepime Vp (L)",
+                  "Enmetazobactam CL (L/h)", "Enmetazobactam Vc (L)", "Enmetazobactam Q (L/h)",
+                  "Enmetazobactam Vp (L)"),
+    Published = published,
+    Model = ref,
+    row.names = NULL
+  ),
+  caption = "Reference individual (70 kg, 50 y, de-indexed eGFR 100 mL/min, female, healthy) versus FDA Table 101."
+)
+
+# Same drawn parameters on both sides, so this is pure floating-point agreement
+# and a tight bound is the correct one.
+stopifnot(max(abs(ref / published - 1)) < 1e-10)
+```
+
+# Check 2 -- the cUTI effect reproduces the separately published infected volume
+
+This is the check that pins the categorical covariate form. The EMA report and
+the IDWeek abstract both state that the enmetazobactam central volume in
+infected subjects is 15.3 L, against a reference estimate of 13.2 L. The
+exponential form gives `13.2 * exp(0.145) = 15.26`; the proportional form
+`13.2 * (1 + 0.145) = 15.11` does not round to 15.3.
+
+```{r cuti-effect}
+inf_par <- params_at(base_cov(DIS_CUTI = 1))
+
+knitr::kable(
+  data.frame(
+    Form = c("Model as encoded, exp(beta)", "Alternative, (1 + beta)"),
+    `Enmetazobactam Vc (L)` = c(inf_par[["vc_enm"]], 13.2 * (1 + 0.145)),
+    Published = c(15.3, 15.3),
+    check.names = FALSE
+  ),
+  caption = "Enmetazobactam central volume in an infected 70 kg patient, published as 15.3 L."
+)
+
+stopifnot(
+  abs(round(inf_par[["vc_enm"]], 1) - 15.3) < 1e-8,  # rounds to the published 15.3
+  abs(round(13.2 * 1.145, 1) - 15.3) > 0.1           # the alternative form does not
+)
+```
+
+Cefepime carries no infection effect, so its central volume is unchanged at
+11.2 L -- which is also the value the abstract prints for a "70 kg cUTI
+patient", and that agreement is what independently pins the weight reference to
+70 kg.
+
+```{r cuti-effect-fep}
+stopifnot(abs(inf_par[["vc"]] - 11.2) < 1e-10)
+```
+
+# Check 3 -- the OMEGA block and its positive-definiteness repair
+
+FDA Table 101 prints all six correlations of the infected 4x4 block to three
+decimals. Built from those printed values verbatim, the block is very slightly
+**indefinite**, so `chol()` fails and `rxSolve()` cannot sample from it. That is
+a rounding artifact rather than a contradiction, and the model file repairs it
+with the nearest positive-definite correlation matrix. The repair has to be
+shown to be publication-consistent: every adjusted correlation must still round
+to the printed three-decimal value.
+
+```{r omega-repair}
+nm  <- c("clF", "vcF", "clE", "vcE")
+sdv <- c(clF = 0.297, vcF = 0.42, clE = 0.356, vcE = 0.474)
+
+R <- diag(4); dimnames(R) <- list(nm, nm)
+R["vcF", "clF"] <- R["clF", "vcF"] <- 0.261
+R["clE", "clF"] <- R["clF", "clE"] <- 0.932
+R["vcE", "clF"] <- R["clF", "vcE"] <- 0.261
+R["clE", "vcF"] <- R["vcF", "clE"] <- 0.339
+R["vcE", "vcF"] <- R["vcF", "vcE"] <- 0.955
+R["vcE", "clE"] <- R["clE", "vcE"] <- 0.438
+
+lambda_printed <- min(eigen(R, only.values = TRUE)$values)
+Rp <- as.matrix(Matrix::nearPD(R, corr = TRUE, keepDiag = TRUE, posd.tol = 1e-6)$mat)
+delta <- max(abs((Rp - R)[upper.tri(R)]))
+
+knitr::kable(
+  data.frame(
+    Correlation = c("Cefepime Vc-CL", "Cefepime CL-enmetazobactam CL",
+                    "Cefepime CL-enmetazobactam Vc", "Cefepime Vc-enmetazobactam CL",
+                    "Cefepime Vc-enmetazobactam Vc", "Enmetazobactam Vc-CL"),
+    Printed  = R[upper.tri(R)][c(1, 2, 4, 3, 5, 6)],
+    Repaired = round(Rp[upper.tri(Rp)][c(1, 2, 4, 3, 5, 6)], 6),
+    `Rounds back` = round(Rp[upper.tri(Rp)][c(1, 2, 4, 3, 5, 6)], 3) ==
+                    R[upper.tri(R)][c(1, 2, 4, 3, 5, 6)],
+    check.names = FALSE
+  ),
+  caption = "Nearest-positive-definite repair of the infected correlation block."
+)
+
+# The repair is only legitimate if it stays inside the rounding interval of the
+# printed three-decimal values, i.e. moves nothing by 0.0005 or more.
+stopifnot(
+  lambda_printed < 0,                              # the printed matrix really is indefinite
+  delta < 0.0005,                                  # repair stays inside the rounding interval
+  all(round(Rp, 3) == round(R, 3)),                # every entry rounds back to what was printed
+  min(eigen(Rp, only.values = TRUE)$values) > 0    # and the result is usable
+)
+```
+
+The model's assembled 9x9 OMEGA must then be positive definite, and reading its
+correlations back must recover the published cross-drug values.
+
+```{r omega-model}
+# modellib() hands back the model FUNCTION; build the rxUi to read its OMEGA.
+om   <- rxode2::rxode2(mod)$omega
+corr <- cov2cor(om)
+
+knitr::kable(
+  data.frame(
+    `Random-effect pair` = c("Cefepime CL - enmetazobactam CL (infected)",
+                             "Cefepime Vc - enmetazobactam Vc (infected)",
+                             "Enmetazobactam Vc - CL (healthy)"),
+    Published = c(0.932, 0.955, 0.983),
+    Model = round(c(corr["etalcl_inf", "etalcl_enm_inf"],
+                    corr["etalvc_inf", "etalvc_enm_inf"],
+                    corr["etalcl_enm_hlth", "etalvc_enm_hlth"]), 4),
+    check.names = FALSE
+  ),
+  caption = "Cross-drug and within-drug IIV correlations versus FDA Table 101."
+)
+
+stopifnot(
+  min(eigen(om, only.values = TRUE)$values) > 0,
+  abs(corr["etalcl_inf", "etalcl_enm_inf"]     - 0.932) < 0.0005,
+  abs(corr["etalvc_inf", "etalvc_enm_inf"]     - 0.955) < 0.0005,
+  abs(corr["etalcl_enm_hlth", "etalvc_enm_hlth"] - 0.983) < 0.0005
+)
+```
+
+The printed %CV column is a second, independent view of the same variances, and
+all nine estimated omegas reproduce it under the log-normal identity
+`CV = sqrt(exp(omega^2) - 1)`. That over-determination is what removes any doubt
+about whether the "Standard deviations" column holds SDs or variances.
+
+```{r omega-cv}
+omega_sd <- c(0.161, 0.297, 0.42, 0.195, 0.15, 0.356, 0.0549, 0.474, 0.0593)
+cv_pub   <- c(16, 30, 44, 20, 15, 37, 5, 50, 6)
+cv_calc  <- 100 * sqrt(exp(omega_sd^2) - 1)
+
+knitr::kable(
+  data.frame(
+    `Random effect` = c("Cefepime CL, healthy", "Cefepime CL, infected",
+                        "Cefepime Vc, infected", "Cefepime Vp, both",
+                        "Enmetazobactam CL, healthy", "Enmetazobactam CL, infected",
+                        "Enmetazobactam Vc, healthy", "Enmetazobactam Vc, infected",
+                        "Enmetazobactam Vp, both"),
+    omega = omega_sd,
+    `%CV printed` = cv_pub,
+    `%CV from omega` = round(cv_calc, 1),
+    check.names = FALSE
+  ),
+  caption = "Every printed omega reproduces its printed %CV as a log-normal SD."
+)
+
+stopifnot(all(round(cv_calc) == cv_pub))
+```
+
+# Check 4 -- terminal half-life from the solved ODE system
+
+Both the abstract and the EMA report quote terminal plasma half-lives calculated
+from the final parameters: 2.2 h for cefepime and 2.0 h for enmetazobactam in
+infected subjects. Regressing the log-linear tail of a solved single-dose
+profile exercises the whole four-compartment system rather than just the `ini()`
+arithmetic.
+
+```{r half-life}
+solve_regimen <- function(model, cov, fep, enm, ii, dur, t_start, t_end, by = 0.02) {
+  dose_times <- if (ii >= t_end) 0 else seq(0, t_end - ii, by = ii)
+  dose <- bind_rows(
+    tidyr::expand_grid(cov, time = dose_times) |>
+      mutate(amt = fep, cmt = "central",     evid = 1L, dur = dur),
+    tidyr::expand_grid(cov, time = dose_times) |>
+      mutate(amt = enm, cmt = "central_enm", evid = 1L, dur = dur)
+  )
+  obs <- bind_rows(
+    tidyr::expand_grid(cov, time = seq(t_start, t_end, by = by)) |>
+      mutate(amt = NA_real_, cmt = "Cc",     evid = 0L, dur = NA_real_),
+    tidyr::expand_grid(cov, time = seq(t_start, t_end, by = by)) |>
+      mutate(amt = NA_real_, cmt = "Cc_enm", evid = 0L, dur = NA_real_)
+  )
+  ev <- bind_rows(dose, obs) |> arrange(id, time, desc(evid))
+  out <- rxode2::rxSolve(model, ev, returnType = "data.frame")
+  # rxSolve() drops `id` when the event table holds exactly one subject.
+  if (!"id" %in% names(out)) {
+    stopifnot(dplyr::n_distinct(cov$id) == 1L)
+    out$id <- cov$id[1]
+  }
+  out |> distinct(id, time, .keep_all = TRUE)
+}
+
+half_life <- function(t, y) log(2) / -stats::coef(stats::lm(log(y) ~ t))[[2]]
+
+sd_prof <- solve_regimen(typ, cbind(base_cov(DIS_CUTI = 1), id = 1L),
+                         fep = 2000, enm = 500, ii = 1e6, dur = 2,
+                         t_start = 0, t_end = 24)
+tail_w  <- sd_prof$time >= 14 & sd_prof$time <= 24
+
+hl <- c(cefepime       = half_life(sd_prof$time[tail_w], sd_prof$Cc[tail_w]),
+        enmetazobactam = half_life(sd_prof$time[tail_w], sd_prof$Cc_enm[tail_w]))
+
+knitr::kable(
+  data.frame(Drug = c("Cefepime", "Enmetazobactam"),
+             `Published t1/2 (h)` = c(2.2, 2.0),
+             `Model t1/2 (h)` = round(hl, 3),
+             check.names = FALSE, row.names = NULL),
+  caption = "Terminal half-life regressed from the solved profile of an infected 70 kg reference patient."
+)
+
+stopifnot(abs(hl[["cefepime"]] - 2.2) < 0.05, abs(hl[["enmetazobactam"]] - 2.0) < 0.05)
+```
+
+```{r single-dose-plot, fig.cap = "Typical-value single-dose profiles, infected 70 kg reference patient, 2 g cefepime / 0.5 g enmetazobactam over 2 hours."}
+sd_prof |>
+  select(time, Cefepime = Cc, Enmetazobactam = Cc_enm) |>
+  tidyr::pivot_longer(-time, names_to = "Analyte", values_to = "conc") |>
+  ggplot(aes(time, conc, colour = Analyte)) +
+  geom_line(linewidth = 0.8) +
+  scale_y_log10() +
+  labs(x = "Time (h)", y = "Total plasma concentration (mg/L)") +
+  theme_bw()
+```
+
+# Check 5 -- the renal-function ladder of FDA Table 104
+
+This is the sharpest available test of the covariate model. For each renal
+function group, FDA Integrated Review Table 104 reports the simulated
+steady-state Cmax and AUC0-24 of **both** drugs at the dose recommended for that
+group, in 8,000 virtual subjects whose covariates were all fixed except
+de-indexed eGFR (sponsor page 138: body weight 75.68 kg, age 54.65 years,
+infected, sex 1:1).
+
+The eGFR distribution *within* each band is not published, so it is not assumed.
+Instead a **single** number per group is taken from the table -- the cefepime
+AUC0-24 -- and inverted through the cefepime clearance model to recover the
+de-indexed eGFR of the patient who would produce it. The other three quantities
+per group are then genuine *predictions*: cefepime Cmax, enmetazobactam Cmax and
+enmetazobactam AUC0-24, eighteen predictions in total.
+
+Because every dosing interval here divides 24 h exactly, `AUC0-24` at steady
+state is `AUC_tau * 24/tau` with no phase dependence, so the inversion is clean.
+
+```{r ladder-table}
+t104 <- tibble::tribble(
+  ~band,      ~lo, ~hi, ~fep, ~enm, ~ii, ~dur, ~fepCmax, ~fepAUC,  ~enmCmax, ~enmAUC,
+  "15-<30",    15,  30, 1000,  250,  12,    2,   82.050, 1205.561,   17.210, 257.076,
+  "30-<60",    30,  60, 1000,  250,   8,    2,   65.639,  930.164,   13.342, 188.652,
+  "60-<90",    60,  90, 2000,  500,   8,    2,  104.614, 1271.797,   20.830, 250.690,
+  "90-<130",   90, 130, 2000,  500,   8,    2,   89.936,  973.021,   17.614, 186.945,
+  ">=130",    130, Inf, 2000,  500,   8,    4,   51.716,  732.636,    9.836, 137.723,
+  ">=150",    150, Inf, 2000,  500,   8,    4,   44.926,  614.844,    8.432, 114.002
+)
+
+# Invert the cefepime renal power term. Cefepime CL carries no weight or age
+# effect, so the inversion needs nothing but the printed AUC.
+t104 <- t104 |>
+  mutate(cl_obs = (24 / ii) * fep / fepAUC,
+         egfr   = 100 * (cl_obs / 5.95)^(1 / 0.834))
+
+knitr::kable(
+  t104 |>
+    mutate(inside = egfr >= lo & egfr <= hi) |>
+    select(`Renal group (mL/min)` = band, `Implied de-indexed eGFR` = egfr,
+           `Inside the band` = inside) |>
+    mutate(`Implied de-indexed eGFR` = round(`Implied de-indexed eGFR`, 1)),
+  caption = "De-indexed eGFR recovered by inverting the cefepime AUC0-24 of FDA Table 104."
+)
+
+# Six for six: a mis-specified reference or exponent would push these out of
+# their own bands. This is also what identifies the table as TOTAL rather than
+# free cefepime -- rescaling by the unbound fraction 0.80 puts four of the six
+# outside their bands.
+stopifnot(all(t104$egfr >= t104$lo & t104$egfr <= t104$hi))
+free_egfr <- 100 * ((t104$cl_obs * 0.80) / 5.95)^(1 / 0.834)
+stopifnot(sum(free_egfr < t104$lo | free_egfr > t104$hi) >= 4)
+```
+
+```{r ladder-predict}
+# Dose for 14 days so even the slowest renal group is unambiguously at steady
+# state, then read the final dosing interval. Female and male are solved
+# separately (sex acts on enmetazobactam Vp) and averaged 1:1 to match the
+# sponsor's simulation.
+ladder_pred <- lapply(seq_len(nrow(t104)), function(i) {
+  r <- t104[i, ]
+  per_sex <- lapply(c(1, 0), function(sf) {
+    cov <- data.frame(id = 1L, WT = 75.68, AGE = 54.65, CRCL = r$egfr,
+                      SEXF = sf, DIS_CUTI = 1)
+    s <- solve_regimen(typ, cov, r$fep, r$enm, r$ii, r$dur,
+                       t_start = 14 * 24 - r$ii, t_end = 14 * 24, by = 0.01)
+    trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+    c(fepCmax = max(s$Cc), enmCmax = max(s$Cc_enm),
+      fepAUC = trapz(s$time, s$Cc) * 24 / r$ii,
+      enmAUC = trapz(s$time, s$Cc_enm) * 24 / r$ii)
+  })
+  as.data.frame(t(colMeans(do.call(rbind, per_sex))))
+}) |> bind_rows()
+
+ladder <- t104 |>
+  select(band, ref_fepCmax = fepCmax, ref_fepAUC = fepAUC,
+         ref_enmCmax = enmCmax, ref_enmAUC = enmAUC) |>
+  bind_cols(ladder_pred) |>
+  mutate(across(c(fepCmax, enmCmax, enmAUC, fepAUC), ~ .x)) |>
+  transmute(
+    `Renal group (mL/min)` = band,
+    `Cefepime AUC0-24 (closure)` = round(100 * (fepAUC / ref_fepAUC - 1), 2),
+    `Cefepime Cmax` = round(100 * (fepCmax / ref_fepCmax - 1), 1),
+    `Enmetazobactam Cmax` = round(100 * (enmCmax / ref_enmCmax - 1), 1),
+    `Enmetazobactam AUC0-24` = round(100 * (enmAUC / ref_enmAUC - 1), 1)
+  )
+
+knitr::kable(
+  ladder,
+  caption = "Per cent difference from FDA Table 104. The cefepime AUC0-24 column is the inverted quantity and closes on itself; the other three columns are predictions."
+)
+
+pred_err <- as.matrix(ladder[, 3:5])
+stopifnot(
+  max(abs(as.matrix(ladder[, 2]))) < 0.5,   # the inversion closes
+  max(abs(pred_err)) < 10,                  # every prediction within 10%
+  stats::median(abs(pred_err)) < 3          # and typically far better
+)
+```
+
+# Check 6 -- a virtual cohort against the approved-regimen label NCA
+
+The US label reports observed steady-state (Day 7) noncompartmental parameters
+in cUTI patients with eGFR at least 60 mL/min receiving the approved 2 g
+cefepime / 0.5 g enmetazobactam every 8 hours as a 2-hour infusion. A virtual
+cohort matching the Phase 3 AT-301 demographics, restricted to de-indexed eGFR
+of at least 60 mL/min, is simulated with full inter-individual variability and
+run through PKNCA.
+
+```{r cohort}
+n_sub <- 200   # one arm; the skill caps cohorts at 200 participants per arm
+
+# AT-301 demographics (FDA Table 100): weight mean 76.11 kg (45-135), age mean
+# 55.04 y (17-94), de-indexed eGFR mean 85.37 mL/min (21.36-193.45), 54% female.
+# Weight and eGFR are drawn log-normally so they stay positive; the spreads are
+# chosen to reproduce the published means and to sit inside the published
+# ranges, which the paper does not tabulate beyond mean and range.
+draw_trunc <- function(n, mean_target, cv, lo, hi) {
+  s  <- sqrt(log(cv^2 + 1))
+  mu <- log(mean_target) - s^2 / 2
+  x  <- stats::rlnorm(n * 20, mu, s)
+  x  <- x[x >= lo & x <= hi]
+  stopifnot(length(x) >= n)   # fail loudly rather than silently recycling
+  x[seq_len(n)]
+}
+
+cohort <- data.frame(
+  id       = seq_len(n_sub),
+  WT       = draw_trunc(n_sub, 76.11, 0.22, 45, 135),
+  AGE      = round(draw_trunc(n_sub, 55.04, 0.30, 18, 94)),
+  CRCL     = draw_trunc(n_sub, 95, 0.30, 60, 193.45),   # restricted to eGFR >= 60 per the label
+  SEXF     = stats::rbinom(n_sub, 1, 0.54),
+  DIS_CUTI = 1
+)
+
+tau     <- 8
+t_last  <- 7 * 24 - tau     # time of the final dose in a 7-day course
+obs_grid <- sort(unique(c(seq(t_last, t_last + tau, by = 0.1), t_last)))
+
+ev <- bind_rows(
+  tidyr::expand_grid(cohort, time = seq(0, t_last, by = tau)) |>
+    mutate(amt = 2000, cmt = "central",     evid = 1L, dur = 2),
+  tidyr::expand_grid(cohort, time = seq(0, t_last, by = tau)) |>
+    mutate(amt = 500,  cmt = "central_enm", evid = 1L, dur = 2),
+  tidyr::expand_grid(cohort, time = obs_grid) |>
+    mutate(amt = NA_real_, cmt = "Cc",     evid = 0L, dur = NA_real_),
+  tidyr::expand_grid(cohort, time = obs_grid) |>
+    mutate(amt = NA_real_, cmt = "Cc_enm", evid = 0L, dur = NA_real_)
+) |> arrange(id, time, desc(evid))
+
+sim <- rxode2::rxSolve(mod, ev, returnType = "data.frame") |>
+  distinct(id, time, .keep_all = TRUE)
+
+# Re-base the final dosing interval to time zero so PKNCA sees a clean
+# steady-state interval that starts at a real observation.
+nca_in <- sim |>
+  filter(time >= t_last) |>
+  mutate(time = time - t_last) |>
+  select(id, time, Cc, Cc_enm) |>
+  tidyr::pivot_longer(c(Cc, Cc_enm), names_to = "endpoint", values_to = "conc") |>
+  mutate(analyte = ifelse(endpoint == "Cc", "Cefepime", "Enmetazobactam")) |>
+  filter(!is.na(conc))
+
+stopifnot(all(c(0) %in% nca_in$time))   # a real time-zero record exists
+
+dose_in <- cohort |>
+  select(id) |>
+  tidyr::expand_grid(analyte = c("Cefepime", "Enmetazobactam")) |>
+  mutate(time = 0, dose = ifelse(analyte == "Cefepime", 2000, 500))
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(nca_in), conc ~ time | analyte + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_in), dose ~ time | analyte + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start = 0, end = tau,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, half.life = TRUE, cl.last = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r cohort-compare}
+sim_nca <- as.data.frame(nca_res) |>
+  filter(PPTESTCD %in% c("cmax", "auclast", "half.life", "cl.last")) |>
+  select(analyte, PPTESTCD, PPORRES)
+
+# US label Table 5: mean (SD) at steady state, Day 7, cUTI, eGFR >= 60 mL/min.
+label_nca <- data.frame(
+  analyte   = c("Cefepime", "Enmetazobactam"),
+  cmax      = c(99.8, 19.8),
+  auclast   = c(379.5, 75.3),
+  half.life = c(2.7, 2.6),
+  cl.last   = c(5.8, 7.6)
+)
+
+tbl <- nlmixr2lib::ncaComparisonTable(
+  simulated = sim_nca,
+  reference = label_nca,
+  by = "analyte",
+  units = c(cmax = "mg/L", auclast = "mg*h/L", half.life = "h", cl.last = "L/h")
+)
+knitr::kable(tbl, caption = "Simulated steady-state NCA (cohort median) versus the US EXBLIFEP label Table 5.")
+attr(tbl, "footnote")
+```
+
+The exposure parameters land close to the label. Two rows deserve comment and
+neither indicates a transcription problem.
+
+* **Half-life.** The label's 2.7 h (cefepime) and 2.6 h (enmetazobactam) are
+  noncompartmental terminal half-lives estimated from sparse late samples within
+  an 8-hour interval, which systematically exceed the model's 2.2 h and 2.0 h
+  true terminal half-lives (Check 4). The bias is a property of the estimator,
+  not of the parameters.
+* **Clearance.** `cl.last` here is `dose / AUClast` over one interval. Its
+  agreement with the label's 5.8 and 7.6 L/h is the more meaningful check, and
+  it also brackets the model's reference estimates of 5.95 and 7.68 L/h at
+  de-indexed eGFR 100 mL/min.
+
+```{r cohort-assert}
+# sim_nca holds one row per subject, so collapse to the cohort MEDIAN first --
+# the same statistic ncaComparisonTable() reports above.
+wide <- sim_nca |>
+  group_by(analyte, PPTESTCD) |>
+  summarise(PPORRES = stats::median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+ratio <- function(a, p) {
+  wide[[p]][wide$analyte == a] / label_nca[[p]][label_nca$analyte == a]
+}
+
+# Assertions are on the CENTRE of the cohort, not on any extreme, because the
+# label cohort's covariate distribution is only published as means and ranges.
+stopifnot(
+  abs(ratio("Cefepime", "cmax") - 1) < 0.25,
+  abs(ratio("Enmetazobactam", "cmax") - 1) < 0.25,
+  abs(ratio("Cefepime", "auclast") - 1) < 0.30,
+  abs(ratio("Enmetazobactam", "auclast") - 1) < 0.30,
+  abs(ratio("Cefepime", "cl.last") - 1) < 0.30,
+  abs(ratio("Enmetazobactam", "cl.last") - 1) < 0.30
+)
+```
+
+```{r cohort-plot, fig.cap = "Simulated steady-state concentration-time profiles over the final 8-hour dosing interval (median and 5th-95th percentiles, 200 virtual cUTI patients)."}
+sim |>
+  filter(time >= t_last) |>
+  mutate(time = time - t_last) |>
+  select(time, Cefepime = Cc, Enmetazobactam = Cc_enm) |>
+  tidyr::pivot_longer(-time, names_to = "Analyte", values_to = "conc") |>
+  group_by(Analyte, time) |>
+  summarise(med = stats::median(conc),
+            lo  = stats::quantile(conc, 0.05),
+            hi  = stats::quantile(conc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med, colour = Analyte, fill = Analyte)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time after the Day-7 dose (h)", y = "Total plasma concentration (mg/L)") +
+  theme_bw()
+```
+
+# Check 7 -- variability is higher in patients than in healthy volunteers
+
+The abstract's qualitative claim is that "variability was higher in cUTI
+patients although differences in mean ENM or FEP exposures between healthy
+subjects and cUTI patients were negligible". Both halves are testable, and the
+comparison uses common random numbers so that the two arms differ only through
+the infection covariate.
+
+```{r infection-strata}
+arm <- function(infected) {
+  rxode2::rxSetSeed(20231014)          # reseed INSIDE the loop: common random numbers
+  cov <- data.frame(
+    id = seq_len(n_sub), WT = 76.11, AGE = 55, CRCL = 100,
+    SEXF = 1, DIS_CUTI = infected
+  )
+  ev <- bind_rows(
+    tidyr::expand_grid(cov, time = 0) |>
+      mutate(amt = 2000, cmt = "central",     evid = 1L, dur = 2),
+    tidyr::expand_grid(cov, time = 0) |>
+      mutate(amt = 500,  cmt = "central_enm", evid = 1L, dur = 2),
+    tidyr::expand_grid(cov, time = seq(0, 24, by = 0.25)) |>
+      mutate(amt = NA_real_, cmt = "Cc",     evid = 0L, dur = NA_real_),
+    tidyr::expand_grid(cov, time = seq(0, 24, by = 0.25)) |>
+      mutate(amt = NA_real_, cmt = "Cc_enm", evid = 0L, dur = NA_real_)
+  ) |> arrange(id, time, desc(evid))
+  rxode2::rxSolve(mod, ev, returnType = "data.frame") |>
+    distinct(id, time, .keep_all = TRUE) |>
+    group_by(id) |>
+    summarise(fep = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+              enm = sum(diff(time) * (head(Cc_enm, -1) + tail(Cc_enm, -1)) / 2),
+              .groups = "drop")
+}
+
+hlth <- arm(0)
+infd <- arm(1)
+
+spread <- function(x) stats::IQR(log(x))   # log-scale IQR, robust to the tails
+
+strata_tbl <- data.frame(
+  Analyte = c("Cefepime", "Enmetazobactam"),
+  `Median AUC ratio, infected / healthy` =
+    round(c(stats::median(infd$fep) / stats::median(hlth$fep),
+            stats::median(infd$enm) / stats::median(hlth$enm)), 3),
+  `Log-scale IQR ratio, infected / healthy` =
+    round(c(spread(infd$fep) / spread(hlth$fep),
+            spread(infd$enm) / spread(hlth$enm)), 2),
+  check.names = FALSE
+)
+knitr::kable(
+  strata_tbl,
+  caption = "Single-dose AUC0-24 in 200 virtual subjects per arm, identical except for infection status."
+)
+
+stopifnot(
+  # "differences in mean exposures ... were negligible" for cefepime, whose
+  # volume carries no infection term at all.
+  abs(strata_tbl[1, 2] - 1) < 0.10,
+  # "variability was higher in cUTI patients" -- for both drugs, decisively.
+  strata_tbl[1, 3] > 1.4,
+  strata_tbl[2, 3] > 1.4
+)
+```
+
+# Assumptions and deviations
+
+* **The paper of record publishes only part of the model.** The IDWeek abstract
+  gives the typical values for a 70 kg cUTI patient, their %CV and the terminal
+  half-lives; it names the covariates but prints no coefficients, no
+  correlations and no residual error. The complete parameter set encoded here is
+  transcribed from the FDA NDA 216165 Integrated Review (Table 101) and the EMA
+  EPAR EMA/63929/2024 (Tables 5 and 6), which are two independent reproductions
+  of the same sponsor study report, AAI101-PK-21-01. They agree with each other
+  on every value, and with the abstract on every value the abstract prints.
+
+* **EMA prose contradicts EMA tables on the weight exponents, and the tables
+  win.** The EMA assessment report's "Updated model" paragraph on page 48 says
+  the previous body-weight coefficients on the central volumes were "0.618 for
+  cefepime and 0.802 for enmetazobactam". Its own Tables 5 and 6, on the two
+  preceding pages, give 0.802 for cefepime and 0.618 for enmetazobactam -- as
+  does FDA Table 101. Two independent tables outvote one sentence, so the model
+  uses 0.802 (cefepime) and 0.618 (enmetazobactam).
+
+* **The covariate reference values are not in the paper of record.** The 70 kg /
+  100 mL/min / 50 years reference individual is stated only in the EMA report
+  (page 46). The 70 kg element is independently confirmed by the abstract, whose
+  "70 kg cUTI patient" cefepime Vc of 11.2 L equals the untransformed estimate;
+  the 100 mL/min element is independently confirmed by Check 5, where inverting
+  FDA Table 104 on a reference of 100 mL/min lands all six implied eGFRs inside
+  their own renal bands.
+
+* **The infected 4x4 correlation block needed a positive-definiteness repair.**
+  Built from the printed three-decimal correlations verbatim the block is
+  indefinite (smallest eigenvalue -1.7e-04) and `rxSolve()` cannot sample from
+  it. The model uses the nearest positive-definite correlation matrix, which
+  moves no correlation by more than 6.7e-05 -- inside the rounding interval of
+  the printed values, so every repaired correlation rounds back to what was
+  published. Check 3 asserts this.
+
+* **Two correlations are printed with the same value.** FDA Table 101 lists both
+  "CEF V1, FEP Cl in infected" and "ENM V1, FEP Cl in infected" as 0.261 with an
+  RSE of 19. The first is independently confirmed by EMA Table 5 ("V1, Cl in
+  cUTI = 0.261"); the second is a cross-drug term that appears only in the FDA
+  table. Both are encoded as printed. If the repetition is a transcription slip
+  in the FDA table rather than a genuine coincidence, the affected element is
+  the cefepime-CL / enmetazobactam-Vc covariance.
+
+* **Cefepime has no healthy-stratum central-volume variability.** FDA Table 101
+  prints "-" for both the estimate and the RSE of `omega_FEP,V1_healthy`, so
+  healthy volunteers take the typical cefepime central volume exactly. This is
+  encoded by omitting the healthy arm of that multiplexed eta, not by setting a
+  variance to zero.
+
+* **The infection covariate is a single pooled indicator.** The source analysis
+  carries one coefficient for the whole infected cohort rather than separate
+  cUTI and acute-pyelonephritis levels, so `DIS_CUTI` is used alone (set it to 1
+  for cUTI *and* acute pyelonephritis patients, 0 only for healthy volunteers)
+  and `DIS_AP` is deliberately not paired with it.
+
+* **The enmetazobactam additive residual error was converted from ng/mL.** FDA
+  Table 101 reports `a_ENM = 40.9 ng/mL` because the analysis dataset held
+  concentrations in ng/mL. This model works in mg/L, so the value is encoded as
+  0.0409 mg/L. Cefepime has no additive component at all.
+
+* **The sex effect is carried by the male level.** The published reference
+  individual is female, so the enmetazobactam peripheral volume of 5.28 L is the
+  female value and males carry `exp(0.198)`. The canonical `SEXF` column codes
+  female as 1, so the model term is written on `(1 - SEXF)` and the parameter is
+  named `e_sexmale_vp_enm`.
+
+* **A later "updated model" exists and is not what is encoded.** The EMA report
+  (page 48) describes a re-fit in which body weight scales the central *and*
+  peripheral volumes with a single shared coefficient (0.407 and 0.553 for the
+  two drugs), improving the objective function by 16 points. That variant is not
+  the model the abstract, the FDA review or the EMA parameter tables report, and
+  its full parameter set is not published, so this file encodes the final model
+  of record. Note that the same sentence carrying those two numbers is the one
+  that swaps the drugs, so their drug assignment should not be trusted either.
+
+* **Concentrations are total, not free.** Multiply by 0.80 for cefepime (20%
+  protein bound) and by 1.00 for enmetazobactam (binding negligible) to obtain
+  the free concentrations that the `%fT > MIC` and `%fT > CT` targets are defined
+  on. Check 5 confirms that FDA Table 104 is likewise on a total-drug basis.
+
+* **The cohort covariate distributions in Check 6 are assumed.** FDA Table 100
+  publishes only means and ranges, not distributional shapes or correlations, so
+  weight, age and de-indexed eGFR are drawn independently from truncated
+  log-normals calibrated to the published means. The assertions are therefore on
+  the cohort centre, not on any extreme.
+
+* **Not extracted from this source.** The EMA report also contains a separate
+  plasma-and-epithelial-lining-fluid population PK model built from the 19
+  healthy volunteers of Phase 1 study AT-103 (its Table 7), and a hemodialysis
+  extension of the plasma model (FDA Figure 22). Neither is the model this
+  abstract describes; both are separate analyses with their own primary sources.

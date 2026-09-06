@@ -1,0 +1,624 @@
+---
+title: "Vancomycin (Ahmed 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Ahmed 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20240115)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ahmed_2024_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ahmed_2024_vancomycin"))$description`
+* Article: <https://doi.org/10.2147/DDDT.S432439> (open access)
+
+```{r model}
+mod <- nlmixr2lib::modellib("Ahmed_2024_vancomycin")
+mod
+```
+
+# Population
+
+Ahmed 2024 is a retrospective, single-centre, observational cohort study at
+Aliaa Specialist Hospital, Khartoum, Sudan, covering patients treated with
+intravenous vancomycin between August 2016 and January 2019. Patients under 18
+years, pregnant patients, and patients receiving renal replacement therapy were
+excluded.
+
+The analysis dataset holds **194 concentrations from 99 adults** (66 male / 33
+female). Sampling was therapeutic-drug-monitoring driven and began with the
+fourth dose: 129 troughs drawn 30 min before the next dose (median 16.22 mg/L,
+IQR 11.1-26.53) and 65 peaks drawn 1 h after the dose (median 29.55 mg/L, IQR
+22.38-37.36). No concentration fell below the limit of quantitation. The assay
+was an enzyme-multiplied immunoassay (EMIT) with a 2-50 mg/L calibration range.
+Usual dosing was 500-1000 mg every 12 h infused over 60 min. The model was
+fitted in MonolixSuite 2020R1 by SAEM.
+
+Baseline characteristics (Ahmed 2024 Table 1):
+
+```{r population-table, echo = FALSE}
+tibble::tribble(
+  ~Characteristic,                       ~`Median (IQR)`,        ~Range,
+  "Age (years)",                         "65 (50-75)",           "18-90",
+  "Serum creatinine (mg/dL)",            "1.2 (0.7-2.5)",        "0.2-9.5",
+  "Serum albumin (g/dL)",                "2.5 (2.1-2.9)",        "1.4-4.1",
+  "Blood urea (mg/dL)",                  "52 (26.1-89)",         "5-215",
+  "Creatinine clearance (source units)", "12.7 (5.52-25.78)",    "1.4-107.5",
+  "Trough concentration (mg/L)",         "16.22 (11.1-26.53)",   "4.41-53",
+  "Peak concentration (mg/L)",           "29.55 (22.38-37.36)",  "11.5-62.5"
+) |>
+  knitr::kable(caption = "Ahmed 2024 Table 1. Sex 66 male / 33 female; n = 99 subjects, 194 observations.")
+```
+
+**Body weight and height were not recorded** in the source medical files. That
+single data gap drives the most important caveat in this model, discussed next.
+
+# The CRCL column is not a conventional creatinine clearance
+
+Because weight was unavailable, Ahmed 2024 could not use Cockcroft-Gault and
+instead used the Bjornson method (Methods, Equations 1-3):
+
+$$\mathrm{CLcr} = \frac{R_{cr}}{S_{CR}}, \qquad
+R_{cr}(\text{males}) = 27 - 0.173 \times \text{age}, \qquad
+R_{cr}(\text{females}) = 25 - 0.175 \times \text{age}$$
+
+with `Rcr` in mg/kg/24 h and `SCR` in mg/dL. The published Bjornson method
+finishes the calculation as `CrCl = Rcr * weight / (SCr * 14.4)` to reach
+mL/min. Ahmed 2024 stops at `Rcr / SCr` -- it has no weight to multiply by --
+yet still labels the column mL/min. The omitted factor is `weight / 14.4`,
+about **4.9 for a 70 kg adult**.
+
+The paper's own Table 1 confirms the arithmetic exactly:
+
+```{r crcl-arithmetic}
+# Median patient of Table 1: male, 65 years, serum creatinine 1.2 mg/dL.
+rcr_male_65 <- 27 - 0.173 * 65
+c(
+  `Ahmed 2024 CLcr = Rcr/SCr`        = rcr_male_65 / 1.2,
+  `reported cohort median (Table 1)` = 12.7,
+  `complete Bjornson at 70 kg`       = rcr_male_65 * 70 / (1.2 * 14.4)
+)
+```
+
+So the covariate column runs roughly five-fold **below** a conventional
+creatinine clearance for the same patient. Two consequences:
+
+1. A general medical-ward cohort appears almost uniformly in severe renal
+   failure (median 12.7). That is largely an artefact of the covariate
+   definition, not a description of the patients.
+2. **Anyone applying this model must reproduce the source's own calculation.**
+   Feeding it a real Cockcroft-Gault value in mL/min would inflate typical
+   clearance by `4.9^0.49` = `r round(4.861^0.49, 2)`-fold.
+
+# Source trace
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Item,               ~Value,   ~`Source location`,
+  "V_pop",             "65 L",   "Table 3, Fixed Effects row V_pop (SE 6.12, RSE 9.41%)",
+  "CL_pop",            "2.02 L/h", "Table 3, Fixed Effects row CL_pop (SE 0.13, RSE 6.40%)",
+  "beta_CL_logtCLcr",  "0.49",   "Table 3, Fixed Effects row beta_CL_logtCLcr (SE 0.064, RSE 13%)",
+  "omega_V (SD)",      "0.39",   "Table 3, Standard Deviation of the Random Effects (RSE 19.3%)",
+  "omega_CL (SD)",     "0.46",   "Table 3, Standard Deviation of the Random Effects (RSE 12.5%); corroborated in Results, 'Model Development' ('from 0.66 to 0.46')",
+  "b (proportional)",  "0.28",   "Table 3, Standard Deviation of the Proportional Error (RSE 8.26%)",
+  "Structural model",  "1-compartment, first-order elimination", "Results, 'Model Development'; Methods, 'Population Pharmacokinetic Analysis'",
+  "Log-normal IIV, exponential BSV", "-", "Methods, 'Population Pharmacokinetic Analysis'",
+  "Proportional-only residual error", "-", "Methods (proportional and combined tested); Table 3 reports b only",
+  "Covariate form on CL", "CL = CL_pop * (CLcr/mean(CLcr))^beta * exp(eta)", "Methods, 'Population Pharmacokinetic Analysis', p. 83 (unnumbered equations)",
+  "Centering constant",  "12.7 (cohort median CLcr)", "Table 1; see 'The covariate form' below -- the mean is never printed",
+  "CLcr definition",     "Rcr/SCr, Bjornson Rcr equations", "Methods, 'Patients and Data Collection', Equations 1-3",
+  "Infusion duration",   "60 min", "Methods, 'Dosing and Sample Collection'",
+  "Dose regimens simulated", "LD 1500 mg (CLcr 10-19), LD 1800 mg (CLcr 20-59); maintenance per Table 4", "Results, 'Model Application'; Table 4 footnote a"
+) |>
+  knitr::kable(caption = "Source trace for every ini() value and every model() equation.")
+```
+
+# The covariate form: the paper prints two of them
+
+Ahmed 2024 gives the clearance covariate model twice, and the two do not agree.
+
+**Methods, p. 83** (the form that was fitted, stated as such):
+
+$$\log(CL) = \log(CL_{pop}) + \beta_{CL,logtCLcr} \cdot logtCLcr + \eta_{CL},
+\quad logtCLcr = \log\!\left(\frac{CLcr}{\mathrm{mean}(CLcr)}\right)$$
+
+$$\Leftrightarrow \quad CL = CL_{pop}\left(\frac{CLcr}{\mathrm{mean}(CLcr)}\right)^{\beta} e^{\eta_{CL}}$$
+
+**Equation 5, p. 85** (and identically the Table 3 footnote) drops the
+denominator:
+
+$$CL_i = CL_{pop} \cdot (CLcr)^{0.49} \cdot e^{\eta_i}$$
+
+The uncentered version is arithmetically impossible against the paper's own
+simulation output:
+
+```{r covariate-form-check}
+crcl_mid <- c(14.5, 24.5, 34.5, 44.5, 54.5)   # midpoints of the five CLcr groups
+cl_table4 <- c(2.22, 2.90, 3.42, 3.88, 4.28)  # Table 4, median simulated CL (L/h)
+
+data.frame(
+  CLcr                       = crcl_mid,
+  `Eq 5 as printed`          = round(2.02 * crcl_mid^0.49, 2),
+  `Methods form, ref 12.7`   = round(2.02 * (crcl_mid / 12.7)^0.49, 2),
+  `Table 4 median CL`        = cl_table4,
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "Equation 5 overshoots the paper's own simulated clearances three-fold; the centered Methods form reproduces them.")
+```
+
+The centered form is therefore used. Equation 5 is a typesetting omission of
+the `/ mean(CLcr)` denominator.
+
+## The centering constant is not printed
+
+The Methods define the reference as `mean(CLcr)`, which the paper never
+reports; the only central-tendency statistic published for the covariate is the
+**median, 12.7** (Table 1), and that is the value the model uses. Back-solving
+the Table 4 clearances for the reference that would reproduce them exactly
+gives a tightly clustered answer, and it is not 12.7:
+
+```{r centering-backsolve}
+implied_ref <- crcl_mid / (cl_table4 / 2.02)^(1 / 0.49)
+data.frame(
+  `CLcr group midpoint` = crcl_mid,
+  `implied reference`   = round(implied_ref, 2),
+  check.names = FALSE
+) |>
+  knitr::kable(caption = "Reference constant back-solved independently from each of the five CLcr groups.")
+
+pct_offset <- 100 * (2.02 * (crcl_mid / 12.7)^0.49 / cl_table4 - 1)
+round(pct_offset, 2)
+```
+
+The five independent estimates agree to within 2% of each other at about
+**11.8** -- consistent with a Monolix log-transform centered on the mean of
+`log(CLcr)` (i.e. the geometric mean, which for a right-skewed covariate sits
+just below the median) rather than on the arithmetic mean, which for this
+cohort would be well above 12.7.
+
+Using the published median 12.7 rather than the back-solved 11.8 leaves typical
+clearance about 3-4% low across the whole covariate range. That residual offset
+is accepted here in preference to fitting a constant to the validation target;
+it is quantified above and again in the comparison below.
+
+# Virtual cohort
+
+Ahmed 2024's Monte Carlo simulations partition virtual patients into five CLcr
+groups spanning 10-59 in 10-unit increments, drawing CLcr at random within each
+group's range (Methods, "Model-Based Dose Optimization"). We reproduce that
+design with 200 subjects per group.
+
+```{r cohort}
+n_per_group <- 200L
+
+groups <- tibble::tribble(
+  ~grp,     ~lo, ~hi, ~load, ~maint, ~cl_pub, ~cl_lo, ~cl_hi, ~vd_pub, ~vd_lo, ~vd_hi, ~auc_pub,
+  "10-19",   10,  19,  1500,    200,    2.22,   1.61,   3.06,   65.28,  49.70,  86.17,   455.62,
+  "20-29",   20,  29,  1800,    400,    2.90,   2.09,   4.00,   66.07,  50.11,  87.05,   489.89,
+  "30-39",   30,  39,  1800,   1000,    3.42,   2.50,   4.70,   65.97,  49.77,  87.21,   503.46,
+  "40-49",   40,  49,  1800,   1300,    3.88,   2.81,   5.35,   65.64,  49.49,  86.25,   492.39,
+  "50-59",   50,  59,  1800,   1650,    4.28,   3.11,   5.91,   66.14,  49.83,  87.06,   491.78
+)
+groups |>
+  select(`CLcr group` = grp, `Loading dose (mg)` = load, `Maintenance (mg/24 h)` = maint) |>
+  knitr::kable(caption = "Ahmed 2024 Table 4 dosing: loading doses from the Table 4 footnote, maintenance doses from the Table 4 'Optimal Maintenance Dose' column.")
+
+set.seed(20240115)
+cohort <-
+  lapply(seq_len(nrow(groups)), function(i) {
+    data.frame(
+      grp   = groups$grp[i],
+      CRCL  = runif(n_per_group, groups$lo[i], groups$hi[i]),
+      load  = groups$load[i],
+      maint = groups$maint[i]
+    )
+  }) |>
+  bind_rows() |>
+  mutate(id = dplyr::row_number())
+```
+
+Dosing follows the paper: the loading dose at time 0, the maintenance dose at
+24 h, each infused over 60 min, with observations through 48 h so the
+AUC~24-48~ window is fully covered.
+
+```{r events}
+obs_times <- sort(unique(c(seq(0, 48, by = 0.5), 1, 24, 25, 48)))
+
+doses <-
+  bind_rows(
+    transmute(cohort, id, grp, CRCL, time = 0,  amt = load,  evid = 1L, dur = 1),
+    transmute(cohort, id, grp, CRCL, time = 24, amt = maint, evid = 1L, dur = 1)
+  )
+
+obs <-
+  cohort[rep(seq_len(nrow(cohort)), each = length(obs_times)), ] |>
+  transmute(
+    id, grp, CRCL,
+    time = rep(obs_times, times = nrow(cohort)),
+    amt  = NA_real_,
+    evid = 0L,
+    dur  = NA_real_
+  )
+
+# Observations are placed on the ODE state "central"; rxode2 returns the
+# algebraic observable Cc as a column at those rows.
+events <-
+  bind_rows(doses, obs) |>
+  mutate(cmt = "central") |>
+  arrange(id, time, desc(evid)) |>
+  as.data.frame()
+```
+
+# Simulation
+
+```{r simulate}
+sim <-
+  rxode2::rxSolve(mod, events, addDosing = FALSE) |>
+  as.data.frame() |>
+  mutate(id = as.integer(as.character(id))) |>
+  left_join(distinct(cohort, id, grp), by = "id")
+
+per_subject <-
+  sim |>
+  group_by(grp, id) |>
+  summarise(cl = dplyr::first(cl), vc = dplyr::first(vc), .groups = "drop") |>
+  left_join(distinct(cohort, id, CRCL), by = "id")
+```
+
+## Replicating Table 4: simulated clearance and volume
+
+Two checks are run against Ahmed 2024 Table 4. The first is deterministic --
+the typical-value clearance at each group's median CLcr, with all random
+effects zeroed. This isolates the structural covariate model from Monte Carlo
+noise.
+
+```{r typical-value}
+mod_typ <- rxode2::zeroRe(mod)
+
+typ_events <-
+  groups |>
+  reframe(
+    id   = dplyr::row_number(),
+    grp  = grp,
+    CRCL = (lo + hi) / 2,
+    time = 0,
+    amt  = 1000,
+    evid = 1L,
+    dur  = 1,
+    cmt  = "central"
+  ) |>
+  as.data.frame()
+
+# `omega = NA` is load-bearing, not decorative. rxode2 keeps the previous
+# solve's omega in the compiled model's solve options, so a typical-value run
+# that follows the population run above can silently re-sample etas even though
+# zeroRe() returned an all-zero matrix. The exact-identity guard on V below is
+# the mechanical check that it did not.
+typ <-
+  rxode2::rxSolve(mod_typ, typ_events, omega = NA, addDosing = FALSE) |>
+  as.data.frame() |>
+  mutate(id = as.integer(as.character(id))) |>
+  group_by(id) |>
+  summarise(cl = dplyr::first(cl), vc = dplyr::first(vc), .groups = "drop") |>
+  bind_cols(select(groups, grp, cl_pub, vd_pub)) |>
+  mutate(
+    cl_pct = 100 * (cl / cl_pub - 1),
+    vc_pct = 100 * (vc / vd_pub - 1)
+  )
+
+typ |>
+  transmute(
+    `CLcr group`             = grp,
+    `Typical CL (L/h)`       = round(cl, 3),
+    `Table 4 median CL`      = cl_pub,
+    `CL difference (%)`      = round(cl_pct, 1),
+    `Typical V (L)`          = round(vc, 1),
+    `Table 4 median V`       = vd_pub,
+    `V difference (%)`       = round(vc_pct, 1)
+  ) |>
+  knitr::kable(caption = "Typical-value clearance and volume from the packaged model against Ahmed 2024 Table 4 medians.")
+```
+
+The clearance offset is the uniform 3-4% traced to the unprinted centering
+constant, discussed above; volume carries no covariate and reproduces to within
+2%.
+
+The second check is stochastic and tests the variability terms:
+
+```{r stochastic-summary}
+sim_summary <-
+  per_subject |>
+  group_by(grp) |>
+  summarise(
+    cl_med = median(cl), cl_q25 = quantile(cl, 0.25), cl_q75 = quantile(cl, 0.75),
+    vc_med = median(vc), vc_q25 = quantile(vc, 0.25), vc_q75 = quantile(vc, 0.75),
+    vc_p025 = quantile(vc, 0.025), vc_p975 = quantile(vc, 0.975),
+    .groups = "drop"
+  ) |>
+  left_join(select(groups, grp, cl_pub, cl_lo, cl_hi, vd_pub, vd_lo, vd_hi), by = "grp")
+
+sim_summary |>
+  transmute(
+    `CLcr group`                = grp,
+    `Simulated CL median [IQR]` = sprintf("%.2f [%.2f-%.2f]", cl_med, cl_q25, cl_q75),
+    `Table 4 CL`                = sprintf("%.2f [%.2f-%.2f]", cl_pub, cl_lo, cl_hi),
+    `Simulated V median [IQR]`  = sprintf("%.1f [%.1f-%.1f]", vc_med, vc_q25, vc_q75),
+    `Table 4 V`                 = sprintf("%.1f [%.1f-%.1f]", vd_pub, vd_lo, vd_hi)
+  ) |>
+  knitr::kable(caption = "Simulated interquartile ranges against Ahmed 2024 Table 4. The published bracket is labelled a 95% tolerance interval but matches the model's IQR, not its 95% interval.")
+```
+
+## The Table 4 interval columns are interquartile ranges, not 95% intervals
+
+Table 4 labels its bracketed columns "95% Interval". They are not. Volume
+carries no covariate, so its spread is a pure log-normal with
+`omega_V` = 0.39 and the two candidate widths can be computed in closed form:
+
+```{r interval-width}
+omega_v <- 0.39
+width_iqr <- exp(2 * qnorm(0.75) * omega_v)
+width_95  <- exp(2 * qnorm(0.975) * omega_v)
+published_width <- groups$vd_hi / groups$vd_lo
+
+c(
+  `model IQR ratio (q75/q25)`      = round(width_iqr, 3),
+  `model 95% ratio (p97.5/p2.5)`   = round(width_95, 3),
+  `published Table 4 width ratios` = paste(round(published_width, 3), collapse = ", ")
+)
+```
+
+The published widths cluster at about 1.74, which is the model's
+interquartile ratio (`r round(width_iqr, 2)`); the model's true 95% interval is
+`r round(width_95, 2)`-fold wide, more than four times too broad to be what
+Table 4 prints. The same holds for the clearance columns. Read the Table 4 and
+Table 5 brackets as interquartile ranges.
+
+## Replicating Figure 1: clearance versus creatinine clearance
+
+```{r figure-1, fig.cap = "Replicates Figure 1 of Ahmed 2024: simulated individual vancomycin clearance versus creatinine clearance."}
+ggplot(per_subject, aes(x = CRCL, y = cl)) +
+  geom_point(aes(colour = grp), alpha = 0.35, size = 0.8) +
+  stat_function(fun = function(x) 2.02 * (x / 12.7)^0.49,
+                colour = "black", linewidth = 0.9) +
+  labs(
+    x = "Creatinine clearance (Ahmed 2024 units)",
+    y = "Individual clearance (L/h)",
+    colour = "CLcr group"
+  ) +
+  theme_bw()
+```
+
+```{r profiles, fig.cap = "Median simulated vancomycin concentration-time profile by CLcr group, loading dose at 0 h and maintenance dose at 24 h."}
+sim |>
+  filter(!is.na(Cc)) |>
+  group_by(grp, time) |>
+  summarise(
+    med = median(Cc), lo = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(x = time, y = med, colour = grp, fill = grp)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.12, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time (h)", y = "Vancomycin concentration (mg/L)",
+       colour = "CLcr group", fill = "CLcr group") +
+  theme_bw()
+```
+
+# Noncompartmental analysis (PKNCA)
+
+AUC~24-48~ is the paper's efficacy and safety endpoint, defined as the exposure
+on the second day of therapy with a target window of 400-600 mg.h/L (Methods,
+"Model-Based Dose Optimization").
+
+```{r pknca}
+nca_conc <-
+  sim |>
+  filter(!is.na(Cc)) |>
+  select(id, grp, time, Cc)
+
+nca_dose <-
+  doses |>
+  select(id, grp, time, amt)
+
+conc_obj <- PKNCA::PKNCAconc(nca_conc, Cc ~ time | grp + id)
+dose_obj <- PKNCA::PKNCAdose(nca_dose, amt ~ time | grp + id)
+
+intervals <- data.frame(
+  start = 24, end = 48,
+  auclast = TRUE, cmax = TRUE, cmin = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_by_group <-
+  as.data.frame(nca_res) |>
+  group_by(grp, PPTESTCD) |>
+  summarise(median = median(PPORRES), .groups = "drop") |>
+  pivot_wider(names_from = PPTESTCD, values_from = median)
+
+nca_by_group |>
+  left_join(select(groups, grp, auc_pub), by = "grp") |>
+  transmute(
+    `CLcr group`               = grp,
+    `Simulated AUC24-48`       = round(auclast, 1),
+    `Published AUC24-48`       = auc_pub,
+    `Difference (%)`           = round(100 * (auclast / auc_pub - 1), 1),
+    `Simulated Cmax (mg/L)`    = round(cmax, 1),
+    `Simulated Ctrough (mg/L)` = round(cmin, 1)
+  ) |>
+  knitr::kable(caption = "PKNCA AUC24-48 (median across 200 subjects per group) against the AUC24-48 column of Ahmed 2024 Table 4.")
+```
+
+The simulated exposures fall 25-55% below the published column. That gap is not
+a transcription slip on our side, and it is not attributable to any choice we
+made about dosing interval, infusion duration or volume of distribution -- as
+the next section shows, the published values are unreachable.
+
+## The published AUC~24-48~ column exceeds what the model can produce
+
+For a one-compartment model, mass balance over the window `[24, 48]` gives
+
+$$AUC_{24-48} = \frac{A(24) + D_{\text{in window}} - A(48)}{CL}$$
+
+Write $r = e^{-24 k_{el}}$. The most the loading dose `LD` can leave at 24 h is
+`A(24) = LD \cdot r`, and the least the window can end on is
+`A(48) = (A(24) + D) \cdot r`, attained when the whole maintenance dose `D` is
+given at the very start of the window. Both extremes therefore give
+
+$$AUC_{24-48} \le \frac{(LD \cdot r + D)(1 - r)}{CL}, \qquad r \in [0, 1]$$
+
+The right-hand side is a downward parabola in `r`, maximised at
+`r* = (LD - D) / (2 LD)` (or at `r* = 0` when `D >= LD`). Evaluating there
+bounds AUC~24-48~ **for every possible volume of distribution**, every dosing
+interval within the window, and every infusion duration -- `r` is the only
+route by which any of those enter. Substituting the paper's own doses and its
+own Table 4 median clearances:
+
+```{r auc-ceiling}
+ceiling_tbl <-
+  groups |>
+  mutate(
+    r_star  = pmax(0, (load - maint) / (2 * load)),
+    ceiling = (load * r_star + maint) * (1 - r_star) / cl_pub
+  ) |>
+  transmute(
+    `CLcr group`                = grp,
+    `Loading dose (mg)`         = load,
+    `Maintenance (mg/24 h)`     = maint,
+    `Table 4 median CL (L/h)`   = cl_pub,
+    `Maximum possible AUC24-48` = round(ceiling, 1),
+    `Published AUC24-48`        = auc_pub,
+    `Published exceeds max by`  = sprintf("%+.0f%%", 100 * (auc_pub / ceiling - 1))
+  )
+knitr::kable(ceiling_tbl,
+             caption = "A volume-free upper bound on AUC24-48. Every published value exceeds it.")
+
+auc_ceiling <-
+  with(groups, {
+    r_star <- pmax(0, (load - maint) / (2 * load))
+    (load * r_star + maint) * (1 - r_star) / cl_pub
+  })
+```
+
+All five published AUC~24-48~ values exceed the model's mathematical ceiling,
+by 27% in the least impaired group and by 110% in the most impaired. The AUC
+block of Tables 4 and 5 -- and the
+probability-of-target-attainment columns derived from it -- therefore cannot be
+reproduced from the published model and the published dosing regimen. The
+structural and variability parameters, which are what this package ships, are
+unaffected: they reproduce the clearance and volume columns of the same table.
+
+# Validation assertions
+
+```{r assertions}
+stopifnot(
+  # Structural: typical-value clearance and volume reproduce the Table 4
+  # medians. Deterministic (random effects zeroed), so a tight bound is
+  # appropriate; the residual is the ~3-4% centering-constant offset.
+  all(abs(typ$cl_pct) < 6),
+
+  # V carries no covariate and no random effect in this run, so the typical
+  # value is exactly V_pop = 65 L for all five groups. Asserted as an exact
+  # identity rather than a tolerance: it is simultaneously the transcription
+  # check on V_pop and the mechanical guard that zeroRe() + omega = NA really
+  # did suppress the etas (a leaked eta makes these five values differ).
+  max(abs(typ$vc - 65)) < 1e-8,
+  all(abs(typ$vc_pct) < 3),
+
+  # The mirror guard on the population solve: IIV must actually be present.
+  dplyr::n_distinct(round(per_subject$vc, 8)) == nrow(per_subject),
+
+  # Covariate direction and magnitude: clearance must rise monotonically with
+  # CLcr, and by the published power across the simulated range.
+  !is.unsorted(typ$cl),
+  abs(typ$cl[5] / typ$cl[1] - (54.5 / 14.5)^0.49) < 0.01,
+
+  # Stochastic cohort: gate the CENTRE, not the extremes. With 200 subjects
+  # per arm the median carries a few percent of Monte Carlo noise on top of
+  # the systematic offset.
+  all(abs(sim_summary$cl_med / sim_summary$cl_pub - 1) < 0.15),
+  all(abs(sim_summary$vc_med / sim_summary$vd_pub - 1) < 0.10),
+
+  # Variability: the model's interquartile width matches the width Table 4
+  # prints, while its 95% width does not - the basis for reading those
+  # brackets as IQRs.
+  all(abs(width_iqr / published_width - 1) < 0.10),
+  all(width_95 / published_width > 2),
+
+  # The published AUC24-48 column exceeds the volume-free ceiling in every
+  # group, by at least 25%. Pure arithmetic on published numbers -- no
+  # simulation, no random draw, so a tight bound is correct here.
+  all(groups$auc_pub / auc_ceiling > 1.25),
+
+  # Sanity: the simulation produced finite concentrations everywhere.
+  all(is.finite(sim$Cc[!is.na(sim$Cc)])),
+  nrow(per_subject) == 5L * n_per_group
+)
+```
+
+# Assumptions and deviations
+
+* **Centering constant (12.7).** The Methods define the clearance covariate
+  reference as `mean(CLcr)`; the paper never prints a mean for the covariate.
+  The cohort **median** of 12.7 (Table 1) is used. Back-solving Ahmed 2024
+  Table 4 implies an effective reference near 11.8, consistent across all five
+  CLcr groups, which leaves typical clearance about 3-4% low. That constant was
+  deliberately **not** fitted to the validation target.
+* **Equation 5 versus the Methods equation.** The paper prints the clearance
+  covariate model in two mutually inconsistent forms. The centered Methods form
+  (p. 83) is implemented; the uncentered Equation 5 (p. 85, repeated in the
+  Table 3 footnote) is treated as a typesetting omission of the
+  `/ mean(CLcr)` denominator, on the evidence shown above that it overshoots
+  the paper's own simulated clearances roughly three-fold.
+* **CRCL is not a conventional creatinine clearance.** It is Bjornson's `Rcr`
+  divided by serum creatinine with the body-weight multiplier and the 14.4 unit
+  divisor omitted, because weight was not recorded. Users must reproduce that
+  calculation rather than substituting a Cockcroft-Gault value; see the
+  `covariateData$CRCL` notes in the model file.
+* **Table 4 / Table 5 bracket columns.** Labelled "95% Interval"; they match
+  the model's interquartile range and not its 95% interval. Treated as IQRs
+  throughout this vignette.
+* **Table 4 / Table 5 AUC~24-48~ and PTA columns are not reproducible.** Every
+  published AUC~24-48~ exceeds, by 27% to 110%, a volume-free mathematical
+  ceiling derived from the paper's own doses and its own median clearances --
+  a bound that holds for every volume of distribution, dosing interval and
+  infusion duration, so no modelling choice on our side can close it. Because the PTA columns
+  are computed from that AUC distribution, they inherit the defect. This is a
+  reporting error in the source, recorded here rather than worked around. The
+  parameters this package ships are unaffected.
+* **Dosing regimen.** The paper states the loading doses (Table 4 footnote a)
+  and the total daily maintenance dose, but not the maintenance dosing interval
+  or when maintenance begins. We give the loading dose at 0 h and the whole
+  maintenance dose at 24 h. The AUC ceiling above holds for every alternative
+  reading, so this choice does not drive the discrepancy.
+* **Infusion duration.** 60 min for every dose, per Methods, "Dosing and Sample
+  Collection". The paper does not say whether the larger loading doses were
+  infused more slowly.
+* **CLcr distribution within a group.** Drawn uniformly across each group's
+  stated range, matching "1000 random values (according to the range of CLcr
+  values for each group) were generated". The paper does not state the
+  distribution used.
+* **Cohort size.** 200 subjects per CLcr group rather than the paper's 1000
+  (x 20 replicates), to keep the vignette within its render budget. All
+  assertions are made on medians and interquartile widths, which are stable at
+  this size.
+* **Covariates screened but not retained** (age, serum creatinine, serum
+  albumin, blood urea nitrogen, sex) are recorded in `covariatesDataExcluded`
+  in the model file with their objective-function drops, not in
+  `covariateData`. Sex has no published coefficient at all -- the Discussion
+  reports only that it dropped the OFV by 6.03 points before backward
+  elimination removed it.
+* **No errata.** No correction, corrigendum or erratum to Ahmed 2024 was
+  located.

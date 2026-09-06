@@ -150,6 +150,24 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Abouelhassan_2024_sulbactam_human.R` (VELF = 2.44 L in a plasma + peripheral + ELF model), `Abouelhassan_2024_sulbactam_mouse.R` (apparent ELF Vc/F = 0.5125 L/kg).
 - **Notes:** Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, following the existing `lvcsf` / `lvcns` precedent in `Luu_2017_nusinersen.R`. Distinct from `lvc`: `lvelf` never scales a plasma concentration. `Parmar_2023_spectinamide_1599_mouse_pbpk.R` carries the same quantity as a hardcoded physiologic constant `v_elf` inside `model` rather than as an `ini` parameter, which is correct for a PBPK model where the volume is anatomy rather than a fitted parameter.
 
+### lvcsf (**canonical log-transformed CSF / CNS compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Apparent volume of the canonical `csf` compartment, used to convert the CSF drug amount to the CSF concentration `Ccsf <- csf / vcsf` (volume). Applies to plasma-plus-CSF popPK models in which `csf` is a lumbar-puncture-sampled distribution compartment. When the source paper writes the volume as `V/F` or `Vcns/F` the value is apparent and also absorbs bioavailability; say so in the `label` and the source-trace comment.
+- **Source aliases:**
+  - `V_CSF` -- Luu 2017 Table 2.
+  - `Vcns`, `Vcns/F` -- Stott 2023 Table 1, where the paper names the compartment "CNS" but samples it by lumbar puncture and reports the observation as a CSF concentration.
+- **Example models:** `Luu_2017_nusinersen.R` (V_CSF = 0.433 L, intrathecal antisense oligonucleotide), `Stott_2023_flucytosine.R` (apparent Vcns/F = 41.73 L, oral flucytosine).
+- **Notes:** Member of the `lv<compartment>` family that names a volume after the canonical compartment it scales, alongside `lvelf`. Distinct from `lvc`: `lvcsf` never scales a plasma concentration. Pairs with `k_central_csf` / `k_csf_central` when the CSF leg is parameterised by rate constants rather than by an inter-compartmental clearance.
+
+### lk12, lk21, lk13, lk31 (**canonical log-transformed inter-compartmental rate constants**)
+- **Type:** log-transformed-pk
+- **Role:** The `ini` forms of the canonical bare `k12` / `k21` / `k13` / `k31` rate constants -- first-order distribution between `central` and `peripheral1` (`lk12` / `lk21`) or `peripheral2` (`lk13` / `lk31`), in 1 / time. Used as the primary estimated quantities when a source paper parameterises distribution by rate constants rather than by an inter-compartmental clearance and a peripheral volume, which is what NONMEM ADVAN4 / ADVAN11 and Pmetrics / ADAPT models typically report, and which is forced when the dependent variable is an amount so peripheral volumes are not identifiable.
+- **Source aliases:**
+  - `k_23` / `k_32` -- Marier 2002 Table 1, under the depot = 1, central = 2, peripheral = 3 numbering.
+  - `K24` / `K42` -- Stott 2023 Table 1, under the gut = 1, central = 2, CNS = 3, peripheral = 4 numbering.
+- **Example models:** `Marier_2002_tobramycin_rat_liposomal.R`, `Marier_2002_tobramycin_rat_conventional.R`, `Stott_2023_flucytosine.R`, `Blair_2004_raltitrexed.R`, `Ekhart_2008_carboplatin.R`.
+- **Notes:** Bare counterparts of `k12` / `k21` / `k13` / `k31`; see those entries for the topology each index is bound to. The canonical nlmixr2 numbering treats `central` as 1 and the peripherals as 2 / 3 after the depot is split out, so a source paper's own subscripts must be re-mapped rather than transcribed -- `k_23` and `K24` both become `lk12` in the example models above. Prefer a role-based `k_<from>_<to>` name (or `kin_<tissue>` / `kout_<tissue>`) whenever the compartment at the far end is anatomically named rather than a generic `peripheral<n>`.
+
 ### lq (**canonical log-transformed first inter-compartmental clearance**)
 - **Type:** log-transformed-pk
 - **Role:** Inter-compartmental clearance between central and first peripheral compartment (volume / time).
@@ -288,6 +306,24 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Veinstein_2013_gentamicin.R` (primary `ini()` parameter with IIV; the dialysis arm is estimated as a structural THETA gated by `HEMODIALYSIS`).
 - **Notes:** Distinct from `lcl_renal` (= residual renal CL, an intrinsic-body component) and `lcl_nonren` (= non-renal intrinsic-body CL). `Liesenfeld_2013_dabigatran.R` derives an equivalent dialysis-arm quantity from the Michaels equation (a function of blood flow rate, dialysate flow rate, and a hemodialyzer mass-transfer-area coefficient) as a derived `cl_dialysis` expression in `model()` rather than a primary `ini()` parameter, so its file does not include `lcl_hemodialysis`. Covariate-effect names on this arm follow the standard shape `e_<cov>_cl_hemodialysis`.
 
+### lclmax_hemoadsorption (**canonical log-transformed maximum extracorporeal-hemoadsorption clearance arm**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale MAXIMUM clearance of an extracorporeal hemoadsorption (hemoperfusion) cartridge -- the adsorption clearance at zero cartridge load, before any saturation has occurred. Paired with the canonical body-CL parameter `lcl` and with the per-time-point `HEMOADSORB_ACTIVE` covariate to express total clearance as `cl_total <- cl + HEMOADSORB_ACTIVE * cl_hemoadsorption`, where the time-varying arm decays from its maximum as the sorbent fills: `cl_hemoadsorption <- clmax_hemoadsorption * (1 - adsorbed / amax_hemoadsorption)`. The `max` element is load-bearing and must not be dropped to a bare `lcl_hemoadsorption`: the `ini()` value is the ceiling of a saturating arm, not the arm's typical value, and naming it `lcl_hemoadsorption` would misreport it as a constant clearance.
+- **Source aliases:**
+  - `CLmax` -- Leber 2023 Eq. 2 and Supplementary Table 2 notation (`CLmax CytoSorb [L/h]`).
+  - `CL_HP`, `CL_HA`, `CLmax_HP` -- variant abbreviations used in adjacent hemoperfusion / hemoadsorption PK literature.
+- **Example models:** `Leber_2023_tacrolimus_sheep.R` (4.02 L/h), `Leber_2023_ciclosporin_sheep.R` (2.80 L/h), `Leber_2023_mycophenolateMofetil_sheep.R` (3.71 L/h), `Leber_2023_everolimus_sheep.R` (3.23 L/h), `Leber_2023_methylprednisolone_sheep.R` (8.21 L/h; the paper notes this estimate exceeds the 7.2 L/h extracorporeal blood flow though its confidence interval covers it).
+- **Notes:** Joins the established `lcl_*` clearance-arm family (`lcl_ss`, `lcl_time`, `lcl_renal`, `lcl_nonren`, `lcl_hemodialysis`, `lcl_dialysis`, `lcl_crrt`, `lcl_tsnet`, ...) as another additive arm of the central clearance, with `hemoadsorption` registered in `R/conventions.R::clComponents` so covariate effects classify as `e_<cov>_clmax_hemoadsorption`. Deliberately device-generic: hemoadsorption is a distinct extracorporeal modality from intermittent hemodialysis (`_hemodialysis`) and continuous RRT (`_crrt`) -- it removes solute by sorbent binding rather than by diffusion or convection across a membrane, so it saturates, has no dialysate or effluent flow, and a coefficient calibrated on one modality does not transfer to another. Paired with `lamax_hemoadsorption` (the cartridge capacity) and the `adsorbed` state.
+
+### lamax_hemoadsorption (**canonical log-transformed extracorporeal-cartridge adsorption capacity**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale maximum drug amount an extracorporeal hemoadsorption cartridge can adsorb (Amax, an amount in mg). Registered by operator ruling 2026-09-05 (sidecar `oasweep_PMC10623319` request-001 q2) as the `_hemoadsorption` sibling of `lclmax_hemoadsorption`, naming the MODALITY rather than the generic process, so a future plasma-exchange or a second hemoperfusion arm gets its own sibling instead of colliding on a bare `adsorption`. Closely related to `lbmax` (**canonical log-transformed maximum binding capacity**): a sorbent cartridge is a saturable binding site and `Amax` is a ceiling on bound drug in the units of the state it saturates (`adsorbed`, mg). The modality-suffixed name was preferred over a `lbmax_<site>` variant so that the capacity and the clearance ceiling of one extracorporeal arm carry the same suffix and read as a pair.
+- **Source aliases:**
+  - `Amax` -- Leber 2023 Eq. 2 and Supplementary Table 2 notation (`Amax CytoSorb [mg]`).
+  - `A_max`, `Qmax` -- variant abbreviations used in the sorbent / adsorption-isotherm literature.
+- **Example models:** `Leber_2023_tacrolimus_sheep.R` (0.040 mg), `Leber_2023_ciclosporin_sheep.R` (1.15 mg), `Leber_2023_mycophenolateMofetil_sheep.R` (4.17 mg), `Leber_2023_everolimus_sheep.R` (0.0163 mg), `Leber_2023_methylprednisolone_sheep.R` (53.4 mg).
+- **Notes:** Distinct from `lvmax`, which is a maximum RATE; `lamax_hemoadsorption` is a maximum AMOUNT, and the two appear together in any saturable-adsorption model. The paper's own `A_half` glossary entry (drug amount at half the maximum adsorption capacity) belongs to the Emax-shaped alternative sub-model Leber 2023 did not retain, and is therefore not registered; a future paper that selects that form would pair `lamax_hemoadsorption` with a half-saturation amount on the `lkt_abs` pattern.
+
 ### lcl_tsnet (**canonical log-transformed net-tubular-secretion clearance arm**)
 - **Type:** log-transformed-pk
 - **Role:** Net renal tubular-secretion component of a renal clearance decomposition `CL_renal_total = GFR + CL_tsnet`, where the filtration arm is carried by the model's glomerular-filtration parameter (in the founding model, the co-administered iohexol probe's `cl`) and this arm carries the transporter-mediated secretory flux *net of tubular reabsorption*. The `tsnet` token keeps the NET qualifier deliberately: the quantity published under this name is secretion minus reabsorption, so a later model that resolves the two separately still has both gross-secretion and reabsorption names available. Applied with an analyte suffix when the model tracks more than one species (`lcl_tsnet_creatinine`).
@@ -353,15 +389,24 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
   - `lduration` -- Gupta 2016 paper notation; an equivalent log-transformed entry.
 - **Example models:** `Aouri_2017_rilpivirine.R` (pure zero-order absorption directly into central; D1 = 4 h), `Goggin_2004_emfilermin.R` (zero-order SC absorption, D1 = 0.84 h), `Heathman_2024_efavirenz.R` (sequential zero-order then first-order; D1 = 1.74 h followed by KA = 0.165/h).
 
+### ld2 (**canonical log-transformed second-process zero-order absorption duration**)
+- **Type:** log-transformed-pk
+- **Role:** Duration of the zero-order input rate of the **second** process of a multi-phase zero-order release input function, the direct partner of `ld1`. Applied via `dur(depot2) <- d2` (dual-depot dual-input models) or `dur(central) <- d2` (a zero-order arm running in parallel with a first-order arm), and normally paired with `logitfrel` / `frel`, which splits the dose across the two processes. The bare counterpart inside `model` is `d2`.
+- **Source aliases:**
+  - `D2` -- the usual NONMEM `$PK` and paper notation (Jeon 2013, Kim 2017, Wang 2024, Laffont 2024).
+  - `dT2` -- Gasthuys 2023 paper notation ("duration of zero-order input into dosing compartment 2"), paired with that paper's `dT1`.
+- **Example models:** `Gasthuys_2023_paracetamol_human.R` (dual input function: `frel` of the dose released over `d1 = 0.22 h` into `depot`, the remaining `1 - frel` released over `d2 = 2.73 h` into a lagged `depot2`), `Jin_2014_simvastatin.R` (the same dual-depot `dur(depot2) <- d2` idiom), `Jeon_2013_interferonAlfa2a.R` (D2 = 20.2 h, with IIV `etald2`), `Kim_2017_fimasartan.R` (virtual duration of the zero-order arm of a parallel mixed input, D2 = 0.583 h), `Wang_2024_risperidone_consta.R` (immediate-release zero-order duration into central, D2 = 0.0467 day), `Laffont_2024_nalmefene.R` (D2 = 0.302 h), `Choi_2018_metformin.R` (D2 = 4.49 h).
+- **Notes:** Registered here to document a spelling that thirteen shipped models already use for exactly this role; per the register's standing rule those files are not modified. Follows the same operator ruling recorded under `lra2` / `lgam2`: a two-process release input is the existing single-process machinery applied twice, so it takes the registered stem plus a numbered second-process partner rather than a parallel family. A third process would continue the numbering (`ld3`). This numbered form is confined to the *parallel multi-phase release* case and is not a licence for bare ordinals generally -- see the `lka_early` / `lka_late` entry, which deliberately rejects `lka1` / `lka2` because a bare ordinal there would encode only sequence and not which time window the rate belongs to. Distinct from `dge` (duration of a post-prandial gallbladder-emptying gate), which is not an absorption input.
+
 ### lkel (**canonical log-transformed elimination rate constant (K-PD)**)
 - **Type:** log-transformed-pk
-- **Role:** First-order elimination rate constant used when no explicit `vc` is estimated (K-PD or single-rate-constant elimination form).
+- **Role:** First-order elimination rate constant, in either of two settings: (a) K-PD or single-rate-constant elimination forms where no explicit `vc` is estimated, and (b) rate-constant-parameterised disposition models that DO estimate an explicit `lvc` alongside it, i.e. the source paper fits `ke` and `V/F` as two separate parameters rather than fitting a clearance. Case (b) must not be silently reparameterised to `lcl` + `lvc`: when the paper places independent random effects on `ke` and on `V`, the algebraically equivalent clearance form would require `etalcl = etalkel + etalvc`, a correlated eta block the authors did not fit, so the reparameterisation would change the model. This mirrors the register's existing acceptance of rate-constant parameterisations at `k12` / `k21`.
 - **Source aliases:**
   - `lke` -- legacy name; replaced 2026-05-28 by the naming audit.
   - `lkde` -- paper-named (Mazzocco 2015 / Shoji 2017 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `lkp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
-- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`.
-- **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R` (all case (a), no explicit `vc`); `Baklouti_2026_amoxicillin.R` (case (b), `ke = 0.31 1/h` estimated alongside `V/F = 82.38 L`, each with its own eta).
+- **Notes:** Canonical `lkel` adopted 2026-05-28 per the naming audit. Role broadened 2026-09-02 to cover rate-constant-parameterised disposition models that also estimate an explicit volume (operator sidecar `oare_PMC13206287` request-001 / response-001, question q2, option A); the entry already carried the paper symbol `ke` as an alias, so registering a separate `lk10` would have duplicated it.
 
 ### lkel_exp_kdes (**canonical log-transformed decay-rate constant of a time-varying elimination rate constant**)
 - **Type:** log-transformed-pk
@@ -581,6 +626,82 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC` = 0.00001, allometrically scaled terminal biliary elimination from liver to faeces; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kbi` = 0.05835 1/h, liver back into the intestinal lumen, which is what produces the observed two-phase luminal decay).
 - **Notes:** Deliberately **not** `kbm`, and `kbm` must not be widened to cover this case: `kbm` is registered as the biliary-*metabolite* excretion rate constant, moving a **metabolite** out of a **plasma / central** compartment, whereas `lkbile` moves **parent drug** out of **`liver`**. Broadening `kbm` would silently change the meaning of an existing entry that `Hamren_2008_tesaglitazar.R` depends on. The two can coexist in one model: a parent drug excreted in bile via `lkbile` and its glucuronide returned via `kbm` / `kicv`.
 
+### lwdist (**canonical log-transformed amplitude of a transient distribution-phase elimination flux**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale amplitude of an additive, dose-proportional elimination flux that is active immediately after a dose and decays exponentially with time after dose, standing in for a distribution phase in a model that carries no peripheral state: `d/dt(central) <- -kel * central - D * wdist * exp(-kdist * tad())`. Units 1 / time, since the flux is `dose * wdist`.
+- **Source aliases:**
+  - `w` -- Braem 2026 Equation 21 and Table S2.
+  - `q` -- Braem 2026 Equation 20 (the same quantity; the paper switches symbol between the ODE and its explicit solution).
+- **Example models:** `Bram_2026_biexponential.R` (`wdist = 0.1716832 1/h`, back-solved from the Table S2 macro-parameters).
+- **Notes:** Ratified 2026-09-02 with the Braem 2026 extraction (sidecar `oare_PMC13291805` request-001 q2 = A). Deliberately **not** a member of the registered `cl_exp_` / `cl_time_` time-varying-clearance families: those name a decaying component **of a clearance** that multiplies the state, whereas this term is an additive, state-independent flux proportional to the dose. Recording it as a clearance would be a category error visible to anyone reading the register. The `dist` token names what the term means -- Braem 2026's own Discussion reads it as "an increased observed elimination from the central compartment which corresponds to a distribution process until equilibration is reached" -- and keeps it clear of the PD `hill` / `emax` namespace. Pairs 1:1 with `lkdist`. Because the term carries no memory of previous doses, a model using it is valid for multiple dosing only when each dose falls after the previous distribution phase completes; the pseudo-compartment repair is in Braem 2026 Figure S2.
+
+### lkdist (**canonical log-transformed decay rate of a transient distribution-phase elimination flux**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order rate constant at which the `wdist` transient distribution-phase flux decays with time after dose (1 / time). In the explicit solution it is the fast macro-exponent, i.e. the `alpha` of the equivalent two-compartment model.
+- **Source aliases:**
+  - `p` -- Braem 2026 Equations 20 and 21 and Table S2.
+- **Example models:** `Bram_2026_biexponential.R` (`kdist = 0.46 1/h`, Table S2).
+- **Notes:** Ratified 2026-09-02 with `lwdist` (same sidecar). Not `lkel_exp_kdes`, which is the relaxation rate of a time-varying *elimination rate constant*; `kdist` decays a flux, not a rate constant. Not `lkde` / `lkel` either -- the ordinary first-order elimination of the same model is a separate parameter (`lkel`) and both appear together.
+
+---
+
+### lflnode (**canonical log-transformed lymphatic-absorption fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Fraction of a subcutaneously absorbed dose that is routed through the `lnode` lymph-node compartment rather than entering `central` directly through the blood capillaries of the SC tissue (unitless, bounded in (0, 1)). The complementary fraction `1 - flnode` reaches plasma directly, so a single absorption rate constant `ka` empties the `depot` and the two destinations split its flux. The bare counterpart inside `model()` is `flnode`.
+- **Source aliases:**
+  - `Frc` -- Wu 2012 Table II and Eqs. (3), (5); Fig. 1 legend ("The fraction absorbed by the lymphatic compartment is given by Frc, and the fraction taken up by the blood capillaries is 1-Frc").
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`Frc` = 0.00964, CV 19.6%; founding example -- bevacizumab-IRDye 800CW after a 0.45 mg/kg footpad SC dose in SKH-1 mice).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q2, option A). Named by DESTINATION COMPARTMENT, exactly as `fdepot` names the fraction routed to `depot`, so the name inherits the `lnode` token and stays synchronised with `lv_lnode` and `lk_lnode_central`. Deliberately **not** any `flymph` / `f_lymph` spelling: `f_lymph` is already in use in `Lindauer_2017_pembrolizumab.R` and `Michelet_2025_BI754111_mpbpk.R` for a **different** quantity -- lymph flow as a fraction of plasma flow -- and the two would be indistinguishable to a reader. Also deliberately not `lffo`, which is the fraction routed to the FAST site of a parallel two-site absorption model; the lymphatic route is the slow one (into the node at `ka`, out of it at the much smaller `k_lnode_central`), so `lffo` would assert the opposite of the mechanism. Held on the log scale to match the sibling fraction canonicals `lfdepot` / `lffo`; use the `logitflnode` spelling instead if a future source estimates the fraction on the logit scale or carries IIV on it, per the reasoning in the `logitfdepot` entry.
+
+### lv_lnode (**canonical log-transformed lymph-node volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of distribution of the `lnode` lymph-node compartment, used to convert the node amount to the measured node concentration (`Clnode <- lnode / v_lnode`). The bare counterpart inside `model()` is `v_lnode`.
+- **Source aliases:**
+  - `VLN` -- Wu 2012 Table II, Eq. (7) (`ALN,sc = CLN,sc x VLN`) and Fig. 1 legend.
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`VLN` = 0.33 mL/kg, FIXED from the measured axillary-node weight at an assumed 1 g/mL specific density over mean SKH-1 body weight; founding example). Bare-form precedent that predates this entry: `Ramachandran_2023_rifampicin_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R` (`v_lnode` = 0.274 L, a hardcoded physiological constant).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q3, option A). Member of the `lv_<space>` family founded by `lv_elf`, and registered for the same reason that entry gives: the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a lymph node is a named physiological space rather than a peripheral compartment. Preferred over the paper's own compact `lvln` spelling because `lv_lnode` carries the `lnode` compartment token, which is already established in this register by `kp_lnode` / `lkp_lnode`. Register it in `ini()` -- wrapped in `fixed()` when the source fixes it from anatomy, as Wu 2012 does -- rather than hardcoding it in `model()`, so the value stays visible to anyone refitting the model.
+
+### lk_lnode_central (**canonical log-transformed lymph-node-to-central transfer rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant carrying drug out of the `lnode` lymph-node compartment into `central` (1 / time) -- the efferent-lymphatic return limb of a subcutaneous-absorption model. The bare counterpart inside `model()` is `k_lnode_central`.
+- **Source aliases:**
+  - `ka2` -- Wu 2012 Table II and Eqs. (3), (5); Fig. 1 legend ("ka2 is the first-order rate constant describing transfer from the lymphatic system to plasma").
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`ka2` = 0.723 /h, CV 9.64%; founding example).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q4, option A). Member of the registered `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_central_milk` / `k_milk_central`, `k_csf_plasma`, `k_presystemic_central`), whose own note directs that the family be used whenever a transfer connects `central` to a named non-numbered compartment. Deliberately **not** `lka2`, even though that is the paper's literal symbol: this register states that `lka1` / `lka2` are not canonical because a bare ordinal encodes only sequence, and `lka2` is already in wide use (`Mauro_2025_nilotinib.R`, `Khwarg_2024_donepezil_im.R`, `Perlstein_2025_risperidone_tv46000.R`, `Qi_2024_vosoritide.R`) for absorption from a SECOND DEPOT. Also not `lka_lnode`: the site-labelled absorption family (`lka_duodenum`, `lka_small_intestine`) describes absorption from a lumen outside the body, whereas the node is a modelled internal state, so this is a transfer and not an absorption.
+
+### lka_fast, lka_slow (**canonical log-transformed rate constants of a PARALLEL two-route depot release**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constants (1 / time) of the fast and the slow route of a **simultaneous** (parallel) two-route release input function, in which a bolus is split across two depot compartments that empty at the same time at different rates. Bare forms inside `model()` are `ka_fast` and `ka_slow`; the dose split between them is `frel` / `logitfrel`. Both routes are active from the first dose onward -- this is the defining difference from the registered `lka_early` / `lka_late` pair, which is a **sequential** switch in which one rate replaces the other at a breakpoint `tkacut`.
+- **Source aliases:**
+  - `Ka1`, `Ka2` -- Snelder 2019 Tables 2 and S1.2 (the paper's positional numbering of the fast and slow routes).
+  - `KAFAST`, `KASLOW`, `lkafast`, `lkaslow` -- Tornoe 2006 degarelix notation, an unregistered spelling of the same concept.
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `Ka1` = 1.57 /h for the fast leuprorelin-SR release depot and `Ka2` = 0.000361 /h for the constant-rate slow release class), `Snelder_2019_leuprorelin_4m.R` (`Ka1` = 0.480 /h; `Ka2` = 0.00464 /h with a 160 h `ltlag`).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q2, operator answer A). The symmetric underscored pair was chosen over a positional `lka1` / `lka2`, which carries no mechanism, and over "bare `lka` for the fast route plus `lka_slow` for the slow one", which is exactly the "none keeps the bare canonical" ambiguity the stratum-suffix rule warns against. Reserve bare `lka` for genuine single-route absorption. `Tornoe_2006_degarelix.R` shipped `lkafast` / `lkaslow` before this entry existed and is a candidate for migration onto the canonical. A third parallel route named by its kinetics rather than its speed (a linearly ramping one, say) takes its own name -- see `lka_slope`.
+
+### lka_slope (**canonical log-transformed slope of a linearly time-ramping depot-release rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Slope of a first-order depot-release rate constant that grows **linearly with time after the first dose**, `k(t) = ka_slope * t`. Units are 1 / time^2, because the parameter is a d(rate constant)/dt rather than a rate constant. Bare form inside `model()` is `ka_slope`, applied as `k_ramp <- ka_slope * max(0, tafd())`; `max(0, ...)` returns 0 before the first dose in rxode2 and does not propagate `NA`, so pre-dose baseline observation rows are safe. Self-regulating in a repeated-dose depot: as `k(t)` grows, the depot amount falls in proportion, so the mass flux into central tracks the input rate and the plasma profile stays flat.
+- **Source aliases:**
+  - `Ka3_SLP`, `SLP` -- Snelder 2019 Table 2, Tables S1.1 / S1.2 and the Supplement 4 control stream (`K34 = SLP * TAD1 / 1E6`).
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `Ka3_SLP` = 0.331e-6 1/h^2 in the ramping mixture class of the leuprorelin-SR 6-month depot), `Snelder_2019_leuprorelin_1m.R` (9.83e-6 1/h^2), `Snelder_2019_leuprorelin_4m.R` (0.757e-6 1/h^2).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q1, operator answer A). A linear ramp is a distinct release shape in the long-acting-injectable literature and is **not** a member of any registered absorption family: `lka` is a constant; `lkamax` / `lra` / `lgam1` are the Piotrovskij / Weibull *saturating* form `ka(t) = kamax*(1 - exp(-(ra*tad)^gam1))`; and `lka_early` / `lka_late` + `tkacut` are a *sequential switch*. Named for the slope rather than the ramp (`lka_ramp` was the rejected alternative) so the 1/time^2 units are visible in the name, following the register's name-by-functional-form principle (cf. `cl_time_` / `cl_exp_`). Note that rxode2 5.1.7's mu-reference pass fails with "mu-ref err: subscript out of bounds" when the ramp is inlined into a mixture expression such as `MIX * ka_slope * max(0, tafd()) + (1 - MIX) * ka_slow`; hold the ramp in its own symbol first.
+
+### lfrel (**canonical log-transformed release-process fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale encoding of the same quantity as `logitfrel` -- the fraction of a dose entering the **first** process of a multi-phase release input function, the second receiving `1 - frel`. Use this form **only** when the source paper estimated the fraction on the natural (linear) scale with an exponential random effect, so that a logit encoding would misstate the published IIV distribution. `logitfrel` remains the default for new extractions.
+- **Source aliases:**
+  - `Fr` -- Snelder 2019 Table S1.1, reported on the natural scale (footnote: "Dose fraction fast absorption: 0.441 / Dose fraction slow absorption compartment: 0.559", 95% CI 0.407-0.475).
+- **Example models:** `Snelder_2019_leuprorelin_1m.R` (founding example; `Fr` = 0.441 with `omega^2` = 0.0229 and covariances to the `RBIO` and `Ka3_SLP` etas, all on the log scale).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. The operator's ruling under `logitfrel` (2026-08-24) directed the logit scale *for Perlstein 2026*, on the grounds that a log-scale encoding of a bounded quantity can leak above 1 under moderate eta. That risk is quantifiable rather than categorical and must be checked per paper: here `0.441 * exp(eta)` with `sd(eta) = 0.151` puts `P(frel > 1)` at about 3e-8. Where the risk is material, re-encode on the logit scale and convert the variance by the delta method, documenting the conversion. Do NOT reach for `lfrel` merely because a paper prints a fraction -- Snelder 2019's own 6-month and 4-month models print `Fr` on the LOGIT scale in the same paper (Table 2 footnote a; Table S1.2 footnote), and the tell is whether the footnote back-transforms the tabulated value or restates it.
+
+### logitfrel2 (**canonical logit-transformed second release-process fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Logit-scale share of the **non-first** portion of the dose that enters the second of three parallel release processes, so the three dose fractions are `frel`, `(1 - frel) * frel2` and `(1 - frel) * (1 - frel2)`. Bare form inside `model()` is `frel2 <- expit(logitfrel2 + etalogitfrel2)`. This is the "three or more processes take `logitfrel2` etc." extension anticipated by the `logitfrel` entry; it is a *nested* (stick-breaking) share, not a share of the whole dose.
+- **Source aliases:**
+  - `Fr2` -- Snelder 2019 Table S1.2 (`Fr2` = -1.62; the footnote gives `(1 - expit(Fr1)) * expit(Fr2)` = 0.11 and `(1 - expit(Fr1)) * (1 - expit(Fr2))` = 0.58).
+- **Example models:** `Snelder_2019_leuprorelin_4m.R` (founding example; three parallel depots carrying 0.310 / 0.114 / 0.576 of the leuprorelin-SR 4-month dose).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. A fourth process would take `logitfrel3` on the same nesting convention, but at that point a softmax / stick-breaking encoding should be considered, per the `logitfrel` entry. Because the share is nested, `etalogitfrel2` can be very large without implying an implausible dose split -- Snelder 2019 estimates `omega^2` = 4.24 on it.
+
 ---
 
 ## Bare structural PK parameters
@@ -676,13 +797,13 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
 
 ### kel (**canonical bare elimination rate constant (K-PD)**)
 - **Type:** bare-pk
-- **Role:** First-order elimination rate constant in K-PD / single-rate-constant elimination models with no explicit `vc`.
+- **Role:** Bare (natural-scale) form of `lkel`: the first-order elimination rate constant, both in K-PD / single-rate-constant elimination models with no explicit `vc` and in rate-constant-parameterised disposition models that estimate an explicit `vc` beside it (see `lkel` for why such a model must not be reparameterised to `cl` / `vc`).
 - **Source aliases:**
   - `ke` -- legacy.
   - `kde` -- paper-named (Mazzocco 2015 / Shoji 2017 / Xia 2024 KDE) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `kp` -- paper-named (van Hasselt 2015 KP) form; replaced 2026-05-30 by the K-PD canonical-name retrofit.
   - `ps_elim`, `pc_elim` -- paper-named (Wilson 2015 p_S / p_C) bare drug-specific K-PD elim rates; replaced 2026-05-30 by `kel_sunitinib` / `kel_irinotecan`.
-- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`.
+- **Example models:** `Mazzocco_2015_temozolomide.R`, `Shoji_2017_fosdagrocorat_oc.R`, `Shoji_2017_fosdagrocorat_p1np.R`, `vanHasselt_2015_eribulin.R`, `Wilson_2015_sunitinib_irinotecan_mouse.R` (bare drug-suffixed `kel_<drug>`), `Xia_2024_warfarin.R`, `Baklouti_2026_amoxicillin.R` (rate-constant disposition with an explicit `vc`).
 
 ### kel_exp_kdes (**canonical bare decay-rate constant of a time-varying elimination rate constant**)
 - **Type:** bare-pk
@@ -723,6 +844,14 @@ The bare counterparts of the log-transformed parameters above. Used when the sou
   - `K12` / `K21` -- Abouelhassan 2024 Results. The paper's prose calls ELF "the third compartment" while its printed subscripts number ELF second; the printed subscripts are the ones that reproduce the paper's own Table 4 PTA, so the ELF pair is the printed `K12` / `K21`. See the source-trace note in `Abouelhassan_2024_sulbactam_human.R`.
 - **Example models:** `Abouelhassan_2024_sulbactam_human.R`.
 - **Notes:** Member of the established `k_<from>_<to>` directional-transfer family already used for `k_central_milk` / `k_milk_central` (`Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R`) and `k_csf_plasma` / `k_csf_brain` / `k_brain_csf` (`Biliouris_2018_nusinersen.R`). Use this family, not `k13` / `k31`, whenever a transfer connects `central` to a named non-numbered compartment: `k13` / `k31` are reserved for `central` <-> `peripheral2` and reusing them for a physiologic matrix hides which compartment the constant actually feeds. Pairs with `lvelf`.
+
+### k_central_csf, k_csf_central (**canonical bare central-to-CSF and CSF-to-central rate constants**)
+- **Type:** bare-pk
+- **Role:** First-order transfer rate constants between `central` and the canonical `csf` compartment (1 / time). Deliberately a directional PAIR rather than a single inter-compartmental clearance, for the same reason as `k_central_elf` / `k_elf_central`: plasma-to-CSF distribution is asymmetric, and the ratio `k_central_csf / k_csf_central` scaled by `vc / vcsf` is exactly the steady-state CSF:plasma penetration ratio that a CNS-infection PK analysis turns on. A symmetric `q` / `vcsf` parameterisation cannot express it -- in `Stott_2023_flucytosine.R` the two implied flows differ by 38% (`k_central_csf * vc` = 272 L/h against `k_csf_central * vcsf` = 376 L/h). The log-transformed `lk_central_csf` / `lk_csf_central` forms are used in `ini`.
+- **Source aliases:**
+  - `K23` / `K32` -- Stott 2023 Equations 2-3 and Table 1. The paper numbers its states 1 = gut, 2 = circulation, 3 = CNS, 4 = peripheral, so its `K23` / `K32` are the central-to-CSF pair and its `K24` / `K42` are the ordinary central-to-`peripheral1` pair (`k12` / `k21`).
+- **Example models:** `Stott_2023_flucytosine.R`.
+- **Notes:** Member of the established `k_<from>_<to>` directional-transfer family already used for `k_central_elf` / `k_elf_central` (`Abouelhassan_2024_sulbactam_human.R`), `k_central_milk` / `k_milk_central` (`Wattanakul_2024_primaquine.R`) and `k_csf_plasma` / `k_csf_brain` / `k_brain_csf` (`Biliouris_2018_nusinersen.R`). Use this family, not `k13` / `k31`, whenever a transfer connects `central` to a named non-numbered compartment: `k13` / `k31` are reserved for `central` <-> `peripheral2`, and a source paper's own subscripts index its own state numbering, so the digits carry no transferable meaning. Pairs with `lvcsf`. Distinct from `k_csf_plasma`, which names a one-way CSF-to-plasma efflux in a model that has no reciprocal plasma-to-CSF leg.
 
 ### fdepot (**canonical bare depot fraction**)
 - **Type:** bare-pk
@@ -823,6 +952,12 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 - **Source aliases:** `CL_HD`, `CLHD`, `CL_HF`, `CL_HDF`.
 - **Example models:** `Veinstein_2013_gentamicin.R`.
 
+### clmax_hemoadsorption, amax_hemoadsorption (**canonical bare extracorporeal-hemoadsorption arm**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lclmax_hemoadsorption` and `lamax_hemoadsorption`, derived inside `model()`. `clmax_hemoadsorption` is the cartridge clearance at zero load (L/h) and `amax_hemoadsorption` the cartridge adsorption capacity (mg). The time-varying arm itself is named `cl_hemoadsorption` (without `max`) and is what gets added to `cl`: `cl_hemoadsorption <- HEMOADSORB_ACTIVE * clmax_hemoadsorption * (1 - adsorbed / amax_hemoadsorption)`.
+- **Source aliases:** `CLmax`, `Amax` (Leber 2023 Eq. 2).
+- **Example models:** `Leber_2023_tacrolimus_sheep.R`, `Leber_2023_ciclosporin_sheep.R`, `Leber_2023_mycophenolateMofetil_sheep.R`, `Leber_2023_everolimus_sheep.R`, `Leber_2023_methylprednisolone_sheep.R`.
+
 ### cl_tsnet (**canonical bare net-tubular-secretion clearance arm**)
 - **Type:** bare-pk
 - **Role:** Bare counterpart of `lcl_tsnet`. Net renal tubular-secretion component (secretion minus reabsorption) of a renal clearance decomposition `CL_renal_total = GFR + CL_tsnet`.
@@ -866,6 +1001,14 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
   - `D1` -- NONMEM / paper notation.
   - `duration` -- alternate paper notation.
 - **Example models:** `Aouri_2017_rilpivirine.R`, `Goggin_2004_emfilermin.R`, `Heathman_2024_efavirenz.R`.
+
+### d2 (**canonical bare second-process zero-order absorption duration**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `ld2`. Duration of the zero-order input rate of the second process of a multi-phase zero-order release input function; applied via `dur(depot2) <- d2` or `dur(central) <- d2`.
+- **Source aliases:**
+  - `D2` -- NONMEM / paper notation.
+  - `dT2` -- Gasthuys 2023 paper notation.
+- **Example models:** `Gasthuys_2023_paracetamol_human.R`, `Jeon_2013_interferonAlfa2a.R`, `Kim_2017_fimasartan.R`, `Wang_2024_risperidone_consta.R`, `Laffont_2024_nalmefene.R`.
 
 ### tlag (**canonical bare absorption lag time**)
 - **Type:** bare-pk
@@ -988,6 +1131,54 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
 - **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
 
+### ka_fast, ka_slow (**canonical bare rate constants of a parallel two-route depot release**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lka_fast` / `lka_slow`. First-order rate constants (1 / time) of the fast and slow route of a simultaneous two-route release input function.
+- **Source aliases:**
+  - `Ka1`, `Ka2` -- Snelder 2019 positional numbering.
+- **Example models:** `Snelder_2019_leuprorelin.R`, `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `lka_fast, lka_slow` entry for the parallel-vs-sequential boundary against `ka_early` / `ka_late`.
+
+### ka_slope (**canonical bare slope of a linearly time-ramping depot-release rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lka_slope`. Slope (1 / time^2) of a depot-release rate constant that grows linearly with time after the first dose; the rate constant itself is `ka_slope * max(0, tafd())`.
+- **Source aliases:**
+  - `Ka3_SLP`, `SLP` -- Snelder 2019.
+- **Example models:** `Snelder_2019_leuprorelin.R`, `Snelder_2019_leuprorelin_1m.R`, `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `lka_slope` entry for the distinction from the Weibull and sequential-switch absorption families.
+
+### frel2 (**canonical bare second release-process fraction**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `logitfrel2`. Nested share of the non-first portion of the dose entering the second of three parallel release processes.
+- **Source aliases:**
+  - `Fr2` -- Snelder 2019 Table S1.2.
+- **Example models:** `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `logitfrel2` entry; the share is nested, not a fraction of the whole dose.
+
+### wdist (**canonical bare amplitude of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lwdist`; the natural-scale amplitude used inside `model()` as `wdist <- exp(lwdist)`.
+- **Source aliases:** `w`, `q` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
+
+### kdist (**canonical bare decay rate of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkdist`; the natural-scale decay rate used inside `model()` as `kdist <- exp(lkdist)`.
+- **Source aliases:** `p` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
+
+### flnode, v_lnode, k_lnode_central (**canonical bare lymph-node absorption-limb parameters**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lflnode`, `lv_lnode` and `lk_lnode_central`. `flnode` is the unitless fraction of an absorbed subcutaneous dose routed through the `lnode` compartment rather than straight into `central`; `v_lnode` is the lymph-node volume that converts the node amount to the `Clnode` observable; `k_lnode_central` is the first-order rate constant returning drug from the node to plasma (1 / time). Together they are the lymphatic limb of a subcutaneous-absorption model.
+- **Source aliases:**
+  - `Frc` -- lymphatic absorption fraction (Wu 2012).
+  - `VLN` -- lymph-node volume (Wu 2012).
+  - `ka2` -- node-to-plasma return rate constant (Wu 2012).
+- **Example models:** `Wu_2012_bevacizumab_mouse.R`. Bare-form `v_lnode` precedent as a hardcoded physiological constant: `Ramachandran_2023_rifampicin_pbpk.R` and its isoniazid / ethambutol / pyrazinamide siblings.
+- **Notes:** Registered 2026-09-02 together with the log-transformed family; see `lflnode`, `lv_lnode` and `lk_lnode_central` above for the ratification rationale, for the collision against the existing `f_lymph` (lymph FLOW fraction), and for why `ka2` is not carried as `lka2`. Pair with the `lnode` compartment, the `Clnode` observable, and the `propSd_Clnode` residual.
+
+---
+
 ## Paper-named mechanistic parameters
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
@@ -1060,10 +1251,11 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 
 ### kd (**canonical mechanistic dissociation / dissociation-like rate**)
 - **Type:** paper-named-param
-- **Role:** Dissociation rate constant or paper-mechanistic "kd" parameter (paper-specific meaning).
-- **Source aliases:** none.
-- **Example models:** TMDD models.
-- **Notes:** Paper-mechanistic; verify the source paper's specific definition before reuse.
+- **Role:** Dissociation rate constant or paper-mechanistic "kd" parameter (paper-specific meaning). Also covers the **equilibrium** dissociation constant of a drug for its receptor, which has concentration units rather than 1/time; the log-transformed `lkd` form carries the `ini()` typical value where the source reports an exponential IIV. The two senses share the symbol in the literature, so the `label()` must state the units.
+- **Source aliases:**
+  - `Kd` -- Snelder 2019 Equation 1 and Table 3, the leuprorelin GnRH-receptor equilibrium dissociation constant in pg/mL.
+- **Example models:** TMDD models; `Snelder_2019_leuprorelin.R` (`Kd` = 4.36 pg/mL, RSE 36.5%, entering the competitive-occupancy term `frac = (agn + Cc/kd) / (1 + agn + Cc/kd)`).
+- **Notes:** Paper-mechanistic; verify the source paper's specific definition and units before reuse. Distinct from `lkd_direct` / `lkd_delay`, which are exposure-scaled linear drug-effect slopes and not dissociation constants at all.
 
 ### kd0 (**canonical baseline mechanistic dissociation rate**)
 - **Type:** paper-named-param
@@ -1553,6 +1745,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Danielak_2017_clopidogrel.R` (clopidogrel -> H4 active thiol, doi:10.1007/s00228-017-2334-z).
 - **Notes:** Distinct from `kmet` (formation rate constant): `fm` is unitless and bounded; `kmet` has rate units.
 
+
 ### fm_125d3, fm_1ohm, fm_25d3, fm_aca, fm_cyp3a4, fm_cyp3a5, fm_gx, fm_h4, fm_ko516_frac, fm_m2, fm_m27, fm_m3034, fm_m3g, fm_m5, fm_m6g, fm_megx, fm_morphine, fm_morphine_raw, fm_other (**canonical fraction metabolised by a named pathway**)
 - **Type:** paper-named-param
 - **Role:** Fraction of a parent drug's clearance routed to one named elimination pathway, used when a paper splits the metabolic flux across two or more identified routes instead of estimating the single `fm` above. Unitless, bounded in (0, 1]; the members of one model's split are expected to sum to 1, either explicitly or with the residual route written inline as `1 - fm_a - fm_b`. The family shape is `fm_<pathway>`, where `<pathway>` is a lowercase token naming the route -- an enzyme (`fm_cyp3a4`, `fm_cyp3a5`) or the metabolite that route forms, reusing the metabolite suffix registered in `compartment-names.md` (`fm_h4`, `fm_m3g`, `fm_m6g`).
@@ -1633,6 +1826,48 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Saporta_2026_meropenem.R` (`VL2 = 9.27 L/kg`, RSE 26%; an apparent volume, because the lung limb is driven by plasma without mass transfer so the whole limb absorbs the unknown partitioning).
 - **Notes:** Auto-approved 2026-09-01 as a well-formed member of the documented `lv_<compartment>` family founded by `lv_elf`, alongside the Saporta 2026 meropenem extraction (operator sidecar `oare_PMC13041408` request-001, "COMPARTMENT NAMES NEED NO SIDECAR" paragraph). Pairs with `lq_elf_lung`. Distinct from the `kp_lung` / `lkp_lung` tissue-to-plasma partition coefficients, which are whole-body-PBPK partitioning constants rather than a fitted compartment volume.
 
+### lq_kidney (**canonical log-transformed central-to-kidney inter-compartmental flow**)
+- **Type:** log-transformed-pk
+- **Role:** Blood (or plasma) flow perfusing a `kidney` compartment, applied as a bidirectional inter-compartmental clearance between `central` and `kidney` (volume / time). Third member of the `lq_<destination>` family founded by `lq_milk` and continued by `lq_elf`, for the same reason those exist: the bare `lq` / `lq2` mean exchange with `peripheral1` / `peripheral2` specifically, so a perfused organ compartment needs its own destination token. The bare form `q_kidney` is used inside `model()`. In a flow-limited organ the same `q_kidney` appears with opposite sign on both sides (`q_kidney * Cc` leaving central, `q_kidney * Ck` returning), so the organ is effectively well-stirred with a partition coefficient of 1 unless the model states otherwise.
+- **Source aliases:** `QR` -- Felmlee 2010 Table I ("Renal blood flow") and eqs. (1), (5).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`QR = 12.5 mL/min`, fixed to the rat physiological value; Table I footnote a).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Distinct from every `lcl_<arm>` name (`lcl_renal`, `lcl_nonren`, ...), which are additive arms of the CENTRAL clearance rather than a flow into a separate organ compartment; reading a perfusion flow as a clearance arm would delete the organ compartment entirely. Other perfused organs should take the same `lq_<organ>` shape.
+
+### lv_kidney (**canonical log-transformed kidney compartment volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of a `kidney` compartment in a hybrid-physiological (semi-PBPK) model (volume). Second member of the `lv_<space>` family founded by `lv_elf`, for the reason given there: the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a named organ is not a numbered peripheral compartment. The bare form `v_kidney` is used inside `model()`, and the organ concentration is `kidney / v_kidney`.
+- **Source aliases:** `Vkidney` -- Felmlee 2010 Table I ("Kidney volume") and eqs. (5), (6).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`Vkidney = 4.0 mL`, fixed to the rat physiological value; Table I footnote a).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Paired with `lq_kidney` in the founding example but independent of it -- a model may carry a kidney volume without an explicit perfusion flow, or vice versa.
+
+### lgfr, gfr (**canonical glomerular filtration rate**)
+- **Type:** log-transformed-pk
+- **Role:** Glomerular filtration rate as a physiologic volumetric flow OUT of a kidney compartment and INTO a renal ultrafiltrate / tubular compartment (volume / time). It is deliberately NOT `cl_renal`: `lcl_renal` is an additive arm of the CENTRAL clearance that lumps filtration, secretion and reabsorption into one net number applied to plasma, whereas `gfr` is the filtration step alone, applied to the kidney compartment concentration, with reabsorption represented explicitly as a separate returning flux. The registered `lcl_tsnet` entry already presumes this parameter exists ("the filtration arm is carried by the model's glomerular-filtration parameter"). The bare form `gfr` is used inside `model()`.
+- **Source aliases:** `GFR` -- Felmlee 2010 Table I ("Glomerular filtration rate") and eqs. (5), (6).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`GFR = 10 mL/min/kg`, entering as `gfr <- exp(lgfr) * WT`; the only weight-scaled term in that model).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Physiology tables report GFR per unit body weight, so a source value is usually per-kg even when every other flow in the same table is an absolute per-animal value -- check the units column before wiring it in, and scale by `WT` inside `model()` rather than baking a body weight into the `ini()` value.
+
+### luf, uf (**canonical urine flow through the renal tubule**)
+- **Type:** log-transformed-pk
+- **Role:** Volumetric flow of ultrafiltrate along the renal tubule (volume / time), carrying drug by convection from one ultrafiltrate compartment to the next and finally into a cumulative `urine` compartment. The bare form `uf` is used inside `model()`.
+- **Source aliases:** `UF` -- Felmlee 2010 Table I ("Urine flow") and eqs. (6), (7), (8).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`UF = 0.1 mL/min`, fixed to the rat physiological value with an estimated 114% CV between-subject variability; Table I footnote a).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A, in preference to widening the registered `lurprod` / `urprod`). Kept distinct from `urprod` deliberately: `urprod` is scoped to an ESTIMATED zero-order rate of urine production that integrates the canonical `urine_vol` volume state, whereas `uf` is a FIXED physiological flow that moves drug mass between tubular compartments and never integrates a volume. The two are the same physical dimension and could be numerically equal in a given paper, but they occupy different structural roles, and the register's standing warning against giving one name two meanings applies.
+
+### lvmax_reab, vmax_reab (**canonical maximum rate of saturable renal tubular reabsorption**)
+- **Type:** log-transformed-pk
+- **Role:** Michaelis-Menten maximum rate for active (transporter-mediated) reabsorption of drug out of a renal ultrafiltrate compartment and back into the kidney (mass / time). Paired with `lkm_reab`; both are meaningless alone. Follows the documented `vmax_<process>` / `km_<process>` disambiguation pattern (`vmax_pah`, `km_pah`, `vmax_trans`, `km_trans`, and the registered `lvmax_rbc` / `lkm_rbc` pair), and is required whenever the bare `lvmax` / `lkm` are already taken by a metabolic arm in the same model.
+- **Source aliases:** `Vmax,R` -- Felmlee 2010 Table I ("Maximum renal reabsorption rate") and eqs. (4), (11)-(13).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`Vmax,R = 2.34 mg/min`, estimated; the reabsorption flux is `vmax_reab * Culf1 / (km_reab + Culf1)`).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). Note the encoding convention in the founding example: the source paper defines a quantity it calls "Reabsorption" that is `Vmax,R / (Km,R + Culf1)` -- a CLEARANCE -- and then multiplies it by `Culf1` in the differential equations, so the mass flux is the usual Michaelis-Menten form.
+
+### lkm_reab, km_reab (**canonical Michaelis constant for saturable renal tubular reabsorption**)
+- **Type:** log-transformed-pk
+- **Role:** Michaelis-Menten constant (concentration at half-maximal rate) for active reabsorption of drug out of a renal ultrafiltrate compartment, expressed as a concentration in that compartment. Paired with `lvmax_reab`; both are meaningless alone.
+- **Source aliases:** `Km,R` -- Felmlee 2010 Table I ("Renal reabsorption Michaelis-Menten constant") and eqs. (4), (11)-(13).
+- **Example models:** `Felmlee_2010_ghb_rat.R` (`Km,R = 0.46 mg/mL`, estimated; the paper notes it agrees with the in-vitro MCT1 uptake `Km` of 0.48 mg/mL).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2895455` request-001 / response-001, question q1, option A). A transport `Km` for reabsorption is generally far away from a metabolic `km` for the same drug -- in the founding example the reabsorption `km_reab` of 0.46 mg/mL sits against a metabolic `km` of 0.054 mg/mL in the same model, an eightfold separation -- so never fold them into one name. The reabsorption value is the transporter-affinity one: Felmlee 2010 Discussion places it inside the in-vitro MCT-isoform range of 0.48-1.9 mg/mL and notes that SMCT1, which also carries GHB in the proximal tubule, has a higher affinity still (0.17 and 0.07 mg/mL), close enough that the two transport processes are not separable in vivo.
+
 ### logitfdepot (**canonical logit-transformed depot fraction**)
 - **Type:** log-transformed-pk
 - **Role:** Logit-scale encoding of the fraction of a dose that reaches the depot compartment -- the same quantity as `lfdepot`, held on the logit scale so that it is bounded in (0, 1) regardless of the covariate and eta combination. Inside `model` the bare form is `f = exp(phi) / (1 + exp(phi))` where `phi` collects the fixed effect, covariate shifts, and IIV on the logit scale; IIV is therefore additive on the logit scale, not multiplicative.
@@ -1679,13 +1914,30 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Role:** Zero-order production rate of an indirect-response / turnover pool (Dayneka 1993; Jusko traditions).
 - **Source aliases:** none.
 - **Example models:** indirect-response PD models.
-- **Notes:** Codified 2026-05-28 per the naming audit. The compartment-suffixed forms `kin_<compartment>` / `kout_<compartment>` (with `lkin_<compartment>` / `lkout_<compartment>` as the log-transformed primaries) are the canonical family for **tissue-exchange rate constants** in semi-physiologic / dosimetry models that parameterise transport as first-order rate constants rather than as clearances: `kin_<tissue>` is central-to-tissue uptake and `kout_<tissue>` is tissue-to-central return, both 1/time. `<compartment>` must be a canonical compartment from `compartment-names.md`. Prefer these role-based names over the source paper's numeric micro-constants (`k12`, `k21`, `k13`,...) whenever the compartments are anatomically named -- the canonical `k12` / `k21` / `k13` / `k31` entries mean central-to-`peripheral1` / `peripheral2` exchange specifically, so reusing them for organ compartments would silently mislead. Founding examples: `Lindauer_2017_pembrolizumab.R` and `Yamazaki_2008_crizotinib_mouse.R` (`kin_tumor` / `kout_tumor`); `Siebinga_2023_lu177psma617.R` (`kin_salivary_gland`, `kin_kidney`, `kin_liver`, `kin_tumor`, `kin_other` and their `kout_` partners, replacing Siebinga's `k12`/`k21`/`k13`/`k31`/`k14`/`k41`/`k15`/`k51`/`k16`/`k61`).
+- **Notes:** Codified 2026-05-28 per the naming audit. The compartment-suffixed forms `kin_<compartment>` / `kout_<compartment>` (with `lkin_<compartment>` / `lkout_<compartment>` as the log-transformed primaries) are the canonical family for **tissue-exchange rate constants** in semi-physiologic / dosimetry models that parameterise transport as first-order rate constants rather than as clearances: `kin_<tissue>` is central-to-tissue uptake and `kout_<tissue>` is tissue-to-central return, both 1/time. `<compartment>` must be a canonical compartment from `compartment-names.md`. Prefer these role-based names over the source paper's numeric micro-constants (`k12`, `k21`, `k13`, ...) whenever the compartments are anatomically named -- the canonical `k12` / `k21` / `k13` / `k31` entries mean central-to-`peripheral1` / `peripheral2` exchange specifically, so reusing them for organ compartments would silently mislead. Founding examples: `Lindauer_2017_pembrolizumab.R` and `Yamazaki_2008_crizotinib_mouse.R` (`kin_tumor` / `kout_tumor`); `Siebinga_2023_lu177psma617.R` (`kin_salivary_gland`, `kin_kidney`, `kin_liver`, `kin_tumor`, `kin_other` and their `kout_` partners, replacing Siebinga's `k12`/`k21`/`k13`/`k31`/`k14`/`k41`/`k15`/`k51`/`k16`/`k61`); `Nguyen_2026_linezolid.R` (`kin_saliva` / `kout_saliva`, replacing Nguyen's `Kabs` / `Kreabs`, i.e. `K23` / `K32`). The family name carries no commitment to mass balance: Nguyen 2026's saliva state is a DRIVEN (non-depleting) hypothetical effect compartment, so `kin_saliva * central` appears only in the saliva equation and `kout_saliva * saliva` appears in neither the central equation nor anywhere else -- the paired name still records which direction each rate constant describes, which is the point.
 
 ### kout (**canonical indirect-response elimination rate**)
 - **Type:** paper-named-param
 - **Role:** First-order elimination rate of an indirect-response turnover pool (1 / time). Also the tissue-to-central return leg of the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family -- see the `kin` entry above.
 - **Source aliases:** none.
-- **Example models:** indirect-response PD models; `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form).
+- **Example models:** indirect-response PD models; `Lindauer_2017_pembrolizumab.R`, `Siebinga_2023_lu177psma617.R` (tissue-exchange form), `Nguyen_2026_linezolid.R` (`kin_saliva` / `kout_saliva`, the central-to-saliva secretion and saliva-to-central reabsorption legs of a saliva-TDM model).
+
+### lkel_saliva, kel_saliva (**canonical irreversible salivary elimination rate constant**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for IRREVERSIBLE loss of drug out of the `saliva` compartment -- physically swallowing plus salivary flow past the sampling site. It is the third leg of a saliva-TDM compartment, alongside the `kin_saliva` / `kout_saliva` pair from the `kin_<compartment>` / `kout_<compartment>` tissue-exchange family: `d/dt(saliva) = kin_saliva * central - (kout_saliva + kel_saliva) * saliva`. `lkel_saliva` is the log-transformed `ini()` primary and `kel_saliva` the bare form used inside `model()`.
+- **Source aliases:**
+  - `Kel` -- Nguyen 2026 Table 2 and Figure 1 ("Kel salivary elimination rate"); `K30` in that paper's supplementary Table S7 control stream.
+- **Example models:** `Nguyen_2026_linezolid.R` (founding example; `kel_saliva` = 2.13 1/h).
+- **Notes:** The compartment suffix is what makes this name necessary rather than a convenience. The source paper's own symbol for the term is "Kel", which is the same word as the canonical bare central elimination rate constant `kel`; writing it unsuffixed in a model that also carries `kel <- cl / vc` would be a silent collision between two different physical processes. Registered as a compartment-suffixed member of the existing `kel_<suffix>` pattern (`kel_renal`, `kel_other`, `kel_gx`, `kel_dihydroart`, drug-suffixed `kel_<drug>`), and it generalises to any second sampling matrix with a one-way loss path -- a future `kel_<compartment>` for another matrix takes the same form. Note that `kout_saliva` and `kel_saliva` are NOT interchangeable even though both appear as first-order losses from the same state: `kout_saliva` is return towards plasma and `kel_saliva` leaves the system, and it is their sum that sets the saliva disposition rate while the RATIO to `kin_saliva` sets the steady-state saliva:plasma exposure ratio. Ratified 2026-09-02 (sidecar request-001 q1) with the Nguyen 2026 extraction; see `saliva` in `compartment-names.md`.
+
+### lsmax, smax (**canonical maximum zero-order production rate of a drug-STIMULATED turnover pool**)
+- **Type:** paper-named-param
+- **Role:** Saturating maximum of the zero-order PRODUCTION term of an indirect-response pool whose synthesis is stimulated by drug, entering as `d/dt(<pool>) <- smax * Cc / (ec50 + Cc) - kout * <pool>` (or the sigmoid form with `lhill`). Unlike the unitless `Imax`-style fractional multipliers, `smax` carries the pool's own rate units -- `[pool concentration] / time` (IU/mL/h in the founding example) -- because it IS the production rate rather than a scale factor on one. Inside `model()` the bare name is `smax`; the log-transformed `lsmax` form is the `ini()` primary, since a production rate is strictly positive. Pairs with `lec50` (the half-maximal driving concentration) and `lkout` (the pool's first-order elimination rate).
+- **Source aliases:**
+  - `Smax` -- Benson 2010 Table 2 and equation 1 ("Smax is the maximum rate of synthesis of IFN-alpha (in international units per milliliter per hour)").
+  - `SC50` -- the partner half-maximal concentration in the same `Smax` / `SC50` notational convention; maps to the registered `lec50` / `ec50`, NOT to a new name.
+- **Example models:** `Benson_2010_bhma_mouse.R` (founding example -- `lsmax <- log(294)` IU/mL/h, the maximum IFN-alpha synthesis rate induced in mice by the TLR-7 agonist BHMA, with `lec50 <- log(135)` ng/mL and `lkout <- log(0.958)` 1/h; the paper's own consistency check is that the maximum attainable response is `smax / kout` = 306 IU/mL).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC2825998` request-001 q2, option B). Deliberately NOT `kin`: the registered `kin` is the DRUG-FREE baseline production rate of a turnover pool, and reusing it for a quantity that is zero in the absence of drug would invert its meaning -- in the founding model the baseline production is exactly zero (unstimulated IFN-alpha was below the assay LOQ), so there is no `kin` to speak of. Deliberately NOT `emax` either: the operator's ratification records that `emax` / `lemax` has no entry in this register at all, and the `emax`-shaped names that do appear in model files are unitless fractional multipliers, so overloading that stem with rate units would mislead. The paper-named `smax_<suffix>` forms already in the registry (`Cao_2025_ferricCarboxymaltose_rat.R` `lsmax_iron`, `Garonzik_2016_daptomycin.R` `smax_s`, `Guiastrennec_2016_gastric_emptying.R` `smax_cckf`) are the multi-arm extension of this bare canonical: a model with a single stimulated pool uses `lsmax` / `smax`, and only a model that must carry two or more stimulated production maxima jointly takes the `_<suffix>` form. Where a paper's `Smax` carries `1/time` units because it scales a first-order rather than a zero-order term, it is a rate CONSTANT and belongs under a `kmax`-style name instead -- see `Mody_2023_doxorubicin_dexrazoxane_mdamb468.R`, which maps "Smax,DOX (1/h)" onto `lkmax_dox` for exactly this reason.
 
 ### lkinf_rbc, kinf_rbc (**canonical first-order influx rate constant into the red-cell analyte pool**)
 - **Type:** paper-named-param
@@ -1726,6 +1978,14 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
   - `Kel-PBMC` -- used in `Yu_2026_tenofovir.R` (Yu 2026 Results 3.2.1 / Table 2, "elimination rate from PBMC").
 - **Example models:** `Yu_2026_tenofovir.R` (`Kel-PBMC = 0.0127 1/h`).
 - **Notes:** The PBMC parallel of `lkeff_rbc`, and lumped in the same sense: `log(2) / keff_pbmc` is an intracellular residence half-life rather than a pure membrane-transport property. Yu 2026 quotes a PBMC tenofovir-diphosphate half-life of 60 h against `log(2) / 0.0127 = 54.6 h`, because the published figure is an effective half-life read from the simulated concentration-time profile rather than `log(2) / k`.
+
+### lkeff_milk, keff_milk (**canonical first-order elimination rate constant out of the breast-milk compartment**)
+- **Type:** paper-named-param
+- **Role:** First-order rate constant (1 / time) for loss of drug out of the canonical `milk` compartment to a sink, lumping removal of milk from the breast by feeding or expression together with milk turnover into a single rate. Enters as the `- keff_milk * milk` term of the milk ODE, exactly as its `lkeff_rbc` / `lkeff_pbmc` siblings enter theirs. Use it only for a UNIDIRECTIONAL milk model in which nothing returns from milk to plasma; when the milk compartment exchanges back with `central`, the transfer is a `k_<from>_<to>` pair (`k_central_milk` / `k_milk_central`) or a `q_milk` / `pcmilk` clearance parameterisation instead.
+- **Source aliases:**
+  - `kmilk_e` -- used in `Baklouti_2026_amoxicillin.R` (paper symbol `k_milk,e`, "the elimination rate constant of amoxicillin from milk").
+- **Example models:** `Baklouti_2026_amoxicillin.R` (`kmilk_e = 0.33 1/h`).
+- **Notes:** Registered 2026-09-02 (operator sidecar `oare_PMC13206287` request-001 / response-001, question q1, option A). Extends the `keff_<pool>` efflux family from intracellular analyte pools (`rbc_<analyte>`, `pbmc_<analyte>`) to a secretory matrix compartment; the family's Role sentence already described the quantity verbatim. Distinct from `kmilkinf` (`Wattanakul_2024_primaquine_motherinfant.R`), which is the dyad milk-to-infant-depot transfer normally fixed high, and from `k_milk_central`, which returns drug to plasma. Lumped in the same sense as its siblings, and in this founding case deliberately so: Baklouti 2026's Discussion notes that "in our model, the drug is continuously eliminated from the milk compartment, whereas in reality, this elimination occurs only at the time of feedings", which makes the resulting relative-infant-dose estimate conservative. The ratio `k_central_milk / keff_milk` is the model's steady-state milk:plasma AUC ratio whenever `vmilk == vc`, which is the natural closed-form falsifier for an extraction using this name.
 
 ### lvmax_rbc, vmax_rbc (**canonical saturable-influx maximum rate into the red-cell analyte pool**)
 - **Type:** paper-named-param
@@ -1956,6 +2216,22 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Bouazza_2025_prednisolone.R` (`kns = fixed(0.8)`, albumin binding fixed from Petersen et al.).
 - **Notes:** Unitless by construction, so it takes no `l` prefix requirement and is written bare in `ini()`. Usually `fixed()` from an external binding study. Before proposing any *further* canonical for a "scale factor" in a protein-binding equation, check for the molecular-weight-ratio signature `MW_drug / MW_protein * 1e6`: `Said_2025_imatinib.R`'s `L = 11700` looks like a new binding parameter but is a unit conversion (493.6 / 42000 * 1e6), correctly hardcoded in `model()` with the arithmetic in a comment.
 
+### kaff2 (**canonical equilibrium affinity constant of a second binding-site class**)
+- **Type:** paper-named-param
+- **Role:** Equilibrium affinity constant of the *second* class of binding sites in a two-class (biphasic) protein-binding model, in the same reciprocal-concentration units as `kaff`, so that `kaff2 * Cu` is dimensionless. Use it when a source paper prints both `Ka1` and `Ka2` for one protein -- the Rosenthal / Scatchard plot is biphasic -- and both constants are needed to reconstruct the binding. Follows the established numbering idiom for a second instance of one role (`vp` / `vp2`, `q` / `q2`): the first class keeps the bare `kaff` and the second takes the `2` suffix, so the two read straight off the paper's own `Ka1` / `Ka2` labels.
+- **Source aliases:**
+  - `Ka2` -- Li 2017 Table 1 (naproxen binding to rat plasma albumin, second class of sites).
+- **Example models:** `Li_2017_naproxen_rat.R` (`kaff2_cf` = 0.0041, `kaff2_hf` = 0.0043, `kaff2_cm` = 0.0056, `kaff2_hm` = 0.0054 L/umol, all `fixed()` from Table 1 and selected in `model()` by `SEXF` and `DIS_CIA`; paired with `kaff_*` for `Ka1`).
+- **Notes:** Ratified 2026-09-02 (task `oare_PMC5399645` sidecar request-001 q2, answer A). Naming a second affinity constant is what lets the *capacity* of each class stay proportional to a live protein covariate: in Li 2017 the linear arm is `kns = n2 * Pt * Ka2`, built inside `model()` from the canonical `ALB` column, so freezing the arm as a per-group `kns` constant would have made the paper's own mechanism -- albumin drives the nonlinearity -- unexercisable. Check the `kns` entry's warning before minting any further binding-equation scalar: a "constant" of the form `MW_drug / MW_protein * 1e6` is a unit conversion and belongs hardcoded in `model()`, not in `ini()`. A second class that the source paper's own approximation collapses to a *linear* arm (Li 2017's stated `Ka2 * Cup << 1`) still keeps `kaff2` rather than being folded into a bare `kns`, because the printed table value is the affinity constant. Do not extend past `kaff2` without a sidecar: a third class of sites is rare enough that the naming should be decided against the paper that needs it.
+
+### f_alb_isf (**canonical interstitial-fluid-to-plasma albumin concentration ratio**)
+- **Type:** paper-named-param
+- **Role:** Unitless ratio of the albumin (binding-protein) concentration in tissue interstitial fluid to that in plasma, used to scale a plasma-derived binding capacity to the interstitial space so that one set of binding constants serves both compartments. Sits in the `f_` family of unitless fractional scalars (`f_pah`, `f_ntcp`, `f_venous`, `f_exposed_bone`) and is always below 1 in the published values. Distinct from the `kp_<tissue>` family, which is an equilibrium tissue:plasma ratio of the *drug*; `f_alb_isf` is a ratio of the *binding protein*. Sibling ratios for other proteins or spaces take the same shape, `f_<protein>_<space>`.
+- **Source aliases:**
+  - `E/P` -- Li 2017 Methods (after eq. 4) and Discussion; also the notation of Fleishaker and McNamara 1985 and Day et al. 1995, from which the human values are quoted.
+- **Example models:** `Li_2017_naproxen_rat.R` (`f_alb_isf_cia` = 0.9, `f_alb_isf_healthy` = 0.5, both `fixed()` from the literature and selected by `DIS_CIA`; multiplies the albumin concentration in both the saturable capacity `n1 * Pt` and the linear arm `n2 * Pt * Ka2` when eq. 4 is re-solved for the tissue compartment).
+- **Notes:** Ratified 2026-09-02 (task `oare_PMC5399645` sidecar request-001 q1, answer A). Typically `fixed()` from physiologic literature rather than estimated, since interstitial albumin is not observed in a PK study; a paper that does estimate it should still use this name, on the log scale (`lf_alb_isf`) only if it reports an exponential typical-value form. The ratio is disease-sensitive -- inflammation raises microvascular permeability and therefore interstitial protein -- so a model spanning inflamed and healthy cohorts is expected to carry two values selected by a disease indicator, as Li 2017 does (0.9 vs 0.5 in rats; the paper quotes 0.73 vs 0.32 for human RA patients and healthy subjects). Rejected alternative recorded so it is not re-opened: `kp_alb_isf` would overload `kp_<tissue>`, which the register defines for drug tissue:plasma ratios, and the register additionally bounds that family away from bare `kp_*` names that qualify rather than name a tissue.
+
 ### kurine (**canonical urinary-excretion rate constant**)
 - **Type:** paper-named-param
 - **Role:** First-order rate constant (1 / time) moving parent drug or a metabolite out of a plasma compartment and into the matching canonical `urine` / `urine_<metab>` cumulative-excretion compartment, used when the source paper carries urinary excretion as a primary estimated rate constant rather than deriving it from a renal clearance. Per-metabolite members take the registered metabolite suffix: `kurine_<metab>`.
@@ -1980,6 +2256,23 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
 - **Example models:** `Cao_2025_busulfan.R` (`sdep_gsh = fixed(0.00259)` L/mg, carried over from Langenhorst 2020, with the covariate effect `e_gst_sdep_gsh = 0.28` on baseline GST activity).
 - **Notes:** Written bare (no `l` prefix) because it is a mechanistic constant reported as a point value rather than an estimated positive-constrained parameter, per the "Endogenous / mechanistic parameters" guidance. Two rejected alternatives are recorded here so the next reader does not re-open them: `s_gsh` (verbatim from the paper) founds an `s_` prefix with no precedent in this register AND collides visually with NONMEM `$PK` compartment *scale* factors, which appear in this very control stream as `S1 = V1/1000`; and `kdep_gsh` would sit visually with the registered `kdeg` / `kdes` / `kint` / `krel` family, but every member of that family is a first-order RATE constant with units 1/time, whereas this parameter is a scaling factor with units L/mg -- naming it `k*` would be a units lie. Pairs 1:1 with the `gsh_pool` compartment (see `compartment-names.md`); a new co-substrate takes a matched `sdep_<pool>` / `<pool>_pool` pair. The covariate effect follows the ordinary `e_<cov>_<param>` grammar with a shortened covariate token, `e_gst_sdep_gsh`, matching the `e_dpp4_bmaxc` precedent in `Retlich_2015_linagliptin.R` rather than spelling out the full `GST_BL_NMOL_MIN_ML` column name.
 
+### h_<process> (**canonical fractal-kinetics heterogeneity exponent**)
+- **Type:** paper-named-param
+- **Role:** Heterogeneity (fractal) exponent of a Kopelman fractal-kinetics rate, in which a constant first-order rate constant is replaced by the time-dependent *instantaneous rate coefficient* `rate(t) = q / t^h`. Unitless and conventionally bounded in `[0, 1]`, with `h = 0` recovering ordinary Fick / constant-rate kinetics and larger `h` giving a rate that decays faster with elapsed time. The `<process>` suffix names the process whose rate is made fractal, so a model may carry more than one: `h_abs` for an absorption / release rate, `h_caseum` for anomalous diffusion into a granuloma caseous core. Because `h` scales a rate coefficient rather than being one, it is written bare (no `l` prefix) even when the paper estimates it on a bounded interval.
+- **Source aliases:**
+  - `h` -- Jung 2023 Eq. (1) and Supplementary Tables S1-S5; `H = THETA(n)` in Codes S3, S5, S7, S9, S11.
+  - `h` -- Karakitsios 2025 equation (S15), Table S13.
+- **Example models:** `Karakitsios_2025_bedaquiline_mouse_pbpk.R` and `Karakitsios_2025_bedaquiline_human_pbpk.R` (`h_caseum = 0.75`, anomalous diffusion through the necrotic caseum rings; founding usage), `Jung_2023_donepezil_singledose.R`, `Jung_2023_im_depot.R`, `Jung_2023_anakinra.R` (`h_abs`, fractal absorption / release; the founding usage of the `h_abs` member).
+- **Notes:** Registered with the Jung 2023 extraction to formalise a naming pattern the library was already using: `h_caseum` / `tau_caseum` shipped with the Karakitsios 2025 bedaquiline models without a register entry, so a later extraction had no way to discover the precedent except by grepping `inst/modeldb/`. The exponent is deliberately NOT folded into `hill`: a Hill coefficient shapes a concentration-response sigmoid, whereas this exponent shapes the *time* dependence of a rate coefficient, so sharing a name would give one canonical two dimensions of meaning -- the pattern rejected for `thres` / `cthres`. Note that a paper may put a random effect on `h`, and the two published forms differ: Jung 2023 Code S11 uses a multiplicative log-normal eta (`H = THETA*EXP(ETA)`) while Code S7 uses an additive one (`H = THETA + ETA`), which can drive individual `h` negative. Reproduce whichever form the source used rather than normalising to the usual `exp(l... + eta)` idiom, and say so in the model file.
+
+### tau_<process> (**canonical fractal-kinetics onset-time regulariser**)
+- **Type:** paper-named-param
+- **Role:** Small positive constant added to elapsed time in a fractal rate, `rate(t) = q / (t + tau)^h`, so the coefficient is finite at `t = 0`. Units are those of time. Paired 1:1 with the matching `h_<process>`.
+- **Source aliases:**
+  - `TAU` -- Jung 2023 Code S5 (`TAU = 0.0000001`; `KF = EXP(LOG(THETA(8)) - H*LOG(TIME - TD + TAU))`).
+  - `tau` -- Karakitsios 2025 equation (S15) ("critical time tau was fixed to a very small positive constant").
+- **Example models:** `Karakitsios_2025_bedaquiline_mouse_pbpk.R` (`tau_caseum = fixed(1e-3)` h), `Jung_2023_donepezil_multipledose.R` (`tau_abs = fixed(1e-7)` h, the authors' own value).
+- **Notes:** Include this parameter **only when the source paper specifies it**. Because `h < 1` makes the `t^-h` singularity integrable, an ODE solver reproduces the unregularised form without it: for Jung 2023 Case 1, adding `tau = 1e-7` moves the simulated concentration by about 4 parts per million, so a regulariser invented by the extractor would be an unsourced parameter buying nothing. Of the five Jung 2023 cases only Case 2 -- the multiple-dose model, where the rate is restarted at each new dose -- carries a `TAU`, and only that model records one here.
 ### sd_ratio_cl_m5, sd_ratio_kgrow (**canonical ratio of two random-effect standard deviations sharing one eta**)
 - **Type:** paper-named-param
 - **Role:** Multiplier applied to a shared eta so that a second parameter carries a *different* IIV magnitude while remaining perfectly correlated with the first. Used when a source paper cannot estimate a second variance reliably (zero gradients, a near-singular OMEGA block, or a correlation that estimates to 1) and therefore reduces the model to one random effect plus a scale factor. The family shape is `sd_ratio_<param>`, where `<param>` is the canonical name of the parameter whose IIV is being *rescaled*; the eta that appears in the expression belongs to the other, reference parameter. Carried on the LINEAR scale, and encoded as `<param> <- exp(l<param> + sd_ratio_<param> * eta<reference>)`. Because the ratio is of standard deviations, the implied variance is `sd_ratio^2` times the reference variance -- the identity papers usually print as a footnote.
@@ -1987,6 +2280,90 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
   - `Factor IIV CL_M-5` -- Keunecke 2020 Table 3 row label.
 - **Example models:** `Courlet_2023_cabamiquine.R` (`sd_ratio_kgrow = fixed(0.9171881)`, the liver-to-blood growth-rate IIV SD ratio, derived as `sqrt(0.0120274 / 0.0142973)` from Table 1 with the correlation fixed at 1; founding example), `Keunecke_2020_regorafenib_phase3.R` (`sd_ratio_cl_m5 = 2.21`, RSE 3.41%, so that `cl_m5 <- exp(lcl_m5 + sd_ratio_cl_m5 * etalcl_m2) * sex_cl_m5`; the Table 3 footnote's `0.385 * 2.21^2 = 1.88` is the implied M-5 variance; doi:10.1111/bcp.14334).
 - **Notes:** Heading added 2026-09-02 alongside the Keunecke 2020 regorafenib extraction, registering a shape that `Courlet_2023_cabamiquine.R` had already shipped unregistered -- per the register's "extend, never duplicate" rule, rather than founding a second name for the same construct. Distinct from a correlated omega block (`etaA + etaB ~ c(...)`), which estimates the covariance: `sd_ratio_<param>` is the *reduced* form used when that block is not identifiable, and it forces the correlation to exactly 1, so the second parameter's eta is deterministic given the first. Prefer the full omega block whenever the paper reports one; reach for this name only when the paper itself reports the reduction. Do not use `f_` (reserved for fractions and bioavailability) or a `k`-prefix (reserved for rate constants with 1/time units) -- the quantity is a unitless ratio.
+
+### ldr50, dr50 (**canonical half-maximal receptor-activation-fraction difference for agonist-induced receptor downregulation**)
+- **Type:** paper-named-param
+- **Role:** The value of the *excess* receptor-activation fraction above baseline, `FRAC - FRAC_0`, that elicits a half-maximal reduction in the receptor synthesis rate. Unitless (the driver is a fraction, so `dr50` lies in the same 0-0.5 range), strictly positive, so the log-transformed `ldr50` carries the `ini()` typical value and any exponential IIV. The term is INHIBITORY with an implicit maximum of 1 and is written `DRR = dr50^hill_dr / (dr50^hill_dr + max(0, frac - frac0)^hill_dr)`, multiplying the receptor synthesis rate `kin_rt`; the `max(0, ...)` reproduces the source guard that holds `DRR = 1` whenever occupancy has not risen above baseline.
+- **Source aliases:**
+  - `DR50` -- Snelder 2019 Equation 1 and Table 3; Romero 2012 triptorelin, the model Snelder 2019 adapts.
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `DR50` = 0.0486, RSE 22.6%, with `omega^2` = 0.696 and a full covariance block against `Kd`, `KoutT`, `BSLT`, `CPA` and `nHT`).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q3, operator answer A). Deliberately NOT folded into the registered `ki50`: `ki50`'s documented form is *stimulatory*, `rate = rmax * I^hill/(ki50^hill + I^hill)`, so reusing it would silently re-label an Imax-type term as an Emax-type one, and its axis is a biomarker readout rather than a receptor-occupancy fraction. Distinct from `lec50` for the same reason -- the driver here is not a concentration. The concept recurs across the GnRH-agonist downregulation family (Romero 2012 triptorelin, Gries 1999 hCG), so a future extraction of either should reuse this name. The Snelder 2019 Discussion warns that `dr50` (with `kd` and `hill_dr`) is conditional on the assumption `agonist_kd_ratio = 1` and "should not be used outside the context of the model".
+
+### lhill_dr, hill_dr, lhill_psa, hill_psa (**canonical suffixed Hill coefficients of two distinct sigmoids in one model**)
+- **Type:** paper-named-param
+- **Role:** Sigmoidicity exponents of, respectively, the receptor-downregulation sigmoid driven by a receptor-activation-fraction difference (`hill_dr`, paired with `dr50`) and the biomarker-to-biomarker sigmoid driven by a downstream analyte concentration (`hill_psa`, paired with `lemax` / `lec50`). Both unitless and strictly positive; the log-transformed forms carry the `ini()` typical values and any exponential IIV. Suffixed members of the registered `hill` family, following the same `<stem>_<suffix>` convention as `cl_time_hill` and `ec50_time_hill`.
+- **Source aliases:**
+  - `nHT` -- Snelder 2019 Equation 1 and Table 3 (the downregulation sigmoid).
+  - `nHP`, `nHp` -- Snelder 2019 Equation 5 and Table 4 (the testosterone-to-PSA sigmoid).
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `nHT` = 2.05, RSE 9.90%, and `nHP` = 2.49, RSE 13.8%, in one joint model).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (sidecar request-001 question q3, operator answer A). Registered because a single model carrying TWO Hill coefficients cannot use the bare canonical `hill` for both, and leaving one bare while suffixing the other is the "none keeps the bare canonical" ambiguity the stratum-suffix rule warns against. The suffix names the sigmoid, not the paper's symbol: `_dr` for a downregulation sigmoid, `_psa` for a sigmoid whose *output* is PSA. A model with only one sigmoid should keep the bare `hill`. Distinct from `gamma`, which stays a mechanistic-role designator for Friberg feedback and TGI power-law exponents.
+
+### agonist_kd_ratio (**canonical endogenous-agonist concentration relative to its own receptor Kd**)
+- **Type:** paper-named-param
+- **Role:** Unitless ratio of an endogenous agonist's (unknown) concentration to its dissociation constant for its own receptor, `[agonist] / Kd_agonist`, used to set baseline receptor occupancy in a competitive endogenous-agonist-versus-drug binding model. The two quantities are not separately identifiable from clinical data, so papers combine them into this single parameter and fix it, which fixes the baseline occupancy at `frac0 = agonist_kd_ratio / (1 + agonist_kd_ratio)`. Ligand-agnostic by design.
+- **Source aliases:**
+  - `GnRH` -- Snelder 2019 Methods 2.5 and Equation 1 ("Model parameter GnRH represents the ratio between the unknown GnRH concentration and its dissociation constant for the GnRH receptor ... arbitrarily fixed to 1 implying 50% activity of the GnRH receptors at baseline").
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `fixed(1)`, giving `frac0` = 0.5).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (sidecar request-001 question q4, operator answer A). Named for the concept rather than the ligand (`gnrh_kd_ratio` was the rejected alternative) so it generalises to any competitive endogenous-agonist receptor model -- Romero 2012 triptorelin and Gries 1999 hCG, both cited by Snelder 2019, share the construct. Distinct from `kd`, which is the dissociation constant itself and has concentration units, and from the occupancy-fraction names `RL_op` / `RL_antag`, which are ODE states rather than a fixed ratio. Whenever this parameter is fixed rather than estimated, every potency parameter estimated alongside it is conditional on the assumed value; say so in the model description and vignette Errata.
+
+### lcpa, cpa (**canonical constant antiandrogen suppression factor on endogenous agonist activity**)
+- **Type:** paper-named-param
+- **Role:** Unitless, strictly positive suppression factor by which a co-administered antiandrogen divides the endogenous-agonist activity ratio: `agonist_kd_ratio / (1 + cpa * CONMED_CYPROTERONE)`. The fractional reduction in endogenous agonist activity is therefore `cpa / (1 + cpa)`. Carries no driver concentration -- it is a constant while the co-medication effect is in force, gated on and off by a time-varying `CONMED_*` covariate column rather than by a PK profile. The log-transformed `lcpa` carries the `ini()` typical value and any exponential IIV.
+- **Source aliases:**
+  - `CPA`, `CPA0` -- Snelder 2019 Table 3 and Supplement 4 control stream (`AGNN = AGN / (1 + CPA)`).
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `CPA` = 4.13, RSE 17.1%, giving the paper's reported 80.5% reduction in endogenous GnRH activity and a consequent 67.3% reduction in typical testosterone; `omega^2` = 1.15 with covariances to every other testosterone-model eta).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. Encoded as a structural parameter rather than through the `e_<cov>_<param>` covariate-effect grammar because the source reports it in the fixed-effects parameter table with its own IIV and a full covariance row set against the other mechanistic etas, and the covariate-effect grammar has no slot for a random effect. Closest registered sibling is `iplac`, likewise a driver-free constant fractional modifier of a rate; the difference is that `iplac` is bounded in [0, 1] and subtracts, whereas `cpa` is an unbounded positive divisor. Distinct from `imax`, which is the maximum of a driver-dependent sigmoid inhibition. A future antiandrogen or flare-prophylaxis model that reports a *dose*- or *concentration*-dependent effect should not reuse this name.
+
+### led50 (**canonical log-transformed half-maximal DOSE**)
+- **Type:** paper-named-param
+- **Role:** Log-transformed administered DOSE producing a half-maximal response, i.e. the dose-axis sibling of `lec50`. Carries the units of the administered dose (mg, ug, umol/kg, ...), NOT concentration units. The founding use is a saturable relative bioavailability of the standard-saturation (`Emax`) form `frel = ed50 / (dose + ed50)`, which equals 1 as the dose approaches 0 and 0.5 at `dose = ed50`. Inside `model()` the bare name is `ed50`.
+- **Source aliases:**
+  - `D50` -- Kastrissios 2006 notation ("the dose at which `Frel` is half maximal"; Table IV row "D50 for F, mg" = 221 mg).
+- **Example models:** `Kastrissios_2006_apricoxib.R` (founding example; `led50 <- log(221)` with `frel <- exp(e_evening_fdepot * evening) * ed50 / (podo(depot) + ed50)` applied via `f(depot)`, reproducing the paper's abstract claim of a "50% reduction at 221 mg").
+- **Notes:** Ratified 2026-08-26 alongside the Kastrissios 2006 apricoxib (CS-706) extraction (sidecar request-001 q3, option A). Deliberately axis-agnostic in the same way `lki50` is: the name records only that the sigmoid's x-axis is the administered DOSE, so a future dose-response PD model whose half-maximal point is a dose rather than a plasma concentration can reuse it. Distinct from `lec50` / `lic50`, which are half-maximal CONCENTRATIONS -- reusing `lec50` for a dose would make the model's units incoherent and mislead a reader into treating the value as a plasma concentration. Distinct also from the covariate-effect family `e_<cov>_<param>`: `ed50` is a structural constant of the bioavailability (or dose-response) model, not a slope on a covariate. Not every dose-dependent-`F` model needs it -- `Wada_2023_sparsentan.R` and `Comisar_2025_rimegepant.R` both use power forms on the `DOSE` covariate and `Maleki_2024_brepocitinib.R` uses a `DOSE_HIGH` step; reach for `led50` only when the source reports a genuine half-maximal dose constant. A downstream user must read the dose units off `label()`, since they are model-specific by construction.
+
+### ed50 (**canonical bare half-maximal DOSE**)
+- **Type:** paper-named-param
+- **Role:** Bare counterpart of `led50`; the half-maximal-response administered dose on the linear scale, for use inside `model()`.
+- **Source aliases:**
+  - `D50` -- Kastrissios 2006 notation.
+- **Example models:** `Kastrissios_2006_apricoxib.R`.
+
+
+### lkadair1, kadair1, lkadair2, kadair2 (**canonical constants of the Adair biphasic effect function**)
+- **Type:** paper-named-param
+- **Role:** The two denominator constants of an Adair biphasic (bell-shaped) drug-effect function, `Sd = Smax * C / (kadair1 + C + kadair2 * C^2)`. `kadair1` is the LINEAR denominator constant and carries concentration units; `kadair2` is the QUADRATIC self-inhibition constant and carries RECIPROCAL concentration units, and it is the term that creates the descending limb, so the effect peaks at `C = sqrt(kadair1 / kadair2)`. Both are strictly positive and are log-transformed in `ini()` as `lkadair1` / `lkadair2`, bare inside `model()`. `Smax` uses the existing `lsmax` / `smax` naming. Use this family for any biphasic concentration-response of Adair or substrate-inhibition shape, not only for the glucose-insulin case.
+- **Source aliases:**
+  - `k1` / `k2` -- Gao 2012 eq. 7 and Table 4 ("First receptor binding constant", "Second receptor binding constant").
+- **Example models:** `Gao_2012_exenatide_glucose_insulin_rat.R` (`k1 = 0.826 nM`, `k2 = 0.0153 1/nM`; exendin-4's insulinotropic effect rises to a maximum near 7.4 nM and falls at higher concentrations, matching the bell-shaped in vitro and in vivo dose-response the paper cites; founding example).
+- **Notes:** Ratified 2026-09-02 (task `oare_PMC3336795` sidecar request-001 q1, answer A). The `adair` infix is load-bearing and deliberately NOT the paper's bare `k1` / `k2`: this register already carries `k1` and `k2` as the ASSOCIATION and DISSOCIATION rate constants of reversible binding, which are 1/(conc*time) and 1/time, so reusing them here would give one name two dimensionalities -- and the numbered pair would additionally be read as the `k12` / `k21` micro-constants. The two constants are numbered rather than role-named (`kadair` / `kadair_inh` was the rejected option B) to keep the direct visual mapping onto the paper's printed `k1` / `k2`; the role is recorded in the `label()`. Reusing `km` for `kadair1` (rejected option C) was declined because `km` denotes a true Michaelis constant of a saturable process, whereas `kadair1` is a denominator coefficient of a stimulation factor. Note that the paper's own mechanistic reading of the two constants (Discussion: a 1:1 complex that may dissociate or bind a second drug molecule) is an interpretation of an empirical fit, not a separately identified binding model -- the TMDD `kon` / `koff` of the same paper are the real binding constants.
+
+### lsstim_<driver>_<target>, sstim_<driver>_<target> (**canonical linear inter-pool stimulation factor**)
+- **Type:** paper-named-param
+- **Role:** Linear stimulation slope of one turnover pool on another pool's turnover, entering as `(1 + sstim_<driver>_<target> * (<driver> - <driver_baseline>))`. Units are the reciprocal of the DRIVER's concentration units, so two members of the same feedback loop routinely carry different scales. `<driver>` and `<target>` are the canonical compartment / analyte stems from `compartment-names.md`, named in that order, so the direction of the effect is readable without consulting the source. Log-transformed in `ini()` as `lsstim_<driver>_<target>`, bare inside `model()`. Pairs naturally with the `lkin_<analyte>` / `lkout_<analyte>` turnover family.
+- **Source aliases:**
+  - `SGlu` / `SIns` -- Gao 2012 eqs. 5-6 and Table 4 ("Stimulation factor of glucose on insulin secretion", "Stimulation factor of insulin on glucose disposal").
+- **Example models:** `Gao_2012_exenatide_glucose_insulin_rat.R` (`sstim_glucose_insulin = 0.0684 1/mM`, `sstim_insulin_glucose = 0.157 1/nM`; founding example).
+- **Notes:** Ratified 2026-09-02 (task `oare_PMC3336795` sidecar request-001 q2, answer A). The paper's own short names `sglu` / `sins` (rejected option B) were declined because they do not say which pool is driver and which is target -- fatal in a feedback loop where both pools are simultaneously both. `lslope_<target>` (rejected option C) was declined for the same ambiguity and because it would overload `slope`, which in this register denotes a concentration-response LINE (`lslope0` / `lslope_inf` in `Liesenfeld_2006_dabigatran_ECT.R`) or an assay cross-calibration slope (`cal_slope_<assay>`), neither of which is an indirect-response coefficient. Do NOT use this family for a drug's effect on a pool: a drug-driven stimulation of production or loss is `lsmax` / `lemax` with its own potency term. This family is specifically for a BIOMARKER driving another biomarker's turnover. When the driver's elevation is rectified at zero (the effect switching off below baseline), that gating belongs in `model()` as a `(delta > 0)` factor, not in a second parameter.
+
+### kon_placebo, koff_placebo (**canonical placebo kinetic-system onset and offset rate constants**)
+- **Type:** paper-named-param
+- **Role:** The two first-order rate constants (1 / time) of a hypothetical placebo "kinetic" system: `kon_placebo` moves a dimensionless dummy dose out of `depot_placebo` into `central_placebo`, and `koff_placebo` removes it from `central_placebo` (see the `depot_placebo` / `central_placebo` pair in `compartment-names.md`). Together they set the time-course -- onset, peak and washout -- of the placebo term of the effect model, whose magnitude is set separately by `slope_placebo`. Strictly positive, so `ini()` normally carries the log-transformed `lkon_placebo` / `lkoff_placebo` form; use it whenever the source reports the IIV as a percent CV.
+- **Source aliases:**
+  - `k_on`, `KON` -- "rate constant for onset of placebo response" (Ravva 2015 Supplementary Table S1).
+  - `k_off`, `KOFF` -- "rate constant for offset of placebo response" (Ravva 2015 Supplementary Table S1).
+- **Example models:** `Ravva_2015_varenicline.R` (`lkon_placebo = fixed(log(0.0112))`, `lkoff_placebo = fixed(log(0.130))`, both fixed from a placebo-data-only fit before the combined drug fit).
+- **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (sidecar `oare_PMC4832970` request-001 q1, operator answer B), spelled with the full `placebo` token to match `fpg_placebo` / `hba1c_placebo` / `skit_pla`; no `_pbo` suffix exists in these registers. The `_placebo` qualifier is what keeps these clear of the register's deliberate refusal to canonicalise a bare `kon` (see "Why `kon` is NOT canonicalised" below) -- these two carry exactly one dimensionality, 1 / time, because the driven quantity is a dimensionless dummy amount. Distinct from `k1` / `k2`, which are the association and dissociation rate constants of a real reversible binding reaction and whose association member is second-order. Distinct from `lkplacebo` in `Johnston_2019_empagliflozin.R` and `kpbo` in `Nguyen_2025_valbenazine_tmc.R`, which are single onset-rate constants of an *algebraic* asymptotic-exponential placebo term with no kinetic states behind them; use `kon_placebo` / `koff_placebo` only when the paper actually builds the two-state dummy-dose system, because only then does the rise-and-fall shape exist.
+
+### slope_placebo, slope_drug (**canonical linear placebo and drug effect slopes**)
+- **Type:** paper-named-param
+- **Role:** The two coefficients of an additive linear effect model in which the response decomposes as baseline plus placebo plus drug, `E = e0 + slope_placebo * <placebo driver> + slope_drug * <drug concentration>`. `slope_drug` multiplies a real drug concentration, so its units are effect per concentration unit; `slope_placebo` multiplies the placebo kinetic-system driver `central_placebo`, so its units are effect per unit dummy amount and are only interpretable together with the unit-dose convention of that system. Both are kept on the bare, untransformed scale: published values are typically negative (an improvement), which forbids a log transform, and the accompanying IIV is additive.
+- **Source aliases:**
+  - `PSLP`, "placebo response parameter" -- Ravva 2015 Supplementary Table S1.
+  - `DSLP`, "drug response parameter" -- Ravva 2015 Supplementary Table S1.
+- **Example models:** `Ravva_2015_varenicline.R` (`slope_placebo = -3.32` and `slope_drug = -0.192`, both on the logit scale of a 0-100 craving score, each with an additive eta).
+- **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (sidecar `oare_PMC4832970` request-001 q2, operator answer A: `slope_drug`, with its partner spelled `slope_placebo` to match the full-token placebo convention). The two are registered as a pair because the naming only makes sense as a pair -- a model with a single linear drug slope and no placebo arm should use the plain canonical `slope`. An additive eta is load-bearing rather than incidental when the typical slope is negative but small relative to its IIV: it lets a subject's individual slope take either sign, which is what per-subject IPRED panels of such papers show. When a paper fits several parallel linear models of different endpoints, suffix by endpoint (`slope_drug_<endpoint>`) the same way multi-output residual SDs are suffixed.
+
 
 ## Nested (multi-level) random effects
 
@@ -2221,3 +2598,146 @@ Vocabulary for permeability-limited whole-body PBPK models, in which each tissue
 - **Source aliases:** `Vd(t)`, `Vdss`
 - **Example models:** `Gaohua_2023_permeabilityLimited_pbpk.R`
 - **Notes:** Named `Vdt` rather than `vd` precisely so that the two never collide in one model.
+
+---
+
+## Extracorporeal circuit parameters (CRRT / ECMO / apheresis)
+
+Prescription, geometry and transport parameters of an extracorporeal blood circuit carried as *structure* (see the `circuit_*` / `reservoir_*` compartment namespace in `inst/references/compartment-names.md`). Like that namespace these names are modality-neutral, so an ECMO oxygenator or an apheresis column reuses them. The five `q*` flows are the settings a clinician dials into the machine and are exposed as fixed `ini()` entries so a user can re-point a circuit model at a different prescription with `rxSolve(params = ...)` rather than editing the model. Registered 2026-09-02 alongside the compartment family (task `oare_PMC13274749` sidecar question q1, answer A).
+
+### qbfr (**canonical extracorporeal circuit blood flow rate**)
+- **Type:** paper-named-param
+- **Role:** Blood flow rate drawn from the patient (or the ex vivo reservoir) through the circuit. Splits on the systemic haematocrit into the red-cell and plasma delivery fluxes.
+- **Source aliases:** `Q_BFR`, `BFR`, `blood flow rate`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Papers print this in mL/min while every other circuit flow is printed in mL/h; convert both to the model's `units$time` and say so in the parameter comment.
+
+### qdia (**canonical dialysate flow rate**)
+- **Type:** paper-named-param
+- **Role:** Countercurrent dialysate flow rate through a hemofilter or dialyser. Enters the effluent flow, `qeff = qdia + qfil`.
+- **Source aliases:** `Q_DIA`, `DIA`, `dialysate flow rate`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Zero for a pure hemofiltration (CVVH) prescription; non-zero for CVVHD and CVVHDF.
+
+### qpbp (**canonical pre-blood pump flow rate**)
+- **Type:** paper-named-param
+- **Role:** Pre-blood pump replacement fluid flow rate, infused into the blood line upstream of the filter. Dilutes the blood entering the filter, which is why the pre-filter haematocrit is `hct * qbfr / (qbfr + qpbp)`.
+- **Source aliases:** `Q_PBP`, `PBP`, `pre-blood pump`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### qrep (**canonical replacement fluid flow rate**)
+- **Type:** paper-named-param
+- **Role:** Total post-filter replacement fluid flow rate. Contributes to the blood-to-dialysate filtration flow `qfil = qpbp + qrep + qpfr` and is subtracted from the return-line flow.
+- **Source aliases:** `Q_REP`, `REP`, `replacement fluids`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### qpfr (**canonical patient fluid removal rate**)
+- **Type:** paper-named-param
+- **Role:** Net ultrafiltration rate removed from the patient (fluid removal prescription). Contributes to `qfil` and is subtracted from the return-line flow. Zero in a bench circuit that is not net-removing fluid.
+- **Source aliases:** `Q_PFR`, `UFR`, `patient fluid removal`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Papers sometimes tabulate the same quantity as `UFR` (ultrafiltration rate); check whether the tabulated number is the *net* patient removal or the *gross* filtrate flow before mapping it here, because the gross flow is `qfil`, not `qpfr`.
+
+### vreservoir (**canonical ex vivo blood reservoir volume**)
+- **Type:** paper-named-param
+- **Role:** Volume of the closed-loop blood reservoir of an ex vivo bench circuit; splits on the haematocrit into the `reservoir_plasma` and `reservoir_rbc` volumes.
+- **Source aliases:** `reservoir volume`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### vfilter (**canonical circuit blood-side volume**)
+- **Type:** paper-named-param
+- **Role:** Blood-side volume of the circuit's drug-contacting body -- the hemofilter (or oxygenator) together with the tubing prime volume; splits on the mean filter haematocrit into the `circuit_plasma` and `circuit_rbc` volumes.
+- **Source aliases:** `filter volume`, `Filter Blood Volume`, `Circuit Blood Volume`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Device product guides tabulate the filter blood volume and the circuit blood volume separately; a model that lumps the tubing into the filter state should carry the *circuit* volume here and say which it used.
+
+### vdialysate (**canonical hemofilter dialysate-side volume**)
+- **Type:** paper-named-param
+- **Role:** Dialysate-side volume of a hemofilter or dialyser; the volume of the `circuit_dialysate` state.
+- **Source aliases:** `dialysate volume`, `filter prime volume`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### safilter (**canonical hemofilter membrane surface area**)
+- **Type:** paper-named-param
+- **Role:** Semipermeable membrane surface area of a hemofilter, dialyser or oxygenator. Enters the diffusive membrane transfer term `dfilter * safilter / thfilter`.
+- **Source aliases:** `SA`, `Membrane Surface Area`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Printed in m2 by device product guides; carry it in whatever length unit makes `dfilter * safilter / thfilter` come out in the model's flow units, and record the conversion in the parameter comment.
+
+### thfilter (**canonical hemofilter membrane thickness**)
+- **Type:** paper-named-param
+- **Role:** Semipermeable membrane (fiber wall) thickness of a hemofilter, dialyser or oxygenator; the diffusion path length in `dfilter * safilter / thfilter`.
+- **Source aliases:** `h`, `membrane thickness`, `Fiber Wall Thickness`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+
+### dfilter (**canonical membrane diffusion coefficient**)
+- **Type:** paper-named-param
+- **Role:** Diffusion coefficient of the drug across the hemofilter membrane (area / time). Together with `safilter` and `thfilter` it sets the diffusive permeability-surface product that drives drug from circuit plasma into the dialysate down the unbound concentration gradient.
+- **Source aliases:** `D`, `MembraneDiffusionCoefficient`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Usually an *estimated* quantity (optimized against ex vivo circuit data) rather than a device constant, so it is drug-specific as well as filter-specific.
+
+### krbc (**canonical red-cell to plasma concentration ratio**)
+- **Type:** paper-named-param
+- **Role:** Equilibrium ratio of the drug concentration in red blood cells to that in plasma; the target of the permeability-limited plasma / red-cell exchange, `flux = PS * (C_plasma - C_rbc / krbc)`. Related to the blood-to-plasma ratio by `B:P = krbc * hct + 1 - hct`.
+- **Source aliases:** `K_rbc`, `Partition coefficient (blood cells/plasma)`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** PK-Sim and similar platforms compute this internally from lipophilicity and the red-cell composition rather than exposing it as an input; when extracting from such a paper, evaluate the platform's own stored formula rather than substituting a literature blood-to-plasma ratio, and check the implied B:P against the published value.
+
+### permrbc (**canonical plasma to red-cell membrane permeability**)
+- **Type:** paper-named-param
+- **Role:** Membrane permeability (length / time) governing passive diffusion of drug between plasma and red blood cells. Multiplied by the exchange surface area and the fraction unbound to give the permeability-surface product.
+- **Source aliases:** `P (plasma->blood cells)`, `P (blood cells->plasma)`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** For small molecules the resulting permeability-surface product is typically orders of magnitude larger than the blood flow, so the two phases stay at equilibrium; carrying the exchange explicitly rather than assuming instant equilibrium keeps the assumption visible and testable.
+
+### satovrbc (**canonical red-cell exchange area per unit red-cell volume**)
+- **Type:** paper-named-param
+- **Role:** Effective plasma / red-cell exchange surface area per unit red-cell volume (inverse length). Multiplied by the haematocrit and the compartment volume it gives the exchange surface area for `permrbc`.
+- **Source aliases:** `A_to_V_bc`, `Surface/Volume ratio (blood cells)`
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Platform implementations fold a fixed accessibility factor into this constant (Open Systems Pharmacology multiplies the geometric surface-to-volume ratio by 0.6); record whether the registered value is the geometric ratio or the effective one.
+
+### vmaxcrrt (**canonical maximum circuit adsorption rate**)
+- **Type:** paper-named-param
+- **Role:** Maximum rate (amount / time) of the saturable drug-loss process in an extracorporeal circuit -- adsorption to the membrane and tubing plus any filter clearance and degradation not modelled separately -- in `vmaxcrrt * C / (C + kmcrrt)`.
+- **Source aliases:** `V_max` (McKnite 2026 Results 3.3 and MoBi reaction `MidazolamDegradation`)
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Kept distinct from the registered `vmax` (metabolic Michaelis-Menten maximum rate) because it is a *device* property, drug- and circuit-specific rather than enzyme-specific, and because a circuit model may need both at once when the module is grafted onto a body model that metabolises the drug. Pairs with [[kmcrrt]].
+
+### kmcrrt (**canonical circuit adsorption half-saturation concentration**)
+- **Type:** paper-named-param
+- **Role:** Concentration at which the saturable circuit drug-loss process runs at half its maximum rate, in `vmaxcrrt * C / (C + kmcrrt)`. The low-concentration limit `vmaxcrrt / kmcrrt` is the effective first-order circuit clearance and is the quantity to compare against the flow-limited filter clearance `fu * qeff`.
+- **Source aliases:** `K_m` (McKnite 2026 Results 3.3 and MoBi reaction `MidazolamDegradation`)
+- **Example models:** `McKnite_2026_midazolam_crrt.R` (founding example)
+- **Notes:** Papers report this in molar units (pmol/mL, umol/L) even when the model is built in mass units; convert with the molecular weight and record the arithmetic in the parameter comment. Pairs with [[vmaxcrrt]].
+
+## Neural-ODE (NODE) network parameters
+
+### nn_w1_rc_1, nn_w1_rc_2, nn_w1_rc_3, nn_w1_rc_4, nn_w1_rc_5 (**canonical NODE input-to-hidden weights, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Input-to-hidden-layer weights of the five-neuron network that replaces the production term of an indirect-response (`rc` = response-compartment) model. Unitless. In the pmxNODE encoding the weight enters as `-(w^2)`, i.e. squared and negated to enforce a monotone-decreasing response, so only the magnitude is identifiable.
+- **Source aliases:**
+  - `Wrc_11` .. `Wrc_15` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_b1_rc_1, nn_b1_rc_2, nn_b1_rc_3, nn_b1_rc_4, nn_b1_rc_5 (**canonical NODE hidden-layer biases, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Hidden-layer biases of the same five-neuron network. Unitless.
+- **Source aliases:**
+  - `brc_11` .. `brc_15` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_w2_rc_1, nn_w2_rc_2, nn_w2_rc_3, nn_w2_rc_4, nn_w2_rc_5 (**canonical NODE hidden-to-output weights, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Hidden-to-output-layer weights of the same five-neuron network. These carry the units of the quantity the network returns -- here a production rate, so response units per time.
+- **Source aliases:**
+  - `Wrc_21` .. `Wrc_25` -- pmxNODE / Monolix names in the Braem 2026 Data S2 deposit.
+- **Example models:** `Bram_2026_warfarin_node.R`.
+
+### nn_beta_rc (**canonical NODE softplus sharpness, response-compartment production network**)
+- **Type:** paper-named-param
+- **Role:** Sharpness parameter of the softplus activation `softplus(x) = log(1 + exp(beta * x)) / beta`, which approaches a rectified linear unit as beta grows. Unitless, and normally fixed rather than estimated.
+- **Source aliases:**
+  - `beta` -- Braem 2026 Supporting Information Equation 2.
+- **Example models:** `Bram_2026_warfarin_node.R` (`nn_beta_rc = fixed(20)`, the pmxNODE default).

@@ -1,0 +1,813 @@
+---
+title: "Everolimus (Park 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Everolimus (Park 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Park_2023_everolimus"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Park_2023_everolimus"))$description`
+* Article: <https://doi.org/10.3389/fphar.2023.1197549>
+* Supplement (Data Sheet 1: inclusion criteria, Table S1 co-medications, Table S2
+  simulation scenarios, Table S3 simulated troughs, Figures S1-S4):
+  <https://www.frontiersin.org/articles/10.3389/fphar.2023.1197549/full#supplementary-material>
+
+Park and colleagues developed the first population PK model for everolimus in
+patients with refractory seizures associated with **focal cortical dysplasia
+(FCD) type II**. FCD II shares its mTOR-pathway biology with tuberous sclerosis
+complex (TSC) -- somatic `TSC1` / `TSC2` mutations were identified in FCD II
+patients -- but everolimus had only been labelled for TSC, and no dosing
+regimen had been established for FCD. The paper's purpose is to supply one.
+
+The final model is a one-compartment model with first-order absorption in which
+apparent oral clearance rises **linearly** with body surface area:
+
+$$\mathrm{CL/F} = 12.5 + 9.71 \times \frac{\mathrm{BSA}}{1.5}\ \mathrm{L/h},
+\qquad V/F = 293\ \mathrm{L}, \qquad k_a = 0.585\ \mathrm{h^{-1}}$$
+
+The additive (rather than multiplicative power) covariate form is unusual and is
+the single most important thing to get right when reading this model; the
+authors note it agrees with the FDA clinical pharmacology review, in which
+everolimus clearance also increases linearly with BSA.
+
+# Population
+
+The model was fit to **152 whole-blood everolimus concentrations from 22
+patients** enrolled in a double-blinded, placebo-controlled, crossover
+randomised trial at Severance Hospital, Seoul, Republic of Korea, between
+September 2017 and May 2020 (Table 1; Methods 2.1-2.3).
+
+Patients had FCD type II with refractory seizures despite more than two
+antiepileptic drugs, at least three seizures per month over two months, and no
+response to vagus nerve stimulation or dietary treatment. Median age was 13.5
+years (range 4-32), median body weight 50 kg (range 13-86), and median BSA
+1.5 m^2 (range 0.6-2.0); 9 of 22 patients (40.9%) were male. All patients
+continued at least one concomitant antiepileptic drug, unchanged through the
+baseline and core phases.
+
+Everolimus (Afinitor disperz, tablet for oral suspension) was given once daily,
+starting at 4.5 mg/m^2/day and adjusted by therapeutic drug monitoring in 2 mg
+steps toward a target trough of 5-15 ng/mL. Sampling was sparse and
+predominantly trough-only, with additional 1-4 h post-dose samples in the
+extension phase; the assay was HPLC-MS/MS on **whole blood** (LLOQ 1.1 ng/mL).
+The sparse sampling is the authors' stated reason for preferring a
+one-compartment structure over the two-compartment models reported for
+everolimus elsewhere.
+
+The same information is available programmatically via the model's `population`
+metadata:
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Park_2023_everolimus"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+Every `ini()` entry in `inst/modeldb/specificDrugs/Park_2023_everolimus.R`
+carries an in-file comment naming its source location. They are collected here
+for review.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lka` (ka) | 0.585 /h | Table 2, "Final model" column, KA (RSE 30%); restated in the Abstract ("TVKA = 0.585") |
+| `lcl` (BSA-independent CL term) | 12.5 L/h | Table 2, "Final model" column, CL (RSE 26%); Abstract ("TVCL = 12.5 + ...") |
+| `e_bsa_cl` (linear BSA slope on CL) | 9.71 L/h | Table 2, "Final model" column, theta BSA on CL (RSE 33%); Abstract ("... + 9.71 x (BSA/1.5)") |
+| `lvc` (V/F) | 293 L | Table 2, "Final model" column, V (RSE 30%); Abstract ("TVV = 293") |
+| `etalcl` | 0.02729 (= 0.1652^2) | Table 2, "Final model" omega CL = 0.1652, a log-scale SD (see note below) |
+| `etalvc` | 0.04339 (= 0.2083^2) | Table 2, "Final model" omega V = 0.2083, a log-scale SD (see note below) |
+| `etalka` | `fixed(0)` | Results 3.2: "The inter-individual variability of the absorption rate (omega KA^2) was fixed as zero"; Discussion |
+| `propSd` | 0.2943 | Table 2, "Final model" sigma proportional (RSE 14%); Results 3.2 ("best explained by the proportional error model") |
+| `TVCL = CL + theta_BSA * (BSA/1.5)` | n/a | Table 2 header equation; Abstract Results; Results 3.2 |
+| Exponential IIV, `theta_i = theta_POP * exp(eta_i)` | n/a | Methods 2.4 |
+| One-compartment, first-order absorption (ADVAN2 TRANS2) | n/a | Methods 2.4; Results 3.2; Conclusion |
+| Normalising constant 1.5 m^2 | n/a | Table 1 (cohort median BSA); Methods 2.4 ("centered on their median values") |
+| 1000 ng/mg unit conversion | n/a | Derived: doses are mg and V is L, so `central/vc` is mg/L; the paper reports ng/mL |
+
+**Are Table 2's omega and sigma variances or standard deviations?** They are
+standard deviations, and the paper proves it itself. Results 3.2 reports the
+**base-model** variances as `omega_CL^2 = 0.0409` and `omega_V^2 = 0.0602`,
+while the corresponding base-model cells in Table 2 read 0.2022 and 0.2454 --
+exactly `sqrt(0.0409)` and `sqrt(0.0602)`. The final-model cells (0.1652,
+0.2083) are therefore also SDs, and are squared in `ini()` to the variance scale
+nlmixr2 expects. The `sigma` row sits in the same column under the same
+convention, so 0.2943 is a 29.4% proportional error. The stochastic check below
+confirms this independently: reading these cells as variances would put the
+simulated trough CV far above the ~50% that Supplementary Table S3 reports.
+
+```{r show-ini}
+ui <- rxode2::rxode(readModelDb("Park_2023_everolimus"))
+ui$iniDf |>
+  dplyr::select(name, est, fix, label) |>
+  dplyr::rename("Parameter" = name, "Estimate" = est, "Fixed" = fix, "Label" = label) |>
+  knitr::kable(digits = 5, caption = "Packaged ini() values for Park_2023_everolimus.")
+```
+
+# The linear BSA-clearance relationship
+
+The defining feature of this model is that BSA enters clearance additively. The
+check below confirms the packaged model reproduces the published equation
+exactly at every BSA the authors simulated.
+
+```{r clearance}
+mod <- readModelDb("Park_2023_everolimus")
+
+bsa_grid <- c(0.5, 0.7, 1, 1.5, 1.7, 2)
+
+# Solve the typical-value model once per BSA and read back the derived `cl`.
+cl_check <- lapply(bsa_grid, function(b) {
+  ev <- rxode2::et(amt = 1, cmt = "depot") |>
+    rxode2::et(0, cmt = "central")
+  d <- as.data.frame(ev)
+  d$BSA <- b
+  s <- rxode2::rxSolve(rxode2::zeroRe(mod), d, addDosing = FALSE)
+  data.frame(BSA = b, cl_model = s$cl[1], vc_model = s$vc[1], ka_model = s$ka[1])
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(
+    cl_published = 12.5 + 9.71 * (BSA / 1.5),
+    pct_diff     = 100 * (cl_model - cl_published) / cl_published
+  )
+
+cl_check |>
+  dplyr::select(BSA, cl_model, cl_published, pct_diff, vc_model, ka_model) |>
+  dplyr::rename(
+    "BSA (m^2)"           = BSA,
+    "CL/F model (L/h)"    = cl_model,
+    "CL/F published (L/h)" = cl_published,
+    "% diff"              = pct_diff,
+    "V/F (L)"             = vc_model,
+    "ka (1/h)"            = ka_model
+  ) |>
+  knitr::kable(digits = 4, caption = "Packaged CL/F against the published equation CL/F = 12.5 + 9.71 x (BSA/1.5).")
+
+# Deterministic: no random draws, so an exact bound is correct here.
+stopifnot(
+  max(abs(cl_check$pct_diff)) < 1e-8,
+  # V/F and ka carry no covariate.
+  max(abs(cl_check$vc_model - 293)) < 1e-8,
+  max(abs(cl_check$ka_model - 0.585)) < 1e-8
+)
+```
+
+At the cohort median BSA of 1.5 m^2, CL/F = 12.5 + 9.71 = 22.21 L/h. Note that
+clearance rises only about 1.6-fold across the entire observed BSA range
+(0.6 to 2.0 m^2) -- far less than proportionally -- which is exactly why a
+mg/m^2 dose (which rises 3.3-fold across the same range) overshoots in large
+patients and undershoots in small ones, and is the mechanism behind the paper's
+dose recommendations.
+
+# Steady-state profiles (replicates Supplementary Figures S1-S3)
+
+The authors simulated 35 BSA x dose scenarios (Supplementary Table S2) for
+14 days of once-daily dosing, which they state is enough to reach steady state.
+With a terminal half-life near 9 h that is amply true, so the deterministic
+profiles below are generated with rxode2's steady-state dosing flag (`ss = 1`),
+which is exact rather than approximately converged.
+
+```{r scenarios}
+# Supplementary Table S2: the authors' 35 scenarios (BSA 0.7 was explored only
+# at 3, 4.5, 5, 6 and 7 mg/m^2 -- there is no 9 mg/m^2 arm at BSA 0.7).
+scenarios <- tidyr::expand_grid(
+  BSA        = c(0.5, 0.7, 1, 1.5, 1.7, 2),
+  dose_mgm2  = c(3, 4.5, 5, 6, 7, 9)
+) |>
+  dplyr::filter(!(BSA == 0.7 & dose_mgm2 == 9)) |>
+  dplyr::mutate(
+    amt      = dose_mgm2 * BSA,
+    scenario = sprintf("BSA %.1f / %s mg/m2", BSA, format(dose_mgm2, trim = TRUE)),
+    id       = dplyr::row_number()
+  )
+
+stopifnot(nrow(scenarios) == 35)
+
+knitr::kable(
+  scenarios |>
+    dplyr::select(id, BSA, dose_mgm2, amt) |>
+    dplyr::rename("Scenario" = id, "BSA (m^2)" = BSA,
+                  "Dose (mg/m^2)" = dose_mgm2, "Actual amount (mg)" = amt),
+  digits = 3,
+  caption = "Replicates Supplementary Table S2 of Park 2023 (35 simulation scenarios)."
+)
+```
+
+```{r typical-profiles}
+# One deterministic profile per scenario over a single steady-state interval.
+# Observations are placed on the ODE state `central`; rxode2 returns the
+# algebraic observable Cc as a column at those rows.
+grid_h <- seq(0, 24, by = 0.1)
+
+events_typ <- scenarios |>
+  dplyr::group_by(id) |>
+  dplyr::reframe(
+    dplyr::bind_rows(
+      data.frame(time = 0,      evid = 1L, amt = amt, cmt = "depot",
+                 ii = 24, ss = 1L),
+      data.frame(time = grid_h, evid = 0L, amt = NA_real_, cmt = "central",
+                 ii = 0,  ss = 0L)
+    )
+  ) |>
+  dplyr::left_join(scenarios |> dplyr::select(id, BSA, dose_mgm2, scenario),
+                   by = "id") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+sim_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events_typ,
+  keep = c("BSA", "dose_mgm2", "scenario"), addDosing = FALSE
+) |>
+  as.data.frame()
+
+stopifnot(nrow(sim_typ) > 0, !anyNA(sim_typ$Cc), all(sim_typ$Cc >= 0))
+```
+
+```{r figure-s1-s3, fig.height = 6}
+# Replicates Supplementary Figures S1-S3 of Park 2023: steady-state
+# concentration-time course by BSA and BSA-based dose regimen.
+sim_typ |>
+  dplyr::mutate(dose_lab = factor(sprintf("%s mg/m2",
+                                          format(dose_mgm2, trim = TRUE)),
+                                  levels = sprintf("%s mg/m2",
+                                                   format(c(3, 4.5, 5, 6, 7, 9),
+                                                          trim = TRUE)))) |>
+  ggplot(aes(time, Cc, colour = dose_lab)) +
+  geom_hline(yintercept = c(5, 15), linetype = "dashed", colour = "red") +
+  geom_line(linewidth = 0.6) +
+  facet_wrap(~ sprintf("BSA %.1f m2", BSA)) +
+  labs(
+    x = "Time after dose (h)", y = "Everolimus whole blood (ng/mL)",
+    colour = "Dose",
+    title = "Steady-state profiles by BSA and BSA-based dose",
+    caption = paste("Replicates Supplementary Figures S1-S3 of Park 2023.",
+                    "Red dashed lines: 5-15 ng/mL target trough range.")
+  ) +
+  theme_bw()
+```
+
+## The solved profile against its own closed form
+
+For a one-compartment model with first-order absorption and complete
+bioavailability, the steady-state concentration has a closed form. Comparing the
+ODE solution against it is an internal identity check with no random draws, so a
+tight bound is the correct assertion.
+
+```{r closed-form}
+ss_conc <- function(t, amt, bsa, ka = 0.585, vc = 293, tau = 24) {
+  cl  <- 12.5 + 9.71 * (bsa / 1.5)
+  kel <- cl / vc
+  1000 * amt * ka / (vc * (ka - kel)) *
+    (exp(-kel * t) / (1 - exp(-kel * tau)) -
+       exp(-ka * t) / (1 - exp(-ka * tau)))
+}
+
+cf <- sim_typ |>
+  dplyr::mutate(
+    Cc_closed = ss_conc(time, dose_mgm2 * BSA, BSA),
+    pct_diff  = 100 * (Cc - Cc_closed) / Cc_closed
+  )
+
+cat(sprintf("max |%% difference| between ODE solve and closed form: %.3g%%\n",
+            max(abs(cf$pct_diff))))
+
+# Pure numerical error between two evaluations of the same parameters; no
+# cohort is drawn, so this bound is deterministic and must stay tight.
+stopifnot(max(abs(cf$pct_diff)) < 1e-3)
+```
+
+# PKNCA validation
+
+Park 2023 reports **no** NCA parameters -- no Cmax, Tmax, AUC or half-life table
+appears anywhere in the paper or supplement, because the analysis is a
+model-based TDM study rather than a dedicated PK study. There is therefore no
+published NCA table to compare against, and `ncaComparisonTable()` is not
+applicable here.
+
+Instead, NCA is run on the deterministic steady-state profiles and checked
+against the **analytical identities the model itself implies**. This is the
+stronger check in this situation: each identity is an exact consequence of the
+structural model and the packaged parameter values, so a transcription error in
+any of CL, V, ka, the BSA equation or the unit conversion breaks it.
+
+```{r pknca}
+sim_nca <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, scenario)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | scenario + id,
+                             concu = "ng/mL", timeu = "h")
+
+dose_df <- scenarios |>
+  dplyr::transmute(id, time = 0, amt, scenario)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | scenario + id,
+                             doseu = "mg")
+
+# Steady state over one dosing interval (PKNCA recipe 3).
+intervals <- data.frame(
+  start     = 0,
+  end       = 24,
+  cmax      = TRUE,
+  tmax      = TRUE,
+  cmin      = TRUE,
+  auclast   = TRUE,
+  cav       = TRUE,
+  half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(id, scenario, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::left_join(scenarios |> dplyr::select(id, BSA, dose_mgm2, amt), by = "id")
+
+stopifnot(nrow(nca_wide) == 35)
+```
+
+```{r pknca-identities}
+identity_check <- nca_wide |>
+  dplyr::mutate(
+    cl_pub      = 12.5 + 9.71 * (BSA / 1.5),
+    kel_pub     = cl_pub / 293,
+    # At steady state with F = 1, AUC over one interval is exactly Dose / CL.
+    # Dose is mg and CL is L/h, so Dose/CL is mg*h/L = 1000 ng*h/mL.
+    auc_ident   = 1000 * amt / cl_pub,
+    # Cavg = AUCtau / tau.
+    cav_ident   = auc_ident / 24,
+    # ka >> kel here, so the terminal slope is kel and t1/2 = ln(2)/kel.
+    thalf_ident = log(2) / kel_pub,
+    auc_pct     = 100 * (auclast   - auc_ident)   / auc_ident,
+    cav_pct     = 100 * (cav       - cav_ident)   / cav_ident,
+    thalf_pct   = 100 * (half.life - thalf_ident) / thalf_ident
+  )
+
+identity_check |>
+  dplyr::select(scenario, auclast, auc_ident, auc_pct,
+                cav, cav_ident, cav_pct, half.life, thalf_ident, thalf_pct) |>
+  dplyr::rename(
+    "Scenario"                 = scenario,
+    "AUCtau PKNCA (ng*h/mL)"   = auclast,
+    "AUCtau = 1000*D/CL"       = auc_ident,
+    "% diff (AUC)"             = auc_pct,
+    "Cavg PKNCA (ng/mL)"       = cav,
+    "Cavg = AUCtau/24"         = cav_ident,
+    "% diff (Cavg)"            = cav_pct,
+    "t1/2 PKNCA (h)"           = half.life,
+    "t1/2 = ln2/kel (h)"       = thalf_ident,
+    "% diff (t1/2)"            = thalf_pct
+  ) |>
+  knitr::kable(digits = 3,
+               caption = paste("Steady-state PKNCA output against the analytical",
+                               "identities implied by the packaged model.",
+                               "Park 2023 reports no NCA values, so these are",
+                               "internal-consistency checks, not a comparison",
+                               "against published NCA."))
+
+# All three are deterministic identities evaluated on a typical-value profile
+# with no IIV and no residual error, so no cohort is drawn and these bounds
+# stay tight.
+#
+# The half-life bound is 2% rather than 0.1% for a understood reason, not to
+# make it pass. PKNCA selects its lambda-z window automatically and starts it
+# at about 7 h (see lambda.z.time.first below), where the absorption term
+# exp(-ka*t) = exp(-0.585*7) still contributes ~1.7% of the signal. Because
+# that term is subtracted, the profile is slightly concave over the fitted
+# window and the regression slope comes out marginally shallower than kel, so
+# t1/2 reads systematically ~1% high (realised 0.98% to 1.06% across all 35
+# scenarios, r-squared 0.9999 throughout). A mis-transcribed CL or V moves kel
+# -- and hence t1/2 -- by tens of percent, so a 2% bound still goes red.
+stopifnot(
+  !anyNA(identity_check$auclast),
+  !anyNA(identity_check$half.life),
+  max(abs(identity_check$auc_pct))   < 0.1,
+  max(abs(identity_check$cav_pct))   < 0.1,
+  max(abs(identity_check$thalf_pct)) < 2
+)
+```
+
+```{r pknca-trough}
+# The trough (concentration at the end of the interval) is the quantity the
+# paper actually reports. Read it from the profile at t = 24 h and check it
+# against the closed form.
+trough_typ <- sim_typ |>
+  dplyr::filter(time == 24) |>
+  dplyr::mutate(
+    trough_closed = ss_conc(24, dose_mgm2 * BSA, BSA),
+    pct_diff      = 100 * (Cc - trough_closed) / trough_closed
+  )
+
+stopifnot(nrow(trough_typ) == 35, max(abs(trough_typ$pct_diff)) < 1e-3)
+
+cat(sprintf("Typical-value trough at BSA 1.5 m2 / 4.5 mg/m2: %.3f ng/mL\n",
+            trough_typ$Cc[trough_typ$BSA == 1.5 & trough_typ$dose_mgm2 == 4.5]))
+```
+
+# Reproducing Supplementary Table S3 and Figure 3
+
+Table S3 reports, for each of the 35 scenarios, the **mean** and **standard
+deviation** of the simulated steady-state trough across 1,000 subjects, plus the
+percentage of subjects inside the 5-15 ng/mL target range. Those means are
+population means over the log-normal IIV, so they sit above the typical-value
+trough; reproducing them exercises the IIV and residual-error parameters as well
+as the structural model.
+
+```{r cohort}
+# `set.seed()` seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned per solver thread -- so this cohort is
+# reproducible on this machine and different on a machine with a different
+# thread count. Every assertion below is written to hold for ANY cohort the
+# model can produce (see pattern 12 of the skill's known-failure catalogue).
+set.seed(20231124)
+rxode2::rxSetSeed(20231124)
+
+n_per_arm <- 200L  # 200 per arm is the cap; the paper used 1,000.
+
+events_sim <- scenarios |>
+  dplyr::group_by(id) |>
+  dplyr::reframe(
+    subj = seq_len(n_per_arm),
+    amt = amt, BSA = BSA, dose_mgm2 = dose_mgm2, scenario = scenario
+  ) |>
+  dplyr::mutate(sid = (id - 1L) * n_per_arm + subj) |>
+  dplyr::group_by(sid) |>
+  dplyr::reframe(
+    BSA = BSA, dose_mgm2 = dose_mgm2, scenario = scenario,
+    dplyr::bind_rows(
+      data.frame(time = 0,  evid = 1L, amt = amt, cmt = "depot", ii = 24, ss = 1L),
+      data.frame(time = 24, evid = 0L, amt = NA_real_, cmt = "central", ii = 0, ss = 0L)
+    )
+  ) |>
+  dplyr::rename(id = sid) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+# IDs must be disjoint across arms; duplicates silently merge into one subject.
+stopifnot(
+  !anyDuplicated(unique(events_sim[, c("id", "time", "evid")])),
+  dplyr::n_distinct(events_sim$id) == 35L * n_per_arm
+)
+```
+
+```{r stochastic}
+sim_stoch <- rxode2::rxSolve(
+  mod, events_sim,
+  keep = c("BSA", "dose_mgm2", "scenario"), addDosing = FALSE
+) |>
+  as.data.frame()
+
+# `Cc` is the individual prediction (no residual error); `sim` carries the
+# proportional residual error and is therefore the analogue of the "simulated
+# concentration" the paper summarises.
+trough_stoch <- sim_stoch |>
+  dplyr::filter(time == 24) |>
+  dplyr::group_by(scenario, BSA, dose_mgm2) |>
+  dplyr::summarise(
+    sim_mean = mean(sim),
+    sim_sd   = sd(sim),
+    sim_pct  = 100 * mean(sim >= 5 & sim <= 15),
+    n        = dplyr::n(),
+    .groups  = "drop"
+  )
+
+stopifnot(nrow(trough_stoch) == 35, all(trough_stoch$n == n_per_arm))
+```
+
+```{r table-s3}
+# Supplementary Table S3 of Park 2023, transcribed.
+published_s3 <- tibble::tribble(
+  ~BSA, ~dose_mgm2, ~pub_mean, ~pub_sd, ~pub_pct,
+  0.5,  3,    2.25,  1.00,  1.2,
+  0.5,  4.5,  3.37,  1.50, 13.0,
+  0.5,  5,    3.75,  1.66, 20.8,
+  0.5,  6,    4.50,  2.00, 37.3,
+  0.5,  7,    5.25,  2.33, 50.5,
+  0.5,  9,    6.75,  3.00, 70.4,
+  0.7,  3,    2.76,  1.25,  4.6,
+  0.7,  4.5,  4.14,  1.88, 28.4,
+  0.7,  5,    4.60,  2.09, 39.1,
+  0.7,  6,    5.52,  2.51, 53.0,
+  0.7,  7,    6.43,  2.93, 65.7,
+  1,    3,    3.26,  1.54, 12.4,
+  1,    4.5,  4.89,  2.31, 44.9,
+  1,    5,    5.43,  2.57, 51.8,
+  1,    6,    6.52,  3.08, 66.2,
+  1,    7,    7.61,  3.59, 77.7,
+  1,    9,    9.78,  4.62, 98.6,
+  1.5,  3,    3.64,  1.83, 20.8,
+  1.5,  4.5,  5.46,  2.75, 51.3,
+  1.5,  5,    6.07,  3.05, 59.1,
+  1.5,  6,    7.28,  3.66, 73.5,
+  1.5,  7,    8.50,  4.27, 85.8,
+  1.5,  9,   10.93,  5.49,  8.7,
+  1.7,  3,    3.69,  1.90, 21.7,
+  1.7,  4.5,  5.53,  2.86, 52.1,
+  1.7,  5,    6.15,  3.17, 59.8,
+  1.7,  6,    7.38,  3.81, 73.4,
+  1.7,  7,    8.61,  4.44, 85.4,
+  1.7,  9,   11.07,  5.71,  9.3,
+  2,    3,    3.69,  1.98, 22.2,
+  2,    4.5,  5.53,  2.96, 51.3,
+  2,    5,    6.14,  3.29, 59.4,
+  2,    6,    7.37,  3.95, 73.1,
+  2,    7,    8.60,  4.61, 86.0,
+  2,    9,   11.06,  5.93,  8.1
+)
+
+stopifnot(nrow(published_s3) == 35)
+
+cmp_s3 <- trough_stoch |>
+  dplyr::inner_join(published_s3, by = c("BSA", "dose_mgm2")) |>
+  dplyr::mutate(
+    mean_pct_diff = 100 * (sim_mean - pub_mean) / pub_mean,
+    sd_pct_diff   = 100 * (sim_sd   - pub_sd)   / pub_sd
+  ) |>
+  dplyr::arrange(BSA, dose_mgm2)
+
+stopifnot(nrow(cmp_s3) == 35)
+
+cmp_s3 |>
+  dplyr::select(BSA, dose_mgm2, sim_mean, pub_mean, mean_pct_diff,
+                sim_sd, pub_sd, sd_pct_diff) |>
+  dplyr::rename(
+    "BSA (m^2)"             = BSA,
+    "Dose (mg/m^2)"         = dose_mgm2,
+    "Mean trough simulated" = sim_mean,
+    "Mean trough Table S3"  = pub_mean,
+    "% diff (mean)"         = mean_pct_diff,
+    "SD simulated"          = sim_sd,
+    "SD Table S3"           = pub_sd,
+    "% diff (SD)"           = sd_pct_diff
+  ) |>
+  knitr::kable(digits = 2,
+               caption = paste("Simulated steady-state trough (200/arm) against",
+                               "Supplementary Table S3 of Park 2023 (1,000/arm).",
+                               "Concentrations in ng/mL."))
+```
+
+```{r table-s3-assertions}
+cat(sprintf("mean trough: median %% diff = %+.2f%%, 90th pct |%% diff| = %.2f%%\n",
+            median(cmp_s3$mean_pct_diff), quantile(abs(cmp_s3$mean_pct_diff), 0.9)))
+cat(sprintf("trough SD  : median %% diff = %+.2f%%, 90th pct |%% diff| = %.2f%%\n",
+            median(cmp_s3$sd_pct_diff), quantile(abs(cmp_s3$sd_pct_diff), 0.9)))
+
+# These summarise a randomly drawn cohort, so the bounds are set outside the
+# spread observed across several seeds AND thread counts, not from one run.
+# Realised across (seed, cores) = (1,1) (1,4) (7,2) (99,4) (2024,8) plus the
+# vignette's own render:
+#   median % diff on the mean ran -2.45 to -3.74, 90th pct |% diff| 5.86 to 8.31
+#   median % diff on the SD   ran -1.90 to -4.32, 90th pct |% diff| 9.55 to 13.94
+# The small negative bias is expected: 200/arm here versus 1,000/arm in the
+# paper, and a different Monte Carlo engine. The bounds below still go red on a
+# mis-transcribed clearance, volume, dose or unit, each of which moves the whole
+# distribution by tens of percent. Do not tighten them to a single run.
+stopifnot(
+  abs(median(cmp_s3$mean_pct_diff))             < 8,
+  quantile(abs(cmp_s3$mean_pct_diff), 0.9)      < 15,
+  abs(median(cmp_s3$sd_pct_diff))               < 12,
+  quantile(abs(cmp_s3$sd_pct_diff), 0.9)        < 25
+)
+```
+
+```{r figure-3, fig.height = 5}
+# Replicates Figure 3 (and Supplementary Figure S4) of Park 2023: simulated
+# steady-state trough concentration against BSA, by BSA-based dose regimen.
+cmp_s3 |>
+  dplyr::mutate(dose_lab = factor(sprintf("%s mg/m2",
+                                          format(dose_mgm2, trim = TRUE)),
+                                  levels = sprintf("%s mg/m2",
+                                                   format(c(3, 4.5, 5, 6, 7, 9),
+                                                          trim = TRUE)))) |>
+  ggplot(aes(BSA, sim_mean, colour = dose_lab)) +
+  geom_hline(yintercept = c(5, 15), linetype = "dashed", colour = "red") +
+  geom_errorbar(aes(ymin = pmax(sim_mean - sim_sd, 0), ymax = sim_mean + sim_sd),
+                width = 0.03) +
+  geom_line() +
+  geom_point(size = 1.8) +
+  geom_point(aes(y = pub_mean), shape = 4, size = 2.4, show.legend = FALSE) +
+  labs(
+    x = "Body surface area (m^2)",
+    y = "Steady-state trough (ng/mL)",
+    colour = "Dose",
+    title = "Simulated trough concentration by BSA and dose regimen",
+    caption = paste("Replicates Figure 3 / Supplementary Figure S4 of Park 2023.",
+                    "Points and error bars: simulated mean +/- SD (200/arm).",
+                    "Crosses: Table S3 published means.",
+                    "Red dashed lines: 5-15 ng/mL target range.")
+  ) +
+  theme_bw()
+```
+
+The simulated means (points) sit essentially on top of the published means
+(crosses) across all 35 scenarios, and the figure reproduces the paper's central
+message: because clearance rises much more slowly than BSA, a fixed mg/m^2 dose
+produces troughs that **increase** with BSA and plateau above about 1.5 m^2, so
+small patients are systematically underexposed on the label-style 4.5 mg/m^2
+starting dose.
+
+# The "% of target range" column does not reconcile with its own table
+
+The third column of Table S3 -- the percentage of simulated subjects inside
+5-15 ng/mL -- is the basis for the paper's dose recommendation (Results 3.3
+adopts a 60% of-target criterion). It is **not** reproducible, and the reason is
+visible in the paper's own numbers without reference to any model: a
+distribution with the mean and SD printed in the same row cannot place the
+printed fraction of its mass in [5, 15].
+
+```{r pct-target}
+# Implied % in target from the PAPER'S OWN mean and SD, by moment-matching a
+# log-normal. This uses no model output at all -- it is a check of Table S3
+# against itself.
+implied <- published_s3 |>
+  dplyr::mutate(
+    cv       = pub_sd / pub_mean,
+    sigma    = sqrt(log(1 + cv^2)),
+    mu       = log(pub_mean) - sigma^2 / 2,
+    pct_implied = 100 * (pnorm((log(15) - mu) / sigma) -
+                           pnorm((log(5) - mu) / sigma))
+  )
+
+pct_cmp <- cmp_s3 |>
+  dplyr::inner_join(implied |> dplyr::select(BSA, dose_mgm2, pct_implied),
+                    by = c("BSA", "dose_mgm2")) |>
+  dplyr::mutate(
+    diff_printed_vs_implied = pub_pct - pct_implied,
+    anomalous = abs(diff_printed_vs_implied) > 20
+  )
+
+pct_cmp |>
+  dplyr::select(BSA, dose_mgm2, pub_mean, pub_sd, pub_pct, pct_implied,
+                sim_pct, diff_printed_vs_implied, anomalous) |>
+  dplyr::rename(
+    "BSA (m^2)"                     = BSA,
+    "Dose (mg/m^2)"                 = dose_mgm2,
+    "Mean (Table S3)"               = pub_mean,
+    "SD (Table S3)"                 = pub_sd,
+    "% target printed"              = pub_pct,
+    "% target implied by mean & SD" = pct_implied,
+    "% target simulated"            = sim_pct,
+    "Printed - implied (points)"    = diff_printed_vs_implied,
+    "Anomalous"                     = anomalous
+  ) |>
+  knitr::kable(digits = 1,
+               caption = paste("Table S3's '% of target range' column checked",
+                               "against the mean and SD printed in the same row",
+                               "(log-normal moment match), and against this",
+                               "model's simulation."))
+
+cat(sprintf("Rows where the printed %% differs from its own mean/SD by >20 points: %d\n",
+            sum(pct_cmp$anomalous)))
+print(pct_cmp |>
+        dplyr::filter(anomalous) |>
+        dplyr::select(BSA, dose_mgm2, pub_mean, pub_sd, pub_pct, pct_implied,
+                      sim_pct) |>
+        as.data.frame())
+
+# For the 31 internally consistent rows, the printed value, the value implied by
+# the row's own mean and SD, and this model's simulation all agree to within a
+# few percentage points. Gate on those; the four anomalous rows are recorded as
+# a documented deviation rather than being fitted (see Errata below).
+consistent <- pct_cmp |> dplyr::filter(!anomalous)
+stopifnot(
+  nrow(consistent) == 31L,
+  # Percentage-point differences on a proportion estimated from 200 draws;
+  # bound set well outside the +/- 3.5 point binomial noise plus the observed
+  # systematic offset, and still far short of the 100-point achievable range,
+  # so it can still go red.
+  median(abs(consistent$sim_pct - consistent$pct_implied)) < 15
+)
+```
+
+The four anomalous rows are exactly the **9 mg/m^2 arms at BSA >= 1**:
+
+* BSA 1.0, 9 mg/m^2: printed 98.6%, but mean 9.78 with SD 4.62 implies ~78%.
+* BSA 1.5, 9 mg/m^2: printed 8.7%, but mean 10.93 with SD 5.49 implies ~74%.
+* BSA 1.7, 9 mg/m^2: printed 9.3%, but mean 11.07 with SD 5.71 implies ~73%.
+* BSA 2.0, 9 mg/m^2: printed 8.1%, but mean 11.06 with SD 5.93 implies ~71%.
+
+A mean near 11 ng/mL with an SD near 5.5 places most of its mass inside
+5-15 ng/mL; it cannot place only 8-9% there. The three low values look like a
+lost leading digit and the one high value like a transposition, but the paper
+gives no way to recover the intended numbers, so they are left as published and
+excluded from the gate. Note this is confined to that one column: the mean and
+SD columns of the same four rows reproduce normally (all within about 6%, see
+the Table S3 comparison above).
+
+# Optimal initial dose (Table 3)
+
+Table 3 of Park 2023 recommends an initial dose by BSA band. The table as
+printed covers `0.5 <= BSA < 1` and `1.5 <= BSA` but leaves the interval
+`1 <= BSA < 1.5` uncovered; the Discussion fills that gap, recommending 7-9
+mg/m^2 below 1 m^2 and 6-7 mg/m^2 between 1 and 2 m^2.
+
+```{r table-3}
+recommendation <- trough_stoch |>
+  dplyr::mutate(in_band = sim_mean >= 5 & sim_mean <= 15) |>
+  dplyr::filter(in_band) |>
+  dplyr::group_by(BSA) |>
+  dplyr::summarise(
+    doses_with_mean_in_target = paste(format(sort(dose_mgm2), trim = TRUE),
+                                      collapse = ", "),
+    lowest = min(dose_mgm2),
+    .groups = "drop"
+  )
+
+recommendation |>
+  dplyr::rename(
+    "BSA (m^2)"                              = BSA,
+    "Doses (mg/m^2) with mean trough in 5-15" = doses_with_mean_in_target,
+    "Lowest such dose (mg/m^2)"              = lowest
+  ) |>
+  knitr::kable(caption = paste("Dose regimens whose simulated mean steady-state",
+                               "trough falls inside 5-15 ng/mL, by BSA.",
+                               "Compare Table 3 and the Discussion of Park 2023."))
+
+# The paper's qualitative conclusion: small patients need a HIGHER mg/m^2 dose
+# than large ones. Assert the trend, not a specific dose (which depends on the
+# drawn cohort and on a criterion the paper applies to an unreproducible column).
+lowest_small <- recommendation$lowest[recommendation$BSA == 0.5]
+lowest_large <- recommendation$lowest[recommendation$BSA == 2]
+stopifnot(length(lowest_small) == 1L, length(lowest_large) == 1L,
+          lowest_small > lowest_large)
+cat(sprintf("Lowest dose keeping the mean trough in target: %s mg/m2 at BSA 0.5 vs %s mg/m2 at BSA 2\n",
+            format(lowest_small, trim = TRUE), format(lowest_large, trim = TRUE)))
+```
+
+This reproduces the paper's central dosing conclusion: at BSA 0.5 m^2 a dose
+above the 4.5 mg/m^2 label-style starting dose is required, whereas at BSA
+2 m^2 a lower mg/m^2 dose suffices -- the Abstract's "a dose higher than
+7 mg/m^2 is needed in patients with BSA 0.5 m^2 ... a dose of 4.5 mg/m^2 is
+enough in the population with BSA higher than 1.5 m^2".
+
+# Assumptions and deviations
+
+* **Table 2's omega and sigma are read as standard deviations, not variances.**
+  The paper proves this internally (Results 3.2's base-model variances 0.0409 /
+  0.0602 are the squares of Table 2's base-model cells 0.2022 / 0.2454), and the
+  Table S3 reproduction above confirms it independently. All parameter values are
+  from the paper; nothing was tuned.
+* **IIV on ka is encoded as `etalka ~ fixed(0)`** rather than omitted, to record
+  that the authors modelled and then fixed it (Results 3.2) rather than never
+  considering it. Numerically this is identical to having no eta on ka.
+* **Steady state is generated with rxode2's `ss = 1` flag** rather than by
+  simulating the authors' 14 days of once-daily dosing. With a terminal
+  half-life near 9 h the two are equivalent to within solver tolerance; this was
+  verified directly (14 days of explicit daily doses, an `addl`-expanded
+  equivalent, and `ss = 1` all give a trough of 5.12208 ng/mL at BSA 1.5 m^2 /
+  4.5 mg/m^2, matching the closed form).
+* **Cohort size is 200 per arm, against the paper's 1,000.** This is the
+  library's cap. It introduces Monte Carlo noise of roughly 3% on each arm's
+  mean and about 3.5 percentage points on each arm's in-target proportion, which
+  is why the Table S3 assertions are written on the median and 90th percentile
+  across the 35 arms rather than per arm.
+* **Bioavailability is fixed at 1.** The paper reports CL/F and V/F (apparent,
+  oral) and does not estimate F, so `f(depot)` is left at its default of 1 and
+  all volumes and clearances are apparent.
+* **No covariate other than BSA is implemented.** The 13 further screened
+  covariates are recorded in the model file's `covariatesDataExcluded` metadata
+  with the reason each was dropped. In particular the paper reports **no point
+  estimate** for the albumin-on-clearance coefficient that entered its
+  intermediate full model, so that full model cannot be reconstructed; only the
+  final model is packaged.
+* **The paper reports no NCA parameters**, so the PKNCA section validates
+  against analytical identities implied by the model rather than against a
+  published NCA table.
+* The trial had a placebo arm and a crossover design; only the everolimus
+  exposure data inform the PK model, so no placebo or period effect is
+  represented.
+
+# Errata
+
+* **Supplementary Table S3, "% of target range (5-15 ng/mL)" column, the four
+  9 mg/m^2 rows at BSA >= 1** (printed 98.6, 8.7, 9.3 and 8.1%) are irreconcilable
+  with the mean and standard deviation printed in the same rows, which imply
+  roughly 78, 74, 73 and 71%. This is demonstrable from the paper's own numbers
+  alone and is confirmed by simulation from the packaged model. The mean and SD
+  columns of those same rows reproduce normally, so the defect is confined to
+  that one column. Because the paper's 60%-of-target dose criterion (Results
+  3.3) is applied to this column, the numerical dose recommendation in Table 3
+  cannot be reproduced exactly; the qualitative conclusion (higher mg/m^2 doses
+  for smaller patients) reproduces cleanly.
+* **Table 3 leaves the BSA band `1 <= BSA < 1.5` uncovered** -- it lists only
+  `0.5 <= BSA < 1` and `1.5 <= BSA`. The Discussion covers the gap
+  ("For patients with BSA between 1 and 2 m^2, 6-7 mg/m^2 of everolimus is
+  recommended").
+* **The Abstract and Table 3 apply different criteria.** The Abstract says
+  "a dose of 4.5 mg/m^2 is enough in the population with BSA higher than
+  1.5 m^2", which holds under a mean-trough-inside-target reading (the simulated
+  mean at BSA 1.5 / 4.5 mg/m^2 is about 5.5 ng/mL, just inside the range),
+  whereas Table 3 recommends 6-7 mg/m^2 under the stricter 60%-of-subjects
+  criterion. Both are consistent with the model; they answer different questions.
+* No published erratum or corrigendum for this article was located.

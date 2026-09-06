@@ -137,27 +137,46 @@
   # accommodates parallel-absorption models with two or more depots.
   # `erythrocytes[0-9]+` / `mch[0-9]+` are the paired erythrocyte-age
   # and corpuscular-hemoglobin chains of semi-mechanistic erythropoiesis
-  # models; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
-  # (tolerance) chain; `reticulocytes[0-9]+` is the reticulocyte chain that
-  # feeds the erythrocyte one, and `caseum[0-9]+` the concentric caseum
-  # rings of a tuberculosis granuloma.
-  # The optional `_slow` / `_fast` qualifier registers
-  # the dual-rate effect-delay cascade families (`effect_slow<n>` /
-  # `effect_fast<n>`): two parallel first-order lag chains of different
-  # speed whose terminal members are summed to form one PD driver. It is
-  # a qualifier rather than a separate prefix because both chains are the
-  # same kind of state, distinguished only by their rate constant.
-  # Documented in inst/references/compartment-names.md; founding example
+  # models; `reticulocytes[0-9]+` is the reticulocyte age-transit chain
+  # that sits one stage upstream of `erythrocytes[0-9]+` in the same
+  # cascade; `moderator[0-9]+` is the Gabrielsson-Hjorth moderator
+  # (tolerance) chain. `caseum[0-9]+` is the catenary chain of concentric
+  # rings of the necrotic caseous core of a tuberculosis granuloma,
+  # numbered outward-to-inward from the outer caseum edge. `hb[0-9]+` is
+  # the hemoglobin-concentration age-transit chain: equal-transit-time
+  # bins whose transit times sum to the mature red-cell lifespan and whose
+  # bin sum is total hemoglobin. It is the collapsed single-state form of
+  # the paired `erythrocytes[0-9]+` * `mch[0-9]+` product, used when a
+  # paper carries hemoglobin per age bin directly rather than a cell count
+  # and a per-cell content.
+  # The optional `_slow` / `_fast` qualifier registers the dual-rate
+  # effect-delay cascade families (`effect_slow<n>` / `effect_fast<n>`):
+  # two parallel first-order lag chains of different speed whose terminal
+  # members are summed to form one PD driver. It is a qualifier rather
+  # than a separate prefix because both chains are the same kind of state,
+  # distinguished only by their rate constant. Founding example
   # Dings_2026_cafedrine_theodrenaline_ephedrine.
+  #
+  # NOTE TO FUTURE MERGES: this one line has now been silently NARROWED
+  # twice by `-X theirs`, because a branch cut from an older main carries
+  # a shorter prefix list and wins the conflict. Both times the loss was
+  # invisible to the register verifiers and caught only by the
+  # enumerating test in test-checkModelConventions.R. When resolving a
+  # conflict here, take the UNION of every prefix and every qualifier;
+  # never take one side wholesale.
   compartmentRegex = paste0(
     "^(transit|effect|precursor|lat|depot|erythrocytes|reticulocytes|mch|",
-    "moderator|caseum)(_slow|_fast)?[0-9]+$"
+    "moderator|caseum|hb)(_slow|_fast)?[0-9]+$"
   ),
   # Membrane-limited PBPK sub-compartment pattern: paper-prefix +
   # spelled-out organ name. Recognises the recurring `<sub>_<organ>`
   # shape used in Shah 2012 mAb PBPK and Parhiz 2024 mRNA-LNP
   # extractions (bc / eu / eb / fr / is / int / mrna / luc prefixes).
-  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$", # nolint: line_length_linter.
+  # `bound_` registers the saturable bound / protein-complexed pool that
+  # sits alongside the free pool in a tissue-binding PBPK (Campbell 2023
+  # manganese). Longer organ alternatives precede their prefixes so the
+  # anchored alternation matches `brain_globus_pallidus` and not `brain`.
+  pbpkSubCompartmentRegex = "^(bc|eu|eb|fr|is|int|mrna|luc|bound)_(liver|lung|kidney|spleen|heart|muscle|skin|adipose|bone|brain_globus_pallidus|brain_olfactory_bulb|brain_cerebellum|brain|pituitary|small_intestine|large_intestine|pancreas|thymus|portal|remainder|other|hepatic|fat|rapidly_perfused|slowly_perfused|venous|arterial|urine|gut|tumor|stomach)$", # nolint: line_length_linter.
   # DAR-numbered ADC isoform compartments (`dar0_central`,
   # `dar4_peripheral1`, ...).
   darCompartmentRegex = "^dar[0-9]+_(central|peripheral[0-9]?)$",
@@ -265,6 +284,14 @@
     # central compartment with its own apparent volume in the source's
     # ADVAN5 parent + 3-metabolite structure.
     "megx", "gx", "xyl",
+    # 4-Guanidinobenzoic acid, the terminal inactive metabolite of camostat
+    # mesylate, formed from the active metabolite GBPA (FOY-251) by
+    # arylesterase -- Kim 2023 doi:10.3390/pharmaceutics15092357. Camostat
+    # itself is never measured, so GBPA takes the bare canonical names as the
+    # model's parent analyte and only GBA carries a suffix; a "gbpa" suffix is
+    # deliberately not registered. Distinct from the human gene symbol GBA
+    # (glucocerebrosidase) -- this list holds analyte suffixes only.
+    "gba",
     # Morphine-3-glucuronide and morphine-6-glucuronide, the two major
     # glucuronide metabolites of morphine -- Knibbe 2009 DDMODEL00000248.
     "m3g", "m6g",
@@ -479,7 +506,33 @@
   # renaming the whole family onto the covariate register's
   # RRT_<MODALITY>_<KIND> shape -- which would also fold the older,
   # near-duplicate `_dialysis` suffix in -- is queued separately.
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet"),
+  # `_ccpd` and `_capd` are the two PERITONEAL-dialysis arms: continuous
+  # cycler-assisted peritoneal dialysis and continuous ambulatory
+  # peritoneal dialysis respectively, gated by RRT_CCPD_ACTIVE /
+  # RRT_CAPD_ACTIVE. They are separate tokens rather than one peritoneal
+  # arm because the two exchange schedules clear drug at materially
+  # different rates through the same membrane -- Patel 2015 estimates
+  # 0.319 vs 0.170 L/h/70 kg for oseltamivir carboxylate, a 1.9-fold
+  # difference -- so a single coefficient cannot stand in for both.
+  # Sidecar `oare_PMC4386947` request-001 / response-001, question q2,
+  # option A.
+  # `_hemoadsorption` the extracorporeal HEMOADSORPTION (hemoperfusion /
+  # sorbent-cartridge) arm, gated by HEMOADSORB_ACTIVE (e.g. Leber 2023,
+  # CL_total = CL + CLmax * (1 - adsorbed / Amax)). A distinct
+  # modality from `_hemodialysis` and `_crrt`: it removes solute by
+  # sorbent binding rather than diffusion or convection, so it
+  # saturates and has no dialysate or effluent flow.
+  #
+  # NOTE TO FUTURE MERGES: this vector is the SECOND in this file to be
+  # silently narrowed by `-X theirs` (see `compartmentRegex` above). A
+  # branch cut from an older main carries a shorter component list and
+  # wins the conflict, so `ccpd`/`capd` were dropped on 2026-09-05 while
+  # `hemoadsorption` was added. Take the UNION of every component and
+  # every comment block; never take one side wholesale.
+  clComponents = c(
+    "ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt",
+    "tsnet", "ccpd", "capd", "hemoadsorption"
+  ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
@@ -540,7 +593,16 @@
     "plasma", "serum", "whole blood", "blood cell", "CSF", "brain ISF",
     "vitreous", "aqueous humour", "retina", "tissue", "tumor", "lymph",
     "endosome", "urine", "bile", "faeces", "saliva", "milk",
+    # Spent dialysate / effluent collected from a dialysis circuit. Companion
+    # to the `dialysate` compartment canonical ratified in sidecar
+    # `oare_PMC4386947` request-001 / response-001 question q1: a dialysate
+    # collection state needs a nameable matrix, and dialysate is a genuinely
+    # assayed specimen (Patel 2015 measured oseltamivir and oseltamivir
+    # carboxylate in plasma, dialysate and urine, each with its own validated
+    # LOQ and its own residual-error term).
+    "dialysate",
     "synovial fluid", "epithelial lining fluid", "bronchoalveolar lavage",
+    "dialysate",
     "administration site", "not applicable"
   ),
 

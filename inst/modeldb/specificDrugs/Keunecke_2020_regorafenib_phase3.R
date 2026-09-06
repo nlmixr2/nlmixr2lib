@@ -1,5 +1,5 @@
 Keunecke_2020_regorafenib_phase3 <- function() {
-  description <- "Final joint parent + metabolite population PK model for oral regorafenib and its two pharmacologically active metabolites M-2 (N-oxide, BAY 75-7495) and M-5 (N-oxide N-desmethyl, BAY 81-8752), fitted to sparsely sampled data from four phase 3 studies in metastatic colorectal cancer, gastrointestinal stromal tumour and hepatocellular carcinoma (Keunecke 2020 Table 3). Structure is identical to the phase 1 model (Keunecke_2020_regorafenib_phase1): each analyte has a two-compartment disposition plus a gallbladder reservoir giving enterohepatic circulation, released during three 30-minute post-prandial windows per day; M-2 is formed pre-systemically through its own three-transit absorption chain and M-5 systemically from parent clearance. This version adds the retained covariate effects - sex and body mass index on parent clearance, and sex on both metabolite clearances - with women having lower clearance of all three analytes. Because the metabolite clearance random effects were almost perfectly correlated, the authors reduced the model to a single shared metabolite eta rescaled by a factor, so M-5 uses the M-2 eta multiplied by sd_ratio_cl_m5. All volumes and clearances are apparent, relative to oral bioavailability and to the parent fraction (1 - fm_m2)."
+  description <- "Final joint parent + metabolite population PK model for oral regorafenib and its two pharmacologically active metabolites M-2 (N-oxide, BAY 75-7495) and M-5 (N-oxide N-desmethyl, BAY 81-8752), fitted to sparsely sampled data from four phase 3 studies in metastatic colorectal cancer, gastrointestinal stromal tumour and hepatocellular carcinoma (Keunecke 2020 Table 3). Structure is identical to the phase 1 model (Keunecke_2020_regorafenib_phase1): each analyte has a two-compartment disposition plus a gallbladder reservoir giving enterohepatic circulation, released during three 30-minute post-prandial windows per day; M-2 is formed pre-systemically through its own three-transit absorption chain and M-5 systemically from parent clearance. This version adds the retained covariate effects - sex and body mass index on parent clearance, and sex on both metabolite clearances - with women having lower clearance of all three analytes. Because the metabolite clearance random effects were almost perfectly correlated, the authors reduced the model to a single shared metabolite eta rescaled by a factor, so M-5 uses the M-2 eta multiplied by sd_ratio_cl_m5. The parent disposition is tabulated as the composites CL_P/(1-FRM2), VC_P/(1-FRM2), Q_P/(1-FRM2) and VP_P/(1-FRM2) and is rescaled by (1 - fm_m2) in model() to recover CL_P, VC_P, Q_P and VP_P, which the metabolites inherit; all values remain apparent, relative to oral bioavailability."
   reference <- paste(
     "Keunecke A, Hoefman S, Drenth H-J, Zisowsky J, Cleton A, Ploeger BA.",
     "Population pharmacokinetics of regorafenib in solid tumours:",
@@ -260,12 +260,29 @@ Keunecke_2020_regorafenib_phase3 <- function() {
     sex_cl_m5 <- 1 - e_sexf_cl_m5 * SEXF
     bmi_cl    <- exp(e_bmi_cl * (BMI - 24.5) / 24.5)
 
-    # 2. Individual parameters.
+    # 2. Formation fractions. Individual logit-scale values collected on their
+    #    own lines so the etas stay mu-referenced, then inverse-logit back onto
+    #    (0, 1). Derived before the disposition parameters because fm_m2
+    #    rescales them (step 3).
+    logitfm_m2_ind <- logitfm_m2 + etalogitfm_m2
+    logitfm_m5_ind <- logitfm_m5 + etalogitfm_m5
+    fm_m2 <- 1 / (1 + exp(-logitfm_m2_ind))
+    fm_m5 <- 1 / (1 + exp(-logitfm_m5_ind))
+
+    # 3. Individual parameters. The parent rows of Table 3 are tabulated as the
+    #    composites CL_P/(1-FRM2), VC_P/(1-FRM2), Q_P/(1-FRM2) and
+    #    VP_P/(1-FRM2), so multiplying by (1 - fm_m2) recovers the parent's own
+    #    CL_P, VC_P, Q_P and VP_P -- which are also the metabolite volumes and
+    #    inter-compartmental flow (section 2.3.2). See the phase 1 model file
+    #    for the Table 1 -> Table 2 argument that fixes this reading. The parent
+    #    profile is unchanged by the rescaling because the factor cancels in
+    #    every parent-only ratio; only the metabolite exposures depend on it.
+    fpar  <- 1 - fm_m2
     ka    <- exp(lka + etalka)
-    cl    <- exp(lcl + etalcl) * sex_cl * bmi_cl
-    vc    <- exp(lvc)
-    q     <- exp(lq)
-    vp    <- exp(lvp)
+    cl    <- exp(lcl + etalcl) * sex_cl * bmi_cl * fpar
+    vc    <- exp(lvc) * fpar
+    q     <- exp(lq)  * fpar
+    vp    <- exp(lvp) * fpar
     kbm   <- exp(lkbm)
     kehc  <- exp(lkehc)
 
@@ -273,14 +290,7 @@ Keunecke_2020_regorafenib_phase3 <- function() {
     # One shared metabolite eta, rescaled for M-5 (Appendix Section 3.3).
     cl_m5 <- exp(lcl_m5 + sd_ratio_cl_m5 * etalcl_m2) * sex_cl_m5
 
-    # Individual logit-scale values collected on their own lines so the etas
-    # stay mu-referenced, then inverse-logit back onto (0, 1).
-    logitfm_m2_ind <- logitfm_m2 + etalogitfm_m2
-    logitfm_m5_ind <- logitfm_m5 + etalogitfm_m5
-    fm_m2 <- 1 / (1 + exp(-logitfm_m2_ind))
-    fm_m5 <- 1 / (1 + exp(-logitfm_m5_ind))
-
-    # 3. Food-intake switch. `t` is absolute time, so the event table origin
+    # 4. Food-intake switch. `t` is absolute time, so the event table origin
     #    must be midnight; tod is the resulting time of day. In the phase 3
     #    studies mealtimes were not recorded and breakfast was imputed 1 h
     #    before the dose (section 3.3.1), i.e. dosing at 09:00.
@@ -289,7 +299,7 @@ Keunecke_2020_regorafenib_phase3 <- function() {
              (tod >= tmeal2) * (tod < tmeal2 + dge) +
              (tod >= tmeal3) * (tod < tmeal3 + dge)
 
-    # 4. Parent regorafenib (Figure 1 caption ODEs for A3, A4, A5).
+    # 5. Parent regorafenib (Figure 1 caption ODEs for A3, A4, A5).
     d/dt(depot)       <- -ka * depot
     d/dt(transit1)    <-  ka * (1 - fm_m2) * depot - ka * transit1
     d/dt(transit2)    <-  ka * transit1 - ka * transit2
@@ -301,7 +311,7 @@ Keunecke_2020_regorafenib_phase3 <- function() {
     d/dt(peripheral1) <-  (q / vc) * central - (q / vp) * peripheral1
     d/dt(gallbladder) <-  kbm * central - meal * kehc * gallbladder
 
-    # 5. M-2, formed pre-systemically through its own three-transit chain.
+    # 6. M-2, formed pre-systemically through its own three-transit chain.
     d/dt(transit1_m2)    <-  ka * fm_m2 * depot - ka * transit1_m2
     d/dt(transit2_m2)    <-  ka * transit1_m2 - ka * transit2_m2
     d/dt(transit3_m2)    <-  ka * transit2_m2 - ka * transit3_m2
@@ -313,7 +323,7 @@ Keunecke_2020_regorafenib_phase3 <- function() {
     d/dt(peripheral1_m2) <-  (q / vc) * central_m2 - (q / vp) * peripheral1_m2
     d/dt(gallbladder_m2) <-  kbm * central_m2 - meal * kehc * gallbladder_m2
 
-    # 6. M-5, formed systemically as the fraction fm_m5 of parent clearance.
+    # 7. M-5, formed systemically as the fraction fm_m5 of parent clearance.
     d/dt(central_m5)     <-  fm_m5 * (cl / vc) * central -
                                kbm * central_m5 -
                                (cl_m5 / vc) * central_m5 -
@@ -322,11 +332,12 @@ Keunecke_2020_regorafenib_phase3 <- function() {
     d/dt(peripheral1_m5) <-  (q / vc) * central_m5 - (q / vp) * peripheral1_m5
     d/dt(gallbladder_m5) <-  kbm * central_m5 - meal * kehc * gallbladder_m5
 
-    # 7. Bioavailability: the tabulated parent parameters are divided by
-    #    (1 - FRM2), so the parent chain must receive the full nominal dose.
-    f(depot) <- 1 / (1 - fm_m2)
+    # 8. Bioavailability. None is applied: the depot receives the full nominal
+    #    dose and the Figure 1 split routes fm_m2 of it down the M-2 chain and
+    #    (1 - fm_m2) down the parent chain. The apparent-parameter convention is
+    #    honoured by the (1 - fm_m2) rescaling in step 3 instead.
 
-    # 8. Observations. Metabolite volumes are the parent's by assumption.
+    # 9. Observations. Metabolite volumes are the parent's VC_P by assumption.
     Cc    <- central / vc
     Cc_m2 <- central_m2 / vc
     Cc_m5 <- central_m5 / vc
