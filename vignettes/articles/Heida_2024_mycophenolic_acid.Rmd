@@ -423,7 +423,9 @@ events <- dplyr::bind_rows(
   make_arm("dose_licensed",  "Licensed dose",       0L),
   make_arm("dose_optimized", "Model-informed dose", 1000L)
 )
-stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+# Test the frame directly: wrapping this in unique() would strip the very
+# duplicates being asserted against, making the check unfalsifiable.
+stopifnot(!anyDuplicated(events[, c("id", "time", "evid")]))
 
 solve_arm <- function(label) {
   rxode2::rxSetSeed(4242)   # common random numbers across the two arms
