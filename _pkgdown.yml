@@ -586,6 +586,8 @@ navbar:
         href: articles/Bruno_2012_capecitabine_docetaxel_mbc.html
       - text: "Capecitabine docetaxel tgi (Bruno 2012)"
         href: articles/Bruno_2012_capecitabine_docetaxel_mbc.html
+      - text: "Capivasertib (FernandezTeruel 2024)"
+        href: articles/FernandezTeruel_2024_capivasertib.html
       - text: "Captopril pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Captopril rat (Kiriyama 2024)"
@@ -4753,6 +4755,7 @@ articles:
   - articles/Feng_2014_ipilimumab
   - articles/Feng_2019_ipilimumab
   - articles/Feng_2026_imipenem_pbpk
+  - articles/FernandezTeruel_2024_capivasertib
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiandaca_2025_mRNABiTE
   - articles/FiedlerKelly_2019_fremanezumab
