@@ -125,8 +125,13 @@ mod <- readModelDb("Yoon_2023_vancomycin")
 ui  <- rxode2::rxode(mod)
 
 # Typical-value form for the deterministic replications below. zeroRe() sets
-# every IIV variance to zero; omega = NA is passed at solve time as well
-# because rxSolve otherwise reuses an omega from a previous call.
+# every IIV variance to zero, which is sufficient on its own -- rxSolve reports
+# "omega/sigma items treated as zero" for each eta and returns the typical-value
+# trajectory. An earlier version of this file also passed `omega = NA` at solve
+# time, on the theory that rxSolve would otherwise reuse an omega from a
+# previous call. That is not so for a zeroRe()d model, and the argument was
+# actively harmful: combined with a multi-subject `params` it triggers an
+# out-of-bounds read in rxode2 5.1.6. See the table5 solve for the measurements.
 mod_typ <- rxode2::zeroRe(mod)
 ```
 
@@ -231,19 +236,22 @@ sim_table5 <- rxode2::rxSolve(
   events = ev_table5,
   params = table5_grid |>
     dplyr::select(id, AGE, WT, CREAT, BUN, PAGE, SEXF, DIS_DIAB, DIS_RENAL, DIS_PNEUMONIA),
-  omega = NA,
+  # NO `omega = NA` here, deliberately. `mod_typ` is already `zeroRe()`d, so the
+  # etas are zero either way -- but passing `omega = NA` alongside a
+  # multi-subject `params` makes rxode2 5.1.6 index a length-1 vector once per
+  # extra subject, emitting 479 "subscript out of bounds (index i >= vector
+  # size 1)" warnings on this 480-row grid. That out-of-bounds read CORRUPTS
+  # results: 23 of the 480 troughs come back attached to the wrong covariate
+  # row (max difference 33.98 mg/L), and some runs return `Cc = NA` outright,
+  # which is what intermittently failed the assertion below.
+  #
+  # An earlier pass misread that as solver stiffness and raised `maxsteps` to
+  # 1e5. That was wrong: the warning count and the corrupted values are
+  # identical at the default ceiling and at 1e5, so the step limit was never
+  # involved. It masked the failure once by perturbing the run, which is why it
+  # looked load-sensitive. Dropping the redundant argument is the actual fix and
+  # `maxsteps` goes with it.
   useLinCmt = FALSE,      # ODE -> linCmt auto-conversion breaks multi-endpoint dvid mapping
-  # Ten days of q6h dosing (addl = 39) integrated across a 480-point covariate
-  # grid puts the stiffest corners of that grid near the default step ceiling.
-  # Standalone all 480 solve; under a loaded 16-worker vignette build three of
-  # them (age 80 at 50 kg, and BUN 40) instead returned `Cc = NA`, which
-  # propagated into a non-finite 15 / trough and failed the gate below. The
-  # solve returned all 480 subjects either way -- nothing was dropped by the
-  # join; the integration itself gave up on those three. Raising the ceiling
-  # removes the load sensitivity and changes nothing else: the trough range is
-  # identical to 8 significant figures (3.7271514 to 45.177341) with the three
-  # NAs resolved.
-  maxsteps = 100000L,
   returnType = "data.frame"
 ) |>
   dplyr::filter(time == t_ss)
@@ -439,8 +447,11 @@ ev_fig6 <- fig6_arms |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 sim_fig6 <- rxode2::rxSolve(
+  # `omega = NA` omitted -- see the table5 solve above: with a multi-subject
+  # `params` it makes rxode2 5.1.6 read past a length-1 vector and corrupt
+  # results. `mod_typ` is `zeroRe()`d, so the etas are zero without it.
   mod_typ, events = ev_fig6, params = fig6_params,
-  omega = NA, useLinCmt = FALSE, returnType = "data.frame"
+  useLinCmt = FALSE, returnType = "data.frame"
 ) |>
   dplyr::mutate(id = as.integer(as.character(id))) |>
   dplyr::distinct(id, time, .keep_all = TRUE) |>
@@ -624,9 +635,10 @@ ev_probe <- cohort |>
   dplyr::arrange(id, time, dplyr::desc(evid))
 
 probe <- rxode2::rxSolve(
+  # `omega = NA` omitted -- see the table5 solve above.
   mod_typ, events = ev_probe,
   params = cohort |> dplyr::select(-dplyr::any_of("dose_g_day")),
-  omega = NA, useLinCmt = FALSE, returnType = "data.frame"
+  useLinCmt = FALSE, returnType = "data.frame"
 ) |>
   dplyr::filter(time == t_ss) |>
   dplyr::transmute(id = as.integer(as.character(id)), trough_1g = Cc)
