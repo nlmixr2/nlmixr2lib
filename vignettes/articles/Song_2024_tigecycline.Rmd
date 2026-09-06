@@ -507,7 +507,7 @@ stopifnot(var_row[["Mean |PTA error| (points)"]] <
   (`omega^2 = 0.224` and `0.552`, `sigma^2 = 0.0158`), giving log-scale SDs of
   0.473 and 0.743 and `propSd = 0.126`. Gate 4 above settles the `omega` rows
   quantitatively with no free parameters: inverting the six published PTA values
-  recovers a median steady-state `AUC0-24` of 23.1 mg*h/L under the variance
+  recovers a median steady-state `AUC0-24` of 23.06 mg*h/L under the variance
   reading against `2 x 50 mg / 4.22 L/h = 23.7`, a 2.7% miss, versus 15.1
   mg*h/L under the CV reading, a 36% miss; and the variance reading reproduces
   the printed PTAs to a mean absolute error of 4.1 percentage points versus
@@ -528,9 +528,9 @@ stopifnot(var_row[["Mean |PTA error| (points)"]] <
   extraction follows that evidence. The two models are consequently on different
   omega conventions, and reconciling them is worth a follow-up on
   `Su_2024_tigecycline`.
-- **The 50 mg PTA cells read about 4-14 points high; the 100 mg cells land
+- **The 50 mg PTA cells read 4.6 to 14.1 points high; the 100 mg cells land
   within 0.2 points.** Under the encoded model the published PTAs at 50 mg q12h
-  reproduce as 72.3 / 90.4 / 86.9 against the printed 58.2 / 85.0 / 82.4, while
+  reproduce as 72.3 / 90.3 / 87.0 against the printed 58.2 / 85.0 / 82.4, while
   at 100 mg q12h they reproduce as 98.0 / 99.7 / 99.5 against 98.1 / 99.9 /
   99.7. Fitting both the median AUC and the spread freely to the six printed
   values gives a log-scale SD near 0.36 rather than 0.47, so the paper's own
