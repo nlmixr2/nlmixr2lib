@@ -94,6 +94,8 @@ navbar:
         href: articles/MarquezMegias_2023_adalimumab.html
       - text: "Adalimumab (Nader 2017)"
         href: articles/Nader_2017_adalimumab.html
+      - text: "Adalimumab (NassarSheikhRashid 2024)"
+        href: articles/NassarSheikhRashid_2024_adalimumab.html
       - text: "Adalimumab minipig (Zheng 2012)"
         href: articles/Zheng_2012_minipig_mab.html
       - text: "Adalimumab phase1 (Kang 2020)"
@@ -5370,6 +5372,7 @@ articles:
   - articles/Nakai_2025_tranexamicAcid
   - articles/Nanga_2019_tacrolimus_metaanalysis
   - articles/Narwal_2013_sifalimumab
+  - articles/NassarSheikhRashid_2024_adalimumab
   - articles/Nath_2007_melphalan
   - articles/Nath_2010_melphalan
   - articles/Nava_2018_busulfan
