@@ -68,7 +68,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkFixedLabelAgreement(ui, conv),
     .checkTimeVaryingClearanceNames(ui, conv),
     .checkCompartmentData(ui, conv),
-    .checkFmFamily(ui, conv)
+    .checkFmFamily(ui, conv),
+    .checkLogitBackTransform(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -1651,6 +1652,107 @@ checkModelConventions <- function(model, verbose = TRUE) {
               "discarded. Repeating a name is only safe when the Types differ.")
       ))
     }
+  }
+  issues
+}
+
+# Logit-scale back-transform agreement ---------------------------------------
+#
+# The inverse of logit is expit, and the library writes it several correct ways
+# -- `expit(x)`, `1/(1+exp(-x))`, `exp(x)/(1+exp(x))`, a two-step
+# `odds <- exp(x); p <- odds/(1+odds)`, and, where the source paper does, the
+# NEGATIVE convention `1/(1+exp(x))` = `expit(-x)`. A softmax over three or more
+# categories is a further legitimate shape that is not a binary expit at all.
+#
+# That variety is why this check does not police the SYNTAX of the
+# back-transform: a rule that grepped for `expit` would fire on six models that
+# are correct today (Chan's odds-ratio identity, Ibrahim's two-step, Choy's
+# negative convention, vandenBerg's and Pejcic's softmaxes). What it checks
+# instead is ARITHMETIC, which is convention-agnostic: where a logit-scale
+# parameter's own label states the proportion it corresponds to, expit of the
+# estimate -- under one sign or the other -- must reproduce that proportion.
+#
+# This is the invariant that catches the failure that matters: a value carried
+# on the logit scale and back-transformed with the wrong function (`exp(x)`
+# alone gives odds, not a probability) or the wrong sign. Both produce a number
+# that is silently plausible, so nothing downstream goes red.
+#
+# Scope is deliberately narrow to keep the false-positive rate at zero:
+#   * only `ini()` entries whose NAME marks them as logit-scale;
+#   * only labels that state a proportion with an explicit marker (`= 0.8`
+#     or a standalone `(0.8)`), never a bare number, because labels also carry
+#     units, compartment counts and reference weights, and never a
+#     percentage, which in this library always states a threshold;
+#   * the parameter's own estimate is never treated as its documented
+#     proportion, which would make the check vacuous.
+# A logit parameter whose label documents nothing is not an error -- most do
+# not, and requiring it would be a documentation rule, not a correctness one.
+.logitScaleNamePattern <- "logit"
+
+# A proportion the label explicitly claims. Anchored on `=`, a parenthesis or a
+# percent sign so that incidental numbers in prose are not mistaken for the
+# back-transformed value.
+.labelDocumentedProportions <- function(label) {
+  if (is.na(label) || !nzchar(label)) return(numeric(0))
+  out <- numeric(0)
+  # "= 0.825", "= .825"
+  m <- regmatches(label, gregexpr("=\\s*(0?\\.[0-9]+)", label, perl = TRUE))[[1]]
+  if (length(m)) out <- c(out, as.numeric(sub("^=\\s*", "", m)))
+  # "(0.825)" as a standalone parenthetical
+  m <- regmatches(label, gregexpr("\\(\\s*(0?\\.[0-9]+)\\s*\\)", label, perl = TRUE))[[1]]
+  if (length(m)) out <- c(out, as.numeric(gsub("[()[:space:]]", "", m)))
+  # "25%" / "25 percent" / "25 pct"
+  # No percentage branch. Every percentage that appears in a logit-scale label
+  # in this library states a THRESHOLD, not the parameter's value -- five
+  # labels read "the probability of an over-50% seizure-frequency reduction",
+  # where 50% defines the endpoint and has nothing to do with the logit. A
+  # branch that produced five false positives and zero true ones is worse than
+  # no branch: the gate has to be trustworthy to be worth having. Re-add it
+  # with a negative lookbehind for threshold words if a source ever documents
+  # a back-transformed value as a percentage.
+  out <- out[is.finite(out) & out > 0 & out < 1]
+  unique(out)
+}
+
+.expit <- function(x) 1 / (1 + exp(-x))
+
+.checkLogitBackTransform <- function(ui, conv) {
+  issues <- .emptyIssues()
+  ini <- ui$iniDf
+  if (is.null(ini) || nrow(ini) == 0) return(issues)
+  if (!all(c("name", "est", "label") %in% names(ini))) return(issues)
+  # tolerance is absolute on a probability scale; 0.005 accommodates a label
+  # that rounds "0.9168" to "0.917" without admitting a genuinely wrong sign,
+  # which moves the value by far more than that except very near logit 0.
+  tol <- 0.005
+  for (i in seq_len(nrow(ini))) {
+    nm <- ini$name[[i]]
+    if (!grepl(.logitScaleNamePattern, nm, ignore.case = TRUE)) next
+    # Variance terms are on the eta scale, not the logit scale of a proportion.
+    if (grepl("^eta", nm)) next
+    est <- suppressWarnings(as.numeric(ini$est[[i]]))
+    if (!is.finite(est)) next
+    docs <- .labelDocumentedProportions(ini$label[[i]])
+    # A label that merely repeats the logit-scale estimate documents nothing.
+    docs <- docs[abs(docs - est) > 1e-9]
+    if (!length(docs)) next
+    pos <- .expit(est)
+    neg <- .expit(-est)
+    if (any(abs(pos - docs) <= tol) || any(abs(neg - docs) <= tol)) next
+    issues <- rbind(issues, .issue(
+      "logit_backtransform_disagreement", "error", nm,
+      sprintf(paste0("'%s' is on the logit scale with estimate %s, but neither ",
+                     "expit(%s) = %s nor expit(-%s) = %s reproduces the ",
+                     "proportion its label states (%s)."),
+              nm, format(est), format(est), format(round(pos, 4)),
+              format(est), format(round(neg, 4)),
+              paste(format(docs), collapse = ", ")),
+      paste("Check the back-transform in `model()`. The inverse of logit is",
+            "expit: `expit(x)`, `1/(1+exp(-x))` or `exp(x)/(1+exp(x))`.",
+            "`exp(x)` alone yields the ODDS, not a probability, and",
+            "`1/(1+exp(x))` is expit(-x). If the source really does use the",
+            "negative convention, keep it and make the label state the",
+            "proportion that convention produces.")))
   }
   issues
 }
