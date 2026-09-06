@@ -966,6 +966,8 @@ navbar:
         href: articles/Liu_2024_spatholobiCaulis.html
       - text: "Dalbavancin (Baiardi 2025)"
         href: articles/Baiardi_2025_dalbavancin.html
+      - text: "Dalbavancin (Cojutti 2024)"
+        href: articles/Cojutti_2024_dalbavancin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Danoprevir (Canini 2015)"
@@ -4978,6 +4980,7 @@ articles:
   - articles/CohenWolkowiez_2012_metronidazole
   - articles/CohenWolkowiez_2014_piperacillin_tazobactam
   - articles/Cojutti_2023_ceftobiprole
+  - articles/Cojutti_2024_dalbavancin
   - articles/Colin_2014_moxifloxacin
   - articles/Collins_2023_belantamab_mprotein
   - articles/Collins_2025_midazolam
