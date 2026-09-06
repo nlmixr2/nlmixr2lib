@@ -2786,6 +2786,8 @@ navbar:
         href: articles/Gaffney_2026_niraparib.html
       - text: "Nirmatrelvir (Chan 2023)"
         href: articles/Chan_2023_nirmatrelvir.html
+      - text: "Nirmatrelvir (Zhang 2024)"
+        href: articles/Zhang_2024_nirmatrelvir.html
       - text: "Nirsevimab (Clegg 2024)"
         href: articles/Clegg_2024_nirsevimab.html
       - text: "Nisin amikacin (Landersdorfer 2013)"
@@ -6453,6 +6455,7 @@ articles:
   - articles/Zhang_2024_aripiprazole
   - articles/Zhang_2024_f53b_pbpk
   - articles/Zhang_2024_nedosiran
+  - articles/Zhang_2024_nirmatrelvir
   - articles/Zhang_2024_olanzapine
   - articles/Zhang_2024_sertraline
   - articles/Zhang_2024_tucatinib
