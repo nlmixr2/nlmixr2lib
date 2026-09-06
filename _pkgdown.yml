@@ -1758,6 +1758,8 @@ navbar:
         href: articles/Kelman_1984_gentamicin.html
       - text: "Gentamicin manchester2 (Kelman 1984)"
         href: articles/Kelman_1984_gentamicin.html
+      - text: "Gentamicin teigen (Lee 2024)"
+        href: articles/Lee_2024_gentamicin.html
       - text: "Gevokizumab (Cao 2013)"
         href: articles/Cao_2013_gevokizumab.html
       - text: "Gevokizumab (Karakitsios 2024)"
@@ -5549,6 +5551,7 @@ articles:
   - articles/Lee_2023_tripegfilgrastim
   - articles/Lee_2023_tylosin
   - articles/Lee_2024_eculizumab
+  - articles/Lee_2024_gentamicin
   - articles/Lee_2024_lserine
   - articles/Lee_2024_topiramate
   - articles/Lee_2025_levofloxacin
