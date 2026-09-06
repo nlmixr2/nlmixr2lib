@@ -942,6 +942,8 @@ navbar:
         href: articles/Bellanti_2015_deferoxamine.html
       - text: "Degarelix (Tornoe 2006)"
         href: articles/Tornoe_2006_HPG_axis.html
+      - text: "Delafloxacin (Lv 2024)"
+        href: articles/Lv_2024_delafloxacin.html
       - text: "Desmopressin (Agerso 2004)"
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
@@ -5245,6 +5247,7 @@ articles:
   - articles/Luo_2016_efavirenz
   - articles/Luo_2024_CES1_cirrhosis
   - articles/Luu_2017_nusinersen
+  - articles/Lv_2024_delafloxacin
   - articles/Lv_2025_asc10a
   - articles/Ma_2020_sarilumab_anc
   - articles/Ma_2020_sarilumab_das28crp
