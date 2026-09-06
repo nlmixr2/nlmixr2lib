@@ -1,0 +1,615 @@
+---
+title: "Cefotaxime (Roelofsen 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefotaxime (Roelofsen 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Roelofsen_2023_cefotaxime"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Roelofsen_2023_cefotaxime"))$description`
+* Article: <https://doi.org/10.1111/bcp.15487>
+* Supplement (S1 NONMEM control stream, S2 NPDE figure): <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10087439/>
+
+```{r model}
+mod <- rxode2::rxode(readModelDb("Roelofsen_2023_cefotaxime"))
+mod
+```
+
+# Population
+
+Roelofsen 2023 is a prospective observational population-PK sub-study of the
+EXPAT trial (Netherlands Trial Registry NTR 5632) conducted in the intensive
+care units of the Erasmus University Medical Center and the Maasstad Hospital in
+Rotterdam between January 2016 and June 2017. Ninety-three critically ill adults
+receiving intravenous cefotaxime as the systemic component of selective
+digestive decontamination were enrolled; one was excluded for a physiologically
+impossible concentration-time profile, leaving **92 patients contributing 437
+concentration records**. Eighty patients received 1 g every 6 h and twelve
+received 1 g every 4 h; study infusions ran from 1 minute to 1 hour.
+
+The cohort (Table 1) is deliberately heterogeneous: median age 64 years (range
+23-85), median weight 76 kg (range 45-150), 57 male / 35 female, APACHE II
+median 23 (range 7-71) and SOFA median 13 (range 1-21). The two covariates that
+entered the final model span very wide ranges - **CKD-EPI eGFR median 57
+mL/min/1.73 m^2 (range 4-347)**, so the cohort covers severe renal impairment
+through augmented renal clearance, and **serum albumin median 26 g/L (range
+11-47)**, i.e. mostly hypoalbuminaemic. Five patients (5.4%) were on CRRT at
+baseline. Five samples per patient were drawn within one dosing interval on day
+2 of therapy, and total (not free) plasma cefotaxime was assayed by validated
+UPLC-MS/MS.
+
+The same information is available programmatically via the model's `population`
+metadata:
+
+```{r population}
+str(readModelDb("Roelofsen_2023_cefotaxime")()$population)
+```
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Roelofsen_2023_cefotaxime.R`. The table
+below collects them in one place for review. All values are from the **"Final
+model including covariates"** column of Table 2 unless noted.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment IV structure | `central` + `peripheral1` | Sect. 3.2 ("a 2-compartment model"); supplementary control stream S1 `ADVAN5`, `COMP=(CENTRAL, DEFOBS)`, `COMP=(PERIPH1)` |
+| `lcl` (CL) | 7.08 L/h (RSE 5.4%) | Table 2 |
+| `lvc` (V1) | 15.70 L (RSE 6.2%) | Table 2 |
+| `lvp` (V2) | 25.00 L (RSE 37.0%) | Table 2 |
+| `lq` (Q) | 4.81 L/h (RSE 15.2%) | Table 2 |
+| `e_crcl_cl` | 0.477 (RSE 15.7%) | Table 2 "Covariate eGFR on CL"; Sect. 3.2 equation |
+| `e_alb_cl` | 0.640 (RSE 24.8%) | Table 2 "Covariate albumin concentration on CL"; Sect. 3.2 equation prints 0.64 |
+| CL covariate equation | `CL = 7.08 * (eGFR/57)^0.477 * (albumin/26)^0.64` | Sect. 3.2, printed in full |
+| eGFR reference 57 | median | Table 1 (eGFR median 57); Sect. 2.6 "normalized to the population median" |
+| Albumin reference 26 | median | Table 1 (albumin median 26); Sect. 2.6 |
+| `etalcl` | variance 0.253009 = 0.503^2 | Table 2 "Variability on CL" 50.3% (RSE 11.8%, shrinkage 2.2%) |
+| `etalvc` | variance 0.121801 = 0.349^2 | Table 2 "Variability on V1" 34.9% (RSE 16.1%, shrinkage 13.3%) |
+| `etalq` | variance 0.848241 = 0.921^2 | Table 2 "Variability on Q" 92.1% (RSE 13.8%, shrinkage 17.3%) |
+| Exponential BSV on CL, V1, Q only | - | Sect. 3.2; control stream S1 `CL=THETA(1)*EXP(ETA(1))`, `V1=THETA(2)*EXP(ETA(2))`, `Q=THETA(4)*EXP(ETA(3))`, `V2=THETA(3)` (no eta) |
+| `addSd` | 0.617 mg/L (RSE 25.9%) | Table 2 "Additive error" |
+| `propSd` | 0.191 (RSE 8.6%) | Table 2 "Proportional error" |
+| Combined additive + proportional error | - | Sect. 2.5; control stream S1 `Y=F+THETA(5)*EPS(1)+F*THETA(6)*EPS(2)` with both `$SIGMA` `1 FIX` |
+| Protein binding 30% (free = 0.70 x total) | - | Sect. 2.7 |
+| MIC(ECOFF) 0.25 mg/L (Enterobacterales), 4 mg/L (*S. aureus*) | - | Sect. 2.7 |
+| Published PTA percentages used as gates | 14/34/25/54/54 and 48/77/70/90/86 | Sect. 3.4 |
+| CL increment 0.42-0.99 L/h per 10 mL/min | - | Discussion (Swartling comparison) |
+
+## Resolving the %CV convention for the reported variability
+
+Table 2 reports the between-subject variability as a bare percentage without
+stating whether it is `omega` itself or `sqrt(exp(omega^2) - 1)`. Sect. 3.2
+supplies the tie-breaker: *"The covariates could explain 48% of the IIV on
+clearance"*, comparing the base model (69.6%) to the final model (50.3%).
+
+```{r cv-convention}
+base <- 0.696
+final <- 0.503
+data.frame(
+  convention = c("omega = CV/100 (NONMEM approximation)",
+                 "CV = sqrt(exp(omega^2) - 1)"),
+  variance_reduction_pct = c(
+    100 * (base^2 - final^2) / base^2,
+    100 * (log(1 + base^2) - log(1 + final^2)) / log(1 + base^2)
+  )
+) |>
+  dplyr::rename("Convention" = convention,
+                "Variance reduction (%)" = variance_reduction_pct) |>
+  knitr::kable(digits = 1)
+```
+
+Only the first convention reproduces the paper's stated 48%, so the model uses
+`omega^2 = (CV/100)^2`. Reading the percentages the other way would understate
+every variance by roughly 10%.
+
+# Simulation setup
+
+All validation below reproduces the paper's Sect. 2.7 Monte Carlo design:
+**steady-state** concentrations, intermittent regimens given as **15-minute**
+infusions, covariates fixed at the grid values the paper simulated (eGFR 10, 30,
+50, 80, 100 mL/min/1.73 m^2 and albumin 20, 30, 40 g/L), a **30% protein
+binding** assumption so free = 0.70 x total, and the **100% *f*T>MIC** target.
+
+Two deliberate departures from the paper's design, both forced by the vignette
+build budget:
+
+* the paper simulated `n = 5000` subjects per scenario; here each arm uses
+  `r 200` subjects, the repository cap. The resulting Monte Carlo standard
+  error on a PTA near 50% is about 3.5 percentage points, which sets the
+  tolerance of the gates below;
+* **common random numbers** are used - `rxode2::rxSetSeed()` is re-seeded
+  identically inside every arm, so the same 200 virtual subjects are carried
+  across all regimens and covariate cells. Differences *between* arms are
+  therefore far less noisy than independent draws would give.
+
+Because probability of target attainment is defined on the model prediction and
+not on a measured concentration, residual error is zeroed for all PTA work
+(`rxode2::zeroRe(mod, "sigma")`); between-subject variability is retained.
+
+```{r sim-helpers}
+N_ARM <- 200L
+PROTEIN_BOUND <- 0.30              # Sect. 2.7
+FREE_FRACTION <- 1 - PROTEIN_BOUND
+MIC_ENTERO <- 0.25                 # Sect. 2.7, MIC(ECOFF)
+MIC_SAUREUS <- 4
+SEED <- 20260904
+
+modPta <- rxode2::zeroRe(mod, "sigma")
+
+# Steady-state intermittent regimen. rxode2's ss = 1 solves the steady state
+# analytically, which matters here because the slowest subjects (low eGFR, low
+# albumin) would otherwise need days of simulated dosing to converge.
+ptaIntermittent <- function(amt, ii, crcl, alb, mic, dur = 0.25, n = N_ARM) {
+  ev <- rxode2::et(amt = amt, ii = ii, ss = 1L, dur = dur) |>
+    rxode2::et(seq(0, ii, length.out = 121))
+  d <- as.data.frame(ev)
+  d$CRCL <- crcl
+  d$ALB <- alb
+  rxode2::rxSetSeed(SEED)          # common random numbers across every arm
+  s <- rxode2::rxSolve(modPta, d, nSub = n, returnType = "data.frame",
+                       maxsteps = 200000L)
+  # 100% fT>MIC == the trough free concentration clears the MIC
+  trough <- tapply(s$Cc, s$sim.id, min)
+  100 * mean(FREE_FRACTION * trough > mic)
+}
+
+# Continuous infusion. A long finite infusion is used rather than an
+# ss = 1 / ii = 0 constant infusion: the latter reports the PRE-infusion value
+# on the time-zero observation row, which would corrupt a min() over the grid.
+ptaContinuous <- function(dose_per_day, crcl, alb, mic, n = N_ARM) {
+  tInf <- 480
+  ev <- rxode2::et(amt = dose_per_day / 24 * tInf, dur = tInf, cmt = "central") |>
+    rxode2::et(seq(tInf - 24, tInf, length.out = 13))
+  d <- as.data.frame(ev)
+  d$CRCL <- crcl
+  d$ALB <- alb
+  rxode2::rxSetSeed(SEED)
+  s <- rxode2::rxSolve(modPta, d, nSub = n, returnType = "data.frame",
+                       maxsteps = 200000L)
+  100 * mean(FREE_FRACTION * tapply(s$Cc, s$sim.id, min) > mic)
+}
+```
+
+Before anything is gated on it, the steady-state shortcut is checked against an
+explicit multi-dose run for the *slowest* subjects in the simulated grid (eGFR
+10, albumin 20 - the longest half-lives the paper's design produces).
+
+```{r ss-check}
+ssTrough <- function(ev) {
+  d <- as.data.frame(ev)
+  d$CRCL <- 10
+  d$ALB <- 20
+  rxode2::rxSetSeed(SEED)
+  s <- rxode2::rxSolve(modPta, d, nSub = N_ARM, returnType = "data.frame",
+                       maxsteps = 200000L)
+  tapply(s$Cc, s$sim.id, min)
+}
+analytic <- ssTrough(
+  rxode2::et(amt = 1000, ii = 8, ss = 1L, dur = 0.25) |>
+    rxode2::et(seq(0, 8, length.out = 121)))
+explicit <- ssTrough(
+  rxode2::et(amt = 1000, ii = 8, until = 8 * 60, dur = 0.25) |>
+    rxode2::et(seq(8 * 59, 8 * 60, length.out = 121)))
+maxRelDiff <- 100 * max(abs(analytic - explicit) / explicit)
+cat(sprintf("ss = 1 vs a 60-dose explicit run: max relative difference in trough = %.2f%%\n",
+            maxRelDiff))
+stopifnot(maxRelDiff < 5)
+```
+
+# Validation 1: the published probability-of-target-attainment grid
+
+Roelofsen 2023 Sect. 3.4 prints ten *S. aureus* target-attainment percentages -
+five intermittent regimens at each of two eGFR / albumin combinations. These are
+outputs of the paper's own Monte Carlo simulation, so reproducing them exercises
+every part of the transcription at once: both structural clearances, both
+volumes, the two covariate exponents and their reference values, and all three
+between-subject variances. **No parameter of this model is fitted to them.**
+
+```{r pta-grid}
+regimens <- data.frame(
+  regimen = c("1 g q8h", "2 g q8h", "1 g q6h", "2 g q6h", "1 g q4h"),
+  amt = c(1000, 2000, 1000, 2000, 1000),
+  ii = c(8, 8, 6, 6, 4),
+  stringsAsFactors = FALSE
+)
+scenarios <- data.frame(
+  scenario = c("eGFR 100, albumin 40", "eGFR 50, albumin 30"),
+  crcl = c(100, 50),
+  alb = c(40, 30),
+  stringsAsFactors = FALSE
+)
+# Roelofsen 2023 Sect. 3.4, in the order printed in the text
+published <- c(14, 34, 25, 54, 54,      # eGFR 100 / albumin 40
+               48, 77, 70, 90, 86)      # eGFR 50  / albumin 30
+
+ptaGrid <- merge(scenarios, regimens) |>
+  dplyr::arrange(dplyr::desc(crcl), match(regimen, regimens$regimen))
+ptaGrid$simulated <- mapply(
+  function(a, i, c, l) ptaIntermittent(a, i, c, l, MIC_SAUREUS),
+  ptaGrid$amt, ptaGrid$ii, ptaGrid$crcl, ptaGrid$alb)
+ptaGrid$published <- published
+ptaGrid$difference <- ptaGrid$simulated - ptaGrid$published
+
+ptaGrid |>
+  dplyr::select(scenario, regimen, published, simulated, difference) |>
+  dplyr::rename("Covariate scenario" = scenario,
+                "Regimen" = regimen,
+                "Published PTA (%)" = published,
+                "Simulated PTA (%)" = simulated,
+                "Difference (pp)" = difference) |>
+  knitr::kable(digits = 1,
+               caption = "Replicates the ten S. aureus PTA percentages of Roelofsen 2023 Sect. 3.4 (MIC(ECOFF) 4 mg/L, 100% fT>MIC).")
+```
+
+```{r pta-gate}
+absDiff <- abs(ptaGrid$difference)
+agreement <- cor(ptaGrid$simulated, ptaGrid$published)
+cat(sprintf("median |difference| = %.1f pp\n", median(absDiff)))
+cat(sprintf("90th percentile |difference| = %.1f pp\n", quantile(absDiff, 0.9)))
+cat(sprintf("correlation with the published grid = %.4f\n", agreement))
+
+stopifnot(
+  # Centre: a mis-transcribed clearance, exponent or reference value shifts the
+  # whole grid by far more than this.
+  median(absDiff) < 8,
+  # Envelope: robust to which subjects land in the tails at n = 200. The
+  # Monte Carlo standard error alone is about 3.5 pp per cell.
+  quantile(absDiff, 0.9) < 12,
+  # Structural: the grid spans 14% to 90%, so a broken covariate model would
+  # destroy the rank ordering long before it moved the median.
+  agreement > 0.95
+)
+```
+
+The residual differences are dominated by Monte Carlo noise at `n = 200` rather
+than by a transcription error: re-running the two worst-agreeing cells at
+`n = 2000` (closer to the paper's 5000) moves 1 g q8h at eGFR 100 / albumin 40
+from +6.0 pp to +2.6 pp, and 2 g q8h at eGFR 50 / albumin 30 from -5.5 pp to
+-2.9 pp. That residual ~3 pp is consistent with the omitted between-subject
+correlations discussed under *Assumptions and deviations*.
+
+## Enterobacterales anchor
+
+Sect. 3.4 additionally states that for Enterobacterales *"even the lowest dosage
+regimen of 1 g q8h reach[es] 95% PTA at the highest eGFR and albumin
+concentration"*.
+
+```{r pta-entero}
+enteroPta <- ptaIntermittent(1000, 8, 100, 40, MIC_ENTERO)
+cat(sprintf("1 g q8h, eGFR 100 / albumin 40, MIC 0.25 mg/L: %.1f%% (paper: 95%%)\n",
+            enteroPta))
+stopifnot(enteroPta > 85)
+```
+
+# Validation 2: the continuous-infusion recommendations
+
+The paper's headline dosing conclusions are three statements about continuous
+infusion, each of which is a claim about the *minimum* attainment over the whole
+eGFR x albumin grid rather than a single cell.
+
+```{r ci-grid}
+ciGrid <- expand.grid(crcl = c(10, 30, 50, 80, 100), alb = c(20, 30, 40))
+ciGrid$ci6_saureus <- mapply(function(c, a) ptaContinuous(6000, c, a, MIC_SAUREUS),
+                             ciGrid$crcl, ciGrid$alb)
+ciGrid$ci4_entero <- mapply(function(c, a) ptaContinuous(4000, c, a, MIC_ENTERO),
+                            ciGrid$crcl, ciGrid$alb)
+ciGrid$ci4_saureus <- mapply(function(c, a) ptaContinuous(4000, c, a, MIC_SAUREUS),
+                             ciGrid$crcl, ciGrid$alb)
+
+ciGrid |>
+  dplyr::rename("eGFR (mL/min/1.73 m^2)" = crcl,
+                "Albumin (g/L)" = alb,
+                "CI 6 g/d, S. aureus (%)" = ci6_saureus,
+                "CI 4 g/d, Enterobacterales (%)" = ci4_entero,
+                "CI 4 g/d, S. aureus (%)" = ci4_saureus) |>
+  knitr::kable(digits = 1,
+               caption = "Continuous-infusion PTA over the Roelofsen 2023 Sect. 2.7 covariate grid.")
+```
+
+```{r ci-gate}
+ci4EnteroMin <- min(ciGrid$ci4_entero)
+ci6SaureusMin <- min(ciGrid$ci6_saureus)
+ci4Saureus_80_40 <- ciGrid$ci4_saureus[ciGrid$crcl == 80 & ciGrid$alb == 40]
+
+cat(sprintf("CI 4 g/d, Enterobacterales, minimum over grid: %.1f%% (paper: adequate at all combinations)\n",
+            ci4EnteroMin))
+cat(sprintf("CI 6 g/d, S. aureus, minimum over grid:        %.1f%% (paper: 'a minimum of 99%% PTA')\n",
+            ci6SaureusMin))
+cat(sprintf("CI 4 g/d, S. aureus, eGFR 80 / albumin 40:     %.1f%% (paper: 'would also suffice', i.e. >= 95%%)\n",
+            ci4Saureus_80_40))
+
+stopifnot(
+  # Abstract + Sect. 3.4: 4 g/d covers Enterobacterales everywhere.
+  ci4EnteroMin >= 99,
+  # Abstract: "CI of 6 g 24 h-1 for S. aureus resulted in a minimum of 99% PTA".
+  ci6SaureusMin >= 99,
+  # Sect. 3.4: 4 g/d "would also suffice for S. aureus at an eGFR of 80
+  # mL min-1 or less and albumin concentration of 40 g L-1 or less".
+  ci4Saureus_80_40 >= 95
+)
+```
+
+The conclusion's boundary case is reproduced too: at eGFR 100 / albumin 40 -
+above the eGFR 80 / albumin 40 threshold the paper names - 4 g/d continuous
+infusion falls to
+`r sprintf("%.1f%%", ciGrid$ci4_saureus[ciGrid$crcl == 100 & ciGrid$alb == 40])`,
+right at the 95% adequacy line, which is why the paper prefers 6 g/d there. No
+assertion is placed on that cell: it sits within Monte Carlo noise of the
+threshold, so a gate on it could go red for reasons unrelated to transcription.
+
+# Validation 3: the clearance-versus-eGFR cross-check
+
+The Discussion compares this model against Swartling et al. and states that
+*"in our exponential model, the increases in clearance ... rang[e] from
+0.42-0.99 L h-1 per 10 mL min-1 with a smaller increase in clearance at higher
+eGFRs"*. That is an independent numeric summary of the fitted clearance
+equation, printed in prose rather than in Table 2, so it jointly checks the
+intercept (7.08), the exponent (0.477) and the reference value (57).
+
+```{r cl-increment}
+typicalCl <- function(crcl, alb = 26) {
+  p <- mod$theta
+  exp(p[["lcl"]]) * (crcl / 57)^p[["e_crcl_cl"]] * (alb / 26)^p[["e_alb_cl"]]
+}
+egfr <- seq(20, 120, by = 10)
+increment <- diff(typicalCl(egfr))
+data.frame(window = paste0(egfr[-length(egfr)], " to ", egfr[-1]),
+           increment = increment) |>
+  dplyr::rename("eGFR window (mL/min/1.73 m^2)" = window,
+                "CL increase (L/h per 10 mL/min)" = increment) |>
+  knitr::kable(digits = 3)
+
+cat(sprintf("range over eGFR 20-120: %.3f to %.3f L/h per 10 mL/min (paper: 0.42 to 0.99)\n",
+            min(increment), max(increment)))
+
+stopifnot(
+  # The paper's qualitative claim: "a smaller increase in clearance at higher
+  # eGFRs". Deterministic, so this is exact.
+  all(diff(increment) < 0),
+  # The published 0.42-0.99 band. The paper does not state the eGFR window it
+  # evaluated, so the bounds are checked with the tolerance that ambiguity
+  # deserves: the model spans this band over eGFR ~18-115, which brackets the
+  # 10-100 grid the paper's own simulations used.
+  min(increment) > 0.35, min(increment) < 0.50,
+  max(increment) > 0.85, max(increment) < 1.05
+)
+```
+
+# Validation 4: steady-state non-compartmental analysis
+
+Roelofsen 2023 reports no non-compartmental parameters, so there is nothing to
+compare an NCA table against. PKNCA is still run, for two reasons: it documents
+the exposure the packaged model produces for the study's own regimen, and the
+steady-state mass-balance identity `AUC(tau) x CL = Dose` provides an
+independent check that the ODE solution and the reported clearance are
+consistent - the trapezoidal integration and the model's clearance are computed
+by completely separate code paths.
+
+```{r nca}
+ev <- rxode2::et(amt = 1000, ii = 6, ss = 1L, dur = 0.25) |>
+  rxode2::et(seq(0, 6, length.out = 241))
+d <- as.data.frame(ev)
+d$CRCL <- 57                    # cohort medians, Table 1
+d$ALB <- 26
+rxode2::rxSetSeed(SEED)
+ncaSim <- rxode2::rxSolve(modPta, d, nSub = N_ARM, returnType = "data.frame",
+                          maxsteps = 200000L)
+
+conc <- ncaSim |>
+  dplyr::transmute(id = sim.id, time, Cc, cl) |>
+  dplyr::filter(!is.na(Cc))
+dose <- conc |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(time = 0, amt = 1000, .groups = "drop") |>
+  as.data.frame()
+
+oConc <- PKNCA::PKNCAconc(conc, Cc ~ time | id)
+oDose <- PKNCA::PKNCAdose(dose, amt ~ time | id,
+                          route = "intravascular", duration = 0.25)
+ncaData <- PKNCA::PKNCAdata(
+  oConc, oDose,
+  intervals = data.frame(start = 0, end = 6,
+                         auclast = TRUE, cmax = TRUE, cmin = TRUE,
+                         tmax = TRUE, half.life = TRUE))
+ncaRes <- as.data.frame(PKNCA::pk.nca(ncaData, verbose = FALSE))
+
+ncaWide <- ncaRes |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "cmin", "tmax", "half.life")) |>
+  dplyr::select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::left_join(
+    conc |> dplyr::group_by(id) |> dplyr::summarise(cl = dplyr::first(cl), .groups = "drop"),
+    by = "id")
+
+summariseQ <- function(x) {
+  q <- stats::quantile(x, c(0.05, 0.5, 0.95), na.rm = TRUE)
+  sprintf("%.2f (%.2f - %.2f)", q[2], q[1], q[3])
+}
+data.frame(
+  parameter = c("Cmax (mg/L)", "Cmin / trough (mg/L)", "Tmax (h)",
+                "t-half (h)", "AUC(0-6 h) (mg*h/L)", "CL (L/h)"),
+  value = c(summariseQ(ncaWide$cmax), summariseQ(ncaWide$cmin),
+            summariseQ(ncaWide$tmax), summariseQ(ncaWide$half.life),
+            summariseQ(ncaWide$auclast), summariseQ(ncaWide$cl))
+) |>
+  dplyr::rename("NCA parameter" = parameter,
+                "Median (5th - 95th percentile)" = value) |>
+  knitr::kable(caption = "Steady-state NCA, 1 g q6h at the cohort median covariates (eGFR 57, albumin 26), n = 200.")
+```
+
+The simulated half-life is consistent with the 0.8-2.42 h range the
+Introduction cites for earlier cefotaxime studies, though shifted upward as
+expected for a cohort whose median eGFR is 57 rather than the ~129
+mL/min/1.73 m^2 of healthy volunteers.
+
+```{r nca-massbalance}
+massBalPct <- 100 * (ncaWide$auclast * ncaWide$cl - 1000) / 1000
+cat(sprintf("AUC(tau) x CL vs Dose: median %.4f%%, max |deviation| %.4f%%\n",
+            median(massBalPct), max(abs(massBalPct))))
+# Both sides use the same drawn parameters, so the only difference is
+# trapezoidal integration error on a 241-point grid - a tight bound is correct
+# here and would catch a dose-unit or volume-scaling error immediately.
+stopifnot(max(abs(massBalPct)) < 0.5)
+```
+
+# Replicating Figure 3
+
+Figure 3 of Roelofsen 2023 plots the percentage of patients reaching 100%
+*f*T>MIC for *S. aureus* against combinations of eGFR and albumin, one panel per
+dosage regimen. The figure below reproduces it over the same grid, with the
+percentages printed in Sect. 3.4 overlaid as open points.
+
+```{r figure3, fig.height = 6}
+figGrid <- merge(
+  regimens,
+  expand.grid(crcl = c(10, 30, 50, 80, 100), alb = c(20, 30, 40))
+)
+figGrid$pta <- mapply(
+  function(a, i, c, l) ptaIntermittent(a, i, c, l, MIC_SAUREUS),
+  figGrid$amt, figGrid$ii, figGrid$crcl, figGrid$alb)
+figGrid$regimen <- factor(figGrid$regimen, levels = regimens$regimen)
+
+anchors <- ptaGrid
+anchors$regimen <- factor(anchors$regimen, levels = regimens$regimen)
+
+ggplot2::ggplot(figGrid,
+                ggplot2::aes(x = crcl, y = pta, colour = factor(alb))) +
+  ggplot2::geom_line() +
+  ggplot2::geom_point(size = 1.4) +
+  ggplot2::geom_point(data = anchors,
+                      ggplot2::aes(x = crcl, y = published, colour = factor(alb)),
+                      shape = 1, size = 4, stroke = 1.1,
+                      show.legend = FALSE) +
+  ggplot2::geom_hline(yintercept = 95, linetype = "dashed") +
+  ggplot2::facet_wrap(~regimen) +
+  ggplot2::labs(
+    x = "eGFR (mL/min/1.73 m^2)",
+    y = "Patients reaching 100% fT>MIC (%)",
+    colour = "Albumin (g/L)",
+    title = "Replicates Figure 3 of Roelofsen 2023 (S. aureus, MIC(ECOFF) 4 mg/L)",
+    subtitle = "Lines: this model. Open circles: percentages printed in Sect. 3.4. Dashed line: the 95% adequacy target."
+  ) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "bottom")
+```
+
+The qualitative conclusions of the figure are reproduced: attainment falls
+steeply with rising eGFR and with rising albumin (both raise clearance), no
+intermittent regimen reaches the 95% target at high eGFR, and the ordering of
+the regimens by attainment is 1 g q8h < 1 g q6h < 2 g q8h < 2 g q6h ~ 1 g q4h.
+
+# Concentration-time profile
+
+For orientation, the steady-state profile over one dosing interval for the
+regimen most patients in the study actually received (1 g q6h), at the cohort
+median covariates. This is the analogue of Figure 2's visual predictive check;
+because Figure 2's underlying observations are not published as numbers, no
+assertion is attached to it.
+
+```{r profile}
+profile <- ncaSim |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    p05 = stats::quantile(Cc, 0.05),
+    p50 = stats::median(Cc),
+    p95 = stats::quantile(Cc, 0.95),
+    .groups = "drop")
+
+ggplot2::ggplot(profile, ggplot2::aes(x = time)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = p05, ymax = p95), alpha = 0.2) +
+  ggplot2::geom_line(ggplot2::aes(y = p50), linewidth = 0.9) +
+  ggplot2::geom_hline(yintercept = MIC_SAUREUS / FREE_FRACTION,
+                      linetype = "dashed") +
+  ggplot2::scale_y_log10() +
+  ggplot2::labs(
+    x = "Time after dose (h)",
+    y = "Total cefotaxime concentration (mg/L)",
+    title = "Steady-state 1 g q6h at the cohort medians (eGFR 57, albumin 26)",
+    subtitle = "Median with 5th-95th percentile band, n = 200. Dashed line: total concentration equivalent to the S. aureus MIC of 4 mg/L free."
+  ) +
+  ggplot2::theme_bw()
+```
+
+# Assumptions and deviations
+
+* **Between-subject correlations are omitted.** Sect. 3.2, the abstract and the
+  supplementary control stream (`$OMEGA BLOCK(3)`) all state that correlations
+  between the interindividual variability terms on CL, V1 and Q were estimated
+  and retained. The **final off-diagonal estimates are published nowhere** - not
+  in Table 2, not in the text, and not in the supplement, which contains only the
+  base-model control stream with its 0.001 *initial* values. Rather than invent
+  correlations, the packaged model declares the three etas as diagonal. This is
+  the one structural deviation from the published model. Its practical effect is
+  visible in Validation 1: after Monte Carlo noise is removed by raising `n` to
+  2000, roughly 3 percentage points of PTA disagreement remain, with the model
+  slightly over-predicting attainment where attainment is low and slightly
+  under-predicting it where attainment is high - the signature of a trough
+  distribution whose tails are too thin, which is what dropping a CL/V
+  correlation would produce. Users reproducing the paper's exact PTA numbers
+  should be aware of this; users simulating typical-value profiles are
+  unaffected.
+* **The %CV convention was inferred, not stated.** Table 2 reports the
+  variability as a bare percentage. The convention `omega = CV/100` was selected
+  because it is the only one of the two candidates that reproduces the paper's
+  own statement that the covariates explain 48% of the IIV on clearance - see
+  the source-trace section above for the arithmetic. The paper does not say this
+  directly.
+* **The eGFR reference is 57 and the albumin reference is 26.** Both come
+  directly from the Sect. 3.2 equation, which the paper prints in full, and both
+  equal the corresponding Table 1 medians. Note that the Sect. 3.4 narrative
+  loosely calls eGFR 50 and albumin 30 the "approximately median" values; those
+  are the nearest points of the *simulation grid*, not the normalizing constants.
+* **eGFR assay.** Sect. 2.3 specifies the CKD-EPI equation. The abstract glosses
+  eGFR as "(creatinine clearance)", which is imprecise; Sect. 2.3 is taken as
+  authoritative. The value is BSA-normalized (mL/min/1.73 m^2), so it is stored
+  under the canonical `CRCL` column in that normalization - supplying a raw,
+  un-normalized creatinine clearance would silently rescale the clearance term.
+* **No body-size term.** Body weight and BMI were screened and not retained, so
+  CL, V1, V2 and Q are absolute values for a typical critically ill adult (the
+  cohort median weight is 76 kg) and carry no allometric scaling. Applying this
+  model far outside the 45-150 kg observed range is extrapolation.
+* **Protein binding is an assumption imported from another study.** The 30%
+  bound fraction used to convert total to free concentrations is not measured in
+  this study; Sect. 2.7 takes it from Aardema et al. Every PTA number above
+  inherits that assumption. The model itself predicts **total** plasma
+  cefotaxime, which is what the Sect. 2.2 assay measured.
+* **CRRT and renal replacement therapy.** CRRT was screened as a binary
+  covariate and not retained, but the Discussion notes it was recorded only at
+  baseline, with no data on duration or continuation during sampling, and that
+  only 5 of 92 patients were affected. The authors state explicitly that the
+  effect of CRRT on cefotaxime PK needs further investigation. This model should
+  not be used to describe patients on renal replacement therapy.
+* **The desacetylcefotaxime metabolite is not modelled**, because it was not
+  measured. The Discussion estimates its contribution at roughly 5% of
+  cefotaxime's antimicrobial activity.
+* **Covariate extrapolation.** The cohort spans eGFR 4-347 and albumin 11-47,
+  but the paper deliberately restricted its own simulations to eGFR 10-100 and
+  albumin 20-40 "to avoid extrapolation". This vignette uses the same grid. One
+  subject had an eGFR above 300; the Discussion reports that capping that
+  subject at 141 did not markedly change the estimates.
+* **Simulation size.** Every arm here uses 200 subjects against the paper's
+  5000, which is the dominant source of the residual disagreement in
+  Validation 1 and is why those gates are set on the median and the 90th
+  percentile of the absolute difference rather than on the worst cell.
+
+# Errata
+
+No erratum, corrigendum or author correction was located for this article. The
+supplementary material retrieved from Europe PMC comprises the base-model NONMEM
+control stream (S1) and the NPDE diagnostic figure (S2); neither contains the
+final-model parameter estimates, which appear only in Table 2 of the main text.

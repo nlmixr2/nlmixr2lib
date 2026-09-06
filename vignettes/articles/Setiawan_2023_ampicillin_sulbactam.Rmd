@@ -1,0 +1,704 @@
+---
+title: "Ampicillin and sulbactam (Setiawan 2023)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ampicillin and sulbactam (Setiawan 2023)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Setiawan and colleagues fitted ampicillin and sulbactam in two **separate**
+non-parametric (NPAG / Pmetrics) runs, so the paper contributes two model files
+to nlmixr2lib. Both share the same structure, the same cohort and the same
+covariate.
+
+```{r models}
+ui_amp <- rxode2::rxode(readModelDb("Setiawan_2023_ampicillin"))
+ui_sul <- rxode2::rxode(readModelDb("Setiawan_2023_sulbactam"))
+```
+
+* Citation: `r ui_amp$reference`
+* Article: <https://doi.org/10.1007/s40262-023-01219-5> (open access, CC BY-NC)
+* Ampicillin model: `Setiawan_2023_ampicillin`
+* Sulbactam model: `Setiawan_2023_sulbactam`
+
+```{r descriptions, echo = FALSE, results = "asis"}
+cat("**Ampicillin.** ", ui_amp$description, "\n\n", sep = "")
+cat("**Sulbactam.** ", ui_sul$description, "\n\n", sep = "")
+```
+
+# Population
+
+Sixteen hospitalised adults on **general (non-ICU) wards** of a referral hospital
+in Surabaya, Indonesia, received intravenous ampicillin-sulbactam 1000 mg /
+500 mg as a roughly three-minute bolus injection, twelve of them every 8 h and
+four every 6 h (Table 1). Blood was drawn 5, 20, 120 and 240 min after an
+injection plus a pre-dose trough, giving 59 ampicillin and 60 sulbactam
+concentrations. Patients on or scheduled for renal replacement therapy, and
+pregnant women, were excluded.
+
+The defining feature of the cohort is its renal function: the median serum
+creatinine was 1.4 mg/dL (range 0.6-6.4) and the median CKD-EPI eGFR was
+42.2 mL/min/1.73 m<sup>2</sup> (range 5.9-108.4), with **11 of 16 patients below
+60 mL/min/1.73 m<sup>2</sup>**. That is the sub-population the authors set out to
+describe. Median age was 68 years (range 40-82), median weight 62 kg (range
+40-82, directly measured in only 8 of the 16 patients), and 6 of 16 (37.5%) were
+male.
+
+The same information is available programmatically from either model's
+`population` metadata:
+
+```{r population}
+str(ui_amp$population[c("n_subjects", "n_concentrations", "age_median",
+                        "weight_median", "renal_function", "dose_range")])
+```
+
+# Source trace
+
+Every value below is also carried as an in-file comment next to its `ini()`
+entry in `inst/modeldb/specificDrugs/Setiawan_2023_ampicillin.R` and
+`inst/modeldb/specificDrugs/Setiawan_2023_sulbactam.R`.
+
+| Model element | Ampicillin | Sulbactam | Source location |
+|---|---|---|---|
+| Structural model | 2-compartment IV | 2-compartment IV | Results 3.2; Table 2 model-selection block (two-compartment beats one-compartment by -2LL 315 vs 356 and 258 vs 283) |
+| `lcl` (CL at CREAT = 1.4 mg/dL) | 5.58 L/h | 4.79 L/h | Table 2, CL mean; also Abstract and Discussion 4.2 |
+| `lvc` (central volume) | 12.6 L | 15.36 L | Table 2, V mean (sulbactam printed as 15.4 there; the Abstract gives 15.36) |
+| `lk12` (KCP) | 0.90 1/h | 0.42 1/h | Table 2, KCP mean |
+| `lk21` (KPC) | **1.17 1/h** (printed 0.17; corrected) | 0.69 1/h | Table 2, KPC mean -- see Errata |
+| `etalcl` | 0.192702 | 0.168209 | Table 2 CV% 46.1 / 42.8, via `omega^2 = log(CV^2 + 1)` |
+| `etalvc` | 0.029155 | 0.090630 | Table 2 CV% 17.2 / 30.8 |
+| `etalk12` | 0.559591 | 0.661153 | Table 2 CV% 86.6 / 96.8 |
+| `etalk21` | 0.373582 | 0.511319 | Table 2 CV% 67.3 / 81.7 |
+| Covariate `CREAT` on CL | `CL x (1.4 / SeCr)` | `CL x (1.4 / SeCr)` | Equation 1 and Equation 2; reference 1.4 mg/dL is the cohort median (Results 3.2, Table 1) |
+| `fu` (fraction unbound) | 0.72 | 0.62 | Methods 2.4.4: fixed protein binding 28% and 38% |
+| `propSd`, `addSd` | `fixed(0)` | `fixed(0)` | Not reported anywhere in the paper -- see Errata |
+| PK/PD target | 60% *f*T>MIC | 60% *f*T>MIC | Methods 2.4.4; validation target for Table 3 below |
+
+# Structural identity checks
+
+These checks do not depend on any random draw, so they are asserted tightly.
+They are what catches a mis-transcribed clearance, volume, rate constant or
+covariate form.
+
+```{r typical-solve}
+# Fine early grid so the trapezoidal AUC resolves the distribution phase.
+obs_times <- sort(unique(c(
+  seq(0, 0.5, by = 0.005),
+  seq(0.5, 4, by = 0.02),
+  seq(4, 48, by = 0.1)
+)))
+
+# One typical-value (zeroRe) IV-bolus solve per drug at the covariate reference.
+solve_typical <- function(model_name, dose_mg, creat) {
+  ev <- data.frame(
+    id = 1L, time = 0, amt = dose_mg, evid = 1L, cmt = "central", rate = 0
+  )
+  ev <- dplyr::bind_rows(
+    ev,
+    data.frame(
+      id = 1L, time = obs_times, amt = NA_real_, evid = 0L,
+      cmt = "central", rate = 0
+    )
+  )
+  ev$CREAT <- creat
+  rxode2::rxSolve(
+    rxode2::zeroRe(readModelDb(model_name)), ev, returnType = "data.frame"
+  )
+}
+
+typ_amp <- solve_typical("Setiawan_2023_ampicillin", 1000, 1.4)
+typ_sul <- solve_typical("Setiawan_2023_sulbactam", 500, 1.4)
+```
+
+## The peripheral compartment is actually solved
+
+`rxSolve()` defaults to `useLinCmt = TRUE` and can silently collapse a
+two-compartment system into a one-compartment closed form when the peripheral
+transfer is written straight from stored micro-constants. Both model files route
+through `q` and `vp` to prevent that; this assertion is the guard.
+
+```{r peripheral-guard}
+stopifnot(max(typ_amp$peripheral1) > 0, max(typ_sul$peripheral1) > 0)
+```
+
+## The solve reproduces the two-compartment closed form
+
+```{r closed-form}
+# Analytical IV-bolus solution of the model's own micro-constants.
+biexp_bolus <- function(dose, vc, kel, k12, k21, time) {
+  s <- kel + k12 + k21
+  alpha <- (s + sqrt(s^2 - 4 * kel * k21)) / 2
+  beta <- (s - sqrt(s^2 - 4 * kel * k21)) / 2
+  dose / vc * ((alpha - k21) / (alpha - beta) * exp(-alpha * time) +
+                 (k21 - beta) / (alpha - beta) * exp(-beta * time))
+}
+
+closed_amp <- biexp_bolus(1000, 12.6, 5.58 * (1.4 / 1.4) / 12.6, 0.90, 1.17,
+                          typ_amp$time)
+closed_sul <- biexp_bolus(500, 15.36, 4.79 * (1.4 / 1.4) / 15.36, 0.42, 0.69,
+                          typ_sul$time)
+
+max_abs_err <- c(
+  ampicillin = max(abs(typ_amp$Cc - closed_amp)),
+  sulbactam = max(abs(typ_sul$Cc - closed_sul))
+)
+print(max_abs_err)
+
+# Pure numerical error between two solutions of the SAME parameters: a tight
+# bound is correct here (both sides use identical drawn parameters, so there is
+# no cohort draw to be robust to). Realised 6.6e-13 and 5.9e-13.
+stopifnot(max_abs_err < 1e-8)
+```
+
+## The serum-creatinine effect is an exact reciprocal
+
+Equation 1 and Equation 2 are raw inverse ratios with no estimated exponent, so
+halving serum creatinine must double clearance exactly.
+
+```{r covariate-identity}
+cl_at <- function(model_name, creat) {
+  unique(solve_typical(model_name, 1000, creat)$cl)
+}
+
+creat_grid <- c(0.7, 1.0, 1.4, 2.0, 6.0)
+cl_amp <- vapply(creat_grid, function(x) cl_at("Setiawan_2023_ampicillin", x), numeric(1))
+cl_sul <- vapply(creat_grid, function(x) cl_at("Setiawan_2023_sulbactam", x), numeric(1))
+
+cov_tab <- tibble::tibble(
+  `Serum creatinine (mg/dL)` = creat_grid,
+  `Mapped CLcr (mL/min/1.73 m2)` = c(100, 70, NA, 20, 10),
+  `Ampicillin CL (L/h)` = round(cl_amp, 3),
+  `Sulbactam CL (L/h)` = round(cl_sul, 3)
+)
+knitr::kable(
+  cov_tab,
+  caption = paste(
+    "Clearance across the serum-creatinine values the authors simulated",
+    "(Results 3.3). The CLcr mapping is the authors'; 1.4 mg/dL is the cohort",
+    "median and the model's reference."
+  )
+)
+
+# CL * SeCr must be constant, exactly.
+stopifnot(
+  max(abs(cl_amp * creat_grid / (5.58 * 1.4) - 1)) < 1e-10,
+  max(abs(cl_sul * creat_grid / (4.79 * 1.4) - 1)) < 1e-10
+)
+```
+
+## Derived secondary parameters
+
+```{r secondary}
+secondary <- function(cl, vc, k12, k21) {
+  kel <- cl / vc
+  s <- kel + k12 + k21
+  alpha <- (s + sqrt(s^2 - 4 * kel * k21)) / 2
+  beta <- (s - sqrt(s^2 - 4 * kel * k21)) / 2
+  c(
+    Q = k12 * vc, Vp = k12 * vc / k21, Vss = vc * (1 + k12 / k21),
+    `t1/2 alpha` = log(2) / alpha, `t1/2 beta` = log(2) / beta
+  )
+}
+
+sec_tab <- rbind(
+  Ampicillin = secondary(5.58, 12.6, 0.90, 1.17),
+  Sulbactam = secondary(4.79, 15.36, 0.42, 0.69)
+)
+knitr::kable(
+  round(sec_tab, 3),
+  caption = paste(
+    "Secondary parameters at the reference serum creatinine of 1.4 mg/dL.",
+    "Q in L/h, volumes in L, half-lives in h. Vss / 62 kg is",
+    paste0(round(sec_tab[, "Vss"] / 62, 2), collapse = " and "), "L/kg."
+  )
+)
+```
+
+`Vss` of `r round(sec_tab["Ampicillin", "Vss"], 1)` L for ampicillin and
+`r round(sec_tab["Sulbactam", "Vss"], 1)` L for sulbactam correspond to
+`r round(sec_tab["Ampicillin", "Vss"] / 62, 2)` and
+`r round(sec_tab["Sulbactam", "Vss"] / 62, 2)` L/kg at the 62 kg cohort median,
+which is the range expected of small hydrophilic beta-lactams. This is one of
+the three arguments for the ampicillin `KPC` correction described under Errata.
+
+# PKNCA validation
+
+The paper reports no NCA table, so the NCA is validated against exact internal
+identities instead: for a linear model given a single IV bolus,
+`AUC(0-inf) = Dose / CL` and the terminal half-life must equal `log(2) / beta`.
+Both sides use the same drawn parameters here (typical values, no residual
+error), so the difference is pure numerical error and a tight bound is correct.
+
+```{r pknca}
+nca_input <- dplyr::bind_rows(
+  typ_amp |> dplyr::select(time, Cc) |> dplyr::mutate(drug = "Ampicillin"),
+  typ_sul |> dplyr::select(time, Cc) |> dplyr::mutate(drug = "Sulbactam")
+) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(id = 1L)
+
+# A time-zero record is mandatory for PKNCA's AUC anchor. For an IV bolus the
+# t = 0 concentration is the back-extrapolated C0, which the solve already
+# provides, so this only guards against a grid that lacks the row.
+stopifnot(all(c("Ampicillin", "Sulbactam") %in%
+                nca_input$drug[nca_input$time == 0]))
+
+conc_obj <- PKNCA::PKNCAconc(nca_input, Cc ~ time | drug + id)
+
+dose_df <- tibble::tibble(
+  drug = c("Ampicillin", "Sulbactam"), id = 1L, time = 0, amt = c(1000, 500)
+)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | drug + id)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(drug, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+expected <- tibble::tibble(
+  drug = c("Ampicillin", "Sulbactam"),
+  `AUCinf identity Dose/CL (mg*h/L)` = c(1000 / 5.58, 500 / 4.79),
+  `t1/2 identity log(2)/beta (h)` = c(sec_tab["Ampicillin", "t1/2 beta"],
+                                      sec_tab["Sulbactam", "t1/2 beta"])
+)
+
+nca_cmp <- nca_wide |>
+  dplyr::left_join(expected, by = "drug") |>
+  dplyr::mutate(
+    `AUCinf error (%)` = 100 * (aucinf.obs / `AUCinf identity Dose/CL (mg*h/L)` - 1),
+    `t1/2 error (%)` = 100 * (half.life / `t1/2 identity log(2)/beta (h)` - 1)
+  ) |>
+  dplyr::rename(
+    "Drug" = drug, "Cmax (mg/L)" = cmax, "Tmax (h)" = tmax,
+    "AUClast (mg*h/L)" = auclast, "AUCinf (mg*h/L)" = aucinf.obs,
+    "t1/2 (h)" = half.life
+  )
+
+knitr::kable(
+  nca_cmp, digits = 3,
+  caption = paste(
+    "PKNCA on the typical-value single-dose solve (1000 mg ampicillin,",
+    "500 mg sulbactam, serum creatinine 1.4 mg/dL) against the exact model",
+    "identities."
+  )
+)
+
+stopifnot(
+  # Realised 0.0004% and 0.0002%: the fine early grid resolves the distribution
+  # phase, so the trapezoidal AUC recovers Dose/CL essentially exactly.
+  max(abs(nca_cmp$`AUCinf error (%)`)) < 0.01,
+  # Realised -0.39% and -0.63%. PKNCA's automatic lambda-z window starts at
+  # 0.68 h (ampicillin) and 1.74 h (sulbactam), where a little distribution-phase
+  # curvature remains, so the fitted slope is marginally steeper than the true
+  # beta. 1.5% still goes red for a mis-transcribed rate constant: the printed
+  # KPC of 0.17 would put the ampicillin half-life at 13.4 h, a 340% error.
+  max(abs(nca_cmp$`t1/2 error (%)`)) < 1.5,
+  # A 48 h window is many half-lives, so the extrapolated tail is negligible.
+  all(nca_cmp$`AUCinf (mg*h/L)` >= nca_cmp$`AUClast (mg*h/L)`)
+)
+```
+
+# Errata
+
+## Ampicillin `KPC`: Table 2 prints 0.17 1/h; 1.17 1/h is used
+
+Table 2's ampicillin `KPC` row reads mean 0.17, SD 0.79, CV 67.3%, median 1.11.
+That row is internally impossible, and three independent arguments all correct
+the mean to **1.17**:
+
+1. **Mean versus median.** For a non-negative random variable, Markov's
+   inequality gives `E[X] >= median / 2`. With a median of 1.11 the mean cannot
+   be below 0.555, and 0.17 is well below it. No non-negative distribution can
+   produce this pairing.
+2. **The CV column back-solves the mean.** Pmetrics reports `CV% = SD / mean`.
+   Every other cell of Table 2 satisfies that to the printed rounding, but
+   `0.79 / 0.17 = 465%`, not the printed 67.3%. Inverting the printed CV gives
+   `0.79 / 0.673 = 1.174`.
+3. **Physiology.** With `KPC = 0.17` the peripheral volume becomes
+   `Vp = KCP x V / KPC = 66.7 L` and `Vss = 79 L`, i.e. 1.28 L/kg at the 62 kg
+   cohort median -- roughly four-fold above the approximately 0.3 L/kg expected
+   of a small hydrophilic beta-lactam -- and the terminal half-life becomes
+   13.4 h. `KPC = 1.17` gives `Vss = 22.3 L` (0.36 L/kg) and a 3.1 h terminal
+   half-life at this cohort's reduced renal function.
+
+A single lost leading digit reconciles all three, and `0.787 / 1.17 = 67.3%`
+reproduces the printed CV exactly.
+
+```{r kpc-evidence}
+kpc_evidence <- tibble::tibble(
+  Argument = c(
+    "Markov bound: for X >= 0, mean >= median / 2",
+    "Pmetrics CV% = SD / mean, inverted for the mean",
+    "Vss / 62 kg (L/kg), printed KPC = 0.17",
+    "Vss / 62 kg (L/kg), corrected KPC = 1.17",
+    "Terminal half-life (h), printed KPC = 0.17",
+    "Terminal half-life (h), corrected KPC = 1.17"
+  ),
+  Value = c(
+    1.11 / 2,
+    0.79 / 0.673,
+    unname(secondary(5.58, 12.6, 0.90, 0.17)["Vss"]) / 62,
+    unname(secondary(5.58, 12.6, 0.90, 1.17)["Vss"]) / 62,
+    unname(secondary(5.58, 12.6, 0.90, 0.17)["t1/2 beta"]),
+    unname(secondary(5.58, 12.6, 0.90, 1.17)["t1/2 beta"])
+  )
+)
+knitr::kable(kpc_evidence, digits = 3,
+             caption = "The three arguments, evaluated.")
+
+# All deterministic arithmetic, so exact bounds are correct here.
+stopifnot(
+  # (1) The printed mean is below the Markov floor implied by the printed median.
+  0.17 < 1.11 / 2,
+  # (2) Inverting the printed CV recovers 1.17 to the printed precision.
+  abs(0.79 / 0.673 - 1.17) < 0.01,
+  # (3) The printed value puts Vss far outside, and the corrected value inside,
+  #     the range expected of a small hydrophilic beta-lactam (~0.3 L/kg).
+  secondary(5.58, 12.6, 0.90, 0.17)["Vss"] / 62 > 1.0,
+  secondary(5.58, 12.6, 0.90, 1.17)["Vss"] / 62 < 0.5
+)
+```
+
+**The correction was not reverse-engineered from the validation target.** The
+Table 3 reproduction below is, as it happens, almost insensitive to this choice:
+re-running the ampicillin bolus arms with `KPC = 0.17` moves the simulated MIC
+breakpoint by at most one doubling dilution, because a larger peripheral volume
+lowers the early central concentration by roughly as much as the slower terminal
+phase raises the late one, over an 8 h interval. The correction therefore rests
+entirely on Table 2's own internal arithmetic, and cannot have been tuned to make
+Table 3 agree. What the choice *does* change materially is `Vss` (22 L versus
+79 L) and the terminal half-life (3.0 h versus 13.4 h) -- the quantities a
+downstream user would take from this model for anything other than a
+short-interval *f*T>MIC calculation.
+
+## Other transcription notes
+
+* **`KCP` / `KPC` units.** Table 2's stub column labels both rate constants
+  "(L/h)". The same table's footnote defines them as "the rate constant from the
+  central compartment to the peripheral compartment" and vice versa, which is
+  1/h. The models carry them as 1/h; a rate constant in L/h would not balance
+  dimensionally against `d/dt(central)` in mg/h.
+* **Sulbactam central volume.** Table 2 prints 15.4 L; the Abstract prints
+  15.36 L. The extra digit is confirmed by Table 2's own CV column, since
+  `4.73 / 15.36 = 30.8%` (the printed CV) while `4.73 / 15.4 = 30.7%`. The
+  models use 15.36.
+* **Residual error is not published.** Methods 2.4.1 records only that "both
+  lambda and gamma error models were tested". Neither the selected error model
+  nor the Pmetrics assay-error polynomial coefficients appear in the paper, and
+  no supplement carrying them is available. `propSd` and `addSd` are therefore
+  `fixed(0)` rather than invented, so simulated `Cc` is the individual
+  prediction. Users who need residual noise must supply their own.
+* **Supplementary material not on disk.** Supplementary Figures 1-2 and
+  Supplementary Tables 1-3 hold the 100% *f*T>MIC PTA and FTA results. They
+  contain simulation output only -- no model structure and no parameter values
+  -- so their absence does not affect this extraction. The 60% *f*T>MIC results
+  used for validation below are all in the main article (Table 3).
+
+# Reproducing Table 3: probability of target attainment
+
+Table 3 reports, for each regimen and serum-creatinine group, the **highest MIC
+at which PTA >= 90%** for the 60% *f*T>MIC target, after the first and after the
+fifth administration. That is the paper's principal quantitative output and the
+strongest available validation target.
+
+The simulation below covers the regimens the authors highlighted in Figures 3
+and 4 -- ampicillin-sulbactam 1.5 g every 8 h, as a bolus injection and as a 4-h
+prolonged infusion, at serum creatinine 1.5, 1 and 0.7 mg/dL.
+
+```{r cohort}
+# set.seed() seeds R's RNG, NOT rxode2's simulation RNG, and rxode2's streams
+# are partitioned per solver thread -- so this cohort is reproducible on this
+# machine but differs on a machine with a different thread count. Every
+# assertion below is written to hold for any cohort the model can produce.
+set.seed(20230228)
+
+n_per_arm <- 200L  # the 200-per-arm cap; PTA standard error near 90% is ~2.1%
+
+# Observation grids: the first dosing interval (0, 8) and the fifth (32, 40).
+# Both exclude the dose times themselves so no observation is ambiguous about
+# which side of a dose it sits on.
+grid_first <- seq(0.05, 7.95, by = 0.05)
+grid_fifth <- seq(32.05, 39.95, by = 0.05)
+
+arms <- tidyr::expand_grid(
+  CREAT = c(1.5, 1.0, 0.7),
+  mode = c("Bolus", "4-h infusion")
+) |>
+  dplyr::mutate(
+    arm = paste0("SeCr ", CREAT, " mg/dL, ", mode),
+    id_offset = (dplyr::row_number() - 1L) * n_per_arm
+  )
+
+make_arm <- function(creat, mode, arm, id_offset, dose_mg) {
+  ids <- id_offset + seq_len(n_per_arm)
+  doses <- tidyr::expand_grid(id = ids, time = seq(0, 32, by = 8)) |>
+    dplyr::mutate(
+      amt = dose_mg, evid = 1L, cmt = "central",
+      rate = if (mode == "Bolus") 0 else dose_mg / 4
+    )
+  obs <- tidyr::expand_grid(id = ids, time = c(grid_first, grid_fifth)) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", rate = 0)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(CREAT = creat, arm = arm) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+build_events <- function(dose_mg) {
+  purrr_free <- Map(
+    make_arm, arms$CREAT, arms$mode, arms$arm, arms$id_offset,
+    MoreArgs = list(dose_mg = dose_mg)
+  )
+  dplyr::bind_rows(purrr_free)
+}
+
+ev_amp <- build_events(1000)
+ev_sul <- build_events(500)
+
+# Disjoint IDs across arms: duplicate IDs would silently merge subjects and sum
+# their doses.
+stopifnot(
+  !anyDuplicated(unique(ev_amp[, c("id", "time", "evid")])),
+  dplyr::n_distinct(ev_amp$id) == n_per_arm * nrow(arms)
+)
+```
+
+```{r simulate}
+sim_amp <- rxode2::rxSolve(readModelDb("Setiawan_2023_ampicillin"), ev_amp,
+                           keep = "arm") |>
+  as.data.frame()
+sim_sul <- rxode2::rxSolve(readModelDb("Setiawan_2023_sulbactam"), ev_sul,
+                           keep = "arm") |>
+  as.data.frame()
+
+stopifnot(nrow(sim_amp) > 0, nrow(sim_sul) > 0, !anyNA(sim_amp$Cu),
+          all(sim_amp$Cu >= 0), all(sim_sul$Cu >= 0))
+```
+
+```{r pta}
+mic_grid <- 2^seq(-5, 6)  # 0.03125 to 64 mg/L, doubling dilutions
+
+# PTA at one MIC: the fraction of subjects whose unbound concentration exceeds
+# the MIC for at least 60% of the dosing interval.
+pta_one <- function(df, mic, target_pct = 60) {
+  per_subject <- df |>
+    dplyr::group_by(id, arm, interval) |>
+    dplyr::summarise(ft = 100 * mean(Cu > mic), .groups = "drop")
+  per_subject |>
+    dplyr::group_by(arm, interval) |>
+    dplyr::summarise(PTA = 100 * mean(ft >= target_pct), .groups = "drop") |>
+    dplyr::mutate(MIC = mic)
+}
+
+pta_table <- function(sim) {
+  # Only observation rows come back from rxSolve, and every one of them sits in
+  # one of the two windows, so the interval label is a straight split.
+  df <- dplyr::mutate(sim, interval = ifelse(time < 8, "First dose", "Fifth dose"))
+  stopifnot(all(df$time < 8 | df$time > 32))
+  dplyr::bind_rows(lapply(mic_grid, function(m) pta_one(df, m)))
+}
+
+pta_amp <- pta_table(sim_amp) |> dplyr::mutate(drug = "Ampicillin")
+pta_sul <- pta_table(sim_sul) |> dplyr::mutate(drug = "Sulbactam")
+pta_all <- dplyr::bind_rows(pta_amp, pta_sul)
+
+stopifnot(nrow(pta_all) == 2 * nrow(arms) * 2 * length(mic_grid))
+```
+
+```{r figure-3-4}
+# Replicates the structure of Figures 3 (ampicillin) and 4 (sulbactam) of
+# Setiawan 2023, restricted to the 1.5 g q8h regimens the authors highlighted.
+pta_all |>
+  ggplot(aes(MIC, PTA, colour = arm, linetype = interval)) +
+  geom_hline(yintercept = 90, linetype = "dotted") +
+  geom_line() +
+  geom_point(size = 0.8) +
+  facet_wrap(~drug) +
+  scale_x_log10(breaks = mic_grid[c(1, 3, 5, 7, 9, 11)]) +
+  labs(
+    x = "MIC (mg/L)", y = "PTA for 60% fT>MIC (%)",
+    colour = NULL, linetype = NULL,
+    title = "Probability of target attainment, ampicillin-sulbactam 1.5 g q8h",
+    caption = paste(
+      "Replicates the 1.5 g q8h panels of Figures 3 and 4 of Setiawan 2023.",
+      "Dotted line is the 90% PTA threshold."
+    )
+  ) +
+  theme(legend.position = "bottom", legend.box = "vertical")
+```
+
+```{r pta-breakpoints}
+# The Table 3 statistic: the highest MIC on the dilution grid at which PTA >= 90%.
+# Returns NA (not -Inf, and not a silently dropped group) when no MIC qualifies,
+# so the join below can detect it rather than passing vacuously.
+breakpoint <- function(pta, mic) {
+  ok <- mic[pta >= 90]
+  if (length(ok) == 0) NA_real_ else max(ok)
+}
+
+sim_bp <- pta_all |>
+  dplyr::group_by(drug, arm, interval) |>
+  dplyr::summarise(sim_mic = breakpoint(PTA, MIC), .groups = "drop")
+
+# Setiawan 2023 Table 3, rows "1.5 g q8-h bolus" and "1.5 g q8-h infusion",
+# columns SeCr 1.5 / 1 / 0.7 mg/dL. Each cell is "first/fifth administration".
+published <- tibble::tribble(
+  ~drug,        ~arm,                            ~interval,     ~pub_mic,
+  "Ampicillin", "SeCr 1.5 mg/dL, Bolus",         "First dose",  2,
+  "Ampicillin", "SeCr 1.5 mg/dL, Bolus",         "Fifth dose",  4,
+  "Ampicillin", "SeCr 1.5 mg/dL, 4-h infusion",  "First dose",  4,
+  "Ampicillin", "SeCr 1.5 mg/dL, 4-h infusion",  "Fifth dose",  8,
+  "Ampicillin", "SeCr 1 mg/dL, Bolus",           "First dose",  1,
+  "Ampicillin", "SeCr 1 mg/dL, Bolus",           "Fifth dose",  2,
+  "Ampicillin", "SeCr 1 mg/dL, 4-h infusion",    "First dose",  2,
+  "Ampicillin", "SeCr 1 mg/dL, 4-h infusion",    "Fifth dose",  4,
+  "Ampicillin", "SeCr 0.7 mg/dL, Bolus",         "First dose",  0.5,
+  "Ampicillin", "SeCr 0.7 mg/dL, Bolus",         "Fifth dose",  0.5,
+  "Ampicillin", "SeCr 0.7 mg/dL, 4-h infusion",  "First dose",  2,
+  "Ampicillin", "SeCr 0.7 mg/dL, 4-h infusion",  "Fifth dose",  2,
+  "Sulbactam",  "SeCr 1.5 mg/dL, Bolus",         "First dose",  1,
+  "Sulbactam",  "SeCr 1.5 mg/dL, Bolus",         "Fifth dose",  1,
+  "Sulbactam",  "SeCr 1.5 mg/dL, 4-h infusion",  "First dose",  2,
+  "Sulbactam",  "SeCr 1.5 mg/dL, 4-h infusion",  "Fifth dose",  4,
+  "Sulbactam",  "SeCr 1 mg/dL, Bolus",           "First dose",  0.5,
+  "Sulbactam",  "SeCr 1 mg/dL, Bolus",           "Fifth dose",  0.5,
+  "Sulbactam",  "SeCr 1 mg/dL, 4-h infusion",    "First dose",  2,
+  "Sulbactam",  "SeCr 1 mg/dL, 4-h infusion",    "Fifth dose",  2,
+  "Sulbactam",  "SeCr 0.7 mg/dL, Bolus",         "First dose",  0.125,
+  "Sulbactam",  "SeCr 0.7 mg/dL, Bolus",         "Fifth dose",  0.25,
+  "Sulbactam",  "SeCr 0.7 mg/dL, 4-h infusion",  "First dose",  1,
+  "Sulbactam",  "SeCr 0.7 mg/dL, 4-h infusion",  "Fifth dose",  1
+)
+
+bp_cmp <- published |>
+  dplyr::left_join(sim_bp, by = c("drug", "arm", "interval")) |>
+  dplyr::mutate(
+    `Dilutions apart` = ifelse(is.na(sim_mic), NA_real_,
+                               log2(sim_mic) - log2(pub_mic))
+  )
+
+# Guard against a silently empty join (pattern 10: a check with no rows to test
+# would pass vacuously).
+stopifnot(nrow(bp_cmp) == 24L, !anyNA(bp_cmp$sim_mic))
+
+bp_cmp |>
+  dplyr::rename(
+    "Drug" = drug, "Regimen (1.5 g q8h)" = arm, "Administration" = interval,
+    "Table 3 MIC (mg/L)" = pub_mic, "Simulated MIC (mg/L)" = sim_mic
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Highest MIC attaining PTA >= 90% for 60% fT>MIC: Setiawan 2023 Table 3",
+      "versus this model. Positive 'dilutions apart' means the simulation is",
+      "more optimistic than the paper."
+    )
+  )
+```
+
+The simulated breakpoints are compared on the log2 (doubling-dilution) scale,
+which is the resolution at which Table 3 itself is reported. Exact agreement is
+not guaranteed, for a structural reason: the authors sampled from the NPAG
+**non-parametric** joint distribution of the support points, including whatever
+correlation structure that distribution carries, whereas the packaged models
+carry only the marginal CVs the paper published, as independent log-normals.
+Correlation between clearance and the distribution rate constants is not
+recoverable from Table 2. In practice most cells land on the published value and
+the rest are one doubling dilution away, which is as close as this comparison can
+reasonably get.
+
+```{r bp-assertions}
+d_off <- bp_cmp$`Dilutions apart`
+
+tibble::tibble(
+  Statistic = c("Cells reproduced exactly (%)", "Mean dilutions apart",
+                "Within 1 dilution (%)", "Max absolute dilutions apart"),
+  Value = c(100 * mean(d_off == 0), mean(d_off),
+            100 * mean(abs(d_off) <= 1), max(abs(d_off)))
+) |>
+  knitr::kable(digits = 3, caption = "Agreement with Table 3 on the log2 MIC scale.")
+
+# Bounds are set on the CENTRE and a ROBUST proportion, never on the extreme of
+# one random cohort. Observed across three renders at 2, 8 and 16 solver
+# threads: mean 0.042, 100% within 1 dilution, max 1 -- identical at all three.
+# The bounds sit well outside that, but still go red for the failures that
+# matter: a mis-transcribed dose, clearance, volume or protein-binding fraction
+# shifts EVERY cell in the same direction, which the mean bound catches, and a
+# structural error scatters the cells, which the within-1-dilution bound catches.
+stopifnot(
+  abs(mean(d_off)) <= 0.5,
+  mean(abs(d_off) <= 1) >= 0.8,
+  max(abs(d_off)) <= 3
+)
+```
+
+# Assumptions and deviations
+
+* **Inter-individual variability is a log-normal approximation of a
+  non-parametric distribution.** NPAG estimates a discrete distribution over
+  support points, not a parametric OMEGA. Methods 2.4.2 states that "the %CV
+  represented the inter-individual variability", so the Table 2 CV% column is
+  carried as `omega^2 = log(CV^2 + 1)`. The shape of the non-parametric
+  distribution (multimodality, skew) and any correlation between parameters are
+  not recoverable from the published summary and are therefore lost. This is the
+  main reason the Table 3 reproduction above is compared at doubling-dilution
+  resolution rather than asserted exactly.
+* **Off-diagonal covariances are absent.** The paper reports no correlation
+  matrix, so all four etas are independent in the packaged models.
+* **Residual unexplained variability is `fixed(0)`.** See Errata; the paper does
+  not publish the Pmetrics error polynomial or the selected lambda/gamma term.
+* **Ampicillin `KPC` is corrected from the printed 0.17 to 1.17 1/h.** See
+  Errata for the three-part derivation. This is the only value in either model
+  file that departs from what the paper prints, and it is derived entirely from
+  the paper's own Table 2 arithmetic -- no external source, and demonstrably no
+  tuning against the validation target, since the Table 3 reproduction is nearly
+  insensitive to the choice.
+* **`CL` is the clearance at the covariate reference, not a covariate-free
+  typical value.** Pmetrics reports the distribution of the primary parameters,
+  and serum creatinine sits inside the clearance equation, so `CL = 5.58` and
+  `4.79 L/h` describe a patient at the 1.4 mg/dL cohort median.
+* **Protein binding is fixed, not measured.** The 28% and 38% bound fractions
+  are literature values the authors applied in the simulations (Methods 2.4.4,
+  and Limitations 4.3 flags this explicitly as a study limitation). `Cu` is
+  therefore a fixed multiple of `Cc` and carries no variability of its own.
+* **The covariate model is a raw reciprocal with no lower bound.** Clearance
+  grows without limit as serum creatinine approaches zero. Simulations should
+  stay inside the observed 0.6-6.4 mg/dL range; the covariate metadata records
+  this.
+* **Bolus doses are simulated as instantaneous.** The study administered them
+  over roughly three minutes (Methods 2.2) and the authors' own simulations used
+  a bolus injection. At a 0.3 h fastest half-life for ampicillin, a 0.05 h
+  infusion changes the peak by a few percent and does not affect the *f*T>MIC
+  results, which are driven by the trough end of the interval.
+* **The Table 3 comparison covers the 1.5 g q8h regimens only.** Those are the
+  regimens the authors highlighted in Figures 3 and 4 and the ones actually
+  prescribed at the study site (all 16 patients received 1.5 g, q8h or q6h). The
+  q24h, q12h, q6h and 3 g rows of Table 3 are reproducible with the same code by
+  extending the `arms` grid; they are omitted to keep the vignette inside its
+  render-time budget.
+* **No body-size scaling.** Weight was screened and not retained, and weight was
+  directly measured in only half the cohort (Table 1 footnote b). Nothing in
+  either model is allometrically scaled.
+
+# Session information
+
+```{r session-info}
+sessionInfo()
+```

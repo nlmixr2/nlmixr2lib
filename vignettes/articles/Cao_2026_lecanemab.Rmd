@@ -765,17 +765,32 @@ corrs <- data.frame(
 knitr::kable(corrs, digits = 3)
 
 stopifnot(
-  # Every virtual patient benefits on all three endpoints: lecanemab lowers
-  # amyloid PET, slows tau accumulation and slows cognitive decline.
-  all(delta$dAmyloid < 0),
-  all(delta$dTau     <= 0),
-  all(delta$dCdr     <= 0),
+  # No virtual patient is made worse on any endpoint. The 1e-6 tolerance is
+  # load-bearing rather than cosmetic: 17 of the 200 subjects sit exactly at
+  # the CDR-SB floor in both arms, so `all(delta$dCdr <= 0)` would pass only
+  # ON its boundary and go red on any rxode2 build whose eta draw or
+  # integrator noise pushes one of them to +1e-16. The other two endpoints are
+  # no better placed -- the least-affected subject's differences are just
+  # -0.0144 Centiloid and -5.6e-05 SUVR against cohort medians of -65.7 and
+  # -0.055, i.e. 0.02% and 0.1% of headroom on an "every subject" bound.
+  max(delta$dAmyloid) < 1e-6,
+  max(delta$dTau)     < 1e-6,
+  max(delta$dCdr)     < 1e-6,
+  # Magnitude of benefit, asserted on robust quantiles instead of on cohort
+  # extremes. Measured 90th percentiles: -28.0 Centiloid and -0.0153 SUVR, so
+  # both bounds carry several-fold headroom over one draw.
+  quantile(delta$dAmyloid, 0.90) < -5,
+  quantile(delta$dTau,     0.90) < -1e-3,
   # Each correlation reproduces its published value. A correlation over 200
   # subjects is a stable aggregate statistic (SE of r ~ 0.05 here), unlike a
   # cohort extreme, so a tight band is the right assertion. The tolerance
-  # absorbs the 200-vs-5000 cohort-size difference.
+  # absorbs the 200-vs-5000 cohort-size difference; measured worst deviation
+  # is 0.048 (r1), leaving roughly 0.07 of headroom.
   all(abs(corrs$Simulated - corrs$Published) < 0.12),
   # The amyloid-cognition link is the strongest of the three, as in Fig 5.
+  # Measured margin over the next-largest correlation is 0.233 against a
+  # published margin of 0.26, so this ordering is not a race between two
+  # noisy statistics.
   corrs$Simulated[1] > corrs$Simulated[2],
   corrs$Simulated[1] > corrs$Simulated[3]
 )
@@ -818,6 +833,18 @@ stopifnot(
   quantile(delta$dCdr, 0.75) < -0.05
 )
 ```
+
+The cognitive benefit is not uniform across the cohort, and the way it is
+non-uniform is a property of the model worth stating. Amyloid and tau respond
+in every virtual patient, but 17 of the 200 subjects show a CDR-SB difference
+of *exactly* zero: these are the subjects whose sampled etas put them early
+enough on the pathological timeline that CDR-SB is still pinned at its floor
+(`CDR0` = 0.69) in both arms, so 18 months of treatment cannot move a score
+that is not yet declining. That floor subpopulation is why the cohort-level
+assertions above are written on robust quantiles and on a signed tolerance
+rather than as "every subject improves" -- the latter is true only on the
+boundary, and a boundary is not something a downstream rxode2 build can be
+relied on to preserve.
 
 # Assumptions and deviations
 
