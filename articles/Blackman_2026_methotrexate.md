@@ -238,7 +238,7 @@ numeric_sol <- numeric_sol$Cc[match(round(tgrid, 4), round(numeric_sol$time, 4))
 
 max_rel <- max(abs(numeric_sol - analytic) / analytic)
 cat(sprintf("max |relative difference| = %.3e\n", max_rel))
-#> max |relative difference| = 2.638e-14
+#> max |relative difference| = 2.608e-14
 
 # Both sides use the same parameters, so this is pure integration error.
 stopifnot(max_rel < 1e-6)
