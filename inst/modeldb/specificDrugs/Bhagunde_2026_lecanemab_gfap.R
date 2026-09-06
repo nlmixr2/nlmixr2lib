@@ -334,7 +334,7 @@ Bhagunde_2026_lecanemab_gfap <- function() {
     # --- Layer 2: brain amyloid plaque turnover
     # BSL = 250 * exp(phi) / (1 + exp(phi)); phi = TVphi * COV
     phi_plaque   <- logitrbase_plaque * e_apoe4_carrier_logitrbase_plaque^APOE4_CARRIER
-    rbase_plaque <- plaque_max * exp(phi_plaque) / (1 + exp(phi_plaque))
+    rbase_plaque <- plaque_max * expit(phi_plaque)
     kout_plaque  <- exp(lkout_plaque) / hrs_per_year
     slope_plaque <- exp(lslope_plaque) * (AGE / age_ref)^e_age_slope_plaque
     kin_plaque   <- rbase_plaque * kout_plaque   # kin = BSL * kout
@@ -355,7 +355,7 @@ Bhagunde_2026_lecanemab_gfap <- function() {
     kout <- kin / rbase   # Bhagunde 2026: "KinG = BGFAP * KoutG (at baseline)"
     # Kept on its own line so rxode2 recognises the mu-referenced expression
     logit_slp <- logitslope_gfap + etalogitslope_gfap
-    slp  <- 1 / (1 + exp(-logit_slp))
+    slp  <- expit(logit_slp)
     prog <- exp(lprog) / hrs_per_year
 
     # dGFAP/dt = KinG * (1 - SLP * relative plaque reduction + DP * TIME) - KoutG * GFAP

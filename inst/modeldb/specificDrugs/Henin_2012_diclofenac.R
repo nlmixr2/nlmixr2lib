@@ -161,7 +161,7 @@ Henin_2012_diclofenac <- function() {
     ka_col      <- exp(lka_col)
 
     logitfa_i   <- logitfa + etalogitfa
-    fa          <- 1 / (1 + exp(-logitfa_i))
+    fa          <- expit(logitfa_i)
 
     # Allometric scaling to 70 kg reference.
     cl          <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
@@ -177,9 +177,9 @@ Henin_2012_diclofenac <- function() {
     # transit is a single event (IP_APSI); IP_FA is not used because
     # no drug is released in the stomach.
     # ------------------------------------------------------------------
-    s_apsi      <- 1 / (1 + exp(-sig * (t - IP_APSI)))
-    s_psidsi    <- 1 / (1 + exp(-sig * (t - IP_PSI_DSI)))
-    s_dsic      <- 1 / (1 + exp(-sig * (t - IP_DSI_C)))
+    s_apsi      <- expit(sig * (t - IP_APSI))
+    s_psidsi    <- expit(sig * (t - IP_PSI_DSI))
+    s_dsic      <- expit(sig * (t - IP_DSI_C))
 
     pos_stomach <- 1 - s_apsi
     pos_psi     <- s_apsi - s_psidsi

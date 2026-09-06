@@ -195,8 +195,8 @@ Yoshida_2024_fazpilodemab <- function() {
     lgt1     <- b1_dtmm + slp_ae * Cc
     lgt2     <- b2_dtmm + slp_ae * Cc
 
-    pge1 <- exp(lgt1) / (1 + exp(lgt1))  # Pr(next grade >= 1 | PREV_AE_SCORE, Cc)
-    pge2 <- exp(lgt2) / (1 + exp(lgt2))  # Pr(next grade >= 2 | PREV_AE_SCORE, Cc)
+    pge1 <- expit(lgt1)  # Pr(next grade >= 1 | PREV_AE_SCORE, Cc)
+    pge2 <- expit(lgt2)  # Pr(next grade >= 2 | PREV_AE_SCORE, Cc)
     p_ae_g0   <- 1    - pge1             # Pr(next grade = 0)
     p_ae_g1   <- pge1 - pge2             # Pr(next grade = 1)
     p_ae_g23  <- pge2                    # Pr(next grade in {2, 3})
@@ -210,7 +210,7 @@ Yoshida_2024_fazpilodemab <- function() {
     b_dc <- (PREV_AE_SCORE == 0) * b_dc_g0 +
             (PREV_AE_SCORE == 1) * b_dc_g1 +
             (PREV_AE_SCORE == 2) * b_dc_g2
-    p_dc <- exp(b_dc) / (1 + exp(b_dc))
+    p_dc <- expit(b_dc)
 
     # ---------- Observation and residual error ----------
     # Observation is free fazpilodemab concentration in central (ug/mL).

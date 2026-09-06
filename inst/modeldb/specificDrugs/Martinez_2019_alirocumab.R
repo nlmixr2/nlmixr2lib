@@ -126,7 +126,7 @@ Martinez_2019_alirocumab <- function() {
 
     # Bioavailability on logit scale with IIV (logit-space).
     logit_f <- logitfdepot + etalogitfdepot
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # Absorption lag time (no IIV).
     lag <- exp(ltlag)

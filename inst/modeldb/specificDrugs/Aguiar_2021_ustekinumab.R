@@ -189,7 +189,7 @@ Aguiar_2021_ustekinumab <- function() {
     # Subcutaneous bioavailability on the logit scale; FCGR3A_VV adds a fixed
     # shift relative to the V/F + F/F reference group.
     logit_f <- logitfdepot + etalogitfdepot + e_fcgr3a_vv_fdepot * FCGR3A_VV
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # ----- Individual target turnover and binding -----
     # Ksyn carries the CRP linear-deviation effect (footnote d) and a

@@ -295,8 +295,8 @@ Siccardi_2012_efavirenz <- function() {
     # 7. Exposure-response (Siccardi 2012 Equation 1). Two independent
     #    binary logistic regressions on log10(C8-16h).
     lc816 <- log10(max(c816, 1e-12))
-    psupp <- 1 / (1 + exp(-(logite0_supp + e_c816_supp * lc816)))
-    pcns  <- 1 / (1 + exp(-(logite0_cns  + e_c816_cns  * lc816)))
+    psupp <- expit(logite0_supp + e_c816_supp * lc816)
+    pcns  <- expit(logite0_cns  + e_c816_cns  * lc816)
 
     # 8. Residual error: proportional structure, magnitude unpublished.
     Cc ~ prop(propSd)

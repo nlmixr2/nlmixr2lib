@@ -213,7 +213,7 @@ Thakkar_2017_amifampridine <- function() {
     # population logit plus a normal-distributed individual deviation.
     # ------------------------------------------------------------
     logit_emax_i <- logitemax + etalogitemax
-    emax <- exp(logit_emax_i) / (1 + exp(logit_emax_i))
+    emax <- expit(logit_emax_i)
     ec50 <- exp(lec50 + etalec50)
     e0   <- exp(le0   + etale0)
     tug3 <- e0 * (1 - emax * Cc / (ec50 + Cc))

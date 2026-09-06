@@ -287,9 +287,9 @@ AitOudhia_2012_canakinumab <- function() {
     logit_acr50 <- log(0.5 / 0.5) + logit_acrl + acrshift + etaacrshift
     logit_acr70 <- log(0.3 / 0.7) + logit_acrl + acrshift + etaacrshift
 
-    prob_ACR20  <- 1 / (1 + exp(-logit_acr20))
-    prob_ACR50  <- 1 / (1 + exp(-logit_acr50))
-    prob_ACR70  <- 1 / (1 + exp(-logit_acr70))
+    prob_ACR20  <- expit(logit_acr20)
+    prob_ACR50  <- expit(logit_acr50)
+    prob_ACR70  <- expit(logit_acr70)
 
     Cc        ~ prop(propSd)            + add(addSd)
     totalIL1b ~ prop(propSd_totalIL1b) + add(addSd_totalIL1b)

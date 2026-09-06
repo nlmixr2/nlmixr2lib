@@ -135,7 +135,7 @@ Shoji_2017_fosdagrocorat_p1np <- function() {
 
     # ---- Individual parameters ----
     kel   <- exp(lkel_active + etalkel)
-    imax  <- 1 / (1 + exp(-logitimax_active))
+    imax  <- expit(logitimax_active)
     edk50 <- exp(ledk50_active + etaledk50)
     kd    <- exp(lkd)
     rbase    <- exp(lrbase + etalrbase)

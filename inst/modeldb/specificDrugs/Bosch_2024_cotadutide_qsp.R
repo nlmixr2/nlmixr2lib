@@ -351,7 +351,7 @@ Bosch_2024_cotadutide_qsp <- function() {
     keglc  <- exp(lkeglc)
     kelglc <- exp(lkelglc)
     kaglc  <- exp(lkaglc)
-    fglc   <- 1 / (1 + exp(-logitfglc))
+    fglc   <- expit(logitfglc)
 
     clins  <- exp(lclins)
     vcins  <- exp(lvcins)

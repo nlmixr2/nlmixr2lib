@@ -392,7 +392,7 @@ NA_NA_paracetamol <- function() {
     ks       <- kw * (1 - gluinhi)
     ks       <- ks * (ks >= 0)
 
-    lag      <- 1 / (1 + exp(-10 * (t - t50)))
+    lag      <- expit(10 * (t - t50))
     fpl      <- vmax * intestine_apap / (km_apap + intestine_apap)
 
     # -------------------------------------------------------------------

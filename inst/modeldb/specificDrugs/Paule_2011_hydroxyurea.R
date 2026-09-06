@@ -172,7 +172,7 @@ Paule_2011_hydroxyurea <- function() {
     kin_hbf       <- exp(lkin_hbf  + etalkin_hbf)
     kout_hbf      <- exp(lkout_hbf + etalkout_hbf)
     logit_imax    <- logitimax_hbf + etalogitimax_hbf
-    imax_hbf      <- 1 / (1 + exp(-logit_imax))
+    imax_hbf      <- expit(logit_imax)
     inhib_hbf     <- imax_hbf * Cc / (Cc + 0.005)
 
     # Off-drug steady state: effect1(SS) = kin_hbf / kout_hbf (matches the

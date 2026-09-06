@@ -329,12 +329,11 @@ Bian_2024_lefamulin_higher_ppb <- function() {
     ka2  <- exp(lka2 + etalka2) * (1 - FED + e_fed_ka2 * FED)
     tlag <- exp(ltlag)
 
-    fdepot_typ <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    fdepot_typ <- expit(logitfdepot)
     bio        <- fdepot_typ * (1 - FED + e_fed_fdepot * FED)
     fpo        <- log(bio / (1 - bio))
-    fdepot     <- exp(fpo + etalogitfdepot) / (1 + exp(fpo + etalogitfdepot))
-    frac       <- exp(logitfrac + etalogitfrac) /
-                  (1 + exp(logitfrac + etalogitfrac))
+    fdepot     <- expit(fpo + etalogitfdepot)
+    frac       <- expit(logitfrac + etalogitfrac)
 
     penratio_elf <- exp(lpenratio_elf)
 

@@ -625,9 +625,9 @@ Mandema_2011_biologicDMARDs_mbma <- function() {
     # (the Table 2 population: placebo means background methotrexate).
     e0_20 <- e0_acr50 + theta_acr20
     e0_70 <- e0_acr50 + theta_acr70
-    p_acr20 <- 1 / (1 + exp(-(e0_20    + g_acr20)))
-    p_acr50 <- 1 / (1 + exp(-(e0_acr50 + g_acr50)))
-    p_acr70 <- 1 / (1 + exp(-(e0_70    + g_acr70)))
+    p_acr20 <- expit(e0_20    + g_acr20)
+    p_acr50 <- expit(e0_acr50 + g_acr50)
+    p_acr70 <- expit(e0_70    + g_acr70)
 
     # ---- Per-arm responder probabilities, methotrexate-naive population -----
     # (the Table 3 and Table 4 population). The treatment effect is the SAME:
@@ -637,9 +637,9 @@ Mandema_2011_biologicDMARDs_mbma <- function() {
     # differs, and it is slightly larger.
     e0_20_naive <- e0_acr50_naive + theta_acr20_naive
     e0_70_naive <- e0_acr50_naive + theta_acr70_naive
-    p_acr20_naive <- 1 / (1 + exp(-(e0_20_naive    + g_acr20)))
-    p_acr50_naive <- 1 / (1 + exp(-(e0_acr50_naive + g_acr50)))
-    p_acr70_naive <- 1 / (1 + exp(-(e0_70_naive    + g_acr70)))
+    p_acr20_naive <- expit(e0_20_naive    + g_acr20)
+    p_acr50_naive <- expit(e0_acr50_naive + g_acr50)
+    p_acr70_naive <- expit(e0_70_naive    + g_acr70)
 
     # ---- Derived reporting quantity ----------------------------------------
     # Multiples of the arm's own ED50: the x-axis on which the source's

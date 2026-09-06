@@ -163,7 +163,7 @@ Germovsek_2018_meropenem <- function() {
     # from the 1.2 g/L reference modulates this logit. p = 1 - barrier
     # is the steady-state CSF / plasma concentration ratio.
     logit_barr <- logituptake + e_csftpro_uptake * (CSF_TPRO - 1.2)
-    barrier    <- 1 / (1 + exp(-logit_barr))
+    barrier    <- expit(logit_barr)
     penetration <- 1 - barrier
 
     # Plasma + CSF ODE system. CL_CSF * Cc enters the CSF compartment;

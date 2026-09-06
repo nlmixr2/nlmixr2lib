@@ -176,7 +176,7 @@ Sheng_2016_quinine_rat <- function() {
     # ------------------------------------------------------------------
     drugEmax <- emax_i * (conc^c_i) / (RIC50_i^c_i + conc^c_i)
     E        <- e0_i + drugEmax + etae
-    p_low    <- exp(E) / (1 + exp(E))
+    p_low    <- expit(E)
     p_high   <- 1 - p_low
 
     # ------------------------------------------------------------------

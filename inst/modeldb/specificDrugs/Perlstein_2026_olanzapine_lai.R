@@ -225,7 +225,7 @@ Perlstein_2026_olanzapine_lai <- function() {
     # etalogitfrel defaulted to non-mu-referenced); same shape as the
     # logitfm_ind idiom registered in parameter-names.md.
     logitfrel_ind <- logitfrel + etalogitfrel
-    frel <- 1 / (1 + exp(-logitfrel_ind))
+    frel <- expit(logitfrel_ind)
 
     # 2. Individual disposition parameters, allometrically scaled to the
     #    70 kg reference weight.

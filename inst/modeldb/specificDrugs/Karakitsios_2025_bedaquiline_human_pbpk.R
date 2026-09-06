@@ -269,7 +269,7 @@ Karakitsios_2025_bedaquiline_human_pbpk <- function() {
     # 2. Individual plasma parameters.
     # -------------------------------------------------------------------
     mat <- exp(lmat + etalmat)
-    fr  <- 1 / (1 + exp(-logitfmat))
+    fr  <- expit(logitfmat)
     mtt <- mat * fr
     ka  <- log(2) / (mat * (1 - fr) / 3.3)
     ktr <- 2 / mtt

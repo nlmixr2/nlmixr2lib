@@ -442,13 +442,13 @@ Bjornsson_2023_buprenorphine <- function() {
     # (etalogitfdepot_sl cannot be mu-referenced because the dose-dependent
     # typical value is not a bare theta; rxode2 emits a non-mu-reference note
     # for it, which affects estimation efficiency only, not simulation.)
-    fdepot_sl_tv <- (1 / (1 + exp(-logitfdepot_sl))) *
+    fdepot_sl_tv <- (expit(logitfdepot_sl)) *
       (DOSE_BPN_SL_MG / dose_sl_ref)^e_dose_fdepot_sl
     lgt_sl       <- log(fdepot_sl_tv / (1 - fdepot_sl_tv)) + etalogitfdepot_sl
-    fdepot_sl    <- 1 / (1 + exp(-lgt_sl))
+    fdepot_sl    <- expit(lgt_sl)
 
     lgt_sl1    <- logitfdepot_sl1 + etalogitfdepot_sl1
-    fdepot_sl1 <- 1 / (1 + exp(-lgt_sl1))
+    fdepot_sl1 <- expit(lgt_sl1)
 
     tlag_sl1 <- exp(ltlag_sl1)
     d1_sl1   <- exp(ld1_sl1)
@@ -473,7 +473,7 @@ Bjornsson_2023_buprenorphine <- function() {
 
     # ------------------ CAM2038 Q4W absorption parameters -----------------
     lgt_q4w1    <- logitfdepot_q4w1 + etalogitfdepot_q4w1
-    fdepot_q4w1 <- 1 / (1 + exp(-lgt_q4w1))
+    fdepot_q4w1 <- expit(lgt_q4w1)
     ka_q4w1     <- exp(lka_q4w1)
     ka_q4w2     <- exp(lka_q4w2 + etalka_q4w2)
 

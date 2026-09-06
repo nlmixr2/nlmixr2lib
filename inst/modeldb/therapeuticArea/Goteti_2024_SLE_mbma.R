@@ -670,11 +670,11 @@ Goteti_2024_SLE_mbma <- function() {
 
     # -------- Responder probabilities (supplement Section 1.3) -------
     # SRI: generalized proportional-odds transform with c_0 = 0.
-    p_SRI4 <- exp(theta_SRI_t             ) / (1 + exp(theta_SRI_t             ))
-    p_SRI5 <- exp(theta_SRI_t - c_SRI5    ) / (1 + exp(theta_SRI_t - c_SRI5    ))
-    p_SRI6 <- exp(theta_SRI_t - c_SRI6    ) / (1 + exp(theta_SRI_t - c_SRI6    ))
+    p_SRI4 <- expit(theta_SRI_t)
+    p_SRI5 <- expit(theta_SRI_t - c_SRI5)
+    p_SRI6 <- expit(theta_SRI_t - c_SRI6)
     # BICLA: logistic transform of the latent SLE activity.
-    p_BICLA <- exp(theta_BICLA_t) / (1 + exp(theta_BICLA_t))
+    p_BICLA <- expit(theta_BICLA_t)
 
     # -------- Observation ---------------------------------------------
     # A single Cc endpoint is declared for nlmixr2 compatibility (the

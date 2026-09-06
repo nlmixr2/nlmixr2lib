@@ -245,7 +245,7 @@ Robarge_2017_efavirenz <- function() {
     # Robarge 2017 final-model equations (Table 2 footnote a):
     #   CL/F = CL_TV * (FFM/56)^(3/4) * factor_CYP2B6  for normal metabolizer factor = 1
     #   V_p/F = V_p,TV * (FM/19)^1
-    f1     <- 1 / (1 + exp(-logitfdepot))           # F1 ~= 0.414 (fixed)
+    f1     <- expit(logitfdepot)           # F1 ~= 0.414 (fixed)
     ka     <- exp(lka     + etalka)
     tlag1  <- exp(ltlag1  + etaltlag1)
     tlag2  <- exp(ltlag2  + etaltlag2)

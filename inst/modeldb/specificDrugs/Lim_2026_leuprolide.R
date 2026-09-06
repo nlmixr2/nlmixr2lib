@@ -278,7 +278,7 @@ Lim_2026_leuprolide <- function() {
     ntr <- exp(lntr)
 
     # FRAC on the natural scale; F2 = 1 - FRAC is the delayed fraction.
-    ffo <- 1 / (1 + exp(-logitffo))
+    ffo <- expit(logitffo)
 
     # ---------------- Micro-constants ---------------------------------------
     kel <- cl / vc # Results: K30_i = CL_i / V_i

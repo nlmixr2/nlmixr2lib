@@ -160,7 +160,7 @@ Abduljalil_2009_clarithromycin <- function() {
     cl      <- exp(lcl     + etalcl) * (WT / ref_wt)^e_wt_cl
     ki      <- exp(lki)
     ic50    <- exp(lic50)
-    fclp    <- exp(logitfclp) / (1 + exp(logitfclp))
+    fclp    <- expit(logitfclp)
     cl_ohcla <- exp(lcl_ohcla + etalcl_ohcla) * (WT / ref_wt)^e_wt_cl_ohcla
     vc_ohcla <- exp(lvc_ohcla)               * (WT / ref_wt)^e_wt_vc_ohcla
 

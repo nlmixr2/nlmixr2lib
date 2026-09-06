@@ -160,7 +160,7 @@ Na_2025_hosu53_mouse <- function() {
     # --- Individual PK parameters -------------------------------------
     # F is logit-normal (Section 2.5) but carries no IIV in the mouse fit;
     # the remaining parameters are log-normal.
-    fdepot <- 1 / (1 + exp(-logitfdepot))
+    fdepot <- expit(logitfdepot)
     ka     <- exp(lka)
     cl     <- exp(lcl + etalcl)
     vc     <- exp(lvc + etalvc)

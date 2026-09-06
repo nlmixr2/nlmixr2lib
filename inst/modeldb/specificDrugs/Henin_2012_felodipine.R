@@ -235,11 +235,11 @@ Henin_2012_felodipine <- function() {
     logitfa_fasted_i <- logitfa_fasted + etalogitfa_fasted
     logitfa_fed_i    <- logitfa_fed    + etalogitfa_fed
     logitfa_i        <- logitfa_fasted_i * (1 - FED) + logitfa_fed_i * FED
-    fa               <- 1 / (1 + exp(-logitfa_i))
+    fa               <- expit(logitfa_i)
 
     # Hepatic extraction ratio via logit-scale IIV.
     logiteh_i      <- logiteh + etalogiteh
-    eh             <- 1 / (1 + exp(-logiteh_i))
+    eh             <- expit(logiteh_i)
 
     # Semi-physiological liver: allometric flow, per-kg volume.
     qh             <- qh_per_kg075 * WT^0.75
@@ -258,10 +258,10 @@ Henin_2012_felodipine <- function() {
     # No-return-to-fundus subpopulation only: fundus -> antrum -> PSI
     # -> DSI -> colon in monotonic order (see description).
     # ------------------------------------------------------------------
-    s_fa           <- 1 / (1 + exp(-sig * (t - IP_FA)))
-    s_apsi         <- 1 / (1 + exp(-sig * (t - IP_APSI)))
-    s_psidsi       <- 1 / (1 + exp(-sig * (t - IP_PSI_DSI)))
-    s_dsic         <- 1 / (1 + exp(-sig * (t - IP_DSI_C)))
+    s_fa           <- expit(sig * (t - IP_FA))
+    s_apsi         <- expit(sig * (t - IP_APSI))
+    s_psidsi       <- expit(sig * (t - IP_PSI_DSI))
+    s_dsic         <- expit(sig * (t - IP_DSI_C))
 
     pos_fundus     <- 1 - s_fa
     pos_antrum     <- s_fa - s_apsi
@@ -281,7 +281,7 @@ Henin_2012_felodipine <- function() {
     # over a ~0.1 mg window. Preserves the paper's zero-order-until-
     # exhausted release intent without introducing an if / else branch.
     # ------------------------------------------------------------------
-    depot_active   <- 1 / (1 + exp(-50 * (depot - 0.1)))
+    depot_active   <- expit(50 * (depot - 0.1))
     release_fundus <- d_fundus     * pos_fundus * depot_active
     release_antrum <- d_antrum_psi * pos_antrum * depot_active
     release_psi    <- d_antrum_psi * pos_psi    * depot_active

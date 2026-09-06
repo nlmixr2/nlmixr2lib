@@ -213,7 +213,7 @@ Schoemaker_2018_levetiracetam <- function() {
     # the FIXED-0 peds offset can be freed by a re-fitter without
     # restructuring the model.
     p_responder_subject <-
-      1 / (1 + exp(-(log(p_responder / (1 - p_responder)) + CHILD * p_responder_ped)))
+      expit(log(p_responder / (1 - p_responder)) + CHILD * p_responder_ped)
 
     # ------------------------------------------------------------------
     # Observation models -- Plan_2012_pain precedent.

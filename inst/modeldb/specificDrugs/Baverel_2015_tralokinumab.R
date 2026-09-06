@@ -143,7 +143,7 @@ Baverel_2015_tralokinumab <- function() {
     d0     <- exp(ld0)
     tlag   <- exp(ltlag)
     fdepot <- exp(lfdepot)
-    fr     <- exp(logitffo + etalogitffo) / (1 + exp(logitffo + etalogitffo))
+    fr     <- expit(logitffo + etalogitffo)
 
     # Two-compartment disposition micro-constants.
     kel <- cl / vc

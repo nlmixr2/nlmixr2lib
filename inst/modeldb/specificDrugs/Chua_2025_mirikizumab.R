@@ -132,7 +132,7 @@ Chua_2025_mirikizumab <- function() {
 
     # Bioavailability on logit scale with linear BMI effect.
     logit_f <- logitfdepot + etalogitfdepot + e_bmi_fdepot * (BMI - 24.75)
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # Two-compartment model with first-order SC absorption.
     kel <- cl / vc

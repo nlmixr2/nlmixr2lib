@@ -124,7 +124,7 @@ Desmee_2015_PSA_mCRPC <- function() {
     r        <- exp(lkg + etalkg)
     psa0     <- exp(lpsa0 + etalpsa0)
     le       <- logiteps + etalogiteps
-    eps      <- exp(le) / (1 + exp(le))                # logit-normal back-transform => (0,1)
+    eps      <- expit(le)                # logit-normal back-transform => (0,1)
     tesc     <- exp(ltesc + etaltesc)
 
     # 2. Fixed mechanistic rate constants
