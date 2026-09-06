@@ -369,6 +369,8 @@ The corresponding derived observation variables are `Cmilk` / `Cmilk_<metab>` an
 
 ---
 
+---
+
 ## Friberg myelosuppression chains
 
 ### circ (**canonical circulating-cell compartment**)
@@ -4574,6 +4576,7 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** `R-143047`, `R143047` -- Kastrissios 2012 Figure 1 and Table III. No chemical or INN name is supplied by the paper.
 - **Example models:** `Kastrissios_2012_managlinatDialanetil_linked.R` (doi:10.1177/0091270010396373).
 - **Notes:** Modelled as 1-compartment; the paper reports no improvement from adding a second compartment. Apparent-parameter and 1:1-flux semantics as for `r134450` -- and note that here the unknown absorbed fraction is genuinely well below 1, because R-125338 is cleared by renal excretion in parallel with the N-acetylation route that forms this metabolite.
+
 
 ## Cell-type suffixes (Friberg multi-cell-type chains)
 

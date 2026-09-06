@@ -292,8 +292,12 @@ navbar:
         href: articles/Knights_2015_aripiprazole.html
       - text: "Aripiprazole (Koue 2007)"
         href: articles/Koue_2007_aripiprazole.html
+      - text: "Aripiprazole (Wang 2022)"
+        href: articles/Wang_2022_aripiprazole.html
       - text: "Aripiprazole (Zhang 2024)"
         href: articles/Zhang_2024_aripiprazole.html
+      - text: "Aripiprazole relapse (Wang 2022)"
+        href: articles/Wang_2022_aripiprazole.html
       - text: "Armodafinil (Darwish 2012)"
         href: articles/Darwish_2012_armodafinil_modafinil_shift_work_disorder.html
       - text: "Artemether (Hietala 2010)"
@@ -516,6 +520,8 @@ navbar:
         href: articles/Papachristos_2020_bevacizumab_pkpd.html
       - text: "Bevacizumab qss (Papachristos 2020)"
         href: articles/Papachristos_2020_bevacizumab_qss.html
+      - text: "Bhma mouse (Benson 2010)"
+        href: articles/Benson_2010_bhma_mouse.html
       - text: "Biapenem (Chen 2024)"
         href: articles/Chen_2024_biapenem.html
       - text: "Biib107 (Toukam 2025)"
@@ -614,6 +620,8 @@ navbar:
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Camostat (Kim 2023)"
         href: articles/Kim_2023_camostat.html
+      - text: "Canagliflozin mbma (Yao 2023)"
+        href: articles/Yao_2023_sglt2_inhibitors.html
       - text: "Canakinumab (AitOudhia 2012)"
         href: articles/AitOudhia_2012_canakinumab.html
       - text: "Canakinumab (Chakraborty 2012)"
@@ -4922,6 +4930,7 @@ articles:
   - articles/Chen_2023_nemonoxacin
   - articles/Chen_2023_teicoplanin
   - articles/Chen_2023_tilmicosin
+  - articles/Chen_2023_vancomycin
   - articles/Chen_2024_biapenem
   - articles/Chen_2024_febuxostat
   - articles/Chen_2024_guhongInjection
@@ -5308,6 +5317,7 @@ articles:
   - articles/Hua_2015_anrukinzumab
   - articles/Huang_2017_vrc01
   - articles/Huang_2025_dexmedetomidine
+  - articles/Hughes_2022_brepocitinib
   - articles/Huh_2024_ritlecitinib
   - articles/Huppe_2023_fosfomycin
   - articles/Hurtado_2014_levofloxacin_rat

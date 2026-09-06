@@ -1745,6 +1745,7 @@ Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across
 - **Example models:** `Danielak_2017_clopidogrel.R` (clopidogrel -> H4 active thiol, doi:10.1007/s00228-017-2334-z).
 - **Notes:** Distinct from `kmet` (formation rate constant): `fm` is unitless and bounded; `kmet` has rate units.
 
+
 ### fm_125d3, fm_1ohm, fm_25d3, fm_aca, fm_cyp3a4, fm_cyp3a5, fm_gx, fm_h4, fm_ko516_frac, fm_m2, fm_m27, fm_m3034, fm_m3g, fm_m5, fm_m6g, fm_megx, fm_morphine, fm_morphine_raw, fm_other (**canonical fraction metabolised by a named pathway**)
 - **Type:** paper-named-param
 - **Role:** Fraction of a parent drug's clearance routed to one named elimination pathway, used when a paper splits the metabolic flux across two or more identified routes instead of estimating the single `fm` above. Unitless, bounded in (0, 1]; the members of one model's split are expected to sum to 1, either explicitly or with the residual route written inline as `1 - fm_a - fm_b`. The family shape is `fm_<pathway>`, where `<pathway>` is a lowercase token naming the route -- an enzyme (`fm_cyp3a4`, `fm_cyp3a5`) or the metabolite that route forms, reusing the metabolite suffix registered in `compartment-names.md` (`fm_h4`, `fm_m3g`, `fm_m6g`).
@@ -2362,6 +2363,7 @@ Enforced mechanically by `.checkFmFamily` in `R/checkModelConventions.R`, which 
   - `DSLP`, "drug response parameter" -- Ravva 2015 Supplementary Table S1.
 - **Example models:** `Ravva_2015_varenicline.R` (`slope_placebo = -3.32` and `slope_drug = -0.192`, both on the logit scale of a 0-100 craving score, each with an additive eta).
 - **Notes:** Ratified 2026-09-03 alongside the Ravva 2015 varenicline craving extraction (sidecar `oare_PMC4832970` request-001 q2, operator answer A: `slope_drug`, with its partner spelled `slope_placebo` to match the full-token placebo convention). The two are registered as a pair because the naming only makes sense as a pair -- a model with a single linear drug slope and no placebo arm should use the plain canonical `slope`. An additive eta is load-bearing rather than incidental when the typical slope is negative but small relative to its IIV: it lets a subject's individual slope take either sign, which is what per-subject IPRED panels of such papers show. When a paper fits several parallel linear models of different endpoints, suffix by endpoint (`slope_drug_<endpoint>`) the same way multi-output residual SDs are suffixed.
+
 
 ## Nested (multi-level) random effects
 

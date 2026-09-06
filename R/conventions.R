@@ -506,13 +506,33 @@
   # renaming the whole family onto the covariate register's
   # RRT_<MODALITY>_<KIND> shape -- which would also fold the older,
   # near-duplicate `_dialysis` suffix in -- is queued separately.
+  # `_ccpd` and `_capd` are the two PERITONEAL-dialysis arms: continuous
+  # cycler-assisted peritoneal dialysis and continuous ambulatory
+  # peritoneal dialysis respectively, gated by RRT_CCPD_ACTIVE /
+  # RRT_CAPD_ACTIVE. They are separate tokens rather than one peritoneal
+  # arm because the two exchange schedules clear drug at materially
+  # different rates through the same membrane -- Patel 2015 estimates
+  # 0.319 vs 0.170 L/h/70 kg for oseltamivir carboxylate, a 1.9-fold
+  # difference -- so a single coefficient cannot stand in for both.
+  # Sidecar `oare_PMC4386947` request-001 / response-001, question q2,
+  # option A.
   # `_hemoadsorption` the extracorporeal HEMOADSORPTION (hemoperfusion /
   # sorbent-cartridge) arm, gated by HEMOADSORB_ACTIVE (e.g. Leber 2023,
   # CL_total = CL + CLmax * (1 - adsorbed / Amax)). A distinct
   # modality from `_hemodialysis` and `_crrt`: it removes solute by
   # sorbent binding rather than diffusion or convection, so it
   # saturates and has no dialysate or effluent flow.
-  clComponents = c("ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt", "tsnet", "hemoadsorption"),
+  #
+  # NOTE TO FUTURE MERGES: this vector is the SECOND in this file to be
+  # silently narrowed by `-X theirs` (see `compartmentRegex` above). A
+  # branch cut from an older main carries a shorter component list and
+  # wins the conflict, so `ccpd`/`capd` were dropped on 2026-09-05 while
+  # `hemoadsorption` was added. Take the UNION of every component and
+  # every comment block; never take one side wholesale.
+  clComponents = c(
+    "ss", "time", "renal", "nonren", "hemodialysis", "dialysis", "crrt",
+    "tsnet", "ccpd", "capd", "hemoadsorption"
+  ),
   requiredUnits = c("time", "dosing", "concentration"),
   requiredMetadata = c("description", "reference", "units"),
   deprecatedResidualError = c(
