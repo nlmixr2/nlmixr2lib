@@ -2889,8 +2889,63 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Reference category:** n/a -- enters into the steady-state AUC computation `AUCss [nM*h] = DOSE_EMPA_MGD * 1e6 / 450.91 / cl` that drives the Emax stimulation of FPG elimination in the indirect-response PD model.
 - **Source aliases:**
   - `DOSE` -- used in `Baron_2016_empagliflozin.R` (Baron 2016 Methods; studied doses 1, 5, 10, 25, 50 mg QD per Table S2 with 10 and 25 mg dominating; 1129 / 40.9% and 1269 / 46.0% of patients respectively).
-- **Example models:** `Baron_2016_empagliflozin.R` (drives AUCss feeding Gmax * AUCss / (AUC50 + AUCss) -- AUC50 = 703 nM*h), `Riggs_2014_empagliflozin.R` (the predecessor exposure-response analysis by the same group; drives the STIM function that lowers FPG and raises urinary glucose excretion, with AUC50 = 626 nM*h for the pooled studies A + B + D and MW 450.9 rather than 450.91 g/mol as printed in that paper).
-- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (e.g., `DOSE_PHT_MGKGD` for phenytoin). Distinct from `DOSE_PHT_MGKGD` (per-kg phenytoin daily-dose) -- empagliflozin is dosed in flat mg/day (no per-kg adjustment in label). Future once-daily SGLT2-inhibitor extractions should register sibling canonicals (e.g., `DOSE_DAPA_MGD` for dapagliflozin, `DOSE_CANA_MGD` for canagliflozin) rather than reuse this name.
+- **Example models:** `Baron_2016_empagliflozin.R` (drives AUCss feeding Gmax * AUCss / (AUC50 + AUCss) -- AUC50 = 703 nM*h), `Riggs_2014_empagliflozin.R` (the predecessor exposure-response analysis by the same group; drives the STIM function that lowers FPG and raises urinary glucose excretion, with AUC50 = 626 nM*h for the pooled studies A + B + D and MW 450.9 rather than 450.91 g/mol as printed in that paper), `Sato_2024_sglt2_hba1c_mbma.R` (study-arm mean daily dose rather than an individual's dose; divided by the drug's UGE reference dose of 11.8 mg/day to give the normalized dose driving a class-level sigmoid Emax on HbA1c change).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family (e.g., `DOSE_PHT_MGKGD` for phenytoin). Distinct from `DOSE_PHT_MGKGD` (per-kg phenytoin daily-dose) -- empagliflozin is dosed in flat mg/day (no per-kg adjustment in label). The sibling once-daily SGLT2-inhibitor canonicals anticipated by this entry now exist: `DOSE_CANA_MGD`, `DOSE_DAPA_MGD`, `DOSE_IPRA_MGD`, `DOSE_LUSEO_MGD` and `DOSE_TOFO_MGD` below. A further SGLT2-inhibitor extraction should register its own sibling rather than reuse this name. The column carries both individual-level (Baron 2016, Riggs 2014) and study-arm-level (Sato 2024 MBMA) daily doses; the quantity is the same mg/day dose either way, so a separate arm-level canonical is not warranted -- document the aggregation level in each model's `covariateData[[DOSE_EMPA_MGD]]$notes`.
+
+### DOSE_CANA_MGD (**canonical for daily canagliflozin dose**)
+- **Description:** Total daily canagliflozin dose, in mg/day. Set to 0 mg/day for placebo arms and for arms given a different SGLT2 inhibitor.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- divided by the drug's UGE reference dose to form the dimensionless normalized dose that drives the class-level sigmoid Emax.
+- **Source aliases:**
+  - `Dose (mg)` on rows with `Drug = canagliflozin` -- used in `Sato_2024_sglt2_hba1c_mbma.R` (Sato 2024 Supplementary Table S2; pooled trial doses 50-300 mg/day).
+- **Example models:** `Sato_2024_sglt2_hba1c_mbma.R` (study-arm mean daily dose divided by the 97.7 mg/day UGE reference dose; the column additionally selects the canagliflozin-specific 1.33-fold Emax potentiation via the derived indicator `DOSE_CANA_MGD > 0`).
+- **Notes:** Sibling of `DOSE_EMPA_MGD` in the `DOSE_<DRUG>_<UNITS>` auto-approve family, registered as that entry's Notes anticipated. Canagliflozin is dosed in flat mg/day. In `Sato_2024_sglt2_hba1c_mbma.R` this is a study-arm mean rather than an individual's dose; exactly one of the six SGLT2-inhibitor dose columns is non-zero on any active arm, and a placebo arm sets all six to 0.
+
+### DOSE_DAPA_MGD (**canonical for daily dapagliflozin dose**)
+- **Description:** Total daily dapagliflozin dose, in mg/day. Set to 0 mg/day for placebo arms and for arms given a different SGLT2 inhibitor.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- divided by the drug's UGE reference dose to form the dimensionless normalized dose.
+- **Source aliases:**
+  - `Dose (mg)` on rows with `Drug = dapagliflozin` -- used in `Sato_2024_sglt2_hba1c_mbma.R` (Sato 2024 Supplementary Table S2; pooled trial doses 1-50 mg/day).
+- **Example models:** `Sato_2024_sglt2_hba1c_mbma.R` (study-arm mean daily dose divided by the 7.05 mg/day UGE reference dose).
+- **Notes:** Sibling of `DOSE_EMPA_MGD` in the `DOSE_<DRUG>_<UNITS>` auto-approve family, registered as that entry's Notes anticipated. Distinct from the `Yao_2023_dapagliflozin_mbma.R` PK model, which consumes real rxode2 dose events rather than a dose covariate column.
+
+### DOSE_IPRA_MGD (**canonical for daily ipragliflozin dose**)
+- **Description:** Total daily ipragliflozin dose, in mg/day. Set to 0 mg/day for placebo arms and for arms given a different SGLT2 inhibitor.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- divided by the drug's UGE reference dose to form the dimensionless normalized dose.
+- **Source aliases:**
+  - `Dose (mg)` on rows with `Drug = ipragliflozin` -- used in `Sato_2024_sglt2_hba1c_mbma.R` (Sato 2024 Supplementary Table S2; pooled trial doses 12.5-300 mg/day).
+- **Example models:** `Sato_2024_sglt2_hba1c_mbma.R` (study-arm mean daily dose divided by the 79.0 mg/day UGE reference dose -- the largest reference dose of the six, reflecting ipragliflozin's comparatively shallow dose-UGE curve).
+- **Notes:** Sibling of `DOSE_EMPA_MGD` in the `DOSE_<DRUG>_<UNITS>` auto-approve family. Ipragliflozin is approved only in Japan and South Korea, so its trials are almost all Japanese.
+
+### DOSE_LUSEO_MGD (**canonical for daily luseogliflozin dose**)
+- **Description:** Total daily luseogliflozin dose, in mg/day. Set to 0 mg/day for placebo arms and for arms given a different SGLT2 inhibitor.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- divided by the drug's UGE reference dose to form the dimensionless normalized dose.
+- **Source aliases:**
+  - `Dose (mg)` on rows with `Drug = luseogliflozin` -- used in `Sato_2024_sglt2_hba1c_mbma.R` (Sato 2024 Supplementary Table S2; pooled trial doses 0.5-10 mg/day).
+- **Example models:** `Sato_2024_sglt2_hba1c_mbma.R` (study-arm mean daily dose divided by the 7.38 mg/day UGE reference dose; luseogliflozin's 2.5 and 5 mg clinical doses are the lowest normalized doses in the pool, about 0.34 and 0.68).
+- **Notes:** Sibling of `DOSE_EMPA_MGD` in the `DOSE_<DRUG>_<UNITS>` auto-approve family. Luseogliflozin is a CYP-metabolised SGLT2 inhibitor approved in Japan, Thailand and Malaysia.
+
+### DOSE_TOFO_MGD (**canonical for daily tofogliflozin dose**)
+- **Description:** Total daily tofogliflozin dose, in mg/day. Set to 0 mg/day for placebo arms and for arms given a different SGLT2 inhibitor.
+- **Units:** mg/day
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- divided by the drug's UGE reference dose to form the dimensionless normalized dose.
+- **Source aliases:**
+  - `Dose (mg)` on rows with `Drug = tofogliflozin` -- used in `Sato_2024_sglt2_hba1c_mbma.R` (Sato 2024 Supplementary Table S2; pooled trial doses 2.5-40 mg/day).
+- **Example models:** `Sato_2024_sglt2_hba1c_mbma.R` (study-arm mean daily dose divided by the 15.0 mg/day UGE reference dose; tofogliflozin's phase I programme ran to 640 mg, giving it by far the widest normalized-dose span of the six drugs and the narrowest observed UGE range).
+- **Notes:** Sibling of `DOSE_EMPA_MGD` in the `DOSE_<DRUG>_<UNITS>` auto-approve family. Tofogliflozin is a CYP-metabolised SGLT2 inhibitor approved in Japan, with the shortest elimination half-life of the six drugs in Sato 2024 Table 1 (5.29 h).
 
 ### DOSE_LOR_MGD (**canonical for daily lorlatinib dose**)
 - **Description:** Patient's own total daily lorlatinib dose, in mg/day. Per-dose-record covariate; constant within an inter-dose interval and updated when the prescriber alters the daily dose (e.g., following a dose reduction for tolerability). For q.d. regimens the value equals the single-dose amount (e.g., 100 mg q.d. -> DOSE_LOR_MGD = 100); for b.i.d. regimens the value is the sum across the day (e.g., 75 mg b.i.d. -> DOSE_LOR_MGD = 150). Set to 0 mg/day during off-treatment periods (e.g., planned drug holidays).
@@ -14591,7 +14646,7 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Reference category:** none -- this is a set of four indicators with no reference level, because the source estimates a separate placebo maximum in each stratum rather than a reference plus three offsets. A model consuming them multiplies each stratum-specific parameter by its indicator and sums.
 - **Source aliases:**
   - `treatment type` (categorical column with levels `naive`, `non-naive`, `add-on`, `mixed`) -- Yao 2023 Model development and Table 2 rows Pfmax1-4 / Phmax1-4. Decompose into the four indicators: `TRT_T2DM_NAIVE = as.integer(treatment_type == "naive")`, and so on.
-- **Example models:** `Yao_2023_sglt2_endpoints_mbma.R` (selects Pfmax1-4 on the FPG placebo response and Phmax1-4 on the HbA1c placebo response; Yao 2023 reports "Treatment type is not significant on other parameters here", so no other parameter is stratified).
+- **Example models:** `Yao_2023_sglt2_endpoints_mbma.R` (selects Pfmax1-4 on the FPG placebo response and Phmax1-4 on the HbA1c placebo response; Yao 2023 reports "Treatment type is not significant on other parameters here", so no other parameter is stratified), `Sato_2024_sglt2_hba1c_mbma.R` (uses only `TRT_T2DM_NAIVE` and `TRT_T2DM_ADDON`, which is sufficient because Sato 2024 resolves the treatment history of every one of its 295 arms and so never needs the `TRT_T2DM_MIXED` level: naive is (NAIVE 1, ADDON 0), non-naive is (0, 0) and add-on is (0, 1), splitting 51 / 53 / 191 with no co-occurrence. The two levels act on *different* parameters -- `TRT_T2DM_NAIVE` multiplies Emax by 1.230 while `TRT_T2DM_ADDON` shifts the placebo term by -0.156 -- rather than jointly selecting one stratum-specific parameter as in Yao 2023).
 - **Notes:** General scope because the four-level naive / non-naive / add-on / mixed stratification is the standard framing of prior antihyperglycemic therapy in T2DM efficacy trials, not a Yao-2023-specific construct. The set is deliberately NOT decomposed into `PRIOR_*` and `CONMED_*` indicators: naive, non-naive and add-on map onto (no prior therapy), (prior therapy, washed out) and (concomitant therapy), but `TRT_T2DM_MIXED` is a meta-analysis artefact with no patient-level referent -- it records that the published arm does not resolve treatment history -- and so cannot be reconstructed from prior- and concomitant-therapy flags. Because that level exists only at the arm level, the whole set is arm-level in an MBMA even though the first three levels have individual-level meaning. Distinct from `LINE_1L`, whose entry warns against overloading it for finer resolution than 1L vs 2L+; distinct from `TRT_<INN>` (`TRT_EPHEDRINE`, `TRT_CAFEDRINE_THEODRENALINE`), which name the drug a subject received rather than the therapeutic context it was added to; and distinct from `CONMED_METFORMIN`, which names one specific background agent rather than the presence of any. The `T2DM` token is part of the name because "naive" and "add-on" mean materially different things in other therapeutic areas; a future oncology or immunology paper needing an analogous stratum should register its own disease-qualified family rather than reuse this one. Family, four-level structure and the `T2DM` qualifier ratified by the operator in the `oasweep_PMC10088079` sidecar (request-001 q1, answered A on 2026-09-05), which recorded `TRT_` as an existing three-entry family and this set as a family-conforming extension: "treatment-history strata are disease-specific (naive/add-on mean different things in oncology or HIV), and dropping it would create a collision the moment a second indication needs the same axis."
 
 

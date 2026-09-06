@@ -3690,6 +3690,8 @@ navbar:
         href: articles/Lu_2014_sglt_qsp.html
       - text: "Sglt2 endpoints mbma (Yao 2023)"
         href: articles/Yao_2023_sglt2_inhibitors.html
+      - text: "Sglt2 hba1c mbma (Sato 2024)"
+        href: articles/Sato_2024_sglt2_hba1c_mbma.html
       - text: "ShikimicAcid broiler mda (Shen 2026)"
         href: articles/Shen_2026_shikimicAcid.html
       - text: "ShikimicAcid broiler sod (Shen 2026)"
@@ -5993,6 +5995,7 @@ articles:
   - articles/Sassen_2017_crisantaspase
   - articles/Sathe_2024_sacituzumab
   - articles/Sathe_2025_sacituzumab
+  - articles/Sato_2024_sglt2_hba1c_mbma
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
   - articles/Schaefer_1996_ciprofloxacin
