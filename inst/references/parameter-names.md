@@ -581,6 +581,30 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 - **Example models:** `Zhang_2024_f53b_mouse_pbpk.R` (`KbileC` = 0.00001, allometrically scaled terminal biliary elimination from liver to faeces; founding example), `Yang_2025_matrine_pig_pbpk.R` (`kbi` = 0.05835 1/h, liver back into the intestinal lumen, which is what produces the observed two-phase luminal decay).
 - **Notes:** Deliberately **not** `kbm`, and `kbm` must not be widened to cover this case: `kbm` is registered as the biliary-*metabolite* excretion rate constant, moving a **metabolite** out of a **plasma / central** compartment, whereas `lkbile` moves **parent drug** out of **`liver`**. Broadening `kbm` would silently change the meaning of an existing entry that `Hamren_2008_tesaglitazar.R` depends on. The two can coexist in one model: a parent drug excreted in bile via `lkbile` and its glucuronide returned via `kbm` / `kicv`.
 
+### lvbmax (**canonical log-transformed maximum fractional volume reduction from saturable binding**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale maximum fraction by which the central volume of distribution is reduced once the hypothetical saturable binding sites are fully occupied, in an *empirical binding* model that expresses `Vc` as a decreasing Emax function of the amount in the central compartment: `Vc = V0 * (1 - vbmax * Ac / (Ac + vba50))`. Dimensionless and bounded on (0, 1); the canonical `lvc` carries `V0`, the volume at zero central amount, and `V0 * (1 - vbmax)` is the fully saturated asymptote. The bare counterpart inside `model` is `vbmax`.
+- **Source aliases:**
+  - `VLmax` -- used in `SchaedeliStark_2024_balovaptan.R` (Table 2, Fig. 3).
+- **Example models:** `SchaedeliStark_2024_balovaptan.R` (`VLmax` = 0.805; founding example).
+- **Notes:** Paired with `lvba50`. The role-based spelling was chosen over the source symbol `VLmax` so that a reader who has not read the founding paper can tell what the parameter does. Distinct from `lbmax`, the maximum binding *capacity* of an explicit binding compartment with real mass transfer: the empirical binding model has **no** binding compartment and moves no mass, it only shrinks the volume the central amount is divided by. Distinct too from `limax` and the Emax / Imax family, which scale a *rate*; this scales a *volume*.
+
+### lvba50 (**canonical log-transformed central amount at half the maximum saturable-binding volume reduction**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale amount of drug in the central compartment at which the empirical-binding volume reduction reaches half of `vbmax` (amount). Functionally an `A50`, but expressed in amount-in-compartment units rather than concentration because the volume it feeds is itself a function of that amount and so cannot be used to form a concentration without circularity. The bare counterpart inside `model` is `vba50`.
+- **Source aliases:**
+  - `VLA50` -- used in `SchaedeliStark_2024_balovaptan.R` (Table 2, Fig. 3).
+- **Example models:** `SchaedeliStark_2024_balovaptan.R` (`VLA50` = 3.36 mg; founding example).
+- **Notes:** Paired with `lvbmax`; same amount-versus-concentration reasoning as `lkt_abs`. Table 2 of the founding paper prints the unit as `ug`, but the value is in mg -- the ug reading saturates the term at every clinical dose and abolishes the non-linearity the model exists to describe. Recorded as an erratum in that model's vignette.
+
+### lkgutex (**canonical log-transformed gut extraction rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant for first-pass gut-wall extraction (metabolism or efflux) of drug out of the oral absorption compartment, competing with absorption out of that same compartment and so reducing bioavailability (1 / time). The bare counterpart inside `model` is `kgutex`.
+- **Source aliases:**
+  - `Kgut` -- used in `SchaedeliStark_2024_balovaptan.R` (Table 2, Fig. 3).
+- **Example models:** `SchaedeliStark_2024_balovaptan.R` (`Kgut` = 1.89 1/h, gated by a `moderator1` turnover pool so extraction is large on the first dose and negligible once repeated dosing suppresses the pool; founding example).
+- **Notes:** Named for the **process**, following the same rule that produced `lkfec`, and deliberately distinct from all three of its neighbours. `lkfec` is faecal excretion of *unabsorbed* drug out of a `gut_lumen` compartment -- a different fate out of a different compartment. `lka` remains the name of the competing *absorptive* route out of the same compartment. `lkgut` is an unregistered legacy spelling (`Yang_2023_diclazuril_chicken_pbpk.R`, `Ai_2024_ractopamine_goat_pbpk.R`) that names the compartment rather than the process and must not be used in new models. `Kgut` is also listed as a source alias on `lkfec`; disambiguate by what the rate does -- extraction across the gut wall is `lkgutex`, excretion to faeces is `lkfec`.
+
 ---
 
 ## Bare structural PK parameters
@@ -987,6 +1011,13 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
   - `CL>TCLchange` -- Park 2025.
 - **Example models:** `Park_2025_efineptakin_alfa.R`.
 - **Notes:** Paired with `tclchange`; the pre-breakpoint arm is the plain `cl`.
+
+### vbmax, vba50, kgutex (**canonical bare empirical-binding and gut-extraction parameters**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lvbmax`, `lvba50` and `lkgutex`. `vbmax` is the maximum fractional reduction of the central volume from saturable binding, `vba50` the central amount giving half that reduction, and `kgutex` the first-pass gut-wall extraction rate constant out of the oral absorption compartment.
+- **Source aliases:** none.
+- **Example models:** `SchaedeliStark_2024_balovaptan.R`.
+- **Notes:** See the log-transformed entries for the full role descriptions and for the distinctions from `lbmax`, `lkfec` and `lka`.
 
 ## Paper-named mechanistic parameters
 
@@ -2052,6 +2083,22 @@ matrices keyed by level rather than a single matrix.
   - `kD,delay`, `kD,delayed` -- Siebinga 2024 Table 3 and Eq. 12.
 - **Example models:** `Siebinga_2024_lu177psmaIT.R` (`lkd_direct` = log(0.00335) L/day/GBq driven by the tumor radioactivity concentration, and `lkd_delay` = log(0.0000328) L/day/MBq driven by an effect compartment at `ke0` = 0.00128 1/h; both act on the PSA compartment, per Eq. 12).
 - **Notes:** **Distinct from `kd`**, the mechanistic *dissociation* rate (1 / time) used in TMDD-type models: these are exposure-scaled slopes with different units, so do not alias them onto `kd`. The `_direct` / `_delay` suffixes name the driver and follow the register's established `<stem>_<suffix>` pattern (`lcl_renal` / `lcl_nonren`, `kge_ctdna` / `kse_ctdna`). Use these names only for the *linear* drug-effect form; when a paper instead fits an Emax or sigmoid-Emax effect, the potency and shape parameters belong to the `ec50` / `lec50` / `hill` family.
+
+### lsmod, smod (**canonical moderator-pool stimulation scaling factor**)
+- **Type:** paper-named-param
+- **Role:** Scaling factor by which a driving model state stimulates the loss rate constant of a `moderator<n>` turnover pool: `d/dt(moderator1) = kin - kout * moderator1 * (1 + smod * <driver>)`. Units are the reciprocal of the driver's units, so the `label` must state them. A larger `smod` suppresses the pool faster and further for a given driver level, switching off the process the pool gates sooner.
+- **Source aliases:**
+  - `S` -- used in `SchaedeliStark_2024_balovaptan.R` (Table 2, "scaling factor for the effect of Aa on Kout").
+- **Example models:** `SchaedeliStark_2024_balovaptan.R` (`S` = 22.0 1/mg, the depot amount stimulating the loss of the pool that gates gut extraction; founding example).
+- **Notes:** Belongs with `kin` / `kout` and the `moderator<n>` compartment family. Distinct from the `e_<cov>_<param>` covariate-effect family: the driver here is a model state, not a data column, so no covariate-effect name applies.
+
+### lkd_fu, kd_fu (**canonical dissociation constant per unit total plasma concentration**)
+- **Type:** paper-named-param
+- **Role:** Equilibrium dissociation constant expressed per unit **total** rather than free plasma concentration, i.e. `Kd / fu_plasma`, for a receptor-occupancy model driven by the free fraction: `RO = 100 * C * fu / (Kd + C * fu) = 100 * C / (kd_fu + C)`. Units are those of the total plasma concentration and the `label` must state them. Use this name when a source reports such an occupancy relationship but its free-fraction and dissociation-constant terms are **not separately identifiable** -- only their ratio is -- so that the name itself records why `kd` and `fu` were not stored separately.
+- **Source aliases:**
+  - `Kb`, `fu_plasma` -- used in `SchaedeliStark_2024_balovaptan.R` (Methods, p. 230); that paper prints the occupancy equation but reports neither constant anywhere.
+- **Example models:** `SchaedeliStark_2024_balovaptan.R` (`kd_fu` = 3.16 ng/mL, back-solved from the seven paired concentration / occupancy medians of Table 3; founding example).
+- **Notes:** A suffixed member of the `kd` family, following the same `<stem>_<suffix>` pattern as `lkd_direct` / `lkd_delay`; here the `_fu` suffix marks the normalisation rather than a driver. Prefer plain `kd` whenever the source reports the dissociation constant and the free fraction separately, and store `fu` in its own right; reach for `kd_fu` only when the ratio is all the source identifies.
 
 ## Unit spellings
 
