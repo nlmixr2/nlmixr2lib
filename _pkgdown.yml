@@ -678,6 +678,8 @@ navbar:
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Cefathiamidine (Zhi 2018)"
         href: articles/Zhi_2018_cefathiamidine.html
+      - text: "Cefazolin (Duke 2024)"
+        href: articles/Duke_2024_cefazolin.html
       - text: "Cefepime (Capparelli 2005)"
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
@@ -5058,6 +5060,7 @@ articles:
   - articles/Drweesh_2026_adalimumab
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability
+  - articles/Duke_2024_cefazolin
   - articles/Dunlap_2025_tacrolimus
   - articles/Dunn_2025_tranexamicAcid
   - articles/Duong_2016_WHIG_T2DM
