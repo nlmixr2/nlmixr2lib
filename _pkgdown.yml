@@ -3638,6 +3638,8 @@ navbar:
         href: articles/Woillard_2011_tacrolimus.html
       - text: "Tacrolimus (Xiang 2025)"
         href: articles/Xiang_2025_tacrolimus.html
+      - text: "Tacrolimus (Zhao 2024)"
+        href: articles/Zhao_2024_tacrolimus.html
       - text: "Tacrolimus (Zhou 2025)"
         href: articles/Zhou_2025_tacrolimus.html
       - text: "Tacrolimus (Zhou 2026)"
@@ -6029,6 +6031,7 @@ articles:
   - articles/Zhao_2015_teicoplanin
   - articles/Zhao_2018_omeprazole
   - articles/Zhao_2024_ciprofloxacin_colistin
+  - articles/Zhao_2024_tacrolimus
   - articles/Zhao_2025_methotrexate
   - articles/Zhao_2025_paracetamol
   - articles/Zhao_2026_venetoclax
