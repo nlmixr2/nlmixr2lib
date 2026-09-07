@@ -3468,6 +3468,8 @@ navbar:
         href: articles/Zhang_2026_ribociclib.html
       - text: "Rifabutin (Hennig 2015)"
         href: articles/Hennig_2015_rifabutin.html
+      - text: "Rifabutin (SemereGebreyesus 2024)"
+        href: articles/SemereGebreyesus_2024_rifabutin.html
       - text: "Rifampicin (Barnett 2018)"
         href: articles/Barnett_2018_rifampicin.html
       - text: "Rifampicin (Chigutsa 2011)"
@@ -6059,6 +6061,7 @@ articles:
   - articles/Schulthess_2017_frequency_domain_response_analysis
   - articles/Schutte_2018_desmopressin
   - articles/Selvaggio_2021_mRNA_vaccine_QSP
+  - articles/SemereGebreyesus_2024_rifabutin
   - articles/Seng_2015_isoniazid
   - articles/Seo_2023_cefepime
   - articles/Sethi_2024_acetaminophen_diclofenac_mbma
