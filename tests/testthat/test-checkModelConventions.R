@@ -1904,3 +1904,190 @@ test_that("no model in the database binds an unregistered fm_ parameter", {
   }
   expect_equal(sort(bad), character(0))
 })
+
+# nolint start: semicolon_linter, infix_spaces_linter
+# Logit back-transform agreement --------------------------------------------
+#
+# The point of these is that the check can go RED. A rule that only ever passes
+# manufactures confidence; each of the three wrong shapes below is a real bug
+# class -- exp() alone (odds), the wrong sign, and a plain arithmetic slip.
+
+test_that(".labelDocumentedProportions tolerates a missing or empty label", {
+  expect_length(nlmixr2lib:::.labelDocumentedProportions(NA_character_), 0L)
+  expect_length(nlmixr2lib:::.labelDocumentedProportions(""), 0L)
+})
+
+test_that("a label rounding expit(2.40) = 0.9168 to 0.917 still matches", {
+  expect_equal(nlmixr2lib:::.labelDocumentedProportions("Logit max suppression = 0.917"),
+               0.917)
+  expect_lt(abs(nlmixr2lib:::.expit(2.40) - 0.917), 0.005)
+})
+
+test_that(".labelDocumentedProportions only reads explicitly marked proportions", {
+  # explicit markers are read
+  expect_equal(nlmixr2lib:::.labelDocumentedProportions("F = 0.825"), 0.825)
+  expect_equal(nlmixr2lib:::.labelDocumentedProportions("bioavailability (0.712)"), 0.712)
+  # percentages are deliberately NOT read: in this library they always state
+  # a threshold ("an over-50% reduction"), never the parameter's value.
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("over-50% reduction"), 0L)
+  # bare numbers, units and counts are NOT read as proportions
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("Clearance (L/h)"), 0L)
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("3 transit compartments"), 0L)
+  # out-of-range values are not proportions
+  expect_length(nlmixr2lib:::.labelDocumentedProportions("reference weight = 70"), 0L)
+})
+
+test_that("expit helper is the inverse of logit", {
+  for (p in c(0.01, 0.25, 0.483, 0.5, 0.917, 0.99)) {
+    expect_equal(nlmixr2lib:::.expit(log(p / (1 - p))), p, tolerance = 1e-12)
+  }
+})
+
+test_that("a correct logit back-transform raises no issue", {
+  mod <- function() {
+    ini({
+      logitfdepot <- 1.5613; label("Oral bioavailability on the logit scale (F = 0.826)")
+      lka <- 0.1
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      fdepot <- expit(logitfdepot)
+      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(depot) <- -ka * depot
+      d/dt(central) <- ka * depot - cl / vc * central
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 0L)
+})
+
+test_that("the negative-logit convention is accepted when the label matches it", {
+  # Choy 2016 / Duong 2016 / Bonate 2004 parameterise p = 1/(1+exp(x)),
+  # i.e. expit(-x). expit(-1.1) = 0.2497.
+  mod <- function() {
+    ini({
+      is0_logit <- 1.1; label("Baseline insulin sensitivity, logit scale = 0.25")
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      is0 <- 1 / (1 + exp(is0_logit))
+      cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * is0
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 0L)
+})
+
+test_that("a label that disagrees with BOTH expit conventions is an error", {
+  # expit(1.5613) = 0.826 and expit(-1.5613) = 0.174; the label claims 0.30,
+  # which is the kind of number a wrong back-transform produces.
+  mod <- function() {
+    ini({
+      logitfdepot <- 1.5613; label("Oral bioavailability on the logit scale (F = 0.30)")
+      lka <- 0.1
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      fdepot <- exp(logitfdepot)          # BUG: odds, not a probability
+      ka <- exp(lka); cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(depot) <- -ka * depot
+      d/dt(central) <- ka * depot - cl / vc * central
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 1L)
+  expect_equal(iss$category[[1]], "logit_backtransform_disagreement")
+  expect_equal(iss$severity[[1]], "error")
+  expect_true(grepl("expit", iss$suggestion[[1]], fixed = TRUE))
+})
+
+test_that("eta variance terms on a logit parameter are out of scope", {
+  mod <- function() {
+    ini({
+      logitfdepot <- 1.5613; label("Oral bioavailability on the logit scale (F = 0.826)")
+      etalogitfdepot ~ 0.09
+      lcl <- 1
+      lvc <- 3
+      addSd <- 1
+    })
+    model({
+      fdepot <- expit(logitfdepot + etalogitfdepot)
+      cl <- exp(lcl); vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * fdepot
+      Cc <- central / vc
+      Cc ~ add(addSd)
+    })
+  }
+  ui <- nlmixr2est::nlmixr(mod)
+  iss <- nlmixr2lib:::.checkLogitBackTransform(ui, nlmixr2lib:::.nlmixr2libConventions())
+  expect_equal(nrow(iss), 0L)
+})
+
+test_that("no shipped model disagrees with its own logit back-transform", {
+  # Enumerating over the source text, like the retired-name and
+  # time-varying-clearance tests above, rather than instantiating all ~2500
+  # models: reading the files takes seconds, `nlmixr2est::nlmixr()` on each
+  # takes a quarter of an hour, and the per-model path is already exercised by
+  # `buildModelDb()`, which runs `checkModelConventions()` over the whole
+  # registry on every rebuild.
+  #
+  # Deliberately no skip_on_cran(): a check that silently skips is worse than
+  # no check, because it reports green over an unexamined library.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  expect_gt(length(files), 100L)   # the sweep must actually have inputs
+
+  # `logitfoo <- 1.56;  label("... F = 0.826 ...")`  and the forward-transform
+  # spelling `logitfoo <- logit(0.826); label(...)`.
+  pat <- paste0("^\\s*([A-Za-z_.][A-Za-z0-9_.]*)\\s*<-\\s*",
+                "(logit\\(\\s*[-0-9.eE]+\\s*\\)|-?[0-9.]+(?:[eE][-+]?[0-9]+)?)\\s*;")
+  offenders <- character(0)
+  for (f in files) {
+    for (ln in readLines(f, warn = FALSE)) {
+      m <- regmatches(ln, regexec(pat, ln, perl = TRUE))[[1]]
+      if (!length(m)) next
+      nm <- m[[2]]
+      if (!grepl("logit", nm, ignore.case = TRUE)) next
+      if (grepl("^eta", nm)) next
+      raw <- m[[3]]
+      est <- if (grepl("^logit\\(", raw)) {
+        p <- as.numeric(gsub("[^-0-9.eE]", "", raw))
+        if (!is.finite(p) || p <= 0 || p >= 1) next
+        log(p / (1 - p))
+      } else {
+        as.numeric(raw)
+      }
+      if (!is.finite(est)) next
+      lbl <- sub("^.*?label\\(\\s*\"", "", ln)
+      lbl <- sub("\"\\s*\\).*$", "", lbl)
+      docs <- nlmixr2lib:::.labelDocumentedProportions(lbl)
+      docs <- docs[abs(docs - est) > 1e-9]
+      if (!length(docs)) next
+      pos <- nlmixr2lib:::.expit(est)
+      neg <- nlmixr2lib:::.expit(-est)
+      if (any(abs(pos - docs) <= 0.005) || any(abs(neg - docs) <= 0.005)) next
+      offenders <- c(offenders, sprintf("%s: %s = %g -> expit %.4f / %.4f, label says %s",
+                                        basename(f), nm, est, pos, neg,
+                                        paste(docs, collapse = ", ")))
+    }
+  }
+  expect_equal(offenders, character(0))
+})
+# nolint end
