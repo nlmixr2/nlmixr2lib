@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ishibashi 2024 ensitrelvir ([doi:10.1007/s40262-024-01446-4](https://doi.org/10.1007/s40262-024-01446-4)) -- healthy adults and participants with SARS-CoV-2 infection.
+- Add Maringwa 2025 venlafaxine and fluoxetine HAMD dose-response MBMA ([doi:10.1002/cpt.3418](https://doi.org/10.1002/cpt.3418)) -- adults with major depressive disorder across 16 placebo-controlled trials.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
