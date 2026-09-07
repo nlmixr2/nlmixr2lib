@@ -612,8 +612,8 @@ navbar:
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
       - text: "Cabozantinib (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib.html
-      - text: "Cabozantinib (Ly 2023)"
-        href: articles/Ly_2023_cabozantinib.html
+      - text: "Cabozantinib (Tan 2024)"
+        href: articles/Tan_2024_cabozantinib.html
       - text: "Cabozantinib dose modification (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib_exposure_response.html
       - text: "Cabozantinib tumor (Lacy 2018)"
@@ -6165,6 +6165,7 @@ articles:
   - articles/Tammara_2017_rivipansel
   - articles/Tamura_2023_remdesivir
   - articles/Tan_2009_artesunate
+  - articles/Tan_2024_cabozantinib
   - articles/Tanaka_2012_phenytoin
   - articles/Tang_2019_amoxicillin
   - articles/Tang_2023_tenecteplase

@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Youssef 2024 bepirovirsen ([doi:10.1007/s40121-024-00980-9](https://doi.org/10.1007/s40121-024-00980-9)) -- healthy participants and participants with chronic hepatitis B virus infection.
+- Add Tan 2024 cabozantinib ([doi:10.1007/s40262-024-01379-y](https://doi.org/10.1007/s40262-024-01379-y)) -- adults with metastatic renal cell carcinoma.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
