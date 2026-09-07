@@ -698,6 +698,8 @@ navbar:
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Cefathiamidine (Zhi 2018)"
         href: articles/Zhi_2018_cefathiamidine.html
+      - text: "Cefazolin (Bausch 2024)"
+        href: articles/Bausch_2024_cefazolin.html
       - text: "Cefepime (Capparelli 2005)"
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
@@ -4850,6 +4852,7 @@ articles:
   - articles/Bartko_2018_sutimlimab
   - articles/Bastida_2018_tocilizumab
   - articles/Bauer_2023_vonWillebrandFactor
+  - articles/Bausch_2024_cefazolin
   - articles/Baverel_2015_tralokinumab
   - articles/Beal_2001_iv1cmt_bql
   - articles/Bellanti_2014_deferiprone
