@@ -2458,6 +2458,8 @@ navbar:
         href: articles/Kim_2024_meropenem.html
       - text: "Meropenem (Padari 2012)"
         href: articles/Padari_2012_meropenem.html
+      - text: "Meropenem (Rancic 2024)"
+        href: articles/Rancic_2024_meropenem.html
       - text: "Meropenem (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Meropenem (Saporta 2026)"
@@ -5932,6 +5934,7 @@ articles:
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
   - articles/Rambiritch_2016_glibenclamide
   - articles/Ramharter_2019_mefloquine
+  - articles/Rancic_2024_meropenem
   - articles/Randell_2024_metronidazole
   - articles/Rao_2023_covid19_qsp
   - articles/Ravix_2024_trametinib

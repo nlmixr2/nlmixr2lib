@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2024 adebrelimab ([doi:10.1002/psp4.13155](https://doi.org/10.1002/psp4.13155)) -- Chinese patients with extensive-stage small-cell lung cancer or advanced solid tumours.
+- Add Rancic 2024 meropenem ([doi:10.1515/med-2024-1004](https://doi.org/10.1515/med-2024-1004)) -- critically ill adults in intensive care.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
