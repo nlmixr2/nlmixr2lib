@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Launay 2024 ceftazidime ([doi:10.3390/antibiotics13080756](https://doi.org/10.3390/antibiotics13080756)) -- septic critically ill adults on continuous infusion.
+- Add Ling 2024 voriconazole ([doi:10.3389/fphar.2024.1455721](https://doi.org/10.3389/fphar.2024.1455721)) -- Chinese adults with invasive fungal infections.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
