@@ -4433,6 +4433,16 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Mohamed_2013_procainamide.R` (doi:10.1053/j.ajkd.2013.02.358).
 
+### nasmx (**canonical N-acetyl sulfamethoxazole suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-acetyl sulfamethoxazole (NASMX), the predominant metabolite of sulfamethoxazole formed by N-acetyltransferase-mediated N4-acetylation. It lacks relevant antibacterial activity but is the toxicity-limiting species during high-dose cotrimoxazole therapy: it is cleared almost entirely by the kidney, so it accumulates steeply in renal impairment, and plasma concentrations above 75 mg/L are the accepted upper limit of the therapeutic range. Roughly 46% of a sulfamethoxazole dose is recovered as this metabolite versus 16% as unchanged parent. Drives `central_nasmx`, the `lcl_nasmx` / `lvc_nasmx` parameters, the `e_<cov>_<param>_nasmx` covariate effects, the `etalcl_nasmx` random effect, the `propSd_nasmx` residual SD and the `Cc_nasmx` observable.
+- **Source aliases:**
+  - `SMX-M`, `SMXm` -- the `$MODEL` comment and `TVCM` / `CM` / `TVV3` / `V3` parameter-symbol stems in the Leegwater 2025 supplementary NONMEM control stream.
+  - `CMT 3` -- the compartment index the same paper's Figure S2 caption uses for the metabolite.
+  - `N-acetylsulfamethoxazole`, `NAcSMX`, `AcSMX` -- unspaced / abbreviated spellings appearing in the cotrimoxazole TDM literature and in the paper's own supplementary assay-validation section.
+- **Example models:** `Leegwater_2025_sulfamethoxazole.R` (founding example; doi:10.1002/cpt.3421 -- integrated one-compartment sulfamethoxazole plus one-compartment metabolite model in hospitalized adults, with the formation clearance fixed at 0.4 times the parent elimination clearance and opposite-signed CRRT effects on the two clearances).
+- **Notes:** The `na` + parent-stem construction follows `napa` (N-acetylprocainamide), and the `smx` stem is the sulfamethoxazole sibling-drug suffix already registered for `Boulanger_2025_trimethoprim_sulfonamides_pig.R`; a bare `smx` cannot serve the metabolite because that model already uses it for the parent drug itself. Distinct from the sulfonamide sibling-drug suffixes `sdz` (sulfadiazine) and `sdmx` (sulfadimethoxine), which are separately administered drugs rather than metabolites.
+
 ### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Norclozapine (N-desmethylclozapine), the primary pharmacologically active metabolite of clozapine formed predominantly by CYP1A2 (with secondary contributions from CYP2C19, CYP3A4, CYP2C9, and CYP2D6). Norclozapine retains receptor affinity at multiple monoaminergic and muscarinic targets and is routinely measured alongside clozapine in therapeutic-drug-monitoring (TDM) practice; the parent-to-metabolite ratio is itself a clinical descriptor of CYP1A2 activity.
