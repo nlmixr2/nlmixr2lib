@@ -3218,6 +3218,8 @@ navbar:
         href: articles/Cheah_2016_polymyxin_Abaumannii_dynamics.html
       - text: "PolymyxinB (Liang 2023)"
         href: articles/Liang_2023_polymyxinB.html
+      - text: "PolymyxinB (Yang 2025)"
+        href: articles/Yang_2025_polymyxinB.html
       - text: "PolymyxinB AB121D0 (Lacroix 2025)"
         href: articles/Lacroix_2025_polymyxinB_mucin.html
       - text: "PolymyxinB AB122D12 (Lacroix 2025)"
@@ -6385,6 +6387,7 @@ articles:
   - articles/Yang_2024_zastaprazan
   - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yang_2025_matrine_pig_pbpk
+  - articles/Yang_2025_polymyxinB
   - articles/Yang_2026_APTM
   - articles/Yang_2026_encorafenib
   - articles/Yang_2026_lurasidone
