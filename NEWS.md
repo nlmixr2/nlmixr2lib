@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chen 2024 nirmatrelvir and ritonavir ([doi:10.2147/IDR.S471918](https://doi.org/10.2147/IDR.S471918)) -- critically ill adults with COVID-19.
+- Add Zhao 2024 tacrolimus ([doi:10.3389/fphar.2024.1439232](https://doi.org/10.3389/fphar.2024.1439232)) -- adult renal transplant recipients on concomitant voriconazole.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
