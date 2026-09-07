@@ -3257,11 +3257,12 @@ Two distinct decompositions of the reticulocyte pool are registered, and a model
 
 ### moderator (**canonical moderator / tolerance state**)
 - **Type:** compartment
-- **Role:** Gabrielsson-Hjorth moderator (tolerance) state -- a first-order delay driven by a system state with **no mass transfer** into or out of the biological pool it tracks, whose terminal member divides (or otherwise scales) the production rate it modulates, producing tolerance / reservoir-depletion behaviour.
+- **Role:** Gabrielsson-Hjorth moderator (tolerance) state -- a first-order delay driven by a system state with **no mass transfer** into or out of the biological pool it tracks, whose terminal member divides (or otherwise scales) the rate it modulates, producing tolerance / reservoir-depletion behaviour. Most commonly that rate is a *production* rate, but the role covers a modulated *loss* rate equally: what defines the state is that it carries no mass and gates a rate with a delay, not which direction the gated rate points.
 - **Source aliases:**
   - `TOL_n` / `M1`, `M2` -- used in `Rognas_2025_bitopertin.R` (Fig. 2; `$MODEL` comps 14-15).
   - `M_n` -- used in `Ahlstrom_2010_nicotinicAcid_rat.R` (Eq. 4).
-- **Example models:** `Rognas_2025_bitopertin.R` (`moderator1`, `moderator2`).
+  - `A_t` -- used in `SchaedeliStark_2024_balovaptan.R` (Fig. 3), a single-element pool starting at 1 that gates a gut-extraction *loss* rate constant and is suppressed by the amount in the depot via `smod`.
+- **Example models:** `Rognas_2025_bitopertin.R` (`moderator1`, `moderator2`), `SchaedeliStark_2024_balovaptan.R` (`moderator1`).
 - **Notes:** Numbered variants `moderator1`, `moderator2`,... are accepted via `compartmentRegex`. New models should use `moderator<n>`; per rule 5 of "How to use this register", `Ahlstrom_2010_nicotinicAcid_rat.R` is not retrofitted here.
 
 ---

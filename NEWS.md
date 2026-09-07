@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bender 2024 mosunetuzumab ([doi:10.1111/cts.13825](https://doi.org/10.1111/cts.13825)) -- adults with relapsed/refractory B-cell non-Hodgkin lymphoma.
+- Add Schaedeli Stark 2024 balovaptan ([doi:10.1007/s10928-023-09898-0](https://doi.org/10.1007/s10928-023-09898-0)) -- adults and children with autism spectrum disorder, plus neurotypical adults.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

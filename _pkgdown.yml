@@ -430,6 +430,8 @@ navbar:
         href: articles/Galluppi_2016_BIIB023.html
       - text: "Balcinrenone (Parkinson 2025)"
         href: articles/Parkinson_2025_balcinrenone.html
+      - text: "Balovaptan (SchaedeliStark 2024)"
+        href: articles/SchaedeliStark_2024_balovaptan.html
       - text: "Baloxavir (Retout 2026)"
         href: articles/Retout_2026_baloxavir.html
       - text: "Bapineuzumab (Hu 2014)"
@@ -6005,6 +6007,7 @@ articles:
   - articles/Sathe_2025_sacituzumab
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
+  - articles/SchaedeliStark_2024_balovaptan
   - articles/Schaefer_1996_ciprofloxacin
   - articles/Scheuher_2023_ADC_platform_qsp
   - articles/Schindler_2016_sunitinib
