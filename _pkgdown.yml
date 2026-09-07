@@ -1140,6 +1140,8 @@ navbar:
         href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Dolutegravir (Kawuma 2023)"
         href: articles/Kawuma_2023_dolutegravir.html
+      - text: "Dolutegravir (Waalewijn 2024)"
+        href: articles/Waalewijn_2024_dolutegravir.html
       - text: "Dolutegravir (Zhang 2015)"
         href: articles/Zhang_2015_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
@@ -6327,6 +6329,7 @@ articles:
   - articles/Vucicevic_2025_efavirenz
   - articles/Vujkovic_2018_efavirenz
   - articles/Vuu_2016_topiramate_dog
+  - articles/Waalewijn_2024_dolutegravir
   - articles/Wada_2023_sparsentan
   - articles/Wade_2008_fluconazole
   - articles/Wade_2015_certolizumab
