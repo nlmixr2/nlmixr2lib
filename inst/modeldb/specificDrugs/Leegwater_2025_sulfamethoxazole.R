@@ -179,9 +179,9 @@ Leegwater_2025_sulfamethoxazole <- function() {
     # directly from the control stream. IIV on ka, on F and on the
     # metabolite volume was fixed to zero ($OMEGA(3), $OMEGA(5), $OMEGA(7)
     # all "0 FIX"), so those parameters carry no eta.
-    etalcl       ~ 0.132                                                                                               # control stream $OMEGA(1) "0.132 FIX"; Table 3 "IIV CL (%)" 36.3, RSE 8%, bootstrap 95% CI 29.6-42.4
-    etalvc       ~ 0.396                                                                                               # control stream $OMEGA(2) "0.396 FIX"; Table 3 "IIV Vd (%)" 62.9, RSE 11%, bootstrap 95% CI 37.4-79.4
-    etalcl_nasmx ~ 0.166                                                                                               # control stream $OMEGA(4) "0.166 FIX"; Table 3 "IIV CL (%)" (metabolite block) 40.7, RSE 8%, bootstrap 95% CI 34.5-48.3
+    etalcl       ~ 0.132                                                                                               # control stream $OMEGA(1) '0.132 FIX'; Table 3 'IIV CL (%)' 36.3, RSE 8%, bootstrap 95% CI 29.6-42.4
+    etalvc       ~ 0.396                                                                                               # control stream $OMEGA(2) '0.396 FIX'; Table 3 'IIV Vd (%)' 62.9, RSE 11%, bootstrap 95% CI 37.4-79.4
+    etalcl_nasmx ~ 0.166                                                                                               # control stream $OMEGA(4) '0.166 FIX'; Table 3 'IIV CL (%)' (metabolite block) 40.7, RSE 8%, bootstrap 95% CI 34.5-48.3
 
     # Residual error. Control stream $ERROR, with $SIGMA 1 FIX:
     # Y = IPRED + W*EPS(1)*IPRED with W = THETA(8) for CMT 2 and

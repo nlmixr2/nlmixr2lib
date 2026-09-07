@@ -168,9 +168,9 @@ Leegwater_2025_trimethoprim <- function() {
     # explicit suffix (references/parameter-names.md "Stratum-suffixed
     # parameters"): a bare etalcl silently meaning "the non-CRRT value" is
     # exactly the ambiguity the suffix removes.
-    etalcl_nocrrt ~ 0.161                                                                                           # control stream $OMEGA(1) "0.161 FIX"; Table 2 "IIV CL (%)" 40.1, RSE 12%, bootstrap 95% CI 26.9-48.5
-    etalcl_crrt   ~ 0.108                                                                                           # control stream $OMEGA(3) "0.108 FIX"; Table 2 "IIV CL patients on CRRT (%)" 32.9, RSE 32%, bootstrap 95% CI 7.54-48.7
-    etalvc        ~ 0.102                                                                                           # control stream $OMEGA(2) "0.102 FIX"; Table 2 "IIV Vd (%)" 31.9, RSE 32%, bootstrap 95% CI 9.77-49.2
+    etalcl_nocrrt ~ 0.161                                                                                           # control stream $OMEGA(1) '0.161 FIX'; Table 2 'IIV CL (%)' 40.1, RSE 12%, bootstrap 95% CI 26.9-48.5
+    etalcl_crrt   ~ 0.108                                                                                           # control stream $OMEGA(3) '0.108 FIX'; Table 2 'IIV CL patients on CRRT (%)' 32.9, RSE 32%, bootstrap 95% CI 7.54-48.7
+    etalvc        ~ 0.102                                                                                           # control stream $OMEGA(2) '0.102 FIX'; Table 2 'IIV Vd (%)' 31.9, RSE 32%, bootstrap 95% CI 9.77-49.2
 
     # Residual error. Control stream $ERROR: W = SQRT(THETA(4)**2*IPRED**2),
     # Y = IPRED + W*EPS(1) with $SIGMA 1 FIX, i.e. a pure proportional error

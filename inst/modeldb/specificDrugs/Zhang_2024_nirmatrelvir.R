@@ -160,7 +160,7 @@ Zhang_2024_nirmatrelvir <- function() {
     # as "reduced the IIV from 58.9% to 52.3%". Converted to a log-normal
     # variance the standard way: omega^2 = log(CV^2 + 1)
     #                                    = log(0.523^2 + 1) = 0.241792.
-    etalcl ~ 0.241792                                                              # Table 2, "Interindividual variability, CV%" / "CL/F, L/h" = 52.30
+    etalcl ~ 0.241792                                                              # Table 2, 'Interindividual variability, CV%' / 'CL/F, L/h' = 52.30
 
     # Residual error. Results, Model Development: "Residual errors were
     # described by additive plus constant coefficient of variation models,

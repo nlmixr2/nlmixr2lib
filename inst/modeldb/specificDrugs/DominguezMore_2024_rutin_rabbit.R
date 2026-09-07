@@ -145,7 +145,7 @@ DominguezMore_2024_rutin_rabbit <- function() {
     vcpop   <- exp(lvc)
     logitvc <- log(vcpop / (1 - vcpop)) +
       e_form_rutin_extract_vc * FORM_RUTIN_EXTRACT
-    vc <- 1 / (1 + exp(-logitvc))
+    vc <- expit(logitvc)
 
     kel <- exp(lkel + e_form_rutin_extract_kel * FORM_RUTIN_EXTRACT + etalkel)
     k12 <- exp(lk12 + e_form_rutin_extract_k12 * FORM_RUTIN_EXTRACT + etalk12)

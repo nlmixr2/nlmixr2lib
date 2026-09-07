@@ -338,8 +338,7 @@ Li_2018_PF04236921 <- function() {
     # =====================================================================
     base <- exp(lbase_cohort + etalbase) * (alb_gdL / 4.0)^e_alb_base
     logitimax_prime <- logitimax_cohort * (alb_gdL / 4.0)^e_alb_logitimax
-    imax <- exp(logitimax_prime + etalogitimax) /
-            (1 + exp(logitimax_prime + etalogitimax))
+    imax <- expit(logitimax_prime + etalogitimax)
     ic50 <- exp(lic50_cohort + etalic50)
     gamma <- exp(lgamma_cohort)
     kout <- exp(lkout)

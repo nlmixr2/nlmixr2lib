@@ -497,9 +497,26 @@ identity_chk <- nca_wide |>
 # Trapezoidal AUC on a 0.25 h grid slightly UNDER-estimates the true AUC around
 # the peak, so pct_diff is small and negative. Assert on the centre and a robust
 # quantile rather than on the extreme (CLAUDE.md vignette-assertion guidance).
+#
+# BOTH bounds must cover the THREAD-COUNT SPREAD, not one realised cohort:
+# rxSetSeed() fixes rxode2's RNG per solver thread rather than across thread
+# counts, so the 200 drawn CL values -- and with them the upper tail of
+# pct_diff -- change when the machine solves with a different number of
+# threads. Measured here at 1 / 2 / 4 / 8 / 16 threads:
+#
+#   median |pct_diff|  0.0570  0.0559  0.0505  0.0669  0.0590   -> stable
+#   90th pct |pct_diff| 1.2375  2.1304  1.8097  2.2716  1.6952   -> NOT stable
+#
+# The centre is a genuine property of the identity and is asserted tightly. The
+# 90th percentile is dominated by which high-CL subjects the cohort happens to
+# draw: their concentration peak is sharper than a 0.25 h grid resolves, so
+# their trapezoidal AUC is badly under-estimated (worst single subject ranges
+# 17% to 74% across the same runs). The previous bound of 2 held only at 1 and
+# 4 threads and failed at 2, 8 and 16 -- it was passing by luck of the thread
+# count, not because the model was right.
 stopifnot(
   abs(median(identity_chk$pct_diff)) < 1,
-  quantile(abs(identity_chk$pct_diff), 0.9) < 2
+  quantile(abs(identity_chk$pct_diff), 0.9) < 3
 )
 
 summary(identity_chk$pct_diff)

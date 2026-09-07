@@ -116,7 +116,7 @@ Lv_2024_delafloxacin <- function() {
     etalcl ~ 0.066            # Table 2: IIV_CL = 0.066 (RSE 17%, shrinkage 2.4%; bootstrap 0.063 [0.048-0.084])
     etalvc ~ 0.041            # Table 2: IIV_V1 = 0.041 (RSE 20.9%, shrinkage 9.2%; bootstrap 0.039 [0.026-0.084])
     etalvp ~ 0.027            # Table 2: IIV_V2 = 0.027 (RSE 19.6%, shrinkage 8%; bootstrap 0.027 [0.018-0.036])
-    etalq2 ~ fixed(0.1)       # Table 2: IIV_Q3 = 0.1, FIX (matches "0.1 FIX ; IIV_Q3" in the control stream)
+    etalq2 ~ fixed(0.1)       # Table 2: IIV_Q3 = 0.1, FIX (matches '0.1 FIX ; IIV_Q3' in the control stream)
 
     # ---- Residual error ----
     # Eq. 2 combined error. The control stream's $ERROR block is

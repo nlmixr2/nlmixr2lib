@@ -239,8 +239,7 @@ Crass_2024_pegcetacoplan_ldh <- function() {
         (logitemax_ecu_bl + e_conmed_eculizumab_emax * CONMED_ECULIZUMAB)
 
     rbase <- exp(lrbase_typ + etalrbase)
-    emax <- exp(logitemax_typ + etalogitemax) /
-      (exp(logitemax_typ + etalogitemax) + 1)
+    emax <- expit(logitemax_typ + etalogitemax)
     ec50 <- exp(lec50 + etalec50)
     hill <- exp(lhill)
 

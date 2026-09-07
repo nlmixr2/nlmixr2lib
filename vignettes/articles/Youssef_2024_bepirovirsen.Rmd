@@ -259,7 +259,16 @@ science and a large variance reduction.
 ```{r cohort}
 set.seed(20240525)
 
-N_ARM   <- 200L
+# 1000, not 200. The Ctrough gate below asserts that the under-prediction is
+# PRESENT in every row (see the Errata), so the cohort has to estimate it
+# precisely enough that the deviation itself is what is being tested rather
+# than Monte Carlo noise. rxSetSeed() fixes rxode2's stream per solver
+# thread, so the cohort is redrawn when the thread count changes, and at 200
+# per arm the worst Ctrough row swung -2.1 / -8.2 / -12.2 percent on
+# 2 / 4 / 8 threads -- crossing the -5 bound at 2. At 1000 the same row is
+# -8.8 to -11.5, and at 2000 it is -12.9, so the true deviation is around
+# -13 percent and the 200-subject estimate was simply noisy.
+N_ARM   <- 1000L
 WEEK    <- 168             # hours in a weekly dosing interval
 WK12    <- 11 * WEEK       # time of the 12th dose
 WK24    <- 23 * WEEK       # time of the 24th (final) dose
@@ -568,12 +577,14 @@ stopifnot(nrow(auc_cmax) == 10L, nrow(ctrough) == 5L)
 # clearance, dose or volume (any of which shifts these by tens of percent).
 stopifnot(max(abs(auc_cmax$pct)) < 15)
 
-# Ctrough: a real, reproducible under-prediction (see Errata). Across three
-# seeds and all five rows it realised -12.8% to -26.7% -- never near zero, and
-# never positive. Gated as a two-sided band so the vignette fails both if the
-# deviation vanishes silently (which would mean something else changed) and if
-# the terminal phase breaks outright, but NOT widened to hide the disagreement:
-# the Cmin rows of the table above report it in full.
+# Ctrough: a real, reproducible under-prediction (see Errata). With the 1000-per
+# -arm cohort above, all five rows realised -8.8% to -16.9% across 2 and 8
+# solver threads and 1000/2000 subjects -- never near zero, and never positive.
+# Gated as a two-sided band so the vignette fails both if the deviation vanishes
+# silently (which would mean something else changed) and if the terminal phase
+# breaks outright, but NOT widened to hide the disagreement: the Cmin rows of
+# the table above report it in full. The bound is unchanged from when this gate
+# was written; what changed is the cohort size behind the estimate.
 stopifnot(max(ctrough$pct) < -5, min(ctrough$pct) > -45)
 ```
 

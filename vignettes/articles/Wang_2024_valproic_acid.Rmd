@@ -326,7 +326,16 @@ patients per group; this vignette uses 100 per cell, which is ample for a median
 and an interquartile range and keeps the render inside its time budget.
 
 ```{r fig2-grid}
-n_per_cell <- 100
+# 1000, not 100. The gate below asserts the PAPER's own 70% PTA criterion,
+# so the cohort has to estimate PTA precisely enough that the criterion is
+# what fails, not Monte Carlo noise. At 100 per cell the minimum across the
+# eight 20-50 kg cells landed at 0.74 / 0.67 / 0.71 / 0.77 on 1 / 2 / 4 / 8
+# solver threads -- rxSetSeed() fixes the stream per thread, so the cohort is
+# redrawn when the thread count changes, and the estimate straddled the
+# threshold. At 1000 the same minimum is 0.79-0.81, and at 4000 it is
+# 0.787-0.790, so ~0.79 is the real value and the paper's claim holds with
+# room to spare.
+n_per_cell <- 1000
 
 cells <- tidyr::crossing(
   BW = c(20, 30, 40, 50),
@@ -456,10 +465,15 @@ pta_tab <- tibble::tibble(
 knitr::kable(pta_tab, caption = "The paper's dose recommendation, reproduced.")
 
 # The 70% threshold is the paper's own stated criterion, not a bound taken from
-# one run. Realised minima across cells were 0.815 (syrup 25) and 0.825 (SR 20)
-# in development, so there is ~11 points of headroom over a cohort redraw --
-# while a mis-transcribed clearance, dose or Ka would move these by tens of
-# points and still break the gate.
+# one run, and it is deliberately left at 70% rather than widened: lowering it
+# would stop testing the claim the paper makes.
+#
+# What was widened instead is the COHORT -- see `n_per_cell` above. With 1000
+# per cell the realised minima are ~0.79 (syrup 25) and ~0.80 (SR 20) and move
+# by <0.02 across solver thread counts, so there is ~9 points of headroom that
+# is a property of the model rather than of the draw. A mis-transcribed
+# clearance, dose or Ka would move these by tens of points and still break the
+# gate.
 stopifnot(
   min(pta_at(25, FALSE)) > 0.70,
   min(pta_at(20, TRUE))  > 0.70

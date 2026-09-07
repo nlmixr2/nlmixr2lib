@@ -309,7 +309,7 @@ FernandezTeruel_2024_capivasertib <- function() {
     #         (1 + exp(LogitF1 * (BBW/67)^F1_BBW + eta))
     # The eta is kept on its own line so rxode2 sees a mu-referenced term.
     logitffo_ind <- logitffo * (WT / 67)^e_wt_logitffo + etalogitffo
-    ffo <- 1 / (1 + exp(-logitffo_ind))
+    ffo <- expit(logitffo_ind)
 
     # Absorption lag time. Formulation selects the magnitude and the overnight
     # fast switches it off entirely. Fernandez-Teruel 2024 Eq. (c):
