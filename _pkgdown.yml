@@ -204,6 +204,8 @@ navbar:
         href: articles/Heo_2016_amlodipine_valsartan.html
       - text: "Amodiaquine (Ali 2018)"
         href: articles/Ali_2018_amodiaquine.html
+      - text: "Amodiaquine (Ding 2024)"
+        href: articles/Ding_2024_antimalarials_pregnancy.html
       - text: "Amoxicillin (Baklouti 2026)"
         href: articles/Baklouti_2026_amoxicillin.html
       - text: "Amoxicillin (Fournier 2018)"
@@ -3230,6 +3232,8 @@ navbar:
         href: articles/Wenker_2024_piperacillin_tazobactam.html
       - text: "Piperaquine (Chotsiri 2019)"
         href: articles/Chotsiri_2019_piperaquine.html
+      - text: "Piperaquine (Ding 2024)"
+        href: articles/Ding_2024_antimalarials_pregnancy.html
       - text: "Piperaquine (Hoglund 2012)"
         href: articles/Hoglund_2012_piperaquine.html
       - text: "Piperaquine (Hoglund 2017)"
@@ -5142,6 +5146,7 @@ articles:
   - articles/Diep_2022_eplontersen
   - articles/Diep_2026_donidalorsen
   - articles/Diepstraten_2013_propofol
+  - articles/Ding_2024_antimalarials_pregnancy
   - articles/Ding_2026_vancomycin
   - articles/Dings_2026_cafedrine_theodrenaline_ephedrine
   - articles/Dirks_2008_cetuximab

@@ -4307,6 +4307,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (one-compartment carboxyprimaquine disposition fed both by first-pass metabolism from the last transit compartment and by the entirety of systemic primaquine clearance, plus its own breast-milk compartment).
 
+### deaq (**canonical desethylamodiaquine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desethylamodiaquine, the major circulating and pharmacologically active metabolite of amodiaquine, formed almost entirely by CYP2C8-mediated N-deethylation. Desethylamodiaquine carries substantially higher exposure and a far longer terminal half-life than the parent (roughly 14 days versus 26 hours), so it is the species responsible for the post-treatment prophylactic effect and the one whose day-7 concentration is used as the efficacy anchor in antimalarial trials. Joint amodiaquine + desethylamodiaquine popPK models assume complete bioconversion and apply a molar correction of `MW_DEAQ / MW_AQ = 327.81 / 355.85 = 0.9212` to the mass flux leaving the amodiaquine central compartment.
+- **Source aliases:**
+  - `DEAQ`, `desethylamodiaquine` -- publication spellings; same species, no transformation.
+- **Example models:** `Ali_2018_amodiaquine.R` (WWARN pooled analysis; three-compartment desethylamodiaquine disposition with sigmoidal postmenstrual-age maturation on its clearance), `Ding_2024_amodiaquine.R` (African pregnant women; two-compartment desethylamodiaquine disposition fed by the entirety of systemic amodiaquine clearance).
+- **Notes:** Founding example `Ali_2018_amodiaquine.R`. Registered when `Ding_2024_amodiaquine.R` was added; both files had been using the `_deaq` suffix already, so registering the name clears the pre-existing `checkModelConventions()` compartment and residual-error warnings on both rather than introducing a new spelling.
+
 ### dihydroart (**canonical dihydroartemisinin suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Dihydroartemisinin, active metabolite of artesunate.
