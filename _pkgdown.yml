@@ -124,6 +124,16 @@ navbar:
         href: articles/Thai_2011_aflibercept.html
       - text: "Agomelatine (Xie 2019)"
         href: articles/Xie_2019_agomelatine.html
+      - text: "Ainuovirine (Han 2024)"
+        href: articles/Han_2024_ainuovirine.html
+      - text: "Ainuovirine adr auctau (Han 2024)"
+        href: articles/Han_2024_ainuovirine.html
+      - text: "Ainuovirine adr ctrough (Han 2024)"
+        href: articles/Han_2024_ainuovirine.html
+      - text: "Ainuovirine virologic auctau (Han 2024)"
+        href: articles/Han_2024_ainuovirine.html
+      - text: "Ainuovirine virologic ctrough (Han 2024)"
+        href: articles/Han_2024_ainuovirine.html
       - text: "Albendazole (PillayFuentesLorente 2024)"
         href: articles/PillayFuentesLorente_2024_albendazole.html
       - text: "Albinterferon (Riggs 2012)"
@@ -5305,6 +5315,7 @@ articles:
   - articles/Han_2015_sibutramine
   - articles/Han_2016_bevacizumab
   - articles/Han_2018_methionineMetabolismCycle
+  - articles/Han_2024_ainuovirine
   - articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk
   - articles/Hanan_2026_peginterferon_alfa_hbsag_loss
   - articles/Hanberg_2018_meropenem
