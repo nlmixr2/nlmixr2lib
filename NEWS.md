@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Dominguez More 2024 rutin and its quercetin conjugates with a *Physalis peruviana* calyx extract ([doi:10.3390/pharmaceutics16101241](https://doi.org/10.3390/pharmaceutics16101241)) -- male New Zealand White rabbits, plus an allometric human projection.
+- Add Duke 2024 cefazolin ([doi:10.1093/jac/dkae318](https://doi.org/10.1093/jac/dkae318)) -- Indigenous Australian adults with end-stage kidney disease on intermittent haemodialysis.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
