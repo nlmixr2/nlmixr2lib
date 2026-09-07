@@ -2741,8 +2741,10 @@ a sensible range.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_vpc</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod</span>, <span class="va">ev_one</span>, nSub <span class="op">=</span> <span class="va">n_subj</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.93689e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.9368e-310 illegal]: 214 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.67242e-310 illegal]: 107 warning(s) for subject(s): Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.67243e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.93065e-310 illegal]: 107 warning(s) for subject(s): Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.93081e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown</span></span>
 <span><span class="co">#&gt; [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown</span></span>
 <span><span class="co"># rxSolve duplicates rows when multiple cmts are observed at the same time;</span></span>
 <span><span class="co"># dedup by (sim.id, time).</span></span>
@@ -2974,7 +2976,7 @@ vignette.</p>
 <span><span class="co">#&gt; [43] pillar_1.11.1       bslib_0.12.0        gtable_0.3.6       </span></span>
 <span><span class="co">#&gt; [46] glue_1.8.1          data.table_1.18.6.1 Rcpp_1.1.2         </span></span>
 <span><span class="co">#&gt; [49] systemfonts_1.3.2   tidyselect_1.2.1    xfun_0.60          </span></span>
-<span><span class="co">#&gt; [52] tibble_3.3.1        sys_3.4.3           knitr_1.51         </span></span>
+<span><span class="co">#&gt; [52] tibble_3.3.1        sys_3.4.3           knitr_1.52         </span></span>
 <span><span class="co">#&gt; [55] farver_2.1.2        dparser_1.3.1-13    htmltools_0.5.9    </span></span>
 <span><span class="co">#&gt; [58] labeling_0.4.3      rmarkdown_2.32      compiler_4.6.1     </span></span>
 <span><span class="co">#&gt; [61] S7_0.2.2            downlit_0.4.5       askpass_1.2.1      </span></span>

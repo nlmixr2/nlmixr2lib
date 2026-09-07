@@ -534,7 +534,7 @@ sessionInfo()
 #> [1] stats     graphics  grDevices utils     datasets  methods   base     
 #> 
 #> other attached packages:
-#> [1] knitr_1.51            ggplot2_4.0.3         tidyr_1.3.2          
+#> [1] knitr_1.52            ggplot2_4.0.3         tidyr_1.3.2          
 #> [4] dplyr_1.2.1           rxode2_5.1.6          nlmixr2lib_0.3.2.9000
 #> 
 #> loaded via a namespace (and not attached):

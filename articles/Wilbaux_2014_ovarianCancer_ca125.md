@@ -259,8 +259,10 @@ a sensible range.
 
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [intdy -- t = 6.93689e-310 illegal]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
-#> [intdy -- t = 6.9368e-310 illegal]: 214 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
+#> [intdy -- t = 4.67242e-310 illegal]: 107 warning(s) for subject(s): Unknown, Unknown
+#> [intdy -- t = 4.67243e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown
+#> [intdy -- t = 6.93065e-310 illegal]: 107 warning(s) for subject(s): Unknown, Unknown
+#> [intdy -- t = 6.93081e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).
@@ -472,7 +474,7 @@ sessionInfo()
 #> [43] pillar_1.11.1       bslib_0.12.0        gtable_0.3.6       
 #> [46] glue_1.8.1          data.table_1.18.6.1 Rcpp_1.1.2         
 #> [49] systemfonts_1.3.2   tidyselect_1.2.1    xfun_0.60          
-#> [52] tibble_3.3.1        sys_3.4.3           knitr_1.51         
+#> [52] tibble_3.3.1        sys_3.4.3           knitr_1.52         
 #> [55] farver_2.1.2        dparser_1.3.1-13    htmltools_0.5.9    
 #> [58] labeling_0.4.3      rmarkdown_2.32      compiler_4.6.1     
 #> [61] S7_0.2.2            downlit_0.4.5       askpass_1.2.1      
