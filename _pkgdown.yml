@@ -1380,6 +1380,8 @@ navbar:
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Enrofloxacin totalFluoroquinolone cat (Foster 2023)"
         href: articles/Foster_2023_enrofloxacin_cat.html
+      - text: "Ensitrelvir (Ishibashi 2024)"
+        href: articles/Ishibashi_2024_ensitrelvir.html
       - text: "Ephedrine caffeine (Csajka 2005)"
         href: articles/Csajka_2005_ephedrine_caffeine.html
       - text: "Epinastine (Sarashina 2005)"
@@ -5467,7 +5469,7 @@ articles:
   - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
   - articles/Ippolito_2024_pacmilimab_qsp
-  - articles/Isla_2024_fosfomycinCalcium
+  - articles/Ishibashi_2024_ensitrelvir
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
   - articles/Iwama_2024_febuxostat
