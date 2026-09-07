@@ -3050,6 +3050,139 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `CarlssonPetri_2018_semaglutide.R` (binary 0.5-vs-1.0 mg maintenance-dose indicator derived inline in `model()`; CL/F ratio 1.00 per Table S3 confirming dose proportionality; the coefficient is fixed at 1.00 in the model file to preserve fidelity to the published estimate).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Distinct from the rxode2/nlmixr2 event column `amt` (which carries the administered dose at dose events; `DOSE_SEMAGLUTIDE_MG` is a per-subject fixed covariate carrying the assigned MAINTENANCE dose target, not the per-record actual dose which varies during the dose-escalation phase). Future once-weekly-semaglutide extractions with the same 0.5-vs-1.0 mg contrast (or an extension to 2.0 mg / oral 3-14 mg tablets) can reuse this canonical; other GLP-1 receptor agonists dosed in mg (dulaglutide, tirzepatide) should register sibling canonicals (e.g. `DOSE_DULAGLUTIDE_MG`, `DOSE_TIRZEPATIDE_MG`) rather than overload this name because the numeric coefficient value is drug-specific. Founded alongside the CarlssonPetri_2018_semaglutide extraction.
 
+### DOSE_LIRAGLUTIDE_MG (**canonical for per-arm assigned liraglutide dose**)
+- **Description:** Assigned liraglutide dose in mg per once-daily subcutaneous injection; 0 when the arm/subject did not receive liraglutide. In the founding model-based meta-analysis this is a study-ARM-level covariate carrying the arm's assigned dose level, and it acts only as a presence indicator because no liraglutide dose-response was estimable.
+- **Units:** mg (per once-daily injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive liraglutide". In `Guo_2025_glp1ReceptorAgonists_mbma.R` the model consumes it as `(DOSE_LIRAGLUTIDE_MG > 0)`, so any non-zero value selects the flat liraglutide Emax of -4.25 kg.
+- **Source aliases:**
+  - Liraglutide dose -- Guo 2025 Results 3.1 and Supplementary Table S3 (per-trial dosing regimen column). The source NMTRAN column name is not separately reported.
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; Guo 2025 Discussion reports "no significant change in weight reduction effect was noted within this range" over liraglutide 1.2-3 mg, so the dose-response was not estimable and the tabulated Emax applies flat).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, registered as a sibling of `DOSE_SEMAGLUTIDE_MG` exactly as that entry's Notes direct ("other GLP-1 receptor agonists dosed in mg ... should register sibling canonicals ... rather than overload this name because the numeric coefficient value is drug-specific"). Distinct from the rxode2/nlmixr2 event column `amt`: an MBMA does not consume dose events, so the assigned dose level must reach `model()` as a covariate column. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction, together with eleven sibling `DOSE_<GLP1RA>_MG` columns for the other drugs in that analysis.
+
+### DOSE_SEMAGLUTIDE_INJ_MG (**canonical for per-arm assigned injectable semaglutide dose**)
+- **Description:** Assigned subcutaneous (injectable) semaglutide dose in mg per once-weekly injection; 0 when the arm/subject did not receive injectable semaglutide. Route-qualified because injectable and oral semaglutide are separate drugs in a dose-response analysis: they have different bioavailability, different mg dose ranges (0.05-2.4 mg injected vs 1-40 mg oral) and, in the founding model, different estimated Emax values.
+- **Units:** mg (per once-weekly injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive injectable semaglutide". Enters an Emax-in-dose term with ED50 = 0.384 mg in the founding model.
+- **Source aliases:**
+  - Semaglutide (INJ) dose -- Guo 2025 Equation 6 and Supplementary Table S6 row "thetaDose on Emax_Semaglutide(INJ)".
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (Emax-in-dose, `Emax_dose = -11.7 * Dose / (0.384 + Dose)`; the paper's worked example at 1.0 mg reproduces its printed 26-week and 52-week effects of 5.77 and 7.57 kg).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, with a route qualifier between the drug and unit tokens on the precedent of `DOSE_BPN_SL_MG` and `DOSE_EFP_MAX_MG`. Deliberately NOT merged with the older `DOSE_SEMAGLUTIDE_MG`, which is scoped to the per-subject *maintenance* dose target (0.5 vs 1.0 mg) in an individual-level popPK analysis of the SUSTAIN trials; that column is a subject-level maintenance target used to derive a binary contrast, whereas this one is an arm-level assigned dose entering a continuous Emax-in-dose term. A future extraction needing the arm-level injectable dose should reuse this name; one needing the SUSTAIN maintenance-dose contrast should reuse `DOSE_SEMAGLUTIDE_MG`. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_SEMAGLUTIDE_PO_MG (**canonical for per-arm assigned oral semaglutide dose**)
+- **Description:** Assigned oral semaglutide dose in mg per once-daily tablet; 0 when the arm/subject did not receive oral semaglutide. Route-qualified for the same reason as `DOSE_SEMAGLUTIDE_INJ_MG`: the oral tablet's mg dose range is more than an order of magnitude above the injectable's, so a shared unqualified column would make the two formulations' dose-response terms incomparable.
+- **Units:** mg (per once-daily tablet)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive oral semaglutide". In `Guo_2025_glp1ReceptorAgonists_mbma.R` the model consumes it as `(DOSE_SEMAGLUTIDE_PO_MG > 0)`, so any non-zero value selects the flat oral-semaglutide Emax of -5.36 kg.
+- **Source aliases:**
+  - Semaglutide (P.O) dose -- Guo 2025 Results 3.1 and Supplementary Table S3.
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no oral-semaglutide dose-response was estimable over the studied 1-40 mg range).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family with a route qualifier. See `DOSE_SEMAGLUTIDE_INJ_MG` for why the injectable and oral formulations carry separate canonicals and why neither overloads `DOSE_SEMAGLUTIDE_MG`. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_EXENATIDE_MG (**canonical for per-arm assigned exenatide dose**)
+- **Description:** Assigned exenatide dose in mg per administration; 0 when the arm/subject did not receive exenatide. In the founding analysis the column spans both the twice-daily immediate-release and the once-weekly extended-release products without distinguishing them, which is why the unit is per-administration rather than a daily or weekly rate.
+- **Units:** mg (per administration)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive exenatide". Consumed as `(DOSE_EXENATIDE_MG > 0)` in the founding model, selecting the flat exenatide Emax of -6.05 kg.
+- **Source aliases:**
+  - Exenatide dose -- Guo 2025 Results 3.1 and Supplementary Table S3.
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no exenatide dose-response was estimable over the studied 0.01-2 mg range).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. A future extraction that needs to separate the immediate-release from the extended-release formulation should add a `FORM_<...>` indicator alongside this column (the `FORM_<drug>_<formulation>` auto-approve family) rather than split this canonical, because the mg dose itself is the same quantity in both products. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_DANUGLIPRON_MG (**canonical for per-arm assigned danuglipron dose**)
+- **Description:** Assigned danuglipron (PF-06882961, an oral small-molecule GLP-1 receptor agonist) dose in mg per administration; 0 when the arm/subject did not receive danuglipron.
+- **Units:** mg (per administration)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive danuglipron". Enters an Emax-in-dose term with ED50 = 80 mg in the founding model.
+- **Source aliases:**
+  - Danuglipron dose -- Guo 2025 Equation 2 and Supplementary Table S6 row "thetaDose on Emax_Danuglipron".
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (Emax-in-dose, `Emax_dose = -9.29 * Dose / (80 + Dose)`; the maximum administered dose of 200 mg reaches 66.4 percent of Emax per Guo 2025 Discussion).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Guo 2025 Results 3.1 lists danuglipron under both the mono-agonist and the dual-agonist headings; the compound is a GLP-1 mono-agonist and the duplicate listing is a transcription slip in the source, which does not affect this column. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_ORFORGLIPRON_MG (**canonical for per-arm assigned orforglipron dose**)
+- **Description:** Assigned orforglipron (LY3502970, an oral non-peptide GLP-1 receptor agonist) dose in mg per once-daily tablet; 0 when the arm/subject did not receive orforglipron.
+- **Units:** mg (per once-daily tablet)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive orforglipron". Enters an Emax-in-dose term with ED50 = 14.6 mg in the founding model.
+- **Source aliases:**
+  - Orforglipron dose -- Guo 2025 Equation 5 and Supplementary Table S6 row "thetaDose on Emax_Orforglipron".
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (Emax-in-dose, `Emax_dose = -14.7 * Dose / (14.6 + Dose)`; the 24 mg simulation tier gives 8.66 kg at 52 weeks, the largest mono-agonist effect in the analysis).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_TIRZEPATIDE_MG (**canonical for per-arm assigned tirzepatide dose**)
+- **Description:** Assigned tirzepatide (a GLP-1/GIP dual agonist) dose in mg per once-weekly subcutaneous injection; 0 when the arm/subject did not receive tirzepatide.
+- **Units:** mg (per once-weekly injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive tirzepatide". Consumed as `(DOSE_TIRZEPATIDE_MG > 0)` in the founding model, selecting the flat tirzepatide Emax of -12.9 kg.
+- **Source aliases:**
+  - Tirzepatide dose -- Guo 2025 Results 3.1 and Supplementary Table S3.
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no tirzepatide dose-response was estimable over the studied 5-15 mg range).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, and is the sibling canonical that the `DOSE_SEMAGLUTIDE_MG` Notes anticipated by name. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_COTADUTIDE_MG (**canonical for per-arm assigned cotadutide dose**)
+- **Description:** Assigned cotadutide (MEDI0382, a GLP-1/glucagon dual agonist) dose in mg per once-daily subcutaneous injection; 0 when the arm/subject did not receive cotadutide.
+- **Units:** mg (per once-daily injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive cotadutide". Enters an Emax-in-dose term with ED50 = 0.219 mg in the founding model.
+- **Source aliases:**
+  - Cotadutide dose -- Guo 2025 Equation 1 and Supplementary Table S6 row "thetaDose on Emax_Cotadutide".
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (Emax-in-dose, `Emax_dose = -10.5 * Dose / (0.219 + Dose)`; the maximum administered dose of 0.6 mg reaches 70.8 percent of Emax per Guo 2025 Discussion).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. A cotadutide QSP model already exists in this package (`Bosch_2024_cotadutide_qsp.R`) but drives its effect from simulated exposure rather than an assigned dose column, so it does not use this covariate. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_MAZDUTIDE_MG (**canonical for per-arm assigned mazdutide dose**)
+- **Description:** Assigned mazdutide (IBI362 / LY3305677, a GLP-1/glucagon dual agonist) dose in mg per once-weekly subcutaneous injection; 0 when the arm/subject did not receive mazdutide.
+- **Units:** mg (per once-weekly injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive mazdutide". Consumed as `(DOSE_MAZDUTIDE_MG > 0)` in the founding model, selecting the flat mazdutide Emax of -7.75 kg.
+- **Source aliases:**
+  - Mazdutide dose -- Guo 2025 Results 3.1 and Supplementary Table S3.
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no mazdutide dose-response was estimable over the studied 3-10 mg range).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_BI456906_MG (**canonical for per-arm assigned BI 456906 (survodutide) dose**)
+- **Description:** Assigned BI 456906 (survodutide, a GLP-1/glucagon dual agonist) dose in mg per once-weekly subcutaneous injection; 0 when the arm/subject did not receive BI 456906.
+- **Units:** mg (per once-weekly injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive BI 456906". Consumed as `(DOSE_BI456906_MG > 0)` in the founding model, selecting the flat BI 456906 Emax of -13.5 kg.
+- **Source aliases:**
+  - BI 456906 dose -- Guo 2025 Results 3.1 and Supplementary Table S3.
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no dose-response was estimable over the studied 1.8-4.8 mg range, yet BI 456906 has the largest dual-agonist effect in the analysis at 12.8 kg over 52 weeks).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. The DEVELOPMENT CODE is retained in the canonical name rather than the INN survodutide, because Guo 2025 uses "BI 456906" throughout (the INN was assigned after the analysis) and the register's job is to be findable from the source paper's own vocabulary. A future extraction of a paper that uses the INN should reuse THIS name and record "survodutide dose" as a source alias rather than register `DOSE_SURVODUTIDE_MG`; the two are the same compound and a second canonical would silently fragment the drug. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_JNJ64565111_MG (**canonical for per-arm assigned JNJ-64565111 dose**)
+- **Description:** Assigned JNJ-64565111 (a GLP-1/glucagon dual agonist) dose in mg per once-weekly subcutaneous injection; 0 when the arm/subject did not receive JNJ-64565111.
+- **Units:** mg (per once-weekly injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive JNJ-64565111". Enters an Emax-in-dose term with ED50 = 6.73 mg in the founding model.
+- **Source aliases:**
+  - JNJ-64565111 dose -- Guo 2025 Equation 3 and Supplementary Table S6 row "thetaDose on Emax_JNJ-64565111".
+  - `JNJ-6456111` and `JNJ-65465111` -- two digit-transposed misspellings of the same compound that appear in Guo 2025 (in the Equation 3 label and in the Table 1 adverse-event row respectively); the correct code JNJ-64565111 is the one used in Results 3.1, 3.2 and Supplementary Table S6.
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (Emax-in-dose, `Emax_dose = -18.6 * Dose / (6.73 + Dose)`; the maximum administered dose of 10 mg reaches only 65.8 percent of Emax, and Guo 2025 Discussion singles this drug out as the one whose effect could be materially improved by dose escalation).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, with the hyphen dropped from the development code so the column name stays a valid R identifier. The two source misspellings are recorded above deliberately: a future extractor grepping the source PDF for "JNJ-6456111" would otherwise fail to connect it to this canonical. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_RETATRUTIDE_MG (**canonical for per-arm assigned retatrutide dose**)
+- **Description:** Assigned retatrutide (LY3437943, a GLP-1/GIP/glucagon TRIPLE agonist) dose in mg per once-weekly subcutaneous injection; 0 when the arm/subject did not receive retatrutide.
+- **Units:** mg (per once-weekly injection)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive retatrutide". Enters an Emax-in-dose term with ED50 = 4 mg in the founding model.
+- **Source aliases:**
+  - Retatrutide dose -- Guo 2025 Equation 4 and Supplementary Table S6 row "thetaDose on Emax_Retatrutide".
+- **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (Emax-in-dose, `Emax_dose = -22.6 * Dose / (4 + Dose)`; retatrutide carries the largest Emax of the 12 drugs analysed and is the only tri-agonist).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
 ### DOSE_BPN_SL_MG (**canonical for administered sublingual buprenorphine dose**)
 - **Description:** Sublingual (SL) buprenorphine dose in mg, supplied as a data column so a dose-dependent SL bioavailability can be evaluated inside `model`. Needed because rxode2 model code cannot read the `amt` of the dose record it is scaling, and because a multi-route buprenorphine model must scale only the SL depots by the dose-dependent term while leaving the intravenous and subcutaneous-depot routes at their own (dose-proportional) bioavailability. Route-qualified in the name (`_SL_`) for exactly that reason: the same model carries intravenous, sublingual, and two subcutaneous depot routes, so an unqualified dose column would be ambiguous.
 - **Units:** mg (per sublingual administration)
