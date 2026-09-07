@@ -2446,6 +2446,8 @@ navbar:
         href: articles/Kim_2024_meropenem.html
       - text: "Meropenem (Padari 2012)"
         href: articles/Padari_2012_meropenem.html
+      - text: "Meropenem (Peng 2025)"
+        href: articles/Peng_2025_meropenem.html
       - text: "Meropenem (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Meropenem (Saporta 2026)"
@@ -5865,6 +5867,7 @@ articles:
   - articles/Pejcic_2024_clopidogrel
   - articles/Peng_2014_MK3577
   - articles/Peng_2024_SAL003
+  - articles/Peng_2025_meropenem
   - articles/PerezBlanco_2016_doxorubicin
   - articles/PerezGuille_2018_dexmedetomidine
   - articles/PerezRuixo_2006_tipifarnib
