@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fernandez-Teruel 2024 capivasertib ([doi:10.1007/s40262-024-01407-x](https://doi.org/10.1007/s40262-024-01407-x)) -- patients with advanced or metastatic solid tumours.
+- Add Chu 2024 allopurinol and oxypurinol ([doi:10.1007/s40262-024-01401-3](https://doi.org/10.1007/s40262-024-01401-3)) -- neonates with critical congenital heart disease undergoing cardiac surgery with cardiopulmonary bypass.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

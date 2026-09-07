@@ -144,6 +144,8 @@ navbar:
         href: articles/Djebli_2017_alirocumab.html
       - text: "Alirocumab (Martinez 2019)"
         href: articles/Martinez_2019_alirocumab.html
+      - text: "Allopurinol (Chu 2024)"
+        href: articles/Chu_2024_allopurinol.html
       - text: "Allopurinol (Wright 2013)"
         href: articles/Wright_2013_allopurinol.html
       - text: "Allopurinol (Wright 2016)"
@@ -4998,6 +5000,7 @@ articles:
   - articles/Chotsiri_2024_primaquine_metabolites
   - articles/Choules_2024_vedotin_ddi
   - articles/Choy_2016_T2DM_WHIG
+  - articles/Chu_2024_allopurinol
   - articles/Chua_2025_mirikizumab
   - articles/Chung_2013_vancomycin
   - articles/Chung_2026_vancomycin
