@@ -1955,6 +1955,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Mulyukov_2018_ranibizumab.R`.
 
+### deltaBCVA (**canonical change-from-baseline best-corrected visual acuity**)
+- **Type:** compartment
+- **Role:** Change from baseline in best-corrected visual acuity PD output, used as the modelled endpoint in algebraic ophthalmology disease-progression models that fit the change score directly rather than the absolute acuity. Companion to `bcva`, which holds the absolute acuity as an ODE state; use `deltaBCVA` when the paper's own structural equation targets the change from baseline and there is no absolute-acuity state to observe.
+- **Source aliases:** `Effect`, the Zhang 2025 supplement's notation in `Effect = K x Time`.
+- **Example models:** `Zhang_2025_bietti_crystalline_dystrophy_mbma.R`.
+- **Notes:** Follows the `delta<INSTRUMENT>` prefix convention of `deltaUPDRS` (`Lee_2011_parkinson_progression.R`) rather than the `cfb` suffix convention of `das28cfb`, because this model is the direct structural analogue of `Lee_2011_parkinson_progression`: an algebraic, no-ODE, no-dose disease-progression model whose endpoint is the change score itself. The register carries both forms; `delta<INSTRUMENT>` marks a change score that is the model's only output, and `<state>cfb` marks a change-score variant of a state that also exists in absolute form in the same model. The scale is LogMAR (higher = worse vision), so a positive `deltaBCVA` is vision loss; note that the covariate register's `SCORE_BCVA` is defined on the ETDRS-letter scale instead (higher = better) and the two are not interchangeable without conversion.
+
 ### score (**canonical generic pain score**)
 - **Type:** compartment
 - **Role:** Generic pain-score PD output.
