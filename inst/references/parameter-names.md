@@ -656,6 +656,80 @@ The `l<base>` convention denotes a population mean estimated on the log scale (`
 
 The bare counterparts of the log-transformed parameters above. Used when the source paper estimates the parameter directly on the linear scale, or when the parameter appears in the `model` block as the exponentiated form `<base> <- exp(l<base> + eta_<base>)`.
 
+### lwdist (**canonical log-transformed amplitude of a transient distribution-phase elimination flux**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale amplitude of an additive, dose-proportional elimination flux that is active immediately after a dose and decays exponentially with time after dose, standing in for a distribution phase in a model that carries no peripheral state: `d/dt(central) <- -kel * central - D * wdist * exp(-kdist * tad())`. Units 1 / time, since the flux is `dose * wdist`.
+- **Source aliases:**
+  - `w` -- Braem 2026 Equation 21 and Table S2.
+  - `q` -- Braem 2026 Equation 20 (the same quantity; the paper switches symbol between the ODE and its explicit solution).
+- **Example models:** `Bram_2026_biexponential.R` (`wdist = 0.1716832 1/h`, back-solved from the Table S2 macro-parameters).
+- **Notes:** Ratified 2026-09-02 with the Braem 2026 extraction (sidecar `oare_PMC13291805` request-001 q2 = A). Deliberately **not** a member of the registered `cl_exp_` / `cl_time_` time-varying-clearance families: those name a decaying component **of a clearance** that multiplies the state, whereas this term is an additive, state-independent flux proportional to the dose. Recording it as a clearance would be a category error visible to anyone reading the register. The `dist` token names what the term means -- Braem 2026's own Discussion reads it as "an increased observed elimination from the central compartment which corresponds to a distribution process until equilibration is reached" -- and keeps it clear of the PD `hill` / `emax` namespace. Pairs 1:1 with `lkdist`. Because the term carries no memory of previous doses, a model using it is valid for multiple dosing only when each dose falls after the previous distribution phase completes; the pseudo-compartment repair is in Braem 2026 Figure S2.
+
+### lkdist (**canonical log-transformed decay rate of a transient distribution-phase elimination flux**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale first-order rate constant at which the `wdist` transient distribution-phase flux decays with time after dose (1 / time). In the explicit solution it is the fast macro-exponent, i.e. the `alpha` of the equivalent two-compartment model.
+- **Source aliases:**
+  - `p` -- Braem 2026 Equations 20 and 21 and Table S2.
+- **Example models:** `Bram_2026_biexponential.R` (`kdist = 0.46 1/h`, Table S2).
+- **Notes:** Ratified 2026-09-02 with `lwdist` (same sidecar). Not `lkel_exp_kdes`, which is the relaxation rate of a time-varying *elimination rate constant*; `kdist` decays a flux, not a rate constant. Not `lkde` / `lkel` either -- the ordinary first-order elimination of the same model is a separate parameter (`lkel`) and both appear together.
+
+### lflnode (**canonical log-transformed lymphatic-absorption fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Fraction of a subcutaneously absorbed dose that is routed through the `lnode` lymph-node compartment rather than entering `central` directly through the blood capillaries of the SC tissue (unitless, bounded in (0, 1)). The complementary fraction `1 - flnode` reaches plasma directly, so a single absorption rate constant `ka` empties the `depot` and the two destinations split its flux. The bare counterpart inside `model()` is `flnode`.
+- **Source aliases:**
+  - `Frc` -- Wu 2012 Table II and Eqs. (3), (5); Fig. 1 legend ("The fraction absorbed by the lymphatic compartment is given by Frc, and the fraction taken up by the blood capillaries is 1-Frc").
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`Frc` = 0.00964, CV 19.6%; founding example -- bevacizumab-IRDye 800CW after a 0.45 mg/kg footpad SC dose in SKH-1 mice).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q2, option A). Named by DESTINATION COMPARTMENT, exactly as `fdepot` names the fraction routed to `depot`, so the name inherits the `lnode` token and stays synchronised with `lv_lnode` and `lk_lnode_central`. Deliberately **not** any `flymph` / `f_lymph` spelling: `f_lymph` is already in use in `Lindauer_2017_pembrolizumab.R` and `Michelet_2025_BI754111_mpbpk.R` for a **different** quantity -- lymph flow as a fraction of plasma flow -- and the two would be indistinguishable to a reader. Also deliberately not `lffo`, which is the fraction routed to the FAST site of a parallel two-site absorption model; the lymphatic route is the slow one (into the node at `ka`, out of it at the much smaller `k_lnode_central`), so `lffo` would assert the opposite of the mechanism. Held on the log scale to match the sibling fraction canonicals `lfdepot` / `lffo`; use the `logitflnode` spelling instead if a future source estimates the fraction on the logit scale or carries IIV on it, per the reasoning in the `logitfdepot` entry.
+
+### lv_lnode (**canonical log-transformed lymph-node volume**)
+- **Type:** log-transformed-pk
+- **Role:** Volume of distribution of the `lnode` lymph-node compartment, used to convert the node amount to the measured node concentration (`Clnode <- lnode / v_lnode`). The bare counterpart inside `model()` is `v_lnode`.
+- **Source aliases:**
+  - `VLN` -- Wu 2012 Table II, Eq. (7) (`ALN,sc = CLN,sc x VLN`) and Fig. 1 legend.
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`VLN` = 0.33 mL/kg, FIXED from the measured axillary-node weight at an assumed 1 g/mL specific density over mean SKH-1 body weight; founding example). Bare-form precedent that predates this entry: `Ramachandran_2023_rifampicin_pbpk.R`, `Ramachandran_2023_isoniazid_pbpk.R`, `Ramachandran_2023_ethambutol_pbpk.R`, `Ramachandran_2023_pyrazinamide_pbpk.R` (`v_lnode` = 0.274 L, a hardcoded physiological constant).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q3, option A). Member of the `lv_<space>` family founded by `lv_elf`, and registered for the same reason that entry gives: the bare volume canonicals `lvc` / `lvp` / `lvp2` / `lvp3` are reserved for the central and numbered peripheral compartments of a classical-PK model, and a lymph node is a named physiological space rather than a peripheral compartment. Preferred over the paper's own compact `lvln` spelling because `lv_lnode` carries the `lnode` compartment token, which is already established in this register by `kp_lnode` / `lkp_lnode`. Register it in `ini()` -- wrapped in `fixed()` when the source fixes it from anatomy, as Wu 2012 does -- rather than hardcoding it in `model()`, so the value stays visible to anyone refitting the model.
+
+### lk_lnode_central (**canonical log-transformed lymph-node-to-central transfer rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constant carrying drug out of the `lnode` lymph-node compartment into `central` (1 / time) -- the efferent-lymphatic return limb of a subcutaneous-absorption model. The bare counterpart inside `model()` is `k_lnode_central`.
+- **Source aliases:**
+  - `ka2` -- Wu 2012 Table II and Eqs. (3), (5); Fig. 1 legend ("ka2 is the first-order rate constant describing transfer from the lymphatic system to plasma").
+- **Example models:** `Wu_2012_bevacizumab_mouse.R` (`ka2` = 0.723 /h, CV 9.64%; founding example).
+- **Notes:** Ratified 2026-09-02 (operator sidecar `oare_PMC3326166` request-001 / response-001, question q4, option A). Member of the registered `k_<from>_<to>` directional-transfer family (`k_central_elf` / `k_elf_central`, `k_central_milk` / `k_milk_central`, `k_csf_plasma`, `k_presystemic_central`), whose own note directs that the family be used whenever a transfer connects `central` to a named non-numbered compartment. Deliberately **not** `lka2`, even though that is the paper's literal symbol: this register states that `lka1` / `lka2` are not canonical because a bare ordinal encodes only sequence, and `lka2` is already in wide use (`Mauro_2025_nilotinib.R`, `Khwarg_2024_donepezil_im.R`, `Perlstein_2025_risperidone_tv46000.R`, `Qi_2024_vosoritide.R`) for absorption from a SECOND DEPOT. Also not `lka_lnode`: the site-labelled absorption family (`lka_duodenum`, `lka_small_intestine`) describes absorption from a lumen outside the body, whereas the node is a modelled internal state, so this is a transfer and not an absorption.
+
+### lka_fast, lka_slow (**canonical log-transformed rate constants of a PARALLEL two-route depot release**)
+- **Type:** log-transformed-pk
+- **Role:** First-order rate constants (1 / time) of the fast and the slow route of a **simultaneous** (parallel) two-route release input function, in which a bolus is split across two depot compartments that empty at the same time at different rates. Bare forms inside `model()` are `ka_fast` and `ka_slow`; the dose split between them is `frel` / `logitfrel`. Both routes are active from the first dose onward -- this is the defining difference from the registered `lka_early` / `lka_late` pair, which is a **sequential** switch in which one rate replaces the other at a breakpoint `tkacut`.
+- **Source aliases:**
+  - `Ka1`, `Ka2` -- Snelder 2019 Tables 2 and S1.2 (the paper's positional numbering of the fast and slow routes).
+  - `KAFAST`, `KASLOW`, `lkafast`, `lkaslow` -- Tornoe 2006 degarelix notation, an unregistered spelling of the same concept.
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `Ka1` = 1.57 /h for the fast leuprorelin-SR release depot and `Ka2` = 0.000361 /h for the constant-rate slow release class), `Snelder_2019_leuprorelin_4m.R` (`Ka1` = 0.480 /h; `Ka2` = 0.00464 /h with a 160 h `ltlag`).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q2, operator answer A). The symmetric underscored pair was chosen over a positional `lka1` / `lka2`, which carries no mechanism, and over "bare `lka` for the fast route plus `lka_slow` for the slow one", which is exactly the "none keeps the bare canonical" ambiguity the stratum-suffix rule warns against. Reserve bare `lka` for genuine single-route absorption. `Tornoe_2006_degarelix.R` shipped `lkafast` / `lkaslow` before this entry existed and is a candidate for migration onto the canonical. A third parallel route named by its kinetics rather than its speed (a linearly ramping one, say) takes its own name -- see `lka_slope`.
+
+### lka_slope (**canonical log-transformed slope of a linearly time-ramping depot-release rate constant**)
+- **Type:** log-transformed-pk
+- **Role:** Slope of a first-order depot-release rate constant that grows **linearly with time after the first dose**, `k(t) = ka_slope * t`. Units are 1 / time^2, because the parameter is a d(rate constant)/dt rather than a rate constant. Bare form inside `model()` is `ka_slope`, applied as `k_ramp <- ka_slope * max(0, tafd())`; `max(0, ...)` returns 0 before the first dose in rxode2 and does not propagate `NA`, so pre-dose baseline observation rows are safe. Self-regulating in a repeated-dose depot: as `k(t)` grows, the depot amount falls in proportion, so the mass flux into central tracks the input rate and the plasma profile stays flat.
+- **Source aliases:**
+  - `Ka3_SLP`, `SLP` -- Snelder 2019 Table 2, Tables S1.1 / S1.2 and the Supplement 4 control stream (`K34 = SLP * TAD1 / 1E6`).
+- **Example models:** `Snelder_2019_leuprorelin.R` (founding example; `Ka3_SLP` = 0.331e-6 1/h^2 in the ramping mixture class of the leuprorelin-SR 6-month depot), `Snelder_2019_leuprorelin_1m.R` (9.83e-6 1/h^2), `Snelder_2019_leuprorelin_4m.R` (0.757e-6 1/h^2).
+- **Notes:** Ratified 2026-09-02 alongside the Snelder 2019 leuprorelin extraction (task `oare_PMC6533438`, sidecar request-001 question q1, operator answer A). A linear ramp is a distinct release shape in the long-acting-injectable literature and is **not** a member of any registered absorption family: `lka` is a constant; `lkamax` / `lra` / `lgam1` are the Piotrovskij / Weibull *saturating* form `ka(t) = kamax*(1 - exp(-(ra*tad)^gam1))`; and `lka_early` / `lka_late` + `tkacut` are a *sequential switch*. Named for the slope rather than the ramp (`lka_ramp` was the rejected alternative) so the 1/time^2 units are visible in the name, following the register's name-by-functional-form principle (cf. `cl_time_` / `cl_exp_`). Note that rxode2 5.1.7's mu-reference pass fails with "mu-ref err: subscript out of bounds" when the ramp is inlined into a mixture expression such as `MIX * ka_slope * max(0, tafd()) + (1 - MIX) * ka_slow`; hold the ramp in its own symbol first.
+
+### lfrel (**canonical log-transformed release-process fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Log-scale encoding of the same quantity as `logitfrel` -- the fraction of a dose entering the **first** process of a multi-phase release input function, the second receiving `1 - frel`. Use this form **only** when the source paper estimated the fraction on the natural (linear) scale with an exponential random effect, so that a logit encoding would misstate the published IIV distribution. `logitfrel` remains the default for new extractions.
+- **Source aliases:**
+  - `Fr` -- Snelder 2019 Table S1.1, reported on the natural scale (footnote: "Dose fraction fast absorption: 0.441 / Dose fraction slow absorption compartment: 0.559", 95% CI 0.407-0.475).
+- **Example models:** `Snelder_2019_leuprorelin_1m.R` (founding example; `Fr` = 0.441 with `omega^2` = 0.0229 and covariances to the `RBIO` and `Ka3_SLP` etas, all on the log scale).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. The operator's ruling under `logitfrel` (2026-08-24) directed the logit scale *for Perlstein 2026*, on the grounds that a log-scale encoding of a bounded quantity can leak above 1 under moderate eta. That risk is quantifiable rather than categorical and must be checked per paper: here `0.441 * exp(eta)` with `sd(eta) = 0.151` puts `P(frel > 1)` at about 3e-8. Where the risk is material, re-encode on the logit scale and convert the variance by the delta method, documenting the conversion. Do NOT reach for `lfrel` merely because a paper prints a fraction -- Snelder 2019's own 6-month and 4-month models print `Fr` on the LOGIT scale in the same paper (Table 2 footnote a; Table S1.2 footnote), and the tell is whether the footnote back-transforms the tabulated value or restates it.
+
+### logitfrel2 (**canonical logit-transformed second release-process fraction**)
+- **Type:** log-transformed-pk
+- **Role:** Logit-scale share of the **non-first** portion of the dose that enters the second of three parallel release processes, so the three dose fractions are `frel`, `(1 - frel) * frel2` and `(1 - frel) * (1 - frel2)`. Bare form inside `model()` is `frel2 <- expit(logitfrel2 + etalogitfrel2)`. This is the "three or more processes take `logitfrel2` etc." extension anticipated by the `logitfrel` entry; it is a *nested* (stick-breaking) share, not a share of the whole dose.
+- **Source aliases:**
+  - `Fr2` -- Snelder 2019 Table S1.2 (`Fr2` = -1.62; the footnote gives `(1 - expit(Fr1)) * expit(Fr2)` = 0.11 and `(1 - expit(Fr1)) * (1 - expit(Fr2))` = 0.58).
+- **Example models:** `Snelder_2019_leuprorelin_4m.R` (founding example; three parallel depots carrying 0.310 / 0.114 / 0.576 of the leuprorelin-SR 4-month dose).
+- **Notes:** Registered 2026-09-02 alongside the Snelder 2019 leuprorelin extraction. A fourth process would take `logitfrel3` on the same nesting convention, but at that point a softmax / stick-breaking encoding should be considered, per the `logitfrel` entry. Because the share is nested, `etalogitfrel2` can be very large without implying an implausible dose split -- Snelder 2019 estimates `omega^2` = 4.24 on it.
+
 ### ka (**canonical bare absorption rate constant**)
 - **Type:** bare-pk
 - **Role:** First-order absorption rate constant from depot into central (1 / time).
@@ -1089,6 +1163,52 @@ shape coefficient itself. See [[cl_time_max]] for the rename rationale.
 ## Paper-named mechanistic parameters
 
 Parameters that don't fit the standard `ka` / `cl` / `vc` shape but recur across published models. Each entry is treated as a canonical bare name; the log-transformed form (`l<name>`) is acceptable wherever the parameter is strictly positive and the source paper reports an exponential typical-value form. Add to this list rather than introducing a new ad-hoc pattern.
+
+### ka_fast, ka_slow (**canonical bare rate constants of a parallel two-route depot release**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lka_fast` / `lka_slow`. First-order rate constants (1 / time) of the fast and slow route of a simultaneous two-route release input function.
+- **Source aliases:**
+  - `Ka1`, `Ka2` -- Snelder 2019 positional numbering.
+- **Example models:** `Snelder_2019_leuprorelin.R`, `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `lka_fast, lka_slow` entry for the parallel-vs-sequential boundary against `ka_early` / `ka_late`.
+
+### ka_slope (**canonical bare slope of a linearly time-ramping depot-release rate constant**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lka_slope`. Slope (1 / time^2) of a depot-release rate constant that grows linearly with time after the first dose; the rate constant itself is `ka_slope * max(0, tafd())`.
+- **Source aliases:**
+  - `Ka3_SLP`, `SLP` -- Snelder 2019.
+- **Example models:** `Snelder_2019_leuprorelin.R`, `Snelder_2019_leuprorelin_1m.R`, `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `lka_slope` entry for the distinction from the Weibull and sequential-switch absorption families.
+
+### frel2 (**canonical bare second release-process fraction**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `logitfrel2`. Nested share of the non-first portion of the dose entering the second of three parallel release processes.
+- **Source aliases:**
+  - `Fr2` -- Snelder 2019 Table S1.2.
+- **Example models:** `Snelder_2019_leuprorelin_4m.R`.
+- **Notes:** See the `logitfrel2` entry; the share is nested, not a fraction of the whole dose.
+
+### wdist (**canonical bare amplitude of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lwdist`; the natural-scale amplitude used inside `model()` as `wdist <- exp(lwdist)`.
+- **Source aliases:** `w`, `q` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
+
+### kdist (**canonical bare decay rate of a transient distribution-phase elimination flux**)
+- **Type:** bare-pk
+- **Role:** Bare counterpart of `lkdist`; the natural-scale decay rate used inside `model()` as `kdist <- exp(lkdist)`.
+- **Source aliases:** `p` -- Braem 2026.
+- **Example models:** `Bram_2026_biexponential.R`.
+
+### flnode, v_lnode, k_lnode_central (**canonical bare lymph-node absorption-limb parameters**)
+- **Type:** bare-pk
+- **Role:** Bare counterparts of `lflnode`, `lv_lnode` and `lk_lnode_central`. `flnode` is the unitless fraction of an absorbed subcutaneous dose routed through the `lnode` compartment rather than straight into `central`; `v_lnode` is the lymph-node volume that converts the node amount to the `Clnode` observable; `k_lnode_central` is the first-order rate constant returning drug from the node to plasma (1 / time). Together they are the lymphatic limb of a subcutaneous-absorption model.
+- **Source aliases:**
+  - `Frc` -- lymphatic absorption fraction (Wu 2012).
+  - `VLN` -- lymph-node volume (Wu 2012).
+  - `ka2` -- node-to-plasma return rate constant (Wu 2012).
+- **Example models:** `Wu_2012_bevacizumab_mouse.R`. Bare-form `v_lnode` precedent as a hardcoded physiological constant: `Ramachandran_2023_rifampicin_pbpk.R` and its isoniazid / ethambutol / pyrazinamide siblings.
+- **Notes:** Registered 2026-09-02 together with the log-transformed family; see `lflnode`, `lv_lnode` and `lk_lnode_central` above for the ratification rationale, for the collision against the existing `f_lymph` (lymph FLOW fraction), and for why `ka2` is not carried as `lka2`. Pair with the `lnode` compartment, the `Clnode` observable, and the `propSd_Clnode` residual.
 
 ### lrbase (**canonical log-transformed baseline level of a PD / turnover state**)
 - **Type:** paper-named-param
