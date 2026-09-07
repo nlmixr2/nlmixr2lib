@@ -69,7 +69,8 @@ checkModelConventions <- function(model, verbose = TRUE) {
     .checkTimeVaryingClearanceNames(ui, conv),
     .checkCompartmentData(ui, conv),
     .checkFmFamily(ui, conv),
-    .checkLogitBackTransform(ui, conv)
+    .checkLogitBackTransform(ui, conv),
+    .checkHandWrittenInverseLogit(ui, conv)
   )
   issues <- do.call(rbind, checks)
   if (is.null(issues) || nrow(issues) == 0) {
@@ -1753,6 +1754,143 @@ checkModelConventions <- function(model, verbose = TRUE) {
             "`1/(1+exp(x))` is expit(-x). If the source really does use the",
             "negative convention, keep it and make the label state the",
             "proportion that convention produces.")))
+  }
+  issues
+}
+
+# Hand-written inverse logit ------------------------------------------------
+#
+# The library spells every binary inverse logit `expit(x)`. That is not a style
+# preference: `exp(x)/(1+exp(x))` returns NaN for x >= 710 because exp()
+# overflows before the division can cancel it, while expit() returns 1. The
+# whole library was normalised for that reason, and within a day four newly
+# extracted models had reintroduced the hand-written form -- a convention that
+# lives only in prose decays, so this check is what keeps it.
+#
+# The sibling check `.checkLogitBackTransform()` tests the ARITHMETIC of a
+# back-transform against the proportion its label documents. This one tests the
+# SPELLING. They are complementary: arithmetic cannot see a correct-but-
+# overflow-prone form, and spelling cannot see a wrong sign.
+#
+# Matching is done on the parsed expression, not on text, because the whole
+# difficulty is telling a binary inverse logit apart from shapes that look like
+# one and must NOT be rewritten:
+#
+#   * a softmax over 3+ categories -- `exp(x_k)/(1 + exp(x_j) + exp(x_k))` or
+#     `exp(x_k)/tsum`. Its denominator carries extra terms, or its two exp()
+#     arguments differ, so the identical-argument test below excludes it.
+#   * the odds two-step `odds <- exp(x); p <- odds/(1+odds)`, and the
+#     odds-ratio IIV identity `odds_typ*exp(eta)` then `odds/(1+odds)`. The
+#     numerator is a SYMBOL, not an `exp()` call, so neither matches.
+#   * a SCALED logistic, `k/(1 + exp(x))` with k != 1 -- `18/(1 + exp(blc - A))`
+#     in Delor 2013, `9.2/(1 + exp(-das28_logit))` in Wojciechowski 2015. These
+#     are published equations whose scale factor carries meaning; `k * expit(x)`
+#     would be equivalent but reshapes a formula quoted from the source, and
+#     they carry no overflow risk. The numerator-is-1 test excludes them.
+#   * `exp(a)/(1 + exp(b))` with DIFFERENT arguments, which is a typical value
+#     divided by a logistic factor rather than an inverse logit at all --
+#     `SchaedeliStark_2024_balovaptan` divides CL by a logistic age term
+#     exactly this way, and rewriting it would be a bug.
+#
+# Comparison is on the deparsed argument so that `a + b` and `a+b` count as the
+# same expression while `a + b` and `b + a` do not -- the latter would still be
+# an inverse logit, but writing the two halves differently is itself worth a
+# nudge toward expit().
+
+# Recursively drop `(` wrappers, which R keeps as calls in the AST. Removing
+# them does not change meaning -- the tree already encodes precedence -- and it
+# lets one template match `1/(1 + exp(x))`, `1/((1 + exp(x)))` and
+# `(exp(a))/(1 + exp(a))` alike. Applied to the templates too, so both sides are
+# in the same normal form.
+.stripParens <- function(e) {
+  while (is.call(e) && length(e) == 2L &&
+         identical(as.character(e[[1]]), "(")) {
+    e <- e[[2]]
+  }
+  if (is.call(e)) {
+    for (i in seq_along(e)) {
+      part <- tryCatch(e[[i]], error = function(e) NULL)
+      if (!is.null(part) && (is.call(part) || is.name(part))) {
+        e[[i]] <- .stripParens(part)
+      }
+    }
+  }
+  e
+}
+
+# The two `exp()` arguments of a matched `exp(.)/(... exp(.) ...)`, in the two
+# operand orders. Top-level rather than closures inside the template list so the
+# accessor is readable on its own.
+.ilArgsPlusRight <- function(e) list(e[[2]][[2]], e[[3]][[3]][[2]])
+.ilArgsPlusLeft <- function(e) list(e[[2]][[2]], e[[3]][[2]][[2]])
+
+# `rxode2::.matchesLangTemplate()` does the structural matching: `.` in a
+# template matches any sub-expression, and a numeric literal matches by VALUE,
+# so the `1` here also matches a source that writes `1.0`. That last point is
+# not incidental -- the regex sweep that first normalised the library required a
+# literal `1` and therefore missed all eleven `1.0 / (1.0 + exp(...))`
+# occurrences.
+#
+# `sameArg` marks the templates whose two wildcards must denote the SAME
+# expression. The matcher does not tie wildcards together -- `exp(a)/(1+exp(b))`
+# matches `exp(.)/(1+exp(.))` -- and that is exactly the shape that must not be
+# flagged, so the equality is checked separately.
+.inverseLogitTemplates <- list(
+  list(tmpl = .stripParens(str2lang("1/(1 + exp(.))")), args = NULL),
+  list(tmpl = .stripParens(str2lang("1/(exp(.) + 1)")), args = NULL),
+  list(tmpl = .stripParens(str2lang("exp(.)/(1 + exp(.))")),
+       args = .ilArgsPlusRight),
+  list(tmpl = .stripParens(str2lang("exp(.)/(exp(.) + 1)")),
+       args = .ilArgsPlusLeft)
+)
+
+.sameArg <- function(a, b) {
+  identical(paste(deparse(a), collapse = " "),
+            paste(deparse(b), collapse = " "))
+}
+
+# Does this expression spell a binary inverse logit by hand? Returns the
+# deparsed offending expression, or NA.
+.handWrittenInverseLogit <- function(e) {
+  e <- .stripParens(e)
+  for (spec in .inverseLogitTemplates) {
+    if (!rxode2::.matchesLangTemplate(e, spec$tmpl)) next
+    if (!is.null(spec$args)) {
+      ab <- tryCatch(spec$args(e), error = function(e) NULL)
+      if (is.null(ab) || !.sameArg(ab[[1]], ab[[2]])) next
+    }
+    return(paste(deparse(e), collapse = " "))
+  }
+  NA_character_
+}
+
+.inverseLogitOffenders <- function(e, acc = character(0)) {
+  if (!is.call(e)) return(acc)
+  hit <- .handWrittenInverseLogit(e)
+  if (!is.na(hit)) acc <- c(acc, hit)
+  for (i in seq_along(e)) {
+    part <- tryCatch(e[[i]], error = function(e) NULL)
+    if (is.call(part)) acc <- .inverseLogitOffenders(part, acc)
+  }
+  acc
+}
+
+.checkHandWrittenInverseLogit <- function(ui, conv) {
+  issues <- .emptyIssues()
+  exprs <- tryCatch(ui$lstExpr, error = function(e) NULL)
+  if (!length(exprs)) return(issues)
+  offenders <- character(0)
+  for (e in exprs) offenders <- .inverseLogitOffenders(e, offenders)
+  for (o in unique(offenders)) {
+    issues <- rbind(issues, .issue(
+      "hand_written_inverse_logit", "error", NA_character_,
+      sprintf("`%s` spells an inverse logit by hand.", substr(o, 1, 120)),
+      paste("Use `expit()`. `exp(x)/(1+exp(x))` returns NaN for x >= 710",
+            "because exp() overflows before the division cancels it, and a",
+            "logit-scale parameter with IIV can reach that on an extreme eta",
+            "draw. `expit(x)` is bit-identical to `1/(1+exp(-x))` and within",
+            "2 ulp of `exp(x)/(1+exp(x))`. For the negative convention write",
+            "`expit(-x)`.")))
   }
   issues
 }
