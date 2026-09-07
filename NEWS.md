@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Koenig 2025 cefiderocol ([doi:10.1128/aac.01539-24](https://doi.org/10.1128/aac.01539-24)) -- hospitalized adults with cystic fibrosis during an acute pulmonary exacerbation.
+- Add Haynes 2025 cephalexin ([doi:10.1093/jpids/piaf088](https://doi.org/10.1093/jpids/piaf088)) -- hospitalized neonates and young infants 7-60 days old.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
