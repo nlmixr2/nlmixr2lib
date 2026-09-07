@@ -768,8 +768,8 @@ navbar:
         href: articles/Conil_2007_ceftazidime.html
       - text: "Ceftazidime (Georges 2009)"
         href: articles/Georges_2009_ceftazidime.html
-      - text: "Ceftazidime (Launay 2024)"
-        href: articles/Launay_2024_ceftazidime.html
+      - text: "Ceftazidime (Li 2024)"
+        href: articles/Li_2024_ceftazidime.html
       - text: "Ceftazidime (Shi 2018)"
         href: articles/Shi_2018_ceftazidime.html
       - text: "Ceftazidime (Yin 2026)"
@@ -5704,6 +5704,7 @@ articles:
   - articles/Li_2023_TQB3203
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
+  - articles/Li_2024_ceftazidime
   - articles/Li_2024_norepinephrine
   - articles/Li_2024_orin1001
   - articles/Li_2025_amikacin

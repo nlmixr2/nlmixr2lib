@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhang 2024 nirmatrelvir ([doi:10.2147/DDDT.S479561](https://doi.org/10.2147/DDDT.S479561)) -- elderly Chinese inpatients with mild-to-moderate COVID-19 treated with nirmatrelvir/ritonavir.
+- Add Li 2024 ceftazidime ([doi:10.3389/fphar.2024.1470350](https://doi.org/10.3389/fphar.2024.1470350)) -- critically ill children in a paediatric intensive care unit.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
