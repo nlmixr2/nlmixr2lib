@@ -227,7 +227,7 @@ Jensen_2023_lngIus52mg <- function() {
     kin_shbg  <- rbase_shbg * kout_shbg
 
     # Bioavailability of the LNG reservoir into the depot compartment.
-    fdepot <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    fdepot <- expit(logitfdepot)
 
     # ------------------------------------------------------------------
     # Free fraction of LNG (closed-form solution to reversible binding).

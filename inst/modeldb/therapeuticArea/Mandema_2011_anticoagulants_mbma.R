@@ -718,12 +718,12 @@ Mandema_2011_anticoagulants_mbma <- function() {
     lor_totalbld <- g_totalbld
 
     # ---- Per-arm event probabilities ---------------------------------------
-    p_pe       <- 1 / (1 + exp(-(e0_pe       + lor_pe)))
-    p_majorvte <- 1 / (1 + exp(-(e0_majorvte + lor_majorvte)))
-    p_totalvte <- 1 / (1 + exp(-(e0_totalvte + lor_totalvte)))
-    p_majorbld <- 1 / (1 + exp(-(e0_majorbld + lor_majorbld)))
-    p_crnmbld  <- 1 / (1 + exp(-(e0_crnmbld  + lor_crnmbld)))
-    p_totalbld <- 1 / (1 + exp(-(e0_totalbld + lor_totalbld)))
+    p_pe       <- expit(e0_pe       + lor_pe)
+    p_majorvte <- expit(e0_majorvte + lor_majorvte)
+    p_totalvte <- expit(e0_totalvte + lor_totalvte)
+    p_majorbld <- expit(e0_majorbld + lor_majorbld)
+    p_crnmbld  <- expit(e0_crnmbld  + lor_crnmbld)
+    p_totalbld <- expit(e0_totalbld + lor_totalbld)
 
     # ---- Derived reporting quantities --------------------------------------
     # The x-axis of the source's Figures 1 and 2: the dose of enoxaparin that

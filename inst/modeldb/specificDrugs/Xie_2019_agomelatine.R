@@ -159,7 +159,7 @@ Xie_2019_agomelatine <- function () {
     alag2 <- exp(ltvalag2 + etaltvalag2 + iov_alag2)
 
     expp <- log(fpop/(1 - fpop)) + etafpop
-    fDepot <- exp(expp + iov_fpop)/(1 + exp(expp + iov_fpop))
+    fDepot <- expit(expp + iov_fpop)
     fDepot2 <- 1 - fDepot
     lv <- 0.05012 * WT^0.78
     v3 <- lv

@@ -84,8 +84,8 @@ Yoshioka_2018_FXa_inhibitors_mbma <- function() {
     logit_p_mb    <- plc_mb + theta3 * log(PTR)
 
     # Event probabilities on the [0, 1] scale
-    p_isse <- 1 / (1 + exp(-logit_p_isse))
-    p_mb   <- 1 / (1 + exp(-logit_p_mb))
+    p_isse <- expit(logit_p_isse)
+    p_mb   <- expit(logit_p_mb)
 
     # Derived mortality probabilities per Yoshioka 2018 Eq. 3:
     # P_death = w_isse * P_ISSE + w_mb * P_MB

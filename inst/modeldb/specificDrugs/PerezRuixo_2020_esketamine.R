@@ -244,7 +244,7 @@ PerezRuixo_2020_esketamine <- function() {
     # externally for 56-/84-/112-mg doses by averaging across sprays:
     #   FRn_effective = FRn * (1 + (N_sprays - 1) * dose_FRn_effect) / N_sprays
     FRn_logit <- logitFRn + etalogitFRn
-    FRn_per_spray <- 1 / (1 + exp(-FRn_logit))
+    FRn_per_spray <- expit(FRn_logit)
     FRn <- FRn_per_spray * (e_japanese_FRn ^ RACE_JAPANESE)
     dose_FRn_effect_export <- dose_FRn_effect  # documented in ini(); not applied dynamically
 
@@ -254,7 +254,7 @@ PerezRuixo_2020_esketamine <- function() {
     ka_sw  <- exp(lka_sw  + etalka_sw)
     Dpo    <- exp(lDpo)
     ka_po  <- exp(lka_po  + etalka_po)
-    Fgut   <- 1 / (1 + exp(-lFgut))
+    Fgut   <- expit(lFgut)
     Vc     <- exp(lvc     + etalvc)
     Q1     <- exp(lq1)
     Vp     <- exp(lvp     + etalvp)

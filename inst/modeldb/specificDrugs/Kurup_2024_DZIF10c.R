@@ -204,7 +204,7 @@ Kurup_2024_DZIF10c <- function() {
     phih <- logitfdepot + etalogitfdepot
     phim <- logitfdepot_macaque + etalogitfdepot_macaque
     logitfinh <- phih * (1 - SPECIES_MACAQUE) + phim * SPECIES_MACAQUE
-    finh <- exp(logitfinh) / (1 + exp(logitfinh))
+    finh <- expit(logitfinh)
 
     # Individual parameters. Every clearance carries the 0.85 exponent and
     # every volume the 1.0 exponent, both on WT/70, for humans and macaques

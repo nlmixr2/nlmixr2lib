@@ -100,7 +100,7 @@ FiedlerKelly_2020_fremanezumab_cm <- function() {
     BL_i      <- bl_cm + slope_AM * max(0, ACUTE_MED_DAYS - 5) + etabl_cm
     maxPLC_i  <- maxPLC_cm + etamaxPLC_cm
     hill_i    <- exp(lhill_PLC + etalhill_PLC)
-    drugInt_i <- 1 / (1 + exp(-(logitDrugInt + etalogitDrugInt)))
+    drugInt_i <- expit(logitDrugInt + etalogitDrugInt)
     drugExp_i <- exp(ldrugExp + etaldrugExp)
 
     # Placebo Hill function in time (Fiedler-Kelly 2020 Figure 2B form):

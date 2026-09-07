@@ -197,7 +197,7 @@ Hanberg_2018_meropenem <- function() {
 
     # Back-transform fraction unbound in SCT from logit scale (bounds 0-1
     # respected without explicit constraint at simulation time).
-    fu_sct <- 1 / (1 + exp(-logitfu_sct))
+    fu_sct <- expit(logitfu_sct)
 
     kel <- cl / vc
     k12 <- q  / vc

@@ -172,7 +172,7 @@ Schmidt_2009_linezolid <- function() {
     dks   <- exp(ldks  + etaldks)
     ksp   <- exp(lksp)
     kd    <- exp(lkd)
-    fsusc <- exp(logitf) / (1 + exp(logitf))   # back-transform logit -> initial susceptible fraction
+    fsusc <- expit(logitf)   # back-transform logit -> initial susceptible fraction
     ninit <- exp(lninit)
 
     # ---- Time-varying turn-on terms for growth and killing ----

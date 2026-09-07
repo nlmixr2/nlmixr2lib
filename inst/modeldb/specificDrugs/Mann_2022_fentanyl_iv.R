@@ -190,7 +190,9 @@ Mann_2022_fentanyl_iv <- function() {
     # the hyperperfusion-driven Q rises above baseline during overdose,
     # q_scale saturates toward 2, vc_eff = vc / q_scale halves, and the
     # effect-site concentration doubles.
-    q_scale_raw <- 1 + 1 / (1 + exp((1.6 - Q_TOTAL_LPM / 4.87) / 0.05))
+    # expit(-x) is identical to the 1/(1+exp(x)) form the `reference`
+    # string quotes verbatim from the paper; the quote is left as printed.
+    q_scale_raw <- 1 + expit(-((1.6 - Q_TOTAL_LPM / 4.87) / 0.05))
     q_scale <- (q_scale_raw < 1) * 1 + (q_scale_raw > 2) * 2 +
                (q_scale_raw >= 1) * (q_scale_raw <= 2) * q_scale_raw
     vc_eff <- vc / q_scale

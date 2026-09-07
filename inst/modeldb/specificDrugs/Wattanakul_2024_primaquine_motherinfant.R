@@ -204,7 +204,7 @@ Wattanakul_2024_primaquine_motherinfant <- function() {
     vc_cpq  <- exp(lvc_cpq + etalvc_cpq) * (WT / 51)^e_wt_vc
     mtt     <- exp(lmtt    + etalmtt + iov_mtt)
     q_milk  <- exp(lq_milk + etalq_milk)
-    fm      <- exp(logitfm + etalogitfm) / (1 + exp(logitfm + etalogitfm))
+    fm      <- expit(logitfm + etalogitfm)
     ktr     <- 5 / mtt
     vmilk   <- (milk_intake * WT_INFANT) / feed_n
 

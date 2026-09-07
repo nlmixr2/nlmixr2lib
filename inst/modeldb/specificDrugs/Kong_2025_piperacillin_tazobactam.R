@@ -582,8 +582,8 @@ Kong_2025_piperacillin_tazobactam <- function() {
       (logitedia_taz_avf1n - logitedia_taz) * VASCACC_AVF1N +
       (logitedia_taz_avf2n - logitedia_taz) * VASCACC_AVF2N
 
-    edia     <- exp(logitedia)       / (1 + exp(logitedia))
-    edia_taz <- exp(logitedia_taz_i) / (1 + exp(logitedia_taz_i))
+    edia     <- expit(logitedia)
+    edia_taz <- expit(logitedia_taz_i)
 
     bfr_lph <- BFR * 60 / 1000  # ESM $PK 'FLOW = IFLOW*60/1000' -- mL/min to L/h
 

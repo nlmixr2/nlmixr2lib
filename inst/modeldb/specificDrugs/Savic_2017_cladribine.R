@@ -140,7 +140,7 @@ Savic_2017_cladribine <- function() {
     # Individual absorption parameters
     ka          <- exp(lka + e_fed_ka * FED + etalka)
     logitf_ind  <- logitf + e_fed_logitf * FED + etalogitf
-    f_oral      <- 1 / (1 + exp(-logitf_ind))
+    f_oral      <- expit(logitf_ind)
     tlag_depot  <- exp(lmtt_fed) * FED
 
     # Individual clearances

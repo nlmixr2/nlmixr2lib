@@ -258,11 +258,11 @@ Novakovic_2017_cladribine <- function() {
     pyr_cum3  <- pyr_cum2 + b_pyr_3
     pyr_cum4  <- pyr_cum3 + b_pyr_4
     pyr_cum5  <- pyr_cum4 + b_pyr_5
-    pge_pyr_1 <- 1 / (1 + exp(-a_pyr * (pd - pyr_cum1)))
-    pge_pyr_2 <- 1 / (1 + exp(-a_pyr * (pd - pyr_cum2)))
-    pge_pyr_3 <- 1 / (1 + exp(-a_pyr * (pd - pyr_cum3)))
-    pge_pyr_4 <- 1 / (1 + exp(-a_pyr * (pd - pyr_cum4)))
-    pge_pyr_5 <- 1 / (1 + exp(-a_pyr * (pd - pyr_cum5)))
+    pge_pyr_1 <- expit(a_pyr * (pd - pyr_cum1))
+    pge_pyr_2 <- expit(a_pyr * (pd - pyr_cum2))
+    pge_pyr_3 <- expit(a_pyr * (pd - pyr_cum3))
+    pge_pyr_4 <- expit(a_pyr * (pd - pyr_cum4))
+    pge_pyr_5 <- expit(a_pyr * (pd - pyr_cum5))
     pyramidal <- pge_pyr_1 + pge_pyr_2 + pge_pyr_3 + pge_pyr_4 + pge_pyr_5
 
     # Item 2: Cerebellar (0-5)
@@ -271,11 +271,11 @@ Novakovic_2017_cladribine <- function() {
     cer_cum3  <- cer_cum2 + b_cer_3
     cer_cum4  <- cer_cum3 + b_cer_4
     cer_cum5  <- cer_cum4 + b_cer_5
-    pge_cer_1 <- 1 / (1 + exp(-a_cer * (pd - cer_cum1)))
-    pge_cer_2 <- 1 / (1 + exp(-a_cer * (pd - cer_cum2)))
-    pge_cer_3 <- 1 / (1 + exp(-a_cer * (pd - cer_cum3)))
-    pge_cer_4 <- 1 / (1 + exp(-a_cer * (pd - cer_cum4)))
-    pge_cer_5 <- 1 / (1 + exp(-a_cer * (pd - cer_cum5)))
+    pge_cer_1 <- expit(a_cer * (pd - cer_cum1))
+    pge_cer_2 <- expit(a_cer * (pd - cer_cum2))
+    pge_cer_3 <- expit(a_cer * (pd - cer_cum3))
+    pge_cer_4 <- expit(a_cer * (pd - cer_cum4))
+    pge_cer_5 <- expit(a_cer * (pd - cer_cum5))
     cerebellar <- pge_cer_1 + pge_cer_2 + pge_cer_3 + pge_cer_4 + pge_cer_5
 
     # Item 3: Brainstem (0-4)
@@ -283,10 +283,10 @@ Novakovic_2017_cladribine <- function() {
     bs_cum2  <- bs_cum1 + b_bs_2
     bs_cum3  <- bs_cum2 + b_bs_3
     bs_cum4  <- bs_cum3 + b_bs_4
-    pge_bs_1 <- 1 / (1 + exp(-a_bs * (pd - bs_cum1)))
-    pge_bs_2 <- 1 / (1 + exp(-a_bs * (pd - bs_cum2)))
-    pge_bs_3 <- 1 / (1 + exp(-a_bs * (pd - bs_cum3)))
-    pge_bs_4 <- 1 / (1 + exp(-a_bs * (pd - bs_cum4)))
+    pge_bs_1 <- expit(a_bs * (pd - bs_cum1))
+    pge_bs_2 <- expit(a_bs * (pd - bs_cum2))
+    pge_bs_3 <- expit(a_bs * (pd - bs_cum3))
+    pge_bs_4 <- expit(a_bs * (pd - bs_cum4))
     brainstem <- pge_bs_1 + pge_bs_2 + pge_bs_3 + pge_bs_4
 
     # Item 4: Sensory (0-6)
@@ -296,12 +296,12 @@ Novakovic_2017_cladribine <- function() {
     sen_cum4  <- sen_cum3 + b_sen_4
     sen_cum5  <- sen_cum4 + b_sen_5
     sen_cum6  <- sen_cum5 + b_sen_6
-    pge_sen_1 <- 1 / (1 + exp(-a_sen * (pd - sen_cum1)))
-    pge_sen_2 <- 1 / (1 + exp(-a_sen * (pd - sen_cum2)))
-    pge_sen_3 <- 1 / (1 + exp(-a_sen * (pd - sen_cum3)))
-    pge_sen_4 <- 1 / (1 + exp(-a_sen * (pd - sen_cum4)))
-    pge_sen_5 <- 1 / (1 + exp(-a_sen * (pd - sen_cum5)))
-    pge_sen_6 <- 1 / (1 + exp(-a_sen * (pd - sen_cum6)))
+    pge_sen_1 <- expit(a_sen * (pd - sen_cum1))
+    pge_sen_2 <- expit(a_sen * (pd - sen_cum2))
+    pge_sen_3 <- expit(a_sen * (pd - sen_cum3))
+    pge_sen_4 <- expit(a_sen * (pd - sen_cum4))
+    pge_sen_5 <- expit(a_sen * (pd - sen_cum5))
+    pge_sen_6 <- expit(a_sen * (pd - sen_cum6))
     sensory <- pge_sen_1 + pge_sen_2 + pge_sen_3 + pge_sen_4 + pge_sen_5 + pge_sen_6
 
     # Item 5: Bowel/Bladder (0-5)
@@ -310,11 +310,11 @@ Novakovic_2017_cladribine <- function() {
     bb_cum3  <- bb_cum2 + b_bb_3
     bb_cum4  <- bb_cum3 + b_bb_4
     bb_cum5  <- bb_cum4 + b_bb_5
-    pge_bb_1 <- 1 / (1 + exp(-a_bb * (pd - bb_cum1)))
-    pge_bb_2 <- 1 / (1 + exp(-a_bb * (pd - bb_cum2)))
-    pge_bb_3 <- 1 / (1 + exp(-a_bb * (pd - bb_cum3)))
-    pge_bb_4 <- 1 / (1 + exp(-a_bb * (pd - bb_cum4)))
-    pge_bb_5 <- 1 / (1 + exp(-a_bb * (pd - bb_cum5)))
+    pge_bb_1 <- expit(a_bb * (pd - bb_cum1))
+    pge_bb_2 <- expit(a_bb * (pd - bb_cum2))
+    pge_bb_3 <- expit(a_bb * (pd - bb_cum3))
+    pge_bb_4 <- expit(a_bb * (pd - bb_cum4))
+    pge_bb_5 <- expit(a_bb * (pd - bb_cum5))
     bowel_bladder <- pge_bb_1 + pge_bb_2 + pge_bb_3 + pge_bb_4 + pge_bb_5
 
     # Item 6: Visual (0-6)
@@ -324,12 +324,12 @@ Novakovic_2017_cladribine <- function() {
     vis_cum4  <- vis_cum3 + b_vis_4
     vis_cum5  <- vis_cum4 + b_vis_5
     vis_cum6  <- vis_cum5 + b_vis_6
-    pge_vis_1 <- 1 / (1 + exp(-a_vis * (pd - vis_cum1)))
-    pge_vis_2 <- 1 / (1 + exp(-a_vis * (pd - vis_cum2)))
-    pge_vis_3 <- 1 / (1 + exp(-a_vis * (pd - vis_cum3)))
-    pge_vis_4 <- 1 / (1 + exp(-a_vis * (pd - vis_cum4)))
-    pge_vis_5 <- 1 / (1 + exp(-a_vis * (pd - vis_cum5)))
-    pge_vis_6 <- 1 / (1 + exp(-a_vis * (pd - vis_cum6)))
+    pge_vis_1 <- expit(a_vis * (pd - vis_cum1))
+    pge_vis_2 <- expit(a_vis * (pd - vis_cum2))
+    pge_vis_3 <- expit(a_vis * (pd - vis_cum3))
+    pge_vis_4 <- expit(a_vis * (pd - vis_cum4))
+    pge_vis_5 <- expit(a_vis * (pd - vis_cum5))
+    pge_vis_6 <- expit(a_vis * (pd - vis_cum6))
     visual <- pge_vis_1 + pge_vis_2 + pge_vis_3 + pge_vis_4 + pge_vis_5 + pge_vis_6
 
     # Item 7: Mental (0-4)
@@ -337,10 +337,10 @@ Novakovic_2017_cladribine <- function() {
     men_cum2  <- men_cum1 + b_men_2
     men_cum3  <- men_cum2 + b_men_3
     men_cum4  <- men_cum3 + b_men_4
-    pge_men_1 <- 1 / (1 + exp(-a_men * (pd - men_cum1)))
-    pge_men_2 <- 1 / (1 + exp(-a_men * (pd - men_cum2)))
-    pge_men_3 <- 1 / (1 + exp(-a_men * (pd - men_cum3)))
-    pge_men_4 <- 1 / (1 + exp(-a_men * (pd - men_cum4)))
+    pge_men_1 <- expit(a_men * (pd - men_cum1))
+    pge_men_2 <- expit(a_men * (pd - men_cum2))
+    pge_men_3 <- expit(a_men * (pd - men_cum3))
+    pge_men_4 <- expit(a_men * (pd - men_cum4))
     mental <- pge_men_1 + pge_men_2 + pge_men_3 + pge_men_4
 
     # Item 8: Ambulation (0-9)
@@ -353,15 +353,15 @@ Novakovic_2017_cladribine <- function() {
     amb_cum7  <- amb_cum6 + b_amb_7
     amb_cum8  <- amb_cum7 + b_amb_8
     amb_cum9  <- amb_cum8 + b_amb_9
-    pge_amb_1 <- 1 / (1 + exp(-a_amb * (pd - amb_cum1)))
-    pge_amb_2 <- 1 / (1 + exp(-a_amb * (pd - amb_cum2)))
-    pge_amb_3 <- 1 / (1 + exp(-a_amb * (pd - amb_cum3)))
-    pge_amb_4 <- 1 / (1 + exp(-a_amb * (pd - amb_cum4)))
-    pge_amb_5 <- 1 / (1 + exp(-a_amb * (pd - amb_cum5)))
-    pge_amb_6 <- 1 / (1 + exp(-a_amb * (pd - amb_cum6)))
-    pge_amb_7 <- 1 / (1 + exp(-a_amb * (pd - amb_cum7)))
-    pge_amb_8 <- 1 / (1 + exp(-a_amb * (pd - amb_cum8)))
-    pge_amb_9 <- 1 / (1 + exp(-a_amb * (pd - amb_cum9)))
+    pge_amb_1 <- expit(a_amb * (pd - amb_cum1))
+    pge_amb_2 <- expit(a_amb * (pd - amb_cum2))
+    pge_amb_3 <- expit(a_amb * (pd - amb_cum3))
+    pge_amb_4 <- expit(a_amb * (pd - amb_cum4))
+    pge_amb_5 <- expit(a_amb * (pd - amb_cum5))
+    pge_amb_6 <- expit(a_amb * (pd - amb_cum6))
+    pge_amb_7 <- expit(a_amb * (pd - amb_cum7))
+    pge_amb_8 <- expit(a_amb * (pd - amb_cum8))
+    pge_amb_9 <- expit(a_amb * (pd - amb_cum9))
     ambulation <- pge_amb_1 + pge_amb_2 + pge_amb_3 + pge_amb_4 + pge_amb_5 + pge_amb_6 + pge_amb_7 + pge_amb_8 + pge_amb_9
 
     # 4. FREM continuous-covariate observations. Each is the typical-population mean shifted by

@@ -102,10 +102,10 @@ Tiraboschi_2025_amlitelimab <- function() {
     # Fsc: population on logit scale -> invert to linear, add additive albumin term, re-logit, then apply the logit-scale eta
     # (Tiraboschi 2025 Table S2 footnote f: Fsc = TVFsc + 0.598 * ((BALB/47) - 1); the source NONMEM code then uses
     # F1 = exp(PHI + ETAF1) / (1 + exp(PHI + ETAF1)) with PHI = log(Fsc / (1 - Fsc)).)
-    f1_typ_lin <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    f1_typ_lin <- expit(logitfdepot)
     f1_cov_lin <- f1_typ_lin + e_alb_f1 * ((ALB / 47) - 1)
     phi_f1     <- log(f1_cov_lin / (1 - f1_cov_lin))
-    f1         <- exp(phi_f1 + etalogitfdepot) / (1 + exp(phi_f1 + etalogitfdepot))
+    f1         <- expit(phi_f1 + etalogitfdepot)
 
     # Micro-constants
     kel <- cl / vc

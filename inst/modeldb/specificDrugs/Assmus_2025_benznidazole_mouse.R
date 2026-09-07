@@ -256,8 +256,8 @@ Assmus_2025_benznidazole_mouse <- function() {
 
     # 7. Exposure-response (Equation 1). Two parallel univariate logistic
     #    models for the probability of sterile parasitological cure.
-    pcure_auc  <- 1 / (1 + exp(-(logite0_cure_auc  + e_auc_cure  * auc_total)))
-    pcure_tmic <- 1 / (1 + exp(-(logite0_cure_tmic + e_tmic_cure * t_above_mic)))
+    pcure_auc  <- expit(logite0_cure_auc  + e_auc_cure  * auc_total)
+    pcure_tmic <- expit(logite0_cure_tmic + e_tmic_cure * t_above_mic)
 
     # 8. Residual error: additive on the natural-log concentration scale.
     Cc ~ lnorm(expSd)

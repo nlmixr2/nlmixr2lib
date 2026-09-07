@@ -89,7 +89,7 @@ FiedlerKelly_2020_fremanezumab_em <- function() {
     exp_i <- exp_PLC + etaexp_PLC
 
     # Individual maximum fractional Cav response (logit-normal IIV).
-    Emax_i <- 1 / (1 + exp(-(logitEmax + etalogitEmax)))
+    Emax_i <- expit(logitEmax + etalogitEmax)
 
     # Placebo time-course (Fiedler-Kelly 2020 Figure 2A form): predicted
     # reduction from baseline = exp(exponent * month). At month 0 the

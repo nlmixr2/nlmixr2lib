@@ -219,7 +219,7 @@ Reinecke_2018_levonorgestrel_lngIus20 <- function() {
     kin_shbg   <- rbase_shbg * kout_shbg
 
     # Absolute bioavailability of the reservoir (logit scale).
-    fdepot <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    fdepot <- expit(logitfdepot)
 
     # Free fraction of levonorgestrel; see the ivOral model file for the
     # unit derivation of A3nM.

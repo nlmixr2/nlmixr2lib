@@ -169,7 +169,7 @@ Li_2019_abatacept <- function() {
     # formulation indicator is additive on the logit scale. F_abs is bounded
     # in (0, 1) via the inverse logit.
     logit_f <- logitfdepot + etalogitfdepot + FORM_ABA_PHASE2 * e_form_f
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # Two-compartment PK; IV doses go directly to central, SC doses to depot
     # with bioavailability fdepot.

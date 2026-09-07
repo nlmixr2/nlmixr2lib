@@ -140,7 +140,7 @@ Plan_2012_pain <- function() {
     # Mean count lambda on 0-10 scale, with the paracetamol additive logit shift.
     tvlam <- bas * plc / 10
     phl   <- log(tvlam / (1 - tvlam)) + e_conmed_para * CONMED_PARA
-    lam   <- 10 * exp(phl) / (1 + exp(phl))
+    lam   <- 10 * expit(phl)
 
     # Time-varying Markov drift (TE * days; TEF in source).
     te  <- exp(lte0 + etalte0)

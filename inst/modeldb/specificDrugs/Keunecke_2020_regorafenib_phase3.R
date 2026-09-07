@@ -266,8 +266,8 @@ Keunecke_2020_regorafenib_phase3 <- function() {
     #    rescales them (step 3).
     logitfm_m2_ind <- logitfm_m2 + etalogitfm_m2
     logitfm_m5_ind <- logitfm_m5 + etalogitfm_m5
-    fm_m2 <- 1 / (1 + exp(-logitfm_m2_ind))
-    fm_m5 <- 1 / (1 + exp(-logitfm_m5_ind))
+    fm_m2 <- expit(logitfm_m2_ind)
+    fm_m5 <- expit(logitfm_m5_ind)
 
     # 3. Individual parameters. The parent rows of Table 3 are tabulated as the
     #    composites CL_P/(1-FRM2), VC_P/(1-FRM2), Q_P/(1-FRM2) and
