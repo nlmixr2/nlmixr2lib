@@ -2694,6 +2694,8 @@ navbar:
         href: articles/Fromage_2025_mycophenolic_acid.html
       - text: "Mycophenolic acid (Frymoyer 2013)"
         href: articles/Frymoyer_2013_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Heida 2024)"
+        href: articles/Heida_2024_mycophenolic_acid.html
       - text: "Mycophenolic acid (Jiao 2008)"
         href: articles/Jiao_2008_mycophenolic_acid.html
       - text: "Mycophenolic acid (Park 2023)"
@@ -5330,6 +5332,7 @@ articles:
   - articles/He_2012_lamotrigine
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
+  - articles/Heida_2024_mycophenolic_acid
   - articles/Hempel_2003_daunorubicin_liposomal
   - articles/Hendriksen_2013_artesunate
   - articles/Henin_2009_capecitabine
