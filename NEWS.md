@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Li 2024 norvancomycin ([doi:10.2147/IDR.S496776](https://doi.org/10.2147/IDR.S496776)) -- Chinese adults with community-acquired pneumonia.
+- Add Punyawudho 2025 dolutegravir ([doi:10.1002/psp4.13244](https://doi.org/10.1002/psp4.13244)) -- Thai adults with HIV/tuberculosis co-infection receiving rifampicin.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
