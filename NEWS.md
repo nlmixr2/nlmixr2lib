@@ -2,8 +2,7 @@
 
 # development version
 
-- Add Darwish 2025b trofinetide ([doi:10.1007/s12325-024-03058-7](https://doi.org/10.1007/s12325-024-03058-7)) -- girls aged 2-4 years with Rett syndrome, pooled with healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury.
-- Rename the Darwish 2025 trofinetide model to `Darwish_2025a_trofinetide` so it does not collide with the `Darwish_2025b_trofinetide` update above.
+- Add Wang 2025 somatrogon ([doi:10.1002/psp4.13279](https://doi.org/10.1002/psp4.13279)) -- children with growth hormone deficiency.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
