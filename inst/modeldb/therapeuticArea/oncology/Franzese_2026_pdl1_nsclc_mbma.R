@@ -543,7 +543,7 @@ Franzese_2026_pdl1_nsclc_mbma <- function() {
                  eta_study_orr
 
     # Predicted per-arm ORR (proportion) via inverse logit.
-    orr_pred <- exp(logit_orr) / (1 + exp(logit_orr))
+    orr_pred <- expit(logit_orr)
 
     # ============ OS MODEL log(HR) ============
     # Per Table 1 OS row: eta_orr_os enters INSIDE each of the four PD-(L)1 or chemotherapy

@@ -219,7 +219,7 @@ Wattanakul_2024_primaquine <- function() {
     q_milk  <- exp(lq_milk + etalq_milk)
 
     # Inverse-logit back-transform of the first-pass metabolised fraction.
-    fm <- exp(logitfm + etalogitfm) / (1 + exp(logitfm + etalogitfm))
+    fm <- expit(logitfm + etalogitfm)
 
     # Transit-chain rate constant. NN = 4 transit compartments and ka is
     # set equal to ktr, so KTR = (NN + 1) / MTT = 5 / MTT.

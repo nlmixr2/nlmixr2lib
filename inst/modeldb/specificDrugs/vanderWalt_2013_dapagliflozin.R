@@ -438,7 +438,7 @@ vanderWalt_2013_dapagliflozin <- function() {
     # logit back-transform; nlmixr2 otherwise warns that the eta is
     # non-mu-referenced because the eta sits inside exp(-...).
     logit_fdepot_i <- logitfdepot + etalogitfdepot
-    fdepot <- 1 / (1 + exp(-logit_fdepot_i))
+    fdepot <- expit(logit_fdepot_i)
 
     # ka collapses the rxode2 transit() output into central without
     # introducing an extra first-order absorption phase that the

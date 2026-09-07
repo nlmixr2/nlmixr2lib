@@ -401,8 +401,8 @@ Jung_2024_clopidogrel <- function() {
                     e_cyp2c19_pm_logitfm1 * CYP2C19_PM + etalogitfm1
     logitfm2_ind <- logitfm2 + e_cyp2c19_im_logitfm2 * CYP2C19_IM +
                     e_cyp2c19_pm_logitfm2 * CYP2C19_PM + etalogitfm2
-    fm1 <- 1 / (1 + exp(-logitfm1_ind))
-    fm2 <- 1 / (1 + exp(-logitfm2_ind))
+    fm1 <- expit(logitfm1_ind)
+    fm2 <- expit(logitfm2_ind)
 
     # ------------------------------------------------------------------
     # Metabolite PK parameters

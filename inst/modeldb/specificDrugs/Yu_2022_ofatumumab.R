@@ -230,7 +230,7 @@ Yu_2022_ofatumumab <- function() {
     # reference; categorical covariates enter as exp(beta * [indicator]).
     ka       <- exp(lka       + etalka)       * (WT / 70)^e_wt_ka
     logit_f  <- logitfdepot + etalogitfdepot
-    fdepot   <- 1 / (1 + exp(-logit_f))
+    fdepot   <- expit(logit_f)
     vc       <- exp(lvc       + etalvc)       * (WT / 70)^e_wt_vc
     kep      <- exp(lkep      + etalkep)      * exp(e_ai_kep      * DEVICE_AI)
     cl       <- exp(lcl       + etalcl)       * (WT / 70)^e_wt_cl    * exp(e_iv_cl       * ROUTE_IV)

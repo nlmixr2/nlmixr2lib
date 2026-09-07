@@ -174,7 +174,7 @@ Nagy_2017_obiltoxaximab_survival <- function() {
     doseTerm <- emax * DOSE_OBILTOXAXIMAB_MGKG / (ed50 + DOSE_OBILTOXAXIMAB_MGKG)
 
     logitPsurv <- theta0 - bactTerm + doseTerm
-    psurv <- 1 / (1 + exp(-logitPsurv))
+    psurv <- expit(logitPsurv)
 
     # ------------------------------------------------------------------
     # 2. Weibull death rate for the non-cured fraction.

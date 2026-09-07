@@ -246,8 +246,8 @@ Tsuji_2017_linezolid <- function() {
 
     tabs <- exp(ltabs)
     ka   <- log(2) / tabs                        # ka = ln(2) / Tabs per Tsuji 2017 Methods
-    fdepot <- 1 / (1 + exp(-logitfdepot))        # back-transform bioavailability
-    fu     <- 1 / (1 + exp(-logitfu))            # back-transform fraction unbound
+    fdepot <- expit(logitfdepot)        # back-transform bioavailability
+    fu     <- expit(logitfu)            # back-transform fraction unbound
 
     kel <- cl / vc
     k12 <- q  / vc

@@ -143,8 +143,8 @@ Weber_2015_fluticasone_inhaled <- function() {
     # recognises the eta as mu-referenced (Aguiar 2021 ustekinumab pattern).
     logit_flung_i <- logitflung + etalogitflung
     logit_fc_i    <- logitfc    + etalogitfc
-    flung <- 1 / (1 + exp(-logit_flung_i))
-    fc    <- 1 / (1 + exp(-logit_fc_i))
+    flung <- expit(logit_flung_i)
+    fc    <- expit(logit_fc_i)
     kdiss <- exp(lkdiss + etalkdiss)
     kmuc  <- exp(lkmuc  + etalkmuc)
     kpulc <- exp(lkpulc + etalkpulc)

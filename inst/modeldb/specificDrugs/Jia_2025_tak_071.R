@@ -173,7 +173,7 @@ Jia_2025_tak_071 <- function() {
     # off for the sparsely-sampled subset (control stream:
     # IF(SAMPLING == 2) FRAC_ = TVFRAC_).
     logitfslowTv <- logitfslow * ((1 - FORM_TABLET) + e_form_tablet_fslow * FORM_TABLET)
-    fslow        <- 1 / (1 + exp(-(logitfslowTv + etalogitfslow * SAMPLE_INTENSIVE)))
+    fslow        <- expit(logitfslowTv + etalogitfslow * SAMPLE_INTENSIVE)
 
     # Parallel absorption rates. Both carry the dose power effect and the
     # tablet ratio, and both share the single random effect on the slow rate,

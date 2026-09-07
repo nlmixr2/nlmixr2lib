@@ -239,7 +239,7 @@ AitOudhia_2024_sotatercept <- function() {
     # logit-scale sum is kept on its own line so nlmixr2 can mu-reference
     # etalogitfdepot (same idiom as Martinez_2019_alirocumab).
     logit_f <- logitfdepot + etalogitfdepot
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
 
     # ---- 2. Micro-constants (Methods 'Clinical relevance of covariates') ----
     kel <- cl / vc

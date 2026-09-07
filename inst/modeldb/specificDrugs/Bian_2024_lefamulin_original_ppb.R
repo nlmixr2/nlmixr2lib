@@ -378,12 +378,11 @@ Bian_2024_lefamulin_original_ppb <- function() {
     # result and adds eta9 on the logit scale. Equations 11-12 do the
     # same for the delayed-route fraction, whose typical value is
     # already carried on the logit scale in ini().
-    fdepot_typ <- exp(logitfdepot) / (1 + exp(logitfdepot))
+    fdepot_typ <- expit(logitfdepot)
     bio        <- fdepot_typ * (1 - FED + e_fed_fdepot * FED)
     fpo        <- log(bio / (1 - bio))
-    fdepot     <- exp(fpo + etalogitfdepot) / (1 + exp(fpo + etalogitfdepot))
-    frac       <- exp(logitfrac + etalogitfrac) /
-                  (1 + exp(logitfrac + etalogitfrac))
+    fdepot     <- expit(fpo + etalogitfdepot)
+    frac       <- expit(logitfrac + etalogitfrac)
 
     # ELF micro-constants.
     kin_elf  <- exp(lkin_elf)

@@ -213,7 +213,7 @@ AlfoseaCuadrado_2024_reserpine_rat <- function() {
     # 1. Individual parameters
     ka     <- exp(lka + etalka)
     d1     <- exp(ld1 + etald1)
-    fdepot <- exp(logitfdepot + etalogitfdepot) / (1 + exp(logitfdepot + etalogitfdepot))
+    fdepot <- expit(logitfdepot + etalogitfdepot)
     vc     <- exp(lvc + etalvc)
     cl     <- exp(lcl + etalcl)
 

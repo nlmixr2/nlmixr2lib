@@ -256,7 +256,7 @@ Wagh_2021_spectinamide_1810_mouse <- function() {
     #    drug at the aerosol infection time.
     # -----------------------------------------------------------------------
     k_load_pae <- 100
-    weight_up  <- 1 / (1 + exp(-50 * (Cc - effect)))
+    weight_up  <- expit(50 * (Cc - effect))
     d/dt(effect) <- k_load_pae * weight_up * (Cc - effect) - kpae * effect
     Cpae <- effect
 

@@ -386,15 +386,15 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
       e_study_sweden_im_fdepot_proc * STUDY_SWEDEN_IM +
         e_study_usa1_fdepot_proc * STUDY_USA1 +
         e_study_japan_fdepot_proc * STUDY_JAPAN) + etalogitfdepot_proc
-    f_proc <- 1 / (1 + exp(-logit_f_proc))
+    f_proc <- expit(logit_f_proc)
 
     # Depots 3 and 4, Duplocilline: two parallel prodrug fractions
     ka_duplo_pro <- exp(lka_duplo_pro + etalka_duplo_pro)
     ka_duplo_benza <- exp(lka_duplo_benza + etalka_duplo_benza)
     logit_f_duplo_pro <- logitfdepot_duplo_pro + etalogitfdepot_duplo_pro
     logit_f_duplo_benza <- logitfdepot_duplo_benza + etalogitfdepot_duplo_benza
-    f_duplo_pro <- 1 / (1 + exp(-logit_f_duplo_pro))
-    f_duplo_benza <- 1 / (1 + exp(-logit_f_duplo_benza))
+    f_duplo_pro <- expit(logit_f_duplo_pro)
+    f_duplo_benza <- expit(logit_f_duplo_benza)
 
     # Depots 5-7, penethamate: one sequential Ka pair per injection site
     ka_peneth1 <- exp(lka_peneth1 + etalka_peneth1)
@@ -407,7 +407,7 @@ Lallemand_2023_benzylpenicillin_horse <- function() {
     ka2_peneth3 <- exp(lka2_peneth3 + etalka2_peneth3)
     tlag_peneth3 <- exp(ltlag_peneth3)
     logit_f_peneth <- logitfdepot_peneth + etalogitfdepot_peneth
-    f_peneth <- 1 / (1 + exp(-logit_f_peneth))
+    f_peneth <- expit(logit_f_peneth)
 
     # -------------------------------------------------------------------
     # Sequential-absorption switches. tad(<depot>) is the time since that

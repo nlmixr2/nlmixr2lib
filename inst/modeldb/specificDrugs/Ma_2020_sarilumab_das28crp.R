@@ -191,7 +191,7 @@ Ma_2020_sarilumab_das28crp <- function() {
             (BLHAQ    / 1.75)^e_blhaq_base    *
             (WT       / 72.8)^e_wt_base
     lemax_i <- lemax + etalemax + e_crp_lemax * log(CRP / 15.7)
-    emax    <- 1 / (1 + exp(-lemax_i))
+    emax    <- expit(lemax_i)
     ic50    <- exp(lic50 + etalic50)
     kout    <- exp(lkout + etalkout) * e_pricort_kout^PRICORT
     PLB     <- exp(lPLB  + etalPLB)

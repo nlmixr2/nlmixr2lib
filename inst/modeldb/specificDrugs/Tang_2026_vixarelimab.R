@@ -192,7 +192,7 @@ Tang_2026_vixarelimab <- function() {
     # Logit-scale bioavailability; the fixed effect and eta are collected on their
     # own line so the term stays in a mu-referenced position.
     logitfdepot_ind <- logitfdepot + etalogitfdepot
-    fdepot <- exp(logitfdepot_ind) / (1 + exp(logitfdepot_ind))
+    fdepot <- expit(logitfdepot_ind)
 
     # ---- Micro-constants (Section 2.4 definitions) ----
     kel  <- cl / vc   # elimination rate constant from the central compartment

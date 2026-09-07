@@ -172,7 +172,7 @@ Na_2025_hosu53_dog <- function() {
     # F is logit-normal (Section 2.5); the remaining parameters are
     # log-normal. CL carries the IIV that was fixed from the IV-only fit.
     logit_f <- logitfdepot + etalogitfdepot
-    fdepot  <- 1 / (1 + exp(-logit_f))
+    fdepot  <- expit(logit_f)
     ka     <- exp(lka + etalka)
     cl     <- exp(lcl + etalcl)
     vc     <- exp(lvc)

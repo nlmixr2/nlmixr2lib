@@ -157,7 +157,7 @@ Chakraborty_2012_canakinumab <- function() {
     kd    <- exp(lkd  + etalkd)
     psl   <- exp(lpsl + etalpsl)
     cl_x  <- cl                    # Complex clearance assumed equal to free-drug clearance (Chakraborty 2012 page e7)
-    fdepot <- 1 / (1 + exp(-lfdepot))
+    fdepot <- expit(lfdepot)
 
     # ------------------------------------------------------------------
     # 2. Quasi-steady-state binding (Chakraborty 2012 equation 7):

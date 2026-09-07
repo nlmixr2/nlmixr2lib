@@ -382,7 +382,7 @@ Courlet_2023_cabamiquine <- function() {
     #    the exponent is clamped to a range that is still far beyond
     #    saturation (exp(500) ~ 1e217, i.e. tr_lb ~ 1e-217 versus 0).
     z_lb  <- max(min((t - t50) / sigma_lb, 500), -500)
-    tr_lb <- 1 / (1 + exp(-z_lb))
+    tr_lb <- expit(z_lb)
 
     d/dt(parasite_liver) <- kgrow_liver * parasite_liver -
                               klb * tr_lb * parasite_liver -

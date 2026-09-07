@@ -162,7 +162,7 @@ Suleiman_2019_risankizumab <- function() {
     # (Suleiman 2019 Eq. 2). The default logitfdepot uses the phase III
     # drug-supply value (logit 2.09, F = 0.890).
     logit_f  <- logitfdepot + etalogitfdepot
-    fdepot   <- exp(logit_f) / (1 + exp(logit_f))
+    fdepot   <- expit(logit_f)
     f(depot) <- fdepot
 
     # Concentration: dose in mg, volume in L -> mg/L = ug/mL.

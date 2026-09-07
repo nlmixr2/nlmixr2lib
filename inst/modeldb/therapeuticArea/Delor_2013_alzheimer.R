@@ -229,7 +229,7 @@ Delor_2013_alzheimer <- function() {
                           e_cdr_sob_slow * (SCORE_CDR_SOB - 1) +
                           e_faq_slow     * (SCORE_FAQ     - 1) +
                           e_rhpnm_slow   * (SCORE_RHPNM   - 1)
-    p_slow_indiv <- 1 / (1 + exp(-logit_p_slow_indiv))
+    p_slow_indiv <- expit(logit_p_slow_indiv)
     p_fast_indiv <- 1 - p_slow_indiv
 
     # 3. Smooth-step disease-activation function. The exponent 30 follows the

@@ -103,7 +103,7 @@ Hennig_2015_phenytoin <- function() {
     # Split the mu-reference onto its own line so nlmixr2 recognises etalogitfdepot
     # as mu-referenced.
     phi_fdepot <- logitfdepot + etalogitfdepot
-    fdepot <- 1 / (1 + exp(-phi_fdepot))
+    fdepot <- expit(phi_fdepot)
 
     # Micro-constants
     kel <- cl / vc
