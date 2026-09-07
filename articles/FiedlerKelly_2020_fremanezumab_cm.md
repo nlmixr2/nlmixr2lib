@@ -82,8 +82,6 @@ only), or placebo SC for 3 months; observation unit is one 28-day month.
 
 str(rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_cm"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> List of 14
 #>  $ n_subjects            : int 1361
 #>  $ n_observations        : int 5312
@@ -143,10 +141,6 @@ ev_check <- data.frame(
 )
 sim_check <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = ev_check, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt
-#> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etabl_cm', 'etamaxPLC_cm', 'etalhill_PLC', 'etalogitDrugInt', 'etaldrugExp'
 sim_check[, c("time", "msHeadacheDays")]
 #>   time msHeadacheDays
@@ -220,10 +214,6 @@ sim_typ <- rxode2::rxSolve(
   returnType = "data.frame"
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt
-#> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etabl_cm', 'etamaxPLC_cm', 'etalhill_PLC', 'etalogitDrugInt', 'etaldrugExp'
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -234,8 +224,6 @@ sim_iiv <- rxode2::rxSolve(
   returnType = "data.frame"
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitDrugInt
-#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ## Replicate published figures

@@ -2706,7 +2706,7 @@ is no dosing event, no drug, and no plasma compartment.</p>
 <span><span class="co">#&gt;         gamma1_i &lt;- exp(lgamma1 + etalgamma1)</span></span>
 <span><span class="co">#&gt;         gamma2_i &lt;- exp(lgamma2 + etalgamma2)</span></span>
 <span><span class="co">#&gt;         logit_pr_i &lt;- llogit_pr + etallogit_pr</span></span>
-<span><span class="co">#&gt;         pr_frac_i &lt;- 1/(1 + exp(-logit_pr_i))</span></span>
+<span><span class="co">#&gt;         pr_frac_i &lt;- expit(logit_pr_i, 0, 1)</span></span>
 <span><span class="co">#&gt;         pr_pct_i &lt;- 100 * pr_frac_i</span></span>
 <span><span class="co">#&gt;         theta_meal_raw &lt;- exp(ltheta_aq) * MEAL_AQUEOUS + exp(ltheta_bm) * </span></span>
 <span><span class="co">#&gt;             MEAL_BREASTMILK + exp(ltheta_fm) * MEAL_FORMULA + </span></span>

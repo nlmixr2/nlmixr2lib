@@ -216,7 +216,7 @@ ui
 #>         gamma1_i <- exp(lgamma1 + etalgamma1)
 #>         gamma2_i <- exp(lgamma2 + etalgamma2)
 #>         logit_pr_i <- llogit_pr + etallogit_pr
-#>         pr_frac_i <- 1/(1 + exp(-logit_pr_i))
+#>         pr_frac_i <- expit(logit_pr_i, 0, 1)
 #>         pr_pct_i <- 100 * pr_frac_i
 #>         theta_meal_raw <- exp(ltheta_aq) * MEAL_AQUEOUS + exp(ltheta_bm) * 
 #>             MEAL_BREASTMILK + exp(ltheta_fm) * MEAL_FORMULA + 

@@ -196,7 +196,7 @@ ui
 #>         ka2 <- exp(lka2 + etalka2)
 #>         mtt <- exp(lmtt + etalmtt)
 #>         ntr <- exp(lntr)
-#>         ffo <- 1/(1 + exp(-logitffo))
+#>         ffo <- expit(logitffo, 0, 1)
 #>         kel <- cl/vc
 #>         ktr <- (ntr + 1)/mtt
 #>         tad_dose <- tad(depot)

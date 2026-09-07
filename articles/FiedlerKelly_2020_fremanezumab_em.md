@@ -89,8 +89,6 @@ metadata:
 
 str(rxode2::rxode2(readModelDb("FiedlerKelly_2020_fremanezumab_em"))$meta$population)
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitEmax
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> List of 14
 #>  $ n_subjects            : int 1142
 #>  $ n_observations        : int 4444
@@ -145,10 +143,6 @@ ev_check <- data.frame(
 )
 sim_check <- rxode2::rxSolve(mod |> rxode2::zeroRe(), events = ev_check, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitEmax
-#> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitEmax
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etabl_em', 'etaexp_PLC', 'etalogitEmax'
 sim_check[, c("time", "migraineDays")]
 #>   time migraineDays
@@ -232,10 +226,6 @@ sim_typ <- rxode2::rxSolve(
   returnType = "data.frame"
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitEmax
-#> as a work-around try putting the mu-referenced expression on a simple line
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitEmax
-#> as a work-around try putting the mu-referenced expression on a simple line
 #> ℹ omega/sigma items treated as zero: 'etabl_em', 'etaexp_PLC', 'etalogitEmax'
 #> Warning: multi-subject simulation without without 'omega'
 
@@ -246,8 +236,6 @@ sim_iiv <- rxode2::rxSolve(
   returnType = "data.frame"
 )
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> Warning: some etas defaulted to non-mu referenced, possible parsing error: etalogitEmax
-#> as a work-around try putting the mu-referenced expression on a simple line
 ```
 
 ## Replicate published figures

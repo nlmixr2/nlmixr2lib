@@ -2579,7 +2579,7 @@ below for why that 2.8% difference matters.</p>
 <span><span class="co">#&gt;         ka2 &lt;- exp(lka2 + etalka2)</span></span>
 <span><span class="co">#&gt;         mtt &lt;- exp(lmtt + etalmtt)</span></span>
 <span><span class="co">#&gt;         ntr &lt;- exp(lntr)</span></span>
-<span><span class="co">#&gt;         ffo &lt;- 1/(1 + exp(-logitffo))</span></span>
+<span><span class="co">#&gt;         ffo &lt;- expit(logitffo, 0, 1)</span></span>
 <span><span class="co">#&gt;         kel &lt;- cl/vc</span></span>
 <span><span class="co">#&gt;         ktr &lt;- (ntr + 1)/mtt</span></span>
 <span><span class="co">#&gt;         tad_dose &lt;- tad(depot)</span></span>

@@ -2550,8 +2550,8 @@ values come from Table 1.</p>
 <span><span class="co">#&gt;         ktr &lt;- 4/mtt</span></span>
 <span><span class="co">#&gt;         logitfslowTv &lt;- logitfslow * ((1 - FORM_TABLET) + e_form_tablet_fslow * </span></span>
 <span><span class="co">#&gt;             FORM_TABLET)</span></span>
-<span><span class="co">#&gt;         fslow &lt;- 1/(1 + exp(-(logitfslowTv + etalogitfslow * </span></span>
-<span><span class="co">#&gt;             SAMPLE_INTENSIVE)))</span></span>
+<span><span class="co">#&gt;         fslow &lt;- expit(logitfslowTv + etalogitfslow * SAMPLE_INTENSIVE, </span></span>
+<span><span class="co">#&gt;             0, 1)</span></span>
 <span><span class="co">#&gt;         kaCov &lt;- e_dose_ka_slow * log(DOSE_TAK071_MG/5) + e_form_tablet_ka_slow * </span></span>
 <span><span class="co">#&gt;             FORM_TABLET + etalka_slow * SAMPLE_INTENSIVE</span></span>
 <span><span class="co">#&gt;         ka_slow &lt;- exp(lka_slow + kaCov)</span></span>
