@@ -2638,6 +2638,8 @@ navbar:
         href: articles/Groenendaal_2007_morphine_brain_rat.html
       - text: "Morphine rat eeg (Groenendaal 2007)"
         href: articles/Groenendaal_2007_morphine_rat_eeg.html
+      - text: "Mosunetuzumab (Bender 2024)"
+        href: articles/Bender_2024_mosunetuzumab.html
       - text: "Motesanib (Gosselin 2015)"
         href: articles/Gosselin_2015_motesanib.html
       - text: "Moxifloxacin (Colin 2014)"
@@ -4780,6 +4782,7 @@ articles:
   - articles/Bender_2009_pregabalin_rat
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
+  - articles/Bender_2024_mosunetuzumab
   - articles/Benkali_2010_tacrolimus
   - articles/Benson_2010_bhma_mouse
   - articles/Benson_2010_reboxetine_hnet_binding
