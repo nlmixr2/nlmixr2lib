@@ -12545,6 +12545,28 @@ All `ROUTE_<TARGET>` canonicals follow the same shape: a binary indicator where 
 - **Example models:** `Qi_2024_vosoritide.R` (multiplies relative bioavailability by 1.56, Qi 2024 Table 5 "Effect of SOLNC (0.2 mg/mL)"; encoded on the log scale as `e_form_voso_soln02_fdepot = log(1.56)` and confirmed by Table 3, where the 0.2 mg/mL column is a constant 56% above the time-only reference at every tabulated time).
 - **Notes:** Specific scope because the effect is tied to vosoritide's reconstituted-solution strengths. The 0.2 mg/mL solution was used only in study 111-202 of the pooled five-trial analysis, so the indicator is 0 for every phase III and commercial record. Qi 2024 draws the analogy to insulin, where dilution of the dosing solution is also known to change subcutaneous bioavailability. A future paper reporting a dosing-solution-strength effect for a different drug should register a parallel `FORM_<drug>_SOLN<strength>` canonical rather than overloading this name.
 
+### FORM_ROPI_SOLN05 (**canonical for the 0.5 % w/v ropivacaine injectate-concentration indicator**)
+- **Description:** Ropivacaine injectate-concentration indicator. 1 = the regional block was performed with the 0.5 % w/v (5 mg/mL) ropivacaine solution; 0 = a different solution strength was used. Per-administration indicator, but time-fixed per subject in single-shot block studies. As with `FORM_VOSO_SOLN02`, the contrast is between *concentrations* of the same injectable drug product rather than between dosage forms, so the covariate belongs to the `FORM_<drug>_<formulation>` drug-specific branch of the `FORM_*` family. The administered mass is held constant across strengths (3 mg/kg in the founding study), so only the injected volume, and hence the geometry and surface area of the fascial-plane drug depot, changes.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the 0.25 % w/v solution, when `FORM_ROPI_SOLN075` is also 0). The two indicators are mutually exclusive and both zero selects the 0.25 % stratum.
+- **Source aliases:**
+  - `The concentration of ropivacaine` -- the three-level randomisation column {0.25 %, 0.5 %, 0.75 %} of Ling 2025 Table 1 and Table 3, decomposed here into two binary indicators against the 0.25 % reference.
+- **Example models:** `Ling_2025_ropivacaine.R` (selects the first-order absorption rate constant estimated in the 0.5 % stratum, ka = 19.4 1/h, against the 0.25 % reference stratum ka = 32.0 1/h; Ling 2025 Table 3 splits its "ka" row into one sub-row per solution strength, so the three estimates are parallel stratum values rather than a reference plus offsets).
+- **Notes:** Specific scope until a second regional-anaesthesia paper ratifies a solution-strength effect for ropivacaine. The numeric token drops the decimal point exactly as `FORM_VOSO_SOLN02` does for 0.2 mg/mL, so `SOLN05` is 0.5 % w/v and `SOLN075` is 0.75 % w/v; a future model that needs an explicit 0.25 % indicator (rather than using it as the reference) should register `FORM_ROPI_SOLN025`. Ling 2025 also enrolled two patients given a 0.375 % solution, but they were held out for external validation and are not part of any fitted stratum, so no indicator is defined for that strength. Distinct from `DOSE_*` covariates: the administered dose in mg/kg is identical across the strata and it is the concentration of the injectate, not the amount of drug, that carries the effect.
+
+### FORM_ROPI_SOLN075 (**canonical for the 0.75 % w/v ropivacaine injectate-concentration indicator**)
+- **Description:** Ropivacaine injectate-concentration indicator. 1 = the regional block was performed with the 0.75 % w/v (7.5 mg/mL) ropivacaine solution; 0 = a different solution strength was used. The direct partner of `FORM_ROPI_SOLN05`; see that entry for the family placement and for why the contrast is a solution-strength rather than a dosage-form one.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the 0.25 % w/v solution, when `FORM_ROPI_SOLN05` is also 0).
+- **Source aliases:**
+  - `The concentration of ropivacaine` -- the same three-level Ling 2025 randomisation column decomposed against the 0.25 % reference.
+- **Example models:** `Ling_2025_ropivacaine.R` (selects the 0.75 % stratum first-order absorption rate constant, ka = 14.4 1/h; Ling 2025 Discussion reads the monotone decline in ka across 0.25 %, 0.5 % and 0.75 % as poorer diffusion of the more concentrated, lower-volume injectate away from the serratus anterior fascial plane).
+- **Notes:** Specific scope, registered together with `FORM_ROPI_SOLN05`. Ling 2025 additionally fits a post-hoc log-linear regression through the three stratum estimates in order to interpolate ka for the held-out 0.375 % patients; that regression is an external-validation device rather than part of the final model and is not encoded by these indicators.
+
 ### FORM_UNDIL_SUSP (**canonical for undiluted oral suspension formulation indicator**)
 - **Description:** 1 = subject received the modelled drug as an undiluted oral suspension, 0 = the per-paper comparator non-undiluted-suspension formulation (tablet or diluted oral suspension in Willmann 2018; documents the comparator per-model in `covariateData[[FORM_UNDIL_SUSP]]$notes`). The undiluted oral suspension was distinguished from the diluted oral suspension because pre-clinical in-vitro dissolution work showed the rivaroxaban suspension excipients limit dissolution of drug particles at low pH unless diluted before administration (Willmann 2018 Discussion paragraph 5).
 - **Units:** (binary)
