@@ -1126,6 +1126,8 @@ navbar:
         href: articles/Chandasana_2024_abacavir_dolutegravir_lamivudine_pediatric.html
       - text: "Dolutegravir (Kawuma 2023)"
         href: articles/Kawuma_2023_dolutegravir.html
+      - text: "Dolutegravir (Punyawudho 2025)"
+        href: articles/Punyawudho_2025_dolutegravir.html
       - text: "Dolutegravir (Zhang 2015)"
         href: articles/Zhang_2015_dolutegravir.html
       - text: "Domagrozumab (Wojciechowski 2022)"
@@ -5901,6 +5903,7 @@ articles:
   - articles/Przybylowski_2015_propofol
   - articles/Pu_2021_evinacumab
   - articles/Puisset_2007_docetaxel
+  - articles/Punyawudho_2025_dolutegravir
   - articles/Qi_2014_sapropterin
   - articles/Qi_2019_vestronidaseAlfa
   - articles/Qi_2024_vosoritide
