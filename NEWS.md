@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Han 2024 ainuovirine population PK and exposure-response models ([doi:10.1097/CM9.0000000000002917](https://doi.org/10.1097/CM9.0000000000002917)) -- antiretroviral-therapy-naive adults living with HIV-1.
+- Add Kuroda 2024 quinidine ([doi:10.3389/fvets.2024.1454342](https://doi.org/10.3389/fvets.2024.1454342)) -- healthy Thoroughbred horses and racehorses with atrial fibrillation.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
