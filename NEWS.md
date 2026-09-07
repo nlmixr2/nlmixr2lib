@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Nassar-Sheikh Rashid 2024 adalimumab ([doi:10.1007/s40272-024-00629-7](https://doi.org/10.1007/s40272-024-00629-7)) -- children with juvenile idiopathic arthritis.
+- Add Wang 2024 voriconazole ([doi:10.3390/ph17060665](https://doi.org/10.3390/ph17060665)) -- critically ill adults in a respiratory intensive care unit, with and without continuous renal replacement therapy.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
