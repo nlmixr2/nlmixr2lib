@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Duke 2024 cefazolin ([doi:10.1093/jac/dkae318](https://doi.org/10.1093/jac/dkae318)) -- Indigenous Australian adults with end-stage kidney disease on intermittent haemodialysis.
+- Add Isla 2024 oral fosfomycin calcium ([doi:10.1093/jac/dkae295](https://doi.org/10.1093/jac/dkae295)) -- healthy adult women.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 

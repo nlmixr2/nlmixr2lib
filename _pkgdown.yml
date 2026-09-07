@@ -1660,6 +1660,8 @@ navbar:
         href: articles/Shoji_2017_fosdagrocorat_p1np.html
       - text: "Fosfomycin (Huppe 2023)"
         href: articles/Huppe_2023_fosfomycin.html
+      - text: "FosfomycinCalcium (Isla 2024)"
+        href: articles/Isla_2024_fosfomycinCalcium.html
       - text: "Fospropofol (Gibiansky 2005)"
         href: articles/Gibiansky_2005_fospropofol.html
       - text: "Fremanezumab (FiedlerKelly 2019)"
@@ -5441,6 +5443,7 @@ articles:
   - articles/Idkaidek_2011_ibuprofen
   - articles/Iida_2008_nicorandil
   - articles/Ippolito_2024_pacmilimab_qsp
+  - articles/Isla_2024_fosfomycinCalcium
   - articles/Ivanova_2024_synucleinopathy_qsp
   - articles/Ivaturi_2017_RBP_7000
   - articles/Iwama_2024_febuxostat
