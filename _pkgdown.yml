@@ -4360,6 +4360,8 @@ navbar:
         href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid (Ogusu 2014)"
         href: articles/Ogusu_2014_valproic_acid.html
+      - text: "Valproic acid (Wang 2024)"
+        href: articles/Wang_2024_valproic_acid.html
       - text: "Valproic acid (Zhang 2024)"
         href: articles/Zhang_2024_valproic_acid.html
       - text: "Valproic acid base (Zhang 2023)"
@@ -6406,7 +6408,7 @@ articles:
   - articles/Wang_2024_saxagliptin_dpp4_rat
   - articles/Wang_2024_sugemalimab
   - articles/Wang_2024_tacrolimus
-  - articles/Wang_2024_voriconazole
+  - articles/Wang_2024_valproic_acid
   - articles/Wang_2025_rivaroxaban
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
