@@ -2810,6 +2810,8 @@ navbar:
         href: articles/Li_2024_norepinephrine.html
       - text: "Norepinephrine (Oualha 2014)"
         href: articles/Oualha_2014_norepinephrine.html
+      - text: "Norvancomycin (Li 2024)"
+        href: articles/Li_2024_norvancomycin.html
       - text: "Noscapine (Chen 2024)"
         href: articles/Chen_2024_noscapine.html
       - text: "Nusinersen (Biliouris 2018)"
@@ -5580,6 +5582,7 @@ articles:
   - articles/Li_2023_granisetron
   - articles/Li_2023_ornidazole
   - articles/Li_2024_norepinephrine
+  - articles/Li_2024_norvancomycin
   - articles/Li_2024_orin1001
   - articles/Li_2025_amikacin
   - articles/Li_2025_doxycycline_florfenicol_ducks
