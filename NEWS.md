@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abegesah 2025 durvalumab ([doi:10.1007/s00280-024-04743-8](https://doi.org/10.1007/s00280-024-04743-8)) -- adults with advanced solid tumours, including the TOPAZ-1 biliary tract cancer cohort.
+- Add Wang 2024 imipenem ([doi:10.3389/fphar.2024.1524272](https://doi.org/10.3389/fphar.2024.1524272)) -- hospitalized Chinese patients aged 60 years and older.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
