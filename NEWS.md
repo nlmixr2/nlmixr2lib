@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Axelsen 2024 selexipag adult and pediatric population PK models ([doi:10.1002/psp4.13231](https://doi.org/10.1002/psp4.13231)) -- adults with pulmonary arterial hypertension and pediatric patients aged 2 to <18 years.
+- Add Majid 2024 lecanemab population PK and ARIA-E exposure-response models ([doi:10.1002/psp4.13224](https://doi.org/10.1002/psp4.13224)) -- adults with early Alzheimer's disease.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
