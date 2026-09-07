@@ -3730,6 +3730,8 @@ navbar:
         href: articles/Wu_2012_sirolimus.html
       - text: "Sirukumab (Xu 2011)"
         href: articles/Xu_2011_sirukumab.html
+      - text: "Sitafloxacin (Paiboonvong 2025)"
+        href: articles/Paiboonvong_2025_sitafloxacin.html
       - text: "Sitafloxacin (Rodjun 2023)"
         href: articles/Rodjun_2023_colistin_sitafloxacin.html
       - text: "Sitafloxacin (Wu 2025)"
@@ -5832,6 +5834,7 @@ articles:
   - articles/Padari_2012_meropenem
   - articles/Padari_2018_penicillin_G
   - articles/Padoin_1998_cephalexin_rat
+  - articles/Paiboonvong_2025_sitafloxacin
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
   - articles/Panetta_2024_palbociclib
