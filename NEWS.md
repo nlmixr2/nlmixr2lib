@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zou 2025 edoxaban ([doi:10.1002/psp4.13248](https://doi.org/10.1002/psp4.13248)) -- pediatric patients 0 to <18 years with venous thromboembolism or cardiac disease at risk of thromboembolic events.
+- Add Abegesah 2025 durvalumab ([doi:10.1007/s00280-024-04743-8](https://doi.org/10.1007/s00280-024-04743-8)) -- adults with advanced solid tumours, including the TOPAZ-1 biliary tract cancer cohort.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 

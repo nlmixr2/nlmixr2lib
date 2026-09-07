@@ -1246,6 +1246,8 @@ navbar:
         href: articles/Zhang_2025_dupilumab_fev1.html
       - text: "Dupilumab qsp (Kapitanov 2025)"
         href: articles/Kapitanov_2025_dupilumab.html
+      - text: "Durvalumab (Abegesah 2025)"
+        href: articles/Abegesah_2025_durvalumab.html
       - text: "Durvalumab (Ogasawara 2020)"
         href: articles/Ogasawara_2020_durvalumab.html
       - text: "Durvalumab (deVries 2025)"
@@ -4801,6 +4803,7 @@ articles:
   - articles/AbdulAziz_2016_doripenem
   - articles/Abduljalil_2009_clarithromycin
   - articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi
+  - articles/Abegesah_2025_durvalumab
   - articles/AbouAuda_2024_gentamicin
   - articles/Abouelhassan_2024_sulbactam_elf_pneumonia
   - articles/Abrantes_2017_moroctocog
