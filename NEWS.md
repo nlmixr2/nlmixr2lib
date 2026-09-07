@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Cai 2025 diamorphine ([doi:10.1002/psp4.13186](https://doi.org/10.1002/psp4.13186)) -- adult male heroin users, extrapolated to children.
+
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
 - Add Pitsiu 2023 atacicept ([doi:10.1002/psp4.12982](https://doi.org/10.1002/psp4.12982)) -- healthy volunteers and adults with systemic lupus erythematosus.

@@ -4230,6 +4230,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
   - `C6G` -- Ashraf 2024 (paper Fig. 1 and Table 2).
 - **Example models:** `Ashraf_2024_codeine.R` (joint codeine + morphine + C6G + M3G popPK; `central_c6g`, `Cc_c6g`, `lcl_c6g`, `lvc_c6g`, `expSd_c6g`).
 
+### 6mam (**canonical 6-monoacetylmorphine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** 6-monoacetylmorphine, the active intermediate metabolite formed by deacetylation of diamorphine (heroin) and itself deacetylated to morphine. It is the obligate middle species of the diamorphine hydrolysis chain, so it appears only in models that carry diamorphine as the parent; morphine, the downstream product, uses the already-registered `morphine` suffix in the same models. The leading digit follows the existing digit-initial suffixes (`3oh`, `7dm`, `5fu`, `25d3`) and is matched by `endsWith(name, "_6mam")` rather than parsed as an R identifier, so it is well-formed.
+- **Source aliases:**
+  - `6-MAM`, `MAM` -- Cai 2025 (paper Figure 1, Table 2 and Supplementary Material S1, which writes the state as `A2`).
+  - `6-AM`, `6-acetylmorphine` -- common alternative names in the opioid literature.
+- **Example models:** `Cai_2025_diamorphine.R` (integrated diamorphine + 6-MAM + morphine popPK; `central_6mam`, `Cc_6mam`, `lkel_6mam`, `propSd_6mam`).
+
 ### gluc (**canonical glucuronide phase-II conjugate suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Phase-II glucuronide conjugate suffix (Allegaert 2015 paracetamol-glucuronide).
