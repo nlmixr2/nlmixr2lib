@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Lv 2024 delafloxacin ([doi:10.1128/aac.00428-24](https://doi.org/10.1128/aac.00428-24)) -- healthy Chinese adults.
+- Add Tsuchitani 2024 telmisartan TMDD-PBPK ([doi:10.1002/psp4.13154](https://doi.org/10.1002/psp4.13154)) -- healthy volunteers.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
