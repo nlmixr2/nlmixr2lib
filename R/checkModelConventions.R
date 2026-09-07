@@ -1797,57 +1797,68 @@ checkModelConventions <- function(model, verbose = TRUE) {
 # an inverse logit, but writing the two halves differently is itself worth a
 # nudge toward expit().
 
-# Strip redundant `(` wrappers, which R keeps in the AST.
-.unparen <- function(e) {
+# Recursively drop `(` wrappers, which R keeps as calls in the AST. Removing
+# them does not change meaning -- the tree already encodes precedence -- and it
+# lets one template match `1/(1 + exp(x))`, `1/((1 + exp(x)))` and
+# `(exp(a))/(1 + exp(a))` alike. Applied to the templates too, so both sides are
+# in the same normal form.
+.stripParens <- function(e) {
   while (is.call(e) && length(e) == 2L &&
          identical(as.character(e[[1]]), "(")) {
     e <- e[[2]]
   }
+  if (is.call(e)) {
+    for (i in seq_along(e)) {
+      part <- tryCatch(e[[i]], error = function(e) NULL)
+      if (!is.null(part) && (is.call(part) || is.name(part))) {
+        e[[i]] <- .stripParens(part)
+      }
+    }
+  }
   e
 }
 
-.isExpCall <- function(e) {
-  e <- .unparen(e)
-  is.call(e) && length(e) == 2L && identical(as.character(e[[1]]), "exp")
-}
+# The two `exp()` arguments of a matched `exp(.)/(... exp(.) ...)`, in the two
+# operand orders. Top-level rather than closures inside the template list so the
+# accessor is readable on its own.
+.ilArgsPlusRight <- function(e) list(e[[2]][[2]], e[[3]][[3]][[2]])
+.ilArgsPlusLeft <- function(e) list(e[[2]][[2]], e[[3]][[2]][[2]])
+
+# `rxode2::.matchesLangTemplate()` does the structural matching: `.` in a
+# template matches any sub-expression, and a numeric literal matches by VALUE,
+# so the `1` here also matches a source that writes `1.0`. That last point is
+# not incidental -- the regex sweep that first normalised the library required a
+# literal `1` and therefore missed all eleven `1.0 / (1.0 + exp(...))`
+# occurrences.
+#
+# `sameArg` marks the templates whose two wildcards must denote the SAME
+# expression. The matcher does not tie wildcards together -- `exp(a)/(1+exp(b))`
+# matches `exp(.)/(1+exp(.))` -- and that is exactly the shape that must not be
+# flagged, so the equality is checked separately.
+.inverseLogitTemplates <- list(
+  list(tmpl = .stripParens(str2lang("1/(1 + exp(.))")), args = NULL),
+  list(tmpl = .stripParens(str2lang("1/(exp(.) + 1)")), args = NULL),
+  list(tmpl = .stripParens(str2lang("exp(.)/(1 + exp(.))")),
+       args = .ilArgsPlusRight),
+  list(tmpl = .stripParens(str2lang("exp(.)/(exp(.) + 1)")),
+       args = .ilArgsPlusLeft)
+)
 
 .sameArg <- function(a, b) {
-  identical(paste(deparse(.unparen(a)), collapse = " "),
-            paste(deparse(.unparen(b)), collapse = " "))
+  identical(paste(deparse(a), collapse = " "),
+            paste(deparse(b), collapse = " "))
 }
 
-.isOne <- function(e) {
-  e <- .unparen(e)
-  is.numeric(e) && length(e) == 1L && isTRUE(e == 1)
-}
-
-# `1 + exp(X)` / `exp(X) + 1` -> the X, else NULL.
-.onePlusExpArg <- function(e) {
-  e <- .unparen(e)
-  if (!(is.call(e) && length(e) == 3L && identical(as.character(e[[1]]), "+"))) {
-    return(NULL)
-  }
-  l <- e[[2]]
-  r <- e[[3]]
-  if (.isOne(l) && .isExpCall(r)) return(.unparen(r)[[2]])
-  if (.isOne(r) && .isExpCall(l)) return(.unparen(l)[[2]])
-  NULL
-}
-
-# Does this call spell a binary inverse logit by hand? Returns the deparsed
-# offending expression, or NA.
+# Does this expression spell a binary inverse logit by hand? Returns the
+# deparsed offending expression, or NA.
 .handWrittenInverseLogit <- function(e) {
-  e <- .unparen(e)
-  if (!(is.call(e) && length(e) == 3L && identical(as.character(e[[1]]), "/"))) {
-    return(NA_character_)
-  }
-  num <- e[[2]]
-  den <- .onePlusExpArg(e[[3]])
-  if (is.null(den)) return(NA_character_)
-  # 1 / (1 + exp(X))
-  if (.isOne(num)) return(paste(deparse(e), collapse = " "))
-  # exp(X) / (1 + exp(X)) -- only when the two arguments are the SAME
-  if (.isExpCall(num) && .sameArg(.unparen(num)[[2]], den)) {
+  e <- .stripParens(e)
+  for (spec in .inverseLogitTemplates) {
+    if (!rxode2::.matchesLangTemplate(e, spec$tmpl)) next
+    if (!is.null(spec$args)) {
+      ab <- tryCatch(spec$args(e), error = function(e) NULL)
+      if (is.null(ab) || !.sameArg(ab[[1]], ab[[2]])) next
+    }
     return(paste(deparse(e), collapse = " "))
   }
   NA_character_
