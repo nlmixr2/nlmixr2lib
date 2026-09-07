@@ -1922,6 +1922,8 @@ navbar:
         href: articles/Admiraal_2023_iminobiotin.html
       - text: "Iminobiotin (Vos 2025)"
         href: articles/Vos_2025_iminobiotin.html
+      - text: "Imipenem (Bai 2024)"
+        href: articles/Bai_2024_imipenem.html
       - text: "Imipenem (Couffignal 2014)"
         href: articles/Couffignal_2014_imipenem.html
       - text: "Imipenem (Lamoth 2009)"
@@ -4791,6 +4793,7 @@ articles:
   - articles/Back_2018_fenofibrate
   - articles/Bae_2026_MIT001
   - articles/Baheti_2011_tenofovir
+  - articles/Bai_2024_imipenem
   - articles/Baiardi_2025_dalbavancin
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore

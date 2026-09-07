@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chu 2024 allopurinol and oxypurinol ([doi:10.1007/s40262-024-01401-3](https://doi.org/10.1007/s40262-024-01401-3)) -- neonates with critical congenital heart disease undergoing cardiac surgery with cardiopulmonary bypass.
+- Add Bai 2024 imipenem ([doi:10.1136/ejhpharm-2022-003403](https://doi.org/10.1136/ejhpharm-2022-003403)) -- critically ill adults with sepsis in intensive care.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
