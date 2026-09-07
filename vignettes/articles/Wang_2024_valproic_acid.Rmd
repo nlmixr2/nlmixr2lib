@@ -1,0 +1,797 @@
+---
+title: "Valproic acid syrup vs sustained-release tablets in children (Wang 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Valproic acid syrup vs sustained-release tablets in children (Wang 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20240906)
+```
+
+# Model and source
+
+Wang et al. (2024) developed a one-compartment population pharmacokinetic model
+with first-order absorption for total plasma valproic acid (VPA) in children
+with epilepsy, from 1411 routine therapeutic-drug-monitoring (TDM) trough
+concentrations in 617 patients at a single centre in Nanjing, China. The
+question the paper is built around is a practical one: **VPA syrup and
+sustained-release (SR) tablets are not interchangeable milligram for milligram,
+so how should the dose be changed when a child is switched from one to the
+other?**
+
+The final model is:
+
+$$
+\mathrm{CL/F}\ (\mathrm{L/h}) = 0.196 \times
+\left(\frac{\mathrm{BW}}{22}\right)^{0.717}
+\times \left(1 - 0.0436 \times \mathrm{Sex}\right) \times e^{\eta_{CL}}
+$$
+
+$$
+\mathrm{V/F}\ (\mathrm{L}) = 2.09 \times \left(\frac{\mathrm{BW}}{22}\right)^{0.524}
+$$
+
+with `Sex = 0` for male and `Sex = 1` for female, and with the absorption rate
+constant FIXED by formulation at `ka = 2.64 1/h` for syrup and `ka = 0.46 1/h`
+for SR tablets.
+
+Two features of this model are worth flagging before any simulation, because
+both are consequences of a trough-only TDM dataset rather than modelling
+choices:
+
+* **Both `ka` values are fixed from the literature**, not estimated. The dataset
+  contains no absorption-phase samples, so absorption is unidentifiable from it.
+  The 2.64 / 0.46 pair is a valproate-literature convention that this paper
+  takes from Mei 2018 and that the sibling `Zhang_2023_*` and
+  `Zhang_2024_valproic_acid` models take from Ding 2015.
+* **There is no interindividual variability on `V/F`.** It "was not informative
+  enough to be calculated because only the C~trough~ samples of VPA were
+  available, and then were excluded from the model."
+
+```{r load-model}
+mod <- modellib("Wang_2024_valproic_acid")
+mod
+
+# Parsed once here so the metadata lists below can be read off the model file
+# itself. readModelDb() returns the raw function; `$population` on the uncalled
+# function is not subsettable, and calling it directly fails outside an rxode2
+# parsing context -- rxode2::rxode() is the working idiom.
+mod_meta <- rxode2::rxode(readModelDb("Wang_2024_valproic_acid"))
+```
+
+## Population
+
+```{r population, echo = FALSE}
+p <- mod_meta$population
+tibble::tibble(Field = names(p), Value = unlist(p, use.names = FALSE)) |>
+  knitr::kable(caption = "Study population (Wang 2024 Table 2 and Methods).")
+```
+
+The metadata above describes the **model-development** set (498 patients, 1138
+samples), which is what Table 3 was fitted to; a further 119 patients with 273
+samples were held out for external evaluation. The cohort is young and light --
+median age 5.8 years, median body weight 22.0 kg -- and every sample is a
+steady-state trough drawn under routine TDM.
+
+## Source trace
+
+Every value in the model file, with the location it came from.
+
+```{r source-trace, echo = FALSE}
+tibble::tribble(
+  ~Quantity, ~Value, ~Source,
+  "Structural model", "1-compartment, first-order absorption (NONMEM ADVAN2 TRANS2)", "Methods, Base model; Results, Base model",
+  "ODE: depot", "d(depot)/dt = -ka * depot", "Methods, Base model (ADVAN2 TRANS2)",
+  "ODE: central", "d(central)/dt = ka * depot - kel * central", "Methods, Base model (ADVAN2 TRANS2)",
+  "Observation", "Cc = central / vc", "Methods, Base model",
+  "Ka (oral syrup)", "2.64 1/h, FIXED", "Methods, Base model; Table 3 (Ka1, 'Fixed'); from Mei 2018 (ref. 19)",
+  "Ka (SR tablet)", "0.46 1/h, FIXED", "Methods, Base model; Table 3 (Ka2, 'Fixed'); from Mei 2018 (ref. 19)",
+  "CL/F typical", "0.196 L/h at 22 kg, male", "Equation 34; Table 3 (0.196, RSE 3%, CI [0.183, 0.208])",
+  "V/F typical", "2.09 L at 22 kg", "Equation 35; Table 3 (2.09, RSE 9%, CI [1.69, 2.49])",
+  "BW normalising value", "22 kg (cohort median)", "Equations 34-35 (literal '22'); Table 2 (BW median 22.0 kg)",
+  "BW exponent on CL/F", "0.717", "Equation 34; Table 3 ('BW on CL/F', RSE 4%, CI [0.659, 0.775])",
+  "BW exponent on V/F", "0.524", "Equation 35; Table 3 ('BW on V/F', RSE 15%, CI [0.361, 0.686])",
+  "Female sex on CL/F", "-0.0436, PROPORTIONAL (1 - 0.0436 * Sex)", "Equation 34; Table 3 ('Sex on CL/F', RSE 29%, CI [-0.0685, -0.0187])",
+  "Sex coding", "Sex = 0 male, Sex = 1 female", "Stated immediately below Equation 35",
+  "IIV on CL/F", "11.9% CV -> omega^2 = log(CV^2+1) = 0.014062", "Table 3 ('IIV on CL/F (%)', RSE 6%, CI [10.4, 13.2]); Equation 1",
+  "IIV on V/F", "not estimated; term omitted", "Results, Base model ('not informative enough to be calculated')",
+  "Residual error", "combined proportional + additive", "Results, Base model (Equation 5 best fit)",
+  "RV proportional", "variance 0.0151 -> propSd = 0.12288", "Table 3 ('RVprop', RSE 15%, CI [0.0105, 0.0198])",
+  "RV additive", "variance 22.6 -> addSd = 4.7539 mg/L", "Table 3 ('RVadd', RSE 35%, CI [6.58, 38.5])"
+) |>
+  knitr::kable(caption = "Source trace for every model equation and ini() value.")
+```
+
+Three transcription decisions in this model are load-bearing and are recorded
+here in full, because each had a superficially plausible alternative.
+
+**1. The sex effect is proportional, not exponential.** The paper offers both
+forms in its Methods (Equation 27 proportional, Equation 28 exponential) and
+Equation 34 uses the proportional one: `(1 - 0.0436 * Sex)`. The model file
+therefore applies the sex term as a multiplicative factor **outside** the
+exponential, so the encoded number is exactly the tabulated `-0.0436` with no
+back-transformation. Encoding it as `exp(-0.0436)` would be a 0.1% error here,
+but it would be the wrong functional form.
+
+**2. `IIV on CL/F (%) = 11.9` is a CV%, not a variance.** This matters: read as
+a variance it would imply a 35.5% CV, a threefold difference. It is settled by
+the authors' own Figure 2, whose boxes are "the median and IQR of C~trough~ for
+each dosing regimen" over their simulated patients. The drawn boxes have a
+Q3/Q1 ratio near 1.2 -- for instance the 20 kg male / 40 mg/kg/day syrup box
+spans roughly 92-112 mg/L about a median near 102 -- which for a log-normal
+implies a log-scale SD near 0.15. That is consistent with an 11.9% CV plus this
+model's residual error, and flatly inconsistent with a 35.5% CV, which would
+place the same panel's Tukey whiskers below 10 and above 190 mg/L instead of
+the drawn 75-140 mg/L.
+
+**3. `RVprop` and `RVadd` are NONMEM variances.** Table 3 gives 0.0151 and 22.6;
+the model file encodes their square roots, 0.12288 and 4.7539 mg/L. The check
+is the assay: combining the two at the cohort median trough of 68.6 mg/L gives
+`sqrt((0.12288 * 68.6)^2 + 4.7539^2) / 68.6 = 14.1%`, against an EMIT assay
+whose within- and between-run coefficients of variation are "below 15%". Reading
+them as standard deviations instead would put the additive term alone at
+22.6 mg/L, a third of the median trough, which no assay-limited TDM dataset
+supports.
+
+Separately, Equation 5 is **typeset** as `Y = IPRED * (1 + eps1 + eps2)`, which
+would make both error terms proportional. That contradicts Table 3's own row
+labels (`RVprop`, `RVadd`) and is arithmetically impossible at the tabulated
+magnitude -- a proportional variance of 22.6 is a 475% CV. It is read here as a
+typesetting slip for the standard NONMEM combined form
+`Y = IPRED * (1 + eps1) + eps2`.
+
+# Verification
+
+Throughout this section `tau = 12 h`, matching the paper's own simulations
+("doses ranging from 10 to 40 mg/kg/day per 12 h").
+
+```{r constants}
+tau <- 12
+
+# Add the model's covariates to an rxode2 event table. Covariates MUST be
+# attached after as.data.frame() -- assigning columns onto an rxEt object is
+# silently dropped by rxode2.
+add_cov <- function(ev, WT, SEXF, FORM_VPA_SR) {
+  d <- as.data.frame(ev)
+  d$WT <- WT
+  d$SEXF <- SEXF
+  d$FORM_VPA_SR <- FORM_VPA_SR
+  d
+}
+```
+
+## The model reproduces the paper's own per-kg summary
+
+Immediately below Equation 35 the authors summarise their typical patient:
+"the typical value for the CL/F of VPA in children at steady state obtained in
+our study was 0.009 L/h/kg and the V/F was 0.1 L/kg". Dividing the tabulated
+`CL/F` and `V/F` by the normalising weight must recover exactly that. This
+is also what confirms the literal "22" in Equations 34-35 is the 22.0 kg cohort
+median from Table 2, rather than some other reference weight.
+
+```{r per-kg}
+per_kg <- tibble::tibble(
+  Parameter = c("CL/F", "V/F"),
+  `Typical value at 22 kg` = c(0.196, 2.09),
+  `Per kg` = c(0.196 / 22, 2.09 / 22),
+  `Paper's stated per-kg value` = c(0.009, 0.1)
+)
+
+knitr::kable(per_kg, digits = 6,
+             caption = "Per-kg typical values against the paper's own prose.")
+
+# Deterministic: these are arithmetic on tabulated values, so they are checked
+# to the precision the paper rounds to.
+stopifnot(
+  round(0.196 / 22, 3) == 0.009,
+  round(2.09 / 22, 1) == 0.1
+)
+```
+
+## The solved model reproduces a closed-form steady-state trough
+
+For a one-compartment first-order-absorption model the steady-state
+concentration at the end of a dosing interval has a closed form. Comparing it
+against `rxSolve` on the packaged model exercises every transcribed value at
+once -- both `ka` values, `CL/F`, `V/F`, both body-weight exponents, the
+reference weight and the sex term. Because the two sides use the *same*
+parameters and differ only by numerical integration, a tight bound is the
+correct assertion here.
+
+```{r closed-form}
+ctrough_closed_form <- function(BW, SEXF, mgkgd, sr) {
+  cl <- 0.196 * (BW / 22)^0.717 * (1 - 0.0436 * SEXF)
+  vc <- 2.09 * (BW / 22)^0.524
+  ka <- if (sr) 0.46 else 2.64
+  kel <- cl / vc
+  D <- BW * mgkgd / 2                      # q12h => half the daily dose
+  (D * ka / (vc * (ka - kel))) *
+    (exp(-kel * tau) / (1 - exp(-kel * tau)) -
+       exp(-ka * tau) / (1 - exp(-ka * tau)))
+}
+
+ctrough_solved <- function(BW, SEXF, mgkgd, sr) {
+  ev <- rxode2::et(amt = BW * mgkgd / 2, ii = tau, ss = 1, cmt = "depot") |>
+    rxode2::et(tau, cmt = "central")
+  d <- add_cov(ev, WT = BW, SEXF = SEXF, FORM_VPA_SR = as.numeric(sr))
+  r <- rxode2::rxSolve(mod, d, returnType = "data.frame", omega = NA)
+  r$Cc[!is.na(r$Cc)][1]
+}
+
+cf_check <- tidyr::crossing(BW = c(20, 30, 50), SEXF = c(0, 1),
+                            mgkgd = c(20, 25), sr = c(FALSE, TRUE)) |>
+  rowwise() |>
+  mutate(closed_form = ctrough_closed_form(BW, SEXF, mgkgd, sr),
+         solved      = ctrough_solved(BW, SEXF, mgkgd, sr),
+         rel_diff    = abs(solved - closed_form) / closed_form) |>
+  ungroup()
+
+# Deterministic identity: same parameters on both sides, so the only difference
+# is solver tolerance. Anything above 1e-6 means a transcribed value moved.
+stopifnot(nrow(cf_check) == 24, max(cf_check$rel_diff) < 1e-6)
+
+cf_check |>
+  filter(SEXF == 0, mgkgd == 25) |>
+  mutate(Formulation = ifelse(sr, "SR tablet", "Syrup")) |>
+  select(BW, Formulation, closed_form, solved, rel_diff) |>
+  rename("Body weight (kg)" = BW, "Closed form (mg/L)" = closed_form,
+         "rxSolve (mg/L)" = solved, "Relative difference" = rel_diff) |>
+  knitr::kable(digits = c(0, 0, 3, 3, 12),
+               caption = paste("Steady-state trough, closed form vs rxSolve,",
+                               "male, 25 mg/kg/day split q12h."))
+```
+
+## The sex effect matches the paper's Discussion
+
+The Discussion states "Compared with males, females exhibited 5-10% higher
+exposure of VPA at equivalent dose (Figure 2)". Reproducing that number requires
+being careful about *which* exposure metric it refers to, because the model
+gives two different answers:
+
+* **Interval AUC** (equivalently `Cav = Dose / (tau * CL/F)`) scales as the
+  reciprocal of clearance, so the female:male ratio is exactly
+  `1 / (1 - 0.0436) = 1.0456` -- a 4.6% increase, independent of dose, weight
+  and formulation.
+* **Trough concentration** amplifies the effect. Lowering clearance also lowers
+  `kel = CL/V`, so less drug is eliminated across the interval and the trough
+  rises by *more* than the AUC does. This ratio is weight- and
+  formulation-dependent.
+
+Figure 2, which the Discussion cites, plots **troughs** -- so the trough ratio
+is the quantity to compare against.
+
+```{r sex-effect}
+sex_ratio <- cf_check |>
+  select(BW, mgkgd, sr, SEXF, solved) |>
+  tidyr::pivot_wider(names_from = SEXF, values_from = solved,
+                     names_prefix = "sex") |>
+  mutate(trough_ratio = sex1 / sex0)
+
+auc_ratio <- 1 / (1 - 0.0436)
+
+tibble::tibble(
+  Metric = c("Interval AUC / Cav ratio", "Trough concentration ratio"),
+  `Female:male ratio` = c(sprintf("%.4f", auc_ratio),
+                          sprintf("%.4f-%.4f", min(sex_ratio$trough_ratio),
+                                  max(sex_ratio$trough_ratio))),
+  `Percent higher` = c(sprintf("%.1f%%", 100 * (auc_ratio - 1)),
+                       sprintf("%.1f-%.1f%%",
+                               100 * (min(sex_ratio$trough_ratio) - 1),
+                               100 * (max(sex_ratio$trough_ratio) - 1))),
+  `Paper` = c("(not stated separately)",
+              "5-10% higher (Discussion, citing Figure 2)")
+) |>
+  knitr::kable(caption = "Female:male exposure ratio, two metrics.")
+
+stopifnot(
+  # AUC ratio is an exact model consequence: 1 / (1 - 0.0436) in every cell,
+  # since Cav = Dose / (tau * CL) and the sex term is a pure CL multiplier.
+  # Deterministic, so checked to solver precision.
+  max(abs(auc_ratio - 1 / (1 - 0.0436))) < 1e-12,
+  # The trough ratio must land inside the paper's stated 5-10% band. Realised
+  # 6.5-8.1% across the 12 weight/dose/formulation cells; the bound is the
+  # paper's own stated range, not a value taken from this run.
+  min(sex_ratio$trough_ratio) > 1.05,
+  max(sex_ratio$trough_ratio) < 1.10
+)
+```
+
+The trough ratio is 6.5-8.1% across the grid, inside the paper's stated 5-10%.
+The AUC ratio alone (4.6%) would sit just below that band, so the Discussion's
+figure is best read as referring to the trough contrast its Figure 2 actually
+displays -- which is also the clinically relevant quantity for a TDM cohort
+monitored on troughs.
+
+Note also that the **direction** here is opposite to the sibling
+`Zhang_2024_valproic_acid` model, in which women had 12.9% *higher* clearance.
+Zhang attributes its direction to the larger median body weight of the women in
+its adult-inclusive cohort; Wang's cohort is paediatric.
+
+## Replicating Figure 2: steady-state trough by weight, sex, dose and formulation
+
+The paper's Figure 2 plots simulated steady-state C~trough~ against daily dose,
+panelled by body weight and sex, with syrup and SR tablets side by side. Here
+the same grid is simulated with the packaged model. The paper used 1000 virtual
+patients per group; this vignette uses 100 per cell, which is ample for a median
+and an interquartile range and keeps the render inside its time budget.
+
+```{r fig2-grid}
+# 1000, not 100. The gate below asserts the PAPER's own 70% PTA criterion,
+# so the cohort has to estimate PTA precisely enough that the criterion is
+# what fails, not Monte Carlo noise. At 100 per cell the minimum across the
+# eight 20-50 kg cells landed at 0.74 / 0.67 / 0.71 / 0.77 on 1 / 2 / 4 / 8
+# solver threads -- rxSetSeed() fixes the stream per thread, so the cohort is
+# redrawn when the thread count changes, and the estimate straddled the
+# threshold. At 1000 the same minimum is 0.79-0.81, and at 4000 it is
+# 0.787-0.790, so ~0.79 is the real value and the paper's claim holds with
+# room to spare.
+n_per_cell <- 1000
+
+cells <- tidyr::crossing(
+  BW = c(20, 30, 40, 50),
+  SEXF = c(0, 1),
+  mgkgd = seq(10, 40, by = 5),
+  sr = c(FALSE, TRUE)
+) |>
+  mutate(cell = row_number())
+
+sim_cell <- function(BW, SEXF, mgkgd, sr) {
+  ev <- rxode2::et(amt = BW * mgkgd / 2, ii = tau, ss = 1, cmt = "depot") |>
+    rxode2::et(tau, cmt = "central")
+  d <- as.data.frame(ev)
+  d <- d[rep(seq_len(nrow(d)), n_per_cell), ]
+  d$id <- rep(seq_len(n_per_cell), each = 2)
+  d$WT <- BW
+  d$SEXF <- SEXF
+  d$FORM_VPA_SR <- as.numeric(sr)
+  r <- rxode2::rxSolve(mod, d, returnType = "data.frame")
+  # `sim` carries the residual error; `Cc` is the individual prediction only.
+  # A TDM trough is an observed concentration, so PTA uses `sim`.
+  r$sim[!is.na(r$Cc)]
+}
+
+fig2 <- cells |>
+  rowwise() |>
+  mutate(ct = list(sim_cell(BW, SEXF, mgkgd, sr))) |>
+  ungroup() |>
+  mutate(
+    Formulation = ifelse(sr, "SR tablets", "Syrup"),
+    Sex = ifelse(SEXF == 1, "Female", "Male"),
+    median_ct = vapply(ct, median, numeric(1)),
+    q1 = vapply(ct, stats::quantile, numeric(1), probs = 0.25),
+    q3 = vapply(ct, stats::quantile, numeric(1), probs = 0.75),
+    pta = vapply(ct, function(x) mean(x >= 50 & x <= 100), numeric(1))
+  )
+```
+
+```{r fig2-plot, echo = FALSE, fig.height = 6, fig.cap = "Replicates Figure 2 of Wang 2024: simulated steady-state VPA trough concentration by daily dose, body weight, sex and formulation. Points are medians with interquartile ranges over 100 simulated children per cell. Dashed lines mark the 50-100 mg/L therapeutic target range."}
+ggplot(fig2, aes(mgkgd, median_ct, colour = Formulation)) +
+  geom_hline(yintercept = c(50, 100), linetype = "dashed", colour = "grey40") +
+  geom_pointrange(aes(ymin = q1, ymax = q3),
+                  position = position_dodge(width = 2), size = 0.25) +
+  facet_grid(Sex ~ paste0("BW: ", BW, " kg")) +
+  labs(x = "VPA dose (mg/kg/day)", y = "VPA trough concentration (mg/L)",
+       colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "top")
+```
+
+The three qualitative claims the paper draws from Figure 2 are all deterministic
+consequences of the model, so each is asserted directly.
+
+```{r fig2-claims}
+med <- function(bw, sexf, dose, sr) {
+  fig2$median_ct[fig2$BW == bw & fig2$SEXF == sexf &
+                   fig2$mgkgd == dose & fig2$sr == sr]
+}
+
+# Guard against a silently-empty lookup (all(logical(0)) is TRUE).
+stopifnot(length(med(30, 0, 25, FALSE)) == 1L)
+
+# Claim 1: "lower Ctrough in patients taking VPA syrup, compared with those
+# taking SR tablets at the same dose". Deterministic in the typical value; the
+# cohort medians below inherit only sampling noise, so this is asserted on the
+# closed form.
+same_dose <- tidyr::crossing(BW = c(20, 30, 40, 50), SEXF = c(0, 1),
+                             mgkgd = seq(10, 40, by = 5)) |>
+  rowwise() |>
+  mutate(syrup = ctrough_closed_form(BW, SEXF, mgkgd, FALSE),
+         sr    = ctrough_closed_form(BW, SEXF, mgkgd, TRUE)) |>
+  ungroup()
+stopifnot(all(same_dose$sr > same_dose$syrup))
+
+# Claim 2: "VPA concentrations increased with higher BW at the same dose".
+by_weight <- same_dose |>
+  filter(SEXF == 0, mgkgd == 25) |>
+  arrange(BW)
+stopifnot(all(diff(by_weight$syrup) > 0), all(diff(by_weight$sr) > 0))
+
+# Claim 3: "females required lower doses to achieve the same target
+# therapeutic concentration range" -- i.e. female exposure exceeds male at
+# every cell.
+stopifnot(all(
+  same_dose |>
+    tidyr::pivot_wider(names_from = SEXF, values_from = c(syrup, sr)) |>
+    mutate(ok = syrup_1 > syrup_0 & sr_1 > sr_0) |>
+    pull(ok)
+))
+```
+
+## Replicating Figure 3: probability of target attainment
+
+Figure 3 is a heatmap of the probability that steady-state C~trough~ falls
+within the 50-100 mg/L therapeutic range. The paper's conclusion is specific:
+**25 mg/kg/day of syrup, but only 20 mg/kg/day of SR tablets, achieves
+PTA > 70% for children weighing 20-50 kg.**
+
+```{r fig3-pta, echo = FALSE, fig.height = 5, fig.cap = "Replicates Figure 3 of Wang 2024: probability of attaining a steady-state trough within 50-100 mg/L. Cells are shaded on the paper's own bands (green PTA >= 80%, orange 50-79%, red < 50%)."}
+fig2 |>
+  mutate(band = cut(pta, breaks = c(-Inf, 0.5, 0.8, Inf),
+                    labels = c("< 50%", "50-79%", ">= 80%"))) |>
+  ggplot(aes(factor(mgkgd), factor(BW), fill = band)) +
+  geom_tile(colour = "white") +
+  geom_text(aes(label = sprintf("%.0f", 100 * pta)), size = 2.6) +
+  facet_grid(Sex ~ Formulation) +
+  scale_fill_manual(values = c("< 50%" = "#e4736a", "50-79%" = "#f0b45e",
+                               ">= 80%" = "#7fbf7b"), drop = FALSE) +
+  labs(x = "VPA dose (mg/kg/day)", y = "Body weight (kg)", fill = "PTA") +
+  theme_bw()
+```
+
+```{r fig3-claims}
+pta_at <- function(dose, sr) {
+  v <- fig2$pta[fig2$mgkgd == dose & fig2$sr == sr]
+  if (length(v) != 8L) stop("expected 8 cells (4 weights x 2 sexes) for dose ",
+                            dose, ", sr = ", sr)
+  v
+}
+
+pta_tab <- tibble::tibble(
+  Claim = c("Syrup 25 mg/kg/day attains PTA > 70% for BW 20-50 kg",
+            "SR tablets 20 mg/kg/day attains PTA > 70% for BW 20-50 kg"),
+  `Minimum PTA across cells` = c(sprintf("%.1f%%", 100 * min(pta_at(25, FALSE))),
+                                 sprintf("%.1f%%", 100 * min(pta_at(20, TRUE))))
+)
+knitr::kable(pta_tab, caption = "The paper's dose recommendation, reproduced.")
+
+# The 70% threshold is the paper's own stated criterion, not a bound taken from
+# one run, and it is deliberately left at 70% rather than widened: lowering it
+# would stop testing the claim the paper makes.
+#
+# What was widened instead is the COHORT -- see `n_per_cell` above. With 1000
+# per cell the realised minima are ~0.79 (syrup 25) and ~0.80 (SR 20) and move
+# by <0.02 across solver thread counts, so there is ~9 points of headroom that
+# is a property of the model rather than of the draw. A mis-transcribed
+# clearance, dose or Ka would move these by tens of points and still break the
+# gate.
+stopifnot(
+  min(pta_at(25, FALSE)) > 0.70,
+  min(pta_at(20, TRUE))  > 0.70
+)
+```
+
+## Replicating Figure 4: the dose-tailoring recommendation
+
+Figure 4 is the paper's headline result. A 30 kg, 9-year-old boy on 25 mg/kg/day
+of syrup is switched to SR tablets; the paper reports that keeping the same
+milligram dose raises his trough, but **reducing the SR dose by 5 mg/kg/day
+leaves the steady-state trough "almost unchanged"**.
+
+```{r fig4-switch}
+switch_tab <- tibble::tibble(
+  Scenario = c("Syrup, 25 mg/kg/day (before switch)",
+               "SR tablets, 25 mg/kg/day (same dose)",
+               "SR tablets, 20 mg/kg/day (dose reduced by 5)"),
+  Ctrough = c(ctrough_closed_form(30, 0, 25, FALSE),
+              ctrough_closed_form(30, 0, 25, TRUE),
+              ctrough_closed_form(30, 0, 20, TRUE))
+) |>
+  mutate(`Change vs before switch (%)` = 100 * (Ctrough - Ctrough[1]) / Ctrough[1])
+
+switch_tab |>
+  rename("Steady-state trough (mg/L)" = Ctrough) |>
+  knitr::kable(digits = 2,
+               caption = paste("Replicates Figure 4 of Wang 2024: a 30 kg boy",
+                               "switched from syrup to SR tablets."))
+
+# Deterministic (typical-value closed form), so tight bounds are correct here.
+stopifnot(
+  # Keeping the same mg dose raises the trough materially.
+  switch_tab$`Change vs before switch (%)`[2] > 15,
+  # Reducing by 5 mg/kg/day leaves it "almost unchanged".
+  abs(switch_tab$`Change vs before switch (%)`[3]) < 3
+)
+```
+
+Keeping the same milligram dose raises the trough by
+`r sprintf("%.0f%%", switch_tab[["Change vs before switch (%)"]][2])`, whereas
+the 5 mg/kg/day reduction the paper recommends changes it by only
+`r sprintf("%.1f%%", switch_tab[["Change vs before switch (%)"]][3])`. That is
+the paper's recommendation reproduced quantitatively from the packaged model.
+
+```{r fig4-profile, echo = FALSE, fig.cap = "Concentration-time profile for the switch scenario, a 30 kg boy at steady state on each regimen. Shaded band is the 50-100 mg/L therapeutic range."}
+profile <- function(mgkgd, sr, label) {
+  ev <- rxode2::et(amt = 30 * mgkgd / 2, ii = tau, ss = 1, cmt = "depot") |>
+    rxode2::et(seq(0, tau, by = 0.25), cmt = "central")
+  d <- add_cov(ev, WT = 30, SEXF = 0, FORM_VPA_SR = as.numeric(sr))
+  rxode2::rxSolve(mod, d, returnType = "data.frame", omega = NA) |>
+    filter(!is.na(Cc)) |>
+    transmute(time, Cc, Regimen = label)
+}
+
+bind_rows(
+  profile(25, FALSE, "Syrup 25 mg/kg/day"),
+  profile(25, TRUE,  "SR 25 mg/kg/day"),
+  profile(20, TRUE,  "SR 20 mg/kg/day")
+) |>
+  ggplot(aes(time, Cc, colour = Regimen)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 50, ymax = 100,
+           alpha = 0.12, fill = "steelblue") +
+  geom_line(linewidth = 0.9) +
+  labs(x = "Time after dose (h)", y = "Total plasma VPA (mg/L)", colour = NULL) +
+  theme_bw()
+```
+
+The flatter SR profile is the fixed `ka = 0.46 1/h` doing its work: the syrup
+arm peaks early and falls further within the interval, while the SR arms hold a
+narrower peak-to-trough band. This is exactly the fluctuation reduction the
+paper's title refers to.
+
+# Virtual cohort and PKNCA validation
+
+The checks above are typical-value checks. This section builds a stochastic
+paediatric cohort so the residual and interindividual variability are exercised
+too, and runs NCA on the resulting steady-state interval.
+
+Three arms, 150 children each (within the 200-per-arm cap): the paper's
+recommended syrup dose, the same milligram dose given as SR tablets, and the
+paper's recommended SR dose.
+
+```{r cohort}
+n_per_arm <- 150
+
+make_arm <- function(arm_label, mgkgd, sr, id_offset) {
+  tibble::tibble(
+    id = id_offset + seq_len(n_per_arm),
+    # Body weight over the paper's 6.0-95.0 kg range, centred near the 22.0 kg
+    # median; log-normal keeps it positive and right-skewed like a paediatric
+    # weight distribution.
+    WT = pmin(95, pmax(6, stats::rlnorm(n_per_arm, log(22), 0.45))),
+    # 39.0% female, per Table 2 (194 of 498).
+    SEXF = stats::rbinom(n_per_arm, 1, 0.390),
+    FORM_VPA_SR = as.numeric(sr),
+    arm = arm_label,
+    mgkgd = mgkgd
+  )
+}
+
+cohort <- bind_rows(
+  make_arm("Syrup 25 mg/kg/day", 25, FALSE, 0),
+  make_arm("SR 25 mg/kg/day",    25, TRUE,  n_per_arm),
+  make_arm("SR 20 mg/kg/day",    20, TRUE,  2 * n_per_arm)
+)
+
+cohort |>
+  group_by(arm) |>
+  summarise(n = n(),
+            `WT median` = round(median(WT), 1),
+            `WT range` = sprintf("%.1f-%.1f", min(WT), max(WT)),
+            `% female` = round(100 * mean(SEXF), 1), .groups = "drop") |>
+  rename("Arm" = arm) |>
+  knitr::kable(caption = "Virtual cohort summary (150 children per arm).")
+```
+
+```{r ss-sim}
+# One steady-state interval, observed every 0.5 h. The grid ENDS exactly at tau
+# because PKNCA's ctrough is NA unless a record sits exactly on the interval end.
+ev_ss <- rxode2::et(amt = 1, ii = tau, ss = 1, cmt = "depot") |>
+  rxode2::et(seq(0, tau, by = 0.5), cmt = "central")
+
+events <- as.data.frame(ev_ss) |>
+  select(-any_of("id")) |>
+  tidyr::crossing(cohort) |>
+  # Per-subject dose: mg/kg/day split into two q12h administrations.
+  mutate(amt = ifelse(evid == 1, WT * mgkgd / 2, amt)) |>
+  arrange(id, time, desc(evid))
+
+sim <- rxode2::rxSolve(mod, events, returnType = "data.frame",
+                       keep = c("arm"))
+
+obs <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, sim, arm)
+
+# Time zero must be present for every subject or PKNCA warns about the AUC range.
+stopifnot(all(
+  obs |> group_by(id) |> summarise(has0 = any(time == 0), .groups = "drop") |> pull(has0)
+))
+
+# Guard: the cohort must actually carry between-subject variability. Dividing
+# out the deterministic covariate model leaves exactly etalcl, whose SD must
+# recover sqrt(0.014062) = 0.1186. Losing IIV here would be silent -- the render
+# would still exit 0 and the ribbons below would collapse to a line.
+eta_recovered <- sim |>
+  distinct(id, cl) |>
+  inner_join(cohort, by = "id") |>
+  mutate(cl_det = 0.196 * (WT / 22)^0.717 * (1 - 0.0436 * SEXF),
+         eta = log(cl / cl_det))
+
+stopifnot(
+  nrow(eta_recovered) == 3 * n_per_arm,
+  abs(stats::sd(eta_recovered$eta) - sqrt(0.014062)) < 0.03,
+  abs(mean(eta_recovered$eta)) < 0.03
+)
+```
+
+```{r vpc-plot, echo = FALSE, fig.cap = "Simulated steady-state profiles by arm (median and 5th-95th percentiles, 150 children per arm). The shaded band is the 50-100 mg/L therapeutic range."}
+obs |>
+  group_by(arm, time) |>
+  summarise(med = median(Cc),
+            lo = stats::quantile(Cc, 0.05),
+            hi = stats::quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, med, colour = arm, fill = arm)) +
+  annotate("rect", xmin = -Inf, xmax = Inf, ymin = 50, ymax = 100,
+           alpha = 0.12, fill = "steelblue") +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.18, colour = NA) +
+  geom_line(linewidth = 0.9) +
+  labs(x = "Time after dose (h)", y = "Total plasma VPA (mg/L)",
+       colour = NULL, fill = NULL) +
+  theme_bw()
+```
+
+## PKNCA
+
+```{r pknca}
+dose_df <- events |>
+  filter(evid == 1) |>
+  select(id, time, amt, arm)
+
+intervals <- data.frame(
+  start = 0, end = tau,
+  cmax = TRUE, tmax = TRUE, ctrough = TRUE, cav = TRUE, auclast = TRUE
+)
+
+conc_obj <- PKNCA::PKNCAconc(obs, Cc ~ time | arm + id, concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+nca_res  <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r pknca-table, echo = FALSE}
+nca_tab <- as.data.frame(nca_res$result) |>
+  filter(start == 0, end == tau,
+         PPTESTCD %in% c("cmax", "tmax", "ctrough", "cav", "auclast")) |>
+  group_by(arm, PPTESTCD) |>
+  summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  mutate(median = round(median, 2),
+         Parameter = nlmixr2lib::ncaParamLabel(PPTESTCD)) |>
+  select(arm, Parameter, median) |>
+  tidyr::pivot_wider(names_from = Parameter, values_from = median)
+
+nca_tab |>
+  rename("Arm" = arm) |>
+  knitr::kable(caption = paste("Median steady-state NCA over one 12 h interval,",
+                               "150 children per arm."))
+```
+
+The paper reports no non-compartmental analysis of its own -- it is a TDM
+dataset of single troughs per visit, so there is no profile to integrate. The
+NCA above therefore validates internal consistency rather than reproducing a
+published table: `ctrough` from PKNCA must agree with the trough the solver
+produced, and `cav` must equal `AUC / tau`.
+
+```{r pknca-identities}
+ct_nca <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD == "ctrough") |>
+  select(arm, id, ctrough = PPORRES)
+
+ct_sim <- obs |>
+  filter(time == tau) |>
+  select(arm, id, ct_solver = Cc)
+
+ident <- inner_join(ct_nca, ct_sim, by = c("arm", "id"))
+stopifnot(nrow(ident) == 3 * n_per_arm)
+stopifnot(max(abs(ident$ctrough - ident$ct_solver)) < 1e-8)
+
+cav_check <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cav", "auclast")) |>
+  select(arm, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  mutate(rel = abs(cav - auclast / tau) / cav)
+stopifnot(max(cav_check$rel) < 1e-8)
+
+tibble::tibble(
+  Identity = c("PKNCA ctrough == solver Cc at t = tau",
+               "PKNCA cav == auclast / tau"),
+  `Max relative deviation` = c(max(abs(ident$ctrough - ident$ct_solver)),
+                               max(cav_check$rel))
+) |>
+  knitr::kable(caption = "Internal NCA identities (no published NCA to compare against).")
+```
+
+One structural check does connect the cohort back to the paper. The SR arm's
+peak-to-trough fluctuation must be smaller than the syrup arm's at the same
+milligram dose -- that is the mechanism behind the paper's entire dose-tailoring
+argument.
+
+```{r fluctuation}
+fluct <- as.data.frame(nca_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "ctrough")) |>
+  select(arm, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  mutate(ratio = cmax / ctrough) |>
+  group_by(arm) |>
+  summarise(`Median Cmax/Ctrough` = round(median(ratio), 3), .groups = "drop")
+
+knitr::kable(fluct, caption = "Peak-to-trough fluctuation by arm.")
+
+syrup_f <- fluct$`Median Cmax/Ctrough`[fluct$arm == "Syrup 25 mg/kg/day"]
+sr_f    <- fluct$`Median Cmax/Ctrough`[fluct$arm == "SR 25 mg/kg/day"]
+stopifnot(length(syrup_f) == 1L, length(sr_f) == 1L)
+# Deterministic separation: ka differs 5.7-fold between arms, so this is a
+# structural gap (roughly 1.9 vs 1.3), not a race between two noisy medians.
+stopifnot(sr_f < syrup_f - 0.25)
+```
+
+# Assumptions and deviations
+
+* **Body-weight distribution.** The paper reports only the median (22.0 kg) and
+  range (6.0-95.0 kg) of body weight, not its shape. The virtual cohort uses a
+  log-normal centred on the median and truncated to the reported range. No
+  conclusion in this vignette depends on the shape: every claim checked against
+  the paper is asserted either on the closed form or on a fixed weight grid.
+* **Age is not simulated.** Age is not in the final model (it was screened and
+  rejected -- see `covariatesDataExcluded`), so the cohort carries weight and
+  sex only.
+* **Dosing frequency.** The source cohort was dosed "one to three times daily".
+  All simulations here use q12h, which is what the paper's own Monte Carlo
+  simulations used ("doses ranging from 10 to 40 mg/kg/day per 12 h").
+* **Steady state is imposed, not accumulated.** Every simulation uses `ss = 1`
+  rather than dosing to steady state, matching a dataset that consists entirely
+  of steady-state troughs from patients treated for at least a week.
+* **PTA cohort size.** The paper simulated 1000 virtual patients per group;
+  this vignette uses 100 per cell for the Figure 2/3 grid and 150 per arm for
+  the PKNCA cohort, to stay inside the vignette time budget and the 200-per-arm
+  cap.
+* **PTA is computed on the simulated observed trough** (`sim`, which carries the
+  residual error), not on the individual prediction. The paper does not state
+  which it used. Using the individual prediction instead raises every PTA cell
+  by a few points and does not change either dose recommendation.
+
+## Errata and reporting notes
+
+* **"5-10% higher exposure" refers to troughs, not AUC.** The Discussion's
+  female:male figure is reproduced only when read against Figure 2's trough
+  contrast (6.5-8.1% here); the interval-AUC ratio implied by the same
+  coefficient is 4.6%, just below the stated band. This is a reporting
+  ambiguity in the paper rather than a discrepancy with it -- see the
+  sex-effect section above.
+* **Equation 5 is mis-typeset.** It appears as
+  `Y = IPRED * (1 + eps1 + eps2)`, which would make both residual terms
+  proportional, contradicting Table 3's `RVprop` / `RVadd` labels and the
+  magnitude of `RVadd`. It is read as the standard combined form
+  `Y = IPRED * (1 + eps1) + eps2`.
+* **Formulation counts are swapped in one Results sentence.** Results,
+  "Demographic data", states that "children taking SR tablets (n = 471)
+  exhibited significantly higher C~trough~/D compared with those receiving the
+  syrup (n = 154)". The Methods say the opposite assignment -- syrup n = 471, SR
+  n = 154 -- and Table 2 confirms the Methods: syrup is 373 (74.9%) of the
+  development set plus 98 (82.4%) of the evaluation set, giving 471, while SR is
+  133 + 21 = 154. The *direction* of the finding (SR gives the higher
+  dose-corrected trough) is correct and is what the model encodes; only the two
+  sample sizes are transposed in that sentence.
+* **Table 2 formulation percentages sum to more than 100%.** 74.9% + 26.7% for
+  the development set. This is expected: 8 children started on syrup and later
+  switched to SR tablets, and are counted in both rows (Table 2 footnote a).
+* **No supplement values were needed.** Tables S1-S5 and Figures S1-S4 are
+  referenced by the paper but every value in the model file comes from the main
+  text (Table 3, Equations 34-35, and the Methods).

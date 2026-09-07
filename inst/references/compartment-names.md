@@ -2085,7 +2085,7 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response (complete response, including uncertified CR, or partial response) as adjudicated by **independent central review**, in a static landmark exposure-response logistic model. The central-vs-investigator distinction is load-bearing and is why this is a separate canonical from `prob_orr_investigator`: the two adjudications are separate endpoints fit as separate models on different analysis sets, and central review is the regulatory-grade assessment.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual).
+- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart).
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Static (no time dimension): unlike `prob_scc`, which is a state-occupancy probability evolving under a multistate ODE, this is a landmark probability evaluated once per subject from baseline covariates and a scalar exposure metric. Founding models expose it with a small placeholder residual so the nlmixr2 observation machinery accepts the model; the source analysis uses an exact Bernoulli likelihood and estimates no residual error.
 
 ### prob_orr_investigator (**canonical investigator-assessment overall-response probability output**)
@@ -2122,6 +2122,27 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Fukae_2024_valemetostat_teae_grade3.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.653), `Chen_2021_lorlatinib_teae_grade3.R` (frequentist binomial logistic exposure-safety model; the steady-state lorlatinib trough enters on the natural-log scale with odds ratio 3.214 per e-fold, alongside baseline total cholesterol and time on study prior to the event).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Composite and therefore not mutually exclusive with the laboratory-value endpoints (`prob_anemia`, `prob_anc_decrease`, `prob_plt_decrease`), which are subsets of it; a model consuming several of these simultaneously must not treat them as competing risks. Chen 2021 makes the same point for a different pair -- because hypercholesterolemia was the most common adverse event in that trial, many of its grade >= 3 TEAEs *were* hypercholesterolemia events, so `prob_teae_grade3` and its paper-specific sibling `prob_hypercholesterolemia` overlap heavily there too. The canonical spans both Bayesian and frequentist fits of the endpoint; the name refers to the endpoint definition, not to the estimation framework.
+
+### prob_hyperglycemia (**canonical hyperglycemia adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a hyperglycemia adverse event of ANY CTCAE grade, in a static landmark exposure-safety logistic model. Hyperglycemia is the characteristic class toxicity of ALK tyrosine-kinase inhibitors built on the ceritinib scaffold, because ALK belongs to the insulin-receptor tyrosine-kinase superfamily and its ATP-binding site is shared with the insulin receptor, so potent ALK inhibition carries on-target off-tumour insulin-receptor blockade with it.
+- **Source aliases:** none.
+- **Example models:** `Liu_2024_saf189s_hyperglycemia.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 3.521 per e-fold; observed incidence 165 of 296 patients, 55.74%).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape founded by `prob_roc`. ANY-grade, which is why it is distinct from the severity-qualified sibling `prob_hyperglycemia_grade2`; a source paper that fits both must expose both, because the two carry materially different exposure slopes. Distinct from a modelled plasma-glucose *concentration* state in a semi-mechanistic glucose-insulin model: this is the probability of crossing a categorical toxicity threshold, not a glucose value.
+
+### prob_hyperglycemia_grade2 (**canonical moderate-or-worse hyperglycemia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a hyperglycemia adverse event of CTCAE grade 2 or worse, in a static landmark exposure-safety logistic model. The severity-qualified sibling of `prob_hyperglycemia`.
+- **Source aliases:** none.
+- **Example models:** `Liu_2024_saf189s_hyperglycemia_grade2.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 7.662 per e-fold; observed incidence 82 of 296 patients, 27.70%).
+- **Notes:** A probability output in `[0, 1]`. Kept as its own canonical rather than folded into `prob_hyperglycemia` for the same reason `prob_teae_grade3` is distinct from an any-grade TEAE endpoint: the grade threshold is a different endpoint fit as a separate model, and in the founding paper the exposure slope on the logit is roughly twice as steep for the graded endpoint (2.036 versus 1.259 per natural-log unit of AUC). The `_grade2` suffix means "grade 2 or worse", matching the source convention "grade >= 2"; use `_grade3` for a grade-3-or-worse threshold, as `prob_teae_grade3` does.
+
+### prob_proteinuria (**canonical proteinuria adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a proteinuria adverse event of ANY CTCAE grade, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Liu_2024_saf189s_proteinuria.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 2.031 per e-fold; observed incidence 90 of 296 patients, 30.41%).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from a modelled urinary-protein or urine-albumin-to-creatinine-ratio *state* in a mechanistic renal model (for example the UACR endpoint of `Goulooze_2022_finerenone_uacr.R`): this is the probability of crossing a categorical toxicity-grade threshold, not a measured protein excretion.
 
 ### prob_dose_interruption (**canonical dose-interruption probability output**)
 - **Type:** compartment
@@ -2164,6 +2185,20 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Chen_2021_lorlatinib_icorr.R` (binomial logistic efficacy model in the CNS-metastatic subset; no exposure term was retained, so the endpoint is driven by baseline alkaline phosphatase on the natural-log scale and baseline amylase -- founding example).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Distinct from `prob_orr_central` and `prob_orr_investigator`**, which score whole-body RECIST response: intracranial response is assessed on CNS lesions only, in the subset of patients with baseline brain metastasis, and can dissociate from the systemic response for a drug selected for blood-brain-barrier penetration -- which is exactly why the founding paper models it separately. The canonical carries no commitment to which assessor scored the response; the founding model uses independent central review, and a paper reporting both central and investigator intracranial assessments should follow the `prob_orr_central` / `prob_orr_investigator` precedent and suffix accordingly.
+
+### prob_hivrna_lt50 (**canonical HIV-1 virologic-suppression probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a person living with HIV-1 has a plasma HIV-RNA level below 50 copies/mL -- the standard regulatory definition of virologic suppression -- at a stated landmark visit, in a static logistic exposure-efficacy model.
+- **Source aliases:** none.
+- **Example models:** `Han_2024_ainuovirine_virologic_ctrough.R` and `Han_2024_ainuovirine_virologic_auctau.R` (parallel univariate binomial logistic models of week-48 suppression on the steady-state trough and on the steady-state 24 h AUC of ainuovirine; both slopes are NON-significant, and the paper reads the relationship as flat because the antiviral effect has plateaued -- founding examples).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape, with the threshold carried in the name in the manner of `prob_seizure50` and `prob_asas20`. The **50 copies/mL** threshold is load-bearing and is what the name pins: HIV trials also report suppression at 200 and 400 copies/mL, and a model fitted to a different threshold is a different endpoint and should register a sibling canonical (`prob_hivrna_lt200`, ...) rather than overload this one. The name carries no commitment to a particular landmark visit -- week 48 in the founding models -- which belongs in the per-model `description` and `population$n_observations`.
+
+### prob_adr (**canonical composite adverse-drug-reaction probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a subject experiences at least one adverse drug reaction of any grade, pooled across all reported preferred terms, in a static logistic exposure-safety model.
+- **Source aliases:** none.
+- **Example models:** `Han_2024_ainuovirine_adr_ctrough.R` and `Han_2024_ainuovirine_adr_auctau.R` (parallel univariate binomial logistic models of the adverse-reaction incidence on the steady-state trough and on the steady-state 24 h AUC of ainuovirine; both slopes ARE significant, and the contrast against the flat companion efficacy models is what drives the paper's conclusion that the ainuovirine dose may warrant optimisation -- founding examples).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. **Distinct from `prob_teae_grade3`**, which is likewise a composite across preferred terms but is thresholded at CTCAE grade 3: `prob_adr` carries NO severity threshold and so sits at a much higher event rate for the same drug. It is also distinct from the single-preferred-term members of the family (`prob_nausea`, `prob_dizziness`, `prob_dyskinesia`, `prob_anemia`, ...), which score one named reaction. Use `prob_adr` only where the source really does pool every reaction with no grading; the founding paper reports neither a preferred-term breakdown nor a severity grading for its endpoint, which is why nothing narrower fits. A paper that grades its composite should prefer `prob_teae_grade3` or register a graded sibling.
 
 ### prolactin (**canonical serum prolactin output**)
 - **Type:** compartment
@@ -2233,6 +2268,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Bhatnagar_2024_upadacitinib_asas40_as.R` and `Bhatnagar_2024_upadacitinib_asas40_nraxspa.R` (week-14 response in ankylosing spondylitis and in non-radiographic axial spondyloarthritis; `logit(p) = alpha + beta_trt * ON_TREATMENT`, fitted separately in each population).
 - **Notes:** A probability output in `[0, 1]`. Sibling of `prob_asas20`, registered alongside it from the same source paper, and following the `prob_<endpoint>` shape founded by `prob_roc`. ASAS40 is the stricter of the two criteria and is the primary end point of the SELECT-AXIS programme, so the two outputs are NOT interchangeable and a model must name whichever criterion it actually fitted. Constant in `time`, and carrying no exposure term in the founding models, for the same reasons given under `prob_asas20`. The founding models expose the output with a small placeholder additive residual so the nlmixr2 likelihood machinery accepts the forward-simulation model; the source analysis maximises a Bernoulli likelihood on the observed 0/1 indicator.
+
+### prob_ariae (**canonical ARIA-E adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences amyloid-related imaging abnormalities with edema/effusion (ARIA-E) -- signal hyperintensities on fluid-attenuated inversion-recovery MRI arising from parenchymal fluid accumulation or sulcal fluid effusion -- at any point during a study of an anti-amyloid-beta monoclonal antibody. A per-subject binary outcome modelled by logistic regression on drug exposure and APOE-epsilon4 genotype, not a time-to-event or per-visit incidence.
+- **Source aliases:** none. (`ARIAETR` is the analysis-dataset column carrying the observed 0/1 indicator in Majid 2024 supplement Text S2 `$INPUT`, not a name for the modelled probability.)
+- **Example models:** `Majid_2024_lecanemab_ariae.R` (lecanemab; linear untransformed steady-state Cmax on the logit scale plus two APOE-epsilon4 genotype indicators, `logit(p) = -4.89 + 0.00666 * CMAX + 0.640 * APOE4_HET + 1.91 * APOE4_HOM` -- founding example).
+- **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Like `prob_dyskinesia`, this endpoint has no time dimension: it is the probability of the event having occurred at some point over the whole study, so it is constant in `time` for a given exposure, and the founding model exposes it with a small placeholder additive residual because the source maximises a Bernoulli likelihood (NONMEM `LAPLACE LIKE` with the single eta fixed to zero) and estimates no observation error. ARIA is the class-defining safety endpoint of the anti-amyloid antibodies (lecanemab, donanemab, aducanumab, gantenerumab, bapineuzumab), so this name is expected to recur; a future model of the **hemorrhage** variant should register a sibling `prob_ariah` (or `prob_ariah_isolated` for the isolated-ARIA-H endpoint specifically) rather than overload this entry, because ARIA-E and isolated ARIA-H are separate endpoints with materially different exposure relationships -- in the founding paper ARIA-E is significantly exposure-dependent while isolated ARIA-H was found to be independent of exposure and was never reduced to a fitted model at all.
 
 ### prob_dyskinesia (**canonical dyskinesia adverse-event probability output**)
 - **Type:** compartment
@@ -3257,11 +3299,12 @@ Two distinct decompositions of the reticulocyte pool are registered, and a model
 
 ### moderator (**canonical moderator / tolerance state**)
 - **Type:** compartment
-- **Role:** Gabrielsson-Hjorth moderator (tolerance) state -- a first-order delay driven by a system state with **no mass transfer** into or out of the biological pool it tracks, whose terminal member divides (or otherwise scales) the production rate it modulates, producing tolerance / reservoir-depletion behaviour.
+- **Role:** Gabrielsson-Hjorth moderator (tolerance) state -- a first-order delay driven by a system state with **no mass transfer** into or out of the biological pool it tracks, whose terminal member divides (or otherwise scales) the rate it modulates, producing tolerance / reservoir-depletion behaviour. Most commonly that rate is a *production* rate, but the role covers a modulated *loss* rate equally: what defines the state is that it carries no mass and gates a rate with a delay, not which direction the gated rate points.
 - **Source aliases:**
   - `TOL_n` / `M1`, `M2` -- used in `Rognas_2025_bitopertin.R` (Fig. 2; `$MODEL` comps 14-15).
   - `M_n` -- used in `Ahlstrom_2010_nicotinicAcid_rat.R` (Eq. 4).
-- **Example models:** `Rognas_2025_bitopertin.R` (`moderator1`, `moderator2`).
+  - `A_t` -- used in `SchaedeliStark_2024_balovaptan.R` (Fig. 3), a single-element pool starting at 1 that gates a gut-extraction *loss* rate constant and is suppressed by the amount in the depot via `smod`.
+- **Example models:** `Rognas_2025_bitopertin.R` (`moderator1`, `moderator2`), `SchaedeliStark_2024_balovaptan.R` (`moderator1`).
 - **Notes:** Numbered variants `moderator1`, `moderator2`,... are accepted via `compartmentRegex`. New models should use `moderator<n>`; per rule 5 of "How to use this register", `Ahlstrom_2010_nicotinicAcid_rat.R` is not retrofitted here.
 
 ---
@@ -4271,6 +4314,14 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Wattanakul_2024_primaquine.R`, `Wattanakul_2024_primaquine_motherinfant.R` (one-compartment carboxyprimaquine disposition fed both by first-pass metabolism from the last transit compartment and by the entirety of systemic primaquine clearance, plus its own breast-milk compartment).
 
+### deaq (**canonical desethylamodiaquine suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desethylamodiaquine, the major circulating and pharmacologically active metabolite of amodiaquine, formed almost entirely by CYP2C8-mediated N-deethylation. Desethylamodiaquine carries substantially higher exposure and a far longer terminal half-life than the parent (roughly 14 days versus 26 hours), so it is the species responsible for the post-treatment prophylactic effect and the one whose day-7 concentration is used as the efficacy anchor in antimalarial trials. Joint amodiaquine + desethylamodiaquine popPK models assume complete bioconversion and apply a molar correction of `MW_DEAQ / MW_AQ = 327.81 / 355.85 = 0.9212` to the mass flux leaving the amodiaquine central compartment.
+- **Source aliases:**
+  - `DEAQ`, `desethylamodiaquine` -- publication spellings; same species, no transformation.
+- **Example models:** `Ali_2018_amodiaquine.R` (WWARN pooled analysis; three-compartment desethylamodiaquine disposition with sigmoidal postmenstrual-age maturation on its clearance), `Ding_2024_amodiaquine.R` (African pregnant women; two-compartment desethylamodiaquine disposition fed by the entirety of systemic amodiaquine clearance).
+- **Notes:** Founding example `Ali_2018_amodiaquine.R`. Registered when `Ding_2024_amodiaquine.R` was added; both files had been using the `_deaq` suffix already, so registering the name clears the pre-existing `checkModelConventions()` compartment and residual-error warnings on both rather than introducing a new spelling.
+
 ### dihydroart (**canonical dihydroartemisinin suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Dihydroartemisinin, active metabolite of artesunate.
@@ -4432,6 +4483,16 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Role:** N-acetylprocainamide (NAPA), the major active metabolite of procainamide formed by hepatic N-acetylation (NAT2). NAPA is a Vaughan-Williams Class III antiarrhythmic in its own right, is predominantly renally cleared, and accumulates alongside the parent in chronic-kidney-disease patients -- parent-plus-NAPA combined exposure is the therapeutic-window target for procainamide dosing in CKD.
 - **Source aliases:** none.
 - **Example models:** `Mohamed_2013_procainamide.R` (doi:10.1053/j.ajkd.2013.02.358).
+
+### nasmx (**canonical N-acetyl sulfamethoxazole suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-acetyl sulfamethoxazole (NASMX), the predominant metabolite of sulfamethoxazole formed by N-acetyltransferase-mediated N4-acetylation. It lacks relevant antibacterial activity but is the toxicity-limiting species during high-dose cotrimoxazole therapy: it is cleared almost entirely by the kidney, so it accumulates steeply in renal impairment, and plasma concentrations above 75 mg/L are the accepted upper limit of the therapeutic range. Roughly 46% of a sulfamethoxazole dose is recovered as this metabolite versus 16% as unchanged parent. Drives `central_nasmx`, the `lcl_nasmx` / `lvc_nasmx` parameters, the `e_<cov>_<param>_nasmx` covariate effects, the `etalcl_nasmx` random effect, the `propSd_nasmx` residual SD and the `Cc_nasmx` observable.
+- **Source aliases:**
+  - `SMX-M`, `SMXm` -- the `$MODEL` comment and `TVCM` / `CM` / `TVV3` / `V3` parameter-symbol stems in the Leegwater 2025 supplementary NONMEM control stream.
+  - `CMT 3` -- the compartment index the same paper's Figure S2 caption uses for the metabolite.
+  - `N-acetylsulfamethoxazole`, `NAcSMX`, `AcSMX` -- unspaced / abbreviated spellings appearing in the cotrimoxazole TDM literature and in the paper's own supplementary assay-validation section.
+- **Example models:** `Leegwater_2025_sulfamethoxazole.R` (founding example; doi:10.1002/cpt.3421 -- integrated one-compartment sulfamethoxazole plus one-compartment metabolite model in hospitalized adults, with the formation clearance fixed at 0.4 times the parent elimination clearance and opposite-signed CRRT effects on the two clearances).
+- **Notes:** The `na` + parent-stem construction follows `napa` (N-acetylprocainamide), and the `smx` stem is the sulfamethoxazole sibling-drug suffix already registered for `Boulanger_2025_trimethoprim_sulfonamides_pig.R`; a bare `smx` cannot serve the metabolite because that model already uses it for the parent drug itself. Distinct from the sulfonamide sibling-drug suffixes `sdz` (sulfadiazine) and `sdmx` (sulfadimethoxine), which are separately administered drugs rather than metabolites.
 
 ### norcloz (**canonical norclozapine (N-desmethylclozapine) suffix**)
 - **Type:** metabolite-suffix
