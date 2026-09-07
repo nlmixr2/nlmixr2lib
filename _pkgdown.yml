@@ -3414,6 +3414,10 @@ navbar:
         href: articles/Roberts_2025_remdesivir.html
       - text: "Remdesivir (Tamura 2023)"
         href: articles/Tamura_2023_remdesivir.html
+      - text: "Remdesivir (Zhang 2025)"
+        href: articles/Zhang_2025_remdesivir.html
+      - text: "Remdesivir esrd (Zhang 2025)"
+        href: articles/Zhang_2025_remdesivir.html
       - text: "Remifentanil (Choi 2011)"
         href: articles/Choi_2011_remifentanil.html
       - text: "Remifentanil (Yang 2017)"
@@ -6464,6 +6468,7 @@ articles:
   - articles/Zhang_2025_erythroferrone
   - articles/Zhang_2025_fluconazole
   - articles/Zhang_2025_nedosiran
+  - articles/Zhang_2025_remdesivir
   - articles/Zhang_2026_ribociclib
   - articles/Zhang_2026_tebipenem
   - articles/Zhao_2010_mycophenolic_acid

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhang 2025 remdesivir with its GS-704277 and GS-441524 metabolites ([doi:10.3389/fphar.2025.1488961](https://doi.org/10.3389/fphar.2025.1488961)) -- healthy adults and adults with renal impairment, plus a separate fit to one anuric patient on haemodialysis.
+
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
 - Add Pitsiu 2023 atacicept ([doi:10.1002/psp4.12982](https://doi.org/10.1002/psp4.12982)) -- healthy volunteers and adults with systemic lupus erythematosus.
