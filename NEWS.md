@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ling 2024 voriconazole ([doi:10.3389/fphar.2024.1455721](https://doi.org/10.3389/fphar.2024.1455721)) -- Chinese adults with invasive fungal infections.
+- Add Bai 2024 tacrolimus ([doi:10.3389/fphar.2024.1449535](https://doi.org/10.3389/fphar.2024.1449535)) -- Chinese adult liver transplant recipients.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 

@@ -3874,6 +3874,8 @@ navbar:
         href: articles/Andrews_2017_tacrolimus.html
       - text: "Tacrolimus (Antignac 2007)"
         href: articles/Antignac_2007_tacrolimus.html
+      - text: "Tacrolimus (Bai 2024)"
+        href: articles/Bai_2024_tacrolimus.html
       - text: "Tacrolimus (Benkali 2010)"
         href: articles/Benkali_2010_tacrolimus.html
       - text: "Tacrolimus (Bergmann 2014)"
@@ -4797,7 +4799,7 @@ articles:
   - articles/Back_2018_fenofibrate
   - articles/Bae_2026_MIT001
   - articles/Baheti_2011_tenofovir
-  - articles/Bai_2024_imipenem
+  - articles/Bai_2024_tacrolimus
   - articles/Baiardi_2025_dalbavancin
   - articles/Bajaj_2017_nivolumab
   - articles/Bajaj_2017_nivolumab_ddmore
