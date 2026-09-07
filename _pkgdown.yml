@@ -3740,6 +3740,8 @@ navbar:
         href: articles/Sanhajariya_2018_snake_venom.html
       - text: "Sodium nitrite qsp (VegaVilla 2013)"
         href: articles/VegaVilla_2013_sodium_nitrite_qsp.html
+      - text: "Somatrogon (Wang 2025)"
+        href: articles/Wang_2025_somatrogon.html
       - text: "Somatropin human (Thorsted 2016)"
         href: articles/Thorsted_2016_somatropin_human.html
       - text: "Somatropin rat (Thorsted 2016)"
@@ -6286,6 +6288,7 @@ articles:
   - articles/Wang_2024_sugemalimab
   - articles/Wang_2024_tacrolimus
   - articles/Wang_2025_rivaroxaban
+  - articles/Wang_2025_somatrogon
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Waterhouse_2024_vedolizumab
