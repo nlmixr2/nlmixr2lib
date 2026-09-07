@@ -4410,6 +4410,10 @@ navbar:
         href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin hughes (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin nonparametric (Hughes 2024)"
+        href: articles/Hughes_2024_vancomycin.html
+      - text: "Vancomycin parametric (Hughes 2024)"
+        href: articles/Hughes_2024_vancomycin.html
       - text: "Vancomycin schwartz (Downes 2023)"
         href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin thomson (Tong 2026)"
@@ -5372,6 +5376,7 @@ articles:
   - articles/Huang_2017_vrc01
   - articles/Huang_2025_dexmedetomidine
   - articles/Hughes_2022_brepocitinib
+  - articles/Hughes_2024_vancomycin
   - articles/Huh_2024_ritlecitinib
   - articles/Huppe_2023_fosfomycin
   - articles/Hurtado_2014_levofloxacin_rat
