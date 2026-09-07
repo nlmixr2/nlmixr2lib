@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2025 somatrogon ([doi:10.1002/psp4.13279](https://doi.org/10.1002/psp4.13279)) -- children with growth hormone deficiency.
+- Add Abdul-Aziz 2025 caspofungin ([doi:10.1128/aac.01435-24](https://doi.org/10.1128/aac.01435-24)) -- critically ill adults receiving extracorporeal membrane oxygenation.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
