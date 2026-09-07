@@ -1,0 +1,806 @@
+---
+title: "Adalimumab in juvenile idiopathic arthritis (Nassar-Sheikh Rashid 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Adalimumab in juvenile idiopathic arthritis (Nassar-Sheikh Rashid 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+# readModelDb() returns the model FUNCTION; rxode2::rxode() resolves it to the
+# ui exactly once so every downstream accessor ($theta, $population, ...) works.
+ui <- rxode2::rxode(readModelDb("NassarSheikhRashid_2024_adalimumab"))
+```
+
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.1007/s40272-024-00629-7> (open access; PMC11192828)
+* Upstream model: `modellib("Kang_2020_adalimumab_phase3_extension")`
+
+This is the first population PK analysis of adalimumab in juvenile idiopathic
+arthritis (JIA). The authors first showed that five published adalimumab models
+-- one paediatric Crohn's disease model, one adult rheumatoid arthritis (RA)
+model and three RA models from Kang 2020 -- all described their JIA
+concentration-time data adequately. They then took the best-fitting structure,
+Kang 2020 model 3 (the RA maintenance-phase model, carried in nlmixr2lib as
+`Kang_2020_adalimumab_phase3_extension`), and re-estimated apparent clearance,
+its covariates, the inter-individual variability on clearance and the residual
+error on the JIA data. Everything else is fixed at Kang's values, because 78
+concentrations from 50 patients cannot support a full re-fit.
+
+The clinically interesting result is the covariate model on `CL/F`: alongside
+the expected body-weight and anti-drug-antibody effects, adalimumab clearance is
+28% *lower* on concomitant methotrexate and 44% *higher* in patients with
+comorbid uveitis. The uveitis association is novel to this paper and offers a
+pharmacokinetic rationale for the escalated dosing that JIA-with-uveitis
+patients are observed to need.
+
+# Population
+
+```{r population}
+p <- ui$population
+tibble::tibble(
+  Field = c("Species", "Subjects", "Observations", "Age", "Body weight",
+            "Female", "Disease state", "Dosing", "Region"),
+  Value = c(p$species, as.character(p$n_subjects), as.character(p$n_observations),
+            p$age_median, paste0(p$weight_median, " (IQR ", "29.4-59.8 kg)"),
+            paste0(p$sex_female_pct, "%"), p$disease_state, p$dose_range, p$regions)
+) |>
+  knitr::kable(caption = "Study population (Nassar-Sheikh Rashid 2024 Table 1 and Section 2.1).")
+```
+
+Fifty children treated with subcutaneous adalimumab at a single Dutch centre
+contributed 78 therapeutic-drug-monitoring samples collected between January
+2013 and August 2023 (Table 1, Section 2.1). Sampling was extremely sparse and
+opportunistic: 33 of the 50 patients contributed only one sample, and samples
+were drawn at arbitrary times within the dosing interval rather than to a PK
+schedule. Median body weight was 49 kg (IQR 29.4-59.8), mean age 11.8 years
+(SD 3.9), and 72% were female. Anti-drug antibodies were detected in 9 patients
+(18%), 39 (78%) were on concomitant methotrexate, and 8 (16%) had active
+uveitis. Median C-reactive protein was very low at 0.55 mg/L (IQR 0.3-1.2),
+consistent with the low-grade inflammatory burden typical of JIA. Race and
+ethnicity were not reported.
+
+The same information is available programmatically via
+`readModelDb("NassarSheikhRashid_2024_adalimumab")()$population`.
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its origin. The table
+below collects them for review. Values marked *fixed (Kang)* were not estimated
+on the JIA data; they are carried over from Kang 2020 model 3 and appear in
+Table 2 flagged with an asterisk.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| `lcl` (CL/F) | 0.374 L/day per 70 kg | Table 2, row `CL/F, L/day (WT/70)^0.75` (RSE 10.0%) |
+| `lvc` (V1/F) | 2.67 L per 70 kg | Table 2, row `V1/F*` -- fixed (Kang) |
+| `lq` (Q/F) | 1.7 L/day per 70 kg | Table 2, row `Q/F*` -- fixed (Kang) |
+| `lvp` (V2/F) | 3.94 L per 70 kg | Table 2, row `V2/F*` -- fixed (Kang) |
+| `lka` | 0.262 /day | Table 2, row `ka*` -- fixed (Kang) |
+| `ld1` (zero-order input duration) | 0.121 day | Table 2, row `D1*` -- fixed (Kang) |
+| `lfdepot` | 1 (structural anchor) | Table 2 reports CL/F, V1/F, Q/F, V2/F throughout; F not estimated |
+| `e_wt_cl`, `e_wt_q` | 0.75 | Table 2 row labels `(WT/70)^0.75`; Section 3.3 "standard allometric scaling ... reference weight of 70 kg" |
+| `e_wt_vc`, `e_wt_vp` | 1 | Table 2 row labels `(WT/70)^1`; Section 3.3 |
+| `e_ada_pos_cl` | log(2.08) | Table 2, row `(theta_ADA)^ADA*` -- fixed; Section 3.3 derivation from Kang model 3 |
+| `e_conmed_mtx_cl` | log(0.720) | Table 2, row `(theta_MTX)^MTX` (RSE 10.8%) |
+| `e_crp_cl` | 0.165 | Table 2, row `(CRP/0.6)^theta_CRP` (RSE 31.6%) |
+| `e_dis_uveitis_cl` | log(1.44) | Table 2, row `(theta_UV)^UVEITIS` (RSE 16.4%) |
+| `etalcl` | 0.0754785 | Table 2, `IIV CL/F` = 28.0% CV; omega^2 = log(1 + CV^2) |
+| `etalvc`, `etalq`, `etalvp`, `etalka` (diagonal) | 0.585, 1.31, 0.150, 0.439 | Table 2, `IIV V1/F* 89.2%`, `Q/F* 165%`, `V2/F* 40.3%`, `ka* 74.2%` -- fixed (Kang) |
+| omega off-diagonals of the fixed BLOCK(4) | -0.205, -0.138, 0.287, 0.0438, 0.559, 0.119 | **Not in this paper.** Section 3.3 "keeping the full omega variance-covariance matrix for the other parameters as described previously"; values read from Kang 2020 Table 4 via `modellib("Kang_2020_adalimumab_phase3_extension")` |
+| `addSd` | 3.61 mg/L | Table 2, `Additive, mg/L` = 13.0 with "(SD 3.61 mg/L)" alongside |
+| Covariate functional forms | n/a | Equation 1 (categorical power `theta_p * theta_cov^COV`) and Equation 2 (continuous power `theta_p * (COV/refCOV)^theta_cov`) |
+| Sequential zero- then first-order SC absorption | n/a | Section 3.3, carried over from Kang 2020 model 3 (`dur(depot) <- d1`, then first-order `ka`) |
+| ODE structure (2 compartments, linear elimination) | n/a | Section 2.3 and 3.2 (Kang model 3 structure) |
+
+# Covariate model: reproducing the paper's own arithmetic
+
+Section 3.3 states four quantitative claims about the covariate model. Each is a
+deterministic consequence of the `ini()` values, so these are exact checks: they
+compare the packaged model's `cl` against the number printed in the paper, with
+no simulation noise on either side.
+
+```{r covariate-claims}
+REF_WT  <- 70
+REF_CRP <- 0.6
+
+# One typical (zero-eta) subject per covariate scenario.
+cov_arms <- tibble::tibble(
+  arm         = c("Reference (70 kg, ADA-, no MTX, no uveitis, CRP 0.6)",
+                  "ADA-positive", "On methotrexate", "Active uveitis",
+                  "CRP 10 mg/L", "35 kg, otherwise reference"),
+  WT          = c(REF_WT, REF_WT, REF_WT, REF_WT, REF_WT, 35),
+  ADA_POS     = c(0, 1, 0, 0, 0, 0),
+  CONMED_MTX  = c(0, 0, 1, 0, 0, 0),
+  DIS_UVEITIS = c(0, 0, 0, 1, 0, 0),
+  CRP         = c(REF_CRP, REF_CRP, REF_CRP, REF_CRP, 10, REF_CRP)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+ev_cov <- dplyr::bind_rows(
+  cov_arms |> dplyr::transmute(id, time = 0, amt = 40, evid = 1L,
+                               cmt = "depot", rate = -2),
+  cov_arms |> dplyr::transmute(id, time = 1, amt = NA_real_, evid = 0L,
+                               cmt = "central", rate = 0)
+) |>
+  dplyr::left_join(cov_arms, by = "id") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+# omega = NA is mandatory: zeroRe() alone does not stop rxode2 re-using an
+# omega left in the solve options by a previous stochastic solve.
+sim_cov <- rxode2::rxSolve(
+  rxode2::zeroRe(ui), events = ev_cov, omega = NA,
+  keep = c("arm"), returnType = "data.frame"
+)
+
+cl_by_arm <- sim_cov |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(cl = unique(round(cl, 10)), .groups = "drop")
+stopifnot(nrow(cl_by_arm) == nrow(cov_arms))   # one CL per arm, i.e. truly typical
+
+cl_of <- function(a) cl_by_arm$cl[match(a, cl_by_arm$arm)]
+cl_ref <- cl_of("Reference (70 kg, ADA-, no MTX, no uveitis, CRP 0.6)")
+
+claims <- tibble::tribble(
+  ~Claim,                                                            ~Paper,  ~Model,
+  "Typical CL/F at 70 kg (Table 2, abstract '0.37 L/day per 70 kg')", 0.374,   cl_ref,
+  "CL/F on methotrexate (Section 4: 'reduced by 28% to 0.27 L/day')", 0.269,   cl_of("On methotrexate"),
+  "ADA-positive CL/F ratio (Section 3.3: '108% increase')",           2.08,    cl_of("ADA-positive") / cl_ref,
+  "Uveitis CL/F ratio (Section 3.3: '44% higher clearance')",         1.44,    cl_of("Active uveitis") / cl_ref,
+  "CRP 10 vs 0.6 mg/L CL/F ratio (Section 3.3: 'CL increased by 59%')", 1.59,  cl_of("CRP 10 mg/L") / cl_ref,
+  "Allometry, 35 vs 70 kg (Table 2 exponent 0.75, i.e. 0.5^0.75)",    0.5946,  cl_of("35 kg, otherwise reference") / cl_ref
+) |>
+  dplyr::mutate(`% diff` = 100 * (Model - Paper) / Paper)
+
+knitr::kable(claims, digits = 4,
+             caption = "Deterministic covariate-model checks against the values printed in Nassar-Sheikh Rashid 2024.")
+
+# These are algebraic identities, not simulated statistics, so a tight bound is
+# the correct gate here (see known-vignette-failure-patterns.md pattern 11).
+# The tolerance is set by the paper's own rounding: 0.269 and 1.59 are printed
+# to 3 significant figures, and 0.5946 is 0.5^0.75 rounded to 4.
+stopifnot(max(abs(claims$`% diff`)) < 0.2)
+```
+
+# Virtual cohort
+
+Individual data are not public. Three virtual cohorts are built below, each
+matching a different set of published demographics. `set.seed()` seeds R's RNG
+only; rxode2's simulation RNG is partitioned per solver thread, so the exact
+cohort differs between a 2-thread CI runner and a 16-thread workstation. Every
+assertion downstream is therefore written to hold for any cohort this model can
+produce.
+
+```{r cohort-helpers}
+set.seed(20240417)
+rxode2::rxSetSeed(20240417)
+
+TAU     <- 14                       # days between doses (every other week)
+N_DOSE  <- 12                       # 154 days of dosing; steady state is reached well before the last interval
+DOSE_T  <- TAU * (seq_len(N_DOSE) - 1)
+SS_FROM <- DOSE_T[N_DOSE]           # 154 -- start of the final dosing interval
+SS_TO   <- SS_FROM + TAU            # 168
+WEEK10  <- 70                       # 10 weeks: the trough the paper reports in Section 3.4
+
+# Coarse over the whole course (day 70 included for the 10-week trough), dense
+# over the final interval so the NCA resolves Cmax and the AUC accurately.
+OBS_T <- sort(unique(c(seq(0, SS_TO, by = 2), seq(SS_FROM, SS_TO, by = 0.25))))
+
+# Approved European JIA dose band (Section 1 and reference [10]).
+dose_for_wt <- function(wt) ifelse(wt < 30, 20, 40)
+
+# Body weight from a lognormal matched to a reported median and IQR.
+rlnorm_median_iqr <- function(n, med, q1, q3, lo, hi) {
+  sdlog <- log(q3 / q1) / (2 * stats::qnorm(0.75))
+  pmin(pmax(stats::rlnorm(n, meanlog = log(med), sdlog = sdlog), lo), hi)
+}
+
+# CRP is far too skewed for a lognormal (an IQR of 0.3-10.6 around a median of
+# 4.0 implies sdlog ~ 2.6, which would put the 99th percentile near 2000 mg/L).
+# Instead sample by inverse-CDF through the reported quartiles, with assumed
+# min / max endpoints -- see "Assumptions and deviations".
+rcrp <- function(n, q1, med, q3, lo, hi) {
+  stats::approx(x = c(0, 0.25, 0.5, 0.75, 1), y = c(lo, q1, med, q3, hi),
+                xout = stats::runif(n))$y
+}
+
+make_events <- function(subj) {
+  dplyr::bind_rows(
+    tidyr::crossing(id = subj$id, time = DOSE_T) |>
+      dplyr::mutate(evid = 1L, cmt = "depot", rate = -2),
+    tidyr::crossing(id = subj$id, time = OBS_T) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", rate = 0)
+  ) |>
+    dplyr::left_join(subj, by = "id") |>
+    dplyr::mutate(amt = ifelse(evid == 1L, dose_mg, amt)) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+```
+
+## Cohort A -- the paper's simulated JIA population (Section 3.4)
+
+Section 3.4 describes the 500-patient virtual data set used for the paper's own
+simulations: median body weight 45.3 kg (IQR 37.5-53.9), 13.2% with detectable
+ADA, 77.4% on methotrexate, 15.4% with uveitis, median CRP 4.0 mg/L
+(IQR 0.3-10.6). 200 subjects are used here (the library cap per arm); that is
+ample for the median and mean statistics compared below.
+
+```{r cohort-a}
+N_A <- 200
+subj_a <- tibble::tibble(
+  id          = seq_len(N_A),
+  WT          = rlnorm_median_iqr(N_A, 45.3, 37.5, 53.9, lo = 10, hi = 90),
+  ADA_POS     = stats::rbinom(N_A, 1, 0.132),
+  CONMED_MTX  = stats::rbinom(N_A, 1, 0.774),
+  DIS_UVEITIS = stats::rbinom(N_A, 1, 0.154),
+  CRP         = rcrp(N_A, q1 = 0.3, med = 4.0, q3 = 10.6, lo = 0.1, hi = 60)
+) |>
+  dplyr::mutate(dose_mg = dose_for_wt(WT), arm = "Simulated JIA cohort")
+
+ev_a <- make_events(subj_a)
+# No unique() here: anyDuplicated() applied to an already-deduplicated frame is
+# always 0, i.e. a gate that cannot go red. The frame itself is checked.
+stopifnot(!anyDuplicated(ev_a[, c("id", "time", "evid")]))
+```
+
+## Cohort B -- body-weight strata (Figure 2A)
+
+Figure 2A stratifies the virtual population into five body-weight categories.
+Each stratum below draws body weight uniformly within its band and the remaining
+covariates from the Cohort A distributions, so the strata differ only in weight
+(and therefore in the approved dose band).
+
+```{r cohort-b}
+N_B <- 100
+bands <- tibble::tribble(
+  ~band,      ~lo, ~hi,
+  "<30 kg",    15,  30,
+  "30-40 kg",  30,  40,
+  "40-50 kg",  40,  50,
+  "50-60 kg",  50,  60,
+  ">60 kg",    60,  80
+)
+
+subj_b <- dplyr::bind_rows(lapply(seq_len(nrow(bands)), function(k) {
+  tibble::tibble(
+    id          = 1000L + (k - 1L) * N_B + seq_len(N_B),   # disjoint from cohorts A and C
+    WT          = stats::runif(N_B, bands$lo[k], bands$hi[k]),
+    ADA_POS     = stats::rbinom(N_B, 1, 0.132),
+    CONMED_MTX  = stats::rbinom(N_B, 1, 0.774),
+    DIS_UVEITIS = stats::rbinom(N_B, 1, 0.154),
+    CRP         = rcrp(N_B, q1 = 0.3, med = 4.0, q3 = 10.6, lo = 0.1, hi = 60),
+    arm         = bands$band[k]
+  )
+})) |>
+  dplyr::mutate(dose_mg = dose_for_wt(WT),
+                arm = factor(arm, levels = bands$band))
+
+ev_b <- make_events(subj_b)
+stopifnot(!anyDuplicated(ev_b[, c("id", "time", "evid")]))
+```
+
+## Cohort C -- the observed JIA cohort (Table 1)
+
+Cohort C matches the *observed* patients rather than the paper's simulated ones:
+median weight 49 kg (IQR 29.4-59.8), 18% ADA-positive, 78% on methotrexate, 16%
+with uveitis, median CRP 0.55 mg/L (IQR 0.3-1.2). It exists so the model can be
+checked against the observed median serum level of 12.0 mg/L (IQR 6.12-15.8),
+which -- unlike the paper's simulated trough -- came from samples drawn at
+arbitrary times within the dosing interval.
+
+```{r cohort-c}
+N_C <- 200
+subj_c <- tibble::tibble(
+  id          = 5000L + seq_len(N_C),
+  WT          = rlnorm_median_iqr(N_C, 49, 29.4, 59.8, lo = 10, hi = 90),
+  ADA_POS     = stats::rbinom(N_C, 1, 0.18),
+  CONMED_MTX  = stats::rbinom(N_C, 1, 0.78),
+  DIS_UVEITIS = stats::rbinom(N_C, 1, 0.16),
+  CRP         = rcrp(N_C, q1 = 0.3, med = 0.55, q3 = 1.2, lo = 0.1, hi = 20)
+) |>
+  dplyr::mutate(dose_mg = dose_for_wt(WT), arm = "Observed-cohort demographics")
+
+ev_c <- make_events(subj_c)
+stopifnot(!anyDuplicated(ev_c[, c("id", "time", "evid")]))
+```
+
+# Simulation
+
+```{r simulate}
+solve_pop <- function(ev) {
+  # omega is passed explicitly because the earlier zeroRe() solve of the same
+  # compiled system can leave a zero omega in the solve options and silently
+  # collapse every subject onto one typical patient.
+  rxode2::rxSolve(
+    ui, events = ev, omega = ui$omega,
+    keep = c("arm", "WT", "ADA_POS", "CONMED_MTX", "DIS_UVEITIS", "CRP", "dose_mg"),
+    returnType = "data.frame"
+  )
+}
+
+sim_a <- solve_pop(ev_a)
+sim_b <- solve_pop(ev_b)
+sim_c <- solve_pop(ev_c)
+
+# Guard the opposite failure to the one above: IIV must actually be sampled.
+stopifnot(dplyr::n_distinct(round(sim_a$cl, 8)) > 1L)
+# Cc is the individual prediction WITHOUT residual error. Everything below uses
+# Cc deliberately; the additive residual is folded in explicitly where the
+# paper's statistic includes it.
+stopifnot(isTRUE(all.equal(sim_a$Cc, sim_a$ipredSim)))
+stopifnot(all(sim_a$Cc >= 0), all(sim_b$Cc >= 0), all(sim_c$Cc >= 0))
+```
+
+# Replicate published figures
+
+## Supplementary Figure 4A -- concentration-time profile to steady state
+
+```{r figure-s4a}
+sim_a |>
+  dplyr::filter(time <= WEEK10) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(Cc, 0.05), Q50 = stats::median(Cc),
+    Q95 = stats::quantile(Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = 5, linetype = "dashed", colour = "grey40") +
+  labs(x = "Time (days)", y = "Adalimumab concentration (mg/L)",
+       title = "First five dosing intervals in the simulated JIA cohort",
+       subtitle = "Median with 5th-95th percentile band; dashed line = the 5 mg/L adult RA target trough",
+       caption = "Replicates Supplementary Figure 4A of Nassar-Sheikh Rashid 2024.")
+```
+
+## Figure 2A -- body-weight strata
+
+```{r figure-2a}
+ss_b <- sim_b |> dplyr::filter(time >= SS_FROM, time <= SS_TO)
+
+ss_b |>
+  dplyr::group_by(arm, t_int = time - SS_FROM) |>
+  dplyr::summarise(Q50 = stats::median(Cc), .groups = "drop") |>
+  ggplot(aes(t_int, Q50, colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time within the dosing interval (days)",
+       y = "Median adalimumab concentration (mg/L)",
+       colour = "Body weight",
+       title = "Figure 2A -- median steady-state profile by body-weight stratum",
+       subtitle = "20 mg every other week below 30 kg, 40 mg every other week at or above 30 kg",
+       caption = "Replicates Figure 2A of Nassar-Sheikh Rashid 2024.")
+
+wt_median <- ss_b |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(`Median Cc over the interval (mg/L)` = stats::median(Cc),
+                   .groups = "drop")
+knitr::kable(wt_median, digits = 2,
+             caption = "Median steady-state concentration by body-weight stratum.")
+
+ratio_30_40_vs_60 <- wt_median[[2]][wt_median$arm == "30-40 kg"] /
+  wt_median[[2]][wt_median$arm == ">60 kg"]
+```
+
+The 30-40 kg stratum reaches
+`r sprintf("%.2f", ratio_30_40_vs_60)`-fold the concentrations of the above-60 kg
+stratum. The paper describes this contrast as "nearly twice as high"
+(Section 3.4); the model reproduces the direction and approximate magnitude of
+the published claim.
+
+```{r figure-2a-gate}
+# A cohort-derived ratio, so the bound is a magnitude band rather than a value
+# read off one run. Realised 1.64 on this render; a mis-transcribed allometric
+# exponent or dose band moves this well outside [1.25, 2.60].
+stopifnot(ratio_30_40_vs_60 > 1.25, ratio_30_40_vs_60 < 2.60)
+# Section 3.4: patients nearer the 30 kg threshold have the highest exposure,
+# so the top stratum by concentration must be one of the two lightest 40 mg
+# bands rather than a heavy one.
+stopifnot(as.character(wt_median$arm[which.max(wt_median[[2]])]) %in%
+            c("30-40 kg", "40-50 kg"))
+```
+
+## Figure 2B-E -- covariate strata
+
+```{r figure-2be}
+ss_a <- sim_a |> dplyr::filter(time >= SS_FROM, time <= SS_TO)
+
+strata <- dplyr::bind_rows(
+  ss_a |> dplyr::transmute(t_int = time - SS_FROM, Cc,
+                           panel = "B. Uveitis",
+                           level = ifelse(DIS_UVEITIS == 1, "Uveitis", "No uveitis")),
+  ss_a |> dplyr::transmute(t_int = time - SS_FROM, Cc,
+                           panel = "C. Methotrexate",
+                           level = ifelse(CONMED_MTX == 1, "On MTX", "No MTX")),
+  ss_a |> dplyr::transmute(t_int = time - SS_FROM, Cc,
+                           panel = "D. Anti-drug antibodies",
+                           level = ifelse(ADA_POS == 1, "ADA-positive", "ADA-negative")),
+  ss_a |> dplyr::transmute(t_int = time - SS_FROM, Cc,
+                           panel = "E. C-reactive protein",
+                           level = ifelse(CRP < 1, "CRP < 1 mg/L", "CRP >= 1 mg/L"))
+)
+
+strata |>
+  dplyr::group_by(panel, level, t_int) |>
+  dplyr::summarise(Q50 = stats::median(Cc), .groups = "drop") |>
+  ggplot(aes(t_int, Q50, colour = level)) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~panel, scales = "free_y") +
+  labs(x = "Time within the dosing interval (days)",
+       y = "Median adalimumab concentration (mg/L)", colour = NULL,
+       title = "Figure 2B-E -- median steady-state profile by covariate status",
+       caption = "Replicates Figure 2B-E of Nassar-Sheikh Rashid 2024.")
+```
+
+```{r figure-2be-gate}
+# Section 3.4: "drug concentrations were highest in methotrexate users without
+# detectable ADA, without uveitis during adalimumab treatment and with CRP
+# levels below 1 mg/L". Each of the four contrasts below is driven by a
+# covariate coefficient of at least 28% on clearance, so the ORDERING is a real
+# structural claim rather than a near-zero effect whose sign could flip
+# (contrast pattern 12 of known-vignette-failure-patterns.md).
+panel_dir <- strata |>
+  dplyr::group_by(panel, level) |>
+  dplyr::summarise(med = stats::median(Cc), .groups = "drop_last") |>
+  dplyr::summarise(
+    favoured = level[which.max(med)],
+    ratio    = max(med) / min(med),
+    .groups  = "drop"
+  )
+knitr::kable(panel_dir, digits = 2,
+             caption = "Higher-exposure group in each covariate panel, and the ratio between groups.")
+
+stopifnot(identical(
+  panel_dir$favoured[order(panel_dir$panel)],
+  c("No uveitis", "On MTX", "ADA-negative", "CRP < 1 mg/L")
+))
+```
+
+# PKNCA validation
+
+Steady-state NCA is run over the final dosing interval (day
+`r SS_FROM` to `r SS_TO`), by which point the cohort is at steady state: the
+terminal half-life at the reference covariate set is about 13 days, and the
+final interval starts after 11 doses.
+
+```{r pknca}
+nca_for <- function(sim, ev) {
+  sim_nca <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time, Cc, arm) |>
+    dplyr::mutate(arm = as.character(arm))
+
+  # Time-zero guarantee (pknca-recipes.md); pre-dose Cc = 0 is correct for a
+  # subcutaneous model. Any existing time-zero row wins.
+  sim_nca <- dplyr::bind_rows(
+    sim_nca,
+    sim_nca |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+  ) |>
+    dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, arm, time)
+
+  dose_df <- ev |>
+    dplyr::filter(evid == 1) |>
+    dplyr::select(id, time, amt, arm) |>
+    dplyr::mutate(arm = as.character(arm))
+
+  conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id,
+                               concu = "mg/L", timeu = "day")
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id,
+                               doseu = "mg")
+
+  # `cmin` rather than `ctrough`: PKNCA re-bases the time vector to the dose
+  # before calling pk.calc.ctrough(), so `time %in% end` never matches and
+  # ctrough comes back NA for every subject on a dose-anchored interval.
+  #
+  # On a dose-anchored steady-state interval the minimum falls at the START of
+  # the interval, i.e. the pre-dose concentration immediately before the dose
+  # that opens it. That is exactly the "trough level" the paper reports. It is
+  # NOT the end-of-interval value: the ka distribution is wide (74.2% CV, fixed
+  # from Kang) and its lower tail sits below kel, so a slow-absorbing subject
+  # carries enough depot from earlier doses that central rises monotonically
+  # across the interval. The chunk below asserts the identity rather than
+  # assuming it.
+  intervals <- data.frame(
+    start = SS_FROM, end = SS_TO,
+    cmax = TRUE, tmax = TRUE, cmin = TRUE, cav = TRUE, auclast = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+nca_a <- nca_for(sim_a, ev_a)
+nca_b <- nca_for(sim_b, ev_b)
+
+res_a <- as.data.frame(nca_a$result)
+res_b <- as.data.frame(nca_b$result)
+stopifnot(nrow(res_a) > 0, nrow(res_b) > 0)   # a gate that cannot go red is worse than none
+
+# Confirm `cmin` really is the pre-dose trough, so the comparison against the
+# paper's trough below is like-for-like.
+cmin_chk <- res_a |>
+  dplyr::filter(PPTESTCD == "cmin") |>
+  dplyr::transmute(id = as.integer(as.character(id)), cmin = PPORRES) |>
+  dplyr::inner_join(
+    sim_a |> dplyr::filter(time == SS_FROM) |> dplyr::select(id, cc_pre = Cc),
+    by = "id"
+  ) |>
+  dplyr::inner_join(
+    sim_a |> dplyr::filter(time == SS_TO) |> dplyr::select(id, cc_end = Cc),
+    by = "id"
+  )
+stopifnot(nrow(cmin_chk) == N_A)
+
+# Both sides are the same solved trajectory, so this is an exact identity and a
+# tight bound is the correct gate: PKNCA's cmin must BE the pre-dose value.
+stopifnot(max(abs(cmin_chk$cmin - cmin_chk$cc_pre)) < 1e-8)
+
+# The pre-dose and end-of-interval troughs differ only by the accumulation still
+# outstanding after 11 doses. Asserted on the centre and a robust quantile
+# rather than the maximum: which subjects draw a slow ka -- and so are furthest
+# from steady state -- is not reproducible across rxode2 builds or thread
+# counts. Realised on one render: median 0.008%, 90th percentile 0.5%,
+# maximum 4.1%.
+ss_gap <- abs(cmin_chk$cc_pre - cmin_chk$cc_end) / cmin_chk$cc_end
+stopifnot(stats::median(ss_gap) < 0.01,
+          stats::quantile(ss_gap, 0.90) < 0.05)
+```
+
+## Internal identity: AUC over the interval equals dose / CL at steady state
+
+At steady state the area under one dosing interval must equal `Dose / CL` for
+every subject, whatever their absorption or distribution parameters. This check
+is independent of the paper and validates that the ODE system, the `f(depot)`
+anchor and the covariate model on clearance are wired together correctly.
+
+```{r auc-identity}
+cl_by_id <- sim_a |> dplyr::group_by(id) |>
+  dplyr::summarise(cl = dplyr::first(cl), dose_mg = dplyr::first(dose_mg),
+                   .groups = "drop")
+
+auc_chk <- res_a |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, auc = PPORRES) |>
+  dplyr::mutate(id = as.integer(as.character(id))) |>
+  dplyr::inner_join(cl_by_id, by = "id") |>
+  dplyr::mutate(pct_diff = 100 * (auc - dose_mg / cl) / (dose_mg / cl))
+stopifnot(nrow(auc_chk) == N_A)
+
+tibble::tibble(
+  Statistic = c("Median % difference", "90th percentile of |% difference|",
+                "Maximum |% difference|"),
+  Value = c(stats::median(auc_chk$pct_diff),
+            stats::quantile(abs(auc_chk$pct_diff), 0.9),
+            max(abs(auc_chk$pct_diff)))
+) |>
+  knitr::kable(digits = 3, caption = "AUC over the final dosing interval versus Dose / CL.")
+
+# Both sides use the SAME drawn parameters, so the residual difference is pure
+# numerical error: trapezoidal integration on a 0.25-day grid, plus the last
+# fraction of a percent of accumulation still outstanding after 11 doses. The
+# central statistics are therefore held tightly; the upper tail is looser
+# because the fixed 165% CV on Q/F produces occasional subjects whose
+# distribution phase is still equilibrating. Realised on this render: median
+# -0.015%, 90th percentile 1.24%, 95th percentile 2.62% (maximum 25.6%, driven
+# by a single still-equilibrating subject). The bounds stop at the 95th
+# percentile deliberately: over a 200-subject cohort the 99th percentile is the
+# second-largest value, an extreme order statistic that is not reproducible
+# across rxode2 builds or thread counts. Any of a wrong bioavailability, a
+# wrong dose band or a mis-scaled clearance moves the MEDIAN by tens of percent
+# and breaks the first bound immediately.
+stopifnot(abs(stats::median(auc_chk$pct_diff)) < 2,
+          stats::quantile(abs(auc_chk$pct_diff), 0.90) < 4,
+          stats::quantile(abs(auc_chk$pct_diff), 0.95) < 10)
+```
+
+## Comparison against the published values
+
+```{r nca-compare}
+published <- tibble::tibble(arm = "Simulated JIA cohort", cmin = 7.4)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_a,
+  reference = published,
+  by        = "arm",
+  units     = c(cmin = "mg/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, caption = paste(
+  "Simulated steady-state trough (PKNCA Cmin over the final dosing interval,",
+  "which the chunk above confirms is the pre-dose trough) versus the",
+  "value reported in Section 3.4 of Nassar-Sheikh Rashid 2024: 'the mean",
+  "trough level in the simulated dataset was 7.4 +/- 5.5 mg/L'.",
+  "* marks a difference above 20%."
+))
+```
+
+```{r trough-detail}
+trough_a <- sim_a |> dplyr::filter(time == WEEK10) |> dplyr::pull(Cc)
+stopifnot(length(trough_a) == N_A)
+
+# The paper's simulated data set is a NONMEM $SIMULATION, so its reported SD
+# includes the additive residual error (SD 3.61 mg/L) on top of between-subject
+# variability. Cc carries only the latter, so the comparable SD is the
+# quadrature sum.
+sd_ipred <- stats::sd(trough_a)
+sd_total <- sqrt(sd_ipred^2 + 3.61^2)
+
+tibble::tibble(
+  Quantity = c("Mean 10-week trough (mg/L)",
+               "SD of trough, between-subject only (mg/L)",
+               "SD of trough, including the additive residual (mg/L)"),
+  Paper    = c(7.4, NA_real_, 5.5),
+  Model    = c(mean(trough_a), sd_ipred, sd_total)
+) |>
+  knitr::kable(digits = 2, caption = paste(
+    "Ten-week (five-interval) trough in the simulated JIA cohort, against",
+    "Section 3.4 of Nassar-Sheikh Rashid 2024."
+  ))
+
+# A cohort mean over 200 subjects with a right-skewed clearance distribution.
+# The band is wide enough to absorb the draw-to-draw spread but narrow enough
+# that a mis-transcribed clearance, dose band or dosing interval -- each of
+# which moves the trough by tens of percent -- still breaks it.
+stopifnot(abs(mean(trough_a) / 7.4 - 1) < 0.35)
+# The paper's SD is an envelope claim, not a point estimate; require only that
+# the model's total variability is of the same order.
+stopifnot(sd_total > 0.5 * 5.5, sd_total < 2.5 * 5.5)
+```
+
+## Observed concentrations (Table 1)
+
+The observed cohort's samples were drawn at arbitrary times within the dosing
+interval, so the comparable model quantity is a single randomly-timed
+steady-state sample per subject, not a trough.
+
+```{r observed-compare}
+set.seed(99)
+# One randomly-timed sample per subject, drawn once in base R and joined on, so
+# the sampling times are fixed by set.seed() rather than redrawn per group.
+rand_t <- subj_c |>
+  dplyr::transmute(id, t_target = SS_FROM + stats::runif(dplyr::n(), 0, TAU))
+
+sample_c <- sim_c |>
+  dplyr::filter(time >= SS_FROM, time <= SS_TO) |>
+  dplyr::inner_join(rand_t, by = "id") |>
+  dplyr::group_by(id) |>
+  dplyr::slice(which.min(abs(time - t_target))) |>
+  dplyr::ungroup()
+stopifnot(nrow(sample_c) == N_C)
+
+obs_cmp <- tibble::tibble(
+  Statistic = c("Median (mg/L)", "25th percentile (mg/L)", "75th percentile (mg/L)"),
+  `Observed (Table 1)` = c(12.0, 6.12, 15.8),
+  Model = c(stats::median(sample_c$Cc),
+            stats::quantile(sample_c$Cc, 0.25),
+            stats::quantile(sample_c$Cc, 0.75))
+)
+knitr::kable(obs_cmp, digits = 2, caption = paste(
+  "Randomly-timed steady-state samples from a virtual cohort matching the",
+  "observed Table 1 demographics, against the observed adalimumab levels."
+))
+
+# The model is being asked to predict a real cohort's concentration
+# distribution from covariates alone, so this is a structural sanity band, not
+# a precision claim. It still fails loudly on a mis-scaled clearance or volume.
+stopifnot(abs(stats::median(sample_c$Cc) / 12.0 - 1) < 0.40)
+```
+
+The lower quartile lands almost exactly on the observed 6.12 mg/L, but the
+model's median and upper quartile sit roughly 15-25% below the observed values.
+This is a real, reproducible under-prediction rather than a transcription
+problem -- the deterministic covariate checks above reproduce every printed
+number to better than 0.2% -- and there are three plausible contributors, all
+of which the source itself raises:
+
+1. **The imputed ADA effect biases clearance upward.** Section 4 states that the
+   drug-sensitive assay used here under-detects ADA-positive patients, so
+   "correcting too little for the presence of ADA could have resulted in an
+   overestimation of clearance". An over-estimated `CL/F` under-predicts
+   concentrations, which is the direction seen here.
+2. **Sampling times are ambiguous in the source.** Section 2.1 describes the
+   samples as trough concentrations, while Section 3.1 says they were "collected
+   at random time points in the treatment interval". Random-time sampling is
+   assumed above; assuming troughs instead would move the model's median further
+   down, not up, so the discrepancy is not explained by this choice alone.
+3. **Ascertainment.** Levels were measured "mainly in case of clinical
+   ineffectiveness" (Section 4), which biases the observed sample in a
+   direction the model has no way to represent.
+
+The gate above is therefore a structural band rather than a precision claim, and
+the deviation is recorded rather than tuned away.
+
+# Assumptions and deviations
+
+- **Known deviation: the observed median is under-predicted by roughly 20%.**
+  The model reproduces the paper's own simulated trough (7.4 mg/L) and every
+  printed covariate multiplier essentially exactly, but a virtual cohort matching
+  the *observed* Table 1 demographics predicts a median randomly-timed level
+  below the observed 12.0 mg/L. See the "Observed concentrations" section above
+  for the three contributing mechanisms the source itself raises. This is
+  recorded, not tuned away, and the corresponding check is a structural band
+  rather than a precision gate.
+- **PKNCA `ctrough` is unusable on a dose-anchored interval.** PKNCA re-bases the
+  time vector to the dose before calling `pk.calc.ctrough()`, so `time %in% end`
+  never matches and every subject returns `NA`. `cmin` is used instead, with an
+  explicit assertion identifying which trough it is: on a steady-state interval
+  anchored at a dose, the minimum falls at the *start* of the interval -- the
+  pre-dose concentration -- for every subject, and that is the quantity the
+  paper's "trough level" refers to. It is deliberately not compared against the
+  end-of-interval value: the fixed 74.2% CV on `ka` puts the lower tail of the
+  absorption-rate distribution below `kel`, so slow-absorbing subjects carry
+  enough depot from earlier doses that concentration rises monotonically across
+  the interval.
+- **Omega off-diagonals are not from this paper.** Table 2 prints only the
+  diagonal %CV values for the four fixed inter-individual variances. Section 3.3
+  says the authors kept "the full omega variance-covariance matrix for the other
+  parameters as described previously", so the six covariances in the fixed
+  `BLOCK(4)` were read from the corresponding sub-block of Kang 2020 Table 4 via
+  the registered upstream extraction
+  `modellib("Kang_2020_adalimumab_phase3_extension")`. Dropping them would
+  contradict the paper's own description of the model; the resulting 4x4 is
+  positive definite (smallest eigenvalue 0.064). The `etalcl` variance sits
+  outside that block because it is the one variance this paper re-estimated.
+- **Bioavailability is a structural anchor.** No intravenous arm was studied and
+  every disposition parameter in Table 2 is apparent (CL/F, V1/F, Q/F, V2/F), so
+  F is unidentifiable and is carried at 1.
+- **The ADA effect is imputed, not fitted.** `theta_ADA = 2.08` was fixed rather
+  than estimated because the JIA data could not identify it. The paper derives
+  it from Kang 2020 model 3, whose reference group is ADA-*positive*, by
+  inverting the 0.654 ADA-negative factor and then doubling the resulting effect
+  to absorb Kang's separate ADA-titre term. Note it is the fractional *increase*
+  that is doubled, not the ratio: inverting 0.65 gives a 53% higher clearance,
+  and 2 x 53% = 106%, i.e. the factor of about 2.08 that Table 2 reports and the
+  "108% increase" Section 3.3 quotes. Doubling the ratio itself would give 3.06,
+  which is not the reported value. The authors flag this in Section 4 as a limitation:
+  assay-to-assay differences in ADA detection may make the imputed effect wrong,
+  which would in turn bias the estimated clearance.
+- **CRP reference value.** The model uses the 0.6 mg/L reference printed in the
+  Table 2 row label and in the Section 3.3 worked example, not the 0.55 mg/L
+  median reported in Table 1; the paper evidently rounded. The 0.165 exponent
+  is only supported over the narrow CRP range this cohort spans (IQR
+  0.3-1.2 mg/L observed) and up to the 10 mg/L used in the paper's own example.
+- **CRP sampling distribution in the vignette.** The simulated cohort's CRP is
+  drawn by inverse-CDF interpolation through the reported quartiles rather than
+  from a lognormal: an IQR of 0.3-10.6 mg/L around a median of 4.0 implies
+  `sdlog` of about 2.6, which would generate physiologically absurd values. The
+  minimum (0.1 mg/L) and maximum (60 mg/L for the simulated cohort, 20 mg/L for
+  the observed cohort) endpoints are assumed, not published.
+- **Body-weight distributions are assumed lognormal**, matched to the published
+  median and interquartile range and clamped to 10-90 kg. Only the median and
+  IQR were reported.
+- **Weight-band boundaries in Figure 2A.** The paper says the virtual population
+  was split into five body-weight categories and names two of them ("30-40 kg",
+  "over 60 kg"). The intermediate cut-points used here (<30, 30-40, 40-50,
+  50-60, >60) are inferred from those two plus the 30 kg dose threshold.
+- **Race and ethnicity are not reported** in the source and are absent from the
+  model's `population` metadata and from the virtual cohorts.
+- **Covariates are treated as time-fixed in the simulations.** In the source,
+  CRP and ADA status are time-varying with last-observation-carried-forward
+  imputation (Section 2.5); a single steady-state value per subject is used here
+  because the validation targets are steady-state statistics.
+- **Screened but unretained covariates** (sex, body surface area, and any
+  concomitant immunosuppressive medication) are recorded in the model file's
+  `covariatesDataExcluded` list rather than `covariateData`, since they are not
+  referenced in `model()`.
+- **The sensitivity analysis is not extracted.** Supplementary Table 3 reports
+  the final model refitted without CRP; per the library's replicate-the-authors
+  policy, robustness checks that the authors did not report as the final model
+  are excluded.
+- **The five literature comparator models are not re-extracted here.** They were
+  evaluated, not developed, by this paper. Three of them are already in
+  nlmixr2lib as `Kang_2020_adalimumab_phase1`,
+  `Kang_2020_adalimumab_phase3_base` and
+  `Kang_2020_adalimumab_phase3_extension`.
