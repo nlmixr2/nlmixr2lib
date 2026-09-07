@@ -2,6 +2,9 @@
 
 # development version
 
+- Add Darwish 2025b trofinetide ([doi:10.1007/s12325-024-03058-7](https://doi.org/10.1007/s12325-024-03058-7)) -- girls aged 2-4 years with Rett syndrome, pooled with healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury.
+- Rename the Darwish 2025 trofinetide model to `Darwish_2025a_trofinetide` so it does not collide with the `Darwish_2025b_trofinetide` update above.
+
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
 - Add Pitsiu 2023 atacicept ([doi:10.1002/psp4.12982](https://doi.org/10.1002/psp4.12982)) -- healthy volunteers and adults with systemic lupus erythematosus.
@@ -864,7 +867,7 @@
 
 - Add Gaspar 2025 fexofenadine ([doi:10.1007/s40262-024-01470-4](https://doi.org/10.1007/s40262-024-01470-4)) -- hospitalized older adult polymorbid patients pooled with healthy volunteers.
 
-- Add Darwish 2025 trofinetide ([doi:10.1007/s12325-024-03056-9](https://doi.org/10.1007/s12325-024-03056-9)) -- healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury.
+- Add Darwish 2025a trofinetide ([doi:10.1007/s12325-024-03056-9](https://doi.org/10.1007/s12325-024-03056-9)) -- healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury.
 
 - Add Golzaryan 2025 [177Lu]Lu-PSMA I&T ([doi:10.1038/s41598-025-86159-9](https://doi.org/10.1038/s41598-025-86159-9)) - men with metastatic castration-resistant prostate cancer; a 21-compartment whole-body PBPK model with parallel labelled and unlabelled circulations.
 

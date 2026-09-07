@@ -1,7 +1,7 @@
-Darwish_2025_trofinetide <- function() {
+Darwish_2025a_trofinetide <- function() {
   description <- "Population PK model for oral trofinetide in Rett syndrome (Darwish 2025): two-compartment with first-order absorption and linear elimination, pooled across healthy volunteers and patients with Rett syndrome, fragile X syndrome, or traumatic brain injury."
   reference <- "Darwish M, Passarell J, Maxwell K, Youakim JM, Bradley H, Bishop KM. Population Pharmacokinetic Modeling to Support Trofinetide Dosing for the Treatment of Rett Syndrome. Advances in Therapy. 2025;42(2):1026-1043. doi:10.1007/s12325-024-03056-9"
-  vignette <- "Darwish_2025_trofinetide"
+  vignette <- "Darwish_2025a_trofinetide"
   units <- list(time = "h", dosing = "mg", concentration = "ug/mL")
 
   # Issue #482: what each ODE state holds, in what amount units, in what
