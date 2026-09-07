@@ -1,0 +1,849 @@
+# Amodiaquine and piperaquine in pregnancy (Ding 2024)
+
+## Model and source
+
+- Citation: Ding J, Hoglund RM, Tagbor H, Tinto H, Valea I, Mwapasa V,
+  Kalilani-Phiri L, Van Geertruyden J-P, Nambozi M, Mulenga M, Hachizovu
+  S, Ravinetto R, D’Alessandro U, Tarning J (2024). Population
+  pharmacokinetics of amodiaquine and piperaquine in African pregnant
+  women with uncomplicated *Plasmodium falciparum* infections. *CPT:
+  Pharmacometrics & Systems Pharmacology* 13(11):1893-1903.
+  <doi:10.1002/psp4.13211>.
+- Article: <https://doi.org/10.1002/psp4.13211>
+- Europe PMC: <https://europepmc.org/article/MED/39498866> (PMC11578137;
+  open access, CC-BY).
+- Trial: PREGACT, ClinicalTrials.gov NCT00852423.
+
+The paper reports **two independently fitted population PK models** from
+two randomised arms of the same phase 3 trial, so the package ships two
+model files and this one vignette covering both:
+
+- `Ding_2024_amodiaquine` – joint parent-metabolite model for
+  amodiaquine and desethylamodiaquine (artesunate-amodiaquine arm, n =
+  771).
+- `Ding_2024_piperaquine` – three-compartment model for piperaquine
+  (dihydroartemisinin-piperaquine arm, n = 755).
+
+``` r
+
+mod_aq_fn <- readModelDb("Ding_2024_amodiaquine")
+mod_pq_fn <- readModelDb("Ding_2024_piperaquine")
+mod_aq <- rxode2::rxode2(mod_aq_fn())
+mod_pq <- rxode2::rxode2(mod_pq_fn())
+```
+
+The supporting information (Figures S1-S6: model structure diagrams,
+basic goodness-of-fit plots and prediction-corrected VPCs) was not on
+disk during this extraction. Every value used below comes from the main
+article text, Table 1, Table 2 and Table 3, which together are complete
+for both models.
+
+## Population
+
+Both arms are drawn from PREGACT, a non-inferiority, multi-centre,
+randomised, open-label phase 3 trial of four artemisinin-based
+combination therapies conducted between June 2010 and August 2013 in
+Burkina Faso (two sites), Ghana (three sites), Malawi (one site) and
+Zambia (one site). Eligible women were in the second or third trimester
+of pregnancy with an acute uncomplicated *P. falciparum* mono-infection.
+Women who vomited after dosing were excluded from the PK analysis (13 of
+784 in the artesunate-amodiaquine arm, 8 of 763 in the
+dihydroartemisinin-piperaquine arm). Sampling was sparse: a single
+venous sample on day 7 from every woman plus additional samples at other
+clinical visits when possible, which is why all absorption parameters
+were fixed to literature values.
+
+Baseline demographics reproduce Ding 2024 Table 1.
+
+``` r
+
+tibble::tribble(
+  ~Characteristic,                              ~Amodiaquine,       ~Piperaquine,
+  "Number of patients",                         "771",              "755",
+  "Daily dose (mg/kg, salt)",                   "12.8 (6.8-19.1)",  "17.8 (8.3-27.4)",
+  "Age (years)",                                "22 (15-43)",       "20 (15-43)",
+  "Bodyweight (kg)",                            "55 (37-104)",      "54 (35-115)",
+  "Height (cm)",                                "158 (132-179)",    "155 (138-178)",
+  "Gestational age (weeks)",                    "24 (13-36)",       "24 (16-36)",
+  "Trimester 2, n (%)",                         "581 (75.7)",       "519 (69.1)",
+  "Parasitaemia at enrolment (parasites/uL)",   "560 (0-82,292)",   "680 (5-355,400)"
+) |>
+  knitr::kable(caption = "Ding 2024 Table 1. Median (min-max) unless stated.")
+```
+
+| Characteristic                           | Amodiaquine     | Piperaquine     |
+|:-----------------------------------------|:----------------|:----------------|
+| Number of patients                       | 771             | 755             |
+| Daily dose (mg/kg, salt)                 | 12.8 (6.8-19.1) | 17.8 (8.3-27.4) |
+| Age (years)                              | 22 (15-43)      | 20 (15-43)      |
+| Bodyweight (kg)                          | 55 (37-104)     | 54 (35-115)     |
+| Height (cm)                              | 158 (132-179)   | 155 (138-178)   |
+| Gestational age (weeks)                  | 24 (13-36)      | 24 (16-36)      |
+| Trimester 2, n (%)                       | 581 (75.7)      | 519 (69.1)      |
+| Parasitaemia at enrolment (parasites/uL) | 560 (0-82,292)  | 680 (5-355,400) |
+
+Ding 2024 Table 1. Median (min-max) unless stated. {.table}
+
+``` r
+
+str(attr(mod_aq, "metadata")$population, max.level = 1)
+#>  NULL
+```
+
+## Source trace
+
+### Amodiaquine and desethylamodiaquine (Ding 2024 Table 2)
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka = fixed(log(0.589))` | 0.589 1/h, fixed | Table 2, “Ka (1/h) – 0.589 fixed” |
+| `lmtt = fixed(log(0.236))` | 0.236 h, fixed | Table 2, “MTT (h) – 0.236 fixed” |
+| Number of transit compartments | 2, fixed | Table 2, “Number of transit compartment – 2 fixed” |
+| `lcl = log(6780)` | 6780 L/h (%RSE 4.9) | Table 2, “CL/F AQ (L/h)” |
+| `lvc = log(272000)` | 272,000 L (%RSE 8.9) | Table 2, “V_C/F AQ (L)” |
+| `lcl_deaq = log(38.3)` | 38.3 L/h (%RSE 9.6) | Table 2, “CL/F DEAQ (L/h)” |
+| `lvc_deaq = log(861)` | 861 L (%RSE 15.7) | Table 2, “V_C/F DEAQ (L)” |
+| `lq_deaq = log(81.7)` | 81.7 L/h (%RSE 7.0) | Table 2, “Q/F DEAQ (L/h)” |
+| `lvp_deaq = log(13200)` | 13,200 L (%RSE 13.4) | Table 2, “V_p/F DEAQ (L)” |
+| `lfdepot = fixed(log(1))` | 100%, fixed | Table 2, “F AQ (%) – 100 fixed”; Methods, “Population PK analysis” |
+| `e_wt_cl = fixed(0.75)` | 0.75, fixed | Methods, “Covariates model”, Equation 2 |
+| `e_wt_vc = fixed(1.00)` | 1, fixed | Methods, “Covariates model”, Equation 3 |
+| `e_ega_f = 0.0128` | 1.28%/week (%RSE 25.0) | Table 2, “Gestational age on F AQ (%)”; footnote form `[1 + (theta x (GA - 24))]` |
+| `etalfdepot ~ 0.0895079` | 30.6% CV | Table 2, IIV column; footnote `CV = 100 x (e^variance - 1)^(1/2)` |
+| `etalcl_deaq ~ 0.0380749` | 19.7% CV | Table 2, IIV column |
+| `etalvc_deaq ~ 1.6491393` | 205% CV | Table 2, IIV column |
+| `propSd = sqrt(0.267)` | RUV 0.267 (variance) | Table 2, “RUV” (AQ); footnote “RUV is the residual error variance” |
+| `propSd_deaq = sqrt(0.122)` | RUV 0.122 (variance) | Table 2, “RUV” (DEAQ) |
+| Allometric scaling, reference 70 kg | – | Equations 2 and 3; Table 2 footnote “estimates are given for a ‘typical’ pregnant women weighting 70 kg” |
+| Molar conversion AQ -\> DEAQ | 327.81 / 355.85 = 0.9212 | Methods, “complete bioconversion”; factor not printed (see Assumptions) |
+
+### Piperaquine (Ding 2024 Table 3)
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lmtt = fixed(log(2.11))` | 2.11 h, fixed | Table 3, “MTT (h) – 2.11 fixed” |
+| Number of transit compartments | 2, fixed | Table 3, “Number of transit compartments – 2 fixed” |
+| `lcl = log(69.9)` | 69.9 L/h (%RSE 5.1) | Table 3, “CL/F (L/h)” |
+| `lvc = log(4240)` | 4240 L (%RSE 36.0) | Table 3, “V_C/F (L)” |
+| `lq = log(265)` | 265 L/h (%RSE 39.9) | Table 3, “Q_1/F (L/h)” |
+| `lvp = log(3880)` | 3880 L (%RSE 28.7) | Table 3, “V_p1/F (L)” |
+| `lq2 = log(103)` | 103 L/h (%RSE 12.8) | Table 3, “Q_2/F (L/h)” |
+| `lvp2 = log(22900)` | 22,900 L (%RSE 7.9) | Table 3, “V_p2/F (L)” |
+| `lfdepot = fixed(log(1))` | 100%, fixed | Table 3, “F (%) – 100 fixed” |
+| `e_wt_cl = fixed(0.75)` | 0.75, fixed | Methods, “Covariates model”, Equation 2 |
+| `e_wt_vc = fixed(1.00)` | 1, fixed | Methods, “Covariates model”, Equation 3 |
+| `e_para_f = -0.119` | -11.9% per log10 (%RSE 19.3) | Table 3, “Baseline parasites count on F (%)”; footnote form `[1 + theta x (log(parasitemia) - 2.83)]` |
+| `e_doseocc_f = fixed(0.237)` | 23.7%, fixed | Table 3, “Dose occasion on F (%) – 23.7 fixed”; Methods cites Hoglund 2017 |
+| `etalfdepot ~ 0.1081761` | 33.8% CV | Table 3, IIV column |
+| `etalvc ~ 0.8128839` | 112% CV | Table 3, IIV column |
+| `propSd = sqrt(0.222)` | RUV 0.222 (variance) | Table 3, “RUV” |
+| Allometric scaling, reference 70 kg | – | Equations 2 and 3; Table 3 footnote “estimates are given for a ‘typical’ pregnant women weighted 70 kg” |
+
+## Dosing regimens
+
+Both regimens are 3 consecutive daily doses under direct observation
+(Methods, “Drug regimen”). Doses below are converted to **base**, which
+is the amount unit of the model compartments.
+
+``` r
+
+dose_aq_mg <- 2 * 270   # 2 tablets x 270 mg amodiaquine base  = 540 mg/day
+dose_pq_mg <- 3 * 171   # 3 tablets x 171 mg piperaquine base  = 513 mg/day
+c(amodiaquine_base_mg_per_day = dose_aq_mg, piperaquine_base_mg_per_day = dose_pq_mg)
+#> amodiaquine_base_mg_per_day piperaquine_base_mg_per_day 
+#>                         540                         513
+```
+
+## Typical-value replication of the published secondary parameters
+
+This is the primary quantitative gate. Ding 2024 reports model-derived
+secondary parameters (terminal half-life, AUC from zero to infinity, and
+the day-7 concentration) in Tables 2 and 3, computed from the empirical
+Bayes post-hoc estimates and summarised as the cohort median. Simulating
+the typical individual at each arm’s **median body weight** and median
+covariate values should therefore land close to those published medians.
+
+``` r
+
+# Dense early sampling for the absorption / distribution phase, then a daily
+# grid long enough to characterise the terminal phase of desethylamodiaquine
+# (t1/2 ~ 14 days) and piperaquine (t1/2 ~ 17 days).
+obs_times <- sort(unique(c(
+  seq(0, 12, by = 0.25),
+  seq(12, 72, by = 1),
+  seq(72, 240, by = 6),
+  seq(240, 24 * 150, by = 24)
+)))
+```
+
+``` r
+
+# Amodiaquine arm. The model has two endpoints (Cc, Cc_deaq), so observation
+# rows carry dvid = 1 and rxode2 returns both observables as columns; dose
+# rows use the ODE state name "depot".
+make_events_aq <- function(id, wt, ega) {
+  dplyr::bind_rows(
+    data.frame(id = id, time = c(0, 24, 48), evid = 1L, amt = dose_aq_mg,
+               cmt = "depot", dvid = NA_integer_),
+    data.frame(id = id, time = obs_times, evid = 0L, amt = NA_real_,
+               cmt = NA_character_, dvid = 1L)
+  ) |>
+    dplyr::mutate(WT = wt, EGA = ega) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+
+# Piperaquine arm. Single endpoint, so observation rows point at the ODE
+# state "central". OCC increments across the three daily doses.
+make_events_pq <- function(id, wt, para) {
+  dplyr::bind_rows(
+    data.frame(id = id, time = c(0, 24, 48), evid = 1L, amt = dose_pq_mg,
+               cmt = "depot", OCC = c(1, 2, 3)),
+    data.frame(id = id, time = obs_times, evid = 0L, amt = NA_real_,
+               cmt = "central",
+               OCC = ifelse(obs_times < 24, 1, ifelse(obs_times < 48, 2, 3)))
+  ) |>
+    dplyr::mutate(WT = wt, PARA = para) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+```
+
+`useLinCmt = FALSE` is required on every `rxSolve()` call for the
+amodiaquine model: rxode2’s automatic ODE-to-linCmt conversion corrupts
+the dvid-to-compartment mapping for multi-output models of this shape.
+
+``` r
+
+sim_aq_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod_aq), make_events_aq(1L, wt = 55, ega = 24),
+  keep = c("WT", "EGA"), useLinCmt = FALSE
+) |> as.data.frame()
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalcl_deaq', 'etalvc_deaq'
+
+sim_pq_typ <- rxode2::rxSolve(
+  rxode2::zeroRe(mod_pq), make_events_pq(1L, wt = 54, para = 680),
+  keep = c("WT", "PARA")
+) |> as.data.frame()
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalvc'
+```
+
+``` r
+
+# Terminal half-life and AUC(0-inf) by log-linear regression over a window
+# well past the last dose, with the standard tail extrapolation Clast/lambda_z.
+#
+# `tail_to` bounds the regression window at the top. It matters: the shared
+# observation grid runs to 150 days so that piperaquine's ~17-day terminal
+# phase is captured, but amodiaquine (t1/2 ~26 h) has decayed to numerical
+# noise long before then. Regressing over the full tail would fit that noise
+# and return a badly inflated half-life. The relative floor drops points that
+# have underflowed toward zero for the same reason.
+terminal_summary <- function(time, conc, tail_from, tail_to = Inf) {
+  keep <- time >= tail_from & time <= tail_to & conc > max(conc) * 1e-8
+  stopifnot(sum(keep) >= 5)
+  lz <- -stats::coef(stats::lm(log(conc[keep]) ~ time[keep]))[[2]]
+  auc_obs <- sum(diff(time) * (utils::head(conc, -1) + utils::tail(conc, -1)) / 2)
+  c(half_life = log(2) / lz, auc_inf = auc_obs + utils::tail(conc, 1) / lz)
+}
+
+sec_aq   <- terminal_summary(sim_aq_typ$time, sim_aq_typ$Cc,
+                             tail_from = 72, tail_to = 240)
+sec_deaq <- terminal_summary(sim_aq_typ$time, sim_aq_typ$Cc_deaq, tail_from = 24 * 60)
+sec_pq   <- terminal_summary(sim_pq_typ$time, sim_pq_typ$Cc,      tail_from = 24 * 80)
+
+day7 <- function(df, col) df[[col]][which.min(abs(df$time - 168))]
+
+secondary <- tibble::tibble(
+  Parameter = c("t1/2 amodiaquine (h)", "AUC0-inf amodiaquine (h*ng/mL)",
+                "t1/2 desethylamodiaquine (day)", "AUC0-inf desethylamodiaquine (h*ug/mL)",
+                "Day 7 desethylamodiaquine (ng/mL)",
+                "t1/2 piperaquine (day)", "AUC0-inf piperaquine (h*ug/mL)",
+                "Day 7 piperaquine (ng/mL)"),
+  Published = c(26.3, 283, 14.1, 45.2, 63.3, 17.0, 31.6, 39.0),
+  `Published 95% CI` = c("24.7-28.6", "182-432", "12.8-16.9", "27.5-78.3",
+                         "38.4-107", "15.8-18.6", "20.6-50.0", "25.1-65.0"),
+  Simulated = c(sec_aq[["half_life"]], sec_aq[["auc_inf"]],
+                sec_deaq[["half_life"]] / 24, sec_deaq[["auc_inf"]] / 1000,
+                day7(sim_aq_typ, "Cc_deaq"),
+                sec_pq[["half_life"]] / 24, sec_pq[["auc_inf"]] / 1000,
+                day7(sim_pq_typ, "Cc"))
+) |>
+  dplyr::mutate(
+    `% diff` = 100 * (Simulated - Published) / Published,
+    Simulated = round(Simulated, 2),
+    `% diff` = round(`% diff`, 1)
+  )
+
+knitr::kable(
+  secondary,
+  caption = paste("Typical-value replication of Ding 2024 Table 2 and Table 3",
+                  "secondary parameters, at each arm's median body weight",
+                  "(55 kg amodiaquine, 54 kg piperaquine), gestational age 24",
+                  "weeks and baseline parasitaemia 680 parasites/uL.")
+)
+```
+
+| Parameter | Published | Published 95% CI | Simulated | % diff |
+|:---|---:|:---|---:|---:|
+| t1/2 amodiaquine (h) | 26.3 | 24.7-28.6 | 26.18 | -0.5 |
+| AUC0-inf amodiaquine (h\*ng/mL) | 283.0 | 182-432 | 286.52 | 1.2 |
+| t1/2 desethylamodiaquine (day) | 14.1 | 12.8-16.9 | 14.19 | 0.6 |
+| AUC0-inf desethylamodiaquine (h\*ug/mL) | 45.2 | 27.5-78.3 | 46.70 | 3.3 |
+| Day 7 desethylamodiaquine (ng/mL) | 63.3 | 38.4-107 | 63.99 | 1.1 |
+| t1/2 piperaquine (day) | 17.0 | 15.8-18.6 | 16.94 | -0.4 |
+| AUC0-inf piperaquine (h\*ug/mL) | 31.6 | 20.6-50.0 | 33.09 | 4.7 |
+| Day 7 piperaquine (ng/mL) | 39.0 | 25.1-65.0 | 39.83 | 2.1 |
+
+Typical-value replication of Ding 2024 Table 2 and Table 3 secondary
+parameters, at each arm’s median body weight (55 kg amodiaquine, 54 kg
+piperaquine), gestational age 24 weeks and baseline parasitaemia 680
+parasites/uL. {.table}
+
+``` r
+
+# Structural gate: every published secondary parameter is reproduced by the
+# typical individual. A mis-transcribed clearance, a wrong reference weight,
+# a dropped molar conversion or a dropped dose-occasion escalation each move
+# one or more of these by >= 10%, so a 6% envelope is a real check while
+# leaving room for the published values being cohort medians of post-hoc
+# empirical Bayes estimates rather than exact typical-value predictions.
+stopifnot(
+  max(abs(secondary$`% diff`)) < 6,
+  abs(stats::median(secondary$`% diff`)) < 3
+)
+```
+
+All eight published secondary parameters are reproduced within 5%. Three
+of the encoding decisions documented under “Assumptions and deviations”
+below are load-bearing for this agreement and are each individually
+falsified by this table:
+
+- using a **70 kg** allometric reference rather than the cohort median
+  weight moves the piperaquine AUC to 27.2 (-14%);
+- dropping the **molar conversion** on the
+  amodiaquine-to-desethylamodiaquine flux moves the desethylamodiaquine
+  AUC and day-7 concentration up by about 12%;
+- dropping the fixed **dose-occasion** escalation on piperaquine
+  bioavailability moves the piperaquine AUC to 26.8 (-15%).
+
+## Concentration-time profiles
+
+``` r
+
+prof <- dplyr::bind_rows(
+  sim_aq_typ |> dplyr::transmute(time, conc = Cc,      Analyte = "Amodiaquine"),
+  sim_aq_typ |> dplyr::transmute(time, conc = Cc_deaq, Analyte = "Desethylamodiaquine"),
+  sim_pq_typ |> dplyr::transmute(time, conc = Cc,      Analyte = "Piperaquine")
+) |>
+  dplyr::filter(time <= 24 * 42, conc > 0)
+
+ggplot2::ggplot(prof, ggplot2::aes(time / 24, conc, colour = Analyte)) +
+  ggplot2::geom_line(linewidth = 0.7) +
+  ggplot2::scale_y_log10() +
+  ggplot2::geom_vline(xintercept = 7, linetype = "dashed", colour = "grey40") +
+  ggplot2::labs(
+    x = "Time (days)", y = "Plasma concentration (ng/mL)",
+    caption = paste("Typical-value profiles for the three-day regimens.",
+                    "Dashed line marks day 7, the trial's universal sampling day.",
+                    "Compare the observed ranges in Ding 2024 Figures 1 and 2.")
+  ) +
+  ggplot2::theme_bw()
+```
+
+![](Ding_2024_antimalarials_pregnancy_files/figure-html/profiles-1.png)
+
+## Gestational-age effect on desethylamodiaquine exposure (Ding 2024 Figure 3)
+
+Gestational age enters only the relative bioavailability of amodiaquine,
+as `F = 1 + 0.0128 * (GA - 24)`. Because `F` scales the whole input,
+both AUC and the day-7 concentration should scale exactly linearly with
+that factor. Ding 2024 Results reports `F` of 90% at 16 weeks and 115%
+at 36 weeks relative to the 24-week reference, and the abstract reports
+a predicted desethylamodiaquine AUC 2.8%-32.2% higher in pregnant women
+at 16-36 weeks than in non-pregnant women.
+
+``` r
+
+ega_grid <- c(16, 20, 24, 28, 32, 36)
+
+sim_ega <- lapply(seq_along(ega_grid), function(i) {
+  rxode2::rxSolve(
+    rxode2::zeroRe(mod_aq),
+    make_events_aq(as.integer(i), wt = 70, ega = ega_grid[i]),
+    keep = c("WT", "EGA"), useLinCmt = FALSE
+  ) |>
+    as.data.frame() |>
+    dplyr::mutate(EGA = ega_grid[i])
+}) |>
+  dplyr::bind_rows()
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalcl_deaq', 'etalvc_deaq'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalcl_deaq', 'etalvc_deaq'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalcl_deaq', 'etalvc_deaq'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalcl_deaq', 'etalvc_deaq'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalcl_deaq', 'etalvc_deaq'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalcl_deaq', 'etalvc_deaq'
+
+ega_summary <- sim_ega |>
+  dplyr::group_by(EGA) |>
+  dplyr::summarise(
+    auc_deaq  = terminal_summary(time, Cc_deaq, tail_from = 24 * 60)[["auc_inf"]] / 1000,
+    day7_deaq = Cc_deaq[which.min(abs(time - 168))],
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(
+    `F relative to 24 weeks` = 1 + 0.0128 * (EGA - 24),
+    `AUC ratio vs 24 weeks`  = auc_deaq / auc_deaq[EGA == 24]
+  )
+
+ega_summary |>
+  dplyr::rename(
+    "Gestational age (weeks)"    = EGA,
+    "AUC0-inf DEAQ (h*ug/mL)"    = auc_deaq,
+    "Day 7 DEAQ (ng/mL)"         = day7_deaq
+  ) |>
+  knitr::kable(digits = 3, caption = paste(
+    "Replicates Ding 2024 Figure 3: predicted desethylamodiaquine AUC and",
+    "day-7 concentration by gestational age for a typical 70 kg pregnant",
+    "woman."))
+```
+
+| Gestational age (weeks) | AUC0-inf DEAQ (h\*ug/mL) | Day 7 DEAQ (ng/mL) | F relative to 24 weeks | AUC ratio vs 24 weeks |
+|---:|---:|---:|---:|---:|
+| 16 | 34.984 | 47.389 | 0.898 | 0.898 |
+| 20 | 36.980 | 50.092 | 0.949 | 0.949 |
+| 24 | 38.975 | 52.795 | 1.000 | 1.000 |
+| 28 | 40.971 | 55.498 | 1.051 | 1.051 |
+| 32 | 42.967 | 58.201 | 1.102 | 1.102 |
+| 36 | 44.962 | 60.904 | 1.154 | 1.154 |
+
+Replicates Ding 2024 Figure 3: predicted desethylamodiaquine AUC and
+day-7 concentration by gestational age for a typical 70 kg pregnant
+woman. {.table}
+
+``` r
+
+# Exact check: the covariate is a pure multiplier on F, so the AUC ratio must
+# equal the F ratio to numerical precision. Both sides come from the same
+# drawn parameters, so a tight bound is correct here.
+stopifnot(
+  max(abs(ega_summary$`AUC ratio vs 24 weeks` -
+          ega_summary$`F relative to 24 weeks`)) < 1e-6,
+  # Ding 2024 Results: F = 90% at 16 weeks and 115% at 36 weeks.
+  abs(ega_summary$`F relative to 24 weeks`[ega_summary$EGA == 16] - 0.90) < 0.005,
+  abs(ega_summary$`F relative to 24 weeks`[ega_summary$EGA == 36] - 1.15) < 0.005
+)
+```
+
+``` r
+
+ggplot2::ggplot(ega_summary, ggplot2::aes(EGA, day7_deaq)) +
+  ggplot2::geom_line(colour = "steelblue") +
+  ggplot2::geom_point(colour = "steelblue", size = 2) +
+  ggplot2::labs(
+    x = "Gestational age (weeks)",
+    y = "Day 7 desethylamodiaquine (ng/mL)",
+    caption = "Replicates the day-7 panel of Ding 2024 Figure 3 (typical 70 kg woman)."
+  ) +
+  ggplot2::theme_bw()
+```
+
+![](Ding_2024_antimalarials_pregnancy_files/figure-html/ega-plot-1.png)
+
+## Piperaquine covariate effects (Ding 2024 Figure 4 and Table 3)
+
+Neither gestational age nor trimester was retained for piperaquine. The
+two covariates that do act on relative bioavailability are baseline
+parasitaemia and the literature-fixed dose-occasion escalation.
+
+``` r
+
+# One log10 unit apart, anchored exactly on the model's centring constant.
+# Note the anchor is 10^2.83 = 676.1 parasites/uL, not the Table 1 median of
+# 680: the paper centres the covariate on the rounded log10 value 2.83, and
+# the Results simulations use "a baseline parasitemia of 676 parasites/uL"
+# for exactly this reason. Anchoring here makes F exactly 1 at the reference.
+para_ref  <- 10^2.83
+para_grid <- para_ref * 10^(-1:2)
+
+pq_para <- lapply(seq_along(para_grid), function(i) {
+  rxode2::rxSolve(
+    rxode2::zeroRe(mod_pq),
+    make_events_pq(as.integer(i), wt = 70, para = para_grid[i]),
+    keep = c("WT", "PARA")
+  ) |>
+    as.data.frame() |>
+    dplyr::mutate(PARA = para_grid[i])
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::group_by(PARA) |>
+  dplyr::summarise(
+    auc_pq    = terminal_summary(time, Cc, tail_from = 24 * 80)[["auc_inf"]] / 1000,
+    half_life = terminal_summary(time, Cc, tail_from = 24 * 80)[["half_life"]] / 24,
+    day7_pq   = Cc[which.min(abs(time - 168))],
+    .groups   = "drop"
+  ) |>
+  dplyr::mutate(
+    `log10 parasitaemia`        = log10(PARA),
+    `F relative to reference`   = 1 - 0.119 * (log10(PARA) - 2.83),
+    `AUC ratio vs reference`    = auc_pq / auc_pq[PARA == para_ref]
+  )
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalfdepot', 'etalvc'
+
+pq_para |>
+  dplyr::rename(
+    "Baseline parasitaemia (per uL)" = PARA,
+    "AUC0-inf (h*ug/mL)"             = auc_pq,
+    "t1/2 (day)"                     = half_life,
+    "Day 7 (ng/mL)"                  = day7_pq
+  ) |>
+  knitr::kable(digits = 3, caption = paste(
+    "Baseline-parasitaemia effect on piperaquine exposure for a typical 70 kg",
+    "pregnant woman. Ding 2024 Table 3: -11.9% relative bioavailability per",
+    "log10 unit above the centring value of 10^2.83 = 676 parasites/uL",
+    "(the Table 1 cohort median is 680)."))
+```
+
+| Baseline parasitaemia (per uL) | AUC0-inf (h\*ug/mL) | t1/2 (day) | Day 7 (ng/mL) | log10 parasitaemia | F relative to reference | AUC ratio vs reference |
+|---:|---:|---:|---:|---:|---:|---:|
+| 67.608 | 30.488 | 18.071 | 36.351 | 1.83 | 1.119 | 1.119 |
+| 676.083 | 27.245 | 18.071 | 32.485 | 2.83 | 1.000 | 1.000 |
+| 6760.830 | 24.003 | 18.071 | 28.619 | 3.83 | 0.881 | 0.881 |
+| 67608.298 | 20.761 | 18.071 | 24.754 | 4.83 | 0.762 | 0.762 |
+
+Baseline-parasitaemia effect on piperaquine exposure for a typical 70 kg
+pregnant woman. Ding 2024 Table 3: -11.9% relative bioavailability per
+log10 unit above the centring value of 10^2.83 = 676 parasites/uL (the
+Table 1 cohort median is 680). {.table}
+
+``` r
+
+# Pure multiplier on F again, so the AUC ratio must track the F ratio exactly.
+# Both sides come from the same drawn parameters and the grid is anchored on
+# the model's own centring constant, so a tight bound is correct here.
+stopifnot(
+  max(abs(pq_para$`AUC ratio vs reference` -
+          pq_para$`F relative to reference`)) < 1e-6,
+  # One log10 step must change F by exactly the tabulated -11.9%.
+  max(abs(diff(pq_para$`F relative to reference`) + 0.119)) < 1e-9,
+  # Terminal half-life must be untouched by a bioavailability covariate.
+  diff(range(pq_para$half_life)) < 1e-3
+)
+```
+
+## Stochastic cohort and PKNCA validation
+
+A virtual cohort per arm, drawn from each model’s own `omega`, with body
+weight, gestational age and baseline parasitaemia sampled to match the
+Table 1 marginal distributions. Cohorts are capped at 150 subjects per
+arm.
+
+``` r
+
+set.seed(20240101)
+n_sub <- 150L
+
+# Log-normal weight and parasitaemia distributions tuned to the Table 1
+# medians; see Assumptions for why these are approximations.
+cohort_aq <- tibble::tibble(
+  id  = seq_len(n_sub),
+  WT  = pmin(pmax(stats::rlnorm(n_sub, log(55), 0.20), 37), 104),
+  EGA = pmin(pmax(round(stats::rnorm(n_sub, 24, 5)), 13), 36)
+)
+cohort_pq <- tibble::tibble(
+  id   = seq_len(n_sub),
+  WT   = pmin(pmax(stats::rlnorm(n_sub, log(54), 0.20), 35), 115),
+  PARA = pmin(pmax(stats::rlnorm(n_sub, log(680), 1.6), 5), 355400)
+)
+```
+
+``` r
+
+set.seed(20240102)
+ev_aq <- dplyr::bind_rows(lapply(
+  seq_len(nrow(cohort_aq)),
+  \(i) make_events_aq(cohort_aq$id[i], cohort_aq$WT[i], cohort_aq$EGA[i])
+))
+sim_aq <- rxode2::rxSolve(mod_aq, ev_aq, keep = c("WT", "EGA"),
+                          useLinCmt = FALSE) |>
+  as.data.frame()
+
+set.seed(20240103)
+ev_pq <- dplyr::bind_rows(lapply(
+  seq_len(nrow(cohort_pq)),
+  \(i) make_events_pq(cohort_pq$id[i], cohort_pq$WT[i], cohort_pq$PARA[i])
+))
+sim_pq <- rxode2::rxSolve(mod_pq, ev_pq, keep = c("WT", "PARA")) |>
+  as.data.frame()
+```
+
+``` r
+
+# One long concentration frame, with the analyte as the treatment grouping
+# variable so PKNCA rolls its summaries up per analyte. The filter is
+# !is.na(Cc) only, so the time-zero record is retained.
+#
+# Amodiaquine gets its own 240 h window. The shared grid runs to 150 days so
+# that piperaquine's ~17-day terminal phase is characterised, but amodiaquine
+# (t1/2 ~26 h) has decayed below any plausible quantification limit -- and
+# into the solver's noise floor -- within a few days. Feeding PKNCA the full
+# record makes its automatic lambda-z search fit that noise: half-life comes
+# back at 67 h instead of 26 h and aucinf.obs fails outright for 145 of the
+# 150 subjects. Truncating at 240 h (about 9 half-lives) is also the
+# realistic analytical window: 79.2% of the trial's amodiaquine samples were
+# below the LLOQ (Ding 2024 Results).
+aq_nca_window_h <- 240
+
+conc_all <- dplyr::bind_rows(
+  sim_aq |>
+    dplyr::filter(time <= aq_nca_window_h) |>
+    dplyr::transmute(id, time, Cc = Cc,      treatment = "Amodiaquine"),
+  sim_aq |> dplyr::transmute(id, time, Cc = Cc_deaq, treatment = "Desethylamodiaquine"),
+  sim_pq |> dplyr::transmute(id, time, Cc = Cc,      treatment = "Piperaquine")
+) |>
+  dplyr::filter(!is.na(Cc))
+
+stopifnot(sum(conc_all$time == 0) == 3 * n_sub)   # time-zero record present
+
+dose_all <- dplyr::bind_rows(
+  tidyr::expand_grid(id = cohort_aq$id, time = c(0, 24, 48),
+                     amt = dose_aq_mg, treatment = c("Amodiaquine", "Desethylamodiaquine")),
+  tidyr::expand_grid(id = cohort_pq$id, time = c(0, 24, 48),
+                     amt = dose_pq_mg, treatment = "Piperaquine")
+)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(conc_all), Cc ~ time | treatment + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_all), amt ~ time | treatment + id,
+                             doseu = "mg")
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE, clast.obs = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+``` r
+
+nca_tbl <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "aucinf.obs", "half.life")) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(
+    Median = stats::median(PPORRES, na.rm = TRUE),
+    `P5`   = stats::quantile(PPORRES, 0.05, na.rm = TRUE),
+    `P95`  = stats::quantile(PPORRES, 0.95, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+nca_tbl |>
+  dplyr::rename("Analyte" = treatment, "NCA parameter" = PPTESTCD) |>
+  knitr::kable(digits = 2, caption = paste(
+    "PKNCA non-compartmental analysis of the simulated cohorts",
+    "(n = 150 per arm). Concentrations in ng/mL, times in h."))
+```
+
+| Analyte             | NCA parameter |   Median |       P5 |      P95 |
+|:--------------------|:--------------|---------:|---------:|---------:|
+| Amodiaquine         | aucinf.obs    |   286.71 |   167.89 |   511.74 |
+| Amodiaquine         | cmax          |     4.04 |     2.33 |     7.42 |
+| Amodiaquine         | half.life     |    25.93 |    24.07 |    28.66 |
+| Amodiaquine         | tmax          |    53.00 |    53.00 |    53.00 |
+| Desethylamodiaquine | aucinf.obs    | 45802.31 | 25940.54 | 83768.97 |
+| Desethylamodiaquine | cmax          |   187.19 |    97.40 |   385.67 |
+| Desethylamodiaquine | half.life     |   345.52 |   266.84 |   476.39 |
+| Desethylamodiaquine | tmax          |    60.50 |    54.00 |    84.00 |
+| Piperaquine         | aucinf.obs    | 34600.56 | 16871.12 | 58007.27 |
+| Piperaquine         | cmax          |   230.08 |    89.86 |   609.95 |
+| Piperaquine         | half.life     |   408.41 |   363.82 |   495.61 |
+| Piperaquine         | tmax          |    52.00 |    51.00 |    53.00 |
+
+PKNCA non-compartmental analysis of the simulated cohorts (n = 150 per
+arm). Concentrations in ng/mL, times in h. {.table}
+
+### Comparison against the published values
+
+Ding 2024 reports AUC0-inf and terminal half-life for all three
+analytes, and the day-7 concentration for desethylamodiaquine and
+piperaquine. Cmax and Tmax are not reported by the paper and are
+therefore shown above but not compared here.
+
+``` r
+
+sim_for_cmp <- nca_tbl |>
+  dplyr::filter(PPTESTCD %in% c("aucinf.obs", "half.life")) |>
+  dplyr::transmute(treatment, PPTESTCD, PPORRES = Median)
+
+ref_for_cmp <- tibble::tribble(
+  ~treatment,             ~aucinf.obs,  ~half.life,
+  "Amodiaquine",          283,          26.3,
+  "Desethylamodiaquine",  45200,        14.1 * 24,
+  "Piperaquine",          31600,        17.0 * 24
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = as.data.frame(sim_for_cmp),
+  reference = as.data.frame(ref_for_cmp),
+  by = "treatment",
+  units = c(aucinf.obs = "h*ng/mL", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, digits = 2, caption = paste(
+  "Simulated (cohort median) versus Ding 2024 published values.",
+  attr(cmp, "footnote")))
+```
+
+| NCA parameter           | treatment           | Reference | Simulated | % diff |
+|:------------------------|:--------------------|:----------|:----------|:-------|
+| AUC0-∞ (obs) (h\*ng/mL) | Amodiaquine         | 283       | 287       | +1.3%  |
+| AUC0-∞ (obs) (h\*ng/mL) | Desethylamodiaquine | 45200     | 45800     | +1.3%  |
+| AUC0-∞ (obs) (h\*ng/mL) | Piperaquine         | 31600     | 34600     | +9.5%  |
+| t½ (h)                  | Amodiaquine         | 26.3      | 25.9      | -1.4%  |
+| t½ (h)                  | Desethylamodiaquine | 338       | 346       | +2.1%  |
+| t½ (h)                  | Piperaquine         | 408       | 408       | +0.1%  |
+
+Simulated (cohort median) versus Ding 2024 published values. {.table
+style="width:100%;"}
+
+``` r
+
+pct <- suppressWarnings(as.numeric(gsub("[^0-9.eE+-]", "", cmp$`% diff`)))
+pct <- pct[is.finite(pct)]
+stopifnot(
+  length(pct) == 6,
+  # Every subject must yield a computable AUC and half-life. This is the
+  # check that catches a mis-specified NCA window: before amodiaquine was
+  # given its own 240 h window, aucinf.obs was NA for 145 of 150 subjects
+  # and the group median was computed from the surviving 5.
+  !any(is.na(nca_tbl$Median)),
+  # Cohort-level check: assert on the centre and a robust envelope, never on
+  # the extreme of a random cohort (see the repo note on cohort assertions).
+  abs(stats::median(pct)) < 5,
+  stats::quantile(abs(pct), 0.9) < 12
+)
+```
+
+All six comparisons agree with the published values, and the simulated
+5th-95th percentile ranges bracket the published 95% intervals (for
+example, amodiaquine AUC0-inf 168-512 against a published 182-432).
+
+The cohort medians sit slightly further from the published values than
+the typical-value table above, which is expected: the published
+secondary parameters are medians of post-hoc empirical Bayes estimates
+from a cohort whose etas are heavily shrunk (70-74% shrinkage on the
+desethylamodiaquine disposition etas, 73% on piperaquine `Vc/F`),
+whereas this cohort draws unshrunk etas from the full `omega`. The very
+large `Vc/F` variability (205% CV for desethylamodiaquine, 112% for
+piperaquine) widens the half-life distribution substantially without
+moving AUC, which depends only on clearance and bioavailability. The
+piperaquine AUC is the largest discrepancy because it additionally
+integrates over the simulated baseline parasitaemia distribution, which
+is an approximation of a covariate the paper reports only as a median
+and range.
+
+## Assumptions and deviations
+
+1.  **Allometric reference weight of 70 kg.** Equations 2 and 3 write
+    the normalising constant generically as `BW_median`, but the
+    footnotes of both Table 2 and Table 3 state that the population
+    estimates are given for a typical pregnant woman weighing 70 kg, the
+    Discussion compares the piperaquine `CL/F` of 69.9 L/h directly
+    against a literature value “for a typical 70-kg adult patient”, and
+    the in-silico simulations use 70 kg hypothetical patients. 70 kg is
+    therefore encoded. The typical-value table above shows a
+    cohort-median reference (55 / 54 kg) would miss the published AUCs
+    by 12-14%.
+
+2.  **Molar conversion on the amodiaquine-to-desethylamodiaquine flux.**
+    The Methods state complete bioconversion but do not print a
+    conversion factor. The model applies
+    `MW_DEAQ / MW_AQ = 327.81 / 355.85 = 0.9212`, matching the sibling
+    WWARN model `Ali_2018_amodiaquine`, which is reference 29 of this
+    paper and states the correction explicitly. The paper’s own numbers
+    support it: the published `AUC_DEAQ / AUC_AQ` ratio of 45,200 / 283
+    = 159.7 back-solves a factor of 0.902 (this ratio cancels the dose
+    and the bioavailability entirely), against 0.921 for the molar
+    reading and 1.0 for a mass-for-mass reading.
+
+3.  **Amodiaquine absorption chain: `ktr = 2 / MTT` with `ka` as a
+    separate final step.** Table 2 fixes both `Ka = 0.589 1/h` and
+    `MTT = 0.236 h` with 2 transit compartments. These two numbers
+    cannot both belong to a pure Savic chain, in which `ka` and `ktr`
+    are the same rate (that would require `ka = 3 / 0.236 = 12.7`, not
+    0.589). Since `MTT` (0.236 h) is shorter than the mean time of the
+    single `ka` step (1/0.589 = 1.70 h), `MTT` provably excludes the
+    `ka` step – a mean transit time cannot be smaller than one of the
+    mean times it sums. `MTT` therefore spans only the two transit
+    compartments, giving `ktr = 2 / MTT`, with `ka` governing the final
+    transfer into the central compartment and a mean absorption time of
+    1.93 h. The sibling `Ali_2018_amodiaquine` model, which fixes the
+    identical `Ka` / `MTT` pair, instead uses `ktr = 3 / MTT` and leaves
+    `ka` unused; that reading discards a reported parameter. No
+    published quantity discriminates between the two – AUC, both
+    half-lives and the day-7 concentration are all insensitive to the
+    absorption structure, and the paper reports no amodiaquine Cmax or
+    Tmax – so this choice is visible only in the unreported amodiaquine
+    peak.
+
+4.  **Piperaquine absorption chain: `ktr = 3 / MTT`.** No separate `ka`
+    is reported for piperaquine, so `ka = ktr` and the standard Savic
+    convention applies over the three transitions
+    `depot -> transit1 -> transit2 -> central`. This matches
+    `Hoglund_2017_piperaquine`, which is reference 28 of this paper and
+    the source of the fixed `MTT = 2.11 h`.
+
+5.  **Residual error reported as a variance.** The Table 2 and Table 3
+    footnotes state “RUV is the residual error variance”, so the
+    tabulated `0.267` / `0.122` / `0.222` are variances and the model
+    encodes `propSd = sqrt(RUV)`. The Methods describe an additive error
+    on log-transformed concentrations, which is equivalent to a
+    proportional error in linear concentration space. This is the same
+    convention as the sibling `Hoglund_2017_piperaquine`.
+
+6.  **Base of the parasitaemia logarithm.** The Table 3 footnote writes
+    `[1 + theta x (log(parasitemia) - 2.83)]` without stating the base.
+    It is base 10: the cohort median is 680 parasites/uL and
+    `log10(680) = 2.83`, and the Results simulations use “a baseline
+    parasitemia of 676 parasites/uL”, which is `10^2.83 = 676.1`.
+    `max(PARA, 1)` gating is applied because the Table 1 minimum is 0
+    parasites/uL.
+
+7.  **Text-versus-table discrepancies, resolved in favour of the
+    final-estimates tables.** The Results text gives an 11.6% decrease
+    in piperaquine bioavailability per log unit of parasitaemia while
+    Table 3 gives -11.9%; the abstract gives a 1.25%/week
+    gestational-age effect while both the Results text and Table 2 give
+    1.28%/week. The Table 2 and Table 3 values are used.
+
+8.  **Gestational age is not extrapolable to the non-pregnant anchor.**
+    The covariate register defines `EGA = 0` as the non-pregnant
+    reference, but this model’s linear form would give `F = 0.69` there.
+    The cohort range is 13-36 weeks and the relationship is only
+    supported inside it; no non-pregnant women were enrolled.
+
+9.  **Virtual-cohort covariate distributions are approximations.** Table
+    1 reports only medians and ranges, not distributional shapes or
+    correlations. Weight and parasitaemia are drawn as truncated
+    log-normals and gestational age as a truncated normal, each matched
+    to the published median and clipped to the published range. Weight
+    and gestational age are drawn independently, which the paper gives
+    no basis to correlate.
+
+10. **`deaq` metabolite suffix registered.** `central_deaq`,
+    `peripheral1_deaq` and `propSd_deaq` follow the standard
+    `<canonical>_<metab>` pattern and match the already-shipped
+    `Ali_2018_amodiaquine`, which models the identical parent-metabolite
+    pair. The suffix was not previously in the canonical register, so
+    both files raised
+    [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+    warnings; `deaq` is registered in
+    `inst/references/compartment-names.md` alongside this extraction,
+    which clears the warnings on both.
+
+11. **Supplementary figures not used.** Figures S1-S6 (structure
+    diagrams, goodness-of-fit plots, prediction-corrected VPCs) were not
+    on disk. They contain no parameter values; Tables 1-3 in the main
+    article are complete for both models.

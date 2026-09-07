@@ -106,7 +106,7 @@ with its location in the source.
 | Vmax / Km, cynomolgus macaque | 0.275 / 3.21 | Supplementary Table S1 |
 | Allometric exponents on CL/Q and Vc/Vp | 0.75 / 1 assumed | not reported; see Assumptions below |
 | Survivor function P(T\>t) = psurv + (1-psurv)exp(-(lambda t)^alpha) | equation | Results, ‘Animal survival modeling’ |
-| logit(psurv) = theta0 - (theta1 log10 PTT)^theta2 + Emax dose/(ED50+dose) | equation | Results, ‘Animal survival modeling’ |
+| logit(psurv) = theta0 - exp((theta1 log10 PTT)^theta2) + Emax dose/(ED50+dose) | equation | Nagy 2017 Results, ‘Animal survival modeling’; exp() printed by Yamamoto 2016 Methods, ‘Survival modeling’ |
 | log(lambda) = lambda0 + lambda1 log10 PTT | equation | Results, ‘Animal survival modeling’ |
 | theta0 / Emax / ED50 / theta1 | 0.105 / 4.060 / 1.640 / 0.296 | Supplementary Table S2 |
 | theta2 / lambda0 / lambda1 / alpha | 1.320 / -2.240 / 0.171 / 2.830 | Supplementary Table S2 |
@@ -115,7 +115,11 @@ Source trace for the Nagy 2017 models. {.table}
 
 The three equation blocks render as `formula-not-decoded` in the
 automated PDF conversion; they were recovered verbatim from the on-disk
-PDF with `pdftotext -layout` (page 4, right column).
+PDF with `pdftotext -layout` (page 4, right column). The
+[`exp()`](https://rdrr.io/r/base/Log.html) around the bacteremia term in
+`logit(psurv)` is taken from the second published report of this same
+fitted model, Yamamoto 2016 (<doi:10.1128/AAC.00972-16>), which prints
+that equation in full; see Assumptions and deviations.
 
 ## Population PK simulation
 
@@ -502,60 +506,123 @@ stopifnot(abs(ed90 - 14.8) < 0.1)
 ```
 
 The paper also states three specific survival probabilities in the
-Discussion. Evaluating the extracted model at those inputs:
+Discussion. `psurv_model()` below solves the extracted model itself
+rather than restating its equation inline, so these checks cannot
+silently drift away from the model file the way an earlier revision of
+this vignette did (see Assumptions and deviations).
 
 ``` r
 
-psurv_at <- function(dose, ptt) {
-  logit <- 0.105 - (0.296 * ptt)^1.320 + 4.060 * dose / (1.640 + dose)
-  1 / (1 + exp(-logit))
+# Evaluate the cure fraction psurv by SOLVING the extracted model. Deliberately
+# not a re-typed copy of the logit equation: a hardcoded copy here kept
+# "passing" against a dropped exp() in the model file until Yamamoto 2016
+# settled the equation form.
+psurv_model <- function(dose, ptt) {
+  n <- max(length(dose), length(ptt))
+  ev <- data.frame(
+    id = seq_len(n),
+    time = 28,
+    BACT_PTT_LOG10CFU = rep_len(ptt, n),
+    DOSE_OBILTOXAXIMAB_MGKG = rep_len(dose, n)
+  )
+  out <- as.data.frame(rxode2::rxSolve(surv, events = ev))
+  out$psurv[order(as.integer(as.character(out$id)))]
 }
+```
+
+``` r
+
+anchor_dose <- c(16, 0, 16)
+anchor_ptt <- c(0, 3.5, 3.5)
+anchor_pub <- c(0.98, 0.06, 0.73)
+anchor_mod <- psurv_model(anchor_dose, anchor_ptt)
 
 tibble::tibble(
   Scenario = c("16 mg/kg, no PTT bacteremia",
                "No treatment, PTT 3.5 log10 CFU/mL",
                "16 mg/kg, PTT 3.5 log10 CFU/mL"),
-  `Model psurv` = round(c(psurv_at(16, 0), psurv_at(0, 3.5), psurv_at(16, 3.5)), 3),
-  `Paper states` = c(0.98, 0.06, 0.73)
+  `Model psurv` = round(anchor_mod, 3),
+  `Paper states` = anchor_pub
 ) |>
   knitr::kable(caption = "Extracted model vs. the probabilities stated in the Nagy 2017 Discussion.")
 ```
 
 | Scenario                           | Model psurv | Paper states |
 |:-----------------------------------|------------:|-------------:|
-| 16 mg/kg, no PTT bacteremia        |       0.978 |         0.98 |
-| No treatment, PTT 3.5 log10 CFU/mL |       0.280 |         0.06 |
-| 16 mg/kg, PTT 3.5 log10 CFU/mL     |       0.939 |         0.73 |
+| 16 mg/kg, no PTT bacteremia        |       0.942 |         0.98 |
+| No treatment, PTT 3.5 log10 CFU/mL |       0.060 |         0.06 |
+| 16 mg/kg, PTT 3.5 log10 CFU/mL     |       0.718 |         0.73 |
 
 Extracted model vs. the probabilities stated in the Nagy 2017
 Discussion. {.table}
 
-The first row reproduces the paper exactly (0.978 vs 0.98). The second
-and third do not, and the discrepancy is traced in Assumptions and
-deviations below: it is confined to the bacteremia term, and the dose
-term is confirmed by the very same rows.
+``` r
 
-The same gap appears in every panel of Supplementary Figure S2, and it
-widens as PTT bacteremia rises. The “digitised” columns below were read
-off the published figure by the extractor (they are not tabulated
-anywhere in the paper) and are recorded here only as evidence for the
-erratum:
+
+# Deterministic model: no IIV, no residual error, no RNG, so a tight absolute
+# bound is reproducible across machines and rxode2 versions. The pre-fix
+# equation missed rows 2 and 3 by 0.22 and 0.21, so this gate discriminates.
+stopifnot(max(abs(anchor_mod - anchor_pub)) < 0.06)
+```
+
+All three rows now reproduce the paper: the largest gap is at the
+degenerate “no PTT bacteremia” row, where `log10(PTT) = 0` makes the
+bacteremia penalty `exp(0) = 1` regardless of `theta1` and `theta2`.
+
+The same agreement holds across every panel of Supplementary Figure S2.
+The “digitised” columns below were read off the published figure by the
+extractor (they are not tabulated anywhere in the paper):
+
+``` r
+
+ptt_mid <- c(2.06, 3.49, 4.42, 6.18)
+figs2 <- tibble::tibble(
+  Panel = c("[BLQ, 3.02]", "[3.03, 3.95]", "[3.96, 4.87]", "(4.87, 8.56]"),
+  `PTT midpoint` = ptt_mid,
+  `Model, dose 0` = round(psurv_model(0, ptt_mid), 3),
+  `Digitised, dose 0` = c(0.20, 0.055, 0.02, 0.002),
+  `Model, dose 32` = round(psurv_model(32, ptt_mid), 3),
+  `Digitised, dose 32` = c(0.91, 0.735, 0.47, 0.10)
+)
+
+figs2 |>
+  knitr::kable(
+    caption = "Published Table S2 parameters vs. the extractor's digitisation of Supplementary Figure S2, by PTT-bacteremia quartile."
+  )
+```
 
 | Panel | PTT midpoint | Model, dose 0 | Digitised, dose 0 | Model, dose 32 | Digitised, dose 32 |
 |:---|---:|---:|---:|---:|---:|
-| \[BLQ, 3.02\] | 2.06 | 0.398 | 0.200 | 0.969 | 0.910 |
-| \[3.03, 3.95\] | 3.49 | 0.281 | 0.055 | 0.949 | 0.735 |
-| \[3.96, 4.87\] | 4.42 | 0.211 | 0.020 | 0.927 | 0.470 |
-| (4.87, 8.56\] | 6.18 | 0.108 | 0.002 | 0.852 | 0.100 |
+| \[BLQ, 3.02\] | 2.06 | 0.171 | 0.200 | 0.908 | 0.910 |
+| \[3.03, 3.95\] | 3.49 | 0.061 | 0.055 | 0.755 | 0.735 |
+| \[3.96, 4.87\] | 4.42 | 0.017 | 0.020 | 0.452 | 0.470 |
+| (4.87, 8.56\] | 6.18 | 0.000 | 0.002 | 0.005 | 0.100 |
 
 Published Table S2 parameters vs. the extractor’s digitisation of
 Supplementary Figure S2, by PTT-bacteremia quartile. {.table}
 
-At the highest quartile the published parameters predict 0.85 survival
-at 32 mg/kg where the figure shows 0.10 and the Results text says there
-is “almost zero probability of survival” at a PTT bacteremia around 5
-log10 CFU/mL. The figure and the text agree with each other and disagree
-with `theta1`.
+``` r
+
+
+# The pre-fix equation was off by 0.46 and 0.75 in the two highest quartiles at
+# 32 mg/kg, so these bounds discriminate by a wide margin. The dose-32 bound is
+# the looser of the two because its worst row is the (4.87, 8.56] quartile,
+# where the model predicts 0.005 against a digitised 0.10 -- reading a value
+# that small off the tail of a log-scale figure is the least reliable anchor in
+# the set. Deterministic model (no IIV, no RUV, no RNG), so both bounds are
+# exactly reproducible across machines and rxode2 versions.
+stopifnot(
+  max(abs(figs2$`Model, dose 0` - figs2$`Digitised, dose 0`)) < 0.05,
+  max(abs(figs2$`Model, dose 32` - figs2$`Digitised, dose 32`)) < 0.15
+)
+```
+
+The model now reproduces the “point of no return” that both papers
+describe: at the highest quartile it predicts 0.005 survival at 32 mg/kg
+against a digitised 0.10, and it drives untreated survival at 10^6
+CFU/mL to essentially zero, consistent with the 0-14.3% placebo survival
+in Yamamoto 2016 Table 2 and with the Results text stating “almost zero
+probability of survival” at a PTT bacteremia around 5 log10 CFU/mL.
 
 ## Assumptions and deviations
 
@@ -616,24 +683,66 @@ profile truncated at 3 days, with non-survivors dropping out, produces.
 These rows are reported for completeness and are not used as model
 gates.
 
-**Supplementary Table S2’s theta1 does not reproduce the paper’s own
-survival figure.** The model encodes `theta1 = 0.296` exactly as
-published. That value predicts a 0.28 probability of survival for an
-untreated animal at PTT 3.5 log10 CFU/mL, where the Discussion states
-0.06 and Supplementary Figure S2’s second panel shows roughly 0.05.
-Back-solving `theta1` from four independent anchors – the dose-zero
-intercept of each of the four Figure S2 panels, evaluated at its
-quartile midpoint – gives a consistent 0.55 in the
-`theta1 * (log10 PTT)^theta2` form (equivalently 0.65 in the printed
-`(theta1 * log10 PTT)^theta2` form), against Table S2’s reported 95% CI
-of 0.206-0.386. The other survival parameters are corroborated: `theta0`
-and the Emax dose term reproduce the “0.98 probability of cure at 16
-mg/kg with no PTT bacteremia” statement exactly, the logit gap between
-the untreated and 16 mg/kg rows (3.68) matches the value the Discussion
-implies (3.75), and `ed90 = 9 * ed50` returns the published 14.8 mg/kg.
-The discrepancy is therefore isolated to `theta1`. **No value was
-tuned**: the published estimate is what the model carries, and this note
-records the inconsistency for a reviewer rather than resolving it.
+**The bacteremia term in `logit(psurv)` is exponential; an earlier
+revision of this vignette misdiagnosed the resulting mismatch as a
+misprinted `theta1`.** Nagy 2017’s displayed `logit(psurv)` equation
+prints the bacteremia penalty as `(theta1 * log10 PTT)^theta2`, with no
+[`exp()`](https://rdrr.io/r/base/Log.html), and this extraction encoded
+it that way. With that form the model reproduced only the degenerate “no
+PTT bacteremia” anchor and missed every other published value,
+predicting 85-98% survival at essentially every dose and every
+bacteremia level – including 85% survival for *untreated* animals at
+10^6 CFU/mL. An earlier revision of this section attributed that gap to
+`theta1 = 0.296` being misprinted, back-solved a replacement value of
+~0.65, and declined to resolve the conflict.
+
+That diagnosis was wrong. `theta1 = 0.296` is correct as published; the
+[`exp()`](https://rdrr.io/r/base/Log.html) was missing, and Nagy’s
+*displayed equation* – not its parameter table – is the defective
+element. Three independent lines of evidence agree.
+
+First, Nagy’s own prose contradicts its own display. One paragraph above
+the equation, the same section states that the model “included an Emax
+dose-response and an **exponential** effect of log10 (PTT bacteremia) on
+logit(psurv)”.
+
+Second, that same display block is demonstrably mis-typeset elsewhere:
+the survivor function immediately above it prints as
+`P(T > t) = psurv + (1 - psurv) exp[-(lambda t)]alpha`, with the Weibull
+shape exponent stranded *outside* the closing bracket instead of
+applying to `(lambda t)`. A dropped `exp` in the next equation of the
+same block is the same class of failure, not a different model.
+
+Third, the same fitted model is reported a second time by Yamamoto 2016
+(<doi:10.1128/AAC.00972-16>, Materials and Methods, “Survival
+modeling”), whose ED50 of 1.64 mg/kg with 95% CI 0.515-5.22 is identical
+to Nagy Supplementary Table S2, and which prints the equation with the
+[`exp()`](https://rdrr.io/r/base/Log.html) intact:
+
+    logit(psurv) = theta0 - exp[(theta1 x log10(PTT))^theta2]
+                   + Emax x dose/(ED50 + dose)
+
+describing it twice in the same paragraph as “an exponential effect of
+log10(PTT bacteremia) on logit(psurv)”.
+
+Scoring four candidate readings of the term against 13 published anchors
+(Nagy Discussion x3, Nagy Figure S2 digitisation x8, Yamamoto Figure 4D
+x2) with all eight Table S2 parameters held at their published values,
+the [`exp()`](https://rdrr.io/r/base/Log.html) form is closest on 12 of
+13 anchors, with a probability-scale RMS error of 0.037 against 0.334
+for the form previously encoded – a nine-fold improvement. The one
+anchor it does not win is the `log10(PTT) = 0` row, where `exp(0) = 1`
+imposes a fixed one-logit offset and “no PTT bacteremia” is a
+below-quantitation imputation rather than a literal zero. **No value was
+tuned**: every parameter is the published Table S2 estimate, and only
+the equation form changed.
+
+The `discussion-anchors` and `figs2-check` chunks above previously
+restated the logit equation inline, so they kept reporting agreement
+with whatever they themselves hardcoded. They now solve the extracted
+model through `psurv_model()` and carry
+[`stopifnot()`](https://rdrr.io/r/base/stopifnot.html) gates, so the
+same class of drift fails the render instead of passing silently.
 
 **Table S1’s macaque CL confidence interval is printed as (0.0162,
 0.223).** The upper bound is an order of magnitude above the point
