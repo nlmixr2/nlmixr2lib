@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bai 2024 imipenem ([doi:10.1136/ejhpharm-2022-003403](https://doi.org/10.1136/ejhpharm-2022-003403)) -- critically ill adults with sepsis in intensive care.
+- Add Launay 2024 ceftazidime ([doi:10.3390/antibiotics13080756](https://doi.org/10.3390/antibiotics13080756)) -- septic critically ill adults on continuous infusion.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
