@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Maringwa 2025 venlafaxine and fluoxetine HAMD dose-response MBMA ([doi:10.1002/cpt.3418](https://doi.org/10.1002/cpt.3418)) -- adults with major depressive disorder across 16 placebo-controlled trials.
+- Add Leegwater 2025 trimethoprim and sulfamethoxazole with N-acetyl sulfamethoxazole ([doi:10.1002/cpt.3421](https://doi.org/10.1002/cpt.3421)) -- hospitalized adults with renal insufficiency or receiving continuous renal replacement therapy, as one model per analyte set.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
