@@ -2112,8 +2112,12 @@ navbar:
         href: articles/Zhu_2017_lebrikizumab.html
       - text: "Lecanemab (Cao 2026)"
         href: articles/Cao_2026_lecanemab.html
+      - text: "Lecanemab (Majid 2024)"
+        href: articles/Majid_2024_lecanemab.html
       - text: "Lecanemab abeta4240 (Bhagunde 2026)"
         href: articles/Bhagunde_2026_lecanemab_biomarkers.html
+      - text: "Lecanemab ariae (Majid 2024)"
+        href: articles/Majid_2024_lecanemab.html
       - text: "Lecanemab gfap (Bhagunde 2026)"
         href: articles/Bhagunde_2026_lecanemab_biomarkers.html
       - text: "Lecanemab ptau181 (Bhagunde 2026)"
@@ -5647,6 +5651,7 @@ articles:
   - articles/Mahadevan_2026_polymyxinB_combination_CRKP
   - articles/Maizaud_2025_missed_mycophenolate_doses
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
+  - articles/Majid_2024_lecanemab
   - articles/Majid_2024_lenvatinib
   - articles/Maleki_2024_brepocitinib
   - articles/Mandema_2005_gemcabene_mbma
