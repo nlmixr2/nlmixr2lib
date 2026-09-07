@@ -2085,7 +2085,7 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Type:** compartment
 - **Role:** Probability (0..1) that a patient achieves an overall response (complete response, including uncertified CR, or partial response) as adjudicated by **independent central review**, in a static landmark exposure-response logistic model. The central-vs-investigator distinction is load-bearing and is why this is a separate canonical from `prob_orr_investigator`: the two adjudications are separate endpoints fit as separate models on different analysis sets, and central review is the regulatory-grade assessment.
 - **Source aliases:** none.
-- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual).
+- **Example models:** `Fukae_2024_valemetostat_orr_central.R` (Bayesian logistic exposure-response for ORR by central assessment in relapsed/refractory ATLL; `prob_orr_central <- expit(...)` is the observation variable and carries the placeholder additive residual), `Liu_2024_saf189s_orr.R` (binomial logistic exposure-efficacy model for INDEPENDENT-REVIEW-COMMITTEE-assessed ORR in ALK+/ROS1+ non-small cell lung cancer; an IRC is an independent central review, so the central-assessment canonical is the right one even though that paper fits no investigator-assessed counterpart).
 - **Notes:** A probability output in `[0, 1]`, not a concentration or an amount. Follows the `prob_<endpoint>` output-naming shape founded by `prob_roc` and extended by `prob_scc`. Static (no time dimension): unlike `prob_scc`, which is a state-occupancy probability evolving under a multistate ODE, this is a landmark probability evaluated once per subject from baseline covariates and a scalar exposure metric. Founding models expose it with a small placeholder residual so the nlmixr2 observation machinery accepts the model; the source analysis uses an exact Bernoulli likelihood and estimates no residual error.
 
 ### prob_orr_investigator (**canonical investigator-assessment overall-response probability output**)
@@ -2122,6 +2122,27 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Fukae_2024_valemetostat_teae_grade3.R` (Bayesian logistic exposure-safety model; reference-patient probability 0.653), `Chen_2021_lorlatinib_teae_grade3.R` (frequentist binomial logistic exposure-safety model; the steady-state lorlatinib trough enters on the natural-log scale with odds ratio 3.214 per e-fold, alongside baseline total cholesterol and time on study prior to the event).
 - **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Composite and therefore not mutually exclusive with the laboratory-value endpoints (`prob_anemia`, `prob_anc_decrease`, `prob_plt_decrease`), which are subsets of it; a model consuming several of these simultaneously must not treat them as competing risks. Chen 2021 makes the same point for a different pair -- because hypercholesterolemia was the most common adverse event in that trial, many of its grade >= 3 TEAEs *were* hypercholesterolemia events, so `prob_teae_grade3` and its paper-specific sibling `prob_hypercholesterolemia` overlap heavily there too. The canonical spans both Bayesian and frequentist fits of the endpoint; the name refers to the endpoint definition, not to the estimation framework.
+
+### prob_hyperglycemia (**canonical hyperglycemia adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a hyperglycemia adverse event of ANY CTCAE grade, in a static landmark exposure-safety logistic model. Hyperglycemia is the characteristic class toxicity of ALK tyrosine-kinase inhibitors built on the ceritinib scaffold, because ALK belongs to the insulin-receptor tyrosine-kinase superfamily and its ATP-binding site is shared with the insulin receptor, so potent ALK inhibition carries on-target off-tumour insulin-receptor blockade with it.
+- **Source aliases:** none.
+- **Example models:** `Liu_2024_saf189s_hyperglycemia.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 3.521 per e-fold; observed incidence 165 of 296 patients, 55.74%).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape founded by `prob_roc`. ANY-grade, which is why it is distinct from the severity-qualified sibling `prob_hyperglycemia_grade2`; a source paper that fits both must expose both, because the two carry materially different exposure slopes. Distinct from a modelled plasma-glucose *concentration* state in a semi-mechanistic glucose-insulin model: this is the probability of crossing a categorical toxicity threshold, not a glucose value.
+
+### prob_hyperglycemia_grade2 (**canonical moderate-or-worse hyperglycemia probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a hyperglycemia adverse event of CTCAE grade 2 or worse, in a static landmark exposure-safety logistic model. The severity-qualified sibling of `prob_hyperglycemia`.
+- **Source aliases:** none.
+- **Example models:** `Liu_2024_saf189s_hyperglycemia_grade2.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 7.662 per e-fold; observed incidence 82 of 296 patients, 27.70%).
+- **Notes:** A probability output in `[0, 1]`. Kept as its own canonical rather than folded into `prob_hyperglycemia` for the same reason `prob_teae_grade3` is distinct from an any-grade TEAE endpoint: the grade threshold is a different endpoint fit as a separate model, and in the founding paper the exposure slope on the logit is roughly twice as steep for the graded endpoint (2.036 versus 1.259 per natural-log unit of AUC). The `_grade2` suffix means "grade 2 or worse", matching the source convention "grade >= 2"; use `_grade3` for a grade-3-or-worse threshold, as `prob_teae_grade3` does.
+
+### prob_proteinuria (**canonical proteinuria adverse-event probability output**)
+- **Type:** compartment
+- **Role:** Probability (0..1) that a patient experiences a proteinuria adverse event of ANY CTCAE grade, in a static landmark exposure-safety logistic model.
+- **Source aliases:** none.
+- **Example models:** `Liu_2024_saf189s_proteinuria.R` (binomial logistic exposure-safety model on log steady-state daily AUC, odds ratio 2.031 per e-fold; observed incidence 90 of 296 patients, 30.41%).
+- **Notes:** A probability output in `[0, 1]`. Follows the `prob_<endpoint>` shape. Distinct from a modelled urinary-protein or urine-albumin-to-creatinine-ratio *state* in a mechanistic renal model (for example the UACR endpoint of `Goulooze_2022_finerenone_uacr.R`): this is the probability of crossing a categorical toxicity-grade threshold, not a measured protein excretion.
 
 ### prob_dose_interruption (**canonical dose-interruption probability output**)
 - **Type:** compartment

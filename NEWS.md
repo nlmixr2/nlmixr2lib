@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Rancic 2024 meropenem ([doi:10.1515/med-2024-1004](https://doi.org/10.1515/med-2024-1004)) -- critically ill adults in intensive care.
+- Add Liu 2024 SAF-189s population PK and exposure-response models ([doi:10.3389/fphar.2024.1418549](https://doi.org/10.3389/fphar.2024.1418549)) -- Chinese adults with ALK+/ROS1+ non-small cell lung cancer and healthy Chinese volunteers.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
