@@ -3386,6 +3386,8 @@ navbar:
         href: articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk.html
       - text: "Pyrotinib (Zhu 2024)"
         href: articles/Zhu_2024_pyrotinib.html
+      - text: "Quercetin rabbit (DominguezMore 2024)"
+        href: articles/DominguezMore_2024_rutin_physalis.html
       - text: "Quetiapine rat (Dias 2024)"
         href: articles/Dias_2024_quetiapine_rat.html
       - text: "Quinidine (Fattinger 1991)"
@@ -3648,6 +3650,10 @@ navbar:
         href: articles/LledoGarcia_2022_rozanolixizumab.html
       - text: "Rucaparib (Wang 2015)"
         href: articles/Wang_2015_rucaparib.html
+      - text: "Rutin human (DominguezMore 2024)"
+        href: articles/DominguezMore_2024_rutin_physalis.html
+      - text: "Rutin rabbit (DominguezMore 2024)"
+        href: articles/DominguezMore_2024_rutin_physalis.html
       - text: "Rutin rat (Chen 2024)"
         href: articles/Chen_2024_guhongInjection.html
       - text: "Rwj416457 (Schmidt 2009)"
@@ -5140,6 +5146,7 @@ articles:
   - articles/Dogterom_2018_asenapine
   - articles/Dohmann_2025_piperacillin
   - articles/DoldanMartelli_2013_EGF_IFN_chimera
+  - articles/DominguezMore_2024_rutin_physalis
   - articles/Dong_2014_mycophenolic_acid
   - articles/Dong_2016_hydroxyurea
   - articles/Dorlo_2008_miltefosine
