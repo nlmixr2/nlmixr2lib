@@ -184,8 +184,8 @@ Savic_2010_warfarin <- function() {
     Cc <- central / vc
     Ce <- effect  / vc
 
-    P_ge2 <- 1.0 / (1.0 + exp(-(alpha1_ind + beta * Ce)))
-    P_ge1 <- 1.0 / (1.0 + exp(-(alpha1_ind + alpha2 + beta * Ce)))
+    P_ge2 <- expit(alpha1_ind + beta * Ce)
+    P_ge1 <- expit(alpha1_ind + alpha2 + beta * Ce)
     P_eq0 <- 1.0 - P_ge1
     P_eq1 <- P_ge1 - P_ge2
     P_eq2 <- P_ge2

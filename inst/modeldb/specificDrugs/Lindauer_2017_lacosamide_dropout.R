@@ -123,10 +123,10 @@ Lindauer_2017_lacosamide_dropout <- function() {
     # reduces to k_j on the j-th interval (a Riemann-sum expression of the
     # piecewise-constant hazard reported by Table 2).
     gam <- 50
-    s1 <- 1.0 / (1.0 + exp(-gam * (t - bp1)))
-    s2 <- 1.0 / (1.0 + exp(-gam * (t - bp2)))
-    s3 <- 1.0 / (1.0 + exp(-gam * (t - bp3)))
-    s4 <- 1.0 / (1.0 + exp(-gam * (t - bp4)))
+    s1 <- expit(gam * (t - bp1))
+    s2 <- expit(gam * (t - bp2))
+    s3 <- expit(gam * (t - bp3))
+    s4 <- expit(gam * (t - bp4))
     h0_drop <- k1 + (k2 - k1) * s1 + (k3 - k2) * s2 + (k4 - k3) * s3 + (k5 - k4) * s4
 
     # Multiplicative covariate effects (log-linear on hazard).

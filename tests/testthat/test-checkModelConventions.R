@@ -2090,4 +2090,154 @@ test_that("no shipped model disagrees with its own logit back-transform", {
   }
   expect_equal(offenders, character(0))
 })
+
+# Hand-written inverse logit -------------------------------------------------
+#
+# The point of this block is the NEGATIVE cases. A rule that only flags
+# `exp(x)/(1+exp(x))` is easy; one that leaves a softmax, an odds two-step and a
+# logistic divisor alone is what makes it safe to run over the whole library.
+
+test_that("the four hand-written inverse-logit spellings are detected", {
+  f <- nlmixr2lib:::.handWrittenInverseLogit
+  for (txt in c("1/(1 + exp(-x))", "1/(1 + exp(x))",
+                "exp(x)/(1 + exp(x))", "exp(x)/(exp(x) + 1)",
+                "exp(a + b)/(1 + exp(a + b))")) {
+    expect_false(is.na(f(str2lang(txt))), info = txt)
+  }
+})
+
+test_that("shapes that merely resemble an inverse logit are NOT detected", {
+  f <- nlmixr2lib:::.handWrittenInverseLogit
+  cases <- c(
+    # Ibrahim's two-step and Chan's odds-ratio IIV: numerator is a symbol
+    "odds/(1 + odds)",
+    # vandenBerg / Pejcic softmax: denominator carries extra terms
+    "exp(k)/(1 + exp(j) + exp(k))",
+    "exp(x)/tsum",
+    # a typical value over a logistic factor -- SchaedeliStark 2024 balovaptan
+    # divides CL exactly this way; the exp() arguments differ
+    "exp(a)/(1 + exp(b))",
+    "exp(lcl + etalcl)/(1 + exp(e_age_cl * (age50_cl - AGE)))",
+    # ordinary division
+    "exp(x)/vc",
+    "central/vc"
+  )
+  for (txt in cases) expect_true(is.na(f(str2lang(txt))), info = txt)
+})
+
+test_that("a model using expit() raises no issue", {
+  ok <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      logitfdepot <- 1.5613; label("Bioavailability on the logit scale")
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      fdepot <- expit(logitfdepot)
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * fdepot
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(ok, verbose = FALSE))
+  expect_equal(nrow(res[res$category == "hand_written_inverse_logit", ]), 0L)
+})
+
+test_that("a model spelling the inverse logit by hand is an error", {
+  bad <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      logitfdepot <- 1.5613; label("Bioavailability on the logit scale")
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      fdepot <- exp(logitfdepot) / (1 + exp(logitfdepot))
+      cl <- exp(lcl)
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central * fdepot
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(bad, verbose = FALSE))
+  hit <- res[res$category == "hand_written_inverse_logit", ]
+  expect_equal(nrow(hit), 1L)
+  expect_equal(hit$severity[[1]], "error")
+  expect_true(grepl("expit", hit$suggestion[[1]], fixed = TRUE))
+})
+
+test_that("a logistic DIVISOR is left alone even though it looks similar", {
+  # SchaedeliStark 2024 balovaptan: CL/F divided by a logistic age factor. The
+  # two exp() arguments differ, so this is not an inverse logit and rewriting
+  # it to expit() would be a bug.
+  divisor <- function() {
+    description <- "A"
+    reference <- "R"
+    units <- list(time = "day", dosing = "mg", concentration = "mg/L")
+    ini({
+      lcl <- 1;   label("Clearance (CL, L/day)")
+      lvc <- 1;   label("Central volume (Vc, L)")
+      e_age_cl <- 0.1; label("Logistic age slope on CL (per year)")
+      age50_cl <- 40;  label("Age at half the CL effect (year)")
+      propSd <- 0.1; label("Proportional residual error (fraction)")
+    })
+    model({
+      cl <- exp(lcl) / (1 + exp(e_age_cl * (age50_cl - AGE)))
+      vc <- exp(lvc)
+      d/dt(central) <- -cl / vc * central
+      Cc <- central / vc
+      Cc ~ prop(propSd)
+    })
+  }
+  res <- suppressWarnings(checkModelConventions(divisor, verbose = FALSE))
+  expect_equal(nrow(res[res$category == "hand_written_inverse_logit", ]), 0L)
+})
+
+test_that("no shipped model spells an inverse logit by hand", {
+  # Enumerating over the source text, like the sibling register sweeps: parse
+  # each model({}) block and walk it, which is seconds rather than the quarter
+  # hour instantiating ~2500 models would cost. Deliberately no skip_on_cran():
+  # a check that silently skips reports green over an unexamined library.
+  root <- system.file("modeldb", package = "nlmixr2lib")
+  skip_if(!nzchar(root) || !dir.exists(root), "modeldb sources not installed")
+  files <- list.files(root, pattern = "[.]R$", recursive = TRUE, full.names = TRUE)
+  expect_gt(length(files), 100L)
+  offenders <- character(0)
+  for (f in files) {
+    txt <- paste(readLines(f, warn = FALSE), collapse = "\n")
+    m <- regexpr("model\\s*\\(\\s*\\{", txt)
+    if (m < 0) next
+    open <- m + attr(m, "match.length") - 1L
+    chars <- strsplit(substring(txt, open), "")[[1]]
+    depth <- 0L
+    close <- NA_integer_
+    for (i in seq_along(chars)) {
+      if (chars[[i]] == "{") depth <- depth + 1L
+      if (chars[[i]] == "}") {
+        depth <- depth - 1L
+        if (depth == 0L) { close <- i; break }
+      }
+    }
+    if (is.na(close)) next
+    body <- substring(txt, open, open + close - 1L)
+    e <- tryCatch(str2lang(body), error = function(e) NULL)
+    if (is.null(e)) next
+    hits <- nlmixr2lib:::.inverseLogitOffenders(e)
+    if (length(hits)) {
+      offenders <- c(offenders, paste0(basename(f), ": ", unique(hits)))
+    }
+  }
+  expect_equal(offenders, character(0))
+})
+
 # nolint end

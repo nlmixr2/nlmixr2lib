@@ -234,7 +234,7 @@ Duong_2016_WHIG_T2DM <- function() {
     # Table 4 'Insulin sensitivity' block).
     # -------------------------------------------------------------------
     lscale_efs  <- log(0.0458)       ; label("ScaleEFS scaling factor for weight change on IS (per kg; log-normal IIV per paper)")                     # Duong 2017 Table 4: Scale EFS = 0.0458 (RSE 9 pct)
-    s0          <- 0.963             ; label("Baseline insulin-sensitivity logit s0; IS_0 = 1 / (1 + exp(s0))")                                        # Duong 2017 Table 4: s0 = 0.963 (RSE 5 pct)
+    s0          <- 0.963             ; label("Baseline insulin-sensitivity logit s0; IS_0 = expit(-s0)")                                        # Duong 2017 Table 4: s0 = 0.963 (RSE 5 pct)
 
     # Duong 2017 Table 4 also reports a Box-Cox shape parameter
     # theta_shape = -0.476 (RSE 15 pct) on the etas0 IIV distribution
@@ -365,13 +365,13 @@ Duong_2016_WHIG_T2DM <- function() {
     # -------------------------------------------------------------------
     dwgt         <- weight - wgt_baseline
     efs          <- 1.0 + scale_efs_i * dwgt
-    is_0         <- 1.0 / (1.0 + exp(s0_i))
+    is_0         <- expit(-s0_i)
 
     # -------------------------------------------------------------------
     # 5. b-cell function (Duong 2017 Eqs 5-7). rB is a rate per year;
     # divide by 365 for a per-day time base.
     # -------------------------------------------------------------------
-    bf           <- 1.0 / (1.0 + exp(b0_i + rb_i * t / 365.0))
+    bf           <- expit(-(b0_i + rb_i * t / 365.0))
     efb          <- 1.0 + efbt_i * oc1
     bfunc        <- bf * efb
 
@@ -415,7 +415,7 @@ Duong_2016_WHIG_T2DM <- function() {
     # equal at t = 0 (efs = 1, efb = 1, bf = BF0). aa_ss, cc_ss,
     # disc_ss are the t = 0 values of aa, cc, disc for the
     # closed-form FSI / FPG at baseline.
-    bf_ss     <- 1.0 / (1.0 + exp(b0_i))
+    bf_ss     <- expit(-b0_i)
     aa_ss     <- bf_ss * 7.8
     cc_ss     <- is_0
     disc_ss   <- (3.5 * aa_ss * cc_ss) * (3.5 * aa_ss * cc_ss) + 4.0 * cc_ss * 35.1 * aa_ss
