@@ -4108,6 +4108,8 @@ navbar:
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
       - text: "Tigecycline (Luo 2023)"
         href: articles/Luo_2023_tigecycline.html
+      - text: "Tigecycline (Song 2024)"
+        href: articles/Song_2024_tigecycline.html
       - text: "Tigecycline (Su 2024)"
         href: articles/Su_2024_tigecycline.html
       - text: "Tilmicosin (Chen 2023)"
@@ -6168,6 +6170,7 @@ articles:
   - articles/Solana_2014_omeprazole
   - articles/Solms_2020_BAY94_9027
   - articles/Song_2013_olmesartan_amlodipine_hydrochlorothiazide
+  - articles/Song_2024_tigecycline
   - articles/Song_2025_infliximab
   - articles/Songvut_2026_andrographolide
   - articles/SoriaChacartegui_2026_tramadol
