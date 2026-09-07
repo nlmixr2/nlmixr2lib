@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Guo 2025 GLP-1 receptor agonist weight-reduction model-based meta-analysis
-  of 12 drugs ([doi:10.1016/j.obpill.2025.100162](https://doi.org/10.1016/j.obpill.2025.100162)) --
-  adults with overweight or obesity, pooled from 55 placebo-controlled trials.
+- Add Peng 2025 meropenem ([doi:10.2147/DDDT.S489603](https://doi.org/10.2147/DDDT.S489603)) -- Chinese critically ill adults on continuous renal replacement therapy.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
