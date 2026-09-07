@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Yang 2025 iruplinalkib ([doi:10.1111/cts.70099](https://doi.org/10.1111/cts.70099)) -- Chinese healthy volunteers and patients with ALK/ROS1-positive solid tumors.
+- Add Li 2024 norvancomycin ([doi:10.2147/IDR.S496776](https://doi.org/10.2147/IDR.S496776)) -- Chinese adults with community-acquired pneumonia.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
