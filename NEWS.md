@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Tsuchitani 2024 telmisartan TMDD-PBPK ([doi:10.1002/psp4.13154](https://doi.org/10.1002/psp4.13154)) -- healthy volunteers.
+- Add Chen 2024 adebrelimab ([doi:10.1002/psp4.13155](https://doi.org/10.1002/psp4.13155)) -- Chinese patients with extensive-stage small-cell lung cancer or advanced solid tumours.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
