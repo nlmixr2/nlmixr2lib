@@ -666,6 +666,8 @@ navbar:
         href: articles/Othman_2007_carvedilol.html
       - text: "Casirivimab (Lin 2024)"
         href: articles/Lin_2024_casirivimab.html
+      - text: "Caspofungin (AbdulAziz 2025)"
+        href: articles/AbdulAziz_2025_caspofungin.html
       - text: "Caspofungin (Wurthwein 2013)"
         href: articles/Wurthwein_2013_caspofungin.html
       - text: "Cebranopadol (Kleideiter 2017)"
@@ -4671,6 +4673,7 @@ articles:
   - articles/AbdelJalil_2013_tacrolimus
   - articles/Abdelgawad_2024_linezolid
   - articles/AbdulAziz_2016_doripenem
+  - articles/AbdulAziz_2025_caspofungin
   - articles/Abduljalil_2009_clarithromycin
   - articles/AbdullahKoolmees_2024_voriconazole_flucloxacillin_ddi
   - articles/AbouAuda_2024_gentamicin
