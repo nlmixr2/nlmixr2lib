@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2024 imipenem ([doi:10.3389/fphar.2024.1524272](https://doi.org/10.3389/fphar.2024.1524272)) -- hospitalized Chinese patients aged 60 years and older.
+- Add Koenig 2025 cefiderocol ([doi:10.1128/aac.01539-24](https://doi.org/10.1128/aac.01539-24)) -- hospitalized adults with cystic fibrosis during an acute pulmonary exacerbation.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
