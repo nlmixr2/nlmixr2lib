@@ -506,6 +506,8 @@ navbar:
         href: articles/Shah_2023_benzylpenicillin.html
       - text: "Benzylpenicillin horse (Lallemand 2023)"
         href: articles/Lallemand_2023_benzylpenicillin_horse.html
+      - text: "Bepirovirsen (Youssef 2024)"
+        href: articles/Youssef_2024_bepirovirsen.html
       - text: "Betamethasone (Schoenmakers 2025)"
         href: articles/Schoenmakers_2025_betamethasone.html
       - text: "Bevacizumab (Han 2015)"
@@ -6430,6 +6432,7 @@ articles:
   - articles/Yoshida_2024_fazpilodemab
   - articles/Yoshioka_2018_FXa_inhibitors_mbma
   - articles/You_2013_hCG_GTN
+  - articles/Youssef_2024_bepirovirsen
   - articles/Yu_2015_sunitinib
   - articles/Yu_2017_mycophenolic_acid
   - articles/Yu_2022_ofatumumab

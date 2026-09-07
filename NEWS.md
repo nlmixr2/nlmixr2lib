@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2024 voriconazole ([doi:10.3390/ph17060665](https://doi.org/10.3390/ph17060665)) -- critically ill adults in a respiratory intensive care unit, with and without continuous renal replacement therapy.
+- Add Youssef 2024 bepirovirsen ([doi:10.1007/s40121-024-00980-9](https://doi.org/10.1007/s40121-024-00980-9)) -- healthy participants and participants with chronic hepatitis B virus infection.
 
 - Add Ousey 2026 plozasiran ([doi:10.1002/jcph.70190](https://doi.org/10.1002/jcph.70190)) -- adults with familial chylomicronemia syndrome.
 
