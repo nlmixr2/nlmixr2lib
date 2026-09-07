@@ -2012,6 +2012,8 @@ navbar:
         href: articles/Fan_2025_iron_wholebody_pbpk.html
       - text: "Iron mouse ironloaded pbpk (Fan 2025)"
         href: articles/Fan_2025_iron_wholebody_pbpk.html
+      - text: "Iruplinalkib (Yang 2025)"
+        href: articles/Yang_2025_iruplinalkib.html
       - text: "Isatuximab (Brillac 2025)"
         href: articles/Brillac_2025_isatuximab.html
       - text: "Isatuximab (Fau 2020)"
@@ -6384,6 +6386,7 @@ articles:
   - articles/Yang_2024_naloxone_opioid_reversal
   - articles/Yang_2024_zastaprazan
   - articles/Yang_2025_imatinib_external_evaluation
+  - articles/Yang_2025_iruplinalkib
   - articles/Yang_2025_matrine_pig_pbpk
   - articles/Yang_2026_APTM
   - articles/Yang_2026_encorafenib
