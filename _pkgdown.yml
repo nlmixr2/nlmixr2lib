@@ -2090,6 +2090,8 @@ navbar:
         href: articles/Moore_1999_lamivudine.html
       - text: "Lamivudine (Ojara 2024)"
         href: articles/Ojara_2024_lamivudine.html
+      - text: "Lamotrigine (Damnjanovic 2023)"
+        href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
       - text: "Lamotrigine (He 2012)"
         href: articles/He_2012_lamotrigine.html
       - text: "Lamotrigine (Hussein 1997)"
@@ -2154,6 +2156,8 @@ navbar:
         href: articles/Cheng_2026_levamisole_interspecies.html
       - text: "Levamisole mpbpk (Cheng 2026)"
         href: articles/Cheng_2026_levamisole_interspecies.html
+      - text: "Levetiracetam (Damnjanovic 2023)"
+        href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
       - text: "Levetiracetam (Shin 2017)"
         href: articles/Shin_2017_levetiracetam.html
       - text: "Levetiracetam (Wang 2012)"
@@ -4270,6 +4274,8 @@ navbar:
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
         href: articles/Vezina_2014_valganciclovir.html
+      - text: "Valproic acid (Damnjanovic 2023)"
+        href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
       - text: "Valproic acid (Nakashima 2015)"
         href: articles/Nakashima_2015_valproic_acid_seizure_control.html
       - text: "Valproic acid (Ogusu 2014)"
@@ -4998,6 +5004,7 @@ articles:
   - articles/Csajka_2004_indinavir
   - articles/Csajka_2005_ephedrine_caffeine
   - articles/DAgate_2024_aciclovir
+  - articles/Damnjanovic_2023_pediatric_antiepileptics
   - articles/Danielak_2017_clopidogrel
   - articles/Danielak_2017_treosulfan
   - articles/Dao_2020_sultiame

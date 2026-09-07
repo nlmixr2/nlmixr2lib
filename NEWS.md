@@ -2,19 +2,7 @@
 
 # development version
 
-- Fix a dropped `exp()` in the bacteremia term of
-  `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
-  `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
-  form printed by Yamamoto 2016 ([doi:10.1128/AAC.00972-16](https://doi.org/10.1128/AAC.00972-16)),
-  which reports the same fitted model. **No parameter value changed** -- all
-  eight Supplementary Table S2 estimates are as published. The previous form
-  predicted 85-98% survival at every dose and bacteremia level, including 85%
-  survival for untreated animals at 10^6 CFU/mL against 0-14.3% observed, and so
-  contradicted the bacteremia "point of no return" that is the central claim of
-  both papers. The vignette erratum that attributed this to a misprinted
-  `theta1` is corrected, and its two anchor chunks now solve the model instead
-  of restating its equation inline so the same drift cannot recur silently.
-
+- Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
 - Add Pitsiu 2023 atacicept ([doi:10.1002/psp4.12982](https://doi.org/10.1002/psp4.12982)) -- healthy volunteers and adults with systemic lupus erythematosus.
