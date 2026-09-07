@@ -1,0 +1,526 @@
+---
+title: "Ensitrelvir (Ishibashi 2024)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Ensitrelvir (Ishibashi 2024)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Ishibashi_2024_ensitrelvir"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Ishibashi_2024_ensitrelvir"))$description`
+* Article: [Clin Pharmacokinet. 2024;63(12):1723-1734](https://doi.org/10.1007/s40262-024-01446-4)
+
+Ensitrelvir is an oral inhibitor of the SARS-CoV-2 3C-like protease. Ishibashi
+2024 is the first population pharmacokinetic analysis of the drug, pooling two
+phase I studies in healthy participants with the phase II/III SCORPIO-SR study
+in participants infected with SARS-CoV-2.
+
+A two-compartment model with first-order absorption and no absorption lag
+described the data. Body weight on apparent clearance and on apparent central
+volume, and food condition and formulation on the absorption rate constant,
+were the only covariates retained in the final model (model no. 511).
+
+# Population
+
+The analysis pooled 8034 plasma ensitrelvir concentrations from 2060
+participants across three studies (Ishibashi 2024 Tables 1 and 2): 4341
+concentrations from 175 healthy adults in two phase I studies, and 3693
+concentrations from 1885 participants with mild-to-moderate SARS-CoV-2
+infection in SCORPIO-SR.
+
+Median body weight was 62.6 kg (range 35.0-156.0), median age 35 years (range
+12-76, with 1.7% adolescents aged 12 to under 18 years), and 42.6% of
+participants were female. The population was 98.5% Asian, enrolled in Japan
+(72.0%), Vietnam (21.7%) and Korea (6.3%) - a limitation the authors call out
+explicitly. Ninety-seven percent of participants received the tablet
+formulation; the oral suspension was used only in part of the phase I
+programme.
+
+The same information is available programmatically via the model's `population`
+metadata:
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Ishibashi_2024_ensitrelvir"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+Every value below carries the same citation as an in-file comment beside its
+`ini()` entry in
+`inst/modeldb/specificDrugs/Ishibashi_2024_ensitrelvir.R`.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lka` (Ka, suspension + fasted reference) | 1.50 1/h | Table 3 "Ka (1/h)"; Sect. 4 legend block |
+| `lcl` (CL/F at 62.6 kg) | 0.211 L/h | Table 3 "CL/F (L/h)"; Sect. 4 legend block |
+| `lvc` (Vc/F at 62.6 kg) | 14.7 L | Table 3 "Vc/F (L)"; Sect. 4 legend block |
+| `lq` (Q/F) | 0.539 L/h | Table 3 "Q/F (L/h)"; Sect. 4 legend block |
+| `lvp` (Vp/F) | 2.50 L | Table 3 "Vp/F (L)"; Sect. 4 legend block |
+| `e_fed_ka` | 0.594 | Table 3 "Effect of food on Ka" |
+| `e_form_tablet_ka` | 0.362 | Table 3 "Effect of formulation on Ka" |
+| `e_wt_cl` | 0.521 | Table 3 "Effect of body weight on CL/F" |
+| `e_wt_vc` | 1.04 | Table 3 "Effect of body weight on Vc/F" |
+| IIV `etalka` (variance) | 0.729^2 = 0.531441 | Table 3 IIV "Ka (%)" = 72.9 |
+| IIV `etalcl` (variance) | 0.213^2 = 0.045369 | Table 3 IIV "CL/F (%)" = 21.3 |
+| IIV `etalvc` (variance) | 0.147^2 = 0.021609 | Table 3 IIV "Vc/F (%)" = 14.7 |
+| IIV covariance CL/F ~ Vc/F | 0.0216 (R = 0.691) | Table 3 "Covariance between CL/F and Vc/F" |
+| `addSd` | 0.0317 ug/mL | Table 3 "Additive residual error (ug/mL)" |
+| `propSd` | 0.199 | Table 3 "Proportional residual error (%)" = 19.9 |
+| Reference body weight | 62.6 kg | Table 2 median body weight; appears in the Sect. 4 legend equations |
+| Categorical covariate model (multiplicative) | n/a | Sect. 2.2.2 |
+| Continuous covariate model (power) | n/a | Sect. 2.2.2 |
+| Two-compartment ODE structure, first-order absorption, no lag | n/a | Sect. 2.2.1, Sect. 3.1 |
+| Combination (additive + proportional) residual error | n/a | Sect. 2.2.1, Sect. 3.1 |
+
+## The IIV percentages are omega standard deviations, not %CV
+
+Table 3 reports the interindividual variability rows as bare percentages,
+which is ambiguous: they could be omega standard deviations on the log scale,
+or coefficients of variation. The covariance row settles it without any
+simulation. Table 3 gives `cov(CL/F, Vc/F) = 0.0216` together with the implied
+correlation `R = 0.691`, and `cov = R * sd_CL * sd_Vc`:
+
+```{r omega-scale}
+R <- 0.691
+# Reading A: the percentages ARE the log-scale omega SDs.
+covA <- R * 0.213 * 0.147
+# Reading B: the percentages are %CV, so omega = sqrt(log(1 + CV^2)).
+covB <- R * sqrt(log(1 + 0.213^2)) * sqrt(log(1 + 0.147^2))
+c(reading_A = covA, reading_B = covB, printed = 0.0216)
+
+# The printed 0.0216 has rounding interval [0.02155, 0.02165].
+stopifnot(covA >= 0.02155, covA <= 0.02165)   # reading A reproduces it
+stopifnot(covB < 0.02155 || covB > 0.02165)   # reading B does not
+```
+
+Reading A lands inside the printed value's rounding interval and reading B does
+not, so the packaged model squares the percentages directly to obtain the
+variances.
+
+# Structural anchors from the paper's own text
+
+Three quantities are printed in the paper independently of Table 3, and each
+one exercises a different part of the model. These are typical-value
+(deterministic) checks, so they are asserted tightly.
+
+```{r anchors}
+mod <- readModelDb("Ishibashi_2024_ensitrelvir")
+
+solve_typical <- function(dose, fed, form_tablet, times, maint = NULL) {
+  ev <- rxode2::et(amt = dose, cmt = "depot", evid = 1)
+  if (!is.null(maint)) {
+    ev <- rxode2::et(ev, amt = maint, cmt = "depot", evid = 1,
+                     time = 24, addl = 3, ii = 24)
+  }
+  ev <- rxode2::et(ev, times, cmt = "central")
+  ev <- as.data.frame(ev)
+  ev$WT <- 62.6
+  ev$FED <- fed
+  ev$FORM_TABLET <- form_tablet
+  rxode2::rxSolve(mod, ev, omega = NA, returnType = "data.frame")
+}
+
+trapz <- function(t, y) sum(diff(t) * (head(y, -1) + tail(y, -1)) / 2)
+
+# (1) Suspension, fasted: the paper reports Tmax "around 2.50 h" (Sect. 1,
+#     citing the first-in-human single-dose study, which used the suspension).
+susp <- solve_typical(250, fed = 0, form_tablet = 0, times = seq(0, 48, by = 0.01))
+tmax_susp <- susp$time[which.max(susp$Cc)]
+
+# (2) and (3) Tablet, fasted, 375 mg day 1 then 125 mg days 2-5 - the
+#     SCORPIO-SR "125 mg group" regimen. Table 4 reports day-1 medians of
+#     AUC_d1 = 432 ug*h/mL and C24_d1 = 16.5 ug/mL.
+tab <- solve_typical(375, fed = 0, form_tablet = 1,
+                     times = seq(0, 120, by = 0.05), maint = 125)
+d1 <- tab[tab$time <= 24, ]
+auc_d1 <- trapz(d1$time, d1$Cc)
+c24_d1 <- d1$Cc[which.min(abs(d1$time - 24))]
+
+anchors <- tibble::tibble(
+  Quantity = c("Tmax, 250 mg suspension, fasted (h)",
+               "AUC_d1, 375 mg tablet, fasted (ug*h/mL)",
+               "C24_d1, 375 mg tablet, fasted (ug/mL)"),
+  Published = c(2.50, 432, 16.5),
+  Model = c(tmax_susp, auc_d1, c24_d1),
+  Source = c("Sect. 1 / Sect. 4", "Table 4, 125 mg group median",
+             "Table 4, 125 mg group median")
+) |>
+  mutate(`% diff` = 100 * (Model - Published) / Published)
+
+knitr::kable(anchors, digits = c(0, 2, 2, 0, 1),
+             caption = "Typical-value reproduction of three independently printed anchors.")
+
+# Deterministic quantities: no cohort sampling is involved, so these bounds are
+# tight on purpose. Each one fails on a mis-transcribed rate constant, volume,
+# clearance, dose or unit.
+stopifnot(
+  abs(tmax_susp - 2.50) < 0.10,          # validates lka and the suspension/fasted reference
+  abs(auc_d1 - 432) / 432 < 0.05,        # validates CL/F and the mg -> ug/mL unit chain
+  abs(c24_d1 - 16.5) / 16.5 < 0.05       # validates the two-compartment disposition
+)
+```
+
+The suspension Tmax of `r sprintf("%.2f", tmax_susp)` h reproduces the printed
+2.50 h, which confirms both that `lka` is 1.50 1/h and that the typical value
+in Table 3 is stated for the *suspension in the fasted state* - the condition
+in which both categorical indicators are zero.
+
+The AUC and C24 anchors are almost independent of the absorption rate constant,
+so their near-exact agreement pins the disposition parameters, the reference
+weight and the `mg` dose to `ug/mL` concentration chain.
+
+# Absorption: food and formulation
+
+The final model multiplies the absorption rate constant by 0.594 when the dose
+is taken within 2 h after a meal and by 0.362 for the tablet
+(Ishibashi 2024 Table 3 and the Sect. 4 legend block:
+`Ka = 1.50 x (0.594 for food) x (0.362 for formulation)`). This is the
+mechanism behind Figure 2c-d.
+
+```{r absorption}
+grid <- tidyr::expand_grid(form_tablet = c(0, 1), fed = c(0, 1))
+
+abs_curves <- do.call(rbind, lapply(seq_len(nrow(grid)), function(i) {
+  s <- solve_typical(250, fed = grid$fed[i], form_tablet = grid$form_tablet[i],
+                     times = seq(0, 72, by = 0.05))
+  s$Formulation <- ifelse(grid$form_tablet[i] == 1, "Tablet", "Suspension")
+  s$Food <- ifelse(grid$fed[i] == 1, "Fed (within 2 h after a meal)", "Fasted")
+  s
+}))
+
+abs_summary <- abs_curves |>
+  group_by(Formulation, Food) |>
+  summarise(ka = first(ka), Tmax = time[which.max(Cc)], Cmax = max(Cc),
+            .groups = "drop")
+
+knitr::kable(abs_summary, digits = 3,
+             caption = paste("Typical-value absorption after a single 250 mg dose",
+                             "under each combination of the two categorical",
+                             "covariates."))
+
+ggplot(abs_curves, aes(time, Cc, colour = Food, linetype = Formulation)) +
+  geom_line(linewidth = 0.7) +
+  coord_cartesian(xlim = c(0, 36)) +
+  labs(x = "Time (h)", y = "Ensitrelvir (ug/mL)",
+       title = "Absorption phase by food condition and formulation",
+       caption = paste("Mechanism behind Figure 2c-d of Ishibashi 2024.",
+                       "Single 250 mg dose, typical 62.6 kg participant.")) +
+  theme(legend.position = "bottom")
+```
+
+Two published claims about food are reproduced, and one is not:
+
+* **Cmax is essentially unaffected by food.** Ishibashi 2024 Sect. 4 states
+  that "the phase I study showed that Cmax was not affected" by food. The
+  model gives a Cmax change of only a few percent in each formulation, because
+  the food effect acts solely on `ka` and ensitrelvir's elimination is very
+  slow relative to its absorption.
+* **Food delays Tmax.** The direction and the existence of the delay are
+  reproduced for both formulations.
+* **The magnitude of the fed Tmax delay is under-predicted.** See
+  *Assumptions and deviations* below.
+
+```{r absorption-checks}
+cmax_ratio <- abs_summary |>
+  group_by(Formulation) |>
+  summarise(ratio = Cmax[Food != "Fasted"] / Cmax[Food == "Fasted"], .groups = "drop")
+
+# Deterministic; the paper's claim is that food does not meaningfully change
+# Cmax, so assert the magnitude of the departure from unity.
+stopifnot(all(abs(cmax_ratio$ratio - 1) < 0.15))
+
+# Food slows absorption in both formulations (a structural consequence of a
+# covariate factor < 1, not a noisy cohort statistic).
+stopifnot(all(abs_summary$ka[abs_summary$Food != "Fasted"] <
+              abs_summary$ka[abs_summary$Food == "Fasted"]))
+```
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below matches the
+Ishibashi 2024 Table 2 body-weight distribution (mean 63.8 kg, SD 13.6, median
+62.6, range 35.0-156.0) and simulates the two SCORPIO-SR regimens with the
+tablet in the fasted state.
+
+```{r cohort}
+# set.seed() seeds R's RNG (used here for the body-weight draw). It does NOT
+# seed rxode2's simulation RNG, whose streams are partitioned per solver
+# thread - so the etas drawn below differ between a 2-core CI runner and a
+# 16-thread workstation. Every assertion downstream is written to hold for any
+# cohort this model can produce.
+set.seed(20241120)
+rxode2::rxSetSeed(20241120)
+
+n_per_arm <- 200L
+obs_times <- seq(0, 120, by = 0.25)
+
+make_cohort <- function(n, day1_dose, maint_dose, label, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  # Lognormal weight matched to the Table 2 mean/SD, truncated to the
+  # observed 35.0-156.0 kg range.
+  wt <- pmin(pmax(rlnorm(n, meanlog = log(62.6),
+                         sdlog = sqrt(log(1 + (13.6 / 63.8)^2))), 35), 156)
+
+  doses <- tibble(
+    id = rep(ids, each = 5L),
+    time = rep(c(0, 24, 48, 72, 96), times = n),
+    amt = rep(c(day1_dose, rep(maint_dose, 4L)), times = n),
+    evid = 1L, cmt = "depot"
+  )
+  obs <- tibble(
+    id = rep(ids, each = length(obs_times)),
+    time = rep(obs_times, times = n),
+    amt = NA_real_, evid = 0L, cmt = "central"
+  )
+  bind_rows(doses, obs) |>
+    mutate(WT = wt[match(id, ids)], FED = 0, FORM_TABLET = 1,
+           treatment = label) |>
+    arrange(id, time, desc(evid))
+}
+
+events <- bind_rows(
+  make_cohort(n_per_arm, 375, 125, "125 mg group", id_offset = 0L),
+  make_cohort(n_per_arm, 750, 250, "250 mg group", id_offset = n_per_arm)
+)
+
+# Disjoint IDs across arms - a collision would silently merge subjects and
+# double their dose.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(dplyr::n_distinct(events$id) == 2L * n_per_arm)
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events,
+                       keep = c("treatment", "WT", "FED", "FORM_TABLET")) |>
+  as.data.frame()
+stopifnot(nrow(sim) > 0, !anyNA(sim$Cc))
+```
+
+```{r figure-3}
+# Replicates the shape of Figure 3 of Ishibashi 2024 (prediction-corrected VPC
+# of SCORPIO-SR multiple-dose data), as a simulation-only percentile band.
+sim |>
+  group_by(treatment, time) |>
+  summarise(Q10 = quantile(Cc, 0.10), Q50 = quantile(Cc, 0.50),
+            Q90 = quantile(Cc, 0.90), .groups = "drop") |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~treatment) +
+  labs(x = "Time (h)", y = "Ensitrelvir (ug/mL)",
+       title = "Simulated median with 10th-90th percentile band",
+       caption = paste("Same regimens and endpoint as Figure 3 of",
+                       "Ishibashi 2024 (375/125 mg and 750/250 mg,",
+                       "tablet, 5 days).")) +
+  theme(legend.position = "none")
+```
+
+# PKNCA validation
+
+Table 4 of Ishibashi 2024 reports empirical-Bayes exposures on day 1 and day 5
+for each SCORPIO-SR dose group. Both intervals are computed here in a single
+PKNCA pass.
+
+```{r pknca}
+# Only `!is.na(Cc)` - a `time > 0` or `Cc > 0` filter would drop the time-zero
+# row that PKNCA needs to anchor AUC.
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time = 0 row per subject; pre-dose Cc = 0 for an oral drug.
+sim_nca <- bind_rows(
+  sim_nca,
+  sim_nca |> distinct(id, treatment) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, treatment, time, .keep_all = TRUE) |>
+  arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id,
+                             concu = "ug/mL", timeu = "h")
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, treatment)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id,
+                             doseu = "mg")
+
+# Day 1 = the first dosing interval; day 5 = the fifth (last) dosing interval.
+intervals <- data.frame(
+  start   = c(0, 96),
+  end     = c(24, 120),
+  cmax    = TRUE,
+  tmax    = TRUE,
+  auclast = TRUE,
+  ctrough    = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+```
+
+## Comparison against published NCA
+
+```{r nca_compare}
+# Label each PKNCA row by the interval it came from so day 1 and day 5 can be
+# compared in one table.
+sim_tbl <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast", "ctrough")) |>
+  mutate(Day = ifelse(start == 0, "Day 1", "Day 5")) |>
+  dplyr::select(treatment, Day, PPTESTCD, PPORRES) |>
+  dplyr::filter(!(PPTESTCD == "ctrough" & Day == "Day 5"))
+
+# PKNCA computes `ctrough` only for an interval that ENDS on a dose record.
+# Dosing stops with the day-5 dose at t = 96 h, so the 96-120 h interval has
+# no dose at its end and PKNCA returns NA there. The paper's C24_d5 is simply
+# the concentration 24 h after the day-5 dose, i.e. the observation at
+# t = 120 h - a direct read-off, not a derived NCA quantity - so it is taken
+# from the simulation and appended here rather than being dropped from the
+# comparison.
+c24_d5 <- sim |>
+  dplyr::filter(abs(time - 120) < 1e-9) |>
+  dplyr::transmute(treatment, Day = "Day 5", PPTESTCD = "ctrough",
+                   PPORRES = Cc)
+stopifnot(nrow(c24_d5) == dplyr::n_distinct(sim$id))
+
+sim_tbl <- bind_rows(sim_tbl, c24_d5)
+
+# Ishibashi 2024 Table 4 medians. ctrough is the 24 h post-dose concentration
+# (the paper's C24_d1 / C24_d5); auclast over a complete dosing interval is
+# the paper's AUC_d1 / AUC_d5.
+published <- tibble::tribble(
+  ~treatment,      ~Day,    ~cmax, ~auclast, ~ctrough,
+  "125 mg group",  "Day 1",  22.9,    432.0,  16.5,
+  "125 mg group",  "Day 5",  26.2,    568.3,  19.2,
+  "250 mg group",  "Day 1",  47.7,    887.3,  34.2,
+  "250 mg group",  "Day 5",  55.1,   1205.0,  40.8
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = sim_tbl,
+  reference     = published,
+  by            = c("treatment", "Day"),
+  units         = c(cmax = "ug/mL", auclast = "ug*h/mL", ctrough = "ug/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Simulated median vs Ishibashi 2024 Table 4 medians.",
+                  "* differs from the reference by more than 20%."),
+  align = c("l", "l", "l", "r", "r", "r")
+)
+attr(cmp, "footnote")
+```
+
+```{r nca_checks}
+pct <- as.numeric(gsub("[^0-9.+-]", "", cmp$`% diff`))
+names(pct) <- paste(cmp$treatment, cmp$Day, cmp[[1]])
+
+# Cohort-derived quantities, so assert on the CENTRE and a robust envelope
+# rather than on any single arm's extreme (see the repo CLAUDE.md note on
+# cohort assertions). A mis-transcribed clearance, volume, dose or unit moves
+# the whole distribution by tens of percent and breaks both bounds.
+stopifnot(
+  abs(median(pct)) < 10,
+  quantile(abs(pct), 0.75) < 15,
+  max(abs(pct)) < 25
+)
+```
+
+Every row agrees with the published medians to within the 20% tolerance. The
+AUC and 24 h trough rows - which barely depend on the absorption rate constant
+- agree to within a few percent on day 1, confirming the disposition block and
+the unit chain. Cmax runs low; the reason is discussed below.
+
+The day-5 troughs, which test five days of accumulation, agree to within about
+1%, so the disposition block is right not only for a single dose but across the
+whole treatment course. Cmax is the only quantity that disagrees materially,
+and it is the only one that depends strongly on the absorption rate constant.
+
+# Assumptions and deviations
+
+* **SCORPIO-SR prandial state is not reported, and is simulated as fasted.**
+  Ishibashi 2024 Table 2 summarises food condition only for the phase I and
+  drug-drug-interaction studies. Since `FED` only scales `ka`, this choice
+  moves Cmax by a few percent and leaves AUC and the 24 h trough essentially
+  unchanged.
+
+* **Body-weight distribution.** The paper reports the mean, SD, median and
+  range of body weight but not its shape. A lognormal matched to the Table 2
+  mean and SD and truncated to the 35.0-156.0 kg range is used here.
+
+* **Simulated variability is wider than the Table 4 empirical-Bayes spread,
+  by construction.** Table 4 summarises *post hoc* individual estimates, which
+  shrink toward the typical value - Ishibashi 2024 Table 3 reports shrinkage of
+  23.9% on CL/F, 33.1% on Vc/F and 68.4% on Ka. The packaged model draws from
+  the full unshrunken omega, so simulated CVs (roughly 25-30%) exceed the
+  published post-hoc CVs (roughly 18-24%). The medians, which the comparison
+  table uses, are unaffected.
+
+* **Cmax is reproduced about 5-11% below the Table 4 medians (a known
+  deviation, not tuned away).** Every ka-insensitive quantity reproduces
+  closely - the day-1 typical-value anchors land at AUC_d1 432 vs 432 and
+  C24_d1 16.4 vs 16.5, and the cohort day-5 troughs agree to within about 1%
+  after five days of accumulation - so the gap is confined to the peak. Two
+  contributors are visible in the paper itself:
+  Table 4 shows that the 250 mg group's post-hoc CL/F median (0.198 L/h) sits
+  7% below the model's typical 0.211 L/h, so that arm's published exposures are
+  raised relative to a typical-value simulation; and the peak is the only
+  quantity that depends strongly on `ka`, whose eta carries 68.4% shrinkage
+  because SCORPIO-SR has almost no absorption-phase sampling (Sect. 4). No
+  parameter was adjusted to close the gap.
+
+* **The fed Tmax delay is under-predicted.** Ishibashi 2024 Sect. 4 reports
+  that Tmax was delayed "from 2.50 to 6.00 h" with a high-fat/high-calorie
+  meal. The packaged model, using the paper's own pooled food effect on `ka`,
+  moves the suspension Tmax from 2.51 h to about 3.8 h. This is a consequence
+  of the covariate the authors fitted rather than an implementation error: the
+  `FED` covariate is defined operationally as *any* dose taken within 2 h after
+  a meal and is estimated across all three pooled studies, whereas the 2.50 to
+  6.00 h observation comes from the dedicated phase I arm with a standardised
+  high-fat, high-calorie meal. A pooled generic fed flag is expected to be
+  diluted relative to a high-fat challenge. The model reproduces what Table 3
+  reports; it cannot reproduce a subgroup effect the final model did not carry.
+
+* **Model terminal half-life (57 h) exceeds the phase I NCA range (42.2-48.1
+  h).** The NCA value is a non-compartmental terminal slope from single-dose
+  phase I profiles of finite duration, which truncates a slow terminal phase;
+  the model value is the analytical `log(2)/beta` of the fitted two-compartment
+  system. This is the usual direction of disagreement between the two and is
+  not a discrepancy in the transcribed parameters.
+
+* **No exposure-response model is packaged.** Ishibashi 2024 Sect. 3.4 assesses
+  the relationship between day-1 exposure and the day-4 change from baseline in
+  SARS-CoV-2 viral RNA using quartile box plots only (Fig. 4, Figs. S4-S5). No
+  regression was fitted and no parameters are reported, so there is no
+  exposure-response model to extract. The paper's conclusion is that the
+  antiviral response was similar across the entire exposure range studied.
+
+* **Relative bioavailability F1 carries no covariate.** Food, formulation and
+  health status were all tested on F1 and all were removed by inferential
+  assessment (Sect. 3.1). All disposition parameters are apparent (CL/F, Vc/F,
+  Q/F, Vp/F), so there is no `f(depot)` hook in the model.
+
+* **Covariates screened but not retained** are recorded in the model file's
+  `covariatesDataExcluded` metadata rather than `covariateData`, so they carry
+  provenance without being flagged as declared-but-unused. Country of enrolment
+  was also tested and removed; it has no canonical register entry and is
+  described in the model file's comments instead.
