@@ -1914,6 +1914,8 @@ navbar:
         href: articles/Couffignal_2014_imipenem.html
       - text: "Imipenem (Lamoth 2009)"
         href: articles/Lamoth_2009_imipenem.html
+      - text: "Imipenem (Wang 2024)"
+        href: articles/Wang_2024_imipenem.html
       - text: "Imipenem amikacin PA001 (Yadav 2017)"
         href: articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas.html
       - text: "Imipenem amikacin PA088 (Yadav 2017)"
@@ -6279,6 +6281,7 @@ articles:
   - articles/Wang_2024_amphenmulin
   - articles/Wang_2024_atezolizumab_carboplatin_nabpaclitaxel_qsp
   - articles/Wang_2024_evorpacept_qsp
+  - articles/Wang_2024_imipenem
   - articles/Wang_2024_omega3PUFA
   - articles/Wang_2024_risperidone_lai_switching
   - articles/Wang_2024_rnaLipidNanoparticle
