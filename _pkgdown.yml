@@ -1336,6 +1336,8 @@ navbar:
         href: articles/Park_2025_efineptakin_alfa.html
       - text: "Eflornithine rat (Jansson 2008)"
         href: articles/Jansson_2008_eflornithine.html
+      - text: "Elexacaftor (Truong 2025)"
+        href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Elinzanetant (Willmann 2024)"
         href: articles/Willmann_2024_elinzanetant.html
       - text: "Elotuzumab (Ide 2020)"
@@ -2120,6 +2122,8 @@ navbar:
         href: articles/Hennig_2007_itraconazole.html
       - text: "Itraconazole (Jansen 2023)"
         href: articles/Jansen_2023_itraconazole.html
+      - text: "Ivacaftor (Truong 2025)"
+        href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Ivermectin (Alshehri 2023)"
         href: articles/Alshehri_2023_ivermectin.html
       - text: "Ivermectin (Fimbo 2023)"
@@ -4164,6 +4168,8 @@ navbar:
         href: articles/Henthorn_2024_tetrahydrocannabinol.html
       - text: "Tetrahydrocannabinol (Storgaard 2026)"
         href: articles/Storgaard_2026_tetrahydrocannabinol.html
+      - text: "Tezacaftor (Truong 2025)"
+        href: articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor.html
       - text: "Tezepelumab (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Thc (Wolowich 2025)"
@@ -6405,6 +6411,7 @@ articles:
   - articles/Tremoulet_2014_ampicillin
   - articles/Troy_2020_arylsulfataseA
   - articles/Trujillo_2025_proinsulin_qsp
+  - articles/Truong_2025_elexacaftor_tezacaftor_ivacaftor
   - articles/Tsai_2023_ceftriaxone
   - articles/Tseng_2026_piperacillin
   - articles/Tsuchitani_2024_telmisartan_pbpk

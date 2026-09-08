@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Truong 2025 elexacaftor, tezacaftor and ivacaftor ([doi:10.1111/cts.70245](https://doi.org/10.1111/cts.70245)) -- children with cystic fibrosis aged 2-18 years.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
