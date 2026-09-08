@@ -4180,6 +4180,8 @@ navbar:
         href: articles/Yano_1993_theophylline.html
       - text: "Theophylline pediatric asthma (elDesoky 1997)"
         href: articles/elDesoky_1997_theophylline_pediatric_asthma.html
+      - text: "Thioguanine (Bayoumy 2025)"
+        href: articles/Bayoumy_2025_thioguanine.html
       - text: "ThrombomodulinAlfa (Mouksassi 2015)"
         href: articles/Mouksassi_2015_thrombomodulinAlfa.html
       - text: "Ticagrelor (Almquist 2016)"
@@ -4932,6 +4934,7 @@ articles:
   - articles/Bauer_2023_vonWillebrandFactor
   - articles/Bausch_2024_cefazolin
   - articles/Baverel_2015_tralokinumab
+  - articles/Bayoumy_2025_thioguanine
   - articles/Beal_2001_iv1cmt_bql
   - articles/Bellanti_2014_deferiprone
   - articles/Bellanti_2015_deferoxamine
