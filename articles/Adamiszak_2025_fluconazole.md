@@ -272,7 +272,7 @@ mod
 #>     Cc ~ prop(propSd)
 #>   })
 #> }
-#> <environment: 0x558707cf2598>
+#> <environment: 0x564b9a90a2c0>
 ```
 
 ## Structural checks against the paper’s own derived numbers

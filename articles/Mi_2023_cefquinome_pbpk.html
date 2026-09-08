@@ -3161,6 +3161,26 @@ comparison), within the 200-per-arm cap.</p>
 <span><span class="co">#&gt; dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero</span></span>
 <span><span class="co">#&gt; Warning: 'ii' requires non zero additional doses ('addl') or steady state</span></span>
 <span><span class="co">#&gt; dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1) and step size H (=R2), the    </span></span>
+<span><span class="co">#&gt;       corrector convergence failed repeatedly     </span></span>
+<span><span class="co">#&gt;       or with ABS(H) = HMIN   </span></span>
+<span><span class="co">#&gt; IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1) and step size H (=R2), the    </span></span>
+<span><span class="co">#&gt;       corrector convergence failed repeatedly     </span></span>
+<span><span class="co">#&gt;       or with ABS(H) = HMIN   </span></span>
+<span><span class="co">#&gt; IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).</span></span>
 <span><span class="co">#&gt; Warning: 'ii' requires non zero additional doses ('addl') or steady state</span></span>
 <span><span class="co">#&gt; dosing ('ii': 24.000000, 'ss': 0; 'addl': 0), reset 'ii' to zero</span></span>
 <span><span class="co">#&gt; Warning: 'ii' requires non zero additional doses ('addl') or steady state</span></span>
@@ -3495,6 +3515,8 @@ weight of the corresponding source cohort.</p>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span><span class="va">conc_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAconc.html" class="external-link">PKNCAconc</a></span><span class="op">(</span><span class="va">sim_nca</span>, <span class="va">Cc</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
 <span><span class="va">dose_obj</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdose.html" class="external-link">PKNCAdose</a></span><span class="op">(</span><span class="va">dose_df</span>, <span class="va">amt</span> <span class="op">~</span> <span class="va">time</span> <span class="op">|</span> <span class="va">treatment</span> <span class="op">+</span> <span class="va">id</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">intervals</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -3504,7 +3526,57 @@ weight of the corresponding source cohort.</p>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">nca_res</span> <span class="op">&lt;-</span> <span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/pk.nca.html" class="external-link">pk.nca</a></span><span class="op">(</span><span class="fu">PKNCA</span><span class="fu">::</span><span class="fu"><a href="https://humanpred.github.io/pknca/reference/PKNCAdata.html" class="external-link">PKNCAdata</a></span><span class="op">(</span><span class="va">conc_obj</span>, <span class="va">dose_obj</span>,</span>
-<span>                                          intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span>                                          intervals <span class="op">=</span> <span class="va">intervals</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0</span></span>
+<span><span class="co">#&gt; points)</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc = conc): Negative concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0</span></span>
+<span><span class="co">#&gt; points)</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span></code></pre></div>
 <div class="section level3">
 <h3 id="comparison-against-published-nca">Comparison against published NCA<a class="anchor" aria-label="anchor" href="#comparison-against-published-nca"></a>
 </h3>
@@ -3552,14 +3624,14 @@ differs from the reference by more than 20%.</caption>
 <td align="left">Cmax (ug/mL)</td>
 <td align="left">Lung ISF (20 kg)</td>
 <td align="right">2.48</td>
-<td align="right">3.01</td>
-<td align="right">+21.3%*</td>
+<td align="right">2.96</td>
+<td align="right">+19.6%</td>
 </tr>
 <tr class="even">
 <td align="left">Cmax (ug/mL)</td>
 <td align="left">Plasma (15 kg)</td>
 <td align="right">—</td>
-<td align="right">3.95</td>
+<td align="right">3.94</td>
 <td align="right">—</td>
 </tr>
 <tr class="odd">
@@ -3587,8 +3659,8 @@ differs from the reference by more than 20%.</caption>
 <td align="left">AUC0-∞ (obs) (ug*h/mL)</td>
 <td align="left">Plasma (15 kg)</td>
 <td align="right">9.77</td>
-<td align="right">9.2</td>
-<td align="right">-5.9%</td>
+<td align="right">9.19</td>
+<td align="right">-6.0%</td>
 </tr>
 <tr class="odd">
 <td align="left">t½ (h)</td>
@@ -3646,6 +3718,50 @@ of the published value, and half-life down from 13.4 h to about 3 h:</p>
 <span>  intervals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>start <span class="op">=</span> <span class="fl">0</span>, end <span class="op">=</span> <span class="fl">11.25</span>,</span>
 <span>                         half.life <span class="op">=</span> <span class="cn">TRUE</span>, mrt.obs <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0</span></span>
+<span><span class="co">#&gt; points)</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(data$conc): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0</span></span>
+<span><span class="co">#&gt; points)</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in assert_conc(conc, any_missing_conc = any_missing_conc): Negative</span></span>
+<span><span class="co">#&gt; concentrations found</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning in log(conc.2/conc.1): NaNs produced</span></span>
+<span><span class="co">#&gt; Warning: Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
+<span><span class="co">#&gt; Too few points for half-life calculation (min.hl.points=3 with only 0 points)</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame</a></span><span class="op">(</span><span class="va">nca_window</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/stats/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">PPTESTCD</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"half.life"</span>, <span class="st">"mrt.obs"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -3744,21 +3860,99 @@ ug/mL (<em>P. multocida</em>, APP) and 1 ug/mL (<em>H. parasuis</em>,
 <span>       <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">12</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">3</span>, <span class="fl">12</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">12</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">12</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu">tmic_arm</span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; DINTDY-  T (=R1) illegal      </span></span>
-<span><span class="co">#&gt;       T not in interval TCUR - HU (= R1) to TCUR (=R2)      </span></span>
-<span><span class="co">#&gt; DINTDY-  T (=R1) illegal      </span></span>
-<span><span class="co">#&gt;       T not in interval TCUR - HU (= R1) to TCUR (=R2)      </span></span>
-<span><span class="co">#&gt; DLSODA-  Trouble in DINTDY.  ITASK = I1, TOUT = R1</span></span>
-<span><span class="co">#&gt; IDID=-3, illegal input detected (see printed message).</span></span>
-<span><span class="co">#&gt; DLSODA-  At current T (=R1), MXSTEP (=I1) steps   </span></span>
-<span><span class="co">#&gt;       taken on this call before reaching TOUT     </span></span>
-<span><span class="co">#&gt; IDID=-1, unhandled exception</span></span>
-<span><span class="co">#&gt; DINTDY-  T (=R1) illegal      </span></span>
-<span><span class="co">#&gt;       T not in interval TCUR - HU (= R1) to TCUR (=R2)      </span></span>
-<span><span class="co">#&gt; DINTDY-  T (=R1) illegal      </span></span>
-<span><span class="co">#&gt;       T not in interval TCUR - HU (= R1) to TCUR (=R2)      </span></span>
-<span><span class="co">#&gt; DLSODA-  Trouble in DINTDY.  ITASK = I1, TOUT = R1</span></span>
-<span><span class="co">#&gt; IDID=-3, illegal input detected (see printed message).</span></span></code></pre></div>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1) and step size H (=R2), the    </span></span>
+<span><span class="co">#&gt;       corrector convergence failed repeatedly     </span></span>
+<span><span class="co">#&gt;       or with ABS(H) = HMIN   </span></span>
+<span><span class="co">#&gt; IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1) and step size H (=R2), the    </span></span>
+<span><span class="co">#&gt;       corrector convergence failed repeatedly     </span></span>
+<span><span class="co">#&gt;       or with ABS(H) = HMIN   </span></span>
+<span><span class="co">#&gt; IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1) and step size H (=R2), the    </span></span>
+<span><span class="co">#&gt;       corrector convergence failed repeatedly     </span></span>
+<span><span class="co">#&gt;       or with ABS(H) = HMIN   </span></span>
+<span><span class="co">#&gt; IDID=-5, repeated convergence failures (perhaps bad jacobian supplied or wrong choice of jt or tolerances).</span></span>
+<span><span class="co">#&gt; [lsoda -- internal t + h = t (h too small for machine precision)]: 77 warning(s) for subject(s): 22</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Warning..Internal T (=R1) and H (=R2) are</span></span>
+<span><span class="co">#&gt;       such that in the machine, T + H = T on the next step  </span></span>
+<span><span class="co">#&gt;      (H = step size). Solver will continue anyway.</span></span>
+<span><span class="co">#&gt; DLSODA-  Above warning has been issued I1 times.  </span></span>
+<span><span class="co">#&gt;      It will not be issued again for this problem.</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span>
+<span><span class="co">#&gt; DLSODA-  At T (=R1), too much accuracy requested  </span></span>
+<span><span class="co">#&gt;       for precision of machine..  See TOLSF (=R2) </span></span>
+<span><span class="co">#&gt; IDID=-2, excess accuracy requested (tolerances too small).</span></span></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">published_tmic</span> <span class="op">&lt;-</span> <span class="fu">tibble</span><span class="fu">::</span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tribble.html" class="external-link">tribble</a></span><span class="op">(</span></span>
 <span>  <span class="op">~</span><span class="va">dose</span>, <span class="op">~</span><span class="va">ii</span>, <span class="op">~</span><span class="va">endpoint</span>,          <span class="op">~</span><span class="va">p10</span>,  <span class="op">~</span><span class="va">p50</span>,  <span class="op">~</span><span class="va">p90</span>,</span>
@@ -3901,35 +4095,35 @@ animals per arm, against Mi 2023 Table 1.</caption>
 <tr class="even">
 <td align="left">4 mg/kg q12h</td>
 <td align="left">PELF, MIC 1</td>
-<td align="left">33.1 / 43.8 / 62.5</td>
+<td align="left">33.3 / 43.8 / 60.6</td>
 <td align="left">28.4 / 37.6 / 47.8</td>
 <td align="right">1.16</td>
 </tr>
 <tr class="odd">
 <td align="left">4 mg/kg q12h</td>
 <td align="left">Plasma, MIC 0.25</td>
-<td align="left">47.9 / 72.9 / 95.8</td>
+<td align="left">47.9 / 71.9 / 94.0</td>
 <td align="left">39.1 / 49.9 / 63.1</td>
-<td align="right">1.46</td>
+<td align="right">1.44</td>
 </tr>
 <tr class="even">
 <td align="left">4 mg/kg q12h</td>
 <td align="left">Plasma, MIC 1</td>
-<td align="left">27.1 / 39.6 / 50.2</td>
+<td align="left">27.1 / 39.6 / 50.0</td>
 <td align="left">23.2 / 29.7 / 37.3</td>
 <td align="right">1.33</td>
 </tr>
 <tr class="odd">
 <td align="left">5 mg/kg q12h</td>
 <td align="left">PELF, MIC 0.25</td>
-<td align="left">62.5 / 80.2 / 100.0</td>
+<td align="left">60.4 / 79.2 / 100.0</td>
 <td align="left">49.4 / 63.0 / 85.3</td>
-<td align="right">1.27</td>
+<td align="right">1.26</td>
 </tr>
 <tr class="even">
 <td align="left">5 mg/kg q12h</td>
 <td align="left">PELF, MIC 1</td>
-<td align="left">37.3 / 45.8 / 60.6</td>
+<td align="left">35.4 / 45.8 / 60.4</td>
 <td align="left">31.3 / 40.6 / 51.6</td>
 <td align="right">1.13</td>
 </tr>
@@ -3950,16 +4144,16 @@ animals per arm, against Mi 2023 Table 1.</caption>
 <tr class="odd">
 <td align="left">2 mg/kg q24h</td>
 <td align="left">PELF, MIC 0.25</td>
-<td align="left">19.8 / 27.1 / 36.6</td>
+<td align="left">21.8 / 27.1 / 36.6</td>
 <td align="left">17.6 / 22.1 / 27.8</td>
 <td align="right">1.23</td>
 </tr>
 <tr class="even">
 <td align="left">2 mg/kg q24h</td>
 <td align="left">PELF, MIC 1</td>
-<td align="left">10.4 / 15.1 / 20.8</td>
+<td align="left">10.4 / 15.6 / 20.8</td>
 <td align="left">9.0 / 13.4 / 18.0</td>
-<td align="right">1.13</td>
+<td align="right">1.17</td>
 </tr>
 <tr class="odd">
 <td align="left">2 mg/kg q24h</td>
@@ -3978,49 +4172,49 @@ animals per arm, against Mi 2023 Table 1.</caption>
 <tr class="odd">
 <td align="left">3 mg/kg q24h</td>
 <td align="left">PELF, MIC 0.25</td>
-<td align="left">24.0 / 33.3 / 43.9</td>
+<td align="left">22.9 / 33.3 / 44.9</td>
 <td align="left">20.2 / 25.2 / 32.0</td>
 <td align="right">1.32</td>
 </tr>
 <tr class="even">
 <td align="left">3 mg/kg q24h</td>
 <td align="left">PELF, MIC 1</td>
-<td align="left">13.5 / 19.8 / 25.1</td>
+<td align="left">12.5 / 19.8 / 26.0</td>
 <td align="left">12.5 / 16.6 / 21.6</td>
 <td align="right">1.19</td>
 </tr>
 <tr class="odd">
 <td align="left">3 mg/kg q24h</td>
 <td align="left">Plasma, MIC 0.25</td>
-<td align="left">21.8 / 29.2 / 39.6</td>
+<td align="left">21.8 / 29.2 / 39.9</td>
 <td align="left">17.5 / 22.3 / 28.3</td>
 <td align="right">1.31</td>
 </tr>
 <tr class="even">
 <td align="left">3 mg/kg q24h</td>
 <td align="left">Plasma, MIC 1</td>
-<td align="left">12.4 / 15.6 / 21.9</td>
+<td align="left">12.4 / 15.6 / 22.0</td>
 <td align="left">10.1 / 12.8 / 16.2</td>
 <td align="right">1.22</td>
 </tr>
 <tr class="odd">
 <td align="left">4 mg/kg q24h</td>
 <td align="left">PELF, MIC 0.25</td>
-<td align="left">27.7 / 37.5 / 50.0</td>
+<td align="left">27.0 / 37.5 / 50.0</td>
 <td align="left">22.0 / 27.3 / 34.1</td>
 <td align="right">1.37</td>
 </tr>
 <tr class="even">
 <td align="left">4 mg/kg q24h</td>
 <td align="left">PELF, MIC 1</td>
-<td align="left">16.7 / 21.9 / 29.6</td>
+<td align="left">16.7 / 21.9 / 29.3</td>
 <td align="left">14.2 / 18.5 / 23.7</td>
 <td align="right">1.18</td>
 </tr>
 <tr class="odd">
 <td align="left">4 mg/kg q24h</td>
 <td align="left">Plasma, MIC 0.25</td>
-<td align="left">25.0 / 33.3 / 45.2</td>
+<td align="left">24.9 / 33.3 / 44.9</td>
 <td align="left">19.3 / 24.4 / 31.2</td>
 <td align="right">1.37</td>
 </tr>
@@ -4034,28 +4228,28 @@ animals per arm, against Mi 2023 Table 1.</caption>
 <tr class="odd">
 <td align="left">5 mg/kg q24h</td>
 <td align="left">PELF, MIC 0.25</td>
-<td align="left">27.1 / 40.6 / 57.4</td>
+<td align="left">28.0 / 40.6 / 55.3</td>
 <td align="left">24.2 / 31.0 / 40.1</td>
 <td align="right">1.31</td>
 </tr>
 <tr class="even">
 <td align="left">5 mg/kg q24h</td>
 <td align="left">PELF, MIC 1</td>
-<td align="left">16.7 / 24.0 / 32.3</td>
+<td align="left">17.6 / 24.0 / 32.3</td>
 <td align="left">15.7 / 20.1 / 25.7</td>
 <td align="right">1.19</td>
 </tr>
 <tr class="odd">
 <td align="left">5 mg/kg q24h</td>
 <td align="left">Plasma, MIC 0.25</td>
-<td align="left">24.0 / 36.5 / 49.0</td>
+<td align="left">24.9 / 36.5 / 49.0</td>
 <td align="left">20.6 / 26.4 / 33.4</td>
 <td align="right">1.38</td>
 </tr>
 <tr class="even">
 <td align="left">5 mg/kg q24h</td>
 <td align="left">Plasma, MIC 1</td>
-<td align="left">14.6 / 20.8 / 27.2</td>
+<td align="left">14.6 / 20.8 / 27.1</td>
 <td align="left">12.7 / 16.1 / 20.1</td>
 <td align="right">1.29</td>
 </tr>
@@ -4115,7 +4309,7 @@ simulation give approximately 2.</caption>
 <td align="left">This model</td>
 <td align="right">1.90</td>
 <td align="right">2.00</td>
-<td align="right">2.19</td>
+<td align="right">2.16</td>
 </tr>
 </tbody>
 </table>
@@ -4156,7 +4350,7 @@ pig.</caption>
 <tbody>
 <tr class="odd">
 <td align="left">Max |relative mass-balance error|</td>
-<td align="left">2.998e-14</td>
+<td align="left">2.032e-14</td>
 </tr>
 <tr class="even">
 <td align="left">Fraction excreted renally at 240 h</td>

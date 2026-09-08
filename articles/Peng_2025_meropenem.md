@@ -611,7 +611,7 @@ c(max_auc_pct  = max(abs(chk$auc_pct)),
   max_hl_pct   = max(abs(chk$hl_pct)),
   max_cmax_pct = max(abs(chk$cmax_pct)))
 #>  max_auc_pct   max_hl_pct max_cmax_pct 
-#> 7.323255e-03 4.193023e-13 3.046421e-13
+#> 7.323255e-03 4.920330e-13 3.046421e-13
 
 stopifnot(
   all(nca_wide$tmax == INF_DUR),
