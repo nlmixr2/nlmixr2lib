@@ -4502,6 +4502,8 @@ navbar:
         href: articles/Yu_2023_vancomycin.html
       - text: "Vancomycin (Yu 2025)"
         href: articles/Yu_2025_vancomycin.html
+      - text: "Vancomycin (Yu 2025b)"
+        href: articles/Yu_2025b_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
         href: articles/Zhao_2014_vancomycin.html
       - text: "Vancomycin carreno (Tong 2026)"
@@ -6637,6 +6639,7 @@ articles:
   - articles/Yu_2023_vancomycin
   - articles/Yu_2024_ilaprazole
   - articles/Yu_2025_vancomycin
+  - articles/Yu_2025b_vancomycin
   - articles/Yu_2026_lacosamide
   - articles/Yu_2026_tenofovir
   - articles/Yuan_2019_concizumab
