@@ -2029,6 +2029,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Harun_2019_cysticFibrosis.R`.
 
+### FEV1 (**canonical absolute forced expiratory volume in 1 second**)
+- **Type:** compartment
+- **Role:** Absolute (pre-bronchodilator) forced expiratory volume in 1 second -- the standard spirometric lung-function PD output of asthma and COPD trials. An algebraic output state rather than an ODE state: the longitudinal FEV1 models that use it build the response as baseline + placebo term + treatment term, with no differential equation.
+- **Source aliases:** `FEV1`, `FEVB` / `FEV1baseline` (the *baseline* parameter of the same endpoint, which is a model parameter and not this output state).
+- **Example models:** `Zhang_2025_dupilumab_fev1.R` (dual `Cc` + `FEV1` output; concentration-driven Emax; FEV1 in L), `Jin_2025_benralizumab_fev1.R` (single `FEV1` output; time-driven `Emax * t / (T50 + t)` because the FEV1 exposure-response relationship was flat over the studied dose range; FEV1 in mL).
+- **Notes:** Registered with the uppercase paper spelling `FEV1`, which is how every source and both current models write it, so that a single-output FEV1 model is recognised as canonical without renaming the endpoint to `Cc`. Holds a **volume in whichever unit the source reports** -- mL in `Jin_2025_benralizumab_fev1`, L in `Zhang_2025_dupilumab_fev1` -- so the per-model `units` field, not this name, fixes the scale; never convert a source's FEV1 values to match a sibling model. Distinct from `fev1pp`, which is the same measurement expressed as a percentage of a reference-equation predicted value and is therefore dimensionless and not interconvertible without that reference equation. Residual error on this output uses the `<param>_FEV1` suffix form (`addSd_FEV1`, `propSd_FEV1`).
+
 ### msHeadacheDays (**canonical monthly headache-day count**)
 - **Type:** compartment
 - **Role:** Monthly headache-day count PD output.
@@ -2047,6 +2054,13 @@ Each entry below is a paper-mechanistic PD endpoint registered as a canonical co
 - **Source aliases:** none.
 - **Example models:** `Singh_2025_donidalorsen.R`.
 - **Notes:** Companion covariates are `PKK` (time-varying prekallikrein exposure driver), `PKK_BL` (per-subject baseline PKK), and `HAERATE_BL` (per-subject baseline attack rate) documented in `inst/references/covariate-columns.md`. Sibling count-outcome PD-output canonicals include `msHeadacheDays`, `migraineDays`, `cel_count`, `seizure_count`, and `score` (each paper-specific by disease domain).
+
+### exac_count (**canonical per-interval asthma-exacerbation-count PD output**)
+- **Type:** compartment
+- **Role:** Per-interval asthma exacerbation count PD output for count-outcome exposure-response models in asthma. The state holds the Poisson mean for the interval being observed; the observation model is `exac_count ~ pois(exac_count)`.
+- **Source aliases:** `EXAC` (Jin 2025 Resource 3, 'the total number of exacerbations within the follow-up time').
+- **Example models:** `Jin_2025_benralizumab_aaer.R` (8-week interval counts under benralizumab; the Poisson mean is read from the paired `cumhaz_exac` accumulator).
+- **Notes:** Member of the per-interval event-count PD-output family; siblings are `hae_attacks`, `seizure_count`, `msHeadacheDays`, `migraineDays`, `cel_count`, and `score`. **Differs from `seizure_count` in how the interval count is formed.** The `seizure_count` entry directs a model tabulating counts over a longer interval to multiply a daily rate by the interval length (an `NDAYS`-style covariate) rather than register a separate canonical; that shortcut is exact only when the drug effect is effectively constant within the interval. `Jin_2025_benralizumab_aaer` instead integrates a time-varying instantaneous rate across the interval, because its source prints the Poisson mean as an explicit integral, `lambda_j(a,b) = integral_a^b exp(...) dt`, over an every-8-weeks dosing interval across which the predicted concentration swings roughly eightfold. Use the paired-accumulator form (`cumhaz_exac` + `exac_count`) whenever the source writes the interval mean as an integral; use the rate-times-interval form when the source writes it as a product.
 
 ### seizure_count (**canonical daily seizure-count PD output**)
 - **Type:** compartment
@@ -3491,6 +3505,13 @@ The Ait-Oudhia 2012 canakinumab IL-1beta -> CRP transit cascade: `crp1` / `crp2`
 - **Source aliases:** none.
 - **Example models:** `Lindauer_2017_lacosamide_seizure.R` (Weibull baseline hazard `hazard_2nd = lam2_eff * p2 * (lam2_eff * (t + del))^(p2 - 1)` with an IIV eta on ln(lam2), reflecting the paper's Table 3 finding of substantial between-subject variability in the subsequent-seizure hazard; SD 2.03 on ln(k2)).
 - **Notes:** Member of the `cumhaz_<type>` multi-hazard family. Applies whenever a model separately parameterises the first-event hazard (`cumhaz_1st`) and the subsequent-event hazard (`cumhaz_2nd`) with different Weibull scale / shape and, typically, different covariate coefficients on each sub-model, as first proposed by Abrantes et al. and adopted by Lindauer 2017 for lacosamide.
+
+### cumhaz_exac (**canonical cumulative asthma-exacerbation Poisson-intensity accumulator**)
+- **Type:** compartment
+- **Role:** Integrates the instantaneous asthma exacerbation rate from t = 0, so that the expected number of exacerbations in any interval (a, b) is the increment `cumhaz_exac(b) - cumhaz_exac(a)` and the annualised rate is the increment over 365 days. Exists so that a count-outcome exposure-response model whose source writes the interval Poisson mean as an explicit time integral can transcribe that integral directly instead of approximating it by a rate-times-interval product.
+- **Source aliases:** none (the source writes the quantity inline as `lambda_j(t) = integral_a^b exp(...) dt`, Jin 2025 Resource 3).
+- **Example models:** `Jin_2025_benralizumab_aaer.R` (`d/dt(cumhaz_exac) <- exacrate`, with `exacrate` in events/day; the paired observation output is `exac_count`).
+- **Notes:** Member of the `cumhaz_<type>` accumulator family alongside `cumhaz`, `cumhaz_os`, `cumhaz_pfs`, `cumhaz_drop`, `cumhaz_cens`, `cumhaz_1st` and `cumhaz_2nd`, and named for that family because it is literally the integrated intensity of a counting process. **Its role differs from the survival members of the family in one important way:** for `cumhaz_os` and its siblings the quantity of interest is the survivor function `exp(-cumhaz)`, i.e. the probability of *no* event, whereas here the quantity of interest is the increment itself, which is the Poisson *mean* number of events. Do not apply `exp(-cumhaz_exac)` to this state expecting a survival probability -- the model counts recurrent events rather than timing a first one. Because the accumulator runs from t = 0 without reset, interval counts must be obtained by differencing; increments over disjoint intervals are independent Poisson variables with those increments as means.
 
 ### sur (**canonical survival-probability output**)
 - **Type:** compartment

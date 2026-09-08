@@ -504,8 +504,14 @@ navbar:
         href: articles/Jadhav_2023_bempedoicAcid.html
       - text: "Benazepril pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Benralizumab (Jin 2025)"
+        href: articles/Jin_2025_benralizumab.html
       - text: "Benralizumab (Wang 2017)"
         href: articles/Wang_2017_benralizumab.html
+      - text: "Benralizumab aaer (Jin 2025)"
+        href: articles/Jin_2025_benralizumab.html
+      - text: "Benralizumab fev1 (Jin 2025)"
+        href: articles/Jin_2025_benralizumab.html
       - text: "Benzathine benzylpenicillin g (Kado 2020)"
         href: articles/Kado_2020_benzathine_benzylpenicillin_g.html
       - text: "Benzathine benzylpenicillin g (Kado 2023)"
@@ -5560,6 +5566,7 @@ articles:
   - articles/Jiao_2008_mycophenolic_acid
   - articles/Jiao_2009_sirolimus
   - articles/Jin_2014_simvastatin
+  - articles/Jin_2025_benralizumab
   - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
   - articles/Johnston_2019_empagliflozin
