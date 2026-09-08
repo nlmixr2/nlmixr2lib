@@ -2092,6 +2092,8 @@ navbar:
         href: articles/ChandralayamAyyappaMenon_2026_isb2001.html
       - text: "Isolariciresinol rat (Liu 2024)"
         href: articles/Liu_2024_spatholobiCaulis.html
+      - text: "Isoniazid (Calderin 2025)"
+        href: articles/Calderin_2025_pyrazinamide_isoniazid_tbm.html
       - text: "Isoniazid (Horita 2018)"
         href: articles/Horita_2018_isoniazid.html
       - text: "Isoniazid (Seng 2015)"
@@ -3416,6 +3418,8 @@ navbar:
         href: articles/vanSchaick_2016_prucalopride_pediatric.html
       - text: "Pyrazinamide (Alsultan 2017)"
         href: articles/Alsultan_2017_pyrazinamide.html
+      - text: "Pyrazinamide (Calderin 2025)"
+        href: articles/Calderin_2025_pyrazinamide_isoniazid_tbm.html
       - text: "Pyrazinamide (Chirehwa 2017)"
         href: articles/Chirehwa_2017_pyrazinamide.html
       - text: "Pyrazinamide (Horita 2018)"
@@ -5030,6 +5034,7 @@ articles:
   - articles/ButraguenoLaiseca_2024_meropenem
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
+  - articles/Calderin_2025_pyrazinamide_isoniazid_tbm
   - articles/Caldes_2009_ganciclovir
   - articles/Cammarata_2024_sulbactam_durlobactam
   - articles/Campagne_2019_cyclophosphamide_mouse
