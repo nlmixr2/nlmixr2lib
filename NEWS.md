@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Sun 2025 teicoplanin ([doi:10.3389/fphar.2025.1621959](https://doi.org/10.3389/fphar.2025.1621959)) -- critically ill adults with sepsis, with and without continuous renal replacement therapy.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the

@@ -4104,6 +4104,8 @@ navbar:
         href: articles/Chen_2023_teicoplanin.html
       - text: "Teicoplanin (Kim 2024)"
         href: articles/Kim_2024_teicoplanin.html
+      - text: "Teicoplanin (Sun 2025)"
+        href: articles/Sun_2025_teicoplanin.html
       - text: "Teicoplanin (Wang 2023)"
         href: articles/Wang_2023_teicoplanin.html
       - text: "Teicoplanin (Wi 2017)"
@@ -6328,6 +6330,7 @@ articles:
   - articles/Suleiman_2019_risankizumab
   - articles/Sun_2023_maribavir
   - articles/Sun_2025_paclitaxel
+  - articles/Sun_2025_teicoplanin
   - articles/Sun_2026_tilmicosin
   - articles/Suri_2018_brentuximab
   - articles/Suyagh_2011_metronidazole
