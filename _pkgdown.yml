@@ -2286,6 +2286,8 @@ navbar:
         href: articles/Schmidt_2009_oxazolidinones.html
       - text: "Linezolid (Taubert 2016)"
         href: articles/Taubert_2016_linezolid.html
+      - text: "Linezolid (Tian 2025)"
+        href: articles/Tian_2025_linezolid.html
       - text: "Linezolid (Tsuji 2017)"
         href: articles/Tsuji_2017_linezolid.html
       - text: "Linezolid (Xu 2024)"
@@ -6389,6 +6391,7 @@ articles:
   - articles/Thoueille_2024_rilpivirine
   - articles/Thoueille_2026_salmeterol
   - articles/Thuo_2011_ciprofloxacin
+  - articles/Tian_2025_linezolid
   - articles/Tian_2025_pirtobrutinib
   - articles/Tikiso_2021_abacavir
   - articles/Timmermann_2019_brodalumab
