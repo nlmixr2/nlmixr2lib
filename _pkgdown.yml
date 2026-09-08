@@ -912,6 +912,8 @@ navbar:
         href: articles/Muller_2010_clindamycin.html
       - text: "Clindamycin (Smith 2017)"
         href: articles/Smith_2017_clindamycin.html
+      - text: "Clobazam (Tuo 2025)"
+        href: articles/Tuo_2025_clobazam.html
       - text: "Clomethiazole (Zingmark 2003)"
         href: articles/Zingmark_2003_clomethiazole.html
       - text: "Clonazepam pediatric (Yukawa 2002)"
@@ -6414,6 +6416,7 @@ articles:
   - articles/Tsyplakova_2025_mycophenolate
   - articles/Tuey_2024_cholecalciferol
   - articles/Tuffal_2023_avalglucosidase_alfa
+  - articles/Tuo_2025_clobazam
   - articles/Ueshima_2018_apixaban
   - articles/Ugolkov_2026_bcell_mouse_qsp
   - articles/Ujihira_2025_glycochenodeoxycholicAcidSulfate

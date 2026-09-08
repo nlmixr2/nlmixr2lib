@@ -4400,6 +4400,15 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Example models:** `Petain_2008_imatinib.R` (one-compartment metabolite; `central_ndmima`), `MenonAndersen_2009_imatinib.R` (two-compartment metabolite; `central_ndmima`, `peripheral1_ndmima`), `Said_2025_imatinib.R` (merged from a duplicate register entry during merge dedup).
 - **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib) rather than a bare `ndi`, so the suffix reads as `n-desmethyl-ima`. Both founding models parameterise the metabolite as apparent with respect to the unidentifiable fraction metabolized (`CLm/fm`, `V1m/fm`), so `central_ndmima` holds an fm-scaled amount; the predicted metabolite concentration is nonetheless the true one, because the same `fm` divides both the clearance and the volume.
 
+### ndmclb (**canonical N-desmethylclobazam suffix**)
+- **Type:** metabolite-suffix
+- **Role:** N-desmethylclobazam (norclobazam), the major active metabolite of the 1,5-benzodiazepine clobazam, formed by CYP3A4-mediated (partly CYP2C19-mediated) N-demethylation and cleared onward to inactive 4'-hydroxydesmethylclobazam predominantly by CYP2C19. Pharmacologically active at roughly one fifth the potency of the parent but circulating at 3-5 times the parent concentration with an approximately twofold longer half-life, so clobazam therapeutic drug monitoring routinely quantifies both analytes and the metabolite is frequently the dose-limiting one. Because CYP2C19 governs the metabolite's elimination rather than its formation, CYP2C19 poor metabolizers accumulate N-desmethylclobazam without a matching rise in parent exposure -- the pharmacogenetic signal that motivates joint parent-plus-metabolite models of this drug.
+- **Source aliases:**
+  - `N-CLB` -- the abbreviation used throughout Tuo 2025 and much of the clobazam popPK literature.
+  - `norclobazam` -- the common non-systematic name.
+- **Example models:** `Tuo_2025_clobazam.R` (doi:10.3390/pharmaceutics17070813).
+- **Notes:** Follows the `ndm<drug>` contraction established by `ndmsel` (N-desmethyl-selumetinib) and `ndmima` (N-desmethyl-imatinib), so the suffix reads as `n-desmethyl-clb`. As in `ndmima`, the founding model parameterises the metabolite as apparent with respect to an unidentifiable dosage conversion fraction (`CL_N-CLB/Fm`, `V_N-CLB/Fm`), so `central_ndmclb` holds an Fm-scaled amount; the predicted metabolite concentration is still the true one because the same `Fm` divides both the clearance and the volume. Do not confuse the parent-drug abbreviation `clb` with this suffix: `clb` names clobazam itself, `ndmclb` names the demethylated metabolite.
+
 ### dfcr (**canonical 5'-DFCR capecitabine metabolite suffix**)
 - **Type:** metabolite-suffix
 - **Role:** 5'-deoxy-5-fluorocytidine (5'-DFCR), formed in the liver by carboxylesterase from capecitabine.
