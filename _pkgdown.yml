@@ -2760,6 +2760,8 @@ navbar:
         href: articles/Sherwin_2012_mycophenolic_acid.html
       - text: "Mycophenolic acid (Suzuki 2024)"
         href: articles/Suzuki_2024_mycophenolic_acid.html
+      - text: "Mycophenolic acid (Ye 2025)"
+        href: articles/Ye_2025_mycophenolic_acid.html
       - text: "Mycophenolic acid (Yu 2017)"
         href: articles/Yu_2017_mycophenolic_acid.html
       - text: "Mycophenolic acid (Zeng 2010)"
@@ -6614,6 +6616,7 @@ articles:
   - articles/Yau_2023_diazepam_pbpk
   - articles/Yau_2023_middle_out_pbpk_translation
   - articles/Ye_2017_ethaselen
+  - articles/Ye_2025_mycophenolic_acid
   - articles/Yin_2020_pexidartinib
   - articles/Yin_2021_pexidartinib
   - articles/Yin_2021_trastuzumabDeruxtecan
