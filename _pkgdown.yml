@@ -4504,6 +4504,8 @@ navbar:
         href: articles/Yu_2025_vancomycin.html
       - text: "Vancomycin (Zhao 2014)"
         href: articles/Zhao_2014_vancomycin.html
+      - text: "Vancomycin (Zhao 2025)"
+        href: articles/Zhao_2025_vancomycin.html
       - text: "Vancomycin carreno (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
       - text: "Vancomycin full (Downes 2023)"
@@ -6696,6 +6698,7 @@ articles:
   - articles/Zhao_2024_tacrolimus
   - articles/Zhao_2025_methotrexate
   - articles/Zhao_2025_paracetamol
+  - articles/Zhao_2025_vancomycin
   - articles/Zhao_2026_venetoclax
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin

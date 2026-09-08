@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhao 2025 vancomycin ([doi:10.1128/spectrum.02274-24](https://doi.org/10.1128/spectrum.02274-24)) -- non-extremely preterm neonates in a neonatal intensive care unit.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
