@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wang 2025 voriconazole ([doi:10.3389/fphar.2025.1554370](https://doi.org/10.3389/fphar.2025.1554370)) -- critically ill adults with COVID-19-associated pulmonary aspergillosis.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the

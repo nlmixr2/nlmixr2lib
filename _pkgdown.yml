@@ -4600,6 +4600,8 @@ navbar:
         href: articles/Wahlby_2004_time_varying_covariates.html
       - text: "Voriconazole (Wang 2024)"
         href: articles/Wang_2024_voriconazole.html
+      - text: "Voriconazole (Wang 2025)"
+        href: articles/Wang_2025_voriconazole.html
       - text: "Voriconazole (Zakria 2026)"
         href: articles/Zakria_2026_voriconazole.html
       - text: "Voriconazole pbpk (AbdullahKoolmees 2024)"
@@ -6502,6 +6504,7 @@ articles:
   - articles/Wang_2024_voriconazole
   - articles/Wang_2025_rivaroxaban
   - articles/Wang_2025_somatrogon
+  - articles/Wang_2025_voriconazole
   - articles/Ward_2026_magnesium_pbpk
   - articles/Warren_2025_pde4_il13_atopic_dermatitis
   - articles/Waterhouse_2024_vedolizumab
