@@ -1688,6 +1688,8 @@ navbar:
         href: articles/Shoji_2017_fosdagrocorat_oc.html
       - text: "Fosdagrocorat p1np (Shoji 2017)"
         href: articles/Shoji_2017_fosdagrocorat_p1np.html
+      - text: "Fosfomycin (Gotz 2025)"
+        href: articles/Gotz_2025_fosfomycin.html
       - text: "Fosfomycin (Huppe 2023)"
         href: articles/Huppe_2023_fosfomycin.html
       - text: "FosfomycinCalcium (Isla 2024)"
@@ -5372,6 +5374,7 @@ articles:
   - articles/Goteti_2024_SLE_mbma
   - articles/Goti_2018_vancomycin
   - articles/Gotta_2025_cefepime_infant_neurotoxicity
+  - articles/Gotz_2025_fosfomycin
   - articles/Goulooze_2022_finerenone
   - articles/Goulooze_2022_finerenone_uacr_egfr
   - articles/Gracia_2025_cr51edta_tc99mdtpa
