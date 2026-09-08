@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Du 2025 repotrectinib ([doi:10.1002/psp4.70036](https://doi.org/10.1002/psp4.70036)) — healthy volunteers and adult and pediatric patients with ALK, ROS1 or NTRK1-3 rearranged advanced solid tumors.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
