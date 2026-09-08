@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yu 2025 perampanel ([doi:10.2147/DDDT.S499085](https://doi.org/10.2147/DDDT.S499085)) -- Chinese pediatric epilepsy patients on therapeutic drug monitoring.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
