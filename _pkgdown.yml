@@ -716,6 +716,8 @@ navbar:
         href: articles/Capparelli_2005_cefepime.html
       - text: "Cefepime (Jonckheere 2019)"
         href: articles/Jonckheere_2019_cefepime.html
+      - text: "Cefepime (MoralesJunior 2025)"
+        href: articles/MoralesJunior_2025_cefepime.html
       - text: "Cefepime (Rolsma 2025)"
         href: articles/Rolsma_2025_betalactams_cysticfibrosis.html
       - text: "Cefepime (Rolsma 2026)"
@@ -5924,6 +5926,7 @@ articles:
   - articles/Mondick_2018_empagliflozin
   - articles/Moore_1999_lamivudine
   - articles/Moore_2016_vancomycin
+  - articles/MoralesJunior_2025_cefepime
   - articles/Morath_2025_apixaban
   - articles/Morcos_2023_copanlisib
   - articles/Morganroth_2015_moxifloxacin
