@@ -4592,6 +4592,8 @@ navbar:
         href: articles/Lin_2018_voriconazole.html
       - text: "Voriconazole (Ling 2024)"
         href: articles/Ling_2024_voriconazole.html
+      - text: "Voriconazole (Liu 2025)"
+        href: articles/Liu_2025_voriconazole.html
       - text: "Voriconazole (Muto 2015)"
         href: articles/Muto_2015_voriconazole.html
       - text: "Voriconazole (Shen 2025)"
@@ -5806,6 +5808,7 @@ articles:
   - articles/Liu_2024_saf189s
   - articles/Liu_2024_spatholobiCaulis
   - articles/Liu_2025_avatrombopag
+  - articles/Liu_2025_voriconazole
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin
   - articles/LlanosPaez_2020_gentamicin
