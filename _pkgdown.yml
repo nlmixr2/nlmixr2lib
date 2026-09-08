@@ -2730,6 +2730,8 @@ navbar:
         href: articles/Morganroth_2015_moxifloxacin.html
       - text: "Moxifloxacin (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Moxifloxacin (Palmer 2025)"
+        href: articles/Palmer_2025_moxifloxacin.html
       - text: "Mrna1273 qsp (Dasti 2025)"
         href: articles/Dasti_2025_mrna_vaccines.html
       - text: "Mu receptor binding (Mann 2022)"
@@ -6033,6 +6035,7 @@ articles:
   - articles/Padari_2012_meropenem
   - articles/Padari_2018_penicillin_G
   - articles/Padoin_1998_cephalexin_rat
+  - articles/Palmer_2025_moxifloxacin
   - articles/Pan_2026_adalimumab
   - articles/Panday_2025_sert_tremor_mbma
   - articles/Panetta_2024_palbociclib
