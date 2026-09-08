@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Qin 2025 ropeginterferon alfa-2b ([doi:10.1002/prp2.70109](https://doi.org/10.1002/prp2.70109)) -- healthy Chinese and Japanese adults and patients with polycythaemia vera; ten models (population PK, three hematologic PK-PD, six exposure-response).
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
