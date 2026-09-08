@@ -56,10 +56,17 @@ cross-comparison with conventional thorough-QT analyses.
 
 **The models are PD-only.** No population PK model is fitted anywhere in the
 source, so both plasma concentrations are consumed as time-varying covariates
-(`CP_FRUQUINTINIB_M11_NGML` and `CP_FRUQUINTINIB_NGML`, both ng/mL). No
-fruquintinib or M11 popPK model exists in the nlmixr2lib registry; a user who
-wants a full DeltaQTc time course from a dose record must supply the
-concentration trajectory externally.
+(`CP_FRUQUINTINIB_M11_NGML` and `CP_FRUQUINTINIB_NGML`, both ng/mL). A user who
+wants a full DeltaQTc time course from a dose record must therefore supply the
+concentration trajectory from a separate PK model. `Zhou_2025_fruquintinib_poppk`
+(the companion population PK analysis by the same first author,
+[doi:10.1002/jcph.70001](https://doi.org/10.1002/jcph.70001), validated in
+`vignette("Zhou_2025_fruquintinib_poppk")`) supplies exactly that: it returns
+`Cc` and `Cc_m11` in ng/mL, the units these models expect. Note that the two
+analyses were fitted independently on different datasets -- the C-QTc models
+here use the FRESCO-2 ECG substudy, whereas the popPK model pools six studies --
+so pairing them is a reasonable simulation workflow, not a joint fit the authors
+performed.
 
 ```{r load-models}
 model_names <- c(

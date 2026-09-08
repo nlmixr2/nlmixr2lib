@@ -1706,6 +1706,8 @@ navbar:
         href: articles/Zhou_2025_fruquintinib.html
       - text: "Fruquintinib QTcP parent (Zhou 2025)"
         href: articles/Zhou_2025_fruquintinib.html
+      - text: "Fruquintinib poppk (Zhou 2025)"
+        href: articles/Zhou_2025_fruquintinib_poppk.html
       - text: "Furmonertinib (Zou 2022)"
         href: articles/Zou_2022_furmonertinib.html
       - text: "Furosemide (Hornik 2025)"
@@ -6710,6 +6712,7 @@ articles:
   - articles/Zhou_2024_cetagliptin
   - articles/Zhou_2025_brentuximab
   - articles/Zhou_2025_fruquintinib
+  - articles/Zhou_2025_fruquintinib_poppk
   - articles/Zhou_2025_tacrolimus
   - articles/Zhou_2026_tacrolimus
   - articles/Zhu_2013_ganitumab

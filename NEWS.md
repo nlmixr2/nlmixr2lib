@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Zhou 2025 fruquintinib and metabolite M11 population PK ([doi:10.1002/jcph.70001](https://doi.org/10.1002/jcph.70001)) -- adults with refractory metastatic colorectal cancer and healthy volunteers.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
