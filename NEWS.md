@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Koele 2025 BTZ-043 population PK and bacterial-load exposure-response models ([doi:10.1093/jac/dkaf076](https://doi.org/10.1093/jac/dkaf076)) -- adults with drug-susceptible pulmonary tuberculosis on 14 days of BTZ-043 monotherapy.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
