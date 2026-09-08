@@ -1012,6 +1012,10 @@ navbar:
         href: articles/Baiardi_2025_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2024)"
         href: articles/Cojutti_2024_dalbavancin.html
+      - text: "Dalbavancin nlls (Giacometti 2025)"
+        href: articles/Giacometti_2025_dalbavancin.html
+      - text: "Dalbavancin nlme (Giacometti 2025)"
+        href: articles/Giacometti_2025_dalbavancin.html
       - text: "Dalteparin (Schoemaker 1996)"
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Danoprevir (Canini 2015)"
@@ -5353,6 +5357,7 @@ articles:
   - articles/Georges_2009_ceftazidime
   - articles/Germovsek_2016_gentamicin
   - articles/Germovsek_2018_meropenem
+  - articles/Giacometti_2025_dalbavancin
   - articles/Gibbs_2011_amg221
   - articles/Gibbs_2017_evolocumab
   - articles/Gibiansky_2005_fospropofol
