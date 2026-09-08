@@ -2214,6 +2214,10 @@ navbar:
         href: articles/Majid_2024_lenvatinib.html
       - text: "Letermovir (Royston 2025)"
         href: articles/Royston_2025_letermovir.html
+      - text: "Letermovir healthy (Prohn 2021)"
+        href: articles/Prohn_2021_letermovir.html
+      - text: "Letermovir hsct (Prohn 2021)"
+        href: articles/Prohn_2021_letermovir.html
       - text: "Leuprolide (Lim 2026)"
         href: articles/Lim_2026_leuprolide.html
       - text: "Leuprorelin (Snelder 2019)"
@@ -6099,6 +6103,7 @@ articles:
   - articles/Pouzin_2022_tusamitamab
   - articles/Press_2010_ciclosporin
   - articles/Proctor_2026_durvalumab_cachexia
+  - articles/Prohn_2021_letermovir
   - articles/Prytula_2016_tacrolimus
   - articles/Przybylowski_2015_propofol
   - articles/Pu_2021_evinacumab
