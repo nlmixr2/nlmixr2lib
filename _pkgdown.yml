@@ -2244,6 +2244,8 @@ navbar:
         href: articles/Denti_2018_levofloxacin.html
       - text: "Levofloxacin (Lee 2025)"
         href: articles/Lee_2025_levofloxacin.html
+      - text: "Levofloxacin (Sawe 2025)"
+        href: articles/Sawe_2025_levofloxacin.html
       - text: "Levofloxacin rat (Hurtado 2014)"
         href: articles/Hurtado_2014_levofloxacin_rat.html
       - text: "Levonorgestrel (Adeojo 2024)"
@@ -6200,6 +6202,7 @@ articles:
   - articles/Sato_2024_sglt2_hba1c_mbma
   - articles/Savic_2010_warfarin
   - articles/Savic_2017_cladribine
+  - articles/Sawe_2025_levofloxacin
   - articles/SchaedeliStark_2024_balovaptan
   - articles/Schaefer_1996_ciprofloxacin
   - articles/Scheuher_2023_ADC_platform_qsp

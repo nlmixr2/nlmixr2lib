@@ -211,13 +211,13 @@ notes: <free text>
 - **Notes:** When translating a model that used `SEXM`, flag the sign/reference-category inversion to the user.
 
 ### PREG (**canonical for pregnancy status indicator**)
-- **Description:** 1 = pregnant, 0 = non-pregnant. Time-fixed per subject in trial cohorts that enrol pregnant and non-pregnant women in parallel; not a time-varying flag.
+- **Description:** 1 = pregnant, 0 = non-pregnant. Usually time-fixed per subject, in trial cohorts that enrol pregnant and non-pregnant women in parallel. It is genuinely time-varying in designs that re-sample the same women after delivery: `Sawe_2025_levofloxacin.R` pools matched antepartum and postpartum profiles, so a subject carries `PREG = 1` on the third-trimester visit and `PREG = 0` on the postpartum visit.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (non-pregnant).
 - **Source aliases:** none known; source NONMEM control streams typically use `PREG` directly.
-- **Example models:** `Birgersson_2019_artesunate.R` (multiplicative effect on dihydroartemisinin clearance; the published structural CLM = 190 L/h is reported with the source-paper reference category PREG = 1, so the model file applies the effect via `(1 + e_preg_cl_dha * (1 - PREG))` with `e_preg_cl_dha = -0.214` to preserve verbatim source values; non-pregnant women have ~21% lower CLM relative to pregnant women).
+- **Example models:** `Sawe_2025_levofloxacin.R` (time-varying across matched antepartum / postpartum visits; fractional multiplicative effect `1 + e_preg_cl * PREG` raising levofloxacin clearance 38.1% in the third trimester, on top of the separately-modelled FFM and serum-creatinine effects. Pregnancy was screened as a three-level categorical covariate -- pregnant / postpartum / never pregnant -- but only the pregnant level was retained, so postpartum records take the reference category and their intermediate exposures are reproduced by the size and renal-function covariates alone), `Birgersson_2019_artesunate.R` (multiplicative effect on dihydroartemisinin clearance; the published structural CLM = 190 L/h is reported with the source-paper reference category PREG = 1, so the model file applies the effect via `(1 + e_preg_cl_dha * (1 - PREG))` with `e_preg_cl_dha = -0.214` to preserve verbatim source values; non-pregnant women have ~21% lower CLM relative to pregnant women).
 - **Notes:** Use this canonical for adult clinical-trial models that test a pregnancy-vs-non-pregnancy contrast (typical settings: malaria-in-pregnancy PK, antiviral-in-pregnancy PK). Trimester or gestational-age stratification within the pregnant cohort should use a separate canonical (e.g., gestational-age weeks via `GA` or a trimester indicator, ratified separately when needed). The canonical convention is reference category 0 (non-pregnant) following the broader pharmacology default; source papers that use the pregnant cohort as the reference (Birgersson 2019) preserve their published structural values via a `(1 - PREG)` form on the effect coefficient.
 
 ### CHILD (**canonical for child age-cohort indicator**)
