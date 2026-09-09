@@ -710,6 +710,8 @@ navbar:
         href: articles/Zhi_2018_cefathiamidine.html
       - text: "Cefazolin (Bausch 2024)"
         href: articles/Bausch_2024_cefazolin.html
+      - text: "Cefazolin (Berthaud 2025)"
+        href: articles/Berthaud_2025_cefazolin.html
       - text: "Cefazolin (Duke 2024)"
         href: articles/Duke_2024_cefazolin.html
       - text: "Cefepime (Capparelli 2005)"
@@ -4953,6 +4955,7 @@ articles:
   - articles/Berges_2015_ozanezumab
   - articles/Bergmann_2014_tacrolimus
   - articles/Berkhout_2015_osteoporosis_placebo
+  - articles/Berthaud_2025_cefazolin
   - articles/Bertrand_2011_S33138
   - articles/Betts_2018_mAb_linear_PK
   - articles/Betts_2019_pf_06671008

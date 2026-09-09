@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Berthaud 2025 cefazolin ([doi:10.1128/aac.00451-25](https://doi.org/10.1128/aac.00451-25)) -- children undergoing maintenance hemodialysis for kidney failure.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
