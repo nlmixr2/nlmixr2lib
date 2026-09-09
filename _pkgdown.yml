@@ -848,6 +848,8 @@ navbar:
         href: articles/Tsai_2023_ceftriaxone.html
       - text: "Cefuroxime (Alqahtani 2018)"
         href: articles/Alqahtani_2018_cefuroxime.html
+      - text: "Cefuroxime (Mouton 2025)"
+        href: articles/Mouton_2025_cefuroxime.html
       - text: "Cefuroxime (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
       - text: "Cefuroxime (Viberg 2006)"
@@ -6131,6 +6133,7 @@ articles:
   - articles/Mosha_2014_artemether_lumefantrine
   - articles/Mouksassi_2015_thrombomodulinAlfa
   - articles/Mould_2007_alemtuzumab
+  - articles/Mouton_2025_cefuroxime
   - articles/Muhamad_2025_cholecalciferol_pbpk
   - articles/Mukai_2019_mogamulizumab
   - articles/Mukker_2026_tuvusertib
