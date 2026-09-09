@@ -8236,6 +8236,18 @@ Baseline seizure-severity indicators derived from a pre-trial seizure count (typ
 - **Example models:** `Ahamadi_2017_pembrolizumab.R` (proportional change of +14.5% on CL for NSCLC patients relative to melanoma; the "other" cancer type cohort -- 1.01% of the population -- is pooled into the melanoma reference per the paper's model description), `Aoyama_2012_sepantronium.R`.
 - **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` decomposition pattern. Scope: general because NSCLC is a high-frequency tumor-type contrast (with melanoma or "other" reference) across PD-1 / PD-L1 / chemotherapy popPK analyses, and is likely to recur in future extractions.
 
+### TUMTP_NONLUNG (**canonical for pooled non-lung-cancer tumor-type indicator**)
+- **Description:** 1 = any tumor type other than lung cancer; 0 = lung cancer (NSCLC or SCLC). This is the INVERSE-sense pooled indicator used by analyses whose cohort is predominantly lung cancer and which collapse every other histology into a single contrast level rather than fitting one indicator per histology. Use it only when the source paper itself pools that way; when the paper names individual non-lung histologies with separate coefficients, decompose into the per-histology members of the family (`TUMTP_HCC`, `TUMTP_CRC`, `TUMTP_OTHER`, ...) instead.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = lung cancer (per source paper; in Wang 2025 the reference group is the pooled NSCLC + SCLC cohort, 817 of 1144 subjects).
+- **Source aliases:**
+  - `TUMTP` (binary column coded 0 = lung cancer, 1 = all other tumor types) -- use directly as `TUMTP_NONLUNG = TUMTP`.
+  - `TUMTP` / `CANCER_TYPE` categorical columns with per-histology levels -- collapse via `TUMTP_NONLUNG = as.integer(!TUMTP %in% c("NSCLC", "SCLC", "lung"))`, but only if the source model fits a single pooled coefficient.
+- **Example models:** `Wang_2025_serplulimab.R` (exponential coefficient -0.0887 on Vc; the pooled non-lung group is hepatocellular carcinoma 125, colorectal cancer 86 and "other" 116, i.e. 327 of 1144 subjects, and no tumor-type effect on CL was retained).
+- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` / `TUMTP_SCLC` / `TUMTP_NSCLC` decomposition pattern, but with the polarity reversed: the named group is the residual rather than the histology of interest. It is NOT interchangeable with `TUMTP_OTHER`, which is the leftover level alongside several *named* histology indicators; `TUMTP_NONLUNG` carries the entire non-reference cohort on its own. Scope: specific because the lung-vs-everything-else pooling is a property of a predominantly-lung cohort rather than a contrast that recurs with a stable meaning; a paper pooling differently should register or reuse the per-histology members instead.
+
 ### TUMTP_NSCLC_NONADENO (**canonical for non-adenocarcinoma-histology NSCLC sub-indicator**)
 - **Description:** 1 = NSCLC of a histology OTHER than adenocarcinoma (squamous-cell carcinoma, large-cell carcinoma, or other non-adenocarcinoma NSCLC subtype); 0 = adenocarcinoma NSCLC, NSCLC of unknown histology, or a non-NSCLC diagnosis. Within-NSCLC histology sub-indicator paired with `TUMTP_NSCLC` (which distinguishes NSCLC patients overall from other tumor types).
 - **Units:** (binary)

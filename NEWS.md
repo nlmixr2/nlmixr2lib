@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Choi 2025 denosumab ([doi:10.3389/fphar.2025.1631034](https://doi.org/10.3389/fphar.2025.1631034)) -- healthy male volunteers and postmenopausal women with osteoporosis.
+- Add Wang 2025 serplulimab ([doi:10.1111/cts.70322](https://doi.org/10.1111/cts.70322)) -- adults with advanced solid tumours, including extensive-stage small cell lung cancer.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
