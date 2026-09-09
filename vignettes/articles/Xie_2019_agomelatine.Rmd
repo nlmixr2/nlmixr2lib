@@ -54,10 +54,10 @@ d_sim_obs <-
   )
 d_sim_prep <- rbind(d_sim_dosing, d_sim_obs)
 d_sim_prep$WT <- 60 # kg, based on table 1 from the paper
-d_sim_prep$ooc1 <- 1
-d_sim_prep$ooc2 <-
-  d_sim_prep$ooc3 <-
-  d_sim_prep$ooc4 <- 0
+d_sim_prep$OOC1 <- 1
+d_sim_prep$OOC2 <-
+  d_sim_prep$OOC3 <-
+  d_sim_prep$OOC4 <- 0
 d_sim_pop <- nlmixr2(Xie_2019_agomelatine, data = d_sim_prep, est = "rxSolve", control = list(nStud = 1000))
 ```
 

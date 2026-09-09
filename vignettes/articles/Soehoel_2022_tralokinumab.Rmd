@@ -44,7 +44,7 @@ The same information is available programmatically via
 
 Every structural parameter, covariate effect, IIV element, and residual-error
 term below is taken directly from Soehoel 2022 Table 2. The reference weight is
-75 kg; `nonECZTRA = 0` and `dilution = 0` define the ECZTRA / undiluted
+75 kg; `NON_ECZTRA = 0` and `DILUTION = 0` define the ECZTRA / undiluted
 reference.
 
 | Equation / parameter                  | Value           | Source location |
@@ -57,8 +57,8 @@ reference.
 | `lfdepot` (F, SC bioavailability)     | `log(0.761)`     | Table 2 |
 | `e_wt_vc_vp` (WT on V2 and V3)        | `0.783`          | Table 2 (allometric) |
 | `e_wt_cl_q` (WT on CL and Q)          | `0.873`          | Table 2 (allometric) |
-| `e_nonECZTRA_cl` (non-ECZTRA on CL)   | `0.344`          | Table 2 |
-| `e_nonECZTRA_vc` (non-ECZTRA on V2)   | `0.258`          | Table 2 |
+| `e_non_ecztra_cl` (non-ECZTRA on CL) | `0.344`          | Table 2 |
+| `e_non_ecztra_vc` (non-ECZTRA on V2) | `0.258`          | Table 2 |
 | `e_dilution_fdepot` (dilution on F)   | `0.354`          | Table 2 |
 | `e_dilution_ka` (dilution on ka)      | `-0.519`         | Table 2 |
 | `var(etalvc)`                         | `0.148971`       | Table 2: CV_V2 = 40.1%, `omega^2 = log(1 + 0.401^2)` |
@@ -82,8 +82,8 @@ Original observed data are not publicly available. The cohort below
 approximates Soehoel 2022 Table 1 demographics restricted to the adult
 atopic-dermatitis subpopulation (i.e., the regimen-relevant population):
 body weight from a truncated normal centered at the reported median (74.5 kg,
-SD ~18 kg) with limits at 36-165 kg; 45% female; `nonECZTRA = 0` (ECZTRA-trial
-reference) and `dilution = 0` (undiluted reference) for the labelled regimen.
+SD ~18 kg) with limits at 36-165 kg; 45% female; `NON_ECZTRA = 0` (ECZTRA-trial
+reference) and `DILUTION = 0` (undiluted reference) for the labelled regimen.
 Sex and race columns are retained for documentation but do not enter the
 Soehoel 2022 model.
 
@@ -95,8 +95,8 @@ cohort <- tibble::tibble(
   id        = seq_len(n_subj),
   WT        = pmin(pmax(rnorm(n_subj, mean = 74.5, sd = 18), 36), 165),
   SEXF      = as.integer(runif(n_subj) < 0.45),
-  nonECZTRA = 0L,
-  dilution  = 0L
+  NON_ECZTRA = 0L,
+  DILUTION  = 0L
 )
 
 # Labelled AD regimen: 600 mg SC loading dose on day 0, 300 mg SC Q2W
@@ -131,7 +131,7 @@ ev_obs <- cohort |>
 events <- dplyr::bind_rows(ev_dose, ev_obs) |>
   dplyr::arrange(id, time, dplyr::desc(evid)) |>
   dplyr::select(id, time, amt, cmt, evid,
-    WT, SEXF, nonECZTRA, dilution)
+    WT, SEXF, NON_ECZTRA, DILUTION)
 ```
 
 # Simulation
@@ -141,7 +141,7 @@ mod <- rxode2::rxode2(readModelDb("Soehoel_2022_tralokinumab"))
 conc_unit <- mod$units[["concentration"]]
 sim <- rxode2::rxSolve(
   mod, events = events,
-  keep = c("WT", "SEXF", "nonECZTRA", "dilution")
+  keep = c("WT", "SEXF", "NON_ECZTRA", "DILUTION")
 )
 ```
 
@@ -174,7 +174,7 @@ ggplot(vpc, aes(time, Q50)) +
     x = "Time (days)",
     y = paste0("Tralokinumab Cc (", conc_unit, ")"),
     title = "Simulated 5-50-95 percentile VPC; 600 mg SC load then 300 mg SC Q2W",
-    caption = "Virtual AD cohort (N = 400); WT median 74.5 kg; nonECZTRA = 0, dilution = 0."
+    caption = "Virtual AD cohort (N = 400); WT median 74.5 kg; NON_ECZTRA = 0, DILUTION = 0."
   ) +
   theme_minimal()
 ```
@@ -260,8 +260,8 @@ typical_cohort <- tibble::tibble(
   id        = 1L,
   WT        = 75,
   SEXF      = 0L,
-  nonECZTRA = 0L,
-  dilution  = 0L
+  NON_ECZTRA = 0L,
+  DILUTION  = 0L
 )
 
 ev_typical <- events |>
@@ -270,7 +270,7 @@ ev_typical <- events |>
 
 sim_typical <- rxode2::rxSolve(
   mod_typical, events = ev_typical,
-  keep = c("WT", "SEXF", "nonECZTRA", "dilution")
+  keep = c("WT", "SEXF", "NON_ECZTRA", "DILUTION")
 ) |>
   as.data.frame()
 
@@ -290,14 +290,14 @@ typical_summary <- tibble::tibble(
   )
 )
 knitr::kable(typical_summary, digits = 2,
-  caption = "Typical-subject steady-state exposure (WT = 75 kg, nonECZTRA = 0, dilution = 0; IIV zeroed).")
+  caption = "Typical-subject steady-state exposure (WT = 75 kg, NON_ECZTRA = 0, DILUTION = 0; IIV zeroed).")
 ```
 
 # Assumptions and deviations
 
 - The pooled-analysis population spans AD, asthma, and healthy subjects
   across 10 trials. The virtual cohort here is restricted to the AD-relevant
-  reference combination (`nonECZTRA = 0`, `dilution = 0`) so the simulated
+  reference combination (`NON_ECZTRA = 0`, `DILUTION = 0`) so the simulated
   profile mirrors the labelled 600-mg-load + 300-mg-Q2W SC atopic-dermatitis
   regimen.
 - Body weight is drawn from a truncated normal approximating Table 1
@@ -305,10 +305,10 @@ knitr::kable(typical_summary, digits = 2,
   pooled median and range; no per-indication WT summary is given, so this
   approximation is unavoidable. Sex is retained as an annotation column; it
   is not a covariate in the Soehoel 2022 final model.
-- The `SEXF`, `nonECZTRA`, and `dilution` column names preserve the original
-  paper's mixed-case spellings per the nlmixr2lib covariate-columns register
-  for this model; future models should use canonical `SEXF` / `NON_ECZTRA` /
-  `DILUTION` forms.
+- The covariate columns use the canonical `SEXF` / `NON_ECZTRA` / `DILUTION`
+  names. Soehoel 2022 writes the latter two `nonECZTRA` and `dilution`; the
+  paper's spellings are recorded in each covariate's `source_name` field, and
+  the values and reference categories are unchanged.
 - IIV variances were back-calculated from the reported CV% using the
   log-normal convention from the Table 2 footnote
   (`omega^2 = log(1 + CV^2)`). The variance-covariance triple passed to

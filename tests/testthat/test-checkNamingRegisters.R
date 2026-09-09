@@ -127,10 +127,11 @@ test_that("checkNamingRegisters enforces the covariate ALL-CAPS convention", {
   # The `## Case convention` section of covariate-columns.md used to name its
   # exceptions in a hand-maintained sentence. It said there were two
   # (`dilution`, `nonECZTRA`) when the file held ten, and had said so through
-  # every register audit, because nothing read it. It is now a machine-read
-  # list and this is what reads it -- in BOTH directions, since the drift that
-  # prompted the check was a documented list falling behind the file rather
-  # than a bad name being added.
+  # every register audit, because nothing read it. Seven of those ten have
+  # since been renamed to ALL CAPS; the list is now machine-read and this is
+  # what reads it -- in BOTH directions, since the drift that prompted the
+  # check was a documented list falling behind the file rather than a bad name
+  # being added.
   tmp <- withr::local_tempdir()
   dir.create(file.path(tmp, "inst", "references"), recursive = TRUE)
   dir.create(file.path(tmp, "inst", "modeldb"), recursive = TRUE)

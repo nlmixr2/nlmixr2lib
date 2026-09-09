@@ -131,7 +131,7 @@ display$section <- factor(
 render_table <- function(rows) {
   rows <- rows[order(rows$label), , drop = FALSE]
   tbl <- rows[, c("name_html", "description_html")] |>
-    stats::setNames(c("name", "description")) |>
+    dplyr::rename(name = name_html, description = description_html) |>
     knitr::kable(
       format = "html",
       row.names = FALSE,
