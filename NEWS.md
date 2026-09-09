@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Wright 2025 colchicine ([doi:10.1007/s40262-025-01551-y](https://doi.org/10.1007/s40262-025-01551-y)) -- adults with gout.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
