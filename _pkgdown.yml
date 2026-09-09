@@ -2966,6 +2966,8 @@ navbar:
         href: articles/Chigutsa_2012_ofloxacin.html
       - text: "Olanzapine (Zhang 2024)"
         href: articles/Zhang_2024_olanzapine.html
+      - text: "Olanzapine (Zhang 2025)"
+        href: articles/Zhang_2025_olanzapine.html
       - text: "Olanzapine lai (Perlstein 2026)"
         href: articles/Perlstein_2026_olanzapine.html
       - text: "Olanzapine oral (Perlstein 2026)"
@@ -6808,7 +6810,7 @@ articles:
   - articles/Zhang_2025_erythroferrone
   - articles/Zhang_2025_fluconazole
   - articles/Zhang_2025_nedosiran
-  - articles/Zhang_2025_remdesivir
+  - articles/Zhang_2025_olanzapine
   - articles/Zhang_2026_ribociclib
   - articles/Zhang_2026_tebipenem
   - articles/Zhao_2010_mycophenolic_acid
