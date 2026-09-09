@@ -548,6 +548,8 @@ navbar:
         href: articles/Benson_2010_bhma_mouse.html
       - text: "Biapenem (Chen 2024)"
         href: articles/Chen_2024_biapenem.html
+      - text: "Bictegravir (Ekobena 2025)"
+        href: articles/Ekobena_2025_bictegravir.html
       - text: "Biib107 (Toukam 2025)"
         href: articles/Toukam_2025_biib107.html
       - text: "Bitopertin (Rognas 2025)"
@@ -5250,6 +5252,7 @@ articles:
   - articles/Edwards_2016_obeticholicAcid
   - articles/Eissing_2024_finerenone
   - articles/Ekhart_2008_carboplatin
+  - articles/Ekobena_2025_bictegravir
   - articles/ElassaissSchaap_2017_pembrolizumab
   - articles/Elhefnawy_2023_recurrent_ischemic_stroke
   - articles/Elhefnawy_2023_recurrent_ischemic_stroke_diabetes
