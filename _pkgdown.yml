@@ -4378,6 +4378,8 @@ navbar:
         href: articles/Ravix_2024_trametinib.html
       - text: "TranexamicAcid (Dunn 2025)"
         href: articles/Dunn_2025_tranexamicAcid.html
+      - text: "TranexamicAcid (Liu 2025)"
+        href: articles/Liu_2025_tranexamicAcid.html
       - text: "TranexamicAcid (Nakai 2025)"
         href: articles/Nakai_2025_tranexamicAcid.html
       - text: "TranexamicAcid (Stitt 2026)"
@@ -5923,7 +5925,7 @@ articles:
   - articles/Liu_2024_saf189s
   - articles/Liu_2024_spatholobiCaulis
   - articles/Liu_2025_avatrombopag
-  - articles/Liu_2025_voriconazole
+  - articles/Liu_2025_tranexamicAcid
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin
   - articles/LlanosPaez_2020_gentamicin
