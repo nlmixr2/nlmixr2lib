@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Sun 2025 teicoplanin ([doi:10.3389/fphar.2025.1621959](https://doi.org/10.3389/fphar.2025.1621959)) -- critically ill adults with sepsis, with and without continuous renal replacement therapy.
+- Add Bayoumy 2025 thioguanine ([doi:10.1007/s40262-025-01532-1](https://doi.org/10.1007/s40262-025-01532-1)) -- adults with inflammatory bowel disease.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
