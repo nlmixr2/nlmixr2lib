@@ -1934,6 +1934,18 @@ navbar:
         href: articles/Franken_2017_haloperidol.html
       - text: "Haloperidol panss subscales (PillaReddy 2013)"
         href: articles/PillaReddy_2013_panss_subscales.html
+      - text: "Hemoporfin (Chen 2025)"
+        href: articles/Chen_2025_hemoporfin.html
+      - text: "Hemoporfin almost cured (Chen 2025)"
+        href: articles/Chen_2025_hemoporfin.html
+      - text: "Hemoporfin any improvement (Chen 2025)"
+        href: articles/Chen_2025_hemoporfin.html
+      - text: "Hemoporfin investigator rating (Chen 2025)"
+        href: articles/Chen_2025_hemoporfin.html
+      - text: "Hemoporfin patient rating (Chen 2025)"
+        href: articles/Chen_2025_hemoporfin.html
+      - text: "Hemoporfin significant improvement (Chen 2025)"
+        href: articles/Chen_2025_hemoporfin.html
       - text: "Higenamine (Feng 2012)"
         href: articles/Feng_2012_higenamine.html
       - text: "Hosu53 dog (Na 2025)"
@@ -5315,6 +5327,7 @@ articles:
   - articles/Chen_2024_remimazolam
   - articles/Chen_2024_rituximab
   - articles/Chen_2025_ceftazidime_avibactam
+  - articles/Chen_2025_hemoporfin
   - articles/Chen_2025_iohexol_creatinine
   - articles/Chen_2025_remimazolam
   - articles/Chen_2025_vancomycin
