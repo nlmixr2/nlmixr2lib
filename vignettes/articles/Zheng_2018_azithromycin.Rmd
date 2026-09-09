@@ -58,7 +58,7 @@ collects them in one place for review.
 | `lq`  (Q typical, L/h)  | log(55.7) | Zheng 2018 Table 3, theta4 |
 | `e_alt_cl` (log effect of ALT > 40 on CL) | log(0.761) | Zheng 2018 Table 3, theta5 |
 | `allo_cl` (allometric exponent on CL and Q) | fixed 0.75 | Zheng 2018 Methods 'Covariate analysis' |
-| `allo_v`  (allometric exponent on V1 and V2) | fixed 1.0 | Zheng 2018 Methods 'Covariate analysis' |
+| `e_wt_vc_vp`  (allometric exponent on V1 and V2) | fixed 1.0 | Zheng 2018 Methods 'Covariate analysis' |
 | Reference weight (kg) | 21.5 | Zheng 2018 Table 1 median; Table 3 footnote |
 | ALT binarization threshold (IU/L) | 40 | Zheng 2018 Table 3 (`F_liver = 1` if ALT > 40) |
 | `etalcl` (IIV variance) | log(0.321^2 + 1) = 0.09805 | Zheng 2018 Table 3, 32.1% CV |

@@ -311,7 +311,7 @@ Cai_2025_diamorphine <- function() {
     wt_ref <- 70  # allometric reference weight (kg), Supplementary Material S2 Eqs. 1-3
 
     allom_cl <- (WT / wt_ref)^e_wt_cl_q   # Eq. 1
-    allo_v  <- (WT / wt_ref)^e_wt_vc_vp  # Eq. 3
+    allom_v  <- (WT / wt_ref)^e_wt_vc_vp  # Eq. 3
 
     # Eq. 2 gives the first-order rate-constant exponent as -0.25. Under
     # theory-based allometry that is exactly the clearance exponent minus the
@@ -336,12 +336,12 @@ Cai_2025_diamorphine <- function() {
     # ----------------------------------------------------------------
     ka     <- exp(lka + etalka) * allo_k
     fdepot <- expit(logitfdepot + etalogitfdepot)
-    vc     <- exp(lvc + etalvc) * allo_v
+    vc     <- exp(lvc + etalvc) * allom_v
 
     kel      <- exp(lkel + etalkel) * allo_k
     kel_6mam <- exp(lkel_6mam + etalkel_6mam) * allo_k
 
-    vc_morphine  <- exp(lvc_morphine + etalvc_morphine) * allo_v
+    vc_morphine  <- exp(lvc_morphine + etalvc_morphine) * allom_v
     cl_morphine  <- exp(lcl_morphine + etalcl_morphine) * allom_cl * maturation_cl
     k12_morphine <- exp(lk12_morphine + etalk12_morphine) * allo_k
     k21_morphine <- exp(lk21_morphine + etalk21_morphine) * allo_k

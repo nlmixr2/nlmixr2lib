@@ -59,7 +59,7 @@ for a typical subject with LBM = 60 kg.
 | `lq2` (Q3 at LBM = 60 kg) | log(1.35) | Table 2 Q3 * (LBM/60)^0.75 = 1.35 L/h [95% boot 1.23, 1.56] |
 | `lvp2`(V3 at LBM = 60 kg) | log(48.4) | Table 2 V3 * (LBM/60) = 48.4 L [95% boot 34.4, 92.9] |
 | `allo_cl` (allometric exponent on CL terms) | fixed(0.75) | Discussion: removing the 0.75 exponent gave dAICc = -0.50 (no improvement); kept fixed |
-| `allo_v`  (allometric exponent on V terms)  | fixed(1.00) | Table 2 footnote: volumes scale linearly with LBM/60 |
+| `e_lbm_vc_vp`  (allometric exponent on V terms)  | fixed(1.00) | Table 2 footnote: volumes scale linearly with LBM/60 |
 | `etalka` (variance) | 0.24 | Table 2 omega^2(ka) = 0.24 |
 | `etalvc` (variance) | 0.14 | Table 2 omega^2(V1) = 0.14 |
 | `etalcl` (variance) | 0.04 | Table 2 omega^2(CL) = 0.04 |

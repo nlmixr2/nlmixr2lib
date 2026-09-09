@@ -44,7 +44,7 @@ The per-parameter origin is recorded as an in-file comment next to each `ini()` 
 | `lka` | log(0.236) | Schipani 2016 Table 4 row "ka (h-1) 0.236" |
 | `lfdepot` (adult anchor, fixed) | log(1) | Schipani 2016 Results body text "for the adults this bioavailability factor was fixed at unity" |
 | `allo_cl` (fixed) | 0.75 | Schipani 2016 Methods "fixing the exponent to 0.75 for CL" |
-| `allo_v` (fixed) | 1.0 | Schipani 2016 Methods "and 1 for V" |
+| `e_wt_vc` (fixed) | 1.0 | Schipani 2016 Methods "and 1 for V" |
 | `e_age_cl` | 0.517 | Schipani 2016 Table 4 row "Factor associated with age on RIF CL/F 0.517" |
 | `e_child_fdepot` | 0.517 | Schipani 2016 Table 4 row "F (% relative bioavailability, children) 51.7" |
 | `etalcl` (omega^2) | 0.466^2 | Schipani 2016 Table 4 row "IIV CL/F (%) 46.6" (approximate CV convention) |

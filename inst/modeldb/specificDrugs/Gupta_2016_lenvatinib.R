@@ -114,7 +114,7 @@ Gupta_2016_lenvatinib <- function() {
 
     # Allometric exponents held fixed at the paper's reported integer / canonical values.
     e_wt_cl    <- fixed(0.75); label("Allometric exponent on CL/F and Q/F (unitless)")                                                                                       # Gupta 2016 Table 2: WGT/75 raised to 0.75 in CL/F and Q1/F, Q2/F covariate equations
-    allo_v     <- fixed(1.0);  label("Allometric exponent on V1/F, V2/F, V3/F (unitless)")                                                                                   # Gupta 2016 Table 2: WGT/75 raised to 1 (linear) in V1/F, V2/F, V3/F covariate equations
+    e_wt_vc_vp     <- fixed(1.0);  label("Allometric exponent on V1/F, V2/F, V3/F (unitless)")                                                                                   # Gupta 2016 Table 2: WGT/75 raised to 1 (linear) in V1/F, V2/F, V3/F covariate equations
 
     # Covariate effects on CL/F expressed on the log scale: source THETAs
     # are entered as exp(e_<cov>_cl * <cov>) so that the linear-space
@@ -171,9 +171,9 @@ Gupta_2016_lenvatinib <- function() {
           exp(e_alp_cl         * alp_high) *
           exp(e_dis_healthy_cl * DIS_HEALTHY)
 
-    vc  <- exp(lvc  + etalvc)  * (WT / ref_wt)^allo_v
-    vp  <- exp(lvp  + etalvp)  * (WT / ref_wt)^allo_v
-    vp2 <- exp(lvp2 + etalvp2) * (WT / ref_wt)^allo_v
+    vc  <- exp(lvc  + etalvc)  * (WT / ref_wt)^e_wt_vc_vp
+    vp  <- exp(lvp  + etalvp)  * (WT / ref_wt)^e_wt_vc_vp
+    vp2 <- exp(lvp2 + etalvp2) * (WT / ref_wt)^e_wt_vc_vp
 
     q   <- exp(lq)  * (WT / ref_wt)^e_wt_cl
     q2  <- exp(lq2) * (WT / ref_wt)^e_wt_cl

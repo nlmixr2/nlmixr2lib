@@ -111,7 +111,7 @@ Chigutsa_2011_rifampicin <- function() {
     # Chigutsa 2011 Methods reference 3 (Anderson and Holford 2008);
     # standard allometric scaling for clearance.
 
-    allo_v <- fixed(1.0)
+    e_wt_vc <- fixed(1.0)
     label("Allometric exponent on V (unitless)")
     # Chigutsa 2011 Methods reference 3 (Anderson and Holford 2008);
     # standard allometric scaling for volume.
@@ -208,7 +208,7 @@ Chigutsa_2011_rifampicin <- function() {
     #    Chigutsa 2011 Methods reference 3); reference 70 kg.
     # ------------------------------------------------------------
     bw_cl <- (WT / 70) ^ e_wt_cl
-    bw_v  <- (WT / 70) ^ allo_v
+    bw_v  <- (WT / 70) ^ e_wt_vc
 
     # ------------------------------------------------------------
     # 2. SLCO1B1 rs4149032 genotype indicators decomposed from the
