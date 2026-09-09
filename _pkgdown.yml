@@ -644,6 +644,8 @@ navbar:
         href: articles/Fung_2008_butanediol_rat.html
       - text: "C3G (Jeon 2012)"
         href: articles/Jeon_2012_C3G.html
+      - text: "CAP256V2LS (Mahomed 2025)"
+        href: articles/Mahomed_2025_CAP256V2LS.html
       - text: "CC292 (Li 2017)"
         href: articles/Li_2017_CC292.html
       - text: "Cabamiquine (Courlet 2023)"
@@ -6021,6 +6023,7 @@ articles:
   - articles/Machavaram_2013_interleukin6_cyp3a_pbpk
   - articles/Macpherson_2015_rosuvastatin
   - articles/Mahadevan_2026_polymyxinB_combination_CRKP
+  - articles/Mahomed_2025_CAP256V2LS
   - articles/Maizaud_2025_missed_mycophenolate_doses
   - articles/Majekodunmi_2017_HIV_HCV_CD4_recovery
   - articles/Majid_2024_lecanemab

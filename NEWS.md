@@ -17,7 +17,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Tuo 2025 clobazam ([doi:10.3390/pharmaceutics17070813](https://doi.org/10.3390/pharmaceutics17070813)) -- Chinese children with refractory epilepsy.
+- Add Mahomed 2025 CAP256V2LS ([doi:10.1093/jac/dkaf181](https://doi.org/10.1093/jac/dkaf181)) -- young HIV-negative South African women.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
