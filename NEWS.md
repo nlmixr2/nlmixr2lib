@@ -17,7 +17,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Giacometti 2025 dalbavancin ([doi:10.3390/e27060602](https://doi.org/10.3390/e27060602)) -- adults on therapeutic drug monitoring; the paper's mixed-effects and naive-pooled least-squares two-compartment fits ship as separate models.
+- Add Yu 2025b vancomycin ([doi:10.1111/cts.70293](https://doi.org/10.1111/cts.70293)) -- neonates and infants in a US neonatal intensive care unit.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
