@@ -249,10 +249,16 @@ checkNamingRegisters <- function(root = NULL) {
       }
       tok <- e$name
       # Suffix sections register the SUFFIX (`dox`), which appears in model
-      # source only inside a compound token (`auc_dox`), so match that too.
+      # source only inside a compound token (`auc_dox`), so match that too --
+      # at the end, the start, or the MIDDLE. The middle case is not exotic: a
+      # metabolite suffix naming a conversion rate constant lands there by
+      # construction, e.g. `gs443902` appears only as
+      # `lkmet_gs443902_peripheral1`, and matching just the ends reported it
+      # as registered-but-unused while two models were using it.
       used <- tok %in% srcTokens ||
         any(endsWith(srcTokens, paste0("_", tok))) ||
-        any(startsWith(srcTokens, paste0(tok, "_")))
+        any(startsWith(srcTokens, paste0(tok, "_"))) ||
+        any(grepl(paste0("_", tok, "_"), srcTokens, fixed = TRUE))
       if (nchar(tok) >= 3L && !used && !isTRUE(e$deprecated)) {
         add(f, "registered-but-unused", tok, e$line, "no model on disk uses it")
       }
