@@ -824,6 +824,8 @@ navbar:
         href: articles/Cojutti_2023_ceftobiprole.html
       - text: "Ceftolozane (Chandorkar 2015)"
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
+      - text: "Ceftriaxone (FernandezRubio 2025)"
+        href: articles/FernandezRubio_2025_ceftriaxone.html
       - text: "Ceftriaxone (Garot 2011)"
         href: articles/Garot_2011_ceftriaxone.html
       - text: "Ceftriaxone (Tsai 2023)"
@@ -5397,6 +5399,7 @@ articles:
   - articles/Feng_2019_ipilimumab
   - articles/Feng_2023_cyclosporine
   - articles/Feng_2026_imipenem_pbpk
+  - articles/FernandezRubio_2025_ceftriaxone
   - articles/FernandezTeruel_2024_capivasertib
   - articles/Ferron_2013_cabazitaxel
   - articles/Fiandaca_2025_mRNABiTE

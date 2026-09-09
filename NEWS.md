@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Truong 2025 elexacaftor, tezacaftor and ivacaftor ([doi:10.1111/cts.70245](https://doi.org/10.1111/cts.70245)) -- children with cystic fibrosis aged 2-18 years.
+- Add Fernandez Rubio 2025 ceftriaxone ([doi:10.3390/antibiotics14050508](https://doi.org/10.3390/antibiotics14050508)) -- elderly adults with *Enterococcus faecalis* infective endocarditis.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
