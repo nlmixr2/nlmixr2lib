@@ -2212,8 +2212,12 @@ navbar:
         href: articles/Valitalo_2017_ketorolac.html
       - text: "Kynurenicacid pbpk (Granda 2024)"
         href: articles/Granda_2024_kidney_pbpk.html
+      - text: "Lacosamide (Li 2025)"
+        href: articles/Li_2025_lacosamide.html
       - text: "Lacosamide (Yu 2026)"
         href: articles/Yu_2026_lacosamide.html
+      - text: "Lacosamide cyp2c19 (Li 2025)"
+        href: articles/Li_2025_lacosamide.html
       - text: "Lacosamide dropout (Lindauer 2017)"
         href: articles/Lindauer_2017_lacosamide.html
       - text: "Lacosamide seizure (Lindauer 2017)"
@@ -5976,6 +5980,7 @@ articles:
   - articles/Li_2024_orin1001
   - articles/Li_2025_amikacin
   - articles/Li_2025_doxycycline_florfenicol_ducks
+  - articles/Li_2025_lacosamide
   - articles/Li_2025_modakafuspAlfa
   - articles/Li_2026_alvespimycin
   - articles/Liang_2023_polymyxinB
