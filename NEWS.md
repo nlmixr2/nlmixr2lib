@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Bayoumy 2025 thioguanine ([doi:10.1007/s40262-025-01532-1](https://doi.org/10.1007/s40262-025-01532-1)) -- adults with inflammatory bowel disease.
+- Add Lim 2025 amikacin ([doi:10.1128/aac.00818-25](https://doi.org/10.1128/aac.00818-25)) -- preterm and term neonates receiving intravenous or intramuscular amikacin.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
