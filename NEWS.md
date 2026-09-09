@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Koele 2025 BTZ-043 population PK and bacterial-load exposure-response models ([doi:10.1093/jac/dkaf076](https://doi.org/10.1093/jac/dkaf076)) -- adults with drug-susceptible pulmonary tuberculosis on 14 days of BTZ-043 monotherapy.
+- Add Parasrampuria 2025 temsavir ([doi:10.1002/prp2.70023](https://doi.org/10.1002/prp2.70023)) -- population PK plus three Day 8 exposure-response models in healthy adults and treatment-experienced adults with HIV-1.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
