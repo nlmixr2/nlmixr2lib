@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Zhao 2025 vancomycin ([doi:10.1128/spectrum.02274-24](https://doi.org/10.1128/spectrum.02274-24)) -- non-extremely preterm neonates in a neonatal intensive care unit.
+- Add Ueshima 2025 edoxaban ([doi:10.1186/s40780-025-00453-2](https://doi.org/10.1186/s40780-025-00453-2)) -- Japanese adults with atrial fibrillation.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
