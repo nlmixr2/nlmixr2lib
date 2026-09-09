@@ -2,7 +2,9 @@
 
 # development version
 
-- Add Yu 2025 perampanel ([doi:10.2147/DDDT.S499085](https://doi.org/10.2147/DDDT.S499085)) -- Chinese pediatric epilepsy patients on therapeutic drug monitoring.
+- Add Prohn 2021 letermovir ([doi:10.1002/psp4.12593](https://doi.org/10.1002/psp4.12593)) -- healthy phase I volunteers over a 30-960 mg dose range.
+
+- Add Prohn 2021 letermovir ([doi:10.1002/psp4.12593](https://doi.org/10.1002/psp4.12593)) -- allogeneic hematopoietic stem cell transplant recipients at clinical doses.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
