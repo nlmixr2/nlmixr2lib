@@ -3010,6 +3010,8 @@ navbar:
         href: articles/Brown_2017_osimertinib.html
       - text: "Osimertinib (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
+      - text: "Osimertinib (Yang 2025)"
+        href: articles/Yang_2025_osimertinib.html
       - text: "Osimertinib pbpk (vanderGaag 2025)"
         href: articles/vanderGaag_2025_osimertinib_pbpk.html
       - text: "Osimertinib qsp (Liang 2024)"
@@ -6602,6 +6604,7 @@ articles:
   - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yang_2025_iruplinalkib
   - articles/Yang_2025_matrine_pig_pbpk
+  - articles/Yang_2025_osimertinib
   - articles/Yang_2026_APTM
   - articles/Yang_2026_encorafenib
   - articles/Yang_2026_lurasidone

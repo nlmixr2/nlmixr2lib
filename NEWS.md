@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Yang 2025 osimertinib and AZ5104 ([doi:10.1002/cpt.3759](https://doi.org/10.1002/cpt.3759)) — adults with EGFR-mutated advanced NSCLC.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and
