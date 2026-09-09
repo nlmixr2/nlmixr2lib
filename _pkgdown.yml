@@ -966,6 +966,8 @@ navbar:
         href: articles/Huang_2025_colistinSulfate.html
       - text: "ColistinSulfate (Ma 2026)"
         href: articles/Ma_2026_colistinSulfate.html
+      - text: "ColistinSulfate (Sun 2025)"
+        href: articles/Sun_2025_colistinSulfate.html
       - text: "Concizumab (Yuan 2019)"
         href: articles/Yuan_2019_concizumab.html
       - text: "ConestatAlfa (Farrell 2013)"
@@ -6441,6 +6443,7 @@ articles:
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
   - articles/Sun_2023_maribavir
+  - articles/Sun_2025_colistinSulfate
   - articles/Sun_2025_paclitaxel
   - articles/Sun_2026_tilmicosin
   - articles/Suri_2018_brentuximab

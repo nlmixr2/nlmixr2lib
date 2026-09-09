@@ -17,7 +17,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Liu 2025 voriconazole ([doi:10.2147/DDDT.S495050](https://doi.org/10.2147/DDDT.S495050)) -- elderly Chinese inpatients aged 60 years and over.
+- Add Sun 2025 colistin sulfate ([doi:10.1038/s41598-025-03503-9](https://doi.org/10.1038/s41598-025-03503-9)) -- critically ill Chinese adults with carbapenem-resistant organism infections.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
