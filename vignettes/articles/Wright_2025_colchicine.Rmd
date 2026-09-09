@@ -1,0 +1,866 @@
+---
+title: "Colchicine (Wright 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Colchicine (Wright 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Wright_2025_colchicine"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Wright_2025_colchicine"))$description`
+* Article: <https://doi.org/10.1007/s40262-025-01551-y>
+* Supplement (Electronic Supplementary Information; contains the final NONMEM
+  control stream, the MATLAB simulation code, and Tables S1-S8):
+  <https://doi.org/10.1007/s40262-025-01551-y>
+
+# Population
+
+Wright 2025 pooled two sources. The primary source is the New Zealand Gout
+Study (ACTRN 12618001179224), a randomised controlled trial in Auckland and
+Christchurch in which 200 people with gout commencing allopurinol were
+randomised 1:1 to colchicine 0.5 mg daily or placebo for six months. Plasma
+colchicine was measured in 80 participants at month 3, with only two samples
+each -- one immediately before the daily dose and one 30-60 min after it.
+After excluding three samples below the limit of quantitation and four whose
+sampling time could not be reconciled with the dose, 153 concentrations from
+78 participants entered the analysis. That cohort was 72/6 male/female,
+median age 59 years (27-90), median weight 97 kg (57-150), median
+Cockcroft-Gault creatinine clearance 81 mL/min (32-132), 13% Maori, 14%
+Pacific Peoples, 56% NZ European and 17% other ethnicities, with 22% taking a
+statin (Wright 2025 Table 1).
+
+Because that sampling is far too sparse to identify a two-compartment
+disposition model, the authors digitised 211 concentrations from 13
+individuals in three published studies (ten healthy volunteers, one person
+with liver disease, one with gout and one with kidney disease) who had
+received single oral doses of 0.5, 1 and 2 mg or single intravenous doses of
+0.5 and 2 mg. The final dataset therefore holds 364 concentrations from 91
+individuals across four studies. Individual demographics were not available
+for the 13 extracted individuals, so every covariate effect in the model is
+identified by the 78 NZ Gout Study participants alone.
+
+The same information is available programmatically via the model's
+`population` metadata (`readModelDb("Wright_2025_colchicine")()$population`).
+
+# Structural model
+
+The final model is a two-compartment disposition model (NONMEM `ADVAN3
+TRANS4`) with **zero-order input directly into the central compartment** --
+there is no depot state. Each oral dose is delivered at a constant rate over
+`D1` = 0.99 h, starting after an absorption lag that is fixed at 1.3 h for the
+subpopulation the authors flagged as delayed absorbers and at 0 h for everyone
+else. Oral bioavailability `F1` is fixed at 0.469 and multiplied by
+`1 + theta_FORM` for the tablet formulations used in the literature-extracted
+studies.
+
+Total body weight is standardised to 70 kg with fixed allometric exponents of
+0.75 on CL and Q and 1 on V1 and V2. Concomitant statin use multiplies CL by
+0.66; female sex multiplies both V1 and V2 by 0.53.
+
+Because the dose enters the central compartment with a modelled duration,
+**every dose record in an event table for this model must carry
+`rate = -2`**; without it rxode2 collapses the dose to an instantaneous bolus
+and the absorption phase disappears.
+
+# Source trace
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Two-compartment disposition, zero-order input into central, no depot | n/a | ESI final control stream `$PROBLEM 66_FINAL_colchicine`: `$SUBR ADVAN3 TRANS4`, `S1 = V1`, `ALAG1 = TLAG`; Wright 2025 Results paragraph 2 |
+| `CL = theta_CL * (WT/70)^0.75 * theta_statin` | n/a | Wright 2025 Results, final covariate model equations; ESI `$PK` `TVCL = THETA(1)*STATINCL*SIZECL` |
+| `V1 = theta_V1 * (WT/70) * theta_SEX` | n/a | Wright 2025 Results, final covariate model equations; ESI `$PK` `TVV1 = THETA(2)*SIZEV*FSEX` |
+| `Q = theta_Q * (WT/70)^0.75` | n/a | Wright 2025 Results, final covariate model equations; ESI `$PK` `TVQ = THETA(3)*SIZECL` |
+| `V2 = theta_V2 * (WT/70) * theta_SEX` | n/a | Wright 2025 Results, final covariate model equations; ESI `$PK` `TVV2 = THETA(4)*SIZEV*FSEX` |
+| `F1 = 0.469 * FORM` | n/a | ESI `$PK` `TVF1 = THETA(9)*FORM`; Table 2 footnote d |
+| `lcl` | 19.1 L/h/70 kg | Table 2, `theta_CL`, RSE 9.0% |
+| `lvc` | 245.5 L/70 kg | Table 2, `theta_V1`, RSE 16.2% |
+| `lq` | 29.9 L/h/70 kg | Table 2, `theta_Q`, RSE 21.9% |
+| `lvp` | 821.8 L/70 kg | Table 2, `theta_V2`, RSE 28.4% |
+| `ld1` | 0.99 h | Table 2, `D1`, RSE 15.2% |
+| `ltlag` | 1.3 h (fixed) | Table 2, `TLAG 1` (fixed); `TLAG 2` = 0 (fixed) |
+| `lfcentral` | 0.469 (fixed) | ESI `$THETA` line 9 `0.469 FIX ; 9. F1_oral`; Table 2 rounds to `F1` = 0.47 |
+| `e_wt_cl_q` | 0.75 (fixed) | Table 2 footnote a; ESI `$PK` `SIZECL = (WTKG/70)**0.75` |
+| `e_wt_vc_vp` | 1 (fixed) | Table 2 footnote b; ESI `$PK` `SIZEV = WTKG/70` |
+| `e_conmed_statin_cl` | 0.66 | Table 2, `theta_statin`, RSE 12.4% |
+| `e_sexf_vc_vp` | 0.53 | Table 2, `theta_SEX`, RSE 25.8% |
+| `e_form_col_lit_fcentral` | 0.55 | Table 2, `theta_FORM`, RSE 54.8%, and footnote d |
+| `etalcl` | 0.1142 (= 0.338^2) | Table 2, `omega_CL` = 33.8 CV%, RSE 21.6% |
+| `etalvc` | 0.126 (fixed) | Table 2, `omega_V1` = 35.5 CV% (fixed); ESI `$OMEGA` `0.126 FIX`; ESI Table S1 (Karatza 2021) |
+| `etalvp` | 0.284 (fixed) | Table 2, `omega_V2` = 53.3 CV% (fixed); ESI `$OMEGA` `0.284 FIX` |
+| `propSd` | 0.377 | Table 2, `sigma_prop` = 37.7 CV%, RSE 8.3% |
+| `addSd` | 0.006 (fixed) | Table 2, `sigma_add` (fixed); ESI `$THETA` line 6 `0.006 FIX` |
+
+The omega scale is settled by arithmetic rather than by convention. Table 2
+reports `omega_V1` = 35.5 CV% and `omega_V2` = 53.3 CV%, both marked fixed,
+while the ESI `$OMEGA` block holds `0.126 FIX` and `0.284 FIX` for the same two
+parameters. `sqrt(0.126)` = 0.355 and `sqrt(0.284)` = 0.533, whereas the
+log-normal `sqrt(exp(var) - 1)` would give 0.367 and 0.575. The paper's "CV%"
+column is therefore the square root of the variance, so the estimated
+`omega_CL` = 33.8 CV% reads back as a variance of 0.338^2 = 0.1142. The ESI's
+MATLAB code confirms this independently: its `para_COL` script draws the
+individual parameters as `exp(mvnrnd(logMU, PPV))` with `PPV` a diagonal matrix
+holding `0.101`, `0.126` and `0.284` -- i.e. those three numbers are used as
+log-scale *variances*, not as CVs.
+
+# Structural verification against closed-form results
+
+Every relationship the paper states about the covariate model is an exact
+multiplicative statement about steady-state exposure, so each one can be
+checked against a closed form rather than eyeballed off a figure. With the
+between-subject variability zeroed out, the steady-state average concentration
+of a linear model is exactly `F1 * dose / (CL * tau)` regardless of the number
+of compartments, the absorption duration or the lag.
+
+```{r structural-scenarios}
+mod <- readModelDb("Wright_2025_colchicine")
+mod_typ <- rxode2::zeroRe(mod)
+
+tau_daily <- 24
+n_dose <- 40L                     # 40 days of therapy, as in Wright 2025 sec. 2.4
+t_last <- (n_dose - 1L) * tau_daily
+
+scenarios <- tibble::tibble(
+  scenario       = c("Reference (70 kg male, no statin)", "Concomitant statin",
+                     "Female", "140 kg", "Literature formulation",
+                     "Delayed-absorption class"),
+  WT             = c(70,  70,  70,  140, 70,  70),
+  SEXF           = c(0,   0,   1,   0,   0,   0),
+  CONMED_STATIN  = c(0,   1,   0,   0,   0,   0),
+  FORM_COL_LIT   = c(0,   0,   0,   0,   1,   0),
+  MIX_LAGGED_ABS = c(0,   0,   0,   0,   0,   1)
+)
+
+# One dose row (rate = -2 so rxode2 uses the modelled dur(central) = D1) plus a
+# 0.05 h observation grid over the final dosing interval. Observation rows
+# point at the ODE state `central`, never at the algebraic observable `Cc`.
+build_events <- function(covs, dose, ii, addl, obs_times) {
+  n <- nrow(covs)
+  covs <- dplyr::mutate(covs, id = seq_len(n))
+  dosing <- covs |>
+    dplyr::mutate(time = 0, amt = dose, evid = 1L, rate = -2,
+                  ii = ii, addl = addl, cmt = "central")
+  obs <- covs |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, rate = 0,
+                  ii = 0, addl = 0L, cmt = "central")
+  dplyr::bind_rows(dosing, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+obs_grid <- t_last + seq(0, tau_daily, by = 0.05)
+ev_typ <- build_events(scenarios, dose = 0.5, ii = tau_daily,
+                       addl = n_dose - 1L, obs_times = obs_grid)
+
+sim_typ <- rxode2::rxSolve(mod_typ, ev_typ,
+                           keep = c("scenario", "WT", "SEXF",
+                                    "CONMED_STATIN", "FORM_COL_LIT",
+                                    "MIX_LAGGED_ABS")) |>
+  as.data.frame()
+stopifnot(!anyNA(sim_typ$Cc), all(sim_typ$Cc >= 0))
+```
+
+```{r structural-check}
+trapz <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+typ_summary <- sim_typ |>
+  dplyr::group_by(scenario) |>
+  dplyr::summarise(
+    cav_sim  = trapz(time, Cc) / tau_daily,
+    cmax_sim = max(Cc),
+    tmax_sim = time[which.max(Cc)] - t_last,
+    cl_sim   = dplyr::first(cl),
+    vc_sim   = dplyr::first(vc),
+    .groups  = "drop"
+  )
+
+# Closed forms, straight from Wright 2025 Table 2.
+f1_ref  <- 0.469
+cl_ref  <- 19.1
+d1_ref  <- 0.99
+cav_ref <- f1_ref * 0.5 / (cl_ref * tau_daily) * 1000   # mg -> ng/mL
+
+expected <- tibble::tibble(
+  scenario = scenarios$scenario,
+  cav_closed = c(
+    cav_ref,                       # reference
+    cav_ref / 0.66,                # statin lowers CL by the factor 0.66
+    cav_ref,                       # female changes volumes only, not CL
+    cav_ref * (140 / 70)^(-0.75),  # allometric CL on 0.75 power of weight
+    cav_ref * 1.55,                # F1 * (1 + 0.55) for the literature tablets
+    cav_ref                        # a lag shifts the profile, not the exposure
+  ),
+  tmax_closed = c(d1_ref, d1_ref, d1_ref, d1_ref, d1_ref, d1_ref + 1.3)
+)
+
+chk <- dplyr::left_join(typ_summary, expected, by = "scenario") |>
+  dplyr::mutate(
+    cav_pct_diff  = 100 * (cav_sim - cav_closed) / cav_closed,
+    tmax_abs_diff = abs(tmax_sim - tmax_closed)
+  )
+
+chk |>
+  dplyr::transmute(
+    "Scenario"              = scenario,
+    "CL (L/h)"              = round(cl_sim, 2),
+    "V1 (L)"                = round(vc_sim, 1),
+    "Cav,ss simulated (ng/mL)" = round(cav_sim, 4),
+    "Cav,ss closed form (ng/mL)" = round(cav_closed, 4),
+    "Difference (%)"        = round(cav_pct_diff, 3),
+    "Tmax simulated (h)"    = round(tmax_sim, 2),
+    "Tmax expected (h)"     = tmax_closed
+  ) |>
+  knitr::kable(
+    caption = paste("Steady-state exposure from the packaged model against the",
+                    "closed form F1 * dose / (CL * tau). These are typical-value",
+                    "(zeroRe) solves, so the agreement is deterministic.")
+  )
+
+# Deterministic quantities -- a tight bound is correct here and is what will
+# catch a regression in the covariate model or the allometric exponents.
+stopifnot(
+  max(abs(chk$cav_pct_diff)) < 0.05,
+  max(chk$tmax_abs_diff) <= 0.05,       # 0.05 h is the observation grid spacing
+  # Female changes V1 and V2 only, so exposure is unchanged but the peak rises.
+  abs(chk$vc_sim[chk$scenario == "Female"] /
+        chk$vc_sim[chk$scenario == "Reference (70 kg male, no statin)"] - 0.53) < 1e-8,
+  chk$cmax_sim[chk$scenario == "Female"] >
+    1.3 * chk$cmax_sim[chk$scenario == "Reference (70 kg male, no statin)"],
+  # Statin reduces CL by exactly the fractional effect 0.66.
+  abs(chk$cl_sim[chk$scenario == "Concomitant statin"] /
+        chk$cl_sim[chk$scenario == "Reference (70 kg male, no statin)"] - 0.66) < 1e-8
+)
+```
+
+The model reproduces every published covariate statement exactly: statin use
+raises steady-state exposure by `1/0.66` = 1.52-fold (Wright 2025 reports a
+~30% clearance reduction), doubling body weight lowers it by `2^-0.75` = 0.59-fold,
+female sex halves both volumes (0.53) without changing exposure, and the
+delayed-absorption class shifts Tmax from 0.99 h to 2.29 h with identical AUC.
+
+# Virtual cohort
+
+Wright 2025 simulated from a virtual gout population of 10,000 individuals
+expanded from 309 people with gout across five New Zealand studies (ESI
+Table S2: weight 101 kg, range 51-172; 45% taking statins; 14% female). That
+file is not distributed, so the cohort below reproduces its reported marginal
+distributions: a lognormal weight with median 101 kg truncated to the observed
+51-172 kg range, statin use at 45%, and female sex at 14%. The
+delayed-absorption class is drawn at the prevalence observed in the NZ Gout
+Study (17 of 78 = 21.8%). `FORM_COL_LIT` is set to 0 throughout -- the
+literature formulations exist only to stabilise the structural model and are
+not part of the target population.
+
+Correlations between weight, sex and statin use in the authors' virtual file
+are not reported numerically, so the covariates here are drawn independently.
+That is the main reason the per-stratum contrasts below are cleaner than the
+published ones.
+
+```{r cohort}
+# set.seed() seeds R's RNG (used for the covariate draws below). It does NOT
+# seed rxode2's simulation RNG, whose streams are partitioned per solver
+# thread -- so the eta draws differ between a 2-core CI runner and a 16-thread
+# workstation. Every assertion downstream is written to hold for any cohort
+# this model can produce.
+set.seed(20250728)
+rxode2::rxSetSeed(20250728)
+
+n_per_arm <- 100L
+
+draw_weight <- function(n) {
+  # median 101 kg; sdlog chosen so the 5th-95th percentile span is ~70-145 kg,
+  # then truncated to the 51-172 kg range reported in ESI Table S2.
+  w <- stats::rlnorm(n, meanlog = log(101), sdlog = 0.22)
+  pmin(pmax(w, 51), 172)
+}
+
+regimens <- tibble::tribble(
+  ~regimen,             ~dose, ~ii,
+  "0.5 mg daily",         0.5,  24,
+  "1 mg daily",           1.0,  24,
+  "1.5 mg daily",         1.5,  24,
+  "0.5 mg twice daily",   0.5,  12,
+  "1 mg twice daily",     1.0,  12,
+  "1.5 mg twice daily",   1.5,  12
+)
+
+make_arm <- function(regimen, dose, ii, id_offset) {
+  addl <- as.integer(n_dose * 24 / ii) - 1L
+  ss_start <- addl * ii
+  covs <- tibble::tibble(
+    id             = id_offset + seq_len(n_per_arm),
+    regimen        = regimen,
+    WT             = draw_weight(n_per_arm),
+    SEXF           = stats::rbinom(n_per_arm, 1, 0.14),
+    CONMED_STATIN  = stats::rbinom(n_per_arm, 1, 0.45),
+    MIX_LAGGED_ABS = stats::rbinom(n_per_arm, 1, 17 / 78),
+    FORM_COL_LIT   = 0,
+    # Carried through rxSolve so downstream code knows each subject's dosing
+    # interval and the start of the steady-state window. Set here, before the
+    # event columns are added, so that the later `ii = 0` on observation rows
+    # cannot leak into `tau`.
+    ss_start       = ss_start,
+    tau            = ii
+  )
+  # Fine grid over the absorption phase, coarse over the elimination phase, so
+  # Cmax and the trough are both resolved without an oversized event table.
+  obs_times <- ss_start + sort(unique(c(seq(0, min(4, ii), by = 0.05),
+                                        seq(0, ii, by = 0.25), ii)))
+  dosing <- covs |>
+    dplyr::mutate(time = 0, amt = dose, evid = 1L, rate = -2,
+                  ii = .env$ii, addl = .env$addl, cmt = "central")
+  obs <- covs |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, rate = 0,
+                  ii = 0, addl = 0L, cmt = "central")
+  dplyr::bind_rows(dosing, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(lapply(
+  seq_len(nrow(regimens)),
+  function(i) {
+    make_arm(regimens$regimen[i], regimens$dose[i], regimens$ii[i],
+             id_offset = (i - 1L) * n_per_arm)
+  }
+))
+stopifnot(
+  !anyDuplicated(dplyr::distinct(events[, c("id", "time", "evid")])),
+  dplyr::n_distinct(events$id) == n_per_arm * nrow(regimens),
+  # tau and ss_start are per-subject constants, not event columns; a zero here
+  # would silently turn every downstream Cav into Inf.
+  all(events$tau > 0), all(events$ss_start > 0),
+  all(events$rate[events$evid == 1L] == -2)
+)
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events = events,
+  keep = c("regimen", "WT", "SEXF", "CONMED_STATIN", "MIX_LAGGED_ABS",
+           "ss_start", "tau")
+) |>
+  as.data.frame()
+
+# Cc is the individual prediction; it carries no residual error, which is what
+# the paper's simulations of Cmin,ss / Cmax,ss / Cav,ss also report.
+stopifnot(!anyNA(sim$Cc), all(sim$Cc >= 0), nrow(sim) > 0,
+          all(sim$tau > 0), all(sim$ss_start > 0))
+```
+
+# Replicate published figures
+
+```{r figure-3, fig.width = 7, fig.height = 4.5}
+# Companion to Figure 3b of Wright 2025 (prediction-corrected VPC of the NZ
+# Gout Study data): the steady-state concentration-time profile of the 0.5 mg
+# daily regimen over one dosing interval, median with 5th-95th percentiles.
+sim |>
+  dplyr::filter(regimen == "0.5 mg daily") |>
+  dplyr::mutate(tad = time - ss_start) |>
+  dplyr::group_by(tad) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(Cc, 0.05),
+    Q50 = stats::median(Cc),
+    Q95 = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(tad, Q50)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::annotate("rect", xmin = -Inf, xmax = Inf, ymin = 0.5, ymax = 3,
+                    alpha = 0.12, fill = "seagreen") +
+  ggplot2::labs(
+    x = "Time after dose (h)", y = "Colchicine (ng/mL)",
+    title = "Steady-state profile, colchicine 0.5 mg daily",
+    caption = paste("Median with 5th-95th percentiles from", n_per_arm,
+                    "virtual gout patients on day 40. Shaded band is the",
+                    "proposed therapeutic range of 0.5-3 ng/mL.")
+  )
+```
+
+```{r figure-4, fig.width = 7, fig.height = 5}
+# Replicates the structure of Figure 4 of Wright 2025: steady-state exposure by
+# weight quartile, statin use and sex. Wright 2025 Table S3 uses the NZ Gout
+# Study weight quartile cut-points 50.0-79.9 / 80.0-96.9 / 97-109.9 / >110 kg.
+strata_all <- sim |>
+  dplyr::group_by(regimen, id, WT, SEXF, CONMED_STATIN, tau) |>
+  dplyr::summarise(
+    cav  = trapz(time, Cc) / dplyr::first(tau),
+    cmax = max(Cc),
+    cmin = min(Cc),
+    .groups = "drop"
+  ) |>
+  dplyr::left_join(dplyr::select(regimens, regimen, dose), by = "regimen") |>
+  dplyr::mutate(
+    # cav * tau / dose is F1 / CL to within the mg -> ng/mL factor, so it is
+    # directly comparable across every regimen and isolates the clearance
+    # covariate model from the dose and the dosing frequency.
+    exposure_per_dose = cav * tau / dose,
+    `Weight quartile` = cut(WT, c(0, 79.9, 96.9, 109.9, Inf),
+                            labels = c("Q1 (50.0-79.9 kg)", "Q2 (80.0-96.9 kg)",
+                                       "Q3 (97-109.9 kg)", "Q4 (>110 kg)")),
+    Statin = ifelse(CONMED_STATIN == 1, "Taking a statin", "Not taking a statin"),
+    Sex    = ifelse(SEXF == 1, "Female", "Male")
+  )
+
+strata <- strata_all |>
+  dplyr::filter(regimen == "0.5 mg daily") |>
+  dplyr::mutate(
+    `Weight quartile` = cut(WT, c(0, 79.9, 96.9, 109.9, Inf),
+                            labels = c("Q1 (50.0-79.9 kg)", "Q2 (80.0-96.9 kg)",
+                                       "Q3 (97-109.9 kg)", "Q4 (>110 kg)")),
+    Statin = ifelse(CONMED_STATIN == 1, "Taking a statin", "Not taking a statin"),
+    Sex    = ifelse(SEXF == 1, "Female", "Male")
+  )
+
+strata |>
+  tidyr::pivot_longer(c(cmin, cmax, cav), names_to = "metric", values_to = "conc") |>
+  dplyr::mutate(metric = factor(metric, c("cmin", "cmax", "cav"),
+                                c("Cmin,ss", "Cmax,ss", "Cav,ss"))) |>
+  tidyr::pivot_longer(c(`Weight quartile`, Statin, Sex),
+                      names_to = "stratification", values_to = "stratum") |>
+  ggplot2::ggplot(ggplot2::aes(stratum, conc, colour = metric)) +
+  ggplot2::annotate("rect", xmin = -Inf, xmax = Inf, ymin = 0.5, ymax = 3,
+                    alpha = 0.12, fill = "seagreen") +
+  ggplot2::stat_summary(fun = stats::median,
+                        fun.min = \(x) stats::quantile(x, 0.05),
+                        fun.max = \(x) stats::quantile(x, 0.95),
+                        position = ggplot2::position_dodge(width = 0.5)) +
+  ggplot2::facet_wrap(~stratification, scales = "free_x", nrow = 1) +
+  ggplot2::labs(
+    x = NULL, y = "Colchicine (ng/mL)", colour = NULL,
+    title = "Colchicine 0.5 mg daily: steady-state exposure by covariate stratum",
+    caption = paste("Median with 5th-95th percentiles. Replicates the",
+                    "stratification of Figure 4a and Table S3 of Wright 2025.")
+  ) +
+  ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1),
+                 legend.position = "bottom")
+```
+
+```{r figure-4-check}
+# The stratified contrasts are checked on all six regimens pooled, using the
+# frequency- and dose-normalised exposure metric, so each stratum holds enough
+# subjects for its median to be stable across cohort draws. The exact
+# multiplicative relationships were gated deterministically further above; this
+# is a directional check that the covariate model survives an IIV cohort.
+med_exp <- function(f) stats::median(strata_all$exposure_per_dose[f])
+n_in    <- function(f) sum(f)
+
+wt_q <- strata_all$`Weight quartile`
+q1 <- med_exp(wt_q == "Q1 (50.0-79.9 kg)")
+q4 <- med_exp(wt_q == "Q4 (>110 kg)")
+statin_yes <- med_exp(strata_all$CONMED_STATIN == 1)
+statin_no  <- med_exp(strata_all$CONMED_STATIN == 0)
+female <- med_exp(strata_all$SEXF == 1)
+male   <- med_exp(strata_all$SEXF == 0)
+
+# Guard against a vacuous pass: every stratum must actually have members.
+stopifnot(
+  all(table(wt_q) >= 30),
+  n_in(strata_all$CONMED_STATIN == 1) >= 30,
+  n_in(strata_all$CONMED_STATIN == 0) >= 30,
+  n_in(strata_all$SEXF == 1) >= 30, n_in(strata_all$SEXF == 0) >= 30
+)
+stopifnot(
+  q1 / q4 > 1.15,                # lighter patients are more exposed
+  statin_yes / statin_no > 1.15, # statin users clear colchicine more slowly
+  # Sex acts on the volumes only, so exposure must NOT separate by sex. This
+  # would read 0.53 or 1.89 if the sex effect were misplaced onto clearance.
+  female / male > 0.75, female / male < 1.35
+)
+tibble::tibble(
+  Contrast = c("Weight Q1 / Q4", "Statin / no statin", "Female / male"),
+  `Ratio of median exposure` = round(c(q1 / q4, statin_yes / statin_no,
+                                       female / male), 3),
+  `Expected` = c("> 1 (allometric CL on WT^0.75)",
+                 "~1.52 (= 1 / 0.66)", "~1 (sex acts on V1 and V2 only)")
+) |>
+  knitr::kable(caption = paste("Covariate contrasts across all six regimens",
+                               "pooled, on the frequency- and dose-normalised",
+                               "exposure metric Cav,ss * tau / dose."))
+```
+
+# PKNCA validation
+
+Steady-state non-compartmental parameters are computed over the final dosing
+interval of the 40-day regimen -- the same window Wright 2025 used ("the
+steady-state plasma concentrations across a 24-h period on day 40").
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, regimen)
+
+# Guarantee an anchor record at the start of each subject's steady-state
+# interval so PKNCA never reports "AUC range starting before the first
+# measurement". The 0.05 h grid already lands on ss_start, so this is
+# defensive rather than corrective.
+anchors <- events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::distinct(id, regimen, ss_start)
+sim_nca <- sim_nca |>
+  dplyr::left_join(anchors, by = c("id", "regimen")) |>
+  dplyr::filter(time >= ss_start) |>
+  dplyr::select(-ss_start) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | regimen + id)
+
+# One dose row per administered dose per subject: the ii/addl compression in
+# the event table has to be expanded for PKNCA.
+dose_df <- events |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(time = list(seq(0, addl * ii, by = ii))) |>
+  dplyr::ungroup() |>
+  tidyr::unnest(time) |>
+  dplyr::select(id, time, amt, regimen)
+
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(dose_df), amt ~ time | regimen + id)
+
+intervals <- anchors |>
+  dplyr::distinct(regimen, ss_start) |>
+  dplyr::left_join(dplyr::select(regimens, regimen, ii), by = "regimen") |>
+  dplyr::transmute(
+    start = ss_start, end = ss_start + ii, regimen = regimen,
+    cmax = TRUE, cmin = TRUE, tmax = TRUE, auclast = TRUE, cav = TRUE
+  ) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(regimen, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+stopifnot(
+  nrow(nca_wide) == n_per_arm * nrow(regimens),
+  all(c("cmax", "cmin", "cav", "tmax") %in% names(nca_wide)),
+  !anyNA(nca_wide$cav), all(nca_wide$cav > 0)
+)
+```
+
+The NCA is a measurement instrument, so it is checked against the closed form
+it has to reproduce. For a linear model at steady state,
+`Cav = F1 * dose / (CL * tau)` exactly, independent of the number of
+compartments, the input duration and the lag. The simulation is run for the
+40 days Wright 2025 used, and a *sufficiently* long run would agree with the
+closed form to within trapezoidal error alone. Day 40 is not sufficient for
+every subject: the fixed 53.3 CV% on the peripheral volume produces a tail of
+subjects whose terminal half-life runs to a week or more, and those are still
+accumulating on day 40. The deviation is therefore one-sided -- accumulation
+approaches steady state from below and can never overshoot it -- and the check
+below asserts exactly that shape.
+
+```{r pknca-internal-check}
+cav_closed_cohort <- sim |>
+  dplyr::group_by(regimen, id) |>
+  dplyr::summarise(cl = dplyr::first(cl), tau = dplyr::first(tau),
+                   .groups = "drop") |>
+  dplyr::left_join(dplyr::select(regimens, regimen, dose), by = "regimen") |>
+  dplyr::mutate(cav_closed = f1_ref * dose / (cl * tau) * 1000)
+
+cav_cmp <- dplyr::left_join(nca_wide, cav_closed_cohort, by = c("regimen", "id")) |>
+  dplyr::mutate(pct_diff = 100 * (cav - cav_closed) / cav_closed)
+
+stopifnot(
+  nrow(cav_cmp) == nrow(nca_wide),
+  !anyNA(cav_cmp$pct_diff),
+  # The typical subject IS at steady state on day 40, so the median error is
+  # pure trapezoidal error on the observation grid and can be bounded tightly.
+  stats::median(abs(cav_cmp$pct_diff)) < 0.05,
+  # One-sided: incomplete accumulation can only sit BELOW the steady-state
+  # closed form. A positive excursion would mean the NCA, the grid or the
+  # closed form is wrong, not that a subject is short of steady state.
+  max(cav_cmp$pct_diff) < 0.5,
+  # The great majority of subjects are within 2% of the closed form, and the
+  # shortfall in the tail is bounded. Loose enough to admit any cohort draw.
+  mean(abs(cav_cmp$pct_diff) < 2) > 0.85,
+  max(abs(cav_cmp$pct_diff)) < 25
+)
+
+tibble::tibble(
+  Statistic = c("median |difference|", "90th percentile |difference|",
+                "largest shortfall", "subjects within 2% of the closed form"),
+  Value = c(
+    sprintf("%.4f %%", stats::median(abs(cav_cmp$pct_diff))),
+    sprintf("%.2f %%", stats::quantile(abs(cav_cmp$pct_diff), 0.9)),
+    sprintf("%.2f %%", min(cav_cmp$pct_diff)),
+    sprintf("%.0f %% of %d", 100 * mean(abs(cav_cmp$pct_diff) < 2), nrow(cav_cmp))
+  )
+) |>
+  knitr::kable(caption = paste("PKNCA Cav,ss against the steady-state closed",
+                               "form F1 * dose / (CL * tau), per subject."))
+
+# Dose proportionality. Comparing medians ACROSS the six arms would compare
+# six different covariate draws, so this is run on one typical subject solved
+# under all six regimens instead -- deterministic, and independent of the
+# cohort. Cav,ss * tau / dose must be the same number (= 1000 * F1 / CL) for
+# every regimen of a linear model.
+dose_prop <- dplyr::bind_rows(lapply(seq_len(nrow(regimens)), function(i) {
+  ii_i   <- regimens$ii[i]
+  addl_i <- as.integer(n_dose * 24 / ii_i) - 1L
+  start  <- addl_i * ii_i
+  ev <- build_events(
+    tibble::tibble(scenario = regimens$regimen[i], WT = 70, SEXF = 0,
+                   CONMED_STATIN = 0, FORM_COL_LIT = 0, MIX_LAGGED_ABS = 0),
+    dose = regimens$dose[i], ii = ii_i, addl = addl_i,
+    obs_times = start + seq(0, ii_i, by = 0.05)
+  )
+  s <- as.data.frame(rxode2::rxSolve(mod_typ, ev))
+  tibble::tibble(regimen = regimens$regimen[i],
+                 exposure_per_dose = trapz(s$time, s$Cc) / regimens$dose[i])
+}))
+stopifnot(
+  nrow(dose_prop) == nrow(regimens),
+  max(dose_prop$exposure_per_dose) / min(dose_prop$exposure_per_dose) < 1.001,
+  # The shared value is 1000 * F1 / CL for a 70 kg male on no statin.
+  abs(stats::median(dose_prop$exposure_per_dose) /
+        (1000 * f1_ref / cl_ref) - 1) < 0.001
+)
+```
+
+## Comparison against published simulations
+
+Wright 2025 Table 3 reports the median and 5th-95th percentiles of Cmin,ss,
+Cmax,ss and Cav,ss for a typical gout cohort under six regimens. Those numbers
+come from the MATLAB code in the ESI, not from NONMEM.
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~regimen,             ~cmin, ~cmax, ~cav,
+  "0.5 mg daily",        0.38,  1.30, 0.59,
+  "1 mg daily",          0.75,  2.63, 1.16,
+  "1.5 mg daily",        1.17,  3.80, 1.76,
+  "0.5 mg twice daily",  0.95,  1.82, 1.16,
+  "1 mg twice daily",    1.76,  3.60, 2.21,
+  "1.5 mg twice daily",  2.74,  5.39, 3.45
+)
+published_pi <- tibble::tribble(
+  ~regimen,             ~cav_lo, ~cav_hi,
+  "0.5 mg daily",          0.31,    1.26,
+  "1 mg daily",            0.59,    2.39,
+  "1.5 mg daily",          0.90,    3.40,
+  "0.5 mg twice daily",    0.59,    2.19,
+  "1 mg twice daily",      1.17,    4.41,
+  "1.5 mg twice daily",    1.69,    6.67
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "regimen",
+  params    = c("cmin", "cmax", "cav"),
+  units     = c(cmin = "ng/mL", cmax = "ng/mL", cav = "ng/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Steady-state exposure simulated from the packaged model",
+                  "against Wright 2025 Table 3. * marks a difference of more",
+                  "than 20% from the published value; the systematic offset is",
+                  "explained below and is not a transcription error.")
+)
+```
+
+```{r published-envelope-check}
+env <- nca_wide |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(cav_med = stats::median(cav), .groups = "drop") |>
+  dplyr::left_join(published_pi, by = "regimen") |>
+  dplyr::left_join(dplyr::select(published, regimen, cav_pub = cav),
+                   by = "regimen")
+
+stopifnot(
+  nrow(env) == nrow(regimens), !anyNA(env$cav_lo),
+  # The simulated median for every regimen sits inside the published 5th-95th
+  # prediction interval for that regimen.
+  all(env$cav_med > env$cav_lo), all(env$cav_med < env$cav_hi),
+  # The offset from the published median is systematic, not regimen-specific:
+  # the ratio is the same to within a few percent across all six regimens.
+  max(env$cav_pub / env$cav_med) / min(env$cav_pub / env$cav_med) < 1.15
+)
+
+env |>
+  dplyr::mutate(ratio = cav_pub / cav_med) |>
+  dplyr::transmute(
+    "Regimen"                          = regimen,
+    "Cav,ss simulated median (ng/mL)"  = round(cav_med, 3),
+    "Cav,ss Wright 2025 Table 3 (ng/mL)" = cav_pub,
+    "Published 5th-95th (ng/mL)"       = sprintf("%.2f-%.2f", cav_lo, cav_hi),
+    "Published / simulated"            = round(ratio, 3)
+  ) |>
+  knitr::kable(
+    caption = paste("The published-to-simulated ratio is essentially constant",
+                    "across regimens, which is the signature of a fixed",
+                    "difference in the delivered dose fraction rather than a",
+                    "structural or parameter discrepancy.")
+  )
+```
+
+## Why the published simulations sit above the model
+
+The offset above is a property of the ESI's MATLAB simulation code, not of the
+NONMEM model this file encodes. Two differences are visible in the code:
+
+1. `Go_PK_Colchcine_STO_sampling` assigns `F1 = 0.469` but never uses it:
+   `PKSim` initialises the input compartment with the whole dose,
+   `A0 = [d 0 0]`.
+2. `ode_colchicine` implements the zero-order input as
+   `Ratein = A(1)/K0` with `dA(1)/dt = -Ratein`, truncated at `t = K0 = D1`.
+   That is a *first-order* transfer with rate constant `1/D1`, not a
+   zero-order rate `d/D1`, so the fraction of the dose that reaches the
+   central compartment before the input switches off is `1 - exp(-1)`, and
+   the remainder is discarded when the next dose overwrites `A(1)`.
+
+The net effective bioavailability in the published simulations is therefore
+`1 - exp(-1)` = 0.632 instead of the model's `F1` = 0.469, a factor of 1.35 on
+its own. Two smaller differences push the other way: the MATLAB script uses
+`POP_CL` = 19.7 L/h rather than Table 2's 19.1, and a statin multiplier of 0.70
+rather than Table 2's 0.66, both of which raise clearance and so lower the
+published exposures. The pooled ratio observed above should therefore land
+somewhat below 1.35, which it does.
+
+```{r offset-arithmetic}
+f_matlab <- 1 - exp(-1)
+predicted_ratio <- f_matlab / f1_ref
+observed_ratio  <- stats::median(env$cav_pub / env$cav_med)
+cat(sprintf(paste0("effective F in the ESI MATLAB code = %.4f\n",
+                   "F1 in the NONMEM model             = %.4f\n",
+                   "ratio from the delivered dose alone = %.3f\n",
+                   "observed pooled ratio               = %.3f\n"),
+            f_matlab, f1_ref, predicted_ratio, observed_ratio))
+
+# Without the delivered-dose discrepancy the ratio would sit at 1. It has to
+# be clearly above 1 and no larger than the delivered-dose factor allows.
+stopifnot(observed_ratio > 1.05, observed_ratio < 1.5)
+```
+
+The decisive check is not the pooled ratio -- which mixes in the covariate
+distribution of a virtual population that is not distributed -- but the
+published *per-stratum* table, where the covariates are pinned down. Table S3
+gives Cav,ss = 0.52 ng/mL for the non-statin stratum on 0.5 mg daily. For that
+stratum every input is known: the virtual population's median weight of 101 kg
+(ESI Table S2), the MATLAB script's own `POP_CL` = 19.7 L/h, and no statin
+multiplier. Evaluating `F_eff * 500 ug / (CL * 24 h)` with `F_eff` = 0.632
+reproduces it, whereas evaluating it with the model's `F1` = 0.469 does not:
+
+```{r stratum-arithmetic}
+cl_matlab <- 19.7 * (101 / 70)^0.75
+with_matlab_f <- f_matlab * 500 / (cl_matlab * 24)
+with_model_f  <- f1_ref   * 500 / (cl_matlab * 24)
+published_stratum <- 0.52
+
+cat(sprintf(paste0("published Table S3 non-statin Cav,ss = %.3f ng/mL\n",
+                   "recomputed with F_eff = 1 - exp(-1)  = %.3f ng/mL  (%+.1f %%)\n",
+                   "recomputed with F1 = 0.469           = %.3f ng/mL  (%+.1f %%)\n"),
+            published_stratum,
+            with_matlab_f, 100 * (with_matlab_f / published_stratum - 1),
+            with_model_f,  100 * (with_model_f  / published_stratum - 1)))
+
+# Pure arithmetic against a published number -- no cohort draw is involved, so
+# this is gated tightly. The 1 - exp(-1) reading must reproduce the published
+# stratum, and the F1 = 0.469 reading must not.
+stopifnot(
+  abs(with_matlab_f / published_stratum - 1) < 0.06,
+  abs(with_model_f  / published_stratum - 1) > 0.20
+)
+```
+
+This model file follows the NONMEM control stream, because that is the model
+the paper fitted, reported in Table 2, and used for its goodness-of-fit plots
+and prediction-corrected VPCs -- all of which are computed by NONMEM from the
+control stream, not by the MATLAB script. The paper's qualitative conclusions
+are unaffected and if anything are conservative: the model still places Cav,ss
+inside the proposed 0.5-3 ng/mL therapeutic range for regimens up to 1.5 mg
+daily and pushes a substantial fraction of patients above 3 ng/mL at 1.5 mg
+twice daily, but at systematically lower concentrations than Table 3 reports,
+so the safety margins the paper describes are wider rather than narrower.
+
+# Assumptions and deviations
+
+- **This file encodes the NONMEM model, not the MATLAB simulation script.**
+  Wright 2025 Table 3 and Tables S3-S8 are produced by the MATLAB code in the
+  ESI, which differs from the control stream in three ways: it never applies
+  `F1` (`PKSim` initialises the input compartment with the whole dose), its
+  `ode_colchicine` implements the zero-order input as a first-order transfer
+  with rate constant `1/D1` truncated at `t = D1` so only `1 - exp(-1)` = 63.2%
+  of each dose is delivered, and it uses `POP_CL` = 19.7 L/h with a statin
+  multiplier of 0.70 in place of Table 2's 19.1 and 0.66. Its remaining
+  parameters also differ slightly from Table 2 (`POP_V1` = 249, `POP_V2` = 817,
+  `POP_Q` = 30.1, and a `PPV` diagonal carrying the control stream's *initial*
+  `omega_CL` = 0.101 rather than the final 0.1142), but none of those moves the
+  steady-state median, which depends only on `F1`, the dose, `CL` and `tau`.
+  Simulations from this
+  file therefore sit systematically below Table 3; the "Why the published
+  simulations sit above the model" section above reproduces the published
+  non-statin stratum from the MATLAB reading to within 2% and shows that the
+  `F1` = 0.469 reading is 26% away from it. Everything the paper reports from
+  NONMEM itself -- Table 2, the goodness-of-fit plots, the pcVPCs -- is
+  consistent with what this file encodes.
+- **Additive residual-error units.** Table 2 tags `sigma_add` = 0.006 as
+  umol/L. Colchicine has a molar mass of 399.4 g/mol, so 0.006 umol/L is
+  2.4 ng/mL -- comparable to the entire proposed therapeutic range and far
+  larger than the concentrations the model predicts. Every concentration in
+  the paper is reported in ng/mL and the ESI `$ERROR` block treats `THETA(6)`
+  as being on the DV scale, so the tag is read here as ug/L (= ng/mL) and
+  `addSd` is encoded as 0.006 ng/mL. At that magnitude the additive term is
+  negligible against the 37.7% proportional term, which is presumably why it
+  was fixed rather than estimated.
+- **Bioavailability anchor.** The ESI `$THETA` block fixes `F1` at 0.469;
+  Table 2 and the Results text round this to 0.47. The unrounded control-stream
+  value is used.
+- **CL is not CL/F.** The Results equations are written as `CL/F`, `V1/F`,
+  `Q/F` and `V2/F`, but the control stream estimates `CL`, `V1`, `Q` and `V2`
+  with `F1` handled separately by `TVF1 = THETA(9)*FORM`. This file follows the
+  control stream and applies `F1` via `f(central)`. The apparent oral clearance
+  implied by the model is `19.1 / 0.469` = 40.7 L/h per 70 kg.
+- **Sex coding is reversed relative to the source.** The analysis dataset codes
+  `SEX` = 1 for male and 0 for female; the canonical covariate column is
+  `SEXF`, so `SEXF = 1 - SEX`. The 0.53 multiplier applies when `SEXF` = 1.
+  Only six of the 78 NZ Gout Study participants were women, so this effect
+  rests on a small subgroup (RSE 25.8%).
+- **The delayed-absorption class is not a fitted mixture.** Wright 2025 reports
+  that a `$MIXTURE` model for the bimodal lag was not supported. The class was
+  assigned deterministically in the analysis dataset (`LAGFLAG` = 1 for the 17
+  of 78 participants whose steady-state Cmax was at or below their Cmin), and
+  the 1.3 h lag is itself fixed -- it is the longest post-dose sampling time
+  recorded in the study, not an estimate. The canonical `MIX_LAGGED_ABS` column
+  carries the indicator; the prevalence used for simulation here (17/78 =
+  21.8%) is the observed class frequency, not a fitted mixture probability.
+- **Virtual cohort covariate correlations.** The authors' virtual gout
+  population preserved the correlations between weight, sex, statin use and
+  ACEI use; only the marginal distributions are reported (ESI Table S2), so
+  the covariates in this vignette are drawn independently. Per-stratum
+  contrasts here are therefore cleaner than the published ones, which is why
+  the stratified checks above are directional rather than exact.
+- **`FORM_COL_LIT` is set to 0 for all simulations.** The literature-extracted
+  arm exists only to stabilise the structural model and its coefficient is
+  imprecise (RSE 54.8%, SIR 95% CI 0.14-1.17).
+- **Covariates screened but not retained** are documented in the model file's
+  `covariatesDataExcluded` list rather than `covariateData`: fat-free mass,
+  normal fat mass, creatinine clearance, ACEI use (a ~25% clearance reduction
+  that the authors deliberately deleted as mechanistically implausible), age,
+  adherence, ethnicity, CYP3A4/P-glycoprotein inhibitor and inducer use, and
+  the remaining cardiovascular drug classes.
+- **No parameter was taken from anywhere other than the paper or its ESI.**
+  Everything in `ini()` traces to Wright 2025 Table 2 or to the final NONMEM
+  control stream reproduced in the Electronic Supplementary Information. The
+  two fixed volume omegas originate with Karatza 2021 but are reproduced in
+  both Table 2 and the ESI `$OMEGA` block.

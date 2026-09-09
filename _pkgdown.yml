@@ -968,6 +968,8 @@ navbar:
         href: articles/Overbeek_2025_cobicistat_olaparib_boosting.html
       - text: "Codeine (Ashraf 2024)"
         href: articles/Ashraf_2024_codeine.html
+      - text: "Colchicine (Wright 2025)"
+        href: articles/Wright_2025_colchicine.html
       - text: "Colchicine mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Colistin (Jacobs 2016)"
@@ -6839,6 +6841,7 @@ articles:
   - articles/Wolowich_2025_thc_heart_rate
   - articles/Wright_2013_allopurinol
   - articles/Wright_2016_allopurinol
+  - articles/Wright_2025_colchicine
   - articles/Wu_2012_bevacizumab_mouse
   - articles/Wu_2012_modafinil
   - articles/Wu_2012_sirolimus

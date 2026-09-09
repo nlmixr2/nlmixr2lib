@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Olivo 2025 vancomycin ([doi:10.3390/pharmaceutics17091111](https://doi.org/10.3390/pharmaceutics17091111)) -- in vitro time-kill of methicillin-resistant *Staphylococcus aureus* ATCC 43300.
+- Add Wright 2025 colchicine ([doi:10.1007/s40262-025-01551-y](https://doi.org/10.1007/s40262-025-01551-y)) -- adults with gout.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
