@@ -1612,6 +1612,8 @@ navbar:
         href: articles/Laffont_2025_opioid_overdose_reversal_simulation.html
       - text: "Fentanyl pbpk (Han 2025)"
         href: articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk.html
+      - text: "Fepixnebart (James 2025)"
+        href: articles/James_2025_fepixnebart.html
       - text: "FerricCarboxymaltose rat (Cao 2025)"
         href: articles/Cao_2025_ferricCarboxymaltose.html
       - text: "Ferumoxytol (Plock 2014)"
@@ -5630,6 +5632,7 @@ articles:
   - articles/Jager_2011_gemtuzumab
   - articles/Jain_2011_sorafenib
   - articles/Jaiswal_2025_dordaviprone
+  - articles/James_2025_fepixnebart
   - articles/Jang_2023_zaltoprofen
   - articles/Jansen_2023_itraconazole
   - articles/Janssen_2017_cabazitaxel_phenotyping
