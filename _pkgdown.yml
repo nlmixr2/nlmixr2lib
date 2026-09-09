@@ -3028,6 +3028,8 @@ navbar:
         href: articles/Granda_2024_kidney_pbpk.html
       - text: "Osimertinib (Brown 2017)"
         href: articles/Brown_2017_osimertinib.html
+      - text: "Osimertinib (Johnson 2025)"
+        href: articles/Johnson_2025_osimertinib.html
       - text: "Osimertinib (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Osimertinib pbpk (vanderGaag 2025)"
@@ -5607,6 +5609,7 @@ articles:
   - articles/Jin_2014_simvastatin
   - articles/Joerger_2006_methotrexate
   - articles/Johnson_2011_olanzapine_rat
+  - articles/Johnson_2025_osimertinib
   - articles/Johnston_2019_empagliflozin
   - articles/Johnston_2021_empagliflozin
   - articles/Jonckheere_2019_cefepime
