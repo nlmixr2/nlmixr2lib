@@ -94,7 +94,7 @@ Struemper_2017_belimumab <- function() {
     # Estimated covariate effects on CL and Vc (Struemper 2017 Table 3)
     e_alb_cl <- -0.736;  label("Power exponent of baseline albumin on CL (reference 41 g/L)")                     # Table 3 BALB effect on CL
     e_igg_cl <-  0.347;  label("Power exponent of baseline IgG on CL (reference 13.7 g/L)")                       # Table 3 BIGG effect on CL
-    e_bmi_vc <- -0.610;  label("Power exponent of baseline BMI on Vc (reference 24.7 kg/m^2)")                    # Table 3 BBMI effect on Vc
+    e_bmi_vc <- -0.610;  label("Power exponent of baseline BMI on Vc, reference 24.7 kg/m^2 (unitless)")                    # Table 3 BBMI effect on Vc
 
     # Inter-individual variability (Struemper 2017 Table 3)
     # OMEGA(1,1) on CL, OMEGA(2,2) on V1 (Vc), OMEGA(2,1) = covariance(CL,V1); no Ka / F / ALAG IIV reported.

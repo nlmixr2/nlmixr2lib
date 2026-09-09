@@ -61,7 +61,7 @@ Chen_2022_guselkumab <- function() {
     #   V/F  = 15.5  * (BWT/84)^0.861
     e_wt_cl   <- 0.926; label("Power exponent of body weight on CL/F (unitless)")             # Chen 2022 Table 1 (BWT on CL/F)
     e_wt_vc   <- 0.861; label("Power exponent of body weight on V/F (unitless)")              # Chen 2022 Table 1 (BWT on V/F)
-    e_diab_cl <- 1.15;  label("Multiplier on CL/F for diabetes comorbidity (1.15^DIS_DIAB)")  # Chen 2022 Table 1 (Diabetes on CL/F = 1.15)
+    e_diab_cl <- 1.15;  label("Multiplier on CL/F for diabetes comorbidity, power form on DIS_DIAB (unitless)")  # Chen 2022 Table 1 (Diabetes on CL/F = 1.15)
 
     # IIV. Table 1 reports IIV as %CV (linear scale) for log-normal IIV
     # entries; convert with omega^2 = log(CV^2 + 1).

@@ -78,7 +78,7 @@ Thakre_2022_risankizumab <- function() {
     lq      <- log(0.839); label("Intercompartmental clearance (Q, L/day)")       # Thakre 2022 Table 1
     lvp     <- log(4.26);  label("Peripheral volume of distribution (Vp / V2, L)")# Thakre 2022 Table 1
     lka     <- log(0.218); label("First-order SC absorption rate (ka, 1/day)")    # Thakre 2022 Table 1
-    lfdepot <- log(0.835); label("Absolute SC bioavailability (F)")                # Thakre 2022 Table 1
+    lfdepot <- log(0.835); label("Absolute SC bioavailability F on the log scale (fraction)")                # Thakre 2022 Table 1
 
     # Covariate effects from Thakre 2022 Table 1 and Eq. 2 / Eq. 3. All are
     # power exponents on covariates normalized to their reference values.

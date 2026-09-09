@@ -127,10 +127,10 @@ Suri_2018_brentuximab <- function() {
     e_bsa_vc       <- 1.27;   label("Power exponent of (BSA / 1.865) on ADC V1 (unitless)")              # Suri 2018 Table S1: 1.27 (4.9% RSE)
     e_bsa_cl       <- 0.457;  label("Power exponent of (BSA / 1.865) on ADC CL (unitless)")              # Suri 2018 Table S1: 0.457 (16.8% RSE)
     e_alb_cl       <- -0.496; label("Power exponent of (ALB / 36.81) on ADC CL (unitless)")              # Suri 2018 Table S1: -0.496 (3.6% RSE)
-    e_pcalcl_cl    <- 0.728;  label("Power-form multiplier of pcALCL on ADC CL: cl *= e_pcalcl_cl^TUMTP_PCALCL") # Suri 2018 Table S1: 0.728 (8.9% RSE)
-    e_adapos_cl    <- 0.125;  label("Multiplicative additive effect of ADA-positive (newer-assay study) on ADC CL: cl *= (1 + e_adapos_cl * ADA_POS)") # Suri 2018 Table S1: 0.125 (10.1% RSE)
-    e_adaposold_cl <- 0.177;  label("Multiplicative additive effect of ADA-positive (older-assay study) on ADC CL: cl *= (1 + e_adaposold_cl * ADA_POSOLD)") # Suri 2018 Table S1: 0.177 (6.0% RSE)
-    e_adam_cl      <- 0.192;  label("Multiplicative additive effect of ADA-missing on ADC CL: cl *= (1 + e_adam_cl * ADA_MISSING)") # Suri 2018 Table S1: 0.192 (9.4% RSE)
+    e_pcalcl_cl    <- 0.728;  label("Power-form multiplier of pcALCL on ADC CL, exponent TUMTP_PCALCL (unitless)") # Suri 2018 Table S1: 0.728 (8.9% RSE)
+    e_adapos_cl    <- 0.125;  label("Fractional effect of ADA-positive on ADC CL in the newer-assay study, applied as 1 + e_adapos_cl * ADA_POS (fraction)") # Suri 2018 Table S1: 0.125 (10.1% RSE)
+    e_adaposold_cl <- 0.177;  label("Fractional effect of ADA-positive on ADC CL in the older-assay study, applied as 1 + e_adaposold_cl * ADA_POSOLD (fraction)") # Suri 2018 Table S1: 0.177 (6.0% RSE)
+    e_adam_cl      <- 0.192;  label("Fractional effect of ADA-missing on ADC CL, applied as 1 + e_adam_cl * ADA_MISSING (fraction)") # Suri 2018 Table S1: 0.192 (9.4% RSE)
 
     # MMAE structural parameters (Suri 2018 supplement Table S3; 2-compartment
     # linear with an upstream Target binding pool and Lag compartment fed by

@@ -101,8 +101,8 @@ Ma_2020_sarilumab_anc <- function() {
 
     # Covariate effect parameters (power-form exponents)
     e_wt_kout       <- 0.875; label("Weight exponent on Kout (ref 71 kg, unitless)")                           # Ma 2020 Table 4
-    e_smoke_rbase    <- 1.15;  label("Smoking multiplier on baseline ANC (power-form: BASE * 1.15^SMOKE)")      # Ma 2020 Table 4
-    e_pricort_emax  <- 0.819; label("Prior corticosteroid multiplier on Emax (power-form: Emax * 0.819^PRICORT)")  # Ma 2020 Table 4
+    e_smoke_rbase    <- 1.15;  label("Smoking multiplier on baseline ANC, power form on SMOKE (unitless)")      # Ma 2020 Table 4
+    e_pricort_emax  <- 0.819; label("Prior corticosteroid multiplier on Emax, power form on PRICORT (unitless)")  # Ma 2020 Table 4
 
     # ---------------------------------------------------------------------
     # Inter-individual variability (omega^2 = log(CV^2 + 1))

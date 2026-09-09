@@ -115,7 +115,7 @@ Yang_2024_axatilimab <- function() {
     # a 50.6% (95% CI, 47.0-54.2) increase in CL') all give kada = 0.489 with the
     # CL * (1 + kada * ADA(t)) parameterization. The Errata section of the validation
     # vignette captures this discrepancy; the canonical value used here is 0.489.
-    e_ada_cl  <- 0.489;       label("ADA effect coefficient on linear CL (kada, applied as CL * (1 + e_ada_cl * ADA_POS(t)))")                                   # Yang 2024 Table 1 row 'ADA effect coefficient (kada)' = 0.489
+    e_ada_cl  <- 0.489;       label("ADA effect coefficient kada on linear CL, applied as CL * (1 + e_ada_cl * ADA_POS) (fraction)")                                   # Yang 2024 Table 1 row 'ADA effect coefficient (kada)' = 0.489
 
     # === AST (aspartate aminotransferase) - NCMC-driven indirect response ===
     lbl_ast            <- log(35.5);  label("Baseline AST concentration BL_AST (U/L)")                                                                          # Yang 2024 Table 1 row 'Baseline AST concentration (BLAST)' = 35.5 U/L

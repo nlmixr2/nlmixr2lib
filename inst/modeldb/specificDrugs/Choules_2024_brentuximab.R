@@ -80,8 +80,8 @@ Choules_2024_brentuximab <- function() {
     # MMAE AUC(inf) = released payload dose / MMAE CL, so a CL multiplier equal
     # to the reciprocal of the published MMAE AUC geometric mean ratio
     # reproduces that ratio exactly.
-    e_keto_cl_mmae <- fixed(0.72993); label("Multiplier of ketoconazole coadministration on MMAE CL: cl_mmae *= e_keto_cl_mmae^CONMED_KETOCONAZOLE") # derived: 1 / 1.37, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + ketoconazole
-    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL: cl_mmae *= e_rif_cl_mmae^CONMED_RIF")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + rifampin
+    e_keto_cl_mmae <- fixed(0.72993); label("Multiplier of ketoconazole coadministration on MMAE CL, power form on CONMED_KETOCONAZOLE (unitless)") # derived: 1 / 1.37, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + ketoconazole
+    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL, power form on CONMED_RIF (unitless)")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + rifampin
 
     # Residual error. Choules 2024 is a deterministic PBPK simulation study; it
     # reports no residual-error model. The CV% values in Table S3 are

@@ -97,16 +97,16 @@ Kim_2025_infliximab_passot_adult <- function() {
 
     # Covariate effects on CL. Sex and IBD subtype act exponentially (the source
     # codes them as EXP(THETA)); body weight acts as a power of WT/67.
-    e_wt_cl     <- 0.603; label("Power exponent of body weight on CL ((WT/67)^e_wt_cl)")                     # Data S1 model #2 $THETA3 = 0.603
-    e_sex_cl    <- 0.181; label("Log-scale male effect on CL (multiplier exp(e_sex_cl) when SEXF = 0)")      # Data S1 model #2 $THETA4 = 0.181
-    e_ibd_cd_cl <- 0.384; label("Log-scale Crohn's disease effect on CL (multiplier exp(e_ibd_cd_cl))")      # Data S1 model #2 $THETA5 = 0.384
-    e_ibd_uc_cl <- 0.472; label("Log-scale ulcerative colitis effect on CL (multiplier exp(e_ibd_uc_cl))")   # Data S1 model #2 $THETA6 = 0.472
+    e_wt_cl     <- 0.603; label("Power exponent of body weight on CL, WT/67 scaling (unitless)")                     # Data S1 model #2 $THETA3 = 0.603
+    e_sex_cl    <- 0.181; label("Log-scale male effect on CL, multiplier exp(e_sex_cl) when SEXF = 0 (unitless)")      # Data S1 model #2 $THETA4 = 0.181
+    e_ibd_cd_cl <- 0.384; label("Log-scale Crohn's disease effect on CL, multiplier exp(e_ibd_cd_cl) (unitless)")      # Data S1 model #2 $THETA5 = 0.384
+    e_ibd_uc_cl <- 0.472; label("Log-scale ulcerative colitis effect on CL, multiplier exp(e_ibd_uc_cl) (unitless)")   # Data S1 model #2 $THETA6 = 0.472
 
     # Covariate effects on Vc, same functional forms.
-    e_wt_vc     <- 0.277; label("Power exponent of body weight on Vc ((WT/67)^e_wt_vc)")                     # Data S1 model #2 $THETA7 = 0.277
-    e_sex_vc    <- 0.209; label("Log-scale male effect on Vc (multiplier exp(e_sex_vc) when SEXF = 0)")      # Data S1 model #2 $THETA8 = 0.209
-    e_ibd_cd_vc <- 0.399; label("Log-scale Crohn's disease effect on Vc (multiplier exp(e_ibd_cd_vc))")      # Data S1 model #2 $THETA9 = 0.399
-    e_ibd_uc_vc <- 0.417; label("Log-scale ulcerative colitis effect on Vc (multiplier exp(e_ibd_uc_vc))")   # Data S1 model #2 $THETA10 = 0.417
+    e_wt_vc     <- 0.277; label("Power exponent of body weight on Vc, WT/67 scaling (unitless)")                     # Data S1 model #2 $THETA7 = 0.277
+    e_sex_vc    <- 0.209; label("Log-scale male effect on Vc, multiplier exp(e_sex_vc) when SEXF = 0 (unitless)")      # Data S1 model #2 $THETA8 = 0.209
+    e_ibd_cd_vc <- 0.399; label("Log-scale Crohn's disease effect on Vc, multiplier exp(e_ibd_cd_vc) (unitless)")      # Data S1 model #2 $THETA9 = 0.399
+    e_ibd_uc_vc <- 0.417; label("Log-scale ulcerative colitis effect on Vc, multiplier exp(e_ibd_uc_vc) (unitless)")   # Data S1 model #2 $THETA10 = 0.417
 
     # Inter-individual variability. The control stream annotates
     # "$OMEGA ; OMEGA = (SD)**2" and gives the SD in each comment:

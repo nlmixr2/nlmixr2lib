@@ -158,9 +158,9 @@ Garcia_2025_garadacimab <- function() {
     e_wt_cl <- 1.16;  label("Power exponent of body weight on CL and Q, centred at 70 kg (unitless)")        # Table S4 final model "Weight effect on CL and Q" = 1.16 (95% CI 0.963-1.360); ESTIMATED, replacing the base model's fixed 0.750
     e_wt_vc <- 0.843; label("Power exponent of body weight on Vc and Vp, centred at 70 kg (unitless)")       # Table S4 final model "Weight effect on V2 and V3" = 0.843 (95% CI 0.657-1.03); ESTIMATED, replacing the base model's fixed 1.00
 
-    e_race_japanese_cl <- log(1.27); label("Log fold change in CL for Japanese vs non-Japanese subjects")    # Table S4 final model "Japanese effect on CL" = 1.27-fold (95% CI 1.11-1.44)
-    e_race_chinese_cl  <- log(1.02); label("Log fold change in CL for Chinese vs non-Chinese subjects")      # Table S4 final model "Chinese effect on CL" = 1.02-fold (95% CI 0.861-1.21)
-    e_dis_hae_cl       <- log(1.05); label("Log fold change in CL for patients with HAE vs healthy volunteers") # Table S4 final model "Patient effect on CL" = 1.05-fold (95% CI 0.952-1.17)
+    e_race_japanese_cl <- log(1.27); label("Log fold change in CL for Japanese vs non-Japanese subjects (unitless)")    # Table S4 final model "Japanese effect on CL" = 1.27-fold (95% CI 1.11-1.44)
+    e_race_chinese_cl  <- log(1.02); label("Log fold change in CL for Chinese vs non-Chinese subjects (unitless)")      # Table S4 final model "Chinese effect on CL" = 1.02-fold (95% CI 0.861-1.21)
+    e_dis_hae_cl       <- log(1.05); label("Log fold change in CL for patients with HAE vs healthy volunteers (unitless)") # Table S4 final model "Patient effect on CL" = 1.05-fold (95% CI 0.952-1.17)
 
     e_creat_cl <- -0.0343; label("Power exponent of baseline serum creatinine on CL, centred at 0.75 mg/dL (unitless)") # Table S4 final model "sCR effect on CL" = -0.0343 (95% CI -0.214 to 0.146)
     e_alt_cl   <- -0.0773; label("Power exponent of baseline ALT on CL, centred at 25 U/L (unitless)")                  # Table S4 final model "ALT effect on CL" = -0.0773 (95% CI -0.148 to -0.0067)

@@ -94,12 +94,12 @@ Li_2017_brentuximab <- function() {
     # Paper reports Fm = -0.261 with BSV 130 %CV (Li 2017 Table 4). Stored as
     # fm = -exp(lfm + etalfm) so the magnitude is log-normally distributed and
     # the sign is held negative.
-    lfm <- log(0.261);    label("Log magnitude of Fm (Fm = -exp(lfm)); Fm is the exponent in Fmc = CYCLE^Fm") # Li 2017 Table 4: Fm = -0.261
+    lfm <- log(0.261);    label("Log magnitude of Fm, where Fm = -exp(lfm) is the exponent in Fmc = CYCLE^Fm (unitless)") # Li 2017 Table 4: Fm = -0.261
 
     # Covariate effects on ADC -- Li 2017 Table 3.
     e_wt_cl <- 0.698; label("Power exponent of WT on ADC CL, Q2, Q3 (unitless)") # Li 2017 Table 3: Theta_BW,CL,Q2,Q3 = 0.698
     e_wt_vc <- 0.503; label("Power exponent of WT on ADC V1, V2, V3 (unitless)") # Li 2017 Table 3: Theta_BW,V1,V2,V3 = 0.503
-    e_sexf_vc   <- 0.873; label("Multiplicative effect of female sex on ADC V1 (ratio female:male)") # Li 2017 Table 3: Theta_SEX,V1 = 0.873
+    e_sexf_vc   <- 0.873; label("Multiplicative effect of female sex on ADC V1, ratio female:male (unitless)") # Li 2017 Table 3: Theta_SEX,V1 = 0.873
 
     # Covariate effects on MMAE -- allometric exponents fixed by the paper
     # (Li 2017 Table 4 footnotes b and c).

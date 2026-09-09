@@ -100,15 +100,15 @@ Melhem_2022_dostarlimab <- function() {
     e_wt_vc_vp <- 0.419;  label("Shared allometric exponent of WT on Vc and Vp (unitless)") # Melhem 2022 Table 3: Effect of WT on Vc and Vp = 0.419
 
     # Continuous covariate effects on CL (power form: (cov / ref)^theta).
-    e_age_cl <- -0.227;   label("AGE exponent on CL (power form (AGE/64)^theta)")        # Melhem 2022 Table 3: Effect of age on CL = -0.227
-    e_alb_cl <- -1.01;    label("ALB exponent on CL (power form (ALB/39)^theta)")        # Melhem 2022 Table 3: Effect of ALB on CL = -1.01
-    e_alt_cl <- -0.0585;  label("ALT exponent on CL (power form (ALT/18)^theta)")        # Melhem 2022 Table 3: Effect of ALT on CL = -0.0585
-    e_alb_vc <- -0.153;   label("ALB exponent on Vc (power form (ALB/39)^theta)")        # Melhem 2022 Table 3: Effect of ALB on Vc = -0.153
+    e_age_cl <- -0.227;   label("AGE power exponent on CL, AGE/64 scaling (unitless)")        # Melhem 2022 Table 3: Effect of age on CL = -0.227
+    e_alb_cl <- -1.01;    label("ALB power exponent on CL, ALB/39 scaling (unitless)")        # Melhem 2022 Table 3: Effect of ALB on CL = -1.01
+    e_alt_cl <- -0.0585;  label("ALT power exponent on CL, ALT/18 scaling (unitless)")        # Melhem 2022 Table 3: Effect of ALT on CL = -0.0585
+    e_alb_vc <- -0.153;   label("ALB power exponent on Vc, ALB/39 scaling (unitless)")        # Melhem 2022 Table 3: Effect of ALB on Vc = -0.153
 
     # Categorical sex effect on CL and Vc (paper codes a male indicator with
     # female as the reference; encoded here as (1 + theta * (1 - SEXF))).
-    e_sex_cl <- 0.165; label("Male fractional change on CL vs. female reference")        # Melhem 2022 Table 3: Effect of male on CL = 0.165
-    e_sex_vc <- 0.162; label("Male fractional change on Vc vs. female reference")        # Melhem 2022 Table 3: Effect of male on Vc = 0.162
+    e_sex_cl <- 0.165; label("Male fractional change on CL vs. female reference (fraction)")        # Melhem 2022 Table 3: Effect of male on CL = 0.165
+    e_sex_vc <- 0.162; label("Male fractional change on Vc vs. female reference (fraction)")        # Melhem 2022 Table 3: Effect of male on Vc = 0.162
 
     # IIV — block on (CL, Vc) and independent eta on |I_max|.
     # Melhem 2022 Table 3 reports the variance/covariance matrix elements:

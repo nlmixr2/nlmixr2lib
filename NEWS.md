@@ -2,6 +2,23 @@
 
 # development version
 
+- Give every parameter in 83 antibody models a unit in the label's trailing
+  parenthetical. 315 `label()` calls across those models either stated no unit
+  at all, used the unit slot for a modelling note (`(reference FFM 40.69 kg)`,
+  `(LBSL01/02)`, `(applied as ratio^SEXF)`), or fused the unit to provenance or
+  to nested parentheses (`(1/day/(ug/mL))`, `(kDa = ug/nmol)`), so a consumer
+  reading `iniDf$label` could not tell a dimensionless fractional change from
+  an unlabelled per-kg slope. Notes and provenance are kept, moved ahead of the
+  unit behind a `;` or `,`, so nothing documented is lost.
+
+  The units reuse the vocabulary already dominant in the library: `unitless`
+  for power exponents, log ratios and multiplicative factors (224), `fraction`
+  for proportional residual SDs, bioavailability and fractional changes (54),
+  `unitless logit` for logit-scale parameters (13), and the parameter's own
+  physical unit otherwise (24). Two parameters that carried no `label()` at all
+  (`Kretsos_2014_olokizumab` `propSd` and `propSd_crp`) now have one. No
+  parameter value, model structure or parameter name changes.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and

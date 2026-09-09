@@ -95,7 +95,7 @@ Toukam_2025_biib107 <- function() {
     a4satE0     <- 17.7;          label("Baseline alpha-4 integrin saturation (E0, %)")             # Toukam 2025 Table 4 (E0 17.7%)
     a4satEmax   <- 77.5;          label("Maximum drug-induced alpha-4 integrin saturation (Emax, % above E0)")  # Toukam 2025 Table 4 (Emax 77.5%)
     la4satEC50  <- log(0.376);    label("BIIB107 concentration producing 50% of Emax (EC50, ug/mL)")            # Toukam 2025 Table 4 (EC50 0.376 ug/mL)
-    a4satGamma  <- fixed(1);      label("Hill coefficient for alpha-4 integrin saturation (gamma)")     # Toukam 2025 PK-PD equation (gamma fixed at 1)
+    a4satGamma  <- fixed(1);      label("Hill coefficient for alpha-4 integrin saturation, gamma (unitless)")     # Toukam 2025 PK-PD equation (gamma fixed at 1)
 
     # IIV on EC50 (only PD parameter with IIV). Paper reports 10 (with
     # high shrinkage 62%); interpreted as 10% CV consistent with the

@@ -95,12 +95,12 @@ Kim_2025_infliximab_wojciechowski <- function() {
     lq  <- log(0.0719); label("Typical inter-compartmental clearance for the reference subject (Q, L/day)") # Data S1 model #10 $THETA4 = 0.0719 L/day; Table S2 "0.0719"
 
     # Covariate effects
-    e_wt_cl  <-  0.614; label("Power exponent of body weight on CL ((WT/70)^e_wt_cl)")                     # Data S1 model #10 $THETA5 = 0.614
-    e_alb_cl <- -1.17;  label("Power exponent of serum albumin on CL ((ALB/4)^e_alb_cl)")                  # Data S1 model #10 $THETA6 = -1.17
-    e_ada_cl <-  0.257; label("Log-scale ADA-positive effect on CL (multiplier exp(e_ada_cl * ADA_POS))")  # Data S1 model #10 $THETA7 = 0.257
-    e_wt_vc  <-  0.691; label("Power exponent of body weight on Vc ((WT/70)^e_wt_vc)")                     # Data S1 model #10 $THETA8 = 0.691
-    e_wt_vp  <-  0.59;  label("Power exponent of body weight on Vp ((WT/70)^e_wt_vp)")                     # Data S1 model #10 $THETA9 = 0.59
-    e_wt_q   <-  1.1;   label("Power exponent of body weight on Q ((WT/70)^e_wt_q)")                       # Data S1 model #10 $THETA10 = 1.1
+    e_wt_cl  <-  0.614; label("Power exponent of body weight on CL, WT/70 scaling (unitless)")                     # Data S1 model #10 $THETA5 = 0.614
+    e_alb_cl <- -1.17;  label("Power exponent of serum albumin on CL, ALB/4 scaling in g/dL (unitless)")                  # Data S1 model #10 $THETA6 = -1.17
+    e_ada_cl <-  0.257; label("Log-scale ADA-positive effect on CL, multiplier exp(e_ada_cl * ADA_POS) (unitless)")  # Data S1 model #10 $THETA7 = 0.257
+    e_wt_vc  <-  0.691; label("Power exponent of body weight on Vc, WT/70 scaling (unitless)")                     # Data S1 model #10 $THETA8 = 0.691
+    e_wt_vp  <-  0.59;  label("Power exponent of body weight on Vp, WT/70 scaling (unitless)")                     # Data S1 model #10 $THETA9 = 0.59
+    e_wt_q   <-  1.1;   label("Power exponent of body weight on Q, WT/70 scaling (unitless)")                       # Data S1 model #10 $THETA10 = 1.1
 
     # Inter-individual variability; OMEGA = (CV)^2 per Kim 2025's control-stream
     # annotation, with each %CV given in the stream comment and Table S2.

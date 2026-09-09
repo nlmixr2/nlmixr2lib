@@ -103,12 +103,12 @@ Nikanjam_2019_siltuximab <- function() {
     e_alb_cl      <- -0.84;   label("Power exponent of albumin on CL (unitless)")                     # Nikanjam 2019 Table 2: theta5
     e_wt_vc_vp    <-  0.65;   label("Shared power exponent of weight on Vc and Vp (unitless)")        # Nikanjam 2019 Table 2: theta6
     e_alb_vc_vp   <- -0.35;   label("Shared power exponent of albumin on Vc and Vp (unitless)")       # Nikanjam 2019 Table 2: theta7
-    e_healthy_vc_vp    <-  0.83;   label("Shared multiplicative effect of healthy volunteer on Vc and Vp")  # Nikanjam 2019 Table 2: theta8
-    e_smm_vc_vp   <-  0.77;   label("Shared multiplicative effect of smoldering MM on Vc and Vp")      # Nikanjam 2019 Table 2: theta9
-    e_healthy_cl       <-  0.77;   label("Multiplicative effect of healthy volunteer on CL")               # Nikanjam 2019 Table 2: theta10
+    e_healthy_vc_vp    <-  0.83;   label("Shared multiplicative effect of healthy volunteer on Vc and Vp, power form on DIS_HEALTHY (unitless)")  # Nikanjam 2019 Table 2: theta8
+    e_smm_vc_vp   <-  0.77;   label("Shared multiplicative effect of smoldering MM on Vc and Vp, power form on DIS_SMM (unitless)")      # Nikanjam 2019 Table 2: theta9
+    e_healthy_cl       <-  0.77;   label("Multiplicative effect of healthy volunteer on CL, power form on DIS_HEALTHY (unitless)")               # Nikanjam 2019 Table 2: theta10
     e_alt_cl      <- -0.096;  label("Power exponent of ALT on CL (unitless)")                         # Nikanjam 2019 Table 2: theta11
-    e_creat_vc_vp <-  0.16;   label("Shared power exponent of serum creatinine on Vc and Vp")         # Nikanjam 2019 Table 2: theta12
-    e_cd_cl       <-  1.24;   label("Multiplicative effect of Castleman's disease on CL")             # Nikanjam 2019 Table 2: theta13
+    e_creat_vc_vp <-  0.16;   label("Shared power exponent of serum creatinine on Vc and Vp, CREAT/0.9 scaling (unitless)")         # Nikanjam 2019 Table 2: theta12
+    e_cd_cl       <-  1.24;   label("Multiplicative effect of Castleman disease on CL, power form on DIS_CASTLEMAN (unitless)")             # Nikanjam 2019 Table 2: theta13
 
     # Inter-individual variability: a single eta on CL (BSV_CL = 20.0% CV)
     # and a single eta shared between V1 and V2 (BSV_Vss = 42.0% CV).

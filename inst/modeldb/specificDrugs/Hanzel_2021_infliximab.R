@@ -72,12 +72,12 @@ Hanzel_2021_infliximab <- function() {
     # Continuous covariates use a power model relative to the reference value;
     # the categorical ATI effect uses theta_ATI^ADA_POS (a power function with the
     # 0/1 indicator as the on-off switch, per the Methods section).
-    e_wt_cl  <-  0.666; label("Power exponent of body weight on CL ((WT/70)^e_wt_cl)")                # Hanzel 2021 Table 3
-    e_wt_vc  <-  0.385; label("Power exponent of body weight on Vc ((WT/70)^e_wt_vc)")                # Hanzel 2021 Table 3
-    e_wt_vp  <-  1.08;  label("Power exponent of body weight on Vp ((WT/70)^e_wt_vp)")                # Hanzel 2021 Table 3
-    e_wt_q   <-  1.26;  label("Power exponent of body weight on Q ((WT/70)^e_wt_q)")                  # Hanzel 2021 Table 3
-    e_alb_cl <- -0.826; label("Power exponent of serum albumin on CL ((ALB/44)^e_alb_cl)")            # Hanzel 2021 Table 3
-    e_ada_cl <-  1.39;  label("ATI multiplicative effect on CL (e_ada_cl^ADA_POS; +39% when ADA-positive)") # Hanzel 2021 Table 3
+    e_wt_cl  <-  0.666; label("Power exponent of body weight on CL, WT/70 scaling (unitless)")                # Hanzel 2021 Table 3
+    e_wt_vc  <-  0.385; label("Power exponent of body weight on Vc, WT/70 scaling (unitless)")                # Hanzel 2021 Table 3
+    e_wt_vp  <-  1.08;  label("Power exponent of body weight on Vp, WT/70 scaling (unitless)")                # Hanzel 2021 Table 3
+    e_wt_q   <-  1.26;  label("Power exponent of body weight on Q, WT/70 scaling (unitless)")                  # Hanzel 2021 Table 3
+    e_alb_cl <- -0.826; label("Power exponent of serum albumin on CL, ALB/44 scaling (unitless)")            # Hanzel 2021 Table 3
+    e_ada_cl <-  1.39;  label("ATI multiplicative effect on CL, e_ada_cl^ADA_POS; +39% when ADA-positive (unitless)") # Hanzel 2021 Table 3
 
     # Inter-individual variability on CL, F1, Vc, Ka -- modelled as a 4x4 block.
     # Variances are omega^2 on log-scale: omega^2 = log(1 + CV^2). Reported %CV

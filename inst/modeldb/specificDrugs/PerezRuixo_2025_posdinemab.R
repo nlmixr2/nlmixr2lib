@@ -69,24 +69,24 @@ PerezRuixo_2025_posdinemab <- function() {
     lvisf  <- log(43.4e-3);  label("Posdinemab ISF volume of distribution (VISF, L, 70 kg ref)")        # Table 2: 43.4 x 10^-3 L = 0.0434 L
 
     # ----- Allometric exponents (Results: fixed; Germovsek 2021 priors) ------
-    e_wt_cl_q  <- fixed(0.75);  label("Allometric (WT) exponent shared across all clearance-like terms (CL, Q, QCSF, QISF; Results: estimating exponents did not improve MOFV)")
-    e_wt_vc_vp <- fixed(1.00);  label("Allometric (WT) exponent shared across all volume-like terms (Vc, Vp, VCSF, VISF; Results)")
+    e_wt_cl_q  <- fixed(0.75);  label("Allometric WT exponent shared across all clearance-like terms CL, Q, QCSF, QISF; Results: estimating exponents did not improve MOFV (unitless)")
+    e_wt_vc_vp <- fixed(1.00);  label("Allometric WT exponent shared across all volume-like terms Vc, Vp, VCSF, VISF; Results (unitless)")
 
     # ----- Mechanistic p217+tau / tau-seed parameters (Table 2) --------------
     lrbase    <- log(0.793);                  label("Baseline free p217+tau in CSF, healthy (R0_HV, pmol/L)") # Table 2: R0 healthy 0.793 pmol/L
-    e_ad_rbase <- log(5.995/0.793);           label("Log-shift on R0 for AD (additive on log-scale; exp = 7.56-fold higher)") # Table 2: R0 AD 5.995 pmol/L => log(5.995/0.793) = 2.023
+    e_ad_rbase <- log(5.995/0.793);           label("Log-shift on R0 for AD, additive on the log scale; exp = 7.56-fold higher (unitless)") # Table 2: R0 AD 5.995 pmol/L => log(5.995/0.793) = 2.023
     lkc    <- log(0.040);                  label("First-order elimination of free p217+tau / tau seeds (kc, 1/h)") # Table 2: 0.040 1/h
     lkint  <- log(0.299);                  label("First-order elimination of free posdinemab in CSF and posdinemab-target complex (kint, 1/h)") # Table 2: 0.299 1/h
 
     # kon reported in Table 2 as 264 nmol/mL^-1 /h. Converting to (pmol/L)^-1 / h:
     # 1 nmol/mL = 10^6 pmol/L => kon[(pmol/L)^-1/h] = 264 * 10^-6 = 2.64e-4
     # Sanity check: kd = koff/kon = 0.224 / 2.64e-4 = 848.5 pmol/L (matches Discussion: 848.5 pM).
-    lkon   <- log(2.64e-4);                label("Posdinemab-p217+tau second-order association rate in CSF (kon, (pmol/L)^-1 h^-1; converted from 264 (nmol/mL)^-1 h^-1)") # Table 2: 264 (nmol/mL)^-1 h^-1
+    lkon   <- log(2.64e-4);                label("Posdinemab-p217+tau second-order association rate kon in CSF on the log scale; converted from 264 per nmol/mL per h (1/pM/h)") # Table 2: 264 (nmol/mL)^-1 h^-1
     lkoff  <- log(0.224);                  label("Posdinemab-p217+tau dissociation rate in CSF (koff, 1/h)") # Table 2: 0.224 1/h
 
     # Fixed mechanistic assumptions (Methods, "Mechanism-based popPK-PD model"):
-    aff_isf_ratio <- fixed(20); label("Affinity ratio kd(CSF)/kd(ISF) (Methods: ISF binds tau seeds with 20-fold higher affinity)")
-    seed_ratio    <- fixed(10); label("Baseline ISF tau seed / CSF p217+tau ratio (Methods: ISF tau seed levels 10-fold higher than CSF)")
+    aff_isf_ratio <- fixed(20); label("Affinity ratio kd_CSF/kd_ISF; Methods: ISF binds tau seeds with 20-fold higher affinity (unitless)")
+    seed_ratio    <- fixed(10); label("Baseline ISF tau seed to CSF p217+tau ratio; Methods: ISF tau seed levels 10-fold higher than CSF (unitless)")
 
     # MW for mg-to-pmol dose conversion. Posdinemab is a humanized IgG1 ~148 kDa
     # (Discussion: "13,805 pmol of posdinemab (148 kDa)").
@@ -108,10 +108,10 @@ PerezRuixo_2025_posdinemab <- function() {
     # Paper Methods: "an additive error model after natural logarithmic
     # transformation was used", which is proportional in linear space. Table 2
     # sigma values match the IIV CV% column convention (bare percentages).
-    propSd         <- 0.0873; label("Proportional residual error on serum posdinemab (sigma_1 = 8.73)")        # Table 2: sigma_1 8.73
-    propSd_Ccsf      <- 0.164;  label("Proportional residual error on CSF posdinemab (sigma_2 = 16.4)")          # Table 2: sigma_2 16.4
-    propSd_TotalTau  <- 0.112;  label("Proportional residual error on CSF total p217+tau (sigma_3 = 11.2)")      # Table 2: sigma_3 11.2
-    propSd_FreeTau   <- 0.133;  label("Proportional residual error on CSF free p217+tau (sigma_4 = 13.3)")       # Table 2: sigma_4 13.3
+    propSd         <- 0.0873; label("Proportional residual error on serum posdinemab; sigma_1 = 8.73 (fraction)")        # Table 2: sigma_1 8.73
+    propSd_Ccsf      <- 0.164;  label("Proportional residual error on CSF posdinemab; sigma_2 = 16.4 (fraction)")          # Table 2: sigma_2 16.4
+    propSd_TotalTau  <- 0.112;  label("Proportional residual error on CSF total p217+tau; sigma_3 = 11.2 (fraction)")      # Table 2: sigma_3 11.2
+    propSd_FreeTau   <- 0.133;  label("Proportional residual error on CSF free p217+tau; sigma_4 = 13.3 (fraction)")       # Table 2: sigma_4 13.3
   })
 
   model({

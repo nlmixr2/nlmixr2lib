@@ -71,7 +71,7 @@ Almquist_2022_anifrolumab <- function() {
     kdeg   <- fixed(77.4); label("Receptor degradation rate kdeg (1/day,; equals internalisation rate kint per supplement)")  # Supplement appendix: kdeg = kint = 77.4 d^-1 fixed
 
     # Covariate effects on linear CL and Vc
-    e_ifngslow_cl <- 0.793;  label("Multiplicative factor on CL for IFNGS-low subjects (1 = high reference, <1 = low)")  # Table 1: F_IFNGS-low = 0.793
+    e_ifngslow_cl <- 0.793;  label("Multiplicative factor on CL for IFNGS-low subjects; 1 = high reference, below 1 = low (unitless)")  # Table 1: F_IFNGS-low = 0.793
     e_wt_cl       <- 0.601;  label("Allometric power exponent of (WT/69.1) on CL (unitless)")                            # Table 1: BW on CL = 0.601
     e_wt_vc       <- 0.764;  label("Allometric power exponent of (WT/69.1) on Vc (unitless)")                            # Table 1: BW on Vc = 0.764
 

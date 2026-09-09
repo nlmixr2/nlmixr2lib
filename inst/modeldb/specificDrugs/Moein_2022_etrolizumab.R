@@ -97,25 +97,25 @@ Moein_2022_etrolizumab <- function() {
     lvc      <- log(2.61);     label("Central volume of distribution for 70 kg adult (Vc, L)")                   # Table 4: Vc = 2.61 L
     lvp      <- log(1.77);     label("Peripheral volume of distribution for 70 kg adult (Vp, L)")                # Table 4: Vp = 1.77 L
     lq       <- log(0.449);    label("Intercompartmental clearance for 70 kg adult (Q, L/day)")                  # Table 4: Q = 0.449 L/day
-    logitfdepot  <- logit(0.712);  label("SC bioavailability (F, logit scale)")                                  # Table 4: F = 0.712
+    logitfdepot  <- logit(0.712);  label("SC bioavailability F (unitless logit)")                                  # Table 4: F = 0.712
 
     # Time-dependent CL parameters (Equation 1, Moein 2022).
-    logitmaxred  <- logit(0.263);  label("Maximum fractional reduction of CL over time (Maxred, logit scale)")   # Table 4: Maxred = 0.263
+    logitmaxred  <- logit(0.263);  label("Maximum fractional reduction of CL over time, Maxred (unitless logit)")   # Table 4: Maxred = 0.263
     lonset       <- log(4.81);     label("Half-life of the time-dependent CL change (Onset, weeks)")             # Table 4: Onset = 4.81 weeks
 
     # Allometric exponents on body weight (reference 70 kg; Table 4 notes a, b).
-    e_wt_cl_q  <- 0.872;  label("Allometric exponent of WT on CL and Q")                                          # Table 4: WT on CL/Q = 0.872
-    e_wt_vc_vp <- 0.788;  label("Allometric exponent of WT on Vc and Vp")                                         # Table 4: WT on Vc/Vp = 0.788
+    e_wt_cl_q  <- 0.872;  label("Allometric exponent of WT on CL and Q (unitless)")                                          # Table 4: WT on CL/Q = 0.872
+    e_wt_vc_vp <- 0.788;  label("Allometric exponent of WT on Vc and Vp (unitless)")                                         # Table 4: WT on Vc/Vp = 0.788
 
     # Continuous covariate effects on CL (exponential form per Table 4 note d: CovEff = exp(theta * (Cov - Cov_ref))).
-    e_alb_cl   <- -0.0314;   label("Albumin effect on CL (exp(theta * (ALB - 41)))")                             # Table 4: Albumin on CL = -0.0314
-    e_crp_cl   <-  0.00458;  label("CRP effect on CL (exp(theta * (CRP - 4.23)))")                               # Table 4: CRP on CL = 0.00458
-    e_adat_cl  <-  0.0365;   label("ADA titer effect on CL (exp(theta * ADA_TITER))")                            # Table 4: ADAT on CL = 0.0365
+    e_alb_cl   <- -0.0314;   label("Albumin log-linear effect on CL, exp(theta * (ALB - 41)) (per g/L)")                             # Table 4: Albumin on CL = -0.0314
+    e_crp_cl   <-  0.00458;  label("CRP log-linear effect on CL, exp(theta * (CRP - 4.23)) (per mg/L)")                               # Table 4: CRP on CL = 0.00458
+    e_adat_cl  <-  0.0365;   label("ADA titer log-linear effect on CL, exp(theta * ADA_TITER) (per titre unit)")                            # Table 4: ADAT on CL = 0.0365
 
     # Categorical covariate effects on CL (multiplicative form per Table 4 note g: 1 + theta * indicator).
-    e_priortnf_cl <- 0.0490; label("Prior anti-TNF fractional change in CL vs. no prior anti-TNF")                # Table 4: Prior TNF on CL = 0.0490
-    e_extpan_cl   <- 0.0816; label("Extensive/pancolitis fractional change in CL vs. left-sided colitis")         # Table 4: Extensive/pancolitis on CL = 0.0816
-    e_othext_cl   <- 0.181;  label("Other disease extension fractional change in CL vs. left-sided colitis")      # Table 4: Other disease extension on CL = 0.181
+    e_priortnf_cl <- 0.0490; label("Prior anti-TNF fractional change in CL vs. no prior anti-TNF (fraction)")                # Table 4: Prior TNF on CL = 0.0490
+    e_extpan_cl   <- 0.0816; label("Extensive/pancolitis fractional change in CL vs. left-sided colitis (fraction)")         # Table 4: Extensive/pancolitis on CL = 0.0816
+    e_othext_cl   <- 0.181;  label("Other disease extension fractional change in CL vs. left-sided colitis (fraction)")      # Table 4: Other disease extension on CL = 0.181
 
     # IIV (log-normal, variance on the estimation scale). omega^2 = log(1 + CV^2) from reported CVs.
     etalcl ~ log(1 + 0.243^2)  # Table 4: IIV CL CV = 0.243

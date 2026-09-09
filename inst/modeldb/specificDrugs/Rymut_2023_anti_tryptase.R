@@ -92,16 +92,16 @@ Rymut_2023_anti_tryptase <- function() {
     # cannot be assembled inside model() from the two pieces above. Storing the
     # rate-balance numerics here keeps the per-line provenance comment in one place.
     sum_kel_isf      <- fixed(log(2) / (2 / 24) + log(2) / (0.5 / 24));                 label("Tetramer-removal aggregate rate constant kel + kdiss in ISF (1/day)")  # Derived from kel_tryp_isf + kdiss_tet_isf (Methods)
-    f_tet_isf        <- fixed((log(2) / (2 / 24)) / (log(2) / (2 / 24) + log(2) / (0.5 / 24)));  label("Baseline fraction of ISF total tryptase mass present as active tetramer (= kel/(kel+kdiss))")  # Methods rate-balance partition (Text S2)
+    f_tet_isf        <- fixed((log(2) / (2 / 24)) / (log(2) / (2 / 24) + log(2) / (0.5 / 24)));  label("Baseline fraction of ISF total tryptase mass present as active tetramer, kel/(kel+kdiss) (fraction)")  # Methods rate-balance partition (Text S2)
     kbreak_tet       <- fixed(1000);                       label("MTPS9579A-induced rapid tetramer disruption rate constant (kbreak, 1/day); from disruption half-life of 1 min")  # Methods "kdiss of 1000 day-1 (half-life of 1 min)" + Table S2
     kel_mono_ab      <- fixed(log(2) / (100 / 24));        label("Elimination rate constant of the airway monomer-MTPS9579A complex (1/day); from assumed complex half-life of 100 h (negligible)")  # Table S2 "Degradation half-life of mAb-monomeric tryptase complex 100 h"
     # mAb-tryptase association rate: 7.62e5 1/M/s -> 1/nM/day. Convert: 7.62e5 [1/M/s] * (1 mol/L / 1e9 nmol/L) * (86400 s/day) = 65.83 [1/nM/day].
     kon_isf          <- fixed(7.62e5 / 1e9 * 86400);       label("MTPS9579A-tryptase association rate constant in ISF (1/nM/day); converted from 7.62e5 1/M/s")  # Table S2 "Binding constant (Kon) 7.62e5 1/Ms" + in vitro binding (ref 5)
     kd_isf           <- fixed(0.0448);                     label("Equilibrium dissociation constant in ISF (KD, nM); equal to the serum Kss")  # Table S2 "KD 4.88e-11 M ~= 0.0488 nM" (Table 1 reports 0.0448 nM; same value used in Text S2)
     # MTPS9579A molecular weight: needed to convert mg dose -> nmol (state) and to back-convert nM -> ug/mL for the observed Cc output.
-    mw_ab            <- fixed(155);                        label("MTPS9579A molecular weight (kDa = ug/nmol); IgG4 monoclonal antibody (Text S2)")           # Text S2 MWab = 155.0 ug/nmol
+    mw_ab            <- fixed(155);                        label("MTPS9579A molecular weight; IgG4 monoclonal antibody, Text S2 (kDa)")           # Text S2 MWab = 155.0 ug/nmol
     mw_mono          <- fixed(32);                         label("Tryptase monomer molecular weight (kDa) used in ISF total-tryptase mass balance")          # Text S2 MWmono = 32.0 ug/nmol
-    mw_tet           <- fixed(128);                        label("Tryptase tetramer molecular weight (kDa = 4 * MWmono) used in ISF total-tryptase mass balance")  # Text S2 MWtet = 128.0 ug/nmol
+    mw_tet           <- fixed(128);                        label("Tryptase tetramer molecular weight, four times the monomer, used in ISF total-tryptase mass balance (kDa)")  # Text S2 MWtet = 128.0 ug/nmol
 
     # === IIV (Rymut 2023 Table 1; exponential model on log-parameters) =====
     # NONMEM .lst Final Parameter Estimates (Text S1, BLOCK structure preserved):

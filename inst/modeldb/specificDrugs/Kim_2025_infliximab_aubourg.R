@@ -85,7 +85,7 @@ Kim_2025_infliximab_aubourg <- function() {
     lq         <- log(1.992); label("Inter-compartmental clearance (Q, L/day)")            # Data S1 model #1 $THETA6 = 1.992 L/day; Table S2 "1.992"
 
     # Covariate effect
-    e_wt_vc <- 0.22; label("Power exponent of body weight on Vc ((WT/60)^e_wt_vc)")  # Data S1 model #1 $THETA7 = 0.22
+    e_wt_vc <- 0.22; label("Power exponent of body weight on Vc, WT/60 scaling (unitless)")  # Data S1 model #1 $THETA7 = 0.22
 
     # Inter-individual variability. The source control stream states
     # "$OMEGA ; Interindividual standard deviation OMEGA = (%CV/100)**2", i.e.

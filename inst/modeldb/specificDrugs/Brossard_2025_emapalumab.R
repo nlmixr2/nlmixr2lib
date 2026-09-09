@@ -115,7 +115,7 @@ Brossard_2025_emapalumab <- function() {
     e_age_vc <- -0.104; label("Age power exponent on V1 (unitless)")                                            # Table 1 V1 'Age effect, exponent' -0.104 (95% CI -0.156 to -0.0529); Table S2 V1_AGE
     e_tbili <- 0.162; label("Total-bilirubin power exponent on CLL, V1 and V2 (unitless)")                      # Table 1 'CL, V1, V2 bilirubin effect, exponent' 0.162 (95% CI 0.137-0.187); Table S2 CLs_V1_TBIL
     e_ifng_clnl <- 0.542; label("Total IFN-gamma power exponent on CLNL (unitless)")                            # Table 1 'IFNg effect, exponent' 0.542 (95% CI 0.503-0.580); Table S2 CLNL_IFNg
-    e_mas_clnl <- fixed(-1); label("MAS effect on CLNL (-1 sets CLNL to zero in MAS patients)")                    # Table S2 CLNL_MAS, -1 (fixed)
+    e_mas_clnl <- fixed(-1); label("MAS fractional effect on CLNL; -1 sets CLNL to zero in MAS patients (fraction)")                    # Table S2 CLNL_MAS, -1 (fixed)
 
     # --- Emapalumab PK: between-subject variability -------------------------
     # Table 1 reports these as omega SDs on the log scale, not variances:

@@ -80,8 +80,8 @@ Kretsos_2014_olokizumab <- function() {
     # F (SC bioavailability); both are population-only here.
 
     # === Residual error (Kretsos 2014 Table 1, Final column; proportional on each output) ===
-    propSd     <- 0.240    # PK proportional residual SD on Cc (fraction); Kretsos 2014 Table 1 Final: 24.0% (%RSE 14.3). Supplement PD NONMEM stream shows Y=EFF+EFF*EPS(1) -> proportional. PK error model in main text Methods (Interim 1 used combined prop+add; Interim 2 / Final simplified to proportional only).
-    propSd_crp <- 0.449    # PD proportional residual SD on CRP (fraction); Kretsos 2014 Table 1 Final: 44.9% (%RSE 22.8). Supplement PD NONMEM stream: Y=EFF+EFF*EPS(1).
+    propSd     <- 0.240; label("PK proportional residual SD on Cc (fraction)")  # Kretsos 2014 Table 1 Final: 24.0% (%RSE 14.3). Supplement PD NONMEM stream shows Y=EFF+EFF*EPS(1) -> proportional. PK error model in main text Methods (Interim 1 used combined prop+add; Interim 2 / Final simplified to proportional only).
+    propSd_crp <- 0.449; label("PD proportional residual SD on CRP (fraction)")  # Kretsos 2014 Table 1 Final: 44.9% (%RSE 22.8). Supplement PD NONMEM stream: Y=EFF+EFF*EPS(1).
   })
 
   model({

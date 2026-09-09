@@ -159,12 +159,12 @@ Song_2025_infliximab <- function() {
     #   F  = 0.667 * (ADA/10)^-0.213  * (BMI/22.5)^-0.832
     # ADA enters as the quantitative ng/mL concentration, NOT as a positivity
     # flag -- see covariateData[[CONC_ADA_NGML]]$notes.
-    e_alb_cl      <- -0.372; label("Power exponent of serum albumin on CL ((ALB_gdL/4.4)^e_alb_cl)")                        # Song 2025 Table 2: theta ALB-CL = -0.372 (RSE 30%); bootstrap -0.383 (-0.592 to -0.154)
-    e_crp_cl      <-  0.022; label("Power exponent of C-reactive protein on CL ((CRP_mgdL/0.18)^e_crp_cl)")                 # Song 2025 Table 2: theta CRP-CL = 0.022 (RSE 33%); bootstrap 0.023 (0.010-0.036)
-    e_conc_ada_cl <-  0.022; label("Power exponent of ADA concentration on CL ((CONC_ADA_NGML/10)^e_conc_ada_cl)")          # Song 2025 Table 2: theta ADA-CL = 0.022 (RSE 42%); bootstrap 0.021 (0.001-0.042)
-    e_bmi_cl      <-  0.360; label("Power exponent of body mass index on CL ((BMI/22.5)^e_bmi_cl)")                         # Song 2025 Table 2: theta BMI-CL = 0.360 (RSE 31%); bootstrap 0.354 (0.150-0.627)
-    e_conc_ada_f  <- -0.213; label("Power exponent of ADA concentration on SC bioavailability ((CONC_ADA_NGML/10)^e_conc_ada_f)") # Song 2025 Table 2: theta ADA-F = -0.213 (RSE 19%); bootstrap -0.209 (-0.298 to -0.057)
-    e_bmi_f       <- -0.832; label("Power exponent of body mass index on SC bioavailability ((BMI/22.5)^e_bmi_f)")          # Song 2025 Table 2: theta BMI-F = -0.832 (RSE 33%); bootstrap -0.838 (-1.450 to -0.300)
+    e_alb_cl      <- -0.372; label("Power exponent of serum albumin on CL, ALB/4.4 scaling in g/dL (unitless)")                        # Song 2025 Table 2: theta ALB-CL = -0.372 (RSE 30%); bootstrap -0.383 (-0.592 to -0.154)
+    e_crp_cl      <-  0.022; label("Power exponent of C-reactive protein on CL, CRP/0.18 scaling in mg/dL (unitless)")                 # Song 2025 Table 2: theta CRP-CL = 0.022 (RSE 33%); bootstrap 0.023 (0.010-0.036)
+    e_conc_ada_cl <-  0.022; label("Power exponent of ADA concentration on CL, CONC_ADA_NGML/10 scaling (unitless)")          # Song 2025 Table 2: theta ADA-CL = 0.022 (RSE 42%); bootstrap 0.021 (0.001-0.042)
+    e_bmi_cl      <-  0.360; label("Power exponent of body mass index on CL, BMI/22.5 scaling (unitless)")                         # Song 2025 Table 2: theta BMI-CL = 0.360 (RSE 31%); bootstrap 0.354 (0.150-0.627)
+    e_conc_ada_f  <- -0.213; label("Power exponent of ADA concentration on SC bioavailability, CONC_ADA_NGML/10 scaling (unitless)") # Song 2025 Table 2: theta ADA-F = -0.213 (RSE 19%); bootstrap -0.209 (-0.298 to -0.057)
+    e_bmi_f       <- -0.832; label("Power exponent of body mass index on SC bioavailability, BMI/22.5 scaling (unitless)")          # Song 2025 Table 2: theta BMI-F = -0.832 (RSE 33%); bootstrap -0.838 (-1.450 to -0.300)
 
     # Inter-individual variability. Song 2025 Methods section 6: "The
     # inter-individual variability was modeled using exponential error model.

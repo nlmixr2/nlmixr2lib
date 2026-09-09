@@ -114,12 +114,12 @@ Frymoyer_2017_infliximab <- function() {
     # Covariate effect parameters. Power exponents reported by Frymoyer 2017 are
     # on the per-kg form of CL / Vc / Vp; the +1 conversion to total parameters
     # is applied in model().
-    e_wt_cl  <-  0.313; label("Power exponent of body weight on per-kg CL ((WT/65)^e_wt_cl on CL/kg)")          # Frymoyer 2017 Methods (CL equation)
-    e_wt_vc  <-  0.233; label("Power exponent of body weight on per-kg Vc ((WT/65)^e_wt_vc on Vc/kg)")          # Frymoyer 2017 Methods (Vc equation)
-    e_wt_vp  <-  0.588; label("Power exponent of body weight on per-kg Vp ((WT/65)^e_wt_vp on Vp/kg)")          # Frymoyer 2017 Methods (Vp equation)
-    e_alb_cl <- -0.855; label("Power exponent of serum albumin on CL ((ALB/4.1)^e_alb_cl)")                     # Frymoyer 2017 Methods (CL equation)
-    e_imm_cl <-  0.863; label("Concomitant-immunomodulator power-of-coefficient on CL (e_imm_cl^IMM; -13.7%)")  # Frymoyer 2017 Methods (CL equation)
-    e_ada_cl <-  1.292; label("ATI power-of-coefficient on CL (e_ada_cl^ADA_POS; +29.2% when ADA-positive)")    # Frymoyer 2017 Methods (CL equation)
+    e_wt_cl  <-  0.313; label("Power exponent of body weight on per-kg CL, WT/65 scaling applied as 1 + e_wt_cl (unitless)")          # Frymoyer 2017 Methods (CL equation)
+    e_wt_vc  <-  0.233; label("Power exponent of body weight on per-kg Vc, WT/65 scaling applied as 1 + e_wt_vc (unitless)")          # Frymoyer 2017 Methods (Vc equation)
+    e_wt_vp  <-  0.588; label("Power exponent of body weight on per-kg Vp, WT/65 scaling applied as 1 + e_wt_vp (unitless)")          # Frymoyer 2017 Methods (Vp equation)
+    e_alb_cl <- -0.855; label("Power exponent of serum albumin on CL, ALB/4.1 scaling (unitless)")                     # Frymoyer 2017 Methods (CL equation)
+    e_imm_cl <-  0.863; label("Concomitant-immunomodulator power-of-coefficient on CL, e_imm_cl^IMM; -13.7% (unitless)")  # Frymoyer 2017 Methods (CL equation)
+    e_ada_cl <-  1.292; label("ATI power-of-coefficient on CL, e_ada_cl^ADA_POS; +29.2% when ADA-positive (unitless)")    # Frymoyer 2017 Methods (CL equation)
 
     # Inter-individual variability (diagonal). Frymoyer 2017 Methods reports the
     # IIV as an exponential error model with %CV; the on-log-scale variance is

@@ -152,7 +152,7 @@ Tang_2026_vixarelimab <- function() {
     # a log-normal residual on the linear scale, i.e. `~ lnorm()` in nlmixr2.
     # Table 3 reports it as CV% = sqrt(exp(sigma^2) - 1) * 100% = 19.6%, so
     # sigma^2 = log(1 + 0.196^2) = 0.0376965 and sigma = 0.1941558.
-    expSd <- 0.1941558; label("Log-scale (log-additive) residual standard deviation")  # Table 3 row "Log-additive residual variability (CV%)" = 19.6%
+    expSd <- 0.1941558; label("Log-scale, log-additive, residual standard deviation (unitless)")  # Table 3 row "Log-additive residual variability (CV%)" = 19.6%
   })
   model({
     # ---- Unit conversion (molar model, mass-unit dose and observation) ----

@@ -70,8 +70,8 @@ Yao_2018_guselkumab <- function() {
     #   V/F  = 13.5  * (BWT/87.1)^0.829
     e_wt_cl   <- 0.998; label("Power exponent of body weight on CL/F (unitless)")  # Yao 2018 Table 4 footnote b
     e_wt_vc   <- 0.829; label("Power exponent of body weight on V/F (unitless)")   # Yao 2018 Table 4 footnote c
-    e_diab_cl <- 1.12;  label("Multiplier on CL/F for diabetes (1.12^DIS_DIAB)")    # Yao 2018 Table 4 footnote b
-    e_race_cl <- 1.11;  label("Multiplier on CL/F for non-White race (1.11^(1-RACE_WHITE))")  # Yao 2018 Table 4 footnote b
+    e_diab_cl <- 1.12;  label("Multiplier on CL/F for diabetes, power form on DIS_DIAB (unitless)")    # Yao 2018 Table 4 footnote b
+    e_race_cl <- 1.11;  label("Multiplier on CL/F for non-White race, power form on 1 - RACE_WHITE (unitless)")  # Yao 2018 Table 4 footnote b
 
     # IIV. Yao 2018 Table 4 reports IIV as %CV with explicit footnote
     # "interindividual variability calculated as (variance)^(1/2) x 100%",

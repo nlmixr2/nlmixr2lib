@@ -115,22 +115,22 @@ Kuchimanchi_2024_dostarlimab <- function() {
     e_wt_vc_vp <- 0.48;   label("Shared allometric exponent of WT on Vc and Vp (unitless)") # Kuchimanchi 2024 Table 2: Effect of WT on Vc and Vp = 0.48
 
     # Continuous covariate effects on CL (power form: (cov / ref)^theta).
-    e_age_cl <- -0.238;   label("AGE exponent on CL (power form (AGE/64)^theta)")        # Kuchimanchi 2024 Table 2: Effect of age on CL = -0.238
-    e_alb_cl <- -0.922;   label("ALB exponent on CL (power form (ALB/39)^theta)")        # Kuchimanchi 2024 Table 2: Effect of ALB on CL = -0.922
-    e_alt_cl <- -0.0623;  label("ALT exponent on CL (power form (ALT/18)^theta)")        # Kuchimanchi 2024 Table 2: Effect of ALT on CL = -0.0623
-    e_alb_vc <- -0.132;   label("ALB exponent on Vc (power form (ALB/39)^theta)")        # Kuchimanchi 2024 Table 2: Effect of ALB on Vc = -0.132
+    e_age_cl <- -0.238;   label("AGE power exponent on CL, AGE/64 scaling (unitless)")        # Kuchimanchi 2024 Table 2: Effect of age on CL = -0.238
+    e_alb_cl <- -0.922;   label("ALB power exponent on CL, ALB/39 scaling (unitless)")        # Kuchimanchi 2024 Table 2: Effect of ALB on CL = -0.922
+    e_alt_cl <- -0.0623;  label("ALT power exponent on CL, ALT/18 scaling (unitless)")        # Kuchimanchi 2024 Table 2: Effect of ALT on CL = -0.0623
+    e_alb_vc <- -0.132;   label("ALB power exponent on Vc, ALB/39 scaling (unitless)")        # Kuchimanchi 2024 Table 2: Effect of ALB on Vc = -0.132
 
     # Categorical sex effect on CL and Vc (paper codes a male indicator with
     # female as the reference; encoded here as (1 + theta * (1 - SEXF))).
-    e_sex_cl <- 0.15;  label("Male fractional change on CL vs. female reference")        # Kuchimanchi 2024 Table 2: Effect of male on CL = 0.15
-    e_sex_vc <- 0.137; label("Male fractional change on Vc vs. female reference")        # Kuchimanchi 2024 Table 2: Effect of male on Vc = 0.137
+    e_sex_cl <- 0.15;  label("Male fractional change on CL vs. female reference (fraction)")        # Kuchimanchi 2024 Table 2: Effect of male on CL = 0.15
+    e_sex_vc <- 0.137; label("Male fractional change on Vc vs. female reference (fraction)")        # Kuchimanchi 2024 Table 2: Effect of male on Vc = 0.137
 
     # Categorical combination-therapy effect on CL. Kuchimanchi 2024 Table 2
     # reports "Effect of combination therapy on CL = -0.0779"; the abstract
     # describes this as combo CL being 7.79% lower than monotherapy. Encoded
     # as (1 + e_combo_cl * CONMED_CHEMO): combination therapy
     # (CONMED_CHEMO = 1) gives factor 1 - 0.0779 = 0.9221.
-    e_combo_cl <- -0.0779; label("Combination-therapy fractional change on CL vs. monotherapy reference") # Kuchimanchi 2024 Table 2: Effect of combination therapy on CL = -0.0779
+    e_combo_cl <- -0.0779; label("Combination-therapy fractional change on CL vs. monotherapy reference (fraction)") # Kuchimanchi 2024 Table 2: Effect of combination therapy on CL = -0.0779
 
     # IIV - block on (CL, Vc) and independent eta on |I_max|. Kuchimanchi 2024
     # Table 2 reports: omega^2_CL = 0.0563, cov(CL, Vc) = 0.0193,

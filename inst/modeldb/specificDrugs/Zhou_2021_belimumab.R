@@ -91,15 +91,15 @@ Zhou_2021_belimumab <- function() {
     lvp <- log(2.318); label("Peripheral volume of distribution (V2, L)")            # Table 2: theta4 = 2318 mL
 
     # Covariate effects on CL (Zhou 2021 Table 2)
-    e_ffm_cl  <-  0.673; label("FFM power exponent on CL (reference FFM 40.69 kg)")           # Table 2: theta7
+    e_ffm_cl  <-  0.673; label("FFM power exponent on CL, reference FFM 40.69 kg (unitless)")           # Table 2: theta7
     e_alb_cl  <- -1.12;  label("Baseline albumin power exponent on CL (reference 40 g/L)")    # Table 2: theta9
     e_igg_cl  <-  0.293; label("Baseline IgG power exponent on CL (reference 14.8 g/L)")      # Table 2: theta10
-    e_stdy_cl <-  1.63;  label("Multiplicative factor on CL when STUDY_LBSL = 1 (LBSL01/02)")  # Table 2: theta11
+    e_stdy_cl <-  1.63;  label("Multiplicative factor on CL when STUDY_LBSL = 1, studies LBSL01 and LBSL02 (unitless)")  # Table 2: theta11
 
     # Covariate effects on V1 (Zhou 2021 Table 2)
-    e_ffm_vc  <-  0.891; label("FFM power exponent on V1 (reference FFM 40.69 kg)")               # Table 2: theta8
-    e_stdy_vc <-  1.26;  label("Multiplicative factor on V1 when STUDY_LBSL = 1 (LBSL01/02)")      # Table 2: theta12
-    e_neas_vc <-  1.07;  label("Multiplicative factor on V1 when RACE_ASIAN_NORTHEAST = 1 (North East Asian)") # Table 2: theta13 (printed as theta12 due to a labelling typo)
+    e_ffm_vc  <-  0.891; label("FFM power exponent on V1, reference FFM 40.69 kg (unitless)")               # Table 2: theta8
+    e_stdy_vc <-  1.26;  label("Multiplicative factor on V1 when STUDY_LBSL = 1, studies LBSL01 and LBSL02 (unitless)")      # Table 2: theta12
+    e_neas_vc <-  1.07;  label("Multiplicative factor on V1 when RACE_ASIAN_NORTHEAST = 1, North East Asian (unitless)") # Table 2: theta13 (printed as theta12 due to a labelling typo)
     age50_vc  <-  1.58;  label("Age (years) at half-maximal V1 in the saturable AGE/(AGE+age50_vc) maturation term") # Table 2: theta14
 
     # IIV (omega^2 from Table 2; CL and V2 correlated, no IIV on Q)

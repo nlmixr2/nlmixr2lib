@@ -93,12 +93,12 @@ Kim_2025_infliximab_dubinsky <- function() {
     lq  <- log(0.0781); label("Typical inter-compartmental clearance for the reference subject (Q, L/day)") # Data S1 model #5 $THETA4 = 0.0781 L/day; Table S2 "0.0781"
 
     # Covariate effects
-    e_wt_cl  <-  0.612; label("Power exponent of body weight on CL ((WT/70)^e_wt_cl)")             # Data S1 model #5 $THETA5 = 0.612
-    e_alb_cl <- -2.3;   label("Power exponent of serum albumin on CL ((ALB/4)^e_alb_cl)")          # Data S1 model #5 $THETA6 = -2.3
-    e_ada_cl <-  0.231; label("Fractional increase in CL when ADA-positive (1 + e_ada_cl)")        # Data S1 model #5 $THETA7 = 0.231
-    e_wt_vc  <-  0.696; label("Power exponent of body weight on Vc ((WT/70)^e_wt_vc)")             # Data S1 model #5 $THETA8 = 0.696
-    e_wt_vp  <-  0.604; label("Power exponent of body weight on Vp ((WT/70)^e_wt_vp)")             # Data S1 model #5 $THETA9 = 0.604
-    e_wt_q   <-  1.15;  label("Power exponent of body weight on Q ((WT/70)^e_wt_q)")               # Data S1 model #5 $THETA10 = 1.15
+    e_wt_cl  <-  0.612; label("Power exponent of body weight on CL, WT/70 scaling (unitless)")             # Data S1 model #5 $THETA5 = 0.612
+    e_alb_cl <- -2.3;   label("Power exponent of serum albumin on CL, ALB/4 scaling in g/dL (unitless)")          # Data S1 model #5 $THETA6 = -2.3
+    e_ada_cl <-  0.231; label("Fractional increase in CL when ADA-positive, applied as 1 + e_ada_cl * ADA_POS (fraction)")        # Data S1 model #5 $THETA7 = 0.231
+    e_wt_vc  <-  0.696; label("Power exponent of body weight on Vc, WT/70 scaling (unitless)")             # Data S1 model #5 $THETA8 = 0.696
+    e_wt_vp  <-  0.604; label("Power exponent of body weight on Vp, WT/70 scaling (unitless)")             # Data S1 model #5 $THETA9 = 0.604
+    e_wt_q   <-  1.15;  label("Power exponent of body weight on Q, WT/70 scaling (unitless)")               # Data S1 model #5 $THETA10 = 1.15
 
     # Inter-individual variability. Kim 2025's control streams use
     # OMEGA = (CV)^2 (see the annotation on the Aubourg stream); each value's

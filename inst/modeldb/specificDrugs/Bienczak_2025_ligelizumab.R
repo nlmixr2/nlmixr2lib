@@ -89,10 +89,10 @@ Bienczak_2025_ligelizumab <- function() {
     e_ige_vp <- -0.0816;  label("Power exponent of baseline IgE on Vp/F (unitless)")  # Table S6 IgE on Vp/F
 
     # Categorical / binary covariate effects (log-additive on the structural parameter)
-    e_ada_pos_cl     <-  0.243;  label("Effect of ever-positive ADA on CL/F (log-additive)")          # Table S6 ADA-positive on CL/F
-    e_ada_pos_vp     <- -0.526;  label("Effect of ever-positive ADA on Vp/F (log-additive)")          # Table S6 ADA-positive on Vp/F
-    e_dis_healthy_cl <- -0.087;  label("Effect of healthy-volunteer status on CL/F (log-additive)")   # Table S6 healthy-volunteer status on CL/F
-    e_study_c2201_cl <-  0.176;  label("Effect of study C2201 enrollment on CL/F (log-additive)")     # Table S6 study C2201 on CL/F
+    e_ada_pos_cl     <-  0.243;  label("Effect of ever-positive ADA on CL/F, log-additive (unitless)")          # Table S6 ADA-positive on CL/F
+    e_ada_pos_vp     <- -0.526;  label("Effect of ever-positive ADA on Vp/F, log-additive (unitless)")          # Table S6 ADA-positive on Vp/F
+    e_dis_healthy_cl <- -0.087;  label("Effect of healthy-volunteer status on CL/F, log-additive (unitless)")   # Table S6 healthy-volunteer status on CL/F
+    e_study_c2201_cl <-  0.176;  label("Effect of study C2201 enrollment on CL/F, log-additive (unitless)")     # Table S6 study C2201 on CL/F
 
     # IIV: variances on the log-scale eta of each structural parameter
     # CL/F and Vp/F are correlated (r = 0.484) per Table S6

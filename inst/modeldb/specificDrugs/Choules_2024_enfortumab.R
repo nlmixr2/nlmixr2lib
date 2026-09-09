@@ -83,8 +83,8 @@ Choules_2024_enfortumab <- function() {
     # mean ratio reproduces that ratio exactly. Choules 2024 states that
     # simulations were run long enough for the AUC(last) ratio to equal the
     # AUC(inf) ratio, so the two are interchangeable here.
-    e_keto_cl_mmae <- fixed(0.72464); label("Multiplier of ketoconazole coadministration on MMAE CL: cl_mmae *= e_keto_cl_mmae^CONMED_KETOCONAZOLE") # derived: 1 / 1.38, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + ketoconazole
-    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL: cl_mmae *= e_rif_cl_mmae^CONMED_RIF")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + rifampin
+    e_keto_cl_mmae <- fixed(0.72464); label("Multiplier of ketoconazole coadministration on MMAE CL, power form on CONMED_KETOCONAZOLE (unitless)") # derived: 1 / 1.38, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + ketoconazole
+    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL, power form on CONMED_RIF (unitless)")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + rifampin
 
     # Residual error. Choules 2024 is a deterministic PBPK simulation study; it
     # reports no residual-error model. The CV% values in Tables 3, 4 and 6 are

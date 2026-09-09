@@ -142,8 +142,8 @@ Zhang_2023_brazikumab <- function() {
     # Covariate effects (Zhang 2023 Table 2 with the parameterisation given in
     # footnotes a and b).
     e_alb_cl         <- -1.32;  label("Power exponent of baseline albumin on CL (centred at 39 g/L)")  # Table 2: effect of baseline albumin on CL = -1.32 (RSE 40%)
-    e_dis_healthy_cl <- -0.362; label("Healthy-participant fractional change in CL")                   # Table 2: effect of health status on CL = -0.362 (RSE 10%)
-    e_male_vc        <-  0.214; label("Male fractional change in Vc vs. the female reference")         # Table 2: effect of male gender on Vc = 0.214 (RSE 37%)
+    e_dis_healthy_cl <- -0.362; label("Healthy-participant fractional change in CL (fraction)")                   # Table 2: effect of health status on CL = -0.362 (RSE 10%)
+    e_male_vc        <-  0.214; label("Male fractional change in Vc vs. the female reference (fraction)")         # Table 2: effect of male gender on Vc = 0.214 (RSE 37%)
 
     # Inter-individual variability. Zhang 2023 Methods state the PK IIVs are
     # log-normal (theta_ij = theta_TVj * exp(eta_ij)), so the Table 2 IIV column

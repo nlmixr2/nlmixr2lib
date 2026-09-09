@@ -226,7 +226,7 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     e_line1l_kdes        <-  3.38;     label("Multiplicative effect of treatment-naive status on cl_exp_kdes (unitless)")                           # Lu 2019 Table 2, theta32
     e_conmed_ritux_kdes  <-  0.932;    label("Multiplicative effect of rituximab combination on cl_exp_kdes (unitless)")                            # Lu 2019 Table 2, theta33
     e_line1l_cl_time     <-  3.53;     label("Multiplicative effect of treatment-naive status on CL_TIME (unitless)")                        # Lu 2019 Table 2, theta34
-    tmbd50_cl_time       <-  1150;     label("Half-maximal-effect TUMSZ on CL_TIME (mm^2 SPD; effect = TUMSZ / (tmbd50_cl_time + TUMSZ))")   # Lu 2019 Table 2, theta35
+    tmbd50_cl_time       <-  1150;     label("Half-maximal-effect TUMSZ on CL_TIME as sum of products of diameters; effect = TUMSZ / (tmbd50_cl_time + TUMSZ) (mm^2)")   # Lu 2019 Table 2, theta35
     bcell_thr_cl_time    <-  121;      label("B-cell threshold below which BLBCELL has no effect on CL_TIME (cells/uL)")                     # Lu 2019 Table 2, theta36
     e_blbcell_cl_time    <-  0.578;    label("Power exponent of max(1, BLBCELL/threshold) on CL_TIME (unitless)")                            # Lu 2019 Table 2, theta37
 
@@ -262,7 +262,7 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     # not adding `eta*` terms on these parameters (standing nlmixr2lib policy:
     # unreported IIV with structural values present -> typical-value only when
     # no fixed(0) variance is required).
-    lalpha_haz <- log(2.26e-6); label("Drug effect parameter alpha (1/(hour*ng/mL); log domain)")                # Lu 2017 Table 1: alpha = 2.26e-6 (RSE 49.2%)
+    lalpha_haz <- log(2.26e-6); label("Drug effect parameter alpha on the log scale (mL/ng/h)")                # Lu 2017 Table 1: alpha = 2.26e-6 (RSE 49.2%)
     lbeta_haz  <- log(1.37);    label("Weibull function shape parameter beta (unitless; log domain)")            # Lu 2017 Table 1: beta = 1.37 (RSE 15.1%)
     lk1e_haz   <- log(3.60e-4); label("Effect-compartment distribution rate constant k1e (1/h; log domain; ke0 = k1e)") # Lu 2017 Table 1: k1e = 3.60e-4 (RSE 73.8%); ke0 = k1e
 

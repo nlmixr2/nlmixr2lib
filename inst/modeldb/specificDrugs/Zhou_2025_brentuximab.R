@@ -118,10 +118,10 @@ Zhou_2025_brentuximab <- function() {
     e_bsa_cl    <- 1.38;   label("Power exponent of (BSA/1.8) on ADC CL (unitless)")               # Zhou 2025 Table S1: 1.38 (23.2% RSE)
     e_alb_cl    <- -0.776; label("Power exponent of (ALB/40) on ADC CL (unitless)")                # Zhou 2025 Table S1: -0.776 (12.3% RSE)
     e_tumsz_cl  <- 0.12;   label("Power exponent of (TUMSZ/41) on ADC CL (unitless)")              # Zhou 2025 Table S1: 0.12 (17.3% RSE)
-    e_nonhl_q2  <- 0.509;  label("Power-form multiplier of non-HL on ADC Q2: q2 *= e_nonhl_q2^(1 - TUMTP_HODGKIN_CLASSICAL)") # Zhou 2025 Table S1: 0.509 (32.2% RSE)
+    e_nonhl_q2  <- 0.509;  label("Power-form multiplier of non-HL on ADC Q2, exponent 1 - TUMTP_HODGKIN_CLASSICAL (unitless)") # Zhou 2025 Table S1: 0.509 (32.2% RSE)
     e_bsa_vp2   <- 1.96;   label("Power exponent of (BSA/1.8) on ADC V3 = vp2 (unitless)")         # Zhou 2025 Table S1: 1.96 (20.8% RSE)
-    e_ada_cl    <- 2.6;    label("Power-form multiplier of ADA positivity on ADC CL: cl *= e_ada_cl^ADA_POS") # Zhou 2025 Table S1: 2.6 (6.4% RSE)
-    e_avd_cl    <- 2.12;   label("Power-form multiplier of A+AVD coadministration on ADC CL: cl *= e_avd_cl^CONMED_AVD") # Zhou 2025 Table S1: 2.12 (18.7% RSE) — supplement table label of 'theta13' for this row is a typo (control stream confirms theta14)
+    e_ada_cl    <- 2.6;    label("Power-form multiplier of ADA positivity on ADC CL, cl times e_ada_cl^ADA_POS (unitless)") # Zhou 2025 Table S1: 2.6 (6.4% RSE)
+    e_avd_cl    <- 2.12;   label("Power-form multiplier of A+AVD coadministration on ADC CL, cl times e_avd_cl^CONMED_AVD (unitless)") # Zhou 2025 Table S1: 2.12 (18.7% RSE) — supplement table label of 'theta13' for this row is a typo (control stream confirms theta14)
 
     # MMAE structural parameters (Zhou 2025 Table S2; 2-compartment linear with
     # an upstream Target binding pool and Lag compartment fed by ADC, ADVAN13
@@ -141,10 +141,10 @@ Zhou_2025_brentuximab <- function() {
     e_creat_cl_mmae    <- -0.0952; label("Power exponent of (CREAT/45.689) on MMAE CL (unitless)")          # Zhou 2025 Table S2: -0.0952 (9.3% RSE)
     e_alb_cl_mmae      <- -0.0805; label("Power exponent of (ALB/40) on MMAE CL (unitless)")                # Zhou 2025 Table S2: -0.0805 (27.5% RSE)
     e_bsa_cl_mmae      <- 0.772;   label("Power exponent of (BSA/1.8) on MMAE CL (unitless)")               # Zhou 2025 Table S2: 0.772 (8.4% RSE)
-    e_ada_cl_mmae      <- 0.696;   label("Power-form multiplier of ADA positivity on MMAE CL: clm *= e_ada_cl_mmae^ADA_POS") # Zhou 2025 Table S2: 0.696 (5.3% RSE)
-    e_nonhl_vc_mmae    <- 0.296;   label("Power-form multiplier of non-HL on MMAE VM: vcm *= e_nonhl_vc_mmae^(1 - TUMTP_HODGKIN_CLASSICAL)") # Zhou 2025 Table S2: 0.296 (15.1% RSE)
+    e_ada_cl_mmae      <- 0.696;   label("Power-form multiplier of ADA positivity on MMAE CL, clm times e_ada_cl_mmae^ADA_POS (unitless)") # Zhou 2025 Table S2: 0.696 (5.3% RSE)
+    e_nonhl_vc_mmae    <- 0.296;   label("Power-form multiplier of non-HL on MMAE VM, exponent 1 - TUMTP_HODGKIN_CLASSICAL (unitless)") # Zhou 2025 Table S2: 0.296 (15.1% RSE)
     e_bsa_vc_mmae      <- 0.546;   label("Power exponent of (BSA/1.8) on MMAE VM (unitless)")               # Zhou 2025 Table S2: 0.546 (9.7% RSE)
-    e_nonhl_alfm_mmae  <- 0.884;   label("Power-form multiplier of non-HL on ALFM: alfm *= e_nonhl_alfm_mmae^(1 - TUMTP_HODGKIN_CLASSICAL)") # Zhou 2025 Table S2: 0.884 (17.7% RSE)
+    e_nonhl_alfm_mmae  <- 0.884;   label("Power-form multiplier of non-HL on ALFM, exponent 1 - TUMTP_HODGKIN_CLASSICAL (unitless)") # Zhou 2025 Table S2: 0.884 (17.7% RSE)
     e_alb_kd_mmae      <- -4.11;   label("Power exponent of (ALB/40) on MMAE Kd (unitless)")                # Zhou 2025 Table S2: -4.11 (3.3% RSE)
 
     # IIV (log-normal). %CV from Zhou 2025 Tables S1 and S2; converted via

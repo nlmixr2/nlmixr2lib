@@ -56,8 +56,8 @@ Huang_2017_vrc01 <- function() {
     #   power:       TV_theta = theta * (BW / 74.5)^beta
     # Final-model selections (Table 2 footnote 2): exponential on CL and Vc;
     # power on Q and Vp.
-    e_wt_cl <- 0.012; label("Body-weight effect on CL (exponential, fold/kg)")  # Huang 2017 Table 2
-    e_wt_vc <- 0.010; label("Body-weight effect on Vc (exponential, fold/kg)")  # Huang 2017 Table 2
+    e_wt_cl <- 0.012; label("Body-weight log-linear effect on CL, exp(theta * (WT - 74.5)) (per kg)")  # Huang 2017 Table 2
+    e_wt_vc <- 0.010; label("Body-weight log-linear effect on Vc, exp(theta * (WT - 74.5)) (per kg)")  # Huang 2017 Table 2
     e_wt_q  <- 0.69;  label("Body-weight effect on Q (power exponent, unitless)")  # Huang 2017 Table 2
     e_wt_vp <- 0.82;  label("Body-weight effect on Vp (power exponent, unitless)")  # Huang 2017 Table 2
 

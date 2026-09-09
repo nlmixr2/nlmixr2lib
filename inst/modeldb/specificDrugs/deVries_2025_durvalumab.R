@@ -132,16 +132,16 @@ deVries_2025_durvalumab <- function() {
     # carries the minus sign.
     e_alb_cl <- fixed(-0.035); label("Slope of serum albumin on CL (per g/L above 38 g/L)")                            # ESM 3 $PK: (1 - 0.035 * (ALB - 38))
     e_crcl_cl <- fixed(0.00149); label("Slope of creatinine clearance on CL (per mL/min above 85.65 mL/min)")          # ESM 3 $PK: (1 + 0.00149 * (CRCL - 85.65))
-    e_ecog_cl <- fixed(0.937); label("Multiplicative effect of ECOG performance status >= 1 on CL")                    # ESM 3 $PK: (0.937 ** FLAECOG)
-    e_sexf_cl <- fixed(0.857); label("Multiplicative effect of female sex on CL")                                      # ESM 3 $PK: (0.857 ** FLASEX)
+    e_ecog_cl <- fixed(0.937); label("Multiplicative effect of ECOG performance status >= 1 on CL, power form on ECOG_GE1 (unitless)")                    # ESM 3 $PK: (0.937 ** FLAECOG)
+    e_sexf_cl <- fixed(0.857); label("Multiplicative effect of female sex on CL, power form on SEXF (unitless)")                                      # ESM 3 $PK: (0.857 ** FLASEX)
     e_tumsz_cl <- fixed(0.00178); label("Slope of baseline tumor size on CL (per mm above 74.8 mm)")                   # ESM 3 $PK: (1 + 0.00178 * (TUMORSIZE - 74.8))
     e_wt_cl <- fixed(0.389); label("Allometric exponent of body weight on CL (unitless)")                              # ESM 3 $PK: ((WT / 69.8) ** 0.389)
 
     # ---- Covariate effects on Vmax and the volumes -----------------------
     e_spdl1_vmax <- fixed(0.00336); label("Slope of soluble PD-L1 on Vmax (per pg/mL above 124.8 pg/mL)")              # ESM 3 $PK: (1 + 0.00336 * (SPDL1 - 124.8))
-    e_sexf_vc <- fixed(0.835); label("Multiplicative effect of female sex on Vc")                                      # ESM 3 $PK: V1 = 3.51 * (0.835 ** FLASEX) * (...)
+    e_sexf_vc <- fixed(0.835); label("Multiplicative effect of female sex on Vc, power form on SEXF (unitless)")                                      # ESM 3 $PK: V1 = 3.51 * (0.835 ** FLASEX) * (...)
     e_wt_vc <- fixed(0.406); label("Allometric exponent of body weight on Vc (unitless)")                              # ESM 3 $PK: ((WT / 69.8) ** 0.406)
-    e_sexf_vp <- fixed(0.795); label("Multiplicative effect of female sex on Vp")                                      # ESM 3 $PK: V2 = 3.45 * (0.795 ** FLASEX) * (...)
+    e_sexf_vp <- fixed(0.795); label("Multiplicative effect of female sex on Vp, power form on SEXF (unitless)")                                      # ESM 3 $PK: V2 = 3.45 * (0.795 ** FLASEX) * (...)
 
     # ---- Between-subject variability -------------------------------------
     # ESM 3 "$OMEGA BLOCK(3) CORRELATION" with a FIX flag on the block:

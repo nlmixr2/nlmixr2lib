@@ -95,10 +95,10 @@ Kim_2025_infliximab_fasanmade_pediatric <- function() {
     # Covariate effects. The three e_wt_* values are the exponents on the PER-KG
     # parameters; model() adds the +1 that converts them to total-parameter
     # exponents (0.66 on CL, 0.829 on Vc, 0.586 on Vp).
-    e_wt_cl  <- -0.34;  label("Power exponent of body weight on per-kg CL ((WT/42)^(1 + e_wt_cl) on total CL)")  # Data S1 model #7 $THETA6 = -0.34
-    e_wt_vc  <- -0.171; label("Power exponent of body weight on per-kg Vc ((WT/42)^(1 + e_wt_vc) on total Vc)")  # Data S1 model #7 $THETA7 = -0.171
-    e_wt_vp  <- -0.414; label("Power exponent of body weight on per-kg Vp ((WT/42)^(1 + e_wt_vp) on total Vp)")  # Data S1 model #7 $THETA8 = -0.414
-    e_alb_cl <- -1.22;  label("Power exponent of serum albumin on CL ((ALB/3.8)^e_alb_cl)")                      # Data S1 model #7 $THETA5 = -1.22
+    e_wt_cl  <- -0.34;  label("Power exponent of body weight on per-kg CL, WT/42 scaling applied as 1 + e_wt_cl (unitless)")  # Data S1 model #7 $THETA6 = -0.34
+    e_wt_vc  <- -0.171; label("Power exponent of body weight on per-kg Vc, WT/42 scaling applied as 1 + e_wt_vc (unitless)")  # Data S1 model #7 $THETA7 = -0.171
+    e_wt_vp  <- -0.414; label("Power exponent of body weight on per-kg Vp, WT/42 scaling applied as 1 + e_wt_vp (unitless)")  # Data S1 model #7 $THETA8 = -0.414
+    e_alb_cl <- -1.22;  label("Power exponent of serum albumin on CL, ALB/3.8 scaling in g/dL (unitless)")                      # Data S1 model #7 $THETA5 = -1.22
 
     # Inter-individual variability; OMEGA = (CV)^2 per Kim 2025's control-stream
     # annotation, with each %CV given in the stream comment and Table S2.
