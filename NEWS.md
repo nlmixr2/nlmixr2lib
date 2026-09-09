@@ -2,9 +2,7 @@
 
 # development version
 
-- Add Prohn 2021 letermovir ([doi:10.1002/psp4.12593](https://doi.org/10.1002/psp4.12593)) -- healthy phase I volunteers over a 30-960 mg dose range.
-
-- Add Prohn 2021 letermovir ([doi:10.1002/psp4.12593](https://doi.org/10.1002/psp4.12593)) -- allogeneic hematopoietic stem cell transplant recipients at clinical doses.
+- Add Qin 2025 ropeginterferon alfa-2b ([doi:10.1002/prp2.70109](https://doi.org/10.1002/prp2.70109)) -- healthy Chinese and Japanese adults and patients with polycythaemia vera; ten models (population PK, three hematologic PK-PD, six exposure-response).
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses

@@ -3720,8 +3720,26 @@ navbar:
         href: articles/Wang_2010_romiplostim.html
       - text: "Romosozumab (Stein 2018)"
         href: articles/Stein_2018_mAb_nonlinear_PK.html
-      - text: "Ropivacaine (Ling 2025)"
-        href: articles/Ling_2025_ropivacaine.html
+      - text: "Ropeginterferon (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon alt increase (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon ast increase (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon chr week24 (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon chr week52 (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon hct (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon jak2 week24 (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon jak2 week52 (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon plt (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
+      - text: "Ropeginterferon wbc (Qin 2025)"
+        href: articles/Qin_2025_ropeginterferon.html
       - text: "Ropivacaine (Ollier 2015)"
         href: articles/Ollier_2015_ropivacaine.html
       - text: "Rosuvastatin (Barnett 2018)"
@@ -6166,6 +6184,7 @@ articles:
   - articles/Qi_2014_sapropterin
   - articles/Qi_2019_vestronidaseAlfa
   - articles/Qi_2024_vosoritide
+  - articles/Qin_2025_ropeginterferon
   - articles/Quartino_2016_trastuzumab
   - articles/Quartino_2019_trastuzumab
   - articles/Ramachandran_2023_tuberculosis_eptb_pbpk
