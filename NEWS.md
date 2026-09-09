@@ -2,8 +2,7 @@
 
 # development version
 
-- Add Parasrampuria 2025 temsavir ([doi:10.1002/prp2.70023](https://doi.org/10.1002/prp2.70023)) -- population PK plus three Day 8 exposure-response models in healthy adults and treatment-experienced adults with HIV-1.
-
+- Add Sawe 2025 levofloxacin ([doi:10.1128/aac.01626-24](https://doi.org/10.1128/aac.01626-24)) -- South African adults with rifampicin-resistant tuberculosis, including third-trimester pregnancy.
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
