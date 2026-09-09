@@ -2164,6 +2164,8 @@ navbar:
         href: articles/Damnjanovic_2023_pediatric_antiepileptics.html
       - text: "Lamotrigine (He 2012)"
         href: articles/He_2012_lamotrigine.html
+      - text: "Lamotrigine (Huo 2025)"
+        href: articles/Huo_2025_lamotrigine.html
       - text: "Lamotrigine (Hussein 1997)"
         href: articles/Hussein_1997_lamotrigine.html
       - text: "Lamotrigine (Milosheska 2016)"
@@ -5503,6 +5505,7 @@ articles:
   - articles/Hughes_2022_brepocitinib
   - articles/Hughes_2024_vancomycin
   - articles/Huh_2024_ritlecitinib
+  - articles/Huo_2025_lamotrigine
   - articles/Huppe_2023_fosfomycin
   - articles/Hurtado_2014_levofloxacin_rat
   - articles/Hussein_1997_lamotrigine
