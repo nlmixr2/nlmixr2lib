@@ -280,6 +280,8 @@ navbar:
         href: articles/Moein_2024_apitolisib.html
       - text: "Apixaban (Gaspar 2023)"
         href: articles/Gaspar_2023_apixaban.html
+      - text: "Apixaban (Kolowrat 2025)"
+        href: articles/Kolowrat_2025_apixaban.html
       - text: "Apixaban (Morath 2025)"
         href: articles/Morath_2025_apixaban.html
       - text: "Apixaban (Ueshima 2018)"
@@ -5663,6 +5665,7 @@ articles:
   - articles/Kohl_2010_posaconazole
   - articles/Kollo_2026_selumetinib
   - articles/Koloskoff_2025_ganciclovir
+  - articles/Kolowrat_2025_apixaban
   - articles/Kong_2025_piperacillin_tazobactam
   - articles/Kong_2025_sudapyridine
   - articles/Koo_2012_propofol
