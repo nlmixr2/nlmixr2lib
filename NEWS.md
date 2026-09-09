@@ -2,6 +2,26 @@
 
 # development version
 
+- Fix the "List of models" vignette, which was rendering roughly 1,500 of its
+  2,642 rows as escaped HTML source instead of table rows. Model `description`
+  text is plain text but was being passed through two markup layers unescaped:
+  the browser (so a description reading "toddlers <3 years" opened a tag) and
+  pandoc, whose `markdown_in_html_blocks` extension parses the content of HTML
+  blocks as markdown. The latter was the destructive one -- a description
+  mentioning a NONMEM record such as `$PRED` opened an inline-math span that
+  swallowed every row up to the next `$` on the page. Descriptions and labels
+  are now HTML-escaped and the finished table is handed to pandoc as a raw
+  block, so all 2,642 models and their 2,593 vignette links render.
+
+- Document the covariate register's ALL-CAPS exceptions accurately and enforce
+  them. The `## Case convention` section of `inst/references/covariate-columns.md`
+  named two non-all-caps canonicals when the register held ten; it is now a
+  machine-read list, grouped by why each is exempt (case-significant unit
+  suffix, case-significant proper noun, or legacy source-preserved).
+  `checkNamingRegisters()` gains `case-convention` and `stale-case-exemption`
+  checks that read that list, so neither an undocumented lower-case canonical
+  nor a documented name whose entry has gone can pass unnoticed.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the

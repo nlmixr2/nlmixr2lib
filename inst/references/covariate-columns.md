@@ -21,7 +21,23 @@ When adding or updating an entry, choose the most conservative scope: if in doub
 
 ## Case convention
 
-Covariate column names should be ALL CAPS. Current non-all-caps canonical names are `dilution` and `nonECZTRA` (both scope: specific), preserved from their source files with "future rename" notes. New entries should default to all caps.
+Covariate column names are **ALL CAPS** by default. `checkNamingRegisters()` enforces this mechanically: any `###` canonical in this file that is not all caps and is not listed below is reported as a `case-convention` issue, and any name listed below that no longer has an entry is reported as `stale-case-exemption`. The list is therefore the complete and current set of exceptions -- it cannot drift out of date the way the hand-maintained sentence it replaced did (that sentence named two exceptions when there were ten).
+
+Exceptions fall into three kinds. To add a new one, add the name as a nested bullet here **and** say why in the entry's own `Notes:` field.
+
+- **Case-significant unit suffix** -- the trailing unit is only unambiguous in mixed case, so upper-casing it would change or destroy the meaning (picomolar `pM` is not `PM`; `12h` is a duration, not an initialism):
+  - `CONMED_RTV_AUC_12h`
+  - `L_ANTAGONIST_pM`
+  - `L_OPIOID_pM`
+- **Case-significant proper noun** -- a construct, reagent, or gene-product name whose published spelling carries the meaning:
+  - `STUDY_d2eGFP`
+- **Legacy source-preserved** -- lower or mixed case kept to match a model file that already shipped with it. These are frozen, not precedent: new models must not copy the form, and each entry's `Notes:` field names the canonical to use instead.
+  - `dilution`
+  - `nonECZTRA`
+  - `ooc1`
+  - `ooc2`
+  - `ooc3`
+  - `ooc4`
 
 ## Entry schema
 

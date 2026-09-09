@@ -36,5 +36,9 @@ Checks performed:
     the entry drops out of the canonical name list
     [checkModelConventions()] builds, so the model-facing check stops
     recognising the name while every other register check stays green.
+  \item covariate canonicals that are not ALL CAPS and are not listed under
+    `## Case convention` in `covariate-columns.md`, and names listed there
+    that no longer have an entry. Checked for that register only:
+    parameter canonicals are deliberately lower case (`lka`, `lcl`).
 }
 }
