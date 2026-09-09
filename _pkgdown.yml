@@ -4536,6 +4536,8 @@ navbar:
         href: articles/Buelga_2005_vancomycin.html
       - text: "Vancomycin (Chen 2023)"
         href: articles/Chen_2023_vancomycin.html
+      - text: "Vancomycin (Chen 2025)"
+        href: articles/Chen_2025_vancomycin.html
       - text: "Vancomycin (Chung 2013)"
         href: articles/Chung_2013_vancomycin.html
       - text: "Vancomycin (Chung 2026)"
@@ -5194,6 +5196,7 @@ articles:
   - articles/Chen_2025_ceftazidime_avibactam
   - articles/Chen_2025_iohexol_creatinine
   - articles/Chen_2025_remimazolam
+  - articles/Chen_2025_vancomycin
   - articles/Cheng_2026_immunoglobulin
   - articles/Cheng_2026_levamisole_interspecies
   - articles/Chetty_2014_efalizumab_cd11a_pasi
