@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Abdelgawad 2025 rifampicin ([doi:10.1093/infdis/jiaf178](https://doi.org/10.1093/infdis/jiaf178)) — adults with HIV-associated tuberculous meningitis, plasma and cerebrospinal fluid.
+- Add Sun 2025 maribavir ([doi:10.1002/psp4.70054](https://doi.org/10.1002/psp4.70054)) -- healthy volunteers and hematopoietic cell or solid organ transplant recipients with cytomegalovirus infection.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
