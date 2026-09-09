@@ -372,7 +372,7 @@ mod
 #>     Cc_toca ~ add(addSd_Cc_toca) + prop(propSd_Cc_toca)
 #>   })
 #> }
-#> <environment: 0x557c4e762878>
+#> <environment: 0x55f1c5282378>
 ```
 
 ## Population
@@ -1054,7 +1054,7 @@ any tuning.
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 

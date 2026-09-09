@@ -111,7 +111,7 @@ rit <- readModelDb("Chen_2024_ritonavir")
 
 Before simulating a cohort, verify against the analytic one-compartment
 oral steady-state solution. Setting `CRCL = 80` and
-`CONMED_RTV_AUC_12h = 12.2` makes **both** covariate factors of Equation
+`CONMED_RTV_AUC_12H = 12.2` makes **both** covariate factors of Equation
 1 exactly 1, so the model must return `cl = 3.6` L/h – the Table 3
 typical value. This is a direct test that the two centring constants,
 which appear nowhere except inside Equation 1, were transcribed
@@ -126,7 +126,7 @@ correct gate here.
 ev_typ <- rxode2::et(amt = 300, cmt = "depot", time = DOSE_TIMES) |>
   rxode2::et(seq(0, 120, by = 0.25), cmt = "central") |>
   as.data.frame() |>
-  dplyr::mutate(id = 1L, CRCL = 80, CONMED_RTV_AUC_12h = 12.2)
+  dplyr::mutate(id = 1L, CRCL = 80, CONMED_RTV_AUC_12H = 12.2)
 
 sim_typ <- rxode2::rxSolve(rxode2::zeroRe(nir), events = ev_typ) |>
   as.data.frame()
@@ -274,11 +274,11 @@ rit_sim <- rxode2::rxSolve(rit, events = rit_events, keep = "CRCL") |>
 rit_cl <- rit_sim |>
   dplyr::group_by(id) |>
   dplyr::summarise(cl_rit = dplyr::first(cl), .groups = "drop") |>
-  dplyr::mutate(CONMED_RTV_AUC_12h = RIT_DOSE / cl_rit)
+  dplyr::mutate(CONMED_RTV_AUC_12H = RIT_DOSE / cl_rit)
 
-stopifnot(nrow(rit_cl) == N_ARM, all(is.finite(rit_cl$CONMED_RTV_AUC_12h)))
+stopifnot(nrow(rit_cl) == N_ARM, all(is.finite(rit_cl$CONMED_RTV_AUC_12H)))
 
-auc_q <- quantile(rit_cl$CONMED_RTV_AUC_12h, c(0.10, 0.50, 0.90))
+auc_q <- quantile(rit_cl$CONMED_RTV_AUC_12H, c(0.10, 0.50, 0.90))
 auc_q
 #>       10%       50%       90% 
 #>  3.728001  8.475159 20.052442
@@ -321,9 +321,9 @@ stopifnot(auc_q[["50%"]] < 12.2, auc_q[["90%"]] > 12.2)
 ``` r
 
 nir_subj <- base_subj |>
-  dplyr::left_join(rit_cl |> dplyr::select(id, CONMED_RTV_AUC_12h), by = "id")
+  dplyr::left_join(rit_cl |> dplyr::select(id, CONMED_RTV_AUC_12H), by = "id")
 
-stopifnot(nrow(nir_subj) == N_ARM, !anyNA(nir_subj$CONMED_RTV_AUC_12h))
+stopifnot(nrow(nir_subj) == N_ARM, !anyNA(nir_subj$CONMED_RTV_AUC_12H))
 
 nir_events <- nir_subj |>
   tidyr::crossing(time = DOSE_TIMES) |>
@@ -339,7 +339,7 @@ stopifnot(!anyDuplicated(unique(nir_events[, c("id", "time", "evid")])))
 
 nir_sim <- rxode2::rxSolve(
   nir, events = nir_events,
-  keep = c("CRCL", "CONMED_RTV_AUC_12h")
+  keep = c("CRCL", "CONMED_RTV_AUC_12H")
 ) |>
   as.data.frame()
 #> ℹ parameter labels from comments will be replaced by 'label()'
@@ -408,7 +408,7 @@ cl_subj <- nir_sim |>
   dplyr::group_by(id) |>
   dplyr::summarise(
     cl = dplyr::first(cl), CRCL = dplyr::first(CRCL),
-    AUC_RIT = dplyr::first(CONMED_RTV_AUC_12h), .groups = "drop"
+    AUC_RIT = dplyr::first(CONMED_RTV_AUC_12H), .groups = "drop"
   )
 
 cl_subj |>
@@ -656,7 +656,7 @@ and exact ordering assertions are appropriate.
 
 grid <- tidyr::crossing(
   CRCL = c(22.5, 37.5, 52.5, 80),                 # Table 4 rows: 15-30, 30-45, 45-60, >60
-  CONMED_RTV_AUC_12h = c(3.2, 5.8, 9.2, 17.5, 23.3)  # Table 4 column breakpoints
+  CONMED_RTV_AUC_12H = c(3.2, 5.8, 9.2, 17.5, 23.3)  # Table 4 column breakpoints
 ) |>
   dplyr::mutate(id = dplyr::row_number())
 
@@ -672,20 +672,20 @@ grid_events <- grid |>
 
 grid_sim <- rxode2::rxSolve(
   rxode2::zeroRe(nir), events = grid_events,
-  keep = c("CRCL", "CONMED_RTV_AUC_12h")
+  keep = c("CRCL", "CONMED_RTV_AUC_12H")
 ) |>
   as.data.frame() |>
   dplyr::filter(time == SS_END) |>
-  dplyr::select(CRCL, CONMED_RTV_AUC_12h, cl, Ctrough = Cc)
+  dplyr::select(CRCL, CONMED_RTV_AUC_12H, cl, Ctrough = Cc)
 #> ℹ parameter labels from comments will be replaced by 'label()'
 #> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
 #> Warning: multi-subject simulation without without 'omega'
 
 # Deterministic (zeroRe), so exact monotonicity is a valid assertion here.
-by_crcl <- grid_sim |> dplyr::arrange(CONMED_RTV_AUC_12h, CRCL) |>
-  dplyr::group_by(CONMED_RTV_AUC_12h) |>
+by_crcl <- grid_sim |> dplyr::arrange(CONMED_RTV_AUC_12H, CRCL) |>
+  dplyr::group_by(CONMED_RTV_AUC_12H) |>
   dplyr::summarise(monotone = all(diff(Ctrough) < 0), .groups = "drop")
-by_auc <- grid_sim |> dplyr::arrange(CRCL, CONMED_RTV_AUC_12h) |>
+by_auc <- grid_sim |> dplyr::arrange(CRCL, CONMED_RTV_AUC_12H) |>
   dplyr::group_by(CRCL) |>
   dplyr::summarise(monotone = all(diff(Ctrough) > 0), .groups = "drop")
 
@@ -695,7 +695,7 @@ stopifnot(nrow(by_auc) == 4L, all(by_auc$monotone))
 grid_sim |>
   dplyr::mutate(`Ctrough / EC90` = Ctrough / EC90_TOTAL) |>
   tidyr::pivot_wider(
-    id_cols = CRCL, names_from = CONMED_RTV_AUC_12h,
+    id_cols = CRCL, names_from = CONMED_RTV_AUC_12H,
     values_from = `Ctrough / EC90`
   ) |>
   dplyr::rename("CrCL (mL/min/1.73 m^2)" = CRCL) |>
@@ -751,7 +751,7 @@ make_pta_arm <- function(dose, crcl_lo, crcl_hi, id_offset, label) {
     dplyr::summarise(cl_rit = dplyr::first(cl), .groups = "drop")
   subj <- subj |>
     dplyr::left_join(rcl, by = "id") |>
-    dplyr::mutate(CONMED_RTV_AUC_12h = RIT_DOSE / cl_rit, arm = label)
+    dplyr::mutate(CONMED_RTV_AUC_12H = RIT_DOSE / cl_rit, arm = label)
 
   ev <- subj |>
     tidyr::crossing(time = DOSE_TIMES) |>

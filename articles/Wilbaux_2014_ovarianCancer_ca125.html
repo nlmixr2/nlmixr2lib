@@ -2821,10 +2821,10 @@ a sensible range.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_vpc</span> <span class="op">&lt;-</span> <span class="fu">rxSolve</span><span class="op">(</span><span class="va">mod</span>, <span class="va">ev_one</span>, nSub <span class="op">=</span> <span class="va">n_subj</span>, returnType <span class="op">=</span> <span class="st">"data.frame"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ parameter labels from comments will be replaced by 'label()'</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.67561e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 4.67579e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.93935e-310 illegal]: 10 warning(s) for subject(s): Unknown</span></span>
-<span><span class="co">#&gt; [intdy -- t = 6.93952e-310 illegal]: 1 warning(s) for subject(s): Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.64632e-310 illegal]: 10 warning(s) for subject(s): Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 4.64633e-310 illegal]: 1 warning(s) for subject(s): Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.91877e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
+<span><span class="co">#&gt; [intdy -- t = 6.91881e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown</span></span>
 <span><span class="co">#&gt; [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown</span></span>
 <span><span class="co"># rxSolve duplicates rows when multiple cmts are observed at the same time;</span></span>
 <span><span class="co"># dedup by (sim.id, time).</span></span>
@@ -3016,7 +3016,7 @@ vignette.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; R version 4.6.1 (2026-06-24)</span></span>
 <span><span class="co">#&gt; Platform: x86_64-pc-linux-gnu</span></span>
-<span><span class="co">#&gt; Running under: Ubuntu 24.04.4 LTS</span></span>
+<span><span class="co">#&gt; Running under: Ubuntu 24.04.5 LTS</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Matrix products: default</span></span>
 <span><span class="co">#&gt; BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 </span></span>

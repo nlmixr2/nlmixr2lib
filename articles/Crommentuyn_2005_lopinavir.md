@@ -9,7 +9,7 @@
   <doi:10.1111/j.1365-2125.2005.02455.x>. Per-subject ritonavir AUC over
   the 12 h dosing interval is computed from the upstream Kappelhoff et
   al. 2005 ritonavir popPK model (Br J Clin Pharmacol 2005;59:174-82)
-  and supplied as the time-fixed CONMED_RTV_AUC_12h covariate; the
+  and supplied as the time-fixed CONMED_RTV_AUC_12H covariate; the
   upstream ritonavir model is not structurally re-instantiated here
   (consistent with the Dickinson 2009 atazanavir precedent for an
   AUC-of-ritonavir-as-covariate encoding).
@@ -18,7 +18,7 @@
   HIV-1-infected adults on BID lopinavir/ritonavir 400-666/100-166 mg.
   Apparent oral clearance CL/F follows an inverse-saturable function of
   per-subject ritonavir AUC over the 12 h dosing interval
-  (CONMED_RTV_AUC_12h, mg\*h/L, computed from the upstream Kappelhoff
+  (CONMED_RTV_AUC_12H, mg\*h/L, computed from the upstream Kappelhoff
   2005 ritonavir popPK model) plus a pooled +39% NNRTI co-medication
   factor (efavirenz or nevirapine, encoded as the CONMED_NNRTI class
   indicator). IIV is estimated on ka, CL/F, and V/F as a full 3x3
@@ -42,7 +42,7 @@ indicator (efavirenz or nevirapine) carrying a +39% multiplicative
 increase on lopinavir CL/F (Results page 7, Table 2 row IND).
 
 The packaged model uses the canonical covariate names
-`CONMED_RTV_AUC_12h` for the per-subject ritonavir 12 h AUC (mg\*h/L)
+`CONMED_RTV_AUC_12H` for the per-subject ritonavir 12 h AUC (mg\*h/L)
 and `CONMED_NNRTI` for the binary NNRTI co-medication indicator. The
 upstream ritonavir popPK model (Kappelhoff et al. 2005, Br J Clin
 Pharmacol 59:174-82) used by the source paper to derive the per-subject
@@ -152,7 +152,7 @@ ev_ss <- rxode2::et(
 ) |>
   rxode2::et(seq(0, n_doses * ii, by = 0.25)) |>
   rxode2::et(id = 1)
-ev_ss$CONMED_RTV_AUC_12h <- 3.58
+ev_ss$CONMED_RTV_AUC_12H <- 3.58
 ev_ss$CONMED_NNRTI       <- 0
 
 sim_ss <- rxode2::rxSolve(mod_typical, ev_ss)
@@ -291,11 +291,11 @@ CONMED_NNRTI <- rbinom(n_subj, size = 1, prob = 0.21)
 
 cohort <- data.frame(
   ID                  = seq_len(n_subj),
-  CONMED_RTV_AUC_12h  = AUC_RTV,
+  CONMED_RTV_AUC_12H  = AUC_RTV,
   CONMED_NNRTI        = CONMED_NNRTI
 )
 
-summary(cohort$CONMED_RTV_AUC_12h)
+summary(cohort$CONMED_RTV_AUC_12H)
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
 #>  0.8566  2.5062  3.5481  4.0496  5.2020 14.8245
 table(cohort$CONMED_NNRTI)
@@ -320,14 +320,14 @@ build_subject_events <- function(id, auc_rtv, nnrti) {
     rxode2::et(c(seq(0, ii, by = 0.5), seq(13 * 24, 13 * 24 + ii, by = 0.5))) |>
     rxode2::et(id = id)
   df <- as.data.frame(ev)
-  df$CONMED_RTV_AUC_12h <- auc_rtv
+  df$CONMED_RTV_AUC_12H <- auc_rtv
   df$CONMED_NNRTI       <- nnrti
   df
 }
 
 ev_all <- do.call(
   rbind,
-  Map(build_subject_events, cohort$ID, cohort$CONMED_RTV_AUC_12h, cohort$CONMED_NNRTI)
+  Map(build_subject_events, cohort$ID, cohort$CONMED_RTV_AUC_12H, cohort$CONMED_NNRTI)
 )
 
 set.seed(2005)
@@ -510,7 +510,7 @@ NCA-derived CL/F (Discussion page 8).
     upstream Kappelhoff 2005 ritonavir popPK model (paper reference 19)
     and uses only the AUC_RTV value in the lopinavir CL/F equation. The
     library model follows the same pattern: ritonavir AUC enters as a
-    time-fixed covariate `CONMED_RTV_AUC_12h` rather than being
+    time-fixed covariate `CONMED_RTV_AUC_12H` rather than being
     simulated from a coupled ODE. This matches the Dickinson 2009
     atazanavir / Schipani 2013 atazanavir-ritonavir approach for
     atazanavir; a coupled-ODE alternative would be similar in shape to
@@ -546,7 +546,7 @@ NCA-derived CL/F (Discussion page 8).
   <doi:10.1111/j.1365-2125.2005.02455.x>. Per-subject ritonavir AUC over
   the 12 h dosing interval is computed from the upstream Kappelhoff et
   al. 2005 ritonavir popPK model (Br J Clin Pharmacol 2005;59:174-82)
-  and supplied as the time-fixed CONMED_RTV_AUC_12h covariate; the
+  and supplied as the time-fixed CONMED_RTV_AUC_12H covariate; the
   upstream ritonavir model is not structurally re-instantiated here
   (consistent with the Dickinson 2009 atazanavir precedent for an
   AUC-of-ritonavir-as-covariate encoding).

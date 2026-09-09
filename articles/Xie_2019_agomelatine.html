@@ -2527,10 +2527,10 @@ reference.</p>
 <span>  <span class="op">)</span></span>
 <span><span class="va">d_sim_prep</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">d_sim_dosing</span>, <span class="va">d_sim_obs</span><span class="op">)</span></span>
 <span><span class="va">d_sim_prep</span><span class="op">$</span><span class="va">WT</span> <span class="op">&lt;-</span> <span class="fl">60</span> <span class="co"># kg, based on table 1 from the paper</span></span>
-<span><span class="va">d_sim_prep</span><span class="op">$</span><span class="va">ooc1</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
-<span><span class="va">d_sim_prep</span><span class="op">$</span><span class="va">ooc2</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">d_sim_prep</span><span class="op">$</span><span class="va">ooc3</span> <span class="op">&lt;-</span></span>
-<span>  <span class="va">d_sim_prep</span><span class="op">$</span><span class="va">ooc4</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
+<span><span class="va">d_sim_prep</span><span class="op">$</span><span class="va">OOC1</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
+<span><span class="va">d_sim_prep</span><span class="op">$</span><span class="va">OOC2</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">d_sim_prep</span><span class="op">$</span><span class="va">OOC3</span> <span class="op">&lt;-</span></span>
+<span>  <span class="va">d_sim_prep</span><span class="op">$</span><span class="va">OOC4</span> <span class="op">&lt;-</span> <span class="fl">0</span></span>
 <span><span class="va">d_sim_pop</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://nlmixr2.github.io/nlmixr2est/reference/nlmixr2.html" class="external-link">nlmixr2</a></span><span class="op">(</span><span class="va">Xie_2019_agomelatine</span>, data <span class="op">=</span> <span class="va">d_sim_prep</span>, est <span class="op">=</span> <span class="st">"rxSolve"</span>, control <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>nStud <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in FUN(X[[i]], ...): some ID(s) could not solve the ODEs correctly;</span></span>
 <span><span class="co">#&gt; These values are replaced with 'NA'</span></span></code></pre></div>

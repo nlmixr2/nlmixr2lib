@@ -305,7 +305,7 @@ knitr::kable(nca_summary_r, caption = "R-carvedilol NCA on typical profiles.")
 | Interval Start | Interval End | treatment | N | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
 | 0 | Inf | 10 mg | 14 | 29.5 \[11.1\] | 0.000 \[0.000, 0.000\] | 1.74 \[0.000\] | 73.9 \[11.1\] |
-| 0 | Inf | 5 mg | 9 | 16.8 \[9.79\] | 0.000 \[0.000, 0.000\] | 1.74 \[4.84e-16\] | 42.0 \[9.79\] |
+| 0 | Inf | 5 mg | 9 | 16.8 \[9.79\] | 0.000 \[0.000, 0.000\] | 1.74 \[4.37e-16\] | 42.0 \[9.79\] |
 
 R-carvedilol NCA on typical profiles. {.table}
 
@@ -333,8 +333,8 @@ knitr::kable(nca_summary_s, caption = "S-carvedilol NCA on typical profiles.")
 
 | Interval Start | Interval End | treatment | N | Cmax (ng/mL) | Tmax (h) | Half-life (h) | AUCinf,obs (h\*ng/mL) |
 |---:|---:|:---|:---|:---|:---|:---|:---|
-| 0 | Inf | 10 mg | 14 | 10.0 \[11.1\] | 0.000 \[0.000, 0.000\] | 2.40 \[2.46e-16\] | 34.7 \[11.1\] |
-| 0 | Inf | 5 mg | 9 | 5.71 \[9.79\] | 0.000 \[0.000, 0.000\] | 2.40 \[1.57e-16\] | 19.7 \[9.79\] |
+| 0 | Inf | 10 mg | 14 | 10.0 \[11.1\] | 0.000 \[0.000, 0.000\] | 2.40 \[3.02e-16\] | 34.7 \[11.1\] |
+| 0 | Inf | 5 mg | 9 | 5.71 \[9.79\] | 0.000 \[0.000, 0.000\] | 2.40 \[3.85e-16\] | 19.7 \[9.79\] |
 
 S-carvedilol NCA on typical profiles. {.table}
 

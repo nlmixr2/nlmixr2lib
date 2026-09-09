@@ -50,10 +50,36 @@ legitimately ratifies the name.
 
 ## Case convention
 
-Covariate column names should be ALL CAPS. Current non-all-caps
-canonical names are `dilution` and `nonECZTRA` (both scope: specific),
-preserved from their source files with “future rename” notes. New
-entries should default to all caps.
+Covariate column names are **ALL CAPS** by default.
+[`checkNamingRegisters()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkNamingRegisters.md)
+enforces this mechanically: any `###` canonical in this file that is not
+all caps and is not listed below is reported as a `case-convention`
+issue, and any name listed below that no longer has an entry is reported
+as `stale-case-exemption`. The list is therefore the complete and
+current set of exceptions – it cannot drift out of date the way the
+hand-maintained sentence it replaced did (that sentence named two
+exceptions when there were ten).
+
+An exception is only for a name whose case is **load-bearing**:
+upper-casing it would change or destroy the meaning. “The source paper
+spelled it that way” is not a reason – source spellings belong in
+`Source aliases:` and in the model’s `source_name` field, not in the
+canonical. The six legacy lower-case canonicals that were carried for
+that reason (`dilution`, `nonECZTRA`, `ooc1`-`ooc4`) were renamed on
+2026-09-09, along with `CONMED_RTV_AUC_12h`, whose `h` was an ordinary
+unit initialism rather than a case-significant one.
+
+To add an exception, add the name as a nested bullet here **and** say
+why in the entry’s own `Notes:` field.
+
+- **Case-significant unit suffix** – the trailing unit is only
+  unambiguous in mixed case (picomolar `pM` is not `PM`, which is a
+  different quantity):
+  - `L_ANTAGONIST_pM`
+  - `L_OPIOID_pM`
+- **Case-significant proper noun** – a construct, reagent, or
+  gene-product name whose published spelling carries the meaning:
+  - `STUDY_d2eGFP`
 
 ## Entry schema
 
@@ -35810,7 +35836,7 @@ indicators = 0 selects the reference).
   including rilpivirine / doravirine / etravirine / delavirdine should
   document each one).
 
-### CONMED_RTV_AUC_12h (**canonical for ritonavir AUC over the 0-12 h q12h dosing interval (BID ritonavir regimens)**)
+### CONMED_RTV_AUC_12H (**canonical for ritonavir AUC over the 0-12 h q12h dosing interval (BID ritonavir regimens)**)
 
 - **Description:** Per-subject (time-fixed within an evaluated regimen)
   ritonavir AUC over a 12-hour dosing interval (q12h, BID ritonavir),
@@ -35822,16 +35848,16 @@ indicators = 0 selects the reference).
   Bayesian CL_RTV estimates from the Kappelhoff et al. 2005 ritonavir
   popPK model (Crommentuyn 2005 reference \[19\], Br J Clin Pharmacol
   59:174-82), and feeds the lopinavir CL/F inverse-saturable form
-  `cl = exp(lcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12h)) * IND` with
+  `cl = exp(lcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12H)) * IND` with
   `auc50 = 2.26 mg*h/L` (Crommentuyn 2005 Methods Equations 1-2; Table
   2).
 - **Units:** `mg*h/L` (document per-model via
-  `covariateData[[CONMED_RTV_AUC_12h]]$units` if a different exposure
+  `covariateData[[CONMED_RTV_AUC_12H]]$units` if a different exposure
   unit is reported).
 - **Type:** continuous
 - **Scope:** specific
 - **Reference category:** n/a – enters via the inverse-saturable form
-  `auc50 / (auc50 + CONMED_RTV_AUC_12h)` (Crommentuyn 2005) or via a
+  `auc50 / (auc50 + CONMED_RTV_AUC_12H)` (Crommentuyn 2005) or via a
   centred power form (vonHentig 2009, Chen 2024). Reference values
   observed: 3.58 mg*h/L (Crommentuyn 2005 cohort median across 122
   HIV-1-infected adults on BID LPV/r; range 0.85-18.77), 6.70355 mg*h/L
@@ -35853,18 +35879,18 @@ indicators = 0 selects the reference).
     value is the 12 h dosing-interval AUC and belongs to this canonical
     rather than the q24h `AUC_RTV` / `CONMED_RTV_AUC`.
 - **Example models:** `Crommentuyn_2005_lopinavir.R` (lopinavir CL/F
-  inverse-saturable dependence on CONMED_RTV_AUC_12h:
-  `cl = exp(lcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12h)) * IND` with
+  inverse-saturable dependence on CONMED_RTV_AUC_12H:
+  `cl = exp(lcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12H)) * IND` with
   `auc50 = 2.26 mg*h/L` and `IND = 1 + 0.39 * CONMED_NNRTI`),
   `vonHentig_2009_saquinavir.R` (saquinavir CL/F centred power
-  dependence on CONMED_RTV_AUC_12h:
-  `cl = exp(lcl) * e_atazanavir_cl^CONMED_ATAZANAVIR * (CONMED_RTV_AUC_12h / 6.70355)^e_rtv_auc_12h_cl`
+  dependence on CONMED_RTV_AUC_12H:
+  `cl = exp(lcl) * e_atazanavir_cl^CONMED_ATAZANAVIR * (CONMED_RTV_AUC_12H / 6.70355)^e_rtv_auc_12h_cl`
   with `e_rtv_auc_12h_cl = -0.403`; centred at the cohort median 6.70355
   mg\*h/L so saquinavir CL/F equals the typical 60.4 L/h at the median
   ritonavir exposure when atazanavir is absent),
   `Chen_2024_nirmatrelvir.R` (nirmatrelvir CL/F centred power dependence
-  on CONMED_RTV_AUC_12h alongside CRCL:
-  `cl = exp(lcl + etalcl) * (CRCL / 80)^e_crcl_cl * (CONMED_RTV_AUC_12h / 12.2)^e_rtv_auc_12h_cl`
+  on CONMED_RTV_AUC_12H alongside CRCL:
+  `cl = exp(lcl + etalcl) * (CRCL / 80)^e_crcl_cl * (CONMED_RTV_AUC_12H / 12.2)^e_rtv_auc_12h_cl`
   with `e_rtv_auc_12h_cl = -0.45`, Chen 2024 Equation 1; the per-subject
   covariate value is computed by the paper’s Equation 2 as
   `100 / cl_ritonavir` from the companion ritonavir model fit in the
@@ -48201,26 +48227,47 @@ explicit in the register rather than relying on the column name alone.
   subject-level otherwise. Mirrors the `FORM_<drug>_<variant>` family
   pattern.
 
-### dilution (**canonical for diluted-drug-product indicator**)
+### DILUTION (**canonical for diluted-drug-product indicator**)
 
 - **Description:** 1 = drug diluted (Soehoel 2022 study D2213C00001), 0
   = not diluted.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Example models:** `Soehoel_2022_tralokinumab.R`.
-- **Notes:** Lower-case preserved from source; future models should
-  rename to `DILUTION`. Kept as alias here to match existing file.
+- **Reference category:** 0 (not diluted).
+- **Source aliases:**
+  - `dilution` (same orientation, no value transformation) – the
+    spelling used in `Soehoel_2022_tralokinumab.R`’s source paper,
+    recorded in that model’s `source_name` field.
+- **Example models:** `Soehoel_2022_tralokinumab.R` (multiplicative
+  effects on bioavailability and absorption rate:
+  `fdepot = exp(lfdepot) * (1 + e_dilution_fdepot * DILUTION)` and
+  `ka = exp(lka) * (1 + e_dilution_ka * DILUTION)`).
+- **Notes:** Renamed from the source’s lower-case `dilution` on
+  2026-09-09, when the ALL-CAPS convention became machine-enforced; the
+  covariate-effect parameters keep the lower-cased covariate token
+  (`e_dilution_<param>`) as the whole `e_<cov>_<param>` family does.
 
-### nonECZTRA (**canonical for non-ECZTRA-trial indicator**)
+### NON_ECZTRA (**canonical for non-ECZTRA-trial indicator**)
 
 - **Description:** 1 = not the ECZTRA trial; 0 = ECZTRA.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** specific
-- **Example models:** `Soehoel_2022_tralokinumab.R`.
-- **Notes:** Mixed case preserved from source; future models should
-  rename to `NON_ECZTRA` or `STUDY_NON_ECZTRA`.
+- **Reference category:** 0 (enrolled in an ECZTRA phase 3 trial).
+- **Source aliases:**
+  - `nonECZTRA` (same orientation, no value transformation) – the
+    mixed-case spelling used in `Soehoel_2022_tralokinumab.R`’s source
+    paper, recorded in that model’s `source_name` field.
+- **Example models:** `Soehoel_2022_tralokinumab.R` (multiplicative
+  effects on clearance and central volume:
+  `cl = ... * (1 + e_non_ecztra_cl * NON_ECZTRA)` and
+  `vc = ... * (1 + e_non_ecztra_vc * NON_ECZTRA)`).
+- **Notes:** Renamed from the source’s mixed-case `nonECZTRA` on
+  2026-09-09, when the ALL-CAPS convention became machine-enforced.
+  `NON_ECZTRA` was taken over `STUDY_NON_ECZTRA` because the model
+  file’s own rename note named it; the `STUDY_*` family names the cohort
+  a subject IS in, whereas this indicator is the complement of one.
 
 ### SEASON2 (**canonical for second RSV season at dosing indicator**)
 
@@ -52513,10 +52560,10 @@ explicit in the register rather than relying on the column name alone.
   this parameter because the paper found IIV in MTT “reduced to zero
   when associated with IOV”).
 - **Notes:** `OCC` is the recommended canonical for new IOV-using models
-  – the binary `ooc1..oocN` indicators below remain canonical for legacy
+  – the binary `OOC1..OOCN` indicators below remain canonical for legacy
   / pre-existing models that ship the data already-decomposed.
 
-### ooc1, ooc2, ooc3, ooc4 (**canonical for mutually-exclusive crossover occasion indicators**)
+### OOC1, OOC2, OOC3, OOC4 (**canonical for mutually-exclusive crossover occasion indicators**)
 
 - **Description:** Mutually exclusive occasion indicators for a
   crossover / multi-period design. Exactly one is 1 per observation.
@@ -52524,9 +52571,12 @@ explicit in the register rather than relying on the column name alone.
 - **Type:** binary
 - **Scope:** specific
 - **Example models:** `Xie_2019_agomelatine.R`.
-- **Notes:** Lower case preserved from source file. Pre-existing legacy
-  form; new models should prefer the integer-valued `OCC` canonical
-  above and decompose into binary indicators inside `model`.
+- **Notes:** Renamed from the source file’s lower-case `ooc1..ooc4` on
+  2026-09-09, when the ALL-CAPS convention became machine-enforced; the
+  source spellings are recorded in `Xie_2019_agomelatine.R`’s
+  `source_name` fields. This remains the already-decomposed legacy form
+  – new models should prefer the integer-valued `OCC` canonical above
+  and decompose into binary indicators inside `model`.
 
 ### MONTH1 (**canonical for first-month-of-treatment landmark indicator**)
 
