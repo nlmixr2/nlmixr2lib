@@ -1110,6 +1110,8 @@ navbar:
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
       - text: "Dha troph late (Cao 2017)"
         href: articles/Cao_2017_dha_artemisinin_stress_model.html
+      - text: "Diamorphine (Cai 2025)"
+        href: articles/Cai_2025_diamorphine.html
       - text: "Diazepam (Ku 2018)"
         href: articles/Ku_2018_diazepam.html
       - text: "Diazepam human pbpk (Yau 2023)"
@@ -5036,6 +5038,7 @@ articles:
   - articles/ButraguenoLaiseca_2024_meropenem
   - articles/ButraguenoLaiseca_2025_teicoplanin
   - articles/Byrne_2022_imr687
+  - articles/Cai_2025_diamorphine
   - articles/Caldes_2009_ganciclovir
   - articles/Cammarata_2024_sulbactam_durlobactam
   - articles/Campagne_2019_cyclophosphamide_mouse

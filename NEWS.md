@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Huang 2025 colistin sulfate ([doi:10.1177/00368504251325334](https://doi.org/10.1177/00368504251325334)) -- critically ill adults on continuous veno-venous hemodiafiltration.
+- Add Cai 2025 diamorphine ([doi:10.1002/psp4.13186](https://doi.org/10.1002/psp4.13186)) -- adult male heroin users, extrapolated to children.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
