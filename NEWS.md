@@ -17,7 +17,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Chen 2025 vancomycin ([doi:10.1128/spectrum.00499-25](https://doi.org/10.1128/spectrum.00499-25)) -- adult intensive-care patients with sepsis.
+- Add Tian 2025 linezolid ([doi:10.1128/aac.01299-24](https://doi.org/10.1128/aac.01299-24)) -- Chinese children aged 0-16 years with bacterial infections.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
