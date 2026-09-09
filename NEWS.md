@@ -15,6 +15,8 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
+- Add Tan 2025 cabotegravir and rilpivirine ([doi:10.1093/ofid/ofaf614](https://doi.org/10.1093/ofid/ofaf614)) -- adults with virologically suppressed HIV-1 on long-acting injectable therapy in routine outpatient care.
+
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
 - Add Bender 2024 mosunetuzumab ([doi:10.1111/cts.13825](https://doi.org/10.1111/cts.13825)) -- adults with relapsed/refractory B-cell non-Hodgkin lymphoma.
