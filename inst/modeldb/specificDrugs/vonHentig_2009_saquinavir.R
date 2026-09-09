@@ -7,8 +7,8 @@ vonHentig_2009_saquinavir <- function() {
     "indicator (CONMED_ATAZANAVIR; 49 of 136 patients on ATV 300 mg QD) as a",
     "power-of-binary multiplier 0.703^CONMED_ATAZANAVIR (30% CL reduction",
     "when atazanavir is coadministered), and the per-subject ritonavir 12 h",
-    "AUC (CONMED_RTV_AUC_12h, cohort median 6.70355 mg*h/L) as a normalised",
-    "power form (CONMED_RTV_AUC_12h / 6.70355)^(-0.403). Saquinavir formulation",
+    "AUC (CONMED_RTV_AUC_12H, cohort median 6.70355 mg*h/L) as a normalised",
+    "power form (CONMED_RTV_AUC_12H / 6.70355)^(-0.403). Saquinavir formulation",
     "(Invirase hard gel vs Fortovase soft gel) was tested and not retained.",
     "Inter-individual variability is estimated on CL/F (53.1% CV) and V/F",
     "(54.8% CV); IIV on ka was rejected during model building. Residual error",
@@ -55,7 +55,7 @@ vonHentig_2009_saquinavir <- function() {
       ),
       source_name        = "atazanavir"
     ),
-    CONMED_RTV_AUC_12h = list(
+    CONMED_RTV_AUC_12H = list(
       description        = "Per-subject ritonavir AUC over the 12 h dosing interval (BID ritonavir 100 mg)",
       units              = "mg*h/L",
       type               = "continuous",
@@ -66,7 +66,7 @@ vonHentig_2009_saquinavir <- function() {
         "profile (predose and 1, 2, 4, 6, 9, 12 h) using the",
         "log-trapezoidal rule. Cohort median 6703.55 ng/ml*h =",
         "6.70355 mg*h/L (Table 1 footnote). Enters saquinavir CL/F via a",
-        "centred power form: cl = ... * (CONMED_RTV_AUC_12h / 6.70355)^",
+        "centred power form: cl = ... * (CONMED_RTV_AUC_12H / 6.70355)^",
         "e_rtv_auc_12h_cl with e_rtv_auc_12h_cl = -0.403 (Table 2 final",
         "model). At the cohort median the power term evaluates to 1 and",
         "CL/F equals the typical 60.4 L/h (without atazanavir)."
@@ -133,7 +133,7 @@ vonHentig_2009_saquinavir <- function() {
         "jeopardize saquinavir therapy (Discussion)."
       )
     ),
-    CONMED_RTV_AUC_12h_AUCATAZ = list(
+    CONMED_RTV_AUC_12H_AUCATAZ = list(
       description = "Per-subject atazanavir AUC over the 24 h dosing interval (when CONMED_ATAZANAVIR = 1)",
       units       = "ng/ml*h",
       type        = "continuous",
@@ -180,7 +180,7 @@ vonHentig_2009_saquinavir <- function() {
     # (final) model column.
     # ============================================================
     lcl <- log(60.4)
-    label("Apparent oral clearance CL/F at no-atazanavir + median CONMED_RTV_AUC_12h (L/h)")  # Table 2 full: CL/F = 60.4 L/h (95% CI 52.7-69)
+    label("Apparent oral clearance CL/F at no-atazanavir + median CONMED_RTV_AUC_12H (L/h)")  # Table 2 full: CL/F = 60.4 L/h (95% CI 52.7-69)
     lvc <- log(126)
     label("Apparent volume of distribution V/F (L)")                                          # Table 2 full: V/F = 126 L (95% CI 105-147)
     lka <- log(0.21)
@@ -236,7 +236,7 @@ vonHentig_2009_saquinavir <- function() {
     vc <- exp(lvc + etalvc)
     cl <- exp(lcl + etalcl) *
       e_atazanavir_cl^CONMED_ATAZANAVIR *
-      (CONMED_RTV_AUC_12h / 6.70355)^e_rtv_auc_12h_cl
+      (CONMED_RTV_AUC_12H / 6.70355)^e_rtv_auc_12h_cl
 
     # Micro-constant.
     kel <- cl / vc

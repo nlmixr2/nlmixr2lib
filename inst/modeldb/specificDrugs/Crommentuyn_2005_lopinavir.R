@@ -4,7 +4,7 @@ Crommentuyn_2005_lopinavir <- function() {
     "lopinavir co-administered with ritonavir in 122 HIV-1-infected adults",
     "on BID lopinavir/ritonavir 400-666/100-166 mg. Apparent oral clearance",
     "CL/F follows an inverse-saturable function of per-subject ritonavir",
-    "AUC over the 12 h dosing interval (CONMED_RTV_AUC_12h, mg*h/L, computed",
+    "AUC over the 12 h dosing interval (CONMED_RTV_AUC_12H, mg*h/L, computed",
     "from the upstream Kappelhoff 2005 ritonavir popPK model) plus a pooled",
     "+39% NNRTI co-medication factor (efavirenz or nevirapine, encoded as",
     "the CONMED_NNRTI class indicator). IIV is estimated on ka, CL/F, and",
@@ -23,7 +23,7 @@ Crommentuyn_2005_lopinavir <- function() {
     "Per-subject ritonavir AUC over the 12 h dosing interval is computed",
     "from the upstream Kappelhoff et al. 2005 ritonavir popPK model",
     "(Br J Clin Pharmacol 2005;59:174-82) and supplied as the time-fixed",
-    "CONMED_RTV_AUC_12h covariate; the upstream ritonavir model is not",
+    "CONMED_RTV_AUC_12H covariate; the upstream ritonavir model is not",
     "structurally re-instantiated here (consistent with the Dickinson 2009",
     "atazanavir precedent for an AUC-of-ritonavir-as-covariate encoding)."
   )
@@ -39,7 +39,7 @@ Crommentuyn_2005_lopinavir <- function() {
   )
 
   covariateData <- list(
-    CONMED_RTV_AUC_12h = list(
+    CONMED_RTV_AUC_12H = list(
       description        = "Per-subject ritonavir AUC over the 12 h dosing interval (BID ritonavir)",
       units              = "mg*h/L",
       type               = "continuous",
@@ -51,7 +51,7 @@ Crommentuyn_2005_lopinavir <- function() {
         "Bayesian CL_RTV estimates from the upstream Kappelhoff 2005",
         "ritonavir popPK model (paper reference 19). Enters lopinavir",
         "CL/F via the inverse-saturable form",
-        "cl = exp(lcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12h)) * IND",
+        "cl = exp(lcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12H)) * IND",
         "with auc50 = 2.26 mg*h/L (Crommentuyn 2005 Methods Equation 2,",
         "Results page 6, Table 2 row AUC50). Crommentuyn 2005 cohort",
         "median 3.58 mg*h/L (range 0.85-18.77); at that median, lopinavir",
@@ -234,7 +234,7 @@ Crommentuyn_2005_lopinavir <- function() {
     # the value the paper reports.
     # ------------------------------------------------------------
     auc50 <- exp(lauc50)
-    cl    <- exp(lcl + etalcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12h)) * ind
+    cl    <- exp(lcl + etalcl) * (auc50 / (auc50 + CONMED_RTV_AUC_12H)) * ind
     vc    <- exp(lvc + etalvc)
     ka    <- exp(lka + etalka)
 

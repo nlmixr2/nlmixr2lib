@@ -34,7 +34,7 @@ population PK model for orally administered ritonavir-boosted saquinavir
 two covariates on apparent oral clearance CL/F: a binary atazanavir
 coadministration indicator (`CONMED_ATAZANAVIR`; 49 of 136 patients on ATV
 300 mg QD) entering as a power-of-binary multiplier, and the per-subject
-ritonavir 12 h AUC (`CONMED_RTV_AUC_12h`; cohort median 6.70355 mg*h/L =
+ritonavir 12 h AUC (`CONMED_RTV_AUC_12H`; cohort median 6.70355 mg*h/L =
 6703.55 ng/ml*h) entering as a centred power form. Demographics (age, weight,
 sex, pregnancy) and the saquinavir capsule formulation (Invirase hard gel vs
 Fortovase soft gel) were tested and not retained.
@@ -106,7 +106,7 @@ The saquinavir CL/F equation (Table 2 full-model column) expands to:
 
 ```
 CL/F_i = exp(lcl + etalcl_i) * 0.703^CONMED_ATAZANAVIR
-                            * (CONMED_RTV_AUC_12h / 6.70355)^(-0.403)
+                            * (CONMED_RTV_AUC_12H / 6.70355)^(-0.403)
 ```
 
 At the cohort-median ritonavir AUC of 6.70355 mg*h/L without atazanavir,
@@ -141,7 +141,7 @@ ev_ss_noatv <- rxode2::et(
   rxode2::et(seq(0, n_doses * ii, by = 0.25)) |>
   rxode2::et(id = 1)
 ev_ss_noatv$CONMED_ATAZANAVIR  <- 0
-ev_ss_noatv$CONMED_RTV_AUC_12h <- 6.70355
+ev_ss_noatv$CONMED_RTV_AUC_12H <- 6.70355
 
 sim_ss_noatv <- rxode2::rxSolve(mod_typical, ev_ss_noatv)
 
@@ -199,7 +199,7 @@ which is consistent with stronger CYP3A inhibition at higher booster
 concentrations. The closed-form typical CL/F is:
 
 ```
-CL/F = 60.4 * 0.703^CONMED_ATAZANAVIR * (CONMED_RTV_AUC_12h / 6.70355)^(-0.403)
+CL/F = 60.4 * 0.703^CONMED_ATAZANAVIR * (CONMED_RTV_AUC_12H / 6.70355)^(-0.403)
 ```
 
 ```{r cl-vs-aucrtv}
@@ -251,7 +251,7 @@ cohort <- data.frame(
 )
 
 # Ritonavir 12 h AUC ~ log-normal centred at cohort median 6.70355 mg*h/L.
-cohort$CONMED_RTV_AUC_12h <- pmin(
+cohort$CONMED_RTV_AUC_12H <- pmin(
   20,
   pmax(1, exp(rnorm(n_subj, log(6.70355), 0.5)))
 )
@@ -260,7 +260,7 @@ cohort$CONMED_RTV_AUC_12h <- pmin(
 cohort <- cohort[sample.int(n_subj), ]
 cohort$ID <- seq_len(n_subj)
 
-summary(cohort$CONMED_RTV_AUC_12h)
+summary(cohort$CONMED_RTV_AUC_12H)
 table(CONMED_ATAZANAVIR = cohort$CONMED_ATAZANAVIR)
 ```
 
@@ -279,7 +279,7 @@ build_subject_events <- function(id, atv, auc_rtv) {
     rxode2::et(id = id)
   df <- as.data.frame(ev)
   df$CONMED_ATAZANAVIR  <- atv
-  df$CONMED_RTV_AUC_12h <- auc_rtv
+  df$CONMED_RTV_AUC_12H <- auc_rtv
   df
 }
 
@@ -289,7 +289,7 @@ ev_all <- do.call(
     build_subject_events,
     cohort$ID,
     cohort$CONMED_ATAZANAVIR,
-    cohort$CONMED_RTV_AUC_12h
+    cohort$CONMED_RTV_AUC_12H
   )
 )
 

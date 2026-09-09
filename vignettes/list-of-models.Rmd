@@ -70,12 +70,55 @@ if (!"category" %in% names(display)) {
   )
 }
 
+# `label` and `description` are PLAIN TEXT written by model authors, and both
+# routinely contain characters that are markup in the two languages this table
+# passes through:
+#
+#   * HTML -- `<` and `&` are common in descriptions ("toddlers <3 years",
+#     "active->resting flux", "CLCR <= 40 mL/min", "<drug>" placeholders). Sent
+#     to the browser unescaped, "<3 years" opens a tag and the rest of the cell
+#     disappears.
+#   * pandoc markdown -- the table is an HTML block inside a markdown document,
+#     and pandoc's `markdown_in_html_blocks` extension (on by default) parses
+#     the CONTENT of block-level HTML tags as markdown. That turns `_x_` and
+#     `*x*` into emphasis (1,206 descriptions contain one or the other) and,
+#     far worse, treats a `$` as opening inline math: six descriptions name a
+#     NONMEM record -- `$PRED`, `$DES`, `$MIXTURE`, `$PK`, `$PRIOR` -- and each
+#     swallowed every row up to the next `$` on the page, rendering 1,461 of
+#     the 2,642 rows as escaped source text.
+#
+# So the text is HTML-escaped here (keeping `escape = FALSE` in kable() for the
+# deliberately-HTML `<a>` wrapper), and render_table() then emits the finished
+# table as a pandoc RAW block so pandoc cannot reinterpret it. Both halves are
+# needed: escaping alone leaves the markdown parsing, and a raw block alone
+# leaves the browser eating "<3 years".
+escapeHtml <- function(x) {
+  x <- gsub("&", "&amp;", x, fixed = TRUE)
+  x <- gsub("<", "&lt;", x, fixed = TRUE)
+  x <- gsub(">", "&gt;", x, fixed = TRUE)
+  gsub('"', "&quot;", x, fixed = TRUE)
+}
+
+# render_table() emits the table as a pandoc raw block, whose fence is closed
+# by a line beginning with three backticks. Cell text is written inline after
+# `<td ...>`, so it can only reach the start of a line if it contains a newline
+# of its own. No shipped description does. Assert it rather than let a future
+# one silently truncate the page -- the failure this vignette is being fixed
+# for was exactly this shape, a stray character quietly eating the rest of the
+# table, and it went unnoticed because nothing checked.
+stopifnot(
+  !any(grepl("\n", display$label, fixed = TRUE)),
+  !any(grepl("\n", display$description, fixed = TRUE))
+)
+
 base_url <- "https://nlmixr2.github.io/nlmixr2lib/articles/"
+display$label_html <- escapeHtml(display$label)
+display$description_html <- escapeHtml(display$description)
 display$name_html <- ifelse(
   is.na(display$vignette),
-  display$label,
+  display$label_html,
   sprintf('<a href="%s%s.html">%s</a>',
-          base_url, display$vignette, display$label)
+          base_url, escapeHtml(display$vignette), display$label_html)
 )
 
 # Map the internal category strings to the user-facing section labels.
@@ -87,14 +130,16 @@ display$section <- factor(
 
 render_table <- function(rows) {
   rows <- rows[order(rows$label), , drop = FALSE]
-  rows[, c("name_html", "description")] |>
-    dplyr::rename(name = name_html) |>
+  tbl <- rows[, c("name_html", "description_html")] |>
+    dplyr::rename(name = name_html, description = description_html) |>
     knitr::kable(
       format = "html",
       row.names = FALSE,
       table.attr = 'class="model-list-table"',
       escape = FALSE
     )
+  # Raw block: hand the finished table to pandoc as-is (see the note above).
+  knitr::raw_block(as.character(tbl), "html")
 }
 ```
 

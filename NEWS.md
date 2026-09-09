@@ -4,6 +4,46 @@
 
 - Add Tsirizani 2025 ritonavir ([doi:10.1128/aac.00771-25](https://doi.org/10.1128/aac.00771-25)) -- African children with HIV on ritonavir-boosted lopinavir, atazanavir or darunavir.
 
+- Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
+  purely because a source paper spelled them that way: `dilution` ->
+  `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and
+  `CONMED_RTV_AUC_12h` -> `CONMED_RTV_AUC_12H`. The source spellings are kept
+  in each model's `source_name` field and as documented `Source aliases:` in
+  the register, so no provenance is lost. **This is a breaking change for any
+  data frame supplying these columns by name**; five models and their vignettes
+  are updated (`Soehoel_2022_tralokinumab`, `Xie_2019_agomelatine`,
+  `Chen_2024_nirmatrelvir`, `Crommentuyn_2005_lopinavir`,
+  `vonHentig_2009_saquinavir`). The covariate-effect parameters follow the
+  `e_<cov>_<param>` family's lower-cased covariate token, so
+  `e_nonECZTRA_cl`/`e_nonECZTRA_vc` become `e_non_ecztra_cl`/`e_non_ecztra_vc`
+  while `e_dilution_*` and `e_rtv_auc_12h_*` are unchanged.
+
+  The `## Case convention` exception list is correspondingly reduced to the
+  three names whose case is genuinely load-bearing: `L_ANTAGONIST_pM` and
+  `L_OPIOID_pM` (picomolar `pM` is not `PM`) and `STUDY_d2eGFP` (a construct
+  name). "The source paper spelled it that way" is no longer an accepted
+  reason for an exception.
+
+- Fix the "List of models" vignette, which was rendering roughly 1,500 of its
+  2,642 rows as escaped HTML source instead of table rows. Model `description`
+  text is plain text but was being passed through two markup layers unescaped:
+  the browser (so a description reading "toddlers <3 years" opened a tag) and
+  pandoc, whose `markdown_in_html_blocks` extension parses the content of HTML
+  blocks as markdown. The latter was the destructive one -- a description
+  mentioning a NONMEM record such as `$PRED` opened an inline-math span that
+  swallowed every row up to the next `$` on the page. Descriptions and labels
+  are now HTML-escaped and the finished table is handed to pandoc as a raw
+  block, so all 2,642 models and their 2,593 vignette links render.
+
+- Document the covariate register's ALL-CAPS exceptions accurately and enforce
+  them. The `## Case convention` section of `inst/references/covariate-columns.md`
+  named two non-all-caps canonicals when the register held ten; it is now a
+  machine-read list, grouped by why each is exempt (case-significant unit
+  suffix, case-significant proper noun, or legacy source-preserved).
+  `checkNamingRegisters()` gains `case-convention` and `stale-case-exemption`
+  checks that read that list, so neither an undocumented lower-case canonical
+  nor a documented name whose entry has gone can pass unnoticed.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
