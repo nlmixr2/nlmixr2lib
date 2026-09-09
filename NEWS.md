@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Qin 2025 ropeginterferon alfa-2b ([doi:10.1002/prp2.70109](https://doi.org/10.1002/prp2.70109)) -- healthy Chinese and Japanese adults and patients with polycythaemia vera; ten models (population PK, three hematologic PK-PD, six exposure-response).
+- Add Koele 2025 BTZ-043 population PK and bacterial-load exposure-response models ([doi:10.1093/jac/dkaf076](https://doi.org/10.1093/jac/dkaf076)) -- adults with drug-susceptible pulmonary tuberculosis on 14 days of BTZ-043 monotherapy.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
