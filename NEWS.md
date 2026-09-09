@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wang 2025 serplulimab ([doi:10.1111/cts.70322](https://doi.org/10.1111/cts.70322)) -- adults with advanced solid tumours, including extensive-stage small cell lung cancer.
+- Add Patel 2025 recombinant ADAMTS13 ([doi:10.1002/cpt.3720](https://doi.org/10.1002/cpt.3720)) -- adults and children with congenital thrombotic thrombocytopenic purpura. Five models: the population PK plus the paper's count and repeated time-to-event exposure-response analyses for thrombocytopenia and elevated LDH.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
