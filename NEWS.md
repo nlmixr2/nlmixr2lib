@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Tsirizani 2025 ritonavir ([doi:10.1128/aac.00771-25](https://doi.org/10.1128/aac.00771-25)) -- African children with HIV on ritonavir-boosted lopinavir, atazanavir or darunavir.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
