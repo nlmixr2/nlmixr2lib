@@ -962,6 +962,8 @@ navbar:
         href: articles/Jung_2024_clopidogrel.html
       - text: "Clopidogrel (Pejcic 2024)"
         href: articles/Pejcic_2024_clopidogrel.html
+      - text: "Clozapine (Han 2025)"
+        href: articles/Han_2025_clozapine.html
       - text: "Clozapine (Li 2012)"
         href: articles/Li_2012_clozapine.html
       - text: "Cobicistat (Overbeek 2025)"
@@ -5651,6 +5653,7 @@ articles:
   - articles/Han_2016_bevacizumab
   - articles/Han_2018_methionineMetabolismCycle
   - articles/Han_2024_ainuovirine
+  - articles/Han_2025_clozapine
   - articles/Han_2025_cyp3a4_pediatric_geriatric_pbpk
   - articles/Hanan_2026_peginterferon_alfa_hbsag_loss
   - articles/Hanberg_2018_meropenem
