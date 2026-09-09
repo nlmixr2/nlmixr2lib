@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Overbeek 2025 cobicistat and olaparib well-stirred liver models ([doi:10.1007/s40262-025-01480-w](https://doi.org/10.1007/s40262-025-01480-w)) -- healthy volunteers, postpartum women with HIV, patients with rheumatoid arthritis and patients with solid tumours.
+- Add Ling 2025 ropivacaine ([doi:10.3389/fphar.2025.1540606](https://doi.org/10.3389/fphar.2025.1540606)) -- adults undergoing thoracoscopic lobectomy with a serratus anterior plane block.
 
 - Add Sager 2023 sotrovimab population PK and COVID-19 progression exposure-response models ([doi:10.1002/psp4.12958](https://doi.org/10.1002/psp4.12958)) -- non-hospitalized adults and adolescents with mild-to-moderate COVID-19 at high risk of progression, plus healthy volunteers.
 
