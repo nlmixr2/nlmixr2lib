@@ -3787,6 +3787,24 @@ K-PD (kinetic-pharmacodynamic) models treat dose as entering a hypothetical body
 - **Example models:** `Verrest_2024_leishmania.R`.
 - **Notes:** Full INN name (lowercase) per the `sunitinib` / `irinotecan` precedent. The suffix names the parent nitroimidazole. In `Verrest_2024_leishmania.R` the PD driver is actually the SUM of the two active metabolites, fexinidazole sulfoxide (M1) and fexinidazole sulfone (M2); that metabolite-sum semantics is carried by the covariate name `CP_FEXINIDAZOLE_M1M2_UGML`, not by this suffix. A future fexinidazole PK model that carries M1 and M2 as separate ODE states should register distinct `m1` / `m2`-style metabolite suffixes rather than overloading this one.
 
+### rosuvastatin (**canonical rosuvastatin sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Rosuvastatin drug-name suffix for the statin arm of lipid-lowering combination models, covering its PK cascade (`depot_rosuvastatin`, `central_rosuvastatin`, `peripheral1_rosuvastatin`), the associated PK parameters (`lka_rosuvastatin`, `lcl_rosuvastatin`, `lvc_rosuvastatin`, `lq_rosuvastatin`, `lvp_rosuvastatin`), the PD potency parameter of the rosuvastatin-driven effect (`lic50_rosuvastatin`), and the multi-output observation `Cc_rosuvastatin` with its residual SDs (`addSd_rosuvastatin`, `propSd_rosuvastatin`).
+- **Source aliases:**
+  - `R` -- An 2025 subscript notation (`ka,R`, `Cl_R`, `IC50,R`, `C_t,R`).
+  - `RSV`, `ROS`, `Crestor` -- generic spellings.
+- **Example models:** `An_2025_rosuvastatin_ezetimibe.R` (rosuvastatin co-administered with ezetimibe; two-compartment oral PK driving one arm of a Bliss-independent, multiplicative inhibition of LDL-C production in a shared indirect-response model).
+- **Notes:** Full INN name (lowercase), matching the `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol` precedent for whole co-administered agents. Registered as a suffix only because An 2025 fits both drugs jointly against one shared PD compartment, so neither can claim the bare canonical names: unlike the parent-plus-sibling models above, the pairing here is symmetric and both arms are suffixed (the same choice `Mody_2023_doxorubicin_dexrazoxane_*` makes with `dox` / `dexrazoxane`). The registry's several standalone rosuvastatin popPK models (`Barnett_2018_rosuvastatin.R`, `Kakara_2014_rosuvastatin.R`, `Macpherson_2015_rosuvastatin.R`) correctly use bare canonical names because rosuvastatin is their sole analyte; this suffix must not be retrofitted onto them.
+
+### ezetimibe (**canonical ezetimibe sibling-drug suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Ezetimibe drug-name suffix for the cholesterol-absorption-inhibitor arm of lipid-lowering combination models, covering its enterohepatic-recirculation PK cascade (`depot_ezetimibe`, `central_ezetimibe`, `peripheral1_ezetimibe`, `gallbladder_ezetimibe`), the associated PK parameters (`lka_ezetimibe`, `lcl_ezetimibe`, `lvc_ezetimibe`, `lq_ezetimibe`, `lvp_ezetimibe`, `lkbm_ezetimibe`, `lkehc_ezetimibe`), the PD potency parameter of the ezetimibe-driven effect (`lic50_ezetimibe`), and the multi-output observation `Cc_ezetimibe` with its residual SD (`addSd_ezetimibe`).
+- **Source aliases:**
+  - `E` -- An 2025 subscript notation (`ka,E`, `Cl_E`, `IC50,E`, `C_t,E`).
+  - `EZE`, `EZT`, `SCH 58235`, `Zetia`, `Ezetrol` -- generic spellings and the development code.
+- **Example models:** `An_2025_rosuvastatin_ezetimibe.R` (ezetimibe co-administered with rosuvastatin; four-compartment PK with intermittent gallbladder emptying driving the second arm of a Bliss-independent inhibition of LDL-C production).
+- **Notes:** Full INN name (lowercase), per the `sunitinib` / `irinotecan` / `olaparib` / `ethinylestradiol` precedent; see the `rosuvastatin` entry for why both arms of An 2025 are suffixed rather than one taking the bare names. The suffix names the ANALYTE the source papers measure, which for ezetimibe is conventionally "total ezetimibe" -- unchanged ezetimibe plus its phenolic glucuronide, the glucuronide accounting for 80-90% of the plasma total and having comparable potency. A future model that resolves the parent and the glucuronide as separate ODE states should register a distinct glucuronide metabolite suffix rather than overloading this one, and should say in its `description` which analyte each state carries.
+
 ---
 
 ## In-vitro single-cell mRNA-translation states (Frohlich 2018 QSP)

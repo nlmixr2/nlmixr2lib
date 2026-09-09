@@ -2,8 +2,7 @@
 
 # development version
 
-- Add Ueshima 2025 edoxaban ([doi:10.1186/s40780-025-00453-2](https://doi.org/10.1186/s40780-025-00453-2)) -- Japanese adults with atrial fibrillation.
-
+- Add An 2025 rosuvastatin + ezetimibe ([doi:10.2147/DDDT.S522863](https://doi.org/10.2147/DDDT.S522863)) - healthy adult male volunteers.
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
