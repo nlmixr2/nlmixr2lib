@@ -3474,8 +3474,18 @@ navbar:
         href: articles/Darpo_2014_racSotalol.html
       - text: "Ractopamine goat pbpk (Ai 2024)"
         href: articles/Ai_2024_ractopamine_goat_pbpk.html
+      - text: "Radamts13 (Patel 2025)"
+        href: articles/Patel_2025_radamts13_exposure_response.html
+      - text: "Radamts13 count ldh (Patel 2025)"
+        href: articles/Patel_2025_radamts13_exposure_response.html
+      - text: "Radamts13 count thrombocytopenia (Patel 2025)"
+        href: articles/Patel_2025_radamts13_exposure_response.html
       - text: "Radamts13 qsp (McBride 2025)"
         href: articles/McBride_2025_radamts13_qsp.html
+      - text: "Radamts13 rtte ldh (Patel 2025)"
+        href: articles/Patel_2025_radamts13_exposure_response.html
+      - text: "Radamts13 rtte thrombocytopenia (Patel 2025)"
+        href: articles/Patel_2025_radamts13_exposure_response.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
       - text: "Raltegravir (ArabAlameddine 2012)"
@@ -6059,6 +6069,7 @@ articles:
   - articles/Patel_2017_selumetinib
   - articles/Patel_2020_sapanisertib
   - articles/Patel_2025_eteplirsen
+  - articles/Patel_2025_radamts13_exposure_response
   - articles/Patidar_2024_mAb_size_charge_fcrn
   - articles/Paule_2011_hydroxyurea
   - articles/Pei_2016_iloperidone
