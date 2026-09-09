@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Fernandez Rubio 2025 ceftriaxone ([doi:10.3390/antibiotics14050508](https://doi.org/10.3390/antibiotics14050508)) -- elderly adults with *Enterococcus faecalis* infective endocarditis.
+- Add Wei 2025 methotrexate, nongene and genotype models ([doi:10.3389/fphar.2025.1578033](https://doi.org/10.3389/fphar.2025.1578033)) -- Chinese adults with primary central nervous system lymphoma.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses

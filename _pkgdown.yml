@@ -2630,8 +2630,12 @@ navbar:
         href: articles/Taylor_2020_methotrexate.html
       - text: "Methotrexate (Taylor 2026)"
         href: articles/Taylor_2026_methotrexate.html
+      - text: "Methotrexate (Wei 2025)"
+        href: articles/Wei_2025_methotrexate.html
       - text: "Methotrexate (Zhao 2025)"
         href: articles/Zhao_2025_methotrexate.html
+      - text: "Methotrexate genotype (Wei 2025)"
+        href: articles/Wei_2025_methotrexate.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Methoxsalen blood (Billard 1995)"
@@ -6644,6 +6648,7 @@ articles:
   - articles/Weatherley_2018_fosdagrocorat
   - articles/Weber_1993_remikiren
   - articles/Weber_2015_fluticasone_inhaled
+  - articles/Wei_2025_methotrexate
   - articles/Wei_2026_enrofloxacin_cefquinome
   - articles/Wen_2016_enrofloxacin_Pmultocida
   - articles/Wen_2025_pulmonary_pbpk
