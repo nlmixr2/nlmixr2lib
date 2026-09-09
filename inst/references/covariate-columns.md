@@ -11927,6 +11927,30 @@ Each model MUST document the protocol name and the phase-to-column mapping in `c
 - **Example models:** `Lane_2011_warfarin_r.R` (multiplicative CL effect 0.804 for the missing-genotype subgroup vs the wild-homozygote reference; Lane 2011 Table 3 final R-warfarin model).
 - **Notes:** Follows the same missing-data-indicator pattern as `CYP2C9_MISSING`, `ADA_MISSING`, and `HEPIMP_MOD_OR_MISSING`.
 
+### SNP_CYP2C19_RS12769205_GA (**canonical for CYP2C19*2 rs12769205 heterozygous GA genotype indicator**)
+- **Description:** Binary genotype indicator for the *CYP2C19* rs12769205 single-nucleotide polymorphism, the intronic tag SNP for the **CYP2C19\*2** loss-of-function allele (c.-98-273A>G; in strong linkage disequilibrium with the canonical \*2 defining variant rs4244285, c.681G>A). 1 = subject's reported genotype is GA (heterozygous); 0 = otherwise. Paired with `SNP_CYP2C19_RS12769205_GG`; both indicators are 0 for the AA reference group, which the founding source identifies explicitly as the wild type. Time-fixed per subject (germline genotype). Named by the **reported genotype letters**, following the `SNP_ABCB1_RS1045642_GA` / `_GG` and `SNP_POR_RS1057868_GA` / `_GG` pattern.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_CYP2C19_RS12769205_GG` = 0, i.e. the AA genotype group (n = 56 of 133 in the Li 2025 model-development group).
+- **Source aliases:**
+  - `CL-rs12769205*GA` -- the Li 2025 Table 2 row label for the CL/F fold-change of the GA group.
+  - `rs12769205` -- the Li 2025 Table 1 genotype row, reported as `AA/GA/GG` counts.
+- **Example models:** `Li_2025_lacosamide_cyp2c19.R` (multiplicative fold-change on apparent clearance of oral lacosamide in Chinese children with epilepsy: `cl = exp(lcl + etalcl) * (WT/30)^e_wt_cl * genoCl` with `genoCl = 1 + (0.879 - 1) * SNP_CYP2C19_RS12769205_GA + (0.736 - 1) * SNP_CYP2C19_RS12769205_GG`, i.e. GA subjects have 0.879-fold, about 12% lower, apparent CL/F than the AA reference group).
+- **Notes:** Genotype-level (three-category) encoding. Unlike the *ABCB1* rs1045642 and *POR* rs1057868 pairs, whose wild-type / variant orientation the register records as unresolved, the orientation here **is** resolved by the founding source: Li 2025 states "theta_rs12769205 = 1 for CYP2C19\*2 AA" and the Discussion calls the AA group the "wild-type", with the GG group showing "a 26.4% reduction in CL/F (i.e., 0.736 x wild-type)" consistent with the loss of function annotated for CYP2C19\*2 in PharmGKB. So A is the wild-type allele and G the \*2-tagging reduced-function allele, and the effects are monotonic in G-allele count (AA 1 > GA 0.879 > GG 0.736). **Not composable with the phenotype-level canonicals** `CYP2C19_S2_CARRIER`, `CYP2C19_IM`, `CYP2C19_PM`, `CYP2C19_NON_EM` or the activity proxy `CYP2C19`: those pool diplotypes across several loci (\*2, \*3, \*17) into metabolizer classes, whereas this pair resolves a single locus by reported genotype and takes the wild-type homozygote as reference. A model needing metabolizer phenotype must derive it from the full diplotype, not from this indicator alone. Li 2025 genotyped nine SNPs across *ABCB1*, *ABCC2*, *CYP2C9* and *CYP2C19* and found rs12769205 to be the only one significantly affecting CL/F.
+
+### SNP_CYP2C19_RS12769205_GG (**canonical for CYP2C19*2 rs12769205 homozygous GG genotype indicator**)
+- **Description:** Binary genotype indicator for the *CYP2C19* rs12769205 single-nucleotide polymorphism, the intronic tag SNP for the **CYP2C19\*2** loss-of-function allele. 1 = subject's reported genotype is GG (homozygous for the G, \*2-tagging, allele); 0 = otherwise. Paired with `SNP_CYP2C19_RS12769205_GA`; both indicators are 0 for the AA wild-type reference group. Time-fixed per subject (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with `SNP_CYP2C19_RS12769205_GA` = 0, i.e. the AA genotype group (n = 56 of 133 in the Li 2025 model-development group).
+- **Source aliases:**
+  - `CL-rs12769205*GG` -- the Li 2025 Table 2 row label for the CL/F fold-change of the GG group.
+  - `rs12769205` -- the Li 2025 Table 1 genotype row, reported as `AA/GA/GG` counts.
+- **Example models:** `Li_2025_lacosamide_cyp2c19.R` (multiplicative fold-change 0.736 on apparent clearance, i.e. GG subjects have about 26% lower CL/F than the AA reference group and correspondingly higher steady-state troughs; Li 2025 reduces the recommended dose for this subgroup).
+- **Notes:** Always used together with `SNP_CYP2C19_RS12769205_GA`; a model that references one without the other has mis-specified the reference category. See the `SNP_CYP2C19_RS12769205_GA` Notes for the resolved wild-type orientation and for why this pair must not be pooled with the CYP2C19 metabolizer-phenotype canonicals. Only 15 of 133 subjects in the Li 2025 model-development group were GG, so the coefficient rests on a small subgroup, though its reported precision is high (RSE 5.5%, bootstrap 95% CI 0.661-0.825). The Li 2025 Discussion notes the CYP2C19\*2 allele frequency exceeds 30% in Asian populations, which amplifies the clinical significance of this indicator relative to European or African cohorts where \*17 predominates.
+
 ### SNP_CYP3A4_RS2242480_VAR_COUNT (**canonical for CYP3A4 rs2242480 variant-allele count**)
 - **Description:** Continuous individual-level CYP3A4 rs2242480 variant-allele count: 0 = wild-type homozygote, 1 = heterozygote, 2 = variant homozygote. Time-invariant (germline genotype). Companion missing-genotype indicator: `SNP_CYP3A4_RS2242480_MISSING`. The rs2242480 SNP is one of the SNPs that defines the CYP3A4*1G haplotype (a 5' UTR variant whose functional effect remains controversial -- some studies report gain-of-function, others loss-of-function; Lane 2011 Discussion paragraph 5).
 - **Units:** (count, 0/1/2 alleles per subject)
