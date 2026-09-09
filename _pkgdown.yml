@@ -2476,6 +2476,8 @@ navbar:
         href: articles/Hyland_2008_maraviroc_invitro.html
       - text: "Maribavir (Sun 2023)"
         href: articles/Sun_2023_maribavir.html
+      - text: "Maribavir (Sun 2025)"
+        href: articles/Sun_2025_maribavir.html
       - text: "Matrine pig pbpk (Yang 2025)"
         href: articles/Yang_2025_matrine_pig_pbpk.html
       - text: "Matuzumab (Kuester 2008)"
@@ -6327,6 +6329,7 @@ articles:
   - articles/Suleiman_2018_risankizumab
   - articles/Suleiman_2019_risankizumab
   - articles/Sun_2023_maribavir
+  - articles/Sun_2025_maribavir
   - articles/Sun_2025_paclitaxel
   - articles/Sun_2026_tilmicosin
   - articles/Suri_2018_brentuximab
