@@ -4597,6 +4597,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Clewe_2018_TB_MTP_GPDI_invitro.R` (static ethambutol concentration driving the multistate-TB kill effects; tested concentrations 0.0078, 0.031, 0.125, 0.5, 2, 8, 32 mg/L per Figure 1).
 - **Notes:** Specific scope because the value is bound to ethambutol and the in-vitro experimental design. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`).
 
+### CONC_VAN_MGL (**canonical for unbound vancomycin concentration driving an antibacterial PD model**)
+- **Description:** Unbound vancomycin concentration driving a bacterial-kill PD effect and, where the model carries one, an adaptive-resistance transition. Supplied as an exogenous covariate rather than derived from a PK state. Distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver family: this is an applied or externally-predicted concentration presented to an in-vitro-derived PD model.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- enters the sigmoidal kill function and the adaptive-resistance activation rate `kon * CONC_VAN_MGL`; set to 0 for the untreated growth control.
+- **Source aliases:**
+  - `Conc` -- used in `Olivo_2025_vancomycin_invitro.R` (Olivo 2025 Supplementary Equations S4-S5, adaptive-resistance activation).
+  - `C` -- used in `Olivo_2025_vancomycin_invitro.R` (Olivo 2025 Equation 3, sigmoidal Emax kill term; Figure 1 legend defines it as "the unbound drug concentration in interstitial compartment").
+- **Example models:** `Olivo_2025_vancomycin_invitro.R` (drives the sigmoidal Emax kill of the active MRSA state and the `kon * CONC_VAN_MGL` adaptive-resistance switch; static bath concentrations 0, 0.5, 1, 2, 4, 8, 12 and 16 mg/L reproduce the time-kill arms of Figure 3, and a PBPK-predicted unbound interstitial profile reproduces the coupled tissue simulations of Figures 4 and 5).
+- **Notes:** Specific scope because the value is bound to vancomycin and to a PD model parameterised on unbound concentration. Member of the in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`). This member is exercised both statically and time-varying: the family is explicitly for "exogenous static or time-varying drug concentrations", and Olivo 2025 uses the same PD block in both modes -- static for the time-kill fit, time-varying when driven by tissue concentration-time profiles from a PK-Sim PBPK model that is not itself reproduced in the library. Because the driver is unbound, a caller supplying a total plasma concentration must apply the fraction unbound before passing it in.
+
 ### CONC_BAI_UM (**canonical for static in-vitro baicalein concentration driving an inflammatory-mediator PD model**)
 - **Description:** Static (time-invariant) baicalein concentration in the cell-culture medium of an in-vitro LPS-stimulated-macrophage experiment, supplied as an exogenous covariate that drives the anti-inflammatory PD effect. Applied experimental concentration in the in-vitro matrix; distinct from a state-derived plasma concentration (`Cc`) and from the `CP_<drug>` plasma-PD-driver family.
 - **Units:** uM

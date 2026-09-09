@@ -4514,6 +4514,8 @@ navbar:
         href: articles/Downes_2023_vancomycin.html
       - text: "Vancomycin hughes (Tong 2026)"
         href: articles/Tong_2026_vancomycin.html
+      - text: "Vancomycin invitro (Olivo 2025)"
+        href: articles/Olivo_2025_vancomycin.html
       - text: "Vancomycin nonparametric (Hughes 2024)"
         href: articles/Hughes_2024_vancomycin.html
       - text: "Vancomycin parametric (Hughes 2024)"
@@ -6012,6 +6014,7 @@ articles:
   - articles/Olafuyi_2025_propyleneGlycol
   - articles/Olagunju_2018_efavirenz
   - articles/Olivo_2024_methotrexate
+  - articles/Olivo_2025_vancomycin
   - articles/Ollier_2015_ropivacaine
   - articles/OlssonGisleskog_2025_ibrutinib
   - articles/Oniki_2018_BMI_NAFLD
