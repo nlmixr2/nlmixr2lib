@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Wright 2025 colchicine ([doi:10.1007/s40262-025-01551-y](https://doi.org/10.1007/s40262-025-01551-y)) -- adults with gout.
+- Add Chen 2025 methotrexate DAS28, ACR20 and ACR50 MBMA models ([doi:10.1002/jcph.70039](https://doi.org/10.1002/jcph.70039)) -- adults with active rheumatoid arthritis on methotrexate monotherapy.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses

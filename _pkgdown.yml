@@ -2672,8 +2672,12 @@ navbar:
         href: articles/Yu_2025_methotrexate.html
       - text: "Methotrexate (Zhao 2025)"
         href: articles/Zhao_2025_methotrexate.html
-      - text: "Methotrexate genotype (Wei 2025)"
-        href: articles/Wei_2025_methotrexate.html
+      - text: "Methotrexate acr20 mbma (Chen 2025)"
+        href: articles/Chen_2025_methotrexate_rheumatoid_arthritis.html
+      - text: "Methotrexate acr50 mbma (Chen 2025)"
+        href: articles/Chen_2025_methotrexate_rheumatoid_arthritis.html
+      - text: "Methotrexate das28 mbma (Chen 2025)"
+        href: articles/Chen_2025_methotrexate_rheumatoid_arthritis.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
         href: articles/Saleh_2023_leicns_pk30_mouse_brain.html
       - text: "Methoxsalen blood (Billard 1995)"
@@ -5328,6 +5332,7 @@ articles:
   - articles/Chen_2025_ceftazidime_avibactam
   - articles/Chen_2025_hemoporfin
   - articles/Chen_2025_iohexol_creatinine
+  - articles/Chen_2025_methotrexate_rheumatoid_arthritis
   - articles/Chen_2025_remimazolam
   - articles/Chen_2025_vancomycin
   - articles/Cheng_2026_immunoglobulin
