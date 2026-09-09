@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Chan 2025 subcutaneous atezolizumab ([doi:10.1002/psp4.13310](https://doi.org/10.1002/psp4.13310)) -- adults with locally advanced or metastatic non-small cell lung cancer, with five companion exposure-response models.
+- Add Wang 2025 voriconazole ([doi:10.3389/fphar.2025.1554370](https://doi.org/10.3389/fphar.2025.1554370)) -- critically ill adults with COVID-19-associated pulmonary aspergillosis.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
