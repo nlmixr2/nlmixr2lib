@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Vonk 2025 tezacaftor and ivacaftor ([doi:10.1002/bcp.70131](https://doi.org/10.1002/bcp.70131)) -- children aged 6-17 years with cystic fibrosis.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the

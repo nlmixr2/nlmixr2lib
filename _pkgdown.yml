@@ -2120,6 +2120,8 @@ navbar:
         href: articles/Hennig_2007_itraconazole.html
       - text: "Itraconazole (Jansen 2023)"
         href: articles/Jansen_2023_itraconazole.html
+      - text: "Ivacaftor (Vonk 2025)"
+        href: articles/Vonk_2025_tezacaftor_ivacaftor.html
       - text: "Ivermectin (Alshehri 2023)"
         href: articles/Alshehri_2023_ivermectin.html
       - text: "Ivermectin (Fimbo 2023)"
@@ -4164,6 +4166,8 @@ navbar:
         href: articles/Henthorn_2024_tetrahydrocannabinol.html
       - text: "Tetrahydrocannabinol (Storgaard 2026)"
         href: articles/Storgaard_2026_tetrahydrocannabinol.html
+      - text: "Tezacaftor (Vonk 2025)"
+        href: articles/Vonk_2025_tezacaftor_ivacaftor.html
       - text: "Tezepelumab (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Thc (Wolowich 2025)"
@@ -6458,6 +6462,7 @@ articles:
   - articles/Volkova_2023_lipidLowering_mace_mbma
   - articles/Voller_2017_phenobarbital
   - articles/Vollmer_2023_cefepime_enmetazobactam
+  - articles/Vonk_2025_tezacaftor_ivacaftor
   - articles/Vorontsova_2022_misoprostol
   - articles/Vos_2025_iminobiotin
   - articles/Vucicevic_2025_efavirenz
