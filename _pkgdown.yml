@@ -3662,6 +3662,8 @@ navbar:
         href: articles/Hennig_2015_rifabutin.html
       - text: "Rifabutin (SemereGebreyesus 2024)"
         href: articles/SemereGebreyesus_2024_rifabutin.html
+      - text: "Rifampicin (Abdelgawad 2025)"
+        href: articles/Abdelgawad_2025_rifampicin.html
       - text: "Rifampicin (Barnett 2018)"
         href: articles/Barnett_2018_rifampicin.html
       - text: "Rifampicin (Chigutsa 2011)"
@@ -5000,6 +5002,7 @@ articles:
   - articles/Abboud_2009_epinephrine
   - articles/AbdelJalil_2013_tacrolimus
   - articles/Abdelgawad_2024_linezolid
+  - articles/Abdelgawad_2025_rifampicin
   - articles/AbdulAziz_2016_doripenem
   - articles/AbdulAziz_2025_caspofungin
   - articles/Abduljalil_2009_clarithromycin

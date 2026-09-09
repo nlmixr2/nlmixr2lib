@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Calderin 2025 pyrazinamide and isoniazid plasma/CSF models ([doi:10.1128/aac.00099-25](https://doi.org/10.1128/aac.00099-25)) -- South African adults with HIV-associated tuberculous meningitis.
+- Add Abdelgawad 2025 rifampicin ([doi:10.1093/infdis/jiaf178](https://doi.org/10.1093/infdis/jiaf178)) — adults with HIV-associated tuberculous meningitis, plasma and cerebrospinal fluid.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
