@@ -654,6 +654,8 @@ navbar:
         href: articles/Ferron_2013_cabazitaxel.html
       - text: "Cabazitaxel (Janssen 2017)"
         href: articles/Janssen_2017_cabazitaxel_phenotyping.html
+      - text: "Cabotegravir (Tan 2025)"
+        href: articles/Tan_2025_cabotegravir_rilpivirine.html
       - text: "Cabozantinib (Lacy 2018)"
         href: articles/Lacy_2018_cabozantinib.html
       - text: "Cabozantinib (Ly 2023)"
@@ -3744,6 +3746,8 @@ navbar:
         href: articles/Zhang_2016_rilotumumab.html
       - text: "Rilpivirine (Aouri 2017)"
         href: articles/Aouri_2017_rilpivirine.html
+      - text: "Rilpivirine (Tan 2025)"
+        href: articles/Tan_2025_cabotegravir_rilpivirine.html
       - text: "Rilpivirine (Thoueille 2024)"
         href: articles/Thoueille_2024_rilpivirine.html
       - text: "Rimegepant (Comisar 2025)"
@@ -6634,6 +6638,7 @@ articles:
   - articles/Tamura_2023_remdesivir
   - articles/Tan_2009_artesunate
   - articles/Tan_2024_cabozantinib
+  - articles/Tan_2025_cabotegravir_rilpivirine
   - articles/Tanaka_2012_phenytoin
   - articles/Tang_2019_amoxicillin
   - articles/Tang_2023_tenecteplase
