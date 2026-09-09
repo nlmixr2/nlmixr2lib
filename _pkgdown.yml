@@ -4350,6 +4350,10 @@ navbar:
         href: articles/Almquist_2016_ticagrelor.html
       - text: "Ticarcillin qsp (LopezArguello 2023)"
         href: articles/LopezArguello_2023_pbp_binding_pseudomonas.html
+      - text: "Tideglusib dm1 (DiDeo 2025)"
+        href: articles/DiDeo_2025_tideglusib.html
+      - text: "Tideglusib healthy (DiDeo 2025)"
+        href: articles/DiDeo_2025_tideglusib.html
       - text: "Tigecycline (Luo 2023)"
         href: articles/Luo_2023_tigecycline.html
       - text: "Tigecycline (Song 2024)"
@@ -5386,6 +5390,7 @@ articles:
   - articles/Desikan_2022_covidVaccine
   - articles/Desmee_2015_PSA_mCRPC
   - articles/Dhoro_2015_efavirenz
+  - articles/DiDeo_2025_tideglusib
   - articles/Diao_2014_rFIXFc
   - articles/Diao_2016_daclizumab_cd25
   - articles/Diao_2016_daclizumab_cd56bright
