@@ -416,15 +416,27 @@ ggplot(expo, aes(WT, auc)) +
        title = "Exposure decreases with body weight",
        caption = "Replicates Figure 5 of Di Deo 2025.")
 
-# The claim is a NEGATIVE weight-exposure association in every arm. This is a
-# structural consequence of allometric CL with a fixed dose, not a near-zero
-# effect, so the sign is a safe assertion here: Spearman rho is strongly
-# negative in every arm regardless of the cohort drawn.
+# The claim is a NEGATIVE weight-exposure association in every arm -- a
+# structural consequence of allometric CL at a fixed dose -- so the SIGN is
+# what this asserts.
+#
+# The magnitude is not uniform across arms and must not be asserted as if it
+# were. Rank correlation is attenuated when body weight varies little relative
+# to the IIV on clearance, and the two healthy arms draw weight with sdlog 0.15
+# against 0.24-0.30 in the DM-1 arms. Measured over three configurations
+# (2 and 8 solver threads, n_arm 100 and 800) the healthy arms realise -0.246
+# to -0.319 while the DM-1 arms reach -0.276 to -0.564. An earlier
+# `all(rho < -0.3)` therefore failed on the healthy arms for reasons that had
+# nothing to do with the model being wrong.
+#
+# -0.15 holds for every cohort measured, with the smallest observed magnitude
+# (0.246) a comfortable margin away, and the gate still goes red if the sign
+# flips or the association collapses -- which is the thing worth catching.
 rho <- expo |>
   group_by(treatment) |>
   summarise(rho = cor(WT, auc, method = "spearman"), .groups = "drop")
 knitr::kable(rho, digits = 3, caption = "Spearman correlation of AUC with body weight.")
-stopifnot(all(rho$rho < -0.3))
+stopifnot(all(rho$rho < -0.15))
 ```
 
 # PKNCA validation

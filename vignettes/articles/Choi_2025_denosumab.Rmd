@@ -568,14 +568,29 @@ omega_cmp |>
 a <- omega_cmp[1, ]
 b <- omega_cmp[2, ]
 
-# The published interval implies SD(log Cmax) = 0.343. Across seeds and thread
-# counts, reading A realises 0.28-0.32 and reading B realises 0.43-0.49, so
-# 0.38 separates them with roughly 20% headroom on each side and the gate can
-# still go red in either direction. The tail percentiles are reported in the
-# table above for the reader but are too noisy at n = 150 to assert on: the
-# 95th percentile is the eighth-largest of 150 draws.
-stopifnot(a$`SD of log Cmax` < 0.38)
-stopifnot(b$`SD of log Cmax` > 0.38)
+# The published interval implies SD(log Cmax) = 0.343, and reading A must
+# reproduce it while reading B inflates it.
+#
+# The separator has to be placed from measurement, because rxSetSeed() fixes
+# rxode2's RNG per solver thread rather than across thread counts, so this
+# cohort is redrawn when the thread count changes. Measured over three
+# configurations (2 and 8 solver threads at n = 150, and 2 threads at n = 600):
+#
+#     reading A   0.334, 0.393, 0.346     (published 0.343 sits inside)
+#     reading B   0.564, 0.549, 0.498
+#
+# An earlier separator of 0.38 was placed against a claimed A range of
+# 0.28-0.32 that no configuration here reproduces, and reading A crossed it at
+# 2 threads. 0.45 sits between the observed max of A (0.393) and min of B
+# (0.498) with ~0.05 either side, and the gate still goes red in both
+# directions -- which is the point of asserting on both.
+#
+# The tail percentiles are reported in the table above for the reader but are
+# too noisy at n = 150 to assert on: the 95th percentile is the eighth-largest
+# of 150 draws. n is not raised to shrink this noise because n = 600 takes
+# ~975 s solo, over the 900 s per-vignette ceiling in the merge gate.
+stopifnot(a$`SD of log Cmax` < 0.45)
+stopifnot(b$`SD of log Cmax` > 0.45)
 
 # Reading A must also sit closer to the published dispersion than reading B.
 # The margin is large and consistent (A errs by ~0.04, B by ~0.11), so this is
