@@ -17,7 +17,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Zhang 2025 olanzapine ([doi:10.3389/fpsyt.2025.1538996](https://doi.org/10.3389/fpsyt.2025.1538996)) -- Chinese inpatients with major depressive disorder, with and without concomitant paroxetine.
+- Add Xu 2025 enrofloxacin ([doi:10.3390/ani15101362](https://doi.org/10.3390/ani15101362)) -- largemouth bass (*Micropterus salmoides*), with separate oral and intravenous models.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 

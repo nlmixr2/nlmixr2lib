@@ -1430,6 +1430,10 @@ navbar:
         href: articles/Schoemaker_1996_low_molecular_weight_heparin_modeling.html
       - text: "Enrofloxacin ciprofloxacin cat (Foster 2023)"
         href: articles/Foster_2023_enrofloxacin_cat.html
+      - text: "Enrofloxacin largemouthBass iv (Xu 2025)"
+        href: articles/Xu_2025_enrofloxacin_largemouthBass.html
+      - text: "Enrofloxacin largemouthBass oral (Xu 2025)"
+        href: articles/Xu_2025_enrofloxacin_largemouthBass.html
       - text: "Enrofloxacin totalFluoroquinolone cat (Foster 2023)"
         href: articles/Foster_2023_enrofloxacin_cat.html
       - text: "Ensitrelvir (Ishibashi 2024)"
@@ -6703,6 +6707,7 @@ articles:
   - articles/Xu_2023_busulfan
   - articles/Xu_2024_linezolid
   - articles/Xu_2025_aficamten
+  - articles/Xu_2025_enrofloxacin_largemouthBass
   - articles/Yadav_2017_imipenem_aminoglycoside_pseudomonas
   - articles/Yadav_2017_imipenem_tobramycin
   - articles/Yamada_2025_fluorouracil_oxaliplatin_zolbetuximab
