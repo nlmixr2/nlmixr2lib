@@ -245,8 +245,11 @@ dat_cov <- as.data.frame(ev_cov) |>
     RRT_CRRT_STATUS = c(0, 1, 0, 1)[id]
   )
 
+# `omega = NA` omitted deliberately -- see the note at the PTA lattice solve
+# below: `mod_typ` is already `zeroRe()`d, and on rxode2 5.1.6 passing it
+# alongside a multi-subject solve reads out of bounds.
 vc_by_stratum <- solve_fixed(mod_typ, dat_cov, returnType = "data.frame",
-                             addDosing = FALSE, omega = NA) |>
+                             addDosing = FALSE) |>
   distinct(id, vc) |>
   arrange(id) |>
   pull(vc)
@@ -446,8 +449,14 @@ pta_det <- function(ld, n_ld, md, crrt, sexf) {
   dat <- as.data.frame(build_events(build_regimen(ld, n_ld, md),
                                     c(72, 168) - 1e-4, nrow(lattice))) |>
     mutate(RRT_CRRT_STATUS = crrt, SEXF = sexf)
+    # `omega = NA` omitted deliberately. The model is already `zeroRe()`d, so
+    # the etas are zero either way -- but on rxode2 5.1.6 (the version CI
+    # installs) passing `omega = NA` ALONGSIDE a multi-subject solve reads
+    # out of bounds and returns NA for some subjects. Locally on 5.1.7 it is
+    # silent, which is how this reached CI. Same defect as PR #501 (Yoon 2023
+    # vancomycin, Lin 2026 coxTte).
   s <- solve_fixed(mod_fixed, dat, params = as.data.frame(lattice),
-                   returnType = "data.frame", addDosing = FALSE, omega = NA) |>
+                   returnType = "data.frame", addDosing = FALSE) |>
     mutate(time = round(time, 3))
   tibble::tibble(
     c72  = 100 * mean(s$Cc[s$time == round(72  - 1e-4, 3)] >= 10),
@@ -584,8 +593,9 @@ pta_under <- function(om_cl, om_v) {
   dat <- as.data.frame(build_events(build_regimen(1000, 3, 1000),
                                     168 - 1e-4, nrow(L))) |>
     mutate(RRT_CRRT_STATUS = 0, SEXF = 1)
+  # `omega = NA` omitted -- see the lattice solve above.
   s <- solve_fixed(mod_fixed, dat, params = as.data.frame(L),
-                   returnType = "data.frame", addDosing = FALSE, omega = NA)
+                   returnType = "data.frame", addDosing = FALSE)
   cc <- s$Cc[round(s$time, 3) == round(168 - 1e-4, 3)]
   tibble::tibble(PTA = 100 * mean(cc >= 10), Median = median(cc),
                  P10 = quantile(cc, 0.10))
