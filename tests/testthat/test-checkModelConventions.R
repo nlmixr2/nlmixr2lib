@@ -345,7 +345,7 @@ test_that("canonical covariates are parsed from inst/references/covariate-column
   expect_equal(canon$ADA_TITER$scope, "general")
   expect_equal(canon$FORM_SAR_DP2$scope, "specific")
   expect_equal(canon$TUMTP_HODGKIN_CLASSICAL$scope, "specific")
-  expect_equal(canon$ooc1$scope, "specific")
+  expect_equal(canon$OOC1$scope, "specific")
   expect_equal(canon$CONMED_EOX$scope, "specific")
   expect_equal(canon$DOSE_70MG$scope, "specific")
   expect_true("Xu_2019_sarilumab" %in% canon$FORM_SAR_DP2$example_models)

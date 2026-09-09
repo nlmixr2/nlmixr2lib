@@ -35,35 +35,35 @@ Xie_2019_agomelatine <- function () {
       notes              = "Used inside liver-volume allometry: lv = 0.05012 * WT^0.78. No explicit reference weight reported; the allometric form uses the raw WT value directly.",
       source_name        = "WT"
     ),
-    ooc1 = list(
+    OOC1 = list(
       description        = "Occasion indicator for period 1 of the four-period crossover study",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
       notes              = "Lower-case name preserved from source per covariate-columns.md register. Used to select the period-specific IOV eta across k13, alag2, k23, clint, and the logit-fraction partitioning absorption between depot and depot2.",
       source_name        = "ooc1"
     ),
-    ooc2 = list(
+    OOC2 = list(
       description        = "Occasion indicator for period 2 of the four-period crossover study",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
       notes              = "Lower-case name preserved from source per covariate-columns.md register.",
       source_name        = "ooc2"
     ),
-    ooc3 = list(
+    OOC3 = list(
       description        = "Occasion indicator for period 3 of the four-period crossover study",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
       notes              = "Lower-case name preserved from source per covariate-columns.md register.",
       source_name        = "ooc3"
     ),
-    ooc4 = list(
+    OOC4 = list(
       description        = "Occasion indicator for period 4 of the four-period crossover study",
       units              = "(binary)",
       type               = "binary",
-      reference_category = "Not applicable; ooc1..ooc4 are a mutually exclusive set (exactly one is 1 per observation)",
+      reference_category = "Not applicable; OOC1..OOC4 are a mutually exclusive set (exactly one is 1 per observation)",
       notes              = "Lower-case name preserved from source per covariate-columns.md register.",
       source_name        = "ooc4"
     )
@@ -81,7 +81,7 @@ Xie_2019_agomelatine <- function () {
     disease_state  = "Healthy Chinese volunteers",
     dose_range     = "25 mg single oral dose (vignette simulation; confirm full design in source)",
     regions        = "China",
-    notes          = "Four-period crossover design (occasions ooc1..ooc4) with IOV on multiple PK parameters. TODO: fill exact demographics from Table 1 of Xie 2019."
+    notes          = "Four-period crossover design (occasions OOC1..OOC4) with IOV on multiple PK parameters. TODO: fill exact demographics from Table 1 of Xie 2019."
   )
 
   ini({
@@ -145,11 +145,11 @@ Xie_2019_agomelatine <- function () {
     etaiov_fpop_4 ~ fix(2.32)
   })
   model({
-    iov_k13   <- ooc1 * etaiov_k13_1   + ooc2 * etaiov_k13_2   + ooc3 * etaiov_k13_3   + ooc4 * etaiov_k13_4
-    iov_alag2 <- ooc1 * etaiov_alag2_1 + ooc2 * etaiov_alag2_2 + ooc3 * etaiov_alag2_3 + ooc4 * etaiov_alag2_4
-    iov_k23   <- ooc1 * etaiov_k23_1   + ooc2 * etaiov_k23_2   + ooc3 * etaiov_k23_3   + ooc4 * etaiov_k23_4
-    iov_clint <- ooc1 * etaiov_clint_1 + ooc2 * etaiov_clint_2 + ooc3 * etaiov_clint_3 + ooc4 * etaiov_clint_4
-    iov_fpop    <- ooc1 * etaiov_fpop_1    + ooc2 * etaiov_fpop_2    + ooc3 * etaiov_fpop_3    + ooc4 * etaiov_fpop_4
+    iov_k13   <- OOC1 * etaiov_k13_1   + OOC2 * etaiov_k13_2   + OOC3 * etaiov_k13_3   + OOC4 * etaiov_k13_4
+    iov_alag2 <- OOC1 * etaiov_alag2_1 + OOC2 * etaiov_alag2_2 + OOC3 * etaiov_alag2_3 + OOC4 * etaiov_alag2_4
+    iov_k23   <- OOC1 * etaiov_k23_1   + OOC2 * etaiov_k23_2   + OOC3 * etaiov_k23_3   + OOC4 * etaiov_k23_4
+    iov_clint <- OOC1 * etaiov_clint_1 + OOC2 * etaiov_clint_2 + OOC3 * etaiov_clint_3 + OOC4 * etaiov_clint_4
+    iov_fpop    <- OOC1 * etaiov_fpop_1    + OOC2 * etaiov_fpop_2    + OOC3 * etaiov_fpop_3    + OOC4 * etaiov_fpop_4
 
     k13 <- exp(ltvk13 + etaltvk13) * exp(iov_k13)
     v4 <- exp(ltvv4 + etaltvv4)

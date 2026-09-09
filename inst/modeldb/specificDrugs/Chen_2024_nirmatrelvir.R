@@ -20,12 +20,12 @@ Chen_2024_nirmatrelvir <- function() {
       notes              = "Enters nirmatrelvir CL/F via the centred power form (CRCL / 80)^e_crcl_cl of Chen 2024 Equation 1, centred at 80 mL/min/1.73 m^2 (the rounded cohort mean of 78.5; Table 1). The paper labels the units inconsistently: the Table 3 footnote gives mL/min/1.73 m^2 while Table 1 and the Table 4 footnote give mL/min for the same CKD-EPI-derived quantity. The CKD-EPI equation returns a body-surface-area-normalised value, so mL/min/1.73 m^2 is used here, matching the Table 3 footnote that defines the covariate coefficient itself. Cohort value 78.5 +/- 34.4; the dosing-recommendation table spans 15 to >60. In combination with ritonavir the primary elimination pathway of nirmatrelvir shifts from liver to kidney, so CL/F falls as CRCL falls (Discussion).",
       source_name        = "CrCL"
     ),
-    CONMED_RTV_AUC_12h = list(
+    CONMED_RTV_AUC_12H = list(
       description        = "Ritonavir AUC over the 12 h (q12h) dosing interval for the co-administered 100 mg twice-daily ritonavir booster",
       units              = "mg*h/L",
       type               = "continuous",
       reference_category = NULL,
-      notes              = "Enters nirmatrelvir CL/F via the centred power form (CONMED_RTV_AUC_12h / 12.2)^e_rtv_auc_12h_cl of Chen 2024 Equation 1, centred at 12.2 mg*h/L. Computed per subject by Chen 2024 Equation 2 as AUC = DOSE / (CL/F) with DOSE = 100 mg (Figure 1 caption: 'AUC, area under curve of ritonavir base on 100mg') and CL/F the individual ritonavir apparent clearance from the companion ritonavir model in the same paper; see modellib('Chen_2024_ritonavir'). Simulated per-subject values are therefore obtained as 100 / cl_ritonavir. The Monte Carlo dosing simulations swept the 10th-90th percentiles of this covariate, and the Table 4 dose-recommendation grid spans 3.2 to 23.3 mg*h/L. Higher ritonavir exposure gives stronger CYP3A4/5 inhibition and hence lower nirmatrelvir CL/F, consistent with the negative exponent.",
+      notes              = "Enters nirmatrelvir CL/F via the centred power form (CONMED_RTV_AUC_12H / 12.2)^e_rtv_auc_12h_cl of Chen 2024 Equation 1, centred at 12.2 mg*h/L. Computed per subject by Chen 2024 Equation 2 as AUC = DOSE / (CL/F) with DOSE = 100 mg (Figure 1 caption: 'AUC, area under curve of ritonavir base on 100mg') and CL/F the individual ritonavir apparent clearance from the companion ritonavir model in the same paper; see modellib('Chen_2024_ritonavir'). Simulated per-subject values are therefore obtained as 100 / cl_ritonavir. The Monte Carlo dosing simulations swept the 10th-90th percentiles of this covariate, and the Table 4 dose-recommendation grid spans 3.2 to 23.3 mg*h/L. Higher ritonavir exposure gives stronger CYP3A4/5 inhibition and hence lower nirmatrelvir CL/F, consistent with the negative exponent.",
       source_name        = "AUCRIT"
     )
   )
@@ -152,7 +152,7 @@ Chen_2024_nirmatrelvir <- function() {
     # value (0.42 * 24.9% = 0.105; 36.5 * 23.3% = 8.5; 3.6 * 7.1% = 0.256).
     lka <- log(0.42); label("Apparent first-order absorption rate constant (ka, 1/h)")  # Table 3: tvKa = 0.42 1/h (RSE 24.9%; bootstrap median 0.61, 95% CI 0.09-0.85)
     lvc <- log(36.5); label("Apparent central volume of distribution (V/F, L)")         # Table 3: tvV = 36.5 L (RSE 23.3%; bootstrap median 34.0, 95% CI 5.5-60.5)
-    lcl <- log(3.6);  label("Apparent oral clearance at CRCL = 80 mL/min/1.73 m^2 and CONMED_RTV_AUC_12h = 12.2 mg*h/L (CL/F, L/h)")  # Table 3: tvCL = 3.6 L/h (RSE 7.1%; bootstrap median 3.2, 95% CI 2.6-3.7)
+    lcl <- log(3.6);  label("Apparent oral clearance at CRCL = 80 mL/min/1.73 m^2 and CONMED_RTV_AUC_12H = 12.2 mg*h/L (CL/F, L/h)")  # Table 3: tvCL = 3.6 L/h (RSE 7.1%; bootstrap median 3.2, 95% CI 2.6-3.7)
 
     # Covariate effects on CL/F. Chen 2024 Equation 1 (reproduced verbatim from
     # the publisher's equation image IDR-17-4055-e0001):
@@ -191,7 +191,7 @@ Chen_2024_nirmatrelvir <- function() {
     ka <- exp(lka)
     cl <- exp(lcl + etalcl) *
       (CRCL / 80)^e_crcl_cl *
-      (CONMED_RTV_AUC_12h / 12.2)^e_rtv_auc_12h_cl
+      (CONMED_RTV_AUC_12H / 12.2)^e_rtv_auc_12h_cl
     vc <- exp(lvc + etalvc)
 
     # Micro-constant
