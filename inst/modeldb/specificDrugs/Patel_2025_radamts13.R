@@ -107,8 +107,8 @@ Patel_2025_radamts13 <- function() {
     #   Vc: log(1 + 0.254^2) = 0.0625202
     # The paper reports no IIV on Q or Vp (Table 1 leaves those cells blank),
     # and reports no eta correlations, so the OMEGA matrix is diagonal.
-    etalcl ~ 0.1237819  # Table 1, "IIV, % (RSE%)" on Clearance = 36.3% (RSE 45.8%), shrinkage 14.3%; converted via footnote a
-    etalvc ~ 0.0625202  # Table 1, "IIV, % (RSE%)" on Central volume = 25.4% (RSE 20.9%), shrinkage 4.9%; converted via footnote a
+    etalcl ~ 0.1237819  # Table 1, 'IIV, % (RSE%)' on Clearance = 36.3% (RSE 45.8%), shrinkage 14.3%; converted via footnote a
+    etalvc ~ 0.0625202  # Table 1, 'IIV, % (RSE%)' on Central volume = 25.4% (RSE 20.9%), shrinkage 4.9%; converted via footnote a
 
     # ---- Residual unexplained variability ----
     # Combined additive + proportional. The additive term is reported in IU/L

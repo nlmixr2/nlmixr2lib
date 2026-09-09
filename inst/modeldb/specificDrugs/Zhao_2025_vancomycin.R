@@ -213,7 +213,7 @@ Zhao_2025_vancomycin <- function() {
     # absorbed by the four covariates. IIV on V was 0.90% CV with an RSE of
     # 215.55% in the base model and was dropped from the final model
     # altogether, so V carries no eta.
-    etalcl ~ 0.00246704  # Zhao 2025 Table 3, final model "CL (%CV)" = 4.97 (RSE 15.70%); bootstrap 4.80 (95% CI 2.83-6.77); omega^2 = log(1 + 0.0497^2)
+    etalcl ~ 0.00246704  # Zhao 2025 Table 3, final model 'CL (%CV)' = 4.97 (RSE 15.70%); bootstrap 4.80 (95% CI 2.83-6.77); omega^2 = log(1 + 0.0497^2)
 
     # Proportional residual error. Zhao 2025 Results: "The examination of
     # residual variability supported the adoption of a proportional error

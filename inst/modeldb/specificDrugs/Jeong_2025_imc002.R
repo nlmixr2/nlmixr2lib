@@ -107,7 +107,7 @@ Jeong_2025_imc002 <- function() {
     # but no covariance. Data S1 $OMEGA BLOCK(2) is the only source for the off-diagonal
     # (0.0199, implying a correlation of 0.183); its diagonals reproduce Table 2 exactly.
     etalvc + etalcl ~ c(0.037,
-                        0.0199, 0.319)  # Table 2 "Interindividual variability" rows; off-diagonal from Data S1 $OMEGA BLOCK(2)
+                        0.0199, 0.319)  # Table 2 'Interindividual variability' rows; off-diagonal from Data S1 $OMEGA BLOCK(2)
 
     # ---- Residual error --------------------------------------------------------------
     # Data S1 $ERROR is additive on the LOG scale -- IPRED = LOG(A(1)/VC),

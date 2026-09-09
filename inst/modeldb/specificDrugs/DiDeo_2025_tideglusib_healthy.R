@@ -210,11 +210,11 @@ DiDeo_2025_tideglusib_healthy <- function() {
     # the formula as "CV = sqrt(exp(Omega^2)) x 100", which does not reproduce
     # its own column; the arithmetic that does is sqrt(variance).) nlmixr2
     # takes variances on the diagonal, so the printed values are used directly.
-    etalcl ~ 0.18  # Table 2, NP031112-07A03, row "eta CL variance" = 0.18 (43.5% CV)
-    etalvc ~ 0.33  # Table 2, NP031112-07A03, row "eta V2 variance" = 0.33 (57.8% CV)
-    etalq ~ 0.96  # Table 2, NP031112-07A03, row "eta Q variance" = 0.96 (98.2% CV)
-    etalvp ~ 0.90  # Table 2, NP031112-07A03, row "eta V3 variance" = 0.90 (95.1% CV)
-    etalka ~ 0.06  # Table 2, NP031112-07A03, row "eta KA variance" = 0.06 (26.2% CV)
+    etalcl ~ 0.18  # Table 2, NP031112-07A03, row 'eta CL variance' = 0.18 (43.5% CV)
+    etalvc ~ 0.33  # Table 2, NP031112-07A03, row 'eta V2 variance' = 0.33 (57.8% CV)
+    etalq ~ 0.96  # Table 2, NP031112-07A03, row 'eta Q variance' = 0.96 (98.2% CV)
+    etalvp ~ 0.90  # Table 2, NP031112-07A03, row 'eta V3 variance' = 0.90 (95.1% CV)
+    etalka ~ 0.06  # Table 2, NP031112-07A03, row 'eta KA variance' = 0.06 (26.2% CV)
 
     # ----- Residual error (proportional, split on the same 400 mg threshold) -----
     # Table 2's abbreviation footnote defines "sigma = residual variance", and

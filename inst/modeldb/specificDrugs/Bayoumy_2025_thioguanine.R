@@ -126,8 +126,8 @@ Bayoumy_2025_thioguanine <- function() {
     # ---------------------------------------------------------------------
     etalvc + etalcl ~ c(0.271878,
                         0.119927, 0.150194)  # ESM 1 $OMEGA BLOCK(2): omega^2 V = 0.271878, cov = 0.119927, omega^2 CL = 0.150194
-    etalka ~ fixed(1)                        # ESM 1 $OMEGA 1 FIX "; BSV Ka"; Results 3.2: BSV on Ka was unidentifiable (>250%) and held at 100%
-    etapropSd ~ 0.244129                     # ESM 1 $OMEGA 0.244129 "; eps" -> ETA(4), the BSV on the residual-error magnitude; sqrt = 0.494 (49% CV), Table 2 "BSV 49%"
+    etalka ~ fixed(1)                        # ESM 1 $OMEGA 1 FIX '; BSV Ka'; Results 3.2: BSV on Ka was unidentifiable (>250%) and held at 100%
+    etapropSd ~ 0.244129                     # ESM 1 $OMEGA 0.244129 '; eps' -> ETA(4), the BSV on the residual-error magnitude; sqrt = 0.494 (49% CV), Table 2 'BSV 49%'
 
     # ---------------------------------------------------------------------
     # Residual error. ESM 1 $ERROR uses log-transform-both-sides with

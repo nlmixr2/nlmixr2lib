@@ -405,8 +405,8 @@ Chan_2025_atezolizumab <- function() {
     # Absorption etas, ESTIMATED by Chan 2025. Table 2 prints them on the
     # standard-deviation scale as percentages, so the variances below are
     # the squares: 0.346^2 = 0.119716 and 0.830^2 = 0.6889.
-    etalka ~ 0.119716                                                                                                  # Chan 2025 Table 2 "POPIIV KA 34.6%, RSE 23.7, shrinkage 38.1"
-    etalogitfdepot ~ 0.6889                                                                                            # Chan 2025 Table 2 "POPIIV F1 83.0%, RSE 18.7, shrinkage 37.4"; this eta lives on the logit scale (control stream adds ETA(6) inside the expit)
+    etalka ~ 0.119716                                                                                                  # Chan 2025 Table 2 'POPIIV KA 34.6%, RSE 23.7, shrinkage 38.1'
+    etalogitfdepot ~ 0.6889                                                                                            # Chan 2025 Table 2 'POPIIV F1 83.0%, RSE 18.7, shrinkage 37.4'; this eta lives on the logit scale (control stream adds ETA(6) inside the expit)
 
     # ==================================================================
     # RESIDUAL UNEXPLAINED VARIABILITY
