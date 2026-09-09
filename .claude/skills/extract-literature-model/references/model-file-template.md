@@ -114,6 +114,10 @@ Related references:
 
     # IIV — eta + transformed parameter name. Use a block for correlated IIV.
     # Use ~ fixed(<var>) for IIVs the paper held constant from a prior publication.
+    # SINGLE-quote any source-table text in these comments: rxode2 promotes a
+    # trailing comment on a line with no label() into label("<comment>"), and an
+    # embedded double quote terminates that string early so the model will not
+    # re-parse. Eta lines carry no label(), so this is where it bites.
     # Use fixed(0) inside a c(...) block for off-diagonals NONMEM fixed to zero.
     etalcl + etalvc ~ c(<var_cl>, <cov_cl_vc>, <var_vc>)  # <source location>
     etalka          ~ <var_ka>                              # <source location>
