@@ -82,10 +82,10 @@ Ogasawara_2020_durvalumab <- function() {
   ini({
     # Structural parameters (time in hours)
     # From Table 3 of the paper
-    lcl <- log(0.0107)   ; label("Clearance (CL, L/h)")
-    lvc <- log(4.63)     ; label("Central volume of distribution (Vc, L)")
-    lq  <- log(0.0376)   ; label("Intercompartmental clearance (Q, L/h)")
-    lvp <- log(2.68)     ; label("Peripheral volume of distribution (Vp, L)")
+    lcl <- log(0.0107)   ; label("Clearance (L/h)")
+    lvc <- log(4.63)     ; label("Central volume of distribution (L)")
+    lq  <- log(0.0376)   ; label("Intercompartmental clearance (L/h)")
+    lvp <- log(2.68)     ; label("Peripheral volume of distribution (L)")
 
     # Covariate effects on CL (continuous: power model; categorical: multiplicative)
     # From Table 3 footnote b

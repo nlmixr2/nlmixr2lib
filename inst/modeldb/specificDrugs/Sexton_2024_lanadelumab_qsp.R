@@ -163,7 +163,7 @@ Sexton_2024_lanadelumab_qsp <- function() {
     # analysis cited as reference [15]; reproduced in MOESM7
     # (SimInput_HAE.r popPK_Param_info, lines 40-42). Not re-estimated here.
     # ==================================================================
-    lka <- fixed(log(0.0179)); label("Absorption rate constant after SC dosing (ka, 1/h)")            # MOESM7 line 42 (PK.ka mean 0.0179)
+    lka <- fixed(log(0.0179)); label("Absorption rate constant after SC dosing (1/h)")            # MOESM7 line 42 (PK.ka mean 0.0179)
     lcl <- fixed(log(0.0249)); label("Apparent clearance (CL/F, L/h) at 70 kg")                       # MOESM7 line 41 (PK.CL_F mean 0.0249)
     lvc <- fixed(log(12.8));   label("Apparent central volume (V/F, L) at 70 kg")                     # MOESM7 line 40 (PK.V_F mean 12.8)
     e_wt_cl <- fixed(0.891);   label("Power exponent on (WT/70) for CL/F (unitless)")                 # MOESM7 line 41 (WT_exponent)

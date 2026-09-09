@@ -193,12 +193,12 @@ Wilkins_2011_isoniazid <- function() {
     # ratio is encoded as the e_mix_fast_elim_cl power-form effect
     # below so that the MIX_FAST_ELIM = 0 reference matches Table 2.
     # ============================================================
-    lcl   <- log(9.70);  label("Apparent oral clearance, slow eliminator at 70 kg (CL_slow/F, L/h)")  # Wilkins 2011 Table 2 row "Typical apparent clearance, slow eliminators (CL_slow/F)" = 9.70 L/h (RSE 3.05 %)
-    lvc   <- log(57.7);  label("Apparent central volume of distribution at 70 kg, male (Vc/F, L)")    # Wilkins 2011 Table 2 row "Typical apparent central volume of distribution (Vc/F)" = 57.7 L (RSE 2.81 %)
-    lvp   <- log(1730);  label("Apparent peripheral volume of distribution at 70 kg (Vp/F, L)")       # Wilkins 2011 Table 2 row "Typical apparent peripheral volume of distribution (Vp/F)" = 1730 L (RSE 14.7 %)
-    lq    <- log(3.34);  label("Apparent inter-compartmental clearance at 70 kg (Q/F, L/h)")          # Wilkins 2011 Table 2 row "Typical apparent intercompartmental clearance (Q/F)" = 3.34 L/h (RSE 8.52 %)
-    lka   <- log(1.85);  label("First-order absorption rate constant (ka, 1/h)")                      # Wilkins 2011 Table 2 row "Typical absorption rate constant (ka)" = 1.85 1/h (RSE 4.01 %)
-    ltlag <- log(0.180); label("Absorption lag time (tlag, h)")                                       # Wilkins 2011 Table 2 row "Typical absorption lag time (tlag)" = 0.180 h (RSE 7.63 %)
+    lcl   <- log(9.70);  label("Apparent oral clearance, slow eliminator at 70 kg (L/h)")  # Wilkins 2011 Table 2 row "Typical apparent clearance, slow eliminators (CL_slow/F)" = 9.70 L/h (RSE 3.05 %)
+    lvc   <- log(57.7);  label("Apparent central volume of distribution at 70 kg, male (L)")    # Wilkins 2011 Table 2 row "Typical apparent central volume of distribution (Vc/F)" = 57.7 L (RSE 2.81 %)
+    lvp   <- log(1730);  label("Apparent peripheral volume of distribution at 70 kg (L)")       # Wilkins 2011 Table 2 row "Typical apparent peripheral volume of distribution (Vp/F)" = 1730 L (RSE 14.7 %)
+    lq    <- log(3.34);  label("Apparent inter-compartmental clearance at 70 kg (L/h)")          # Wilkins 2011 Table 2 row "Typical apparent intercompartmental clearance (Q/F)" = 3.34 L/h (RSE 8.52 %)
+    lka   <- log(1.85);  label("First-order absorption rate constant (1/h)")                      # Wilkins 2011 Table 2 row "Typical absorption rate constant (ka)" = 1.85 1/h (RSE 4.01 %)
+    ltlag <- log(0.180); label("Absorption lag time (h)")                                       # Wilkins 2011 Table 2 row "Typical absorption lag time (tlag)" = 0.180 h (RSE 7.63 %)
 
     # Bioavailability anchor. Oral-only data: absolute F is not
     # identifiable; the typical value is fixed at 1.0 and IIV on F

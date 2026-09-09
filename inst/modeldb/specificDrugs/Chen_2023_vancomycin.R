@@ -172,7 +172,7 @@ Chen_2023_vancomycin <- function() {
 
     # Sigmoid postmenstrual-age maturation on CL (Chen 2023 Equation 6). Both
     # terms are estimated and are reported with an RSE in Table 3.
-    pma_tm50 <- 37.0;  label("Postmenstrual age at 50% mature CL (TM50, weeks)")                    # Chen 2023 Table 3: TM50 = 37.0 weeks (RSE 4.6%; bootstrap 95% CI 33.5-40.2)
+    pma_tm50 <- 37.0;  label("Postmenstrual age at 50% mature CL (weeks)")                    # Chen 2023 Table 3: TM50 = 37.0 weeks (RSE 4.6%; bootstrap 95% CI 33.5-40.2)
     pma_hill <- -1.63; label("Hill coefficient of the sigmoid CL maturation function (unitless)")   # Chen 2023 Table 3: Hill = -1.63 (RSE 13%; bootstrap 95% CI -2.11 to -1.24). Negative because Equation 6 writes MF = 1 / (1 + (PMA/TM50)^Hill)
 
     # Covariate effects on CL.

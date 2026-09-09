@@ -189,27 +189,27 @@ Mukker_2026_tuvusertib_HR <- function() {
     # ------------------------------------------------------------------
 
     e_tad0h_e0 <- -1.19
-    label("Effect of the 0 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 0 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (0 h), bpm' = -1.19
     # (95% CI -2.56, 0.181).
 
     e_tad1h_e0 <- -5.16
-    label("Effect of the 1 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 1 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (1 h), bpm' = -5.16
     # (95% CI -6.13, -4.19). CI excludes zero.
 
     e_tad2h_e0 <- 0.694
-    label("Effect of the 2 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 2 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (2 h), bpm' = 0.694
     # (95% CI -0.352, 1.74).
 
     e_tad3h_e0 <- 2.80
-    label("Effect of the 3 h nominal post-dose timepoint on e0 (additive, bpm)")
+    label("Effect of the 3 h nominal post-dose timepoint on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Nominal time after dose (3 h), bpm' = 2.80
     # (95% CI 1.82, 3.79). CI excludes zero.
 
     e_day8_e0 <- 2.84
-    label("Effect of dosing day 8 versus day 1 on e0 (additive, bpm)")
+    label("Effect of dosing day 8 versus day 1 on e0, applied additively (bpm)")
     # Mukker 2026 Table S1 'Dosing day (Day 8 versus Day 1), bpm' =
     # 2.84 (95% CI 1.78, 3.91). Present in the C-DeltaHR model only;
     # the C-DeltaQTcF model of Table 2 carries no dosing-day term.

@@ -131,8 +131,8 @@ Henin_2012_felodipine <- function() {
     # footnote a). K34 has separate fasted / fed typical values.
     # ------------------------------------------------------------------
     lk23         <- log(0.43)  ; label("Log dissolved-drug transfer rate fundus -> antrum K23 (1/h)")                  # Table I: K23 = 0.43 1/h (RSE 9.3%)
-    lk34_fasted  <- log(3.48)  ; label("Log dissolved-drug transfer rate antrum -> PSI K34 (fasted, 1/h)")             # Table I: K34 fasted = 3.48 1/h (RSE 7.4%)
-    lk34_fed     <- log(0.81)  ; label("Log dissolved-drug transfer rate antrum -> PSI K34 (fed, 1/h)")                # Table I: K34 fed = 0.81 1/h (RSE 5.9%)
+    lk34_fasted  <- log(3.48)  ; label("Log dissolved-drug transfer rate antrum -> PSI K34 (1/h)")             # Table I: K34 fasted = 3.48 1/h (RSE 7.4%)
+    lk34_fed     <- log(0.81)  ; label("Log dissolved-drug transfer rate antrum -> PSI K34 (1/h)")                # Table I: K34 fed = 0.81 1/h (RSE 5.9%)
     k_si_bump    <- fixed(5)   ; label("Additive increase in K23 and K34 after tablet reaches SI (1/h)")        # Table I footnote a: rate increased by 5 h^-1 after tablet movement to small intestine
 
     # ------------------------------------------------------------------

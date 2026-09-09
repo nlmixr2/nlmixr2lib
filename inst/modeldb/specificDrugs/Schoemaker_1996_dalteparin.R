@@ -100,13 +100,13 @@ Schoemaker_1996_dalteparin <- function() {
     # central volume is derived from the typical CL and elimination t1/2E
     # via Vc = CL * t1/2E / ln(2).
     lka     <- log(0.5429)
-    label("Absorption rate constant (ka, 1/h)")
+    label("Absorption rate constant (1/h)")
     # Schoemaker 1996 Table 4: t1/2A = 76.6 min; ka = ln(2)/(76.6/60) h = 0.5429 1/h
     lcl     <- log(2.766)
-    label("Clearance (CL, L/h)")
+    label("Clearance (L/h)")
     # Schoemaker 1996 Table 4: CL = 46.1 mL/min; converted: 46.1 * 60 / 1000 = 2.766 L/h
     lvc     <- log(6.166)
-    label("Central volume of distribution (Vc, L)")
+    label("Central volume of distribution (L)")
     # Schoemaker 1996 Table 4: derived from CL = 46.1 mL/min and t1/2E = 92.7 min via
     # Vc = CL * t1/2E / ln(2) = 2.766 L/h * (92.7/60) h / 0.6931 = 6.166 L
     lfdepot <- log(0.705)
@@ -127,10 +127,10 @@ Schoemaker_1996_dalteparin <- function() {
     # alternative exponential-slope form e^(slope * Xa) hides the natural
     # interpretation that I10 provides.
     lrbase_APTT <- log(30.2)
-    label("Basal APTT level (APTT0, s)")
+    label("Basal APTT level (s)")
     # Schoemaker 1996 Table 4: APTT0 = 30.2 s (s.e. 0.910; CV 10.6%)
     lI10        <- log(0.0665)
-    label("Anti-Xa activity increment producing a 10% APTT increase (I10, IU/mL)")
+    label("Anti-Xa activity increment producing a 10% APTT increase (IU/mL)")
     # Schoemaker 1996 Table 4: I10 = 0.0665 IU/mL (s.e. 0.00439; CV 19.6%)
 
     # IIV. Schoemaker 1996 used the constant-coefficient-of-variation log-normal

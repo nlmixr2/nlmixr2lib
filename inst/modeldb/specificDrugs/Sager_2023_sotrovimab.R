@@ -198,10 +198,10 @@ Sager_2023_sotrovimab <- function() {
     # ==================================================================
 
     # ----- Disposition -----
-    lcl <- log(0.0960 / 24) ; label("Elimination clearance at 83.6 kg body weight (CL, L/h)")     # Sager 2023 Table 1: 0.0960 L/day (RSE 1.33%); /24 -> 0.00400 L/h
-    lvc <- log(3.33)        ; label("Central volume of distribution (V2, L)")                     # Sager 2023 Table 1: 3.33 L (RSE 2.20%)
-    lq  <- log(0.667 / 24)  ; label("Distribution clearance (Q, L/h)")                            # Sager 2023 Table 1: 0.667 L/day (RSE 1.49%); /24 -> 0.0277917 L/h
-    lvp <- log(4.51)        ; label("Peripheral volume of distribution at 83.6 kg body weight (V3, L)") # Sager 2023 Table 1: 4.51 L (RSE 1.32%)
+    lcl <- log(0.0960 / 24) ; label("Elimination clearance at 83.6 kg body weight (L/h)")     # Sager 2023 Table 1: 0.0960 L/day (RSE 1.33%); /24 -> 0.00400 L/h
+    lvc <- log(3.33)        ; label("Central volume of distribution (L)")                     # Sager 2023 Table 1: 3.33 L (RSE 2.20%)
+    lq  <- log(0.667 / 24)  ; label("Distribution clearance (L/h)")                            # Sager 2023 Table 1: 0.667 L/day (RSE 1.49%); /24 -> 0.0277917 L/h
+    lvp <- log(4.51)        ; label("Peripheral volume of distribution at 83.6 kg body weight (L)") # Sager 2023 Table 1: 4.51 L (RSE 1.32%)
 
     # ----- Intramuscular absorption -----
     # Table 1 prints the KA units as "L/h", which is a typographical
@@ -215,7 +215,7 @@ Sager_2023_sotrovimab <- function() {
     # (MODEL CODE S1, $THETA and $DES). Read as 1/h the value gives an
     # absorption half-life of log(2)/0.00643 = 108 h (4.5 days), the
     # expected order for intramuscular monoclonal-antibody absorption.
-    lka <- log(0.00643)     ; label("First-order absorption rate constant from the i.m. depot in male participants with BMI 30.41 kg/m2 (KA, 1/h)") # Sager 2023 Table 1: 0.00643 (RSE 4.67%)
+    lka <- log(0.00643)     ; label("First-order absorption rate constant from the i.m. depot in male participants with BMI 30.41 kg/m2 (1/h)") # Sager 2023 Table 1: 0.00643 (RSE 4.67%)
     lr1 <- log(130)         ; label("Zero-order input rate R1 into the i.m. depot (mg/h)")        # Sager 2023 Table 1: 130 mg/h (RSE 6.69%)
 
     # F_IM is estimated on the logit scale (Sager 2023 Table 1 footnote

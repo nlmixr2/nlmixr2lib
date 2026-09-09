@@ -103,8 +103,8 @@ Kamal_2015_oseltamivir <- function() {
     # clinically meaningful parameter reported in Table 2; the directly
     # fit NONMEM parameter ED50* is derived inside model() from
     # ED50 = ED50* / (Emax / log10(2) - 1).
-    lemax <- log(2.35); label("Maximum log10-fold inhibition of viral production rate p by oseltamivir (Emax, log10 units)")  # Table 2: Emax = 2.35, %SEM 25
-    led50 <- log(3.2);  label("Oseltamivir dose producing 50% (2-fold) reduction of viral production rate p (ED50, mg)")       # Table 2: ED50 = 3.2 mg, %SEM 69
+    lemax <- log(2.35); label("Maximum log10-fold inhibition of viral production rate p by oseltamivir (log10 units)")  # Table 2: Emax = 2.35, %SEM 25
+    led50 <- log(3.2);  label("Oseltamivir dose producing 50% (2-fold) reduction of viral production rate p (mg)")       # Table 2: ED50 = 3.2 mg, %SEM 69
 
     # Inter-individual variability. Table 2 reports IIV on p_prod
     # (65% CV) and Emax (82% CV); no IIV on beta_inf, c_clr, delta_clr,

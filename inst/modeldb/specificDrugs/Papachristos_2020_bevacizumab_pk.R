@@ -73,10 +73,10 @@ Papachristos_2020_bevacizumab_pk <- function() {
 
   ini({
     # Structural PK parameters - reference values for a 70 kg adult, all SNPs wild-type
-    lcl <- log(0.200); label("Clearance for a 70 kg wild-type adult (CL, L/day)")  # Table 1 row CLpop
-    lvc <- log(3.09);  label("Central volume of distribution (Vc, L)")              # Table 1 row V1pop
-    lq  <- log(0.35);  label("Inter-compartmental clearance for a wild-type adult (Q, L/day)")  # Table 1 row Qpop
-    lvp <- log(2.39);  label("Peripheral volume of distribution (Vp, L)")           # Table 1 row V2pop
+    lcl <- log(0.200); label("Clearance for a 70 kg wild-type adult (L/day)")  # Table 1 row CLpop
+    lvc <- log(3.09);  label("Central volume of distribution (L)")              # Table 1 row V1pop
+    lq  <- log(0.35);  label("Inter-compartmental clearance for a wild-type adult (L/day)")  # Table 1 row Qpop
+    lvp <- log(2.39);  label("Peripheral volume of distribution (L)")           # Table 1 row V2pop
 
     # Allometric / covariate effects on log-CL (paper formula: CL = CLpop * (WT/70)^allo * exp(e * cat))
     e_wt_cl <- 1.04;  label("Allometric exponent on CL for log(WT/70) (unitless)")  # Table 1 row "log(weight/70) on CL"

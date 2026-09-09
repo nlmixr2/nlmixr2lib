@@ -76,7 +76,7 @@ PerezRuixo_2006_tipifarnib <- function() {
     lcl  <- log(21.9);  label("Systemic clearance (CL, L/h) for cancer patients at TBILI = 9 umol/L")         # Perez-Ruixo 2006 Table 4: CL cancer = 21.9 L/h (footnote a normalises to TBIL = 9 umol/L)
     lvc  <- log(54.9);  label("Central volume of distribution (V2, L per 70 kg) for cancer patients")          # Perez-Ruixo 2006 Table 4: V2 cancer = 54.9 L / 70 kg
     lq   <- log(4.11);  label("Inter-compartmental clearance Q3 to peripheral1 (L/h)")                         # Perez-Ruixo 2006 Table 4: Q3 = 4.11 L/h (cancer = healthy)
-    lvp  <- log(92.4);  label("First peripheral volume of distribution (V3, L)")                                # Perez-Ruixo 2006 Table 4: V3 = 92.4 L (cancer = healthy)
+    lvp  <- log(92.4);  label("First peripheral volume of distribution (L)")                                # Perez-Ruixo 2006 Table 4: V3 = 92.4 L (cancer = healthy)
     lq2  <- log(14.8);  label("Inter-compartmental clearance Q4 to peripheral2 (L/h) for cancer patients")     # Perez-Ruixo 2006 Table 4: Q4 cancer = 14.8 L/h
     lvp2 <- log(21.4);  label("Second peripheral volume of distribution (V4, L) for cancer patients")          # Perez-Ruixo 2006 Table 4: V4 cancer = 21.4 L
     ld1  <- log(1.20);  label("Duration of zero-order release into depot D1 (h) for the solid formulation")    # Perez-Ruixo 2006 Table 4: D1 solid = 1.20 h

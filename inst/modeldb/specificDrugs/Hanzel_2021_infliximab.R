@@ -61,12 +61,12 @@ Hanzel_2021_infliximab <- function() {
   ini({
     # Structural parameters -- typical values for the reference patient
     # (70 kg, ALB 44 g/L, ADA-negative) per Hanzel 2021 Table 3 (Final model column).
-    lka     <- log(0.273); label("First-order SC absorption rate constant (Ka, 1/day)")            # Hanzel 2021 Table 3: Ka = 0.273 /d
-    lcl     <- log(0.355); label("Clearance for the reference patient (CL, L/day)")                # Hanzel 2021 Table 3: CL = 0.355 L/d
-    lvc     <- log(3.10);  label("Central volume of distribution for the reference patient (Vc, L)")     # Hanzel 2021 Table 3: Vc = 3.10 L
-    lvp     <- log(1.93);  label("Peripheral volume of distribution for the reference patient (Vp, L)")  # Hanzel 2021 Table 3: Vp = 1.93 L
-    lq      <- log(0.598); label("Inter-compartmental clearance for the reference patient (Q, L/day)")   # Hanzel 2021 Table 3: Q = 0.598 L/d
-    lfdepot <- log(0.791); label("Subcutaneous bioavailability (F1, fraction)")                          # Hanzel 2021 Table 3: F1 = 79.1%
+    lka     <- log(0.273); label("First-order SC absorption rate constant (1/day)")            # Hanzel 2021 Table 3: Ka = 0.273 /d
+    lcl     <- log(0.355); label("Clearance for the reference patient (L/day)")                # Hanzel 2021 Table 3: CL = 0.355 L/d
+    lvc     <- log(3.10);  label("Central volume of distribution for the reference patient (L)")     # Hanzel 2021 Table 3: Vc = 3.10 L
+    lvp     <- log(1.93);  label("Peripheral volume of distribution for the reference patient (L)")  # Hanzel 2021 Table 3: Vp = 1.93 L
+    lq      <- log(0.598); label("Inter-compartmental clearance for the reference patient (L/day)")   # Hanzel 2021 Table 3: Q = 0.598 L/d
+    lfdepot <- log(0.791); label("Subcutaneous bioavailability (fraction)")                          # Hanzel 2021 Table 3: F1 = 79.1%
 
     # Covariate effect parameters from Hanzel 2021 Table 3 (Final model column).
     # Continuous covariates use a power model relative to the reference value;

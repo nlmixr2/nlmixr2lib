@@ -77,10 +77,10 @@ Melhem_2022_dostarlimab <- function() {
     # Structural PK parameters at the reference patient (female, 70 kg, 64 y,
     # ALB 39 g/L, ALT 18 U/L). Values are the typical-value population PK
     # parameter estimates from Melhem 2022 Table 3.
-    lcl  <- log(0.179);  label("Baseline clearance at t=0 for reference patient (CL_base, L/day)") # Melhem 2022 Table 3: CL = 0.179 L/d
-    lvc  <- log(2.98);   label("Central volume of distribution for reference patient (Vc_base, L)") # Melhem 2022 Table 3: Vc = 2.98 L
-    lq   <- log(0.547);  label("Intercompartmental clearance (Q, L/day)")                           # Melhem 2022 Table 3: Q = 0.547 L/d
-    lvp  <- log(2.10);   label("Peripheral volume of distribution for 70 kg reference (Vp, L)")     # Melhem 2022 Table 3: Vp = 2.10 L
+    lcl  <- log(0.179);  label("Baseline clearance at t=0 for reference patient (L/day)") # Melhem 2022 Table 3: CL = 0.179 L/d
+    lvc  <- log(2.98);   label("Central volume of distribution for reference patient (L)") # Melhem 2022 Table 3: Vc = 2.98 L
+    lq   <- log(0.547);  label("Intercompartmental clearance (L/day)")                           # Melhem 2022 Table 3: Q = 0.547 L/d
+    lvp  <- log(2.10);   label("Peripheral volume of distribution for 70 kg reference (L)")     # Melhem 2022 Table 3: Vp = 2.10 L
 
     # Time-dependent clearance (sigmoid I_max function of time since first
     # dose; Melhem 2022 Results, equation block):

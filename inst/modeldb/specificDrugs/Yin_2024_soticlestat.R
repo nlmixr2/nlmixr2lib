@@ -292,11 +292,11 @@ Yin_2024_soticlestat <- function() {
 
   ini({
     # ---- Structural PK, Table 1a (a) PopPK model, 'Estimate' column ----
-    lka     <- log(8.39)   ; label("Absorption rate constant (ka, 1/h)")                     # Table 1a, Absorption rate (ka), TV
-    lcl     <- log(4.2)    ; label("Linear elimination clearance in a healthy volunteer (CL, L/h)")  # Table 1a, Elimination clearance (CL), TV
-    lvc     <- log(3.01)   ; label("Central volume of distribution (Vc, L)")                 # Table 1a, Central volume (Vc), TV
-    lq      <- log(1.15)   ; label("Inter-compartmental clearance (Q, L/h)")                 # Table 1a, Distribution clearance (Q), TV
-    lvp     <- log(7.8)    ; label("Peripheral volume of distribution (Vp, L)")              # Table 1a, Peripheral volume (Vp), TV
+    lka     <- log(8.39)   ; label("Absorption rate constant (1/h)")                     # Table 1a, Absorption rate (ka), TV
+    lcl     <- log(4.2)    ; label("Linear elimination clearance in a healthy volunteer (L/h)")  # Table 1a, Elimination clearance (CL), TV
+    lvc     <- log(3.01)   ; label("Central volume of distribution (L)")                 # Table 1a, Central volume (Vc), TV
+    lq      <- log(1.15)   ; label("Inter-compartmental clearance (L/h)")                 # Table 1a, Distribution clearance (Q), TV
+    lvp     <- log(7.8)    ; label("Peripheral volume of distribution (L)")              # Table 1a, Peripheral volume (Vp), TV
     ltlag   <- log(0.133)  ; label("Absorption lag time for the oral solution (h)")          # Table 1a, Lag time of the first compartment (ALAG1), TV
     lfdepot <- fixed(log(0.0216)) ; label("Relative bioavailability of the depot (unitless)")  # Table 1a, Bioavailability (F1), TV, Fixed; NONMEM $THETA 7 FIX
 
@@ -339,9 +339,9 @@ Yin_2024_soticlestat <- function() {
     # Not re-estimated in this paper ('The PK/EO model was not updated because no
     # additional EO data were available'); all four values carry FIX in the
     # NONMEM $THETA of the final PK/EO/PD run and are inherited from Yin 2023.
-    lke0     <- fixed(log(0.254)) ; label("Plasma-to-brain effect-site equilibration rate constant (ke0, 1/h)")  # Appendix S1 PK/EO/PD $THETA 3 KPLBR, FIX
-    lemax    <- fixed(log(100))   ; label("Maximum CH24H enzyme occupancy (Emax, %)")                            # Appendix S1 PK/EO/PD $THETA 4 EMAX, FIX
-    lec50    <- fixed(log(5.86))  ; label("Effect-site concentration for 50% CH24H enzyme occupancy (EC50, ng/mL)")  # Appendix S1 PK/EO/PD $THETA 5 EC50, FIX
+    lke0     <- fixed(log(0.254)) ; label("Plasma-to-brain effect-site equilibration rate constant (1/h)")  # Appendix S1 PK/EO/PD $THETA 3 KPLBR, FIX
+    lemax    <- fixed(log(100))   ; label("Maximum CH24H enzyme occupancy (%)")                            # Appendix S1 PK/EO/PD $THETA 4 EMAX, FIX
+    lec50    <- fixed(log(5.86))  ; label("Effect-site concentration for 50% CH24H enzyme occupancy (ng/mL)")  # Appendix S1 PK/EO/PD $THETA 5 EC50, FIX
     lhill_eo <- fixed(log(0.769)) ; label("Sigmoidicity of the CH24H enzyme-occupancy relationship (unitless)")  # Appendix S1 PK/EO/PD $THETA 6 EGAM, FIX
 
     # ---- 24HC turnover, Table 1b 'Original estimate' column ----
@@ -350,9 +350,9 @@ Yin_2024_soticlestat <- function() {
     e_age_rbase     <- -0.511      ; label("Exponent on (AGE/17.5) for baseline 24HC below the breakpoint (unitless)")    # Table 1b, Age effect, exponent
     e_aag_rbase     <- 0.215       ; label("Exponent on (AAG/20) for baseline 24HC (unitless)")           # Table 1b, AGP effect, exponent
     e_wt_rbase      <- -0.256      ; label("Exponent on (WT/55.25) for baseline 24HC (unitless)")         # Table 1b, Body weight effect, exponent
-    lkout           <- log(0.0199) ; label("First-order 24HC degradation rate constant (kout, 1/h)")      # Table 1b, 24HC degradation rate (kout), TV
-    limax           <- log(92)     ; label("Maximum inhibition of 24HC production (Imax, %)")             # Table 1b, Maximum inhibition of 24HC production (Imax), TV
-    lic50           <- log(9.85)   ; label("Effect-site concentration for 50% of maximum 24HC inhibition (IC50, ng/mL)")  # Table 1b, Effect-site concentration for 50% maximum effect (IC50), TV
+    lkout           <- log(0.0199) ; label("First-order 24HC degradation rate constant (1/h)")      # Table 1b, 24HC degradation rate (kout), TV
+    limax           <- log(92)     ; label("Maximum inhibition of 24HC production (%)")             # Table 1b, Maximum inhibition of 24HC production (Imax), TV
+    lic50           <- log(9.85)   ; label("Effect-site concentration for 50% of maximum 24HC inhibition (ng/mL)")  # Table 1b, Effect-site concentration for 50% maximum effect (IC50), TV
     lhill_hc24      <- log(0.881)  ; label("Sigmoidicity of the 24HC inhibition relationship (unitless)")  # Table 1b, Shape parameter (gamma), TV
     # NOTE THE SCALE: I0 in the control stream is a PERCENT and enters as
     # (100 - I0)/100, whereas the canonical iplac is the FRACTION I0/100.

@@ -115,12 +115,12 @@ Germovsek_2016_gentamicin <- function() {
     # Structural typical values: from FINAL PARAMETER ESTIMATE block of
     # Output_real_run35b.lst (DDMODEL00000238), THETA vector. Reference subject:
     # WT = 70 kg, PMA -> infinity (fully mature), CREAT = TCREA at the subject's PMA.
-    lcl  <- log(6.21);    label("Typical clearance at WT = 70 kg, fully mature, typical SCr (CL, L/h)")  # .lst TH1 = 6.21
-    lvc  <- log(26.5);    label("Typical central volume at WT = 70 kg (V1, L)")  # .lst TH2 = 26.5
-    lq   <- log(2.15);    label("Typical inter-compartmental CL to peripheral1 at WT = 70 kg (Q, L/h)")  # .lst TH3 = 2.15
-    lvp  <- log(21.2);    label("Typical first peripheral volume at WT = 70 kg (V2, L)")  # .lst TH4 = 21.2
-    lq2  <- log(0.271);   label("Typical inter-compartmental CL to peripheral2 at WT = 70 kg (Q2, L/h)")  # .lst TH5 = 0.271
-    lvp2 <- log(148);     label("Typical second peripheral volume at WT = 70 kg (V3, L)")  # .lst TH6 = 148
+    lcl  <- log(6.21);    label("Typical clearance at WT = 70 kg, fully mature, typical SCr (L/h)")  # .lst TH1 = 6.21
+    lvc  <- log(26.5);    label("Typical central volume at WT = 70 kg (L)")  # .lst TH2 = 26.5
+    lq   <- log(2.15);    label("Typical inter-compartmental CL to peripheral1 at WT = 70 kg (L/h)")  # .lst TH3 = 2.15
+    lvp  <- log(21.2);    label("Typical first peripheral volume at WT = 70 kg (L)")  # .lst TH4 = 21.2
+    lq2  <- log(0.271);   label("Typical inter-compartmental CL to peripheral2 at WT = 70 kg (L/h)")  # .lst TH5 = 0.271
+    lvp2 <- log(148);     label("Typical second peripheral volume at WT = 70 kg (L)")  # .lst TH6 = 148
 
     # Maturation parameters for CL (Hill-type function of postmenstrual age, weeks).
     # T50 and Hill are FIXED in the source ($THETA 55.4 FIX, 3.33 FIX); values are

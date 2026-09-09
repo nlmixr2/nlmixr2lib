@@ -106,10 +106,10 @@ Frymoyer_2017_infliximab <- function() {
     #   lvc = log(52.4 * 65 / 1000) = log(3.406 L)
     #   lvp = log(19.6 * 65 / 1000) = log(1.274 L)
     #   lq  = log(2.26 * 65 / 1000) = log(0.1469 L/day)
-    lcl <- log(0.3523); label("Clearance for the reference subject (CL, L/day)")          # Frymoyer 2017 Methods (CL equation): 5.42 mL/kg/day * 65 kg / 1000
-    lvc <- log(3.406);  label("Central volume of distribution for the reference subject (Vc, L)")     # Frymoyer 2017 Methods (Vc equation): 52.4 mL/kg * 65 kg / 1000
-    lvp <- log(1.274);  label("Peripheral volume of distribution for the reference subject (Vp, L)")  # Frymoyer 2017 Methods (Vp equation): 19.6 mL/kg * 65 kg / 1000
-    lq  <- log(0.1469); label("Inter-compartmental clearance for the reference subject (Q, L/day)")   # Frymoyer 2017 Methods: 2.26 mL/kg/day * 65 kg / 1000
+    lcl <- log(0.3523); label("Clearance for the reference subject (L/day)")          # Frymoyer 2017 Methods (CL equation): 5.42 mL/kg/day * 65 kg / 1000
+    lvc <- log(3.406);  label("Central volume of distribution for the reference subject (L)")     # Frymoyer 2017 Methods (Vc equation): 52.4 mL/kg * 65 kg / 1000
+    lvp <- log(1.274);  label("Peripheral volume of distribution for the reference subject (L)")  # Frymoyer 2017 Methods (Vp equation): 19.6 mL/kg * 65 kg / 1000
+    lq  <- log(0.1469); label("Inter-compartmental clearance for the reference subject (L/day)")   # Frymoyer 2017 Methods: 2.26 mL/kg/day * 65 kg / 1000
 
     # Covariate effect parameters. Power exponents reported by Frymoyer 2017 are
     # on the per-kg form of CL / Vc / Vp; the +1 conversion to total parameters

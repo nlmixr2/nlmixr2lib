@@ -73,7 +73,7 @@ Bienczak_2025_ligelizumab <- function() {
   ini({
     # Structural parameters - typical values for a 70 kg, ADA-negative, CSU patient
     # with IgE = 90 IU/mL, not enrolled in study C2201 (Table S6 of Supplementary Information S1)
-    lka  <- log(0.218);   label("Absorption rate constant (ka, 1/day)")                                # Table S6, structural ka
+    lka  <- log(0.218);   label("Absorption rate constant (1/day)")                                # Table S6, structural ka
     lcl  <- log(0.602);   label("Apparent clearance (CL/F, L/day) for a 70 kg CSU patient")            # Table S6, structural CL/F
     lvc  <- log(5.47);    label("Apparent central volume of distribution (Vc/F, L) for a 70 kg CSU patient")  # Table S6, structural Vc/F
     lq   <- log(0.969);   label("Apparent inter-compartmental clearance (Q/F, L/day) for a 70 kg CSU patient")  # Table S6, structural Q/F

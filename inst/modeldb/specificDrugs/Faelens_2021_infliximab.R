@@ -68,8 +68,8 @@ Faelens_2021_infliximab <- function() {
     # and V; nlmixr2lib's standard parameterization is CL and Vc, so:
     #   typical CL = KE_Mayo2 * V_typ = 0.0463 /d * 6.97 L = 0.32271 L/d
     #   typical Vc = V_typ              = 6.97 L
-    lcl <- log(0.32271); label("Clearance for the reference patient (CL, L/day)")            # Faelens 2021 supplement Table S1 (Adapted Model); KE_Mayo2 = 0.0463 /d, V_typ = 6.97 L; CL = KE * V
-    lvc <- log(6.97);    label("Central volume of distribution for the reference patient (Vc, L)")  # Faelens 2021 supplement Table S1 (Adapted Model); THETA(6) = TVV = 6.97 L
+    lcl <- log(0.32271); label("Clearance for the reference patient (L/day)")            # Faelens 2021 supplement Table S1 (Adapted Model); KE_Mayo2 = 0.0463 /d, V_typ = 6.97 L; CL = KE * V
+    lvc <- log(6.97);    label("Central volume of distribution for the reference patient (L)")  # Faelens 2021 supplement Table S1 (Adapted Model); THETA(6) = TVV = 6.97 L
 
     # Baseline Mayo endoscopic subscore effect on KE (and therefore on CL).
     # Source models the effect as a categorical lookup, with separate typical

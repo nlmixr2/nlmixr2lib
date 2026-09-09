@@ -140,12 +140,12 @@ Kirubakaran_2022_tacrolimus <- function() {
     # also estimates a state-dependent BSV magnitude (61% CV without azole vs
     # 89.5% CV with azole). Each lcl_<state> intercept therefore has its own
     # eta<lcl_<state>> IIV term.
-    lka       <- log(0.508);  label("Absorption rate (Ka, 1/h)")  # Kirubakaran 2022 Table 3 final-model Ka = 0.508 h^-1 (RSE 20%)
-    lcl       <- log(21.1);   label("Apparent CL/F at reference covariates without concomitant azole antifungal (CL/F, L/h)")  # Kirubakaran 2022 Table 3 final-model CL/F (without azole) = 21.1 L/h (RSE 11%)
-    lcl_azole <- log(4.2);    label("Apparent CL/F at reference covariates with concomitant azole antifungal (CL/F, L/h)")  # Kirubakaran 2022 Table 3 final-model CL/F (with azole) = 4.2 L/h (RSE 12%)
-    lvc       <- log(197);    label("Apparent central volume V2/F at reference FFM (V2/F, L)")  # Kirubakaran 2022 Table 3 final-model V2/F = 197 L (RSE 9%)
-    lq        <- log(55.0);   label("Apparent intercompartmental clearance Q/F at reference FFM (Q/F, L/h)")  # Kirubakaran 2022 Table 3 final-model Q/F = 55.0 L/h (RSE 10%)
-    lvp       <- log(297);    label("Apparent peripheral volume V3/F at reference FFM (V3/F, L)")  # Kirubakaran 2022 Table 3 final-model V3/F = 297 L (RSE 9%)
+    lka       <- log(0.508);  label("Absorption rate (1/h)")  # Kirubakaran 2022 Table 3 final-model Ka = 0.508 h^-1 (RSE 20%)
+    lcl       <- log(21.1);   label("Apparent CL/F at reference covariates without concomitant azole antifungal (L/h)")  # Kirubakaran 2022 Table 3 final-model CL/F (without azole) = 21.1 L/h (RSE 11%)
+    lcl_azole <- log(4.2);    label("Apparent CL/F at reference covariates with concomitant azole antifungal (L/h)")  # Kirubakaran 2022 Table 3 final-model CL/F (with azole) = 4.2 L/h (RSE 12%)
+    lvc       <- log(197);    label("Apparent central volume V2/F at reference FFM (L)")  # Kirubakaran 2022 Table 3 final-model V2/F = 197 L (RSE 9%)
+    lq        <- log(55.0);   label("Apparent intercompartmental clearance Q/F at reference FFM (L/h)")  # Kirubakaran 2022 Table 3 final-model Q/F = 55.0 L/h (RSE 10%)
+    lvp       <- log(297);    label("Apparent peripheral volume V3/F at reference FFM (L)")  # Kirubakaran 2022 Table 3 final-model V3/F = 297 L (RSE 9%)
 
     # FFM-allometric exponents (fixed at 0.75 / 1.0; Section 3.3.3 final-model
     # equations cite the reported allometry scale of Anderson and Holford 2009 /

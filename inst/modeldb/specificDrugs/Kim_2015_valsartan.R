@@ -51,11 +51,11 @@ Kim_2015_valsartan <- function() {
     # Structural parameters -- reference values for a 70 kg adult with CRCL = 125.5 mL/min
     # Kim 2015 Eq. 1 (page 32): CL/F, V1/F, Q/F, V2/F are apparent oral parameters;
     # bioavailability F is folded into all CL/V terms (not estimated separately).
-    lcl  <- log(6.18);  label("Apparent oral clearance for a 70 kg adult with CRCL = 125.5 mL/min (CL/F, L/h)")   # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(1))
-    lvc  <- log(25.9);  label("Apparent central volume of distribution for a 70 kg adult (V1/F, L)")              # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(2))
-    ld1  <- log(4.39);  label("Zero-order absorption duration into central compartment (D1, h)")                  # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(3))
-    lq   <- log(2.01);  label("Apparent inter-compartmental clearance for a 70 kg adult (Q/F, L/h)")              # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(4))
-    lvp  <- log(17.4);  label("Apparent peripheral volume of distribution for a 70 kg adult (V2/F, L)")           # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(5))
+    lcl  <- log(6.18);  label("Apparent oral clearance for a 70 kg adult with CRCL = 125.5 mL/min (L/h)")   # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(1))
+    lvc  <- log(25.9);  label("Apparent central volume of distribution for a 70 kg adult (L)")              # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(2))
+    ld1  <- log(4.39);  label("Zero-order absorption duration into central compartment (h)")                  # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(3))
+    lq   <- log(2.01);  label("Apparent inter-compartmental clearance for a 70 kg adult (L/h)")              # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(4))
+    lvp  <- log(17.4);  label("Apparent peripheral volume of distribution for a 70 kg adult (L)")           # Kim 2015 Methods, Eq. 1 + parameter list page 32 (THETA(5))
 
     # Allometric exponents -- fixed at canonical values in Kim 2015 Eq. 1 (no uncertainty reported)
     e_wt_cl_q  <- fixed(0.75);  label("Allometric exponent on CL and Q (unitless)")  # Kim 2015 Eq. 1, page 32 (literal **0.75)

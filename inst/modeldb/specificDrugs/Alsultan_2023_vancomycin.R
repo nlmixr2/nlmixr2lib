@@ -124,7 +124,7 @@ Alsultan_2023_vancomycin <- function() {
 
     # Sigmoidal Hill maturation of clearance with postmenstrual age, in WEEKS.
     # Methods "Covariates" gives the form F_PMA = PMA^hill / (PMA^hill + TMA50^hill).
-    pma_tm50 <- 26.3; label("Postmenstrual age at 50% of mature CL (TMA50, weeks)")     # Alsultan 2023 Table 3 (TMA50 = 26.3 weeks, RSE 7%)
+    pma_tm50 <- 26.3; label("Postmenstrual age at 50% of mature CL (weeks)")     # Alsultan 2023 Table 3 (TMA50 = 26.3 weeks, RSE 7%)
     pma_hill <- 4.42; label("Hill coefficient for sigmoidal CL maturation (unitless)")  # Alsultan 2023 Table 3 (Hill coefficient for clearance = 4.42, RSE 19%)
 
     # Serum-creatinine effect on clearance. The printed Results equation uses the

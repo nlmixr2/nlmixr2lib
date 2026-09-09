@@ -161,7 +161,7 @@ Beredaki_2024_amphotericinB_liposomal_cauris24h <- function() {
     lemax <- log(5.491)
     label("Log maximum reduction Emax relative to the drug-free control (log10 CFU/mL)")  # digitised from Beredaki 2024 Figure 5, 24 h curve; implies a bottom asymptote of 2.417 - 5.491 = -3.07 log10 CFU/mL
     lec50 <- log(6.006)
-    label("Log Cmax/MIC producing 50% of Emax (EI50, unitless)")  # digitised from Beredaki 2024 Figure 5, 24 h curve
+    label("Log Cmax/MIC producing 50% of Emax (unitless)")  # digitised from Beredaki 2024 Figure 5, 24 h curve
     lhill <- log(1.339)
     label("Log Hill coefficient n of the exposure-response relationship (unitless)")  # digitised from Beredaki 2024 Figure 5, 24 h curve
 

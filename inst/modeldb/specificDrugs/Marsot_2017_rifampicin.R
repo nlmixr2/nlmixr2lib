@@ -153,8 +153,8 @@ Marsot_2017_rifampicin <- function() {
     # below so that CONMED_FUSIDIC = 0 recovers Table 2's
     # 'Without fusidic acid' values (13.7 L/h and 61.1 L).
     # ============================================================
-    lcl <- log(13.7);  label("Apparent oral clearance without fusidic acid (CL/F, L/h)")               # Marsot 2017 Table 2 row "CL/F (L h-1) Without fusidic acid" = 13.7 (RSE 26.3 %)
-    lvc <- log(61.1);  label("Apparent central volume of distribution without fusidic acid (V/F, L)")  # Marsot 2017 Table 2 row "V/F (L)   Without fusidic acid" = 61.1 (RSE 56.5 %)
+    lcl <- log(13.7);  label("Apparent oral clearance without fusidic acid (L/h)")               # Marsot 2017 Table 2 row "CL/F (L h-1) Without fusidic acid" = 13.7 (RSE 26.3 %)
+    lvc <- log(61.1);  label("Apparent central volume of distribution without fusidic acid (L)")  # Marsot 2017 Table 2 row "V/F (L)   Without fusidic acid" = 61.1 (RSE 56.5 %)
 
     # Absorption rate constant fixed at 1.15 1/h. Marsot 2017
     # Results paragraph 2: "The absorption rate was fixed at 1.15
@@ -163,7 +163,7 @@ Marsot_2017_rifampicin <- function() {
     # improve the fit, as presented in previous studies [14, 28]."
     # This is the transit-chain rate constant applied at both
     # depot -> transit1 and transit1 -> central transitions.
-    lka <- fixed(log(1.15));  label("Absorption / transit-chain rate constant (ka, 1/h)")
+    lka <- fixed(log(1.15));  label("Absorption / transit-chain rate constant (1/h)")
 
     # Bioavailability anchor. Oral-only data; absolute F is not
     # identifiable, so the typical value is fixed at 1.0. Marsot

@@ -90,8 +90,8 @@ Lin_2020_glasdegib_decitabine <- function() {
     #   days = 11.0 months, matching the paper's "estimated median OS of
     #   11.1 months for glasdegib + decitabine" (page 6).
     llam_haz       <- log(0.00540); label("Exponential baseline hazard for overall survival in the LDAC alone reference arm (lambda, log(1/day))")  # Lin 2020 Results page 6: lambda = 0.00540, RSE 14.1%
-    e_gl_ldac_haz  <- 0.480;        label("Proportional hazard reduction for glasdegib + LDAC vs LDAC alone (theta_gl_ldac, unitless multiplier; hazard fraction = 1 - 0.480 = 0.520)")  # Lin 2020 page 6 equation: 0.480 = 48.0% hazard reduction
-    e_gl_dec_haz   <- 0.618;        label("Proportional hazard reduction for glasdegib + decitabine vs LDAC alone (theta_gl_dec, unitless multiplier; hazard fraction = 1 - 0.618 = 0.382)")  # Lin 2020 page 6 equation: 0.618 = 61.8% hazard reduction (95% CI -95.0% to -28.6%)
+    e_gl_ldac_haz  <- 0.480;        label("Proportional hazard reduction for glasdegib + LDAC vs LDAC alone (unitless multiplier; hazard fraction = 1 - 0.480 = 0.520)")  # Lin 2020 page 6 equation: 0.480 = 48.0% hazard reduction
+    e_gl_dec_haz   <- 0.618;        label("Proportional hazard reduction for glasdegib + decitabine vs LDAC alone (unitless multiplier; hazard fraction = 1 - 0.618 = 0.382)")  # Lin 2020 page 6 equation: 0.618 = 61.8% hazard reduction (95% CI -95.0% to -28.6%)
 
     # No estimated IIV. Parametric population TTE fit with no subject-
     # level random effects on a small (n = 162) cohort with two binary

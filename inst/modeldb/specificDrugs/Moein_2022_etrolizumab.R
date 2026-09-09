@@ -92,16 +92,16 @@ Moein_2022_etrolizumab <- function() {
   ini({
     # Structural PK parameters -- reference values for a 70 kg adult at the first dose (TSFD = 0).
     # Source: Moein 2022 Table 4 (final population PK parameter estimates).
-    lka      <- log(0.193);    label("First-order SC absorption rate constant (ka, 1/day)")                      # Table 4: ka = 0.193 /day
-    lcl      <- log(0.260);    label("Baseline clearance at TSFD = 0 for 70 kg adult (CL, L/day)")               # Table 4: CL = 0.260 L/day
-    lvc      <- log(2.61);     label("Central volume of distribution for 70 kg adult (Vc, L)")                   # Table 4: Vc = 2.61 L
-    lvp      <- log(1.77);     label("Peripheral volume of distribution for 70 kg adult (Vp, L)")                # Table 4: Vp = 1.77 L
-    lq       <- log(0.449);    label("Intercompartmental clearance for 70 kg adult (Q, L/day)")                  # Table 4: Q = 0.449 L/day
+    lka      <- log(0.193);    label("First-order SC absorption rate constant (1/day)")                      # Table 4: ka = 0.193 /day
+    lcl      <- log(0.260);    label("Baseline clearance at TSFD = 0 for 70 kg adult (L/day)")               # Table 4: CL = 0.260 L/day
+    lvc      <- log(2.61);     label("Central volume of distribution for 70 kg adult (L)")                   # Table 4: Vc = 2.61 L
+    lvp      <- log(1.77);     label("Peripheral volume of distribution for 70 kg adult (L)")                # Table 4: Vp = 1.77 L
+    lq       <- log(0.449);    label("Intercompartmental clearance for 70 kg adult (L/day)")                  # Table 4: Q = 0.449 L/day
     logitfdepot  <- logit(0.712);  label("SC bioavailability F (unitless logit)")                                  # Table 4: F = 0.712
 
     # Time-dependent CL parameters (Equation 1, Moein 2022).
     logitmaxred  <- logit(0.263);  label("Maximum fractional reduction of CL over time, Maxred (unitless logit)")   # Table 4: Maxred = 0.263
-    lonset       <- log(4.81);     label("Half-life of the time-dependent CL change (Onset, weeks)")             # Table 4: Onset = 4.81 weeks
+    lonset       <- log(4.81);     label("Half-life of the time-dependent CL change (weeks)")             # Table 4: Onset = 4.81 weeks
 
     # Allometric exponents on body weight (reference 70 kg; Table 4 notes a, b).
     e_wt_cl_q  <- 0.872;  label("Allometric exponent of WT on CL and Q (unitless)")                                          # Table 4: WT on CL/Q = 0.872
@@ -128,7 +128,7 @@ Moein_2022_etrolizumab <- function() {
     etalogitmaxred  ~ 0.597^2   # Table 4: IIV Maxred logit-SD = 0.597
 
     # Residual error (combined additive + proportional; Phase III typical values).
-    propSd <- 0.196;  label("Proportional residual error (CV, fraction)")       # Table 4: proportional residual error CV = 0.196
+    propSd <- 0.196;  label("Proportional residual error, reported as a CV (fraction)")       # Table 4: proportional residual error CV = 0.196
     addSd  <- 0.427;  label("Additive residual error (ug/mL)")                  # Table 4: additive residual error SD = 0.427 ug/mL
   })
 

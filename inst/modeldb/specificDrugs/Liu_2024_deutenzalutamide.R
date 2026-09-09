@@ -132,11 +132,11 @@ Liu_2024_deutenzalutamide <- function() {
     # Structural parameters -- Liu 2024 Table 1, "Final model" estimates column.
     # V1/F and CLd/F carry no RSE, no bootstrap median and no bootstrap CI in
     # Table 1, and the table marks each "(fixed)".
-    lka <- log(1.32)         ; label("Absorption rate constant (ka, 1/h)")                                        # Liu 2024 Table 1 (RSE 16.3%)
-    lcl <- log(0.166)        ; label("Apparent clearance (CL/F, L/h)")                                            # Liu 2024 Table 1 (RSE 3.9%)
-    lvc <- fixed(log(17.5))  ; label("Apparent central volume of distribution (V1/F, L)")                         # Liu 2024 Table 1, marked "(fixed)"
-    lvp <- log(58.1)         ; label("Apparent peripheral volume of distribution at 64 kg body weight (V2/F, L)") # Liu 2024 Table 1 (RSE 8.3%)
-    lq  <- fixed(log(12.5))  ; label("Apparent intercompartmental clearance (CLd/F, L/h)")                        # Liu 2024 Table 1, marked "(fixed)"
+    lka <- log(1.32)         ; label("Absorption rate constant (1/h)")                                        # Liu 2024 Table 1 (RSE 16.3%)
+    lcl <- log(0.166)        ; label("Apparent clearance (L/h)")                                            # Liu 2024 Table 1 (RSE 3.9%)
+    lvc <- fixed(log(17.5))  ; label("Apparent central volume of distribution (L)")                         # Liu 2024 Table 1, marked "(fixed)"
+    lvp <- log(58.1)         ; label("Apparent peripheral volume of distribution at 64 kg body weight (L)") # Liu 2024 Table 1 (RSE 8.3%)
+    lq  <- fixed(log(12.5))  ; label("Apparent intercompartmental clearance (L/h)")                        # Liu 2024 Table 1, marked "(fixed)"
 
     # Covariate effect. Power (ratio-exponent) form of Liu 2024 Equation 3,
     # theta_i = theta_TV * (COV_i / COV_bar)^theta_2, with COV_bar = 64.0 kg.

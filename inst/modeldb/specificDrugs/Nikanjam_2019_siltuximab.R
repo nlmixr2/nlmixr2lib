@@ -91,10 +91,10 @@ Nikanjam_2019_siltuximab <- function() {
     # 73-kg patient with ALB 4.1 g/dL, ALT 19 U/L, CREAT 0.9 mg/dL, and a
     # non-Castleman / non-SMM / non-HV oncology indication). Source: Nikanjam
     # 2019 Table 2 (final population PK model parameters).
-    lcl <- log(0.214); label("Clearance (CL, L/day)")                       # Nikanjam 2019 Table 2: theta2
-    lvc <- log(3.66);  label("Central volume of distribution (V1, L)")      # Nikanjam 2019 Table 2: theta1
-    lvp <- log(3.13);  label("Peripheral volume of distribution (V2, L)")   # Nikanjam 2019 Table 2: theta3
-    lq  <- log(0.624); label("Inter-compartmental clearance (Q, L/day)")    # Nikanjam 2019 Table 2: theta4
+    lcl <- log(0.214); label("Clearance (L/day)")                       # Nikanjam 2019 Table 2: theta2
+    lvc <- log(3.66);  label("Central volume of distribution (L)")      # Nikanjam 2019 Table 2: theta1
+    lvp <- log(3.13);  label("Peripheral volume of distribution (L)")   # Nikanjam 2019 Table 2: theta3
+    lq  <- log(0.624); label("Inter-compartmental clearance (L/day)")    # Nikanjam 2019 Table 2: theta4
 
     # Covariate effects (Nikanjam 2019 Table 2). The continuous-covariate
     # exponents act as power-form effects normalized to the population

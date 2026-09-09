@@ -60,9 +60,9 @@ Desai_2016_isavuconazole <- function() {
     # Table 4 'Parameter estimates of the best covariate model'. Linear-scale
     # values in the table are in ml/h (CL, Q) and ml (V2, V3); converted to L/h
     # and L for nlmixr2lib unit consistency (time = h, concentration = mg/L).
-    lcl <- log(2.54);    label("Isavuconazole clearance for the healthy reference subject (CL, L/h)")  # Desai 2016 Table 4: theta_8 (CL, healthy) = 2540 mL/h
+    lcl <- log(2.54);    label("Isavuconazole clearance for the healthy reference subject (L/h)")  # Desai 2016 Table 4: theta_8 (CL, healthy) = 2540 mL/h
     lvc <- log(51.4);    label("Isavuconazole central volume of distribution (V2 = Vc, L)")  # Desai 2016 Table 4: theta_2 (V2) = 51400 mL
-    lq  <- log(33.678);  label("Isavuconazole intercompartmental clearance for the healthy reference subject (Q, L/h)")  # Desai 2016 Table 4: theta_10 (Q, healthy) = 33678 mL/h
+    lq  <- log(33.678);  label("Isavuconazole intercompartmental clearance for the healthy reference subject (L/h)")  # Desai 2016 Table 4: theta_10 (Q, healthy) = 33678 mL/h
     lvp <- log(410);     label("Isavuconazole peripheral volume of distribution at reference BMI 27 (V3 = Vp, L)")  # Desai 2016 Table 4: theta_4 (V3) = 410000 mL (printed in the table as '41,0000' with the comma misplaced; bootstrap mean 410661 mL confirms 410 L)
 
     # Weibull absorption parameters (Piotrovskij saturating-ka form, operator-
@@ -71,15 +71,15 @@ Desai_2016_isavuconazole <- function() {
     # form for these three named parameters is
     #   ka(t) = kamax * (1 - exp(-(ra * tad)^gam1))
     # See Assumptions and deviations in the vignette.
-    lra    <- log(0.653);  label("Weibull-absorption rate-scaling parameter (RA, 1/h)")  # Desai 2016 Table 4: theta_5 (RA) = 0.653 1/h
-    lgam1  <- log(4.57);   label("Weibull-absorption shape / sigmoidicity parameter (GAM1, unitless)")  # Desai 2016 Table 4: theta_6 (GAM1) = 4.57
-    lkamax <- log(0.86);   label("Weibull-absorption asymptotic maximum absorption rate constant (KAMAX, 1/h)")  # Desai 2016 Table 4: theta_7 (KAMAX) = 0.86 1/h
+    lra    <- log(0.653);  label("Weibull-absorption rate-scaling parameter (1/h)")  # Desai 2016 Table 4: theta_5 (RA) = 0.653 1/h
+    lgam1  <- log(4.57);   label("Weibull-absorption shape / sigmoidicity parameter (unitless)")  # Desai 2016 Table 4: theta_6 (GAM1) = 4.57
+    lkamax <- log(0.86);   label("Weibull-absorption asymptotic maximum absorption rate constant (1/h)")  # Desai 2016 Table 4: theta_7 (KAMAX) = 0.86 1/h
 
     # Bioavailability anchor. Desai 2016 Table 4 reports F1 = 1.00 (fixed). The
     # 100 mg dose is the isavuconazole equivalent of the 186 mg prodrug; the
     # paper assumes complete conversion of isavuconazonium sulfate to active
     # isavuconazole in vivo.
-    lfdepot <- fixed(log(1.0));  label("Isavuconazole oral bioavailability (F1, fraction)")  # Desai 2016 Table 4: F1 = 1.00 (fixed)
+    lfdepot <- fixed(log(1.0));  label("Isavuconazole oral bioavailability (fraction)")  # Desai 2016 Table 4: F1 = 1.00 (fixed)
 
     # Categorical covariate effects on CL and Q for hepatic-impairment status.
     # Desai 2016 reports three group-specific typical values (theta_{1,8,9} for

@@ -52,9 +52,9 @@ Chen_2022_guselkumab <- function() {
     # Structural parameters from Chen 2022 Table 1 (final population PK model).
     # Typical values are for the reference subject: 84 kg body weight (median),
     # no diabetes comorbidity (DIS_DIAB = 0).
-    lcl <- log(0.596); label("Apparent clearance at reference covariates (CL/F, L/day)")               # Chen 2022 Table 1 (CL/F = 0.596 L/day for 84 kg, non-diabetic)
-    lvc <- log(15.5);  label("Apparent central volume of distribution at reference covariates (V/F, L)") # Chen 2022 Table 1 (V/F = 15.5 L for 84 kg)
-    lka <- log(0.572); label("First-order SC absorption rate constant (Ka, 1/day)")                    # Chen 2022 Table 1 (Ka = 0.572 1/day)
+    lcl <- log(0.596); label("Apparent clearance at reference covariates (L/day)")               # Chen 2022 Table 1 (CL/F = 0.596 L/day for 84 kg, non-diabetic)
+    lvc <- log(15.5);  label("Apparent central volume of distribution at reference covariates (L)") # Chen 2022 Table 1 (V/F = 15.5 L for 84 kg)
+    lka <- log(0.572); label("First-order SC absorption rate constant (1/day)")                    # Chen 2022 Table 1 (Ka = 0.572 1/day)
 
     # Covariate effect exponents and multipliers (Chen 2022 Table 1 / Table 1 footnotes f-g):
     #   CL/F = 0.596 * (BWT/84)^0.926 * 1.15^DIS_DIAB
@@ -78,8 +78,8 @@ Chen_2022_guselkumab <- function() {
     # model section, and Table 1).
     #   Proportional CV% = 19.1  -> propSd = 0.191
     #   Additive (ug/mL) = 0.00289
-    propSd <- 0.191;   label("Proportional residual error (SD, fraction)")               # Chen 2022 Table 1 (Proportional residual error CV% = 19.1)
-    addSd  <- 0.00289; label("Additive residual error (SD, ug/mL)")                      # Chen 2022 Table 1 (Additive residual error 0.00289 ug/mL)
+    propSd <- 0.191;   label("Proportional residual error (fraction)")               # Chen 2022 Table 1 (Proportional residual error CV% = 19.1)
+    addSd  <- 0.00289; label("Additive residual error (ug/mL)")                      # Chen 2022 Table 1 (Additive residual error 0.00289 ug/mL)
   })
   model({
     # Individual PK parameters. Reference subject: 84 kg body weight, no

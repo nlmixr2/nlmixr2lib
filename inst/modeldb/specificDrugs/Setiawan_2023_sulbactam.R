@@ -159,11 +159,11 @@ Setiawan_2023_sulbactam <- function() {
     # the extra digit is confirmed by the CV column, since 4.73/15.36 = 30.8% (printed) while
     # 4.73/15.4 = 30.7%. SD 4.73, CV 30.8%, median 14.6.
 
-    lk12 <- log(0.42); label("Transfer rate constant central -> peripheral1 (KCP, 1/h)")
+    lk12 <- log(0.42); label("Transfer rate constant central -> peripheral1 (1/h)")
     # Table 2, sulbactam KCP mean = 0.42 (SD 0.41, CV 96.8%, median 0.32). Table 2 labels KCP/KPC
     # "(L/h)"; the same table's own footnote calls them "the rate constant from the central
     # compartment to the peripheral compartment", so the unit is 1/h, not L/h -- see vignette Errata.
-    lk21 <- log(0.69); label("Transfer rate constant peripheral1 -> central (KPC, 1/h)")
+    lk21 <- log(0.69); label("Transfer rate constant peripheral1 -> central (1/h)")
     # Table 2, sulbactam KPC mean = 0.69 (SD 0.56, CV 81.7%, median 0.79)
 
     # ------------------------------------------------------------------------

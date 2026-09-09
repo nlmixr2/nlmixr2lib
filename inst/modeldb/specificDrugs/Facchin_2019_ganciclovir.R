@@ -131,8 +131,8 @@ Facchin_2019_ganciclovir <- function() {
     lvc   <- log(45)  ; label("Apparent central volume Vc/F at BSA = 1 m^2, female (L)")                      # Yang 2023 Table 3 (Facchin 2019): Vc/F = 45 * BSA^1.28 * 1.14^GENDER
     lq    <- log(1.46); label("Apparent inter-compartmental clearance Q/F (L/h)")                             # Yang 2023 Table 3 (Facchin 2019): Q/F = 1.46
     lvp   <- log(18.5); label("Apparent peripheral volume Vp/F (L)")                                          # Yang 2023 Table 3 (Facchin 2019): Vp/F = 18.5
-    lka   <- log(6.96); label("First-order oral absorption rate constant (ka, 1/h)")                          # Yang 2023 Table 3 (Facchin 2019): Ka = 6.96
-    ltlag <- log(0.86); label("Absorption lag time (Tlag, h)")                                                # Yang 2023 Table 3 (Facchin 2019): Tlag = 0.86
+    lka   <- log(6.96); label("First-order oral absorption rate constant (1/h)")                          # Yang 2023 Table 3 (Facchin 2019): Ka = 6.96
+    ltlag <- log(0.86); label("Absorption lag time (h)")                                                # Yang 2023 Table 3 (Facchin 2019): Tlag = 0.86
 
     # Covariate effects. All are non-canonical estimated values.
     e_creat_cl <- -0.768; label("Power exponent of serum creatinine on CL/F (unitless; reference 72.5 umol/L)") # Yang 2023 Table 3 (Facchin 2019): (SCR/72.5)^-0.768

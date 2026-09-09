@@ -103,26 +103,26 @@ Benson_2010_bhma_mouse <- function() {
     # ratio", so all four are apparent (/F) values.
     # ==================================================================
     lka <- fixed(log(35))
-    label("Apparent first-order oral absorption rate constant (ka, 1/h)")
+    label("Apparent first-order oral absorption rate constant (1/h)")
     # Benson 2010 Table 1 row 3: Ka = 35 h^-1, marked "Fix". Results,
     # "PK of BHMA in mice": "The absorption rate constant was fixed at
     # 35 h-1, reflecting complete absorption prior to the collection of
     # the earliest PK samples (at 0.1 h)."
 
     lcl <- log(3.45)
-    label("Apparent clearance per kg body weight (CL/F, L/h/kg)")
+    label("Apparent clearance per kg body weight (L/h/kg)")
     # Benson 2010 Table 1 row 1: CL = 3.45 liters/h/kg, CV 16%.
 
     lvc <- log(4.31)
-    label("Apparent central volume of distribution per kg body weight (V2/F, L/kg)")
+    label("Apparent central volume of distribution per kg body weight (L/kg)")
     # Benson 2010 Table 1 row 2: V2 = 4.31 liters/kg, CV 24%.
 
     lq <- log(2.78)
-    label("Apparent intercompartmental clearance per kg body weight (Q/F, L/h/kg)")
+    label("Apparent intercompartmental clearance per kg body weight (L/h/kg)")
     # Benson 2010 Table 1 row 4: Q = 2.78 liters/kg/h, CV 22%.
 
     lvp <- log(39.7)
-    label("Apparent peripheral volume of distribution per kg body weight (V3/F, L/kg)")
+    label("Apparent peripheral volume of distribution per kg body weight (L/kg)")
     # Benson 2010 Table 1 row 5: V3 = 39.7 liters/kg, CV 36%. The
     # Discussion refers to this as the "ca. 40 liters/kg" V/F ratio.
 
@@ -135,20 +135,20 @@ Benson_2010_bhma_mouse <- function() {
     # PK-PD modeling."
     # ==================================================================
     lsmax <- log(294)
-    label("Maximum zero-order IFN-alpha synthesis rate (Smax, IU/mL/h)")
+    label("Maximum zero-order IFN-alpha synthesis rate (IU/mL/h)")
     # Benson 2010 Table 2 row 3: Smax = 294 IU/ml/h, CV 8%. The
     # Discussion cross-checks this against kout: "the maximum response
     # is given by the Smax/kout ratio of 306 IU/ml"
     # (294 / 0.958 = 306.9, consistent).
 
     lec50 <- log(135)
-    label("Total plasma BHMA concentration giving half-maximal IFN-alpha synthesis (SC50, ng/mL)")
+    label("Total plasma BHMA concentration giving half-maximal IFN-alpha synthesis (ng/mL)")
     # Benson 2010 Table 2 row 2: SC50 = 135 ng/ml, CV 24%. This is a
     # TOTAL plasma concentration; the Results note that "corrected for
     # the free fraction" (fu = 0.33) it "equates to 125 nM" unbound.
 
     lkout <- log(0.958)
-    label("First-order IFN-alpha elimination rate constant (kout, 1/h)")
+    label("First-order IFN-alpha elimination rate constant (1/h)")
     # Benson 2010 Table 2 row 1: kout = 0.958 h^-1, CV 0.1%. The
     # Discussion converts this to a half-life: "The apparent degradation
     # rate constant for IFN-alpha was 0.96 h-1, giving a half-life

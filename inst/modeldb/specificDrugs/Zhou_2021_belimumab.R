@@ -85,10 +85,10 @@ Zhou_2021_belimumab <- function() {
   ini({
     # Structural parameters — typical values from Zhou 2021 Table 2 (final model run613)
     # Published in mL/day and mL; converted to L/day and L by dividing by 1000.
-    lcl <- log(0.238); label("Clearance for the reference adult (CL, L/day)")        # Table 2: theta1 = 238 mL/day
-    lvc <- log(2.597); label("Central volume of distribution for the reference adult (V1, L)")  # Table 2: theta2 = 2597 mL
-    lq  <- log(0.591); label("Intercompartmental clearance (Q, L/day)")              # Table 2: theta3 = 591 mL/day
-    lvp <- log(2.318); label("Peripheral volume of distribution (V2, L)")            # Table 2: theta4 = 2318 mL
+    lcl <- log(0.238); label("Clearance for the reference adult (L/day)")        # Table 2: theta1 = 238 mL/day
+    lvc <- log(2.597); label("Central volume of distribution for the reference adult (L)")  # Table 2: theta2 = 2597 mL
+    lq  <- log(0.591); label("Intercompartmental clearance (L/day)")              # Table 2: theta3 = 591 mL/day
+    lvp <- log(2.318); label("Peripheral volume of distribution (L)")            # Table 2: theta4 = 2318 mL
 
     # Covariate effects on CL (Zhou 2021 Table 2)
     e_ffm_cl  <-  0.673; label("FFM power exponent on CL, reference FFM 40.69 kg (unitless)")           # Table 2: theta7

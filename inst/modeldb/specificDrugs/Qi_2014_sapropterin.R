@@ -63,11 +63,11 @@ Qi_2014_sapropterin <- function() {
   ini({
     # Structural parameters -- Qi 2014 Table 3, final population PK model
     # (reference weight 70 kg, typical adult; oral dose, apparent parameters).
-    lka   <- log(0.235); label("First-order absorption rate (ka, 1/h)")            # Qi 2014 Table 3 (theta3): ka = 0.235 h^-1
-    lcl   <- log(2710);  label("Apparent clearance at WT = 70 kg (CL/F, L/h)")     # Qi 2014 Table 3 (theta1): CL/F = 2710 L/h
-    lvc   <- log(3010);  label("Apparent central volume at WT = 70 kg (Vc/F, L)")  # Qi 2014 Table 3 (theta2): Vc/F = 3010 L
-    ltlag <- log(0.321); label("Absorption lag time (tlag, h)")                    # Qi 2014 Table 3 (theta4): tlag = 0.321 h
-    lc0   <- log(16.6);  label("Endogenous BH4 baseline plasma concentration (C0, ug/L)")  # Qi 2014 Table 3 (theta5): C0 = 16.6 ug/L
+    lka   <- log(0.235); label("First-order absorption rate (1/h)")            # Qi 2014 Table 3 (theta3): ka = 0.235 h^-1
+    lcl   <- log(2710);  label("Apparent clearance at WT = 70 kg (L/h)")     # Qi 2014 Table 3 (theta1): CL/F = 2710 L/h
+    lvc   <- log(3010);  label("Apparent central volume at WT = 70 kg (L)")  # Qi 2014 Table 3 (theta2): Vc/F = 3010 L
+    ltlag <- log(0.321); label("Absorption lag time (h)")                    # Qi 2014 Table 3 (theta4): tlag = 0.321 h
+    lc0   <- log(16.6);  label("Endogenous BH4 baseline plasma concentration (ug/L)")  # Qi 2014 Table 3 (theta5): C0 = 16.6 ug/L
 
     # Body-weight covariate effects: power form normalized to 70 kg (Eq. 6).
     e_wt_cl <- 0.864; label("Power exponent of body weight on CL/F (unitless, reference 70 kg)")  # Qi 2014 Table 3 (theta6)
@@ -85,8 +85,8 @@ Qi_2014_sapropterin <- function() {
 
     # Residual error -- log-transform-both-sides (LTBS) constant-CV model
     # (Eq. 5); separate magnitudes per study (Table 3 theta8 and theta9).
-    expSdPKU004 <- 0.211; label("Log-scale residual SD, study PKU-004 (LTBS, fraction)")  # Qi 2014 Table 3 (theta8): 21.1% CV
-    expSdPKU015 <- 0.302; label("Log-scale residual SD, study PKU-015 (LTBS, fraction)")  # Qi 2014 Table 3 (theta9): 30.2% CV
+    expSdPKU004 <- 0.211; label("Log-scale residual SD, study PKU-004 (fraction)")  # Qi 2014 Table 3 (theta8): 21.1% CV
+    expSdPKU015 <- 0.302; label("Log-scale residual SD, study PKU-015 (fraction)")  # Qi 2014 Table 3 (theta9): 30.2% CV
   })
 
   model({

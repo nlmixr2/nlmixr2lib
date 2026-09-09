@@ -92,8 +92,8 @@ Li_2021_ganciclovir <- function() {
     # Structural PK -- Yang 2023 Table 3, Li et al. (2021) row. Reference subject:
     # WT = 12.0 kg, eGFR = 120 mL/min/1.73 m^2 (i.e. KF = 1). Clearance in L/h,
     # volume in L. One-compartment IV model; no absorption parameters.
-    lcl <- log(5.23) ; label("Clearance at WT = 12.0 kg and KF = 1 (CL, L/h)")     # Yang 2023 Table 3 (Li 2021): CL = 5.23 * KF^0.92 * (BW/12.0)^1.02
-    lvc <- log(11.35); label("Central volume of distribution at WT = 12.0 kg (Vc, L)") # Yang 2023 Table 3 (Li 2021): Vc = 11.35 * (BW/12.0)^0.80
+    lcl <- log(5.23) ; label("Clearance at WT = 12.0 kg and KF = 1 (L/h)")     # Yang 2023 Table 3 (Li 2021): CL = 5.23 * KF^0.92 * (BW/12.0)^1.02
+    lvc <- log(11.35); label("Central volume of distribution at WT = 12.0 kg (L)") # Yang 2023 Table 3 (Li 2021): Vc = 11.35 * (BW/12.0)^0.80
 
     # Covariate effects. All three exponents are non-canonical estimated values.
     e_crcl_cl <- 0.92; label("Power exponent of kidney function KF = CRCL/120 on CL (unitless)") # Yang 2023 Table 3 (Li 2021): KF^0.92

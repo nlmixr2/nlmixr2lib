@@ -190,8 +190,8 @@ Brill_2014_midazolam <- function() {
     # for the simple-model column of Table 2 (3.1%) was dropped in the
     # final model. Final-column CV% are 10.0% (HV) and 46.7% (MO);
     # propSd is the linear-scale standard deviation.
-    propSd_hv <- 0.100;   label("Proportional residual error in non-obese subjects (SD, fraction)") # Brill 2014 Table 2 (HV final, 10.0% CV)
-    propSd_mo <- 0.467;   label("Proportional residual error in morbidly obese subjects (SD, fraction)") # Brill 2014 Table 2 (MO final, 46.7% CV)
+    propSd_hv <- 0.100;   label("Proportional residual error in non-obese subjects (fraction)") # Brill 2014 Table 2 (HV final, 10.0% CV)
+    propSd_mo <- 0.467;   label("Proportional residual error in morbidly obese subjects (fraction)") # Brill 2014 Table 2 (MO final, 46.7% CV)
   })
   model({
     # Binary morbid-obesity stratifier derived from BMI per the .docx

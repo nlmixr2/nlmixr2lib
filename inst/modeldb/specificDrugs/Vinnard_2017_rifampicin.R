@@ -58,7 +58,7 @@ Vinnard_2017_rifampicin <- function() {
     lcl  <- log(16.36); label("Apparent oral clearance CL/F (L/h)")                                       # Vinnard 2017 Table 1: oral apparent clearance (CL/F) = 16.36 L/h (RSE 6.27%)
     lvc  <- log(52.90); label("Apparent oral central volume of distribution V/F (L)")                     # Vinnard 2017 Table 1: oral apparent volume of distribution (V/F) = 52.90 L (RSE 5.10%)
     lmtt <- log(0.97);  label("Mean absorption transit time MTT (h)")                                     # Vinnard 2017 Table 1: mean transit time within compartments = 0.97 h (RSE 6.80%)
-    lnn  <- log(4.36);  label("Number of absorption transit compartments NN (continuous, dimensionless)") # Vinnard 2017 Table 1: number of absorption transit compartments = 4.36 (RSE 9.01%)
+    lnn  <- log(4.36);  label("Number of absorption transit compartments NN, estimated on a continuous scale (dimensionless)") # Vinnard 2017 Table 1: number of absorption transit compartments = 4.36 (RSE 9.01%)
     lfdepot <- fixed(log(1)); label("Oral bioavailability F")                                # Vinnard 2017 Table 1: oral bioavailability (F) = 1 (fixed)
 
     # Inter-individual variability (between-subject). Source reports BSV as CV%

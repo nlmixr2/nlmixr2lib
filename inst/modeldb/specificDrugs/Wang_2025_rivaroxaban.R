@@ -118,8 +118,8 @@ Wang_2025_rivaroxaban <- function() {
     # 0.617 h-1 based on a prior PPK study involving Japanese patients
     # (Kaneko et al., 2013)" (Results); Table 5 marks it "(Freeze)".
     lka <- fixed(log(0.617)); label("Absorption rate constant (ka, 1/h), taken from Kaneko 2013")  # Table 5 row "0.617 ka (h-1) (Freeze)"; Results, Population pharmacokinetic model
-    lcl <- log(5.64);         label("Apparent clearance (CL/F, L/h)")                              # Table 5 CL/F estimate 5.64 (RSE 5.49%); Equation 7
-    lvc <- log(41.7);         label("Apparent volume of distribution (V/F, L)")                    # Table 5 V/F estimate 41.7 (RSE 7.58%); Equation 8
+    lcl <- log(5.64);         label("Apparent clearance (L/h)")                              # Table 5 CL/F estimate 5.64 (RSE 5.49%); Equation 7
+    lvc <- log(41.7);         label("Apparent volume of distribution (L)")                    # Table 5 V/F estimate 41.7 (RSE 7.58%); Equation 8
 
     # Covariate effects. Equation 6 gives the continuous-covariate form
     #   P_i = P * (Cov / Cov_median)^theta * exp(eta_i)

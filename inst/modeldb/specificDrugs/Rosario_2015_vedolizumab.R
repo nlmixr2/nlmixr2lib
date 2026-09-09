@@ -149,8 +149,8 @@ Rosario_2015_vedolizumab <- function() {
     lvc    <- log(3.19);   label("Central volume of distribution Vc for the reference UC patient (L)")  # Table 2: Vc = 3.19 L
     lvp    <- log(1.65);   label("Peripheral volume of distribution Vp for 70 kg (L)")          # Table 2: Vp = 1.65 L
     lq     <- log(0.12);   label("Intercompartmental clearance Q for 70 kg (L/day)")            # Table 2: Q = 0.12 L/day
-    lvmax  <- log(0.265);  label("Maximum elimination rate of the Michaelis-Menten pathway for 70 kg (Vmax, mg/day)")  # Table 2: Vmax = 0.265 mg/day
-    lkm    <- log(0.964);  label("Michaelis-Menten constant (Km, ug/mL)")                       # Table 2: Km = 0.964 ug/mL
+    lvmax  <- log(0.265);  label("Maximum elimination rate of the Michaelis-Menten pathway for 70 kg (mg/day)")  # Table 2: Vmax = 0.265 mg/day
+    lkm    <- log(0.964);  label("Michaelis-Menten constant (ug/mL)")                       # Table 2: Km = 0.964 ug/mL
 
     # Continuous covariate effects (power-form; Table S4 "NULL effect = 0" entries).
     e_wt_cl     <-  0.362;  label("Weight exponent on CLL (unitless; reference 70 kg)")          # Table S4: weight on CLL = 0.362

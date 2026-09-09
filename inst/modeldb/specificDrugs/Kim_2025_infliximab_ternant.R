@@ -91,8 +91,8 @@ Kim_2025_infliximab_ternant <- function() {
     # Structural parameters. Clearance is estimated separately in each ADA
     # stratum rather than as a reference value plus an offset, so both strata
     # carry an explicit suffix (no bare lcl).
-    lcl_ada_neg <- log(0.288); label("Typical clearance in ADA-negative patients (CL, L/day)")  # Data S1 model #3 $THETA1 = 0.288 L/day; Table S2 "ATI negative: 0.288"
-    lcl_ada_pos <- log(0.768); label("Typical clearance in ADA-positive patients (CL, L/day)")  # Data S1 model #3 $THETA2 = 0.768 L/day; Table S2 "ATI positive: 0.768"
+    lcl_ada_neg <- log(0.288); label("Typical clearance in ADA-negative patients (L/day)")  # Data S1 model #3 $THETA1 = 0.288 L/day; Table S2 "ATI negative: 0.288"
+    lcl_ada_pos <- log(0.768); label("Typical clearance in ADA-positive patients (L/day)")  # Data S1 model #3 $THETA2 = 0.768 L/day; Table S2 "ATI positive: 0.768"
 
     # The central volume is an ADDITIVE decomposition, not the usual
     # multiplicative covariate model:
@@ -103,8 +103,8 @@ Kim_2025_infliximab_ternant <- function() {
     lvc_female <- log(1.1); label("Sex-specific intercept of the central volume, females (L)")  # Data S1 model #3 $THETA3 = 1.1 L; Table S2 "F: 1.1"
     lvc_male   <- log(2.3); label("Sex-specific intercept of the central volume, males (L)")    # Data S1 model #3 $THETA4 = 2.3 L; Table S2 "M: 2.3"
     lvc_wt     <- log(1.7); label("Weight-proportional component of the central volume at 67 kg (L)")  # Data S1 model #3 $THETA5 = 1.7 L
-    lvp        <- log(1.9);   label("Peripheral volume of distribution (Vp, L)")        # Data S1 model #3 $THETA6 = 1.9 L; Table S2 "1.9"
-    lq         <- log(0.130); label("Inter-compartmental clearance (Q, L/day)")         # Data S1 model #3 $THETA7 = 0.130 L/day; Table S2 "0.130"
+    lvp        <- log(1.9);   label("Peripheral volume of distribution (L)")        # Data S1 model #3 $THETA6 = 1.9 L; Table S2 "1.9"
+    lq         <- log(0.130); label("Inter-compartmental clearance (L/day)")         # Data S1 model #3 $THETA7 = 0.130 L/day; Table S2 "0.130"
 
     # Inter-individual variability. Following the panel-wide convention stated
     # in the Aubourg stream ("OMEGA = (%CV/100)**2"), each variance is the

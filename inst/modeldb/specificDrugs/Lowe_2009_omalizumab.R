@@ -60,14 +60,14 @@ Lowe_2009_omalizumab <- function() {
     # Structural parameters - reference 70 kg body weight, 365 ng/mL baseline IgE.
     # All CL and V are reported as apparent (divided by SC bioavailability f), so f = 1
     # is treated implicitly. Time unit is days (the unit used in the paper's Table 3).
-    lka            <- log(0.458); label("Apparent SC absorption rate constant for omalizumab (ka, 1/day)")                              # Lowe 2009 Table 3 (ka 0.458 +/- 0.0626)
-    lcl            <- log(0.208); label("Apparent CL of free omalizumab at 70 kg (CL_X/F, L/day)")                                       # Lowe 2009 Table 3 (CL_X/F 0.208 +/- 0.00338)
-    lcl_ige        <- log(3.85);  label("Apparent CL of free IgE at 70 kg, 365 ng/mL baseline IgE (CL_E/F, L/day)")                      # Lowe 2009 Table 3 (CL_E/F 3.85 +/- 0.155)
-    lcl_complex    <- log(0.832); label("Apparent CL of omalizumab-IgE complex at 70 kg (CL_C/F, L/day)")                                # Lowe 2009 Table 3 (CL_C/F 0.832 +/- 0.0344)
+    lka            <- log(0.458); label("Apparent SC absorption rate constant for omalizumab (1/day)")                              # Lowe 2009 Table 3 (ka 0.458 +/- 0.0626)
+    lcl            <- log(0.208); label("Apparent CL of free omalizumab at 70 kg (L/day)")                                       # Lowe 2009 Table 3 (CL_X/F 0.208 +/- 0.00338)
+    lcl_ige        <- log(3.85);  label("Apparent CL of free IgE at 70 kg, 365 ng/mL baseline IgE (L/day)")                      # Lowe 2009 Table 3 (CL_E/F 3.85 +/- 0.155)
+    lcl_complex    <- log(0.832); label("Apparent CL of omalizumab-IgE complex at 70 kg (L/day)")                                # Lowe 2009 Table 3 (CL_C/F 0.832 +/- 0.0344)
     lvc            <- log(9.33);  label("Apparent V_d of free omalizumab and free IgE at 70 kg (V_X/f = V_E/f, L)")                      # Lowe 2009 Table 3 (V_X/f & V_E/f 9.33 +/- 0.147)
-    lvc_complex    <- log(6.31);  label("Apparent V_d of omalizumab-IgE complex at 70 kg (V_C/f, L)")                                    # Lowe 2009 Table 3 (V_C/f 6.31 +/- 0.196)
-    lp_ige         <- log(1220 / 190.07); label("Apparent IgE production rate at 70 kg, 365 ng/mL baseline IgE (R/f, nmol/day; paper: 1220 ug/day / 190 kDa IgE)") # Lowe 2009 Table 3 footnote dagger (R_E/f 1220 +/- 49.9 ug/day)
-    lkd0           <- log(1.81);  label("Equilibrium dissociation constant at central = total_target, 365 ng/mL baseline IgE (Kd, nmol/L)") # Lowe 2009 Table 3 (Kd 1.81 +/- 0.0808 nmol/L)
+    lvc_complex    <- log(6.31);  label("Apparent V_d of omalizumab-IgE complex at 70 kg (L)")                                    # Lowe 2009 Table 3 (V_C/f 6.31 +/- 0.196)
+    lp_ige         <- log(1220 / 190.07); label("Apparent IgE production rate at 70 kg, 365 ng/mL baseline IgE (nmol/day; paper: 1220 ug/day / 190 kDa IgE)") # Lowe 2009 Table 3 footnote dagger (R_E/f 1220 +/- 49.9 ug/day)
+    lkd0           <- log(1.81);  label("Equilibrium dissociation constant at central = total_target, 365 ng/mL baseline IgE (nmol/L)") # Lowe 2009 Table 3 (Kd 1.81 +/- 0.0808 nmol/L)
 
     # Covariate exponents (power form; Lowe 2009 page 64 Eq. 3 and Table 3 covariate block).
     e_wt_cl            <- 1.00;   label("Power exponent of body weight on CL_X/F (unitless)")                                            # Lowe 2009 Table 3 (1.00 +/- 0.0662)

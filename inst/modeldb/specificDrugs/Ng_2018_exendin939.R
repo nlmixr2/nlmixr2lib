@@ -45,10 +45,10 @@ Ng_2018_exendin939 <- function() {
   ini({
     # Structural parameters (Ng 2018 Table 2 final-model column; reference adult
     # body weight 70 kg). Log-transformed for positivity.
-    lcl <- log(11.6); label("Typical clearance at 70 kg (CL_TV, L/h)")               # Ng 2018 Table 2: CL_TV = 11.6 L/h (SE 0.728)
-    lvc <- log(9.59); label("Typical central volume at 70 kg (V1_TV, L)")            # Ng 2018 Table 2: V1_TV = 9.59 L (SE 0.449)
-    lq  <- log(2.20); label("Typical inter-compartmental clearance at 70 kg (Q_TV, L/h)") # Ng 2018 Table 2: Q_TV  = 2.20 L/h (SE 0.576)
-    lvp <- log(8.89); label("Typical peripheral volume at 70 kg (V2_TV, L)")         # Ng 2018 Table 2: V2_TV = 8.89 L (SE 0.996)
+    lcl <- log(11.6); label("Typical clearance at 70 kg (L/h)")               # Ng 2018 Table 2: CL_TV = 11.6 L/h (SE 0.728)
+    lvc <- log(9.59); label("Typical central volume at 70 kg (L)")            # Ng 2018 Table 2: V1_TV = 9.59 L (SE 0.449)
+    lq  <- log(2.20); label("Typical inter-compartmental clearance at 70 kg (L/h)") # Ng 2018 Table 2: Q_TV  = 2.20 L/h (SE 0.576)
+    lvp <- log(8.89); label("Typical peripheral volume at 70 kg (L)")         # Ng 2018 Table 2: V2_TV = 8.89 L (SE 0.996)
 
     # Allometric weight effects -- fixed by the authors at the physiology-based
     # canonical exponents (0.75 on clearances, 1.0 on volumes) per Ng 2018

@@ -97,8 +97,8 @@ Kim_2025_infliximab_passot_pediatric <- function() {
     # Structural parameters -- typical values before any covariate multiplier.
     # Neither IBD subtype is a unit multiplier (see e_ibd_* below), so these are
     # not the values for a "reference patient" on their own.
-    lcl <- log(0.23); label("Typical clearance before covariate effects (CL, L/day)")   # Data S1 model #8 $THETA1 = 0.23 L/day; Table S2 "0.23"
-    lvc <- log(5.2);  label("Typical central volume before covariate effects (Vc, L)")  # Data S1 model #8 $THETA2 = 5.2 L; Table S2 "5.2"
+    lcl <- log(0.23); label("Typical clearance before covariate effects (L/day)")   # Data S1 model #8 $THETA1 = 0.23 L/day; Table S2 "0.23"
+    lvc <- log(5.2);  label("Typical central volume before covariate effects (L)")  # Data S1 model #8 $THETA2 = 5.2 L; Table S2 "5.2"
 
     # Covariate effects on CL -- identical to the adult variant.
     e_wt_cl     <- 0.603; label("Power exponent of body weight on CL, WT/67 scaling (unitless)")                     # Data S1 model #8 $THETA3 = 0.603

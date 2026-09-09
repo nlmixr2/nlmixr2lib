@@ -57,16 +57,16 @@ Leber_2023_tacrolimus_sheep <- function() {
     # parameters of step 1 except clearance ... fixed" (Methods,
     # Pharmacokinetic parameters calculations). CL/F below is therefore the
     # re-estimated step-2 value and every other step-1 parameter is fixed().
-    lcl     <- log(132);       label("Apparent oral clearance (CL/F, L/h)")                     # Leber 2023 Supplementary Table 2 (final adsorption model)
-    lvc     <- fixed(log(6330)); label("Apparent central volume of distribution (V1/F, L)")     # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
-    lka     <- fixed(log(4.8));  label("First-order oral absorption rate constant (KA, 1/h)")   # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
-    ltlag   <- fixed(log(15.3)); label("Absorption lag time (ALAG, h)")                         # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
+    lcl     <- log(132);       label("Apparent oral clearance (L/h)")                     # Leber 2023 Supplementary Table 2 (final adsorption model)
+    lvc     <- fixed(log(6330)); label("Apparent central volume of distribution (L)")     # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
+    lka     <- fixed(log(4.8));  label("First-order oral absorption rate constant (1/h)")   # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
+    ltlag   <- fixed(log(15.3)); label("Absorption lag time (h)")                         # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
 
     # CytoSorb saturable adsorption sub-model (Leber 2023 Eq. 2):
     #   CL_CytoSorb(t) = CLmax * (1 - A_CytoSorb(t) / Amax)
     # Both parameters are estimated in step 2.
-    lclmax_hemoadsorption <- log(4.02);   label("Maximum CytoSorb hemoadsorption clearance at zero saturation (CLmax, L/h)")  # Leber 2023 Supplementary Table 2
-    lamax_hemoadsorption  <- log(0.040);  label("Maximum drug amount adsorbable by the CytoSorb cartridge (Amax, mg)")        # Leber 2023 Supplementary Table 2
+    lclmax_hemoadsorption <- log(4.02);   label("Maximum CytoSorb hemoadsorption clearance at zero saturation (L/h)")  # Leber 2023 Supplementary Table 2
+    lamax_hemoadsorption  <- log(0.040);  label("Maximum drug amount adsorbable by the CytoSorb cartridge (mg)")        # Leber 2023 Supplementary Table 2
 
     # Interindividual variability, carried from the step-1 model and held
     # fixed in step 2. Supplementary Table 1 reports CV%; the exponential

@@ -376,18 +376,18 @@ Marathe_2023_belzutifan <- function() {
     # values correspond to the reference subject: body weight 73.64 kg, age
     # 55 years, UGT2B17 intermediate metabolizer, CYP2C19 non-poor
     # metabolizer, dosed fasted with the FFP formulation.
-    lka   <- log(2.40);  label("First-order absorption rate constant for a fasted FFP dose (ka, 1/h)")  # Marathe 2023 Table 2 (KA = 2.40 /h)
-    lcl   <- log(5.63);  label("Apparent clearance for the reference subject (CL/F, L/h)")              # Marathe 2023 Table 2 (CL/F = 5.63 L/h)
-    lvc   <- log(85.4);  label("Apparent central volume of distribution for the reference subject (V2/F, L)") # Marathe 2023 Table 2 (V2/F = 85.4 L)
-    lq    <- log(5.37);  label("Apparent inter-compartmental clearance for the reference subject (Q/F, L/h)") # Marathe 2023 Table 2 (Q/F = 5.37 L/h)
-    lvp   <- log(30.38); label("Apparent peripheral volume of distribution for the reference subject (V3/F, L)") # Marathe 2023 Table 2 (V3/F = 30.38 L)
-    ltlag <- log(0.16);  label("Absorption lag time (ALAG, h)")                                         # Marathe 2023 Table 2 (ALAG = 0.16 h)
+    lka   <- log(2.40);  label("First-order absorption rate constant for a fasted FFP dose (1/h)")  # Marathe 2023 Table 2 (KA = 2.40 /h)
+    lcl   <- log(5.63);  label("Apparent clearance for the reference subject (L/h)")              # Marathe 2023 Table 2 (CL/F = 5.63 L/h)
+    lvc   <- log(85.4);  label("Apparent central volume of distribution for the reference subject (L)") # Marathe 2023 Table 2 (V2/F = 85.4 L)
+    lq    <- log(5.37);  label("Apparent inter-compartmental clearance for the reference subject (L/h)") # Marathe 2023 Table 2 (Q/F = 5.37 L/h)
+    lvp   <- log(30.38); label("Apparent peripheral volume of distribution for the reference subject (L)") # Marathe 2023 Table 2 (V3/F = 30.38 L)
+    ltlag <- log(0.16);  label("Absorption lag time (h)")                                         # Marathe 2023 Table 2 (ALAG = 0.16 h)
 
     # Relative bioavailability is a structural anchor fixed to 1 for the
     # pooled UGT2B17 intermediate + extensive reference stratum: the source
     # control stream (supplement 2) writes F1 = 1 * F1UGT2B17P, so only the
     # UGT2B17 poor-metabolizer deviation below is estimated.
-    lfdepot <- fixed(log(1)); label("Relative bioavailability for the UGT2B17 IM/EM reference (F, fraction)") # Marathe 2023 Table 2 caption (F = 1 * (1 + F-UGT2B17P)); supplement 2 control stream F1 = 1 * F1UGT2B17P
+    lfdepot <- fixed(log(1)); label("Relative bioavailability for the UGT2B17 IM/EM reference (fraction)") # Marathe 2023 Table 2 caption (F = 1 * (1 + F-UGT2B17P)); supplement 2 control stream F1 = 1 * F1UGT2B17P
 
     # Covariate effects, Marathe 2023 Table 2. Body weight and age enter as
     # power (allometric-style) exponents on normalized covariates; the

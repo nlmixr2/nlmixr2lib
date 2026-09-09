@@ -83,12 +83,12 @@ Ravva_2009_varenicline <- function() {
   ini({
     # Structural parameters - reference values for a White subject, 70 kg, 45 years,
     # CLcr = 100 mL/min (Ravva 2009 Results paragraph defining the 'typical individual').
-    lka     <- log(1.69); label("First-order absorption rate constant (Ka, 1/h)")            # Ravva 2009 Table 4 final-model Ka
+    lka     <- log(1.69); label("First-order absorption rate constant (1/h)")            # Ravva 2009 Table 4 final-model Ka
     lcl     <- log(10.4); label("Apparent clearance (CL/F, L/h) at reference covariates")   # Ravva 2009 Table 4 final-model q_CL
-    lvc     <- log(337);  label("Apparent central volume of distribution (V2/F, L)")        # Ravva 2009 Table 4 final-model q_V2
-    lvp     <- log(78.1); label("Apparent peripheral volume of distribution (V3/F, L)")     # Ravva 2009 Table 4 final-model q_V3
-    lq      <- log(2.08); label("Apparent intercompartmental clearance (Q/F, L/h)")         # Ravva 2009 Table 4 final-model q_Q
-    ltlag   <- log(0.43); label("Absorption lag time (Alag, h)")                              # Ravva 2009 Table 4 final-model q_Alag
+    lvc     <- log(337);  label("Apparent central volume of distribution (L)")        # Ravva 2009 Table 4 final-model q_V2
+    lvp     <- log(78.1); label("Apparent peripheral volume of distribution (L)")     # Ravva 2009 Table 4 final-model q_V3
+    lq      <- log(2.08); label("Apparent intercompartmental clearance (L/h)")         # Ravva 2009 Table 4 final-model q_Q
+    ltlag   <- log(0.43); label("Absorption lag time (h)")                              # Ravva 2009 Table 4 final-model q_Alag
 
     # Covariate effects on CL/F: power exponent on CRCL/100 plus categorical
     # race multipliers in power-of-indicator form (Ravva 2009 Table 4).

@@ -233,9 +233,9 @@ Bai_2024_imipenem <- function() {
     # subject, CrCl 99.896 mL/min (Eq. 8).
     # =========================================================================
     lcl <- log(11.357); label("Clearance (CL, L/h) at CrCl 99.896 mL/min")  # Table 2 row 'CL (L/h)' 11.357 (RSE 3.024%; 95% CI 10.679-12.035; bootstrap median 11.367, 95% CI 9.248-14.227); also the leading coefficient of Eq. 8
-    lvc <- log(16.378); label("Central volume of distribution (Vc, L)")     # Table 2 row 'Vc (L)' 16.378 (RSE 2.283%; 95% CI 15.641-17.116; bootstrap median 16.460, 95% CI 5.110-32.423)
-    lvp <- log(10.904); label("Peripheral volume of distribution (Vp, L)")  # Table 2 row 'Vp (L)' 10.904 (RSE 3.951%; 95% CI 10.054-11.754; bootstrap median 12.505, 95% CI 8.434-73.773)
-    lq  <- log(7.645);  label("Intercompartmental clearance (Q, L/h)")      # Table 2 row 'Q (L/h)' 7.645 (RSE 4.086%; 95% CI 7.029-8.261; bootstrap median 7.539, 95% CI 2.919-17.858)
+    lvc <- log(16.378); label("Central volume of distribution (L)")     # Table 2 row 'Vc (L)' 16.378 (RSE 2.283%; 95% CI 15.641-17.116; bootstrap median 16.460, 95% CI 5.110-32.423)
+    lvp <- log(10.904); label("Peripheral volume of distribution (L)")  # Table 2 row 'Vp (L)' 10.904 (RSE 3.951%; 95% CI 10.054-11.754; bootstrap median 12.505, 95% CI 8.434-73.773)
+    lq  <- log(7.645);  label("Intercompartmental clearance (L/h)")      # Table 2 row 'Q (L/h)' 7.645 (RSE 4.086%; 95% CI 7.029-8.261; bootstrap median 7.539, 95% CI 2.919-17.858)
 
     # =========================================================================
     # Covariate effect. Eq. 7 gives the general continuous-covariate form

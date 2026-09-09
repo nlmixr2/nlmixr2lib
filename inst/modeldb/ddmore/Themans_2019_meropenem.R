@@ -86,12 +86,12 @@ Themans_2019_meropenem <- function() {
     # FINAL PARAMETER ESTIMATE block (post MINIMIZATION SUCCESSFUL, OBJV = 1488.719).
     # The .mod $THETA values in Executable_merop_PK_run3.mod are initial estimates and
     # must not be used as final values; the .lst's own embedded $THETA differs from the .mod's.
-    lcl  <- log(7.94); label("Clearance for GFR = 65 mL/min, typical individual (CL, L/h)")  # DDMODEL00000301 Output_real .lst FINAL THETA(1)
-    lvc  <- log(13.6); label("Central volume of distribution for WT = 75 kg, typical individual (V1, L)")  # DDMODEL00000301 .lst FINAL THETA(3)
-    lq   <- log(6.73); label("Inter-compartmental clearance to ELF compartment, typical individual (Q2, L/h)")  # DDMODEL00000301 .lst FINAL THETA(5)
-    lvp  <- log(4.08); label("Apparent volume of ELF compartment for WT = 75 kg, typical individual (V2, L)")  # DDMODEL00000301 .lst FINAL THETA(6)
-    lq2  <- log(8.22); label("Inter-compartmental clearance to deep peripheral compartment, typical individual (Q3, L/h)")  # DDMODEL00000301 .lst FINAL THETA(7)
-    lvp2 <- log(10.1); label("Volume of deep peripheral compartment, typical individual (V3, L)")  # DDMODEL00000301 .lst FINAL THETA(8)
+    lcl  <- log(7.94); label("Clearance for GFR = 65 mL/min, typical individual (L/h)")  # DDMODEL00000301 Output_real .lst FINAL THETA(1)
+    lvc  <- log(13.6); label("Central volume of distribution for WT = 75 kg, typical individual (L)")  # DDMODEL00000301 .lst FINAL THETA(3)
+    lq   <- log(6.73); label("Inter-compartmental clearance to ELF compartment, typical individual (L/h)")  # DDMODEL00000301 .lst FINAL THETA(5)
+    lvp  <- log(4.08); label("Apparent volume of ELF compartment for WT = 75 kg, typical individual (L)")  # DDMODEL00000301 .lst FINAL THETA(6)
+    lq2  <- log(8.22); label("Inter-compartmental clearance to deep peripheral compartment, typical individual (L/h)")  # DDMODEL00000301 .lst FINAL THETA(7)
+    lvp2 <- log(10.1); label("Volume of deep peripheral compartment, typical individual (L)")  # DDMODEL00000301 .lst FINAL THETA(8)
 
     # Covariate effects (power form, all unitless exponents)
     e_crcl_cl <- 0.722; label("CRCL (GFR) effect on CL: exponent of (CRCL / 65) (unitless)")  # DDMODEL00000301 .lst FINAL THETA(2)

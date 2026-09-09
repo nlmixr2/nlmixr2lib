@@ -301,15 +301,15 @@ Majid_2024_lecanemab <- function() {
     # ==================================================================
 
     # ----- Structural parameters (Table 1, "PK parameters" block) -----
-    lcl <- log(0.0154) ; label("Clearance for the reference subject (CL, L/h)")                       # Majid 2024 Table 1: CL 0.0154 L/h, %RSE 1.60, bootstrap median 0.0154 (95% CI 0.0147-0.0160)
-    lvc <- log(3.24)   ; label("Central volume of distribution for the reference subject (V1, L)")    # Majid 2024 Table 1: V1 3.24 L, %RSE 0.799, bootstrap median 3.24 (95% CI 3.18-3.30)
-    lvp <- log(2.00)   ; label("Peripheral volume of distribution for the reference subject (V2, L)") # Majid 2024 Table 1: V2 2.00 L, %RSE 4.09, bootstrap median 2.02 (95% CI 1.83-2.21)
-    lq  <- log(0.00718); label("Intercompartmental clearance (Q, L/h)")                               # Majid 2024 Table 1: Q 0.00718 L/h, %RSE 4.23, bootstrap median 0.00701 (95% CI 0.00155-0.0125); no covariate and no IIV (Text S1 $PK: "TVQ=THETA(4); Q=TVQ")
+    lcl <- log(0.0154) ; label("Clearance for the reference subject (L/h)")                       # Majid 2024 Table 1: CL 0.0154 L/h, %RSE 1.60, bootstrap median 0.0154 (95% CI 0.0147-0.0160)
+    lvc <- log(3.24)   ; label("Central volume of distribution for the reference subject (L)")    # Majid 2024 Table 1: V1 3.24 L, %RSE 0.799, bootstrap median 3.24 (95% CI 3.18-3.30)
+    lvp <- log(2.00)   ; label("Peripheral volume of distribution for the reference subject (L)") # Majid 2024 Table 1: V2 2.00 L, %RSE 4.09, bootstrap median 2.02 (95% CI 1.83-2.21)
+    lq  <- log(0.00718); label("Intercompartmental clearance (L/h)")                               # Majid 2024 Table 1: Q 0.00718 L/h, %RSE 4.23, bootstrap median 0.00701 (95% CI 0.00155-0.0125); no covariate and no IIV (Text S1 $PK: "TVQ=THETA(4); Q=TVQ")
 
     # Process A bioavailability is a STRUCTURAL ANCHOR, not an estimate:
     # supplement Text S1 $PK opens the branch with a literal "F1=1" and no
     # THETA, so it is fixed here rather than estimated.
-    lfcentral <- fixed(log(1)); label("Relative bioavailability of the intravenous dose for manufacturing Process A (F, unitless)")  # Majid 2024 supplement Text S1 $PK: "F1=1" (reference process; not an estimated parameter)
+    lfcentral <- fixed(log(1)); label("Relative bioavailability of the intravenous dose for manufacturing Process A (unitless)")  # Majid 2024 supplement Text S1 $PK: "F1=1" (reference process; not an estimated parameter)
 
     # ----- Covariate effects on CL (Table 1, "Covariate effects" block) -----
     e_wt_cl     <-  0.353; label("Power exponent on (WT/72 kg) for CL (unitless)")                            # Majid 2024 Table 1 "Weight ~ CL (exponent)" 0.353, %RSE 10.5, bootstrap median 0.344 (95% CI 0.250-0.460)

@@ -74,12 +74,12 @@ Chan_2008_maraviroc <- function() {
     # Chan 2008 Eq 9 -- logit(E_H_i) = logit(E_H_typ) + eta -- reduces to a
     # standard additive eta on the logit scale. logit(0.662) = 0.6722.
     logiteh <- 0.6722       ; label("Logit of hepatic extraction ratio E_H at the reference covariate set (unitless)")   # Chan 2008 Table 4: E_H = 0.662 (RSE 1.5%)
-    lvc     <- log(132)     ; label("Central volume of distribution (V_c, L)")                                          # Chan 2008 Table 4: V_c = 132 L (RSE 2.7%)
+    lvc     <- log(132)     ; label("Central volume of distribution (L)")                                          # Chan 2008 Table 4: V_c = 132 L (RSE 2.7%)
     lvp     <- log(277)     ; label("Peripheral volume of distribution (V_p, L) at the non-Asian reference")            # Chan 2008 Table 4: V_p = 277 L (RSE 4.2%)
     lq      <- log(16.4)    ; label("Inter-compartmental clearance (CL_ic, L/h) at the 30-y non-Asian reference")       # Chan 2008 Table 4: CL_ic = 16.4 L/h (RSE 3.9%)
-    lka     <- log(0.277)   ; label("Absorption rate constant at 1-mg dose under fasted conditions (ka_1mg, 1/h)")      # Chan 2008 Table 4: ka_1mg = 0.277 /h (RSE 21.0%)
-    ltlag   <- log(0.198)   ; label("Absorption lag time (Tlag, h)")                                                    # Chan 2008 Table 4: Tlag = 0.198 h (RSE 4.1%)
-    led50   <- log(51.2)    ; label("Dose producing 50% of ABSEmax at the fasted reference (ED50, mg)")                 # Chan 2008 Table 4: ED50 = 51.2 mg (RSE 12.8%)
+    lka     <- log(0.277)   ; label("Absorption rate constant at 1-mg dose under fasted conditions (1/h)")      # Chan 2008 Table 4: ka_1mg = 0.277 /h (RSE 21.0%)
+    ltlag   <- log(0.198)   ; label("Absorption lag time (h)")                                                    # Chan 2008 Table 4: Tlag = 0.198 h (RSE 4.1%)
+    led50   <- log(51.2)    ; label("Dose producing 50% of ABSEmax at the fasted reference (mg)")                 # Chan 2008 Table 4: ED50 = 51.2 mg (RSE 12.8%)
     lhill   <- log(1.39)    ; label("Sigmoidicity exponent g of the dose-vs-F_ABS sigmoid-Emax model (unitless)")       # Chan 2008 Table 4: g = 1.39 (RSE 15.3%)
 
     # Dose / food effect coefficients on absorption

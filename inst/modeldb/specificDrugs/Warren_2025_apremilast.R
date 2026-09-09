@@ -62,8 +62,8 @@ Warren_2025_apremilast <- function() {
     # Structural PK -- Warren 2025 Table 1 (population mean parameters of the FDA
     # Otezla popPK model in psoriasis). Transferred without re-estimation, hence fixed().
     lka <- fixed(log(1.84)); label("Absorption rate constant (1/h)")                    # Warren 2025 Table 1: Ka = 1.84 1/h
-    lcl <- fixed(log(9.26)); label("Apparent clearance in the psoriasis reference cohort (CL/F, L/h)")  # Warren 2025 Table 1: CL/F = 9.26 L/h
-    lvc <- fixed(log(118)); label("Apparent central volume of distribution (Vc/F, L)")  # Warren 2025 Table 1: Vc/F = 118 L
+    lcl <- fixed(log(9.26)); label("Apparent clearance in the psoriasis reference cohort (L/h)")  # Warren 2025 Table 1: CL/F = 9.26 L/h
+    lvc <- fixed(log(118)); label("Apparent central volume of distribution (L)")  # Warren 2025 Table 1: Vc/F = 118 L
 
     # Covariate effect -- multiplicative factor applied to CL/F when the subject is
     # NOT a psoriasis patient. Warren 2025 applied it to reach the 10.09 L/h used for
@@ -71,7 +71,7 @@ Warren_2025_apremilast <- function() {
     e_dis_psoriasis_cl <- fixed(1.09); label("Multiplicative factor on CL/F for other disease or missing disease status vs the psoriasis reference (unitless)")  # Warren 2025 Table 1 row "If other disease or missing" and table footnote
 
     # IL-13 pharmacodynamics -- LPS-stimulated human whole blood, Warren 2025 Table 2.
-    lec50 <- fixed(log(405)); label("Apremilast concentration inhibiting 50% of whole-blood IL-13 production (IC50, ng/mL)")  # Warren 2025 Table 2: 881 nM (405 ng/mL)
+    lec50 <- fixed(log(405)); label("Apremilast concentration inhibiting 50% of whole-blood IL-13 production (ng/mL)")  # Warren 2025 Table 2: 881 nM (405 ng/mL)
     limax <- fixed(log(1)); label("Maximum fractional inhibition of IL-13 production (unitless)")  # Warren 2025 Methods: IC50 estimated "relative to the maximum response achieved with each drug", i.e. the fitted asymptote is 100%
     # hill is not printed in Warren 2025; the paper states the IC90 was calculated from
     # the fitted hillslope coefficient. Under the sigmoidal Imax form used here the

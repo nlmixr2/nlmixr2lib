@@ -78,8 +78,8 @@ CohenWolkowiez_2012_metronidazole <- function() {
 
   ini({
     # Structural parameters at the reference subject (1.5 kg body weight, 32 weeks postmenstrual age).
-    lcl <- log(0.0397); label("Clearance at WT=1.5 kg, PMA=32 weeks (CL, L/h)")  # Cohen-Wolkowiez 2012 Table 4: theta_CL = 0.0397 (RSE 10.9%)
-    lvc <- log(1.07);   label("Central volume at WT=1.5 kg (V, L)")              # Cohen-Wolkowiez 2012 Table 4: theta_V = 1.07 (RSE 15.0%)
+    lcl <- log(0.0397); label("Clearance at WT=1.5 kg, PMA=32 weeks (L/h)")  # Cohen-Wolkowiez 2012 Table 4: theta_CL = 0.0397 (RSE 10.9%)
+    lvc <- log(1.07);   label("Central volume at WT=1.5 kg (L)")              # Cohen-Wolkowiez 2012 Table 4: theta_V = 1.07 (RSE 15.0%)
 
     # Fixed allometric exponents on body weight (linear scaling, exponent = 1).
     # An estimated body-size exponent was tested by the authors and excluded for

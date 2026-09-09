@@ -87,10 +87,10 @@ Kim_2025_infliximab_dubinsky <- function() {
   ini({
     # Structural parameters -- typical values for the reference subject
     # (WT = 70 kg, ALB = 4 g/dL, ADA-negative).
-    lcl <- log(0.296);  label("Typical clearance for the reference subject (CL, L/day)")                    # Data S1 model #5 $THETA1 = 0.296 L/day; Table S2 "0.296"
-    lvc <- log(3.30);   label("Typical central volume for the reference subject (Vc, L)")                   # Data S1 model #5 $THETA2 = 3.30 L; Table S2 "3.3"
-    lvp <- log(1.16);   label("Typical peripheral volume for the reference subject (Vp, L)")                # Data S1 model #5 $THETA3 = 1.16 L; Table S2 "1.16"
-    lq  <- log(0.0781); label("Typical inter-compartmental clearance for the reference subject (Q, L/day)") # Data S1 model #5 $THETA4 = 0.0781 L/day; Table S2 "0.0781"
+    lcl <- log(0.296);  label("Typical clearance for the reference subject (L/day)")                    # Data S1 model #5 $THETA1 = 0.296 L/day; Table S2 "0.296"
+    lvc <- log(3.30);   label("Typical central volume for the reference subject (L)")                   # Data S1 model #5 $THETA2 = 3.30 L; Table S2 "3.3"
+    lvp <- log(1.16);   label("Typical peripheral volume for the reference subject (L)")                # Data S1 model #5 $THETA3 = 1.16 L; Table S2 "1.16"
+    lq  <- log(0.0781); label("Typical inter-compartmental clearance for the reference subject (L/day)") # Data S1 model #5 $THETA4 = 0.0781 L/day; Table S2 "0.0781"
 
     # Covariate effects
     e_wt_cl  <-  0.612; label("Power exponent of body weight on CL, WT/70 scaling (unitless)")             # Data S1 model #5 $THETA5 = 0.612

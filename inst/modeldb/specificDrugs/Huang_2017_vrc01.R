@@ -43,12 +43,12 @@ Huang_2017_vrc01 <- function() {
     # Structural parameters — population-typical values at the median IV-group
     # weight of 74.5 kg. CL and Vc are reference values at WT = 74.5 kg; Q and
     # Vp are reference values at the same allometric-scaling reference.
-    lka     <- log(0.26); label("Absorption rate constant after SC administration (Ka, 1/day)")  # Huang 2017 Table 2 (final model, IV+SC)
-    lcl     <- log(0.40); label("Clearance from the central compartment at WT = 74.5 kg (CL, L/day)")  # Huang 2017 Table 2 (final model, IV+SC)
-    lvc     <- log(1.94); label("Volume of the central compartment at WT = 74.5 kg (Vc, L)")  # Huang 2017 Table 2 (final model, IV+SC)
-    lq      <- log(0.84); label("Intercompartmental distribution clearance at WT = 74.5 kg (Q, L/day)")  # Huang 2017 Table 2 (final model, IV+SC)
-    lvp     <- log(4.90); label("Volume of the peripheral compartment at WT = 74.5 kg (Vp, L)")  # Huang 2017 Table 2 (final model, IV+SC)
-    lfdepot <- log(0.74); label("SC bioavailability relative to IV administration (F1, fraction)")  # Huang 2017 Table 2 (final model, IV+SC)
+    lka     <- log(0.26); label("Absorption rate constant after SC administration (1/day)")  # Huang 2017 Table 2 (final model, IV+SC)
+    lcl     <- log(0.40); label("Clearance from the central compartment at WT = 74.5 kg (L/day)")  # Huang 2017 Table 2 (final model, IV+SC)
+    lvc     <- log(1.94); label("Volume of the central compartment at WT = 74.5 kg (L)")  # Huang 2017 Table 2 (final model, IV+SC)
+    lq      <- log(0.84); label("Intercompartmental distribution clearance at WT = 74.5 kg (L/day)")  # Huang 2017 Table 2 (final model, IV+SC)
+    lvp     <- log(4.90); label("Volume of the peripheral compartment at WT = 74.5 kg (L)")  # Huang 2017 Table 2 (final model, IV+SC)
+    lfdepot <- log(0.74); label("SC bioavailability relative to IV administration (fraction)")  # Huang 2017 Table 2 (final model, IV+SC)
 
     # Body-weight covariate effects.
     # Form is given by Huang 2017 Methods ("Covariate model"):

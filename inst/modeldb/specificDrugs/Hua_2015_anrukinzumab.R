@@ -65,11 +65,11 @@ Hua_2015_anrukinzumab <- function() {
   ini({
     # Structural PK parameters -- reference values for a 75-kg non-UC subject
     # with baseline albumin 4.3 g/dL (Hua 2015 Table 3, Final model column).
-    lka     <- log(0.0119); label("First-order SC absorption rate constant (Ka, 1/h)")                         # Hua 2015 Table 3: Ka,pop = 0.0119 /h
-    lcl     <- log(0.00732); label("Systemic clearance for 75-kg non-UC subject at ALB 4.3 g/dL (CL, L/h)")    # Hua 2015 Table 3: CL,pop = 0.00732 L/h
-    lvc     <- log(3.81);   label("Central volume of distribution for 75-kg subject (Vc, L)")                  # Hua 2015 Table 3: Vc,pop = 3.81 L
-    lvp     <- log(2.17);   label("Peripheral volume of distribution for 75-kg subject (Vp, L)")               # Hua 2015 Table 3: Vp,pop = 2.17 L
-    lq      <- log(0.0224); label("Inter-compartmental clearance (Q, L/h)")                                    # Hua 2015 Table 3: Q,pop = 0.0224 L/h
+    lka     <- log(0.0119); label("First-order SC absorption rate constant (1/h)")                         # Hua 2015 Table 3: Ka,pop = 0.0119 /h
+    lcl     <- log(0.00732); label("Systemic clearance for 75-kg non-UC subject at ALB 4.3 g/dL (L/h)")    # Hua 2015 Table 3: CL,pop = 0.00732 L/h
+    lvc     <- log(3.81);   label("Central volume of distribution for 75-kg subject (L)")                  # Hua 2015 Table 3: Vc,pop = 3.81 L
+    lvp     <- log(2.17);   label("Peripheral volume of distribution for 75-kg subject (L)")               # Hua 2015 Table 3: Vp,pop = 2.17 L
+    lq      <- log(0.0224); label("Inter-compartmental clearance (L/h)")                                    # Hua 2015 Table 3: Q,pop = 0.0224 L/h
     lfdepot <- log(0.973);  label("SC bioavailability F in non-moderate-to-severe-asthma subjects, log scale (fraction)")  # Hua 2015 Table 3: F,pop = 0.973
 
     # Allometric exponents on body weight (reference 75 kg; Hua 2015 Table 3).

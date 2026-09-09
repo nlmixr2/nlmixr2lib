@@ -34,13 +34,13 @@ Thai_2011_aflibercept <- function() {
     # Structural parameters - typical values for the healthy adult subject
     # (Thai 2011 Table 1). All values are population point estimates from
     # the final mechanism-based MM-TMDD model.
-    lcl    <- log(0.88);   label("Linear clearance of free aflibercept from central compartment (CL, L/day)")    # Table 1: CL = 0.88 L/day (RSE 4%)
+    lcl    <- log(0.88);   label("Linear clearance of free aflibercept from central compartment (L/day)")    # Table 1: CL = 0.88 L/day (RSE 4%)
     lvc    <- log(4.94);   label("Central volume of distribution of free aflibercept (Vp in paper notation, L)") # Table 1: Vp = 4.94 L (RSE 4%)
-    lq     <- log(1.39);   label("Inter-compartmental clearance of free aflibercept (Q, L/day)")                 # Table 1: Q = 1.39 L/day (RSE 9%)
-    lvp    <- log(2.33);   label("Peripheral / tissue volume of distribution of free aflibercept (Vt, L)")       # Table 1: Vt = 2.33 L (RSE 7%)
+    lq     <- log(1.39);   label("Inter-compartmental clearance of free aflibercept (L/day)")                 # Table 1: Q = 1.39 L/day (RSE 9%)
+    lvp    <- log(2.33);   label("Peripheral / tissue volume of distribution of free aflibercept (L)")       # Table 1: Vt = 2.33 L (RSE 7%)
     lvmax  <- log(0.99);   label("Michaelis-Menten maximum binding capacity Vmax (mg/day)")                      # Table 1: Vmax = 0.99 mg/day (RSE 5%)
     lkm    <- log(2.91);   label("Michaelis-Menten half-saturation constant Km (ug/mL = mg/L)")                  # Table 1: Km = 2.91 ug/mL (RSE 11%)
-    lkint  <- log(0.028);  label("First-order internalisation rate constant of bound aflibercept (kint, 1/day)") # Table 1: kint = 0.028 /day (RSE 5%)
+    lkint  <- log(0.028);  label("First-order internalisation rate constant of bound aflibercept (1/day)") # Table 1: kint = 0.028 /day (RSE 5%)
     # Vb (volume of distribution of bound aflibercept) is structurally fixed
     # equal to Vc for identifiability (Thai 2011 Table 1 row 'Vb (l): 4.94
     # ( = Vp)' and main-text page 405: 'Vb was fixed to the population value

@@ -65,12 +65,12 @@ Jonckheere_2019_cefepime <- function() {
     # Structural parameters -- typical values for a non-dialysis patient at
     # 70 kg body weight and eCrCL = 60 mL/min (Cockcroft-Gault). All seven
     # estimates come from Jonckheere 2019 Table 2.
-    lcl_renal <- log(2.29);   label("Renal clearance for a 70 kg patient at eCrCL = 60 mL/min (CL_renal, L/h)")  # Jonckheere 2019 Table 2 (theta_1)
+    lcl_renal <- log(2.29);   label("Renal clearance for a 70 kg patient at eCrCL = 60 mL/min (L/h)")  # Jonckheere 2019 Table 2 (theta_1)
     e_crcl_cl_renal <- 0.943; label("Power exponent of (eCrCL / 60) on CL_renal (unitless)")                     # Jonckheere 2019 Table 2 (theta_2)
     lcl_nonren <- log(0.795); label("Non-renal clearance for a 70 kg patient (CL_other in the paper, L/h)")       # Jonckheere 2019 Table 2 (CL_other)
-    lvc <- log(10.7);         label("Central volume of distribution for a 70 kg patient (V_1, L)")                # Jonckheere 2019 Table 2 (V_1)
-    lvp <- log(12.2);         label("Peripheral volume of distribution for a 70 kg patient (V_2, L)")             # Jonckheere 2019 Table 2 (V_2)
-    lq  <- log(11.0);         label("Inter-compartmental clearance for a 70 kg patient (Q_2, L/h)")               # Jonckheere 2019 Table 2 (Q_2)
+    lvc <- log(10.7);         label("Central volume of distribution for a 70 kg patient (L)")                # Jonckheere 2019 Table 2 (V_1)
+    lvp <- log(12.2);         label("Peripheral volume of distribution for a 70 kg patient (L)")             # Jonckheere 2019 Table 2 (V_2)
+    lq  <- log(11.0);         label("Inter-compartmental clearance for a 70 kg patient (L/h)")               # Jonckheere 2019 Table 2 (Q_2)
 
     # Allometric exponents (fixed by Jonckheere 2019 Discussion paragraph 4:
     # "scaling of all PK parameters with body weight according to allometric

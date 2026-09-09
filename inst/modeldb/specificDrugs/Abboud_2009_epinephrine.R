@@ -64,14 +64,14 @@ Abboud_2009_epinephrine <- function() {
     # estimates. Reference subject: 70 kg body weight, SAPS II = 50 units.
     # Table 3 reports CL in L/h, V in L, and R0 (baseline endogenous
     # epinephrine input rate) in nmol/h.
-    lcl <- log(127);  label("Clearance for reference subject (CL, L/h)")              # Table 3 (127 L/h at 70 kg BW, SAPS II 50)
-    lvc <- log(7.9);  label("Volume of distribution (V, L)")                          # Table 3 (final-model V = 7.9 L)
-    lrbase <- log(43.5); label("Endogenous epinephrine production rate (R0, nmol/h)")    # Table 3
+    lcl <- log(127);  label("Clearance for reference subject (L/h)")              # Table 3 (127 L/h at 70 kg BW, SAPS II 50)
+    lvc <- log(7.9);  label("Volume of distribution (L)")                          # Table 3 (final-model V = 7.9 L)
+    lrbase <- log(43.5); label("Endogenous epinephrine production rate (nmol/h)")    # Table 3
 
     # Covariate effects from Abboud 2009 Table 3 (final relationship for CL
     # in the Results section): CL_i = 127 * (BW/70)^0.60 * (SAPS II/50)^-0.67.
-    e_wt_cl      <-  0.60; label("Power exponent of (WT/70) on CL (theta_BW, unitless)")          # Table 3
-    e_saps_ii_cl <- -0.67; label("Power exponent of (SAPS_II/50) on CL (theta_SAPSII, unitless)") # Table 3
+    e_wt_cl      <-  0.60; label("Power exponent of (WT/70) on CL (unitless)")          # Table 3
+    e_saps_ii_cl <- -0.67; label("Power exponent of (SAPS_II/50) on CL (unitless)") # Table 3
 
     # Inter-individual variability (lognormal, exponential per Methods:
     # "BSVs were assumed to be exponential"). Table 3 reports the square

@@ -98,12 +98,12 @@ Budha_2023_tislelizumab <- function() {
   ini({
     # Structural parameters — typical values for a 65 kg male patient, 60 y, ALB 41 g/L,
     # TUMSZ 63 mm, ADA-negative, non-cHL/non-GC tumor (Budha 2023 Table 3).
-    lcl  <- log(0.153); label("Clearance at reference covariates (CL, L/day)")            # Budha 2023 Table 3, exp(theta1)*24 = 0.153 L/day
-    lvc  <- log(3.05);  label("Central volume of distribution at reference (Vc, L)")     # Budha 2023 Table 3, exp(theta2) = 3.05 L
-    lq   <- log(0.740); label("Intercompartmental clearance to peripheral1 (Q2, L/day)") # Budha 2023 Table 3, exp(theta3)*24 = 0.740 L/day
-    lvp  <- log(1.27);  label("Peripheral1 volume of distribution (V2, L)")              # Budha 2023 Table 3, exp(theta4) = 1.27 L
-    lq2  <- log(0.092); label("Intercompartmental clearance to peripheral2 (Q3, L/day)") # Budha 2023 Table 3, exp(theta5)*24 = 0.092 L/day
-    lvp2 <- log(2.10);  label("Peripheral2 volume of distribution (V3, L)")              # Budha 2023 Table 3, exp(theta6) = 2.10 L
+    lcl  <- log(0.153); label("Clearance at reference covariates (L/day)")            # Budha 2023 Table 3, exp(theta1)*24 = 0.153 L/day
+    lvc  <- log(3.05);  label("Central volume of distribution at reference (L)")     # Budha 2023 Table 3, exp(theta2) = 3.05 L
+    lq   <- log(0.740); label("Intercompartmental clearance to peripheral1 (L/day)") # Budha 2023 Table 3, exp(theta3)*24 = 0.740 L/day
+    lvp  <- log(1.27);  label("Peripheral1 volume of distribution (L)")              # Budha 2023 Table 3, exp(theta4) = 1.27 L
+    lq2  <- log(0.092); label("Intercompartmental clearance to peripheral2 (L/day)") # Budha 2023 Table 3, exp(theta5)*24 = 0.092 L/day
+    lvp2 <- log(2.10);  label("Peripheral2 volume of distribution (L)")              # Budha 2023 Table 3, exp(theta6) = 2.10 L
 
     # Covariate effects on CL (Budha 2023 Equation 5)
     e_wt_cl        <-  0.565;  label("Power exponent of WT on CL (unitless)")                            # Budha 2023 Table 3, theta7

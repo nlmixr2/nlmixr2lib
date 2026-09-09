@@ -123,13 +123,13 @@ Stringer_2013_sipoglitazar <- function() {
     # carries a suffix (parameter-names.md, "Stratum-suffixed parameters").
     # CL and V are apparent (CL/F, V/F) - bioavailability is unknown
     # (Table 2 footnote a).
-    lcl_s1s1 <- log(4.46); label("Apparent clearance, UGT2B15 *1/*1 (CL/F, L/h)")   # Table 2: CL (*1/*1) = 4.46 L/h (RSE 2.5%)
-    lcl_s1s2 <- log(3.25); label("Apparent clearance, UGT2B15 *1/*2 (CL/F, L/h)")   # Table 2: CL (*1/*2) = 3.25 L/h (RSE 2.2%)
-    lcl_s2s2 <- log(1.53); label("Apparent clearance, UGT2B15 *2/*2 (CL/F, L/h)")   # Table 2: CL (*2/*2) = 1.53 L/h (RSE 2.2%)
+    lcl_s1s1 <- log(4.46); label("Apparent clearance, UGT2B15 *1/*1 (L/h)")   # Table 2: CL (*1/*1) = 4.46 L/h (RSE 2.5%)
+    lcl_s1s2 <- log(3.25); label("Apparent clearance, UGT2B15 *1/*2 (L/h)")   # Table 2: CL (*1/*2) = 3.25 L/h (RSE 2.2%)
+    lcl_s2s2 <- log(1.53); label("Apparent clearance, UGT2B15 *2/*2 (L/h)")   # Table 2: CL (*2/*2) = 1.53 L/h (RSE 2.2%)
 
-    lvc <- log(9.03);  label("Apparent central volume of distribution (V/F, L)")    # Table 2: V = 9.03 L (RSE 2.4%)
-    lvp <- log(1.71);  label("Apparent peripheral volume of distribution (V2/F, L)") # Table 2: V2 = 1.71 L (RSE 4.9%); Table 2 footnote b - implemented as a fraction of the central volume
-    lq  <- log(0.313); label("Intercompartmental clearance (Q/F, L/h)")             # Table 2: Q = 0.313 L/h (RSE 6.6%)
+    lvc <- log(9.03);  label("Apparent central volume of distribution (L)")    # Table 2: V = 9.03 L (RSE 2.4%)
+    lvp <- log(1.71);  label("Apparent peripheral volume of distribution (L)") # Table 2: V2 = 1.71 L (RSE 4.9%); Table 2 footnote b - implemented as a fraction of the central volume
+    lq  <- log(0.313); label("Apparent intercompartmental clearance (L/h)")             # Table 2: Q = 0.313 L/h (RSE 6.6%)
 
     # Absorption. Table 2 reports only ka and D1 with no fraction splitting
     # the dose between the two routes, and the NONMEM duration variable is

@@ -77,10 +77,10 @@ Jonsson_2005_disufenton <- function() {
     # CL with a piecewise CLCR effect (slope above 40 mL/min only) and Vc with a
     # linear deviation centered at 76 kg, so THETA(5) is the CL "intercept"
     # at CLCR <= 40 mL/min and THETA(2) is the Vc at WT = 76 kg.
-    lcl <- log(2.91)  ; label("Clearance for CRCL <= 40 mL/min, typical individual (CL, L/h)")              # THETA(5) FINAL = 2.91E+00
-    lvc <- log(7.91)  ; label("Central volume of distribution at WT = 76 kg, typical individual (V1, L)")    # THETA(2) FINAL = 7.91E+00
-    lq  <- log(13.1)  ; label("Inter-compartmental clearance, typical individual (Q, L/h)")                  # THETA(3) FINAL = 1.31E+01
-    lvp <- log(7.17)  ; label("Peripheral volume of distribution, typical individual (V2, L)")               # THETA(4) FINAL = 7.17E+00
+    lcl <- log(2.91)  ; label("Clearance for CRCL <= 40 mL/min, typical individual (L/h)")              # THETA(5) FINAL = 2.91E+00
+    lvc <- log(7.91)  ; label("Central volume of distribution at WT = 76 kg, typical individual (L)")    # THETA(2) FINAL = 7.91E+00
+    lq  <- log(13.1)  ; label("Inter-compartmental clearance, typical individual (L/h)")                  # THETA(3) FINAL = 1.31E+01
+    lvp <- log(7.17)  ; label("Peripheral volume of distribution, typical individual (L)")               # THETA(4) FINAL = 7.17E+00
 
     # Covariate effects (linear-deviation form per .mod $PK lines 31-41)
     e_crcl_cl <- 0.0187 ; label("Slope of (CRCL - 40) on CL above the 40 mL/min breakpoint: cl = cl * (1 + e_crcl_cl * max(0, CRCL - 40)) (1/(mL/min))") # THETA(6) FINAL = 1.87E-02

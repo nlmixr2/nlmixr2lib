@@ -126,12 +126,12 @@ Li_2017_CC292 <- function() {
     # Structural PK parameters from Li 2017 Table 2 (final model column).
     # Typical values correspond to the reference subject: male (SEXF = 0)
     # with age = 62 years (the cohort median age).
-    lka     <- log(0.974); label("First-order absorption rate constant (ka, 1/h)")                     # Li 2017 Table 2 (ka = 0.974 1/h)
-    lcl     <- log(134);   label("Apparent clearance for reference male subject (CL/F, L/h)")          # Li 2017 Table 2 (CL/F = 134 L/h)
-    lvc     <- log(158);   label("Apparent central volume of distribution at AGE = 62 years (V2/F, L)") # Li 2017 Table 2 (V2/F = 158 L)
-    lq      <- log(18.7);  label("Apparent inter-compartmental clearance (Q/F, L/h)")                  # Li 2017 Table 2 (Q/F = 18.7 L/h)
-    lvp     <- log(72);    label("Apparent peripheral volume of distribution (V3/F, L)")               # Li 2017 Table 2 (V3/F = 72 L)
-    ltlag   <- log(0.427); label("Absorption lag time (Alag1, h)")                                     # Li 2017 Table 2 (Alag1 = 0.427 h)
+    lka     <- log(0.974); label("First-order absorption rate constant (1/h)")                     # Li 2017 Table 2 (ka = 0.974 1/h)
+    lcl     <- log(134);   label("Apparent clearance for reference male subject (L/h)")          # Li 2017 Table 2 (CL/F = 134 L/h)
+    lvc     <- log(158);   label("Apparent central volume of distribution at AGE = 62 years (L)") # Li 2017 Table 2 (V2/F = 158 L)
+    lq      <- log(18.7);  label("Apparent inter-compartmental clearance (L/h)")                  # Li 2017 Table 2 (Q/F = 18.7 L/h)
+    lvp     <- log(72);    label("Apparent peripheral volume of distribution (L)")               # Li 2017 Table 2 (V3/F = 72 L)
+    ltlag   <- log(0.427); label("Absorption lag time (h)")                                     # Li 2017 Table 2 (Alag1 = 0.427 h)
 
     # Covariate effects (Li 2017 final covariate model equations, page 1283).
     # Sex effect on CL/F: categorical linear-deviation form per Methods

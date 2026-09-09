@@ -70,12 +70,12 @@ Weber_1993_remikiren <- function() {
     # Typical-value parameters from Weber 1993 Results, paragraph 5 (p. 552).
 
     limax <- log(0.903)
-    label("Maximum fractional inhibition of angiotensin I production rate (Imax, unitless, 0-1)")
+    label("Maximum fractional inhibition of angiotensin I production rate (unitless, 0-1)")
     # Weber 1993, Results p. 552: 'Imax was estimated as 90.3% (CV = 1.4%)'.
     # The 1.4% CV is the parameter precision (RSE), not IIV.
 
     lic50 <- log(0.5)
-    label("Plasma remikiren concentration producing 50% of maximum APR inhibition (IC50, ng/mL)")
+    label("Plasma remikiren concentration producing 50% of maximum APR inhibition (ng/mL)")
     # Weber 1993, Results p. 552: 'IC50 was 0.5 ng ml-1 (CV = 32.3%)'.
     # The 32.3% CV is parameter precision; the value also matches the
     # in-vitro IC50 of 0.5 ng/mL (0.8 nM) reported in the Discussion p. 553.

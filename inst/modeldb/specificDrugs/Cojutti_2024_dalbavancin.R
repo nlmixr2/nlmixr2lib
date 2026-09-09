@@ -202,7 +202,7 @@ Cojutti_2024_dalbavancin <- function() {
     # the non-renal clearance. The two differ by 3% and both reproduce the
     # reported 0.045 L/h at the median eGFR of 93 (0.0458 vs 0.0443).
     # ------------------------------------------------------------------
-    lcl  <- log(0.031); label("Non-renal clearance intercept at CRCL = 0 (CL, L/h)")   # Cojutti 2024 Table 2: CL = 0.031 L/h (RSE 15.4%; bootstrap median 0.028, 5th-95th 0.02-0.03)
+    lcl  <- log(0.031); label("Non-renal clearance intercept at CRCL = 0 (L/h)")   # Cojutti 2024 Table 2: CL = 0.031 L/h (RSE 15.4%; bootstrap median 0.028, 5th-95th 0.02-0.03)
     lvc  <- log(5.93);  label("Central volume of distribution V1 (L)")                 # Cojutti 2024 Table 2: V1 = 5.93 L (RSE 4.8%; bootstrap median 5.98, 5th-95th 5.43-6.32)
     lq   <- log(0.038); label("Intercompartmental clearance Q (L/h)")                  # Cojutti 2024 Table 2: Q = 0.038 L/h (RSE 34.9%; bootstrap median 0.04, 5th-95th 0.02-0.19)
     lvp  <- log(9.55);  label("Peripheral volume of distribution V2 (L)")              # Cojutti 2024 Table 2: V2 = 9.55 L (RSE 14.2%; bootstrap median 9.08, 5th-95th 6.81-25.59)
@@ -223,8 +223,8 @@ Cojutti_2024_dalbavancin <- function() {
     # is the individual's own baseline C-RP (the CRP covariate column), so
     # neither appears in Table 2.
     # ------------------------------------------------------------------
-    lkout  <- log(0.0037); label("First-order elimination rate constant of plasma C-RP (kout, 1/h)")           # Cojutti 2024 Table 2: kout = 0.0037 1/h (RSE 11.6%; bootstrap median 0.0038, 5th-95th 0.003-0.005)
-    lic50  <- log(0.70);   label("Total dalbavancin concentration causing half-maximal inhibition of C-RP production (IC50, mg/L)")  # Cojutti 2024 Table 2: IC50 = 0.70 mg/L (RSE 35.0%; bootstrap median 0.58, 5th-95th 0.35-1.16)
+    lkout  <- log(0.0037); label("First-order elimination rate constant of plasma C-RP (1/h)")           # Cojutti 2024 Table 2: kout = 0.0037 1/h (RSE 11.6%; bootstrap median 0.0038, 5th-95th 0.003-0.005)
+    lic50  <- log(0.70);   label("Total dalbavancin concentration causing half-maximal inhibition of C-RP production (mg/L)")  # Cojutti 2024 Table 2: IC50 = 0.70 mg/L (RSE 35.0%; bootstrap median 0.58, 5th-95th 0.35-1.16)
 
     # ------------------------------------------------------------------
     # Inter-individual variability. Cojutti 2024 Table 2 heads this block

@@ -92,8 +92,8 @@ Kim_2025_infliximab_passot_adult <- function() {
     # Structural parameters -- typical values before any covariate multiplier.
     # Note that neither IBD subtype is a unit multiplier (see e_ibd_* below), so
     # these are not the values for a "reference patient" on their own.
-    lcl <- log(0.23); label("Typical clearance before covariate effects (CL, L/day)")            # Data S1 model #2 $THETA1 = 0.23 L/day; Table S2 "0.23"
-    lvc <- log(5.2);  label("Typical central volume before covariate effects (Vc, L)")           # Data S1 model #2 $THETA2 = 5.2 L; Table S2 "5.2"
+    lcl <- log(0.23); label("Typical clearance before covariate effects (L/day)")            # Data S1 model #2 $THETA1 = 0.23 L/day; Table S2 "0.23"
+    lvc <- log(5.2);  label("Typical central volume before covariate effects (L)")           # Data S1 model #2 $THETA2 = 5.2 L; Table S2 "5.2"
 
     # Covariate effects on CL. Sex and IBD subtype act exponentially (the source
     # codes them as EXP(THETA)); body weight acts as a power of WT/67.

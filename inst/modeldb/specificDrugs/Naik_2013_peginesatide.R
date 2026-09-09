@@ -118,11 +118,11 @@ Naik_2013_peginesatide <- function() {
     # All volumes and inter-compartmental clearance are per kg body weight
     # in the source paper; conversion to absolute units happens in model().
     lka      <- log(0.00865)     ; label("Absorption rate constant base (Ka, 1/h) for non-Hispanic dialysis subject")  # Naik 2013 Table 6
-    lfdepot  <- log(0.498)       ; label("Subcutaneous bioavailability (F1, fraction)")                                  # Naik 2013 Table 6
+    lfdepot  <- log(0.498)       ; label("Subcutaneous bioavailability (fraction)")                                  # Naik 2013 Table 6
     lvc      <- log(35.6)        ; label("Central volume of distribution (V2, mL/kg) at reference BMI 26, age 59, TBILI 9")  # Naik 2013 Table 6
-    lvp      <- log(7.44)        ; label("Peripheral volume of distribution (V3, mL/kg)")                                 # Naik 2013 Table 6
+    lvp      <- log(7.44)        ; label("Peripheral volume of distribution (mL/kg)")                                 # Naik 2013 Table 6
     lq       <- fixed(log(5.23)) ; label("Inter-compartmental clearance (Q, mL/kg/h) -- for model stability")      # Naik 2013 Table 6 (Fixed)
-    lvmax    <- log(45.3)        ; label("Maximum rate of elimination from central (Vmax, ng/mL/h)")                     # Naik 2013 Table 6
+    lvmax    <- log(45.3)        ; label("Maximum rate of elimination from central (ng/mL/h)")                     # Naik 2013 Table 6
     lkm      <- log(1880)        ; label("Concentration giving 50% of Vmax (Km, ng/mL) at reference ALP 87")              # Naik 2013 Table 6
 
     # PK covariate effects (Naik 2013 eq 13, 14, 15)
@@ -149,11 +149,11 @@ Naik_2013_peginesatide <- function() {
 
     # === PD structural parameters (Naik 2013 Table 7) ===
     lhgbbl <- log(11.5)    ; label("Baseline hemoglobin (HgbBL, g/dL) for ESA-naive subject (ESAD = 0)")          # Naik 2013 Table 7
-    lec50  <- log(401)     ; label("Concentration for 50% of maximum stimulatory effect (EC50, ng/mL)")           # Naik 2013 Table 7
-    lemax  <- log(0.542)   ; label("Maximum stimulatory effect of peginesatide on K0 (Emax, unitless)")           # Naik 2013 Table 7
-    lmtt   <- log(1640)    ; label("Mean red-blood-cell lifespan (MTT, hours ~ 68.3 days)")                       # Naik 2013 Table 7
-    lmtp   <- log(462)     ; label("Mean transit time for progenitor cells (MTP, hours ~ 19.3 days)")             # Naik 2013 Table 7
-    lrsa   <- log(0.153)   ; label("Residual prior-ESA effective concentration (RSA, ng/mL; paper symbol RSA)")   # Naik 2013 Table 7
+    lec50  <- log(401)     ; label("Concentration for 50% of maximum stimulatory effect (ng/mL)")           # Naik 2013 Table 7
+    lemax  <- log(0.542)   ; label("Maximum stimulatory effect of peginesatide on K0 (unitless)")           # Naik 2013 Table 7
+    lmtt   <- log(1640)    ; label("Mean red-blood-cell lifespan (hours ~ 68.3 days)")                       # Naik 2013 Table 7
+    lmtp   <- log(462)     ; label("Mean transit time for progenitor cells (hours ~ 19.3 days)")             # Naik 2013 Table 7
+    lrsa   <- log(0.153)   ; label("Residual prior-ESA effective concentration (ng/mL; paper symbol RSA)")   # Naik 2013 Table 7
     lcf    <- log(2.75e-4) ; label("Correction factor for empirical Hgb drift (CF, 1/h) at reference age 58")    # Naik 2013 Table 7
 
     # PD covariate effects (Naik 2013 eq 16, 17)

@@ -157,12 +157,12 @@ Schindler_2017_imatinib <- function() {
     # MTD (maximum transaxial diameter, mm) -- Schindler 2017 Table 2
     # =====================================================================
     # Mixture subpopulation 1 (larger baseline; Ppop1 = 0.348) typical S0
-    lS0_mtd_pop1_l1 <- log(76.6);   label("MTD baseline S0 -- lesion 1, mixture subpop 1 (larger, mm)")  # Table 2 row 'S0, pop1' lesion 1
-    lS0_mtd_pop1_l2 <- log(41.9);   label("MTD baseline S0 -- lesion 2, mixture subpop 1 (larger, mm)")  # Table 2 row 'S0, pop1' lesion 2
+    lS0_mtd_pop1_l1 <- log(76.6);   label("MTD baseline S0 -- lesion 1, mixture subpop 1, larger subpopulation (mm)")  # Table 2 row 'S0, pop1' lesion 1
+    lS0_mtd_pop1_l2 <- log(41.9);   label("MTD baseline S0 -- lesion 2, mixture subpop 1, larger subpopulation (mm)")  # Table 2 row 'S0, pop1' lesion 2
 
     # Mixture subpopulation 2 (smaller baseline) typical S0
-    lS0_mtd_pop2_l1 <- log(20.9);   label("MTD baseline S0 -- lesion 1, mixture subpop 2 (smaller, mm)") # Table 2 row 'S0, pop2' lesion 1
-    lS0_mtd_pop2_l2 <- log(14.2);   label("MTD baseline S0 -- lesion 2, mixture subpop 2 (smaller, mm)") # Table 2 row 'S0, pop2' lesion 2
+    lS0_mtd_pop2_l1 <- log(20.9);   label("MTD baseline S0 -- lesion 1, mixture subpop 2, smaller subpopulation (mm)") # Table 2 row 'S0, pop2' lesion 1
+    lS0_mtd_pop2_l2 <- log(14.2);   label("MTD baseline S0 -- lesion 2, mixture subpop 2, smaller subpopulation (mm)") # Table 2 row 'S0, pop2' lesion 2
 
     # Per-lesion carrying capacity (shared across subpopulations)
     lSmax_mtd_l1    <- log(171);    label("MTD carrying capacity Smax -- lesion 1 (mm)")                  # Table 2 row 'Smax' lesion 1

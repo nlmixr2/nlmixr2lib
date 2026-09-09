@@ -193,7 +193,7 @@ PerezBlanco_2016_doxorubicin <- function() {
     #   AUC_DOX   = Dose / CL
     #   AUC_DOXol = Dose * Fm / CLm    (Methods 'Drug exposure and haematological toxicity')
 
-    lfm <- log(0.22) ; label("Fraction of doxorubicin clearance routed to doxorubicinol formation (Fm, unitless)") # Table 2 final-model Fm = 0.22, RSE 14.7%
+    lfm <- log(0.22) ; label("Fraction of doxorubicin clearance routed to doxorubicinol formation (unitless)") # Table 2 final-model Fm = 0.22, RSE 14.7%
 
     # ------------------------------------------------------------------
     # DOXORUBICINOL STRUCTURAL PARAMETERS

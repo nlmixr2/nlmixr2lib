@@ -50,8 +50,8 @@ Candelaria_2018_rituximab <- function() {
     # to L by /1000.
     lcl <- log(12.5 * 24 / 1000); label("Typical clearance (CL, L/day) at reference BSA 1.72 m^2")               # Candelaria 2018 Table 2 CL = 12.5 mL/h (RSE 2.35%)
     lvc <- log(3191 / 1000);      label("Typical central volume of distribution (V1, L) at reference BSA 1.72 m^2") # Candelaria 2018 Table 2 V1 = 3191 mL (RSE 1.36%)
-    lq  <- log(18.6 * 24 / 1000); label("Typical inter-compartmental clearance (Q, L/day)")                       # Candelaria 2018 Table 2 Q = 18.6 mL/h (RSE 6.40%)
-    lvp <- log(4154 / 1000);      label("Typical peripheral volume of distribution (V2, L)")                      # Candelaria 2018 Table 2 V2 = 4154 mL (RSE 2.77%)
+    lq  <- log(18.6 * 24 / 1000); label("Typical inter-compartmental clearance (L/day)")                       # Candelaria 2018 Table 2 Q = 18.6 mL/h (RSE 6.40%)
+    lvp <- log(4154 / 1000);      label("Typical peripheral volume of distribution (L)")                      # Candelaria 2018 Table 2 V2 = 4154 mL (RSE 2.77%)
 
     # Covariate effect: BSA on V1 only (median-centered power form per Methods
     # 'Covariate analysis'). The paper also evaluated BSA on CL but discarded
@@ -86,7 +86,7 @@ Candelaria_2018_rituximab <- function() {
     # (CV) and the additive 278 ng/mL is interpreted as an SD in ng/mL
     # which converts to 0.278 ug/mL to match this model's concentration
     # unit declaration.
-    propSd <- 0.27;  label("Proportional residual error (SD, fraction)")  # Candelaria 2018 Table 2 proportional = 27% (RSE 3.29%)
+    propSd <- 0.27;  label("Proportional residual error (fraction)")  # Candelaria 2018 Table 2 proportional = 27% (RSE 3.29%)
     addSd  <- 0.278; label("Additive residual error (ug/mL)")             # Candelaria 2018 Table 2 additive = 278 ng/mL = 0.278 ug/mL (RSE 26.5%)
   })
 

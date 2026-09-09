@@ -74,21 +74,21 @@ Li_2017_brentuximab <- function() {
     # Modeled in molar units: amount in nmol, volume in L, clearance in L/day
     # so that concentration Cc = A / V is in nmol/L = pmol/mL = nM (matching
     # the paper's reported "concentration in units of pmol/mL").
-    lcl  <- log(1.56);  label("ADC clearance (CL, L/day)")                         # Li 2017 Table 3: CL 1.56 L/d
-    lvc  <- log(4.29);  label("ADC central volume (V1, L)")                        # Li 2017 Table 3: V1 4.29 L
-    lq   <- log(2.83);  label("ADC intercompartmental clearance to peripheral 1 (Q2, L/day)") # Li 2017 Table 3: Q2 2.83 L/d
-    lvp  <- log(3.83);  label("ADC peripheral volume 1 (V2, L)")                   # Li 2017 Table 3: V2 3.83 L
-    lq2  <- log(0.708); label("ADC intercompartmental clearance to peripheral 2 (Q3, L/day)") # Li 2017 Table 3: Q3 0.708 L/d
-    lvp2 <- log(9.52);  label("ADC peripheral volume 2 (V3, L)")                   # Li 2017 Table 3: V3 9.52 L
+    lcl  <- log(1.56);  label("ADC clearance (L/day)")                         # Li 2017 Table 3: CL 1.56 L/d
+    lvc  <- log(4.29);  label("ADC central volume (L)")                        # Li 2017 Table 3: V1 4.29 L
+    lq   <- log(2.83);  label("ADC intercompartmental clearance to peripheral 1 (L/day)") # Li 2017 Table 3: Q2 2.83 L/d
+    lvp  <- log(3.83);  label("ADC peripheral volume 1 (L)")                   # Li 2017 Table 3: V2 3.83 L
+    lq2  <- log(0.708); label("ADC intercompartmental clearance to peripheral 2 (L/day)") # Li 2017 Table 3: Q3 0.708 L/d
+    lvp2 <- log(9.52);  label("ADC peripheral volume 2 (L)")                   # Li 2017 Table 3: V3 9.52 L
 
     # MMAE structural parameters -- reference: 75 kg (Li 2017 Table 4). CLM and
     # V4 are apparent parameters (ADC -> MMAE stoichiometry is already absorbed
     # into the DAR-based formation term in the ODE).
-    lcl_mmae  <- log(55.7);   label("MMAE apparent clearance (CLM, L/day)")            # Li 2017 Table 4: CLM 55.7 L/d
-    lvc_mmae  <- log(79.8);   label("MMAE apparent central volume (V4, L)")            # Li 2017 Table 4: V4 79.8 L
-    lq_mmae   <- log(65.0);   label("MMAE apparent intercompartmental clearance (Q5, L/day)") # Li 2017 Table 4: Q5 65.0 L/d
-    lvp_mmae  <- log(28.1);   label("MMAE apparent peripheral volume (V5, L)")         # Li 2017 Table 4: V5 28.1 L
-    lbeta <- log(0.0785); label("Macro rate constant of DAR decline (beta, 1/day)") # Li 2017 Table 4: beta 0.0785 /d
+    lcl_mmae  <- log(55.7);   label("MMAE apparent clearance (L/day)")            # Li 2017 Table 4: CLM 55.7 L/d
+    lvc_mmae  <- log(79.8);   label("MMAE apparent central volume (L)")            # Li 2017 Table 4: V4 79.8 L
+    lq_mmae   <- log(65.0);   label("MMAE apparent intercompartmental clearance (L/day)") # Li 2017 Table 4: Q5 65.0 L/d
+    lvp_mmae  <- log(28.1);   label("MMAE apparent peripheral volume (L)")         # Li 2017 Table 4: V5 28.1 L
+    lbeta <- log(0.0785); label("Macro rate constant of DAR decline (1/day)") # Li 2017 Table 4: beta 0.0785 /d
 
     # Fm (exponent on Cycle for the MMAE formation fraction Fmc = Cycle^Fm).
     # Paper reports Fm = -0.261 with BSV 130 %CV (Li 2017 Table 4). Stored as

@@ -192,7 +192,7 @@ Simpson_2006_artesunate <- function() {
     # rate constant and lag time were fixed so that a satisfactory model fit
     # could be obtained" (Discussion).
     lka   <- fixed(log(0.2))
-    label("First-order appearance rate constant of DHA (ka, 1/h)")  # Simpson 2006 Table 5: "k_a (/h) - fixed" = 0.2
+    label("First-order appearance rate constant of DHA (1/h)")  # Simpson 2006 Table 5: "k_a (/h) - fixed" = 0.2
     ltlag <- fixed(log(0.14))
     label("Appearance lag time (h)")  # Simpson 2006 Table 5: "Lag time (h) - fixed" = 0.14
 
@@ -200,7 +200,7 @@ Simpson_2006_artesunate <- function() {
     # Table 5 prints both sex-specific typical values; 2.03 + 1.14 = 3.17
     # exactly, so lcl is the female reference and e_male_cl the male increment.
     lcl <- log(2.03)
-    label("Apparent DHA clearance for a female (CL/F, L/kg/h)")  # Simpson 2006 Table 5: "CL/F (l/kg/h) for a: Female" = 2.03
+    label("Apparent DHA clearance for a female (L/kg/h)")  # Simpson 2006 Table 5: "CL/F (l/kg/h) for a: Female" = 2.03
     e_male_cl <- 1.14
     label("Additive increase in apparent DHA clearance for a male (CL/F, L/kg/h; applied as (1 - SEXF))")  # Simpson 2006 Table 5: "Increase in CL/F (l/kg/h) for a male" = 1.14 (SE 0.40); Abstract 95% CI 0.36-1.92
 
@@ -209,9 +209,9 @@ Simpson_2006_artesunate <- function() {
     # Table 5; together they reproduce the four printed typical values
     # (15 kg -> 1.81, 30 kg -> 3.04, 60 kg -> 5.52, 70 kg -> 6.34 L/kg).
     lvc <- log(0.57)
-    label("Intercept of the apparent DHA volume of distribution (V/F, L/kg)")  # Simpson 2006 Table 5: "Intercept" = 0.57 (SE 1.68)
+    label("Intercept of the apparent DHA volume of distribution (L/kg)")  # Simpson 2006 Table 5: "Intercept" = 0.57 (SE 1.68)
     e_wt_vc <- 5.77
-    label("Increase in apparent DHA volume of distribution per unit of WT/70 (V/F, L/kg)")  # Simpson 2006 Table 5: "Increase in V/F per unit (l/70 kg)" = 5.77 (SE 0.55)
+    label("Increase in apparent DHA volume of distribution per unit of WT/70 (L/kg)")  # Simpson 2006 Table 5: "Increase in V/F per unit (l/70 kg)" = 5.77 (SE 0.55)
 
     # ---- Inter-individual variability ------------------------------------
     # "Inter-individual variability in the pharmacokinetic parameters was

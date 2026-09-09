@@ -104,10 +104,10 @@ Kim_2025_infliximab_fasanmade_combined <- function() {
     #   lvc = log(52.4 * 65 / 1000) = log(3.406 L)
     #   lvp = log(19.6 * 65 / 1000) = log(1.274 L)
     #   lq  = log(2.26 * 65 / 1000) = log(0.1469 L/day)
-    lcl <- log(0.3523); label("Typical clearance for the reference subject (CL, L/day)")                    # Data S1 model #6 $THETA1 = 5.42 mL/kg/day * 65 kg / 1000; Table S2 "5.42"
-    lvc <- log(3.406);  label("Typical central volume for the reference subject (Vc, L)")                   # Data S1 model #6 $THETA2 = 52.4 mL/kg * 65 kg / 1000; Table S2 "52.4"
-    lvp <- log(1.274);  label("Typical peripheral volume for the reference subject (Vp, L)")                # Data S1 model #6 $THETA3 = 19.6 mL/kg * 65 kg / 1000; Table S2 "19.6"
-    lq  <- log(0.1469); label("Typical inter-compartmental clearance for the reference subject (Q, L/day)") # Data S1 model #6 $THETA4 = 2.26 mL/kg/day * 65 kg / 1000; Table S2 "2.26"
+    lcl <- log(0.3523); label("Typical clearance for the reference subject (L/day)")                    # Data S1 model #6 $THETA1 = 5.42 mL/kg/day * 65 kg / 1000; Table S2 "5.42"
+    lvc <- log(3.406);  label("Typical central volume for the reference subject (L)")                   # Data S1 model #6 $THETA2 = 52.4 mL/kg * 65 kg / 1000; Table S2 "52.4"
+    lvp <- log(1.274);  label("Typical peripheral volume for the reference subject (L)")                # Data S1 model #6 $THETA3 = 19.6 mL/kg * 65 kg / 1000; Table S2 "19.6"
+    lq  <- log(0.1469); label("Typical inter-compartmental clearance for the reference subject (L/day)") # Data S1 model #6 $THETA4 = 2.26 mL/kg/day * 65 kg / 1000; Table S2 "2.26"
 
     # Covariate effects. The three e_wt_* values are the exponents on the PER-KG
     # parameters; model() adds the +1 that converts them to total-parameter

@@ -200,17 +200,17 @@ Lu_2017_polatuzumab_neuropathy <- function() {
     # single-agent.
 
     # ----- acMMAE structural parameters (Lu 2019 Table 1, theta1-theta11) -----
-    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (cl_exp_kdes, 1/h)")     # Lu 2019 Table 1, theta1
-    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (CL_TIME, L/h)") # Lu 2019 Table 1, theta2
-    lcl        <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (CL_SS, L/h)") # Lu 2019 Table 1, theta3
-    lvc        <- log(3.15);    label("acMMAE central volume (Vc, L)")                                 # Lu 2019 Table 1, theta4
-    lvp        <- log(3.98);    label("acMMAE peripheral volume (Vp, L)")                              # Lu 2019 Table 1, theta5
-    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (Q, L/h)")               # Lu 2019 Table 1, theta6
-    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (Vmax, ng/mL/h)") # Lu 2019 Table 1, theta7
-    lkm_ac     <- log(0.604);   label("acMMAE Michaelis-Menten constant (KM, ng/mL)")                  # Lu 2019 Table 1, theta8
-    clss_emax  <- 0.223;        label("Maximum fractional effect of cycle on CL_NS (CLSSEMAX, unitless)") # Lu 2019 Table 1, theta9
-    lt50_mo    <- log(3.53);    label("Time of half-maximal cycle effect on CL_NS (T50, months)")      # Lu 2019 Table 1, theta10 (converted to hours in model() via T50_hr = T50_mo * 24 * 30)
-    gamma_ns   <- 2.27;         label("Sigmoidicity of the CL_NS(t) Hill function (gamma, unitless)")  # Lu 2019 Table 1, theta11
+    lcl_exp_kdes      <- log(0.0046);  label("Rate constant of CL_TIME exponential decay (1/h)")     # Lu 2019 Table 1, theta1
+    lcl_exp_component   <- log(0.00623); label("Initial CL_TIME at time 0 for the reference subject (L/h)") # Lu 2019 Table 1, theta2
+    lcl        <- log(0.0344);  label("acMMAE nonspecific linear clearance after repeated dosing (L/h)") # Lu 2019 Table 1, theta3
+    lvc        <- log(3.15);    label("acMMAE central volume (L)")                                 # Lu 2019 Table 1, theta4
+    lvp        <- log(3.98);    label("acMMAE peripheral volume (L)")                              # Lu 2019 Table 1, theta5
+    lq         <- log(0.0145);  label("acMMAE intercompartmental clearance (L/h)")               # Lu 2019 Table 1, theta6
+    lvmax      <- log(0.0203);  label("acMMAE Michaelis-Menten maximum elimination rate (ng/mL/h)") # Lu 2019 Table 1, theta7
+    lkm_ac     <- log(0.604);   label("acMMAE Michaelis-Menten constant (ng/mL)")                  # Lu 2019 Table 1, theta8
+    clss_emax  <- 0.223;        label("Maximum fractional effect of cycle on CL_NS (unitless)") # Lu 2019 Table 1, theta9
+    lt50_mo    <- log(3.53);    label("Time of half-maximal cycle effect on CL_NS (months)")      # Lu 2019 Table 1, theta10 (converted to hours in model() via T50_hr = T50_mo * 24 * 30)
+    gamma_ns   <- 2.27;         label("Sigmoidicity of the CL_NS(t) Hill function (unitless)")  # Lu 2019 Table 1, theta11
 
     # ----- Covariate effects on acMMAE PK parameters (Lu 2019 Table 2, theta22-theta37) -----
     e_wt_cl              <-  0.73;     label("Power exponent of WT on CL_SS (unitless)")                                                     # Lu 2019 Table 2, theta22

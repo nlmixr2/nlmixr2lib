@@ -74,13 +74,13 @@ Struemper_2017_belimumab <- function() {
   ini({
     # Structural parameters -- typical values from Struemper 2017 Table 3 (final SC popPK model)
     # Reported in mL / mL per day; converted to L / L per day by dividing by 1000.
-    lka      <- log(0.235);    label("Absorption rate constant (Kabs, 1/day)")                                    # Table 3 THETA(5)
-    lcl      <- log(0.204);    label("Clearance for the reference adult (CL, L/day)")                             # Table 3 THETA(1): 204 mL/day
-    lvc      <- log(2.300);    label("Central volume of distribution for the reference adult (Vc, L)")            # Table 3 THETA(2): 2300 mL
-    lq       <- log(0.698);    label("Intercompartmental clearance (Q, L/day)")                                   # Table 3 THETA(3): 698 mL/day
-    lvp      <- log(2.650);    label("Peripheral volume of distribution (Vp, L)")                                 # Table 3 THETA(4): 2650 mL
-    lfdepot  <- log(0.742);    label("Subcutaneous bioavailability (F, fraction)")                                # Table 3 THETA(6)
-    lalag    <- log(0.179);    label("Absorption lag time (ALAG, day)")                                           # Table 3 THETA(7)
+    lka      <- log(0.235);    label("Absorption rate constant (1/day)")                                    # Table 3 THETA(5)
+    lcl      <- log(0.204);    label("Clearance for the reference adult (L/day)")                             # Table 3 THETA(1): 204 mL/day
+    lvc      <- log(2.300);    label("Central volume of distribution for the reference adult (L)")            # Table 3 THETA(2): 2300 mL
+    lq       <- log(0.698);    label("Intercompartmental clearance (L/day)")                                   # Table 3 THETA(3): 698 mL/day
+    lvp      <- log(2.650);    label("Peripheral volume of distribution (L)")                                 # Table 3 THETA(4): 2650 mL
+    lfdepot  <- log(0.742);    label("Subcutaneous bioavailability (fraction)")                                # Table 3 THETA(6)
+    lalag    <- log(0.179);    label("Absorption lag time (day)")                                           # Table 3 THETA(7)
 
     # Fixed allometric body-weight exponents (reference 67 kg)
     # Effect column in Table 3 lists each as 9 (BWT/67)^e with no estimate ("-"), i.e. fixed.

@@ -325,7 +325,7 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
     # ------------------------------------------------------------------
 
     e_on_treatment_e0 <- -5.19
-    label("Effect of active-treatment arm on the intercept (additive, ms)")
+    label("Effect of active-treatment arm on the intercept, applied additively (ms)")
     # Zhou 2025 Table 2 'Treatment' = -5.19 (SE 1.36; RSE 26.2%;
     # 95% CI -7.86, -2.52; P = 0.0002). Empirical flexibility term with
     # no physiological interpretation (Zhou 2025 Methods 'C-QTc Model'
@@ -333,7 +333,7 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
     # corrected contrast: mean DeltaDeltaQTcP = -5.19 + 0.0339 * C.
 
     e_ntime1_e0 <- -0.25
-    label("Effect of the 1 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 1 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Table 2 'NTime = 1' = -0.25 (SE 0.867; RSE 347%;
     # 95% CI -1.95, 1.45; P = 0.7733). Not statistically significant;
     # retained per the Garnett 2018 C-QTc white-paper recommendation
@@ -342,23 +342,23 @@ Zhou_2025_fruquintinib_QTcP_M11 <- function() {
     # white paper on concentration-QTc modeling", Zhou 2025 Results).
 
     e_ntime2_e0 <- 1.78
-    label("Effect of the 2 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 2 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Table 2 'NTime = 2' = 1.78 (SE 0.867; RSE 48.7%;
     # 95% CI 0.0873, 3.48; P = 0.0399).
 
     e_ntime3_e0 <- 1.84
-    label("Effect of the 3 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 3 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Table 2 'NTime = 3' = 1.84 (SE 0.868; RSE 47.2%;
     # 95% CI 0.144, 3.54; P = 0.0340).
 
     e_ntime4_e0 <- 0.570
-    label("Effect of the 4 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 4 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Table 2 'NTime = 4' = 0.570 (SE 0.874; RSE 153%;
     # 95% CI -1.14, 2.28; P = 0.5150). Not statistically significant;
     # retained per the same white-paper recommendation as NTime = 1.
 
     e_day21_e0 <- -1.39
-    label("Effect of the cycle 1 day 21 visit on the intercept (additive, ms)")
+    label("Effect of the cycle 1 day 21 visit on the intercept, applied additively (ms)")
     # Zhou 2025 Table 2 'Cycle 1 day 21 visit' = -1.39 (SE 0.676;
     # RSE 48.6%; 95% CI -2.71, -0.0638; P = 0.0406).
 

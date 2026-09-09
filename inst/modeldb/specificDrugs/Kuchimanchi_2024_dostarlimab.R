@@ -92,10 +92,10 @@ Kuchimanchi_2024_dostarlimab <- function() {
     # values reported in L/h (CL, Q) are converted to L/day so the time axis
     # matches the rest of the dostarlimab / mAb library and the time-dependent
     # CL equation, which is parameterised in days (T50 = 145 days).
-    lcl  <- log(0.00732 * 24); label("Baseline clearance at t=0 for reference patient (CL_base, L/day)") # Kuchimanchi 2024 Table 2: CL = 0.00732 L/h
-    lvc  <- log(3.09);         label("Central volume of distribution for reference patient (Vc_base, L)") # Kuchimanchi 2024 Table 2: Vc = 3.09 L
-    lq   <- log(0.0191 * 24);  label("Intercompartmental clearance (Q, L/day)")                           # Kuchimanchi 2024 Table 2: Q = 0.0191 L/h
-    lvp  <- log(2.48);         label("Peripheral volume of distribution for 70 kg reference (Vp, L)")     # Kuchimanchi 2024 Table 2: Vp = 2.48 L
+    lcl  <- log(0.00732 * 24); label("Baseline clearance at t=0 for reference patient (L/day)") # Kuchimanchi 2024 Table 2: CL = 0.00732 L/h
+    lvc  <- log(3.09);         label("Central volume of distribution for reference patient (L)") # Kuchimanchi 2024 Table 2: Vc = 3.09 L
+    lq   <- log(0.0191 * 24);  label("Intercompartmental clearance (L/day)")                           # Kuchimanchi 2024 Table 2: Q = 0.0191 L/h
+    lvp  <- log(2.48);         label("Peripheral volume of distribution for 70 kg reference (L)")     # Kuchimanchi 2024 Table 2: Vp = 2.48 L
 
     # Time-dependent clearance (sigmoid I_max function of time since first
     # dose; Kuchimanchi 2024 Results, equation block):

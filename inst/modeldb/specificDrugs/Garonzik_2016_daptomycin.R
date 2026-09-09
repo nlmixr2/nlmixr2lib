@@ -84,10 +84,10 @@ Garonzik_2016_daptomycin <- function() {
     # Each factive is bounded in (0, 1); log-transform keeps positivity and is
     # consistent with the rest of the parameter set. factive(0%) = 1 by
     # construction (no serum, no protein binding) and is not estimated.
-    lfact_hs10 <- log(0.346); label("Active daptomycin fraction at 10% HS (factive10, unitless)")  # Garonzik 2016 Table 2 (factive 10%)
-    lfact_hs30 <- log(0.284); label("Active daptomycin fraction at 30% HS (factive30, unitless)")  # Garonzik 2016 Table 2 (factive 30%)
-    lfact_hs50 <- log(0.239); label("Active daptomycin fraction at 50% HS (factive50, unitless)")  # Garonzik 2016 Table 2 (factive 50%)
-    lfact_hs70 <- log(0.252); label("Active daptomycin fraction at 70% HS (factive70, unitless)")  # Garonzik 2016 Table 2 (factive 70%)
+    lfact_hs10 <- log(0.346); label("Active daptomycin fraction at 10% HS (unitless)")  # Garonzik 2016 Table 2 (factive 10%)
+    lfact_hs30 <- log(0.284); label("Active daptomycin fraction at 30% HS (unitless)")  # Garonzik 2016 Table 2 (factive 30%)
+    lfact_hs50 <- log(0.239); label("Active daptomycin fraction at 50% HS (unitless)")  # Garonzik 2016 Table 2 (factive 50%)
+    lfact_hs70 <- log(0.252); label("Active daptomycin fraction at 70% HS (unitless)")  # Garonzik 2016 Table 2 (factive 70%)
 
     # ---- Bacterial inoculum and subpopulation fractions ----
     # The paper parameterises CFU0, FR_I, FR_r on log10 scale (Table 2). These
@@ -98,29 +98,29 @@ Garonzik_2016_daptomycin <- function() {
     frr_log10  <- -5.67; label("Resistant population as a fraction of initial inoculum (log10)")    # Garonzik 2016 Table 2 (Log10 FR_r)
 
     # ---- Bacterial life-cycle structural parameters ----
-    lmtt_lag    <- log(75.5);                label("Mean transit time for lag phase (MTT_lag, h)")                       # Garonzik 2016 Table 2 (MTT_lag)
-    beta_lag    <- fixed(10.0);              label("Sigmoidicity constant for lag-phase function (beta, unitless)") # Garonzik 2016 Table 2 (beta; reported with 0% SE = FIXED)
-    lmtt_k12    <- log(20.2);                label("Mean transit time S1 -> S2 (MTT_K12, h; k12 = 1/MTT_K12)")          # Garonzik 2016 Table 2 (MTT_K12)
+    lmtt_lag    <- log(75.5);                label("Mean transit time for lag phase (h)")                       # Garonzik 2016 Table 2 (MTT_lag)
+    beta_lag    <- fixed(10.0);              label("Sigmoidicity constant for lag-phase function (unitless)") # Garonzik 2016 Table 2 (beta; reported with 0% SE = FIXED)
+    lmtt_k12    <- log(20.2);                label("Mean transit time S1 -> S2 (h; k12 = 1/MTT_K12)")          # Garonzik 2016 Table 2 (MTT_K12)
     ic50_k12_log10 <- 7.81;                  label("CFU/mL for 50% inhibition of k12 transition (log10 IC50_K12)")        # Garonzik 2016 Table 2 (Log10IC50_K12)
-    imax_k12    <- fixed(0.99);              label("Maximum inhibition of k12 at high CFU/mL (Imax_k12, unitless)") # Garonzik 2016 Table 2 (IMAX_K12)
-    lk21        <- fixed(log(50.0));         label("S2 -> S1 transition rate (k21, 1/h; -- doubling fast)")        # Garonzik 2016 Table 2 (K21; FIXED at 50)
+    imax_k12    <- fixed(0.99);              label("Maximum inhibition of k12 at high CFU/mL (unitless)") # Garonzik 2016 Table 2 (IMAX_K12)
+    lk21        <- fixed(log(50.0));         label("S2 -> S1 transition rate (1/h; -- doubling fast)")        # Garonzik 2016 Table 2 (K21; FIXED at 50)
     cfum_log10  <- 9.20;                     label("CFU/mL at which probability of successful replication is 50% (log10 CFU_M)") # Garonzik 2016 Table 2 (Log10 CFU_M)
 
     # ---- Subpopulation k12 ratios (relative to susceptible) ----
-    fr_k12i     <- fixed(1.00);              label("Ratio k12_intermediate / k12_susceptible (FR_K12i, unitless)") # Garonzik 2016 Table 2 (FR_K12i; FIXED -- estimated close to 1)
-    fr_k12r     <- 0.0442;                   label("Ratio k12_resistant / k12_susceptible (FR_K12r, unitless)")           # Garonzik 2016 Table 2 (FR_K12r)
+    fr_k12i     <- fixed(1.00);              label("Ratio k12_intermediate / k12_susceptible (unitless)") # Garonzik 2016 Table 2 (FR_K12i; FIXED -- estimated close to 1)
+    fr_k12r     <- 0.0442;                   label("Ratio k12_resistant / k12_susceptible (unitless)")           # Garonzik 2016 Table 2 (FR_K12r)
 
     # ---- Stimulation of probability of death (per subpopulation) ----
-    smax_s      <- fixed(0.99);              label("Maximum stimulation of death probability, susceptible (Smax_s, unitless)") # Garonzik 2016 Table 2 footnote: "Smax_s was estimated to be very close to 1 so was fixed to 0.99"
-    smax_i      <- 0.515;                    label("Maximum stimulation of death probability, intermediate (Smax_i, unitless)")        # Garonzik 2016 Table 2 (Smax_i)
-    smax_r      <- fixed(0);                 label("Maximum stimulation of death probability, resistant (Smax_r, unitless)")    # Garonzik 2016 Table 2 footnote: "Smax_r was estimated to be close to zero so was fixed at zero"
-    lsc50       <- log(0.0468);              label("Effective daptomycin concentration for 50% Smax (SC50, mg/L)")                     # Garonzik 2016 Table 2 (SC50_s); shared across subpopulations
+    smax_s      <- fixed(0.99);              label("Maximum stimulation of death probability, susceptible (unitless)") # Garonzik 2016 Table 2 footnote: "Smax_s was estimated to be very close to 1 so was fixed to 0.99"
+    smax_i      <- 0.515;                    label("Maximum stimulation of death probability, intermediate (unitless)")        # Garonzik 2016 Table 2 (Smax_i)
+    smax_r      <- fixed(0);                 label("Maximum stimulation of death probability, resistant (unitless)")    # Garonzik 2016 Table 2 footnote: "Smax_r was estimated to be close to zero so was fixed at zero"
+    lsc50       <- log(0.0468);              label("Effective daptomycin concentration for 50% Smax (mg/L)")                     # Garonzik 2016 Table 2 (SC50_s); shared across subpopulations
 
     # ---- Direct killing (per subpopulation) ----
-    lkmax_s     <- log(14.0);                label("Maximum direct killing rate constant, susceptible (Kmax_s, 1/h)")    # Garonzik 2016 Table 2 (Kmax_s)
-    lkmax_i     <- log(1.45);                label("Maximum direct killing rate constant, intermediate (Kmax_i, 1/h)")   # Garonzik 2016 Table 2 (Kmax_i)
-    kmax_r      <- fixed(0);                 label("Maximum direct killing rate constant, resistant (Kmax_r, 1/h)") # Garonzik 2016 Table 2 footnote: "Kmax_r was estimated close to zero and was thus fixed to zero"
-    lkc50       <- log(4.81);                label("Effective daptomycin concentration for 50% Kmax (KC50, mg/L)")        # Garonzik 2016 Table 2 (KC50_s); shared across subpopulations
+    lkmax_s     <- log(14.0);                label("Maximum direct killing rate constant, susceptible (1/h)")    # Garonzik 2016 Table 2 (Kmax_s)
+    lkmax_i     <- log(1.45);                label("Maximum direct killing rate constant, intermediate (1/h)")   # Garonzik 2016 Table 2 (Kmax_i)
+    kmax_r      <- fixed(0);                 label("Maximum direct killing rate constant, resistant (1/h)") # Garonzik 2016 Table 2 footnote: "Kmax_r was estimated close to zero and was thus fixed to zero"
+    lkc50       <- log(4.81);                label("Effective daptomycin concentration for 50% Kmax (mg/L)")        # Garonzik 2016 Table 2 (KC50_s); shared across subpopulations
 
     # ---- Residual error ----
     # The paper reports three residual variability components on log10 CFU/mL:

@@ -210,8 +210,8 @@ Han_2025_midazolam_pbpk <- function() {
     kp_stomach <- fixed(7.79);    label("midazolam stomach:plasma partition coefficient Kt:p (unitless)")   # Table S1, Stomach
     kp_gut     <- fixed(4.92);    label("midazolam intestine:plasma partition coefficient Kt:p (unitless)") # Table S1, Intestine (all five gut-wall segments)
     kp_other   <- fixed(0.001);   label("midazolam rest-of-body:plasma partition coefficient Kt:p (unitless)")  # Table S1, ROB (footnote a: assumed, not calculated; identical in the deposited S2 script)
-    lbpr       <- fixed(log(0.6));    label("midazolam blood:plasma concentration ratio Rb (log, unitless)")  # Table S1, Rb [ref 3]; Phoenix control stream tvRb = 0.6
-    lfu_p      <- fixed(log(0.044));  label("midazolam fraction unbound in adult plasma (log, unitless)")     # Table S1, fu,p [ref 14]; Phoenix control stream tvfub = 0.044
+    lbpr       <- fixed(log(0.6));    label("midazolam blood:plasma concentration ratio Rb (unitless)")  # Table S1, Rb [ref 3]; Phoenix control stream tvRb = 0.6
+    lfu_p      <- fixed(log(0.044));  label("midazolam fraction unbound in adult plasma (unitless)")     # Table S1, fu,p [ref 14]; Phoenix control stream tvfub = 0.044
     lcl_int_h  <- fixed(log(0.389));  label("midazolam CYP3A4 hepatic intrinsic clearance (log mL/min/mg microsomal protein)")  # Table S1, CLint [ref 17]; Phoenix control stream tvClint = 0.389
     lpeff      <- fixed(log(0.0264)); label("midazolam effective intestinal permeability Peff (log cm/min)")  # Table S1, Peff [ref 3]; reported for midazolam only; Phoenix control stream tvPeff1 = 0.0264
 

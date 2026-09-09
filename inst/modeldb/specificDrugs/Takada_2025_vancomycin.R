@@ -109,10 +109,10 @@ Takada_2025_vancomycin <- function() {
     # reference patient has a Cockcroft-Gault creatinine clearance of
     # 3.09 L/h (51.5 mL/min) and a serum albumin of 2.3 g/dL, both the
     # Table 1 modeling-cohort medians.
-    lcl <- log(1.96);  label("Clearance at CLcr=3.09 L/h and Alb=2.3 g/dL (CL, L/h)")            # Takada 2025 Table 3 theta1: 1.96 L/h (SE 0.06, CV 3.11%, 95% CI 1.84-2.08)
-    lq  <- log(4.86);  label("Intercompartmental clearance (Q, L/h)")                             # Takada 2025 Table 3 theta4: 4.86 L/h (SE 0.91, CV 18.63%, 95% CI 3.08-6.64); see vignette Errata for the conflicting 3.24 in the Results narrative
-    lvc <- log(31.78); label("Central volume of distribution (Vc, L)")                            # Takada 2025 Table 3 theta5: 31.78 L (SE 3.86, CV 12.16%, 95% CI 24.19-39.38)
-    lvp <- log(53.64); label("Peripheral volume of distribution (Vp, L)")                         # Takada 2025 Table 3 theta6: 53.64 L (SE 4.22, CV 7.86%, 95% CI 45.36-61.93)
+    lcl <- log(1.96);  label("Clearance at CLcr=3.09 L/h and Alb=2.3 g/dL (L/h)")            # Takada 2025 Table 3 theta1: 1.96 L/h (SE 0.06, CV 3.11%, 95% CI 1.84-2.08)
+    lq  <- log(4.86);  label("Intercompartmental clearance (L/h)")                             # Takada 2025 Table 3 theta4: 4.86 L/h (SE 0.91, CV 18.63%, 95% CI 3.08-6.64); see vignette Errata for the conflicting 3.24 in the Results narrative
+    lvc <- log(31.78); label("Central volume of distribution (L)")                            # Takada 2025 Table 3 theta5: 31.78 L (SE 3.86, CV 12.16%, 95% CI 24.19-39.38)
+    lvp <- log(53.64); label("Peripheral volume of distribution (L)")                         # Takada 2025 Table 3 theta6: 53.64 L (SE 4.22, CV 7.86%, 95% CI 45.36-61.93)
 
     # Covariate effects on clearance, both estimated (SEs and 95% CIs
     # reported in Table 3), so neither is wrapped in fixed().

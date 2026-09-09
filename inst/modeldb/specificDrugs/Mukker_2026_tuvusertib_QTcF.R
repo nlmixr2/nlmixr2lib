@@ -218,23 +218,23 @@ Mukker_2026_tuvusertib_QTcF <- function() {
     # ------------------------------------------------------------------
 
     e_tad0h_e0 <- -1.59
-    label("Effect of the 0 h nominal post-dose timepoint on e0 (additive, ms)")
+    label("Effect of the 0 h nominal post-dose timepoint on e0, applied additively (ms)")
     # Mukker 2026 Table 2 'Nominal time after dose (0h), ms' = -1.59
     # (95% CI -3.34, 0.167).
 
     e_tad1h_e0 <- 1.11
-    label("Effect of the 1 h nominal post-dose timepoint on e0 (additive, ms)")
+    label("Effect of the 1 h nominal post-dose timepoint on e0, applied additively (ms)")
     # Mukker 2026 Table 2 'Nominal time after dose (1h), ms' = 1.11
     # (95% CI -0.162, 2.38).
 
     e_tad2h_e0 <- 2.87
-    label("Effect of the 2 h nominal post-dose timepoint on e0 (additive, ms)")
+    label("Effect of the 2 h nominal post-dose timepoint on e0, applied additively (ms)")
     # Mukker 2026 Table 2 'Nominal time after dose (2h), ms' = 2.87
     # (95% CI 1.51, 4.23). The only nominal-time effect whose CI
     # excludes zero.
 
     e_tad3h_e0 <- -0.402
-    label("Effect of the 3 h nominal post-dose timepoint on e0 (additive, ms)")
+    label("Effect of the 3 h nominal post-dose timepoint on e0, applied additively (ms)")
     # Mukker 2026 Table 2 'Nominal time after dose (3h), ms' = -0.402
     # (95% CI -1.69, 0.884).
 

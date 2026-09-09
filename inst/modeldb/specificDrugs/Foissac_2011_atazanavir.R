@@ -107,9 +107,9 @@ Foissac_2011_atazanavir <- function() {
     # stratum standardised to 70 kg. The theta_NO_RTV covariate flips on
     # when CONMED_RTV = 0 and scales CL/F by 1 + 0.80 = 1.80.
     # ===================================================================
-    lcl <- log(7.1);  label("Apparent oral clearance at WT = 70 kg, CONMED_RTV = 1, CONMED_TDF = 0 (CL/F, L/h)") # Table 2: CL/F = 7.1 L/h (70 kg)^-1, RSE 8%
-    lvc <- log(103);  label("Apparent volume of distribution at WT = 70 kg (V/F, L)")                            # Table 2: V/F  = 103 L (70 kg)^-1, RSE 19%
-    lka <- log(0.44); label("First-order absorption rate constant (ka, 1/h)")                                    # Table 2: Ka   = 0.44 1/h, RSE 26%
+    lcl <- log(7.1);  label("Apparent oral clearance at WT = 70 kg, CONMED_RTV = 1, CONMED_TDF = 0 (L/h)") # Table 2: CL/F = 7.1 L/h (70 kg)^-1, RSE 8%
+    lvc <- log(103);  label("Apparent volume of distribution at WT = 70 kg (L)")                            # Table 2: V/F  = 103 L (70 kg)^-1, RSE 19%
+    lka <- log(0.44); label("First-order absorption rate constant (1/h)")                                    # Table 2: Ka   = 0.44 1/h, RSE 26%
 
     # ===================================================================
     # Allometric exponents on CL/F and V/F.
@@ -142,7 +142,7 @@ Foissac_2011_atazanavir <- function() {
     # 'The proportional model for the residual variability ensured a good
     # adequacy between observed and predicted values.').
     # ===================================================================
-    propSd <- 0.53; label("Proportional residual error (CV, fraction)") # Table 2: sigma_proportional = 0.53, RSE 15%
+    propSd <- 0.53; label("Proportional residual error, reported as a CV (fraction)") # Table 2: sigma_proportional = 0.53, RSE 15%
   })
 
   model({

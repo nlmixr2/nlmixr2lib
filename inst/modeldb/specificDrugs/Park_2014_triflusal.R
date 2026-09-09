@@ -123,8 +123,8 @@ Park_2014_triflusal <- function() {
     # median used in the source paper's covariate equations.
     # -----------------------------------------------------------------
     lka <- log(0.341); label("First-order HTB formation rate from triflusal (kf == ka, 1/h)") # Park 2014 Table 2 theta_3 (k_f = 0.341 1/h, RSE 15.1%)
-    lcl <- log(0.200); label("Apparent oral clearance of HTB at WT = 71.65 kg (CL/F, L/h)")    # Park 2014 Table 2 theta_1 (CL/F = 0.200 L/h, RSE 2.7%)
-    lvc <- log(8.300); label("Apparent oral volume of distribution of HTB at WT = 71.65 kg (V/F, L)") # Park 2014 Table 2 theta_2 (V_d/F = 8.300 L, RSE 2.7%)
+    lcl <- log(0.200); label("Apparent oral clearance of HTB at WT = 71.65 kg (L/h)")    # Park 2014 Table 2 theta_1 (CL/F = 0.200 L/h, RSE 2.7%)
+    lvc <- log(8.300); label("Apparent oral volume of distribution of HTB at WT = 71.65 kg (L)") # Park 2014 Table 2 theta_2 (V_d/F = 8.300 L, RSE 2.7%)
 
     # -----------------------------------------------------------------
     # Covariate effects on PK -- Park 2014 Table 2 footnotes.
@@ -144,7 +144,7 @@ Park_2014_triflusal <- function() {
     # The shape is quantal-like (gamma ~ 19) -- the concentration-
     # response transitions sharply around EC50.
     # -----------------------------------------------------------------
-    lec50 <- log(84.9); label("HTB concentration at which P(IPA) = 0.5 (EC50, ug/mL)")        # Park 2014 Table 2 theta_5 (EC50 = 84.9 ug/mL, RSE 4.0%)
+    lec50 <- log(84.9); label("HTB concentration at which P(IPA) = 0.5 (ug/mL)")        # Park 2014 Table 2 theta_5 (EC50 = 84.9 ug/mL, RSE 4.0%)
     lhill <- log(19.2); label("Hill / shape exponent of IPA probability vs HTB concentration (unitless)") # Park 2014 Table 2 theta_6 (gamma = 19.2, RSE 22.4%)
 
     # -----------------------------------------------------------------

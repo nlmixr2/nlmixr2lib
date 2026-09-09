@@ -157,7 +157,7 @@ Ma_2026_colistinSulfate <- function() {
     # subject, CrCl 94.76 mL/min (Ma 2026 final-model equation, p. 7).
 
     lcl <- log(1.66);  label("Clearance (CL, L/h) at CrCl 94.76 mL/min")  # Table 3, TVCL 1.660 (RSE 7.7%; bootstrap median 1.65, 95% CI 1.44-1.92); also the leading coefficient of the p. 7 equation
-    lvc <- log(10.10); label("Central volume of distribution (V, L)")     # Table 3, TVV 10.10 (RSE 7.1%; bootstrap median 10.05, 95% CI 8.32-12.87); also the p. 7 equation "V (L) = 10.10"
+    lvc <- log(10.10); label("Central volume of distribution (L)")     # Table 3, TVV 10.10 (RSE 7.1%; bootstrap median 10.05, 95% CI 8.32-12.87); also the p. 7 equation "V (L) = 10.10"
 
     # Covariate effect: creatinine clearance on CL as a power function of the
     # covariate divided by 94.76 mL/min (p. 7 equation

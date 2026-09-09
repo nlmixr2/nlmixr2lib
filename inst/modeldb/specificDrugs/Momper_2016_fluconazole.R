@@ -57,10 +57,10 @@ Momper_2016_fluconazole <- function() {
   ini({
     # Structural parameters: reference values per Table 3 (Momper 2016).
     # Time is in hours; allometric scaling references are absolute (WT in kg).
-    lka     <- log(0.96);   label("Absorption rate constant (ka, 1/h)")                                   # Table 3 theta_KA point estimate
-    lcl     <- log(0.0127); label("Allometric-scaled clearance (CL, L/h/kg^0.75)")                        # Table 3 theta_CL point estimate
-    lvc     <- log(1.00);   label("Allometric-scaled volume of distribution (V, L/kg)")                   # Table 3 theta_V point estimate
-    lfdepot <- log(1.00);   label("Oral bioavailability (F1, fraction)")                                  # Table 3 theta_F1 point estimate (estimated, not fixed)
+    lka     <- log(0.96);   label("Absorption rate constant (1/h)")                                   # Table 3 theta_KA point estimate
+    lcl     <- log(0.0127); label("Allometric-scaled clearance (L/h/kg^0.75)")                        # Table 3 theta_CL point estimate
+    lvc     <- log(1.00);   label("Allometric-scaled volume of distribution (L/kg)")                   # Table 3 theta_V point estimate
+    lfdepot <- log(1.00);   label("Oral bioavailability (fraction)")                                  # Table 3 theta_F1 point estimate (estimated, not fixed)
 
     # Allometric exponents (held fixed per Methods: "Population PK parameters were
     # scaled by body size prior to evaluation of potential covariates.

@@ -123,11 +123,11 @@ Green_2003_enoxaparin <- function() {
     # Source: Green 2003 Table 3 ("Final parameter estimates for covariate model").
     # The paper fits CL and Vc as P_pop = P_70 * (size / 70) per the
     # "L h^-1 70 kg^-1 (LBW)" and "L 70 kg^-1 (WT)" unit conventions in Table 3.
-    lcl <- log(1.03);  label("Clearance for a 70 kg LBM (lean body weight) patient (CL, L/h)")               # Green 2003 Table 3: CL = 1.03 L/h per 70 kg LBW
-    lvc <- log(3.67);  label("Central volume of distribution for a 70 kg WT patient (V2, L)")                # Green 2003 Table 3: V2 = 3.67 L per 70 kg WT
-    lka <- log(0.195); label("First-order absorption rate constant from the SC depot (Ka, 1/h)")             # Green 2003 Table 3: Ka = 0.195 1/h
-    lvp <- log(13.1);  label("Peripheral volume of distribution (V3, L)")                                    # Green 2003 Table 3: V3 = 13.1 L
-    lq  <- log(0.363); label("Inter-compartmental clearance between central and peripheral (Q, L/h)")        # Green 2003 Table 3: Q = 0.363 L/h
+    lcl <- log(1.03);  label("Clearance for a 70 kg LBM (lean body weight) patient (L/h)")               # Green 2003 Table 3: CL = 1.03 L/h per 70 kg LBW
+    lvc <- log(3.67);  label("Central volume of distribution for a 70 kg WT patient (L)")                # Green 2003 Table 3: V2 = 3.67 L per 70 kg WT
+    lka <- log(0.195); label("First-order absorption rate constant from the SC depot (1/h)")             # Green 2003 Table 3: Ka = 0.195 1/h
+    lvp <- log(13.1);  label("Peripheral volume of distribution (L)")                                    # Green 2003 Table 3: V3 = 13.1 L
+    lq  <- log(0.363); label("Inter-compartmental clearance between central and peripheral (L/h)")        # Green 2003 Table 3: Q = 0.363 L/h
 
     # Linear size descriptors enter as ratios with reference 70 kg, so no
     # explicit allometric exponent is estimated (paper reports CL and V2 in

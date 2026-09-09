@@ -76,10 +76,10 @@ Qi_2019_vestronidaseAlfa <- function() {
     # subsequently back-transformed, so the printed point estimates are already
     # on the linear scale and log() is applied here to recover the estimated
     # parameter.
-    lcl <- log(1.97);  label("Serum clearance for a 20 kg subject (CL, L/h)")                          # Table 2: CL = 1.97 L/h (RSE 9.61%; 95% CI 1.63, 2.38; bootstrap median 1.99)
-    lvc <- log(1.52);  label("Central volume of distribution for a 20 kg subject (Vc, L)")             # Table 2: Vc = 1.52 L (RSE 9.64%; 95% CI 1.26, 1.83; bootstrap median 1.49)
-    lq  <- log(0.931); label("Intercompartmental clearance for a 20 kg subject (Q, L/h)")              # Table 2: Q = 0.931 L/h (RSE 16.3%; 95% CI 0.676, 1.28; bootstrap median 0.940)
-    lvp <- log(3.11);  label("Peripheral volume of distribution for a 20 kg subject (Vp, L)")          # Table 2: Vp = 3.11 L (RSE 4.23%; 95% CI 2.86, 3.38; bootstrap median 3.03)
+    lcl <- log(1.97);  label("Serum clearance for a 20 kg subject (L/h)")                          # Table 2: CL = 1.97 L/h (RSE 9.61%; 95% CI 1.63, 2.38; bootstrap median 1.99)
+    lvc <- log(1.52);  label("Central volume of distribution for a 20 kg subject (L)")             # Table 2: Vc = 1.52 L (RSE 9.64%; 95% CI 1.26, 1.83; bootstrap median 1.49)
+    lq  <- log(0.931); label("Intercompartmental clearance for a 20 kg subject (L/h)")              # Table 2: Q = 0.931 L/h (RSE 16.3%; 95% CI 0.676, 1.28; bootstrap median 0.940)
+    lvp <- log(3.11);  label("Peripheral volume of distribution for a 20 kg subject (L)")          # Table 2: Vp = 3.11 L (RSE 4.23%; 95% CI 2.86, 3.38; bootstrap median 3.03)
 
     # ---- Allometric body-weight exponents (Table 2, "Covariates") ----
     # Both are ESTIMATED, not fixed: Table 2 footnote c states explicitly that
@@ -133,10 +133,10 @@ Qi_2019_vestronidaseAlfa <- function() {
     rbase_ucs <- fixed(0); label("No-drug response for uCS, percent change from baseline (%)")         # Qi 2019 Methods (Exposure-Response Analysis): "I0 is the no-drug response and fixed to 0 in the model"
     rbase_uds <- fixed(0); label("No-drug response for uDS, percent change from baseline (%)")         # Qi 2019 Methods (Exposure-Response Analysis): "I0 is the no-drug response and fixed to 0 in the model"
 
-    limax_ucs <- log(82.0); label("Maximal percent reduction from baseline in urinary chondroitin sulfate (Imax, %)") # Table 4: Imax uCS = 82.0% (RSE 5.3%)
-    limax_uds <- log(76.9); label("Maximal percent reduction from baseline in urinary dermatan sulfate (Imax, %)")    # Table 4: Imax uDS = 76.9% (RSE 4.1%)
-    lic50_ucs <- log(8.6);  label("Vestronidase alfa AUC producing half-maximal uCS reduction (IC50, ug*h/mL)")       # Table 4: IC50 uCS = 8.6 ug*h/mL (RSE 31.0%)
-    lic50_uds <- log(7.3);  label("Vestronidase alfa AUC producing half-maximal uDS reduction (IC50, ug*h/mL)")       # Table 4: IC50 uDS = 7.3 ug*h/mL (RSE 24.5%)
+    limax_ucs <- log(82.0); label("Maximal percent reduction from baseline in urinary chondroitin sulfate (%)") # Table 4: Imax uCS = 82.0% (RSE 5.3%)
+    limax_uds <- log(76.9); label("Maximal percent reduction from baseline in urinary dermatan sulfate (%)")    # Table 4: Imax uDS = 76.9% (RSE 4.1%)
+    lic50_ucs <- log(8.6);  label("Vestronidase alfa AUC producing half-maximal uCS reduction (ug*h/mL)")       # Table 4: IC50 uCS = 8.6 ug*h/mL (RSE 31.0%)
+    lic50_uds <- log(7.3);  label("Vestronidase alfa AUC producing half-maximal uDS reduction (ug*h/mL)")       # Table 4: IC50 uDS = 7.3 ug*h/mL (RSE 24.5%)
 
     # ---- PD interindividual variability (Table 4) ----
     # The paper states IIV "was estimable for Imax only"; no IIV is reported on

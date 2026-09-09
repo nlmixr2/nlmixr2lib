@@ -251,22 +251,22 @@ Zhou_2025_fruquintinib_QTcP_parent <- function() {
     # ------------------------------------------------------------------
 
     e_on_treatment_e0 <- -5.24
-    label("Effect of active-treatment arm on the intercept (additive, ms)")
+    label("Effect of active-treatment arm on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 5 'Treatment' = -5.24 (SE 1.46;
     # RSE 27.9%; 95% CI -8.12, -2.37; P = 0.0004).
 
     e_ntime1_e0 <- -0.254
-    label("Effect of the 1 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 1 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 5 'NTime=1' = -0.254 (SE 0.851;
     # RSE 335%; 95% CI -1.92, 1.41; P = 0.7655).
 
     e_ntime2_e0 <- 1.6
-    label("Effect of the 2 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 2 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 5 'NTime=2' = 1.6 (SE 0.846;
     # RSE 52.9%; 95% CI -0.0524, 3.26; P = 0.0584).
 
     e_ntime3_e0 <- 1.6
-    label("Effect of the 3 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 3 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 5 'NTime=3' = 1.6 (SE 0.846;
     # RSE 52.9%; 95% CI -0.0611, 3.25; P = 0.0598). Printed with the same
     # point estimate and SE as NTime=2 but a distinct 95% CI and P-value,
@@ -274,7 +274,7 @@ Zhou_2025_fruquintinib_QTcP_parent <- function() {
     # to the two significant figures the table prints.
 
     e_ntime4_e0 <- 0.353
-    label("Effect of the 4 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 4 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 5 'NTime=4' = 0.353 (SE 0.854;
     # RSE 242%; 95% CI -1.32, 2.02; P = 0.6797).
 

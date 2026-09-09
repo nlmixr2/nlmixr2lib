@@ -98,11 +98,11 @@ Thoueille_2023_lopinavir <- function() {
     # are apparent (CL/F, V/F); the paper reports no bioavailability
     # parameter and none is introduced here.
     lka <- log(0.76)
-    label("First-order absorption rate constant (ka, 1/h)")                  # Thoueille 2023 Table 2: ka = 0.76 1/h (RSE 3%; bootstrap median 0.75)
+    label("First-order absorption rate constant (1/h)")                  # Thoueille 2023 Table 2: ka = 0.76 1/h (RSE 3%; bootstrap median 0.75)
     lvc <- log(78.9)
-    label("Apparent volume of distribution (V_LPV/F, L)")                    # Thoueille 2023 Table 2: V_LPV = 78.9 L (RSE 2%; bootstrap median 77.7, 95% CI 52.2-119.5)
+    label("Apparent volume of distribution (L)")                    # Thoueille 2023 Table 2: V_LPV = 78.9 L (RSE 2%; bootstrap median 77.7, 95% CI 52.2-119.5)
     lcl <- log(4.02)
-    label("Apparent oral clearance at the 70 kg reference weight (CL_LPV/F, L/h)")  # Thoueille 2023 Table 2: CL_LPV = 4.02 L/h (RSE 3%; bootstrap median 4.00, 95% CI 3.71-4.32)
+    label("Apparent oral clearance at the 70 kg reference weight (L/h)")  # Thoueille 2023 Table 2: CL_LPV = 4.02 L/h (RSE 3%; bootstrap median 4.00, 95% CI 3.71-4.32)
 
     # ---- Covariate effect on CL/F. Thoueille 2023 prints the final-model
     # covariate equation directly beneath Table 2:

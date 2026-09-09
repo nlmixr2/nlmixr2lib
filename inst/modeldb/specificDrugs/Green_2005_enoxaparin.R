@@ -64,12 +64,12 @@ Green_2005_enoxaparin <- function() {
     # Structural parameters -- Green 2005 Table 2 'Covariate Model' column.
     # Reference subject: WT = 80 kg total body weight, CRCL = 80 mL/min
     # (Cockcroft-Gault using ideal body weight as the size descriptor).
-    lcl_renal  <- log(0.681); label("Renal clearance at reference CRCL = 80 mL/min (CL_renal, L/h)")  # Green 2005 Table 2 Covariate Model: 'renal = 0.681 / 80 ml min-1 (GFR)' (SE 33.3 percent)
-    lcl_nonren <- log(0.229); label("Non-renal clearance (CL_nonrenal, L/h)")                          # Green 2005 Table 2 Covariate Model: 'nonrenal = 0.229' (SE 49.8 percent)
-    lvc        <- log(5.22);  label("Central volume of distribution at reference WT = 80 kg (Vc, L)")  # Green 2005 Table 2 Covariate Model: '5.22 / 80 kg (WT)' (SE 18.8 percent)
-    lka        <- log(0.255); label("First-order absorption rate constant (Ka, 1/h)")                  # Green 2005 Table 2 Covariate Model: 'K_a = 0.255' (SE 16.2 percent)
-    lvp        <- log(29.6);  label("Peripheral volume of distribution (Vp, L)")                       # Green 2005 Table 2 Covariate Model: 'V_p = 29.6' (SE 22.6 percent)
-    lq         <- log(0.632); label("Inter-compartmental clearance (Q, L/h)")                          # Green 2005 Table 2 Covariate Model: 'Q = 0.632' (SE 21.2 percent)
+    lcl_renal  <- log(0.681); label("Renal clearance at reference CRCL = 80 mL/min (L/h)")  # Green 2005 Table 2 Covariate Model: 'renal = 0.681 / 80 ml min-1 (GFR)' (SE 33.3 percent)
+    lcl_nonren <- log(0.229); label("Non-renal clearance (L/h)")                          # Green 2005 Table 2 Covariate Model: 'nonrenal = 0.229' (SE 49.8 percent)
+    lvc        <- log(5.22);  label("Central volume of distribution at reference WT = 80 kg (L)")  # Green 2005 Table 2 Covariate Model: '5.22 / 80 kg (WT)' (SE 18.8 percent)
+    lka        <- log(0.255); label("First-order absorption rate constant (1/h)")                  # Green 2005 Table 2 Covariate Model: 'K_a = 0.255' (SE 16.2 percent)
+    lvp        <- log(29.6);  label("Peripheral volume of distribution (L)")                       # Green 2005 Table 2 Covariate Model: 'V_p = 29.6' (SE 22.6 percent)
+    lq         <- log(0.632); label("Inter-compartmental clearance (L/h)")                          # Green 2005 Table 2 Covariate Model: 'Q = 0.632' (SE 21.2 percent)
     lrbase     <- log(49.9);  label("Basal anti-Xa activity (IU/L)")                                    # Green 2005 Table 2 Covariate Model: 'Basal anti-Xa activity = 49.9' (SE 30.1 percent)
 
     # Inter-individual variability. Paper Results paragraph 2: "log normal

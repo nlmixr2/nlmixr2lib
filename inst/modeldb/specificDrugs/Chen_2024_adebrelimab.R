@@ -85,10 +85,10 @@ Chen_2024_adebrelimab <- function() {
     # carries more significant figures than the rounded Chen 2024 Table 2
     # values quoted in each trailing comment. CL and Q are already reported
     # in L/day, so the day time unit needs no conversion.
-    lcl <- log(0.237784); label("Baseline clearance at t = 0 for the reference patient (CL, L/day)")      # Chen 2024 Data S1 $THETA(1); Table 2 final model CL = 0.238 L/day
-    lvc <- log(3.22559);  label("Central volume of distribution for the reference patient (V1, L)")       # Chen 2024 Data S1 $THETA(2); Table 2 final model V1 = 3.23 L
-    lq  <- log(0.703417); label("Intercompartmental clearance (Q, L/day)")                                # Chen 2024 Data S1 $THETA(3); Table 2 final model Q = 0.703 L/day
-    lvp <- log(1.69298);  label("Peripheral volume of distribution for the reference patient (V2, L)")    # Chen 2024 Data S1 $THETA(4); Table 2 final model V2 = 1.69 L
+    lcl <- log(0.237784); label("Baseline clearance at t = 0 for the reference patient (L/day)")      # Chen 2024 Data S1 $THETA(1); Table 2 final model CL = 0.238 L/day
+    lvc <- log(3.22559);  label("Central volume of distribution for the reference patient (L)")       # Chen 2024 Data S1 $THETA(2); Table 2 final model V1 = 3.23 L
+    lq  <- log(0.703417); label("Intercompartmental clearance (L/day)")                                # Chen 2024 Data S1 $THETA(3); Table 2 final model Q = 0.703 L/day
+    lvp <- log(1.69298);  label("Peripheral volume of distribution for the reference patient (L)")    # Chen 2024 Data S1 $THETA(4); Table 2 final model V2 = 1.69 L
 
     # Empirical time-varying clearance (sigmoid maximal-change function of
     # time since the first dose; Chen 2024 Equation 1):

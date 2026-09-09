@@ -121,10 +121,10 @@ Watson_2010_liraglutide <- function() {
     # Study A (with IV data). Doses are entered in nmol so that
     # Cc = central / vc directly returns nmol/L (= nM), matching the
     # residual-error scale (Table II additive = 0.042 nM).
-    lcl <- log(0.013);  label("Apparent clearance per kg body weight (CL/F, L/h/kg)")     # Table II, All Studies: 0.013 L/h/kg (rSE 5%)
-    lvc <- log(0.16);   label("Apparent central volume per kg body weight (V/F, L/kg)")   # Table II, All Studies: 0.16 L/kg (rSE 42%)
-    lka <- log(0.104);  label("First-order absorption rate constant in HV (kA, 1/h)")     # Table II, All Studies HV: 0.104 /h (rSE 71%)
-    lt0 <- log(6.0);    label("Duration of the zero-order absorption phase in HV (T0, h)") # Table II, All Studies HV: 6.0 h (rSE 0.1%)
+    lcl <- log(0.013);  label("Apparent clearance per kg body weight (L/h/kg)")     # Table II, All Studies: 0.013 L/h/kg (rSE 5%)
+    lvc <- log(0.16);   label("Apparent central volume per kg body weight (L/kg)")   # Table II, All Studies: 0.16 L/kg (rSE 42%)
+    lka <- log(0.104);  label("First-order absorption rate constant in HV (1/h)")     # Table II, All Studies HV: 0.104 /h (rSE 71%)
+    lt0 <- log(6.0);    label("Duration of the zero-order absorption phase in HV (h)") # Table II, All Studies HV: 6.0 h (rSE 0.1%)
 
     # T2D disease-status effects on absorption (Watson 2010 Results:
     # 'The only significant differences were found on the absorption

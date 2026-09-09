@@ -141,12 +141,12 @@ Kleideiter_2018_cebranopadol <- function() {
     #   WT = 82 kg, CRCL = 106.4 mL/min, ALT = 19 U/L,
     #   FORM_CAPSULE = FORM_SOLUTION = 0 (tablet), CYP2C9_EM = CYP2C9_PIM = 0 (unknown),
     #   DIS_HEALTHY = DIS_DPN = DIS_BUNIONECTOMY = 0 (LBP / OA reference).
-    lcl    <- log(74.3);     label("Apparent oral clearance at the reference covariate set (CL/F, L/h)")                       # Kleideiter 2018 Table 13 'Clearance Reference value'
-    lvc    <- log(225);      label("Apparent central volume of distribution at the reference covariate set (Vc/F, L)")         # Kleideiter 2018 Table 13 'Volume central compartment Reference value'
-    lvp    <- log(6750);     label("Apparent peripheral volume of distribution at the reference covariate set (Vp/F, L)")      # Kleideiter 2018 Table 13 'Volume peripheral compartment Reference value'
-    lq     <- log(84.2);     label("Apparent inter-compartmental clearance at the reference covariate set (Q/F, L/h)")         # Kleideiter 2018 Table 13 'Intercompartmental clearance'
-    lka    <- log(0.864);    label("Absorption rate constant at the reference covariate set (Ka, 1/h)")                        # Kleideiter 2018 Table 13 'Absorption rate constant Reference value'
-    lklag  <- log(0.087);    label("Transition-compartment rate constant at the reference covariate set (klag, 1/h)")          # Kleideiter 2018 Table 13 'klag Reference value'
+    lcl    <- log(74.3);     label("Apparent oral clearance at the reference covariate set (L/h)")                       # Kleideiter 2018 Table 13 'Clearance Reference value'
+    lvc    <- log(225);      label("Apparent central volume of distribution at the reference covariate set (L)")         # Kleideiter 2018 Table 13 'Volume central compartment Reference value'
+    lvp    <- log(6750);     label("Apparent peripheral volume of distribution at the reference covariate set (L)")      # Kleideiter 2018 Table 13 'Volume peripheral compartment Reference value'
+    lq     <- log(84.2);     label("Apparent inter-compartmental clearance at the reference covariate set (L/h)")         # Kleideiter 2018 Table 13 'Intercompartmental clearance'
+    lka    <- log(0.864);    label("Absorption rate constant at the reference covariate set (1/h)")                        # Kleideiter 2018 Table 13 'Absorption rate constant Reference value'
+    lklag  <- log(0.087);    label("Transition-compartment rate constant at the reference covariate set (1/h)")          # Kleideiter 2018 Table 13 'klag Reference value'
 
     # Covariate effects on CL (Kleideiter 2018 Table 13)
     e_male_cl   <- 1.176;    label("Male-vs-female CL ratio (87.4 / 74.3); applied as ratio^(1 - SEXF)")                       # Kleideiter 2018 Table 13: Male CL 87.4 vs Female CL 74.3 = 1.176

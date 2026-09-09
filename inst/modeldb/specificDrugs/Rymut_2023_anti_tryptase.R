@@ -54,18 +54,18 @@ Rymut_2023_anti_tryptase <- function() {
 
   ini({
     # === Systemic PK structural parameters (Rymut 2023 Table 1) ==============
-    lka     <- log(0.239);  label("First-order SC absorption rate (ka, 1/day)")                                  # Table 1 row "First order absorption rate (ka)" 0.239 1/day
+    lka     <- log(0.239);  label("First-order SC absorption rate (1/day)")                                  # Table 1 row "First order absorption rate (ka)" 0.239 1/day
     lcl     <- log(0.128);  label("Linear clearance (CL, L/day) at the 70 kg reference weight")                  # Table 1 row "Clearance (CL)" 0.128 L/day
     lvc     <- log(3.33);   label("Central volume of distribution (V2, L) at the 70 kg reference weight")        # Table 1 row "Central volume of distribution (V2)" 3.33 L
-    lq      <- log(0.408);  label("Inter-compartmental clearance (Q, L/day)")                                    # Table 1 row "Intercompartmental clearance (Q)" 0.408 L/day
-    lvp     <- log(2.28);   label("Peripheral volume of distribution (V3, L)")                                   # Table 1 row "Peripheral volume of distribution (V3)" 2.28 L
-    lfdepot <- log(0.661);  label("SC bioavailability (Fsc, fraction)")                                          # Table 1 row "Subcutaneous bioavailability (Fsc)" 0.661
+    lq      <- log(0.408);  label("Inter-compartmental clearance (L/day)")                                    # Table 1 row "Intercompartmental clearance (Q)" 0.408 L/day
+    lvp     <- log(2.28);   label("Peripheral volume of distribution (L)")                                   # Table 1 row "Peripheral volume of distribution (V3)" 2.28 L
+    lfdepot <- log(0.661);  label("SC bioavailability (fraction)")                                          # Table 1 row "Subcutaneous bioavailability (Fsc)" 0.661
 
     # === Serum QE-TMDD parameters (Rymut 2023 Table 1) =======================
     lkss   <- log(0.0448);  label("QE dissociation constant Kss (nM) for MTPS9579A binding to total monomeric serum tryptase (= KD)")  # Table 1 row "Equilibrium dissociation constant (KD)" 0.0448 nM
-    lbase  <- log(0.223);   label("Baseline total monomeric serum tryptase concentration (Base, nM)")                                   # Table 1 row "Baseline total tryptase (Base)" 0.223 nM
-    lkdeg  <- log(20.7);    label("First-order tryptase degradation rate constant (kdeg, 1/day)")                                       # Table 1 row "Total tryptase degradation rate constant (kdeg)" 20.7 1/day
-    lclint <- log(0.398);   label("Internalisation clearance of the MTPS9579A-total-tryptase complex (CLint, L/day)")                   # Table 1 row "Clearance of MTPS9579A-total tryptase complex (CLint)" 0.398 L/day
+    lbase  <- log(0.223);   label("Baseline total monomeric serum tryptase concentration (nM)")                                   # Table 1 row "Baseline total tryptase (Base)" 0.223 nM
+    lkdeg  <- log(20.7);    label("First-order tryptase degradation rate constant (1/day)")                                       # Table 1 row "Total tryptase degradation rate constant (kdeg)" 20.7 1/day
+    lclint <- log(0.398);   label("Internalisation clearance of the MTPS9579A-total-tryptase complex (L/day)")                   # Table 1 row "Clearance of MTPS9579A-total tryptase complex (CLint)" 0.398 L/day
 
     # === Allometric covariate effects on linear CL and central volume (Rymut 2023 Table 1) ===
     e_wt_cl <- 0.820;  label("Allometric exponent of WT/70 on linear CL (unitless)")           # Table 1 row "Effect of weight on CL (exponential model)" 0.82 (RSE 23 percent)

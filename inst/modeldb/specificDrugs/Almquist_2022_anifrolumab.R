@@ -55,10 +55,10 @@ Almquist_2022_anifrolumab <- function() {
 
   ini({
     # Structural PK -- typical values for the IFNGS-high reference subject at 69.1 kg (Almquist 2022 Table 1)
-    lcl    <- log(0.193);  label("Linear systemic clearance for IFNGS-high reference subject at 69.1 kg (CL, L/day)")  # Table 1: CL = 0.193 L/day
-    lvc    <- log(2.93);   label("Central volume of distribution at 69.1 kg (Vc, L)")                                  # Table 1: Vc = 2.93 L
-    lq     <- log(0.937);  label("Inter-compartmental clearance (Q, L/day)")                                           # Table 1: Q = 0.937 L/day
-    lvp    <- log(3.30);   label("Peripheral volume of distribution (Vp, L)")                                          # Table 1: Vp = 3.30 L
+    lcl    <- log(0.193);  label("Linear systemic clearance for IFNGS-high reference subject at 69.1 kg (L/day)")  # Table 1: CL = 0.193 L/day
+    lvc    <- log(2.93);   label("Central volume of distribution at 69.1 kg (L)")                                  # Table 1: Vc = 2.93 L
+    lq     <- log(0.937);  label("Inter-compartmental clearance (L/day)")                                           # Table 1: Q = 0.937 L/day
+    lvp    <- log(3.30);   label("Peripheral volume of distribution (L)")                                          # Table 1: Vp = 3.30 L
 
     # QSS-TMDD binding parameters (target = type I IFN receptor IFNAR1, in nmol/L)
     lkss   <- log(0.712);  label("Quasi-steady-state binding constant Kss = (koff + kint)/kon (nmol/L)")               # Table 1: Kss = 0.712 nmol/L

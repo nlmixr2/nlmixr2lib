@@ -200,13 +200,13 @@ Huppe_2023_fosfomycin <- function() {
     # Renal arm intercept: the clearance of a patient with preserved diuresis and
     # CRCL = 0. Reported as CL_Renal = 0.263 L/h (RSE 16%); the Results text
     # rounds it to 0.26 L/h.
-    lcl_renal <- log(0.263); label("Renal fosfomycin clearance intercept in patients with preserved diuresis (CL_Renal, L/h)")  # Huppe 2023 Table 2
-    lvc       <- log(18.20); label("Central compartment volume at time since first dose = 0 (V_C, L)")                          # Huppe 2023 Table 2
-    lvp       <- log(20.80); label("Peripheral compartment volume (V_P, L)")                                                    # Huppe 2023 Table 2
+    lcl_renal <- log(0.263); label("Renal fosfomycin clearance intercept in patients with preserved diuresis (L/h)")  # Huppe 2023 Table 2
+    lvc       <- log(18.20); label("Central compartment volume at time since first dose = 0 (L)")                          # Huppe 2023 Table 2
+    lvp       <- log(20.80); label("Peripheral compartment volume (L)")                                                    # Huppe 2023 Table 2
 
     # Intercompartmental clearance was FIXED (Table 2 footnote c; RSE reported
     # as "-").
-    lq        <- fixed(log(5.08)); label("Intercompartmental clearance (Q, L/h)")                                              # Huppe 2023 Table 2 (fixed, footnote c)
+    lq        <- fixed(log(5.08)); label("Intercompartmental clearance (L/h)")                                              # Huppe 2023 Table 2 (fixed, footnote c)
 
     # Hemodialyzer mass transfer-area coefficient for the Michaels equation
     # (Eq. 1), estimated with RSE 9%. Table 2 labels the units "mL/min", but that

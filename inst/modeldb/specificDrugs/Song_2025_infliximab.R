@@ -133,10 +133,10 @@ Song_2025_infliximab <- function() {
     # covariate vector (ALB 4.4 g/dL, CRP 0.18 mg/dL, ADA 10 ng/mL,
     # BMI 22.5 kg/m^2), because every covariate term in the published
     # equations is normalised to those values and so evaluates to 1 there.
-    lcl     <- log(0.248); label("Clearance at the reference covariate vector (CL, L/day)")                      # Song 2025 Table 2: CL = 0.248 L/day (RSE 20%); bootstrap 0.249 (0.173-0.344)
-    lvc     <- log(1.87);  label("Central volume of distribution (Vc, L)")                                       # Song 2025 Table 2: Vc = 1.87 L (RSE 61%); bootstrap 1.88 (0.23-4.36); also stated in the Results text
-    lka     <- log(0.083); label("First-order subcutaneous absorption rate constant (ka, 1/day)")                # Song 2025 Table 2: ka = 0.083 /day (RSE 26%); bootstrap 0.083 (0.051-0.151); also stated in the Results text
-    lfdepot <- log(0.667); label("Subcutaneous bioavailability at the reference covariate vector (F, fraction)")  # Song 2025 Table 2: F = 0.667 (RSE 19%); bootstrap 0.677 (0.477-0.921)
+    lcl     <- log(0.248); label("Clearance at the reference covariate vector (L/day)")                      # Song 2025 Table 2: CL = 0.248 L/day (RSE 20%); bootstrap 0.249 (0.173-0.344)
+    lvc     <- log(1.87);  label("Central volume of distribution (L)")                                       # Song 2025 Table 2: Vc = 1.87 L (RSE 61%); bootstrap 1.88 (0.23-4.36); also stated in the Results text
+    lka     <- log(0.083); label("First-order subcutaneous absorption rate constant (1/day)")                # Song 2025 Table 2: ka = 0.083 /day (RSE 26%); bootstrap 0.083 (0.051-0.151); also stated in the Results text
+    lfdepot <- log(0.667); label("Subcutaneous bioavailability at the reference covariate vector (fraction)")  # Song 2025 Table 2: F = 0.667 (RSE 19%); bootstrap 0.677 (0.477-0.921)
 
     # Vp and Q were NOT estimated. Song 2025 Methods section 6: "only sparsely
     # measured concentrations were utilized, necessitating the fixation of Vp

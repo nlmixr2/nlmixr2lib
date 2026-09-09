@@ -168,10 +168,10 @@ Hu_2026_utreloxastat <- function() {
     # as the chain's "transit constant" in MTT = (8 + 1) / 4.10 = 2.20 h, so it
     # is the canonical ktr: one rate constant governs the depot, all eight
     # transit transfers, and entry into central.
-    lktr <- log(4.10);     label("Transit-chain rate constant, also the terminal absorption rate into central (ktr, 1/h)")  # Table 3 theta1 (Ka = 4.10 1/h, ASE 0.21, %RSE 5.10, 90% CI 3.75-4.44); footnote: MTT = (8 + 1) / 4.10 = 2.20 h
-    lvc  <- log(362.00);   label("Apparent central volume of distribution (V/F, L)")                                        # Table 3 theta2 (V/F = 362.00 L, ASE 21.27, %RSE 5.88, 90% CI 326.89-397.10)
-    lvp  <- log(1827.15);  label("Apparent peripheral volume of distribution (V2/F, L)")                                    # Table 3 theta4 (V2/F = 1827.15 L, ASE 140.19, %RSE 7.67, 90% CI 1595.84-2058.46)
-    lq   <- log(37.39);    label("Apparent intercompartmental clearance (Q/F, L/h)")                                        # Table 3 theta5 (Q/F = 37.39 L/h, ASE 2.35, %RSE 6.31, 90% CI 33.50-41.28)
+    lktr <- log(4.10);     label("Transit-chain rate constant, also the terminal absorption rate into central (1/h)")  # Table 3 theta1 (Ka = 4.10 1/h, ASE 0.21, %RSE 5.10, 90% CI 3.75-4.44); footnote: MTT = (8 + 1) / 4.10 = 2.20 h
+    lvc  <- log(362.00);   label("Apparent central volume of distribution (L)")                                        # Table 3 theta2 (V/F = 362.00 L, ASE 21.27, %RSE 5.88, 90% CI 326.89-397.10)
+    lvp  <- log(1827.15);  label("Apparent peripheral volume of distribution (L)")                                    # Table 3 theta4 (V2/F = 1827.15 L, ASE 140.19, %RSE 7.67, 90% CI 1595.84-2058.46)
+    lq   <- log(37.39);    label("Apparent intercompartmental clearance (L/h)")                                        # Table 3 theta5 (Q/F = 37.39 L/h, ASE 2.35, %RSE 6.31, 90% CI 33.50-41.28)
 
     # ---------------------------------------------------------------------
     # Time-varying clearance, Hu 2026 Table 2 Model 8:
@@ -193,7 +193,7 @@ Hu_2026_utreloxastat <- function() {
     #     t = 672 h (4 weeks): 46.85 * (1 + 672^-0.096) = 71.9 L/h
     # which is where the paper says the curve reaches its plateau.
     # ---------------------------------------------------------------------
-    lcl_exp_inf  <- log(46.85);  label("Asymptotic apparent clearance, the paper's CL_TV (CL/F, L/h)")                      # Table 3 theta3 (CL/F = 46.85 L/h, ASE 2.98, %RSE 6.34, 90% CI 41.93-51.76)
+    lcl_exp_inf  <- log(46.85);  label("Asymptotic apparent clearance, the paper's CL_TV (L/h)")                      # Table 3 theta3 (CL/F = 46.85 L/h, ASE 2.98, %RSE 6.34, 90% CI 41.93-51.76)
     lcl_exp_kdes <- log(0.096);  label("Decay coefficient of the clearance component against ln(time), paper KTMCL (unitless)")  # Table 3 theta10 (KTMCL = 0.096, ASE 0.022, %RSE 23.71, 90% CI 0.059-0.13); Table 2 Model 8. Table 3 labels KTMCL "h-1", but it multiplies the dimensionless ln(t) in Model 8 and so is unitless.
 
     # ---------------------------------------------------------------------
@@ -207,7 +207,7 @@ Hu_2026_utreloxastat <- function() {
     # exposure scales as Dose^(1 + 0.21), giving (150/250)^1.21 = 0.54 and
     # (500/250)^1.21 = 2.31 against the paper's 0.53 and 2.28.
     # ---------------------------------------------------------------------
-    lfdepot              <- fixed(log(1));  label("Relative bioavailability at the reference condition, 250 mg fasted (Frel, unitless)")  # Structural anchor: Hu 2026 estimated only relative bioavailability, so absolute F is not identifiable
+    lfdepot              <- fixed(log(1));  label("Relative bioavailability at the reference condition, 250 mg fasted (unitless)")  # Structural anchor: Hu 2026 estimated only relative bioavailability, so absolute F is not identifiable
     e_fed_lowfat_fdepot  <- 0.36;           label("Additive effect of a low-fat meal on Frel (unitless)")                   # Table 3 theta7 (0.36, ASE 0.071, %RSE 19.48, 90% CI 0.25-0.48); Results: "food increases drug absorption by up to 36% (90%CI: 25% to 48%) for low-fat meals"
 
     # Hu 2026 states this effect inconsistently. Table 3 theta8 and the Results

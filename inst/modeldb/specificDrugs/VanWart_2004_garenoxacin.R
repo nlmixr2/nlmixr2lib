@@ -95,15 +95,15 @@ VanWart_2004_garenoxacin <- function() {
     # interindividual variability of ka was removed from the model"
     # because the protocol sampling provided limited absorption-phase
     # information).
-    lka <- log(2.41);  label("First-order absorption rate constant (Ka, 1/h)")               # Van Wart 2004 Table 4 final-model Ka
+    lka <- log(2.41);  label("First-order absorption rate constant (1/h)")               # Van Wart 2004 Table 4 final-model Ka
 
     # Apparent oral clearance intercept reported in mL/min (Van Wart 2004
     # Table 4). The model() block converts to L/h to match the time unit.
-    lcl <- log(83.4);  label("Apparent oral clearance structural coefficient at reference covariates (CL/F, mL/min)") # Van Wart 2004 Table 4 final-model CL/F coefficient
+    lcl <- log(83.4);  label("Apparent oral clearance structural coefficient at reference covariates (mL/min)") # Van Wart 2004 Table 4 final-model CL/F coefficient
 
     # Apparent volume of distribution structural coefficient for the
     # reference female; the male additive shift is applied separately.
-    lvc <- log(67.1);  label("Apparent volume of distribution structural coefficient for a 79.3 kg female (V/F, L)") # Van Wart 2004 Table 4 final-model V/F coefficient
+    lvc <- log(67.1);  label("Apparent volume of distribution structural coefficient for a 79.3 kg female (L)") # Van Wart 2004 Table 4 final-model V/F coefficient
 
     # Covariate effects on CL/F (Van Wart 2004 Table 4 + Results 'Final
     # model' equation).

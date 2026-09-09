@@ -196,7 +196,7 @@ Retlich_2015_linagliptin <- function() {
     lbsl  <- log(10700);    label("Typical baseline plasma DPP-4 activity for males (BSL_male, RFU)")  # Table 5 row BSL_male
     e_sex_bsl  <- 865;           label("Additive shift in BSL for SEXF = 1 (RFU, female - male)")           # Table 5 row BSL_female: 10700 + 865 = 11565
     emax       <- 0.924;         label("Maximum fractional decrease in DPP-4 activity (Emax/100)")          # Table 5 row Emax (92.4 %)
-    lec50      <- log(3.06);     label("Linagliptin concentration giving half-maximum DPP-4 inhibition (EC50, nmol/L)")  # Table 5 row EC50
+    lec50      <- log(3.06);     label("Linagliptin concentration giving half-maximum DPP-4 inhibition (nmol/L)")  # Table 5 row EC50
     hill       <- 3.22;          label("Hill coefficient of the sigmoid Emax PD model")                      # Table 5 row HILL
 
     # ---- PD covariate effects (Retlich 2015 Table 5 footnotes b and c) ----

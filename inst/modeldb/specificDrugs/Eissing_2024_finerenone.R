@@ -90,9 +90,9 @@ Eissing_2024_finerenone <- function() {
     # model NONMEM code, $THETA block (final estimates).
 
     lka   <- log(20.0);  label("Transit-compartment absorption / chain rate constant (1/h)")   # supplement $THETA TH2 (4 sequential transit steps DEPOT->BUFFER->BUFFER2->BUFFER3->CENTRAL with shared rate Ka)
-    lcl   <- log(35.1);  label("Apparent clearance, reference participant (CL/F, L/h)")        # supplement $THETA TH3
-    lvc   <- log(126);   label("Apparent central volume of distribution, reference participant (Vc/F, L)")  # supplement $THETA TH4
-    lq    <- log(0.357); label("Apparent inter-compartmental clearance (Q/F, L/h)")             # supplement $THETA TH5
+    lcl   <- log(35.1);  label("Apparent clearance, reference participant (L/h)")        # supplement $THETA TH3
+    lvc   <- log(126);   label("Apparent central volume of distribution, reference participant (L)")  # supplement $THETA TH4
+    lq    <- log(0.357); label("Apparent inter-compartmental clearance (L/h)")             # supplement $THETA TH5
 
     # Structural fixed parameters
     ltlag    <- fixed(log(0.215)); label("Absorption lag time (h)")           # supplement $THETA TH7 (FIX)

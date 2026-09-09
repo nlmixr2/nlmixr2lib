@@ -44,18 +44,18 @@ Panoilia_2015_bevacizumab <- function() {
 
   ini({
     # Structural PK parameters (reference 70 kg adult)
-    lcl   <- log(0.18);   label("Linear clearance of free bevacizumab for a 70 kg adult (CL, L/day)")  # Table 3 TMDD column row CL
-    lvc   <- log(3.23);   label("Central volume of distribution (V1, L)")                              # Table 3 TMDD column row V1
-    lq    <- log(1.38);   label("Inter-compartmental clearance (Q, L/day)")                            # Table 3 TMDD column row Q
-    lvp   <- log(3.1);    label("Peripheral volume of distribution (V2, L)")                           # Table 3 TMDD column row V2
+    lcl   <- log(0.18);   label("Linear clearance of free bevacizumab for a 70 kg adult (L/day)")  # Table 3 TMDD column row CL
+    lvc   <- log(3.23);   label("Central volume of distribution (L)")                              # Table 3 TMDD column row V1
+    lq    <- log(1.38);   label("Inter-compartmental clearance (L/day)")                            # Table 3 TMDD column row Q
+    lvp   <- log(3.1);    label("Peripheral volume of distribution (L)")                           # Table 3 TMDD column row V2
 
     # Target turnover (free VEGF165). BM0 reported as 0.0053 nM (= 212 ng/L) under the paper's
     # 1:1 monomeric bevacizumab-VEGF165 binding assumption.
-    lkout <- log(0.401);  label("First-order elimination rate constant of free VEGF165 (kout, 1/day)") # Table 3 row kout
-    lbm0  <- log(0.0053); label("Baseline (pre-dose) free VEGF165 concentration (BM0, nM)")            # Table 3 row BM0 (= 212 ng/L)
+    lkout <- log(0.401);  label("First-order elimination rate constant of free VEGF165 (1/day)") # Table 3 row kout
+    lbm0  <- log(0.0053); label("Baseline (pre-dose) free VEGF165 concentration (nM)")            # Table 3 row BM0 (= 212 ng/L)
 
     # QSS dissociation constant (same units as Ctot, Rtot)
-    lkss  <- log(267);    label("Quasi-steady-state dissociation constant for bevacizumab-VEGF165 binding (Kss, nM)")  # Table 3 row Kss
+    lkss  <- log(267);    label("Quasi-steady-state dissociation constant for bevacizumab-VEGF165 binding (nM)")  # Table 3 row Kss
 
     # Fixed allometric exponents on body weight. Panoilia 2015 Methods (Eq 3): the power exponent
     # k was "either estimated or fixed to a certain value (0.75 for clearance and 1 for volume

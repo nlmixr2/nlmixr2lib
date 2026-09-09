@@ -75,16 +75,16 @@ Yao_2023_empagliflozin_mbma <- function() {
   # ==========================================================================
   ini({
     lcl <- log(4.25)
-    label("Apparent clearance from the central compartment (CL/F, L/h)")  # Yao 2023 Table 1 (RSE 6.10%)
+    label("Apparent clearance from the central compartment (L/h)")  # Yao 2023 Table 1 (RSE 6.10%)
 
     lvc <- log(30.6)
-    label("Apparent central volume of distribution (Vc/F, L)")  # Yao 2023 Table 1 (RSE 9.50%)
+    label("Apparent central volume of distribution (L)")  # Yao 2023 Table 1 (RSE 9.50%)
 
     lq <- log(1.37)
-    label("Apparent distribution clearance between central and peripheral compartments (CLD/F, L/h)")  # Yao 2023 Table 1 (RSE 13.5%)
+    label("Apparent distribution clearance between central and peripheral compartments (L/h)")  # Yao 2023 Table 1 (RSE 13.5%)
 
     lvp <- log(28.3)
-    label("Apparent peripheral volume of distribution (VT/F, L)")  # Yao 2023 Table 1 (RSE 26.5%)
+    label("Apparent peripheral volume of distribution (L)")  # Yao 2023 Table 1 (RSE 26.5%)
 
     lktr <- log(4.13)
     label("Transit / absorption rate constant Kt (1/h)")  # Yao 2023 Table 1 (RSE 6.90%)

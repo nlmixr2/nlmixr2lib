@@ -246,10 +246,10 @@ Bhagunde_2026_lecanemab_gfap <- function() {
     # IV input, linear elimination). All values FIXED: not re-estimated #
     # by Bhagunde 2026. Source: Majid 2024 Table 1 and its equations.   #
     # ---------------------------------------------------------------- #
-    lcl <- fixed(log(0.0154)); label("Lecanemab clearance at the reference subject (CL, L/h)")        # Majid 2024 Table 1: CL = 0.0154 L/h (RSE 1.60%)
-    lvc <- fixed(log(3.24));   label("Lecanemab central volume at the reference subject (V1, L)")     # Majid 2024 Table 1: V1 = 3.24 L (RSE 0.799%)
-    lvp <- fixed(log(2.00));   label("Lecanemab peripheral volume at the reference subject (V2, L)")  # Majid 2024 Table 1: V2 = 2.00 L (RSE 4.09%)
-    lq  <- fixed(log(0.00718)); label("Lecanemab intercompartmental clearance (Q, L/h)")              # Majid 2024 Table 1: Q = 0.00718 L/h (RSE 4.23%)
+    lcl <- fixed(log(0.0154)); label("Lecanemab clearance at the reference subject (L/h)")        # Majid 2024 Table 1: CL = 0.0154 L/h (RSE 1.60%)
+    lvc <- fixed(log(3.24));   label("Lecanemab central volume at the reference subject (L)")     # Majid 2024 Table 1: V1 = 3.24 L (RSE 0.799%)
+    lvp <- fixed(log(2.00));   label("Lecanemab peripheral volume at the reference subject (L)")  # Majid 2024 Table 1: V2 = 2.00 L (RSE 4.09%)
+    lq  <- fixed(log(0.00718)); label("Lecanemab intercompartmental clearance (L/h)")              # Majid 2024 Table 1: Q = 0.00718 L/h (RSE 4.23%)
 
     e_wt_cl            <- fixed(0.353);  label("Power exponent for body weight on CL, (WT/72)^e (unitless)")            # Majid 2024 Table 1
     e_alb_cl           <- fixed(-0.374); label("Power exponent for serum albumin on CL, (ALB/43)^e (unitless)")         # Majid 2024 Table 1
@@ -268,8 +268,8 @@ Bhagunde_2026_lecanemab_gfap <- function() {
     # source of the plaque predictions. All FIXED (not re-estimated).   #
     # ---------------------------------------------------------------- #
     logitrbase_plaque <- fixed(-1.12);        label("Typical baseline amyloid plaque burden on the logit scale, Plaque_0 = 250 * plogis(logit) Centiloid")  # Bhagunde 2026 CPT:PSP Table 1: baseline amyloid plaque, logit scale = -1.12 (RSE 5.35%). 250 CL is the stated maximum possible plaque
-    lkout_plaque      <- fixed(log(0.0572));  label("First-order amyloid plaque elimination rate constant (Kout, 1/year)")  # Bhagunde 2026 CPT:PSP Table 1: Kout = 0.0572 /year (RSE 24.4%), t1/2 = 12.1 years
-    lslope_plaque     <- fixed(log(0.154));   label("Linear slope of the lecanemab-concentration effect on plaque elimination (DESLP, per ug/mL)")  # Bhagunde 2026 CPT:PSP Table 1: Drug effect (DESLP) = 0.154 (RSE 23.7%)
+    lkout_plaque      <- fixed(log(0.0572));  label("First-order amyloid plaque elimination rate constant (1/year)")  # Bhagunde 2026 CPT:PSP Table 1: Kout = 0.0572 /year (RSE 24.4%), t1/2 = 12.1 years
+    lslope_plaque     <- fixed(log(0.154));   label("Linear slope of the lecanemab-concentration effect on plaque elimination (per ug/mL)")  # Bhagunde 2026 CPT:PSP Table 1: Drug effect (DESLP) = 0.154 (RSE 23.7%)
 
     e_apoe4_carrier_logitrbase_plaque <- fixed(0.629); label("Ratio applied to the logit-scale baseline plaque for APOE4 carriers, e^APOE4_CARRIER (unitless)")  # Bhagunde 2026 CPT:PSP Table 1: APOE4 carrier on baseline amyloid PET (ratio) = 0.629 (RSE 6.36%)
     e_age_slope_plaque                <- fixed(3.10);  label("Power exponent for age on DESLP, (AGE/72)^e (unitless)")  # Bhagunde 2026 CPT:PSP Table 1: Age on drug effect = 3.10 (RSE 7.82%)
@@ -278,10 +278,10 @@ Bhagunde_2026_lecanemab_gfap <- function() {
     # Layer 3 -- plasma GFAP indirect response with disease progression #
     # (Bhagunde 2026 Section 2.2.2 equation and Table 1)                #
     # ---------------------------------------------------------------- #
-    lrbase <- log(315); label("Baseline plasma GFAP at the reference subject (BGFAP, pg/mL)")                   # Bhagunde 2026 Table 1: Baseline GFAP = 315 pg/mL (RSE 1.66%)
-    lkin   <- log(5.6); label("Zero-order plasma GFAP production rate at the reference subject (KinG, pg/mL/h)")  # Bhagunde 2026 Table 1: KinG = 5.6 pg/mL/h (RSE 23.5%), KoutG is derived as KinG / BGFAP
+    lrbase <- log(315); label("Baseline plasma GFAP at the reference subject (pg/mL)")                   # Bhagunde 2026 Table 1: Baseline GFAP = 315 pg/mL (RSE 1.66%)
+    lkin   <- log(5.6); label("Zero-order plasma GFAP production rate at the reference subject (pg/mL/h)")  # Bhagunde 2026 Table 1: KinG = 5.6 pg/mL/h (RSE 23.5%), KoutG is derived as KinG / BGFAP
     logitslope_gfap <- log(0.237 / (1 - 0.237)); label("Logit of the slope of the relative-plaque-reduction effect on GFAP production (SLP, unitless in (0,1))")  # Bhagunde 2026 Table 1: SLP (logit) = 0.237 (RSE 8.33%), logit(0.237) = -1.16920, matching the additive-on-logit IIV
-    lprog  <- log(0.0307); label("Linear disease-progression drift on GFAP production (DP, 1/year)")            # Bhagunde 2026 Table 1: DP = 0.0307 /year (RSE 0.279%)
+    lprog  <- log(0.0307); label("Linear disease-progression drift on GFAP production (1/year)")            # Bhagunde 2026 Table 1: DP = 0.0307 /year (RSE 0.279%)
 
     e_age_rbase          <- 1.03;  label("Power exponent for age on baseline GFAP, (AGE/72)^e (unitless)")                    # Bhagunde 2026 Table 1: Age on baseline GFAP (power) = 1.03 (RSE 12.1%)
     e_wt_rbase           <- -0.66; label("Power exponent for body weight on baseline GFAP, (WT/72)^e (unitless)")             # Bhagunde 2026 Table 1: Weight on baseline GFAP (power) = -0.66 (RSE 10.2%)

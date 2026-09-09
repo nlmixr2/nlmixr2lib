@@ -64,7 +64,7 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     # 2006 ref 22). CL/F is ADDITIVE in CrCl and WT (Table 2 footnote a):
     #   CL/F = CL/F_0 + b_CrCl * CrCl + b_WT * WT
     # ============================================================
-    lka_febx       <- log(13.7);  label("Febuxostat absorption rate constant (Ka, 1/h)")                           # Table 2: Ka 13.7 h^-1, BSV CV% 176
+    lka_febx       <- log(13.7);  label("Febuxostat absorption rate constant (1/h)")                           # Table 2: Ka 13.7 h^-1, BSV CV% 176
     lcl_febx       <- log(49.3);  label("Febuxostat baseline apparent clearance CL/F_0 (dL/h)")                   # Table 2: CL/F_0 49.3 dL/h, BSV CV% 18.3
     lvc_febx       <- log(322);   label("Febuxostat apparent central volume Vc/F_0 (dL)")                          # Table 2: Vc/F_0 322 dL, BSV NE
     lvp_febx       <- log(222);   label("Febuxostat apparent peripheral volume Vp/F (dL)")                         # Table 2: Vp/F 222 dL, BSV NE
@@ -81,7 +81,7 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     #   CL/F = CL/F_0 * (CrCl / 87)^b_CrCl
     #   Vc/F = Vc/F_0 * (WT  / 70)^b_WT
     # ============================================================
-    lka_lesn       <- log(0.69);  label("Lesinurad absorption rate constant (Ka, 1/h)")                            # Table 2: Ka 0.69 h^-1, BSV CV% 121.7
+    lka_lesn       <- log(0.69);  label("Lesinurad absorption rate constant (1/h)")                            # Table 2: Ka 0.69 h^-1, BSV CV% 121.7
     lcl_lesn       <- log(69.9);  label("Lesinurad apparent clearance CL/F_0 at CrCl 87 mL/min (dL/h)")           # Table 2: CL/F_0 69.9 dL/h, BSV CV% 63.4
     lvc_lesn       <- log(241);   label("Lesinurad apparent central volume Vc/F_0 at WT 70 kg (dL)")               # Table 2: Vc/F_0 241 dL, BSV CV% 12.2
     lvp_lesn       <- log(83);    label("Lesinurad apparent peripheral volume Vp/F (dL)")                          # Table 2: Vp/F 83 dL, BSV CV% 20.5
