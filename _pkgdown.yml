@@ -186,6 +186,8 @@ navbar:
         href: articles/Li_2025_amikacin.html
       - text: "Amikacin (Matcha 2025)"
         href: articles/Matcha_2025_amikacin.html
+      - text: "Amikacin (Steffens 2025)"
+        href: articles/Steffens_2025_amikacin.html
       - text: "Amikacin (Tod 1998)"
         href: articles/Tod_1998_amikacin.html
       - text: "Aminocaproic acid (Stricker 2015)"
@@ -6443,6 +6445,7 @@ articles:
   - articles/Staatz_2005_gentamicin_vancomycin
   - articles/Standing_2008_diclofenac
   - articles/Standing_2012_oseltamivir
+  - articles/Steffens_2025_amikacin
   - articles/Steichert_2025_enalapril_enalaprilat_pediatric
   - articles/Stein_2018_mAb_nonlinear_PK
   - articles/Stein_2019_Tisagenlecleucel
