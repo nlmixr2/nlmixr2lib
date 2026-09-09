@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Du 2025 repotrectinib ([doi:10.1002/psp4.70036](https://doi.org/10.1002/psp4.70036)) — healthy volunteers and adult and pediatric patients with ALK, ROS1 or NTRK1-3 rearranged advanced solid tumors.
+- Add Sun 2025 teicoplanin ([doi:10.3389/fphar.2025.1621959](https://doi.org/10.3389/fphar.2025.1621959)) -- critically ill adults with sepsis, with and without continuous renal replacement therapy.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
