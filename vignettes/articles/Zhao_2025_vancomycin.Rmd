@@ -1,0 +1,691 @@
+---
+title: "Vancomycin (Zhao 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vancomycin (Zhao 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhao_2025_vancomycin"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Zhao_2025_vancomycin"))$description`
+* Article: [Microbiol Spectr 2025;13(6):e02274-24](https://doi.org/10.1128/spectrum.02274-24)
+
+```{r load-model}
+mod <- readModelDb("Zhao_2025_vancomycin")
+ui  <- rxode2::rxode(mod)
+```
+
+# Population
+
+The model was built from 276 vancomycin concentrations in 126 neonates
+admitted to the neonatal intensive care unit of Northwest Women's and
+Children's Hospital (Xi'an, Shaanxi, China) between January 2019 and
+December 2023. Inclusion required postnatal age at or below 28 days, at
+least one measured vancomycin concentration, and at least three days of
+vancomycin treatment. Neonates with congenital renal dysplasia or with
+chronic or acute renal insufficiency were excluded, as were creatinine
+values drawn within seven days of birth (which still reflect maternal
+rather than neonatal renal function). Extremely preterm infants were
+not included, which is what the title's "non-extremely preterm" refers
+to.
+
+Median gestational age at delivery was 32 weeks (IQR 29.38-37.85) and
+median postmenstrual age at the start of vancomycin was 35.7 weeks
+(IQR 32.9-39.98); 93/126 (73.8%) were preterm. Median birth weight was
+1.45 kg and median weight at the start of vancomycin 1.98 kg
+(IQR 1.35-2.98). 86/126 (68.3%) were male. Median serum creatinine was
+32.48 umol/L (IQR 24.54-42.31), median daily fluid input 364 mL
+(IQR 252.91-473.10) and median daily urine volume 200.5 mL. 42/126
+(33.3%) received a concomitant diuretic. Vancomycin was given at
+10-15 mg/kg per dose every 8 to 12 hours as a one-hour infusion, with
+peaks and troughs drawn 0.5 h after and 0.5 h before an infusion, all
+at steady state after at least four doses (Zhao 2025 Table 1 and
+Materials and Methods).
+
+The cohort was split by calendar time rather than at random: 112
+patients (January 2019 to June 2023) built the model and 14 patients
+(July 2023 to December 2023, 24 concentrations) were held out for
+external validation, on which the paper reports a mean prediction error
+of 2.74%, a mean absolute prediction error of 17.48%, and 75.00% /
+83.33% of predictions within 20% / 30%.
+
+The same information is available programmatically via
+`rxode2::rxode(readModelDb("Zhao_2025_vancomycin"))$population`.
+
+# The missing exponents
+
+This paper needs one adjudication before it can be encoded, and it is
+worth stating up front because it changes the model materially.
+
+Zhao 2025 prints its final model as equations 6 and 7:
+
+```
+CL(L/h) = 0.14 x (WT/2.12) x (Scr/30.52) x (DFI/367.18) x e^A x exp(etaCL)
+V       = 1.04 x (WT/2.12)
+```
+
+Every parenthesised covariate ratio is missing its superscript
+exponent. This is **not** a text-extraction artifact: the EuropePMC
+open-access bundle for PMC12131725 ships equations 1-7 as publisher
+artwork (`spectrum.02274-24.m001.jpg` through `m007.jpg`), and the
+rendered images for equations 6 and 7 carry no superscripts either. The
+exponents were lost in production.
+
+Table 3 supplies them -- rows `WTonCL` = 1.13, `Scr on CL` = -0.15,
+`DFI on CL` = 0.14, and `WTonV` = 1.07 -- and the Methods state that
+"an exponential model was used to evaluate the influence of covariates
+on pharmacokinetic parameters", i.e. covariate ratios raised to an
+estimated power. Two independent checks confirm that reading against
+the paper's own numbers.
+
+**Check 1: reading the equations literally is falsified by Table 4.**
+If every exponent were really 1, then Table 4's recommended daily dose
+(which the paper derives from clearance via equation 5,
+`Dose = 400 x CL`) would rise ninefold from Scr = 10 to Scr = 90
+umol/L, and sevenfold from DFI = 100 to DFI = 700 mL. Table 4 does the
+opposite on creatinine and moves by 30% on fluid input.
+
+**Check 2: the Table 3 exponents can be recovered from Table 4.**
+Because Table 4 is a pure function of the clearance equation, taking
+log-ratios across its rows and columns reads the exponents back out.
+
+```{r missing-exponents}
+# Table 4 of Zhao 2025, "Non-DA" (no concomitant diuretic) column,
+# mg/kg/day, transcribed as printed.
+tab4 <- tidyr::expand_grid(
+  CREAT        = c(10, 30, 50, 70, 90),
+  FLUID_IN_24H = c(100, 250, 400, 550, 700)
+) |>
+  dplyr::mutate(
+    dose_DA    = c(26, 29, 31, 33, 34, 22, 25, 27, 28, 29, 21, 23, 25, 26, 27,
+                   20, 22, 24, 25, 26, 19, 21, 23, 24, 25),
+    dose_nonDA = c(32, 36, 38, 39, 41, 27, 30, 32, 34, 35, 25, 28, 30, 31, 32,
+                   24, 27, 29, 30, 31, 23, 26, 28, 29, 30)
+  )
+
+# Exponent recovered from the creatinine axis, at each fixed fluid input.
+scr_ref <- tab4 |>
+  dplyr::group_by(FLUID_IN_24H) |>
+  dplyr::summarise(
+    e_creat = mean(log(dose_nonDA[CREAT != 10] / dose_nonDA[CREAT == 10]) /
+                     log(CREAT[CREAT != 10] / 10)),
+    .groups = "drop"
+  )
+
+# Exponent recovered from the fluid-input axis, at each fixed creatinine.
+dfi_ref <- tab4 |>
+  dplyr::group_by(CREAT) |>
+  dplyr::summarise(
+    e_dfi = mean(log(dose_nonDA[FLUID_IN_24H != 100] /
+                       dose_nonDA[FLUID_IN_24H == 100]) /
+                   log(FLUID_IN_24H[FLUID_IN_24H != 100] / 100)),
+    .groups = "drop"
+  )
+
+# Diuretic effect recovered from the two dose columns.
+diuretic_factor <- with(tab4, mean(dose_DA / dose_nonDA))
+
+recovered <- tibble::tibble(
+  Quantity = c("Serum-creatinine exponent on CL",
+               "Daily-fluid-input exponent on CL",
+               "Diuretic multiplier on CL"),
+  `Zhao 2025 Table 3` = c(-0.15, 0.14, exp(-0.20)),
+  `Recovered from Table 4` = c(mean(scr_ref$e_creat),
+                               mean(dfi_ref$e_dfi),
+                               diuretic_factor),
+  `Literal reading of eq. 6` = c(1, 1, NA_real_)
+)
+knitr::kable(recovered, digits = 4,
+             caption = paste("Covariate exponents recovered from the Zhao 2025 Table 4",
+                             "dosing grid, versus the Table 3 estimates and versus",
+                             "reading equation 6 literally."))
+
+stopifnot(
+  # The recovered exponents sit close to the Table 3 estimates. Table 4 is
+  # printed to whole mg/kg/day, so a 1 mg rounding on a ~25 mg cell is ~4%
+  # and the recovered exponents carry that much noise. Nothing here is
+  # simulated -- both sides are fixed transcriptions -- so these bounds are
+  # exactly reproducible and are set just outside the realised residuals
+  # (0.0037, 0.0107, 0.0091).
+  abs(mean(scr_ref$e_creat) - (-0.15)) < 0.02,
+  abs(mean(dfi_ref$e_dfi) - 0.14) < 0.02,
+  abs(diuretic_factor - exp(-0.20)) < 0.015,
+  # And the literal reading is nowhere near: it has the creatinine effect
+  # pointing the wrong way entirely.
+  mean(scr_ref$e_creat) < 0
+)
+```
+
+The packaged model therefore encodes equations 6 and 7 **with** the
+Table 3 exponents:
+
+```
+CL = 0.14 * (WT/2.12)^1.13 * (CREAT/30.52)^-0.15 * (FLUID_IN_24H/367.18)^0.14 * exp(-0.20 * CONMED_DIURETIC) * exp(etaCL)
+V  = 1.04 * (WT/2.12)^1.07
+```
+
+At the reference covariate values every ratio is 1, so `CL` reduces to
+0.14 L/h -- exactly the "typical CL value of 0.14 L/hour" the Results
+paragraph after equation 7 reports, which is a third consistency check
+on the encoding.
+
+# Source trace
+
+Every numeric value in `ini()` carries an in-file comment pointing to
+the Zhao 2025 source location. The table below collects them in one
+place for review.
+
+| Equation / parameter          | Value       | Source location                                                            |
+|-------------------------------|-------------|----------------------------------------------------------------------------|
+| Structural model              | 1 compartment, first-order elimination | Base model section; Table 3 reports only CL and V |
+| Residual error model          | proportional | Results: "The examination of residual variability supported the adoption of a proportional error model" (equation 3) |
+| IIV model                     | exponential | Equation 1, `P_i = P_TV * exp(eta_i)`                                      |
+| `lcl` (CL)                    | 0.14 L/h    | Table 3, final model row "CL (L/hour)" (RSE 3.15%)                          |
+| `lvc` (V)                     | 1.04 L      | Table 3, final model row "V (L)" (RSE 4.28%)                                |
+| `e_wt_cl`                     | 1.13        | Table 3, final model row "WTonCL(L/hour)" (RSE 5.64%)                        |
+| `e_creat_cl`                  | -0.15       | Table 3, final model row "Scr on CL (L/hour)" (RSE 31.34%)                   |
+| `e_fluid_in_24h_cl`           | 0.14        | Table 3, final model row "DFI on CL (L/hour)" (RSE 27.03%)                   |
+| `e_conmed_diuretic_cl`        | -0.20       | Table 3 row "DA on CL"; text after equation 6: "When diuretics were used concomitantly, A = -0.20" |
+| `e_wt_vc`                     | 1.07        | Table 3, final model row "WTonV(L)" (RSE 7.61%)                              |
+| `etalcl` (4.97% CV)           | 0.00246704  | Table 3, final model row "CL (%CV)"; also stated in prose in Results         |
+| `propSd`                      | 0.180       | Table 3, final model row "Proportional (%CV)" = 18.0 (RSE 5.76%)             |
+| WT reference 2.12 kg          |             | Equation 6 and equation 7 (cohort mean)                                      |
+| Scr reference 30.52 umol/L    |             | Equation 6 (cohort mean)                                                     |
+| DFI reference 367.18 mL/24h   |             | Equation 6 (cohort mean)                                                     |
+
+# Virtual cohort
+
+The virtual cohort reproduces the Table 1 marginal distributions of the
+four model covariates. Weight, creatinine and fluid input are drawn
+log-normally with the published median and interquartile range, and
+truncated to the observed range; diuretic use is drawn at the published
+33.3% prevalence and then split into two equal arms so that the
+diuretic contrast can be read directly.
+
+```{r cohort}
+rxode2::rxSetSeed(20250514)   # Zhao 2025 publication date
+set.seed(20250514)
+
+n_per_arm <- 100L   # 200 subjects total, at the 200-per-arm vignette cap
+
+# Draw a log-normal variate matching a published median and IQR.
+rlnorm_iqr <- function(n, median, q25, q75, lower, upper) {
+  sdlog <- (log(q75) - log(q25)) / (2 * stats::qnorm(0.75))
+  x <- stats::rlnorm(n, meanlog = log(median), sdlog = sdlog)
+  pmin(pmax(x, lower), upper)
+}
+
+subj <- tibble::tibble(
+  id = seq_len(2L * n_per_arm),
+  # Zhao 2025 Table 1: WT median 1.98 kg (IQR 1.35-2.98).
+  WT = rlnorm_iqr(2L * n_per_arm, 1.98, 1.35, 2.98, lower = 0.8, upper = 5.0),
+  # Table 1: Scr median 32.48 umol/L (IQR 24.54-42.31).
+  CREAT = rlnorm_iqr(2L * n_per_arm, 32.48, 24.54, 42.31, lower = 8, upper = 95),
+  # Table 1: DFI median 364 mL (IQR 252.91-473.10).
+  FLUID_IN_24H = rlnorm_iqr(2L * n_per_arm, 364, 252.91, 473.10,
+                            lower = 80, upper = 750),
+  # Two equal arms so the diuretic contrast is directly readable; the
+  # cohort prevalence in Table 1 is 33.3%.
+  CONMED_DIURETIC = rep(c(0, 1), each = n_per_arm),
+  arm = factor(rep(c("No diuretic", "Concomitant diuretic"), each = n_per_arm),
+               levels = c("No diuretic", "Concomitant diuretic"))
+) |>
+  # Zhao 2025 Materials and Methods: 10-15 mg/kg per dose. Use the top of the
+  # band, rounded to whole milligrams as it would be prescribed.
+  dplyr::mutate(dose_mg = round(15 * WT))
+
+knitr::kable(
+  subj |>
+    dplyr::group_by(arm) |>
+    dplyr::summarise(
+      n = dplyr::n(),
+      `WT (kg), median [IQR]` = sprintf("%.2f [%.2f-%.2f]", median(WT),
+                                        quantile(WT, .25), quantile(WT, .75)),
+      `Scr (umol/L), median [IQR]` = sprintf("%.1f [%.1f-%.1f]", median(CREAT),
+                                             quantile(CREAT, .25), quantile(CREAT, .75)),
+      `DFI (mL/24h), median [IQR]` = sprintf("%.0f [%.0f-%.0f]",
+                                             median(FLUID_IN_24H),
+                                             quantile(FLUID_IN_24H, .25),
+                                             quantile(FLUID_IN_24H, .75)),
+      .groups = "drop"
+    ),
+  caption = "Virtual cohort covariate distributions (compare Zhao 2025 Table 1: WT 1.98 [1.35-2.98] kg, Scr 32.48 [24.54-42.31] umol/L, DFI 364 [253-473] mL)."
+)
+```
+
+# Simulation
+
+Vancomycin 15 mg/kg is given every 12 hours as a one-hour intravenous
+infusion for eleven doses. Concentrations are sampled coarsely through
+the accumulation phase and finely over the 96-120 h interval, which is
+the steady-state 24-hour window used for NCA below. Observation rows
+carry `cmt = "central"`, the model's ODE state.
+
+```{r simulate}
+dose_times <- seq(0, 120, by = 12)
+
+dosing <- subj |>
+  tidyr::crossing(time = dose_times) |>
+  dplyr::mutate(
+    evid = 1L,
+    amt  = dose_mg,
+    rate = dose_mg / 1,   # 1-hour IV infusion (Zhao 2025 Materials and Methods)
+    cmt  = "central"
+  )
+
+obs_times <- sort(unique(c(seq(0, 96, by = 4), seq(96, 120, by = 0.25))))
+
+obs <- subj |>
+  tidyr::crossing(time = obs_times) |>
+  dplyr::mutate(
+    evid = 0L,
+    amt  = NA_real_,
+    rate = NA_real_,
+    cmt  = "central"
+  )
+
+events <- dplyr::bind_rows(dosing, obs) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep = c("WT", "CREAT", "FLUID_IN_24H", "CONMED_DIURETIC", "arm", "dose_mg")
+) |>
+  as.data.frame()
+
+stopifnot(
+  # Fail loudly rather than silently validating nothing (failure pattern 10).
+  nrow(sim) > 0,
+  all(c("Cc", "cl", "vc") %in% names(sim)),
+  !anyNA(sim$Cc),
+  all(sim$Cc >= 0)
+)
+```
+
+# Replicate published figures
+
+Zhao 2025 Figure 1 plots observed individual clearance against serum
+creatinine (panel A) and against daily fluid input (panel B), split by
+diuretic use. The individual clearances themselves are not published,
+but the typical-value surfaces the model implies over those two axes
+are, and they are what the figure is asserting.
+
+```{r figure-1, fig.width = 7, fig.height = 3.4}
+cl_typ <- function(WT, CREAT, FLUID_IN_24H, CONMED_DIURETIC) {
+  0.14 * (WT / 2.12)^1.13 * (CREAT / 30.52)^-0.15 *
+    (FLUID_IN_24H / 367.18)^0.14 * exp(-0.20 * CONMED_DIURETIC)
+}
+
+fig1 <- dplyr::bind_rows(
+  tidyr::expand_grid(CREAT = seq(10, 90, by = 1), CONMED_DIURETIC = c(0, 1)) |>
+    dplyr::mutate(panel = "A: serum creatinine",
+                  x = CREAT,
+                  cl = cl_typ(2.12, CREAT, 367.18, CONMED_DIURETIC)),
+  tidyr::expand_grid(FLUID_IN_24H = seq(100, 700, by = 5),
+                     CONMED_DIURETIC = c(0, 1)) |>
+    dplyr::mutate(panel = "B: daily fluid input",
+                  x = FLUID_IN_24H,
+                  cl = cl_typ(2.12, 30.52, FLUID_IN_24H, CONMED_DIURETIC))
+) |>
+  dplyr::mutate(Diuretic = ifelse(CONMED_DIURETIC == 1, "Yes", "No"))
+
+ggplot(fig1, aes(x, cl, colour = Diuretic)) +
+  geom_line(linewidth = 0.9) +
+  facet_wrap(~ panel, scales = "free_x") +
+  labs(
+    x = "Covariate value (umol/L in panel A, mL/24h in panel B)",
+    y = "Typical CL (L/h) at WT = 2.12 kg",
+    title = "Figure 1 - typical-value clearance vs creatinine and fluid input",
+    caption = "Replicates the two relationships in Figure 1 of Zhao 2025 at the reference body weight. Clearance falls with creatinine, rises with fluid input, and is uniformly lower with a concomitant diuretic."
+  )
+```
+
+```{r profile, fig.width = 7, fig.height = 3.6}
+sim |>
+  dplyr::filter(time <= 60) |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~ arm) +
+  labs(
+    x = "Time after first dose (h)", y = "Vancomycin Cc (mg/L)",
+    title = "Simulated vancomycin concentration-time profile",
+    caption = "15 mg/kg as a 1-hour IV infusion Q12H. Median with 5th-95th percentile band across 100 virtual neonates per arm."
+  )
+```
+
+# Structural checks
+
+Four checks on the packaged encoding, all deterministic or
+closed-form.
+
+```{r checks-structure}
+# --- Check 1: the diuretic effect is exactly exp(-0.20) -------------------
+# Same covariates, diuretic toggled: the ratio must be the published factor.
+diuretic_ratio <- cl_typ(2.12, 30.52, 367.18, 1) / cl_typ(2.12, 30.52, 367.18, 0)
+
+# --- Check 2: at the reference covariates, CL and V are the Table 3 values --
+cl_at_ref <- cl_typ(2.12, 30.52, 367.18, 0)
+vc_at_ref <- 1.04 * (2.12 / 2.12)^1.07
+
+# --- Check 3: interindividual variability reads back off the simulation ----
+# The model carries exactly ONE eta, so eta_i is recoverable from the solved
+# individual clearance by dividing out the (deterministic) covariate model.
+etas <- sim |>
+  dplyr::distinct(id, cl, WT, CREAT, FLUID_IN_24H, CONMED_DIURETIC) |>
+  dplyr::mutate(
+    eta = log(cl / cl_typ(WT, CREAT, FLUID_IN_24H, CONMED_DIURETIC))
+  )
+omega_readback <- sd(etas$eta)
+omega_published <- sqrt(log(1 + 0.0497^2))
+
+# --- Check 4: the ODE is actually being solved ---------------------------
+# rxode2 auto-solves a one-compartment model presented as a cl/vc pair,
+# discarding the explicit d/dt. That is harmless here only because the ODE
+# rate IS cl/vc; this check confirms the solved profile really does respond
+# to the structural parameters rather than being a frozen artifact.
+ev_one <- data.frame(
+  id = 1L, time = c(0, seq(0.5, 24, by = 0.5)),
+  evid = c(1L, rep(0L, 48)), amt = c(30, rep(NA_real_, 48)),
+  rate = c(30, rep(NA_real_, 48)), cmt = "central",
+  WT = 2.12, CREAT = 30.52, FLUID_IN_24H = 367.18, CONMED_DIURETIC = 0
+)
+mod_typ  <- mod |> rxode2::zeroRe()
+base_run <- rxode2::rxSolve(mod_typ, ev_one) |> as.data.frame()
+fast_run <- rxode2::rxSolve(mod_typ, ev_one,
+                            params = c(lcl = log(0.28))) |> as.data.frame()
+trough_ratio <- fast_run$Cc[nrow(fast_run)] / base_run$Cc[nrow(base_run)]
+
+knitr::kable(
+  tibble::tibble(
+    Check = c("Diuretic multiplier on CL",
+              "Typical CL at reference covariates (L/h)",
+              "Typical V at reference weight (L)",
+              "Interindividual SD of log CL",
+              "24 h trough ratio when CL is doubled"),
+    Model = c(diuretic_ratio, cl_at_ref, vc_at_ref, omega_readback, trough_ratio),
+    `Zhao 2025` = c(exp(-0.20), 0.14, 1.04, omega_published, NA_real_)
+  ),
+  digits = 5,
+  caption = "Structural checks against the Zhao 2025 published values."
+)
+
+stopifnot(
+  # Deterministic identities -- these are exact arithmetic, so they are held
+  # to floating-point tolerance.
+  abs(diuretic_ratio - exp(-0.20)) < 1e-10,
+  abs(cl_at_ref - 0.14) < 1e-10,
+  abs(vc_at_ref - 1.04) < 1e-10,
+  # Simulated quantity: the sd of 200 draws from a normal has a sampling CV of
+  # 1/sqrt(2*199) = 5.0%, so this +/- 30-35% band is about six sampling SDs and
+  # holds for any cohort the model can draw at any thread count. It still goes
+  # red if the encoded omega were wrong by a factor of two (ratio 0.5 or 2.0).
+  # Realised ratio 0.964 on this render.
+  omega_readback > 0.70 * omega_published,
+  omega_readback < 1.35 * omega_published,
+  # Doubling clearance halves the half-life from 5.15 h to 2.57 h, so a 24-hour
+  # trough drops by a further ~4.6 half-lives: the expected ratio is ~0.04, and
+  # it was 0.042 here. If rxode2 had silently frozen the profile (it auto-solves
+  # a cl/vc pair), this ratio would be exactly 1. Deterministic typical-value
+  # solve, so the bound is set close to the expected value.
+  trough_ratio < 0.15
+)
+```
+
+# PKNCA validation
+
+Zhao 2025 publishes no NCA table -- it reports model parameters, a
+dosing grid, and external-validation prediction errors -- so
+`nlmixr2lib::ncaComparisonTable()` has no published Cmax / Tmax / AUC /
+half-life to sit beside. The NCA below instead serves as a closed-form
+audit of the simulation: at steady state, the AUC over one 24-hour
+window must equal the 24-hour dose divided by the individual clearance,
+exactly. That identity is independent of the numerical solver and of
+the trapezoidal rule, so any disagreement beyond integration error
+means the encoded clearance and the solved profile have diverged.
+
+```{r pknca}
+ss_start <- 96
+ss_end   <- 120
+
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc), time >= ss_start, time <= ss_end) |>
+  dplyr::select(id, time, Cc, arm)
+
+dose_nca <- events |>
+  dplyr::filter(evid == 1, time >= ss_start, time < ss_end) |>
+  dplyr::select(id, time, amt, arm)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id,
+                             concu = "mg/L", timeu = "hr")
+dose_obj <- PKNCA::PKNCAdose(dose_nca, amt ~ time | arm + id, doseu = "mg")
+
+intervals <- data.frame(
+  start = ss_start, end = ss_end,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+
+knitr::kable(
+  summary(nca_res),
+  caption = "Simulated steady-state NCA parameters by arm (15 mg/kg Q12H as a 1 h IV infusion; 24-hour window 96-120 h)."
+)
+```
+
+```{r pknca-closed-form}
+auc_nca <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, arm, auc_nca = PPORRES)
+
+closed_form <- sim |>
+  dplyr::distinct(id, arm, cl, dose_mg) |>
+  dplyr::mutate(auc_closed = 2 * dose_mg / cl) |>   # two 12-hourly doses per 24 h
+  dplyr::inner_join(auc_nca, by = c("id", "arm")) |>
+  dplyr::mutate(pct_diff = 100 * (auc_nca - auc_closed) / auc_closed)
+
+stopifnot(
+  # Every subject was matched -- a silently empty join would make the
+  # assertions below vacuously true (failure pattern 10).
+  nrow(closed_form) == nrow(subj),
+  # Both sides use the SAME drawn per-subject clearance, so the only
+  # difference is trapezoidal integration error on a 0.25 h grid. This is
+  # pure numerical error, not cohort variability, so a tight bound is correct
+  # (the cohort-spread caveat about tightening to one run does not apply).
+  # Realised maximum 0.015%; 0.3% is twenty times that and would still catch
+  # any structural divergence between the encoded clearance and the solve.
+  max(abs(closed_form$pct_diff)) < 0.3
+)
+
+knitr::kable(
+  closed_form |>
+    dplyr::group_by(arm) |>
+    dplyr::summarise(
+      `AUC0-24,ss NCA (mg*h/L), median` = median(auc_nca),
+      `AUC0-24,ss = Dose/CL (mg*h/L), median` = median(auc_closed),
+      `Max |% difference| across subjects` = max(abs(pct_diff)),
+      .groups = "drop"
+    ),
+  digits = 3,
+  caption = "Steady-state AUC from PKNCA versus the closed-form Dose/CL identity."
+)
+```
+
+# Comparison against the published dosing table
+
+Table 4 of Zhao 2025 is the paper's one published quantitative outcome
+that the packaged model can be checked against end to end. It gives the
+recommended initial vancomycin dose in mg/kg/day for a grid of serum
+creatinine, daily fluid input and diuretic use, derived from the final
+model through equation 5, `Dose = 400 x CL` (the daily dose achieving
+AUC24/MIC = 400 at MIC = 1 mg/L).
+
+Applying equation 5 to the packaged clearance at the reference body
+weight reproduces the **structure** of Table 4 essentially exactly --
+the ratio of published to model-predicted dose is constant across all
+50 cells -- but sits systematically below it in **level**.
+
+```{r table4-comparison}
+tab4_cmp <- tab4 |>
+  tidyr::pivot_longer(c(dose_DA, dose_nonDA),
+                      names_to = "diuretic", values_to = "dose_published") |>
+  dplyr::mutate(
+    CONMED_DIURETIC = as.numeric(diuretic == "dose_DA"),
+    # Equation 5 at the reference body weight, converted to mg/kg/day.
+    dose_model = 400 * cl_typ(2.12, CREAT, FLUID_IN_24H, CONMED_DIURETIC) / 2.12,
+    ratio = dose_published / dose_model
+  )
+
+ratio_cv <- 100 * sd(tab4_cmp$ratio) / mean(tab4_cmp$ratio)
+
+knitr::kable(
+  tibble::tibble(
+    Quantity = c("Cells compared",
+                 "Mean published / model dose ratio",
+                 "CV of that ratio across cells (%)",
+                 "Range of that ratio"),
+    Value = c(as.character(nrow(tab4_cmp)),
+              sprintf("%.3f", mean(tab4_cmp$ratio)),
+              sprintf("%.2f", ratio_cv),
+              sprintf("%.3f-%.3f", min(tab4_cmp$ratio), max(tab4_cmp$ratio)))
+  ),
+  caption = "Zhao 2025 Table 4 versus equation 5 applied to the packaged model."
+)
+
+stopifnot(
+  nrow(tab4_cmp) == 50,
+  # The covariate STRUCTURE of Table 4 is reproduced: the ratio is flat.
+  # Table 4 is printed to whole mg/kg/day, so 1 mg of rounding on the
+  # smallest (19 mg/kg/day) cell is already 5%, which is where the residual
+  # 1.35% CV comes from. Nothing here is simulated, so the value is exactly
+  # reproducible; 2% still fails if any exponent were mis-encoded, because a
+  # wrong exponent tilts the ratio along that covariate's axis.
+  ratio_cv < 2,
+  # ... and the level offset is real and one-directional, not noise.
+  mean(tab4_cmp$ratio) > 1.1
+)
+```
+
+The ratio is `r sprintf("%.3f", mean(tab4_cmp$ratio))` with a CV of
+only `r sprintf("%.2f", ratio_cv)`% across all 50 cells. A flat ratio
+is a strong statement: it says every covariate exponent and the
+diuretic multiplier in the packaged model match the ones that generated
+Table 4, because any mis-encoded exponent would tilt the ratio along
+that covariate's axis. The remaining constant factor of about 1.21 is a
+**level** offset that the paper does not explain, and two mechanisms
+are consistent with it:
+
+* **The body weight used to build Table 4 is not stated.** Because the
+  weight exponent on clearance is 1.13 rather than 1, dose per kilogram
+  is not weight-invariant: it rises as `WT^0.13`, from 24.0 mg/kg/day
+  at 1 kg to 29.5 mg/kg/day at 5 kg at the reference covariates. Table
+  4 gives one number per cell over a simulated 1-5 kg range, so some
+  representative weight was chosen and never reported. Evaluating at
+  5 kg rather than at the 2.12 kg cohort mean shrinks the offset from
+  about 21% to about 8%, but does not remove it.
+* **Table 4 is a Monte Carlo target-attainment dose, not a
+  typical-value dose.** The Methods state that each regimen underwent
+  5,000 Monte Carlo simulations, so the tabulated dose is presumably
+  the one attaining AUC24/MIC >= 400 in some fraction of the simulated
+  population rather than in the typical patient. Any such fraction
+  above the median pushes the dose above the equation-5 typical value.
+
+Neither mechanism can be pinned down from what is printed, so this is
+recorded as a documented deviation rather than absorbed into the model.
+It does not affect the packaged parameters: the model file encodes
+Table 3 and equations 6-7, and Table 4 is a downstream application of
+them.
+
+# Assumptions and deviations
+
+- **The published equations 6 and 7 are incomplete, and the model file
+  restores their exponents.** As set out in "The missing exponents"
+  above, the covariate ratios are printed with no superscripts in both
+  the article text and the publisher's own equation artwork. The
+  packaged model uses the Table 3 exponents (1.13, -0.15, 0.14 on CL;
+  1.07 on V), which are independently recovered from the Table 4 dosing
+  grid in this vignette. This is the single most consequential decision
+  in the extraction and any reviewer should check it first.
+- **Reference values are cohort means, not medians.** The normalising
+  constants in equations 6 and 7 (2.12 kg, 30.52 umol/L,
+  367.18 mL/24h) are all slightly different from the Table 1 medians
+  (1.98 kg, 32.48 umol/L, 364 mL). They are used exactly as printed.
+- **Two Table 3 entries have printing errors that do not affect the
+  model.** The relative standard errors for the Scr and DA effects are
+  printed as negative numbers (-31.34 and -20.03); an RSE is a
+  magnitude. The bootstrap 95% CI for the DFI effect is printed as
+  "-0.087 to -0.21", which cannot bracket the positive point estimate
+  of 0.13 and is a sign typo for 0.087 to 0.21. Only point estimates
+  enter the model file, so neither error propagates.
+- **The interindividual variability is unusually small and is encoded
+  as published.** A 4.97% CV on clearance is far below what neonatal
+  vancomycin models typically report. It is not a transcription error:
+  the Results state it in prose, and the bootstrap corroborates it at
+  4.80% (95% CI 2.83-6.77). The base model's 24.84% CV is the
+  conventional-looking value, and almost all of it is absorbed by the
+  four covariates. Users simulating unexplained between-subject spread
+  should be aware that this model attributes very little of it to a
+  random effect.
+- **No interindividual variability on volume.** IIV on V was 0.90% CV
+  with an RSE of 215.55% in the base model and was dropped from the
+  final model, so V carries no eta. The consequence is that simulated
+  peak concentrations are less variable than real neonatal data would
+  be.
+- **Variability scale.** Table 3 reports IIV and residual variability
+  as "%CV" (defined in the Table 3 abbreviation footnote). The eta
+  variance is taken as `log(1 + CV^2)`, the exact inverse of a
+  log-normal CV; at 4.97% this differs from the naive `omega = CV`
+  reading by 0.07%, so the choice is immaterial here.
+- **Postmenstrual age is deliberately absent.** PMA was the second
+  strongest univariate covariate on clearance (dOFV -113.1) and it
+  entered the multivariate model, but it was the first term removed on
+  backward elimination. Most neonatal vancomycin models retain a
+  maturation term and this one does not; that is the paper's result,
+  not an omission in the extraction. PMA and the other screened-but-not-
+  retained covariates are recorded in the model file's
+  `covariatesDataExcluded` list.
+- **Daily fluid input required a new canonical covariate column.**
+  `FLUID_IN_24H` (mL/24h) is registered in
+  `inst/references/covariate-columns.md` as part of this extraction. It
+  is deliberately distinct from `URINE_VOL_24H`, the output counterpart
+  over the same window, which Zhao 2025 screened and did **not** retain
+  -- collapsing the two would destroy the paper's finding.
+- **Diuretic class composition.** `CONMED_DIURETIC` pools furosemide,
+  spironolactone and hydrochlorothiazide, per the Materials and Methods
+  list. The register requires the pooled class to be enumerated per
+  model, and it is, in `covariateData[[CONMED_DIURETIC]]$notes`.
+- **Table 4 level offset is documented, not fitted.** See the previous
+  section. No parameter was adjusted to close it.
+- **Virtual-cohort covariate distributions are reconstructed, not
+  published.** Zhao 2025 reports medians and interquartile ranges but
+  not the joint covariate distribution, so the cohort here draws each
+  covariate independently from a log-normal matched to its published
+  median and IQR. The paper reports a weight-DFI correlation of
+  R = 0.7274 which this independent draw does not reproduce; that
+  affects the spread of simulated exposures but not any of the
+  structural checks above, all of which are evaluated per subject or in
+  closed form.
+- **Assay range.** Concentrations below 2 or above 50 mg/L were
+  excluded from the original fit (Materials and Methods, exclusion
+  criterion i). The simulation applies no such truncation.
