@@ -1486,6 +1486,8 @@ navbar:
         href: articles/deWit_2016_everolimus.html
       - text: "Everolimus sheep (Leber 2023)"
         href: articles/Leber_2023_immunosuppressants_hemoperfusion.html
+      - text: "Evinacumab (Bihorel 2025)"
+        href: articles/Bihorel_2025_evinacumab.html
       - text: "Evinacumab (Pu 2021)"
         href: articles/Pu_2021_evinacumab.html
       - text: "Evogliptin (Kim 2025)"
@@ -4964,6 +4966,7 @@ articles:
   - articles/Bienczak_2016_nevirapine
   - articles/Bienczak_2025_ligelizumab
   - articles/Bihorel_2023_molnupiravir
+  - articles/Bihorel_2025_evinacumab
   - articles/Bijleveld_2016_gentamicin
   - articles/Bijleveld_2017_gentamicin
   - articles/Biliouris_2018_nusinersen
