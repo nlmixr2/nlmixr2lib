@@ -19,7 +19,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Johnson 2025 osimertinib ([doi:10.1002/prp2.70098](https://doi.org/10.1002/prp2.70098)) -- adults with advanced EGFR-mutation-positive non-small cell lung cancer.
+- Add Morales Junior 2025 cefepime ([doi:10.1007/s40262-025-01485-5](https://doi.org/10.1007/s40262-025-01485-5)) -- critically ill children and young adults in a pediatric intensive care unit.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
