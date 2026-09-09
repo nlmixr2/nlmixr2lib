@@ -2,6 +2,7 @@
 
 # development version
 
+- Add Wurthwein 2025 PEGylated asparaginase, four models ([doi:10.1007/s13318-025-00962-3](https://doi.org/10.1007/s13318-025-00962-3)) -- children with acute lymphoblastic leukemia in the AIEOP-BFM ALL 2009 trial (German/Czech, Italian, high-risk post-induction, and R2 experimental arm).
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
