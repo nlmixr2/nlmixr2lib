@@ -81,10 +81,11 @@ if (!"category" %in% names(display)) {
 #   * pandoc markdown -- the table is an HTML block inside a markdown document,
 #     and pandoc's `markdown_in_html_blocks` extension (on by default) parses
 #     the CONTENT of block-level HTML tags as markdown. That turns `_x_` and
-#     `*x*` into emphasis (1600+ descriptions contain one or the other) and,
-#     far worse, treats a `$` as opening inline math: a NONMEM description
-#     mentioning `$PRED` or `$OMEGA` swallowed every row up to the next `$` on
-#     the page and rendered ~1500 rows of the table as escaped source text.
+#     `*x*` into emphasis (1,206 descriptions contain one or the other) and,
+#     far worse, treats a `$` as opening inline math: six descriptions name a
+#     NONMEM record -- `$PRED`, `$DES`, `$MIXTURE`, `$PK`, `$PRIOR` -- and each
+#     swallowed every row up to the next `$` on the page, rendering 1,461 of
+#     the 2,642 rows as escaped source text.
 #
 # So the text is HTML-escaped here (keeping `escape = FALSE` in kable() for the
 # deliberately-HTML `<a>` wrapper), and render_table() then emits the finished
