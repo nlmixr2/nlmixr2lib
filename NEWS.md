@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Choi 2025 denosumab ([doi:10.3389/fphar.2025.1631034](https://doi.org/10.3389/fphar.2025.1631034)) -- healthy male volunteers and postmenopausal women with osteoporosis.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
