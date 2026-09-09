@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Di Deo 2025 tideglusib ([doi:10.3390/pharmaceutics17081065](https://doi.org/10.3390/pharmaceutics17081065)) -- elderly healthy subjects and adolescent/adult patients with congenital or juvenile-onset myotonic dystrophy type 1.
+- Add Choi 2025 denosumab ([doi:10.3389/fphar.2025.1631034](https://doi.org/10.3389/fphar.2025.1631034)) -- healthy male volunteers and postmenopausal women with osteoporosis.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses

@@ -1124,6 +1124,8 @@ navbar:
         href: articles/Tornoe_2006_HPG_axis.html
       - text: "Delafloxacin (Lv 2024)"
         href: articles/Lv_2024_delafloxacin.html
+      - text: "Denosumab (Choi 2025)"
+        href: articles/Choi_2025_denosumab.html
       - text: "Desmopressin (Agerso 2004)"
         href: articles/Agerso_2004_desmopressin.html
       - text: "Desmopressin (Schutte 2018)"
@@ -5316,6 +5318,7 @@ articles:
   - articles/Choe_2012_busulfan
   - articles/Choi_2011_remifentanil
   - articles/Choi_2018_metformin
+  - articles/Choi_2025_denosumab
   - articles/Chotsiri_2019_lumefantrine
   - articles/Chotsiri_2019_piperaquine
   - articles/Chotsiri_2024_primaquine_metabolites
