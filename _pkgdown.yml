@@ -2584,6 +2584,8 @@ navbar:
         href: articles/Taylor_2020_methotrexate.html
       - text: "Methotrexate (Taylor 2026)"
         href: articles/Taylor_2026_methotrexate.html
+      - text: "Methotrexate (Yu 2025)"
+        href: articles/Yu_2025_methotrexate.html
       - text: "Methotrexate (Zhao 2025)"
         href: articles/Zhao_2025_methotrexate.html
       - text: "Methotrexate mouse pbpk (Saleh 2023)"
@@ -6636,6 +6638,7 @@ articles:
   - articles/Yu_2022_ofatumumab
   - articles/Yu_2023_vancomycin
   - articles/Yu_2024_ilaprazole
+  - articles/Yu_2025_methotrexate
   - articles/Yu_2025_vancomycin
   - articles/Yu_2026_lacosamide
   - articles/Yu_2026_tenofovir
