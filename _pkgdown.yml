@@ -926,6 +926,8 @@ navbar:
         href: articles/Pejcic_2024_clopidogrel.html
       - text: "Clozapine (Li 2012)"
         href: articles/Li_2012_clozapine.html
+      - text: "Cobicistat (Overbeek 2025)"
+        href: articles/Overbeek_2025_cobicistat_olaparib_boosting.html
       - text: "Codeine (Ashraf 2024)"
         href: articles/Ashraf_2024_codeine.html
       - text: "Colchicine mouse pbpk (Saleh 2023)"
@@ -2938,6 +2940,8 @@ navbar:
         href: articles/PillaReddy_2013_panss_subscales.html
       - text: "Olanzapine rat (Johnson 2011)"
         href: articles/Johnson_2011_olanzapine_rat.html
+      - text: "Olaparib (Overbeek 2025)"
+        href: articles/Overbeek_2025_cobicistat_olaparib_boosting.html
       - text: "Olaparib (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
       - text: "Olaparib mouse (DeJongh 2025)"
@@ -6041,6 +6045,7 @@ articles:
   - articles/Ouerdani_2015_pazopanib
   - articles/Ouerdani_2015_pazopanib_mouse
   - articles/Ousey_2026_plozasiran
+  - articles/Overbeek_2025_cobicistat_olaparib_boosting
   - articles/Overgaard_2016_liraglutide
   - articles/Overgaard_2019_semaglutide
   - articles/Ozawa_2007_docetaxel
