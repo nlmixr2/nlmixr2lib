@@ -684,8 +684,10 @@ navbar:
         href: articles/Bruno_2012_capecitabine_docetaxel_mbc.html
       - text: "Capivasertib (FernandezTeruel 2024)"
         href: articles/FernandezTeruel_2024_capivasertib.html
-      - text: "Capivasertib (FernandezTeruel 2025)"
-        href: articles/FernandezTeruel_2025_capivasertib.html
+      - text: "Caplacizumab 1cmt (Straube 2025)"
+        href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
+      - text: "Caplacizumab 2cmt (Straube 2025)"
+        href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
       - text: "Captopril pbpk (Gu 2025)"
         href: articles/Gu_2025_heart_failure_pbpk.html
       - text: "Captopril rat (Kiriyama 2024)"
@@ -2330,6 +2332,10 @@ navbar:
         href: articles/Retlich_2015_linagliptin.html
       - text: "Linagliptin (Tadayasu 2014)"
         href: articles/Tadayasu_2014_linagliptin.html
+      - text: "Linagliptin 1cmt (Straube 2025)"
+        href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
+      - text: "Linagliptin 2cmt (Straube 2025)"
+        href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
       - text: "Linezolid (Abdelgawad 2024)"
         href: articles/Abdelgawad_2024_linezolid.html
       - text: "Linezolid (Boak 2014)"
@@ -3028,6 +3034,10 @@ navbar:
         href: articles/Lowe_2009_omalizumab.html
       - text: "Omalizumab (Marcantonio 2022)"
         href: articles/Marcantonio_2022_efa.html
+      - text: "Omalizumab 1cmt (Straube 2025)"
+        href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
+      - text: "Omalizumab 2cmt (Straube 2025)"
+        href: articles/Straube_2025_TMDD_high_vs_low_affinity.html
       - text: "Omalizumab pediatric (Zhu 2023)"
         href: articles/Zhu_2023_omalizumab_pediatric.html
       - text: "Ombitasvir (Mensing 2017)"
@@ -6472,6 +6482,7 @@ articles:
   - articles/Storset_2014_tacrolimus
   - articles/Stoschus_2025_phenobarbital
   - articles/Stott_2023_flucytosine
+  - articles/Straube_2025_TMDD_high_vs_low_affinity
   - articles/Stricker_2013_aminocaproicAcid
   - articles/Stricker_2015_aminocaproic_acid
   - articles/Stringer_2013_sipoglitazar

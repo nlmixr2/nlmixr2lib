@@ -17,7 +17,7 @@
   `theta1` is corrected, and its two anchor chunks now solve the model instead
   of restating its equation inline so the same drift cannot recur silently.
 
-- Add Fernandez Teruel 2025 capivasertib ([doi:10.1111/cts.70286](https://doi.org/10.1111/cts.70286)) -- adults with advanced solid tumours and with HR-positive/HER2-negative advanced breast cancer receiving capivasertib plus fulvestrant.
+- Add Straube 2025 omalizumab, caplacizumab (ALX-0081) and linagliptin ([doi:10.1002/psp4.70048](https://doi.org/10.1002/psp4.70048)) -- full TMDD fits to published single-dose profiles, each as a one- and a two-compartment model.
 
 - Add Damnjanovic 2023 levetiracetam, lamotrigine and valproic acid ([doi:10.1177/20420986231181337](https://doi.org/10.1177/20420986231181337)) -- Serbian children aged 2-18 years on dual antiepileptic therapy.
 
