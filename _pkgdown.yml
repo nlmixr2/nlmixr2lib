@@ -3250,6 +3250,8 @@ navbar:
         href: articles/Dohmann_2025_piperacillin.html
       - text: "Piperacillin (Jeon 2014)"
         href: articles/Jeon_2014_piperacillin.html
+      - text: "Piperacillin (Kumta 2025)"
+        href: articles/Kumta_2025_piperacillin_tazobactam.html
       - text: "Piperacillin (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_piperacillin.html
       - text: "Piperacillin (Lee 2025)"
@@ -4072,6 +4074,8 @@ navbar:
         href: articles/Chandorkar_2015_ceftolozane_tazobactam.html
       - text: "Tazobactam (CohenWolkowiez 2014)"
         href: articles/CohenWolkowiez_2014_piperacillin_tazobactam.html
+      - text: "Tazobactam (Kumta 2025)"
+        href: articles/Kumta_2025_piperacillin_tazobactam.html
       - text: "Tazobactam (Lee 2025)"
         href: articles/Lee_2025_piperacillin_tazobactam.html
       - text: "Tazobactam (Nichols 2016)"
@@ -5687,6 +5691,7 @@ articles:
   - articles/Kuester_2008_matuzumab
   - articles/Kumar_2024_mAb_popPBPK
   - articles/Kumpulainen_2010_flurbiprofen
+  - articles/Kumta_2025_piperacillin_tazobactam
   - articles/Kunarajah_2017_doxorubicin
   - articles/Kunisawa_2014_olprinone
   - articles/Kunisawa_2015_landiolol
