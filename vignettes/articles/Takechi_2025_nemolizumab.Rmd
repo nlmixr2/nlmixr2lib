@@ -1,0 +1,751 @@
+---
+title: "Nemolizumab in prurigo nodularis (Takechi 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Nemolizumab in prurigo nodularis (Takechi 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse   = TRUE,
+  comment    = "#>",
+  fig.width  = 7,
+  fig.height = 4.5,
+  error      = FALSE
+)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20250929)
+```
+
+# Model and source
+
+* Citation: Takechi T, Shimizu J, Kabashima K, Ieiri I (2025). *Quantitative
+  evaluation of nemolizumab pharmacokinetics and efficacy in prurigo nodularis:
+  a population pharmacokinetics and model-based meta-analysis approach.*
+  Dermatol Ther (Heidelb) 15(12):3615-3632.
+* Article: <https://doi.org/10.1007/s13555-025-01554-4>
+* Supplement (Figs. S1-S10, Table S1) retrieved from the EuropePMC
+  supplementary-file endpoint for PMC12619860. It contains figures and the
+  study-design table only -- **no NONMEM control stream and no additional
+  parameter table**.
+
+Nemolizumab is a humanized monoclonal antibody against interleukin-31 receptor
+A (IL-31RA). IL-31 signalling on sensory neurons and immune cells is a
+principal driver of itch, and nemolizumab is approved for prurigo nodularis
+(PN) and atopic dermatitis (AD). Takechi 2025 is a three-part pharmacometric
+analysis and this vignette validates all three parts:
+
+| Part | nlmixr2lib model | What it describes |
+| --- | --- | --- |
+| PopPK | `Takechi_2025_nemolizumab` | Serum nemolizumab concentration, one compartment, first-order SC absorption |
+| PopPD | `Takechi_2025_nemolizumab_ppnrs` | Weekly average Peak Pruritus NRS (PP-NRS, 0-10) under placebo and nemolizumab |
+| MBMA | `Takechi_2025_nemolizumab_mbma_iga` | Study-arm IGA success rate, nemolizumab vs dupilumab, 6 RCTs |
+
+The three are **independent models fitted to different data**, exactly as the
+authors built them, so they are three model files sharing this one vignette.
+The PopPD model has no PK layer: the authors looked for an exposure-response
+relationship and did not find one, because the 30 mg and 60 mg arms of the
+pivotal study responded alike.
+
+A fourth model in the paper -- the MBMA of *PP-NRS* success rates, the sibling
+of the IGA meta-analysis -- is **not yet included**; see
+[Not yet extracted](#not-yet-extracted).
+
+```{r load-models}
+pk   <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab"))
+pd   <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab_ppnrs"))
+mbma <- rxode2::rxode(readModelDb("Takechi_2025_nemolizumab_mbma_iga"))
+```
+
+# Population
+
+**PopPK** (Table 1, "All" column; Supplementary Table S1). 680 patients
+contributing 4389 nemolizumab concentrations across seven studies -- six in AD
+(including two paediatric studies in children aged 6-12 years) and one in PN.
+Median age 37 years (range 6-84), median weight 62.8 kg (range 16-151), median
+serum albumin 4.4 g/dL (range 2.0-5.2), 386 male / 294 female. Race, summed
+across the per-study counts of Table 1, is 125 White / 18 Black or African
+American / 535 Asian / 2 Other, which totals exactly the 680 stated subjects;
+all non-Asian subjects come from the single multinational phase 2a study
+CIM003JG. Placebo subjects were excluded from the PopPK dataset (Table S1
+footnote a). Doses ranged from 0.003 mg/kg single doses in phase 1 up to 60 mg
+Q4W.
+
+The 153 PN patients (905 observations) were held out as an **external
+validation** set rather than used for estimation, which is the basis of the
+paper's conclusion that AD and PN share the same PK.
+
+**PopPD** (Table 1, "Patients with PN" column, footnote-b rows). All 229
+patients of the phase II/III study M525101-11 (jRCT2011200017, Yokozeki et al.
+2024), contributing 3833 weekly-average PP-NRS observations over 112 days.
+Median age 51 years (range 13-84), median weight 61.2 kg (range 32.8-109.6),
+107 male / 122 female, all Japanese. Baseline weekly average PP-NRS median 8.6
+(range 6.4-10); baseline IGA 3 in 112 patients and 4 in 117. Arms were placebo
+(76), nemolizumab 30 mg Q4W after a 60 mg loading dose (77) and nemolizumab
+60 mg Q4W (76).
+
+**MBMA** (Table 3). 1170 participants in 13 arms of six randomized controlled
+trials: Yokozeki et al. (jRCT2011200017), Staender et al. (SPR.115828),
+OLYMPIA 1, OLYMPIA 2 for nemolizumab, and PRIME and PRIME2 for dupilumab.
+Arm-mean age 46.7-59.7 years, arm-mean weight 60.4-87.1 kg, baseline PP-NRS
+8.3-8.6, proportion with IGA 4 at baseline 28.0-54.5%.
+
+# Source trace
+
+Every value in the three `ini()` blocks, with the source location. Values are
+transcribed from the "Original data / Estimate" columns; the bootstrap medians
+and 95% CIs in the adjacent columns were used only as a transcription check.
+
+```{r source-trace, echo = FALSE}
+trace <- tibble::tribble(
+  ~Model,  ~Parameter,             ~Value,          ~Source,
+  "PopPK", "lcl",                  "log(0.340)",    "Table 2, CL/F (L/day); also the displayed CL/F equation",
+  "PopPK", "lvc",                  "log(8.44)",     "Table 2, V/F (L); also the displayed V/F equation",
+  "PopPK", "lka",                  "log(0.548)",    "Table 2, ka (1/day)",
+  "PopPK", "e_wt_cl",              "fixed(0.75)",   "Displayed CL/F equation exponent (no RSE reported)",
+  "PopPK", "e_wt_vc",              "fixed(1)",      "Displayed V/F equation, printed without an exponent",
+  "PopPK", "e_alb_cl",             "-1.52",         "Table 2, Covariate effect of ALB",
+  "PopPK", "etalcl + etalvc",      "0.135 / 0.0896 / 0.148", "Table 2, IIV CL/F, Covariance, IIV V/F",
+  "PopPK", "etalka",               "0.404",         "Table 2, IIV ka",
+  "PopPK", "expSd",                "0.164866",      "Table 2, log normal error (CV%) = 16.6; sqrt(log(1 + 0.166^2))",
+  "PopPD", "lpmax",                "0.618",         "Table 2, Pmax (log scale; see Assumptions)",
+  "PopPD", "lkp",                  "log(2.74e-3)",  "Table 2, Kp (x 10^-3/day)",
+  "PopPD", "lemax",                "1.41",          "Table 2, Edrug (log scale; see Assumptions)",
+  "PopPD", "lkdrug",               "log(28.7e-3)",  "Table 2, Kd (x 10^-3/day)",
+  "PopPD", "etalpmax / etalkp / etalemax / etalkdrug", "1.55 / 10.4 / 1.19 / 2.10", "Table 2, IIV Pmax / Kp / Edrug / Kd",
+  "PopPD", "addSd",                "sqrt(0.582)",   "Table 2, Additive error (variance; see Assumptions)",
+  "MBMA",  "e0",                   "-4.92",         "Table 4, IGA column, row A",
+  "MBMA",  "pmax_placebo",         "2.99",          "Table 4, IGA column, row Pmax",
+  "MBMA",  "lkp",                  "log(0.123)",    "Table 4, IGA column, row Kp (/week)",
+  "MBMA",  "edrug_nemolizumab",    "1.71",          "Table 4, IGA column, row Edrug,nemolizumab",
+  "MBMA",  "lkdrug_nemolizumab",   "log(0.416)",    "Table 4, IGA column, row Kd,nemolizumab (/week)",
+  "MBMA",  "edrug_dupilumab",      "1.49",          "Table 4, IGA column, row Edrug,dupilumab",
+  "MBMA",  "lkdrug_dupilumab",     "log(0.134)",    "Table 4, IGA column, row Kd,dupilumab (/week)",
+  "MBMA",  "eta_study_eff",        "0.226",         "Table 4, IGA column, row ISV on EFF (variance)",
+  "MBMA",  "addSd",                "sqrt(0.619)",   "Table 4, IGA column, row Additive error (variance)"
+)
+knitr::kable(trace, caption = "Source trace for all three model files.")
+```
+
+Structural equations: the PopPK model structure is Results "PopPK Analysis"
+paragraph 1 plus the two displayed fixed-effect equations; the PopPD equations
+are the two displayed equations in Methods "Pharmacodynamic Model"; the MBMA
+equations are the displayed logit / EFF / f0 / fdrug group and the displayed
+residual equation in Methods "Model-Based Meta-analysis".
+
+## Reading the omega scale from the covariance row
+
+Table 2 prints the IIV rows as bare numbers with no CV% label, so whether they
+are variances or standard deviations has to be settled from the table itself.
+The `Covariance for CL/F and V/F` row settles it: only one reading gives a
+legal correlation.
+
+```{r omega-scale}
+corr_if_variance <- 0.0896 / sqrt(0.135 * 0.148)
+corr_if_sd       <- 0.0896 / sqrt(0.135^2 * 0.148^2)
+c(`as variances` = corr_if_variance, `as SDs` = corr_if_sd)
+
+# A correlation must lie in [-1, 1]. The SD reading is impossible.
+stopifnot(
+  abs(corr_if_variance) < 1,
+  abs(corr_if_sd) > 1
+)
+```
+
+The IIV rows are therefore **variances**, and by the same table's convention so
+are the `ISV on EFF` and `Additive error` rows of Table 4.
+
+# Part 1 -- Population pharmacokinetics
+
+## Typical-value structure
+
+With the etas zeroed, the model must reproduce the paper's two displayed
+equations exactly for any weight and albumin.
+
+```{r pk-typical}
+pk0 <- rxode2::zeroRe(pk)
+
+pk_typ <- function(wt, alb_gL, dose = 60, tmax = 112, dt = 0.25) {
+  ev <- rxode2::et(amt = dose, cmt = "depot") |>
+    rxode2::et(seq(0, tmax, by = dt)) |>
+    as.data.frame()
+  ev$id  <- 1L
+  ev$WT  <- wt
+  ev$ALB <- alb_gL
+  as.data.frame(rxode2::rxSolve(pk0, ev))
+}
+
+s70 <- pk_typ(70, 45)   # 70 kg, albumin 4.5 g/dL = 45 g/L -> both covariates at reference
+s40 <- pk_typ(40, 30)   # 40 kg, albumin 3.0 g/dL = 30 g/L
+
+# Paper's equations:
+#   CL/F = 0.340 * (WT/70)^0.75 * (ALB_gdL/4.5)^-1.52
+#   V/F  = 8.44  * (WT/70)
+cl_paper <- function(wt, alb_gL) 0.340 * (wt / 70)^0.75 * ((alb_gL * 0.1) / 4.5)^-1.52
+vc_paper <- function(wt)         8.44  * (wt / 70)
+
+chk <- tibble::tibble(
+  quantity = c("CL/F at 70 kg / 45 g/L", "V/F at 70 kg", "CL/F at 40 kg / 30 g/L", "V/F at 40 kg"),
+  model    = c(s70$cl[1], s70$vc[1], s40$cl[1], s40$vc[1]),
+  paper    = c(cl_paper(70, 45), vc_paper(70), cl_paper(40, 30), vc_paper(40))
+) |>
+  dplyr::mutate(rel_err = abs(model - paper) / paper)
+knitr::kable(chk, digits = 6,
+             caption = "Model parameters vs the paper's displayed equations.")
+
+# Deterministic identity: exact to machine precision, so assert tightly.
+stopifnot(all(chk$rel_err < 1e-10))
+```
+
+The reference values also reproduce Table 2 directly: CL/F 0.340 L/day and
+V/F 8.44 L at 70 kg and 4.5 g/dL, giving an elimination half-life of
+
+```{r pk-halflife}
+thalf <- log(2) * s70$vc[1] / s70$cl[1]
+round(thalf, 1)
+stopifnot(abs(thalf - 17.2) < 0.2)   # deterministic; 17.2 days
+```
+
+which is in the usual range for an IgG cleared by non-specific catabolism.
+
+## Closed-form check and mass balance
+
+The ODE solve is checked against the analytic one-compartment first-order
+absorption solution using the *same* parameters, so the only difference is
+numerical -- a tight bound is correct here.
+
+```{r pk-closed-form}
+ka <- s70$ka[1]; cl <- s70$cl[1]; vc <- s70$vc[1]; kel <- cl / vc
+bateman <- 1000 * 60 * ka / (vc * (ka - kel)) * (exp(-kel * s70$time) - exp(-ka * s70$time))
+
+rel <- abs(s70$Cc - bateman) / pmax(bateman, 1e-8)
+max(rel[s70$time > 0 & bateman > 1])
+stopifnot(max(rel[s70$time > 0 & bateman > 1]) < 1e-4)
+```
+
+Mass balance: everything dosed is either still in the depot, in the central
+compartment, or has been eliminated.
+
+```{r pk-mass-balance}
+# Eliminated amount = integral of CL * C dt, by the trapezoid rule.
+# Cc is ng/mL, so divide by 1000 to get mg/L before multiplying by CL in L/day.
+rate <- s70$cl * s70$Cc / 1000
+elim <- c(0, cumsum(0.5 * (head(rate, -1) + tail(rate, -1)) * diff(s70$time)))
+total <- s70$depot + s70$central + elim
+max(abs(total - 60))
+# Deterministic: the only error is the trapezoid discretisation of the
+# elimination integral on the 0.25-day grid. Realised 0.0072 mg.
+stopifnot(max(abs(total - 60)) < 0.02)
+```
+
+## Concentration-time profile and assay range
+
+The paper's assay is validated over 100-6400 ng/mL (Methods, "Pharmacokinetic
+and Pharmacodynamic Assessments"), which is an independent check that the model
+is on the right concentration scale.
+
+```{r pk-profile, fig.cap = "Typical nemolizumab profile after a single 60 mg SC dose, 70 kg subject at reference albumin."}
+cmax_typ <- max(s70$Cc)
+tmax_typ <- s70$time[which.max(s70$Cc)]
+c(Cmax_ng_mL = round(cmax_typ), Tmax_day = tmax_typ)
+
+# Cmax must land inside the validated assay range, not orders of magnitude out.
+stopifnot(cmax_typ > 100, cmax_typ < 6400)
+
+ggplot(s70, aes(time, Cc)) +
+  geom_line(linewidth = 0.8) +
+  geom_hline(yintercept = c(100, 6400), linetype = "dashed", colour = "grey50") +
+  labs(x = "Time (day)", y = "Serum nemolizumab (ng/mL)",
+       subtitle = "Dashed lines: validated assay range 100-6400 ng/mL")
+```
+
+## Virtual cohort
+
+A 150-subject cohort at the multiple-dose regimen used in the PN study: 30 mg
+Q4W after a 60 mg loading dose, over the 16-week initial treatment phase.
+Weight and albumin are drawn to match the PN cohort of Table 1.
+
+```{r pk-cohort}
+n_pk <- 150L
+set.seed(11)
+cov_pk <- tibble::tibble(
+  id  = seq_len(n_pk),
+  WT  = pmin(109.6, pmax(32.8, rlnorm(n_pk, log(61.2), 0.24))),
+  ALB = pmin(51, pmax(27, rnorm(n_pk, 43, 3)))     # g/L; PN median 4.3 g/dL
+)
+
+ev_pk <- rxode2::et(amt = 60, cmt = "depot") |>                       # loading dose
+  rxode2::et(amt = 30, cmt = "depot", time = 28, ii = 28, addl = 2) |> # 30 mg Q4W
+  rxode2::et(seq(0, 112, by = 1), cmt = "central") |>                  # observations on the ODE state
+  as.data.frame()
+
+d_pk <- merge(cov_pk, ev_pk)
+d_pk <- d_pk[order(d_pk$id, d_pk$time, -d_pk$evid), ]
+
+sim_pk <- as.data.frame(rxode2::rxSolve(pk, d_pk))
+stopifnot(nrow(sim_pk) > 0, !anyNA(sim_pk$Cc))
+```
+
+```{r pk-vpc, fig.cap = "Simulated nemolizumab concentrations, 30 mg Q4W with a 60 mg loading dose (150 subjects). Ribbon: 5th-95th percentile; line: median."}
+pctl <- sim_pk |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(lo = quantile(sim, 0.05), md = median(sim), hi = quantile(sim, 0.95),
+                   .groups = "drop")
+
+ggplot(pctl, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey80") +
+  geom_line(aes(y = md), linewidth = 0.8) +
+  labs(x = "Time (day)", y = "Serum nemolizumab (ng/mL)")
+```
+
+## PKNCA validation
+
+Non-compartmental analysis of the typical-value (`zeroRe`) single-dose profile.
+Because the etas are zeroed, AUC(0-inf) must equal Dose/(CL/F) analytically,
+which makes this a real gate rather than a self-consistency check.
+
+```{r pknca}
+nca_in <- pk_typ(70, 45, dose = 60, tmax = 240, dt = 0.25) |>
+  dplyr::transmute(id = 1L, time, Cc, treatment = "60 mg SC single dose") |>
+  dplyr::filter(!is.na(Cc))
+
+# A time-zero record must be present or PKNCA warns per subject.
+stopifnot(any(nca_in$time == 0))
+
+o_conc <- PKNCA::PKNCAconc(nca_in, Cc ~ time | id / treatment)
+o_dose <- PKNCA::PKNCAdose(
+  data.frame(id = 1L, time = 0, dose = 60),
+  dose ~ time | id
+)
+o_data <- PKNCA::PKNCAdata(
+  o_conc, o_dose,
+  intervals = data.frame(start = 0, end = Inf,
+                         cmax = TRUE, tmax = TRUE, half.life = TRUE,
+                         aucinf.obs = TRUE)
+)
+res <- suppressWarnings(as.data.frame(PKNCA::pk.nca(o_data)))
+nca <- setNames(res$PPORRES, res$PPTESTCD)
+
+auc_analytic <- 60 / cl_paper(70, 45) * 1000   # mg / (L/day) -> ng*day/mL
+
+nca_tab <- tibble::tibble(
+  `NCA parameter` = c("Cmax (ng/mL)", "Tmax (day)", "t-half (day)", "AUC0-inf (ng*day/mL)"),
+  `PKNCA`         = c(nca[["cmax"]], nca[["tmax"]], nca[["half.life"]], nca[["aucinf.obs"]]),
+  `Analytic`      = c(cmax_typ, tmax_typ, log(2) * vc / cl, auc_analytic)
+) |>
+  dplyr::mutate(`% difference` = 100 * (PKNCA - Analytic) / Analytic)
+knitr::kable(nca_tab, digits = 2,
+             caption = "PKNCA on the typical-value profile vs the analytic one-compartment result.")
+
+# Deterministic (no IIV, no residual): a tight bound is correct here.
+stopifnot(max(abs(nca_tab$`% difference`)) < 1)
+```
+
+The paper reports **no** NCA table of its own -- its PK validation is entirely
+GOF plots and VPCs (Fig. 1, Figs. S1-S5) -- so there is no published Cmax /
+AUC to compare against, and this section deliberately validates against the
+analytic identity instead.
+
+# Part 2 -- Population PD: weekly average PP-NRS
+
+## Reading Pmax and Edrug off Table 2
+
+Table 2 prints `Pmax = 0.618` and `Edrug = 1.41` with no units. Taking them at
+face value as PP-NRS point reductions is wrong: they are the **log-scale
+thetas** of the paper's stated exponential (log-normal) IIV
+parameterisation. This subsection reproduces the adjudication, because it is
+the single most consequential reading in the extraction.
+
+The paper's Fig. 2 plots the observed 5th, 50th and 95th percentiles of the
+weekly average PP-NRS for each arm. Those observed percentiles, read from the
+figure, are the target:
+
+```{r ppnrs-targets}
+days <- c(0, 28, 56, 84, 112)
+obs_fig2 <- list(
+  placebo     = rbind(p05 = c(7.0, 6.1, 4.4, 3.0, 2.7),
+                      p50 = c(8.3, 8.0, 7.8, 8.0, 7.7),
+                      p95 = c(10,  10,  10,  10,  10)),
+  nemolizumab = rbind(p05 = c(7.0, 1.6, 0.3, 0.0, 0.1),
+                      p50 = c(8.5, 6.0, 4.6, 3.6, 3.1),
+                      p95 = c(10,  8.9, 8.5, 8.9, 8.2))
+)
+```
+
+Simulate the source's own design under both readings. 200 subjects per arm.
+
+```{r ppnrs-adjudicate}
+n_pd <- 200L
+
+pd_cohort <- function(dose, base_median) {
+  set.seed(if (dose > 0) 21 else 22)
+  b <- pmin(10, pmax(6.4, rnorm(n_pd, base_median, 0.9)))
+  d <- expand.grid(time = days, id = seq_len(n_pd))
+  d$SCORE_PPNRS         <- b[d$id]
+  d$DOSE_NEMOLIZUMAB_MG <- dose
+  d$evid <- 0L
+  d$amt  <- 0
+  d[order(d$id, d$time), ]
+}
+
+run_pd <- function(model, dose, base_median) {
+  s <- as.data.frame(rxode2::rxSolve(model, pd_cohort(dose, base_median), nSub = n_pd))
+  sapply(split(s$sim, s$time), quantile, c(0.05, 0.50, 0.95))
+}
+
+# The shipped model = log-scale reading.
+q_log <- list(placebo     = run_pd(pd, 0,  8.4),
+              nemolizumab = run_pd(pd, 30, 8.6))
+
+# The linear reading, for comparison only: overwrite the two thetas with
+# log(0.618) and log(1.41) so the typical maxima become 0.618 and 1.41 points.
+pd_linear <- rxode2::ini(pd, lpmax = log(0.618), lemax = log(1.41))
+q_lin <- list(placebo     = run_pd(pd_linear, 0,  8.4),
+              nemolizumab = run_pd(pd_linear, 30, 8.6))
+```
+
+```{r ppnrs-adjudicate-table, echo = FALSE}
+row_of <- function(q, arm, pct) q[[arm]][pct, ]
+adj <- tibble::tibble(
+  Arm        = rep(c("placebo", "nemolizumab"), each = 5),
+  Day        = rep(days, 2),
+  `Observed (Fig. 2)` = c(obs_fig2$placebo["p50", ], obs_fig2$nemolizumab["p50", ]),
+  `Log-scale reading` = c(row_of(q_log, "placebo", 2), row_of(q_log, "nemolizumab", 2)),
+  `Linear reading`    = c(row_of(q_lin, "placebo", 2), row_of(q_lin, "nemolizumab", 2))
+)
+knitr::kable(adj, digits = 2,
+             caption = "Median weekly average PP-NRS: observed (Fig. 2) vs the two readings of Table 2.")
+```
+
+The linear reading misses the active-arm median at day 112 by more than 3
+points -- more than the entire observed placebo-arm change -- and it cannot be
+rescued by the IIV, because with `Edrug = 1.41` as a point reduction the
+*median* subject's drug effect is capped at 1.41 points however large the etas
+are. The log-scale reading tracks both arms.
+
+```{r ppnrs-adjudicate-gate}
+err_log <- abs(row_of(q_log, "nemolizumab", 2) - obs_fig2$nemolizumab["p50", ])
+err_lin <- abs(row_of(q_lin, "nemolizumab", 2) - obs_fig2$nemolizumab["p50", ])
+c(log_scale_max_err = max(err_log), linear_max_err = max(err_lin))
+
+# Cohort-derived, so bounds are deliberately loose (see the note below). The
+# separation between the two readings is ~3 points at day 112, far outside any
+# thread-count noise, which is what makes this gate meaningful.
+stopifnot(
+  max(err_log) < 1.5,   # log-scale reading tracks the observed median
+  max(err_lin) > 2.5    # linear reading does not
+)
+```
+
+These are cohort statistics, so the bounds admit the sampling noise rather than
+pinning one run: `rxSetSeed()` fixes rxode2's stream per solver thread but not
+across thread counts, so a CI runner draws a different cohort. Realised
+`max(err_log)` was 0.8 and `max(err_lin)` 3.7 while authoring; the two readings
+are separated by about 3 points, so bounds of 1.5 and 2.5 sit well outside the
+noise while still going red on a mis-transcribed theta.
+
+## Full VPC against Figure 2
+
+```{r ppnrs-vpc-table, echo = FALSE}
+vpc_tab <- do.call(rbind, lapply(c("placebo", "nemolizumab"), function(arm) {
+  tibble::tibble(
+    Arm = arm, Day = days,
+    `Sim 5th`  = q_log[[arm]][1, ], `Obs 5th`  = obs_fig2[[arm]]["p05", ],
+    `Sim 50th` = q_log[[arm]][2, ], `Obs 50th` = obs_fig2[[arm]]["p50", ],
+    `Sim 95th` = q_log[[arm]][3, ], `Obs 95th` = obs_fig2[[arm]]["p95", ]
+  )
+}))
+knitr::kable(vpc_tab, digits = 1,
+             caption = "Simulated vs observed PP-NRS percentiles (observed values read from Takechi 2025 Fig. 2).")
+```
+
+The 50th and 95th percentiles track the observed data in both arms. The 5th
+percentile runs far below it -- in the active arm it goes negative, because the
+model has no floor at 0 and the additive residual is applied to an already
+small predicted score.
+
+**This is the paper's own model behaving as the paper says it does**, not an
+extraction error. Results, "PopPD Analysis": *"The observed 50th and 95th
+percentiles were almost within the 95% prediction interval (PI) of the model
+simulation. The simulated 5th percentile slightly underestimated the severity
+of pruritus during early treatment, suggesting a modest overprediction of early
+response in some patients."* Fig. 2's lower prediction band sits clipped
+against the zero axis for the same reason. It is recorded here as a deviation
+and excluded from the gate.
+
+```{r ppnrs-vpc-gate}
+gate <- do.call(rbind, lapply(c("placebo", "nemolizumab"), function(arm) {
+  data.frame(arm = arm, pct = c("50th", "95th"),
+             err = c(max(abs(q_log[[arm]][2, ] - obs_fig2[[arm]]["p50", ])),
+                     max(abs(q_log[[arm]][3, ] - obs_fig2[[arm]]["p95", ]))))
+}))
+knitr::kable(gate, digits = 2, caption = "Maximum absolute deviation from the observed percentile, by arm.")
+stopifnot(nrow(gate) == 4L, max(gate$err) < 1.5)
+```
+
+```{r ppnrs-plot, fig.cap = "Simulated median PP-NRS (lines) against the observed medians read from Takechi 2025 Fig. 2 (points)."}
+plot_df <- dplyr::bind_rows(
+  tibble::tibble(arm = "placebo",     day = days, sim = q_log$placebo[2, ],
+                 obs = obs_fig2$placebo["p50", ]),
+  tibble::tibble(arm = "nemolizumab", day = days, sim = q_log$nemolizumab[2, ],
+                 obs = obs_fig2$nemolizumab["p50", ])
+)
+ggplot(plot_df, aes(day, colour = arm)) +
+  geom_line(aes(y = sim), linewidth = 0.8) +
+  geom_point(aes(y = obs), size = 2.5) +
+  ylim(0, 10) +
+  labs(x = "Time (day)", y = "Weekly average PP-NRS", colour = NULL,
+       subtitle = "Lines: simulated median. Points: observed median (Fig. 2).")
+```
+
+## Onset rates
+
+The paper's rapid-onset claim is a statement about `Kd` relative to `Kp`.
+
+```{r ppnrs-onset}
+onset <- tibble::tibble(
+  effect          = c("placebo", "nemolizumab"),
+  `rate (1/day)`  = c(2.74e-3, 28.7e-3),
+  `half-life (d)` = log(2) / c(2.74e-3, 28.7e-3),
+  `% of maximum expressed by day 112` = 100 * (1 - exp(-c(2.74e-3, 28.7e-3) * 112))
+)
+knitr::kable(onset, digits = 1, caption = "Onset of the placebo and nemolizumab effects.")
+
+stopifnot(
+  abs(28.7e-3 / 2.74e-3 - 10.5) < 0.1,                       # deterministic
+  onset$`% of maximum expressed by day 112`[2] > 95,
+  onset$`% of maximum expressed by day 112`[1] < 30
+)
+```
+
+Only about a quarter of the placebo maximum is expressed within the 112-day
+observation window, against essentially all of the nemolizumab maximum. That
+asymmetry -- not the ratio of the maxima alone -- is what produces the roughly
+eight-fold separation between the two arms in Fig. 2.
+
+# Part 3 -- Model-based meta-analysis of IGA success rates
+
+This model is a **study-arm-level** model. Its output is the proportion of an
+arm achieving at least a 2-point decrease in IGA, not an individual patient's
+outcome, and its only random effect is between-study.
+
+## Reproducing Figure 4
+
+Fig. 4B plots the typical (population-mean) time course of the IGA success rate
+for placebo, dupilumab and nemolizumab, and Fig. 4D gives simulated medians at
+weeks 4 and 16. With the between-study eta zeroed, the model is deterministic,
+so these are exact regression tests.
+
+```{r mbma-fig4}
+mbma0 <- rxode2::zeroRe(mbma)
+
+arms <- tibble::tribble(
+  ~arm,          ~DOSE_NEMOLIZUMAB_MG, ~DOSE_DUPILUMAB_MG,
+  "placebo",     0,                    0,
+  "dupilumab",   0,                    300,
+  "nemolizumab", 30,                   0
+)
+weeks <- c(4, 16, 24)
+
+d_mbma <- arms |>
+  dplyr::mutate(id = dplyr::row_number()) |>
+  tidyr::crossing(time = weeks) |>
+  dplyr::mutate(evid = 0L, amt = 0) |>
+  dplyr::arrange(id, time)
+
+sim_mbma <- as.data.frame(rxode2::rxSolve(mbma0, as.data.frame(d_mbma)))
+sim_mbma$arm <- arms$arm[sim_mbma$id]
+
+fig4 <- sim_mbma |>
+  dplyr::transmute(Arm = arm, Week = time, `Model (%)` = 100 * pResp) |>
+  dplyr::left_join(
+    tibble::tribble(
+      ~Arm,          ~Week, ~`Read from Fig. 4 (%)`,
+      "placebo",     4,     2.5,
+      "placebo",     16,    8.8,
+      "placebo",     24,    11.0,
+      "dupilumab",   4,     4.0,
+      "dupilumab",   16,    26.5,
+      "dupilumab",   24,    34.0,
+      "nemolizumab", 4,     8.5,
+      "nemolizumab", 16,    34.0,
+      "nemolizumab", 24,    41.0
+    ), by = c("Arm", "Week")
+  ) |>
+  dplyr::mutate(`Difference (points)` = `Model (%)` - `Read from Fig. 4 (%)`)
+knitr::kable(fig4, digits = 1,
+             caption = "IGA success rate: model vs values read from Takechi 2025 Figs. 4B and 4D.")
+
+# Deterministic (zeroRe), so the only error is figure read-off. A
+# mis-transcribed theta moves these by many percentage points.
+stopifnot(nrow(fig4) == 9L, max(abs(fig4$`Difference (points)`)) < 1.5)
+```
+
+Nine independent points across three arms and three time points are reproduced
+to within figure read-off precision, which validates the intercept, the placebo
+maximum and rate, and both drugs' maxima and rates simultaneously.
+
+```{r mbma-curves, fig.cap = "Typical IGA success-rate time courses. Replicates Figure 4B of Takechi 2025."}
+d_curve <- arms |>
+  dplyr::mutate(id = dplyr::row_number()) |>
+  tidyr::crossing(time = seq(0, 24, by = 0.5)) |>
+  dplyr::mutate(evid = 0L, amt = 0) |>
+  dplyr::arrange(id, time)
+curve <- as.data.frame(rxode2::rxSolve(mbma0, as.data.frame(d_curve)))
+curve$arm <- arms$arm[curve$id]
+
+ggplot(curve, aes(time, 100 * pResp, colour = arm)) +
+  geom_line(linewidth = 0.8) +
+  ylim(0, 80) +
+  labs(x = "Time (week)", y = "IGA success rate (%)", colour = NULL)
+```
+
+Nemolizumab is above dupilumab throughout, and the gap is widest early: at week
+4 the model gives
+
+```{r mbma-early}
+early <- fig4 |> dplyr::filter(Week == 4) |> dplyr::select(Arm, `Model (%)`)
+knitr::kable(early, digits = 1, caption = "Week-4 IGA success rate.")
+
+nemo4 <- early$`Model (%)`[early$Arm == "nemolizumab"]
+dupi4 <- early$`Model (%)`[early$Arm == "dupilumab"]
+stopifnot(nemo4 > 2 * dupi4)   # deterministic
+```
+
+which is the quantitative content of the paper's "particularly notable rapid
+onset of effects during the early treatment phase". It is driven by the onset
+rate constants, not by the maxima: nemolizumab's `Kd` is 0.416/week against
+dupilumab's 0.134/week, while its maximum effect (1.71) is only slightly larger
+than dupilumab's (1.49).
+
+## Arm-size weighting of the residual
+
+The paper's residual is scaled by the binomial standard error of the arm:
+`success rate = Pr + eps * sqrt(Pr * (1 - Pr) / N)`. The model encodes the
+prediction-dependent factor `sqrt(Pr * (1 - Pr))` exactly but ships the `N = 1`
+residual, because `N` is a property of the arm being simulated rather than of
+the model -- the same convention as `Boucher_2018_naproxen_mbma`. Divide by
+`sqrt(N_arm)` to reproduce a real arm.
+
+```{r mbma-residual}
+set.seed(7)
+n_rep  <- 400L
+N_arm  <- 190L   # OLYMPIA 1 nemolizumab arm (Table 3)
+
+d_rep <- data.frame(id = seq_len(n_rep), time = 24,
+                    DOSE_NEMOLIZUMAB_MG = 30, DOSE_DUPILUMAB_MG = 0,
+                    evid = 0L, amt = 0)
+rep_sim <- as.data.frame(rxode2::rxSolve(mbma0, d_rep, nSub = n_rep))
+
+sd_shipped  <- sd(rep_sim$sim)
+sd_expected <- sqrt(0.619) * sqrt(mean(rep_sim$pResp) * (1 - mean(rep_sim$pResp)))
+sd_for_arm  <- sd_shipped / sqrt(N_arm)
+
+tibble::tibble(
+  quantity = c("simulated residual SD (N = 1)",
+               "expected addSd * sqrt(Pr(1-Pr))",
+               paste0("rescaled for an arm of N = ", N_arm)),
+  value    = c(sd_shipped, sd_expected, sd_for_arm)
+) |>
+  knitr::kable(digits = 4, caption = "Residual SD of the shipped model and its per-arm rescaling.")
+
+# Cohort-derived SD from 400 draws: allow generous sampling noise.
+stopifnot(abs(sd_shipped - sd_expected) / sd_expected < 0.20)
+# The rescaled per-arm SD must be a plausible few percentage points.
+stopifnot(sd_for_arm > 0.005, sd_for_arm < 0.05)
+```
+
+# Assumptions and deviations
+
+**1. `Pmax` and `Edrug` of the PopPD model are read as log-scale thetas.**
+Table 2 prints them without units while labelling `Kp` and `Kd`
+`(x 10^-3/day)`. The evidence is set out in full in the "Reading Pmax and
+Edrug" section above and in the model file: a unitless column, an unrescuable
+3.7-point miss of the Fig. 2 active-arm median under the linear reading, a
+matching 50th and 95th percentile under the log-scale reading, and the paper's
+own statement that its simulated 5th percentile ran too low. The paper never
+states the scale explicitly, so this is an inference, but it is a
+figure-falsified one rather than a preference.
+
+**2. The PopPD equation that combines the two response components with the
+baseline is not printed in the paper.** Methods "Pharmacodynamic Model" gives
+`Placebo response(t)` and `Drug response(t)` but no line assembling them into a
+PP-NRS prediction. The additive assembly used here --
+`PP-NRS = baseline - placebo response - drug response` -- follows from the
+paper's own definition of `Pmax` and `Edrug` as *"the maximum effects, defined
+as the reduction in PP-NRS scores"* and is what reproduces Fig. 2. This is a
+genuine reporting gap in the source, not a converter loss: the PDF, the PMC
+full-text XML and the supplement all contain only the two component equations.
+
+**3. Variance-vs-SD reading of the variability rows.** Table 2's IIV rows are
+variances, proved above from the CL/F-V/F covariance row. The same convention
+is applied to Table 2's `Additive error` (0.582 -> SD 0.763) and Table 4's
+`ISV on EFF` and `Additive error`, on the grounds that every row in those
+tables is on the raw NONMEM scale except the one the authors explicitly
+relabelled `log normal error (CV%)`. Reading Table 2's additive error instead
+as an SD of 0.582 changes the residual by 24% and no structural conclusion; a
+user who prefers that reading can set `addSd = 0.582`.
+
+**4. Serum albumin units.** Table 1 heads the albumin row "Serum albumin
+(g/L)" but tabulates 4.3-4.5 with a range of 2.0-5.2. Those are **g/dL**: 45
+g/L is a normal serum albumin and 4.5 g/L is not survivable, and the model
+equation's own reference of 4.5 confirms it. The Table 1 header is a
+publication unit-label error. The covariate register stores `ALB` in SI g/L, so
+the model applies the register's documented inline conversion
+`alb_gdL <- ALB * 0.1` before the power term.
+
+**5. Allometric exponents are `fixed()`.** Neither 0.75 nor the implicit 1 on
+V/F appears as an estimated row in Table 2 with an %RSE or a bootstrap CI; both
+are printed only inside the displayed equations, so both are encoded as
+structural assumptions.
+
+**6. Observed percentiles in Part 2 and the Fig. 4 values in Part 3 are read
+from figures.** The paper tabulates neither, so the comparison targets were
+read off Fig. 2 and Figs. 4B/4D at the resolution of the publisher's
+figure files. The gates are set to tolerate read-off error (1.5 points /
+1.5 percentage points) while still failing on a mis-transcribed parameter,
+which moves these quantities by many points. No parameter value in any model
+file is figure-derived -- every `ini()` entry comes from Table 2 or Table 4.
+
+**7. The MBMA residual ships at `N = 1`.** See "Arm-size weighting" above.
+
+**8. No PK-PD link.** The PopPD and MBMA models take no concentration input.
+This is the authors' structure, not a simplification: no exposure-response
+relationship was identifiable, so the drug effects are constants selected by a
+dose column used only as an on/off switch.
+
+**9. No 0-10 floor on the PP-NRS prediction.** The source describes no
+clamping, and clamping would change the residual distribution near zero.
+Simulated values below 0 occur for strong responders and are visible in the
+paper's own Fig. 2, whose lower prediction band sits against the axis.
+
+**10. Simulation scope.** `Takechi_2025_nemolizumab_mbma_iga` predicts
+study-arm success rates and must not be used to simulate individual patients;
+its only random effect is between-study. `Takechi_2025_nemolizumab_ppnrs` does
+describe individual subjects.
+
+## Not yet extracted {#not-yet-extracted}
+
+Takechi 2025 fits the same longitudinal logistic meta-analysis to a second
+endpoint, the **PP-NRS success rate** (at least a 4-point improvement); its
+parameters are the "PP-NRS" column of Table 4. That model is not in this
+release for one reason: unlike the IGA model, it retains a covariate -- the
+proportion of patients in the arm classified as moderate by IGA -- on the
+nemolizumab maximum effect, and that concept has no entry in the package's
+canonical covariate register yet. Adding it requires a new canonical name,
+which is an operator decision rather than an extraction one. The IGA model
+shipped here is complete and independent of that question.
+
+# Session info
+
+```{r session-info}
+sessionInfo()
+```

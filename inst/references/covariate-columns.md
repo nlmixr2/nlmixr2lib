@@ -2087,6 +2087,18 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
 - **Example models:** `Tiraboschi_2025_amlitelimab.R`.
 - **Notes:** When used as a time-invariant baseline covariate (`BEASI`), document in `covariateData[[SCORE_EASI]]$notes`. Canonical name is `SCORE_EASI` without the `B` prefix to match the `AGE` / `WT` / `ALB` pattern where baseline vs time-varying status is recorded in notes rather than the column name.
 
+### SCORE_PPNRS (**canonical for Peak Pruritus Numerical Rating Scale score**)
+- **Description:** Peak Pruritus Numerical Rating Scale score -- an 11-point (0-10) patient-reported measure of worst itch intensity over the previous 24 hours, where 0 is "no itch" and 10 is "worst itch imaginable". Recorded daily and conventionally averaged over each week before modelling ("weekly average PP-NRS"). Higher values = more severe pruritus. The near-identical Worst Itch NRS (WI-NRS) used in dupilumab trials maps to this canonical; see Source aliases.
+- **Units:** (score)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a -- used as a per-subject baseline anchor (the initial value of the modelled response) or as a screened covariate, not with a reference-value normalisation.
+- **Source aliases:**
+  - `PP-NRS` / `PPNRS` -- the instrument's usual printed name.
+  - `WI-NRS` (Worst Itch Numerical Rating Scale) -- the dupilumab prurigo-nodularis trials (PRIME, PRIME2) report WI-NRS rather than PP-NRS. Takechi 2025 Discussion treats the two as conceptually equivalent ("the PP-NRS and WI-NRS have similar response scales and recall periods, suggesting conceptual equivalence based on cognitive debriefing and usability testing in US adults with moderate-to-severe PN") while cautioning that cross-trial interpretation should allow for the difference. No value transformation; record the instrument actually used in the per-model `notes`.
+- **Example models:** `Takechi_2025_nemolizumab_ppnrs.R` (per-subject observed baseline, used as the initial value of the weekly average PP-NRS response; median 8.6, range 6.4-10).
+- **Notes:** Member of the `SCORE_<instrument>` family (`SCORE_EASI`, `SCORE_MADRS`, `SCORE_HAMD`, `SCORE_NIHSS`, ...), registered on the same family-conforming basis. Baseline-vs-time-varying status is recorded in the per-model `notes` rather than in the column name, matching the `SCORE_EASI` decision. When a model consumes the score as a per-subject baseline anchor there is deliberately no corresponding estimated baseline parameter in `ini()`.
+
 ### SCORE_MGADL (**canonical for Myasthenia Gravis Activities of Daily Living score**)
 <!-- AUDIT 2026-06-19: renamed from `MGADL` to `SCORE_MGADL`. The prior name `MGADL` is preserved as a source_alias for one release cycle so existing covariate-data CSVs continue to load. -->
 - **Description:** Myasthenia Gravis Activities of Daily Living score -- eight-item patient-reported outcome measure (each item 0-3), total 0-24, higher values = greater symptom severity and functional limitation.
@@ -3125,6 +3137,28 @@ All RRT-related canonicals follow the `RRT_<MODALITY>_<KIND>` shape, where `MODA
   - Tirzepatide dose -- Guo 2025 Results 3.1 and Supplementary Table S3.
 - **Example models:** `Guo_2025_glp1ReceptorAgonists_mbma.R` (presence indicator only; no tirzepatide dose-response was estimable over the studied 5-15 mg range).
 - **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family, and is the sibling canonical that the `DOSE_SEMAGLUTIDE_MG` Notes anticipated by name. Founded alongside the Guo 2025 GLP-1RA weight-reduction MBMA extraction.
+
+### DOSE_NEMOLIZUMAB_MG (**canonical for per-arm or per-subject assigned nemolizumab dose**)
+- **Description:** Assigned nemolizumab (anti-interleukin-31 receptor A monoclonal antibody) dose in mg per subcutaneous administration; 0 when the arm/subject did not receive nemolizumab (placebo or a comparator arm).
+- **Units:** mg (per administration)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm/subject did not receive nemolizumab". Consumed as `(DOSE_NEMOLIZUMAB_MG > 0)` in both founding models, because Takechi 2025 found no dose-response over the studied range and modelled the maximum effect as a constant.
+- **Source aliases:**
+  - Treatment arm / dosing regimen -- Takechi 2025 Table 3 (Yokozeki et al., Staender et al., Kwatra et al. rows) and Supplementary Table S1.
+- **Example models:** `Takechi_2025_nemolizumab_ppnrs.R` (per-subject; 0 = placebo, 30 = 30 mg Q4W after a 60 mg loading dose, 60 = 60 mg Q4W), `Takechi_2025_nemolizumab_mbma_iga.R` (per study arm; the pooled "30 mg, 60 mg Q4W" arms of OLYMPIA 1 and OLYMPIA 2 and the weight-based 0.5 mg/kg Q4W arm of SPR.115828 are all recorded as presence only).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. **Presence indicator in practice:** neither founding model reads the magnitude, so a value of 30 and a value of 60 give identical predictions; the column is kept numeric rather than binary so the randomised arm is recorded faithfully and a future dose-response extension has somewhere to read the dose from. Two of the Takechi 2025 MBMA arms are not clean flat milligram doses -- OLYMPIA 1 and OLYMPIA 2 pooled their 30 mg and 60 mg arms into a single reported arm, and SPR.115828 dosed 0.5 mg/kg -- so a dose-response extension must go back to the individual trial reports rather than trusting a single number in this column. Sibling of `DOSE_DUPILUMAB_MG`, the comparator in the same meta-analysis.
+
+### DOSE_DUPILUMAB_MG (**canonical for per-arm assigned dupilumab dose**)
+- **Description:** Assigned dupilumab (anti-interleukin-4 receptor alpha monoclonal antibody) dose in mg per subcutaneous administration; 0 when the arm/subject did not receive dupilumab.
+- **Units:** mg (per administration)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a -- 0 means "this arm did not receive dupilumab". Consumed as `(DOSE_DUPILUMAB_MG > 0)` in the founding model.
+- **Source aliases:**
+  - Dupilumab dose -- Takechi 2025 Table 3 (Yosipovitch et al. PRIME and PRIME2 rows), "300 mg, Q2W".
+- **Example models:** `Takechi_2025_nemolizumab_mbma_iga.R` (per study arm; the only administered value in the meta-analysis is 300 mg Q2W, so no dose-response is identifiable and the column acts as a presence indicator selecting the dupilumab-specific Edrug and Kd).
+- **Notes:** Follows the `DOSE_<DRUG>_<UNITS>` auto-approve family. Every included dupilumab arm used the same 300 mg Q2W regimen, so this column carries only two distinct values (0 and 300) across the founding meta-analysis and the drug effect is estimated as a constant. Note the DIFFERENT dosing interval from its sibling `DOSE_NEMOLIZUMAB_MG` (Q2W vs Q4W): the two columns are not a common per-administration dose metric and must not be compared to each other numerically. Dupilumab appears elsewhere in this package as an atopic-dermatitis comparator; a model that needs an atopic-dermatitis dupilumab regimen must confirm the interval before reusing this column.
 
 ### DOSE_COTADUTIDE_MG (**canonical for per-arm assigned cotadutide dose**)
 - **Description:** Assigned cotadutide (MEDI0382, a GLP-1/glucagon dual agonist) dose in mg per once-daily subcutaneous injection; 0 when the arm/subject did not receive cotadutide.

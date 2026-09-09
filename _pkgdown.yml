@@ -2822,6 +2822,12 @@ navbar:
         href: articles/Hirt_2006_nelfinavir.html
       - text: "Nelfinavir (Hirt 2007)"
         href: articles/Hirt_2007_nelfinavir.html
+      - text: "Nemolizumab (Takechi 2025)"
+        href: articles/Takechi_2025_nemolizumab.html
+      - text: "Nemolizumab mbma iga (Takechi 2025)"
+        href: articles/Takechi_2025_nemolizumab.html
+      - text: "Nemolizumab ppnrs (Takechi 2025)"
+        href: articles/Takechi_2025_nemolizumab.html
       - text: "Nemonoxacin (Chen 2023)"
         href: articles/Chen_2023_nemonoxacin.html
       - text: "Nemtabrutinib (Kemal 2026)"
@@ -6350,6 +6356,7 @@ articles:
   - articles/Takahashi_2023_abatacept
   - articles/Takama_2007_darbepoetin
   - articles/Takechi_2018_propranolol
+  - articles/Takechi_2025_nemolizumab
   - articles/Takeuchi_2023_ozoralizumab
   - articles/Talke_2018_dexmedetomidine
   - articles/Tammara_2017_rivipansel
