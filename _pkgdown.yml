@@ -2032,6 +2032,8 @@ navbar:
         href: articles/Yang_2025_imatinib_external_evaluation.html
       - text: "Imatinib (Yamakawa 2011)"
         href: articles/Yang_2025_imatinib_external_evaluation.html
+      - text: "Imc002 (Jeong 2025)"
+        href: articles/Jeong_2025_imc002.html
       - text: "Imetelstat (GonzalezSales 2024)"
         href: articles/GonzalezSales_2024_imetelstat.html
       - text: "Iminobiotin (Admiraal 2023)"
@@ -5733,6 +5735,7 @@ articles:
   - articles/Jeon_2014_piperacillin
   - articles/Jeong_2022_torsemide
   - articles/Jeong_2023_rabeprazole
+  - articles/Jeong_2025_imc002
   - articles/Ji_2017_vancomycin
   - articles/Ji_2018_tacrolimus
   - articles/Ji_2025_TDI01
