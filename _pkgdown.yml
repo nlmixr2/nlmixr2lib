@@ -3936,6 +3936,8 @@ navbar:
         href: articles/Odongo_2015_sulfadoxinePyrimethamine.html
       - text: "SulfadoxinePyrimethamine (deKock 2017)"
         href: articles/deKock_2017_sulfadoxinePyrimethamine.html
+      - text: "Sulfamethoxazole (Chen 2025)"
+        href: articles/Chen_2025_cotrimoxazole.html
       - text: "Sulfamethoxazole (Leegwater 2025)"
         href: articles/Leegwater_2025_cotrimoxazole.html
       - text: "Sumatriptan (Lee 2015)"
@@ -4318,6 +4320,8 @@ navbar:
         href: articles/Okada_2024_triazolam.html
       - text: "Triflusal (Park 2014)"
         href: articles/Park_2014_triflusal.html
+      - text: "Trimethoprim (Chen 2025)"
+        href: articles/Chen_2025_cotrimoxazole.html
       - text: "Trimethoprim (Leegwater 2025)"
         href: articles/Leegwater_2025_cotrimoxazole.html
       - text: "Trimethoprim sulfonamides pig (Boulanger 2025)"
@@ -5110,6 +5114,7 @@ articles:
   - articles/Chen_2024_remimazolam
   - articles/Chen_2024_rituximab
   - articles/Chen_2025_ceftazidime_avibactam
+  - articles/Chen_2025_cotrimoxazole
   - articles/Chen_2025_iohexol_creatinine
   - articles/Chen_2025_remimazolam
   - articles/Cheng_2026_immunoglobulin
