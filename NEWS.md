@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Hu 2025 vatiquinone ([doi:10.3390/ph18091339](https://doi.org/10.3390/ph18091339)) -- adult healthy volunteers and adult and pediatric patients with Friedreich's ataxia or other mitochondrial diseases.
+- Add Olivo 2025 vancomycin ([doi:10.3390/pharmaceutics17091111](https://doi.org/10.3390/pharmaceutics17091111)) -- in vitro time-kill of methicillin-resistant *Staphylococcus aureus* ATCC 43300.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
