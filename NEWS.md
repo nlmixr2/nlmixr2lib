@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Di Deo 2025 tideglusib ([doi:10.3390/pharmaceutics17081065](https://doi.org/10.3390/pharmaceutics17081065)) -- elderly healthy subjects and adolescent/adult patients with congenital or juvenile-onset myotonic dystrophy type 1.
+
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
   `theta0 - exp((theta1 * log10 PTT)^theta2) + Emax * dose/(ED50 + dose)`, the
