@@ -3604,6 +3604,8 @@ navbar:
         href: articles/Chen_2025_remimazolam.html
       - text: "Remimazolam pbpk (Luo 2024)"
         href: articles/Luo_2024_CES1_cirrhosis.html
+      - text: "Repotrectinib (Du 2025)"
+        href: articles/Du_2025_repotrectinib.html
       - text: "Reserpine rat (AlfoseaCuadrado 2024)"
         href: articles/AlfoseaCuadrado_2024_reserpine_rat.html
       - text: "Respiratory physiology (Mann 2022)"
@@ -5375,6 +5377,7 @@ articles:
   - articles/Downes_2022_tobramycin
   - articles/Downes_2023_vancomycin
   - articles/Drweesh_2026_adalimumab
+  - articles/Du_2025_repotrectinib
   - articles/Duan_2024_linezolid
   - articles/Duffull_2025_tmdd_model_instability
   - articles/Duke_2024_cefazolin

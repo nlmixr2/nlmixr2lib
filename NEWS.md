@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Ye 2025 mycophenolic acid ([doi:10.1136/lupus-2025-001535](https://doi.org/10.1136/lupus-2025-001535)) -- paediatric patients with lupus nephritis.
+- Add Du 2025 repotrectinib ([doi:10.1002/psp4.70036](https://doi.org/10.1002/psp4.70036)) — healthy volunteers and adult and pediatric patients with ALK, ROS1 or NTRK1-3 rearranged advanced solid tumors.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
