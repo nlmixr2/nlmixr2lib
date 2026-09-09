@@ -2,7 +2,7 @@
 
 # development version
 
-- Add Vonk 2025 tezacaftor and ivacaftor ([doi:10.1002/bcp.70131](https://doi.org/10.1002/bcp.70131)) -- children aged 6-17 years with cystic fibrosis.
+- Add Hu 2025 vatiquinone ([doi:10.3390/ph18091339](https://doi.org/10.3390/ph18091339)) -- adult healthy volunteers and adult and pediatric patients with Friedreich's ataxia or other mitochondrial diseases.
 
 - Fix a dropped `exp()` in the bacteremia term of
   `Nagy_2017_obiltoxaximab_survival`. `logit(psurv)` now uses
