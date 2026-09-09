@@ -4634,6 +4634,8 @@ navbar:
         href: articles/Waterhouse_2024_vedolizumab.html
       - text: "Veliparib (Niu 2017)"
         href: articles/Niu_2017_veliparib.html
+      - text: "Venetoclax (Yang 2025)"
+        href: articles/Yang_2025_venetoclax.html
       - text: "Venetoclax (Zhao 2026)"
         href: articles/Zhao_2026_venetoclax.html
       - text: "Venetoclax apoptosis qsp (Derippe 2024)"
@@ -6715,7 +6717,7 @@ articles:
   - articles/Yang_2025_imatinib_external_evaluation
   - articles/Yang_2025_iruplinalkib
   - articles/Yang_2025_matrine_pig_pbpk
-  - articles/Yang_2025_polymyxinB
+  - articles/Yang_2025_venetoclax
   - articles/Yang_2026_APTM
   - articles/Yang_2026_encorafenib
   - articles/Yang_2026_lurasidone
