@@ -3792,6 +3792,8 @@ navbar:
         href: articles/Axelsen_2024_selexipag.html
       - text: "Selexipag pediatric (Axelsen 2024)"
         href: articles/Axelsen_2024_selexipag.html
+      - text: "Selpercatinib (Liu 2025)"
+        href: articles/Liu_2025_selpercatinib.html
       - text: "Selumetinib (Kollo 2026)"
         href: articles/Kollo_2026_selumetinib.html
       - text: "Selumetinib (Patel 2017)"
@@ -5806,6 +5808,7 @@ articles:
   - articles/Liu_2024_saf189s
   - articles/Liu_2024_spatholobiCaulis
   - articles/Liu_2025_avatrombopag
+  - articles/Liu_2025_selpercatinib
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin
   - articles/LlanosPaez_2020_gentamicin
