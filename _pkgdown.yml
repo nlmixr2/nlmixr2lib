@@ -4728,6 +4728,8 @@ navbar:
         href: articles/Roberts_2011_vancomycin.html
       - text: "Vancomycin (Shen 2024)"
         href: articles/Shen_2024_vancomycin.html
+      - text: "Vancomycin (Shiau 2026)"
+        href: articles/Shiau_2026_vancomycin.html
       - text: "Vancomycin (Staatz 2005)"
         href: articles/Staatz_2005_gentamicin_vancomycin.html
       - text: "Vancomycin (Takada 2025)"
@@ -6556,6 +6558,7 @@ articles:
   - articles/Sherwin_2012_mycophenolic_acid
   - articles/Sherwin_2012_risperidone
   - articles/Shi_2018_ceftazidime
+  - articles/Shiau_2026_vancomycin
   - articles/Shigetome_2025_paroxetine
   - articles/Shin_2006_quinidine_QT
   - articles/Shin_2014_sevoflurane
