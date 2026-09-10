@@ -58,6 +58,7 @@ The following pattern constants remain hard-coded in `R/conventions.R::.nlmixr2l
 ### central (**canonical central compartment**)
 - **Type:** compartment
 - **Role:** Central compartment holding the drug pool in plasma / systemic circulation; the conventional output state for plasma concentration `Cc = central / vc`.
+- **Naming rule (`Cc`):** `Cc` names the CENTRAL DRUG CONCENTRATION, whether or not it is the observed output. It is not a general-purpose name for "the model's primary observation" -- a model whose only DV is a fungal burden, a bacterial count or a body weight must name that DV by its own canonical (`log_cfu`, `cfu`, `BW`) and still call `central / vc` `Cc`. Two things legitimately differ from `Cc` and should keep their own names: a SECOND central quantity derived alongside it (unbound `Cu`/`Cunbound` where `Cc` is total, or a raw value where `Cc` is assay-calibrated), and a SCALED derivation (`* fu`, `* bp`, `/ mw`, unit conversions). In a multi-analyte model the suffix follows the state: `central_rtv / vc_rtv` is `Cc_rtv`.
 - **Source aliases:** none.
 - **Example models:** universal in popPK extractions.
 

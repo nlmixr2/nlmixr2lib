@@ -153,13 +153,13 @@ Terranova_2018_paclitaxel <- function() {
 
     # ------------------------------------------------------------------
     # 4. Drug-dependent quantities used inside the DES branches.
-    #    Cc_pacl = paclitaxel central-compartment concentration (.ctl
+    #    Cc = paclitaxel central-compartment concentration (.ctl
     #    $DES L123). rho is the inhibition-modulated proliferation
     #    factor (Hill / Emax form, .ctl L124). ku is the cachexia
     #    coupling fraction (.ctl L125).
     # ------------------------------------------------------------------
-    Cc_pacl <- central / vc
-    rho     <- rho_b * (1 - Cc_pacl / (ic50 + Cc_pacl))
+    Cc <- central / vc
+    rho     <- rho_b * (1 - Cc / (ic50 + Cc))
     ku      <- (mu_u * tumor1) / (bodyZ + mu_u * tumor1)
 
     # ------------------------------------------------------------------
@@ -188,13 +188,13 @@ Terranova_2018_paclitaxel <- function() {
       dev_VU1 <- ((ni * bodyZ^(2/3) + M * bodyZ) * gr * ku * bodyEn) /
                  ((gr * gu) + (1 - ku) * gu * bodyEn + 1.0e-5) -
                  mu * tumor1 -
-                 k2 * tumor1 * Cc_pacl
+                 k2 * tumor1 * Cc
       dev_Z   <- ((1 - ku) * ni * bodyEn * bodyZ^(2/3) - gr * M * bodyZ) /
                  (gr + (1 - ku) * bodyEn + 1.0e-5)
     } else if (switch2 >= -delta_vmax) {
       dev_VU1 <- (gr * M * ku * bodyZ) / (gu * (1 - ku) + 1.0e-5) -
                  mu * tumor1 -
-                 k2 * Cc_pacl * tumor1
+                 k2 * Cc * tumor1
       dev_Z   <- ((1 - ku) * ni * bodyEn * bodyZ^(2/3) - gr * M * bodyZ) /
                  ((1 - ku) * (bodyEn + omeg * gr) + 1.0e-5)
     } else {
@@ -203,7 +203,7 @@ Terranova_2018_paclitaxel <- function() {
                   delta_vmax * bodyEn +
                   delta_vmax * omeg * gr) -
                  mu * tumor1 -
-                 k2 * Cc_pacl * tumor1
+                 k2 * Cc * tumor1
       dev_Z   <- -delta_vmax
     }
 
@@ -223,7 +223,7 @@ Terranova_2018_paclitaxel <- function() {
     d/dt(bodyEn)      <- (ni / bodyZ^(1/3)) *                                            # .ctl DADT(4)
                           (rho * (v1inf / (tumor1 + bodyZ))^(2/3) - bodyEn)
     d/dt(tumor1)      <- dev_VU1                                                         # .ctl DADT(5)
-    d/dt(tumor2)      <- k2 * Cc_pacl * tumor1 - k1 * tumor2                             # .ctl DADT(6)
+    d/dt(tumor2)      <- k2 * Cc * tumor1 - k1 * tumor2                             # .ctl DADT(6)
     d/dt(tumor3)      <- k1 * tumor2 - k1 * tumor3                                       # .ctl DADT(7)
     d/dt(tumor4)      <- k1 * tumor3 - k1 * tumor4                                       # .ctl DADT(8)
 

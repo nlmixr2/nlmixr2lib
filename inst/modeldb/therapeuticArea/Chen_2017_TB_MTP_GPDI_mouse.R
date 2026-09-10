@@ -414,12 +414,12 @@ Chen_2017_TB_MTP_GPDI_mouse <- function() {
     total_bugs <- fbugs + sbugs + nbugs
     # Floor at LLOQ (10 CFU/lungs per Chen 2017 Methods) to avoid log of
     # zero when drug effect drives the integrated total to ~0. The single
-    # model observation Cc is the natural-log of the total CFU/lungs
-    # (canonical single-output name; the "Cc" symbol is reused here for the
+    # model observation log_cfu is the natural-log of the total CFU/lungs
+    # (canonical single-output name; the "log_cfu" symbol is reused here for the
     # bacterial output to satisfy the nlmixr2lib convention even though the
     # underlying quantity is a count, not a concentration).
     if (total_bugs < 10) total_bugs <- 10
-    Cc <- log(total_bugs)
-    Cc ~ add(addSd)
+    log_cfu <- log(total_bugs)
+    log_cfu ~ add(addSd)
   })
 }

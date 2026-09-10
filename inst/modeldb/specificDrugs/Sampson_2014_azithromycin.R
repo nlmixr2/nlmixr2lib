@@ -62,7 +62,7 @@ Sampson_2014_azithromycin <- function() {
     lclpbmc  <- log(0.0091);   label("Apparent PBMC elimination clearance CL2/F (L/h)")            # Table 1
     lclpmn   <- log(0.026);    label("Apparent PMN elimination clearance CL3/F (L/h)")             # Table 1
 
-    # Blood observation mixing coefficients (unitless): [blood] = a*Cplasma + b*Cpbmc + c*Cpmn.
+    # Blood observation mixing coefficients (unitless): [blood] = a*Cc + b*Cpbmc + c*Cpmn.
     # A and B were estimated empirically; C was fixed at B/1,000 in the final model.
     a_blood  <- 0.51;          label("Blood mixing coefficient for plasma (unitless)")            # Table 1
     b_blood  <- 0.0016;        label("Blood mixing coefficient for PBMC (unitless)")              # Table 1
@@ -127,13 +127,13 @@ Sampson_2014_azithromycin <- function() {
     lag(depot) <- tlag
 
     # Observed concentrations
-    Cplasma <- central / vc
+    Cc <- central / vc
     Cpbmc   <- pbmc    / vpbmc
     Cpmn    <- pmn     / vpmn
     # Whole-blood concentration is the weighted sum of plasma, PBMC, and PMN
     # concentrations (paper: [blood] = A*[Comp1] + B*[Comp2] + C*[Comp3], where
     # A, B were estimated and C = B/1000 was fixed). Reported in mg/L.
-    Cblood  <- a_blood * Cplasma + b_blood * Cpbmc + c_blood * Cpmn
+    Cblood  <- a_blood * Cc + b_blood * Cpbmc + c_blood * Cpmn
 
     Cblood ~ prop(propSd_Cblood)
     Cpbmc  ~ prop(propSd_Cpbmc)

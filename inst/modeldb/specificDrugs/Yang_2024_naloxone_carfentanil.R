@@ -340,7 +340,7 @@ Yang_2024_naloxone_carfentanil <- function() {
 
     # ---- Outputs
     Cc <- central / vc
-    Cnal <- central_naloxone / vc_naloxone
+    Cc_naloxone <- central_naloxone / vc_naloxone
     # Linear ventilation-versus-CO2 relationship at steady state,
     # equation 14 / control stream (D) $ERROR:
     #   E = (G - G*RL^P1) * (E0/G - Bmax*RL^P2)
