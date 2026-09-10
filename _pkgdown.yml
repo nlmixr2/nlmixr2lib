@@ -2522,6 +2522,8 @@ navbar:
         href: articles/Hanberg_2018_meropenem.html
       - text: "Meropenem (Kim 2024)"
         href: articles/Kim_2024_meropenem.html
+      - text: "Meropenem (Liu 2025)"
+        href: articles/Liu_2025_meropenem.html
       - text: "Meropenem (Padari 2012)"
         href: articles/Padari_2012_meropenem.html
       - text: "Meropenem (Peng 2025)"
@@ -5806,6 +5808,7 @@ articles:
   - articles/Liu_2024_saf189s
   - articles/Liu_2024_spatholobiCaulis
   - articles/Liu_2025_avatrombopag
+  - articles/Liu_2025_meropenem
   - articles/Livio_2014_tobramycin
   - articles/LlanosPaez_2017_gentamicin
   - articles/LlanosPaez_2020_gentamicin
