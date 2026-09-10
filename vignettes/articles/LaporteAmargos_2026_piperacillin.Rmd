@@ -382,7 +382,7 @@ pta_events <- do.call(
 # Disjoint IDs across arms are mandatory: rxSolve treats id as the subject key
 # and would silently merge duplicated ids into one subject receiving the sum
 # of both arms' doses.
-stopifnot(!anyDuplicated(unique(pta_events[, c("id", "time", "evid")])))
+stopifnot(!anyDuplicated(pta_events[, c("id", "time", "evid")]))
 stopifnot(dplyr::n_distinct(pta_events$id) == nrow(arm_grid) * n_arm)
 ```
 
@@ -679,6 +679,11 @@ below include residual error, and the comparison is model-versus-data rather
 than model-versus-model.
 
 ```{r table1-compare}
+# Seeded per stochastic block, not once globally: this chunk is the only other
+# consumer of R's RNG, so it must not inherit whatever state the cohort chunk
+# happened to leave behind.
+set.seed(20260911)
+
 # Cohort creatinine clearance drawn log-normally to match each arm's Table 1
 # median and interquartile interval.
 crcl_draw <- function(n, med, lo, hi) {
