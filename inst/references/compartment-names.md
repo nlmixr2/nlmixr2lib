@@ -4500,6 +4500,13 @@ These tokens may appear as a trailing `_<suffix>` on a canonical compartment, pa
 - **Source aliases:** none.
 - **Example models:** `Li_2012_clozapine.R` (doi:10.1038/aps.2012.71).
 
+### norfluox (**canonical norfluoxetine (N-desmethylfluoxetine) suffix**)
+- **Type:** metabolite-suffix
+- **Role:** Norfluoxetine (N-desmethylfluoxetine), the primary pharmacologically active metabolite of fluoxetine, formed by CYP2D6- and CYP2C19-mediated N-demethylation. Norfluoxetine is an equipotent serotonin-reuptake inhibitor with a longer elimination half-life than the parent, so therapeutic drug monitoring of fluoxetine targets the summed "active moiety" (fluoxetine + norfluoxetine, conventionally 120-500 ng/mL in adults). Used as the metabolite suffix on `central_norfluox` compartments, `lcl_norfluox` / `lvc_norfluox` parameters, `Cc_norfluox` observation variables, and `addSd_norfluox` / `propSd_norfluox` residual SDs.
+- **Source aliases:** none.
+- **Example models:** `Han_2025_fluoxetine.R` (doi:10.3390/pharmaceutics17121516).
+- **Notes:** Follows the `norcloz` (norclozapine) precedent for an N-desmethyl metabolite whose published name already carries the `nor` prefix, truncating the parent stem rather than spelling out the demethylation (`ndm...`, as in `ndmsel` / `ndmima`, is reserved for metabolites whose published names use the N-desmethyl form).
+
 ### dnef (**canonical desmethyl-nefopam suffix**)
 - **Type:** metabolite-suffix
 - **Role:** Desmethyl-nefopam (nor-nefopam), N-demethyl metabolite of nefopam formed by CYP3A4-mediated N-demethylation. Followed in plasma alongside the parent in joint parent + metabolite popPK models of postoperative nefopam analgesia. Used as the metabolite suffix on `central_dnef` compartments, `lcl_dnef` / `lvc_dnef` / `lcl_form_dnef` parameters, and `addSd_dnef` / `propSd_dnef` residual SDs.

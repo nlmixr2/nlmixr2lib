@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Han 2025 fluoxetine ([doi:10.3390/pharmaceutics17121516](https://doi.org/10.3390/pharmaceutics17121516)) -- Chinese psychiatric adolescents and adults.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and
