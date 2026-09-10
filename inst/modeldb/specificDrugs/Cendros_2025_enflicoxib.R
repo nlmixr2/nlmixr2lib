@@ -229,22 +229,22 @@ Cendros_2025_enflicoxib <- function() {
     # (Cendros 2025: P_POP = theta1 * (WGT / median(WGT))^theta2, and every
     # Table 1 row spells the term out as (WGT/9.9)).
     allo_cl_factor <- (WT / 9.9)^e_wt_cl
-    allo_v  <- (WT / 9.9)^e_wt_vc
+    allom_v  <- (WT / 9.9)^e_wt_vc
 
     # --- Individual enflicoxib (parent) parameters ---
     fdepot     <- exp(lfdepot + etalfdepot)
     tlag       <- exp(ltlag + etaltlag)
     ka         <- exp(lka + etalka)
-    vc         <- exp(lvc + etalvc) * allo_v
-    vp         <- exp(lvp) * allo_v
+    vc         <- exp(lvc + etalvc) * allom_v
+    vp         <- exp(lvp) * allom_v
     q          <- exp(lq) * allo_cl_factor
     cl_met     <- exp(lcl_met + etalcl_met) * allo_cl_factor
     cl_nonmet  <- exp(lcl_nonmet) * allo_cl_factor
 
     # --- Individual pyrazol metabolite parameters ---
-    vc_pyrazol  <- exp(lvc_pyrazol) * allo_v
-    vp_pyrazol  <- exp(lvp_pyrazol) * allo_v
-    vp2_pyrazol <- exp(lvp2_pyrazol) * allo_v
+    vc_pyrazol  <- exp(lvc_pyrazol) * allom_v
+    vp_pyrazol  <- exp(lvp_pyrazol) * allom_v
+    vp2_pyrazol <- exp(lvp2_pyrazol) * allom_v
     q_pyrazol   <- exp(lq_pyrazol) * allo_cl_factor
     q2_pyrazol  <- exp(lq2_pyrazol) * allo_cl_factor
     cl_pyrazol  <- exp(lcl_pyrazol + etalcl_pyrazol) * allo_cl_factor

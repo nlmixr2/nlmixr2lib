@@ -125,7 +125,7 @@ Hopkins_2017_doxycycline <- function() {
     # exponents of 0.75 for clearance parameters and 1 for volumes").
     # =========================================================================
     e_wt_cl <- fixed(0.75) ; label("Allometric exponent on CL and CLP1 (unitless)")       # Hopkins 2017 Methods paragraph 5; canonical Anderson-Holford 2008
-    allo_v  <- fixed(1.0)  ; label("Allometric exponent on V and VP1 (unitless)")         # Hopkins 2017 Methods paragraph 5; canonical Anderson-Holford 2008
+    e_ffm_vc_vp  <- fixed(1.0)  ; label("Allometric exponent on V and VP1 (unitless)")         # Hopkins 2017 Methods paragraph 5; canonical Anderson-Holford 2008
 
     # =========================================================================
     # Correlated between-subject / population variability on the four
@@ -159,8 +159,8 @@ Hopkins_2017_doxycycline <- function() {
     # 1. Individual parameters with FFM allometric scaling and covariate
     #    effects.
     cl  <- exp(lcl + etalcl) * (FFM / 70) ^ e_wt_cl * (1 + e_sex_cl * SEXF)
-    vc  <- exp(lvc + etalvc) * (FFM / 70) ^ allo_v
-    vp  <- exp(lvp + etalvp) * (FFM / 70) ^ allo_v
+    vc  <- exp(lvc + etalvc) * (FFM / 70) ^ e_ffm_vc_vp
+    vp  <- exp(lvp + etalvp) * (FFM / 70) ^ e_ffm_vc_vp
     q   <- exp(lq)           * (FFM / 70) ^ e_wt_cl
 
     # 2. Transit-absorption rate with formulation-dependent food effect.

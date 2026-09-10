@@ -163,7 +163,7 @@ Majid_2024_lenvatinib <- function() {
     # ---- Allometric exponents. Both were held FIXED in the source control
     # stream (Text S1 $THETA slots 12 and 13 carry the FIX flag).
     e_wt_cl    <- fixed(0.75); label("Allometric exponent of body weight on CL/F, Q1/F and Q2/F (unitless)")     # Majid 2024 Text S1 $THETA 12: '0.75 FIX ;[WGT_CL]'; Table 1 footnote CL/F = 6.28 * (BW/73.2)^0.75
-    allo_v     <- fixed(1.0);  label("Allometric exponent of body weight on V1/F, V2/F and V3/F (unitless)")     # Majid 2024 Text S1 $THETA 13: '1 FIX ;[WGT_Volume]'; Table 1 footnote V1/F = 46.0 * (BW/73.2)
+    e_wt_vc_vp     <- fixed(1.0);  label("Allometric exponent of body weight on V1/F, V2/F and V3/F (unitless)")     # Majid 2024 Text S1 $THETA 13: '1 FIX ;[WGT_Volume]'; Table 1 footnote V1/F = 46.0 * (BW/73.2)
 
     # ---- Covariate effects on CL/F. The source reports each as a
     # multiplicative ratio entering the power form theta^covariate; they are
@@ -229,9 +229,9 @@ Majid_2024_lenvatinib <- function() {
       exp(e_tumtp_hcc_cl   * TUMTP_HCC) *
       exp(e_tumtp_rcc_cl   * TUMTP_RCC)
 
-    vc  <- exp(lvc  + etalvc)  * (WT / ref_wt)^allo_v
-    vp  <- exp(lvp  + etalvp)  * (WT / ref_wt)^allo_v
-    vp2 <- exp(lvp2 + etalvp2) * (WT / ref_wt)^allo_v
+    vc  <- exp(lvc  + etalvc)  * (WT / ref_wt)^e_wt_vc_vp
+    vp  <- exp(lvp  + etalvp)  * (WT / ref_wt)^e_wt_vc_vp
+    vp2 <- exp(lvp2 + etalvp2) * (WT / ref_wt)^e_wt_vc_vp
 
     # No IIV on the inter-compartmental clearances (Text S1 assigns no ETA
     # to Q3 or Q4, and Table 1 reports no IIV row for Q1 or Q2).

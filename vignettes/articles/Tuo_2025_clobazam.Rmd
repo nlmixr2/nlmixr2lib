@@ -1,0 +1,790 @@
+---
+title: "Clobazam (Tuo 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Clobazam (Tuo 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+rxode2::rxSetSeed(20250623)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Tuo_2025_clobazam"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Tuo_2025_clobazam"))$description`
+* Article: <https://doi.org/10.3390/pharmaceutics17070813> (open access, CC BY)
+
+```{r load-model}
+mod <- rxode2::rxode(readModelDb("Tuo_2025_clobazam"))
+mod
+```
+
+Concentrations in the model are in **mg/L**, matching the `units` metadata.
+Tuo 2025 reports every concentration in **ug/L**, so this vignette multiplies
+model output by 1000 before any comparison with the paper.
+
+```{r units}
+UGL <- 1000  # mg/L -> ug/L
+```
+
+# Population
+
+Tuo 2025 is a prospective, single-centre study at Wuhan Children's Hospital
+(December 2022 to March 2024) in **103 Chinese children with refractory
+epilepsy** (Lennox-Gastaut syndrome, Dravet syndrome, infantile spasms and
+other refractory epilepsies) receiving oral clobazam. Median age was 5.46 years
+(range 0.85-16.75) and median body weight 20.0 kg (range 6.60-73.0); 45 of 103
+(43.7%) were female (Table 1). Sampling was **opportunistic**: 156 plasma
+samples were scavenged from residual blood drawn for routine biochemistry
+during safety follow-up, yielding 302 analyte concentrations (154 clobazam and
+148 N-desmethylclobazam). Most patients contributed a single sample (68 of 103),
+and the draws were almost entirely in the elimination phase -- the reason the
+authors could not identify absorption or distribution and fixed `Ka`.
+
+CYP2C19 phenotype was determined for all 103 patients: 41 normal metabolizers
+(39.8%), 45 intermediate (43.7%), 15 poor (14.6%) and 2 rapid (1.9%). No
+ultrarapid metabolizers were observed, and the 2 rapid metabolizers were
+dropped from the covariate analysis for lack of sample size. The cohort was
+heavily co-medicated -- 75.7% were on three or more antiepileptic drugs, 80.6%
+on valproic acid -- and 6.8% followed a ketogenic diet; none of these was
+retained as a covariate.
+
+The same information is available programmatically:
+
+```{r population}
+str(readModelDb("Tuo_2025_clobazam")()$population)
+```
+
+# Source trace
+
+Every `ini()` value carries an in-file comment naming its source location in
+`inst/modeldb/specificDrugs/Tuo_2025_clobazam.R`. They are collected here.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Depot / parent / metabolite ODEs | -- | Tuo 2025 Methods 2.5, Equations (1)-(3) |
+| Exponential IIV `P_i = theta * exp(eta_i)` | -- | Equation (4) |
+| Proportional residual `Y = IPRED * (1 + eps)` | -- | Equation (5) |
+| Continuous covariate form `(Cov/Cov_median)^theta_cov` | -- | Equation (6) |
+| Categorical covariate form `exp(theta_cov)` | -- | Equation (7) |
+| `lka` (Ka) | 1.99 1/h, **fixed** | Table 2 row 1 and Equation (8); value taken from Jullien 2015 (Tuo 2025 reference [19]) |
+| `lvc` (V_CLB/F) | 92.07 L at 70 kg | Table 2, RSE 31.15%, bootstrap 40.42-176.27; Equation (9) |
+| `lcl` (CL_CLB/F) | 5.66 L/h at 70 kg | Table 2, RSE 10.53%, bootstrap 4.09-7.26; Equation (10) |
+| `lvc_ndmclb` (V_N-CLB/Fm) | 1.84 L at 70 kg | Table 2, RSE 29.66%, bootstrap 0.72-2.76; Equation (11) |
+| `lcl_ndmclb` (CL_N-CLB/Fm) | 1.01 L/h at 70 kg, NM | Table 2, RSE 11.83%, bootstrap 0.71-1.30; Equation (12) |
+| `e_wt_vc`, `e_wt_vc_ndmclb` | 1.0, **fixed** | Equations (9) and (11), printed inline; no Table 2 row |
+| `e_wt_cl`, `e_wt_cl_ndmclb` | 0.75, **fixed** | Equations (10) and (12), printed inline; no Table 2 row |
+| Reference weight | 70 kg | Equations (9)-(12) denominators |
+| `e_cyp2c19_im_cl_ndmclb` | -0.25 | Table 2 `theta_CYP2C19,IM`, RSE 39.03%, bootstrap -0.53 to -0.02 |
+| `e_cyp2c19_pm_cl_ndmclb` | -1.30 | Table 2 `theta_CYP2C19,PM`, RSE 15.01%, bootstrap -1.67 to -0.89 |
+| NM reference level | 0.00, **fixed** | Table 2 `theta_CYP2C19,NM` |
+| `etalcl` | variance 0.1594 | Table 2 `omega^2 CL_CLB/F (%) = 15.94`, footnote "interindividual variance"; eta-shrinkage 9.73% |
+| `etalcl_ndmclb` | variance 0.4535 | Table 2 `omega^2 CL_N-CLB/Fm (%) = 45.35`; eta-shrinkage 17.42% |
+| `propSd` | 0.33 | Table 2 `sigma_CLB`, RSE 8.52%, bootstrap 0.27-0.37 |
+| `propSd_ndmclb` | 0.53 | Table 2 `sigma_N-CLB`, RSE 8.60%, bootstrap 0.44-0.61; eps-shrinkage 33.17% |
+| Published validation targets | Table 3 (15 dose rows) | Median trough and PTA by weight and CYP2C19 phenotype |
+
+## The apparent (F, Fm) parameterisation
+
+Tuo 2025 Equations (1)-(3) are written in true amounts and carry two fractions
+that the study could not estimate: `F`, oral bioavailability, and `Fm`, the
+clobazam-to-N-desmethylclobazam dosage conversion fraction ("Since the amount
+of CLB converted to N-CLB was not clear, Fm was not estimated in this study").
+Table 2 accordingly reports all four disposition parameters as apparent:
+`V_CLB/F`, `CL_CLB/F`, `V_N-CLB/Fm`, `CL_N-CLB/Fm`.
+
+The packaged model divides the parent equations through by `F` and the
+metabolite equation by `F * Fm`, so each state holds a scaled amount:
+`central` holds `A_CLB/F` and `central_ndmclb` holds `A_N-CLB/(F*Fm)`. The four
+`ini()` parameters are then exactly the four apparent quantities of Table 2,
+and both observed concentrations are the **true** plasma concentrations,
+because the same scaling factor divides the state and the volume it is divided
+by. This is the convention the register already records for the sibling
+`ndmima` (N-desmethyl-imatinib) models.
+
+A consequence worth stating: the parent's entire elimination is routed into the
+metabolite compartment. The paper writes no separate non-metabolic clobazam
+elimination arm, and the `Fm` factor of Equation (3) -- which is what would
+otherwise split the parent's exit between metabolite formation and other routes
+-- has been absorbed into the metabolite state scaling.
+
+# Virtual cohort
+
+Tuo 2025 Table 3 gives the optimal simulated dosing strategy for 15
+combinations of body weight (10, 20, 30, 40, 50 kg) and CYP2C19 phenotype
+(NM, IM, PM), each with a published median steady-state trough for both
+analytes and four probability-of-target-attainment columns. That table is the
+validation target for this vignette, so the cohort mirrors it exactly:
+twice-daily oral dosing for 10 consecutive days, with the trough read 12 h
+after the last dose.
+
+```{r cohort-definition}
+tab3 <- tibble::tribble(
+  ~geno, ~wt, ~mgkg, ~pub_clb, ~pub_ndmclb, ~pub_pta_clb30, ~pub_pta_ndmclb300,
+  "NM", 10, 0.3,    109.28,  629.52,  94.8, 84.1,
+  "NM", 20, 0.25,   119.74,  699.26,  97.0, 88.4,
+  "NM", 30, 0.2,    111.47,  651.02,  97.0, 86.3,
+  "NM", 40, 0.175,  108.24,  630.81,  97.2, 85.5,
+  "NM", 50, 0.15,    93.03,  568.99,  95.6, 80.9,
+  "IM", 10, 0.25,    83.75,  658.07,  89.6, 83.5,
+  "IM", 20, 0.2,     88.17,  708.52,  93.5, 87.1,
+  "IM", 30, 0.15,    77.19,  626.37,  92.1, 82.7,
+  "IM", 40, 0.125,   71.53,  579.29,  91.7, 80.9,
+  "IM", 50, 0.12,    80.33,  616.59,  94.0, 84.4,
+  "PM", 10, 0.1,     33.50,  962.78,  57.3, 89.9,
+  "PM", 20, 0.075,   33.06,  950.00,  55.9, 92.2,
+  "PM", 30, 0.075,   38.59, 1081.81,  66.1, 95.2,
+  "PM", 40, 0.0625,  35.94,  967.24,  62.3, 91.4,
+  "PM", 50, 0.06,    37.39,  996.10,  65.2, 92.0
+) |>
+  dplyr::mutate(
+    id         = dplyr::row_number(),
+    CYP2C19_IM = as.integer(geno == "IM"),
+    CYP2C19_PM = as.integer(geno == "PM"),
+    dose_mg    = mgkg * wt,
+    arm        = sprintf("%s %g kg (%g mg/kg BID)", geno, wt, mgkg)
+  )
+
+knitr::kable(
+  tab3 |>
+    dplyr::select("CYP2C19" = geno, "Weight (kg)" = wt,
+                  "Dose (mg/kg BID)" = mgkg, "Dose (mg)" = dose_mg,
+                  "Published median CLB trough (ug/L)" = pub_clb,
+                  "Published median N-CLB trough (ug/L)" = pub_ndmclb),
+  caption = "Tuo 2025 Table 3 dosing scenarios and published median steady-state troughs."
+)
+```
+
+The event table is built as a plain data frame so the covariate columns survive
+to `rxSolve()`. The model declares two endpoints (`Cc`, `Cc_ndmclb`), so
+observation rows carry an explicit `dvid` alongside the ODE-state `cmt`; dose
+rows carry `dvid = NA`.
+
+```{r events}
+DOSE_TIMES <- seq(0, 228, by = 12)  # twice daily for 10 days: 20 doses
+
+# Built vectorised (one rbind for the whole cohort) rather than per subject --
+# a per-subject rbind loop is quadratic and dominates the render time once the
+# cohort reaches a few hundred subjects.
+build_events <- function(subjects, obs_times) {
+  nd <- length(DOSE_TIMES)
+  no <- length(obs_times)
+  ns <- nrow(subjects)
+  doses <- data.frame(
+    id   = rep(subjects$id, each = nd),
+    time = rep(DOSE_TIMES, times = ns),
+    amt  = rep(subjects$dose_mg, each = nd),
+    evid = 1L, cmt = "depot", dvid = NA_integer_
+  )
+  obs <- data.frame(
+    id   = rep(subjects$id, each = no),
+    time = rep(obs_times, times = ns),
+    amt  = NA_real_, evid = 0L, cmt = "central", dvid = 1L
+  )
+  out <- rbind(doses, obs)
+  idx <- match(out$id, subjects$id)
+  out$WT         <- subjects$wt[idx]
+  out$CYP2C19_IM <- subjects$CYP2C19_IM[idx]
+  out$CYP2C19_PM <- subjects$CYP2C19_PM[idx]
+  out[order(out$id, out$time, out$evid), ]
+}
+
+dense_times <- sort(unique(c(seq(0, 240, by = 0.25), 228, 240)))
+ev_typ <- build_events(tab3, dense_times)
+```
+
+# Simulation
+
+`rxode2::zeroRe()` gives the typical-value (deterministic) profile for each arm
+-- the quantity the published median trough should reproduce, because the
+steady-state trough is a monotone function of clearance and the median of a
+monotone transform is the transform of the median.
+
+```{r simulate-typical}
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ, returnType = "data.frame")
+stopifnot(!anyNA(sim_typ$Cc), !anyNA(sim_typ$Cc_ndmclb))
+
+sim_typ <- sim_typ |>
+  dplyr::left_join(dplyr::select(tab3, id, geno, wt, arm, dose_mg), by = "id") |>
+  dplyr::mutate(clb = Cc * UGL, ndmclb = Cc_ndmclb * UGL)
+```
+
+## Structural gate: steady-state mass balance
+
+The sharpest cheap check on this model is the steady-state mass balance, and it
+pins three things at once: that the explicit ODE system is really being solved
+(rxode2 will silently replace a `cl`/`vc` pair with an analytic one-compartment
+solution in some models, which would discard the metabolite arm), that the
+metabolite formation term carries the parent's *whole* elimination, and that
+the dose-to-concentration unit chain is right.
+
+Over a steady-state dosing interval, `CL_CLB/F * AUCtau(Cc)` must equal the
+dose, and because every molecule leaving the parent enters the metabolite,
+`CL_N-CLB/Fm * AUCtau(Cc_ndmclb)` must equal the same dose. Equivalently the
+ratio of metabolite to parent AUC is exactly `cl / cl_ndmclb`.
+
+```{r mass-balance}
+tau_win <- sim_typ |> dplyr::filter(time >= 228, time <= 240)
+
+trapz <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+mb <- tau_win |>
+  dplyr::group_by(id, arm, dose_mg) |>
+  dplyr::summarise(
+    auc_clb    = trapz(time, Cc),          # mg*h/L
+    auc_ndmclb = trapz(time, Cc_ndmclb),
+    cl         = dplyr::first(cl),         # rxSolve returns the per-subject values
+    cl_ndmclb  = dplyr::first(cl_ndmclb),
+    .groups    = "drop"
+  ) |>
+  dplyr::mutate(
+    dose_recovered_clb    = cl * auc_clb,
+    dose_recovered_ndmclb = cl_ndmclb * auc_ndmclb,
+    err_clb    = 100 * (dose_recovered_clb    - dose_mg) / dose_mg,
+    err_ndmclb = 100 * (dose_recovered_ndmclb - dose_mg) / dose_mg,
+    auc_ratio  = auc_ndmclb / auc_clb,
+    ratio_pred = cl / cl_ndmclb,
+    err_ratio  = 100 * (auc_ratio - ratio_pred) / ratio_pred
+  )
+
+knitr::kable(
+  mb |>
+    dplyr::select("Arm" = arm, "Dose (mg)" = dose_mg,
+                  "CL x AUC, parent (mg)" = dose_recovered_clb,
+                  "CL x AUC, metabolite (mg)" = dose_recovered_ndmclb,
+                  "AUC ratio N-CLB/CLB" = auc_ratio,
+                  "cl / cl_ndmclb" = ratio_pred),
+  digits = 4,
+  caption = "Steady-state mass balance. Both recovered doses must equal the administered dose."
+)
+
+# Deterministic identities: numerical-integration error only, so tight bounds
+# are correct here and are NOT an extreme-of-cohort assertion.
+stopifnot(
+  max(abs(mb$err_clb))    < 0.5,
+  max(abs(mb$err_ndmclb)) < 0.5,
+  max(abs(mb$err_ratio))  < 0.5
+)
+```
+
+The metabolite arm therefore survives: if rxode2 had auto-solved the parent as
+a linear one-compartment model and dropped the explicit `d/dt()` block, the
+metabolite mass balance would fail immediately.
+
+## Structural gate: closed-form steady-state trough
+
+The parent is a one-compartment model with first-order absorption, so its
+steady-state trough has a closed form. Comparing it to the ODE solve uses the
+*same* per-subject parameters on both sides, so the difference is pure
+numerical error and a tight bound is appropriate.
+
+```{r closed-form}
+ss_trough <- function(dose, ka, cl, vc, tau = 12) {
+  kel <- cl / vc
+  dose * ka / (vc * (ka - kel)) *
+    (exp(-kel * tau) / (1 - exp(-kel * tau)) - exp(-ka * tau) / (1 - exp(-ka * tau)))
+}
+
+cf <- sim_typ |>
+  dplyr::filter(time == 240) |>
+  dplyr::mutate(closed_form = ss_trough(dose_mg, ka, cl, vc) * UGL) |>
+  dplyr::select(arm, ode = clb, closed_form) |>
+  dplyr::mutate(pct_diff = 100 * (ode - closed_form) / closed_form)
+
+stopifnot(max(abs(cf$pct_diff)) < 0.1)
+sprintf("Closed-form vs ODE steady-state trough: max |%% diff| = %.4f%%",
+        max(abs(cf$pct_diff)))
+```
+
+# Replicate published figures
+
+## Figure 3 -- clearance versus body weight
+
+Tuo 2025 Figure 3 shows both clearances rising allometrically with body weight,
+with parent clearance above metabolite clearance at every weight.
+
+```{r figure3, fig.cap = "Replicates Figure 3 of Tuo 2025: allometric rise of CL_CLB/F and CL_N-CLB/Fm with body weight (typical CYP2C19 normal metabolizer)."}
+wt_grid <- tibble::tibble(wt = seq(6.6, 73, length.out = 120)) |>
+  dplyr::mutate(
+    `CLB (CL/F)`      = 5.66 * (wt / 70)^0.75,
+    `N-CLB (CL/Fm)`   = 1.01 * (wt / 70)^0.75
+  ) |>
+  tidyr::pivot_longer(-wt, names_to = "Analyte", values_to = "CL")
+
+ggplot(wt_grid, aes(wt, CL, colour = Analyte)) +
+  geom_line(linewidth = 1) +
+  labs(x = "Body weight (kg)", y = "Apparent clearance (L/h)",
+       title = "Clearance versus body weight") +
+  theme_bw()
+
+stopifnot(
+  # Parent clearance exceeds metabolite clearance at every weight (Figure 3).
+  all(
+    dplyr::filter(wt_grid, Analyte == "CLB (CL/F)")$CL >
+      dplyr::filter(wt_grid, Analyte == "N-CLB (CL/Fm)")$CL
+  )
+)
+```
+
+## Figure 6 -- simulated concentration-time profiles at 0.2 mg/kg BID
+
+Tuo 2025 Figure 6 simulates a 20 kg child (the cohort median weight) given
+0.2 mg/kg twice daily for 10 days, separately for CYP2C19 NM, IM and PM, and
+plots the median with the 10th-90th percentile band. The paper's reading of the
+figure is that parent troughs are indistinguishable across phenotypes and stay
+inside 30-300 ug/L, while metabolite troughs rise NM < IM < PM, with about half
+of the PM subjects above 3000 ug/L.
+
+```{r figure6-sim}
+N_PER_ARM <- 200  # cap: never more than 200 participants per arm
+
+fig6_arms <- tibble::tibble(geno = c("NM", "IM", "PM")) |>
+  dplyr::mutate(CYP2C19_IM = as.integer(geno == "IM"),
+                CYP2C19_PM = as.integer(geno == "PM"))
+
+# Coarse over the approach to steady state, dense over the final dosing
+# interval where the AUC ratios of the Figure 5 replication are integrated.
+# The metabolite elimination rate constant reaches ~5.5 1/h in the upper tail
+# of the 45.35% metabolite-clearance variance, so the integration is stiff
+# enough that the record count -- not the cohort size -- sets the render time.
+fig6_times <- sort(unique(c(seq(0, 228, by = 2), seq(228, 240, by = 0.5))))
+fig6_subjects <- fig6_arms |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = N_PER_ARM)) |>
+  dplyr::mutate(id = dplyr::row_number(), wt = 20, dose_mg = 0.2 * 20)
+
+fig6_ev <- build_events(fig6_subjects, fig6_times)
+
+sim_fig6 <- rxode2::rxSolve(mod, fig6_ev, returnType = "data.frame") |>
+  dplyr::left_join(dplyr::select(fig6_subjects, id, geno), by = "id") |>
+  dplyr::mutate(clb = Cc * UGL, ndmclb = Cc_ndmclb * UGL,
+                geno = factor(geno, levels = c("NM", "IM", "PM")))
+stopifnot(!anyNA(sim_fig6$clb), !anyNA(sim_fig6$ndmclb))
+```
+
+```{r figure6-plot, fig.height = 6, fig.cap = "Replicates Figure 6 of Tuo 2025: median (solid) and 10th-90th percentile band (shaded) concentration-time profiles for a 20 kg child on 0.2 mg/kg twice daily for 10 days, by CYP2C19 phenotype."}
+fig6_summary <- sim_fig6 |>
+  tidyr::pivot_longer(c(clb, ndmclb), names_to = "analyte", values_to = "conc") |>
+  dplyr::mutate(analyte = factor(analyte, levels = c("clb", "ndmclb"),
+                                 labels = c("CLB", "N-CLB"))) |>
+  dplyr::group_by(geno, analyte, time) |>
+  dplyr::summarise(med = median(conc), lo = quantile(conc, 0.1),
+                   hi = quantile(conc, 0.9), .groups = "drop")
+
+ggplot(fig6_summary, aes(time, med, colour = analyte, fill = analyte)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~geno, ncol = 1, scales = "free_y") +
+  labs(x = "Time (h)", y = "Concentration (ug/L)",
+       colour = "Analyte", fill = "Analyte",
+       title = "20 kg child, clobazam 0.2 mg/kg twice daily for 10 days") +
+  theme_bw()
+```
+
+```{r figure6-claims}
+fig6_trough <- sim_fig6 |>
+  dplyr::filter(time == 240) |>
+  dplyr::group_by(geno) |>
+  dplyr::summarise(
+    med_clb      = median(clb),
+    med_ndmclb   = median(ndmclb),
+    pct_clb_in   = 100 * mean(clb >= 30 & clb <= 300),
+    pct_ndmclb_gt3000 = 100 * mean(ndmclb > 3000),
+    .groups = "drop"
+  )
+knitr::kable(
+  fig6_trough |>
+    dplyr::rename("CYP2C19" = geno,
+                  "Median CLB trough (ug/L)" = med_clb,
+                  "Median N-CLB trough (ug/L)" = med_ndmclb,
+                  "% CLB in 30-300 ug/L" = pct_clb_in,
+                  "% N-CLB > 3000 ug/L" = pct_ndmclb_gt3000),
+  digits = 1,
+  caption = "Steady-state trough summary for the Figure 6 scenario."
+)
+
+# The paper's qualitative Figure 6 claims. These are assertions on the CENTRE
+# of the distribution and on a monotone ordering, not on cohort extremes.
+stopifnot(
+  # "steady-state trough concentrations of CLB had no significant difference
+  # between the CYP2C19 NMs, IMs and PMs" -- spread across phenotypes is small
+  # relative to the parent trough itself.
+  (max(fig6_trough$med_clb) - min(fig6_trough$med_clb)) / min(fig6_trough$med_clb) < 0.15,
+  # "the steady-state trough concentrations of N-CLB gradually increased in the
+  # order NMs < IMs < PMs"
+  !is.unsorted(fig6_trough$med_ndmclb[match(c("NM", "IM", "PM"), fig6_trough$geno)]),
+  # "Approximately 90% of the N-CLB concentrations in the NMs and IMs were less
+  # than 3000 ug/L, but about 50% of the N-CLB concentrations in the PMs
+  # exceeded 3000 ug/L" -- gate the direction and a generous envelope.
+  fig6_trough$pct_ndmclb_gt3000[fig6_trough$geno == "NM"] < 25,
+  fig6_trough$pct_ndmclb_gt3000[fig6_trough$geno == "PM"] > 30
+)
+```
+
+## Figure 5 -- N-CLB / CLB metabolic ratios by CYP2C19 phenotype
+
+Tuo 2025 Figure 5 reports mean steady-state metabolic ratios of AUC24h, Cmax
+and Cmin. The AUC ratio is the one the model pins exactly: by the steady-state
+mass balance above it equals `cl / cl_ndmclb`, which is
+`exp(-theta_CYP2C19)` times 5.60 and therefore depends only on phenotype, not
+on weight or dose.
+
+```{r figure5}
+ratio_window <- sim_fig6 |> dplyr::filter(time >= 228, time <= 240)
+
+ratios <- ratio_window |>
+  dplyr::group_by(geno, id) |>
+  dplyr::summarise(
+    auc24  = trapz(time, ndmclb) / trapz(time, clb),
+    cmax_r = max(ndmclb) / max(clb),
+    cmin_r = min(ndmclb) / min(clb),
+    .groups = "drop"
+  )
+
+published_ratios <- tibble::tibble(
+  geno   = factor(c("NM", "IM", "PM"), levels = c("NM", "IM", "PM")),
+  auc24  = c(6.77, 8.28, 27.05),
+  cmax_r = c(5.81, 6.74, 18.54),
+  cmin_r = c(8.18, 10.79, 51.40)
+)
+
+ratio_cmp <- ratios |>
+  dplyr::group_by(geno) |>
+  dplyr::summarise(dplyr::across(c(auc24, cmax_r, cmin_r), mean), .groups = "drop") |>
+  dplyr::left_join(published_ratios, by = "geno", suffix = c("_sim", "_pub"))
+
+knitr::kable(
+  ratio_cmp |>
+    dplyr::select("CYP2C19" = geno,
+                  "AUC24h ratio (simulated)" = auc24_sim,
+                  "AUC24h ratio (Tuo 2025)"  = auc24_pub,
+                  "Cmax ratio (simulated)"   = cmax_r_sim,
+                  "Cmax ratio (Tuo 2025)"    = cmax_r_pub,
+                  "Cmin ratio (simulated)"   = cmin_r_sim,
+                  "Cmin ratio (Tuo 2025)"    = cmin_r_pub),
+  digits = 2,
+  caption = "Replicates Figure 5 of Tuo 2025: mean steady-state N-CLB/CLB metabolic ratios by CYP2C19 phenotype."
+)
+
+# Exact identity: the steady-state AUC ratio equals cl / cl_ndmclb, which for a
+# 20 kg subject is 5.66/1.01 * exp(-theta). Uses the same drawn etas on both
+# sides, so a tight bound is correct.
+exact_auc_ratio <- (5.66 / 1.01) * exp(-c(NM = 0, IM = -0.25, PM = -1.30))
+auc_ratio_med <- ratios |>
+  dplyr::group_by(geno) |>
+  dplyr::summarise(m = median(auc24), .groups = "drop")
+stopifnot(
+  # Ordering NM < IM < PM (Tuo 2025 Figure 5 and Results 3.3).
+  !is.unsorted(ratio_cmp$auc24_sim),
+  !is.unsorted(ratio_cmp$cmax_r_sim),
+  !is.unsorted(ratio_cmp$cmin_r_sim),
+  # The MEDIAN AUC ratio is the exact structural identity (the published means
+  # are inflated by the log-normal IIV, so they are compared, not asserted on).
+  all(abs(100 * (auc_ratio_med$m[match(c("NM", "IM", "PM"), auc_ratio_med$geno)] -
+                   exact_auc_ratio) / exact_auc_ratio) < 20)
+)
+```
+
+The simulated means sit close to the published means for AUC24h and Cmax. The
+Cmin ratio is the noisiest of the three in both the paper and the simulation --
+it is a ratio of two small numbers at the bottom of the profile, and its mean is
+strongly inflated by the log-normal metabolite-clearance variability -- so it is
+reported side by side rather than gated.
+
+# PKNCA validation
+
+NCA is run over the last steady-state dosing interval (228 to 240 h) on the
+typical-value cohort, once per analyte. The trough is taken as `cmin`, not
+`ctrough`: PKNCA defines `ctrough` as the *predose* concentration at the
+interval **start**, which is not returned for this interval, whereas at steady
+state the minimum over a full dosing interval is the trough by construction --
+the concentration at 228 h and at 240 h are equal. `cmin` here reproduces the
+240 h model trough exactly.
+
+```{r pknca}
+nca_conc <- sim_typ |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, arm, geno, wt, time, clb, ndmclb)
+
+dose_df <- ev_typ |>
+  dplyr::filter(evid == 1L) |>
+  dplyr::select(id, time, amt) |>
+  dplyr::left_join(dplyr::select(tab3, id, arm), by = "id")
+
+intervals <- data.frame(
+  start = 228, end = 240,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, cmin = TRUE
+)
+
+run_nca <- function(conc_col) {
+  cobj <- PKNCA::PKNCAconc(
+    nca_conc |> dplyr::mutate(conc = .data[[conc_col]]),
+    conc ~ time | arm + id, concu = "ug/L", timeu = "hr"
+  )
+  dobj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id, doseu = "mg")
+  as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(cobj, dobj, intervals = intervals))$result)
+}
+
+nca_clb    <- run_nca("clb")    |> dplyr::mutate(analyte = "CLB")
+nca_ndmclb <- run_nca("ndmclb") |> dplyr::mutate(analyte = "N-CLB")
+
+nca_all <- dplyr::bind_rows(nca_clb, nca_ndmclb) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cmin"))
+
+knitr::kable(
+  nca_all |>
+    tidyr::pivot_wider(id_cols = c(analyte, arm), names_from = PPTESTCD,
+                       values_from = PPORRES) |>
+    dplyr::rename("Analyte" = analyte, "Arm" = arm, "Cmax (ug/L)" = cmax,
+                  "Tmax (h)" = tmax, "AUCtau (ug*h/L)" = auclast,
+                  "Ctrough (ug/L)" = cmin),
+  digits = 1,
+  caption = "Steady-state NCA (228-240 h) of the typical-value profiles, by analyte and arm."
+)
+```
+
+# Comparison against published NCA
+
+Tuo 2025 reports no conventional NCA table, but Table 3 gives a published
+**median steady-state trough** for both analytes in each of the 15 dosing
+scenarios -- the same quantity as `ctrough` above. That is the reference set.
+
+```{r nca-compare}
+simulated_long <- nca_all |>
+  dplyr::filter(PPTESTCD == "cmin") |>
+  dplyr::select(analyte, arm, PPTESTCD, PPORRES)
+
+published <- dplyr::bind_rows(
+  tab3 |> dplyr::transmute(analyte = "CLB",   arm, cmin = pub_clb),
+  tab3 |> dplyr::transmute(analyte = "N-CLB", arm, cmin = pub_ndmclb)
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = simulated_long,
+  reference     = published,
+  by            = c("analyte", "arm"),
+  units         = c(cmin = "ug/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated versus published median steady-state trough concentration for all 15 Tuo 2025 Table 3 scenarios."
+)
+```
+
+```{r nca-compare-gate}
+# Recompute the percent difference numerically -- the `% diff` column of
+# ncaComparisonTable() is formatted character and cannot be asserted on.
+gate <- simulated_long |>
+  dplyr::left_join(published, by = c("analyte", "arm")) |>
+  dplyr::mutate(pct_diff = 100 * (PPORRES - cmin) / cmin)
+
+knitr::kable(
+  gate |>
+    dplyr::group_by(analyte) |>
+    dplyr::summarise(`Median % diff` = median(pct_diff),
+                     `Max |% diff|`  = max(abs(pct_diff)), .groups = "drop") |>
+    dplyr::rename("Analyte" = analyte),
+  digits = 2,
+  caption = "Agreement between the deterministic model trough and the Tuo 2025 Table 3 published medians."
+)
+
+# This comparison is DETERMINISTIC on the simulated side (zeroRe, no RNG), so
+# the bound cannot drift with the rxode2 build or the thread count. The
+# residual gap is the Monte Carlo median-estimation error of the paper's own
+# simulation, which scatters roughly +/- 4%.
+stopifnot(
+  max(abs(dplyr::filter(gate, analyte == "CLB")$pct_diff))   < 15,
+  max(abs(dplyr::filter(gate, analyte == "N-CLB")$pct_diff)) < 15,
+  abs(median(gate$pct_diff)) < 8
+)
+```
+
+## Probability of target attainment
+
+The parent trough depends only on `etalcl` (no IIV was estimated on `V_CLB/F`),
+and it is monotone decreasing in clearance. The probability of exceeding a
+target is therefore available **exactly**, by root-finding the eta that lands on
+the threshold and reading the normal CDF -- no sampling, so even the sub-1%
+columns of Table 3 are resolved rather than quantised by a finite cohort.
+
+```{r pta-clb}
+OM_CL <- 0.1594  # etalcl variance, Table 2
+
+pta_exact <- function(dose, wt, threshold_ugL) {
+  f <- function(eta) {
+    cl <- 5.66 * (wt / 70)^0.75 * exp(eta)
+    vc <- 92.07 * (wt / 70)
+    ss_trough(dose, 1.99, cl, vc) * UGL - threshold_ugL
+  }
+  if (f(-6) < 0) return(0)
+  if (f(6)  > 0) return(100)
+  eta_star <- stats::uniroot(f, c(-6, 6), tol = 1e-10)$root
+  100 * stats::pnorm(eta_star / sqrt(OM_CL))
+}
+
+pta_clb <- tab3 |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    sim_pta30  = pta_exact(dose_mg, wt, 30),
+    sim_pta300 = pta_exact(dose_mg, wt, 300),
+    sim_pta500 = pta_exact(dose_mg, wt, 500)
+  ) |>
+  dplyr::ungroup()
+
+knitr::kable(
+  pta_clb |>
+    dplyr::select("CYP2C19" = geno, "Weight (kg)" = wt,
+                  "Dose (mg/kg BID)" = mgkg,
+                  "PTA >= 30 ug/L (simulated)" = sim_pta30,
+                  "PTA >= 30 ug/L (Tuo 2025)"  = pub_pta_clb30,
+                  "PTA >= 300 ug/L (simulated)" = sim_pta300,
+                  "PTA >= 500 ug/L (simulated)" = sim_pta500),
+  digits = 1,
+  caption = "Replicates the CLB probability-of-target-attainment columns of Tuo 2025 Table 3."
+)
+
+pta_err <- pta_clb$sim_pta30 - pta_clb$pub_pta_clb30
+stopifnot(
+  # Exact (non-stochastic) computation against published values; compare on the
+  # percentage-point scale, and gate the centre plus a robust quantile.
+  abs(median(pta_err)) < 10,
+  stats::quantile(abs(pta_err), 0.9) < 20,
+  # The paper's headline stratification: PMs on the recommended dose reach the
+  # 30 ug/L parent target far less often than NMs and IMs.
+  mean(pta_clb$sim_pta30[pta_clb$geno == "PM"]) <
+    mean(pta_clb$sim_pta30[pta_clb$geno == "NM"]) - 20
+)
+```
+
+The metabolite target-attainment columns depend on both etas, so they are
+estimated from the stochastic cohort rather than in closed form. The cohort is
+capped at 200 subjects per arm, which resolves a probability to about 0.5
+percentage points -- adequate for the `>= 300 ug/L` column (81-95% in Table 3)
+but **not** for the `>= 3000` and `>= 5000` columns (0.1-9.3%), which are
+therefore reported for inspection and not gated.
+
+```{r pta-ndmclb}
+pta_subjects <- tab3 |>
+  dplyr::select(arm_id = id, wt, dose_mg, CYP2C19_IM, CYP2C19_PM) |>
+  dplyr::slice(rep(seq_len(dplyr::n()), each = N_PER_ARM)) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+# Only the 240 h trough is needed, so the PTA cohort carries one observation
+# record per subject.
+pta_ev <- build_events(pta_subjects, 240)
+
+sim_pta <- rxode2::rxSolve(mod, pta_ev, returnType = "data.frame") |>
+  dplyr::left_join(dplyr::select(pta_subjects, id, arm_id), by = "id") |>
+  dplyr::filter(time == 240) |>
+  dplyr::mutate(ndmclb = Cc_ndmclb * UGL)
+stopifnot(!anyNA(sim_pta$ndmclb))
+
+pta_ndmclb <- sim_pta |>
+  dplyr::group_by(arm_id) |>
+  dplyr::summarise(sim_pta300  = 100 * mean(ndmclb >= 300),
+                   sim_pta3000 = 100 * mean(ndmclb >= 3000),
+                   .groups = "drop") |>
+  dplyr::left_join(dplyr::select(tab3, arm_id = id, geno, wt, mgkg, pub_pta_ndmclb300),
+                   by = "arm_id")
+
+knitr::kable(
+  pta_ndmclb |>
+    dplyr::select("CYP2C19" = geno, "Weight (kg)" = wt, "Dose (mg/kg BID)" = mgkg,
+                  "PTA >= 300 ug/L (simulated)" = sim_pta300,
+                  "PTA >= 300 ug/L (Tuo 2025)"  = pub_pta_ndmclb300,
+                  "PTA >= 3000 ug/L (simulated, not gated)" = sim_pta3000),
+  digits = 1,
+  caption = "Replicates the N-CLB probability-of-target-attainment columns of Tuo 2025 Table 3."
+)
+
+nd_err <- pta_ndmclb$sim_pta300 - pta_ndmclb$pub_pta_ndmclb300
+stopifnot(
+  abs(median(nd_err)) < 15,
+  stats::quantile(abs(nd_err), 0.9) < 25
+)
+```
+
+# Assumptions and deviations
+
+* **Interindividual-variance scale.** Tuo 2025 Table 2 labels the two IIV rows
+  `omega^2 CL/F (%)` with values 15.94 and 45.35. Two readings are possible: a
+  variance expressed as a percentage (0.1594, 0.4535) or a %CV (0.1594, 0.4535
+  as SDs). The table footnote resolves it in words -- "interindividual
+  **variance** for pharmacokinetic parameters" -- and the paper's own Monte
+  Carlo output confirms it numerically. Reading them as variances reproduces the
+  Table 3 parent PTA columns for the 20 kg NM / 0.25 mg/kg row (3.9% and 0.2%
+  of subjects above 300 and 500 ug/L, against the published 5.1% and 0.1%);
+  reading them as CVs predicts 0.0005% and 7e-11%, four to ten orders of
+  magnitude too small. The variance reading is used.
+* **Bioavailability and metabolite fraction are not identifiable.** `F` and `Fm`
+  were not estimated, so the model is written in the apparent parameterisation
+  the paper reports; `central` and `central_ndmclb` hold scaled amounts. Both
+  predicted concentrations are the true plasma concentrations. See "The apparent
+  (F, Fm) parameterisation" above. A consequence is that the parent's entire
+  elimination is routed into the metabolite compartment -- the paper models no
+  separate non-metabolic clobazam elimination arm.
+* **Absorption is inherited, not fitted.** `Ka` is fixed at 1.99 1/h from
+  Jullien 2015 (Tuo 2025 reference [19]) because the opportunistic sampling
+  carried essentially no absorption-phase information. Predictions near Tmax are
+  therefore weakly supported by this study's own data; the trough predictions
+  that the paper and this vignette validate against are not sensitive to it.
+* **70 kg reference weight is an extrapolation.** All four typical values are
+  reported standardised to 70 kg, but the cohort spans 6.60-73.0 kg with a
+  median of 20.0 kg. Only one subject sits near the reference, so the printed
+  typical values are adult-standardised rather than observed.
+* **Allometric exponents were not estimated.** Equations (9)-(12) print 1.0 on
+  the volumes and 0.75 on the clearances as literal constants and Table 2 has no
+  exponent row, no RSE and no bootstrap interval for them; they are encoded with
+  `fixed()`.
+* **No IIV on volumes or on Ka.** The Discussion states the model was simplified
+  by "reducing model compartments, freezing parameter values, and ignoring
+  interindividual variability for certain parameters". Only the two clearances
+  carry an eta, and Table 2 reports no correlation block, so the two etas are
+  independent. This is encoded faithfully rather than by inventing variances.
+* **CYP2C19 rapid and ultrarapid metabolizers have no encoding.** The 2 rapid
+  metabolizers (`*1/*17`) were excluded from the covariate analysis for lack of
+  sample size and no ultrarapid metabolizers were enrolled, so neither has an
+  estimated effect. Both fall into the `CYP2C19_IM = 0, CYP2C19_PM = 0`
+  reference cell by default; simulating them is an explicit extrapolation the
+  paper flags as a limitation.
+* **Screened-but-not-retained covariates** (age, sex, body surface area, renal
+  and hepatic panels, concomitant antiepileptics, ketogenic diet, and the ABCB1
+  / CYP3A4 / GABA-receptor SNPs) are recorded in `covariatesDataExcluded` so the
+  paper's covariate screen is preserved without implying they act in the model.
+  The twelve screened SNPs are represented by a single entry because none
+  carries an estimated coefficient.
+* **Table 1 unit typo in the source.** Tuo 2025 Table 1 labels the two
+  concentration rows `ug*mL^-1` while the values (mean 137.01 clobazam, 1611.56
+  N-desmethylclobazam) and the whole of the surrounding text are in `ug*L^-1`.
+  The `ug/L` reading is used. Relatedly, Results 3.1 calls 137.01 the *median*
+  clobazam concentration whereas Table 1 lists it as the *mean* (median 114.50);
+  neither number enters the model.
+* **Comparison target.** The paper reports no conventional NCA table, so the
+  validation reference is the published median steady-state trough of Table 3
+  for all 15 weight-by-phenotype scenarios, compared against `ctrough` from
+  PKNCA on the typical-value profiles.
+* **Residual error is excluded from the simulated concentrations.** `Cc` and
+  `Cc_ndmclb` are individual predictions; the proportional residual terms
+  describe assay and model misspecification error and are not added before
+  computing troughs or target attainment. Adding a 33-53% proportional error
+  would also drive simulated concentrations negative.
+* **Metabolite PTA resolution.** The `>= 3000` and `>= 5000 ug/L` metabolite
+  columns of Table 3 range from 0.1% to 9.3%, below what a 200-subject-per-arm
+  cohort resolves; the `>= 3000` column is shown for inspection and neither is
+  gated. The parent PTA columns are computed exactly instead, by root-finding
+  rather than sampling.
+* **Equation recovery.** All twelve numbered equations were lost by the
+  PDF-to-markdown conversion (each rendered as `formula-not-decoded`); they were
+  recovered from the PDF text layer directly and are the basis for the ODE
+  system, the covariate forms and the fixed allometric exponents.

@@ -238,7 +238,8 @@ Chigutsa_2012_ofloxacin <- function() {
     # analysis' paragraph 4, citing reference (1) Anderson & Holford 2008
     # for allometric scaling).
     allo_cl_q <- fixed(0.75); label("Allometric exponent on CL_nonGFR and Q (unitless)")                           # Chigutsa 2012 Methods: 'introduced using allometric scaling (1)' -- standard 0.75 for clearances
-    allo_v    <- fixed(1);    label("Allometric exponent on Vc and Vp (unitless)")                                 # Chigutsa 2012 Methods: 'allometrically scaled' -- standard 1.0 for volumes
+    e_lbm_vc  <- fixed(1);    label("Allometric exponent of lean body mass on Vc (unitless)")   # Chigutsa 2012 Methods: 'allometrically scaled' -- standard 1.0 for volumes
+    e_wt_vp   <- fixed(1);    label("Allometric exponent of total body weight on Vp (unitless)") # Chigutsa 2012 Methods: 'allometrically scaled' -- standard 1.0 for volumes
 
     # Food / site effect on mean transit time.
     # Chigutsa 2012 Table 3 reports two separately estimated MTT typical
@@ -293,8 +294,8 @@ Chigutsa_2012_ofloxacin <- function() {
     cl_typ        <- cl_renal_typ + cl_nonren_typ
     cl            <- cl_typ * exp(etalcl)
 
-    vc <- exp(lvc + etalvc) * (LBM / 46)^allo_v                 # allometric scaling, reference 46 kg lean body mass
-    vp <- exp(lvp)          * (WT / 70)^allo_v                  # allometric scaling, reference 70 kg total body weight
+    vc <- exp(lvc + etalvc) * (LBM / 46)^e_lbm_vc                 # allometric scaling, reference 46 kg lean body mass
+    vp <- exp(lvp)          * (WT / 70)^e_wt_vp                  # allometric scaling, reference 70 kg total body weight
     q  <- exp(lq)           * (WT / 70)^allo_cl_q               # allometric scaling, reference 70 kg total body weight
 
     mtt    <- exp(lmtt + etalmtt) * fed_mtt
