@@ -1186,6 +1186,8 @@ navbar:
         href: articles/Wojciechowski_2022_domagrozumab.html
       - text: "Donepezil im (Khwarg 2024)"
         href: articles/Khwarg_2024_donepezil.html
+      - text: "Donepezil im (Park 2025)"
+        href: articles/Park_2025_donepezil.html
       - text: "Donepezil multipledose (Jung 2023)"
         href: articles/Jung_2023_fractal_kinetics.html
       - text: "Donepezil oral (Khwarg 2024)"
@@ -6049,6 +6051,7 @@ articles:
   - articles/Park_2023_everolimus
   - articles/Park_2023_mycophenolic_acid
   - articles/Park_2025_cd19_cart_sle_qsp
+  - articles/Park_2025_donepezil
   - articles/Park_2025_efineptakin_alfa
   - articles/Parkinson_2025_balcinrenone
   - articles/Parmar_2023_spectinamides_pbpk

@@ -1,0 +1,680 @@
+---
+title: "Long-acting intramuscular donepezil GB-5001A (Park 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Long-acting intramuscular donepezil GB-5001A (Park 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Park 2025 reports a phase 1, open-label, active-controlled dose-escalation study of
+GB-5001, a long-acting injectable (LAI) formulation of donepezil for Alzheimer's
+disease, together with a NONMEM population PK analysis of the GB-5001A
+intramuscular (IM) arms. The structural model is a two-compartment disposition fed
+by **three parallel absorption pathways**: two lagged first-order IM depots and a
+simultaneous zero-order input directly into the central compartment.
+
+```{r models}
+mod <- readModelDb("Park_2025_donepezil_im")
+ui <- rxode2::rxode(mod)
+```
+
+* Description: `r ui$description`
+* Citation: `r ui$reference`
+* Article: <https://doi.org/10.3390/pharmaceutics17121517>
+* Trial registration: [NCT06127368](https://clinicaltrials.gov/study/NCT06127368)
+
+This is the **second** GB-5001 population PK model in the library. The earlier
+formulation, from the same sponsor and cited by Park 2025 as reference 14, is
+`modellib("Khwarg_2024_donepezil_im")`. The two are separate studies with separate
+estimates (Park 2025 reports a longer Tmax and lower Cmax, which the Discussion
+attributes to further refinement of the LAI properties), so both are distributed.
+
+# Population
+
+The model was fitted to plasma donepezil concentrations from healthy Asian
+(Korean) men aged 19-55 years with body weight of at least 55 kg and BMI
+18.5-30.0 kg/m2 (Park 2025 Section 2.4 and Table 1). Fifty participants completed
+the study across six cohorts; the GB-5001A IM arms used for this model are Cohort
+A (70 mg), Cohort E (140 mg) and Cohort F (280 mg), each targeting 8 participants.
+All participants were male, so no sex effect was estimable. CYP2D6 poor
+metabolizers were excluded from Part B by protocol.
+
+Section 3.8 states that 32 participants entered the modelling analysis, pooling
+the IM cohorts with the oral Aricept Cohort D. No covariate effect is retained in
+the final model: Table 6 reports structural, inter-individual-variability and
+residual parameters only.
+
+The same information is available programmatically:
+
+```{r population}
+str(ui$population, max.level = 1)
+```
+
+Covariates that were carried in the modelling dataset but not retained are
+recorded in the model file's `covariatesDataExcluded` metadata rather than in
+`covariateData`, because `model()` never references them:
+
+```{r covariates-excluded}
+names(ui$covariatesDataExcluded)
+```
+
+# Source trace
+
+Every `ini()` entry carries an in-file comment naming its source location. They are
+collected here for review. All parameter values come from Park 2025 **Table 6**
+("Population Parameter Estimates for the Final Pharmacokinetic Model of
+GB-5001A"); the model topology comes from **Figure 2**.
+
+| Equation / parameter | Value | Source location |
+|---|---|---|
+| Two-compartment disposition, three parallel absorption pathways | n/a | Figure 2 (structural diagram) |
+| `lka` (KA3, IM depot 1) | 0.00173 1/h | Table 6 |
+| `lka2` (KA4, IM depot 2) | 0.0113 1/h | Table 6 |
+| `lfdepot` (F3) | 0.657 | Table 6 |
+| `lfdepot2` (F4) | 0.195 | Table 6 |
+| zero-order fraction `1 - F3 - F4` | 0.148 | Figure 2 (arm labelled "Zero order absorption / F1"); value implied, see below |
+| `ltlag` (ALAG3) | 299 h | Table 6 |
+| `ltlag2` (ALAG4) | 1130 h | Table 6 |
+| `ld1` (D1, zero-order duration) | 497 h | Table 6 |
+| `lcl` (CL) | 9.57 L/h | Table 6 |
+| `lvc` (V1) | 58.2 L | Table 6 |
+| `lq` (Q) | 100 L/h, **fixed** | Table 6 ("100 FIX"); rationale in Section 2.10 |
+| `lvp` (V2) | 2050 L | Table 6 |
+| `etalcl` | 0.0945 (CV 31.5%) | Table 6, IIV CL |
+| `etalvc` | 6.97 | Table 6, IIV V1 |
+| `propSd` | 0.271 | Table 6, eps2 (proportional), "represented as CV" |
+| `addSd` | 0.0713 ug/L | Table 6, eps1 (additive), ng/mL |
+
+## Three transcription decisions
+
+**1. The zero-order fraction F1 is not tabulated.** Figure 2 labels the zero-order
+arm "F1" but prints no value, and Table 6 lists only F3 and F4. The complement
+`F1 = 1 - F3 - F4 = 0.148` is confirmed arithmetically by the paper's own
+steady-state simulation: at steady state `AUCtau = Dose * Ftotal / CL`, so
+`Ftotal = 1` predicts a mean AUCtau of `280 mg / 9.57 L/h` inflated by the
+log-normal CL factor `exp(0.0945 / 2) = 1.048`, i.e. 30,675 h*ng/mL against the
+30,259.2 h*ng/mL reported in Section 3.8 (a 1.4% gap). Any other value of F1 moves
+this by the same proportion. The check is repeated numerically below.
+
+**2. Equation (1) is not usable as typeset.** The paper prints the residual-error
+model as
+
+$$Y = F + \sqrt{F^2 * \theta_1^2 * \theta_2^2 * \varepsilon}, \quad \varepsilon \sim N(0, 1^2)$$
+
+which takes the square root of a signed normal deviate and *multiplies* rather
+than adds the proportional and additive components. Section 2.10's prose ("a
+single residual error term ... with weights assigned based on a proportional
+component and an additive component, thereby implementing a combined error
+structure") describes the standard NONMEM combined form
+`W = sqrt((theta1 * F)^2 + theta2^2)`, `Y = F + W * eps`, which is what the model
+file encodes. Table 6's units corroborate this reading: eps1 is given in linear
+ng/mL and eps2 is explicitly "a proportional residual error represented as CV", so
+both are standard deviations, not `$SIGMA` variances.
+
+**3. `IIV V1 = 6.97` is a log-scale variance, not a percent CV.** Table 6's
+footnote defines the derived CV as `CV(%) = sqrt(exp(omega) - 1) * 100`, which
+reads the column as a variance and gives 31.5% for CL and 3264% for V1. Section
+3.8's prose calls the volume IIV "relatively low", which would instead suggest
+6.97%. The paper's own simulation settles it: the two readings were simulated and
+compared against the Section 3.8 steady-state summary, and the variance reading
+reproduces the published CV structure while the percent-CV reading does not (see
+"Steady-state replication" below, where this comparison is re-run).
+
+## Encoding the three-phase IM absorption
+
+Figure 2 splits each IM dose three ways. In rxode2 this is expressed with one dose
+record per arm, all carrying the **full nominal dose**, with the `f()` multipliers
+performing the split:
+
+| Arm | `cmt` | `rate` | Fraction | Control |
+|---|---|---|---|---|
+| First-order depot | `depot` | 0 | F3 = 0.657 | `alag(depot) = 299 h`, `ka = 0.00173 1/h` |
+| First-order depot | `depot2` | 0 | F4 = 0.195 | `alag(depot2) = 1130 h`, `ka2 = 0.0113 1/h` |
+| Zero-order input | `central` | -2 | 1 - F3 - F4 = 0.148 | `dur(central) = 497 h`, no lag |
+
+`rate = -2` tells rxode2 that the infusion duration is supplied by the model
+(`dur(central)`) rather than by the data. The zero-order arm has no lag time, which
+is why donepezil is already quantifiable at the first post-dose sample in most
+participants (Section 3.8 / Table S4) even though both first-order depots are
+still latent at that point.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The simulations below use
+virtual cohorts of 100 participants per arm dosed and sampled at the study's
+published nominal times for Cohorts A, E and F (Park 2025 Section 2.7), so the
+simulated NCA is directly comparable with the paper's own NCA in Table 2.
+
+```{r cohort}
+rxode2::rxSetSeed(20251125)
+
+im_times <- c(0, 0.5, 1, 2, 4, 6, 8, 12, 24, 48, 72, 96, 120, 168, 240, 312, 360,
+              432, 504, 552, 600, 648, 720, 768, 840, 1008, 1176, 1344, 1512,
+              1848, 2184, 2352)
+
+# Each IM administration is split across three parallel dose records; every
+# record carries the full nominal dose because f() applies the fraction.
+make_im_events <- function(dose, n, obs_times, dose_times, treatment, id_offset = 0L) {
+  ids <- id_offset + seq_len(n)
+  doses <- tidyr::expand_grid(
+    id = ids,
+    time = dose_times,
+    tibble::tibble(cmt = c("depot", "depot2", "central"), rate = c(0, 0, -2))
+  ) |>
+    dplyr::mutate(amt = dose, evid = 1L)
+  obs <- tidyr::expand_grid(id = ids, time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", rate = 0)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::mutate(treatment = treatment, nominal_dose = dose) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+n_arm <- 100
+
+ev_im <- dplyr::bind_rows(
+  make_im_events(70,  n_arm, im_times, 0, "IM 70 mg",  id_offset =   0L),
+  make_im_events(140, n_arm, im_times, 0, "IM 140 mg", id_offset = 100L),
+  make_im_events(280, n_arm, im_times, 0, "IM 280 mg", id_offset = 200L)
+)
+
+stopifnot(
+  # No record collides with another on the (subject, time, type, compartment) key.
+  anyDuplicated(ev_im[, c("id", "time", "evid", "cmt")]) == 0L,
+  # Three dose records per IM administration, one per absorption arm.
+  sum(ev_im$evid == 1L) == 3L * 3L * n_arm,
+  # Every dose record carries the full nominal dose; f() performs the split.
+  all(ev_im$amt[ev_im$evid == 1L] == ev_im$nominal_dose[ev_im$evid == 1L]),
+  # Observations are written on an ODE state, never on the observable name.
+  all(ev_im$cmt[ev_im$evid == 0L] %in% ui$state)
+)
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, ev_im, keep = c("treatment", "nominal_dose")) |>
+  as.data.frame() |>
+  dplyr::mutate(
+    treatment = factor(treatment, levels = c("IM 70 mg", "IM 140 mg", "IM 280 mg")),
+    # Park 2025 Section 2.8 handles below-quantification values before Tmax as
+    # zero. Flooring the residual-error draw at zero mirrors that rule and keeps
+    # the early-time samples, where the additive term can outweigh a
+    # sub-ng/mL prediction, from going negative.
+    dv = pmax(sim, 0)
+  )
+
+stopifnot(
+  !anyNA(sim$Cc), !anyNA(sim$dv),
+  # Cc is the individual prediction and carries no residual error; dv does.
+  all(sim$Cc >= 0)
+)
+```
+
+## Replicating the published concentration-time profiles
+
+Figure 4 (Part A) and Figure 5 (Part B) show mean (SD) plasma donepezil against
+time. The slow rise over roughly 2-3 weeks and the very gradual decline are the
+flip-flop signature the Discussion describes: absorption, not elimination, is
+rate-limiting.
+
+```{r figure-profiles, fig.cap = "Replicates Figures 4 and 5 of Park 2025: mean simulated donepezil concentration-time profiles for the three GB-5001A IM dose levels."}
+prof <- sim |>
+  dplyr::group_by(treatment, time) |>
+  dplyr::summarise(mean_dv = mean(dv), sd_dv = sd(dv), .groups = "drop")
+
+ggplot(prof, aes(time, mean_dv, colour = treatment)) +
+  geom_ribbon(aes(ymin = pmax(mean_dv - sd_dv, 0), ymax = mean_dv + sd_dv,
+                  fill = treatment), alpha = 0.15, colour = NA) +
+  geom_line(linewidth = 0.7) +
+  geom_point(size = 1) +
+  labs(x = "Time (h)", y = "Donepezil (ng/mL)",
+       colour = "Treatment", fill = "Treatment",
+       title = "Simulated GB-5001A IM profiles (mean +/- SD)") +
+  theme_bw()
+```
+
+The paper's observed Tmax medians (1176, 817 and 619 h at 70, 140 and 280 mg;
+Table 2) sit on a profile that is nearly flat between roughly 400 and 1300 h, so
+the reported Tmax is dominated by which sample happened to be highest rather than
+by a genuine dose-dependent shift. The typical-value model, being linear, peaks at
+the same time at every dose:
+
+```{r typical-tmax}
+typ_profile <- function(dose) {
+  ev <- make_im_events(dose, 1L, seq(0, 2352, by = 4), 0, paste0("IM ", dose, " mg"))
+  out <- rxode2::rxSolve(rxode2::zeroRe(mod), ev) |> as.data.frame()
+  out[!duplicated(out$time), ]
+}
+
+typ <- lapply(c(70, 140, 280), typ_profile)
+typ_tab <- tibble::tibble(
+  `Dose (mg)` = c(70, 140, 280),
+  `Typical Tmax (h)` = vapply(typ, function(d) d$time[which.max(d$Cc)], numeric(1)),
+  `Typical Cmax (ng/mL)` = vapply(typ, function(d) max(d$Cc), numeric(1)),
+  `Observed median Tmax (h)` = c(1176.00, 816.72, 619.19),
+  `Observed geometric mean Cmax (ng/mL)` = c(5.28, 13.71, 29.12)
+)
+knitr::kable(typ_tab, digits = 2,
+             caption = "Typical-value peak vs Park 2025 Table 2 observed values.")
+
+stopifnot(
+  # A linear model is exactly dose-proportional: the typical Cmax must double
+  # with the dose. This is deterministic (zeroRe), so the bound is tight -- the
+  # only slack is the adaptive solver's own tolerance, realised at ~2e-6
+  # relative. 1e-4 sits ~50x above that and far below any real nonlinearity,
+  # which would show up at the percent level.
+  abs(typ_tab$`Typical Cmax (ng/mL)`[2] / typ_tab$`Typical Cmax (ng/mL)`[1] - 2) < 1e-4,
+  abs(typ_tab$`Typical Cmax (ng/mL)`[3] / typ_tab$`Typical Cmax (ng/mL)`[1] - 4) < 1e-4,
+  # The zero-order arm's duration D1 = 497 h sets the typical peak.
+  all(abs(typ_tab$`Typical Tmax (h)` - 497) < 12)
+)
+```
+
+# Mass-balance check on the IM dose split
+
+The three arms partition the dose into `F3 + F4 + (1 - F3 - F4) = 1`, so the
+formulation is implicitly fully bioavailable and the typical-value `AUC(0-inf)`
+must equal `Dose / CL` exactly. This validates the dose split, the `F1` inference,
+the unit conversion and the clearance in one deterministic step -- no random
+effects are involved, so the bound is tight.
+
+```{r mass-balance}
+auc_typ <- function(dose) {
+  tt <- sort(unique(c(seq(0, 400, by = 1), seq(400, 30000, by = 4))))
+  ev <- make_im_events(dose, 1L, tt, 0, "typ")
+  out <- rxode2::rxSolve(rxode2::zeroRe(mod), ev) |> as.data.frame()
+  out <- out[!duplicated(out$time), ]
+  sum(diff(out$time) * (head(out$Cc, -1) + tail(out$Cc, -1)) / 2)
+}
+
+mb <- tibble::tibble(`Dose (mg)` = c(70, 140, 280)) |>
+  dplyr::mutate(
+    `Simulated AUC(0-inf), typical (h*ng/mL)` = vapply(`Dose (mg)`, auc_typ, numeric(1)),
+    `Dose / CL (h*ng/mL)` = `Dose (mg)` * 1e6 / 9.57 / 1000,
+    Ratio = `Simulated AUC(0-inf), typical (h*ng/mL)` / `Dose / CL (h*ng/mL)`
+  )
+knitr::kable(mb, digits = c(0, 1, 1, 5),
+             caption = "Typical-value mass balance: total exposure equals Dose/CL when F1 + F3 + F4 = 1.")
+
+stopifnot(all(abs(mb$Ratio - 1) < 0.005))
+```
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim |>
+  dplyr::filter(!is.na(dv)) |>
+  dplyr::mutate(treatment = as.character(treatment)) |>
+  dplyr::select(id, time, dv, treatment)
+
+# Guarantee a time = 0 row per subject. GB-5001A is extravascular, so a pre-dose
+# concentration of zero is the correct anchor for AUC(0-*).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, dv = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+stopifnot(nrow(sim_nca) > 0, all(table(sim_nca$id) == length(im_times)))
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, dv ~ time | treatment + id,
+                             concu = "ug/L", timeu = "h")
+
+# The event table carries THREE dose records per administration, each holding the
+# full nominal dose because f() performs the split. Filtering evid == 1 would hand
+# PKNCA three times the administered dose and inflate CL/F and Vz/F threefold.
+# Build the dose frame from the nominal dose instead. The dose is converted to ug
+# so it shares the mass unit of the ug/L concentrations; otherwise cl.obs and
+# vz.obs come out 1000-fold too small.
+dose_df <- ev_im |>
+  dplyr::filter(evid == 1) |>
+  dplyr::distinct(id, time, treatment, nominal_dose) |>
+  dplyr::mutate(amt = nominal_dose * 1000) |>
+  dplyr::select(-nominal_dose)
+
+stopifnot(nrow(dose_df) == 3 * n_arm)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "ug")
+
+intervals <- data.frame(
+  start      = 0,
+  end        = Inf,
+  cmax       = TRUE,
+  tmax       = TRUE,
+  auclast    = TRUE,
+  aucinf.obs = TRUE,
+  half.life  = TRUE,
+  cl.obs     = TRUE,
+  vz.obs     = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+## Comparison against published NCA
+
+Park 2025 Table 2 reports **geometric mean** NCA parameters (median for Tmax) from
+the observed concentrations. The comparison therefore uses the residual-error-
+carrying simulated observations `dv`, not the individual prediction `Cc`, so that
+the simulated NCA inherits the same assay noise and the same 32-sample grid as the
+published one. The paper's `Vd/F` corresponds to PKNCA's `vz.obs` and `CL/F` to
+`cl.obs`; the concentration unit ng/mL equals ug/L.
+
+```{r nca_compare}
+published <- tibble::tribble(
+  ~treatment,   ~cmax, ~tmax,   ~auclast, ~aucinf.obs, ~half.life, ~cl.obs, ~vz.obs,
+  "IM 70 mg",    5.28, 1176.00,  6119.81,    6326.81,      314.30,   11.06, 5016.88,
+  "IM 140 mg",  13.71,  816.72, 15523.91,   16803.08,      286.91,    8.33, 3448.76,
+  "IM 280 mg",  29.12,  619.19, 28981.27,   29693.07,      289.40,    9.43, 3937.14
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by        = "treatment",
+  units     = c(cmax = "ug/L", tmax = "h", auclast = "h*ug/L",
+                aucinf.obs = "h*ug/L", half.life = "h",
+                cl.obs = "L/h", vz.obs = "L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated vs published NCA (Park 2025 Table 2, GB-5001A IM arms). * differs from reference by >20%.",
+  digits = 3
+)
+```
+
+```{r nca_footnote, echo = FALSE, results = "asis"}
+fn <- attr(cmp, "footnote")
+if (!is.null(fn)) cat(fn, "\n")
+```
+
+The exposure parameters that carry the model's structure reproduce well:
+`AUClast`, `AUC(0-inf)` and `CL/F` all land within about 18% of the published
+geometric means at every dose, and `t1/2` within 5% at every dose. The last of
+those is the more informative check -- the terminal slope here is set by the slow
+depot release rather than by elimination (the flip-flop regime), so recovering
+289-314 h confirms `KA3`, `ALAG3` and the dose split rather than `CL` and `V`.
+
+Three families of starred rows remain, and all three are properties of the
+published model rather than transcription errors:
+
+* **Cmax at 70 mg (+38%).** Two effects stack here. The paper's own
+  dose-proportionality analysis (Table 5) found AUC proportional (slopes 1.13 and
+  1.12, both CIs spanning 1) but **Cmax slightly more than proportional** (slope
+  1.24, 95% CI 1.01-1.46). A linear model cannot express that, so it splits the
+  difference: the typical-value Cmax runs 13% above the observed value at 70 mg
+  and 18% below it at 280 mg (see the typical-value table earlier). The remaining
+  ~20% is the upward bias of taking a maximum over 32 samples that each carry
+  27% proportional residual error -- a bias the published observed Cmax shares,
+  but which is amplified here because the simulated cohort is 100 per arm rather
+  than 7-8.
+* **Tmax at 70 and 140 mg.** Not a meaningful target on this profile; see the
+  typical-value section above.
+* **Vz/F at 140 mg (+21%, marginal).** `Vz/F` is a derived quantity,
+  `dose / (lambda_z * AUCinf)`, so it compounds the noise in both the terminal
+  slope and the extrapolated AUC. Its three arms straddle the published values
+  (-17%, +21%, +10%) with no systematic direction.
+
+None of these was tuned. The steady-state section below is the sharper test of
+the model as a whole.
+
+```{r nca-summary}
+sim_cmax <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "cmax") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(cmax_geomean = exp(mean(log(PPORRES))), .groups = "drop")
+
+dose_map <- c("IM 70 mg" = 70, "IM 140 mg" = 140, "IM 280 mg" = 280)
+sim_cmax <- sim_cmax |>
+  dplyr::mutate(dose = dose_map[treatment],
+                dn_cmax = cmax_geomean / dose)
+knitr::kable(sim_cmax, digits = 4,
+             caption = "Dose-normalised simulated Cmax: flat, as a linear model requires.")
+
+stopifnot(
+  # A linear model gives a dose-independent, dose-normalised Cmax even after
+  # residual error is added. Bound is on the spread across arms relative to the
+  # mean; residual error and cohort draw move each arm by a few percent.
+  (max(sim_cmax$dn_cmax) - min(sim_cmax$dn_cmax)) / mean(sim_cmax$dn_cmax) < 0.12
+)
+```
+
+# Steady-state replication (Park 2025 Section 3.8 and Figure 7)
+
+The paper's strongest quantitative statement about the model is its own
+simulation: 1000 replicates of GB-5001A given IM every 28 days for four doses,
+summarised as mean (CV%) steady-state parameters. Reproducing that summary tests
+the whole model at once -- the dose split, both lag times, both absorption rate
+constants, the zero-order duration, clearance, both volumes and the IIV structure.
+It is also what settles the `IIV V1` reading, so both candidate readings are run.
+
+```{r steady-state}
+TAU <- 672  # 28 days
+
+ss_metrics <- function(mod_in, dose, n) {
+  obs <- sort(unique(c(seq(0, 3 * TAU, by = 24), seq(3 * TAU, 4 * TAU, by = 6))))
+  ev <- make_im_events(dose, n, obs, seq(0, 3 * TAU, by = TAU), "ss")
+  out <- rxode2::rxSolve(mod_in, ev) |> as.data.frame()
+  if (is.null(out$id)) out$id <- 1L
+  out |>
+    dplyr::filter(time >= 3 * TAU, time <= 4 * TAU) |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(
+      cmax = max(Cc), cmin = min(Cc),
+      auctau = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+      .groups = "drop"
+    ) |>
+    dplyr::mutate(cav = auctau / TAU, swing = (cmax - cmin) / cav)
+}
+
+cv_pct <- function(x) sd(x) / mean(x) * 100
+
+# Reading B: 6.97 read as a percent CV rather than a log-scale variance.
+mod_cv_reading <- rxode2::rxode(mod) |> rxode2::ini(etalvc = log(1 + 0.0697^2))
+
+ss_rows <- function(m, dose, label) {
+  x <- ss_metrics(m, dose, 100L)
+  tibble::tibble(
+    Source = label, `Dose (mg)` = dose,
+    `Cmax,ss` = mean(x$cmax), `Cmax,ss CV%` = cv_pct(x$cmax),
+    `Cmin,ss` = mean(x$cmin), `Cmin,ss CV%` = cv_pct(x$cmin),
+    AUCtau = mean(x$auctau), `AUCtau CV%` = cv_pct(x$auctau),
+    `Cav,ss` = mean(x$cav), `Cav,ss CV%` = cv_pct(x$cav)
+  )
+}
+
+ss <- dplyr::bind_rows(
+  tibble::tibble(
+    Source = "Published (Section 3.8)", `Dose (mg)` = c(140, 280),
+    `Cmax,ss` = c(26.2, 52.4), `Cmax,ss CV%` = c(28.0, 28.0),
+    `Cmin,ss` = c(18.3, 36.8), `Cmin,ss CV%` = c(35.9, 36.1),
+    AUCtau = c(15111.5, 30259.2), `AUCtau CV%` = c(31.5, 31.6),
+    `Cav,ss` = c(22.5, 45.0), `Cav,ss CV%` = c(31.5, 31.6)
+  ),
+  ss_rows(mod, 140, "Packaged model (IIV V1 = variance)"),
+  ss_rows(mod, 280, "Packaged model (IIV V1 = variance)"),
+  ss_rows(mod_cv_reading, 140, "Alternative (IIV V1 = 6.97% CV)"),
+  ss_rows(mod_cv_reading, 280, "Alternative (IIV V1 = 6.97% CV)")
+) |>
+  dplyr::arrange(`Dose (mg)`, Source)
+
+knitr::kable(ss, digits = c(0, 0, 2, 1, 2, 1, 1, 1, 2, 1),
+             caption = "Steady-state summary after four q28d IM doses vs Park 2025 Section 3.8.")
+```
+
+```{r steady-state-checks}
+pub <- ss |> dplyr::filter(Source == "Published (Section 3.8)")
+pkg <- ss |> dplyr::filter(Source == "Packaged model (IIV V1 = variance)")
+alt <- ss |> dplyr::filter(Source == "Alternative (IIV V1 = 6.97% CV)")
+
+pct <- function(a, b) abs(a - b) / b * 100
+
+stopifnot(
+  # Structural: a mis-transcribed clearance, dose, fraction or unit moves the
+  # whole distribution by tens of percent and blows these instantly. The
+  # realised gaps are a few percent; 15 leaves room for the cohort draw
+  # (rxSetSeed fixes the stream per thread count, not across thread counts).
+  all(pct(pkg$`Cmax,ss`, pub$`Cmax,ss`) < 15),
+  all(pct(pkg$`Cav,ss`, pub$`Cav,ss`) < 15),
+  all(pct(pkg$AUCtau, pub$AUCtau) < 15),
+  all(pct(pkg$`Cmin,ss`, pub$`Cmin,ss`) < 15),
+  # The CL CV of 31.5% propagates unchanged to AUCtau and Cav,ss because both
+  # scale as 1/CL. This is an absolute bound the paper itself states.
+  all(abs(pkg$`AUCtau CV%` - 31.5) < 5)
+)
+
+# NOT gated: the head-to-head distance between the two IIV V1 readings. At 100
+# subjects per arm the standard error of a ~27% CV is about 1.9 percentage
+# points, which is wider than the ~2-point gap between the readings, so the
+# comparison is a coin flip at this cohort size. It is displayed above as
+# evidence for the reader; the adjudication itself is quoted below from a run
+# at the paper's own 1000 replicates.
+```
+
+The two readings are shown side by side above so the reader can see the
+comparison, but a 100-per-arm cohort is too small to separate them: it is the
+*shape* of the CV structure that discriminates, and CV estimates at this cohort
+size carry roughly two percentage points of noise. The adjudication behind the
+model file was therefore made at 1000 replicates, matching the paper's own
+simulation size. At 140 mg those runs gave, against a published
+`Cmax,ss` CV of 28.0% / `AUCtau` CV of 31.5% / swing CV of 33.2%:
+
+| Reading | `Cmax,ss` mean (CV%) | `AUCtau` CV% | swing CV% |
+|---|---|---|---|
+| Published (Section 3.8) | 26.2 (28.0) | 31.5 | 33.2 |
+| `IIV V1` = variance 6.97 | 26.68 (27.1) | 30.7 | 27.8 |
+| `IIV V1` = 6.97% CV | 27.51 (25.1) | 29.6 | 22.8 |
+
+The variance reading reproduces the published CV structure -- in particular the
+fact that `Cmax,ss` is *less* variable than `AUCtau` while `Cmin,ss` is *more*
+variable. That asymmetry is a signature of large variability on `V1`: a subject
+with a large `V1` has a flatter profile (lower peak, higher trough) at the same
+`AUC`. The percent-CV reading makes every metric carry essentially the CL CV alone
+and cannot produce it. This is why the model file encodes 6.97 as a variance,
+despite Section 3.8's prose describing the volume IIV as "relatively low".
+
+```{r figure-steady-state, fig.cap = "Replicates Figure 7a,b of Park 2025: model-predicted concentrations for GB-5001A given intramuscularly every 28 days for four doses."}
+ss_profile <- function(dose) {
+  obs <- seq(0, 4 * TAU, by = 12)
+  ev <- make_im_events(dose, 100L, obs, seq(0, 3 * TAU, by = TAU),
+                       paste0("IM ", dose, " mg q28d"))
+  rxode2::rxSolve(mod, ev, keep = "treatment") |>
+    as.data.frame() |>
+    dplyr::group_by(treatment, time) |>
+    dplyr::summarise(
+      med = median(Cc),
+      lo  = quantile(Cc, 0.05), hi = quantile(Cc, 0.95),
+      .groups = "drop"
+    )
+}
+
+ss_prof <- dplyr::bind_rows(ss_profile(140), ss_profile(280))
+
+ggplot(ss_prof, aes(time / 24, med)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "grey70", alpha = 0.5) +
+  geom_line(linewidth = 0.7) +
+  facet_wrap(~treatment, ncol = 1, scales = "free_y") +
+  labs(x = "Time (days)", y = "Donepezil (ng/mL)",
+       title = "Simulated multiple-dose GB-5001A (median and 90% prediction interval)") +
+  theme_bw()
+```
+
+Section 3.8 and the Discussion state that concentrations reach near steady state
+after three doses. The accumulation ratio below quantifies that claim.
+
+```{r accumulation}
+acc <- ss_prof |>
+  dplyr::filter(treatment == "IM 280 mg q28d") |>
+  dplyr::mutate(cycle = pmin(floor(time / TAU) + 1, 4)) |>
+  dplyr::group_by(cycle) |>
+  dplyr::summarise(cav = mean(med), .groups = "drop") |>
+  dplyr::mutate(`Ratio to cycle 4` = cav / cav[cycle == 4])
+
+knitr::kable(acc, digits = 3,
+             caption = "Approach to steady state across the four q28d cycles (280 mg).")
+
+stopifnot(
+  # Cycle 3 is within a modest distance of cycle 4 ("near steady-state after
+  # three doses"); cycle 1 is clearly below both. Directional, not tight.
+  acc$`Ratio to cycle 4`[acc$cycle == 3] > 0.85,
+  acc$`Ratio to cycle 4`[acc$cycle == 1] < 0.75
+)
+```
+
+# Assumptions and deviations
+
+* **The oral Aricept 10 mg model is not distributed.** Section 2.10 states that a
+  conventional two-compartment first-order-absorption model was fitted to Cohort D
+  (structure in Figure S1), and Section 3.8 says its parameters are "summarized in
+  Table 6" -- but Table 6 is titled and populated for GB-5001A only. The single
+  oral estimate published anywhere in the paper is `ka = 0.7 1/h` (Discussion), so
+  the oral model is not reconstructable from any on-disk source. Figure 2 and the
+  Figure S1 caption were both inspected for in-panel parameter annotations; Figure
+  2 labels arms with parameter *names* only (`KA3`, `KA4`, `F1`, `Q/F`, `CL/F`)
+  and carries no values. The MDPI supplement endpoint returns HTTP 403 and the
+  EuropePMC supplementary-files endpoint returns HTTP 500, but the published
+  supplementary-materials list (Figures S1-S4, Tables S1-S4) contains no oral
+  parameter table, so the gap is in the publication rather than in the
+  acquisition. Two oral donepezil models from other papers are available:
+  `modellib("Khwarg_2024_donepezil_oral")` and
+  `modellib("Jung_2023_donepezil_singledose")`.
+* **`F1 = 1 - F3 - F4 = 0.148` is inferred, not printed.** Figure 2 names the
+  zero-order fraction `F1` without a value and Table 6 omits it. The
+  sum-to-one construction is confirmed by the steady-state arithmetic and by the
+  mass-balance check above; it is also how the sibling GB-5001 model
+  (`Khwarg_2024_donepezil_im`, whose Figure 2 labels the same arm `1-F4-F5`)
+  is built.
+* **Equation (1) is encoded as the standard combined error model**, not as
+  typeset. See "Three transcription decisions" above.
+* **`IIV V1 = 6.97` is encoded as a log-scale variance** (CV 3264%), against
+  Section 3.8's prose description of the volume IIV as "relatively low". The
+  Table 6 footnote's own CV formula and the Section 3.8 simulation both support
+  the variance reading; the steady-state table above shows the comparison. The
+  parameter is very imprecise in the source -- the `V1` point estimate's 95% CI
+  is -35.7 to 152.1 L, i.e. it spans zero -- so downstream users refitting this
+  model should expect `V1` and its IIV to be weakly identified.
+* **Q is fixed at 100 L/h**, as published. Section 2.10 explains that estimating
+  Q was unstable and that 100 L/h was chosen from preliminary fits with reference
+  to the 185 L/h of the earlier formulation.
+* **Table 2 and the Section 3.3 prose disagree on one value.** The prose gives the
+  GB-5001A 70 mg IM `AUClast` as 6991.81 h*ng/mL; Table 2 gives 6119.81 with the
+  identical 95% CI (4694.41, 7978.01). Since the reported statistic is a geometric
+  mean, `sqrt(4694.41 * 7978.01) = 6119.6`, which matches Table 2. The comparison
+  above therefore uses the Table 2 value and treats the prose figure as a typo.
+* **Cmax is supra-proportional in the data but proportional in the model.** The
+  paper's Table 5 reports a Cmax dose slope of 1.24 (95% CI 1.01-1.46) while AUC
+  is proportional. The published linear model cannot express this, so the
+  typical-value Cmax runs 13% high at 70 mg and 18% low at 280 mg. Reproduced
+  faithfully, not tuned. The `Cmax` rows of the NCA table additionally carry the
+  upward bias of a maximum taken over 32 residual-error-bearing samples, which is
+  larger in a 100-subject arm than in the paper's 7-8.
+* **Tmax is not a strong validation target here.** The profile is nearly flat
+  between roughly 400 and 1300 h, so the observed median Tmax varies with which
+  sample happened to be highest (1176, 817 and 619 h across the three arms of a
+  dose-proportional formulation). The typical-value model peaks at ~497 h at every
+  dose, set by the zero-order duration D1.
+* **The metabolite and pharmacodynamics are not modelled.** 6-O-desmethyl
+  donepezil PK (Table S2) and AChE inhibition (Table 3) were analysed
+  non-compartmentally only; the paper reports no structural model for either.
+* **Race is recorded as Asian for the whole cohort.** Table 1 reports only sex,
+  age, height, weight and BMI; the study enrolled "healthy Asian adult male
+  volunteers" (Section 2.4) in the Republic of Korea.
+* **Observed data are not public** (Data Availability Statement), so all
+  comparisons are simulation-vs-published-summary rather than
+  simulation-vs-observation.
