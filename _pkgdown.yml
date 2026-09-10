@@ -2560,6 +2560,8 @@ navbar:
         href: articles/Yoon_2013_metformin.html
       - text: "Metformin (vanRongen 2018)"
         href: articles/vanRongen_2018_metformin.html
+      - text: "Methadone (Watt 2026)"
+        href: articles/Watt_2026_methadone.html
       - text: "Methotrexate (Aumente 2006)"
         href: articles/Wang_2023_methotrexate.html
       - text: "Methotrexate (Blackman 2026)"
@@ -6507,6 +6509,7 @@ articles:
   - articles/Waterhouse_2024_vedolizumab
   - articles/Watson_2010_liraglutide
   - articles/Watt_2015_fluconazole
+  - articles/Watt_2026_methadone
   - articles/Wattanakul_2016_paracetamol
   - articles/Wattanakul_2024_primaquine_lactation
   - articles/Weatherley_2009_maraviroc_iv
