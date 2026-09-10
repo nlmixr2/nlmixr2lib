@@ -651,7 +651,7 @@ stopifnot(nrow(hl_check) == N_COHORT * 2L + 1L, nrow(auc_check) == N_COHORT)
 c(max_abs_pct_half_life = signif(max(abs(hl_check$pct)), 3),
   max_abs_pct_auc_tau_ss = signif(max(abs(auc_check$pct)), 3))
 #>  max_abs_pct_half_life max_abs_pct_auc_tau_ss 
-#>               1.30e-12               1.39e-03
+#>               1.25e-12               1.39e-03
 
 # PKNCA log-linear t1/2 against each subject's own log(2) * V / CL: the decay
 # is exactly mono-exponential, so the regression recovers it to machine

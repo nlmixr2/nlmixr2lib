@@ -314,7 +314,7 @@ mod
 #>     totalCdk6Csf <- free_cdk6 + complex_cdk6_csf
 #>   })
 #> }
-#> <environment: 0x55b229825c40>
+#> <environment: 0x55a0c656a668>
 ```
 
 Ribociclib (RIB) is a CDK4/6 inhibitor approved for

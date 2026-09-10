@@ -2986,7 +2986,7 @@ correct assertion.</p>
 <span></span>
 <span><span class="va">max_rel</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Extremes.html" class="external-link">max</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">numeric_sol</span> <span class="op">-</span> <span class="va">analytic</span><span class="op">)</span> <span class="op">/</span> <span class="va">analytic</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/cat.html" class="external-link">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"max |relative difference| = %.3e\n"</span>, <span class="va">max_rel</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; max |relative difference| = 2.638e-14</span></span>
+<span><span class="co">#&gt; max |relative difference| = 2.608e-14</span></span>
 <span></span>
 <span><span class="co"># Both sides use the same parameters, so this is pure integration error.</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/stopifnot.html" class="external-link">stopifnot</a></span><span class="op">(</span><span class="va">max_rel</span> <span class="op">&lt;</span> <span class="fl">1e-6</span><span class="op">)</span></span></code></pre></div>

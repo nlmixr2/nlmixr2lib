@@ -227,7 +227,7 @@ hl_closed <- log(2) * pub_v / pub_cl
 c(measured_h = hl_model, closed_form_h = hl_closed,
   rel_diff = abs(hl_model - hl_closed) / hl_closed)
 #>    measured_h closed_form_h      rel_diff 
-#>  1.024598e+01  1.024598e+01  3.294052e-15
+#>  1.024598e+01  1.024598e+01  2.947310e-15
 
 stopifnot(abs(hl_model - hl_closed) / hl_closed < 1e-6)
 ```
