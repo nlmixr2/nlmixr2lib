@@ -448,9 +448,9 @@ Jin_2025_benralizumab <- function() {
     # over the same underlying prediction; assign each concentration record to
     # the endpoint matching its study (see covariateData$STUDY_PHASE3).
     # ------------------------------------------------------------------------
-    expSd         <- 0.367;  label("Log-scale additive residual error, phase III studies (log(ng/mL))")                 # Jin 2025 Resource 10, "Error_ADD3, log(ng/mL)" = 0.367 (RSE 0.737%) -- SIROCCO, CALIMA, ZONDA, BISE, MIRACLE
-    expSd_Cc_early   <- 0.175;  label("Log-scale additive residual error, early phase I/II studies (log(ng/mL))")          # Jin 2025 Resource 10, "Error_ADD1, log(ng/mL)" = 0.175 (RSE 1.64%) -- all observations except phase III and MI-CP220
-    expSd_Cc_micp220 <- 0.549;  label("Log-scale additive residual error, study MI-CP220 (log(ng/mL))")                    # Jin 2025 Resource 10, "Error_ADD2, log(ng/mL)" = 0.549 (RSE 2.17%) -- study MI-CP220
+    expSd         <- 0.367;  label("Log-scale additive residual error, phase III studies, log(ng/mL) scale (unitless)")                 # Jin 2025 Resource 10, "Error_ADD3, log(ng/mL)" = 0.367 (RSE 0.737%) -- SIROCCO, CALIMA, ZONDA, BISE, MIRACLE
+    expSd_Cc_early   <- 0.175;  label("Log-scale additive residual error, early phase I/II studies, log(ng/mL) scale (unitless)")          # Jin 2025 Resource 10, "Error_ADD1, log(ng/mL)" = 0.175 (RSE 1.64%) -- all observations except phase III and MI-CP220
+    expSd_Cc_micp220 <- 0.549;  label("Log-scale additive residual error, study MI-CP220, log(ng/mL) scale (unitless)")                    # Jin 2025 Resource 10, "Error_ADD2, log(ng/mL)" = 0.549 (RSE 2.17%) -- study MI-CP220
   })
   model({
     # --- 1. Individual disposition parameters -------------------------------
