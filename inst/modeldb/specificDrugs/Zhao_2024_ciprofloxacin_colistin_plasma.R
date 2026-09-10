@@ -446,7 +446,7 @@ Zhao_2024_ciprofloxacin_colistin_plasma <- function() {
     # plate count, exactly as in $ERROR of the fitted model.
     cfuObserved <- bact_s1 + bact_r1 + bact_s2 + bact_r2 +
       bact_s3 + bact_r3 + bact_s4 + bact_r4 + bact_pr
-    Cc <- log10(max(cfuObserved, eps))
-    Cc ~ add(addSd)
+    log_cfu <- log10(max(cfuObserved, eps))
+    log_cfu ~ add(addSd)
   })
 }

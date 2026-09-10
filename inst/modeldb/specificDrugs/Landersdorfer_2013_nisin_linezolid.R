@@ -264,11 +264,11 @@ Landersdorfer_2013_nisin_linezolid <- function() {
     # 10. Observation: log10 total viable count (CFU/mL).
     #     A 1 CFU/mL floor mirrors the experimental limit of counting
     #     (paper Figures 5-6: counts of zero colonies plotted as
-    #     0 log10 CFU/mL). Cc carries log10 CFU/mL in this MBM, not a
+    #     0 log10 CFU/mL). log_cfu carries log10 CFU/mL in this MBM, not a
     #     drug concentration (matches Rees 2018 / Landersdorfer 2018
     #     HFIM-MBM convention).
     cfu_obs <- CFUall + 1
-    Cc <- log10(cfu_obs)
-    Cc ~ add(addSd)
+    log_cfu <- log10(cfu_obs)
+    log_cfu ~ add(addSd)
   })
 }

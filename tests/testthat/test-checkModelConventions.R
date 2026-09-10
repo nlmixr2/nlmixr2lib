@@ -2241,3 +2241,50 @@ test_that("no shipped model spells an inverse logit by hand", {
 })
 
 # nolint end
+
+test_that(".checkCentralConcentrationName fires in BOTH directions", {
+  # A one-sided check passes on exactly the swap that motivated this one:
+  # `Venisse_2008_caspofungin` had `Cc <- log(candida + 1)` (a fungal burden)
+  # and `cc <- central / vc` (the drug), distinguishable only by letter case.
+  # Checking only "is a central/vc named Cc?" misses it, because `cc` is not
+  # `Cc`; checking only "is Cc a concentration?" misses a plain rename. So both
+  # directions are asserted here, and so is each legitimate exemption.
+  conv <- nlmixr2lib:::.nlmixr2libConventions()
+  run <- function(lines) {
+    ui <- list(lstExpr = lapply(lines, function(x) str2lang(x)))
+    nlmixr2lib:::.checkCentralConcentrationName(ui, conv)
+  }
+
+  # (1) plain central/vc under another name, with Cc unused -> error
+  r <- run(c("Cp <- central / vc", "Cp ~ prop(propSd)"))
+  expect_equal(nrow(r), 1L)
+  expect_equal(r$name, "Cp")
+  expect_equal(r$severity, "error")
+
+  # (2) `Cc` that is not a central concentration at all -> error
+  r <- run(c("cc <- central / vc", "Cc <- log(candida + 1)"))
+  expect_true("Cc" %in% r$name[r$severity == "error"])
+  # ...and the drug concentration is reported too: `cc` is not `Cc`.
+  expect_true("cc" %in% r$name)
+
+  # (3) the canonical arrangement -> clean
+  expect_equal(nrow(run(c("Cc <- central / vc", "Cc ~ prop(propSd)"))), 0L)
+
+  # (4) EXEMPTION: a second central quantity beside a defined `Cc` keeps its
+  #     own name (Duke_2024_cefazolin: unbound beside total).
+  expect_equal(nrow(run(c("Cunbound <- central / vc",
+                          "Cc <- (complex + central) / vc"))), 0L)
+
+  # (5) EXEMPTION: a SCALED derivation is a different quantity, not a rename.
+  expect_equal(nrow(run(c("Cc <- central / vc", "Cu <- central / vc * fu"))), 0L)
+
+  # (6) multi-analyte: the suffix follows the state.
+  expect_equal(nrow(run(c("Cc_rtv <- central_rtv / vc_rtv"))), 0L)
+  expect_true("crtv" %in% run(c("crtv <- central_rtv / vc_rtv"))$name)
+
+  # (7) `Cc` reached through an alias still counts as a concentration.
+  expect_equal(nrow(run(c("ctot <- central / vc", "Cc <- ctot"))), 0L)
+
+  # (8) a linCmt() solved model satisfies the rule.
+  expect_equal(nrow(run(c("Cc <- linCmt()"))), 0L)
+})

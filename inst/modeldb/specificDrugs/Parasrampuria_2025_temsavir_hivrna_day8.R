@@ -43,7 +43,7 @@ Parasrampuria_2025_temsavir_hivrna_day8 <- function() {
   units <- list(
     time          = "n/a (static landmark exposure-response regression at Day 8; no time dimension)",
     dosing        = "n/a (no dose events; exposure enters as the CTROUGH covariate column)",
-    concentration = "dviralLoad (change in plasma HIV-1 RNA from Day 1 to Day 8, log10 c/mL; negative = a decline)"
+    concentration = "d_viral_load (change in plasma HIV-1 RNA from Day 1 to Day 8, log10 c/mL; negative = a decline)"
   )
 
   covariateData <- list(
@@ -276,7 +276,7 @@ Parasrampuria_2025_temsavir_hivrna_day8 <- function() {
     # Additive on the response scale (log10 c/mL), per the Table 3 Note
     # "Residual error: Y = IPRED + (eps1)". Naive-pooled fit: there is
     # no between-subject random effect to estimate.
-    addSd_dviralLoad <- 0.653 ; label("Additive residual error SD on the Day 8 change in plasma HIV-1 RNA (log10 c/mL)")  # Parasrampuria 2025 Table 3, epsilon = 0.653 (RSE 4.10%), bootstrap 95% CI 0.594-0.699. Results 3.2.1 describe this as "high residual variability (approximately 65% of Emax)"
+    addSd_d_viral_load <- 0.653 ; label("Additive residual error SD on the Day 8 change in plasma HIV-1 RNA (log10 c/mL)")  # Parasrampuria 2025 Table 3, epsilon = 0.653 (RSE 4.10%), bootstrap 95% CI 0.594-0.699. Results 3.2.1 describe this as "high residual variability (approximately 65% of Emax)"
   })
 
   model({
@@ -293,9 +293,9 @@ Parasrampuria_2025_temsavir_hivrna_day8 <- function() {
     hivRnaEff <- (HIV_VLOAD / 44940)^e_hiv_vload_emax
 
     # Table 3 Note, verbatim. Negative values are declines.
-    dviralLoad <- e0 -
+    d_viral_load <- e0 -
       emax * CTROUGH / (ec50 + CTROUGH) * hivRnaEff * e_cd4_abs_emax^bslCd4Low
 
-    dviralLoad ~ add(addSd_dviralLoad)
+    d_viral_load ~ add(addSd_d_viral_load)
   })
 }

@@ -209,7 +209,7 @@ Kroemer_2024_ceftazidime_avibactam_fosfomycin_tkc <- function() {
     bact_resistant(0)   <- inoc_r
 
     # ---- 6. Output: total viable count on the log10 scale ----
-    Cc <- log10(bact_susceptible + bact_resistant + eps)
-    Cc ~ add(addSd)
+    log_cfu <- log10(bact_susceptible + bact_resistant + eps)
+    log_cfu ~ add(addSd)
   })
 }

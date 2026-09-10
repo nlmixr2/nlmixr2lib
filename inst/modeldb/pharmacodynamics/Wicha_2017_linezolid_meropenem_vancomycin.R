@@ -127,8 +127,8 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
 
     # ---- Residual error ----
     # Wicha 2017 Table 1, "r [log10 CFU/mL] = 0.63"; residual is additive on
-    # log10(CFU/mL). Implemented as an additive error on the Cc observation
-    # (named Cc per nlmixr2lib single-output convention; values are log10
+    # log10(CFU/mL). Implemented as an additive error on the log_cfu observation
+    # (named log_cfu per nlmixr2lib single-output convention; values are log10
     # CFU/mL, not concentration -- see units$concentration).
     addSd <- 0.63
     label("Additive residual SD on log10(bacteria) (log10 CFU/mL)")  # Wicha 2017 Table 1, Residual variability
@@ -235,14 +235,14 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
     aroff_van(0) <- 1
 
     # ---- Observation ----
-    # The observation Cc is the log10 of the total CFU/mL aggregated across
+    # The observation log_cfu is the log10 of the total CFU/mL aggregated across
     # the three bacterial states (growing + replicating + persisting); a 1e-6
-    # floor avoids log10(0) when all states are driven to zero. The 'Cc' name
+    # floor avoids log10(0) when all states are driven to zero. The 'log_cfu' name
     # is the nlmixr2lib single-output convention; the underlying quantity is
     # log10 CFU/mL, not a drug concentration -- see units$concentration and
     # the model's description for the full semantics. Additive residual on
     # log10(CFU/mL) per Wicha 2017 Table 1 (sigma = 0.63).
-    Cc <- log10(gro + repl + pers + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(gro + repl + pers + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

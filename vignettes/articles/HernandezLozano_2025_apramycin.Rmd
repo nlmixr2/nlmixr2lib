@@ -188,7 +188,9 @@ at_time <- function(d, t, col) {
 # In vitro time-kill (replicates Figure 2)
 
 Observation rows point at the ODE state `bact_s1`; rxode2 returns the algebraic
-observable `Cc` (here the log10 total count) as a column regardless.
+observable `log_cfu` (the log10 total count) as a column regardless. The PK
+sections below keep `Cc`, which is the apramycin plasma concentration -- the
+two are different quantities and now have different names.
 
 ```{r invitro-sim}
 # `mic` here is only the design quantity used to convert a multiple of the MIC
@@ -214,7 +216,7 @@ sim_invitro <- purrr::pmap_dfr(invitro_conditions, function(condition, BACT, PH_
       dplyr::arrange(time, dplyr::desc(evid)) |>
       dplyr::mutate(id = 1L, BACT = BACT, PH_MEDIUM = PH_MEDIUM)
     solve_typical(mod_invitro, ev) |>
-      dplyr::transmute(time, logcfu = Cc,
+      dplyr::transmute(time, logcfu = log_cfu,
                        condition = condition,
                        xmic = factor(xmic, levels = xmic_levels,
                                      labels = paste0(xmic_levels, " x MIC")))

@@ -601,7 +601,7 @@ stopifnot(
   name**, and `checkModelConventions()` raises one warning for it. There is no
   drug concentration to call `Cc` and no registered PD-output canonical for a
   PASI score. This follows the existing practice for score-type PD endpoints in
-  the library (`walkDist` in `Hajjar_2018_DMD_6MWT`, `fev1` in
+  the library (`walk_dist` in `Hajjar_2018_DMD_6MWT`, `fev1` in
   `Wu_2014_FEV1_asthma`, `BMD` in `Plan_2012_bmd_fracture`).
 * **`CONMED_<drug>_DOSE` columns carry a different dose metric here than in
   `Mandema_2011_biologicDMARDs_mbma`.** In that model they are per-administration

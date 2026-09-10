@@ -666,7 +666,7 @@ kill <- bind_rows(
 ```
 
 ```{r pd-sim-plot, echo = FALSE, fig.cap = "Predicted P. multocida time-kill over a 72 h course at the recommended 40 mg/kg once-daily regimen, driven by the 24 h PK/PD index Sun 2026 Table S10 reports for that regimen in each matrix. Dashed lines mark the bactericidal (3-log) and eradication (4-log) reductions from the 1e6 CFU/mL inoculum."}
-ggplot(kill, aes(time, Cc, colour = matrix)) +
+ggplot(kill, aes(time, log_cfu, colour = matrix)) +
   geom_line(linewidth = 0.9) +
   geom_hline(yintercept = c(6, 3, 2), linetype = "dashed", alpha = 0.4) +
   labs(x = "Time (h)", y = "log10 CFU/mL", colour = NULL) +
@@ -675,8 +675,8 @@ ggplot(kill, aes(time, Cc, colour = matrix)) +
 ```
 
 ```{r pd-sim-assert}
-pif_24 <- kill |> filter(matrix == "PIF (index 172.68 h)", time == 24) |> pull(Cc)
-pl_24 <- kill |> filter(matrix == "Plasma (index 55.87 h)", time == 24) |> pull(Cc)
+pif_24 <- kill |> filter(matrix == "PIF (index 172.68 h)", time == 24) |> pull(log_cfu)
+pl_24 <- kill |> filter(matrix == "Plasma (index 55.87 h)", time == 24) |> pull(log_cfu)
 
 stopifnot(
   # At the recommended regimen the PIF index (172.68 h) is far above the PIF

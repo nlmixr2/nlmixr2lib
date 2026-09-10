@@ -143,7 +143,7 @@ Yadav_2017_imipenem_amikacin_PA001 <- function() {
     bact_intermediate_resistant1(0)  <- cfu0 * 10^log10mf_ags
     csig(0) <- cfu0
 
-    Cc <- log10(CFUall)
-    Cc ~ add(addSd)
+    log_cfu <- log10(CFUall)
+    log_cfu ~ add(addSd)
   })
 }

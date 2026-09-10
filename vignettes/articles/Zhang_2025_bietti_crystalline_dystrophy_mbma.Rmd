@@ -117,7 +117,7 @@ str(ui$population, max.level = 1)
 ```{r source-trace, echo = FALSE}
 tibble::tribble(
   ~Item, ~Value, ~`Source location`,
-  "`deltaBCVA <- slope * time`", "n/a", "Supplement, Data analysis, equation (1) (`Effect = K x Time`)",
+  "`d_bcva <- slope * time`", "n/a", "Supplement, Data analysis, equation (1) (`Effect = K x Time`)",
   "Exponential between-individual random effect", "n/a", "Supplement, Data analysis, equation (2); appendix 4 model 102 (`ETA: Exponential type`), selected as the base model",
   "Additive residual error", "n/a", "Supplement, Data analysis, equation (4); appendix 4 model 102 (`SIGMA: Additive type`)",
   "No covariate on the slope", "n/a", "Supplement appendix 6 (forward inclusion + backward elimination; nothing retained)",
@@ -154,7 +154,7 @@ rather than 0.898, a difference of only
 | `slope` | LogMAR / year |
 | `time` | year |
 | `slope * time` | LogMAR |
-| `deltaBCVA` | LogMAR (change from baseline) |
+| `d_bcva` | LogMAR (change from baseline) |
 | `addSd` | LogMAR |
 | `etalslope` | (unitless; log scale) |
 
@@ -179,13 +179,13 @@ closed_form <- 0.0566 * t_grid
 
 stopifnot(
   # Deterministic quantities: assert tightly (no cohort, no RNG involved).
-  isTRUE(all.equal(sim_typ$deltaBCVA, closed_form, tolerance = 1e-10)),
+  isTRUE(all.equal(sim_typ$d_bcva, closed_form, tolerance = 1e-10)),
   # No intercept: change from baseline is identically zero at the baseline visit.
-  sim_typ$deltaBCVA[t_grid == 0] == 0
+  sim_typ$d_bcva[t_grid == 0] == 0
 )
 
 cat("max |model - 0.0566 * t| =",
-    format(max(abs(sim_typ$deltaBCVA - closed_form)), digits = 3), "LogMAR\n")
+    format(max(abs(sim_typ$d_bcva - closed_form)), digits = 3), "LogMAR\n")
 ```
 
 # Verification 2: reproduce the published simulation tables
@@ -269,7 +269,7 @@ solve_typical_slope <- function(k) {
     rxode2::zeroRe(rxode2::ini(mod, lslope = log(k))),
     events     = data.frame(id = 1L, time = published$time, evid = 0L, amt = 0),
     returnType = "data.frame"
-  )$deltaBCVA
+  )$d_bcva
 }
 
 table2 <- published |>
@@ -363,7 +363,7 @@ if (is.null(sim_cohort$id)) sim_cohort$id <- 1L
 
 ```{r figure-2a, fig.height = 4.8}
 # Replicates Figure 2A of Zhang 2025: one line per study eye, change in BCVA
-# from baseline vs time. `sim` carries the additive residual error; `deltaBCVA`
+# from baseline vs time. `sim` carries the additive residual error; `d_bcva`
 # is the individual prediction.
 sim_cohort |>
   dplyr::filter(time <= 20) |>
@@ -624,9 +624,9 @@ tibble::tibble(
   labelled "<0.5" and "0.5~1" rather than a single time. They are plotted at 0.25
   and 0.75 years respectively. This affects only the observed-data overlay, not
   any parameter.
-* **Observation-variable name.** The observation is named `deltaBCVA`, following
-  the `deltaUPDRS` precedent set by `Lee_2011_parkinson_progression` for an
-  algebraic change-from-baseline clinical-score endpoint. `deltaBCVA` is a new
+* **Observation-variable name.** The observation is named `d_bcva`, following
+  the `d_updrs` precedent set by `Lee_2011_parkinson_progression` for an
+  algebraic change-from-baseline clinical-score endpoint. `d_bcva` is a new
   entry in `inst/references/compartment-names.md`; the alternative register form
   for a change-from-baseline variant is the `cfb` suffix (`das28` / `das28cfb`),
   which would give `bcvacfb`. The `delta` prefix was chosen because this model is

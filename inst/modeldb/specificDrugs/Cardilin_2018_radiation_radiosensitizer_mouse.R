@@ -35,7 +35,7 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
   # means NOT checked against the source paper.
   compartmentData <- list(
     central        = list(analyte = "radiosensitizer", units = NA_character_, specimen = "plasma", verified = FALSE),
-    radDepot       = list(analyte = "radiosensitizer", units = NA_character_, specimen = "administration site", verified = FALSE),
+    rad_depot       = list(analyte = "radiosensitizer", units = NA_character_, specimen = "administration site", verified = FALSE),
     cycling_cells  = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells1 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
     damaged_cells2 = list(analyte = "cells", units = NA_character_, specimen = "tumor", verified = FALSE),
@@ -130,8 +130,8 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
     vf     <- exp(lvf + etalvf)
 
     # 2. Numerical device for the (Dirac-delta) instantaneous radiation kill.
-    # Radiation is delivered as a unit bolus (amt = 1) into `radDepot`, which
-    # decays at the fast rate krad so that integral(krad * radDepot dt) = 1 per
+    # Radiation is delivered as a unit bolus (amt = 1) into `rad_depot`, which
+    # decays at the fast rate krad so that integral(krad * rad_depot dt) = 1 per
     # fraction. The kill hazard below therefore integrates to the LQ lethal-lesion
     # number over each fraction, multiplying the proliferating pool by the
     # surviving fraction exp(-(1 + bRad*Cc)(alpha*D + beta*D^2)). krad is a
@@ -146,10 +146,10 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
     logi <- 1 - Vtot / cap                    # logistic capacity factor
 
     lethal  <- (1 + bRad * Cc) * (alpha * radDose + beta * radDose * radDose)
-    killHaz <- lethal * krad * radDepot       # near-instantaneous LQ kill at each fraction
+    killHaz <- lethal * krad * rad_depot       # near-instantaneous LQ kill at each fraction
 
     d/dt(central)  <- -ke * central           # RS1 PK (mg/kg)
-    d/dt(radDepot) <- -krad * radDepot        # radiation timing trigger (unit area / fraction)
+    d/dt(rad_depot) <- -krad * rad_depot        # radiation timing trigger (unit area / fraction)
 
     d/dt(cycling_cells)  <- kg * cycling_cells * logi - (1 + aDeath * Cc) * kk * cycling_cells - killHaz * cycling_cells
     d/dt(damaged_cells1) <- (1 + aDeath * Cc) * kk * cycling_cells - kk * damaged_cells1
@@ -173,5 +173,5 @@ Cardilin_2018_radiation_radiosensitizer_mouse <- function() {
   })
 }
 attr(Cardilin_2018_radiation_radiosensitizer_mouse, "message") <-
-  "Radiation is given as a unit bolus (amt=1) into the radDepot compartment at each irradiation time; the per-fraction radiation dose (Gy) is the parameter radDose (default 2). RS1 is dosed (mg/kg) into the central compartment. Observation tumor_vol is total tumor volume (mm^3)."
+  "Radiation is given as a unit bolus (amt=1) into the rad_depot compartment at each irradiation time; the per-fraction radiation dose (Gy) is the parameter radDose (default 2). RS1 is dosed (mg/kg) into the central compartment. Observation tumor_vol is total tumor volume (mm^3)."
 Cardilin_2018_radiation_radiosensitizer_mouse

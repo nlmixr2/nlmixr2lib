@@ -128,7 +128,7 @@ Mohamed_2012_gentamicin <- function() {
 
     # 8. Observation: natural log of total viable count (the scale on which
     #    the paper transformed data and fitted residual error).
-    Cc <- log(bact_growing + bact_resting)
-    Cc ~ add(addSd)
+    log_cfu <- log(bact_growing + bact_resting)
+    log_cfu ~ add(addSd)
   })
 }

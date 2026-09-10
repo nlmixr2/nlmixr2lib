@@ -28,7 +28,7 @@ Schmidt_2009_rwj416457 <- function() {
   units <- list(
     time          = "h",
     dosing        = "ug/mL (initial antibiotic concentration in MHB)",
-    concentration = "log10 CFU/mL (bacterial Cc output); ug/mL (antibiotic central state)"
+    concentration = "log10 CFU/mL (bacterial log_cfu output); ug/mL (antibiotic central state)"
   )
 
   # bact_susceptible and bact_persister are paper-mechanistic states
@@ -213,7 +213,7 @@ Schmidt_2009_rwj416457 <- function() {
     bact_persister(0)   <- ninit * (1 - fsusc)
 
     # ---- Observation: log10 of total viable count ----
-    Cc <- log10(ntot)
-    Cc ~ add(addSd)
+    log_cfu <- log10(ntot)
+    log_cfu ~ add(addSd)
   })
 }

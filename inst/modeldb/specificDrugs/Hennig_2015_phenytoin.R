@@ -82,7 +82,7 @@ Hennig_2015_phenytoin <- function() {
     # The within-pair correlation between Cu and Cb residuals induced by the
     # shared EPS3 in NONMEM is not preserved; marginal proportional SD per
     # output is.
-    propSd_Cu <- 0.221; label("Proportional residual SD for unbound phenytoin (fraction)")  # Table 2: PHYu assay error 13.6 percent combined with common prop 17.4 percent
+    propSd_Cc <- 0.221; label("Proportional residual SD for unbound phenytoin, the Cc output (fraction)")  # Table 2: PHYu assay error 13.6 percent combined with common prop 17.4 percent
     propSd_Cb <- 0.202; label("Proportional residual SD for bound phenytoin (fraction)")    # Table 2: PHYb assay error 10.3 percent combined with common prop 17.4 percent
   })
 
@@ -122,12 +122,19 @@ Hennig_2015_phenytoin <- function() {
     f(depot) <- fdepot
 
     # Observations (Hennig 2015 Figure 1 caption):
-    #   Cu = A_central / V2
+    #   Cc = A_central / V2      (UNBOUND phenytoin -- see below)
     #   Cb = (A_peripheral1 / V3) * PUB
-    Cu <- central / vc
+    #
+    # `central` holds the UNBOUND phenytoin pool in this model, so `central/vc`
+    # is the unbound concentration; by the library convention that quantity is
+    # `Cc` whatever the pool contains, and the label records that it is unbound.
+    # `Cb` is NOT a second reading of the same space -- it comes from
+    # `peripheral1` -- so there is no total to form as `Cc <- Cu + Cb` the way
+    # `Bausch_2024_cefazolin` does.
+    Cc <- central / vc
     Cb <- (peripheral1 / vp) * pub
 
-    Cu ~ prop(propSd_Cu)
+    Cc ~ prop(propSd_Cc)
     Cb ~ prop(propSd_Cb)
   })
 }

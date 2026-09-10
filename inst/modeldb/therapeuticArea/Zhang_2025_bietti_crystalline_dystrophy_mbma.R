@@ -6,7 +6,7 @@ Zhang_2025_bietti_crystalline_dystrophy_mbma <- function() {
     "autosomal-recessive retinal degeneration caused by biallelic CYP4V2 ",
     "mutations. Zhang 2025 pooled INDIVIDUAL eye-level BCVA time courses ",
     "digitised from 14 published studies (117 patients, 193 study eyes) and ",
-    "fit a single-parameter structural model, deltaBCVA = slope * time ",
+    "fit a single-parameter structural model, d_bcva = slope * time ",
     "(supplement equation 1, where the supplement calls the slope K). ",
     "Higher LogMAR = worse vision, so a positive slope encodes vision LOSS. ",
     "Unusually for an MBMA the random effect is BETWEEN-EYE, not ",
@@ -45,7 +45,7 @@ Zhang_2025_bietti_crystalline_dystrophy_mbma <- function() {
     time          = "year",
     dosing        = "n/a (no dosing; untreated natural history)",
     concentration = "n/a (no drug concentration)",
-    response      = "LogMAR (change from baseline in best-corrected visual acuity; observation deltaBCVA)"
+    response      = "LogMAR (change from baseline in best-corrected visual acuity; observation d_bcva)"
   )
 
   # Every covariate Zhang 2025 examined was screened OUT: no covariate
@@ -188,8 +188,8 @@ Zhang_2025_bietti_crystalline_dystrophy_mbma <- function() {
     # time 0 by construction (time 0 is the first visual-acuity evaluation,
     # i.e. the baseline visit). Dimensional check:
     # (LogMAR/year) * year = LogMAR.
-    deltaBCVA <- slope * time
+    d_bcva <- slope * time
 
-    deltaBCVA ~ add(addSd)
+    d_bcva ~ add(addSd)
   })
 }
