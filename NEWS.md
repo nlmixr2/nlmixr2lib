@@ -2,6 +2,8 @@
 
 # development version
 
+- Add He 2025 YPEG-rhGH ([doi:10.3389/fphar.2025.1651323](https://doi.org/10.3389/fphar.2025.1651323)) -- healthy elderly subjects and healthy young adults.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and

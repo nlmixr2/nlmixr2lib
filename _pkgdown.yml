@@ -4638,6 +4638,8 @@ navbar:
         href: articles/Zhou_2016_warfarin_vk2.html
       - text: "XZP5610 (Zhang 2024)"
         href: articles/Zhang_2024_XZP5610.html
+      - text: "YPEGrhGH (He 2025)"
+        href: articles/He_2025_YPEGrhGH.html
       - text: "Zalcitabine (Adams 1998)"
         href: articles/Adams_1998_zalcitabine.html
       - text: "Zaleplon (Izat 2025)"
@@ -5438,6 +5440,7 @@ articles:
   - articles/Haynes_2025_cephalexin
   - articles/Hazendonk_2016_factor_viii
   - articles/He_2012_lamotrigine
+  - articles/He_2025_YPEGrhGH
   - articles/He_2025_lidocaine
   - articles/Heathman_2024_efavirenz
   - articles/Heida_2024_mycophenolic_acid
