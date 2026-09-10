@@ -147,19 +147,19 @@ mod
 #>     vignette <- "Sun_2025_maribavir"
 #>     ini({
 #>         lcl <- 1.37118072330984
-#>         label("Apparent clearance in the reference subject (CL/F, L/h)")
+#>         label("Apparent clearance in the reference subject (L/h)")
 #>         lvc <- 2.87919845729804
-#>         label("Apparent central volume of distribution in the reference subject (Vc/F, L)")
+#>         label("Apparent central volume of distribution in the reference subject (L)")
 #>         lq <- 0.215111379616945
-#>         label("Apparent intercompartmental clearance in the reference subject (Q/F, L/h)")
+#>         label("Apparent intercompartmental clearance in the reference subject (L/h)")
 #>         lvp <- 1.96009478404727
-#>         label("Apparent peripheral volume of distribution in the reference subject (Vp/F, L)")
+#>         label("Apparent peripheral volume of distribution in the reference subject (L)")
 #>         lka <- -0.360969868221613
-#>         label("First-order absorption rate at the 800 mg reference dose (Ka, 1/h)")
+#>         label("First-order absorption rate at the 800 mg reference dose (1/h)")
 #>         ltlag <- -1.55116900431012
 #>         label("Absorption lag time (h)")
 #>         lfdepot <- fix(0)
-#>         label("Relative bioavailability in the reference subject (F, fraction)")
+#>         label("Relative bioavailability in the reference subject (fraction)")
 #>         e_wt_cl <- 0.301
 #>         label("Allometric (WT/70) exponent shared by CL/F and Q/F (unitless)")
 #>         e_wt_vc <- 0.536

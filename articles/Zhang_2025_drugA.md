@@ -153,7 +153,7 @@ ui$iniDf |>
 | lpmax | -0.82326 | FALSE | theta | Maximum fractional increase of the PASI degradation rate by placebo (unitless) |
 | lkpl | -3.29145 | FALSE | theta | Decay rate constant of the placebo effect (1/day) |
 | lke0 | -3.05974 | FALSE | theta | Effect-compartment (signaling) equilibration rate constant (1/day) |
-| e_region_china_ic50 | 2.60000 | TRUE | theta | Ratio of IC50 in Region X patients to IC50 in typical patients (R_regionX, unitless) |
+| e_region_china_ic50 | 2.60000 | TRUE | theta | Ratio of IC50 in Region X patients to IC50 in typical patients (unitless) |
 | propSd | 0.51800 | TRUE | theta | Proportional residual error for drug concentration (fraction) |
 | addSd | 0.30000 | TRUE | theta | Additive residual error for drug concentration (ug/mL) |
 | propSd_pasi | 0.06360 | FALSE | theta | Proportional residual error for PASI score (fraction) |

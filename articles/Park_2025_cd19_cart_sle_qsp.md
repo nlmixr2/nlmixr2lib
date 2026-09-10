@@ -139,20 +139,20 @@ location. The table below is generated from the model object.
 
 | Parameter | Estimate | Fixed | Label |
 |:---|---:|:---|:---|
-| lkexp_max | 5.87787e-01 | no | Maximum first-order CAR-T expansion rate constant, CD8+ subset (KexpMax, 1/day) |
-| lkkill_max | 1.01523e+00 | no | Maximum first-order CD19+ B cell killing rate constant (KkillMax, 1/day) |
-| lec50_exp | -1.08711e+01 | yes | CAR-target complexes per effector cell giving 50% of maximum expansion (EC50exp, number/cell) |
-| lrm1 | -1.89712e+00 | no | Differentiation rate constant, naive to central memory (Rm1, 1/day) |
-| lrm2 | -2.20727e+00 | no | Differentiation rate constant, central memory to effector memory (Rm2, 1/day) |
-| lrm3 | -3.28504e-01 | no | Differentiation rate constant, effector memory to effector (Rm3, 1/day) |
-| lkel_e | 3.85820e+00 | no | Elimination rate constant of effector CAR-T cells (Kel.e, 1/day) |
-| lkel_m | -3.71064e-01 | no | Elimination rate constant of naive and memory CAR-T cells (Kel.m, 1/day) |
-| lk12 | 3.43590e-01 | no | Distribution rate constant, blood to bone marrow (K12, 1/day) |
-| lk21 | -6.37713e+00 | no | Redistribution rate constant, bone marrow to blood (K21, 1/day) |
-| lkc50_cart | 2.04252e+00 | no | CAR-target complexes per CD19+ B cell giving 50% of maximum killing (KC50, number/cell) |
-| lcart_rev_min | 8.67100e-01 | no | Total CAR-T threshold below which naive B cell reconstitution starts (CARTrev.min, cells/uL) |
-| lk0_rev_cd19b | 1.42729e+01 | no | Zero-order generation rate constant of naive CD19+ B cells (K0.rev, cells/L/day) |
-| lcd19b_pb_max | 1.99225e+01 | no | Maximum CD19+ B cell level in peripheral blood (CD19B.PB.max, cells/L) |
+| lkexp_max | 5.87787e-01 | no | Maximum first-order CAR-T expansion rate constant, CD8+ subset (1/day) |
+| lkkill_max | 1.01523e+00 | no | Maximum first-order CD19+ B cell killing rate constant (1/day) |
+| lec50_exp | -1.08711e+01 | yes | CAR-target complexes per effector cell giving 50% of maximum expansion (number/cell) |
+| lrm1 | -1.89712e+00 | no | Differentiation rate constant, naive to central memory (1/day) |
+| lrm2 | -2.20727e+00 | no | Differentiation rate constant, central memory to effector memory (1/day) |
+| lrm3 | -3.28504e-01 | no | Differentiation rate constant, effector memory to effector (1/day) |
+| lkel_e | 3.85820e+00 | no | Elimination rate constant of effector CAR-T cells (1/day) |
+| lkel_m | -3.71064e-01 | no | Elimination rate constant of naive and memory CAR-T cells (1/day) |
+| lk12 | 3.43590e-01 | no | Distribution rate constant, blood to bone marrow (1/day) |
+| lk21 | -6.37713e+00 | no | Redistribution rate constant, bone marrow to blood (1/day) |
+| lkc50_cart | 2.04252e+00 | no | CAR-target complexes per CD19+ B cell giving 50% of maximum killing (number/cell) |
+| lcart_rev_min | 8.67100e-01 | no | Total CAR-T threshold below which naive B cell reconstitution starts (cells/uL) |
+| lk0_rev_cd19b | 1.42729e+01 | no | Zero-order generation rate constant of naive CD19+ B cells (cells/L/day) |
+| lcd19b_pb_max | 1.99225e+01 | no | Maximum CD19+ B cell level in peripheral blood (cells/L) |
 | lrbase_cd19b | 1.87784e+01 | yes | Baseline reactive CD19+ B cells in peripheral blood (cells/L) |
 | cd19b_bm_0 | 1.50000e+09 | yes | Baseline CD19+ B cells in bone marrow (cells/L) |
 | kg_cd19b | 1.93000e-02 | yes | First-order proliferation rate constant of CD19+ B cells (1/day) |

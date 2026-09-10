@@ -115,10 +115,10 @@ print(ui$iniDf[, c("name", "est", "fix", "label")])
 #> 8           addSd 30.580000 FALSE
 #> 9          etalvc  0.326287 FALSE
 #>                                                                                            label
-#> 1       Renal fosfomycin clearance intercept in patients with preserved diuresis (CL_Renal, L/h)
-#> 2                               Central compartment volume at time since first dose = 0 (V_C, L)
-#> 3                                                         Peripheral compartment volume (V_P, L)
-#> 4                                                          Intercompartmental clearance (Q, L/h)
+#> 1                 Renal fosfomycin clearance intercept in patients with preserved diuresis (L/h)
+#> 2                                    Central compartment volume at time since first dose = 0 (L)
+#> 3                                                              Peripheral compartment volume (L)
+#> 4                                                             Intercompartmental clearance (L/h)
 #> 5 Hemodialyzer mass transfer-area coefficient (K0A) for Eq. 1, with BFR in mL/min and DFR in L/h
 #> 6                  Linear effect of urinary creatinine clearance on renal clearance (per mL/min)
 #> 7                    Linear increase of central volume per minute since the first dose (per min)

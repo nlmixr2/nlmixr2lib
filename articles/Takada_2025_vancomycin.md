@@ -116,10 +116,10 @@ ui$iniDf |>
 
 | Parameter | Estimate | Fixed | Label |
 |:---|---:|:---|:---|
-| lcl | 0.6729445 | FALSE | Clearance at CLcr=3.09 L/h and Alb=2.3 g/dL (CL, L/h) |
-| lq | 1.5810384 | FALSE | Intercompartmental clearance (Q, L/h) |
-| lvc | 3.4588372 | FALSE | Central volume of distribution (Vc, L) |
-| lvp | 3.9822951 | FALSE | Peripheral volume of distribution (Vp, L) |
+| lcl | 0.6729445 | FALSE | Clearance at CLcr=3.09 L/h and Alb=2.3 g/dL (L/h) |
+| lq | 1.5810384 | FALSE | Intercompartmental clearance (L/h) |
+| lvc | 3.4588372 | FALSE | Central volume of distribution (L) |
+| lvp | 3.9822951 | FALSE | Peripheral volume of distribution (L) |
 | e_crcl_cl | 0.6300000 | FALSE | Power exponent on (CLcr/3.09 L/h) for CL (unitless) |
 | e_alb_cl | 0.2200000 | FALSE | Power exponent on (Alb/2.3 g/dL) for CL (unitless) |
 | propSd | 0.0000000 | TRUE | Proportional residual SD (fraction; 0 – not reported in the source) |

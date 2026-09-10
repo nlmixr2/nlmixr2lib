@@ -4,7 +4,6 @@
 
 Cross-cutting guides and the list of models.
 
-- [PK_2cmt_mAb_Davda_2014](https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.md):
 - [Canonical covariate
   columns](https://nlmixr2.github.io/nlmixr2lib/articles/covariate-columns.md):
 - [Creating a model
@@ -13,5 +12,6 @@ Cross-cutting guides and the list of models.
   models](https://nlmixr2.github.io/nlmixr2lib/articles/list-of-models.md):
 - [Markov
   modeling](https://nlmixr2.github.io/nlmixr2lib/articles/markov.md):
+- [PK_2cmt_mAb_Davda_2014](https://nlmixr2.github.io/nlmixr2lib/articles/PK_2cmt_mAb_Davda_2014.md):
 - [TMDD archetypes: full, QSS, and Michaelis-Menten
   approximations](https://nlmixr2.github.io/nlmixr2lib/articles/tmdd_archetypes.md):

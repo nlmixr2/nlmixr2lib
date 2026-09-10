@@ -331,9 +331,9 @@ mod
 #>     lka   <- log(2.25);  label("Absorption rate constant (Ka, 1/h), fasted reference")                              # Chawla 2023 Table 1: Ka = 2.25 (95% CI 1.86, 2.85), RSE 9.9%
 #>     lcl   <- log(10.3);  label("Apparent clearance (CL/F, L/h) at reference eGFR, age, weight, and female sex")     # Chawla 2023 Table 1: CL/F = 10.3 (10.1, 10.5), RSE 1.1%
 #>     lvc   <- log(101);   label("Apparent central volume of distribution (Vc/F, L) at reference age, weight, sex")   # Chawla 2023 Table 1: Vc/F = 101 (96.9, 104), RSE 1.8%
-#>     lq    <- log(3.51);  label("Apparent intercompartmental clearance (Q/F, L/h)")                                  # Chawla 2023 Table 1: Q/F = 3.51 (2.7, 4.42), RSE 12.8%
-#>     lvp   <- log(32.8);  label("Apparent peripheral volume of distribution (Vp/F, L)")                              # Chawla 2023 Table 1: Vp/F = 32.8 (26.9, 46.6), RSE 12.7%
-#>     ltlag <- log(0.432); label("Absorption lag time (ALAG, h)")                                                     # Chawla 2023 Table 1: ALAG = 0.432 (0.415, 0.445), RSE 1.7%
+#>     lq    <- log(3.51);  label("Apparent intercompartmental clearance (L/h)")                                  # Chawla 2023 Table 1: Q/F = 3.51 (2.7, 4.42), RSE 12.8%
+#>     lvp   <- log(32.8);  label("Apparent peripheral volume of distribution (L)")                              # Chawla 2023 Table 1: Vp/F = 32.8 (26.9, 46.6), RSE 12.7%
+#>     ltlag <- log(0.432); label("Absorption lag time (h)")                                                     # Chawla 2023 Table 1: ALAG = 0.432 (0.415, 0.445), RSE 1.7%
 #> 
 #>     # Covariate effects on CL/F.
 #>     # Continuous covariates enter as median-centered power functions and categorical
@@ -412,7 +412,7 @@ mod
 #>     Cc ~ add(addSd) + prop(propSd)
 #>   })
 #> }
-#> <environment: 0x55ba33484d48>
+#> <environment: 0x56280bdc9e68>
 ```
 
 ## Virtual cohort

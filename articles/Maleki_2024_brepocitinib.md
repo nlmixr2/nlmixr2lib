@@ -219,15 +219,15 @@ rxode2::rxode(mod)
 #>     vignette <- "Maleki_2024_brepocitinib"
 #>     ini({
 #>         lka <- 0.978326122793608
-#>         label("Absorption rate constant for non-UC subjects (Ka, 1/h)")
+#>         label("Absorption rate constant for non-UC subjects (1/h)")
 #>         lcl <- 2.86162928903051
-#>         label("Apparent oral clearance (CL/F, L/h)")
+#>         label("Apparent oral clearance (L/h)")
 #>         lvc <- 4.48322851518285
-#>         label("Apparent central volume of distribution (Vc/F, L)")
+#>         label("Apparent central volume of distribution (L)")
 #>         lq <- -0.59783700075562
-#>         label("Apparent inter-compartmental clearance (Q/F, L/h)")
+#>         label("Apparent inter-compartmental clearance (L/h)")
 #>         lvp <- 5.44889022502741
-#>         label("Apparent peripheral volume of distribution (Vp/F, L)")
+#>         label("Apparent peripheral volume of distribution (L)")
 #>         ltlag <- -1.34707364796661
 #>         label("Absorption lag time of the tablet formulation (h)")
 #>         lfdepot <- fix(0)

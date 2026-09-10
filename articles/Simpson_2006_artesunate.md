@@ -142,12 +142,12 @@ ui$iniDf |>
 
 | Parameter | Estimate (transformed scale) | Fixed | Label |
 |:---|---:|:---|:---|
-| lka | -1.6094 | TRUE | First-order appearance rate constant of DHA (ka, 1/h) |
+| lka | -1.6094 | TRUE | First-order appearance rate constant of DHA (1/h) |
 | ltlag | -1.9661 | TRUE | Appearance lag time (h) |
-| lcl | 0.7080 | FALSE | Apparent DHA clearance for a female (CL/F, L/kg/h) |
+| lcl | 0.7080 | FALSE | Apparent DHA clearance for a female (L/kg/h) |
 | e_male_cl | 1.1400 | FALSE | Additive increase in apparent DHA clearance for a male (CL/F, L/kg/h; applied as (1 - SEXF)) |
-| lvc | -0.5621 | FALSE | Intercept of the apparent DHA volume of distribution (V/F, L/kg) |
-| e_wt_vc | 5.7700 | FALSE | Increase in apparent DHA volume of distribution per unit of WT/70 (V/F, L/kg) |
+| lvc | -0.5621 | FALSE | Intercept of the apparent DHA volume of distribution (L/kg) |
+| e_wt_vc | 5.7700 | FALSE | Increase in apparent DHA volume of distribution per unit of WT/70 (L/kg) |
 | expSd | 0.9300 | FALSE | Log-normal residual SD for DHA plasma concentration (SD on the log scale) |
 
 ini() fixed effects as packaged. {.table}

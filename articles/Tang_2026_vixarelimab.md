@@ -140,20 +140,20 @@ knitr::kable(
 
 | Parameter | Estimate | Label |
 |:---|---:|:---|
-| lvc | 1.111858 | Central volume of distribution (Vc, L) |
-| lcl | -5.037493 | Linear (non-specific) clearance (CL, L/h) |
-| lq | -3.877622 | Inter-compartmental clearance (Q, L/h) |
-| lvp | 0.553885 | Peripheral volume of distribution (Vp, L) |
-| lka | -4.374058 | First-order subcutaneous absorption rate constant (Ka, 1/h) |
+| lvc | 1.111858 | Central volume of distribution (L) |
+| lcl | -5.037493 | Linear (non-specific) clearance (L/h) |
+| lq | -3.877622 | Inter-compartmental clearance (L/h) |
+| lvp | 0.553885 | Peripheral volume of distribution (L) |
+| lka | -4.374058 | First-order subcutaneous absorption rate constant (1/h) |
 | logitfdepot | 0.265550 | Subcutaneous bioavailability on the logit scale (logit(F1), unitless) |
-| lrbase | 0.609766 | Baseline total target (OSMR-beta) concentration (R0, nM) |
-| lkdeg | -2.333044 | Target degradation rate constant (Kdeg, 1/h) |
-| lkss | -3.519981 | Quasi-steady-state constant for drug-target binding (Kss, nM) |
-| lkint | -8.866751 | Drug-target complex internalisation rate constant (Kint, 1/h) |
+| lrbase | 0.609766 | Baseline total target (OSMR-beta) concentration (nM) |
+| lkdeg | -2.333044 | Target degradation rate constant (1/h) |
+| lkss | -3.519981 | Quasi-steady-state constant for drug-target binding (nM) |
+| lkint | -8.866751 | Drug-target complex internalisation rate constant (1/h) |
 | e_wt_cl | 0.943000 | Power exponent of WT/81.7 on CL (unitless) |
 | e_wt_vc | 0.762000 | Power exponent of WT/81.7 on Vc (unitless) |
 | e_wt_vp | 0.646000 | Power exponent of WT/81.7 on Vp (unitless) |
-| expSd | 0.194156 | Log-scale (log-additive) residual standard deviation |
+| expSd | 0.194156 | Log-scale, log-additive, residual standard deviation (unitless) |
 
 Fixed effects as packaged. {.table}
 

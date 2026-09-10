@@ -116,15 +116,15 @@ knitr::kable(
 )
 ```
 
-| Parameter | Estimate | Fixed | Label |
-|:---|---:|:---|:---|
-| lka | -1.8326 | TRUE | Absorption rate constant (Ka, 1/h) |
-| lcl | 3.1987 | TRUE | Apparent oral clearance (CL/F, L/h) |
-| lvc | 6.0331 | TRUE | Apparent central volume of distribution (V2/F, L) |
-| lq | 3.5752 | TRUE | Apparent inter-compartmental clearance (Q/F, L/h) |
-| lvp | 6.2934 | TRUE | Apparent peripheral volume of distribution (V3/F, L) |
-| propSd | 0.3000 | TRUE | Proportional residual error (fraction) |
-| addSd | 0.0000 | TRUE | Additive residual error (ug/mL) |
+| Parameter | Estimate | Fixed | Label                                          |
+|:----------|---------:|:------|:-----------------------------------------------|
+| lka       |  -1.8326 | TRUE  | Absorption rate constant (1/h)                 |
+| lcl       |   3.1987 | TRUE  | Apparent oral clearance (L/h)                  |
+| lvc       |   6.0331 | TRUE  | Apparent central volume of distribution (L)    |
+| lq        |   3.5752 | TRUE  | Apparent inter-compartmental clearance (L/h)   |
+| lvp       |   6.2934 | TRUE  | Apparent peripheral volume of distribution (L) |
+| propSd    |   0.3000 | TRUE  | Proportional residual error (fraction)         |
+| addSd     |   0.0000 | TRUE  | Additive residual error (ug/mL)                |
 
 Fixed-effect parameters as packaged. Every value is fixed(). {.table}
 

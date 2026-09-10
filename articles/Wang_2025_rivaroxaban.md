@@ -112,8 +112,8 @@ The equations as printed in the paper are
 | Parameter | Estimate | Fixed | Label |
 |:---|---:|:---|:---|
 | lka | -0.482886 | TRUE | Absorption rate constant (ka, 1/h), taken from Kaneko 2013 |
-| lcl | 1.729880 | FALSE | Apparent clearance (CL/F, L/h) |
-| lvc | 3.730500 | FALSE | Apparent volume of distribution (V/F, L) |
+| lcl | 1.729880 | FALSE | Apparent clearance (L/h) |
+| lvc | 3.730500 | FALSE | Apparent volume of distribution (L) |
 | e_astalt_cl | -0.074000 | FALSE | AST/ALT ratio power exponent on CL/F (unitless) |
 | e_astalt_vc | 0.213000 | FALSE | AST/ALT ratio power exponent on V/F (unitless) |
 | propSd | 0.710000 | FALSE | Proportional residual error (fraction) |

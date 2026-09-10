@@ -215,7 +215,7 @@ mod
 #>     # log scale is exponential (log-normal) on the linear scale, which Table 2
 #>     # footnote e states outright ('Corresponds to proportional on normal
 #>     # scale').
-#>     expSd <- 0.259; label("Exponential (log-scale additive) residual error SD") # Bender 2024 Table 2 residual variability = 0.259 (%RSE 0.257; 95% CI 0.258, 0.260)
+#>     expSd <- 0.259; label("Exponential, log-scale additive, residual error SD (unitless)") # Bender 2024 Table 2 residual variability = 0.259 (%RSE 0.257; 95% CI 0.258, 0.260)
 #>   })
 #> 
 #>   model({
@@ -316,7 +316,7 @@ mod
 #>     Cc ~ lnorm(expSd)
 #>   })
 #> }
-#> <environment: 0x55ba323b2250>
+#> <environment: 0x56280854d4c0>
 ```
 
 ## Population
