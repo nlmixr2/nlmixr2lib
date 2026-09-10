@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Laporte-Amargos 2026 piperacillin ([doi:10.1128/aac.01253-25](https://doi.org/10.1128/aac.01253-25)) -- adults with haematological malignancy and febrile neutropenia.
+
 - Add Kumta 2025 piperacillin and tazobactam ([doi:10.1128/aac.00601-24](https://doi.org/10.1128/aac.00601-24)) -- critically ill neurosurgical adults with an external ventricular drain.
 
 - Add Huang 2025 colistin sulfate ([doi:10.1177/00368504251325334](https://doi.org/10.1177/00368504251325334)) -- critically ill adults on continuous veno-venous hemodiafiltration.

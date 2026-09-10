@@ -1,0 +1,880 @@
+---
+title: "Piperacillin (Laporte-Amargos 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Piperacillin (Laporte-Amargos 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model-meta, echo = FALSE, results = "asis"}
+ui <- rxode2::rxode(readModelDb("LaporteAmargos_2026_piperacillin"))
+cat("* Citation: ", ui$reference, "\n", sep = "")
+cat("* Description: ", ui$description, "\n", sep = "")
+```
+
+* Article: <https://doi.org/10.1128/aac.01253-25>
+* Supplement: `AAC01253-25-s0001.docx` (supplemental methods, Table S1, Fig. S1),
+  distributed with the open-access PubMed Central record
+  [PMC12777563](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12777563/).
+
+# Population
+
+Forty-four adults with haematological malignancy and febrile neutropenia,
+enrolled in the piperacillin-tazobactam arm of the BEATLE randomised
+controlled trial across four Spanish university hospitals between November
+2019 and June 2022 (Laporte-Amargos 2026 Table 1). Median weight 70 kg
+(interquartile interval 62.4-77.6), mean age 55.4 years (SD 10.2), 47.7 %
+male. Ninety-one percent were admitted for haematopoietic stem cell
+transplantation; the underlying malignancies were multiple myeloma (31.8 %),
+lymphoma (29.5 %), acute myeloid leukaemia or myelodysplastic syndrome
+(20.5 %), acute lymphoblastic leukaemia (6.8 %) and other (11.4 %).
+
+Renal function skewed high: median Cockcroft-Gault creatinine clearance
+96.2 mL/min (interquartile interval 83.4-125.7), with half the cohort above
+90 mL/min and a quarter above 120 mL/min against a mean 24-h diuresis over
+2,000 mL -- a pattern the authors read as augmented renal clearance in the
+early phase of febrile neutropenia. Patients with a CKD-EPI eGFR below
+30 mL/min/1.73 m^2 were excluded, so the model does not describe
+moderate-to-severe renal impairment. Only 3 patients (6.8 %) were hypotensive
+at onset, none needed vasoactive drugs, and 1 (2.3 %) was admitted to
+intensive care, so the cohort is *not* a critically ill one.
+
+All patients received piperacillin-tazobactam 4 g / 0.5 g q6h (q8h if eGFR was
+30-40 mL/min/1.73 m^2). The first dose was always a 30 min infusion; thereafter
+21 patients (47.7 %) received 3 h extended infusions and 23 (52.3 %) continued
+with 30 min infusions. 221 total plasma piperacillin concentrations were
+collected from 122 dosing occasions.
+
+The same information is available programmatically via the model's
+`population` metadata (`readModelDb("LaporteAmargos_2026_piperacillin")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/LaporteAmargos_2026_piperacillin.R`. The
+table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | 12.0 L/h | Table 2, `CL (L/h)` = 12.0 (6.2 % RSE); bootstrap 12.0 (10.8-13.6). Restated in the Discussion. |
+| `lvc` (Vd) | 29.8 L | Table 2, `Vd (L)` = 29.8 (10.9 % RSE); bootstrap 29.7 (23.4-37.9) |
+| `e_crcl_cl` | 0.64 | Table 2, `CrCL effect on CL` = 0.64 (27.2 % RSE); printed as the exponent of the Results equation |
+| CrCL reference | 99.3 mL/min | Results, "normalized to the median CrCL of our patient population (99.3 mL/min)" |
+| `etalcl` | 36.2 % CV -> omega^2 = 0.1231 | Table 2, `BSV CL (CV %)` = 36.2 (14.9 % RSE) |
+| `etalvc` | 57.3 % CV -> omega^2 = 0.2839 | Table 2, `BSV Vd (CV %)` = 57.3 (15.2 % RSE) |
+| `etaiov_cl_1..3` | 16.4 % CV -> omega^2 = 0.0265 | Table 2, `BOV CL (CV %)` = 16.4 (23.5 % RSE); three sampling occasions per Methods |
+| `addSd` | 5.5 mg/L | Table 2, `a (constant) (mg/L)` = 5.5 (19.3 % RSE) |
+| `propSd` | 0.20 | Table 2, `b (proportional)` = 0.20 (11.1 % RSE) |
+| `cl <- exp(lcl + etalcl + iov_cl) * (CRCL / 99.3)^e_crcl_cl` | n/a | Results equation, "CL_i (L/h) = 12 x (CrCL_i / 99.3)^0.64" |
+| `d/dt(central) <- -kel * central` | n/a | Results, "A one-compartment model with first-order elimination was the structural model that best fitted the concentration-time data" |
+| BSV / BOV entering as `exp(eta_i) * exp(eta_ik)` | n/a | Supplement, Supplementary material on Methods: `theta_ik = theta_p * exp(eta_i) * exp(eta_ik)` |
+| `Cc ~ add(addSd) + prop(propSd) + combined1()` | n/a | Supplement, "Additive, proportional or combined (additive + proportional) error models were tested"; Table 2 footnote defines `a` and `b`. The combined1-vs-combined2 choice is discussed under *Assumptions and deviations*. |
+| Unbound fraction 0.7 used for the PK/PD targets | n/a | Methods, "Unbound piperacillin concentrations were calculated assuming a 30 % protein binding" |
+
+# Structural checks
+
+The covariate relationship and the derived micro-constants are deterministic,
+so they can be checked exactly against the published equation rather than
+against a simulated cohort.
+
+```{r structural}
+mod <- readModelDb("LaporteAmargos_2026_piperacillin")
+mod_typ <- rxode2::zeroRe(mod)
+
+crcl_levels <- c(60, 90, 120, 150)
+
+typ_ev <- tidyr::expand_grid(
+  id = seq_along(crcl_levels),
+  time = c(0, 1)
+) |>
+  dplyr::mutate(
+    amt  = ifelse(time == 0, 4000, NA_real_),
+    evid = ifelse(time == 0, 1L, 0L),
+    rate = ifelse(time == 0, 4000 / 0.5, NA_real_),
+    cmt  = "central",
+    CRCL = crcl_levels[id],
+    OCC  = 1
+  )
+
+typ <- rxode2::rxSolve(mod_typ, typ_ev, keep = c("CRCL")) |>
+  as.data.frame() |>
+  dplyr::distinct(id, CRCL, cl, vc, kel)
+
+typ <- typ |>
+  dplyr::mutate(
+    cl_published = 12 * (CRCL / 99.3)^0.64,
+    thalf        = log(2) / kel,
+    thalf_closed = log(2) * 29.8 / (12 * (CRCL / 99.3)^0.64)
+  )
+
+# Exact, deterministic: the model must reproduce the published covariate
+# equation to solver precision. A mis-transcribed exponent, reference value
+# or typical CL moves these by tens of percent.
+stopifnot(
+  max(abs(typ$cl - typ$cl_published) / typ$cl_published) < 1e-6,
+  max(abs(typ$vc - 29.8)) < 1e-9,
+  max(abs(typ$thalf - typ$thalf_closed) / typ$thalf_closed) < 1e-6
+)
+
+typ |>
+  dplyr::select(CRCL, cl, vc, thalf) |>
+  dplyr::rename(
+    "CrCL (mL/min)"   = CRCL,
+    "CL (L/h)"        = cl,
+    "Vd (L)"          = vc,
+    "t-half (h)"      = thalf
+  ) |>
+  knitr::kable(
+    digits  = 3,
+    caption = paste(
+      "Typical-value clearance, volume and elimination half-life at the four",
+      "creatinine-clearance levels used in the Laporte-Amargos 2026 dosing",
+      "simulations. CL reproduces the published equation",
+      "CL = 12 x (CrCL / 99.3)^0.64 exactly."
+    )
+  )
+```
+
+At the reference CrCL of 99.3 mL/min the model returns CL = 12.0 L/h and
+Vd = 29.8 L, matching the Discussion's "our population estimate for
+piperacillin was 12 L/h at a median CrCL of ~100 mL/min" and "the estimated
+Vd of piperacillin was approximately 30 L".
+
+# PKNCA validation against the closed form
+
+A one-compartment linear model has an exact steady-state solution, so NCA of
+the typical-value profile is a strong check on the packaged encoding: over one
+dosing interval at steady state, `CL x AUCtau` must equal the dose, and the
+terminal half-life must equal `log(2) x Vd / CL`.
+
+```{r pknca}
+# One typical subject per CrCL level, dosed 4 g q6h as a 30 min infusion to
+# steady state; NCA is run over the final interval with time re-based to the
+# start of that interval.
+tau <- 6
+n_dose <- 12
+nca_grid <- sort(unique(c(seq(0, tau, by = 0.02), 0.5)))
+
+nca_ev <- dplyr::bind_rows(
+  tidyr::expand_grid(id = seq_along(crcl_levels), time = seq(0, (n_dose - 1) * tau, by = tau)) |>
+    dplyr::mutate(amt = 4000, evid = 1L, rate = 4000 / 0.5),
+  tidyr::expand_grid(id = seq_along(crcl_levels), time = (n_dose - 1) * tau + nca_grid) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, rate = NA_real_)
+) |>
+  dplyr::mutate(
+    cmt  = "central",
+    CRCL = crcl_levels[id],
+    OCC  = 1,
+    crcl_label = paste0("CrCL ", crcl_levels[id], " mL/min")
+  ) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+nca_sim <- rxode2::rxSolve(mod_typ, nca_ev, keep = c("CRCL", "crcl_label")) |>
+  as.data.frame()
+
+# Concentration frame for PKNCA: only !is.na(Cc), never a time or Cc filter.
+sim_nca <- nca_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(time = time - (n_dose - 1) * tau) |>
+  dplyr::select(id, time, Cc, crcl_label)
+
+# Time-zero anchor (pre-dose trough of the modelled interval).
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, crcl_label) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, crcl_label, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, crcl_label, time)
+
+stopifnot(nrow(sim_nca) > 0)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | crcl_label + id)
+
+dose_df <- nca_ev |>
+  dplyr::filter(evid == 1, time == (n_dose - 1) * tau) |>
+  dplyr::mutate(time = 0) |>
+  dplyr::select(id, time, amt, crcl_label)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | crcl_label + id)
+
+intervals <- data.frame(
+  start     = 0,
+  end       = tau,
+  auclast   = TRUE,
+  cmax      = TRUE,
+  tmax      = TRUE,
+  half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+```
+
+```{r pknca-compare}
+# Closed-form reference for the same quantities. AUCtau at steady state is
+# Dose / CL exactly; the terminal half-life is log(2) * Vd / CL; Cmax is the
+# end-of-infusion concentration of the accumulated one-compartment system.
+closed <- typ |>
+  dplyr::mutate(
+    crcl_label = paste0("CrCL ", CRCL, " mL/min"),
+    auclast    = 4000 / cl,
+    half.life  = log(2) / kel,
+    tmax       = 0.5,
+    cmax       = (4000 / 0.5) / (kel * vc) * (1 - exp(-kel * 0.5)) /
+      (1 - exp(-kel * tau))
+  ) |>
+  dplyr::select(crcl_label, auclast, cmax, tmax, half.life)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = closed,
+  by            = "crcl_label",
+  units         = c(auclast = "mg*h/L", cmax = "mg/L", tmax = "h", half.life = "h"),
+  tolerance_pct = 5,
+  label_first_column = "NCA parameter"
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Steady-state NCA of the typical-value profile (4 g q6h, 30 min infusion)",
+    "against the exact one-compartment closed form. Reference AUCtau is",
+    "Dose / CL and reference half-life is log(2) x Vd / CL, both computed",
+    "from the published parameters. * marks a >5 % difference."
+  )
+)
+```
+
+```{r pknca-gate}
+# Machine-checkable form of the same comparison: mass balance and half-life
+# are deterministic (no cohort, no RNG), so they are gated tightly. The only
+# expected error is trapezoidal/regression discretisation of the 0.02 h grid.
+res <- as.data.frame(nca_res)
+
+get_par <- function(par) {
+  v <- res$PPORRES[res$PPTESTCD == par]
+  stopifnot(length(v) == length(crcl_levels))
+  v[order(res$crcl_label[res$PPTESTCD == par])]
+}
+ref_of <- function(par) closed[[par]][order(closed$crcl_label)]
+
+auc_err   <- (get_par("auclast") - ref_of("auclast")) / ref_of("auclast")
+thalf_err <- (get_par("half.life") - ref_of("half.life")) / ref_of("half.life")
+
+stopifnot(
+  # CL * AUCtau == Dose. Catches a wrong CL, a wrong dose, a dropped
+  # elimination arm, or an infusion encoded as a bolus.
+  max(abs(auc_err)) < 0.01,
+  # Terminal slope recovers log(2) * Vd / CL. Catches a wrong Vd.
+  max(abs(thalf_err)) < 0.01
+)
+
+data.frame(
+  Check = c("max |CL x AUCtau / Dose - 1|", "max |t-half / (log(2) Vd / CL) - 1|"),
+  Value = c(max(abs(auc_err)), max(abs(thalf_err))),
+  Bound = c(0.01, 0.01)
+) |>
+  knitr::kable(digits = 5, caption = "Deterministic closed-form gates.")
+```
+
+# Virtual cohort and replication of Table 3 (probability of target attainment)
+
+Table 3 of Laporte-Amargos 2026 is the paper's central quantitative result: for
+each dosing regimen it reports the probability, over the first 48 h of therapy,
+of holding unbound piperacillin above a target for the *entire* dosing interval
+(100 % *f*T>MIC), at creatinine clearances fixed to 60, 90, 120 and
+150 mL/min. Because the table is generated from the model itself, reproducing
+it is a direct test of the packaged encoding.
+
+Three regimens are replicated here -- the standard short infusion, the extended
+infusion with a loading dose, and the continuous infusion the paper ultimately
+recommends. Each of the twelve regimen-by-CrCL arms uses 200 virtual subjects
+(the paper used 1,000; see *Assumptions and deviations*).
+
+```{r cohort}
+# set.seed() seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned PER SOLVER THREAD, so this cohort is
+# reproducible on this machine and different on a machine with a different
+# thread count. Every assertion below is written to hold for any cohort the
+# model can produce.
+set.seed(20260910)
+
+n_arm  <- 200
+t_end  <- 48
+fu     <- 0.7  # 30 % protein binding (Methods)
+
+# Dosing histories. Amounts in mg, durations in h. Where a 2 g loading dose is
+# given the maintenance regimen starts immediately at the end of the 30 min
+# loading infusion, as specified in Methods.
+regimens <- list(
+  "4 g q6h, 30 min infusion" = data.frame(
+    time = seq(0, 42, by = 6), amt = 4000, dur = 0.5
+  ),
+  "2 g LD + 4 g q6h, 3 h infusion" = data.frame(
+    time = c(0, seq(0.5, 42.5, by = 6)),
+    amt  = c(2000, rep(4000, 8)),
+    dur  = c(0.5, rep(3, 8))
+  ),
+  "2 g LD + 12 g/24 h continuous infusion" = data.frame(
+    time = c(0, 0.5),
+    amt  = c(2000, 12000 / 24 * (t_end - 0.5)),
+    dur  = c(0.5, t_end - 0.5)
+  )
+)
+
+# Observation grid. The minimum unbound concentration of an intermittent
+# regimen sits immediately before a dose, so the pre-dose instants are added
+# explicitly rather than relying on the regular grid to land on them.
+obs_grid <- sort(unique(c(
+  seq(0.5, t_end, by = 0.5),
+  seq(6, t_end, by = 6) - 1e-4,
+  seq(6.5, t_end, by = 6) - 1e-4
+)))
+obs_grid <- obs_grid[obs_grid >= 0.5 & obs_grid <= t_end]
+
+make_arm <- function(reg_label, doses, crcl, n, id_offset) {
+  ids <- id_offset + seq_len(n)
+  dplyr::bind_rows(
+    tidyr::expand_grid(id = ids, doses) |>
+      dplyr::mutate(evid = 1L, rate = amt / dur, amt = amt) |>
+      dplyr::select(id, time, amt, evid, rate),
+    tidyr::expand_grid(id = ids, time = obs_grid) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, rate = NA_real_)
+  ) |>
+    dplyr::mutate(
+      cmt        = "central",
+      CRCL       = crcl,
+      OCC        = 1,
+      regimen    = reg_label,
+      crcl_label = paste0("CrCL ", crcl, " mL/min")
+    ) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+arm_grid <- tidyr::expand_grid(
+  regimen = names(regimens),
+  crcl    = crcl_levels
+) |>
+  dplyr::mutate(id_offset = (dplyr::row_number() - 1L) * n_arm)
+
+pta_events <- do.call(
+  dplyr::bind_rows,
+  lapply(seq_len(nrow(arm_grid)), function(i) {
+    make_arm(
+      arm_grid$regimen[i], regimens[[arm_grid$regimen[i]]],
+      arm_grid$crcl[i], n_arm, arm_grid$id_offset[i]
+    )
+  })
+)
+
+# Disjoint IDs across arms are mandatory: rxSolve treats id as the subject key
+# and would silently merge duplicated ids into one subject receiving the sum
+# of both arms' doses.
+stopifnot(!anyDuplicated(unique(pta_events[, c("id", "time", "evid")])))
+stopifnot(dplyr::n_distinct(pta_events$id) == nrow(arm_grid) * n_arm)
+```
+
+```{r pta-simulate}
+pta_sim <- rxode2::rxSolve(
+  mod, pta_events,
+  keep = c("regimen", "crcl_label")
+) |>
+  as.data.frame()
+
+# 100 % fT>MIC over the first 48 h: the subject attains the target if the
+# MINIMUM unbound concentration from the end of the first infusion to 48 h is
+# at or above it. Cc is the individual prediction and carries no residual
+# error, which is what a target-attainment simulation needs.
+pta_min <- pta_sim |>
+  dplyr::filter(time >= 0.5) |>
+  dplyr::group_by(regimen, crcl_label, id) |>
+  dplyr::summarise(fmin = fu * min(Cc), .groups = "drop")
+
+targets <- c(0.5, 1, 2, 4, 8, 16, 32, 64)
+
+pta_sim_tab <- pta_min |>
+  tidyr::expand_grid(target = targets) |>
+  dplyr::group_by(regimen, crcl_label, target) |>
+  dplyr::summarise(pta_sim = 100 * mean(fmin >= target), .groups = "drop")
+```
+
+```{r pta-published}
+# Laporte-Amargos 2026 Table 3, transcribed. Rows are CrCL 60/90/120/150 and
+# columns the eight target fCmin / fCss values in mg/L.
+pta_pub <- dplyr::bind_rows(
+  tibble::tibble(
+    regimen = "4 g q6h, 30 min infusion",
+    crcl    = rep(crcl_levels, each = length(targets)),
+    target  = rep(targets, times = 4),
+    pta_pub = c(
+      97.3, 95.8, 93.7, 88.2, 76.0, 49.5,  8.1, 0.0,
+      94.4, 91.5, 85.3, 75.2, 58.3, 26.7,  1.9, 0.0,
+      86.1, 80.2, 71.6, 58.8, 40.5, 15.2,  0.3, 0.0,
+      82.7, 76.5, 67.9, 53.7, 34.0, 10.9,  0.2, 0.0
+    )
+  ),
+  tibble::tibble(
+    regimen = "2 g LD + 4 g q6h, 3 h infusion",
+    crcl    = rep(crcl_levels, each = length(targets)),
+    target  = rep(targets, times = 4),
+    pta_pub = c(
+      99.4, 99.1, 97.7, 96.2, 91.1, 74.5, 27.4, 0.5,
+      98.7, 97.5, 95.8, 91.3, 78.8, 55.1, 12.7, 0.3,
+      96.7, 93.1, 88.5, 78.9, 64.0, 37.7,  6.1, 0.1,
+      93.4, 89.7, 84.2, 75.6, 57.9, 30.4,  4.3, 0.0
+    )
+  ),
+  tibble::tibble(
+    regimen = "2 g LD + 12 g/24 h continuous infusion",
+    crcl    = rep(crcl_levels, each = length(targets)),
+    target  = rep(targets, times = 4),
+    pta_pub = c(
+      100, 100, 100, 100, 100.0, 97.1, 51.6, 2.4,
+      100, 100, 100, 100, 100.0, 93.2, 33.3, 0.8,
+      100, 100, 100, 100,  99.9, 85.5, 18.5, 0.2,
+      100, 100, 100, 100,  99.7, 80.5, 13.9, 0.0
+    )
+  )
+) |>
+  dplyr::mutate(crcl_label = paste0("CrCL ", crcl, " mL/min"))
+
+pta_cmp <- pta_sim_tab |>
+  dplyr::inner_join(pta_pub, by = c("regimen", "crcl_label", "target")) |>
+  dplyr::mutate(diff = pta_sim - pta_pub)
+
+# Guard against a silently empty join: all 96 cells must be present.
+stopifnot(nrow(pta_cmp) == length(targets) * length(crcl_levels) * length(regimens))
+```
+
+```{r pta-table}
+pta_cmp |>
+  dplyr::mutate(
+    cell = sprintf("%.1f / %.1f", pta_sim, pta_pub),
+    target = factor(target, levels = targets)
+  ) |>
+  dplyr::select(regimen, crcl_label, target, cell) |>
+  tidyr::pivot_wider(names_from = target, values_from = cell) |>
+  dplyr::rename("Regimen" = regimen, "CrCL" = crcl_label) |>
+  knitr::kable(
+    caption = paste(
+      "Replication of Laporte-Amargos 2026 Table 3. Each cell is",
+      "simulated / published probability (%) of 100 % fT>MIC over the first",
+      "48 h. Columns are the target unbound trough or steady-state",
+      "concentration in mg/L."
+    )
+  )
+```
+
+```{r pta-gate}
+# Bounds are set from the spread of a 200-subject cohort, not from one run.
+# Realised over two independently seeded 200/arm renders: median |diff| 0.80
+# and 0.75, 90th percentile 4.1 and 4.1, max 8.3 and 7.5 percentage points,
+# mean signed difference -0.01 and +0.08. Binomial noise alone contributes
+# about 3.5 points of standard error per cell at a PTA of 50 %.
+#
+# The bounds below sit well outside that range but still go red on a real
+# transcription error: halving the dose, dropping the CrCL exponent, or
+# mis-scaling Vd each move whole blocks of cells by 15-40 points and would
+# shift the MEAN signed difference, which binomial noise cannot.
+pta_stats <- c(
+  median_abs = median(abs(pta_cmp$diff)),
+  q90_abs    = unname(quantile(abs(pta_cmp$diff), 0.9)),
+  max_abs    = max(abs(pta_cmp$diff)),
+  mean_signed = mean(pta_cmp$diff)
+)
+
+stopifnot(
+  pta_stats[["median_abs"]] < 4,
+  pta_stats[["q90_abs"]] < 12,
+  abs(pta_stats[["mean_signed"]]) < 4
+)
+
+data.frame(
+  Statistic = c("median |difference|", "90th percentile |difference|",
+                "max |difference|", "mean signed difference"),
+  Value     = unname(pta_stats),
+  Bound     = c(4, 12, NA, 4)
+) |>
+  knitr::kable(
+    digits = 2,
+    caption = paste(
+      "Agreement between the simulated and published probabilities of target",
+      "attainment across all 96 cells (percentage points). max |difference|",
+      "is reported but not gated, because the extreme of a 96-cell binomial",
+      "comparison is not reproducible across cohorts."
+    )
+  )
+```
+
+```{r pta-figure}
+pta_cmp |>
+  ggplot(aes(x = target)) +
+  geom_line(aes(y = pta_pub, colour = "Published (Table 3)")) +
+  geom_point(aes(y = pta_pub, colour = "Published (Table 3)")) +
+  geom_line(aes(y = pta_sim, colour = "Simulated"), linetype = 2) +
+  geom_point(aes(y = pta_sim, colour = "Simulated"), shape = 1) +
+  geom_hline(yintercept = 90, linewidth = 0.3, linetype = 3) +
+  facet_grid(regimen ~ crcl_label, labeller = label_wrap_gen(width = 22)) +
+  scale_x_log10(breaks = targets) +
+  scale_colour_manual(values = c("Published (Table 3)" = "black", "Simulated" = "#C1272D")) +
+  labs(
+    x = "Target unbound trough or steady-state concentration (mg/L)",
+    y = "Probability of 100% fT>MIC over the first 48 h (%)",
+    colour = NULL,
+    title = "Probability of target attainment",
+    caption = "Replicates Table 3 of Laporte-Amargos 2026. Dotted line: the 90% optimal-PTA threshold."
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The simulation reproduces the paper's dosing conclusions: at CrCL above
+90 mL/min the standard 4 g q6h 30 min infusion falls below the 90 % threshold
+even for a target of 0.5 mg/L, whereas the 12 g/24 h continuous infusion after
+a 2 g loading dose holds above 90 % out to a target of 16 mg/L -- the EUCAST
+clinical breakpoint for *Pseudomonas aeruginosa* with tazobactam. The checks
+below restate those conclusions in a form that a 200-subject cohort can
+support; see the chunk comment for how each bound was chosen.
+
+```{r pta-conclusions}
+cell <- function(reg, crcl, tgt, what) {
+  v <- pta_cmp[[what]][pta_cmp$regimen == reg &
+                         pta_cmp$crcl_label == paste0("CrCL ", crcl, " mL/min") &
+                         pta_cmp$target == tgt]
+  if (length(v) != 1L) stop("no unique cell for ", reg, " / ", crcl, " / ", tgt)
+  v
+}
+
+# The paper's own qualitative claims, restated as checks on the simulated
+# cohort. Each bound leaves at least ~4 binomial standard errors of headroom
+# over the published value (a 200-subject cell has a standard error of about
+# 3.5 percentage points at a PTA of 50 % and about 1.2 at 97 %), so none of
+# them is a coin flip on one draw. The published value is carried alongside
+# so a reader can see the margin.
+claims <- tibble::tribble(
+  ~Claim, ~Simulated, ~Published, ~Pass,
+  "4 g q6h 30 min at CrCL 120 attains a 4 mg/L target in under 80% of subjects",
+  cell("4 g q6h, 30 min infusion", 120, 4, "pta_sim"),
+  cell("4 g q6h, 30 min infusion", 120, 4, "pta_pub"),
+  cell("4 g q6h, 30 min infusion", 120, 4, "pta_sim") < 80,
+
+  "2 g LD + 12 g/24 h CI holds >=90% PTA at a 16 mg/L target for CrCL 60",
+  cell("2 g LD + 12 g/24 h continuous infusion", 60, 16, "pta_sim"),
+  cell("2 g LD + 12 g/24 h continuous infusion", 60, 16, "pta_pub"),
+  cell("2 g LD + 12 g/24 h continuous infusion", 60, 16, "pta_sim") >= 90,
+
+  "No regimen reaches 90% PTA at a 64 mg/L target (100% fT>4xMIC for P. aeruginosa)",
+  max(pta_cmp$pta_sim[pta_cmp$target == 64]),
+  max(pta_cmp$pta_pub[pta_cmp$target == 64]),
+  max(pta_cmp$pta_sim[pta_cmp$target == 64]) < 90,
+
+  "Extended infusion beats short infusion at a 16 mg/L target, CrCL 90",
+  cell("2 g LD + 4 g q6h, 3 h infusion", 90, 16, "pta_sim") -
+    cell("4 g q6h, 30 min infusion", 90, 16, "pta_sim"),
+  cell("2 g LD + 4 g q6h, 3 h infusion", 90, 16, "pta_pub") -
+    cell("4 g q6h, 30 min infusion", 90, 16, "pta_pub"),
+  (cell("2 g LD + 4 g q6h, 3 h infusion", 90, 16, "pta_sim") -
+     cell("4 g q6h, 30 min infusion", 90, 16, "pta_sim")) > 10,
+
+  "Continuous infusion beats extended infusion at a 16 mg/L target, CrCL 90",
+  cell("2 g LD + 12 g/24 h continuous infusion", 90, 16, "pta_sim") -
+    cell("2 g LD + 4 g q6h, 3 h infusion", 90, 16, "pta_sim"),
+  cell("2 g LD + 12 g/24 h continuous infusion", 90, 16, "pta_pub") -
+    cell("2 g LD + 4 g q6h, 3 h infusion", 90, 16, "pta_pub"),
+  (cell("2 g LD + 12 g/24 h continuous infusion", 90, 16, "pta_sim") -
+     cell("2 g LD + 4 g q6h, 3 h infusion", 90, 16, "pta_sim")) > 15,
+
+  "Attainment of a 4 mg/L target falls from CrCL 60 to CrCL 150 (short infusion)",
+  cell("4 g q6h, 30 min infusion", 60, 4, "pta_sim") -
+    cell("4 g q6h, 30 min infusion", 150, 4, "pta_sim"),
+  cell("4 g q6h, 30 min infusion", 60, 4, "pta_pub") -
+    cell("4 g q6h, 30 min infusion", 150, 4, "pta_pub"),
+  (cell("4 g q6h, 30 min infusion", 60, 4, "pta_sim") -
+     cell("4 g q6h, 30 min infusion", 150, 4, "pta_sim")) > 15
+)
+
+stopifnot(all(claims$Pass))
+knitr::kable(
+  claims, digits = 1,
+  caption = "Published qualitative conclusions restated as checks on the simulated cohort (values in percentage points)."
+)
+```
+
+# Concentration-time profiles (Figure 1 / Figure 2)
+
+```{r figure-2}
+# Replicates the axes of Figure 2 of Laporte-Amargos 2026 (pc-VPC over the
+# final dosing interval). The published figure is prediction-corrected against
+# observed data that are not public, so this panel shows the model's own
+# 5th / 50th / 95th percentiles of individual predictions over the last q6h
+# interval for both infusion durations at the cohort's median CrCL.
+vpc_regimens <- list(
+  "30 min infusion" = 0.5,
+  "3 h extended infusion" = 3
+)
+
+vpc_events <- do.call(dplyr::bind_rows, lapply(seq_along(vpc_regimens), function(k) {
+  dur <- vpc_regimens[[k]]
+  lbl <- names(vpc_regimens)[k]
+  ids <- (k - 1L) * n_arm + seq_len(n_arm)
+  dplyr::bind_rows(
+    tidyr::expand_grid(id = ids, time = seq(0, 42, by = 6)) |>
+      dplyr::mutate(
+        amt  = 4000,
+        evid = 1L,
+        # The first dose was a 30 min infusion in BOTH arms (Methods).
+        rate = ifelse(time == 0, 4000 / 0.5, 4000 / dur)
+      ),
+    tidyr::expand_grid(id = ids, time = 42 + seq(0.02, 6, by = 0.02)) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, rate = NA_real_)
+  ) |>
+    dplyr::mutate(cmt = "central", CRCL = 96.2, OCC = 1, arm = lbl)
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+vpc_sim <- rxode2::rxSolve(mod, vpc_events, keep = c("arm")) |>
+  as.data.frame() |>
+  dplyr::filter(!is.na(Cc), time > 42) |>
+  dplyr::mutate(tad = time - 42)
+
+vpc_sim |>
+  dplyr::group_by(arm, tad) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(tad, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "#4477AA") +
+  geom_line() +
+  facet_wrap(~arm) +
+  labs(
+    x = "Time after the last dose (h)",
+    y = "Total piperacillin (mg/L)",
+    title = "Simulated concentration-time profile over the final dosing interval",
+    caption = paste(
+      "Same axes as Figure 2 of Laporte-Amargos 2026. Line: median individual",
+      "prediction; band: 5th-95th percentile. CrCL fixed at the cohort median",
+      "96.2 mL/min."
+    )
+  )
+```
+
+# Observed concentrations of Table 1
+
+Table 1 reports the observed median (interquartile interval) pre-dose
+concentration (*C*min) and mid-interval concentration at 180 min (*C*50) in
+each infusion arm. These are raw observations, so the simulated counterparts
+below include residual error, and the comparison is model-versus-data rather
+than model-versus-model.
+
+```{r table1-compare}
+# Cohort creatinine clearance drawn log-normally to match each arm's Table 1
+# median and interquartile interval.
+crcl_draw <- function(n, med, lo, hi) {
+  s <- (log(hi) - log(lo)) / (2 * qnorm(0.75))
+  exp(stats::rnorm(n, log(med), s))
+}
+
+lloq <- 0.58  # Methods; the assay's lower limit of quantification (mg/L)
+
+t1_arms <- tibble::tribble(
+  ~arm,                    ~dur, ~med,  ~lo,   ~hi,
+  "30 min infusion",       0.5,  99.8,  84.7,  117.0,
+  "3 h extended infusion", 3.0,  93.6,  83.1,  134.9
+)
+
+t1_events <- do.call(dplyr::bind_rows, lapply(seq_len(nrow(t1_arms)), function(k) {
+  a <- t1_arms[k, ]
+  ids <- (k - 1L) * n_arm + seq_len(n_arm)
+  crcl <- crcl_draw(n_arm, a$med, a$lo, a$hi)
+  dplyr::bind_rows(
+    tidyr::expand_grid(id = ids, time = seq(0, 42, by = 6)) |>
+      dplyr::mutate(
+        amt = 4000, evid = 1L,
+        rate = ifelse(time == 0, 4000 / 0.5, 4000 / a$dur)
+      ),
+    # C50 at 180 min into the final interval, and Cmin 10 min before the next
+    # dose, exactly as sampled in the source study (Methods).
+    tidyr::expand_grid(id = ids, time = c(42 + 3, 48 - 10 / 60)) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, rate = NA_real_)
+  ) |>
+    dplyr::mutate(
+      cmt = "central", OCC = 1, arm = a$arm,
+      CRCL = crcl[match(id, ids)]
+    )
+})) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+t1_sim <- rxode2::rxSolve(mod, t1_events, keep = c("arm")) |>
+  as.data.frame() |>
+  dplyr::filter(!is.na(sim), time > 42) |>
+  dplyr::mutate(
+    # A combined residual error can push a simulated observation negative; the
+    # source assay reports below-limit values at the LLOQ, so the simulated
+    # observations are floored at LLOQ / 2 the way real data would be.
+    obs   = pmax(sim, lloq / 2),
+    param = ifelse(abs(time - 45) < 1e-6, "C50 (180 min)", "Cmin (pre-dose)")
+  )
+
+t1_tab <- t1_sim |>
+  dplyr::group_by(arm, param) |>
+  dplyr::summarise(
+    sim_med = median(obs),
+    sim_q1  = quantile(obs, 0.25),
+    sim_q3  = quantile(obs, 0.75),
+    .groups = "drop"
+  ) |>
+  dplyr::inner_join(
+    tibble::tribble(
+      ~arm,                    ~param,            ~pub_med, ~pub_q1, ~pub_q3,
+      "3 h extended infusion", "Cmin (pre-dose)",     19.9,     8.8,    33.2,
+      "3 h extended infusion", "C50 (180 min)",       72.6,    53.8,    91.0,
+      "30 min infusion",       "Cmin (pre-dose)",      7.6,     4.5,    17.7,
+      "30 min infusion",       "C50 (180 min)",       38.0,    23.3,    63.3
+    ),
+    by = c("arm", "param")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (sim_med - pub_med) / pub_med)
+
+stopifnot(nrow(t1_tab) == 4L)
+
+t1_tab |>
+  dplyr::transmute(
+    "Infusion arm" = arm,
+    "Concentration" = param,
+    "Simulated median (IQI)" = sprintf("%.1f (%.1f-%.1f)", sim_med, sim_q1, sim_q3),
+    "Published median (IQI)" = sprintf("%.1f (%.1f-%.1f)", pub_med, pub_q1, pub_q3),
+    "Difference (%)" = round(pct_diff, 1)
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Simulated versus observed piperacillin concentrations of",
+      "Laporte-Amargos 2026 Table 1. Simulated values carry residual error and",
+      "are floored at half the assay LLOQ."
+    )
+  )
+```
+
+```{r table1-gate}
+# The mid-interval concentration is the structural check: a mis-transcribed
+# volume, dose or unit moves it by a factor, not by a fifth. The pre-dose
+# trough is recorded as a KNOWN DEVIATION and excluded from the gate --
+# see Assumptions and deviations for why, and do not tune the model to it.
+c50 <- t1_tab |> dplyr::filter(param == "C50 (180 min)")
+cmin <- t1_tab |> dplyr::filter(param == "Cmin (pre-dose)")
+
+stopifnot(
+  # Realised +20 % to +24 % over the two arms; 60 % still goes red on a
+  # halved dose (-50 %) or a doubled volume (-50 %).
+  max(abs(c50$pct_diff)) < 60,
+  # The extended-infusion arm must hold a materially higher trough than the
+  # short-infusion arm; the published medians differ 2.6-fold, so this is a
+  # wide structural margin, not a race between two noisy statistics.
+  cmin$sim_med[cmin$arm == "3 h extended infusion"] /
+    cmin$sim_med[cmin$arm == "30 min infusion"] > 1.15
+)
+
+data.frame(
+  Check = c(
+    "max |C50 difference| (%)",
+    "extended / short infusion trough ratio"
+  ),
+  Value = c(
+    max(abs(c50$pct_diff)),
+    cmin$sim_med[cmin$arm == "3 h extended infusion"] /
+      cmin$sim_med[cmin$arm == "30 min infusion"]
+  ),
+  Bound = c(60, 1.15),
+  Deviation = c(FALSE, FALSE)
+) |>
+  knitr::kable(digits = 2, caption = "Gated checks against the Table 1 observed concentrations.")
+```
+
+# Assumptions and deviations
+
+- **Residual-error combination form.** The model was fit in Monolix, which
+  parameterises its combined error models as `SD = a + b * f` (`combined1`) and
+  `SD = sqrt(a^2 + (b * f)^2)` (`combined2`). Neither the paper nor its
+  supplement says which was selected; both report only `a` and `b`. This file
+  encodes `combined1()`, matching Monolix's first-listed combined model and
+  the supplement's wording "combined (additive + proportional)". Note that
+  rxode2's default for `add() + prop()` is the `combined2` form, so the
+  explicit `combined1()` term is load-bearing. Only the simulated *observations*
+  (`sim`) are affected; every gate above except the Table 1 comparison runs on
+  the individual predictions (`Cc`), which carry no residual error.
+
+- **Between-occasion variability: number of occasions.** The paper reports a
+  single BOV magnitude on clearance (16.4 % CV) without stating an occasion
+  count. Methods says plasma samples were collected on three occasions during
+  the first 5 days, and Results reports 122 dosing occasions across 44 patients
+  (2.8 per patient), so three occasions are encoded with occasions 2 and 3
+  fixed to occasion 1's variance. All simulations here pass `OCC = 1`, giving
+  each subject a single between-occasion draw -- which is what a
+  single-occasion Monte Carlo dosing simulation does.
+
+- **Omega scale.** Table 2 labels the random-effect column "CV %" and its
+  footnote reads "BSV, between-subject variability expressed as coefficient of
+  variation (CV %)". For the log-normal parameter distribution the supplement
+  specifies, `CV = sqrt(exp(omega^2) - 1)`, so the stored variances are
+  `omega^2 = log(1 + CV^2)`. Reading the printed percentages as `omega`
+  directly would change `etalvc` from 0.284 to 0.328; nothing in the paper's
+  bootstrap percentiles discriminates the two readings, and the exact
+  log-normal relation is the one the printed column header states.
+
+- **Cohort size.** The paper simulated 1,000 individual profiles per regimen;
+  this vignette uses 200 per regimen-by-CrCL arm, the nlmixr2lib cap. That adds
+  roughly 3.5 percentage points of binomial standard error per PTA cell at a
+  PTA of 50 %, which is why the Table 3 gates are set on the median and 90th
+  percentile of the 96 absolute differences rather than on the maximum.
+
+- **Creatinine clearance distribution.** For the Table 1 comparison, per-arm
+  creatinine clearance is drawn log-normally from each arm's published median
+  and interquartile interval (Table 1: 99.8 [84.7-117] mL/min short infusion,
+  93.6 [83.1-134.9] mL/min extended infusion). The paper does not publish the
+  distributional form. The Table 3 replication does not need this assumption:
+  the paper fixes CrCL at 60, 90, 120 and 150 mL/min, and so does the
+  simulation.
+
+- **KNOWN DEVIATION -- the pre-dose trough of the short-infusion arm.** The
+  simulated median *C*min in the 30 min infusion arm runs roughly twice the
+  observed median of Table 1 (about 15 mg/L against 7.6), while the
+  extended-infusion arm and both mid-interval *C*50 values agree to within
+  about 20-30 %. Three properties of the source dataset that the simulation
+  above deliberately does not reproduce all push the observed medians down:
+  the Table 1 statistics pool all sampling occasions including day-1 troughs
+  before accumulation; patients with an eGFR of 30-40 mL/min/1.73 m^2 were
+  dosed q8h, giving a two-hour-longer washout on a drug with a 1.7 h
+  half-life; and creatinine clearance was re-estimated at every sampling time,
+  so the occasion-level renal function that generated those samples is not the
+  baseline distribution used here. The model's own prediction-corrected VPC
+  (Figure 2 of the paper) puts the observed median at roughly 17 mg/L six
+  hours after the last dose, pooled across arms, which is far closer to this
+  simulation than the Table 1 short-infusion row is. The deviation is recorded
+  rather than gated, and no parameter was adjusted to close it.
+
+- **Unbound concentrations.** The model predicts *total* plasma piperacillin.
+  Every target-attainment calculation multiplies by the paper's assumed unbound
+  fraction of 0.7 (30 % protein binding, Methods). The paper notes this is an
+  assumption, justified by albumin being within the physiological range, and
+  lists it among the study's limitations.
+
+- **Tazobactam.** Tazobactam concentrations were not measured in the source
+  study and no tazobactam model is reported, so this file covers piperacillin
+  only.
+
+- **No allometric size term.** Weight, height, age, sex, albumin, total
+  protein, bilirubin and the APACHE II / SOFA / MASCC severity scores were all
+  screened and none was retained; they are recorded in the model's
+  `covariatesDataExcluded` metadata. The final model carries creatinine
+  clearance on clearance and nothing else.

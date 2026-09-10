@@ -3406,6 +3406,8 @@ navbar:
         href: articles/Kumta_2025_piperacillin_tazobactam.html
       - text: "Piperacillin (Landersdorfer 2012)"
         href: articles/Landersdorfer_2012_piperacillin.html
+      - text: "Piperacillin (LaporteAmargos 2026)"
+        href: articles/LaporteAmargos_2026_piperacillin.html
       - text: "Piperacillin (Lee 2025)"
         href: articles/Lee_2025_piperacillin_tazobactam.html
       - text: "Piperacillin (Nichols 2016)"
@@ -5999,6 +6001,7 @@ articles:
   - articles/Langdon_2010_PF00821385
   - articles/Langenhorst_2019_fludarabine
   - articles/Laouenan_2015_ribavirin
+  - articles/LaporteAmargos_2026_piperacillin
   - articles/Larsen_2018_haemophilia_animal_popPK
   - articles/Lau_2026_paracetamol
   - articles/Launay_2024_ceftazidime
