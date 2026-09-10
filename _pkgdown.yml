@@ -860,6 +860,8 @@ navbar:
         href: articles/Mouton_2025_cefuroxime.html
       - text: "Cefuroxime (Nielsen 2011)"
         href: articles/Nielsen_2011_antibacterial_efficacy.html
+      - text: "Cefuroxime (Schouwenburg 2026)"
+        href: articles/Schouwenburg_2026_cefuroxime.html
       - text: "Cefuroxime (Viberg 2006)"
         href: articles/Viberg_2006_cefuroxime.html
       - text: "Cefuroxime axetil (Bulitta 2009)"
@@ -6514,6 +6516,7 @@ articles:
   - articles/Schoenmakers_2025_betamethasone
   - articles/Schoning_2026_oral1cmt_wgan
   - articles/Schouwenburg_2025_clavulanicAcid
+  - articles/Schouwenburg_2026_cefuroxime
   - articles/Schreib_2024_busulfan
   - articles/Schulthess_2017_frequency_domain_response_analysis
   - articles/Schutte_2018_desmopressin

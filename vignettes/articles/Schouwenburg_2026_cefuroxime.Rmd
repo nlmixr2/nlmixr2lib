@@ -1,0 +1,972 @@
+---
+title: "Cefuroxime (Schouwenburg 2026)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Cefuroxime (Schouwenburg 2026)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Schouwenburg_2026_cefuroxime"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Schouwenburg_2026_cefuroxime"))$description`
+* Article: <https://doi.org/10.1007/s40262-025-01577-2>
+* Open-access supplement (Online Resource 1): <https://europepmc.org/article/MED/41180859>
+
+# Population
+
+The model was fitted to 148 intravenous cefuroxime plasma concentrations from
+45 critically ill children admitted to a level 3 paediatric or cardiac
+intensive care unit in the Netherlands, pooled across three studies: EXPAT
+Kids (Erasmus MC Sophia, Rotterdam and Wilhelmina Children's Hospital UMCU,
+Utrecht; n = 31, 120 concentrations), PERFORM (Erasmus MC; n = 10) and
+POPSICLE (Radboudumc, Nijmegen; n = 4), the latter two contributing 28
+concentrations together (Results, first paragraph).
+
+Baseline characteristics come from Table 2. Median (range) body weight was
+9.0 kg (2.8-70.0), postnatal age 391 days (0-6131), gestational age 39.3 weeks
+(26.0-42.0) and bedside-Schwartz creatinine clearance 81.3 mL/min/1.73 m^2
+(25.4-181.5). The cohort was 55.6% female, and 8.9% (4/45) met the
+age-adjusted augmented-renal-clearance cutoffs (99 mL/min/1.73 m^2 below 2
+years, 140 above). Prematurity was an exclusion criterion for the EXPAT Kids
+dataset and no premature neonates were included overall, which is why the
+authors retained plain postnatal age rather than a postmenstrual-age Hill
+maturation function.
+
+Concentrations were quantified by a validated multi-analyte UPLC-MS/MS assay
+with an LLOQ of 1.25 mg/L and a ULOQ of 50 mg/L (supplement, "Methods of
+quantification"); 12 of 148 samples (8.1%) were below the LLOQ and were
+retained using Beal's M1 method. Only total (not unbound) cefuroxime was
+measured and no protein-binding correction was applied.
+
+The same information is available programmatically:
+
+```{r population}
+pop <- rxode2::rxode(readModelDb("Schouwenburg_2026_cefuroxime"))$population
+str(pop, max.level = 1)
+```
+
+# Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Schouwenburg_2026_cefuroxime.R` carries an in-file
+comment naming its source location. They are collected here for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `CLcefu = TVCL * (BW/70)^0.75 * (CRCL/81.3)^theta_CRCL * (PNA/391)^theta_PNA` | n/a | Table 3, "Fixed effects" row 1 |
+| `V1cefu = TVV1 * (BW/70)^1.00` | n/a | Table 3, "Fixed effects" row 2 |
+| `V2cefu = TVV2 * (BW/70)^1.00` | n/a | Table 3, "Fixed effects" row 3 |
+| `Qcefu = TVQ * (BW/70)^0.75` | n/a | Table 3, "Fixed effects" row 4 |
+| `lcl` (TVCL) | 5.29 L/h/70 kg (RSE 6.78%) | Table 3; restated in Abstract and Results |
+| `lvc` (TVV1) | 5.02 L (RSE 20.1%) | Table 3 |
+| `lvp` (TVV2) | 12.3 L (RSE 9.44%) | Table 3 |
+| `lq` (TVQ) | 27.9 L/h (RSE 32.9%) | Table 3 |
+| `e_wt_cl_q` | 0.75, fixed | Methods "Covariate Relationship Analysis"; printed inline in the Table 3 CL and Q equations; supplement "Model development" |
+| `e_wt_vc_vp` | 1.00, fixed | Methods "Covariate Relationship Analysis"; printed inline in the Table 3 V1 and V2 equations |
+| `e_crcl_cl` (theta_CLCR) | 0.754 (RSE 22%) | Table 3, "Covariate relationships" |
+| `e_pna_cl` (theta_PNA) | 0.0869 (RSE 30.9%) | Table 3, "Covariate relationships" |
+| CRCL reference | 81.3 mL/min/1.73 m^2 | Table 3 footnote; Table 2 pooled median |
+| PNA reference | 391 days | Table 3 footnote; Table 2 pooled median |
+| Body-weight reference | 70 kg | Table 3 footnote; supplement "Model development" |
+| `etalcl` | 33.3 %CV (RSE 26.1%, shrinkage 10.5%) -> omega^2 = 0.110889 | Table 3, "Interindividual variability (IIV)" |
+| `propSd` | 40.1% (RSE 7.9%) | Table 3, "Residual variability" |
+| `addSd` | 0.545 mg/L (RSE 25.6%) | Table 3, "Residual variability" |
+| No IIV on V1, V2, Q | n/a | Discussion: "Sparse sampling resulted in the inability to accurately estimate an IIV for V1, V2, or Q" |
+| No absorption depot, no F | n/a | Methods: intravenous administration only |
+
+# Structural-parameter recovery
+
+The first and cheapest check is that the packaged model reproduces the four
+Table 3 typical values at the reference subject, i.e. when all three covariate
+ratios equal 1: body weight 70 kg, creatinine clearance 81.3 mL/min/1.73 m^2
+and postnatal age 391 days.
+
+The published values on the right-hand side are transcribed **literally into
+this vignette**, independently of the model file, so a typo in either place
+makes the check fail.
+
+```{r reference-recovery}
+mod <- readModelDb("Schouwenburg_2026_cefuroxime")
+
+# Published Table 3 point estimates, transcribed here independently of the
+# model file. These literals are reused throughout the vignette.
+TVCL <- 5.29     # L/h at 70 kg
+TVV1 <- 5.02     # L at 70 kg
+TVV2 <- 12.3     # L at 70 kg
+TVQ <- 27.9      # L/h at 70 kg
+E_WT_CL <- 0.75  # fixed allometric exponent, clearances
+E_WT_V <- 1.00   # fixed allometric exponent, volumes
+TH_CRCL <- 0.754
+TH_PNA <- 0.0869
+WT_REF <- 70     # kg
+CRCL_REF <- 81.3 # mL/min/1.73 m^2
+PNA_REF_D <- 391 # days
+DAYS_PER_MONTH <- 30.4375
+
+ref_ev <- rxode2::et(amt = 1000, cmt = "central") |>
+  rxode2::et(seq(0, 24, by = 0.1)) |>
+  as.data.frame() |>
+  mutate(WT = WT_REF, CRCL = CRCL_REF, PNA = PNA_REF_D / DAYS_PER_MONTH)
+
+ref_sim <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = ref_ev, returnType = "data.frame"
+)
+
+recovery <- tibble::tibble(
+  Parameter = c("CL (L/h)", "V1 (L)", "V2 (L)", "Q (L/h)"),
+  Published = c(TVCL, TVV1, TVV2, TVQ),
+  Model = c(ref_sim$cl[1], ref_sim$vc[1], ref_sim$vp[1], ref_sim$q[1])
+) |>
+  mutate(`Absolute difference` = abs(Model - Published))
+
+knitr::kable(
+  recovery, digits = 12,
+  caption = "Typical values at the Table 3 reference subject (70 kg, CRCL 81.3, PNA 391 days)."
+)
+
+# Deterministic: no simulation randomness is involved, so an exact bound is
+# correct here (contrast with the cohort-derived gates further down).
+stopifnot(max(recovery$`Absolute difference`) < 1e-9)
+```
+
+# Single-dose disposition and PKNCA validation
+
+Schouwenburg 2026 publishes no NCA table, so there is nothing to transcribe
+directly. Instead the NCA output is compared against the **closed-form
+predictions of the published Table 3 parameters** for the five reference
+patients the authors simulated (Table 1). For a single intravenous bolus of
+dose `D` into a two-compartment model:
+
+* `Cmax = D / V1` (at time 0),
+* `AUC(0, inf) = D / CL`,
+* terminal half-life `= log(2) / beta`, where `beta` is the smaller root of
+  `lambda^2 - (k10 + k12 + k21) * lambda + k10 * k21 = 0`.
+
+Each individual `CL`, `V1`, `V2` and `Q` is built from the transcribed Table 3
+literals, so this is an independent reference and not a restatement of the
+model's own internal variables.
+
+```{r reference-patients}
+# Table 1 "Simulated dosing regimens" of Schouwenburg 2026. Weights and daily
+# doses are as printed there; the 16-year regimen carries the SmPC maximum of
+# 4.5 g/day. Postnatal ages are the nominal ages of the row.
+ref_patients <- tibble::tribble(
+  ~age_label,  ~WT,   ~PNA_d,  ~mg_kg_day,
+  "7 days",    3.7,      7.0,          75,
+  "28 days",   4.1,     28.0,         100,
+  "1 year",    9.75,   365.25,        100,
+  "10 years", 34.0,   3652.50,        100,
+  "16 years", 61.0,   5844.00,        100
+) |>
+  mutate(
+    daily_mg = pmin(mg_kg_day * WT, 4500),  # 4.5 g/day SmPC cap
+    dose_q8h = daily_mg / 3
+  )
+
+knitr::kable(
+  ref_patients |>
+    dplyr::rename(
+      "Age" = age_label, "Weight (kg)" = WT, "Postnatal age (days)" = PNA_d,
+      "Daily dose (mg/kg/day)" = mg_kg_day, "Daily dose (mg)" = daily_mg,
+      "Dose per q8h administration (mg)" = dose_q8h
+    ),
+  caption = "Reference patients, from Table 1 of Schouwenburg 2026."
+)
+```
+
+```{r single-dose-sim}
+# Dense early sampling resolves the fast distribution phase (alpha half-life
+# is under 0.1 h at these parameters); 0.1 h thereafter resolves the terminal
+# slope. Typical values only -- zeroRe() removes the clearance eta so the
+# comparison is against the closed form, not a cohort median.
+sd_grid <- sort(unique(c(seq(0, 4, by = 0.02), seq(4, 24, by = 0.1))))
+
+sd_events <- ref_patients |>
+  mutate(id = dplyr::row_number()) |>
+  rowwise() |>
+  do({
+    r <- .
+    dose <- data.frame(
+      id = r$id, time = 0, amt = r$dose_q8h, evid = 1L, cmt = "central"
+    )
+    obs <- data.frame(
+      id = r$id, time = sd_grid, amt = NA_real_, evid = 0L, cmt = "central"
+    )
+    out <- rbind(dose, obs)
+    out$WT <- r$WT
+    out$CRCL <- CRCL_REF
+    out$PNA <- r$PNA_d / DAYS_PER_MONTH
+    out$age_label <- r$age_label
+    out
+  }) |>
+  ungroup() |>
+  as.data.frame() |>
+  arrange(id, time, desc(evid))
+
+sd_sim <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = sd_events,
+  keep = "age_label", returnType = "data.frame"
+)
+
+# Guard against solver noise in the far tail turning AUC(inf) into NaN.
+stopifnot(all(sd_sim$Cc[!is.na(sd_sim$Cc)] >= 0))
+```
+
+```{r pknca}
+sd_nca_conc <- sd_sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, age_label)
+
+# Guarantee a time = 0 record per subject so PKNCA anchors AUC at 0 rather
+# than warning about a range starting before the first measurement. For an
+# intravenous bolus the model already emits the post-dose peak at time 0, so
+# any row added here is discarded by the distinct() below.
+sd_nca_conc <- dplyr::bind_rows(
+  sd_nca_conc,
+  sd_nca_conc |> dplyr::distinct(id, age_label) |>
+    dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, age_label, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, age_label, time)
+
+sd_dose <- sd_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, age_label)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sd_nca_conc, Cc ~ time | age_label + id, concu = "mg/L", timeu = "h"
+)
+dose_obj <- PKNCA::PKNCAdose(
+  sd_dose, amt ~ time | age_label + id, doseu = "mg"
+)
+
+intervals <- data.frame(
+  start = 0, end = Inf,
+  cmax = TRUE, tmax = TRUE, aucinf.obs = TRUE, half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+```
+
+## Comparison against the closed-form published-parameter predictions
+
+```{r nca-compare}
+published <- ref_patients |>
+  mutate(
+    cl_i = TVCL * (WT / WT_REF)^E_WT_CL *
+      (CRCL_REF / CRCL_REF)^TH_CRCL * (PNA_d / PNA_REF_D)^TH_PNA,
+    vc_i = TVV1 * (WT / WT_REF)^E_WT_V,
+    vp_i = TVV2 * (WT / WT_REF)^E_WT_V,
+    q_i = TVQ * (WT / WT_REF)^E_WT_CL,
+    k10 = cl_i / vc_i,
+    k12 = q_i / vc_i,
+    k21 = q_i / vp_i,
+    bsum = k10 + k12 + k21,
+    beta = (bsum - sqrt(bsum^2 - 4 * k10 * k21)) / 2,
+    cmax = dose_q8h / vc_i,
+    tmax = 0,
+    aucinf.obs = dose_q8h / cl_i,
+    half.life = log(2) / beta
+  ) |>
+  dplyr::select(age_label, cmax, tmax, aucinf.obs, half.life)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference = published,
+  by = "age_label",
+  units = c(cmax = "mg/L", aucinf.obs = "mg*h/L", tmax = "h", half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated NCA vs the closed-form prediction of the published Table 3",
+    "parameters, single 8-hourly dose at the cohort-median creatinine",
+    "clearance (81.3 mL/min/1.73 m2). * differs from reference by >20%."
+  ),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+```{r nca-gate}
+# The gate is computed numerically here rather than parsed out of the display
+# table above ('% diff' in that table is formatted text). Both sides are
+# deterministic typical-value quantities, so the bounds are tight: they are
+# limited by trapezoidal AUC error and by PKNCA's lambda.z window, not by
+# simulation randomness.
+nca_wide <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "aucinf.obs", "half.life")) |>
+  dplyr::select(age_label, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES) |>
+  dplyr::left_join(published, by = "age_label", suffix = c("", "_ref")) |>
+  dplyr::mutate(
+    pct_cmax = 100 * (cmax - cmax_ref) / cmax_ref,
+    pct_auc = 100 * (aucinf.obs - aucinf.obs_ref) / aucinf.obs_ref,
+    pct_thalf = 100 * (half.life - half.life_ref) / half.life_ref
+  )
+
+stopifnot(
+  # Cmax is the time-zero record and must match D/V1 to machine precision.
+  max(abs(nca_wide$pct_cmax)) < 1e-6,
+  # Trapezoidal AUC on this grid; realised 0.032% at the worst subject.
+  max(abs(nca_wide$pct_auc)) < 0.5,
+  # PKNCA's automatic lambda.z window vs the exact beta eigenvalue;
+  # realised 0.18% at the worst subject.
+  max(abs(nca_wide$pct_thalf)) < 1
+)
+```
+
+## Mass-balance identity
+
+For any time `T`, an exact identity holds for this model regardless of
+steady state: the amount eliminated, `AUC(0, T) * CL`, equals the dose
+administered minus the amount still in the body. This catches a wrong
+observation scaling, a wrong micro-constant, or a dose routed to the wrong
+compartment -- none of which the NCA comparison above would see, because both
+of its sides are built from the same `Cc = central / vc` definition.
+
+```{r mass-balance}
+mb_end <- 24
+
+mb_auc <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  conc_obj, dose_obj,
+  intervals = data.frame(start = 0, end = mb_end, auclast = TRUE)
+))
+
+mb <- as.data.frame(mb_auc$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(age_label, auc = PPORRES) |>
+  dplyr::left_join(
+    sd_sim |>
+      dplyr::filter(time == mb_end) |>
+      dplyr::select(age_label, cl, central, peripheral1),
+    by = "age_label"
+  ) |>
+  dplyr::left_join(
+    ref_patients |> dplyr::select(age_label, dose_q8h),
+    by = "age_label"
+  ) |>
+  dplyr::mutate(
+    eliminated = auc * cl,
+    expected = dose_q8h - (central + peripheral1),
+    pct_error = 100 * (eliminated - expected) / dose_q8h
+  )
+
+knitr::kable(
+  mb |>
+    dplyr::select(age_label, dose_q8h, eliminated, expected, pct_error) |>
+    dplyr::rename(
+      "Age" = age_label, "Dose (mg)" = dose_q8h,
+      "AUC(0,24) x CL (mg)" = eliminated,
+      "Dose - amount remaining (mg)" = expected,
+      "Error (% of dose)" = pct_error
+    ),
+  digits = 4,
+  caption = "Mass-balance identity at 24 h after a single intravenous dose."
+)
+
+# Deterministic; the residual is trapezoidal AUC error only.
+stopifnot(max(abs(mb$pct_error)) < 0.1)
+```
+
+# Dosing-regimen simulations
+
+The paper's Figures 3-5 and Supplementary Tables S1-S4 all rest on the same
+Monte Carlo design: the five reference patients of Table 1, each simulated
+across four creatinine-clearance strata (`< 30`, `30-80`, `80-120` and
+`> 120` mL/min/1.73 m^2), dosed for the first 24 h of treatment. Patients with
+eGFR below 30 receive the same total daily dose split over two administrations
+(q12h) rather than three (q8h).
+
+The paper does not state which creatinine-clearance value it used **within**
+each stratum, so band midpoints are used here (`15`, `55`, `100` and `150`
+mL/min/1.73 m^2). This is exact for neither of the two open-ended bands, and
+the consequences are quantified in the target-attainment comparison below.
+
+```{r cohort}
+# rxSetSeed() fixes rxode2's stream per solver thread, not across thread
+# counts, so a 2-core CI runner draws a different cohort from a 16-thread
+# workstation. Every assertion below is written to hold for any cohort the
+# model can produce; see the bound-selection comments at each stopifnot().
+rxode2::rxSetSeed(20260910)
+
+N_PER_ARM <- 200L  # the per-arm cap; the paper used n = 1000 per arm
+MIC <- 8           # mg/L, the Enterobacteriaceae ECOFF used throughout
+
+egfr_bands <- tibble::tibble(
+  band = factor(c("<30", "30-80", "80-120", ">120"),
+                levels = c("<30", "30-80", "80-120", ">120")),
+  CRCL = c(15, 55, 100, 150),
+  bounded = c(FALSE, TRUE, TRUE, FALSE)
+)
+
+make_arm <- function(age_label, WT, PNA_d, daily_mg, CRCL, band,
+                     n_adm, n = N_PER_ARM, id_offset = 0L) {
+  tau <- 24 / n_adm
+  ids <- id_offset + seq_len(n)
+  dose <- expand.grid(id = ids, time = seq(0, by = tau, length.out = n_adm))
+  dose$amt <- daily_mg / n_adm
+  dose$evid <- 1L
+  obs <- expand.grid(id = ids, time = seq(0, 24, by = 0.1))
+  obs$amt <- NA_real_
+  obs$evid <- 0L
+  out <- rbind(dose, obs)
+  # cmt is the ODE state name, never the observable name Cc.
+  out$cmt <- "central"
+  out$WT <- WT
+  out$CRCL <- CRCL
+  out$PNA <- PNA_d / DAYS_PER_MONTH
+  out$age_label <- age_label
+  out$band <- as.character(band)
+  out
+}
+
+arms <- tidyr::crossing(ref_patients, egfr_bands) |>
+  mutate(
+    n_adm = ifelse(band == "<30", 2L, 3L),
+    id_offset = (dplyr::row_number() - 1L) * N_PER_ARM
+  )
+
+events <- do.call(rbind, lapply(seq_len(nrow(arms)), function(i) {
+  a <- arms[i, ]
+  make_arm(
+    age_label = a$age_label, WT = a$WT, PNA_d = a$PNA_d,
+    daily_mg = a$daily_mg, CRCL = a$CRCL, band = a$band,
+    n_adm = a$n_adm, id_offset = a$id_offset
+  )
+})) |>
+  arrange(id, time, desc(evid))
+
+# Disjoint IDs across arms: duplicate IDs would silently merge subjects and
+# sum their doses.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(dplyr::n_distinct(events$id) == nrow(arms) * N_PER_ARM)
+```
+
+```{r simulate}
+sim <- rxode2::rxSolve(
+  mod, events = events, keep = c("age_label", "band"),
+  returnType = "data.frame"
+) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(
+    age_label = factor(age_label, levels = ref_patients$age_label),
+    band = factor(band, levels = levels(egfr_bands$band))
+  )
+```
+
+## Figure 3 -- median concentration-time curves by eGFR stratum
+
+```{r figure-3, fig.height = 6}
+# Replicates Figure 3 of Schouwenburg 2026: median concentration-time curve
+# over the first 24 h for each reference patient, stratified by eGFR band.
+sim |>
+  group_by(age_label, band, time) |>
+  summarise(median_Cc = median(Cc), .groups = "drop") |>
+  ggplot(aes(time, median_Cc, colour = band)) +
+  geom_line(linewidth = 0.6) +
+  geom_hline(yintercept = MIC, linetype = "dashed") +
+  facet_wrap(~age_label, ncol = 2, scales = "free_y") +
+  scale_x_continuous(breaks = seq(0, 24, by = 6)) +
+  scale_y_log10() +
+  labs(
+    x = "Time (h)", y = "Cefuroxime concentration (mg/L)",
+    colour = "eGFR (mL/min/1.73 m2)",
+    title = "Figure 3 -- median concentration-time curves by eGFR stratum",
+    caption = paste(
+      "Replicates Figure 3 of Schouwenburg 2026. Dashed line is the MIC of",
+      "8 mg/L. eGFR < 30 is dosed q12h, all other strata q8h."
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+The two qualitative claims the paper draws from this figure are checked
+directly.
+
+```{r figure-3-claims}
+# Paper, Results 3.2: "for eGFR levels of 80-120 and > 120 mL/min/1.73 m2, no
+# steady-state cefuroxime concentrations were reached ... almost all drug was
+# cleared at the end of each dosing interval in the two highest eGFR groups.
+# With twice-daily dosing in the renal insufficiency group (eGFR < 30
+# mL/min/1.73 m2), peak concentrations steadily increased."
+med <- sim |>
+  group_by(age_label, band, time) |>
+  summarise(median_Cc = median(Cc), .groups = "drop")
+
+# Accumulation is measured on the PRE-DOSE TROUGHS, not on the peaks. After
+# an intravenous bolus the peak is dominated by dose/V1 and barely moves
+# between intervals -- the measured peak ratio is 1.001-1.074 across every
+# stratum, so it separates nothing. The trough is where accumulation shows.
+# `tau` is 12 h for the q12h <30 arm and 8 h otherwise, and the first trough
+# is the last observation strictly BEFORE the second dose, because the record
+# at the dose time itself is post-dose.
+med <- med |> mutate(tau = ifelse(band == "<30", 12, 8))
+
+first_trough <- med |>
+  dplyr::filter(time < tau - 1e-9) |>
+  group_by(age_label, band) |>
+  dplyr::slice_max(time, n = 1) |>
+  summarise(trough_first = median_Cc[1], .groups = "drop")
+
+end_trough <- med |>
+  dplyr::filter(abs(time - 24) < 1e-8) |>
+  dplyr::select(age_label, band, trough24 = median_Cc)
+
+claims <- first_trough |>
+  dplyr::left_join(end_trough, by = c("age_label", "band")) |>
+  dplyr::mutate(accumulation = trough24 / trough_first) |>
+  dplyr::arrange(band, age_label)
+
+# A gate with no rows passes; make sure every stratum is present.
+stopifnot(nrow(claims) == 20, !anyNA(claims$accumulation))
+
+knitr::kable(
+  claims |>
+    dplyr::select(age_label, band, trough_first, trough24, accumulation) |>
+    dplyr::rename(
+      "Age" = age_label, "eGFR band" = band,
+      "First pre-dose trough (mg/L)" = trough_first,
+      "Median trough at 24 h (mg/L)" = trough24,
+      "Trough accumulation ratio" = accumulation
+    ),
+  digits = 3,
+  caption = paste(
+    "Accumulation and end-of-day trough by stratum, supporting the",
+    "Figure 3 narrative of Schouwenburg 2026."
+  )
+)
+
+stopifnot(
+  # "peak concentrations steadily increased" in the eGFR < 30 group, measured
+  # on the troughs: realised 1.166-1.260 across the five ages, against
+  # 0.939-1.087 in every other stratum. The effect is large and structural
+  # (clearance at eGFR 15 is about a fifth of that at eGFR 150), not a
+  # near-zero effect whose sign could flip between cohorts. 1.05 sits below
+  # the realised range and above every other band.
+  all(claims$accumulation[claims$band == "<30"] > 1.05),
+  # "almost all drug was cleared at the end of each dosing interval in the
+  # two highest eGFR groups" -- the median 24 h trough sits far below the
+  # 8 mg/L MIC. Realised 0.47-2.92 mg/L; 5 mg/L keeps headroom over cohort
+  # variation while still failing if clearance were mis-transcribed low.
+  all(claims$trough24[claims$band %in% c("80-120", ">120")] < 5),
+  # Conversely the renal-insufficiency arm holds above the MIC all day:
+  # realised 41.3-59.0 mg/L against a threshold of 8.
+  all(claims$trough24[claims$band == "<30"] > MIC)
+)
+```
+
+## Figure 4 and Supplementary Tables S1-S2 -- target attainment
+
+The paper's pharmacodynamic target is 100% of the dosing period above the MIC
+(`T > MIC`, MIC 8 mg/L) during the first day of treatment, with adequate
+treatment defined as achieving that in more than 90% of cases. Supplementary
+Table S1 (q8h) tabulates, for each patient and eGFR stratum, the percentage of
+simulated cases reaching each `% T > MIC` threshold from 10% to 100%.
+
+```{r attainment}
+# %T>MIC per simulated subject, as the fraction of the 0-24 h grid above the
+# MIC. The 0.1 h grid resolves this to 0.42 percentage points.
+pct_t_gt_mic <- sim |>
+  group_by(age_label, band, id) |>
+  summarise(pct = 100 * mean(Cc > MIC), .groups = "drop")
+
+model_attain <- pct_t_gt_mic |>
+  group_by(age_label, band) |>
+  summarise(
+    `40` = 100 * mean(pct >= 40),
+    `60` = 100 * mean(pct >= 60),
+    `80` = 100 * mean(pct >= 80),
+    `100` = 100 * mean(pct >= 99.9),
+    .groups = "drop"
+  ) |>
+  tidyr::pivot_longer(c(`40`, `60`, `80`, `100`),
+                      names_to = "threshold", values_to = "model")
+
+# Schouwenburg 2026 Supplementary Table S1 (q8h; the <30 rows are q12h),
+# columns 40%, 60%, 80% and 100% T>MIC, transcribed verbatim.
+paper_attain <- tibble::tribble(
+  ~age_label,  ~band,     ~`40`,  ~`60`,  ~`80`,  ~`100`,
+  "7 days",    "<30",     100.0,   99.1,   93.4,    81.0,
+  "7 days",    "30-80",    99.0,   91.7,   75.1,    56.5,
+  "7 days",    "80-120",   87.6,   55.9,   24.2,     9.4,
+  "7 days",    ">120",     52.2,   16.3,    4.4,     1.0,
+  "28 days",   "<30",      99.9,   98.4,   89.2,    73.0,
+  "28 days",   "30-80",    99.2,   92.4,   77.0,    58.6,
+  "28 days",   "80-120",   89.4,   58.0,   26.8,    10.4,
+  "28 days",   ">120",     54.8,   18.0,    4.9,     1.2,
+  "1 year",    "<30",     100.0,   99.2,   93.7,    81.9,
+  "1 year",    "30-80",    99.2,   92.5,   77.1,    58.7,
+  "1 year",    "80-120",   89.7,   58.5,   27.0,    10.5,
+  "1 year",    ">120",     55.3,   18.2,    4.9,     1.2,
+  "10 years",  "<30",     100.0,   99.8,   97.3,    90.3,
+  "10 years",  "30-80",    99.6,   95.9,   84.9,    69.8,
+  "10 years",  "80-120",   94.4,   71.4,   40.3,    17.8,
+  "10 years",  ">120",     68.0,   28.9,    8.7,     2.7,
+  "16 years",  "<30",     100.0,   99.8,   97.3,    90.4,
+  "16 years",  "30-80",    99.5,   95.6,   83.7,    68.0,
+  "16 years",  "80-120",   93.5,   69.4,   38.1,    16.5,
+  "16 years",  ">120",     65.0,   27.5,    7.9,     2.5
+) |>
+  tidyr::pivot_longer(c(`40`, `60`, `80`, `100`),
+                      names_to = "threshold", values_to = "paper")
+
+attain_cmp <- model_attain |>
+  mutate(age_label = as.character(age_label), band = as.character(band)) |>
+  dplyr::inner_join(paper_attain, by = c("age_label", "band", "threshold")) |>
+  dplyr::left_join(
+    egfr_bands |> mutate(band = as.character(band)) |>
+      dplyr::select(band, bounded),
+    by = "band"
+  ) |>
+  mutate(diff = model - paper)
+
+# The join must not have silently dropped rows -- a gate with no rows passes.
+stopifnot(nrow(attain_cmp) == 20 * 4)
+
+knitr::kable(
+  attain_cmp |>
+    dplyr::mutate(
+      age_label = factor(age_label, levels = ref_patients$age_label),
+      band = factor(band, levels = levels(egfr_bands$band))
+    ) |>
+    dplyr::arrange(band, age_label, as.numeric(threshold)) |>
+    dplyr::select(age_label, band, threshold, paper, model, diff, bounded) |>
+    dplyr::rename(
+      "Age" = age_label, "eGFR band" = band,
+      "% T>MIC threshold" = threshold,
+      "Paper (Table S1)" = paper, "Model" = model,
+      "Difference (points)" = diff, "eGFR band bounded" = bounded
+    ),
+  digits = 1,
+  caption = paste(
+    "Percentage of simulated cases reaching each % T>MIC threshold at a MIC",
+    "of 8 mg/L over the first 24 h, model vs Supplementary Table S1 of",
+    "Schouwenburg 2026."
+  )
+)
+```
+
+```{r attainment-gate}
+bounded <- attain_cmp |> dplyr::filter(bounded)
+unbounded <- attain_cmp |> dplyr::filter(!bounded)
+
+stopifnot(
+  # Both bounded bands must be present, or the gate tests nothing.
+  nrow(bounded) == 2 * 5 * 4,
+  # Within the two CLOSED eGFR bands the midpoint is a faithful stand-in for
+  # whatever the authors sampled, and the reproduction is close: realised max
+  # 9.5 points across the 40 cells. The bound is that realised maximum plus
+  # three Monte Carlo standard errors (at n = 200 per arm the worst-case
+  # standard error on a percentage is 3.5 points), which also absorbs the
+  # cohort differing with the solver thread count. It still goes red on a
+  # mis-transcribed clearance, volume or covariate exponent: those shift many
+  # cells at once by 15-30 points.
+  max(abs(bounded$diff)) < 20
+)
+
+# The two OPEN-ended bands are reported but deliberately excluded from the
+# gate: "< 30" and "> 120" have no midpoint, and the 15 and 150
+# mL/min/1.73 m2 used here are guesses. The residual is a property of that
+# guess, not of the model, so widening the gate to cover it would only make
+# the gate unable to fail.
+knitr::kable(
+  unbounded |>
+    dplyr::group_by(band) |>
+    dplyr::summarise(
+      `Max absolute difference (points)` = max(abs(diff)),
+      `Mean difference (points)` = mean(diff),
+      .groups = "drop"
+    ) |>
+    dplyr::rename("eGFR band" = band),
+  digits = 1,
+  caption = paste(
+    "Open-ended eGFR bands: reported, not gated. The residual reflects the",
+    "unpublished within-band eGFR value, not the model."
+  )
+)
+```
+
+```{r attainment-headline}
+# Paper, Abstract and Results 3.2: target attainment is "poor (< 20%)" for
+# eGFR 80-120 and > 120, and no q8h/q6h simulation reaches the 100% T>MIC
+# target in more than 90% of patients.
+headline <- attain_cmp |>
+  dplyr::filter(threshold == "100", band %in% c("80-120", ">120"))
+
+stopifnot(
+  nrow(headline) == 10,
+  # "poor (< 20%)" attainment of the 100% T>MIC target in the two highest
+  # eGFR strata. The paper's own Table S1 cells span 1.0-17.8%; realised here
+  # 1.0-16.5%. The bound is that realised maximum plus three Monte Carlo
+  # standard errors, and still fails by a wide margin if clearance were
+  # transcribed too low.
+  all(headline$model < 30),
+  # The paper's threshold for adequate treatment, which no q8h regimen met.
+  all(headline$model < 90)
+)
+```
+
+## Figure 5 -- target attainment across the MIC range
+
+Figure 5 shows the same q6h regimens evaluated across MICs from 0.125 to
+128 mg/L. The Discussion summarises it as: "Simulations across the MIC range
+indicated improved target attainment for pathogens with lower MICs, with
+approximately 90% attainment achieved at an MIC of 1 mg/L regardless of age
+and eGFR."
+
+```{r figure-5}
+rxode2::rxSetSeed(20260911)
+
+# q6h regimens: all ages at 100 mg/kg/day, per the Figure 5 caption; the
+# eGFR < 30 stratum keeps the q12h split.
+arms_q6h <- tidyr::crossing(
+  ref_patients |> mutate(daily_q6h = pmin(100 * WT, 4500)),
+  egfr_bands
+) |>
+  mutate(
+    n_adm = ifelse(band == "<30", 2L, 4L),
+    id_offset = (dplyr::row_number() - 1L) * N_PER_ARM
+  )
+
+events_q6h <- do.call(rbind, lapply(seq_len(nrow(arms_q6h)), function(i) {
+  a <- arms_q6h[i, ]
+  make_arm(
+    age_label = a$age_label, WT = a$WT, PNA_d = a$PNA_d,
+    daily_mg = a$daily_q6h, CRCL = a$CRCL, band = a$band,
+    n_adm = a$n_adm, id_offset = a$id_offset
+  )
+})) |>
+  arrange(id, time, desc(evid))
+
+stopifnot(!anyDuplicated(unique(events_q6h[, c("id", "time", "evid")])))
+
+sim_q6h <- rxode2::rxSolve(
+  mod, events = events_q6h, keep = c("age_label", "band"),
+  returnType = "data.frame"
+) |>
+  dplyr::filter(!is.na(Cc))
+
+mic_range <- c(0.125, 0.25, 0.5, 1, 2, 4, 8, 16, 32, 64, 128)
+
+mic_attain <- lapply(mic_range, function(m) {
+  sim_q6h |>
+    dplyr::group_by(age_label, band, id) |>
+    dplyr::summarise(pct = 100 * mean(Cc > m), .groups = "drop") |>
+    dplyr::group_by(age_label, band) |>
+    dplyr::summarise(attain = 100 * mean(pct >= 99.9), .groups = "drop") |>
+    dplyr::mutate(MIC = m)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::mutate(
+    age_label = factor(age_label, levels = ref_patients$age_label),
+    band = factor(band, levels = levels(egfr_bands$band))
+  )
+
+ggplot(mic_attain, aes(MIC, attain, colour = band)) +
+  geom_line(linewidth = 0.6) +
+  geom_point(size = 1) +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  geom_vline(xintercept = 1, linetype = "dotted") +
+  facet_wrap(~age_label, ncol = 2) +
+  scale_x_log10(breaks = mic_range) +
+  labs(
+    x = "MIC (mg/L)", y = "Cases reaching 100% T>MIC (%)",
+    colour = "eGFR (mL/min/1.73 m2)",
+    title = "Figure 5 -- target attainment across the MIC range, q6h dosing",
+    caption = paste(
+      "Replicates Figure 5 of Schouwenburg 2026. Dashed line is the 90%",
+      "adequacy threshold; dotted line marks MIC 1 mg/L."
+    )
+  ) +
+  theme(legend.position = "bottom", axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r figure-5-gate}
+at_mic1 <- mic_attain |>
+  dplyr::mutate(band_chr = as.character(band)) |>
+  dplyr::left_join(
+    egfr_bands |> dplyr::transmute(band_chr = as.character(band), bounded),
+    by = "band_chr"
+  )
+
+knitr::kable(
+  at_mic1 |>
+    dplyr::filter(MIC == 1) |>
+    dplyr::group_by(band) |>
+    dplyr::summarise(
+      `Lowest attainment across ages (%)` = min(attain),
+      `Highest attainment across ages (%)` = max(attain),
+      .groups = "drop"
+    ) |>
+    dplyr::rename("eGFR band" = band),
+  digits = 1,
+  caption = "Cases reaching 100% T>MIC at an MIC of 1 mg/L, q6h dosing."
+)
+
+stopifnot(
+  nrow(dplyr::filter(at_mic1, MIC == 1)) == 20,
+  # "approximately 90% attainment achieved at an MIC of 1 mg/L". Gated only on
+  # the two CLOSED eGFR bands, for the same reason as the target-attainment
+  # table above: realised 99.0-100% (30-80) and 84.0-97.0% (80-120). The bound
+  # is the realised minimum less three Monte Carlo standard errors. At an MIC
+  # of 8 the same quantity falls to 1.5-100%, and in the 80-120 band
+  # specifically to 25-58%, so the gate discriminates strongly.
+  all(dplyr::filter(at_mic1, MIC == 1, bounded)$attain > 70),
+  # Attainment must fall as the MIC rises -- a large, structural trend
+  # compared end-to-end rather than step-by-step. Realised 90-100% at MIC
+  # 0.125 and 0% at MIC 128 in every stratum.
+  all(
+    (at_mic1 |> dplyr::filter(MIC == 128) |> dplyr::arrange(age_label, band))$attain <=
+      (at_mic1 |> dplyr::filter(MIC == 0.125) |> dplyr::arrange(age_label, band))$attain
+  )
+)
+```
+
+## q6h versus q8h
+
+```{r q6h-vs-q8h}
+# Paper, Results 3.2: "dosing q6h demonstrated higher percentage T > MIC as
+# compared with q8h". Compared at the ages where both regimens use the same
+# 100 mg/kg/day daily dose (i.e. excluding the 7-day patient, which the paper
+# doses at 75 mg/kg/day q8h) and at the q8h strata.
+q8h_med <- pct_t_gt_mic |>
+  dplyr::group_by(age_label, band) |>
+  dplyr::summarise(q8h = median(pct), .groups = "drop")
+
+q6h_med <- sim_q6h |>
+  dplyr::group_by(age_label, band, id) |>
+  dplyr::summarise(pct = 100 * mean(Cc > MIC), .groups = "drop") |>
+  dplyr::group_by(age_label, band) |>
+  dplyr::summarise(q6h = median(pct), .groups = "drop")
+
+interval_cmp <- q8h_med |>
+  dplyr::mutate(age_label = as.character(age_label), band = as.character(band)) |>
+  dplyr::inner_join(
+    q6h_med |>
+      dplyr::mutate(age_label = as.character(age_label), band = as.character(band)),
+    by = c("age_label", "band")
+  ) |>
+  dplyr::filter(age_label != "7 days", band %in% c("80-120", ">120")) |>
+  dplyr::mutate(gain = q6h - q8h)
+
+knitr::kable(
+  interval_cmp |>
+    dplyr::rename(
+      "Age" = age_label, "eGFR band" = band,
+      "Median % T>MIC, q8h" = q8h, "Median % T>MIC, q6h" = q6h,
+      "Gain (points)" = gain
+    ),
+  digits = 1,
+  caption = "Median % T>MIC at MIC 8 mg/L, q6h vs q8h, same daily dose."
+)
+
+stopifnot(
+  nrow(interval_cmp) == 8,
+  # A structural consequence of splitting the same daily dose more finely,
+  # not a near-zero effect: realised gains were 4.8-21.8 points across the
+  # eight cells. 2 points sits below the realised minimum with headroom for
+  # cohort variation, and still fails if the effect vanished or reversed.
+  all(interval_cmp$gain > 2)
+)
+```
+
+# Assumptions and deviations
+
+* **Within-stratum creatinine clearance.** The paper stratifies its
+  simulations into eGFR bands (`< 30`, `30-80`, `80-120`, `> 120`
+  mL/min/1.73 m^2) but never states the value used inside each band. Band
+  midpoints (55 and 100 mL/min/1.73 m^2) are used for the two closed bands,
+  and 15 and 150 mL/min/1.73 m^2 for the two open-ended bands. Only the closed
+  bands are used as a numerical gate; the open-ended bands are reported
+  alongside the published values so the reader can see the residual, which is
+  a property of that guess rather than of the model.
+* **Known deviation: the MIC 1 mg/L claim is not reproduced in the open-ended
+  `> 120` stratum.** The Discussion states that "approximately 90% attainment
+  [was] achieved at an MIC of 1 mg/L regardless of age and eGFR". At the
+  assumed 150 mL/min/1.73 m^2 this vignette reaches 99.0-100% in the `30-80`
+  band, 84.0-97.0% in `80-120` and 100% in `< 30`, but only 50.0-80.5% in
+  `> 120`. Since the paper never states the eGFR value it used inside that
+  open-ended band, the shortfall is most likely a property of the 150
+  mL/min/1.73 m^2 assumption rather than of the model -- a lower assumed value
+  would raise attainment. The claim is therefore gated on the two closed
+  bands only and the shortfall is reported rather than gated away. The same
+  band shows the same signature in the target-attainment table above.
+* **Intravenous bolus rather than a timed infusion.** Neither the paper nor
+  the supplement states an infusion duration, and the model has no infusion
+  parameter, so every dose is administered as an instantaneous bolus into
+  `central`. This inflates the simulated peak but has little effect on
+  `% T > MIC`, which is governed by the elimination phase.
+* **Cohort size.** The paper simulated n = 1000 per arm; this vignette uses
+  200 per arm, the per-arm cap for nlmixr2lib validation vignettes. The
+  smaller cohort raises the Monte Carlo standard error to at most about 3.5
+  percentage points, which is accounted for in every assertion bound.
+* **Postnatal age of the reference patients.** Table 1 identifies its
+  simulated patients only by nominal age ("1 year", "10 years", "16 years").
+  These are converted at 365.25 days per year.
+* **Weight discrepancy between Table 1 and Table S1.** Table 1 gives the
+  7-day patient a weight of 3.7 kg; the body of Supplementary Table S1 prints
+  3.8 kg while its own caption says 3.7 kg. Table 1 is used here. Similarly,
+  Supplementary Tables S3-S4 use 65 kg for the 16-year patient where Table 1
+  uses 61 kg; Table 1 is used, and only Tables S1-S2 are reproduced.
+* **Postnatal-age relationship is a power, not an exponential.** The Results
+  text describes the retained PNA effect as "an exponential function", but the
+  Table 3 equation prints `(PNA / 391)^theta_PNA`. The printed equation is
+  authoritative and the power form is encoded. The same text-versus-equation
+  conflict appears in the same group's `Schouwenburg_2025_clavulanicAcid` and
+  was resolved the same way.
+* **Postnatal age is carried in months.** The paper reports PNA in days with a
+  391-day reference; the canonical nlmixr2lib `PNA` column is in months, so
+  `model()` converts the reference to `391 / 30.4375 = 12.846` months. The
+  ratio is unit-invariant, so the exponent is unchanged. Users supply PNA in
+  months.
+* **Interindividual variability was read as a CV percentage.** Table 3 labels
+  the clearance IIV row "Clearance (%CV)" and its sampling-importance-
+  resampling interval (27.9-40.9) brackets the point estimate (33.8) on the
+  %CV scale, so the row is a CV and not a variance. `omega^2 = 0.333^2 =
+  0.110889` follows the direct-square convention used by the same author group
+  in `Schouwenburg_2025_clavulanicAcid`. The strict log-normal conversion
+  `log(CV^2 + 1) = 0.10517` is equally defensible and differs by 3% on the SD
+  scale.
+* **No IIV on V1, V2 or Q.** The authors could not estimate it from sparse
+  data (Discussion), so those parameters carry no eta. This is the published
+  model, not an omission.
+* **Both singularities are outside the usable range.** Clearance goes to zero
+  at `PNA = 0` and at `CRCL = 0` because both covariates enter as powers with
+  positive exponents. The dataset does contain day-of-birth records, so the
+  published model cannot be evaluated at exactly `PNA = 0`; use
+  `PNA >= 1` day (0.0329 months).
+* **Total, not unbound, concentrations.** No protein-binding correction was
+  applied by the authors, so all `% T > MIC` values here -- like the paper's --
+  are computed on total cefuroxime and may be optimistic in hypoalbuminaemic
+  patients.
+* **BLQ handling is not encoded.** 8.1% of samples were below the 1.25 mg/L
+  LLOQ and were retained with Beal's M1 method, an estimation-time convention
+  with no simulation-time counterpart.
+* **NONMEM version.** The Abstract says 7.5 and the Methods say 7.4. This does
+  not affect any reported parameter value.
+* **A minor internal inconsistency in the paper.** Results 3.2 states that
+  "None of the simulations reached 100% T > MIC in > 90% of patients,
+  regardless of eGFR level", but Supplementary Table S1 reports 90.3% and
+  90.4% for the 10- and 16-year patients in the `< 30` stratum. Those rows are
+  q12h renal-insufficiency regimens, whereas Figure 4 covers only q8h and q6h,
+  which is the most likely explanation. The gate here is applied only to the
+  two highest eGFR strata, where the claim is unambiguous.
+* **All parameter values come from the paper's Table 3.** No value was
+  digitised from a figure, supplied by correspondence, or carried from an
+  upstream model.
