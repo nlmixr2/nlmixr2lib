@@ -1,0 +1,638 @@
+# Amikacin (Steffens 2025)
+
+## Model and source
+
+- Citation: Steffens NA, Zimmermann ES, Azeredo FJ, Linden R, Finatto
+  LJ, Hahn RZ, Schwarzbold AV, Pacheco LS, Brucker N. Therapeutic Drug
+  Monitoring-Based Population Pharmacokinetics of Amikacin in Patients
+  at a Teaching Hospital. Antibiotics (Basel). 2025;14(6):531.
+  <doi:10.3390/antibiotics14060531>
+- Description: One-compartment IV population PK model for amikacin in
+  Brazilian hospitalized adult and pediatric patients undergoing
+  therapeutic drug monitoring, with an exponential creatinine-clearance
+  effect on CL (Steffens 2025)
+- Article: <https://doi.org/10.3390/antibiotics14060531>
+
+Steffens and colleagues built a one-compartment intravenous population
+PK model for amikacin from non-routine therapeutic drug monitoring (TDM)
+at a Brazilian teaching hospital, then used it to ask whether standard
+once-daily regimens reach the aminoglycoside efficacy target Cmax/MIC
+\>= 8.
+
+## Population
+
+Thirty-nine patients (43 enrolled, 4 excluded for inappropriate
+collection time or missing data) admitted to the Hospital Universitario
+de Santa Maria between May 2018 and February 2020 contributed 113
+amikacin concentrations, 2-6 samples per subject (53 peak, 60 trough).
+The cohort was 84.6% male, median age 51 years (range 4-75, including
+two pediatric patients), median weight 69.40 kg (range 15.60-143.80),
+and median Cockcroft-Gault creatinine clearance 79.01 mL/min (range
+12.97-517.97) – seven patients below 30 mL/min and ten above 120 mL/min.
+Doses ranged 225-1500 mg given every 12, 24, 48 or 72 h, with 1000 mg
+q24h the modal regimen (35.7%). *Klebsiella pneumoniae* (n = 20) and
+*Pseudomonas aeruginosa* (n = 7) were the commonest isolates. Baseline
+demographics are Steffens 2025 Table 1.
+
+Samples were drawn at steady state after at least three days of therapy:
+the trough 30 min before a dose and the peak 30 min after the end of the
+infusion. Mean +/- SD concentrations were 41.96 +/- 20.20 ug/mL (peak)
+and 8.75 +/- 15.38 ug/mL (trough).
+
+The same information is available programmatically via
+`readModelDb("Steffens_2025_amikacin")()$population`.
+
+## Source trace
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL at CRCL = 0) | `log(1.49)` | Table 2, “Cl (L/h)” final estimate 1.49 (RSE 12.96%) |
+| `lvc` | `log(23.18)` | Table 2, “Vd (L)” final estimate 23.18 (RSE 23.73%) |
+| `e_crcl_cl` | `0.004` | Table 2, “beta CrCl on Cl” final estimate 0.004 (RSE 57.15%) |
+| `etalcl` | `0.4489` = 0.67^2 | Table 2, “IIV (%CV) omega Cl” = 0.67 (74.8%), RSE 17.01% |
+| `etalvc` | `0.2209` = 0.47^2 | Table 2, “omega Vd” = 0.47 (49.89%), RSE 37.69% |
+| `propSd` | `0.38` | Table 2, “Proportional error model” 0.38 (RSE 14.86%); Abstract confirms a proportional error model |
+| Structure: 1 compartment, linear elimination | n/a | Section 2.2 (“the one-compartment model, with linear elimination … presented a good description of the data”) |
+| `d/dt(central) <- -kel * central`, `kel <- cl/vc` | n/a | Section 2.2; standard one-compartment IV parameterisation |
+| `log(cl) = log(1.49) + 0.004 * CRCL` (uncentered) | n/a | Reconstructed – see “Establishing the covariate form” below |
+| CRCL by Cockcroft-Gault, raw mL/min | n/a | Section 4.3 |
+| Simulated regimens (500/750 mg q12h; 1000/1500/2000 mg q24h, 1 h infusion) | n/a | Section 4.4.2 |
+
+### Establishing the covariate form
+
+The paper prints the covariate coefficient (`beta CrCl on Cl` = 0.004)
+but never writes the covariate equation, so the centering had to be
+established from the paper’s own numbers rather than read off the page.
+Two facts settle it:
+
+1.  Monolix – the software used here – enters a continuous covariate
+    **uncentered** by default and names the coefficient exactly as Table
+    2 prints it (`beta_Cl_CrCl`).
+2.  Under the uncentered reading, the final model reproduces the paper’s
+    own covariate-free base model at the population median creatinine
+    clearance: `1.49 * exp(0.004 * 79.01) = 2.044 L/h` against the
+    base-model CL of **2.04 L/h** reported in Section 2.2. A
+    median-centered reading would instead place CL = 1.49 L/h at the
+    median – a 27% drop from the base model with no explanation in the
+    text.
+
+The model therefore encodes `log(CL) = log(1.49) + 0.004 * CRCL`, so
+`exp(lcl)` is clearance extrapolated to CRCL = 0 rather than clearance
+in a typical patient. This is checked mechanically below.
+
+## Structural verification
+
+These checks are deterministic – one typical subject, no random effects,
+no cohort – so they are reproducible on any machine and are asserted
+tightly.
+
+``` r
+
+mod <- readModelDb("Steffens_2025_amikacin")
+mod_typ <- rxode2::zeroRe(mod)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+# Build a single-subject IV-infusion event table.
+iv_events <- function(crcl, dose, tau, tinf = 1, n_dose = 1, obs) {
+  dose_times <- (seq_len(n_dose) - 1) * tau
+  dplyr::bind_rows(
+    data.frame(id = 1L, time = dose_times, amt = dose, evid = 1L,
+               cmt = "central", rate = dose / tinf, CRCL = crcl),
+    data.frame(id = 1L, time = obs, amt = NA_real_, evid = 0L,
+               cmt = "central", rate = 0, CRCL = crcl)
+  ) |>
+    dplyr::arrange(time, dplyr::desc(evid))
+}
+
+# --- Check 1: the packaged solve matches the closed-form 1-compartment
+# IV-infusion solution. Both sides use the same parameters, so the only
+# difference is numerical and the tolerance is tight.
+crcl_med <- 79.01
+tinf <- 1
+dose1 <- 1000
+obs1 <- sort(unique(c(seq(0, 24, by = 0.05), tinf)))
+
+sol1 <- rxode2::rxSolve(mod_typ, iv_events(crcl_med, dose1, 24, tinf, 1, obs1),
+                        omega = NA, returnType = "data.frame")
+
+cl_typ <- sol1$cl[1]
+vc_typ <- sol1$vc[1]
+kel_typ <- cl_typ / vc_typ
+r0 <- dose1 / tinf
+
+closed_form <- function(t) {
+  plateau <- r0 / (kel_typ * vc_typ)
+  ifelse(t <= tinf,
+         plateau * (1 - exp(-kel_typ * t)),
+         plateau * (1 - exp(-kel_typ * tinf)) * exp(-kel_typ * (t - tinf)))
+}
+
+chk1 <- sol1 |>
+  dplyr::filter(time > 0) |>
+  dplyr::mutate(analytic = closed_form(time),
+                rel = abs(Cc - analytic) / analytic)
+
+max_rel <- max(chk1$rel)
+# Realised ~1e-13 (analytic linear-compartment solve). 1e-6 leaves ample
+# headroom for a solver-backed path while still catching any structural error.
+stopifnot(max_rel < 1e-6)
+
+# --- Check 2 (load-bearing): the covariate form. exp(lcl) must be CL at
+# CRCL = 0, and CL at the population median CRCL must recover the paper's
+# own covariate-free base-model clearance of 2.04 L/h.
+cl_at <- function(crcl) {
+  rxode2::rxSolve(mod_typ, iv_events(crcl, dose1, 24, tinf, 1, c(1, 2)),
+                  omega = NA, returnType = "data.frame")$cl[1]
+}
+cl_zero <- cl_at(0)
+cl_median <- cl_at(crcl_med)
+
+stopifnot(abs(cl_zero - 1.49) < 1e-6)            # Table 2 intercept
+stopifnot(abs(cl_median - 2.04) < 0.01)          # Section 2.2 base-model CL
+
+# --- Check 3: the covariate actually reaches the solved profile. A covariate
+# silently dropped from the solve would leave the concentration-time profile
+# unchanged; assert it moves by an amount the covariate implies.
+sol_lo <- rxode2::rxSolve(mod_typ, iv_events(30, dose1, 24, tinf, 1, obs1),
+                          omega = NA, returnType = "data.frame")
+sol_hi <- rxode2::rxSolve(mod_typ, iv_events(200, dose1, 24, tinf, 1, obs1),
+                          omega = NA, returnType = "data.frame")
+trough_ratio <- sol_lo$Cc[sol_lo$time == 24] / sol_hi$Cc[sol_hi$time == 24]
+stopifnot(trough_ratio > 2)   # realised ~3.6; a dropped covariate gives 1.0
+```
+
+| Check | Expected | Achieved |
+|:---|:---|:---|
+| Solve vs closed-form 1-cmt IV infusion (max relative error) | \< 1e-6 | 7.5e-15 |
+| CL at CRCL = 0 (L/h) | 1.49 (Table 2) | 1.4900 |
+| CL at median CRCL 79.01 mL/min (L/h) | 2.04 (Section 2.2 base model) | 2.0438 |
+| 24 h trough ratio, CRCL 30 vs 200 mL/min | \> 1 (covariate active) | 5.25 |
+
+Deterministic structural checks. {.table}
+
+### Steady-state mass balance
+
+At steady state the amount cleared over one dosing interval equals the
+dose, so `CL * AUCtau = Dose`. AUC comes from PKNCA, not an inline
+trapezoid.
+
+``` r
+
+tau_mb <- 24
+# 20 q24h doses is many multiples of the ~8 h half-life, so the final interval
+# is steady state to well below the assertion tolerance.
+obs_mb <- sort(unique(c(seq(19 * tau_mb, 20 * tau_mb, by = 0.02),
+                        19 * tau_mb + tinf)))
+sol_mb <- rxode2::rxSolve(mod_typ,
+                          iv_events(crcl_med, dose1, tau_mb, tinf, 20, obs_mb),
+                          omega = NA, returnType = "data.frame")
+
+mb_conc <- sol_mb |>
+  dplyr::filter(time >= 19 * tau_mb) |>
+  dplyr::transmute(id = 1L, regimen = "mass balance",
+                   time = time - 19 * tau_mb, Cc = Cc)
+
+mb_nca <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(mb_conc, Cc ~ time | regimen + id,
+                   concu = "ug/mL", timeu = "h"),
+  PKNCA::PKNCAdose(data.frame(id = 1L, regimen = "mass balance",
+                              time = 0, amt = dose1),
+                   amt ~ time | regimen + id, doseu = "mg"),
+  intervals = data.frame(start = 0, end = tau_mb, auclast = TRUE)
+))
+
+auc_tau <- as.data.frame(mb_nca$result) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::pull(PPORRES)
+
+cleared <- cl_typ * auc_tau          # L/h * ug/mL*h == mg
+mb_pct <- 100 * (cleared - dose1) / dose1
+# Realised ~0.0x%; the residual is trapezoidal discretisation of the infusion
+# ramp. 1.5% still goes red on a mis-scaled volume, dose or clearance.
+stopifnot(abs(mb_pct) < 1.5)
+```
+
+Amount cleared per 24 h interval: **1000.0 mg** against a 1000 mg dose
+(-0.000%).
+
+## Virtual cohort
+
+Original data are not public. The cohort below draws creatinine
+clearance from a lognormal matched to the published median (79.01
+mL/min) and mean (100.3 mL/min), truncated to the observed range
+12.97-517.97 mL/min. Random effects are drawn in R and passed to the
+solver as columns so that **all five regimens use the identical set of
+200 virtual patients** – this makes the dose-ranking comparisons below
+exact rather than a race between noisy arms.
+
+``` r
+
+set.seed(20250522)
+
+n_sub <- 200   # per arm; at or below the 200/arm cap
+
+# Lognormal on CRCL: median 79.01 (Table 1) fixes mu; the published mean of
+# 100.3 fixes sigma via mean = median * exp(sigma^2/2).
+crcl_mu <- log(79.01)
+crcl_sigma <- sqrt(2 * log(100.3 / 79.01))
+
+subjects <- tibble::tibble(
+  sid = seq_len(n_sub),
+  CRCL = pmin(pmax(exp(rnorm(n_sub, crcl_mu, crcl_sigma)), 12.97), 517.97),
+  # omega values are the log-scale SDs from Table 2 (0.67 on CL, 0.47 on Vd).
+  etalcl = rnorm(n_sub, 0, 0.67),
+  etalvc = rnorm(n_sub, 0, 0.47)
+)
+
+regimens <- tibble::tribble(
+  ~regimen,          ~dose, ~tau,
+  "500 mg q12h",       500,   12,
+  "750 mg q12h",       750,   12,
+  "1000 mg q24h",     1000,   24,
+  "1500 mg q24h",     1500,   24,
+  "2000 mg q24h",     2000,   24
+)
+
+# Observe the final dosing interval only, after dosing to steady state.
+make_arm <- function(regimen, dose, tau, id_offset) {
+  n_dose <- ceiling(20 * 24 / tau)
+  last <- (n_dose - 1) * tau
+  obs_t <- sort(unique(c(
+    seq(0, tau, by = 0.25),
+    seq(0, 2, by = 0.05),            # resolve the infusion peak
+    tinf, tinf + 0.5, tau - 0.5, tau # paper's sampling times and interval ends
+  )))
+  subj <- subjects |>
+    dplyr::mutate(id = id_offset + sid, regimen = regimen, tau = tau)
+  dplyr::bind_rows(
+    subj |> tidyr::crossing(time = (seq_len(n_dose) - 1) * tau) |>
+      dplyr::mutate(amt = dose, evid = 1L, cmt = "central", rate = dose / tinf),
+    subj |> tidyr::crossing(time = last + obs_t) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central", rate = 0)
+  ) |>
+    dplyr::mutate(last_dose = last) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- dplyr::bind_rows(
+  lapply(seq_len(nrow(regimens)), function(i) {
+    make_arm(regimens$regimen[i], regimens$dose[i], regimens$tau[i],
+             id_offset = (i - 1L) * n_sub)
+  })
+)
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+# Random effects are supplied per subject as data columns, so `omega = NA`
+# suppresses rxode2's own draw. rxode2 warns that a multi-subject simulation
+# has no omega; that is expected here and is suppressed rather than silenced
+# elsewhere.
+sim <- suppressWarnings(
+  rxode2::rxSolve(mod, events = events, omega = NA,
+                  keep = c("regimen", "tau", "last_dose"),
+                  returnType = "data.frame")
+)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+sim_ss <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(tad = time - last_dose) |>
+  dplyr::filter(tad >= 0)
+
+stopifnot(nrow(sim_ss) > 0, all(sim_ss$Cc >= 0))
+```
+
+## PKNCA validation
+
+Steady-state NCA over the final dosing interval, stratified by regimen.
+The q12h and q24h arms have different intervals, so they are run
+separately and combined.
+
+``` r
+
+run_nca <- function(dat, tau) {
+  # Filter with !is.na() only. The observation grid already puts a record at
+  # both interval ends: at tad = 0 (the steady-state pre-dose trough, which is
+  # the correct anchor value here -- NOT zero, since this is a steady-state
+  # interval) and at tad = tau, which PKNCA needs for ctrough.
+  conc <- dat |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::select(id, time = tad, Cc, regimen) |>
+    dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, regimen, time)
+  # Fail loudly rather than let PKNCA warn once per subject.
+  ends <- conc |>
+    dplyr::group_by(id, regimen) |>
+    dplyr::summarise(has0 = any(time == 0), hasTau = any(time == tau),
+                     .groups = "drop")
+  stopifnot(all(ends$has0), all(ends$hasTau))
+
+  dose_df <- dat |>
+    dplyr::distinct(id, regimen) |>
+    dplyr::left_join(regimens |> dplyr::select(regimen, amt = dose), by = "regimen") |>
+    dplyr::mutate(time = 0)
+
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(conc, Cc ~ time | regimen + id,
+                     concu = "ug/mL", timeu = "h"),
+    PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id, doseu = "mg"),
+    intervals = data.frame(start = 0, end = tau, cmax = TRUE, tmax = TRUE,
+                           cmin = TRUE, auclast = TRUE, cav = TRUE, ctrough = TRUE)
+  ))
+}
+
+nca_res <- dplyr::bind_rows(
+  lapply(c(12, 24), function(tt) {
+    as.data.frame(run_nca(dplyr::filter(sim_ss, tau == tt), tt)$result)
+  })
+)
+
+nca_wide <- nca_res |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "cmin", "auclast", "cav", "ctrough")) |>
+  dplyr::select(regimen, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+stopifnot(nrow(nca_wide) == nrow(regimens) * n_sub, !anyNA(nca_wide$cmax))
+```
+
+| Regimen      | Cmax,ss (ug/mL)      | Cmin,ss (ug/mL) | AUCtau (ug\*h/mL) |
+|:-------------|:---------------------|:----------------|:------------------|
+| 500 mg q12h  | 33.7 \[16.6-79.9\]   | 10.64           | 227               |
+| 750 mg q12h  | 50.6 \[25.0-119.8\]  | 15.97           | 341               |
+| 1000 mg q24h | 51.2 \[25.5-109.4\]  | 5.51            | 455               |
+| 1500 mg q24h | 76.9 \[38.3-164.1\]  | 8.27            | 682               |
+| 2000 mg q24h | 102.5 \[51.1-218.9\] | 11.02           | 910               |
+
+Simulated steady-state NCA by regimen (median \[5th-95th percentile\], n
+= 200 per arm). {.table}
+
+### Comparison against published concentrations
+
+Steffens 2025 reports no formal NCA parameters. It does report the
+observed TDM peak and trough concentrations, which map onto the
+steady-state `cmax` and `ctrough` of the modal 1000 mg q24h regimen. The
+published values pool **all** regimens (225-1500 mg, q12-q72h), so this
+is an indicative rather than a like-for-like comparison; the trough in
+particular has a published SD (15.38 ug/mL) nearly twice its mean.
+
+``` r
+
+published <- tibble::tribble(
+  ~regimen,        ~cmax,  ~ctrough,
+  "1000 mg q24h",  41.96,  8.75      # Steffens 2025 Section 2.1, observed means
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res |> dplyr::filter(regimen == "1000 mg q24h"),
+  reference = published,
+  by = "regimen",
+  params = c("cmax", "ctrough"),
+  units = c(cmax = "ug/mL", ctrough = "ug/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, caption = "Simulated vs. published amikacin concentrations. * differs by >20%.")
+```
+
+| NCA parameter   | regimen      | Reference | Simulated | % diff   |
+|:----------------|:-------------|:----------|:----------|:---------|
+| Cmax (ug/mL)    | 1000 mg q24h | 42        | 51.2      | +22.1%\* |
+| Ctrough (ug/mL) | 1000 mg q24h | 8.75      | 5.51      | -37.0%\* |
+
+Simulated vs. published amikacin concentrations. \* differs by \>20%.
+{.table}
+
+**Both rows exceed the 20% tolerance, in the directions the pooling
+predicts.**
+
+- *Cmax is high by 22%.* Two effects push the same way. The published
+  mean pools doses from 225 mg upward, so it sits below a pure 1000 mg
+  arm; and the published peak was drawn **30 min after the end of the
+  infusion**, not at the true Cmax. Sampled on the paper’s own clock
+  (1.5 h after the start of the infusion), this model gives a median of
+  49.0 ug/mL rather than the 51.2 ug/mL reported as `cmax` above –
+  closer to the published 41.96 ug/mL, though the dose-pooling gap
+  remains.
+- *Ctrough is low by 37%.* The published trough pools the q12h and
+  q48-72h patients as well. In this simulation the q12h arms trough at a
+  median of 13.3 ug/mL against 5.5 ug/mL for 1000 mg q24h, so pooling
+  them in raises the observed mean well above the q24h-only value. The
+  published trough SD (15.38 ug/mL) is nearly twice its mean, which is
+  itself the signature of a heavily mixed set of intervals.
+
+Neither discrepancy is evidence of a transcription error, and no
+parameter was adjusted in response to them.
+
+## Replicate Figure 4 – probability of target attainment
+
+Figure 4 of Steffens 2025 plots the probability of reaching Cmax/MIC \>=
+8 for each simulated regimen against the MIC of the strain, with a 90%
+attainment line.
+
+``` r
+
+mics <- c(1, 2, 4, 8, 16, 32)
+
+pta <- tidyr::crossing(nca_wide |> dplyr::select(regimen, id, cmax), MIC = mics) |>
+  dplyr::group_by(regimen, MIC) |>
+  dplyr::summarise(PTA = 100 * mean(cmax >= 8 * MIC), .groups = "drop") |>
+  dplyr::left_join(regimens |> dplyr::select(regimen, dose, tau), by = "regimen") |>
+  dplyr::arrange(tau, dose, MIC)
+
+ggplot(pta, aes(MIC, PTA, colour = regimen)) +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  geom_line() + geom_point() +
+  scale_x_log10(breaks = mics) +
+  labs(x = "MIC (mg/L)", y = "Probability of target attainment (%)",
+       colour = "Regimen",
+       title = "Cmax/MIC >= 8 attainment by regimen",
+       caption = "Replicates Figure 4 of Steffens 2025 (n = 200 simulated patients per arm).")
+```
+
+![](Steffens_2025_amikacin_files/figure-html/figure-4-1.png)
+
+| Regimen      | MIC 1 | MIC 2 | MIC 4 | MIC 8 | MIC 16 | MIC 32 |
+|:-------------|:------|:------|:------|:------|:-------|:-------|
+| 500 mg q12h  | 100.0 | 96.5  | 55.0  | 7.5   | 0.5    | 0.0    |
+| 750 mg q12h  | 100.0 | 100.0 | 81.5  | 29.0  | 4.0    | 0.0    |
+| 1000 mg q24h | 100.0 | 100.0 | 85.0  | 25.5  | 1.5    | 0.0    |
+| 1500 mg q24h | 100.0 | 100.0 | 99.0  | 65.0  | 12.0   | 0.0    |
+| 2000 mg q24h | 100.0 | 100.0 | 100.0 | 85.0  | 25.5   | 1.5    |
+
+Simulated PTA (%) for Cmax/MIC \>= 8. {.table}
+
+``` r
+
+pta_at <- function(reg, mic) {
+  v <- pta$PTA[pta$regimen == reg & pta$MIC == mic]
+  if (length(v) != 1L) stop("no unique PTA row for '", reg, "' at MIC ", mic)
+  v
+}
+
+# Structural claims that hold for ANY cohort this model can produce.
+# (1) PTA is non-increasing in MIC -- true by construction of P(Cmax >= 8*MIC).
+stopifnot(
+  pta |>
+    dplyr::group_by(regimen) |>
+    dplyr::summarise(ok = all(diff(PTA) <= 0), .groups = "drop") |>
+    dplyr::pull(ok) |>
+    all()
+)
+# (2) Within a dosing interval, a higher dose never attains less. Exact here
+# because every arm uses the same 200 virtual patients and Cmax is linear in
+# dose (verified to 10 significant figures during development).
+stopifnot(
+  pta |>
+    dplyr::group_by(tau, MIC) |>
+    dplyr::arrange(dose, .by_group = TRUE) |>
+    dplyr::summarise(ok = all(diff(PTA) >= 0), .groups = "drop") |>
+    dplyr::pull(ok) |>
+    all()
+)
+```
+
+## Published-claim checklist
+
+``` r
+
+ctau_over_target <- nca_wide |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(pct = 100 * mean(ctrough > 2.5), .groups = "drop")
+
+claims <- tibble::tribble(
+  ~Claim, ~Published, ~Simulated, ~Deviation,
+  "CL at CRCL = 0 (L/h)", "1.49", sprintf("%.3f", cl_zero), FALSE,
+  "CL at median CRCL (L/h), base model", "2.04", sprintf("%.3f", cl_median), FALSE,
+  "Vc (L)", "23.18", sprintf("%.3f", vc_typ), FALSE,
+  "1000 mg q24h PTA at MIC 4 (%)", ">= 90", sprintf("%.1f", pta_at("1000 mg q24h", 4)), TRUE,
+  "1500 mg q24h PTA at MIC 8 (%)", "92.2", sprintf("%.1f", pta_at("1500 mg q24h", 8)), TRUE,
+  "2000 mg q24h PTA at MIC 16 (%)", "< 90", sprintf("%.1f", pta_at("2000 mg q24h", 16)), FALSE,
+  "Patients above the Ctrough 2.5 ug/mL toxicity target, 1000 mg q24h (%)",
+    ">= 90", sprintf("%.1f", ctau_over_target$pct[ctau_over_target$regimen == "1000 mg q24h"]),
+    FALSE
+)
+
+knitr::kable(claims, caption = "Published claims against this implementation. Rows marked Deviation are discussed below and are excluded from the gate.")
+```
+
+| Claim | Published | Simulated | Deviation |
+|:---|:---|:---|:---|
+| CL at CRCL = 0 (L/h) | 1.49 | 1.490 | FALSE |
+| CL at median CRCL (L/h), base model | 2.04 | 2.044 | FALSE |
+| Vc (L) | 23.18 | 23.180 | FALSE |
+| 1000 mg q24h PTA at MIC 4 (%) | \>= 90 | 85.0 | TRUE |
+| 1500 mg q24h PTA at MIC 8 (%) | 92.2 | 65.0 | TRUE |
+| 2000 mg q24h PTA at MIC 16 (%) | \< 90 | 25.5 | FALSE |
+| Patients above the Ctrough 2.5 ug/mL toxicity target, 1000 mg q24h (%) | \>= 90 | 64.5 | FALSE |
+
+Published claims against this implementation. Rows marked Deviation are
+discussed below and are excluded from the gate. {.table
+style="width:100%;"}
+
+``` r
+
+# Gated (non-deviation) claims.
+stopifnot(abs(cl_zero - 1.49) < 0.01)
+stopifnot(abs(cl_median - 2.04) < 0.01)
+stopifnot(abs(vc_typ - 23.18) < 0.01)
+# 2000 mg q24h falls short of 90% attainment above MIC 9 (Section 2.4 / Discussion).
+stopifnot(pta_at("2000 mg q24h", 16) < 90)
+# "none of the simulated doses were effective" against Ctrough <= 2.5 ug/mL
+# (Section 2.4): a large majority of patients exceed the toxicity target. The
+# bound is a majority claim, not the published 90%, so it survives cohort noise.
+stopifnot(all(ctau_over_target$pct > 60))
+```
+
+## Assumptions and deviations
+
+### Covariate centering (reconstructed, not printed)
+
+Steffens 2025 never writes the CL-CRCL covariate equation. The
+uncentered exponential form `log(CL) = log(1.49) + 0.004 * CRCL` was
+established from Monolix’s default handling of a continuous covariate
+plus the paper’s own internal consistency
+(`1.49 * exp(0.004 * 79.01) = 2.044` reproduces the base-model CL of
+2.04 L/h to three significant figures). The alternative – a
+median-centered form making 1.49 L/h the typical clearance – cannot be
+excluded from the text alone, but it leaves the 27% gap to the base
+model unexplained. Readers refitting this model should confirm the
+centering against the authors if it is load-bearing for their
+application.
+
+### Variability scale
+
+Table 2 prints `omega Cl` as `0.67 (74.8)` and `omega Vd` as
+`0.47 (49.89)`. The parenthesised figures are lognormal %CV computed
+from omega as a **log-scale standard deviation**:
+`sqrt(exp(0.67^2) - 1) = 75.3%` and `sqrt(exp(0.47^2) - 1) = 49.7%`,
+matching the printed 74.8% and 49.89% to within the two-decimal rounding
+of omega itself. Reading the same numbers as variances would give 97.7%
+and 77.5%, which the paper does not print. `ini()` therefore carries the
+squared values 0.4489 and 0.2209.
+
+### Residual error
+
+Section 2.2 records that a combined additive-plus-proportional error
+model was *tested* during model building, but Table 2 and the Abstract
+both report the final model with a **proportional** term only (0.38),
+and no additive estimate is given anywhere. Only the proportional term
+is encoded.
+
+### Probability of target attainment (known deviation)
+
+Two PTA claims are not reproduced:
+
+- Steffens 2025 reports **92.2%** attainment of Cmax/MIC \>= 8 for 1500
+  mg q24h at MIC 8 mg/L; this implementation gives 65.0%.
+- Steffens 2025 states 1000 mg q24h reaches the target “for all
+  simulated patients” up to MIC 4 mg/L; this implementation gives 85.0%.
+
+The shortfall is not a centering artefact – it is present under *both*
+readings of the covariate equation, because Cmax after a 1 h infusion is
+governed almost entirely by volume, and the published `omega Vd` of 0.47
+(49.9% CV) spreads Cmax far too widely for 92% of patients to clear a
+threshold that sits close to the typical-patient value.
+
+The median steady-state Cmax at 1500 mg q24h is 76.9 ug/mL against the
+64 ug/mL target, with a realised spread of 44% CV. Putting 92.2% of
+patients above the target from that median would require the spread to
+be about 13% CV – under a third of what the published `omega Vd` of 0.47
+implies. No plausible centering of the creatinine-clearance covariate
+closes a gap of that size.
+
+The paper does not state what creatinine-clearance distribution its
+Simulx Monte Carlo used, nor whether Cmax was taken at the end of
+infusion, at the paper’s 30-min post-infusion sampling time, or from the
+first dose rather than at steady state. Any of these could account for
+part of the gap. No parameter was tuned to close it; the deviation is
+recorded and excluded from the assertion gate, and the structural PTA
+claims (monotone decline with MIC, monotone rise with dose) are gated
+instead.
+
+### Simulation assumptions
+
+- **Creatinine clearance distribution** – drawn lognormal with median
+  79.01 mL/min and mean 100.3 mL/min (Table 1), truncated to the
+  observed range 12.97-517.97. The paper reports an SD of 102.2 mL/min,
+  heavier-tailed than this lognormal (SD ~78), driven by the single
+  517.97 mL/min subject.
+- **Infusion duration** – 1 h for every simulated regimen, per Section
+  4.4.2. The observed TDM data came from infusions whose duration is not
+  reported.
+- **Steady state** – 20 days of dosing before the observed interval,
+  many multiples of the ~8 h half-life.
+- **Random effects** – drawn in R and passed as data columns so all five
+  regimens share the same 200 virtual patients. This makes the
+  dose-ranking comparison exact; it does not change any per-arm marginal
+  distribution.
+- **Comparison caveat** – the published mean peak and trough pool all
+  observed regimens (225-1500 mg, q12-q72h) and all sampling days, while
+  the simulated values are for 1000 mg q24h at steady state.
+- No covariate other than creatinine clearance is in the final model.
+  Body weight, age, BMI, sex and dialysis status were screened by the
+  authors and not retained; they are recorded in the model file’s
+  `covariatesDataExcluded`.

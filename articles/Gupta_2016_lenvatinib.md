@@ -70,7 +70,7 @@ The table below collects them in one place for review.
 | `lduration` (D1) | 1.22 h | Table 2, theta_D1 |
 | `lfcap` (F1, capsule vs tablet) | 0.896 | Table 2, theta_F1 |
 | `allo_cl` (WGT exponent on CL/Q) | 0.75 (fixed) | Table 2, equation for CL/F and Q/F covariate model |
-| `allo_v` (WGT exponent on V) | 1.0 (fixed) | Table 2, equation for V/F covariate model |
+| `e_wt_vc_vp` (WGT exponent on V) | 1.0 (fixed) | Table 2, equation for V/F covariate model |
 | `e_cyp3a4_ind_cl` | log(1.30) | Table 2, theta_INDU |
 | `e_cyp3a4_inh_cl` | log(0.922) | Table 2, theta_INHIB |
 | `e_alb_cl` | log(0.837) | Table 2, theta_ALB (ALB \< 30 g/L) |

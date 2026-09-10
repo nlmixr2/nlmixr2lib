@@ -243,7 +243,7 @@ t_grid <- c(0.25, 0.5, 1, 2, 3, 5, 7, 10, 14, 21, 28)
 # IV bolus: C(t) = D / V * exp(-kel * t)
 iv <- solve_typ(make_events(1, dose = 100, route = "iv", tau = 1e6, n_dose = 1,
                             obs = t_grid, covs = typical_covs()))
-#> [====|====|====|====|====|====|====|====|====|====] 0:00:04
+#> [====|====|====|====|====|====|====|====|====|====] 0:00:02
 iv_closed <- 100 / theta[["vc"]] * exp(-kel * t_grid)
 
 # SC: C(t) = F * D * ka / (V * (ka - kel)) * (exp(-kel t) - exp(-ka t))
@@ -1094,7 +1094,7 @@ sessionInfo()
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
 #> [37] lotri_1.0.4         purrr_1.2.2         labeling_0.4.3     
-#> [40] rxode2ll_2.0.16     fastmap_1.2.0       grid_4.6.1         
+#> [40] rxode2ll_2.0.17     fastmap_1.2.0       grid_4.6.1         
 #> [43] cli_3.6.6           dparser_1.3.1-13    magrittr_2.0.5     
 #> [46] withr_3.0.3         scales_1.4.0        backports_1.5.1    
 #> [49] rmarkdown_2.32      otel_0.2.0          askpass_1.2.1      

@@ -1,0 +1,748 @@
+# Cefazolin (Berthaud 2025)
+
+## Model and source
+
+- Citation: Berthaud R, Urien S, Krid S, Foissac F, Oualha M, Thy M,
+  Boyer O, Beranger A, Hirt D, Benaboud S, Treluyer JM, Bouazza N.
+  Cefazolin population pharmacokinetics in children undergoing
+  maintenance hemodialysis for kidney failure. Antimicrob Agents
+  Chemother. 2025;69(11):e00451-25. <doi:10.1128/aac.00451-25>. PMCID
+  PMC12587577. ClinicalTrials.gov NCT02539407 (Optimome study). All
+  parameter estimates from Table 2; the structural equations from the
+  Results ‘Population PK modeling’ display-equation block.
+- Description: One-compartment population PK model for intravenous
+  cefazolin in children undergoing maintenance hemodialysis for kidney
+  failure (Berthaud 2025, n = 6 patients aged 1.3-14.6 years weighing
+  11.4-51 kg, 83 total plasma concentrations). Total apparent clearance
+  is the SUM of a residual (non-renal plus residual renal) elimination
+  clearance and a dialysis clearance that is switched on only while a
+  hemodialysis session is running, gated by the time-varying
+  RRT_HEMODIAL_ACTIVE covariate. Body weight enters both the residual
+  clearance and the volume of distribution allometrically, normalized to
+  70 kg, with the exponents FIXED at 0.75 and 1. Dialysis membrane
+  surface area (FILT_SA) drives the dialysis-clearance arm through an
+  estimated power function centred at 1 m2 and explained essentially all
+  of the between-subject variability on that arm, so no IIV is carried
+  there; population dialysis clearance is more than 10-fold the
+  population residual clearance. Serum albumin, fat-free mass, age,
+  blood flow rate, ultrafiltration volume, vascular access type and RRT
+  technique were tested and not retained. Estimated in Monolix 2023R1 by
+  SAEM.
+- Article: <https://doi.org/10.1128/aac.00451-25>
+- Supplement (Tables S1 and S2): `AAC00451-25-S0001.docx`, distributed
+  with the open-access article and retrievable from
+  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12587577/supplementaryFiles>
+
+``` r
+
+mod <- readModelDb("Berthaud_2025_cefazolin")
+ui <- rxode2::rxode(mod)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+mod_typ <- rxode2::zeroRe(ui)   # typical-value (no IIV) form
+```
+
+## Population
+
+Six children (five male, one female) aged 1.3 to 14.6 years and weighing
+11.4 to 51 kg, all established on maintenance hemodialysis for kidney
+failure for more than six months and all with a methicillin-susceptible
+*Staphylococcus aureus* bloodstream infection. The study ran January
+2018 to December 2019 in the paediatric nephrology department of
+Necker-Enfants Malades (Paris) as part of the Optimome study
+(NCT02539407). Eighty-five samples were available; two were discarded as
+outliers, leaving 83 total-plasma cefazolin concentrations with none
+below the limit of quantification. Baseline characteristics are Table 1
+of the source.
+
+Cefazolin was given as 30-60 min intravenous infusions every 6, 8, 12,
+24 or 48 h, with median doses per infusion of 4.9 to 26.3 mg/kg.
+Dialysis membrane surface areas spanned 0.2 to 1.7 m^2; patient 6
+switched membranes mid-study. Patient 4 had undergone bilateral
+nephrectomy and was anephric, with an individual residual clearance of
+0.0073 L/h.
+
+The same information is available programmatically via
+`readModelDb("Berthaud_2025_cefazolin")()$population`.
+
+## Source trace
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CLpop) | 0.186 L/h | Table 2, “CL pop (L/h)”, RSE 45.7% |
+| `lcl_hemodialysis` (CLdialpop) | 1.98 L/h | Table 2, “CLdial pop (L/h)”, RSE 3.74% |
+| `lvc` (Vdpop) | 14.6 L | Table 2, “Vd pop (L)”, RSE 10.9% |
+| `e_wt_cl` | 0.75 (fixed) | Table 2, “beta BW/CL”, RSE column reads “Fixed”; Methods “beta values fixed at 0.75 for CL” |
+| `e_wt_vc` | 1 (fixed) | Table 2, “beta BW/Vd”, RSE column reads “Fixed”; Methods “and 1 for Vd” |
+| `e_filt_sa_cl_hemodialysis` | 1.26 | Table 2, “beta DMSA/CLdial”, RSE 1.06% |
+| `etalcl` | omega = 1.07 -\> var 1.1449 | Table 2, “omegaCL”, RSE 33.7%, shrinkage 8.43%; footnote defines omega as the square root of the variance |
+| `etalvc` | omega = 0.197 -\> var 0.038809 | Table 2, “omegaVd”, RSE 49.9%, shrinkage 20.6% |
+| `propSd` | 0.398 | Table 2, “b (proportional)”, RSE 9.33% |
+| `vc <- 14.6 * (WT/70)^1` | n/a | Results, “Population PK modeling” display equations |
+| `cl_resid <- 0.186 * (WT/70)^0.75` | n/a | same display-equation block |
+| `cl_hemodialysis <- 1.98 * (FILT_SA/1)^1.26` | n/a | same display-equation block |
+| `cl <- cl_resid + RRT_HEMODIAL_ACTIVE * cl_hemodialysis` | n/a | display equation “CLtot_i = CL_i + CLdial_i”; the on/off gate from the Introduction and the Figure 4 design (see Assumptions) |
+| One-compartment, first-order elimination | n/a | Results, “A one-compartment model with first-order elimination best described the data” |
+| Proportional residual error | n/a | Results, “A proportional model was used to describe the residual variability” |
+| `FILT_SA = 0.85 * BSA`, `BSA = (4*BW+7)/(BW+90)` | n/a | Results, “Dosing regimen simulations” (used ONLY for the dose-simulation cohort, not for the fit) |
+
+## Structural verification
+
+### The three published parameter equations
+
+The paper prints its final model as three covariate equations plus their
+sum. The check below evaluates the packaged model at each of the six
+patients’ actual Table 1 covariates and compares against those equations
+evaluated by hand. Both sides use the same fixed typical values, so the
+agreement should be numerically exact and the tolerance is
+correspondingly tight.
+
+``` r
+
+patients <- tibble::tibble(
+  patient = 1:6,
+  WT      = c(23.2, 24.5, 47.5, 11.4, 12.3, 51.0),   # Table 1, body weight (kg)
+  FILT_SA = c(1.0,  1.0,  1.5,  0.2,  0.3,  1.4)     # Table 1, DMSA (m^2); patient 6 1.4/1.7
+)
+
+ev_point <- rxode2::et(amt = 1000, cmt = "central", time = 0) |> rxode2::et(0)
+
+eq_events <- patients |>
+  dplyr::rowwise() |>
+  dplyr::group_map(~ {
+    e <- as.data.frame(ev_point)
+    e$id <- .x$patient; e$WT <- .x$WT; e$FILT_SA <- .x$FILT_SA
+    e$RRT_HEMODIAL_ACTIVE <- 1
+    e
+  }) |>
+  dplyr::bind_rows()
+
+eq_sim <- rxode2::rxSolve(mod_typ, events = eq_events, returnType = "data.frame") |>
+  dplyr::filter(time == 0)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+
+eq_chk <- patients |>
+  dplyr::mutate(
+    # packaged model
+    vc_sim      = eq_sim$vc,
+    cldial_sim  = eq_sim$cl_hemodialysis,
+    clresid_sim = eq_sim$cl - eq_sim$cl_hemodialysis,   # cl is the TOTAL; peel the gated arm off
+    # published equations, transcribed by hand
+    vc_pub      = 14.6  * (WT / 70),
+    cldial_pub  = 1.98  * (FILT_SA / 1)^1.26,
+    clresid_pub = 0.186 * (WT / 70)^0.75
+  )
+
+stopifnot(
+  max(abs(eq_chk$vc_sim      / eq_chk$vc_pub      - 1)) < 1e-10,
+  max(abs(eq_chk$cldial_sim  / eq_chk$cldial_pub  - 1)) < 1e-10,
+  max(abs(eq_chk$clresid_sim / eq_chk$clresid_pub - 1)) < 1e-10
+)
+
+eq_chk |>
+  dplyr::transmute(
+    Patient = patient, `WT (kg)` = WT, `DMSA (m2)` = FILT_SA,
+    `Vd model (L)` = round(vc_sim, 3),      `Vd published (L)` = round(vc_pub, 3),
+    `CL model (L/h)` = signif(clresid_sim, 4), `CL published (L/h)` = signif(clresid_pub, 4),
+    `CLdial model (L/h)` = round(cldial_sim, 4), `CLdial published (L/h)` = round(cldial_pub, 4)
+  ) |>
+  knitr::kable(caption = "Packaged model vs the three published covariate equations, at each patient's Table 1 covariates. Agreement is exact to machine precision.")
+```
+
+| Patient | WT (kg) | DMSA (m2) | Vd model (L) | Vd published (L) | CL model (L/h) | CL published (L/h) | CLdial model (L/h) | CLdial published (L/h) |
+|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| 1 | 23.2 | 1.0 | 4.839 | 4.839 | 0.08125 | 0.08125 | 1.9800 | 1.9800 |
+| 2 | 24.5 | 1.0 | 5.110 | 5.110 | 0.08464 | 0.08464 | 1.9800 | 1.9800 |
+| 3 | 47.5 | 1.5 | 9.907 | 9.907 | 0.13910 | 0.13910 | 3.3002 | 3.3002 |
+| 4 | 11.4 | 0.2 | 2.378 | 2.378 | 0.04768 | 0.04768 | 0.2606 | 0.2606 |
+| 5 | 12.3 | 0.3 | 2.565 | 2.565 | 0.05048 | 0.05048 | 0.4343 | 0.4343 |
+| 6 | 51.0 | 1.4 | 10.637 | 10.637 | 0.14670 | 0.14670 | 3.0254 | 3.0254 |
+
+Packaged model vs the three published covariate equations, at each
+patient’s Table 1 covariates. Agreement is exact to machine precision.
+{.table}
+
+### The dialysis gate is load-bearing
+
+This is the single most important structural check in this vignette, and
+it is here because the natural way to write this model is silently
+wrong.
+
+The paper’s total clearance is additive, `CLtot = CL + CLdial`, with the
+dialysis arm contributing only while a session runs. rxode2 recognises
+the joint presence of `cl` and `vc` and solves the one-compartment
+system analytically from that pair, **discarding the explicit
+`d/dt()`**. A model that assigns only the interdialytic arm to `cl` and
+then eliminates via a separate `cl_total / vc` therefore reports a
+correct-looking `cl_total` and `kel` while the simulated concentrations
+decay at the interdialytic rate in both states – the dialysis arm is
+inert and the model silently loses its entire reason for existing. The
+packaged model avoids this by assigning the gated sum to `cl` itself.
+
+The check below is a genuine two-state comparison of the simulated
+*amounts*, not of the reported clearance columns, so it fails if the
+gate ever stops being load-bearing.
+
+``` r
+
+gate_events <- function(gate, wt = 70, sa = 1) {
+  e <- as.data.frame(rxode2::et(amt = 1000, cmt = "central", time = 0) |>
+                       rxode2::et(seq(0, 6, by = 0.5)))
+  e$WT <- wt; e$FILT_SA <- sa; e$RRT_HEMODIAL_ACTIVE <- gate
+  e
+}
+sim_on  <- rxode2::rxSolve(mod_typ, events = gate_events(1), returnType = "data.frame")
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+sim_off <- rxode2::rxSolve(mod_typ, events = gate_events(0), returnType = "data.frame")
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+
+kel_emp <- function(s) -diff(log(s$central[c(1, nrow(s))])) / diff(s$time[c(1, nrow(s))])
+kel_on_obs  <- kel_emp(sim_on)
+kel_off_obs <- kel_emp(sim_off)
+
+# closed form at WT = 70 kg, DMSA = 1 m^2: the published typical values verbatim
+kel_on_exp  <- (0.186 + 1.98) / 14.6
+kel_off_exp <- 0.186 / 14.6
+
+stopifnot(
+  abs(kel_on_obs  / kel_on_exp  - 1) < 1e-8,
+  abs(kel_off_obs / kel_off_exp - 1) < 1e-8,
+  # and, most importantly, the two states must actually differ
+  kel_on_obs / kel_off_obs > 10
+)
+
+tibble::tibble(
+  State = c("Dialysis running", "Interdialytic"),
+  `Elimination rate constant, simulated (1/h)` = signif(c(kel_on_obs, kel_off_obs), 6),
+  `Closed form (1/h)` = signif(c(kel_on_exp, kel_off_exp), 6)
+) |>
+  knitr::kable(caption = "Two-state gate check at 70 kg and a 1 m2 membrane. Turning the gate on must multiply the elimination rate constant by (0.186 + 1.98)/0.186 = 11.6.")
+```
+
+| State | Elimination rate constant, simulated (1/h) | Closed form (1/h) |
+|:---|---:|---:|
+| Dialysis running | 0.1483560 | 0.1483560 |
+| Interdialytic | 0.0127397 | 0.0127397 |
+
+Two-state gate check at 70 kg and a 1 m2 membrane. Turning the gate on
+must multiply the elimination rate constant by (0.186 + 1.98)/0.186 =
+11.6. {.table}
+
+The ratio of the two population clearances also reproduces a
+quantitative claim in the Results: *“Population dialysis clearance was
+on average more than 10 times the population residual clearance.”*
+
+``` r
+
+ratio_pop <- 1.98 / 0.186
+stopifnot(ratio_pop > 10)
+cat(sprintf("CLdial_pop / CL_pop = %.2f (paper: 'more than 10 times')\n", ratio_pop))
+#> CLdial_pop / CL_pop = 10.65 (paper: 'more than 10 times')
+```
+
+### Two half-lives
+
+Because the model has two clearance states it has two half-lives, which
+is what the Discussion contrasts when it reports an “interdialytic
+cefazolin half-life” alongside a “dialysis half-life”. No numeric value
+is printed for either, so this table is descriptive rather than a gate;
+it is reported because the interdialytic values are what the Discussion
+compares against adult and historical paediatric literature (“almost
+twice as high as that observed in adults”).
+
+``` r
+
+eq_chk |>
+  dplyr::transmute(
+    Patient = patient, `WT (kg)` = WT, `DMSA (m2)` = FILT_SA,
+    `Interdialytic t1/2 (h)` = round(log(2) * vc_pub / clresid_pub, 1),
+    `On-dialysis t1/2 (h)`   = round(log(2) * vc_pub / (clresid_pub + cldial_pub), 2)
+  ) |>
+  knitr::kable(caption = "Typical-value half-lives in each clearance state, per patient covariates.")
+```
+
+| Patient | WT (kg) | DMSA (m2) | Interdialytic t1/2 (h) | On-dialysis t1/2 (h) |
+|--------:|--------:|----------:|-----------------------:|---------------------:|
+|       1 |    23.2 |       1.0 |                   41.3 |                 1.63 |
+|       2 |    24.5 |       1.0 |                   41.8 |                 1.72 |
+|       3 |    47.5 |       1.5 |                   49.4 |                 2.00 |
+|       4 |    11.4 |       0.2 |                   34.6 |                 5.35 |
+|       5 |    12.3 |       0.3 |                   35.2 |                 3.67 |
+|       6 |    51.0 |       1.4 |                   50.3 |                 2.32 |
+
+Typical-value half-lives in each clearance state, per patient
+covariates. {.table}
+
+## Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+approximates the published demographics: body weights spanning the Table
+1 range, with the dialysis membrane sized from body weight by the
+paper’s own simulation convention, `DMSA = 0.85 * BSA` with
+`BSA = (4*BW + 7)/(BW + 90)` (Results, “Dosing regimen simulations”).
+
+``` r
+
+n_sub <- 120L   # well under the 200-per-arm cap
+
+bsa_from_wt <- function(bw) (4 * bw + 7) / (bw + 90)
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  WT = round(runif(n_sub, 11.4, 51.0), 1)
+) |>
+  dplyr::mutate(FILT_SA = round(0.85 * bsa_from_wt(WT), 3))
+
+# One week of maintenance hemodialysis: 4-hour sessions on days 0, 2 and 4
+# (Monday / Wednesday / Friday per Table S1), dosing 15 mg/kg immediately after
+# each session's end. Session duration is an assumption -- see Assumptions.
+hd_days <- c(0, 2, 4)
+hd_dur  <- 4
+
+wk_events <- cohort |>
+  dplyr::rowwise() |>
+  dplyr::group_map(function(s, ...) {
+    dose_times <- hd_days * 24 + hd_dur          # post-dialysis dosing
+    obs_times  <- seq(0, 7 * 24, by = 0.5)
+    e <- data.frame(
+      id   = s$id,
+      time = c(dose_times, obs_times),
+      amt  = c(rep(15 * s$WT, length(dose_times)), rep(NA_real_, length(obs_times))),
+      evid = c(rep(1L, length(dose_times)), rep(0L, length(obs_times))),
+      cmt  = "central",
+      dur  = c(rep(0.5, length(dose_times)), rep(NA_real_, length(obs_times)))
+    )
+    e <- e[order(e$time, -e$evid), ]
+    on_hd <- vapply(e$time, function(t) {
+      any(t >= hd_days * 24 & t < hd_days * 24 + hd_dur)
+    }, logical(1))
+    e$WT <- s$WT; e$FILT_SA <- s$FILT_SA
+    e$RRT_HEMODIAL_ACTIVE <- as.integer(on_hd)
+    e
+  }) |>
+  dplyr::bind_rows()
+
+stopifnot(!anyDuplicated(unique(wk_events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+sim_wk <- rxode2::rxSolve(ui, events = wk_events,
+                          keep = c("WT", "FILT_SA", "RRT_HEMODIAL_ACTIVE")) |>
+  as.data.frame()
+stopifnot(!anyNA(sim_wk$Cc), all(sim_wk$Cc >= 0))
+```
+
+### Concentration-time profile over a dialysis week
+
+This reproduces the design of Figure 4 of the source (three dialysis
+sessions per week, children weighing 10-51 kg), showing the sawtooth
+created by switching the dialysis clearance arm on and off. The shaded
+bands are the dialysis sessions.
+
+``` r
+
+hd_bands <- data.frame(xmin = hd_days * 24, xmax = hd_days * 24 + hd_dur)
+
+sim_wk |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = median(Cc), Q95 = quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_rect(data = hd_bands, inherit.aes = FALSE,
+            aes(xmin = xmin, xmax = xmax, ymin = -Inf, ymax = Inf),
+            fill = "grey70", alpha = 0.35) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.7) +
+  geom_hline(yintercept = c(20, 80), linetype = "dashed", colour = "firebrick") +
+  scale_x_continuous(breaks = seq(0, 168, by = 24)) +
+  labs(x = "Time (h)", y = "Total cefazolin concentration (mg/L)",
+       title = "Simulated cefazolin over one hemodialysis week",
+       subtitle = "15 mg/kg after each session; median with 5th-95th percentile band",
+       caption = "Grey bands are dialysis sessions; dashed lines are the 20-80 mg/L target of Table S1.")
+```
+
+![](Berthaud_2025_cefazolin_files/figure-html/figure-week-1.png)
+
+The visible drops during the grey bands are the model’s dialysis arm
+doing work; if the gate were inert (see “The dialysis gate is
+load-bearing”) the curve would decay smoothly through them.
+
+``` r
+
+# Median concentration must fall materially faster during a session than in the
+# interdialytic interval that follows it. Both slopes come from the same drawn
+# cohort, so this is a within-cohort contrast that does not depend on the draw.
+med <- sim_wk |> dplyr::group_by(time) |> dplyr::summarise(Cc = median(Cc), .groups = "drop")
+slope <- function(lo, hi) {
+  w <- med |> dplyr::filter(time >= lo, time <= hi)
+  -diff(log(w$Cc[c(1, nrow(w))])) / diff(w$time[c(1, nrow(w))])
+}
+slope_on  <- slope(48, 52)     # the day-2 session
+slope_off <- slope(56, 72)     # the interval after it
+stopifnot(slope_on > 5 * slope_off, slope_off > 0)
+cat(sprintf("median log-slope during dialysis %.4f /h vs interdialytic %.4f /h (ratio %.1f)\n",
+            slope_on, slope_off, slope_on / slope_off))
+#> median log-slope during dialysis 0.2389 /h vs interdialytic 0.0215 /h (ratio 11.1)
+```
+
+## PKNCA validation
+
+The source reports no NCA table, so there is nothing to compare against
+with
+[`ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md).
+PKNCA is instead used as an independent implementation of the terminal
+half-life: a single interdialytic dose is simulated with between-subject
+variability, and PKNCA’s `half.life` is compared against each subject’s
+own closed-form `log(2) * vc / cl`. Both sides use the same drawn
+parameters, so the difference is pure numerical error and a tight bound
+is correct here.
+
+``` r
+
+nca_events <- cohort |>
+  dplyr::rowwise() |>
+  dplyr::group_map(function(s, ...) {
+    obs <- c(seq(0, 12, by = 0.25), seq(13, 240, by = 1))
+    e <- data.frame(
+      id = s$id, time = c(0, obs),
+      amt = c(15 * s$WT, rep(NA_real_, length(obs))),
+      evid = c(1L, rep(0L, length(obs))),
+      cmt = "central",
+      dur = c(0.5, rep(NA_real_, length(obs)))
+    )
+    e <- e[order(e$time, -e$evid), ]
+    e$WT <- s$WT; e$FILT_SA <- s$FILT_SA
+    e$RRT_HEMODIAL_ACTIVE <- 0L      # interdialytic single dose
+    e
+  }) |>
+  dplyr::bind_rows()
+
+sim_nca_raw <- rxode2::rxSolve(ui, events = nca_events,
+                               keep = c("WT", "FILT_SA")) |>
+  as.data.frame()
+```
+
+``` r
+
+sim_nca <- sim_nca_raw |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(treatment = "15 mg/kg IV, interdialytic") |>
+  dplyr::select(id, time, Cc, treatment)
+
+# Guarantee a time = 0 record so AUC has an anchor.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, treatment) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, treatment, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | treatment + id)
+
+dose_df <- nca_events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::mutate(treatment = "15 mg/kg IV, interdialytic") |>
+  dplyr::select(id, time, amt, treatment)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+intervals <- data.frame(start = 0, end = Inf,
+                        cmax = TRUE, tmax = TRUE,
+                        aucinf.obs = TRUE, half.life = TRUE)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+```
+
+``` r
+
+# Per-subject closed form from the parameters the solver actually used.
+per_sub <- sim_nca_raw |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = dplyr::first(cl), vc = dplyr::first(vc),
+                   WT = dplyr::first(WT), .groups = "drop") |>
+  dplyr::mutate(hl_closed = log(2) * vc / cl,
+                auc_closed = (15 * WT) / cl)
+
+cmp <- nca_wide |>
+  dplyr::inner_join(per_sub, by = "id") |>
+  dplyr::mutate(hl_pct  = 100 * (half.life  / hl_closed  - 1),
+                auc_pct = 100 * (aucinf.obs / auc_closed - 1))
+
+stopifnot(
+  nrow(cmp) == n_sub,
+  !anyNA(cmp$half.life), !anyNA(cmp$aucinf.obs),
+  max(abs(cmp$hl_pct))  < 1,     # same drawn parameters: numerical error only
+  max(abs(cmp$auc_pct)) < 1
+)
+
+tibble::tibble(
+  `NCA parameter` = c("t1/2 (h)", "AUCinf (mg*h/L)", "Cmax (mg/L)", "Tmax (h)"),
+  `Simulated median` = c(median(cmp$half.life), median(cmp$aucinf.obs),
+                         median(cmp$cmax), median(cmp$tmax)),
+  `Closed-form median` = c(median(cmp$hl_closed), median(cmp$auc_closed), NA, NA),
+  `Max |deviation| (%)` = c(max(abs(cmp$hl_pct)), max(abs(cmp$auc_pct)), NA, NA)
+) |>
+  dplyr::mutate(dplyr::across(where(is.numeric), ~ signif(.x, 4))) |>
+  knitr::kable(caption = "PKNCA on a simulated interdialytic single dose, against the model's own closed form. Cmax and Tmax have no closed-form counterpart for a 30-min infusion and are reported for reference.")
+```
+
+| NCA parameter    | Simulated median | Closed-form median | Max \|deviation\| (%) |
+|:-----------------|-----------------:|-------------------:|----------------------:|
+| t1/2 (h)         |            54.39 |              54.39 |               0.00000 |
+| AUCinf (mg\*h/L) |          5413.00 |            5413.00 |               0.02136 |
+| Cmax (mg/L)      |            71.80 |                 NA |                    NA |
+| Tmax (h)         |             0.50 |                 NA |                    NA |
+
+PKNCA on a simulated interdialytic single dose, against the model’s own
+closed form. Cmax and Tmax have no closed-form counterpart for a 30-min
+infusion and are reported for reference. {.table}
+
+## Reproducing the Table S1 dosing regimens
+
+Table S1 of the supplement gives, for each of six residual-clearance
+ranges, an explicit weekly regimen (three dialysis sessions per week,
+Monday / Wednesday / Friday) together with the proportion of the week
+spent inside the 20-80 mg/L target. Those percentages are the paper’s
+own model output and are reproduced here by administering exactly the
+tabulated regimens.
+
+Two design details Table S1 does not state are needed to run it: the
+**duration of a dialysis session** and the **alignment of the dosing
+clock to the session**. A 4-hour session with the day’s first (larger)
+dose given immediately afterwards is assumed throughout – see
+Assumptions. Both choices matter, so the results are reported as a
+deviation table rather than gated tightly.
+
+``` r
+
+s1 <- list(
+  list(rng = "0.001-0.025", cl = 0.013, ii = 48, published = 99.5,
+       days = list(15.0, 0, 9.0, 0, 9.0, 0, 0)),
+  list(rng = "0.026-0.15",  cl = 0.088, ii = 48, published = 97.1,
+       days = list(15.0, 0, 10.5, 0, 10.5, 0, 0)),
+  list(rng = "0.16-0.35",   cl = 0.255, ii = 12, published = 97.2,
+       days = list(c(15.0, 2.1), c(2.1, 2.1), c(10.2, 2.1), c(2.1, 2.1),
+                   c(10.2, 2.1), c(2.1, 2.1), c(2.1, 2.1))),
+  list(rng = "0.36-0.54",   cl = 0.450, ii = 12, published = 96.8,
+       days = list(c(15.0, 4.2), c(4.2, 4.2), c(11.4, 4.2), c(4.2, 4.2),
+                   c(11.4, 4.2), c(4.2, 4.2), c(4.2, 4.2))),
+  list(rng = "0.55-0.7",    cl = 0.625, ii = 8,  published = 97.3,
+       days = list(c(15.0, 4.2, 4.2), rep(4.2, 3), c(11.4, 4.2, 4.2), rep(4.2, 3),
+                   c(11.4, 4.2, 4.2), rep(4.2, 3), rep(4.2, 3))),
+  list(rng = "0.71-0.9",    cl = 0.805, ii = 8,  published = 97.0,
+       days = list(c(15.0, 5.4, 5.4), rep(5.4, 3), c(11.7, 5.4, 5.4), rep(5.4, 3),
+                   c(11.7, 5.4, 5.4), rep(5.4, 3), rep(5.4, 3))))
+
+n_week <- 4L                      # run to steady state, score the final week
+s1_wts <- c(10, 15, 20, 30, 40, 51)
+
+build_s1 <- function(wt, spec, id) {
+  dt <- numeric(0); da <- numeric(0)
+  for (w in 0:(n_week - 1)) for (d in 0:6) {
+    v <- spec$days[[d + 1]]; v <- v[v > 0]
+    if (!length(v)) next
+    dt <- c(dt, w * 168 + d * 24 + hd_dur + (seq_along(v) - 1) * spec$ii)
+    da <- c(da, v * wt)
+  }
+  obs <- seq(0, n_week * 168, by = 0.25)
+  e <- data.frame(
+    id = id, time = c(dt, obs),
+    amt = c(da, rep(NA_real_, length(obs))),
+    evid = c(rep(1L, length(dt)), rep(0L, length(obs))),
+    cmt = "central",
+    dur = c(rep(0.5, length(dt)), rep(NA_real_, length(obs)))
+  )
+  e <- e[order(e$time, -e$evid), ]
+  on_hd <- vapply(e$time, function(t) {
+    tt <- t %% 168; d <- floor(tt / 24); h <- tt - 24 * d
+    d %in% hd_days && h < hd_dur
+  }, logical(1))
+  e$WT <- wt; e$FILT_SA <- 0.85 * bsa_from_wt(wt)
+  e$RRT_HEMODIAL_ACTIVE <- as.integer(on_hd)
+  e$lcl <- log(spec$cl / (wt / 70)^0.75)   # pin residual CL to the range midpoint
+  e
+}
+
+s1_grid <- expand.grid(w = seq_along(s1_wts), i = seq_along(s1))
+s1_events <- do.call(rbind, lapply(seq_len(nrow(s1_grid)), function(k) {
+  build_s1(s1_wts[s1_grid$w[k]], s1[[s1_grid$i[k]]], k)
+}))
+
+s1_sim <- rxode2::rxSolve(mod_typ, events = s1_events, returnType = "data.frame")
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+s1_sim <- s1_sim |>
+  dplyr::select(-dplyr::any_of(c("w", "i"))) |>
+  dplyr::left_join(dplyr::mutate(s1_grid, id = dplyr::row_number()), by = "id")
+```
+
+``` r
+
+s1_attain <- s1_sim |>
+  dplyr::filter(time >= (n_week - 1) * 168, !is.na(Cc)) |>
+  dplyr::group_by(i, w) |>
+  dplyr::summarise(pct = 100 * mean(Cc >= 20 & Cc <= 80), .groups = "drop") |>
+  dplyr::mutate(wt = s1_wts[w], rng = vapply(s1, `[[`, "", "rng")[i])
+
+s1_tab <- s1_attain |>
+  dplyr::select(rng, wt, pct) |>
+  tidyr::pivot_wider(names_from = wt, values_from = pct,
+                     names_glue = "{wt} kg") |>
+  dplyr::mutate(`Published (Table S1)` = vapply(s1, `[[`, 0, "published"))
+
+s1_tab |>
+  dplyr::rename(`CL range (L/h)` = rng) |>
+  dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 1))) |>
+  knitr::kable(caption = "Time within the 20-80 mg/L target (%) over the final simulated week, by body weight, running the Table S1 regimens verbatim. The published column is a single weight-independent value.")
+```
+
+| CL range (L/h) | 10 kg | 15 kg | 20 kg | 30 kg | 40 kg | 51 kg | Published (Table S1) |
+|:---------------|------:|------:|------:|------:|------:|------:|---------------------:|
+| 0.001-0.025    |  94.1 |  88.7 |  82.0 |  73.7 |  74.0 |  74.0 |                 99.5 |
+| 0.026-0.15     |  45.8 |  69.5 |  82.8 |  95.2 |  95.1 |  93.8 |                 97.1 |
+| 0.16-0.35      |  17.4 |  33.3 |  56.0 |  92.1 |  95.1 |  96.0 |                 97.2 |
+| 0.36-0.54      |  11.9 |  26.2 |  45.0 |  83.7 |  94.5 |  96.0 |                 96.8 |
+| 0.55-0.7       |  10.4 |  24.5 |  44.1 |  85.0 |  95.1 |  96.4 |                 97.3 |
+| 0.71-0.9       |  13.4 |  25.0 |  40.9 |  76.1 |  94.9 |  96.1 |                 97.0 |
+
+Time within the 20-80 mg/L target (%) over the final simulated week, by
+body weight, running the Table S1 regimens verbatim. The published
+column is a single weight-independent value. {.table}
+
+At the upper end of the weight range the five highest clearance ranges
+reproduce the published attainment closely – 94.4 to 95.8% simulated
+against 96.8 to 97.1% published, a shortfall of only 1.5 to 2.7
+percentage points. Two features do not reproduce, and both are reported
+rather than tuned away:
+
+- **Attainment falls steeply for the lightest children.** This is a real
+  property of the model rather than an artefact. The tabulated doses are
+  in mg/kg, so peak concentrations are weight-independent
+  (`dose * WT / vc`, with `vc` proportional to `WT`), whereas the
+  residual clearance is pinned to an absolute L/h value, making
+  `kel = cl/vc` inversely proportional to weight. A 10 kg child at a
+  given absolute clearance therefore eliminates several times faster
+  than a 51 kg child at the same clearance. The paper reaches the same
+  conclusion from the other direction: Table S2, for the tighter 40-80
+  mg/L target, has to break the recommendations out into five
+  body-weight bands, and its 10-12 kg band shows the lowest attainment
+  of any band. Table S1’s single weight-independent percentage
+  necessarily averages over this spread.
+- **The lowest clearance range (0.001-0.025 L/h) is 25 percentage points
+  short.** In this range the interdialytic half-life at 40-51 kg exceeds
+  500 h, so essentially all elimination happens inside the dialysis
+  sessions and the simulated profile is unusually sensitive to the
+  assumed session duration – the one design parameter neither the paper
+  nor its supplement reports. This row should be read as a diagnostic of
+  that missing assumption, not as a disagreement about any published
+  parameter value.
+
+``` r
+
+heavy <- s1_attain |> dplyr::filter(wt >= 40)
+pub   <- vapply(s1, `[[`, 0, "published")
+
+# Gate only what the reconstruction can defensibly support: at the upper weights
+# the four highest-CL regimens must hold the target for the large majority of the
+# week, as Table S1 reports. Observed range at these weights when authored was
+# 94.5-96.4%; the bound is set well below it and is still far from vacuous, since
+# a broken dialysis gate or a mis-transcribed dose drops it to 60% or less.
+stopifnot(
+  min(heavy$pct[heavy$i >= 3]) > 85,
+  # every published value is itself a high-attainment claim
+  all(pub > 95)
+)
+
+s1_dev <- s1_attain |>
+  dplyr::filter(wt >= 40) |>
+  dplyr::group_by(rng) |>
+  dplyr::summarise(simulated = mean(pct), .groups = "drop") |>
+  dplyr::mutate(published = pub, difference = simulated - published)
+
+s1_dev |>
+  dplyr::rename(`CL range (L/h)` = rng, `Simulated, 40-51 kg (%)` = simulated,
+                `Published (%)` = published, `Difference (pp)` = difference) |>
+  dplyr::mutate(dplyr::across(where(is.numeric), ~ round(.x, 1))) |>
+  knitr::kable(caption = "Table S1 attainment at the upper end of the weight range, against the published values.")
+```
+
+| CL range (L/h) | Simulated, 40-51 kg (%) | Published (%) | Difference (pp) |
+|:---------------|------------------------:|--------------:|----------------:|
+| 0.001-0.025    |                    74.0 |          99.5 |           -25.5 |
+| 0.026-0.15     |                    94.4 |          97.1 |            -2.7 |
+| 0.16-0.35      |                    95.5 |          97.2 |            -1.7 |
+| 0.36-0.54      |                    95.2 |          96.8 |            -1.6 |
+| 0.55-0.7       |                    95.8 |          97.3 |            -1.5 |
+| 0.71-0.9       |                    95.5 |          97.0 |            -1.5 |
+
+Table S1 attainment at the upper end of the weight range, against the
+published values. {.table}
+
+## Assumptions and deviations
+
+- **The on/off dialysis gate is not in the printed equation block.** The
+  paper’s final-equation display reads only `CLtot_i = CL_i + CLdial_i`,
+  with no indicator. The gated form implemented here is established by
+  the surrounding text: the Introduction states that during hemodialysis
+  sessions a dialysis clearance “is added to the patient residual
+  elimination clearance”; the Discussion contrasts an “interdialytic
+  cefazolin half-life” with a “dialysis half-life”, which requires two
+  distinct clearance states; and the Figure 4 and Table S1 simulations
+  are built on three dialysis sessions per week. A model that applied
+  `CLdial` continuously would have a single half-life and could not
+  produce either figure.
+- **Additive, not replacement, composition.** The dialysis arm is
+  *added* to the residual clearance, per the paper’s own equation. This
+  differs from the two sibling hemodialysis models in this package,
+  `Duke_2024_cefazolin.R` and `Tsai_2023_ceftriaxone.R`, in which the
+  published estimate is the *total* clearance during a session and
+  replaces the interdialytic arm. Reading one convention as the other
+  would misstate clearance by the body baseline.
+- **Dialysis session duration is not reported** anywhere in the paper or
+  its supplement. A 4-hour session is assumed throughout, which is the
+  usual paediatric maintenance schedule. This assumption is load-bearing
+  for the Table S1 reconstruction: the on-dialysis half-life is 1.6-5.4
+  h across the cohort, so the fraction of drug removed per session is
+  sensitive to the duration chosen. It does not affect any of the
+  structural checks.
+- **The dosing clock alignment to each session is not reported.** Table
+  S1 lists a larger first dose on dialysis days, which is consistent
+  with post-dialysis replacement dosing; the reconstruction accordingly
+  places the day’s first dose at the end of the session. Table S1 does
+  not state the time of day of either.
+- **Table S1’s single attainment percentage is weight-dependent in
+  reproduction.** See the discussion under that section. The regimens
+  reproduce the published percentages at the upper end of the 10-51 kg
+  range and fall short at the lower end. No parameter was adjusted to
+  improve the agreement.
+- **`FILT_SA` in the simulated cohorts is imputed from body weight** as
+  `0.85 * BSA` with `BSA = (4*BW + 7)/(BW + 90)`, which is the paper’s
+  own convention for its dosing simulations, not the fitted data. The
+  measured Table 1 areas do not equal `0.85 * BSA` (patient 1, 23.2 kg:
+  0.75 vs an actual 1 m^2), so the imputation is used only where the
+  paper itself used it – the dose-simulation cohorts. The structural
+  verification section uses the measured Table 1 areas.
+- **Patient 6’s membrane switch (1.4 then 1.7 m^2)** is represented by
+  the lower value in the structural check; the model supports `FILT_SA`
+  varying with time.
+- **Race and ethnicity are not reported** by the source and are not
+  represented.
+- **Between-subject variability is carried on CL and Vd only.** The
+  paper reports no omega for the dialysis arm, having found that
+  membrane surface area drove it towards zero, so the dialysis arm is
+  deterministic given `FILT_SA`.
+- **`omegaCL` is large (1.07 on the log scale, roughly 150% CV).** This
+  is the paper’s central clinical finding rather than a transcription
+  artefact: the unexplained between-subject variability in residual
+  clearance is what leads the authors to conclude that a priori dosing
+  is not feasible and that therapeutic drug monitoring is required.
+  Simulated cohorts are correspondingly wide.
+- All parameter values are the Table 2 final estimates. No value was
+  tuned to match any validation output.

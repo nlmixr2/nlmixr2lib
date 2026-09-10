@@ -1,0 +1,1007 @@
+# Hemoporfin population PK and exposure-response in pediatric port-wine stain (Chen 2025)
+
+## Model and source
+
+Chen 2025 develops a population PK model for **hemoporfin**, a
+porphyrin-derivative photosensitiser used in photodynamic therapy (PDT)
+of port-wine stain (PWS), and uses it to ask whether the common
+off-label practice of scaling the approved adult 5 mg/kg dose down by
+body weight gives children the same exposure as adults. It does not:
+pediatric exposure is materially lower, and the paper proposes three
+alternative regimens that close the gap.
+
+- Article: <https://doi.org/10.1002/psp4.70050> (PMC12439283), CPT
+  Pharmacometrics Syst Pharmacol. 2025;14(8):1449-1457.
+- Data S2 of the supplement contains the **final NONMEM control stream**
+  (ADVAN11 TRANS4); Data S1 contains **Tables S1 and S2**, the
+  exposure-response coefficients and the predicted efficacy outcomes.
+
+Two clinical trials were pooled: a pediatric PWS pilot study
+(NCT03125057, n = 24, ages 7-14, sparse sampling, PDT administered) and
+a 2012 adult healthy-volunteer phase I study (n = 16, ages 20-45,
+intensive sampling, no PDT). Both gave a single 5 mg/kg intravenous
+infusion over 20 minutes.
+
+The paper contributes **six models** to nlmixr2lib – one population PK
+model and five independent binomial logistic exposure-response
+regressions, one per efficacy endpoint. The regressions were fitted in R
+by [`glm()`](https://rdrr.io/r/stats/glm.html) on empirical Bayes AUC
+estimates, separately from the NONMEM PK run, so they are genuinely
+independent models rather than one jointly-fitted model.
+
+``` r
+
+pk_name <- "Chen_2025_hemoporfin"
+er_names <- c(
+  "Chen_2025_hemoporfin_any_improvement",
+  "Chen_2025_hemoporfin_significant_improvement",
+  "Chen_2025_hemoporfin_almost_cured",
+  "Chen_2025_hemoporfin_investigator_rating",
+  "Chen_2025_hemoporfin_patient_rating"
+)
+pk_mod <- rxode2::rxode(readModelDb(pk_name))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+er_mods <- lapply(stats::setNames(nm = er_names),
+                  function(n) rxode2::rxode(readModelDb(n)))
+
+# The explicit three-compartment ODE system must NOT have been silently
+# replaced by rxode2's analytic linear-compartment solver.
+stopifnot(
+  identical(pk_mod$state, c("central", "peripheral1", "peripheral2")),
+  length(pk_mod$linCmt) == 0L
+)
+```
+
+### Structure
+
+Disposition is three-compartment with linear elimination from central.
+Every one of the six disposition parameters is scaled by empirical
+allometry on **fat-free mass**, normalised to the adult median FFM of
+46.1 kg (Chen 2025 Equation 1):
+
+``` math
+ P_i = P_{\text{adult,typical}} \times \left(\frac{\text{FFM}_i}{46.1}\right)^{\theta} 
+```
+
+with a single estimated exponent $`\theta_1 = 0.474`$ shared by `CL`,
+`Q2` and `Q3`, and a single exponent $`\theta_2 = 1`$ (fixed at the
+theoretical value) shared by `V1`, `V2` and `V3`. An inter-trial “study
+effect” is carried on bioavailability (Equation 2):
+$`F_1 = 1 + \theta_{\text{study}} \times \text{STUDY}`$, with
+$`\theta_{\text{study}} = -0.175`$ and `STUDY = 1` for the pediatric
+trial.
+
+The estimated 0.474 exponent – well below the theory-based 0.75 – is the
+paper’s central result. A smaller exponent means clearance falls off
+*less* than proportionally as size falls, so small children have a
+substantially **higher** clearance per kilogram than adults, and
+weight-proportional dosing under-exposes them.
+
+Each exposure-response model is a landmark logistic regression on the
+same exposure metric (Equation 3):
+
+``` math
+ \log\!\left(\frac{P}{1-P}\right) = \beta_0 + \beta_1 \times \text{AUC}_{0-30\text{min}} 
+```
+
+The 0-30 minute integration window is not a dosing interval. Hemoporfin
+is inert until light is applied; irradiation runs from 10 to 30 minutes
+after the start of the 20-minute infusion, so AUC(0-30min) is the drug
+exposure actually available for photoactivation (Methods 2.8).
+
+## Population
+
+``` r
+
+pop <- pk_mod$population
+tibble::tibble(
+  Field = c("Species", "Subjects", "Studies", "Age", "Weight", "Height",
+            "Female", "Race", "Disease", "Dose", "Region"),
+  Value = c(
+    pop$species,
+    paste0(pop$n_subjects, " (24 pediatric patients + 16 adult healthy volunteers)"),
+    as.character(pop$n_studies),
+    pop$age_range, pop$weight_range, pop$height_range,
+    paste0(pop$sex_female_pct, "% pooled (10/24 pediatric, 8/16 adult)"),
+    "Asian (100%)",
+    "Port-wine stain (pediatric); healthy (adult)",
+    pop$dose_range, pop$regions
+  )
+) |>
+  knitr::kable(caption = "Pooled study population (Chen 2025 Table 1).")
+```
+
+| Field | Value |
+|:---|:---|
+| Species | human |
+| Subjects | 40 (24 pediatric patients + 16 adult healthy volunteers) |
+| Studies | 2 |
+| Age | 7-13 years (pediatric patients); 20-43 years (adult healthy volunteers) |
+| Weight | 21-72 kg (pediatric); 50-75 kg (adult) |
+| Height | 120-164 cm (pediatric); 157-180 cm (adult) |
+| Female | 45% pooled (10/24 pediatric, 8/16 adult) |
+| Race | Asian (100%) |
+| Disease | Port-wine stain (pediatric); healthy (adult) |
+| Dose | Single 5 mg/kg intravenous infusion over 20 minutes in both trials. |
+| Region | China |
+
+Pooled study population (Chen 2025 Table 1). {.table}
+
+## Source trace
+
+Every `ini()` value, with the location in Chen 2025 it came from.
+Structure – which parameter carries which exponent, the FFM
+normalisation, the `F1` study effect and the combined residual form –
+comes from the **final NONMEM control stream in Data S2**. The `$THETA`
+/ `$OMEGA` numbers printed in that control stream are *initial*
+estimates (CL 11.2, Q2 0.374, `theta1` 0.442, `theta_study` -0.151) and
+are **not** used; every value below is the published *final* estimate.
+
+``` r
+
+tibble::tribble(
+  ~Parameter,      ~Value,        ~Source,
+  "lcl",           "11.2 L/h",    "Table 2, CL_adult,typical (RSE 4.71%)",
+  "lq",            "0.381 L/h",   "Table 2, Q2_adult,typical (RSE 9.46%)",
+  "lq2",           "0.127 L/h",   "Table 2, Q3_adult,typical (RSE 8.86%)",
+  "lvc",           "3.45 L",      "Table 2, V1_adult,typical (RSE 6.42%)",
+  "lvp",           "0.675 L",     "Table 2, V2_adult,typical (RSE 6.40%)",
+  "lvp2",          "1.32 L",      "Table 2, V3_adult,typical (RSE 6.69%)",
+  "e_ffm_cl",      "0.474",       "Table 2, theta1 (RSE 16.3%); Equation 1",
+  "e_ffm_vc",      "1 (fixed)",   "Table 2, theta2 = 1 FIX; Data S2 $THETA '(0, 1) FIX'",
+  "e_study_f",     "-0.175",      "Table 2, theta_study (RSE 33.1%); Equation 2",
+  "FFM reference", "46.1 kg",     "Results 3.3, median FFM of the adult volunteers",
+  "etalcl",        "0.0167584",   "Table 2, IIV CL 13.0 CV%; log(0.130^2 + 1)",
+  "etalq",         "0.0392207",   "Table 2, IIV Q2 20.0 CV%; log(0.200^2 + 1)",
+  "etalvc",        "0.0460116",   "Table 2, IIV V1 21.7 CV%; log(0.217^2 + 1)",
+  "propSd",        "0.267",       "Table 2, sigma_prop 26.7 CV%; Data S2 THETA(9)",
+  "addSd",         "0.240 ng/mL", "Table 2, sigma_add; Data S2 THETA(10)",
+  "ER beta0/beta1", "see below",  "Table S1 (Data S1); Equation 3"
+) |>
+  knitr::kable(caption = "Source trace for the population PK model.")
+```
+
+| Parameter | Value | Source |
+|:---|:---|:---|
+| lcl | 11.2 L/h | Table 2, CL_adult,typical (RSE 4.71%) |
+| lq | 0.381 L/h | Table 2, Q2_adult,typical (RSE 9.46%) |
+| lq2 | 0.127 L/h | Table 2, Q3_adult,typical (RSE 8.86%) |
+| lvc | 3.45 L | Table 2, V1_adult,typical (RSE 6.42%) |
+| lvp | 0.675 L | Table 2, V2_adult,typical (RSE 6.40%) |
+| lvp2 | 1.32 L | Table 2, V3_adult,typical (RSE 6.69%) |
+| e_ffm_cl | 0.474 | Table 2, theta1 (RSE 16.3%); Equation 1 |
+| e_ffm_vc | 1 (fixed) | Table 2, theta2 = 1 FIX; Data S2 \$THETA ‘(0, 1) FIX’ |
+| e_study_f | -0.175 | Table 2, theta_study (RSE 33.1%); Equation 2 |
+| FFM reference | 46.1 kg | Results 3.3, median FFM of the adult volunteers |
+| etalcl | 0.0167584 | Table 2, IIV CL 13.0 CV%; log(0.130^2 + 1) |
+| etalq | 0.0392207 | Table 2, IIV Q2 20.0 CV%; log(0.200^2 + 1) |
+| etalvc | 0.0460116 | Table 2, IIV V1 21.7 CV%; log(0.217^2 + 1) |
+| propSd | 0.267 | Table 2, sigma_prop 26.7 CV%; Data S2 THETA(9) |
+| addSd | 0.240 ng/mL | Table 2, sigma_add; Data S2 THETA(10) |
+| ER beta0/beta1 | see below | Table S1 (Data S1); Equation 3 |
+
+Source trace for the population PK model. {.table}
+
+``` r
+
+er_published <- tibble::tribble(
+  ~model,                                         ~endpoint,                                  ~output,                          ~b0,    ~b1,
+  "Chen_2025_hemoporfin_any_improvement",         "Any improvement (I+II+III)",               "prob_any_improvement",          1.56,  -0.0700,
+  "Chen_2025_hemoporfin_significant_improvement", "Significant improvement (I+II)",           "prob_significant_improvement", -2.09,   0.169,
+  "Chen_2025_hemoporfin_almost_cured",            "Almost cured (I)",                         "prob_almost_cured",           -29.7,    1.98,
+  "Chen_2025_hemoporfin_investigator_rating",     "Investigator rating good/excellent",       "prob_investigator_rating",    -10.3,    0.794,
+  "Chen_2025_hemoporfin_patient_rating",          "Patient rating good/excellent",            "prob_patient_rating",         -12.9,    0.981
+)
+
+er_published |>
+  dplyr::mutate(
+    Significant = c("no (p = 0.790)", "no (p = 0.505)", "no (p = 0.104)",
+                    "YES (p = 0.0223)", "YES (p = 0.0148)")
+  ) |>
+  dplyr::select(Endpoint = endpoint, "beta0" = b0, "beta1" = b1, "Slope significance" = Significant) |>
+  knitr::kable(caption = "Exposure-response coefficients (Chen 2025 Table S1). beta1 is in mL/(ug*h).")
+```
+
+| Endpoint                           |  beta0 |  beta1 | Slope significance |
+|:-----------------------------------|-------:|-------:|:-------------------|
+| Any improvement (I+II+III)         |   1.56 | -0.070 | no (p = 0.790)     |
+| Significant improvement (I+II)     |  -2.09 |  0.169 | no (p = 0.505)     |
+| Almost cured (I)                   | -29.70 |  1.980 | no (p = 0.104)     |
+| Investigator rating good/excellent | -10.30 |  0.794 | YES (p = 0.0223)   |
+| Patient rating good/excellent      | -12.90 |  0.981 | YES (p = 0.0148)   |
+
+Exposure-response coefficients (Chen 2025 Table S1). beta1 is in
+mL/(ug\*h). {.table style="width:100%;"}
+
+## Virtual cohort
+
+Chen 2025 reports its demographics as medians with ranges (Table 1) and
+does not publish per-subject covariates. The cohort below is built
+**deterministically** from those medians and ranges with a
+split-lognormal lattice on standard normal quantiles: each arm
+reproduces the published median, minimum and maximum exactly, with the
+right-skew that a median of 32 kg inside a 21-72 kg range implies.
+Weight, height and age share one lattice position per subject, so
+body-mass index and age stay physically coherent.
+
+Because the lattice is deterministic and every published-number check
+below is run on **typical values**
+([`rxode2::zeroRe()`](https://nlmixr2.github.io/rxode2/reference/zeroRe.html)),
+none of those checks depends on rxode2’s random number stream, and
+therefore none of them depends on the solver thread count.
+
+``` r
+
+# Al-Sallami et al. (Clin Pharmacokinet 2015;54:1169-1178) -- reference [20] of
+# Chen 2025 -- the PEDIATRIC fat-free-mass equation. It multiplies the adult
+# (Janmahasatian) form by an age-correction factor that converges to 1 in
+# adulthood. Note the female numerator (1 - 1.11) is NEGATIVE, as published.
+ffm_al_sallami <- function(wt, ht_cm, age_y, female) {
+  bmi <- wt / (ht_cm / 100)^2
+  ffm_adult <- ifelse(female,
+                      9270 * wt / (8780 + 244 * bmi),
+                      9270 * wt / (6680 + 216 * bmi))
+  multiplier <- ifelse(female,
+                       1.11 + (1 - 1.11) / (1 + (age_y / 7.1)^-1.1),
+                       0.88 + (1 - 0.88) / (1 + (age_y / 13.4)^-12.7))
+  ffm_adult * multiplier
+}
+
+# Split-lognormal lattice: reproduces median, min and max exactly.
+split_lognormal <- function(z, zmax, med, lo, hi) {
+  med * exp(ifelse(z < 0, z * log(med / lo) / zmax, z * log(hi / med) / zmax))
+}
+
+make_arm <- function(n, cohort, wt, ht, age, study_pediatric) {
+  z <- stats::qnorm(seq_len(n) / (n + 1))
+  female <- rep(c(TRUE, FALSE), length.out = n)
+  WT <- split_lognormal(z, max(z), wt[1], wt[2], wt[3])
+  HT <- split_lognormal(z, max(z), ht[1], ht[2], ht[3])
+  AGE <- split_lognormal(z, max(z), age[1], age[2], age[3])
+  data.frame(
+    id = seq_len(n), cohort = cohort, WT = WT, HT = HT, AGE = AGE,
+    SEXF = as.numeric(female),
+    FFM = ffm_al_sallami(WT, HT, AGE, female),
+    STUDY_PEDIATRIC = study_pediatric
+  )
+}
+
+pediatric <- make_arm(24, "Pediatric", c(32, 21, 72), c(139, 120, 164), c(9, 7, 13), 1)
+adult     <- make_arm(16, "Adult",     c(62, 50, 75), c(167, 157, 180), c(29, 20, 43), 0)
+adult$id  <- adult$id + 100L
+
+dplyr::bind_rows(pediatric, adult) |>
+  dplyr::group_by(Cohort = cohort) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    `Weight median (range)` = sprintf("%.0f (%.0f-%.0f)", median(WT), min(WT), max(WT)),
+    `Height median (range)` = sprintf("%.0f (%.0f-%.0f)", median(HT), min(HT), max(HT)),
+    `Age median (range)`    = sprintf("%.0f (%.0f-%.0f)", median(AGE), min(AGE), max(AGE)),
+    `FFM median`            = sprintf("%.1f kg", median(FFM)),
+    .groups = "drop"
+  ) |>
+  knitr::kable(caption = "Virtual cohort, to be compared against Chen 2025 Table 1.")
+```
+
+| Cohort | n | Weight median (range) | Height median (range) | Age median (range) | FFM median |
+|:---|---:|:---|:---|:---|:---|
+| Adult | 16 | 62 (50-75) | 167 (157-180) | 29 (20-43) | 45.3 kg |
+| Pediatric | 24 | 32 (21-72) | 139 (120-164) | 9 (7-13) | 24.9 kg |
+
+Virtual cohort, to be compared against Chen 2025 Table 1. {.table}
+
+### Check 1 – the FFM equation recovers the paper’s own reference value
+
+Chen 2025 fixed `body_size_adult,typical` at “the median FFM of 46.1 kg
+from adult healthy volunteers” (Results 3.3) but never prints the
+per-subject FFM values. If the Al-Sallami equation used above is the
+right one, applying it to the *published adult demographics* must return
+approximately 46.1 kg. This is a genuine falsifier: the adult
+Janmahasatian formula, or a lean-body-mass formula from a different
+family, would land several kilograms away.
+
+``` r
+
+adult_ffm_median <- median(adult$FFM)
+cat(sprintf("Adult median FFM from Table 1 demographics: %.2f kg (paper fixed 46.1 kg)\n",
+            adult_ffm_median))
+#> Adult median FFM from Table 1 demographics: 45.35 kg (paper fixed 46.1 kg)
+
+# Deterministic quantity -- no cohort noise. 1.5 kg admits the fact that the
+# cohort is reconstructed from medians and ranges rather than per-subject data.
+stopifnot(abs(adult_ffm_median - 46.1) < 1.5)
+```
+
+### Check 2 – the ODE system reproduces its own analytic solution
+
+The three-compartment system is written as explicit ODEs. Solving it
+against rxode2’s analytic three-compartment solver with identical
+parameters is a pure numerical-accuracy comparison – the same drawn
+parameters on both sides, no cohort and no physical mechanism differing
+– so a tight bound is the correct one here.
+
+``` r
+
+pk_typical <- rxode2::zeroRe(pk_mod)
+
+analytic <- rxode2::rxode2({
+  cl  <- 11.2  * (FFM / 46.1)^0.474
+  q   <- 0.381 * (FFM / 46.1)^0.474
+  q2  <- 0.127 * (FFM / 46.1)^0.474
+  vc  <- 3.45  * (FFM / 46.1)
+  vp  <- 0.675 * (FFM / 46.1)
+  vp2 <- 1.32  * (FFM / 46.1)
+  Cc  <- 1000 * linCmt()
+})
+
+grid <- seq(0, 24, length.out = 241)
+ev_ode <- as.data.frame(
+  rxode2::et(amt = 160, dur = 1 / 3, cmt = "central") |> rxode2::et(grid)
+)
+ev_ode$FFM <- 25.5
+ev_ode$STUDY_PEDIATRIC <- 0
+ev_an <- as.data.frame(rxode2::et(amt = 160, dur = 1 / 3) |> rxode2::et(grid))
+ev_an$FFM <- 25.5
+
+s_ode <- rxode2::rxSolve(pk_typical, ev_ode, returnType = "data.frame")
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+s_an  <- rxode2::rxSolve(analytic,   ev_an,  returnType = "data.frame")
+
+keep <- s_ode$Cc > 1  # above assay-relevant magnitudes; avoids solver-noise tail
+stopifnot(sum(keep) > 100)
+max_rel <- max(abs(s_ode$Cc[keep] - s_an$Cc[keep]) / s_ode$Cc[keep])
+cat(sprintf("Max relative difference, ODE vs analytic: %.2e over %d points\n",
+            max_rel, sum(keep)))
+#> Max relative difference, ODE vs analytic: 3.51e-06 over 240 points
+stopifnot(max_rel < 1e-4)
+```
+
+## Simulation
+
+``` r
+
+# One multi-subject solve per scenario. Observation rows sit on the ODE state
+# "central"; rxode2 returns the algebraic observable Cc as a column at those rows.
+obs_grid <- seq(0, 0.5, length.out = 201)   # the 0-30 min photoactivation window
+
+solve_cohort <- function(cohort, mg_per_kg, model = pk_typical) {
+  doses <- data.frame(
+    id = cohort$id, time = 0, amt = mg_per_kg * cohort$WT, dur = 1 / 3,
+    evid = 1L, cmt = "central"
+  )
+  obs <- tidyr::crossing(id = cohort$id, time = obs_grid) |>
+    dplyr::mutate(amt = NA_real_, dur = NA_real_, evid = 0L, cmt = "central")
+  ev <- dplyr::bind_rows(doses, obs) |>
+    dplyr::left_join(cohort[, c("id", "cohort", "FFM", "WT", "STUDY_PEDIATRIC")],
+                     by = "id") |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    as.data.frame()
+  out <- rxode2::rxSolve(model, ev, keep = c("cohort", "WT"),
+                         returnType = "data.frame")
+  if (is.null(out$id)) out$id <- 1L
+  out$Cc_ug <- out$Cc / 1000    # ng/mL -> ug/mL, the paper's exposure unit
+  # rxSolve returns observation records only and drops `evid`; the dose sits at
+  # time 0 alongside the first observation, so guard against a duplicated row.
+  dplyr::distinct(out, id, time, .keep_all = TRUE)
+}
+
+sim_ped_5 <- solve_cohort(pediatric, 5)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+sim_ad_5  <- solve_cohort(adult, 5)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+
+stopifnot(!anyNA(sim_ped_5$Cc), !anyNA(sim_ad_5$Cc),
+          all(sim_ped_5$Cc >= 0), all(sim_ad_5$Cc >= 0))
+```
+
+### Concentration-time profiles over the treatment window
+
+``` r
+
+dplyr::bind_rows(sim_ped_5, sim_ad_5) |>
+  ggplot(aes(time * 60, Cc_ug, group = id, colour = cohort)) +
+  annotate("rect", xmin = 10, xmax = 30, ymin = -Inf, ymax = Inf,
+           alpha = 0.12, fill = "grey40") +
+  geom_line(alpha = 0.6) +
+  labs(x = "Time since start of infusion (min)", y = "Hemoporfin (ug/mL)",
+       colour = NULL, title = "5 mg/kg IV over 20 minutes") +
+  theme_bw()
+```
+
+![Typical-value hemoporfin profiles over the 0-30 minute photoactivation
+window. Light is applied from 10 to 30 minutes
+(shaded).](Chen_2025_hemoporfin_files/figure-html/fig-profiles-1.png)
+
+Typical-value hemoporfin profiles over the 0-30 minute photoactivation
+window. Light is applied from 10 to 30 minutes (shaded).
+
+## PKNCA validation
+
+Exposure metrics are computed with PKNCA over the paper’s 0-30 minute
+treatment window rather than by inline trapezoidal code.
+
+``` r
+
+conc_df <- dplyr::bind_rows(sim_ped_5, sim_ad_5) |>
+  dplyr::filter(!is.na(Cc_ug)) |>
+  dplyr::select(id, cohort, time, Cc_ug)
+
+# A time-zero record must exist for every subject or PKNCA warns that the AUC
+# range starts before the first measurement.
+stopifnot(all(table(conc_df$id[conc_df$time == 0]) == 1))
+
+dose_df <- dplyr::bind_rows(pediatric, adult) |>
+  dplyr::transmute(id, cohort, time = 0, dose = 5 * WT)
+
+o_conc <- PKNCA::PKNCAconc(conc_df, Cc_ug ~ time | cohort + id,
+                           concu = "ug/mL", timeu = "h")
+o_dose <- PKNCA::PKNCAdose(dose_df, dose ~ time | cohort + id, doseu = "mg")
+
+intervals <- data.frame(start = 0, end = 0.5, cmax = TRUE, auclast = TRUE)
+o_data <- PKNCA::PKNCAdata(o_conc, o_dose, intervals = intervals)
+res <- as.data.frame(PKNCA::pk.nca(o_data))
+stopifnot(nrow(res) > 0)
+
+nca <- res |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "auclast")) |>
+  dplyr::select(id, cohort, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_summary <- nca |>
+  dplyr::group_by(cohort) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    cmax_mean = mean(cmax), cmax_cv = 100 * sd(cmax) / mean(cmax),
+    auc_mean = mean(auclast), auc_cv = 100 * sd(auclast) / mean(auclast),
+    .groups = "drop"
+  )
+nca_summary |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2))) |>
+  dplyr::rename(
+    "Cohort" = cohort, "N" = n,
+    "Cmax mean (ug/mL)" = cmax_mean, "Cmax CV%" = cmax_cv,
+    "AUC0-30min mean (h*ug/mL)" = auc_mean, "AUC0-30min CV%" = auc_cv
+  ) |>
+  knitr::kable(caption = "PKNCA exposure metrics over 0-30 min at 5 mg/kg (typical values).")
+```
+
+| Cohort | N | Cmax mean (ug/mL) | Cmax CV% | AUC0-30min mean (h\*ug/mL) | AUC0-30min CV% |
+|:---|---:|---:|---:|---:|---:|
+| Adult | 16 | 54.24 | 8.11 | 17.64 | 8.08 |
+| Pediatric | 24 | 37.62 | 13.83 | 12.21 | 13.91 |
+
+PKNCA exposure metrics over 0-30 min at 5 mg/kg (typical values).
+{.table}
+
+## Comparison against published exposures
+
+``` r
+
+get <- function(coh, col) nca_summary[[col]][nca_summary$cohort == coh]
+ped_cmax <- get("Pediatric", "cmax_mean"); ad_cmax <- get("Adult", "cmax_mean")
+ped_auc  <- get("Pediatric", "auc_mean");  ad_auc  <- get("Adult", "auc_mean")
+
+cmax_gap <- 100 * (1 - ped_cmax / ad_cmax)
+auc_gap  <- 100 * (1 - ped_auc  / ad_auc)
+
+# Chen 2025 Results 3.4 reports the pediatric values and the two percentage
+# gaps; the adult values are implied by them.
+claims <- tibble::tribble(
+  ~Quantity,                              ~Published, ~Simulated, ~Tolerance, ~Deviation,
+  "Pediatric Cmax (ug/mL)",                    37.1,   ped_cmax,        10.0,      FALSE,
+  "Pediatric AUC0-30min (h*ug/mL)",            12.4,   ped_auc,         10.0,      FALSE,
+  "Adult AUC0-30min (h*ug/mL), implied",       17.84,  ad_auc,          10.0,      FALSE,
+  "AUC0-30min gap, pediatric vs adult (%)",    30.5,   auc_gap,          5.0,      FALSE,
+  "Adult Cmax (ug/mL), implied",               45.63,  ad_cmax,         10.0,      TRUE,
+  "Cmax gap, pediatric vs adult (%)",          18.7,   cmax_gap,         5.0,      TRUE
+) |>
+  dplyr::mutate(
+    Difference = dplyr::if_else(
+      grepl("\\(%\\)", Quantity),
+      Simulated - Published,                       # percentage points
+      100 * (Simulated - Published) / Published    # percent
+    ),
+    Pass = abs(Difference) < Tolerance
+  )
+
+claims |>
+  dplyr::mutate(dplyr::across(c(Published, Simulated, Difference), \(x) round(x, 2))) |>
+  dplyr::rename("Difference (% or pp)" = Difference,
+                "Known deviation" = Deviation) |>
+  knitr::kable(caption = "Simulated exposures against Chen 2025 Results 3.4.")
+```
+
+| Quantity | Published | Simulated | Tolerance | Known deviation | Difference (% or pp) | Pass |
+|:---|---:|---:|---:|:---|---:|:---|
+| Pediatric Cmax (ug/mL) | 37.10 | 37.62 | 10 | FALSE | 1.41 | TRUE |
+| Pediatric AUC0-30min (h\*ug/mL) | 12.40 | 12.21 | 10 | FALSE | -1.50 | TRUE |
+| Adult AUC0-30min (h\*ug/mL), implied | 17.84 | 17.64 | 10 | FALSE | -1.13 | TRUE |
+| AUC0-30min gap, pediatric vs adult (%) | 30.50 | 30.75 | 5 | FALSE | 0.25 | TRUE |
+| Adult Cmax (ug/mL), implied | 45.63 | 54.24 | 10 | TRUE | 18.86 | FALSE |
+| Cmax gap, pediatric vs adult (%) | 18.70 | 30.63 | 5 | TRUE | 11.93 | FALSE |
+
+Simulated exposures against Chen 2025 Results 3.4. {.table}
+
+``` r
+
+
+stopifnot(all(claims$Pass[!claims$Deviation]))
+```
+
+Every AUC-based claim reproduces: pediatric AUC(0-30min) within a few
+percent of the published 12.4 h\*ug/mL, the implied adult value within a
+few percent of 17.84, and the 30.5% gap that motivates the entire paper
+within a few percentage points.
+
+The two Cmax rows are flagged deviations and are excluded from the gate.
+The reason is visible in the paper’s own numbers rather than in the
+model. Figure 2’s caption states that panel (a) compares **observed**
+Cmax while panel (b) compares **EBEs** of AUC(0-30min) – the two metrics
+do not share a baseline. In a linear model, Cmax and AUC over a fixed
+window must move together, and in the simulation above they do (the two
+gaps agree to well under a percentage point). Chen 2025 reports gaps of
+18.7% for Cmax and 30.5% for AUC, which differ by 12 percentage points,
+and the same inconsistency propagates into Table 3 below. An observed
+peak is bounded by the sampling schedule and by the actual infusion
+durations – the Data S2 example data set shows those varied (16 minutes
+for subject 101, 20 for subject 102) – so it is not the same quantity as
+the model-predicted peak.
+
+### Individual predictions against the Data S2 example data set
+
+The supplement prints an eight-row example data set with real observed
+concentrations for two pediatric subjects. Their FFM values are given,
+so the typical prediction can be compared directly. This is a
+two-subject spot check, not a gate: each observation carries that
+subject’s random effects and residual error.
+
+``` r
+
+example_obs <- tibble::tribble(
+  ~id,  ~ffm,  ~amt, ~dur_h,     ~time,     ~dv_ng_ml,
+  101L, 20.2,  130,  0.266667,   0.316667,  22800,
+  102L, 29.3,  210,  0.333333,   0.333333,  37900
+)
+
+pred_one <- function(ffm, amt, dur_h, time) {
+  ev <- as.data.frame(
+    rxode2::et(amt = amt, dur = dur_h, cmt = "central") |> rxode2::et(c(0, time))
+  )
+  ev$FFM <- ffm
+  ev$STUDY_PEDIATRIC <- 1
+  s <- rxode2::rxSolve(pk_typical, ev, returnType = "data.frame")
+  s$Cc[which.min(abs(s$time - time))]
+}
+
+example_obs |>
+  dplyr::rowwise() |>
+  dplyr::mutate(pred = pred_one(ffm, amt, dur_h, time)) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(`Difference (%)` = round(100 * (pred - dv_ng_ml) / dv_ng_ml, 1),
+                pred = round(pred)) |>
+  dplyr::select("Subject" = id, "FFM (kg)" = ffm, "Dose (mg)" = amt,
+                "Time (h)" = time, "Observed (ng/mL)" = dv_ng_ml,
+                "Typical prediction (ng/mL)" = pred, `Difference (%)`) |>
+  knitr::kable(caption = "Typical predictions against the Data S2 example observations.")
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+```
+
+| Subject | FFM (kg) | Dose (mg) | Time (h) | Observed (ng/mL) | Typical prediction (ng/mL) | Difference (%) |
+|---:|---:|---:|---:|---:|---:|---:|
+| 101 | 20.2 | 130 | 0.316667 | 22800 | 29514 | 29.4 |
+| 102 | 29.3 | 210 | 0.333333 | 37900 | 42012 | 10.9 |
+
+Typical predictions against the Data S2 example observations. {.table}
+
+## Dosing-regimen exposure matching (Table 3)
+
+Chen 2025 evaluates three alternatives to the empirical 5 mg/kg
+pediatric dose and reports the mean bias of each against adults dosed at
+5 mg/kg.
+
+``` r
+
+bsa_du_bois <- function(wt, ht_cm) 0.007184 * wt^0.425 * ht_cm^0.725
+
+# Table 3 footnote a: > 20-30 kg -> 7 mg/kg; > 30-50 kg -> 6 mg/kg; > 50 kg -> 5 mg/kg.
+stratified_mg_kg <- function(wt) ifelse(wt <= 30, 7, ifelse(wt <= 50, 6, 5))
+
+regimens <- list(
+  "Standardised 6 mg/kg"        = rep(6, nrow(pediatric)),
+  "Stratified 7/6/5 mg/kg"      = stratified_mg_kg(pediatric$WT),
+  "Standardised 190 mg/m^2 BSA" = 190 * bsa_du_bois(pediatric$WT, pediatric$HT) / pediatric$WT
+)
+
+regimen_nca <- function(mg_per_kg) {
+  s <- solve_cohort(pediatric, mg_per_kg) 
+  cd <- s |> dplyr::filter(!is.na(Cc_ug)) |> dplyr::select(id, cohort, time, Cc_ug)
+  dd <- data.frame(id = pediatric$id, cohort = "Pediatric", time = 0,
+                   dose = mg_per_kg * pediatric$WT)
+  r <- as.data.frame(PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(cd, Cc_ug ~ time | cohort + id, concu = "ug/mL", timeu = "h"),
+    PKNCA::PKNCAdose(dd, dose ~ time | cohort + id, doseu = "mg"),
+    intervals = intervals
+  )))
+  c(cmax = mean(r$PPORRES[r$PPTESTCD == "cmax"]),
+    auc  = mean(r$PPORRES[r$PPTESTCD == "auclast"]))
+}
+
+reg_res <- lapply(regimens, regimen_nca)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalq', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+
+table3 <- tibble::tibble(
+  Regimen         = names(regimens),
+  `Cmax bias published (%)` = c(-2.40, 1.62, 2.63),
+  `Cmax bias simulated (%)` = vapply(reg_res, \(x) 100 * (x[["cmax"]] / ad_cmax - 1), 0),
+  `AUC bias published (%)`  = c(-16.7, -13.0, -12.2),
+  `AUC bias simulated (%)`  = vapply(reg_res, \(x) 100 * (x[["auc"]] / ad_auc - 1), 0)
+)
+
+table3 |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 1))) |>
+  knitr::kable(caption = "Exposure-matching bias against adults at 5 mg/kg (Chen 2025 Table 3).")
+```
+
+| Regimen | Cmax bias published (%) | Cmax bias simulated (%) | AUC bias published (%) | AUC bias simulated (%) |
+|:---|---:|---:|---:|---:|
+| Standardised 6 mg/kg | -2.4 | -16.8 | -16.7 | -16.9 |
+| Stratified 7/6/5 mg/kg | 1.6 | -15.1 | -13.0 | -15.2 |
+| Standardised 190 mg/m^2 BSA | 2.6 | -12.3 | -12.2 | -12.5 |
+
+Exposure-matching bias against adults at 5 mg/kg (Chen 2025 Table 3).
+{.table}
+
+``` r
+
+
+# The AUC column reproduces; the Cmax column carries the observed-Cmax baseline
+# discussed above and is not gated. 4 percentage points admits the fact that the
+# cohort is reconstructed from Table 1 medians and ranges rather than from the
+# 24 real patients; a mis-transcribed clearance, volume or dose moves these by
+# tens of percentage points.
+stopifnot(max(abs(table3$`AUC bias simulated (%)` -
+                  table3$`AUC bias published (%)`)) < 4)
+
+# The paper's ranking of the three regimens on AUC must be reproduced.
+stopifnot(identical(
+  order(table3$`AUC bias simulated (%)`), order(table3$`AUC bias published (%)`)
+))
+```
+
+All three regimens raise pediatric exposure into the adult range, and
+the simulation reproduces the paper’s ordering: the BSA-based 190 mg/m^2
+regimen matches best, then the weight-stratified 7/6/5 mg/kg regimen,
+then the flat 6 mg/kg regimen.
+
+## Exposure-response
+
+### Check 3 – every published coefficient
+
+Solving each logistic model at `AUC_HEMO = 0` returns `expit(beta0)`,
+and the difference between two exposures recovers `beta1`. Both are
+algebraic identities between Table S1 and the encoded `ini()` values,
+with no cohort and no solver noise, so an exact tolerance is correct.
+
+``` r
+
+logit <- function(p) log(p / (1 - p))
+
+solve_er <- function(model, output, auc) {
+  ev <- data.frame(id = 1L, time = 0, amt = 0, evid = 0L, AUC_HEMO = auc)
+  as.data.frame(rxode2::rxSolve(model, events = ev,
+                                returnType = "data.frame"))[[output]][1]
+}
+
+er_check <- er_published |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    b0_sim = logit(solve_er(er_mods[[model]], output, 0)),
+    b1_sim = logit(solve_er(er_mods[[model]], output, 1)) -
+             logit(solve_er(er_mods[[model]], output, 0))
+  ) |>
+  dplyr::ungroup()
+
+stopifnot(max(abs(er_check$b0_sim - er_check$b0)) < 1e-9,
+          max(abs(er_check$b1_sim - er_check$b1)) < 1e-9)
+
+er_check |>
+  dplyr::select(Endpoint = endpoint, "beta0 published" = b0, "beta0 recovered" = b0_sim,
+                "beta1 published" = b1, "beta1 recovered" = b1_sim) |>
+  knitr::kable(caption = "Recovered exposure-response coefficients against Table S1.")
+```
+
+| Endpoint | beta0 published | beta0 recovered | beta1 published | beta1 recovered |
+|:---|---:|---:|---:|---:|
+| Any improvement (I+II+III) | 1.56 | 1.56 | -0.070 | -0.070 |
+| Significant improvement (I+II) | -2.09 | -2.09 | 0.169 | 0.169 |
+| Almost cured (I) | -29.70 | -29.70 | 1.980 | 1.980 |
+| Investigator rating good/excellent | -10.30 | -10.30 | 0.794 | 0.794 |
+| Patient rating good/excellent | -12.90 | -12.90 | 0.981 | 0.981 |
+
+Recovered exposure-response coefficients against Table S1. {.table}
+
+### Check 4 – the published efficacy predictions (Table S2)
+
+Table S2 reports the mean AUC(0-30min) for each of the four regimens
+together with the probability of a high investigator and patient rating.
+Feeding the paper’s own AUC values into the encoded models must return
+the paper’s own probabilities. This is exact arithmetic over published
+inputs.
+
+``` r
+
+table_s2 <- tibble::tribble(
+  ~Regimen,                       ~auc,  ~inv_pub, ~pat_pub,
+  "Empirical 5 mg/kg",            12.4,      38.9,     32.4,
+  "Standardised 6 mg/kg",         14.9,      82.2,     84.8,
+  "Stratified 7/6/5 mg/kg",       15.5,      88.2,     90.0,
+  "Standardised 190 mg/m^2 BSA",  15.7,      89.7,     92.4
+) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    inv_sim = 100 * solve_er(er_mods[["Chen_2025_hemoporfin_investigator_rating"]],
+                             "prob_investigator_rating", auc),
+    pat_sim = 100 * solve_er(er_mods[["Chen_2025_hemoporfin_patient_rating"]],
+                             "prob_patient_rating", auc)
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::mutate(inv_diff = inv_sim - inv_pub, pat_diff = pat_sim - pat_pub)
+
+table_s2 |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 1))) |>
+  dplyr::rename("AUC0-30min (h*ug/mL)" = auc,
+                "Investigator published (%)" = inv_pub, "Investigator model (%)" = inv_sim,
+                "Patient published (%)" = pat_pub, "Patient model (%)" = pat_sim,
+                "Investigator diff (pp)" = inv_diff, "Patient diff (pp)" = pat_diff) |>
+  knitr::kable(caption = "Predicted efficacy under each regimen (Chen 2025 Table S2).")
+```
+
+| Regimen | AUC0-30min (h\*ug/mL) | Investigator published (%) | Patient published (%) | Investigator model (%) | Patient model (%) | Investigator diff (pp) | Patient diff (pp) |
+|:---|---:|---:|---:|---:|---:|---:|---:|
+| Empirical 5 mg/kg | 12.4 | 38.9 | 32.4 | 38.8 | 32.4 | -0.1 | 0.0 |
+| Standardised 6 mg/kg | 14.9 | 82.2 | 84.8 | 82.2 | 84.8 | 0.0 | 0.0 |
+| Stratified 7/6/5 mg/kg | 15.5 | 88.2 | 90.0 | 88.2 | 90.9 | 0.0 | 0.9 |
+| Standardised 190 mg/m^2 BSA | 15.7 | 89.7 | 92.4 | 89.7 | 92.4 | 0.0 | 0.0 |
+
+Predicted efficacy under each regimen (Chen 2025 Table S2). {.table}
+
+``` r
+
+
+# Seven of the eight cells agree to better than 0.1 percentage points. The
+# eighth -- the patient rating at 15.5 h*ug/mL -- is 1.0 pp away and is
+# discussed in Assumptions and deviations below; 0.15 pp gates the rest
+# exactly, and 1.1 pp bounds that one cell.
+stopifnot(max(abs(table_s2$inv_diff)) < 0.15)
+stopifnot(max(abs(table_s2$pat_diff[table_s2$Regimen != "Stratified 7/6/5 mg/kg"])) < 0.15)
+stopifnot(abs(table_s2$pat_diff[table_s2$Regimen == "Stratified 7/6/5 mg/kg"]) < 1.1)
+```
+
+### Exposure-response curves
+
+``` r
+
+auc_grid <- seq(5, 25, by = 0.25)
+er_curves <- er_published |>
+  dplyr::filter(model %in% c("Chen_2025_hemoporfin_investigator_rating",
+                             "Chen_2025_hemoporfin_patient_rating")) |>
+  dplyr::rowwise() |>
+  dplyr::reframe(
+    endpoint = endpoint,
+    auc = auc_grid,
+    prob = vapply(auc_grid, \(a) solve_er(er_mods[[model]], output, a), 0)
+  )
+
+ggplot(er_curves, aes(auc, 100 * prob, colour = endpoint)) +
+  geom_vline(xintercept = table_s2$auc, linetype = 3, colour = "grey50") +
+  geom_line(linewidth = 0.9) +
+  labs(x = "AUC(0-30min) (h*ug/mL)", y = "Probability of a high rating (%)",
+       colour = NULL) +
+  theme_bw() +
+  theme(legend.position = "bottom")
+```
+
+![Exposure-response for the two statistically significant endpoints
+(replicates Figure 4 of Chen 2025). Vertical lines mark the mean
+AUC(0-30min) achieved under each regimen in Table
+S2.](Chen_2025_hemoporfin_files/figure-html/fig-er-1.png)
+
+Exposure-response for the two statistically significant endpoints
+(replicates Figure 4 of Chen 2025). Vertical lines mark the mean
+AUC(0-30min) achieved under each regimen in Table S2.
+
+The vertical lines show why the paper argues the exposure gap matters
+clinically: moving from the empirical 5 mg/kg regimen to any of the
+three proposed regimens crosses the steep part of both curves, roughly
+doubling the predicted probability of a high efficacy rating.
+
+## Variability with between-subject random effects
+
+The checks above deliberately use typical values so that they cannot
+depend on rxode2’s random draw. This section adds the published IIV to
+compare the *spread* of exposures, which is the quantity Chen 2025
+reports as a %CV.
+
+``` r
+
+sim_ped_iiv <- solve_cohort(pediatric, 5, model = pk_mod)
+sim_ad_iiv  <- solve_cohort(adult, 5, model = pk_mod)
+
+iiv_cv <- dplyr::bind_rows(sim_ped_iiv, sim_ad_iiv) |>
+  dplyr::group_by(cohort, id) |>
+  dplyr::summarise(cmax = max(Cc_ug),
+                   auc = sum(diff(time) * (head(Cc_ug, -1) + tail(Cc_ug, -1)) / 2),
+                   .groups = "drop") |>
+  dplyr::group_by(cohort) |>
+  dplyr::summarise(`Cmax CV%` = 100 * sd(cmax) / mean(cmax),
+                   `AUC0-30min CV%` = 100 * sd(auc) / mean(auc), .groups = "drop")
+
+iiv_cv |>
+  dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 1))) |>
+  dplyr::rename(Cohort = cohort) |>
+  knitr::kable(caption = "Simulated variability with IIV (Chen 2025 Results 3.4 reports Cmax 24.8% pediatric / 20.4% adult and AUC 13.5% / 11.9%).")
+```
+
+| Cohort    | Cmax CV% | AUC0-30min CV% |
+|:----------|---------:|---------------:|
+| Adult     |     16.8 |           16.7 |
+| Pediatric |     19.5 |           19.5 |
+
+Simulated variability with IIV (Chen 2025 Results 3.4 reports Cmax 24.8%
+pediatric / 20.4% adult and AUC 13.5% / 11.9%). {.table}
+
+``` r
+
+
+# A cohort-derived spread depends on the random draw and therefore on the solver
+# thread count, so this is bounded by magnitude only -- never by an ordering or
+# a sign. The published values span 11.9-24.8%; 45% still goes red if an IIV
+# variance were transcribed as an SD (which would roughly triple these).
+stopifnot(all(iiv_cv$`Cmax CV%` < 45), all(iiv_cv$`AUC0-30min CV%` < 45))
+```
+
+The simulated spreads land between the two published columns, and their
+*pattern* is again diagnostic of the observed-versus-EBE split discussed
+above. Chen 2025 reports a Cmax %CV roughly twice its AUC %CV (24.8
+against 13.5 in children), whereas the model – in which both metrics are
+driven by the same three random effects over the same window – produces
+near-identical spreads (18.5 against 18.6). An observed Cmax carries
+assay and residual variability that an empirical Bayes AUC does not, and
+Bayesian shrinkage pulls the AUC estimates toward the typical value; the
+two published columns are therefore not on a common footing, exactly as
+with the mean values.
+
+## Assumptions and deviations
+
+**Values taken from the final table, not the control stream.** Data S2
+prints a `$THETA` / `$OMEGA` block whose numbers (CL 11.2, Q2 0.374, Q3
+0.129, V1 3.5, V2 0.668, V3 1.33, `theta1` 0.442, `sigma_prop` 0.268,
+`sigma_add` 0.236, `theta_study` -0.151) are *initial* estimates. The
+control stream supplies the model **structure**; all values come from
+Table 2.
+
+**IIV scale.** Table 2 reports between-subject variability as a %CV. It
+is encoded as a log-scale variance with `omega^2 = log(CV^2 + 1)`. The
+alternative reading (`omega^2 = CV^2`) differs by under 1.5% in variance
+at these magnitudes and does not affect any conclusion here. The Data S2
+`$OMEGA` initial values (0.0178, 0.0404, 0.048) confirm the reported
+column is a CV and the `$OMEGA` entries are variances – read as SDs they
+would imply CVs near 2%, an order of magnitude away from Table 2.
+
+**Zero-variance etas are omitted, not fixed at zero.** The control
+stream carries an ETA on all six disposition parameters but fixes the
+Q3, V2 and V3 elements to `0 FIX`, which is why Table 2 reports IIV for
+CL, Q2 and V1 only. Those three are omitted from `ini()` rather than
+written as `fixed(0)`: a zero diagonal makes OMEGA singular and rxode2’s
+Cholesky sampler then fails.
+
+**Concentration units.** The control stream sets `S1 = V1/1000`, which
+with doses in mg and volumes in L puts predicted concentrations – and
+hence the 0.240 ng/mL additive residual and the 2 ng/mL LLOQ – on the
+**ng/mL** scale. The model therefore computes
+`Cc <- 1000 * central / vc`. The paper reports exposure metrics in ug/mL
+and h\*ug/mL, so this vignette divides by 1000 before computing AUC.
+
+**The M3 likelihood is not reproduced.** A large proportion of the
+pediatric 24-hour samples were below the LLOQ, and the source was fitted
+with Beal’s M3 method: the control stream’s `$ERROR` block switches to
+`F_FLAG=1` and a `PHI()` censoring likelihood below 2 ng/mL. Only the
+above-LLOQ branch – the combined proportional plus additive residual –
+is encoded, because M3 is an *estimation* device with no counterpart in
+a forward simulation. Simulating an observation below 2 ng/mL is outside
+the assay’s range and should be treated as censored by the user.
+
+**The virtual cohort is reconstructed, not published.** Chen 2025 gives
+medians and ranges (Table 1), not per-subject covariates. The
+deterministic split-lognormal lattice reproduces each arm’s median,
+minimum and maximum exactly and gives weight, height and age one shared
+lattice position per subject so that BMI stays coherent, but the true
+joint distribution of the 24 patients is unknown. Sex is assigned in an
+alternating 50/50 pattern rather than the actual 10F/14M and 8F/8M
+splits.
+
+**Fat-free mass equation.** Chen 2025 cites reference \[20\] for FFM,
+which is Al-Sallami et al. 2015 – the *pediatric* equation – not the
+adult Janmahasatian equation. Check 1 confirms this choice: applying
+Al-Sallami to the published adult demographics returns a median FFM
+within 1.5 kg of the 46.1 kg the paper fixed.
+
+**Body surface area formula.** Table 3’s 190 mg/m^2 regimen requires a
+BSA formula that Chen 2025 does not state. Du Bois is used here.
+Mosteller changes the mean pediatric BSA in this cohort by well under a
+percent and does not change any conclusion.
+
+**The study effect is applied to the pediatric arm.**
+`STUDY_PEDIATRIC = 1` gives `F1 = 0.825`. Chen 2025 states that its
+dose-selection simulations proceeded *without* correcting for this
+effect, i.e. the offset was left in, which is what is done here. A user
+wishing to see the pure allometric prediction should set the covariate
+to 0.
+
+**Cmax is a documented deviation, and the disagreement is internal to
+the paper.** Chen 2025 reports the pediatric-versus-adult gap as 18.7%
+for Cmax and 30.5% for AUC(0-30min). In a linear model over a fixed
+window these two must move together, and in this simulation they do –
+30.6% and 30.8%, agreeing to 0.2 percentage points. Table 3 shows the
+same split: its published Cmax and AUC bias columns differ by about 14
+percentage points for the flat 6 mg/kg regimen, whereas the simulated
+columns agree to 0.1. Figure 2’s caption resolves it – panel (a)
+compares **observed** Cmax while panel (b) compares **EBEs** of
+AUC(0-30min). An observed peak depends on the sampling schedule and on
+the actual infusion duration, which the Data S2 example data set shows
+varied between subjects (16 minutes for subject 101, 20 for subject
+102). The Cmax rows are therefore reported and excluded from the gate
+rather than tuned; every AUC row, and the ranking of all three proposed
+regimens, reproduces.
+
+**One Table S2 cell appears to be a typographical error.** Seven of the
+eight published probabilities in Table S2 are reproduced to better than
+0.1 percentage points by `expit(beta0 + beta1 * AUC)` using the paper’s
+own Table S1 coefficients and its own tabulated AUC values. The eighth –
+the patient rating under the stratified 7/6/5 mg/kg regimen – is
+published as 90.0% where the arithmetic gives 90.9%. The investigator
+cell in the same column reproduces exactly (88.2%), so the AUC input for
+that column is right and the discrepancy is confined to the one number.
+A transposed digit (90.0 for 90.9) is the most likely explanation. The
+value is reported as published and bounded at 1.1 percentage points
+rather than corrected.
+
+**The three non-significant endpoints are shipped but should not be
+extrapolated.** Only the investigator- and patient-rating endpoints
+reached significance. The `almost_cured` model in particular has an
+intercept of -29.7 and a slope of 1.98 with a 95% CI of 0.372 to 5.63,
+the signature of near-separation in 24 patients; its fitted curve is
+effectively a step function. The `any_improvement` model has the only
+negative slope of the five, which is a sampling artefact rather than
+evidence that exposure harms response. Both are extracted verbatim,
+because Table S1 reports point estimates for all five endpoints and
+tuning a published estimate toward an expected direction is not
+permitted.
+
+**Placeholder residual on the exposure-response models.** The source
+likelihood is Bernoulli, which has no sigma, and no random effects were
+estimated. Each ER model carries `addSd_prob_* <- fixed(0.001)` purely
+so rxode2 has an error model to attach to the typical-value probability.
+It is not a published quantity.
+
+**Convention deviation.** The five ER models use `prob_<endpoint>` as
+the observation variable rather than the canonical `Cc`. `Cc` is
+reserved for drug concentrations, and these models have no PK layer and
+no ODE – the output is a probability. This matches the existing
+`Chen_2021_lorlatinib_*` family in nlmixr2lib, which carries the same
+[`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+warning for the same reason.
+
+**No covariates other than size and study were tested.** Chen 2025
+states explicitly (Discussion, limitations) that with 24 pediatric
+patients no covariate screening beyond allometry and the study effect
+was performed. Nothing is inferred here about sex, race, renal or
+hepatic function.

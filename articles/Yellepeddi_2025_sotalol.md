@@ -1,0 +1,823 @@
+# Sotalol (Yellepeddi 2025)
+
+## Model and source
+
+- Citation: Yellepeddi VK, Ismail M, Bunch TJ, Deering TF, Holubkov R,
+  Kennedy R, Mittal S, Perez M, Piccini JP, Pokharel P, Savona S, Verma
+  N, Steinberg B, Watt K. (2025). Population Pharmacokinetics and
+  Pharmacodynamics of Sotalol Following Expedited Intravenous Loading in
+  Patients With Atrial Arrhythmias. CPT: Pharmacometrics & Systems
+  Pharmacology 14(4):658-666. <doi:10.1002/psp4.13302>. PMCID
+  PMC12001255. Final NONMEM control stream: Supplementary Datafile S1
+  (file PSP4-14-658-s004.docx of the publisher supplementary bundle).
+- Description: Two-compartment population PK model with first-order oral
+  absorption for sotalol in 22 adults with atrial fibrillation or atrial
+  flutter (AFIB/AFL) enrolled in the PK/PD substudy of the PEAKS
+  Registry, who received an expedited 1 h intravenous loading dose
+  followed by two oral maintenance doses 12 h apart. Creatinine
+  clearance is a power covariate on clearance (CL \* \[CRCL/92.4\]^0.65)
+  and body weight is a power covariate on the central volume (Vc \*
+  \[WT/104\]^1.2). Relative oral bioavailability was estimated above
+  unity (Foral = 1.6), which the authors flag as an unexplained finding
+  requiring further study. Interindividual variability is carried on Ka,
+  CL and Vc; residual error is proportional. Plasma concentrations are
+  returned in ng/mL (the source control stream scales the central
+  compartment as S2 = Vc/1000 with doses in mg and volumes in L). The
+  file also packages the paper’s three concentration-QTc linear
+  regressions, which were fitted in R (not in NONMEM) against the
+  individual model-predicted sotalol concentrations at the times of the
+  Bazett-corrected QTc observations, and are returned as the derived
+  outputs QTc (ms), dQTc (change from baseline, ms) and pctQTc (percent
+  change from baseline). They carry no residual error term because the
+  source reports only slope, intercept, R^2 and p-value; the paper
+  applies them deterministically to simulated concentrations in its
+  Monte Carlo dosing evaluation (Methods 2.7).
+- Article: <https://doi.org/10.1002/psp4.13302> (open access; PMCID
+  PMC12001255)
+- Supplement: publisher supplementary bundle, in particular **Datafile
+  S1** (the final NONMEM control stream), **Table S2** (sequential
+  covariate model development) and **Figures S2 / S3** (Monte Carlo QTc
+  results).
+
+Sotalol is a class III antiarrhythmic used to maintain sinus rhythm in
+atrial fibrillation / atrial flutter (AFIB/AFL). Its use is limited by
+QT prolongation, which historically required a multi-day inpatient oral
+loading. The 2020 FDA approval of an intravenous loading indication was
+intended to compress that stay to a one-day outpatient procedure. This
+paper is the first population PK/PD analysis of the expedited
+IV-load-then-oral-maintenance regimen in patients (rather than healthy
+volunteers), using the PK/PD substudy of the PEAKS Registry.
+
+The packaged model has two layers, matching the paper:
+
+1.  a **two-compartment population PK model** with first-order oral
+    absorption, fitted in NONMEM 7.5 (ADVAN4/TRANS4), with creatinine
+    clearance on CL and body weight on Vc; and
+2.  three **linear concentration-QTc regressions**, fitted in R against
+    the individual model-predicted concentrations at the times of the
+    Bazett-corrected QTc observations. These are returned as the
+    deterministic derived outputs `QTc`, `dQTc` and `pctQTc`.
+
+## Population
+
+The PK/PD substudy enrolled 22 of the 167 PEAKS Registry patients (10 US
+sites, February 2022 to June 2023). All 22 received one IV loading dose
+infused over 1 h followed by two oral maintenance doses, and contributed
+99 plasma sotalol concentrations (all above the 5 ng/mL LLOQ) and 104
+Bazett-corrected QTc values (Yellepeddi 2025 Results 3.1 and Table 1).
+
+The cohort is older, male-predominant and heavy: median age 69 years
+(48-79), 19 male / 3 female, median weight 104 kg (68.7-185), median
+Cockcroft-Gault creatinine clearance 92.4 mL/min (64.3-306). Twenty of
+22 self-identified as white and race was therefore not testable as a
+covariate. Median baseline QTc was 435 ms (386-482) and median post-dose
+QTc 459 ms (388-548); four patients had a baseline QRS above 120 ms and
+were allowed an extra 50 ms of QTc. Enrollment deliberately targeted
+normal renal function (CrCl above 60 mL/min), so the model is **not
+informed in renal impairment** even though sotalol labelling reduces the
+dose there.
+
+The same information is available programmatically via the model’s
+`population` metadata:
+
+``` r
+
+pop <- rxode2::rxode(readModelDb("Yellepeddi_2025_sotalol"))$population
+str(pop[c("species", "n_subjects", "weight_median", "renal_function")])
+#> List of 4
+#>  $ species       : chr "human"
+#>  $ n_subjects    : int 22
+#>  $ weight_median : chr "104 kg (mean 107 +/- 29.9)"
+#>  $ renal_function: chr "Cockcroft-Gault creatinine clearance 116 +/- 57.4 mL/min (median 92.4, range 64.3-306); BSA-normalized 87.9 +/-"| __truncated__
+```
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Yellepeddi_2025_sotalol.R`.
+The table collects them here for review. `T2` = Table 2 (final
+estimates, printed to one decimal place), `T3` = Table 3 (bootstrap
+summary, whose first column repeats the final estimate), `S1` =
+Supplementary Datafile S1 (the final NONMEM control stream, whose
+records carry two significant figures).
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| Structure: 2-compartment, first-order oral absorption, no lag time | n/a | Results 3.2; S1 `$SUBROUTINES ADVAN4 TRANS4` |
+| `lka` (Ka) | 0.16 1/h | S1 `$THETA (0, 0.16) ; KA`; T2 and T3 print 0.2 |
+| `lcl` (CL) | 9.5 L/h | T2 = T3 = S1 |
+| `lvc` (Vc) | 38.2 L | T2 = T3 (S1 `38`) |
+| `lq` (Q) | 71.3 L/h | T2 = T3 (S1 `71`) |
+| `lvp` (Vp) | 89.1 L | T2 = T3 (S1 `89`) |
+| `lfdepot` (Foral) | 1.6 | T2 and S1 `$THETA (0, 1.6) ; F1`; T3 and Discussion print 1.5 |
+| `e_crcl_cl` | 0.65 | S1 `$THETA (0, 0.65) ; CRCL on CL`; T2 and T3 print 0.7 |
+| `e_wt_vc` | 1.2 | S1 `$THETA (0, 1.2) ; WT on V` and T3; T2 prints 1.1 |
+| CL covariate form `CL * (CRCL/92.4)^theta` | n/a | T2 row label; S1 `CRCLCOV = (CRCL/92.4)**THETA(8)` |
+| Vc covariate form `Vc * (WT/104)^theta` | n/a | T2 row label; S1 `WTCOVVOL = (WTKG/104)**THETA(7)` |
+| `etalka` | 0.227149 | T2 `IIV - Ka (%) = 50.5`; `log(1 + 0.505^2)`; S1 `$OMEGA 0.23` |
+| `etalcl` | 0.068366 | T2 `IIV - CL(%) = 26.6`; `log(1 + 0.266^2)`; S1 `$OMEGA 0.068` |
+| `etalvc` | 0.208106 | T2 `IIV - Vc (%) = 48.1`; `log(1 + 0.481^2)`; S1 `$OMEGA 0.21` |
+| `propSd` | 0.151987 | T2 `RUV (sigma^2) = 0.0231`; `sqrt(0.0231)`; S1 `$SIGMA 0.023`, `Y = F + F*EPS(1)` |
+| Concentration scaling to ng/mL | n/a | S1 `S2 = V2/1000` with doses in mg and volumes in L |
+| `e0_qtc` / `e_sotalol_qtc` | 440 ms / 0.015 ms per ng/mL | Results 3.3 (R^2 = 0.1, p = 0.0011) |
+| `e0_dqtc` / `e_sotalol_dqtc` | 11 ms / 0.019 ms per ng/mL | Results 3.3 (R^2 = 0.29, p = 1.1e-07) |
+| `e0_pctqtc` / `e_sotalol_pctqtc` | 1.7 % / 0.0045 % per ng/mL | Results 3.3 (R^2 = 0.27, p = 1.6e-08) |
+
+### Establishing the IIV scale and the control-stream provenance
+
+Table 2 reports interindividual variability as a bare percentage, which
+is ambiguous between a log-scale standard deviation and a log-normal
+coefficient of variation. Supplementary Datafile S1 settles it, because
+its `$OMEGA` and `$SIGMA` records could not match by chance under the
+wrong reading:
+
+``` r
+
+pub_cv   <- c(CL = 0.266, Vc = 0.481, Ka = 0.505)   # Table 2 IIV (%)
+as_cv    <- log(1 + pub_cv^2)                        # omega^2 if the % is a CV
+as_sd    <- pub_cv^2                                 # omega^2 if the % is an SD
+s1_omega <- c(CL = 0.068, Vc = 0.21, Ka = 0.23)      # Datafile S1 $OMEGA records
+
+data.frame(
+  parameter        = names(pub_cv),
+  `Datafile S1`    = s1_omega,
+  `omega2 if CV`   = signif(as_cv, 5),
+  `omega2 if SD`   = signif(as_sd, 5),
+  check.names      = FALSE
+) |>
+  knitr::kable(caption = "The S1 $OMEGA records match the CV reading, not the SD reading.")
+```
+
+|     | parameter | Datafile S1 | omega2 if CV | omega2 if SD |
+|:----|:----------|------------:|-------------:|-------------:|
+| CL  | CL        |       0.068 |     0.068365 |     0.070756 |
+| Vc  | Vc        |       0.210 |     0.208120 |     0.231360 |
+| Ka  | Ka        |       0.230 |     0.227160 |     0.255020 |
+
+The S1 \$OMEGA records match the CV reading, not the SD reading.
+{.table}
+
+``` r
+
+
+# S1's records round to the CV-derived variances at two significant figures,
+# and do not round to the SD-derived ones. This is a deterministic check on
+# transcribed constants, so it is asserted exactly.
+stopifnot(
+  all(signif(as_cv, 2) == s1_omega),
+  !any(signif(as_sd, 2) == s1_omega),
+  signif(0.0231, 2) == 0.023        # T2 RUV sigma^2 vs S1 $SIGMA
+)
+```
+
+The same argument establishes that S1’s `$THETA` records are the
+**final** estimates rounded to two significant figures rather than
+hand-chosen starting values, which is why `Ka = 0.16` and the CrCl
+exponent `0.65` are taken from S1 (Table 2’s `0.2` and `0.7` are the
+one-decimal renderings of the same numbers) and why the two Table 2 /
+Table 3 conflicts are resolved as `Foral = 1.6` and `WT-on-Vc = 1.2`.
+See “Assumptions and deviations” below.
+
+## Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+reproduces the five Monte Carlo dosing regimens the paper simulated
+(Methods 2.7 and Figures S2 / S3), using covariate distributions that
+approximate the published PEAKS PK-substudy demographics.
+
+``` r
+
+# `set.seed()` seeds R's RNG. It does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned PER SOLVER THREAD -- so this cohort is
+# reproducible on this machine and different on a machine with a different
+# thread count. Every assertion downstream is written to hold for ANY cohort
+# the model can produce (pattern 12 of known-vignette-failure-patterns.md).
+set.seed(20250107)
+
+n_per_arm <- 200L   # never exceed 200 per arm
+
+# The five regimens of Methods 2.7 / Figure S2. NOTE: Methods 2.7 describes the
+# fifth as "125 mg IV + two 80 mg oral doses"; the Figure S2 and S3 panel titles
+# read "125 mg IV + 120 mg Oral". The figures are the reported result, so the
+# figure's 120 mg is used here and the discrepancy is recorded in the Errata.
+regimens <- tibble::tribble(
+  ~regimen,                          ~iv,   ~po,  ~renal,
+  "60 mg IV + 80 mg PO, normal",     60,    80,   "normal",
+  "75 mg IV + 80 mg PO, normal",     75,    80,   "normal",
+  "82.5 mg IV + 80 mg PO, CrCl<90",  82.5,  80,   "low",
+  "90 mg IV + 120 mg PO, normal",    90,    120,  "normal",
+  "125 mg IV + 120 mg PO, CrCl<90",  125,   120,  "low"
+)
+
+# Truncated-lognormal draw helper (rejection-free: draw then clamp by resampling
+# the quantile range), so weights and clearances stay inside the observed range.
+rtrunc_lnorm <- function(n, med, sdlog, lo, hi) {
+  p_lo <- plnorm(lo, log(med), sdlog)
+  p_hi <- plnorm(hi, log(med), sdlog)
+  qlnorm(runif(n, p_lo, p_hi), log(med), sdlog)
+}
+
+# Dosing / observation schedule (Methods 2.2): 1 h IV infusion at t = 0, first
+# oral dose after a 4 h minimum delay (t = 5 h), second oral dose 12 h later
+# (t = 17 h). Trough times are immediately before the next dose, and 12 h after
+# the last dose.
+t_iv_inf   <- 1
+t_po1      <- 5
+t_po2      <- 17
+trough_times <- c(CTrough_IV = t_po1, CTrough_Oral1 = t_po2, CTrough_Oral2 = 29)
+
+obs_grid <- sort(unique(c(0, seq(0, 30, by = 0.25), seq(32, 96, by = 2),
+                          trough_times)))
+
+make_cohort <- function(n, regimen, iv, po, renal, id_offset = 0L) {
+  subj <- tibble::tibble(
+    id      = id_offset + seq_len(n),
+    regimen = regimen,
+    WT      = rtrunc_lnorm(n, med = 104, sdlog = 0.25, lo = 68.7, hi = 185),
+    # "Normal CrCl" is not defined numerically in the paper; it is taken here as
+    # the observed PEAKS PK-substudy distribution (Table 1: median 92.4, range
+    # 64.3-306 mL/min). The reduced-renal arms use the paper's own stated
+    # 60-90 mL/min band.
+    CRCL    = if (renal == "normal") {
+      rtrunc_lnorm(n, med = 92.4, sdlog = 0.35, lo = 64.3, hi = 306)
+    } else {
+      runif(n, 60, 90)
+    }
+  )
+  dosing <- dplyr::bind_rows(
+    subj |> dplyr::mutate(time = 0,     amt = iv, rate = iv / t_iv_inf, evid = 1L, cmt = "central"),
+    subj |> dplyr::mutate(time = t_po1, amt = po, rate = 0,             evid = 1L, cmt = "depot"),
+    subj |> dplyr::mutate(time = t_po2, amt = po, rate = 0,             evid = 1L, cmt = "depot")
+  )
+  obs <- subj |>
+    tidyr::crossing(time = obs_grid) |>
+    dplyr::mutate(amt = NA_real_, rate = NA_real_, evid = 0L, cmt = "central")
+  dplyr::bind_rows(dosing, obs) |>
+    # canonical event columns first, covariates after
+    dplyr::select(id, time, amt, rate, evid, cmt, WT, CRCL, regimen) |>
+    dplyr::arrange(id, time, dplyr::desc(evid))
+}
+
+events <- do.call(
+  dplyr::bind_rows,
+  lapply(seq_len(nrow(regimens)), function(i) {
+    make_cohort(
+      n = n_per_arm, regimen = regimens$regimen[i], iv = regimens$iv[i],
+      po = regimens$po[i], renal = regimens$renal[i],
+      id_offset = (i - 1L) * n_per_arm
+    )
+  })
+)
+
+# Disjoint IDs across arms are mandatory: duplicate IDs silently merge into one
+# subject that receives the summed dose.
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+stopifnot(nrow(dplyr::distinct(events, id)) == n_per_arm * nrow(regimens))
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("Yellepeddi_2025_sotalol")
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen")) |>
+  as.data.frame()
+
+sim_obs <- sim |> dplyr::filter(!is.na(Cc))
+stopifnot(all(is.finite(sim_obs$Cc)), all(sim_obs$Cc >= 0))
+```
+
+## Structural verification against a closed-form solution
+
+Before comparing against the paper, confirm the packaged ODE system
+really is the two-compartment model of Datafile S1 and that the
+`S2 = V2/1000` scaling gives ng/mL. This is a deterministic comparison
+of the solver against an independently written analytic solution, so it
+is asserted tightly.
+
+``` r
+
+mod_typ <- rxode2::zeroRe(mod)
+
+# Typical-subject parameters at the reference covariates.
+cl <- 9.5; vc <- 38.2; q <- 71.3; vp <- 89.1
+kel <- cl / vc; k12 <- q / vc; k21 <- q / vp
+s <- kel + k12 + k21
+alpha <- (s + sqrt(s^2 - 4 * kel * k21)) / 2
+beta  <- (s - sqrt(s^2 - 4 * kel * k21)) / 2
+
+# 1 h zero-order IV infusion of D mg into the central compartment, ng/mL.
+conc_iv <- function(t, D, Tinf = 1) {
+  k0 <- D / Tinf
+  A <- (k0 / vc) * (k21 - alpha) / (alpha * (beta - alpha))
+  B <- (k0 / vc) * (k21 - beta)  / (beta  * (alpha - beta))
+  1000 * ifelse(
+    t <= Tinf,
+    A * (1 - exp(-alpha * t)) + B * (1 - exp(-beta * t)),
+    A * (1 - exp(-alpha * Tinf)) * exp(-alpha * (t - Tinf)) +
+      B * (1 - exp(-beta  * Tinf)) * exp(-beta  * (t - Tinf))
+  )
+}
+
+ev_iv <- data.frame(
+  id = 1L, time = c(0, seq(0, 24, by = 0.25)),
+  amt = c(92.3, rep(NA_real_, 97)), rate = c(92.3, rep(NA_real_, 97)),
+  evid = c(1L, rep(0L, 97)), cmt = c("central", rep("central", 97)),
+  WT = 104, CRCL = 92.4
+)
+sim_iv <- rxode2::rxSolve(mod_typ, ev_iv) |>
+  as.data.frame() |>
+  dplyr::filter(!is.na(Cc))
+#> ℹ omega/sigma items treated as zero: 'etalka', 'etalcl', 'etalvc'
+ref_iv <- conc_iv(sim_iv$time, D = 92.3)
+
+rel_err <- max(abs(sim_iv$Cc[ref_iv > 1] - ref_iv[ref_iv > 1]) / ref_iv[ref_iv > 1])
+thalf_beta <- log(2) / beta
+
+cat(sprintf("max relative solve-vs-closed-form error : %.2e\n", rel_err))
+#> max relative solve-vs-closed-form error : 1.20e-06
+cat(sprintf("terminal half-life (log(2)/beta)        : %.2f h\n", thalf_beta))
+#> terminal half-life (log(2)/beta)        : 9.91 h
+cat(sprintf("end-of-infusion Cc, 92.3 mg over 1 h    : %.0f ng/mL\n", max(sim_iv$Cc)))
+#> end-of-infusion Cc, 92.3 mg over 1 h    : 1203 ng/mL
+
+stopifnot(
+  rel_err < 1e-4,                       # pure numerical error; no cohort noise
+  abs(thalf_beta - 9.91) < 0.05
+)
+```
+
+The solver reproduces the analytic two-compartment infusion profile to
+better than 1e-4, so the compartment structure, the infusion handling
+and the ng/mL scaling are all as transcribed. The end-of-infusion
+concentration for a median 92.3 mg IV dose (about 1200 ng/mL), and about
+1950 ng/mL for the largest 150 mg IV dose administered, bracket the
+paper’s reported observed range of 220-1900 ng/mL with the maximum after
+the IV load (Discussion, paragraph 3).
+
+## Covariate effects
+
+The Discussion states the direction and rough magnitude of both
+covariate effects. Typical-value predictions are deterministic, so these
+are checked exactly against the packaged covariate equations.
+
+``` r
+
+cov_check <- tibble::tibble(
+  quantity = c("CL at CrCl 64.3 mL/min", "CL at CrCl 92.4 mL/min (reference)",
+               "CL at CrCl 306 mL/min",
+               "Vc at WT 68.7 kg", "Vc at WT 104 kg (reference)",
+               "Vc at WT 185 kg"),
+  value = c(9.5 * (c(64.3, 92.4, 306) / 92.4)^0.65,
+            38.2 * (c(68.7, 104, 185) / 104)^1.2),
+  units = c(rep("L/h", 3), rep("L", 3))
+)
+knitr::kable(cov_check, digits = 2,
+             caption = "Typical-value covariate effects from the packaged equations.")
+```
+
+| quantity                           | value | units |
+|:-----------------------------------|------:|:------|
+| CL at CrCl 64.3 mL/min             |  7.51 | L/h   |
+| CL at CrCl 92.4 mL/min (reference) |  9.50 | L/h   |
+| CL at CrCl 306 mL/min              | 20.69 | L/h   |
+| Vc at WT 68.7 kg                   | 23.23 | L     |
+| Vc at WT 104 kg (reference)        | 38.20 | L     |
+| Vc at WT 185 kg                    | 76.25 | L     |
+
+Typical-value covariate effects from the packaged equations. {.table}
+
+``` r
+
+
+stopifnot(
+  # Both effects are monotone increasing, as the paper describes.
+  all(diff(cov_check$value[1:3]) > 0),
+  all(diff(cov_check$value[4:6]) > 0),
+  # The reference covariates return the reference parameter values exactly.
+  abs(cov_check$value[2] - 9.5) < 1e-9,
+  abs(cov_check$value[5] - 38.2) < 1e-9
+)
+```
+
+The paper’s Discussion quotes CL of about 5 and 35 L/h and Vc of about
+19 and 70 L for the patients at the extremes of CrCl and weight. Those
+are *post hoc individual* (empirical Bayes) estimates for two named
+patients, not typical values – they include that subject’s eta – so they
+are not a check on the typical-value equations above and are not
+asserted here.
+
+## Replicate published figures
+
+### Concentration-time profiles (compare Figure 1A and the Figure 2 pcVPC)
+
+``` r
+
+sim_obs |>
+  dplyr::filter(time <= 40) |>
+  dplyr::group_by(regimen, time) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~regimen) +
+  labs(x = "Time (h)", y = "Sotalol concentration (ng/mL)",
+       title = "Simulated sotalol concentrations, median and 5th-95th percentiles",
+       caption = paste("Compare Figure 1A (observed concentrations, 220-1900 ng/mL)",
+                       "and Figure 2 (pcVPC) of Yellepeddi 2025."))
+```
+
+![](Yellepeddi_2025_sotalol_files/figure-html/figure-1a-1.png)
+
+``` r
+
+peak_by_arm <- sim_obs |>
+  dplyr::group_by(regimen, id) |>
+  dplyr::summarise(cmax = max(Cc), .groups = "drop") |>
+  dplyr::group_by(regimen) |>
+  dplyr::summarise(median_cmax = median(cmax), q95_cmax = quantile(cmax, 0.95),
+                   .groups = "drop")
+knitr::kable(peak_by_arm, digits = 0,
+             caption = "Simulated peak sotalol concentration by regimen (ng/mL).")
+```
+
+| regimen                         | median_cmax | q95_cmax |
+|:--------------------------------|------------:|---------:|
+| 125 mg IV + 120 mg PO, CrCl\<90 |        1748 |     2198 |
+| 60 mg IV + 80 mg PO, normal     |         901 |     1288 |
+| 75 mg IV + 80 mg PO, normal     |        1035 |     1308 |
+| 82.5 mg IV + 80 mg PO, CrCl\<90 |        1132 |     1473 |
+| 90 mg IV + 120 mg PO, normal    |        1343 |     1870 |
+
+Simulated peak sotalol concentration by regimen (ng/mL). {.table}
+
+``` r
+
+
+# The paper observed 220-1900 ng/mL across IV doses of 45.6-150 mg and oral
+# doses of 80-120 mg. The simulated regimens span 60-125 mg IV, so their
+# per-subject peaks should sit inside a generous envelope around that range.
+# Bound chosen well outside the observed cohort spread, and still red if a
+# volume, dose or unit were mis-transcribed (which moves peaks by 10x).
+stopifnot(
+  all(peak_by_arm$median_cmax > 300),
+  all(peak_by_arm$q95_cmax < 4000)
+)
+```
+
+### Monte Carlo QTc at trough (Figures S2 and S3)
+
+The paper’s headline safety result: at the trough after each of the
+three doses, in every simulated regimen and renal-function population,
+**100% of patients had a QTc below 500 ms** and **100% had a change in
+QTc from baseline below 20%** (Results 3.3, Figures S2 and S3). Those
+are absolute thresholds stated by the paper, so they can be asserted
+directly.
+
+``` r
+
+trough <- sim_obs |>
+  dplyr::filter(time %in% trough_times) |>
+  dplyr::mutate(
+    trough = factor(names(trough_times)[match(time, trough_times)],
+                    levels = names(trough_times))
+  )
+
+ggplot(trough, aes(trough, QTc)) +
+  geom_boxplot(outlier.size = 0.5) +
+  geom_hline(yintercept = 500, colour = "red", linetype = "dashed") +
+  facet_wrap(~regimen) +
+  labs(x = NULL, y = "QTc (ms)",
+       title = "QTc at the trough after each dose",
+       caption = "Replicates Figure S2 of Yellepeddi 2025 (red dashed line: 500 ms).")
+```
+
+![](Yellepeddi_2025_sotalol_files/figure-html/figure-s2-1.png)
+
+``` r
+
+ggplot(trough, aes(trough, pctQTc)) +
+  geom_boxplot(outlier.size = 0.5) +
+  geom_hline(yintercept = 20, colour = "red", linetype = "dashed") +
+  facet_wrap(~regimen) +
+  labs(x = NULL, y = "Change in QTc from baseline (%)",
+       title = "Percent change in QTc from baseline at the trough after each dose",
+       caption = "Replicates Figure S3 of Yellepeddi 2025 (red dashed line: 20%).")
+```
+
+![](Yellepeddi_2025_sotalol_files/figure-html/figure-s3-1.png)
+
+``` r
+
+trough_summary <- trough |>
+  dplyr::group_by(regimen, trough) |>
+  dplyr::summarise(
+    `Median Cc (ng/mL)` = median(Cc),
+    `Median QTc (ms)`   = median(QTc),
+    `Max QTc (ms)`      = max(QTc),
+    `Median dQTc (ms)`  = median(dQTc),
+    `Max % change`      = max(pctQTc),
+    .groups = "drop"
+  )
+knitr::kable(trough_summary, digits = 1,
+             caption = "Simulated trough exposures and QTc, by regimen and trough.")
+```
+
+| regimen | trough | Median Cc (ng/mL) | Median QTc (ms) | Max QTc (ms) | Median dQTc (ms) | Max % change |
+|:---|:---|---:|---:|---:|---:|---:|
+| 125 mg IV + 120 mg PO, CrCl\<90 | CTrough_IV | 646.3 | 449.7 | 453.7 | 23.3 | 5.8 |
+| 125 mg IV + 120 mg PO, CrCl\<90 | CTrough_Oral1 | 1011.7 | 455.2 | 465.5 | 30.2 | 9.3 |
+| 125 mg IV + 120 mg PO, CrCl\<90 | CTrough_Oral2 | 1288.3 | 459.3 | 473.6 | 35.5 | 11.8 |
+| 60 mg IV + 80 mg PO, normal | CTrough_IV | 281.8 | 444.2 | 446.1 | 16.4 | 3.5 |
+| 60 mg IV + 80 mg PO, normal | CTrough_Oral1 | 526.1 | 447.9 | 453.7 | 21.0 | 5.8 |
+| 60 mg IV + 80 mg PO, normal | CTrough_Oral2 | 696.8 | 450.5 | 460.2 | 24.2 | 7.8 |
+| 75 mg IV + 80 mg PO, normal | CTrough_IV | 362.5 | 445.4 | 447.7 | 17.9 | 4.0 |
+| 75 mg IV + 80 mg PO, normal | CTrough_Oral1 | 584.9 | 448.8 | 454.2 | 22.1 | 6.0 |
+| 75 mg IV + 80 mg PO, normal | CTrough_Oral2 | 745.6 | 451.2 | 460.0 | 25.2 | 7.7 |
+| 82.5 mg IV + 80 mg PO, CrCl\<90 | CTrough_IV | 429.9 | 446.4 | 448.5 | 19.2 | 4.2 |
+| 82.5 mg IV + 80 mg PO, CrCl\<90 | CTrough_Oral1 | 675.3 | 450.1 | 455.1 | 23.8 | 6.2 |
+| 82.5 mg IV + 80 mg PO, CrCl\<90 | CTrough_Oral2 | 854.5 | 452.8 | 460.4 | 27.2 | 7.8 |
+| 90 mg IV + 120 mg PO, normal | CTrough_IV | 424.5 | 446.4 | 450.3 | 19.1 | 4.8 |
+| 90 mg IV + 120 mg PO, normal | CTrough_Oral1 | 815.9 | 452.2 | 464.5 | 26.5 | 9.1 |
+| 90 mg IV + 120 mg PO, normal | CTrough_Oral2 | 1100.3 | 456.5 | 473.7 | 31.9 | 11.8 |
+
+Simulated trough exposures and QTc, by regimen and trough. {.table}
+
+``` r
+
+
+# The paper's own absolute thresholds. Headroom is large: reaching 500 ms needs
+# about 4000 ng/mL and a 20% change needs about 4070 ng/mL, whereas the highest
+# simulated trough sits near 1400 ng/mL, so these bounds are robust to which
+# cohort a given machine draws while still going red on a mis-transcribed
+# clearance, dose, volume or regression slope.
+stopifnot(
+  max(trough$QTc) < 500,
+  max(trough$pctQTc) < 20,
+  # The relationship must be increasing in exposure and in dose intensity.
+  cor(trough$Cc, trough$QTc) > 0.99
+)
+```
+
+## PKNCA validation
+
+``` r
+
+sim_nca <- sim_obs |>
+  dplyr::select(id, time, Cc, regimen)
+
+# Guarantee a time = 0 row per (id, regimen). The IV infusion starts at t = 0 so
+# the pre-dose concentration is 0.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, regimen) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id,
+                             concu = "ng/mL", timeu = "h")
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, regimen)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id, doseu = "mg")
+
+intervals <- data.frame(
+  start     = 0,
+  end       = 96,
+  cmax      = TRUE,
+  tmax      = TRUE,
+  auclast   = TRUE,
+  half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+summary(nca_res)
+#>  Interval Start Interval End                        regimen   N
+#>               0           96 125 mg IV + 120 mg PO, CrCl<90 200
+#>               0           96    60 mg IV + 80 mg PO, normal 200
+#>               0           96    75 mg IV + 80 mg PO, normal 200
+#>               0           96 82.5 mg IV + 80 mg PO, CrCl<90 200
+#>               0           96   90 mg IV + 120 mg PO, normal 200
+#>  AUClast (h*ng/mL) Cmax (ng/mL)          Tmax (h) Half-life (h)
+#>       60400 [24.8]  1720 [18.6] 19.1 [1.00, 27.0]   12.7 [3.57]
+#>       30800 [29.8]   908 [20.3] 21.0 [1.00, 30.0]   10.8 [3.59]
+#>       32900 [32.7]  1010 [19.5] 1.00 [1.00, 27.2]   10.8 [3.40]
+#>       40300 [26.3]  1130 [18.4] 1.00 [1.00, 28.8]   12.8 [3.80]
+#>       46700 [32.8]  1350 [21.0] 21.5 [1.00, 29.5]   11.2 [4.04]
+#> 
+#> Caption: AUClast, Cmax: geometric mean and geometric coefficient of variation; Tmax: median and range; Half-life: arithmetic mean and standard deviation; N: number of subjects
+```
+
+### Comparison against published values
+
+Yellepeddi 2025 reports no non-compartmental analysis of its own – the
+PK is summarised only through the population model. The one exposure
+metric the paper quotes numerically is the drug’s mean elimination
+half-life of about 12 h, cited from the sotalol prescribing information
+in the Introduction. Comparing the simulated terminal half-life against
+that literature value is therefore the available NCA-style check, and it
+is regimen-independent.
+
+``` r
+
+published <- regimens |>
+  dplyr::transmute(regimen, half.life = 12)   # Introduction, "mean elimination half-life of ~12 h"
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_res,
+  reference     = published,
+  by            = "regimen",
+  units         = c(half.life = "h"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Simulated terminal half-life vs the ~12 h literature value",
+                  "quoted in the Introduction of Yellepeddi 2025.",
+                  "* differs from reference by >20%."),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+| NCA parameter | regimen                         | Reference | Simulated | % diff |
+|:--------------|:--------------------------------|----------:|----------:|-------:|
+| t½ (h)        | 60 mg IV + 80 mg PO, normal     |        12 |      10.1 | -15.9% |
+| t½ (h)        | 75 mg IV + 80 mg PO, normal     |        12 |      10.3 | -13.8% |
+| t½ (h)        | 82.5 mg IV + 80 mg PO, CrCl\<90 |        12 |      12.2 |  +1.4% |
+| t½ (h)        | 90 mg IV + 120 mg PO, normal    |        12 |      10.6 | -11.9% |
+| t½ (h)        | 125 mg IV + 120 mg PO, CrCl\<90 |        12 |      12.4 |  +3.1% |
+
+Simulated terminal half-life vs the ~12 h literature value quoted in the
+Introduction of Yellepeddi 2025. \* differs from reference by \>20%.
+{.table style="width:100%;"}
+
+Every arm agrees with the 12 h literature value within the 20%
+tolerance. The normal-renal-function arms come in around 10 h – close to
+the model’s analytic `log(2)/beta = 9.9 h` at the reference CrCl of 92.4
+mL/min, about 15% below the literature figure – while the reduced-renal
+arms come in around 12 h, because CL carries the CrCl covariate and a
+lower clearance lengthens the terminal slope. Any residual gap is a
+property of the published parameter estimates rather than of the
+transcription: the sampling design ends only a few hours after the
+second oral dose and so gives limited leverage on the terminal phase,
+and the closed-form check above confirms the packaged model reproduces
+exactly the disposition implied by Table 2.
+
+Note also that median Tmax alternates between about 1 h and about 21 h
+across arms. That is genuine bimodality rather than an artifact: for
+this regimen the overall peak is a near-tie between the end of the 1 h
+IV infusion and the peak following the second oral dose, so the median
+flips between the two branches depending on how many simulated subjects
+fall on each side.
+
+``` r
+
+nca_tbl <- as.data.frame(nca_res$result) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+  dplyr::group_by(regimen, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = median)
+
+nca_tbl |>
+  dplyr::rename(
+    "Regimen"              = regimen,
+    "Cmax (ng/mL)"         = cmax,
+    "Tmax (h)"             = tmax,
+    "AUClast (ng*h/mL)"    = auclast,
+    "t1/2 (h)"             = half.life
+  ) |>
+  knitr::kable(digits = 1, caption = "Median simulated NCA parameters by regimen.")
+```
+
+| Regimen | AUClast (ng\*h/mL) | Cmax (ng/mL) | t1/2 (h) | Tmax (h) |
+|:---|---:|---:|---:|---:|
+| 125 mg IV + 120 mg PO, CrCl\<90 | 60533.7 | 1747.5 | 12.4 | 19.1 |
+| 60 mg IV + 80 mg PO, normal | 30987.5 | 901.1 | 10.1 | 21.0 |
+| 75 mg IV + 80 mg PO, normal | 33491.0 | 1035.2 | 10.3 | 1.0 |
+| 82.5 mg IV + 80 mg PO, CrCl\<90 | 40086.4 | 1132.0 | 12.2 | 1.0 |
+| 90 mg IV + 120 mg PO, normal | 47202.3 | 1343.4 | 10.6 | 21.5 |
+
+Median simulated NCA parameters by regimen. {.table}
+
+``` r
+
+
+# The terminal slope is dose-independent but NOT covariate-independent: CL
+# carries the CrCl term, so the reduced-renal arms have a genuinely longer
+# terminal half-life than the normal-CrCl arms. The analytic values across the
+# simulated CrCl span are 12.9 h at 60 mL/min, 11.3 h at the 75 mL/min midpoint
+# of the reduced-renal band, 9.9 h at the 92.4 mL/min reference and 4.9 h at the
+# 306 mL/min maximum, so per-arm medians are expected in roughly 10-12.5 h.
+# The bound below brackets that with headroom for cohort noise and for PKNCA's
+# choice of terminal points, and still goes red on a mis-transcribed CL, Vc, Q
+# or Vp (each of which moves the terminal slope by tens of percent).
+med_hl <- nca_tbl$half.life
+stopifnot(all(med_hl > 8), all(med_hl < 15))
+```
+
+## Assumptions and deviations
+
+**Conflicting parameter values between Table 2, Table 3 and Datafile
+S1.** Each of the paper’s two parameter tables carries exactly one value
+that the other two artifacts contradict:
+
+- **Oral bioavailability.** Table 2 and the Datafile S1 `$THETA` record
+  both give `Foral = 1.6`; Table 3’s “final parameter estimate” column
+  and the Discussion both give 1.5. The packaged model uses **1.6**.
+- **Weight-on-Vc exponent.** Table 3 and the Datafile S1 `$THETA` record
+  both give 1.2; Table 2 gives 1.1. The packaged model uses **1.2**.
+
+Both are resolved in favour of the majority of independent artifacts,
+and the tie-breaking role of Datafile S1 rests on the `$OMEGA` /
+`$SIGMA` argument in the “Establishing the IIV scale” section above,
+which shows S1’s records are the final estimates rounded to two
+significant figures rather than starting values. Users who prefer the
+Table 2 presentation can change `lfdepot` to `log(1.5)` and `e_wt_vc` to
+`1.1`; the effect on predicted exposure is a few percent.
+
+**Higher-precision values taken from Datafile S1.** For the same reason,
+`lka = log(0.16)` and `e_crcl_cl = 0.65` are taken from the control
+stream. Table 2 prints these as 0.2 and 0.7, which are the one-decimal
+renderings of the same numbers (Table 2’s PK parameter column is
+uniformly one decimal place).
+
+**A relative bioavailability above 1.** `Foral = 1.6` is not
+interpretable as a fraction absorbed. The authors flag it themselves:
+“The reason for this higher oral bioavailability must be evaluated
+further in future studies” (Discussion). It is packaged as published
+because it is load-bearing for every oral-dose prediction; do not
+silently reset it to 1.
+
+**Interindividual variability scale.** Table 2 reports IIV as a bare
+percentage. It is interpreted here as a log-normal coefficient of
+variation, giving `omega^2 = log(1 + CV^2)`, on the evidence set out
+above. Q, Vp and Foral carry `$OMEGA 0.0 FIX` in Datafile S1, so no etas
+are declared for them.
+
+**No residual error on the QTc outputs.** The three concentration-QTc
+relationships were fitted in R by ordinary linear regression, and the
+paper reports only the slope, intercept, `R^2` and p-value for each – no
+residual standard deviation. `QTc`, `dQTc` and `pctQTc` are therefore
+packaged as deterministic derived outputs with no error model, which is
+exactly how the paper uses them in its Monte Carlo evaluation (Methods
+2.7). They also come from three separate regressions and so are not
+algebraically consistent with one another: `dQTc / 435 * 100` is 0.00437
+percent per ng/mL against the directly fitted 0.0045, but the intercepts
+(11 ms versus 1.7%) do not correspond.
+
+**The fifth simulated regimen.** Methods 2.7 describes it as “125 mg
+IV + two 80 mg oral doses”; the Figure S2 and Figure S3 panel titles
+read “125 mg IV + 120 mg Oral”. This vignette follows the figures, which
+are the reported result.
+
+**Simulated covariate distributions.** The paper does not state the
+covariate distributions or the numerical definition of “normal CrCl”
+used in its Monte Carlo. Here weight is drawn as a truncated lognormal
+matching the observed median of 104 kg over the observed 68.7-185 kg
+range; “normal CrCl” is taken as the observed PEAKS PK-substudy
+creatinine-clearance distribution (median 92.4 mL/min over 64.3-306),
+and the reduced-renal arms use the paper’s own stated 60-90 mL/min band.
+
+**Trough timings.** The paper reports QTc “at the timepoint
+corresponding to C trough after each dose” without giving times. They
+are taken here from the dosing schedule of Methods 2.2: 1 h infusion, a
+4 h minimum delay to the first oral dose, and 12 h between oral doses,
+giving troughs at 5, 17 and 29 h.
+
+**Known deviation from Figure S2.** With these assumptions the packaged
+model’s typical-value QTc at the three troughs runs roughly 3-5 ms below
+the medians visible in Figure S2 (for example about 444.5 / 449.0 /
+451.8 ms for the 60 mg IV + 80 mg oral arm against roughly 448 / 452 /
+455 ms read off the figure). The paper does not publish the simulated
+covariate distributions, the exact trough times, or the simulation
+script, so the difference cannot be attributed. It is recorded here
+rather than removed: no parameter was tuned, and the closed-form check
+above shows the packaged model reproduces the disposition implied by
+Table 2 exactly. The offset is far smaller than the headroom to either
+published threshold (500 ms and 20%), so it does not affect the paper’s
+conclusion.
+
+**Terminal half-life.** The packaged model’s analytic terminal half-life
+is 9.9 h against the roughly 12 h the Introduction quotes from the
+sotalol prescribing information. The 12 h figure is a literature value
+for the drug, not an NCA result from this study, and the study’s
+sampling ends only a few hours after the second oral dose.
+
+**Not informed in renal impairment.** PK-substudy enrollment targeted
+CrCl above 60 mL/min, so `CRCL` below about 64 mL/min extrapolates
+outside the observed range even though sotalol labelling reduces the
+dose in renal impairment.
+
+**Raw versus BSA-normalized creatinine clearance.** `CRCL` here is the
+raw Cockcroft-Gault value in mL/min, not the mL/min/1.73 m^2 default of
+the register entry. The paper computed a BSA-normalized clearance
+separately and found it did not improve the model; supplying a
+BSA-normalized value to this model would silently rescale the renal
+term.

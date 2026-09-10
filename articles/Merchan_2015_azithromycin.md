@@ -54,7 +54,7 @@ below collects them in one place for review.
 | `lq` (Q coefficient, L/h/kg^0.75) | log(1.79) | Merchan 2015 Table 3 |
 | `lvp` (V2 coefficient, L/kg) | log(13.0) | Merchan 2015 Table 3 |
 | `allo_cl` (allometric exponent on CL and Q) | fixed 0.75 | Merchan 2015 Methods ‘Pharmacokinetic data analysis’ |
-| `allo_v` (allometric exponent on V1 and V2) | fixed 1.0 | Merchan 2015 Methods ‘Pharmacokinetic data analysis’ |
+| `e_wt_vc_vp` (allometric exponent on V1 and V2) | fixed 1.0 | Merchan 2015 Methods ‘Pharmacokinetic data analysis’ |
 | Reference weight (kg) | 1 | Merchan 2015 Results ‘Pharmacokinetic analysis’ (worked half-life sentence: ‘a typical neonate weighing 1 kg’) |
 | `etalcl` (IIV variance) | 0.581^2 = 0.3376 | Merchan 2015 Table 3 (ISV 58.1% = sqrt(omega^2) x 100; footnote a) |
 | `etalvc` (IIV variance) | 0.782^2 = 0.6115 | Merchan 2015 Table 3 (ISV 78.2%) |

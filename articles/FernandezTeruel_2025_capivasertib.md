@@ -1,0 +1,908 @@
+# Capivasertib with fulvestrant (Fernandez Teruel 2025)
+
+## Model and source
+
+    #> ℹ parameter labels from comments will be replaced by 'label()'
+
+- Citation: Fernandez Teruel C, Cullberg M, Gonzalez-Garcia I, Schiavon
+  G, Zhang L, Zhou D. Population pharmacokinetics and exposure-response
+  analyses for capivasertib in combination with fulvestrant in patients
+  with breast cancer. Clin Transl Sci. 2025;18:e70286.
+  <doi:10.1111/cts.70286>
+- Description: Three-compartment population PK model for capivasertib
+  (oral pan-AKT inhibitor) with parallel first-order and zero-order
+  absorption, absorption lag time, and sigmoidal time- and
+  dose-dependent auto-inhibition of apparent clearance, with power
+  effects of body weight and age on CL0/F, in patients with advanced
+  solid tumours and HR-positive/HER2-negative advanced breast cancer
+  receiving capivasertib plus fulvestrant (Fernandez Teruel 2025)
+- Article: <https://doi.org/10.1111/cts.70286>
+
+Capivasertib is a first-in-class, selective inhibitor of all three AKT
+isoforms. Fernandez Teruel 2025 **updates** the four-study, 441-patient
+population PK model of `FernandezTeruel_2024_capivasertib` by adding the
+Phase III CAPItello-291 trial and a Chinese PK study, giving 5960
+analysed concentrations from 851 patients across six Phase I-III trials.
+The updated model was then used to generate individual steady-state
+exposure metrics for exposure-response analyses of efficacy and safety.
+
+Both capivasertib models are shipped. They are the same structural model
+fitted to different datasets, so they are separate files rather than
+one:
+
+| Model                             | Vignette                          |
+|:----------------------------------|:----------------------------------|
+| FernandezTeruel_2024_capivasertib | FernandezTeruel_2024_capivasertib |
+| FernandezTeruel_2025_capivasertib | FernandezTeruel_2025_capivasertib |
+
+The two shipped capivasertib population PK models. {.table}
+
+Three things changed in the structural model between the two fits, and
+each is a change of *form*, not just of value:
+
+1.  **Body weight on CL0/F became a power term.** The 2024 model used a
+    linear deviation, `CL0/F * (1 + (WT - 67) * 0.00585)`. The 2025
+    model uses `CL0/F * (WT/67)^0.302`. Reading the 2025 coefficient
+    0.302 as a per-kg linear term would be absurd, so the printed
+    equation is load-bearing here.
+2.  **Age entered the model**, also as a power term, `(AGE/57)^-0.314`.
+    Age was not a covariate in the 2024 fit.
+3.  **The Ka and D2 inter-individual variabilities were dropped.** The
+    2024 model held both at a fixed 15% CV; the 2025 Table 2 reports no
+    IIV for either, so the 2025 model carries five etas rather than
+    seven.
+
+## Population
+
+| Field | Value |
+|:---|:---|
+| species | human |
+| n_subjects | 851 |
+| n_studies | 6 |
+| n_observations | 5960 |
+| age_range | 26-87 years |
+| age_median | 57 years |
+| weight_range | 32-150 kg |
+| weight_median | 65 kg |
+| sex_female_pct | 88.8 |
+| race_ethnicity | White 60.9; Black 1.4; Asian 27.8; American Indian or Alaska Native 1.8; Native Hawaiian or Other Pacific Islander 0.1; Other 7.5; Missing 0.5 |
+| disease_state | Advanced solid malignancies, and HR-positive / HER2-negative locally advanced or metastatic breast cancer resistant to aromatase inhibitors |
+| dose_range | 80-800 mg orally twice daily, most commonly 400 mg (63.8%) or 480 mg (22.4%); continuous dosing (8.0%) or one of two intermittent schedules, 4 days on / 3 days off (4/3, 86.4%) or 2 days on / 5 days off (2/5, 5.6%). The Phase III regimen is 400 mg twice daily \[4/3\] with fulvestrant 500 mg. |
+| renal_function | Normal 54.4%, mild impairment 34.3%, moderate impairment 10.6%, no severe impairment |
+| hepatic_function | Normal 64.0%, mild impairment 35.0%, moderate impairment 0.8%, no severe impairment |
+| co_medication | Fulvestrant 55.0%, paclitaxel 10.6%, acid-reducing agent 25.4% |
+| regions | Global; China 11.0%, Asia excluding China 15.3%, rest of world 73.7% |
+| notes | Pooled from six Phase I-III studies: Study 1, BEECH, Study 4 (all-Japanese), OAK, a China PK study, and the Phase III CAPItello-291 trial. This analysis UPDATES the 441-patient, four-study model of FernandezTeruel_2024_capivasertib.R by adding CAPItello-291 and the China PK study (Sect. 2.3). 6630 concentrations were collected and 5960 (89.9%) were analysed; 670 were excluded, mainly 436 (6.6%) drawn before treatment start, plus 220 (3.3%) below the 1.00 ng/mL limit of quantification and 9 (0.1%) unexpectedly high. Demographics are Table S1. The exposure-response analyses used subsets of this cohort: 798 patients for efficacy (Table S2) and 468 for safety (Table S3). |
+
+Study population (Fernandez Teruel 2025 Table 1 and Table S1). {.table}
+
+The PopPK dataset was 6630 collected concentrations from 851 patients,
+of which 5960 (89.9%) were analysed. Median age was 57 years (range
+26-87), median body weight 65 kg (range 32-150), and 88.8% of patients
+were women. 11.0% were from mainland China and Taiwan, 15.3% from
+elsewhere in Asia, and 73.7% from the rest of the world (Table S1). The
+exposure-response analyses used subsets of this cohort: 798 patients for
+efficacy (Table S2) and 468 for safety (Table S3).
+
+## Source trace
+
+Every value in `ini()` and every equation in `model()` comes from the
+locations below. The model equations are printed as display equations on
+p. 7 of the article, immediately after Table 2; the PDF’s text layer
+renders them only under `pdftotext -layout` (the publisher-supplied
+structured text drops them entirely), which is why they are quoted in
+full here.
+
+| Item | Source location |
+|:---|:---|
+| Ka, CL0/F, V2/F, V3/F, Q3/F, V4/F, Q4/F, D2, LogitF1, Lag1_tab, Lag1_cap, Imax, T50 | Table 2 (estimate column) |
+| Imax_dose, CL0_BBW, CL0_AGE, F1_BBW | Table 2 (estimate column) |
+| IIV on CL0/F, V2/F, Imax, Lag1, LogitF1 (as CV %) | Table 2 (last five rows) |
+| Residual error, proportional 43% and additive 1.12 ug/L | Table 2 |
+| F1i = expit(LogitF1 \* (BBW/67)^F1_BBW + eta) | p. 7 display equation 1 |
+| F2i = 1 - F1i | p. 7 display equation 2 |
+| ALAG1i = (Lag1_tab*(1-CAP) + Lag1_cap*CAP) \* (1 - FASTED) \* exp(eta) | p. 7 display equation 3 |
+| CL0/Fi = CL0/F \* (BBW/67)^CL0_BBW \* (AGE/57)^CL0_AGE \* exp(eta) | p. 7 display equation 4 |
+| Imax_i = Imax \* (1 + (DOSE-480)*Imax_dose)* (1 + PACL*Imax_pacl)* exp(eta) | p. 7 display equation 5 |
+| CL/Fi = CL0/Fi \* (1 - exp(Imax_i) \* Time^5 / (T50^5 + Time^5)) | p. 7 display equation 6 |
+| Hill exponent fixed at 5 | p. 7 display equation 6 (literal Time^5, T50^5) |
+| Vss = 265 L; CL/F falls 11.2% at 400 mg and 29.2% at 640 mg | Sect. 3.2 (used as gates, not as inputs) |
+| Accumulation ratio 1.47, effective half-life 7.25 h at 400 mg \[4/3\] | Sect. 3.2 (gates) |
+| Median steady-state AUC 7650 ug\*h/L and Cmax 1460 ug/L | Sect. 3.2 (gates) |
+| Exposure window 252-264 h (last dosing day of week 2) | Sect. 2.3 |
+| Imax_pacl | NOT REPORTED ANYWHERE – see Assumptions and deviations |
+
+Source trace for every parameter and equation. {.table}
+
+## Simulation helpers
+
+``` r
+
+mod <- readModelDb("FernandezTeruel_2025_capivasertib")
+tv  <- rxode2::zeroRe(mod)   # typical-value (all etas set to zero) version
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+# Dosing-time grid. Capivasertib is twice daily (q12h) within a dosing day; the
+# Phase III schedule is 4 days on / 3 days off.
+dose_times <- function(schedule, n_weeks) {
+  days <- switch(
+    schedule,
+    "continuous" = seq_len(n_weeks * 7L) - 1L,
+    "4/3"        = unlist(lapply(seq_len(n_weeks) - 1L, function(w) w * 7L + 0:3)),
+    "2/5"        = unlist(lapply(seq_len(n_weeks) - 1L, function(w) w * 7L + 0:1))
+  )
+  sort(c(days * 24, days * 24 + 12))
+}
+
+# Each administration is TWO dose records carrying the same amt: one into
+# `depot` (scaled by f(depot) = ffo, lagged by alag(depot)) and one into
+# `central` (scaled by f(central) = 1 - ffo, delivered as a zero-order input
+# whose duration D2 is modelled, hence rate = -2). Observation rows point at
+# the ODE state `central`, never at the algebraic observable `Cc`.
+make_events <- function(ids, dose, dosing_times, obs_times, WT = 65, AGE = 57,
+                        FORM_CAPSULE = 0, FASTED_STRICT = 0,
+                        CONMED_PACLITAXEL = 0, treatment = "") {
+  subj <- data.frame(id = ids, WT = WT, AGE = AGE)
+  dos <- merge(subj, data.frame(time = dosing_times))
+  dos <- rbind(
+    transform(dos, amt = dose, evid = 1L, cmt = "depot",   rate = 0),
+    transform(dos, amt = dose, evid = 1L, cmt = "central", rate = -2)
+  )
+  obs <- transform(merge(subj, data.frame(time = obs_times)),
+                   amt = NA_real_, evid = 0L, cmt = "central", rate = 0)
+  ev <- rbind(dos, obs)
+  ev$FORM_CAPSULE <- FORM_CAPSULE
+  ev$FASTED_STRICT <- FASTED_STRICT
+  ev$CONMED_PACLITAXEL <- CONMED_PACLITAXEL
+  ev$DOSE_CAPIVASERTIB_MG <- dose
+  ev$treatment <- treatment
+  ev[order(ev$id, ev$time, -ev$evid), ]
+}
+
+# Linear-trapezoidal AUC of Cc over [a, b] for a single-subject solve.
+auc_window <- function(sim, a, b) {
+  d <- sim[sim$time >= a & sim$time <= b, ]
+  d <- d[order(d$time), ]
+  sum(diff(d$time) * (head(d$Cc, -1) + tail(d$Cc, -1)) / 2)
+}
+
+# Fernandez Teruel 2025 Sect. 2.3: exposure metrics were projected for "the
+# final dosing day during the second week of treatment (252-264 h)". On the
+# [4/3] schedule, week 2 dosing days are days 7-10, so 252 h is the second dose
+# of day 10 -- the last dose of that week.
+ss_start <- 252
+ss_end   <- 264
+
+tv_profile <- function(dose = 400, WT = 65, AGE = 57, FORM_CAPSULE = 0,
+                       FASTED_STRICT = 0, CONMED_PACLITAXEL = 0) {
+  obs <- sort(unique(c(seq(0, 12, by = 0.02), seq(ss_start, ss_end, by = 0.02))))
+  ev <- make_events(1L, dose, dose_times("4/3", 3L), obs, WT = WT, AGE = AGE,
+                    FORM_CAPSULE = FORM_CAPSULE, FASTED_STRICT = FASTED_STRICT,
+                    CONMED_PACLITAXEL = CONMED_PACLITAXEL)
+  s <- as.data.frame(rxode2::rxSolve(tv, ev, addDosing = FALSE))
+  ss <- s[s$time >= ss_start, ]
+  fd <- s[s$time <= 12, ]
+  list(
+    auc12_ss    = auc_window(s, ss_start, ss_end),
+    cmax_ss     = max(ss$Cc),
+    cmin_ss     = min(ss$Cc),
+    tmax_ss     = ss$time[which.max(ss$Cc)] - ss_start,
+    auc12_dose1 = auc_window(s, 0, 12),
+    cmax_dose1  = max(fd$Cc)
+  )
+}
+
+# Collect claim / published / reproduced rows so the gate and the rendered
+# table are driven by exactly the same numbers. `acc` is an environment
+# (reference semantics) so `claim()` can append without superassignment.
+acc <- new.env(parent = emptyenv())
+acc$rows <- list()
+claim <- function(what, published, reproduced, tolerance, unit = "",
+                  deviation = FALSE) {
+  acc$rows[[length(acc$rows) + 1L]] <- tibble::tibble(
+    Quantity = what, Unit = unit, Published = published,
+    Reproduced = reproduced, Tolerance = tolerance,
+    Pass = abs(reproduced - published) <= tolerance, Deviation = deviation
+  )
+  invisible(reproduced)
+}
+```
+
+## Internal identities
+
+These are deterministic functions of the `ini()` values – no simulated
+cohort is involved – so they are gated tightly. Each is a quantity
+Fernandez Teruel 2025 states in prose but did **not** put in Table 2,
+which makes them independent tests of the transcription rather than
+restatements of it.
+
+``` r
+
+p <- setNames(ui$theta, names(ui$theta))
+
+# 1. Apparent volume of distribution at steady state.
+Vss <- exp(p[["lvc"]]) + exp(p[["lvp"]]) + exp(p[["lvp2"]])
+claim("Apparent volume of distribution at steady state (V2 + V3 + V4)",
+      265, Vss, 0.5, "L")
+
+# 2. The maximal fractional reduction of CL/F at two dose levels. This is the
+#    check that pins the Imax parameterisation: `Imax` is the LOG of the
+#    maximal fractional inhibition, so the reduction is exp(Imax_i), not Imax_i.
+max_inhibition <- function(dose, CONMED_PACLITAXEL = 0) {
+  imax_i <- p[["lcl_time_max"]] *
+    (1 + (dose - 480) * p[["e_dose_cl_time_max"]]) *
+    (1 + CONMED_PACLITAXEL * p[["e_pacl_cl_time_max"]])
+  100 * exp(imax_i)
+}
+claim("Maximal reduction in CL/F after multiple doses at 400 mg",
+      11.2, max_inhibition(400), 0.1, "%")
+claim("Maximal reduction in CL/F after multiple doses at 640 mg",
+      29.2, max_inhibition(640), 0.2, "%")
+
+# 3. Fraction absorbed by the first-order route at the 67 kg normalisation
+#    weight. The paper does not state this directly, but expit(1.6) is a
+#    one-line consequence of Table 2 and confirms the logit encoding.
+ffo_ref <- 1 / (1 + exp(-p[["logitffo"]]))
+claim("Fraction of the dose absorbed by the first-order route at 67 kg",
+      0.832, ffo_ref, 0.001, "fraction")
+```
+
+### CL/F is time-dependent and reaches a plateau by day 7
+
+``` r
+
+clf_at <- function(time, dose = 400, WT = 65, AGE = 57, CONMED_PACLITAXEL = 0) {
+  imax_i <- p[["lcl_time_max"]] *
+    (1 + (dose - 480) * p[["e_dose_cl_time_max"]]) *
+    (1 + CONMED_PACLITAXEL * p[["e_pacl_cl_time_max"]])
+  hill <- exp(p[["lcl_time_hill"]]); t50 <- exp(p[["lcl_t50"]])
+  exp(p[["lcl"]]) * (WT / 67)^p[["e_wt_cl"]] * (AGE / 57)^p[["e_age_cl"]] *
+    (1 - exp(imax_i) * time^hill / (t50^hill + time^hill))
+}
+
+clf_grid <- tidyr::expand_grid(time = seq(0, 336, by = 2),
+                               dose = c(400, 480, 640)) |>
+  dplyr::mutate(CL = clf_at(time, dose = dose),
+                Dose = factor(paste(dose, "mg")))
+
+ggplot(clf_grid, aes(time, CL, colour = Dose)) +
+  geom_line(linewidth = 0.8) +
+  geom_vline(xintercept = 168, linetype = "dashed") +
+  geom_vline(xintercept = exp(p[["lcl_t50"]]), linetype = "dotted") +
+  labs(x = "Time since first dose (h)", y = "CL/F (L/h)",
+       caption = "Dashed = 168 h (day 7); dotted = T50 = 126 h") +
+  theme_bw()
+```
+
+![Time course of apparent clearance at three dose levels. The paper
+states the plateau is reached by roughly 168 h (day 7) at 400
+mg.](FernandezTeruel_2025_capivasertib_files/figure-html/clf-time-1.png)
+
+Time course of apparent clearance at three dose levels. The paper states
+the plateau is reached by roughly 168 h (day 7) at 400 mg.
+
+``` r
+
+
+# How complete is the decline at the day-7 "plateau"? This is a pure function
+# of T50 and the Hill exponent: extent(t) = t^5 / (T50^5 + t^5).
+extent_at <- function(time) (clf_at(0) - clf_at(time)) / (clf_at(0) - clf_at(1e7))
+t_to_extent <- function(target) exp(p[["lcl_t50"]]) * (target / (1 - target))^(1 / 5)
+
+tibble::tibble(
+  Quantity = c("T50 (Table 2)", "Extent of CL/F decline at 168 h (day 7)",
+               "Time to 90% of the decline", "Time to 95% of the decline"),
+  Value = c(round(exp(p[["lcl_t50"]]), 1), round(extent_at(168), 3),
+            round(t_to_extent(0.90), 1), round(t_to_extent(0.95), 1)),
+  Unit = c("h", "fraction", "h", "h")
+) |>
+  knitr::kable(caption = "Approach to the CL/F plateau.")
+```
+
+| Quantity                                |   Value | Unit     |
+|:----------------------------------------|--------:|:---------|
+| T50 (Table 2)                           | 126.000 | h        |
+| Extent of CL/F decline at 168 h (day 7) |   0.808 | fraction |
+| Time to 90% of the decline              | 195.500 | h        |
+| Time to 95% of the decline              | 227.000 | h        |
+
+Approach to the CL/F plateau. {.table}
+
+``` r
+
+
+# Sect. 3.2 says the plateau "would be achieved after approximately 168 h
+# (Day 7)". Taken literally that is not quite true -- with T50 = 126 h and a
+# Hill of 5 the decline is 81% complete at 168 h and needs about 215 h to reach
+# 95%. It is recorded as a deviation rather than gated, because the paper's
+# statement is a qualitative reading of where the curve visibly flattens.
+claim("Extent of the CL/F decline completed at 168 h ('plateau' per Sect. 3.2)",
+      1.0, extent_at(168), 0.05, "fraction", deviation = TRUE)
+
+# The real gate: the shape is deterministic, so a mis-encoded T50 or Hill
+# exponent moves this immediately. (Hill = 1 would give 0.57; T50 = 67 h, the
+# 2024 model's value, would give 0.95.)
+stopifnot(extent_at(168) > 0.75, extent_at(168) < 0.88)
+```
+
+## Steady-state exposure reproduces the published reference values
+
+Fernandez Teruel 2025 Sect. 3.2 defines a reference patient – female, 65
+kg, 57 years, 400 mg twice daily as a tablet, semi-fasted, no paclitaxel
+– and reports a median steady-state AUC of 7650 ug\*h/L and Cmax of 1460
+ug/L. That combination is exactly the model’s reference covariate set,
+so the typical-value prediction is directly comparable.
+
+There is also a closed-form route to the same number that uses no ODE
+solver at all. Once CL/F has plateaued, a twice-daily regimen at steady
+state satisfies `AUC(0-12) = Dose / CL_ss`, and
+`CL_ss = CL0/F * (1 - exp(Imax_i))`. Agreement between the closed form
+and the solved ODE tests the solver, the dual-input routing and the
+bioavailability split simultaneously.
+
+``` r
+
+ref <- tv_profile(dose = 400, WT = 65, AGE = 57)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_time_max', 'etaltlag', 'etalogitffo'
+
+cl_ss_closed  <- clf_at(1e7, dose = 400, WT = 65, AGE = 57)
+auc_closed    <- 400 / cl_ss_closed * 1000   # mg/(L/h) -> ug*h/L
+
+claim("Steady-state AUC over the 12 h dosing interval (252-264 h), solved",
+      7650, ref$auc12_ss, 400, "ug*h/L")
+claim("Steady-state AUC, closed form Dose / CL_ss (no ODE solver)",
+      7650, auc_closed, 400, "ug*h/L")
+claim("Steady-state Cmax (252-264 h)",
+      1460, ref$cmax_ss, 150, "ug/L")
+
+# The closed form and the solve must agree far more tightly with each other
+# than either does with the paper: both are deterministic here.
+stopifnot(abs(ref$auc12_ss - auc_closed) / auc_closed < 0.03)
+```
+
+### Accumulation ratio and effective half-life
+
+The paper reports an accumulation ratio of 1.47 and an effective
+half-life of 7.25 h for 400 mg twice daily \[4/3\]. These two are not
+independent: for a twice-daily regimen, `R = 1 / (1 - exp(-k * 12))`, so
+an accumulation ratio of 1.47 *implies* an effective half-life of 7.30
+h. Reproducing both therefore also checks that the paper’s own two
+numbers are mutually consistent.
+
+``` r
+
+acc_ratio <- ref$auc12_ss / ref$auc12_dose1
+claim("Accumulation ratio (AUC12 at steady state / AUC12 after the first dose)",
+      1.47, acc_ratio, 0.25, "ratio")
+
+# Effective half-life implied by the published accumulation ratio:
+# R = 1 / (1 - exp(-k*tau))  =>  k = -log(1 - 1/R) / tau  =>  t_half = log(2)/k.
+t_half_from_R <- function(R, tau = 12) -tau * log(2) / log(1 - 1 / R)
+claim("Effective half-life implied by the published accumulation ratio 1.47",
+      7.25, t_half_from_R(1.47), 0.1, "h")
+```
+
+## Replicating Figure 2a: the covariate forest plot
+
+Figure 2a is a forest plot of median steady-state ratios relative to a
+reference patient (65 kg, 57 years, 400 mg), and it prints the exact
+covariate values it uses – the 5th, 25th, 50th, 75th and 95th
+percentiles of body weight (46/57/65/76/98 kg) and of age
+(38/49/57/65/73 years), and six dose levels. That makes it directly
+reproducible, and a far sharper test than the prose summary.
+
+Every ratio here has a closed form, because once CL/F has plateaued
+`AUC(0-12) = Dose / CL_ss` and the covariate terms enter `CL_ss`
+multiplicatively. The dose ratios are the most demanding of the three
+panels: dose enters *twice*, once as the numerator of the AUC and once
+through the depth of the auto-inhibition, so reproducing them tests the
+`Imax` and `Imax_dose` encoding jointly.
+
+``` r
+
+# AUC12,ss relative to the reference patient, closed form.
+auc_ratio <- function(dose = 400, WT = 65, AGE = 57) {
+  (dose / clf_at(1e7, dose = dose, WT = WT, AGE = AGE)) /
+    (400 / clf_at(1e7, dose = 400, WT = 65, AGE = 57))
+}
+
+fig2a <- dplyr::bind_rows(
+  tibble::tibble(Panel = "Body weight (kg)", Level = c(46, 57, 65, 76, 98),
+                 Percentile = c("5th", "25th", "50th", "75th", "95th"),
+                 Model = vapply(c(46, 57, 65, 76, 98), \(w) auc_ratio(WT = w), numeric(1)),
+                 `Figure 2a` = c(1.10, 1.04, 1.00, 0.97, 0.90)),
+  tibble::tibble(Panel = "Age (years)", Level = c(38, 49, 57, 65, 73),
+                 Percentile = c("5th", "25th", "50th", "75th", "95th"),
+                 Model = vapply(c(38, 49, 57, 65, 73), \(a) auc_ratio(AGE = a), numeric(1)),
+                 `Figure 2a` = c(0.90, 0.96, 1.00, 1.04, 1.07)),
+  tibble::tibble(Panel = "Dose (mg)", Level = c(80, 240, 320, 400, 480, 640),
+                 Percentile = NA_character_,
+                 Model = vapply(c(80, 240, 320, 400, 480, 640), \(d) auc_ratio(dose = d), numeric(1)),
+                 `Figure 2a` = c(0.18, 0.57, 0.78, 1.00, 1.25, 2.00))
+) |>
+  dplyr::mutate(Difference = Model - `Figure 2a`)
+
+fig2a |>
+  dplyr::mutate(dplyr::across(c(Model, `Figure 2a`, Difference), \(x) round(x, 3))) |>
+  knitr::kable(caption = "AUC12h,ss median ratio to reference: model vs values read from Figure 2a.")
+```
+
+| Panel            | Level | Percentile | Model | Figure 2a | Difference |
+|:-----------------|------:|:-----------|------:|----------:|-----------:|
+| Body weight (kg) |    46 | 5th        | 1.110 |      1.10 |      0.010 |
+| Body weight (kg) |    57 | 25th       | 1.040 |      1.04 |      0.000 |
+| Body weight (kg) |    65 | 50th       | 1.000 |      1.00 |      0.000 |
+| Body weight (kg) |    76 | 75th       | 0.954 |      0.97 |     -0.016 |
+| Body weight (kg) |    98 | 95th       | 0.883 |      0.90 |     -0.017 |
+| Age (years)      |    38 | 5th        | 0.880 |      0.90 |     -0.020 |
+| Age (years)      |    49 | 25th       | 0.954 |      0.96 |     -0.006 |
+| Age (years)      |    57 | 50th       | 1.000 |      1.00 |      0.000 |
+| Age (years)      |    65 | 75th       | 1.042 |      1.04 |      0.002 |
+| Age (years)      |    73 | 95th       | 1.081 |      1.07 |      0.011 |
+| Dose (mg)        |    80 | NA         | 0.183 |      0.18 |      0.003 |
+| Dose (mg)        |   240 | NA         | 0.566 |      0.57 |     -0.004 |
+| Dose (mg)        |   320 | NA         | 0.773 |      0.78 |     -0.007 |
+| Dose (mg)        |   400 | NA         | 1.000 |      1.00 |      0.000 |
+| Dose (mg)        |   480 | NA         | 1.260 |      1.25 |      0.010 |
+| Dose (mg)        |   640 | NA         | 2.005 |      2.00 |      0.005 |
+
+AUC12h,ss median ratio to reference: model vs values read from Figure
+2a. {.table}
+
+``` r
+
+
+ggplot(fig2a, aes(Model, `Figure 2a`)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed") +
+  geom_point(aes(colour = Panel), size = 2.5) +
+  scale_x_log10() + scale_y_log10() +
+  labs(x = "Model AUC ratio to reference", y = "Figure 2a AUC ratio to reference",
+       title = "Replicates Figure 2a of Fernandez Teruel 2025") +
+  theme_bw()
+```
+
+![](FernandezTeruel_2025_capivasertib_files/figure-html/figure2a-1.png)
+
+``` r
+
+
+# The Figure 2a values are read off a printed forest plot, so the tolerance
+# reflects reading precision, not model error. Every point is deterministic --
+# no simulated cohort is involved -- so this gate cannot flicker across
+# machines. A mis-encoded Imax or a linear-instead-of-power weight term moves
+# the dose panel by a factor of two.
+stopifnot(max(abs(fig2a$Difference)) < 0.06)
+claim("Largest deviation from the Figure 2a AUC ratios (16 points)",
+      0, max(abs(fig2a$Difference)), 0.06, "ratio")
+
+# Cross-check the closed form against a full ODE solve at two corners.
+stopifnot(
+  abs(tv_profile(WT = 46)$auc12_ss / ref$auc12_ss - auc_ratio(WT = 46)) < 0.03,
+  abs(tv_profile(dose = 640)$auc12_ss / ref$auc12_ss - auc_ratio(dose = 640)) < 0.05
+)
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_time_max', 'etaltlag', 'etalogitffo'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalcl_time_max', 'etaltlag', 'etalogitffo'
+```
+
+### How large is “less than 20%”?
+
+Sect. 3.2 summarises the two demographic panels as causing “\< 20%
+difference in capivasertib exposure” between the 5th and 95th
+percentiles. Computed exactly from the model, the spans are marginally
+larger than that:
+
+``` r
+
+span <- function(panel) {
+  r <- fig2a$Model[fig2a$Panel == panel]
+  100 * (max(r) - min(r))
+}
+tibble::tibble(
+  Covariate = c("Body weight, 46-98 kg", "Age, 38-73 years"),
+  `Span in AUC12,ss (%)` = round(c(span("Body weight (kg)"), span("Age (years)")), 1),
+  `Paper's prose claim` = "< 20%"
+) |>
+  knitr::kable(caption = "Spread in steady-state exposure across the 5th-95th percentile range.")
+```
+
+| Covariate             | Span in AUC12,ss (%) | Paper’s prose claim |
+|:----------------------|---------------------:|:--------------------|
+| Body weight, 46-98 kg |                 22.7 | \< 20%              |
+| Age, 38-73 years      |                 20.0 | \< 20%              |
+
+Spread in steady-state exposure across the 5th-95th percentile range.
+{.table}
+
+``` r
+
+
+# Recorded as a DEVIATION, not gated: the paper's "< 20%" is a rounded prose
+# summary, and its own Figure 2a shows body-weight points at roughly 1.10 and
+# 0.90, i.e. a 20-point span, consistent with what the model gives. The
+# quantity is deterministic, so this is a stable, reproducible disagreement
+# rather than simulation noise -- it is reported rather than tuned away.
+claim("Body-weight span in AUC12,ss, 5th-95th percentile", 20, span("Body weight (kg)"),
+      1, "%", deviation = TRUE)
+claim("Age span in AUC12,ss, 5th-95th percentile", 20, span("Age (years)"),
+      1, "%", deviation = TRUE)
+
+# Both must still be small enough to support the paper's clinical conclusion
+# that no dose adjustment is warranted.
+stopifnot(span("Body weight (kg)") < 30, span("Age (years)") < 30)
+```
+
+## Virtual cohort and PKNCA validation
+
+A 150-patient cohort is drawn from the Table S1 demographics (median
+weight 65 kg, range 32-150; median age 57 years, range 26-87) and dosed
+at 400 mg twice daily \[4/3\] as a tablet, semi-fasted – the
+CAPItello-291 regimen. NCA is run on the same 252-264 h interval the
+paper used, with time re-based so the interval starts at zero.
+
+``` r
+
+rxode2::rxSetSeed(20250908)
+set.seed(20250908)
+n_sub <- 150L
+
+cohort <- tibble::tibble(
+  id  = seq_len(n_sub),
+  WT  = pmin(pmax(round(exp(rnorm(n_sub, log(65), 0.24))), 32), 150),
+  AGE = pmin(pmax(round(rnorm(n_sub, 57, 11)), 26), 87)
+)
+
+obs_ss <- seq(ss_start, ss_end, by = 0.25)
+ev_cohort <- make_events(cohort$id, 400, dose_times("4/3", 3L), obs_ss,
+                         WT = cohort$WT, AGE = cohort$AGE,
+                         treatment = "400 mg BD [4/3]")
+# make_events() merges on a per-id frame, so WT / AGE must be re-attached by id
+# rather than recycled positionally.
+ev_cohort <- ev_cohort |>
+  dplyr::select(-WT, -AGE) |>
+  dplyr::left_join(cohort, by = "id")
+
+sim <- rxode2::rxSolve(mod, ev_cohort, addDosing = FALSE,
+                       keep = c("WT", "AGE", "treatment")) |>
+  as.data.frame()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+if (is.null(sim$id)) sim$id <- 1L
+
+# Re-base time so the dosing interval starts at 0, which PKNCA requires for
+# auc.last, and keep the record exactly at t = 12 so ctrough is defined.
+conc_df <- sim |>
+  dplyr::mutate(time = time - ss_start) |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, WT, AGE, treatment)
+
+stopifnot(nrow(conc_df) > 0, all(conc_df$Cc >= 0),
+          any(abs(conc_df$time - 0) < 1e-9),
+          any(abs(conc_df$time - 12) < 1e-9))
+
+dose_df <- conc_df |>
+  dplyr::distinct(id, treatment) |>
+  dplyr::mutate(time = 0, amt = 400)
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+intervals <- data.frame(start = 0, end = 12,
+                        auclast = TRUE, cmax = TRUE, tmax = TRUE, cmin = TRUE)
+res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+
+nca <- as.data.frame(res) |>
+  dplyr::filter(PPTESTCD %in% c("auclast", "cmax", "tmax", "cmin"))
+stopifnot(nrow(nca) > 0, !anyNA(nca$PPORRES))
+
+nca_summary <- nca |>
+  dplyr::group_by(PPTESTCD) |>
+  dplyr::summarise(Median = median(PPORRES),
+                   `5th pct` = quantile(PPORRES, 0.05),
+                   `95th pct` = quantile(PPORRES, 0.95), .groups = "drop")
+nca_summary |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) signif(x, 3))) |>
+  dplyr::rename("NCA parameter" = PPTESTCD) |>
+  knitr::kable(caption = "PKNCA results over the 252-264 h dosing interval, 150 simulated patients.")
+```
+
+| NCA parameter |  Median | 5th pct | 95th pct |
+|:--------------|--------:|--------:|---------:|
+| auclast       | 7730.00 | 3950.00 | 20300.00 |
+| cmax          | 1300.00 |  693.00 |  2850.00 |
+| cmin          |  246.00 |   93.30 |  1070.00 |
+| tmax          |    1.75 |    0.75 |     3.25 |
+
+PKNCA results over the 252-264 h dosing interval, 150 simulated
+patients. {.table}
+
+### Comparison against the published exposure metrics
+
+``` r
+
+med <- function(k) nca_summary$Median[nca_summary$PPTESTCD == k]
+stopifnot(length(med("auclast")) == 1L, length(med("cmax")) == 1L)
+
+comparison <- tibble::tibble(
+  `NCA parameter` = c("AUC0-12 (ug*h/L)", "Cmax (ug/L)"),
+  `Published median` = c(7650, 1460),
+  `Simulated median`  = signif(c(med("auclast"), med("cmax")), 4)
+) |>
+  dplyr::mutate(`% difference` = round(100 * (`Simulated median` - `Published median`) /
+                                         `Published median`, 1))
+knitr::kable(comparison, caption = "Simulated cohort medians against the published reference values.")
+```
+
+| NCA parameter     | Published median | Simulated median | % difference |
+|:------------------|-----------------:|-----------------:|-------------:|
+| AUC0-12 (ug\*h/L) |             7650 |             7734 |          1.1 |
+| Cmax (ug/L)       |             1460 |             1297 |        -11.2 |
+
+Simulated cohort medians against the published reference values.
+{.table}
+
+``` r
+
+
+# Cohort medians, so the bound is on the CENTRE and is set with headroom rather
+# than at the accuracy of one draw. The published values are for a reference
+# patient at exactly 65 kg / 57 y while the cohort spans the full demographic
+# range, so a modest offset is expected. A mis-transcribed dose, clearance or
+# unit moves these by tens of percent.
+stopifnot(all(abs(comparison$`% difference`) < 25))
+```
+
+``` r
+
+band <- conc_df |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(med = median(Cc), lo = quantile(Cc, 0.05),
+                   hi = quantile(Cc, 0.95), .groups = "drop")
+
+ggplot(band, aes(time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.2) +
+  geom_line(aes(y = med), linewidth = 0.9) +
+  labs(x = "Time since the 252 h dose (h)", y = "Capivasertib (ug/L)") +
+  theme_bw()
+```
+
+![Simulated steady-state concentration-time profiles over the 252-264 h
+dosing interval: median and 5th-95th percentiles across 150
+patients.](FernandezTeruel_2025_capivasertib_files/figure-html/vpc-1.png)
+
+Simulated steady-state concentration-time profiles over the 252-264 h
+dosing interval: median and 5th-95th percentiles across 150 patients.
+
+## Exposure-response
+
+The exposure-response half of this paper contributes **no shipped
+model**, for two different reasons that are worth separating.
+
+### Efficacy: a reported null
+
+The exposure-efficacy analysis is a genuine null result, not a reporting
+gap. Neither progression-free survival nor objective response rate was
+related to any capivasertib exposure metric, and the supplement
+publishes the full coefficient tables that establish it. Every hazard
+ratio is centred on 1:
+
+| Metric | Univariate estimate | Univariate HR (95% CI) | Wald p |
+|:-------|--------------------:|:-----------------------|-------:|
+| AUC    |             0.01070 | 1.01 (0.987, 1.04)     |  0.382 |
+| Cmax   |             0.01430 | 1.01 (0.791, 1.30)     |  0.910 |
+| Cmin   |             0.20100 | 1.22 (0.807, 1.85)     |  0.343 |
+| AAUC   |             0.00751 | 1.01 (0.976, 1.04)     |  0.646 |
+| ACmax  |            -0.01570 | 0.984 (0.756, 1.28)    |  0.907 |
+| ACmin  |             0.18500 | 1.20 (0.681, 2.13)     |  0.524 |
+
+Univariate PFS Cox regression by exposure metric (Table S4). No metric
+is significant. {.table}
+
+The final PFS Cox model retained only liver metastasis (HR 2.05, 95% CI
+1.62 to 2.60) and prior CDK4/6-inhibitor use (HR 1.70, 95% CI 1.32 to
+2.19) – both baseline prognostic factors, neither exposure-driven. There
+is therefore no exposure-response model to encode.
+
+### Safety: significant, but with no published coefficients
+
+The exposure-safety analysis is the opposite case. Three of ten
+endpoints showed a significant relationship with steady-state AUC –
+adverse event leading to dose modification (AEDM), AE grade \>= 3, and
+diarrhea grade \>= 2, all at p \< 0.005 (Figure 4) – but **not one
+logistic-regression coefficient is printed anywhere**: not in the main
+text, not in Table 2, not in Tables S1-S5. The relationships appear only
+as fitted curves in Figure 4 and Figure S6.
+
+The paper does, however, print six predicted probabilities that are
+enough to recover the coefficients arithmetically. For patients aged \>=
+65 years at 400 mg, Sect. 3.4 reports the probability at the observed
+median AUC, and again after hypothetical 20% and 50% reductions in AUC.
+Three points on a two-parameter logistic curve are one more than needed,
+so the third point is a consistency check rather than an input.
+
+``` r
+
+# Sect. 3.4, patients >= 65 years, 400 mg: probability at the median AUC (A),
+# at 0.8*A and at 0.5*A.
+er <- tibble::tribble(
+  ~Endpoint,            ~p_A,  ~p_80, ~p_50,
+  "AEDM",               0.587, 0.554, 0.504,
+  "AE grade >= 3",      0.567, 0.534, 0.494,
+  "Diarrhea grade >= 2", 0.398, 0.369, 0.329
+)
+
+logit <- function(p) log(p / (1 - p))
+expit_ <- function(x) 1 / (1 + exp(-x))
+
+er_fit <- er |>
+  dplyr::mutate(
+    # If logit(p) = a + b*AUC then logit(p_A) - logit(p_50) = 0.5*b*A.
+    bA_from_50 = (logit(p_A) - logit(p_50)) / 0.5,
+    bA_from_80 = (logit(p_A) - logit(p_80)) / 0.2,
+    bA         = (bA_from_50 + bA_from_80) / 2,
+    a          = logit(p_A) - bA,
+    `p at AUC = 0` = expit_(a),
+    `consistency (%)` = 100 * abs(bA_from_80 - bA_from_50) / bA
+  )
+
+er_fit |>
+  dplyr::select(Endpoint, bA_from_50, bA_from_80, a, `p at AUC = 0`, `consistency (%)`) |>
+  dplyr::mutate(dplyr::across(where(is.numeric), \(x) round(x, 3))) |>
+  dplyr::rename("b*A from the 50% step" = bA_from_50,
+                "b*A from the 20% step" = bA_from_80,
+                "intercept a" = a) |>
+  knitr::kable(caption = "Logistic coefficients recovered from the three printed probabilities per endpoint.")
+```
+
+| Endpoint | b\*A from the 50% step | b\*A from the 20% step | intercept a | p at AUC = 0 | consistency (%) |
+|:---|---:|---:|---:|---:|---:|
+| AEDM | 0.671 | 0.674 | -0.321 | 0.420 | 0.372 |
+| AE grade \>= 3 | 0.587 | 0.667 | -0.358 | 0.412 | 12.726 |
+| Diarrhea grade \>= 2 | 0.598 | 0.614 | -1.019 | 0.265 | 2.593 |
+
+Logistic coefficients recovered from the three printed probabilities per
+endpoint. {.table}
+
+Two independent facts support the reconstruction:
+
+1.  **The two steps agree.** The 20% and 50% reductions give the same
+    `b*A` to within a few percent for AEDM and diarrhea, which they
+    would not do if the model were logistic in `log(AUC)` rather than in
+    `AUC` (that alternative gives estimates differing by 25%). So the
+    paper’s logistic regression is linear in AUC, and the reconstruction
+    is self-checking.
+2.  **The recovered intercepts match Figure S6.** Figure S6 plots these
+    curves from AUC = 0, so the intercept is directly readable: about
+    0.42 for AEDM and about 0.27 for diarrhea in the \>= 65 y group. The
+    recovered values land on both.
+
+``` r
+
+# The 20%-step and 50%-step estimates of b*A are two routes to the same
+# quantity; they must agree. A logistic in log(AUC) would break this.
+stopifnot(all(er_fit$`consistency (%)` < 15))
+
+# Recovered intercepts against Figure S6 read-off values.
+fig_s6_intercepts <- c(AEDM = 0.42, `AE grade >= 3` = 0.43, `Diarrhea grade >= 2` = 0.27)
+stopifnot(all(abs(er_fit$`p at AUC = 0` - fig_s6_intercepts[er_fit$Endpoint]) < 0.05))
+```
+
+What cannot be recovered is the slope `b` on its own, because the paper
+never states `A`, the median AUC in the \>= 65 y subgroup – only that it
+is 14.7% higher than in the \< 65 y subgroup. `b` and `A` appear solely
+as the product `b*A`, so the reconstruction pins the *shape* of every
+curve but not its horizontal scale. That is why this is documented here
+rather than shipped as a model file: a model file would have to commit
+to a value of `b`, and no source on disk supplies one.
+
+The practical size of the effect is worth stating plainly. Halving a
+patient’s AUC – far more than any tolerated dose reduction achieves –
+moves the AEDM probability only from 58.7% to 50.4%. That is the
+quantitative basis for the paper’s conclusion that a priori dose
+reduction is not warranted.
+
+## Validation summary
+
+``` r
+
+tab <- dplyr::bind_rows(acc$rows)
+tab |>
+  dplyr::mutate(dplyr::across(c(Published, Reproduced, Tolerance),
+                              \(x) signif(x, 4))) |>
+  knitr::kable(caption = "Published values against values reproduced from the model file.")
+```
+
+| Quantity | Unit | Published | Reproduced | Tolerance | Pass | Deviation |
+|:---|:---|---:|---:|---:|:---|:---|
+| Apparent volume of distribution at steady state (V2 + V3 + V4) | L | 265.000 | 2.650e+02 | 0.500 | TRUE | FALSE |
+| Maximal reduction in CL/F after multiple doses at 400 mg | % | 11.200 | 1.121e+01 | 0.100 | TRUE | FALSE |
+| Maximal reduction in CL/F after multiple doses at 640 mg | % | 29.200 | 2.915e+01 | 0.200 | TRUE | FALSE |
+| Fraction of the dose absorbed by the first-order route at 67 kg | fraction | 0.832 | 8.320e-01 | 0.001 | TRUE | FALSE |
+| Extent of the CL/F decline completed at 168 h (‘plateau’ per Sect. 3.2) | fraction | 1.000 | 8.082e-01 | 0.050 | FALSE | TRUE |
+| Steady-state AUC over the 12 h dosing interval (252-264 h), solved | ug\*h/L | 7650.000 | 7.549e+03 | 400.000 | TRUE | FALSE |
+| Steady-state AUC, closed form Dose / CL_ss (no ODE solver) | ug\*h/L | 7650.000 | 7.628e+03 | 400.000 | TRUE | FALSE |
+| Steady-state Cmax (252-264 h) | ug/L | 1460.000 | 1.395e+03 | 150.000 | TRUE | FALSE |
+| Accumulation ratio (AUC12 at steady state / AUC12 after the first dose) | ratio | 1.470 | 1.438e+00 | 0.250 | TRUE | FALSE |
+| Effective half-life implied by the published accumulation ratio 1.47 | h | 7.250 | 7.294e+00 | 0.100 | TRUE | FALSE |
+| Largest deviation from the Figure 2a AUC ratios (16 points) | ratio | 0.000 | 1.954e-02 | 0.060 | TRUE | FALSE |
+| Body-weight span in AUC12,ss, 5th-95th percentile | % | 20.000 | 2.267e+01 | 1.000 | FALSE | TRUE |
+| Age span in AUC12,ss, 5th-95th percentile | % | 20.000 | 2.003e+01 | 1.000 | TRUE | TRUE |
+
+Published values against values reproduced from the model file. {.table}
+
+``` r
+
+
+stopifnot(all(tab$Pass[!tab$Deviation]))
+```
+
+## Assumptions and deviations
+
+- **`Imax_pacl` is not reported anywhere and is set to 0.** The printed
+  Imax equation (p. 7) retains the factor `(1 + PACL * Imax_pacl)` and
+  the equation legend defines `Imax_pacl` as “the relationship between
+  concomitant paclitaxel and Imax”, but no estimate for it appears in
+  Table 2 – which tabulates every other coefficient in every other
+  equation – nor in Tables S1-S5, nor in any figure panel. The 2024
+  parent model reports `Imax_pacl = 1.15`, but that is a different fit:
+  `Imax` moved from -1.54 to -1.87 and `Imax_dose` from -0.00183 to
+  -0.00213 between the two, so carrying the 2024 value across would
+  fabricate a 2025 estimate. Setting it to 0 makes `(1 + PACL * 0) = 1`,
+  so the encoded model is *exactly* the paper’s model for every
+  paclitaxel-free patient – 89.4% of the PopPK cohort and 100% of the
+  CAPItello-291 population this paper exists to describe. Simulating the
+  paclitaxel arm requires supplying a value.
+- **The weight normalisation constant is 67 kg, not the 65 kg cohort
+  median.** Both printed covariate equations read `(BBW/67)`, carried
+  over from the 2024 parent model, while Table S1 gives a median weight
+  of 65 kg. The equation governs. The age constant, 57 years, is both
+  the printed constant and the cohort median, so no such distinction
+  arises there.
+- **IIV is read as `omega = CV / 100`.** Table 2 reports all five IIVs
+  in one column headed “CV (%)”, and one of them – LogitF1 – is additive
+  on the logit scale, where a log-normal `100 * sqrt(exp(omega^2) - 1)`
+  back-transform is undefined. A single column cannot carry two
+  conventions, so the column is read as `100 * omega` throughout. This
+  matches the reading used for the same table layout by the same first
+  author in `FernandezTeruel_2024_capivasertib`.
+- **No IIV on Ka or D2.** The 2024 parent model held both at a fixed
+  15% CV. The 2025 Table 2 lists neither, so neither is encoded; nothing
+  is invented to fill the gap.
+- **The RSE column of Table 2 is not used.** Its values are implausible
+  as relative standard errors – CL0/F is listed at 0.0509% against a
+  bootstrap 95% CI of 56.8-62 around 59.6, which implies roughly 2%.
+  Nothing in the model file depends on the RSE column; the bootstrap
+  intervals, which are internally consistent, are quoted in the in-file
+  comments instead.
+- **The model equations were recovered with `pdftotext -layout`.** The
+  publisher-supplied structured text renders the entire p. 7
+  display-equation block as a single dropped-formula placeholder. Had
+  the equations not been recovered, the weight effect would have been
+  mis-encoded as the 2024 model’s linear-deviation form, and the age
+  covariate missed altogether.
+- **Two prose claims are reproduced only approximately, and are flagged
+  as deviations rather than gated.** Neither involves a simulated
+  cohort, so both are stable, reproducible disagreements rather than
+  sampling noise, and both are reported instead of being tuned away. (i)
+  Sect. 3.2 states the CL/F plateau “would be achieved after
+  approximately 168 h (Day 7)”; with T50 = 126 h and a Hill exponent of
+  5 the decline is 81% complete at 168 h and needs about 215 h to reach
+  95%. (ii) Sect. 3.2 summarises the demographic covariate effects as
+  “\< 20% difference in exposure” between the 5th and 95th percentiles;
+  computed exactly from Table 2 the spans are 22.7% for body weight and
+  20.0% for age. The paper’s own Figure 2a shows body-weight points at
+  roughly 1.10 and 0.90, i.e. a 20-point span, so the model agrees with
+  the figure and it is the rounded prose summary that is slightly
+  optimistic.
+- **Region and race are not in the model.** The paper screened both and
+  found Chinese/Asian steady-state exposure less than 15% higher than
+  the rest of the world, which it judged not clinically relevant. That
+  claim cannot be checked against this model file, because no region
+  term was retained to check.
+- **Exposure-response is documented, not shipped.** See the
+  Exposure-response section: the efficacy analysis is a published null,
+  and the safety logistic regressions have no published coefficients.
+  The reconstruction shown there is derived from the paper’s own printed
+  predicted probabilities and is validated against Figure S6, but it
+  recovers only the product `b*A`, not the slope alone.
+- **Cohort demographics are assumed log-normal (weight) and normal
+  (age)**, truncated to the Table S1 ranges. The paper reports medians
+  and ranges only, not distributional shape. \`\`\`

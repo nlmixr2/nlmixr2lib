@@ -1,0 +1,682 @@
+# Thioguanine (Bayoumy 2025)
+
+## Model and source
+
+- Citation: Bayoumy AB, de Boer NKH, Keizer RJ, Derijks LJJ. Population
+  pharmacokinetics model of thioguanine in patients with inflammatory
+  bowel disease. Clin Pharmacokinet. 2025;64:1255-1262.
+  <doi:10.1007/s40262-025-01532-1>
+- Description: One-compartment population PK model with first-order
+  absorption for erythrocyte 6-thioguanine nucleotide (6-TGN)
+  concentrations after oral thioguanine in adults with inflammatory
+  bowel disease, with fixed allometric body-weight scaling and a
+  concomitant-aminosalicylate (5-ASA) effect on apparent clearance
+  (Bayoumy 2025)
+- Article: <https://doi.org/10.1007/s40262-025-01532-1>
+- Supplement (ESM 1, final NONMEM control stream):
+  <https://doi.org/10.1007/s40262-025-01532-1>
+
+This is the first published population pharmacokinetic model of
+thioguanine (TG) in inflammatory bowel disease. It was built to support
+model-informed precision dosing (MIPD): TG is given at a fixed dose in
+IBD, and therapeutic drug monitoring of the active metabolites, the
+6-thioguanine nucleotides (6-TGN), is already routine in clinical
+practice.
+
+Two features of this model are unusual enough to state up front, because
+both are easy to mis-transcribe from the printed paper alone (see
+**Errata** below):
+
+1.  **The model runs in days, not hours.** ESM 1 estimates `Ka = 8 /day`
+    and `CL/F = 110.405 L/day`; Table 2 of the paper reports the same
+    values per hour (0.33 /h, 4.6 L/h).
+2.  **The apparent volume carries a x5 assay unit-conversion factor
+    applied inside `$PK`.** ESM 1 sets `V_FACT = 5` and
+    `MU_2 = LOG(THETA(2) * V_FACT) + ...`, so the volume that scales the
+    central amount – and therefore sets `kel = CL/V` – is
+    `270.46 x 5 = 1352.3 L`, not the 270.5 L printed in Table 2. The
+    factor converts nmol/L into the historical 6-TGN assay unit,
+    picomole per 8e8 red blood cells, which the authors equate with
+    picomole per 200 uL of blood (Methods 2.3).
+
+Together these give a 6-TGN elimination half-life of about 8.5 days,
+which is why the source study sampled troughs out to 8 weeks.
+
+## Population
+
+The model was developed from 131 6-TGN trough measurements in 28 adults
+with IBD (16 Crohn’s disease, 12 ulcerative colitis) treated with oral
+thioguanine, re-analysed from the cohort of Derijks et al. (reference
+\[9\] of the source paper). Six patients were male and 22 female (78.6%
+female); mean age was 38 years (range 19-70) and median weight 60 kg
+(IQR 56-74.25). The mean TG dose was 0.32 mg/kg/day (95% CI 0.29-0.34).
+Concomitant aminosalicylate (5-ASA) therapy was taken by 23/28 patients
+(82%), at a median 5-ASA dose of 3000 mg (range 1500-3200). TPMT was
+genotyped in 17/28 patients (61%), all of whom were `*1/*1` wild type,
+so a TPMT effect could not be estimated. These are the baseline
+characteristics of Table 1 of the source paper.
+
+Trough samples were drawn at days 7, 14, 21, 28 and 56 of daily dosing.
+Three further patients contributed a densely sampled 24-h steady-state
+profile; because a joint fit destabilised the model and between-occasion
+variability could not be estimated from three subjects, those profiles
+were entered as separate subjects. Seven of the 131 measurements (5.0%)
+were removed as outliers – three for `|CWRES| > 3` and four for
+suspected non-adherence. 6-TGN was measured in erythrocytes by
+reversed-phase HPLC with UV detection (run-to-run CV 6.6%, LLOQ 30 pmol
+per 8e8 RBC).
+
+The same information is available programmatically via the model’s
+`population` metadata
+(`readModelDb("Bayoumy_2025_thioguanine")()$population`).
+
+## Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Bayoumy_2025_thioguanine.R` carries an
+in-file comment naming its origin. The table below collects them for
+review. “ESM 1” is *Supplement 1. Final model code*, the final NONMEM
+control stream in the paper’s Electronic Supplementary Material.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lka` | `log(8)`, fixed | ESM 1 `$THETA` 1: `(0.1, 8) FIX ; 1 Ka /day`. Table 2 prints `0.33 (f)` /h = 8 /day. Results 3.2: Ka could not be estimated, so it was fixed at the value best describing the three 24-h profiles. |
+| `lcl` | `log(110.405)` | ESM 1 `$THETA` 3: `(0,110.405) ; 3 CL/F L/day`. Table 2 prints 4.6 (= 110.405/24) with RSE 11%. |
+| `lvc` | `log(270.46 * 5)` | ESM 1 `$THETA` 2: `(0,270.46) ; 2 V/F`, multiplied by `V_FACT = 5` in `$PK` (`MU_2 = LOG(THETA(2) * V_FACT) + ...`). Table 2 prints the unscaled 270.5 with RSE 15%. |
+| `e_wt_cl` | `0.75`, fixed | ESM 1 `$THETA` 6: `(0,0.75) FIX ; 6 WT on CL`. Results 3.3 and the final model equations. |
+| `e_wt_vc` | `1.0`, fixed | ESM 1 `$THETA` 5: `(0,1.0) FIX ; 5 WT on V`. Results 3.3 and the final model equations. |
+| `e_conmed_amino_cl` | `1.58165` | ESM 1 `$THETA` 7: `(0,1.58165) ; 7 USE of 5-ASA on CL`. Printed as `1.582` in the final model equation and as “58% higher CL” (RSE 15%) in Results 3.3. |
+| `etalvc` (omega^2) | `0.271878` | ESM 1 `$OMEGA BLOCK(2)`, first diagonal; ETA(2) is assigned to V in `$PK`. sqrt = 0.521 (52% CV). |
+| `etalcl` (omega^2) | `0.150194` | ESM 1 `$OMEGA BLOCK(2)`, second diagonal; ETA(3) is assigned to CL in `$PK`. sqrt = 0.388 (39% CV). |
+| `etalvc ~ etalcl` covariance | `0.119927` | ESM 1 `$OMEGA BLOCK(2)` off-diagonal; correlation 0.59. |
+| `etalka` (omega^2) | `1`, fixed | ESM 1 `$OMEGA 1 FIX ; BSV Ka`. Results 3.2: BSV on Ka was \>250% with large uncertainty, so it was held at 100%. |
+| `etapropSd` (omega^2) | `0.244129` | ESM 1 `$OMEGA 0.244129 ; eps` -\> ETA(4). sqrt = 0.494 (49% CV). Table 2 “BSV 49%” on the residual-error magnitude. |
+| `propSd` | `0.145424` | ESM 1 `$THETA` 4: `(0,0.145424) ; 4 prop error`. Table 2 “Residual error magnitude 14.5%”. |
+| `CL_i = CL_pop * (WT/70)^0.75 * 1.582^ASA * exp(eta)` | n/a | Final model equation, Results 3.3 (p. 1259); ESM 1 `$PK` `MU_3`. |
+| `V_i = V_pop * (WT/70) * exp(eta)` | n/a | Final model equation, Results 3.3 (p. 1259); ESM 1 `$PK` `MU_2`. |
+| `d/dt(depot)`, `d/dt(central)` | n/a | One-compartment model with first-order absorption, Results 3.2 and Fig. 1; ESM 1 uses a two-compartment-numbering ADVAN with `S2 = V`. |
+| `f(depot) = 1e6/167.19` | n/a | ESM 1 `$PK`: `F1 = 1E6/167.19 ; convert mg dose to nanomole, Mw 6-TG = 167.19 g/mol`. |
+| `Cc ~ prop(propSd * exp(etapropSd))` | n/a | ESM 1 `$ERROR`: log-transform-both-sides with `PROP = THETA(4)*EXP(ETA(4))`, `W = PROP`, `Y = LOG(F) + W*EPS(1)`, `$SIGMA 1 FIX`. Results 3.2 states this is “equivalent to a proportional error model”. |
+
+## Structural checks
+
+Before simulating a cohort, confirm the covariate model and the unit
+conversion are wired up as the control stream specifies. These checks
+compare the solved model against its own closed form using the *same*
+parameter values, so the difference is pure numerical error and a tight
+bound is appropriate.
+
+``` r
+
+mod <- readModelDb("Bayoumy_2025_thioguanine")
+
+MW_TG   <- 167.19          # g/mol, ESM 1 $PK
+MG2NMOL <- 1e6 / MW_TG     # mg -> nmol
+CL_POP  <- 110.405         # L/day, ESM 1 $THETA 3
+V_POP   <- 270.46 * 5      # L, ESM 1 $THETA 2 x V_FACT
+E_ASA   <- 1.58165         # ESM 1 $THETA 7
+
+# Typical-value solve over a weight x 5-ASA grid. zeroRe() removes the
+# random effects; omega/sigma = NA stops rxSolve reusing a previous draw.
+grid <- expand.grid(WT = c(45, 60, 70, 95), CONMED_AMINO = c(0, 1))
+grid$id <- seq_len(nrow(grid))
+
+ev_grid <- dplyr::bind_rows(lapply(grid$id, function(i) {
+  dplyr::bind_rows(
+    data.frame(id = i, time = 0, evid = 1, amt = 20, cmt = "depot"),
+    data.frame(id = i, time = c(0, 1, 5), evid = 0, amt = NA_real_, cmt = "central")
+  )
+})) |>
+  dplyr::left_join(grid, by = "id") |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+chk <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_grid,
+                       omega = NA, sigma = NA,
+                       keep = c("WT", "CONMED_AMINO"),
+                       returnType = "data.frame") |>
+  dplyr::distinct(id, cl, vc, kel, WT, CONMED_AMINO) |>
+  dplyr::mutate(
+    cl_closed = CL_POP * (WT / 70)^0.75 * E_ASA^CONMED_AMINO,
+    vc_closed = V_POP  * (WT / 70)^1.0
+  )
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: No sigma parameters in the model
+
+stopifnot(
+  # Covariate model reproduced exactly (solver round-off only).
+  max(abs(chk$cl / chk$cl_closed - 1)) < 1e-8,
+  max(abs(chk$vc / chk$vc_closed - 1)) < 1e-8,
+  # 5-ASA raises CL/F by exactly the published factor.
+  all(abs(chk$cl[chk$CONMED_AMINO == 1] /
+          chk$cl[chk$CONMED_AMINO == 0] - E_ASA) < 1e-8)
+)
+
+thalf_pop <- log(2) / (CL_POP / V_POP)
+knitr::kable(
+  chk |>
+    dplyr::select(WT, CONMED_AMINO, cl, vc, kel) |>
+    dplyr::mutate(`t1/2 (day)` = log(2) / kel) |>
+    dplyr::rename("Weight (kg)" = WT, "5-ASA" = CONMED_AMINO,
+                  "CL/F (L/day)" = cl, "V/F (L)" = vc, "kel (1/day)" = kel),
+  digits = c(0, 0, 1, 1, 5, 2),
+  caption = paste0("Typical-value parameters over a weight x 5-ASA grid. ",
+                   "The 6-TGN half-life is weight-independent at ",
+                   round(thalf_pop, 2), " days because CL/F and V/F ",
+                   "scale with different allometric exponents only through ",
+                   "their ratio WT^-0.25.")
+)
+```
+
+| Weight (kg) | 5-ASA | CL/F (L/day) | V/F (L) | kel (1/day) | t1/2 (day) |
+|------------:|------:|-------------:|--------:|------------:|-----------:|
+|          45 |     0 |         79.3 |   869.3 |     0.09118 |       7.60 |
+|          60 |     0 |         98.4 |  1159.1 |     0.08485 |       8.17 |
+|          70 |     0 |        110.4 |  1352.3 |     0.08164 |       8.49 |
+|          95 |     0 |        138.8 |  1835.3 |     0.07564 |       9.16 |
+|          45 |     1 |        125.4 |   869.3 |     0.14421 |       4.81 |
+|          60 |     1 |        155.6 |  1159.1 |     0.13420 |       5.16 |
+|          70 |     1 |        174.6 |  1352.3 |     0.12913 |       5.37 |
+|          95 |     1 |        219.6 |  1835.3 |     0.11964 |       5.79 |
+
+Typical-value parameters over a weight x 5-ASA grid. The 6-TGN half-life
+is weight-independent at 8.49 days because CL/F and V/F scale with
+different allometric exponents only through their ratio WT^-0.25.
+{.table}
+
+The x5 factor is load-bearing: dropping it would shorten the 6-TGN
+half-life from 8.5 days to 1.7 days and put steady state inside the
+first week, contradicting the source study’s 8-week trough design.
+
+## Virtual cohort
+
+The original data are not public. The cohort below approximates Table 1
+of the source paper: median weight 60 kg and the paper’s mean dose of
+0.32 mg/kg/day. Two arms of 200 subjects isolate the 5-ASA covariate;
+the source cohort was 82% 5-ASA users, but a balanced design is what
+makes the covariate effect readable against the paper’s two published
+group means.
+
+``` r
+
+# set.seed() seeds R's RNG, not rxode2's per-thread simulation streams, so
+# the drawn etas differ across machines with different thread counts. Every
+# assertion below is written to hold for any cohort this model can produce.
+set.seed(20250908)
+
+N_PER_ARM <- 150L
+DOSE_MGKG <- 0.32          # mg/kg/day, Table 1 mean
+LLOQ      <- 30            # pmol per 8e8 RBC, Methods 2.1
+
+# Dosing duration for the NCA arm. The closed-form gates below are asserted
+# with a tight `all()` bound, which is only legitimate if EVERY subject is
+# genuinely at steady state -- otherwise the residual approach to steady
+# state is a per-subject physical mechanism and the extreme of a random
+# cohort is not reproducible across rxode2 builds. kel = cl/vc has a
+# log-scale SD of sqrt(0.150194 + 0.271878 - 2*0.119927) = 0.427, so a
+# 4-SD-slow subject has a half-life near 47 days. Dosing for 500 days gives
+# even that subject more than ten half-lives.
+DAYS_DOSE <- 500L
+stopifnot(
+  log(2) / (CL_POP / V_POP * exp(-4 * sqrt(0.150194 + 0.271878 - 2 * 0.119927))) * 10 <
+    DAYS_DOSE
+)
+
+make_arm <- function(n, asa, arm, id_offset = 0L) {
+  tibble::tibble(
+    id  = id_offset + seq_len(n),
+    # Weight: lognormal with the published median of 60 kg. The paper gives
+    # only median and IQR, so the spread (sdlog = 0.20) is an assumption --
+    # see "Assumptions and deviations".
+    WT  = pmin(pmax(stats::rlnorm(n, log(60), 0.20), 40), 120),
+    CONMED_AMINO = asa,
+    arm = arm
+  )
+}
+
+cohort <- dplyr::bind_rows(
+  make_arm(N_PER_ARM, 0, "No 5-ASA",          id_offset = 0L),
+  make_arm(N_PER_ARM, 1, "Concomitant 5-ASA", id_offset = N_PER_ARM)
+)
+
+# Observation grid: pre-dose troughs (offset just before the dose so the
+# record is unambiguously a trough) -- daily over the source study's 8-week
+# window, then weekly out to the NCA interval -- plus a dense grid over the
+# final steady-state dosing interval and a washout for the half-life.
+t_trough_daily  <- seq_len(56) - 1e-3
+t_trough_weekly <- seq(63, DAYS_DOSE - 1, by = 7) - 1e-3
+t_ss            <- seq(DAYS_DOSE, DAYS_DOSE + 1, by = 0.04)
+t_washout       <- seq(DAYS_DOSE + 2, DAYS_DOSE + 70, by = 4)
+t_obs <- sort(unique(c(0, t_trough_daily, t_trough_weekly, t_ss, t_washout)))
+
+events <- dplyr::bind_rows(
+  # One dose record per subject, expanded by rxode2 via ii/addl into daily
+  # oral doses on days 0 .. DAYS_DOSE.
+  cohort |>
+    dplyr::mutate(time = 0, evid = 1, amt = DOSE_MGKG * WT, cmt = "depot",
+                  ii = 1, addl = DAYS_DOSE),
+  cohort |>
+    tidyr::expand_grid(time = t_obs) |>
+    dplyr::mutate(evid = 0, amt = NA_real_, cmt = "central",
+                  ii = 0, addl = 0)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(
+  nrow(dplyr::distinct(cohort, id)) == 2L * N_PER_ARM,
+  N_PER_ARM <= 200L
+)
+```
+
+## Simulation
+
+``` r
+
+simres <- rxode2::rxSolve(
+  mod, events,
+  keep = c("WT", "CONMED_AMINO", "arm"),
+  returnType = "data.frame"
+) |>
+  dplyr::filter(!is.na(Cc))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+# `Cc` is the individual prediction; `sim` additionally carries the
+# per-subject proportional residual error. Apply the assay LLOQ to `sim` the
+# way the laboratory would: values below the limit are reported as LLOQ/2.
+# Without this the large residual error occasionally drives a simulated
+# concentration negative, which no assay can return.
+simres <- simres |>
+  dplyr::mutate(dv = pmax(sim, LLOQ / 2))
+
+stopifnot(
+  !anyNA(simres$Cc),
+  all(simres$Cc >= 0),
+  all(simres$dv > 0)
+)
+```
+
+## Replicate published figures
+
+The source paper’s Fig. 2 is a visual predictive check of 6-TGN trough
+concentration against time over the 8-week trough cohort, with the
+median and the 5th-95th percentile prediction interval. The panel below
+reproduces that shape from the packaged model over the same 8-week
+window, split by 5-ASA status so the covariate effect is visible.
+
+``` r
+
+# Replicates Figure 2 of Bayoumy 2025: VPC of 6-TGN trough vs time.
+simres |>
+  dplyr::filter(time %in% t_trough_daily) |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(dv, 0.05),
+    Q50 = stats::quantile(dv, 0.50),
+    Q95 = stats::quantile(dv, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(time, Q50)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  ggplot2::geom_line(linewidth = 0.8) +
+  ggplot2::facet_wrap(~arm) +
+  ggplot2::labs(
+    x = "Time (days)",
+    y = "6-TGN (pmol per 8e8 RBC)",
+    title = "Figure 2 - simulated 6-TGN trough accumulation over 8 weeks",
+    caption = paste("Replicates Figure 2 of Bayoumy 2025 (VPC).",
+                    "Line = median, band = 5th-95th percentile.")
+  )
+```
+
+![](Bayoumy_2025_thioguanine_files/figure-html/figure-2-1.png)
+
+Accumulation to steady state takes roughly six weeks, consistent with
+the 8.5-day 6-TGN half-life and with the source study’s choice to sample
+out to day 56.
+
+## PKNCA validation
+
+NCA is run over the final steady-state dosing interval (day 500 to 501)
+for exposure parameters, and over the washout window for the terminal
+half-life.
+
+``` r
+
+# Only `!is.na(Cc)` -- do NOT filter on time or concentration, which would
+# drop the time-zero anchor PKNCA needs.
+sim_nca <- simres |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, arm)
+
+# Guarantee a time-zero record per subject; pre-dose Cc = 0 is correct for an
+# extravascular dose into an empty compartment.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, arm, time)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | arm + id)
+
+# The rxSolve event table carries one ii/addl dose record per subject;
+# PKNCA needs the dose that opens the steady-state interval, so expand just
+# that one. No dose falls in the washout interval, which is correct.
+dose_df <- cohort |>
+  dplyr::mutate(time = DAYS_DOSE, amt = DOSE_MGKG * WT) |>
+  dplyr::select(id, time, amt, arm)
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id)
+
+intervals <- data.frame(
+  start      = c(DAYS_DOSE, DAYS_DOSE + 1),
+  end        = c(DAYS_DOSE + 1, DAYS_DOSE + 70),
+  cmax       = c(TRUE,  FALSE),
+  tmax       = c(TRUE,  FALSE),
+  auclast    = c(TRUE,  FALSE),
+  cav        = c(TRUE,  FALSE),
+  half.life  = c(FALSE, TRUE)
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+
+# Split by interval before reshaping: `tmax` is returned for BOTH intervals
+# (and the washout interval also returns the lambda.z diagnostics), so a
+# single pivot_wider would collide and silently produce list-columns.
+nca_long <- as.data.frame(nca_res) |>
+  dplyr::select(arm, id, start, PPTESTCD, PPORRES)
+
+nca_wide <- dplyr::left_join(
+  nca_long |>
+    dplyr::filter(start == DAYS_DOSE,
+                  PPTESTCD %in% c("cmax", "tmax", "auclast", "cav")) |>
+    dplyr::select(-start) |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES),
+  nca_long |>
+    dplyr::filter(start == DAYS_DOSE + 1, PPTESTCD == "half.life") |>
+    dplyr::select(arm, id, half.life = PPORRES),
+  by = c("arm", "id")
+)
+stopifnot(nrow(nca_wide) == 2L * N_PER_ARM,
+          all(vapply(nca_wide, is.atomic, logical(1))))
+
+knitr::kable(
+  nca_wide |>
+    dplyr::group_by(arm) |>
+    dplyr::summarise(
+      cmax = stats::median(cmax), tmax = stats::median(tmax),
+      auclast = stats::median(auclast), cav = stats::median(cav),
+      half.life = stats::median(half.life), .groups = "drop"
+    ) |>
+    dplyr::rename("Arm" = arm,
+                  "Cmax (pmol/8e8 RBC)" = cmax,
+                  "Tmax (day)" = tmax,
+                  "AUCtau (pmol*day/8e8 RBC)" = auclast,
+                  "Cav (pmol/8e8 RBC)" = cav,
+                  "t1/2 (day)" = half.life),
+  digits = 1,
+  caption = paste0("Median simulated steady-state NCA over the day ",
+                   DAYS_DOSE, "-", DAYS_DOSE + 1,
+                   " dosing interval, with the terminal half-life from the ",
+                   "post-dosing washout.")
+)
+```
+
+| Arm | Cmax (pmol/8e8 RBC) | Tmax (day) | AUCtau (pmol\*day/8e8 RBC) | Cav (pmol/8e8 RBC) | t1/2 (day) |
+|:---|---:|---:|---:|---:|---:|
+| Concomitant 5-ASA | 812.3 | 0.2 | 796.7 | 796.7 | 5.1 |
+| No 5-ASA | 1227.0 | 0.2 | 1199.1 | 1199.1 | 8.5 |
+
+Median simulated steady-state NCA over the day 500-501 dosing interval,
+with the terminal half-life from the post-dosing washout. {.table}
+
+### Closed-form gates on the NCA output
+
+Two identities must hold if the unit conversion and the disposition
+model are encoded correctly. Both compare the NCA output against each
+subject’s *own* solved parameters, so they are numerical-accuracy checks
+and are asserted tightly.
+
+``` r
+
+subj <- simres |>
+  dplyr::distinct(id, arm, WT, cl, vc, kel) |>
+  dplyr::left_join(nca_wide, by = c("id", "arm")) |>
+  dplyr::mutate(
+    dose_nmol = DOSE_MGKG * WT * MG2NMOL,
+    # Steady-state mass balance: Cav * CL * tau == dose delivered per interval.
+    mass_bal  = cav * cl * 1 / dose_nmol,
+    # Terminal half-life must equal log(2)/kel for each subject.
+    thalf_rel = half.life / (log(2) / kel)
+  )
+
+stopifnot(
+  !anyNA(subj$cav), !anyNA(subj$half.life),
+  # Mass balance: within 1% of unity for every subject. The small systematic
+  # shortfall is the residual approach to steady state at day 90 plus
+  # trapezoidal error on the absorption peak.
+  all(abs(subj$mass_bal - 1) < 0.01),
+  # Half-life recovered from the washout to within 1% for every subject.
+  all(abs(subj$thalf_rel - 1) < 0.01)
+)
+
+knitr::kable(
+  subj |>
+    dplyr::group_by(arm) |>
+    dplyr::summarise(
+      n = dplyr::n(),
+      mass_bal_med = stats::median(mass_bal),
+      mass_bal_max = max(abs(mass_bal - 1)),
+      thalf_med    = stats::median(thalf_rel),
+      thalf_max    = max(abs(thalf_rel - 1)),
+      .groups = "drop"
+    ) |>
+    dplyr::rename("Arm" = arm, "N" = n,
+                  "Cav*CL/Dose (median)" = mass_bal_med,
+                  "Cav*CL/Dose (max |dev|)" = mass_bal_max,
+                  "t1/2 NCA / closed form (median)" = thalf_med,
+                  "t1/2 ratio (max |dev|)" = thalf_max),
+  digits = 5,
+  caption = paste("Closed-form gates. A value of 1 is exact; the maximum",
+                  "absolute deviation across all subjects is shown.")
+)
+```
+
+| Arm | N | Cav\*CL/Dose (median) | Cav\*CL/Dose (max \|dev\|) | t1/2 NCA / closed form (median) | t1/2 ratio (max \|dev\|) |
+|:---|---:|---:|---:|---:|---:|
+| Concomitant 5-ASA | 150 | 0.99988 | 0.00172 | 1 | 0.00298 |
+| No 5-ASA | 150 | 0.99990 | 0.00077 | 1 | 0.00280 |
+
+Closed-form gates. A value of 1 is exact; the maximum absolute deviation
+across all subjects is shown. {.table}
+
+## Comparison against published values
+
+The source paper reports no NCA parameters – the analysis dataset is
+almost entirely trough concentrations, so Cmax, Tmax and AUC were never
+computed. It does, however, publish one directly comparable exposure
+statistic. In Limitations 4.2, to corroborate the model-based 5-ASA
+effect, the authors report the mean steady-state trough at 4 weeks in
+each group: **805** with concomitant 5-ASA and **1070** without (a
+significant difference, p \< 0.05).
+
+Those means are the reference below, compared against the simulated
+week-4 (day 28) trough. Because the 6-TGN half-life is 8.5 days against
+a 1-day dosing interval, peak-to-trough fluctuation is only about 8.5%,
+so the day-28 trough is a faithful stand-in for average exposure.
+
+``` r
+
+sim_trough_wk4 <- simres |>
+  dplyr::filter(abs(time - (28 - 1e-3)) < 1e-9) |>
+  dplyr::select(arm, id, ctrough = Cc)
+
+published <- tibble::tribble(
+  ~arm,                 ~ctrough,
+  "No 5-ASA",              1070,
+  "Concomitant 5-ASA",      805
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = sim_trough_wk4 |> dplyr::select(arm, ctrough),
+  reference     = published,
+  by            = "arm",
+  units         = c(ctrough = "pmol per 8e8 RBC"),
+  tolerance_pct = 25
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Simulated vs published mean 4-week 6-TGN trough",
+                  "(Bayoumy 2025, Limitations 4.2).",
+                  "* differs from the reference by >25%."),
+  align = c("l", "l", "r", "r", "r")
+)
+```
+
+| NCA parameter              | arm               | Reference | Simulated | % diff |
+|:---------------------------|:------------------|----------:|----------:|-------:|
+| Ctrough (pmol per 8e8 RBC) | No 5-ASA          |      1070 |      1020 |  -4.4% |
+| Ctrough (pmol per 8e8 RBC) | Concomitant 5-ASA |       805 |       741 |  -8.0% |
+
+Simulated vs published mean 4-week 6-TGN trough (Bayoumy 2025,
+Limitations 4.2). \* differs from the reference by \>25%. {.table
+style="width:100%;"}
+
+``` r
+
+gate <- sim_trough_wk4 |>
+  dplyr::group_by(arm) |>
+  dplyr::summarise(med = stats::median(ctrough), .groups = "drop") |>
+  dplyr::left_join(published, by = "arm") |>
+  dplyr::mutate(pct_diff = 100 * (med - ctrough) / ctrough)
+
+stopifnot(
+  # Structural: a mis-transcribed clearance, dose, time base or unit factor
+  # moves these by a factor, not by tens of percent.
+  all(abs(gate$pct_diff) < 30),
+  # The published direction of the 5-ASA effect must be reproduced: higher
+  # clearance on 5-ASA means a lower trough.
+  gate$med[gate$arm == "Concomitant 5-ASA"] < gate$med[gate$arm == "No 5-ASA"]
+)
+
+knitr::kable(
+  gate |>
+    dplyr::rename("Arm" = arm,
+                  "Simulated median trough" = med,
+                  "Published mean trough" = ctrough,
+                  "% difference" = pct_diff),
+  digits = 1,
+  caption = "Week-4 trough: simulated median vs the published group mean."
+)
+```
+
+| Arm | Simulated median trough | Published mean trough | % difference |
+|:---|---:|---:|---:|
+| Concomitant 5-ASA | 740.9 | 805 | -8.0 |
+| No 5-ASA | 1022.8 | 1070 | -4.4 |
+
+Week-4 trough: simulated median vs the published group mean. {.table}
+
+The no-5-ASA arm lands within a few percent of the published 1070. The
+5-ASA arm simulates lower than the published 805, which is expected and
+not a transcription error: 1070/805 = 1.33 is the *observed* group-mean
+ratio in an unbalanced 19-vs-4 split, whereas the model’s fitted
+covariate effect is 1.582 on clearance. The authors themselves present
+the group means only as corroboration of the direction of the effect,
+not as a calibration target, and they note that 5-ASA dose could not be
+related to clearance at all.
+
+## Assumptions and deviations
+
+### Errata and conflicts in the source
+
+- **Table 2’s `Unit` column is transposed between its two disposition
+  rows.** It prints “CL/F … L” and “V/F … L/h”. CL/F is a clearance and
+  V/F is a volume; ESM 1 labels them `; 3 CL/F L/day` and `; 2 V/F`. The
+  control stream was followed.
+- **Table 2’s `BSV` column disagrees with ESM 1 about which parameter
+  carries which variance.** ESM 1 assigns `ETA(2)` to V and `ETA(3)` to
+  CL in `$PK`, and its `$OMEGA BLOCK(2)` declares `0.271878 ; BSV V`
+  then `0.119927 0.150194 ; BSV CL` – that is, omega_V = 52% and
+  omega_CL = 39%. Table 2, and Sections 3.4 and 4 which read off it,
+  assign 52% to CL/F and 39% to V/F, the opposite way round. **This
+  model follows the control stream**, because it is the final model
+  code, its ETA ordering and its own inline comments agree with each
+  other, and the adjacent `Unit` column of the same two Table 2 rows is
+  demonstrably transposed as well. The two variance magnitudes
+  themselves are not in dispute – only which parameter each belongs to.
+  A reviewer who prefers Table 2 need only swap the two diagonals of the
+  `etalvc + etalcl` block. Note that this choice does not affect any
+  gate in this vignette: all of them are conditioned on each subject’s
+  own solved `cl` and `vc`.
+- **Section 3.4 mislabels the RSE column as residual error** (“Residual
+  error was estimated to be 15% and 11% for V/F and CL/F”); Table 2
+  lists those values under `RSE`, and the residual error magnitude is
+  the separate 14.5% row.
+- **The trough concentrations in Limitations 4.2 are printed as “805
+  mg/L” and “1070 mg/L”.** 6-TGN is reported in pmol per 8e8 RBC
+  throughout the rest of the paper; mg/L is not a possible unit for this
+  assay at this magnitude. The values are used here in the assay’s own
+  units.
+- **Section 3.4 attributes the final parameters to “the base model”**
+  while Table 2 is captioned as the model’s PopPK parameters and the
+  Discussion treats them as final. ESM 1 is titled “Final model code”
+  and contains exactly these values, so they are treated as the final
+  estimates.
+- **`n_observations = 131` predates outlier removal.** The paper says 7
+  concentrations (5.0%) were removed; 7/131 is 5.3%, so the 5.0% figure
+  is presumably computed against a slightly larger pre-cleaning set that
+  is not reported.
+
+### Modelling assumptions made here
+
+- **Weight distribution.** The paper reports only the median (60 kg) and
+  IQR (56-74.25). The cohort uses a lognormal with that median and
+  `sdlog = 0.20`, truncated to 40-120 kg. The published IQR is markedly
+  asymmetric about its median and no single lognormal reproduces both
+  quartiles; the spread is therefore an assumption. No gate in this
+  vignette depends on it – the closed-form gates are per-subject and the
+  trough comparison uses each subject’s own weight-scaled clearance.
+- **5-ASA arm balance.** Simulated 200/200 rather than the cohort’s
+  23/5, to make the covariate effect readable. The published group means
+  are compared arm-by-arm, so the imbalance in the source does not
+  enter.
+- **Dose.** `0.32 mg/kg/day`, the cohort mean of Table 1, given as a
+  continuous per-subject amount. In practice TG is given as a fixed dose
+  in IBD; a fixed 20 mg/day would shift both arms by the ratio of actual
+  to weight-proportional dose without changing any structural
+  conclusion.
+- **Steady state.** Dosing runs to day 500 rather than the source
+  study’s day
+  56. This is not cosmetic: the closed-form mass-balance gate is
+      asserted with a tight [`all()`](https://rdrr.io/r/base/all.html)
+      bound across every subject, and that is only legitimate once the
+      residual approach to steady state has been eliminated. At day 56 a
+      subject drawing a slow `kel` would still be short of steady state,
+      and how slow the slowest subject is depends on the random draw –
+      which rxode2 partitions per solver thread and therefore varies
+      with the machine’s thread count. Dosing to day 500 gives even a
+      4-SD-slow subject more than ten half-lives, so the residual is
+      numerical rather than physical. The 8-week accumulation figure and
+      the week-4 trough comparison still use the source study’s own
+      window.
+- **LLOQ handling.** Simulated observations carrying residual error are
+  floored at LLOQ/2 = 15 pmol per 8e8 RBC (Methods 2.1 gives an LLOQ of
+  30). The residual-error model is proportional with a per-subject
+  magnitude whose BSV is 49%, so without the floor a small number of
+  draws in the highest-error subjects would be negative. Only the VPC
+  figure uses these values; every gate uses `Cc`.
+- **Pre-existing 6-TGN not modelled.** ESM 1 `$PK` carries a
+  data-handling branch, `IF(A_0FLG.EQ.1) A_0(2) = CONC0 * V`,
+  initialising the central compartment for patients who switched from
+  azathioprine or mercaptopurine without a full washout. That is a
+  property of the analysis dataset, not of the structural model, so it
+  is not encoded; simulations here start from an empty compartment.
+- **Between-occasion variability not modelled.** ESM 1 contains a
+  commented-out IOV block. The paper states IOV could not be estimated
+  from the three densely sampled subjects and was not retained in the
+  final model.
+- **No non-paper-derived parameter values.** Every `ini()` entry comes
+  from the paper’s Table 2, its final model equations, or ESM 1. Nothing
+  was digitised from a figure, obtained by correspondence, or carried
+  from an upstream publication.

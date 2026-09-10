@@ -1,0 +1,1099 @@
+# Serplulimab (Wang 2025)
+
+``` r
+
+library(nlmixr2lib)
+library(rxode2)
+#> rxode2 5.1.6 using 2 threads (see ?getRxThreads)
+#>   no cache: create with `rxCreateCache()`
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(tidyr)
+library(ggplot2)
+library(PKNCA)
+#> 
+#> Attaching package: 'PKNCA'
+#> The following object is masked from 'package:stats':
+#> 
+#>     filter
+```
+
+## Model and source
+
+- Citation: Wang K, Shen Y, Hu C, Xu F, Wang Q, Gao Y, Zhou L.
+  Population Pharmacokinetics and Exposure-Response Analysis of
+  Serplulimab in Small Cell Lung Cancer Patients. Clin Transl Sci.
+  2025;18(9):e70322. <doi:10.1111/cts.70322>
+- Description: Two-compartment population PK model with sigmoidal
+  time-varying clearance for intravenous serplulimab (anti-PD-1 IgG4) in
+  adults with advanced solid tumours, including extensive-stage small
+  cell lung cancer, across eight Phase I-III trials (Wang 2025)
+- Article: <https://doi.org/10.1111/cts.70322>
+
+Serplulimab (HLX10) is a fully humanized IgG4 anti-PD-1 monoclonal
+antibody. Wang et al. (2025) pooled 6650 analyzable serum concentrations
+from 1144 patients across eight Phase I-III trials into a single
+population PK model, then used it to drive an exposure-response (E-R)
+analysis of efficacy and safety in the extensive-stage small cell lung
+cancer (ES-SCLC) subset from the Phase III ASTRUM-005 trial.
+
+The structural model is a two-compartment IV model with linear
+elimination and **time-dependent clearance**, parameterized as a
+sigmoidal function of time since the first dose. Wang 2025 Section 3.2
+prints the final model as
+
+``` math
+\mathrm{CL}_i(t) = 0.225 \cdot \exp\!\left(
+   E_{\max,i}\,\frac{t^{2.05}}{t^{2.05} + 106^{2.05}}
+   + 0.531\ln\!\frac{\mathrm{WT}}{65}
+   - 0.783\ln\!\frac{\mathrm{ALB}}{41.3}
+   + \eta_{\mathrm{CL},i}\right)
+```
+
+``` math
+V_{c,i} = 3.52 \cdot \exp\!\left(
+   0.450\ln\!\frac{\mathrm{WT}}{65}
+   - 0.0887\,\mathrm{TUMTP}
+   - 0.121\,\mathrm{SEX}
+   + \eta_{V_c,i}\right),
+\qquad
+E_{\max,i} = -0.364 + \eta_{E_{\max},i}
+```
+
+with `SEX = 1` for female and `TUMTP = 1` for a non-lung tumour type.
+The Supporting Information gives the algebraically identical form
+$`\mathrm{CL} = \mathrm{CL}_0\exp\!\big(E_{\max}(t/T_{50})^{\lambda} /
+(1 + (t/T_{50})^{\lambda})\big)`$, which confirms that the printed
+constants `106` and `2.05` are $`T_{50}`$ and $`\lambda`$.
+
+Because $`E_{\max} = -0.364`$ is negative, clearance **falls** with
+time, approaching $`\exp(-0.364) = 0.695`$ of baseline at full
+saturation. That back-transform is reported independently as the
+`exp(Emax) = 0.695` row of Wang 2025 Table 2, which cross-checks the
+sign and scale of the printed equation.
+
+## Population
+
+``` r
+
+ui  <- rxode2::rxode(readModelDb("Wang_2025_serplulimab"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+pop_meta <- ui$population
+
+knitr::kable(
+  data.frame(
+    Field = names(pop_meta),
+    Value = vapply(
+      pop_meta,
+      function(x) paste(paste0(if (is.null(names(x))) "" else paste0(names(x), ": "), x),
+                        collapse = "; "),
+      character(1)
+    ),
+    row.names = NULL
+  ),
+  caption = "Population metadata (Wang 2025 Table 1, PK dataset column)."
+)
+```
+
+| Field | Value |
+|:---|:---|
+| species | human |
+| n_subjects | 1144 |
+| n_studies | 8 |
+| n_observations | 6650 |
+| age_range | 23.0-83.0 years |
+| age_median | 61.0 years |
+| weight_range | 33.0-131 kg |
+| weight_median | 64.5 kg |
+| sex_female_pct | 19.84 |
+| race_ethnicity | Asian: 78.41; Non-Asian: 21.59 |
+| disease_state | Adults with advanced solid tumours. Tumour-type mix in the PK dataset (n = 1144): lung cancer 817 (71.42%; NSCLC and SCLC pooled), hepatic cancer 125 (10.93%), colorectal cancer 86 (7.52%), other 116 (10.14%). The exposure-response efficacy dataset is the ES-SCLC subset from the Phase III ASTRUM-005 trial (HLX10-005-SCLC301 / NCT04063163; n = 389). |
+| dose_range | Serplulimab 0.3-10 mg/kg IV across the Phase I dose-escalation trials; the recommended Phase II/III dose is 3 mg/kg Q2W or 4.5 mg/kg Q3W. ASTRUM-005 used 4.5 mg/kg Q3W with a 1-h infusion. Flat doses of 200 mg and 300 mg were also studied in Phase I. |
+| regions | Predominantly China (Asian 78.41%); the Phase III ASTRUM-005 trial was multinational, contributing the 21.59% non-Asian subjects. |
+| ada_status | ADA-negative 1078 (94.23%); ADA-positive 23 (2.01%); missing 43 (3.76%). Geometric-mean CL was 13.3% higher in ADA-positive subjects, which Wang 2025 judged not clinically meaningful; ADA was not retained in the final model. |
+| ecog_status | ECOG performance status 0 in 306 (26.75%), 1 in 835 (72.99%), 2 in 3 (0.26%). |
+| albumin | 41.3 g/L median (23.9-67.9 g/L range). |
+| tumour_burden | 88.0 mm median (10.0-350 mm range) in the PK dataset; 117 mm median (13.8-323 mm) in the ER efficacy dataset. |
+| renal_function | Creatinine clearance 90.9 mL/min median (28.5-291 mL/min); serum creatinine 68.9 umol/L median (23.0-156 umol/L). Neither was a significant covariate. |
+| notes | Baseline demographics per Wang 2025 Table 1 (PK dataset column). Pooled dataset spans eight serplulimab (HLX10) trials: two Phase I (HLX10-001 / NCT03952403, HLX10HLX04-001 / NCT04818359), four Phase II (HLX10-008-HCC201 / NCT05246164, HLX10-010-MSI201 / NCT04747236, HLX10-011-CC201 / NCT03973112, HLX10HLX07-001 / NCT04297995) and two Phase III (HLX10-004-NSCLC303 / NCT04778904, HLX10-005-SCLC301 / NCT04063163). 6677 serum concentrations were collected; 27 below the LLOQ were excluded, leaving 6650 in the analysis. Two subjects (0.18%) with missing weight were excluded from the covariate-effect simulations only. Fit with NONMEM 7.5.0 using FOCE-I; PsN 4.2.0 for diagnostics and a 1000-replicate bootstrap. |
+
+Population metadata (Wang 2025 Table 1, PK dataset column). {.table}
+
+## Source trace
+
+Every structural parameter, covariate effect, variance term and equation
+in the model file, with the exact location it was read from.
+
+``` r
+
+source_trace <- tibble::tribble(
+  ~Quantity,                    ~Value,              ~`Source location`,
+  "CL0 (baseline clearance)",   "0.225 L/day",       "Table 2, final model estimate (RSE 2.85%, 95% CI 0.213-0.238); also printed in the Section 3.2 CL equation",
+  "Vc (central volume)",        "3.52 L",            "Table 2 (RSE 0.849%, 95% CI 3.46-3.58); also printed in the Section 3.2 Vc equation",
+  "Q (intercompartmental CL)",  "0.463 L/day",       "Table 2 (RSE 5.98%, 95% CI 0.412-0.52)",
+  "Vp (peripheral volume)",     "2.21 L",            "Table 2 (RSE 7.41%, 95% CI 1.91-2.55)",
+  "Emax (max log CL change)",   "-0.364",            "Section 3.2 equation 'Emax_i = -0.364 + eta_Emax,i'; Table 2 reports the back-transform exp(Emax) = 0.695 (RSE 4.52%)",
+  "T50",                        "106 day",           "Table 2 (RSE 4.52%, 95% CI 83.2-129); the same 106 is the printed constant in the Section 3.2 CL equation",
+  "lambda (Hill on time)",      "2.05",              "Table 2 (RSE 14.2%, 95% CI 1.48-2.62); the same 2.05 is the printed exponent in the Section 3.2 CL equation",
+  "WT on CL (power)",           "0.531",             "Table 2 row CLwt (RSE 12.2%); Section 3.2 equation term '+ 0.531 * ln(WT/65)'",
+  "ALB on CL (power)",          "-0.783",            "Table 2 row CLalb (RSE 13.4%); Section 3.2 equation term '- 0.783 * ln(ALB/41.3)'",
+  "WT on Vc (power)",           "0.450",             "Table 2 row Vwt (RSE 7.3%); Section 3.2 equation term '+ 0.450 * ln(WT/65)'",
+  "Female sex on Vc",           "-0.121",            "Table 2 row Vcsex (95% CI -0.152 to -0.0891); Section 3.2 equation term '- 0.121 * SEX', SEX = 1 for female",
+  "Non-lung tumour type on Vc", "-0.0887",           "Table 2 row Vctumtp (RSE 15.5%); Section 3.2 equation term '- 0.0887 * TUMTP', TUMTP = 1 for non-lung",
+  "WT reference",               "65 kg",             "Section 3.2 equations ('ln(WT/65)'); Table 1 PK-dataset median is 64.5 kg",
+  "ALB reference",              "41.3 g/L",          "Section 3.2 equation ('ln(ALB/41.3)'); equals the Table 1 PK-dataset median exactly",
+  "IIV CL",                     "25.8% -> om2 0.06656", "Table 2 row IIVCL (95% CI 23.5-27.9)",
+  "IIV Vc",                     "15.4% -> om2 0.02372", "Table 2 row IIVVc (95% CI 13.7-17.0)",
+  "IIV Q",                      "49.7% -> om2 0.24701", "Table 2 row IIVQ (95% CI 17-68.1)",
+  "IIV Vp",                     "51.5% -> om2 0.26523", "Table 2 row IIVVp (95% CI 41.7-59.7)",
+  "IIV Emax",                   "26.3% -> om2 0.06917", "Table 2 row IIVEmax (95% CI 21.1-30.6); additive eta per the Section 3.2 relation",
+  "Cov(CL, Vc)",                "0.017",             "Table 2 row omega CL,Vc (RSE 12.6%, 95% CI 0.0128-0.0212); correlation 0.428",
+  "Residual error",             "16.6% proportional","Table 2 row sigma (RSE 2.74%, 95% CI 15.7-17.4); Supporting Information Section 1 residual model ln(y) = ln(yhat) + eps",
+  "Time-varying CL equation",   "sigmoidal in t",    "Section 3.2 equation 1; identical form in Supporting Information Section 1",
+  "Two-compartment structure",  "central + peripheral1", "Section 2.2 and Section 3.2 ('two-compartment PK model with time-dependent clearance')"
+)
+
+knitr::kable(source_trace, caption = "Source trace for Wang 2025 serplulimab.")
+```
+
+| Quantity | Value | Source location |
+|:---|:---|:---|
+| CL0 (baseline clearance) | 0.225 L/day | Table 2, final model estimate (RSE 2.85%, 95% CI 0.213-0.238); also printed in the Section 3.2 CL equation |
+| Vc (central volume) | 3.52 L | Table 2 (RSE 0.849%, 95% CI 3.46-3.58); also printed in the Section 3.2 Vc equation |
+| Q (intercompartmental CL) | 0.463 L/day | Table 2 (RSE 5.98%, 95% CI 0.412-0.52) |
+| Vp (peripheral volume) | 2.21 L | Table 2 (RSE 7.41%, 95% CI 1.91-2.55) |
+| Emax (max log CL change) | -0.364 | Section 3.2 equation ‘Emax_i = -0.364 + eta_Emax,i’; Table 2 reports the back-transform exp(Emax) = 0.695 (RSE 4.52%) |
+| T50 | 106 day | Table 2 (RSE 4.52%, 95% CI 83.2-129); the same 106 is the printed constant in the Section 3.2 CL equation |
+| lambda (Hill on time) | 2.05 | Table 2 (RSE 14.2%, 95% CI 1.48-2.62); the same 2.05 is the printed exponent in the Section 3.2 CL equation |
+| WT on CL (power) | 0.531 | Table 2 row CLwt (RSE 12.2%); Section 3.2 equation term ‘+ 0.531 \* ln(WT/65)’ |
+| ALB on CL (power) | -0.783 | Table 2 row CLalb (RSE 13.4%); Section 3.2 equation term ‘- 0.783 \* ln(ALB/41.3)’ |
+| WT on Vc (power) | 0.450 | Table 2 row Vwt (RSE 7.3%); Section 3.2 equation term ‘+ 0.450 \* ln(WT/65)’ |
+| Female sex on Vc | -0.121 | Table 2 row Vcsex (95% CI -0.152 to -0.0891); Section 3.2 equation term ‘- 0.121 \* SEX’, SEX = 1 for female |
+| Non-lung tumour type on Vc | -0.0887 | Table 2 row Vctumtp (RSE 15.5%); Section 3.2 equation term ‘- 0.0887 \* TUMTP’, TUMTP = 1 for non-lung |
+| WT reference | 65 kg | Section 3.2 equations (‘ln(WT/65)’); Table 1 PK-dataset median is 64.5 kg |
+| ALB reference | 41.3 g/L | Section 3.2 equation (‘ln(ALB/41.3)’); equals the Table 1 PK-dataset median exactly |
+| IIV CL | 25.8% -\> om2 0.06656 | Table 2 row IIVCL (95% CI 23.5-27.9) |
+| IIV Vc | 15.4% -\> om2 0.02372 | Table 2 row IIVVc (95% CI 13.7-17.0) |
+| IIV Q | 49.7% -\> om2 0.24701 | Table 2 row IIVQ (95% CI 17-68.1) |
+| IIV Vp | 51.5% -\> om2 0.26523 | Table 2 row IIVVp (95% CI 41.7-59.7) |
+| IIV Emax | 26.3% -\> om2 0.06917 | Table 2 row IIVEmax (95% CI 21.1-30.6); additive eta per the Section 3.2 relation |
+| Cov(CL, Vc) | 0.017 | Table 2 row omega CL,Vc (RSE 12.6%, 95% CI 0.0128-0.0212); correlation 0.428 |
+| Residual error | 16.6% proportional | Table 2 row sigma (RSE 2.74%, 95% CI 15.7-17.4); Supporting Information Section 1 residual model ln(y) = ln(yhat) + eps |
+| Time-varying CL equation | sigmoidal in t | Section 3.2 equation 1; identical form in Supporting Information Section 1 |
+| Two-compartment structure | central + peripheral1 | Section 2.2 and Section 3.2 (‘two-compartment PK model with time-dependent clearance’) |
+
+Source trace for Wang 2025 serplulimab. {.table}
+
+### Reading the reported IIV percentages
+
+Wang 2025 Table 2 reports IIV and residual variability as “approximate
+CV%”, a notation that is ambiguous between omega (the SD on the
+estimation scale) and omega-squared (the variance). The published 95% CI
+columns settle it arithmetically: for **every** variance row the CI is
+symmetric on the **variance** scale and not on the percentage scale,
+which is only consistent with the reported percentage being omega x 100.
+
+``` r
+
+omega_rows <- tibble::tribble(
+  ~Parameter, ~`Reported %`, ~`CI low %`, ~`CI high %`,
+  "IIV CL",    25.8,  23.5,  27.9,
+  "IIV Vc",    15.4,  13.7,  17.0,
+  "IIV Q",     49.7,  17.0,  68.1,
+  "IIV Vp",    51.5,  41.7,  59.7,
+  "IIV Emax",  26.3,  21.1,  30.6,
+  "sigma",     16.6,  15.7,  17.4
+) |>
+  dplyr::mutate(
+    `omega^2 from point estimate` = (`Reported %` / 100)^2,
+    `Midpoint of CI on variance scale` =
+      ((`CI low %` / 100)^2 + (`CI high %` / 100)^2) / 2,
+    `Relative difference (%)` =
+      100 * (`Midpoint of CI on variance scale` - `omega^2 from point estimate`) /
+      `omega^2 from point estimate`
+  )
+
+knitr::kable(omega_rows, digits = 5,
+             caption = "Every reported variability percentage is omega x 100: squaring it reproduces the midpoint of the published 95% CI on the variance scale.")
+```
+
+| Parameter | Reported % | CI low % | CI high % | omega^2 from point estimate | Midpoint of CI on variance scale | Relative difference (%) |
+|:---|---:|---:|---:|---:|---:|---:|
+| IIV CL | 25.8 | 23.5 | 27.9 | 0.06656 | 0.06653 | -0.04657 |
+| IIV Vc | 15.4 | 13.7 | 17.0 | 0.02372 | 0.02383 | 0.49966 |
+| IIV Q | 49.7 | 17.0 | 68.1 | 0.24701 | 0.24633 | -0.27469 |
+| IIV Vp | 51.5 | 41.7 | 59.7 | 0.26522 | 0.26515 | -0.02865 |
+| IIV Emax | 26.3 | 21.1 | 30.6 | 0.06917 | 0.06908 | -0.13084 |
+| sigma | 16.6 | 15.7 | 17.4 | 0.02756 | 0.02746 | -0.33931 |
+
+Every reported variability percentage is omega x 100: squaring it
+reproduces the midpoint of the published 95% CI on the variance scale.
+{.table}
+
+``` r
+
+
+# Deterministic arithmetic on published numbers - a tight bound is correct here.
+stopifnot(max(abs(omega_rows$`Relative difference (%)`)) < 1)
+```
+
+The same conversion is applied to Emax even though its eta is additive
+on the linear scale rather than log-normal: the reporting routine
+emitted `sqrt(omega^2) * 100` for every row, so `omega_Emax = 0.263`
+(**not** `0.263 * |Emax|`).
+
+## Virtual cohorts
+
+Two cohorts are simulated, both at the ASTRUM-005 regimen of 4.5 mg/kg
+IV Q3W with a 1-hour infusion:
+
+- **PK population** (n = 200) - the pooled eight-trial cohort of Wang
+  2025 Table 1, used to replicate the Figure 1 covariate forest plot.
+- **ES-SCLC** (n = 150) - the ASTRUM-005 efficacy subset of Wang 2025
+  Table 1, used to reproduce the first-dose exposure metrics of Table
+  S5.
+
+Wang 2025 publishes marginal medians and ranges but no individual
+covariate table and no covariate correlations, so each covariate is
+drawn independently from a distribution centred on the published median
+and clipped to the published range.
+
+``` r
+
+set.seed(20250731)
+
+make_cohort <- function(n, wt_med, wt_lo, wt_hi,
+                        alb_med, pct_female, pct_nonlung, arm) {
+  data.frame(
+    arm  = arm,
+    WT   = pmin(pmax(rlnorm(n, meanlog = log(wt_med), sdlog = 0.20), wt_lo), wt_hi),
+    # Albumin SD is not published; 5.0 g/L reproduces the Table 1 quartile
+    # boundaries (38.0 / 41.3 / 44.1 g/L) used by the Figure 1 forest plot.
+    ALB  = pmin(pmax(rnorm(n, mean = alb_med, sd = 5.0), 23.9), 67.9),
+    SEXF = rbinom(n, 1, pct_female),
+    TUMTP_NONLUNG = rbinom(n, 1, pct_nonlung)
+  )
+}
+
+# PK dataset (Table 1): WT 64.5 kg (33.0-131), ALB 41.3 g/L (23.9-67.9),
+# 19.84% female, 28.58% non-lung tumour type (327 / 1144).
+pop_pk <- make_cohort(200, 64.5, 33.0, 131, 41.3, 0.1984, 0.2858, "PK population")
+
+# ER efficacy dataset (Table 1): WT 67.0 kg (33.0-120), ALB 41.1 g/L,
+# 18.51% female, 100% lung cancer (all ES-SCLC), so TUMTP_NONLUNG = 0.
+pop_sclc <- make_cohort(150, 67.0, 33.0, 120, 41.1, 0.1851, 0.0, "ES-SCLC")
+
+pop_all <- dplyr::bind_rows(pop_pk, pop_sclc)
+pop_all$ID <- seq_len(nrow(pop_all))
+
+knitr::kable(
+  pop_all |>
+    dplyr::group_by(arm) |>
+    dplyr::summarise(
+      N = dplyr::n(),
+      `WT median (kg)`  = round(median(WT), 1),
+      `ALB median (g/L)`= round(median(ALB), 1),
+      `% female`        = round(100 * mean(SEXF), 1),
+      `% non-lung`      = round(100 * mean(TUMTP_NONLUNG), 1),
+      .groups = "drop"
+    ),
+  caption = "Simulated cohorts vs. Wang 2025 Table 1 (PK: 64.5 kg, 41.3 g/L, 19.8% female, 28.6% non-lung; ES-SCLC: 67.0 kg, 41.1 g/L, 18.5% female, 0% non-lung)."
+)
+```
+
+| arm           |   N | WT median (kg) | ALB median (g/L) | % female | % non-lung |
+|:--------------|----:|---------------:|-----------------:|---------:|-----------:|
+| ES-SCLC       | 150 |           66.2 |             39.9 |     15.3 |        0.0 |
+| PK population | 200 |           67.2 |             42.1 |     22.0 |       25.5 |
+
+Simulated cohorts vs. Wang 2025 Table 1 (PK: 64.5 kg, 41.3 g/L, 19.8%
+female, 28.6% non-lung; ES-SCLC: 67.0 kg, 41.1 g/L, 18.5% female, 0%
+non-lung). {.table}
+
+## Dosing and observation schedule
+
+Wang 2025 Section 2.3 simulates “4.5 mg/kg of serplulimab, administered
+Q3W for eight cycles with a 1-h infusion”, and computes steady-state
+exposure over “the beginning of the eighth infusion to Day 21
+post-dose” - i.e. days 147-168. The event table below reproduces that
+schedule and samples finely across both the cycle-1 and cycle-8 windows
+so the trapezoidal AUC resolves the distribution phase (alpha half-life
+~1.9 days).
+
+``` r
+
+n_cycles   <- 8L
+cycle_days <- 21
+ss_start   <- (n_cycles - 1L) * cycle_days   # day 147, start of cycle 8
+ss_end     <- ss_start + cycle_days          # day 168
+
+dose_times <- seq(0, ss_start, by = cycle_days)
+
+obs_times <- sort(unique(c(
+  seq(0, 3, by = 0.25),                        # cycle-1 distribution phase
+  seq(3, cycle_days, by = 0.5),                # rest of cycle 1
+  seq(cycle_days, ss_start, by = 7),           # weekly across cycles 2-7
+  seq(ss_start, ss_end, by = 0.5),             # cycle-8 dosing interval
+  seq(ss_end, 300, by = 14)                    # washout follow-up
+)))
+
+d_dose <- pop_all |>
+  tidyr::crossing(TIME = dose_times) |>
+  dplyr::mutate(
+    AMT  = 4.5 * WT,          # 4.5 mg/kg
+    EVID = 1L,
+    CMT  = "central",         # ODE state name, never the observable "Cc"
+    DUR  = 1 / 24             # 1-hour infusion, expressed in days
+  )
+
+d_obs <- pop_all |>
+  tidyr::crossing(TIME = obs_times) |>
+  dplyr::mutate(
+    AMT  = NA_real_,
+    EVID = 0L,
+    CMT  = "central",
+    DUR  = NA_real_
+  )
+
+events <- dplyr::bind_rows(d_dose, d_obs) |>
+  dplyr::arrange(ID, TIME, dplyr::desc(EVID)) |>
+  as.data.frame()
+
+stopifnot(
+  nrow(events) > 0,
+  all(c("WT", "ALB", "SEXF", "TUMTP_NONLUNG") %in% names(events)),
+  # A time-zero observation must exist for PKNCA (see pknca-recipes).
+  any(events$TIME == 0 & events$EVID == 0L)
+)
+```
+
+## Simulate
+
+``` r
+
+mod <- readModelDb("Wang_2025_serplulimab")
+rxode2::rxSetSeed(20250731)
+sim <- rxode2::rxSolve(
+  mod, events,
+  returnType = "data.frame",
+  keep = c("arm", "WT", "ALB", "SEXF", "TUMTP_NONLUNG")
+)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+# Cc is the individual prediction (no residual error), which is the right
+# quantity to compare against Wang 2025's Bayesian post-hoc exposure metrics.
+stopifnot(!anyNA(sim$Cc), all(sim$Cc >= 0))
+```
+
+## Concentration-time profile
+
+``` r
+
+sim_summary <- sim |>
+  dplyr::filter(time > 0) |>
+  dplyr::group_by(arm, time) |>
+  dplyr::summarise(
+    median = stats::median(Cc),
+    lo     = stats::quantile(Cc, 0.05),
+    hi     = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  )
+
+ggplot(sim_summary, aes(x = time, colour = arm, fill = arm)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.18, colour = NA) +
+  geom_line(aes(y = median), linewidth = 0.9) +
+  scale_y_log10() +
+  labs(
+    x = "Time (days since first dose)",
+    y = "Serplulimab concentration (ug/mL)",
+    title = "Simulated serplulimab PK at 4.5 mg/kg IV Q3W",
+    subtitle = "Median and 90% prediction interval; 8 cycles then washout",
+    caption = "Model: Wang et al. (2025) Clin Transl Sci 18:e70322",
+    colour = NULL, fill = NULL
+  ) +
+  theme_bw()
+```
+
+![](Wang_2025_serplulimab_files/figure-html/pk-plot-1.png)
+
+## Time-varying clearance and the half-life gates
+
+The strongest quantitative checks available for this paper are
+deterministic: Wang 2025 Section 4 reports that “the median half-life of
+serplulimab was 19.0 days after the first dose and 24.4 days at steady
+state”, and Table 2 reports the asymptotic clearance ratio
+`exp(Emax) = 0.695`. All three follow in closed form from the published
+typical values, so they gate the transcription of CL0, Vc, Q, Vp, Emax,
+T50 and lambda simultaneously - a mis-transcribed volume or clearance
+moves the terminal half-life by tens of percent.
+
+``` r
+
+cl0_typ <- 0.225; vc_typ <- 3.52; q_typ <- 0.463; vp_typ <- 2.21
+emax    <- -0.364; t50 <- 106; lambda <- 2.05
+
+cl_factor <- function(t) exp(emax * t^lambda / (t50^lambda + t^lambda))
+
+# Terminal (beta) half-life of a two-compartment model in closed form.
+terminal_thalf <- function(cl, vc, q, vp) {
+  kel <- cl / vc; k12 <- q / vc; k21 <- q / vp
+  a <- kel + k12 + k21
+  beta <- 0.5 * (a - sqrt(a^2 - 4 * kel * k21))
+  log(2) / beta
+}
+
+t_grid <- seq(0, 300, by = 2)
+cl_traj <- tibble::tibble(time = t_grid, cl = cl0_typ * cl_factor(t_grid))
+
+ggplot(cl_traj, aes(time, cl)) +
+  geom_line(linewidth = 1) +
+  geom_hline(yintercept = cl0_typ * exp(emax), linetype = "dashed") +
+  labs(
+    x = "Time (days since first dose)",
+    y = "Typical CL (L/day)",
+    title = "Time-varying clearance at reference covariates (65 kg, ALB 41.3 g/L)",
+    subtitle = "Dashed line: asymptote CL0 * exp(Emax) = 0.156 L/day (30.5% reduction); T50 = 106 d, lambda = 2.05"
+  ) +
+  theme_bw()
+```
+
+![](Wang_2025_serplulimab_files/figure-html/cl-trajectory-1.png)
+
+``` r
+
+thalf_first <- terminal_thalf(cl0_typ, vc_typ, q_typ, vp_typ)
+thalf_ss    <- terminal_thalf(cl0_typ * cl_factor(ss_start), vc_typ, q_typ, vp_typ)
+emax_ratio  <- exp(emax)
+
+gate <- tibble::tibble(
+  Quantity  = c("Terminal half-life after first dose (day)",
+                "Terminal half-life at cycle 8 / day 147 (day)",
+                "Asymptotic CL ratio exp(Emax)"),
+  Published = c(19.0, 24.4, 0.695),
+  Computed  = c(thalf_first, thalf_ss, emax_ratio),
+  Source    = c("Section 4", "Section 4", "Table 2")
+) |>
+  dplyr::mutate(`% diff` = 100 * (Computed - Published) / Published)
+
+knitr::kable(gate, digits = 3,
+             caption = "Closed-form checks from the published typical values.")
+```
+
+| Quantity | Published | Computed | Source | % diff |
+|:---|---:|---:|:---|---:|
+| Terminal half-life after first dose (day) | 19.000 | 19.080 | Section 4 | 0.423 |
+| Terminal half-life at cycle 8 / day 147 (day) | 24.400 | 23.853 | Section 4 | -2.240 |
+| Asymptotic CL ratio exp(Emax) | 0.695 | 0.695 | Table 2 | -0.016 |
+
+Closed-form checks from the published typical values. {.table}
+
+``` r
+
+
+# Deterministic (no cohort, no RNG): tight bounds are correct and are what
+# make these catch a transcription regression.
+stopifnot(
+  abs(gate$`% diff`[1]) < 1,   # realised +0.42%
+  abs(gate$`% diff`[3]) < 0.5, # realised -0.02%
+  # "Steady state" is not pinned to an exact day in the paper; day 147 (the
+  # start of the eighth cycle the paper simulates) gives -2.2%, and the
+  # t -> infinity asymptote gives +9.8%, so the published 24.4 d sits inside
+  # the range the model produces across any reasonable reading of the phrase.
+  abs(gate$`% diff`[2]) < 6
+)
+```
+
+## PKNCA validation
+
+### Cycle 1 (days 0-21) - the exposure metrics used in the E-R analysis
+
+Wang 2025 Section 2.4 defines the E-R exposure metrics on the **first**
+dosing interval: `Cavg1` (average concentration) and `Cmin1` (trough).
+Table S5 tabulates their quartile medians in the ES-SCLC efficacy
+dataset, which gives a direct target for the simulated cohort.
+
+``` r
+
+conc1 <- sim |>
+  dplyr::filter(time <= cycle_days) |>
+  dplyr::transmute(ID = id, time, Cc, arm) |>
+  dplyr::filter(!is.na(Cc))
+
+dose1 <- events |>
+  dplyr::filter(EVID == 1L, TIME == 0) |>
+  dplyr::transmute(ID, TIME, AMT, arm)
+
+conc_obj1 <- PKNCA::PKNCAconc(conc1, Cc ~ time | arm + ID,
+                              concu = "ug/mL", timeu = "day")
+dose_obj1 <- PKNCA::PKNCAdose(dose1, AMT ~ TIME | arm + ID, doseu = "mg")
+
+intervals1 <- data.frame(
+  start = 0, end = cycle_days,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE
+)
+
+nca1 <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj1, dose_obj1, intervals = intervals1))
+
+nca1_df <- as.data.frame(nca1$result)
+stopifnot(nrow(nca1_df) > 0)
+
+# Cavg1 = AUC(0-21) / 21. Cmin1 is the trough at exactly t = 21 days; taking it
+# from the simulation directly avoids PKNCA's cmin-over-an-interval-starting-
+# at-zero semantics, which would return the time-zero anchor (= 0).
+cavg1 <- nca1_df |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::transmute(ID, arm, Cavg1 = PPORRES / cycle_days)
+
+cmin1 <- sim |>
+  dplyr::filter(time == cycle_days) |>
+  dplyr::transmute(ID = id, arm, Cmin1 = Cc)
+
+first_dose_exposure <- dplyr::inner_join(cavg1, cmin1, by = c("ID", "arm"))
+stopifnot(nrow(first_dose_exposure) == nrow(pop_all))
+```
+
+The published Table S5 medians describe a cohort whose covariates sit at
+the Table 1 medians. A *simulated* cohort’s own covariate medians wander
+by a couple of percent from draw to draw, and albumin enters clearance
+with a power of -0.783, so the cohort-median comparison inherits that
+noise. The sharper check is therefore run first, on a **typical
+subject** held at the published ES-SCLC median covariates with IIV
+switched off - a deterministic quantity that does not depend on the draw
+at all.
+
+``` r
+
+# Typical ES-SCLC subject: WT 67.0 kg, ALB 41.1 g/L, male, lung cancer
+# (Wang 2025 Table 1, ER efficacy dataset column).
+typ_wt <- 67.0; typ_alb <- 41.1
+
+ev_typ <- dplyr::bind_rows(
+  data.frame(ID = 1L, TIME = 0, AMT = 4.5 * typ_wt, EVID = 1L,
+             CMT = "central", DUR = 1 / 24),
+  data.frame(ID = 1L, TIME = sort(unique(c(seq(0, 3, by = 0.25),
+                                           seq(3, cycle_days, by = 0.25)))),
+             AMT = NA_real_, EVID = 0L, CMT = "central", DUR = NA_real_)
+) |>
+  dplyr::mutate(WT = typ_wt, ALB = typ_alb, SEXF = 0, TUMTP_NONLUNG = 0) |>
+  dplyr::arrange(TIME, dplyr::desc(EVID)) |>
+  as.data.frame()
+
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod), ev_typ,
+                           returnType = "data.frame")
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalq', 'etalvp', 'etacl_time_max'
+stopifnot(!anyNA(sim_typ$Cc))
+
+conc_typ <- sim_typ |>
+  dplyr::transmute(ID = 1L, time, Cc, arm = "Typical") |>
+  dplyr::filter(!is.na(Cc))
+
+nca_typ <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(conc_typ, Cc ~ time | arm + ID,
+                   concu = "ug/mL", timeu = "day"),
+  PKNCA::PKNCAdose(data.frame(ID = 1L, TIME = 0, AMT = 4.5 * typ_wt,
+                              arm = "Typical"),
+                   AMT ~ TIME | arm + ID, doseu = "mg"),
+  intervals = data.frame(start = 0, end = cycle_days,
+                         cmax = TRUE, auclast = TRUE)
+))
+
+nca_typ_df <- as.data.frame(nca_typ$result)
+stopifnot(nrow(nca_typ_df) > 0)
+
+auc_typ   <- nca_typ_df$PPORRES[nca_typ_df$PPTESTCD == "auclast"]
+cavg1_typ <- auc_typ / cycle_days
+cmin1_typ <- sim_typ$Cc[sim_typ$time == cycle_days]
+stopifnot(length(auc_typ) == 1L, length(cmin1_typ) == 1L)
+
+typ_cmp <- tibble::tibble(
+  Metric    = c("Cavg1 (ug/mL)", "Cmin1 (ug/mL)"),
+  Published = c(36.6, 21.3),
+  `Typical subject` = c(cavg1_typ, cmin1_typ)
+) |>
+  dplyr::mutate(`% diff` = 100 * (`Typical subject` - Published) / Published)
+
+knitr::kable(typ_cmp, digits = 2,
+             caption = "Deterministic check: typical ES-SCLC subject (67.0 kg, ALB 41.1 g/L, male, lung) vs. Wang 2025 Table S5 medians.")
+```
+
+| Metric        | Published | Typical subject | % diff |
+|:--------------|----------:|----------------:|-------:|
+| Cavg1 (ug/mL) |      36.6 |           35.63 |  -2.64 |
+| Cmin1 (ug/mL) |      21.3 |           20.56 |  -3.47 |
+
+Deterministic check: typical ES-SCLC subject (67.0 kg, ALB 41.1 g/L,
+male, lung) vs. Wang 2025 Table S5 medians. {.table}
+
+``` r
+
+
+# No cohort and no RNG here (zeroRe + fixed covariates), so this is
+# reproducible everywhere and a tight bound is correct. Realised -2.6%
+# (Cavg1) and -3.5% (Cmin1). A mis-transcribed CL0, Vc, Q or Vp moves these
+# by tens of percent.
+stopifnot(max(abs(typ_cmp$`% diff`)) < 8)
+```
+
+``` r
+
+# Wang 2025 Table S5 quartile medians in the ES-SCLC efficacy dataset. The
+# overall median sits at the Q2/Q3 boundary the table prints.
+sclc_exposure <- dplyr::filter(first_dose_exposure, arm == "ES-SCLC")
+
+cycle1_cmp <- tibble::tibble(
+  Metric = c("Cavg1 median (ug/mL)", "Cmin1 median (ug/mL)"),
+  Published = c(36.6, 21.3),
+  Simulated = c(median(sclc_exposure$Cavg1), median(sclc_exposure$Cmin1)),
+  `Cohort ALB median (g/L)` = round(median(pop_sclc$ALB), 1),
+  Source = "Table S5 (Q2/Q3 boundary of the exposure quartiles)"
+) |>
+  dplyr::mutate(`% diff` = 100 * (Simulated - Published) / Published)
+
+knitr::kable(cycle1_cmp, digits = 2,
+             caption = "First-dose exposure metrics, ES-SCLC cohort at 4.5 mg/kg Q3W, vs. Wang 2025 Table S5.")
+```
+
+| Metric | Published | Simulated | Cohort ALB median (g/L) | Source | % diff |
+|:---|---:|---:|---:|:---|---:|
+| Cavg1 median (ug/mL) | 36.6 | 35.79 | 39.9 | Table S5 (Q2/Q3 boundary of the exposure quartiles) | -2.22 |
+| Cmin1 median (ug/mL) | 21.3 | 19.16 | 39.9 | Table S5 (Q2/Q3 boundary of the exposure quartiles) | -10.06 |
+
+First-dose exposure metrics, ES-SCLC cohort at 4.5 mg/kg Q3W, vs. Wang
+2025 Table S5. {.table}
+
+``` r
+
+
+# Cohort-derived: assert on the MEDIAN, never on the extremes of a random
+# cohort (not reproducible across rxode2 versions or solver thread counts).
+# This draw realised -5.7% (Cavg1) and -11.1% (Cmin1), with the cohort's own
+# albumin median landing at 39.9 rather than the intended 41.1 g/L; albumin
+# enters CL with a power of -0.783, so a 1.2 g/L shortfall alone accounts for
+# ~2.3% of that. 20% leaves room for the draw while still going red on a
+# mis-transcribed dose, volume or clearance (which move these by tens of
+# percent). The deterministic check above is the tight gate.
+stopifnot(max(abs(cycle1_cmp$`% diff`)) < 20)
+
+# The published Table S5 min-max spans are [19.8, 70.1] for Cavg1 and
+# [7.01, 50.4] for Cmin1 in n = 389. Check the simulated cohort's robust
+# quantiles land inside a comparable envelope rather than testing extremes.
+stopifnot(
+  quantile(sclc_exposure$Cavg1, 0.05) > 15,
+  quantile(sclc_exposure$Cavg1, 0.95) < 80,
+  quantile(sclc_exposure$Cmin1, 0.05) > 5,
+  quantile(sclc_exposure$Cmin1, 0.95) < 60
+)
+```
+
+### Cycle 8 (days 147-168) - steady-state exposure
+
+``` r
+
+conc_ss <- sim |>
+  dplyr::filter(time >= ss_start, time <= ss_end) |>
+  dplyr::transmute(ID = id, time_rel = time - ss_start, Cc, arm) |>
+  dplyr::filter(!is.na(Cc))
+
+dose_ss <- events |>
+  dplyr::filter(EVID == 1L, TIME == ss_start) |>
+  dplyr::transmute(ID, TIME = 0, AMT, arm)
+
+conc_obj_ss <- PKNCA::PKNCAconc(conc_ss, Cc ~ time_rel | arm + ID,
+                                concu = "ug/mL", timeu = "day")
+dose_obj_ss <- PKNCA::PKNCAdose(dose_ss, AMT ~ TIME | arm + ID, doseu = "mg")
+
+intervals_ss <- data.frame(
+  start = 0, end = cycle_days,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE
+)
+
+nca_ss <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj_ss, dose_obj_ss, intervals = intervals_ss)
+)
+
+nca_ss_df <- as.data.frame(nca_ss$result)
+stopifnot(nrow(nca_ss_df) > 0)
+
+ss_exposure <- nca_ss_df |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::transmute(ID, arm, AUCss = PPORRES, Cavgss = PPORRES / cycle_days) |>
+  dplyr::left_join(
+    sim |>
+      dplyr::filter(time == ss_end) |>
+      dplyr::transmute(ID = id, arm, Cminss = Cc),
+    by = c("ID", "arm")
+  ) |>
+  dplyr::left_join(
+    nca_ss_df |>
+      dplyr::filter(PPTESTCD == "cmax") |>
+      dplyr::transmute(ID, arm, Cmaxss = PPORRES),
+    by = c("ID", "arm")
+  )
+
+stopifnot(nrow(ss_exposure) == nrow(pop_all), !anyNA(ss_exposure$Cavgss))
+
+knitr::kable(
+  ss_exposure |>
+    dplyr::group_by(arm) |>
+    dplyr::summarise(
+      `AUCss (ug*day/mL)` = median(AUCss),
+      `Cavgss (ug/mL)`    = median(Cavgss),
+      `Cmaxss (ug/mL)`    = median(Cmaxss),
+      `Cminss (ug/mL)`    = median(Cminss),
+      .groups = "drop"
+    ),
+  digits = 1,
+  caption = "Median cycle-8 (steady-state) exposure metrics at 4.5 mg/kg Q3W."
+)
+```
+
+| arm | AUCss (ug\*day/mL) | Cavgss (ug/mL) | Cmaxss (ug/mL) | Cminss (ug/mL) |
+|:---|---:|---:|---:|---:|
+| ES-SCLC | 1511.0 | 72.0 | 124.8 | 47.5 |
+| PK population | 1627.1 | 77.5 | 131.9 | 52.8 |
+
+Median cycle-8 (steady-state) exposure metrics at 4.5 mg/kg Q3W.
+{.table}
+
+### Combined comparison against the published values
+
+Wang 2025 does not tabulate absolute steady-state NCA values (Figures S4
+and S5 report only geometric-mean *ratios*), so the side-by-side
+comparison uses the first-dose metrics of Table S5 - the only absolute
+exposure numbers the paper publishes.
+
+``` r
+
+simulated_nca <- sclc_exposure |>
+  dplyr::summarise(
+    auclast = median(Cavg1) * cycle_days,
+    cavg    = median(Cavg1),
+    ctrough = median(Cmin1)
+  ) |>
+  tidyr::pivot_longer(dplyr::everything(),
+                      names_to = "PPTESTCD", values_to = "PPORRES") |>
+  as.data.frame()
+
+reference_nca <- data.frame(
+  auclast = 36.6 * cycle_days,   # Table S5 Cavg1 median x 21-day interval
+  ctrough = 21.3,                # Table S5 Cmin1 median
+  cavg    = 36.6                 # Table S5 Cavg1 median
+)
+
+cmp_tbl <- nlmixr2lib::ncaComparisonTable(
+  simulated_nca, reference_nca,
+  units = c(auclast = "ug*day/mL", cavg = "ug/mL", ctrough = "ug/mL"),
+  tolerance_pct = 20
+)
+#> Warning: ncaParamLabel(): unknown PKNCA code(s) returned as-is: 'cavg'
+
+knitr::kable(
+  cmp_tbl,
+  caption = "Simulated ES-SCLC first-dose NCA vs. Wang 2025 Table S5 (4.5 mg/kg Q3W)."
+)
+```
+
+| NCA parameter        | Reference | Simulated | % diff |
+|:---------------------|:----------|:----------|:-------|
+| AUClast (ug\*day/mL) | 769       | 752       | -2.2%  |
+| Ctrough (ug/mL)      | 21.3      | 19.2      | -10.1% |
+| cavg (ug/mL)         | 36.6      | 35.8      | -2.2%  |
+
+Simulated ES-SCLC first-dose NCA vs. Wang 2025 Table S5 (4.5 mg/kg Q3W).
+{.table}
+
+``` r
+
+attr(cmp_tbl, "footnote")
+#> NULL
+```
+
+## Replicating Figure 1 - the covariate forest plot
+
+Wang 2025 Figure 1 reports the ratio of each subgroup’s geometric-mean
+steady-state `Cavgss` to the geometric mean over the whole population,
+using the Table 1 quartile boundaries. Because the dose is weight-based
+(4.5 mg/kg) and `Cavgss` is driven by `AUC = Dose / CL`, the weight
+effect on exposure is
+$`\mathrm{WT}^{1 - 0.531} = \mathrm{WT}^{0.469}`$ - i.e. exposure
+*rises* with weight despite clearance rising with weight, exactly as
+Figure 1 shows. This makes the forest plot a genuine multi-point
+regression test of the covariate model rather than a single-number
+check.
+
+``` r
+
+forest_dat <- ss_exposure |>
+  dplyr::filter(arm == "PK population") |>
+  dplyr::left_join(dplyr::select(pop_all, ID, WT, ALB, SEXF, TUMTP_NONLUNG),
+                   by = "ID")
+
+overall_gm <- exp(mean(log(forest_dat$Cavgss)))
+
+# Wang 2025 Table 1 / Figure 1 quartile boundaries.
+wt_breaks  <- c(33, 56, 64.5, 73, 131)
+alb_breaks <- c(23.9, 38, 41.3, 44.1, 67.9)
+
+forest_dat <- forest_dat |>
+  dplyr::mutate(
+    wt_q  = cut(WT,  wt_breaks,  include.lowest = TRUE),
+    alb_q = cut(ALB, alb_breaks, include.lowest = TRUE)
+  )
+
+gm_ratio <- function(x) exp(mean(log(x))) / overall_gm
+
+subgroup_ratio <- function(df, col, label) {
+  df |>
+    dplyr::filter(!is.na(.data[[col]])) |>
+    dplyr::group_by(Subgroup = as.character(.data[[col]])) |>
+    dplyr::summarise(N = dplyr::n(), Ratio = gm_ratio(Cavgss), .groups = "drop") |>
+    dplyr::mutate(Covariate = label)
+}
+
+forest_res <- dplyr::bind_rows(
+  subgroup_ratio(forest_dat, "wt_q",  "Weight quartile"),
+  subgroup_ratio(forest_dat, "alb_q", "Albumin quartile"),
+  forest_dat |>
+    dplyr::group_by(Subgroup = ifelse(SEXF == 1, "Female", "Male")) |>
+    dplyr::summarise(N = dplyr::n(), Ratio = gm_ratio(Cavgss), .groups = "drop") |>
+    dplyr::mutate(Covariate = "Sex"),
+  forest_dat |>
+    dplyr::group_by(Subgroup = ifelse(TUMTP_NONLUNG == 1, "non-Lung cancer", "Lung cancer")) |>
+    dplyr::summarise(N = dplyr::n(), Ratio = gm_ratio(Cavgss), .groups = "drop") |>
+    dplyr::mutate(Covariate = "Tumour type")
+)
+
+ggplot(forest_res, aes(x = Ratio, y = Subgroup)) +
+  annotate("rect", xmin = 0.7, xmax = 1.43, ymin = -Inf, ymax = Inf, alpha = 0.10) +
+  annotate("rect", xmin = 0.8, xmax = 1.25, ymin = -Inf, ymax = Inf, alpha = 0.15) +
+  geom_vline(xintercept = 1, linetype = "dashed") +
+  geom_point(size = 2.4) +
+  facet_grid(Covariate ~ ., scales = "free_y", space = "free_y", switch = "y") +
+  labs(
+    x = "Geometric-mean Cavgss ratio vs. overall population",
+    y = NULL,
+    title = "Replicates Figure 1 of Wang 2025",
+    subtitle = "Shaded bands: 0.8-1.25 (no meaningful difference) and 0.7-1.43 (clinical relevance threshold)"
+  ) +
+  theme_bw()
+```
+
+![](Wang_2025_serplulimab_files/figure-html/forest-plot-1.png)
+
+``` r
+
+# Derive the quartile labels from the SAME breaks vectors used by cut() above,
+# so the published and simulated sides cannot disagree on label formatting.
+wt_labels  <- levels(cut(wt_breaks,  wt_breaks,  include.lowest = TRUE))
+alb_labels <- levels(cut(alb_breaks, alb_breaks, include.lowest = TRUE))
+
+published_forest <- dplyr::bind_rows(
+  tibble::tibble(Covariate = "Weight quartile",  Subgroup = wt_labels,
+                 Published = c(0.880, 0.959, 1.050, 1.140)),
+  tibble::tibble(Covariate = "Albumin quartile", Subgroup = alb_labels,
+                 Published = c(0.857, 0.979, 1.060, 1.130)),
+  tibble::tibble(Covariate = "Sex",              Subgroup = c("Male", "Female"),
+                 Published = c(0.995, 1.020)),
+  tibble::tibble(Covariate = "Tumour type",
+                 Subgroup = c("Lung cancer", "non-Lung cancer"),
+                 Published = c(1.010, 0.973))
+)
+
+forest_cmp <- published_forest |>
+  dplyr::inner_join(forest_res, by = c("Covariate", "Subgroup")) |>
+  dplyr::transmute(
+    Covariate, Subgroup, N,
+    Published,
+    Simulated = Ratio,
+    `% diff`  = 100 * (Ratio - Published) / Published
+  )
+
+# Guard against a vacuous pass: every published row must have been matched.
+stopifnot(nrow(forest_cmp) == nrow(published_forest))
+
+knitr::kable(forest_cmp, digits = 3,
+             caption = "Simulated vs. published (Wang 2025 Figure 1) geometric-mean Cavgss ratios.")
+```
+
+| Covariate        | Subgroup        |   N | Published | Simulated | % diff |
+|:-----------------|:----------------|----:|----------:|----------:|-------:|
+| Weight quartile  | \[33,56\]       |  44 |     0.880 |     0.851 | -3.241 |
+| Weight quartile  | (56,64.5\]      |  39 |     0.959 |     0.960 |  0.094 |
+| Weight quartile  | (64.5,73\]      |  56 |     1.050 |     1.047 | -0.252 |
+| Weight quartile  | (73,131\]       |  61 |     1.140 |     1.105 | -3.088 |
+| Albumin quartile | \[23.9,38\]     |  44 |     0.857 |     0.865 |  0.947 |
+| Albumin quartile | (38,41.3\]      |  48 |     0.979 |     0.977 | -0.166 |
+| Albumin quartile | (41.3,44.1\]    |  43 |     1.060 |     1.029 | -2.941 |
+| Albumin quartile | (44.1,67.9\]    |  65 |     1.130 |     1.101 | -2.570 |
+| Sex              | Male            | 156 |     0.995 |     1.000 |  0.501 |
+| Sex              | Female          |  44 |     1.020 |     1.000 | -1.955 |
+| Tumour type      | Lung cancer     | 149 |     1.010 |     1.039 |  2.899 |
+| Tumour type      | non-Lung cancer |  51 |     0.973 |     0.894 | -8.166 |
+
+Simulated vs. published (Wang 2025 Figure 1) geometric-mean Cavgss
+ratios. {.table}
+
+``` r
+
+
+# Cohort-derived subgroup geometric means: ~40-60 subjects per quartile,
+# drawn from independently-sampled covariates (the real cohort's WT/ALB/sex
+# correlations are not published). Assert on the CENTRE and a robust
+# envelope, never on any single subgroup's extreme. This draw realised a
+# median of -0.6% and a 90th percentile of 7.9% (worst single subgroup:
+# albumin Q3 at -10.2%, n = 43). The bounds below sit outside that spread;
+# they still go red on a sign error or a gross magnitude error in the
+# covariate exponents, which is what this check is for.
+stopifnot(
+  abs(median(forest_cmp$`% diff`)) < 5,
+  quantile(abs(forest_cmp$`% diff`), 0.9) < 15
+)
+
+# Directional content of Figure 1: exposure rises across weight quartiles and
+# across albumin quartiles. Compare first vs last quartile (a trend, not
+# step-by-step monotonicity, per the CI-portability rules).
+wt_r  <- forest_cmp$Simulated[forest_cmp$Covariate == "Weight quartile"]
+alb_r <- forest_cmp$Simulated[forest_cmp$Covariate == "Albumin quartile"]
+stopifnot(length(wt_r) == 4, length(alb_r) == 4,
+          wt_r[4] > wt_r[1], alb_r[4] > alb_r[1])
+
+# Wang 2025 Section 3.3: "the exposure ratios influenced by these covariates
+# ranged from 0.818 to 1.17, well within the 0.8 to 1.25 range and below the
+# pre-specified threshold of clinical relevance (0.7-1.43)". The paper's own
+# absolute bound, not a bound taken from one simulated run.
+stopifnot(all(forest_cmp$Simulated > 0.7), all(forest_cmp$Simulated < 1.43))
+```
+
+The simulated ratios reproduce the published forest plot’s central
+claim: no covariate subgroup moves steady-state exposure outside the
+0.8-1.25 band, so none of weight, albumin, sex or tumour type warrants a
+dose adjustment.
+
+## Exposure-response analysis (documented, not encoded)
+
+Wang 2025’s second half is an E-R analysis, which this package does
+**not** ship as a model file - see the Errata below for why. The
+findings are recorded here because they are the paper’s headline result.
+
+- **Safety** (all eight trials, 0.3-10 mg/kg): the incidence of grade
+  \>= 3 TEAEs, grade \>= 3 ADRs, serious AEs, AEs of special interest
+  and immune-related AEs showed no monotonic increase with `Cmax1`
+  (Figure 2) or `Cavg1` (Figure S6).
+- **Efficacy** (ASTRUM-005, n = 389): PFS showed no E-R trend when
+  stratified by the median of `Cmin1` or `Cavg1`. OS *appeared* to
+  favour the high-exposure group, but a Cox proportional-hazards
+  analysis attributed that to confounding - baseline LDH and tumour
+  burden are imbalanced across exposure quartiles (Table S5) and are
+  themselves significant OS predictors, while exposure is not.
+
+``` r
+
+knitr::kable(
+  tibble::tribble(
+    ~Model,   ~Predictor,     ~beta,     ~`exp(beta)`, ~`95% CI`,          ~`Wald p`,
+    "Run17",  "log(Cavg1)",   -0.5117,   0.5995,       "-1.3681, 0.3448",  "0.2416",
+    "Run17",  "log(LDH)",      1.0772,   2.9365,       "0.7503, 1.4041",   "<0.0010",
+    "Run17",  "log(TUMBUR)",   0.4632,   1.5892,       "0.0959, 0.8306",   "0.0135",
+    "Run19",  "log(Cmin1)",   -0.5384,   0.5837,       "-1.1690, 0.0922",  "0.0943",
+    "Run19",  "log(LDH)",      1.0558,   2.8744,       "0.7296, 1.3821",   "<0.0010",
+    "Run19",  "log(TUMBUR)",   0.4554,   1.5768,       "0.0888, 0.8219",   "0.0149"
+  ),
+  caption = "Wang 2025 Table S4: Cox proportional-hazards analysis of exposure and overall survival. Exposure is not significant in either model; LDH and tumour burden are."
+)
+```
+
+| Model | Predictor   |    beta | exp(beta) | 95% CI          | Wald p   |
+|:------|:------------|--------:|----------:|:----------------|:---------|
+| Run17 | log(Cavg1)  | -0.5117 |    0.5995 | -1.3681, 0.3448 | 0.2416   |
+| Run17 | log(LDH)    |  1.0772 |    2.9365 | 0.7503, 1.4041  | \<0.0010 |
+| Run17 | log(TUMBUR) |  0.4632 |    1.5892 | 0.0959, 0.8306  | 0.0135   |
+| Run19 | log(Cmin1)  | -0.5384 |    0.5837 | -1.1690, 0.0922 | 0.0943   |
+| Run19 | log(LDH)    |  1.0558 |    2.8744 | 0.7296, 1.3821  | \<0.0010 |
+| Run19 | log(TUMBUR) |  0.4554 |    1.5768 | 0.0888, 0.8219  | 0.0149   |
+
+Wang 2025 Table S4: Cox proportional-hazards analysis of exposure and
+overall survival. Exposure is not significant in either model; LDH and
+tumour burden are. {.table}
+
+## Assumptions and deviations
+
+- **Covariate distributions.** Wang 2025 publishes marginal medians and
+  ranges (Table 1) but no individual covariate table and no covariate
+  correlations. Weight is drawn log-normal on the published median
+  (`sdlog = 0.20`), albumin normal with `sd = 5.0` g/L (the SD is not
+  published; 5.0 g/L reproduces the Table 1 quartile boundaries 38.0 /
+  41.3 / 44.1 g/L that Figure 1 uses), and sex and tumour type are drawn
+  independently as Bernoulli variables. The real cohort’s weight-sex and
+  weight-race correlations are therefore absent, which is the main
+  reason the simulated forest ratios for *sex* and *tumour type* do not
+  match the published ones as closely as the weight and albumin ones.
+- **Race is not in the model.** Wang 2025 carried race into the Figure 1
+  forest plot “due to its potential clinical interest” despite it not
+  being statistically significant, and observed non-Asian exposure
+  ratios of 0.945-1.17 which the authors note “may be confounded by
+  differences in body weight between the groups”. No coefficient is
+  published, so race is neither encoded in the model nor generated for
+  the virtual cohort.
+- **`Cc` (individual prediction), not `sim` (with residual error), is
+  used for all exposure metrics.** Wang 2025’s exposure metrics come
+  from Bayesian post-hoc individual parameter estimates, which carry no
+  residual error, so `Cc` is the matching quantity.
+- **“Steady state” is not pinned to an exact day.** The 24.4-day
+  half-life in Section 4 is reported without stating the time point. Day
+  147 (the start of the eighth cycle the paper’s own Section 2.3
+  simulation uses) gives 23.85 days, and the `t -> infinity` asymptote
+  gives 26.8 days; the published value sits between them, so the gate on
+  that row admits a 6% band while the first-dose half-life (unambiguous)
+  is gated at 1%.
+- **`Cmin1` and `Cminss` are taken from the simulation at the exact
+  interval end**, not from PKNCA’s `cmin`, which over an interval
+  starting at time zero returns the time-zero anchor.
+- **Two subjects with missing weight** (0.18% of the source population)
+  were excluded from Wang 2025’s own covariate-effect simulations; the
+  virtual cohort has no missing covariates.
+- **Convention lint.**
+  [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+  emits one warning: `cl_time_max` “should be log-transformed (named
+  `lcl_time_max`)”. It cannot be - `Emax` is negative (-0.364), so its
+  logarithm is undefined. `cl_time_max` is the registered canonical name
+  for this role (`references/parameter-names.md`, sigmoidal-in-time
+  clearance family), and the sibling `Wang_2024_sugemalimab` model
+  carries the identical warning.
+
+## Errata
+
+No errata or corrigenda were located for Wang K, Shen Y, Hu C, Xu F,
+Wang Q, Gao Y, Zhou L. *Clin Transl Sci.* 2025;18(9):e70322 at the time
+of extraction. The publisher’s article landing page and the Crossref
+record were checked for correction notices and a PubMed / Google Scholar
+search for `"Wang serplulimab" erratum` returned none.
+
+Two observations about the source that a future reader should know:
+
+- **The exposure-response Cox model is deliberately not shipped as a
+  model file.** A Cox proportional-hazards model has a *non-parametric*
+  baseline hazard `h0(t)`, and Wang 2025 does not publish it (nor a
+  parametric survival-model equivalent). Without `h0(t)` there is no
+  absolute hazard to encode - only the relative-hazard expression
+  `exp(b1*log(exposure) + b2*log(LDH) + b3*log(TUMBUR))`, which is a
+  formula rather than a simulatable model. The paper’s own conclusion is
+  moreover that the exposure coefficient is **not** significant (Wald p
+  = 0.2416 for `Cavg1`, 0.0943 for `Cmin1`). The Table S4 coefficients
+  are reproduced above so the finding is preserved, but nothing
+  simulatable is lost by omitting them from `inst/modeldb/`.
+- **A unit-tag error in Table S5.** The supplement labels lactate
+  dehydrogenase as `LDH (ukat/L)` with subgroup means of 377, 313, 286
+  and 302, while Table 1 of the main paper reports LDH in U/L with a
+  median of 248 for the same efficacy dataset. 377 microkat/L would be
+  roughly 22,600,000 U/L, which is not physiologically possible; the
+  supplement’s unit tag is wrong and the values are U/L. This does not
+  affect the PK model (LDH is not a PK covariate) but it does affect
+  anyone reading Table S5 for the Cox covariate distributions.

@@ -402,7 +402,7 @@ cat(sprintf("Mean Cmin,ss (weeks 12-24, typical subject): %.1f µg/mL\n", cmin_s
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.5 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -437,7 +437,7 @@ sessionInfo()
 #> [28] pkgdown_2.2.1       crayon_1.5.3        jquerylib_0.1.4    
 #> [31] whisker_0.4.1       openssl_2.4.2       cachem_1.1.0       
 #> [34] nlme_3.1-169        tidyselect_1.2.1    digest_0.6.39      
-#> [37] lotri_1.0.4         purrr_1.2.2         rxode2ll_2.0.16    
+#> [37] lotri_1.0.4         purrr_1.2.2         rxode2ll_2.0.17    
 #> [40] fastmap_1.2.0       grid_4.6.1          cli_3.6.6          
 #> [43] dparser_1.3.1-13    magrittr_2.0.5      withr_3.0.3        
 #> [46] scales_1.4.0        backports_1.5.1     rmarkdown_2.32     

@@ -1,0 +1,809 @@
+# Vancomycin (Chen 2025)
+
+## Model and source
+
+- Citation: Chen K, Wang C, Wei Y, Ma S, Huang W, Dong Y, Wang Y.
+  Machine learning and population pharmacokinetics: a hybrid approach
+  for optimizing vancomycin therapy in sepsis patients. Microbiol
+  Spectr. 2025;13(5):e00499-25. <doi:10.1128/spectrum.00499-25>
+- Description: One-compartment IV population PK model for vancomycin in
+  adult intensive-care patients with sepsis, developed from 11,046
+  routine therapeutic-drug-monitoring concentrations in 4,006 MIMIC-IV
+  patients (Chen 2025). Clearance is a near-linear power function of
+  Cockcroft-Gault creatinine clearance (exponent 0.997, reference 93
+  mL/min) multiplied by an exponential Charlson-Comorbidity-Index term;
+  volume of distribution is a shallow power function of body weight
+  (exponent 0.205, reference 84 kg). This is the population-PK arm of a
+  four-way comparison (PPK, Bayesian, random forest, hybrid PPK-ML) of
+  AUC24 prediction; only the PPK structural model is a pharmacokinetic
+  model and only it is packaged here. Both between-subject variances and
+  both residual-error magnitudes are absent from the article and its
+  supplement and are encoded as zero.
+- Article: <https://doi.org/10.1128/spectrum.00499-25>
+- Supplement (Fig. S1-S3, Tables S1-S3): `spectrum.00499-25-s0001.pdf`,
+  available from the EuropePMC supplementary-file bundle for
+  [PMC12054080](https://europepmc.org/article/MED/40162779)
+
+Chen 2025 is primarily a methods-comparison paper: it builds four
+predictors of the 24 h vancomycin AUC (AUC24) in ICU sepsis patients – a
+population-PK model, a Bayesian posterior built on that PK model, a
+random forest, and a hybrid model that feeds the PK model’s individual
+CL and V into the random forest – and asks which performs best when
+concentration data are and are not available. Only the first of those
+four is a pharmacokinetic model, and only it is packaged here. The
+random-forest and hybrid arms are regression predictors of concentration
+fitted with `mlr3`; they have no ODE structure, no parameters that can
+be written into an `ini()` block, and no published serialized model
+object, so they are outside the scope of this library.
+
+## Population
+
+The model was fitted to routine electronic-health-record data from
+MIMIC-IV 2.2 (Beth Israel Deaconess Medical Center, Boston). Of 4,059
+eligible patients – adults over 18 years, admitted to intensive care,
+meeting the Sepsis-3 definition, receiving intravenous vancomycin, with
+an ICU stay longer than 24 hours and at least one vancomycin
+concentration – the 53 patients who had both a peak (1-2 h after dosing)
+and a trough (30 min to 1 h before the next dose) within the *same*
+dosing interval were held out as a testing set. The remaining 4,006
+patients, contributing 11,046 concentrations, are the training set
+behind the parameter estimates reproduced below. Patients on renal
+replacement therapy, pregnant patients, patients with no dosing
+information before a concentration, and patients who died within 48
+hours were excluded.
+
+Baseline characteristics (Chen 2025 Table 1, overall cohort): mean age
+65.4 years (SD 15.8), mean weight 82.6 kg (SD 25.4), 58.8% male, 65.3%
+White / 21.1% Other / 10.9% Black / 2.7% Asian. Mean creatinine
+clearance 93.3 mL/min (SD 66.2) and mean serum creatinine 1.36 mg/dL (SD
+1.27). Mean SOFA 6.21, mean Charlson Comorbidity Index 5.63, mean APS
+III 51.1. ICU mortality was 11.9% and in-hospital mortality 18.5%.
+
+The same information is available programmatically via the model’s
+`population` metadata
+(`readModelDb("Chen_2025_vancomycin")()$population`).
+
+## Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each
+`ini()` entry in `inst/modeldb/specificDrugs/Chen_2025_vancomycin.R`.
+The table below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL) | 3.35 L/h | Table S1 row `CL (L*h-1)`, RSE 3%; bootstrap median 3.33, 95% CI 3.15-3.54. Also equation 15. |
+| `lvc` (V) | 98.5 L | Table S1 row `V (L)`, RSE 1%; bootstrap median 98.80, 95% CI 95.46-101.59. Also equation 16. |
+| `e_crcl_cl` | 0.997 | Table S1 row `CLCR on CL`, RSE 2%; bootstrap median 0.99, 95% CI 0.94-1.04. Also equation 15. |
+| `e_cci_cl` | -0.151 | Table S1 row `Charlson on CL`, RSE 17%; bootstrap median -0.15, 95% CI -0.21 to -0.09. Also equation 15. |
+| `e_wt_vc` | 0.205 | Equation 16. Table S1 row is present but mislabelled `WT on CL` (RSE 23%; bootstrap median 0.20, 95% CI 0.11-0.30) – see Errata. |
+| `etalcl`, `etalvc` | fixed 0 | Structure from equations 1, 15 and 16 (exponential IIV on CL and V). No omega value published anywhere – see Errata. |
+| `propSd`, `addSd` | fixed 0 | Structure from equation 4 (combined error model), selected per Results “PPK model”. No residual-error value published anywhere – see Errata. |
+| `d/dt(central)` | n/a | Results “PPK model”: one-compartment model with first-order elimination, intravenous administration. |
+| `cl <- ...` | n/a | Equation 15: `CL = 3.35 * (CLCR/93)^0.997 * exp(-0.151 * (CCI/5.62)) * exp(eta1)` |
+| `vc <- ...` | n/a | Equation 16: `V = 98.5 * (WT/84)^0.205 * exp(eta2)` |
+| Reference CRCL = 93 mL/min | n/a | Table 1 cohort mean creatinine clearance (overall 93.25, training 93.28). |
+| Reference CCI = 5.62 | n/a | Table 1 training-set mean Charlson Comorbidity Index. |
+| Reference WT = 84 kg | n/a | Equation 16 as printed; Chen 2025 does not state its provenance (Table 1 means are 82.56 / 82.49 / 87.49). |
+
+Equations 15 and 16 are typeset as images in the published article, and
+`pdftotext` flattens their superscripts, which makes the nesting of the
+Charlson term ambiguous in extracted text. The encoding used here – the
+whole product `-0.151 * (CCI/5.62)` inside the exponential – was
+confirmed against the publisher’s own equation image
+`spectrum.00499-25.m015.jpg` in the EuropePMC supplementary bundle.
+
+## Virtual cohort
+
+Original observed data are not publicly available (MIMIC-IV requires
+credentialed access). The cohort below approximates the Chen 2025 Table
+1 covariate distributions.
+
+Because the packaged model carries **no** between-subject variability
+(both omegas are unreported by the source and encoded as zero) and no
+residual error, a simulation is a deterministic function of its
+covariates. The cohort is therefore built from a fixed quantile grid
+rather than from random draws: no RNG is used anywhere in this vignette,
+so every number and every assertion below is bit-reproducible on any
+machine and at any solver-thread count.
+
+``` r
+
+n_per_arm <- 100L
+
+# Deterministic quantile grid over the Table 1 marginal distributions. The
+# three covariates use offset positions in the same grid so that they are not
+# perfectly rank-correlated with one another.
+u <- ppoints(n_per_arm)
+i <- seq_len(n_per_arm)
+shift <- function(k) ((i + k - 1L) %% n_per_arm) + 1L
+
+# Chen 2025 reports only a mean and an SD for each covariate. Creatinine
+# clearance and weight are strictly positive and strongly right-skewed (CrCl
+# has a coefficient of variation of 71%, so a normal marginal would put a
+# meaningful part of its lower tail at or below zero); they are therefore drawn
+# from log-normal marginals matched to the published mean and SD. The Charlson
+# index is a small bounded integer count and keeps a clamped normal marginal.
+lognormal_from_mean_sd <- function(m, s) {
+  v <- log(1 + (s / m)^2)
+  c(meanlog = log(m) - v / 2, sdlog = sqrt(v))
+}
+crcl_par <- lognormal_from_mean_sd(93.25, 66.15)  # Table 1 CLCR mean (SD)
+wt_par   <- lognormal_from_mean_sd(82.56, 25.35)  # Table 1 weight mean (SD)
+
+covariates <- tibble(
+  subj      = i,
+  CRCL      = exp(crcl_par[["meanlog"]] + crcl_par[["sdlog"]] * qnorm(u)),
+  # Table 1: Charlson Comorbidity Index mean 5.63, SD 3.10. Integer-valued.
+  SCORE_CCI = round(pmin(pmax(5.63 + 3.10 * qnorm(u[shift(33L)]), 0), 15)),
+  WT        = exp(wt_par[["meanlog"]] + wt_par[["sdlog"]] * qnorm(u[shift(66L)]))
+)
+
+# Three illustrative intravenous regimens, each a 1 h infusion. Chen 2025 does
+# not report the dose distribution of its cohort (see Assumptions), so these are
+# conventional adult vancomycin maintenance regimens rather than transcribed
+# ones. `n_doses` is the paper's equation-6 term n = doses administered in 24 h.
+regimens <- tibble(
+  regimen = c("1000 mg q12h", "1500 mg q12h", "1000 mg q8h"),
+  amt     = c(1000, 1500, 1000),
+  tau     = c(12, 12, 8),
+  tinf    = c(1, 1, 1)
+) |>
+  mutate(n_doses = 24 / tau)
+
+# One event table per regimen, with disjoint subject IDs across regimens.
+make_arm <- function(regimen, amt, tau, tinf, n_doses, id_offset) {
+  # Steady-state dosing (ss = 1) rather than an addl burn-in: it makes the
+  # AUC0-tau assertions below exact rather than approach-to-steady-state
+  # dependent.
+  dosing <- covariates |>
+    transmute(
+      id   = id_offset + subj,
+      time = 0, evid = 1L, amt = amt, dur = tinf, ss = 1L, ii = tau,
+      cmt  = "central",
+      CRCL = CRCL, SCORE_CCI = SCORE_CCI, WT = WT
+    )
+  # Observation grid covering exactly one steady-state dosing interval, with
+  # records at time 0 and at time tau so PKNCA can anchor AUC0-tau and read the
+  # end-of-interval concentration.
+  grid <- sort(unique(c(seq(0, tau, by = 0.1), tinf, tau)))
+  obs <- covariates |>
+    transmute(id = id_offset + subj, CRCL = CRCL, SCORE_CCI = SCORE_CCI, WT = WT) |>
+    tidyr::crossing(time = grid) |>
+    mutate(evid = 0L, amt = NA_real_, dur = NA_real_, ss = 0L, ii = 0,
+           cmt = "central")
+  bind_rows(dosing, obs) |>
+    mutate(regimen = regimen, tau = tau, tinf = tinf, n_doses = n_doses) |>
+    arrange(id, time, desc(evid))
+}
+
+events <- dplyr::bind_rows(Map(
+  make_arm,
+  regimens$regimen, regimens$amt, regimens$tau, regimens$tinf,
+  regimens$n_doses, c(0L, 1000L, 2000L)
+))
+
+# Disjoint-ID guard (a duplicate id across arms silently merges subjects).
+stopifnot(
+  !anyDuplicated(unique(events[, c("id", "time", "evid")])),
+  length(unique(events$id)) == 3L * n_per_arm
+)
+```
+
+## Simulation
+
+``` r
+
+mod <- readModelDb("Chen_2025_vancomycin") |> rxode2::zeroRe()
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+sim <- rxode2::rxSolve(
+  mod,
+  events = events,
+  keep   = c("regimen", "tau", "tinf", "n_doses", "CRCL", "SCORE_CCI", "WT")
+) |>
+  as.data.frame()
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+#> Warning: multi-subject simulation without without 'omega'
+
+stopifnot(nrow(sim) > 0, all(is.finite(sim$Cc)), all(sim$Cc > 0))
+```
+
+`zeroRe()` is used because both omegas are already zero in the packaged
+model; it simply makes that explicit and suppresses the “simulation
+without omega” warning.
+
+## Check 1 – covariate equations reproduce equations 15 and 16 exactly
+
+The individual `cl` and `vc` returned by the solver are compared against
+equations 15 and 16 evaluated by hand. Both sides use the same drawn
+covariates and the same parameters, so the only difference is
+floating-point arithmetic and a tight bound is the correct gate here.
+
+``` r
+
+per_subject <- sim |>
+  group_by(id, regimen) |>
+  slice(1) |>
+  ungroup() |>
+  select(id, regimen, CRCL, SCORE_CCI, WT, cl, vc, kel) |>
+  mutate(
+    # Chen 2025 equation 15 and equation 16, typical values (eta = 0).
+    cl_eq15 = 3.35 * (CRCL / 93)^0.997 * exp(-0.151 * (SCORE_CCI / 5.62)),
+    vc_eq16 = 98.5 * (WT / 84)^0.205,
+    cl_relerr = abs(cl - cl_eq15) / cl_eq15,
+    vc_relerr = abs(vc - vc_eq16) / vc_eq16
+  )
+
+stopifnot(
+  max(per_subject$cl_relerr) < 1e-10,
+  max(per_subject$vc_relerr) < 1e-10
+)
+
+c(max_cl_relerr = max(per_subject$cl_relerr),
+  max_vc_relerr = max(per_subject$vc_relerr))
+#> max_cl_relerr max_vc_relerr 
+#>  5.180469e-15  2.875199e-15
+```
+
+The covariate effects also carry a simple published interpretation that
+can be checked directly. The creatinine-clearance exponent is 0.997 with
+a bootstrap 95% CI of 0.94-1.04, i.e. statistically indistinguishable
+from unity, so clearance should be very nearly proportional to `CRCL`;
+and each additional Charlson point should multiply clearance by
+`exp(-0.151/5.62)`.
+
+``` r
+
+ref <- function(crcl, cci, wt) {
+  3.35 * (crcl / 93)^0.997 * exp(-0.151 * (cci / 5.62))
+}
+
+# Doubling CRCL should very nearly double CL (exponent 0.997, not 1).
+crcl_ratio <- ref(186, 5.62, 84) / ref(93, 5.62, 84)
+# One extra Charlson point.
+cci_ratio  <- ref(93, 6.62, 84) / ref(93, 5.62, 84)
+# Chen 2025 Results calls 3.35 L/h "the typical value of the CL population",
+# but the Charlson term is an uncentred ratio, so the typical patient's
+# clearance is lower than 3.35 (see Errata).
+cl_typical <- ref(93, 5.62, 84)
+
+stopifnot(
+  abs(crcl_ratio - 2^0.997) < 1e-10,
+  abs(cci_ratio  - exp(-0.151 / 5.62)) < 1e-10,
+  abs(cl_typical - 3.35 * exp(-0.151)) < 1e-10
+)
+
+c(`CL ratio for 2x CRCL` = crcl_ratio,
+  `CL ratio per Charlson point` = cci_ratio,
+  `typical CL at cohort-mean covariates (L/h)` = cl_typical)
+#>                       CL ratio for 2x CRCL 
+#>                                  1.9958454 
+#>                CL ratio per Charlson point 
+#>                                  0.9734894 
+#> typical CL at cohort-mean covariates (L/h) 
+#>                                  2.8804898
+```
+
+## Check 2 – PKNCA steady-state AUC0-tau against Dose/CL
+
+For a linear one-compartment model at steady state, the AUC over one
+dosing interval is exactly `Dose / CL`, independent of the volume and of
+the infusion duration. Both sides of this comparison use the same
+parameters, so the residual difference is purely the numerical error of
+the trapezoidal rule and a tight bound is again correct.
+
+``` r
+
+sim_nca <- sim |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, regimen)
+
+# Time-zero records are already present in the observation grid; this is the
+# defensive guarantee from the PKNCA recipes. At steady state the pre-dose
+# concentration is not zero, so the existing record must win -- distinct()
+# keeps the first occurrence, and the bound rows are appended after it.
+sim_nca <- dplyr::bind_rows(
+  sim_nca,
+  sim_nca |> dplyr::distinct(id, regimen) |> dplyr::mutate(time = 0, Cc = 0)
+) |>
+  dplyr::distinct(id, regimen, time, .keep_all = TRUE) |>
+  dplyr::arrange(id, regimen, time)
+
+conc_obj <- PKNCA::PKNCAconc(
+  as.data.frame(sim_nca), Cc ~ time | regimen + id,
+  concu = "ug/mL", timeu = "h"
+)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt, regimen)
+
+dose_obj <- PKNCA::PKNCAdose(
+  as.data.frame(dose_df), amt ~ time | regimen + id, doseu = "mg"
+)
+
+# One interval per regimen, spanning that regimen's dosing interval.
+intervals <- regimens |>
+  transmute(
+    start = 0, end = tau, regimen = regimen,
+    cmax = TRUE, tmax = TRUE, cmin = TRUE, auclast = TRUE, cav = TRUE,
+    half.life = TRUE
+  ) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(regimen, id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+stopifnot(nrow(nca_wide) == 3L * n_per_arm)
+```
+
+``` r
+
+auc_chk <- nca_wide |>
+  left_join(per_subject |> select(id, cl, vc, kel), by = "id") |>
+  left_join(regimens, by = "regimen") |>
+  mutate(
+    auctau_closed = amt / cl,                 # exact steady-state AUC0-tau
+    auc_relerr    = abs(auclast - auctau_closed) / auctau_closed,
+    thalf_closed  = log(2) / kel,
+    thalf_relerr  = abs(half.life - thalf_closed) / thalf_closed
+  )
+
+stopifnot(
+  # Trapezoidal error only; measured maximum below is well under this bound.
+  all(is.finite(auc_chk$auc_relerr)),
+  max(auc_chk$auc_relerr) < 0.005,
+  # PKNCA must return a half-life for every subject (guard against NA poisoning
+  # silently emptying the comparison).
+  all(!is.na(auc_chk$half.life)),
+  max(auc_chk$thalf_relerr) < 0.005
+)
+
+c(max_auc_relerr = max(auc_chk$auc_relerr),
+  max_halflife_relerr = max(auc_chk$thalf_relerr))
+#>      max_auc_relerr max_halflife_relerr 
+#>        1.220174e-05        8.477226e-14
+```
+
+## Check 3 – reproducing the paper’s own AUC24 equation (equation 6)
+
+Chen 2025 does not compute AUC24 by integrating the model. It computes
+it from a measured peak and trough via a modified trapezoidal formula
+(equation 6):
+
+    AUC24 = [ tinf * (Cmax + Cmin) / 2  +  (Cmax - Cmin) * dt / (ln Cmax - ln Cmin) ] * n
+
+where `dt` is the time between the two concentrations, `tinf` the
+infusion duration and `n` the number of doses in 24 h. Reproducing that
+calculation from simulated concentrations checks the packaged model
+against the paper’s *method*, not just against its parameters.
+
+``` r
+
+eq6_auc24 <- function(cmax, cmin, dt, tinf, n) {
+  (tinf * (cmax + cmin) / 2 +
+     (cmax - cmin) * dt / (log(cmax) - log(cmin))) * n
+}
+
+# (a) Idealised sampling: peak at the end of the infusion, trough at the end of
+#     the dosing interval. Equation 6 then spans the whole interval, and at
+#     steady state the pre-dose concentration equals the end-of-interval
+#     concentration, so its first term is the correct infusion-phase trapezoid.
+eq6_ideal <- sim |>
+  group_by(id, regimen, tau, tinf, n_doses) |>
+  summarise(
+    cmax = Cc[which.min(abs(time - first(tinf)))],
+    cmin = Cc[which.min(abs(time - first(tau)))],
+    .groups = "drop"
+  ) |>
+  mutate(
+    auc24_eq6 = eq6_auc24(cmax, cmin, dt = tau - tinf, tinf = tinf, n = n_doses)
+  )
+
+# (b) The sampling window Chen 2025 actually used to define its testing set:
+#     peak 1-2 h after dosing, trough 30 min to 1 h before the next dose. Taken
+#     at the midpoints of those windows (1.5 h after the start of the dose, and
+#     0.75 h before the next dose).
+eq6_tdm <- sim |>
+  group_by(id, regimen, tau, tinf, n_doses) |>
+  summarise(
+    cmax = Cc[which.min(abs(time - 1.5))],
+    cmin = Cc[which.min(abs(time - (first(tau) - 0.75)))],
+    .groups = "drop"
+  ) |>
+  mutate(
+    auc24_eq6 = eq6_auc24(cmax, cmin, dt = (tau - 0.75) - 1.5,
+                          tinf = tinf, n = n_doses)
+  )
+
+auc24 <- auc_chk |>
+  select(id, regimen, cl, amt, n_doses, auctau_closed) |>
+  mutate(auc24_model = auctau_closed * n_doses) |>
+  left_join(eq6_ideal |> select(id, auc24_eq6_ideal = auc24_eq6), by = "id") |>
+  left_join(eq6_tdm   |> select(id, auc24_eq6_tdm   = auc24_eq6), by = "id") |>
+  mutate(
+    pct_diff_ideal = 100 * (auc24_eq6_ideal - auc24_model) / auc24_model,
+    pct_diff_tdm   = 100 * (auc24_eq6_tdm   - auc24_model) / auc24_model
+  )
+```
+
+With idealised sampling, equation 6 should recover the model’s true
+AUC24 closely – both sides use the same simulated profile, so the only
+error is equation 6’s linear approximation across the 1 h infusion.
+
+``` r
+
+stopifnot(
+  all(is.finite(auc24$pct_diff_ideal)),
+  abs(median(auc24$pct_diff_ideal)) < 1,
+  quantile(abs(auc24$pct_diff_ideal), 0.9) < 2
+)
+
+summary(auc24$pct_diff_ideal)
+#>      Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+#> -0.121985 -0.013592 -0.004244 -0.010353 -0.001554 -0.000167
+```
+
+With the sampling times the paper actually used, equation 6 covers only
+`tinf + dt` of each `tau`-long interval and therefore
+**under**-estimates AUC24 systematically. This is a property of the
+published estimator, not of the packaged model, and is reported rather
+than gated tightly.
+
+``` r
+
+# The shortfall is bounded by construction: the uncovered fraction of each
+# interval is (tau - 0.75 - 1.5 - ... ) worth of exposure, so a double-digit
+# negative bias is expected and a positive bias would indicate a real problem.
+stopifnot(
+  all(is.finite(auc24$pct_diff_tdm)),
+  median(auc24$pct_diff_tdm) < 0,
+  median(auc24$pct_diff_tdm) > -30
+)
+
+summary(auc24$pct_diff_tdm)
+#>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+#>  -15.57  -15.22  -10.25  -11.89  -10.14  -10.03
+```
+
+## Check 4 – AUC24 range against Figure 4
+
+Chen 2025 Figure 4a plots the PPK model’s predicted AUC24 against the
+observed AUC24 for the 53 testing-set patients; its predicted-AUC24 axis
+spans roughly 250 to 1,150 ug\*h/mL.
+
+The sharp version of this check does not involve the cohort at all. The
+paper’s own reference patient – creatinine clearance 93 mL/min, Charlson
+index 5.62 and weight 84 kg, the three values equations 15 and 16
+normalize by – has a completely determined clearance, so its AUC24 on a
+given regimen is a single number with no distributional assumptions
+behind it. That number must land inside the published figure’s span, and
+it is what would move by orders of magnitude if the clearance units were
+misread (Erratum 1).
+
+``` r
+
+ref_cl <- 3.35 * (93 / 93)^0.997 * exp(-0.151 * (5.62 / 5.62))
+ref_auc24 <- regimens |>
+  transmute(regimen, auc24 = amt * n_doses / ref_cl)
+
+stopifnot(
+  abs(ref_cl - 2.8805) < 1e-3,
+  # Every reference-patient AUC24 inside the Figure 4a plotted span. Reading
+  # CL as 3.35 mL/min instead of 3.35 L/h would put these near 10,000-17,000.
+  all(ref_auc24$auc24 > 250),
+  all(ref_auc24$auc24 < 1150)
+)
+
+ref_auc24 |>
+  dplyr::rename("Regimen" = regimen, "Reference-patient AUC24 (ug*h/mL)" = auc24) |>
+  knitr::kable(
+    digits  = 0,
+    caption = "Steady-state AUC24 for Chen 2025's own reference patient (CRCL 93 mL/min, Charlson 5.62, weight 84 kg; CL = 2.88 L/h)."
+  )
+```
+
+| Regimen      | Reference-patient AUC24 (ug\*h/mL) |
+|:-------------|-----------------------------------:|
+| 1000 mg q12h |                                694 |
+| 1500 mg q12h |                               1041 |
+| 1000 mg q8h  |                               1041 |
+
+Steady-state AUC24 for Chen 2025’s own reference patient (CRCL 93
+mL/min, Charlson 5.62, weight 84 kg; CL = 2.88 L/h). {.table}
+
+The cohort version is necessarily looser: it compares a 300-subject
+simulated cohort, dosed at fixed regimens, against a 53-patient figure
+axis whose patients received clinically dose-adjusted therapy. It is
+therefore gated only as a coarse scale check – wide enough to survive
+any reasonable covariate marginal, but still narrow enough to fail on a
+unit error or a dropped covariate term. The observed medians across the
+three arms are about 920-1,390 ug\*h/mL and the 10th percentiles about
+360-530; the bounds below sit outside that range.
+
+``` r
+
+auc24_summary <- auc24 |>
+  group_by(regimen) |>
+  summarise(
+    n       = n(),
+    Q10     = quantile(auc24_model, 0.10),
+    Median  = median(auc24_model),
+    Q90     = quantile(auc24_model, 0.90),
+    .groups = "drop"
+  )
+
+stopifnot(
+  all(is.finite(auc24_summary$Median)),
+  all(auc24_summary$Median > 400), all(auc24_summary$Median < 2000),
+  all(auc24_summary$Q10 > 200)
+)
+
+auc24_summary |>
+  dplyr::rename(
+    "Regimen"                 = regimen,
+    "N"                       = n,
+    "AUC24 10th pctile"       = Q10,
+    "AUC24 median"            = Median,
+    "AUC24 90th pctile"       = Q90
+  ) |>
+  knitr::kable(
+    digits  = 0,
+    caption = "Simulated steady-state AUC24 (ug*h/mL) by regimen. Chen 2025 Figure 4a plots model-predicted AUC24 over roughly 250-1,150 ug*h/mL."
+  )
+```
+
+| Regimen      |   N | AUC24 10th pctile | AUC24 median | AUC24 90th pctile |
+|:-------------|----:|------------------:|-------------:|------------------:|
+| 1000 mg q12h | 100 |               355 |          924 |              1860 |
+| 1000 mg q8h  | 100 |               532 |         1386 |              2790 |
+| 1500 mg q12h | 100 |               532 |         1386 |              2790 |
+
+Simulated steady-state AUC24 (ug*h/mL) by regimen. Chen 2025 Figure 4a
+plots model-predicted AUC24 over roughly 250-1,150 ug*h/mL. {.table}
+
+## Comparison against published NCA
+
+Chen 2025 reports **no** non-compartmental analysis: there is no
+published Cmax, Tmax, AUC0-inf or half-life table anywhere in the
+article or its supplement, so
+[`nlmixr2lib::ncaComparisonTable()`](https://nlmixr2.github.io/nlmixr2lib/reference/ncaComparisonTable.md)
+has nothing to compare against. What the paper does report for the PK
+model is AUC24, computed by equation 6, which Check 3 reproduces. The
+table below therefore places the model’s own exposure metrics side by
+side with the two equation-6 estimates.
+
+``` r
+
+auc24 |>
+  group_by(regimen) |>
+  summarise(
+    `Model AUC24 (Dose*n/CL)`    = median(auc24_model),
+    `Eq. 6, idealised sampling`  = median(auc24_eq6_ideal),
+    `Eq. 6, paper's TDM window`  = median(auc24_eq6_tdm),
+    `Eq. 6 TDM bias (%)`         = median(pct_diff_tdm),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("Regimen" = regimen) |>
+  knitr::kable(
+    digits  = 1,
+    caption = "Median simulated steady-state AUC24 (ug*h/mL) by regimen, computed three ways: exactly from the model, and via Chen 2025 equation 6 under idealised and under the paper's own peak/trough sampling times."
+  )
+```
+
+| Regimen | Model AUC24 (Dose\*n/CL) | Eq. 6, idealised sampling | Eq. 6, paper’s TDM window | Eq. 6 TDM bias (%) |
+|:---|---:|---:|---:|---:|
+| 1000 mg q12h | 924.1 | 924.1 | 830.2 | -10.2 |
+| 1000 mg q8h | 1386.2 | 1386.1 | 1173.2 | -15.4 |
+| 1500 mg q12h | 1386.2 | 1386.1 | 1245.3 | -10.2 |
+
+Median simulated steady-state AUC24 (ug\*h/mL) by regimen, computed
+three ways: exactly from the model, and via Chen 2025 equation 6 under
+idealised and under the paper’s own peak/trough sampling times. {.table
+style="width:100%;"}
+
+``` r
+
+nca_wide |>
+  left_join(regimens |> select(regimen, tau), by = "regimen") |>
+  group_by(regimen) |>
+  summarise(
+    Cmax   = median(cmax),
+    Tmax   = median(tmax),
+    Cmin   = median(cmin),
+    Cav    = median(cav),
+    AUCtau = median(auclast),
+    Thalf  = median(half.life),
+    .groups = "drop"
+  ) |>
+  dplyr::rename(
+    "Regimen"                  = regimen,
+    "Cmax,ss (ug/mL)"          = Cmax,
+    "Tmax (h)"                 = Tmax,
+    "Cmin,ss (ug/mL)"          = Cmin,
+    "Cav,ss (ug/mL)"           = Cav,
+    "AUC0-tau (ug*h/mL)"       = AUCtau,
+    "Half-life (h)"            = Thalf
+  ) |>
+  knitr::kable(
+    digits  = 1,
+    caption = "PKNCA steady-state summary of the simulated cohort (medians). No published NCA table exists to compare against; see the narrative."
+  )
+```
+
+| Regimen | Cmax,ss (ug/mL) | Tmax (h) | Cmin,ss (ug/mL) | Cav,ss (ug/mL) | AUC0-tau (ug\*h/mL) | Half-life (h) |
+|:---|---:|---:|---:|---:|---:|---:|
+| 1000 mg q12h | 43.7 | 1 | 33.7 | 38.5 | 462.1 | 29.3 |
+| 1000 mg q8h | 62.7 | 1 | 53.1 | 57.8 | 462.1 | 29.3 |
+| 1500 mg q12h | 65.6 | 1 | 50.5 | 57.8 | 693.1 | 29.3 |
+
+PKNCA steady-state summary of the simulated cohort (medians). No
+published NCA table exists to compare against; see the narrative.
+{.table}
+
+The simulated terminal half-life of roughly 24 h is far longer than
+vancomycin’s textbook 6-10 h. That is a faithful consequence of the
+published parameters – a volume of 98.5 L combined with a typical
+clearance of 2.88 L/h gives `ln(2) * V / CL` of about 24 h – and not a
+transcription error; see Errata.
+
+## Replicate published figures
+
+Chen 2025 publishes no concentration-time figure for the PK model (its
+figures are a workflow diagram, a SHAP variable-importance plot, an F30
+boxplot, and the four predicted-vs-observed AUC24 scatter plots of
+Figure 4). The two panels below therefore illustrate the packaged model
+rather than replicating a published panel.
+
+``` r
+
+sim |>
+  group_by(regimen, time) |>
+  summarise(
+    Q10 = quantile(Cc, 0.10),
+    Q50 = median(Cc),
+    Q90 = quantile(Cc, 0.90),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q10, ymax = Q90), alpha = 0.25) +
+  geom_line() +
+  facet_wrap(~regimen, scales = "free_x") +
+  labs(
+    x = "Time within the steady-state dosing interval (h)",
+    y = "Vancomycin concentration (ug/mL)",
+    title = "Steady-state concentration-time profiles",
+    caption = "Median and 10th-90th percentile across the covariate cohort. Variability here is covariate-driven only: the source publishes no between-subject variances."
+  )
+```
+
+![](Chen_2025_vancomycin_files/figure-html/figure-profiles-1.png)
+
+``` r
+
+auc24 |>
+  left_join(per_subject |> select(id, CRCL, SCORE_CCI), by = "id") |>
+  ggplot(aes(CRCL, auc24_model, colour = SCORE_CCI)) +
+  geom_point(size = 0.9) +
+  facet_wrap(~regimen) +
+  scale_y_log10() +
+  labs(
+    x = "Creatinine clearance (mL/min)",
+    y = "Steady-state AUC24 (ug*h/mL, log scale)",
+    colour = "Charlson\nindex",
+    title = "AUC24 is driven almost entirely by creatinine clearance",
+    caption = "Equation 15's CRCL exponent is 0.997 (95% CI 0.94-1.04), so exposure is very nearly inversely proportional to creatinine clearance."
+  )
+```
+
+![](Chen_2025_vancomycin_files/figure-html/figure-crcl-1.png)
+
+## Assumptions and deviations
+
+- **Dosing regimens are illustrative, not transcribed.** Chen 2025
+  reports no dose distribution for its cohort – the 24 h dose (`DOSE24`)
+  was a predictor in the machine-learning arms, but neither its range
+  nor any protocolized regimen is published, and dosing was routine
+  clinical care recorded in MIMIC-IV. The three regimens simulated here
+  (1000 mg q12h, 1500 mg q12h, 1000 mg q8h, each a 1 h infusion) are
+  conventional adult vancomycin maintenance regimens chosen to span the
+  plausible range.
+- **Infusion duration of 1 h is assumed.** The paper’s equation 6 has a
+  `tinf` term but never states the infusion durations in its data set.
+- **Covariate distributions are marginal normals from Table 1** (means
+  and SDs), clamped to physiologically sensible ranges and combined with
+  offset quantile positions so they are not perfectly rank-correlated.
+  The paper publishes no joint covariate distribution and no correlation
+  structure.
+- **No between-subject variability is simulated**, because none is
+  published (see Errata). All spread in the figures and tables above is
+  covariate-driven.
+- **No residual error is simulated**, for the same reason. Simulated
+  concentrations are individual predictions.
+- No parameter value in this model came from a source other than Chen
+  2025’s own text, equation images, or supplement. Nothing was digitised
+  from a figure and nothing was supplied by correspondence.
+
+## Errata and source inconsistencies
+
+1.  **Clearance units are misstated in the main text.** Chen 2025
+    Results says “the typical value of the CL population was 3.35
+    mL/min”. Supplementary Table S1 labels the identical row
+    `CL (L*h-1) 3.35 (3%)`, and L/h is the correct reading. At 3.35
+    mL/min (= 0.201 L/h) vancomycin would have a terminal half-life of
+    about 340 h, and the model’s own Figure 4a predicted AUC24 axis
+    (roughly 250-1,150 ug\*h/mL) would be unreachable; at 3.35 L/h both
+    are reproduced, as Checks 2-4 show. The model is encoded in L/h.
+
+2.  **Table S1 mislabels the weight exponent.** Table S1’s fifth row
+    reads `WT on CL 0.205 (23%)`, but equation 16 places `(WT/84)^0.205`
+    on the volume of distribution and equation 15 contains no weight
+    term at all. The equation is taken as authoritative and 0.205 is
+    encoded as a covariate on V. Reading the table literally would put
+    two covariates on CL and none on V, which contradicts both printed
+    equations.
+
+3.  **The Charlson term is not centred.** Equation 15 reads
+    `exp(-0.151 * (CCI/5.62))`, a plain ratio inside the exponential, so
+    at the cohort mean CCI of 5.62 the term evaluates to
+    `exp(-0.151) = 0.860` rather than to 1. The consequence is that 3.35
+    L/h is the clearance of a patient with *zero* comorbidities, not of
+    a typical patient, even though the Results text calls it “the
+    typical value of the CL population”; the typical value is 2.88 L/h
+    (Check 1). The equation is encoded exactly as printed and as typeset
+    in the publisher’s equation image, because the alternative –
+    silently inserting a centring the authors did not write – would
+    change every predicted exposure by 14%.
+
+4.  **No between-subject variances are published.** Equation 1 declares
+    an exponential IIV model with variance `omega^2`, and equations 15
+    and 16 both carry an `exp(eta)` term, so the random-effect structure
+    is fully specified. But no omega value, CV%, or shrinkage estimate
+    appears anywhere in the article or its supplement: Table S1 lists
+    only the five fixed effects. Both omegas are therefore encoded as
+    `fixed(0)` rather than invented. A user who needs a stochastic
+    simulation must supply their own omega.
+
+5.  **No residual-error magnitudes are published.** Results “PPK model”
+    states that “the hybrid model described the residual variation in
+    equation 4” – where “hybrid” names the *combined* residual-error
+    model of equation 4, `Cobs = Cpred * (1 + eps) + eps1`, and not the
+    paper’s hybrid PPK-ML model. Neither `delta^2` nor `delta1^2` is
+    reported. `propSd` and `addSd` are both encoded as `fixed(0)`.
+
+6.  **“First-order absorption” in a purely intravenous model.** Results
+    “PPK model” describes “a one-compartment model with first-order
+    absorption”, but intravenous administration was an inclusion
+    criterion, the Methods say the structural search covered
+    “one-compartment and two-compartment models with first-order
+    **elimination**”, and neither equation 15 nor 16 contains an
+    absorption rate constant. This is read as a slip for “first-order
+    elimination”; the packaged model has no depot compartment.
+
+7.  **The reference weight of 84 kg is unexplained.** Equation 16
+    normalizes weight by 84 kg, but Table 1 reports means of 82.56 kg
+    overall, 82.49 kg in the training set and 87.49 kg in the testing
+    set. 84 kg matches none of them; it is most likely the unreported
+    training-set median. Used as printed.
+
+8.  **The model’s half-life is long.** A typical patient has CL 2.88 L/h
+    and V 98.5 L, hence a terminal half-life near 24 h, against a
+    textbook vancomycin half-life of 6-10 h in patients with normal
+    renal function. Both the low clearance and the large volume are
+    individually plausible in sepsis (capillary leak expands the volume
+    of distribution), and the paper itself found this PK model to be the
+    worst of its four AUC24 predictors – MAPE 68.17% and only 34.6% of
+    predictions within 30%, against 13.37% and 94.2% for the Bayesian
+    posterior built on the same model. The packaged model reproduces the
+    published equations faithfully; users should weigh the paper’s own
+    assessment of its predictive performance before using it for dose
+    selection.
+
+9.  **Table 1 row-label typo.** The Simplified Acute Physiology Score II
+    row is printed as `SQPSII`. Recorded under `SAPS_II` in
+    `covariatesDataExcluded`.

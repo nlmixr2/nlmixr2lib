@@ -259,10 +259,10 @@ a sensible range.
 
 sim_vpc <- rxSolve(mod, ev_one, nSub = n_subj, returnType = "data.frame")
 #> ℹ parameter labels from comments will be replaced by 'label()'
-#> [intdy -- t = 4.64293e-310 illegal]: 107 warning(s) for subject(s): Unknown, Unknown
-#> [intdy -- t = 4.64303e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown
-#> [intdy -- t = 6.90667e-310 illegal]: 107 warning(s) for subject(s): Unknown, Unknown
-#> [intdy -- t = 6.90678e-310 illegal]: 7 warning(s) for subject(s): Unknown, Unknown
+#> [intdy -- t = 4.65693e-310 illegal]: 204 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 4.65698e-310 illegal]: 13 warning(s) for subject(s): Unknown, Unknown, Unknown
+#> [intdy -- t = 6.90519e-310 illegal]: 10 warning(s) for subject(s): Unknown
+#> [intdy -- t = 6.90531e-310 illegal]: 1 warning(s) for subject(s): Unknown
 #> [lsoda -- internal t + h = t (h too small for machine precision)]: 14 warning(s) for subject(s): Unknown, Unknown, Unknown, Unknown
 # rxSolve duplicates rows when multiple cmts are observed at the same time;
 # dedup by (sim.id, time).
@@ -461,7 +461,7 @@ sessionInfo()
 #>  [4] digest_0.6.39       magrittr_2.0.5      RColorBrewer_1.1-3 
 #>  [7] evaluate_1.0.5      grid_4.6.1          fastmap_1.2.0      
 #> [10] lotri_1.0.4         jsonlite_2.0.0      whisker_0.4.1      
-#> [13] rxode2ll_2.0.16     backports_1.5.1     purrr_1.2.2        
+#> [13] rxode2ll_2.0.17     backports_1.5.1     purrr_1.2.2        
 #> [16] scales_1.4.0        textshaping_1.0.5   jquerylib_0.1.4    
 #> [19] cli_3.6.6           crayon_1.5.3        symengine_0.2.13   
 #> [22] rlang_1.3.0         withr_3.0.3         cachem_1.1.0       

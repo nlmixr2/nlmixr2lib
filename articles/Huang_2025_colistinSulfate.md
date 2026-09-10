@@ -1,0 +1,985 @@
+# Colistin sulfate (Huang 2025)
+
+## Model and source
+
+- Citation: Huang T, Luo Y, Wu Y, Niu L, Xiao Y, Wu T, Chen X, Liu Y, Lu
+  J, Zhu D, Liu T (2025). Population pharmacokinetics of colistin
+  sulfate in patients on continuous veno-venous hemodiafiltration.
+  Science Progress 108(1):1-20. <doi:10.1177/00368504251325334>.
+- Description: Two-compartment population PK model for intravenous
+  colistin sulfate in critically ill adults receiving continuous
+  veno-venous hemodiafiltration (CVVHDF) for acute kidney injury (Huang
+  2025; n = 20 Chinese ICU patients, 86 plasma concentrations spanning
+  0.09-2.32 mg/L). Linear elimination from the central compartment with
+  a 0.5-h or 2-h intravenous infusion input. Serum cystatin C and body
+  weight both enter clearance as power functions centred on the cohort
+  medians 2.31 mg/L and 65 kg (exponents -0.626 and 1.03); clearance
+  falls as cystatin C rises (worse residual renal function) and rises
+  with body weight. Cockcroft-Gault creatinine clearance was screened
+  and NOT retained – the authors attribute this to creatinine (113 Da)
+  being efficiently removed by CVVHDF while cystatin C (13.25 kDa) is
+  not, so only cystatin C still tracks residual renal function on
+  dialysis. Inter-individual variability was estimated on CL and V2 only
+  (IIV on V1 and Q collapsed toward zero with shrinkage \> 30%);
+  residual error is exponential. Fixed allometric scaling was tested and
+  rejected as not supported by the data. Colistin sulfate is
+  administered as the active drug and must not be confused with
+  colistimethate sodium (CMS), the inactive prodrug modelled in
+  Plachouras 2009, Mohamed 2012, Jacobs 2016 and Karaiskos 2015. Dose
+  unit conversion: 1 million units (MU) = 44 mg.
+- Article: <https://doi.org/10.1177/00368504251325334>
+- Supplement (Table S1, Figures S1-S2) and the publisher’s native
+  equation / table renderings: EuropePMC
+  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC11877486/supplementaryFiles>
+
+Huang 2025 is, by the authors’ account, the first population PK analysis
+of **colistin sulfate** in patients receiving continuous renal
+replacement therapy (CRRT). Colistin sulfate is the *active* drug; it
+must not be confused with colistimethate sodium (CMS), the inactive
+prodrug modelled elsewhere in this package (`Plachouras_2009_colistin`,
+`Mohamed_2012_colistin`, `Jacobs_2016_colistin`,
+`Karaiskos_2015_colistin`). The sibling model `Ma_2026_colistinSulfate`
+describes the same active drug in an ICU population from which CRRT and
+ECMO patients were *excluded*, so the two are complementary rather than
+competing.
+
+Dose unit conversion used throughout: **1 million unit (MU) = 44 mg**
+(Methods, and the Figure 5 note).
+
+## Population
+
+Twenty critically ill adults at a single centre in Nanning, Guangxi,
+China (May 2023 - January 2024; ChiCTR2300072191) contributed 86 plasma
+concentrations. All were receiving CVVHDF for acute kidney injury for at
+least 48 h and had confirmed or suspected carbapenem-resistant organism
+(CRO) infection. The cohort was severely ill: SOFA 9.27 +/- 4.08, APACHE
+II 26.6 +/- 10.1, with 90% on vasoactive agents, 90% mechanically
+ventilated, 90% with lung infection and 75% with multi-site infection
+(Table 1). Age was 50.5 +/- 14.1 years, weight 68.6 +/- 14.1 kg (median
+65 kg) and 75% were male. Cystatin C was 2.87 +/- 1.91 mg/L (median 2.31
+mg/L, observed range 1.05-5.11 mg/L per the Figure 5 note).
+
+Sampling was rich *within* a maintenance-phase dosing interval: a
+pre-dose trough plus four to six post-dose samples at nominally 0.5, 1,
+2, 4 and 6 h. Most subjects (85%) received 1.5 MU daily divided q8h,
+infused over 0.5 h.
+
+The same information is available programmatically via
+`readModelDb("Huang_2025_colistinSulfate")()$population`.
+
+``` r
+
+pop <- rxode2::rxode(readModelDb("Huang_2025_colistinSulfate"))$population
+#> ℹ parameter labels from comments will be replaced by 'label()'
+str(pop, max.level = 1, give.attr = FALSE)
+#> List of 15
+#>  $ species       : chr "human"
+#>  $ n_subjects    : num 20
+#>  $ n_studies     : num 1
+#>  $ n_observations: num 86
+#>  $ age_mean      : chr "50.5 +/- 14.1 years"
+#>  $ weight_mean   : chr "68.6 +/- 14.1 kg"
+#>  $ weight_median : chr "65 kg"
+#>  $ weight_range  : chr "50-80 kg (simulation range, Figure 5 note)"
+#>  $ sex_female_pct: num 25
+#>  $ race_ethnicity: Named num 100
+#>  $ disease_state : chr "Critically ill adults with confirmed or suspected carbapenem-resistant organism (CRO) infection, all receiving "| __truncated__
+#>  $ renal_function: chr "All subjects on CVVHDF (Prismaflex, 1.5 m2 AN69-ST150 polyacrylonitrile filter) with blood flow 139.3 +/- 29.1 "| __truncated__
+#>  $ dose_range    : chr "1.0-2.0 MU daily intravenously (1 MU = 44 mg, i.e. 44-88 mg/day), divided q8h (85%) or q12h (15%); 1.5 MU daily"| __truncated__
+#>  $ regions       : chr "China (single centre, Nanning, Guangxi)"
+#>  $ notes         : chr "Prospective single-centre observational study, May 2023 - January 2024 (ChiCTR2300072191). Baseline demographic"| __truncated__
+```
+
+## Source trace
+
+Every `ini()` entry in
+`inst/modeldb/specificDrugs/Huang_2025_colistinSulfate.R` carries an
+in-file comment naming its origin. Collected here for review:
+
+| Equation / parameter | Value | Source location |
+|----|----|----|
+| `lcl` (CL) | 3.69 L/h | Table 3, “Final model / Estimate” (RSE 22.2%); also the Results final-model equation |
+| `lvc` (V1) | 20.50 L | Table 3 (RSE 10.1%); Results equation |
+| `lvp` (V2) | 33.20 L | Table 3 (RSE 17.3%); Results equation |
+| `lq` (Q) | 25.30 L/h | Table 3 (RSE 26.5%); Results equation |
+| `e_cysc_cl` | -0.626 | Table 3 `theta_CysC` (RSE 16.8%) |
+| `e_wt_cl` | 1.03 | Table 3 `theta_wt` (RSE 21.7%) |
+| CYSC centring | 2.31 mg/L | Results text: “The values 2.31 and 65 were the medians for CYSC and WT” |
+| WT centring | 65 kg | Results text, same sentence |
+| `etalcl` | 0.31^2 | Table 3 `IIV_CL` 31% as an omega SD (bootstrap median 0.311) |
+| `etalvp` | 0.545^2 | Table 3 `IIV_V2` 54.5% as an omega SD (bootstrap median 0.557) |
+| `expSd` | 0.203 | Table 3 `RSV` 20.3% as a log-scale SD (bootstrap median 0.193) |
+| Two-compartment, first-order linear elimination | n/a | Results “Population PK model”; supplement Table S1 “Structure model” |
+| IIV on CL and V2 only | n/a | Results (IIV on V1 and Q near zero, shrinkage \> 30%); supplement Table S1 |
+| Exponential residual error | n/a | Methods; Results; supplement Table S1 (“RSV (exponential model)”) |
+| CL covariate equation | see below | Results final-model equation; publisher rendering `...-eq2.jpg` |
+
+The final-model equation, transcribed from the publisher’s own rendering
+of the Results equation block:
+
+``` math
+\mathrm{CL\ (L/h)} = 3.69 \times \left(\frac{\mathrm{CYSC}}{2.31}\right)^{-0.626}
+\times \left(\frac{\mathrm{WT}}{65}\right)^{1.03}
+```
+
+**Both covariates are power terms.** The Results narrative says “CYSC
+and WT are included on CL in power form and exponential form,
+respectively”, but the paper’s own printed equation shows WT as a power
+term, and an exponential reading is arithmetically impossible (see
+*Assumptions and deviations*).
+
+## Structural checks
+
+These gates are deterministic - they compare the packaged model against
+the paper’s printed equation, transcribed here independently. They do
+not depend on any random draw, so they are asserted tightly.
+
+``` r
+
+mod <- readModelDb("Huang_2025_colistinSulfate")
+
+# The paper's printed equation, transcribed directly from the Results block.
+cl_paper <- function(cysc, wt) 3.69 * (cysc / 2.31)^-0.626 * (wt / 65)^1.03
+
+# Gate 1: at the reference covariates the equation must return the typical
+# value the paper tabulates in Table 3.
+stopifnot(isTRUE(all.equal(cl_paper(2.31, 65), 3.69, tolerance = 1e-12)))
+
+# Gate 2: the packaged model must reproduce that equation everywhere in the
+# covariate space the paper simulated over (CysC 1.05-5.11, WT 50-80). Solve
+# the typical-value model on a covariate grid and read back its own `cl`.
+grid <- tidyr::expand_grid(
+  CYSC = c(1.05, 1.40, 2.31, 3.07, 5.11),
+  WT   = c(50, 65, 80)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+grid_ev <- grid |>
+  tidyr::crossing(time = c(0, 1)) |>
+  dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central") |>
+  dplyr::arrange(id, time)
+
+grid_sim <- rxode2::rxSolve(
+  rxode2::zeroRe(mod), events = grid_ev,
+  keep = c("CYSC", "WT"), returnType = "data.frame"
+)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
+#> Warning: multi-subject simulation without without 'omega'
+
+chk_cl <- grid_sim |>
+  dplyr::group_by(CYSC, WT) |>
+  dplyr::summarise(cl_model = mean(cl), .groups = "drop") |>
+  dplyr::mutate(
+    cl_ref   = cl_paper(CYSC, WT),
+    rel_diff = 100 * (cl_model - cl_ref) / cl_ref
+  )
+
+stopifnot(nrow(chk_cl) == 15L)                       # the gate had rows to test
+stopifnot(max(abs(chk_cl$rel_diff)) < 1e-8)          # exact algebraic agreement
+
+chk_cl |>
+  dplyr::mutate(dplyr::across(c(cl_model, cl_ref), \(x) round(x, 4)),
+                rel_diff = signif(rel_diff, 2)) |>
+  dplyr::rename(
+    "CysC (mg/L)"      = CYSC,
+    "WT (kg)"          = WT,
+    "CL, model (L/h)"  = cl_model,
+    "CL, paper (L/h)"  = cl_ref,
+    "% difference"     = rel_diff
+  ) |>
+  knitr::kable(caption = paste(
+    "Packaged model vs the paper's printed CL equation over the simulated",
+    "covariate space. Agreement is algebraically exact."
+  ))
+```
+
+| CysC (mg/L) | WT (kg) | CL, model (L/h) | CL, paper (L/h) | % difference |
+|------------:|--------:|----------------:|----------------:|-------------:|
+|        1.05 |      50 |          4.6134 |          4.6134 |            0 |
+|        1.05 |      65 |          6.0448 |          6.0448 |            0 |
+|        1.05 |      80 |          7.4863 |          7.4863 |            0 |
+|        1.40 |      50 |          3.8531 |          3.8531 |            0 |
+|        1.40 |      65 |          5.0486 |          5.0486 |            0 |
+|        1.40 |      80 |          6.2525 |          6.2525 |            0 |
+|        2.31 |      50 |          2.8162 |          2.8162 |            0 |
+|        2.31 |      65 |          3.6900 |          3.6900 |            0 |
+|        2.31 |      80 |          4.5699 |          4.5699 |            0 |
+|        3.07 |      50 |          2.3569 |          2.3569 |            0 |
+|        3.07 |      65 |          3.0882 |          3.0882 |            0 |
+|        3.07 |      80 |          3.8246 |          3.8246 |            0 |
+|        5.11 |      50 |          1.7132 |          1.7132 |            0 |
+|        5.11 |      65 |          2.2448 |          2.2448 |            0 |
+|        5.11 |      80 |          2.7801 |          2.7801 |            0 |
+
+Packaged model vs the paper’s printed CL equation over the simulated
+covariate space. Agreement is algebraically exact. {.table}
+
+The covariate directions match the paper’s prose (“clearance decreases
+as the CysC level increases … clearance increases with increased body
+WT”): clearance spans 1.71 to 7.49 L/h across the grid, a 4.4-fold
+range.
+
+``` r
+
+# Derived disposition quantities implied by Table 3 (reference covariates).
+vss   <- 20.5 + 33.2
+# Effective (Vss-based) half-life; the true terminal slope is steeper.
+t_half_eff <- log(2) * vss / 3.69
+tibble::tibble(
+  Quantity = c("Vss = V1 + V2 (L)", "Vss/WT at 65 kg (L/kg)",
+               "Effective half-life log(2)*Vss/CL (h)"),
+  Value = c(round(vss, 1), round(vss / 65, 3), round(t_half_eff, 1))
+) |>
+  knitr::kable(caption = "Disposition quantities derived from Table 3.")
+```
+
+| Quantity                               |  Value |
+|:---------------------------------------|-------:|
+| Vss = V1 + V2 (L)                      | 53.700 |
+| Vss/WT at 65 kg (L/kg)                 |  0.826 |
+| Effective half-life log(2)\*Vss/CL (h) | 10.100 |
+
+Disposition quantities derived from Table 3. {.table}
+
+A 0.78 L/kg steady-state volume is consistent with the paper’s
+Discussion remark that colistin sulfate has “a lower apparent
+distribution volume \[indicating\] that the drug predominantly remains
+within the bloodstream”.
+
+## Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+reproduces the Table 1 covariate distributions and the modal regimen
+(1.5 MU daily = 66 mg daily, divided q8h as a 0.5-h infusion, which 85%
+and 90% of subjects respectively received).
+
+``` r
+
+# `set.seed()` seeds R's RNG, NOT rxode2's simulation RNG, and rxode2's streams
+# are partitioned per solver thread -- so this cohort is reproducible on this
+# machine and different on a machine with a different thread count. Every
+# assertion below is therefore written to hold for ANY cohort the model can
+# produce (see pattern 12 of known-vignette-failure-patterns.md).
+set.seed(20250829)
+
+n_sub <- 200L   # <= 200 per arm (vignette cap)
+tau   <- 8      # dosing interval (h)
+dose  <- 22     # 0.5 MU = 22 mg per dose -> 66 mg (1.5 MU) daily
+t_end <- 96     # >= 9 effective half-lives, so [72, 96] is steady state
+
+# Table 1: WT 68.6 +/- 14.1 kg; CysC 2.87 +/- 1.91 mg/L. Cystatin C is
+# strictly positive and right-skewed (mean 2.87 > median 2.31), so it is drawn
+# log-normally with the moments matched to Table 1 and truncated to the
+# observed 1.05-5.11 mg/L range quoted in the Figure 5 note.
+cysc_sd_log <- sqrt(log(1 + (1.91 / 2.87)^2))
+cysc_mu_log <- log(2.87) - cysc_sd_log^2 / 2
+
+subj <- tibble::tibble(
+  id   = seq_len(n_sub),
+  WT   = pmin(pmax(rnorm(n_sub, 68.6, 14.1), 40), 110),
+  CYSC = pmin(pmax(rlnorm(n_sub, cysc_mu_log, cysc_sd_log), 1.05), 5.11)
+)
+
+# Observation grid: coarse over the approach to steady state, dense over the
+# [72, 96] window where NCA is computed so that Cmax is resolved.
+obs_times <- sort(unique(c(seq(0, t_end, by = 0.25), seq(72, t_end, by = 0.05))))
+
+dose_rows <- subj |>
+  tidyr::crossing(time = seq(0, t_end - tau, by = tau)) |>
+  dplyr::mutate(amt = dose, evid = 1L, dur = 0.5, cmt = "central")
+
+obs_rows <- subj |>
+  tidyr::crossing(time = obs_times) |>
+  dplyr::mutate(amt = NA_real_, evid = 0L, dur = NA_real_, cmt = "central")
+
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+sim <- rxode2::rxSolve(
+  mod, events = events, keep = c("WT", "CYSC"), returnType = "data.frame"
+)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+if (is.null(sim$id)) sim$id <- 1L
+stopifnot(all(sim$Cc[!is.na(sim$Cc)] >= 0))
+```
+
+### Replicates Figure 1 of Huang 2025
+
+Figure 1 of the paper shows the observed concentration-time curves for
+the 16 subjects with sufficient sampling. The panel below is the
+simulated equivalent over one steady-state day, with the observed cohort
+summaries overlaid as reference lines.
+
+``` r
+
+sim_ss <- sim |>
+  dplyr::filter(time >= 72, time <= 96) |>
+  dplyr::mutate(t_ss = time - 72)
+
+sim_ss |>
+  dplyr::group_by(t_ss) |>
+  dplyr::summarise(
+    Q05 = quantile(Cc, 0.05), Q50 = quantile(Cc, 0.50),
+    Q95 = quantile(Cc, 0.95), .groups = "drop"
+  ) |>
+  ggplot(aes(t_ss, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(linewidth = 0.8, colour = "steelblue4") +
+  geom_hline(yintercept = 0.30, linetype = "dashed", colour = "grey30") +
+  annotate("text", x = 0.4, y = 0.30, vjust = -0.6, hjust = 0, size = 3,
+           colour = "grey30", label = "observed Css,min 0.30 mg/L") +
+  labs(
+    x = "Time within the steady-state day (h)", y = "Colistin (mg/L)",
+    title = "Simulated steady-state profile, 0.5 MU q8h (1.5 MU daily)",
+    subtitle = "Median with 5th-95th percentile band, n = 200 virtual subjects",
+    caption = paste(
+      "Compare Figure 1 of Huang 2025 (observed profiles, 16 subjects).",
+      "Dashed line is the paper's observed mean Css,min."
+    )
+  )
+```
+
+![](Huang_2025_colistinSulfate_files/figure-html/figure-1-1.png)
+
+### Clearance covariate effects
+
+``` r
+
+sim |>
+  dplyr::distinct(id, WT, CYSC, cl) |>
+  ggplot(aes(CYSC, cl, colour = WT)) +
+  geom_point(alpha = 0.8) +
+  scale_colour_viridis_c(name = "WT (kg)") +
+  labs(
+    x = "Cystatin C (mg/L)", y = "Individual CL (L/h)",
+    title = "Clearance falls with cystatin C and rises with body weight",
+    caption = paste(
+      "Reproduces the direction of both covariate effects reported in the",
+      "Huang 2025 Results (theta_CysC = -0.626, theta_wt = +1.03)."
+    )
+  )
+```
+
+![](Huang_2025_colistinSulfate_files/figure-html/figure-covariates-1.png)
+
+## PKNCA validation
+
+Steady-state NCA over the last full day of dosing, 3-dose interval
+window \[72, 96\] h (PKNCA recipe 3).
+
+``` r
+
+sim_nca <- sim |>
+  dplyr::filter(time >= 72, time <= 96, !is.na(Cc)) |>
+  dplyr::mutate(regimen = "0.5 MU q8h") |>
+  dplyr::select(id, time, Cc, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(
+  sim_nca, Cc ~ time | regimen + id, concu = "mg/L", timeu = "h"
+)
+
+dose_df <- events |>
+  dplyr::filter(evid == 1, time >= 72, time < 96) |>
+  dplyr::mutate(regimen = "0.5 MU q8h") |>
+  dplyr::select(id, time, amt, regimen)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id, doseu = "mg")
+
+# One 24-h steady-state interval, matching the paper's AUCss,0-24h.
+intervals <- data.frame(
+  start = 72, end = 96,
+  cmax = TRUE, cmin = TRUE, tmax = TRUE, auclast = TRUE, cav = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(
+  PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals)
+)
+```
+
+### Gate: NCA against the exact mass-balance identity
+
+Integrating the ODE system over any window `[T1, T2]` gives an identity
+that holds **exactly**, with no steady-state assumption:
+
+``` math
+\int_{T_1}^{T_2} C\,\mathrm{d}t \;=\; \frac{D_\mathrm{in} - \left[A(T_2) - A(T_1)\right]}{CL}
+```
+
+where `A = central + peripheral1` is the total amount in the body and
+`D_in` is the dose administered during the window. Both compartment
+amounts are returned by `rxSolve`, so this compares the PKNCA integral
+against the solver’s own mass balance using each subject’s own
+clearance.
+
+The steady-state form of this identity (`AUC = D_in / CL`) is **not**
+used as the gate, because it is not true for every subject here: IIV on
+V2 is large (omega = 0.545), so a subject drawing a big peripheral
+volume has a long terminal half-life and has not fully accumulated by 72
+h. The exact form above is insensitive to that, which is why it is the
+gate.
+
+``` r
+
+per_id <- sim |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = dplyr::first(cl), .groups = "drop")
+
+# Total amount in the body at each window edge. All three infusions in the
+# window start at 72, 80 and 88 h and finish by 88.5 h, so D_in is exactly
+# 3 x 22 mg and neither edge falls inside an infusion.
+amt_edge <- sim |>
+  dplyr::filter(time %in% c(72, 96)) |>
+  dplyr::mutate(A = central + peripheral1) |>
+  dplyr::select(id, time, A) |>
+  tidyr::pivot_wider(names_from = time, values_from = A,
+                     names_prefix = "A_")
+
+auc_nca <- as.data.frame(nca_res) |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::select(id, auclast = PPORRES) |>
+  dplyr::mutate(id = as.integer(as.character(id)))
+
+chk_mb <- auc_nca |>
+  dplyr::inner_join(per_id, by = "id") |>
+  dplyr::inner_join(amt_edge, by = "id") |>
+  dplyr::mutate(
+    auc_exact = (3 * dose - (A_96 - A_72)) / cl,
+    pct_diff  = 100 * (auclast - auc_exact) / auc_exact,
+    # The steady-state approximation, shown for contrast only -- NOT gated.
+    auc_ss    = 3 * dose / cl,
+    pct_ss    = 100 * (auclast - auc_ss) / auc_ss
+  )
+
+stopifnot(nrow(chk_mb) == n_sub)          # the gate had rows to test
+# Only trapezoidal error on a 0.05-h grid separates the two sides, and that is
+# deterministic rather than a property of the drawn cohort. Realised max
+# |diff| ~0.02%; 1% still catches a mis-specified dose, window or clearance,
+# which move this by tens of percent.
+stopifnot(max(abs(chk_mb$pct_diff)) < 1)
+
+tibble::tibble(
+  Quantity = c(
+    "median PKNCA AUC0-24 over [72, 96] h (mg*h/L)",
+    "median exact mass-balance AUC (mg*h/L)",
+    "max |% difference|, exact identity (gated)",
+    "max |% difference|, steady-state approximation (not gated)",
+    "subjects >2% from the steady-state approximation"
+  ),
+  Value = c(
+    round(median(chk_mb$auclast), 3),
+    round(median(chk_mb$auc_exact), 3),
+    signif(max(abs(chk_mb$pct_diff)), 2),
+    signif(max(abs(chk_mb$pct_ss)), 2),
+    sum(abs(chk_mb$pct_ss) > 2)
+  )
+) |>
+  knitr::kable(caption = paste(
+    "PKNCA AUC against the exact mass-balance identity (gated) and against",
+    "the steady-state approximation (shown for contrast)."
+  ))
+```
+
+| Quantity                                                     |   Value |
+|:-------------------------------------------------------------|--------:|
+| median PKNCA AUC0-24 over \[72, 96\] h (mg\*h/L)             | 17.1950 |
+| median exact mass-balance AUC (mg\*h/L)                      | 17.1960 |
+| max \|% difference\|, exact identity (gated)                 |  0.0089 |
+| max \|% difference\|, steady-state approximation (not gated) | 22.0000 |
+| subjects \>2% from the steady-state approximation            | 55.0000 |
+
+PKNCA AUC against the exact mass-balance identity (gated) and against
+the steady-state approximation (shown for contrast). {.table}
+
+The gap between the two right-hand columns is the point: the exact
+identity agrees to a few hundredths of a percent for every subject,
+while the steady-state approximation is off by double digits for the
+minority of subjects still accumulating at 72 h.
+
+### Comparison against published NCA
+
+The paper reports two observed exposure summaries for the cohort
+(Results, “Patient information and treatment outcomes”): Css,min 0.30
++/- 0.22 mg/L and AUCss,0-24h 12.51 +/- 6.41 mg\*h/L, the latter
+obtained for only 16 of 20 subjects by the trapezoidal rule.
+
+``` r
+
+published <- tibble::tibble(
+  regimen = "0.5 MU q8h",
+  cmin    = 0.30,    # Results: Css,min 0.30 +/- 0.22 mg/L
+  auclast = 12.51    # Results: AUCss,0-24h 12.51 +/- 6.41 mg*h/L
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_res,
+  reference  = published,
+  by         = "regimen",
+  params     = c("cmin", "auclast"),
+  units      = c(cmin = "mg/L", auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste(
+    "Simulated (median of 200 virtual subjects) vs the paper's observed",
+    "cohort summaries. * differs from the reference by >20%. Both rows are",
+    "expected to be starred -- see Assumptions and deviations."
+  )
+)
+```
+
+| NCA parameter     | regimen    | Reference | Simulated | % diff   |
+|:------------------|:-----------|:----------|:----------|:---------|
+| Cmin (mg/L)       | 0.5 MU q8h | 0.3       | 0.504     | +68.0%\* |
+| AUClast (mg\*h/L) | 0.5 MU q8h | 12.5      | 17.2      | +37.5%\* |
+
+Simulated (median of 200 virtual subjects) vs the paper’s observed
+cohort summaries. \* differs from the reference by \>20%. Both rows are
+expected to be starred – see Assumptions and deviations. {.table}
+
+Both rows differ from the observed summaries by more than 20%, in the
+same direction: the packaged model predicts **higher** exposure than the
+paper’s observed means. This is a property of the published model
+itself, not of the transcription, and it is quantified in the next chunk
+rather than tuned away.
+
+``` r
+
+# The paper's own parameters are internally consistent: at the cohort-mean
+# covariates the printed equation gives CL = 3.41 L/h, so a 66 mg daily dose
+# must produce AUCss,0-24h = 66 / 3.41 = 19.4 mg*h/L, not the 12.51 reported.
+cl_cohort_mean <- cl_paper(2.87, 68.6)
+auc_implied    <- 3 * dose / cl_cohort_mean
+
+# Part of the gap is the paper's SAMPLING WINDOW. AUC was computed by the
+# trapezoidal rule from samples at 0 (trough), 0.5, 1, 2, 4 and 6 h -- but the
+# dosing interval is 8 h, so the 6-8 h tail is never measured. Quantify that
+# truncation on the typical-value profile.
+typ_ev <- tibble::tibble(id = 1L, CYSC = 2.87, WT = 68.6) |>
+  (\(d) dplyr::bind_rows(
+    d |> tidyr::crossing(time = seq(0, t_end - tau, by = tau)) |>
+      dplyr::mutate(amt = dose, evid = 1L, dur = 0.5, cmt = "central"),
+    d |> tidyr::crossing(time = sort(unique(c(seq(0, t_end, by = 0.25),
+                                              seq(72, t_end, by = 0.01))))) |>
+      dplyr::mutate(amt = NA_real_, evid = 0L, dur = NA_real_, cmt = "central")
+  ))() |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+typ <- rxode2::rxSolve(rxode2::zeroRe(mod), events = typ_ev,
+                       returnType = "data.frame") |>
+  dplyr::filter(time >= 88, time <= 96) |>
+  dplyr::mutate(t = time - 88)
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvp'
+
+trap <- function(t, c) sum(diff(t) * (head(c, -1) + tail(c, -1)) / 2)
+auc_full_tau <- trap(typ$t, typ$Cc)
+sample_grid  <- c(0, 0.5, 1, 2, 4, 6)
+auc_trunc    <- trap(sample_grid, approx(typ$t, typ$Cc, sample_grid)$y)
+
+tibble::tibble(
+  Quantity = c(
+    "CL at cohort-mean covariates (L/h)",
+    "AUCss,0-24h implied by the paper's own CL (mg*h/L)",
+    "AUCss,0-24h reported as observed (mg*h/L)",
+    "observed / model-implied ratio",
+    "true AUC over one 8-h interval (mg*h/L)",
+    "trapezoid on the paper's 0-6 h sample grid (mg*h/L)",
+    "truncation factor from stopping at 6 h"
+  ),
+  Value = c(
+    round(cl_cohort_mean, 3), round(auc_implied, 2), 12.51,
+    round(12.51 / auc_implied, 2), round(auc_full_tau, 3),
+    round(auc_trunc, 3), round(auc_trunc / auc_full_tau, 2)
+  )
+) |>
+  knitr::kable(caption = paste(
+    "The published model over-predicts the paper's own observed AUC.",
+    "Sampling truncation at 6 h in an 8-h interval accounts for part of it."
+  ))
+```
+
+| Quantity                                             |  Value |
+|:-----------------------------------------------------|-------:|
+| CL at cohort-mean covariates (L/h)                   |  3.405 |
+| AUCss,0-24h implied by the paper’s own CL (mg\*h/L)  | 19.380 |
+| AUCss,0-24h reported as observed (mg\*h/L)           | 12.510 |
+| observed / model-implied ratio                       |  0.650 |
+| true AUC over one 8-h interval (mg\*h/L)             |  6.442 |
+| trapezoid on the paper’s 0-6 h sample grid (mg\*h/L) |  5.189 |
+| truncation factor from stopping at 6 h               |  0.810 |
+
+The published model over-predicts the paper’s own observed AUC. Sampling
+truncation at 6 h in an 8-h interval accounts for part of it. {.table}
+
+``` r
+
+
+# Gate: the packaged model must agree with the paper's PARAMETERS (which it
+# does exactly), and the cohort median must track the closed form. This is the
+# claim that can go red on a mis-transcription; the observed-AUC gap above is
+# recorded as a deviation and deliberately NOT gated.
+med_auc <- median(chk_mb$auclast)
+stopifnot(abs(100 * (med_auc - 3 * dose / cl_paper(median(subj$CYSC),
+                                                   median(subj$WT))) /
+                (3 * dose / cl_paper(median(subj$CYSC), median(subj$WT)))) < 10)
+```
+
+## Dosing-regimen simulation (Figure 5 / Table 4)
+
+Because AUC at steady state is exactly (daily dose) / CL for this linear
+model, and CL is log-normal with omega = 0.31, the probability of target
+attainment has a closed form. The paper’s target is fAUC/MIC \>= 20 with
+a 50% protein binding rate, i.e. total AUCss,0-24h \>= 40 x MIC.
+
+``` r
+
+omega_cl <- 0.31
+pta <- function(daily_mg, mic, cysc, wt) {
+  # P(AUC >= 40*MIC) = P(CL <= daily/(40*MIC)) for log-normal CL
+  pnorm(log(daily_mg / (40 * mic * cl_paper(cysc, wt))) / omega_cl)
+}
+
+regimens <- tibble::tribble(
+  ~regimen,      ~daily_mg,
+  "0.5 MU q12h",  44,
+  "0.5 MU q8h",   66,
+  "0.75 MU q12h", 66,
+  "1 MU q12h",    88,
+  "0.75 MU q8h",  99,
+  "1 MU q8h",     132
+)
+
+pta_tab <- tidyr::expand_grid(
+  regimens,
+  WT   = c(50, 65, 80),
+  CYSC = c(1.05, 1.40, 2.31, 3.07, 5.11),
+  MIC  = c(0.25, 0.5, 1)
+) |>
+  dplyr::mutate(PTA = 100 * pta(daily_mg, MIC, CYSC, WT))
+
+ggplot(pta_tab, aes(factor(CYSC), PTA,
+                    colour = reorder(regimen, daily_mg),
+                    group = regimen)) +
+  geom_hline(yintercept = 90, linetype = "dashed", colour = "grey40") +
+  geom_line() + geom_point(size = 1) +
+  facet_grid(MIC ~ WT, labeller = label_both) +
+  labs(
+    x = "Cystatin C (mg/L)", y = "PTA, fAUC/MIC >= 20 (%)",
+    colour = "Regimen",
+    title = "Probability of target attainment by weight, cystatin C and MIC",
+    caption = paste(
+      "Replicates Figure 5 of Huang 2025. Rows are MIC (mg/L), columns are",
+      "body weight (kg). Dashed line is the 90% PTA criterion."
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+![](Huang_2025_colistinSulfate_files/figure-html/pta-1.png)
+
+``` r
+
+# Each row is a claim Huang 2025 makes in prose, re-derived from the closed
+# form above. The closed form is deterministic (no random draw), so a failure
+# here is a real disagreement with the paper and not cohort noise.
+#
+# `Deviation = TRUE` marks a claim the packaged model reproducibly does NOT
+# reproduce. Those rows stay visible in the table but are excluded from the
+# gate, rather than the gate being widened until they pass.
+claim <- function(text, achieved, pass, deviation = FALSE) {
+  tibble::tibble(Claim = text, Achieved = achieved,
+                 Pass = pass, Deviation = deviation)
+}
+
+worst_mic1     <- max(pta_tab$PTA[pta_tab$MIC == 1])
+worst_80_mic05 <- max(pta_tab$PTA[pta_tab$WT == 80 & pta_tab$MIC == 0.5])
+
+# Cystatin C at which a given daily dose crosses 90% PTA, inverting the
+# closed form above. (Re-used by the Table 4 section below.)
+thr_cysc <- function(daily_mg, mic, wt) {
+  2.31 * (3.69 * (wt / 65)^1.03 /
+            (daily_mg / (40 * mic * exp(qnorm(0.9) * omega_cl))))^(1 / 0.626)
+}
+
+# Table 4, 50 kg row: the paper recommends 1.5 MU daily (0.5 MU q8h) for
+# CysC 3.07-5.11 at MIC 0.25, i.e. its 90%-PTA threshold is the 3.07 grid
+# point. Consistency therefore means the closed-form threshold falls in the
+# grid step ending at 3.07.
+thr_50 <- thr_cysc(66, 0.25, 50)
+
+# Structural claims: PTA rises with dose, rises with CysC, falls with WT.
+# These are large effects spanning the whole grid, not near-zero slopes.
+mono_dose <- with(
+  dplyr::filter(pta_tab, WT == 65, CYSC == 2.31, MIC == 0.25),
+  cor(daily_mg, PTA, method = "spearman")
+)
+mono_wt <- with(
+  dplyr::filter(pta_tab, regimen == "1 MU q8h", CYSC == 2.31, MIC == 0.25),
+  cor(WT, PTA, method = "spearman")
+)
+mono_cysc <- with(
+  dplyr::filter(pta_tab, regimen == "1 MU q8h", WT == 65, MIC == 0.25),
+  cor(CYSC, PTA, method = "spearman")
+)
+
+claims <- dplyr::bind_rows(
+  claim("PTA increases with daily dose",
+        sprintf("Spearman rho = %+.2f", mono_dose), mono_dose > 0.9),
+  claim("PTA decreases with body weight",
+        sprintf("Spearman rho = %+.2f", mono_wt), mono_wt < -0.9),
+  claim("PTA increases with cystatin C",
+        sprintf("Spearman rho = %+.2f", mono_cysc), mono_cysc > 0.9),
+  claim("At 50 kg, 1.5 MU daily reaches 90% PTA only for CysC >= 3.07 mg/L (MIC 0.25)",
+        sprintf("closed-form threshold CysC = %.2f mg/L", thr_50),
+        thr_50 >= 2.31 && thr_50 <= 3.07, deviation = TRUE),
+  claim("No regimen reaches 90% PTA at MIC = 1 mg/L",
+        sprintf("max PTA = %.1f%% (1 MU q8h, 50 kg, CysC 5.11)", worst_mic1),
+        worst_mic1 < 90, deviation = TRUE),
+  claim("At 80 kg, no regimen reaches 90% PTA at MIC = 0.5 mg/L",
+        sprintf("max PTA = %.1f%%", worst_80_mic05),
+        worst_80_mic05 < 90, deviation = TRUE)
+)
+
+claims |>
+  dplyr::mutate(
+    Status = dplyr::case_when(
+      Pass                   ~ "reproduced",
+      Deviation              ~ "KNOWN DEVIATION (not gated)",
+      TRUE                   ~ "FAIL"
+    )
+  ) |>
+  dplyr::select(Claim, Achieved, Status) |>
+  knitr::kable(caption = paste(
+    "Huang 2025 Monte Carlo claims re-derived from the packaged model.",
+    "The three structural claims reproduce; the three absolute PTA claims do",
+    "not, all in the same direction -- see the note below."
+  ))
+```
+
+| Claim | Achieved | Status |
+|:---|:---|:---|
+| PTA increases with daily dose | Spearman rho = +1.00 | reproduced |
+| PTA decreases with body weight | Spearman rho = -1.00 | reproduced |
+| PTA increases with cystatin C | Spearman rho = +1.00 | reproduced |
+| At 50 kg, 1.5 MU daily reaches 90% PTA only for CysC \>= 3.07 mg/L (MIC 0.25) | closed-form threshold CysC = 1.12 mg/L | KNOWN DEVIATION (not gated) |
+| No regimen reaches 90% PTA at MIC = 1 mg/L | max PTA = 98.3% (1 MU q8h, 50 kg, CysC 5.11) | KNOWN DEVIATION (not gated) |
+| At 80 kg, no regimen reaches 90% PTA at MIC = 0.5 mg/L | max PTA = 99.7% | KNOWN DEVIATION (not gated) |
+
+Huang 2025 Monte Carlo claims re-derived from the packaged model. The
+three structural claims reproduce; the three absolute PTA claims do not,
+all in the same direction – see the note below. {.table
+style="width:100%;"}
+
+``` r
+
+
+# Gate only the claims that are not flagged deviations, and assert the
+# deviations really are deviations (so this cannot silently become vacuous).
+stopifnot(nrow(claims) == 6L)
+stopifnot(all(claims$Pass[!claims$Deviation]))
+stopifnot(!any(claims$Pass[claims$Deviation]))
+```
+
+The three failures share one direction: **the closed form implied by the
+paper’s own parameters and its own stated target is more optimistic than
+the paper’s Monte Carlo**, by roughly one cystatin-C grid step. A
+partial mechanism is available - if the simulated AUCs were reduced by
+the same trapezoidal truncation that affects the observed AUCs (the 0.81
+factor measured above), the maximum PTA at MIC = 1 mg/L falls from 98.3%
+to about 92%, much closer to the paper’s “all regimens fail” - but it
+does not fully close the gap, so the paper’s simulation evidently
+carried variability its Methods do not describe. The *structural*
+conclusions (higher doses needed at higher weight and lower cystatin C;
+failure at raised MIC) reproduce; the exact PTA percentages should not
+be quoted from this model as if they were the paper’s.
+
+### Table 4 recommendations: a partial reproduction
+
+Table 4 lists the recommended regimen per weight / cystatin-C stratum at
+MIC = 0.25 mg/L. The closed form above reproduces the *structure* of
+that table - the ordering of regimens, and the direction of every
+covariate effect - but its 90%-PTA thresholds sit roughly one cystatin-C
+grid step **below** the paper’s, i.e. the closed form is more optimistic
+than the paper’s Monte Carlo.
+
+``` r
+
+# thr_cysc() is defined in the claims chunk above.
+t4 <- tidyr::expand_grid(regimens, WT = c(50, 65, 80)) |>
+  dplyr::mutate(
+    cysc_90 = thr_cysc(daily_mg, 0.25, WT),
+    note = dplyr::case_when(
+      cysc_90 < 1.05 ~ "attained at all CysC in 1.05-5.11",
+      cysc_90 > 5.11 ~ "never attained in 1.05-5.11",
+      TRUE           ~ sprintf("attained for CysC >= %.2f", cysc_90)
+    )
+  ) |>
+  dplyr::arrange(WT, daily_mg)
+
+t4 |>
+  dplyr::select(WT, regimen, daily_mg, note) |>
+  dplyr::rename(
+    "WT (kg)"           = WT,
+    "Regimen"           = regimen,
+    "Daily dose (mg)"   = daily_mg,
+    "90% PTA at MIC 0.25 mg/L" = note
+  ) |>
+  knitr::kable(caption = paste(
+    "Model-derived counterpart to Table 4 of Huang 2025.",
+    "Compare with the paper's stated thresholds -- see the note below."
+  ))
+```
+
+| WT (kg) | Regimen      | Daily dose (mg) | 90% PTA at MIC 0.25 mg/L          |
+|--------:|:-------------|----------------:|:----------------------------------|
+|      50 | 0.5 MU q12h  |              44 | attained for CysC \>= 2.14        |
+|      50 | 0.5 MU q8h   |              66 | attained for CysC \>= 1.12        |
+|      50 | 0.75 MU q12h |              66 | attained for CysC \>= 1.12        |
+|      50 | 1 MU q12h    |              88 | attained at all CysC in 1.05-5.11 |
+|      50 | 0.75 MU q8h  |              99 | attained at all CysC in 1.05-5.11 |
+|      50 | 1 MU q8h     |             132 | attained at all CysC in 1.05-5.11 |
+|      65 | 0.5 MU q12h  |              44 | attained for CysC \>= 3.29        |
+|      65 | 0.5 MU q8h   |              66 | attained for CysC \>= 1.72        |
+|      65 | 0.75 MU q12h |              66 | attained for CysC \>= 1.72        |
+|      65 | 1 MU q12h    |              88 | attained for CysC \>= 1.09        |
+|      65 | 0.75 MU q8h  |              99 | attained at all CysC in 1.05-5.11 |
+|      65 | 1 MU q8h     |             132 | attained at all CysC in 1.05-5.11 |
+|      80 | 0.5 MU q12h  |              44 | attained for CysC \>= 4.63        |
+|      80 | 0.5 MU q8h   |              66 | attained for CysC \>= 2.42        |
+|      80 | 0.75 MU q12h |              66 | attained for CysC \>= 2.42        |
+|      80 | 1 MU q12h    |              88 | attained for CysC \>= 1.53        |
+|      80 | 0.75 MU q8h  |              99 | attained for CysC \>= 1.27        |
+|      80 | 1 MU q8h     |             132 | attained at all CysC in 1.05-5.11 |
+
+Model-derived counterpart to Table 4 of Huang 2025. Compare with the
+paper’s stated thresholds – see the note below. {.table}
+
+For the 65 kg stratum the paper states that 0.5 MU q8h / 0.75 MU q12h
+attain the target at CysC \>= 3.07, 0.75 MU q8h at \>= 2.31 and 1 MU q8h
+at \>= 1.4 mg/L; the closed form gives 1.72, 0.90 and 0.57 mg/L
+respectively. The offset is systematic (the paper is more conservative
+at every dose) and no single required-AUC threshold reconciles all of
+the paper’s grid points at omega = 0.31, so the paper’s Monte Carlo
+evidently carried variability beyond the IIV on CL. This is recorded as
+a deviation, not gated.
+
+## Assumptions and deviations
+
+- **The WT effect on CL is a POWER term, not an exponential term** -
+  resolving a conflict inside the paper. The Results narrative states
+  “CYSC and WT are included on CL in power form and exponential form,
+  respectively”, but the paper’s own final-model equation is
+  `CL = 3.69 * (CYSC/2.31)^-0.626 * (WT/65)^1.03`, with WT unambiguously
+  raised to a power. The equation was confirmed character-for-character
+  against the publisher’s native rendering of the equation block
+  (`10.1177_00368504251325334-eq2.jpg` from the EuropePMC
+  `supplementaryFiles` endpoint), so this is a printed value and not a
+  digitisation. The exponential reading is also arithmetically
+  impossible: `exp(1.03 * WT/65)` would multiply CL by 2.80 at the
+  reference weight rather than 1, contradicting the tabulated typical CL
+  of 3.69 L/h, and `exp(1.03 * (WT - 65))` would inflate CL about
+  5e6-fold across the 50-80 kg simulation range. Per the standing
+  precedence rule (printed equation outranks narrative prose), power
+  form is used. The word “exponential” is read as a slip for “exponent”.
+
+- **`IIV_CL`, `IIV_V2` and `RSV` in Table 3 are omega standard
+  deviations, not variances.** Table 3 gives them as percentages in the
+  final-model column (31%, 54.5%, 20.3%) and as bare numbers in the
+  bootstrap-median column (0.311, 0.557, 0.193). The bare numbers
+  reproduce the percentages directly, which fixes the scale: reading
+  0.311 as a *variance* would imply a 60.4% CV on clearance, double the
+  printed 31%, and would make the bootstrap median inconsistent with a
+  final estimate the paper describes as “close”. The residual row is the
+  clincher - a 0.193 log-scale SD is a 19.3% CV, matching the printed
+  20.3% within bootstrap noise. `ini()` takes variances, so each SD is
+  squared in the model file.
+
+- **Fixed allometric scaling was rejected by the authors and is not
+  used.** The Methods describe a fixed allometric model
+  `P = theta_p * (WT/70)^K` (K = 0.75 on CL/Q, 1 on V1/V2), but the
+  Results state it “was not suitable for our data, so it was not
+  considered finally” and Table 2 confirms it (OFV 958.59 -\> 954.37, p
+  \> 0.05, Reserve = NO). The retained WT term is an *estimated*
+  exponent of 1.03 on CL only, centred on the cohort median 65 kg
+
+  - not 0.75 on 70 kg. Weight does not enter V1, V2 or Q.
+
+- **Centring constants are cohort medians, not means.** CYSC is centred
+  on 2.31 mg/L and WT on 65 kg, per the Results sentence “The values
+  2.31 and 65 were the medians for CYSC and WT”. Table 1’s *means* are
+  2.87 mg/L and 68.6 kg; substituting them would bias clearance.
+
+- **The published model over-predicts the paper’s own observed
+  exposures, and this is not tuned away.** At the cohort-mean covariates
+  the printed equation gives CL = 3.41 L/h, so 66 mg daily must yield
+  AUCss,0-24h = 19.4 mg*h/L - yet the paper reports an observed
+  AUCss,0-24h of 12.51 +/- 6.41 mg*h/L and a Css,min of 0.30 +/- 0.22
+  mg/L against a model trough near 0.6 mg/L. The gap is a property of
+  the publication, not of this transcription: the parameter block is
+  internally exact (typical CL reproduces 3.69 L/h to machine precision,
+  and the steady-state mass-balance identity holds to \<1%). A
+  quantified part of the discrepancy is the paper’s sampling window -
+  AUC was computed trapezoidally from samples at 0, 0.5, 1, 2, 4 and 6 h
+  inside an **8-h** dosing interval, so the 6-8 h tail was never
+  measured, which alone accounts for a factor of about 0.81. The
+  remainder is unexplained by the reported model; contributing
+  candidates are the mixed dose levels (10% of subjects received 1.0 MU
+  daily and 5% received 2.0 MU), the fact that AUCss,0-24h was
+  obtainable for only 16 of 20 subjects, and possible non-steady-state
+  troughs. Users comparing this model against observed colistin sulfate
+  troughs in CRRT should expect it to run high.
+
+- **Table 4 / Figure 5 reproduce structurally but not numerically.** The
+  paper’s 90%-PTA cystatin-C thresholds are about one grid step above
+  the closed-form values implied by its own model plus its stated target
+  (fAUC/MIC \>= 20, 50% protein binding, i.e. AUC \>= 40 x MIC). No
+  single required-AUC threshold reconciles all of the paper’s grid
+  points at omega = 0.31, so the paper’s Monte Carlo evidently included
+  variability beyond the IIV on clearance (it is not described in the
+  Methods). The qualitative conclusions - failure at MIC \>= 0.5-1 mg/L,
+  higher doses needed at higher weight and lower cystatin C - reproduce
+  exactly.
+
+- **Covariate distributions are assumed, not published.** Individual
+  data are not available. WT is drawn normally and CYSC log-normally
+  with the Table 1 moments, CYSC truncated to the 1.05-5.11 mg/L range
+  quoted in the Figure 5 note. No WT/CYSC correlation is imposed; the
+  paper reports none.
+
+- **Only the modal regimen is simulated.** The virtual cohort uses 0.5
+  MU q8h (1.5 MU daily) infused over 0.5 h, which 85% and 90% of
+  subjects respectively received. The 2-h infusion (10%), the q12h
+  interval (15%), the 50% who received a loading dose, and the three
+  subjects who additionally received nebulized colistin sulfate are not
+  simulated. Loading dose does not affect steady-state AUC for this
+  linear model.
+
+- **CVVHDF flow settings are not covariates.** BFR, DFR, RFR and UFR
+  were all screened; UFR reached the forward-inclusion criterion on CL
+  in isolation (Table 2, model 2) but was dropped in the second forward
+  step (model 6, p \> 0.05). The authors attribute the absence of a flow
+  effect to a plateau at the high flow rates used. The model therefore
+  carries no dependence on CRRT intensity, and should not be
+  extrapolated to substantially different CVVHDF settings than the 25-35
+  mL/kg/h reported.
+
+- **Total bilirubin was significant but is not in the final model.**
+  TBIL reached significance in forward selection (Table 2, models 3, 7
+  and 9) but was removed in backward elimination (model 12, p \> 0.01).
+  Only CYSC and WT are retained, consistent with the paper’s final-model
+  equation.
+
+- **All values are from the paper’s text and tables** (Table 1, Table 2,
+  Table 3, the Results final-model equation, and supplement Table S1).
+  No parameter was digitised from a figure, obtained by correspondence,
+  or carried from another publication.

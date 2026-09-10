@@ -160,7 +160,14 @@ notes: <free text>
   clearance, `CL0/F * (1 + (WT - 67) * 0.00585)`, and a POWER effect on
   the logit-scale first-order absorbed fraction,
   `logitffo * (WT / 67)^(-1.11)`; Fernandez-Teruel 2024 equations (a)
-  and (d)).
+  and (d)), `Ekobena_2025_bictegravir.R` (baseline, source column BW;
+  reference 70 kg is a ROUNDED value named in the text, NOT the cohort
+  median, which Table 1 gives as 74 kg – a reminder that the reference
+  weight must be read off the covariate equation’s own prose rather than
+  inferred from the demographics table; the exponent 0.35 is ESTIMATED,
+  not fixed to an allometric 0.75, and the paper writes the term as
+  `exp(beta * log(BW / 70))` rather than as the algebraically identical
+  power form).
 - **Notes:** Universal. Verify time-varying vs. baseline-only against
   the source paper.
 
@@ -189,8 +196,20 @@ notes: <free text>
   `Svensson_2016_bedaquiline.R`, `Thakre_2022_risankizumab.R`,
   `Wu_2024_inotuzumab.R`, `Yassen_2025_asundexian.R`,
   `Yu_2022_ofatumumab.R`, `Zhong_2026_abatacept.R`,
-  `Zhou_2021_belimumab.R`, `Zhu_2017_lebrikizumab.R`.
-- **Notes:** Zhu 2017 normalizes as `AGE/40`.
+  `Zhou_2021_belimumab.R`, `Zhu_2017_lebrikizumab.R`,
+  `Ekobena_2025_bictegravir.R` (median-centred FRACTIONAL-deviation form
+  on apparent clearance).
+- **Notes:** Zhu 2017 normalizes as `AGE/40`. Ekobena 2025 uses a form
+  worth recognising because it is easy to mis-transcribe: the paper
+  calls it a “linear model”, but it is linear in the *fractional*
+  deviation from the cohort median and sits inside an exponential –
+  `exp(beta_Age * (AGE - AgeM) / AgeM)` with `AgeM = 51` years. The
+  division by `AgeM` is load-bearing. Dropping it and applying the
+  coefficient to a raw deviation in years turns the paper’s stated “11%
+  decreased CL” at age 80 into a 99.7% decrease. When a paper describes
+  a continuous covariate effect as “linear” and centres it on a median,
+  check whether the printed equation also *normalises* by that median
+  before encoding it.
 
 ### AGE_GE70 (**canonical for age \>= 70 years indicator**)
 
@@ -704,22 +723,34 @@ notes: <free text>
 
 ### PREG (**canonical for pregnancy status indicator**)
 
-- **Description:** 1 = pregnant, 0 = non-pregnant. Time-fixed per
-  subject in trial cohorts that enrol pregnant and non-pregnant women in
-  parallel; not a time-varying flag.
+- **Description:** 1 = pregnant, 0 = non-pregnant. Usually time-fixed
+  per subject, in trial cohorts that enrol pregnant and non-pregnant
+  women in parallel. It is genuinely time-varying in designs that
+  re-sample the same women after delivery: `Sawe_2025_levofloxacin.R`
+  pools matched antepartum and postpartum profiles, so a subject carries
+  `PREG = 1` on the third-trimester visit and `PREG = 0` on the
+  postpartum visit.
 - **Units:** (binary)
 - **Type:** binary
 - **Scope:** general
 - **Reference category:** 0 (non-pregnant).
 - **Source aliases:** none known; source NONMEM control streams
   typically use `PREG` directly.
-- **Example models:** `Birgersson_2019_artesunate.R` (multiplicative
-  effect on dihydroartemisinin clearance; the published structural CLM =
-  190 L/h is reported with the source-paper reference category PREG = 1,
-  so the model file applies the effect via
-  `(1 + e_preg_cl_dha * (1 - PREG))` with `e_preg_cl_dha = -0.214` to
-  preserve verbatim source values; non-pregnant women have ~21% lower
-  CLM relative to pregnant women).
+- **Example models:** `Sawe_2025_levofloxacin.R` (time-varying across
+  matched antepartum / postpartum visits; fractional multiplicative
+  effect `1 + e_preg_cl * PREG` raising levofloxacin clearance 38.1% in
+  the third trimester, on top of the separately-modelled FFM and
+  serum-creatinine effects. Pregnancy was screened as a three-level
+  categorical covariate – pregnant / postpartum / never pregnant – but
+  only the pregnant level was retained, so postpartum records take the
+  reference category and their intermediate exposures are reproduced by
+  the size and renal-function covariates alone),
+  `Birgersson_2019_artesunate.R` (multiplicative effect on
+  dihydroartemisinin clearance; the published structural CLM = 190 L/h
+  is reported with the source-paper reference category PREG = 1, so the
+  model file applies the effect via `(1 + e_preg_cl_dha * (1 - PREG))`
+  with `e_preg_cl_dha = -0.214` to preserve verbatim source values;
+  non-pregnant women have ~21% lower CLM relative to pregnant women).
 - **Notes:** Use this canonical for adult clinical-trial models that
   test a pregnancy-vs-non-pregnancy contrast (typical settings:
   malaria-in-pregnancy PK, antiviral-in-pregnancy PK). Trimester or
@@ -1475,8 +1506,13 @@ against.
   `fdepot *= (1 + e_waz_fdepot)^waz_below3` with `e_waz_fdepot = -0.26`,
   i.e. bioavailability falls 26.0% per z-score unit below -3 and is
   unchanged at `WAZ >= -3`; Semere Gebreyesus 2024 Table 2 and Results
-  “Covariate model”), `Wallender_2021_piperaquine.R` (merged from a
-  duplicate register entry during merge dedup).
+  “Covariate model”), `Wallender_2021_piperaquine.R` (time-varying;
+  linear-deviation effect on relative oral bioavailability,
+  `(1 + 0.113 * (WAZ - (-0.5)))`, centred on the cohort median -0.5, so
+  each 1 z-score decrease lowers F by 11.3%),
+  `Chotsiri_2019_lumefantrine.R` (screened alongside `MUAC` and `WHZ`
+  and found significant, but not retained in the final model; carried as
+  documentation).
 - **Notes:** Belongs to the same anthropometric z-score family as `BMIZ`
   (body-mass-index z-score) and, when future papers register them, `HAZ`
   (height/length-for-age, reported as ZHFA by some papers) and `WHZ`
@@ -2939,6 +2975,64 @@ value, use `_BL` unless it is explicitly pre-intervention.
   would be lossy. Scope kept specific pending a second model that fits
   urinary concentrations from interval collections.
 
+### FLUID_IN_24H (**canonical for total daily fluid intake volume**)
+
+- **Description:** Total volume of fluid administered to (or ingested
+  by) a subject over a 24-hour window – enteral plus parenteral, summed
+  across all routes. A whole-body INTAKE volume: not weight-normalized,
+  not a rate, and not a net balance (nothing is debited for urine,
+  insensible or drain losses). Used as a renal-haemodynamic covariate on
+  the clearance of renally eliminated, hydrophilic drugs, where a larger
+  fluid load raises urine output and glomerular filtration and therefore
+  raises clearance. Most natural in neonatal / paediatric intensive
+  care, where daily fluid intake is prescribed and charted per patient
+  per day and is a first-class clinical variable rather than a derived
+  one.
+- **Units:** mL/24h
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used algebraically. Zhao 2025 enters it
+  as a power term normalized to the cohort MEAN,
+  `CL = 0.14 * ... * (FLUID_IN_24H / 367.18)^0.14`. Future papers may
+  center on a median or use a linear form; record the per-paper
+  parameterisation in `covariateData[[FLUID_IN_24H]]$notes`.
+- **Source aliases:**
+  - `DFI` (daily fluid input) – used in `Zhao_2025_vancomycin.R` (Zhao
+    2025 Microbiol Spectr Table 1 “Daily fluid input (mL)”; cohort
+    median 364 mL, IQR 252.91-473.10, mean 367.18). Same quantity in mL
+    per 24 h, no value transformation.
+- **Example models:** `Zhao_2025_vancomycin.R` (founding example;
+  vancomycin popPK in 126 non-extremely preterm NICU neonates, where
+  daily fluid input is one of the two covariates the paper contributes
+  as novel. Enters clearance as `(FLUID_IN_24H / 367.18)^0.14` alongside
+  body weight, serum creatinine and a concomitant-diuretic indicator;
+  univariate dOFV -20.894 on CL, entered at forward-inclusion step 7 and
+  survived backward elimination).
+- **Notes:** Specific scope until a second paper ratifies the name; at
+  that point promote to `general`. **Distinct from `URINE_VOL_24H`**,
+  which is the OUTPUT counterpart over the same 24-hour window: the two
+  are not interconvertible (they differ by insensible losses, stool
+  water and net fluid retention), they can move in opposite directions
+  in a fluid-overloaded or oliguric patient, and the founding paper
+  screened BOTH and retained only the intake – Zhao 2025 Discussion
+  records that daily urine volume “was not a significant covariate
+  affecting clearance”, so collapsing the two would destroy the paper’s
+  result. **Distinct from `PFA`** (perioperative intra-operative fluid
+  administration volume), which is a gross cumulative volume over one
+  surgical procedure rather than a per-day intake, and from
+  `PFA_NET_RATE`, which is a net hourly balance that explicitly debits
+  urine output. Distinct from the extracorporeal circuit flows
+  (`RRT_CRRT_EFFLUENT_FLOW`, `Q_CVVH`, `DFR`), which are machine
+  settings rather than a patient’s charted intake. Deliberately named
+  `FLUID_IN_24H` rather than a bare `FLUID_24H` so the direction of flow
+  is unambiguous against the registered urine-output family; a future
+  paper reporting a charted net fluid BALANCE per day (intake minus
+  output) should register a sibling `FLUID_NET_24H` rather than
+  overloading this entry, and one reporting weight-normalized intake
+  (mL/kg/24h, the more common neonatal prescribing unit) should record
+  the normalisation in per-model notes rather than silently rescaling
+  this column.
+
 ### TER_MAG3 (**canonical for tubular extraction rate measured by 99mTc-MAG3 renography**)
 
 - **Description:** Tubular extraction rate of
@@ -3915,7 +4009,24 @@ CSVs continue to work for one release cycle.
 - **Example models:** `Shekar_2014_meropenem.R` (piecewise CL:
   `TVCL = exp(lcl) * RRT_CRRT_STATUS + e_crcl_cl * CRCL_in_Lh * (1 - RRT_CRRT_STATUS)`,
   with CRCL in raw Cockcroft-Gault mL/min converted to L/h inside
-  `model()`; 5/11 ECMO patients and 5/10 controls were on RRT).
+  `model()`; 5/11 ECMO patients and 5/10 controls were on RRT),
+  `Wi_2017_teicoplanin.R` (power-model multiplier on the peripheral
+  volume, `vp <- exp(lvp) * 1.50^RRT_CRRT_STATUS`; 5/10 subjects on
+  CVVHDF via Prismaflex), `Sun_2025_teicoplanin.R` (exponential effect
+  on the CENTRAL volume, `exp(-0.71 * RRT_CRRT_STATUS)`, i.e. CRRT
+  *reduces* V by 50.8%; 20/86 sepsis patients, modality mix 14 CVVH / 5
+  CVVHD / 1 both).
+- **Direction is not fixed by the canonical.** Most published CRRT
+  effects act on clearance and *increase* it, but the registry now holds
+  examples going both ways and on either volume: `Wi_2017_teicoplanin.R`
+  has CRRT *raising* the peripheral volume 1.5-fold, while
+  `Sun_2025_teicoplanin.R` has it *lowering* the central volume by half,
+  with no retained effect on clearance at all. Sun 2025 attributes the
+  reduction to fluid overload being the indication for starting CRRT, so
+  that CRRT-treated subjects had an expanded interstitial volume
+  corrected by the therapy. Do not “correct” a source paper’s sign
+  against an expected direction; transcribe it and record the authors’
+  stated mechanism in `covariateData[[RRT_CRRT_STATUS]]$notes`.
 - **Notes:** Distinct from `RRT_HEMODIAL_STATUS` (intermittent
   hemodialysis IHD only) and from `RRT_HEMODIAL_ACTIVE` (per-time-point
   session gate in within-subject time-varying dialysis-clearance models
@@ -4605,6 +4716,55 @@ CSVs continue to work for one release cycle.
   2015 reflects empirical saturation of the GGT-vs-DPP-4-activity
   relationship at extreme values.
 
+### TBA (**canonical for total serum bile acids**)
+
+- **Description:** Total serum (or plasma) bile-acid concentration, the
+  summed pool of primary and secondary conjugated and unconjugated bile
+  acids. A sensitive marker of hepatocellular uptake / excretory
+  function and of cholestasis: because bile acids undergo near-complete
+  first-pass hepatic extraction from portal blood, the systemic
+  concentration rises early when sinusoidal uptake or canalicular
+  secretion is impaired, often before the transaminases or bilirubin
+  move. Both baseline and time-varying usages are covered; document
+  per-model in `covariateData[[TBA]]$notes` which applies.
+- **Units:** umol/L (the conventional clinical reporting unit; document
+  per-model via `covariateData[[TBA]]$units`).
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used with power scaling
+  `(TBA / ref)^exponent` or exponential effects
+  `exp(coef * (TBA - ref))`. Reference values observed: 3.95 umol/L (Liu
+  2025, cohort median in an elderly Chinese voriconazole TDM cohort).
+- **Source aliases:**
+  - `TBA` – used in `Liu_2025_voriconazole.R` (Table 1 / Table 2 and the
+    published final-model equation).
+  - `SBA`, `TSBA`, `BA` – total-(serum)-bile-acid variants seen in
+    clinical-chemistry panels and NONMEM `$INPUT` columns; the same
+    analyte, no value transformation.
+- **Example models:** `Liu_2025_voriconazole.R` (median-normalized power
+  effect on apparent voriconazole clearance, `(TBA / 3.95)^-0.158`, so a
+  cholestatic rise in bile acids predicts slower clearance and higher
+  voriconazole exposure).
+- **Notes:** Registered on the same terms as the established
+  general-scope liver-panel analytes `TBILI`, `DBIL`, `AST`, `ALT`,
+  `ALP` and `GGT` – a routine clinical-chemistry measurement that recurs
+  across hepatically-cleared-drug population-PK analyses – and is
+  **not** an alias of any of them: total bile acids report hepatic
+  uptake and canalicular transport capacity, whereas the transaminases
+  report hepatocyte injury and bilirubin reports conjugation plus
+  excretion, so the four can move independently (bile acids commonly
+  rise with normal transaminases in early or mild cholestasis). Closest
+  sibling is `GGT`, the other cholestasis-weighted marker, but GGT is an
+  induced membrane enzyme and TBA a transported substrate pool; they are
+  separate assays. Values against this column must be a **total**
+  bile-acid pool, not an individual species (cholic, chenodeoxycholic,
+  ursodeoxycholic acid), and not a post-prandial-stimulated measurement
+  unless the source paper states so – record the fasting-vs-postprandial
+  status in per-model notes, since the postprandial pool can be
+  several-fold the fasting one. Right-skewed in unselected inpatient
+  cohorts (Liu 2025: median 3.95, IQR 2.50-7.45 umol/L), so median
+  normalization rather than mean centring is the usual encoding.
+
 ### LDH (**canonical for serum lactate dehydrogenase**)
 
 - **Description:** Serum lactate dehydrogenase activity (baseline or
@@ -4845,7 +5005,23 @@ CSVs continue to work for one release cycle.
   power exponents: -0.650 on CL and -0.294 on V. Ding 2026 attributes
   the volume effect to reduced excretion at higher CYSC producing a
   relative fall in apparent V, and notes it is the first report of the
-  association).
+  association), `Huang_2025_colistinSulfate.R` (mg/L, reference 2.31 –
+  the cohort MEDIAN, explicitly distinguished in the Results text from
+  the Table 1 mean of 2.87; power exponent -0.626 on the CL of colistin
+  sulfate, observed range 1.05-5.11 in critically ill adults. This is
+  the founding **continuous-renal-replacement-therapy** example, and the
+  reason it matters is mechanistic rather than incidental: the cohort
+  was entirely on CVVHDF, and creatinine clearance, serum creatinine,
+  blood urea nitrogen and uric acid were ALL screened on CL and none was
+  retained, while cystatin C was. The authors attribute this to
+  molecular size – CVVHDF combines convection and diffusion and
+  therefore clears creatinine (113 Da) efficiently, so serum creatinine
+  and any Cockcroft-Gault estimate derived from it stop tracking
+  residual renal function once the filter is running, whereas cystatin C
+  (13.25 kDa) is not appreciably removed (cited clearance 17 mL/min,
+  under 30% of its production rate) and so remains interpretable on
+  dialysis. A model needing a renal-function covariate in a CRRT
+  population should prefer this column over `CRCL` for that reason).
 - **Notes:** Cystatin C is freely filtered at the glomerulus and is not
   secreted by the renal tubule (unlike creatinine), so it is less
   sensitive to muscle mass, body composition, and tubular-secretion
@@ -5106,6 +5282,46 @@ CSVs continue to work for one release cycle.
   labs (bilirubin, AST) or Child-Pugh scores, whereas LIVER_RESECT_MAJOR
   is a surgical-exposure covariate that acts on drug clearance for the
   transient postoperative window.
+
+### RENALIMP (**canonical for renal-impairment indicator (any degree)**)
+
+- **Description:** 1 = renal impairment of any degree (mild, moderate,
+  severe, or kidney failure / ESRD), 0 = normal renal function. Pooled
+  parent of the `RENALIMP_*` severity family, for source papers that
+  carry renal impairment as a single binary covariate rather than
+  resolving the individual strata. The threshold separating “normal”
+  from “impaired” is paper-specific and must be documented in per-model
+  `covariateData[[RENALIMP]]$notes`; a common scheme (used by Zhang 2025
+  and mirrored in FDA / EMA renal-impairment labeling guidance) is eGFR
+  \< 90 mL/min/1.73 m^2 as impaired.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (normal renal function; matched healthy
+  controls in the founding example).
+- **Source aliases:**
+  - `Renal Impairment` (binary, “0 representing controls and 1
+    indicating renal impairment”) – used in `Zhang_2025_remdesivir.R`
+    (Zhang 2025 Methods 2.3 ‘Mixed effect model and covariant
+    analysis’).
+- **Example models:** `Zhang_2025_remdesivir.R` (multiplicative shift on
+  the remdesivir-to-GS-704277 and GS-704277-to-GS-441524 metabolic
+  conversion rate constants, from the healthy-control column to the
+  severe-renal-impairment column of Zhang 2025 Table 1).
+- **Notes:** Exact structural analogue of `HEPIMP` (the pooled “mild or
+  worse hepatic impairment” indicator that sits alongside `HEPIMP_MILD`
+  / `HEPIMP_MOD` / `HEPIMP_SEV` / `HEPIMP_MODSEV`), and completes the
+  same symmetry for the renal family, whose members already state that
+  they “follow the `HEPIMP_*` family precedent”. Use this column only
+  when the source paper genuinely pools every impairment stratum under
+  one coefficient – Zhang 2025 says so explicitly: “To maintain
+  simplicity, varying degrees of renal impairment were not further
+  distinguished as separate covariates.” If a future model needs finer
+  resolution, use the existing `RENALIMP_MILD` / `RENALIMP_MOD` /
+  `RENALIMP_SEV` / `RENALIMP_ESRD` indicators rather than overloading
+  this one. Companion to continuous `CRCL`. Distinct from
+  `RRT_HEMODIAL_STATUS` / `RRT_HEMODIAL_ACTIVE`, which record dialysis
+  treatment rather than the underlying renal-function stratum.
 
 ### RENALIMP_MOD (**canonical for moderate renal impairment indicator**)
 
@@ -5946,14 +6162,16 @@ CSVs continue to work for one release cycle.
   (membrane age, not size). Meaningful only when `RRT_CRRT_ACTIVE = 1`
   (or the equivalent hemodialysis gate); the whole extracorporeal arm is
   gated off otherwise. A source paper that reports a genuinely
-  continuous membrane surface area, or more than three sizes, should add
-  a continuous canonical rather than extending the indicator set
-  indefinitely. Butragueno-Laiseca 2025 also tested effluent flow and
-  blood flow on the extracorporeal clearance arm and could not retain
-  them alongside filter size because of strong mutual correlation, so
-  filter size is doing the work those flows would otherwise do. Scope
-  kept specific pending a second model that ratifies the same
-  three-level decomposition.
+  continuous membrane surface area, or more than three sizes, should use
+  the continuous canonical `FILT_SA` rather than extending the indicator
+  set indefinitely (that canonical was founded on this instruction by
+  `Berthaud_2025_cefazolin.R`, whose six paediatric patients span six
+  distinct areas in a power model). Butragueno-Laiseca 2025 also tested
+  effluent flow and blood flow on the extracorporeal clearance arm and
+  could not retain them alongside filter size because of strong mutual
+  correlation, so filter size is doing the work those flows would
+  otherwise do. Scope kept specific pending a second model that ratifies
+  the same three-level decomposition.
 
 ### FILT_SA_LARGE (**canonical for large-haemofilter membrane-surface-area indicator**)
 
@@ -6009,6 +6227,71 @@ CSVs continue to work for one release cycle.
   body weight and circuit flows. Scope kept specific pending a second
   ratifying model.
 
+### FILT_SA (**canonical for continuous haemofilter / dialyser membrane surface area**)
+
+- **Description:** Membrane surface area of the extracorporeal
+  renal-replacement-therapy filter (dialyser / haemofilter) in use, as a
+  continuous quantity in m^2. Membrane surface area is the physical
+  determinant of the diffusive and convective solute-transfer capacity
+  of the filter, so it is the natural driver of an extracorporeal
+  clearance arm. This is the continuous counterpart of the discrete
+  `FILT_SA_MED` / `FILT_SA_LARGE` indicator pair: use those when a paper
+  stocks only two or three filter sizes and retains size as a
+  categorical covariate, and use `FILT_SA` when a paper spans enough
+  distinct areas to fit a continuous (typically power) relationship. The
+  `FILT_SA_MED` entry anticipated this split explicitly (“A source paper
+  that reports a genuinely continuous membrane surface area, or more
+  than three sizes, should add a continuous canonical rather than
+  extending the indicator set indefinitely”); Berthaud 2025 is that
+  paper.
+- **Units:** m^2
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – enters as a power-centred ratio
+  `(FILT_SA / ref)^e_filt_sa_<arm>` on the extracorporeal clearance arm,
+  and is meaningful only while `RRT_HEMODIAL_ACTIVE = 1` (or the
+  equivalent CRRT gate). Reference values observed: 1 m^2 (Berthaud
+  2025, the area the published dialysis-clearance estimate is
+  standardized to).
+- **Source aliases:**
+  - `DMSA`, `Dialysis membrane surface area` – Berthaud 2025 abstract,
+    Table 1 row label, and Table 2 covariate-effect row.
+  - `Filter surface area`, `dialyser surface area`, `membrane area` –
+    variant forms used across the intermittent-hemodialysis and CRRT
+    popPK literature.
+- **Example models:** `Berthaud_2025_cefazolin.R` (founding example;
+  power effect on the dialysis-clearance arm,
+  `cl_hemodialysis <- exp(lcl_hemodialysis) * (FILT_SA / 1)^e_filt_sa_cl_hemodialysis`
+  with `e_filt_sa_cl_hemodialysis = 1.26` (RSE 1.06%) against
+  `CLdialpop = 1.98` L/h at 1 m^2; Berthaud 2025 Table 2. Six paediatric
+  maintenance-hemodialysis patients spanning DMSA 0.2, 0.3, 1, 1, 1.5
+  and 1.4/1.7 m^2. Adding DMSA to the dialysis arm made allometrically
+  scaled body weight on that arm non-significant, decreased the BIC by 6
+  units and drove the BSV on the arm towards 0, so the final model
+  carries no IIV there).
+- **Notes:** Distinct from `BSA` (body surface area – a patient
+  property, not a device property). The two are related in practice but
+  must not be conflated: paediatric dialysis prescriptions commonly SIZE
+  the membrane from the patient’s BSA, and Berthaud 2025 exploits this
+  in its dosing-regimen simulations by approximating
+  `FILT_SA = 0.85 * BSA` with `BSA = (4 * BW + 7) / (BW + 90)` when a
+  measured area is unavailable. That approximation is a simulation
+  convenience and does NOT reproduce the fitted data (the paper’s own
+  Table 1 areas differ from it by up to a factor of two), so record the
+  measured area in this column and keep any BSA-based imputation in the
+  model’s validation vignette, flagged as an assumption. The Berthaud
+  2025 Discussion notes 0.85 sits mid-range of the recommended 75-100%
+  of BSA and that dialysis clearance changes proportionally under a
+  different coefficient. Because membrane size tracks patient size in
+  paediatric practice, `FILT_SA` and `WT` are strongly collinear –
+  record which the model actually uses, and expect an allometric weight
+  term on the extracorporeal arm to lose significance once `FILT_SA` is
+  added (exactly what happened in the founding source). Naturally
+  time-varying within subject when a patient’s membrane is changed
+  mid-course (Berthaud 2025 patient 6 switched between 1.4 and 1.7 m^2).
+  Scope kept specific pending a second model that ratifies the
+  continuous form; promote to general once corroborated.
+
 ### RRT_HEMODIAL_ACTIVE (**canonical for hemodialysis-active indicator (time-varying per-session gate)**)
 
 - **Description:** Within-subject time-varying indicator for whether an
@@ -6044,6 +6327,19 @@ CSVs continue to work for one release cycle.
   - `Veinstein_2013_gentamicin.R` (additive arm with an estimated
     primary `ini` parameter;
     `cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis`).
+  - `Berthaud_2025_cefazolin.R` (additive arm in a paediatric
+    maintenance-hemodialysis cohort, with the arm driven by a continuous
+    membrane surface area instead of a bare estimate:
+    `cl_total <- cl + RRT_HEMODIAL_ACTIVE * cl_hemodialysis` where
+    `cl_hemodialysis <- exp(lcl_hemodialysis) * (FILT_SA / 1)^1.26`.
+    Note that Berthaud 2025 does NOT print the gate in its
+    final-equation block – the block states only
+    `CLtot_i = CL_i + CLdial_i` – and the on/off structure is
+    established by the Introduction (“during hemodialysis sessions, a
+    dialysis clearance … is added to the patient residual elimination
+    clearance”), by the Discussion’s contrast between an “interdialytic”
+    and a “dialysis” half-life, and by Figure 4’s
+    three-sessions-per-week simulation design).
   - `VanWart_2025_telavancin.R` (same additive-arm shape as Veinstein
     2013, with IIV on the dialysis arm:
     `cl_hemodialysis <- exp(lcl_hemodialysis + etalcl_hemodialysis) * RRT_HEMODIAL_ACTIVE`,
@@ -7877,7 +8173,11 @@ CSVs continue to work for one release cycle.
   `(NEXAC12M / 1.0)^-0.0411` on baseline pre-bronchodilator FEV1;
   subjects with more prior exacerbations start from a lower baseline
   lung function, though Zhang 2025 Table 4 shows the effect is not
-  clinically meaningful – only -7% at the 95th-percentile count of 6).
+  clinically meaningful – only -7% at the 95th-percentile count of 6),
+  `Jin_2025_benralizumab_aaer.R` (log-linear effect `+ 0.17 * NEXAC12M`
+  inside the exponent of the baseline asthma exacerbation rate,
+  i.e. each additional prior-year exacerbation multiplies the baseline
+  rate by exp(0.17) = 1.19; Jin 2025 Resource 17 row `beta_Base, PE`).
 - **Notes:** Distinct from \[\[HOSPRA\]\], which is a *time-varying
   binary* indicator of being hospitalised for a pulmonary exacerbation
   at the moment a spirometry value is recorded; NEXAC12M is a time-fixed
@@ -8471,6 +8771,68 @@ CSVs continue to work for one release cycle.
   validation vignette holds the flag at the 0 reference throughout so
   that no reproduced published value depends on the inference. Scope
   `specific` until a second model ratifies it.
+
+### SCORE_CCI (**canonical for Charlson Comorbidity Index total score**)
+
+- **Description:** Charlson Comorbidity Index (CCI) total score: the
+  weighted sum of a fixed list of chronic comorbid conditions (Charlson
+  ME, Pompei P, Ales KL, MacKenzie CR. J Chronic Dis
+  1987;40(5):373-383), optionally with the Deyo/Quan ICD-code
+  adaptations used to derive it from administrative or
+  electronic-health-record data. Higher scores indicate a greater burden
+  of chronic comorbidity and a higher predicted 1- and 10-year
+  mortality. Integer, theoretically unbounded above but in practice 0-15
+  or so; adult inpatient and ICU cohorts typically have means in the 3-7
+  range. A CHRONIC-burden index and therefore time-fixed per admission,
+  in contrast to the acute-physiology ICU scores that are recomputed
+  from the first 24 hours of an ICU stay.
+- **Units:** (SCORE_CCI units, weighted comorbidity count)
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – used with a ratio scaling
+  `(SCORE_CCI / ref)` inside an exponential, or with centred linear or
+  power scaling. Reference value observed: 5.62 (Chen 2025, the
+  training-set mean CCI of a MIMIC-IV adult sepsis cohort). Note that
+  Chen 2025’s ratio is UNCENTRED, so the covariate term does not equal 1
+  at the reference; check the printed equation before assuming a
+  centring.
+- **Source aliases:**
+  - `CCI` – printed row label in Chen 2025 Table 1 and the symbol used
+    in its equation 15; used in `Chen_2025_vancomycin.R`. Same quantity,
+    no value transformation.
+  - `Charlson` – printed row label in Chen 2025 supplementary Table S1
+    (`Charlson on CL`).
+- **Example models:** `Chen_2025_vancomycin.R` (exponential effect on
+  vancomycin clearance in adult ICU sepsis patients:
+  `cl = 3.35 * (CRCL/93)^0.997 * exp(-0.151 * (SCORE_CCI / 5.62))`; each
+  additional Charlson point multiplies clearance by exp(-0.151/5.62) =
+  0.973, so a patient at the cohort mean CCI of 5.62 clears vancomycin
+  14% more slowly than a comorbidity-free patient).
+- **Notes:** Named with the `SCORE_` prefix per the `SCORE_<instrument>`
+  family established by the 2026-06-19 clinical-instrument
+  standardization audit (`SCORE_EASI`, `SCORE_MADRS`, `SCORE_NIHSS`,
+  `SCORE_MMSE`, …). The bare acronym `CCI` is deliberately NOT used
+  because it is already overloaded in this registry with two unrelated
+  meanings – chronic constriction injury, the neuropathic-pain surgical
+  model (`Bender_2009_pregabalin_rat_binary.R`,
+  `Bender_2009_pregabalin_rat_smetab.R`), and computer-controlled
+  infusion, the target-controlled-infusion pump mode
+  (`Xie_2000_m3g_rat.R`) – so an unprefixed column name would be
+  ambiguous on sight. This makes SCORE_CCI differ from the bare-acronym
+  `APACHE_II` / `SAPS_II` ICU-score canonicals, which face no such
+  collision; the two conventions coexist in the register and the
+  disambiguating prefix wins here. Distinct from `APACHE_II` and
+  `SAPS_II` in substance as well as in name: those score ACUTE
+  physiologic derangement over the first ICU day and predict short-term
+  mortality, whereas the Charlson index scores CHRONIC comorbid disease
+  and is fixed on admission; a single ICU popPK paper may report any
+  combination of the three. Also distinct from `ORG_FAIL_COUNT` (a count
+  of concurrently failing organ systems, an acute measure). Scope
+  `specific` until a second paper ratifies the column; future models
+  using the Charlson index with the same derivation should extend
+  `Example models` rather than register a new canonical, and should
+  document the Deyo/Quan variant and the reference value in
+  `covariateData[[SCORE_CCI]]$notes`.
 
 ### LACT (**canonical for serum lactate concentration**)
 
@@ -9310,6 +9672,61 @@ CSVs continue to work for one release cycle.
   `Suri_2018_brentuximab.R`) versus a shift of the between-subject
   VARIANCE only (`AAG_MISSING` here); document which applies in
   `covariateData[[AAG_MISSING]]$notes`.
+
+### PCT (**canonical for serum procalcitonin concentration**)
+
+- **Description:** Serum (or plasma) procalcitonin concentration, the
+  116-amino-acid calcitonin precursor released from parenchymal tissue
+  under bacterial-inflammatory stimulation. The most widely used
+  clinical discriminator of bacterial sepsis from non-infectious
+  inflammation, and a graded severity marker in critical illness. In
+  population-PK analyses of hepatically-metabolized drugs it acts as an
+  inflammation covariate: the acute-phase response downregulates
+  cytochrome-P450 expression, so a rising procalcitonin predicts falling
+  metabolic clearance. Both baseline and time-varying usages are
+  covered; document per-model in `covariateData[[PCT]]$notes` which
+  applies.
+- **Units:** ug/L (= ng/mL; the two labels are numerically equivalent).
+  Document per-model via `covariateData[[PCT]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used with power scaling
+  `(PCT / ref)^exponent` or exponential effects
+  `exp(coef * (PCT - ref))`. Reference values observed: 0.19 ug/L (Liu
+  2025, cohort median in an elderly Chinese voriconazole TDM cohort).
+- **Source aliases:**
+  - `PCT` – used in `Liu_2025_voriconazole.R` (Table 1 / Table 2 and the
+    published final-model equation).
+  - `PROCT`, `ProCT`, `PCT_BASE`, `BLPCT` – procalcitonin variants seen
+    in publication tables and NONMEM `$INPUT` columns (the canonical
+    drops the `BL` prefix per the `IL6` / `IL8` / `CRP` convention, with
+    baseline-vs-time-varying status documented in per-model notes).
+- **Example models:** `Liu_2025_voriconazole.R` (median-normalized power
+  effect on apparent voriconazole clearance, `(PCT / 0.19)^-0.209`, so a
+  septic rise in procalcitonin predicts slower clearance and higher
+  voriconazole exposure; ranked fourth by SHAP importance in that
+  paper’s downstream machine-learning ensemble).
+- **Notes:** Registered on the same terms as the established
+  general-scope inflammation-marker canonicals `CRP`, `IL6`, `IL8` and
+  `AAG`, and is **not** an alias of any of them. Procalcitonin is
+  induced far more selectively by bacterial infection than C-reactive
+  protein is (CRP rises in viral infection, autoimmune flare and tissue
+  injury alike), rises and falls faster than CRP, and is measured on a
+  separate immunoassay – papers routinely fit the two as competing
+  covariates and retain only one, so conflating them would silently
+  merge distinguishable effects. Liu 2025 is a case in point: it reports
+  procalcitonin as a retained clearance covariate while CRP was excluded
+  from the analysis entirely for a \>50% missing rate. **Unit vigilance
+  is warranted:** the clinically meaningful range spans roughly three
+  orders of magnitude (\<0.05 ug/L healthy, ~0.5 ug/L
+  bacterial-infection threshold, \>10 ug/L septic shock), and ug/L and
+  ng/mL are numerically identical while ng/L is 1000-fold different – an
+  unnoticed ng/L table silently rescales every prediction through the
+  power term. Right-skewed in unselected inpatient cohorts (Liu 2025:
+  median 0.19, IQR 0.13-0.28 ug/L), so median normalization rather than
+  mean centring is the usual encoding. Distinct from `WBC` and `NEUT`,
+  which count the responding cell populations rather than measuring the
+  inflammatory mediator.
 
 ### IL6 (**canonical for serum interleukin-6 concentration**)
 
@@ -10185,7 +10602,41 @@ CSVs continue to work for one release cycle.
   averaging window is the OBSERVATION interval rather than a dosing
   interval, chosen by Huh 2024 Section 4.1 specifically so that
   treatment interruptions are reflected in the exposure metric; placebo
-  periods and interruptions carry CAV = 0).
+  periods and interruptions carry CAV = 0),
+  `Patel_2025_radamts13_count_thrombocytopenia.R`,
+  `Patel_2025_radamts13_count_ldh.R` (mean average plasma ADAMTS13
+  activity over a dosing interval, in IU/mL, averaged over a roughly
+  6-month prophylaxis period, from the individual post hoc parameters of
+  the companion `modellib('Patel_2025_radamts13')` popPK; one value per
+  patient per period rather than a time-varying column, driving a
+  sigmoid Emax reduction of the Poisson thrombocytopenia count with EC50
+  = 0.0149 IU/mL and a log-linear slope of -5.12 per IU/mL on the
+  elevated-LDH count), `Patel_2025_radamts13_rtte_thrombocytopenia.R`,
+  `Patel_2025_radamts13_rtte_ldh.R` (the same IU/mL ADAMTS13 activity
+  metric driving a sigmoid Emax term on the log hazard of a repeated
+  time-to-event model, EC50 = 0.0113 and 0.0133 IU/mL respectively;
+  nominally time-varying daily Cave per Patel 2025 Methods, but the
+  paper’s own published simulations hold it constant at the
+  treatment-arm median Cave, and untreated periods carry CAV = 0),
+  `Qin_2025_ropeginterferon_chr_week24.R`,
+  `Qin_2025_ropeginterferon_chr_week52.R`,
+  `Qin_2025_ropeginterferon_jak2_week24.R`,
+  `Qin_2025_ropeginterferon_jak2_week52.R`,
+  `Qin_2025_ropeginterferon_alt_increase.R`,
+  `Qin_2025_ropeginterferon_ast_increase.R` (individual average TOTAL
+  serum ropeginterferon alfa-2b concentration in ng/mL, from the
+  empirical-Bayes parameters of the companion
+  `modellib('Qin_2025_ropeginterferon')` quasi-equilibrium TMDD
+  population PK model; all six enter the regression LINEARLY and
+  UNCENTRED. This paper is the clearest illustration in the register
+  that the AVERAGING WINDOW is part of the column’s meaning and that one
+  paper may need several mutually non-interchangeable CAV columns: weeks
+  0-24 from first dose for the week-24 CHR and JAK2 V617F models, weeks
+  0-52 for their week-52 siblings, and a STUDY-DEPENDENT
+  dose-titration-phase window – weeks 0-16 in A19-201 but weeks 0-6 in
+  A20-202 – for the transaminase safety models. None of these is a
+  steady-state dosing-interval average; each runs from the first dose to
+  its landmark and so is diluted by the titration period).
 - **Notes:** Specific scope because the value is intrinsically tied to
   the modelled drug – there is no shared meaning across drugs or
   studies. Each model’s `covariateData[[CAV]]$notes` should state how
@@ -11308,7 +11759,18 @@ CSVs continue to work for one release cycle.
   at 480 mg and 53% at 800 mg, reproducing the 18% / 22% / 54% the paper
   reports in Sect. 3.5. The mechanism the authors propose is
   time-dependent auto-inhibition of CYP3A4, of which capivasertib is
-  both a substrate and a weak inhibitor).
+  both a substrate and a weak inhibitor),
+  `FernandezTeruel_2025_capivasertib.R` (the successor fit of the same
+  model by the same first author, adding the Phase III CAPItello-291 and
+  China PK studies; identical linear-deviation form on the log-scale
+  magnitude with the slope re-estimated to -0.00213 and the reference
+  dose unchanged at 480 mg,
+  `lcl_time_max * (1 + (DOSE_CAPIVASERTIB_MG - 480) * (-0.00213))`,
+  which reproduces the two reductions that paper prints in Sect. 3.2 –
+  11.2% at 400 mg and 29.1% against a reported 29.2% at 640 mg. Note the
+  maximal reductions are markedly SHALLOWER than the 2024 fit at the
+  same doses despite a deeper Imax, because the two coefficients moved
+  together).
 - **Notes:** A drug-specific member of the auto-approved
   `DOSE_<drug>_<units>` family, required here rather than the general
   `DOSE` canonical for the same solve-path reason as `DOSE_TBPPI_MG`,
@@ -12052,6 +12514,59 @@ CSVs continue to work for one release cycle.
   death-rate term `kd0 * AUC_CARBO * tumorSize`, with an internal
   `/1000` numerical scaling carried verbatim from the source `$DES`
   block.
+
+### AUC_ATEZO (**canonical for Cycle-1 atezolizumab serum AUC over the day 0 to day 21 dosing interval**)
+
+- **Description:** Per-subject, time-fixed model-predicted atezolizumab
+  serum AUC from day 0 to day 21 following the first dose (Cycle 1),
+  used as the exposure regressor in exposure-response analyses. Not an
+  observed quantity: it is derived from the individual empirical-Bayes
+  parameters of a population PK model, which is precisely why it exists
+  as a canonical column – Chan 2025 used it as a **co-primary endpoint
+  of a registrational phase III study**, the first population-PK-derived
+  measure to serve that role in a pivotal PK non-inferiority trial. The
+  21-day window is the Q3W dosing interval; do not substitute a
+  steady-state AUC (`AUCss`) or an AUC over a different interval,
+  because the exposure-response coefficients are calibrated to the
+  Cycle-1 value and the two differ by roughly a factor of two under Q3W
+  accumulation.
+- **Units:** `ug*day/mL` (equivalently mg*day/L). Document per-model via
+  `covariateData[[AUC_ATEZO]]$units`. Note that the source
+  exposure-response tables rescale it by 1000 when reporting
+  coefficients (“Increase by 1000 ug*day/mL”); that rescaling belongs in
+  `model()`, not in the column.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – a continuous exposure regressor entering
+  linearly and **uncentred**, so the companion model intercept is the
+  value at `AUC_ATEZO = 0`, outside the observed range. Reference
+  distribution (Chan 2025 Table S5B, subcutaneous 1875 mg Q3W, N = 246):
+  geometric mean 2907 ug\*day/mL (geoCV 35.9 percent), median 2974,
+  range 666-6572. The intravenous 1200 mg Q3W comparator arm (N = 122)
+  gives geometric mean 3328 (geoCV 19.4 percent), i.e. a
+  subcutaneous-to-intravenous geometric mean ratio of 0.87 (90 percent
+  CI 0.83-0.92).
+- **Source aliases:**
+  - `AUC0-21d`, `AUC 0-21d` – printed name in Chan 2025 Tables S10C,
+    S10F and S10G.
+- **Example models:** `Chan_2025_atezolizumab_aeg35.R` (logistic, grade
+  3-5 adverse events, log-odds 0.0879 per 1000 ug*day/mL),
+  `Chan_2025_atezolizumab_isr.R` (logistic, injection site reactions,
+  log-odds 0.581 per 1000 ug*day/mL), `Chan_2025_atezolizumab_os.R` (Cox
+  relative hazard for overall survival, log-hazard 0.134 per 1000
+  ug\*day/mL), `Chan_2025_atezolizumab.R`.
+- **Notes:** Specific scope because the column meaning is tied to a
+  particular drug and a particular Cycle-1 21-day averaging window.
+  Sibling exposure metrics from the same analysis use the general
+  canonicals \[\[CMAX\]\] and \[\[CTROUGH\]\] rather than drug-suffixed
+  columns, because those two are already registered as generic
+  user-supplied exposure regressors; `AUC_ATEZO` is drug-suffixed
+  instead because it follows the established `AUC_<DRUG>` family
+  (`AUC_ADU`, `AUC_LEC`, `AUC_LEN`, `AUC_IBRU`, …) and there is no
+  generic bare `AUC` canonical. Chan 2025 selected, per endpoint,
+  whichever exposure metric gave the lowest p-value, so a single paper
+  legitimately carries all three columns across its companion models;
+  every one of the resulting exposure coefficients was non-significant.
 
 ### AUC_BAST_FW (**canonical for first-week AUC in the BAST PTTE 2017 teaching dataset**)
 
@@ -12864,6 +13379,76 @@ CSVs continue to work for one release cycle.
   (Cmax, or a cumulative rather than per-interval AUC) should register a
   parallel canonical rather than overload `AUC_ANV`; the trough metric
   already has one in the general `CTROUGH` canonical.
+
+### AUC_HEMO (**canonical for hemoporfin AUC over the 0-30 minute photodynamic treatment window**)
+
+- **Description:** Hemoporfin area under the plasma concentration-time
+  curve from time zero (start of the 20-minute intravenous infusion) to
+  30 minutes, `AUC(0-30min)`, used as the exposure driver of landmark
+  logistic exposure-response regressions for photodynamic-therapy
+  efficacy in port-wine stain. Per-subject and time-fixed within the
+  analysis: Chen 2025 derives it as an empirical Bayes estimate from the
+  companion population PK model reported in the same paper and carries
+  it into the exposure-response runs as a data column. Unusually for an
+  `AUC_<DRUG>` member, the integration window is **not** a dosing
+  interval – it is the photoactivation window. Chen 2025 Methods 2.8
+  states the rationale explicitly: hemoporfin is inert until light is
+  applied, the 530 nm irradiation runs from 10 to 30 minutes after the
+  start of infusion, and “the treatment time window for hemoporfin
+  overlaps with the early phase of drug disposition”, giving “an overall
+  treatment time window of 0-30 min”. The exposure accumulated after 30
+  minutes is therefore pharmacologically irrelevant to efficacy, which
+  is why a conventional `AUC(0-inf)` or interval AUC is not the right
+  driver for this drug.
+- **Units:** `h*ug/mL` (equivalently `mg*h/L`). Note this is **not** the
+  `ng*h/mL` convention of most `AUC_<DRUG>` members, and the difference
+  is load-bearing: the coefficients are per `h*ug/mL` and a 1000-fold
+  unit error would move the fitted probabilities from the published
+  values to essentially 0 or 1. Chen 2025 states the units on Tables S1
+  and S2 and in Results 3.4 (mean pediatric `AUC(0-30min)` 12.4
+  `h*ug/mL`); the regression slopes carry the reciprocal unit tag
+  `mL*ug^-1*h^-1`. Note the companion population PK model predicts
+  concentrations in `ng/mL`, so a simulated concentration-time profile
+  must be divided by 1000 before integrating to this column. Document
+  per model via `covariateData[[AUC_HEMO]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – a continuous exposure regressor entering
+  **linearly and uncentred** on the logit scale,
+  `beta0 + beta1 * AUC_HEMO` (Chen 2025 Equation 3). The intercept is
+  consequently the logit at zero exposure, an extrapolated anchor rather
+  than a reference-patient probability. Reference values observed: 12.4
+  `h*ug/mL` (cohort mean at the empirical 5 mg/kg pediatric dose), 14.9
+  (standardised 6 mg/kg), 15.5 (weight-stratified 7/6/5 mg/kg) and 15.7
+  (standardised 190 mg/m^2 BSA-based dosing) – Chen 2025 Table S2.
+- **Source aliases:**
+  - `AUC 0-30min` / `AUC(0-30min)` – Chen 2025 Methods 2.8, Results 3.4
+    and 3.5, Tables 3, S1 and S2, and Figures 2b, 3d-f and 4.
+- **Example models:** `Chen_2025_hemoporfin_investigator_rating.R`
+  (drives the significant exposure-efficacy regression
+  `logit(p) = -10.3 + 0.794 * AUC_HEMO` for a ‘good’ or ‘excellent’
+  investigator rating, Chen 2025 Table S1 – founding example),
+  `Chen_2025_hemoporfin_patient_rating.R` (the parallel significant
+  patient-rating regression `logit(p) = -12.9 + 0.981 * AUC_HEMO`),
+  `Chen_2025_hemoporfin_almost_cured.R`,
+  `Chen_2025_hemoporfin_significant_improvement.R`,
+  `Chen_2025_hemoporfin_any_improvement.R`, `Chen_2025_hemoporfin.R`.
+- **Notes:** Specific scope because the column meaning is tied to
+  hemoporfin and to the photoactivation-window integration limit. Member
+  of the `AUC_<DRUG>` family (`AUC_ANV`, `AUC_LEN`, `AUC_VAREN`,
+  `AUC_RTV`, `AUC_VERUB`, `AUC_LCM`, `AUC_CBZ`, …); `AUC_ANV` is the
+  closest structural analogue, being likewise a Bayesian post-hoc AUC
+  from a same-paper companion PK model entering an uncentred linear
+  landmark logistic regression, with both a significant and a
+  non-significant endpoint sharing the one column. The published Table
+  S2 predictions are an exact arithmetic check on any implementation of
+  this column: `expit(-10.3 + 0.794 * 12.4)` = 38.9% and
+  `expit(-12.9 + 0.981 * 12.4)` = 32.4%, both matching Table S2 to the
+  printed digit. A future hemoporfin model using `Cmax` (which Chen 2025
+  reports is highly linearly correlated with `AUC(0-30min)` and
+  therefore dropped from the exposure-response screen) or a full
+  `AUC(0-inf)` should register a parallel canonical rather than overload
+  `AUC_HEMO`.
 
 ### AUC_VAREN (**canonical for varenicline steady-state daily AUC**)
 
@@ -16217,6 +16802,46 @@ CSVs continue to work for one release cycle.
   applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
   `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_IPM_MGL`, `CONC_TOB_MGL`).
 
+### CONC_VAN_MGL (**canonical for unbound vancomycin concentration driving an antibacterial PD model**)
+
+- **Description:** Unbound vancomycin concentration driving a
+  bacterial-kill PD effect and, where the model carries one, an
+  adaptive-resistance transition. Supplied as an exogenous covariate
+  rather than derived from a PK state. Distinct from a state-derived
+  plasma concentration (`Cc`) and from the `CP_<DRUG>` plasma-PD-driver
+  family: this is an applied or externally-predicted concentration
+  presented to an in-vitro-derived PD model.
+- **Units:** mg/L
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – enters the sigmoidal kill function and
+  the adaptive-resistance activation rate `kon * CONC_VAN_MGL`; set to 0
+  for the untreated growth control.
+- **Source aliases:**
+  - `Conc` – used in `Olivo_2025_vancomycin_invitro.R` (Olivo 2025
+    Supplementary Equations S4-S5, adaptive-resistance activation).
+  - `C` – used in `Olivo_2025_vancomycin_invitro.R` (Olivo 2025 Equation
+    3, sigmoidal Emax kill term; Figure 1 legend defines it as “the
+    unbound drug concentration in interstitial compartment”).
+- **Example models:** `Olivo_2025_vancomycin_invitro.R` (drives the
+  sigmoidal Emax kill of the active MRSA state and the
+  `kon * CONC_VAN_MGL` adaptive-resistance switch; static bath
+  concentrations 0, 0.5, 1, 2, 4, 8, 12 and 16 mg/L reproduce the
+  time-kill arms of Figure 3, and a PBPK-predicted unbound interstitial
+  profile reproduces the coupled tissue simulations of Figures 4 and 5).
+- **Notes:** Specific scope because the value is bound to vancomycin and
+  to a PD model parameterised on unbound concentration. Member of the
+  in-vitro applied-drug-concentration `CONC_<DRUG>_MGL` family (siblings
+  `CONC_RIF_MGL`, `CONC_INH_MGL`, `CONC_EMB_MGL`, `CONC_IPM_MGL`,
+  `CONC_TOB_MGL`). This member is exercised both statically and
+  time-varying: the family is explicitly for “exogenous static or
+  time-varying drug concentrations”, and Olivo 2025 uses the same PD
+  block in both modes – static for the time-kill fit, time-varying when
+  driven by tissue concentration-time profiles from a PK-Sim PBPK model
+  that is not itself reproduced in the library. Because the driver is
+  unbound, a caller supplying a total plasma concentration must apply
+  the fraction unbound before passing it in.
+
 ### CONC_BAI_UM (**canonical for static in-vitro baicalein concentration driving an inflammatory-mediator PD model**)
 
 - **Description:** Static (time-invariant) baicalein concentration in
@@ -19200,6 +19825,53 @@ CSVs continue to work for one release cycle.
   alongside the Agarwal 2011 sorafenib transporter extraction, as a
   well-formed member of the auto-approved `CP_<drug>_<units>` family.
 
+### AUC_BTZ043TOT (**canonical for BTZ-043total (BTZ-043 plus metabolite M2) AUC over the 24 h dosing interval**)
+
+- **Description:** Area under the plasma concentration-time curve over
+  the once-daily 24 h dosing interval for BTZ-043total – the sum of the
+  benzothiazinone antituberculosis drug BTZ-043 and its metabolite M2,
+  reported as BTZ-043 mass equivalents. The analyte is defined by the
+  assay: M2 cannot be quantified directly, so the bioanalytical method
+  back-converts all M2 to BTZ-043 under acid conditions and measures the
+  sum, and M2 is then obtained by difference against a second assay
+  (Koele 2025 Methods ‘PK analysis’). Per-subject and time-fixed within
+  the exposure-response analysis: Koele 2025 derives it by post-hoc
+  estimation from the companion population PK model on the
+  intensive-sampling day (Day 12 for Stage 1, Day 14 for Stage 2) and
+  carries it into the PD run as a data column.
+- **Units:** `ng*h/mL`. Document per model via
+  `covariateData[[AUC_BTZ043TOT]]$units`.
+- **Type:** continuous
+- **Scope:** specific
+- **Reference category:** n/a – a continuous exposure regressor entering
+  an Emax function, `Emax * AUC_BTZ043TOT / (EC50 + AUC_BTZ043TOT)`, so
+  the coefficient scale is set by the EC50 of 16 900 ng/mL\*h. Reference
+  values observed: Koele 2025 tabulates no AUC distribution, but states
+  that the estimated EC50 is “similar to the exposure obtained after a
+  500 mg BTZ-043 dose following a standard breakfast”, which is the
+  anchor to use when choosing a simulation range.
+- **Source aliases:**
+  - `EXMET` – Koele 2025 supplementary pharmacodynamic control-stream
+    `$INPUT` list and data dictionary (`;EXMET = Exposure metric`).
+- **Example models:** `Koele_2025_btz043_bacterialload.R` (drives the
+  first-phase slope of the bilinear decline in sputum bacterial load for
+  both the log10 cfu and the log10 TTP endpoints through a single shared
+  EC50; Koele 2025 Table 3 – founding example).
+- **Notes:** Specific scope: the column names one drug’s composite
+  analyte and the once-daily 24 h steady-state convention. Member of the
+  `AUC_<DRUG>` family (`AUC_RTV`, `AUC_ANV`, `AUC_VAREN`, `AUC_LEN`, …).
+  **The `TOT` token is load-bearing and the units are mass-based even
+  though the companion PK model works in molar units.** Koele 2025 also
+  fitted the same exposure-response with M2 AUC alone (dOFV -13.1 versus
+  -12.1 for BTZ-043total, no significant difference, attributed to the
+  high correlation between the two exposures) and with M1 AUC (no
+  relationship identified), and selected BTZ-043total because M2 cannot
+  be measured directly; a future model driven by the parent alone or by
+  M2 alone should register a parallel canonical rather than overload
+  this one. To build the column from `modellib('Koele_2025_btz043')`,
+  integrate `Cc + Cc_m2` (nmol/L) over the 24 h interval and multiply by
+  431.39/1000 = 0.43139 ng per nmol.
+
 ## Count / Markov-feedback PD covariates
 
 These columns are specific to count / Markov / time-to-event PD models
@@ -19614,7 +20286,15 @@ tied to the study’s analysis plan.
 - **Example models:** `Brown_2017_osimertinib.R` (paper’s “Asian (not
   Japanese or Chinese)” composite indicator with linear effect on
   apparent clearance of the AZ5104 metabolite; reference category
-  Caucasian).
+  Caucasian), `Johnson_2025_osimertinib.R` (the same osimertinib
+  program’s AURA3 + FLAURA update; paper’s “Asian (non-Chinese,
+  non-Japanese)” arm of a five-level `grouped race` covariate, with an
+  exponential effect `exp(0.182 * RACE_ASIAN_OTH)` on apparent clearance
+  of the AZ5104 metabolite and reference category White. Retained as
+  `Scope: specific` rather than promoted to general: Brown 2017 and
+  Johnson 2025 are the predecessor and successor analyses of one
+  clinical program, so they are not two independent papers evidencing a
+  general grouping).
 - **Notes:** Distinct from `RACE_ASIAN_AMIND_MULTI` (a 4-way composite
   of Asian + American Indian + Multiple Races), `RACE_ASIAN_AMIND_OTH`
   (a 3-way Asian + AmInd + Other composite against a White+Black
@@ -19735,6 +20415,44 @@ tied to the study’s analysis plan.
   but the numerical Hispanic-vs-non-Hispanic encoding matches this
   canonical – the per-model `covariateData[[RACE_HISPANIC]]$notes`
   records the “reported as ethnicity” interpretation.
+
+### RACE_HISPANIC_MISSING (**canonical for Hispanic / Latino ethnicity-not-reported indicator**)
+
+- **Description:** 1 = the subject’s Hispanic / Latino ethnicity was
+  recorded as Unknown / not reported; 0 = ethnicity was recorded
+  (Hispanic or not Hispanic). The third level of a three-level ethnicity
+  factor whose reference is not-Hispanic-or-Latino, carried as its own
+  indicator rather than collapsed onto that reference.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (ethnicity recorded). Mutually exclusive
+  with \[\[RACE_HISPANIC\]\]; both 0 selects the not-Hispanic-or-Latino
+  reference level.
+- **Source aliases:**
+  - `ethnic: Unknown` – printed row label in Chan 2025 Table S10G.
+- **Example models:** `Chan_2025_atezolizumab_isr.R` (log-odds shift of
+  +2.39 on the probability of an injection site reaction, odds ratio
+  10.9, 95 percent CI 0.0684-258, p = 0.2559).
+- **Notes:** The ethnicity analogue of \[\[ADA_MISSING\]\], and
+  registered for the same reason: when a source model gives the unknown
+  / not-reported level its own coefficient, dropping that coefficient
+  silently redefines the reference group of the sibling indicator from
+  “recorded as not Hispanic” to “not recorded as Hispanic, including
+  unknown”, which biases the sibling coefficient a downstream user
+  reproduces. Retain the column whenever the source model retained the
+  level, even – as in the founding example – when the estimate is wholly
+  uninformative (a confidence interval spanning three orders of
+  magnitude). Interpret any non-zero estimate with caution: a
+  missing-ethnicity indicator is a proxy for a data-collection pattern,
+  not a biological covariate, and the missingness mechanism is rarely
+  stated. Follows the `<CONCEPT>_MISSING` family convention shared with
+  `ADA_MISSING`, `PDL1_TUM_MISSING`, `TUM_EGFR_MUT_MISSING`,
+  `AAG_MISSING` and `CYP2C9_MISSING`. Note that the register carries the
+  ethnicity dimension under the `RACE_` prefix by convention – see the
+  \[\[RACE_HISPANIC\]\] Notes for why – so this name preserves the
+  sibling relationship even though the underlying variable is an
+  ethnicity rather than a race.
 
 ### RACE_JAPANESE (**canonical for Japanese-heritage race indicator**)
 
@@ -19925,6 +20643,53 @@ tied to the study’s analysis plan.
   recurring source of confusion in race-canonical lookups; reviewers
   should verify the meaning whenever a paper mentions “Indian” patients
   in a popPK cohort.
+
+### RACE_COLOURED (**canonical for Coloured (South African population group) race indicator**)
+
+- **Description:** 1 = subject self-identifies as Coloured, the South
+  African census population group of mixed ancestry that is the majority
+  group in the Western Cape; 0 = any other self-identified race.
+  Registered because South African clinical-trial cohorts routinely
+  report Black / Coloured / White as their three self-identified race
+  strata, and the Coloured stratum has no existing canonical: it is
+  neither `RACE_BLACK` nor `RACE_WHITE` nor `RACE_MULTI` (which denotes
+  a subject reporting more than one race on a US-style form, not a
+  distinct census group).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (non-Coloured; document the paper-specific
+  reference race composition per model in the covariate’s notes – Black
+  and White in the founding cohort).
+- **Source aliases:**
+  - `RACE` – Koele 2025 supplementary control-stream data dictionary,
+    `;RACE = Race [1=Cape-colored, 0=other]`; same orientation as the
+    canonical, so no value transformation is needed.
+  - “Cape-coloured” – the regional descriptor Koele 2025 Table 1 and
+    Results use for the same group.
+- **Example models:** `Koele_2025_btz043.R` (multiplicative factor 0.762
+  on apparent BTZ-043 clearance, i.e. clearance 24% slower than in the
+  Black / White reference; Koele 2025 Table 2 ‘Cape-coloured race on
+  CL/F (%) 76.2 (65.4-88.5)’. The Discussion hypothesises a genetic
+  polymorphism in a BTZ-043-metabolizing enzyme and states the effect
+  should be confirmed in a larger population; the founding cohort was
+  65% Black, 34% Coloured and 1% White).
+- **Notes:** The canonical name uses the bare census group name
+  `COLOURED` rather than the regional form `CAPE_COLOURED` because
+  “Coloured” is the term used on South African census and clinical-trial
+  case-report forms nationally, while “Cape Coloured” narrows it to one
+  province and would not fit a Gauteng or KwaZulu-Natal cohort reporting
+  the same stratum. Spelled with the South African (British)
+  orthography, matching the source. Sibling of `RACE_BLACK` /
+  `RACE_WHITE`, with which it is mutually exclusive and jointly
+  exhaustive in the typical South African three-stratum design; a model
+  needs at most two of the three indicators, the third being the
+  reference. **Distinct from `RACE_MULTI`**, which encodes a subject who
+  selected more than one race category on a US-style multi-select form:
+  that is an answer-format artefact, whereas Coloured is a single
+  self-identified group with its own demographic history, so pooling the
+  two would put subjects from different populations under one
+  coefficient.
 
 ## Geographic / enrollment-country indicators
 
@@ -20330,6 +21095,42 @@ serve other parameters that do separate that group.
   country of origin non-significant while East Asian region was
   significant.
 
+### REGION_EASTEUROPE (**canonical for Eastern European region-of-enrollment study-site indicator**)
+
+- **Description:** 1 = subject enrolled at a study site in the Eastern
+  European region, 0 = enrolled elsewhere. Multi-country regional
+  grouping (broader than a single-country `REGION_<COUNTRY>` indicator,
+  narrower than a Rest-of-World `REGION_ROW` bucket). The exact country
+  membership is protocol-specific and must be documented in per-model
+  `covariateData[[REGION_EASTEUROPE]]$notes`. **Distinct from
+  `REGION_EUROPE`, not a synonym of it:** multi-regional trials
+  routinely define Eastern Europe and (western) Europe as two separate
+  levels of one region variable, and folding one into the other silently
+  merges two arms the source fitted apart.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any non-Eastern-European region).
+- **Source aliases:**
+  - `EE` – used in `Jin_2025_benralizumab_aaer.R` (Jin 2025 Resource 17
+    row `beta_Base, EE`).
+  - `REGION01 = 2`, `REGION = Eastern Europe` – the parent five-level
+    region variable in Jin 2025 Resource 3, whose levels are ‘1: Asia,
+    2: Eastern Europe, 3: Europe, 4: North America, 5: Rest of the
+    world’.
+- **Example models:** `Jin_2025_benralizumab_aaer.R` (log-scale effect
+  of -0.329 on the baseline asthma exacerbation rate, i.e. a 28% lower
+  baseline rate at Eastern European sites; the only region contrast
+  retained in the final longitudinal exacerbation-rate model).
+- **Notes:** Scope `specific`, matching every other member of the
+  `REGION_*` family. Same sub-continental grain as `REGION_EASTASIA`,
+  which is its closest structural sibling. As with `REGION_EASTASIA`,
+  keep this column distinct from the `RACE_*` family: it records where a
+  subject was enrolled, not self-reported race, and a source may find
+  one significant and the other not (Jin 2025 retains both
+  `REGION_EASTEUROPE` on the exacerbation baseline and `RACE_CHINESE` on
+  the exacerbation Emax).
+
 ### REGION_CHINA (**canonical for China study-site / enrollment-country indicator**)
 
 - **Description:** 1 = subject enrolled at a study site in China, 0 =
@@ -20721,6 +21522,51 @@ serve other parameters that do separate that group.
   `covariateData[[DIS_HYPERLIP]]$notes` whenever both appear. Also
   distinct from the continuous lipid-panel canonicals (`LDLC`, `HDLC`),
   which carry the measured concentration rather than the diagnosis.
+
+### DIS_FRDA (**canonical for Friedreich’s ataxia patient indicator**)
+
+- **Description:** 1 = participant has Friedreich’s ataxia (FRDA), the
+  autosomal-recessive `FXN` trinucleotide-repeat disorder causing
+  progressive sensory and cerebellar ataxia with hypertrophic
+  cardiomyopathy; 0 = participant does not. Time-fixed per subject (a
+  primary disease-state stratifier, not a comorbidity flag). Use it in
+  pooled analyses that mix an FRDA patient cohort with healthy
+  volunteers and/or a different patient cohort, where the FRDA stratum
+  carries its own disposition or bioavailability effect.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (not Friedreich’s ataxia; typically healthy
+  volunteers, and any other-disease stratum whose exposures were shown
+  not to differ from healthy volunteers).
+- **Source aliases:**
+  - `FA` – used in `Hu_2025_vatiquinone.R` (Hu 2025 Section 2.3
+    covariate equations, “FAi is set to 1 for participants with FA and
+    is set to 0 for healthy volunteers”; same orientation as the
+    canonical).
+- **Example models:**
+  - `Hu_2025_vatiquinone.R` (two linear-deviation effects from Hu 2025
+    Table 2: `Frel *= (1 + (-0.501) * DIS_FRDA)` on relative
+    bioavailability, theta16, and `CL *= (1 + (-0.406) * DIS_FRDA)` on
+    apparent clearance, theta15. The two act in opposite exposure
+    directions – lower bioavailability but also slower clearance – and
+    partly cancel, netting a 19% lower steady-state AUC and 24% lower
+    Cmax,ss in FRDA patients per Hu 2025 Table 3).
+- **Notes:** The canonical name uses the standard genetic-disease
+  abbreviation FRDA rather than the source papers’ `FA`, because a bare
+  `FA` column is ambiguous against “fatty acid” and “folic acid” in a
+  pharmacometric register. When a pooled dataset contains a third
+  disease stratum, check how the source paper coded it before assigning
+  the reference level: `Hu_2025_vatiquinone.R` codes its 54 patients
+  with other mitochondrial diseases as `DIS_FRDA = 0` because Hu 2025’s
+  Discussion reports that stratum’s exposures were not distinguishable
+  from healthy volunteers, so the reference level pools two clinically
+  distinct groups. If a future paper estimates a separate effect for a
+  non-FRDA mitochondrial-disease stratum, register a sibling indicator
+  for it rather than overloading this column. Distinct from the
+  ataxia-severity rating scales (mFARS / FARS), which are continuous
+  progression endpoints rather than a diagnosis flag; register those
+  separately if a PD model needs them.
 
 ### DIS_IHD (**canonical for ischemic heart disease comorbidity / medical-history indicator**)
 
@@ -21132,6 +21978,72 @@ serve other parameters that do separate that group.
   the base entry. Ratified canonically on 2026-09-04 alongside the Nie
   2023 nalbuphine extraction.
 
+### CUM_FLUID_BAL_PCT (**canonical for cumulative fluid balance expressed as a percentage of admission body weight**)
+
+- **Description:** Running sum, over the days of an intensive-care
+  admission, of the daily net fluid balance (all recorded intakes minus
+  all recorded outputs), divided by the ADMISSION body weight and
+  expressed as a percentage. Time-varying within subject and monotone
+  only when the patient stays net-positive: a day of diuresis subtracts,
+  and the value can be negative outright. Known clinically as “percent
+  fluid overload” or “cumulative fluid balance (%)”; it is the standard
+  critical-care fluid-accumulation metric, preferred over an absolute
+  volume because it is already normalized for patient size and therefore
+  comparable between a 4 kg infant and a 90 kg adult. Used as a
+  covariate on distribution volume in critical-care popPK models of
+  small hydrophilic drugs (beta-lactams, aminoglycosides), whose
+  extracellular distribution expands with fluid accumulation.
+- **Units:** %
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – used algebraically, and NOT normalized
+  to a reference value: zero cumulative fluid balance is the natural,
+  dimensionally meaningful origin, so the covariate enters uncentred.
+  Morales Junior 2025 applies it as the exponential multiplier
+  `vc = vc_pop * (WT/70) * exp(0.026 * CUM_FLUID_BAL_PCT)`, i.e. +2.6%
+  central volume per percentage point of cumulative fluid balance. A
+  future paper may use a linear (`1 + slope * CUM_FLUID_BAL_PCT`) or
+  power form; record the per-paper parameterisation in
+  `covariateData[[CUM_FLUID_BAL_PCT]]$notes`.
+- **Source aliases:**
+  - `Cum%FB` – used in `MoralesJunior_2025_cefepime.R` (Morales Junior
+    2025 Clin Pharmacokinet; defined in Sect. 2.5 as “the sum of all the
+    previous days’ and present day’s percentage of fluid balance (sum of
+    each day’s net fluid balance / PICU admission body weight x 100)”).
+    Same quantity, no value transformation.
+- **Example models:** `MoralesJunior_2025_cefepime.R` (exponential
+  effect on the central volume of distribution, coefficient 0.026 per
+  percentage point, Table 2; cohort day-1 to day-7 medians 3.3 / 4.5 /
+  5.5 / 6.2 / 4.9 / 5.7 / 4.0% with IQRs spanning -0.1 to 15.1%; the
+  Monte Carlo simulations set the covariate to 0% for every simulated
+  patient and the Discussion sanctions that as the fallback when
+  fluid-balance data are unavailable).
+- **Notes:** **Distinct from `PFA` and `PFA_NET_RATE`.** All three
+  describe fluid handling but none is convertible into another: `PFA` is
+  a gross intra-operative administered VOLUME in mL with no output
+  debit, `PFA_NET_RATE` is a net intra-operative balance per hour in
+  mL/h, and this entry is a net cumulative balance over days expressed
+  as a PERCENTAGE of admission body weight. The differing normalisations
+  (none / operation duration / admission weight) and the differing
+  accumulation windows (one operation / one operation / a whole ICU
+  admission) mean a value from one can never substitute for another.
+  Deliberately named outside the perioperative `PFA_` prefix for that
+  reason: this is an intensive-care admission-scale quantity, not a
+  perioperative one, and reusing the `PFA` prefix would assert a
+  surgical setting the covariate does not have. **The denominator is the
+  ADMISSION body weight, a fixed per-subject scalar** – a model that
+  also carries a time-varying `WT` must not re-derive this covariate
+  from the current weight, because the two denominators diverge exactly
+  when fluid accumulates, which is the situation the covariate exists to
+  describe. A paper reporting the same accumulation in absolute volume
+  (mL or L) rather than as a percentage should register a sibling
+  `CUM_FLUID_BAL_ML` instead of reusing this column, following the `PFA`
+  / `PFA_NET_RATE` precedent. General scope on the first paper: the
+  definition is paper-independent standard critical-care nomenclature,
+  and the same group reports having used the identical covariate on
+  central volume in a companion PICU meropenem model (Morales Junior
+  2025 Discussion, reference 28), which is not yet in this registry.
+
 ### TX_LIVER (**canonical for liver (hepatic) transplant indicator**)
 
 - **Description:** Binary indicator for liver / hepatic-graft transplant
@@ -21460,11 +22372,13 @@ serve other parameters that do separate that group.
   cell transplant recipient (the complement is paper-defined; in
   `Fromage_2025_mycophenolic_acid.R` it is renal or hepatic
   transplantation as the reference group, with cardiac and pulmonary
-  transplantation and autoimmune disease as the other levels).
-  Time-fixed per subject (assigned at transplantation date).
+  transplantation and autoimmune disease as the other levels, while in
+  `Prohn_2021_letermovir_hsct.R` it is healthy phase I volunteers pooled
+  into the same fit). Time-fixed per subject (assigned at
+  transplantation date).
 - **Units:** (binary)
 - **Type:** binary
-- **Scope:** specific
+- **Scope:** general
 - **Reference category:** 0 (non-haematopoietic-cell-transplant patient;
   the complement group is paper-defined).
 - **Source aliases:**
@@ -21479,25 +22393,37 @@ serve other parameters that do separate that group.
     autoimmune disease; decompose into binary
     `TX_HCT = as.integer(Indication == "bone marrow transplantation")`
     and document the decomposition in `covariateData[[TX_HCT]]$notes`.
-- **Example models:** `Fromage_2025_mycophenolic_acid.R` (one of three
-  transplant indicators – `TX_HEART` / `TX_LUNG` / `TX_HCT` – that the
-  source pools into a single group-(ii) level carrying one estimated
-  effect on the second gamma absorption rate constant: `beta_b2 = +0.59`
-  on `log(b2)`, equivalently `-0.59` on `log(MAT2)`, halving the mean
-  absorption time of the second peak from 4.13 h to 2.29 h relative to
-  the renal / hepatic reference; Fromage 2025 Table 2 and Discussion).
-- **Notes:** Sibling to the solid-organ indicators `TX_LIVER` /
-  `TX_HEART` / `TX_LUNG`; distinct in kind from them in that a
-  haematopoietic cell graft is not a solid organ, so a model pooling
-  both (as Fromage 2025 does) is pooling across graft classes and should
-  say so in its `covariateData` notes.
-  `Fromage_2025_mycophenolic_acid.R` does NOT use `TX_ANY`, so no
-  statement about whether that model’s `TX_ANY` includes HCT is
-  required; a future model combining the two must decide explicitly and
-  record it in the `TX_ANY` entry. Where a source pools several
-  transplant types under one estimated effect, keep the per-type columns
-  canonical and form the pooled indicator inside `model()`, so a later
-  model that separates the effects can reuse the same columns.
+- **Example models:** `Prohn_2021_letermovir_hsct.R` (the indicator that
+  separates the 363 HSCT recipients from the 36 healthy phase I
+  participants pooled into the same fit; it switches BOTH oral
+  bioavailability – 0.346 without cyclosporine in HSCT recipients
+  against 1.00 fixed in healthy participants – and the absorption rate,
+  0.150 against 1.26 1/h; Prohn 2021 Table 3),
+  `Fromage_2025_mycophenolic_acid.R` (one of three transplant indicators
+  – `TX_HEART` / `TX_LUNG` / `TX_HCT` – that the source pools into a
+  single group-(ii) level carrying one estimated effect on the second
+  gamma absorption rate constant: `beta_b2 = +0.59` on `log(b2)`,
+  equivalently `-0.59` on `log(MAT2)`, halving the mean absorption time
+  of the second peak from 4.13 h to 2.29 h relative to the renal /
+  hepatic reference; Fromage 2025 Table 2 and Discussion).
+- **Notes:** Promoted from `Scope: specific` to `Scope: general` on the
+  strength of a second, independent source using the column with
+  identical value semantics (Prohn 2021 letermovir, a different drug,
+  indication and modelling group from the founding Fromage 2025
+  mycophenolic-acid entry). What varies between the two is only the
+  paper-defined complement group, which the Description already records
+  per model, so the column generalises without a semantic change.
+  Sibling to the solid-organ indicators `TX_LIVER` / `TX_HEART` /
+  `TX_LUNG`; distinct in kind from them in that a haematopoietic cell
+  graft is not a solid organ, so a model pooling both (as Fromage 2025
+  does) is pooling across graft classes and should say so in its
+  `covariateData` notes. `Fromage_2025_mycophenolic_acid.R` does NOT use
+  `TX_ANY`, so no statement about whether that model’s `TX_ANY` includes
+  HCT is required; a future model combining the two must decide
+  explicitly and record it in the `TX_ANY` entry. Where a source pools
+  several transplant types under one estimated effect, keep the per-type
+  columns canonical and form the pooled indicator inside `model()`, so a
+  later model that separates the effects can reuse the same columns.
 
 ### DIS_ALOPECIA_AT_AU (**canonical for alopecia totalis / universalis indicator within an alopecia areata cohort**)
 
@@ -22015,7 +22941,11 @@ serve other parameters that do separate that group.
 - **Example models:** `Sun_2023_maribavir.R` (log-scale additive shift
   on CL/F: `exp(e_dis_cmv_cl * DIS_CMV)` with
   `e_dis_cmv_cl = -0.280346`, i.e. CL/F is 0.756x lower in transplant
-  recipients with CMV than in the healthy 70-kg reference subject).
+  recipients with CMV than in the healthy 70-kg reference subject),
+  `Sun_2025_maribavir.R` (the same log-scale additive shift on CL/F in
+  the updated pooled analysis, `e_dis_cmv_cl = log(0.678)`, i.e. CL/F is
+  32% lower in transplant recipients with CMV; source column `HSCMV`,
+  derived as `HS == 2` with the control-stream comment `;HV reference`).
 - **Notes:** Distinct from the organ-specific transplant indicators
   `TX_LIVER` / `TX_HEART` / `TX_LUNG`, which record which organ was
   transplanted rather than the presence of CMV infection, and from
@@ -22034,8 +22964,16 @@ serve other parameters that do separate that group.
   and a `DIS_CMV_RETINITIS` cohort carries `DIS_CMV = 1` throughout.
   Scope: specific; promote to general if a second paper pools transplant
   recipients with CMV against a non-CMV reference with the same
-  semantics. \### DIS_CMV_RETINITIS (**canonical for CMV-retinitis
-  indicator within a CMV-positive cohort**)
+  semantics. `Sun_2025_maribavir.R` is a second attestation with exactly
+  those semantics, but it is deliberately NOT treated as discharging the
+  promotion condition: it is the same authors’ updated pooled analysis
+  of the same drug programme (it reuses the same `HSCMV` column and the
+  same healthy-volunteer reference), so it is a second *paper* rather
+  than a second independent line of evidence that the concept
+  generalises. Promote when a paper from a different drug programme
+  pools a CMV-infected transplant cohort against a non-CMV reference.
+  \### DIS_CMV_RETINITIS (**canonical for CMV-retinitis indicator within
+  a CMV-positive cohort**)
 - **Description:** Binary indicator that a CMV-positive subject has CMV
   retinitis, i.e. symptomatic end-organ CMV disease of the retina, as
   opposed to CMV positivity without retinitis. 1 = CMV retinitis; 0 =
@@ -23046,7 +23984,41 @@ serve other parameters that do separate that group.
   areata” – so in this model `DIS_HEALTHY` moves only the residual
   error, never a typical value. Contrast the companion
   `Maleki_2024_brepocitinib.R` entry, where the same column scales the
-  IIV magnitudes as well as the residual error).
+  IIV magnitudes as well as the residual error), `Choi_2025_denosumab.R`
+  (exponential effects on the absorption rate constant ka, the
+  inter-compartmental clearance Q/F and the baseline RANKL concentration
+  R0; reference category is the postmenopausal-osteoporosis patient
+  cohort of the Phase III SB16-3001 study, and the 1 level is the
+  healthy male volunteers of the Phase I SB16-1001 study),
+  `Qin_2025_ropeginterferon.R`, `Qin_2025_ropeginterferon_hct.R`,
+  `Qin_2025_ropeginterferon_plt.R`, `Qin_2025_ropeginterferon_wbc.R` (an
+  unusual use worth noting: DIS_HEALTHY gates no structural PK parameter
+  at all, but instead switches OFF the chronic decline of the target
+  binding capacity from Rtot0 to Rtot,SS. Qin 2025 Methods 2.4.1 states
+  that ‘In healthy subjects who received only a single dose, as well as
+  in PV patients prior to the start time of target mediation (TSTART),
+  Rtot was simply Rtot0’, so the 48 healthy phase I volunteers keep a
+  constant binding capacity while the 78 polycythaemia vera patients
+  lose theirs with a 27-day half-life. Reference category is the PV
+  patient cohort. In the three pharmacodynamic siblings the column must
+  be set to 0 for every subject, since only patients contributed
+  hematologic observations), `Zhou_2025_fruquintinib_poppk.R`
+  (fractional-change form on fruquintinib apparent volume of
+  distribution: `V/F * (1 - 0.0908 * DIS_HEALTHY)`, i.e. V/F 9.08% lower
+  in the 42 healthy volunteers of NCT04645940 and NCT04557397 than in
+  the 515 patients with metastatic colorectal cancer or other advanced
+  solid tumors who form the reference; the paper’s own forest plot shows
+  the resulting change in steady-state exposure is \<= 2%, i.e. not
+  clinically meaningful), `Du_2025_repotrectinib.R` (three roles at
+  once: a LINEAR-deviation effect on central volume
+  `vc * (1 + (-0.854) * DIS_HEALTHY)`, so healthy volunteers carry a
+  central volume 14.6% of the patient value; a stratifier selecting
+  between two clearance IIV terms, because healthy volunteers received
+  at most 3 doses and autoinduction of CL is far better characterised in
+  patients; and a stratifier selecting between two combined
+  proportional-plus-additive residual error magnitudes. Source column
+  HV, same orientation, no value transformation. Patients are the
+  reference in all three roles).
 - **Notes:** Used when a population PK model pools healthy participants
   with patients across heterogeneous indications and the
   healthy-vs-patient contrast is retained as a covariate. Scope:
@@ -23091,7 +24063,15 @@ serve other parameters that do separate that group.
   (DPN-vs-LBP/OA bioavailability ratio 1.132 applied as `ratio^DIS_DPN`;
   one level of the four-level disease-status stratification {LBP/OA
   reference, healthy, DPN, bunionectomy}, Kleideiter 2018 Table 13
-  erratum-corrected).
+  erratum-corrected), `James_2025_fepixnebart.R` (additive log-scale
+  effect on the central volume of fepixnebart: `VCSTUDY = -0.102` for
+  DPNP relative to a **chronic-low-back-pain-only** reference, i.e. a
+  fold change of `exp(-0.102) = 0.903`; the osteoarthritis level of the
+  same three-level term is carried by the sibling `DIS_OA`. The
+  reference group differs from the Kleideiter models, where
+  osteoarthritis is pooled INTO the reference and therefore needs no
+  indicator – which is precisely why this canonical’s scope is
+  `specific` and each model must document its own complement).
 - **Notes:** Used when a population PK model pools DPN patients with a
   non-DPN reference cohort (typically the chronic-pain `LBP/OA`
   reference plus other strata) and DPN disease status is retained as a
@@ -23157,6 +24137,54 @@ serve other parameters that do separate that group.
   avoided to prevent confusion with the common BUN (blood urea nitrogen)
   laboratory abbreviation. Scope: specific because the disease-pooling
   reference category is paper-defined.
+
+### DIS_OA (**canonical for osteoarthritis-pain cohort indicator**)
+
+- **Description:** 1 = patient enrolled in the osteoarthritis (typically
+  knee) chronic-pain cohort, 0 = non-osteoarthritis subject
+  (e.g. chronic low back pain, painful diabetic peripheral neuropathy,
+  post-bunionectomy acute pain, or healthy volunteer). Time-fixed per
+  subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-osteoarthritis subject; the complement
+  reference is paper-defined – in `James_2025_fepixnebart.R` the
+  reference indication is chronic low back pain, with the sibling
+  canonical `DIS_DPN` carrying the diabetic-peripheral-neuropathic-pain
+  level of the same three-level term).
+- **Source aliases:**
+  - `OA` – James 2025 Table 3 footnote d
+    (`VCSTUDY = 0, -0.102, 0.00735 for patients with CLBP, DPNP, and OA patients, respectively`;
+    the three-level categorical disease/study term decomposed to the
+    binary indicators `DIS_DPN` and `DIS_OA`).
+  - `Disease`, `Study` – James 2025 Table 2 covariate-run labels, where
+    the same variable is called both (each phase 2 study enrolled
+    exactly one indication, so study and indication are the same
+    column).
+- **Example models:** `James_2025_fepixnebart.R` (additive log-scale
+  effect on the central volume: `VCSTUDY = 0.00735` for osteoarthritis
+  relative to the chronic-low-back-pain reference, i.e. a fold change of
+  `exp(0.00735) = 1.01`. The effect is essentially null and its RSE is
+  408.2%; it is carried because the paper retained the whole three-level
+  term after backward deletion, not because the OA level is itself
+  informative).
+- **Notes:** Sibling of `DIS_DPN` and `DIS_BUNIONECTOMY` in the
+  analgesic / chronic-pain enrollment-category family. The distinction
+  from those two is which cohort the paper made its reference: in the
+  Kleideiter cebranopadol models osteoarthritis is pooled INTO the
+  reference (the “LBP/OA nociceptive-pain” group) and therefore needs no
+  indicator, whereas James 2025 separates all three indications, so OA
+  needs its own column. Do not treat this canonical as interchangeable
+  with the reference-group membership of the Kleideiter models – the
+  same trial population can be split differently by different analyses,
+  which is exactly why the scope is specific and the complement
+  reference must be documented per model. Distinct from `FLARE`, which
+  is an osteoarthritis-pain TRIAL-DESIGN descriptor (whether the
+  protocol required a washout-induced pain flare at randomization)
+  rather than the enrollment-indication label. Distinct also from any
+  osteoarthritis SEVERITY grade (Kellgren-Lawrence and similar); this
+  column carries cohort membership only.
 
 ### DIS_CASTLEMAN (**canonical for Castleman’s disease indicator**)
 
@@ -26962,7 +27990,7 @@ indicators = 0 selects the reference).
   cure-rate survival model; Supplementary Figure S2 stratifies the
   observed and predicted dose-response into quartiles of this covariate
   – \[BLQ, 3.02\], \[3.03, 3.95\], \[3.96, 4.87\], (4.87, 8.56\] log10
-  CFU)………
+  CFU)……….
 - **Notes:** Values below the assay’s limit of quantification are
   reported by the founding paper as “BLQ” and pooled into the lowest
   quartile; a model consuming this covariate must decide how to impute
@@ -27026,9 +28054,76 @@ indicators = 0 selects the reference).
   model, as `SARS_VLOAD` and `HEV_VLOAD` require. Note that the
   reporting SCALE differs across the `<VIRUS>_VLOAD` family –
   `SARS_VLOAD` is log10 copies/mL while `HEV_VLOAD` and `HCV_VLOAD` are
-  linear IU/mL – so never carry a log10 value in this column. \###
-  IMMUNE_STATE (**canonical for experimentally-induced immune status in
-  a preclinical infection model**)
+  linear IU/mL – so never carry a log10 value in this column.
+
+### HIV_VLOAD (**canonical for human immunodeficiency virus type 1 baseline plasma viral load**)
+
+- **Description:** Baseline (pre-treatment / Day 1) plasma HIV-1 RNA
+  concentration, measured by a quantitative nucleic-acid assay. Carried
+  as the CONTINUOUS concentration on the LINEAR scale even when a model
+  consumes it log-transformed or dichotomized, so that one column can
+  serve several transforms and so that the transform stays visible in
+  `model()` rather than being baked into the dataset. The HIV-1 member
+  of the `<VIRUS>_VLOAD` family, pre-named in the `HEV_VLOAD` notes
+  (“viral-load canonicals for HCV / HBV / HIV that should be registered
+  separately when first encountered”).
+- **Units:** copies/mL (c/mL). HIV-1 RNA has no IU-based WHO reporting
+  convention in routine clinical use, unlike HCV and HEV; copies/mL is
+  universal in the antiretroviral literature. Document the assay and its
+  lower limit of quantitation per model in
+  `covariateData[[HIV_VLOAD]]$units` and `$notes`.
+- **Type:** continuous
+- **Scope:** general – baseline plasma HIV-1 RNA is the standard
+  disease-burden covariate across antiretroviral popPK and
+  exposure-response analyses, and is the denominator of every
+  virologic-response endpoint in the field.
+- **Reference category:** n/a – a subject-level baseline concentration.
+  Enters either as a median-normalized power term
+  `(HIV_VLOAD / ref)^exponent` on the linear scale or as a
+  median-centred log10 term `beta * (log10(HIV_VLOAD) - ref10)`; a
+  single paper can use BOTH forms for the same column across sibling
+  models. Reference values observed: 44,940 c/mL and its log10
+  equivalent 4.65 (Parasrampuria 2025, the phase 3 BRIGHTE Day 8
+  exposure-efficacy cohort median).
+- **Source aliases:**
+  - `BHIVRNA` – Parasrampuria 2025 Table 3 and Table 4
+    covariate-equation notes; “baseline plasma HIV-1 RNA (c/mL)” in the
+    abbreviations. Carries the LINEAR value in the Table 3 equation and
+    the LOG10 value in the Table 4 equation, with the same symbol in
+    both – read the centring constant to tell which scale is meant (a
+    constant near 4-7 is log10; a constant in the tens of thousands is
+    linear).
+  - `Baseline plasma HIV-1 RNA`, `baseline HIV RNA`, `VL`, `HIVRNA` –
+    common prose and dataset spellings.
+- **Example models:** `Parasrampuria_2025_temsavir_hivrna_day8.R`
+  (linear-scale median-normalized power term on the Emax drug-effect of
+  a temsavir exposure-response model, `(HIV_VLOAD / 44940)^0.150`),
+  `Parasrampuria_2025_temsavir_resp05log_day8.R`,
+  `Parasrampuria_2025_temsavir_resp1log_day8.R` (the SAME column on the
+  log10 scale, median-centred, as a logit-scale slope
+  `0.836 * (log10(HIV_VLOAD) - 4.65)` and
+  `0.848 * (log10(HIV_VLOAD) - 4.65)` in the two companion
+  responder-rate logistic regressions – founding examples).
+- **Notes:** Distinct from `HIV_POS`, the binary serostatus indicator
+  used when HIV status is a comorbidity of the modelled population
+  rather than the treated disease; the two are complementary and a model
+  fit to a mixed healthy / HIV-infected cohort may carry both. Distinct
+  from `CD4_ABS` and `CD8_CD38DR_PCT`, which measure the host immune
+  consequence of infection rather than the viral burden. Populate with
+  the linear concentration and transform inside `model()`; the founding
+  paper is the discriminating case, consuming this one column on two
+  different scales across three sibling models in a single publication.
+  For subjects below the assay lower limit of quantitation (commonly 40,
+  50 or 200 c/mL depending on assay generation), record the LOQ value
+  and document the convention per model, as `SARS_VLOAD`, `HEV_VLOAD`
+  and `HCV_VLOAD` require. Note that the reporting SCALE differs across
+  the `<VIRUS>_VLOAD` family – `SARS_VLOAD` is log10 copies/mL while
+  `HEV_VLOAD`, `HCV_VLOAD` and this entry are linear – so never carry a
+  log10 value in this column. Register `HBV_VLOAD` separately when first
+  encountered, following this pattern.
+
+### IMMUNE_STATE (**canonical for experimentally-induced immune status in a preclinical infection model**)
+
 - **Description:** Ordered categorical level of host immune competence
   in a preclinical infection model whose immune status is an
   experimental design factor rather than a patient characteristic: `0` =
@@ -28584,6 +29679,45 @@ indicators = 0 selects the reference).
   high-frequency tumor-type contrast (with melanoma or “other”
   reference) across PD-1 / PD-L1 / chemotherapy popPK analyses, and is
   likely to recur in future extractions.
+
+### TUMTP_NONLUNG (**canonical for pooled non-lung-cancer tumor-type indicator**)
+
+- **Description:** 1 = any tumor type other than lung cancer; 0 = lung
+  cancer (NSCLC or SCLC). This is the INVERSE-sense pooled indicator
+  used by analyses whose cohort is predominantly lung cancer and which
+  collapse every other histology into a single contrast level rather
+  than fitting one indicator per histology. Use it only when the source
+  paper itself pools that way; when the paper names individual non-lung
+  histologies with separate coefficients, decompose into the
+  per-histology members of the family (`TUMTP_HCC`, `TUMTP_CRC`,
+  `TUMTP_OTHER`, …) instead.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 = lung cancer (per source paper; in Wang
+  2025 the reference group is the pooled NSCLC + SCLC cohort, 817 of
+  1144 subjects).
+- **Source aliases:**
+  - `TUMTP` (binary column coded 0 = lung cancer, 1 = all other tumor
+    types) – use directly as `TUMTP_NONLUNG = TUMTP`.
+  - `TUMTP` / `CANCER_TYPE` categorical columns with per-histology
+    levels – collapse via
+    `TUMTP_NONLUNG = as.integer(!TUMTP %in% c("NSCLC", "SCLC", "lung"))`,
+    but only if the source model fits a single pooled coefficient.
+- **Example models:** `Wang_2025_serplulimab.R` (exponential coefficient
+  -0.0887 on Vc; the pooled non-lung group is hepatocellular carcinoma
+  125, colorectal cancer 86 and “other” 116, i.e. 327 of 1144 subjects,
+  and no tumor-type effect on CL was retained).
+- **Notes:** Follows the `TUMTP_HODGKIN_CLASSICAL` / `TUMTP_GASTRIC` /
+  `TUMTP_SCLC` / `TUMTP_NSCLC` decomposition pattern, but with the
+  polarity reversed: the named group is the residual rather than the
+  histology of interest. It is NOT interchangeable with `TUMTP_OTHER`,
+  which is the leftover level alongside several *named* histology
+  indicators; `TUMTP_NONLUNG` carries the entire non-reference cohort on
+  its own. Scope: specific because the lung-vs-everything-else pooling
+  is a property of a predominantly-lung cohort rather than a contrast
+  that recurs with a stable meaning; a paper pooling differently should
+  register or reuse the per-histology members instead.
 
 ### TUMTP_NSCLC_NONADENO (**canonical for non-adenocarcinoma-histology NSCLC sub-indicator**)
 
@@ -32416,6 +33550,48 @@ indicators = 0 selects the reference).
   hyperphosphatemia management. When a source paper reports both,
   register both.
 
+### CONMED_HYALURONIDASE (**canonical for coadministered recombinant human hyaluronidase (rHuPH20) subcutaneous-delivery adjuvant**)
+
+- **Description:** 1 = the subcutaneous dose was coadministered with
+  recombinant human hyaluronidase (rHuPH20; marketed as the ENHANZE drug
+  product, EDP, and co-formulated in products such as SC trastuzumab, SC
+  rituximab, SC daratumumab and pertuzumab/trastuzumab fixed-dose
+  combination), 0 = no hyaluronidase. rHuPH20 transiently depolymerises
+  hyaluronan in the subcutaneous extracellular matrix, raising the
+  volume and rate that can be injected at one site and altering the
+  absorption of the coadministered drug. Time-fixed per dosing occasion:
+  a trial that gives some doses with and some without the adjuvant
+  carries it per dose record, not per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (no hyaluronidase coadministration).
+- **Source aliases:**
+  - `EDP` – used in `Mahomed_2025_CAP256V2LS.R` (Mahomed 2025 Table 3
+    “EDP – No / Yes” and Supplementary Table S1, where the EDP arms are
+    marked with an asterisk; the paper writes it out as “a recombinant
+    human hyaluronidase (ENHANZE Drug Product; EDP)”).
+- **Example models:** `Mahomed_2025_CAP256V2LS.R` (founding example;
+  three separate multiplicative effects from Supplementary Table S6 –
+  clearance `x 0.378`, central volume `x 0.41`, and an effective
+  relative-bioavailability factor of `0.452` applied on the logit scale
+  as `logit(0.712 * 0.452) - logit(0.712)`).
+- **Notes:** The covariate records the presence of the adjuvant, not the
+  route: pair it with the model’s own IV-vs-SC dosing structure rather
+  than treating it as a route indicator. Whether the estimated effects
+  extend to intravenous records is a per-paper modelling choice that the
+  model file must state – Mahomed 2025 applies its clearance and
+  central-volume effects to every record and simulates hypothetical IV
+  +EDP scenarios (Supplementary Tables S3-S5), even though every EDP
+  dose actually administered in CAPRISA 012B was subcutaneous, so the
+  systemic effects are identified only from the SC arms. A study that
+  instead co-formulates hyaluronidase into a single fixed product with
+  no comparator arm has no contrast to estimate and should not register
+  the column at all. Distinct from `FORM_<drug>_<formulation>`
+  indicators, which encode a physical dosage form of the drug itself;
+  rHuPH20 is a separate coadministered enzyme with its own approval and
+  its own INN.
+
 ### CONMED_IFNB1A (**canonical for concomitant interferon beta-1a coadministration indicator**)
 
 - **Description:** 1 = patient coadministered subcutaneous interferon
@@ -33456,6 +34632,50 @@ indicators = 0 selects the reference).
   concomitant-medication pattern established for IBD models (AZA / MP /
   MTX / AMINO) and `CONMED_NSAID` (Li 2019).
 
+### CONMED_PAROXETINE (**canonical for concomitant paroxetine coadministration indicator**)
+
+- **Description:** 1 = subject is co-prescribed paroxetine (SSRI
+  antidepressant; a potent mechanism-based inhibitor of CYP2D6 and
+  itself a CYP2D6 substrate) at the PK observation, 0 = no concomitant
+  paroxetine. Time-fixed at the analysis baseline in the founding
+  source, which draws comedication status from a retrospective medical
+  record system; time-varying encoding is appropriate wherever
+  paroxetine start / stop events are captured.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant paroxetine).
+- **Source aliases:**
+  - `PAR` – used in `Zhang_2025_olanzapine.R` (Zhang 2025 Equation 6:
+    “PAR represents paroxetine; when patients took paroxetine, PAR was
+    1, otherwise PAR was 0”; same 0/1 orientation).
+- **Example models:** `Zhang_2025_olanzapine.R` (linear-shift effect on
+  apparent oral clearance: `cl *= (1 + e_par_cl * CONMED_PAROXETINE)`
+  with `e_par_cl = -0.289`, i.e. concomitant paroxetine lowers
+  olanzapine CL/F by 28.9%, equivalently a with:without clearance ratio
+  of 0.711:1 as stated in the Results and Discussion and plotted in
+  Figure 1H; founding example).
+- **Notes:** Paroxetine appears in the popPK literature on both sides of
+  the DDI – as the victim drug (`Kim_2015_paroxetine.R`,
+  `Shigetome_2025_paroxetine.R`, where paroxetine’s own disposition is
+  modelled) and, here, as the perpetrator on a co-prescribed CYP2D6
+  substrate. Use `CONMED_PAROXETINE` only for the perpetrator role; a
+  model of paroxetine itself does not need a covariate for the drug
+  being modelled. Distinct from `CYP2D6_PM`: the comedication indicator
+  captures a phenoconversion-like exposure shift in patients of
+  unrecorded genotype, whereas `CYP2D6_PM` captures the germline
+  poor-metaboliser phenotype, and a study measuring both should carry
+  both columns. Parallel in construction to `CONMED_ARIPIPRAZOLE`
+  (`Zhang_2024_olanzapine.R`), the same group’s companion analysis of
+  olanzapine in schizophrenia; the two models differ in perpetrator drug
+  and population but share the structural model and the linear-shift
+  covariate form. Specific scope until a second model registers
+  paroxetine as a covariate; promote to `general` once that happens.
+  Zhang 2025’s cohort prevalence was 18 of 72 patients (25.0%, Table 2),
+  so the -0.289 estimate rests on a reasonably sized exposed subgroup,
+  but its bootstrap 95% interval \[-0.420, -0.078\] still reaches close
+  to no effect and should be quoted alongside the point estimate.
+
 ### CONMED_PACLITAXEL (**canonical for concomitant paclitaxel coadministration indicator**)
 
 - **Description:** 1 = the modelled drug’s observation was collected
@@ -34094,7 +35314,7 @@ indicators = 0 selects the reference).
   effect was found significant only in the oral-cephalexin +
   oral-quinapril group (paper found no DDI on CL when cephalexin was
   given intra-arterially, attributed to higher cephalexin renal
-  concentrations outcompeting quinapril at the carrier)……………..
+  concentrations outcompeting quinapril at the carrier)………………
 - **Notes:** Scope: specific because the only on-disk source is a single
   preclinical rat popPK paper (Padoin 1998) and the column meaning is
   intrinsically tied to the oral cephalexin + oral quinapril DDI design
@@ -34483,7 +35703,12 @@ indicators = 0 selects the reference).
 - **Example models:** `Martinez_2019_alirocumab.R` (additive effect on
   linear clearance CLL:
   `CLL = TVCLL + COV1*(WT-82.9) + COV2*CONMED_STATIN`; +0.00644 L/h when
-  conmed_statin is coadministered).
+  conmed_statin is coadministered), `Wright_2025_colchicine.R`
+  (multiplicative fractional effect on colchicine clearance only:
+  `cl <- ... * (1 - (1 - e_conmed_statin_cl) * CONMED_STATIN)` with
+  `e_conmed_statin_cl` = 0.66, a ~30% reduction; any concomitant statin
+  at any dose counts, the retained cohort being atorvastatin (n = 12)
+  and simvastatin (n = 4), Wright 2025 Table 2 footnote c).
 - **Notes:** Per-model `covariateData[[CONMED_STATIN]]$notes` must
   document which statins and dose thresholds are included in the
   “CONMED_STATIN = 1” category, since inclusion criteria vary by study.
@@ -34761,6 +35986,41 @@ indicators = 0 selects the reference).
   coexist on the same subject. The name `STEROID_BL` was used as an
   alias in earlier register drafts and is retired; use `CONMED_STEROID`
   for all future models.
+
+### CONMED_THEOPHYLLINE (**canonical for concomitant theophylline / aminophylline coadministration indicator**)
+
+- **Description:** 1 = subject was taking theophylline or aminophylline
+  as background co-medication, 0 = not taking either. Aminophylline is a
+  theophylline-ethylenediamine salt that dissociates to theophylline in
+  vivo, so source papers that record the two together are recording one
+  exposure and a single indicator is correct. Time-fixed per subject
+  when the source captures baseline background therapy (the usual case
+  in asthma / COPD trials, where the drug is a maintenance controller).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no theophylline or aminophylline
+  co-medication).
+- **Source aliases:**
+  - `CTHEO` – used in `Jin_2025_benralizumab_fev1.R`; defined in Jin
+    2025 Resource 1 as ‘CTHEO Theophylline/aminophylline use (0: no, 1:
+    yes)’ and appearing in Resource 4 as the row label
+    `Beta_FEVB (CTHEO_1)`.
+- **Example models:** `Jin_2025_benralizumab_fev1.R` (log-scale
+  multiplicative effect of -0.089 on baseline pre-bronchodilator FEV1,
+  i.e. an 8.5% lower baseline in users), `Jin_2025_benralizumab.R`.
+- **Notes:** Specific scope. In severe-asthma models this covariate
+  usually behaves as a **disease-severity marker rather than a
+  pharmacological interaction**: theophylline is a late-line controller,
+  so its users have worse baseline lung function, and the effect
+  direction (lower baseline FEV1) reflects selection into the therapy
+  rather than any effect of theophylline on the modelled drug. Do not
+  reinterpret a negative coefficient as a drug-drug interaction without
+  the source saying so. Distinct from `FORM_THEO_APNECUT`, which is a
+  formulation indicator for models in which theophylline itself is the
+  analyte, and from the `CONMED_<INN>` CYP-modulator entries
+  (`CONMED_AZOLE`, `CONMED_CBZ`, …), which are registered for their
+  metabolic-interaction role.
 
 ### CONMED_STEROID_SPARING (**canonical for steroid-sparing immunosuppression-protocol indicator**)
 
@@ -36387,8 +37647,6 @@ indicators = 0 selects the reference).
   pharmacogenetic canonical `CYP2C19_S2_CARRIER`, which modulates the
   *activation* of clopidogrel rather than recording whether an
   antiplatelet is being taken.
-
-## Rheumatoid-arthritis disease-activity covariates
 
 ### RHEUMATOID_FACTOR (**canonical for serum rheumatoid factor concentration**)
 
@@ -38923,6 +40181,103 @@ indicators = 0 selects the reference).
   misstated. Imputation rules (LOCF / NOCB / baseline-as-negative)
   should be documented per-model.
 
+**`ABPEG_<isotype>` – canonical family for PRE-EXISTING
+anti-polyethylene-glycol antibody levels.** Antibodies directed at the
+polyethylene-glycol (PEG) moiety of a PEGylated drug, not at the drug’s
+protein or small-molecule payload. The defining property, and the reason
+this family is separate from the `ADA_*` and `CONC_ADA_*` canonicals, is
+that these antibodies are **pre-existing**: they arise from
+environmental PEG exposure (cosmetics, food, excipients) and are present
+in a large fraction of PEG-naive subjects, so they can and do act on the
+**first** dose of drug ever administered. Treatment-emergent anti-drug
+antibody columns cannot, by construction. Isotype is load-bearing and is
+carried in the name (`ABPEG_IGM`, `ABPEG_IGG`), because papers routinely
+screen both and retain only one. Values are on the originating assay’s
+own arbitrary scale (typically a plate-reader mean fluorescence
+intensity), are measured in every subject regardless of positivity, and
+are strictly positive with **no special encoding for antibody-negative
+subjects**; positivity, where a paper reports it, is a derived dichotomy
+from an assay cut point. Store the LINEAR level and apply any log
+transform inside `model()`, so a cut point printed on the log scale is
+recorded in the model file on the linear scale next to its log-scale
+twin. Distinct from `ADA_TITER` (a dimensionless dilution factor whose
+load-bearing semantic is a `0`- or `1`-for-negative encoding, which is
+actively false here), from `CONC_ADA_NGML` / `CONC_ADA_AUML` (calibrated
+anti-drug-antibody concentrations against the drug itself), from
+`ADA_POS` (binary treatment-emergent positivity), and from `IGG` / `IGM`
+(total serum immunoglobulin, not antigen-specific).
+
+### ABPEG_IGM (**canonical for pre-existing anti-polyethylene-glycol IgM antibody level**)
+
+- **Description:** Anti-PEG IgM antibody level on the originating
+  assay’s arbitrary scale, measured before the first dose of a PEGylated
+  drug. Member of the `ABPEG_<isotype>` family described above. Baseline
+  (one value per subject), not time-varying, unless a source explicitly
+  re-measures it per exposure phase.
+- **Units:** assay-specific arbitrary scale (mean fluorescence intensity
+  for the founding assay); document per-model via
+  `covariateData[[ABPEG_IGM]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – enters as a hockey stick above an assay
+  cut point. Cut points observed: 3.67 on the linear scale (1.3 on the
+  natural-log scale), estimated in NONMEM by Siebel 2022 and held fixed
+  by Wurthwein 2025; 2 on the linear scale, the assay cut point of
+  Khalil 2022.
+- **Source aliases:**
+  - `anti-PEG IgM prior PIAd12` – Wurthwein 2025 ESM Tables S5-S9, the
+    level in the sample drawn within 3 days before the first induction
+    dose.
+  - `IgMprior` / `IgMprior PIAd12` – the same quantity in the Wurthwein
+    2025 running text and figure captions.
+- **Example models:**
+  `Wurthwein_2025_pegasparaginase_hrPostinduction.R`,
+  `Wurthwein_2025_pegasparaginase_r2ea.R` (founding examples; hockey
+  stick `1 + theta * (log(ABPEG_IGM) - 1.3)` on the initial clearance of
+  PEGylated asparaginase, active only above the cut point and gated to
+  the first induction dose, `theta` 0.396 and 0.449 respectively).
+- **Notes:** PROVISIONAL – proposed alongside the Wurthwein 2025
+  pegasparaginase extraction and awaiting operator ratification (sidecar
+  `oasweep_PMC12540506` request-001 question q1). The founding paper
+  illustrates why the effect is usually gated to the first dose:
+  anti-PEG levels fall sharply once dosing starts (Wurthwein 2025 ESM
+  Section 2.2 and Fig. S2, ‘A marked decrease in antibody levels from
+  prior to after administration is apparent following the first dose’),
+  so a baseline level is informative about the first exposure and
+  progressively less so afterwards. Clinical relevance is dose-dependent
+  and worth recording per-model: Wurthwein 2025 Section 4.2 judges the
+  effect ‘of rather limited relevance given the currently used high
+  PEG-ASNase dosages but might become more relevant when down-titrating
+  dosages’.
+
+### ABPEG_IGG (**canonical for pre-existing anti-polyethylene-glycol IgG antibody level**)
+
+- **Description:** Anti-PEG IgG antibody level on the originating
+  assay’s arbitrary scale, measured before the first dose of a PEGylated
+  drug. Member of the `ABPEG_<isotype>` family described above.
+  Baseline, not time-varying.
+- **Units:** assay-specific arbitrary scale (mean fluorescence intensity
+  for the founding assay); document per-model via
+  `covariateData[[ABPEG_IGG]]$units`.
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a – enters as a hockey stick above an assay
+  cut point. Cut point observed: 8 on the linear scale (2.079 on the
+  natural-log scale), the assay cut point of Khalil 2022.
+- **Source aliases:**
+  - `anti-PEG IgG prior` / `IgGprior` – Wurthwein 2025 ESM Tables S5,
+    S6.
+- **Example models:**
+  `Wurthwein_2025_pegasparaginase_hrPostinduction.R`.
+- **Notes:** PROVISIONAL – proposed alongside `ABPEG_IGM`, same sidecar.
+  Registered as a distinct member rather than folded into `ABPEG_IGM`
+  because the two isotypes are separately assayed, carry different cut
+  points, and are routinely tested head-to-head: Wurthwein 2025 ESM
+  Table S6 fits both and keeps IgM (BIC 73239 versus 73259), concluding
+  ‘the influence of anti-PEG IgGprior was less pronounced’. A model that
+  screens IgG without retaining it should record it in
+  `covariatesDataExcluded`, not `covariateData`.
+
 ## Disease / treatment history
 
 **`TRTPH_<phase>` – canonical family for protocol-defined
@@ -39876,6 +41231,135 @@ promote to general when a second paper ratifies identical semantics.
   (0.976) is not. Genotype distribution in the Jiang 2023 cohort of 85
   Chinese postoperative GIST adults (Table 2): GG 34 (40%), GT 45 (53%),
   TT 6 (7%); allele frequency G 0.66 / T 0.34; Hardy-Weinberg p = 0.22.
+
+### SNP_ABCG2_RS2231142_T_COUNT (**canonical for ABCG2 rs2231142 (Q141K) variant T-allele count**)
+
+- **Description:** Continuous individual-level count of *ABCG2* (BCRP)
+  rs2231142 variant alleles reported on the G\>T strand convention: 0 =
+  GG wild-type homozygote, 1 = GT heterozygote, 2 = TT variant
+  homozygote. Equivalently 0 = 421C/C, 1 = 421C/A, 2 = 421A/A on the
+  dbSNP c.421C\>A reference orientation. Time-invariant (germline
+  genotype). *ABCG2* encodes breast cancer resistance protein, the
+  efflux transporter that limits substrate absorption and facilitates
+  renal and biliary excretion; the Q141K variant impairs plasma-membrane
+  localisation and function. The count form carries the full
+  three-genotype information in one column, so `model()` can derive a
+  per-allele slope, a carrier indicator, or – as in the founding example
+  – a term in a multi-SNP additive group score.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). A count of 0 (GG / 421C/C
+  wild-type homozygote) is the natural reference.
+- **Source aliases:**
+  - `ABCG2 rs2231142 (G > T)` – Wei 2025 Results 3.2 and Methods
+    ‘Grouping and combination of variants’. Same orientation as the
+    canonical, no value transformation.
+  - `rs2231142` genotype string (`"GG"` / `"GT"` / `"TT"`): derive the
+    count as the number of T alleles in the diplotype.
+- **Example models:** `Wei_2025_methotrexate_genotype.R` (one of three
+  variant-allele counts summed inside `model()` into a composite
+  ABCC4-ABCG2-ADORA2A carrier indicator that multiplies methotrexate
+  clearance by 0.91; this SNP is the worked example the source paper
+  uses to fix its own grouping convention).
+- **Notes:** Auto-approved member of the
+  `SNP_<GENE>_RS<rsid>_<allele>_COUNT` family, following the
+  `SNP_ABCB1_RS1045642_T_COUNT`, `SNP_CYP2B6_RS3745274_T_COUNT` and
+  `SNP_CYP4F2_RS2108622_T_COUNT` precedents. Composable with the binary
+  siblings `SNP_ABCG2_RS2231142_HOM` (recoverable as `== 2`) and
+  `SNP_ABCG2_RS2231142_HET` (recoverable as `== 1`); the count is the
+  more general encoding and should be preferred when the source resolves
+  all three genotypes or needs an additive allele dose. **Strand
+  orientation:** papers report this SNP either as c.421C\>A (dbSNP
+  reference, variant allele A) or as G\>T on the opposite strand
+  (variant allele T); these are the same variant, so always map the
+  paper’s genotype labels onto the variant-allele count before assigning
+  values – see the `SNP_ABCG2_RS2231142_HOM` Notes for the full mapping.
+  Direction of effect in the founding paper: the T (variant) allele is
+  associated with REDUCED methotrexate clearance, consistent with
+  impaired BCRP-mediated efflux.
+
+### SNP_ABCC4_RS2274407_G_COUNT (**canonical for ABCC4 rs2274407 variant G-allele count**)
+
+- **Description:** Continuous individual-level count of *ABCC4*
+  rs2274407 variant alleles as defined on the T\>G orientation: 0 = TT
+  wild-type homozygote, 1 = TG heterozygote, 2 = GG variant homozygote.
+  Time-invariant (germline genotype). *ABCC4* encodes
+  multidrug-resistance protein 4 (MRP4), an ATP-binding-cassette
+  C-subfamily efflux transporter expressed across many tissues and
+  tumours. The variant sits at the 3’ splice acceptor site of exon 8;
+  the cited functional work reports that it does not alter MRP4
+  transport activity directly but may disrupt normal splicing of *ABCC4*
+  pre-mRNA.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). A count of 0 (TT wild-type
+  homozygote) is the natural reference.
+- **Source aliases:**
+  - `ABCC4 rs2274407 (T > G)` – Wei 2025 Results 3.2, which is the
+    definition this canonical follows.
+  - `ABCC4 G912T` – the older cDNA nomenclature used in the Wei 2025
+    Discussion and in the cited Mesrian Tanha 2017 source, which
+    describes the same variant on the opposite orientation and therefore
+    calls the clearance-increasing allele “T”. **These two labels invert
+    each other**: resolve any new source against the dbSNP reference
+    orientation before assigning counts, and use the direction-of-effect
+    statement rather than the letter as the check.
+- **Example models:** `Wei_2025_methotrexate_genotype.R` (one of three
+  variant-allele counts summed inside `model()` into a composite
+  ABCC4-ABCG2-ADORA2A carrier indicator that multiplies methotrexate
+  clearance by 0.91).
+- **Notes:** Auto-approved member of the
+  `SNP_<GENE>_RS<rsid>_<allele>_COUNT` family. Direction of effect in
+  the founding paper: the G (variant) allele is associated with REDUCED
+  methotrexate clearance – the Wei 2025 Discussion states the converse,
+  that “the T allele was associated with increased MTX clearance”, which
+  is the same statement under the T\>G definition the same paper gives
+  in Results 3.2. Because this variant is reported under two mutually
+  inverted nomenclatures in the founding paper itself, a future
+  extraction MUST confirm which orientation its source uses before
+  reusing this column; a silent mis-assignment flips the sign of the
+  effect. Distinct from `SNP_ABCC2_*` and `SNP_ABCB1_*` columns
+  (different transporter genes).
+
+### SNP_ADORA2A_RS2298383_T_COUNT (**canonical for ADORA2A rs2298383 variant T-allele count**)
+
+- **Description:** Continuous individual-level count of *ADORA2A*
+  rs2298383 variant alleles on the C\>T orientation: 0 = CC wild-type
+  homozygote, 1 = CT heterozygote, 2 = TT variant homozygote.
+  Time-invariant (germline genotype). *ADORA2A* encodes the adenosine
+  A2A receptor; rs2298383 lies in a putative promoter region and has
+  been associated with transcriptional regulation, with higher mRNA
+  levels reported in CC-genotype carriers. Methotrexate’s
+  anti-inflammatory and neurotoxic effects are partly
+  adenosine-mediated, which is the mechanistic rationale for screening
+  this receptor variant against methotrexate disposition.
+- **Units:** (count, 0/1/2 alleles per subject)
+- **Type:** continuous
+- **Scope:** general
+- **Reference category:** n/a (continuous). A count of 0 (CC wild-type
+  homozygote) is the natural reference.
+- **Source aliases:**
+  - `ADORA2A rs2298383 (C > T)` – Wei 2025 Results 3.2. Same orientation
+    as the canonical, no value transformation.
+- **Example models:** `Wei_2025_methotrexate_genotype.R` (one of three
+  variant-allele counts summed inside `model()` into a composite
+  ABCC4-ABCG2-ADORA2A carrier indicator that multiplies methotrexate
+  clearance by 0.91).
+- **Notes:** Auto-approved member of the
+  `SNP_<GENE>_RS<rsid>_<allele>_COUNT` family. Direction of effect in
+  the founding paper: the T (variant) allele is associated with REDUCED
+  methotrexate clearance (Wei 2025 Discussion: “the C allele was
+  associated with increased MTX clearance”). This is a
+  pharmacodynamic-receptor gene rather than a transporter or
+  metabolising-enzyme gene, so a clearance association is not
+  mechanistically obvious; the founding paper retains it only as one
+  third of a composite score whose whole effect is a 9% clearance
+  reduction, and explicitly concedes the effect “may have limited
+  clinical significance”. Do not reuse this column as a standalone
+  clearance covariate without re-establishing the association in the new
+  source.
 
 ### SNP_IL10_RS1800896_HET (**canonical for IL-10 G-1082A (rs1800896) heterozygote indicator**)
 
@@ -41182,6 +42666,96 @@ promote to general when a second paper ratifies identical semantics.
   reference; Lane 2011 Table 3 final R-warfarin model).
 - **Notes:** Follows the same missing-data-indicator pattern as
   `CYP2C9_MISSING`, `ADA_MISSING`, and `HEPIMP_MOD_OR_MISSING`.
+
+### SNP_CYP2C19_RS12769205_GA (\*\*canonical for CYP2C19\*2 rs12769205 heterozygous GA genotype indicator\*\*)
+
+- **Description:** Binary genotype indicator for the *CYP2C19*
+  rs12769205 single-nucleotide polymorphism, the intronic tag SNP for
+  the **CYP2C19\*2** loss-of-function allele (c.-98-273A\>G; in strong
+  linkage disequilibrium with the canonical \*2 defining variant
+  rs4244285, c.681G\>A). 1 = subject’s reported genotype is GA
+  (heterozygous); 0 = otherwise. Paired with
+  `SNP_CYP2C19_RS12769205_GG`; both indicators are 0 for the AA
+  reference group, which the founding source identifies explicitly as
+  the wild type. Time-fixed per subject (germline genotype). Named by
+  the **reported genotype letters**, following the
+  `SNP_ABCB1_RS1045642_GA` / `_GG` and `SNP_POR_RS1057868_GA` / `_GG`
+  pattern.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with
+  `SNP_CYP2C19_RS12769205_GG` = 0, i.e. the AA genotype group (n = 56 of
+  133 in the Li 2025 model-development group).
+- **Source aliases:**
+  - `CL-rs12769205*GA` – the Li 2025 Table 2 row label for the CL/F
+    fold-change of the GA group.
+  - `rs12769205` – the Li 2025 Table 1 genotype row, reported as
+    `AA/GA/GG` counts.
+- **Example models:** `Li_2025_lacosamide_cyp2c19.R` (multiplicative
+  fold-change on apparent clearance of oral lacosamide in Chinese
+  children with epilepsy:
+  `cl = exp(lcl + etalcl) * (WT/30)^e_wt_cl * genoCl` with
+  `genoCl = 1 + (0.879 - 1) * SNP_CYP2C19_RS12769205_GA + (0.736 - 1) * SNP_CYP2C19_RS12769205_GG`,
+  i.e. GA subjects have 0.879-fold, about 12% lower, apparent CL/F than
+  the AA reference group).
+- **Notes:** Genotype-level (three-category) encoding. Unlike the
+  *ABCB1* rs1045642 and *POR* rs1057868 pairs, whose wild-type / variant
+  orientation the register records as unresolved, the orientation here
+  **is** resolved by the founding source: Li 2025 states
+  “theta_rs12769205 = 1 for CYP2C19\*2 AA” and the Discussion calls the
+  AA group the “wild-type”, with the GG group showing “a 26.4% reduction
+  in CL/F (i.e., 0.736 x wild-type)” consistent with the loss of
+  function annotated for CYP2C19\*2 in PharmGKB. So A is the wild-type
+  allele and G the \*2-tagging reduced-function allele, and the effects
+  are monotonic in G-allele count (AA 1 \> GA 0.879 \> GG 0.736). **Not
+  composable with the phenotype-level canonicals** `CYP2C19_S2_CARRIER`,
+  `CYP2C19_IM`, `CYP2C19_PM`, `CYP2C19_NON_EM` or the activity proxy
+  `CYP2C19`: those pool diplotypes across several loci (\*2, \*3, \*17)
+  into metabolizer classes, whereas this pair resolves a single locus by
+  reported genotype and takes the wild-type homozygote as reference. A
+  model needing metabolizer phenotype must derive it from the full
+  diplotype, not from this indicator alone. Li 2025 genotyped nine SNPs
+  across *ABCB1*, *ABCC2*, *CYP2C9* and *CYP2C19* and found rs12769205
+  to be the only one significantly affecting CL/F.
+
+### SNP_CYP2C19_RS12769205_GG (\*\*canonical for CYP2C19\*2 rs12769205 homozygous GG genotype indicator\*\*)
+
+- **Description:** Binary genotype indicator for the *CYP2C19*
+  rs12769205 single-nucleotide polymorphism, the intronic tag SNP for
+  the **CYP2C19\*2** loss-of-function allele. 1 = subject’s reported
+  genotype is GG (homozygous for the G, \*2-tagging, allele); 0 =
+  otherwise. Paired with `SNP_CYP2C19_RS12769205_GA`; both indicators
+  are 0 for the AA wild-type reference group. Time-fixed per subject
+  (germline genotype).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 in combination with
+  `SNP_CYP2C19_RS12769205_GA` = 0, i.e. the AA genotype group (n = 56 of
+  133 in the Li 2025 model-development group).
+- **Source aliases:**
+  - `CL-rs12769205*GG` – the Li 2025 Table 2 row label for the CL/F
+    fold-change of the GG group.
+  - `rs12769205` – the Li 2025 Table 1 genotype row, reported as
+    `AA/GA/GG` counts.
+- **Example models:** `Li_2025_lacosamide_cyp2c19.R` (multiplicative
+  fold-change 0.736 on apparent clearance, i.e. GG subjects have about
+  26% lower CL/F than the AA reference group and correspondingly higher
+  steady-state troughs; Li 2025 reduces the recommended dose for this
+  subgroup).
+- **Notes:** Always used together with `SNP_CYP2C19_RS12769205_GA`; a
+  model that references one without the other has mis-specified the
+  reference category. See the `SNP_CYP2C19_RS12769205_GA` Notes for the
+  resolved wild-type orientation and for why this pair must not be
+  pooled with the CYP2C19 metabolizer-phenotype canonicals. Only 15 of
+  133 subjects in the Li 2025 model-development group were GG, so the
+  coefficient rests on a small subgroup, though its reported precision
+  is high (RSE 5.5%, bootstrap 95% CI 0.661-0.825). The Li 2025
+  Discussion notes the CYP2C19\*2 allele frequency exceeds 30% in Asian
+  populations, which amplifies the clinical significance of this
+  indicator relative to European or African cohorts where \*17
+  predominates.
 
 ### SNP_CYP3A4_RS2242480_VAR_COUNT (**canonical for CYP3A4 rs2242480 variant-allele count**)
 
@@ -43363,7 +44937,16 @@ explicit in the register rather than relying on the column name alone.
   dose-split ratios (RAT-transit, RAT-slowfast), and the relative
   bioavailability (F_SC = 0.957) between the IM reference and the SC
   structural values; all IIVs on absorption parameters are also
-  route-specific per Kado 2020 Methods ‘PK modelling’).
+  route-specific per Kado 2020 Methods ‘PK modelling’),
+  `Tan_2025_cabotegravir.R` (per-dose-record linear-effect
+  `(1 + e_route_sc_ka * ROUTE_SC)` on the typical absorption rate
+  constant of long-acting intramuscular cabotegravir, with theta =
+  -0.563 -\> a 56.3% slower ka for a subcutaneous depot per Tan 2025
+  Table 2 ‘Effect of subcutaneous location on k a (%)’. Because the drug
+  is flip-flop the slower absorption RAISES the 8-weekly trough. Unlike
+  Kado 2020 the SC value is not an assigned route: every injection was
+  an intended ventrogluteal IM injection and `ROUTE_SC` records where
+  post-injection ultrasound actually found the injectate – see notes).
 - **Notes:** This is the per-dose-record covariate-equation indicator,
   distinct from the dosing-event `cmt` column that names the target
   compartment (Kado 2020 doses all routes into the same triple-depot
@@ -43372,7 +44955,22 @@ explicit in the register rather than relying on the column name alone.
   `ROUTE_IP` (IP-vs-non-IP, where non-IP including SC is the reference)
   – `ROUTE_SC` fills the SC-vs-IM contrast that neither of those cover.
   Scope: specific because the IM-vs-SC contrast and the set of
-  parameters that differ by route are paper-specific.
+  parameters that differ by route are paper-specific. The canonical
+  covers two distinct study designs, and the per-model `covariateData`
+  entry states which one applies. In Kado 2020 the route is **assigned**
+  – a deliberate SC-versus-IM crossover. In Tan 2025 it is **observed**:
+  all injections were intended to be IM, and the column records the
+  depot location found by a post-injection ultrasound, so a value of 1
+  flags an unintentionally ectopic deposition rather than a chosen
+  route. The observed form can also absorb covariates that would
+  otherwise appear in their own right: Tan 2025 reports that sex and BMI
+  both lost significance once `ROUTE_SC` entered the model, because
+  gluteal subcutaneous fat depth mediates both (see the
+  `covariatesDataExcluded` block of `Tan_2025_cabotegravir.R`). A source
+  that grades deposition on three levels (intramuscular / mixed /
+  subcutaneous) but reports a single coefficient collapses to this
+  binary with the mixed depots in the reference category; record that
+  grouping in the model’s `covariateData` notes.
 
 ### DEVICE_AI (**canonical for autoinjector-vs-prefilled-syringe SC device indicator**)
 
@@ -43585,6 +45183,73 @@ explicit in the register rather than relying on the column name alone.
   cell elimination rate kout).
 - **Notes:** Captures a between-study shift in the B cell elimination
   rate not explained by the other covariates in the final model.
+
+### STUDY_MICP220 (**canonical for benralizumab phase II study MI-CP220 indicator**)
+
+- **Description:** 1 = subject enrolled in the phase II benralizumab
+  study MI-CP220, 0 = subject enrolled in any of the other studies of
+  the pooled analysis. MI-CP220 is one of the two phase II studies that
+  administered benralizumab 2-200 mg subcutaneously Q4W/Q8W and is the
+  single study in the Jin 2025 12-study pool that carries both its own
+  absolute subcutaneous bioavailability and its own residual-error
+  magnitude.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any of the other 11 studies in the Jin 2025
+  pooled analysis).
+- **Source aliases:**
+  - `STUDYN` – the numeric study identifier column (Jin 2025 Resource
+    1); the indicator is derived from it.
+  - `Fa1S220`, `study 220` – the parameter-name and footnote spellings
+    Jin 2025 Resource 10 uses for the study-specific bioavailability.
+- **Example models:** `Jin_2025_benralizumab.R` (selects an absolute
+  subcutaneous bioavailability of 0.457, with its own lognormal IIV of
+  omega 0.373, in place of the reference 0.539; the same study also has
+  its own log-scale additive residual error of 0.549 versus 0.175 for
+  the other early studies, encoded as the separate `Cc_micp220`
+  endpoint).
+- **Notes:** Sibling of `STUDY_AMES`, the other study-specific
+  bioavailability stratum in the same model; the two are mutually
+  exclusive per subject and a subject in neither takes the reference
+  bioavailability. Distinct from a bare between-study shift on a
+  disposition parameter – here the study effect is on bioavailability,
+  which is why the strata are estimated as three separate absolute
+  fractions rather than as relative multipliers.
+
+### STUDY_AMES (**canonical for the benralizumab AMES autoinjector-versus-prefilled-syringe study indicator**)
+
+- **Description:** 1 = subject enrolled in the phase I AMES study
+  (NCT02968914), which compared benralizumab PK exposure after
+  administration by accessorized prefilled syringe versus autoinjector
+  in 180 healthy volunteers given a single 30 mg subcutaneous dose, 0 =
+  subject enrolled in any of the other studies of the pooled analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (any of the other 11 studies in the Jin 2025
+  pooled analysis).
+- **Source aliases:**
+  - `STUDYN` – the numeric study identifier column (Jin 2025 Resource
+    1); the indicator is derived from it.
+  - `Fa1S30`, `FaslS30`, `AMES` – the parameter-name and footnote
+    spellings Jin 2025 Resource 10 uses for the study-specific
+    bioavailability (the `FaslS30` spelling in the Resource 10 row label
+    is a typo for `Fa1S30`, which the same table’s footnote uses).
+- **Example models:** `Jin_2025_benralizumab.R` (selects an absolute
+  subcutaneous bioavailability of 0.688, with its own lognormal IIV of
+  omega 0.144, in place of the reference 0.539).
+- **Notes:** Sibling of `STUDY_MICP220`. This stratum exists for a
+  diagnostic reason worth preserving: external validation of the legacy
+  model under-predicted the AMES concentrations, and Jin 2025 Results
+  3.2 tested injection site (`ILOC`), healthy status and an AMES study
+  effect on Fa1, CL and V2 before concluding that ‘the model featuring
+  an effect of AMES on Fa1 performed best’. The injection-site and
+  healthy-status alternatives were rejected – the healthy-status effect
+  improved AMES but degraded the other healthy-volunteer study – so the
+  study indicator is deliberately narrower than the physiological
+  covariates it displaced, and must not be re-interpreted as a
+  healthy-volunteer or injection-device effect.
 
 ### STUDY_ARROW_PART2 (**canonical for ARROW PK Substudy Part 2 study indicator**)
 
@@ -44538,6 +46203,58 @@ explicit in the register rather than relying on the column name alone.
   well-defined across studies (rather than tied to a single paper’s
   protocol).
 
+### FED_LIQUIDSUPP (**canonical for liquid-nutritional-supplement meal at dosing indicator**)
+
+- **Description:** 1 = the oral dose was taken with a ready-to-drink
+  liquid nutritional supplement (PediaSure, Ensure, Boost and
+  equivalents) rather than a solid test meal; 0 = any other prandial
+  state. Extends the `FED_*` meal-type family along the meal *form and
+  lipid load* axis rather than the fat-percentage axis: a paediatric or
+  enteral nutritional drink delivers a far smaller absolute quantity of
+  lipid than a standardised solid meal even when its fat percentage is
+  comparable. That distinction matters for drugs whose absorption
+  depends on bile-salt micellar solubilisation or on
+  chylomicron-mediated lymphatic uptake, where the absolute lipid load,
+  not the fat fraction, sets bioavailability.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (not a liquid nutritional supplement). As
+  with `FED_HIGHFAT`, `FED_LOWFAT` and `FED_PATIENTSELECTED`, the
+  meal-type indicators are mutually exclusive per dose record. Note that
+  the reference is NOT necessarily the fasted state: in
+  `Hu_2025_vatiquinone.R` the prandial reference is the medium-fat solid
+  meal (`FED = 1`, `FED_LIQUIDSUPP = 0`) and the fasted state is carried
+  separately on the complement `(1 - FED)`. Document the per-model
+  reference explicitly.
+- **Source aliases:**
+  - `LQD` – used in `Hu_2025_vatiquinone.R` (Hu 2025 Section 2.3
+    covariate equations, “LQDi assumes a value of 1 when a liquid
+    PediaSure meal is ingested”; same orientation as the canonical).
+- **Example models:**
+  - `Hu_2025_vatiquinone.R` (multiplicative log-scale effect on relative
+    bioavailability: `Frel *= exp(-2.671 * FED_LIQUIDSUPP)`, Hu 2025
+    Table 2 theta12, i.e. exposure falls to 6.9% of the medium-fat-meal
+    reference – reproduced as 0.07 for Cmax,ss, Cmin,ss and AUC0-24h,ss
+    alike in Hu 2025 Table 3. Vatiquinone has cLogP 7.8 and is thought
+    to reach the systemic circulation partly by chylomicron-mediated
+    lymphatic transport, which is why the lipid load of the meal
+    dominates its bioavailability).
+- **Notes:** Distinct from `FED` (generic fed-vs-fasted), from
+  `FED_LOWFAT` / `FED_HIGHFAT` (protocol-supplied solid test meals
+  classified by fat percentage) and from `FED_PATIENTSELECTED` (who
+  chose the meal). It is also distinct from the `FORM_*` family:
+  `FORM_SUSPENSION`, `FORM_SYRUP` and siblings describe the DRUG
+  PRODUCT’s physical form, whereas this column describes the MEAL taken
+  with it. The two co-occur and are independent –
+  `Hu_2025_vatiquinone.R` pools capsule (82.8%) and oral-solution
+  (17.2%) records and models neither formulation effect, while modelling
+  the liquid-supplement meal effect. Scope is `specific` rather than
+  `general` because the effect size depends on the particular
+  supplement’s volume and composition and on what the study’s reference
+  meal was; promote to `general` when a second paper ratifies the
+  concept with a comparable definition.
+
 ### FED_PATIENTSELECTED (**canonical for patient-selected-meal-at-dosing indicator**)
 
 - **Description:** 1 = the oral dose was taken with a meal the
@@ -45155,7 +46872,16 @@ explicit in the register rather than relying on the column name alone.
   tablets and capsules” – so neither bioavailability nor Ka carries a
   formulation effect. Unlike Xu 2025, the lag term is additionally gated
   OFF entirely by `FASTED_STRICT`, so the formulation contrast exists
-  only on non-overnight-fasted dose records).
+  only on non-overnight-fasted dose records),
+  `FernandezTeruel_2025_capivasertib.R` (the successor fit of that same
+  model by the same first author, adding the Phase III CAPItello-291 and
+  China PK studies; identical lag-time-only encoding and identical
+  `FASTED_STRICT` gating, with both lag times re-estimated – 0.287 h for
+  the tablet reference and 0.468 h for the capsule per Fernandez Teruel
+  2025 Table 2. The formulation contrast narrows from 2.2-fold in the
+  2024 fit to 1.6-fold here. CAPItello-291, the Phase III trial that
+  motivates the update, dosed the tablet exclusively, so the indicator
+  is 0 throughout any Phase III simulation).
 - **Notes:** Scoped specific because the complement reference category
   is paper-defined (solution for Hennig itraconazole, tablet for Gupta
   lenvatinib). Sibling to `FORM_TABLET` (Kyhl 2016 / Tikiso 2021 tablet
@@ -45396,6 +47122,46 @@ explicit in the register rather than relying on the column name alone.
   in the Wang 2018 trials each subject received a single ASV
   formulation.
 
+### FORM_COL_LIT (**canonical for the literature-extracted colchicine tablet formulation indicator**)
+
+- **Description:** Colchicine (COL) formulation indicator. 1 = the dose
+  was one of the colchicine tablet products used in the published
+  studies from which concentration-time data were digitised into the
+  analysis dataset; 0 = the colchicine tablets used in the New Zealand
+  Gout Study (the reference formulation). Per-dose-occasion in
+  principle, per-study in the source data.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the NZ Gout Study colchicine tablets).
+- **Source aliases:** `STUDY` – the analysis-dataset study index in the
+  Wright 2025 final NONMEM control stream (`IF(STUDY.EQ.1) FORM=1` for
+  the NZ Gout Study; `IF(STUDY.GT.1) FORM=1+THETA(11)` for the three
+  literature-extracted studies), so
+  `FORM_COL_LIT = as.integer(STUDY > 1)`. The paper’s Table 2 names the
+  coefficient theta_FORM and glosses it as “bioavailability differences
+  between data extracted from published studies and the present
+  dataset”.
+- **Example models:** `Wright_2025_colchicine.R` (multiplies the fixed
+  oral bioavailability anchor:
+  `f1 <- exp(lfcentral) * (1 + e_form_col_lit_fcentral * FORM_COL_LIT)`,
+  so F1 = 0.469 for the NZ Gout Study tablets and 0.469 \* 1.55 = 0.727
+  for the literature formulations; `e_form_col_lit_fcentral` = 0.55,
+  Wright 2025 Table 2 and footnote d).
+- **Notes:** Specific scope because the contrast is between one named
+  study’s colchicine tablets and the pooled tablet products of the
+  studies Wright 2025 digitised (Thomas 1989, Ferron 1996, Rochdi 1994);
+  it is not a generic dosage-form contrast and does not interoperate
+  with `FORM_TABLET` / `FORM_CAPSULE` / `FORM_SOLUTION`, which
+  distinguish dosage forms rather than products. Drug-specific member of
+  the `FORM_<drug>_<formulation>` branch of the `FORM_*` family,
+  alongside `FORM_ASV_LIQUID` and `FORM_UPA_ER`. Set to 0 when
+  simulating the gout-patient population the model was built to describe
+  – the literature arm exists only to stabilise the structural model
+  against intensively sampled profiles, and its coefficient is imprecise
+  (RSE 54.8%, SIR 95% CI 0.14-1.17, i.e. the 1.55 multiplier is not
+  distinguishable from 1.14 or 2.17).
+
 ### FORM_UPA_ER (**canonical for the upadacitinib extended-release tablet indicator**)
 
 - **Description:** Upadacitinib (UPA) formulation indicator. 1 = the
@@ -45481,6 +47247,78 @@ explicit in the register rather than relying on the column name alone.
   a dosing-solution-strength effect for a different drug should register
   a parallel `FORM_<drug>_SOLN<strength>` canonical rather than
   overloading this name.
+
+### FORM_ROPI_SOLN05 (**canonical for the 0.5 % w/v ropivacaine injectate-concentration indicator**)
+
+- **Description:** Ropivacaine injectate-concentration indicator. 1 =
+  the regional block was performed with the 0.5 % w/v (5 mg/mL)
+  ropivacaine solution; 0 = a different solution strength was used.
+  Per-administration indicator, but time-fixed per subject in
+  single-shot block studies. As with `FORM_VOSO_SOLN02`, the contrast is
+  between *concentrations* of the same injectable drug product rather
+  than between dosage forms, so the covariate belongs to the
+  `FORM_<drug>_<formulation>` drug-specific branch of the `FORM_*`
+  family. The administered mass is held constant across strengths (3
+  mg/kg in the founding study), so only the injected volume, and hence
+  the geometry and surface area of the fascial-plane drug depot,
+  changes.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the 0.25 % w/v solution, when
+  `FORM_ROPI_SOLN075` is also 0). The two indicators are mutually
+  exclusive and both zero selects the 0.25 % stratum.
+- **Source aliases:**
+  - `The concentration of ropivacaine` – the three-level randomisation
+    column {0.25 %, 0.5 %, 0.75 %} of Ling 2025 Table 1 and Table 3,
+    decomposed here into two binary indicators against the 0.25 %
+    reference.
+- **Example models:** `Ling_2025_ropivacaine.R` (selects the first-order
+  absorption rate constant estimated in the 0.5 % stratum, ka = 19.4
+  1/h, against the 0.25 % reference stratum ka = 32.0 1/h; Ling 2025
+  Table 3 splits its “ka” row into one sub-row per solution strength, so
+  the three estimates are parallel stratum values rather than a
+  reference plus offsets).
+- **Notes:** Specific scope until a second regional-anaesthesia paper
+  ratifies a solution-strength effect for ropivacaine. The numeric token
+  drops the decimal point exactly as `FORM_VOSO_SOLN02` does for 0.2
+  mg/mL, so `SOLN05` is 0.5 % w/v and `SOLN075` is 0.75 % w/v; a future
+  model that needs an explicit 0.25 % indicator (rather than using it as
+  the reference) should register `FORM_ROPI_SOLN025`. Ling 2025 also
+  enrolled two patients given a 0.375 % solution, but they were held out
+  for external validation and are not part of any fitted stratum, so no
+  indicator is defined for that strength. Distinct from `DOSE_*`
+  covariates: the administered dose in mg/kg is identical across the
+  strata and it is the concentration of the injectate, not the amount of
+  drug, that carries the effect.
+
+### FORM_ROPI_SOLN075 (**canonical for the 0.75 % w/v ropivacaine injectate-concentration indicator**)
+
+- **Description:** Ropivacaine injectate-concentration indicator. 1 =
+  the regional block was performed with the 0.75 % w/v (7.5 mg/mL)
+  ropivacaine solution; 0 = a different solution strength was used. The
+  direct partner of `FORM_ROPI_SOLN05`; see that entry for the family
+  placement and for why the contrast is a solution-strength rather than
+  a dosage-form one.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the 0.25 % w/v solution, when
+  `FORM_ROPI_SOLN05` is also 0).
+- **Source aliases:**
+  - `The concentration of ropivacaine` – the same three-level Ling 2025
+    randomisation column decomposed against the 0.25 % reference.
+- **Example models:** `Ling_2025_ropivacaine.R` (selects the 0.75 %
+  stratum first-order absorption rate constant, ka = 14.4 1/h; Ling 2025
+  Discussion reads the monotone decline in ka across 0.25 %, 0.5 % and
+  0.75 % as poorer diffusion of the more concentrated, lower-volume
+  injectate away from the serratus anterior fascial plane).
+- **Notes:** Specific scope, registered together with
+  `FORM_ROPI_SOLN05`. Ling 2025 additionally fits a post-hoc log-linear
+  regression through the three stratum estimates in order to interpolate
+  ka for the held-out 0.375 % patients; that regression is an
+  external-validation device rather than part of the final model and is
+  not encoded by these indicators.
 
 ### FORM_UNDIL_SUSP (**canonical for undiluted oral suspension formulation indicator**)
 
@@ -47208,6 +49046,78 @@ explicit in the register rather than relying on the column name alone.
   model cannot identify separate effects. Sibling of `TRT_EPHEDRINE`;
   mutually exclusive with it.
 
+### TRT_PBT (**canonical for plasma-based-therapy treatment-arm indicator**)
+
+- **Description:** Binary treatment-arm indicator: 1 = the infusion is a
+  plasma-based therapy (PBT) – fresh frozen plasma,
+  solvent/detergent-treated plasma, or an equivalent whole-plasma
+  infusion – 0 = it is not. Used in ADAMTS13 / coagulation-factor
+  replacement models where plasma infusion is the comparator against a
+  recombinant or plasma-derived concentrate, and the products differ in
+  how much of the active factor they deliver per administered unit.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. **The reference differs by model and must
+  be documented per model** – in `Patel_2025_radamts13.R` the reference
+  is the recombinant product (rADAMTS13), whose relative activity is
+  fixed to 1, and `TRT_PDFVIII_VWF` is carried as a separate
+  mutually-exclusive indicator alongside this one.
+- **Source aliases:**
+  - `PBT` – Patel 2025 Table 1 row label “x (1-0.390) if PBT”; also the
+    abbreviation used throughout that paper’s text and figures.
+- **Example models:** `Patel_2025_radamts13.R` (multiplies the delivered
+  dose by a relative-ADAMTS13-activity factor of 1 - 0.390, i.e. plasma
+  infusion delivers 39.0% less ADAMTS13 activity per administered IU
+  than rADAMTS13; enters as relative bioavailability `f(central)`, not
+  as an effect on clearance or volume).
+- **Notes:** Specific scope. Unlike `TRT_EPHEDRINE` /
+  `TRT_CAFEDRINE_THEODRENALINE`, which are patient-level indicators,
+  this is a **per-dose-record** covariate: the cTTP pivotal trial is a
+  crossover in which each patient receives the recombinant product in
+  one period and PBT in another, so the indicator changes within a
+  subject. Deliberately kept separate from `TRT_PDFVIII_VWF` rather than
+  collapsed into one “non-recombinant” indicator, because the two
+  product classes differ by more than a factor of nine in delivered
+  activity (39.0% vs 93.3% lower); a source that pools all
+  plasma-derived products into a single arm should use this canonical
+  and say so in its `notes`. Distinct from `FORM_*` (a formulation of
+  the *same* drug) – these are different products with different
+  active-factor content, which is why the `TRT_` prefix applies.
+  Founding example: Patel 2025.
+
+### TRT_PDFVIII_VWF (**canonical for plasma-derived FVIII/VWF concentrate treatment-arm indicator**)
+
+- **Description:** Binary treatment-arm indicator: 1 = the infusion is a
+  plasma-derived factor VIII / von Willebrand factor concentrate
+  (pdFVIII:VWF), 0 = it is not. These concentrates are given in
+  congenital thrombotic thrombocytopenic purpura (cTTP) and in von
+  Willebrand disease as a source of VWF and, incidentally, of the
+  ADAMTS13 that co-purifies with it; the ADAMTS13 content is far lower
+  per administered unit than in either plasma or a recombinant product.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0. Reference differs by model and must be
+  documented per model – in `Patel_2025_radamts13.R` the reference is
+  rADAMTS13 and this indicator is mutually exclusive with `TRT_PBT`.
+- **Source aliases:**
+  - `FVIII:VWF concentrates` – Patel 2025 Table 1 row label “x (1-0.933)
+    if FVIII:VWF concentrates”.
+  - `pdFVIII:VWF` – the abbreviation used in that paper’s text and in
+    Figure 3.
+- **Example models:** `Patel_2025_radamts13.R` (multiplies the delivered
+  dose by a relative-ADAMTS13-activity factor of 1 - 0.933,
+  i.e. pdFVIII:VWF concentrates deliver 93.3% less ADAMTS13 activity per
+  administered IU than rADAMTS13).
+- **Notes:** Specific scope. Per-dose-record, for the same crossover
+  reason given under `TRT_PBT`; mutually exclusive with it. Orthogonal
+  to `VWF` (a measured plasma von Willebrand factor concentration used
+  as a covariate on FVIII clearance) and to `FVIIIRECENT` (a measured
+  FVIII:C activity) – this canonical identifies which *product was
+  administered*, not a measured analyte concentration. Founding example:
+  Patel 2025.
+
 ### TRT_OLX703A, TRT_AB729, TRT_ALG125755, TRT_ALG125819, TRT_VIR2218, TRT_ARB1740, TRT_ARB1467, TRT_ARC520, TRT_SIHBV74, TRT_SIHBV75, TRT_SIHBV76, TRT_SIHBV77, TRT_SIHBV74_77 (**canonical for anti-HBV short-interfering-RNA treatment-arm indicators**)
 
 - **Description:** Mutually exclusive binary treatment-arm indicators
@@ -48119,7 +50029,7 @@ explicit in the register rather than relying on the column name alone.
   the SR reference, consistent with a higher vinpocetine oral
   bioavailability / metabolite yield for the Cavinton IR arm; Petric
   2023 Table 1 beta_Tk0_Formulation#2 = -0.4 (RSE 29.0%) and
-  beta_V1/F_Formulation#2 = -1.26 (RSE 5.44%))…………
+  beta_V1/F_Formulation#2 = -1.26 (RSE 5.44%))………….
 - **Notes:** Scoped specific because the Cavinton-IR-vs-Ultra-Vinca-SR
   contrast is tied to the Petric 2023 relative-bioavailability crossover
   design (a three-level formulation stratification of vinpocetine as its
@@ -49199,7 +51109,67 @@ explicit in the register rather than relying on the column name alone.
   artefact of that gap: a continuous dose-Frel relationship was fitted
   and gave minimal improvement, and the Discussion argues the step
   estimate is likely the maximum of an effect that rises gradually
-  between 100 and 175 mg).
+  between 100 and 175 mg), `DiDeo_2025_tideglusib_healthy.R`,
+  `DiDeo_2025_tideglusib_dm1.R` (`DOSE_HIGH = 1` for an administered
+  tideglusib dose above 400 mg, per Di Deo 2025 Table 2, whose rows are
+  split as `kA (1/h)` vs `kA (dose > 400 mg) (1/h)` and
+  `Bioavailability (doses <= 400 mg)` – FIXED to 1 – vs
+  `Bioavailability (doses > 400 mg)`. Notable as the widest use of the
+  indicator so far: one column gates THREE quantities, because the paper
+  splits the proportional residual error on the same threshold as well
+  (`Proportional error (doses <= 400 mg)` vs `(doses > 400 mg)`), so the
+  model carries `propSd` / `propSd_highdose` alongside `lka` /
+  `lka_highdose` and `lfdepot` / `lfdepot_highdose`. The threshold
+  applies to the PER-ADMINISTRATION dose rather than the daily dose,
+  which matters in the healthy-elderly study where the 400 mg b.i.d. arm
+  delivers 800 mg/day yet sits in the reference group: `DOSE_HIGH = 0`
+  for the 300 mg b.i.d. and 400 mg b.i.d. arms and 1 for the 600, 800,
+  1000 and 1200 mg q.d. arms. In the DM-1 patient study only the 400 mg
+  q.d. (0) and 1000 mg q.d. (1) arms exist. Mechanistically the paper
+  attributes the step to the limited aqueous solubility of tideglusib –
+  Discussion: “oral bioavailability decreases with increasing doses,
+  even though we have not been able to quantify these changes in a
+  continuous manner. Instead, bioavailability and absorption rate
+  constant were dichotomized into two levels, with exposure data
+  following a 400 mg dose as reference” – the same “could not identify a
+  continuous form, so a step was used” reasoning Hughes 2022 gives
+  above), `Koele_2025_btz043.R` (`DOSE_HIGH = 1` for a daily BTZ-043
+  dose above 1250 mg – the 1500 and 1750 mg Stage 1 dose-escalation
+  cohorts – gating a multiplicative 0.710 factor on relative
+  bioavailability, `frel = ... * 0.710^DOSE_HIGH`, per Koele 2025 Table
+  2 ‘Dose (\>1250 mg) on F (%) 71.0 (51.0-98.0)’ and the supplementary
+  control stream `IF(DOSE.GT.1250)FDose = THETA(8)`. Koele 2025 Results:
+  ‘An apparent plateau in bioavailability was observed for doses over
+  1250 mg daily. No further decrease in the bioavailability was detected
+  between the 1500 and 1750 mg doses (dOFV = -3.3, df = 1)’, attributed
+  in the Discussion to possible saturable absorption. Per dose record
+  rather than per subject in principle, though in this trial each
+  participant stayed on one dose level), `Jin_2025_benralizumab.R`
+  (`DOSE_HIGH = 1` for the 200 mg subcutaneous benralizumab arms – the
+  top of the 2-200 mg SC range used by the two phase II studies in the
+  12-study pool – gating a 42.5% *reduction* in absolute subcutaneous
+  bioavailability, `Fa1 * exp(-0.554 * DOSE_HIGH)`, per Jin 2025
+  Resource 10 row `Rfa1Dose`. Same step-at-the-top-of-the-dose-range
+  semantics on bioavailability as the two brepocitinib entries above,
+  but the first registered instance in which the step is DOWNWARD –
+  consistent with saturable absorption from the subcutaneous depot at
+  high injected mass. The coefficient additionally carries its own small
+  normally-distributed random effect, omega 0.029 fixed, which the
+  source labels as an IIV on the covariate coefficient itself rather
+  than on a parameter), `Abdelgawad_2025_rifampicin.R` (`DOSE_HIGH = 1`
+  for the LASER-TBM high-dose experimental arms – oral rifampicin 35
+  mg/kg once daily, or intravenous 20 mg/kg for the first three days –
+  and 0 for the standard-of-care control arm at oral 10 mg/kg. Jointly
+  with `DAY28` it selects one of four unconstrained typical values of
+  the maximal intrinsic hepatic clearance (33.1 and 41.4 L/h standard
+  dose at the day-3 and day-28 visits; 46.1 and 70.2 L/h high dose at
+  the same two visits, all as the reported CLint,max \* fu product).
+  Viberg 2012 founding semantics – a step-function switch in clearance
+  at the top of the dose range, encoded as distinct THETAs – but note
+  that this model ALSO carries a smooth saturable first-pass extraction,
+  and the paper cannot separate the dose-group step from the arm-level
+  difference in prior rifampicin exposure, so the indicator and the
+  structural nonlinearity coexist here and must not be conflated).
 - **Notes:** Abstract-form sibling of the numerically-explicit
   `DOSE_<N>MG` family (`DOSE_50MG`, `DOSE_70MG`, `DOSE_130MG`,
   `DOSE_260MG`, `DOSE_400MG`) and of the drug-suffixed `DOSE_HIGH_EFL`
@@ -49389,6 +51359,48 @@ explicit in the register rather than relying on the column name alone.
   pooled analysis with additional study cohorts would justify its own
   canonical or a promotion to general.
 
+### STUDY_MARIBAVIR_PHASE1 (**canonical for phase 1 study cohort indicator in the Sun 2025 maribavir pooled analysis**)
+
+- **Description:** 1 = the concentration record originates from a phase
+  1 maribavir study in the Sun 2025 pooled population PK analysis (206
+  individuals, 4231 records: healthy volunteers plus the
+  hepatic-impairment, renal-impairment and stable-renal-transplant
+  cohorts, and the NCT05319353 Japanese-descended / non-Hispanic
+  Caucasian study); 0 = the record originates from a phase 2/3 study
+  (SHP620-202, -203, -302, -303, which includes SOLSTICE and AURORA; 724
+  individuals, 3200 records). Used ONLY to switch the proportional
+  residual-error magnitude; it has no structural effect on any PK
+  parameter.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (phase 2/3 study).
+- **Source aliases:**
+  - `STUDY` – the NONMEM control-stream study-identifier column. The
+    `$ERROR` block selects the phase 2/3 proportional term with
+    `IF(STUDY.EQ.202.OR.STUDY.EQ.203.OR.STUDY.EQ.303.OR.STUDY.EQ.302)`,
+    so the binary indicator is derived as `STUDY_MARIBAVIR_PHASE1 = 1`
+    for any study identifier outside that set.
+- **Example models:** `Sun_2025_maribavir.R` (switches the proportional
+  residual SD between 0.265518 for phase 1 and 0.397492 for phase 2/3).
+- **Notes:** Auto-approved member of the `STUDY_<id>` family, and a
+  direct sibling of \[\[STUDY_NIPOCALIMAB_PHASE1\]\] and
+  \[\[STUDY_BALCINRENONE_PHASE1\]\] – all three are
+  phase-1-versus-later-phase cohort indicators whose sole role is to
+  switch a study-specific residual-error magnitude in a pooled analysis.
+  Sun 2025 attributes the difference to the different LC-MS assays, with
+  different lower limits of quantification, used in the phase 1 versus
+  the phase 2/3 studies (proportional residual variance 0.0705 vs 0.158,
+  i.e. SD 0.266 vs 0.397). The paper-specific `MARIBAVIR` token is
+  required because the generic `PHASE1` name is ambiguous across pooled
+  analyses that pick opposite reference categories; see the
+  `STUDY_NIPOCALIMAB_PHASE1` source-alias note. Distinct from
+  \[\[DIS_CMV\]\], which carries the healthy-versus-transplant-recipient
+  contrast structurally on CL/F: the two columns are correlated in the
+  Sun 2025 dataset (every phase 1 participant is `DIS_CMV = 0`) but
+  encode different things, and a downstream user simulating a phase 1
+  healthy cohort needs both set to their phase 1 values.
+
 ### STUDY_PKU015 (**canonical for sapropterin PKU-015 pediatric study cohort indicator**)
 
 - **Description:** 1 = subject enrolled in study PKU-015 (pediatric
@@ -49441,6 +51453,46 @@ explicit in the register rather than relying on the column name alone.
   because the indicator is tied to the ObsEva linzagolix
   clinical-development program.
 
+### STUDY_GERECKE (**canonical for the Gerecke 2021 PIKRT cohort indicator in the Gotz 2025 pooled fosfomycin analysis**)
+
+- **Description:** 1 = subject enrolled in study B (Gerecke 2021, J
+  Antimicrob Chemother 2021;77:169-173, <doi:10.1093/jac/dkab357>; eight
+  critically ill patients on prolonged-intermittent kidney replacement
+  therapy with a Genius 90 batch dialysis system) of the Gotz 2025
+  four-study pooled fosfomycin analysis; 0 = any of studies A (Dimski
+  2021), C (Huppe 2023) or D (Parker 2015), and 0 for any new patient
+  being simulated. Unlike its `STUDY_*` siblings, which switch a
+  residual-error magnitude or a relative bioavailability between values,
+  this indicator is a hard structural gate: it multiplies the
+  body-clearance arm by zero, removing that elimination pathway entirely
+  for the cohort.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (studies A, C, D, or a newly simulated
+  patient).
+- **Source aliases:** derived per subject from the pooled-analysis study
+  identifier (`study B` -\> 1; `study A` / `study C` / `study D` -\> 0).
+- **Example models:** `Gotz_2025_fosfomycin.R` (gates the body-clearance
+  arm to zero:
+  `cl_body <- diuresis * (1 - STUDY_GERECKE) * exp(lcl_body + etalcl_body) * (CRCL/48.4)^e_crcl_cl_body`).
+- **Notes:** Gotz 2025 Table 2 footnote b prints the gate literally as
+  `(x 0 if study B)`, and Results explains it: “CL_body was fixed to 0
+  for study B since these patients presented no fosfomycin elimination
+  without KRT (Fig. 2), which led to individual CL_body estimates close
+  to zero.” The gate is NOT redundant with the anuria gate that the same
+  model carries on `URINE_VOL_24H`: study B’s median (IQR) 24-hour urine
+  output was 700 (500-1000) mL, so no study B patient meets that model’s
+  \< 100 mL anuria criterion, and both gates have to be carried
+  separately. Study B contributed 8 of the 45 pooled patients (17.8%)
+  and also had no height, BMI, BSA or laboratory markers recorded, which
+  is why Gotz 2025 additionally reports a sensitivity re-fit on a
+  reduced data set (n = 37) that excludes it; Table 2 shows the two
+  parameter sets to be consistent. Set to 0 for simulation – the paper’s
+  own Monte Carlo scenarios (Methods, Simulations; Fig. S6) never invoke
+  it. Specific scope because the indicator is tied to one named cohort
+  of one pooled analysis.
+
 ### STUDY_FARLETUZUMAB_PHASE2 (**canonical for Phase II study cohort indicator in the Farrell 2012 farletuzumab pooled analysis**)
 
 - **Description:** 1 = subject enrolled in the Phase II study
@@ -49464,6 +51516,55 @@ explicit in the register rather than relying on the column name alone.
   (sigma = 20.5%); Phase II uses a combined additive + proportional
   model (sigma_prop = 34.9%, sigma_add = 7.94 ug/mL). The
   `STUDY_FARLETUZUMAB_PHASE2` indicator selects between them.
+
+### STUDY_PEDIATRIC (**canonical for the pediatric-trial cohort indicator in the Chen 2025 hemoporfin pooled pediatric + adult analysis**)
+
+- **Description:** 1 = the subject is from the pediatric port-wine-stain
+  trial of the Chen 2025 hemoporfin analysis (NCT03125057, patients aged
+  7-14 years, sparse sampling, photodynamic therapy administered); 0 =
+  the subject is from the 2012 adult healthy-volunteer phase I trial
+  (aged 20-45 years, intensive sampling, no photodynamic therapy). Used
+  as the inter-trial (“study effect”) indicator on relative
+  bioavailability, so that the allometric body-size relationship can be
+  estimated across a pooled pediatric + adult data set without the trial
+  difference confounding the exponent.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the adult healthy-volunteer phase I trial).
+  Enters as the **additive-on-one** form
+  `F1 = 1 + theta_study * STUDY_PEDIATRIC` (Chen 2025 Equation 2), not
+  as a multiplicative or exponential form – so the fitted `theta_study`
+  is directly the fractional change in bioavailability, and setting the
+  indicator to 0 recovers `F1 = 1` exactly. Value observed:
+  `theta_study` = -0.175 (Chen 2025 Table 2), i.e. pediatric-trial
+  exposure 17.5% below the allometric prediction.
+- **Source aliases:**
+  - `STUDY` – the `$INPUT`-derived variable in the Chen 2025 Data S2
+    final control stream, set from the subject identifier
+    (`IF (ID.LT.1000) STUDY=1`, `IF (ID.GT.1000) STUDY=0`).
+- **Example models:** `Chen_2025_hemoporfin.R` (founding example;
+  `f(central) <- 1 + e_study_f * STUDY_PEDIATRIC` on a three-compartment
+  intravenous model whose six disposition parameters are otherwise
+  scaled only by fat-free mass).
+- **Notes:** Specific scope until a second model ratifies the name.
+  Member of the `STUDY_<id>` family; `STUDY_PKU015` is the closest
+  structural analogue, being likewise a pediatric-versus-adult trial
+  indicator in a pooled pediatric + adult population PK analysis, though
+  `STUDY_PKU015` switches a residual-error magnitude where this one
+  switches bioavailability. Named for the cohort rather than for the NCT
+  number because the paper itself calls the parameter the “study effect”
+  and identifies the cohorts as pediatric versus adult throughout; a
+  second pooled pediatric + adult analysis needing an inter-trial offset
+  of a different kind should register a paper-specific sibling rather
+  than overload this name. Note that Chen 2025 deliberately does **not**
+  apply this offset in its dose-selection simulations – the authors
+  state that the cause of the study effect (study operations,
+  bioanalytical method, or subject physiology) is unknown, so the
+  recommended pediatric regimens are derived with the indicator
+  effectively set to 0. A downstream user reproducing the paper’s dosing
+  tables must do the same; a user reproducing the observed pediatric
+  concentrations must set it to 1.
 
 ### STUDY_BALCINRENONE_PHASE1 (**canonical for single-dose phase 1 study cohort indicator in the Parkinson 2025 balcinrenone pooled analysis**)
 
@@ -52471,6 +54572,143 @@ explicit in the register rather than relying on the column name alone.
   oncology or HIV), and dropping it would create a collision the moment
   a second indication needs the same axis.”
 
+### FED_MISSING (**canonical for prandial-state-not-recorded indicator**)
+
+- **Description:** 1 = the prandial state in force at this dose record
+  was not captured by the study, 0 = the prandial state was recorded
+  (fasted, fed, or any of the meal-composition levels). Completes the
+  `FED_*` family for pooled analyses in which a substantial share of
+  dose records carry no food-status information and the analyst
+  estimates the unrecorded stratum as its own level rather than dropping
+  the records or imputing them into an observed level. The
+  distinguishing feature is that the associated absorption and
+  bioavailability estimates are a *nuisance* average over an unknown
+  mixture of true prandial states, so they describe the missingness
+  stratum and not any physiological meal condition.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** general
+- **Reference category:** 0 (prandial state recorded). Mutually
+  exclusive with the meal-composition indicators in the sense that a
+  record with `FED_MISSING = 1` has no known meal composition, so `FED`
+  / `FED_HIGHFAT` / `FED_LOWFAT` must all be 0 on that record and must
+  not be read; the fasted reference is likewise derived as the
+  complement only among records with `FED_MISSING = 0`.
+- **Source aliases:**
+  - `FED2 = -99` – Du 2025 repotrectinib `$INPUT` sentinel for an
+    unrecorded prandial state; the source column pools four levels (0
+    fasted, 1 fed, 2 modified fasted, -99 unknown) and the control
+    stream branches on the sentinel exactly as it branches on the
+    observed levels (`IF (FED2.EQ.-99) TVKA = THETA(8)`).
+- **Example models:** `Du_2025_repotrectinib.R` (selects a fourth
+  absorption rate constant, 0.193 1/h – the fastest of the four – and a
+  fourth bioavailability, 0.533, essentially the fasted value; Du 2025
+  Table 2 KAUnknown and F1Unknown. The stratum is large: 434 of 715
+  prandial records, 60.6%, per Table 1. Du 2025 Discussion states that
+  “the unknown food effect was also estimated as a nuisance parameter”,
+  which is what allowed those records to be retained rather than
+  excluded).
+- **Notes:** General scope: “food status was not collected for part of
+  the pooled dataset” is a design-independent property of retrospective
+  pooled popPK analyses, not a property of one protocol, and the
+  register already carries a well-populated `<COVARIATE>_MISSING` family
+  on exactly this pattern (`AAG_MISSING`, `ADA_MISSING`,
+  `CYP2C9_MISSING`, `PDL1_TUM_MISSING`, `TUM_EGFR_MUT_MISSING`,
+  `UGT2B15_MISSING`). **This indicator is not interchangeable with a
+  fasted or fed flag and must never be collapsed into one.** Its
+  estimates are properties of a missingness mechanism – in Du 2025 the
+  unknown-state absorption rate constant is the fastest of the four
+  levels and its bioavailability is closest to fasted, a combination
+  that no single real prandial state produces – so folding it into an
+  observed level would misreproduce every prediction that touches those
+  records. A model that carries this indicator should set it to 0 for
+  all prospective simulations of a defined prandial state; it exists to
+  reproduce the published fit, not to describe a meal. Distinct from
+  `FED_PATIENTSELECTED`, where the meal is unstandardised but its
+  occurrence *is* recorded; here the occurrence itself is unknown.
+  Contrast `Bihorel_2023_molnupiravir.R`, which faced the same problem
+  and chose the opposite resolution – mixture modelling with the
+  high-fat fraction fixed at 25%, hard-coded into the analysis dataset –
+  so a paper that imputes rather than estimates the unrecorded stratum
+  should carry `FED_HIGHFAT` with a provenance note instead of this
+  indicator.
+
+### TRT_BENRALIZUMAB (**canonical for benralizumab treatment-arm indicator**)
+
+- **Description:** Binary treatment-arm indicator: 1 = the subject was
+  randomised to benralizumab, 0 = the subject was randomised to placebo.
+  A patient-level property of the randomised assignment, not of a trial
+  arm in a meta-analysis.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (placebo).
+- **Source aliases:**
+  - `TRTAN` – the actual-treatment column of Jin 2025 Resource 3, coded
+    ‘0: placebo, 1: benralizumab 30 mg every 4 weeks \[Q4W\], 2:
+    benralizumab 30 mg every 8 weeks \[Q8W\]’; the binary indicator is
+    derived as `TRTAN > 0`, which collapses the two active regimens
+    because the model that uses it carries no dose or regimen term.
+- **Example models:** `Jin_2025_benralizumab_fev1.R` (gates the
+  time-driven `Emax * t / (T50 + t)` treatment effect on the
+  pre-bronchodilator FEV1 endpoint on and off, so that the placebo arm
+  is described by the baseline plus the exponential-onset placebo term
+  alone).
+- **Notes:** Specific scope. Follows the `TRT_<INN>` convention
+  established by `TRT_EPHEDRINE`: use `TRT_<INN>` when the drug is the
+  study treatment under investigation, `CONMED_<INN>` when it is
+  background co-medication, and a bare INN only for MBMA trial-arm
+  indicators. **An explicit arm indicator is needed only when the drug
+  effect is not concentration-driven.** In an exposure-response model
+  the Emax term vanishes of its own accord in the placebo arm because
+  the predicted concentration is zero, so no indicator is required (see
+  `Zhang_2025_dupilumab_fev1.R`, and the sibling
+  `Jin_2025_benralizumab_aaer.R`, which both rely on that).
+  `Jin_2025_benralizumab_fev1.R` needs the indicator precisely because
+  its FEV1 exposure-response relationship was flat over the studied dose
+  range and the authors therefore re-expressed the treatment effect as a
+  function of TIME rather than of concentration – a time-driven effect
+  does not switch itself off for placebo subjects.
+
+### TRT_SB16 (**canonical for SB16 denosumab-biosimilar treatment-arm indicator**)
+
+- **Description:** Binary treatment-arm indicator: 1 = the subject
+  received SB16 (a proposed denosumab biosimilar, approved as Obodence /
+  Xbryk in the EU and Ospomyv / Xbryk (denosumab-dssb) in the US), 0 =
+  the subject received reference denosumab. A patient-level
+  randomised-treatment indicator. In Choi 2025 the EU-sourced and
+  US-sourced reference products were pooled into a single reference
+  group, so the 0 level spans both.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (reference denosumab, EU- and US-sourced
+  pooled). Choi 2025 justify pooling the two reference sources because
+  the same pivotal clinical data supported approval of the originator in
+  both regions.
+- **Source aliases:**
+  - `treatment group (SB16 vs DEN)` – Choi 2025 Methods 2.7 and Results
+    3.3.
+- **Example models:** `Choi_2025_denosumab.R` (multiplicative effect on
+  CL/F of 0.9982, i.e. a 0.18% lower apparent clearance on SB16 than on
+  reference denosumab).
+- **Notes:** Specific scope (a per-product arm indicator). Member of the
+  `TRT_<product>` family; named for the development code rather than the
+  INN because both arms receive denosumab and the INN alone cannot
+  distinguish them – the same reasoning that gives the anti-HBV siRNA
+  arms their development-code names. **This indicator carries a
+  deliberately non-significant effect.** Choi 2025 found treatment group
+  was not a statistically significant covariate on any PK or PD
+  parameter and excluded it from the covariate-selected model, then
+  re-introduced it on CL/F specifically to drive the comparative
+  biosimilarity simulation (Methods 2.3, Results 3.3). Consumers
+  reproducing the covariate-selected final model should leave `TRT_SB16`
+  at its reference level 0; consumers reproducing the paper’s Table 5
+  biosimilarity comparison should vary it. Future
+  biosimilar-vs-reference extractions should ratify a sibling
+  `TRT_<code>` canonical rather than overloading this one, since the
+  effect size is product- and analysis-specific.
+
 ## Occasion / period (IOV)
 
 ### OCC (**canonical for the integer-valued occasion / period column**)
@@ -52560,8 +54798,19 @@ explicit in the register rather than relying on the column name alone.
   this parameter because the paper found IIV in MTT “reduced to zero
   when associated with IOV”).
 - **Notes:** `OCC` is the recommended canonical for new IOV-using models
-  – the binary `OOC1..OOCN` indicators below remain canonical for legacy
-  / pre-existing models that ship the data already-decomposed.
+  – the binary `ooc1..oocN` indicators below remain canonical for legacy
+  / pre-existing models that ship the data already-decomposed. The
+  column is also the right home for a **fixed categorical occasion
+  effect on a typical value**, which is what an occasion column often
+  collapses to once IOV is simplified away: `Mahomed_2025_CAP256V2LS.R`
+  decomposes `OCC` into `occ2 <- (OCC >= 2)` and adds a fixed `+20`
+  logit offset that pins subcutaneous relative bioavailability to 1 on
+  the second and later dosing occasions, having tested and then
+  discarded true IOV on F1 (Mahomed 2025 Supplementary Methods,
+  Structural model: “inter-occasion variability (IOV) was also tested
+  and showed an improvement … Further model refinement and
+  simplification lead to replacing the IOV with a categorical occasion
+  effect on F1”).
 
 ### OOC1, OOC2, OOC3, OOC4 (**canonical for mutually-exclusive crossover occasion indicators**)
 
@@ -52768,6 +55017,68 @@ explicit in the register rather than relying on the column name alone.
   `Zhou_2025_fruquintinib_QTcP_parent.R` documents it in
   `covariatesDataExcluded` because the source authors dropped it from
   that fit (95% CI included 0; likelihood-ratio-test p = 0.1318).
+
+### DAY28 (**canonical for day-28-of-treatment landmark indicator**)
+
+- **Description:** Binary within-subject landmark indicator: 1 = the
+  record belongs to the day-28 pharmacokinetic visit of the study, 0 =
+  the record belongs to the earlier baseline / early-treatment visit
+  that the same study samples (day 3 in the founding model).
+  Time-varying within subject – gates a step change in a typical-value
+  model parameter between the early and the late sampling visit,
+  typically standing in for enzyme autoinduction, nutritional recovery,
+  or another slow process that has run to completion by the second
+  visit.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (the study’s earlier PK visit; day 3 in
+  `Abdelgawad_2025_rifampicin.R`).
+- **Source aliases:**
+  - `PK_VISIT_2` – the NONMEM control-stream column in the Abdelgawad
+    2025 supplementary material, which carries the literal visit day
+    (values 3 and 28) rather than a 0/1 indicator; the covariate
+    branches are written `IF (RIFHIGH.EQ.0.AND.PK_VISIT_2.EQ.3)` and
+    `IF (RIFHIGH.EQ.1.AND.PK_VISIT_2.EQ.28)`. The canonical column is
+    the 0/1 indicator, so a data assembler derives
+    `DAY28 = as.integer(pk_visit_day >= 28)`.
+  - `visit 2` / `Visit 2` – Abdelgawad 2025 Table 2 row labels
+    (“Standard dose: visit 2”, “High dose: visit 2”).
+- **Example models:**
+  - `Abdelgawad_2025_rifampicin.R` (selects, jointly with `DOSE_HIGH`,
+    one of four stratum-suffixed typical values of the maximal intrinsic
+    hepatic clearance: 33.1 L/h standard dose day 3, 41.4 L/h standard
+    dose day 28, 46.1 L/h high dose day 3, 70.2 L/h high dose day 28,
+    all as the reported CLint,max \* fu product).
+  - `Calderin_2025_pyrazinamide.R` (multiplicative shift on clearance:
+    `cl <- exp(lcl + etalcl) * (FFM/45)^0.75 * (1 + e_day28_cl * DAY28)`
+    with `e_day28_cl = 0.302`, i.e. pyrazinamide clearance is 30.2%
+    higher at day 28 than at day 3, reducing exposure in both plasma and
+    CSF over the first month of antituberculosis therapy).
+- **Notes:** Registered under the naming pattern the `DAY14` entry
+  prescribes by name (“future studies that test a similar within-subject
+  step change with a different cutoff (day 7, day 28, etc.) should
+  register a new canonical (e.g., `DAY28`)”), and a well-formed member
+  of the same `DAY<n>` landmark-indicator family as `DAY4`, `DAY8`,
+  `DAY14` and `DAY21`. Specific scope because the day-28 cutoff is a
+  sampling-schedule landmark of the source trial rather than a
+  mechanistic threshold, and because what the 0 level means depends on
+  which earlier visit the study sampled. Distinct from `OCC` and
+  `ooc<n>`, which decompose multi-occasion sampling for inter-occasion
+  variability and carry per-occasion `eta` slots rather than a
+  typical-value step – the founding model carries both, `OCC` (1-5)
+  driving the between-occasion etas on absorption and `DAY28` selecting
+  the visit-specific typical clearance. Distinct from `DAY21`, whose 0
+  level is day 1 of a treatment cycle rather than an early on-treatment
+  visit, and from `DAY14`, whose semantics are “on or after day 14 of
+  treatment” across a continuously sampled study rather than “at the
+  second of two discrete PK visits”. A study whose autoinduction is
+  resolvable in continuous time should prefer a
+  time-since-treatment-start covariate over this indicator; `DAY28` is
+  the right column when the source paper explicitly abandoned a
+  continuous autoinduction model for separate per-visit typical values,
+  as Abdelgawad 2025 did after neither an exponential time-on-treatment
+  model nor an enzyme-turnover model converged.
 
 ### NTIME (**canonical for the protocol-scheduled (nominal) hour after the most recent dose**)
 
@@ -53241,8 +55552,6 @@ explicit in the register rather than relying on the column name alone.
   alongside the Karlsson 2010 acute-stroke disease-progression
   extraction.
 
-## Mixture / latent-class indicators
-
 ### MIX_PDI (**canonical for binary mixture-model class indicator: PDI inhibition-of-synthesis vs PDS stimulation-of-elimination thrombocytopenia mechanism**)
 
 - **Description:** Per-subject latent mixture-model class indicator from
@@ -53467,7 +55776,18 @@ explicit in the register rather than relying on the column name alone.
   comments; the footnote reading is adopted because the paper’s own
   Figure 4C – the median of 1000 simulated profiles from the final model
   – sits on the baseline through 3 h and peaks near 6.1 h, which only
-  the 74%-lagged reading reproduces).
+  the 74%-lagged reading reproduces), `Wright_2025_colchicine.R` (gates
+  the lag time on the **central** compartment of a zero-order-absorption
+  colchicine model between the lagged class = `exp(ltlag) = 1.3 h` and
+  the no-lag class = 0, as `tlag <- exp(ltlag) * MIX_LAGGED_ABS`; D1, F1
+  and the disposition parameters are shared between the two classes. Not
+  a `$MIXTURE` class index – Wright 2025 reports that a `$MIX` model for
+  the bimodal lag “was not supported”, so the class was assigned
+  deterministically in the analysis dataset as a `LAGFLAG` column set to
+  1 for the 17 of 78 NZ Gout Study participants whose steady-state Cmax
+  was at or below their Cmin. The 1.3 h lag is itself fixed – it is the
+  longest post-dose sampling time recorded in that study, not an
+  estimate).
 - **Notes:** The population probability of `MIX_LAGGED_ABS = 1` is the
   estimated mixture fraction `P(Group 1) = 1 / (1 + exp(P1)) = 0.970`
   (Bonate 2004 Table 3 with P1 = -3.47). For typical-value simulation
@@ -53481,7 +55801,16 @@ explicit in the register rather than relying on the column name alone.
   lagged-vs-no-lag absorption-mixture dichotomy may extend this entry,
   while mixture indicators from unrelated dichotomies (e.g., fast vs
   slow elimination subpopulations) should register a new canonical name
-  (`MIX_FAST_ELIM`, etc.).
+  (`MIX_FAST_ELIM`, etc.). The class assignment need not come from a
+  `$MIXTURE` block: `Wright_2025_colchicine.R` uses the same column for
+  a lagged-vs-no-lag dichotomy that its authors assigned
+  deterministically in the analysis dataset (from the observed Cmax \<=
+  Cmin pattern) after a `$MIX` mixture failed to support the bimodality.
+  The covariate semantics – 1 = lagged-absorption class, 0 = no lag –
+  are identical either way; what changes is only how a downstream user
+  should draw it for simulation (a fitted mixture fraction versus an
+  observed class prevalence, documented in each model’s
+  `covariateData[[MIX_LAGGED_ABS]]$notes`).
 
 ### MIX_HIGH_VP (**canonical for binary mixture-model class indicator: high-peripheral-volume vs typical-peripheral-volume subpopulation**)
 
@@ -57087,6 +59416,50 @@ explicit in the register rather than relying on the column name alone.
   mAb itself, the appropriate covariate is a chemotherapy-backbone
   indicator (e.g. `CONMED_CHEMO`) on the mAb model instead.
 
+### CONMED_ZOPICLONE (**canonical for concomitant zopiclone coadministration indicator**)
+
+- **Description:** 1 = the patient was co-prescribed zopiclone (a
+  cyclopyrrolone non-benzodiazepine hypnotic), 0 = not. Time-fixed per
+  subject in the founding example, which draws the comedication list
+  once from a retrospective inpatient medical log; a study that records
+  zopiclone starting or stopping during the sampling window should carry
+  the column on the observation records instead.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (no concomitant zopiclone), which is the
+  larger cohort in the founding example (73 of 81 patients) and carries
+  the structural typical value.
+- **Source aliases:**
+  - `ZOP` – the symbol used in the Han 2025 covariate equation
+    `CL/F = 29.6 * (weight/70)^0.75 * (1 - 0.254 * ZOP)` (Results,
+    Equations 6-7: “ZOP denoted zopiclone and when schizophrenia
+    patients took ZOP, ZOP denoted 1, otherwise ZOP denoted 0”).
+  - `Zopiclone tablets` – the row label in the Han 2025 comedication
+    table (Table 2), coded `Category` 0/1 on the same orientation as
+    this canonical.
+- **Example models:** `Han_2025_clozapine.R` (linear-shift effect on
+  apparent oral clearance: `cl *= (1 + e_zop_cl * CONMED_ZOPICLONE)`
+  with `e_zop_cl = -0.254`, i.e. concomitant zopiclone lowers clozapine
+  CL/F by 25.4%; founding example).
+- **Notes:** Named-drug member of the `CONMED_<INN>` family, used as the
+  perpetrator indicator in a comedication-screening popPK analysis. The
+  founding paper attributes the interaction to competition for CYP3A4,
+  which metabolises both clozapine (alongside CYP1A2) and zopiclone. Use
+  `CONMED_ZOPICLONE` only for the perpetrator role; a popPK model of
+  zopiclone itself does not need a covariate for the drug being
+  modelled. Cohort prevalence in the founding example was 8 of 81
+  patients (9.9%, Table 2), so the -0.254 estimate rests on a small
+  exposed subgroup – its bootstrap 95% interval \[-0.408, -0.009\] very
+  nearly touches zero and should be quoted alongside the point estimate.
+  Zopiclone was also among the 30 comedications screened by
+  `Zhang_2024_olanzapine.R` (same research group, same centre,
+  overlapping inpatient population), where it was *not* retained on
+  olanzapine clearance; olanzapine is cleared mainly by CYP1A2 and
+  UGT1A4 rather than CYP3A4, so the two results are consistent rather
+  than contradictory. Promote to `general` scope once a second model
+  registers zopiclone as a covariate.
+
 ### CONMED_TISACEL (**canonical for scheduled tisagenlecleucel CAR T-cell product indicator**)
 
 - **Description:** 1 = the subject’s scheduled CD19-directed CAR T-cell
@@ -57527,7 +59900,16 @@ explicit in the register rather than relying on the column name alone.
   regression on the NATURAL LOG scale as `1.659 * log(CMAX)`, odds ratio
   5.256 per e-fold, for grade \>= 3 hypercholesterolemia – note the
   averaging window ends at the adverse event and so is subject-specific
-  rather than a fixed dosing interval).
+  rather than a fixed dosing interval), `Chan_2025_atezolizumab_sae.R`
+  (ug/mL, individual TOTAL model-predicted **Cycle-1** maximum serum
+  atezolizumab concentration as an empirical-Bayes prediction from the
+  companion population PK model `modellib('Chan_2025_atezolizumab')`;
+  enters a binomial logistic exposure-safety regression LINEARLY,
+  UNCENTRED and RESCALED as `0.210 * (CMAX / 100)`, odds ratio 1.23 per
+  100 ug/mL, for serious adverse events – the relationship is NOT
+  significant (p = 0.441), and the Cycle-1 rather than steady-state
+  landmark was chosen deliberately by the source “to minimize the
+  potential effect of response-dependent time-varying clearance”).
 - **Notes:** Specific scope for the same reason as `CAV` – the value is
   intrinsically tied to the modelled drug, with no shared meaning across
   drugs or studies. Each model’s `covariateData[[CMAX]]$notes` must
@@ -57594,7 +59976,27 @@ explicit in the register rather than relying on the column name alone.
   `Han_2024_ainuovirine_virologic_ctrough.R` (same column and same
   linear uncentred form driving the parallel, **non-significant**
   exposure-efficacy regression for HIV-RNA \< 50 copies/mL at week 48,
-  `1.65 + 0.0038 * CTROUGH`, Han 2024 Table 4).
+  `1.65 + 0.0038 * CTROUGH`, Han 2024 Table 4),
+  `Parasrampuria_2025_temsavir_hivrna_day8.R`,
+  `Parasrampuria_2025_temsavir_resp05log_day8.R`,
+  `Parasrampuria_2025_temsavir_resp1log_day8.R` (ng/mL, individual TOTAL
+  steady-state plasma temsavir concentration at the END OF THE 12 h
+  DOSING INTERVAL – the source writes it `Ctau` – derived post hoc from
+  the companion `modellib('Parasrampuria_2025_temsavir')` population PK
+  model and computed from the simulated profiles with PKNCA; enters all
+  three exposure-response models through a SATURABLE Emax form
+  `Ctau/(EC50 + Ctau)` rather than linearly or on a log scale, with EC50
+  between 64 and 88 ng/mL, so the three fits sit on the plateau of the
+  curve at the 433 ng/mL cohort-median exposure),
+  `Chan_2025_atezolizumab_pfs.R` (ug/mL, individual TOTAL
+  model-predicted **Cycle-1** trough serum atezolizumab concentration as
+  an empirical-Bayes prediction from the companion population PK model
+  `modellib('Chan_2025_atezolizumab')`; enters a **Cox
+  proportional-hazards** relative-hazard model for progression-free
+  survival LINEARLY, UNCENTRED and RESCALED as `-0.002 * (CTROUGH / 10)`
+  – the first Cox rather than logistic consumer of this column, and
+  effectively a null effect, with a 95 percent CI of -0.052 to 0.047
+  straddling zero symmetrically).
 - **Notes:** Specific scope for the same reason as `CMAX` and `CAV` –
   the value is intrinsically tied to the modelled drug, with no shared
   meaning across drugs or studies. Each model’s
@@ -58628,6 +61030,53 @@ as `AUC_BAST_FW`.
   same 10 and 25 mg doses give 80 / 90 pct of maximal response on the
   pooled A + B + D estimate but only 65 / 82 pct on the study E
   estimate. See \[\[STUDY_EMPA_A\]\] for the naming rationale.
+
+### STUDY_PROACTIVE (**canonical for the PROACTIVE olaparib-boosting trial cohort indicator**)
+
+- **Description:** 1 = subject enrolled in PROACTIVE (NCT05078671), the
+  randomised cross-over trial of reduced-dose olaparib 100 mg twice
+  daily boosted with cobicistat 150 mg twice daily against olaparib 300
+  mg twice daily monotherapy in patients with solid tumours; 0 = subject
+  enrolled in one of the other three cobicistat studies pooled into the
+  same analysis (DATE-4, PANNA or PRACTICAL, all cobicistat 150 mg once
+  daily). Subject-level (time-fixed).
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0, which pools DATE-4 (healthy volunteers
+  boosting atazanavir), PANNA (postpartum women with HIV boosting
+  elvitegravir) and PRACTICAL (rheumatoid arthritis, boosting
+  tofacitinib) into a single reference stratum.
+- **Source aliases:**
+  - `OLAP` – the NONMEM data item in Overbeek 2025 Online Resource
+    Material 1
+    (`$INPUT ID TIME EVID DV AMT WEIGHT ELVI ATAZ TOFA OLAP MDV CMT DROP II SS`),
+    applied as `CLINT=(THETA(3)*VL)*(THETA(4)**OLAP)*EXP(ETA(4))`.
+  - `PROACTIVE` – the study acronym used in Overbeek 2025 Table 1, Fig.
+    2 and Fig. 3.
+- **Example models:** `Overbeek_2025_cobicistat.R` (multiplicative
+  power-form effect raising cobicistat unbound intrinsic clearance
+  1.21-fold, the only one of four candidate study indicators retained in
+  the final model).
+- **Notes:** Well-formed member of the auto-approved `STUDY_<id>`
+  canonical family, named for the trial acronym in keeping with
+  `STUDY_NOVA` / `STUDY_QUADRA` / `STUDY_ODYSSEY`. Overbeek 2025 tested
+  a binary indicator for each of its four studies on both prehepatic
+  bioavailability and intrinsic clearance (Eq 7); all four improved the
+  fit univariately and this one was retained. **Read it as a cohort
+  effect, not as a drug-drug interaction.** Although Table 2 labels the
+  coefficient `CLint-olaparib` and the data item is named `OLAP`, the
+  paper’s Discussion attributes the higher intrinsic clearance to
+  selection of a population with relatively high CYP3A activity – the
+  same patients had unusually low olaparib exposure at the standard dose
+  – and the indicator is simultaneously confounded with the twice-daily
+  cobicistat regimen and the solid-tumour population. A model needing a
+  genuine “olaparib is coadministered” perpetrator flag should use a
+  `CONMED_<INN>` column instead; the sibling model
+  `Overbeek_2025_olaparib.R` uses \[\[CONMED_COBICISTAT\]\] for the
+  reciprocal effect of cobicistat on olaparib, which *is* a drug-drug
+  interaction. The two columns are therefore not mirror images of one
+  another and must not be collapsed.
 
 ### CRT_BL (**canonical for per-subject baseline choice reaction time**)
 

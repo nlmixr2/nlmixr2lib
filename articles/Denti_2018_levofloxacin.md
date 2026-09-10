@@ -57,7 +57,7 @@ full per-parameter comments.
 | `ltlag` (typical Tlag for oral) | `log(0.242)` | Table 2 row `Tlag (h) = 0.242 (0.0385, 0.654) for oral dosing` |
 | `lfdepot` (bioavailability anchor) | `fixed(log(1))` | Table 2 row `F = 1 (fixed)` |
 | `allo_cl` (allometric exponent on CL and Q) | `fixed(0.75)` | Methods, Population PK model development paragraph: Anderson-Holford scaling, exponents fixed |
-| `allo_v` (allometric exponent on Vc and Vp) | `fixed(1)` | Methods, Population PK model development paragraph: Anderson-Holford scaling, exponents fixed |
+| `e_wt_vc_vp` (allometric exponent on Vc and Vp) | `fixed(1)` | Methods, Population PK model development paragraph: Anderson-Holford scaling, exponents fixed |
 | `pmage50` (PMAGE at 50% CL maturation) | `10.6` | Table 2 row `PMAGE50 (mo) = 10.6 (7.55, 12.9)` |
 | `gamma_mat` (maturation shape) | `3.39` | Table 2 row `gamma = 3.39 (1.42, 4.98)` |
 | `e_hiv_pos_cl` (HIV+ effect on CL) | `-0.159` | Table 2 row `HIV+ on CL (%) = -15.9 (-26.6, -5.93)` |
@@ -619,7 +619,7 @@ Cross-check of model recovery against Denti 2018 Table 2 and Table 4.
 - **Allometric exponents 0.75 (CL parameters) and 1 (volume parameters)
   are fixed.** Per Methods, Population PK model development paragraph
   (Anderson and Holford 2008 convention). The model wraps both `allo_cl`
-  and `allo_v` in `fixed(...)`.
+  and `e_wt_vc_vp` in `fixed(...)`.
 - **NGT effect is applied only to absorption lag time.** Per Table 2 the
   NGT effect was retained only on Tlag (not on bioavailability or ka).
   Denti 2018 Results ‘Pharmacokinetic model’ paragraph 2 confirms “no

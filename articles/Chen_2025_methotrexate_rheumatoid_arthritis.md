@@ -1,0 +1,593 @@
+# Methotrexate monotherapy in rheumatoid arthritis: DAS28, ACR20 and ACR50 MBMA (Chen 2025)
+
+## Model and source
+
+Chen S, Wu Y, Huang W, Zhou J, Wei Z, Wu X. *Can Methotrexate
+Monotherapy Achieve Clinical Remission in Patients with Active
+Rheumatoid Arthritis? A Model-Based Meta-Analysis.* J Clin Pharmacol.
+2025;65(10):1310-1321.
+[doi:10.1002/jcph.70039](https://doi.org/10.1002/jcph.70039)
+(PMC12484399, open access).
+
+The authors performed a systematic search of PubMed, Cochrane and EMBASE
+for randomised controlled trials of methotrexate (MTX) monotherapy in
+rheumatoid arthritis (RA), pooled 69 trials covering 7999 patients, and
+fitted **three independent model-based meta-analysis (MBMA) time-course
+models** – one per efficacy endpoint. Models for HAQ and ACR70 were
+attempted but could not be fitted because of missing data.
+
+Each endpoint is described by the same three-parameter Emax-in-time
+model (Chen 2025 Methods, *Model Developing*):
+
+``` math
+E_{i,j} = \frac{E_{max} \cdot e^{\eta_i} \cdot Time_j}{ET_{50} \cdot e^{\eta_i} + Time_j}
+```
+
+Note that the single study-level random effect `eta_i` multiplies
+**both** `Emax` and `ET50`, exactly as printed. Because the three
+endpoints were fitted separately – on different subsets of trials (31,
+40 and 41 respectively), with their own `Emax`, `ET50`, inter-study
+variance and residual error, and their own bootstrap – they are
+extracted as three model files that share this vignette:
+
+``` r
+
+# readModelDb() returns the model *function*; rxode2() gives the rxUi object
+# whose $theta and $meta accessors are used below.
+mod_das28 <- rxode2::rxode2(readModelDb("Chen_2025_methotrexate_das28_mbma"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+mod_acr20 <- rxode2::rxode2(readModelDb("Chen_2025_methotrexate_acr20_mbma"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+mod_acr50 <- rxode2::rxode2(readModelDb("Chen_2025_methotrexate_acr50_mbma"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+
+models <- list(DAS28 = mod_das28, ACR20 = mod_acr20, ACR50 = mod_acr50)
+```
+
+In all three models the observation `Cc` follows the package’s canonical
+observation name but is **not a drug concentration**: it is a study-arm
+summary percentage. For DAS28 it is the percentage *change from
+baseline* (a negative quantity); for ACR20 and ACR50 it is the
+percentage of patients in the arm meeting the responder criterion
+(0-100).
+
+## Population
+
+``` r
+
+pop <- mod_das28$meta$population
+knitr::kable(
+  data.frame(
+    Field = c("Species", "Pooled patients", "Trials (DAS28 / ACR20 / ACR50)",
+              "Disease state", "Baseline (pooled medians)",
+              "Treatment duration"),
+    Value = c(
+      pop$species,
+      format(pop$n_subjects, big.mark = ","),
+      paste(mod_das28$meta$population$n_studies,
+            mod_acr20$meta$population$n_studies,
+            mod_acr50$meta$population$n_studies, sep = " / "),
+      pop$disease_state,
+      pop$baseline,
+      "median 52.73 weeks (range 12-144)"
+    )
+  ),
+  caption = "Chen 2025 Table 1 and Results, Characteristics of Included Studies."
+)
+```
+
+| Field | Value |
+|:---|:---|
+| Species | human |
+| Pooled patients | 7,999 |
+| Trials (DAS28 / ACR20 / ACR50) | 31 / 40 / 41 |
+| Disease state | adults with active rheumatoid arthritis receiving methotrexate monotherapy; trials in which MTX-inadequate responders continued on MTX were excluded, so the population is MTX-naive or MTX-responsive patients |
+| Baseline (pooled medians) | pooled medians (Chen 2025 Table 1): DAS28 5.78 (range 3.79-6.84), HAQ 1.34 (0.67-2.59), CRP 27.82 mg/L (3.1-53.9), ESR 46.56 mm/h (23-63), RA duration 4.15 years (0.13-12.5) |
+| Treatment duration | median 52.73 weeks (range 12-144) |
+
+Chen 2025 Table 1 and Results, Characteristics of Included Studies.
+{.table}
+
+Every modelled data point is one trial arm’s mean endpoint value at one
+follow-up time. Variability is **between-study**, not between-subject;
+these models simulate study-arm mean trajectories and must not be used
+for individual-patient prediction.
+
+## Source trace
+
+Every value in `ini()` and every equation in `model()`, with its
+location in the source.
+
+| Item | Source location | Value |
+|:---|:---|:---|
+| Structural equation E = Emax*exp(eta)*t / (ET50\*exp(eta) + t) | Methods, *Model Developing*, display equation (PDF p. 1312) | eta on BOTH Emax and ET50, as printed |
+| Residual form Y = E + W*(ERR1 + RUV) / E*(1 + W\*(ERR1+RUV)) | Methods, *Model Developing*, additive / proportional / exponential display equations | form selected per endpoint (see Errata) |
+| Weight W = 1/sqrt(N) | Methods, *Model Developing*, display equation | N = per-arm sample size |
+| ERR1 realised once per study arm (NONMEM L2) | Methods, *Model Developing*, prose | encoded as eta_study_err1 |
+| emax (DAS28) | Table 2, Emax-DAS28 | -54.90 % (RSE 13%) |
+| let50 (DAS28) | Table 2, ET50-DAS28 | log(20.60) week (RSE 26%) |
+| eta_study_emax (DAS28) | Table 2, eta(Emax-DAS28) = 37.40% | variance 0.374^2 = 0.139876 |
+| eta_study_err1 (DAS28) | Table 2, Correlation coefficient of DAS28 | 0.00264 (RSE 28%) |
+| propSd (DAS28) | Table 2, epsilon-DAS28 = 0.00135 | sqrt(0.00135) = 0.0367423 |
+| emax (ACR20) | Table 2, Emax-ACR20 | 70.30 % (RSE 3%) |
+| let50 (ACR20) | Table 2, ET50-ACR20 | log(6.69) week (RSE 7%) |
+| eta_study_emax (ACR20) | Table 2, eta(Emax-ACR20) = 8.90% | variance 0.089^2 = 0.007921 |
+| eta_study_err1 (ACR20) | Table 2, Correlation coefficient of ACR20 | 1.98 (RSE 56%) |
+| addSd (ACR20) | Table 2, epsilon-ACR20 = 1.91 | sqrt(1.91) = 1.3820275 |
+| emax (ACR50) | Table 2, Emax-ACR50 | 49.4 % (RSE 24%) |
+| let50 (ACR50) | Table 2, ET50-ACR50 | log(27.3) week (RSE 37%) |
+| eta_study_emax (ACR50) | Table 2, eta(Emax-ACR50) = 45.40% | variance 0.454^2 = 0.206116 |
+| eta_study_err1 (ACR50) | Table 2, Correlation coefficient of ACR50 | 3.11 (RSE 106%) |
+| addSd (ACR50) | Table 2, epsilon-ACR50 = 11.8 | sqrt(11.8) = 3.4351128 |
+| Screened, NOT retained: MTX dose, RA duration, CRP, ESR | Results, *Model Developing*; Tables S2-S6 | no covariate retained |
+
+Source trace for all three Chen 2025 endpoint models. {.table}
+
+Two notes on how Table 2 was read:
+
+- The `eta` rows are printed as percentages and the Methods state that
+  ISV used an **exponential** model, so `eta = 37.40%` means
+  `omega = 0.374` on the exponential scale. `ini()` carries the variance
+  `omega^2`.
+- The `Correlation coefficient` and `epsilon` rows both carry a
+  **shrinkage** figure, which identifies them as NONMEM `$OMEGA` /
+  `$SIGMA` **variances** rather than standard deviations. `ini()`
+  therefore carries `sqrt(value)` for the residual SD.
+
+## Errata
+
+No erratum or corrigendum was located for Chen 2025.
+
+The Supplemental Information (Table S1, the study-level overview; Tables
+S2-S6, the covariate stepwise results; Figures S1-S6, risk-of-bias,
+goodness-of-fit and LOO-CV plots) is referenced by the paper but was
+**not on disk** for this extraction. No parameter value depends on it:
+the final models retained no covariates, so every estimate is in Table 2
+of the main text. Two consequences are recorded rather than resolved:
+
+1.  **Study-count discrepancy.** The Results say “Table S1 provides an
+    overview of the 71 studies” while the Abstract and the same Results
+    paragraph both state 69 included studies. The model metadata uses
+    69.
+2.  **Per-endpoint patient counts are unavailable.** `n_subjects`
+    records the pooled 7999 across all trials, not the per-endpoint
+    subset.
+
+**Internal inconsistency in the paper’s own 12-week simulation
+numbers.** The Results report the 12-week values as -20.3% (DAS28),
+44.9% (ACR20) and 14.8% (ACR50); the Discussion reports 21.17%, 46.84%
+and 17.63% for the same three quantities at the same time point. The
+Results values are the ones reproduced by the typical-value (eta = 0)
+model, as the regression test below shows, so this vignette gates
+against the Results values and records the Discussion values as
+unexplained.
+
+This discrepancy is load-bearing for one of the paper’s own conclusions.
+The Discussion infers a EULAR “good response” at 12 weeks from a DAS28
+unit change of 1.23, computed as 21.17% of a 5.8 baseline. Recomputed
+from the Results value of -20.3% against the Table 1 median baseline of
+5.78, the change is 1.17 units – just below the 1.2-unit good-response
+threshold. The model reproduces the Results value, so it reproduces
+1.17, not 1.23. See the *Clinical interpretation reproduced* section; no
+parameter was adjusted to move this number.
+
+**Residual-error form was inferred, not stated.** The Methods list four
+candidate residual forms (additive, proportional, exponential, combined)
+and never say which was selected for which endpoint. The magnitudes in
+Table 2 settle it, because all three endpoints are modelled on the same
+percentage scale:
+
+| Endpoint | epsilon (variance) | as additive SD | as proportional CV | Verdict |
+|----|----|----|----|----|
+| DAS28 | 0.00135 | 0.037 pct pts on a -20% prediction | 3.7% | proportional |
+| ACR20 | 1.91 | 1.38 pct pts on a 45-70% prediction | 138% | additive |
+| ACR50 | 11.8 | 3.44 pct pts on a 15-23% prediction | 344% | additive |
+
+An additive SD of 0.037 percentage points is impossible for arm means
+digitised with WebPlotDigitizer (digitisation error alone is on the
+order of 1%), and a proportional CV of 138% or 344% is impossible
+against the ACR predictions. The files therefore encode DAS28 as
+proportional and ACR20/ACR50 as additive. A per-endpoint selection is
+consistent with the paper’s wording that the four forms were candidates
+“with adjustments made to the model structures”.
+
+The alternative reading – that DAS28 was fitted on the **fractional**
+scale (`Emax = -0.549`) with an additive SD of 0.037, i.e. 3.7
+percentage points after rescaling – cannot be excluded from the text. It
+would change only the DAS28 residual magnitude, not the structural model
+or any typical-value prediction.
+
+**The paper’s printed proportional and exponential residual equations
+are dimensionally broken.** As typeset they read
+`Y = E * W * (1 + ERR1 + RUV)` and `Y = E * W * exp(ERR1 + RUV)`,
+i.e. the weight multiplies the *prediction*, which would scale every
+predicted value by roughly 0.1. The additive form
+`Y = E + W * (ERR1 + RUV)` is dimensionally sound and is the form the
+weight is clearly intended to take. These files place `W` on the error
+term only.
+
+**Sample-size weighting is not applied inside the model.** The `propSd`
+/ `addSd` values are the unweighted Table 2 estimates. Chen 2025 weights
+each study-arm observation by `W = 1/sqrt(N)`; downstream simulation
+code that wants per-arm realism must scale the residual SD by
+`1/sqrt(N_arm)`. This follows the `Boucher_2018_naproxen_mbma` and
+`Mercier_2014_tramadol_tapentadol_mbma` precedent.
+
+## PKNCA not applicable
+
+These MBMA models have no drug-concentration output, no dose events and
+no absorption-distribution-elimination profile to integrate – MTX
+exposure does not enter the model at all (dose was screened as a
+covariate and rejected). PKNCA-style NCA (Cmax / Tmax / AUC / half-life)
+is therefore not a meaningful validation target. The models are
+validated instead by (a) closed-form structural identities, (b) a
+six-point regression test against the paper’s published 12- and 24-week
+simulation results, and (c) replication of the published time-course
+figures – the strategy used for `Boucher_2018_naproxen_mbma` and
+`Vargo_2014_statins_ezetimibe_mbma`.
+
+## Validation 1: closed-form structural identities
+
+The Emax-in-time form implies three exact identities, checked here
+against the typical-value (random-effects-zeroed) solve. Both sides use
+the same fixed parameters, so the only difference is numerical and a
+tight bound is correct.
+
+``` r
+
+typ <- lapply(models, rxode2::zeroRe)
+
+solve_typ <- function(m, times) {
+  ev <- as.data.frame(rxode2::et(times))
+  ev$id <- 1L
+  rxode2::rxSolve(m, events = ev, returnType = "data.frame")$Cc
+}
+
+gates <- lapply(names(models), function(nm) {
+  m     <- typ[[nm]]
+  emax  <- models[[nm]]$theta[["emax"]]
+  et50  <- exp(models[[nm]]$theta[["let50"]])
+  # t = 0 -> 0; t = ET50 -> Emax/2; t -> large -> approaches Emax
+  y <- solve_typ(m, c(0, et50, 1e6))
+  data.frame(
+    Endpoint     = nm,
+    `At t=0`     = y[1],
+    `At t=ET50`  = y[2],
+    `Emax/2`     = emax / 2,
+    `At t=1e6`   = y[3],
+    Emax         = emax,
+    check.names  = FALSE
+  )
+}) |> dplyr::bind_rows()
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+
+knitr::kable(gates, digits = 4,
+             caption = "Closed-form identities of the Emax-in-time model.")
+```
+
+| Endpoint | At t=0 | At t=ET50 | Emax/2 | At t=1e6 |  Emax |
+|:---------|-------:|----------:|-------:|---------:|------:|
+| DAS28    |      0 |    -27.45 | -27.45 | -54.8989 | -54.9 |
+| ACR20    |      0 |     35.15 |  35.15 |  70.2995 |  70.3 |
+| ACR50    |      0 |     24.70 |  24.70 |  49.3987 |  49.4 |
+
+Closed-form identities of the Emax-in-time model. {.table}
+
+``` r
+
+
+stopifnot(
+  # E(0) = 0 exactly for every endpoint.
+  all(abs(gates$`At t=0`) < 1e-8),
+  # E(ET50) = Emax/2 exactly.
+  all(abs(gates$`At t=ET50` - gates$`Emax/2`) < 1e-6),
+  # E(t) -> Emax as t grows large.
+  all(abs(gates$`At t=1e6` - gates$Emax) < 1e-3 * abs(gates$Emax))
+)
+```
+
+## Validation 2: regression test against the published simulation results
+
+Chen 2025 Results, *Model Simulation*: “MTX monotherapy resulted in
+DAS28 decline rates, ACR20, and ACR50 of -20.3%, 44.9%, and 14.8%,
+respectively, at 12 weeks, and -29.6%, 54.7%, and 22.7%, respectively,
+at 24 weeks.”
+
+Because the single `eta` enters monotonically, the median over the
+between-study distribution equals the typical value at `eta = 0`, so
+those six published medians are directly comparable to the typical-value
+solve. This is the strongest available check on the structural form: it
+independently confirms there is **no Hill exponent** (the Methods call
+the model “sigmoid Emax” but no gamma is tabulated), and it confirms the
+`Emax` and `ET50` values and units.
+
+``` r
+
+published <- tibble::tribble(
+  ~Endpoint, ~Week, ~Published,
+  "DAS28", 12, -20.3,
+  "DAS28", 24, -29.6,
+  "ACR20", 12,  44.9,
+  "ACR20", 24,  54.7,
+  "ACR50", 12,  14.8,
+  "ACR50", 24,  22.7
+)
+
+published$Model <- vapply(seq_len(nrow(published)), function(i) {
+  solve_typ(typ[[published$Endpoint[i]]], c(0, published$Week[i]))[2]
+}, numeric(1))
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+
+published <- published |>
+  dplyr::mutate(`Difference (pct pts)` = Model - Published,
+                `Relative difference (%)` = 100 * (Model - Published) / abs(Published))
+
+knitr::kable(
+  published |>
+    dplyr::rename("Simulated (this package)" = Model,
+                  "Published (Chen 2025)"    = Published),
+  digits = 3,
+  caption = "Chen 2025 Results, Model Simulation: published 12- and 24-week values vs the typical-value model."
+)
+```
+
+| Endpoint | Week | Published (Chen 2025) | Simulated (this package) | Difference (pct pts) | Relative difference (%) |
+|:---|---:|---:|---:|---:|---:|
+| DAS28 | 12 | -20.3 | -20.209 | 0.091 | 0.450 |
+| DAS28 | 24 | -29.6 | -29.543 | 0.057 | 0.194 |
+| ACR20 | 12 | 44.9 | 45.136 | 0.236 | 0.527 |
+| ACR20 | 24 | 54.7 | 54.976 | 0.276 | 0.504 |
+| ACR50 | 12 | 14.8 | 15.084 | 0.284 | 1.919 |
+| ACR50 | 24 | 22.7 | 23.111 | 0.411 | 1.811 |
+
+Chen 2025 Results, Model Simulation: published 12- and 24-week values vs
+the typical-value model. {.table}
+
+``` r
+
+
+stopifnot(
+  # Deterministic typical-value solve against six published point estimates.
+  # The residual gap is the paper's Monte Carlo / rounding noise only.
+  max(abs(published$`Relative difference (%)`)) < 3,
+  # Signs must match: DAS28 declines, ACR responder rates rise.
+  all(sign(published$Model) == sign(published$Published))
+)
+```
+
+Every published value is reproduced to better than 2% relative
+difference, without tuning any parameter.
+
+## Replication: published time-course figures (Chen 2025 Figures 3, 4, 5)
+
+Figures 3, 4 and 5 plot the simulated time-varying DAS28 change rate,
+ACR20 and ACR50 over the 52-week horizon the authors simulated, with the
+typical efficacy as a dotted line and a shaded 95% interval. The panel
+below reproduces the typical trajectories and the between-study
+interval.
+
+``` r
+
+n_arms <- 200L                       # study arms per endpoint; <= 200 per the cohort cap
+tgrid  <- seq(0, 52, by = 1)
+
+rxode2::rxSetSeed(1234)
+
+sim_one <- function(nm) {
+  ev <- as.data.frame(rxode2::et(tgrid, id = seq_len(n_arms)))
+  s  <- rxode2::rxSolve(models[[nm]], events = ev) |> as.data.frame()
+  s$Endpoint <- nm
+  s
+}
+
+sim_all <- dplyr::bind_rows(lapply(names(models), sim_one))
+
+band <- sim_all |>
+  dplyr::group_by(Endpoint, time) |>
+  dplyr::summarise(lo  = quantile(Cc, 0.05),
+                   mid = median(Cc),
+                   hi  = quantile(Cc, 0.95),
+                   .groups = "drop")
+
+typical <- dplyr::bind_rows(lapply(names(models), function(nm) {
+  data.frame(Endpoint = nm, time = tgrid, Cc = solve_typ(typ[[nm]], tgrid))
+}))
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+#> ℹ omega/sigma items treated as zero: 'eta_study_emax', 'eta_study_err1'
+
+ggplot(band, aes(x = time)) +
+  geom_ribbon(aes(ymin = lo, ymax = hi), fill = "steelblue", alpha = 0.25) +
+  geom_line(data = typical, aes(y = Cc), linetype = "dotted", linewidth = 0.9) +
+  facet_wrap(~ Endpoint, scales = "free_y") +
+  labs(x = "Time (weeks)", y = "Percent",
+       title = "Chen 2025 Figures 3-5 -- simulated MTX monotherapy time course",
+       caption = "Dotted = typical value; band = 5th-95th percentile across 200 study arms.") +
+  theme_bw()
+```
+
+![Replication of Chen 2025 Figures 3-5: simulated time course of DAS28
+percentage change, ACR20 and ACR50 under MTX monotherapy over 52 weeks.
+Line = typical value (eta = 0); band = 5th-95th percentile across 200
+simulated study
+arms.](Chen_2025_methotrexate_rheumatoid_arthritis_files/figure-html/figures-3-4-5-1.png)
+
+Replication of Chen 2025 Figures 3-5: simulated time course of DAS28
+percentage change, ACR20 and ACR50 under MTX monotherapy over 52 weeks.
+Line = typical value (eta = 0); band = 5th-95th percentile across 200
+simulated study arms.
+
+The between-study band is widest for ACR50 (ISV 45.4%) and narrowest for
+ACR20 (ISV 8.9%), matching the ordering of the `eta(Emax)` estimates in
+Table 2.
+
+## Validation 3: the median of the between-study cohort equals the typical value
+
+Because `eta` enters `E(t)` monotonically, the cohort median must
+coincide with the typical-value curve. This is a direct check that the
+shared-`eta`-on-both- `Emax`-and-`ET50` encoding is the one the paper
+printed: an encoding with `eta` on `Emax` alone would also be monotone,
+so this check does not discriminate between them, but a sign or scale
+error in the `eta` encoding would break it.
+
+The comparison is made on a robust central statistic rather than on
+extremes, because the cohort draw is not reproducible across rxode2
+versions.
+
+``` r
+
+med_chk <- band |>
+  dplyr::inner_join(typical, by = c("Endpoint", "time")) |>
+  dplyr::filter(time > 0) |>
+  dplyr::mutate(pct_diff = 100 * (mid - Cc) / abs(Cc))
+
+med_summary <- med_chk |>
+  dplyr::group_by(Endpoint) |>
+  dplyr::summarise(`Median abs % difference` = median(abs(pct_diff)),
+                   `90th pctile abs % difference` = quantile(abs(pct_diff), 0.9),
+                   .groups = "drop")
+
+knitr::kable(med_summary, digits = 3,
+             caption = "Cohort median vs typical value across the 52-week grid.")
+```
+
+| Endpoint | Median abs % difference | 90th pctile abs % difference |
+|:---------|------------------------:|-----------------------------:|
+| ACR20    |                   0.582 |                        0.779 |
+| ACR50    |                   1.297 |                        2.767 |
+| DAS28    |                   0.721 |                        0.954 |
+
+Cohort median vs typical value across the 52-week grid. {.table}
+
+``` r
+
+
+stopifnot(
+  # Centre: a scale or sign error in the eta encoding moves this by tens of pct.
+  all(med_summary$`Median abs % difference` < 5),
+  # Envelope: robust to which arms land in the tails.
+  all(med_summary$`90th pctile abs % difference` < 15)
+)
+```
+
+## Clinical interpretation reproduced
+
+The paper’s central claim is that MTX monotherapy does not reach
+remission. Two statements are checkable against the model.
+
+``` r
+
+# Discussion: "the DAS28 change rate reached 21.17% at 12 weeks, corresponding
+# to a DAS28 score change of 1.23 (with an average baseline DAS28 score of 5.8
+# ...)". A EULAR "good response" needs a drop > 1.2 units; "remission" needs a
+# > 50% change rate.
+das28_12wk_pct <- published$Model[published$Endpoint == "DAS28" &
+                                    published$Week == 12]
+
+claims <- tibble::tribble(
+  ~Basis,                            ~`Change rate (%)`, ~`Baseline DAS28`,
+  "Model (reproduces paper Results)", abs(das28_12wk_pct), 5.78,
+  "Paper Discussion arithmetic",      21.17,               5.80
+) |>
+  dplyr::mutate(
+    `Unit change` = `Change rate (%)` / 100 * `Baseline DAS28`,
+    `Good response (> 1.2 units)` = ifelse(`Unit change` > 1.2, "yes", "no"),
+    `Remission (> 50% change)`    = ifelse(`Change rate (%)` > 50, "yes", "no")
+  )
+
+knitr::kable(claims, digits = 3,
+             caption = "Chen 2025 Discussion, DAS28 paragraph: the good-response claim recomputed from the Results value and from the Discussion's own value.")
+```
+
+| Basis | Change rate (%) | Baseline DAS28 | Unit change | Good response (\> 1.2 units) | Remission (\> 50% change) |
+|:---|---:|---:|---:|:---|:---|
+| Model (reproduces paper Results) | 20.209 | 5.78 | 1.168 | no | no |
+| Paper Discussion arithmetic | 21.170 | 5.80 | 1.228 | yes | no |
+
+Chen 2025 Discussion, DAS28 paragraph: the good-response claim
+recomputed from the Results value and from the Discussion’s own value.
+{.table style="width:100%;"}
+
+``` r
+
+
+stopifnot(
+  # The paper's CENTRAL conclusion -- the 50% change rate required for clinical
+  # remission is not reached at 12 weeks -- holds on either basis. This is the
+  # robust, directional claim and is the one gated here.
+  all(claims$`Change rate (%)` < 50),
+  # The model reproduces the paper's Results 12-week value (gated exactly in
+  # the regression test above); the unit change it implies is ~1.17.
+  abs(claims$`Unit change`[1] - 1.168) < 0.02
+)
+```
+
+The model reproduces the paper’s central conclusion – at 12 weeks MTX
+monotherapy falls well short of the 50% DAS28 change rate that would
+indicate clinical remission – on either arithmetic basis.
+
+The *secondary* claim, that a EULAR good response (a drop of more than
+1.2 DAS28 units) is reached at 12 weeks, does **not** survive
+recomputation from the paper’s own Results. It depends entirely on which
+of the paper’s two mutually inconsistent 12-week figures is used: the
+Discussion’s 21.17% against a 5.8 baseline gives 1.23 units and clears
+the threshold, whereas the Results’ -20.3% – the value the model
+reproduces to 0.5% – gives 1.17 units against the Table 1 median
+baseline of 5.78 and falls just short. This is a reporting inconsistency
+in the source, not an encoding error: the model matches the Results
+value exactly, and no parameter was adjusted. It is recorded here and in
+Errata rather than gated.
+
+## Assumptions and deviations
+
+- **`eta` on both `Emax` and `ET50`.** The printed structural equation
+  places `exp(eta_i)` on `ET50` as well as on `Emax`, while Table 2
+  labels the random effect `eta (Emax-...)`. These files follow the
+  equation. The Results note that “Covariates were not investigated on
+  ET50 because ISV was unsuccessful in being evaluated”, which is
+  consistent with a shared `eta` (a *separate* ET50 random effect
+  failed) but does not settle the question. Users who prefer the
+  `Emax`-only reading can drop `eta_study_emax` from the `et50Arm` line;
+  no typical-value prediction changes.
+- **No Hill exponent.** The Methods call the model “sigmoid Emax” but
+  Table 2 reports no gamma, and the gamma = 1 form reproduces all six
+  published simulation values to better than 2%. Encoded with gamma = 1.
+- **`eta_study_err1` has no paired fixed effect**, so
+  [`checkModelConventions()`](https://nlmixr2.github.io/nlmixr2lib/reference/checkModelConventions.md)
+  emits one warning per file
+  (`IIV 'eta_study_err1' has no matching fixed-effect parameter`). This
+  is expected and is not a naming slip: `ERR1` is the paper’s zero-mean,
+  study-arm-level residual-correlation term (NONMEM L2 grouping), and a
+  zero-mean random effect on the response has no fixed counterpart to
+  pair with. The alternative – folding `ERR1` into the residual as a
+  combined variance – would silence the warning but discard a parameter
+  that the paper reports with its own RSE and bootstrap interval, so the
+  faithful encoding is kept.
+- **Residual form and sample-size weighting** are as described in
+  Errata: the form was inferred from Table 2 magnitudes, and the
+  `1/sqrt(N)` weight is left to downstream code.
+- **ACR20 inter-study variability is weakly identified** (eta-shrinkage
+  49% per Table 2). The ACR20 between-study band above should be read
+  with that caveat.
+- **ACR50 is the weakest of the three models** overall: the authors note
+  its goodness-of-fit trend lines were “not as parallel to the reference
+  line”, the correlation coefficient has a 106% RSE, and the bootstrap
+  median `Emax` (54.6%) sits well above the point estimate (49.4%).
+- **No covariates.** Every simulation here is covariate-free because the
+  final models are. MTX dose, RA disease duration, baseline CRP and
+  baseline ESR were screened and rejected; the first three are recorded
+  in `covariatesDataExcluded`. Baseline ESR is recorded in prose in the
+  model `population$notes` instead, because the covariate register has
+  no canonical entry for erythrocyte sedimentation rate and these files
+  do not introduce a new canonical name for a covariate that carries no
+  coefficient.
+- **Between-study, not between-subject.** `eta_study_emax` and
+  `eta_study_err1` are study-arm-level effects. Simulated trajectories
+  are study-arm means; individual-patient simulation is out of scope.

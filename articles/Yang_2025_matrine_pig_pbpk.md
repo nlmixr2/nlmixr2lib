@@ -728,7 +728,7 @@ adjusted to close that gap; it is recorded below.
 
     #> R version 4.6.1 (2026-06-24)
     #> Platform: x86_64-pc-linux-gnu
-    #> Running under: Ubuntu 24.04.4 LTS
+    #> Running under: Ubuntu 24.04.5 LTS
     #> 
     #> Matrix products: default
     #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -764,7 +764,7 @@ adjusted to close that gap; it is recorded below.
     #> [31] jquerylib_0.1.4     whisker_0.4.1       openssl_2.4.2      
     #> [34] cachem_1.1.0        nlme_3.1-169        tidyselect_1.2.1   
     #> [37] digest_0.6.39       lotri_1.0.4         purrr_1.2.2        
-    #> [40] labeling_0.4.3      rxode2ll_2.0.16     fastmap_1.2.0      
+    #> [40] labeling_0.4.3      rxode2ll_2.0.17     fastmap_1.2.0      
     #> [43] grid_4.6.1          cli_3.6.6           dparser_1.3.1-13   
     #> [46] magrittr_2.0.5      withr_3.0.3         scales_1.4.0       
     #> [49] backports_1.5.1     rmarkdown_2.32      otel_0.2.0         

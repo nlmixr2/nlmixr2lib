@@ -613,7 +613,7 @@ the rats reached.
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.4 LTS
+#> Running under: Ubuntu 24.04.5 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
@@ -640,7 +640,7 @@ sessionInfo()
 #>  [4] xml2_1.6.0          digest_0.6.39       magrittr_2.0.5     
 #>  [7] RColorBrewer_1.1-3  evaluate_1.0.5      grid_4.6.1         
 #> [10] fastmap_1.2.0       lotri_1.0.4         jsonlite_2.0.0     
-#> [13] whisker_0.4.1       rxode2ll_2.0.16     backports_1.5.1    
+#> [13] whisker_0.4.1       rxode2ll_2.0.17     backports_1.5.1    
 #> [16] purrr_1.2.2         scales_1.4.0        textshaping_1.0.5  
 #> [19] jquerylib_0.1.4     cli_3.6.6           crayon_1.5.3       
 #> [22] symengine_0.2.13    rlang_1.3.0         withr_3.0.3        

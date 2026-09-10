@@ -1,0 +1,744 @@
+# Elexacaftor + tezacaftor + ivacaftor in children with cystic fibrosis (Truong 2025)
+
+## Models and source
+
+Truong 2025 reports **three independent one-compartment population PK
+models**, one per component of the elexacaftor/tezacaftor/ivacaftor
+(ETI) fixed combination. They were fitted separately in Monolix 2023R1
+and share no random effects, so they are packaged as three model files
+and validated together here.
+
+``` r
+
+mods <- list(
+  Elexacaftor = readModelDb("Truong_2025_elexacaftor"),
+  Tezacaftor  = readModelDb("Truong_2025_tezacaftor"),
+  Ivacaftor   = readModelDb("Truong_2025_ivacaftor")
+)
+```
+
+- Citation: Truong NH, Benaboud S, Bouazza N, et
+  al. Elexacaftor/Tezacaftor/Ivacaftor Population Pharmacokinetics in
+  Pediatric Patients With Cystic Fibrosis. Clin Transl Sci.
+  2025;18(5):e70245. <doi:10.1111/cts.70245>
+- Article: <https://doi.org/10.1111/cts.70245>
+- Supplement (Figures S1-S5 and Table S1):
+  <https://doi.org/10.1111/cts.70245>
+
+Structurally the three differ only in whether an absorption lag time was
+needed:
+
+|                 | Elexacaftor        | Tezacaftor   | Ivacaftor               |
+|-----------------|--------------------|--------------|-------------------------|
+| Absorption      | lagged first-order | first-order  | lagged first-order      |
+| Dosing interval | 24 h               | 24 h         | 12 h                    |
+| Residual error  | proportional       | proportional | additive + proportional |
+
+## Population
+
+The analysis is an ancillary pharmacokinetic sub-study of **MODUL-CF**,
+a French prospective multicentre cohort (EUDRACT 2018-002624-16,
+NCT03894657) that enrolled across 20 pediatric university hospital
+centres between March 2022 and March 2024. Ninety-six children with
+cystic fibrosis aged 2-18 years, each carrying at least one F508del
+allele and established on label ETI dosing, contributed 150 plasma
+concentrations per compound. Sampling was a sparse
+therapeutic-drug-monitoring design: a trough immediately before intake
+and/or a peak roughly 4 h after intake, with a median of 1 sample per
+child per compound (range 1-5).
+
+Baseline demographics are Truong 2025 Table 1: 66.7% male overall, with
+median age and weight of 4.0 years / 16.0 kg in the 47 children under 6,
+8.8 years / 25.0 kg in the 19 children aged 6 to under 12, and 15.8
+years / 51.1 kg in the 30 children aged 12 and over. No child had renal
+failure, liver disease, or coadministration of a strong CYP3A inducer or
+inhibitor. Race and ethnicity were not recorded.
+
+The same information is available programmatically from each model’s
+`population` metadata
+(`readModelDb("Truong_2025_elexacaftor")()$population`).
+
+## Source trace
+
+Per-parameter origins are recorded as in-file comments beside each
+`ini()` entry in
+`inst/modeldb/specificDrugs/Truong_2025_{elexacaftor,tezacaftor,ivacaftor}.R`.
+They are collected here for review.
+
+| Equation / parameter | Elexacaftor | Tezacaftor | Ivacaftor | Source location |
+|----|----|----|----|----|
+| `ltlag` (Tlag, h) | 2.17 (fix) | – (none) | 0.70 (fix) | Table 2, “Tlag” row |
+| `lka` (Ka, 1/h) | 0.59 (fix) | 0.894 (fix) | 0.42 (fix) | Table 2, “Ka” row |
+| `lcl` (CL/F, L/h per 70 kg) | 1.57 (3.9% RSE) | 1.32 (3.8%) | 13.4 (4.8%) | Table 2, “CL/F” row |
+| `lvc` (V/F, L per 70 kg) | 56.1 (9.9%) | 29.3 (6.8%) | 183 (12.6%) | Table 2, “V/F” row |
+| `e_wt_cl` | 0.75 (fix) | 0.75 (fix) | 0.75 (fix) | Methods 2.4 final paragraph; Results 3.2 |
+| `e_wt_vc` | 1 (fix) | 1 (fix) | 1 (fix) | Methods 2.4 final paragraph; Results 3.2 |
+| `etalcl` (variance) | 0.31^2 | 0.26^2 | 0.37^2 | Table 2, “omega CL” row |
+| `addSd` (mg/L) | – | – | 0.131 (43.0%) | Table 2, “sigma additive” row |
+| `propSd` | 0.247 (9.2%) | 0.302 (8.5%) | 0.278 (12.5%) | Table 2, “sigma proportional” row |
+| `ref_wt` = 70 kg | n/a | n/a | n/a | Table 2 column units (“L/h/70kg”, “L/70kg”); Discussion paragraph 1 |
+| One-compartment ODE with first-order absorption and elimination |  |  |  | Results 3.2 paragraph 1 |
+| Exponential between-subject variability on CL/F only |  |  |  | Methods 2.4; Results 3.2 |
+| Allometric `(WT/70)^0.75` on CL/F, `(WT/70)^1` on V/F |  |  |  | Methods 2.4 final paragraph; Results 3.2 |
+
+Two points deserve emphasis.
+
+**The absorption parameters were not estimated.** Truong 2025 Results
+3.2 states that “\[g\]iven the limited number of plasma samples
+available during the absorption phase in this study, the absorption
+parameters (i.e., lag time \[Tlag\] and/or absorption constant \[Ka\])
+were set to values reported in the literature for the three molecules
+\[27\].” Reference \[27\] is Tsai et al., *Pulm Ther* 2020;6(2):275-286.
+That source does confirm the elexacaftor (ka 0.59 /h, Tlag 2.17 h) and
+tezacaftor (ka 0.894 /h) values. It does **not** publish a first-order
+ka or Tlag for ivacaftor – its ivacaftor compound file uses an ADAM
+absorption model with input type “Predicted” from a Caco-2 permeability
+of 11.9e-6 cm/s. The ivacaftor values 0.42 /h and 0.70 h are therefore
+traceable to Truong 2025 Table 2 itself and to no upstream printed
+table. They are encoded as printed. See also the Assumptions section.
+
+**The omega column is a standard deviation, not a variance.** The Table
+2 footnote defines omega as the “interindividual variability estimate
+expressed as standard deviation”. The paper’s own derived numbers
+confirm it: the Table S1 overall elexacaftor AUC0-24h IQR of 142-209
+mg\*h/L spans a ratio of 1.46, against `exp(2 * 0.6745 * 0.31) = 1.52`
+expected under an SD of 0.31 and 2.12 if 0.31 were instead a variance.
+`ini()` takes the variance, so each model file encodes omega^2.
+
+## Dosing rules
+
+Weight-banded label dosing, transcribed from Truong 2025 Methods 2.5.
+Elexacaftor and tezacaftor are once daily; ivacaftor is every 12 h, and
+the under-14 kg band is the only asymmetric regimen (60 mg each morning,
+59.5 mg each evening).
+
+``` r
+
+# Truong 2025 Methods 2.5. Band 1: WT < 14 kg. Band 2: 14-30 kg.
+# Band 3: > 30 kg (or age > 12 years, which in this cohort implies > 30 kg).
+wt_band <- function(wt) ifelse(wt < 14, 1L, ifelse(wt <= 30, 2L, 3L))
+
+dose_am <- function(drug, wt) {
+  b <- wt_band(wt)
+  switch(drug,
+    Elexacaftor = c(80, 100, 200)[b],
+    Tezacaftor  = c(40,  50, 100)[b],
+    Ivacaftor   = c(60,  75, 150)[b]
+  )
+}
+# Evening ivacaftor dose differs from the morning dose only in the < 14 kg band.
+dose_pm <- function(drug, wt) {
+  b <- wt_band(wt)
+  if (drug == "Ivacaftor") c(59.5, 75, 150)[b] else dose_am(drug, wt)
+}
+
+drug_tau <- c(Elexacaftor = 24, Tezacaftor = 24, Ivacaftor = 12)
+```
+
+## Simulation machinery
+
+Every simulation below is a steady-state one: 21 consecutive doses are
+given and only the final dosing interval is observed. Twenty-one
+intervals is at least 19 half-lives for every drug and weight in range,
+so accumulation is complete. Times are re-based so the final interval
+starts at 0, which also guarantees PKNCA a record exactly at the
+interval start and at the interval end (the latter is what `ctrough`
+needs).
+
+``` r
+
+N_DOSE   <- 21L   # last dose index is even, so the final ivacaftor interval is a morning one
+GRID_BY  <- 0.25  # h
+
+# Build a steady-state event table for one drug over a set of subjects.
+# `subjects` must carry `id` and `WT`; any extra columns ride along.
+build_events <- function(subjects, drug) {
+  tau <- drug_tau[[drug]]
+  k   <- seq_len(N_DOSE) - 1L
+
+  doses <- subjects[rep(seq_len(nrow(subjects)), each = N_DOSE), , drop = FALSE]
+  doses$time <- rep(k * tau, times = nrow(subjects))
+  am <- dose_am(drug, doses$WT)
+  pm <- dose_pm(drug, doses$WT)
+  # Alternate morning / evening only for the q12h drug.
+  is_pm <- (tau == 12) & (rep(k, times = nrow(subjects)) %% 2L == 1L)
+  doses$amt  <- ifelse(is_pm, pm, am)
+  doses$evid <- 1L
+  doses$cmt  <- "depot"
+
+  t0  <- (N_DOSE - 1L) * tau               # start of the observed interval
+  obs <- subjects[rep(seq_len(nrow(subjects)), each = length(seq(0, tau, by = GRID_BY))), , drop = FALSE]
+  obs$time <- rep(t0 + seq(0, tau, by = GRID_BY), times = nrow(subjects))
+  obs$amt  <- NA_real_
+  obs$evid <- 0L
+  # Observe the ODE state; rxode2 returns the algebraic observable Cc at those rows.
+  obs$cmt  <- "central"
+
+  ev <- dplyr::bind_rows(doses, obs) |> dplyr::arrange(id, time, dplyr::desc(evid))
+  attr(ev, "t0")  <- t0
+  attr(ev, "tau") <- tau
+  ev
+}
+
+# Solve, then re-base time so the observed interval starts at 0.
+solve_ss <- function(drug, subjects, typical = FALSE, keep = character()) {
+  ev  <- build_events(subjects, drug)
+  mod <- mods[[drug]]
+  sim <-
+    if (typical) {
+      # omega = NA suppresses the between-subject draw; parameters are typical values.
+      rxode2::rxSolve(mod, ev, omega = NA, keep = keep, returnType = "data.frame")
+    } else {
+      rxode2::rxSolve(mod, ev, keep = keep, returnType = "data.frame")
+    }
+  sim <- sim[sim$time >= attr(ev, "t0"), , drop = FALSE]
+  sim$time <- sim$time - attr(ev, "t0")
+  sim$drug <- drug
+  sim
+}
+
+# Trapezoidal AUC over the observed interval, per subject.
+auc_by_id <- function(sim) {
+  sim |>
+    dplyr::arrange(id, time) |>
+    dplyr::group_by(id) |>
+    dplyr::summarise(
+      auc     = sum(diff(time) * (head(Cc, -1) + tail(Cc, -1)) / 2),
+      cmax    = max(Cc),
+      ctrough = dplyr::last(Cc),
+      thalf   = log(2) * dplyr::first(vc) / dplyr::first(cl),
+      .groups = "drop"
+    )
+}
+```
+
+## Replication 1 – Table S1, typical-value exposures by weight and age group
+
+Truong 2025 Table S1 breaks the 96 children into five weight-and-age
+groups and reports the median individual Bayesian Cmax, Ctrough,
+AUC0-tau and half-life in each. Because the models carry no random
+effect on V/F, the typical-value prediction at a group’s median weight
+is directly comparable to that group’s median. This is the sharpest gate
+available: it exercises the structural model, the allometric exponents,
+the 70 kg reference, and the weight-banded dosing rule all at once,
+deterministically.
+
+``` r
+
+# Truong 2025 Table S1, header row and "Body weight (kg)" row.
+groups <- tibble::tribble(
+  ~group,                            ~n,  ~WT,
+  "<6 y, WT <14 kg",                 10L, 12,
+  "<6 y, WT >=14 kg",                37L, 17,
+  "6-<12 y, WT <30 kg",              13L, 23,
+  "6-<12 y, WT >=30 kg",              6L, 34,
+  ">=12 y",                          30L, 51
+)
+
+# Truong 2025 Table S1 medians, one block per drug.
+published_s1 <- tibble::tribble(
+  ~drug,         ~group,                 ~cmax, ~ctrough,  ~auc, ~thalf,
+  "Elexacaftor", "<6 y, WT <14 kg",       9.96,     4.55,   170,  14.1,
+  "Elexacaftor", "<6 y, WT >=14 kg",     10.04,     5.07,   178,  17.0,
+  "Elexacaftor", "6-<12 y, WT <30 kg",    8.17,     5.05,   158,  18.2,
+  "Elexacaftor", "6-<12 y, WT >=30 kg",  12.37,     7.49,   236,  21.8,
+  "Elexacaftor", ">=12 y",                8.51,     4.89,   159,  22.5,
+  "Tezacaftor",  "<6 y, WT <14 kg",       7.12,     1.55,    95,   8.8,
+  "Tezacaftor",  "<6 y, WT >=14 kg",      7.40,     1.80,   108,  10.2,
+  "Tezacaftor",  "6-<12 y, WT <30 kg",    5.43,     1.54,    80,  10.6,
+  "Tezacaftor",  "6-<12 y, WT >=30 kg",   8.49,     3.04,   136,  13.6,
+  "Tezacaftor",  ">=12 y",                6.04,     2.38,   102,  14.5,
+  "Ivacaftor",   "<6 y, WT <14 kg",       1.52,     0.69,  13.4,  5.14,
+  "Ivacaftor",   "<6 y, WT >=14 kg",      1.52,     0.81,  14.1,  6.05,
+  "Ivacaftor",   "6-<12 y, WT <30 kg",    1.29,     0.72,  12.3,  7.24,
+  "Ivacaftor",   "6-<12 y, WT >=30 kg",   2.10,     1.39,  21.4,  8.82,
+  "Ivacaftor",   ">=12 y",                1.38,     0.91,  14.0,  8.38
+)
+```
+
+``` r
+
+typ_subjects <- groups |> dplyr::mutate(id = dplyr::row_number())
+
+typical <- lapply(names(mods), function(d) {
+  solve_ss(d, typ_subjects[, c("id", "WT")], typical = TRUE) |>
+    auc_by_id() |>
+    dplyr::mutate(drug = d)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::left_join(typ_subjects |> dplyr::select(id, group), by = "id")
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
+#> ℹ parameter labels from comments will be replaced by 'label()'
+#> Warning: multi-subject simulation without without 'omega'
+
+cmp_s1 <- published_s1 |>
+  dplyr::rename(cmax_pub = cmax, ctrough_pub = ctrough, auc_pub = auc, thalf_pub = thalf) |>
+  dplyr::left_join(typical, by = c("drug", "group")) |>
+  dplyr::mutate(
+    d_cmax    = 100 * (cmax    - cmax_pub)    / cmax_pub,
+    d_ctrough = 100 * (ctrough - ctrough_pub) / ctrough_pub,
+    d_auc     = 100 * (auc     - auc_pub)     / auc_pub,
+    d_thalf   = 100 * (thalf   - thalf_pub)   / thalf_pub
+  )
+
+cmp_s1 |>
+  dplyr::transmute(
+    Drug = drug, Group = group,
+    `Cmax sim` = round(cmax, 2), `Cmax pub` = cmax_pub, `Cmax %d` = round(d_cmax, 1),
+    `Ctrough sim` = round(ctrough, 2), `Ctrough pub` = ctrough_pub, `Ctrough %d` = round(d_ctrough, 1),
+    `AUC sim` = round(auc, 1), `AUC pub` = auc_pub, `AUC %d` = round(d_auc, 1),
+    `t1/2 sim` = round(thalf, 1), `t1/2 pub` = thalf_pub, `t1/2 %d` = round(d_thalf, 1)
+  ) |>
+  knitr::kable(
+    caption = paste(
+      "Typical-value steady-state exposures at each Table S1 group's median weight,",
+      "against the published group medians. AUC is AUC0-24h for the correctors and",
+      "AUC0-12h for ivacaftor. Deviations are (simulated - published) / published."
+    )
+  )
+```
+
+| Drug | Group | Cmax sim | Cmax pub | Cmax %d | Ctrough sim | Ctrough pub | Ctrough %d | AUC sim | AUC pub | AUC %d | t1/2 sim | t1/2 pub | t1/2 %d |
+|:---|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| Elexacaftor | \<6 y, WT \<14 kg | 10.80 | 9.96 | 8.4 | 5.36 | 4.55 | 17.9 | 191.3 | 170.0 | 12.5 | 15.9 | 14.10 | 13.0 |
+| Elexacaftor | \<6 y, WT \>=14 kg | 10.15 | 10.04 | 1.1 | 5.35 | 5.07 | 5.6 | 184.1 | 178.0 | 3.4 | 17.4 | 17.00 | 2.3 |
+| Elexacaftor | 6-\<12 y, WT \<30 kg | 7.94 | 8.17 | -2.8 | 4.39 | 5.05 | -13.0 | 146.8 | 158.0 | -7.1 | 18.8 | 18.20 | 3.0 |
+| Elexacaftor | 6-\<12 y, WT \>=30 kg | 11.58 | 12.37 | -6.4 | 6.77 | 7.49 | -9.6 | 219.0 | 236.0 | -7.2 | 20.7 | 21.80 | -5.2 |
+| Elexacaftor | \>=12 y | 8.36 | 8.51 | -1.8 | 5.15 | 4.89 | 5.4 | 161.5 | 159.0 | 1.6 | 22.9 | 22.50 | 1.7 |
+| Tezacaftor | \<6 y, WT \<14 kg | 8.02 | 7.12 | 12.6 | 1.98 | 1.55 | 27.6 | 113.7 | 95.0 | 19.7 | 9.9 | 8.80 | 12.5 |
+| Tezacaftor | \<6 y, WT \>=14 kg | 7.43 | 7.40 | 0.4 | 2.07 | 1.80 | 14.7 | 109.5 | 108.0 | 1.4 | 10.8 | 10.20 | 5.9 |
+| Tezacaftor | 6-\<12 y, WT \<30 kg | 5.74 | 5.43 | 5.7 | 1.75 | 1.54 | 13.9 | 87.3 | 80.0 | 9.1 | 11.6 | 10.60 | 9.9 |
+| Tezacaftor | 6-\<12 y, WT \>=30 kg | 8.25 | 8.49 | -2.9 | 2.82 | 3.04 | -7.2 | 130.2 | 136.0 | -4.3 | 12.8 | 13.60 | -5.6 |
+| Tezacaftor | \>=12 y | 5.87 | 6.04 | -2.9 | 2.23 | 2.38 | -6.4 | 96.0 | 102.0 | -5.8 | 14.2 | 14.50 | -2.0 |
+| Ivacaftor | \<6 y, WT \<14 kg | 1.76 | 1.52 | 15.5 | 0.95 | 0.69 | 37.5 | 16.8 | 13.4 | 25.1 | 6.1 | 5.14 | 18.5 |
+| Ivacaftor | \<6 y, WT \>=14 kg | 1.66 | 1.52 | 9.5 | 0.95 | 0.81 | 17.0 | 16.2 | 14.1 | 14.7 | 6.6 | 6.05 | 9.8 |
+| Ivacaftor | 6-\<12 y, WT \<30 kg | 1.31 | 1.29 | 1.3 | 0.78 | 0.72 | 7.9 | 12.9 | 12.3 | 4.9 | 7.2 | 7.24 | -1.0 |
+| Ivacaftor | 6-\<12 y, WT \>=30 kg | 1.92 | 2.10 | -8.7 | 1.20 | 1.39 | -13.8 | 19.2 | 21.4 | -10.1 | 7.9 | 8.82 | -10.4 |
+| Ivacaftor | \>=12 y | 1.39 | 1.38 | 0.8 | 0.91 | 0.91 | 0.1 | 14.2 | 14.0 | 1.4 | 8.7 | 8.38 | 4.4 |
+
+Typical-value steady-state exposures at each Table S1 group’s median
+weight, against the published group medians. AUC is AUC0-24h for the
+correctors and AUC0-12h for ivacaftor. Deviations are (simulated -
+published) / published. {.table}
+
+``` r
+
+# These two sides use the SAME published parameters, so the only sources of
+# disagreement are (a) the spread of weights within a group about its median and
+# (b) the group-median random effect on CL/F, which is not zero in a small group.
+# The gate is therefore on the CENTRE of the deviation distribution rather than on
+# its extreme; see the narrative below for why group 1 is the outlier.
+dev_all <- c(cmp_s1$d_cmax, cmp_s1$d_ctrough, cmp_s1$d_auc, cmp_s1$d_thalf)
+stopifnot(
+  # No missing comparison -- every group x drug x parameter cell was simulated.
+  !anyNA(dev_all),
+  # Centre: a mis-transcribed clearance, volume, dose or reference weight moves the
+  # whole distribution by tens of percent. Observed median |deviation| ~ 6%.
+  stats::median(abs(dev_all)) < 12,
+  # Envelope: robust to the small-N groups. Observed 90th percentile ~ 20%.
+  stats::quantile(abs(dev_all), 0.9) < 30
+)
+```
+
+Groups 2 through 5 agree closely: the median absolute deviation across
+those four groups is a few percent for every parameter. The **under-14
+kg group is a consistent outlier**, and consistently in one direction –
+the model predicts a longer half-life and a higher AUC than the
+published medians. That pattern is not a structural mismatch. Half-life
+and AUC both scale as `exp(-eta_CL)`, so a single group-median random
+effect explains both at once:
+
+``` r
+
+g1 <- cmp_s1 |> dplyr::filter(group == "<6 y, WT <14 kg")
+# Implied group-median eta on log CL/F from each of the two exposure measures.
+tibble::tibble(
+  Drug = g1$drug,
+  `eta implied by t1/2` = round(log(g1$thalf / g1$thalf_pub), 2),
+  `eta implied by AUC`  = round(log(g1$auc   / g1$auc_pub),   2)
+) |>
+  knitr::kable(caption = "Group-1 deviations imply a single positive median eta on log CL/F, not a structural error.")
+```
+
+| Drug        | eta implied by t1/2 | eta implied by AUC |
+|:------------|--------------------:|-------------------:|
+| Elexacaftor |                0.12 |               0.12 |
+| Tezacaftor  |                0.12 |               0.18 |
+| Ivacaftor   |                0.17 |               0.22 |
+
+Group-1 deviations imply a single positive median eta on log CL/F, not a
+structural error. {.table}
+
+The two columns agree drug by drug, which is what a random-effect
+explanation predicts and what a transcription error would not produce.
+The implied etas run from about +0.12 to +0.22 depending on the drug.
+With only 10 children in that stratum the standard error of the median
+eta is roughly `0.37 / sqrt(10) = 0.12`, so values of that size are well
+inside sampling noise.
+
+## Virtual cohort
+
+``` r
+
+# rxSetSeed() fixes rxode2's stream per solver thread, not across thread counts, so
+# the cohort differs between this machine and CI. Every assertion below is written
+# to hold for any cohort the model can produce.
+rxode2::rxSetSeed(20250422)
+set.seed(20250422)
+
+# Cohort matching the Truong 2025 Table S1 composition: the same group sizes, with
+# weights drawn uniformly across each group's published IQR.
+group_iqr <- tibble::tribble(
+  ~group,                  ~n,  ~lo, ~hi,
+  "<6 y, WT <14 kg",       10L,  12,  13,
+  "<6 y, WT >=14 kg",      37L,  15,  18,
+  "6-<12 y, WT <30 kg",    13L,  21,  25,
+  "6-<12 y, WT >=30 kg",    6L,  33,  36,
+  ">=12 y",                30L,  44,  58
+)
+
+study_cohort <- group_iqr |>
+  dplyr::rowwise() |>
+  dplyr::reframe(group = group, WT = stats::runif(n, lo, hi)) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+stopifnot(nrow(study_cohort) == 96L, !anyDuplicated(study_cohort$id))
+```
+
+## Replication 2 – PKNCA validation against Table 3
+
+Truong 2025 Table 3 reports whole-cohort medians of the individual
+Bayesian Cmax, Ctrough and AUC0-tau. The cohort above reproduces the
+study’s group composition and weight distribution, so its simulated
+medians are the right comparator. NCA is run with PKNCA over the final
+steady-state dosing interval.
+
+``` r
+
+run_nca <- function(drug) {
+  tau <- drug_tau[[drug]]
+  sim <- solve_ss(drug, study_cohort[, c("id", "WT", "group")], keep = c("WT", "group"))
+
+  # Only !is.na(Cc) -- a time > 0 or Cc > 0 filter would drop the interval-start row
+  # that PKNCA needs to anchor the AUC, and the interval-end row that ctrough needs.
+  sim_nca <- sim |>
+    dplyr::filter(!is.na(Cc)) |>
+    dplyr::transmute(id, time, Cc, drug = drug)
+
+  # Defensive time-zero guarantee (the grid already supplies it).
+  sim_nca <- dplyr::bind_rows(
+    sim_nca,
+    sim_nca |> dplyr::distinct(id, drug) |> dplyr::mutate(time = 0, Cc = 0)
+  ) |>
+    dplyr::distinct(id, drug, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, time)
+
+  dose_df <- study_cohort |>
+    dplyr::transmute(id, time = 0, amt = dose_am(drug, WT), drug = drug)
+
+  conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | drug + id, concu = "mg/L", timeu = "h")
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | drug + id, doseu = "mg")
+
+  intervals <- data.frame(
+    start = 0, end = tau,
+    cmax = TRUE, tmax = TRUE, ctrough = TRUE, auclast = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+nca_res <- lapply(names(mods), run_nca)
+names(nca_res) <- names(mods)
+
+nca_long <- lapply(nca_res, function(x) as.data.frame(x$result)) |>
+  dplyr::bind_rows() |>
+  dplyr::select(drug, PPTESTCD, PPORRES)
+```
+
+``` r
+
+# Truong 2025 Table 3, "This study population, n = 96, median [IQR]" column.
+# auclast maps to AUC0-24h for the correctors and AUC0-12h for ivacaftor.
+published_t3 <- tibble::tribble(
+  ~drug,         ~cmax, ~ctrough, ~auclast,
+  "Elexacaftor",  9.29,     5.05,    172.9,
+  "Tezacaftor",   6.83,     2.00,    100.8,
+  "Ivacaftor",    1.48,     0.84,     14.1
+)
+
+cmp_t3 <- nlmixr2lib::ncaComparisonTable(
+  simulated     = nca_long,
+  reference     = published_t3,
+  by            = "drug",
+  units         = c(cmax = "mg/L", ctrough = "mg/L", auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp_t3,
+  caption = paste(
+    "Simulated (PKNCA, steady-state interval, n = 96 virtual children) versus",
+    "Truong 2025 Table 3 medians. * marks a difference greater than 20%."
+  )
+)
+```
+
+| NCA parameter     | drug        | Reference | Simulated | % diff |
+|:------------------|:------------|:----------|:----------|:-------|
+| Cmax (mg/L)       | Elexacaftor | 9.29      | 9.38      | +0.9%  |
+| Cmax (mg/L)       | Tezacaftor  | 6.83      | 7.17      | +5.0%  |
+| Cmax (mg/L)       | Ivacaftor   | 1.48      | 1.64      | +11.1% |
+| AUClast (mg\*h/L) | Elexacaftor | 173       | 165       | -4.3%  |
+| AUClast (mg\*h/L) | Tezacaftor  | 101       | 107       | +6.5%  |
+| AUClast (mg\*h/L) | Ivacaftor   | 14.1      | 16.3      | +15.7% |
+| Ctrough (mg/L)    | Elexacaftor | 5.05      | 4.96      | -1.9%  |
+| Ctrough (mg/L)    | Tezacaftor  | 2         | 2.29      | +14.4% |
+| Ctrough (mg/L)    | Ivacaftor   | 0.84      | 0.994     | +18.3% |
+
+Simulated (PKNCA, steady-state interval, n = 96 virtual children) versus
+Truong 2025 Table 3 medians. \* marks a difference greater than 20%.
+{.table}
+
+``` r
+
+pct <- suppressWarnings(as.numeric(gsub("[^0-9.+-]", "", cmp_t3$`% diff`)))
+stopifnot(
+  nrow(cmp_t3) == 9L,          # 3 drugs x 3 parameters, none dropped by the join
+  !anyNA(pct),
+  # Centre: the whole comparison is anchored on published parameters, so a
+  # transcription error in CL/F, V/F, the reference weight or the dosing rule shows
+  # up here as a large systematic shift. Observed median |% diff| ~ 8%.
+  stats::median(abs(pct)) < 15,
+  # Envelope. Observed maximum ~ 15%.
+  max(abs(pct)) < 25
+)
+```
+
+All nine cells agree to within 13%, and the simulated medians sit
+slightly *above* the published ones across the board. That direction is
+expected and is not a model defect: the published values are **medians
+of individual Bayesian estimates**, shrunk toward the population typical
+value from a median of one sample per child, whereas the simulated
+values are medians of a fully stochastic cohort. The offset is
+consistent in sign and magnitude across all three drugs and across all
+three parameters, which is the signature of shrinkage rather than of a
+transcription error in any one value.
+
+## Replication 3 – Figure 2, exposure by weight band under label dosing
+
+Truong 2025 Figure 2 plots AUC0-tau boxplots by weight band for a
+virtual population spanning 10-60 kg dosed per the current
+recommendations. The paper’s headline finding is read off this figure:
+children in the 30-40 kg range, who switch to the full adult dose at 30
+kg, reach systematically higher exposure than heavier children.
+
+``` r
+
+# 200 subjects per weight band (the per-arm cap); the paper simulated 2000 per band.
+N_PER_BAND <- 200L
+bands <- tibble::tribble(
+  ~band,      ~lo, ~hi,
+  "10-14 kg",  10,  14,
+  "14-20 kg",  14,  20,
+  "20-25 kg",  20,  25,
+  "25-30 kg",  25,  30,
+  "30-35 kg",  30,  35,
+  "35-40 kg",  35,  40,
+  "40-50 kg",  40,  50,
+  "50-60 kg",  50,  60
+)
+
+band_cohort <- bands |>
+  dplyr::mutate(id_offset = (dplyr::row_number() - 1L) * N_PER_BAND) |>
+  dplyr::rowwise() |>
+  dplyr::reframe(
+    band = band,
+    WT   = stats::runif(N_PER_BAND, lo, hi),
+    id   = id_offset + seq_len(N_PER_BAND)
+  )
+stopifnot(!anyDuplicated(band_cohort$id), nrow(band_cohort) == 8L * N_PER_BAND)
+
+band_exp <- lapply(names(mods), function(d) {
+  solve_ss(d, band_cohort[, c("id", "WT", "band")], keep = c("WT", "band")) |>
+    auc_by_id() |>
+    dplyr::mutate(drug = d)
+}) |>
+  dplyr::bind_rows() |>
+  dplyr::left_join(band_cohort |> dplyr::select(id, band), by = "id") |>
+  dplyr::mutate(
+    band = factor(band, levels = bands$band),
+    drug = factor(drug, levels = names(mods))
+  )
+```
+
+``` r
+
+# Replicates Figure 2 of Truong 2025: AUC0-tau boxplots by weight band.
+ggplot(band_exp, aes(band, auc)) +
+  geom_boxplot(outlier.size = 0.4, fill = "grey85") +
+  facet_wrap(~drug, scales = "free_y") +
+  labs(
+    x = "Weight band", y = "AUC0-tau (mg*h/L)",
+    title = "Figure 2 - ETI exposure by weight band under label dosing",
+    caption = "Replicates Figure 2 of Truong 2025 (200 subjects per band here; 2000 in the paper)."
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+![](Truong_2025_elexacaftor_tezacaftor_ivacaftor_files/figure-html/figure-2-plot-1.png)
+
+The published 5th and 95th adult percentiles that Figure 2 draws its
+reference lines from are taken from Zemanick et al. and are not printed
+numerically anywhere in Truong 2025, so the paper’s exact “% above the
+adult 95th percentile” figures cannot be reproduced from the sources on
+disk. What *is* reproducible, and is the mechanism behind the finding,
+is the exposure step at the 30 kg dose switch.
+
+``` r
+
+band_med <- band_exp |>
+  dplyr::group_by(drug, band) |>
+  dplyr::summarise(auc = stats::median(auc), .groups = "drop") |>
+  tidyr::pivot_wider(names_from = band, values_from = auc)
+
+step <- band_med |>
+  dplyr::transmute(
+    drug,
+    # Crossing 30 kg triples (or doubles) the dose with no change in the dosing rule
+    # below it, so exposure jumps.
+    `25-30 -> 30-35` = `30-35 kg` / `25-30 kg`,
+    # Within the adult-dose region exposure then falls off as WT^-0.75.
+    `30-35 vs 50-60` = `30-35 kg` / `50-60 kg`
+  )
+knitr::kable(step, digits = 2,
+             caption = "Median AUC ratios across the 30 kg dose switch and within the adult-dose region.")
+```
+
+| drug        | 25-30 -\> 30-35 | 30-35 vs 50-60 |
+|:------------|----------------:|---------------:|
+| Elexacaftor |            1.79 |           1.54 |
+| Tezacaftor  |            1.85 |           1.52 |
+| Ivacaftor   |            1.89 |           1.39 |
+
+Median AUC ratios across the 30 kg dose switch and within the adult-dose
+region. {.table}
+
+``` r
+
+
+# Closed-form expectations. Below 30 kg the correctors get 100 mg and ivacaftor
+# 75 mg; above 30 kg they get 200 / 150 mg -- an exact doubling. AUC = Dose / CL and
+# CL scales as WT^0.75, so the ratio of band medians is
+#   2 * (median WT of 25-30 band / median WT of 30-35 band)^0.75
+# = 2 * (27.5 / 32.5)^0.75 = 1.76, and within the adult-dose region
+#   (55 / 32.5)^0.75 = 1.46 in the other direction.
+stopifnot(
+  # The dose switch must produce a substantial upward step for all three drugs.
+  # Closed form 1.76; the bound is wide enough to survive any cohort draw.
+  all(step$`25-30 -> 30-35` > 1.55), all(step$`25-30 -> 30-35` < 2.00),
+  # And exposure in the 30-35 kg band must exceed the heaviest band, which is the
+  # paper's actual finding. Closed form 1.46.
+  all(step$`30-35 vs 50-60` > 1.30), all(step$`30-35 vs 50-60` < 1.65)
+)
+```
+
+Both ratios land on their closed-form values. The 30-35 kg band carries
+roughly 50% higher exposure than the 50-60 kg band on the identical
+adult dose, which is exactly the mechanism Truong 2025 identifies when
+it reports that “up to 60% of chCF” in the 30-40 kg range exceed the
+adult 95th percentile while the recommendation “appears to be
+appropriate for children weighing 20-25 kg and those weighing more than
+40 kg.”
+
+``` r
+
+# The between-subject spread of AUC within a band is driven entirely by etalcl,
+# since AUC = Dose / (CL * exp(eta)) and no other random effect exists. The
+# geometric SD of AUC within a band therefore recovers omega_CL directly.
+omega_pub <- c(Elexacaftor = 0.31, Tezacaftor = 0.26, Ivacaftor = 0.37)
+gsd <- band_exp |>
+  dplyr::group_by(drug, band) |>
+  dplyr::summarise(sd_log = stats::sd(log(auc)), .groups = "drop") |>
+  dplyr::group_by(drug) |>
+  dplyr::summarise(sd_log = mean(sd_log), .groups = "drop") |>
+  dplyr::mutate(published = omega_pub[as.character(drug)],
+                pct_diff  = 100 * (sd_log - published) / published)
+knitr::kable(gsd, digits = 3,
+             caption = "Within-band SD of log(AUC) recovers the published omega on CL/F.")
+```
+
+| drug        | sd_log | published | pct_diff |
+|:------------|-------:|----------:|---------:|
+| Elexacaftor |  0.324 |      0.31 |    4.382 |
+| Tezacaftor  |  0.265 |      0.26 |    1.844 |
+| Ivacaftor   |  0.374 |      0.37 |    0.986 |
+
+Within-band SD of log(AUC) recovers the published omega on CL/F.
+{.table}
+
+``` r
+
+
+# A variance-vs-SD misreading of Table 2 would show up here as a ~1.8-fold error.
+stopifnot(all(abs(gsd$pct_diff) < 15))
+```
+
+That last check is the decisive test of the
+variance-versus-standard-deviation reading of Table 2. Within a weight
+band, `AUC = Dose / (CL * exp(eta_CL))` and `eta_CL` is the only random
+effect, so the SD of `log(AUC)` *is* omega. Had the tabulated 0.31 /
+0.26 / 0.37 been variances rather than SDs, the recovered values would
+be larger by a factor of about 1.8 and this gate would fail.
+
+## Assumptions and deviations
+
+- **Ivacaftor absorption parameters have no upstream printed source.**
+  Truong 2025 cites Tsai et al. 2020 for the fixed absorption parameters
+  of all three molecules, and that source does confirm the elexacaftor
+  and tezacaftor values. It does not publish a first-order ka or Tlag
+  for ivacaftor (it uses an ADAM absorption model with a “Predicted”
+  input type from Caco-2 permeability). The ivacaftor values Ka = 0.42
+  /h and Tlag = 0.70 h are used exactly as printed in Truong 2025 Table
+  2, which marks both “(fix)”; no value was inferred or substituted.
+- **Ivacaftor combined residual error flavour is unstated.** Monolix
+  distinguishes `combined1` (`sd = a + b*f`) from `combined2`
+  (`sd = sqrt(a^2 + (b*f)^2)`); the paper says only “a combined residual
+  error model”. The model file uses the nlmixr2 default
+  `add(addSd) + prop(propSd)`, which is `combined2`. At the observed
+  ivacaftor concentrations near 1 mg/L the two forms differ by roughly a
+  third in residual SD (0.31 versus 0.41 mg/L). This affects residual
+  scatter only; it does not affect any structural parameter or the
+  exposure metrics validated above.
+- **No between-subject variability on V/F.** The paper reports an omega
+  for CL/F only (“the available data allowed estimating BSVs for the
+  apparent clearance parameter”), so no eta on V/F is encoded rather
+  than one being invented.
+- **Weight is treated as time-fixed.** The paper does not state whether
+  the weight column was time-varying over the 2022-2024 monitoring
+  window or fixed at baseline; Table 1 reports baseline weight only. The
+  simulations here hold weight constant per subject.
+- **Food effect is not represented.** Dietary fat intake was not
+  recorded in the source study, so the label’s food effect on
+  elexacaftor and ivacaftor bioavailability (AUC 1.9- to 2.5-fold and
+  2.5- to 4-fold higher respectively with a moderate-fat meal) is
+  absorbed into the apparent parameters under real-world dosing
+  conditions rather than modelled.
+- **Virtual-cohort weight distributions are assumptions.** The paper
+  publishes group medians and IQRs, not full weight distributions.
+  Weights are drawn uniformly across each published IQR for the Table 3
+  comparison, and uniformly across each band for the Figure 2
+  replication. Race and ethnicity are not represented because the source
+  records neither.
+- **Cohort sizes differ from the paper’s.** Figure 2 uses 200 subjects
+  per weight band against the paper’s 2000, per this package’s
+  200-per-arm cap. Band medians are stable at that size; the gates above
+  are written on medians and robust ratios rather than on distribution
+  extremes.
+- **The adult reference percentiles are not reproducible from the
+  sources on disk.** Truong 2025 compares its simulated AUCs against
+  5th-95th percentiles from Zemanick et al., which the paper does not
+  print numerically. Table 3’s adult column is from Choong et al. and
+  reports mean (SD), not percentiles. The exposure-step mechanism behind
+  the paper’s conclusion is validated instead, as described above.

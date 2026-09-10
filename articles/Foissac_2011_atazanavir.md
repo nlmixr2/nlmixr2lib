@@ -71,7 +71,7 @@ The table below collects them in one place for review.
 | `lvc` | `log(103)` | Table 2: V/F = 103 L (70 kg)^-1 (RSE 19%) |
 | `lka` | `log(0.44)` | Table 2: Ka = 0.44 1/h (RSE 26%) |
 | `allo_cl` | `fixed(0.75)` | Methods: PWR = 0.75 for CL (FIXED at allometric-theory value) |
-| `allo_v` | `fixed(1)` | Methods: PWR = 1 for V (FIXED at allometric-theory value) |
+| `e_wt_vc` | `fixed(1)` | Methods: PWR = 1 for V (FIXED at allometric-theory value) |
 | `e_no_rtv_cl` | `0.80` | Table 2: theta_NO_RTV (CL/F) = 0.80 (RSE 24%) |
 | `e_tdf_cl` | `0.25` | Table 2: theta_TDF (CL/F) = 0.25 (RSE 37%) |
 | `etalcl` | `0.16^2` | Table 2: BSV(CL/F) = 0.16 (sqrt of omega; RSE 34%); variance = 0.0256 |
@@ -83,7 +83,7 @@ Covariate equation (Foissac 2011 Table 2 footnote):
            * (1 + e_no_rtv_cl * (1 - CONMED_RTV_i))
            * (1 + e_tdf_cl    * CONMED_TDF_i)
            * (WT_i / 70)^allo_cl
-    V/F_i  = exp(lvc) * (WT_i / 70)^allo_v
+    V/F_i  = exp(lvc) * (WT_i / 70)^e_wt_vc
 
 where `CONMED_RTV = 1` is the boosted reference stratum (typical CL/F =
 7.1 L/h at 70 kg), `CONMED_RTV = 0` flips on the `theta_NO_RTV` effect

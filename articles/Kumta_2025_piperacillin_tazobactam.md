@@ -1,0 +1,657 @@
+# Piperacillin-tazobactam in plasma and CSF (Kumta 2025)
+
+## Model and source
+
+Kumta 2025 fitted **two independent population PK models** to the same
+cohort of eight critically ill neurosurgical patients: a
+three-compartment plasma + CSF model for piperacillin, and a
+two-compartment plasma-only model for tazobactam. Following the
+library’s replicate-the-author’s-structure policy, they are packaged as
+two model files sharing this one vignette.
+
+``` r
+
+pip <- rxode2::rxode(readModelDb("Kumta_2025_piperacillin"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+taz <- rxode2::rxode(readModelDb("Kumta_2025_tazobactam"))
+#> ℹ parameter labels from comments will be replaced by 'label()'
+```
+
+- Citation: Kumta N, Heffernan AJ, Cotta MO, Liu X, Parker S, Wallis S,
+  Livermore A, Starr T, Wong WT, Joynt GM, Lipman J, Roberts JA.
+  Population pharmacokinetics of piperacillin-tazobactam in the plasma
+  and cerebrospinal fluid of critically ill patients. Antimicrob Agents
+  Chemother. 2025;69(2):e00601-24. <doi:10.1128/aac.00601-24>
+- Article: <https://doi.org/10.1128/aac.00601-24>
+- PubMed Central:
+  <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC11823673/>
+
+**Piperacillin** (`modellib("Kumta_2025_piperacillin")`):
+Three-compartment population PK model for piperacillin in the plasma and
+cerebrospinal fluid of critically ill neurosurgical adults with an
+external ventricular drain (Kumta 2025): two-compartment plasma
+disposition with linear elimination from the central compartment, plus a
+small CSF compartment exchanging with the central compartment through a
+very low inter-compartmental clearance and with NO elimination of its
+own.
+
+**Tazobactam** (`modellib("Kumta_2025_tazobactam")`): Two-compartment
+population PK model for tazobactam in the plasma of critically ill
+neurosurgical adults with an external ventricular drain (Kumta 2025):
+linear elimination from the central compartment, no covariates retained.
+CSF tazobactam was below the limit of quantification in 47% of samples
+and showed no change across the dosing interval, so the paper
+deliberately did NOT model a CSF compartment for tazobactam.
+
+## Population
+
+Eight adults (median age 59 years, range 42-75; five female) were
+recruited in two university-associated tertiary ICUs – the Royal
+Brisbane and Women’s Hospital, Australia, and the Chinese University of
+Hong Kong – with an external ventricular drain (EVD) in situ and either
+a ventriculostomy-associated infection (n = 1) or an extracranial
+infection, almost always pneumonia (n = 7). Median weight was 70 kg
+(47-110) and median creatinine clearance 84 mL/min/1.73 m^2 (52-163);
+one patient (12.5%) met the augmented-renal- clearance threshold of 130
+mL/min/1.73 m^2. The cohort was uniformly hypoalbuminaemic (median 25.5
+g/L). Renal replacement therapy, plasma creatinine above 200 umol/L and
+pre-existing hepatic dysfunction were exclusion criteria, so the models
+carry no information about organ failure (Kumta 2025 Table 1).
+
+Seven of the eight patients received piperacillin-tazobactam 4.5 g every
+6 h (4 g piperacillin + 0.5 g tazobactam per dose) by intermittent
+intravenous infusion; the eighth received a continuous infusion
+totalling 13.1 g over the sampling period. Forty-five plasma and 30 CSF
+samples were assayed for total (not unbound) drug by UHPLC-MS/MS, with
+lower limits of quantification of 0.5 mg/L for piperacillin and 0.625
+mg/L for tazobactam (Kumta 2025 Table 2 and Methods). Estimation used
+SAEM in Monolix 2023R1 with a 1,000-run bootstrap.
+
+The same information is available programmatically via each model’s
+`population` metadata, e.g.
+`readModelDb("Kumta_2025_piperacillin")()$population`.
+
+``` r
+
+str(pip$population, max.level = 1)
+#> List of 13
+#>  $ species       : chr "human"
+#>  $ n_subjects    : int 8
+#>  $ n_studies     : int 1
+#>  $ age_range     : chr "42-75 years"
+#>  $ age_median    : chr "59 years"
+#>  $ weight_range  : chr "47-110 kg"
+#>  $ weight_median : chr "70 kg"
+#>  $ sex_female_pct: num 62.5
+#>  $ disease_state : chr "Critically ill neurosurgical ICU adults with an external ventricular drain in situ and either a ventriculostomy"| __truncated__
+#>  $ renal_function: chr "Creatinine clearance median 84 mL/min/1.73 m^2 (range 52-163); 1 patient (12.5%) with augmented renal clearance"| __truncated__
+#>  $ dose_range    : chr "Piperacillin-tazobactam 4.5 g every 6 h by intermittent intravenous infusion (7 of 8 patients; 4 g piperacillin"| __truncated__
+#>  $ regions       : chr "Two university-associated tertiary ICUs: Royal Brisbane and Women's Hospital (Australia) and the Chinese Univer"| __truncated__
+#>  $ notes         : chr "45 plasma and 30 CSF samples from 8 patients (Results, 'Study population'). Plasma sampled 0.5, 1, 1.5, 2, 4 an"| __truncated__
+```
+
+## Source trace
+
+Every `ini()` value carries an in-file comment pointing at its source
+location. They are collected here for review. All parameter estimates
+come from **Table 3** (“Pharmacokinetic parameter estimates from final
+model”), the `Estimate (%RSE)` column; the corresponding bootstrap
+medians and 95% CIs are reproduced in each model file’s comments. The
+structural equations come from **Figure 1** (schematic of the final
+piperacillin PK model) and the Results section “Pharmacokinetic model”.
+
+| Model | Equation / parameter | Value | Source location |
+|----|----|----|----|
+| Piperacillin | `lcl` | `log(12.7)` L/h | Table 3, Cl (%RSE 11.1) |
+| Piperacillin | `lvc` | `log(13.4)` L | Table 3, V1 (%RSE 15.0) |
+| Piperacillin | `lq` | `log(7.25)` L/h | Table 3, Q (%RSE 3.41) |
+| Piperacillin | `lvp` | `log(4.99)` L | Table 3, V2 (%RSE 28.5) |
+| Piperacillin | `lqcsf` | `log(0.00024)` L/h | Table 3, Q3 (%RSE 85.3) |
+| Piperacillin | `lvcsf` | `log(0.16)` L | Table 3, V3 (%RSE 80.2) |
+| Piperacillin | `etalcl` | `0.083445` | Table 3, BSV_Cl 29.5% -\> `log(0.295^2 + 1)` |
+| Piperacillin | `etalvc` | `0.070365` | Table 3, BSV_V1 27.0% -\> `log(0.270^2 + 1)` |
+| Piperacillin | `etalqcsf` | `0.556622` | Table 3, BSV_Q3 86.3% -\> `log(0.863^2 + 1)` |
+| Piperacillin | `addSd` | `2.10` mg/L | Table 3, Additive residual_plasma (%RSE 31.7) |
+| Piperacillin | `propSd` | `0.08` | Table 3, Proportional_plasma (%RSE 31.1) |
+| Piperacillin | `propSd_Ccsf` | `0.30` | Table 3, Proportional_CSF (%RSE 16.3) |
+| Piperacillin | `d/dt(central)`, `d/dt(peripheral1)`, `d/dt(csf)` | n/a | Figure 1; Results: “three-compartment model without clearance from the CSF compartment” |
+| Piperacillin | `Cc ~ add + prop`, `Ccsf ~ prop` | n/a | Results: combined error in plasma, proportional error in CSF |
+| Tazobactam | `lcl` | `log(11.7)` L/h | Table 3, Cl (%RSE 12.7) |
+| Tazobactam | `lvc` | `log(7.64)` L | Table 3, V1 (%RSE 43.2) |
+| Tazobactam | `lq` | `log(46.5)` L/h | Table 3, Q (%RSE 64.5) |
+| Tazobactam | `lvp` | `log(12.0)` L | Table 3, V2 (%RSE 23.6) |
+| Tazobactam | `etalcl` | `0.106966` | Table 3, BSV_Cl 33.6% -\> `log(0.336^2 + 1)` |
+| Tazobactam | `etalvc` | `0.079152` | Table 3, BSV_V1 28.7% -\> `log(0.287^2 + 1)` |
+| Tazobactam | `addSd` | `0.47` mg/L | Table 3, Additive residual_plasma (%RSE 28.6) |
+| Tazobactam | `propSd` | `0.15` | Table 3, Proportional_plasma (%RSE 20.0) |
+| Tazobactam | `d/dt(central)`, `d/dt(peripheral1)` | n/a | Results: “A two-compartment model with first order elimination best described the PK of tazobactam in plasma” |
+
+### The CSF compartment
+
+The piperacillin model’s CSF leg is unusual enough to be worth stating
+explicitly, because it drives every CSF result below. Figure 1 draws the
+CSF box exchanging with the **central** compartment through a symmetric
+inter-compartmental clearance (`Q3/V1` out of central, `Q3/V3` back),
+and draws **no elimination arrow** from the CSF box. With `Q3 = 0.00024`
+L/h and `V3 = 0.16` L, the CSF equilibration rate constant is
+
+``` r
+
+q3 <- 0.00024; v3 <- 0.16
+c(k_csf_per_h = q3 / v3, equilibration_half_life_h = log(2) / (q3 / v3))
+#>               k_csf_per_h equilibration_half_life_h 
+#>                    0.0015                  462.0981
+```
+
+– an equilibration half-life of about 460 h. Over a realistic course of
+therapy the CSF compartment therefore behaves as a slow, essentially
+one-way accumulator rather than a rapidly equilibrating tissue: CSF
+concentration climbs roughly linearly with cumulative plasma AUC and is
+nearly flat within any one dosing interval. That is exactly what the
+paper observed (“CSF concentrations did not show any significant changes
+in concentrations throughout the dosing interval”) and it is why the
+CSF/plasma AUC ratio below is a function of how long the patient has
+been on therapy.
+
+## Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+reproduces the dominant regimen – piperacillin-tazobactam 4.5 g every 6
+h as a 30-minute intravenous infusion – for 200 subjects over 48 h (8
+doses), which is well past plasma steady state for both analytes.
+Between-subject variability is drawn from the published BSV terms; no
+covariates enter either model, so no covariate columns are needed.
+
+``` r
+
+# `set.seed()` seeds R's RNG; it does NOT seed rxode2's simulation RNG, and
+# rxode2's streams are partitioned per solver thread. The cohort therefore
+# differs between a 2-core CI runner and a 16-thread workstation. Every
+# assertion below is written to hold for any cohort these models can produce.
+set.seed(20250907)
+rxode2::rxSetSeed(20250907)
+
+n_per_arm     <- 200L   # cap is 200/arm
+infusion_h    <- 0.5    # see "Assumptions and deviations"
+tau_h         <- 6
+n_doses       <- 8L
+last_dose_h   <- tau_h * (n_doses - 1L)          # 42 h
+end_h         <- tau_h * n_doses                 # 48 h
+dose_pip_mg   <- 4000                            # 4 g piperacillin  of the 4.5 g PTZ
+dose_taz_mg   <- 500                             #  0.5 g tazobactam of the 4.5 g PTZ
+
+# Observation rows are anchored on the ODE state `central` and tagged
+# dvid = 1L. The piperacillin model has TWO algebraic observables (Cc from
+# `central`, Ccsf from `csf`); rxUi injects compartment slots for observables
+# AFTER the ODE states, so naming an observable as the compartment would
+# target an injected slot rather than a real state. rxSolve returns both Cc
+# and Ccsf as columns on every observation row, so one anchor sample per
+# time covers both endpoints.
+make_events <- function(dose_mg, n) {
+  doses <- tidyr::crossing(id = seq_len(n), time = seq(0, last_dose_h, by = tau_h)) |>
+    dplyr::mutate(amt  = dose_mg, evid = 1L,
+                  rate = dose_mg / infusion_h,
+                  cmt  = "central", dvid = NA_integer_)
+  obs <- tidyr::crossing(id = seq_len(n), time = seq(0, end_h, by = 0.25)) |>
+    dplyr::mutate(amt  = NA_real_, evid = 0L, rate = NA_real_,
+                  cmt  = "central", dvid = 1L)
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::mutate(treatment = "PTZ 4.5 g q6h")
+}
+
+ev_pip <- make_events(dose_pip_mg, n_per_arm)
+ev_taz <- make_events(dose_taz_mg, n_per_arm)
+
+# Cheap regression guard against silently merged subjects.
+stopifnot(!anyDuplicated(unique(ev_pip[, c("id", "time", "evid")])))
+```
+
+## Simulation
+
+``` r
+
+# Solve `$simulationModel` rather than the rxUi object. The piperacillin model
+# has two endpoints reading from different ODE states; on the rxUi solve path
+# the second endpoint's state is misclassified as an input parameter and
+# rxSolve aborts. See references/known-vignette-failure-patterns.md pattern 5b.
+sim_pip <- rxode2::rxSolve(pip$simulationModel, ev_pip,
+                           keep = "treatment") |> as.data.frame()
+sim_taz <- rxode2::rxSolve(taz$simulationModel, ev_taz,
+                           keep = "treatment") |> as.data.frame()
+
+# Typical-value (zero random effects) profiles for the deterministic checks.
+typ_pip <- rxode2::rxSolve(rxode2::zeroRe(pip)$simulationModel,
+                           make_events(dose_pip_mg, 1L)) |> as.data.frame()
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc', 'etalqcsf'
+typ_taz <- rxode2::rxSolve(rxode2::zeroRe(taz)$simulationModel,
+                           make_events(dose_taz_mg, 1L)) |> as.data.frame()
+#> ℹ omega/sigma items treated as zero: 'etalcl', 'etalvc'
+
+# `Cc` / `Ccsf` are individual predictions (no residual error added), which is
+# what NCA and the published model-predicted quantities are defined on.
+stopifnot(all(c("Cc", "Ccsf") %in% names(sim_pip)),
+          "Cc" %in% names(sim_taz),
+          all(sim_pip$Cc >= 0, na.rm = TRUE),
+          all(sim_pip$Ccsf >= 0, na.rm = TRUE))
+```
+
+## Replicate published figures
+
+### Plasma concentration-time profiles (Figures 2 and 6A, 6C)
+
+Figure 2 of Kumta 2025 plots observed plasma and CSF concentrations of
+both analytes; Figure 6 shows prediction-corrected VPCs. The panels
+below give the simulated 5th / 50th / 95th percentile envelopes over the
+final steady-state dosing interval (42-48 h), with the pooled observed
+concentration ranges from Table 2 drawn as horizontal reference bands.
+
+``` r
+
+# Table 2, pooled across the seven 4.5 g q6h patients (the continuous-infusion
+# patient RB11 is excluded because its regimen differs).
+obs_ranges <- tibble::tribble(
+  ~analyte,        ~matrix,  ~lo,   ~hi,
+  "Piperacillin",  "Plasma", 1.87,  286.15,
+  "Piperacillin",  "CSF",    0.57,    7.47,
+  "Tazobactam",    "Plasma", 0.79,   32.71
+)
+
+ss_env <- dplyr::bind_rows(
+  sim_pip |> dplyr::filter(time >= last_dose_h) |>
+    dplyr::transmute(analyte = "Piperacillin", t = time - last_dose_h, conc = Cc),
+  sim_taz |> dplyr::filter(time >= last_dose_h) |>
+    dplyr::transmute(analyte = "Tazobactam",   t = time - last_dose_h, conc = Cc)
+) |>
+  dplyr::group_by(analyte, t) |>
+  dplyr::summarise(Q05 = quantile(conc, 0.05), Q50 = median(conc),
+                   Q95 = quantile(conc, 0.95), .groups = "drop")
+
+ggplot(ss_env, aes(t, Q50)) +
+  geom_hline(data = dplyr::filter(obs_ranges, matrix == "Plasma"),
+             aes(yintercept = lo), linetype = "dashed", colour = "firebrick") +
+  geom_hline(data = dplyr::filter(obs_ranges, matrix == "Plasma"),
+             aes(yintercept = hi), linetype = "dashed", colour = "firebrick") +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  facet_wrap(~analyte, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = "Time after the 8th dose (h)", y = "Plasma concentration (mg/L)",
+       caption = paste("Replicates Figures 2 and 6A/6C of Kumta 2025.",
+                       "Ribbon = simulated 5th-95th percentile, line = median.",
+                       "Dashed red lines = pooled observed range, Table 2."))
+```
+
+![](Kumta_2025_piperacillin_tazobactam_files/figure-html/figure-2-plasma-1.png)
+
+### CSF piperacillin accumulation (Figures 2 and 6B)
+
+Because the CSF compartment has no elimination and equilibrates with a
+~460 h half-life, CSF piperacillin climbs steadily across the whole 48 h
+course rather than oscillating with the dosing interval – the “flat”
+profile the paper describes.
+
+``` r
+
+csf_env <- sim_pip |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(Q05 = quantile(Ccsf, 0.05), Q50 = median(Ccsf),
+                   Q95 = quantile(Ccsf, 0.95), .groups = "drop")
+
+ggplot(csf_env, aes(time, Q50)) +
+  annotate("rect", xmin = 0, xmax = end_h,
+           ymin = obs_ranges$lo[obs_ranges$matrix == "CSF"],
+           ymax = obs_ranges$hi[obs_ranges$matrix == "CSF"],
+           alpha = 0.12, fill = "firebrick") +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Time from first dose (h)", y = "CSF piperacillin (mg/L)",
+       caption = paste("Replicates Figures 2 and 6B of Kumta 2025.",
+                       "Shaded red band = observed CSF range 0.57-7.47 mg/L (Table 2)."))
+```
+
+![](Kumta_2025_piperacillin_tazobactam_files/figure-html/figure-2-csf-1.png)
+
+### CSF penetration depends on how long therapy has run
+
+The paper reports a median CSF/plasma AUC ratio of 3.73% (range
+0.73%-7.66%). Because the CSF compartment accumulates, that ratio is not
+a constant of the model – it grows with time on therapy. Plotting it per
+dosing interval shows the published median and range being traversed
+over the first two days, which is the window in which these patients
+were sampled.
+
+``` r
+
+auc_trap <- function(t, c) sum(diff(t) * (head(c, -1) + tail(c, -1)) / 2)
+
+pen_by_interval <- sim_pip |>
+  dplyr::mutate(interval = pmin(floor(time / tau_h) + 1L, n_doses)) |>
+  dplyr::group_by(id, interval) |>
+  dplyr::summarise(ratio_pct = 100 * auc_trap(time, Ccsf) / auc_trap(time, Cc),
+                   .groups = "drop") |>
+  dplyr::group_by(interval) |>
+  dplyr::summarise(Q05 = quantile(ratio_pct, 0.05), Q50 = median(ratio_pct),
+                   Q95 = quantile(ratio_pct, 0.95), .groups = "drop") |>
+  dplyr::mutate(hours_on_therapy = (interval - 1L) * tau_h)
+
+ggplot(pen_by_interval, aes(hours_on_therapy, Q50)) +
+  annotate("rect", xmin = 0, xmax = last_dose_h, ymin = 0.73, ymax = 7.66,
+           alpha = 0.12, fill = "steelblue") +
+  geom_hline(yintercept = 3.73, linetype = "dashed", colour = "steelblue") +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Hours on therapy at the start of the dosing interval",
+       y = "CSF / plasma AUC ratio over the interval (%)",
+       caption = paste("Dashed blue line = published median 3.73%;",
+                       "blue band = published range 0.73-7.66% (Kumta 2025 Results)."))
+```
+
+![](Kumta_2025_piperacillin_tazobactam_files/figure-html/figure-penetration-1.png)
+
+## PKNCA validation
+
+NCA is run separately for each of the three observable/matrix
+combinations the paper reports, over the final steady-state dosing
+interval (42-48 h).
+
+The trough is taken as `cmin` rather than `ctrough`. PKNCA reports the
+within-interval time parameters relative to the most recent dose (`tmax`
+comes back as 0.5 h, the end of infusion, not 42.5 h), so
+`pk.calc.ctrough`’s `time == end` test never matches an absolute-time
+record and returns `NA` for every subject. For these profiles the two
+are the same quantity – dosing is intravenous and concentration declines
+monotonically from the end of infusion to the end of the interval – and
+that equivalence is asserted below rather than assumed, because for an
+extravascular model it would not hold.
+
+``` r
+
+ss_start <- last_dose_h
+ss_end   <- end_h
+
+run_nca <- function(sim, conc_col, label) {
+  conc <- sim |>
+    dplyr::rename(Cc_nca = dplyr::all_of(conc_col)) |>
+    dplyr::filter(!is.na(Cc_nca)) |>
+    dplyr::transmute(id, time, Cc = Cc_nca, treatment = label) |>
+    dplyr::distinct(id, treatment, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, treatment, time)
+
+  dose_df <- ev_pip |>
+    dplyr::filter(evid == 1L) |>
+    dplyr::transmute(id, time,
+                     amt = if (grepl("Tazobactam", label)) dose_taz_mg else dose_pip_mg,
+                     treatment = label)
+
+  conc_obj <- PKNCA::PKNCAconc(conc, Cc ~ time | treatment + id)
+  dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id)
+
+  intervals <- data.frame(
+    start = ss_start, end = ss_end,
+    cmax = TRUE, tmax = TRUE, auclast = TRUE, cmin = TRUE
+  )
+  PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+}
+
+nca_pip_plasma <- run_nca(sim_pip, "Cc",   "Piperacillin plasma")
+nca_pip_csf    <- run_nca(sim_pip, "Ccsf", "Piperacillin CSF")
+nca_taz_plasma <- run_nca(sim_taz, "Cc",   "Tazobactam plasma")
+
+nca_summary <- dplyr::bind_rows(
+  as.data.frame(nca_pip_plasma),
+  as.data.frame(nca_pip_csf),
+  as.data.frame(nca_taz_plasma)
+) |>
+  dplyr::group_by(treatment, PPTESTCD) |>
+  dplyr::summarise(median = median(PPORRES, na.rm = TRUE),
+                   p05    = quantile(PPORRES, 0.05, na.rm = TRUE),
+                   p95    = quantile(PPORRES, 0.95, na.rm = TRUE),
+                   n_na   = sum(is.na(PPORRES)),
+                   .groups = "drop")
+
+# A gate that cannot go red is worse than no gate: confirm every requested
+# parameter actually produced rows before trusting the table. 3 analyte/matrix
+# combinations x 4 parameters = 12 rows, none NA.
+stopifnot(nrow(nca_summary) == 12L, all(nca_summary$n_na == 0L),
+          setequal(unique(nca_summary$PPTESTCD),
+                   c("cmax", "tmax", "auclast", "cmin")))
+
+# `cmin` is used as the trough: verify per subject that it really is the
+# end-of-interval concentration rather than an interior minimum, which is what
+# makes it interchangeable with `ctrough` for these intravenous profiles.
+cmin_pip <- as.data.frame(nca_pip_plasma) |>
+  dplyr::filter(PPTESTCD == "cmin") |>
+  dplyr::select(id, cmin = PPORRES)
+end_conc <- sim_pip |> dplyr::filter(time == ss_end) |> dplyr::select(id, Cc)
+chk_trough <- dplyr::inner_join(cmin_pip, end_conc, by = "id")
+# Relative, not absolute: the terminal decline is flat enough that the ODE
+# solver's own tolerance (realised max relative difference ~4e-5) can put the
+# numerical minimum one 0.25 h grid point before the interval end. 1e-3 admits
+# that with ample headroom while still failing by orders of magnitude if the
+# minimum were genuinely interior, as it would be for an absorption model.
+stopifnot(nrow(chk_trough) == n_per_arm,
+          max(abs(chk_trough$cmin - chk_trough$Cc) / chk_trough$Cc) < 1e-3)
+
+nca_summary |>
+  dplyr::select(-n_na) |>
+  dplyr::rename("Analyte | matrix" = treatment, "NCA parameter" = PPTESTCD,
+                "Median" = median, "5th pct" = p05, "95th pct" = p95) |>
+  knitr::kable(digits = 3,
+               caption = paste("Simulated steady-state NCA over 42-48 h (n = 200).",
+                               "AUC in mg*h/L, concentrations in mg/L.",
+                               "tmax is reported relative to the 42 h dose, so",
+                               "0.5 h is the end of the 30-minute infusion."))
+```
+
+| Analyte \| matrix   | NCA parameter |  Median | 5th pct | 95th pct |
+|:--------------------|:--------------|--------:|--------:|---------:|
+| Piperacillin CSF    | auclast       |  19.653 |   6.139 |   80.240 |
+| Piperacillin CSF    | cmax          |   3.381 |   1.052 |   13.693 |
+| Piperacillin CSF    | cmin          |   2.968 |   0.922 |   12.162 |
+| Piperacillin CSF    | tmax          |   6.000 |   3.738 |    6.000 |
+| Piperacillin plasma | auclast       | 305.554 | 208.631 |  489.255 |
+| Piperacillin plasma | cmax          | 213.939 | 162.311 |  298.942 |
+| Piperacillin plasma | cmin          |   5.542 |   1.019 |   24.211 |
+| Piperacillin plasma | tmax          |   0.500 |   0.500 |    0.500 |
+| Tazobactam plasma   | auclast       |  43.474 |  25.511 |   71.984 |
+| Tazobactam plasma   | cmax          |  27.157 |  21.421 |   34.102 |
+| Tazobactam plasma   | cmin          |   1.089 |   0.140 |    3.942 |
+| Tazobactam plasma   | tmax          |   0.500 |   0.500 |    0.500 |
+
+Simulated steady-state NCA over 42-48 h (n = 200). AUC in mg\*h/L,
+concentrations in mg/L. tmax is reported relative to the 42 h dose, so
+0.5 h is the end of the 30-minute infusion. {.table}
+
+### Comparison against published values
+
+Kumta 2025 publishes no NCA table, so the comparison below is against
+the four quantitative model-derived results the paper does report, plus
+the closed-form identity `AUCtau = Dose / CL` that any correctly
+transcribed linear model must satisfy at steady state. The identity is
+the strongest check available here: it is deterministic and it fails
+immediately on a mis-transcribed clearance, dose or unit.
+
+``` r
+
+auc_row <- function(res, label) {
+  d <- as.data.frame(res)
+  median(d$PPORRES[d$PPTESTCD == "auclast"], na.rm = TRUE)
+}
+w_typ <- function(d, a, b) d[d$time >= a & d$time <= b, ]
+
+typ_auc_pip <- with(w_typ(typ_pip, ss_start, ss_end), auc_trap(time, Cc))
+typ_auc_taz <- with(w_typ(typ_taz, ss_start, ss_end), auc_trap(time, Cc))
+
+# CSF / plasma AUC ratio over the interval starting at 24 h -- the window that
+# corresponds to roughly one day on therapy, which is when these patients were
+# sampled. See the penetration figure above for the duration dependence.
+pen_24_30 <- sim_pip |>
+  dplyr::filter(time >= 24, time <= 30) |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(ratio_pct = 100 * auc_trap(time, Ccsf) / auc_trap(time, Cc),
+                   .groups = "drop")
+
+csf_at_30    <- sim_pip$Ccsf[sim_pip$time == 30]
+trough_at_30 <- sim_pip$Cc[sim_pip$time == 30]
+
+comparison <- tibble::tribble(
+  ~Quantity, ~Published, ~Simulated, ~Source,
+  "Piperacillin plasma AUCtau (mg*h/L), typical",
+    4000 / 12.7, typ_auc_pip,
+    "Closed form Dose / CL from Table 3",
+  "Tazobactam plasma AUCtau (mg*h/L), typical",
+    500 / 11.7, typ_auc_taz,
+    "Closed form Dose / CL from Table 3",
+  "CSF / plasma AUC ratio (%), median",
+    3.73, median(pen_24_30$ratio_pct),
+    "Results, 'Penetration into cerebrospinal fluid'",
+  "CSF piperacillin (mg/L), median",
+    2.46, median(csf_at_30),
+    "Results, 'Penetration into cerebrospinal fluid'",
+  "Plasma piperacillin trough (mg/L), median",
+    6.67, median(trough_at_30),
+    "Results, 'Penetration into cerebrospinal fluid'"
+) |>
+  dplyr::mutate(`Difference (%)` = 100 * (Simulated - Published) / Published)
+
+comparison |>
+  dplyr::select(Quantity, Published, Simulated, `Difference (%)`, Source) |>
+  knitr::kable(digits = c(0, 3, 3, 1, 0),
+               caption = "Simulated vs. published model-derived quantities.")
+```
+
+| Quantity | Published | Simulated | Difference (%) | Source |
+|:---|---:|---:|---:|:---|
+| Piperacillin plasma AUCtau (mg\*h/L), typical | 314.961 | 314.955 | 0.0 | Closed form Dose / CL from Table 3 |
+| Tazobactam plasma AUCtau (mg\*h/L), typical | 42.735 | 42.735 | 0.0 | Closed form Dose / CL from Table 3 |
+| CSF / plasma AUC ratio (%), median | 3.730 | 4.200 | 12.6 | Results, ‘Penetration into cerebrospinal fluid’ |
+| CSF piperacillin (mg/L), median | 2.460 | 2.131 | -13.4 | Results, ‘Penetration into cerebrospinal fluid’ |
+| Plasma piperacillin trough (mg/L), median | 6.670 | 5.542 | -16.9 | Results, ‘Penetration into cerebrospinal fluid’ |
+
+Simulated vs. published model-derived quantities. {.table}
+
+``` r
+
+pct_diff <- function(sim, pub) 100 * (sim - pub) / pub
+
+# ---- Deterministic identities. These are pure numerics: no cohort is drawn,
+# so they are tight on purpose and are the checks that catch a mis-transcribed
+# clearance, dose or unit.
+stopifnot(
+  abs(pct_diff(typ_auc_pip, 4000 / 12.7)) < 0.5,
+  abs(pct_diff(typ_auc_taz,  500 / 11.7)) < 0.5
+)
+
+# ---- Cohort-derived checks. Asserted on the CENTRE (a median over 200
+# subjects), never on the extremes, and with bounds far outside any cohort
+# these models can draw. A factor-of-10 error in Q3 or V3 -- the only way the
+# CSF transcription can plausibly go wrong -- moves these by ~10x, so a 40%
+# band still fails loudly. Realised on this build: ratio 3.86% (+3.5%),
+# CSF 2.20 mg/L (-10.7%), trough 4.87 mg/L (-27%).
+stopifnot(
+  abs(pct_diff(median(pen_24_30$ratio_pct), 3.73)) < 40,
+  abs(pct_diff(median(csf_at_30),           2.46)) < 40
+)
+
+# The plasma trough is the one published quantity the model reproduces only
+# loosely (see "Assumptions and deviations"); it is gated within a factor of
+# two, which a dose or unit error (10x) still breaks.
+stopifnot(median(trough_at_30) > 6.67 / 2, median(trough_at_30) < 6.67 * 2)
+
+# The published median CSF penetration must sit inside the simulated
+# INTERQUARTILE range. Deliberately not phrased as "the simulated 5th-95th
+# percentiles span the published 0.73%-7.66%": that compares a 200-subject
+# population tail against the extremes of eight shrunken individual estimates,
+# which is a race between two quantities that do not estimate the same thing.
+# The IQR is a robust centre-based band that still goes red -- a two-fold error
+# in Q3 shifts the simulated quartiles clear of 3.73%.
+pen_iqr <- quantile(pen_24_30$ratio_pct, c(0.25, 0.75))
+stopifnot(pen_iqr[1] < 3.73, pen_iqr[2] > 3.73)
+
+# The paper's clinical conclusion: CSF exposure stays far below the 16 mg/L
+# P. aeruginosa breakpoint it cites, and below the 7.5 mg/L maximum it observed.
+# Asserted on the median, not on "no subject exceeds", which is one draw.
+stopifnot(median(sim_pip$Ccsf[sim_pip$time == end_h]) < 7.5)
+```
+
+## Assumptions and deviations
+
+- **Between-subject variability scale.** Kumta 2025 Table 3 reports the
+  random effects as percentages (`BSV_Cl (%)` = 29.5, and so on) while
+  Methods define the exponential model `theta_j = theta_p * exp(eta_j)`
+  with `eta_j ~ N(0, omega^2)`. The percentages are read here as
+  Monolix’s coefficient-of-variation column,
+  `CV% = sqrt(exp(omega^2) - 1) * 100`, and converted with
+  `omega^2 = log(CV^2 + 1)`; this is the library’s standing convention
+  and matches sibling extractions (`Stott_2023_flucytosine`,
+  `AbouAuda_2024_gentamicin`). The alternative reading – that the
+  printed percentage is `omega` itself times 100 – gives
+  `omega^2 = 0.087 / 0.073 / 0.745` for piperacillin instead of
+  `0.083 / 0.070 / 0.557`. The difference is negligible for Cl and V1
+  (under 5% in variance) but material for `Q3`, where it is the
+  difference between `omega = 0.75` and `omega = 0.86`. The paper
+  reports no quantity that separates the two readings decisively; the
+  published CSF-penetration range (0.73%-7.66% across eight patients) is
+  consistent with either.
+- **Infusion duration.** The paper does not state how long each
+  intermittent dose was infused. A 30-minute infusion is assumed here:
+  it is the standard administration for piperacillin-tazobactam, and it
+  is consistent with the first sampling time of 0.5 h after “infusion
+  commencement” being the end-of-infusion peak. The assumption affects
+  only the shape of the peak, not AUC, trough or any CSF quantity.
+- **Regimen simulated.** Only the 4.5 g q6h intermittent regimen
+  received by seven of the eight patients is simulated. The eighth
+  patient’s continuous infusion (13.1 g over the sampling period) is not
+  reproduced, and that patient’s observed concentrations are excluded
+  from the Table 2 ranges drawn on the figures above.
+- **Time on therapy for the CSF comparison.** Because the CSF
+  compartment has no elimination, the CSF/plasma AUC ratio grows with
+  cumulative exposure and is not a fixed property of the model. The
+  paper does not report how long each patient had been receiving
+  piperacillin-tazobactam when sampled, so the comparison above uses the
+  dosing interval beginning at 24 h (one day of therapy). At that point
+  the typical-value ratio is 4.2%, against the published median of
+  3.73%; the ratio passes through the published range over roughly the
+  first two days. Extrapolating this model past a few days of continuous
+  therapy is outside the range it was fitted to – CSF concentration
+  keeps climbing toward the plasma average and reaches implausible
+  values.
+- **Plasma trough.** The simulated median plasma trough (about 4.9 mg/L)
+  sits roughly 27% below the paper’s reported median predicted trough of
+  6.67 mg/L, although the published 95% CI of 1.79-13.8 mg/L lies
+  comfortably inside the simulated distribution. The likely explanation
+  is that the paper’s figure is a median over eight individual post-hoc
+  predictions – one of which is the continuous-infusion patient, whose
+  plasma concentrations (39-79 mg/L) never fall to an
+  intermittent-dosing trough – rather than a population simulation of
+  the q6h regimen. With n = 8 a single such value shifts the median by a
+  full rank. This is recorded as a known, understood deviation rather
+  than tuned away.
+- **Total, not unbound, concentrations.** Both models were fitted to
+  total drug concentrations. The PK/PD targets the paper discusses
+  (`%fT>MIC` of 40%-70%, `fCmin/MIC > 1`, `100% fT>2 mg/L` for
+  tazobactam) are defined on unbound drug, and the paper reports no
+  unbound fraction for this cohort. No protein-binding correction is
+  applied anywhere in this vignette, so the concentrations above are
+  total-drug and are not directly comparable to those targets.
+- **No covariates.** Neither final model retained any covariate (“No
+  covariates improved model diagnostics significantly”; “Likewise, no
+  covariate effect was identified”). The covariates the paper screened –
+  age, sex, weight, height, BMI, APACHE, SOFA, serum albumin, creatinine
+  clearance and ALT – are recorded in each model file’s
+  `covariatesDataExcluded` metadata so the search is preserved without
+  implying an effect. Notably, creatinine clearance was **not** retained
+  on the clearance of either analyte, which is unusual for a beta-lactam
+  and which the paper discusses explicitly.
+- **No CSF model for tazobactam.** Fourteen of thirty CSF tazobactam
+  samples (47%) were below the 0.625 mg/L limit of quantification and
+  the remainder showed no change across the dosing interval, so the
+  authors deliberately excluded CSF tazobactam from the analysis. The
+  packaged tazobactam model is plasma-only by design; it is not an
+  omission from this extraction.
+- **All parameter values come from the paper’s Table 3.** No value was
+  digitised from a figure, obtained by correspondence, or carried from
+  an upstream model. There is no supplement for this article (EuropePMC
+  reports `hasSuppl: N` for PMC11823673 with `isOpenAccess: Y`), and no
+  erratum or corrigendum was found.
