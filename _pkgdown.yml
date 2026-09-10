@@ -2720,6 +2720,12 @@ navbar:
         href: articles/Randell_2024_metronidazole.html
       - text: "Metronidazole (Suyagh 2011)"
         href: articles/Suyagh_2011_metronidazole.html
+      - text: "Mg1113 human (Kwak 2025)"
+        href: articles/Kwak_2025_mg1113.html
+      - text: "Mg1113 monkey (Kwak 2025)"
+        href: articles/Kwak_2025_mg1113.html
+      - text: "Mg1113 rabbit (Kwak 2025)"
+        href: articles/Kwak_2025_mg1113.html
       - text: "MHD rat (Clinckers 2008)"
         href: articles/Clinckers_2008_MHD_rat.html
       - text: "MI 219 (Zou 2012)"
@@ -5984,6 +5990,7 @@ articles:
   - articles/Kuroda_2024_quinidine_horse
   - articles/Kurup_2024_DZIF10c
   - articles/Kutumova_2024_albuminNanoparticles
+  - articles/Kwak_2025_mg1113
   - articles/Kyhl_2016_nalmefene
   - articles/Lacroix_2025_polymyxinB_mucin
   - articles/Lacy_2018_cabozantinib
