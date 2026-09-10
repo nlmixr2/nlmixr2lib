@@ -822,17 +822,34 @@ osimertinib clearance is a 29.6 percent reduction in the de novo model and a
   intervals of, for example, 1.40-1.46 for DL 2 reflect. The simulated point
   estimates fall inside every published interval.
 
-* **Omega scale in the Brown-based model.** Westra 2025 entered Brown 2017's
-  reported omega values directly into `$OMEGA`, where NONMEM reads them as
-  variances. The supplied covariance settles the reading: 0.44 / sqrt(0.46 *
-  0.52) = 0.90, exactly the correlation Brown 2017 reports. The published
-  spread corroborates it, since a 90 percent AUC interval of 10.2-97.4 implies
-  a log-scale SD of 0.686, matching sqrt(0.46) = 0.678 rather than 0.46. The
-  packaged `Brown_2017_osimertinib` model file reads the same published
-  numbers the other way, as standard deviations, and therefore carries a much
-  smaller between-subject variability. Both readings are defensible from
-  Brown 2017 alone; `Westra_2025_osimertinib_brownbase` reproduces what
-  Westra 2025 actually ran, and the two files will not agree on variability.
+* **Omega scale in the Brown-based model: a reproduced transcription error.**
+  Westra 2025 entered Brown 2017's reported omega values directly into
+  `$OMEGA`, where NONMEM reads them as variances. Brown 2017's own Table 2
+  shows that those values are **standard deviations**, not variances: the
+  table prints an `IIV% (%RSE)` column beside the structural parameters and an
+  `Estimate` column on the eta rows, and the two track each other one-to-one
+  (CLparent/F IIV% 45.6 vs. eta CLparent 0.46; ka IIV% 89.4 vs. eta ka 0.89;
+  CLmetabolite/F IIV% 52.3 vs. eta CLmetabolite 0.52), with the `%RSE` values
+  matching pairwise too. Brown therefore reports `IIV% = omega * 100`. A
+  variance reading of eta CLparent = 0.46 would imply a CV of
+  `sqrt(exp(0.46) - 1)` = 76 percent, contradicting the 45.6 percent printed
+  next to it. Brown's covariance row similarly prints 0.90, which its
+  footnote a states explicitly is the correlation coefficient.
+
+  Westra nevertheless supplied the off-diagonal as
+  `0.90 * sqrt(0.46 * 0.52)` = 0.44, self-consistent with his own variance
+  interpretation but not with Brown's scale, giving parent CL/F a log-scale SD
+  of `sqrt(0.46)` = 0.678 instead of 0.46. Supplementary Table S1 confirms the
+  model was *run* that way: its 90 percent AUC0-144h interval of 10.2-97.4
+  implies a log-scale SD of 0.686. `Westra_2025_osimertinib_brownbase`
+  therefore encodes the variances, because reproducing the published analysis
+  requires it, and the deviation is documented here rather than silently
+  corrected.
+
+  The packaged `Brown_2017_osimertinib` model file reads the same published
+  numbers as standard deviations and squares them, which by the analysis above
+  is **correct**. The two files will not agree on between-subject variability;
+  the discrepancy is Westra's, and is not an open question about Brown.
 
 * **Additive residual error units in the Brown-based model.** Brown 2017
   reports its additive residual error as 0.105 on a nmol/L scale. Westra 2025

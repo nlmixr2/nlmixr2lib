@@ -56,7 +56,7 @@ Westra_2025_osimertinib_brownbase <- function() {
     dose_range     = "Oral osimertinib 80 mg once daily (one patient received an increased dose of 160 mg once daily), first as monotherapy and then with oral cobicistat 150 mg once daily added for at least 21 days to reach steady state.",
     regions        = "Netherlands (Maastricht University Medical Centre and the Antoni van Leeuwenhoek hospital).",
     n_observations = "88 osimertinib and AZ5104 plasma concentrations in total from the 11 patients, the same dataset as the de novo model.",
-    notes          = "The cobicistat factor of this model was estimated on the 11-patient OSIBOOST cohort described above (Westra 2025 Table 1). Every OTHER parameter is inherited fixed from Brown 2017, whose own estimation population was 780 subjects (748 advanced-NSCLC patients from AURA and AURA2 plus 32 healthy volunteers, weight median 62 kg, albumin median 39 g/L). Users comparing this model against Westra_2025_osimertinib.R should note that its much larger between-subject variability is inherited from that broad Brown 2017 population and is not a property of the OSIBOOST cohort; see the vignette Errata for the omega-scale reading."
+    notes          = "The cobicistat factor of this model was estimated on the 11-patient OSIBOOST cohort described above (Westra 2025 Table 1). Every OTHER parameter is inherited fixed from Brown 2017, whose own estimation population was 780 subjects (748 advanced-NSCLC patients from AURA and AURA2 plus 32 healthy volunteers, weight median 62 kg, albumin median 39 g/L). Users comparing this model against Westra_2025_osimertinib.R should note that its much larger between-subject variability is NOT a property of either the OSIBOOST cohort or the Brown 2017 population: it follows from Westra 2025 having entered Brown's reported standard deviations into a NONMEM $OMEGA block, which reads them as variances. The variances are reproduced here because they are what the published Table S1 simulations were run with. See the ini() scale note and the vignette Errata."
   )
 
   ini({
@@ -93,20 +93,41 @@ Westra_2025_osimertinib_brownbase <- function() {
     # one relative to the ETAs their own $PK block uses. The code, not
     # the comment, is authoritative here.
     #
-    # IMPORTANT scale note. Westra 2025 entered Brown 2017's reported
-    # omega values into $OMEGA, where NONMEM reads them as VARIANCES;
-    # the covariance 0.44 confirms this reading, because
-    # 0.44 / sqrt(0.46 * 0.52) = 0.90, exactly the correlation Brown 2017
-    # reports. The simulated spread of Westra 2025 Table S1 corroborates
-    # it: a 90% interval of 10.2-97.4 for AUC0-144h implies a log-scale
-    # SD of log(97.4/10.2)/(2*1.645) = 0.686, which matches sqrt(0.46) =
-    # 0.678 and not 0.46. This is a larger between-subject variability
-    # than the existing Brown_2017_osimertinib.R model file encodes,
-    # because that file reads the same published numbers as omegas
-    # (standard deviations) and squares them. Both readings are defensible
-    # from Brown 2017 alone; this file reproduces what Westra 2025
-    # actually ran, which is the variance reading. See the vignette
-    # Errata.
+    # IMPORTANT scale note. The values below are entered as VARIANCES
+    # because that is what Westra 2025 ran, but that appears to be a
+    # transcription error on Westra's part, and this file deliberately
+    # reproduces it rather than silently correcting it.
+    #
+    # Brown 2017 Table 2 settles the scale of its own numbers. The table
+    # carries an 'IIV% (%RSE)' column on the structural rows and an
+    # 'Estimate' column on the eta rows, and the two track each other:
+    # CLparent/F IIV% 45.6 against eta CLparent 0.46; ka IIV% 89.4
+    # against eta ka 0.89; CLmetabolite/F IIV% 52.3 against eta
+    # CLmetabolite 0.52; Vparent/F IIV% 51.8 against eta Vparent 0.52.
+    # The %RSE values match pairwise as well (3.2, 6.1, ...). So Brown
+    # reports IIV% as omega * 100, i.e. its eta estimates are STANDARD
+    # DEVIATIONS. Under a variance reading, eta CLparent = 0.46 would
+    # imply a CV of sqrt(exp(0.46) - 1) = 76%, which contradicts the
+    # 45.6% printed beside it. Brown's covariance row likewise reports
+    # 0.90, which footnote a states explicitly is the correlation
+    # coefficient r, not a covariance.
+    #
+    # Westra 2025 nevertheless placed 0.46 / 0.52 / 0.89 / 0.52 / 0.62
+    # directly into $OMEGA, where NONMEM reads them as variances, and
+    # supplied the off-diagonal as 0.90 * sqrt(0.46 * 0.52) = 0.44 -
+    # self-consistent with his own variance interpretation, but not with
+    # Brown's SD scale. The resulting between-subject variability is much
+    # larger than Brown estimated: a log-scale SD of sqrt(0.46) = 0.678
+    # for parent CL/F instead of 0.46. Westra 2025 Table S1 confirms the
+    # model was RUN that way (its 90% AUC0-144h interval of 10.2-97.4
+    # implies a log-scale SD of log(97.4/10.2)/(2*1.645) = 0.686), which
+    # is why this file must encode variances to reproduce Table S1.
+    #
+    # The existing Brown_2017_osimertinib.R reads the same published
+    # numbers as standard deviations and squares them; per the analysis
+    # above that file is CORRECT and needs no change. The two files will
+    # therefore not agree on variability, and the discrepancy is Westra's,
+    # not an open question about Brown. See the vignette Errata.
     etalcl + etalcl_az5104 ~ c(0.46, 0.44, 0.52)                   # Part SII $OMEGA BLOCK, ETA(1) and ETA(2) with their covariance
     etalka        ~ 0.89                                           # Part SII $OMEGA BLOCK third diagonal, ETA(3), zero covariance with the two clearance etas
     etalvc        ~ fixed(0.52)                                    # Part SII $OMEGA '0.52 FIX', ETA(4), referenced by V1 in $PK
