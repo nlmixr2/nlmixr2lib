@@ -6577,6 +6577,17 @@ Geographical study-site region indicators. Distinct from race / ethnicity (`RACE
 - **Example models:** `Xu_2023_MBG453.R` (exponential effect on CL: `exp(-0.0411 * DIS_CMML)`; not statistically significant in the full covariate model but retained because Xu 2023 used the full-covariate-model approach).
 - **Notes:** CMML is a clonal myeloid malignancy with overlapping features of MDS and myeloproliferative neoplasms. Scope: specific because the disease-pooling reference category is paper-defined.
 
+### DIS_CML (**canonical for chronic myeloid leukemia disease-state indicator**)
+- **Description:** 1 = patient with chronic myeloid leukemia (CML), 0 = non-CML subject (the complement group in a pooled analysis; a healthy volunteer in the founding example). Time-fixed per subject.
+- **Units:** (binary)
+- **Type:** binary
+- **Scope:** specific
+- **Reference category:** 0 (non-CML subject; the complement group is paper-defined -- in Kang 2025 it is the 23 Korean healthy male volunteers of NCT06461078 pooled with the 24 Chinese CML-CP patients of NCT03722420).
+- **Source aliases:**
+  - `CML` -- used in `Kang_2025_radotinib.R` (Kang 2025 equation 1 and Table 2 footnote a: "disease status: 0 = healthy volunteers, 1 = patients with chronic myeloid leukemia").
+- **Example models:** `Kang_2025_radotinib.R` (fractional effect on apparent oral clearance applied via the COMPLEMENT: `cl <- exp(lcl + etalcl) * (1 + 0.646 * (1 - DIS_CML)) * circ_cl`, so the published typical CL/F of 23.0 L/h is the CML-CP value and a healthy volunteer takes 23.0 * 1.646 = 37.9 L/h, i.e. clearance is 39.2% slower in patients).
+- **Notes:** CML is a myeloproliferative neoplasm driven by the BCR-ABL1 fusion gene arising from the Philadelphia chromosome; it is the indication for the BCR-ABL1 tyrosine kinase inhibitors (imatinib, nilotinib, radotinib, ...). Distinct from the neighbouring `DIS_CMML` (chronic myelo**monocytic** leukemia, a different disease with mixed MDS/MPN features) -- the two abbreviations differ by one letter and must not be conflated. Also distinct from `TUMTP_LEUKEMIA`, which pools AML/ALL/CLL/CML against other tumour types rather than isolating CML. Like the `DIS_AML` alias in `Vaddady_2024_quizartinib.R`, the founding example's published coefficient multiplies `(1 - DIS_CML)` rather than `DIS_CML`, because the paper's typical value is stated for the patient group; check the direction against the source equation before reusing an effect size. Kang 2025 Discussion warns that its disease effect is confounded with ethnicity and sex (all healthy volunteers Korean male, all patients Chinese of both sexes), so the coefficient is not cleanly a disease effect -- record the actual complement cohort in `covariateData[["DIS_CML"]]$notes`. Scope: specific because the reference complement is paper-defined.
+
 ### DIS_BCPALL (**canonical for B-cell precursor acute lymphoblastic leukemia disease-state indicator**)
 - **Description:** 1 = B-cell precursor acute lymphoblastic leukemia (BCP-ALL), 0 = B-cell non-Hodgkin's lymphoma (NHL) or other non-BCP-ALL indication pooled in the source analysis. Time-fixed per subject.
 - **Units:** (binary)

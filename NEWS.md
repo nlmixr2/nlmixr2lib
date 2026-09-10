@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Kang 2025 radotinib ([doi:10.3390/ph18111705](https://doi.org/10.3390/ph18111705)) -- Asian healthy volunteers and patients with chronic myeloid leukemia.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and

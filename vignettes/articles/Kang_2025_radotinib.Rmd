@@ -1,0 +1,787 @@
+---
+title: "Radotinib (Kang 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Radotinib (Kang 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+```{r model}
+ui <- rxode2::rxode(readModelDb("Kang_2025_radotinib"))
+```
+
+* Citation: `r ui$reference`
+* Description: `r ui$description`
+* Article: <https://doi.org/10.3390/ph18111705>
+
+Radotinib is an oral second-generation BCR-ABL1 tyrosine kinase inhibitor
+approved in the Republic of Korea for chronic-phase chronic myeloid leukemia
+(CML-CP). Kang 2025 is the first population PK analysis of the drug.
+
+# Population
+
+The model was fit to 640 plasma concentrations from 47 Asian participants
+pooled across two clinical studies (Kang 2025 Results section 2.1, Table 1):
+
+* **23 healthy male volunteers** (Korean, ClinicalTrials.gov NCT06461078), each
+  given a single oral 400 mg dose under fasting conditions, with 306
+  concentrations sampled pre-dose and at 0.5 to 48 h post-dose.
+* **24 patients with Ph+ CML-CP** (Chinese, NCT03722420), given 300 mg orally
+  twice daily under fasting conditions, with 334 concentrations sampled
+  pre-dose and to 12 h post-dose on days 1 and 14.
+
+Pooled baseline characteristics: median (range) age 31 (20-72) years, weight
+65.7 (47.0-96.0) kg, height 171 (155-186) cm, BMI 22.8 (18.4-30.3) kg/m^2;
+36 males (77%) and 11 females (23%); creatinine clearance 114 (72-200) mL/min.
+All healthy volunteers were male; the female participants are all in the
+CML-CP arm.
+
+The same information is available programmatically from the model metadata:
+
+```{r population}
+str(ui$population, max.level = 1)
+```
+
+# Source trace
+
+Each `ini()` entry in `inst/modeldb/specificDrugs/Kang_2025_radotinib.R`
+carries an in-file comment naming its source location. They are collected here
+for review. Equation numbers refer to Kang 2025 Results section 2.3.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL/F, CML-CP, circadian mesor) | 23.0 L/h | Table 2 row `CL/F (L/h)`, RSE 7.3% |
+| `lvc` (Vc/F at age 31) | 383 L | Table 2 row `Vc/F (L)`, RSE 13.8% |
+| `lq` (Q/F) | 132 L/h | Table 2 row `Q/F (L/h)`, RSE 11.6% |
+| `lvp` (Vp/F) | 519 L | Table 2 row `Vp/F (L)`, RSE 15.6% |
+| `lka` (ka) | 1.59 1/h | Table 2 row `ka (h-1)`, RSE 21.6% |
+| `lmtt` (MTT) | 1.88 h | Table 2 row `MTT (h)`, RSE 10.4% |
+| `lnn` (N) | 6.58 | Table 2 row `N`, RSE 17.0% |
+| `amp_cl` (circadian fractional amplitude) | 0.683 | Table 2 row `CL/F Circadian effect`, RSE 14.8%; equation 1 |
+| `acrophase_cl` (circadian phase shift) | 7 h | Equation 1 only (`cos{2*pi*(TIME - 7)/24}`); not tabulated, no RSE |
+| `e_dis_cml_cl` (disease status on CL/F) | 0.646 | Table 2 row `CL/F Disease status`, RSE 30.0%; equation 1, Table 2 footnote a |
+| `e_age_vc` (age on Vc/F) | -0.0129 /year | Table 2 row `Vc/F Age`, RSE 37.6%; equation 2, Table 2 footnote b |
+| `etalcl` | 0.389^2 = 0.151321 | Table 2 row `omega CL/F` = 0.389 (a SD), RSE 20.1% |
+| `etalmtt` | 0.1 FIXED | Results 2.3 ("variances ... fixed at ... 0.1"); Table 2 `omega MTT` = 0.316 = sqrt(0.1) |
+| `etalnn` | 0.2 FIXED | Results 2.3 ("variances ... fixed at ... 0.2"); Table 2 `omega N` = 0.447 = sqrt(0.2) |
+| `etaiov_v_1` / `etaiov_v_2` | 0.698^2 = 0.487204 | Table 2 row `omega IOV` = 0.698 (a SD), RSE 25.1%; equations 2 and 4 |
+| `propSd` | 0.200 | Table 2 row `sigma proportional (%)` = 20.0 |
+| Transit-chain input, `ktr = (N + 1)/MTT` | n/a | Methods 4.3 ("transit compartment model with first-order absorption"); Savic 2007 parameterisation |
+| `d/dt(central)`, `d/dt(peripheral1)` | n/a | Results 2.3 ("two-compartment model ... first-order elimination") |
+| `Cc ~ prop(propSd)` | n/a | Results 2.3 ("Residual variability was most appropriately described using a proportional model") |
+
+## The omega column is a standard deviation, not a variance
+
+Table 2's interindividual-variability block is headed `omega <parameter>` with
+no scale stated. The paper settles it internally: Results section 2.3 says the
+IIV **variances** for MTT and N "were fixed at ... 0.1 and 0.2, respectively",
+and Table 2 prints `omega MTT = 0.316` and `omega N = 0.447`, which are
+`sqrt(0.1)` and `sqrt(0.2)`. Every entry in that column is therefore a standard
+deviation and is squared in the model file to reach the log-scale variance.
+
+```{r omega-scale}
+c(MTT = sqrt(0.1), N = sqrt(0.2))   # -> 0.3162, 0.4472, as printed in Table 2
+```
+
+# Structural checks against published derived quantities
+
+These checks are deterministic functions of the published point estimates -- no
+simulated cohort is involved -- so they are asserted tightly. They are the
+sharpest available test that the parameter values, the covariate forms and the
+disposition structure were transcribed correctly: a mis-read clearance, volume,
+or covariate direction moves them immediately.
+
+```{r structural-gates}
+th <- ui$theta
+
+# Terminal half-life of the two-compartment disposition model.
+terminal_hl <- function(cl, vc, vp, q) {
+  k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+  s <- k10 + k12 + k21
+  beta <- 0.5 * (s - sqrt(s^2 - 4 * k21 * k10))
+  log(2) / beta
+}
+
+cl_cml <- exp(th[["lcl"]])
+cl_hv  <- cl_cml * (1 + th[["e_dis_cml_cl"]])   # equation 1 with DIS_CML = 0
+vc31   <- exp(th[["lvc"]])
+vp     <- exp(th[["lvp"]])
+qq     <- exp(th[["lq"]])
+
+vc_at <- function(age) vc31 * (1 + th[["e_age_vc"]] * (age - 31))
+
+checks <- tibble::tribble(
+  ~Quantity,                              ~Published, ~Model,
+  "CL/F, CML-CP patient (L/h)",                 23.0, cl_cml,
+  "CL/F, healthy volunteer (L/h)",              37.9, cl_hv,
+  "Terminal half-life, CML-CP (h)",             28.8, terminal_hl(cl_cml, vc31, vp, qq),
+  "Terminal half-life, healthy volunteer (h)",  18.2, terminal_hl(cl_hv,  vc31, vp, qq),
+  "Vc/F at age 20 (L)",                          437, vc_at(20),
+  "Vc/F at age 72 (L)",                          180, vc_at(72),
+  "Total V/F = Vc/F + Vp/F (L)",                 902, vc31 + vp
+) |>
+  mutate(`% diff` = 100 * (Model - Published) / Published)
+
+knitr::kable(checks, digits = c(0, 1, 2, 2),
+             caption = "Derived quantities the model must reproduce exactly. Published values from Kang 2025 Abstract, Results section 2.3 and Discussion.")
+
+# Deterministic -- these are closed-form functions of the published thetas, so
+# the tolerances are tight on purpose. There is no cohort and no RNG here.
+stopifnot(
+  abs(cl_cml - 23.0) < 0.01,
+  abs(cl_hv  - 37.9) < 0.05,
+  abs(terminal_hl(cl_cml, vc31, vp, qq) - 28.8) < 0.1,
+  abs(terminal_hl(cl_hv,  vc31, vp, qq) - 18.2) < 0.1,
+  abs(vc_at(20) - 437) < 1,
+  abs(vc_at(72) - 180) < 1,
+  abs((vc31 + vp) - 902) < 1
+)
+```
+
+The half-lives are the strongest of these: 28.8 h and 18.2 h are reproduced to
+better than 0.05 h from the four disposition parameters and the disease
+coefficient, which pins `CL/F`, `Vc/F`, `Vp/F`, `Q/F` and the 0.646 disease
+effect simultaneously.
+
+## The circadian rhythm on CL/F
+
+Equation 1 modulates apparent clearance with a 24 h cosinor whose amplitude is
+**fractional** -- it multiplies the mesor rather than being expressed in L/h:
+
+$$\mathrm{CL}/F_i = 23.0 \times \left[1 + 0.646 (1 - \mathrm{CML}_i)\right] \times \left[1 + 0.683 \cos\!\left(\frac{2\pi(\mathrm{TIME} - 7)}{24}\right)\right] \times e^{\eta_i}$$
+
+`TIME` is the NONMEM time variable, i.e. hours since the first dose, not clock
+time. Kang 2025's Discussion states that the model puts peak CL/F activity at
+16:00, "in close agreement" with the reported ~15:00 peak of hepatic CYP3A
+activity; a 7 h offset reaches 16:00 from a ~09:00 morning dose, which is the
+only reading consistent with both equation 1 and that sentence.
+
+```{r circadian}
+mod_typ <- rxode2::zeroRe(readModelDb("Kang_2025_radotinib"))
+
+ev_day <- data.frame(
+  id = 1L, time = c(0, seq(0, 48, by = 0.25)),
+  evid = c(1L, rep(0L, 193)), amt = c(300, rep(NA_real_, 193)),
+  cmt = c("depot", rep("central", 193)),
+  DIS_CML = 1, AGE = 32, OCC = 2L
+)
+day <- rxode2::rxSolve(mod_typ, ev_day, returnType = "data.frame")
+
+cl_range <- range(day$cl)
+# Average over a HALF-OPEN 24 h period: including both t = 24 and t = 48 would
+# count the same phase twice and bias the mean off the mesor.
+cl_mesor <- mean(day$cl[day$time >= 24 & day$time < 48])
+
+tibble::tibble(
+  Quantity = c("CL/F mesor over a full 24 h cycle (L/h)",
+               "CL/F minimum (L/h)", "CL/F maximum (L/h)",
+               "Hours after dose at which CL/F peaks"),
+  Model = c(cl_mesor, cl_range[1], cl_range[2],
+            day$time[which.max(day$cl)]),
+  Expected = c(23.0, 23.0 * (1 - 0.683), 23.0 * (1 + 0.683), 7)
+) |>
+  knitr::kable(digits = 2,
+               caption = "The cosinor term as encoded, against equation 1 evaluated by hand.")
+
+stopifnot(
+  abs(cl_mesor - 23.0) < 0.01,
+  abs(cl_range[1] - 23.0 * (1 - 0.683)) < 0.01,
+  abs(cl_range[2] - 23.0 * (1 + 0.683)) < 0.01,
+  abs(day$time[which.max(day$cl)] - 7) < 0.3
+)
+```
+
+Because the amplitude 0.683 is smaller than 1, the bracket never changes sign
+and CL/F stays positive across the whole cycle, ranging from 7.3 to 38.7 L/h in
+a CML-CP patient.
+
+## Mass balance across a steady-state day
+
+At steady state the drug eliminated over one full 24 h circadian cycle must
+equal the dose given over that cycle. With a time-varying clearance this is a
+non-trivial check of the ODE system, the transit input and the cosinor term
+together -- it fails if the dose is delivered twice (the classic transit-model
+bug where the depot bolus is not suppressed), if the input kernel is
+mis-normalised, or if the circadian term is applied to the wrong quantity.
+
+```{r mass-balance}
+ss_profile <- function(dose, ii, ndays = 15, by = 0.05) {
+  ndose <- ceiling(ndays * 24 / ii)
+  tobs  <- seq((ndays - 1) * 24, ndays * 24, by = by)
+  data.frame(
+    id = 1L,
+    time = c(seq(0, by = ii, length.out = ndose), tobs),
+    evid = c(rep(1L, ndose), rep(0L, length(tobs))),
+    amt  = c(rep(dose, ndose), rep(NA_real_, length(tobs))),
+    cmt  = c(rep("depot", ndose), rep("central", length(tobs))),
+    DIS_CML = 1, AGE = 32, OCC = 2L
+  ) |>
+    (\(ev) rxode2::rxSolve(mod_typ, ev, returnType = "data.frame"))() |>
+    dplyr::filter(!is.na(Cc))
+}
+
+trapz <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+
+mb <- lapply(
+  list(c(300, 12), c(300, 24), c(400, 24), c(500, 24), c(600, 24)),
+  function(p) {
+    s <- ss_profile(p[1], p[2])
+    # Eliminated amount over the day = integral of CL(t) * C(t) dt.
+    # Cc is ng/mL = ug/L, so divide by 1000 to reach mg/L before multiplying
+    # by CL/F in L/h.
+    eliminated <- trapz(s$time, s$cl * s$Cc / 1000)
+    daily <- p[1] * 24 / p[2]
+    tibble::tibble(Regimen = sprintf("%d mg %s", p[1], ifelse(p[2] == 12, "BID", "QD")),
+                   `Dose over 24 h (mg)` = daily,
+                   `Eliminated over 24 h (mg)` = eliminated,
+                   `Ratio` = eliminated / daily)
+  }
+) |> bind_rows()
+
+knitr::kable(mb, digits = c(0, 0, 2, 4),
+             caption = "Steady-state mass balance: amount eliminated over one circadian cycle versus the dose given.")
+
+# Deterministic (typical-value solve, no RNG): the residual is numerical
+# integration error on a 0.02 h grid, so a tight bound is correct here.
+stopifnot(all(abs(mb$Ratio - 1) < 0.005))
+```
+
+# Virtual cohort
+
+The observed concentrations are not public, so the sections below simulate
+virtual cohorts whose covariate distributions approximate the published trial
+demographics (Table 1).
+
+```{r cohort}
+# set.seed() seeds R's RNG for the covariate draws below. It does NOT seed
+# rxode2's simulation RNG, whose streams are partitioned per solver thread --
+# so the etas drawn here differ between a 16-thread workstation and a 2-core CI
+# runner and no seed can make them agree. Every assertion downstream is written
+# to hold for any cohort this model can produce.
+set.seed(20251110)
+n_arm <- 150L
+
+# Age draws: a truncated normal matched to the per-arm median and range of
+# Kang 2025 Table 1 (CML-CP median 32, range 21-72; healthy volunteers median
+# 29, range 20-51). The paper reports only median and range, so the shape of
+# the distribution between those points is an assumption (see Assumptions).
+draw_age <- function(n, med, lo, hi, sd) {
+  a <- round(rnorm(n, med, sd))
+  pmin(pmax(a, lo), hi)
+}
+
+# The five CML-CP regimens are compared against each other and against Table 3,
+# so they use COMMON RANDOM NUMBERS: the same n_arm subjects (same ages, same
+# ids, and -- because rxode2's eta stream is keyed by id and the seed is reset
+# before each solve -- the same random effects) are put through every regimen.
+# Independent draws per arm would add roughly a 4% standard error to each arm's
+# median on top of the systematic offset discussed below, which is enough to
+# make the cross-regimen comparison look non-dose-proportional purely by chance.
+age_cml <- draw_age(n_arm, 32, 21, 72, 12)
+age_hv  <- draw_age(n_arm, 29, 20, 51, 8)
+
+make_arm <- function(dose, ii, is_cml, ndays = 21, obs_by = 0.25) {
+  if (is_cml) {
+    ndose  <- ceiling(ndays * 24 / ii)
+    dose_t <- seq(0, by = ii, length.out = ndose)
+    obs_t  <- seq((ndays - 1) * 24, ndays * 24, by = obs_by)
+    subj   <- tibble::tibble(id = seq_len(n_arm), AGE = age_cml)
+    occ    <- 2L
+  } else {
+    dose_t <- 0
+    obs_t  <- seq(0, 48, by = obs_by)
+    subj   <- tibble::tibble(id = seq_len(n_arm), AGE = age_hv)
+    occ    <- 1L
+  }
+  bind_rows(
+    tidyr::crossing(subj, time = dose_t) |>
+      mutate(evid = 1L, amt = dose, cmt = "depot"),
+    tidyr::crossing(subj, time = obs_t) |>
+      mutate(evid = 0L, amt = NA_real_, cmt = "central")
+  ) |>
+    mutate(DIS_CML = as.integer(is_cml), OCC = occ) |>
+    arrange(id, time, desc(evid))
+}
+
+arms <- list(
+  "300 mg BID"             = list(dose = 300, ii = 12, cml = TRUE),
+  "300 mg QD"              = list(dose = 300, ii = 24, cml = TRUE),
+  "400 mg QD"              = list(dose = 400, ii = 24, cml = TRUE),
+  "500 mg QD"              = list(dose = 500, ii = 24, cml = TRUE),
+  "600 mg QD"              = list(dose = 600, ii = 24, cml = TRUE),
+  "HV 400 mg single dose"  = list(dose = 400, ii = NA, cml = FALSE)
+)
+
+events <- lapply(names(arms), function(nm) {
+  a <- arms[[nm]]
+  make_arm(a$dose, a$ii, a$cml) |> mutate(regimen = nm)
+}) |> bind_rows()
+
+# Within an arm the (id, time, evid) key must be unique; ids intentionally
+# REPEAT across arms (that is what makes the random numbers common), and each
+# arm is solved in its own rxSolve call so they never share a subject key.
+stopifnot(!anyDuplicated(unique(events[, c("regimen", "id", "time", "evid")])))
+stopifnot(length(unique(events$regimen)) == 6L)
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Kang_2025_radotinib")
+
+# One solve per arm, with the seed reset before each, so every arm draws the
+# same eta sequence for subject i. Note rxSetSeed() fixes the stream per solver
+# thread, not across thread counts -- this makes the arms comparable to each
+# other on any machine, but does not make the cohort identical between machines.
+sim <- lapply(names(arms), function(nm) {
+  ev <- events |> filter(regimen == nm) |> select(-regimen)
+  rxode2::rxSetSeed(20251110)
+  rxode2::rxSolve(mod, events = ev, keep = c("AGE", "DIS_CML"),
+                  returnType = "data.frame") |>
+    mutate(regimen = nm)
+}) |> bind_rows() |> filter(!is.na(Cc))
+
+stopifnot(nrow(sim) > 0, !anyNA(sim$Cc), all(sim$Cc >= 0))
+```
+
+# Replicate published figures
+
+## Figure 3 -- simulated steady-state concentration-time profiles
+
+Kang 2025 Figure 3 shows the median and 90% prediction interval of simulated
+steady-state profiles for 300 mg BID and 300, 400, 500 and 600 mg QD in virtual
+CML-CP patients. Panel F overlays all five.
+
+```{r figure-3, fig.height = 6}
+ss <- sim |>
+  filter(DIS_CML == 1) |>
+  mutate(tau_time = time - 20 * 24)   # hours into the final 24 h window
+
+ss |>
+  group_by(regimen, tau_time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc),
+            Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(tau_time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "steelblue") +
+  geom_line(colour = "steelblue4", linewidth = 0.7) +
+  facet_wrap(~regimen) +
+  scale_x_continuous(breaks = seq(0, 24, by = 6)) +
+  labs(x = "Time into the steady-state dosing day (h)",
+       y = "Radotinib plasma concentration (ng/mL)",
+       title = "Steady-state profiles in virtual CML-CP patients",
+       caption = "Replicates Figure 3 of Kang 2025 (median with 90% prediction interval).")
+```
+
+Kang 2025 Results section 2.4 describes these profiles as rising "with a delay
+of approximately 0.5 h", reaching Cmax "in approximately 3 h" and then declining
+until the next dose.
+
+```{r figure-3-shape}
+shape <- ss |>
+  group_by(regimen, tau_time) |>
+  summarise(Q50 = median(Cc), .groups = "drop") |>
+  group_by(regimen) |>
+  summarise(tmax_median_profile = tau_time[which.max(Q50)], .groups = "drop")
+
+knitr::kable(shape, digits = 2,
+             caption = "Time of the peak of the median profile within the steady-state day (paper: approximately 3 h).")
+
+# Cohort-derived, so the bound is a band around the paper's stated ~3 h rather
+# than an exact match. Realised 3.00-3.25 h across all five arms locally.
+stopifnot(all(shape$tmax_median_profile >= 2), all(shape$tmax_median_profile <= 5))
+```
+
+## Healthy volunteers versus patients
+
+The paper's headline covariate finding is that CL/F is 39.2% slower in CML-CP
+patients than in healthy volunteers, lengthening the terminal half-life from
+18.2 h to 28.8 h.
+
+```{r hv-vs-cml}
+sim |>
+  filter(regimen == "HV 400 mg single dose") |>
+  group_by(time) |>
+  summarise(Q05 = quantile(Cc, 0.05), Q50 = median(Cc),
+            Q95 = quantile(Cc, 0.95), .groups = "drop") |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25, fill = "darkorange") +
+  geom_line(colour = "darkorange3", linewidth = 0.7) +
+  scale_y_log10() +
+  labs(x = "Time after dose (h)", y = "Radotinib plasma concentration (ng/mL)",
+       title = "Healthy volunteers, single oral 400 mg dose",
+       caption = "Sampling schedule of NCT06461078 (Kang 2025 Methods section 4.1).")
+```
+
+# PKNCA validation
+
+NCA is computed with PKNCA over the final 24 h dosing day for the CML-CP arms
+(the window Table 3 reports) and over 0-48 h for the single-dose healthy-
+volunteer arm.
+
+```{r pknca-ss}
+# Shift the steady-state window onto a 0-24 h axis for the NCA intervals. The
+# SOLVE must stay on the absolute time axis because the circadian term depends
+# on it; only the reported times are shifted here.
+t0_ss <- 20 * 24
+
+nca_conc <- sim |>
+  filter(DIS_CML == 1) |>
+  transmute(id, regimen, time = time - t0_ss, Cc)
+
+nca_dose <- events |>
+  filter(DIS_CML == 1, evid == 1, time >= t0_ss, time < t0_ss + 24) |>
+  transmute(id, regimen, time = time - t0_ss, amt)
+
+# Every arm must have a dose at the start of the window and an observation at
+# both ends of it, or PKNCA silently anchors AUC somewhere else.
+stopifnot(
+  all(tapply(nca_dose$time, nca_dose$regimen, min) == 0),
+  all(tapply(nca_conc$time, nca_conc$regimen, min) == 0),
+  all(tapply(nca_conc$time, nca_conc$regimen, max) == 24)
+)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(nca_conc), Cc ~ time | regimen + id,
+                             concu = "ng/mL", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(as.data.frame(nca_dose), amt ~ time | regimen + id,
+                             doseu = "mg")
+
+intervals_ss <- data.frame(
+  start = 0, end = 24,
+  cmax = TRUE, tmax = TRUE, auclast = TRUE, clast.obs = TRUE, cav = TRUE
+)
+
+nca_ss <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                         intervals = intervals_ss))
+```
+
+`clast.obs` over the 0-24 h window is the concentration at the end of the
+dosing day, i.e. the pre-dose trough -- the quantity Table 3 reports as
+`Ctrough`. PKNCA's `cmin` over a single interval would instead return the
+minimum *within* the window, which for the BID arm is the 12 h trough.
+
+```{r pknca-ss-summary}
+ss_res <- as.data.frame(nca_ss$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "clast.obs")) |>
+  group_by(regimen, PPTESTCD) |>
+  summarise(median = median(PPORRES),
+            q25 = quantile(PPORRES, 0.25),
+            q75 = quantile(PPORRES, 0.75), .groups = "drop")
+
+ss_res |>
+  mutate(Parameter = nlmixr2lib::ncaParamLabel(PPTESTCD)) |>
+  select(Regimen = regimen, Parameter, Median = median, `Q1` = q25, `Q3` = q75) |>
+  knitr::kable(digits = 1,
+               caption = "Simulated steady-state NCA, median (interquartile range) over 150 virtual CML-CP patients per arm.")
+```
+
+## Comparison against Kang 2025 Table 3
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~regimen,      ~cmax, ~tmax, ~auclast, ~clast.obs,
+  "300 mg BID",  1551,      3,    29669,        960,
+  "300 mg QD",    955,      3,    14276,        443,
+  "400 mg QD",   1274,      3,    19034,        591,
+  "500 mg QD",   1592,      3,    23793,        739,
+  "600 mg QD",   1910,      3,    28551,        887
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = nca_ss,
+  reference = published,
+  by        = "regimen",
+  units     = c(cmax = "ng/mL", tmax = "h",
+                auclast = "ng*h/mL", clast.obs = "ng/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, digits = 1,
+             caption = "Simulated versus Kang 2025 Table 3 (median of 2400 virtual patients). * differs by more than 20%.")
+attr(cmp, "footnote")
+```
+
+Because the five arms share subjects (common random numbers), the four
+once-daily rows are exactly dose-proportional and their offsets against Table 3
+are identical to the last digit -- `-11.9%` on AUC, `-9.7%` on Cmax and `-5.6%`
+on Ctrough for every one of 300, 400, 500 and 600 mg QD. The twice-daily arm is
+offset by `-8.9%` on AUC. The simulated exposures therefore track Table 3 in
+dose-proportionality, in profile shape and in `tmax`, but sit systematically
+**below** the published medians by roughly a tenth. This is a reproducible
+disagreement with the published simulation table rather than a transcription
+error in the model, and the next section quantifies why.
+
+Two rows deserve a note. `Tmax` differs by up to 16.7% only because the
+observation grid has 0.25 h resolution, so the simulated peak lands at 3.25 or
+3.5 h against the paper's rounded `3`; both sit inside Table 3's own reported
+interquartile range of 3-4 h for the once-daily regimens. And `Ctrough` for the
+twice-daily arm is the one row that comes out *above* the paper (+14.5%),
+because with a 24 h rhythm and a 12 h interval the morning and evening troughs
+are not equal -- this model puts them at roughly 870 and 1100 ng/mL, and Table 3
+reports a single value of 960 between them.
+
+```{r nca-compare-gate}
+pct <- suppressWarnings(as.numeric(gsub("[^0-9.+-]", "", cmp[["% diff"]])))
+worst <- max(abs(pct), na.rm = TRUE)
+worst
+
+# The Table 3 gap is a documented deviation (see below): a uniform ~12% on AUC
+# with the tmax grid artifact the largest single row. Realised worst-case
+# 16.7%; the bound leaves room for the cohort draw to move but still goes red
+# on a mis-transcribed dose, clearance or unit, any of which moves exposure by
+# tens of percent.
+stopifnot(worst < 30)
+```
+
+## Why the simulated exposures sit below Table 3
+
+For a linear model the steady-state AUC over a full 24 h cycle is exactly
+`daily dose / CL_effective`, so each row of Table 3 pins the effective apparent
+clearance the paper's own simulation must have used.
+
+```{r table3-implied-cl}
+implied <- published |>
+  mutate(`Daily dose (mg)` = c(600, 300, 400, 500, 600),
+         `Implied CL/F (L/h)` = `Daily dose (mg)` / auclast * 1000,
+         `Ratio to the 23.0 L/h mesor` = 23.0 / `Implied CL/F (L/h)`) |>
+  select(Regimen = regimen, `Daily dose (mg)`, `AUC0-24h (ng*h/mL)` = auclast,
+         `Implied CL/F (L/h)`, `Ratio to the 23.0 L/h mesor`)
+
+knitr::kable(implied, digits = c(0, 0, 0, 2, 4),
+             caption = "Effective CL/F implied by each row of Kang 2025 Table 3.")
+```
+
+The four once-daily rows imply an effective CL/F of 21.0 L/h to four
+significant figures -- Table 3 is internally perfectly linear -- and the
+twice-daily row implies 20.2 L/h. Both are below the 23.0 L/h mesor of
+equation 1.
+
+A time-varying clearance *can* push effective clearance away from the mesor,
+because over a steady-state cycle `daily dose = integral of CL(t) C(t) dt`: if
+concentration is systematically high when clearance is low, effective clearance
+falls below the mesor and AUC rises above `dose / mesor`. Whether that happens,
+and by how much, depends on the phase relationship between the dosing schedule
+and the rhythm. For a **once-daily** regimen the two are locked, so the effect
+is large; for a **twice-daily** regimen the profile repeats twice per rhythm
+cycle and the effect largely averages out.
+
+```{r phase-sensitivity}
+auc24_at <- function(dose, ii, acro) {
+  ndays <- 15; ndose <- ceiling(ndays * 24 / ii)
+  tobs <- seq((ndays - 1) * 24, ndays * 24, by = 0.05)
+  ev <- data.frame(
+    id = 1L,
+    time = c(seq(0, by = ii, length.out = ndose), tobs),
+    evid = c(rep(1L, ndose), rep(0L, length(tobs))),
+    amt  = c(rep(dose, ndose), rep(NA_real_, length(tobs))),
+    cmt  = c(rep("depot", ndose), rep("central", length(tobs))),
+    DIS_CML = 1, AGE = 32, OCC = 2L
+  )
+  s <- rxode2::rxSolve(mod_typ, ev, params = c(acrophase_cl = acro),
+                       returnType = "data.frame") |> filter(!is.na(Cc))
+  trapz(s$time, s$Cc)
+}
+
+# Odd-numbered grid so the acrophase of 7 h printed in equation 1 is on it.
+acro_grid <- seq(1, 23, by = 2)
+phase <- tibble::tibble(
+  acrophase = acro_grid,
+  `400 mg QD` = vapply(acro_grid, \(a) auc24_at(400, 24, a) / (400 / 23 * 1000), 1),
+  `300 mg BID` = vapply(acro_grid, \(a) auc24_at(300, 12, a) / (600 / 23 * 1000), 1)
+)
+
+phase |>
+  pivot_longer(-acrophase, names_to = "Regimen", values_to = "ratio") |>
+  ggplot(aes(acrophase, ratio, colour = Regimen)) +
+  geom_hline(yintercept = 19034 / (400 / 23 * 1000), linetype = "dashed",
+             colour = "grey30") +
+  geom_hline(yintercept = 29669 / (600 / 23 * 1000), linetype = "dotted",
+             colour = "grey30") +
+  geom_line(linewidth = 0.7) + geom_point(size = 1.4) +
+  geom_vline(xintercept = 7, colour = "firebrick", linewidth = 0.5) +
+  labs(x = "Circadian acrophase (h after the dose)",
+       y = "AUC0-24h relative to daily dose / 23.0 L/h",
+       title = "Sensitivity of steady-state AUC to the circadian phase",
+       caption = paste("Red line: acrophase 7 h as printed in equation 1.",
+                       "Dashed / dotted: the ratio Table 3 requires for 400 mg QD / 300 mg BID."))
+
+summ <- tibble::tibble(
+  Regimen = c("400 mg QD", "300 mg BID"),
+  `Table 3 requires` = c(19034 / (400 / 23 * 1000), 29669 / (600 / 23 * 1000)),
+  `At acrophase 7 (equation 1)` = c(phase$`400 mg QD`[phase$acrophase == 7],
+                                    phase$`300 mg BID`[phase$acrophase == 7]),
+  `Best over any acrophase` = c(max(phase$`400 mg QD`), max(phase$`300 mg BID`))
+)
+knitr::kable(summ, digits = 4,
+             caption = "AUC0-24h relative to daily dose / mesor: what Table 3 requires versus what equation 1 can produce.")
+```
+
+The once-daily gap **is** a phase effect: Table 3 requires a ratio of 1.094 and
+the model reaches 1.098 at an acrophase near 19 h -- a 12 h shift from the 7 h
+printed in equation 1. The twice-daily gap is not: Table 3 requires 1.137 and
+**no** acrophase gets the twice-daily regimen above about 1.016, because the
+12 h dosing interval averages the 24 h rhythm out.
+
+Table 3 therefore cannot be reproduced from equations 1-7 as printed, under any
+phase convention. The model file encodes equation 1 exactly as published --
+acrophase 7 h, which the paper's own 16:00 statement corroborates -- and this
+disagreement is recorded rather than tuned away. Note that every quantity the
+paper states in prose (both half-lives, both clearances, the Vc/F range, the
+total V/F, tmax, and the *relative* comparison between regimens) is reproduced;
+it is only the absolute level of the Table 3 Monte Carlo medians that differs.
+
+```{r relative-claims}
+med <- ss_res |> filter(PPTESTCD %in% c("cmax", "auclast", "clast.obs")) |>
+  select(regimen, PPTESTCD, median) |>
+  pivot_wider(names_from = PPTESTCD, values_from = median)
+
+g <- function(r, p) med[[p]][med$regimen == r]
+rel <- tibble::tibble(
+  Quantity = c("AUC0-24h", "Cmax", "Ctrough"),
+  `Paper: 400 mg QD vs 300 mg BID (%)` = c(-36, -18, -38),
+  `Model (%)` = c(100 * (g("400 mg QD", "auclast")   / g("300 mg BID", "auclast")   - 1),
+                  100 * (g("400 mg QD", "cmax")      / g("300 mg BID", "cmax")      - 1),
+                  100 * (g("400 mg QD", "clast.obs") / g("300 mg BID", "clast.obs") - 1))
+)
+knitr::kable(rel, digits = 1,
+             caption = "Kang 2025 Results section 2.4 / Discussion: 400 mg once daily versus the approved 300 mg twice daily.")
+
+# Cohort-derived. Gate the direction and the magnitude band the paper claims,
+# not the exact percentage. Realised -39 / -22 / -48 locally.
+stopifnot(all(rel$`Model (%)` < -10), all(rel$`Model (%)` > -60))
+```
+
+## Single-dose healthy volunteers
+
+```{r pknca-hv}
+hv <- sim |> filter(DIS_CML == 0) |> transmute(id, regimen, time, Cc)
+
+hv <- bind_rows(
+  hv,
+  hv |> distinct(id, regimen) |> mutate(time = 0, Cc = 0)
+) |>
+  distinct(id, regimen, time, .keep_all = TRUE) |>
+  arrange(id, time)
+
+hv_dose <- events |>
+  filter(DIS_CML == 0, evid == 1) |>
+  transmute(id, regimen, time, amt)
+
+hv_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(
+  PKNCA::PKNCAconc(as.data.frame(hv), Cc ~ time | regimen + id,
+                   concu = "ng/mL", timeu = "h"),
+  PKNCA::PKNCAdose(as.data.frame(hv_dose), amt ~ time | regimen + id,
+                   doseu = "mg"),
+  intervals = data.frame(start = 0, end = 48, cmax = TRUE, tmax = TRUE,
+                         auclast = TRUE, half.life = TRUE)
+))
+
+hv_tab <- as.data.frame(hv_res$result) |>
+  filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+  group_by(PPTESTCD) |>
+  summarise(Median = median(PPORRES, na.rm = TRUE),
+            Q1 = quantile(PPORRES, 0.25, na.rm = TRUE),
+            Q3 = quantile(PPORRES, 0.75, na.rm = TRUE), .groups = "drop") |>
+  mutate(Parameter = nlmixr2lib::ncaParamLabel(PPTESTCD)) |>
+  select(Parameter, Median, Q1, Q3)
+
+knitr::kable(hv_tab, digits = 1,
+             caption = "Single 400 mg oral dose in 150 virtual healthy volunteers, 0-48 h.")
+```
+
+The NCA half-life over a 48 h window is shorter than the model's own terminal
+half-life of 18.2 h, because 48 h of sampling after an oral dose with a
+1.88 h transit-absorption delay does not fully resolve the terminal phase --
+this is a property of the sampling schedule (Kang 2025 Methods section 4.1
+samples to 48 h), not of the model. The paper makes the same point in reverse
+in its Discussion, noting that its model-derived CL/F of 37.9 L/h is slower than
+the 51.0 L/h obtained by NCA on the same data.
+
+```{r hv-gate}
+hv_cmax <- hv_tab$Median[hv_tab$Parameter == nlmixr2lib::ncaParamLabel("cmax")]
+hv_tmax <- hv_tab$Median[hv_tab$Parameter == nlmixr2lib::ncaParamLabel("tmax")]
+
+# Cohort-derived; assert the shape of the profile, not a published number
+# (Kang 2025 reports no NCA table for the healthy-volunteer arm).
+stopifnot(hv_tmax >= 1.5, hv_tmax <= 6, hv_cmax > 500, hv_cmax < 5000)
+```
+
+# Assumptions and deviations
+
+* **Table 3 is not reproducible from equations 1-7 as printed.** Simulated
+  steady-state exposures sit about 12% (once daily) and 9% (twice daily) below
+  the published Monte Carlo medians on AUC0-24h, with Cmax about 10% low and
+  Ctrough within 6% for the once-daily arms.
+  Table 3 is internally perfectly dose-proportional and implies an effective
+  CL/F of 21.0 L/h (once daily) and 20.2 L/h (twice daily) against the 23.0 L/h
+  mesor of equation 1. The once-daily gap is reproduced by a 12 h shift of the
+  circadian acrophase, but no acrophase reproduces the twice-daily gap. The
+  model encodes equation 1 exactly as published; the disagreement is recorded,
+  not tuned. Everything the paper states in prose -- both clearances, both
+  terminal half-lives, the Vc/F range, total V/F, tmax, and the relative
+  comparison between regimens -- is reproduced.
+* **The omega column is read as a standard deviation.** Kang 2025 Table 2 does
+  not label the scale of its IIV column, but Results section 2.3 states that the
+  MTT and N variances were fixed at 0.1 and 0.2 and Table 2 prints 0.316 and
+  0.447, which are their square roots. Every entry is squared in the model file.
+* **The IOV eta is shared between Vc/F and Vp/F.** Equations 2 and 4 both
+  multiply by the same symbol `e^(eta_IOV)` with no distinguishing subscript,
+  and Table 2 reports a single `omega IOV` row, so one occasion-level random
+  effect drives both volumes. The alternative reading -- two independent etas
+  with a common variance -- is not excluded by the text but is not what the
+  equations print.
+* **The circadian acrophase is a structural constant.** The 7 h phase shift
+  appears only inside equation 1; Table 2 neither tabulates it nor reports an
+  RSE for it, so it is encoded as `fixed(7)`. `TIME` is read as hours since the
+  first dose (not clock time), which is the only reading consistent with the
+  Discussion's statement that CL/F peaks at 16:00. Simulations that dose at a
+  clock time other than ~09:00 should shift `acrophase_cl` accordingly.
+* **Transit absorption uses the Savic 2007 parameterisation**, `ktr = (N + 1)/MTT`.
+  Kang 2025 estimates MTT and N and states that a "transit compartment model
+  with first-order absorption" was used (Methods section 4.3), but does not
+  print the transit equations. The `(N + 1)` convention -- in which the mean
+  transit time spans the N transit compartments plus the depot they feed -- is
+  the standard form for this model class and the one the separately estimated
+  `ka` implies. The chain is implemented in the analytical gamma-kernel form so
+  that the non-integer N = 6.58 is handled smoothly.
+* **The analytical transit kernel tracks the most recent dose only.** `podo()`
+  and `tad()` restart at each dose, so superposition of overlapping absorption
+  from consecutive doses is not represented. With MTT = 1.88 h and
+  ktr = 4.03 1/h the chain is essentially exhausted within about 5 h, well
+  inside the shortest (12 h) dosing interval used here, so the approximation is
+  immaterial for these regimens.
+* **No IIV on Vc/F, Q/F, Vp/F or ka.** Kang 2025 Results section 2.3 fixed those
+  variances at exactly zero, so no eta is carried for them. A zero-variance eta
+  would make the OMEGA matrix singular and break rxSolve's Cholesky sampler.
+* **Age distribution.** Kang 2025 Table 1 reports only medians and ranges, so
+  the virtual cohorts draw age from a truncated normal matched to the per-arm
+  median and range (CML-CP median 32, range 21-72; healthy volunteers median 29,
+  range 20-51). The shape between those points is an assumption. Age enters only
+  Vc/F, which does not affect steady-state exposure.
+* **Weight, sex, ethnicity, hepatic and renal function are not in the model.**
+  They were screened (Methods section 4.3) but not retained, so no covariate
+  columns are carried for them.
+* **The disease effect is confounded.** Kang 2025's own Discussion (limitations)
+  notes that all healthy volunteers were Korean males and all patients were
+  Chinese of both sexes, so the 0.646 coefficient may partly reflect interethnic
+  or sex-related variability rather than disease status alone. The coefficient
+  is encoded as published; users should not transport it to other populations
+  without that caveat.
+* **The linear age effect must not be extrapolated.** `1 - 0.0129 * (AGE - 31)`
+  reaches zero at age 108.5 and turns negative beyond it. It is supported only
+  over the observed 20-72 year range.
+* **All values are from the paper's text and tables.** No supplement was
+  published for this article and no parameter was digitised from a figure or
+  obtained by correspondence.

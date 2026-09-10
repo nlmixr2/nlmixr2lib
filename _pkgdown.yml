@@ -3478,6 +3478,8 @@ navbar:
         href: articles/McBride_2025_radamts13_qsp.html
       - text: "Radiation radiosensitizer mouse (Cardilin 2018)"
         href: articles/Cardilin_2018_radiation_radiosensitizer_mouse.html
+      - text: "Radotinib (Kang 2025)"
+        href: articles/Kang_2025_radotinib.html
       - text: "Raltegravir (ArabAlameddine 2012)"
         href: articles/ArabAlameddine_2012_raltegravir.html
       - text: "Raltegravir (Bukkems 2021)"
@@ -5588,6 +5590,7 @@ articles:
   - articles/Kang_2020_adalimumab
   - articles/Kang_2020_cefpirome
   - articles/Kang_2023_pyronaridine_artesunate_hamster_pbpk
+  - articles/Kang_2025_radotinib
   - articles/Kapitanov_2025_dupilumab
   - articles/Kappelhoff_2005_indinavir
   - articles/Kappelhoff_2005_ritonavir
