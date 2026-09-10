@@ -104,9 +104,9 @@ Wurthwein_2025_pegasparaginase_r2ea <- function() {
     # ESM Table S9, 'Final popPK model' column (model 493158). Values are
     # quoted for a child with BSA = 1 m^2; the BSA factors in model() are
     # renormalised to 1 at BSA = 1 m^2 so these are used exactly as printed.
-    lvc <- log(1.62);  label("Volume of the serum compartment shared by all 14 species, for a child with BSA 1 m^2 (V, L)")                    # ESM Table S9 (V 1.62, RSE 1.1%; bootstrap 1.62, 95% CI 1.59-1.66)
-    lcl <- log(0.127); label("Initial clearance of fully PEGylated asparaginase, for a child with BSA 1 m^2 (CLinitial, L/day)")               # ESM Table S9 (CLinitial 0.127, RSE 1.0%; bootstrap 0.127, 95% CI 0.125-0.13)
-    lq  <- log(0.822); label("Intercompartmental clearance driving the de-PEGylation transit chain, for a child with BSA 1 m^2 (Qtr, L/day)")   # ESM Table S9 (Qrt 0.822, RSE 2.5%; bootstrap 0.820, 95% CI 0.78-0.857)
+    lvc <- log(1.62);  label("Volume of the serum compartment shared by all 14 species, for a child with BSA 1 m^2 (L)")                    # ESM Table S9 (V 1.62, RSE 1.1%; bootstrap 1.62, 95% CI 1.59-1.66)
+    lcl <- log(0.127); label("Initial clearance of fully PEGylated asparaginase, for a child with BSA 1 m^2 (L/day)")               # ESM Table S9 (CLinitial 0.127, RSE 1.0%; bootstrap 0.127, 95% CI 0.125-0.13)
+    lq  <- log(0.822); label("Intercompartmental clearance driving the de-PEGylation transit chain, for a child with BSA 1 m^2 (L/day)")   # ESM Table S9 (Qrt 0.822, RSE 2.5%; bootstrap 0.820, 95% CI 0.78-0.857)
 
     # ---- Body surface area -------------------------------------------------
     e_bsa_vc   <- 1.57; label("Linear slope of BSA on V, centred on 0.79 m^2 (1/m^2)")                  # ESM Table S9 (FBSA on V 1.57, RSE 1.6%; bootstrap 1.56, 95% CI 1.51-1.61)

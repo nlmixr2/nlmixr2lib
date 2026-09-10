@@ -258,9 +258,9 @@ Jonsson_2015_edoxaban <- function() {
     # Svensson_2014_bedaquiline.R drops the analogous 55% BDQ/M2 residual
     # correlation. See the vignette's Assumptions and deviations section.
     # ---------------------------------------------------------------------
-    propSd        <- 0.154 ; label("Edoxaban plasma proportional residual error (SD, fraction)")   # Jonsson 2015 Table 1 'Proportional residual error, edoxaban plasma concentrations, %CV = 15.4' (RSE 5.9%); control stream $SIGMA 0.023842, sqrt = 0.1544
-    propSd_m4     <- 0.184 ; label("M4 plasma proportional residual error (SD, fraction)")         # Jonsson 2015 Table 1 'Proportional residual error, M4 plasma concentrations, %CV = 18.4' (RSE 8.3%); control stream $SIGMA 0.0337782, sqrt = 0.1838
-    propSd_Aurine <- 0.254 ; label("Edoxaban urine proportional residual error (SD, fraction)")    # Jonsson 2015 Table 1 'Proportional residual error, edoxaban urine concentrations, %CV = 25.4' (RSE 8.1%); control stream $SIGMA 0.0649608, sqrt = 0.2549
+    propSd        <- 0.154 ; label("Edoxaban plasma proportional residual error (fraction)")   # Jonsson 2015 Table 1 'Proportional residual error, edoxaban plasma concentrations, %CV = 15.4' (RSE 5.9%); control stream $SIGMA 0.023842, sqrt = 0.1544
+    propSd_m4     <- 0.184 ; label("M4 plasma proportional residual error (fraction)")         # Jonsson 2015 Table 1 'Proportional residual error, M4 plasma concentrations, %CV = 18.4' (RSE 8.3%); control stream $SIGMA 0.0337782, sqrt = 0.1838
+    propSd_Aurine <- 0.254 ; label("Edoxaban urine proportional residual error (fraction)")    # Jonsson 2015 Table 1 'Proportional residual error, edoxaban urine concentrations, %CV = 25.4' (RSE 8.1%); control stream $SIGMA 0.0649608, sqrt = 0.2549
   })
 
   model({

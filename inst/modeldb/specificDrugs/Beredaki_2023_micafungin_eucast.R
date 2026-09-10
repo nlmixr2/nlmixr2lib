@@ -156,7 +156,7 @@ Beredaki_2023_micafungin_eucast <- function() {
     lemax <- log(6.73)
     label("Log maximum reduction Emax relative to the drug-free control (log10 CFU/mL)")  # digitised from Beredaki 2023 Figure 5(b); implies a bottom asymptote of 4.23 - 6.73 = -2.50 log10 CFU/mL
     lec50 <- log(1.35)
-    label("Log fAUC0-24/MIC producing 50% of Emax (EI50, unitless)")  # digitised from Beredaki 2023 Figure 5(b)
+    label("Log fAUC0-24/MIC producing 50% of Emax (unitless)")  # digitised from Beredaki 2023 Figure 5(b)
     lhill <- log(0.733)
     label("Log Hill coefficient n of the exposure-response relationship (unitless)")  # digitised from Beredaki 2023 Figure 5(b)
 

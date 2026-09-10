@@ -96,9 +96,9 @@ Wurthwein_2025_pegasparaginase_germanCzech <- function() {
     # BSA factors in model() are renormalised to 1 at BSA = 1 m^2 so these are
     # used exactly as printed. See covariateData$BSA on why the printed
     # 'L/m^2' tag is a quoting convention, not a normalisation.
-    lvc <- log(1.68);  label("Volume of the serum compartment shared by all 14 species, for a child with BSA 1 m^2 (V, L)")                      # ESM Table S13 German/Czech (V 1.68, RSE 1.1%; bootstrap 1.68, 95% CI 1.62-1.72)
-    lcl <- log(0.126); label("Initial clearance of fully PEGylated asparaginase, for a child with BSA 1 m^2 (CLinitial, L/day)")                 # ESM Table S13 German/Czech (CLinitial 0.126, RSE 1.1%; bootstrap 0.126, 95% CI 0.123-0.130)
-    lq  <- log(0.926); label("Intercompartmental clearance driving the de-PEGylation transit chain, for a child with BSA 1 m^2 (Qtr, L/day)")    # ESM Table S13 German/Czech (Qtr 0.926, RSE 1.9%; bootstrap 0.925, 95% CI 0.883-0.968)
+    lvc <- log(1.68);  label("Volume of the serum compartment shared by all 14 species, for a child with BSA 1 m^2 (L)")                      # ESM Table S13 German/Czech (V 1.68, RSE 1.1%; bootstrap 1.68, 95% CI 1.62-1.72)
+    lcl <- log(0.126); label("Initial clearance of fully PEGylated asparaginase, for a child with BSA 1 m^2 (L/day)")                 # ESM Table S13 German/Czech (CLinitial 0.126, RSE 1.1%; bootstrap 0.126, 95% CI 0.123-0.130)
+    lq  <- log(0.926); label("Intercompartmental clearance driving the de-PEGylation transit chain, for a child with BSA 1 m^2 (L/day)")    # ESM Table S13 German/Czech (Qtr 0.926, RSE 1.9%; bootstrap 0.925, 95% CI 0.883-0.968)
 
     # ---- Body surface area -------------------------------------------------
     # Linear and centred on the model-building median 0.79 m^2, with a single

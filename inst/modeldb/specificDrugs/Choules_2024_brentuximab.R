@@ -56,17 +56,17 @@ Choules_2024_brentuximab <- function() {
     # published simulated summary statistics for brentuximab vedotin: the
     # arithmetic mean Cmax and AUC(inf) at 1.8 and 2.7 mg/kg and the mean
     # terminal half-life (Choules 2024 Table S3).
-    lcl <- log(0.065773);  label("Conjugated-antibody clearance (CL, L/h)")                              # derived: Choules 2024 Table S3 simulated mean AUC(inf) 82.2 ug*day/mL (1.8 mg/kg) and 123 (2.7 mg/kg) at 72.0 kg
-    lvc <- log(4.0966);    label("Conjugated-antibody central volume (V1, L)")                           # derived: Choules 2024 Table S3 simulated mean Cmax 31.5 ug/mL (1.8 mg/kg) and 47.2 (2.7 mg/kg)
-    lq  <- log(0.0057794); label("Conjugated-antibody inter-compartmental clearance (Q, L/h)")           # derived: Choules 2024 Table S3 simulated mean terminal half-life 5.71 day and MMAE mean Cmax 4.62 / 6.96 ng/mL
-    lvp <- log(1.0127);    label("Conjugated-antibody peripheral volume (V2, L)")                        # derived: Choules 2024 Table S3 simulated mean terminal half-life 5.71 day and MMAE mean Cmax 4.62 / 6.96 ng/mL
+    lcl <- log(0.065773);  label("Conjugated-antibody clearance (L/h)")                              # derived: Choules 2024 Table S3 simulated mean AUC(inf) 82.2 ug*day/mL (1.8 mg/kg) and 123 (2.7 mg/kg) at 72.0 kg
+    lvc <- log(4.0966);    label("Conjugated-antibody central volume (L)")                           # derived: Choules 2024 Table S3 simulated mean Cmax 31.5 ug/mL (1.8 mg/kg) and 47.2 (2.7 mg/kg)
+    lq  <- log(0.0057794); label("Conjugated-antibody inter-compartmental clearance (L/h)")           # derived: Choules 2024 Table S3 simulated mean terminal half-life 5.71 day and MMAE mean Cmax 4.62 / 6.96 ng/mL
+    lvp <- log(1.0127);    label("Conjugated-antibody peripheral volume (L)")                        # derived: Choules 2024 Table S3 simulated mean terminal half-life 5.71 day and MMAE mean Cmax 4.62 / 6.96 ng/mL
 
     # MMAE disposition. Choules 2024 used the SAME MMAE compound file for
     # brentuximab vedotin and enfortumab vedotin, so these are the identical
     # published Simcyp inputs used in Choules_2024_enfortumab and are not
     # fitted here.
-    lcl_mmae <- fixed(log(2.72));   label("MMAE clearance (CL, L/h)")                                    # Choules 2024 Table 2: Simcyp retrograde calculation based on apparent CLiv 2.72 L/h
-    lvc_mmae <- fixed(log(218.2));  label("MMAE volume of distribution (Vss, L)")                        # Choules 2024 Table 2: Vss 3.03 L/kg x 72.0 kg assumed mean weight
+    lcl_mmae <- fixed(log(2.72));   label("MMAE clearance (L/h)")                                    # Choules 2024 Table 2: Simcyp retrograde calculation based on apparent CLiv 2.72 L/h
+    lvc_mmae <- fixed(log(218.2));  label("MMAE volume of distribution (L)")                        # Choules 2024 Table 2: Vss 3.03 L/kg x 72.0 kg assumed mean weight
 
     # Payload stoichiometry. Frel (deconjugation) and Frel (catabolic) are both
     # 1 in Choules 2024 Table S1, so the released fraction is 1 and the mass
@@ -80,8 +80,8 @@ Choules_2024_brentuximab <- function() {
     # MMAE AUC(inf) = released payload dose / MMAE CL, so a CL multiplier equal
     # to the reciprocal of the published MMAE AUC geometric mean ratio
     # reproduces that ratio exactly.
-    e_keto_cl_mmae <- fixed(0.72993); label("Multiplier of ketoconazole coadministration on MMAE CL: cl_mmae *= e_keto_cl_mmae^CONMED_KETOCONAZOLE") # derived: 1 / 1.37, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + ketoconazole
-    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL: cl_mmae *= e_rif_cl_mmae^CONMED_RIF")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + rifampin
+    e_keto_cl_mmae <- fixed(0.72993); label("Multiplier of ketoconazole coadministration on MMAE CL, power form on CONMED_KETOCONAZOLE (unitless)") # derived: 1 / 1.37, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + ketoconazole
+    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL, power form on CONMED_RIF (unitless)")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for brentuximab vedotin 1.8 mg/kg + rifampin
 
     # Residual error. Choules 2024 is a deterministic PBPK simulation study; it
     # reports no residual-error model. The CV% values in Table S3 are

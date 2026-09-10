@@ -73,12 +73,12 @@ Thakre_2022_risankizumab <- function() {
     # Structural parameters from Thakre 2022 Table 1 (final PsA population PK model).
     # Typical values are for the reference subject (70 kg, age 52, ALB 45 g/L,
     # CREAT 70.73 umol/L, CRP 5.21 mg/L [hs-CRP]).
-    lcl     <- log(0.248); label("Clearance (CL, L/day)")                         # Thakre 2022 Table 1
+    lcl     <- log(0.248); label("Clearance (L/day)")                         # Thakre 2022 Table 1
     lvc     <- log(4.71);  label("Central volume of distribution (Vc / V1, L)")   # Thakre 2022 Table 1
-    lq      <- log(0.839); label("Intercompartmental clearance (Q, L/day)")       # Thakre 2022 Table 1
+    lq      <- log(0.839); label("Intercompartmental clearance (L/day)")       # Thakre 2022 Table 1
     lvp     <- log(4.26);  label("Peripheral volume of distribution (Vp / V2, L)")# Thakre 2022 Table 1
-    lka     <- log(0.218); label("First-order SC absorption rate (ka, 1/day)")    # Thakre 2022 Table 1
-    lfdepot <- log(0.835); label("Absolute SC bioavailability (F)")                # Thakre 2022 Table 1
+    lka     <- log(0.218); label("First-order SC absorption rate (1/day)")    # Thakre 2022 Table 1
+    lfdepot <- log(0.835); label("Absolute SC bioavailability F on the log scale (fraction)")                # Thakre 2022 Table 1
 
     # Covariate effects from Thakre 2022 Table 1 and Eq. 2 / Eq. 3. All are
     # power exponents on covariates normalized to their reference values.
@@ -98,7 +98,7 @@ Thakre_2022_risankizumab <- function() {
 
     # Residual error. Table 1 reports the variance of the proportional residual
     # error (0.0382); nlmixr2 prop(propSd) expects an SD, so store sqrt(variance).
-    propSd <- sqrt(0.0382); label("Proportional residual error (SD, fraction)")   # Thakre 2022 Table 1
+    propSd <- sqrt(0.0382); label("Proportional residual error (fraction)")   # Thakre 2022 Table 1
   })
   model({
     # Individual PK parameters. Reference subject: 70 kg, age 52 years,

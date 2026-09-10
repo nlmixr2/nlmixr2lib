@@ -129,11 +129,11 @@ Tan_2025_cabotegravir <- function() {
     # Discussion cross-checks this ka against the two published comparators,
     # 0.00102 1/h in the Swiss real-world cohort and 0.000642 1/h in the
     # registrational analysis.
-    lka <- log(0.000972) ; label("Absorption rate constant (ka, 1/h)")  # Table 2 'k a (h-1) 0.000972'; bootstrap median 0.000978 [0.00069-0.00118]
+    lka <- log(0.000972) ; label("Absorption rate constant (1/h)")  # Table 2 'k a (h-1) 0.000972'; bootstrap median 0.000978 [0.00069-0.00118]
 
     # --- Disposition -----------------------------------------------------
-    lcl <- log(0.136) ; label("Apparent clearance at 70 kg (CL/F, L/h)")                     # Table 2 'CL/F (liters/h/70 kg) 0.136'; bootstrap median 0.1361 [0.1167-0.1628]
-    lvc <- log(9.28)  ; label("Apparent central volume of distribution at 70 kg (V/F, L)")   # Table 2 'V/F (liters/70 kg) 9.28'; bootstrap median 9.16 [5.95-17.77]. Tan 2025 Discussion notes the registrational two-compartment central and peripheral volumes "approximately summed to our single compartment estimate"
+    lcl <- log(0.136) ; label("Apparent clearance at 70 kg (L/h)")                     # Table 2 'CL/F (liters/h/70 kg) 0.136'; bootstrap median 0.1361 [0.1167-0.1628]
+    lvc <- log(9.28)  ; label("Apparent central volume of distribution at 70 kg (L)")   # Table 2 'V/F (liters/70 kg) 9.28'; bootstrap median 9.16 [5.95-17.77]. Tan 2025 Discussion notes the registrational two-compartment central and peripheral volumes "approximately summed to our single compartment estimate"
 
     # --- Allometric weight scaling ---------------------------------------
     # NOT PRINTED BY THE PAPER. Tan 2025 states the reference weight in the

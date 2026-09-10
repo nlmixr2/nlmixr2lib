@@ -91,10 +91,10 @@ Schoemaker_1996_enoxaparin <- function() {
     # central volume is derived from the typical CL and t1/2 via the standard
     # one-compartment relation Vc = CL * t1/2 / ln(2).
     lcl    <- log(1.974)
-    label("Clearance (CL, L/h)")
+    label("Clearance (L/h)")
     # Schoemaker 1996 Table 3: CL = 32.9 mL/min; converted: 32.9 mL/min * 60 / 1000 = 1.974 L/h
     lvc    <- log(6.170)
-    label("Central volume of distribution (Vc, L)")
+    label("Central volume of distribution (L)")
     # Schoemaker 1996 Table 3: derived from CL = 32.9 mL/min and t1/2 = 130 min via
     # Vc = CL * t1/2 / ln(2) = 1.974 L/h * (130/60) h / 0.6931 = 6.170 L
     lrbase <- log(0.0254)

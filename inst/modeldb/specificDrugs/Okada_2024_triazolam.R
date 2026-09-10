@@ -123,16 +123,16 @@ Okada_2024_triazolam <- function() {
     # profiles were available for fitting.
     # =================================================================
     lka <- log(3.16)
-    label("Absorption rate constant (Ka, 1/h)")                                      # Table 3: Ka = theta1 = 3.16 1/hr (CV 5.27%)
+    label("Absorption rate constant (1/h)")                                      # Table 3: Ka = theta1 = 3.16 1/hr (CV 5.27%)
 
     lvc <- log(119)
-    label("Apparent volume of distribution at age 30 years (Vd/F, L)")               # Table 3: Vd = theta2 * (age/30)^theta4; theta2 = 119 L (CV 1.86%)
+    label("Apparent volume of distribution at age 30 years (L)")               # Table 3: Vd = theta2 * (age/30)^theta4; theta2 = 119 L (CV 1.86%)
 
     e_age_vc <- -0.49
     label("Power-law exponent for age on apparent volume of distribution (unitless)") # Table 3: theta4 = -0.49 (CV 6.53%); form from Eq 1
 
     lcl <- log(0.47)
-    label("Weight-normalised apparent clearance at age 30 years (CL/F, L/h/kg)")     # Table 3: CL = theta3 * (age/30)^theta5 * 1/AUCR; theta3 = 0.47 L/hr/kg (CV 1.92%)
+    label("Weight-normalised apparent clearance at age 30 years (L/h/kg)")     # Table 3: CL = theta3 * (age/30)^theta5 * 1/AUCR; theta3 = 0.47 L/hr/kg (CV 1.92%)
 
     e_age_cl <- -0.53
     label("Power-law exponent for age on apparent clearance (unitless)")             # Table 3: theta5 = -0.53 (CV 4.30%); form from Eq 1
@@ -149,7 +149,7 @@ Okada_2024_triazolam <- function() {
     # change-from-baseline measures and the paper reports no intercept.
     # =================================================================
     lke0 <- log(3.42)
-    label("Plasma-to-effect-compartment equilibration rate constant (Keo, 1/h)")     # Table 3: Keo = 3.42 1/hr (CV 12.6%)
+    label("Plasma-to-effect-compartment equilibration rate constant (1/h)")     # Table 3: Keo = 3.42 1/hr (CV 12.6%)
 
     slope_sedation <- 12.1
     label("Slope of sedation VAS on effect-site triazolam concentration (mm per ng/mL)") # Table 3 footnote: "Sedation = 12.1 x concentration" (CV 1.05%)

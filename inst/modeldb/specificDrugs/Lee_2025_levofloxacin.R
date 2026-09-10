@@ -132,8 +132,8 @@ Lee_2025_levofloxacin <- function() {
     # subject: CrCl 105.71 mL/min and LBM 47.91 kg (Lee 2025 Table 2 footnote).
 
     lcl <- log(13.4); label("Clearance (CL, L/h) at CrCl 105.71 mL/min")               # Table 2, theta1 (RSE 3.36%)
-    lvc <- log(34.3); label("Central volume of distribution (V1, L)")                  # Table 2, V1 (RSE 8.93%)
-    lq  <- log(72.8); label("Intercompartmental clearance (Q, L/h)")                   # Table 2, Q (RSE 10.9%)
+    lvc <- log(34.3); label("Central volume of distribution (L)")                  # Table 2, V1 (RSE 8.93%)
+    lq  <- log(72.8); label("Intercompartmental clearance (L/h)")                   # Table 2, Q (RSE 10.9%)
     lvp <- log(67.7); label("Peripheral volume of distribution (V2, L) at LBM 47.91 kg") # Table 2, theta3 (RSE 3.42%)
 
     # Covariate effects, both entered as power functions of the covariate

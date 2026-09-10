@@ -59,7 +59,7 @@ Martial_2017_micafungin <- function() {
     # (Methods Section 2.4: "an allometric exponent of 0.75 for all flow
     # parameters and an exponent of 1 for all volume parameters standardised
     # to a 70-kg patient as proposed previously").
-    lcl  <- log(1.10)  ; label("Clearance for a 70 kg subject (CL, L/h)")                                # Martial 2017 Table 2: CL = 1.10 [RSE 8%]
+    lcl  <- log(1.10)  ; label("Clearance for a 70 kg subject (L/h)")                                # Martial 2017 Table 2: CL = 1.10 [RSE 8%]
     lvc  <- log(17.6)  ; label("Central volume of distribution V1 for a 70 kg subject (L)")              # Martial 2017 Table 2: V1 = 17.6 [RSE 14%]
     lq   <- log(0.363) ; label("Inter-compartmental clearance Q for a 70 kg subject (L/h)")              # Martial 2017 Table 2: Q  = 0.363 [RSE 20%]
     lvp  <- log(3.63)  ; label("Peripheral volume of distribution V2 for a 70 kg subject (L)")           # Martial 2017 Table 2: V2 = 3.63 [RSE 8%]

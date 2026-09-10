@@ -59,15 +59,15 @@ Choules_2024_enfortumab <- function() {
     # 1.25 mg/kg and the mean terminal half-life (Choules 2024 Table 3). The
     # plotted simulated curves in Figure 3 are arithmetic means, so the
     # arithmetic-mean column of Table 3 is the calibration target.
-    lcl <- log(0.10969); label("Conjugated-antibody clearance (CL, L/h)")                                # derived: Choules 2024 Table 3 simulated mean AUC(d0-7) 32.6 ug*day/mL (1.25 mg/kg) and 26.0 (1.0 mg/kg) at 72.0 kg
-    lvc <- log(3.4842);  label("Conjugated-antibody central volume (V1, L)")                             # derived: Choules 2024 Table 3 simulated mean Cmax 25.3 ug/mL (1.25 mg/kg) and 20.6 (1.0 mg/kg)
-    lq  <- log(0.040504); label("Conjugated-antibody inter-compartmental clearance (Q, L/h)")            # derived: Choules 2024 Table 3 simulated mean terminal half-life 1.96 day with Figure 3a curve shape
-    lvp <- log(1.6225);  label("Conjugated-antibody peripheral volume (V2, L)")                          # derived: Choules 2024 Table 3 simulated mean terminal half-life 1.96 day with Figure 3a curve shape
+    lcl <- log(0.10969); label("Conjugated-antibody clearance (L/h)")                                # derived: Choules 2024 Table 3 simulated mean AUC(d0-7) 32.6 ug*day/mL (1.25 mg/kg) and 26.0 (1.0 mg/kg) at 72.0 kg
+    lvc <- log(3.4842);  label("Conjugated-antibody central volume (L)")                             # derived: Choules 2024 Table 3 simulated mean Cmax 25.3 ug/mL (1.25 mg/kg) and 20.6 (1.0 mg/kg)
+    lq  <- log(0.040504); label("Conjugated-antibody inter-compartmental clearance (L/h)")            # derived: Choules 2024 Table 3 simulated mean terminal half-life 1.96 day with Figure 3a curve shape
+    lvp <- log(1.6225);  label("Conjugated-antibody peripheral volume (L)")                          # derived: Choules 2024 Table 3 simulated mean terminal half-life 1.96 day with Figure 3a curve shape
 
     # MMAE disposition. Both values are the paper's published Simcyp compound-file
     # inputs for MMAE and are NOT fitted here; they are used exactly as printed.
-    lcl_mmae <- fixed(log(2.72));   label("MMAE clearance (CL, L/h)")                                    # Choules 2024 Table 2: Simcyp retrograde calculation based on apparent CLiv 2.72 L/h
-    lvc_mmae <- fixed(log(218.2));  label("MMAE volume of distribution (Vss, L)")                        # Choules 2024 Table 2: Vss 3.03 L/kg x 72.0 kg simulated mean weight (Table S4)
+    lcl_mmae <- fixed(log(2.72));   label("MMAE clearance (L/h)")                                    # Choules 2024 Table 2: Simcyp retrograde calculation based on apparent CLiv 2.72 L/h
+    lvc_mmae <- fixed(log(218.2));  label("MMAE volume of distribution (L)")                        # Choules 2024 Table 2: Vss 3.03 L/kg x 72.0 kg simulated mean weight (Table S4)
 
     # Payload stoichiometry. Each milligram of eliminated conjugated antibody
     # releases dar molecules of MMAE; Frel (deconjugation) and Frel (catabolic)
@@ -83,8 +83,8 @@ Choules_2024_enfortumab <- function() {
     # mean ratio reproduces that ratio exactly. Choules 2024 states that
     # simulations were run long enough for the AUC(last) ratio to equal the
     # AUC(inf) ratio, so the two are interchangeable here.
-    e_keto_cl_mmae <- fixed(0.72464); label("Multiplier of ketoconazole coadministration on MMAE CL: cl_mmae *= e_keto_cl_mmae^CONMED_KETOCONAZOLE") # derived: 1 / 1.38, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + ketoconazole
-    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL: cl_mmae *= e_rif_cl_mmae^CONMED_RIF")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + rifampin
+    e_keto_cl_mmae <- fixed(0.72464); label("Multiplier of ketoconazole coadministration on MMAE CL, power form on CONMED_KETOCONAZOLE (unitless)") # derived: 1 / 1.38, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + ketoconazole
+    e_rif_cl_mmae  <- fixed(2.12766); label("Multiplier of rifampin coadministration on MMAE CL, power form on CONMED_RIF (unitless)")               # derived: 1 / 0.47, Choules 2024 Table 5 predicted MMAE AUC ratio for enfortumab vedotin 1.25 mg/kg + rifampin
 
     # Residual error. Choules 2024 is a deterministic PBPK simulation study; it
     # reports no residual-error model. The CV% values in Tables 3, 4 and 6 are

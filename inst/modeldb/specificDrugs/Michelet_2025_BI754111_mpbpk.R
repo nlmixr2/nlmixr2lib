@@ -213,11 +213,11 @@ Michelet_2025_BI754111_mpbpk <- function() {
     # parameters that were re-estimated against the PET biodistribution data;
     # the starting-model values are given in the comment on each line.
     # ======================================================================
-    n_tcell    <- fixed(6430);    label("Activated (CD4+/CD8+) T cells per uL of blood")                              # Table 2 final average two-pore model N_Tcell = 6430 (starting model 2000)
-    n_lag3_tc  <- fixed(1330);    label("LAG-3 receptors per activated T cell")                                       # Table 2 final average two-pore model N_LAG-3,TC = 1330 (starting model 511)
+    n_tcell    <- fixed(6430);    label("Activated CD4+/CD8+ T cells in blood (cells/uL)")                              # Table 2 final average two-pore model N_Tcell = 6430 (starting model 2000)
+    n_lag3_tc  <- fixed(1330);    label("LAG-3 receptors per activated T cell (receptors/cell)")                                       # Table 2 final average two-pore model N_LAG-3,TC = 1330 (starting model 511)
     tmulti     <- fixed(16.2);    label("Initial ratio of LAG-3 concentration in tumor versus blood (unitless)")      # Table 2 final average two-pore model T_multi = 16.2 (starting model 4.3)
     kint_lag3  <- fixed(0.466);   label("Internalization rate of the BI 754111-LAG-3 complex into T cells (1/h)")     # Table 2 final average two-pore model K_int,LAG-3 = 0.466 1/h (starting model 0.276)
-    krec_lag3  <- fixed(0.453);   label("Fraction of intracellular LAG-3 recycled to the cell surface per hour")      # Table 2 final average two-pore model K_rec,LAG-3 = 0.453 (starting model 0.30)
+    krec_lag3  <- fixed(0.453);   label("Fraction of intracellular LAG-3 recycled to the cell surface per hour (1/h)")      # Table 2 final average two-pore model K_rec,LAG-3 = 0.453 (starting model 0.30)
     kdeg_tc    <- fixed(0.00725); label("Removal of internalized complex and receptor by T-cell turnover (1/h)")      # Table 2 final average two-pore model K_deg,TC = 0.00725 1/h (starting model 0.00963)
 
     # ======================================================================

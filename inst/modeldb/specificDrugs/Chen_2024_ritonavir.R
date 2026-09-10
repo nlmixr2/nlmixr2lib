@@ -132,9 +132,9 @@ Chen_2024_ritonavir <- function() {
     # Abstract reports the companion nirmatrelvir estimates as "Mean (SD)
     # 0.42 (0.10) h-1, 36.5 (8.5) L, 3.6 (0.26) L/h", which are exactly the
     # Table 3 estimates multiplied by the Table 3 "CV, %" values.
-    lka <- log(0.64); label("Apparent first-order absorption rate constant (ka, 1/h)")  # Table 2: tvKa = 0.64 1/h (RSE 37.4%; bootstrap median 1.10, 95% CI 0.13-9.99)
-    lvc <- log(84.9); label("Apparent central volume of distribution (V/F, L)")         # Table 2: tvV = 84.9 L (RSE 29.2%; bootstrap median 82.4, 95% CI 10.1-158.4)
-    lcl <- log(10.3); label("Apparent oral clearance (CL/F, L/h)")                      # Table 2: tvCL = 10.3 L/h (RSE 14.7%; bootstrap median 10.3, 95% CI 7.5-13.7)
+    lka <- log(0.64); label("Apparent first-order absorption rate constant (1/h)")  # Table 2: tvKa = 0.64 1/h (RSE 37.4%; bootstrap median 1.10, 95% CI 0.13-9.99)
+    lvc <- log(84.9); label("Apparent central volume of distribution (L)")         # Table 2: tvV = 84.9 L (RSE 29.2%; bootstrap median 82.4, 95% CI 10.1-158.4)
+    lcl <- log(10.3); label("Apparent oral clearance (L/h)")                      # Table 2: tvCL = 10.3 L/h (RSE 14.7%; bootstrap median 10.3, 95% CI 7.5-13.7)
 
     # Interindividual variability, exponential model on CL/F and V/F, with the
     # CL-V correlation carried in the off-diagonal element of the

@@ -68,8 +68,8 @@ Royer_2010_HuHMFG1 <- function() {
     # for a combined proportional + additive error model; the additive sigma^2
     # was FIXED at 2.26. nlmixr2 stores residual error as SDs, so propSd and
     # addSd are sqrt() of the reported variances.
-    propSd <- sqrt(0.034);        label("Proportional residual error (SD, fraction)")  # Royer 2010 Table 3 (sigma^2_prop = 0.034)
-    addSd  <- fixed(sqrt(2.26));  label("Additive residual error (SD, mg/L)")          # Royer 2010 Table 3 (sigma^2_add = 2.26, FIXED)
+    propSd <- sqrt(0.034);        label("Proportional residual error (fraction)")  # Royer 2010 Table 3 (sigma^2_prop = 0.034)
+    addSd  <- fixed(sqrt(2.26));  label("Additive residual error (mg/L)")          # Royer 2010 Table 3 (sigma^2_add = 2.26, FIXED)
   })
   model({
     # Typical clearance follows the Royer 2010 Results page-829 additive equation

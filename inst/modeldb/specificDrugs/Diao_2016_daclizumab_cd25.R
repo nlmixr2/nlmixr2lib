@@ -71,13 +71,13 @@ Diao_2016_daclizumab_cd25 <- function() {
     # vignette Assumptions and deviations for the small numerical
     # differences between Othman 2014 and the in-paper PK summary.
     # ----------------------------------------------------------------------
-    lka      <- log(0.009 * 24); label("Absorption rate constant (Ka, 1/day; 0.009 /h SC)")           # Othman 2014 Table 2
-    lcl      <- log(0.010 * 24); label("Clearance for a 70 kg adult (CL, L/day; 10 mL/h)")            # Othman 2014 Table 2
-    lvc      <- log(3.89);       label("Central volume of distribution for a 70 kg adult (Vc, L)")    # Othman 2014 Table 2
-    lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (Vp, L)") # Othman 2014 Table 2
-    lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (Q, L/day)")  # Othman 2014 Table 2
-    lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (F, fraction)")       # Othman 2014 Table 2
-    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (Tlag, day; 2 h)")           # Othman 2014 Table 2
+    lka      <- log(0.009 * 24); label("Absorption rate constant (1/day; 0.009 /h SC)")           # Othman 2014 Table 2
+    lcl      <- log(0.010 * 24); label("Clearance for a 70 kg adult (L/day; 10 mL/h)")            # Othman 2014 Table 2
+    lvc      <- log(3.89);       label("Central volume of distribution for a 70 kg adult (L)")    # Othman 2014 Table 2
+    lvp      <- log(2.52);       label("Peripheral volume of distribution for a 70 kg adult (L)") # Othman 2014 Table 2
+    lq       <- log(0.044 * 24); label("Inter-compartmental clearance for a 70 kg adult (L/day)")  # Othman 2014 Table 2
+    lfdepot  <- log(0.84);       label("SC bioavailability for 100-300 mg doses (fraction)")       # Othman 2014 Table 2
+    ltlag    <- log(2 / 24);     label("Absorption lag time for SC doses (day; 2 h)")           # Othman 2014 Table 2
 
     e_wt_cl_q <- 0.54; label("Allometric exponent on CL and Q (unitless)")  # Othman 2014 Table 2
     e_wt_vc_vp <- 0.64; label("Allometric exponent on Vc and Vp (unitless)") # Othman 2014 Table 2
@@ -135,7 +135,7 @@ Diao_2016_daclizumab_cd25 <- function() {
     # the paper's reported variability.
     # ----------------------------------------------------------------------
     lkon      <- fixed(log(24));    label("Kinetic binding association rate (kon, L/(mg*day); calibrated -- see Assumptions)")   # Calibrated re-parameterisation; targets rapid Figure 1A saturation
-    lkoff     <- fixed(log(0.033)); label("Kinetic binding dissociation rate (koff, 1/day; t1/2 off = 21 days; calibrated)")     # Calibrated re-parameterisation; targets Figure 1B ~24-week baseline return
+    lkoff     <- fixed(log(0.033)); label("Kinetic binding dissociation rate (1/day; t1/2 off = 21 days; calibrated)")     # Calibrated re-parameterisation; targets Figure 1B ~24-week baseline return
     cd25E0    <- 56;                label("Typical baseline unoccupied CD25 (% of CD4+ T cells)")                                # Diao 2016 Table 3 (Baseline E0 = 56%)
 
     # IIV.

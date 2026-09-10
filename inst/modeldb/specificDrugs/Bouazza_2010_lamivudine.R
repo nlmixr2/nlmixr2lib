@@ -47,10 +47,10 @@ Bouazza_2010_lamivudine <- function() {
     # eigenvalue), which is required by the sparse early-time sampling design (no
     # samples during the absorption phase). See Methods 'Modeling strategy'.
     lka <- fixed(log(0.71)); label("Absorption rate constant (1/h); the published value from reference 17 (= the model's alpha disposition eigenvalue)") # Table 2 K_a; Methods 'Modeling strategy' fixes K_a per ref. 17
-    lcl <- log(16.9);        label("Apparent clearance at WT=16.8 kg (CL/F, L/h)") # Table 2 CL/F
-    lvc <- log(30.8);        label("Apparent central volume at WT=16.8 kg (Vc/F, L)") # Table 2 Vc/F
-    lvp <- log(58.6);        label("Apparent peripheral volume at WT=16.8 kg (Vp/F, L)") # Table 2 Vp/F
-    lq  <- log(4.48);        label("Apparent intercompartmental clearance at WT=16.8 kg (Q/F, L/h)") # Table 2 Q/F
+    lcl <- log(16.9);        label("Apparent clearance at WT=16.8 kg (L/h)") # Table 2 CL/F
+    lvc <- log(30.8);        label("Apparent central volume at WT=16.8 kg (L)") # Table 2 Vc/F
+    lvp <- log(58.6);        label("Apparent peripheral volume at WT=16.8 kg (L)") # Table 2 Vp/F
+    lq  <- log(4.48);        label("Apparent intercompartmental clearance at WT=16.8 kg (L/h)") # Table 2 Q/F
 
     # Allometric exponents -- fixed at canonical theoretical values per Methods
     # ("from allometric scaling theory, these are typically 0.75 for clearance

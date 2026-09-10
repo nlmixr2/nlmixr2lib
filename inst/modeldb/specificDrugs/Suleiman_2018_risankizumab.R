@@ -52,12 +52,12 @@ Suleiman_2018_risankizumab <- function() {
   ini({
     # Structural parameters from Suleiman 2018 Table 3 (final phase I-II population PK model).
     # Typical values for the reference subject (70 kg, ALB 40 g/L).
-    lcl     <- log(0.30);  label("Clearance (CL, L/day)")                              # Suleiman 2018 Table 3
-    lvc     <- log(5.66);  label("Central volume of distribution (Vc, L)")             # Suleiman 2018 Table 3
-    lq      <- log(0.33);  label("Intercompartmental clearance (Q, L/day)")            # Suleiman 2018 Table 3
-    lvp     <- log(3.43);  label("Peripheral volume of distribution (Vp, L)")          # Suleiman 2018 Table 3
-    lka     <- log(0.18);  label("First-order SC absorption rate (ka, 1/day)")         # Suleiman 2018 Table 3
-    lfdepot <- log(0.72);  label("Absolute SC bioavailability (F, fraction)")          # Suleiman 2018 Table 3
+    lcl     <- log(0.30);  label("Clearance (L/day)")                              # Suleiman 2018 Table 3
+    lvc     <- log(5.66);  label("Central volume of distribution (L)")             # Suleiman 2018 Table 3
+    lq      <- log(0.33);  label("Intercompartmental clearance (L/day)")            # Suleiman 2018 Table 3
+    lvp     <- log(3.43);  label("Peripheral volume of distribution (L)")          # Suleiman 2018 Table 3
+    lka     <- log(0.18);  label("First-order SC absorption rate (1/day)")         # Suleiman 2018 Table 3
+    lfdepot <- log(0.72);  label("Absolute SC bioavailability (fraction)")          # Suleiman 2018 Table 3
 
     # Covariate effects (Suleiman 2018 Table 3; power exponents on covariates
     # normalized to their reference values, per Eq. 3 and Eq. 4). One exponent

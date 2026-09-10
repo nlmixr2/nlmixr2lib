@@ -125,17 +125,17 @@ Suksai_2026_levodopa <- function() {
     # ------------------------------------------------------------------
 
     # -- Absorption ----------------------------------------------------
-    lka   <- fixed(log(1.2))   ; label("First-order absorption rate constant from the gastrointestinal depot (ka, 1/h)")             # Methods, Model development: ka = 1.2 h-1
+    lka   <- fixed(log(1.2))   ; label("First-order absorption rate constant from the gastrointestinal depot (1/h)")             # Methods, Model development: ka = 1.2 h-1
 
     # -- Distribution micro-constants ----------------------------------
     # Suksai 2026 parameterises distribution directly in first-order rate
     # constants, not in an inter-compartmental clearance. k12 / k21 exchange
     # with the peripheral tissue compartment; k13 / k31 exchange with the brain
     # compartment. Both pairs hang off plasma IN PARALLEL (see model()).
-    lk12  <- fixed(log(0.6))   ; label("Plasma-to-peripheral-tissue distribution rate constant (k12, 1/h)")                          # Methods, Model development: k12 = 0.6 h-1
-    lk21  <- fixed(log(0.5))   ; label("Peripheral-tissue-to-plasma distribution rate constant (k21, 1/h)")                          # Methods, Model development: k21 = 0.5 h-1
-    lk13  <- fixed(log(0.25))  ; label("Plasma-to-brain distribution rate constant (k13, 1/h)")                                      # Methods, Model development: k13 = 0.25 h-1
-    lk31  <- fixed(log(0.20))  ; label("Brain-to-plasma distribution rate constant (k31, 1/h)")                                      # Methods, Model development: k31 = 0.20 h-1
+    lk12  <- fixed(log(0.6))   ; label("Plasma-to-peripheral-tissue distribution rate constant (1/h)")                          # Methods, Model development: k12 = 0.6 h-1
+    lk21  <- fixed(log(0.5))   ; label("Peripheral-tissue-to-plasma distribution rate constant (1/h)")                          # Methods, Model development: k21 = 0.5 h-1
+    lk13  <- fixed(log(0.25))  ; label("Plasma-to-brain distribution rate constant (1/h)")                                      # Methods, Model development: k13 = 0.25 h-1
+    lk31  <- fixed(log(0.20))  ; label("Brain-to-plasma distribution rate constant (1/h)")                                      # Methods, Model development: k31 = 0.20 h-1
 
     # -- Elimination ---------------------------------------------------
     # The paper's symbol is `ke`. Equation 4 DEFINES ke as "the effect-site
@@ -154,7 +154,7 @@ Suksai_2026_levodopa <- function() {
     lkel  <- fixed(log(0.35))  ; label("First-order elimination rate constant from plasma (paper symbol ke, 1/h)")                   # Methods, Model development: ke = 0.35 h-1
 
     # -- Effect-site equilibration -------------------------------------
-    lke0  <- fixed(log(0.6))   ; label("Effect-site equilibration rate constant (ke0, 1/h)")                                         # Methods, Model development: ke0 = 0.6 h-1
+    lke0  <- fixed(log(0.6))   ; label("Effect-site equilibration rate constant (1/h)")                                         # Methods, Model development: ke0 = 0.6 h-1
 
     # -- Volumes -------------------------------------------------------
     # Only vc is load-bearing: it converts the plasma amount into the

@@ -87,10 +87,10 @@ Schoenmakers_2025_betamethasone <- function() {
     # proportional residual error and IIV on CL and Vc (Methods 2.2 and
     # Results 3.1).
     lka  <- log(1.67);  label("First-order absorption rate constant after IM betamethasone (1/h)")           # Schoenmakers 2025 Table 2 final, Ka = 1.67 (RSE 27%)
-    lcl  <- log(15.6);  label("Apparent clearance for a non-eoPE pregnant woman (CL/F, L/h)")                  # Schoenmakers 2025 Table 2 final, CL/F = 15.6 (RSE 5%)
-    lvc  <- log(46.1);  label("Apparent central volume of distribution (Vc/F, L)")                            # Schoenmakers 2025 Table 2 final, Vc/F = 46.1 (RSE 34%)
-    lvp  <- log(109);   label("Apparent peripheral volume of distribution (Vp/F, L)")                         # Schoenmakers 2025 Table 2 final, Vp/F = 109 (RSE 7%)
-    lq   <- log(99.8);  label("Apparent inter-compartmental clearance (Q/F, L/h)")                            # Schoenmakers 2025 Table 2 final, Q/F = 99.8 (RSE 23%); Table 2 unit label is 'L' but the row is for an inter-compartmental clearance, so units are L/h (confirmed by CL/F row units L/h above and by the parameter's role in the rate equation).
+    lcl  <- log(15.6);  label("Apparent clearance for a non-eoPE pregnant woman (L/h)")                  # Schoenmakers 2025 Table 2 final, CL/F = 15.6 (RSE 5%)
+    lvc  <- log(46.1);  label("Apparent central volume of distribution (L)")                            # Schoenmakers 2025 Table 2 final, Vc/F = 46.1 (RSE 34%)
+    lvp  <- log(109);   label("Apparent peripheral volume of distribution (L)")                         # Schoenmakers 2025 Table 2 final, Vp/F = 109 (RSE 7%)
+    lq   <- log(99.8);  label("Apparent inter-compartmental clearance (L/h)")                            # Schoenmakers 2025 Table 2 final, Q/F = 99.8 (RSE 23%); Table 2 unit label is 'L' but the row is for an inter-compartmental clearance, so units are L/h (confirmed by CL/F row units L/h above and by the parameter's role in the rate equation).
 
     # Covariate effect: early-onset pre-eclampsia (eoPE) on CL.
     # The source paper's Eq. 2 (categorical covariate form):

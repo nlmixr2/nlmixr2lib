@@ -59,7 +59,7 @@ Na_2024_tovecimig <- function() {
     etalvp ~ 0.699147                                                                                    # Na 2024 Table 2 (IIV V2 100.6 %CV, shrinkage 19%); log(1.006^2 + 1)
 
     # Residual error - proportional only (Na 2024 Section 3.2).
-    propSd <- 0.245;             label("Proportional residual error (SD, fraction)")                      # Na 2024 Table 2 (RSE 1%); read as an SD, i.e. 24.5% CV - see vignette Errata
+    propSd <- 0.245;             label("Proportional residual error (fraction)")                      # Na 2024 Table 2 (RSE 1%); read as an SD, i.e. 24.5% CV - see vignette Errata
   })
 
   model({

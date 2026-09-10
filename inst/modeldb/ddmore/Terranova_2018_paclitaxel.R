@@ -71,14 +71,14 @@ Terranova_2018_paclitaxel <- function() {
     # ----------------------------------------------------------------------
 
     # ----- Estimated DEB-TGI parameters (.ctl $THETA non-FIX entries) -----
-    lmu          <- log(0.0223)  ; label("Body-weight reduction rate constant from tumor (mu, 1/day)")                            # .ctl $THETA(1)  = 0.0223  ; mu_POP
-    lmu_u        <- log(13.3)    ; label("Cachexia coupling parameter coupling tumor mass to host energy budget (mu_u, unitless)") # .ctl $THETA(2)  = 13.3    ; mu_u_POP
-    lgu          <- log(11.7)    ; label("Tumor energy-budget threshold for cachexia onset (gu, unitless)")                       # .ctl $THETA(3)  = 11.7    ; gu_POP
-    ldelta_vmax  <- log(0.185)   ; label("Maximum body-weight loss rate cap (delta_Vmax, g/day)")                                 # .ctl $THETA(4)  = 0.185   ; delta_Vmax_POP
+    lmu          <- log(0.0223)  ; label("Body-weight reduction rate constant from tumor (1/day)")                            # .ctl $THETA(1)  = 0.0223  ; mu_POP
+    lmu_u        <- log(13.3)    ; label("Cachexia coupling parameter coupling tumor mass to host energy budget (unitless)") # .ctl $THETA(2)  = 13.3    ; mu_u_POP
+    lgu          <- log(11.7)    ; label("Tumor energy-budget threshold for cachexia onset (unitless)")                       # .ctl $THETA(3)  = 11.7    ; gu_POP
+    ldelta_vmax  <- log(0.185)   ; label("Maximum body-weight loss rate cap (g/day)")                                 # .ctl $THETA(4)  = 0.185   ; delta_Vmax_POP
     lw_initial   <- log(21.2)    ; label("Initial mouse body weight (g)")                                                         # .ctl $THETA(5)  = 21.2    ; W_initial_POP
     lvu1_initial <- log(0.0023)  ; label("Initial proliferating tumor mass (g)")                                                  # .ctl $THETA(6)  = 0.0023  ; Vu1_initial_POP
     lic50        <- log(0.461)   ; label("Paclitaxel concentration giving 50% inhibition of tumor growth (IC50; same units as central / V1)")  # .ctl $THETA(7)  = 0.461  ; IC50_POP
-    lk1          <- log(0.462)   ; label("Damaged-tumor-cell transit rate constant (k1, 1/day)")                                  # .ctl $THETA(8)  = 0.462   ; k1_POP
+    lk1          <- log(0.462)   ; label("Damaged-tumor-cell transit rate constant (1/day)")                                  # .ctl $THETA(8)  = 0.462   ; k1_POP
     lk2          <- log(6.53e-4) ; label("Linear paclitaxel cell-kill coefficient (k2, 1/((conc-unit)*day))")                    # .ctl $THETA(9)  = 6.53e-4 ; k2_POP
 
     # Residual-error scale coefficients (b_W, b_Wu in the .ctl $ERROR block).

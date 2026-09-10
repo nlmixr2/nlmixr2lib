@@ -138,9 +138,9 @@ Bulitta_2010_colistin_PAO1 <- function() {
     t12_kdeg <- 0.970
     label("Signal-molecule degradation half-life (h; t1/2(kdeg))")  # Bulitta 2010 Table 1, NONMEM column
     imax_rep <- 0.422
-    label("Maximal fractional inhibition of bacterial replication by signal molecules (ImaxRep, unitless)")  # Bulitta 2010 Table 1, NONMEM column
+    label("Maximal fractional inhibition of bacterial replication by signal molecules (unitless)")  # Bulitta 2010 Table 1, NONMEM column
     imax_kill <- 0.992
-    label("Maximal fractional inhibition of bacterial killing by signal molecules (ImaxKill, unitless)")  # Bulitta 2010 Table 1, NONMEM column
+    label("Maximal fractional inhibition of bacterial killing by signal molecules (unitless)")  # Bulitta 2010 Table 1, NONMEM column
 
     # =============================================================
     # Receptor occupancy and bacterial killing
@@ -149,7 +149,7 @@ Bulitta_2010_colistin_PAO1 <- function() {
     # or Ca2+ at which the effective colistin concentration reaches
     # 50% of the broth concentration.
     ec50_rec <- 0.537
-    label("Fraction of receptors not occupied by Mg2+/Ca2+ giving 50% effective colistin (EC50, unitless)")  # Bulitta 2010 Table 1, NONMEM column
+    label("Fraction of receptors not occupied by Mg2+/Ca2+ giving 50% effective colistin (unitless)")  # Bulitta 2010 Table 1, NONMEM column
     # Hill coefficient: initially estimated 10-20 then fixed to 10
     # for model stability (footnote e).
     hill_rec <- fixed(10)

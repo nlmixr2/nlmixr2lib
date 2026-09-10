@@ -330,37 +330,37 @@ Yellepeddi_2025_sotalol <- function() {
     # ==================================================================
 
     lka <- log(0.16)
-    label("Sotalol first-order oral absorption rate constant (Ka, 1/h)")
+    label("Sotalol first-order oral absorption rate constant (1/h)")
     # Yellepeddi 2025 Datafile S1 $THETA (0, 0.16) ; KA. Table 2 prints
     # 0.2 (%RSE 34.2) and Table 3 prints 0.2 with bootstrap mean 0.2 and
     # 95% CI 0.08-0.4; both are the one-decimal rendering of 0.16.
 
     lcl <- log(9.5)
-    label("Sotalol clearance at the reference creatinine clearance of 92.4 mL/min (CL, L/h)")
+    label("Sotalol clearance at the reference creatinine clearance of 92.4 mL/min (L/h)")
     # Yellepeddi 2025 Table 2 Clearance (CL) = 9.5 L/h (%RSE 33.1);
     # Table 3 final estimate 9.5 (bootstrap mean 8.2, 95% CI 3-13.2);
     # Datafile S1 $THETA (0, 9.5) ; CL. All three agree.
 
     lvc <- log(38.2)
-    label("Sotalol central volume of distribution at the reference body weight of 104 kg (Vc, L)")
+    label("Sotalol central volume of distribution at the reference body weight of 104 kg (L)")
     # Yellepeddi 2025 Table 2 Central Volume of distribution (Vc) = 38.2 L
     # (%RSE 31.2); Table 3 final estimate 38.2 (bootstrap mean 48.2,
     # 95% CI 25.6-70.6); Datafile S1 $THETA (0, 38) ; V2.
 
     lq <- log(71.3)
-    label("Sotalol intercompartmental clearance (Q, L/h)")
+    label("Sotalol intercompartmental clearance (L/h)")
     # Yellepeddi 2025 Table 2 Intercompartmental clearance (Q) = 71.3 L/h
     # (%RSE 20.3); Table 3 final estimate 71.3 (bootstrap mean 53.8,
     # 95% CI 22.6-83.7); Datafile S1 $THETA (0, 71) ; Q.
 
     lvp <- log(89.1)
-    label("Sotalol peripheral volume of distribution (Vp, L)")
+    label("Sotalol peripheral volume of distribution (L)")
     # Yellepeddi 2025 Table 2 Peripheral volume of distribution (Vp) =
     # 89.1 L (%RSE 25.4); Table 3 final estimate 89.1 (bootstrap mean
     # 102.4, 95% CI 54.7-130.2); Datafile S1 $THETA (0, 89) ; V3.
 
     lfdepot <- log(1.6)
-    label("Oral bioavailability of sotalol relative to intravenous (Foral, unitless)")
+    label("Oral bioavailability of sotalol relative to intravenous (unitless)")
     # Yellepeddi 2025 Table 2 'Oral bioavailability relative to IV
     # (Foral)' = 1.6 (%RSE 28.4) and Datafile S1 $THETA (0, 1.6) ; F1.
     # Table 3 and the Discussion instead report 1.5 (bootstrap mean 1.5,

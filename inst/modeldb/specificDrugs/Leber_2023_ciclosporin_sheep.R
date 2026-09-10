@@ -60,15 +60,15 @@ Leber_2023_ciclosporin_sheep <- function() {
     #
     # No absorption lag was retained for ciclosporin: the paper reports a lag
     # only for tacrolimus, mycophenolate mofetil and everolimus (Results).
-    lcl   <- log(343);            label("Apparent oral clearance (CL/F, L/h)")                   # Leber 2023 Supplementary Table 2 (final adsorption model)
-    lvc   <- fixed(log(826));     label("Apparent central volume of distribution (V1/F, L)")     # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
-    lka   <- fixed(log(0.0076));  label("First-order oral absorption rate constant (KA, 1/h)")   # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
+    lcl   <- log(343);            label("Apparent oral clearance (L/h)")                   # Leber 2023 Supplementary Table 2 (final adsorption model)
+    lvc   <- fixed(log(826));     label("Apparent central volume of distribution (L)")     # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
+    lka   <- fixed(log(0.0076));  label("First-order oral absorption rate constant (1/h)")   # Leber 2023 Supplementary Table 1 (fixed in the step-2 adsorption model)
 
     # CytoSorb saturable adsorption sub-model (Leber 2023 Eq. 2):
     #   CL_CytoSorb(t) = CLmax * (1 - A_CytoSorb(t) / Amax)
     # Both parameters are estimated in step 2.
-    lclmax_hemoadsorption <- log(2.80);  label("Maximum CytoSorb hemoadsorption clearance at zero saturation (CLmax, L/h)")  # Leber 2023 Supplementary Table 2
-    lamax_hemoadsorption  <- log(1.15);  label("Maximum drug amount adsorbable by the CytoSorb cartridge (Amax, mg)")        # Leber 2023 Supplementary Table 2
+    lclmax_hemoadsorption <- log(2.80);  label("Maximum CytoSorb hemoadsorption clearance at zero saturation (L/h)")  # Leber 2023 Supplementary Table 2
+    lamax_hemoadsorption  <- log(1.15);  label("Maximum drug amount adsorbable by the CytoSorb cartridge (mg)")        # Leber 2023 Supplementary Table 2
 
     # Interindividual variability, carried from the step-1 model and held
     # fixed in step 2. Supplementary Table 1 reports CV%; the exponential

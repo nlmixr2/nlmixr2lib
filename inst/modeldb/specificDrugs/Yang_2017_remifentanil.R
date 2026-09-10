@@ -70,8 +70,8 @@ Yang_2017_remifentanil <- function() {
     # estimates and Results final-model equation. Reference subject:
     # female (SEXF = 1) at the cohort-median ECMO pump speed 2350 RPM.
     # Table 2 reports CL in L/h and V in L.
-    lcl <- log(366); label("Clearance for reference female at 2350 RPM (CL, L/h)")    # Table 2: TVCL = 366 L/h
-    lvc <- log(41);  label("Central volume of distribution (V, L)")                   # Table 2: TVV  = 41 L
+    lcl <- log(366); label("Clearance for reference female at 2350 RPM (L/h)")    # Table 2: TVCL = 366 L/h
+    lvc <- log(41);  label("Central volume of distribution (L)")                   # Table 2: TVV  = 41 L
 
     # Covariate effects from Yang 2017 Results final-model equation:
     # CL (L/h) = 366 x 0.502^SEX x (ECMO pump speed / 2350)^2.04

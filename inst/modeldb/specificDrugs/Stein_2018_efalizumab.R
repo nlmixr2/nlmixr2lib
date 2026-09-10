@@ -36,10 +36,10 @@ Stein_2018_efalizumab <- function() {
 
   ini({
     # Drug disposition (Stein and Peletier 2018 Table 1, Efalizumab column)
-    lvc   <- fixed(log(2.4));  label("Central volume of distribution (Vc, L)")                  # Stein and Peletier 2018 Table 1: Vc = 2.4 L
-    lvp   <- fixed(log(3.6));  label("Peripheral volume of distribution (Vp, L)")               # Stein and Peletier 2018 Table 1: Vp = 3.6 L
-    lcl   <- fixed(log(0.46)); label("Linear (nonspecific) clearance (CL, L/day)")              # Stein and Peletier 2018 Table 1: CL = 0.46 L/d
-    lq    <- fixed(log(9.7));  label("Intercompartmental clearance (Q, L/day)")                 # Stein and Peletier 2018 Table 1: Q = 9.7 L/d
+    lvc   <- fixed(log(2.4));  label("Central volume of distribution (L)")                  # Stein and Peletier 2018 Table 1: Vc = 2.4 L
+    lvp   <- fixed(log(3.6));  label("Peripheral volume of distribution (L)")               # Stein and Peletier 2018 Table 1: Vp = 3.6 L
+    lcl   <- fixed(log(0.46)); label("Linear (nonspecific) clearance (L/day)")              # Stein and Peletier 2018 Table 1: CL = 0.46 L/d
+    lq    <- fixed(log(9.7));  label("Intercompartmental clearance (L/day)")                 # Stein and Peletier 2018 Table 1: Q = 9.7 L/d
 
     # Target turnover and binding (QSS approximation; paper Eq. 7)
     lksyn <- fixed(log(8.5));   label("Target synthesis rate (ksyn = Vmax/Vc, nM/day)")          # Stein and Peletier 2018 Table 1: ksyn = Vmax/Vc = 8.5 nM/d

@@ -91,8 +91,8 @@ Solms_2020_BAY94_9027 <- function() {
     # VWF = 110 IU/dL). Volumes in dL and clearances in dL/h match the paper's
     # units. Source: Solms 2020 Table 2 ("Chromogenic assay" column, final
     # model).
-    lcl <- log(1.09); label("Clearance for the reference 49.1 kg LBW and 110 IU/dL VWF patient (CL, dL/h)") # Solms 2020 Table 2: CL = 1.09 dL/h (2.19% RSE; 95% CI 1.04-1.14)
-    lvc <- log(26.2); label("Central volume of distribution for the reference 49.1 kg LBW patient (Vc, dL)") # Solms 2020 Table 2: Vc = 26.2 dL (1.18% RSE; 95% CI 25.6-26.8)
+    lcl <- log(1.09); label("Clearance for the reference 49.1 kg LBW and 110 IU/dL VWF patient (dL/h)") # Solms 2020 Table 2: CL = 1.09 dL/h (2.19% RSE; 95% CI 1.04-1.14)
+    lvc <- log(26.2); label("Central volume of distribution for the reference 49.1 kg LBW patient (dL)") # Solms 2020 Table 2: Vc = 26.2 dL (1.18% RSE; 95% CI 25.6-26.8)
 
     # Covariate effects: power-form scaling for LBW on CL and Vc, and VWF on CL.
     # Form (Solms 2020 Table 2 footnotes b, c):

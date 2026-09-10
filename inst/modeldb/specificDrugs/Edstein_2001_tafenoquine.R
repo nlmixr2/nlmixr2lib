@@ -77,7 +77,7 @@ Edstein_2001_tafenoquine <- function() {
     # population model number 1' -- the final model adopted from the forward /
     # backward covariate development summarised in Table 2). The reported CV %
     # next to each value is the RSE of the point estimate, not the IIV.
-    lka  <- log(0.694) ; label("First-order absorption rate constant (Ka, 1/h)")     # Table 3 theta_3: Ka = 0.694 /h (RSE 12.8 %)
+    lka  <- log(0.694) ; label("First-order absorption rate constant (1/h)")     # Table 3 theta_3: Ka = 0.694 /h (RSE 12.8 %)
     lcl  <- log(3.20)  ; label("Apparent clearance CL/F (L/h)")                       # Table 3 theta_1: CL/F = 3.20 L/h (RSE 2.7 %)
     lvc  <- log(1820)  ; label("Apparent central volume of distribution V/F (L)")     # Table 3 theta_2: V/F = 1820 L (RSE 1.7 %)
 

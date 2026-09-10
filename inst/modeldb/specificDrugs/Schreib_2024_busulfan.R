@@ -223,7 +223,7 @@ Schreib_2024_busulfan <- function() {
     #         + theta_V3 * (Tinf - 3 h)
     # Reference values are TBW = 10 L and Tinf = 3 h.
     # ------------------------------------------------------------------
-    lvc       <- 2.459;  label("log of central volume of distribution at the reference covariate values (V, L)")   # Table 3, theta_V1 = 2.459 (SE 0.0189); untransformed 11.70 L
+    lvc       <- 2.459;  label("log of central volume of distribution at the reference covariate values (L)")   # Table 3, theta_V1 = 2.459 (SE 0.0189); untransformed 11.70 L
     e_tbw_vc  <- 0.931;  label("Exponent of total body water on the central volume (unitless)")                    # Table 3, theta_V2 = 0.931 (SE 0.0233, p < 0.001)
     e_tinf_vc <- 0.226;  label("Effect of infusion duration above 3 h on log central volume (per h)")              # Table 3, theta_V3 = 0.226 (SE 0.0356, p < 0.001)
 

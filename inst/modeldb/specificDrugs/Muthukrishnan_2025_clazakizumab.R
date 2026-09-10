@@ -190,9 +190,9 @@ Muthukrishnan_2025_clazakizumab <- function() {
     # PK from Table 1.
     # =====================================================================
     lkout <- log(0.381); label("First-order hs-CRP elimination rate kout (1/day)")                          # Muthukrishnan 2025 Table 2
-    lkin  <- log(3.76);  label("Zero-order hs-CRP production rate kin ([mg/L]/day) at reference CRP=8.15")  # Muthukrishnan 2025 Table 2
+    lkin  <- log(3.76);  label("Zero-order hs-CRP production rate kin on the log scale at reference CRP = 8.15 (mg/L/day)")  # Muthukrishnan 2025 Table 2
     lic50 <- log(3.39);  label("Clazakizumab IC50 for kin inhibition (ng/mL)")                              # Muthukrishnan 2025 Table 2
-    limax <- fixed(log(1)); label("Maximum fractional inhibition of kin (Imax)")                # Muthukrishnan 2025 Table 2 "1.00 Fixed"
+    limax <- fixed(log(1)); label("Maximum fractional inhibition of kin, Imax, on the log scale (fraction)")                # Muthukrishnan 2025 Table 2 "1.00 Fixed"
     lhill <- log(0.523); label("Hill coefficient on the clazakizumab-vs-kin sigmoid (unitless)")            # Muthukrishnan 2025 Table 2 Hill factor
 
     # Baseline hs-CRP covariate effect on kin.
@@ -218,7 +218,7 @@ Muthukrishnan_2025_clazakizumab <- function() {
     # 72.6% under the same sqrt(exp(sigma^2)-1) presentation used for the
     # IIVs. Back-transforming: sigma^2 = ln(1 + 0.726^2) = 0.42355 so
     # sigma_log = 0.6508. That log-scale SD is what nlmixr2 lnorm() takes.
-    expSd_hsCRP <- 0.6508; label("Log-normal (log-scale additive) residual SD on hs-CRP")  # Muthukrishnan 2025 Table 2 Proportional (%) 72.6 back-transformed via ln(1+CV^2)
+    expSd_hsCRP <- 0.6508; label("Log-normal, log-scale additive, residual SD on hs-CRP (unitless)")  # Muthukrishnan 2025 Table 2 Proportional (%) 72.6 back-transformed via ln(1+CV^2)
   })
 
   model({

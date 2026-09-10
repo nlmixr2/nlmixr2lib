@@ -284,8 +284,8 @@ Sun_2025_colistinSulfate <- function() {
     # half-life of ~47 h. Only the exposure argument discriminates.)
     lcl <- log(2.66);  label("Clearance (CL, L/h) at CrCL 71.40 mL/min")     # Table 2, tvCL 2.66 (RSE 7%; bootstrap median 2.67, 95% CI 2.30-3.04); Eq. 1 leading coefficient, mis-typeset as "266"
     lvc <- log(49.70); label("Central volume of distribution (V1, L) at WT 67.89 kg")  # Table 2, tvV1 49.7 (RSE 5.8%, 95% CI 44.036-55.364; bootstrap median 50.04, 95% CI 44.16-55.26); also the Eq. 2 leading coefficient
-    lq  <- log(1.63);  label("Inter-compartmental clearance (Q, L/h)")       # Table 2, tvQ 1.63 (RSE 19.8%, 95% CI 0.999-2.261; bootstrap median 1.67, 95% CI 0.44-3.67); also Eq. 3
-    lvp <- log(109);   label("Peripheral volume of distribution (V2, L)")    # Table 2, tvV2 109 (RSE 24.8%, 95% CI 56.08-161.92; bootstrap median 103.65, 95% CI 58.18-161.31); also Eq. 4
+    lq  <- log(1.63);  label("Inter-compartmental clearance (L/h)")       # Table 2, tvQ 1.63 (RSE 19.8%, 95% CI 0.999-2.261; bootstrap median 1.67, 95% CI 0.44-3.67); also Eq. 3
+    lvp <- log(109);   label("Peripheral volume of distribution (L)")    # Table 2, tvV2 109 (RSE 24.8%, 95% CI 56.08-161.92; bootstrap median 103.65, 95% CI 58.18-161.31); also Eq. 4
 
     # CAVEAT on the distribution parameters. Q = 1.63 L/h against V2 = 109 L
     # makes the peripheral compartment equilibrate very slowly, so these

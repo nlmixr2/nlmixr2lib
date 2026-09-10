@@ -89,10 +89,10 @@ Jones_2011_PF04878691 <- function() {
     lcl_exp_inf       <- log(1.7);    label("Steady-state apparent clearance per kg body weight (CL_SS = paper CLF, L/h/kg)")              # Table 1 (CLF = 1.7 L/h/kg, %CV 6.8)
     lcl_exp_component  <- log(1.8);    label("Initial offset of the time-varying clearance component per kg (CL_TIME0 = CL0 - CLF, L/h/kg)") # Derived from Table 1 (CL0 = 3.5, CLF = 1.7)
     lcl_exp_kdes     <- log(0.24);   label("Exponential decay rate of the time-varying clearance component (paper DEG, 1/h)")              # Table 1 (DEG = 0.24 1/h, %CV 35)
-    lvc       <- log(3.3);    label("Apparent central volume of distribution per kg body weight (Vc, L/kg)")                        # Table 1 (Vc = 3.3 L/kg, %CV 47)
-    lq        <- log(0.74);   label("Apparent intercompartmental clearance per kg body weight (Q, L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg, %CV 51)
-    lvp       <- log(21);     label("Apparent peripheral volume of distribution per kg body weight (Vp, L/kg)")                     # Table 1 (Vp = 21 L/kg, %CV 17)
-    lka       <- log(0.078);  label("First-order absorption rate constant (ka, 1/h)")                                               # Table 1 (ka = 0.078 1/h, %CV 22)
+    lvc       <- log(3.3);    label("Apparent central volume of distribution per kg body weight (L/kg)")                        # Table 1 (Vc = 3.3 L/kg, %CV 47)
+    lq        <- log(0.74);   label("Apparent intercompartmental clearance per kg body weight (L/h/kg)")                         # Table 1 (Q = 0.74 L/h/kg, %CV 51)
+    lvp       <- log(21);     label("Apparent peripheral volume of distribution per kg body weight (L/kg)")                     # Table 1 (Vp = 21 L/kg, %CV 17)
+    lka       <- log(0.078);  label("First-order absorption rate constant (1/h)")                                               # Table 1 (ka = 0.078 1/h, %CV 22)
 
     # Inter-individual variability. Table 1 reports OM1 (IIV on CLF, here
     # IIV on cl_exp_inf) and OM3 (IIV on ka). OM2 is absent in the source

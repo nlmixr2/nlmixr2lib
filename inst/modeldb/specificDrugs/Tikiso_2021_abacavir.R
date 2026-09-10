@@ -101,7 +101,7 @@ Tikiso_2021_abacavir <- function() {
     lq   <- log(4.808);  label("Apparent inter-compartmental clearance Q/F at 70 kg (L/h)")                                                                                  # Tikiso 2021 Table 4 Q = 1.10 L/h at 9.8 kg, exponent 0.75; 1.10 * 4.371 = 4.808 L/h
     lka  <- log(2.29);   label("First-order absorption rate constant from depot to central, ka (1/h)")                                                                       # Tikiso 2021 Table 4 ka = 2.29 1/h (not weight-scaled)
     lmtt <- log(0.104);  label("Mean absorption transit-chain time MTT for the liquid formulation reference (h)")                                                            # Tikiso 2021 Table 4 MTT = 6.24 min = 0.104 h (liquid reference)
-    lnn  <- log(11.9);   label("Number of absorption transit compartments NN (continuous, dimensionless)")                                                                   # Tikiso 2021 Table 4 NN = 11.9
+    lnn  <- log(11.9);   label("Number of absorption transit compartments NN, estimated on a continuous scale (dimensionless)")                                                                   # Tikiso 2021 Table 4 NN = 11.9
 
     # Allometric exponents (paper-fixed: 0.75 on CL/Q, 1 on Vc/Vp)
     e_wt_cl_q  <- 0.75; label("Allometric exponent on CL and Q (unitless)")                  # Tikiso 2021 Section 2.4 (fixed at 0.75 on disposition clearances)

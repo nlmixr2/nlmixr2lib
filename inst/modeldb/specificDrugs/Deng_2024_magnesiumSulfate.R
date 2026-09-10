@@ -79,8 +79,8 @@ Deng_2024_magnesiumSulfate <- function() {
     # Dose units used here: mg of elemental Mg (multiply g of MgSO4-7H2O by 98.6).
     # Concentration units: mg/L of elemental Mg (administered drug only; see
     # the population notes on the absent endogenous baseline).
-    lcl <- log(2.98);  label("Clearance for the reference subject (CL, L/h)")             # Deng 2024 Table 2 tvCL, 95% CI 1.29-4.62
-    lvc <- log(25.07); label("Volume of distribution for the reference subject (V, L)")   # Deng 2024 Table 2 tvV, 95% CI 23.31-26.82
+    lcl <- log(2.98);  label("Clearance for the reference subject (L/h)")             # Deng 2024 Table 2 tvCL, 95% CI 1.29-4.62
+    lvc <- log(25.07); label("Volume of distribution for the reference subject (L)")   # Deng 2024 Table 2 tvV, 95% CI 23.31-26.82
 
     # Covariate effects from Deng 2024 Table 2 and the final-model equations
     # printed in Results ("The equations for V and CL were as follows").
@@ -120,7 +120,7 @@ Deng_2024_magnesiumSulfate <- function() {
     # paper selected an additive error model over proportional and combined
     # alternatives on AIC/BIC/OFV grounds; the SD is on the mg/L scale of the
     # Fig. 3 visual predictive check.
-    addSd <- 3.65; label("Additive residual error (SD, mg/L)")  # Deng 2024 Table 2 stdev0
+    addSd <- 3.65; label("Additive residual error (mg/L)")  # Deng 2024 Table 2 stdev0
   })
   model({
     # Individual PK parameters, replicating the final-model equations printed

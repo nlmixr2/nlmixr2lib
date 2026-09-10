@@ -76,11 +76,11 @@ Diep_2026_donidalorsen <- function() {
     # healthy volunteer with a body weight of 70 kg receiving donidalorsen
     # 80 mg Q4W subcutaneously into the abdomen or thigh, using a vial and
     # syringe as the drug presentation"), DIS_HAE = INJSITE_ARM = DEVICE_AI = 0.
-    lka <- log(0.952); label("First-order SC absorption rate constant at reference covariates (ka, 1/h; INJSITE_ARM = DEVICE_AI = 0 reference)") # Diep 2026 Table 1 final-model ka = 0.952 1/h
-    lcl <- log(12.8);  label("Apparent clearance at reference WT (CL/F, L/h)")              # Diep 2026 Table 1 final-model CL/F = 12.8 L/h
-    lvc <- log(69.8);  label("Apparent central volume at reference WT (Vc/F, L)")           # Diep 2026 Table 1 final-model Vc/F = 69.8 L
-    lq  <- log(2.58);  label("Apparent intercompartmental clearance at reference WT (Q/F, L/h)") # Diep 2026 Table 1 final-model Q/F = 2.58 L/h
-    lvp <- log(1840);  label("Apparent peripheral volume at reference WT (Vp/F, L)")        # Diep 2026 Table 1 final-model Vp/F = 1840 L
+    lka <- log(0.952); label("First-order SC absorption rate constant at reference covariates (1/h; INJSITE_ARM = DEVICE_AI = 0 reference)") # Diep 2026 Table 1 final-model ka = 0.952 1/h
+    lcl <- log(12.8);  label("Apparent clearance at reference WT (L/h)")              # Diep 2026 Table 1 final-model CL/F = 12.8 L/h
+    lvc <- log(69.8);  label("Apparent central volume at reference WT (L)")           # Diep 2026 Table 1 final-model Vc/F = 69.8 L
+    lq  <- log(2.58);  label("Apparent intercompartmental clearance at reference WT (L/h)") # Diep 2026 Table 1 final-model Q/F = 2.58 L/h
+    lvp <- log(1840);  label("Apparent peripheral volume at reference WT (L)")        # Diep 2026 Table 1 final-model Vp/F = 1840 L
 
     # ---- Covariate effects on PK (Diep 2026 Table 1 footnotes a-e) ----
     # Functional forms (paper footnotes, with WTKG -> WT and explicit indicators):
@@ -112,10 +112,10 @@ Diep_2026_donidalorsen <- function() {
     # Functional forms (paper footnotes):
     #   BL   = TVBL   * (1 + e_dis_hae_rbase   * DIS_HAE)
     #   IC50 = TVIC50 * (1 + e_dis_hae_ic50 * DIS_HAE)
-    lrbase   <- log(139);     label("Baseline plasma prekallikrein at reference DIS_HAE = 0 (BL, mg/L)")               # Diep 2026 Table 2 final-model BL = 139 mg/L
-    lkout <- log(0.00266); label("First-order PKK loss rate constant (kout, 1/h)")                                  # Diep 2026 Table 2 final-model kout = 0.00266 1/h
-    imax  <- 0.992;        label("Maximum fractional inhibition of PKK production by donidalorsen (Imax, unitless)") # Diep 2026 Table 2 final-model Imax = 0.992
-    lic50 <- log(0.158);   label("Plasma donidalorsen concentration yielding half-maximum inhibition (IC50, ng/mL)") # Diep 2026 Table 2 final-model IC50 = 0.158 ng/mL
+    lrbase   <- log(139);     label("Baseline plasma prekallikrein at reference DIS_HAE = 0 (mg/L)")               # Diep 2026 Table 2 final-model BL = 139 mg/L
+    lkout <- log(0.00266); label("First-order PKK loss rate constant (1/h)")                                  # Diep 2026 Table 2 final-model kout = 0.00266 1/h
+    imax  <- 0.992;        label("Maximum fractional inhibition of PKK production by donidalorsen (unitless)") # Diep 2026 Table 2 final-model Imax = 0.992
+    lic50 <- log(0.158);   label("Plasma donidalorsen concentration yielding half-maximum inhibition (ng/mL)") # Diep 2026 Table 2 final-model IC50 = 0.158 ng/mL
 
     # ---- Covariate effects on PD (Diep 2026 Table 2 footnotes a-b) ----
     e_dis_hae_rbase   <- -0.132; label("Linear effect of HAE-patient indicator on BL (fraction)")   # Diep 2026 Table 2 Estimate; multiplier 1 - 0.132 = 0.868 for HAE

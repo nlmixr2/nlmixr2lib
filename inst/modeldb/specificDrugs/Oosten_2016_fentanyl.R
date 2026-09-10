@@ -63,9 +63,9 @@ Oosten_2016_fentanyl <- function() {
     # Structural PK parameters reported at the reference 70 kg adult subject
     # (Oosten 2016 Table 2). Bootstrap mean and 95% CI given alongside the
     # NONMEM estimate.
-    lka_sc     <- log(0.0358);     label("Subcutaneous absorption rate constant (Ka_sc, 1/h)")              # Oosten 2016 Table 2: ka_sc = 0.0358 (RSE 24.4%); bootstrap mean 0.0374 (95% CI 0.0248-0.0555)
-    lka_td     <- log(0.0135);     label("Transdermal absorption rate constant (Ka_td, 1/h)")               # Oosten 2016 Table 2: ka_td = 0.0135 (RSE 16.8%); bootstrap mean 0.0140 (95% CI 0.0105-0.0188)
-    llag_td    <- log(4.73);       label("Transdermal absorption lag time (Tlag_td, h)")                    # Oosten 2016 Table 2: t_lag_td = 4.73 (RSE 21.2%); bootstrap mean 4.65 (95% CI 2.25-6.98)
+    lka_sc     <- log(0.0358);     label("Subcutaneous absorption rate constant (1/h)")              # Oosten 2016 Table 2: ka_sc = 0.0358 (RSE 24.4%); bootstrap mean 0.0374 (95% CI 0.0248-0.0555)
+    lka_td     <- log(0.0135);     label("Transdermal absorption rate constant (1/h)")               # Oosten 2016 Table 2: ka_td = 0.0135 (RSE 16.8%); bootstrap mean 0.0140 (95% CI 0.0105-0.0188)
+    llag_td    <- log(4.73);       label("Transdermal absorption lag time (h)")                    # Oosten 2016 Table 2: t_lag_td = 4.73 (RSE 21.2%); bootstrap mean 4.65 (95% CI 2.25-6.98)
     lcl        <- log(49.6);       label("Apparent clearance CL/F at 70 kg (L/h)")                          # Oosten 2016 Table 2: CL/F at 70 kg = 49.6 (RSE 9.36%); bootstrap mean 50.4 (95% CI 40.9-61.6)
     lvc        <- fixed(log(280)); label("Apparent volume of distribution V/F at 70 kg (L)")                # Oosten 2016 Table 2 + Results: V70kg/F fixed to 280 L (citation [25] of Oosten 2016); sensitivity analysis with V/F +/-50% showed insensitivity of other parameters
     lfdepot_td <- fixed(log(1));   label("Transdermal bioavailability (typical fraction; F_sc = 1 anchor)") # Oosten 2016 Table 2: the typical F_td is not separately reported (only the IIV on F_td is listed); per the standard popPK convention for a reference route, F_td is anchored at 1 at the population level with between-subject variability allowed (etalfdepot_td below). F for the subcutaneous route is fixed at 1 implicitly by leaving f(depot) unset.

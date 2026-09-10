@@ -97,10 +97,10 @@ Truong_2025_tezacaftor <- function() {
     # 2020;6(2):275-286 (doi:10.1007/s41030-020-00124-7), whose tezacaftor
     # compound file carries ka = 0.894 /h - the same value Truong 2025
     # prints. It is marked "(fix)" in Table 2.
-    lka <- fixed(log(0.894)); label("First-order absorption rate constant (Ka, 1/h)")     # Truong 2025 Table 2: Ka = 0.894 (fix)
+    lka <- fixed(log(0.894)); label("First-order absorption rate constant (1/h)")     # Truong 2025 Table 2: Ka = 0.894 (fix)
 
-    lcl <- log(1.32); label("Apparent oral clearance at 70 kg (CL/F, L/h)")               # Truong 2025 Table 2: CL/F = 1.32 L/h/70kg (3.8% RSE)
-    lvc <- log(29.3); label("Apparent volume of distribution at 70 kg (V/F, L)")          # Truong 2025 Table 2: V/F = 29.3 L/70kg (6.8% RSE)
+    lcl <- log(1.32); label("Apparent oral clearance at 70 kg (L/h)")               # Truong 2025 Table 2: CL/F = 1.32 L/h/70kg (3.8% RSE)
+    lvc <- log(29.3); label("Apparent volume of distribution at 70 kg (L)")          # Truong 2025 Table 2: V/F = 29.3 L/70kg (6.8% RSE)
 
     # Allometric exponents on body weight, held fixed at the theoretical
     # values by the source authors. Truong 2025 Results 3.2: "According to

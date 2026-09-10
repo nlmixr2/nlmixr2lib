@@ -38,23 +38,23 @@ Berges_2015_ozanezumab <- function() {
     # Q : 14.6 mL/h * 24 h/day / 1000 mL/L = 0.3504 L/day
     # Vc: 3310 mL / 1000 = 3.31 L
     # Vp: 3650 mL / 1000 = 3.65 L
-    lcl <- log(0.2808); label("Elimination clearance (CL, L/day)")              # Berges 2015 Table 2: CL = 11.7 mL/h (RSE 4.2%)
-    lvc <- log(3.31);   label("Central volume of distribution (Vc, L)")         # Berges 2015 Table 2: Vc = 3310 mL (RSE 4.3%)
-    lq  <- log(0.3504); label("Inter-compartmental clearance (Q, L/day)")       # Berges 2015 Table 2: Q = 14.6 mL/h (RSE 8.6%)
-    lvp <- log(3.65);   label("Peripheral volume of distribution (Vp, L)")      # Berges 2015 Table 2: Vp = 3650 mL (RSE 5.0%)
+    lcl <- log(0.2808); label("Elimination clearance (L/day)")              # Berges 2015 Table 2: CL = 11.7 mL/h (RSE 4.2%)
+    lvc <- log(3.31);   label("Central volume of distribution (L)")         # Berges 2015 Table 2: Vc = 3310 mL (RSE 4.3%)
+    lq  <- log(0.3504); label("Inter-compartmental clearance (L/day)")       # Berges 2015 Table 2: Q = 14.6 mL/h (RSE 8.6%)
+    lvp <- log(3.65);   label("Peripheral volume of distribution (L)")      # Berges 2015 Table 2: Vp = 3650 mL (RSE 5.0%)
 
     # Effect-compartment delay (Berges 2015 Eq. 3; Table 2)
     # ke0 = 0.00359 1/h * 24 h/day = 0.08616 1/day
-    lke0 <- log(0.08616); label("Effect-compartment equilibration rate (ke0, 1/day)") # Berges 2015 Table 2: ke0 = 0.00359 1/h (RSE 14%)
+    lke0 <- log(0.08616); label("Effect-compartment equilibration rate (1/day)") # Berges 2015 Table 2: ke0 = 0.00359 1/h (RSE 14%)
 
     # PD parameters - sigmoid Emax model on the proportion (percent) of membrane Nogo-A
     # co-localized with ozanezumab (Berges 2015 Eq. 4; Table 2). Asymptote is Emax (100%
     # FIXED); baseline at Ce = 0 is E0. The model interpolates E = E0 + (Emax - E0) * R,
     # where R = Ce^gamma / (EC50^gamma + Ce^gamma), so that E(0) = E0 and E(inf) = Emax.
-    le0    <- log(6.04);       label("Baseline % membrane Nogo-A co-localized with drug at Ce=0 (E0, %)")   # Berges 2015 Table 2: E0 = 6.04% (RSE 26%)
-    lemax  <- fixed(log(100)); label("Maximal % membrane Nogo-A co-localized with drug (Emax, %)")          # Berges 2015 Table 2: Emax = 100% (Fixed)
-    lec50  <- log(24.9);       label("Effect-site concentration giving half-maximal response (EC50, ug/mL)") # Berges 2015 Table 2: EC50 = 24.9 ug/mL (RSE 10%)
-    lgamma <- log(1.94);       label("Hill coefficient for sigmoid Emax (gamma, unitless)")                  # Berges 2015 Table 2: gamma = 1.94 (RSE 14%)
+    le0    <- log(6.04);       label("Baseline % membrane Nogo-A co-localized with drug at Ce=0 (%)")   # Berges 2015 Table 2: E0 = 6.04% (RSE 26%)
+    lemax  <- fixed(log(100)); label("Maximal % membrane Nogo-A co-localized with drug (%)")          # Berges 2015 Table 2: Emax = 100% (Fixed)
+    lec50  <- log(24.9);       label("Effect-site concentration giving half-maximal response (ug/mL)") # Berges 2015 Table 2: EC50 = 24.9 ug/mL (RSE 10%)
+    lgamma <- log(1.94);       label("Hill coefficient for sigmoid Emax (unitless)")                  # Berges 2015 Table 2: gamma = 1.94 (RSE 14%)
 
     # IIV - between-subject variance on log(CL) and log(Vc) only (Berges 2015 Table 2).
     # No IIV on Q, Vp, ke0, or any PD parameter (paper Methods: "between-subject variance

@@ -103,9 +103,9 @@ Wurthwein_2025_pegasparaginase_hrPostinduction <- function() {
     # ESM Table S7, 'Final covariate model' column (model 354103). Values are
     # quoted for a child with BSA = 1 m^2; the BSA factors in model() are
     # renormalised to 1 at BSA = 1 m^2 so these are used exactly as printed.
-    lvc <- log(1.73);  label("Volume of the serum compartment shared by all 14 species, for a child with BSA 1 m^2 (V, L)")                    # ESM Table S7 (V 1.73, RSE 1.4%; bootstrap 1.73, 95% CI 1.66-1.80)
-    lcl <- log(0.127); label("Initial clearance of fully PEGylated asparaginase, for a child with BSA 1 m^2 (CLinitial, L/day)")               # ESM Table S7 (CLinitial 0.127, RSE 1.4%; bootstrap 0.127, 95% CI 0.122-0.132)
-    lq  <- log(0.960); label("Intercompartmental clearance driving the de-PEGylation transit chain, for a child with BSA 1 m^2 (Qtr, L/day)")   # ESM Table S7 (Qrt 0.960, RSE 2.2%; bootstrap 0.958, 95% CI 0.908-1.01)
+    lvc <- log(1.73);  label("Volume of the serum compartment shared by all 14 species, for a child with BSA 1 m^2 (L)")                    # ESM Table S7 (V 1.73, RSE 1.4%; bootstrap 1.73, 95% CI 1.66-1.80)
+    lcl <- log(0.127); label("Initial clearance of fully PEGylated asparaginase, for a child with BSA 1 m^2 (L/day)")               # ESM Table S7 (CLinitial 0.127, RSE 1.4%; bootstrap 0.127, 95% CI 0.122-0.132)
+    lq  <- log(0.960); label("Intercompartmental clearance driving the de-PEGylation transit chain, for a child with BSA 1 m^2 (L/day)")   # ESM Table S7 (Qrt 0.960, RSE 2.2%; bootstrap 0.958, 95% CI 0.908-1.01)
 
     # ---- Body surface area -------------------------------------------------
     e_bsa_vc   <- 1.61; label("Linear slope of BSA on V, centred on 0.79 m^2 (1/m^2)")                  # ESM Table S7 (FBSA on V 1.61, RSE 2.2%; bootstrap 1.61, 95% CI 1.54-1.68)

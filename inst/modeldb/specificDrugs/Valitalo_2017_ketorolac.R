@@ -91,21 +91,21 @@ Valitalo_2017_ketorolac <- function() {
   ini({
     # R-ketorolac structural parameters (Valitalo 2017 Table 2 final model column,
     # typical values for a 71-kg nonpregnant female: WAD = 0, MS = 0).
-    lcl_r_enant  <- log(1.12)  ; label("R-ketorolac clearance for a 71-kg nonpregnant female (CL_R, L/h)")        # Valitalo 2017 Table 2 final, CL_R = 1.12 (RSE 5.95%)
-    lvc_r_enant  <- log(3.4)   ; label("R-ketorolac central volume for a 71-kg nonpregnant female (V1_R, L)")     # Valitalo 2017 Table 2 final, V1_R = 3.4 (RSE 5.99%)
-    lq_r_enant   <- log(3.86)  ; label("R-ketorolac shallow inter-compartmental clearance (Q1_R, L/h)")            # Valitalo 2017 Table 2 final, Q1_R = 3.86 (RSE 9.94%)
-    lvp_r_enant  <- log(2.29)  ; label("R-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (V2_R, L)")  # Valitalo 2017 Table 2 final, V2_R = 2.29 (RSE 9.09%)
-    lq2_r_enant  <- log(0.58)  ; label("R-ketorolac deep inter-compartmental clearance (Q2_R, L/h)")               # Valitalo 2017 Table 2 final, Q2_R = 0.58 (RSE 11.8%)
-    lvp2_r_enant <- log(4.88)  ; label("R-ketorolac deep peripheral volume for a 71-kg nonpregnant female (V3_R, L)")  # Valitalo 2017 Table 2 final, V3_R = 4.88 (RSE 20.1%)
+    lcl_r_enant  <- log(1.12)  ; label("R-ketorolac clearance for a 71-kg nonpregnant female (L/h)")        # Valitalo 2017 Table 2 final, CL_R = 1.12 (RSE 5.95%)
+    lvc_r_enant  <- log(3.4)   ; label("R-ketorolac central volume for a 71-kg nonpregnant female (L)")     # Valitalo 2017 Table 2 final, V1_R = 3.4 (RSE 5.99%)
+    lq_r_enant   <- log(3.86)  ; label("R-ketorolac shallow inter-compartmental clearance (L/h)")            # Valitalo 2017 Table 2 final, Q1_R = 3.86 (RSE 9.94%)
+    lvp_r_enant  <- log(2.29)  ; label("R-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (L)")  # Valitalo 2017 Table 2 final, V2_R = 2.29 (RSE 9.09%)
+    lq2_r_enant  <- log(0.58)  ; label("R-ketorolac deep inter-compartmental clearance (L/h)")               # Valitalo 2017 Table 2 final, Q2_R = 0.58 (RSE 11.8%)
+    lvp2_r_enant <- log(4.88)  ; label("R-ketorolac deep peripheral volume for a 71-kg nonpregnant female (L)")  # Valitalo 2017 Table 2 final, V3_R = 4.88 (RSE 20.1%)
 
     # S-ketorolac structural parameters (Valitalo 2017 Table 2 final model column,
     # typical values for a 71-kg nonpregnant female).
-    lcl_s_enant  <- log(3.96)  ; label("S-ketorolac clearance for a 71-kg nonpregnant female (CL_S, L/h)")        # Valitalo 2017 Table 2 final, CL_S = 3.96 (RSE 5.7%)
-    lvc_s_enant  <- log(3.74)  ; label("S-ketorolac central volume for a 71-kg nonpregnant female (V1_S, L)")     # Valitalo 2017 Table 2 final, V1_S = 3.74 (RSE 6.95%)
-    lq_s_enant   <- log(20)    ; label("S-ketorolac shallow inter-compartmental clearance (Q1_S, L/h)")            # Valitalo 2017 Table 2 final, Q1_S = 20 (RSE 10.7%)
-    lvp_s_enant  <- log(3.86)  ; label("S-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (V2_S, L)")  # Valitalo 2017 Table 2 final, V2_S = 3.86 (RSE 8.62%)
-    lq2_s_enant  <- log(1.3)   ; label("S-ketorolac deep inter-compartmental clearance (Q2_S, L/h)")               # Valitalo 2017 Table 2 final, Q2_S = 1.3 (RSE 20.5%)
-    lvp2_s_enant <- log(3.3)   ; label("S-ketorolac deep peripheral volume for a 71-kg nonpregnant female (V3_S, L)")  # Valitalo 2017 Table 2 final, V3_S = 3.3 (RSE 9.71%)
+    lcl_s_enant  <- log(3.96)  ; label("S-ketorolac clearance for a 71-kg nonpregnant female (L/h)")        # Valitalo 2017 Table 2 final, CL_S = 3.96 (RSE 5.7%)
+    lvc_s_enant  <- log(3.74)  ; label("S-ketorolac central volume for a 71-kg nonpregnant female (L)")     # Valitalo 2017 Table 2 final, V1_S = 3.74 (RSE 6.95%)
+    lq_s_enant   <- log(20)    ; label("S-ketorolac shallow inter-compartmental clearance (L/h)")            # Valitalo 2017 Table 2 final, Q1_S = 20 (RSE 10.7%)
+    lvp_s_enant  <- log(3.86)  ; label("S-ketorolac shallow peripheral volume for a 71-kg nonpregnant female (L)")  # Valitalo 2017 Table 2 final, V2_S = 3.86 (RSE 8.62%)
+    lq2_s_enant  <- log(1.3)   ; label("S-ketorolac deep inter-compartmental clearance (L/h)")               # Valitalo 2017 Table 2 final, Q2_S = 1.3 (RSE 20.5%)
+    lvp2_s_enant <- log(3.3)   ; label("S-ketorolac deep peripheral volume for a 71-kg nonpregnant female (L)")  # Valitalo 2017 Table 2 final, V3_S = 3.3 (RSE 9.71%)
 
     # Allometric weight exponents (estimated; identical for both enantiomers).
     e_wt_cl    <- 0.536  ; label("Body-weight allometric exponent on CL (shared between R- and S-enantiomers)")  # Valitalo 2017 Table 2 final, WT_CL = 0.536 (RSE 36.5%)

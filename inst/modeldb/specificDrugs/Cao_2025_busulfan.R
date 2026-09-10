@@ -146,10 +146,10 @@ Cao_2025_busulfan <- function() {
   ini({
     # Structural parameters, standardised to a 70 kg adult (Table 2; identical to
     # the Supplementary Text S2 $THETA block, records 1-4).
-    lcl <- log(9.57);  label("Typical clearance at the adult reference size (CL, L/h)")                          # Table 2 / Text S2 $THETA(1)
-    lvc <- log(28.2);  label("Typical central volume of distribution at the adult reference size (Vc, L)")       # Table 2 / Text S2 $THETA(2)
-    lq  <- log(8.16);  label("Typical intercompartmental clearance at the adult reference size (Q, L/h)")        # Table 2 / Text S2 $THETA(3)
-    lvp <- log(16.1);  label("Typical peripheral volume of distribution at the adult reference size (Vp, L)")    # Table 2 / Text S2 $THETA(4)
+    lcl <- log(9.57);  label("Typical clearance at the adult reference size (L/h)")                          # Table 2 / Text S2 $THETA(1)
+    lvc <- log(28.2);  label("Typical central volume of distribution at the adult reference size (L)")       # Table 2 / Text S2 $THETA(2)
+    lq  <- log(8.16);  label("Typical intercompartmental clearance at the adult reference size (L/h)")        # Table 2 / Text S2 $THETA(3)
+    lvp <- log(16.1);  label("Typical peripheral volume of distribution at the adult reference size (L)")    # Table 2 / Text S2 $THETA(4)
 
     # Fat-mass fractions defining parameter-specific normal fat mass. Estimated
     # here (unlike Lawson 2022, which fixed them a priori from McCune 2014).

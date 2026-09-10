@@ -62,18 +62,18 @@ Ngamprasertwong_2016_propofol_sheep <- function() {
     # Maternal clearance (CL) is parameterised via the normalised power
     # model CL = theta1 * (HR/158)^theta2 (Table 2). theta1 is the
     # reference-subject CL at HR = 158 beats/min.
-    lcl     <- log(4.17);    label("Maternal clearance at HR=158 bpm (CL, L/min)")           # Table 2: theta1 = 4.17 (RSE 8.4 percent)
-    lvc     <- log(37.7);    label("Maternal central volume of distribution (Vc, L)")         # Table 2: Vc = 37.7 (RSE 8.0 percent)
-    lq      <- log(1.22);    label("Maternal inter-compartmental clearance (Q, L/min)")       # Table 2: Q = 1.22 (RSE 21.6 percent)
-    lvp     <- log(60.8);    label("Maternal peripheral volume of distribution (Vp, L)")      # Table 2: Vp = 60.8 (RSE 21.9 percent)
-    lqmf    <- log(0.0138);  label("Maternal-fetal inter-compartmental clearance (QM-F, L/min)") # Table 2: QM-F = 0.0138 (RSE 26.5 percent); units row in the source PDF lists '(min)' which is a typo for 'L/min' per the Fig 3 caption
-    lvfetus <- log(0.144);   label("Fetal volume of distribution (VFetus, L)")                # Table 2: VFetus = 0.144 (RSE 6.5 percent)
+    lcl     <- log(4.17);    label("Maternal clearance at HR=158 bpm (L/min)")           # Table 2: theta1 = 4.17 (RSE 8.4 percent)
+    lvc     <- log(37.7);    label("Maternal central volume of distribution (L)")         # Table 2: Vc = 37.7 (RSE 8.0 percent)
+    lq      <- log(1.22);    label("Maternal inter-compartmental clearance (L/min)")       # Table 2: Q = 1.22 (RSE 21.6 percent)
+    lvp     <- log(60.8);    label("Maternal peripheral volume of distribution (L)")      # Table 2: Vp = 60.8 (RSE 21.9 percent)
+    lqmf    <- log(0.0138);  label("Maternal-fetal inter-compartmental clearance (L/min)") # Table 2: QM-F = 0.0138 (RSE 26.5 percent); units row in the source PDF lists '(min)' which is a typo for 'L/min' per the Fig 3 caption
+    lvfetus <- log(0.144);   label("Fetal volume of distribution (L)")                # Table 2: VFetus = 0.144 (RSE 6.5 percent)
 
     # Covariate effect (Table 2 equation footer): CL = theta1 * (HR/158)^theta2.
     # Reference HR = 158 beats/min is the population-level normaliser written
     # into the Table 2 equation; the per-subject median HR used as the typical
     # value in the Results narrative is 135 beats/min (see covariateData[[HR]]$notes).
-    e_hr_cl <- 0.764;        label("Power exponent of (HR/158) on maternal CL (theta2, unitless)") # Table 2: theta2 = 0.764 (RSE 28.3 percent)
+    e_hr_cl <- 0.764;        label("Power exponent of (HR/158) on maternal CL (unitless)") # Table 2: theta2 = 0.764 (RSE 28.3 percent)
 
     # IIV (log-normal). NONMEM reports the %CV directly under
     # 'Inter-individual variability (% CV)' in Table 2; the internal

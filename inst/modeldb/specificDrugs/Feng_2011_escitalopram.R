@@ -79,11 +79,11 @@ Feng_2011_escitalopram <- function() {
     # (KA, CL, V2, Q, V3) per the Methods: "the NONMEM program
     # (two-compartment, ADVAN4 TRANS4)". Data are oral-only, so CL and the
     # volumes are apparent (CL/F, V/F) although Feng 2011 labels them CL, V2, V3.
-    lka <- fixed(log(0.16));  label("Absorption rate constant (Ka, 1/h)")                          # Feng 2011 Table 2, row Ka (/h) = 0.16
-    lcl <- fixed(log(24.5));  label("Apparent oral clearance (CL/F, L/h)")                         # Feng 2011 Table 2, row CL (L/h) = 24.5
-    lvc <- fixed(log(417));   label("Apparent central volume of distribution (V2/F, L)")           # Feng 2011 Table 2, row V2 (L) = 417
-    lq  <- fixed(log(35.7));  label("Apparent inter-compartmental clearance (Q/F, L/h)")           # Feng 2011 Table 2, row Q (L/h) = 35.7
-    lvp <- fixed(log(541));   label("Apparent peripheral volume of distribution (V3/F, L)")        # Feng 2011 Table 2, row V3 (L) = 541
+    lka <- fixed(log(0.16));  label("Absorption rate constant (1/h)")                          # Feng 2011 Table 2, row Ka (/h) = 0.16
+    lcl <- fixed(log(24.5));  label("Apparent oral clearance (L/h)")                         # Feng 2011 Table 2, row CL (L/h) = 24.5
+    lvc <- fixed(log(417));   label("Apparent central volume of distribution (L)")           # Feng 2011 Table 2, row V2 (L) = 417
+    lq  <- fixed(log(35.7));  label("Apparent inter-compartmental clearance (L/h)")           # Feng 2011 Table 2, row Q (L/h) = 35.7
+    lvp <- fixed(log(541));   label("Apparent peripheral volume of distribution (L)")        # Feng 2011 Table 2, row V3 (L) = 541
 
     # Inter-individual variability. Feng 2011 states the IIV terms are
     # "log-normally distributed, with a mean of zero and variance of omega^2"

@@ -92,11 +92,11 @@ Truong_2025_elexacaftor <- function() {
     # (doi:10.1007/s41030-020-00124-7), whose elexacaftor compound file
     # carries ka = 0.59 /h and Tlag = 2.17 h - the same values Truong 2025
     # prints. Both are marked "(fix)" in Table 2.
-    ltlag <- fixed(log(2.17)); label("Absorption lag time (Tlag, h)")                    # Truong 2025 Table 2: Tlag = 2.17 (fix)
-    lka   <- fixed(log(0.59)); label("First-order absorption rate constant (Ka, 1/h)")   # Truong 2025 Table 2: Ka = 0.59 (fix)
+    ltlag <- fixed(log(2.17)); label("Absorption lag time (h)")                    # Truong 2025 Table 2: Tlag = 2.17 (fix)
+    lka   <- fixed(log(0.59)); label("First-order absorption rate constant (1/h)")   # Truong 2025 Table 2: Ka = 0.59 (fix)
 
-    lcl <- log(1.57); label("Apparent oral clearance at 70 kg (CL/F, L/h)")              # Truong 2025 Table 2: CL/F = 1.57 L/h/70kg (3.9% RSE)
-    lvc <- log(56.1); label("Apparent volume of distribution at 70 kg (V/F, L)")         # Truong 2025 Table 2: V/F = 56.1 L/70kg (9.9% RSE)
+    lcl <- log(1.57); label("Apparent oral clearance at 70 kg (L/h)")              # Truong 2025 Table 2: CL/F = 1.57 L/h/70kg (3.9% RSE)
+    lvc <- log(56.1); label("Apparent volume of distribution at 70 kg (L)")         # Truong 2025 Table 2: V/F = 56.1 L/70kg (9.9% RSE)
 
     # Allometric exponents on body weight, held fixed at the theoretical
     # values by the source authors. Truong 2025 Results 3.2: "According to

@@ -158,12 +158,12 @@ Setiawan_2023_ampicillin <- function() {
     lvc <- log(12.6);  label("Central volume of distribution (L)")
     # Table 2, ampicillin V mean = 12.6 L (SD 2.16, CV 17.2%, median 12.7); also Abstract "volumes of distribution were 12.6 L"
 
-    lk12 <- log(0.90); label("Transfer rate constant central -> peripheral1 (KCP, 1/h)")
+    lk12 <- log(0.90); label("Transfer rate constant central -> peripheral1 (1/h)")
     # Table 2, ampicillin KCP mean = 0.90 (SD 0.78, CV 86.6%, median 0.44). Table 2 labels KCP/KPC
     # "(L/h)"; the same table's own footnote calls them "the rate constant from the central
     # compartment to the peripheral compartment", so the unit is 1/h, not L/h -- see vignette Errata.
 
-    lk21 <- log(1.17); label("Transfer rate constant peripheral1 -> central (KPC, 1/h)")
+    lk21 <- log(1.17); label("Transfer rate constant peripheral1 -> central (1/h)")
     # Table 2, ampicillin KPC. CORRECTED from the printed mean of 0.17 to 1.17. The printed row is
     # internally impossible: (i) for a non-negative parameter Markov's inequality forces
     # mean >= median/2 = 1.11/2 = 0.555, and 0.17 < 0.555; (ii) Pmetrics reports CV% = SD/mean, and

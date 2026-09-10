@@ -210,8 +210,8 @@ Han_2025_sufentanil_pbpk <- function() {
     kp_stomach <- fixed(5.70);        label("sufentanil stomach:plasma partition coefficient Kt:p (unitless)")   # Table S1, Stomach
     kp_gut     <- fixed(5.70);        label("sufentanil intestine:plasma partition coefficient Kt:p (unitless)") # Table S1, Intestine (all five gut-wall segments)
     kp_other   <- fixed(0.001);   label("sufentanil rest-of-body:plasma partition coefficient Kt:p (unitless)")  # Table S1, ROB (footnote a: assumed, not calculated)
-    lbpr       <- fixed(log(0.74));   label("sufentanil blood:plasma concentration ratio Rb (log, unitless)")         # Table S1, Rb [ref 11]
-    lfu_p      <- fixed(log(0.075));  label("sufentanil fraction unbound in adult plasma (log, unitless)")            # Table S1, fu,p [ref 11]
+    lbpr       <- fixed(log(0.74));   label("sufentanil blood:plasma concentration ratio Rb (unitless)")         # Table S1, Rb [ref 11]
+    lfu_p      <- fixed(log(0.075));  label("sufentanil fraction unbound in adult plasma (unitless)")            # Table S1, fu,p [ref 11]
     lcl_int_h  <- fixed(log(0.934));  label("sufentanil CYP3A4 hepatic intrinsic clearance (log mL/min/mg microsomal protein)")  # Table S1, CLint [ref 20]; back-calculated from in vivo hepatic clearance via Eq S7 (Table S1 footnote)
     # Table S1 reports "/" for the sufentanil effective permeability: Han 2025
     # never simulate an oral sufentanil dose, and every data set in Table S11 is

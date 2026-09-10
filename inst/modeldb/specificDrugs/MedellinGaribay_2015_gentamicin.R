@@ -153,13 +153,13 @@ MedellinGaribay_2015_gentamicin <- function() {
     #     Vc = theta2 * BW
     # Q (theta3) and Vp (theta4) are absolute (L/h and L respectively) and are
     # not weight-scaled in the published parameterisation.
-    lcl <- log(0.12);   label("Body-weight coefficient on CL (theta1, L/h per kg BW)")     # Table 3 theta1 = 0.12 +/- 0.01 L/h/kg
-    lvc <- log(0.35);   label("Body-weight coefficient on Vc (theta2, L per kg BW)")       # Table 3 theta2 = 0.35 +/- 0.02 L/kg
-    lq  <- log(0.23);   label("Intercompartmental clearance Q (theta3, L/h)")              # Table 3 theta3 = 0.23 +/- 0.05 L/h
-    lvp <- log(2.3);    label("Peripheral volume of distribution Vp (theta4, L)")          # Table 3 theta4 = 2.3 +/- 1.0 L
+    lcl <- log(0.12);   label("Body-weight coefficient on CL (L/h per kg BW)")     # Table 3 theta1 = 0.12 +/- 0.01 L/h/kg
+    lvc <- log(0.35);   label("Body-weight coefficient on Vc (L per kg BW)")       # Table 3 theta2 = 0.35 +/- 0.02 L/kg
+    lq  <- log(0.23);   label("Intercompartmental clearance Q (L/h)")              # Table 3 theta3 = 0.23 +/- 0.05 L/h
+    lvp <- log(2.3);    label("Peripheral volume of distribution Vp (L)")          # Table 3 theta4 = 2.3 +/- 1.0 L
 
     # Additive CLCR effect on CL (Table 3 footnote b, theta5).
-    e_crcl_cl <- 0.06;  label("Additive CLCR contribution to CL (theta5, L/h per CLCR/75)") # Table 3 theta5 = 0.06 +/- 0.11 L/h
+    e_crcl_cl <- 0.06;  label("Additive CLCR contribution to CL (L/h per CLCR/75)") # Table 3 theta5 = 0.06 +/- 0.11 L/h
 
     # Inter-individual variability (Medellin-Garibay 2015 Table 3 IIV block;
     # reported as CV% in the source). Convert CV% to log-scale variance for

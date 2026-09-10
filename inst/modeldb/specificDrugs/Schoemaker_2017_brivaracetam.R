@@ -70,9 +70,9 @@ Schoemaker_2017_brivaracetam <- function() {
     # Table 1). All clearance and volume terms are apparent (X/F) because
     # the study used oral solution and no IV reference arm; bioavailability
     # is not separately identifiable.
-    lka <- log(1.84);  label("First-order absorption rate constant (Ka, 1/h)")               # Schoemaker 2017 Table 1: Ka = 1.84 (95% CI 0.91/2.78); bootstrap median 1.83
-    lcl <- log(3.63);  label("Apparent oral clearance at 50 kg LBW reference (CL/F, L/h)")   # Schoemaker 2017 Table 1: CL/F = 3.63 (95% CI 3.42/3.85); bootstrap median 3.62
-    lvc <- log(47.8);  label("Apparent central volume at 50 kg LBW reference (V/F, L)")      # Schoemaker 2017 Table 1: V/F = 47.8 (95% CI 43.1/52.5); bootstrap median 47.6
+    lka <- log(1.84);  label("First-order absorption rate constant (1/h)")               # Schoemaker 2017 Table 1: Ka = 1.84 (95% CI 0.91/2.78); bootstrap median 1.83
+    lcl <- log(3.63);  label("Apparent oral clearance at 50 kg LBW reference (L/h)")   # Schoemaker 2017 Table 1: CL/F = 3.63 (95% CI 3.42/3.85); bootstrap median 3.62
+    lvc <- log(47.8);  label("Apparent central volume at 50 kg LBW reference (L)")      # Schoemaker 2017 Table 1: V/F = 47.8 (95% CI 43.1/52.5); bootstrap median 47.6
 
     # Allometric exponents on lean body weight (theoretical values held
     # fixed by the source authors per Anderson & Holford 2008; Schoemaker

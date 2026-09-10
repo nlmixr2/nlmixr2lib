@@ -270,18 +270,18 @@ Sun_2025_maribavir <- function() {
     # reports the BACK-TRANSFORMED typical values, so each log below is written
     # as log(<Table 2 estimate>) to keep the source value visible verbatim.
     # Reference subject: 70 kg, no CMV, no CYP3A4 perpetrator, no PPI, 800 mg.
-    lcl   <- log(3.94);  label("Apparent clearance in the reference subject (CL/F, L/h)")                        # Table 2 'CL/F (L/h)' 3.94 (%RSE 3.3, 95% CI 3.69-4.20)
-    lvc   <- log(17.8);  label("Apparent central volume of distribution in the reference subject (Vc/F, L)")     # Table 2 'Vc/F (L)' 17.8 (%RSE 2.81, 95% CI 16.9-18.9)
-    lq    <- log(1.24);  label("Apparent intercompartmental clearance in the reference subject (Q/F, L/h)")      # Table 2 'Q/F (L/h)' 1.24 (%RSE 12.9, 95% CI 0.962-1.60)
-    lvp   <- log(7.10);  label("Apparent peripheral volume of distribution in the reference subject (Vp/F, L)")  # Table 2 'Vp/F (L)' 7.10 (%RSE 4.2, 95% CI 6.04-8.35)
-    lka   <- log(0.697); label("First-order absorption rate at the 800 mg reference dose (Ka, 1/h)")             # Table 2 'Ka (1/h)' 0.697 (%RSE 8.21, 95% CI 0.594-0.819)
+    lcl   <- log(3.94);  label("Apparent clearance in the reference subject (L/h)")                        # Table 2 'CL/F (L/h)' 3.94 (%RSE 3.3, 95% CI 3.69-4.20)
+    lvc   <- log(17.8);  label("Apparent central volume of distribution in the reference subject (L)")     # Table 2 'Vc/F (L)' 17.8 (%RSE 2.81, 95% CI 16.9-18.9)
+    lq    <- log(1.24);  label("Apparent intercompartmental clearance in the reference subject (L/h)")      # Table 2 'Q/F (L/h)' 1.24 (%RSE 12.9, 95% CI 0.962-1.60)
+    lvp   <- log(7.10);  label("Apparent peripheral volume of distribution in the reference subject (L)")  # Table 2 'Vp/F (L)' 7.10 (%RSE 4.2, 95% CI 6.04-8.35)
+    lka   <- log(0.697); label("First-order absorption rate at the 800 mg reference dose (1/h)")             # Table 2 'Ka (1/h)' 0.697 (%RSE 8.21, 95% CI 0.594-0.819)
     ltlag <- log(0.212); label("Absorption lag time (h)")                                                       # Table 2 'Lag (h)' 0.212 (%RSE 5.16, 95% CI 0.192-0.235)
 
     # Relative bioavailability anchor. Table 2 reports 'F  1' with no %RSE and
     # no CI: F is fixed at 1 and only the PPI effect on it is estimated. The
     # control stream has no THETA for baseline F at all -- F1 is set directly to
     # the PPI gate -- so the anchor is structural, hence fixed().
-    lfdepot <- fixed(log(1)); label("Relative bioavailability in the reference subject (F, fraction)")           # Table 2 'F' = 1, reported without uncertainty; control stream 'F1 = PPIF' with PPIF = 1 when PPI = 0
+    lfdepot <- fixed(log(1)); label("Relative bioavailability in the reference subject (fraction)")           # Table 2 'F' = 1, reported without uncertainty; control stream 'F1 = PPIF' with PPIF = 1 when PPI = 0
 
     # ---- Allometric body-weight exponents (ESTIMATED in this analysis) ----
     # Two parameters, not four: the control stream reuses CLWT for Q/F and VCWT

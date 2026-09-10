@@ -123,34 +123,34 @@ DeJongh_2025_azd7648_olaparib_xenograft_mouse <- function() {
     # The TGI studies used SCID mice only, so the SCID absorption rate
     # applies and relative bioavailability is 1 (the control stream keeps
     # the nude-mouse branch "for later ref" but it is never active here).
-    lka   <- fixed(log(2.7726));  label("AZD7648 absorption rate constant (ka, 1/h)")                     # Table 1 Ka* = 2.77; PK-PD control stream THETA(1) = 2.7726
-    lcl   <- fixed(log(0.25119)); label("AZD7648 linear clearance (CL, L/kg/h)")                          # Table 1 CL = 0.251
-    lvmax <- fixed(log(4.2741));  label("AZD7648 maximum saturable elimination rate (Vmax, umol/kg/h)")   # Table 1 Vmax = 4.27
-    lkm   <- fixed(log(3.7268));  label("AZD7648 concentration at half-maximal elimination (Km, uM)")     # Table 1 Km = 3.73
-    lvc   <- fixed(log(3.4475));  label("AZD7648 central volume of distribution (Vc, L/kg)")              # Table 1 Vc = 3.45; Vp is set equal to Vc per Table 1
-    lq    <- fixed(log(0.93210)); label("AZD7648 intercompartmental clearance (Q, L/kg/h)")               # Table 1 Q = 0.932
+    lka   <- fixed(log(2.7726));  label("AZD7648 absorption rate constant (1/h)")                     # Table 1 Ka* = 2.77; PK-PD control stream THETA(1) = 2.7726
+    lcl   <- fixed(log(0.25119)); label("AZD7648 linear clearance (L/kg/h)")                          # Table 1 CL = 0.251
+    lvmax <- fixed(log(4.2741));  label("AZD7648 maximum saturable elimination rate (umol/kg/h)")   # Table 1 Vmax = 4.27
+    lkm   <- fixed(log(3.7268));  label("AZD7648 concentration at half-maximal elimination (uM)")     # Table 1 Km = 3.73
+    lvc   <- fixed(log(3.4475));  label("AZD7648 central volume of distribution (L/kg)")              # Table 1 Vc = 3.45; Vp is set equal to Vc per Table 1
+    lq    <- fixed(log(0.93210)); label("AZD7648 intercompartmental clearance (L/kg/h)")               # Table 1 Q = 0.932
 
     # --- Olaparib (DeJongh 2025 Table 2) ------------------------------
-    lka_olaparib     <- fixed(log(10.0));   label("Olaparib absorption rate constant (ka, 1/h)")                  # Table 2: 10.0, fixed by assumption for lack of absorption-phase data
-    lcl_olaparib     <- fixed(log(1.9460)); label("Olaparib clearance (CL, L/h)")                                 # Table 2 CL = 1.95
-    lvc_olaparib     <- fixed(log(1.1656)); label("Olaparib central volume of distribution (Vc, L/kg)")           # Table 2 Vc = 1.17
-    lq_olaparib      <- fixed(log(0.6676)); label("Olaparib intercompartmental clearance (Q, L/h)")               # Table 2 Q = 0.668
-    lvp_olaparib     <- fixed(log(2.6608)); label("Olaparib peripheral volume of distribution (Vp, L/kg)")        # Table 2 Vp = 2.66
-    lfdepot_olaparib <- fixed(log(4.1817)); label("Olaparib relative oral bioavailability in the xenograft studies (F1, fraction)")  # Table 2 "F1 1816 (SCID)" = 4.18; PK-PD control stream F11 = 4.1817 ("rel. F1, based on S_11448/S_1816")
-    lcmd50           <- fixed(log(82.538)); label("AZD7648 daily dose halving olaparib clearance (CmD50, mg/kg/day)")                # Table 2: 82.5
+    lka_olaparib     <- fixed(log(10.0));   label("Olaparib absorption rate constant (1/h)")                  # Table 2: 10.0, fixed by assumption for lack of absorption-phase data
+    lcl_olaparib     <- fixed(log(1.9460)); label("Olaparib clearance (L/h)")                                 # Table 2 CL = 1.95
+    lvc_olaparib     <- fixed(log(1.1656)); label("Olaparib central volume of distribution (L/kg)")           # Table 2 Vc = 1.17
+    lq_olaparib      <- fixed(log(0.6676)); label("Olaparib intercompartmental clearance (L/h)")               # Table 2 Q = 0.668
+    lvp_olaparib     <- fixed(log(2.6608)); label("Olaparib peripheral volume of distribution (L/kg)")        # Table 2 Vp = 2.66
+    lfdepot_olaparib <- fixed(log(4.1817)); label("Olaparib relative oral bioavailability in the xenograft studies (fraction)")  # Table 2 "F1 1816 (SCID)" = 4.18; PK-PD control stream F11 = 4.1817 ("rel. F1, based on S_11448/S_1816")
+    lcmd50           <- fixed(log(82.538)); label("AZD7648 daily dose halving olaparib clearance (mg/kg/day)")                # Table 2: 82.5
 
     # ==================================================================
     # TUMOUR PK-PD -- DeJongh 2025 Table 3 (estimated).
     # ==================================================================
-    lrbase      <- log(0.115);  label("Xenograft volume at baseline (BL, cm3)")                                   # Table 3 BL = 0.115 (RSE 3.9%)
-    lkge        <- log(0.329);  label("Tumour growth rate coefficient (GC, 1/day)")                               # Table 3 GC = 0.329 (RSE 5.6%)
-    ltsmax      <- log(2.25);   label("Carrying capacity (KC, cm3)")                                              # Table 3 KC = 2.25 (RSE 5.8%)
-    lec50_allee <- log(1.93);   label("Proliferating-cell volume giving 50% Allee effect (AEC, mm3)")             # Table 3 AEC = 1.93 mm3 (RSE 11%); converted to cm3 in model()
-    lhill       <- log(0.637);  label("Power coefficient on the Allee function (G, unitless)")                    # Table 3 G = 0.637 (RSE 9.4%)
-    lke0        <- log(0.961);  label("Biophase equilibration rate constant (Ktr, 1/day)")                        # Table 3 Ktr = 0.961 (RSE 17%); control stream Ke0 = THETA(6)/24
-    lec50       <- log(8.99);   label("AZD7648 concentration giving 50% inhibition of quiescent-to-proliferating transition (EC50az, uM)")  # Table 3 EC50az = 8.99 (RSE 7.4%)
+    lrbase      <- log(0.115);  label("Xenograft volume at baseline (cm3)")                                   # Table 3 BL = 0.115 (RSE 3.9%)
+    lkge        <- log(0.329);  label("Tumour growth rate coefficient (1/day)")                               # Table 3 GC = 0.329 (RSE 5.6%)
+    ltsmax      <- log(2.25);   label("Carrying capacity (cm3)")                                              # Table 3 KC = 2.25 (RSE 5.8%)
+    lec50_allee <- log(1.93);   label("Proliferating-cell volume giving 50% Allee effect (mm3)")             # Table 3 AEC = 1.93 mm3 (RSE 11%); converted to cm3 in model()
+    lhill       <- log(0.637);  label("Power coefficient on the Allee function (unitless)")                    # Table 3 G = 0.637 (RSE 9.4%)
+    lke0        <- log(0.961);  label("Biophase equilibration rate constant (1/day)")                        # Table 3 Ktr = 0.961 (RSE 17%); control stream Ke0 = THETA(6)/24
+    lec50       <- log(8.99);   label("AZD7648 concentration giving 50% inhibition of quiescent-to-proliferating transition (uM)")  # Table 3 EC50az = 8.99 (RSE 7.4%)
 
-    lslope_olaparib <- log(0.0154); label("Olaparib linear effect coefficient on proliferating-to-quiescent transition (EColap, 1/uM)")     # Table 3 EColap = 0.0154 (RSE 4.5%)
+    lslope_olaparib <- log(0.0154); label("Olaparib linear effect coefficient on proliferating-to-quiescent transition (1/uM)")     # Table 3 EColap = 0.0154 (RSE 4.5%)
 
     # Kto, the turnover rate constant shared by every cell-state
     # transition, is NOT a separate parameter: DeJongh 2025 Table 3

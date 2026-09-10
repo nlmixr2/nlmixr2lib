@@ -49,18 +49,18 @@ Straube_2025_caplacizumab_1cmt <- function() {
 
   ini({
     # Drug disposition. Straube 2025 Table 2, ALX-0081 column.
-    lvc    <- log(0.046);          label("Central volume of distribution (Vc, L)")                    # Table 2, ALX-0081: Vc = 0.046 L. Table 2 also prints the derived keD = CL/Vc = 58.80 1/day, which implies Vc = 0.0464 L; the Vc column is rounded to 3 decimals, so cl/vc here gives 59.3 1/day (0.8% high). See vignette Errata.
-    lcl    <- log(2.728);          label("Systemic clearance (CL, L/day)")                            # Table 2, ALX-0081: CL = 2.728 L/day
+    lvc    <- log(0.046);          label("Central volume of distribution (L)")                    # Table 2, ALX-0081: Vc = 0.046 L. Table 2 also prints the derived keD = CL/Vc = 58.80 1/day, which implies Vc = 0.0464 L; the Vc column is rounded to 3 decimals, so cl/vc here gives 59.3 1/day (0.8% high). See vignette Errata.
+    lcl    <- log(2.728);          label("Systemic clearance (L/day)")                            # Table 2, ALX-0081: CL = 2.728 L/day
 
     # Drug-target binding. Both koff and Kd were fixed from Glassman and
     # Muzykantov, so kon = koff/Kd is derived in model() (Equation 7).
-    lk2    <- fixed(log(83.76));   label("Dissociation (off) rate constant of drug-target binding (koff, 1/day)")  # Table 2 footnote a: koff fixed at 83.76 1/day from Glassman and Muzykantov
+    lk2    <- fixed(log(83.76));   label("Dissociation (off) rate constant of drug-target binding (1/day)")  # Table 2 footnote a: koff fixed at 83.76 1/day from Glassman and Muzykantov
     lkd    <- fixed(log(0.0036));  label("Equilibrium dissociation constant (Kd = koff/kon, nM)")     # Table 2 footnote a: Kd fixed at 0.0036 nM from Glassman and Muzykantov. Table 2 reports the derived kon = koff/Kd = 2.3e4 1/(nM*day)
 
     # Target turnover (Figure 1): ksyn = keR*Rb, baseline Rb = ksyn/keR.
-    lrbase <- fixed(log(32.8));    label("Baseline (basal) free target concentration (Rb, nM)")       # Table 2 footnote a: Rb fixed at 32.8 nM from Glassman and Muzykantov. Table 2 reports the derived ksyn = keR*Rb = 10.394 nM/day
-    lkdeg  <- log(0.317);          label("Free target elimination rate constant (keR, 1/day)")        # Table 2, ALX-0081: keR = 0.317 1/day (estimated)
-    lkint  <- log(0.948);          label("Drug-target complex elimination rate constant (keDR, 1/day)")  # Table 2, ALX-0081: keDR = keR/Tacc = 0.317/0.334 = 0.948 1/day. NOT itself fixed: Tacc = 0.334 was fixed (footnote a) but keR was estimated, so keDR inherits keR's uncertainty. Tacc (Equation 14) is recoverable as kdeg/kint and so is not carried separately.
+    lrbase <- fixed(log(32.8));    label("Baseline (basal) free target concentration (nM)")       # Table 2 footnote a: Rb fixed at 32.8 nM from Glassman and Muzykantov. Table 2 reports the derived ksyn = keR*Rb = 10.394 nM/day
+    lkdeg  <- log(0.317);          label("Free target elimination rate constant (1/day)")        # Table 2, ALX-0081: keR = 0.317 1/day (estimated)
+    lkint  <- log(0.948);          label("Drug-target complex elimination rate constant (1/day)")  # Table 2, ALX-0081: keDR = keR/Tacc = 0.317/0.334 = 0.948 1/day. NOT itself fixed: Tacc = 0.334 was fixed (footnote a) but keR was estimated, so keDR inherits keR's uncertainty. Tacc (Equation 14) is recoverable as kdeg/kint and so is not carried separately.
   })
 
   model({

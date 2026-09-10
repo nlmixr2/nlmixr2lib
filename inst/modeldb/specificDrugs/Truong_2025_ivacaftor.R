@@ -103,11 +103,11 @@ Truong_2025_ivacaftor <- function() {
     # The specific ivacaftor values 0.42 /h and 0.70 h are therefore
     # traceable to Truong 2025 Table 2 itself and to no upstream printed
     # table. They are used as printed.
-    ltlag <- fixed(log(0.70)); label("Absorption lag time (Tlag, h)")                    # Truong 2025 Table 2: Tlag = 0.70 (fix)
-    lka   <- fixed(log(0.42)); label("First-order absorption rate constant (Ka, 1/h)")   # Truong 2025 Table 2: Ka = 0.42 (fix)
+    ltlag <- fixed(log(0.70)); label("Absorption lag time (h)")                    # Truong 2025 Table 2: Tlag = 0.70 (fix)
+    lka   <- fixed(log(0.42)); label("First-order absorption rate constant (1/h)")   # Truong 2025 Table 2: Ka = 0.42 (fix)
 
-    lcl <- log(13.4); label("Apparent oral clearance at 70 kg (CL/F, L/h)")              # Truong 2025 Table 2: CL/F = 13.4 L/h/70kg (4.8% RSE)
-    lvc <- log(183);  label("Apparent volume of distribution at 70 kg (V/F, L)")         # Truong 2025 Table 2: V/F = 183 L/70kg (12.6% RSE)
+    lcl <- log(13.4); label("Apparent oral clearance at 70 kg (L/h)")              # Truong 2025 Table 2: CL/F = 13.4 L/h/70kg (4.8% RSE)
+    lvc <- log(183);  label("Apparent volume of distribution at 70 kg (L)")         # Truong 2025 Table 2: V/F = 183 L/70kg (12.6% RSE)
 
     # Allometric exponents on body weight, held fixed at the theoretical
     # values by the source authors. Truong 2025 Results 3.2: "According to

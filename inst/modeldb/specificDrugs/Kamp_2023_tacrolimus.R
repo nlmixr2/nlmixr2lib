@@ -303,7 +303,7 @@ Kamp_2023_tacrolimus <- function() {
     # compartments empty at the same rate. Table 2 names this parameter
     # "Ktr, oral transit constant"; the Results narrative calls the same
     # number "Ka".
-    lktr <- log(0.752); label("Oral absorption transit rate constant (Ktr, 1/h)")   # Table 2 Ktr = 0.752 (RSE 21%); S1 $THETA(6)
+    lktr <- log(0.752); label("Oral absorption transit rate constant (1/h)")   # Table 2 Ktr = 0.752 (RSE 21%); S1 $THETA(6)
 
     # Absorption lag time of the lagged mixture class (74% of the population).
     # The no-lag class has its lag structurally fixed at 0 (S1 $THETA(4) =
@@ -316,9 +316,9 @@ Kamp_2023_tacrolimus <- function() {
     # ---- Disposition ------------------------------------------------------
     # All disposition parameters are apparent (/F) values at the 70 kg
     # allometric reference; oral bioavailability is fixed at 1 (see lfdepot).
-    lcl <- log(19.6); label("Apparent elimination clearance at 70 kg (CL/F, L/h)")   # Table 2 CL/F = 19.6 (RSE 8%); S1 $THETA(7)
-    lvc <- log(123);  label("Apparent central volume of distribution at 70 kg (Vc/F, L)") # Table 2 Vc/F = 123 (RSE 38%); S1 $THETA(8)
-    lq  <- log(74.9); label("Apparent intercompartmental clearance at 70 kg (Q/F, L/h)") # Table 2 Q/F = 74.9 (RSE 9%); S1 $THETA(9)
+    lcl <- log(19.6); label("Apparent elimination clearance at 70 kg (L/h)")   # Table 2 CL/F = 19.6 (RSE 8%); S1 $THETA(7)
+    lvc <- log(123);  label("Apparent central volume of distribution at 70 kg (L)") # Table 2 Vc/F = 123 (RSE 38%); S1 $THETA(8)
+    lq  <- log(74.9); label("Apparent intercompartmental clearance at 70 kg (L/h)") # Table 2 Q/F = 74.9 (RSE 9%); S1 $THETA(9)
 
     # The peripheral volume was not identifiable and was fixed to the
     # literature value of 500 L per 70 kg (Sect. 3.3.1: "identifiability

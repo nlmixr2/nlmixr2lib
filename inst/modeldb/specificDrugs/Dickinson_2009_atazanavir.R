@@ -42,10 +42,10 @@ Dickinson_2009_atazanavir <- function() {
 
   ini({
     # Structural parameters from Dickinson 2009 Table 2 (final-model column).
-    lcl   <- log(7.7);  label("Apparent oral clearance at CONMED_RTV_AUC = 7.52 mg*h/L (CL/F, L/h)")  # Table 2 final: CL/F = 7.7 L/h (RSE 5%)
-    lvc   <- log(103);  label("Apparent volume of distribution (V/F, L)")                      # Table 2 final: V/F = 103 L (RSE 13%)
-    lka   <- log(3.4);  label("First-order absorption rate constant (ka, 1/h)")                # Table 2 final: ka = 3.4 1/h (RSE 34%)
-    ltlag <- log(0.96); label("Absorption lag-time (Tlag, h)")                                 # Table 2 final: Lag-time = 0.96 h (RSE 1%)
+    lcl   <- log(7.7);  label("Apparent oral clearance at CONMED_RTV_AUC = 7.52 mg*h/L (L/h)")  # Table 2 final: CL/F = 7.7 L/h (RSE 5%)
+    lvc   <- log(103);  label("Apparent volume of distribution (L)")                      # Table 2 final: V/F = 103 L (RSE 13%)
+    lka   <- log(3.4);  label("First-order absorption rate constant (1/h)")                # Table 2 final: ka = 3.4 1/h (RSE 34%)
+    ltlag <- log(0.96); label("Absorption lag-time (h)")                                 # Table 2 final: Lag-time = 0.96 h (RSE 1%)
 
     # Covariate effect: ritonavir AUC0-24 on atazanavir CL/F via power function.
     # Paper Results page 1236 / Table 3 final equation: CL/F = theta1 * (RTV/7.52)^theta2
@@ -60,7 +60,7 @@ Dickinson_2009_atazanavir <- function() {
     etalka ~ 1.2155  # log(1 + 1.54^2) = 1.2155; CV = 154% per Table 2 final (RSE 51%)
 
     # Residual error: combined proportional + additive (paper Results page 1236).
-    propSd <- 0.23; label("Proportional residual error (CV, fraction)")  # Table 2 final: 23% (RSE 27%)
+    propSd <- 0.23; label("Proportional residual error, reported as a CV (fraction)")  # Table 2 final: 23% (RSE 27%)
     addSd  <- 0.08; label("Additive residual error (mg/L)")              # Table 2 final: 0.08 mg/L (RSE 38%)
   })
 

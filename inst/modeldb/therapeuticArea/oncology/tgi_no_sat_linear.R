@@ -14,7 +14,7 @@ tgi_no_sat_linear <- function() {
 
   ini({
     lrbase <- 0.8; label("Initial tumor size (TS0)") 
-    lka <- 0.45 ; label("Absorption rate (Ka, 1/time_unit)")
+    lka <- 0.45 ; label("Absorption rate (1/time_unit)")
     lcl <- 1 ; label("Clearance (CL)")
     lvc  <- 3.45 ; label("Central volume of distribution (V)")
     lkgl <- 0.7; label("Zero-order linear growth rate (tumor size/time_unit)")

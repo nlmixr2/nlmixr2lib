@@ -105,10 +105,10 @@ Henninger_2026_dndi6148_mouse <- function() {
     # Plasma PK -- Henninger 2026 Table 1, typical values for a 22 g mouse.
     # Only oral data were available, so CL and V are apparent (relative to F).
     # =================================================================
-    lka   <- log(2.7)    ; label("Oral absorption rate constant (ka, 1/h)")                                # Table 1: ka = 2.7 [2.0-3.9]
-    lvc   <- log(0.025)  ; label("Apparent central volume of distribution for a 22 g mouse (V/F, L)")      # Table 1: V/F = 0.025 [0.022-0.028]
-    lvmax <- log(65)     ; label("Apparent maximal elimination rate for a 22 g mouse (Vmax/F, ug/h)")      # Table 1: Vmax/F = 65 [55-77]
-    lkm   <- log(8000)   ; label("Apparent Michaelis-Menten constant (Km, ug/L)")                          # Table 1: Km = 8.0e3 [6.5e3-9.5e3]
+    lka   <- log(2.7)    ; label("Oral absorption rate constant (1/h)")                                # Table 1: ka = 2.7 [2.0-3.9]
+    lvc   <- log(0.025)  ; label("Apparent central volume of distribution for a 22 g mouse (L)")      # Table 1: V/F = 0.025 [0.022-0.028]
+    lvmax <- log(65)     ; label("Apparent maximal elimination rate for a 22 g mouse (ug/h)")      # Table 1: Vmax/F = 65 [55-77]
+    lkm   <- log(8000)   ; label("Apparent Michaelis-Menten constant (ug/L)")                          # Table 1: Km = 8.0e3 [6.5e3-9.5e3]
 
     # Allometric exponents. Table 1 footnote b gives them without uncertainty
     # under "power exponent of 0.75 for clearance and 1 for volume of
@@ -128,10 +128,10 @@ Henninger_2026_dndi6148_mouse <- function() {
     # Tissue distribution -- Equation 3. Separate effect compartments with NO
     # mass transfer from plasma; each state holds a tissue CONCENTRATION.
     # =================================================================
-    lke0 <- fixed(log(20)) ; label("Plasma-to-tissue equilibration rate constant (k_plasma-tissue, 1/h)")  # Table 1: 20, Fixed -- tissues sampled at a single time point could not identify it (Methods 2.2.2)
-    lkp_skin   <- log(0.56); label("Skin-to-plasma penetration coefficient (R_skin-plasma, unitless)")     # Table 1: 0.56 [0.49-0.68]
-    lkp_liver  <- log(1.9) ; label("Liver-to-plasma penetration coefficient (R_liver-plasma, unitless)")   # Table 1: 1.9 [1.6-2.2]
-    lkp_spleen <- log(0.34); label("Spleen-to-plasma penetration coefficient (R_spleen-plasma, unitless)") # Table 1: 0.34 [0.28-0.41]
+    lke0 <- fixed(log(20)) ; label("Plasma-to-tissue equilibration rate constant (1/h)")  # Table 1: 20, Fixed -- tissues sampled at a single time point could not identify it (Methods 2.2.2)
+    lkp_skin   <- log(0.56); label("Skin-to-plasma penetration coefficient (unitless)")     # Table 1: 0.56 [0.49-0.68]
+    lkp_liver  <- log(1.9) ; label("Liver-to-plasma penetration coefficient (unitless)")   # Table 1: 1.9 [1.6-2.2]
+    lkp_spleen <- log(0.34); label("Spleen-to-plasma penetration coefficient (unitless)") # Table 1: 0.34 [0.28-0.41]
 
     # Not paper-estimated: an in-house measurement the authors state and assume
     # to hold in skin as well as plasma.
@@ -140,9 +140,9 @@ Henninger_2026_dndi6148_mouse <- function() {
     # =================================================================
     # Drug-induced parasite elimination -- Equations 4-5, Table 2.
     # =================================================================
-    lemax <- log(0.049)    ; label("Maximal rate of parasite elimination (Emax, 1/h)")                     # Table 2: 0.049 [0.042-0.058]
-    lec50 <- log(165)      ; label("Free skin concentration achieving half of Emax (fEC50, ug/L)")         # Table 2: 165 [125-236]
-    lhill <- log(1.6)      ; label("Sigmoidicity factor on free skin concentration (gamma, unitless)")     # Table 2: 1.6 [1.1-2.8]
+    lemax <- log(0.049)    ; label("Maximal rate of parasite elimination (1/h)")                     # Table 2: 0.049 [0.042-0.058]
+    lec50 <- log(165)      ; label("Free skin concentration achieving half of Emax (ug/L)")         # Table 2: 165 [125-236]
+    lhill <- log(1.6)      ; label("Sigmoidicity factor on free skin concentration (unitless)")     # Table 2: 1.6 [1.1-2.8]
 
     # Baseline is reported as 8.01 log10 photons/s; the STATE is the linear
     # bioluminescence in photons/s, so the initial condition is 10^8.01.
@@ -156,7 +156,7 @@ Henninger_2026_dndi6148_mouse <- function() {
     # =================================================================
     lrbase_lesion <- log(31)     ; label("Baseline lesion area (mm^2)")                                    # Table 2: Lesion_base = 31 [26-36]
     lslope_lesion <- log(0.0029) ; label("Parasite-induced lesion growth slope, per log10 photons/s (1/h)")# Table 2: slope = 0.0029 [0.0010-0.0050]
-    lkheal        <- log(0.027)  ; label("Lesion healing rate constant (k_heal, 1/h)")                     # Table 2: 0.027 [0.010-0.044]; Results 3.2.3 gives 0.0272
+    lkheal        <- log(0.027)  ; label("Lesion healing rate constant (1/h)")                     # Table 2: 0.027 [0.010-0.044]; Results 3.2.3 gives 0.0272
 
     # =================================================================
     # Between-subject variability. Table 1 / Table 2 report CV%; the footnote

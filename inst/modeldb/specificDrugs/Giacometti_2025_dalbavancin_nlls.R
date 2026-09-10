@@ -138,9 +138,9 @@ Giacometti_2025_dalbavancin_nlls <- function() {
     # data and 0.038 L/h in the literature column (Cojutti 2024). The
     # paper names this as the fit's failure mode rather than a finding.
     # ------------------------------------------------------------------
-    lcl <- log(0.054); label("Clearance (CL, L/h)")                        # Giacometti 2025 Table 4, Two-Compartment column: Cl = 0.054 +/- 0.002 L/h (across-fold SD)
+    lcl <- log(0.054); label("Clearance (L/h)")                        # Giacometti 2025 Table 4, Two-Compartment column: Cl = 0.054 +/- 0.002 L/h (across-fold SD)
     lvc <- log(5.3);   label("Central volume of distribution V1 (L)")      # Giacometti 2025 Table 4, Two-Compartment column: V1 = 5.3 +/- 0.4 L (across-fold SD)
-    lq  <- log(0.42);  label("Intercompartmental clearance (Q, L/h)")      # Giacometti 2025 Table 4, Two-Compartment column: Q  = 0.42 +/- 0.14 L/h (across-fold SD); the source calls this estimate inaccurate
+    lq  <- log(0.42);  label("Intercompartmental clearance (L/h)")      # Giacometti 2025 Table 4, Two-Compartment column: Q  = 0.42 +/- 0.14 L/h (across-fold SD); the source calls this estimate inaccurate
     lvp <- log(8.8);   label("Peripheral volume of distribution V2 (L)")   # Giacometti 2025 Table 4, Two-Compartment column: V2 = 8.8 +/- 1.5 L (across-fold SD)
 
     # ------------------------------------------------------------------

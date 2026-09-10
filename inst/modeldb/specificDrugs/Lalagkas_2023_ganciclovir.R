@@ -106,25 +106,25 @@ Lalagkas_2023_ganciclovir <- function() {
     # subject: WT = 70 kg, CKD-EPI eGFR = 55 mL/min/1.73 m^2. Clearances in L/h,
     # volumes in L, ka in 1/h, lag time in h. All values are typical (population)
     # values of the final model; the review reports no standard errors.
-    lcl   <- log(6.93) ; label("Clearance at WT = 70 kg and CKD-EPI = 55 mL/min/1.73 m^2 (CL, L/h)")  # Yang 2023 Table 3 (Lalagkas 2023): CL = 6.93 * (CKD-EPI/55)^0.817 * (BW/70)^0.75
-    lvc   <- log(43.1) ; label("Central volume of distribution at WT = 70 kg (Vc, L)")                 # Yang 2023 Table 3 (Lalagkas 2023): Vc = 43.1 * (BW/70)
-    lq    <- log(9.23) ; label("Inter-compartmental clearance at WT = 70 kg (Q, L/h)")                 # Yang 2023 Table 3 (Lalagkas 2023): Q = 9.23 * (BW/70)^0.75
+    lcl   <- log(6.93) ; label("Clearance at WT = 70 kg and CKD-EPI = 55 mL/min/1.73 m^2 (L/h)")  # Yang 2023 Table 3 (Lalagkas 2023): CL = 6.93 * (CKD-EPI/55)^0.817 * (BW/70)^0.75
+    lvc   <- log(43.1) ; label("Central volume of distribution at WT = 70 kg (L)")                 # Yang 2023 Table 3 (Lalagkas 2023): Vc = 43.1 * (BW/70)
+    lq    <- log(9.23) ; label("Inter-compartmental clearance at WT = 70 kg (L/h)")                 # Yang 2023 Table 3 (Lalagkas 2023): Q = 9.23 * (BW/70)^0.75
     # Vp = 219 L gives Vss ~262 L at 70 kg -- by far the largest volume among the
     # 16 models in the Yang 2023 repository, and well above the ~0.7 L/kg
     # literature volume of distribution for ganciclovir. Transcribed verbatim from
     # Table 3; it produces a long terminal half-life (~34 h in the validation
     # vignette) while contributing little to AUC over a 24 h interval. Flagged in
     # the validation vignette for re-verification against the primary.
-    lvp   <- log(219)  ; label("Peripheral volume of distribution at WT = 70 kg (Vp, L)")              # Yang 2023 Table 3 (Lalagkas 2023): Vp = 219 * (BW/70)
-    lka   <- log(0.766); label("First-order oral absorption rate constant (ka, 1/h)")                  # Yang 2023 Table 3 (Lalagkas 2023): Ka = 0.766
-    ltlag <- log(0.331); label("Absorption lag time (Tlag, h)")                                        # Yang 2023 Table 3 (Lalagkas 2023): Tlag = 0.331
+    lvp   <- log(219)  ; label("Peripheral volume of distribution at WT = 70 kg (L)")              # Yang 2023 Table 3 (Lalagkas 2023): Vp = 219 * (BW/70)
+    lka   <- log(0.766); label("First-order oral absorption rate constant (1/h)")                  # Yang 2023 Table 3 (Lalagkas 2023): Ka = 0.766
+    ltlag <- log(0.331); label("Absorption lag time (h)")                                        # Yang 2023 Table 3 (Lalagkas 2023): Tlag = 0.331
 
     # Oral bioavailability of ganciclovir from valganciclovir. The review reports
     # F = 0.699 on the linear scale with 16.6% between-subject variability and
     # states that BSV was exponential in every included study, so F carries an
     # exponential eta here (see the vignette Assumptions and deviations section
     # for the F > 1 caveat this parameterisation permits).
-    lfdepot <- log(0.699); label("Oral bioavailability of ganciclovir from valganciclovir (F, fraction)")  # Yang 2023 Table 3 (Lalagkas 2023): F = 0.699
+    lfdepot <- log(0.699); label("Oral bioavailability of ganciclovir from valganciclovir (fraction)")  # Yang 2023 Table 3 (Lalagkas 2023): F = 0.699
 
     # Covariate effects. The CKD-EPI exponent 0.817 is a non-canonical value and
     # is therefore an estimated effect; the body-weight exponents 0.75 (CL, Q) and

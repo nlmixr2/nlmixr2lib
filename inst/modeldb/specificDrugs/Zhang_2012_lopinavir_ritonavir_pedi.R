@@ -205,7 +205,7 @@ Zhang_2012_lopinavir_ritonavir_pedi <- function() {
     lmtt_rtv     <- log(1.28)
     label("RTV mean transit time MTT through the 10-compartment Savic transit chain (h)")          # Zhang 2012 Table 2 row 'Ritonavir MTT = 1.28'
     nn_rtv       <- fixed(10)
-    label("RTV number of Savic-style transit compartments (integer, unitless)")             # Zhang 2012 Results 'Model description' paragraph 1: 'the absorption phase displayed more complex pharmacokinetics which was described best by a series of 10 transit compartments'; the paper does not state whether the chain length was estimated or fixed before the final fit, but Table 2 does not list NN as an estimated parameter; treated as fixed here
+    label("RTV number of Savic-style transit compartments, integer-valued (unitless)")             # Zhang 2012 Results 'Model description' paragraph 1: 'the absorption phase displayed more complex pharmacokinetics which was described best by a series of 10 transit compartments'; the paper does not state whether the chain length was estimated or fixed before the final fit, but Table 2 does not list NN as an estimated parameter; treated as fixed here
 
     # =====================================================================
     # Allometric exponents. The paper Methods 'Population pharmacokinetic

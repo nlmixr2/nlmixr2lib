@@ -75,7 +75,7 @@ Bartko_2018_sutimlimab <- function() {
     # parameter precision, and are NOT interindividual variability.
 
     le0 <- log(94.8)
-    label("Baseline classical complement pathway activity in the absence of sutimlimab (E0, % of the assay's normal reference)")
+    label("Baseline classical complement pathway activity in the absence of sutimlimab (% of the assay's normal reference)")
     # Bartko 2018 Supplementary Table S3: E0 (%) = 94.8 (RSE 1.1%).
     # Consistent with the observed baselines quoted in Results,
     # 'Pharmacodynamics' (part A sutimlimab 97 +/- 14%; part B sutimlimab
@@ -94,7 +94,7 @@ Bartko_2018_sutimlimab <- function() {
     # section 'Which Imax parameterisation?', for the digitisation evidence.
 
     lic50 <- log(6.2)
-    label("Sutimlimab serum concentration producing half of the maximum CP-activity reduction (IC50, ug/mL)")
+    label("Sutimlimab serum concentration producing half of the maximum CP-activity reduction (ug/mL)")
     # Bartko 2018 Supplementary Table S3: IC50 (ug/mL) = 6.2 (RSE 27.5%);
     # also quoted in Results, 'Pharmacokinetic/pharmacodynamic (PD)
     # correlations': "a 50% knockdown of CP activity (IC50) predicted at a

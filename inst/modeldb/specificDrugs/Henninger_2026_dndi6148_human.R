@@ -90,26 +90,26 @@ Henninger_2026_dndi6148_human <- function() {
     # Vmax/F / Km (Discussion). Dose-dependent bioavailability is dropped
     # too; both were judged mouse-specific (Methods 2.2.5).
     # =================================================================
-    lka <- fixed(log(0.360)) ; label("Oral absorption rate constant (ka, 1/h)")                        # Results 3.2.6: 0.360
-    lcl <- fixed(log(3.44))  ; label("Apparent clearance for a 70 kg adult (CL/F, L/h)")               # Results 3.2.6: 3.44
-    lvc <- fixed(log(79.5))  ; label("Apparent central volume for a 70 kg adult (Vd/F, L)")            # Results 3.2.6: 79.5
+    lka <- fixed(log(0.360)) ; label("Oral absorption rate constant (1/h)")                        # Results 3.2.6: 0.360
+    lcl <- fixed(log(3.44))  ; label("Apparent clearance for a 70 kg adult (L/h)")               # Results 3.2.6: 3.44
+    lvc <- fixed(log(79.5))  ; label("Apparent central volume for a 70 kg adult (L)")            # Results 3.2.6: 79.5
 
     # =================================================================
     # Skin distribution -- carried over unchanged from the murine model
     # ("Predicted human PK parameters were combined with tissue distribution
     # characteristics and PD components from the murine PK/PD model").
     # =================================================================
-    lke0     <- fixed(log(20))   ; label("Plasma-to-tissue equilibration rate constant (k_plasma-tissue, 1/h)")  # Table 1: 20, Fixed; transferred from the murine model
-    lkp_skin <- fixed(log(0.56)) ; label("Skin-to-plasma penetration coefficient (R_skin-plasma, unitless)")     # Table 1: 0.56 [0.49-0.68]; transferred from the murine model
+    lke0     <- fixed(log(20))   ; label("Plasma-to-tissue equilibration rate constant (1/h)")  # Table 1: 20, Fixed; transferred from the murine model
+    lkp_skin <- fixed(log(0.56)) ; label("Skin-to-plasma penetration coefficient (unitless)")     # Table 1: 0.56 [0.49-0.68]; transferred from the murine model
 
     fu <- fixed(0.07) ; label("Fraction unbound in plasma and in skin (unitless; assumed equal in both matrices)")  # Methods 2.2.6: "An fu of 0.07 in plasma was applied, and a similar fu in tissue was assumed"
 
     # =================================================================
     # Parasite killing -- murine PD component transferred unchanged.
     # =================================================================
-    lemax <- fixed(log(0.049)) ; label("Maximal rate of parasite elimination (Emax, 1/h)")                     # Table 2: 0.049 [0.042-0.058]; transferred from the murine model
-    lec50 <- fixed(log(165))   ; label("Free skin concentration achieving half of Emax (fEC50, ug/L)")         # Table 2: 165 [125-236]; transferred from the murine model
-    lhill <- fixed(log(1.6))   ; label("Sigmoidicity factor on free skin concentration (gamma, unitless)")     # Table 2: 1.6 [1.1-2.8]; transferred from the murine model
+    lemax <- fixed(log(0.049)) ; label("Maximal rate of parasite elimination (1/h)")                     # Table 2: 0.049 [0.042-0.058]; transferred from the murine model
+    lec50 <- fixed(log(165))   ; label("Free skin concentration achieving half of Emax (ug/L)")         # Table 2: 165 [125-236]; transferred from the murine model
+    lhill <- fixed(log(1.6))   ; label("Sigmoidicity factor on free skin concentration (unitless)")     # Table 2: 1.6 [1.1-2.8]; transferred from the murine model
 
     lrbase_parasites <- fixed(log(10^8.01)) ; label("Baseline skin parasite bioluminescence (photons/s)")      # Methods 2.2.6: "Initial parasite loads in humans were set to the same as in mice"; Table 2 value 8.01 log10 photons/s
 

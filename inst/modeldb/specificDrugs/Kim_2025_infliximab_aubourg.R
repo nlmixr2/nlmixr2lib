@@ -77,15 +77,15 @@ Kim_2025_infliximab_aubourg <- function() {
     # Structural parameters. This model estimates a separate typical clearance
     # and central volume in each sex rather than a reference value plus an
     # offset, so both strata carry an explicit suffix (no bare lcl / lvc).
-    lcl_female <- log(0.336); label("Typical clearance in females (CL, L/day)")   # Data S1 model #1 $THETA1 = 0.336 L/day (reported 0.014 L/h); Table S2 "F: 0.336"
-    lcl_male   <- log(0.456); label("Typical clearance in males (CL, L/day)")     # Data S1 model #1 $THETA2 = 0.456 L/day (reported 0.019 L/h); Table S2 "M: 0.456"
-    lvc_female <- log(2.6);   label("Typical central volume in females at 60 kg (Vc, L)")  # Data S1 model #1 $THETA3 = 2.6 L; Table S2 "F: 2.6"
-    lvc_male   <- log(3.2);   label("Typical central volume in males at 60 kg (Vc, L)")    # Data S1 model #1 $THETA4 = 3.2 L; Table S2 "M: 3.2"
-    lvp        <- log(4.5);   label("Peripheral volume of distribution (Vp, L)")           # Data S1 model #1 $THETA5 = 4.5 L; Table S2 "4.5"
-    lq         <- log(1.992); label("Inter-compartmental clearance (Q, L/day)")            # Data S1 model #1 $THETA6 = 1.992 L/day; Table S2 "1.992"
+    lcl_female <- log(0.336); label("Typical clearance in females (L/day)")   # Data S1 model #1 $THETA1 = 0.336 L/day (reported 0.014 L/h); Table S2 "F: 0.336"
+    lcl_male   <- log(0.456); label("Typical clearance in males (L/day)")     # Data S1 model #1 $THETA2 = 0.456 L/day (reported 0.019 L/h); Table S2 "M: 0.456"
+    lvc_female <- log(2.6);   label("Typical central volume in females at 60 kg (L)")  # Data S1 model #1 $THETA3 = 2.6 L; Table S2 "F: 2.6"
+    lvc_male   <- log(3.2);   label("Typical central volume in males at 60 kg (L)")    # Data S1 model #1 $THETA4 = 3.2 L; Table S2 "M: 3.2"
+    lvp        <- log(4.5);   label("Peripheral volume of distribution (L)")           # Data S1 model #1 $THETA5 = 4.5 L; Table S2 "4.5"
+    lq         <- log(1.992); label("Inter-compartmental clearance (L/day)")            # Data S1 model #1 $THETA6 = 1.992 L/day; Table S2 "1.992"
 
     # Covariate effect
-    e_wt_vc <- 0.22; label("Power exponent of body weight on Vc ((WT/60)^e_wt_vc)")  # Data S1 model #1 $THETA7 = 0.22
+    e_wt_vc <- 0.22; label("Power exponent of body weight on Vc, WT/60 scaling (unitless)")  # Data S1 model #1 $THETA7 = 0.22
 
     # Inter-individual variability. The source control stream states
     # "$OMEGA ; Interindividual standard deviation OMEGA = (%CV/100)**2", i.e.

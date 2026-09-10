@@ -223,10 +223,10 @@ Ravix_2024_trametinib <- function() {
     # intravenous data and did not estimate a bioavailability term, so CL is CL/F,
     # V2 is Vc/F, Q is Q/F and V3 is Vp/F.
     lka <- fixed(log(0.913)); label("First-order absorption rate constant (1/h)")            # Table 2 'ka (h-1) 0.913 fixed'; not estimable from the sparse absorption-phase data. Results 3.2 and the Discussion both attribute the fixed value to reference [38], which the paper's reference list gives as Balakirouchenane et al. (candidate values of 0.4-2 /h were screened, Methods 2.2.1). Yields a median (min, max) tmax of 1.75 h (1.51, 1.84) vs the 1.5 h FDA reference (Results 3.2).
-    lcl <- log(3.96);         label("Apparent clearance at the covariate reference (CL/F, L/h)") # Table 2 'thetaCL (L.h-1) 3.96 (6)'; bootstrap median 3.98 (95% PI 3.52, 4.45). This is the typical value at AGE = 63 y and FFM = 46.35 kg, where both covariate factors equal 1.
-    lvc <- log(108);          label("Apparent central volume of distribution (Vc/F, L)")      # Table 2 'V2 (L) 108 (16)'; bootstrap median 101.84 (95% PI 65.42, 143.40)
-    lq  <- log(29.4);         label("Apparent inter-compartmental clearance (Q/F, L/h)")      # Table 2 'Q (L.h-1) 29.4 (30)'; bootstrap median 28.83 (95% PI 12.69, 60.68)
-    lvp <- log(286);          label("Apparent peripheral volume of distribution (Vp/F, L)")   # Table 2 'V3 (L) 286 (25)'; bootstrap median 286.48 (95% PI 104.63, 385.40)
+    lcl <- log(3.96);         label("Apparent clearance at the covariate reference (L/h)") # Table 2 'thetaCL (L.h-1) 3.96 (6)'; bootstrap median 3.98 (95% PI 3.52, 4.45). This is the typical value at AGE = 63 y and FFM = 46.35 kg, where both covariate factors equal 1.
+    lvc <- log(108);          label("Apparent central volume of distribution (L)")      # Table 2 'V2 (L) 108 (16)'; bootstrap median 101.84 (95% PI 65.42, 143.40)
+    lq  <- log(29.4);         label("Apparent inter-compartmental clearance (L/h)")      # Table 2 'Q (L.h-1) 29.4 (30)'; bootstrap median 28.83 (95% PI 12.69, 60.68)
+    lvp <- log(286);          label("Apparent peripheral volume of distribution (L)")   # Table 2 'V3 (L) 286 (25)'; bootstrap median 286.48 (95% PI 104.63, 385.40)
 
     # ---- Covariate effects on apparent clearance (Ravix 2024 Table 2 and its footnote) ----
     # The footnote prints the final clearance equation as a product of two linear

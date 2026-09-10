@@ -52,15 +52,15 @@ Overbeek_2025_cobicistat <- function() {
   ini({
     # ---- Structural parameters, at the 70 kg reference weight -------------
     # (Overbeek 2025 Table 2; NONMEM $THETA of Online Resource Material 1.)
-    lktr   <- log(3.92)  ; label("Erlang absorption transition rate constant (ktr, 1/h)")                              # Overbeek 2025 Table 2: k_tr = 3.92 /h (RSE 12.3%); Online Resource Material 1 $THETA 1
-    lvc    <- log(69.7)  ; label("Apparent central volume of distribution (Vc/F, L)")                                  # Overbeek 2025 Table 2: V_c = 69.7 L (RSE 5.6%); Online Resource Material 1 $THETA 2
+    lktr   <- log(3.92)  ; label("Erlang absorption transition rate constant (1/h)")                              # Overbeek 2025 Table 2: k_tr = 3.92 /h (RSE 12.3%); Online Resource Material 1 $THETA 1
+    lvc    <- log(69.7)  ; label("Apparent central volume of distribution (L)")                                  # Overbeek 2025 Table 2: V_c = 69.7 L (RSE 5.6%); Online Resource Material 1 $THETA 2
     lclint <- log(322)   ; label("Apparent unbound intrinsic clearance per litre of liver (CLint/F, L/h/L liver)")     # Overbeek 2025 Table 2: CL_int = 322 L/h/L_liver (RSE 6.7%); Online Resource Material 1 $THETA 3
 
     # Prehepatic bioavailability. The paper reports all volume and clearance
     # parameters relative to the unknown absolute bioavailability (Methods 2.3),
     # so F1 is an anchor rather than an estimate; hepatic first pass is carried
     # mechanistically by routing the absorbed dose through the liver compartment.
-    lfdepot <- fixed(log(1)) ; label("Prehepatic bioavailability (F1, unitless)")                                      # Online Resource Material 1 $PK: F1=1*EXP(ETA(1)) with $OMEGA 1 = 0 FIX
+    lfdepot <- fixed(log(1)) ; label("Prehepatic bioavailability (unitless)")                                      # Online Resource Material 1 $PK: F1=1*EXP(ETA(1)) with $OMEGA 1 = 0 FIX
 
     # ---- Study covariate on intrinsic clearance (Eq 7, power form) --------
     e_study_proactive_clint <- 1.21 ; label("Ratio of intrinsic clearance in the PROACTIVE cohort to the other cohorts (unitless)")  # Overbeek 2025 Table 2: CL_int-olaparib = 1.21 (RSE 16.3%), p < 0.001; Online Resource Material 1 $THETA 4
@@ -69,9 +69,9 @@ Overbeek_2025_cobicistat <- function() {
     # Assumed rather than estimated (Methods 2.3). hct was fixed because
     # haematocrit was not measured in all four studies; the paper's sensitivity
     # analysis over 0.30-0.50 changed the estimates negligibly (Results 3.1).
-    q_liver      <- fixed(90)    ; label("Hepatic blood flow at the 70 kg reference weight (QH, L/h)")                 # Overbeek 2025 Methods 2.3: "assuming a hepatic blood flood (QH) of 90 L/h"
-    hct          <- fixed(0.44)  ; label("Haematocrit, assumed (Ht, unitless)")                                        # Overbeek 2025 Methods 2.3: "hematocrit (Ht) of 0.44"; sensitivity analysis over 0.30-0.50 in Results 3.1
-    fu           <- fixed(0.025) ; label("Fraction unbound in plasma, literature value (fu, unitless)")                # Overbeek 2025 Methods 2.3: "an unbound fraction in plasma (fu) of 0.025 for cobicistat"
+    q_liver      <- fixed(90)    ; label("Hepatic blood flow at the 70 kg reference weight (L/h)")                 # Overbeek 2025 Methods 2.3: "assuming a hepatic blood flood (QH) of 90 L/h"
+    hct          <- fixed(0.44)  ; label("Haematocrit, assumed (unitless)")                                        # Overbeek 2025 Methods 2.3: "hematocrit (Ht) of 0.44"; sensitivity analysis over 0.30-0.50 in Results 3.1
+    fu           <- fixed(0.025) ; label("Fraction unbound in plasma, literature value (unitless)")                # Overbeek 2025 Methods 2.3: "an unbound fraction in plasma (fu) of 0.025 for cobicistat"
     v_liver_coef <- fixed(0.10)  ; label("Coefficient of the liver-volume relation, from Small 2017 (L/kg^0.59)")    # Overbeek 2025 Eq 5: VL = 0.10 * TBW^0.59, citing reference [31] (Small BG et al., Biopharm Drug Dispos 2017;38(4):290-300)
     e_wt_v_liver <- fixed(0.59)  ; label("Body-weight exponent of the liver-volume relation, from Small 2017 (unitless)")  # Overbeek 2025 Eq 5: VL = 0.10 * TBW^0.59, citing reference [31] (Small BG et al., Biopharm Drug Dispos 2017;38(4):290-300)
 

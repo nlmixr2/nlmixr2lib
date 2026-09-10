@@ -193,9 +193,9 @@ Ren_2026_rivaroxaban <- function() {
     # models that fixed it at the Japanese value of 0.617 1/h -- the
     # Discussion argues explicitly against reusing that fixed value.
     # =================================================================
-    lka <- log(1.25);  label("Absorption rate constant (ka, 1/h)")         # Table 2: Ka = 1.25 (CV 13.5%, bootstrap 0.922-1.58)
-    lvc <- log(53.0);  label("Apparent volume of distribution (V/F, L)")   # Table 2: V/F = 53.0 (CV 3.91%, bootstrap 49.0-57.1)
-    lcl <- log(6.13);  label("Apparent clearance (CL/F, L/h)")             # Table 2: CL/F = 6.13 (CV 3.18%, bootstrap 5.75-6.52)
+    lka <- log(1.25);  label("Absorption rate constant (1/h)")         # Table 2: Ka = 1.25 (CV 13.5%, bootstrap 0.922-1.58)
+    lvc <- log(53.0);  label("Apparent volume of distribution (L)")   # Table 2: V/F = 53.0 (CV 3.91%, bootstrap 49.0-57.1)
+    lcl <- log(6.13);  label("Apparent clearance (L/h)")             # Table 2: CL/F = 6.13 (CV 3.18%, bootstrap 5.75-6.52)
 
     # =================================================================
     # PK covariate effects. Methods Equation 4 gives the continuous-

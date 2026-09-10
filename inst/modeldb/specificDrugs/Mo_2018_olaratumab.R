@@ -57,10 +57,10 @@ Mo_2018_olaratumab <- function() {
   ini({
     # Structural parameters — typical values (final model, Mo 2018 Table 3).
     # Reference covariate values: WT 79.7 kg, TUMSZ 86.5 mm (population medians, Table 2).
-    lcl <- log(0.0233); label("Clearance at reference covariates (CL, L/h)")              # Mo 2018 Table 3, Final PK model
-    lvc <- log(4.16);   label("Central volume of distribution at reference (V1, L)")      # Mo 2018 Table 3, Final PK model
-    lvp <- log(3.58);   label("Peripheral volume of distribution (V2, L)")                # Mo 2018 Table 3, Final PK model
-    lq  <- log(0.0315); label("Intercompartmental clearance (Q, L/h)")                    # Mo 2018 Table 3, Final PK model
+    lcl <- log(0.0233); label("Clearance at reference covariates (L/h)")              # Mo 2018 Table 3, Final PK model
+    lvc <- log(4.16);   label("Central volume of distribution at reference (L)")      # Mo 2018 Table 3, Final PK model
+    lvp <- log(3.58);   label("Peripheral volume of distribution (L)")                # Mo 2018 Table 3, Final PK model
+    lq  <- log(0.0315); label("Intercompartmental clearance (L/h)")                    # Mo 2018 Table 3, Final PK model
 
     # Covariate effects (Mo 2018 Table 3 footnotes a and b)
     e_wt_cl    <- 0.431;   label("Power exponent of WT on CL (unitless)")                 # Mo 2018 Table 3, WTE_CL

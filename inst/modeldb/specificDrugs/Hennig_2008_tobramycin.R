@@ -53,10 +53,10 @@ Hennig_2008_tobramycin <- function() {
     # All four PK parameters in Hennig 2008 Table 2 (Covariate model column) are
     # the typical values per 70 kg; allometric scaling per the table footnote
     # (f = 3/4 for clearance, f = 1 for volume) is applied to CL, Q, Vc, Vper.
-    lcl    <- log(6.37);   label("Clearance for a 70 kg patient (CL, L/h)")           # Hennig 2008 Table 2 (Covariate model)
-    lvc    <- log(18.70);  label("Central volume of distribution for a 70 kg patient (Vc, L)")  # Hennig 2008 Table 2 (Covariate model)
-    lq     <- log(0.39);   label("Intercompartmental clearance for a 70 kg patient (Q, L/h)")   # Hennig 2008 Table 2 (Covariate model)
-    lvp    <- log(1.32);   label("Peripheral volume of distribution for a 70 kg patient (Vper, L)")  # Hennig 2008 Table 2 (Covariate model)
+    lcl    <- log(6.37);   label("Clearance for a 70 kg patient (L/h)")           # Hennig 2008 Table 2 (Covariate model)
+    lvc    <- log(18.70);  label("Central volume of distribution for a 70 kg patient (L)")  # Hennig 2008 Table 2 (Covariate model)
+    lq     <- log(0.39);   label("Intercompartmental clearance for a 70 kg patient (L/h)")   # Hennig 2008 Table 2 (Covariate model)
+    lvp    <- log(1.32);   label("Peripheral volume of distribution for a 70 kg patient (L)")  # Hennig 2008 Table 2 (Covariate model)
 
     # Allometric exponents (Hennig 2008 Table 2 footnote: fixed)
     e_wt_cl_q  <- fixed(0.75); label("Allometric (WT) exponent on CL and Q (unitless)")  # Hennig 2008 Table 2 footnote

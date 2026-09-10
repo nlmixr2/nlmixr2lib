@@ -86,7 +86,7 @@ Warren_2025_orismilast <- function() {
     # paper's rounded conversion; 8 nM x 510.29 g/mol (MW from Warren 2025 Methods)
     # = 4.0823 ng/mL, which is the exact ng/mL equivalent of the reported molar value
     # and is what this model uses. Not re-estimated here, hence fixed().
-    lec50 <- fixed(log(4.0823)); label("Orismilast concentration inhibiting 50% of whole-blood IL-13 production (IC50, ng/mL)")  # Warren 2025 Table 2: IC50 = 8 nM (4 ng/mL); 8e-9 mol/L * 510.29 g/mol = 4.0823 ng/mL
+    lec50 <- fixed(log(4.0823)); label("Orismilast concentration inhibiting 50% of whole-blood IL-13 production (ng/mL)")  # Warren 2025 Table 2: IC50 = 8 nM (4 ng/mL); 8e-9 mol/L * 510.29 g/mol = 4.0823 ng/mL
 
     limax <- fixed(log(1)); label("Maximum fractional inhibition of IL-13 production (unitless)")  # Warren 2025 Methods: the IC50 is estimated "relative to the maximum response achieved with each drug", so the fitted asymptote is 100% of the achievable inhibition
 

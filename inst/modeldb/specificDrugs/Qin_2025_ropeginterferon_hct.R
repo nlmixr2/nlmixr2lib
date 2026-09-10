@@ -120,17 +120,17 @@ Qin_2025_ropeginterferon_hct <- function() {
     # source-trace and for the three proofs that the table's h^-1 unit
     # labels should read day^-1.
     # ==================================================================
-    lka     <- fixed(log(0.18))    ; label("First-order absorption rate constant from the subcutaneous depot (Ka, 1/day)")   # Qin 2025 Table 2: Ka 0.18 (RSE 1.04%); inherited unchanged by the sequential PD fit
-    ltlag   <- fixed(log(0.62))    ; label("Absorption lag time on the subcutaneous depot (ALAG, day)")                      # Qin 2025 Table 2: 0.62 (RSE 0.421%)
-    lcl     <- fixed(log(0.753))   ; label("Linear clearance at the median BMI of 23.1 kg/m^2 (CL, L/day)")                  # Qin 2025 Table 2: CL 0.753 (RSE 0.846%)
-    lvc     <- fixed(log(3.29))    ; label("Volume of the serum compartment (Vc, L)")                                        # Qin 2025 Table 2: Vc 3.29 (RSE 1.03%)
-    lrtot0  <- fixed(log(0.317))   ; label("Baseline maximum target binding capacity (Rtot0, ng/mL)")                        # Qin 2025 Table 2: Rtot0 0.317 (RSE 0.904%)
-    lrtot_ss <- fixed(log(0.012))  ; label("Steady-state maximum target binding capacity under chronic dosing (Rtot,SS, ng/mL)")  # Qin 2025 Table 2: Rtot,SS 0.012 (RSE 0.997%)
-    lkint   <- fixed(log(0.0223))  ; label("First-order elimination rate constant of the drug-target complex (kint, 1/day)") # Qin 2025 Table 2: kint 0.0223 (RSE 0.88%)
-    lkdeg   <- fixed(log(0.51))    ; label("First-order degradation rate constant of free target (kdeg, 1/day)")             # Qin 2025 Table 2: kdeg 0.51 (RSE 0.576%)
-    lkd     <- fixed(log(0.0662))  ; label("Equilibrium dissociation constant of ropeg for its target (KD, ng/mL)")          # Qin 2025 Table 2: KD 0.0662 (RSE 0.981%)
-    lkdecay <- fixed(log(0.0255))  ; label("First-order rate constant of the decline in binding capacity (kdec, 1/day)")     # Qin 2025 Table 2: kdec 0.0255 (RSE 0.892%); Methods 2.4.1 states this one is "in day-1"
-    t_start <- fixed(7)            ; label("Time after the first dose at which target mediation begins in patients (TSTART, day)")  # Qin 2025 Table 2: TSTART 7 (FIX)
+    lka     <- fixed(log(0.18))    ; label("First-order absorption rate constant from the subcutaneous depot (1/day)")   # Qin 2025 Table 2: Ka 0.18 (RSE 1.04%); inherited unchanged by the sequential PD fit
+    ltlag   <- fixed(log(0.62))    ; label("Absorption lag time on the subcutaneous depot (day)")                      # Qin 2025 Table 2: 0.62 (RSE 0.421%)
+    lcl     <- fixed(log(0.753))   ; label("Linear clearance at the median BMI of 23.1 kg/m^2 (L/day)")                  # Qin 2025 Table 2: CL 0.753 (RSE 0.846%)
+    lvc     <- fixed(log(3.29))    ; label("Volume of the serum compartment (L)")                                        # Qin 2025 Table 2: Vc 3.29 (RSE 1.03%)
+    lrtot0  <- fixed(log(0.317))   ; label("Baseline maximum target binding capacity (ng/mL)")                        # Qin 2025 Table 2: Rtot0 0.317 (RSE 0.904%)
+    lrtot_ss <- fixed(log(0.012))  ; label("Steady-state maximum target binding capacity under chronic dosing (SS, ng/mL)")  # Qin 2025 Table 2: Rtot,SS 0.012 (RSE 0.997%)
+    lkint   <- fixed(log(0.0223))  ; label("First-order elimination rate constant of the drug-target complex (1/day)") # Qin 2025 Table 2: kint 0.0223 (RSE 0.88%)
+    lkdeg   <- fixed(log(0.51))    ; label("First-order degradation rate constant of free target (1/day)")             # Qin 2025 Table 2: kdeg 0.51 (RSE 0.576%)
+    lkd     <- fixed(log(0.0662))  ; label("Equilibrium dissociation constant of ropeg for its target (ng/mL)")          # Qin 2025 Table 2: KD 0.0662 (RSE 0.981%)
+    lkdecay <- fixed(log(0.0255))  ; label("First-order rate constant of the decline in binding capacity (1/day)")     # Qin 2025 Table 2: kdec 0.0255 (RSE 0.892%); Methods 2.4.1 states this one is "in day-1"
+    t_start <- fixed(7)            ; label("Time after the first dose at which target mediation begins in patients (day)")  # Qin 2025 Table 2: TSTART 7 (FIX)
     e_bmi_cl <- fixed(0.813)       ; label("Power exponent on (BMI / 23.1) for clearance (unitless)")                        # Qin 2025 Table 2: BMI effect on CL 0.813 (RSE 9.39%)
 
     etalka    ~ fixed(0.397837) ; label("IIV variance on log Ka")     # Qin 2025 Table 2: 69.9% CV; log(0.699^2 + 1)
@@ -169,11 +169,11 @@ Qin_2025_ropeginterferon_hct <- function() {
     # Hill coefficient". The final model is therefore a plain Imax with
     # an implicit exponent of 1, and no gamma appears in Table 3.
     # ==================================================================
-    lrbase    <- log(0.459) ; label("Initial hematocrit at the start of ropeg treatment, the initial condition of both hematocrit states (HCT0, fraction)")  # Qin 2025 Table 3, HCT block: HCT0 0.459 (RSE 1.41%). Discussion restates it as "the estimated initial HCT was 45.9%"
-    lrbase_ss <- log(0.489) ; label("Drug-free steady-state hematocrit the system relaxes toward (HCTss, fraction)")                                         # Qin 2025 Table 3, HCT block: HCTss 0.489 (RSE 0.516%). Discussion restates it as "the equilibrium value was 48.9%". Note HCTss > HCT0, so an untreated patient drifts UPWARD
-    lic50     <- log(137)   ; label("Total serum ropeg concentration producing half of Imax on hematocrit production (IC50, ng/mL)")                         # Qin 2025 Table 3, HCT block: IC50 137 (RSE 14.6%). Discussion restates it as "IC50,H estimated at 137 ng mL-1"
-    limax     <- log(0.592) ; label("Maximum fractional inhibition of hematocrit production by ropeg (Imax, unitless fraction of kin)")                      # Qin 2025 Table 3, HCT block: Imax 0.592 (RSE 3.42%). Discussion restates it as "maximally reduce kin,H (Imax,H) by 59.2%"
-    lktr      <- log(0.023) ; label("First-order transit rate constant governing both the transit-to-hematocrit and hematocrit-loss transfers (ktr, 1/day)")  # Qin 2025 Table 3, HCT block: ktr 0.023 (RSE 10.1%), printed as h-1; per day (see the vignette Errata)
+    lrbase    <- log(0.459) ; label("Initial hematocrit at the start of ropeg treatment, the initial condition of both hematocrit states (fraction)")  # Qin 2025 Table 3, HCT block: HCT0 0.459 (RSE 1.41%). Discussion restates it as "the estimated initial HCT was 45.9%"
+    lrbase_ss <- log(0.489) ; label("Drug-free steady-state hematocrit the system relaxes toward (fraction)")                                         # Qin 2025 Table 3, HCT block: HCTss 0.489 (RSE 0.516%). Discussion restates it as "the equilibrium value was 48.9%". Note HCTss > HCT0, so an untreated patient drifts UPWARD
+    lic50     <- log(137)   ; label("Total serum ropeg concentration producing half of Imax on hematocrit production (ng/mL)")                         # Qin 2025 Table 3, HCT block: IC50 137 (RSE 14.6%). Discussion restates it as "IC50,H estimated at 137 ng mL-1"
+    limax     <- log(0.592) ; label("Maximum fractional inhibition of hematocrit production by ropeg (unitless fraction of kin)")                      # Qin 2025 Table 3, HCT block: Imax 0.592 (RSE 3.42%). Discussion restates it as "maximally reduce kin,H (Imax,H) by 59.2%"
+    lktr      <- log(0.023) ; label("First-order transit rate constant governing both the transit-to-hematocrit and hematocrit-loss transfers (1/day)")  # Qin 2025 Table 3, HCT block: ktr 0.023 (RSE 10.1%), printed as h-1; per day (see the vignette Errata)
 
     # ----- IIV on the hematocrit parameters -----
     # Table 3 reports IIV as a per-cent CV for log-normal random effects,

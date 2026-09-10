@@ -168,9 +168,9 @@ Denti_2018_levofloxacin <- function() {
     lvc     <- log(19.2);  label("Central volume of distribution (Vc, L) at 12 kg")    # Table 2 row "Vc"
     lq      <- log(0.796); label("Intercompartmental clearance (Q, L/h) at 12 kg")     # Table 2 row "Q"
     lvp     <- log(3.40);  label("Peripheral volume of distribution (Vp, L) at 12 kg") # Table 2 row "Vp"
-    lka     <- log(1.61);  label("Absorption rate constant (ka, 1/h)")                 # Table 2 row "ka"
+    lka     <- log(1.61);  label("Absorption rate constant (1/h)")                 # Table 2 row "ka"
     ltlag   <- log(0.242); label("Absorption lag time (T_lag, h) for oral dosing")     # Table 2 row "T_lag" (for oral)
-    lfdepot <- fixed(log(1)); label("Bioavailability anchor (F, fraction)")            # Table 2 row "F" = 1 (fixed)
+    lfdepot <- fixed(log(1)); label("Bioavailability anchor (fraction)")            # Table 2 row "F" = 1 (fixed)
 
     # Allometric exponents (fixed per Denti 2018 Methods: 0.75 on CL parameters and
     # 1 on volume parameters, citing Anderson and Holford 2008).

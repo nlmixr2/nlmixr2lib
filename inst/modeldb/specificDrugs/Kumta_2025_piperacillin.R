@@ -104,18 +104,18 @@ Kumta_2025_piperacillin <- function() {
 
   ini({
     # ---- Plasma disposition (Kumta 2025 Table 3, piperacillin "Estimate (%RSE)" column) ----
-    lcl   <- log(12.7);    label("Clearance from the central compartment (Cl, L/h)")                                  # Table 3: Cl 12.7 L/h (%RSE 11.1); bootstrap median 12.6 (95% CI 10.3-15.8)
-    lvc   <- log(13.4);    label("Central compartment volume (V1, L)")                                                # Table 3: V1 13.4 L (%RSE 15.0); bootstrap median 13.5 (95% CI 9.35-17.6)
-    lq    <- log(7.25);    label("Inter-compartmental clearance central <-> peripheral (Q, L/h)")                     # Table 3: Q 7.25 L/h (%RSE 3.41); bootstrap median 6.85 (95% CI 1.85-70.7)
-    lvp   <- log(4.99);    label("Peripheral compartment volume (V2, L)")                                             # Table 3: V2 4.99 L (%RSE 28.5); bootstrap median 4.98 (95% CI 2.94-12.6)
+    lcl   <- log(12.7);    label("Clearance from the central compartment (L/h)")                                  # Table 3: Cl 12.7 L/h (%RSE 11.1); bootstrap median 12.6 (95% CI 10.3-15.8)
+    lvc   <- log(13.4);    label("Central compartment volume (L)")                                                # Table 3: V1 13.4 L (%RSE 15.0); bootstrap median 13.5 (95% CI 9.35-17.6)
+    lq    <- log(7.25);    label("Inter-compartmental clearance central <-> peripheral (L/h)")                     # Table 3: Q 7.25 L/h (%RSE 3.41); bootstrap median 6.85 (95% CI 1.85-70.7)
+    lvp   <- log(4.99);    label("Peripheral compartment volume (L)")                                             # Table 3: V2 4.99 L (%RSE 28.5); bootstrap median 4.98 (95% CI 2.94-12.6)
 
     # ---- CSF compartment (Kumta 2025 Fig. 1 and Table 3) ----
     # Fig. 1 draws the CSF compartment exchanging with the CENTRAL compartment
     # only, with rate constants Q3/V1 (out of central) and Q3/V3 (out of CSF),
     # and draws NO elimination arrow from the CSF box. Results: "a three-
     # compartment model without clearance from the CSF compartment".
-    lqcsf <- log(0.00024); label("Inter-compartmental clearance central <-> CSF (Q3, L/h)")                           # Table 3: Q3 0.00024 L/h (%RSE 85.3); bootstrap median 0.00025 (95% CI 0.00013-0.00047)
-    lvcsf <- log(0.16);    label("CSF compartment volume (V3, L)")                                                    # Table 3: V3 0.16 L (%RSE 80.2); bootstrap median 0.16 (95% CI 0.12-0.25)
+    lqcsf <- log(0.00024); label("Inter-compartmental clearance central <-> CSF (L/h)")                           # Table 3: Q3 0.00024 L/h (%RSE 85.3); bootstrap median 0.00025 (95% CI 0.00013-0.00047)
+    lvcsf <- log(0.16);    label("CSF compartment volume (L)")                                                    # Table 3: V3 0.16 L (%RSE 80.2); bootstrap median 0.16 (95% CI 0.12-0.25)
 
     # ---- Between-subject variability ----
     # Methods: BSV used the exponential model theta_j = theta_p * exp(eta_j)

@@ -227,21 +227,21 @@ Qin_2025_ropeginterferon <- function() {
     # ==================================================================
 
     # ----- Absorption -----
-    lka   <- log(0.18)   ; label("First-order absorption rate constant from the subcutaneous depot (Ka, 1/day)")     # Qin 2025 Table 2: Ka 0.18 (RSE 1.04%), printed as h-1; per day (see the unit note above)
-    ltlag <- log(0.62)   ; label("Absorption lag time on the subcutaneous depot (ALAG, day)")                        # Qin 2025 Table 2: absorption lag time 0.62 (RSE 0.421%), printed as h. Carried in DAYS for internal consistency with the rest of the table; a 0.62 h reading changes Cmax and AUC by under 1% because Tmax is ~118 h (see vignette Errata)
+    lka   <- log(0.18)   ; label("First-order absorption rate constant from the subcutaneous depot (1/day)")     # Qin 2025 Table 2: Ka 0.18 (RSE 1.04%), printed as h-1; per day (see the unit note above)
+    ltlag <- log(0.62)   ; label("Absorption lag time on the subcutaneous depot (day)")                        # Qin 2025 Table 2: absorption lag time 0.62 (RSE 0.421%), printed as h. Carried in DAYS for internal consistency with the rest of the table; a 0.62 h reading changes Cmax and AUC by under 1% because Tmax is ~118 h (see vignette Errata)
 
     # ----- Linear disposition -----
-    lcl   <- log(0.753)  ; label("Linear clearance from the serum compartment at the median BMI of 23.1 kg/m^2 (CL, L/day)")  # Qin 2025 Table 2: CL 0.753 (RSE 0.846%), printed as L h-1; per day (see the unit note above)
-    lvc   <- log(3.29)   ; label("Volume of the serum compartment (Vc, L)")                                          # Qin 2025 Table 2: Vc 3.29 (RSE 1.03%)
+    lcl   <- log(0.753)  ; label("Linear clearance from the serum compartment at the median BMI of 23.1 kg/m^2 (L/day)")  # Qin 2025 Table 2: CL 0.753 (RSE 0.846%), printed as L h-1; per day (see the unit note above)
+    lvc   <- log(3.29)   ; label("Volume of the serum compartment (L)")                                          # Qin 2025 Table 2: Vc 3.29 (RSE 1.03%)
 
     # ----- Target-mediated disposition (quasi-equilibrium) -----
-    lrtot0    <- log(0.317)  ; label("Baseline maximum target binding capacity, the initial condition of the total-target pool (Rtot0, ng/mL)")  # Qin 2025 Table 2: Rtot0 0.317 (RSE 0.904%)
-    lrtot_ss  <- log(0.012)  ; label("Steady-state maximum target binding capacity reached under chronic dosing in patients (Rtot,SS, ng/mL)")   # Qin 2025 Table 2: Rtot,SS 0.012 (RSE 0.997%)
-    lkint     <- log(0.0223) ; label("First-order elimination rate constant of the drug-target complex (kint, 1/day)")                           # Qin 2025 Table 2: kint 0.0223 (RSE 0.88%), printed as h-1; per day
-    lkdeg     <- log(0.51)   ; label("First-order degradation rate constant of free target (kdeg, 1/day)")                                       # Qin 2025 Table 2: kdeg 0.51 (RSE 0.576%), printed as h-1; per day
-    lkd       <- log(0.0662) ; label("Equilibrium dissociation constant of ropeg for its target (KD, ng/mL)")                                    # Qin 2025 Table 2: KD 0.0662 (RSE 0.981%)
-    lkdecay   <- log(0.0255) ; label("First-order rate constant of the decline in binding capacity from Rtot0 to Rtot,SS (kdec, 1/day)")         # Qin 2025 Table 2: kdec 0.0255 (RSE 0.892%). Methods 2.4.1 states this one explicitly as "in day-1", which is the direct textual confirmation that Table 2's h-1 labels are wrong
-    t_start   <- fixed(7)    ; label("Time after the first dose at which target mediation begins in patients (TSTART, day)")                     # Qin 2025 Table 2: TSTART 7 (FIX), printed as h; carried in DAYS with the rest of the table. Immaterial either way against the 27-day half-life of the kdec decline
+    lrtot0    <- log(0.317)  ; label("Baseline maximum target binding capacity, the initial condition of the total-target pool (ng/mL)")  # Qin 2025 Table 2: Rtot0 0.317 (RSE 0.904%)
+    lrtot_ss  <- log(0.012)  ; label("Steady-state maximum target binding capacity reached under chronic dosing in patients (SS, ng/mL)")   # Qin 2025 Table 2: Rtot,SS 0.012 (RSE 0.997%)
+    lkint     <- log(0.0223) ; label("First-order elimination rate constant of the drug-target complex (1/day)")                           # Qin 2025 Table 2: kint 0.0223 (RSE 0.88%), printed as h-1; per day
+    lkdeg     <- log(0.51)   ; label("First-order degradation rate constant of free target (1/day)")                                       # Qin 2025 Table 2: kdeg 0.51 (RSE 0.576%), printed as h-1; per day
+    lkd       <- log(0.0662) ; label("Equilibrium dissociation constant of ropeg for its target (ng/mL)")                                    # Qin 2025 Table 2: KD 0.0662 (RSE 0.981%)
+    lkdecay   <- log(0.0255) ; label("First-order rate constant of the decline in binding capacity from Rtot0 to Rtot,SS (1/day)")         # Qin 2025 Table 2: kdec 0.0255 (RSE 0.892%). Methods 2.4.1 states this one explicitly as "in day-1", which is the direct textual confirmation that Table 2's h-1 labels are wrong
+    t_start   <- fixed(7)    ; label("Time after the first dose at which target mediation begins in patients (day)")                     # Qin 2025 Table 2: TSTART 7 (FIX), printed as h; carried in DAYS with the rest of the table. Immaterial either way against the 27-day half-life of the kdec decline
 
     # ----- Covariate effect -----
     e_bmi_cl <- 0.813 ; label("Power exponent on (BMI / 23.1) for clearance (unitless)")  # Qin 2025 Table 2: "BMI effect on CL" 0.813 (RSE 9.39%). Applied through the paper's Equation (1) power form P_i = P_TV*(COV/COV_med)^theta with COV_med = 23.1 kg/m^2 (Table 1, Overall median)

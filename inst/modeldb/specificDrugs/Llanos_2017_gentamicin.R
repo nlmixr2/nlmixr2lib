@@ -64,13 +64,13 @@ Llanos_2017_gentamicin <- function() {
     # Structural parameters from Llanos 2017 Table 2 (Final model column).
     # Typical values are normalized to a 70 kg adult-equivalent reference subject
     # via the FFM/70 allometric scaling and the GFRmat asymptote 112 mL/min.
-    lcl <- log(5.77); label("Clearance (CL, L/h per 70 kg reference)")                                  # Llanos 2017 Table 2
-    lvc <- log(21.6); label("Central volume of distribution (V1, L per 70 kg reference)")              # Llanos 2017 Table 2
-    lvp <- log(13.8); label("Peripheral volume of distribution (V2, L per 70 kg reference)")           # Llanos 2017 Table 2
-    lq  <- log(0.62); label("Intercompartmental clearance (Q, L/h per 70 kg reference)")               # Llanos 2017 Table 2
+    lcl <- log(5.77); label("Clearance (L/h per 70 kg reference)")                                  # Llanos 2017 Table 2
+    lvc <- log(21.6); label("Central volume of distribution (L per 70 kg reference)")              # Llanos 2017 Table 2
+    lvp <- log(13.8); label("Peripheral volume of distribution (L per 70 kg reference)")           # Llanos 2017 Table 2
+    lq  <- log(0.62); label("Intercompartmental clearance (L/h per 70 kg reference)")               # Llanos 2017 Table 2
 
     # Covariate effect coefficients (Llanos 2017 Table 2 footer; Methods Eq. 3-4).
-    e_creat_cl  <- 0.55; label("Power exponent of CREAT_REF/CREAT on CL (theta_Scr, unitless)")        # Llanos 2017 Table 2
+    e_creat_cl  <- 0.55; label("Power exponent of CREAT_REF/CREAT on CL (unitless)")        # Llanos 2017 Table 2
     e_ffm_cl_q  <- 0.75; label("Shared FFM/70 allometric exponent on CL (via GFRmat) and on Q (unitless)") # Llanos 2017 Methods Eq. 4
     e_ffm_vc_vp <- 1;    label("Shared FFM/70 allometric exponent on V1 and V2 (unitless)")            # Llanos 2017 Table 2 footer
     pma_hill    <- 3.33; label("Hill coefficient for postmenstrual-age GFR maturation (unitless)")     # Llanos 2017 Methods Eq. 3 (Rhodin 2009)
@@ -87,8 +87,8 @@ Llanos_2017_gentamicin <- function() {
     etalvp ~ 0.32870                      # Llanos 2017 Table 2 (BSV V2, CV 62.4%)
 
     # Residual error (Llanos 2017 Table 2 final model).
-    propSd <- 0.275; label("Proportional residual error (SD, fraction)")                                # Llanos 2017 Table 2
-    addSd  <- 0.04;  label("Additive residual error (SD, mg/L)")                                        # Llanos 2017 Table 2
+    propSd <- 0.275; label("Proportional residual error (fraction)")                                # Llanos 2017 Table 2
+    addSd  <- 0.04;  label("Additive residual error (mg/L)")                                        # Llanos 2017 Table 2
   })
   model({
     # Convert canonical PAGE (months) to postmenstrual age in weeks for the

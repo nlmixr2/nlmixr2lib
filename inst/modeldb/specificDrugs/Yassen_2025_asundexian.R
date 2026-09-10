@@ -85,10 +85,10 @@ Yassen_2025_asundexian <- function() {
     # eGFR = 77 mL/min/1.73 m^2, male, no CYP3A4 inhibitor.
     # Source: Yassen 2025 Table 4 (Estimate column) and section 3.2.
 
-    lcl <- log(2.25);  label("Apparent clearance, reference participant (CL/F, L/h)")            # Table 4
-    lvc <- log(35.3);  label("Apparent central volume of distribution, reference participant (Vc/F, L)")  # Table 4 -- model assumes Vp/F = Vc/F (overparameterisation constraint)
-    lka <- log(1.87);  label("First-order absorption rate constant (Ka, 1/h)")                    # Table 4
-    lq  <- log(27.4);  label("Apparent inter-compartmental clearance (Q/F, L/h)")                  # Table 4
+    lcl <- log(2.25);  label("Apparent clearance, reference participant (L/h)")            # Table 4
+    lvc <- log(35.3);  label("Apparent central volume of distribution, reference participant (L)")  # Table 4 -- model assumes Vp/F = Vc/F (overparameterisation constraint)
+    lka <- log(1.87);  label("First-order absorption rate constant (1/h)")                    # Table 4
+    lq  <- log(27.4);  label("Apparent inter-compartmental clearance (L/h)")                  # Table 4
 
     # Covariate effects on CL/F
     e_age_cl        <- -0.426;   label("Power exponent of age on CL/F (unitless)")                 # Table 4

@@ -60,7 +60,7 @@ Barnett_2018_rifampicin <- function() {
     lcl  <- log(3.97);  label("Apparent oral clearance CL/F (L/h)")                       # Table 1, RIF row 'CL (L/h)' = 3.97
     lvc  <- log(24.7);  label("Apparent central volume of distribution V/F (L)")          # Table 1, RIF row 'V (L)' = 24.7
     lmtt <- log(0.74);  label("Mean transit time MTT through the absorption chain (h)")   # Table 1, RIF row 'MTT (h)' = 0.74
-    lnn  <- log(8.63);  label("Number of transit compartments NN (continuous, unitless)") # Table 1, RIF row 'n' = 8.63
+    lnn  <- log(8.63);  label("Number of transit compartments NN, estimated on a continuous scale (unitless)") # Table 1, RIF row 'n' = 8.63
 
     # IIV -- log-normal variances computed from Table 1 IIV CV% column
     # via the standard omega^2 = log(1 + CV^2) conversion.

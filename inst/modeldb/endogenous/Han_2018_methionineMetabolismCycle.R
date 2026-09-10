@@ -40,19 +40,19 @@ Han_2018_methionineMetabolismCycle <- function() {
 
   ini({
     # Methionine compartment-transfer and elimination rate constants (Han 2018 Table 1; common to both cohorts -- see Results paragraph 1)
-    lkcm <- log(0.13);          label("Rate constant: methionine plasma -> hepatic (K_CM, 1/h)")     # Han 2018 Table 1 (point estimate 0.13, RSE 16.8 %)
-    lkmc <- fixed(log(0.0629)); label("Rate constant: methionine hepatic -> plasma (K_MC, 1/h)")     # Han 2018 Table 1 (no RSE reported; fixed during estimation)
-    lkms <- log(0.605);         label("Rate constant: methionine hepatic -> SAM via MAT (K_MS, 1/h)")# Han 2018 Table 1 (point estimate 0.605, RSE 9.5 %)
-    lkss <- fixed(log(3220));   label("Rate constant: SAM -> SAH via methyltransferases (K_SS, 1/h)")# Han 2018 Table 1 (no RSE reported; fixed during estimation)
-    lkel <- fixed(log(0.245));  label("Methionine elimination rate constant (K_EL, 1/h)")            # Han 2018 Table 1 (no RSE reported; fixed during estimation)
-    lvc  <- fixed(log(0.15));   label("Apparent volume of distribution for plasma compartments (V_c, L/kg)")  # Han 2018 Table 1 (no RSE reported; fixed during estimation)
+    lkcm <- log(0.13);          label("Rate constant: methionine plasma -> hepatic (1/h)")     # Han 2018 Table 1 (point estimate 0.13, RSE 16.8 %)
+    lkmc <- fixed(log(0.0629)); label("Rate constant: methionine hepatic -> plasma (1/h)")     # Han 2018 Table 1 (no RSE reported; fixed during estimation)
+    lkms <- log(0.605);         label("Rate constant: methionine hepatic -> SAM via MAT (1/h)")# Han 2018 Table 1 (point estimate 0.605, RSE 9.5 %)
+    lkss <- fixed(log(3220));   label("Rate constant: SAM -> SAH via methyltransferases (1/h)")# Han 2018 Table 1 (no RSE reported; fixed during estimation)
+    lkel <- fixed(log(0.245));  label("Methionine elimination rate constant (1/h)")            # Han 2018 Table 1 (no RSE reported; fixed during estimation)
+    lvc  <- fixed(log(0.15));   label("Apparent volume of distribution for plasma compartments (L/kg)")  # Han 2018 Table 1 (no RSE reported; fixed during estimation)
 
     # SAH -> homocysteine and homocysteine-fate rate constants (Han 2018 Table 1 control-rat point estimates)
-    lksh <- log(11.6);          label("Rate constant: SAH -> homocysteine via SAHH (K_SH, 1/h)")      # Han 2018 Table 1 control (point estimate 11.6, RSE 20.5 %)
-    lkhm <- log(30.7);          label("Rate constant: homocysteine -> methionine via BHMT (K_HM, 1/h)")# Han 2018 Table 1 control (point estimate 30.7, RSE 31.1 %)
-    lkhc <- log(11.1);          label("Rate constant: homocysteine -> cysteine via CBS (K_HC, 1/h)") # Han 2018 Table 1 control (point estimate 11.1, RSE 4.8 %)
-    lkhp <- log(142);           label("Rate constant: homocysteine hepatic -> plasma (K_HP, 1/h)")    # Han 2018 Table 1 control (point estimate 142, RSE 18.5 %)
-    lkph <- log(5.13);          label("Rate constant: homocysteine plasma -> hepatic (K_PH, 1/h)")    # Han 2018 Table 1 control (point estimate 5.13, RSE 10.4 %)
+    lksh <- log(11.6);          label("Rate constant: SAH -> homocysteine via SAHH (1/h)")      # Han 2018 Table 1 control (point estimate 11.6, RSE 20.5 %)
+    lkhm <- log(30.7);          label("Rate constant: homocysteine -> methionine via BHMT (1/h)")# Han 2018 Table 1 control (point estimate 30.7, RSE 31.1 %)
+    lkhc <- log(11.1);          label("Rate constant: homocysteine -> cysteine via CBS (1/h)") # Han 2018 Table 1 control (point estimate 11.1, RSE 4.8 %)
+    lkhp <- log(142);           label("Rate constant: homocysteine hepatic -> plasma (1/h)")    # Han 2018 Table 1 control (point estimate 142, RSE 18.5 %)
+    lkph <- log(5.13);          label("Rate constant: homocysteine plasma -> hepatic (1/h)")    # Han 2018 Table 1 control (point estimate 5.13, RSE 10.4 %)
 
     # DIS_DIAB (ZDF) covariate effects (multiplicative on log scale, Han 2018 Eqs 8-11).
     # Coefficient = log(K_ZDF / K_control); ZDF cohort recovers when DIS_DIAB = 1.

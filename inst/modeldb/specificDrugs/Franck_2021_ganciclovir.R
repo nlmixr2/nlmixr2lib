@@ -99,16 +99,16 @@ Franck_2021_ganciclovir <- function() {
     # Structural PK -- Yang 2023 Table 3, Franck et al. (2021) row. Reference
     # subject: WT = 26.7 kg, CrCL = 149.8 mL/min/1.73 m^2. Clearances in L/h,
     # volumes in L, ka in 1/h, lag time in h.
-    lcl   <- log(6.9) ; label("Clearance at WT = 26.7 kg and CrCL = 149.8 mL/min/1.73 m^2 (CL, L/h)") # Yang 2023 Table 3 (Franck 2021): CL = 6.9 * (BW/26.7)^0.75 * (CrCL/149.8)^0.88
-    lvc   <- log(9.7) ; label("Central volume of distribution at WT = 26.7 kg (Vc, L)")               # Yang 2023 Table 3 (Franck 2021): Vc = 9.7 * (BW/26.7)
-    lq    <- log(10.9); label("Inter-compartmental clearance (Q, L/h; not weight-scaled)")            # Yang 2023 Table 3 (Franck 2021): Q = 10.9
-    lvp   <- log(7.6) ; label("Peripheral volume of distribution at WT = 26.7 kg (Vp, L)")            # Yang 2023 Table 3 (Franck 2021): Vp = 7.6 * (BW/26.7)
-    lka   <- log(0.73); label("First-order oral absorption rate constant (ka, 1/h)")                  # Yang 2023 Table 3 (Franck 2021): Ka = 0.73
-    ltlag <- log(0.33); label("Absorption lag time (Tlag, h)")                                        # Yang 2023 Table 3 (Franck 2021): Tlag = 0.33
+    lcl   <- log(6.9) ; label("Clearance at WT = 26.7 kg and CrCL = 149.8 mL/min/1.73 m^2 (L/h)") # Yang 2023 Table 3 (Franck 2021): CL = 6.9 * (BW/26.7)^0.75 * (CrCL/149.8)^0.88
+    lvc   <- log(9.7) ; label("Central volume of distribution at WT = 26.7 kg (L)")               # Yang 2023 Table 3 (Franck 2021): Vc = 9.7 * (BW/26.7)
+    lq    <- log(10.9); label("Inter-compartmental clearance (L/h; not weight-scaled)")            # Yang 2023 Table 3 (Franck 2021): Q = 10.9
+    lvp   <- log(7.6) ; label("Peripheral volume of distribution at WT = 26.7 kg (L)")            # Yang 2023 Table 3 (Franck 2021): Vp = 7.6 * (BW/26.7)
+    lka   <- log(0.73); label("First-order oral absorption rate constant (1/h)")                  # Yang 2023 Table 3 (Franck 2021): Ka = 0.73
+    ltlag <- log(0.33); label("Absorption lag time (h)")                                        # Yang 2023 Table 3 (Franck 2021): Tlag = 0.33
 
     # Oral bioavailability of ganciclovir from a valganciclovir milligram dose
     # (no molecular-weight conversion was applied by this study).
-    lfdepot <- log(0.43); label("Oral bioavailability of ganciclovir from valganciclovir (F, fraction)") # Yang 2023 Table 3 (Franck 2021): F = 0.43
+    lfdepot <- log(0.43); label("Oral bioavailability of ganciclovir from valganciclovir (fraction)") # Yang 2023 Table 3 (Franck 2021): F = 0.43
 
     # Covariate effects. The CrCL exponent 0.88 is a non-canonical estimated
     # value; the body-weight exponents 0.75 (CL) and 1 (Vc, Vp) are the canonical

@@ -50,10 +50,10 @@ Farrell_2012_farletuzumab <- function() {
     # Structural parameters (final model) — Farrell 2012 Table 3.
     # Reference weight 66.2 kg = overall population median (Table 1; paper states
     # COV_ST is the median value of the covariate in the study population).
-    lcl      <- log(0.00784); label("Clearance at reference body weight (CL, L/h)")                     # Table 3: CL = 0.00784 L/h
-    lvc      <- log(3.00);    label("Central volume of distribution at reference body weight (Vc, L)")  # Table 3: Vc = 3.00 L
-    lq       <- log(0.0203);  label("Inter-compartmental clearance (Q, L/h)")                          # Table 3: Q = 0.0203 L/h
-    lvp      <- log(7.50);    label("Peripheral volume of distribution (Vp, L)")                        # Table 3: Vp = 7.50 L
+    lcl      <- log(0.00784); label("Clearance at reference body weight (L/h)")                     # Table 3: CL = 0.00784 L/h
+    lvc      <- log(3.00);    label("Central volume of distribution at reference body weight (L)")  # Table 3: Vc = 3.00 L
+    lq       <- log(0.0203);  label("Inter-compartmental clearance (L/h)")                          # Table 3: Q = 0.0203 L/h
+    lvp      <- log(7.50);    label("Peripheral volume of distribution (L)")                        # Table 3: Vp = 7.50 L
 
     # Weight effect (power form on CL and Vc only; no weight effect on Q or Vp)
     e_wt_cl  <- 0.715;        label("Power exponent of body weight on CL (unitless)")                   # Table 3: CL ~ WT = 0.715

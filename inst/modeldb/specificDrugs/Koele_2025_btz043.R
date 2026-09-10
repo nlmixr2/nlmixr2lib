@@ -172,8 +172,8 @@ Koele_2025_btz043 <- function() {
     ltlag   <- log(1.83)    ; label("Lag time of the secondary parallel absorption route (h)")                          # Koele 2025 Table 2 'Lag time parallel absorption with food (h) 1.83 (1.76-1.90)'; control stream THETA(7)
 
     # Allometric exponents, fixed at the theory-based values.
-    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent on every apparent clearance (CL/F, Q/F, CL_M1, CL_M2, Q_M2; unitless)") # Koele 2025 Methods 'PK model development': 'allometrically scaled, using fixed exponents of 1 and 0.75'; control stream AlloCL = (WT/70)**0.75
-    e_wt_vc <- fixed(1)     ; label("Allometric exponent on every apparent volume (V/F, Vp/F, V_M1, V_M2, Vp_M2; unitless)")     # Koele 2025 Methods 'PK model development'; control stream AlloV = (WT/70)**1
+    e_wt_cl <- fixed(0.75)  ; label("Allometric exponent on every apparent clearance (Q/F, CL_M1, CL_M2, Q_M2; unitless)") # Koele 2025 Methods 'PK model development': 'allometrically scaled, using fixed exponents of 1 and 0.75'; control stream AlloCL = (WT/70)**0.75
+    e_wt_vc <- fixed(1)     ; label("Allometric exponent on every apparent volume (Vp/F, V_M1, V_M2, Vp_M2; unitless)")     # Koele 2025 Methods 'PK model development'; control stream AlloV = (WT/70)**1
 
     # -----------------------------------------------------------------------
     # Covariate effects, Koele 2025 Table 2 'Covariates'. All are

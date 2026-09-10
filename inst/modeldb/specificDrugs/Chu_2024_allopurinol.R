@@ -137,18 +137,18 @@ Chu_2024_allopurinol <- function() {
     # is the PERIPHERAL volume and the fixed "All V1" (0.1 L) is the
     # observed CENTRAL volume. Total Vss = 0.1 + 2.22 = 2.32 L.
     # ---------------------------------------------------------------------
-    lcl <- log(0.95);          label("Allopurinol clearance at birth (CL_Postnatal, L/h per 3.5 kg)")            # Chu 2024 Table 2: All CL_Postnatal = 0.95 L/h (95% CI 0.75-1.2)
-    lvp <- log(2.22);          label("Allopurinol peripheral volume of distribution (Vd_Postnatal, L per 3.5 kg)")  # Chu 2024 Table 2: All Vd_Postnatal = 2.22 L (95% CI 2-2.49); ESM S3 S3 = VA
-    lvc <- fixed(log(0.1));    label("Allopurinol central volume of distribution (V1, L per 3.5 kg)")             # Chu 2024 Table 2: All V1 = 0.1 L (fix); ESM S3 S1 = V1
-    lq  <- fixed(log(6.97));   label("Allopurinol intercompartmental clearance (Q1, L/h per 3.5 kg)")             # Chu 2024 Table 2: All Q1 = 6.97 L/h (fix). Sect. 3.2 text prints 6.79 L/h; see vignette Errata.
+    lcl <- log(0.95);          label("Allopurinol clearance at birth (L/h per 3.5 kg)")            # Chu 2024 Table 2: All CL_Postnatal = 0.95 L/h (95% CI 0.75-1.2)
+    lvp <- log(2.22);          label("Allopurinol peripheral volume of distribution (L per 3.5 kg)")  # Chu 2024 Table 2: All Vd_Postnatal = 2.22 L (95% CI 2-2.49); ESM S3 S3 = VA
+    lvc <- fixed(log(0.1));    label("Allopurinol central volume of distribution (L per 3.5 kg)")             # Chu 2024 Table 2: All V1 = 0.1 L (fix); ESM S3 S1 = V1
+    lq  <- fixed(log(6.97));   label("Allopurinol intercompartmental clearance (L/h per 3.5 kg)")             # Chu 2024 Table 2: All Q1 = 6.97 L/h (fix). Sect. 3.2 text prints 6.79 L/h; see vignette Errata.
 
     # ---------------------------------------------------------------------
     # Oxypurinol (metabolite). Chu 2024 Table 2 footnote b: "Oxypurinol
     # clearances and volume of distributions are relative to formation
     # fraction (assumed to be 1)".
     # ---------------------------------------------------------------------
-    lcl_oxy <- log(0.21);      label("Oxypurinol clearance at birth (CL_Postnatal, L/h per 3.5 kg)")              # Chu 2024 Table 2: Oxy CL_Postnatal = 0.21 L/h (95% CI 0.17-0.27)
-    lvc_oxy <- log(12);        label("Oxypurinol volume of distribution (Vd_Postnatal, L per 3.5 kg)")            # Chu 2024 Table 2: Oxy Vd_Postnatal = 12 L (95% CI 9.87-15.33)
+    lcl_oxy <- log(0.21);      label("Oxypurinol clearance at birth (L/h per 3.5 kg)")              # Chu 2024 Table 2: Oxy CL_Postnatal = 0.21 L/h (95% CI 0.17-0.27)
+    lvc_oxy <- log(12);        label("Oxypurinol volume of distribution (L per 3.5 kg)")            # Chu 2024 Table 2: Oxy Vd_Postnatal = 12 L (95% CI 9.87-15.33)
 
     # ---------------------------------------------------------------------
     # Auto-inhibition of allopurinol metabolism by oxypurinol. ESM S3 $DES:
@@ -157,7 +157,7 @@ Chu_2024_allopurinol <- function() {
     # data and then held) -- Chu 2024 Sect. 3.2 and Table 2.
     # ---------------------------------------------------------------------
     limax <- fixed(log(1));    label("Maximum achievable auto-inhibition of allopurinol conversion (fraction of conversion clearance)")  # Chu 2024 Table 2: Maximum achievable autoinhibition effect = 1 (fix)
-    lic50 <- fixed(log(1.1));  label("Oxypurinol concentration at 50% of maximum auto-inhibition (IC50, mg/L)")                          # Chu 2024 Table 2: IC50,auto-inhibition = 1.1 mg/L (fix)
+    lic50 <- fixed(log(1.1));  label("Oxypurinol concentration at 50% of maximum auto-inhibition (mg/L)")                          # Chu 2024 Table 2: IC50,auto-inhibition = 1.1 mg/L (fix)
     fm    <- fixed(1);         label("Molar fraction of allopurinol converted to oxypurinol (unitless)")                                 # Chu 2024 Table 2 footnote b and ESM S1 legend: "fm, formation fraction was assumed 1"
 
     # ---------------------------------------------------------------------

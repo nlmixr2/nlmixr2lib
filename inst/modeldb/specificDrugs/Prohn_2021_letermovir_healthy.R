@@ -171,39 +171,39 @@ Prohn_2021_letermovir_healthy <- function() {
     # log-normal IIV terms add on the natural-log scale.
     # ------------------------------------------------------------------
     lclmax <- log(12.3)
-    label("Maximal clearance at a reference 65.8 kg body weight (CLmax, L/h)")  # Table 2 'Clearance Vmax, L/h' CLmax 12.3 (RSE 2.60%, bootstrap 95% CI 11.3-13.3)
+    label("Maximal clearance at a reference 65.8 kg body weight (L/h)")  # Table 2 'Clearance Vmax, L/h' CLmax 12.3 (RSE 2.60%, bootstrap 95% CI 11.3-13.3)
     lvc <- log(7.46)
-    label("Central volume of distribution at reference (V1, L)")  # Table 2 'Central volume of distribution, L' V1 7.46 (RSE 6.30%, CI 6.94-7.89)
+    label("Central volume of distribution at reference (L)")  # Table 2 'Central volume of distribution, L' V1 7.46 (RSE 6.30%, CI 6.94-7.89)
     lvp <- log(61.6)
-    label("Fast peripheral volume of distribution at reference (V2, L)")  # Table 2 'Peripheral volume, L' V2 61.6 (RSE 4.80%, CI 55.3-68.2)
+    label("Fast peripheral volume of distribution at reference (L)")  # Table 2 'Peripheral volume, L' V2 61.6 (RSE 4.80%, CI 55.3-68.2)
     lvp2 <- log(12.1)
-    label("Second peripheral volume of distribution at reference (V3, L)")  # Table 2 'Peripheral volume, L' V3 12.1 (RSE 4.20%, CI 11.4-12.9)
+    label("Second peripheral volume of distribution at reference (L)")  # Table 2 'Peripheral volume, L' V3 12.1 (RSE 4.20%, CI 11.4-12.9)
     lvp3 <- log(19.0)
-    label("Third peripheral volume of distribution at reference (V4, L)")  # Table 2 'Peripheral volume, L' V4 19.0 (RSE 4.00%, CI 17.4-21.2)
+    label("Third peripheral volume of distribution at reference (L)")  # Table 2 'Peripheral volume, L' V4 19.0 (RSE 4.00%, CI 17.4-21.2)
     lq <- log(4.39)
-    label("Maximal intercompartmental clearance to peripheral1 (Q1max, L/h)")  # Table 2 'Intercompartment clearance Vmax, L/h' Q1max 4.39 (RSE 4.90%, CI 3.93-4.95)
+    label("Maximal intercompartmental clearance to peripheral1 (L/h)")  # Table 2 'Intercompartment clearance Vmax, L/h' Q1max 4.39 (RSE 4.90%, CI 3.93-4.95)
     lq2 <- log(31.3)
-    label("Intercompartmental clearance to peripheral2 (Q2, L/h)")  # Table 2 'Intercompartment clearance, L/h' Q2 31.3 (RSE 12.3%, CI 27.2-36.6)
+    label("Intercompartmental clearance to peripheral2 (L/h)")  # Table 2 'Intercompartment clearance, L/h' Q2 31.3 (RSE 12.3%, CI 27.2-36.6)
     lq3 <- log(4.91)
-    label("Intercompartmental clearance to peripheral3 (Q3, L/h)")  # Table 2 'Intercompartment clearance, L/h' Q3 4.91 (RSE 4.90%, CI 4.49-5.39)
+    label("Intercompartmental clearance to peripheral3 (L/h)")  # Table 2 'Intercompartment clearance, L/h' Q3 4.91 (RSE 4.90%, CI 4.49-5.39)
     lfdepot <- log(0.938)
-    label("Oral bioavailability (F1, fraction)")  # Table 2 'Bioavailability' F1 0.938 (RSE 2.10%, CI 0.906-0.974); Results quote "93.8%"
+    label("Oral bioavailability (fraction)")  # Table 2 'Bioavailability' F1 0.938 (RSE 2.10%, CI 0.906-0.974); Results quote "93.8%"
 
     # Saturable-elimination and saturable-distribution constants. Both are
     # tabulated in ng/mL, which is why the observation below is scaled to
     # ng/mL rather than left in mg/L.
     lkm_cl <- log(2680)
-    label("Michaelis-Menten constant for clearance (KMcl, ng/mL)")  # Table 2 'Michaelis-Menten constant, ng/ml' KMCL 2.68e3 (RSE 4.50%, CI 2.20e3-3.41e3)
+    label("Michaelis-Menten constant for clearance (ng/mL)")  # Table 2 'Michaelis-Menten constant, ng/ml' KMCL 2.68e3 (RSE 4.50%, CI 2.20e3-3.41e3)
     lkm_q <- log(5630)
-    label("Michaelis-Menten constant for intercompartmental clearance (KMq, ng/mL)")  # Table 2 'Michaelis-Menten constant, ng/ml' KMQ1 5.63e3 (RSE 10.3%, CI 3.81e3-7.32e3)
+    label("Michaelis-Menten constant for intercompartmental clearance (ng/mL)")  # Table 2 'Michaelis-Menten constant, ng/ml' KMQ1 5.63e3 (RSE 10.3%, CI 3.81e3-7.32e3)
 
     # Transit-compartment absorption (Savic parameterisation). NTR is not an
     # integer: it is an estimated continuous chain length, which the analytical
     # Savic form accommodates through the gamma function.
     lntr <- log(3.58)
-    label("Number of transit compartments (NTR, unitless)")  # Table 2 'Number of transit compartments' NTR 3.58 (RSE 1.70%, CI 3.12-4.09)
+    label("Number of transit compartments (unitless)")  # Table 2 'Number of transit compartments' NTR 3.58 (RSE 1.70%, CI 3.12-4.09)
     lmtt <- log(1.04)
-    label("Mean transit time intercept (TVMTT, h)")  # Table 2 'Mean transit time, h' MTT 1.04 (RSE 4.20%, CI 0.949-1.14)
+    label("Mean transit time intercept (h)")  # Table 2 'Mean transit time, h' MTT 1.04 (RSE 4.20%, CI 0.949-1.14)
 
     # Auto-induction of clearance. Figure 1a:
     #   d(EAI)/dt = kin * (1 + IMAG * Cc / 1000) - kout * EAI
@@ -218,9 +218,9 @@ Prohn_2021_letermovir_healthy <- function() {
     # kenz * enzyme with enzyme(0) <- 1). kout is therefore the only estimated
     # rate constant and kin is derived from it in model().
     lkout <- log(0.00783)
-    label("Turnover rate constant of the enzyme induction pool (kout, 1/h)")  # Table 2 'Turnover rate induction,/h' Kout 0.00783 (RSE not applicable, bootstrap CI 0.00580-0.00966)
+    label("Turnover rate constant of the enzyme induction pool (1/h)")  # Table 2 'Turnover rate induction,/h' Kout 0.00783 (RSE not applicable, bootstrap CI 0.00580-0.00966)
     imag <- 0.0829
-    label("Slope of the concentration-driven induction effect (IMAG, per ug/mL)")  # Table 2 'Slope of induction effect' IMAG 0.0829 (RSE not calculated, bootstrap CI 0.0672-0.102)
+    label("Slope of the concentration-driven induction effect (per ug/mL)")  # Table 2 'Slope of induction effect' IMAG 0.0829 (RSE not calculated, bootstrap CI 0.0672-0.102)
 
     # ------------------------------------------------------------------
     # Covariate effects

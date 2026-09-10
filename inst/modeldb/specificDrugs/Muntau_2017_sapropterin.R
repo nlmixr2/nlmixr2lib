@@ -44,11 +44,11 @@ Muntau_2017_sapropterin <- function() {
     # Structural parameters -- Muntau 2017 Table 3 final model
     # (reference weight 70 kg adult male per Table 4 footnote; oral dose,
     # apparent parameters).
-    lka   <- log(0.234); label("First-order absorption rate (ka, 1/h)")           # Muntau 2017 Table 3: Ka = 0.234 h^-1
-    lcl   <- log(2780);  label("Apparent clearance at WT = 70 kg (CL/F, L/h)")    # Muntau 2017 Table 3: CL/F = 2780 L/h
-    lvc   <- log(3870);  label("Apparent central volume at WT = 70 kg (V/F, L)")  # Muntau 2017 Table 3: V/F = 3870 L
-    ltlag <- log(0.342); label("Absorption lag time (tlag, h)")                   # Muntau 2017 Table 3: LAG = 0.342 h
-    lc0   <- log(12.6);  label("Endogenous BH4 baseline plasma concentration (C0, ug/L)")  # Muntau 2017 Table 3: C0 = 12.6 ug/L
+    lka   <- log(0.234); label("First-order absorption rate (1/h)")           # Muntau 2017 Table 3: Ka = 0.234 h^-1
+    lcl   <- log(2780);  label("Apparent clearance at WT = 70 kg (L/h)")    # Muntau 2017 Table 3: CL/F = 2780 L/h
+    lvc   <- log(3870);  label("Apparent central volume at WT = 70 kg (L)")  # Muntau 2017 Table 3: V/F = 3870 L
+    ltlag <- log(0.342); label("Absorption lag time (h)")                   # Muntau 2017 Table 3: LAG = 0.342 h
+    lc0   <- log(12.6);  label("Endogenous BH4 baseline plasma concentration (ug/L)")  # Muntau 2017 Table 3: C0 = 12.6 ug/L
 
     # Body-weight covariate effects: power form normalized to a 70 kg reference.
     e_wt_cl <- 0.839; label("Power exponent of body weight on CL/F (unitless, reference 70 kg)")  # Muntau 2017 Table 3: 'Coefficient describing effect of weight on CL/F' = 0.839

@@ -175,7 +175,7 @@ Ding_2024_piperaquine <- function() {
     # identical MTT of 2.11 h with 2 transit compartments (see the sibling
     # model Hoglund_2017_piperaquine.R).
     lmtt <- fixed(log(2.11))
-    label("Mean transit time of the 2-transit-compartment absorption chain, literature value (MTT, h)")
+    label("Mean transit time of the 2-transit-compartment absorption chain, literature value (h)")
     # Ding 2024 Table 3: MTT = 2.11 h fixed; number of transit
     # compartments = 2 fixed. No separate ka is reported for piperaquine
     # (contrast Table 2 for amodiaquine, which reports both), so kA = kTR

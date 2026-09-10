@@ -224,7 +224,7 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
     lclmax <- -4.43
     label("Maximum 25(OH)D3 clearance rate constant at 30 kg (log h^-1)")  # Muhamad 2025 Table 2: est. in natural log -4.43, SE 0.0787, %RSE 1.78; linear 0.0119 (95% CI 0.0102, 0.0139) h^-1
     lkp_adipose_25d3 <- 1.54
-    label("25(OH)D3 fat-mass:venous-blood partition coefficient Kp25fm (log, unitless)")  # Muhamad 2025 Table 2: est. in natural log 1.54, SE 0.136, %RSE 8.8; linear 4.66 (95% CI 3.6, 6.11)
+    label("25(OH)D3 fat-mass:venous-blood partition coefficient Kp25fm (unitless)")  # Muhamad 2025 Table 2: est. in natural log 1.54, SE 0.136, %RSE 8.8; linear 4.66 (95% CI 3.6, 6.11)
 
     # ---------------------------------------------------------------
     # FIXED - vitamin D3 disposition. Muhamad 2025 Section 1 and 2.3:
@@ -238,9 +238,9 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
     lmclh <- fixed(log(0.222))
     label("Vitamin D3 hepatic clearance after repeated dosing (log L/h)")  # Muhamad 2025 Table S4: MCLH = 0.222 (see vignette Errata on the unit label)
     lkp_liver <- fixed(log(1))
-    label("Vitamin D3 liver:venous-blood partition coefficient Kpl (log, unitless)")  # Muhamad 2025 Table S4: Kpl = 1
+    label("Vitamin D3 liver:venous-blood partition coefficient Kpl (unitless)")  # Muhamad 2025 Table S4: Kpl = 1
     lkp_other <- fixed(log(0.09))
-    label("Vitamin D3 rest-of-body:venous-blood partition coefficient Kprb (log, unitless)")  # Muhamad 2025 Table S4: Kprb = 0.09
+    label("Vitamin D3 rest-of-body:venous-blood partition coefficient Kprb (unitless)")  # Muhamad 2025 Table S4: Kprb = 0.09
 
     # ---------------------------------------------------------------
     # FIXED - 25(OH)D3 disposition and the sigmoidal clearance shape.
@@ -249,13 +249,13 @@ Muhamad_2025_cholecalciferol_pbpk <- function() {
     # three needs data at more than one dose level.
     # ---------------------------------------------------------------
     lkp_liver_25d3 <- fixed(log(1))
-    label("25(OH)D3 liver:venous-blood partition coefficient Kp25l (log, unitless)")  # Muhamad 2025 Table S4: Kp25l = 1
+    label("25(OH)D3 liver:venous-blood partition coefficient Kp25l (unitless)")  # Muhamad 2025 Table S4: Kp25l = 1
     lkp_other_25d3 <- fixed(log(4))
-    label("25(OH)D3 lean-mass:venous-blood partition coefficient Kp25lm (log, unitless)")  # Muhamad 2025 Section 3.1 and Table S6 model 9d: Kp25lm FIXED = 4, the optimum of the Figure S7 objective-function scan over 1, 2, 3, 4, 6, 8
+    label("25(OH)D3 lean-mass:venous-blood partition coefficient Kp25lm (unitless)")  # Muhamad 2025 Section 3.1 and Table S6 model 9d: Kp25lm FIXED = 4, the optimum of the Figure S7 objective-function scan over 1, 2, 3, 4, 6, 8
     lc50 <- fixed(log(86.3))
     label("25(OH)D3 concentration at half-maximum clearance rate C50 (log nmol/L)")  # Muhamad 2025 Table S4: C50 = 86.3 nmol/L; Table S6 model 9d lists C50 as FIXED
     lhill <- fixed(log(5.64))
-    label("Hill exponent of the sigmoidal 25(OH)D3 clearance (log, unitless)")  # Muhamad 2025 Table S4: gamma = 5.64; Table S6 model 9d lists gamma as FIXED
+    label("Hill exponent of the sigmoidal 25(OH)D3 clearance (unitless)")  # Muhamad 2025 Table S4: gamma = 5.64; Table S6 model 9d lists gamma as FIXED
     fm_25d3 <- fixed(1 / 3)
     label("Fraction of hepatic vitamin D3 elimination forming 25(OH)D3 (unitless)")  # Muhamad 2025 Section 2.3 states Fm assumed to be 0.33; the Figure S2/S3 equations use exactly 1/3 (formation term x 1/3, ENDOG term x 3), so 1/3 is used here to keep the baseline balance exact
 

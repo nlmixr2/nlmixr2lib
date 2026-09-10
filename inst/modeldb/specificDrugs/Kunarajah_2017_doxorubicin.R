@@ -100,9 +100,9 @@ Kunarajah_2017_doxorubicin <- function() {
 
     # Cardiac troponin I (cTnI) turnover sub-model.
     lkdeg       <- log(0.6)   ; label("cTnI first-order degradation rate constant kdeg (1/h)")                 # Table 2 (estimated; THETA(16))
-    lemax       <- log(0.15)  ; label("Maximum drug-driven fractional increase in cTnI synthesis rate (Emax, unitless)") # Table 2 (estimated; THETA(19))
-    lec50       <- log(11.8)  ; label("Combined doxorubicin + doxorubicinol plasma concentration giving half-maximal cTnI synthesis stimulation (EC50, ug/L)") # Table 2 (estimated; THETA(20))
-    lbl_ctni    <- log(0.021) ; label("Baseline cTnI for a patient with PRIOR_ANTHRACYCLINE_DOSE = 90 mg/m^2 (Cbase, ug/L)") # Table 2 (estimated; THETA(17) reported as 20.5 pg/mL = 0.021 ug/L)
+    lemax       <- log(0.15)  ; label("Maximum drug-driven fractional increase in cTnI synthesis rate (unitless)") # Table 2 (estimated; THETA(19))
+    lec50       <- log(11.8)  ; label("Combined doxorubicin + doxorubicinol plasma concentration giving half-maximal cTnI synthesis stimulation (ug/L)") # Table 2 (estimated; THETA(20))
+    lbl_ctni    <- log(0.021) ; label("Baseline cTnI for a patient with PRIOR_ANTHRACYCLINE_DOSE = 90 mg/m^2 (ug/L)") # Table 2 (estimated; THETA(17) reported as 20.5 pg/mL = 0.021 ug/L)
     e_pcamt_bl_ctni <- fixed(0.00308) ; label("Linear coefficient on prior cumulative anthracycline dose in `1 + e_pcamt_bl_ctni * (PRIOR_ANTHRACYCLINE_DOSE - 90)` shift on baseline cTnI (per mg/m^2)") # Table 2 (estimated; THETA(21)). Paper text: 0.31% baseline shift per 1 mg/m^2 prior dose.
 
     # IIV. Doxorubicin CL and doxorubicinol CL share a 2x2 NONMEM

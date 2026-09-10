@@ -301,29 +301,29 @@ Majid_2024_lecanemab <- function() {
     # ==================================================================
 
     # ----- Structural parameters (Table 1, "PK parameters" block) -----
-    lcl <- log(0.0154) ; label("Clearance for the reference subject (CL, L/h)")                       # Majid 2024 Table 1: CL 0.0154 L/h, %RSE 1.60, bootstrap median 0.0154 (95% CI 0.0147-0.0160)
-    lvc <- log(3.24)   ; label("Central volume of distribution for the reference subject (V1, L)")    # Majid 2024 Table 1: V1 3.24 L, %RSE 0.799, bootstrap median 3.24 (95% CI 3.18-3.30)
-    lvp <- log(2.00)   ; label("Peripheral volume of distribution for the reference subject (V2, L)") # Majid 2024 Table 1: V2 2.00 L, %RSE 4.09, bootstrap median 2.02 (95% CI 1.83-2.21)
-    lq  <- log(0.00718); label("Intercompartmental clearance (Q, L/h)")                               # Majid 2024 Table 1: Q 0.00718 L/h, %RSE 4.23, bootstrap median 0.00701 (95% CI 0.00155-0.0125); no covariate and no IIV (Text S1 $PK: "TVQ=THETA(4); Q=TVQ")
+    lcl <- log(0.0154) ; label("Clearance for the reference subject (L/h)")                       # Majid 2024 Table 1: CL 0.0154 L/h, %RSE 1.60, bootstrap median 0.0154 (95% CI 0.0147-0.0160)
+    lvc <- log(3.24)   ; label("Central volume of distribution for the reference subject (L)")    # Majid 2024 Table 1: V1 3.24 L, %RSE 0.799, bootstrap median 3.24 (95% CI 3.18-3.30)
+    lvp <- log(2.00)   ; label("Peripheral volume of distribution for the reference subject (L)") # Majid 2024 Table 1: V2 2.00 L, %RSE 4.09, bootstrap median 2.02 (95% CI 1.83-2.21)
+    lq  <- log(0.00718); label("Intercompartmental clearance (L/h)")                               # Majid 2024 Table 1: Q 0.00718 L/h, %RSE 4.23, bootstrap median 0.00701 (95% CI 0.00155-0.0125); no covariate and no IIV (Text S1 $PK: "TVQ=THETA(4); Q=TVQ")
 
     # Process A bioavailability is a STRUCTURAL ANCHOR, not an estimate:
     # supplement Text S1 $PK opens the branch with a literal "F1=1" and no
     # THETA, so it is fixed here rather than estimated.
-    lfcentral <- fixed(log(1)); label("Relative bioavailability of the intravenous dose for manufacturing Process A (F, unitless)")  # Majid 2024 supplement Text S1 $PK: "F1=1" (reference process; not an estimated parameter)
+    lfcentral <- fixed(log(1)); label("Relative bioavailability of the intravenous dose for manufacturing Process A (unitless)")  # Majid 2024 supplement Text S1 $PK: "F1=1" (reference process; not an estimated parameter)
 
     # ----- Covariate effects on CL (Table 1, "Covariate effects" block) -----
     e_wt_cl     <-  0.353; label("Power exponent on (WT/72 kg) for CL (unitless)")                            # Majid 2024 Table 1 "Weight ~ CL (exponent)" 0.353, %RSE 10.5, bootstrap median 0.344 (95% CI 0.250-0.460)
     e_alb_cl    <- -0.374; label("Power exponent on (ALB/43 g/L) for CL; NEGATIVE, so CL falls as albumin rises (unitless)")  # Majid 2024 Table 1 "Albumin ~ CL (exponent)" -0.374, %RSE 9.71, bootstrap median -0.372 (95% CI -0.482 to -0.261)
-    e_female_cl <-  0.791; label("Multiplicative CL ratio for females vs the male reference (applied as ratio^SEXF)")         # Majid 2024 Table 1 "Females ~ CL (ratio to males)" 0.791, %RSE 2.17, bootstrap median 0.791 (95% CI 0.758-0.824); Discussion: "20.9% [lower] for CL"
-    e_ada_cl    <-  1.13 ; label("Multiplicative CL ratio for ADA-positive vs ADA-negative samples (applied as ratio^ADA_POS)")  # Majid 2024 Table 1 "ADApositive ~ CL (ratio to ADAnegative)" 1.13, %RSE 0.860, bootstrap median 1.13 (95% CI 1.09-1.17)
+    e_female_cl <-  0.791; label("Multiplicative CL ratio for females vs the male reference, applied as ratio^SEXF (unitless)")         # Majid 2024 Table 1 "Females ~ CL (ratio to males)" 0.791, %RSE 2.17, bootstrap median 0.791 (95% CI 0.758-0.824); Discussion: "20.9% [lower] for CL"
+    e_ada_cl    <-  1.13 ; label("Multiplicative CL ratio for ADA-positive vs ADA-negative samples, applied as ratio^ADA_POS (unitless)")  # Majid 2024 Table 1 "ADApositive ~ CL (ratio to ADAnegative)" 1.13, %RSE 0.860, bootstrap median 1.13 (95% CI 1.09-1.17)
 
     # ----- Covariate effects on V1 -----
     e_wt_vc       <- 0.513; label("Power exponent on (WT/72 kg) for V1 (unitless)")                             # Majid 2024 Table 1 "Weight ~ V1 (exponent)" 0.513, %RSE 5.01, bootstrap median 0.514 (95% CI 0.469-0.558)
-    e_female_vc   <- 0.868; label("Multiplicative V1 ratio for females vs the male reference (applied as ratio^SEXF)")  # Majid 2024 Table 1 "Females ~ V1 (ratio to males)" 0.868, %RSE 1.04, bootstrap median 0.868 (95% CI 0.853-0.884); Discussion: "13.2% [lower] for V1"
-    e_japanese_vc <- 0.920; label("Multiplicative V1 ratio for Japanese vs the non-Japanese reference (applied as ratio^RACE_JAPANESE)")  # Majid 2024 Table 1 "Japanese ethnicity ~ V1 (ratio to non-Japanese)" 0.920, %RSE 1.58, bootstrap median 0.920 (95% CI 0.896-0.945); the one term new relative to the previously published model
+    e_female_vc   <- 0.868; label("Multiplicative V1 ratio for females vs the male reference, applied as ratio^SEXF (unitless)")  # Majid 2024 Table 1 "Females ~ V1 (ratio to males)" 0.868, %RSE 1.04, bootstrap median 0.868 (95% CI 0.853-0.884); Discussion: "13.2% [lower] for V1"
+    e_japanese_vc <- 0.920; label("Multiplicative V1 ratio for Japanese vs the non-Japanese reference, applied as ratio^RACE_JAPANESE (unitless)")  # Majid 2024 Table 1 "Japanese ethnicity ~ V1 (ratio to non-Japanese)" 0.920, %RSE 1.58, bootstrap median 0.920 (95% CI 0.896-0.945); the one term new relative to the previously published model
 
     # ----- Covariate effect on V2 -----
-    e_japanese_vp <- 0.671; label("Multiplicative V2 ratio for Japanese vs the non-Japanese reference (applied as ratio^RACE_JAPANESE)")  # Majid 2024 Table 1 "Japanese ethnicity ~ V2 (ratio to non-Japanese)" 0.671, %RSE 11.8, bootstrap median 0.665 (95% CI 0.475-0.835)
+    e_japanese_vp <- 0.671; label("Multiplicative V2 ratio for Japanese vs the non-Japanese reference, applied as ratio^RACE_JAPANESE (unitless)")  # Majid 2024 Table 1 "Japanese ethnicity ~ V2 (ratio to non-Japanese)" 0.671, %RSE 11.8, bootstrap median 0.665 (95% CI 0.475-0.835)
 
     # ----- Manufacturing-process comparability on the intravenous dose -----
     e_processb_f <- 0.904; label("Relative bioavailability ratio for Process B vs the Process A reference (unitless)")  # Majid 2024 Table 1 "F (comparability) for process B" 0.904, %RSE 0.750, bootstrap median 0.904 (95% CI 0.890-0.918); Discussion: 9.6% lower exposure

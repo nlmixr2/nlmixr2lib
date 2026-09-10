@@ -240,10 +240,10 @@ Mauro_2025_nilotinib <- function() {
 
   ini({
     # ---- Disposition -- Supplemental Table 2, 'Typical Values' ----
-    lcl <- log(34.5); label("Clearance (CL, L/h)") # Suppl. Table 2: CL = 34.5 L/h (RSE 2.85%, 95% CI 32.4-36.2; bootstrap 34.5)
-    lvc <- log(557); label("Central volume of distribution (V1, L)") # Suppl. Table 2: V1 = 557 L (RSE 2.66%, 95% CI 525-586; bootstrap 556)
-    lq <- log(4.54); label("Inter-compartmental clearance (Q, L/h)") # Suppl. Table 2: Q = 4.54 L/h (RSE 16.6%, 95% CI 3.26-6.73; bootstrap 4.58)
-    lvp <- log(223); label("Peripheral volume of distribution (V2, L)") # Suppl. Table 2: V2 = 223 L (RSE 8.78%, 95% CI 185-273; bootstrap 224)
+    lcl <- log(34.5); label("Clearance (L/h)") # Suppl. Table 2: CL = 34.5 L/h (RSE 2.85%, 95% CI 32.4-36.2; bootstrap 34.5)
+    lvc <- log(557); label("Central volume of distribution (L)") # Suppl. Table 2: V1 = 557 L (RSE 2.66%, 95% CI 525-586; bootstrap 556)
+    lq <- log(4.54); label("Inter-compartmental clearance (L/h)") # Suppl. Table 2: Q = 4.54 L/h (RSE 16.6%, 95% CI 3.26-6.73; bootstrap 4.58)
+    lvp <- log(223); label("Peripheral volume of distribution (L)") # Suppl. Table 2: V2 = 223 L (RSE 8.78%, 95% CI 185-273; bootstrap 224)
 
     # ---- Primary absorption: lagged zero-order input into central ----
     # Supplemental Information, 'Initial Model Development': "The oral absorption of
@@ -251,9 +251,9 @@ Mauro_2025_nilotinib <- function() {
     # order, mixed zero-then-first-order and transit-compartment alternatives were
     # tested and rejected. D1/ALAG1/F1 are NONMEM compartment-1 attributes and
     # compartment 1 is the central compartment in a zero-order-input ADVAN.
-    ld1 <- log(2.32); label("Duration of the zero-order absorption input into central (D1, h)") # Suppl. Table 2: D1 = 2.32 h (RSE 1.63%, 95% CI 2.07-2.40; bootstrap 2.32)
-    ltlag <- log(0.0988); label("Absorption lag time of the zero-order input (ALAG1, h)") # Suppl. Table 2: ALAG1 = 0.0988 h (RSE 14.8%, 95% CI 0.0719-0.136; bootstrap 0.102)
-    lfdepot <- fixed(log(1)); label("Relative bioavailability of the capsule reference at 400 mg fasted (F1, fraction)") # Suppl. Info F1 equations: F1_capsule = 1 * (DOSE/400)^theta10, i.e. F1 is anchored at 1 for the capsule reference dose
+    ld1 <- log(2.32); label("Duration of the zero-order absorption input into central (h)") # Suppl. Table 2: D1 = 2.32 h (RSE 1.63%, 95% CI 2.07-2.40; bootstrap 2.32)
+    ltlag <- log(0.0988); label("Absorption lag time of the zero-order input (h)") # Suppl. Table 2: ALAG1 = 0.0988 h (RSE 14.8%, 95% CI 0.0719-0.136; bootstrap 0.102)
+    lfdepot <- fixed(log(1)); label("Relative bioavailability of the capsule reference at 400 mg fasted (fraction)") # Suppl. Info F1 equations: F1_capsule = 1 * (DOSE/400)^theta10, i.e. F1 is anchored at 1 for the capsule reference dose
 
     # ---- Secondary depot: delayed late re-absorption ----
     # Supplemental Information, 'Initial Model Development': an increase in

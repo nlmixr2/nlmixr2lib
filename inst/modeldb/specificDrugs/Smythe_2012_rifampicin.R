@@ -90,8 +90,8 @@ Smythe_2012_rifampicin <- function() {
     # --- Anderson-Holford NFM (normal fat mass) fractional fat contributions ---
     # NFM_CL = FFM + e_fat_cl * (WT - FFM); allometric exponent 0.75 on CL/F.
     # NFM_VC = FFM + e_fat_vc * (WT - FFM); allometric exponent 1.0  on V/F.
-    e_fat_cl  <- 0.311                  ; label("Fractional fat contribution to NFM for CL/F (Ffat_CL/F, unitless)") # Smythe 2012 Table 3: (Ffat)CL/F = 0.311 (RSE 40.2%)
-    e_fat_vc  <- 0.188                  ; label("Fractional fat contribution to NFM for V/F  (Ffat_V/F,  unitless)") # Smythe 2012 Table 3: (Ffat)V/F  = 0.188 (RSE 49.1%)
+    e_fat_cl  <- 0.311                  ; label("Fractional fat contribution to NFM for CL/F (unitless)") # Smythe 2012 Table 3: (Ffat)CL/F = 0.311 (RSE 40.2%)
+    e_fat_vc  <- 0.188                  ; label("Fractional fat contribution to NFM for V/F (unitless)") # Smythe 2012 Table 3: (Ffat)V/F  = 0.188 (RSE 49.1%)
 
     # --- HIV covariate effect on V/F: multiplicative (1 + e_hiv_vc * HIV_POS) ---
     e_hiv_pos_vc <- 0.296                ; label("Fractional increase in V/F for HIV-positive patients (unitless)")  # Smythe 2012 Table 3: V/F-HIV = 29.6% (RSE 17.2%)

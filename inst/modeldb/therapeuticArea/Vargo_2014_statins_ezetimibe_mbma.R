@@ -172,7 +172,7 @@ Vargo_2014_statins_ezetimibe_mbma <- function() {
     # ============================================================
 
     emax_statin_int <- -0.758
-    label("Statin Emax intercept (Emax,1; fractional change in LDL-C, signed)")  # Vargo 2014 Table 3
+    label("Statin Emax intercept (1; fractional change in LDL-C, signed)")  # Vargo 2014 Table 3
 
     e_ldlc_emax_statin <- -0.14
     label("LDL.base coefficient on statin Emax (per natural-log unit of LDL/180)")  # Vargo 2014 Table 3 Emax,2 (LDL.base)

@@ -115,8 +115,8 @@ Lim_2025_amikacin <- function() {
     #   V (L/kg) = 0.497(WT/1,000)^0.851
     #
     # Reference subject: WT = 1,000 g = 1 kg, PMA = 30 weeks.
-    lcl <- log(0.0487); label("Clearance at 1 kg and 30 weeks postmenstrual age (CL, L/h)")   # Lim 2025 Results, final model equation 1: 0.0487 L/h
-    lvc <- log(0.497);  label("Volume of distribution at 1 kg (V, L)")                        # Lim 2025 Results, final model equation 2: 0.497 L
+    lcl <- log(0.0487); label("Clearance at 1 kg and 30 weeks postmenstrual age (L/h)")   # Lim 2025 Results, final model equation 1: 0.0487 L/h
+    lvc <- log(0.497);  label("Volume of distribution at 1 kg (L)")                        # Lim 2025 Results, final model equation 2: 0.497 L
 
     # Power covariate exponents, both estimated (Lim 2025 Results, final model
     # equations). The paper reports no standard errors or bootstrap intervals

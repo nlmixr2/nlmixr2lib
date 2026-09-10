@@ -61,13 +61,13 @@ Feillet_2008_sapropterin <- function() {
     # Structural parameters -- Feillet 2008 Table III, final covariate model.
     # Reference weight for CL/F and V1/F is 70 kg (units L/h/70 kg and L/70 kg
     # per Table III header); V2/F and Q/F are population-wide (not weight-scaled).
-    ltlag  <- log(0.275); label("Absorption lag time (tlag, h)")                              # Feillet 2008 Table III: tlag = 0.275 h
-    lka    <- log(0.518); label("First-order absorption rate (ka, 1/h)")                      # Feillet 2008 Table III: ka = 0.518 h^-1
-    lcl    <- log(2100);  label("Apparent clearance at WT = 70 kg (CL/F, L/h)")               # Feillet 2008 Table III: CL/F = 2100 L/h/70 kg
-    lvc    <- log(8350);  label("Apparent central volume at WT = 70 kg (V1/F, L)")            # Feillet 2008 Table III: V1/F = 8350 L/70 kg
-    lvp    <- log(4240);  label("Apparent peripheral volume (V2/F, L)")                       # Feillet 2008 Table III: V2/F = 4240 L (not weight-scaled)
-    lq     <- log(862);   label("Apparent intercompartmental clearance (Q/F, L/h)")           # Feillet 2008 Table III: Q/F = 862 L/h (not weight-scaled)
-    lrbase <- log(13.5);  label("Endogenous BH4 baseline plasma concentration (BASE, ng/mL)") # Feillet 2008 Table III: BASE = 13.5 ng/mL
+    ltlag  <- log(0.275); label("Absorption lag time (h)")                              # Feillet 2008 Table III: tlag = 0.275 h
+    lka    <- log(0.518); label("First-order absorption rate (1/h)")                      # Feillet 2008 Table III: ka = 0.518 h^-1
+    lcl    <- log(2100);  label("Apparent clearance at WT = 70 kg (L/h)")               # Feillet 2008 Table III: CL/F = 2100 L/h/70 kg
+    lvc    <- log(8350);  label("Apparent central volume at WT = 70 kg (L)")            # Feillet 2008 Table III: V1/F = 8350 L/70 kg
+    lvp    <- log(4240);  label("Apparent peripheral volume (L)")                       # Feillet 2008 Table III: V2/F = 4240 L (not weight-scaled)
+    lq     <- log(862);   label("Apparent intercompartmental clearance (L/h)")           # Feillet 2008 Table III: Q/F = 862 L/h (not weight-scaled)
+    lrbase <- log(13.5);  label("Endogenous BH4 baseline plasma concentration (ng/mL)") # Feillet 2008 Table III: BASE = 13.5 ng/mL
 
     # Body-weight covariate effects (Equation 3, power form normalized to 70 kg).
     e_wt_cl <- 0.586; label("Power exponent of body weight on CL/F (unitless, reference 70 kg)") # Feillet 2008 Table III: power function on CL/F = 0.586

@@ -80,9 +80,9 @@ Takeuchi_2023_ozoralizumab <- function() {
     # status (Takeuchi 2023 Table 3, p. 421; final-model equations, p. 422).
     # Paper reports CL/F in mL/h; converted to L/h (/ 1000) for ODE consistency
     # with central in mg and Cc in mg/L = ug/mL.
-    lka <- log(0.0343);        label("Absorption rate constant (Ka, 1/h)")                                            # Takeuchi 2023 Table 3: Ka = 0.0343 1/h
-    lcl <- log(9.20 / 1000);   label("Apparent clearance for the typical patient (CL/F, L/h; paper reports 9.20 mL/h)") # Takeuchi 2023 Table 3: CL/F = 9.20 mL/h
-    lvc <- log(4.91);          label("Apparent volume of distribution for the typical patient (Vd/F, L)")             # Takeuchi 2023 Table 3: Vd/F = 4.91 L
+    lka <- log(0.0343);        label("Absorption rate constant (1/h)")                                            # Takeuchi 2023 Table 3: Ka = 0.0343 1/h
+    lcl <- log(9.20 / 1000);   label("Apparent clearance for the typical patient (L/h; paper reports 9.20 mL/h)") # Takeuchi 2023 Table 3: CL/F = 9.20 mL/h
+    lvc <- log(4.91);          label("Apparent volume of distribution for the typical patient (L)")             # Takeuchi 2023 Table 3: Vd/F = 4.91 L
 
     # Covariate effects on CL/F (Takeuchi 2023 final-model equation, p. 422,
     # and Table 3, p. 421). Power form on continuous covariates; (1 + theta)

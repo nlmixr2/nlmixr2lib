@@ -125,8 +125,8 @@ Zhao_2009_ganciclovir <- function() {
     lvc        <- log(5.2) ; label("Apparent central volume Vc/F (L)")                                        # Yang 2023 Table 3 (Zhao 2009): Vc/F = 5.2
     lq         <- log(3.97); label("Apparent inter-compartmental clearance Q/F (L/h)")                        # Yang 2023 Table 3 (Zhao 2009): Q/F = 3.97
     lvp        <- log(30.7); label("Apparent peripheral volume Vp/F (L)")                                     # Yang 2023 Table 3 (Zhao 2009): Vp/F = 30.7
-    lka        <- log(0.369); label("First-order oral absorption rate constant (ka, 1/h)")                    # Yang 2023 Table 3 (Zhao 2009): Ka = 0.369
-    ltlag      <- log(0.743); label("Absorption lag time (Tlag, h)")                                          # Yang 2023 Table 3 (Zhao 2009): Tlag = 0.743
+    lka        <- log(0.369); label("First-order oral absorption rate constant (1/h)")                    # Yang 2023 Table 3 (Zhao 2009): Ka = 0.369
+    ltlag      <- log(0.743); label("Absorption lag time (h)")                                          # Yang 2023 Table 3 (Zhao 2009): Tlag = 0.743
 
     # Covariate effects. The CLcr exponent 2.93 is transcribed verbatim from
     # Yang 2023 Table 3 (see covariateData[[CRCL]]$notes for the flag). The weight

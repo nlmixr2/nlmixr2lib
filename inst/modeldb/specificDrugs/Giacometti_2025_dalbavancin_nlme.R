@@ -159,9 +159,9 @@ Giacometti_2025_dalbavancin_nlme <- function() {
     # onto cl and q. Units are stated in Table 4's row labels: Cl and Q in
     # L/h, V1 and V2 in L.
     # ------------------------------------------------------------------
-    lcl <- log(0.0367); label("Clearance (CL, L/h)")                        # Giacometti 2025 Table 4, NLME column: Cl = 0.0367 +/- 0.0006 L/h (across-fold SD)
+    lcl <- log(0.0367); label("Clearance (L/h)")                        # Giacometti 2025 Table 4, NLME column: Cl = 0.0367 +/- 0.0006 L/h (across-fold SD)
     lvc <- log(6.32);   label("Central volume of distribution V1 (L)")      # Giacometti 2025 Table 4, NLME column: V1 = 6.32 +/- 0.15 L (across-fold SD)
-    lq  <- log(0.028);  label("Intercompartmental clearance (Q, L/h)")      # Giacometti 2025 Table 4, NLME column: Q  = 0.028 +/- 0.003 L/h (across-fold SD)
+    lq  <- log(0.028);  label("Intercompartmental clearance (L/h)")      # Giacometti 2025 Table 4, NLME column: Q  = 0.028 +/- 0.003 L/h (across-fold SD)
     lvp <- log(13.9);   label("Peripheral volume of distribution V2 (L)")   # Giacometti 2025 Table 4, NLME column: V2 = 13.9 +/- 0.6 L (across-fold SD)
 
     # ------------------------------------------------------------------

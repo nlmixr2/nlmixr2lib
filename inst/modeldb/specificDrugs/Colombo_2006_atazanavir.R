@@ -102,16 +102,16 @@ Colombo_2006_atazanavir <- function() {
     # CL/F is the typical apparent oral clearance in the absence of ritonavir
     # (the CONMED_RTV = 0 reference stratum); the CONMED_RTV covariate effect
     # reduces this by 46% when CONMED_RTV = 1.
-    lcl <- log(12.9); label("Apparent oral clearance at CONMED_RTV = 0 (CL/F, L/h)")  # Table 3: CL/F = 12.9 L/h (RSE 17%)
-    lvc <- log(88.3); label("Apparent volume of distribution (V/F, L)")               # Table 3: V/F = 88.3 L (RSE 9.5%)
+    lcl <- log(12.9); label("Apparent oral clearance at CONMED_RTV = 0 (L/h)")  # Table 3: CL/F = 12.9 L/h (RSE 17%)
+    lvc <- log(88.3); label("Apparent volume of distribution (L)")               # Table 3: V/F = 88.3 L (RSE 9.5%)
 
     # ka and lag time were fixed to the rich-data substudy estimates because the
     # sparse cohort had too few early-phase observations to estimate them.
     # Results page 3804: "the population mean estimate and variance of ka and
     # the mean estimate of the lag time were fixed to the final values obtained
     # from the rich data set."
-    lka   <- fixed(log(0.405)); label("First-order absorption rate constant (ka, 1/h)")  # Table 3: ka = 0.405 1/h, fixed (rich-data substudy)
-    ltlag <- fixed(log(0.876)); label("Absorption lag-time (tlag, h)")                   # Results p3804: lag = 0.876 h, fixed mean (Table 3 reports rounded 0.88 h, RSE 10.3%)
+    lka   <- fixed(log(0.405)); label("First-order absorption rate constant (1/h)")  # Table 3: ka = 0.405 1/h, fixed (rich-data substudy)
+    ltlag <- fixed(log(0.876)); label("Absorption lag-time (h)")                   # Results p3804: lag = 0.876 h, fixed mean (Table 3 reports rounded 0.88 h, RSE 10.3%)
 
     # F: relative bioavailability in the sparse routine-TDM cohort, accounting
     # for undercompliance vs the rich-data substudy (F_rich was set to 1
@@ -132,7 +132,7 @@ Colombo_2006_atazanavir <- function() {
     # Residual error (sparse routine-TDM cohort, Table 3): combined proportional
     # + additive. The rich-data substudy uses a separate residual-error pair
     # (CV 19%, SD 0.370 mg/L) documented in the vignette Assumptions section.
-    propSd <- 0.30;  label("Proportional residual error (CV, fraction)")  # Table 3 sparse: 30% (RSE 35%)
+    propSd <- 0.30;  label("Proportional residual error, reported as a CV (fraction)")  # Table 3 sparse: 30% (RSE 35%)
     addSd  <- 0.542; label("Additive residual error (mg/L)")              # Table 3 sparse: SD = +/-542 ng/mL = 0.542 mg/L
   })
 

@@ -54,18 +54,18 @@ Rymut_2023_anti_tryptase <- function() {
 
   ini({
     # === Systemic PK structural parameters (Rymut 2023 Table 1) ==============
-    lka     <- log(0.239);  label("First-order SC absorption rate (ka, 1/day)")                                  # Table 1 row "First order absorption rate (ka)" 0.239 1/day
+    lka     <- log(0.239);  label("First-order SC absorption rate (1/day)")                                  # Table 1 row "First order absorption rate (ka)" 0.239 1/day
     lcl     <- log(0.128);  label("Linear clearance (CL, L/day) at the 70 kg reference weight")                  # Table 1 row "Clearance (CL)" 0.128 L/day
     lvc     <- log(3.33);   label("Central volume of distribution (V2, L) at the 70 kg reference weight")        # Table 1 row "Central volume of distribution (V2)" 3.33 L
-    lq      <- log(0.408);  label("Inter-compartmental clearance (Q, L/day)")                                    # Table 1 row "Intercompartmental clearance (Q)" 0.408 L/day
-    lvp     <- log(2.28);   label("Peripheral volume of distribution (V3, L)")                                   # Table 1 row "Peripheral volume of distribution (V3)" 2.28 L
-    lfdepot <- log(0.661);  label("SC bioavailability (Fsc, fraction)")                                          # Table 1 row "Subcutaneous bioavailability (Fsc)" 0.661
+    lq      <- log(0.408);  label("Inter-compartmental clearance (L/day)")                                    # Table 1 row "Intercompartmental clearance (Q)" 0.408 L/day
+    lvp     <- log(2.28);   label("Peripheral volume of distribution (L)")                                   # Table 1 row "Peripheral volume of distribution (V3)" 2.28 L
+    lfdepot <- log(0.661);  label("SC bioavailability (fraction)")                                          # Table 1 row "Subcutaneous bioavailability (Fsc)" 0.661
 
     # === Serum QE-TMDD parameters (Rymut 2023 Table 1) =======================
     lkss   <- log(0.0448);  label("QE dissociation constant Kss (nM) for MTPS9579A binding to total monomeric serum tryptase (= KD)")  # Table 1 row "Equilibrium dissociation constant (KD)" 0.0448 nM
-    lbase  <- log(0.223);   label("Baseline total monomeric serum tryptase concentration (Base, nM)")                                   # Table 1 row "Baseline total tryptase (Base)" 0.223 nM
-    lkdeg  <- log(20.7);    label("First-order tryptase degradation rate constant (kdeg, 1/day)")                                       # Table 1 row "Total tryptase degradation rate constant (kdeg)" 20.7 1/day
-    lclint <- log(0.398);   label("Internalisation clearance of the MTPS9579A-total-tryptase complex (CLint, L/day)")                   # Table 1 row "Clearance of MTPS9579A-total tryptase complex (CLint)" 0.398 L/day
+    lbase  <- log(0.223);   label("Baseline total monomeric serum tryptase concentration (nM)")                                   # Table 1 row "Baseline total tryptase (Base)" 0.223 nM
+    lkdeg  <- log(20.7);    label("First-order tryptase degradation rate constant (1/day)")                                       # Table 1 row "Total tryptase degradation rate constant (kdeg)" 20.7 1/day
+    lclint <- log(0.398);   label("Internalisation clearance of the MTPS9579A-total-tryptase complex (L/day)")                   # Table 1 row "Clearance of MTPS9579A-total tryptase complex (CLint)" 0.398 L/day
 
     # === Allometric covariate effects on linear CL and central volume (Rymut 2023 Table 1) ===
     e_wt_cl <- 0.820;  label("Allometric exponent of WT/70 on linear CL (unitless)")           # Table 1 row "Effect of weight on CL (exponential model)" 0.82 (RSE 23 percent)
@@ -92,16 +92,16 @@ Rymut_2023_anti_tryptase <- function() {
     # cannot be assembled inside model() from the two pieces above. Storing the
     # rate-balance numerics here keeps the per-line provenance comment in one place.
     sum_kel_isf      <- fixed(log(2) / (2 / 24) + log(2) / (0.5 / 24));                 label("Tetramer-removal aggregate rate constant kel + kdiss in ISF (1/day)")  # Derived from kel_tryp_isf + kdiss_tet_isf (Methods)
-    f_tet_isf        <- fixed((log(2) / (2 / 24)) / (log(2) / (2 / 24) + log(2) / (0.5 / 24)));  label("Baseline fraction of ISF total tryptase mass present as active tetramer (= kel/(kel+kdiss))")  # Methods rate-balance partition (Text S2)
+    f_tet_isf        <- fixed((log(2) / (2 / 24)) / (log(2) / (2 / 24) + log(2) / (0.5 / 24)));  label("Baseline fraction of ISF total tryptase mass present as active tetramer, kel/(kel+kdiss) (fraction)")  # Methods rate-balance partition (Text S2)
     kbreak_tet       <- fixed(1000);                       label("MTPS9579A-induced rapid tetramer disruption rate constant (kbreak, 1/day); from disruption half-life of 1 min")  # Methods "kdiss of 1000 day-1 (half-life of 1 min)" + Table S2
     kel_mono_ab      <- fixed(log(2) / (100 / 24));        label("Elimination rate constant of the airway monomer-MTPS9579A complex (1/day); from assumed complex half-life of 100 h (negligible)")  # Table S2 "Degradation half-life of mAb-monomeric tryptase complex 100 h"
     # mAb-tryptase association rate: 7.62e5 1/M/s -> 1/nM/day. Convert: 7.62e5 [1/M/s] * (1 mol/L / 1e9 nmol/L) * (86400 s/day) = 65.83 [1/nM/day].
     kon_isf          <- fixed(7.62e5 / 1e9 * 86400);       label("MTPS9579A-tryptase association rate constant in ISF (1/nM/day); converted from 7.62e5 1/M/s")  # Table S2 "Binding constant (Kon) 7.62e5 1/Ms" + in vitro binding (ref 5)
     kd_isf           <- fixed(0.0448);                     label("Equilibrium dissociation constant in ISF (KD, nM); equal to the serum Kss")  # Table S2 "KD 4.88e-11 M ~= 0.0488 nM" (Table 1 reports 0.0448 nM; same value used in Text S2)
     # MTPS9579A molecular weight: needed to convert mg dose -> nmol (state) and to back-convert nM -> ug/mL for the observed Cc output.
-    mw_ab            <- fixed(155);                        label("MTPS9579A molecular weight (kDa = ug/nmol); IgG4 monoclonal antibody (Text S2)")           # Text S2 MWab = 155.0 ug/nmol
+    mw_ab            <- fixed(155);                        label("MTPS9579A molecular weight; IgG4 monoclonal antibody, Text S2 (kDa)")           # Text S2 MWab = 155.0 ug/nmol
     mw_mono          <- fixed(32);                         label("Tryptase monomer molecular weight (kDa) used in ISF total-tryptase mass balance")          # Text S2 MWmono = 32.0 ug/nmol
-    mw_tet           <- fixed(128);                        label("Tryptase tetramer molecular weight (kDa = 4 * MWmono) used in ISF total-tryptase mass balance")  # Text S2 MWtet = 128.0 ug/nmol
+    mw_tet           <- fixed(128);                        label("Tryptase tetramer molecular weight, four times the monomer, used in ISF total-tryptase mass balance (kDa)")  # Text S2 MWtet = 128.0 ug/nmol
 
     # === IIV (Rymut 2023 Table 1; exponential model on log-parameters) =====
     # NONMEM .lst Final Parameter Estimates (Text S1, BLOCK structure preserved):

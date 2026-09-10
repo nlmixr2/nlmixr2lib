@@ -213,7 +213,7 @@ Poels_2025_elranatamab_qsp <- function() {
     # --- Unit conversion --------------------------------------------------
     # Supplementary Eqs 8, 10, 20 and 21 convert (receptors/cell x cells/uL)
     # to pM as `L_to_uL / av_num * 1e12`, i.e. 1e6 uL/L / Avogadro x 1e12.
-    sbcma_pm_per_ngml <- fixed(185); label("Soluble BCMA scale: pM per ng/mL")  # derived from the paper's own two scales: Suppl Table 2 range 185-153520 pM equals the 1-830 ng/mL plausible-patient range of Figure 2b
+    sbcma_pm_per_ngml <- fixed(185); label("Soluble BCMA conversion scale (pM per ng/mL)")  # derived from the paper's own two scales: Suppl Table 2 range 185-153520 pM equals the 1-830 ng/mL plausible-patient range of Figure 2b
 
     # --- Residual error ---------------------------------------------------
     propSd <- fixed(0); label("Proportional residual error (fraction; ZERO - not reported in source)")  # the source is a simulation-only QSP model and reports no residual-error model

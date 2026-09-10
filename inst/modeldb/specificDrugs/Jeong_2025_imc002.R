@@ -81,13 +81,13 @@ Jeong_2025_imc002 <- function() {
     # precision it prints (Vc 4.19, CL 0.0115, Krec 0.0142, Kel_dR 0.0188 identical;
     # Ksyn 0.00273 vs 0.0027, Vp 85 vs 85.1, Kup 0.00968 vs 0.0097). Where the two
     # differ, the published table wins and the control stream supplies the structure.
-    lvc   <- log(4.19)   ; label("Central volume of distribution (Vc, L)")                                          # Table 2 row "Vc (L)" 4.19 (RSE 4%); Data S1 $THETA 1
-    lcl   <- log(0.0115) ; label("Linear clearance of free IMC-002 from the central compartment (CL, L/h)")         # Table 2 row "CL (L/h)" 0.0115 (RSE 12%); Data S1 $THETA 6
-    lvp   <- log(85.1)   ; label("Peripheral (FcRn recycling space) volume of distribution (Vp, L)")                # Table 2 row "Vp (L)" 85.1 (RSE 18%); Data S1 $THETA 7
-    lkup  <- log(0.0097) ; label("First-order uptake rate constant from central into the peripheral space (Kup, 1/h)") # Table 2 row "Kup" 0.0097 (RSE 5%); Data S1 $THETA 8
+    lvc   <- log(4.19)   ; label("Central volume of distribution (L)")                                          # Table 2 row "Vc (L)" 4.19 (RSE 4%); Data S1 $THETA 1
+    lcl   <- log(0.0115) ; label("Linear clearance of free IMC-002 from the central compartment (L/h)")         # Table 2 row "CL (L/h)" 0.0115 (RSE 12%); Data S1 $THETA 6
+    lvp   <- log(85.1)   ; label("Peripheral (FcRn recycling space) volume of distribution (L)")                # Table 2 row "Vp (L)" 85.1 (RSE 18%); Data S1 $THETA 7
+    lkup  <- log(0.0097) ; label("First-order uptake rate constant from central into the peripheral space (1/h)") # Table 2 row "Kup" 0.0097 (RSE 5%); Data S1 $THETA 8
 
     # ---- CD47 target turnover --------------------------------------------------------
-    lksyn <- log(0.0027) ; label("Zero-order synthesis rate constant of the CD47 receptor (Ksyn, umol/L/h)")        # Table 2 row "Ksyn (uM/h)" 0.0027 (RSE 8%); Data S1 $THETA 2
+    lksyn <- log(0.0027) ; label("Zero-order synthesis rate constant of the CD47 receptor (umol/L/h)")        # Table 2 row "Ksyn (uM/h)" 0.0027 (RSE 8%); Data S1 $THETA 2
     lkdeg <- fixed(log(0.0213)) ; label("First-order degradation rate constant of the CD47 receptor (Kdeg, 1/h), from the CD47 protein half-life reported by Du 2023") # Table 2 row "Kdeg (1/h)" 0.0213 (fixed); sec. 3.2 cites ref. 14; Data S1 $THETA 3 FIX
 
     # ---- IMC-002 / CD47 binding (full second-order TMDD) -----------------------------
@@ -95,12 +95,12 @@ Jeong_2025_imc002 <- function() {
     # association rate constant as Kon = Koff / KD,CD47 inside $PK.
     lkd   <- fixed(log(0.046)) ; label("Equilibrium dissociation constant of IMC-002 for CD47 (KD,CD47, umol/L), from in-house binding experiments") # Table 2 row "KD,CD47 (uM)" 0.046 (fixed); sec. 3.2; Data S1 $THETA 4 FIX
     lk2   <- fixed(log(90.4))  ; label("Dissociation rate constant of the IMC-002-CD47 complex (Koff, 1/h), from in-house binding experiments")      # Table 2 row "Koff (1/h)" 90.4 (fixed); sec. 3.2; Data S1 $THETA 5 FIX
-    lkint <- log(0.0188) ; label("Elimination (catabolism) rate constant of the IMC-002-CD47 complex (Kel,D-R complex, 1/h)")                        # Table 2 row "Kel,D-R complex (1/h)" 0.0188 (RSE 13%); Data S1 $THETA 12
+    lkint <- log(0.0188) ; label("Elimination (catabolism) rate constant of the IMC-002-CD47 complex (D-R complex, 1/h)")                        # Table 2 row "Kel,D-R complex (1/h)" 0.0188 (RSE 13%); Data S1 $THETA 12
 
     # ---- IMC-002 / FcRn binding in the peripheral space (quasi-steady state) ---------
-    lkss     <- fixed(log(0.117)) ; label("Quasi-steady-state dissociation constant of IMC-002 for FcRn (KD,FcRn, umol/L)")   # Table 2 row "KD,FcRn (uM)" 0.117 (fixed); Data S1 $THETA 9 FIX ("KSS1")
+    lkss     <- fixed(log(0.117)) ; label("Quasi-steady-state dissociation constant of IMC-002 for FcRn (FcRn, umol/L)")   # Table 2 row "KD,FcRn (uM)" 0.117 (fixed); Data S1 $THETA 9 FIX ("KSS1")
     lc_fcrn_t <- fixed(log(0.291)) ; label("Total FcRn concentration in the peripheral space (Rtot,FcRn, umol/L), literature value from Li 2018 human in-vitro data") # Table 2 row "FcRn (uM)" 0.291 (fixed); sec. 3.2 cites ref. 15; Data S1 $THETA 10 FIX
-    lkrec    <- log(0.0142) ; label("Recycling rate constant of the IMC-002-FcRn complex back into central (Krec, 1/h)")      # Table 2 row "Krec (1/h)" 0.0142 (RSE 11%); Data S1 $THETA 11
+    lkrec    <- log(0.0142) ; label("Recycling rate constant of the IMC-002-FcRn complex back into central (1/h)")      # Table 2 row "Krec (1/h)" 0.0142 (RSE 11%); Data S1 $THETA 11
 
     # ---- IIV. Log-normal on Vc and CL, correlated. -----------------------------------
     # Table 2 reports the two variances (omega-Vc 0.037 RSE 35%, omega-CL 0.319 RSE 45%)

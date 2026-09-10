@@ -62,11 +62,11 @@ Bulitta_2010_ceftazidime <- function() {
     # estimates are group estimates of the respective PK parameter for
     # subjects of standard size (fat-free mass: 53 kg).'
     lcl  <- log(7.82);  label("Total clearance at CF reference, FFM = 53 kg (L/h)")                                    # Bulitta 2010 Table 3 NONMEM CF
-    lvc  <- log(5.73);  label("Central volume at CF reference, FFM = 53 kg (V1, L)")                                   # Bulitta 2010 Table 3 NONMEM CF
-    lvp  <- log(3.92);  label("Shallow peripheral volume at CF reference, FFM = 53 kg (V2, L)")                        # Bulitta 2010 Table 3 NONMEM CF
-    lvp2 <- log(3.16);  label("Deep peripheral volume at CF reference, FFM = 53 kg (V3, L)")                           # Bulitta 2010 Table 3 NONMEM CF
-    lq   <- log(27.9);  label("Intercompartmental clearance to shallow peripheral at FFM = 53 kg (Q, L/h)")            # Bulitta 2010 Table 3 NONMEM (same for both groups)
-    lq2  <- log(2.57);  label("Intercompartmental clearance to deep peripheral at FFM = 53 kg (Q2, L/h)")              # Bulitta 2010 Table 3 NONMEM (same for both groups)
+    lvc  <- log(5.73);  label("Central volume at CF reference, FFM = 53 kg (L)")                                   # Bulitta 2010 Table 3 NONMEM CF
+    lvp  <- log(3.92);  label("Shallow peripheral volume at CF reference, FFM = 53 kg (L)")                        # Bulitta 2010 Table 3 NONMEM CF
+    lvp2 <- log(3.16);  label("Deep peripheral volume at CF reference, FFM = 53 kg (L)")                           # Bulitta 2010 Table 3 NONMEM CF
+    lq   <- log(27.9);  label("Intercompartmental clearance to shallow peripheral at FFM = 53 kg (L/h)")            # Bulitta 2010 Table 3 NONMEM (same for both groups)
+    lq2  <- log(2.57);  label("Intercompartmental clearance to deep peripheral at FFM = 53 kg (L/h)")              # Bulitta 2010 Table 3 NONMEM (same for both groups)
 
     # Allometric body-size exponents -- fixed per Bulitta 2010 Methods,
     # 'Body size model': clearance exponent fixed to 0.75, volume exponent

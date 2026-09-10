@@ -45,19 +45,19 @@ Straube_2025_caplacizumab_2cmt <- function() {
 
   ini({
     # Drug disposition. Straube 2025 supplement Table S1, ALX-0081 column.
-    lvc    <- log(0.042);          label("Central volume of distribution (Vc, L)")                    # Table S1, ALX-0081: Vc = 0.042 L. Table S1 also prints the derived keD = CL/Vc = 65.6 1/day, which implies Vc = 0.0415 L; the Vc column is rounded to 3 decimals, so cl/vc here gives 64.8 1/day (1.2% low). See vignette Errata.
-    lvp    <- log(0.246);          label("Peripheral volume of distribution (Vp, L)")                 # Table S1, ALX-0081: Vp = 0.246 L
-    lcl    <- log(2.723);          label("Systemic clearance (CL, L/day)")                            # Table S1, ALX-0081: CL = 2.723 L/day
-    lq     <- log(0.871);          label("Intercompartmental clearance (Q, L/day)")                   # Table S1, ALX-0081: Q = 0.871 L/day
+    lvc    <- log(0.042);          label("Central volume of distribution (L)")                    # Table S1, ALX-0081: Vc = 0.042 L. Table S1 also prints the derived keD = CL/Vc = 65.6 1/day, which implies Vc = 0.0415 L; the Vc column is rounded to 3 decimals, so cl/vc here gives 64.8 1/day (1.2% low). See vignette Errata.
+    lvp    <- log(0.246);          label("Peripheral volume of distribution (L)")                 # Table S1, ALX-0081: Vp = 0.246 L
+    lcl    <- log(2.723);          label("Systemic clearance (L/day)")                            # Table S1, ALX-0081: CL = 2.723 L/day
+    lq     <- log(0.871);          label("Intercompartmental clearance (L/day)")                   # Table S1, ALX-0081: Q = 0.871 L/day
 
     # Drug-target binding: koff and Kd fixed, kon = koff/Kd derived (Equation 7).
-    lk2    <- fixed(log(83.76));   label("Dissociation (off) rate constant of drug-target binding (koff, 1/day)")  # Table S1 footnote #: koff fixed at 83.76 1/day from Glassman and Muzykantov
+    lk2    <- fixed(log(83.76));   label("Dissociation (off) rate constant of drug-target binding (1/day)")  # Table S1 footnote #: koff fixed at 83.76 1/day from Glassman and Muzykantov
     lkd    <- fixed(log(0.0036));  label("Equilibrium dissociation constant (Kd = koff/kon, nM)")     # Table S1 footnote #: Kd fixed at 0.0036 nM from Glassman and Muzykantov. Table S1 reports the derived kon = koff/Kd = 2.3e4 1/(nM*day)
 
     # Target turnover (Figure 1): ksyn = keR*Rb, baseline Rb = ksyn/keR.
-    lrbase <- fixed(log(32.8));    label("Baseline (basal) free target concentration (Rb, nM)")       # Table S1 footnote #: Rb fixed at 32.8 nM from Glassman and Muzykantov. Table S1 reports the derived ksyn = keR*Rb = 10.24 nM/day
-    lkdeg  <- log(0.312);          label("Free target elimination rate constant (keR, 1/day)")        # Table S1, ALX-0081: keR = 0.312 1/day (estimated)
-    lkint  <- log(0.935);          label("Drug-target complex elimination rate constant (keDR, 1/day)")  # Table S1, ALX-0081: keDR = keR/Tacc = 0.312/0.334 = 0.935 1/day. NOT itself fixed: Tacc = 0.334 was fixed (footnote #) but keR was estimated. Tacc (Equation 14) is recoverable as kdeg/kint and so is not carried separately.
+    lrbase <- fixed(log(32.8));    label("Baseline (basal) free target concentration (nM)")       # Table S1 footnote #: Rb fixed at 32.8 nM from Glassman and Muzykantov. Table S1 reports the derived ksyn = keR*Rb = 10.24 nM/day
+    lkdeg  <- log(0.312);          label("Free target elimination rate constant (1/day)")        # Table S1, ALX-0081: keR = 0.312 1/day (estimated)
+    lkint  <- log(0.935);          label("Drug-target complex elimination rate constant (1/day)")  # Table S1, ALX-0081: keDR = keR/Tacc = 0.312/0.334 = 0.935 1/day. NOT itself fixed: Tacc = 0.334 was fixed (footnote #) but keR was estimated. Tacc (Equation 14) is recoverable as kdeg/kint and so is not carried separately.
   })
 
   model({

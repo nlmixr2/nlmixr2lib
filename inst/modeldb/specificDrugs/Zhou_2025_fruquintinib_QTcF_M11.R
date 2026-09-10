@@ -249,34 +249,34 @@ Zhou_2025_fruquintinib_QTcF_M11 <- function() {
     # ------------------------------------------------------------------
 
     e_on_treatment_e0 <- -3.34
-    label("Effect of active-treatment arm on the intercept (additive, ms)")
+    label("Effect of active-treatment arm on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 4 'Treatment' = -3.34 (SE 1.32;
     # RSE 39.5%; 95% CI -5.94, -0.743; P = 0.0122). Empirical
     # flexibility term; with `slope` it defines the placebo-corrected
     # contrast mean DeltaDeltaQTcF = -3.34 + 0.0477 * C.
 
     e_ntime1_e0 <- 0.964
-    label("Effect of the 1 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 1 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 4 'NTime=1' = 0.964 (SE 0.826;
     # RSE 85.7%; 95% CI -0.651, 2.58; P = 0.2432).
 
     e_ntime2_e0 <- 2.73
-    label("Effect of the 2 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 2 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 4 'NTime=2' = 2.73 (SE 0.826;
     # RSE 30.3%; 95% CI 1.12, 4.35; P = 0.0010).
 
     e_ntime3_e0 <- 2.69
-    label("Effect of the 3 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 3 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 4 'NTime=3' = 2.69 (SE 0.826;
     # RSE 30.7%; 95% CI 1.07, 4.31; P = 0.0012).
 
     e_ntime4_e0 <- 1.42
-    label("Effect of the 4 h nominal time point on the intercept (additive, ms)")
+    label("Effect of the 4 h nominal time point on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 4 'NTime=4' = 1.42 (SE 0.833;
     # RSE 58.7%; 95% CI -0.210, 3.05; P = 0.0887).
 
     e_day21_e0 <- -1.50
-    label("Effect of the cycle 1 day 21 visit on the intercept (additive, ms)")
+    label("Effect of the cycle 1 day 21 visit on the intercept, applied additively (ms)")
     # Zhou 2025 Supplementary Table 4 'Cycle 1 Day 21 Visit' = -1.50
     # (SE 0.652; RSE 43.5%; 95% CI -2.78, -0.226; P = 0.0214).
 

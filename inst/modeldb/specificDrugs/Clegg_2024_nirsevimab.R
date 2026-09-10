@@ -83,12 +83,12 @@ Clegg_2024_nirsevimab <- function() {
     # Structural parameters — reference values for a 70 kg adult
     # Units: CL and Q in L/day; V2 and V3 in L; Ka in 1/day
     # (Converted from published mL/day and mL by dividing by 1000)
-    lka      <- log(0.401);   label("Absorption rate constant (Ka, 1/day)")
-    lcl      <- log(0.0388);  label("Clearance for a 70 kg adult (CL, L/day)")
-    lvc      <- log(1.98);    label("Central volume of distribution for a 70 kg adult (V2, L)")
-    lvp      <- log(2.4);     label("Peripheral volume of distribution for a 70 kg adult (V3, L)")
-    lq       <- log(0.709);   label("Intercompartmental clearance for a 70 kg adult (Q, L/day)")
-    lfdepot  <- log(0.839);   label("Intramuscular bioavailability (F, fraction)")
+    lka      <- log(0.401);   label("Absorption rate constant (1/day)")
+    lcl      <- log(0.0388);  label("Clearance for a 70 kg adult (L/day)")
+    lvc      <- log(1.98);    label("Central volume of distribution for a 70 kg adult (L)")
+    lvp      <- log(2.4);     label("Peripheral volume of distribution for a 70 kg adult (L)")
+    lq       <- log(0.709);   label("Intercompartmental clearance for a 70 kg adult (L/day)")
+    lfdepot  <- log(0.839);   label("Intramuscular bioavailability (fraction)")
 
     # Allometric exponents (shared between CL+Q and Vc+Vp)
     e_wt_cl_q  <- 0.589; label("Shared allometric exponent on CL and Q (unitless)")

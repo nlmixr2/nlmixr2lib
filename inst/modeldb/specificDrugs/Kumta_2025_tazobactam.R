@@ -104,10 +104,10 @@ Kumta_2025_tazobactam <- function() {
 
   ini({
     # ---- Plasma disposition (Kumta 2025 Table 3, tazobactam "Estimate (%RSE)" column) ----
-    lcl <- log(11.7); label("Clearance from the central compartment (Cl, L/h)")                       # Table 3: Cl 11.7 L/h (%RSE 12.7); bootstrap median 11.4 (95% CI 9.00-15.5)
-    lvc <- log(7.64); label("Central compartment volume (V1, L)")                                    # Table 3: V1 7.64 L (%RSE 43.2); bootstrap median 7.17 (95% CI 0.18-18.2)
-    lq  <- log(46.5); label("Inter-compartmental clearance central <-> peripheral (Q, L/h)")         # Table 3: Q 46.5 L/h (%RSE 64.5); bootstrap median 48.8 (95% CI 6.18-216)
-    lvp <- log(12.0); label("Peripheral compartment volume (V2, L)")                                 # Table 3: V2 12.0 L (%RSE 23.6); bootstrap median 15.7 (95% CI 5.08-20.4)
+    lcl <- log(11.7); label("Clearance from the central compartment (L/h)")                       # Table 3: Cl 11.7 L/h (%RSE 12.7); bootstrap median 11.4 (95% CI 9.00-15.5)
+    lvc <- log(7.64); label("Central compartment volume (L)")                                    # Table 3: V1 7.64 L (%RSE 43.2); bootstrap median 7.17 (95% CI 0.18-18.2)
+    lq  <- log(46.5); label("Inter-compartmental clearance central <-> peripheral (L/h)")         # Table 3: Q 46.5 L/h (%RSE 64.5); bootstrap median 48.8 (95% CI 6.18-216)
+    lvp <- log(12.0); label("Peripheral compartment volume (L)")                                 # Table 3: V2 12.0 L (%RSE 23.6); bootstrap median 15.7 (95% CI 5.08-20.4)
 
     # ---- Between-subject variability ----
     # Methods: BSV used the exponential model theta_j = theta_p * exp(eta_j)

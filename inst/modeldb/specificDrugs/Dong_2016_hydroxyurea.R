@@ -267,7 +267,7 @@ Dong_2016_hydroxyurea <- function() {
     # =========================================================================
     lka  <- log(8.19);   label("First-order absorption rate constant Ka (1/h)")                                   # Dong 2016 Table 2: Ka = 8.19 /h (RSE 21%)
     lmtt <- log(0.158);  label("Mean absorption transit time MTT (h)")                                            # Dong 2016 Table 2: MTT = 0.158 h (RSE 15%)
-    lnn  <- log(12.4);   label("Number of absorption transit compartments NN (continuous, dimensionless)")        # Dong 2016 Table 2: N = 12.4 (RSE 15%)
+    lnn  <- log(12.4);   label("Number of absorption transit compartments NN, estimated on a continuous scale (dimensionless)")        # Dong 2016 Table 2: N = 12.4 (RSE 15%)
 
     lfdepot <- fixed(log(1));  label("Oral bioavailability F (anchored at 1; apparent CL/F and V/F parameterisation)")  # Dong 2016 reports apparent CL/F (=Vmax/Km in steady-state limit) and V/F; absolute F not estimable from oral-only data
 

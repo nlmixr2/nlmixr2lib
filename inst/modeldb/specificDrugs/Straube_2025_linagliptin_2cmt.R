@@ -49,19 +49,19 @@ Straube_2025_linagliptin_2cmt <- function() {
 
   ini({
     # Drug disposition. Straube 2025 supplement Table S1, Linagliptin column.
-    lvc    <- log(56.25);          label("Central volume of distribution (Vc, L)")                    # Table S1, Linagliptin: Vc = 56.25 L
-    lvp    <- log(117.865);        label("Peripheral volume of distribution (Vp, L)")                 # Table S1, Linagliptin: Vp = 117.865 L
-    lcl    <- log(639.614);        label("Systemic clearance (CL, L/day)")                            # Table S1, Linagliptin: CL = 639.614 L/day; Table S1 reports the derived keD = CL/Vc = 11.37 1/day (reproduced exactly)
-    lq     <- log(495.636);        label("Intercompartmental clearance (Q, L/day)")                   # Table S1, Linagliptin: Q = 495.636 L/day
+    lvc    <- log(56.25);          label("Central volume of distribution (L)")                    # Table S1, Linagliptin: Vc = 56.25 L
+    lvp    <- log(117.865);        label("Peripheral volume of distribution (L)")                 # Table S1, Linagliptin: Vp = 117.865 L
+    lcl    <- log(639.614);        label("Systemic clearance (L/day)")                            # Table S1, Linagliptin: CL = 639.614 L/day; Table S1 reports the derived keD = CL/Vc = 11.37 1/day (reproduced exactly)
+    lq     <- log(495.636);        label("Intercompartmental clearance (L/day)")                   # Table S1, Linagliptin: Q = 495.636 L/day
 
     # Drug-target binding: koff and Kd fixed, kon = koff/Kd derived (Equation 7).
-    lk2    <- fixed(log(1.675));   label("Dissociation (off) rate constant of drug-target binding (koff, 1/day)")  # Table S1 footnote +: koff fixed at 1.675 1/day from Wu and An
+    lk2    <- fixed(log(1.675));   label("Dissociation (off) rate constant of drug-target binding (1/day)")  # Table S1 footnote +: koff fixed at 1.675 1/day from Wu and An
     lkd    <- fixed(log(0.074));   label("Equilibrium dissociation constant (Kd = koff/kon, nM)")     # Table S1 footnote +: Kd fixed at 0.074 nM from Wu and An. Table S1 prints kon = 22.73 1/(nM*day), which implies Kd = 0.0737; koff/Kd from the rounded printed values gives 22.64. See vignette Errata.
 
     # Target turnover (Figure 1): ksyn = keR*Rb, baseline Rb = ksyn/keR.
-    lrbase <- log(2.861);          label("Baseline (basal) free target concentration (Rb, nM)")       # Table S1, Linagliptin: Rb = 2.861 nM (estimated); Table S1 reports the derived ksyn = keR*Rb = 1.573 nM/day
-    lkdeg  <- log(0.550);          label("Free target elimination rate constant (keR, 1/day)")        # Table S1, Linagliptin: keR = 0.550 1/day (estimated)
-    lkint  <- log(0.102);          label("Drug-target complex elimination rate constant (keDR, 1/day)")  # Table S1, Linagliptin: keDR = keR/Tacc = 0.550/5.399 = 0.102 1/day. Tacc = 5.399 (Equation 14) was estimated here, not fixed; it is recoverable as kdeg/kint and so is not carried separately.
+    lrbase <- log(2.861);          label("Baseline (basal) free target concentration (nM)")       # Table S1, Linagliptin: Rb = 2.861 nM (estimated); Table S1 reports the derived ksyn = keR*Rb = 1.573 nM/day
+    lkdeg  <- log(0.550);          label("Free target elimination rate constant (1/day)")        # Table S1, Linagliptin: keR = 0.550 1/day (estimated)
+    lkint  <- log(0.102);          label("Drug-target complex elimination rate constant (1/day)")  # Table S1, Linagliptin: keDR = keR/Tacc = 0.550/5.399 = 0.102 1/day. Tacc = 5.399 (Equation 14) was estimated here, not fixed; it is recoverable as kdeg/kint and so is not carried separately.
   })
 
   model({

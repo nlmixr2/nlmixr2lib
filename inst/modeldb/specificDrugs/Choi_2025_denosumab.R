@@ -140,27 +140,27 @@ Choi_2025_denosumab <- function() {
     # ---- Absorption (Choi 2025 Table 3) ---------------------------------
     # Reference level is the postmenopausal-osteoporosis patient (DIS_HEALTHY = 0).
     lka <- log(0.0078)
-    label("First-order subcutaneous absorption rate constant in patients (ka, 1/h)")  # Table 3, "ka_PMO" = 0.0078 1/h [4.96% RSE]
+    label("First-order subcutaneous absorption rate constant in patients (1/h)")  # Table 3, "ka_PMO" = 0.0078 1/h [4.96% RSE]
     e_healthy_ka <- 0.5849336
     label("Effect of healthy-volunteer status on ka (log-scale)")  # Table 3: ka(HV) 0.014 / ka_PMO 0.0078 = 1.795; Results 3.1 quotes the reciprocal ratio as 0.55
 
     # ---- Distribution (Choi 2025 Table 3) -------------------------------
     lvc <- log(1.58)
-    label("Apparent central volume of distribution at 64 kg (VC/F, L)")  # Table 3, "VC/F" = 1.58 L [4.30% RSE]
+    label("Apparent central volume of distribution at 64 kg (L)")  # Table 3, "VC/F" = 1.58 L [4.30% RSE]
     e_wt_vc <- 1.50
     label("Power exponent on (WT/64) for VC/F (unitless)")  # Table 3, "Covariate effect (theta) of body weight on VC/F" = 1.50 [13.78% RSE]
     lvp <- log(6.06)
-    label("Apparent peripheral volume of distribution at 64 kg (VP/F, L)")  # Table 3, "VP/F" = 6.06 L [1.20% RSE]
+    label("Apparent peripheral volume of distribution at 64 kg (L)")  # Table 3, "VP/F" = 6.06 L [1.20% RSE]
     e_wt_vp <- 0.52
     label("Power exponent on (WT/64) for VP/F (unitless)")  # Table 3, "Covariate effect (theta) of body weight on VP/F" = 0.52 [11.25% RSE]
     lq <- log(0.20)
-    label("Apparent inter-compartmental clearance in patients (Q/F, L/h)")  # Table 3, "Q/F_PMO" = 0.20 L/h [20.22% RSE]
+    label("Apparent inter-compartmental clearance in patients (L/h)")  # Table 3, "Q/F_PMO" = 0.20 L/h [20.22% RSE]
     e_healthy_q <- 1.731656
     label("Effect of healthy-volunteer status on Q/F (log-scale)")  # Table 3: Q/F(HV) 1.13 / Q/F_PMO 0.20 = 5.65; Results 3.1 quotes the reciprocal ratio as 0.18
 
     # ---- Linear elimination (Choi 2025 Table 3) -------------------------
     lcl <- log(0.006)
-    label("Apparent linear clearance in Caucasian subjects at 64 kg (CL/F, L/h)")  # Table 3, "CL/F in Caucasian" = 0.006 L/h [1.46% RSE]
+    label("Apparent linear clearance in Caucasian subjects at 64 kg (L/h)")  # Table 3, "CL/F in Caucasian" = 0.006 L/h [1.46% RSE]
     e_wt_cl <- 0.93
     label("Power exponent on (WT/64) for CL/F (unitless)")  # Table 3, "Covariate effect (theta) of body weight on CL/F" = 0.93 [7.98% RSE]
     e_black_cl <- 0.1397619
@@ -172,25 +172,25 @@ Choi_2025_denosumab <- function() {
 
     # ---- Target (RANKL) turnover and QSS binding (Choi 2025 Table 3) ----
     lrbase_target <- log(15.23)
-    label("Baseline total target (RANKL) concentration in patients (R0, nmol/L)")  # Table 3, "R0_PMO" = 15.23 nmol/L [12.78% RSE]
+    label("Baseline total target (RANKL) concentration in patients (nmol/L)")  # Table 3, "R0_PMO" = 15.23 nmol/L [12.78% RSE]
     e_healthy_rbase_target <- -2.74347
     label("Effect of healthy-volunteer status on baseline RANKL (log-scale)")  # Table 3: R0(HV) 0.98 / R0_PMO 15.23 = 0.0644; Results 3.1 quotes the reciprocal ratio as 15.49
     lksyn <- log(0.01)
-    label("Zero-order target (RANKL) synthesis rate constant (ksyn, nmol/L/h)")  # Table 3, "ksyn" = 0.01 1/h [2.86% RSE]; see model() for the ksyn/kdeg unit note
+    label("Zero-order target (RANKL) synthesis rate constant (nmol/L/h)")  # Table 3, "ksyn" = 0.01 1/h [2.86% RSE]; see model() for the ksyn/kdeg unit note
     lkint <- log(0.022)
-    label("First-order denosumab-RANKL complex internalization rate constant (kint, 1/h)")  # Table 3, "kint" = 0.022 1/h [1.71% RSE]
+    label("First-order denosumab-RANKL complex internalization rate constant (1/h)")  # Table 3, "kint" = 0.022 1/h [1.71% RSE]
     lkss <- log(1.56)
     label("Quasi-steady-state equilibrium constant (KSS = (koff + kint)/kon, nmol/L)")  # Table 3, "KSS" = 1.56 nmol/L [12.41% RSE]
 
     # ---- Lumbar-spine BMD turnover (Choi 2025 Table 4) ------------------
     lrbase_bmd <- log(0.76)
-    label("Baseline lumbar spine BMD (BMD0, g/cm^2)")  # Table 4, "BMD0" = 0.76 g/cm^2 [0.46% RSE]
+    label("Baseline lumbar spine BMD (g/cm^2)")  # Table 4, "BMD0" = 0.76 g/cm^2 [0.46% RSE]
     lkout <- log(0.00018)
-    label("First-order lumbar spine BMD loss rate constant (kout, 1/h)")  # Table 4, "kout" = 0.00018 1/h [9.5% RSE]
+    label("First-order lumbar spine BMD loss rate constant (1/h)")  # Table 4, "kout" = 0.00018 1/h [9.5% RSE]
     logitimax <- -1.75
-    label("Logit of the maximum fractional inhibition of kout (ImaxF, unitless)")  # Table 4, "ImaxF" = -1.75 [3.02% RSE]; Eq 10 Imax = exp(ImaxF)/(1 + exp(ImaxF)) = 0.148
+    label("Logit of the maximum fractional inhibition of kout (unitless)")  # Table 4, "ImaxF" = -1.75 [3.02% RSE]; Eq 10 Imax = exp(ImaxF)/(1 + exp(ImaxF)) = 0.148
     lic50 <- log(6.92)
-    label("Free denosumab concentration giving 50% of Imax (IC50, nmol/L)")  # Table 4, "IC50" = 6.92 nmol/L [11.65% RSE]
+    label("Free denosumab concentration giving 50% of Imax (nmol/L)")  # Table 4, "IC50" = 6.92 nmol/L [11.65% RSE]
     lhill <- log(0.17)
     label("Hill coefficient of the inhibitory sigmoid (unitless)")  # Table 4, "HILL" = 0.17 [4.9% RSE]
 

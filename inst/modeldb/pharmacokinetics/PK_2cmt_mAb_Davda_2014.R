@@ -41,11 +41,11 @@ PK_2cmt_mAb_Davda_2014 <- function() {
   ini({
     # Structural parameters — Davda 2014 reference weight = 70 kg
     lfdepot <- log(0.744); label("Subcutaneous bioavailability (fraction)")                            # Davda 2014 Table 3: F1 = 0.744
-    lka     <- log(0.282); label("Absorption rate (Ka, 1/day)")                                        # Davda 2014 Table 3: Ka = 0.282 /day
-    lcl     <- log(0.200); label("Clearance at reference weight (CL, L/day)")                          # Davda 2014 Table 3: CL = 0.200 L/day
-    lvc     <- log(3.61);  label("Central volume of distribution at reference weight (Vc, L)")         # Davda 2014 Table 3: V1 = 3.61 L
-    lvp     <- log(2.75);  label("Peripheral volume of distribution at reference weight (Vp, L)")      # Davda 2014 Table 3: V2 = 2.75 L
-    lq      <- log(0.747); label("Intercompartmental clearance at reference weight (Q, L/day)")        # Davda 2014 Table 3: Q = 0.747 L/day
+    lka     <- log(0.282); label("Absorption rate (1/day)")                                        # Davda 2014 Table 3: Ka = 0.282 /day
+    lcl     <- log(0.200); label("Clearance at reference weight (L/day)")                          # Davda 2014 Table 3: CL = 0.200 L/day
+    lvc     <- log(3.61);  label("Central volume of distribution at reference weight (L)")         # Davda 2014 Table 3: V1 = 3.61 L
+    lvp     <- log(2.75);  label("Peripheral volume of distribution at reference weight (L)")      # Davda 2014 Table 3: V2 = 2.75 L
+    lq      <- log(0.747); label("Intercompartmental clearance at reference weight (L/day)")        # Davda 2014 Table 3: Q = 0.747 L/day
 
     allocl  <- 0.865; label("Allometric exponent on clearance and intercompartmental clearance (unitless)")  # Davda 2014 Table 3
     allov   <- 0.957; label("Allometric exponent on volumes of distribution (unitless)")                      # Davda 2014 Table 3

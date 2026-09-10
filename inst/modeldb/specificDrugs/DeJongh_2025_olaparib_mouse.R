@@ -158,16 +158,16 @@ DeJongh_2025_olaparib_mouse <- function() {
     # mismatch is absorbed into the per-study bioavailability factors
     # (which is why some exceed 1). This is transcribed as published.
     # ------------------------------------------------------------------
-    lka  <- fixed(log(10.0)); label("Absorption rate constant (ka, 1/h)")                  # Table 2: 10.0, fixed by assumption for lack of post-dose absorption data; checked by likelihood profiling
-    lcl  <- log(1.9460);      label("Clearance (CL, L/h)")                                 # Table 2 CL = 1.95 (RSE 11.6%); control stream THETA(3) = 1.9460
-    lvc  <- log(1.1656);      label("Central volume of distribution (Vc, L/kg)")           # Table 2 Vc = 1.17 (RSE 16.5%); control stream THETA(4) = 1.1656
-    lq   <- log(0.6676);      label("Intercompartmental clearance (Q, L/h)")               # Table 2 Q = 0.668 (RSE 12.8%); control stream THETA(5) = 0.6676
-    lvp  <- log(2.6608);      label("Peripheral volume of distribution (Vp, L/kg)")        # Table 2 Vp = 2.66 (RSE 13.3%); control stream THETA(6) = 2.6608
+    lka  <- fixed(log(10.0)); label("Absorption rate constant (1/h)")                  # Table 2: 10.0, fixed by assumption for lack of post-dose absorption data; checked by likelihood profiling
+    lcl  <- log(1.9460);      label("Clearance (L/h)")                                 # Table 2 CL = 1.95 (RSE 11.6%); control stream THETA(3) = 1.9460
+    lvc  <- log(1.1656);      label("Central volume of distribution (L/kg)")           # Table 2 Vc = 1.17 (RSE 16.5%); control stream THETA(4) = 1.1656
+    lq   <- log(0.6676);      label("Intercompartmental clearance (L/h)")               # Table 2 Q = 0.668 (RSE 12.8%); control stream THETA(5) = 0.6676
+    lvp  <- log(2.6608);      label("Peripheral volume of distribution (L/kg)")        # Table 2 Vp = 2.66 (RSE 13.3%); control stream THETA(6) = 2.6608
 
     # ------------------------------------------------------------------
     # AZD7648 -> olaparib drug-drug interaction (DeJongh 2025 Eq. 7-8).
     # ------------------------------------------------------------------
-    lcmd50 <- log(82.538); label("AZD7648 daily dose halving olaparib clearance (CmD50, mg/kg/day)")  # Table 2: 82.5 (RSE 19.7%); control stream THETA(14) = 82.538
+    lcmd50 <- log(82.538); label("AZD7648 daily dose halving olaparib clearance (mg/kg/day)")  # Table 2: 82.5 (RSE 19.7%); control stream THETA(14) = 82.538
 
     # ------------------------------------------------------------------
     # Per-study relative oral bioavailability. The source estimated one
@@ -177,13 +177,13 @@ DeJongh_2025_olaparib_mouse <- function() {
     # intravenous and oral arms and so anchors the absolute
     # bioavailability of the whole set.
     # ------------------------------------------------------------------
-    lfdepot_s11448    <- log(0.42536); label("Relative oral bioavailability, study S11448, nude mice (F1, fraction)")  # Table 2 "F1 11,448 (Nude)" = 0.425 (RSE 15.1%); control stream THETA(7) = 0.42536
-    lfdepot_s1143     <- log(0.17443); label("Relative oral bioavailability, study S1143, nude mice (F1, fraction)")   # Table 2 "F1 1143 (Nude)" = 0.174 (RSE 25.2%); control stream THETA(8) = 0.17443
-    lfdepot_s1721     <- log(0.48873); label("Relative oral bioavailability, study S1721, nude mice (F1, fraction)")   # Table 2 "F1 1721 (Nude)" = 0.489 (RSE 16.1%); control stream THETA(9) = 0.48873
-    lfdepot_s1734scid <- log(0.59754); label("Relative oral bioavailability, study S1734, SCID mice (F1, fraction)")   # Table 2 "Absolute bio-avail F1" = 0.598 (RSE 15.5%); control stream THETA(10) = 0.59754 (labelled "F1 1734 SCID")
-    lfdepot_s1734nude <- log(0.23833); label("Relative oral bioavailability, study S1734, nude mice (F1, fraction)")   # Table 2 "F1 1734 (Nude)" = 0.238 (RSE 17.1%); control stream THETA(11) = 0.23833
-    lfdepot_s1770     <- log(1.4785);  label("Relative oral bioavailability, study S1770, SCID mice (F1, fraction)")   # Table 2 "F1 1770 (SCID)" = 1.48 (RSE 21.9%); control stream THETA(12) = 1.4785
-    lfdepot_s1816     <- log(4.1817);  label("Relative oral bioavailability, study S1816, SCID mice (F1, fraction)")   # Table 2 "F1 1816 (SCID)" = 4.18 (RSE 36.8%); control stream THETA(13) = 4.1817
+    lfdepot_s11448    <- log(0.42536); label("Relative oral bioavailability, study S11448, nude mice (fraction)")  # Table 2 "F1 11,448 (Nude)" = 0.425 (RSE 15.1%); control stream THETA(7) = 0.42536
+    lfdepot_s1143     <- log(0.17443); label("Relative oral bioavailability, study S1143, nude mice (fraction)")   # Table 2 "F1 1143 (Nude)" = 0.174 (RSE 25.2%); control stream THETA(8) = 0.17443
+    lfdepot_s1721     <- log(0.48873); label("Relative oral bioavailability, study S1721, nude mice (fraction)")   # Table 2 "F1 1721 (Nude)" = 0.489 (RSE 16.1%); control stream THETA(9) = 0.48873
+    lfdepot_s1734scid <- log(0.59754); label("Relative oral bioavailability, study S1734, SCID mice (fraction)")   # Table 2 "Absolute bio-avail F1" = 0.598 (RSE 15.5%); control stream THETA(10) = 0.59754 (labelled "F1 1734 SCID")
+    lfdepot_s1734nude <- log(0.23833); label("Relative oral bioavailability, study S1734, nude mice (fraction)")   # Table 2 "F1 1734 (Nude)" = 0.238 (RSE 17.1%); control stream THETA(11) = 0.23833
+    lfdepot_s1770     <- log(1.4785);  label("Relative oral bioavailability, study S1770, SCID mice (fraction)")   # Table 2 "F1 1770 (SCID)" = 1.48 (RSE 21.9%); control stream THETA(12) = 1.4785
+    lfdepot_s1816     <- log(4.1817);  label("Relative oral bioavailability, study S1816, SCID mice (fraction)")   # Table 2 "F1 1816 (SCID)" = 4.18 (RSE 36.8%); control stream THETA(13) = 4.1817
 
     # ------------------------------------------------------------------
     # Inter-individual variability -- one level only, on Vc, identifiable

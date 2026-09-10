@@ -90,7 +90,7 @@ Chirehwa_2017_pyrazinamide <- function() {
     lcl  <- log(3.35);   label("Apparent oral clearance CL/F at day 1 of treatment, FFM 42 kg (L/h)")  # Chirehwa 2017 Table 2 CL/F day 1 = 3.35 (95% CI 3.11-3.56)
     lvc  <- log(43.2);   label("Apparent central volume of distribution V/F, FFM 42 kg (L)")           # Chirehwa 2017 Table 2 V/F = 43.2 (95% CI 41.5-44.7)
     lmtt <- log(0.542);  label("Mean transit time MTT through the absorption chain (h)")               # Chirehwa 2017 Table 2 MTT = 0.542 (95% CI 0.47-0.61)
-    lnn  <- log(28);     label("Number of Savic-style transit compartments NN (continuous, unitless)") # Chirehwa 2017 Table 2 NN = 28 (95% CI 7-52)
+    lnn  <- log(28);     label("Number of Savic-style transit compartments NN, estimated on a continuous scale (unitless)") # Chirehwa 2017 Table 2 NN = 28 (95% CI 7-52)
     lfdepot <- fixed(log(1));  label("Bioavailability")                                   # Chirehwa 2017 Table 2 F = 1 fixed
 
     # =========================================================================

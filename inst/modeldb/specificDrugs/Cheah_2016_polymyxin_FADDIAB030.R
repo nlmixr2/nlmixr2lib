@@ -105,7 +105,7 @@ Cheah_2016_polymyxin_FADDIAB030 <- function() {
     # Fitness cost (Eq 10) -- ESTIMATED for FADDI-AB030
     # ===============================================================
     g_inhib_max <- 0.991
-    label("Maximal fitness cost associated with adaptive resistance (G_inhib,max; unitless)")  # Cheah 2016 Table 1, FADDI-AB030
+    label("Maximal fitness cost associated with adaptive resistance (max; unitless)")  # Cheah 2016 Table 1, FADDI-AB030
 
     # ===============================================================
     # Medium / physical constants (inherited; see ATCC 19606 file)

@@ -27,14 +27,14 @@ PK_1cmt_tmdd_mm <- function() {
 
   ini({
     # Drug disposition
-    lka     <- log(0.3);  label("Absorption rate (Ka, 1/day)")                              # Generic mAb-scale default (cf. Davda 2014 Table 3)
-    lfdepot <- log(0.7);  label("Extravascular bioavailability (F, fraction)")              # Generic mAb-scale default
-    lcl     <- log(0.2);  label("Linear (non-specific) clearance (CL, L/day)")              # Gibiansky 2008 Eq 10 (k_el * V); generic mAb-scale default
-    lvc     <- log(3);    label("Central volume of distribution (Vc, L)")                   # Gibiansky 2008 Eq 10 (V); generic mAb-scale default
+    lka     <- log(0.3);  label("Absorption rate (1/day)")                              # Generic mAb-scale default (cf. Davda 2014 Table 3)
+    lfdepot <- log(0.7);  label("Extravascular bioavailability (fraction)")              # Generic mAb-scale default
+    lcl     <- log(0.2);  label("Linear (non-specific) clearance (L/day)")              # Gibiansky 2008 Eq 10 (k_el * V); generic mAb-scale default
+    lvc     <- log(3);    label("Central volume of distribution (L)")                   # Gibiansky 2008 Eq 10 (V); generic mAb-scale default
 
     # Saturable (target-mediated) elimination
-    lvmax     <- log(0.1);  label("Maximum target-mediated elimination rate (Vm, mg/L/day)")  # Gibiansky 2008 Eq 10 (V_m = k_int * R0); generic TMDD default
-    lKm     <- log(1.1);  label("MM constant for target-mediated elimination (Km, mg/L)")   # Gibiansky 2008 Eq 10 (K_m approx Kss)
+    lvmax     <- log(0.1);  label("Maximum target-mediated elimination rate (mg/L/day)")  # Gibiansky 2008 Eq 10 (V_m = k_int * R0); generic TMDD default
+    lKm     <- log(1.1);  label("MM constant for target-mediated elimination (mg/L)")   # Gibiansky 2008 Eq 10 (K_m approx Kss)
 
     # IIV (generic archetype; single eta on each of CL, Vc, Ka)
     etalcl ~ 0.09

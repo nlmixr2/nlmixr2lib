@@ -210,8 +210,8 @@ Han_2025_alfentanil_pbpk <- function() {
     kp_stomach <- fixed(0.47);        label("alfentanil stomach:plasma partition coefficient Kt:p (unitless)")   # Table S1, Stomach
     kp_gut     <- fixed(0.47);        label("alfentanil intestine:plasma partition coefficient Kt:p (unitless)") # Table S1, Intestine (all five gut-wall segments)
     kp_other   <- fixed(0.001);   label("alfentanil rest-of-body:plasma partition coefficient Kt:p (unitless)")  # Table S1, ROB (footnote a: assumed, not calculated)
-    lbpr       <- fixed(log(0.63));   label("alfentanil blood:plasma concentration ratio Rb (log, unitless)")         # Table S1, Rb [ref 16]
-    lfu_p      <- fixed(log(0.086));  label("alfentanil fraction unbound in adult plasma (log, unitless)")            # Table S1, fu,p [ref 13]
+    lbpr       <- fixed(log(0.63));   label("alfentanil blood:plasma concentration ratio Rb (unitless)")         # Table S1, Rb [ref 16]
+    lfu_p      <- fixed(log(0.086));  label("alfentanil fraction unbound in adult plasma (unitless)")            # Table S1, fu,p [ref 13]
     lcl_int_h  <- fixed(log(0.096));  label("alfentanil CYP3A4 hepatic intrinsic clearance (log mL/min/mg microsomal protein)")  # Table S1, CLint [ref 19]
     # Table S1 reports "/" for the alfentanil effective permeability: Han 2025
     # never simulate an oral alfentanil dose, and every data set in Table S10 is

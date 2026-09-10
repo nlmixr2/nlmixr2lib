@@ -48,21 +48,21 @@ Straube_2025_omalizumab_1cmt <- function() {
 
   ini({
     # Drug disposition. Straube 2025 Table 2, Omalizumab / "Figure 5a" column.
-    lvc     <- log(3.925);        label("Central volume of distribution (Vc, L)")                    # Table 2, Figure 5a column: Vc = 3.925 L (estimated patient-specific)
-    lcl     <- log(0.01);         label("Systemic clearance (CL, L/day)")                            # Table 2, Figure 5a column: CL = 0.01 L/day (estimated patient-specific); Table 2 reports the derived keD = CL/Vc = 0.0025 1/day
-    lka     <- log(1.03);         label("First-order absorption rate constant (ka, 1/day)")          # Table 2, Omalizumab: ka = 1.03 1/day (pooled across the two patients)
-    lfdepot <- fixed(log(0.42));  label("Subcutaneous bioavailability (F, fraction)")                # Table 2 footnote *: "F and Kd fixed at values reported in Stein and Ramakrishna" -> F = 0.42
+    lvc     <- log(3.925);        label("Central volume of distribution (L)")                    # Table 2, Figure 5a column: Vc = 3.925 L (estimated patient-specific)
+    lcl     <- log(0.01);         label("Systemic clearance (L/day)")                            # Table 2, Figure 5a column: CL = 0.01 L/day (estimated patient-specific); Table 2 reports the derived keD = CL/Vc = 0.0025 1/day
+    lka     <- log(1.03);         label("First-order absorption rate constant (1/day)")          # Table 2, Omalizumab: ka = 1.03 1/day (pooled across the two patients)
+    lfdepot <- fixed(log(0.42));  label("Subcutaneous bioavailability (fraction)")                # Table 2 footnote *: "F and Kd fixed at values reported in Stein and Ramakrishna" -> F = 0.42
 
     # Drug-target binding. Kd is fixed from an external source and koff is
     # estimated, so kon = koff / Kd is derived in model() (Equation 7).
-    lk2     <- log(3.288);        label("Dissociation (off) rate constant of drug-target binding (koff, 1/day)")  # Table 2, Omalizumab: koff = 3.288 1/day (pooled)
+    lk2     <- log(3.288);        label("Dissociation (off) rate constant of drug-target binding (1/day)")  # Table 2, Omalizumab: koff = 3.288 1/day (pooled)
     lkd     <- fixed(log(2.3));   label("Equilibrium dissociation constant (Kd = koff/kon, nM)")     # Table 2 footnote *: Kd fixed at 2.3 nM from Stein and Ramakrishna. Table 2 reports the derived kon = koff/Kd = 1.430 1/(nM*day)
 
     # Target turnover. Figure 1: free target is synthesised at ksyn = keR*Rb
     # and eliminated with rate constant keR, so the baseline is Rb = ksyn/keR.
-    lrbase  <- log(1.342);        label("Baseline (basal) free target concentration (Rb, nM)")       # Table 2, Figure 5a column: Rb = 1.342 nM (estimated patient-specific); Table 2 reports the derived ksyn = keR*Rb = 1.130 nM/day
-    lkdeg   <- log(0.842);        label("Free target elimination rate constant (keR, 1/day)")        # Table 2, Omalizumab: keR = 0.842 1/day (pooled)
-    lkint   <- log(0.167);        label("Drug-target complex elimination rate constant (keDR, 1/day)")  # Table 2, Omalizumab: keDR = keR/Tacc = 0.842/5.058 = 0.167 1/day. Tacc = 5.058 is the target accumulation ratio keR/keDR (Equation 14); it is recoverable from this file as kdeg/kint and so is not carried as a separate parameter
+    lrbase  <- log(1.342);        label("Baseline (basal) free target concentration (nM)")       # Table 2, Figure 5a column: Rb = 1.342 nM (estimated patient-specific); Table 2 reports the derived ksyn = keR*Rb = 1.130 nM/day
+    lkdeg   <- log(0.842);        label("Free target elimination rate constant (1/day)")        # Table 2, Omalizumab: keR = 0.842 1/day (pooled)
+    lkint   <- log(0.167);        label("Drug-target complex elimination rate constant (1/day)")  # Table 2, Omalizumab: keDR = keR/Tacc = 0.842/5.058 = 0.167 1/day. Tacc = 5.058 is the target accumulation ratio keR/keDR (Equation 14); it is recoverable from this file as kdeg/kint and so is not carried as a separate parameter
   })
 
   model({

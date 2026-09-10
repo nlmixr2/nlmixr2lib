@@ -175,7 +175,7 @@ Yu_2025b_vancomycin <- function() {
     # 3.2: "PMA was incorporated using the Hill function in the covariate
     # model"; the printed CL equation gives the bare fraction
     # PMA^2.24 / (42.6^2.24 + PMA^2.24), with no reference-PMA normalisation.
-    pma_tm50 <- 42.6; label("Postmenstrual age at 50% of mature CL (PMA_T50, weeks)")  # Yu 2025 Table 2 (PMA_T50 = 42.6 weeks, S.E. 3.57, R.S.E. 8.38%, 95% CI 36.2-50.2)
+    pma_tm50 <- 42.6; label("Postmenstrual age at 50% of mature CL (weeks)")  # Yu 2025 Table 2 (PMA_T50 = 42.6 weeks, S.E. 3.57, R.S.E. 8.38%, 95% CI 36.2-50.2)
     pma_hill <- 2.24; label("Hill coefficient for CL maturation with postmenstrual age (unitless)")  # Yu 2025 Table 2 (PMA_Hill = 2.24, S.E. 0.0354, R.S.E. 1.58%, 95% CI 2.17-2.31)
 
     # Serum-creatinine effect on clearance. The printed Results 3.2 CL equation

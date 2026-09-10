@@ -100,15 +100,15 @@ Bulitta_2010_colistin_URMC1 <- function() {
     t12_kdeg <- 1.30
     label("Signal-molecule degradation half-life (h; t1/2(kdeg))")  # Bulitta 2010 Table 1, URMC1
     imax_rep <- 0.569
-    label("Maximal fractional inhibition of bacterial replication by signal molecules (ImaxRep, unitless)")  # Bulitta 2010 Table 1, URMC1
+    label("Maximal fractional inhibition of bacterial replication by signal molecules (unitless)")  # Bulitta 2010 Table 1, URMC1
     imax_kill <- 0.999
-    label("Maximal fractional inhibition of bacterial killing by signal molecules (ImaxKill, unitless)")  # Bulitta 2010 Table 1, URMC1
+    label("Maximal fractional inhibition of bacterial killing by signal molecules (unitless)")  # Bulitta 2010 Table 1, URMC1
 
     # =============================================================
     # Receptor occupancy and bacterial killing
     # =============================================================
     ec50_rec <- 0.316
-    label("Fraction of receptors not occupied by Mg2+/Ca2+ giving 50% effective colistin (EC50, unitless)")  # Bulitta 2010 Table 1, URMC1
+    label("Fraction of receptors not occupied by Mg2+/Ca2+ giving 50% effective colistin (unitless)")  # Bulitta 2010 Table 1, URMC1
     hill_rec <- fixed(10)
     label("Receptor-occupancy Hill coefficient (unitless; gamma; per Table 1 footnote e)")  # Bulitta 2010 Table 1 footnote (e)
     kdiss_cation <- fixed(200)

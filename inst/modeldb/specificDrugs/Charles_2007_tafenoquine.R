@@ -71,9 +71,9 @@ Charles_2007_tafenoquine <- function() {
     # are reported in Charles 2007 Table 2. The typical CL/F and V/F at the
     # cohort-mean weight of 80.9 kg are theta_1*(1+theta_4) = 4.37 L/h and
     # theta_2*(1+theta_5) = 1901 L respectively, matching the Results text.
-    lka     <- log(0.243);  label("Absorption rate constant (Ka, 1/h)")            # Charles 2007 Table 2 (theta_3 = 0.243 1/h)
-    lcl     <- log(3.02);   label("Clearance partial theta_1 (CL/F, L/h)")          # Charles 2007 Table 2 (theta_1 = 3.02 L/h; typical CL/F at 80.9 kg = 4.37 L/h)
-    lvc     <- log(1110);   label("Central volume partial theta_2 (V/F, L)")        # Charles 2007 Table 2 (theta_2 = 1110 L; typical V/F at 80.9 kg = 1901 L)
+    lka     <- log(0.243);  label("Absorption rate constant (1/h)")            # Charles 2007 Table 2 (theta_3 = 0.243 1/h)
+    lcl     <- log(3.02);   label("Apparent clearance partial theta_1 (L/h)")          # Charles 2007 Table 2 (theta_1 = 3.02 L/h; typical CL/F at 80.9 kg = 4.37 L/h)
+    lvc     <- log(1110);   label("Apparent central volume partial theta_2 (L)")        # Charles 2007 Table 2 (theta_2 = 1110 L; typical V/F at 80.9 kg = 1901 L)
 
     # Centered linear weight effects, parameterized as (1 + theta * WT/80.9).
     # See Charles 2007 Table 2 footnote a and Results paragraph 3.

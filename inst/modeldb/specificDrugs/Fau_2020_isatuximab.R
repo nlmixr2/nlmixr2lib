@@ -119,9 +119,9 @@ Fau_2020_isatuximab <- function() {
     # Categorical covariate effects, applied as exp(coef * indicator).
     e_nigg_cl <- -0.751; label("Exponential coefficient of non-IgG MM (vs IgG MM) on steady-state CL") # Fau 2020 Table S3: CLinf ~ IgType=Not_IgG
     e_nigg_cl_t50   <- -0.931; label("Exponential coefficient of non-IgG MM (vs IgG MM) on KCL")       # Fau 2020 Table S3: KCL ~ IgType=Not_IgG (main text rounds to -0.930)
-    e_p2f2_vc    <- -0.137; label("Exponential coefficient of P2F2 (vs P1F1) drug material on Vc")  # Fau 2020 Table S3: Vc ~ Formulation=P2F2
-    e_asian_vc   <- -0.275; label("Exponential coefficient of Asian race (vs non-Asian) on Vc")     # Fau 2020 Table S3: Vc ~ Race=Asian
-    e_sexf_vc    <- -0.126; label("Exponential coefficient of female sex (vs male) on Vc")          # Fau 2020 Table S3: Vc ~ Sex=Female
+    e_p2f2_vc    <- -0.137; label("Exponential coefficient of P2F2 vs P1F1 drug material on Vc (unitless)")  # Fau 2020 Table S3: Vc ~ Formulation=P2F2
+    e_asian_vc   <- -0.275; label("Exponential coefficient of Asian race vs non-Asian on Vc (unitless)")     # Fau 2020 Table S3: Vc ~ Race=Asian
+    e_sexf_vc    <- -0.126; label("Exponential coefficient of female sex vs male on Vc (unitless)")          # Fau 2020 Table S3: Vc ~ Sex=Female
 
     # Inter-individual variability. Fau 2020 Table S3 footnote defines
     # "ω: Between-subject coefficient of variation"; convert to nlmixr2

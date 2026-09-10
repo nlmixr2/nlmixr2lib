@@ -59,10 +59,10 @@ Lawson_2022_busulfan <- function() {
   ini({
     # Structural parameters at adult reference NFM (70 kg TBW corresponds to NFM 62 kg for CL,
     # 59 kg for V1 and V2, 56.1 kg for Q; allometric exponents 0.75 on CL and Q, 1 on V1 and V2).
-    lcl <- log(14.5);  label("Typical clearance at adult reference (CL, L/h)")                              # Lawson 2022 Table 3
-    lvc <- log(40.6);  label("Typical central volume of distribution at adult reference (V1, L)")          # Lawson 2022 Table 3
-    lq  <- log(1.92);  label("Typical intercompartmental clearance at adult reference (Q, L/h)")           # Lawson 2022 Table 3
-    lvp <- log(3.57);  label("Typical peripheral volume of distribution at adult reference (V2, L)")       # Lawson 2022 Table 3
+    lcl <- log(14.5);  label("Typical clearance at adult reference (L/h)")                              # Lawson 2022 Table 3
+    lvc <- log(40.6);  label("Typical central volume of distribution at adult reference (L)")          # Lawson 2022 Table 3
+    lq  <- log(1.92);  label("Typical intercompartmental clearance at adult reference (L/h)")           # Lawson 2022 Table 3
+    lvp <- log(3.57);  label("Typical peripheral volume of distribution at adult reference (L)")       # Lawson 2022 Table 3
 
     # Time-associated CL decline within a treatment course (Lawson 2022 Equation 1, simplified
     # to gamma = 1; CL_t = CL * exp(cl_time_max * t / (cl_t50 + t)) where t is time since the

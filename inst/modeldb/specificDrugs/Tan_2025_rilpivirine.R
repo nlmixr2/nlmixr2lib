@@ -127,11 +127,11 @@ Tan_2025_rilpivirine <- function() {
     # "Compared to CAB the absorption rate of RPV was approximately half
     # (0.000500 vs 0.000972 hours-1), consistent with a flatter
     # pharmacokinetic profile."
-    lka <- log(0.000500) ; label("Absorption rate constant (ka, 1/h)")  # Table 2 'k a (h-1) 0.000500'; bootstrap median 0.000507 [0.000402-0.000624]
+    lka <- log(0.000500) ; label("Absorption rate constant (1/h)")  # Table 2 'k a (h-1) 0.000500'; bootstrap median 0.000507 [0.000402-0.000624]
 
     # --- Disposition -----------------------------------------------------
-    lcl <- log(7.24) ; label("Apparent clearance at 70 kg (CL/F, L/h)")                     # Table 2 'CL/F (liters/h/70 kg) 7.24'; bootstrap median 7.16 [6.28-8.16]
-    lvc <- log(86.5) ; label("Apparent central volume of distribution at 70 kg (V/F, L)")   # Table 2 'V/F (liters/70 kg) 86.5'; bootstrap median 86.0 [33.8-183]
+    lcl <- log(7.24) ; label("Apparent clearance at 70 kg (L/h)")                     # Table 2 'CL/F (liters/h/70 kg) 7.24'; bootstrap median 7.16 [6.28-8.16]
+    lvc <- log(86.5) ; label("Apparent central volume of distribution at 70 kg (L)")   # Table 2 'V/F (liters/70 kg) 86.5'; bootstrap median 86.0 [33.8-183]
 
     # --- Allometric weight scaling ---------------------------------------
     # NOT PRINTED BY THE PAPER. Tan 2025 states the reference weight in the

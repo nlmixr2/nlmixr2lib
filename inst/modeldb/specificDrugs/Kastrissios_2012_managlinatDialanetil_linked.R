@@ -150,13 +150,13 @@ Kastrissios_2012_managlinatDialanetil_linked <- function() {
     # value of 100*SE/estimate)"), NOT a between-subject CV.
     # ------------------------------------------------------------------
     lka <- log(5.40)
-    label("CS-917 first-order absorption rate constant (ka, 1/h)")  # Table III CS-917 ka = 5.40 (RSE 21%); Table III prints the unit as "L/h", a typo -- see vignette Errata
+    label("CS-917 first-order absorption rate constant (1/h)")  # Table III CS-917 ka = 5.40 (RSE 21%); Table III prints the unit as "L/h", a typo -- see vignette Errata
     ltlag <- log(0.23)
-    label("CS-917 absorption lag time (Tlag, h)")  # Table III CS-917 Tlag = 0.23 h (RSE 3%)
+    label("CS-917 absorption lag time (h)")  # Table III CS-917 Tlag = 0.23 h (RSE 3%)
     lcl <- log(85.1)
-    label("CS-917 apparent clearance (CL/F, L/h)")  # Table III CS-917 CL/F = 85.1 (RSE 8%); footnote equation Cl/F = 85.1*(WT/86)^0.95
+    label("CS-917 apparent clearance (L/h)")  # Table III CS-917 CL/F = 85.1 (RSE 8%); footnote equation Cl/F = 85.1*(WT/86)^0.95
     lvc <- log(68.0)
-    label("CS-917 apparent central volume (Vc/F, L)")  # Table III CS-917 Vc/F = 68.0 (RSE 9%); footnote equation Vc/F = 68*(WT/86)^0.63
+    label("CS-917 apparent central volume (L)")  # Table III CS-917 Vc/F = 68.0 (RSE 9%); footnote equation Vc/F = 68*(WT/86)^0.63
     lfdepot <- fixed(log(1))
     label("CS-917 relative oral bioavailability for the fasted-capsule reference (unitless)")  # Table III footnote anchors the reference at F = 1: "F = 1*exp(-0.27*KFood)"
 
@@ -182,13 +182,13 @@ Kastrissios_2012_managlinatDialanetil_linked <- function() {
     # R-134450 (first, inactive metabolite)
     # ------------------------------------------------------------------
     lcl_r134450 <- log(187)
-    label("R-134450 apparent clearance (CL/F, L/h)")  # Table III R-134450 CL/F = 187 (RSE 15%)
+    label("R-134450 apparent clearance (L/h)")  # Table III R-134450 CL/F = 187 (RSE 15%)
     lvc_r134450 <- log(50.7)
-    label("R-134450 apparent central volume (Vc/F, L)")  # Table III R-134450 Vc/F = 50.7 (RSE 30%)
+    label("R-134450 apparent central volume (L)")  # Table III R-134450 Vc/F = 50.7 (RSE 30%)
     lq_r134450 <- log(197)
-    label("R-134450 apparent intercompartmental clearance (Q/F, L/h)")  # Table III R-134450 Q/F = 197 (RSE 11%)
+    label("R-134450 apparent intercompartmental clearance (L/h)")  # Table III R-134450 Q/F = 197 (RSE 11%)
     lvp_r134450 <- log(249)
-    label("R-134450 apparent peripheral volume (Vp/F, L)")  # Table III R-134450 Vp/F = 249 (RSE 9%)
+    label("R-134450 apparent peripheral volume (L)")  # Table III R-134450 Vp/F = 249 (RSE 9%)
 
     e_age_cl_r134450 <- -0.55
     label("Power exponent on (AGE/58) for R-134450 CL/F (unitless)")  # Table III Effect, age on CL/F = -0.55 (RSE 45%); reference age assumed, not printed -- see vignette Errata
@@ -204,13 +204,13 @@ Kastrissios_2012_managlinatDialanetil_linked <- function() {
     # R-125338 (active moiety)
     # ------------------------------------------------------------------
     lcl_r125338 <- log(30.9)
-    label("R-125338 apparent clearance (CL/F, L/h)")  # Table III R-125338 CL/F = 30.9 (RSE 7%); footnote equation Cl/F = 30.9*(ClCR/70)^0.36*exp(-0.22*KFood)
+    label("R-125338 apparent clearance (L/h)")  # Table III R-125338 CL/F = 30.9 (RSE 7%); footnote equation Cl/F = 30.9*(ClCR/70)^0.36*exp(-0.22*KFood)
     lvc_r125338 <- log(60.7)
-    label("R-125338 apparent central volume (Vc/F, L)")  # Table III R-125338 Vc/F = 60.7 (RSE 10%); footnote equation Vc/F = 60.7*exp(-0.56*KBlack)
+    label("R-125338 apparent central volume (L)")  # Table III R-125338 Vc/F = 60.7 (RSE 10%); footnote equation Vc/F = 60.7*exp(-0.56*KBlack)
     lq_r125338 <- log(7.07)
-    label("R-125338 apparent intercompartmental clearance (Q/F, L/h)")  # Table III R-125338 Q/F = 7.07 (RSE 14%)
+    label("R-125338 apparent intercompartmental clearance (L/h)")  # Table III R-125338 Q/F = 7.07 (RSE 14%)
     lvp_r125338 <- log(278)
-    label("R-125338 apparent peripheral volume (Vp/F, L)")  # Table III R-125338 Vp/F = 278 (RSE 7%)
+    label("R-125338 apparent peripheral volume (L)")  # Table III R-125338 Vp/F = 278 (RSE 7%)
 
     e_crcl_cl_r125338 <- 0.36
     label("Power exponent on (CRCL/70) for R-125338 CL/F (unitless)")  # Table III Effect, CLCR on CL/F = 0.36 (RSE 27%); footnote equation
@@ -228,9 +228,9 @@ Kastrissios_2012_managlinatDialanetil_linked <- function() {
     # R-143047 (terminal, inactive N-acetyl metabolite)
     # ------------------------------------------------------------------
     lcl_r143047 <- log(9.81)
-    label("R-143047 apparent clearance (CL/F, L/h)")  # Table III R-143047 CL/F = 9.81 (RSE 7%)
+    label("R-143047 apparent clearance (L/h)")  # Table III R-143047 CL/F = 9.81 (RSE 7%)
     lvc_r143047 <- log(338)
-    label("R-143047 apparent central volume (Vc/F, L)")  # Table III R-143047 Vc/F = 338 (RSE 8%)
+    label("R-143047 apparent central volume (L)")  # Table III R-143047 Vc/F = 338 (RSE 8%)
 
     e_wt_cl_r143047 <- 0.61
     label("Power exponent on (WT/86) for R-143047 CL/F (unitless)")  # Table III Effect, body weight on CL/F = 0.61 (RSE 34%)

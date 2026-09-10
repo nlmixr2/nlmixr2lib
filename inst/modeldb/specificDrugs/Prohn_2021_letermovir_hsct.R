@@ -195,19 +195,19 @@ Prohn_2021_letermovir_hsct <- function() {
     # the log-normal IIV terms add on the natural-log scale.
     # ------------------------------------------------------------------
     lcl <- log(4.84)
-    label("Clearance without concomitant cyclosporine (CL, L/h)")  # Table 3 'CL non-CSA treatment, L/h' 4.84 (95% CI 4.3-5.45)
+    label("Clearance without concomitant cyclosporine (L/h)")  # Table 3 'CL non-CSA treatment, L/h' 4.84 (95% CI 4.3-5.45)
     lvc <- log(19.7)
-    label("Central volume of distribution (Vc, L)")  # Table 3 'Central volume, L' 19.7 (95% CI 17.6-22.1)
+    label("Central volume of distribution (L)")  # Table 3 'Central volume, L' 19.7 (95% CI 17.6-22.1)
     lvp <- log(25.8)
-    label("Peripheral volume of distribution in non-Asian participants (Vp, L)")  # Table 3 'Peripheral volume, L' 25.8 (95% CI 19.1-34.9)
+    label("Peripheral volume of distribution in non-Asian participants (L)")  # Table 3 'Peripheral volume, L' 25.8 (95% CI 19.1-34.9)
     lq <- log(1.54)
-    label("Intercompartmental clearance (Q, L/h)")  # Table 3 'Intercompartment CL, L/h' 1.54 (95% CI 1.17-2.04)
+    label("Intercompartmental clearance (L/h)")  # Table 3 'Intercompartment CL, L/h' 1.54 (95% CI 1.17-2.04)
     lka <- log(0.150)
-    label("First-order absorption rate in HSCT recipients (Ka, 1/h)")  # Table 3 'Absorption rate, 1/h' 0.150 (95% CI 0.104-0.215)
+    label("First-order absorption rate in HSCT recipients (1/h)")  # Table 3 'Absorption rate, 1/h' 0.150 (95% CI 0.104-0.215)
     ltlag <- log(0.674)
     label("Absorption lag time (h)")  # Table 3 'Absorption lag, h' 0.674 (95% CI 0.59-0.769)
     lfdepot <- log(0.346)
-    label("Oral bioavailability in HSCT recipients without cyclosporine (F, fraction)")  # Table 3 'Bioavailability without CSA' 0.346 (95% CI 0.278-0.42)
+    label("Oral bioavailability in HSCT recipients without cyclosporine (fraction)")  # Table 3 'Bioavailability without CSA' 0.346 (95% CI 0.278-0.42)
 
     # Healthy-participant branch. Bioavailability was FIXED to 1: "models in
     # which the bioavailability for healthy participants was estimated were
@@ -215,9 +215,9 @@ Prohn_2021_letermovir_hsct <- function() {
     # 100%. Therefore, to stabilize the model, bioavailability was fixed to
     # 100%." Table 3 accordingly gives no confidence interval for this row.
     lfdepot_hp <- fixed(log(1.00))
-    label("Oral bioavailability in healthy participants (F, fraction)")  # Table 3 'Bioavailability HP' 1.00, no CI reported
+    label("Oral bioavailability in healthy participants (fraction)")  # Table 3 'Bioavailability HP' 1.00, no CI reported
     lka_hp <- log(1.26)
-    label("First-order absorption rate in healthy participants (Ka, 1/h)")  # Table 3 'Absorption rate HP, 1/h' 1.26 (95% CI 0.933-1.71)
+    label("First-order absorption rate in healthy participants (1/h)")  # Table 3 'Absorption rate HP, 1/h' 1.26 (95% CI 0.933-1.71)
 
     # ------------------------------------------------------------------
     # Covariate effects. Both cyclosporine terms are log-ratios of two

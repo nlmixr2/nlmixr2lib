@@ -60,7 +60,7 @@ LeTilly_2021_trastuzumab <- function() {
     # not a measured antigen mass.
     lkin   <- log(11.88); label("Zero-order latent HER2 production rate (nmol/day)")                  # Le Tilly 2021 Table 2: kin = 11.88 nmol/day
     lktr   <- log(0.325); label("Latent HER2 transit / output rate (1/day); ktr = kout (constrained equal to avoid overparameterization)") # Le Tilly 2021 Table 2: ktr = 0.325 day^-1
-    lkdeg  <- log(0.0116); label("Second-order trastuzumab-HER2 binding/degradation rate kdeg (nmol^-1 day^-1)") # Le Tilly 2021 Table 2: kdeg = 0.0116 nmol^-1 day^-1
+    lkdeg  <- log(0.0116); label("Second-order trastuzumab-HER2 binding and degradation rate kdeg on the log scale (1/nmol/day)") # Le Tilly 2021 Table 2: kdeg = 0.0116 nmol^-1 day^-1
 
     # Inter-individual variability. MONOLIX exponential IIV: theta_i =
     # theta_pop * exp(eta_i), with eta_i ~ N(0, omega^2). Le Tilly 2021

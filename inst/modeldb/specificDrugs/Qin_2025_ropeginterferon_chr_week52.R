@@ -146,7 +146,7 @@ Qin_2025_ropeginterferon_chr_week52 <- function() {
 
     # ----- Saturable exposure effect on the logit -----
     lemax <- log(8.397) ; label("Maximum increment in the week-52 complete-hematologic-response logit attributable to ropeg exposure (unitless logit)")  # Qin 2025 Table 4: maximum effect Emax = 8.397, standard error 0.665, p < 0.0001
-    lec50 <- log(1.98)  ; label("Average total serum ropeg concentration over weeks 0-52 producing half of Emax on the logit (EC50, ng/mL)")            # Qin 2025 Table 4: EC50 = 1.98, standard error 2.472, p = 0.4231 -- NOT significant, and the standard error exceeds the estimate
+    lec50 <- log(1.98)  ; label("Average total serum ropeg concentration over weeks 0-52 producing half of Emax on the logit (ng/mL)")            # Qin 2025 Table 4: EC50 = 1.98, standard error 2.472, p = 0.4231 -- NOT significant, and the standard error exceeds the estimate
 
     # ----- No between-subject variability, no residual error -----
     # The source is a binomial logistic regression; a Bernoulli

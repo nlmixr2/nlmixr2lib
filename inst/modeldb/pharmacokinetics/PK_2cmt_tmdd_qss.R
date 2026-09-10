@@ -29,17 +29,17 @@ PK_2cmt_tmdd_qss <- function() {
 
   ini({
     # Drug disposition
-    lka     <- log(0.3);   label("Absorption rate (Ka, 1/day)")                                # Generic mAb-scale default (cf. Davda 2014 Table 3)
-    lfdepot <- log(0.7);   label("Extravascular bioavailability (F, fraction)")                # Generic mAb-scale default
-    lcl     <- log(0.2);   label("Linear (non-specific) clearance (CL, L/day)")                # Gibiansky 2008 Eq 8 (k_el * V); generic mAb-scale default
-    lvc     <- log(3);     label("Central volume of distribution (Vc, L)")                     # Gibiansky 2008 Eq 8 (V); generic mAb-scale default
-    lvp     <- log(3);     label("Peripheral volume of distribution (Vp, L)")                  # Gibiansky 2008 two-compartment extension; generic mAb-scale default
-    lq      <- log(0.5);   label("Intercompartmental clearance (Q, L/day)")                    # Gibiansky 2008 two-compartment extension; generic mAb-scale default
+    lka     <- log(0.3);   label("Absorption rate (1/day)")                                # Generic mAb-scale default (cf. Davda 2014 Table 3)
+    lfdepot <- log(0.7);   label("Extravascular bioavailability (fraction)")                # Generic mAb-scale default
+    lcl     <- log(0.2);   label("Linear (non-specific) clearance (L/day)")                # Gibiansky 2008 Eq 8 (k_el * V); generic mAb-scale default
+    lvc     <- log(3);     label("Central volume of distribution (L)")                     # Gibiansky 2008 Eq 8 (V); generic mAb-scale default
+    lvp     <- log(3);     label("Peripheral volume of distribution (L)")                  # Gibiansky 2008 two-compartment extension; generic mAb-scale default
+    lq      <- log(0.5);   label("Intercompartmental clearance (L/day)")                    # Gibiansky 2008 two-compartment extension; generic mAb-scale default
 
     # Target turnover
-    lT0     <- log(0.1);   label("Baseline total target concentration (T0, mg/L)")             # Gibiansky 2008 Eq 9 (R_tot(0) = ksyn/kdeg); generic TMDD default
-    lkdeg   <- log(0.1);   label("Free target first-order degradation rate (kdeg, 1/day)")     # Gibiansky 2008 Eq 9 (k_deg)
-    lkint   <- log(1);     label("Drug-target complex internalization rate (kint, 1/day)")     # Gibiansky 2008 Eq 9 (k_int)
+    lT0     <- log(0.1);   label("Baseline total target concentration (mg/L)")             # Gibiansky 2008 Eq 9 (R_tot(0) = ksyn/kdeg); generic TMDD default
+    lkdeg   <- log(0.1);   label("Free target first-order degradation rate (1/day)")     # Gibiansky 2008 Eq 9 (k_deg)
+    lkint   <- log(1);     label("Drug-target complex internalization rate (1/day)")     # Gibiansky 2008 Eq 9 (k_int)
 
     # Binding (QSS)
     lkss    <- log(1.1);   label("Steady-state binding constant (Kss = (koff + kint)/kon, mg/L)")  # Gibiansky 2008 Eq 7 (Kss)

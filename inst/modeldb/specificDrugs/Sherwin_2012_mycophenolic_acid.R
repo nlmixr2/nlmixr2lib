@@ -189,9 +189,9 @@ Sherwin_2012_mycophenolic_acid <- function() {
     # data. See Sherwin 2012 Results: 'These elimination rates were
     # unidentifiable by the model due to a lack of data and estimations
     # were based on previously reported values in the literature [45].'
-    e_fm           <- fixed(0.85); label("Fraction of MPA elimination converted to MPAG (FM, unitless,; remainder 0.15 is AcMPAG, not modelled)")      # Table 3 FM     fixed at 85%
-    e_fmpag        <- fixed(0.65); label("Fraction of MPAG total elimination via biliary pathway (FMPAG, unitless,; complement is renal)")             # Table 3 FMPAG  fixed at 65%
-    e_ehc          <- fixed(0.35); label("Fraction of gallbladder content reaching the gut during meal-time emptying (EHC, unitless,; complement is feces)") # Table 3 EHC    fixed at 35%
+    e_fm           <- fixed(0.85); label("Fraction of MPA elimination converted to MPAG (unitless,; remainder 0.15 is AcMPAG, not modelled)")      # Table 3 FM     fixed at 85%
+    e_fmpag        <- fixed(0.65); label("Fraction of MPAG total elimination via biliary pathway (unitless,; complement is renal)")             # Table 3 FMPAG  fixed at 65%
+    e_ehc          <- fixed(0.35); label("Fraction of gallbladder content reaching the gut during meal-time emptying (unitless,; complement is feces)") # Table 3 EHC    fixed at 35%
 
     # ---- Inter-individual variability (Eq. 1; CV% per Table 3) ----
     # omega^2 = log(1 + CV^2):

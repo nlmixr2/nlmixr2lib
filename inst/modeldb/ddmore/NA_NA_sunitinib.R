@@ -162,14 +162,14 @@ NA_NA_sunitinib <- function() {
     #   Y1..Y6 = proportionalError(proportional = b_*, eps = EPS_Y, prediction = output*)
     #   Y7     = combinedError1(additive = a_7, proportional = b_7, eps = EPS_Y, prediction = output7)
     # ----------------------------------------------------------------------
-    propSd          <- 0.512;  label("Proportional residual error on parent concentration (Y1, fraction)")    # MDL parObj b_1
-    propSd_Cc_metab <- 0.429;  label("Proportional residual error on metabolite concentration (Y2, fraction)") # MDL parObj b_2
-    propSd_biom1 <- 0.503;  label("Proportional residual error on biomarker 1 (Y3, fraction)")              # MDL parObj b_3
-    propSd_biom2 <- 0.137;  label("Proportional residual error on biomarker 2 (Y4, fraction)")              # MDL parObj b_4
-    propSd_biom3 <- 0.28;   label("Proportional residual error on biomarker 3 (Y5, fraction)")              # MDL parObj b_5
-    propSd_biom4 <- 0.135;  label("Proportional residual error on biomarker 4 (Y6, fraction)")              # MDL parObj b_6
+    propSd          <- 0.512;  label("Proportional residual error on parent concentration (fraction)")    # MDL parObj b_1
+    propSd_Cc_metab <- 0.429;  label("Proportional residual error on metabolite concentration (fraction)") # MDL parObj b_2
+    propSd_biom1 <- 0.503;  label("Proportional residual error on biomarker 1 (fraction)")              # MDL parObj b_3
+    propSd_biom2 <- 0.137;  label("Proportional residual error on biomarker 2 (fraction)")              # MDL parObj b_4
+    propSd_biom3 <- 0.28;   label("Proportional residual error on biomarker 3 (fraction)")              # MDL parObj b_5
+    propSd_biom4 <- 0.135;  label("Proportional residual error on biomarker 4 (fraction)")              # MDL parObj b_6
     addSd_tumorRadius  <- 0.241;  label("Additive residual error on tumor radius (Y7)")                     # MDL parObj a_7
-    propSd_tumorRadius <- 0.0856; label("Proportional residual error on tumor radius (Y7, fraction)")       # MDL parObj b_7
+    propSd_tumorRadius <- 0.0856; label("Proportional residual error on tumor radius (fraction)")       # MDL parObj b_7
   })
 
   model({

@@ -207,8 +207,8 @@ Chen_2025_vancomycin <- function() {
     # Comorbidity Index of ZERO, not of a typical patient: the CCI term in
     # equation 15 is an uncentred ratio, so it contributes exp(-0.151) =
     # 0.860 at the cohort mean CCI of 5.62.
-    lcl <- log(3.35);  label("Clearance at CRCL=93 mL/min and SCORE_CCI=0 (CL, L/h)")  # Chen 2025 Table S1 "CL (L*h^-1)" = 3.35 (RSE 3%); bootstrap median 3.33, 95% CI 3.15-3.54, bias -1.0%
-    lvc <- log(98.5);  label("Volume of distribution at WT=84 kg (V, L)")              # Chen 2025 Table S1 "V (L)" = 98.5 (RSE 1%); bootstrap median 98.80, 95% CI 95.46-101.59, bias 2.7%
+    lcl <- log(3.35);  label("Clearance at CRCL=93 mL/min and SCORE_CCI=0 (L/h)")  # Chen 2025 Table S1 "CL (L*h^-1)" = 3.35 (RSE 3%); bootstrap median 3.33, 95% CI 3.15-3.54, bias -1.0%
+    lvc <- log(98.5);  label("Volume of distribution at WT=84 kg (L)")              # Chen 2025 Table S1 "V (L)" = 98.5 (RSE 1%); bootstrap median 98.80, 95% CI 95.46-101.59, bias 2.7%
 
     # Covariate effects. All three are estimated (Table S1 reports an RSE and
     # a bootstrap confidence interval for each), so none is wrapped in
