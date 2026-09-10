@@ -88,10 +88,10 @@ naming its source location. They are collected here for review.
 | `etalcl` | 0.41^2 = 0.1681 | Table 2, row `omega CL` (Monolix reports omega as an SD) |
 | `etalvc` | 0.45^2 = 0.2025 | Table 2, row `omega V1` (Monolix reports omega as an SD) |
 | `propSd` | 0.34 | Table 2, row `Proportion error` (RSE 11.6%) |
-| `cl <- ... * WT * (WT/7.5)^e_wt_cl * (CRCL/123.4)^e_crcl_cl` | n/a | Equation 4, p. 6; per-kg units from Table 2; BWmed and eGFRmed from Table 1 |
-| `vc <- ... * WT * (WT/7.5)^e_wt_vc` | n/a | Equation 5, p. 6 |
-| `q <- ... * WT * (WT/7.5)^e_wt_q` | n/a | Equation 6, p. 6 |
-| `vp <- ... * WT` | n/a | Table 2 `V2 (L/kg)`; the paper prints no covariate equation for V2 |
+| `cl <- ... * 7.5 * (WT/7.5)^e_wt_cl * (CRCL/123.4)^e_crcl_cl` | n/a | Equation 4, p. 6; BWmed and eGFRmed from Table 1; the `* 7.5` is Table 2's per-median-kilogram convention, see Assumptions and deviations |
+| `vc <- ... * 7.5 * (WT/7.5)^e_wt_vc` | n/a | Equation 5, p. 6 |
+| `q <- ... * 7.5 * (WT/7.5)^e_wt_q` | n/a | Equation 6, p. 6 |
+| `vp <- ... * 7.5` | n/a | Table 2 `V2 (L/kg)`; the paper prints no covariate equation for V2 |
 | Two-compartment, linear elimination | n/a | Results 3.2, p. 6 |
 | Proportional residual error | n/a | Results 3.2, p. 6 |
 | eGFR definition (bedside Schwartz) | k = 0.33 / 0.45 / 0.41 | Methods Equation 1, p. 3 |
@@ -116,9 +116,11 @@ ref <- rxode2::rxSolve(mod_typ, ev_ref, returnType = "data.frame")
 
 # At the Table 1 medians (7.5 kg, 123.4 mL/min/1.73 m^2) BOTH covariate terms
 # equal exactly 1, so each individual parameter must reduce to the Table 2
-# per-kilogram value multiplied by the weight. This is the regression test for
-# the whole covariate model: a wrong reference value, a dropped WT
-# multiplication or a mis-transcribed exponent all break it.
+# value multiplied by BWmed = 7.5 kg. This is the regression test for the whole
+# covariate model: a wrong reference value or a mis-transcribed exponent breaks
+# it. Note it CANNOT discriminate the two readings of Table 2's per-kilogram
+# units, which coincide at exactly this weight -- the gate-figure4-shape chunk
+# below is what does that.
 algebra <- tibble::tibble(
   Parameter = c("cl (L/h)", "vc (L)", "q (L/h)", "vp (L)"),
   Model     = c(ref$cl[1], ref$vc[1], ref$q[1], ref$vp[1]),
@@ -374,31 +376,55 @@ of subtherapeutic meropenem exposure. With `e_crcl_cl` = 0.96 the model makes
 clearance very nearly proportional to eGFR, so this is a structural
 consequence rather than a coincidence of the cohort.
 
-```{r gate-arc-contrast}
-# Compare the lowest and highest eGFR terciles of the simulated cohort.
+```{r arc-contrast}
+# Descriptive: exposure by eGFR tercile of the simulated cohort. Note that
+# eGFR and body weight are strongly confounded here -- the low-eGFR tercile is
+# mostly neonates -- so this table alone cannot isolate the eGFR effect. The
+# regression below does that; the deterministic gate-egfr-exponent chunk
+# already pins the exponent exactly at fixed weight.
 arc <- nca_ind |>
-  left_join(sim |> distinct(id, CRCL), by = "id") |>
+  left_join(sim |> distinct(id, WT, CRCL), by = "id") |>
   mutate(band = cut(CRCL, quantile(CRCL, c(0, 1/3, 2/3, 1)),
                     labels = c("Low eGFR", "Moderate eGFR", "High eGFR"),
                     include.lowest = TRUE))
 
-arc_tab <- arc |>
+arc |>
   group_by(band) |>
-  summarise(`Median eGFR` = median(CRCL),
+  summarise(`Median weight (kg)` = median(WT),
+            `Median eGFR` = median(CRCL),
             `Median AUCtau (mg*h/L)` = median(auclast),
-            `Median Ctrough (mg/L)` = median(ctrough), .groups = "drop")
+            `Median Ctrough (mg/L)` = median(ctrough), .groups = "drop") |>
+  knitr::kable(digits = 1,
+               caption = "Steady-state exposure by eGFR tercile (20 mg/kg q8h). Weight and eGFR are confounded across these bands.")
+```
 
-knitr::kable(arc_tab, digits = 1,
-             caption = "Steady-state exposure by eGFR tercile (20 mg/kg q8h).")
+```{r gate-covariate-exponents}
+# The strong cohort-level gate on the covariate model. Every subject gets the
+# same 20 mg/kg, so at steady state
+#   log AUC(tau) = const + (1 - beta_CL,WT) * log WT - beta_CL,eGFR * log eGFR - eta
+# and a regression of the NCA-derived AUC on the two covariates must recover
+# 1 - 0.43 = 0.57 and -0.96. This is not circular: the right-hand side uses the
+# covariate columns that were fed IN, and the left-hand side is the exposure
+# that came OUT of the ODE solve and PKNCA.
+#
+# This is what separates the two readings of Table 2's per-kilogram units. The
+# encoded absolute reading predicts a weight slope of +0.57; the rejected
+# per-kg reading predicts 1 - 1.43 = -0.43. The two differ by a full 1.0, so
+# the tolerance below can be loose and still make the gate decisive.
+fit <- lm(log(auclast) ~ log(WT) + log(CRCL), data = arc)
+co <- coef(fit)
 
-ratio_low_high <- arc_tab$`Median AUCtau (mg*h/L)`[1] /
-  arc_tab$`Median AUCtau (mg*h/L)`[3]
+cat(sprintf("weight slope: %.3f (expected %.2f; per-kg reading would give %.2f)\n",
+            co[["log(WT)"]], 1 - 0.43, 1 - 1.43))
+cat(sprintf("eGFR slope:   %.3f (expected %.2f)\n", co[["log(CRCL)"]], -0.96))
 
-# The eGFR terciles of this cohort differ by roughly 4-fold, and with an
-# exponent of 0.96 the exposure ratio should be large. Assert the MAGNITUDE of
-# a large effect, not the sign of a small one.
-cat(sprintf("AUCtau low-eGFR / high-eGFR = %.2f\n", ratio_low_high))
-stopifnot(ratio_low_high > 1.5)
+# Tolerance covers residual IIV and the small eGFR-correlated bias from not
+# being fully at steady state after 61 doses; it is far tighter than the 1.0
+# gap between the two candidate readings.
+stopifnot(
+  abs(co[["log(WT)"]]   - 0.57) < 0.15,
+  abs(co[["log(CRCL)"]] + 0.96) < 0.15
+)
 ```
 
 ## Probability of target attainment
@@ -438,7 +464,7 @@ pta_preterm <- pta$PTA[pta$stratum == "Preterm neonate" & pta$MIC == 2]
 pta_older   <- pta$PTA[pta$stratum == "3 months to <2 years" & pta$MIC == 2]
 cat(sprintf("PTA at MIC 2: preterm neonate %.0f%%, 3 months to <2 years %.0f%%\n",
             pta_preterm, pta_older))
-# Realised gap on this cohort: 100% vs 66%. Assert the MAGNITUDE of a large
+# Realised gap on this cohort: 98% vs 65%. Assert the MAGNITUDE of a large
 # separation rather than a bare ordering, so the gate does not become a coin
 # flip on a cohort that happens to draw the two strata closer together.
 stopifnot(pta_preterm - pta_older > 10)
@@ -453,65 +479,126 @@ infusion, and that the maximum label dose fails above 1 month of age once the
 MIC exceeds 2 mg/L; the table above shows the same direction and the same order
 of magnitude.
 
-The preterm stratum corroborates the recommendation from the other end. At an
-eGFR median of 33.1 mL/min/1.73 m^2 the model puts a standard 20 mg/kg q8h
-regimen at a median steady-state trough near 47 mg/L, essentially at the
-50 mg/L toxicity threshold the paper adopts -- which is why Table 5 recommends
-only 10 mg/kg q8h for the 50%-of-expected-GFR group rather than the label dose.
-The packaged model reaches the same conclusion from the exposure side.
+The preterm stratum corroborates the recommendation from the other end, though
+less sharply. At an eGFR median of 33.1 mL/min/1.73 m^2 the model puts a
+standard 20 mg/kg q8h regimen at a median steady-state trough of 13.8 mg/L and
+a median AUC(tau) of 131 mg*h/L -- roughly twice the exposure of the term
+neonate and 3 months to 2 years strata, and the highest trough of any stratum.
+That is the direction behind Table 5 recommending only 10 mg/kg q8h for the
+50%-of-expected-GFR group rather than the label dose, although the model does
+not approach the 50 mg/L steady-state toxicity threshold the paper adopts.
+Given the roughly twofold level offset against Figure 4 documented below, the
+ordering across strata is the part of this comparison to rely on, not the
+absolute margin to the toxicity threshold.
 
 ## Comparison against the published Figure 4
 
 Figure 4 reports simulated steady-state AUC, Cmax and Ctrough for four
-scenarios at 20 mg/kg. The comparison below is presented as a **known
-deviation**, not a gate, for two reasons given in full in Assumptions and
-deviations: the paper publishes neither the body weights nor the ARC eGFR
-thresholds it used for those simulations, and the figure values had to be read
-off the plotted symbols.
+scenarios, all at 20 mg/kg. Methods 2.4 states that the PopPK panels were
+simulated "based on median eGFR and BW", so the typical-value calculation below
+is the like-for-like comparison. The figure values were read off the plotted
+symbols (the cyan "without ARC" triangles) and the per-scenario body weights are
+assumed, so the **absolute level** of these ratios carries digitisation and
+weight-assumption error. What the comparison is used for here is the
+**cross-stratum shape**, which is insensitive to both: it is what discriminates
+the two candidate readings of Table 2's per-kilogram unit labels.
 
 ```{r figure4-comparison}
 fig4 <- tibble::tribble(
-  ~Scenario,                              ~Regimen,          ~wt,  ~egfr, ~`Figure 4 AUCtau (popPK)`,
-  "a. Term neonate, PNA <2 weeks",        "20 mg/kg q12h",   3.4,  88.0,  157,
-  "b. Term neonate, PNA >=2 weeks",       "20 mg/kg q8h",    3.8,  88.0,  140,
-  "c. 1-3 months",                        "20 mg/kg q8h",    4.7, 109.7,  155,
-  "d. >=3 months",                        "20 mg/kg q8h",   11.0, 175.8,  155
+  ~Scenario,                        ~Regimen,        ~wt,  ~egfr, ~auc_fig, ~cmax_fig,
+  "a. Term neonate, PNA <2 weeks",  "20 mg/kg q12h", 3.4,  88.0,     160,       33,
+  "b. Term neonate, PNA >=2 weeks", "20 mg/kg q8h",  3.8,  88.0,     140,       36,
+  "c. 1-3 months",                  "20 mg/kg q8h",  4.7, 109.7,     158,       42,
+  "d. >=3 months",                  "20 mg/kg q8h", 11.0, 175.8,     158,       47
 )
 
 # Typical-value AUC(tau) is Dose/CL exactly, so both candidate readings of
 # Table 2 can be evaluated in closed form without simulating.
 #
-#   "per-kg"   (what this package encodes): the tabulated 0.24 L/h/kg is a
-#              PER-SUBJECT per-kilogram clearance, so CL = 0.24 * WT * ...
-#   "absolute" (the alternative): the tabulated value is the typical ABSOLUTE
-#              clearance expressed per median kilogram, so CL = 0.24 * 7.5 * ...
-#              and the weight term is the only weight scaling.
+#   "absolute" (what this package encodes): the tabulated 0.24 L/h/kg is the
+#              typical ABSOLUTE clearance quoted per median kilogram, so
+#              CL = 0.24 * 7.5 * (WT/7.5)^0.43 * ... and the power term is the
+#              only weight scaling. Net weight exponent on absolute CL = 0.43.
+#   "per-kg"   (the alternative): the tabulated value is a PER-SUBJECT
+#              per-kilogram clearance, so CL = 0.24 * WT * (WT/7.5)^0.43 * ...
+#              Net weight exponent on absolute CL = 1.43.
 fig4_cmp <- fig4 |>
   mutate(
-    cov      = (wt / 7.5)^0.43 * (egfr / 123.4)^0.96,
-    `Per-kg reading`   = 20 * wt / (0.24 * wt  * cov),
-    `Absolute reading` = 20 * wt / (0.24 * 7.5 * cov)
-  ) |>
-  mutate(
-    `Ratio, per-kg`   = `Per-kg reading`   / `Figure 4 AUCtau (popPK)`,
-    `Ratio, absolute` = `Absolute reading` / `Figure 4 AUCtau (popPK)`
-  ) |>
-  select(Scenario, Regimen, `Figure 4 AUCtau (popPK)`,
-         `Per-kg reading`, `Ratio, per-kg`,
-         `Absolute reading`, `Ratio, absolute`)
+    cov_cl   = (wt / 7.5)^0.43 * (egfr / 123.4)^0.96,
+    cov_vc   = (wt / 7.5)^0.37,
+    `Absolute reading` = 20 * wt / (0.24 * 7.5 * cov_cl),
+    `Per-kg reading`   = 20 * wt / (0.24 * wt  * cov_cl),
+    `Cmax, absolute`   = 20 * wt / (1.53 * 7.5 * cov_vc),
+    `Cmax, per-kg`     = 20 * wt / (1.53 * wt  * cov_vc)
+  )
 
-knitr::kable(fig4_cmp, digits = 2,
-             caption = "Typical-value steady-state AUC(tau) (mg*h/L) under both readings of Table 2, against the non-ARC popPK values read off Figure 4. Presented as a documented deviation, not a gate; see Assumptions and deviations.")
+knitr::kable(
+  fig4_cmp |>
+    select(Scenario, Regimen,
+           `Figure 4 AUCtau` = auc_fig, `Absolute reading`, `Per-kg reading`,
+           `Figure 4 Cmax` = cmax_fig, `Cmax, absolute`, `Cmax, per-kg`),
+  digits = 1,
+  caption = "Typical-value steady-state AUC(tau) (mg*h/L) and Cmax (mg/L) under both readings of Table 2, against the non-ARC popPK values read off Figure 4.")
 ```
 
-Neither reading reproduces all four panels. The per-kg reading that this
-package encodes matches the two neonatal panels almost exactly and falls about
-threefold short for the >=3 months panel; the absolute reading tracks the
-cross-stratum *shape* better but sits uniformly about twofold low. The two
-readings differ by exactly a factor of `WT/7.5`, which is 0.45 for a term
-neonate and 1.47 for an 11 kg child, so no single choice can close both ends.
-This is discussed below; it is a property of the published parameter set rather
-than of this encoding, and no parameter was adjusted to improve any comparison.
+```{r gate-figure4-shape}
+# The discriminating test. Panels b and d share a regimen (20 mg/kg q8h) and
+# differ mainly in size: weight roughly triples while median eGFR doubles.
+# Because both sides are mg/kg-normalised, the d/b AUC ratio depends almost
+# entirely on the NET weight exponent of absolute clearance and is immune to a
+# common scale error in the digitised values or in the assumed weights.
+#
+# Figure 4 shows an essentially FLAT AUC across strata. Solving
+#   (wt_d/wt_b)^(e-1) * (egfr_d/egfr_b)^0.96 = auc_b/auc_d
+# for the net exponent e gives the value the paper's own figure implies.
+b <- fig4_cmp[fig4_cmp$Scenario == "b. Term neonate, PNA >=2 weeks", ]
+d <- fig4_cmp[fig4_cmp$Scenario == "d. >=3 months", ]
+
+e_implied <- 1 + (log(b$auc_fig / d$auc_fig) -
+                    0.96 * log(d$egfr / b$egfr)) / log(d$wt / b$wt)
+
+ratio_fig <- d$auc_fig / b$auc_fig
+ratio_abs <- d$`Absolute reading` / b$`Absolute reading`
+ratio_pkg <- d$`Per-kg reading`   / b$`Per-kg reading`
+
+cat(sprintf("Net weight exponent implied by Figure 4: %.2f\n", e_implied))
+cat(sprintf("  encoded (absolute) reading:  0.43\n"))
+cat(sprintf("  rejected (per-kg)  reading:  1.43\n\n"))
+cat(sprintf("AUC(tau) ratio, panel d / panel b\n"))
+cat(sprintf("  Figure 4:            %.2f\n", ratio_fig))
+cat(sprintf("  absolute (encoded):  %.2f\n", ratio_abs))
+cat(sprintf("  per-kg (rejected):   %.2f\n", ratio_pkg))
+
+# Gate. Closed-form typical values, no simulated cohort and no RNG, so this is
+# reproducible on any machine; the tolerance covers digitisation of the plotted
+# symbols and the assumed stratum weights, nothing else. It goes red if the
+# model is ever flipped back to the per-kg reading.
+stopifnot(
+  # The encoded reading reproduces the figure's cross-stratum shape.
+  abs(log(ratio_abs / ratio_fig)) < 0.30,
+  # The rejected reading does not, by a wide margin.
+  abs(log(ratio_pkg / ratio_fig)) > 1.00,
+  # And the figure implies a net exponent near beta_CL,WT = 0.43, not 1.43.
+  abs(e_implied - 0.43) < 0.30
+)
+```
+
+The encoded absolute reading reproduces Figure 4's cross-stratum **shape**: the
+figure's AUC is flat across the four panels (160, 140, 158, 158) and so is the
+model's (73, 78, 72, 74). The rejected per-kg reading gives 162, 154, 114, 50 --
+a threefold fall from term neonates to children over three months that the
+figure plainly does not show. Cmax points the same way: Figure 4's Cmax *rises*
+across panels a to d (about 33 to 47 mg/L), which the absolute reading
+reproduces in direction (7.9 to 16.6) while the per-kg reading has it *falling*.
+
+What neither reading reproduces is the **level**. The absolute reading sits
+uniformly about 2.1-fold below Figure 4 on AUC (ratios 2.18, 1.79, 2.21, 2.14)
+and about 3-4 fold below on Cmax. That the AUC offset is a near-constant scalar
+across four panels spanning a threefold weight range, two dosing intervals and a
+twofold eGFR range is itself informative: a structural error in the weight or
+eGFR term would vary across the panels, whereas a constant offset points to the
+*level* of Table 2's `CL` and `V1` rows. It is recorded below and left as
+printed. No parameter was adjusted to improve any comparison.
 
 # Assumptions and deviations
 
@@ -530,45 +617,60 @@ than of this encoding, and no parameter was adjusted to improve any comparison.
   The model therefore encodes `(WT/7.5)^0.43 * (CRCL/123.4)^0.96`, using the
   Table 1 medians as the normalising constants. This is the minimal repair that
   makes the equation evaluable and self-consistent with the paper's own text.
-- **Every structural parameter is per kilogram and is multiplied by WT.**
-  Table 2 labels its rows `CL (L/h/kg)`, `V1 (L/kg)`, `Q (L/h/kg)` and
-  `V2 (L/kg)`, and Equations 4-6 return values in the units of their thetas, so
-  the absolute clearance is `0.24 * WT * (WT/7.5)^0.43 * ...`. The net exponent
-  on absolute clearance is therefore `1 + 0.43 = 1.43`, steeper than the 0.75 of
-  classical allometry. This is a property of the published model as printed and
-  not a transcription choice: eGFR in mL/min/1.73 m^2 is body-surface-area
-  normalised and so carries no size information, leaving the weight terms to
-  absorb all of the absolute-size and maturation signal across a cohort running
-  from preterm neonates to 14-year-olds. Equivalently, the model may be driven
-  entirely on a per-kilogram basis with mg/kg doses.
-- **Figure 4 is not reproducible across all four scenarios under any reading of
-  Table 2, and this is recorded rather than tuned away.** The two candidate
-  readings differ by exactly a factor of `WT/BWmed`: the encoded **per-kg**
-  reading treats 0.24 L/h/kg as a per-subject per-kilogram clearance
-  (`CL = 0.24 * WT * ...`), while the **absolute** reading treats it as the
-  typical absolute clearance quoted per median kilogram
-  (`CL = 0.24 * 7.5 * ...`, i.e. 1.8 L/h at the medians, with the weight term
-  as the only weight scaling). Against the non-ARC popPK AUC(tau) values read
-  off Figure 4, the per-kg reading gives ratios of 1.03, 1.10, 0.74 and 0.32
-  across panels a-d, and the absolute reading gives 0.47, 0.56, 0.46 and 0.48.
-  So the per-kg reading matches the neonatal panels in absolute terms while
-  running about threefold short for older children, and the absolute reading
-  reproduces the cross-stratum shape but is uniformly about twofold low.
-  Checking Cmax as well as AUC does not break the tie in the other direction:
-  for panel a the per-kg reading gives a steady-state Cmax of 22.8 mg/L against
-  roughly 33 read off Figure 4's middle row, where the absolute reading gives
-  10.3. The paper is therefore internally inconsistent somewhere between
-  Table 2, Equations 4-6 and Figure 4.
-  The per-kg reading was chosen because (i) it is the literal composition of
-  Table 2's printed unit labels with Equations 4-6, which return values in the
-  units of their thetas; (ii) it is the reading under which `theta_CL` is a
-  plausible meropenem clearance in its own right -- 0.24 L/h/kg is a textbook
-  paediatric value -- and under which the paper's own "theta_CL is the typical
-  value" wording holds; (iii) the absolute reading requires inserting a
-  multiplication by `BWmed` that appears nowhere in the paper. Readers who
-  prefer the absolute reading can recover it exactly by dividing the model's
-  `cl`, `vc`, `q` and `vp` by `WT/7.5`. No parameter was adjusted to improve
-  any comparison.
+- **Table 2's per-kilogram unit labels are read as typical absolute values
+  quoted per median kilogram, so each theta is multiplied by BWmed = 7.5 kg
+  rather than by the individual weight.** Table 2 labels its rows
+  `CL (L/h/kg)`, `V1 (L/kg)`, `Q (L/h/kg)` and `V2 (L/kg)`, which admits two
+  readings that differ by exactly a factor of `WT/BWmed`:
+  the encoded **absolute** reading, `CL = 0.24 * 7.5 * (WT/7.5)^0.43 * ...`
+  (1.8 L/h at the medians, net weight exponent 0.43 on absolute clearance), and
+  a **per-kg** reading, `CL = 0.24 * WT * (WT/7.5)^0.43 * ...` (net exponent
+  1.43). The two coincide at the reference weight and diverge away from it, so
+  the deterministic gates above cannot tell them apart; the paper's own Figure 4
+  can, and it selects the absolute reading:
+    - Figure 4's four PopPK panels all give 20 mg/kg, and its steady-state AUC
+      is essentially **flat** across them (roughly 160, 140, 158 and 158 mg*h/L
+      for the non-ARC subgroups) even though median eGFR rises from 88 to 175.8
+      and median weight from about 3.4 to 11 kg. Methods 2.4 confirms these
+      panels were simulated at group median eGFR and BW.
+    - A flat mg/kg-normalised AUC under a rising eGFR pins the net weight
+      exponent on absolute clearance at about 0.26 with the assumed stratum
+      weights -- close to `beta_CL,WT` = 0.43 and more than a full unit away
+      from the per-kg reading's 1.43, which would make AUC fall about
+      threefold from panel b to panel d. The `gate-figure4-shape` chunk above
+      makes this a hard assertion so the choice cannot be silently reverted.
+    - Cmax agrees independently: Figure 4's Cmax *rises* across panels a to d
+      (about 33 to 47 mg/L). The absolute reading reproduces that direction;
+      the per-kg reading has Cmax *falling* with age.
+    - The simulated cohort agrees a third time, and most tightly. Regressing
+      log AUC(tau) on log WT and log eGFR across the 600 virtual subjects
+      (`gate-covariate-exponents`) recovers a weight slope of 0.61 against the
+      0.57 the absolute reading predicts, where the per-kg reading predicts
+      -0.43; the eGFR slope comes back at -0.97 against the published -0.96.
+  The absolute reading is also the only one under which body weight enters
+  once rather than twice, and a net exponent of 0.43 is what one expects when
+  eGFR is already in the model absorbing much of the size and maturation
+  signal. Readers who prefer the per-kg reading can recover it exactly by
+  multiplying the model's `cl`, `vc`, `q` and `vp` by `WT/7.5`.
+- **Figure 4's exposure *level* is not reproducible under either reading, and
+  this is recorded rather than tuned away.** With the absolute reading the
+  typical-value AUC(tau) sits uniformly about 2.1-fold below the values read off
+  Figure 4 (ratios 2.18, 1.79, 2.21, 2.14 across panels a-d) and Cmax about
+  3-4 fold below. The offset being a near-constant scalar across a threefold
+  weight range, two dosing intervals and a twofold eGFR range is what
+  distinguishes it from the shape question settled above: a mis-transcribed
+  covariate exponent would vary panel to panel, a mis-scaled `CL` or `V1` row
+  would not. Working backwards from Figure 4's Cmax gives a central volume near
+  0.45-0.6 L/kg, which is the textbook meropenem value and about a third of the
+  tabulated `V1` = 1.53 L/kg; working backwards from its AUC gives a clearance
+  about half the tabulated `CL` = 0.24. So the *levels* of Table 2's `CL` and
+  `V1` rows appear inconsistent with Figure 4 by roughly two- and threefold
+  respectively. The tabulated values are used exactly as printed and nothing was
+  scaled to close the gap. Users comparing this model against the paper's
+  published exposure figures should expect that offset; users comparing relative
+  exposures across weights, eGFRs or regimens -- which is what the paper's
+  dosing recommendations turn on -- are on the part of the model the gates above
+  confirm.
 - **The IIV block is diagonal.** Section 3.5 describes the simulations as using
   "log-normal IIV on CL and V1 with covariance", and Methods 2.2 says a
   correlation between etas was retained when it exceeded 0.30, but Table 2

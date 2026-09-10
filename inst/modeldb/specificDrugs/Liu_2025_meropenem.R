@@ -6,14 +6,17 @@ Liu_2025_meropenem <- function() {
     "dominated by the very young -- 28.7% neonates and 47.5% under three months",
     "-- and by augmented renal clearance: the median bedside-Schwartz eGFR is",
     "123.4 mL/min/1.73 m2, well above the age-specific healthy reference in",
-    "every stratum. Every structural parameter is reported per kilogram of body",
-    "weight (CL 0.24 L/h/kg, V1 1.53 L/kg, Q 0.014 L/h/kg, V2 6.06 L/kg), so",
-    "each is multiplied by WT here to give the absolute value used in the ODEs.",
-    "On top of that per-kilogram normalisation, clearance carries a power term",
-    "on body weight (exponent 0.43) and on eGFR (exponent 0.96, i.e. very close",
-    "to proportional, as expected for a drug cleared almost entirely by the",
-    "kidney), the central volume a power term on body weight (0.37) and the",
-    "inter-compartmental clearance a power term on body weight (1.54); all three",
+    "every stratum. Table 2 labels every structural row per kilogram of body",
+    "weight (CL 0.24 L/h/kg, V1 1.53 L/kg, Q 0.014 L/h/kg, V2 6.06 L/kg); those",
+    "are read here as typical ABSOLUTE values quoted per median kilogram, so",
+    "each is multiplied by the cohort median weight of 7.5 kg rather than by the",
+    "individual weight. Multiplying by the individual weight instead would count",
+    "body weight twice and is contradicted by the paper's own Figure 4 -- see the",
+    "vignette's Assumptions and deviations section. Clearance then carries a",
+    "power term on body weight (exponent 0.43) and on eGFR (exponent 0.96, i.e.",
+    "very close to proportional, as expected for a drug cleared almost entirely",
+    "by the kidney), the central volume a power term on body weight (0.37) and",
+    "the inter-compartmental clearance a power term on body weight (1.54); all",
     "are normalised to the cohort medians of 7.5 kg and 123.4 mL/min/1.73 m2.",
     "Q is small relative to CL and V2 is large, so the peripheral compartment",
     "acts as a slowly-equilibrating deep sink that carries only a few percent of",
@@ -48,25 +51,32 @@ Liu_2025_meropenem <- function() {
       type               = "continuous",
       reference_category = NULL,
       notes              = paste(
-        "Body weight plays TWO distinct structural roles in this model and both must be",
-        "applied or the model is wrong by orders of magnitude across the age range.",
-        "(1) Table 2 reports every structural parameter per kilogram -- the row labels are",
-        "'CL (L/h/kg)', 'V1 (L/kg)', 'Q (L/h/kg)' and 'V2 (L/kg)' -- so the absolute value",
-        "used in the ODEs is the tabulated value multiplied by WT. Equations 4-6 return",
-        "CL_i, V1_i and Q_i in the units of their respective thetas, which are per-kilogram;",
-        "the multiplication by WT is what converts them to L/h and L. Equivalently, the",
-        "model may be run entirely on a per-kilogram basis with mg/kg doses.",
-        "(2) On top of that, Equations 4, 5 and 6 each carry a body-weight term normalised",
-        "to BWmed, encoded here as (WT/7.5)^beta. BWmed is the Table 1 cohort median body",
-        "weight, 7.5 kg (IQR 3.4-12.1). Table 2 gives beta_CL,WT = 0.43 (RSE 10.3%),",
-        "beta_V1,WT = 0.37 (RSE 19.7%) and beta_Q,WT = 1.54 (RSE 12.1%).",
-        "The net exponent on ABSOLUTE clearance is therefore 1 + 0.43 = 1.43, which is",
-        "steeper than the 0.75 of classical allometry. That is a property of the published",
-        "model as printed, not a transcription choice: eGFR enters in mL/min/1.73 m2, which",
-        "is body-surface-area-normalised and so carries no size information, leaving the",
-        "weight terms to absorb all of the absolute-size and maturation signal in a cohort",
-        "spanning preterm neonates to 14-year-olds. See the vignette's Assumptions and",
-        "deviations section for the arithmetic and for the Figure 4 cross-check.",
+        "Body weight enters ONCE, through the power terms of Equations 4, 5 and 6,",
+        "normalised to BWmed and encoded here as (WT/7.5)^beta. BWmed is the Table 1",
+        "cohort median body weight, 7.5 kg (IQR 3.4-12.1). Table 2 gives",
+        "beta_CL,WT = 0.43 (RSE 10.3%), beta_V1,WT = 0.37 (RSE 19.7%) and",
+        "beta_Q,WT = 1.54 (RSE 12.1%).",
+        "Table 2 additionally LABELS each structural row per kilogram ('CL (L/h/kg)',",
+        "'V1 (L/kg)', 'Q (L/h/kg)', 'V2 (L/kg)'). Those labels are read here as typical",
+        "absolute values quoted per median kilogram, i.e. the absolute clearance is",
+        "0.24 * 7.5 = 1.8 L/h at the cohort medians, NOT 0.24 * WT. Multiplying by the",
+        "individual weight as well as applying the (WT/7.5)^0.43 term would count body",
+        "weight twice and give a net exponent of 1.43 on absolute clearance.",
+        "The paper's own Figure 4 rules that out. Its four PopPK panels all give",
+        "20 mg/kg and report an essentially flat steady-state AUC across strata",
+        "(roughly 160, 140, 158 and 158 mg.h/L for the non-ARC subgroups) even though",
+        "median eGFR rises from 88 to 175.8 and median weight from about 3.4 to 12 kg.",
+        "A flat mg/kg-normalised AUC under a rising eGFR requires a net weight exponent",
+        "on absolute clearance near 0.26-0.46 depending on the assumed stratum weights,",
+        "which brackets beta_CL,WT = 0.43 and is more than a full unit away from the",
+        "per-kg reading's 1.43. That reading predicts AUC falling roughly threefold from",
+        "neonates to children over three months, and Cmax falling with age where Figure 4",
+        "shows it rising. Regressing log AUC(tau) on log WT and log eGFR over the",
+        "vignette's simulated cohort confirms it a third time: the weight slope comes",
+        "back at 0.61 against the 0.57 this encoding predicts and the -0.43 the per-kg",
+        "reading predicts. What does NOT reproduce is the exposure LEVEL, which sits",
+        "about twofold below Figure 4 uniformly across panels; see the vignette's",
+        "Assumptions and deviations section.",
         "No V2 covariate was retained; the paper prints no equation for V2."
       ),
       source_name        = "BW"
@@ -231,29 +241,32 @@ Liu_2025_meropenem <- function() {
   ini({
     # ---------------------------------------------------------------------
     # Structural parameters: Liu 2025 Table 2, 'Stochastic Approximation /
-    # Estimate' column. EVERY structural row of Table 2 is reported PER
-    # KILOGRAM of body weight, so each theta below is multiplied by WT in
-    # model() to give the absolute L/h or L used in the ODEs.
+    # Estimate' column. Every structural row of Table 2 is LABELLED per
+    # kilogram; each is read here as a typical ABSOLUTE value quoted per
+    # median kilogram, so each theta below is multiplied by BWmed = 7.5 kg
+    # in model() to give the absolute L/h or L used in the ODEs. See the
+    # vignette's Assumptions and deviations section for the Figure 4
+    # evidence that rules out multiplying by the individual weight instead.
     # ---------------------------------------------------------------------
 
     # Table 2 row 'CL (L/h/kg)' = 0.24 (RSE 11.1%; bootstrap median 0.23,
-    # 95% CI 0.16-0.34). This is the typical per-kilogram clearance of a
-    # subject AT the cohort medians of 7.5 kg and 123.4 mL/min/1.73 m2,
-    # because both covariate terms equal exactly 1 there.
-    lcl <- log(0.24); label("Clearance per kilogram at the median covariates (L/h/kg)")
+    # 95% CI 0.16-0.34). Absolute clearance at the cohort medians of 7.5 kg
+    # and 123.4 mL/min/1.73 m2 is 0.24 * 7.5 = 1.8 L/h, because both
+    # covariate terms equal exactly 1 there.
+    lcl <- log(0.24); label("Clearance per median kilogram at the median covariates (L/h/kg)")
     # Table 2 row 'V1 (L/kg)' = 1.53 (RSE 15.8%; bootstrap median 1.64,
-    # 95% CI 0.90-2.79)
-    lvc <- log(1.53); label("Central volume of distribution per kilogram at the median weight (L/kg)")
+    # 95% CI 0.90-2.79); absolute V1 at the median weight is 11.5 L.
+    lvc <- log(1.53); label("Central volume of distribution per median kilogram (L/kg)")
     # Table 2 row 'Q (L/h/kg)' = 0.014 (RSE 42.4%; bootstrap median 0.014,
     # 95% CI 0.0002-0.038). Poorly identified, as the RSE and the bootstrap
     # interval that nearly touches zero both show.
-    lq <- log(0.014); label("Inter-compartmental clearance per kilogram at the median weight (L/h/kg)")
+    lq <- log(0.014); label("Inter-compartmental clearance per median kilogram (L/h/kg)")
     # Table 2 row 'V2 (L/kg)' = 6.06 (RSE 23.3%). The bootstrap columns for
     # this row are internally inconsistent -- the printed 2.5%ile of 9.4
     # exceeds the printed median of 6.08 -- so only the point estimate is
     # used. No covariate and no IIV were retained on V2, and the paper prints
     # no equation for it.
-    lvp <- log(6.06); label("Peripheral volume of distribution per kilogram (L/kg)")
+    lvp <- log(6.06); label("Peripheral volume of distribution per median kilogram (L/kg)")
 
     # ---------------------------------------------------------------------
     # Covariate effects. Equations 4-6, normalised to the Table 1 cohort
@@ -263,18 +276,21 @@ Liu_2025_meropenem <- function() {
     # ---------------------------------------------------------------------
 
     # Table 2 row 'beta CL,WT' = 0.43 (RSE 10.3%; bootstrap median 0.42,
-    # 95% CI 0.33-0.65)
-    e_wt_cl <- 0.43; label("Power exponent of body weight on per-kilogram clearance (unitless)")
+    # 95% CI 0.33-0.65). This is the NET exponent on absolute clearance,
+    # which is why it sits below the 0.75 of classical allometry: eGFR is
+    # already in the model and absorbs much of the size and maturation
+    # signal in a cohort spanning preterm neonates to 14-year-olds.
+    e_wt_cl <- 0.43; label("Power exponent of body weight on clearance (unitless)")
     # Table 2 row 'beta CL,eGFR' = 0.96 (RSE 9.19%; bootstrap median 0.97,
     # 95% CI 0.72-1.29). Indistinguishable from 1: clearance is essentially
     # proportional to eGFR.
     e_crcl_cl <- 0.96; label("Power exponent of eGFR on clearance (unitless)")
     # Table 2 row 'beta V1,WT' = 0.37 (RSE 19.7%; bootstrap median 0.35,
     # 95% CI 0.09-0.56)
-    e_wt_vc <- 0.37; label("Power exponent of body weight on per-kilogram central volume (unitless)")
+    e_wt_vc <- 0.37; label("Power exponent of body weight on central volume (unitless)")
     # Table 2 row 'beta Q,WT' = 1.54 (RSE 12.1%; bootstrap median 1.62,
     # 95% CI 1.04-4.27)
-    e_wt_q <- 1.54; label("Power exponent of body weight on per-kilogram inter-compartmental clearance (unitless)")
+    e_wt_q <- 1.54; label("Power exponent of body weight on inter-compartmental clearance (unitless)")
 
     # ---------------------------------------------------------------------
     # Inter-individual variability. Results 3.2: 'incorporating log-normal
@@ -310,24 +326,25 @@ Liu_2025_meropenem <- function() {
   })
 
   model({
-    # Equation 4. Table 2 reports CL per kilogram, so the per-kilogram value
-    # is multiplied by WT to give the absolute clearance in L/h. Both
-    # covariate terms are normalised to the Table 1 cohort medians, so a
-    # 7.5 kg subject with an eGFR of 123.4 mL/min/1.73 m2 has
-    # cl = 0.24 * WT exactly.
-    cl <- exp(lcl + etalcl) * WT * (WT / 7.5)^e_wt_cl * (CRCL / 123.4)^e_crcl_cl
+    # Equation 4. The Table 2 value is a typical ABSOLUTE clearance quoted
+    # per median kilogram, so it is multiplied by BWmed = 7.5 kg (a
+    # constant), not by the individual weight. Both covariate terms are
+    # normalised to the Table 1 cohort medians, so a 7.5 kg subject with an
+    # eGFR of 123.4 mL/min/1.73 m2 has cl = 0.24 * 7.5 = 1.8 L/h exactly.
+    cl <- exp(lcl + etalcl) * 7.5 * (WT / 7.5)^e_wt_cl * (CRCL / 123.4)^e_crcl_cl
 
-    # Equation 5, same per-kilogram convention. Note that the paper's own
-    # text under Equation 5 calls the coefficient 'beta_CL,BW'; that is a
-    # typo for beta_V1,BW, which Table 2 lists separately as 0.37.
-    vc <- exp(lvc + etalvc) * WT * (WT / 7.5)^e_wt_vc
+    # Equation 5, same convention: 1.53 * 7.5 = 11.5 L at the median weight.
+    # Note that the paper's own text under Equation 5 calls the coefficient
+    # 'beta_CL,BW'; that is a typo for beta_V1,BW, which Table 2 lists
+    # separately as 0.37.
+    vc <- exp(lvc + etalvc) * 7.5 * (WT / 7.5)^e_wt_vc
 
     # Equation 6. Q carries no IIV.
-    q <- exp(lq) * WT * (WT / 7.5)^e_wt_q
+    q <- exp(lq) * 7.5 * (WT / 7.5)^e_wt_q
 
-    # V2 has no covariate and no IIV; only the per-kilogram normalisation of
-    # the Table 2 'V2 (L/kg)' row applies.
-    vp <- exp(lvp) * WT
+    # V2 has no covariate and no IIV, so it is constant across subjects at
+    # the Table 2 'V2 (L/kg)' row times the median weight: 6.06 * 7.5 = 45.5 L.
+    vp <- exp(lvp) * 7.5
 
     kel <- cl / vc
     k12 <- q / vc
