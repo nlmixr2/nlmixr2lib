@@ -144,7 +144,7 @@ Related references:
     # 2. Individual parameters
     ka <- exp(lka + etalka)
     cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^e_wt_cl  # * maturation_cl * race_cl ...
-    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^allo_v
+    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^e_wt_vc_vp
 
     # 3. Micro-constants (if using explicit ODEs)
     kel <- cl / vc
@@ -174,8 +174,8 @@ Related references:
   model({
     ka <- exp(lka + etalka)
     cl <- exp(lcl + etalcl) * (WT / <ref_wt>)^e_wt_cl
-    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^allo_v
-    vp <- exp(lvp) * (WT / <ref_wt>)^allo_v
+    vc <- exp(lvc + etalvc) * (WT / <ref_wt>)^e_wt_vc_vp
+    vp <- exp(lvp) * (WT / <ref_wt>)^e_wt_vc_vp
     q  <- exp(lq)  * (WT / <ref_wt>)^e_wt_cl
     Cc <- linCmt()
     Cc ~ prop(propSd)

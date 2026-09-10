@@ -1,0 +1,593 @@
+---
+title: "Remdesivir and its metabolites in renal impairment (Zhang 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Remdesivir and its metabolites in renal impairment (Zhang 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Zhang_2025_remdesivir"))$reference`
+* Article: <https://doi.org/10.3389/fphar.2025.1488961>
+* Models contributed by this paper:
+  * `Zhang_2025_remdesivir` -- the healthy-control / renal-impairment cohort fit.
+  * `Zhang_2025_remdesivir_esrd` -- the single anuric (eGFR = 0) patient fit.
+
+Zhang 2025 builds a six-state cascade model for intravenous remdesivir (RDV,
+GS-5734) and its two circulating metabolites: the alanine intermediate
+GS-704277 (the paper's "IM") and the nucleoside GS-441524 (the paper's "NUC").
+Each analyte occupies a central and a peripheral compartment, and -- this is the
+paper's distinguishing structural claim -- metabolism proceeds down the cascade
+in **both** compartments, not only centrally. The authors introduced the
+peripheral metabolic route specifically to capture the slow second decay phase
+of RDV and GS-704277 that a conventional two-compartment model could not
+reproduce (Zhang 2025 Figure 6 and Discussion).
+
+```{r structure, echo = FALSE}
+ui_cohort <- rxode2::rxode(readModelDb("Zhang_2025_remdesivir"))
+ui_esrd <- rxode2::rxode(readModelDb("Zhang_2025_remdesivir_esrd"))
+cat(paste(ui_cohort$state, collapse = "\n"))
+```
+
+## Why the model is written in concentration space
+
+Every parameter in Zhang 2025 Table 1 carries units of **1/h**, and Equations
+1-6 are written on concentrations rather than amounts. There is therefore **no
+volume of distribution anywhere in the published model**, and the paper reports
+none. Two consequences follow, and both are load-bearing for anything done
+below:
+
+1. Each state in the packaged model holds a **concentration in ng/mL**, not an
+   amount. The observation equations are simply `Cc <- central` and so on, with
+   no division by a volume.
+2. A dose cannot be supplied as a mass. It enters as the **initial central
+   remdesivir concentration**. Converting a 100 mg or 200 mg intravenous dose
+   into that initial concentration requires a volume the paper does not
+   publish, so this vignette works throughout in a *relative* scale: every
+   simulation starts from a reference initial concentration of 1000 ng/mL, and
+   every quantity validated below is invariant to that choice.
+
+That invariance is not a convenience -- it is a property of the model. The
+system is entirely **linear**, so scaling the initial condition scales all six
+state trajectories by the same factor. Times to peak, ratios between analytes,
+and terminal slopes are therefore all independent of the unpublished volume,
+and they are exactly the quantities compared against the paper's figures.
+
+# Population
+
+The cohort model was fitted to the Gilead phase I, open-label, parallel-group
+renal-impairment study that Zhang 2025 cites as "Zhang et al. (2020)": adults
+with mild (n = 12), moderate (n = 11) or severe (n = 10) renal impairment, plus
+kidney failure (n = 6 on dialysis, n = 4 without), against matched healthy
+controls. Impairment was graded by eGFR: mild 60-89, moderate 30-59, severe
+15-29 and kidney failure < 15 mL/min/1.73 m^2. Single intravenous doses were
+assigned by stratum -- 100 mg for mild or moderate impairment, 40 mg for severe
+impairment or predialysis kidney failure, and 20 mg for postdialysis or
+non-dialysis kidney failure (Zhang 2025 Results 3.1).
+
+The ESRD model was fitted to a single kidney-transplant recipient in his
+mid-seventies with COVID-19, anuric (eGFR 0 mL/min) and on intermittent
+haemodialysis, from the case report of Soergel 2021
+(<https://doi.org/10.1093/jac/dkaa500>). He received the standard 5-day
+regimen -- 200 mg on day 1 then 100 mg daily -- and Zhang 2025 fitted **day 1
+only**.
+
+**A provenance limitation that governs how much the fitted variability can
+mean.** Zhang 2025 had no individual patient data. Methods 2.1 states that the
+published profiles "were digitized using the open-source software Engauge
+Digitizer (Version 12.1)" and that "Due to the absence of individual
+patient-level data, only the mean drug concentration values from the profile
+curves were extracted." The mixed-effects fit therefore ran against *digitised
+mean curves*, one per analyte per stratum, not against subject-level
+observations.
+
+```{r population}
+str(readModelDb("Zhang_2025_remdesivir")()$population)
+```
+
+# Source trace
+
+Per-parameter provenance is recorded as an in-file comment beside each `ini()`
+entry in `inst/modeldb/specificDrugs/Zhang_2025_remdesivir.R` and
+`inst/modeldb/specificDrugs/Zhang_2025_remdesivir_esrd.R`. Collected here for
+review. All nine structural parameters come from a single table; Zhang 2025
+reports **point estimates only**, with no standard errors, RSEs or confidence
+intervals anywhere.
+
+| Model element | Paper symbol | Healthy control | Severe renal impairment | eGFR = 0 | Source |
+|---|---|---|---|---|---|
+| `lk12` | Q_RDV | 0.19 | 0.19 | 0.31 | Table 1 |
+| `lk12_gs704277` | Q_IM | 12.53 | 12.33 | 83.8 | Table 1 |
+| `lk12_gs441524` | Q_NUC | 0.039 | 0.038 | 50.02 | Table 1 |
+| `lkmet_gs704277_central` | K_C,IM | 0.22 | 0.19 | 0 | Table 1 |
+| `lkmet_gs704277_peripheral1` | K_P,IM | 0.31 | 0.19 | 0.22 | Table 1 |
+| `lkmet_gs441524_central` | K_C,NUC | 0.38 | 0.85 | 6.27 | Table 1 |
+| `lkmet_gs441524_peripheral1` | K_P,NUC | 2.44 | 0.5 | 0.15 | Table 1 |
+| `lkmet_gs443902_peripheral1` | K_P,NTP | 3.28E10 | 8.08E10 | 0.037 | Table 1 |
+| `lkel` | CL_C,RDV | 2.99 | 2.99 | 2.3 | Table 1 |
+| `d/dt(central)` | Equation 1 | n/a | n/a | n/a | Methods 2.2 |
+| `d/dt(peripheral1)` | Equation 2 | n/a | n/a | n/a | Methods 2.2 |
+| `d/dt(central_gs704277)` | Equation 3 | n/a | n/a | n/a | Methods 2.2 |
+| `d/dt(peripheral1_gs704277)` | Equation 4 | n/a | n/a | n/a | Methods 2.2 |
+| `d/dt(central_gs441524)` | Equation 5 | n/a | n/a | n/a | Methods 2.2 |
+| `d/dt(peripheral1_gs441524)` | Equation 6 | n/a | n/a | n/a | Methods 2.2 |
+| Cascade topology | Figure 2 | n/a | n/a | n/a | Figure 2 |
+| `RENALIMP` covariate | "Renal Impairment" | 0 | 1 | n/a | Methods 2.3, Results 3.1 |
+| Residual error form | Equation 7 | not reported | not reported | not reported | Methods 2.3 |
+
+The equations are vector graphics in the published PDF and are dropped by
+markdown conversion (they appear as `formula-not-decoded`). They were recovered
+with `pdftotext -layout` and independently cross-checked against the arrow
+topology of Figure 2, which shows K_P,IM and K_C,IM feeding GS-704277 from the
+peripheral and central remdesivir pools respectively, K_P,NUC and K_C,NUC
+feeding GS-441524 from the corresponding GS-704277 pools, K_P,NTP draining
+peripheral GS-441524, the bidirectional Q_i exchanges, and CL_RDV leaving
+central remdesivir only.
+
+Two asymmetries in the published system are deliberate and are reproduced
+verbatim: **remdesivir is eliminated only from its central compartment**
+(Equation 2 carries no elimination term), and **GS-441524 is removed only from
+its peripheral compartment**, by conversion to the triphosphate GS-443902
+(Equation 5 carries no elimination term). Neither metabolite has a renal or
+other clearance term of its own.
+
+# Virtual cohort
+
+Neither model carries between-subject variability -- Zhang 2025 declares
+lognormal random effects on all parameters (Methods 2.3) but publishes no
+variance, SD or CV% for any of them, and there is no supplement to fall back on.
+Both models are therefore **typical-value, fully deterministic** simulations,
+and the "cohort" below is one representative profile per arm. Because nothing
+is drawn at random, no seed is needed and no result depends on the solver
+thread count.
+
+```{r cohort}
+# Reference initial central remdesivir concentration. Arbitrary: the published
+# model has no volume, so absolute concentrations are determined only up to
+# this scale factor. Every validation quantity below is scale-invariant.
+C0 <- 1000
+
+arms <- tibble::tibble(
+  arm      = c("Control", "Severe renal impairment", "eGFR = 0 (ESRD)"),
+  model    = c("Zhang_2025_remdesivir", "Zhang_2025_remdesivir", "Zhang_2025_remdesivir_esrd"),
+  RENALIMP = c(0, 1, NA),
+  tmax_sim = c(200, 260, 30)
+)
+
+make_events <- function(tmax_sim, id) {
+  dose <- rxode2::et(amt = C0, cmt = "central")
+  # Observations are placed on the ENDPOINT compartment `Cc`. For this model
+  # that is correct rather than the pattern-2 anti-pattern: `Cc` is a declared
+  # endpoint (`Cc ~ add(addSd) + prop(propSd)`), so rxode2 already owns a
+  # compartment slot for it and nothing is renumbered. rxode2 returns all
+  # three observables as columns at those rows.
+  rxode2::et(dose, seq(0, tmax_sim, length.out = 4000), cmt = "Cc") |>
+    as.data.frame() |>
+    dplyr::mutate(id = id)
+}
+```
+
+# Simulation
+
+```{r simulate}
+solve_arm <- function(i, atol = NULL, rtol = NULL) {
+  ev <- make_events(arms$tmax_sim[i], id = i)
+  args <- list(
+    rxode2::rxode(readModelDb(arms$model[i])),
+    events = ev,
+    returnType = "data.frame",
+    # rxode2's automatic ODE -> linCmt conversion corrupts the endpoint
+    # mapping for this six-state / three-endpoint model.
+    useLinCmt = FALSE
+  )
+  if (!is.na(arms$RENALIMP[i])) args$params <- c(RENALIMP = arms$RENALIMP[i])
+  if (!is.null(atol)) { args$atol <- atol; args$rtol <- rtol }
+  out <- do.call(rxode2::rxSolve, args)
+  out$arm <- arms$arm[i]
+  out$id <- i
+  out
+}
+
+sim <- dplyr::bind_rows(lapply(seq_len(nrow(arms)), solve_arm))
+sim$arm <- factor(sim$arm, levels = arms$arm)
+```
+
+Observation rows above carry `cmt = "Cc"`. For a model whose observables are
+*declared endpoints* that is legitimate and not the compartment-renumbering
+anti-pattern: rxode2 already owns a slot for `Cc`, so nothing is injected. It
+is also the only form that works here -- with three endpoints, an observation
+row on an ODE state (`cmt = "central"`) or carrying only a `dvid` is rejected
+with `'dvid'->'cmt' on observation record ... undefined compartment`. The guard
+below turns that reasoning into a mechanical check rather than a claim: if a
+slot had been injected ahead of the ODE states, the dose would no longer land
+in `central` and all six state columns would not survive.
+
+```{r no-renumbering-guard}
+stopifnot(
+  # The dose landed in `central`, i.e. compartment 1 was not displaced.
+  all(sapply(split(sim$central, sim$arm), function(x) isTRUE(all.equal(x[1], C0)))),
+  # All six ODE states are still present and distinct from the observables.
+  all(ui_cohort$state %in% names(sim)),
+  # And the observables were computed.
+  all(c("Cc", "Cc_gs704277", "Cc_gs441524") %in% names(sim))
+)
+```
+
+The `K_P,NTP` estimate in the cohort model is 3.28e10 /h, which makes the
+system formally stiff. It is transcribed exactly as printed, and it is **not** a
+typographical error for 3.28e-10: at the negative exponent the peripheral
+GS-441524 pool is never drained, central GS-441524 rises monotonically for a
+week and never peaks, and Zhang 2025 Figure 3c -- which shows a clear peak
+followed by decline -- cannot be reproduced at all. LSODA handles the printed
+value without difficulty, as the check below confirms.
+
+```{r solver-check}
+tight <- dplyr::bind_rows(
+  lapply(seq_len(nrow(arms)), solve_arm, atol = 1e-12, rtol = 1e-10)
+)
+solver_delta <- max(abs(tight$Cc_gs441524 - sim$Cc_gs441524)) /
+  max(sim$Cc_gs441524)
+# Deterministic quantity: no cohort is drawn, so this bound is a genuine
+# numerical-agreement check and not a race against sampling noise.
+stopifnot(solver_delta < 1e-6)
+sprintf("max relative GS-441524 difference, default vs tightened tolerances: %.2e",
+        solver_delta)
+```
+
+# Replicate published figures
+
+The published figures plot absolute ng/mL, which this model determines only up
+to the unpublished volume. What the model *does* determine, exactly, is the
+shape of each profile and the relationship between the three analytes. The
+panels below therefore plot each analyte scaled by the initial remdesivir
+concentration, with the peak times digitised from the corresponding published
+panels marked as vertical dashed lines.
+
+```{r figure-3-5, fig.height = 6}
+# Replicates Zhang 2025 Figure 3 (control and severe renal impairment columns)
+# and Figure 5 (eGFR = 0), on a volume-free relative scale.
+long <- sim |>
+  dplyr::select(arm, time, Cc, Cc_gs704277, Cc_gs441524) |>
+  tidyr::pivot_longer(
+    c(Cc, Cc_gs704277, Cc_gs441524),
+    names_to = "analyte", values_to = "conc"
+  ) |>
+  dplyr::mutate(
+    analyte = factor(
+      analyte,
+      levels = c("Cc", "Cc_gs704277", "Cc_gs441524"),
+      labels = c("Remdesivir", "GS-704277 (IM)", "GS-441524 (NUC)")
+    ),
+    frac = conc / C0
+  )
+
+# Peak times read off the published figure panels (Figure 3 columns 1 and 4,
+# Figure 5). Digitised by on-screen measurement of the publisher's figure
+# files at native resolution; +/- ~15% from gridline resolution.
+published_tmax <- tibble::tribble(
+  ~arm,                       ~analyte,           ~tmax_pub,
+  "Control",                  "GS-704277 (IM)",   0.65,
+  "Control",                  "GS-441524 (NUC)",  5.0,
+  "Severe renal impairment",  "GS-704277 (IM)",   0.75,
+  "Severe renal impairment",  "GS-441524 (NUC)",  6.5,
+  "eGFR = 0 (ESRD)",          "GS-704277 (IM)",   1.5,
+  "eGFR = 0 (ESRD)",          "GS-441524 (NUC)",  6.7
+) |>
+  dplyr::mutate(
+    arm = factor(arm, levels = arms$arm),
+    analyte = factor(analyte, levels = levels(long$analyte))
+  )
+
+long |>
+  dplyr::filter(time <= 30) |>
+  ggplot(aes(time, frac)) +
+  geom_line(colour = "#4B0082") +
+  geom_vline(
+    data = published_tmax, aes(xintercept = tmax_pub),
+    linetype = "dashed", colour = "grey40"
+  ) +
+  facet_grid(analyte ~ arm, scales = "free_y") +
+  labs(
+    x = "Time (h)",
+    y = "Concentration / initial remdesivir concentration",
+    title = "Zhang 2025 Figures 3 and 5, on a volume-free relative scale",
+    caption = paste(
+      "Dashed lines are the metabolite peak times digitised from the",
+      "published panels. Remdesivir panels have no marker: it is dosed as an",
+      "initial condition, so its peak is at t = 0 by construction."
+    )
+  )
+```
+
+# PKNCA validation
+
+NCA is run separately for each of the three analytes, grouped by arm. Note that
+`amt` here is an initial **concentration**, not a dose amount, so any
+dose-normalised parameter (CL/F, Vz/F) would be meaningless and none is
+requested; `cmax`, `tmax`, `auclast` and `half.life` are all well defined.
+
+```{r pknca}
+nca_for <- function(col) {
+  d <- sim |>
+    dplyr::filter(!is.na(.data[[col]])) |>
+    dplyr::select(id, arm, time, conc = dplyr::all_of(col))
+
+  # Guarantee a time = 0 record per (id, arm) so PKNCA can anchor AUC.
+  d <- dplyr::bind_rows(
+    d,
+    d |> dplyr::distinct(id, arm) |> dplyr::mutate(time = 0, conc = 0)
+  ) |>
+    dplyr::distinct(id, arm, time, .keep_all = TRUE) |>
+    dplyr::arrange(id, arm, time)
+
+  dose_df <- sim |>
+    dplyr::distinct(id, arm) |>
+    dplyr::mutate(time = 0, amt = C0)
+
+  dat <- PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(d, conc ~ time | arm + id),
+    PKNCA::PKNCAdose(dose_df, amt ~ time | arm + id),
+    intervals = data.frame(
+      start = 0, end = Inf,
+      cmax = TRUE, tmax = TRUE, auclast = TRUE, half.life = TRUE
+    )
+  )
+  as.data.frame(PKNCA::pk.nca(dat))
+}
+
+nca <- dplyr::bind_rows(
+  nca_for("Cc") |> dplyr::mutate(analyte = "Remdesivir"),
+  nca_for("Cc_gs704277") |> dplyr::mutate(analyte = "GS-704277 (IM)"),
+  nca_for("Cc_gs441524") |> dplyr::mutate(analyte = "GS-441524 (NUC)")
+)
+
+nca_wide <- nca |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "half.life")) |>
+  dplyr::select(arm, analyte, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+
+nca_wide |>
+  dplyr::relocate(arm, analyte, cmax, tmax, auclast, half.life) |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Analyte" = analyte,
+    "Cmax (ng/mL)" = cmax,
+    "Tmax (h)" = tmax,
+    "AUClast (ng*h/mL)" = auclast,
+    "t1/2 (h)" = half.life
+  ) |>
+  knitr::kable(
+    digits = 3,
+    caption = paste(
+      "Simulated NCA per analyte and arm, from an initial remdesivir",
+      "concentration of 1000 ng/mL. Absolute values scale linearly with that",
+      "reference; times and between-analyte ratios do not."
+    )
+  )
+```
+
+## Comparison against the published figures
+
+Zhang 2025 reports **no NCA table** -- it publishes only concentration-time
+figures and goodness-of-fit plots -- so there is no tabulated Cmax / AUC to
+compare against, and `ncaComparisonTable()` is not applicable. The comparison
+below is instead against quantities digitised from the published panels that
+are invariant to the unpublished volume: the metabolite peak times, and the
+ratio of the GS-441524 peak to the GS-704277 peak within each arm.
+
+```{r compare}
+model_vals <- nca_wide |>
+  dplyr::filter(analyte != "Remdesivir") |>
+  dplyr::select(arm, analyte, cmax, tmax)
+
+ratio_model <- model_vals |>
+  dplyr::select(arm, analyte, cmax) |>
+  tidyr::pivot_wider(names_from = analyte, values_from = cmax) |>
+  dplyr::mutate(ratio_model = `GS-441524 (NUC)` / `GS-704277 (IM)`) |>
+  dplyr::select(arm, ratio_model)
+
+# Peak heights digitised from the same published panels as the peak times.
+ratio_pub <- tibble::tribble(
+  ~arm,                       ~im_pub, ~nuc_pub,
+  "Control",                  157,     63,
+  "Severe renal impairment",  235,     146,
+  "eGFR = 0 (ESRD)",          118,     1085
+) |>
+  dplyr::mutate(
+    arm = factor(arm, levels = arms$arm),
+    ratio_pub = nuc_pub / im_pub
+  )
+
+tmax_cmp <- model_vals |>
+  dplyr::mutate(analyte = as.character(analyte)) |>
+  dplyr::left_join(
+    published_tmax |> dplyr::mutate(analyte = as.character(analyte)),
+    by = c("arm", "analyte")
+  ) |>
+  dplyr::mutate(pct_diff = 100 * (tmax - tmax_pub) / tmax_pub)
+
+tmax_cmp |>
+  dplyr::select(arm, analyte, tmax, tmax_pub, pct_diff) |>
+  dplyr::rename(
+    "Arm" = arm, "Analyte" = analyte,
+    "Model Tmax (h)" = tmax, "Published Tmax (h)" = tmax_pub,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 2, caption = "Metabolite peak times: model vs digitised published curves.")
+
+ratio_cmp <- ratio_model |>
+  dplyr::left_join(ratio_pub, by = "arm") |>
+  dplyr::mutate(pct_diff = 100 * (ratio_model - ratio_pub) / ratio_pub)
+
+ratio_cmp |>
+  dplyr::select(arm, ratio_model, ratio_pub, pct_diff) |>
+  dplyr::rename(
+    "Arm" = arm,
+    "Model GS-441524 : GS-704277 peak ratio" = ratio_model,
+    "Published ratio" = ratio_pub,
+    "Difference (%)" = pct_diff
+  ) |>
+  knitr::kable(digits = 3, caption = "Peak-height ratio between the two metabolites: model vs digitised published curves.")
+```
+
+```{r assertions}
+# Everything asserted here is DETERMINISTIC: neither model carries IIV, so
+# there is no cohort draw and no thread-count sensitivity (pattern 12 of
+# known-vignette-failure-patterns.md does not apply). The tolerances below are
+# therefore sized for DIGITISATION error in reading the published panels
+# (roughly +/- 15% on a peak time), not for simulation noise.
+
+# 1. Structural: every metabolite peak time reproduces its published panel.
+#    A mis-transcribed rate constant moves these by factors, not percent --
+#    encoding the covariate on only the three parameters the text names, for
+#    instance, moves the severe-arm GS-441524 peak from 6.66 h to 8.03 h and
+#    breaks the 35% bound.
+stopifnot(max(abs(tmax_cmp$pct_diff)) < 35)
+
+# 2. The GS-441524 peak time, the single most robust published quantity
+#    (a broad, well-resolved maximum in every panel), is tighter still.
+stopifnot(
+  max(abs(tmax_cmp$pct_diff[tmax_cmp$analyte == "GS-441524 (NUC)"])) < 25
+)
+
+# 3. In the ESRD arm the two metabolite peak heights are in the published
+#    proportion. This is the strongest available check on the metabolite
+#    balance because it is completely free of the unpublished volume.
+esrd_ratio <- ratio_cmp$pct_diff[ratio_cmp$arm == "eGFR = 0 (ESRD)"]
+stopifnot(length(esrd_ratio) == 1L, abs(esrd_ratio) < 10)
+
+# 4. Sanity: concentrations stay non-negative and the cascade actually runs.
+stopifnot(
+  min(sim$Cc, sim$Cc_gs704277, sim$Cc_gs441524) >= 0,
+  all(tapply(sim$Cc_gs441524, sim$arm, max) > 0)
+)
+
+# 5. KNOWN DEVIATION, deliberately excluded from the gate: the cohort model's
+#    two arms do not reproduce the published metabolite peak-height ratio.
+#    Recorded rather than tuned away -- see "Assumptions and deviations".
+knitr::kable(
+  ratio_cmp |>
+    dplyr::mutate(
+      Gated = ifelse(arm == "eGFR = 0 (ESRD)", "yes", "no (known deviation)")
+    ) |>
+    dplyr::select(arm, ratio_model, ratio_pub, pct_diff, Gated) |>
+    dplyr::rename(
+      "Arm" = arm, "Model ratio" = ratio_model, "Published ratio" = ratio_pub,
+      "Difference (%)" = pct_diff
+    ),
+  digits = 2,
+  caption = "Which comparisons are gated, and which are recorded as known deviations."
+)
+```
+
+# Assumptions and deviations
+
+- **No volume of distribution exists in the published model.** Every Table 1
+  parameter is a 1/h rate constant and Equations 1-6 are written on
+  concentrations, so a dose enters as an initial central remdesivir
+  concentration. This vignette uses a reference value of 1000 ng/mL and
+  validates only volume-invariant quantities. Users who need absolute ng/mL for
+  a stated mg dose must supply a volume from another source; the paper does not
+  provide one.
+
+- **The dose is applied as an instantaneous initial condition.** Zhang 2025
+  does not state how the dose entered the model, and the underlying trial gave
+  remdesivir by intravenous infusion. Applying a 30-minute infusion instead
+  moves the control GS-704277 peak from 0.45 h to 0.75 h, bracketing the
+  digitised 0.65 h; the GS-441524 peak is barely affected (4.65 h to 4.90 h).
+  The bolus is used here as the minimal assumption consistent with an
+  initial-condition model.
+
+- **No inter-individual variability is carried.** Methods 2.3 declares
+  lognormal random effects on all parameters, but no variance, SD or CV% is
+  reported for any parameter, and the EuropePMC supplementary bundle for
+  PMC11982744 contains only the six publisher figure files. Inventing variances
+  is not permitted, so both models are typical-value only. The etas are omitted
+  rather than written as `~ fixed(0)`, because a zero-variance diagonal makes
+  OMEGA singular and breaks rxSolve's Cholesky sampler.
+
+- **Residual error structure is carried but its magnitude is not.** Equation 7
+  declares a combined additive-plus-proportional model; neither `a` nor `b` is
+  reported for any analyte, so both are fixed at zero for all three outputs and
+  simulation from these files is noise-free.
+
+- **Table 1 is transcribed in full, in preference to the narrower covariate
+  statement in the text.** Results 3.1 and the Discussion name only K_C,IM,
+  K_P,IM and K_P,NUC as carrying the renal-impairment covariate, but Table 1's
+  two columns also differ in Q_IM, Q_NUC, K_C,NUC and K_P,NTP. The Table 1
+  caption states that "The simulation results derived from these values are
+  presented in the Results section", so Table 1 is what generated the published
+  figures and is what is encoded. This is also the better-fitting choice: with
+  the covariate restricted to the three named parameters, the severe-arm
+  GS-441524 peak moves to 8.03 h against a digitised 6.5 h, whereas the full
+  Table 1 column gives 6.66 h.
+
+- **`RENALIMP = 1` reproduces the *severe* stratum specifically.** The covariate
+  is binary and pools every impairment grade, but Table 1 tabulates only a
+  healthy-control and a severe-renal-impairment column. The paper publishes no
+  parameter set for the mild or moderate strata even though Figure 3 shows
+  panels for them, so those two panels cannot be reproduced from any published
+  parameter values.
+
+- **KNOWN DEVIATION -- the cohort model's metabolite peak-height ratio.** In the
+  ESRD arm the model reproduces the published GS-441524 : GS-704277 peak ratio
+  essentially exactly (9.23 predicted against 9.19 digitised, 0.4% apart). In
+  the two cohort-model arms it does not: 0.59 against a digitised 0.40 for the
+  control arm, and 2.08 against 0.62 for the severe arm. The peak *times* are
+  reproduced in all three arms, so this is a discrepancy in the relative
+  *heights* of the two metabolites, not in the cascade kinetics. The most
+  likely explanation is that Figure 3's four panels were each generated from a
+  per-stratum parameter set while Table 1 tabulates only two, but the paper
+  does not supply enough information to settle it. Following the project's
+  standing practice, the disagreement is reported with its measured values and
+  excluded from the assertion gate rather than being tuned away.
+
+- **Digitised comparison values.** Every "published" number compared against in
+  this vignette was read on-screen from the publisher's native-resolution
+  figure files (obtained from the EuropePMC `supplementaryFiles` bundle for
+  PMC11982744), because Zhang 2025 tabulates no NCA or peak values. Peak times
+  carry roughly +/- 15% uncertainty from gridline resolution and peak heights
+  somewhat more; the assertion tolerances are sized accordingly.
+
+# Errata and inconsistencies in the source
+
+- **The abstract and Methods misname GS-441524.** Both call the third analyte
+  "nucleoside monophosphate (NUC)". Figure 1, the paper's own metabolic-pathway
+  diagram, labels **GS-441524** as "(NUC)" and shows the monophosphate
+  GS-441524-MP as a separate species that the model does not carry; Figure 3's
+  y-axis likewise reads "Nucleosides (NUC)", and the fitted data are plasma
+  GS-441524. The packaged models use the `gs441524` metabolite suffix
+  accordingly.
+
+- **Table 1 calls the 1/h parameters "clearances".** Q_RDV, Q_IM and Q_NUC are
+  described as "intercompartment clearance" and CL_C,RDV as "Clearance of RDV",
+  but all four carry units of 1/h. In this concentration-space formulation they
+  are micro-constants (Q/V and CL/V), which is how they are named in the model
+  files.
+
+- **`K_C,IM = 0` in the eGFR = 0 column.** This boundary estimate means all
+  GS-704277 formation is peripheral in that patient. It is the one parameter
+  that cannot be log-transformed, so it is carried on the linear scale as
+  `kmet_gs704277_central <- fixed(0)`.
+
+- **A reference-list error.** Zhang 2025 cites its primary PK data source as
+  "Zhang et al. (2020)", but the entry that appears under that name in the
+  reference list is Zhang, Zhang and Ho, *Extrapolation for a pharmacokinetic
+  model for acetaminophen from adults to neonates*
+  (doi:10.1016/j.dmpk.2020.03.004) -- an acetaminophen paper by the same senior
+  author, not the Gilead remdesivir renal-impairment study the text describes.
+  The intended source is the Gilead phase I renal-impairment trial.

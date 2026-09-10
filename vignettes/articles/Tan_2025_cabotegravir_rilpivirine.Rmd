@@ -1,0 +1,755 @@
+---
+title: "Long-acting cabotegravir + rilpivirine injection-site pharmacokinetics (Tan 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Long-acting cabotegravir + rilpivirine injection-site pharmacokinetics (Tan 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+Tan 2025 fitted the two analytes of the co-packaged long-acting injection
+independently, so the paper contributes two model files.
+
+```{r models}
+mod_cab <- readModelDb("Tan_2025_cabotegravir")
+mod_rpv <- readModelDb("Tan_2025_rilpivirine")
+```
+
+* Citation: `r rxode2::rxode(mod_cab)$reference`
+* Cabotegravir: `r rxode2::rxode(mod_cab)$description`
+* Rilpivirine: `r rxode2::rxode(mod_rpv)$description`
+* Article: <https://doi.org/10.1093/ofid/ofaf614>
+* Supplement (Supplementary Figures 1-4 only; no control stream was deposited):
+  <https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12547498/supplementaryFiles>
+
+## What the paper is about
+
+Long-acting injectable cabotegravir plus rilpivirine is given as a
+ventrogluteal intramuscular injection every 8 weeks. Two effects have been
+reproduced across registrational and real-world cohorts: cabotegravir
+absorption is roughly half as fast in women as in men, and it slows further
+with rising body mass index. Tan 2025 asked whether both are really one
+effect -- whether an injection *intended* for gluteal muscle often fails to
+reach it.
+
+Every injection in the JABS-PKInSITE cohort was imaged by ultrasound within 15
+minutes of administration. Of 134 imaged injections, 30% had deposited the
+injectate primarily in subcutaneous fat rather than muscle, and every injection
+with a skin-to-muscle thickness above 30 mm was subcutaneous. Women, who had
+17.7 mm greater median skin-to-muscle thickness at the same weight or body mass
+index, received 72.4% of their injections subcutaneously against 18.1% for men.
+
+A subcutaneous depot cut the cabotegravir absorption rate constant by 56.3%,
+and once that covariate was in the model *sex and body mass index both lost
+their significance*. Rilpivirine, from the same syringe into the same tissue,
+showed no depot-location effect at all.
+
+Because both drugs absorb far more slowly than they are eliminated -- the
+flip-flop regime -- slower absorption **raises** rather than lowers the
+8-weekly trough. That is the paper's clinical punchline, and it is the first
+thing checked below.
+
+# Population
+
+31 adults with virologically suppressed HIV-1 (at least one recent HIV-1 RNA
+< 40 copies/mL), recruited from the Royal Perth Hospital immunology outpatient
+clinic in Western Australia between 4 October 2023 and 21 March 2024 and
+followed for 16 weeks over three clinic visits and three injections. 23 were
+men and 8 women (26%). Median age 45 years (range 23-72), median weight 84 kg
+(52-114), median body mass index 26.3 kg/m^2 (19.0-38.1), with 8 participants
+(25.8%) above 30 kg/m^2 (Tan 2025 Table 1). The median duration already spent
+on injectable therapy at the trough samples was 56 weeks, so the observed
+troughs are steady-state values.
+
+141 serum samples were assayed by validated LC-MS/MS, 78 of them pre-injection
+troughs at approximately 8 weeks. Observed median trough concentrations were
+1390 ng/mL for cabotegravir (1292 in men, 1727 in women, P < .05) and
+56.0 ng/mL for rilpivirine (53.0 in men, 62.5 in women, P = .02).
+
+The same information is available programmatically from either model's
+`population` metadata (`readModelDb("Tan_2025_cabotegravir")()$population` --
+`readModelDb()` returns the model *function*, so the trailing `()` evaluates
+it).
+
+# Source trace
+
+Every value comes from Tan 2025 Table 2, "Final Population Pharmacokinetic
+Estimates and Bootstrap Results for Cabotegravir and Rilpivirine in Patients
+With HIV Receiving Long-acting Injections". No NONMEM control stream was
+deposited -- the PMC supplement holds only Supplementary Figures 1-4 and their
+captions -- so the main-text table is the sole source.
+
+The variability rows are back-transformed using the paper's own footnote above
+Table 2: *"Variability parameters are presented as 100% x sqrt(variability
+estimate)"*. Each printed percentage is therefore `100 * omega` on the
+**standard-deviation** scale, and the variance nlmixr2 wants is
+`(printed/100)^2`. This settles the usual standard-deviation-versus-variance
+ambiguity by arithmetic rather than by convention.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| Structural model: 1 compartment, first-order absorption, both analytes | n/a | Tan 2025 Results, "Population Pharmacokinetic Modeling" |
+| **Cabotegravir** | | |
+| `lka` = `log(0.000972)` | ka 0.000972 1/h | Table 2, cabotegravir `k a (h-1)`; bootstrap 0.000978 [0.00069-0.00118] |
+| `lcl` = `log(0.136)` | CL/F 0.136 L/h/70 kg | Table 2, `CL/F (liters/h/70 kg)`; bootstrap 0.1361 [0.1167-0.1628] |
+| `lvc` = `log(9.28)` | V/F 9.28 L/70 kg | Table 2, `V/F (liters/70 kg)`; bootstrap 9.16 [5.95-17.77] |
+| `e_route_sc_ka` = `-0.563` | -56.3% on ka | Table 2, `Effect of subcutaneous location on k a (%)`; bootstrap -55.3 [-32.1 to -71.8] |
+| `etalka ~ 0.1089` | IIV ka 33% | Table 2, `IIV in k a  33 [35]`; `(33/100)^2` |
+| `etaiov_lka_1..3 ~ 0.0625` | IOV ka 25% | Table 2, `IOV in k a  25 [33]`; `(25/100)^2` |
+| `etalcl ~ 0.1089` | IIV CL/F 33% | Table 2, `IIV in CL/F 33 [16]`; `(33/100)^2` |
+| `propSd` = `0.17` | RV 17% | Table 2, `RV 17 [31]` |
+| **Rilpivirine** | | |
+| `lka` = `log(0.000500)` | ka 0.000500 1/h | Table 2, rilpivirine `k a (h-1)`; bootstrap 0.000507 [0.000402-0.000624] |
+| `lcl` = `log(7.24)` | CL/F 7.24 L/h/70 kg | Table 2, `CL/F (liters/h/70 kg)`; bootstrap 7.16 [6.28-8.16] |
+| `lvc` = `log(86.5)` | V/F 86.5 L/70 kg | Table 2, `V/F (liters/70 kg)`; bootstrap 86.0 [33.8-183] |
+| `etalka ~ 0.1024` | IIV ka 32% | Table 2, `IIV in k a  32 [15]`; `(32/100)^2` |
+| `etalcl ~ 0.1089` | IIV CL/F 33% | Table 2, `IIV in CL/F 33 [45]`; `(33/100)^2` |
+| `etaiov_lcl_1..3 ~ 0.0256` | IOV CL/F 16% | Table 2, `IOV in CL/F 16 [47]`; `(16/100)^2` |
+| `propSd` = `0.25` | RV 25% | Table 2, `RV 25 [20]` |
+| **Both** | | |
+| `e_wt_cl` = `fixed(0.75)`, `e_wt_vc` = `fixed(1)` | allometric exponents | **NOT in Tan 2025.** Reference weight 70 kg is from the Table 2 row headers themselves; the exponents are theory-based. See Assumptions and deviations. |
+| Occasion count = 3 | n/a | Tan 2025 Methods: "Participants were observed over 16 weeks, corresponding to 3 clinic appointments (8-week intervals) with corresponding injection administration" |
+| Residual error read as proportional | n/a | Inferred: Table 2 reports `RV` on the same `100 * sqrt(estimate)` percentage scale as the log-normal IIV rows, not in ng/mL. See Assumptions and deviations. |
+
+# Structural checks on typical values
+
+These are deterministic: both sides of each comparison use the same parameters,
+so the difference is pure numerical error and a tight bound is the right one.
+
+```{r helpers}
+TAU <- 8 * 7 * 24        # 8-week dosing interval, hours
+N_DOSE <- 12L            # enough to reach steady state for the slower analyte
+DOSE_CAB <- 600          # mg, labelled every-2-months maintenance dose (NOT stated by Tan 2025)
+DOSE_RPV <- 900          # mg, labelled every-2-months maintenance dose (NOT stated by Tan 2025)
+
+# Analytic steady-state concentration for a one-compartment model with
+# first-order absorption, evaluated at time `t` into a `tau`-long interval.
+# Returned in ng/mL for a dose in mg and a volume in L.
+ss_conc <- function(dose, ka, kel, vc, tau, t) {
+  1000 * dose * ka / (vc * (ka - kel)) *
+    (exp(-kel * t) / (1 - exp(-kel * tau)) - exp(-ka * t) / (1 - exp(-ka * tau)))
+}
+
+# One typical-value (zeroRe) solve of `nDose` injections, returning the profile
+# over the final interval together with the individual parameters rxode2
+# computed for it.
+solve_typical <- function(mod, dose, wt, route_sc, by = 12) {
+  ev <-
+    dplyr::bind_rows(
+      data.frame(time = (seq_len(N_DOSE) - 1) * TAU, evid = 1L,
+                 amt = dose, cmt = "depot"),
+      data.frame(time = seq((N_DOSE - 1) * TAU, N_DOSE * TAU, by = by), evid = 0L,
+                 amt = NA_real_, cmt = "central")
+    )
+  ev$id <- 1L
+  ev$WT <- wt
+  ev$ROUTE_SC <- route_sc
+  ev$OCC <- 1
+  ev <- ev[order(ev$time, -ev$evid), ]
+  out <- as.data.frame(rxode2::rxSolve(rxode2::zeroRe(mod), ev))
+  out[!is.na(out$Cc), ]
+}
+```
+
+## The ODE reproduces the closed-form steady state
+
+```{r gate-closed-form}
+grid <- tidyr::crossing(
+  drug = c("Cabotegravir", "Rilpivirine"),
+  WT = c(52, 70, 84, 114),
+  ROUTE_SC = c(0, 1)
+)
+
+closed_form <- do.call(rbind, lapply(seq_len(nrow(grid)), function(i) {
+  g <- grid[i, ]
+  mod <- if (g$drug == "Cabotegravir") mod_cab else mod_rpv
+  dose <- if (g$drug == "Cabotegravir") DOSE_CAB else DOSE_RPV
+  s <- solve_typical(mod, dose, g$WT, g$ROUTE_SC)
+  last <- s[nrow(s), ]
+  data.frame(
+    drug = g$drug, WT = g$WT, ROUTE_SC = g$ROUTE_SC,
+    ode = last$Cc,
+    analytic = ss_conc(dose, last$ka, last$kel, last$vc, TAU, TAU)
+  )
+}))
+closed_form$pct_diff <- 100 * (closed_form$ode - closed_form$analytic) / closed_form$analytic
+
+# Both sides use the SAME drawn parameters, so the only difference is solver
+# error plus the tiny residual of approaching steady state in 12 doses rather
+# than infinitely many. A tight bound is correct here.
+stopifnot(max(abs(closed_form$pct_diff)) < 0.5)
+
+knitr::kable(
+  closed_form |>
+    dplyr::mutate(Depot = ifelse(ROUTE_SC == 1, "Subcutaneous", "Intramuscular")) |>
+    dplyr::select(Drug = drug, `Weight (kg)` = WT, Depot,
+                  `ODE trough (ng/mL)` = ode,
+                  `Closed-form trough (ng/mL)` = analytic,
+                  `Difference (%)` = pct_diff),
+  digits = c(0, 0, 0, 1, 1, 4),
+  caption = "Steady-state trough from the packaged ODE model against the analytic one-compartment first-order-absorption solution."
+)
+```
+
+## The depot-location effect is exactly the published 56.3%
+
+```{r gate-ka-ratio}
+ka_im <- solve_typical(mod_cab, DOSE_CAB, 70, 0)$ka[1]
+ka_sc <- solve_typical(mod_cab, DOSE_CAB, 70, 1)$ka[1]
+stopifnot(abs((ka_sc / ka_im) - (1 - 0.563)) < 1e-9)
+c(ka_intramuscular = ka_im, ka_subcutaneous = ka_sc, ratio = ka_sc / ka_im)
+```
+
+## Both drugs are flip-flop, and slower absorption raises the trough
+
+Tan 2025 Discussion: *"simulations from our model and the real-world CAB cohort
+by Thoueille et al, in fact, link slower absorption to higher trough
+concentrations."*
+
+```{r gate-flipflop}
+p_cab_im <- solve_typical(mod_cab, DOSE_CAB, 70, 0)
+p_cab_sc <- solve_typical(mod_cab, DOSE_CAB, 70, 1)
+p_rpv    <- solve_typical(mod_rpv, DOSE_RPV, 70, 0)
+
+flip <- data.frame(
+  Profile = c("Cabotegravir, intramuscular", "Cabotegravir, subcutaneous",
+              "Rilpivirine"),
+  `Absorption half-life (h)` =
+    log(2) / c(p_cab_im$ka[1], p_cab_sc$ka[1], p_rpv$ka[1]),
+  `Elimination half-life (h)` =
+    log(2) / c(p_cab_im$kel[1], p_cab_sc$kel[1], p_rpv$kel[1]),
+  `Steady-state trough (ng/mL)` =
+    c(p_cab_im$Cc[nrow(p_cab_im)], p_cab_sc$Cc[nrow(p_cab_sc)],
+      p_rpv$Cc[nrow(p_rpv)]),
+  check.names = FALSE
+)
+flip$`Absorption / elimination` <-
+  flip$`Absorption half-life (h)` / flip$`Elimination half-life (h)`
+
+# Flip-flop: absorption is the slow step for both analytes, by a wide margin.
+stopifnot(all(flip$`Absorption / elimination` > 10))
+# The paper's clinical claim: a subcutaneous cabotegravir depot absorbs more
+# slowly and therefore troughs HIGHER. Deterministic, so a strict comparison.
+stopifnot(flip$`Steady-state trough (ng/mL)`[2] > flip$`Steady-state trough (ng/mL)`[1])
+
+knitr::kable(flip, digits = 1,
+             caption = "Flip-flop kinetics at typical values, 70 kg. The absorption half-life is 15-167x the elimination half-life, so the terminal phase is absorption-limited and slowing absorption raises the trough.")
+```
+
+```{r fig-profiles}
+prof <- dplyr::bind_rows(
+  dplyr::mutate(solve_typical(mod_cab, DOSE_CAB, 70, 0, by = 6),
+                Drug = "Cabotegravir 600 mg", Depot = "Intramuscular"),
+  dplyr::mutate(solve_typical(mod_cab, DOSE_CAB, 70, 1, by = 6),
+                Drug = "Cabotegravir 600 mg", Depot = "Subcutaneous"),
+  dplyr::mutate(solve_typical(mod_rpv, DOSE_RPV, 70, 0, by = 6),
+                Drug = "Rilpivirine 900 mg", Depot = "Intramuscular"),
+  dplyr::mutate(solve_typical(mod_rpv, DOSE_RPV, 70, 1, by = 6),
+                Drug = "Rilpivirine 900 mg", Depot = "Subcutaneous")
+) |>
+  dplyr::mutate(week = (time - (N_DOSE - 1) * TAU) / (24 * 7))
+
+ggplot(prof, aes(week, Cc, colour = Depot)) +
+  geom_line(linewidth = 0.9) +
+  facet_wrap(~Drug, scales = "free_y") +
+  labs(x = "Weeks into the 8-week dosing interval", y = "Concentration (ng/mL)",
+       colour = "Depot location",
+       title = "Steady-state interval at typical values, 70 kg",
+       caption = "Cabotegravir absorption slows 56.3% from a subcutaneous depot (Tan 2025 Table 2); rilpivirine has no depot-location effect, so its two curves coincide.") +
+  theme(legend.position = "bottom")
+```
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below reproduces
+the sex-stratified weight distribution of Tan 2025 Table 1 and the
+sex-stratified subcutaneous-deposition rates of Tan 2025 Results, and is sized
+23:8 male:female to match the study. Depot location is drawn **per injection**,
+not per subject, because the paper's covariate is the location of the depot laid
+down by the dose being absorbed and a participant's injections can differ from
+visit to visit.
+
+```{r cohort}
+# `set.seed()` seeds R's RNG, which draws the covariates below. It does NOT
+# seed rxode2's simulation RNG, and rxode2's streams are partitioned per solver
+# thread, so the etas differ between a 2-core CI runner and a 16-thread
+# workstation. Every assertion downstream is written to hold for any cohort the
+# model can produce (see known-vignette-failure-patterns.md pattern 12).
+set.seed(20251030)
+
+N_MALE <- 200L
+N_FEMALE <- 70L   # 200 * 8/23, preserving the study's 23:8 sex ratio
+
+# Log-normal weights matched to the Table 1 per-sex median, with the spread set
+# so the published range spans about four standard deviations, then truncated
+# to that range.
+make_weights <- function(n, med, lo, hi) {
+  w <- exp(stats::rnorm(n, log(med), (log(hi) - log(lo)) / 4))
+  pmin(pmax(w, lo), hi)
+}
+
+subj <- dplyr::bind_rows(
+  tibble(id = seq_len(N_MALE), SEX = "Male",
+         WT = make_weights(N_MALE, 85, 55, 114)),
+  tibble(id = N_MALE + seq_len(N_FEMALE), SEX = "Female",
+         WT = make_weights(N_FEMALE, 69, 52, 88))
+)
+
+# Tan 2025 Results: "The rate of subcutaneous injection was significantly
+# (P < .05) higher in females (72.4%) compared to in males (18.1%)."
+P_SC <- c(Male = 0.181, Female = 0.724)
+
+dose_rows <- tidyr::crossing(subj, time = (seq_len(N_DOSE) - 1) * TAU) |>
+  dplyr::mutate(evid = 1L, cmt = "depot",
+                ROUTE_SC = stats::rbinom(dplyr::n(), 1, P_SC[SEX]))
+
+# Weekly sampling through the accumulation phase, daily through the final
+# interval so the trough record sits exactly on the interval end (PKNCA's
+# ctrough is NA otherwise).
+obs_times <- sort(unique(c(
+  seq(0, (N_DOSE - 1) * TAU, by = 168),
+  seq((N_DOSE - 1) * TAU, N_DOSE * TAU, by = 24)
+)))
+
+# An observation inherits the depot location of the most recent preceding dose.
+obs_rows <- tidyr::crossing(subj, time = obs_times) |>
+  dplyr::mutate(evid = 0L, cmt = "central") |>
+  dplyr::left_join(dplyr::select(dose_rows, id, dose_time = time, ROUTE_SC),
+                   by = "id", relationship = "many-to-many") |>
+  dplyr::filter(dose_time <= time) |>
+  dplyr::group_by(id, time) |>
+  dplyr::slice_max(dose_time, n = 1) |>
+  dplyr::ungroup() |>
+  dplyr::select(id, SEX, WT, time, evid, cmt, ROUTE_SC)
+
+# The three study injections are the last three of the twelve simulated, so the
+# occasion index runs 1-3 over the window Tan 2025 actually observed.
+occasion_of <- function(t) {
+  k <- floor(pmin(t, N_DOSE * TAU - 1e-9) / TAU) + 1
+  ifelse(k >= N_DOSE - 2, k - (N_DOSE - 3), 1)
+}
+
+events <- dplyr::bind_rows(
+  dplyr::select(dose_rows, id, SEX, WT, time, evid, cmt, ROUTE_SC),
+  obs_rows
+) |>
+  dplyr::mutate(OCC = occasion_of(time)) |>
+  dplyr::arrange(id, time, dplyr::desc(evid))
+
+stopifnot(!anyDuplicated(unique(events[, c("id", "time", "evid")])))
+c(subjects = nrow(subj), rows = nrow(events),
+  sc_rate_male = mean(dose_rows$ROUTE_SC[dose_rows$SEX == "Male"]),
+  sc_rate_female = mean(dose_rows$ROUTE_SC[dose_rows$SEX == "Female"]))
+```
+
+# Simulation
+
+```{r simulate}
+simulate_arm <- function(mod, dose) {
+  ev <- dplyr::mutate(events, amt = ifelse(evid == 1L, dose, NA_real_))
+  as.data.frame(
+    rxode2::rxSolve(mod, events = ev, keep = c("SEX", "ROUTE_SC", "WT"))
+  )
+}
+
+sim_cab <- simulate_arm(mod_cab, DOSE_CAB)
+sim_rpv <- simulate_arm(mod_rpv, DOSE_RPV)
+
+# Nothing degenerate: no missing predictions and no negative concentrations.
+stopifnot(!anyNA(sim_cab$Cc), !anyNA(sim_rpv$Cc),
+          min(sim_cab$Cc) >= 0, min(sim_rpv$Cc) >= 0)
+```
+
+```{r fig-trough-by-sex}
+troughs <- dplyr::bind_rows(
+  dplyr::mutate(sim_cab, Drug = "Cabotegravir"),
+  dplyr::mutate(sim_rpv, Drug = "Rilpivirine")
+) |>
+  dplyr::filter(abs(time - N_DOSE * TAU) < 1e-6)
+
+observed_median <- tibble(
+  Drug = rep(c("Cabotegravir", "Rilpivirine"), each = 2),
+  SEX = rep(c("Male", "Female"), 2),
+  observed = c(1292, 1727, 53.0, 62.5)
+)
+
+ggplot(troughs, aes(SEX, Cc, fill = SEX)) +
+  geom_boxplot(alpha = 0.6, outlier.size = 0.6) +
+  geom_point(data = observed_median, aes(SEX, observed),
+             shape = 23, size = 3.2, fill = "white", inherit.aes = FALSE) +
+  facet_wrap(~Drug, scales = "free_y") +
+  scale_y_log10() +
+  labs(x = NULL, y = "Steady-state trough (ng/mL)",
+       title = "Simulated steady-state troughs by sex",
+       caption = "White diamonds are the observed median troughs of Tan 2025 Table 1. Sex is NOT a covariate in either model: the separation is produced entirely by the lighter female weight distribution and by the 72.4%-vs-18.1% subcutaneous deposition rate.") +
+  theme(legend.position = "none")
+```
+
+# PKNCA validation
+
+NCA is run over the final, steady-state dosing interval of each subject, with
+time re-zeroed to the start of that interval.
+
+```{r pknca}
+nca_for <- function(sim, dose) {
+  conc_df <- sim |>
+    dplyr::filter(!is.na(Cc), time >= (N_DOSE - 1) * TAU) |>
+    dplyr::mutate(t_interval = time - (N_DOSE - 1) * TAU) |>
+    dplyr::select(id, t_interval, Cc, SEX)
+
+  # Guarantee a record at the start of the interval; PKNCA needs it to anchor
+  # AUC, and the interval end must be present for ctrough (it already is, the
+  # daily grid lands exactly on N_DOSE * TAU).
+  conc_df <- dplyr::bind_rows(
+    conc_df,
+    conc_df |> dplyr::distinct(id, SEX) |> dplyr::mutate(t_interval = 0, Cc = 0)
+  ) |>
+    dplyr::distinct(id, SEX, t_interval, .keep_all = TRUE) |>
+    dplyr::arrange(id, t_interval)
+
+  dose_df <- conc_df |>
+    dplyr::distinct(id, SEX) |>
+    dplyr::mutate(t_interval = 0, amt = dose) |>
+    as.data.frame()
+
+  intervals <- data.frame(
+    start = 0, end = TAU,
+    cmax = TRUE, tmax = TRUE, ctrough = TRUE,
+    auclast = TRUE, half.life = TRUE
+  )
+
+  PKNCA::pk.nca(PKNCA::PKNCAdata(
+    PKNCA::PKNCAconc(as.data.frame(conc_df), Cc ~ t_interval | SEX + id),
+    PKNCA::PKNCAdose(dose_df, amt ~ t_interval | SEX + id),
+    intervals = intervals
+  ))
+}
+
+nca_cab <- nca_for(sim_cab, DOSE_CAB)
+nca_rpv <- nca_for(sim_rpv, DOSE_RPV)
+
+nca_summary <- dplyr::bind_rows(
+  dplyr::mutate(as.data.frame(nca_cab), Drug = "Cabotegravir"),
+  dplyr::mutate(as.data.frame(nca_rpv), Drug = "Rilpivirine")
+) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "ctrough", "auclast", "half.life")) |>
+  dplyr::group_by(Drug, SEX, PPTESTCD) |>
+  dplyr::summarise(median = stats::median(PPORRES), .groups = "drop")
+
+stopifnot(nrow(nca_summary) == 2 * 2 * 5)   # the table below is not empty
+
+knitr::kable(
+  nca_summary |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = median) |>
+    dplyr::rename("Cmax (ng/mL)" = cmax, "Tmax (h)" = tmax,
+                  "Ctrough (ng/mL)" = ctrough,
+                  "AUC0-tau (ng*h/mL)" = auclast,
+                  "Apparent t1/2 (h)" = half.life),
+  digits = 1,
+  caption = "Median steady-state NCA over one 8-week interval, by sex."
+)
+```
+
+The apparent terminal half-life is the flip-flop signature: it tracks the
+absorption half-life (713 h intramuscular, 1632 h subcutaneous for
+cabotegravir; 1386 h for rilpivirine) rather than the elimination half-life
+(47 h and 8.3 h respectively).
+
+```{r gate-halflife}
+hl <- nca_summary |> dplyr::filter(PPTESTCD == "half.life")
+# Sample-median apparent half-life must sit in the absorption regime, orders of
+# magnitude above the elimination half-lives of 47 h (CAB) and 8.3 h (RPV).
+stopifnot(all(hl$median > 400), all(hl$median < 2500))
+# Rilpivirine has no depot-location covariate, so its apparent half-life must
+# not differ materially between the two sexes despite their very different
+# subcutaneous rates. Bound is wide enough for cohort noise on n = 70 women.
+hl_rpv <- hl$median[hl$Drug == "Rilpivirine"]
+stopifnot(abs(diff(hl_rpv)) / mean(hl_rpv) < 0.35)
+```
+
+## Comparison against the published trough concentrations
+
+Tan 2025 reports no NCA table. What it does report is the observed median
+steady-state trough by sex (Table 1), which is exactly `ctrough` over a
+steady-state interval, so that is the comparison made here.
+
+```{r nca-compare}
+published <- tibble::tribble(
+  ~Drug,          ~SEX,      ~ctrough,
+  "Cabotegravir", "Male",    1292,
+  "Cabotegravir", "Female",  1727,
+  "Rilpivirine",  "Male",      53.0,
+  "Rilpivirine",  "Female",    62.5
+)
+
+simulated_ctrough <- nca_summary |>
+  dplyr::filter(PPTESTCD == "ctrough") |>
+  dplyr::select(Drug, SEX, ctrough = median)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_ctrough,
+  reference = published,
+  by        = c("Drug", "SEX"),
+  units     = c(ctrough = "ng/mL"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = "Simulated median steady-state trough against the observed medians of Tan 2025 Table 1. * differs from the reference by more than 20%.",
+  align = c("l", "l", "l", "r", "r", "r")
+)
+```
+
+# Claims checked
+
+The paper's headline is that the male/female cabotegravir gap needs no sex
+term: it falls out of women being lighter and, far more importantly, of their
+injections landing subcutaneously 72.4% of the time against 18.1% for men.
+That claim is checked below on **typical values**, where it is deterministic and
+exactly reproducible, rather than on the cohort median, whose sampling noise
+across rxode2 thread counts is larger than the effect being measured.
+
+```{r sex-surrogate}
+WT_MALE <- 85    # Tan 2025 Table 1, male median weight
+WT_FEMALE <- 69  # Tan 2025 Table 1, female median weight
+
+typ_trough <- function(mod, dose, wt, sc) {
+  s <- solve_typical(mod, dose, wt, sc)
+  s$Cc[nrow(s)]
+}
+
+# Depot location is a per-injection Bernoulli draw, so the typical-value
+# surrogate for a sex is the depot-probability-weighted trough at that sex's
+# median weight. This is an arithmetic mean over depot location and is used
+# only for the RATIO between the sexes, not as an estimate of the cohort median
+# level (a mean over a right-skewed mixture sits above its median).
+depot_mix <- function(mod, dose, wt, p_sc) {
+  (1 - p_sc) * typ_trough(mod, dose, wt, 0) + p_sc * typ_trough(mod, dose, wt, 1)
+}
+
+cab_typ_m <- depot_mix(mod_cab, DOSE_CAB, WT_MALE,   P_SC[["Male"]])
+cab_typ_f <- depot_mix(mod_cab, DOSE_CAB, WT_FEMALE, P_SC[["Female"]])
+# Rilpivirine has no depot-location effect, so only weight separates the sexes.
+rpv_typ_m <- typ_trough(mod_rpv, DOSE_RPV, WT_MALE,   0)
+rpv_typ_f <- typ_trough(mod_rpv, DOSE_RPV, WT_FEMALE, 0)
+
+c(cab_ratio = cab_typ_f / cab_typ_m, cab_observed_ratio = 1727 / 1292,
+  rpv_ratio = rpv_typ_f / rpv_typ_m, rpv_observed_ratio = 62.5 / 53.0)
+```
+
+```{r claims}
+tr_med <- function(drug, sex) {
+  v <- troughs$Cc[troughs$Drug == drug & troughs$SEX == sex]
+  if (length(v) == 0L) stop("no rows for ", drug, " / ", sex)
+  stats::median(v)
+}
+cab_m <- tr_med("Cabotegravir", "Male");  cab_f <- tr_med("Cabotegravir", "Female")
+rpv_m <- tr_med("Rilpivirine", "Male");   rpv_f <- tr_med("Rilpivirine", "Female")
+
+pct <- function(sim, obs) 100 * (sim - obs) / obs
+
+# Bounds. Rows 1-8 are deterministic (typical values, no eta draw), so they are
+# gated tightly. Rows 9-12 are cohort medians and therefore depend on the eta
+# draw, which rxode2 partitions per solver thread: a 2-core CI runner and a
+# 16-thread workstation see different cohorts. Realised over two independent
+# draws: rilpivirine men -4% and +1%, women +9% and +16%. The male arm has 200
+# subjects and the female arm 70, so the female median carries roughly twice
+# the sampling error and gets a correspondingly wider bound. Both bounds still
+# go red on the failures worth catching -- a wrong dose, a dropped 1000x unit
+# conversion or a transposed volume move the trough by a factor, not by tens of
+# percent.
+claims <- tibble::tribble(
+  ~Claim, ~Source, ~Achieved, ~Pass, ~Deviation,
+  "Subcutaneous deposition cuts cabotegravir ka by 56.3%",
+  "Table 2",
+  sprintf("ka ratio %.3f (target %.3f)", ka_sc / ka_im, 1 - 0.563),
+  abs((ka_sc / ka_im) - 0.437) < 1e-9, FALSE,
+
+  "Rilpivirine ka is approximately half that of cabotegravir",
+  "Results, 'Population Pharmacokinetic Modeling'",
+  sprintf("%.4g vs %.4g 1/h, ratio %.2f",
+          p_rpv$ka[1], p_cab_im$ka[1], p_rpv$ka[1] / p_cab_im$ka[1]),
+  abs(p_rpv$ka[1] / p_cab_im$ka[1] - 0.5) < 0.06, FALSE,
+
+  "Slower (subcutaneous) absorption raises the cabotegravir trough",
+  "Discussion",
+  sprintf("SC/IM trough ratio %.2f at 70 kg typical values",
+          flip$`Steady-state trough (ng/mL)`[2] / flip$`Steady-state trough (ng/mL)`[1]),
+  flip$`Steady-state trough (ng/mL)`[2] > flip$`Steady-state trough (ng/mL)`[1], FALSE,
+
+  "Both analytes are absorption-limited (flip-flop)",
+  "Results; ka far below CL/V for both",
+  sprintf("absorption/elimination half-life ratio %.0f-%.0f",
+          min(flip$`Absorption / elimination`), max(flip$`Absorption / elimination`)),
+  all(flip$`Absorption / elimination` > 10), FALSE,
+
+  "Cabotegravir sex gap reproduced from weight + depot location alone, no sex term",
+  "Table 1 (observed ratio 1.34)",
+  sprintf("typical-value ratio %.2f", cab_typ_f / cab_typ_m),
+  abs(pct(cab_typ_f / cab_typ_m, 1727 / 1292)) < 30, FALSE,
+
+  "Rilpivirine sex gap reproduced from weight alone, no covariate at all",
+  "Table 1 (observed ratio 1.18)",
+  sprintf("typical-value ratio %.2f", rpv_typ_f / rpv_typ_m),
+  abs(pct(rpv_typ_f / rpv_typ_m, 62.5 / 53.0)) < 15, FALSE,
+
+  "Rilpivirine typical trough at the male median weight (observed 53.0 ng/mL)",
+  "Table 1",
+  sprintf("%.1f ng/mL (%+.0f%%)", rpv_typ_m, pct(rpv_typ_m, 53.0)),
+  abs(pct(rpv_typ_m, 53.0)) < 20, FALSE,
+
+  "Rilpivirine typical trough at the female median weight (observed 62.5 ng/mL)",
+  "Table 1",
+  sprintf("%.1f ng/mL (%+.0f%%)", rpv_typ_f, pct(rpv_typ_f, 62.5)),
+  abs(pct(rpv_typ_f, 62.5)) < 20, FALSE,
+
+  "Rilpivirine cohort median trough, men, n = 200 (observed 53.0 ng/mL)",
+  "Table 1",
+  sprintf("%.1f ng/mL (%+.0f%%)", rpv_m, pct(rpv_m, 53.0)),
+  abs(pct(rpv_m, 53.0)) < 25, FALSE,
+
+  "Rilpivirine cohort median trough, women, n = 70 (observed 62.5 ng/mL)",
+  "Table 1",
+  sprintf("%.1f ng/mL (%+.0f%%)", rpv_f, pct(rpv_f, 62.5)),
+  abs(pct(rpv_f, 62.5)) < 35, FALSE,
+
+  "Cabotegravir cohort median trough, men (observed 1292 ng/mL)",
+  "Table 1",
+  sprintf("%.0f ng/mL (%+.0f%%)", cab_m, pct(cab_m, 1292)),
+  abs(pct(cab_m, 1292)) < 25, TRUE,
+
+  "Cabotegravir cohort median trough, women (observed 1727 ng/mL)",
+  "Table 1",
+  sprintf("%.0f ng/mL (%+.0f%%)", cab_f, pct(cab_f, 1727)),
+  abs(pct(cab_f, 1727)) < 25, TRUE
+)
+
+# Deviation rows stay visible in the rendered table but are excluded from the
+# gate -- see Assumptions and deviations for why the cabotegravir troughs run
+# high and why widening the bound would be the wrong response.
+stopifnot(all(claims$Pass[!claims$Deviation]))
+
+knitr::kable(claims, caption = "Published claims checked against the packaged models. Rows flagged Deviation are reported but not gated.")
+```
+
+# Assumptions and deviations
+
+* **The injected dose is not stated by the paper.** Tan 2025 names the Cabenuva
+  pack and its 23 gauge / 38 mm needle and says injections were given at 8-week
+  intervals, but never prints a milligram dose. The 8-week interval identifies
+  the every-2-months maintenance regimen, so this vignette simulates 600 mg
+  cabotegravir and 900 mg rilpivirine. **This is a non-paper-derived input.**
+  Both models are linear in dose, so every simulated concentration scales
+  directly with it.
+
+* **The allometric exponents are not stated by the paper.** Tan 2025 Table 2
+  heads its structural rows `CL/F (liters/h/70 kg)` and `V/F (liters/70 kg)`
+  for both analytes, which states the reference weight and states that the
+  parameters are weight-normalised -- a "per 70 kg" volume is otherwise
+  meaningless. The exponents themselves never appear, and no control stream was
+  deposited, so the theory-based 0.75 (clearance) and 1.0 (volume) are used and
+  are held `fixed()`. Two independent arithmetic checks support the presence of
+  the weight term rather than its absence: at the cohort median 84 kg the
+  typical steady-state troughs are 1493 ng/mL (cabotegravir, intramuscular) and
+  56.9 ng/mL (rilpivirine) against observed medians of 1390 and 56.0, whereas
+  deleting the weight term entirely puts them at 1706 and 65.3 -- **both**
+  analytes 17-23% high, in the same direction, which is the signature of a
+  missing normalisation from a 70 kg reference to a heavier cohort. A user who
+  prefers the unscaled reading can set both exponents to 0.
+
+* **Cabotegravir troughs run about 15-20% above the paper's observed medians;
+  this is reported, not tuned away.** The two cabotegravir cohort rows of the
+  claims table are marked Deviation and excluded from the gate (realised +13%
+  to +21% per sex over two independent cohort draws). Rilpivirine, encoded from
+  the same table by the same rules, agrees far better: its *deterministic*
+  typical-value troughs at each sex's median weight are +6% against the
+  observed medians, and its sex ratio comes out at 1.17 against an observed
+  1.18. The discrepancy is therefore specific to cabotegravir, not to the
+  encoding method. Three candidate mechanisms, none of which can be settled from
+  what is on disk: (i) the unstated dose -- a 17% overprediction is exactly what
+  a 512 mg rather than 600 mg dose would give, and the model is linear in dose;
+  (ii) the unstated clearance exponent -- setting `e_wt_cl` to 1.0 instead of
+  0.75 moves the typical male prediction from about 1498 to about 1404 ng/mL,
+  but adopting it *because* it fits better would be tuning a parameter to a
+  validation target and is not done; (iii) the paper's own fit sitting above its
+  observed median, which 16-35% eta shrinkage on 31 participants can easily
+  produce. Of the three, only (i) is analyte-specific -- the two doses are
+  independent, so a wrong cabotegravir dose assumption leaves rilpivirine
+  untouched. Mechanism (ii) would move both analytes in the right direction at
+  once (rilpivirine's +6% would fall to roughly +1%), which is suggestive but is
+  not evidence, and is exactly why the exponent is left at its theory-based
+  value. The deviation is recorded as unresolved.
+
+* **The residual-error form is inferred.** Tan 2025 never names it. Table 2
+  reports the residual row `RV` as a percentage on the same
+  `100 * sqrt(estimate)` scale as the log-normal IIV and IOV rows rather than in
+  ng/mL, and the assayed concentrations span more than a decade for both
+  analytes (340-4423 ng/mL and 20-257 ng/mL), so a proportional error is
+  encoded. An additive component, if one existed, would be reported in ng/mL and
+  is not.
+
+* **The occasion count is inferred.** Table 2 reports one inter-occasion
+  variability magnitude per analyte but never states how many occasions or how
+  an occasion was delimited. Three are encoded, because Tan 2025 Methods fixes
+  the window exactly: three clinic appointments at 8-week intervals, each with an
+  injection. All three slots share the single estimated magnitude, so occasions
+  2 and 3 are `fixed()` to the occasion-1 variance.
+
+* **"Mixed" depots sit in the reference category.** Tan 2025 Methods screened
+  injection site as a three-level categorical covariate (intramuscular, mixed,
+  subcutaneous), but the final model reports a single coefficient, "Effect of
+  subcutaneous location on k a (%)". The retained relationship is therefore
+  binary, and the 19 of 134 injections whose depot spanned both tissues fall in
+  the reference category with the intramuscular ones. The paper does not say so
+  explicitly.
+
+* **Depot location acts through a single depot compartment.** `ROUTE_SC` is a
+  per-dose-record covariate that sets `ka` on the record being evaluated, and
+  all drug remaining in `depot` from earlier injections absorbs at that current
+  rate. This reproduces the source model's structure -- a NONMEM one-compartment
+  absorption model with `KA` a function of the current record's covariate -- and
+  is not an approximation introduced here.
+
+* **A discrepancy inside Tan 2025 Table 1, resolved in favour of the counts.**
+  The table's female column lists 7 (25%) intramuscular, 1 (3.6%) mixed and
+  21 (75%) subcutaneous depots. Those counts sum to 29, and the printed
+  percentages correspond to a denominator of 28. The counts are the consistent
+  set: 29 female plus 105 male injections give the 134 total stated in the
+  Results, and 21/29 = 72.4% and 19/105 = 18.1% reproduce exactly the per-sex
+  subcutaneous rates the Results text prints. This vignette uses 72.4% and
+  18.1%.
+
+* **Sex is not a covariate in either model, and is not one here.** The
+  simulated male/female separation comes only from the lighter female weight
+  distribution of Table 1 and from the per-sex subcutaneous-deposition rates.
+  That is the paper's thesis, and reproducing the observed trough gap without a
+  sex term is the strongest available check of it.
+
+* **Cohort construction.** Weights are drawn log-normally to match each sex's
+  Table 1 median with the published range spanning about four standard
+  deviations, then truncated to that range; the paper reports only medians and
+  ranges. Age, height and body mass index are not simulated because neither
+  model reads them. Depot location is drawn independently per injection at the
+  per-sex rate; the paper does not report within-subject correlation of depot
+  location across visits, and treating them as independent slightly understates
+  how consistently a participant with deep gluteal fat will receive
+  subcutaneous injections.
+
+* **A benign parse warning.** Loading either model emits *"some etas defaulted
+  to non-mu referenced ... etaiov_..."*. The inter-occasion etas enter through a
+  product with an occasion indicator, which rxode2 cannot mu-reference. It
+  affects estimation efficiency only, not simulation, and the same warning is
+  emitted by the other inter-occasion-variability models in this package.

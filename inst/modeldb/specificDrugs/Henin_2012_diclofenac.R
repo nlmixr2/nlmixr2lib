@@ -117,7 +117,7 @@ Henin_2012_diclofenac <- function() {
     lvp2        <- log(3.79)  ; label("Log second peripheral volume V3 at 70 kg reference (L)")                     # Table III: V3 = 3.79 L/70kg (RSE 7%)
 
     e_wt_cl     <- fixed(0.75); label("Allometric exponent on clearances")                                  # Table III headers 'L/h/70 kg^0.75' -- standard allometric scaling
-    allo_v      <- fixed(1)   ; label("Allometric exponent on volumes")                                     # Table III headers 'L/70 kg' -- standard allometric scaling
+    e_wt_vc_vp      <- fixed(1)   ; label("Allometric exponent on volumes")                                     # Table III headers 'L/70 kg' -- standard allometric scaling
 
     # ------------------------------------------------------------------
     # STEP function sigmoidicity (paper Equation 1). Value not
@@ -165,11 +165,11 @@ Henin_2012_diclofenac <- function() {
 
     # Allometric scaling to 70 kg reference.
     cl          <- exp(lcl + etalcl) * (WT / 70)^e_wt_cl
-    vc          <- exp(lvc + etalvc) * (WT / 70)^allo_v
+    vc          <- exp(lvc + etalvc) * (WT / 70)^e_wt_vc_vp
     q           <- exp(lq  + etalq)  * (WT / 70)^e_wt_cl
-    vp          <- exp(lvp + etalvp) * (WT / 70)^allo_v
+    vp          <- exp(lvp + etalvp) * (WT / 70)^e_wt_vc_vp
     q2          <- exp(lq2 + etalq2) * (WT / 70)^e_wt_cl
-    vp2         <- exp(lvp2 + etalvp2) * (WT / 70)^allo_v
+    vp2         <- exp(lvp2 + etalvp2) * (WT / 70)^e_wt_vc_vp
 
     # ------------------------------------------------------------------
     # Tablet-position STEP indicators (Equation 1). No-return

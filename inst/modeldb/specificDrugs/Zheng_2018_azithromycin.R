@@ -57,7 +57,7 @@ Zheng_2018_azithromycin <- function() {
 
     # Allometric exponents held fixed at the paper's a priori values (Zheng 2018 Methods 'Covariate analysis'); reported in Table 3 as the constants 0.75 and 1.
     e_wt_cl <- fixed(0.75); label("Allometric exponent on CL and Q (unitless)")  # Zheng 2018 Methods 'Covariate analysis' and Table 3 equations
-    allo_v  <- fixed(1.0);  label("Allometric exponent on V1 and V2 (unitless)") # Zheng 2018 Methods 'Covariate analysis' and Table 3 equations
+    e_wt_vc_vp  <- fixed(1.0);  label("Allometric exponent on V1 and V2 (unitless)") # Zheng 2018 Methods 'Covariate analysis' and Table 3 equations
 
     # Binarized ALT covariate effect on CL, expressed on the log scale: exp(e_alt_cl * fliver) reproduces the paper's power form theta5^F_liver.
     e_alt_cl <- log(0.761); label("Log-effect of ALT > 40 IU/L on CL (unitless)")  # Zheng 2018 Table 3: theta5 = 0.761 (RSE 14.7 percent; -24 percent on CL when ALT > 40)
@@ -87,8 +87,8 @@ Zheng_2018_azithromycin <- function() {
     # Individual structural parameters with allometric scaling on body
     # weight and the multiplicative ALT effect on CL.
     cl <- exp(lcl + etalcl) * (WT / ref_wt)^e_wt_cl * exp(e_alt_cl * fliver)
-    vc <- exp(lvc + etalvc) * (WT / ref_wt)^allo_v
-    vp <- exp(lvp)          * (WT / ref_wt)^allo_v
+    vc <- exp(lvc + etalvc) * (WT / ref_wt)^e_wt_vc_vp
+    vp <- exp(lvp)          * (WT / ref_wt)^e_wt_vc_vp
     q  <- exp(lq  + etalq)  * (WT / ref_wt)^e_wt_cl
 
     # Micro-constants for the explicit two-compartment ODE system.
