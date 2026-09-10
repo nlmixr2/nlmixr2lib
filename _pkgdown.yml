@@ -4410,6 +4410,8 @@ navbar:
         href: articles/Fukae_2024_valemetostat_exposure_response.html
       - text: "Valemetostat teae grade3 (Fukae 2024)"
         href: articles/Fukae_2024_valemetostat_exposure_response.html
+      - text: "Valganciclovir (Dvorackova 2026)"
+        href: articles/Dvorackova_2026_valganciclovir.html
       - text: "Valganciclovir (Vezina 2010)"
         href: articles/Vezina_2010_valganciclovir.html
       - text: "Valganciclovir (Vezina 2014)"
@@ -5241,6 +5243,7 @@ articles:
   - articles/Duong_2016_WHIG_T2DM
   - articles/Duong_2017_AT9283
   - articles/Dvorackova_2023_posaconazole
+  - articles/Dvorackova_2026_valganciclovir
   - articles/Easterling_2018_magnesium_sulfate
   - articles/Eaton_2025_dabigatran_sheep
   - articles/Ebihara_2025_tebipenem
