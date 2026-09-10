@@ -1010,6 +1010,8 @@ navbar:
         href: articles/Liu_2024_spatholobiCaulis.html
       - text: "Dalbavancin (Baiardi 2025)"
         href: articles/Baiardi_2025_dalbavancin.html
+      - text: "Dalbavancin (Benavent 2025)"
+        href: articles/Benavent_2025_dalbavancin.html
       - text: "Dalbavancin (Cojutti 2024)"
         href: articles/Cojutti_2024_dalbavancin.html
       - text: "Dalteparin (Schoemaker 1996)"
@@ -4937,6 +4939,7 @@ articles:
   - articles/Bellanti_2015_deferoxamine
   - articles/Bellanti_2017_deferiprone
   - articles/Belldina_2003_cysteamine
+  - articles/Benavent_2025_dalbavancin
   - articles/Bender_2009_pregabalin_rat
   - articles/Bender_2014_trastuzumabEmtansine_mechanistic
   - articles/Bender_2014_trastuzumabEmtansine_reduced
