@@ -372,8 +372,12 @@ navbar:
         href: articles/Foissac_2011_atazanavir.html
       - text: "Atazanavir (Hong 2011)"
         href: articles/Hong_2011_atazanavir.html
+      - text: "Atazanavir (Kengo 2025)"
+        href: articles/Kengo_2025_atazanavir_ritonavir_rifampicin.html
       - text: "Atazanavir (Rekic 2011)"
         href: articles/Rekic_2011_atazanavir.html
+      - text: "Atazanavir a5231 (Kengo 2025)"
+        href: articles/Kengo_2025_atazanavir_ritonavir_rifampicin.html
       - text: "Atazanavir ritonavir (Molto 2016)"
         href: articles/Molto_2016_atazanavir_ritonavir.html
       - text: "Atazanavir ritonavir (Schipani 2013)"
@@ -3626,6 +3630,8 @@ navbar:
         href: articles/Chen_2024_nirmatrelvir_ritonavir.html
       - text: "Ritonavir (Kappelhoff 2005)"
         href: articles/Kappelhoff_2005_ritonavir.html
+      - text: "Ritonavir (Kengo 2025)"
+        href: articles/Kengo_2025_atazanavir_ritonavir_rifampicin.html
       - text: "Ritonavir (Mensing 2017)"
         href: articles/Mensing_2017_3D_HCV_regimen.html
       - text: "Rituximab (Candelaria 2018)"
@@ -5611,6 +5617,7 @@ articles:
   - articles/Keizer_2011_E7820
   - articles/Kelman_1984_gentamicin
   - articles/Kemal_2026_nemtabrutinib
+  - articles/Kengo_2025_atazanavir_ritonavir_rifampicin
   - articles/Kerbusch_2000_ifosfamide
   - articles/Kervezee_2014_quinidine_rat
   - articles/Ketharanathan_2023_pentobarbital
