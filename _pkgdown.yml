@@ -2116,6 +2116,8 @@ navbar:
         href: articles/Marcantonio_2022_efa.html
       - text: "Infliximab (Song 2025)"
         href: articles/Song_2025_infliximab.html
+      - text: "Infliximab (Zhao 2026)"
+        href: articles/Zhao_2026_infliximab.html
       - text: "Infliximab aubourg (Kim 2025)"
         href: articles/Kim_2025_infliximab.html
       - text: "Infliximab dubinsky (Kim 2025)"
@@ -7052,6 +7054,7 @@ articles:
   - articles/Zhao_2025_methotrexate
   - articles/Zhao_2025_paracetamol
   - articles/Zhao_2025_vancomycin
+  - articles/Zhao_2026_infliximab
   - articles/Zhao_2026_venetoclax
   - articles/Zheng_2012_minipig_mab
   - articles/Zheng_2014_azithromycin
