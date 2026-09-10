@@ -3010,6 +3010,10 @@ navbar:
         href: articles/Brown_2017_osimertinib.html
       - text: "Osimertinib (Richardson 2025)"
         href: articles/Richardson_2025_automated_popPK.html
+      - text: "Osimertinib (Westra 2025)"
+        href: articles/Westra_2025_osimertinib.html
+      - text: "Osimertinib brownbase (Westra 2025)"
+        href: articles/Westra_2025_osimertinib.html
       - text: "Osimertinib pbpk (vanderGaag 2025)"
         href: articles/vanderGaag_2025_osimertinib_pbpk.html
       - text: "Osimertinib qsp (Liang 2024)"
@@ -6519,6 +6523,7 @@ articles:
   - articles/Wenker_2024_piperacillin_tazobactam
   - articles/Westerhout_2012_acetaminophen_rat_pbpk
   - articles/Westerhout_2013_quinidine
+  - articles/Westra_2025_osimertinib
   - articles/Wi_2017_teicoplanin
   - articles/Wicha_2017_linezolid_meropenem_vancomycin
   - articles/Wicha_2018_rifampicin

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Westra 2025 osimertinib with cobicistat boosting ([doi:10.1002/jcph.70085](https://doi.org/10.1002/jcph.70085)) -- adults with advanced NSCLC selected for low osimertinib trough exposure (OSIBOOST trial). Two models: the de novo OSIBOOST fit and the paper's Brown-2017-based generalizability re-analysis.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and
