@@ -1,0 +1,757 @@
+---
+title: "Valemetostat population PK in relapsed/refractory PTCL (Inoue 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Valemetostat population PK in relapsed/refractory PTCL (Inoue 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5, error = FALSE
+)
+library(nlmixr2lib)
+library(rxode2)
+library(PKNCA)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+```
+
+# Model and source
+
+Inoue 2025 reports an updated population pharmacokinetic (PPK) model for
+**valemetostat**, an oral EZH1/EZH2 dual inhibitor approved in Japan for
+relapsed/refractory (R/R) adult T-cell leukemia/lymphoma (ATLL) and R/R
+peripheral T-cell lymphoma (PTCL), given 200 mg once daily.
+
+* Article: <https://doi.org/10.1002/jcph.70100> (PMC12649291)
+* J Clin Pharmacol. 2025;65(12):1699-1711.
+
+The model is fitted to **4635 total** and **3085 unbound** valemetostat
+concentrations from 342 participants pooled across six trials, and it describes
+both analytes *simultaneously*. Three features make it structurally unusual.
+
+**The central compartment is a binding equilibrium, not a well-stirred pool.**
+Valemetostat binds alpha-1-acid glycoprotein (AAG). The state variable
+`central` holds *total* drug; the unbound concentration is recovered
+analytically from a single-site saturable binding sub-model with capacity
+`bmax` (the paper's RMAX) and dissociation constant `kd`. Because
+`Ctot = Cu + bmax * Cu / (kd + Cu)`, the unbound concentration is the positive
+root of a quadratic.
+
+**Everything downstream is driven by unbound drug.** Clearance and *both*
+inter-compartmental clearances act on `Cu`, exactly as drawn in the paper's
+Figure 1. This is what makes the model nonlinear in total drug even though
+unbound elimination is linear.
+
+**AAG enters three places using only two estimated exponents.** It scales the
+binding capacity (exponent 0.805) and it scales CL *and* F1 through one shared
+exponent (0.336). Since unbound exposure is `dose * F1 / CL`, the shared
+exponent cancels: unbound exposure is algebraically independent of AAG while
+total exposure still rises with it. That cancellation is the paper's central
+pharmacological result and it is checked numerically below.
+
+```{r load-model}
+mod <- nlmixr2lib::modellib("Inoue_2025_valemetostat")
+mod
+```
+
+# Population
+
+```{r population}
+pop <- nlmixr2lib::readModelDb("Inoue_2025_valemetostat")
+```
+
+The PPK analysis set (Inoue 2025 Table 1) is 342 participants: mean (SD) age
+59.8 (17.2) years, weight 69.3 (15.9) kg, 64.3% male, and AAG 113 (62.3) mg/dL.
+Disease type is PTCL 55.6%, ATLL 17.8%, other non-Hodgkin lymphoma 5.6%, with
+21.1% non-patients (healthy Japanese participants from the J107 drug-drug
+interaction and J109 food-effect studies, pooled with non-cancer participants
+with hepatic impairment from U106). Race/country enrolled is Asian Japanese
+41.8%, Asian non-Japanese 6.1%, White 39.2%, Other 12.9%. Hepatic function by
+NCI-ODWG criteria is normal 74.9%, mild 21.1%, moderate 3.5%; creatinine
+clearance is 89.2 (35.5) mL/min.
+
+The covariate **reference individual** used throughout the paper's inference
+(Figure 2 caption) is a male PTCL patient, Asian Japanese, on no interacting
+comedication, with normal hepatic function, weighing 68.2 kg, aged 65 years,
+with AAG 100 mg/dL and creatinine clearance 83 mL/min. Every reference value in
+the model file is taken from that sentence.
+
+```{r reference-individual}
+refCov <- data.frame(
+  WT = 68.2, AGE = 65, CRCL = 83, AAG = 100,
+  SEXF = 0, TUMTP_ATLL = 0, DIS_BCELLNHL = 0, DIS_HEALTHY = 0,
+  RACE_ASIAN_OTH = 0, RACE_WHITE = 0, RACE_OTHER = 0,
+  HEPIMP_MILD = 0, HEPIMP_MOD = 0,
+  CONMED_PGP_INH = 0, CONMED_CYP3A4_INH = 0, STUDY_J101 = 0
+)
+knitr::kable(t(refCov), col.names = "Reference individual",
+             caption = "Covariate reference values (Inoue 2025 Figure 2 caption).")
+```
+
+# A note on units
+
+Inoue 2025 Table 2 prints `KD` and `RMAX` in **nmol/L**, and the paper nowhere
+states a molar mass for valemetostat. The binding sub-model therefore can only
+be written on a molar scale without importing a constant from outside the
+source, so this model file declares `dosing = "nmol"` and
+`concentration = "nmol/L"`, and doses below are in nmol.
+
+That choice costs nothing in validation power, because every check in this
+vignette is either a **ratio** (unit-free) or the **mass-balance identity**
+`Cu,ss,avg = dose rate / CL`, which holds in whatever mass unit the dose is
+supplied in. In particular, applying that identity in mg gives
+
+```{r mg-arithmetic}
+c(`200 mg / 24 h / 520 L/h, in ng/mL` = 200 / 24 / 520 * 1000)
+```
+
+which brackets the paper's own reference unbound average concentrations of
+**13.9 ng/mL** (efficacy analysis, Figure S6 caption) and **18.1 ng/mL**
+(safety analysis, Figure S8 caption). Mapping a milligram dose onto the molar
+scale of the binding sub-model would need the molar mass; see *Assumptions and
+deviations*.
+
+# Source trace
+
+```{r source-trace}
+sourceTrace <- tibble::tribble(
+  ~Quantity,                          ~Value,     ~`Source location`,
+  "CL (unbound), L/h",                "520",      "Table 2, 'CL/F, L/h'",
+  "V1, L",                            "42.5",     "Table 2, 'V1/F, L'",
+  "Q2, L/h",                          "40.0",     "Table 2, 'Q2/F, L/h'",
+  "V2, L",                            "3670",     "Table 2, 'V2/F, L'",
+  "Q3, L/h",                          "230",      "Table 2, 'Q3/F, L/h'",
+  "V3, L",                            "2950",     "Table 2, 'V3/F, L'",
+  "KA, 1/h",                          "0.374",    "Table 2, 'KA, 1/h'",
+  "D1 (zero-order duration), h",      "1.22",     "Table 2, 'D1, h'",
+  "KD, nmol/L",                       "221",      "Table 2, 'KD, nmol/L'",
+  "RMAX (bmax), nmol/L",              "8280",     "Table 2, 'RMAX, nmol/L'",
+  "J101 unbound assay factor",        "0.638",    "Table 2, 'ASSAY'",
+  "F1",                               "1 (FIXED)","Table 2, 'F1, Relative bioavailability'",
+  "Allometric exponent, clearances",  "0.75 (FIXED)", "Table 2, 'CL ~ WT'",
+  "Allometric exponent, volumes",     "1 (FIXED)",    "Table 2, 'V ~ WT'",
+  "AAG exponent on bmax",             "0.805",    "Table 2, 'RMAX ~ AAG'",
+  "AAG exponent on CL and on F1",     "0.336",    "Table 2, 'CL/F ~ AAG' and 'F1 ~ AAG' (one common parameter)",
+  "Age exponent on CL",               "-0.205",   "Table 2, 'CL/F ~ AGE'",
+  "CrCl exponent on CL",              "-0.0107",  "Table 2, 'CL/F ~ CrCl'",
+  "CL ratio, ATLL",                   "0.828",    "Table 2, 'CL/F ~ ATLL'",
+  "CL ratio, other NHL",              "0.847",    "Table 2, 'CL/F ~ OTHER NHL'",
+  "CL ratio, non-patient",            "0.942",    "Table 2, 'CL/F ~ NON-PATIENT'",
+  "CL ratio, female",                 "1.06",     "Table 2, 'CL/F ~ FEMALE'",
+  "CL ratio, Asian non-Japanese",     "1.25",     "Table 2, 'CL/F ~ ASIAN NON-J'",
+  "CL ratio, White",                  "0.967",    "Table 2, 'CL/F ~ WHITE'",
+  "CL ratio, other race",             "0.816",    "Table 2, 'CL/F ~ OTHER RACE'",
+  "CL ratio, mild hepatic impairment","0.892",    "Table 2, 'CL/F ~ HEPAT MILD'",
+  "CL ratio, moderate hepatic impairment","0.752","Table 2, 'CL/F ~ HEPAT MOD'",
+  "F1 ratio, P-gp inhibitor",         "1.29",     "Table 2, 'F1 ~ DDI PGPi'",
+  "F1 ratio, CYP3A inhibitor",        "1.23",     "Table 2, 'F1 ~ DDI CYPi PGPi'",
+  "Omega block CL/V1",                "0.249, 0.613, 2.49", "Table 2, Omega(1,1), Omega(2,1), Omega(2,2)",
+  "Omega block KA/D1",                "0.0563, 0.0629, 1.65","Table 2, Omega(3,3), Omega(4,3), Omega(4,4)",
+  "Omega bmax",                       "0.0564",   "Table 2, Omega(5,5)",
+  "Omega F1",                         "0.485",    "Table 2, Omega(6,6)",
+  "Sigma, total",                     "0.388",    "Table 2, 'Log-additive - Total'",
+  "Sigma, unbound non-J101",          "0.404",    "Table 2, 'Log-additive - Unbound/non-DS3201-A-J101'",
+  "Sigma, unbound J101",              "0.327",    "Table 2, 'Log-additive - Unbound/DS3201-A-J101'",
+  "Covariate reference values",       "68.2 kg, 65 y, AAG 100 mg/dL, CrCl 83 mL/min", "Figure 2 caption",
+  "Model structure (schematic)",      "3-cmt, zero+first-order absorption, saturable binding", "Figure 1"
+)
+knitr::kable(sourceTrace, caption = "Source trace for every ini() value and structural feature.")
+```
+
+## Reporting-scale conventions, settled from the table's own derived columns
+
+Table 2 prints two derived columns that pin down the variance conventions
+without any assumption on our part. The OMEGA rows report **log-scale
+variances**: the printed `CV%` reproduces as `sqrt(exp(var) - 1)` and the
+printed `Corr` reproduces as `cov / sqrt(var1 * var2)`. The SIGMA rows use a
+*different* convention: their printed `CV%` is simply `sqrt(var)`.
+
+```{r scale-conventions}
+omegaVar  <- c(CL = 0.249, V1 = 2.49, KA = 0.0563, D1 = 1.65, RMAX = 0.0564, F1 = 0.485)
+sigmaVar  <- c(Total = 0.388, `Unbound non-J101` = 0.404, `Unbound J101` = 0.327)
+conv <- dplyr::bind_rows(
+  tibble::tibble(
+    Row = names(omegaVar), Block = "OMEGA", Variance = omegaVar,
+    `Printed CV%` = c(53.2, 333, 24.1, 205, 24.1, 79.0),
+    `sqrt(exp(v)-1)` = round(100 * sqrt(exp(omegaVar) - 1), 1),
+    `sqrt(v)` = round(100 * sqrt(omegaVar), 1)
+  ),
+  tibble::tibble(
+    Row = names(sigmaVar), Block = "SIGMA", Variance = sigmaVar,
+    `Printed CV%` = c(62.3, 63.6, 57.2),
+    `sqrt(exp(v)-1)` = round(100 * sqrt(exp(sigmaVar) - 1), 1),
+    `sqrt(v)` = round(100 * sqrt(sigmaVar), 1)
+  )
+)
+knitr::kable(conv, caption = "The printed CV% column identifies which scale each block uses.")
+
+# OMEGA: sqrt(exp(v)-1) reproduces the printed CV% to the printed precision.
+stopifnot(max(abs(100 * sqrt(exp(omegaVar) - 1) -
+                  c(53.2, 333, 24.1, 205, 24.1, 79.0)) /
+              c(53.2, 333, 24.1, 205, 24.1, 79.0)) < 0.005)
+# SIGMA: sqrt(v) reproduces the printed CV%.
+stopifnot(max(abs(100 * sqrt(sigmaVar) - c(62.3, 63.6, 57.2))) < 0.15)
+# And the printed correlations follow from the printed covariances.
+stopifnot(
+  abs(0.613 / sqrt(0.249 * 2.49) - 0.778) < 0.001,
+  abs(0.0629 / sqrt(0.0563 * 1.65) - 0.207) < 0.001
+)
+```
+
+# Structural checks on typical values
+
+`rxode2::zeroRe()` removes the random effects so that the following identities
+can be asserted tightly; the stochastic cohort comes later.
+
+```{r typical-model}
+modT <- rxode2::zeroRe(mod)
+
+# Observation rows must nominate one of the two endpoints; with exactly two
+# outputs the idiom is dvid (1 = Cc total, 2 = Cu unbound).
+buildEvents <- function(dose, nDose, grid, covs) {
+  dosing <- data.frame(
+    id = 1L, time = seq(0, by = 24, length.out = nDose), amt = dose,
+    evid = 1L, rate = -2, cmt = "depot", dvid = NA_integer_
+  )
+  obs <- do.call(rbind, lapply(1:2, function(d) data.frame(
+    id = 1L, time = grid, amt = NA_real_, evid = 0L, rate = NA_real_,
+    cmt = NA_character_, dvid = as.integer(d)
+  )))
+  ev <- dplyr::arrange(rbind(dosing, obs), time, dvid)
+  cbind(ev, covs[rep(1, nrow(ev)), , drop = FALSE])
+}
+
+DOSE  <- 4e5           # nmol once daily
+TAU   <- 24
+grid  <- seq(24 * 29, 24 * 30, by = 0.05)
+ssRef <- rxode2::rxSolve(modT, buildEvents(DOSE, 30, grid, refCov),
+                         returnType = "data.frame") |>
+  dplyr::filter(time >= 24 * 29) |>
+  dplyr::distinct(time, .keep_all = TRUE) |>
+  dplyr::arrange(time)
+
+trapz <- function(x, y) sum(diff(x) * (utils::head(y, -1) + utils::tail(y, -1)) / 2)
+aucU  <- trapz(ssRef$time, ssRef$Cu)
+aucT  <- trapz(ssRef$time, ssRef$Cc)
+```
+
+## Mass balance: unbound exposure is exactly dose divided by clearance
+
+At steady state the amount eliminated per interval must equal the amount
+absorbed. Because elimination is `CL * Cu` with a constant `CL`, this pins
+`AUCu,ss` to `dose / CL` exactly - a check that would fail immediately if the
+binding algebra, the bioavailability, or the compartment bookkeeping were
+wrong.
+
+```{r mass-balance}
+CL <- 520
+c(`AUCu,ss simulated` = aucU, `dose / CL` = DOSE / CL,
+  ratio = aucU / (DOSE / CL))
+stopifnot(abs(aucU / (DOSE / CL) - 1) < 1e-3)
+```
+
+## Free fraction at low concentration
+
+At `Cu << kd` the binding equation collapses to `Cu = Ctot / (1 + bmax/kd)`,
+so the reference individual's low-concentration unbound fraction is fixed by
+Table 2 alone at `1 / (1 + 8280/221)`.
+
+```{r free-fraction}
+# Probe the limit with a dose 10000-fold below the reference dose, so that
+# Cu << kd and the quadratic collapses to its linear limit.
+probe <- rxode2::rxSolve(modT, buildEvents(DOSE / 1e4, 30, grid, refCov),
+                         returnType = "data.frame") |>
+  dplyr::filter(time >= 24 * 29) |>
+  dplyr::distinct(time, .keep_all = TRUE)
+probeTrough <- probe[which.min(probe$Cc), ]
+
+trough <- ssRef[which.min(ssRef$Cc), ]
+c(`fu in the low-concentration limit, %` = 100 * probeTrough$Cu / probeTrough$Cc,
+  `1/(1 + 8280/221), %`                  = 100 / (1 + 8280 / 221),
+  `fu at the reference-dose trough, %`   = 100 * trough$Cu / trough$Cc,
+  `fu at the reference-dose peak, %`     = 100 * ssRef$Cu[which.max(ssRef$Cc)] /
+                                                 ssRef$Cc[which.max(ssRef$Cc)])
+stopifnot(
+  abs(100 * probeTrough$Cu / probeTrough$Cc - 100 / (1 + 8280 / 221)) < 0.05
+)
+```
+
+The unbound fraction is *not* constant across the dosing interval at the
+reference dose: it rises from trough to peak because the AAG binding sites
+partially saturate as unbound concentrations approach `kd = 221 nmol/L`. That
+concentration dependence is the whole reason the paper carries a saturable
+binding sub-model rather than a fixed `fu`.
+
+```{r free-fraction-monotone}
+stopifnot(
+  # fu increases with total concentration, everywhere in the interval.
+  stats::cor(ssRef$Cc, ssRef$Cu / ssRef$Cc, method = "spearman") > 0.99,
+  # and always sits at or above the low-concentration limit.
+  min(ssRef$Cu / ssRef$Cc) >= 1 / (1 + 8280 / 221) - 1e-6
+)
+```
+
+## Half-life and time to steady state
+
+Three-compartment disposition gives this model two very different time
+constants, and it is worth separating them because only one of them controls
+the once-daily regimen the paper analyses.
+
+The **effective** (mean-residence) time constant is set by the unbound-basis
+steady-state volume, `V1 * (1 + bmax/kd) + V2 + V3`, over `CL`. The
+**terminal** slope is set by the slowest disposition eigenvalue and is much
+longer, but it carries only a small share of the area.
+
+```{r half-life}
+washGrid <- seq(0, 2000, by = 2)
+wash <- rxode2::rxSolve(modT, buildEvents(DOSE, 1, washGrid, refCov),
+                        returnType = "data.frame") |>
+  dplyr::distinct(time, .keep_all = TRUE) |>
+  dplyr::filter(Cu > 0)
+tailFit <- dplyr::filter(wash, time >= 400)
+tHalf <- log(2) / -stats::coef(stats::lm(log(Cu) ~ time, data = tailFit))[["time"]]
+vssU  <- 42.5 * (1 + 8280 / 221) + 3670 + 2950
+
+c(`terminal half-life, h`                 = tHalf,
+  `unbound-basis Vss, L`                  = vssU,
+  `effective half-life ln2 * Vss / CL, h` = log(2) * vssU / CL)
+stopifnot(tHalf > 40, tHalf < 110)
+```
+
+What matters clinically is that once-daily dosing reaches steady state well
+inside a treatment cycle, which is the premise of every steady-state exposure
+metric the paper computes.
+
+```{r accumulation}
+troughTimes <- seq(24, 24 * 30, by = 24) - 0.01
+accum <- rxode2::rxSolve(modT, buildEvents(DOSE, 30, troughTimes, refCov),
+                         returnType = "data.frame") |>
+  dplyr::distinct(time, .keep_all = TRUE) |>
+  dplyr::arrange(time)
+ssTrough <- utils::tail(accum$Cu, 1)
+approach <- c(`day 3` = accum$Cu[3], `day 7` = accum$Cu[7],
+              `day 14` = accum$Cu[14], `day 21` = accum$Cu[21]) / ssTrough
+round(approach, 3)
+stopifnot(approach[["day 7"]] > 0.90, approach[["day 14"]] > 0.97)
+```
+
+This is also the discriminator between the two readings of Figure 1. Had the
+peripheral compartments equilibrated with the *total* rather than the unbound
+concentration, the clearance seen by the total-drug mass balance would have
+been reduced by the free fraction of about 2.6%, inflating the accumulation
+time constant roughly 38-fold - so steady state would take months rather than
+about a week, and the paper's steady-state exposure analysis under once-daily
+dosing would be incoherent. The unbound-driven reading is the one adopted here.
+
+# Replicating the paper's central finding: AAG moves total but not unbound exposure
+
+Inoue 2025 concludes that "binding of valemetostat to AAG in the plasma
+influenced total valemetostat exposure, but had little effect on unbound
+valemetostat exposure" (Results), and that unbound exposure is the clinically
+relevant metric. In the model this is not an empirical near-miss - it is an
+algebraic identity created by giving CL and F1 the *same* AAG exponent.
+
+```{r aag-sweep}
+aagLevels <- c(50, 75, 100, 150, 200, 250)
+aagSweep <- do.call(rbind, lapply(aagLevels, function(a) {
+  cv <- refCov; cv$AAG <- a
+  s <- rxode2::rxSolve(modT, buildEvents(DOSE, 30, grid, cv),
+                       returnType = "data.frame") |>
+    dplyr::filter(time >= 24 * 29) |>
+    dplyr::distinct(time, .keep_all = TRUE) |>
+    dplyr::arrange(time)
+  data.frame(AAG = a, AUCu = trapz(s$time, s$Cu), AUCt = trapz(s$time, s$Cc))
+}))
+aagSweep <- aagSweep |>
+  dplyr::mutate(
+    `Unbound AUCss ratio` = AUCu / AUCu[AAG == 100],
+    `Total AUCss ratio`   = AUCt / AUCt[AAG == 100]
+  )
+knitr::kable(
+  aagSweep |> dplyr::select(AAG, `Unbound AUCss ratio`, `Total AUCss ratio`),
+  digits = 4,
+  caption = "AAG (mg/dL) versus steady-state exposure, relative to the reference AAG of 100 mg/dL."
+)
+
+# Unbound exposure is INVARIANT to AAG (exact, by construction).
+stopifnot(max(abs(aagSweep$`Unbound AUCss ratio` - 1)) < 1e-3)
+# Total exposure rises monotonically and substantially with AAG.
+stopifnot(
+  all(diff(aagSweep$`Total AUCss ratio`) > 0),
+  aagSweep$`Total AUCss ratio`[aagSweep$AAG == 250] > 1.5
+)
+```
+
+```{r aag-plot, fig.cap = "Replicates the mechanism behind Inoue 2025 Figure 2: AAG shifts total valemetostat exposure while leaving unbound exposure untouched."}
+aagSweep |>
+  tidyr::pivot_longer(c(`Unbound AUCss ratio`, `Total AUCss ratio`),
+                      names_to = "Analyte", values_to = "Ratio") |>
+  ggplot2::ggplot(ggplot2::aes(AAG, Ratio, colour = Analyte)) +
+  ggplot2::geom_line(linewidth = 1) +
+  ggplot2::geom_point(size = 2) +
+  ggplot2::geom_hline(yintercept = 1, linetype = "dashed") +
+  ggplot2::labs(x = "Baseline AAG (mg/dL)",
+                y = "Steady-state AUC relative to AAG = 100 mg/dL",
+                colour = NULL) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "top")
+```
+
+# Covariate effects on unbound exposure reproduce Table 2
+
+Each categorical covariate multiplies CL by its Table 2 ratio, so unbound
+exposure must move by the *reciprocal* of that ratio. Simulating one covariate
+at a time from the reference individual recovers exactly that.
+
+```{r covariate-forest}
+catCovs <- tibble::tribble(
+  ~Covariate,                      ~Column,             ~`Table 2 CL ratio`,
+  "ATLL vs PTCL",                  "TUMTP_ATLL",        0.828,
+  "Other NHL vs PTCL",             "DIS_BCELLNHL",      0.847,
+  "Non-patient vs PTCL",           "DIS_HEALTHY",       0.942,
+  "Female vs male",                "SEXF",              1.06,
+  "Asian non-Japanese vs Japanese","RACE_ASIAN_OTH",    1.25,
+  "White vs Asian Japanese",       "RACE_WHITE",        0.967,
+  "Other race vs Asian Japanese",  "RACE_OTHER",        0.816,
+  "Mild hepatic impairment",       "HEPIMP_MILD",       0.892,
+  "Moderate hepatic impairment",   "HEPIMP_MOD",        0.752
+)
+covResult <- do.call(rbind, lapply(seq_len(nrow(catCovs)), function(i) {
+  cv <- refCov; cv[[catCovs$Column[i]]] <- 1
+  s <- rxode2::rxSolve(modT, buildEvents(DOSE, 30, grid, cv),
+                       returnType = "data.frame") |>
+    dplyr::filter(time >= 24 * 29) |>
+    dplyr::distinct(time, .keep_all = TRUE) |>
+    dplyr::arrange(time)
+  data.frame(Covariate = catCovs$Covariate[i],
+             `Simulated unbound AUCss ratio` = trapz(s$time, s$Cu) / aucU,
+             check.names = FALSE)
+}))
+covResult <- covResult |>
+  dplyr::mutate(`Expected (1 / Table 2 ratio)` = 1 / catCovs$`Table 2 CL ratio`,
+                `Relative error` = abs(`Simulated unbound AUCss ratio` /
+                                         `Expected (1 / Table 2 ratio)` - 1))
+knitr::kable(covResult, digits = 4,
+             caption = "Categorical covariate effects on unbound steady-state exposure.")
+stopifnot(max(covResult$`Relative error`) < 1e-3)
+```
+
+The paper independently quantifies the moderate-hepatic-impairment effect from
+its post hoc simulations as a **29% (95% CI 1%-66%)** increase in unbound
+AUCss. The structural model gives `1 / 0.752 = 1.330`, i.e. +33%. These are not
+the same estimator - the paper's number is a cohort-average over the real
+covariate distribution of the 12 moderately-impaired participants, whereas the
+model ratio holds one covariate at a time from the reference individual - so
+this is recorded as a consistency observation, not asserted.
+
+```{r hepatic-note}
+c(`structural ratio` = 1 / 0.752,
+  `paper post hoc, unbound AUCss` = 1.29)
+```
+
+# Saturable binding makes total exposure less than dose-proportional
+
+Unbound clearance is linear, so unbound exposure is exactly dose-proportional.
+Total exposure is not: as unbound concentrations climb toward `kd`, the AAG
+binding sites saturate and a smaller fraction of the drug is carried bound.
+
+```{r dose-proportionality}
+doseLadder <- DOSE * c(0.25, 0.5, 1, 2, 4)
+dp <- do.call(rbind, lapply(doseLadder, function(d) {
+  s <- rxode2::rxSolve(modT, buildEvents(d, 30, grid, refCov),
+                       returnType = "data.frame") |>
+    dplyr::filter(time >= 24 * 29) |>
+    dplyr::distinct(time, .keep_all = TRUE) |>
+    dplyr::arrange(time)
+  data.frame(`Dose (nmol)` = d, AUCu = trapz(s$time, s$Cu),
+             AUCt = trapz(s$time, s$Cc), check.names = FALSE)
+}))
+dp <- dp |>
+  dplyr::mutate(`Dose ratio` = `Dose (nmol)` / DOSE,
+                `Unbound AUC ratio` = AUCu / AUCu[`Dose (nmol)` == DOSE],
+                `Total AUC ratio`   = AUCt / AUCt[`Dose (nmol)` == DOSE])
+knitr::kable(dp |> dplyr::select(`Dose (nmol)`, `Dose ratio`,
+                                 `Unbound AUC ratio`, `Total AUC ratio`),
+             digits = 4, caption = "Dose proportionality of the two analytes.")
+
+# Unbound exposure is exactly dose-proportional (linear unbound clearance).
+stopifnot(max(abs(dp$`Unbound AUC ratio` / dp$`Dose ratio` - 1)) < 1e-3)
+# Total exposure is strictly LESS than dose-proportional above the reference
+# dose, and strictly MORE below it: the signature of saturable binding.
+stopifnot(
+  all(dp$`Total AUC ratio`[dp$`Dose ratio` > 1] < dp$`Dose ratio`[dp$`Dose ratio` > 1]),
+  all(dp$`Total AUC ratio`[dp$`Dose ratio` < 1] > dp$`Dose ratio`[dp$`Dose ratio` < 1])
+)
+```
+
+# Virtual cohort and non-compartmental analysis
+
+A 150-participant cohort is drawn to match the PPK analysis set demographics of
+Table 1, and NCA is run separately on each analyte with `PKNCA`.
+
+```{r cohort}
+set.seed(20251210)
+rxode2::rxSetSeed(20251210)
+nSub <- 150L
+
+cohort <- data.frame(
+  id  = seq_len(nSub),
+  WT  = pmax(35, stats::rnorm(nSub, 69.3, 15.9)),
+  AGE = pmin(90, pmax(20, stats::rnorm(nSub, 59.8, 17.2))),
+  CRCL = pmax(20, stats::rnorm(nSub, 89.2, 35.5)),
+  AAG = pmax(20, stats::rnorm(nSub, 113, 62.3)),
+  SEXF = stats::rbinom(nSub, 1, 0.357),
+  STUDY_J101 = 0, CONMED_PGP_INH = 0, CONMED_CYP3A4_INH = 0
+)
+# Disease type: PTCL reference (55.6%), ATLL 17.8%, other NHL 5.6%, non-patient 21.1%.
+dz <- sample(c("PTCL", "ATLL", "otherNHL", "nonpatient"), nSub, replace = TRUE,
+             prob = c(0.556, 0.178, 0.056, 0.211))
+cohort$TUMTP_ATLL   <- as.integer(dz == "ATLL")
+cohort$DIS_BCELLNHL <- as.integer(dz == "otherNHL")
+cohort$DIS_HEALTHY  <- as.integer(dz == "nonpatient")
+# Race/country: Asian Japanese reference (41.8%).
+rc <- sample(c("AsianJP", "AsianNonJP", "White", "Other"), nSub, replace = TRUE,
+             prob = c(0.418, 0.061, 0.392, 0.129))
+cohort$RACE_ASIAN_OTH <- as.integer(rc == "AsianNonJP")
+cohort$RACE_WHITE     <- as.integer(rc == "White")
+cohort$RACE_OTHER     <- as.integer(rc == "Other")
+# Hepatic function: normal reference (74.9%).
+hf <- sample(c("normal", "mild", "moderate"), nSub, replace = TRUE,
+             prob = c(0.749, 0.211, 0.035))
+cohort$HEPIMP_MILD <- as.integer(hf == "mild")
+cohort$HEPIMP_MOD  <- as.integer(hf == "moderate")
+
+summary(cohort[, c("WT", "AGE", "CRCL", "AAG")])
+```
+
+```{r cohort-sim}
+ncaGrid <- c(0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 10, 12, 16, 20, 24)
+dosing <- do.call(rbind, lapply(cohort$id, function(i) data.frame(
+  id = i, time = seq(0, by = 24, length.out = 30), amt = DOSE,
+  evid = 1L, rate = -2, cmt = "depot", dvid = NA_integer_
+)))
+obsRows <- do.call(rbind, lapply(cohort$id, function(i)
+  do.call(rbind, lapply(1:2, function(d) data.frame(
+    id = i, time = 24 * 29 + ncaGrid, amt = NA_real_, evid = 0L,
+    rate = NA_real_, cmt = NA_character_, dvid = as.integer(d)
+  ))))
+)
+evAll <- dplyr::arrange(rbind(dosing, obsRows), id, time, dvid)
+evAll <- dplyr::left_join(evAll, cohort, by = "id")
+
+simCohort <- rxode2::rxSolve(mod, evAll, returnType = "data.frame")
+simSS <- simCohort |>
+  dplyr::filter(time >= 24 * 29) |>
+  dplyr::distinct(id, time, .keep_all = TRUE) |>
+  dplyr::mutate(time = time - 24 * 29) |>
+  dplyr::arrange(id, time)
+nrow(simSS)
+```
+
+```{r pknca}
+concU <- simSS |> dplyr::filter(!is.na(Cu)) |>
+  dplyr::mutate(analyte = "Unbound", conc = Cu)
+concT <- simSS |> dplyr::filter(!is.na(Cc)) |>
+  dplyr::mutate(analyte = "Total", conc = Cc)
+
+doseFrame <- cohort |> dplyr::transmute(id, time = 0, dose = DOSE)
+
+runNca <- function(cd) {
+  oConc <- PKNCA::PKNCAconc(as.data.frame(cd), conc ~ time | id)
+  oDose <- PKNCA::PKNCAdose(as.data.frame(doseFrame), dose ~ time | id)
+  intervals <- data.frame(start = 0, end = 24,
+                          cmax = TRUE, tmax = TRUE, auclast = TRUE, cav = TRUE)
+  res <- PKNCA::pk.nca(PKNCA::PKNCAdata(oConc, oDose, intervals = intervals))
+  as.data.frame(res)
+}
+ncaU <- runNca(concU)
+ncaT <- runNca(concT)
+
+ncaSummary <- dplyr::bind_rows(
+  dplyr::mutate(ncaU, Analyte = "Unbound"),
+  dplyr::mutate(ncaT, Analyte = "Total")
+) |>
+  dplyr::filter(PPTESTCD %in% c("cmax", "tmax", "auclast", "cav")) |>
+  dplyr::group_by(Analyte, PPTESTCD) |>
+  dplyr::summarise(Median = stats::median(PPORRES),
+                   `5th pct` = stats::quantile(PPORRES, 0.05),
+                   `95th pct` = stats::quantile(PPORRES, 0.95),
+                   .groups = "drop") |>
+  dplyr::rename(`NCA parameter` = PPTESTCD)
+knitr::kable(ncaSummary, digits = 4,
+             caption = "Steady-state NCA over the 24 h dosing interval, by analyte (nmol/L and nmol*h/L; tmax in h).")
+```
+
+## NCA cross-check against the structural identity
+
+The cohort-median `cav` for the unbound analyte must sit close to
+`dose / (CL * 24)` scaled by the cohort's clearance distribution. Because
+clearance carries a 53% CV and weight enters allometrically, the *median* is
+the right statistic to compare - the cohort extremes are not reproducible
+across rxode2 builds and are deliberately not asserted.
+
+```{r nca-check}
+cavU <- ncaU |> dplyr::filter(PPTESTCD == "cav") |> dplyr::pull(PPORRES)
+refCav <- DOSE / (CL * 24)
+c(`median unbound cav` = stats::median(cavU),
+  `reference-individual dose/(CL*24)` = refCav,
+  ratio = stats::median(cavU) / refCav)
+
+stopifnot(
+  # Centre: a mis-transcribed clearance, dose or exponent moves the whole
+  # distribution by tens of percent and breaks this immediately.
+  abs(stats::median(cavU) / refCav - 1) < 0.30,
+  # Envelope: robust to which subjects land in the tails.
+  stats::quantile(cavU, 0.9) / refCav < 4,
+  !anyNA(cavU)
+)
+```
+
+```{r profile-plot, fig.cap = "Simulated steady-state profiles over one 24 h dosing interval (150 participants). Total valemetostat sits far above unbound; the ratio is concentration-dependent because the AAG binding sites partially saturate over the interval."}
+simSS |>
+  dplyr::select(id, time, Total = Cc, Unbound = Cu) |>
+  tidyr::pivot_longer(c(Total, Unbound), names_to = "Analyte", values_to = "conc") |>
+  dplyr::group_by(Analyte, time) |>
+  dplyr::summarise(median = stats::median(conc),
+                   lo = stats::quantile(conc, 0.05),
+                   hi = stats::quantile(conc, 0.95), .groups = "drop") |>
+  ggplot2::ggplot(ggplot2::aes(time, median, colour = Analyte, fill = Analyte)) +
+  ggplot2::geom_ribbon(ggplot2::aes(ymin = lo, ymax = hi), alpha = 0.2, colour = NA) +
+  ggplot2::geom_line(linewidth = 1) +
+  ggplot2::scale_y_log10() +
+  ggplot2::labs(x = "Time after dose (h)", y = "Concentration (nmol/L, log scale)",
+                colour = NULL, fill = NULL) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(legend.position = "top")
+```
+
+# The J101 unbound assay adjustment
+
+Unbound observations from the DS3201-A-J101 study are rescaled by the estimated
+factor 0.638 and carry their own residual error. Total observations are
+unaffected.
+
+```{r assay}
+refJ101 <- refCov; refJ101$STUDY_J101 <- 1
+sJ <- rxode2::rxSolve(modT, buildEvents(DOSE, 30, grid, refJ101),
+                      returnType = "data.frame") |>
+  dplyr::filter(time >= 24 * 29) |>
+  dplyr::distinct(time, .keep_all = TRUE) |>
+  dplyr::arrange(time)
+c(`unbound AUC ratio, J101 vs other studies` = trapz(sJ$time, sJ$Cu) / aucU,
+  `Table 2 ASSAY factor` = 0.638,
+  `total AUC ratio (must be 1)` = trapz(sJ$time, sJ$Cc) / aucT)
+stopifnot(
+  abs(trapz(sJ$time, sJ$Cu) / aucU - 0.638) < 1e-3,
+  abs(trapz(sJ$time, sJ$Cc) / aucT - 1)     < 1e-6
+)
+```
+
+# Comedication effects on bioavailability
+
+The paper groups the comedication categories as none / P-gp inhibitor / CYP3A
+inhibitor with or without a P-gp inhibitor. The two arms are mutually
+exclusive, so a participant on both belongs to the CYP3A arm - the model file
+enforces that precedence explicitly rather than multiplying both factors.
+
+```{r comed}
+comedCases <- list(
+  `P-gp inhibitor only`        = c(CONMED_PGP_INH = 1, CONMED_CYP3A4_INH = 0),
+  `CYP3A inhibitor only`       = c(CONMED_PGP_INH = 0, CONMED_CYP3A4_INH = 1),
+  `Both (CYP3A arm applies)`   = c(CONMED_PGP_INH = 1, CONMED_CYP3A4_INH = 1)
+)
+comedRes <- do.call(rbind, lapply(names(comedCases), function(nm) {
+  cv <- refCov
+  cv$CONMED_PGP_INH    <- comedCases[[nm]][["CONMED_PGP_INH"]]
+  cv$CONMED_CYP3A4_INH <- comedCases[[nm]][["CONMED_CYP3A4_INH"]]
+  s <- rxode2::rxSolve(modT, buildEvents(DOSE, 30, grid, cv),
+                       returnType = "data.frame") |>
+    dplyr::filter(time >= 24 * 29) |>
+    dplyr::distinct(time, .keep_all = TRUE) |>
+    dplyr::arrange(time)
+  data.frame(Scenario = nm,
+             `Unbound AUCss ratio` = trapz(s$time, s$Cu) / aucU,
+             check.names = FALSE)
+}))
+comedRes$`Table 2 F1 ratio` <- c(1.29, 1.23, 1.23)
+knitr::kable(comedRes, digits = 4,
+             caption = "Comedication effects on unbound steady-state exposure.")
+stopifnot(max(abs(comedRes$`Unbound AUCss ratio` /
+                    comedRes$`Table 2 F1 ratio` - 1)) < 1e-3)
+```
+
+# Assumptions and deviations
+
+* **Molar units.** Table 2 prints `KD` and `RMAX` in nmol/L and the paper gives
+  no molar mass for valemetostat, so the model is expressed on a molar scale
+  (`dosing = "nmol"`, `concentration = "nmol/L"`). A user who wants to dose in
+  milligrams must supply the molar mass themselves. No molar mass was imported
+  from outside the source. The doses used above are nominal nmol values chosen
+  to exercise the model, not conversions of the 200 mg clinical dose. Note that
+  the *unbound* predictions are unaffected by this choice: the identity
+  `Cu,ss,avg = dose rate / CL` holds in any consistent unit, and applied in
+  milligrams it gives 16.0 ng/mL for 200 mg once daily, bracketing the paper's
+  own reference unbound Cavg values of 13.9 and 18.1 ng/mL.
+* **Distribution is driven by unbound concentration.** Figure 1 draws `CL`
+  leaving the "Unbound" species and the peripheral compartments attached to the
+  central box; the paper does not write the differential equations out. Driving
+  `Q2` and `Q3` from the unbound concentration is the reading adopted here. It
+  is not a free choice: the alternative (distribution driven by total
+  concentration) would shrink the clearance seen by the total-drug mass balance
+  by the free fraction of about 2.6%, inflating the time to steady state some
+  38-fold - months rather than about a week - which contradicts the paper's own
+  steady-state exposure analysis under once-daily dosing. The accumulation
+  check above is the discriminator.
+* **Continuous covariates enter as power terms; categorical covariates as
+  multiplicative ratios.** Table 2 does not state the functional form. The
+  split is inferred from the estimates themselves: the continuous coefficients
+  are centred on zero (age -0.205, CrCl -0.0107) and sit in the same block as
+  the two body-weight allometric exponents, which are unambiguously exponents;
+  the categorical coefficients are centred on one (ATLL 0.828, female 1.06).
+* **The AAG effect on CL and F1 is one parameter, not two.** Table 2 prints
+  `CL/F ~ AAG` and `F1 ~ AAG` as separate rows with the identical estimate
+  (0.336) and the identical RSE (18.6%), and the Results text says AAG was
+  included "by estimating a common effect on both CL/F and F1". It is encoded
+  as a single `e_aag_cl` parameter used in both places. The `CL/F ~ AAG` row is
+  additionally printed with an asymmetric 95% CI (`-0.165-0.567`) while the
+  `F1 ~ AAG` row prints `0.165-0.567`; the two rows describe one parameter, and
+  the point estimate used here is unaffected either way.
+* **"Other NHL" is mapped to `DIS_BCELLNHL`.** The paper labels this population
+  stratum "other NHL" without specifying histology. The only contributing study
+  is DS3201-A-J101, which the Methods describe as enrolling "R/R non-Hodgkin
+  lymphoma (NHL), including B-cell lymphomas, ATLL, and PTCL", so the non-ATLL
+  non-PTCL remainder is the B-cell lymphoma group. A future paper whose
+  residual NHL stratum is explicitly non-B-cell should not reuse this mapping.
+* **Bootstrap columns not used.** Table 2's `Median` and `95% CI` columns are
+  non-parametric bootstrap summaries (n = 462) and differ from the point
+  estimates in places (for example `V1/F` 42.5 versus a bootstrap median of
+  31.3). The `Estimate` column is used throughout, per the standing convention
+  of taking the reported final estimates.
+* **Residual-error parameter names.** The model carries three residual-error
+  parameters because the paper estimates three SIGMAs: `propSd` (total),
+  `propSd_Cu` (unbound outside J101) and `propSd_Cu_j101` (unbound within
+  J101). The third is a study-conditional variant of the second rather than a
+  fourth endpoint, and is selected inside `model()` by the `STUDY_J101`
+  indicator.
+* **No published NCA table to compare against.** Inoue 2025 reports no
+  non-compartmental summary of observed concentrations, so the NCA section
+  above validates internal consistency (unbound `cav` against
+  `dose / (CL * 24)`) rather than reproducing a published table. The paper's
+  own visual predictive checks (Figure S2) and goodness-of-fit plots (Figures
+  S3-S4) are graphical and are not digitised here.
+* **Companion exposure-response models.** The paper additionally reports one
+  exposure-efficacy and six exposure-safety logistic-regression models
+  (Tables S4-S10) that consume the unbound average concentration this PK model
+  predicts. They are packaged separately as the `Inoue_2025_valemetostat_*`
+  family and documented in this same vignette when available.
+
+# Session information
+
+```{r session}
+sessionInfo()
+```

@@ -2,6 +2,8 @@
 
 # development version
 
+- Add Inoue 2025 valemetostat ([doi:10.1002/jcph.70100](https://doi.org/10.1002/jcph.70100)) -- adults with relapsed/refractory non-Hodgkin lymphoma and healthy participants.
+
 - Rename the seven covariate canonicals that were carried in non-ALL-CAPS form
   purely because a source paper spelled them that way: `dilution` ->
   `DILUTION`, `nonECZTRA` -> `NON_ECZTRA`, `ooc1`-`ooc4` -> `OOC1`-`OOC4`, and
