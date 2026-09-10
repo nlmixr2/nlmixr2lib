@@ -67,6 +67,72 @@ formatRow <- function(row) {
   paste(bits, collapse = "\n")
 }
 
+# Double quotes in a trailing `ini()` comment. checkModelConventions() cannot
+# see this: it is a property of the FILE TEXT, not of the parsed model object.
+# rxode2 promotes a trailing comment on an ini() line that carries no label()
+# into `label("<comment>")`, and an embedded double quote terminates that
+# generated string early, so the model fails to re-parse and its vignette dies
+# at render.
+#
+# The package already has an enumerating test for this
+# (tests/testthat/test-checkModelConventions.R, "no ini() line carries a quoted
+# trailing comment rxode2 would promote into a broken label"), but it only runs
+# over the whole library once the file is written and the suite is run. Two
+# consecutive consolidation merges had to repair the defect after the fact
+# (2026-09-05, 15 lines; 2026-09-09, 18 lines), so the same check runs here,
+# on the one file the extraction just wrote.
+.lintIniQuotes <- function(path) {
+  if (is.null(path) || !file.exists(path)) {
+    return(character())
+  }
+  lines <- readLines(path, warn = FALSE)
+  inIni <- FALSE
+  bad <- character()
+  for (i in seq_along(lines)) {
+    ln <- lines[[i]]
+    if (grepl("^\\s*ini\\(\\{", ln)) {
+      inIni <- TRUE
+      next
+    }
+    if (grepl("^\\s*model\\(\\{", ln)) inIni <- FALSE
+    if (!inIni) next
+    # A standalone comment is not attached to a parameter; a line that already
+    # calls label() is not promoted.
+    if (grepl("^\\s*#", ln)) next
+    if (grepl("label(", ln, fixed = TRUE)) next
+    # First `#` that is not itself inside a string literal.
+    chars <- strsplit(ln, "", fixed = TRUE)[[1]]
+    nq <- 0L
+    hash <- 0L
+    for (k in seq_along(chars)) {
+      if (chars[[k]] == '"') {
+        nq <- nq + 1L
+      } else if (chars[[k]] == "#" && nq %% 2L == 0L) {
+        hash <- k
+        break
+      }
+    }
+    if (hash == 0L) next
+    if (grepl('"', substring(ln, hash), fixed = TRUE)) {
+      bad <- c(bad, sprintf("%s:%d: %s", basename(path), i, trimws(ln)))
+    }
+  }
+  bad
+}
+
+.modelFilePath <- function(model) {
+  db <- tryCatch(nlmixr2lib::modeldb, error = function(e) NULL)
+  if (is.null(db) || !("filename" %in% names(db))) return(NULL)
+  row <- db[db$name == model, , drop = FALSE]
+  if (nrow(row) != 1L) return(NULL)
+  for (root in c(file.path(getwd(), "inst", "modeldb"),
+                 system.file("modeldb", package = "nlmixr2lib"))) {
+    p <- file.path(root, row$filename[[1]])
+    if (nzchar(root) && file.exists(p)) return(p)
+  }
+  NULL
+}
+
 lintOne <- function(model) {
   res <- tryCatch(
     suppressWarnings(checkModelConventions(model, verbose = FALSE)),
@@ -77,15 +143,28 @@ lintOne <- function(model) {
     }
   )
   if (is.null(res)) return(2L)
-  if (nrow(res) == 0L) {
+  quoted <- .lintIniQuotes(.modelFilePath(model))
+  if (length(quoted)) {
+    cat(sprintf("\n=== %s — %d ini() comment(s) with a double quote ===\n",
+                model, length(quoted)))
+    for (q in quoted) {
+      cat(sprintf("  [error] %s\n", q))
+    }
+    cat(paste0("        rxode2 promotes a trailing comment on an ini() line ",
+               "with no label() into\n        label(\"<comment>\"); an embedded ",
+               "double quote terminates that string early\n        and the model ",
+               "will not re-parse. Use single quotes.\n\n"))
+  }
+  if (nrow(res) == 0L && length(quoted) == 0L) {
     cat(sprintf("OK: %s — no convention issues.\n", model))
     return(0L)
   }
+  if (nrow(res) == 0L) return(2L)
   cat(sprintf("\n=== %s — %d issue(s) ===\n", model, nrow(res)))
   for (i in seq_len(nrow(res))) {
     cat(formatRow(res[i, ]), "\n\n", sep = "")
   }
-  if (any(res$severity == "error")) {
+  if (length(quoted) || any(res$severity == "error")) {
     2L
   } else if (any(res$severity == "warning")) {
     1L

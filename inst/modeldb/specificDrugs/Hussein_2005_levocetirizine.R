@@ -56,7 +56,7 @@ Hussein_2005_levocetirizine <- function() {
     lvc <- log(0.639); label("V/F per kg of body weight (theta_V/F per WT, L/kg)")     # Hussein 2005 Table 3 final-model q_V (no intercept)
 
     # Per-kg slope for the linear CL/F covariate effect (units: L/h/kg).
-    e_wt_cl <- 0.0442; label("Slope of CL/F on body weight (WT, L/h/kg)")     # Hussein 2005 Table 3 final-model q_CL,WT
+    e_wt_cl <- 0.0442; label("Slope of CL/F on body weight (L/h/kg)")     # Hussein 2005 Table 3 final-model q_CL,WT
 
     # ka was modelled as ka = theta_ka + CL/V to guard against flip-flop;
     # theta_ka is the additive offset reported in Table 3 with %CV(IIV) =

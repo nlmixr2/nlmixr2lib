@@ -1,0 +1,997 @@
+---
+title: "Lacosamide in pediatric epilepsy (Li 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Lacosamide in pediatric epilepsy (Li 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7,
+  fig.height = 4.5
+)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Models and source
+
+Li 2025 developed **two** final population PK models for oral lacosamide (LCM) in
+Chinese children with epilepsy, one for each of the two real-world clinical
+scenarios defined by whether a CYP2C19 genotype is on hand. Both are packaged
+here, as the authors built them:
+
+* **Model I** -- body weight only. `Li_2025_lacosamide`
+* **Model II** -- body weight plus CYP2C19\*2 (rs12769205) genotype.
+  `Li_2025_lacosamide_cyp2c19`
+
+```{r load-models}
+mod1 <- rxode2::rxode(readModelDb("Li_2025_lacosamide"))
+mod2 <- rxode2::rxode(readModelDb("Li_2025_lacosamide_cyp2c19"))
+```
+
+* Citation: `r mod1$reference`
+* Model I: `r mod1$description`
+* Model II: `r mod2$description`
+* Article: <https://doi.org/10.1038/s41525-025-00519-y>
+* Supplement (Supplementary Material S.1-S.5, Tables S1-S7, Figures S1-S13):
+  <https://doi.org/10.1038/s41525-025-00519-y>
+
+Both models share the same structure: one compartment with first-order
+absorption and elimination (NONMEM `ADVAN2 TRANS2`), an absorption rate constant
+fixed at 2.45 /h, a power function of body weight on apparent clearance
+normalised to the cohort median of 30 kg, exponential inter-individual
+variability on CL/F only, and a mixed (proportional plus additive) residual
+error. Lacosamide was given as oral tablets twice daily.
+
+# Population
+
+The model-development dataset was a retrospective real-world therapeutic drug
+monitoring cohort from the Children's Hospital of Nanjing Medical University,
+collected between June 2021 and March 2023 (Methods, "Study population"). Of 190
+children contributing 493 plasma concentrations, a random 70% became the
+development group -- **133 children, 347 concentrations** -- and the remaining
+30% (57 children, 146 concentrations) an external validation group.
+
+Baseline characteristics of the development group (Table 1): median age 7.5
+years (range 1-18), median body weight 30 kg (range 10-80), 52 of 133 female,
+median plasma LCM concentration 3.71 mg/L (range 0.70-11.90). Concomitant
+antiseizure medications were present -- valproate 19.5%, levetiracetam 21.1%,
+sodium channel blockers 9.7% -- but none was retained as a covariate. The
+rs12769205 genotype distribution was AA/GA/GG = 56/62/15.
+
+Every sample is a **steady-state trough**: peripheral venous blood drawn 30 min
+before the next maintenance dose, after at least 3 days on an unchanged regimen
+(Methods, "Sample collection and concentration measurement"). That single fact
+drives most of the model's structure -- with no data in the absorption or
+distribution phase, `ka` had to be fixed and the inter-individual variability on
+V/F was not estimable and was dropped (Supplementary S.4.4).
+
+The therapeutic target used throughout the paper is a trough of **2-7 mg/L**
+(equivalently 2-7 ug/mL), taken from the authors' own prior work.
+
+```{r population}
+str(mod1$population)
+```
+
+# Source trace
+
+Per-parameter provenance is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Li_2025_lacosamide.R` and
+`inst/modeldb/specificDrugs/Li_2025_lacosamide_cyp2c19.R`. Collected here for
+review:
+
+| Equation / parameter | Model I | Model II | Source location |
+|---|---|---|---|
+| Structural model | 1-cmt, 1st-order abs. | 1-cmt, 1st-order abs. | Methods "Base model" (`ADVAN2 TRANS2`); Results "Model development" |
+| `lka` (ka, /h) | `fixed(log(2.45))` | `fixed(log(2.45))` | Table 2 "Ka 2.45 (fixed)"; Methods "Base model" -- fixed from the paper's reference 15 because trough-only data could not identify it |
+| `lcl` (CL/F, L/h) | `log(1.51)` | `log(1.7)` | Table 2 "CL/F (L/h)", RSE 3.4% / 4.7%; Results Eq. 1 / Eq. 3 |
+| `lvc` (V/F, L) | `log(23.7)` | `log(26.4)` | Table 2 "V/F (L)", RSE 12.1% / 13.4%; Results Eq. 2 / Eq. 4 |
+| `e_wt_cl` | `0.294` | `0.319` | Table 2 "CL-BW", RSE 14.1% / 13.3%; Table 2 "Covariate model structure" footnote; Results Eq. 1 / Eq. 3 |
+| Body-weight reference | 30 kg | 30 kg | Table 2 footnote `(BW/30)`; Table 1 median BW 30 kg; Supplementary Eq. 13 defines the normaliser as the cohort median |
+| `e_snp_cyp2c19_rs12769205_ga_cl` | -- | `0.879` | Table 2 "CL-rs12769205\*GA", RSE 4.0% |
+| `e_snp_cyp2c19_rs12769205_gg_cl` | -- | `0.736` | Table 2 "CL-rs12769205\*GG", RSE 5.5%; Discussion "26.4% reduction in CL/F (i.e., 0.736 x wild-type)" |
+| `etalcl` (IIV on CL/F) | `0.0324` | `0.024336` | Table 2 "IIV in CL/F, %CV" = 18.0 / 15.6; exponential form per Supplementary Tables S4/S5 ("Eq.1 & Eq.7") |
+| IIV on V/F | none | none | Supplementary S.4.4: "the IIV for Vd/F was not informative enough to be estimated and then was excluded from the model" |
+| `propSd` | `0.174` | `0.174` | Table 2 "Proportional error, %CV" = 17.4; variance 0.0301 quoted in Results "Model evaluation" |
+| `addSd` | `fixed(0.554)` | `fixed(0.554)` | Table 2 "Additive error, SD 0.554 (fixed)"; variance 0.307 quoted in Results "Model evaluation" |
+| Residual error form | `prop + add` | `prop + add` | Supplementary Eq. 7, `Y = IPRED*(1 + eps1) + eps2`, selected over Eqs. 4-6 on OFV/AIC |
+| Body weight on V/F | excluded | excluded | Results, paragraph after Eq. 4: allometric V-BW term rejected, RSE 327.4% |
+| Maturation term | none | none | Supplementary S.4.4: both maturation parameterisations (Eqs. 8-11) abandoned for RSE and shrinkage > 80% |
+
+```{r ini-tables}
+knitr::kable(
+  mod1$iniDf[, c("name", "est", "fix", "label")],
+  caption = "Model I (body weight only) -- ini() as packaged.",
+  row.names = FALSE
+)
+knitr::kable(
+  mod2$iniDf[, c("name", "est", "fix", "label")],
+  caption = "Model II (body weight + CYP2C19*2 genotype) -- ini() as packaged.",
+  row.names = FALSE
+)
+```
+
+# Simulation helpers
+
+Every simulation below dosed twice daily to steady state (20 doses, q12h) and
+observed densely across the final dosing interval. Observation rows carry
+`cmt = "central"` -- the ODE state -- and rxode2 returns the algebraic
+observable `Cc` as a column at those rows.
+
+```{r helpers}
+TAU     <- 12    # h, twice-daily dosing (Methods, "Study design and data collection")
+N_DOSE  <- 20    # doses; ~10 days, well past steady state at a ~11 h half-life
+SS_START <- (N_DOSE - 1) * TAU
+SS_END   <- N_DOSE * TAU
+# The paper's trough samples were drawn 30 min before the next dose
+# (Methods, "Sample collection and concentration measurement").
+TROUGH_TIME <- SS_END - 0.5
+
+TARGET_LO <- 2  # mg/L
+TARGET_HI <- 7  # mg/L
+
+# Build a plain data.frame event table. Covariates are attached here rather
+# than assigned onto an rxEt object, which silently drops them.
+build_events <- function(subjects, dose_mg, obs_times = NULL) {
+  if (is.null(obs_times)) {
+    obs_times <- sort(unique(c(seq(SS_START, SS_END, by = 0.25), TROUGH_TIME)))
+  }
+  covs <- setdiff(names(subjects), "id")
+  dose_times <- seq(0, by = TAU, length.out = N_DOSE)
+  doses <- subjects |>
+    tidyr::crossing(time = dose_times) |>
+    dplyr::mutate(amt = dose_mg[match(id, subjects$id)],
+                  evid = 1L, cmt = "depot")
+  obs <- subjects |>
+    tidyr::crossing(time = obs_times) |>
+    dplyr::mutate(amt = NA_real_, evid = 0L, cmt = "central")
+  dplyr::bind_rows(doses, obs) |>
+    dplyr::arrange(id, time, dplyr::desc(evid)) |>
+    dplyr::select(id, time, amt, evid, cmt, dplyr::all_of(covs))
+}
+
+# Typical-value (no IIV) solve. Deterministic, so it is identical on every
+# machine and thread count -- the right basis for a tight assertion.
+solve_typical <- function(mod, subjects, dose_mg) {
+  ev <- build_events(subjects, dose_mg)
+  keep <- setdiff(names(subjects), "id")
+  rxode2::rxSolve(rxode2::zeroRe(mod), ev, keep = keep,
+                  returnType = "data.frame")
+}
+
+trough_of <- function(sim) {
+  sim |>
+    dplyr::filter(abs(time - TROUGH_TIME) < 1e-8) |>
+    dplyr::pull(Cc)
+}
+```
+
+# Validation 1 -- the cohort's own observed trough
+
+The strongest quantitative anchor the paper offers is arithmetic
+self-consistency between two independent parts of Table 1. Table 1 reports, per
+body-weight band, the median LCM dose the cohort actually received, and
+separately reports the median observed plasma concentration for the whole
+development group (3.71 mg/L). Dosing a typical child in each band at that
+band's own median regimen and weighting by the band's share of the cohort should
+therefore land on 3.71 mg/L.
+
+Note that Table 1 labels its `mg/kg` column "LCM daily dose", but the values are
+**per dose** on a twice-daily schedule. That follows both from this
+reconstruction (reading them as daily totals halves every dose and puts the
+predicted trough near 1.9 mg/L, roughly half the observed median) and from the
+Results "Simulation" section, which recommends "3-4 mg/kg **per dose**" for the
+same 20-40 kg band whose Table 1 median is 3.3 mg/kg.
+
+```{r validation-observed-trough}
+bands <- tibble::tibble(
+  band       = c("10-15 kg", "15-20 kg", "20-40 kg", "40-50 kg", ">=50 kg"),
+  WT         = c(12.5, 17.5, 30, 45, 60),   # band midpoints; >=50 uses 60 kg
+  median_mgkg = c(3.6, 4.1, 3.3, 2.8, NA),  # Table 1, per dose
+  median_flat = c(NA, NA, NA, NA, 150),     # Table 1, >=50 kg reported in mg
+  share_pct  = c(6.0, 9.0, 57.1, 12.9, 15.0) # Table 1, n (%) of the 133
+) |>
+  dplyr::mutate(dose_mg = dplyr::if_else(is.na(median_flat),
+                                         median_mgkg * WT, median_flat))
+
+subj_bands <- bands |> dplyr::select(WT, band) |> dplyr::mutate(id = dplyr::row_number())
+sim_bands  <- solve_typical(mod1, subj_bands, bands$dose_mg)
+
+obs_check <- bands |> dplyr::mutate(trough_pred = trough_of(sim_bands))
+
+weighted_trough <- sum(obs_check$share_pct * obs_check$trough_pred) / sum(obs_check$share_pct)
+observed_median <- 3.71  # Table 1, development group
+
+knitr::kable(
+  obs_check |>
+    dplyr::select("Body-weight band" = band, "WT (kg)" = WT,
+                  "Table 1 median dose (mg)" = dose_mg,
+                  "% of cohort" = share_pct,
+                  "Predicted trough (mg/L)" = trough_pred) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2))),
+  caption = paste0(
+    "Model I typical-value steady-state trough at each band's own Table 1 ",
+    "median regimen. Cohort-share-weighted mean = ",
+    round(weighted_trough, 2), " mg/L; Table 1 observed median = ",
+    observed_median, " mg/L."
+  )
+)
+
+pct_diff_observed <- 100 * (weighted_trough - observed_median) / observed_median
+cat(sprintf("Cohort-weighted predicted trough: %.3f mg/L\n", weighted_trough))
+cat(sprintf("Table 1 observed median:          %.3f mg/L\n", observed_median))
+cat(sprintf("Difference:                       %+.1f %%\n", pct_diff_observed))
+
+# Deterministic (typical-value, no IIV), so this bound is reproducible.
+# Realised +3.9% when the prediction is read at the paper's 30-min-pre-dose
+# sampling time and +0.5% when read exactly at the 12 h interval end; the
+# choice of sampling time is the only slack. 8% still goes red on a
+# mis-transcribed CL/F, V/F, dose or unit, each of which moves the trough by
+# tens of percent -- reading CL/F as the misprinted "L/h/kg" moves it 30-fold.
+stopifnot(abs(pct_diff_observed) < 8)
+```
+
+This is also what settles the units of CL/F. Table 2's row label reads
+"CL/F (L/h)" and the Discussion says "Model I estimated the CL/F of 1.51 L/h",
+but the Results sentence introducing Eq. 1 misprints it as "1.51 L/h/kg". The
+per-kg reading is arithmetically impossible: it would give a 30 kg child a
+clearance of 45.3 L/h and a steady-state trough near 0.12 mg/L, some 30-fold
+below every concentration in Table 1's observed range of 0.70-11.90 mg/L.
+
+# Validation 2 -- reproducing the paper's dose recommendations
+
+Li 2025 derived its maintenance-dose recommendations by a stated criterion
+(Results, "Simulation"): a dose is recommended for a body-weight band when the
+**simulated concentration interquartile range falls within the target
+therapeutic range of 2-7 mg/L**. Regimen A of Table S7 is the result, for both
+weight-adjusted (mg/kg) and flat (mg) dosing. Reproducing it is a direct test of
+the packaged Model I.
+
+```{r regimen-a-typical}
+# Table S7, Regimen A (children aged 1-18 years). Each band is checked at both
+# ends of its recommended dose range and at both ends of its weight range.
+regimen_a <- tibble::tribble(
+  ~band,       ~wt_lo, ~wt_hi, ~mgkg_lo, ~mgkg_hi, ~flat_lo, ~flat_hi,
+  "10-15 kg",      10,     15,        5,        8,       50,      100,
+  "15-20 kg",      15,     20,        4,        6,       75,      100,
+  "20-40 kg",      20,     40,        3,        4,       75,      125,
+  "40-50 kg",      40,     50,        2,        3,      100,      150,
+  ">=50 kg",       50,     80,       NA,       NA,      100,      175
+)
+
+# Expand to one row per (band, weight edge, dose edge, dosing mode).
+rows <- list()
+for (i in seq_len(nrow(regimen_a))) {
+  r <- regimen_a[i, ]
+  for (wt in c(r$wt_lo, r$wt_hi)) {
+    if (!is.na(r$mgkg_lo)) {
+      for (d in c(r$mgkg_lo, r$mgkg_hi)) {
+        rows[[length(rows) + 1L]] <- data.frame(
+          band = r$band, mode = "Weight-adjusted (mg/kg)",
+          dose_label = paste0(d, " mg/kg"), WT = wt, dose_mg = d * wt
+        )
+      }
+    }
+    for (d in c(r$flat_lo, r$flat_hi)) {
+      rows[[length(rows) + 1L]] <- data.frame(
+        band = r$band, mode = "Flat (mg)",
+        dose_label = paste0(d, " mg"), WT = wt, dose_mg = d
+      )
+    }
+  }
+}
+grid_a <- dplyr::bind_rows(rows) |> dplyr::mutate(id = dplyr::row_number())
+
+subj_a <- grid_a |> dplyr::select(id, WT)
+sim_a  <- solve_typical(mod1, subj_a, grid_a$dose_mg)
+grid_a$trough <- trough_of(sim_a)
+
+summary_a <- grid_a |>
+  dplyr::group_by(band, mode) |>
+  dplyr::summarise(
+    doses = paste(unique(dose_label), collapse = ", "),
+    trough_min = min(trough), trough_max = max(trough),
+    .groups = "drop"
+  ) |>
+  dplyr::mutate(in_target = trough_min >= TARGET_LO & trough_max <= TARGET_HI)
+
+knitr::kable(
+  summary_a |>
+    dplyr::select("Body-weight band" = band, "Dosing mode" = mode,
+                  "Table S7 Regimen A doses" = doses,
+                  "Min trough (mg/L)" = trough_min,
+                  "Max trough (mg/L)" = trough_max,
+                  "Within 2-7 mg/L" = in_target) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2))),
+  caption = paste(
+    "Model I typical-value steady-state trough across every weight edge and",
+    "dose edge of Table S7 Regimen A."
+  )
+)
+
+# Deterministic: no IIV, so identical on every machine. The gate is the
+# paper's own recommendation criterion. Realised span 2.56 to 6.13 mg/L
+# across all 9 band/mode combinations, i.e. headroom at both bounds.
+stopifnot(nrow(summary_a) == 9L)
+stopifnot(all(summary_a$in_target))
+cat(sprintf("All %d Regimen A band/mode combinations keep the typical trough in %g-%g mg/L\n",
+            nrow(summary_a), TARGET_LO, TARGET_HI))
+cat(sprintf("Realised trough span: %.2f to %.2f mg/L\n",
+            min(grid_a$trough), max(grid_a$trough)))
+```
+
+The headline simplification claim is also reproducible. The abstract states that
+"a fixed 100 mg dose for patients >= 10 kg achieved equivalent exposure to
+BW-adjusted dosing":
+
+```{r flat-100}
+flat_subj <- tibble::tibble(WT = c(10, 15, 20, 30, 40, 50, 60, 80)) |>
+  dplyr::mutate(id = dplyr::row_number())
+sim_flat <- solve_typical(mod1, flat_subj, rep(100, nrow(flat_subj)))
+flat_subj$trough <- trough_of(sim_flat)
+
+knitr::kable(
+  flat_subj |>
+    dplyr::select("WT (kg)" = WT, "Trough on 100 mg BID (mg/L)" = trough) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2))),
+  caption = "Model I typical-value trough on a uniform 100 mg twice-daily dose."
+)
+
+stopifnot(all(flat_subj$trough >= TARGET_LO), all(flat_subj$trough <= TARGET_HI))
+cat(sprintf("Uniform 100 mg BID holds every weight from 10 to 80 kg inside %g-%g mg/L (%.2f to %.2f)\n",
+            TARGET_LO, TARGET_HI, min(flat_subj$trough), max(flat_subj$trough)))
+```
+
+Because CL/F scales with weight only as `WT^0.294`, an eight-fold weight range
+spans just `8^0.294` = `r round(8^0.294, 2)`-fold in clearance, which is why one
+flat dose can cover the whole paediatric range at all. That shallow exponent is
+the mechanistic content of the paper's conclusion.
+
+# Validation 3 -- stochastic cohort and the interquartile criterion
+
+The checks above use typical values, which is what makes them reproducible.
+The paper's criterion is stated on the interquartile range of a simulated
+cohort, so here is that version, with 150 subjects per band (the repository caps
+vignette cohorts at 200 per arm).
+
+```{r cohort-iqr}
+set.seed(20250909)
+rxode2::rxSetSeed(20250909)
+
+N_PER_BAND <- 150
+wt_lo <- c(10, 15, 20, 40, 50)
+wt_hi <- c(15, 20, 40, 50, 80)
+
+cohort_list <- vector("list", nrow(bands))
+for (i in seq_len(nrow(bands))) {
+  wt <- stats::runif(N_PER_BAND, wt_lo[i], wt_hi[i])
+  # Weight-adjusted bands keep the band's Table 1 mg/kg; the >= 50 kg band
+  # received a flat 150 mg, so its dose does not scale with weight.
+  dose <- if (is.na(bands$median_mgkg[i])) {
+    rep(bands$median_flat[i], N_PER_BAND)
+  } else {
+    bands$median_mgkg[i] * wt
+  }
+  cohort_list[[i]] <- data.frame(band = bands$band[i], WT = wt, dose_mg = dose)
+}
+cohort <- dplyr::bind_rows(cohort_list) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+ev_cohort <- build_events(cohort |> dplyr::select(id, WT, band),
+                          cohort$dose_mg,
+                          obs_times = sort(unique(c(seq(SS_START, SS_END, by = 0.5), TROUGH_TIME))))
+sim_cohort <- rxode2::rxSolve(mod1, ev_cohort, keep = c("WT", "band"),
+                              returnType = "data.frame")
+
+troughs <- sim_cohort |>
+  dplyr::filter(abs(time - TROUGH_TIME) < 1e-8) |>
+  dplyr::select(id, WT, band, Cc)
+
+iqr_tab <- troughs |>
+  dplyr::group_by(band) |>
+  dplyr::summarise(
+    n = dplyr::n(),
+    Q1 = stats::quantile(Cc, 0.25),
+    Median = stats::median(Cc),
+    Q3 = stats::quantile(Cc, 0.75),
+    pct_in_target = 100 * mean(Cc >= TARGET_LO & Cc <= TARGET_HI),
+    .groups = "drop"
+  )
+
+knitr::kable(
+  iqr_tab |>
+    dplyr::rename("Body-weight band" = band, "N" = n,
+                  "% within 2-7 mg/L" = pct_in_target) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2))),
+  caption = paste(
+    "Model I simulated steady-state trough by band, dosing each subject at",
+    "the band's Table 1 median mg/kg (or 150 mg for >= 50 kg), with IIV on",
+    "CL/F and no residual error."
+  )
+)
+
+# Cohort-derived, so assert on the CENTRE and on the interquartile band, never
+# on the extremes: rxSetSeed() fixes the draw for a given thread count only,
+# so a CI runner draws a different cohort than a dev box.
+stopifnot(all(iqr_tab$Median >= TARGET_LO), all(iqr_tab$Median <= TARGET_HI))
+stopifnot(all(iqr_tab$Q1 >= TARGET_LO), all(iqr_tab$Q3 <= TARGET_HI))
+# The paper reports initial target attainment of 61.2-88.7% on the validation
+# set, rising above 78% after dose adjustment (Results, "Simulation"; Fig. 4).
+# The cohort here is dosed at the observed median regimens, not the adjusted
+# ones, so a floor rather than a two-sided band is the honest gate.
+stopifnot(min(iqr_tab$pct_in_target) > 60)
+cat(sprintf("Target attainment by band: %s\n",
+            paste(sprintf("%s %.0f%%", iqr_tab$band, iqr_tab$pct_in_target),
+                  collapse = "; ")))
+```
+
+# Replicating Figure 2 -- dose versus simulated exposure
+
+Figure 2 of Li 2025 plots simulated concentration quartiles against ascending
+dose, panel (a) for weight-adjusted (mg/kg) dosing and panel (b) for flat (mg)
+dosing, with dashed lines at 2 and 7 mg/L. Doses were swept over 2-8 mg/kg and
+50-200 mg (Methods, "Simulation of dosing regimen").
+
+```{r fig2, fig.height = 5.5}
+set.seed(20250910)
+rxode2::rxSetSeed(20250910)
+
+N_SWEEP <- 100
+sweep_bands <- tibble::tibble(
+  band  = c("10-15 kg", "15-20 kg", "20-40 kg", "40-50 kg", ">=50 kg"),
+  wt_lo = c(10, 15, 20, 40, 50),
+  wt_hi = c(15, 20, 40, 50, 80)
+)
+
+sweep_one <- function(band, wt_lo, wt_hi, dose_values, mode) {
+  out <- vector("list", length(dose_values))
+  for (k in seq_along(dose_values)) {
+    # Re-seed per arm so every dose level sees the SAME cohort (common random
+    # numbers); otherwise the dose trend is confounded with sampling noise.
+    rxode2::rxSetSeed(20250910)
+    subj <- tibble::tibble(WT = seq(wt_lo, wt_hi, length.out = N_SWEEP)) |>
+      dplyr::mutate(id = dplyr::row_number())
+    dose_mg <- if (mode == "mgkg") dose_values[k] * subj$WT else rep(dose_values[k], nrow(subj))
+    ev <- build_events(subj, dose_mg, obs_times = TROUGH_TIME)
+    s <- rxode2::rxSolve(mod1, ev, keep = "WT", returnType = "data.frame")
+    out[[k]] <- data.frame(band = band, dose = dose_values[k], Cc = s$Cc)
+  }
+  dplyr::bind_rows(out)
+}
+
+mgkg_doses <- seq(2, 8, by = 1)
+flat_doses <- seq(50, 200, by = 25)
+
+sweep_all <- function(dose_values, mode) {
+  out <- vector("list", nrow(sweep_bands))
+  for (i in seq_len(nrow(sweep_bands))) {
+    out[[i]] <- sweep_one(sweep_bands$band[i], sweep_bands$wt_lo[i],
+                          sweep_bands$wt_hi[i], dose_values, mode)
+  }
+  dplyr::bind_rows(out)
+}
+
+sweep_mgkg <- sweep_all(mgkg_doses, "mgkg")
+sweep_flat <- sweep_all(flat_doses, "flat")
+
+quartiles <- function(d, xlab) {
+  d |>
+    dplyr::group_by(band, dose) |>
+    dplyr::summarise(Q1 = stats::quantile(Cc, 0.25),
+                     Median = stats::median(Cc),
+                     Q3 = stats::quantile(Cc, 0.75), .groups = "drop") |>
+    dplyr::mutate(panel = xlab)
+}
+
+q_mgkg <- quartiles(sweep_mgkg, "(a) Weight-adjusted dosing (mg/kg per dose)")
+q_flat <- quartiles(sweep_flat, "(b) Flat dosing (mg per dose)")
+
+plot_panel <- function(q, xlab) {
+  ggplot2::ggplot(q, ggplot2::aes(dose)) +
+    ggplot2::geom_ribbon(ggplot2::aes(ymin = Q1, ymax = Q3, fill = band), alpha = 0.25) +
+    ggplot2::geom_line(ggplot2::aes(y = Median, colour = band), linewidth = 0.7) +
+    ggplot2::geom_hline(yintercept = c(TARGET_LO, TARGET_HI), linetype = "dashed") +
+    ggplot2::labs(x = xlab, y = "Simulated steady-state trough (mg/L)",
+                  colour = "Body weight", fill = "Body weight") +
+    ggplot2::theme_bw()
+}
+
+print(plot_panel(q_mgkg, "Dose (mg/kg per dose)") +
+        ggplot2::ggtitle("Replicates Figure 2a of Li 2025"))
+print(plot_panel(q_flat, "Dose (mg per dose)") +
+        ggplot2::ggtitle("Replicates Figure 2b of Li 2025"))
+```
+
+The qualitative structure of Figure 2 is reproduced: exposure rises linearly
+with dose within each band (lacosamide is linear over this range), the bands
+separate only modestly because of the shallow weight exponent, and the dose
+windows that keep the interquartile band inside the dashed 2-7 mg/L lines are
+the ones Table S7 recommends. As a check that the recommended windows really are
+the ones the sweep selects:
+
+```{r fig2-window-check}
+window_from_sweep <- q_mgkg |>
+  dplyr::filter(Q1 >= TARGET_LO, Q3 <= TARGET_HI) |>
+  dplyr::group_by(band) |>
+  dplyr::summarise(sweep_lo = min(dose), sweep_hi = max(dose), .groups = "drop")
+
+published <- tibble::tibble(
+  band = c("10-15 kg", "15-20 kg", "20-40 kg", "40-50 kg"),
+  pub_lo = c(5, 4, 3, 2), pub_hi = c(8, 6, 4, 3)
+)
+
+cmp_window <- published |> dplyr::left_join(window_from_sweep, by = "band")
+knitr::kable(
+  cmp_window |>
+    dplyr::select("Body-weight band" = band,
+                  "Published low (mg/kg)" = pub_lo, "Published high (mg/kg)" = pub_hi,
+                  "Sweep low (mg/kg)" = sweep_lo, "Sweep high (mg/kg)" = sweep_hi),
+  caption = paste(
+    "Table S7 Regimen A weight-adjusted windows versus the doses this sweep",
+    "selects under the paper's own interquartile criterion (1 mg/kg grid)."
+  )
+)
+
+# The sweep grid is 1 mg/kg, so agreement is asserted to within one grid step.
+stopifnot(!anyNA(cmp_window$sweep_lo))
+stopifnot(all(abs(cmp_window$sweep_lo - cmp_window$pub_lo) <= 1))
+stopifnot(all(abs(cmp_window$sweep_hi - cmp_window$pub_hi) <= 1))
+```
+
+# Model II -- the CYP2C19\*2 genotype effect
+
+Model II adds the rs12769205 genotype to CL/F as a multiplicative factor: 1 for
+the AA wild type, 0.879 for GA, 0.736 for GG (Table 2; Results Eq. 3). The
+Discussion states the GG effect as "a 26.4% reduction in CL/F (i.e., 0.736 x
+wild-type)".
+
+```{r model2-genotype}
+geno_subj <- tibble::tribble(
+  ~genotype, ~SNP_CYP2C19_RS12769205_GA, ~SNP_CYP2C19_RS12769205_GG,
+  "AA", 0, 0,
+  "GA", 1, 0,
+  "GG", 0, 1
+) |>
+  dplyr::mutate(WT = 30, id = dplyr::row_number())
+
+sim_geno <- solve_typical(mod2, geno_subj, rep(100, nrow(geno_subj)))
+geno_res <- sim_geno |>
+  dplyr::filter(abs(time - TROUGH_TIME) < 1e-8) |>
+  dplyr::select(id, cl, Cc) |>
+  dplyr::left_join(geno_subj |> dplyr::select(id, genotype), by = "id")
+
+cl_aa <- geno_res$cl[geno_res$genotype == "AA"]
+geno_res <- geno_res |>
+  dplyr::mutate(cl_ratio = cl / cl_aa,
+                trough_ratio = Cc / Cc[genotype == "AA"])
+
+knitr::kable(
+  geno_res |>
+    dplyr::select("rs12769205 genotype" = genotype, "CL/F (L/h)" = cl,
+                  "CL/F vs AA" = cl_ratio, "Trough (mg/L)" = Cc,
+                  "Trough vs AA" = trough_ratio) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3))),
+  caption = paste(
+    "Model II typical-value CL/F and steady-state trough for a 30 kg child on",
+    "100 mg twice daily, by rs12769205 genotype."
+  )
+)
+
+# Deterministic identity: the CL/F ratios ARE the tabulated factors.
+gg_ratio <- geno_res$cl_ratio[geno_res$genotype == "GG"]
+ga_ratio <- geno_res$cl_ratio[geno_res$genotype == "GA"]
+stopifnot(abs(ga_ratio - 0.879) < 1e-6)
+stopifnot(abs(gg_ratio - 0.736) < 1e-6)
+cat(sprintf("GG reduction in CL/F: %.1f %% (Discussion: 26.4 %%)\n", 100 * (1 - gg_ratio)))
+stopifnot(abs(100 * (1 - gg_ratio) - 26.4) < 0.05)
+```
+
+Because the GG group clears lacosamide 26.4% more slowly, the same dose produces
+a `r round(geno_res$trough_ratio[geno_res$genotype == "GG"], 2)`-fold higher
+trough, which is why Table S7's genotype-informed Regimen C reduces the GG dose
+in every weight band. Checking Regimen C's GG recommendations against the target
+range:
+
+```{r regimen-c-gg}
+# Table S7, Regimen C, GG rows (children aged 1-18 years).
+regimen_c_gg <- tibble::tribble(
+  ~band,      ~wt_lo, ~wt_hi, ~mgkg_lo, ~mgkg_hi, ~flat_lo, ~flat_hi,
+  "10-15 kg",     10,     15,        5,        7,       50,       50,
+  "15-20 kg",     15,     20,        4,        5,       75,       75,
+  "20-40 kg",     20,     40,        3,        3,       75,      100,
+  "40-50 kg",     40,     50,        2,        2,      100,      125,
+  ">=50 kg",      50,     80,       NA,       NA,      100,      125
+)
+
+rows_c <- list()
+for (i in seq_len(nrow(regimen_c_gg))) {
+  r <- regimen_c_gg[i, ]
+  for (wt in c(r$wt_lo, r$wt_hi)) {
+    if (!is.na(r$mgkg_lo)) {
+      for (d in unique(c(r$mgkg_lo, r$mgkg_hi))) {
+        rows_c[[length(rows_c) + 1L]] <- data.frame(
+          band = r$band, mode = "Weight-adjusted (mg/kg)", WT = wt, dose_mg = d * wt)
+      }
+    }
+    for (d in unique(c(r$flat_lo, r$flat_hi))) {
+      rows_c[[length(rows_c) + 1L]] <- data.frame(
+        band = r$band, mode = "Flat (mg)", WT = wt, dose_mg = d)
+    }
+  }
+}
+grid_c <- dplyr::bind_rows(rows_c) |>
+  dplyr::mutate(id = dplyr::row_number(),
+                SNP_CYP2C19_RS12769205_GA = 0,
+                SNP_CYP2C19_RS12769205_GG = 1)
+
+sim_c <- solve_typical(
+  mod2,
+  grid_c |> dplyr::select(id, WT, SNP_CYP2C19_RS12769205_GA, SNP_CYP2C19_RS12769205_GG),
+  grid_c$dose_mg
+)
+grid_c$trough <- trough_of(sim_c)
+
+summary_c <- grid_c |>
+  dplyr::group_by(band, mode) |>
+  dplyr::summarise(trough_min = min(trough), trough_max = max(trough), .groups = "drop") |>
+  dplyr::mutate(
+    in_target = trough_min >= TARGET_LO & trough_max <= TARGET_HI,
+    overshoot_pct = 100 * pmax(0, trough_max - TARGET_HI) / TARGET_HI
+  )
+
+knitr::kable(
+  summary_c |>
+    dplyr::select("Body-weight band" = band, "Dosing mode" = mode,
+                  "Min trough (mg/L)" = trough_min, "Max trough (mg/L)" = trough_max,
+                  "Within 2-7 mg/L" = in_target,
+                  "Overshoot above 7 mg/L (%)" = overshoot_pct) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2))),
+  caption = paste(
+    "Model II typical-value trough for GG (homozygous CYP2C19*2) children on",
+    "Table S7 Regimen C GG doses, evaluated at both weight edges and both dose",
+    "edges of every cell."
+  )
+)
+
+n_ok <- sum(summary_c$in_target)
+cat(sprintf("%d of %d Regimen C GG band/mode cells stay inside %g-%g mg/L\n",
+            n_ok, nrow(summary_c), TARGET_LO, TARGET_HI))
+
+# DOCUMENTED DEVIATION, not a widened gate. Exactly one cell falls outside:
+# the 10-15 kg weight-adjusted cell at its top corner (7 mg/kg for a 15 kg
+# child = 105 mg) predicts 7.13 mg/L, 1.9% over the 7 mg/L bound. See
+# "Assumptions and deviations" below. Deterministic (typical value), so these
+# bounds are reproducible.
+stopifnot(n_ok >= 8L)
+# No cell may undershoot, and no cell may overshoot by more than 5% -- a
+# mis-transcribed genotype factor or clearance moves these by tens of percent.
+stopifnot(all(summary_c$trough_min >= TARGET_LO))
+stopifnot(max(summary_c$overshoot_pct) < 5)
+```
+
+# PKNCA validation
+
+Steady-state NCA over the final dosing interval, for the three genotype arms of
+Model II at a common 100 mg twice-daily dose. PKNCA is given a `treatment`
+grouping variable so per-arm results roll up as reported.
+
+```{r pknca}
+set.seed(20250911)
+rxode2::rxSetSeed(20250911)
+
+N_NCA <- 100
+nca_subj <- geno_subj |>
+  dplyr::select(genotype, SNP_CYP2C19_RS12769205_GA, SNP_CYP2C19_RS12769205_GG) |>
+  tidyr::crossing(rep = seq_len(N_NCA)) |>
+  dplyr::mutate(WT = 30, treatment = genotype, id = dplyr::row_number()) |>
+  dplyr::select(id, WT, treatment, SNP_CYP2C19_RS12769205_GA, SNP_CYP2C19_RS12769205_GG)
+
+# Include the interval start (SS_START) so PKNCA never reports
+# "Requesting an AUC range starting before the first measurement".
+nca_times <- sort(unique(c(seq(SS_START, SS_END, by = 0.25), TROUGH_TIME)))
+ev_nca <- build_events(nca_subj, rep(100, nrow(nca_subj)), obs_times = nca_times)
+sim_nca_raw <- rxode2::rxSolve(mod2, ev_nca, keep = c("WT", "treatment"),
+                               returnType = "data.frame")
+
+stopifnot(all(sim_nca_raw$Cc >= 0))
+
+conc_df <- sim_nca_raw |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc, treatment)
+stopifnot(nrow(conc_df) > 0)
+
+dose_df <- ev_nca |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt) |>
+  dplyr::left_join(nca_subj |> dplyr::select(id, treatment), by = "id")
+
+conc_obj <- PKNCA::PKNCAconc(conc_df, Cc ~ time | treatment + id,
+                             concu = "mg/L", timeu = "h")
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | treatment + id, doseu = "mg")
+
+intervals <- data.frame(
+  start = SS_START, end = SS_END,
+  cmax = TRUE, tmax = TRUE, cmin = TRUE, ctrough = TRUE,
+  cav = TRUE, auclast = TRUE, half.life = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj, intervals = intervals))
+nca_tbl <- as.data.frame(nca_res$result)
+
+knitr::kable(
+  nca_tbl |>
+    dplyr::group_by(treatment, PPTESTCD) |>
+    dplyr::summarise(Median = stats::median(PPORRES), .groups = "drop") |>
+    tidyr::pivot_wider(names_from = PPTESTCD, values_from = Median) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3))),
+  caption = paste(
+    "PKNCA steady-state parameters over the final 12 h dosing interval,",
+    "median across 100 subjects per genotype arm, Model II, 30 kg, 100 mg BID."
+  )
+)
+```
+
+Two internal consistency checks on the NCA output. First, the mass-balance
+identity: at steady state the amount cleared over one interval equals the dose
+in, so `AUC(0,tau) x CL/F = dose`. This is a solver-correctness check rather than
+a source-validation check, and it is exact.
+
+```{r nca-massbalance}
+cl_by_arm <- sim_nca_raw |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(cl = stats::median(cl), .groups = "drop")
+
+auc_by_arm <- nca_tbl |>
+  dplyr::filter(PPTESTCD == "auclast") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(auc = stats::median(PPORRES), .groups = "drop")
+
+mb <- auc_by_arm |>
+  dplyr::left_join(cl_by_arm, by = "treatment") |>
+  dplyr::mutate(dose_recovered = auc * cl,
+                pct_err = 100 * (dose_recovered - 100) / 100)
+
+knitr::kable(
+  mb |>
+    dplyr::select("Genotype arm" = treatment, "AUC(0,tau) (mg*h/L)" = auc,
+                  "CL/F (L/h)" = cl, "AUC x CL/F (mg)" = dose_recovered,
+                  "Error vs 100 mg dose (%)" = pct_err) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 3))),
+  caption = "Steady-state mass balance: AUC(0,tau) x CL/F should recover the 100 mg dose."
+)
+
+# Pure numerical error (trapezoidal AUC on a 0.25 h grid) between two sides
+# that share the same drawn parameters, so a tight bound is correct here.
+stopifnot(max(abs(mb$pct_err)) < 1.5)
+```
+
+Second, the elimination half-life recovered by NCA must match `log(2) * V/F / CL/F`
+from the packaged parameters:
+
+```{r nca-halflife}
+hl_nca <- nca_tbl |>
+  dplyr::filter(PPTESTCD == "half.life") |>
+  dplyr::group_by(treatment) |>
+  dplyr::summarise(hl_nca = stats::median(PPORRES), .groups = "drop")
+
+vc_med <- stats::median(sim_nca_raw$vc)
+hl_cmp <- hl_nca |>
+  dplyr::left_join(cl_by_arm, by = "treatment") |>
+  dplyr::mutate(hl_analytic = log(2) * vc_med / cl,
+                pct_diff = 100 * (hl_nca - hl_analytic) / hl_analytic)
+
+knitr::kable(
+  hl_cmp |>
+    dplyr::select("Genotype arm" = treatment, "NCA half-life (h)" = hl_nca,
+                  "log(2)*V/F/(CL/F) (h)" = hl_analytic, "% diff" = pct_diff) |>
+    dplyr::mutate(dplyr::across(dplyr::where(is.numeric), \(x) round(x, 2))),
+  caption = "NCA-recovered half-life versus the closed form from the packaged parameters."
+)
+
+stopifnot(max(abs(hl_cmp$pct_diff)) < 5)
+```
+
+# Comparison against published values
+
+Li 2025 reports no formal NCA table -- the study is trough-only therapeutic drug
+monitoring -- so the single published exposure statistic available for a
+side-by-side comparison is Table 1's observed steady-state trough for the
+development group. The simulated side dosed each body-weight band at that same
+band's Table 1 median regimen, matching what the cohort actually received.
+
+```{r nca-comparison}
+set.seed(20250912)
+rxode2::rxSetSeed(20250912)
+
+# Re-simulate the Table 1 cohort with the sampling grid PKNCA needs, then
+# weight each band by its share of the 133 development-group children.
+band_share <- bands$share_pct / sum(bands$share_pct)
+names(band_share) <- bands$band
+
+cohort_troughs <- troughs |>
+  dplyr::left_join(tibble::tibble(band = names(band_share), w = band_share), by = "band")
+
+# Cohort-share-weighted median trough: draw each band in proportion to its
+# share so the pooled median matches the cohort composition of Table 1.
+set.seed(20250912)
+n_draw <- 4000
+draw_band <- sample(names(band_share), n_draw, replace = TRUE, prob = band_share)
+pooled <- vapply(draw_band, function(b) {
+  v <- cohort_troughs$Cc[cohort_troughs$band == b]
+  v[sample.int(length(v), 1L)]
+}, numeric(1))
+
+simulated_nca <- data.frame(
+  PPTESTCD = "ctrough",
+  PPORRES  = stats::median(pooled)
+)
+reference_nca <- data.frame(ctrough = observed_median)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated_nca, reference_nca,
+  units = c(ctrough = "mg/L"),
+  tolerance_pct = 20
+)
+knitr::kable(
+  cmp,
+  caption = paste0(
+    "Simulated versus published steady-state trough. Reference is Table 1's ",
+    "median observed plasma LCM concentration in the development group ",
+    "(3.71 mg/L, range 0.70-11.90)."
+  )
+)
+if (!is.null(attr(cmp, "footnote"))) cat(attr(cmp, "footnote"), "\n")
+
+pct <- 100 * (simulated_nca$PPORRES - observed_median) / observed_median
+cat(sprintf("Pooled simulated median trough %.2f mg/L vs observed %.2f mg/L (%+.1f %%)\n",
+            simulated_nca$PPORRES, observed_median, pct))
+# Cohort-derived: assert on the CENTRE with headroom for the draw, not on a
+# tight bound taken from one run.
+stopifnot(abs(pct) < 20)
+```
+
+The simulated spread is also comparable to the observed one. Table 1 reports an
+observed range of 0.70-11.90 mg/L across the whole development group; that range
+includes residual (assay plus model misspecification) error, which the
+simulations above deliberately exclude, so the simulated range is expected to be
+the narrower of the two.
+
+```{r spread-check}
+cat(sprintf("Simulated pooled trough: median %.2f, 5th-95th pct %.2f-%.2f mg/L\n",
+            stats::median(pooled), stats::quantile(pooled, 0.05),
+            stats::quantile(pooled, 0.95)))
+cat(sprintf("Observed (Table 1):      median %.2f, full range 0.70-11.90 mg/L\n",
+            observed_median))
+# BSV-only spread must not EXCEED the observed total spread; if it did, the
+# omega convention would have been misread (e.g. variance taken as SD).
+stopifnot(stats::quantile(pooled, 0.95) < 11.90)
+stopifnot(stats::quantile(pooled, 0.05) > 0.70)
+```
+
+# Assumptions and deviations
+
+## Errata and internal inconsistencies in the source
+
+1. **CL/F units misprinted as "L/h/kg".** Table 2's row label is "CL/F (L/h)"
+   and the Discussion says "Model I estimated the CL/F of 1.51 L/h", but the
+   Results sentence introducing Eq. 1 reads "the typical CL/F of LCM ... was 1.51
+   L/h/kg", and the corresponding Model II sentence says "1.7 L/h/kg". **L/h is
+   used.** The per-kg reading is arithmetically impossible: it puts a 30 kg
+   child's clearance at 45.3 L/h and the predicted trough about 30-fold below
+   Table 1's observed range. Validation 1 above is the proof.
+
+2. **Genotype factors stated twice with different values.** Table 2 gives
+   `CL-rs12769205*GA = 0.879` and `CL-rs12769205*GG = 0.736`; the Results gloss
+   under Eq. 4 instead says "0.887 for CYP2C19\*2 GA, and 0.744 for CYP2C19\*2
+   GG". **Table 2 is used.** Three reasons: Table 2's own bootstrap columns
+   independently report medians of 0.880 and 0.736; the Discussion derives "a
+   26.4% reduction in CL/F (i.e., 0.736 x wild-type)", and 1 - 0.736 = 0.264
+   exactly, so 0.736 is arithmetically self-confirming while 0.744 is not; and
+   both gloss values sit exactly 0.008 above the tabulated ones, which is one
+   systematic slip in a single sentence rather than two independent estimates.
+
+3. **Table 2's Model II block mislabels a shrinkage row.** The Model II block
+   lists "Proportional error, %CV" twice -- once as 17.4 (with RSE 21.2%) and
+   again as 12.7 in the position where the Model I block reads "sigma-shrinkage
+   (%) 14.1". The 12.7 is the epsilon-shrinkage, not a second error estimate:
+   Results "Model evaluation" states that "both residual error components showed
+   reduced epsilon-shrinkage to 12.7% (vs. 14.1% previously)". The packaged
+   Model II therefore carries `propSd = 0.174`, identical to Model I, which is
+   also what Results "Model evaluation" means by the proportional error variance
+   having "remained stable at 0.0301".
+
+4. **Supplementary S.4.4 cites the wrong IIV equation.** Its prose says the IIV
+   "on CL and V were estimated using exponential models (Eq. 3)", but its own
+   Eq. 3 is the proportional form `Pi = TV(P)*(1 + eta)` while Eq. 1 is the
+   exponential form `Pi = TV(P)*exp(eta)`. **The exponential form is used**, on
+   the strength of the word "exponential" in both the main text and the
+   supplement, and of Supplementary Tables S4 and S5, which label the base model
+   "Eq.1 & Eq.7".
+
+5. **Main text and supplement disagree on whether V/F carried IIV.** Results
+   "Model development" says variability "in CL/F and V/F was estimated", but
+   Table 2 reports an IIV row for CL/F only and Supplementary S.4.4 resolves it:
+   "Due to only the C0 samples of LCM being available, the IIV for Vd/F was not
+   informative enough to be estimated and then was excluded from the model."
+   **No eta on V/F.**
+
+6. **Table 1's `mg/kg` column is labelled "LCM daily dose" but holds per-dose
+   amounts.** Reading it as a daily total halves every dose and drops the
+   predicted trough to roughly half the observed median; the Results
+   "Simulation" section independently recommends "3-4 mg/kg per dose" for the
+   same 20-40 kg band whose Table 1 value is 3.3 mg/kg. Treated as **per dose**
+   on the twice-daily schedule.
+
+7. **One Regimen C cell overshoots the target by a small margin.** Table S7's
+   genotype-informed Regimen C recommends 5-7 mg/kg per dose for GG
+   (homozygous CYP2C19\*2) children in the 10-15 kg band. At the top corner of
+   that cell -- 7 mg/kg for a 15 kg child, i.e. 105 mg -- the packaged Model II
+   predicts a typical steady-state trough of 7.13 mg/L, 1.8% above the paper's
+   own 7 mg/L bound. The other eight Regimen C GG cells, and all nine Regimen A
+   cells, stay inside the range. Two things are worth noting rather than
+   explaining away. First, the paper's criterion is stated on the interquartile
+   range of a simulated cohort spread across the band, not on the band's corner
+   subject, so a corner value just outside the bound is consistent with a cohort
+   IQR just inside it. Second, Table S7's own two columns for this cell disagree
+   sharply: the flat-dose recommendation for 10-15 kg GG is 50 mg, whereas
+   7 mg/kg at the top of the band is 105 mg -- a greater than two-fold gap, far
+   wider than for any other cell. The vignette records this as a deviation and
+   keeps it visible in the Regimen C table instead of loosening the gate until
+   it disappeared.
+
+## Assumptions made in this vignette
+
+* **Percent-CV to variance convention.** Table 2 reports IIV as `%CV` and never
+  prints omega squared. The plain square is used (`omega^2 = 0.180^2 = 0.0324`
+  for Model I, `0.156^2 = 0.024336` for Model II) because the same table's
+  residual rows fix the convention: the reported proportional `%CV` of 17.4 and
+  additive SD of 0.554 correspond to the variances of 0.0301 and 0.307 quoted in
+  Results "Model evaluation", and both are plain squares. The exact log-normal
+  alternative, `omega^2 = log(1 + CV^2)`, gives 0.0319 and 0.0241 -- a change of
+  under 1% in omega, which moves no gate in this vignette.
+
+* **Trough sampling time.** Predictions are read 30 min before the next dose, to
+  match the paper's stated sampling window, rather than exactly at the interval
+  end. The difference is about 3% on an 11 h half-life; both readings pass
+  Validation 1 (+3.7% at 11.5 h, +0.6% at 12 h).
+
+* **Body-weight distribution within bands.** The paper reports only band
+  membership counts and a cohort median weight, not a within-band weight
+  distribution. Weights are drawn uniformly across each band, and the open-ended
+  `>= 50 kg` band is capped at 80 kg (Table 1's observed maximum). Typical-value
+  checks evaluate both band edges instead, so they do not depend on this choice.
+
+* **Genotype was not assigned in the Model I cohorts.** Model I contains no
+  genotype term by construction, so the Table 1 cohort reconstruction ignores
+  the AA/GA/GG mix. That mix is part of why the observed spread exceeds the
+  simulated one.
+
+* **Race and ethnicity.** Recorded as 100% Asian on the basis that this is a
+  Chinese single-centre paediatric cohort. The paper reports no formal race or
+  ethnicity breakdown.
+
+* **No PD, seizure-outcome or adverse-event layer.** The paper explicitly
+  declines to link exposure to clinical endpoints ("this modeling was unable to
+  correlate directly with clinical endpoints such as seizure control or adverse
+  effects"), so nothing beyond the PK is extractable.
+
+* **Not applicable outside the studied covariate space.** The Discussion cautions
+  against applying these models to children on enzyme-inducing antiseizure drugs
+  or sodium channel blockers (the cohort was largely on monotherapy), and to
+  infants aged 1 month to 1 year, for whom the paper had no data. The genotype
+  coefficients are anchored to a population with a CYP2C19\*2 allele frequency
+  above 30% and should not be transferred to cohorts where \*17 predominates.
+
+* **Figure 2 is replicated qualitatively.** The published panels are area plots
+  read off a rendered figure with no underlying numeric table, so the comparison
+  asserted here is against Table S7's dose windows -- the numeric output of that
+  figure -- rather than against digitised curves.

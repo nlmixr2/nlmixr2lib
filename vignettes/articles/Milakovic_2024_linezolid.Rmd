@@ -272,7 +272,11 @@ solve_once <- function() {
     rxode2::zeroRe(mod_ui),
     events = events,
     params = subjects |> select(id, lvc, lcl),
-    omega = NA,
+    # `omega = NA` omitted deliberately. The model is already `zeroRe()`d, so
+    # the etas are zero either way -- but on rxode2 5.1.6 (the version CI
+    # installs) passing it alongside a multi-subject `params` reads out of
+    # bounds and returns NA for some subjects. Same defect as PR #501.
+
     keep = c("treatment"),
     addDosing = FALSE,
     returnType = "data.frame"
@@ -332,7 +336,8 @@ ev_typ <- data.frame(
     dur = NA_real_, cmt = "central", ss = 0L, ii = 0
   ))
 
-sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_ui), ev_typ, omega = NA,
+# `omega = NA` omitted -- redundant after zeroRe(); see the note above.
+sim_typ <- rxode2::rxSolve(rxode2::zeroRe(mod_ui), ev_typ,
                            addDosing = FALSE, returnType = "data.frame") |>
   rename(time_in_interval = time)
 

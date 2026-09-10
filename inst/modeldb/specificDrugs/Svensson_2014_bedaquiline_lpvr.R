@@ -102,8 +102,8 @@ Svensson_2014_bedaquiline_lpvr <- function() {
     # Allometric scaling (theory-based, fixed): exponent 0.75 on apparent
     # clearances and 1 on apparent volumes around 70 kg (Svensson 2014
     # Supplementary Table S1a footnote b).
-    e_wt_cl_q  <- fixed(0.75) ; label("Allometric exponent on apparent CL and Q (Q1/F, Q2/F, CL_M2, Q_M2; unitless)")  # Svensson 2014 Methods (fixed)
-    e_wt_vc_vp <- fixed(1)    ; label("Allometric exponent on apparent Vc and Vp (VP1/F, VP2/F, V_M2, VP_M2; unitless)") # Svensson 2014 Methods (fixed)
+    e_wt_cl_q  <- fixed(0.75) ; label("Allometric exponent on apparent CL and Q (Q2/F, CL_M2, Q_M2; unitless)")  # Svensson 2014 Methods (fixed)
+    e_wt_vc_vp <- fixed(1)    ; label("Allometric exponent on apparent Vc and Vp (VP2/F, V_M2, VP_M2; unitless)") # Svensson 2014 Methods (fixed)
 
     # Drug-drug-interaction multiplicative factors on the bedaquiline and M2
     # apparent clearances during ritonavir-boosted lopinavir (LPV/r)

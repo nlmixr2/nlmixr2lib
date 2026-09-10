@@ -77,11 +77,11 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
 
     # ---- MER paradoxical Eagle-effect arm ----
     emax_mer_eagle <- 0.328
-    label("Eagle-effect maximum fractional reduction of MER effect at high MER (Eagle, unitless)")  # Wicha 2017 Table 1 -- "32.8%"
+    label("Eagle-effect maximum fractional reduction of MER effect at high MER (unitless)")  # Wicha 2017 Table 1 -- "32.8%"
     lec50_mer_eagle <- log(1.35)
-    label("MER half-maximum paradoxical Eagle-effect concentration (Eagle, mg/L)")  # Wicha 2017 Table 1
+    label("MER half-maximum paradoxical Eagle-effect concentration (mg/L)")  # Wicha 2017 Table 1
     lhill_mer_eagle <- fixed(log(4))
-    label("MER Eagle-effect Hill coefficient (Eagle, unitless)")  # Wicha 2017 Table 1 (FIXED)
+    label("MER Eagle-effect Hill coefficient (unitless)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- MER adaption submodel ----
     lb_mer <- log(9.53)
@@ -107,9 +107,9 @@ Wicha_2017_linezolid_meropenem_vancomycin <- function() {
 
     # ---- VAN-on-MER adaption inhibition (PD interaction) ----
     lec50_van_ari <- log(0.39)
-    label("VAN half-maximum suppression of MSSA adaption to MER (ARI, mg/L)")  # Wicha 2017 Table 1
+    label("VAN half-maximum suppression of MSSA adaption to MER (mg/L)")  # Wicha 2017 Table 1
     lhill_van_ari <- fixed(log(1))
-    label("VAN-on-MER-adaption Hill coefficient (ARI, unitless)")  # Wicha 2017 Table 1 (FIXED)
+    label("VAN-on-MER-adaption Hill coefficient (unitless)")  # Wicha 2017 Table 1 (FIXED)
 
     # ---- VAN adaption submodel ----
     lb_van <- log(3.59)

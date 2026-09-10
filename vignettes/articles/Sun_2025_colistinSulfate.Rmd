@@ -1,0 +1,983 @@
+---
+title: "Colistin sulfate (Sun 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Colistin sulfate (Sun 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", fig.width = 7, fig.height = 4.5)
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Sun_2025_colistinSulfate"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Sun_2025_colistinSulfate"))$description`
+* Article: <https://doi.org/10.1038/s41598-025-03503-9>
+
+Every value below comes from the main text, Table 1, Table 2, Eqs. 1-5, the
+supplementary Word document (Supplementary Tables S1-S3), or -- where
+explicitly flagged -- from digitisation of Figure 3.
+
+Two mechanical notes on reading this particular source. First, Eqs. 1-5 do not
+survive text extraction: in the publisher PDF they are typeset images, and both
+the trimmed markdown and `pdftotext` in default mode drop them. They were
+recovered with `pdftotext -layout` and cross-read against the equation images
+`41598_2025_3503_Article_Equ1-5.gif`, which EuropePMC serves from
+`https://www.ebi.ac.uk/europepmc/webservices/rest/PMC12106615/supplementaryFiles`.
+Second, the centring constants of the covariate model (71.40 mL/min and
+67.89 kg) appear **only** inside those equation images -- they are in no table
+-- so a text-only extraction of this paper silently loses the covariate model.
+
+Colistin sulfate is the **active** polymyxin E salt, given intravenously as
+such. It is not colistimethate sodium (CMS), the inactive prodrug that must be
+hydrolysed in vivo, and whose PK is modelled separately in this library by
+`Plachouras_2009_colistin`, `Mohamed_2012_colistin`, `Jacobs_2016_colistin`,
+`Karaiskos_2015_colistin` and `Rodjun_2023_colistin`. The closest sibling here
+is `Ma_2026_colistinSulfate`, an independent Chinese ICU colistin sulfate
+cohort; it is used below as an external cross-check on the dose-unit
+conversion.
+
+# Population
+
+One hundred and seventy-eight critically ill adults treated with intravenous
+colistin sulfate at Beijing Electric Power Hospital between May 2022 and May
+2024 contributed 364 plasma concentrations to the training set; a further 26
+patients and 57 concentrations were held out for external validation
+(Supplementary Tables S1-S3). One hundred and seventeen were male. Median age
+was 78.5 years (range 31-98) -- an unusually elderly cohort -- and median
+weight 70 kg (40-100). Cockcroft-Gault creatinine clearance was 51.9 mL/min
+(6.7-271.8), raw and not normalised to body surface area, and baseline serum
+creatinine 79 umol/L (19-753). Serum albumin was 30.97 +/- 4.43 g/L, i.e. the
+cohort was uniformly hypoalbuminaemic.
+
+Infections were overwhelmingly pulmonary (93.26%). *Klebsiella pneumoniae* was
+the commonest isolate (51.69%), followed by *Acinetobacter baumannii* (39.32%),
+*Pseudomonas aeruginosa* (8.43%) and *Escherichia coli* (3.93%); 13.48% were
+treated empirically. Meropenem was the commonest co-administered antibacterial
+(61.80%). Fourteen-day mortality was 27.53% and 11.8% developed acute kidney
+injury by RIFLE criteria. Patients who died within 24 h of the first dose, who
+received nebulised or intrathecal colistin sulfate, or who received continuous
+renal replacement therapy during treatment were excluded -- so the model
+carries no information about renal replacement therapy.
+
+Sampling was sparse, opportunistic therapeutic drug monitoring recovered
+retrospectively: of the 364 concentrations, 52 (14.29%) were first-dose peaks,
+154 (42.31%) steady-state peaks and 158 (43.41%) troughs, spanning 0.16 to
+4.91 mg/L. The paper does not state the nominal offsets at which "peak" and
+"trough" were drawn.
+
+The final model is a two-compartment model with linear elimination fitted in
+NONMEM 7.5 via Pirana 3.0, evaluated by a 1000-sample nonparametric bootstrap
+(Table 2), a prediction- and variability-corrected VPC (Supplementary Figure
+S1) and the external validation. Creatinine clearance enters CL and body weight
+enters V1, each as a power function; age, sex and albumin were screened and
+rejected.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Sun_2025_colistinSulfate")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Sun_2025_colistinSulfate.R`. The table
+below collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL, L/h) | 2.66 | Table 2 `tvCL` 2.66 (RSE 7%, 95% CI 2.293-3.027; bootstrap 2.67, 95% CI 2.30-3.04). Eq. 1 mis-typesets this as "266" -- see below |
+| `lvc` (V1, L) | 49.70 | Table 2 `tvV1` 49.7 (RSE 5.8%, 95% CI 44.036-55.364; bootstrap 50.04, 95% CI 44.16-55.26); Eq. 2 leading coefficient |
+| `lq` (Q, L/h) | 1.63 | Table 2 `tvQ` 1.63 (RSE 19.8%, 95% CI 0.999-2.261; bootstrap 1.67, 95% CI 0.44-3.67); Eq. 3 |
+| `lvp` (V2, L) | 109 | Table 2 `tvV2` 109 (RSE 24.8%, 95% CI 56.08-161.92; bootstrap 103.65, 95% CI 58.18-161.31); Eq. 4 |
+| `e_crcl_cl` (CrCL exponent) | 0.456 | Table 2 `dCLdCrCL` 0.456 (RSE 8.6%, 95% CI 0.379-0.533; bootstrap 0.466, 95% CI 0.39-0.59); Eq. 1 exponent |
+| `e_wt_vc` (WT exponent) | 1.2 | Table 2 `dVdWT` 1.2 (RSE 22.2%, 95% CI 0.679-1.721; bootstrap 1.28, 95% CI 0.60-1.75); Eq. 2 exponent |
+| CrCL centring constant | 71.40 mL/min | Eq. 1 image ONLY. Not tabulated anywhere |
+| WT centring constant | 67.89 kg | Eq. 2 image ONLY. Not tabulated anywhere |
+| `etalcl` (IIV on CL) | variance 0.125 | Table 2 `omega^2 CL` (RSE 22%, shrinkage 38.5%; bootstrap 0.117, 95% CI 0.05-0.19) |
+| `etalvc` (IIV on V1) | variance 0.244 | Table 2 `omega^2 V1` (RSE 19%, shrinkage 21.9%; bootstrap 0.215, 95% CI 0.16-0.34) |
+| `etalq` (IIV on Q) | variance 1.69 | Table 2 `omega^2 Q` (RSE 49%, shrinkage 60.7%; bootstrap 1.657, 95% CI 0.12-6.00) |
+| `etalvp` (IIV on V2) | variance 0.993 | Table 2 `omega^2 V2` (RSE 29%, shrinkage 57.6%; bootstrap 0.892, 95% CI 0.10-4.00) |
+| `propSd`, `addSd` | `fixed(0)` | Magnitudes NOT reported. Table 2's only residual row is `stdev0` = 1, the fixed EPS scale -- see below |
+| Covariate model | n/a | Eqs. 1-2: `CL = 2.66*(CrCL/71.40)^0.456*exp(etaCL)`, `V1 = 49.70*(WT/67.89)^1.2*exp(etaV1)` |
+| Two-compartment ODEs | n/a | Results: "Two-compartment models with first-order elimination were selected" |
+| Cockcroft-Gault | n/a | Eq. 5: `CrCL = (140 - AGE) * WT / (0.818 * Scr[umol/L])`, x0.85 for females |
+
+The IIV scale needs no adjudication in this paper: the Table 2 legend states it
+outright -- "omega^2 V1, **variance** of inter-individual variability for V1"
+-- so the tabulated numbers are variances and are packaged unsquared. Two other
+rows do need care, and both are resolved below rather than assumed.
+
+## Eq. 1 mis-typesets the clearance as "266"
+
+```{r erratum-tvcl}
+# Eq. 1 as typeset: "CL(L/h) = 266 (CrCL/71.40)^0.456 exp(etaCL)".
+# Table 2: tvCL = 2.66, RSE 7%, 95% CI 2.293-3.027, bootstrap median 2.67.
+# At steady state AUC0-24 = daily dose / CL exactly, so Css,avg = D/(CL*24).
+# Test both readings against Table 1's reported Css,avg of 0.93 mg/L at the
+# median daily dose of 1.5 MU. The dose conversion is derived further below and
+# is only needed to set the scale; the two readings differ by a factor of 100,
+# so no plausible conversion changes which one survives.
+mg_per_mu_prov <- 45
+daily_mg       <- 1.5 * mg_per_mu_prov
+cl_typ        <- function(crcl) 2.66 * (crcl / 71.40)^0.456
+cl_med        <- cl_typ(51.9)                     # Table 1 median CrCL
+
+erratum <- tibble::tibble(
+  `Reading of Eq. 1`       = c("2.66 L/h (Table 2)", "266 L/h (Eq. 1 as typeset)"),
+  `CL at median CrCL (L/h)` = c(cl_med, cl_med * 100),
+  `Implied Css,avg (mg/L)`  = daily_mg / (c(cl_med, cl_med * 100) * 24),
+  `Table 1 Css,avg (mg/L)`  = 0.93,
+  `Within assayed 0.16-4.91 mg/L?` =
+    daily_mg / (c(cl_med, cl_med * 100) * 24) > 0.16
+)
+
+knitr::kable(erratum, digits = 4, caption = paste(
+  "The '266' of Eq. 1 is a lost decimal point. It would place every predicted",
+  "concentration two orders of magnitude below the 364 assayed samples, i.e.",
+  "below the assay's own limit of quantification."
+))
+
+# Deterministic arithmetic on published numbers. The claim being gated is an
+# order-of-magnitude one, which is what actually separates the two readings:
+# 2.66 lands within a factor of two of Table 1's Css,avg, while 266 lands more
+# than tenfold below the lowest concentration the assay ever reported.
+stopifnot(
+  daily_mg / (cl_med * 24) > 0.93 / 2,
+  daily_mg / (cl_med * 24) < 0.93 * 2,
+  daily_mg / (cl_med * 100 * 24) < 0.16 / 10
+)
+```
+
+The `266` in Eq. 1 is a typographical error for `2.66`; Table 2 -- which
+carries a standard error, a confidence interval and a bootstrap interval, none
+of which the equation does -- is authoritative.
+
+Note that the usual "the half-life would be absurd" argument does **not**
+discriminate here, and is deliberately not used:
+
+```{r erratum-halflife-does-not-help}
+tbeta <- function(cl, vc = 49.70, q = 1.63, vp = 109) {
+  k10 <- cl / vc; k12 <- q / vc; k21 <- q / vp
+  b <- k10 + k12 + k21
+  log(2) / ((b - sqrt(b^2 - 4 * k10 * k21)) / 2)
+}
+tibble::tibble(
+  `CL (L/h)`               = c(2.66, 266),
+  `Terminal half-life (h)` = c(tbeta(2.66), tbeta(266))
+) |>
+  knitr::kable(digits = 1, caption = paste(
+    "Because Q = 1.63 L/h against V2 = 109 L makes the peripheral compartment",
+    "rate-limiting, even CL = 266 L/h gives a terminal half-life of ~47 h.",
+    "Only the exposure argument above separates the two readings."
+  ))
+
+stopifnot(tbeta(266) > 20)   # the half-life argument genuinely fails
+```
+
+## The residual-error magnitude is not reported
+
+The residual error's **form** is stated twice. Results: "Residual random
+effects were assessed using additive plus proportional error models." Methods:
+"Within-subject variability (WSV) was assessed by additive, proportional, or
+combined (additive plus proportional) models".
+
+Its **magnitude** is not. Table 2's entire "Residual variability (sigma)" block
+is one row, `stdev0`, with the value 1 and -- alone among every row of the
+table -- no RSE and no confidence interval, only an epsilon-shrinkage of 40.8%.
+That is the signature of the standard NONMEM combined-error parameterisation
+
+```
+W = SQRT(THETA(a)**2 + (THETA(p)*IPRED)**2)
+Y = IPRED + W*EPS(1)        with   $SIGMA 1 FIX
+```
+
+in which the reported `1` is the *fixed variance scale* of `EPS(1)` and the
+actual additive and proportional coefficients live in `$ERROR` as THETAs this
+paper does not tabulate. The sibling `Ma_2026_colistinSulfate` documents the
+same parameterisation from a paper that *does* tabulate its coefficient.
+
+Reading the `1` as a real residual SD is refuted either way it is taken:
+
+```{r residual-scale}
+resid_readings <- tibble::tibble(
+  `Reading of "stdev0 = 1"` = c(
+    "Additive SD of 1 mg/L",
+    "Proportional SD of 1 (100% CV)",
+    "Fixed EPS variance scale ($SIGMA 1 FIX)"
+  ),
+  `Refuted by` = c(
+    "exceeds Table 1's mean Css,avg of 0.93 mg/L and most of the 0.16-4.91 mg/L range",
+    "Supplementary Table S3 reports a relative RMSE of 7.90%, not 100%",
+    "not refuted -- consistent with the missing RSE/CI and with the sibling model"
+  ),
+  Packaged = c(FALSE, FALSE, TRUE)
+)
+knitr::kable(resid_readings, caption =
+  "Why the tabulated residual row cannot be a residual standard deviation.")
+
+# An order-of-magnitude reconstruction for users who need a non-zero residual.
+# Supplementary Table S3 gives the relative RMSE of the paper's own post-hoc
+# individual predictions against the 57 external-validation observations.
+# Those residuals are shrunk: epsilon-shrinkage = 1 - sd(IWRES), and Table 2
+# reports 40.8%, so sd(IWRES) = 0.592 and propSd ~ relRMSE / 0.592.
+eps_shrink <- 0.408
+recon <- tibble::tibble(
+  `Supplementary Table S3 row` = c("Call (all)", "Cpeak", "Ctrough"),
+  `Relative RMSE`              = c(0.0790, 0.0706, 0.0780),
+  `Implied proportional SD`    = c(0.0790, 0.0706, 0.0780) / (1 - eps_shrink)
+)
+knitr::kable(recon, digits = 3, caption = paste(
+  "Reconstruction of the unreported proportional residual SD (~13%). This is",
+  "NOT packaged -- both residual terms are fixed at 0 -- and is recorded only",
+  "so a user who needs a non-zero residual has a defensible starting value."
+))
+
+# The near-equality of the peak and trough relative RMSEs is the evidence that
+# the additive term is negligible: an additive component inflates the RELATIVE
+# error at low concentrations, so troughs would be much worse than peaks.
+stopifnot(
+  abs(0.0780 - 0.0706) / 0.0706 < 0.25,
+  all(recon$`Implied proportional SD` > 0.10),
+  all(recon$`Implied proportional SD` < 0.20)
+)
+```
+
+Per the standing policy for unreported variance components nothing is invented:
+`propSd` and `addSd` are both `fixed(0)`, so the packaged model simulates the
+typical-value and IIV-only trajectories the paper plots. The reconstruction
+above (roughly 13% proportional, additive negligible) is documented, not
+packaged.
+
+# The dose unit: MU is never converted to mg
+
+The paper expresses every dose in millions of international units, while its
+parameters (CL in L/h, V in L) and its observations (mg/L) are on a mass basis.
+No MU-to-mg potency appears anywhere in the article or the supplement. The
+packaged model therefore takes **dose in mg** and needs no conversion; the
+conversion is required only to restate the paper's MU regimens, and is derived
+here.
+
+## First, a check that does not depend on the conversion at all
+
+Figure 3 panel A plots the hourly mean predicted concentration for 1.0 MU q8h
+over 72 h. Its *shape* -- peak-to-trough ratio and accumulation ratio -- is
+invariant to the dose scale for a linear model, so it validates the structural
+parameters before any unit question is settled.
+
+```{r fig3-digitised}
+# Operator-digitised from Figure 3 panel A of Sun 2025 (1.0 MU q8h, 1 h
+# infusion), rendered from the publisher PDF at 300 dpi. Peaks fall at
+# t = 1, 9, ..., 65 h and troughs at t = 8, 16, ..., 72 h. Read to roughly
+# +/- 0.05 mg/L; the first peak sits exactly on the 1.0 gridline.
+fig3a <- tibble::tibble(
+  t_peak   = seq(1, 65, by = 8),
+  peak     = c(1.00, 1.40, 1.60, 1.77, 1.90, 2.00, 2.03, 2.10, 2.15),
+  t_trough = seq(8, 72, by = 8),
+  trough   = c(0.42, 0.67, 0.82, 0.93, 1.02, 1.09, 1.15, 1.22, 1.27)
+)
+stopifnot(nrow(fig3a) == 9L)
+```
+
+```{r fig3-shape}
+mod <- readModelDb("Sun_2025_colistinSulfate")
+
+# Typical-value (eta = 0) profile at the covariate reference subject. This is
+# deterministic: no cohort, no seed, no dependence on solver thread count, so
+# the bounds below can be tight.
+tv_profile <- function(mg_per_mu, ld = 1, md = 1, tau = 8, tinf = 1, tend = 72,
+                       crcl = 71.40, wt = 67.89) {
+  starts <- seq(0, tend - 1e-9, by = tau)
+  amt <- c(ld, rep(md, length(starts) - 1)) * mg_per_mu
+  ev <- rxode2::et(amt = amt[1], time = starts[1], dur = tinf, cmt = "central")
+  for (i in seq_along(starts)[-1]) {
+    ev <- rxode2::et(ev, amt = amt[i], time = starts[i], dur = tinf, cmt = "central")
+  }
+  ev <- rxode2::et(ev, seq(0, tend, by = 1), cmt = "central")
+  s <- rxode2::rxSolve(mod, ev, params = c(CRCL = crcl, WT = wt), omega = NA) |>
+    as.data.frame()
+  s <- s[!is.na(s$Cc), ]
+  stats::setNames(s$Cc, s$time)
+}
+
+at <- function(v, tt) as.numeric(v[match(as.character(tt), names(v))])
+tv45  <- tv_profile(45)
+mpk   <- at(tv45, fig3a$t_peak)
+mtr   <- at(tv45, fig3a$t_trough)
+stopifnot(!anyNA(mpk), !anyNA(mtr))
+
+shape <- tibble::tibble(
+  `Dose-scale-free ratio` = c("Steady-state peak / trough (65 h vs 72 h)",
+                              "Peak accumulation (65 h / 1 h)",
+                              "Trough accumulation (72 h / 8 h)"),
+  `Digitised Fig. 3A` = c(fig3a$peak[9] / fig3a$trough[9],
+                          fig3a$peak[9] / fig3a$peak[1],
+                          fig3a$trough[9] / fig3a$trough[1]),
+  `Model` = c(mpk[9] / mtr[9], mpk[9] / mpk[1], mtr[9] / mtr[1])
+) |>
+  mutate(`% difference` = 100 * (Model / `Digitised Fig. 3A` - 1))
+
+knitr::kable(shape, digits = 3, caption = paste(
+  "Shape of Figure 3 panel A, which is invariant to the MU-to-mg conversion",
+  "for a linear model. Deterministic typical-value profile, so no cohort",
+  "noise enters."
+))
+
+# Bounds admit operator digitisation error of ~+/- 0.05 mg/L on values of
+# 0.42-2.15 mg/L (up to ~12% on the smallest), but would still break on a
+# mis-transcribed volume, inter-compartmental clearance or dosing interval,
+# each of which moves these ratios by tens of percent.
+stopifnot(max(abs(shape$`% difference`)) < 20)
+```
+
+The structural parameters reproduce the shape of the paper's own predicted
+profile to within `r sprintf("%.0f%%", max(abs(shape$"% difference")))` on
+every dose-scale-free ratio.
+
+## Then, the conversion itself
+
+With the shape confirmed, the absolute level of Figure 3 panel A fixes the
+conversion. Eighteen digitised points are fitted over a grid.
+
+```{r dose-unit}
+grid <- seq(34, 56, by = 2)
+rms <- vapply(grid, function(mm) {
+  v <- tv_profile(mm)
+  sqrt(mean(log(c(at(v, fig3a$t_peak), at(v, fig3a$t_trough)) /
+                   c(fig3a$peak, fig3a$trough))^2))
+}, numeric(1))
+
+mg_per_mu <- grid[which.min(rms)]
+
+tibble::tibble(`mg per MU` = grid, `RMS log-error over 18 points` = rms) |>
+  knitr::kable(digits = 4, caption = paste(
+    "Milligram equivalent of one million IU of colistin sulfate, fitted to the",
+    "18 digitised hourly-mean values of Figure 3 panel A. Deterministic."
+  ))
+
+tibble::tibble(
+  Quantity = c("Best-fit mg per MU", "RMS log-error there",
+               "Implied potency (IU/mg)",
+               "Ma 2026 sibling model, mg per 1e6 IU"),
+  Value = c(mg_per_mu, min(rms), 1e6 / mg_per_mu, 44)
+) |>
+  knitr::kable(digits = 2, caption =
+    "The derived conversion, and the independent value from the sibling paper.")
+
+# The 2 mg/MU grid step is finer than the digitisation supports, so the bound
+# is a range, not a point. It still excludes the colistin BASE-activity
+# conversion (33.3 mg/MU), which is the reading a careless extraction would
+# assume.
+stopifnot(
+  mg_per_mu >= 40, mg_per_mu <= 50,
+  min(rms) < 0.12
+)
+```
+
+The fitted `r mg_per_mu` mg per MU corresponds to a potency of about
+`r sprintf("%.0f", 1e6 / mg_per_mu)` IU/mg. That is the colistin **sulfate
+salt** figure, not colistin **base activity** (30,000 IU/mg, i.e. 33.3 mg/MU);
+the two differ by roughly 35%, so the distinction is worth stating explicitly.
+Three independent lines of evidence agree:
+
+* the Figure 3 panel A fit above, `r mg_per_mu` mg/MU;
+* the paper's own external-validation cohort -- repeating Supplementary
+  Table S2 with typical-value predictions against the 57 observed
+  concentrations minimises at about 45 mg/MU (not re-run here, because those
+  57 values are compared against *post-hoc* individual predictions in the
+  source and so carry eta contamination);
+* the sibling `Ma_2026_colistinSulfate`, an independent cohort whose own
+  Table 4 yields 44 mg per 10^6 IU, derived there by a completely different
+  route (a dose-ratio probit identity on published attainment probabilities).
+
+## Where the conversion does *not* reconcile
+
+Applying the same conversion to Figure 2 (probability of target attainment)
+under a steady-state identity does not reproduce the published curves, and it
+is worth being explicit that this is a property of the source rather than of
+the packaged model.
+
+```{r pta-inconsistency}
+# Figure 2's PK/PD target is fAUC0-24/MIC >= 10 with an unbound fraction of 0.5
+# (Methods, "Monte Carlo simulations"). At steady state AUC0-24 = daily dose /
+# CL exactly, so 0.5 * D / CL >= 10 * MIC, i.e. CL <= D / (20 * MIC).
+omega_cl <- sqrt(0.125)
+pta_ss <- function(mu_day, crcl, mic, mg = mg_per_mu) {
+  100 * pnorm(log((mu_day * mg / (20 * mic)) / cl_typ(crcl)) / omega_cl)
+}
+
+# The 0.5 MU q12h regimen (1.0 MU/day) is the one the paper singles out as the
+# only regimen below 90% PTA at MIC = 0.5 mg/L.
+cmp_pta <- tibble::tibble(
+  `CrCL (mL/min)`             = c(10, 50, 80, 120),
+  `Steady-state PTA (%)`      = pta_ss(1.0, c(10, 50, 80, 120), 0.5),
+  `Digitised from Fig. 2 (%)` = c(NA, 88, 71, 52)
+)
+knitr::kable(cmp_pta, digits = 1, caption = sprintf(paste(
+  "0.5 MU q12h at MIC = 0.5 mg/L, with doses converted at the %d mg/MU derived",
+  "above. A steady-state reading of Figure 2 would instead imply a conversion",
+  "nearer 35 mg/MU, which the Figure 3 profiles exclude."
+), mg_per_mu))
+```
+
+The discrepancy is explained by Figure 2 itself, and it is not a free
+parameter. Figure 2's legend plots `1.0 MU + 0.75 MU, q12` as a **separate
+curve** from `0.75 MU, q12`, and `1.25 MU + 0.75 MU, q12` and
+`1.5 MU + 0.75 MU, q12` as two more. All four share the same maintenance dose
+and therefore the same steady-state exposure, so at steady state they would be
+one line. They are four, which means Figure 2's `AUC0-24` is the **first**
+24 hours -- a window in which a loading dose does change exposure -- and not
+the steady-state interval. A first-24-hour AUC is smaller than
+`24 * Css,avg`, so inverting Figure 2 with a steady-state identity
+underestimates the dose scale, which is the direction of the gap seen above.
+Figure 2 is therefore not a usable anchor for the conversion, and the packaged
+model is unaffected either way: the conversion is not one of its parameters.
+
+```{r pta-loading-dose-evidence}
+# Confirm the claim mechanically: at steady state the loading dose is
+# irrelevant, but over the first 24 h it is not.
+auc_window <- function(ld, md, tau, lo, hi, tinf = 1, mg = mg_per_mu) {
+  starts <- seq(0, hi - 1e-9, by = tau)
+  amt <- c(ld, rep(md, length(starts) - 1)) * mg
+  ev <- rxode2::et(amt = amt[1], time = starts[1], dur = tinf, cmt = "central")
+  for (i in seq_along(starts)[-1]) {
+    ev <- rxode2::et(ev, amt = amt[i], time = starts[i], dur = tinf, cmt = "central")
+  }
+  ev <- rxode2::et(ev, seq(lo, hi, by = 0.05), cmt = "central")
+  s <- rxode2::rxSolve(mod, ev, params = c(CRCL = 71.40, WT = 67.89), omega = NA) |>
+    as.data.frame()
+  s <- s[!is.na(s$Cc) & s$time >= lo, ]
+  sum(diff(s$time) * (utils::head(s$Cc, -1) + utils::tail(s$Cc, -1)) / 2)
+}
+
+load_tbl <- tibble::tibble(
+  Regimen = c("0.75 MU q12h", "1.0 MU + 0.75 MU q12h",
+              "1.25 MU + 0.75 MU q12h", "1.5 MU + 0.75 MU q12h"),
+  `AUC over first 24 h (mg*h/L)` = c(
+    auc_window(0.75, 0.75, 12, 0, 24), auc_window(1.00, 0.75, 12, 0, 24),
+    auc_window(1.25, 0.75, 12, 0, 24), auc_window(1.50, 0.75, 12, 0, 24)
+  ),
+  `AUC over the 12 h interval at 288-300 h (mg*h/L)` = c(
+    auc_window(0.75, 0.75, 12, 288, 300), auc_window(1.00, 0.75, 12, 288, 300),
+    auc_window(1.25, 0.75, 12, 288, 300), auc_window(1.50, 0.75, 12, 288, 300)
+  )
+)
+knitr::kable(load_tbl, digits = 2, caption = paste(
+  "Four of Figure 2's sixteen regimens share a maintenance dose and differ",
+  "only in their loading dose. They separate over the first 24 h and converge",
+  "at steady state -- so Figure 2, which draws them as four distinct curves,",
+  "must be a first-24-hour quantity."
+))
+
+first24 <- load_tbl$`AUC over first 24 h (mg*h/L)`
+ss12    <- load_tbl$`AUC over the 12 h interval at 288-300 h (mg*h/L)`
+# Deterministic typical-value integrals.
+stopifnot(
+  all(diff(first24) > 0),                      # loading dose matters over 24 h
+  max(ss12) / min(ss12) - 1 < 0.02,            # and not at steady state
+  100 * (max(first24) / min(first24) - 1) > 10 # the separation is material
+)
+```
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohort below
+approximates the published demographics: creatinine clearance is drawn from a
+log-normal distribution matched to the reported median of 51.9 mL/min and
+truncated to the observed 6.7-271.8 mL/min range, and weight from a normal
+distribution centred on the reported median of 70 kg and truncated to 40-100 kg.
+The paper reports only medians and ranges, so the distributional shapes are
+assumptions (see "Assumptions and deviations").
+
+Three arms are simulated, all at 200 subjects: the study's own median regimen
+(1.5 MU/day as 0.75 MU q12h), the highest-exposure regimen the paper simulates
+(1.0 MU q8h, the one it warns about at low creatinine clearance), and a
+reference arm held at the model's covariate reference values, which is the
+right comparator for Figure 3.
+
+```{r cohort}
+# set.seed() seeds R's RNG, used here only for the covariate draws. It does NOT
+# seed rxode2's simulation RNG, whose streams are partitioned per solver
+# thread, so the eta draws differ between a 2-core CI runner and a 16-thread
+# workstation. Every assertion on a cohort-derived quantity below is written to
+# hold for any such cohort.
+set.seed(20260908)
+
+n_arm <- 200
+rtrunc <- function(n, f, lo, hi) {
+  out <- numeric(0)
+  while (length(out) < n) {
+    x <- f(2 * n)
+    out <- c(out, x[x >= lo & x <= hi])
+  }
+  out[seq_len(n)]
+}
+draw_crcl <- function(n) rtrunc(n, function(k) rlnorm(k, log(51.9), 0.67), 6.7, 271.8)
+draw_wt   <- function(n) rtrunc(n, function(k) rnorm(k, 70, 11), 40, 100)
+
+# Dose for 300 h, then observe the last dosing interval finely. The terminal
+# half-life is long (quantified below), so "steady state" here means the
+# plateau the paper's own 72-hour figures show, reached to within a few percent
+# by 300 h.
+# Observations run from time 0 so the exact mass-balance identity below can be
+# evaluated, with the final dosing interval refined for the NCA.
+make_arm <- function(label, md_mu, tau, crcl, wt, id_offset, tinf = 1) {
+  subj <- tibble::tibble(id = id_offset + seq_len(n_arm), CRCL = crcl,
+                         WT = wt, regimen = label)
+  obs_times <- sort(unique(c(seq(0, 300, by = 0.5),
+                             seq(300 - tau, 300, by = 0.25))))
+  doses <- subj |>
+    tidyr::crossing(time = seq(0, 300 - tau, by = tau)) |>
+    mutate(evid = 1L, amt = md_mu * mg_per_mu, dur = tinf, cmt = "central")
+  obs <- subj |>
+    tidyr::crossing(time = obs_times) |>
+    mutate(evid = 0L, amt = NA_real_, dur = NA_real_, cmt = "central")
+  bind_rows(doses, obs) |> arrange(id, time, desc(evid))
+}
+
+events <- bind_rows(
+  make_arm("0.75 MU q12h", 0.75, 12, draw_crcl(n_arm), draw_wt(n_arm),   0L),
+  make_arm("1.0 MU q8h",   1.00,  8, draw_crcl(n_arm), draw_wt(n_arm), 200L),
+  make_arm("Covariate reference (0.75 MU q12h)", 0.75, 12, 71.40, 67.89, 400L)
+)
+
+stopifnot(
+  nrow(distinct(events, id)) == 3 * n_arm,
+  all(events$cmt %in% c("central")),
+  !anyNA(events$amt[events$evid == 1L])
+)
+```
+
+# Simulation
+
+```{r simulate}
+sim <- rxode2::rxSolve(mod, events = events, keep = c("regimen")) |>
+  as.data.frame()
+
+# rxode2 returns the algebraic observable Cc at every observation row. Both
+# residual terms are fixed at 0, so `sim` equals `Cc` here -- the packaged
+# model deliberately carries no residual scatter.
+stopifnot(all(c("Cc", "cl", "vc", "central", "peripheral1", "regimen") %in%
+                names(sim)))
+obs_rows <- sim[!is.na(sim$Cc), ]
+stopifnot(
+  nrow(obs_rows) > 0,
+  all(is.finite(obs_rows$Cc)),
+  # Cc is exactly 0 at t = 0 (the infusion has not started) and strictly
+  # positive at every later time. A negative value would mean solver noise.
+  all(obs_rows$Cc >= 0),
+  all(obs_rows$Cc[obs_rows$time > 0] > 0)
+)
+```
+
+# Replicate published figures
+
+## Figure 3 panel A -- predicted concentration-time profile
+
+```{r figure-3}
+ref_arm <- "Covariate reference (0.75 MU q12h)"
+
+fig3_sim <- tv_profile(mg_per_mu)     # 1.0 MU q8h at the reference subject
+fig3_df <- tibble::tibble(time = as.numeric(names(fig3_sim)),
+                          Cc = as.numeric(fig3_sim))
+
+fig3_pts <- bind_rows(
+  tibble::tibble(time = fig3a$t_peak,   Cc = fig3a$peak,   what = "Digitised peak"),
+  tibble::tibble(time = fig3a$t_trough, Cc = fig3a$trough, what = "Digitised trough")
+)
+
+ggplot(fig3_df, aes(time, Cc)) +
+  geom_line() +
+  geom_point(data = fig3_pts, aes(colour = what), size = 2) +
+  labs(
+    x = "Time after first dose (h)",
+    y = "Colistin sulfate concentration (mg/L)",
+    colour = NULL,
+    title = "Figure 3 panel A -- 1.0 MU q8h, 1 h infusion",
+    caption = paste(
+      "Line: packaged model, typical value at the covariate reference (CrCL",
+      "71.40 mL/min, WT 67.89 kg), doses converted at",
+      sprintf("%d mg/MU.", mg_per_mu),
+      "Points: hourly means digitised from Figure 3 panel A of Sun 2025."
+    )
+  ) +
+  theme(legend.position = "bottom")
+```
+
+## The terminal phase is poorly identified
+
+Figure 3 stops at 72 h. The published `Q` and `V2` imply that the model has not
+finished accumulating by then, which matters for anyone simulating a full
+course of therapy (the cohort was treated for 11.21 +/- 6.39 days).
+
+```{r terminal-phase}
+long <- tv_profile(mg_per_mu, ld = 0.75, md = 0.75, tau = 12, tend = 600)
+peak_at <- function(h) as.numeric(long[match(as.character(h), names(long))])
+
+accum <- tibble::tibble(
+  `Time (h)`               = c(72, 168, 336, 600),
+  `Day`                    = c(3, 7, 14, 25),
+  `Peak concentration (mg/L)` = peak_at(c(72, 168, 336, 600))
+) |>
+  mutate(`Fraction of the day-25 peak` = `Peak concentration (mg/L)` /
+           `Peak concentration (mg/L)`[4])
+
+knitr::kable(accum, digits = 3, caption = sprintf(paste(
+  "Accumulation on 0.75 MU q12h at the covariate reference. The terminal",
+  "half-life implied by Q = 1.63 L/h and V2 = 109 L is %.0f h (Vss = %.0f L),",
+  "so the plateau of Figure 3 is not the true steady state."
+), tbeta(2.66), 49.70 + 109))
+
+# Deterministic. The paper's own Discussion attributes this to having only
+# 14.29% first-dose peaks, leaving the distribution phase unidentified.
+stopifnot(
+  tbeta(2.66) > 48,
+  accum$`Fraction of the day-25 peak`[1] < 0.85
+)
+```
+
+The large inter-individual variances on `Q` (1.69) and `V2` (0.993) spread this
+across the simulated cohort dramatically:
+
+```{r terminal-phase-cohort}
+thalf_i <- sim |>
+  filter(!is.na(Cc)) |>
+  group_by(id) |>
+  summarise(cl = first(cl), vc = first(vc), q = first(q), vp = first(vp),
+            .groups = "drop") |>
+  mutate(thalf = mapply(tbeta, cl, vc, q, vp))
+
+tibble::tibble(
+  Statistic = c("Median terminal half-life (h)", "10th percentile (h)",
+                "90th percentile (h)",
+                "Subjects with terminal half-life > 300 h (%)"),
+  Value = c(median(thalf_i$thalf),
+            quantile(thalf_i$thalf, 0.10),
+            quantile(thalf_i$thalf, 0.90),
+            100 * mean(thalf_i$thalf > 300))
+) |>
+  knitr::kable(digits = 1, caption = paste(
+    "Terminal half-life across the simulated cohort. omega^2 on Q is 1.69",
+    "(190% CV) and on V2 is 0.993, so the slow compartment's equilibration",
+    "time varies over orders of magnitude."
+  ))
+
+# Cohort-derived, so bounded loosely -- but the claim being made is a
+# magnitude claim ("the terminal phase is long and highly variable"), and
+# these bounds would break if Q or V2 or their variances were mis-transcribed.
+stopifnot(
+  median(thalf_i$thalf) > 40,
+  quantile(thalf_i$thalf, 0.90) > 150
+)
+```
+
+This is a property of the published estimates, not of the encoding: `tvQ` has
+an RSE of 19.8% and a bootstrap interval of 0.44-3.67 L/h -- more than
+eightfold -- and `tvV2` an RSE of 24.8%. The paper concedes the cause directly:
+with only 14.29% of samples drawn as first-dose peaks, "there was insufficient
+information regarding the initial rapid distribution phase of the drug in the
+body". The parameters are packaged as published; the caveat is recorded here
+and in the model file.
+
+# PKNCA validation
+
+```{r pknca}
+sim_nca <- sim |>
+  filter(!is.na(Cc)) |>
+  select(id, time, Cc, regimen)
+
+conc_obj <- PKNCA::PKNCAconc(sim_nca, Cc ~ time | regimen + id,
+                             concu = "mg/L", timeu = "h")
+
+dose_df <- events |>
+  filter(evid == 1L) |>
+  select(id, time, amt, regimen)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | regimen + id, doseu = "mg")
+
+tau_of <- c("0.75 MU q12h" = 12, "1.0 MU q8h" = 8)
+tau_of[ref_arm] <- 12
+
+intervals <- tibble::tibble(
+  regimen   = names(tau_of),
+  start     = 300 - unname(tau_of),
+  end       = 300,
+  cmax      = TRUE, cmin = TRUE, tmax = TRUE,
+  auclast   = TRUE, cav  = TRUE
+) |>
+  as.data.frame()
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+nca_df <- as.data.frame(nca_res)
+stopifnot(nrow(nca_df) > 0, "cav" %in% nca_df$PPTESTCD)
+```
+
+## Identity check against the closed form
+
+The obvious check -- `AUC0-tau = Dose / CL` -- is a *steady-state* identity, and
+this model does not reach steady state on any practical timescale for a
+substantial minority of subjects (see the terminal-phase section above). It is
+reported below as a diagnostic, not gated.
+
+The gated identity is instead the exact mass balance, which needs no
+steady-state assumption at all: for a linear system, integrating the elimination
+flux from time zero gives
+
+`CL * AUC(0, T) = (total dose administered by T) - (amount still in the body at T)`
+
+for **any** `T`. Both sides use each subject's own drawn clearance and the
+solver's own state values, so the only residual is trapezoidal integration
+error.
+
+```{r nca-identity}
+per_subject <- sim |>
+  group_by(id, regimen) |>
+  summarise(cl = first(cl), q = first(q), vc = first(vc), vp = first(vp),
+            .groups = "drop")
+
+dose_amt <- dose_df |> distinct(regimen, amt)
+# Per SUBJECT, not per regimen: counting by regimen alone would multiply the
+# dose total by the arm size and silently break the mass balance.
+dose_given <- dose_df |>
+  group_by(id, regimen) |>
+  summarise(dose_in = sum(amt), .groups = "drop")
+
+# Exact mass balance over 0 -> 300 h.
+mass_balance <- sim |>
+  filter(!is.na(Cc)) |>
+  group_by(id, regimen) |>
+  summarise(
+    auc_total = sum(diff(time) *
+                      (utils::head(Cc, -1) + utils::tail(Cc, -1)) / 2),
+    amt_left  = dplyr::last(central) + dplyr::last(peripheral1),
+    .groups   = "drop"
+  ) |>
+  left_join(per_subject, by = c("id", "regimen")) |>
+  left_join(dose_given, by = c("id", "regimen")) |>
+  mutate(
+    eliminated = dose_in - amt_left,
+    pct        = 100 * (cl * auc_total - eliminated) / eliminated
+  )
+
+# Diagnostic only: the steady-state identity.
+auc_tau <- nca_df |>
+  filter(PPTESTCD == "auclast") |>
+  select(id, regimen, auc = PPORRES) |>
+  left_join(per_subject, by = c("id", "regimen")) |>
+  left_join(dose_amt, by = "regimen") |>
+  mutate(pct = 100 * (auc - amt / cl) / (amt / cl))
+
+cav_chk <- nca_df |>
+  filter(PPTESTCD == "cav") |>
+  select(id, regimen, cav = PPORRES) |>
+  left_join(per_subject, by = c("id", "regimen")) |>
+  left_join(dose_amt, by = "regimen") |>
+  left_join(tibble::tibble(regimen = names(tau_of), tau = unname(tau_of)),
+            by = "regimen") |>
+  mutate(pct = 100 * (cav - amt / (cl * tau)) / (amt / (cl * tau)))
+
+tibble::tibble(
+  Check = c("GATED: CL * AUC(0,300 h) vs dose in - amount remaining",
+            "Diagnostic: AUC0-tau vs Dose / CL (steady state assumed)",
+            "Consistency: Cav,ss vs AUC0-tau / tau"),
+  `Median % difference`  = c(median(mass_balance$pct), median(auc_tau$pct),
+                             median(cav_chk$pct - auc_tau$pct)),
+  `Max abs % difference` = c(max(abs(mass_balance$pct)), max(abs(auc_tau$pct)),
+                             max(abs(cav_chk$pct - auc_tau$pct)))
+) |>
+  knitr::kable(digits = 4, caption = paste(
+    "The mass-balance identity holds at any time and is exact to trapezoidal",
+    "error. The steady-state identity does not hold for this model, because",
+    "the peripheral compartment is still filling at 300 h in a substantial",
+    "minority of subjects."
+  ))
+
+stopifnot(
+  nrow(mass_balance) == 3 * n_arm,
+  # Exact identity, per subject, both sides from the same drawn parameters.
+  # Realised max ~1e-4 %; the bound allows for a coarser grid or a different
+  # solver tolerance, and still breaks on any ODE or unit error.
+  max(abs(mass_balance$pct)) < 0.2,
+  # Cav is AUC/tau by definition, so this catches an interval or tau mismatch.
+  max(abs(cav_chk$pct - auc_tau$pct)) < 1e-6,
+  # The steady-state deficit must be one-sided: drug is still accumulating, so
+  # the interval AUC can only fall SHORT of Dose/CL, never exceed it.
+  max(auc_tau$pct) < 1
+)
+```
+
+The steady-state identity is short by a median of
+`r sprintf("%.1f%%", abs(median(auc_tau$pct)))` and by as much as
+`r sprintf("%.0f%%", abs(min(auc_tau$pct)))` in the worst subject -- always in
+the same direction, because drug is still moving into the peripheral
+compartment. That one-sidedness is itself gated above; it is the signature of
+the unidentified distribution phase rather than of an encoding error, and the
+mass-balance identity confirms the ODE system conserves mass exactly.
+
+## Comparison against the published exposure
+
+Table 1 reports a steady-state concentration of 0.93 +/- 0.35 mg/L for the 129
+surviving patients, at a median daily dose of 1.5 MU -- which is the first
+simulated arm.
+
+```{r nca-compare}
+sim_cav <- nca_df |>
+  filter(PPTESTCD == "cav", regimen == "0.75 MU q12h") |>
+  summarise(cav = mean(PPORRES)) |>
+  mutate(regimen = "0.75 MU q12h") |>
+  as.data.frame()
+
+published <- tibble::tibble(
+  regimen = "0.75 MU q12h",
+  cav     = 0.93            # Table 1, "Css,avg", surviving patients
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated     = sim_cav,
+  reference     = published,
+  by            = "regimen",
+  units         = c(cav = "mg/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(cmp, caption = paste(
+  "Simulated mean steady-state concentration at the study's median daily dose",
+  "of 1.5 MU against the value reported in Table 1.",
+  "* differs from the reference by more than 20%."
+), align = c("l", "l", "r", "r", "r"))
+```
+
+```{r nca-compare-check}
+cav_mean <- sim_cav$cav
+pct_diff <- 100 * (cav_mean - 0.93) / 0.93
+
+tibble::tibble(
+  Quantity = c("Model mean Cav,ss on 1.5 MU/day (mg/L)",
+               "Sun 2025 Table 1 Css,avg (mg/L)",
+               "Table 1 SD (mg/L)",
+               "% difference"),
+  Value = c(cav_mean, 0.93, 0.35, pct_diff)
+) |>
+  knitr::kable(digits = 2, caption = paste(
+    "The model over-predicts the reported Css,avg. The two quantities are not",
+    "strictly like-for-like: the model figure is a true interval average at a",
+    "fixed dose, whereas Table 1's is a summary of sparse measured samples in",
+    "surviving patients only, at each patient's own dose."
+  ))
+
+# Cohort-derived, and deliberately loose: this compares an interval average
+# against a summary of sparse measured samples. It still goes red on a
+# mis-transcribed clearance, dose conversion or unit, which move it severalfold.
+# Realised near +45% here; the bound admits cohort noise on either side.
+stopifnot(abs(pct_diff) < 90)
+```
+
+The row stars. The gap is not a transcription error but a like-for-like
+mismatch compounded by the terminal-phase problem above, and it is worth
+setting out plainly:
+
+* Table 1's `Css,avg` is a summary of the *measured* sparse samples in
+  *surviving* patients, at each patient's own dose, whereas the model figure is
+  a true dosing-interval average at a single fixed regimen. The measured mix is
+  43.41% troughs, which pulls the reported mean down.
+* The model has not finished accumulating at 300 h, so its interval average is
+  above the concentration a patient treated for the cohort's median 11 days
+  would show.
+* Independently, the same conversion reproduces Figure 3 panel A -- the paper's
+  *own model output* -- to within
+  `r sprintf("%.0f%%", 100 * min(rms))` RMS. Where the paper's model output and
+  the paper's observed-data summary disagree, the model output is the right
+  target for validating an encoding of the model.
+
+# Assumptions and deviations
+
+- **Eqs. 1-5 are images, and the covariate model exists nowhere else.** The
+  centring constants 71.40 mL/min and 67.89 kg appear only inside the typeset
+  Eq. 1 and Eq. 2 and are in no table. They were recovered with
+  `pdftotext -layout` and confirmed against the publisher's equation GIFs from
+  the EuropePMC supplementary-files endpoint. A text-only extraction of this
+  paper loses the covariate model entirely.
+- **Eq. 1 mis-typesets the clearance as "266".** Table 2's 2.66 L/h is used, on
+  the strength of its RSE, confidence interval and bootstrap interval, and
+  because 266 L/h would place every prediction below the assay's limit of
+  quantification. Recorded above as an erratum.
+- **Residual-error magnitude is not reported, and is fixed at zero.** The form
+  is stated as combined additive plus proportional, but Table 2 reports only
+  `stdev0` = 1, the fixed `$SIGMA` scale of a NONMEM combined-error
+  parameterisation, with no RSE and no CI. Both `propSd` and `addSd` are
+  `fixed(0)`; nothing is invented. A reconstruction of roughly 13% proportional
+  (from Supplementary Table S3's 7.90% relative RMSE de-shrunk by the reported
+  40.8% epsilon-shrinkage), with a negligible additive term, is documented
+  above for users who need a non-zero residual.
+- **MU-to-mg conversion is derived, not printed.** The paper doses entirely in
+  MU and never gives a potency. The `r mg_per_mu` mg per MU used in the
+  simulations above is fitted to the 18 digitised points of Figure 3 panel A,
+  and is corroborated by the paper's own external-validation cohort (~45 mg/MU)
+  and by the independent `Ma_2026_colistinSulfate` model (44 mg per 10^6 IU).
+  It is the colistin **sulfate salt** basis, not colistin base activity
+  (33.3 mg/MU), which a careless extraction would assume. **The packaged model
+  does not contain this constant** -- it takes dose in mg -- so a user with
+  mg-denominated doses is unaffected by any residual uncertainty in it.
+- **Figure 2 cannot be inverted at steady state, and is not used as an
+  anchor.** Read as a steady-state quantity it implies a conversion nearer
+  35 mg/MU. Figure 2 refutes that reading itself: it draws four regimens that
+  share a maintenance dose as four distinct curves, which is only possible for
+  a first-24-hour AUC. Demonstrated mechanically above. No PTA claim is gated.
+- **Figure 3 panel A is operator-digitised.** The nine hourly-mean peaks and
+  nine troughs were read off the panel rendered at 300 dpi, to roughly
+  +/- 0.05 mg/L. They appear nowhere in the text or tables. The dose-scale-free
+  shape check is therefore bounded at 20% and the conversion at a range rather
+  than a point.
+- **The terminal phase is poorly identified.** `Q` = 1.63 L/h with `V2` = 109 L
+  gives a terminal half-life near 80 h and accumulation over days, against the
+  9-18 h usually reported for colistin. Both parameters are among the least
+  precise in Table 2 (bootstrap `tvQ` 0.44-3.67 L/h), and the paper's own
+  Discussion attributes this to having only 14.29% first-dose peaks. Values are
+  packaged as published and the caveat is quantified above.
+- **Table 1's `Css,avg` is over-predicted by the model.** The comparison table
+  stars. The two quantities are not like-for-like (a measured-sample summary in
+  survivors versus a true interval average) and the terminal-phase problem adds
+  to the gap; the paper's own model output in Figure 3 is reproduced well by the
+  same encoding.
+- **IIV scale is stated, not inferred.** The Table 2 legend says "variance of
+  inter-individual variability", so the four tabulated values are packaged
+  unsquared. No adjudication was needed, unlike in the sibling
+  `Ma_2026_colistinSulfate`.
+- **No inter-eta correlations.** Table 2 reports four diagonal variances and no
+  covariances, so the block is diagonal.
+- **Peak and trough sampling offsets are unknown.** The paper does not state
+  when "peak" and "trough" samples were drawn relative to the infusion. The
+  simulations here observe the whole final dosing interval on a 0.25 h grid
+  rather than assuming offsets.
+- **Covariate distributions in the virtual cohort.** The paper reports only
+  medians and ranges for CrCL and weight. The cohort draws CrCL log-normally
+  about the reported median and weight normally about it, each truncated to the
+  reported range; the true shapes are unknown. No gated check depends on this:
+  the erratum, residual, shape, conversion, loading-dose and terminal-phase
+  checks are all deterministic typical-value arithmetic, and the closed-form
+  NCA identities are per subject.
+- **Age, sex and albumin were screened and dropped.** Results states they had
+  "no statistically significant correlation with the pharmacokinetic
+  parameters" and reports no coefficients. They are documented in
+  `covariatesDataExcluded` and not encoded. Age, sex and weight all enter
+  indirectly through the Cockcroft-Gault CrCL the user supplies (Eq. 5).
+- **No PD or exposure-response model is extracted.** The `fAUC0-24/MIC >= 10`
+  target and the unbound fraction of 0.5 are literature assumptions quoted from
+  Cheah et al and others, not quantities fitted here, and the nephrotoxicity
+  and mortality rates are descriptive. The paper contributes one model: the
+  population PK model above.
+- **Two internal text-versus-table inconsistencies in the demographics.**
+  Results names "ceftazidime-avibactam (9.55%)" where Table 1 has
+  "Cefoperazone/sulbactam 17 (9.55%)", and Results names "Enterobacter cloacae
+  (3.93%)" where Table 1 has "E. coli 7 (3.93%)". Table 1 is followed in both
+  cases. Neither affects the model.
+- **Steady state is imposed by repeated dosing, not by an `ss` flag.** Each
+  subject receives 25-37 doses over 300 h before the observation window.

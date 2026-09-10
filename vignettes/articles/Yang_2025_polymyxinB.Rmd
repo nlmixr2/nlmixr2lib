@@ -1,0 +1,607 @@
+---
+title: "Polymyxin B (Yang 2025)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Polymyxin B (Yang 2025)}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>")
+library(nlmixr2lib)
+library(PKNCA)
+library(rxode2)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+```
+
+# Model and source
+
+* Citation: `r rxode2::rxode(readModelDb("Yang_2025_polymyxinB"))$reference`
+* Description: `r rxode2::rxode(readModelDb("Yang_2025_polymyxinB"))$description`
+* Article: [Front Pharmacol. 2025;16:1511088](https://doi.org/10.3389/fphar.2025.1511088)
+
+# Population
+
+Yang 2025 is a single-centre prospective study run in the intensive care unit of
+the First Affiliated Hospital of Army Medical University (Chong Qing, China)
+between August 2021 and July 2024. Ninety-five adults receiving intravenous
+polymyxin B for a microbiologically confirmed carbapenem-resistant organism
+(CRO) infection were split chronologically into a modelling set (80 patients,
+184 concentrations) and an external validation set (15 patients, 30
+concentrations). Patients receiving any form of renal replacement therapy during
+polymyxin B treatment were excluded, so the cohort spans a wide but
+non-dialysed range of renal function.
+
+The modelling set (Table 1) had a median age of 60 years (IQR 47-74), a median
+total body weight of 63 kg (IQR 55-74), 25% women, and an APACHE II score of
+28 +/- 9.25. Carbapenem-resistant *Acinetobacter baumannii* was the commonest
+pathogen (70 cases), followed by carbapenem-resistant Enterobacterales (56) and
+carbapenem-resistant *Pseudomonas aeruginosa* (15); the lung was the infection
+site in 81.25%. Cockcroft-Gault creatinine clearance had a median of
+75.99 mL/min (IQR 38.46-130.58) and platelet count a median of
+163.50 x 10^9/L (IQR 84.5-266.25) -- the two values that normalise the
+covariate model. A loading dose was given to 97.5% of the modelling set and the
+maintenance dose was 1.31 +/- 0.25 mg/kg per administration, which at the median
+body weight is about 82.5 mg every 12 h.
+
+Sampling was deliberately sparse and paired: after at least 48 h of therapy, one
+sample immediately before an infusion (steady-state trough) and one immediately
+after (steady-state peak). Concentrations were measured by validated
+UPLC-MS/MS with polymyxin E2 as internal standard, with total polymyxin B
+computed by summing the molar contributions of the PMB1 and PMB2 components.
+
+The same information is available programmatically via the model's `population`
+metadata (`readModelDb("Yang_2025_polymyxinB")()$population`).
+
+# Source trace
+
+The per-parameter origin is recorded as an in-file comment next to each `ini()`
+entry in `inst/modeldb/specificDrugs/Yang_2025_polymyxinB.R`. The table below
+collects them in one place for review.
+
+| Equation / parameter | Value | Source location |
+|----------------------|-------|-----------------|
+| `lcl` (CL) | 2.03 L/h | Table 2, "CL (L h-1)"; RSE 5.30%, bootstrap 95% CI 1.81-2.24 |
+| `lvc` (V) | 18 L | Table 2, "V(L)"; RSE 5.30%, bootstrap 95% CI 16.30-19.80 |
+| `e_crcl_cl` | 0.26 | Table 2, "dCLdCrCL"; RSE 20.40%, bootstrap 95% CI 0.15-0.36 |
+| `e_plt_cl` | -0.14 | Table 2, "dCLdPLT"; RSE 24.20%, bootstrap 95% CI -0.22 to -0.066 |
+| CRCL normalising constant | 75.99 mL/min | Equation 6 prints the symbol `CrCLmedian`; the number is the modelling-set median of Table 1 |
+| PLT normalising constant | 163.50 x 10^9/L | Equation 6 prints the symbol `PLTmedian`; the number is the modelling-set median of Table 1 |
+| `etalcl` | variance 0.148225 (omega 0.385) | Table 2, "etaCL (%) 38.50"; RSE 10.70%, bootstrap 95% CI 29.70-46.60 |
+| `etalvc` | `fixed(0)` | Equation 7 contains `exp(eta_V)` but Table 2 reports no variance for it |
+| `propSd` | 0.30 | Table 2, "Proportional error"; RSE 8.20%, bootstrap 95% CI 0.25-0.35 |
+| `addSd` | 0.21 mg/L | Table 2, "Additive error"; RSE 28.40%, bootstrap 95% CI 0.070-0.35 |
+| `cl <- exp(lcl + etalcl) * (CRCL/75.99)^e_crcl_cl * (PLT/163.5)^e_plt_cl` | n/a | Equation 6 |
+| `vc <- exp(lvc + etalvc)` | n/a | Equation 7 |
+| `d/dt(central) <- -kel * central` | n/a | Results, "PopPK model analysis and validation": "A one-compartment model with first-order elimination best fit the population data" |
+| `Cc ~ add(addSd) + prop(propSd)` | n/a | Results: "residual variability was described using both proportional and additive error models" |
+| 1-hour infusion | n/a | Methods, "Monte Carlo simulation": "50 mg, 75 mg, 100 mg, and 125 mg every 12 h (q12h) with a 1-hour infusion time" |
+
+## Two Table 2 rows that had to be resolved on scale, not read off
+
+Table 2 reports its variability rows as bare numbers, and its abbreviation
+footnote glosses `eta` as "variance of inter-individual variability". Read
+literally that would make `etaCL = 0.385` a variance (omega = 0.62) and the two
+residual rows NONMEM `$SIGMA` variances (proportional SD 0.548, additive SD
+0.458). Both readings are refuted by numbers printed elsewhere in the same
+paper, so this model encodes 38.50%, 0.30 and 0.21 on the **SD scale**.
+
+**`etaCL` is an SD, not a variance.** Three independent checks agree.
+
+1. The row is labelled `etaCL (%)`. A percentage is meaningless for a variance
+   of a log-scale random effect.
+2. Table 1 reports the model-based AUCss,24h of the modelling set as a median of
+   74.07 with IQR 55.81-94.07. Because AUCss,24h was computed as the 24-hour
+   dose divided by the individual clearance (Methods, "Data analysis"), that
+   IQR is the IQR of 1/CL. Its 1.686-fold spread implies a total SD of log(CL)
+   of about `log(94.07 / 55.81) / (2 * qnorm(0.75))` = 0.387. That total
+   *already includes* the CrCL and PLT contributions, so it is an upper bound on
+   omega -- and it excludes 0.62 outright.
+3. The Table 3 band percentages can be reconstructed from Equation 6 only with
+   omega near 0.385. The reconstruction is run as a gate below.
+
+**The residual rows are SDs, not variances.** At the variance reading the
+residual CV would be about 55%, and the external-validation metrics reported in
+the Results (MAPE% 28.45, F30 73.33%, i.e. 73% of predictions within 30% of
+observed) would be unreachable: for a 55% error SD only about
+`r round(100 * (2 * stats::pnorm(0.30 / 0.61) - 1), 0)`% of predictions fall
+within 30%. At the SD reading the combined residual CV over the observed
+concentration range (Ctrough,ss 1.69 mg/L, Cpeak,ss 5.73 mg/L) is about 30-33%,
+which puts F30 near 70% and MAPE near 25% -- consistent with what the paper
+reports.
+
+# Virtual cohort
+
+Original observed data are not publicly available. The cohorts below are virtual
+populations whose covariate distributions approximate the published Table 1
+demographics of the modelling set.
+
+`CRCL` and `PLT` are drawn as log-normals matched to the Table 1 median and
+interquartile range, then truncated to a physiologically plausible window. The
+dose is 82.53 mg every 12 h as a 1-hour infusion -- the median maintenance dose
+of 1.31 mg/kg (Table 1) at the median body weight of 63 kg.
+
+```{r cohort}
+# set.seed() seeds R's RNG (used for the covariate draws below). It does NOT
+# seed rxode2's eta sampler, whose streams are partitioned per solver thread,
+# so the eta draw differs between this machine and a CI runner with a different
+# thread count. Every assertion below is therefore written either on a
+# deterministic (zeroRe) quantity or on a robust centre/quantile statistic.
+set.seed(20250312)
+
+n_sub <- 200L
+tau <- 12      # dosing interval (h)
+t_inf <- 1     # infusion duration (h)
+dose_mg <- 1.31 * 63  # Table 1 median maintenance dose x median body weight
+
+# Log-normal parameters matched to the Table 1 modelling-set median and IQR.
+lnorm_from_median_iqr <- function(median_value, q25, q75) {
+  list(
+    meanlog = log(median_value),
+    sdlog = log(q75 / q25) / (2 * stats::qnorm(0.75))
+  )
+}
+crcl_par <- lnorm_from_median_iqr(75.99, 38.46, 130.58)
+plt_par <- lnorm_from_median_iqr(163.50, 84.5, 266.25)
+
+cohort <- tibble::tibble(
+  id = seq_len(n_sub),
+  CRCL = pmin(pmax(stats::rlnorm(n_sub, crcl_par$meanlog, crcl_par$sdlog), 5), 300),
+  PLT = pmin(pmax(stats::rlnorm(n_sub, plt_par$meanlog, plt_par$sdlog), 10), 600)
+)
+
+# Event table built as a plain data frame so the dosing columns stay explicit.
+# ss = 1 on the t = 0 dose puts the system directly at the steady state of the
+# q12h regimen, which removes any dependence on the length of a burn-in; a
+# second explicit dose at t = 12 completes a 24-hour steady-state window.
+# PKNCA does not expand `addl`, so the second dose is written out as its own row.
+obs_times <- seq(0, 24, by = 0.1)
+
+dose_rows <- tidyr::expand_grid(
+  cohort,
+  tibble::tibble(time = c(0, tau), ss = c(1, 0), ii = c(tau, 0))
+) |>
+  dplyr::mutate(amt = dose_mg, evid = 1, cmt = "central", dur = t_inf)
+
+obs_rows <- tidyr::expand_grid(cohort, tibble::tibble(time = obs_times)) |>
+  dplyr::mutate(amt = NA_real_, evid = 0, cmt = "central", dur = NA_real_,
+                ss = 0, ii = 0)
+
+events <- dplyr::bind_rows(dose_rows, obs_rows) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  dplyr::select(id, time, amt, evid, cmt, dur, ss, ii, CRCL, PLT) |>
+  as.data.frame()
+
+stopifnot(
+  nrow(dose_rows) == 2L * n_sub,
+  !anyNA(events$CRCL), !anyNA(events$PLT)
+)
+```
+
+# Simulation
+
+```{r simulate}
+mod <- readModelDb("Yang_2025_polymyxinB")
+
+# The solved object is named `sim_cohort`, not `sim`: rxSolve emits a column
+# literally called `sim` (the residual-error-carrying simulated observation, as
+# opposed to `Cc`, which is the individual prediction without residual error),
+# and a data frame of the same name shadows it in confusing ways downstream.
+# rxSolve returns observation records only, so there is no `evid` column to
+# filter on.
+sim_cohort <- rxode2::rxSolve(mod, events = events,
+                              keep = c("CRCL", "PLT")) |>
+  as.data.frame()
+
+stopifnot(nrow(sim_cohort) == n_sub * length(obs_times))
+```
+
+A matching deterministic (typical-value) solve is used for every replication of
+a published *median*. That substitution is exact here rather than approximate:
+the model carries a single non-zero random effect, log-normal on `CL`, and both
+the steady-state concentration profile and AUCss,24h are monotone in `CL`, so
+the population median equals the typical-value profile.
+
+```{r simulate-typical}
+mod_typical <- rxode2::zeroRe(mod)
+
+events_typical <- events |>
+  dplyr::filter(id == 1L) |>
+  dplyr::mutate(CRCL = 75.99, PLT = 163.50)
+
+sim_typical <- rxode2::rxSolve(mod_typical, events = events_typical) |>
+  as.data.frame()
+```
+
+# Replicate published results
+
+## Table 1 -- steady-state trough and peak concentrations
+
+Table 1 reports the observed steady-state concentrations of the modelling set as
+medians with IQR: Ctrough,ss 1.69 mg/L (0.78-3.29) and Cpeak,ss 5.73 mg/L
+(3.96-7.64). Peak samples were drawn "immediately after" the infusion, i.e. at
+the end of the 1-hour infusion, and trough samples "immediately before" the next
+one.
+
+```{r table1-conc}
+peak_typ <- sim_typical$Cc[which.min(abs(sim_typical$time - t_inf))]
+trough_typ <- sim_typical$Cc[which.min(abs(sim_typical$time - tau))]
+
+table1_cmp <- tibble::tibble(
+  Quantity = c("Cpeak,ss (end of 1-h infusion)", "Ctrough,ss (end of interval)"),
+  Simulated = c(peak_typ, trough_typ),
+  Published = c(5.73, 1.69),
+  `Published IQR` = c("3.96-7.64", "0.78-3.29")
+) |>
+  dplyr::mutate(`Difference (%)` = 100 * (Simulated - Published) / Published)
+
+knitr::kable(table1_cmp, digits = 2,
+             caption = "Typical-value steady-state concentrations at the median dose (82.53 mg q12h) and median covariates, against the observed medians of Yang 2025 Table 1.")
+
+# The typical-value profile IS the population median here (single log-normal
+# eta, monotone response), so these gates are deterministic -- no cohort draw
+# enters them.
+stopifnot(
+  peak_typ > 3.96, peak_typ < 7.64,
+  trough_typ > 0.78, trough_typ < 3.29,
+  abs(peak_typ - 5.73) / 5.73 < 0.05,
+  abs(trough_typ - 1.69) / 1.69 < 0.02
+)
+```
+
+## Table 3 -- AUCss,24h band probabilities across 40 simulated scenarios
+
+Table 3 tabulates, for 40 combinations of maintenance dose (50, 75, 100,
+125 mg q12h), creatinine clearance (30, 60, 90, 120, 150 mL/min) and platelet
+count (85 and 266 x 10^9/L), the percentage of the simulated population whose
+AUCss,24h falls below 50, inside 50-100, and above 100 mg h/L.
+
+For a linear one-compartment model at steady state, AUCss,24h is exactly the
+24-hour dose divided by the individual clearance -- which is also how Yang 2025
+computed it (Methods, "Data analysis"). Individual clearance is log-normal about
+the typical value of Equation 6, so the three band probabilities follow in
+closed form from the typical clearance and omega. The typical clearance for each
+scenario is read off a `zeroRe()` solve, so the check exercises the packaged
+encoding of Equation 6 rather than a re-typed formula.
+
+```{r table3-scenarios}
+scenarios <- tidyr::expand_grid(
+  dose = c(50, 75, 100, 125),
+  CRCL = c(30, 60, 90, 120, 150),
+  PLT = c(85, 266)
+) |>
+  dplyr::mutate(id = dplyr::row_number())
+
+scen_events <- dplyr::bind_rows(
+  scenarios |>
+    dplyr::transmute(id, time = 0, amt = dose, evid = 1, cmt = "central",
+                     dur = t_inf, ss = 1, ii = tau, CRCL, PLT),
+  scenarios |>
+    dplyr::transmute(id, time = tau, amt = NA_real_, evid = 0, cmt = "central",
+                     dur = NA_real_, ss = 0, ii = 0, CRCL, PLT)
+) |>
+  dplyr::arrange(id, time, dplyr::desc(evid)) |>
+  as.data.frame()
+
+scen_cl <- rxode2::rxSolve(mod_typical, events = scen_events) |>
+  as.data.frame() |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl_typ = dplyr::first(cl), .groups = "drop")
+
+omega_cl <- sqrt(0.148225)  # Table 2 etaCL 38.50% -> omega 0.385
+
+band_prob <- function(auc_typ, lower, upper, omega) {
+  stats::pnorm(log(upper / auc_typ) / omega) -
+    stats::pnorm(log(lower / auc_typ) / omega)
+}
+
+table3_sim <- scenarios |>
+  dplyr::inner_join(scen_cl, by = "id") |>
+  dplyr::mutate(
+    auc_typ = 2 * dose / cl_typ,
+    below50 = 100 * band_prob(auc_typ, 0, 50, omega_cl),
+    within = 100 * band_prob(auc_typ, 50, 100, omega_cl),
+    above100 = 100 * band_prob(auc_typ, 100, Inf, omega_cl)
+  )
+```
+
+```{r table3-published}
+# Yang 2025 Table 3, transcribed. Columns: percentage of the simulated
+# population with AUCss,24h < 50, within 50-100, and > 100 mg h/L.
+table3_pub <- tibble::tribble(
+  ~dose, ~CRCL, ~PLT, ~below50, ~within, ~above100,
+  50,  30,  85, 35.2, 58.0,  6.8,   50,  30, 266, 24.3, 59.4, 16.3,
+  50,  60,  85, 51.8, 45.0,  3.2,   50,  60, 266, 37.2, 55.8,  7.0,
+  50,  90,  85, 64.4, 33.8,  1.8,   50,  90, 266, 50.2, 45.2,  4.6,
+  50, 120,  85, 69.9, 29.0,  1.1,   50, 120, 266, 55.5, 41.2,  3.3,
+  50, 150,  85, 76.4, 22.7,  0.9,   50, 150, 266, 63.8, 34.0,  2.2,
+  75,  30,  85,  8.3, 58.9, 32.8,   75,  30, 266,  3.7, 46.2, 50.1,
+  75,  60,  85, 17.4, 61.4, 21.2,   75,  60, 266, 10.5, 57.0, 32.5,
+  75,  90,  85, 25.8, 60.0, 14.2,   75,  90, 266, 16.8, 60.7, 22.5,
+  75, 120,  85, 30.6, 59.9,  9.5,   75, 120, 266, 20.5, 61.1, 18.4,
+  75, 150,  85, 37.3, 55.3,  7.4,   75, 150, 266, 25.6, 60.8, 13.6,
+  100,  30,  85,  2.2, 33.8, 64.0,  100,  30, 266,  0.6, 24.2, 75.2,
+  100,  60,  85,  4.4, 48.0, 47.6,  100,  60, 266,  2.3, 35.5, 62.2,
+  100,  90,  85,  8.4, 56.7, 34.9,  100,  90, 266,  4.7, 46.0, 49.3,
+  100, 120,  85, 13.4, 56.7, 29.9,  100, 120, 266,  6.2, 50.0, 43.8,
+  100, 150,  85, 15.6, 61.0, 23.4,  100, 150, 266,  8.4, 55.9, 35.7,
+  125,  30,  85,  0.5, 17.0, 82.5,  125,  30, 266,  0.1, 10.4, 89.5,
+  125,  60,  85,  1.4, 29.2, 69.4,  125,  60, 266,  0.4, 20.6, 79.0,
+  125,  90,  85,  3.2, 38.2, 58.6,  125,  90, 266,  1.4, 28.8, 69.8,
+  125, 120,  85,  4.8, 42.0, 53.2,  125, 120, 266,  2.0, 32.8, 65.2,
+  125, 150,  85,  4.9, 50.6, 44.5,  125, 150, 266,  2.6, 39.2, 58.2
+)
+stopifnot(nrow(table3_pub) == 40L)
+
+table3_cmp <- table3_pub |>
+  tidyr::pivot_longer(c(below50, within, above100),
+                      names_to = "band", values_to = "published") |>
+  dplyr::inner_join(
+    table3_sim |>
+      tidyr::pivot_longer(c(below50, within, above100),
+                          names_to = "band", values_to = "simulated"),
+    by = c("dose", "CRCL", "PLT", "band")
+  ) |>
+  dplyr::mutate(diff_pp = simulated - published)
+
+stopifnot(nrow(table3_cmp) == 120L)
+```
+
+```{r table3-gate}
+table3_summary <- table3_cmp |>
+  dplyr::group_by(band) |>
+  dplyr::summarise(
+    `Median |difference| (pp)` = stats::median(abs(diff_pp)),
+    `90th pctile |difference| (pp)` = stats::quantile(abs(diff_pp), 0.9),
+    `Max |difference| (pp)` = max(abs(diff_pp)),
+    .groups = "drop"
+  ) |>
+  dplyr::rename("AUC band" = band)
+
+knitr::kable(table3_summary, digits = 2,
+             caption = "Reconstruction of Yang 2025 Table 3 from Equation 6 and omega = 0.385, across all 120 published cells. Differences are in percentage points.")
+
+# Deterministic gate -- no random draw enters the reconstruction, so the
+# residual difference is Yang 2025's own 1,000-draw Monte Carlo noise plus
+# rounding of the two normalising medians.
+stopifnot(
+  stats::median(abs(table3_cmp$diff_pp)) < 2,
+  stats::quantile(abs(table3_cmp$diff_pp), 0.9) < 3.5,
+  max(abs(table3_cmp$diff_pp)) < 6,
+  stats::cor(table3_cmp$simulated, table3_cmp$published) > 0.997
+)
+```
+
+```{r figure-5}
+# Replicates the substance of Figure 5 of Yang 2025: probability of target
+# attainment against creatinine clearance, by maintenance dose and platelet
+# count, at MIC 0.5 mg/L with the AUCss,24h/MIC >= 66.9 target.
+pta_target <- 66.9 * 0.5
+
+pta <- table3_sim |>
+  dplyr::mutate(
+    pta = 100 * (1 - stats::pnorm(log(pta_target / auc_typ) / omega_cl)),
+    dose_label = factor(paste0(dose, " mg q12h"),
+                        levels = paste0(c(50, 75, 100, 125), " mg q12h")),
+    plt_label = paste0("PLT = ", PLT, " x 10^9/L")
+  )
+
+ggplot(pta, aes(CRCL, pta, colour = dose_label)) +
+  geom_line() +
+  geom_point() +
+  geom_hline(yintercept = 90, linetype = "dashed") +
+  facet_wrap(~plt_label) +
+  coord_cartesian(ylim = c(0, 100)) +
+  labs(x = "Creatinine clearance (mL/min)",
+       y = "PTA (%) for AUCss,24h/MIC >= 66.9 at MIC 0.5 mg/L",
+       colour = "Maintenance dose",
+       caption = "Replicates Figure 5 / Results of Yang 2025.")
+
+# Results: "At MIC <= 0.5 mg/L, PTA >= 90% was achieved in all groups except
+# the 50 mg q12h maintenance dose group"; the Discussion narrows the exception
+# to "the 50 mg maintenance dose group with high CrCL".
+stopifnot(
+  all(pta$pta[pta$dose > 50] >= 90),
+  any(pta$pta[pta$dose == 50] < 90),
+  all(pta$pta[pta$dose == 50 & pta$CRCL >= 90] < 90)
+)
+```
+
+## Figure 2 -- steady-state concentration-time profile
+
+```{r figure-2}
+# Replicates the shape of Figure 2 (VPC) of Yang 2025 over one 24-hour
+# steady-state window at the median maintenance dose.
+sim_cohort |>
+  dplyr::group_by(time) |>
+  dplyr::summarise(
+    Q05 = stats::quantile(Cc, 0.05),
+    Q50 = stats::quantile(Cc, 0.50),
+    Q95 = stats::quantile(Cc, 0.95),
+    .groups = "drop"
+  ) |>
+  ggplot(aes(time, Q50)) +
+  geom_ribbon(aes(ymin = Q05, ymax = Q95), alpha = 0.25) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(0, 24, by = 4)) +
+  labs(x = "Time (h)", y = "Polymyxin B concentration (mg/L)",
+       caption = paste("Steady-state profile, 82.53 mg q12h as a 1-h infusion;",
+                       "median and 5th-95th percentile of 200 virtual subjects.",
+                       "Compare Figure 2 of Yang 2025."))
+```
+
+# PKNCA validation
+
+NCA is run over the full 24-hour steady-state window (two q12h doses), which is
+the interval Yang 2025 reports AUCss,24h over.
+
+```{r pknca}
+sim_nca <- sim_cohort |>
+  dplyr::filter(!is.na(Cc)) |>
+  dplyr::select(id, time, Cc)
+
+# A record sits exactly on the interval end (t = 24) by construction of
+# obs_times, which is what ctrough needs; and a t = 0 record anchors the interval
+# start. Guard both defensively.
+stopifnot(
+  all(tapply(sim_nca$time, sim_nca$id, function(x) any(x == 0))),
+  all(tapply(sim_nca$time, sim_nca$id, function(x) any(x == 24)))
+)
+
+conc_obj <- PKNCA::PKNCAconc(as.data.frame(sim_nca), Cc ~ time | id,
+                             concu = "mg/L", timeu = "h")
+
+dose_df <- events |>
+  dplyr::filter(evid == 1) |>
+  dplyr::select(id, time, amt)
+
+dose_obj <- PKNCA::PKNCAdose(dose_df, amt ~ time | id, doseu = "mg")
+
+intervals <- data.frame(
+  start = 0,
+  end = 24,
+  cmax = TRUE,
+  tmax = TRUE,
+  cmin = TRUE,
+  ctrough = TRUE,
+  auclast = TRUE,
+  cav = TRUE
+)
+
+nca_res <- PKNCA::pk.nca(PKNCA::PKNCAdata(conc_obj, dose_obj,
+                                          intervals = intervals))
+
+nca_wide <- as.data.frame(nca_res) |>
+  dplyr::select(id, PPTESTCD, PPORRES) |>
+  tidyr::pivot_wider(names_from = PPTESTCD, values_from = PPORRES)
+```
+
+## Solve against its own closed form
+
+For a linear one-compartment model at steady state, AUC over a full dosing
+window equals the dose administered in that window divided by the individual
+clearance. Both sides of this comparison use the *same* drawn `CL`, so the only
+difference is trapezoidal error on the simulated grid and a tight bound is the
+correct assertion.
+
+```{r auc-identity}
+cl_i <- sim_cohort |>
+  dplyr::group_by(id) |>
+  dplyr::summarise(cl = dplyr::first(cl), .groups = "drop")
+
+auc_chk <- nca_wide |>
+  dplyr::inner_join(cl_i, by = "id") |>
+  dplyr::mutate(
+    auc_closed_form = 2 * dose_mg / cl,
+    pct_diff = 100 * (auclast - auc_closed_form) / auc_closed_form
+  )
+
+knitr::kable(
+  tibble::tibble(
+    Statistic = c("Median % difference", "90th percentile |% difference|",
+                  "Max |% difference|"),
+    Value = c(stats::median(auc_chk$pct_diff),
+              stats::quantile(abs(auc_chk$pct_diff), 0.9),
+              max(abs(auc_chk$pct_diff)))
+  ),
+  digits = 3,
+  caption = "PKNCA AUC(0-24) at steady state against dose/CL, over 200 virtual subjects."
+)
+
+stopifnot(max(abs(auc_chk$pct_diff)) < 0.05)
+```
+
+## Comparison against published values
+
+```{r nca_compare}
+simulated_nca <- nca_wide |>
+  dplyr::transmute(
+    group = "82.53 mg q12h",
+    cmax = cmax,
+    ctrough = ctrough,
+    auclast = auclast
+  )
+
+published <- tibble::tribble(
+  ~group,          ~cmax, ~ctrough, ~auclast,
+  "82.53 mg q12h",  5.73,  1.69,    74.07
+)
+
+cmp <- nlmixr2lib::ncaComparisonTable(
+  simulated = simulated_nca,
+  reference = published,
+  by = "group",
+  units = c(cmax = "mg/L", ctrough = "mg/L", auclast = "mg*h/L"),
+  tolerance_pct = 20
+)
+
+knitr::kable(
+  cmp,
+  caption = paste("Simulated steady-state NCA against Yang 2025 Table 1",
+                  "(observed Cpeak,ss and Ctrough,ss medians; model-based",
+                  "AUCss,24h median). * differs from reference by >20%."),
+  align = c("l", "l", "r", "r", "r")
+)
+
+# Centre-of-distribution gates against the published medians. The AUC target is
+# the modelling set's model-based median, which was computed over the cohort's
+# ACTUAL per-patient doses; the simulation fixes every subject at the median
+# maintenance dose, so a moderate offset is expected and the bound is set on
+# the centre rather than on any cohort extreme.
+stopifnot(
+  abs(stats::median(nca_wide$cmax) - 5.73) / 5.73 < 0.15,
+  abs(stats::median(nca_wide$ctrough) - 1.69) / 1.69 < 0.15,
+  abs(stats::median(nca_wide$auclast) - 74.07) / 74.07 < 0.25
+)
+```
+
+# Assumptions and deviations
+
+- **Normalising constants for the two covariates.** Equation 6 prints its two
+  divisors only as the symbols `CrCLmedian` and `PLTmedian`. They are taken as
+  the modelling-set medians of Table 1, 75.99 mL/min and 163.50 x 10^9/L. This
+  is corroborated rather than assumed: the Table 3 reconstruction above
+  reproduces all 120 published cells to a median of under 3 percentage points,
+  which would not happen if either divisor were materially different, and the
+  paper's own simulation grid uses the Table 1 modelling-set quartiles of PLT
+  (85 and 266) as its two levels.
+- **`etaCL` and the two residual rows read on the SD scale.** Table 2's
+  abbreviation footnote calls `eta` a variance. That gloss is not followed, for
+  the reasons set out in the source-trace section. Under the variance reading
+  neither the Table 1 AUCss,24h IQR, nor the Table 3 band percentages, nor the
+  external-validation MAPE/F30 metrics could be reproduced.
+- **No IIV on volume of distribution.** Equation 7 is written
+  `V = 18 L * exp(eta_V)`, but Table 2's inter-individual-variability block
+  contains only the `etaCL` row, and no supplementary table on disk supplies a
+  value (the article's deposited supplementary material is the base-model
+  goodness-of-fit figure only). `etalvc` is therefore encoded as
+  `fixed(0)` -- the random effect is declared, as the paper writes it, with a
+  variance of zero rather than an invented magnitude. A user who wants to
+  reinstate it can set a non-zero variance on `etalvc`.
+- **Covariate distributions are virtual.** `CRCL` and `PLT` are drawn as
+  log-normals matched to the Table 1 median and IQR of the modelling set, then
+  truncated to 5-300 mL/min and 10-600 x 10^9/L. The paper does not publish the
+  per-patient covariate values, nor the correlation between creatinine clearance
+  and platelet count, which is treated here as zero.
+- **Both covariates are treated as time-fixed.** The paper reports a single
+  baseline value per patient in Table 1 and does not describe a time-varying
+  covariate model, although platelet count and renal function do move over a
+  13-day ICU course.
+- **Dose.** Table 1 reports the maintenance dose as 1.31 +/- 0.25 mg/kg per
+  administration and the median body weight as 63 kg; the simulated regimen uses
+  the product, 82.53 mg q12h, for every subject. The paper's own Monte Carlo
+  scenarios (50/75/100/125 mg q12h) are used for the Table 3 and Figure 5
+  replications.
+- **AUCss,24h definition.** Following the paper (Methods, "Data analysis"),
+  model-based AUCss,24h is the 24-hour dose divided by the individual clearance.
+  The PKNCA section computes it independently by trapezoidal integration of the
+  simulated profile and confirms the two agree.
+- **The PLT covariate is extrapolation-unsafe outside roughly
+  85-266 x 10^9/L.** Yang 2025 excluded patients with elevated platelet counts
+  from modelling (Limitations) and describes the platelet effect as a first
+  report requiring confirmation.
+- All parameter values come from the paper's own text and tables. No value was
+  taken from a figure, from correspondence, or from an upstream model.
