@@ -593,7 +593,7 @@ mod
 #>     Crbc ~ prop(propSd_Crbc)
 #>   })
 #> }
-#> <environment: 0x55f1c5eb6a68>
+#> <environment: 0x55d5ea9fb0b0>
 ```
 
 ## Population
@@ -1678,7 +1678,7 @@ The undocumented tissue Vmax ratios are not identifiable from plasma: a
 sessionInfo()
 #> R version 4.6.1 (2026-06-24)
 #> Platform: x86_64-pc-linux-gnu
-#> Running under: Ubuntu 24.04.5 LTS
+#> Running under: Ubuntu 24.04.4 LTS
 #> 
 #> Matrix products: default
 #> BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
