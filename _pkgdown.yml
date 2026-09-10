@@ -4134,6 +4134,10 @@ navbar:
         href: articles/Setiawan_2023_ampicillin_sulbactam.html
       - text: "Sulbactam durlobactam (Cammarata 2024)"
         href: articles/Cammarata_2024_sulbactam_durlobactam.html
+      - text: "Sulbactam durlobactam pediatric allometry (Larson 2026)"
+        href: articles/Larson_2026_sulbactam_durlobactam_pediatric.html
+      - text: "Sulbactam durlobactam pediatric allometry crcl (Larson 2026)"
+        href: articles/Larson_2026_sulbactam_durlobactam_pediatric.html
       - text: "Sulbactam human (Abouelhassan 2024)"
         href: articles/Abouelhassan_2024_sulbactam_elf_pneumonia.html
       - text: "Sulbactam mouse (Abouelhassan 2024)"
@@ -6011,6 +6015,7 @@ articles:
   - articles/Langenhorst_2019_fludarabine
   - articles/Laouenan_2015_ribavirin
   - articles/Larsen_2018_haemophilia_animal_popPK
+  - articles/Larson_2026_sulbactam_durlobactam_pediatric
   - articles/Lau_2026_paracetamol
   - articles/Launay_2024_ceftazidime
   - articles/Lawson_2022_busulfan
