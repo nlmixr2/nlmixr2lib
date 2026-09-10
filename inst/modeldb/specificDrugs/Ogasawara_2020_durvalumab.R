@@ -113,7 +113,7 @@ Ogasawara_2020_durvalumab <- function() {
 
     # Residual error: log-additive (concentrations were log-transformed;
     # additive error on log scale = proportional-like on original scale)
-    addSd <- 0.198     ; label("Log-additive residual error SD on the log scale (unitless)")
+    expSd <- 0.198     ; label("Log-additive residual error SD on the log scale (unitless)")
   })
   model({
     # Covariate-adjusted PK parameters
@@ -150,6 +150,6 @@ Ogasawara_2020_durvalumab <- function() {
 
     Cc <- central / vc   # mg/L
 
-    Cc ~ lnorm(addSd)
+    Cc ~ lnorm(expSd)
   })
 }

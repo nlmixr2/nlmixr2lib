@@ -142,7 +142,7 @@ Choi_2025_denosumab <- function() {
     lka <- log(0.0078)
     label("First-order subcutaneous absorption rate constant in patients (1/h)")  # Table 3, "ka_PMO" = 0.0078 1/h [4.96% RSE]
     e_healthy_ka <- 0.5849336
-    label("Effect of healthy-volunteer status on ka (log-scale)")  # Table 3: ka(HV) 0.014 / ka_PMO 0.0078 = 1.795; Results 3.1 quotes the reciprocal ratio as 0.55
+    label("Effect of healthy-volunteer status on ka, log-scale (unitless)")  # Table 3: ka(HV) 0.014 / ka_PMO 0.0078 = 1.795; Results 3.1 quotes the reciprocal ratio as 0.55
 
     # ---- Distribution (Choi 2025 Table 3) -------------------------------
     lvc <- log(1.58)
@@ -156,7 +156,7 @@ Choi_2025_denosumab <- function() {
     lq <- log(0.20)
     label("Apparent inter-compartmental clearance in patients (L/h)")  # Table 3, "Q/F_PMO" = 0.20 L/h [20.22% RSE]
     e_healthy_q <- 1.731656
-    label("Effect of healthy-volunteer status on Q/F (log-scale)")  # Table 3: Q/F(HV) 1.13 / Q/F_PMO 0.20 = 5.65; Results 3.1 quotes the reciprocal ratio as 0.18
+    label("Effect of healthy-volunteer status on Q/F, log-scale (unitless)")  # Table 3: Q/F(HV) 1.13 / Q/F_PMO 0.20 = 5.65; Results 3.1 quotes the reciprocal ratio as 0.18
 
     # ---- Linear elimination (Choi 2025 Table 3) -------------------------
     lcl <- log(0.006)
@@ -164,17 +164,17 @@ Choi_2025_denosumab <- function() {
     e_wt_cl <- 0.93
     label("Power exponent on (WT/64) for CL/F (unitless)")  # Table 3, "Covariate effect (theta) of body weight on CL/F" = 0.93 [7.98% RSE]
     e_black_cl <- 0.1397619
-    label("Effect of Black race on CL/F (log-scale)")  # Table 3: CL/F Black 0.0069 / Caucasian 0.006 = 1.15; Results 3.1 quotes 1.14
+    label("Effect of Black race on CL/F, log-scale (unitless)")  # Table 3: CL/F Black 0.0069 / Caucasian 0.006 = 1.15; Results 3.1 quotes 1.14
     e_asian_cl <- 0.2097205
-    label("Effect of Asian race on CL/F (log-scale)")  # Table 3: CL/F Asian 0.0074 / Caucasian 0.006 = 1.233; Results 3.1 quotes 1.22
+    label("Effect of Asian race on CL/F, log-scale (unitless)")  # Table 3: CL/F Asian 0.0074 / Caucasian 0.006 = 1.233; Results 3.1 quotes 1.22
     e_sb16_cl <- -0.001801622
-    label("Effect of SB16 biosimilar treatment on CL/F (log-scale)")  # Results 3.3: "implemented CL/F ratio of SB16 to DEN was 0.9982"; log(0.9982)
+    label("Effect of SB16 biosimilar treatment on CL/F, log-scale (unitless)")  # Results 3.3: "implemented CL/F ratio of SB16 to DEN was 0.9982"; log(0.9982)
 
     # ---- Target (RANKL) turnover and QSS binding (Choi 2025 Table 3) ----
     lrbase_target <- log(15.23)
     label("Baseline total target (RANKL) concentration in patients (nmol/L)")  # Table 3, "R0_PMO" = 15.23 nmol/L [12.78% RSE]
     e_healthy_rbase_target <- -2.74347
-    label("Effect of healthy-volunteer status on baseline RANKL (log-scale)")  # Table 3: R0(HV) 0.98 / R0_PMO 15.23 = 0.0644; Results 3.1 quotes the reciprocal ratio as 15.49
+    label("Effect of healthy-volunteer status on baseline RANKL, log-scale (unitless)")  # Table 3: R0(HV) 0.98 / R0_PMO 15.23 = 0.0644; Results 3.1 quotes the reciprocal ratio as 15.49
     lksyn <- log(0.01)
     label("Zero-order target (RANKL) synthesis rate constant (nmol/L/h)")  # Table 3, "ksyn" = 0.01 1/h [2.86% RSE]; see model() for the ksyn/kdeg unit note
     lkint <- log(0.022)
