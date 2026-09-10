@@ -852,6 +852,8 @@ navbar:
         href: articles/FernandezRubio_2025_ceftriaxone.html
       - text: "Ceftriaxone (Garot 2011)"
         href: articles/Garot_2011_ceftriaxone.html
+      - text: "Ceftriaxone (Marianski 2026)"
+        href: articles/Marianski_2026_ceftriaxone.html
       - text: "Ceftriaxone (Tsai 2023)"
         href: articles/Tsai_2023_ceftriaxone.html
       - text: "Cefuroxime (Alqahtani 2018)"
@@ -6152,6 +6154,7 @@ articles:
   - articles/Mao_2024_sirolimus
   - articles/Marathe_2023_belzutifan
   - articles/Marcantonio_2022_efa
+  - articles/Marianski_2026_ceftriaxone
   - articles/Marier_2002_tobramycin_rat_conventional
   - articles/Marier_2002_tobramycin_rat_liposomal
   - articles/Marier_2010_teduglutide
