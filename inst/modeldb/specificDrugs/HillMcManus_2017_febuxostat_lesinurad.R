@@ -196,8 +196,8 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     lag(depot_lesn) <- tlag_lesn_h
 
     # Drug plasma concentrations (mg/dL) feeding PD drug functions
-    cf_t <- central_febx / vc_febx
-    cl_t <- central_lesn / vc_lesn
+    Cc_febx <- central_febx / vc_febx
+    Cc_lesn <- central_lesn / vc_lesn
 
     # --- Individual PD parameters ---
     ic50_1 <- exp(lic501 + etalic501_lic502)
@@ -228,10 +228,10 @@ HillMcManus_2017_febuxostat_lesinurad <- function() {
     # when Imax = 1 (both Imax_1 and Imax_2 are Assumed = 1 in Table 1).
     # The general form is used here so the Imax_1 and Imax_2 parameter values
     # remain auditable and overridable.
-    inh1  <- 1 - imax_1 * cf_t / (ic50_1 + cf_t)
-    inh2  <- 1 - imax_2 * cf_t / (ic50_2 + cf_t)
-    stim1 <- 1 + emax_1 * cf_t / (ec50_1 + cf_t)
-    stim2 <- 1 + emax_2 * cl_t / (ec50_2 + cl_t)
+    inh1  <- 1 - imax_1 * Cc_febx / (ic50_1 + Cc_febx)
+    inh2  <- 1 - imax_2 * Cc_febx / (ic50_2 + Cc_febx)
+    stim1 <- 1 + emax_1 * Cc_febx / (ec50_1 + Cc_febx)
+    stim2 <- 1 + emax_2 * Cc_lesn / (ec50_2 + Cc_lesn)
 
     # --- PD ODEs (Figure 1 Eqs 1-4)
     # The UA production term `k1 * inh2 * xanthine` is scaled by the

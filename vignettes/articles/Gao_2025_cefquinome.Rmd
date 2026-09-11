@@ -420,12 +420,12 @@ pd_sim <- rxode2::rxSolve(pd_mod, events = pd_events, keep = c("AUC_CEFQ", "ce_l
 ode_chk <- pd_sim |>
   dplyr::group_by(ce_level) |>
   dplyr::summarise(
-    # Measure the STATE, not the observable: Cc is log10(bact + 1), and that
+    # Measure the STATE, not the observable: log_cfu is log10(bact + 1), and
     # 1-CFU/mL floor deliberately shifts the reading once bact is driven into
     # the tens of CFU/mL. The floor is a guard on the observation, not part of
     # the kinetics, so the ODE must be scored on bact itself.
     `Delta log10 (state)` = log10(bact[time == 24]) - log10(bact[time == 0]),
-    `Delta log10 (Cc, floored)` = Cc[time == 24] - Cc[time == 0],
+    `Delta log10 (log_cfu, floored)` = log_cfu[time == 24] - log_cfu[time == 0],
     .groups = "drop"
   ) |>
   dplyr::mutate(`Sigmoid E` = effect_of(ce_level),
@@ -474,7 +474,7 @@ exvivo <- rxode2::rxSolve(pd_mod, events = exvivo_events, keep = c("AUC_CEFQ", "
 # against E. coli in serum drawn at each sampling time after IM administration.
 exvivo |>
   dplyr::mutate(draw = factor(draw)) |>
-  ggplot(aes(time, Cc, colour = draw)) +
+  ggplot(aes(time, log_cfu, colour = draw)) +
   geom_line(linewidth = 0.7) +
   geom_hline(yintercept = log10(200), linetype = "dotted") +
   labs(x = "Incubation time (h)", y = "log10 CFU/mL", colour = "Serum draw (h)",

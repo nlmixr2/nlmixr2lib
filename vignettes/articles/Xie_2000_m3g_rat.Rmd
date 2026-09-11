@@ -173,7 +173,7 @@ ggplot(vpc_sum, aes(time, Q50, colour = arm, fill = arm)) +
 # p1787 confirms blood CL and t_1/2 unchanged by probenecid).
 sim_typical |>
   filter(time > 0) |>
-  ggplot(aes(time, cu_pl, colour = arm)) +
+  ggplot(aes(time, Cc, colour = arm)) +
   geom_line(linewidth = 0.8) +
   labs(x = "Time (min)", y = "Unbound M3G in arterial plasma (uM)",
        title = "Plasma M3G typical-value trace (Model A reduction)",
@@ -188,9 +188,9 @@ The paper's primary quantitative claim is that probenecid increases the steady-s
 end_inf <- sim_typical |>
   filter(time == 240) |>
   transmute(arm,
-            cu_pl,
+            Cc,
             cu_br_csf,
-            ratio = cu_br_csf / cu_pl)
+            ratio = cu_br_csf / Cc)
 
 knitr::kable(
   end_inf |> distinct(),
@@ -204,7 +204,7 @@ The ratio at `t = 240 min` slightly under-reads the strict asymptotic `CL_u,in /
 ```{r late-ratio}
 late <- sim_typical |>
   filter(time == 360) |>
-  transmute(arm, cu_pl, cu_br_csf, ratio = cu_br_csf / cu_pl)
+  transmute(arm, Cc, cu_br_csf, ratio = cu_br_csf / Cc)
 knitr::kable(
   late |> distinct(),
   digits = 4,
@@ -228,7 +228,7 @@ All ratios reproduce the published values within rounding. The structural model 
 # Assumptions and deviations
 
 * **Model A reduced to a one-compartment plasma surrogate.** The paper's Model A is a joint arterial / venous PK fit using both arterial-plasma and venous-blood data, with the venous volume `V_v` arbitrarily fixed to 1 to make the clearance from venous equal to the rate constant; the model is used purely as a smoothing fit to generate individual arterial-plasma forcing functions for Model B. The paper tabulates only the joint unbound clearance `CL_u = 3.8 mL/min` (Results, p1787); the inter-compartmental rate constants between arterial and venous and `V_arterial` are not reported. The packaged model collapses the arterial / venous distinction to a single central compartment driven by the same `CL_u = 3.8 mL/min`. The central volume is derived as `V_c = CL_u * t_1/2,bl / ln(2) = 120.6 mL` from the paper-reported pooled venous-blood terminal half-life of 22 min (Table 2). With this calibration, the packaged-model plasma trace matches the paper's reported steady-state plasma target (65 uM at a 0.247 umol/min infusion) and reproduces the 22-min plasma half-life. Users who want to drive the brain layer with a more sophisticated plasma forcing function can re-implement the arterial-venous Model A as a separate `rxode2` model and pass its solution into the brain layer as a covariate.
-* **Plasma residual-error model not declared.** Xie 2000 Table 3 lists residual variability only for the brain ECF fit (Model B, `sigma = 0.14`); the residual error attached to the arterial-venous Model A fit is not tabulated in the published paper. The packaged model therefore declares a residual-error model only on the brain ECF observation. The plasma concentration `cu_pl` is computed for diagnostic and simulation use but is not declared as an observation; users who need an explicit plasma error model can add one but should not treat the choice as paper-derived.
+* **Plasma residual-error model not declared.** Xie 2000 Table 3 lists residual variability only for the brain ECF fit (Model B, `sigma = 0.14`); the residual error attached to the arterial-venous Model A fit is not tabulated in the published paper. The packaged model therefore declares a residual-error model only on the brain ECF observation. The plasma concentration `Cc` is computed for diagnostic and simulation use but is not declared as an observation; users who need an explicit plasma error model can add one but should not treat the choice as paper-derived.
 * **Single IIV magnitude on CL_u,in across treatment arms.** Table 3 of the paper reports two different inter-animal variabilities for CL_u,in: 49% in the without-probenecid pool (RSE 25%) and 20% in the with-probenecid arm (RSE 47%). The current nlmixr2lib `ini()` syntax does not support arm-dependent IIV magnitudes directly; the packaged model uses the without-probenecid value (49%) for both arms. Users simulating probenecid-arm data should expect mildly over-dispersed brain-ECF percentiles relative to the paper's narrower with-probenecid distribution.
 * **Per-g-brain semantics in the brain layer.** Xie 2000 expresses brain volumes (`V_u,br1`, `V_u,br2`) in uL/g-brain and brain clearances (`CL_u,in`, `CL_u,out`, `Q_br`) in uL/min/g-brain. The packaged model retains the per-g-brain semantics literally rather than scaling to whole-rat brain weight, because the per-g normalisation is the form in which the parameters are reported and the source paper itself does not state the rat brain weight used during the fit. A typical Sprague-Dawley rat brain weighs about 1.7-1.8 g, so users who want whole-brain amounts in the brain compartments should multiply `brain_csf` and `brain_deep` by their assumed brain weight in g. The plasma `central` compartment remains in whole-rat (umol) semantics; the brain efflux back into plasma is negligible per paper Discussion p1789 (~0.02% of body amount at steady state) so the unit mismatch between plasma and brain does not affect mass-balance accuracy.
 * **Compartment names `brain_csf` and `brain_deep` are paper-named rather than canonical.** The nlmixr2lib canonical compartment list includes `central`, `peripheral1`, `peripheral2`, plus a handful of named physiologic compartments (`csf`, `isf`, named brain regions, etc.). The Xie 2000 brain layer is asymmetric (CL_u,in != CL_u,out across the BBB) and the deep brain compartment connects only to the brain ECF, not to central -- neither matches the symmetric `peripheral` semantics. Naming them `brain_csf` and `brain_deep` is semantically clearer than `peripheral1` / `peripheral2` and follows the Stevens 2012 remoxipride precedent of using `brain_csf` for the microdialysis-sampled compartment. This generates two `checkModelConventions()` warnings (`compartments`), accepted by design.

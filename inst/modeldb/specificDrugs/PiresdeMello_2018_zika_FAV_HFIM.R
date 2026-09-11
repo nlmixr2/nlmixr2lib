@@ -38,7 +38,7 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
   units <- list(
     time          = "h",
     dosing        = "no dosing events -- FAV concentration is supplied via the CONC_FAV_UM time-varying covariate",
-    concentration = "log10(PFU/mL) for the model observation Cc"
+    concentration = "log10(PFU/mL) for the model observation log10_viral_load"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -79,7 +79,7 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
         "the no-treatment growth control. Paper-specific covariate not in",
         "inst/references/covariate-columns.md because the canonical",
         "concentration concept in nlmixr2lib is a state-derived plasma",
-        "concentration (Cc), not an exogenous-drug-concentration covariate",
+        "concentration (log10_viral_load), not an exogenous-drug-concentration covariate",
         "used to drive an in vitro PD model."
       ),
       source_name        = "C_FAV (Pires de Mello 2018 Eq 8)"
@@ -308,7 +308,7 @@ PiresdeMello_2018_zika_FAV_HFIM <- function() {
     #    method was used in S-ADAPT to handle BLQ samples. A small
     #    floor (1e-30) avoids -Inf when vextra is exactly 0.
     # ================================================================
-    Cc <- log10(vextra + 1e-30)
-    Cc ~ add(addSd)
+    log10_viral_load <- log10(vextra + 1e-30)
+    log10_viral_load ~ add(addSd)
   })
 }

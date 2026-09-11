@@ -177,7 +177,7 @@ Sun_2026_tilmicosin_pkpd_plasma <- function() {
     # log10 CFU/mL observation with a 1-CFU/mL floor (matches the
     # Lee 2023 / Chen 2023 in-vitro PD convention so the log10 stays
     # finite if bact is driven below 1 CFU/mL).
-    Cc <- log10(bact + 1)
-    Cc ~ add(addSd)
+    log_cfu <- log10(bact + 1)
+    log_cfu ~ add(addSd)
   })
 }

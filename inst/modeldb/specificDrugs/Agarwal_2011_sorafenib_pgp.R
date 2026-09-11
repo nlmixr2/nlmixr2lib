@@ -5,7 +5,7 @@ Agarwal_2011_sorafenib_pgp <- function() {
     "increase in intracellular accumulation of the prototypical P-gp",
     "substrate vinblastine in polarised MDCKII monolayers stably",
     "transfected with human MDR1. The model is:",
-    "vblAccum = e0 + (emax - e0) * C^hill / (ic50^hill + C^hill),",
+    "vbl_accum = e0 + (emax - e0) * C^hill / (ic50^hill + C^hill),",
     "with ic50 = 15900 ng/mL (15.9 ug/mL, 25 uM). Sorafenib is NOT itself",
     "a P-gp substrate in this system (Figure 4 shows no directional",
     "transport), so this curve describes sorafenib acting purely as a P-gp",
@@ -42,7 +42,7 @@ Agarwal_2011_sorafenib_pgp <- function() {
   units <- list(
     time          = "h",
     dosing        = "(none; static in vitro concentration-response model driven by an external sorafenib concentration covariate)",
-    concentration = "(observation vblAccum is the fold increase in intracellular vinblastine accumulation relative to untreated control, dimensionless; driving covariate CP_SORAFENIB_NGML is the sorafenib concentration in the incubation medium in ng/mL)"
+    concentration = "(observation vbl_accum is the fold increase in intracellular vinblastine accumulation relative to untreated control, dimensionless; driving covariate CP_SORAFENIB_NGML is the sorafenib concentration in the incubation medium in ng/mL)"
   )
 
   covariateData <- list(
@@ -206,16 +206,16 @@ Agarwal_2011_sorafenib_pgp <- function() {
     # CP_SORAFENIB_NGML, in the exact form printed in Methods
     # Equation 3 and the Figure 6A panel:
     #
-    #   vblAccum = e0 + (emax - e0) * C^hill / (ic50^hill + C^hill)
+    #   vbl_accum = e0 + (emax - e0) * C^hill / (ic50^hill + C^hill)
     #
     # At C = ic50 this returns (e0 + emax) / 2, the half-maximal effect
     # that defines the reported IC50. That identity is asserted in the
     # validation vignette.
     # ==================================================================
-    vblAccum <-
+    vbl_accum <-
       e0 + (emax - e0) * CP_SORAFENIB_NGML^hill /
         (ic50^hill + CP_SORAFENIB_NGML^hill)
 
-    vblAccum ~ add(addSd)
+    vbl_accum ~ add(addSd)
   })
 }

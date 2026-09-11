@@ -290,7 +290,7 @@ Yang_2024_naloxone_buprenorphine <- function() {
 
     # ---- Outputs
     Cc <- central / vc
-    Cnal <- central_naloxone / vc_naloxone
+    Cc_naloxone <- central_naloxone / vc_naloxone
     # Linear transduction function, equation 7 / control stream (A)
     # $ERROR E = E0*(1 - ALPHA*A(12)).
     VE <- e0 * (1 - alpha * RL_op)

@@ -11,7 +11,7 @@ Venisse_2008_caspofungin <- function() {
   units <- list(
     time          = "h",
     dosing        = "mg",
-    concentration = "mg/L (drug central; numerically equal to ug/mL used in the paper); CFU/mL (Candida count); log CFU/mL (Cc observation)"
+    concentration = "mg/L (drug central; numerically equal to ug/mL used in the paper); CFU/mL (Candida count); log CFU/mL (log_cfu observation)"
   )
 
   paper_specific_compartments <- c("candida")
@@ -113,10 +113,10 @@ Venisse_2008_caspofungin <- function() {
     kel <- cl / vc
 
     # ----- Bath drug concentration (drives the caspofungin killing term) -----
-    cc <- central / vc
+    Cc <- central / vc
 
     # ----- Caspofungin death-stimulation rate (Emax * C / (EC50 + C)) -----
-    e_casp <- emax * cc / (ec50 + cc)
+    e_casp <- emax * Cc / (ec50 + Cc)
 
     # ----- ODE system -----
     # Eq 5 (Venisse 2008):
@@ -141,7 +141,7 @@ Venisse_2008_caspofungin <- function() {
     # Equivalent to the paper's exponential residual on the linear CFU/mL scale;
     # the +1 floor prevents log(0) when caspofungin's fungicidal effect drives
     # the count toward 0 in the initial decay phase before regrowth.
-    Cc <- log(candida + 1)
-    Cc ~ add(addSd)
+    log_cfu <- log(candida + 1)
+    log_cfu ~ add(addSd)
   })
 }

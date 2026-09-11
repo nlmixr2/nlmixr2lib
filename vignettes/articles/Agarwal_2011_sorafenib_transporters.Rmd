@@ -118,7 +118,7 @@ points are stored below and used for the figure replications.
 # values themselves and they are excluded from the quantitative comparison.
 fig5_obs <- tibble::tibble(
   conc_ngml = c(1.91, 4.14, 6.13, 7.85, 9.65, 17.37, 23.35, 39.26, 71.28, 166.27, 325.65),
-  pappBa_obs  = c(3.446, 2.338, 1.658, 1.669, 1.233, 0.784, 0.893, 0.567, 0.365, 0.182, 0.131)
+  papp_ba_obs  = c(3.446, 2.338, 1.658, 1.669, 1.233, 0.784, 0.893, 0.567, 0.365, 0.182, 0.131)
 )
 
 # Figure 6A -- fold increase in vinblastine accumulation in MDCKII-MDR1 cells.
@@ -167,11 +167,11 @@ pred5 <- solveStatic(bcrp, grid5)
 ggplot2::ggplot() +
   ggplot2::geom_line(
     data = pred5,
-    ggplot2::aes(CP_SORAFENIB_NGML, pappBa), linewidth = 0.8
+    ggplot2::aes(CP_SORAFENIB_NGML, papp_ba), linewidth = 0.8
   ) +
   ggplot2::geom_point(
     data = fig5_obs,
-    ggplot2::aes(conc_ngml, pappBa_obs), size = 2.2
+    ggplot2::aes(conc_ngml, papp_ba_obs), size = 2.2
   ) +
   ggplot2::scale_x_log10(
     breaks = c(1, 10, 100, 1000, 10000, 100000),
@@ -197,20 +197,20 @@ km <- exp(bcrp$theta[["lkm"]])
 emax5 <- exp(bcrp$theta[["lemax"]])
 chk5 <- solveStatic(bcrp, c(0, km, 1e9))
 
-halfMax <- chk5$pappBa[2]
+halfMax <- chk5$papp_ba[2]
 tibble::tibble(
-  Check = c("pappBa at C = 0", "pappBa at C = km", "emax / 2", "pappBa at C = 1e9"),
-  Value = c(chk5$pappBa[1], halfMax, emax5 / 2, chk5$pappBa[3])
+  Check = c("papp_ba at C = 0", "papp_ba at C = km", "emax / 2", "papp_ba at C = 1e9"),
+  Value = c(chk5$papp_ba[1], halfMax, emax5 / 2, chk5$papp_ba[3])
 ) |>
   knitr::kable(digits = 6)
 
 stopifnot(
   # Deterministic identities -- exact to machine precision, no RNG involved.
-  abs(chk5$pappBa[1] - emax5) < 1e-10,
+  abs(chk5$papp_ba[1] - emax5) < 1e-10,
   abs(halfMax - emax5 / 2) < 1e-10,
-  chk5$pappBa[3] < 1e-5,
+  chk5$papp_ba[3] < 1e-5,
   # Strictly monotone decreasing across five decades.
-  all(diff(pred5$pappBa) < 0)
+  all(diff(pred5$papp_ba) < 0)
 )
 ```
 
@@ -219,13 +219,13 @@ stopifnot(
 ```{r bcrp_agreement}
 cmp5 <- fig5_obs |>
   dplyr::mutate(
-    pappBa_pred = solveStatic(bcrp, conc_ngml)$pappBa,
-    abs_dev = pappBa_pred - pappBa_obs,
-    pct_diff = 100 * abs_dev / pappBa_obs
+    papp_ba_pred = solveStatic(bcrp, conc_ngml)$papp_ba,
+    abs_dev = papp_ba_pred - papp_ba_obs,
+    pct_diff = 100 * abs_dev / papp_ba_obs
   )
 knitr::kable(cmp5, digits = 3)
 
-r2_5 <- 1 - sum(cmp5$abs_dev^2) / sum((cmp5$pappBa_obs - mean(cmp5$pappBa_obs))^2)
+r2_5 <- 1 - sum(cmp5$abs_dev^2) / sum((cmp5$papp_ba_obs - mean(cmp5$papp_ba_obs))^2)
 cat("R-squared:", round(r2_5, 4), "\n")
 ```
 
@@ -261,7 +261,7 @@ pred6 <- solveStatic(pgp, grid6)
 ggplot2::ggplot() +
   ggplot2::geom_line(
     data = pred6,
-    ggplot2::aes(CP_SORAFENIB_NGML / 1000, vblAccum), linewidth = 0.8
+    ggplot2::aes(CP_SORAFENIB_NGML / 1000, vbl_accum), linewidth = 0.8
   ) +
   ggplot2::geom_point(
     data = fig6_obs,
@@ -291,18 +291,18 @@ hill <- exp(pgp$theta[["lhill"]])
 chk6 <- solveStatic(pgp, c(0, ic50, 1e12))
 
 tibble::tibble(
-  Check = c("vblAccum at C = 0", "e0", "vblAccum at C = ic50", "(e0 + emax) / 2",
-            "vblAccum at C = 1e12", "emax"),
-  Value = c(chk6$vblAccum[1], e0, chk6$vblAccum[2], (e0 + emax6) / 2,
-            chk6$vblAccum[3], emax6)
+  Check = c("vbl_accum at C = 0", "e0", "vbl_accum at C = ic50", "(e0 + emax) / 2",
+            "vbl_accum at C = 1e12", "emax"),
+  Value = c(chk6$vbl_accum[1], e0, chk6$vbl_accum[2], (e0 + emax6) / 2,
+            chk6$vbl_accum[3], emax6)
 ) |>
   knitr::kable(digits = 6)
 
 stopifnot(
-  abs(chk6$vblAccum[1] - e0) < 1e-10,
-  abs(chk6$vblAccum[2] - (e0 + emax6) / 2) < 1e-10,
-  abs(chk6$vblAccum[3] - emax6) < 1e-6,
-  all(diff(pred6$vblAccum) > 0),
+  abs(chk6$vbl_accum[1] - e0) < 1e-10,
+  abs(chk6$vbl_accum[2] - (e0 + emax6) / 2) < 1e-10,
+  abs(chk6$vbl_accum[3] - emax6) < 1e-6,
+  all(diff(pred6$vbl_accum) > 0),
   # The Hill exponent is well above 1, so the curve is genuinely sigmoidal
   # rather than the hyperbolic (hill = 1) special case.
   hill > 1.5
@@ -314,7 +314,7 @@ stopifnot(
 ```{r pgp_agreement}
 cmp6 <- fig6_obs |>
   dplyr::mutate(
-    fold_pred = solveStatic(pgp, conc_ngml)$vblAccum,
+    fold_pred = solveStatic(pgp, conc_ngml)$vbl_accum,
     abs_dev = fold_pred - fold_obs,
     pct_diff = 100 * abs_dev / fold_obs
   ) |>
@@ -347,20 +347,20 @@ mw_tosylate <- 15900 / 25    # ng/mL per uM, from the paper's own conversion
 clinical <- solveStatic(pgp, c(1, 5, 15) * mw_tosylate)
 tibble::tibble(
   `Plasma sorafenib (uM)` = c(1, 5, 15),
-  `Predicted fold increase in P-gp substrate accumulation` = clinical$vblAccum
+  `Predicted fold increase in P-gp substrate accumulation` = clinical$vbl_accum
 ) |>
   knitr::kable(digits = 2)
 
 stopifnot(
   # The clinical range reaches the foot of the curve but not its plateau:
   # at 15 uM the model predicts a real but sub-maximal effect.
-  clinical$vblAccum[1] < 1.5,
-  clinical$vblAccum[3] > 2, clinical$vblAccum[3] < emax6 / 2
+  clinical$vbl_accum[1] < 1.5,
+  clinical$vbl_accum[3] > 2, clinical$vbl_accum[3] < emax6 / 2
 )
 ```
 
 At the top of the clinical range sorafenib is predicted to raise the tissue
-accumulation of a P-gp substrate roughly `r round(clinical$vblAccum[3], 1)`-fold
+accumulation of a P-gp substrate roughly `r round(clinical$vbl_accum[3], 1)`-fold
 -- consistent with the authors' warning that sorafenib "may alter tissue
 pharmacokinetics of concurrently administered drugs if the coadministered drug
 is a substrate for P-gp".
@@ -487,15 +487,15 @@ Figures 5 and 6A as an IIV or RUV estimate -- they are replicate spread
 ## Two new canonical observation names
 
 Neither endpoint could reuse an existing canonical: `Cc` would be wrong because
-neither is a drug concentration (`pappBa` is an apparent permeability in
-cm/sec, `vblAccum` is a dimensionless fold change in the accumulation of a
+neither is a drug concentration (`papp_ba` is an apparent permeability in
+cm/sec, `vbl_accum` is a dimensionless fold change in the accumulation of a
 *different* drug, vinblastine), and a search of the 658-entry observation
 register for permeability / flux / efflux / accumulation / fold / transport /
 uptake turned up nothing either name could alias. Both names were therefore
 ratified by the operator before this model file was committed, and are
 registered in `inst/references/compartment-names.md`:
 
-* **`pappBa`** -- apparent basolateral-to-apical permeability, with `pappAb`
+* **`papp_ba`** -- apparent basolateral-to-apical permeability, with `papp_ab`
   reserved for the opposite direction. The direction is part of the name rather
   than a note in the entry because directional flux is the entire point of a
   Transwell assay: this paper reports both directions (Figure 3), so a bare
@@ -503,8 +503,8 @@ registered in `inst/references/compartment-names.md`:
   time an A-to-B model were added. The qualified form also avoids a collision
   with `papp`, which already exists in the registry as an `ini()` *parameter*
   name for apparent permeability in the three `Granda_2024_*_pbpk` models.
-* **`vblAccum`** -- fold increase in intracellular vinblastine accumulation,
-  named for the specific probe in the same way `hergInh` names a specific
+* **`vbl_accum`** -- fold increase in intracellular vinblastine accumulation,
+  named for the specific probe in the same way `herg_inh` names a specific
   channel's tail-current block. A generic `probeAccumFold` would need the probe
   recorded out-of-band to be interpretable; this paper alone uses three
   different probes (vinblastine for P-gp, prazosin and mitoxantrone for BCRP).

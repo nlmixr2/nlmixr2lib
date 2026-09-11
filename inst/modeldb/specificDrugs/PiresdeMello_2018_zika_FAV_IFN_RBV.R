@@ -35,7 +35,7 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
   units <- list(
     time          = "h",
     dosing        = "static covariates (uM FAV, ug/mL RBV, IU/mL IFN) -- not administered events",
-    concentration = "log10(PFU/mL) for the model observation Cc"
+    concentration = "log10(PFU/mL) for the model observation log10_viral_load"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -68,7 +68,7 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
         "competitive-interaction term with RBV (Eq 13). Paper-specific covariate",
         "not in inst/references/covariate-columns.md because the canonical",
         "concentration concept in nlmixr2lib is a state-derived plasma",
-        "concentration (Cc), not a static exogenous-drug-concentration",
+        "concentration (log10_viral_load), not a static exogenous-drug-concentration",
         "covariate used to drive an in vitro PD model."
       ),
       source_name        = "C_FAV (Pires de Mello 2018 Eq 10)"
@@ -347,7 +347,7 @@ PiresdeMello_2018_zika_FAV_IFN_RBV <- function() {
     #    t = 0; observed data are sampled from t = 24 h onward, by which
     #    point vextra is well above the floor.
     # ================================================================
-    Cc <- log10(vextra + 1e-30)
-    Cc ~ add(addSd)
+    log10_viral_load <- log10(vextra + 1e-30)
+    log10_viral_load ~ add(addSd)
   })
 }

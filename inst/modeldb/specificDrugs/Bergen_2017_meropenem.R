@@ -182,11 +182,11 @@ Bergen_2017_meropenem <- function() {
 
     # 10. Observation: total viable count on the log10 scale; an additive 1e-6
     #     floor protects log10 when all states are driven near zero by sustained
-    #     bactericidal exposure. Cc is the nlmixr2lib single-output convention;
+    #     bactericidal exposure. log_cfu is the nlmixr2lib single-output convention;
     #     the underlying quantity is log10 CFU/mL, not a drug concentration --
     #     see units$concentration. Additive residual SD on log10 scale matches
     #     Table 3 SD_CFU.
-    Cc <- log10(cfu_all + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(cfu_all + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

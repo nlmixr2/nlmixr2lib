@@ -63,7 +63,7 @@ Wojciechowski_2015_rheumatoidArthritis <- function() {
   # The DAS28 score is paper-mechanistic and does not generalise to
   # other models, so it is declared paper-specific here following the
   # same pattern as `Wu_2014_FEV1_asthma`'s `fev1` and
-  # `Lee_2011_parkinson_progression`'s `deltaUPDRS`.
+  # `Lee_2011_parkinson_progression`'s `d_updrs`.
   paper_specific_compartments <- c("das28_logit", "das28")
 
   units <- list(

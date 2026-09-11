@@ -229,13 +229,13 @@ Garonzik_2016_daptomycin <- function() {
     bact_resistant1(0) <- cfu0 * frr
 
     # ---- Observation ----
-    # Observation Cc is log10 of total CFU/mL across the six bacterial
+    # Observation log_cfu is log10 of total CFU/mL across the six bacterial
     # compartments; a 1e-6 floor protects log10 when all states are driven
-    # to zero. The Cc name is the nlmixr2lib single-output convention; the
+    # to zero. The log_cfu name is the nlmixr2lib single-output convention; the
     # underlying quantity is log10 CFU/mL, not a drug concentration -- see
     # units$concentration. Additive residual SD = 0.558 on log10 CFU/mL
     # (Garonzik 2016 Table 2 epsilon_CFU).
-    Cc <- log10(cfu_total + 1e-6)
-    Cc ~ add(addSd)
+    log_cfu <- log10(cfu_total + 1e-6)
+    log_cfu ~ add(addSd)
   })
 }

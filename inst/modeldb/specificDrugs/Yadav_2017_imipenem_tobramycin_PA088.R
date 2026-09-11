@@ -191,7 +191,7 @@ Yadav_2017_imipenem_tobramycin_PA088 <- function() {
     csig(0) <- cfu0
 
     # 12. Outputs: total viable count on the log10 scale (fitted endpoint).
-    Cc <- log10(CFUall)
-    Cc ~ add(addSd)
+    log_cfu <- log10(CFUall)
+    log_cfu ~ add(addSd)
   })
 }

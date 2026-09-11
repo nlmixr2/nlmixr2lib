@@ -5,9 +5,9 @@ Patel_2020_sapanisertib_RR <- function() {
     "advanced solid tumors, from a dedicated QTc (DQT) study of a single",
     "40 mg oral dose. The endpoint is change from time-matched day -1",
     "baseline in the RR interval (the time between two consecutive R waves,",
-    "i.e. the reciprocal-scale heart-rate measure; observation variable dRR,",
+    "i.e. the reciprocal-scale heart-rate measure; observation variable d_rr,",
     "msec). The model is:",
-    "dRR = e0 + slope * CP_SAPANISERTIB_NGML,",
+    "d_rr = e0 + slope * CP_SAPANISERTIB_NGML,",
     "with e0 = -25.504 msec and slope = 0.147 msec per ng/mL. Unlike the two",
     "companion QTc models the slope here is POSITIVE and strongly",
     "significant (P < 0.001): higher sapanisertib concentration is",
@@ -47,7 +47,7 @@ Patel_2020_sapanisertib_RR <- function() {
   units <- list(
     time          = "h",
     dosing        = "(none; PD-only model fed by an external sapanisertib plasma-concentration covariate)",
-    concentration = "(observation dRR is the change from time-matched day -1 baseline in the RR interval, msec; driving covariate CP_SAPANISERTIB_NGML is in ng/mL)"
+    concentration = "(observation d_rr is the change from time-matched day -1 baseline in the RR interval, msec; driving covariate CP_SAPANISERTIB_NGML is in ng/mL)"
   )
 
   covariateData <- list(
@@ -268,7 +268,7 @@ Patel_2020_sapanisertib_RR <- function() {
     # unit rescaling is applied. Output is the change from time-matched
     # day -1 baseline in the RR interval, in msec.
     #
-    # The observation variable is named `dRR`, the canonical
+    # The observation variable is named `d_rr`, the canonical
     # change-from-baseline RR interval registered in
     # inst/references/compartment-names.md alongside this extraction
     # (founding example). The register had no RR entry of either form,
@@ -277,12 +277,12 @@ Patel_2020_sapanisertib_RR <- function() {
     # observation variable in change-from-baseline concentration-QTc
     # models (Darpo_2014_racSotalol_*.R,
     # Fostvedt_2021_glasdegib_QTcF.R, Mukker_2026_tuvusertib_QTcF.R,
-    # Zhou_2025_fruquintinib_*.R), whereas `dHR` exists precisely for a
+    # Zhou_2025_fruquintinib_*.R), whereas `d_hr` exists precisely for a
     # change-from-baseline heart-rate-domain endpoint. Operator ruling
     # (sidecar oare_PMC7586797 request-001 q1, answered 2026-09-02)
-    # adopted `dRR`: the bare-name precedent is for ABSOLUTE interval
-    # names, and a delta is what `dHR` already encodes, so the
-    # heart-rate-domain pair (dHR, dRR) is kept mutually consistent.
+    # adopted `d_rr`: the bare-name precedent is for ABSOLUTE interval
+    # names, and a delta is what `d_hr` already encodes, so the
+    # heart-rate-domain pair (d_hr, d_rr) is kept mutually consistent.
     # The scale-incomparability rationale transfers directly -- an
     # absolute RR interval is ~850 msec, this DeltaRR is -25 to
     # +18 msec. The consequence is a deliberate naming asymmetry
@@ -295,8 +295,8 @@ Patel_2020_sapanisertib_RR <- function() {
     # no compartmentData and rxSolve() must NOT be given omega = NA
     # (there are no etas to suppress).
     # ==================================================================
-    dRR <- e0 + slope * CP_SAPANISERTIB_NGML
+    d_rr <- e0 + slope * CP_SAPANISERTIB_NGML
 
-    dRR ~ add(addSd)
+    d_rr ~ add(addSd)
   })
 }

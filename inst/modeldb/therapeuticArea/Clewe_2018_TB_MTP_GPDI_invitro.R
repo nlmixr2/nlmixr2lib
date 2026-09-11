@@ -25,7 +25,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
   units <- list(
     time          = "day",
     dosing        = "mg/L (static covariates -- not administered events)",
-    concentration = "log(CFU/mL) for the model observation Cc"
+    concentration = "log(CFU/mL) for the model observation log_cfu"
   )
 
   # Issue #482: what each ODE state holds, in what amount units, in what
@@ -54,7 +54,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
         "the source experiment (Figure 1): rifampicin 0.002, 0.008, 0.03, 0.125, 0.5, 8",
         "mg/L. Set to 0 in regimens without rifampicin. Paper-specific covariate not in",
         "inst/references/covariate-columns.md because the canonical concentration concept",
-        "in nlmixr2lib is a state-derived plasma concentration (Cc), not a static",
+        "in nlmixr2lib is a state-derived plasma concentration (log_cfu), not a static",
         "exogenous-drug-concentration covariate used to drive an in vitro PD model."
       ),
       source_name        = "CRIF (Clewe 2018 Materials and methods)"
@@ -558,7 +558,7 @@ Clewe_2018_TB_MTP_GPDI_invitro <- function() {
     # ================================================================
     total_bugs <- fbugs + sbugs + nbugs
     if (total_bugs < 1) total_bugs <- 1
-    Cc <- log(total_bugs)
-    Cc ~ add(addSd)
+    log_cfu <- log(total_bugs)
+    log_cfu ~ add(addSd)
   })
 }

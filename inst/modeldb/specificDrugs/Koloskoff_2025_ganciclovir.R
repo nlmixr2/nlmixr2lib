@@ -29,7 +29,7 @@ Koloskoff_2025_ganciclovir <- function() {
   # model description; units derived from the units block. verified = FALSE
   # means NOT checked against the source paper.
   compartmentData <- list(
-    viralLoad = list(analyte = "CMV", units = NA_character_, specimen = "plasma", verified = FALSE)
+    viral_load = list(analyte = "CMV", units = NA_character_, specimen = "plasma", verified = FALSE)
   )
 
   covariateData <- list(
@@ -130,12 +130,12 @@ Koloskoff_2025_ganciclovir <- function() {
     # degradation (Koloskoff 2025 Eq. 1; reproduced from Cojutti 2018 model
     # structure with AUC_0-12 replacing instantaneous concentration). The
     # AUC_GCV covariate must be present in the input dataset as a
-    # time-varying column in mg*h/L. The state viralLoad is on the
+    # time-varying column in mg*h/L. The state viral_load is on the
     # log10 copies/mL scale; the typical-value steady-state baseline at
     # AUC_GCV = 0 is kin / kout = 3.78 log10 copies/mL.
-    d/dt(viralLoad) <- kin - kout * (1 + emax * AUC_GCV / (ec50 + AUC_GCV)) * viralLoad
-    viralLoad(0)    <- kin / kout
+    d/dt(viral_load) <- kin - kout * (1 + emax * AUC_GCV / (ec50 + AUC_GCV)) * viral_load
+    viral_load(0)    <- kin / kout
 
-    viralLoad ~ prop(propSd)
+    viral_load ~ prop(propSd)
   })
 }
